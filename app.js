@@ -209,8 +209,9 @@ async function loadRealPrices() {
       : `Loaded ${allItems.length} official signed-rent records.${studioNote}`;
     priceStatus.className = "price-status success";
   } catch (err) {
-    priceTableBody.innerHTML = `<tr class="empty-row"><td colspan="6">Could not load official data.</td></tr>`;
-    priceStatus.textContent = err.message || "Could not load official data.";
+    const friendlyMessage = KHGApiErrors.humanizePriceError(err.message, priceType.value);
+    priceTableBody.innerHTML = `<tr class="empty-row"><td colspan="6">${friendlyMessage}</td></tr>`;
+    priceStatus.textContent = friendlyMessage;
     priceStatus.className = "price-status error";
   } finally {
     loadPricesBtn.disabled = false;
