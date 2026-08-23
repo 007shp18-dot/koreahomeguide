@@ -3,6 +3,7 @@ const neighborhoods = [
     key: "gangnam",
     name: "Gangnam",
     district: "Gangnam-gu",
+    lawdCd: "11680",
     lat: 37.4979,
     lng: 127.0276,
     description: "Major business district with dense transit, offices, shopping and late-night amenities.",
@@ -12,6 +13,7 @@ const neighborhoods = [
     key: "seongsu",
     name: "Seongsu",
     district: "Seongdong-gu",
+    lawdCd: "11200",
     lat: 37.5445,
     lng: 127.0560,
     description: "Lifestyle-heavy neighborhood known for cafés, creative spaces and access to eastern Seoul.",
@@ -21,6 +23,7 @@ const neighborhoods = [
     key: "hongdae",
     name: "Hongdae",
     district: "Mapo-gu",
+    lawdCd: "11440",
     lat: 37.5563,
     lng: 126.9237,
     description: "Lively university area with nightlife, restaurants and convenient airport-rail access.",
@@ -30,6 +33,7 @@ const neighborhoods = [
     key: "itaewon",
     name: "Itaewon",
     district: "Yongsan-gu",
+    lawdCd: "11170",
     lat: 37.5345,
     lng: 126.9946,
     description: "International dining and nightlife hub with a long-established foreign resident community.",
@@ -39,6 +43,7 @@ const neighborhoods = [
     key: "yeouido",
     name: "Yeouido",
     district: "Yeongdeungpo-gu",
+    lawdCd: "11560",
     lat: 37.5219,
     lng: 126.9245,
     description: "Finance and office district with strong subway access, parks and high-rise housing.",
@@ -48,6 +53,7 @@ const neighborhoods = [
     key: "wangsimni",
     name: "Wangsimni",
     district: "Seongdong-gu",
+    lawdCd: "11200",
     lat: 37.5611,
     lng: 127.0379,
     description: "Practical multi-line transit hub for reaching several major parts of Seoul.",
@@ -91,7 +97,10 @@ function renderCards(items, query = "") {
           ${depositBudget.value ? `<span class="tag">Deposit filter applied</span>` : ""}
         </div>
       </div>
-      <button class="card-action" type="button" data-focus="${item.key}">View on map</button>
+      <div class="card-actions">
+        <button class="card-action" type="button" data-focus="${item.key}">View on map</button>
+        <button class="card-action primary-action" type="button" data-real-price="${item.key}">See real prices</button>
+      </div>
     `;
     resultList.appendChild(card);
   });
@@ -103,6 +112,18 @@ function renderCards(items, query = "") {
         map.setView([item.lat, item.lng], 14);
         markerByKey[item.key].openPopup();
       }
+    });
+  });
+
+  document.querySelectorAll("[data-real-price]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const item = neighborhoods.find(n => n.key === button.dataset.realPrice);
+      if (!item) return;
+      const selection = KHGRealPrices.buildRealPriceSelection(item, homeType.value);
+      priceArea.value = selection.lawdCd;
+      priceType.value = selection.priceType;
+      document.querySelector("#real-prices").scrollIntoView({ behavior: "smooth", block: "start" });
+      await loadRealPrices();
     });
   });
 }
@@ -180,8 +201,7 @@ const priceTableBody = document.querySelector("#priceTableBody");
 const loadPricesBtn = document.querySelector("#loadPricesBtn");
 
 if (priceMonth) {
-  const now = new Date();
-  priceMonth.value = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}`;
+  priceMonth.value = KHGRealPrices.previousCompletedMonth(new Date());
 }
 
 function formatMoneyFromManwon(value) {
@@ -208,35 +228,49 @@ function renderPriceRows(items, typeLabel) {
   `).join("");
 }
 
+async function loadRealPrices() {
+  const ym = (priceMonth.value || "").replace("-", "");
+  if (!/^\d{6}$/.test(ym)) {
+    priceStatus.textContent = "Choose a valid contract month.";
+    priceStatus.className = "price-status error";
+    return;
+  }
+
+  priceStatus.textContent = "Loading official transaction data...";
+  priceStatus.className = "price-status";
+  loadPricesBtn.disabled = true;
+
+  try {
+    const url = `/api/real-prices?type=${encodeURIComponent(priceType.value)}&lawdCd=${encodeURIComponent(priceArea.value)}&dealYmd=${encodeURIComponent(ym)}`;
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.error || "Failed to load data.");
+
+    const allItems = data.items || [];
+    const filteredItems = KHGRealPrices.filterTransactions(allItems, {
+      rentBudgetWon: Number(rentBudget.value || 0),
+      depositBudgetWon: Number(depositBudget.value || 0)
+    });
+
+    renderPriceRows(filteredItems, priceType.options[priceType.selectedIndex].text);
+    const hasBudget = rentBudget.value || depositBudget.value;
+    const studioNote = homeType.value === "studio" && priceType.value === "villa"
+      ? " Studio is not an official transaction category, so villa/multi-family contracts are shown."
+      : "";
+    priceStatus.textContent = hasBudget
+      ? `Showing ${filteredItems.length} of ${allItems.length} official contracts matching your search budget.${studioNote}`
+      : `Loaded ${allItems.length} official transaction records.${studioNote}`;
+    priceStatus.className = "price-status success";
+  } catch (err) {
+    priceTableBody.innerHTML = `<tr class="empty-row"><td colspan="6">Could not load official data.</td></tr>`;
+    priceStatus.textContent = err.message || "Could not load official data.";
+    priceStatus.className = "price-status error";
+  } finally {
+    loadPricesBtn.disabled = false;
+  }
+}
+
 if (loadPricesBtn) {
-  loadPricesBtn.addEventListener("click", async () => {
-    const ym = (priceMonth.value || "").replace("-", "");
-    if (!/^\d{6}$/.test(ym)) {
-      priceStatus.textContent = "Choose a valid contract month.";
-      priceStatus.className = "price-status error";
-      return;
-    }
-
-    priceStatus.textContent = "Loading official transaction data...";
-    priceStatus.className = "price-status";
-    loadPricesBtn.disabled = true;
-
-    try {
-      const url = `/api/real-prices?type=${encodeURIComponent(priceType.value)}&lawdCd=${encodeURIComponent(priceArea.value)}&dealYmd=${encodeURIComponent(ym)}`;
-      const res = await fetch(url);
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.error || "Failed to load data.");
-
-      renderPriceRows(data.items || [], priceType.options[priceType.selectedIndex].text);
-      priceStatus.textContent = `Loaded ${data.items?.length || 0} official transaction records.`;
-      priceStatus.className = "price-status success";
-    } catch (err) {
-      priceTableBody.innerHTML = `<tr class="empty-row"><td colspan="6">Could not load official data.</td></tr>`;
-      priceStatus.textContent = err.message || "Could not load official data.";
-      priceStatus.className = "price-status error";
-    } finally {
-      loadPricesBtn.disabled = false;
-    }
-  });
+  loadPricesBtn.addEventListener("click", loadRealPrices);
 }

@@ -133,3 +133,7 @@ footer small{text-align:right;align-self:end}
 .price-status.success{background:#edf7f1;color:#286044}
 @media (max-width:1020px){.price-controls{grid-template-columns:1fr 1fr}.price-controls .search-button{grid-column:1/-1}}
 @media (max-width:760px){.price-controls{grid-template-columns:1fr}.price-controls .search-button{grid-column:auto}}
+.card-actions{display:flex;flex-direction:column;gap:8px;align-self:center}
+.primary-action{background:var(--accent);color:#fff;border-color:var(--accent)}
+.primary-action:hover{background:var(--accent-dark);color:#fff;border-color:var(--accent-dark)}
+@media (max-width:760px){.card-actions{flex-direction:row;flex-wrap:wrap;justify-self:start}}
