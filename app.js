@@ -34,6 +34,42 @@ const rentCheckEvidenceSummary = document.querySelector("#rentCheckEvidenceSumma
 const rentCheckComparableBody = document.querySelector("#rentCheckComparableBody");
 const rentCheckStudioNote = document.querySelector("#rentCheckStudioNote");
 
+const currencySelect = document.querySelector("#currencySelect");
+let fxRates = {};
+let fxRateDate = null;
+let lastRentCheckData = null;
+let lastPriceItems = null;
+
+function moneyHtml(amountWon) {
+  return KHGCurrency.formatMoneyHtml(amountWon, currencySelect ? currencySelect.value : "KRW", fxRates, "en-US");
+}
+
+function refreshCurrencyDisplays() {
+  updateCalculator();
+  if (lastRentCheckData) renderRentCheckResult(lastRentCheckData);
+  if (lastPriceItems) renderPriceRows(lastPriceItems);
+}
+
+async function loadFxRates() {
+  try {
+    const response = await fetch('/api/fx');
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'FX unavailable');
+    fxRates = data.rates || {};
+    fxRateDate = data.date || null;
+    if (currencySelect) currencySelect.title = `Reference FX ${fxRateDate || "latest"} · approximate only`;
+    refreshCurrencyDisplays();
+  } catch (error) {
+    fxRates = {};
+    if (currencySelect) currencySelect.title = "FX reference temporarily unavailable";
+    refreshCurrencyDisplays();
+  }
+}
+
+if (currencySelect) {
+  currencySelect.addEventListener('change', refreshCurrencyDisplays);
+}
+
 function renderCards(items, query = "") {
   resultList.innerHTML = "";
   resultCount.textContent = `${items.length} ${items.length === 1 ? "area" : "areas"}`;
@@ -120,7 +156,6 @@ if (window.L) {
   });
 }
 
-function won(n) { return "₩" + Math.round(Number(n || 0)).toLocaleString("en-US"); }
 
 // ---- Brokerage + move-in calculator ----
 const calcPropertyType = document.querySelector("#calcPropertyType");
@@ -142,14 +177,14 @@ function updateCalculator() {
     movingCleaningWon: Number(movingCleaning.value || 0)
   });
   const value100 = Math.max(0, depositWon) + Math.max(0, monthlyRentWon) * 100;
-  document.querySelector("#transactionValueResult").textContent = won(summary.transactionValueWon);
+  document.querySelector("#transactionValueResult").innerHTML = moneyHtml(summary.transactionValueWon);
   document.querySelector("#transactionFormula").textContent = value100 < 50_000_000
     ? "Below ₩50M → deposit + monthly rent × 70"
     : "Deposit + monthly rent × 100";
   document.querySelector("#brokerageRateResult").textContent = `${(summary.maxRate * 100).toFixed(1)}%`;
-  document.querySelector("#brokerageFeeResult").textContent = won(summary.brokerageMaxWon);
-  document.querySelector("#calcResult").textContent = won(summary.moveInCashWon);
-  document.querySelector("#monthlyCostResult").textContent = won(summary.monthlyRecurringWon);
+  document.querySelector("#brokerageFeeResult").innerHTML = moneyHtml(summary.brokerageMaxWon);
+  document.querySelector("#calcResult").innerHTML = moneyHtml(summary.moveInCashWon);
+  document.querySelector("#monthlyCostResult").innerHTML = moneyHtml(summary.monthlyRecurringWon);
 }
 
 document.querySelector("#calcForm").addEventListener("submit", e => e.preventDefault());
@@ -186,20 +221,21 @@ function renderRentCheckRows(items) {
     <tr>
       <td>${item.building || '-'}</td>
       <td>${Number.isFinite(Number(item.areaSqm)) ? `${Number(item.areaSqm).toFixed(1)}㎡` : '-'}</td>
-      <td>${KHGRentCheckUI.formatWon(item.depositWon)}</td>
-      <td>${KHGRentCheckUI.formatWon(item.monthlyRentWon)}</td>
+      <td>${moneyHtml(item.depositWon)}</td>
+      <td>${moneyHtml(item.monthlyRentWon)}</td>
       <td>${item.contractDate || '-'}</td>
     </tr>
   `).join('');
 }
 
 function renderRentCheckResult(data) {
+  lastRentCheckData = data;
   rentCheckResult.hidden = false;
   rentCheckRating.textContent = KHGRentCheckUI.ratingLabel(data.rating);
   rentCheckRating.className = `rent-rating ${data.rating || 'insufficient'}`;
   rentCheckMessage.textContent = KHGRentCheckUI.resultSentence(data);
-  rentCheckAsking.textContent = KHGRentCheckUI.formatWon(data.askingValueWon);
-  rentCheckMedian.textContent = data.medianValueWon == null ? '-' : KHGRentCheckUI.formatWon(data.medianValueWon);
+  rentCheckAsking.innerHTML = moneyHtml(data.askingValueWon);
+  rentCheckMedian.innerHTML = data.medianValueWon == null ? '-' : moneyHtml(data.medianValueWon);
   rentCheckDifference.textContent = data.differencePct == null ? '-' : KHGRentCheckUI.formatDifference(data.differencePct);
 
   if (data.confidence) {
@@ -289,13 +325,13 @@ setPriceType(priceType.value);
 function formatMoneyFromManwon(value) {
   const num = Number(String(value || "0").replace(/,/g, "").trim());
   if (!Number.isFinite(num)) return "-";
-  const valueWon = num * 10000;
-  return valueWon === 0 ? "₩0" : won(valueWon);
+  return moneyHtml(num * 10000);
 }
 function typeLabel(type) {
   return type === "apartment" ? "Apartment" : type === "officetel" ? "Officetel" : "Villa / Multi-family";
 }
 function renderPriceRows(items) {
+  lastPriceItems = items;
   if (!items.length) {
     priceTableBody.innerHTML = `<tr class="empty-row"><td colspan="6">No matching contracts returned for this area and month.</td></tr>`;
     return;
@@ -332,6 +368,7 @@ async function loadRealPrices() {
       : `Loaded ${allItems.length} official signed-rent records.${studioNote}`;
     priceStatus.className = "price-status success";
   } catch (err) {
+    lastPriceItems = null;
     const friendlyMessage = KHGApiErrors.humanizePriceError(err.message, priceType.value);
     priceTableBody.innerHTML = `<tr class="empty-row"><td colspan="6">${friendlyMessage}</td></tr>`;
     priceStatus.textContent = friendlyMessage;
@@ -341,3 +378,5 @@ async function loadRealPrices() {
   }
 }
 loadPricesBtn.addEventListener("click", loadRealPrices);
+
+loadFxRates();

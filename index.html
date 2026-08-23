@@ -42,6 +42,13 @@
     </nav>
     <div class="header-actions">
       <a class="header-cta" href="#search">Start searching</a>
+      <label class="currency-picker" aria-label="Display currency">
+        <select id="currencySelect">
+          <option value="KRW">KRW</option>
+          <option value="USD" selected>USD</option>
+          <option value="CNY">CNY</option>
+        </select>
+      </label>
       <div class="language-switch" aria-label="Language">
         <a class="active" href="/" hreflang="en">EN</a>
         <a href="/zh/" hreflang="zh-CN">中文</a>
@@ -443,11 +450,13 @@
     <div>
       <strong>KoreaHomeGuide</strong>
       <p>Find a home in Seoul with more context and fewer surprises.</p>
+      <p class="footer-contact">Questions, feedback, or data issues? <a href="mailto:007shp18@gmail.com">Email us</a></p>
     </div>
-    <small>© 2026 KoreaHomeGuide. General information only. Not legal or brokerage advice.</small>
+    <small>© 2026 KoreaHomeGuide. General information only. Not legal or brokerage advice. Foreign-currency conversions use latest reference rates and are approximate.</small>
   </footer>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="/currency-utils.js"></script>
   <script src="/real-price-utils.js"></script>
   <script src="/brokerage-utils.js"></script>
   <script src="/api-error-utils.js"></script>
