@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>KoreaHomeGuide | 首尔租房价格查询与租金比较</title>
+  <meta name="description" content="为在首尔租房的外国人提供租金报价比较、韩国官方实际租赁成交数据、中介费上限和入住费用估算。" />
+  <link rel="canonical" href="https://koreahomeguide.com/zh/" />
+  <link rel="alternate" hreflang="en" href="https://koreahomeguide.com/" />
+  <link rel="alternate" hreflang="zh-CN" href="https://koreahomeguide.com/zh/" />
+  <link rel="alternate" hreflang="x-default" href="https://koreahomeguide.com/" />
+  <meta property="og:title" content="KoreaHomeGuide" />
+  <meta property="og:description" content="在首尔租房，签约前先看看真实成交价。" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://koreahomeguide.com/zh/" />
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6SXH5BREDP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-6SXH5BREDP');
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://unpkg.com" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/">
+      <span class="brand-mark">K</span>
+      <span>KoreaHomeGuide</span>
+    </a>
+    <nav aria-label="主导航">
+      <a href="#search">找房</a>
+      <a href="#real-prices">实际成交价</a>
+      <a href="#calculator">费用计算器</a>
+      <a href="#guides">租房指南</a>
+    </nav>
+    <div class="header-actions">
+      <a class="header-cta" href="#search">开始查询</a>
+      <div class="language-switch" aria-label="语言">
+        <a href="/" hreflang="en">EN</a>
+        <a class="active" href="/zh/" hreflang="zh-CN">中文</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow">面向外国人的首尔租房指南</span>
+        <h1>在首尔找房。<br><span>签约前先看看真实成交价。</span></h1>
+        <p>
+          按地区、预算和房型搜索。查看近期真实签约租金，估算首尔法定中介费上限，
+          并在一个页面了解韩国租房合同的基本规则。
+        </p>
+        <div class="trust-row">
+          <span>✓ 简体中文</span>
+          <span>✓ 韩国官方成交数据</span>
+          <span>✓ 首尔中介费规则</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="search-shell" id="search">
+      <div class="search-panel">
+        <div class="panel-heading">
+          <div>
+            <span class="eyebrow">找房</span>
+            <h2>你想住在首尔哪里？</h2>
+          </div>
+          <span class="beta-pill">BETA</span>
+        </div>
+
+        <div class="search-form">
+          <label class="field field-wide">
+            <span>地区、地铁站或大学</span>
+            <input id="areaSearch" type="search" placeholder="江南、圣水、弘大..." autocomplete="off" />
+          </label>
+
+          <label class="field">
+            <span>月租</span>
+            <select id="rentBudget">
+              <option value="">不限预算</option>
+              <option value="800000">最高 ₩800,000</option>
+              <option value="1200000">最高 ₩1,200,000</option>
+              <option value="1800000">最高 ₩1,800,000</option>
+              <option value="2500000">最高 ₩2,500,000</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>押金</span>
+            <select id="depositBudget">
+              <option value="">不限押金</option>
+              <option value="5000000">最高 ₩5,000,000</option>
+              <option value="10000000">最高 ₩10,000,000</option>
+              <option value="20000000">最高 ₩20,000,000</option>
+              <option value="50000000">最高 ₩50,000,000</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>房型</span>
+            <select id="homeType">
+              <option value="">不限房型</option>
+              <option value="studio">单间 / One-room</option>
+              <option value="officetel">Officetel（办公住宅）</option>
+              <option value="apartment">公寓（Apartment）</option>
+              <option value="villa">Villa / 多户住宅</option>
+            </select>
+          </label>
+
+          <button id="searchBtn" class="search-button" type="button">搜索首尔</button>
+        </div>
+
+        <div class="quick-links" aria-label="热门地区">
+          <button data-area="Gangnam">江南</button>
+          <button data-area="Seongsu">圣水</button>
+          <button data-area="Hongdae">弘大</button>
+          <button data-area="Itaewon">梨泰院</button>
+          <button data-area="Yeouido">汝矣岛</button>
+          <button data-area="Wangsimni">往十里</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="results-layout">
+      <div class="results-column">
+        <div class="results-heading">
+          <div>
+            <span class="eyebrow">搜索结果</span>
+            <h2 id="resultTitle">浏览首尔热门地区</h2>
+          </div>
+          <span id="resultCount">6 个地区</span>
+        </div>
+
+        <div class="notice neutral-notice">
+          点击<strong>比较近期成交</strong>，即可查看该行政区的官方租赁成交数据。
+          当前房源报价与已签约成交价会分开显示，避免把“挂牌价”和“真实成交价”混在一起。
+        </div>
+
+        <div id="resultList" class="result-list"></div>
+      </div>
+
+      <aside class="map-column">
+        <div class="map-card">
+          <div class="map-heading">
+            <div>
+              <span class="eyebrow">地图</span>
+              <h3>浏览首尔</h3>
+            </div>
+            <span class="map-note">OpenStreetMap</span>
+          </div>
+          <div id="map" aria-label="首尔地区地图"></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="real-prices-section" id="real-prices">
+      <div class="section-copy compact-copy">
+        <span class="eyebrow">实际成交价</span>
+        <h2>查看真实签约租金，而不是挂牌报价。</h2>
+        <p>
+          把中介或房源给你的报价，与同一区域近期真实签约租金进行比较。
+          下方数据来自韩国国土交通部（MOLIT）官方租赁成交记录。
+        </p>
+      </div>
+
+      <div class="rent-check-card">
+        <div class="rent-check-head">
+          <div>
+            <span class="eyebrow">租金检查</span>
+            <h3>中介给了你报价？先检查一下。</h3>
+            <p>输入你的报价，与同一区域、相近房型、面积和押金的近期官方签约记录进行比较。</p>
+          </div>
+          <span class="data-badge">MOLIT 可比成交</span>
+        </div>
+
+        <form id="rentCheckForm" class="rent-check-form">
+          <label class="field">
+            <span>地区</span>
+            <select id="rentCheckArea">
+              <option value="11680">江南区</option>
+              <option value="11200">城东区</option>
+              <option value="11440">麻浦区</option>
+              <option value="11170">龙山区</option>
+              <option value="11560">永登浦区</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>房产类型</span>
+            <select id="rentCheckType">
+              <option value="apartment">公寓（Apartment）</option>
+              <option value="officetel">Officetel（办公住宅）</option>
+              <option value="villa">Villa / 多户住宅</option>
+              <option value="studio">单间 / One-room</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>押金</span>
+            <div class="rent-check-money"><b>₩</b><input id="rentCheckDeposit" type="number" min="0" step="100000" value="10000000" inputmode="numeric" /></div>
+          </label>
+          <label class="field">
+            <span>月租</span>
+            <div class="rent-check-money"><b>₩</b><input id="rentCheckRent" type="number" min="0" step="10000" value="1200000" inputmode="numeric" /></div>
+          </label>
+          <label class="field">
+            <span>面积</span>
+            <div class="rent-check-size"><input id="rentCheckAreaSqm" type="number" min="1" step="0.1" value="25" inputmode="decimal" /><b>㎡</b></div>
+          </label>
+          <button id="rentCheckButton" class="search-button rent-check-button" type="submit">检查这个租金</button>
+        </form>
+
+        <div id="rentCheckStudioNote" class="rent-check-note" hidden>
+          韩国官方数据没有单独的“单间”类别，因此这里使用 Villa / 多户住宅成交记录作为最接近的参考。
+        </div>
+        <div id="rentCheckStatus" class="rent-check-status">输入你收到的租金报价，与近期真实签约记录进行比较。</div>
+
+        <section id="rentCheckResult" class="rent-check-result" hidden aria-live="polite">
+          <div class="rent-check-summary">
+            <div class="rent-check-verdict">
+              <div class="rent-check-badges">
+                <span id="rentCheckRating" class="rent-rating fair">价格合理</span>
+                <span id="rentCheckConfidence" class="confidence-pill medium">中等可信度</span>
+              </div>
+              <h3 id="rentCheckMessage">这个报价接近近期可比成交水平。</h3>
+              <p id="rentCheckMeta">基于最近已完成月份的可比签约记录。</p>
+            </div>
+            <div class="rent-check-metrics">
+              <div><span>你的报价</span><strong id="rentCheckAsking">-</strong></div>
+              <div><span>可比成交中位数</span><strong id="rentCheckMedian">-</strong></div>
+              <div><span>差异</span><strong id="rentCheckDifference">-</strong></div>
+            </div>
+          </div>
+
+          <div class="rent-check-evidence-head">
+            <div>
+              <strong>本次比较使用的成交记录</strong>
+              <span id="rentCheckEvidenceSummary">-</span>
+            </div>
+          </div>
+          <div class="table-wrap rent-check-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>楼盘 / 建筑</th>
+                  <th>面积</th>
+                  <th>押金</th>
+                  <th>月租</th>
+                  <th>签约日期</th>
+                </tr>
+              </thead>
+              <tbody id="rentCheckComparableBody"></tbody>
+            </table>
+          </div>
+          <div class="rent-check-result-footer">
+            <p class="rent-check-disclaimer">基于韩国国土交通部（MOLIT）官方成交数据，仅供市场参考，不构成房产估值或法律意见。</p>
+            <a class="rent-check-next" href="#calculator">估算入住费用和中介费 →</a>
+          </div>
+        </section>
+      </div>
+
+      <div class="price-preview">
+        <div class="preview-head">
+          <div>
+            <strong>近期真实签约租金</strong>
+            <span>韩国国土交通部官方租赁成交数据</span>
+          </div>
+          <span class="data-badge">官方数据</span>
+        </div>
+
+        <div class="property-tabs" role="tablist" aria-label="房产类型">
+          <button class="property-tab active" type="button" data-price-type="apartment">公寓</button>
+          <button class="property-tab" type="button" data-price-type="officetel">Officetel</button>
+          <button class="property-tab" type="button" data-price-type="villa">Villa / 多户住宅</button>
+        </div>
+        <select id="priceType" class="visually-hidden" aria-hidden="true" tabindex="-1">
+          <option value="apartment">公寓（Apartment）</option>
+          <option value="officetel">Officetel（办公住宅）</option>
+          <option value="villa">Villa / 多户住宅</option>
+        </select>
+
+        <div class="price-controls">
+          <label class="field">
+            <span>地区</span>
+            <select id="priceArea">
+              <option value="11680">江南区</option>
+              <option value="11200">城东区</option>
+              <option value="11440">麻浦区</option>
+              <option value="11170">龙山区</option>
+              <option value="11560">永登浦区</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>签约月份</span>
+            <input id="priceMonth" type="month" />
+          </label>
+
+          <button id="loadPricesBtn" class="search-button" type="button">加载成交租金</button>
+        </div>
+
+        <div id="priceStatus" class="price-status">选择地区和月份，然后加载官方成交记录。</div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>楼盘 / 建筑</th>
+                <th>类型</th>
+                <th>面积</th>
+                <th>押金</th>
+                <th>月租</th>
+                <th>签约日期</th>
+              </tr>
+            </thead>
+            <tbody id="priceTableBody">
+              <tr class="empty-row">
+                <td colspan="6">官方成交结果会显示在这里。</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="calculator-section" id="calculator">
+      <div class="calculator-copy compact-copy">
+        <span class="eyebrow">中介费与入住费用计算器</span>
+        <h2>外国租客最容易忽略的费用。</h2>
+        <p>
+          输入押金和月租。我们会换算中介费计算用的交易金额，套用首尔中介费上限，
+          并把一次性入住支出与每月固定支出分开显示。
+        </p>
+      </div>
+
+      <form id="calcForm" class="calculator-card">
+        <div class="calc-topline">
+          <div>
+            <span class="calc-kicker">适用规则</span>
+            <strong>选择与合同相符的房产类型</strong>
+          </div>
+          <label class="calc-property-select">
+            <span class="visually-hidden">房产类型</span>
+            <select id="calcPropertyType">
+              <option value="housing">公寓 / Villa / 单间</option>
+              <option value="officetel">Officetel ≤85㎡ + 具备住宅设施</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="calc-input-grid">
+          <label>
+            <span>押金</span>
+            <div class="money-input"><b>₩</b><input id="deposit" type="number" min="0" step="100000" value="10000000" /></div>
+          </label>
+          <label>
+            <span>月租</span>
+            <div class="money-input"><b>₩</b><input id="rent" type="number" min="0" step="10000" value="1000000" /></div>
+          </label>
+          <label>
+            <span>管理费 <em>每月</em></span>
+            <div class="money-input"><b>₩</b><input id="maintenance" type="number" min="0" step="10000" value="100000" /></div>
+          </label>
+          <label>
+            <span>押金担保保险 <em>可选</em></span>
+            <div class="money-input"><b>₩</b><input id="guaranteeInsurance" type="number" min="0" step="10000" value="0" /></div>
+          </label>
+          <label>
+            <span>搬家 + 清洁 <em>可选</em></span>
+            <div class="money-input"><b>₩</b><input id="movingCleaning" type="number" min="0" step="10000" value="0" /></div>
+          </label>
+        </div>
+
+        <div class="brokerage-breakdown">
+          <div class="breakdown-item">
+            <span>中介费计算用交易金额</span>
+            <strong id="transactionValueResult">₩110,000,000</strong>
+            <small id="transactionFormula">押金 + 月租 × 100</small>
+          </div>
+          <div class="breakdown-item">
+            <span>适用最高费率</span>
+            <strong id="brokerageRateResult">0.3%</strong>
+            <small>首尔租赁中介费上限</small>
+          </div>
+          <div class="breakdown-item highlight-breakdown">
+            <span>最高中介费</span>
+            <strong id="brokerageFeeResult">₩330,000</strong>
+            <small>实际费用可在此上限内协商；增值税可能另计。</small>
+          </div>
+        </div>
+
+        <div class="calc-output-grid">
+          <div class="calc-output primary-output">
+            <span>预计入住时需准备的现金</span>
+            <strong id="calcResult">₩11,330,000</strong>
+            <small>押金 + 首月租金 + 中介费上限 + 可选的一次性费用。</small>
+          </div>
+          <div class="calc-output secondary-output">
+            <span>每月固定支出</span>
+            <strong id="monthlyCostResult">₩1,100,000</strong>
+            <small>月租 + 管理费。管理费不计入一次性入住现金。</small>
+          </div>
+        </div>
+
+        <div class="calc-legal-note">
+          月租（Wolse）合同的中介费计算金额通常为“押金 + 月租 × 100”；如果该金额低于 ₩50,000,000，
+          则改用“押金 + 月租 × 70”。住宅中介费上限按首尔公开标准计算。
+          符合条件的住宅型 Officetel 租赁上限费率为 0.4%。实际中介费可在法定上限内协商。
+        </div>
+      </form>
+    </section>
+
+    <section class="guides" id="guides">
+      <div class="section-heading">
+        <span class="eyebrow">韩国租房</span>
+        <h2>签约前先了解韩国租房制度。</h2>
+      </div>
+
+      <div class="guide-grid">
+        <article>
+          <span class="guide-number">01</span>
+          <div><h3>月租（Wolse）</h3><p>了解韩国月租、押金、管理费以及常见付款方式。</p></div>
+        </article>
+        <article>
+          <span class="guide-number">02</span>
+          <div><h3>全租（Jeonse）</h3><p>了解韩国特有的大额押金租赁方式，以及签约前为什么必须认真核查。</p></div>
+        </article>
+        <article>
+          <span class="guide-number">03</span>
+          <div><h3>签约前检查</h3><p>按外国租客视角检查房屋、房东、登记簿和合同关键事项。</p></div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div>
+      <strong>KoreaHomeGuide</strong>
+      <p>用更清晰的信息在首尔找房，减少租房踩坑。</p>
+    </div>
+    <small>© 2026 KoreaHomeGuide。内容仅供一般参考，不构成法律或房产中介意见。</small>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="/real-price-utils.js"></script>
+  <script src="/brokerage-utils.js"></script>
+  <script src="/api-error-utils.js"></script>
+  <script src="/zh/rent-check-ui-utils.js"></script>
+  <script src="/zh/app.js"></script>
+</body>
+</html>
