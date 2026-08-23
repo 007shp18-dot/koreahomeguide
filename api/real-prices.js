@@ -1,4 +1,4 @@
-const { tag, endpointForType, parseItems } = require('../lib/real-price-core.cjs');
+const { tag, normalizeServiceKey, endpointForType, parseItems } = require('../lib/real-price-core.cjs');
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -10,10 +10,7 @@ module.exports = async function handler(req, res) {
     return res.status(500).json({ error: 'DATA_GO_KR_SERVICE_KEY is not configured in Vercel.' });
   }
 
-  let serviceKey = rawServiceKey.trim();
-  try {
-    if (/%[0-9A-Fa-f]{2}/.test(serviceKey)) serviceKey = decodeURIComponent(serviceKey);
-  } catch (_) {}
+  const serviceKey = normalizeServiceKey(rawServiceKey);
 
   const { type = 'apartment', lawdCd, dealYmd } = req.query;
   if (!/^\d{5}$/.test(String(lawdCd || '')) || !/^\d{6}$/.test(String(dealYmd || ''))) {

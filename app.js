@@ -14,6 +14,25 @@ const areaSearch = document.querySelector("#areaSearch");
 const rentBudget = document.querySelector("#rentBudget");
 const depositBudget = document.querySelector("#depositBudget");
 const homeType = document.querySelector("#homeType");
+const rentCheckForm = document.querySelector("#rentCheckForm");
+const rentCheckArea = document.querySelector("#rentCheckArea");
+const rentCheckType = document.querySelector("#rentCheckType");
+const rentCheckDeposit = document.querySelector("#rentCheckDeposit");
+const rentCheckRent = document.querySelector("#rentCheckRent");
+const rentCheckAreaSqm = document.querySelector("#rentCheckAreaSqm");
+const rentCheckButton = document.querySelector("#rentCheckButton");
+const rentCheckStatus = document.querySelector("#rentCheckStatus");
+const rentCheckResult = document.querySelector("#rentCheckResult");
+const rentCheckRating = document.querySelector("#rentCheckRating");
+const rentCheckConfidence = document.querySelector("#rentCheckConfidence");
+const rentCheckMessage = document.querySelector("#rentCheckMessage");
+const rentCheckMeta = document.querySelector("#rentCheckMeta");
+const rentCheckAsking = document.querySelector("#rentCheckAsking");
+const rentCheckMedian = document.querySelector("#rentCheckMedian");
+const rentCheckDifference = document.querySelector("#rentCheckDifference");
+const rentCheckEvidenceSummary = document.querySelector("#rentCheckEvidenceSummary");
+const rentCheckComparableBody = document.querySelector("#rentCheckComparableBody");
+const rentCheckStudioNote = document.querySelector("#rentCheckStudioNote");
 
 function renderCards(items, query = "") {
   resultList.innerHTML = "";
@@ -63,6 +82,9 @@ function renderCards(items, query = "") {
       const selection = KHGRealPrices.buildRealPriceSelection(item, homeType.value);
       priceArea.value = selection.lawdCd;
       setPriceType(selection.priceType);
+      if (rentCheckArea) rentCheckArea.value = selection.lawdCd;
+      if (rentCheckType) rentCheckType.value = homeType.value || selection.priceType;
+      updateRentCheckStudioNote();
       document.querySelector("#real-prices").scrollIntoView({ behavior:"smooth", block:"start" });
       await loadRealPrices();
     });
@@ -142,6 +164,107 @@ homeType.addEventListener("change", () => {
 });
 updateCalculator();
 renderCards(neighborhoods);
+
+// ---- Compare this rent ----
+function updateRentCheckStudioNote() {
+  if (!rentCheckStudioNote || !rentCheckType) return;
+  rentCheckStudioNote.hidden = rentCheckType.value !== 'studio';
+}
+
+function setRentCheckStatus(message, state = '') {
+  if (!rentCheckStatus) return;
+  rentCheckStatus.textContent = message;
+  rentCheckStatus.className = `rent-check-status${state ? ` ${state}` : ''}`;
+}
+
+function renderRentCheckRows(items) {
+  if (!items || !items.length) {
+    rentCheckComparableBody.innerHTML = '<tr class="empty-row"><td colspan="5">No reliable comparable set is available for this quote.</td></tr>';
+    return;
+  }
+  rentCheckComparableBody.innerHTML = items.map(item => `
+    <tr>
+      <td>${item.building || '-'}</td>
+      <td>${Number.isFinite(Number(item.areaSqm)) ? `${Number(item.areaSqm).toFixed(1)}㎡` : '-'}</td>
+      <td>${KHGRentCheckUI.formatWon(item.depositWon)}</td>
+      <td>${KHGRentCheckUI.formatWon(item.monthlyRentWon)}</td>
+      <td>${item.contractDate || '-'}</td>
+    </tr>
+  `).join('');
+}
+
+function renderRentCheckResult(data) {
+  rentCheckResult.hidden = false;
+  rentCheckRating.textContent = KHGRentCheckUI.ratingLabel(data.rating);
+  rentCheckRating.className = `rent-rating ${data.rating || 'insufficient'}`;
+  rentCheckMessage.textContent = KHGRentCheckUI.resultSentence(data);
+  rentCheckAsking.textContent = KHGRentCheckUI.formatWon(data.askingValueWon);
+  rentCheckMedian.textContent = data.medianValueWon == null ? '-' : KHGRentCheckUI.formatWon(data.medianValueWon);
+  rentCheckDifference.textContent = data.differencePct == null ? '-' : KHGRentCheckUI.formatDifference(data.differencePct);
+
+  if (data.confidence) {
+    rentCheckConfidence.hidden = false;
+    rentCheckConfidence.textContent = KHGRentCheckUI.confidenceLabel(data.confidence);
+    rentCheckConfidence.className = `confidence-pill ${data.confidence}`;
+  } else {
+    rentCheckConfidence.hidden = true;
+    rentCheckConfidence.textContent = '';
+  }
+
+  const count = Number(data.comparableCount || 0);
+  const months = Number(data.monthsUsed || 12);
+  rentCheckMeta.textContent = data.rating === 'insufficient'
+    ? `Searched up to ${months} completed months. The dataset is too thin for a reliable judgment.`
+    : `${count} comparable ${count === 1 ? 'contract' : 'contracts'} · last ${months} completed months.`;
+  rentCheckEvidenceSummary.textContent = data.rating === 'insufficient'
+    ? `${count} possible matches found; at least 3 suitable contracts are required.`
+    : `${count} signed contracts matched the selected comparison tier.`;
+  renderRentCheckRows(data.comparables || []);
+}
+
+async function runRentCheck(event) {
+  if (event) event.preventDefault();
+  const depositWon = Number(rentCheckDeposit.value);
+  const rentWon = Number(rentCheckRent.value);
+  const areaSqm = Number(rentCheckAreaSqm.value);
+  if (!Number.isFinite(depositWon) || depositWon < 0) return setRentCheckStatus('Deposit must be zero or greater.', 'error');
+  if (!Number.isFinite(rentWon) || rentWon < 0) return setRentCheckStatus('Monthly rent must be zero or greater.', 'error');
+  if (!Number.isFinite(areaSqm) || areaSqm <= 0) return setRentCheckStatus('Size must be greater than zero.', 'error');
+
+  const mappedType = KHGRentCheckUI.mapRentCheckType(rentCheckType.value);
+  updateRentCheckStudioNote();
+  setRentCheckStatus('Finding similar official signed contracts…', 'loading');
+  rentCheckButton.disabled = true;
+
+  try {
+    const params = new URLSearchParams({
+      lawdCd: rentCheckArea.value,
+      type: mappedType.officialType,
+      deposit: String(Math.round(depositWon)),
+      rent: String(Math.round(rentWon)),
+      area: String(areaSqm)
+    });
+    const response = await fetch(`/api/rent-check?${params.toString()}`);
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Failed to compare this rent.');
+    renderRentCheckResult(data);
+    setRentCheckStatus(
+      data.rating === 'insufficient'
+        ? 'No market judgment was made because there are too few similar official contracts.'
+        : 'Comparison complete. Review the signed contracts used below.',
+      data.rating === 'insufficient' ? '' : 'success'
+    );
+  } catch (error) {
+    rentCheckResult.hidden = true;
+    setRentCheckStatus(KHGRentCheckUI.humanizeRentCheckError(error.message), 'error');
+  } finally {
+    rentCheckButton.disabled = false;
+  }
+}
+
+if (rentCheckForm) rentCheckForm.addEventListener('submit', runRentCheck);
+if (rentCheckType) rentCheckType.addEventListener('change', updateRentCheckStudioNote);
+updateRentCheckStudioNote();
 
 // ---- Official MOLIT rental transaction data ----
 const priceArea = document.querySelector("#priceArea");
