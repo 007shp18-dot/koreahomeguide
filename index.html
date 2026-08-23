@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>KoreaHomeGuide | Find a home in Seoul</title>
+  <meta name="description" content="Search Seoul neighborhoods, compare real rental transaction prices, estimate move-in costs, and learn how renting in Korea works." />
+  <link rel="canonical" href="https://koreahomeguide.com/" />
+  <meta property="og:title" content="KoreaHomeGuide" />
+  <meta property="og:description" content="Find a home in Seoul. Know the real price before you sign." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://koreahomeguide.com/" />
+  <link rel="preconnect" href="https://unpkg.com" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/">
+      <span class="brand-mark">K</span>
+      <span>KoreaHomeGuide</span>
+    </a>
+    <nav aria-label="Primary navigation">
+      <a href="#search">Find a Home</a>
+      <a href="#real-prices">Real Prices</a>
+      <a href="#calculator">Calculator</a>
+      <a href="#guides">Guides</a>
+    </nav>
+    <a class="header-cta" href="#search">Start searching</a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow">Seoul rentals, explained for foreigners</span>
+        <h1>Find a home in Seoul.<br><span>Know the real price before you sign.</span></h1>
+        <p>
+          Search by neighborhood, budget and housing type. Compare official rental transaction
+          data, estimate move-in costs and understand Korean contracts in one place.
+        </p>
+        <div class="trust-row">
+          <span>✓ English-first</span>
+          <span>✓ Seoul-first</span>
+          <span>✓ Official-data ready</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="search-shell" id="search">
+      <div class="search-panel">
+        <div class="panel-heading">
+          <div>
+            <span class="eyebrow">Find a home</span>
+            <h2>Where do you want to live?</h2>
+          </div>
+          <span class="beta-pill">BETA</span>
+        </div>
+
+        <div class="search-form">
+          <label class="field field-wide">
+            <span>Neighborhood, station or university</span>
+            <input id="areaSearch" type="search" placeholder="Gangnam, Seongsu, Hongdae..." autocomplete="off" />
+          </label>
+
+          <label class="field">
+            <span>Monthly rent</span>
+            <select id="rentBudget">
+              <option value="">Any budget</option>
+              <option value="800000">Up to ₩800K</option>
+              <option value="1200000">Up to ₩1.2M</option>
+              <option value="1800000">Up to ₩1.8M</option>
+              <option value="2500000">Up to ₩2.5M</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Deposit</span>
+            <select id="depositBudget">
+              <option value="">Any deposit</option>
+              <option value="5000000">Up to ₩5M</option>
+              <option value="10000000">Up to ₩10M</option>
+              <option value="20000000">Up to ₩20M</option>
+              <option value="50000000">Up to ₩50M</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Home type</span>
+            <select id="homeType">
+              <option value="">Any type</option>
+              <option value="studio">Studio / One-room</option>
+              <option value="officetel">Officetel</option>
+              <option value="apartment">Apartment</option>
+              <option value="villa">Villa</option>
+            </select>
+          </label>
+
+          <button id="searchBtn" class="search-button" type="button">Search Seoul</button>
+        </div>
+
+        <div class="quick-links" aria-label="Popular neighborhoods">
+          <button data-area="Gangnam">Gangnam</button>
+          <button data-area="Seongsu">Seongsu</button>
+          <button data-area="Hongdae">Hongdae</button>
+          <button data-area="Itaewon">Itaewon</button>
+          <button data-area="Yeouido">Yeouido</button>
+          <button data-area="Wangsimni">Wangsimni</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="results-layout">
+      <div class="results-column">
+        <div class="results-heading">
+          <div>
+            <span class="eyebrow">Search results</span>
+            <h2 id="resultTitle">Explore Seoul neighborhoods</h2>
+          </div>
+          <span id="resultCount">6 areas</span>
+        </div>
+
+        <div class="notice">
+          <strong>Current version:</strong> neighborhood discovery is live. Live listing feeds and official MOLIT rental transactions
+          are the next data connections. We are not showing invented listing prices.
+        </div>
+
+        <div id="resultList" class="result-list"></div>
+      </div>
+
+      <aside class="map-column">
+        <div class="map-card">
+          <div class="map-heading">
+            <div>
+              <span class="eyebrow">Map view</span>
+              <h3>Explore Seoul</h3>
+            </div>
+            <span class="map-note">OpenStreetMap</span>
+          </div>
+          <div id="map" aria-label="Map of Seoul neighborhoods"></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="real-prices-section" id="real-prices">
+      <div class="section-copy">
+        <span class="eyebrow">Real Prices</span>
+        <h2>See what people actually signed for.</h2>
+        <p>
+          The site is structured to connect official Ministry of Land rental transaction data.
+          Once the API key is added, this section can show recent deposit, monthly rent, size and contract date
+          by area instead of relying on asking prices.
+        </p>
+      </div>
+
+      <div class="price-preview">
+        <div class="preview-head">
+          <div>
+            <strong>Recent rental contracts</strong>
+            <span>Official data connection pending</span>
+          </div>
+          <span class="data-badge">MOLIT API READY</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Building</th>
+                <th>Type</th>
+                <th>Size</th>
+                <th>Deposit</th>
+                <th>Monthly rent</th>
+                <th>Contract date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="empty-row">
+                <td colspan="6">No fabricated prices here — connect the official API to populate this table.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="calculator-section" id="calculator">
+      <div class="calculator-copy">
+        <span class="eyebrow">Move-in calculator</span>
+        <h2>How much cash do you need before moving?</h2>
+        <p>Estimate the deposit, first month’s rent, maintenance fee and brokerage fee in one total.</p>
+      </div>
+
+      <form id="calcForm" class="calculator-card">
+        <label>
+          <span>Deposit</span>
+          <div class="money-input"><b>₩</b><input id="deposit" type="number" min="0" step="100000" value="10000000" /></div>
+        </label>
+        <label>
+          <span>First month rent</span>
+          <div class="money-input"><b>₩</b><input id="rent" type="number" min="0" step="10000" value="1000000" /></div>
+        </label>
+        <label>
+          <span>Maintenance fee</span>
+          <div class="money-input"><b>₩</b><input id="maintenance" type="number" min="0" step="10000" value="100000" /></div>
+        </label>
+        <label>
+          <span>Brokerage fee</span>
+          <div class="money-input"><b>₩</b><input id="brokerage" type="number" min="0" step="10000" value="300000" /></div>
+        </label>
+        <button type="submit">Calculate move-in cash</button>
+        <div class="calc-output">
+          <span>Estimated move-in cash</span>
+          <strong id="calcResult">₩11,400,000</strong>
+          <small>Planning estimate only. Actual payment timing and fees depend on your contract.</small>
+        </div>
+      </form>
+    </section>
+
+    <section class="guides" id="guides">
+      <div class="section-heading">
+        <span class="eyebrow">Renting in Korea</span>
+        <h2>Know the system before you sign.</h2>
+      </div>
+
+      <div class="guide-grid">
+        <article>
+          <span class="guide-number">01</span>
+          <div>
+            <h3>Wolse explained</h3>
+            <p>Understand monthly rent, deposits, maintenance fees and common payment structures.</p>
+          </div>
+        </article>
+        <article>
+          <span class="guide-number">02</span>
+          <div>
+            <h3>Jeonse explained</h3>
+            <p>Learn how Korea’s large-deposit rental system works and why contract checks matter.</p>
+          </div>
+        </article>
+        <article>
+          <span class="guide-number">03</span>
+          <div>
+            <h3>Before you sign</h3>
+            <p>Use a foreigner-friendly checklist for the building, landlord, registry and contract.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div>
+      <strong>KoreaHomeGuide</strong>
+      <p>Find a home in Seoul with more context and fewer surprises.</p>
+    </div>
+    <small>© 2026 KoreaHomeGuide. General information only. Not legal or brokerage advice.</small>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>
