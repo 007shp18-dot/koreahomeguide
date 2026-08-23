@@ -126,3 +126,10 @@ footer small{text-align:right;align-self:end}
   footer{flex-direction:column}
   footer small{text-align:left}
 }
+
+.price-controls{display:grid;grid-template-columns:1.1fr 1.1fr 1fr auto;gap:10px;align-items:end;margin-top:18px}
+.price-status{margin-top:12px;padding:11px 13px;border-radius:11px;background:var(--surface-soft);color:var(--muted);font-size:12px;line-height:1.45}
+.price-status.error{background:#fff0f0;color:#8a3131}
+.price-status.success{background:#edf7f1;color:#286044}
+@media (max-width:1020px){.price-controls{grid-template-columns:1fr 1fr}.price-controls .search-button{grid-column:1/-1}}
+@media (max-width:760px){.price-controls{grid-template-columns:1fr}.price-controls .search-button{grid-column:auto}}

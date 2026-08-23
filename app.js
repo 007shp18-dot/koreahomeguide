@@ -169,3 +169,74 @@ document.querySelector("#calcForm").addEventListener("submit", (e) => {
 });
 
 renderCards(neighborhoods);
+
+
+// ---- Official MOLIT rental transaction data ----
+const priceArea = document.querySelector("#priceArea");
+const priceType = document.querySelector("#priceType");
+const priceMonth = document.querySelector("#priceMonth");
+const priceStatus = document.querySelector("#priceStatus");
+const priceTableBody = document.querySelector("#priceTableBody");
+const loadPricesBtn = document.querySelector("#loadPricesBtn");
+
+if (priceMonth) {
+  const now = new Date();
+  priceMonth.value = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}`;
+}
+
+function formatMoneyFromManwon(value) {
+  const num = Number(String(value || "0").replace(/,/g, "").trim());
+  if (!Number.isFinite(num)) return "-";
+  const won = num * 10000;
+  return won === 0 ? "₩0" : "₩" + won.toLocaleString("en-US");
+}
+
+function renderPriceRows(items, typeLabel) {
+  if (!items.length) {
+    priceTableBody.innerHTML = `<tr class="empty-row"><td colspan="6">No transactions returned for this area and month.</td></tr>`;
+    return;
+  }
+  priceTableBody.innerHTML = items.slice(0, 40).map(item => `
+    <tr>
+      <td>${item.building || "-"}</td>
+      <td>${typeLabel}</td>
+      <td>${item.area ? `${item.area}㎡` : "-"}</td>
+      <td>${formatMoneyFromManwon(item.deposit)}</td>
+      <td>${formatMoneyFromManwon(item.monthlyRent)}</td>
+      <td>${item.contractDate || "-"}</td>
+    </tr>
+  `).join("");
+}
+
+if (loadPricesBtn) {
+  loadPricesBtn.addEventListener("click", async () => {
+    const ym = (priceMonth.value || "").replace("-", "");
+    if (!/^\d{6}$/.test(ym)) {
+      priceStatus.textContent = "Choose a valid contract month.";
+      priceStatus.className = "price-status error";
+      return;
+    }
+
+    priceStatus.textContent = "Loading official transaction data...";
+    priceStatus.className = "price-status";
+    loadPricesBtn.disabled = true;
+
+    try {
+      const url = `/api/real-prices?type=${encodeURIComponent(priceType.value)}&lawdCd=${encodeURIComponent(priceArea.value)}&dealYmd=${encodeURIComponent(ym)}`;
+      const res = await fetch(url);
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || "Failed to load data.");
+
+      renderPriceRows(data.items || [], priceType.options[priceType.selectedIndex].text);
+      priceStatus.textContent = `Loaded ${data.items?.length || 0} official transaction records.`;
+      priceStatus.className = "price-status success";
+    } catch (err) {
+      priceTableBody.innerHTML = `<tr class="empty-row"><td colspan="6">Could not load official data.</td></tr>`;
+      priceStatus.textContent = err.message || "Could not load official data.";
+      priceStatus.className = "price-status error";
+    } finally {
+      loadPricesBtn.disabled = false;
+    }
+  });
+}

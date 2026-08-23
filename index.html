@@ -156,10 +156,41 @@
         <div class="preview-head">
           <div>
             <strong>Recent rental contracts</strong>
-            <span>Official data connection pending</span>
+            <span>Official MOLIT transaction data</span>
           </div>
-          <span class="data-badge">MOLIT API READY</span>
+          <span class="data-badge">OFFICIAL API</span>
         </div>
+
+        <div class="price-controls">
+          <label class="field">
+            <span>Area</span>
+            <select id="priceArea">
+              <option value="11680">Gangnam-gu</option>
+              <option value="11200">Seongdong-gu</option>
+              <option value="11440">Mapo-gu</option>
+              <option value="11170">Yongsan-gu</option>
+              <option value="11560">Yeongdeungpo-gu</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Property type</span>
+            <select id="priceType">
+              <option value="officetel">Officetel</option>
+              <option value="villa">Villa / Multi-family</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Contract month</span>
+            <input id="priceMonth" type="month" />
+          </label>
+
+          <button id="loadPricesBtn" class="search-button" type="button">Load real prices</button>
+        </div>
+
+        <div id="priceStatus" class="price-status">Choose an area and month, then load official rental contracts.</div>
+
         <div class="table-wrap">
           <table>
             <thead>
@@ -172,9 +203,9 @@
                 <th>Contract date</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="priceTableBody">
               <tr class="empty-row">
-                <td colspan="6">No fabricated prices here — connect the official API to populate this table.</td>
+                <td colspan="6">Official results will appear here.</td>
               </tr>
             </tbody>
           </table>
