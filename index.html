@@ -4,12 +4,15 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>KoreaHomeGuide | Find a home in Seoul</title>
-  <meta name="description" content="Search Seoul neighborhoods, compare real rental transaction prices, estimate move-in costs, and learn how renting in Korea works." />
+  <meta name="description" content="Search Seoul neighborhoods, compare official rental transaction prices, calculate brokerage fees, and estimate move-in costs." />
   <link rel="canonical" href="https://koreahomeguide.com/" />
   <meta property="og:title" content="KoreaHomeGuide" />
   <meta property="og:description" content="Find a home in Seoul. Know the real price before you sign." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://koreahomeguide.com/" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="preconnect" href="https://unpkg.com" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="/styles.css" />
@@ -35,13 +38,13 @@
         <span class="eyebrow">Seoul rentals, explained for foreigners</span>
         <h1>Find a home in Seoul.<br><span>Know the real price before you sign.</span></h1>
         <p>
-          Search by neighborhood, budget and housing type. Compare official rental transaction
-          data, estimate move-in costs and understand Korean contracts in one place.
+          Search by neighborhood, budget and housing type. Compare recent signed rents, estimate your legal brokerage-fee ceiling,
+          and understand Korean contracts in one place.
         </p>
         <div class="trust-row">
           <span>✓ English-first</span>
-          <span>✓ Seoul-first</span>
-          <span>✓ Official-data ready</span>
+          <span>✓ Official transaction data</span>
+          <span>✓ Seoul brokerage rules</span>
         </div>
       </div>
     </section>
@@ -91,7 +94,7 @@
               <option value="studio">Studio / One-room</option>
               <option value="officetel">Officetel</option>
               <option value="apartment">Apartment</option>
-              <option value="villa">Villa</option>
+              <option value="villa">Villa / Multi-family</option>
             </select>
           </label>
 
@@ -119,9 +122,9 @@
           <span id="resultCount">6 areas</span>
         </div>
 
-        <div class="notice">
-          <strong>Current version:</strong> neighborhood discovery is live. Live listing feeds and official MOLIT rental transactions
-          are the next data connections. We are not showing invented listing prices.
+        <div class="notice neutral-notice">
+          Use <strong>Compare recent contracts</strong> to jump from a neighborhood to official signed-rent data for its district.
+          Current listings will be added separately so asking prices and signed prices never get mixed together.
         </div>
 
         <div id="resultList" class="result-list"></div>
@@ -142,24 +145,34 @@
     </section>
 
     <section class="real-prices-section" id="real-prices">
-      <div class="section-copy">
+      <div class="section-copy compact-copy">
         <span class="eyebrow">Real Prices</span>
-        <h2>See what people actually signed for.</h2>
+        <h2>Recent signed rents — not asking prices.</h2>
         <p>
-          The site is structured to connect official Ministry of Land rental transaction data.
-          Once the API key is added, this section can show recent deposit, monthly rent, size and contract date
-          by area instead of relying on asking prices.
+          Compare what a broker or listing asks with what tenants recently signed for in the same district.
+          Data below comes from official Ministry of Land rental transactions.
         </p>
       </div>
 
       <div class="price-preview">
         <div class="preview-head">
           <div>
-            <strong>Recent rental contracts</strong>
-            <span>Official MOLIT transaction data</span>
+            <strong>Recent signed rents</strong>
+            <span>Official MOLIT rental transaction data</span>
           </div>
-          <span class="data-badge">OFFICIAL API</span>
+          <span class="data-badge">OFFICIAL DATA</span>
         </div>
+
+        <div class="property-tabs" role="tablist" aria-label="Property type">
+          <button class="property-tab active" type="button" data-price-type="apartment">Apartment</button>
+          <button class="property-tab" type="button" data-price-type="officetel">Officetel</button>
+          <button class="property-tab" type="button" data-price-type="villa">Villa / Multi-family</button>
+        </div>
+        <select id="priceType" class="visually-hidden" aria-hidden="true" tabindex="-1">
+          <option value="apartment">Apartment</option>
+          <option value="officetel">Officetel</option>
+          <option value="villa">Villa / Multi-family</option>
+        </select>
 
         <div class="price-controls">
           <label class="field">
@@ -174,23 +187,14 @@
           </label>
 
           <label class="field">
-            <span>Property type</span>
-            <select id="priceType">
-              <option value="apartment">Apartment</option>
-              <option value="officetel">Officetel</option>
-              <option value="villa">Villa / Multi-family</option>
-            </select>
-          </label>
-
-          <label class="field">
             <span>Contract month</span>
             <input id="priceMonth" type="month" />
           </label>
 
-          <button id="loadPricesBtn" class="search-button" type="button">Load real prices</button>
+          <button id="loadPricesBtn" class="search-button" type="button">Load signed rents</button>
         </div>
 
-        <div id="priceStatus" class="price-status">Choose an area and month, then load official rental contracts.</div>
+        <div id="priceStatus" class="price-status">Choose an area and month, then load official contracts.</div>
 
         <div class="table-wrap">
           <table>
@@ -215,34 +219,88 @@
     </section>
 
     <section class="calculator-section" id="calculator">
-      <div class="calculator-copy">
-        <span class="eyebrow">Move-in calculator</span>
-        <h2>How much cash do you need before moving?</h2>
-        <p>Estimate the deposit, first month’s rent, maintenance fee and brokerage fee in one total.</p>
+      <div class="calculator-copy compact-copy">
+        <span class="eyebrow">Brokerage & move-in calculator</span>
+        <h2>The fee foreigners usually don’t know.</h2>
+        <p>
+          Enter your deposit and monthly rent. We convert the rental value, apply the Seoul brokerage-fee ceiling,
+          and separate one-time move-in cash from monthly recurring costs.
+        </p>
       </div>
 
       <form id="calcForm" class="calculator-card">
-        <label>
-          <span>Deposit</span>
-          <div class="money-input"><b>₩</b><input id="deposit" type="number" min="0" step="100000" value="10000000" /></div>
-        </label>
-        <label>
-          <span>First month rent</span>
-          <div class="money-input"><b>₩</b><input id="rent" type="number" min="0" step="10000" value="1000000" /></div>
-        </label>
-        <label>
-          <span>Maintenance fee</span>
-          <div class="money-input"><b>₩</b><input id="maintenance" type="number" min="0" step="10000" value="100000" /></div>
-        </label>
-        <label>
-          <span>Brokerage fee</span>
-          <div class="money-input"><b>₩</b><input id="brokerage" type="number" min="0" step="10000" value="300000" /></div>
-        </label>
-        <button type="submit">Calculate move-in cash</button>
-        <div class="calc-output">
-          <span>Estimated move-in cash</span>
-          <strong id="calcResult">₩11,400,000</strong>
-          <small>Planning estimate only. Actual payment timing and fees depend on your contract.</small>
+        <div class="calc-topline">
+          <div>
+            <span class="calc-kicker">Property rule</span>
+            <strong>Choose the rule that matches the contract</strong>
+          </div>
+          <label class="calc-property-select">
+            <span class="visually-hidden">Property type</span>
+            <select id="calcPropertyType">
+              <option value="housing">Apartment / Villa / Studio</option>
+              <option value="officetel">Officetel ≤85㎡ + residential facilities</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="calc-input-grid">
+          <label>
+            <span>Deposit</span>
+            <div class="money-input"><b>₩</b><input id="deposit" type="number" min="0" step="100000" value="10000000" /></div>
+          </label>
+          <label>
+            <span>Monthly rent</span>
+            <div class="money-input"><b>₩</b><input id="rent" type="number" min="0" step="10000" value="1000000" /></div>
+          </label>
+          <label>
+            <span>Maintenance fee <em>monthly</em></span>
+            <div class="money-input"><b>₩</b><input id="maintenance" type="number" min="0" step="10000" value="100000" /></div>
+          </label>
+          <label>
+            <span>Deposit guarantee insurance <em>optional</em></span>
+            <div class="money-input"><b>₩</b><input id="guaranteeInsurance" type="number" min="0" step="10000" value="0" /></div>
+          </label>
+          <label>
+            <span>Moving + cleaning <em>optional</em></span>
+            <div class="money-input"><b>₩</b><input id="movingCleaning" type="number" min="0" step="10000" value="0" /></div>
+          </label>
+        </div>
+
+        <div class="brokerage-breakdown">
+          <div class="breakdown-item">
+            <span>Converted transaction value</span>
+            <strong id="transactionValueResult">₩110,000,000</strong>
+            <small id="transactionFormula">Deposit + monthly rent × 100</small>
+          </div>
+          <div class="breakdown-item">
+            <span>Applicable maximum rate</span>
+            <strong id="brokerageRateResult">0.3%</strong>
+            <small>Seoul rental brokerage ceiling</small>
+          </div>
+          <div class="breakdown-item highlight-breakdown">
+            <span>Maximum brokerage fee</span>
+            <strong id="brokerageFeeResult">₩330,000</strong>
+            <small>Negotiated at or below this ceiling; VAT may be separate.</small>
+          </div>
+        </div>
+
+        <div class="calc-output-grid">
+          <div class="calc-output primary-output">
+            <span>Estimated move-in cash</span>
+            <strong id="calcResult">₩11,330,000</strong>
+            <small>Deposit + first month rent + brokerage ceiling + optional one-time costs.</small>
+          </div>
+          <div class="calc-output secondary-output">
+            <span>Monthly recurring cost</span>
+            <strong id="monthlyCostResult">₩1,100,000</strong>
+            <small>Monthly rent + maintenance fee. Maintenance is not counted as move-in cash.</small>
+          </div>
+        </div>
+
+        <div class="calc-legal-note">
+          For monthly-rent contracts, the brokerage transaction value is deposit + monthly rent × 100; if that total is below ₩50M,
+          deposit + monthly rent × 70 is used instead. Housing fee ceilings follow Seoul’s published rental schedule.
+          Qualifying residential officetels use a 0.4% rental ceiling. Actual brokerage fees are negotiated within the ceiling.
         </div>
       </form>
     </section>
@@ -256,24 +314,15 @@
       <div class="guide-grid">
         <article>
           <span class="guide-number">01</span>
-          <div>
-            <h3>Wolse explained</h3>
-            <p>Understand monthly rent, deposits, maintenance fees and common payment structures.</p>
-          </div>
+          <div><h3>Wolse explained</h3><p>Understand monthly rent, deposits, maintenance fees and common payment structures.</p></div>
         </article>
         <article>
           <span class="guide-number">02</span>
-          <div>
-            <h3>Jeonse explained</h3>
-            <p>Learn how Korea’s large-deposit rental system works and why contract checks matter.</p>
-          </div>
+          <div><h3>Jeonse explained</h3><p>Learn how Korea’s large-deposit rental system works and why contract checks matter.</p></div>
         </article>
         <article>
           <span class="guide-number">03</span>
-          <div>
-            <h3>Before you sign</h3>
-            <p>Use a foreigner-friendly checklist for the building, landlord, registry and contract.</p>
-          </div>
+          <div><h3>Before you sign</h3><p>Use a foreigner-friendly checklist for the building, landlord, registry and contract.</p></div>
         </article>
       </div>
     </section>
@@ -289,6 +338,7 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="/real-price-utils.js"></script>
+  <script src="/brokerage-utils.js"></script>
   <script src="/app.js"></script>
 </body>
 </html>
