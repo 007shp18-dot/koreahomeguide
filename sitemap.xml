@@ -55,10 +55,22 @@
     <priority>0.75</priority>
   </url>
   <url>
+    <loc>https://koreahomeguide.com/zh/rent/gangnam-gu/apartment/</loc>
+    <lastmod>2026-08-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.72</priority>
+  </url>
+  <url>
     <loc>https://koreahomeguide.com/rent/gangnam-gu/officetel/</loc>
     <lastmod>2026-08-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://koreahomeguide.com/zh/rent/gangnam-gu/officetel/</loc>
+    <lastmod>2026-08-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.72</priority>
   </url>
   <url>
     <loc>https://koreahomeguide.com/rent/gangnam-gu/villa/</loc>
@@ -67,10 +79,22 @@
     <priority>0.75</priority>
   </url>
   <url>
+    <loc>https://koreahomeguide.com/zh/rent/gangnam-gu/villa/</loc>
+    <lastmod>2026-08-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.72</priority>
+  </url>
+  <url>
     <loc>https://koreahomeguide.com/rent/mapo-gu/apartment/</loc>
     <lastmod>2026-08-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://koreahomeguide.com/zh/rent/mapo-gu/apartment/</loc>
+    <lastmod>2026-08-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.72</priority>
   </url>
   <url>
     <loc>https://koreahomeguide.com/rent/mapo-gu/officetel/</loc>
@@ -79,10 +103,22 @@
     <priority>0.75</priority>
   </url>
   <url>
+    <loc>https://koreahomeguide.com/zh/rent/mapo-gu/officetel/</loc>
+    <lastmod>2026-08-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.72</priority>
+  </url>
+  <url>
     <loc>https://koreahomeguide.com/rent/mapo-gu/villa/</loc>
     <lastmod>2026-08-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://koreahomeguide.com/zh/rent/mapo-gu/villa/</loc>
+    <lastmod>2026-08-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.72</priority>
   </url>
   <url>
     <loc>https://koreahomeguide.com/rent/yongsan-gu/apartment/</loc>
@@ -91,10 +127,22 @@
     <priority>0.75</priority>
   </url>
   <url>
+    <loc>https://koreahomeguide.com/zh/rent/yongsan-gu/apartment/</loc>
+    <lastmod>2026-08-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.72</priority>
+  </url>
+  <url>
     <loc>https://koreahomeguide.com/rent/yongsan-gu/officetel/</loc>
     <lastmod>2026-08-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://koreahomeguide.com/zh/rent/yongsan-gu/officetel/</loc>
+    <lastmod>2026-08-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.72</priority>
   </url>
   <url>
     <loc>https://koreahomeguide.com/rent/yongsan-gu/villa/</loc>
@@ -103,10 +151,22 @@
     <priority>0.75</priority>
   </url>
   <url>
+    <loc>https://koreahomeguide.com/zh/rent/yongsan-gu/villa/</loc>
+    <lastmod>2026-08-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.72</priority>
+  </url>
+  <url>
     <loc>https://koreahomeguide.com/rent/seongdong-gu/apartment/</loc>
     <lastmod>2026-08-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://koreahomeguide.com/zh/rent/seongdong-gu/apartment/</loc>
+    <lastmod>2026-08-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.72</priority>
   </url>
   <url>
     <loc>https://koreahomeguide.com/rent/seongdong-gu/officetel/</loc>
@@ -115,10 +175,22 @@
     <priority>0.75</priority>
   </url>
   <url>
+    <loc>https://koreahomeguide.com/zh/rent/seongdong-gu/officetel/</loc>
+    <lastmod>2026-08-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.72</priority>
+  </url>
+  <url>
     <loc>https://koreahomeguide.com/rent/seongdong-gu/villa/</loc>
     <lastmod>2026-08-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://koreahomeguide.com/zh/rent/seongdong-gu/villa/</loc>
+    <lastmod>2026-08-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.72</priority>
   </url>
   <url>
     <loc>https://koreahomeguide.com/rent/yeongdeungpo-gu/apartment/</loc>
@@ -127,16 +199,34 @@
     <priority>0.75</priority>
   </url>
   <url>
+    <loc>https://koreahomeguide.com/zh/rent/yeongdeungpo-gu/apartment/</loc>
+    <lastmod>2026-08-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.72</priority>
+  </url>
+  <url>
     <loc>https://koreahomeguide.com/rent/yeongdeungpo-gu/officetel/</loc>
     <lastmod>2026-08-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
+    <loc>https://koreahomeguide.com/zh/rent/yeongdeungpo-gu/officetel/</loc>
+    <lastmod>2026-08-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.72</priority>
+  </url>
+  <url>
     <loc>https://koreahomeguide.com/rent/yeongdeungpo-gu/villa/</loc>
     <lastmod>2026-08-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://koreahomeguide.com/zh/rent/yeongdeungpo-gu/villa/</loc>
+    <lastmod>2026-08-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.72</priority>
   </url>
   <url>
     <loc>https://koreahomeguide.com/guides/wolse-vs-jeonse/</loc>
