@@ -158,13 +158,13 @@ function renderCards(items, query = "") {
         <div class="tags">
           ${item.tags.map(tag => `<span class="tag">${tag}</span>`).join("")}
           ${homeType.value ? `<span class="tag">${homeType.options[homeType.selectedIndex].text}</span>` : ""}
-          ${rentBudget.value ? `<span class="tag">月租筛选</span>` : ""}
-          ${depositBudget.value ? `<span class="tag">押金筛选</span>` : ""}
+          ${rentBudget.value ? `<span class="tag">已签约月租筛选</span>` : ""}
+          ${depositBudget.value ? `<span class="tag">已签约押金筛选</span>` : ""}
         </div>
       </div>
       <div class="card-actions">
-        <button class="card-action" type="button" data-focus="${item.key}">在地图上查看</button>
-        <button class="card-action primary-action" type="button" data-real-price="${item.key}">比较近期成交</button>
+        <button class="card-action" type="button" data-focus="${item.key}">查看区域</button>
+        <button class="card-action primary-action" type="button" data-real-price="${item.key}">查看官方租金数据</button>
       </div>`;
     resultList.appendChild(card);
   });

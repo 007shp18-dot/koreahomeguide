@@ -158,13 +158,13 @@ function renderCards(items, query = "") {
         <div class="tags">
           ${item.tags.map(tag => `<span class="tag">${tag}</span>`).join("")}
           ${homeType.value ? `<span class="tag">${homeType.options[homeType.selectedIndex].text}</span>` : ""}
-          ${rentBudget.value ? `<span class="tag">Rent filter</span>` : ""}
-          ${depositBudget.value ? `<span class="tag">Deposit filter</span>` : ""}
+          ${rentBudget.value ? `<span class="tag">Signed rent filter</span>` : ""}
+          ${depositBudget.value ? `<span class="tag">Signed deposit filter</span>` : ""}
         </div>
       </div>
       <div class="card-actions">
-        <button class="card-action" type="button" data-focus="${item.key}">View on map</button>
-        <button class="card-action primary-action" type="button" data-real-price="${item.key}">Compare recent contracts</button>
+        <button class="card-action" type="button" data-focus="${item.key}">Explore area</button>
+        <button class="card-action primary-action" type="button" data-real-price="${item.key}">View official rent data</button>
       </div>`;
     resultList.appendChild(card);
   });
