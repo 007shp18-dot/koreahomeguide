@@ -71,28 +71,21 @@ function renderDongs(dongs) {
     dongList.innerHTML = '<div class="explorer-empty">No neighborhood median fits both selected budget limits. Try a higher rent or deposit budget.</div>';
     return;
   }
-  const allActive = currentDong ? '' : ' is-active';
-  const allLabel = hasBudgetFilter() ? 'All matching neighborhoods' : 'All neighborhoods';
-  const all = `<button class="dong-chip${allActive}" type="button" data-dong=""><strong>${allLabel}</strong><small>${items.length} dongs</small></button>`;
-  const cards = items.map(item => {
-    const active = item.dong === currentDong ? ' is-active' : '';
+  if (!items.length) {
+    dongList.innerHTML = '<div class="explorer-empty">No neighborhood summary is available for this selection yet.</div>';
+    return;
+  }
+  dongList.innerHTML = items.map(item => {
     const rent = item.medianMonthlyRentWon == null ? '—' : moneyHtml(item.medianMonthlyRentWon);
+    const deposit = item.medianDepositWon == null ? '—' : moneyHtml(item.medianDepositWon);
     const seoHref = KHGExplorer.buildDongSeoUrl({ lawdCd:areaSelect.value, type:typeSelect.value, dong:item.dong, lang:'en' });
-    return `<div class="dong-chip-wrap"><button class="dong-chip${active}" type="button" data-dong="${escapeHtml(item.dong)}"><strong>${escapeHtml(item.dong)}</strong><span>${rent}</span><small>${Number(item.contractCount || 0).toLocaleString('en-US')} contracts</small></button><a class="dong-seo-link" href="${escapeHtml(seoHref)}">Neighborhood page →</a></div>`;
+    return `<a class="neighborhood-card" href="${escapeHtml(seoHref)}">
+      <span class="neighborhood-card-main"><strong>${escapeHtml(item.dong)}</strong><small>${Number(item.contractCount || 0).toLocaleString('en-US')} recent contracts</small></span>
+      <span class="neighborhood-card-metric"><small>Typical rent</small><strong>${rent}</strong></span>
+      <span class="neighborhood-card-metric"><small>Typical deposit</small><strong>${deposit}</strong></span>
+      <span class="neighborhood-card-cta">View neighborhood →</span>
+    </a>`;
   }).join('');
-  dongList.innerHTML = all + cards;
-  dongList.querySelectorAll('[data-dong]').forEach(button => button.addEventListener('click', () => {
-    const dong = button.dataset.dong || '';
-    if (!dong) {
-      currentDong = '';
-      renderDongs(currentAreaData ? currentAreaData.dongs : []);
-      if (currentAreaData) renderSummary(currentAreaData, '');
-      history.replaceState(null, '', `/explore/?${currentParams(false).toString()}`);
-      updateLanguageSwitch();
-      return;
-    }
-    loadDong(dong);
-  }));
 }
 
 function renderSummary(data, dong = '') {
@@ -118,10 +111,13 @@ function renderSummary(data, dong = '') {
 }
 
 function renderBuildings(buildings) {
-  if (hasBudgetFilter() && !currentDong) {
-    buildingList.innerHTML = '<div class="explorer-empty">Choose one of the matching neighborhoods above to see buildings and recent contracts.</div>';
+  const buildingSection = document.querySelector('.building-section');
+  if (!currentDong) {
+    if (buildingSection) buildingSection.hidden = true;
+    buildingList.innerHTML = '';
     return;
   }
+  if (buildingSection) buildingSection.hidden = false;
   if (!buildings.length) {
     buildingList.innerHTML = '<div class="explorer-empty">No named buildings had reported contracts in this recent period.</div>';
     return;

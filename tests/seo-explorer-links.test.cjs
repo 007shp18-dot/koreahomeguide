@@ -26,7 +26,7 @@ test('Explorer URL helpers match server collision-safe building paths', () => {
 test('EN Explorer exposes canonical neighborhood/building pages and keeps interactive building view secondary', () => {
   const source = fs.readFileSync('explore/app.js','utf8');
   assert.match(source, /buildDongSeoUrl/);
-  assert.match(source, /Neighborhood page/);
+  assert.match(source, /View neighborhood/);
   assert.match(source, /buildBuildingSeoUrl/);
   assert.match(source, /Interactive view/);
   assert.match(source, /buildBuildingDetailUrl/);
@@ -35,7 +35,7 @@ test('EN Explorer exposes canonical neighborhood/building pages and keeps intera
 test('ZH Explorer exposes localized canonical neighborhood/building page links', () => {
   const source = fs.readFileSync('zh/explore/app.js','utf8');
   assert.match(source, /buildDongSeoUrl/);
-  assert.match(source, /街区页面/);
+  assert.match(source, /查看街区/);
   assert.match(source, /buildBuildingSeoUrl/);
   assert.match(source, /交互查看/);
 });

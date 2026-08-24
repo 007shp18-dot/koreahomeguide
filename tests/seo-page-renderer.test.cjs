@@ -70,7 +70,7 @@ test('building page includes Dong comparison, recent contracts, back link and qu
   assert.match(html, /A &lt;Villa&gt;/);
   assert.match(html, /about 2\.9% above the Yeonnam-dong median/i);
   assert.match(html, /Back to Yeonnam-dong/);
-  assert.match(html, /Check this rent/);
+  assert.match(html, /Check a rent quote/);
   assert.match(html, /Jul 2026/);
 
   const sparse = renderBuildingPage({ ...base('en'), detail:{ ...detail, contractCount:2 } });

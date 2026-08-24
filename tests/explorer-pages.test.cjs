@@ -8,7 +8,7 @@ test('explorer page is a sparse, indexable Seoul rent-data surface rather than a
   assert.match(html, /<title>Seoul Rent Explorer \| Official Building-Level Rental Data<\/title>/);
   assert.match(html, /rel="canonical" href="https:\/\/koreahomeguide\.com\/explore\/"/);
   assert.match(html, /SEOUL RENT EXPLORER/);
-  assert.match(html, /Understand Seoul rent before you sign\./);
+  assert.match(html, /Compare neighborhoods before you choose\./);
   assert.match(html, /Official signed rental transactions — not live listings\./);
   for (const code of ['11680','11440','11170','11200','11560']) assert.match(html, new RegExp(`value="${code}"`));
   for (const type of ['apartment','officetel','villa']) assert.match(html, new RegExp(`value="${type}"`));
@@ -35,11 +35,11 @@ test('building detail URL helper preserves the selected area, type, and normaliz
 test('explorer includes a compact neighborhood drill-down and persists dong state in API and URLs', () => {
   const html = fs.readFileSync('explore/index.html','utf8');
   const js = fs.readFileSync('explore/app.js','utf8');
-  assert.match(html, /NEIGHBORHOODS/);
+  assert.match(html, /COMPARE NEIGHBORHOODS/);
   assert.match(html, /id="dongList"/);
   assert.match(js, /\/api\/explore-dong/);
   assert.match(js, /query\.get\('dong'\)/);
-  assert.match(js, /All neighborhoods/);
+  assert.match(js, /View neighborhood/);
   assert.match(js, /params\.set\('dong'/);
 });
 
