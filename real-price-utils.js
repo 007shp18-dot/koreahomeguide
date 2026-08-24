@@ -8,6 +8,16 @@
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
   }
 
+  function recentCompletedMonths(date, count = 60) {
+    const total = Math.max(1, Number(count) || 60);
+    const values = [];
+    for (let offset = 1; offset <= total; offset += 1) {
+      const d = new Date(date.getFullYear(), date.getMonth() - offset, 1);
+      values.push(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`);
+    }
+    return values;
+  }
+
   function mapHomeTypeToPriceType(homeType) {
     if (homeType === 'apartment' || homeType === 'officetel' || homeType === 'villa') return homeType;
     if (homeType === 'studio') return 'villa';
@@ -40,6 +50,7 @@
 
   return {
     previousCompletedMonth,
+    recentCompletedMonths,
     mapHomeTypeToPriceType,
     buildRealPriceSelection,
     toWonFromManwon,

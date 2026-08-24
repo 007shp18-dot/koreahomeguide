@@ -6,6 +6,7 @@ const requestedDong = query.get('dong') || '';
 const currencySelect = document.querySelector('#currencySelect');
 const languageSwitch = document.querySelector('#languageSwitch');
 const buildingName = document.querySelector('#buildingName');
+const buildingOfficialName = document.querySelector('#buildingOfficialName');
 const buildingMeta = document.querySelector('#buildingMeta');
 const buildingStatus = document.querySelector('#buildingStatus');
 const buildingRent = document.querySelector('#buildingRent');
@@ -77,9 +78,11 @@ function buildRentCheckUrl(data) {
 
 function renderBuilding(data) {
   buildingData = data;
-  buildingName.textContent = data.buildingName;
+  const nameDisplay = KHGBuildingNames.getBuildingNameDisplay(data.buildingName, 'zh');
+  buildingName.textContent = nameDisplay.primary;
+  if (buildingOfficialName) { buildingOfficialName.textContent = nameDisplay.secondary; buildingOfficialName.hidden = !nameDisplay.secondary; }
   buildingMeta.textContent = [districtName(), data.dong ? dongDisplayName(data.dong) : '', typeName(), '首尔'].filter(Boolean).join(' · ');
-  document.title = `${data.buildingName} 租金数据 | 首尔租金探索`;
+  document.title = `${nameDisplay.primary} 租金数据 | 首尔租金探索`;
   buildingRent.innerHTML = data.medianMonthlyRentWon == null ? '数据不足' : moneyHtml(data.medianMonthlyRentWon);
   buildingDeposit.innerHTML = data.medianDepositWon == null ? '数据不足' : moneyHtml(data.medianDepositWon);
   buildingArea.textContent = formatArea(data.typicalAreaSqm);

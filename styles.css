@@ -123,3 +123,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 52px;display:flex;justify
 
 @media(max-width:900px){.search-form,.explorer-search-card{grid-template-columns:1fr 1fr}.search-form .search-button,.explorer-search-card .search-button{grid-column:1/-1}.neighborhood-card{grid-template-columns:minmax(170px,1.4fr) 1fr 1fr}.neighborhood-card-cta{grid-column:1/-1}.home-paths{grid-template-columns:1fr}}
 @media(max-width:620px){.site-header{gap:12px}.site-header nav{display:none}.hero{padding-top:38px}.hero h1{font-size:clamp(40px,13vw,58px)}.search-panel{padding:17px}.search-form,.explorer-search-card{grid-template-columns:1fr}.search-form .search-button,.explorer-search-card .search-button{grid-column:auto}.advanced-filter-content{max-width:none}.home-paths a{align-items:flex-start;flex-direction:column;gap:5px}.home-paths span{white-space:normal}.neighborhood-card{grid-template-columns:1fr 1fr;gap:12px;padding:15px}.neighborhood-card-main{grid-column:1/-1}.neighborhood-card-cta{grid-column:1/-1}.explorer-metrics{margin-bottom:28px}}
+
+/* v10.2 building-name display: readable name first, Korean official name preserved */
+.building-official-name{display:block;margin-top:3px;color:#667085;font-size:12px;font-weight:600;line-height:1.35;letter-spacing:0}
+#buildingOfficialName{margin:4px 0 0;font-size:14px}

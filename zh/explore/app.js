@@ -138,8 +138,9 @@ function renderBuildings(buildings) {
     const interactiveHref = `/zh/explore/building/?${interactiveParams.toString()}`;
     const seoHref = KHGExplorer.buildBuildingSeoUrl({ lawdCd:areaSelect.value, type:typeSelect.value, dong, buildingName:item.buildingName, buildingKey:item.buildingKey, lang:'zh' });
     const location = [dong ? dongDisplayName(dong) : '', areaName(), typeName()].filter(Boolean).join(' · ');
+    const nameDisplay = KHGBuildingNames.getBuildingNameDisplay(item.buildingName, 'zh');
     return `<article class="building-row">
-      <div class="building-name"><strong>${escapeHtml(item.buildingName)}</strong><small>${escapeHtml(location)}</small></div>
+      <div class="building-name"><strong>${escapeHtml(nameDisplay.primary)}</strong>${nameDisplay.secondary ? `<small class="building-official-name">${escapeHtml(nameDisplay.secondary)}</small>` : ''}<small>${escapeHtml(location)}</small></div>
       <div><span class="mobile-label">典型面积</span><strong>${formatArea(item.typicalAreaSqm)}</strong></div>
       <div class="building-money"><span class="mobile-label">月租</span><strong>${item.medianMonthlyRentWon == null ? '—' : moneyHtml(item.medianMonthlyRentWon)}</strong></div>
       <div class="building-money"><span class="mobile-label">押金</span><strong>${item.medianDepositWon == null ? '—' : moneyHtml(item.medianDepositWon)}</strong></div>

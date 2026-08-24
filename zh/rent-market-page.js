@@ -24,6 +24,10 @@ function selectedCurrency() {
   return currencySelect ? currencySelect.value : 'CNY';
 }
 
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, char => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[char]);
+}
+
 function moneyHtml(amountWon) {
   if (amountWon == null) return '<span class="money-primary">数据不足</span>';
   return KHGCurrency.formatMoneyHtml(amountWon, selectedCurrency(), fxRates, 'zh-CN');
@@ -50,7 +54,7 @@ function renderRecentContracts(recentContracts) {
   }
   recentContractsBody.innerHTML = recentContracts.map(item => `
     <tr>
-      <td>${item.building || '-'}</td>
+      <td>${(() => { const name = KHGBuildingNames.getBuildingNameDisplay(item.building || '-', 'zh'); return `<strong>${escapeHtml(name.primary)}</strong>${name.secondary ? `<small class="building-official-name">${escapeHtml(name.secondary)}</small>` : ''}`; })()}</td>
       <td>${Number(item.areaSqm).toFixed(1)}㎡</td>
       <td>${moneyHtml(item.depositWon)}</td>
       <td>${moneyHtml(item.monthlyRentWon)}</td>

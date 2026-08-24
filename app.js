@@ -298,7 +298,11 @@ const priceTableBody = document.querySelector("#priceTableBody");
 const loadPricesBtn = document.querySelector("#loadPricesBtn");
 const propertyTabs = [...document.querySelectorAll("[data-price-type]")];
 
-if (priceMonth) priceMonth.value = KHGRealPrices.previousCompletedMonth(new Date());
+if (priceMonth) {
+  const values = KHGRealPrices.recentCompletedMonths(new Date(), 60);
+  priceMonth.innerHTML = values.map(value => `<option value="${value}">${KHGDate.formatMonth(value, 'en-US')}</option>`).join('');
+  priceMonth.value = KHGRealPrices.previousCompletedMonth(new Date());
+}
 
 function setPriceType(type) {
   const supported = ["apartment","officetel","villa"];
