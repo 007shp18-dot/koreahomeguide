@@ -37,7 +37,7 @@ test('Chinese building page keeps the flow inside Chinese Rent Check and preserv
 });
 
 test('sitemap indexes Chinese Rent Explorer but not query-string building detail pages', () => {
-  const sitemap = read('sitemap.xml');
+  const sitemap = read('sitemap-static.xml');
   assert.match(sitemap, /https:\/\/koreahomeguide\.com\/zh\/explore\//);
   assert.doesNotMatch(sitemap, /explore\/building\//);
 });

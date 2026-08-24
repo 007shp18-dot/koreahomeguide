@@ -14,7 +14,7 @@ test('English Find a Home uses district/type/budget fields and routes to Explore
   assert.match(html, /id="rentBudget"/);
   assert.match(html, /id="depositBudget"/);
   assert.doesNotMatch(html, /id="areaSearch"/);
-  assert.match(html, />Find neighborhoods</);
+  assert.match(html, />Check rents</);
   assert.match(app, /\/explore\/\?/);
   assert.match(app, /maxRent/);
   assert.match(app, /maxDeposit/);
@@ -25,7 +25,7 @@ test('Chinese Find a Home routes the same filters to Chinese Explorer', () => {
   const app = read('zh/app.js');
   assert.match(html, /id="findDistrict"/);
   assert.doesNotMatch(html, /id="areaSearch"/);
-  assert.match(html, />查找合适地区</);
+  assert.match(html, />查看租金</);
   assert.match(app, /\/zh\/explore\/\?/);
   assert.match(app, /maxRent/);
   assert.match(app, /maxDeposit/);

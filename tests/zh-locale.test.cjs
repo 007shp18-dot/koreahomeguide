@@ -4,7 +4,7 @@ const fs = require('node:fs');
 
 test('English page advertises the Chinese alternate and sitemap lists /zh/', () => {
   const html = fs.readFileSync('index.html', 'utf8');
-  const sitemap = fs.readFileSync('sitemap.xml', 'utf8');
+  const sitemap = fs.readFileSync('sitemap-static.xml', 'utf8');
   assert.match(html, /hreflang="zh-CN"[^>]+https:\/\/koreahomeguide\.com\/zh\//);
   assert.match(html, /href="\/zh\/"[^>]*>中文</);
   assert.match(sitemap, /<loc>https:\/\/koreahomeguide\.com\/zh\/<\/loc>/);

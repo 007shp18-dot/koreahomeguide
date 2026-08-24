@@ -50,12 +50,12 @@ test('Chinese market runtime renders Chinese states and keeps CNY locale', () =>
   assert.match(js, /月租合同/);
   assert.match(js, /近 3 个月/);
   assert.match(js, /\/api\/rent-market/);
-  assert.match(js, /sizeBands/);
+  assert.match(js, /areaGroups/);
   assert.match(js, /recentContracts/);
 });
 
 test('sitemap includes all 15 Chinese rent market pages', () => {
-  const xml = fs.readFileSync('sitemap.xml','utf8');
+  const xml = fs.readFileSync('sitemap-static.xml','utf8');
   for (const district of Object.keys(districts)) {
     for (const type of types) {
       assert.match(xml, new RegExp(`<loc>https://koreahomeguide.com/zh/rent/${district}/${type}/<\\/loc>`));

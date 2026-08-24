@@ -4,7 +4,7 @@
   root.KHGExplorer = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this, function() {
   const DISTRICT_SLUGS = Object.freeze({
-    '11680':'gangnam-gu', '11440':'mapo-gu', '11170':'yongsan-gu', '11200':'seongdong-gu', '11560':'yeongdeungpo-gu'
+    '11680':'gangnam-gu', '11440':'mapo-gu', '11170':'yongsan-gu', '11200':'seongdong-gu', '11560':'yeongdeungpo-gu', '11620':'gwanak-gu', '11230':'dongdaemun-gu', '11410':'seodaemun-gu', '11290':'seongbuk-gu', '11215':'gwangjin-gu'
   });
   const DONG_SLUGS = Object.freeze({
     '역삼동':'yeoksam-dong','논현동':'nonhyeon-dong','대치동':'daechi-dong','삼성동':'samseong-dong','청담동':'cheongdam-dong',
@@ -47,7 +47,7 @@
   function buildDongSeoUrl({ lawdCd, type, dong, lang = 'en' }) {
     const district = DISTRICT_SLUGS[String(lawdCd || '')];
     const dSlug = dongSlug(dong);
-    if (!district || !['apartment','officetel','villa'].includes(String(type || '')) || !dSlug) return '';
+    if (!district || !['apartment','officetel','villa','detached'].includes(String(type || '')) || !dSlug) return '';
     const prefix = String(lang || '').toLowerCase().startsWith('zh') ? '/zh' : '';
     return `${prefix}/seoul/${encodeURIComponent(district)}/${encodeURIComponent(dSlug)}/${encodeURIComponent(type)}/`.replace(/%2F/gi, '/');
   }
@@ -73,14 +73,24 @@
     const rentLimit = Math.max(0, Number(maxRent) || 0);
     const depositLimit = Math.max(0, Number(maxDeposit) || 0);
     return (Array.isArray(items) ? items : []).filter(item => {
+      const bands = Array.isArray(item && item.depositBands) ? item.depositBands : [];
+      if ((rentLimit || depositLimit) && bands.length) {
+        return bands.some(band => {
+          const rent = Number(band.medianMonthlyRentWon);
+          const deposit = Number(band.medianDepositWon);
+          if (rentLimit && (!Number.isFinite(rent) || rent > rentLimit)) return false;
+          if (depositLimit && (!Number.isFinite(deposit) || deposit > depositLimit)) return false;
+          return true;
+        });
+      }
       if (rentLimit) {
-        const rawRent = item && item.medianMonthlyRentWon;
+        const rawRent = item && (item.contextualMedianMonthlyRentWon ?? item.medianMonthlyRentWon);
         if (rawRent == null || rawRent === '') return false;
         const rent = Number(rawRent);
         if (!Number.isFinite(rent) || rent > rentLimit) return false;
       }
       if (depositLimit) {
-        const rawDeposit = item && item.medianDepositWon;
+        const rawDeposit = item && (item.contextualMedianDepositWon ?? item.medianDepositWon);
         if (rawDeposit == null || rawDeposit === '') return false;
         const deposit = Number(rawDeposit);
         if (!Number.isFinite(deposit) || deposit > depositLimit) return false;
@@ -90,7 +100,7 @@
   }
 
   function propertyTypeLabel(type) {
-    return ({ apartment:'Apartment', officetel:'Officetel', villa:'Villa / Multi-family' })[type] || type;
+    return ({ apartment:'Apartment', officetel:'Officetel', villa:'Villa / Low-rise (연립·다세대)', detached:'Detached / Multi-family' })[type] || type;
   }
 
   return {

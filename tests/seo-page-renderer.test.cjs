@@ -11,15 +11,18 @@ const routes = require('../seo/seo-route-utils.cjs');
 const summary = {
   dong:'연남동', totalContracts:18, contractCount:18, monthlyRentCount:12, jeonseCount:6,
   medianMonthlyRentWon:700000, medianDepositWon:20000000, medianJeonseDepositWon:180000000,
+  newContractMonthlyRentCount:10, renewalMonthlyRentCount:2, contractTypeCounts:{new:10,renewal:2,unknown:6},
+  depositBands:[{minDepositWon:10000000,maxDepositWon:30000000,count:10,medianDepositWon:20000000,medianMonthlyRentWon:700000}],
+  areaGroups:[{approxAreaSqm:25,count:10,medianAreaSqm:24.5,depositBands:[{minDepositWon:10000000,maxDepositWon:30000000,count:10,medianDepositWon:20000000,medianMonthlyRentWon:700000}]}],
   typicalAreaSqm:24.5, quarterChangePct:4.2, monthsUsed:6, dataThroughMonth:'2026-07',
   recentTransactions:[
-    { building:'A <Villa>', areaSqm:23.1, depositWon:20000000, monthlyRentWon:700000, contractDate:'2026-07-31' },
+    { building:'A <Villa>', areaSqm:23.1, depositWon:20000000, monthlyRentWon:700000, contractDate:'2026-07-31', contractType:'new' },
     { building:'B House', areaSqm:25.0, depositWon:180000000, monthlyRentWon:0, contractDate:'2026-07-30' }
   ]
 };
 const buildings = [
-  { buildingName:'A <Villa>', buildingKey:'연남동::a <villa>', dong:'연남동', contractCount:8, medianMonthlyRentWon:720000, medianDepositWon:20000000, typicalAreaSqm:23.5 },
-  { buildingName:'B House', buildingKey:'연남동::b house', dong:'연남동', contractCount:2, medianMonthlyRentWon:650000, medianDepositWon:10000000, typicalAreaSqm:20 }
+  { buildingName:'A <Villa>', buildingKey:'연남동::a <villa>', dong:'연남동', contractCount:8, medianMonthlyRentWon:720000, medianDepositWon:20000000, typicalAreaSqm:23.5, depositBands:[{minDepositWon:10000000,maxDepositWon:30000000,count:8,medianDepositWon:20000000,medianMonthlyRentWon:720000}] },
+  { buildingName:'B House', buildingKey:'연남동::b house', dong:'연남동', contractCount:2, medianMonthlyRentWon:650000, medianDepositWon:10000000, typicalAreaSqm:20, depositBands:[{minDepositWon:10000000,maxDepositWon:30000000,count:2,medianDepositWon:10000000,medianMonthlyRentWon:650000}] }
 ];
 const fxRates = { USD:0.00072, CNY:0.0052 };
 
@@ -59,16 +62,17 @@ test('building quality gate indexes substantive pages and noindexes sparse pages
   assert.equal(isBuildingIndexable({ contractCount:5, medianMonthlyRentWon:null, medianDepositWon:null }), false);
 });
 
-test('building page includes Dong comparison, recent contracts, back link and quality-gated robots', () => {
+test('building page includes contextual rent sections, recent contracts, back link and quality-gated robots', () => {
   const detail = {
-    ...buildings[0], contractCount:4, quarterChangePct:3.1,
+    ...buildings[0], contractCount:4, quarterChangePct:3.1, medianJeonseDepositWon:180000000, newContractMonthlyRentCount:3, renewalMonthlyRentCount:1, contractTypeCounts:{new:3,renewal:1,unknown:0}, areaGroups:[{approxAreaSqm:25,count:4,medianAreaSqm:23.5,depositBands:buildings[0].depositBands}],
     monthlyTrend:[{month:'2026-05',count:1,medianMonthlyRentWon:680000},{month:'2026-06',count:1,medianMonthlyRentWon:700000},{month:'2026-07',count:2,medianMonthlyRentWon:720000}],
-    recentTransactions:[{contractDate:'2026-07-30',areaSqm:23.5,depositWon:20000000,monthlyRentWon:720000}]
+    recentTransactions:[{contractDate:'2026-07-30',areaSqm:23.5,depositWon:20000000,monthlyRentWon:720000,contractType:'new'}]
   };
   const html = renderBuildingPage({ ...base('en'), detail });
   assert.match(html, /<meta name="robots" content="index,follow">/);
   assert.match(html, /A &lt;Villa&gt;/);
-  assert.match(html, /about 2\.9% above the Yeonnam-dong median/i);
+  assert.match(html, /Monthly rent by deposit/i);
+  assert.match(html, /New vs renewal/i);
   assert.match(html, /Back to Yeonnam-dong/);
   assert.match(html, /Check a rent quote/);
   assert.match(html, /Jul 2026/);

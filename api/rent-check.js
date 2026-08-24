@@ -17,7 +17,7 @@ function parseRentCheckQuery(query = {}) {
   const lawdCd = String(query.lawdCd || '');
   const propertyType = String(query.type || '');
   if (!/^\d{5}$/.test(lawdCd)) return { ok: false, error: 'Choose a valid Seoul district.' };
-  if (!['apartment', 'officetel', 'villa'].includes(propertyType)) {
+  if (!['apartment', 'officetel', 'villa', 'detached'].includes(propertyType)) {
     return { ok: false, error: 'Choose a supported property type.' };
   }
   const depositWon = Number(query.deposit);

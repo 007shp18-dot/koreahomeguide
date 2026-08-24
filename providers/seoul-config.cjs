@@ -3,7 +3,12 @@ const SEOUL_DISTRICTS = Object.freeze({
   '11440':'Mapo-gu',
   '11170':'Yongsan-gu',
   '11200':'Seongdong-gu',
-  '11560':'Yeongdeungpo-gu'
+  '11560':'Yeongdeungpo-gu',
+  '11620':'Gwanak-gu',
+  '11230':'Dongdaemun-gu',
+  '11410':'Seodaemun-gu',
+  '11290':'Seongbuk-gu',
+  '11215':'Gwangjin-gu'
 });
 
 const SEOUL_DISTRICT_SLUGS = Object.freeze({
@@ -11,7 +16,12 @@ const SEOUL_DISTRICT_SLUGS = Object.freeze({
   'mapo-gu':'11440',
   'yongsan-gu':'11170',
   'seongdong-gu':'11200',
-  'yeongdeungpo-gu':'11560'
+  'yeongdeungpo-gu':'11560',
+  'gwanak-gu':'11620',
+  'dongdaemun-gu':'11230',
+  'seodaemun-gu':'11410',
+  'seongbuk-gu':'11290',
+  'gwangjin-gu':'11215'
 });
 
 const DONG_SLUG_ALIASES = Object.freeze({
@@ -43,7 +53,7 @@ const DONG_SLUG_ALIASES = Object.freeze({
   '영등포동':'yeongdeungpo-dong'
 });
 
-const PROPERTY_TYPES = Object.freeze(['apartment','officetel','villa']);
+const PROPERTY_TYPES = Object.freeze(['apartment','officetel','villa','detached']);
 
 function isSupportedAreaCode(code) {
   return Object.prototype.hasOwnProperty.call(SEOUL_DISTRICTS, String(code || ''));

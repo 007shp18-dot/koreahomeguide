@@ -24,7 +24,7 @@ test('all 15 rent SEO pages hand off to the explorer with matching district and 
 });
 
 test('sitemap indexes the explorer but never the query-driven building detail surface', () => {
-  const sitemap = fs.readFileSync('sitemap.xml','utf8');
+  const sitemap = fs.readFileSync('sitemap-static.xml','utf8');
   assert.match(sitemap, /https:\/\/koreahomeguide\.com\/explore\//);
   assert.doesNotMatch(sitemap, /https:\/\/koreahomeguide\.com\/explore\/building\//);
 });

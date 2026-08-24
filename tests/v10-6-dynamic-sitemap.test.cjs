@@ -1,0 +1,92 @@
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+
+function responseRecorder() {
+  return {
+    statusCode:200, headers:{}, body:'',
+    status(code) { this.statusCode = code; return this; },
+    setHeader(name, value) { this.headers[name] = value; },
+    send(value) { this.body = String(value); return this; },
+    json(value) { this.body = JSON.stringify(value); return this; }
+  };
+}
+
+test('root sitemap is an index with static pages plus 10 districts x 3 proven property-type child sitemaps', () => {
+  const root = fs.readFileSync('sitemap.xml','utf8');
+  const staticMap = fs.readFileSync('sitemap-static.xml','utf8');
+  assert.match(root, /<sitemapindex/);
+  assert.match(root, /https:\/\/koreahomeguide\.com\/sitemap-static\.xml/);
+  assert.match(root, /https:\/\/koreahomeguide\.com\/sitemaps\/seoul\/mapo-gu\/villa\//);
+  assert.doesNotMatch(root, /\/sitemaps\/seoul\/gwanak-gu\/detached\//);
+  assert.equal((root.match(/<sitemap>/g) || []).length, 31);
+  assert.equal((staticMap.match(/<url>/g) || []).length, 46);
+  assert.equal(root.includes('/api/'), false);
+});
+
+test('vercel exposes one shared child-sitemap endpoint without adding static HTML files', () => {
+  const config = JSON.parse(fs.readFileSync('vercel.json','utf8'));
+  const route = config.rewrites.find(item => item.destination.includes('sitemap-market'));
+  assert.ok(route);
+  assert.equal(route.source, '/sitemaps/seoul/:district/:type/');
+  assert.match(route.destination, /district=:district/);
+  assert.match(route.destination, /type=:type/);
+});
+
+test('dynamic market sitemap emits EN/ZH Dong URLs and only index-quality buildings', async () => {
+  const oldKey = process.env.DATA_GO_KR_SERVICE_KEY;
+  process.env.DATA_GO_KR_SERVICE_KEY = 'test';
+  delete require.cache[require.resolve('../api/sitemap-market.js')];
+  const sitemapApi = require('../api/sitemap-market.js');
+  const provider = {
+    getDongs: async () => [
+      { dong:'연남동', contractCount:12 },
+      { dong:'희우동', contractCount:2 }
+    ],
+    getBuildings: async () => [
+      {
+        buildingName:'A Villa', buildingKey:'연남동::a villa', dong:'연남동', contractCount:5,
+        depositBands:[{ count:5, medianMonthlyRentWon:800000 }], medianJeonseDepositWon:null
+      },
+      {
+        buildingName:'Sparse Villa', buildingKey:'연남동::sparse villa', dong:'연남동', contractCount:2,
+        depositBands:[{ count:2, medianMonthlyRentWon:700000 }], medianJeonseDepositWon:null
+      }
+    ]
+  };
+  const handler = sitemapApi.createHandler({ providerFactory:() => provider, referenceDate:new Date('2026-08-25T00:00:00Z') });
+  const res = responseRecorder();
+  await handler({ method:'GET', query:{ district:'mapo-gu', type:'villa' } }, res);
+  assert.equal(res.statusCode, 200);
+  assert.match(res.headers['Content-Type'], /xml/);
+  assert.match(res.headers['Cache-Control'], /s-maxage=/);
+  assert.match(res.body, /https:\/\/koreahomeguide\.com\/seoul\/mapo-gu\/yeonnam-dong\/villa\//);
+  assert.match(res.body, /https:\/\/koreahomeguide\.com\/zh\/seoul\/mapo-gu\/yeonnam-dong\/villa\//);
+  assert.doesNotMatch(res.body, /희우동/);
+  assert.match(res.body, /a-villa-[0-9a-f]{7}/);
+  assert.doesNotMatch(res.body, /sparse-villa/);
+  if (oldKey == null) delete process.env.DATA_GO_KR_SERVICE_KEY; else process.env.DATA_GO_KR_SERVICE_KEY = oldKey;
+});
+
+test('rent-market response and UI expose canonical neighborhood links', () => {
+  const apiSource = fs.readFileSync('api/rent-market.js','utf8');
+  const enSource = fs.readFileSync('rent-market-page.js','utf8');
+  const zhSource = fs.readFileSync('zh/rent-market-page.js','utf8');
+  const sampleEn = fs.readFileSync('rent/mapo-gu/villa/index.html','utf8');
+  const sampleZh = fs.readFileSync('zh/rent/mapo-gu/villa/index.html','utf8');
+  assert.match(apiSource, /aggregateDongs/);
+  assert.match(apiSource, /dongs/);
+  assert.match(enSource, /renderNeighborhoodLinks/);
+  assert.match(enSource, /buildDongSeoUrl/);
+  assert.match(zhSource, /renderNeighborhoodLinks/);
+  assert.match(zhSource, /buildDongSeoUrl/);
+  assert.match(sampleEn, /id="neighborhoodLinks"/);
+  assert.match(sampleEn, /\/explore\/explorer-utils\.js/);
+  assert.match(sampleZh, /id="neighborhoodLinks"/);
+  assert.match(sampleZh, /\/explore\/explorer-utils\.js/);
+});
+
+test('robots keeps Search Console pointed at the stable root sitemap URL', () => {
+  const robots = fs.readFileSync('robots.txt','utf8');
+  assert.match(robots, /Sitemap: https:\/\/koreahomeguide\.com\/sitemap\.xml/);
+});

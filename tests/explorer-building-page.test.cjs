@@ -6,7 +6,7 @@ test('building detail is a non-indexed historical transaction view with a Rent C
   const html = fs.readFileSync('explore/building/index.html','utf8');
   assert.match(html, /<meta name="robots" content="noindex,follow">/);
   assert.match(html, /Historical signed rental transactions — not a live listing\./);
-  for (const id of ['buildingName','buildingRent','buildingDeposit','buildingArea','buildingContracts','trendChart','recentBuildingContracts','rentCheckCta']) {
+  for (const id of ['buildingName','buildingArea','buildingContracts','buildingNewContracts','buildingJeonse','buildingDepositBands','buildingAreaGroups','buildingContractMix','trendChart','recentBuildingContracts','buildingSalesSection','rentCheckCta']) {
     assert.match(html, new RegExp(`id="${id}"`));
   }
   assert.match(html, /G-6SXH5BREDP/);

@@ -34,10 +34,24 @@
     <div id="buildingStatus" class="market-status">Loading official rental transactions…</div>
 
     <section class="building-detail-metrics">
-      <div><span>Typical monthly rent</span><strong id="buildingRent">—</strong><small>Median of monthly-rent contracts</small></div>
-      <div><span>Typical deposit</span><strong id="buildingDeposit">—</strong><small>Median of monthly-rent contracts</small></div>
-      <div><span>Typical size</span><strong id="buildingArea">—</strong><small>Median reported floor area</small></div>
       <div><span>Recent contracts</span><strong id="buildingContracts">—</strong><small>Latest 6 completed months</small></div>
+      <div><span>New monthly-rent contracts</span><strong id="buildingNewContracts">—</strong><small>New contracts when identified</small></div>
+      <div><span>Typical size</span><strong id="buildingArea">—</strong><small>Median reported floor area</small></div>
+      <div><span>Median jeonse deposit</span><strong id="buildingJeonse">—</strong><small>Jeonse-style contracts only</small></div>
+    </section>
+
+    <section class="building-trend-section">
+      <div class="building-section-head"><div><span class="eyebrow">PRICE CONTEXT</span><h2>Monthly rent by deposit</h2></div><small>New contracts are used when enough are identified</small></div>
+      <div id="buildingDepositBands" class="size-band-grid"><div class="explorer-empty">Loading deposit bands…</div></div>
+    </section>
+
+    <section class="building-trend-section">
+      <div class="building-section-head"><div><span class="eyebrow">BY FLOOR AREA</span><h2>By floor area</h2></div><small>Approximate area groups keep 59㎡ and 84㎡ contracts separate</small></div>
+      <div id="buildingAreaGroups" class="size-band-grid"><div class="explorer-empty">Loading area groups…</div></div>
+    </section>
+
+    <section class="building-trend-section">
+      <div class="building-section-head"><div><span class="eyebrow">CONTRACT TYPE</span><h2>New vs renewal</h2></div><small id="buildingContractMix">—</small></div>
     </section>
 
     <section class="building-trend-section">
@@ -47,7 +61,14 @@
 
     <section class="building-contracts-section">
       <div class="building-section-head"><div><span class="eyebrow">RECENT CONTRACTS</span><h2>Reported contracts for this building</h2></div><small>Zero monthly rent indicates a jeonse-style contract</small></div>
-      <div class="table-wrap"><table><thead><tr><th>Date</th><th>Size</th><th>Deposit</th><th>Monthly rent</th></tr></thead><tbody id="recentBuildingContracts"><tr class="empty-row"><td colspan="4">Loading reported contracts…</td></tr></tbody></table></div>
+      <div class="table-wrap"><table><thead><tr><th>Date</th><th>Type</th><th>Size</th><th>Deposit</th><th>Monthly rent</th></tr></thead><tbody id="recentBuildingContracts"><tr class="empty-row"><td colspan="5">Loading reported contracts…</td></tr></tbody></table></div>
+    </section>
+
+
+    <section id="buildingSalesSection" class="building-contracts-section" hidden>
+      <div class="building-section-head"><div><span class="eyebrow">APARTMENT SALES</span><h2>Recent apartment sales</h2></div><small>Official reported sale transactions, shown separately from rent</small></div>
+      <div id="buildingSaleGroups" class="size-band-grid"></div>
+      <div class="table-wrap"><table><thead><tr><th>Date</th><th>Size</th><th>Sale price</th><th>Floor</th></tr></thead><tbody id="recentBuildingSales"></tbody></table></div>
     </section>
 
     <section class="building-rent-check-card">

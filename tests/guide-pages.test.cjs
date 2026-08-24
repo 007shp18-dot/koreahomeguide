@@ -2,7 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 
-const slugs = ['wolse-vs-jeonse','korea-rental-contract-checklist','seoul-brokerage-fees'];
+const slugs = ['wolse-vs-jeonse','korea-rental-contract-checklist','seoul-brokerage-fees','before-you-sign'];
 
 test('guide pairs exist, are substantial, and cross-link via hreflang', () => {
   for (const slug of slugs) {

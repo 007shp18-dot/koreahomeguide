@@ -18,9 +18,11 @@ const fakeFxFetch = async () => ({ ok:true, json:async () => ({ rates:{ USD:0.00
 const dongSummary = {
   dong:'연남동', totalContracts:5, contractCount:5, monthlyRentCount:4, jeonseCount:1,
   medianMonthlyRentWon:700000, medianDepositWon:20000000, medianJeonseDepositWon:180000000,
+  newContractMonthlyRentCount:4, renewalMonthlyRentCount:0, contractTypeCounts:{new:4,renewal:0,unknown:1},
+  depositBands:[{minDepositWon:10000000,maxDepositWon:30000000,count:4,medianDepositWon:20000000,medianMonthlyRentWon:700000}], areaGroups:[],
   quarterChangePct:null, monthsUsed:6, dataThroughMonth:'2026-07', recentTransactions:[]
 };
-const building = { buildingName:'A Villa', buildingKey:'연남동::a villa', dong:'연남동', contractCount:4, medianMonthlyRentWon:720000, medianDepositWon:20000000, typicalAreaSqm:23 };
+const building = { buildingName:'A Villa', buildingKey:'연남동::a villa', dong:'연남동', contractCount:4, medianMonthlyRentWon:720000, medianDepositWon:20000000, medianJeonseDepositWon:null, typicalAreaSqm:23, newContractMonthlyRentCount:4, renewalMonthlyRentCount:0, contractTypeCounts:{new:4,renewal:0,unknown:0}, depositBands:[{minDepositWon:10000000,maxDepositWon:30000000,count:4,medianDepositWon:20000000,medianMonthlyRentWon:720000}], areaGroups:[] };
 
 function provider(overrides={}) {
   return {
@@ -111,5 +113,5 @@ test('vercel rewrites map EN/ZH Dong and building paths to two shared HTML endpo
   assert.match(serialized, /seo-dong-page/);
   assert.match(serialized, /seo-building-page/);
   assert.match(serialized, /\/zh\/seoul\//);
-  assert.equal(config.rewrites.length, 4);
+  assert.equal(config.rewrites.length, 5);
 });

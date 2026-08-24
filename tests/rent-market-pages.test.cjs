@@ -28,10 +28,10 @@ test('all 15 rent pages exist with unique canonical, district code, type, and su
   }
 });
 
-test('rent market runtime calls the shared API and renders size bands plus recent contracts', () => {
+test('rent market runtime calls the shared API and renders contextual area groups plus recent contracts', () => {
   const js = fs.readFileSync('rent-market-page.js','utf8');
   assert.match(js, /\/api\/rent-market/);
-  assert.match(js, /sizeBands/);
+  assert.match(js, /areaGroups/);
   assert.match(js, /recentContracts/);
   assert.match(js, /quarterChangePct/);
 });

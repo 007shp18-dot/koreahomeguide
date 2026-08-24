@@ -62,6 +62,22 @@ function updateLanguageSwitch() {
   if (languageSwitch) languageSwitch.href = `/zh/explore/?${currentParams(true).toString()}`;
 }
 
+
+function representativeBand(item) {
+  const bands = Array.isArray(item && item.depositBands) ? item.depositBands : [];
+  if (!bands.length) return null;
+  const { maxRent, maxDeposit } = budgetValues();
+  const matches = bands.filter(band => {
+    const rent = Number(band.medianMonthlyRentWon);
+    const deposit = Number(band.medianDepositWon);
+    if (maxRent && (!Number.isFinite(rent) || rent > maxRent)) return false;
+    if (maxDeposit && (!Number.isFinite(deposit) || deposit > maxDeposit)) return false;
+    return true;
+  });
+  const pool = matches.length ? matches : bands;
+  return [...pool].sort((a,b) => Number(b.count || 0) - Number(a.count || 0))[0] || null;
+}
+
 function renderDongs(dongs) {
   if (!dongList) return;
   const allItems = Array.isArray(dongs) ? dongs : [];
@@ -76,13 +92,16 @@ function renderDongs(dongs) {
     return;
   }
   dongList.innerHTML = items.map(item => {
-    const rent = item.medianMonthlyRentWon == null ? '—' : moneyHtml(item.medianMonthlyRentWon);
-    const deposit = item.medianDepositWon == null ? '—' : moneyHtml(item.medianDepositWon);
+    const band = representativeBand(item);
+    const rentValue = band ? band.medianMonthlyRentWon : (item.contextualMedianMonthlyRentWon ?? item.medianMonthlyRentWon);
+    const depositValue = band ? band.medianDepositWon : (item.contextualMedianDepositWon ?? item.medianDepositWon);
+    const rent = rentValue == null ? '—' : moneyHtml(rentValue);
+    const deposit = depositValue == null ? '—' : moneyHtml(depositValue);
     const seoHref = KHGExplorer.buildDongSeoUrl({ lawdCd:areaSelect.value, type:typeSelect.value, dong:item.dong, lang:'en' });
     return `<a class="neighborhood-card" href="${escapeHtml(seoHref)}">
       <span class="neighborhood-card-main"><strong>${escapeHtml(item.dong)}</strong><small>${Number(item.contractCount || 0).toLocaleString('en-US')} recent contracts</small></span>
-      <span class="neighborhood-card-metric"><small>Typical rent</small><strong>${rent}</strong></span>
-      <span class="neighborhood-card-metric"><small>Typical deposit</small><strong>${deposit}</strong></span>
+      <span class="neighborhood-card-metric"><small>Rent context</small><strong>${rent}</strong></span>
+      <span class="neighborhood-card-metric"><small>Deposit context</small><strong>${deposit}</strong></span>
       <span class="neighborhood-card-cta">View neighborhood →</span>
     </a>`;
   }).join('');
@@ -94,8 +113,11 @@ function renderSummary(data, dong = '') {
   const district = data.districtName || areaName();
   title.textContent = [district, currentDong, KHGExplorer.propertyTypeLabel(data.propertyType || typeSelect.value)].filter(Boolean).join(' · ');
   const summary = data.summary || {};
-  metricRent.innerHTML = summary.medianMonthlyRentWon == null ? 'Not enough data' : moneyHtml(summary.medianMonthlyRentWon);
-  metricDeposit.innerHTML = summary.medianDepositWon == null ? 'Not enough data' : moneyHtml(summary.medianDepositWon);
+  const band = representativeBand(summary);
+  const rentValue = band ? band.medianMonthlyRentWon : (summary.contextualMedianMonthlyRentWon ?? summary.medianMonthlyRentWon);
+  const depositValue = band ? band.medianDepositWon : (summary.contextualMedianDepositWon ?? summary.medianDepositWon);
+  metricRent.innerHTML = rentValue == null ? 'Not enough data' : moneyHtml(rentValue);
+  metricDeposit.innerHTML = depositValue == null ? 'Not enough data' : moneyHtml(depositValue);
   metricContracts.textContent = Number(summary.totalContracts || summary.contractCount || 0).toLocaleString('en-US');
   const change = Number(summary.quarterChangePct);
   metricChange.textContent = Number.isFinite(change) ? `${change > 0 ? '+' : ''}${change.toFixed(1)}%` : 'Not enough data';
@@ -131,8 +153,7 @@ function renderBuildings(buildings) {
     return `<article class="building-row">
       <div class="building-name"><strong>${escapeHtml(nameDisplay.primary)}</strong>${nameDisplay.secondary ? `<small class="building-official-name">${escapeHtml(nameDisplay.secondary)}</small>` : ''}<small>${escapeHtml(location)}</small></div>
       <div><span class="mobile-label">Typical size</span><strong>${formatArea(item.typicalAreaSqm)}</strong></div>
-      <div class="building-money"><span class="mobile-label">Monthly rent</span><strong>${item.medianMonthlyRentWon == null ? '—' : moneyHtml(item.medianMonthlyRentWon)}</strong></div>
-      <div class="building-money"><span class="mobile-label">Deposit</span><strong>${item.medianDepositWon == null ? '—' : moneyHtml(item.medianDepositWon)}</strong></div>
+      ${(() => { const band = representativeBand(item); const rentValue = band ? band.medianMonthlyRentWon : (item.contextualMedianMonthlyRentWon ?? item.medianMonthlyRentWon); const depositValue = band ? band.medianDepositWon : (item.contextualMedianDepositWon ?? item.medianDepositWon); return `<div class="building-money"><span class="mobile-label">Rent context</span><strong>${rentValue == null ? '—' : moneyHtml(rentValue)}</strong></div><div class="building-money"><span class="mobile-label">Deposit context</span><strong>${depositValue == null ? '—' : moneyHtml(depositValue)}</strong></div>`; })()}
       <div><span class="mobile-label">Contracts</span><strong>${Number(item.contractCount || 0).toLocaleString('en-US')}</strong></div>
       <div class="building-actions"><a href="${escapeHtml(seoHref)}">Building page →</a><a class="secondary" href="${escapeHtml(interactiveHref)}">Interactive view</a></div>
     </article>`;

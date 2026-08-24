@@ -1,5 +1,5 @@
-const { median, completedMonthKeys, normalizeTransaction } = require('../lib/rent-check-core.cjs');
-const { buildRentMarketStats, pctChange } = require('../lib/rent-market-core.cjs');
+const { median, completedMonthKeys, normalizeTransaction, numberFromManwon } = require('../lib/rent-check-core.cjs');
+const { buildRentMarketStats, pctChange, contextualStatsFromNormalized } = require('../lib/rent-market-core.cjs');
 const { getBuildingNameDisplay } = require('../building-name-utils.js');
 
 function normalizeBuildingName(name) {
@@ -88,10 +88,13 @@ function summaryForBuilding(group, options = {}) {
     dong:group.dong || '',
     contractCount:rows.length,
     monthlyRentCount:monthly.length,
+    // Legacy fields kept for existing consumers; contextual fields below are safer for display.
     medianMonthlyRentWon:median(monthly.map(row => row.monthlyRentWon)),
     medianDepositWon:median(monthly.map(row => row.depositWon)),
+    medianJeonseDepositWon:median(rows.filter(row => row.monthlyRentWon === 0).map(row => row.depositWon)),
     typicalAreaSqm:median(rows.map(row => row.areaSqm)),
-    quarterChangePct:quarterChangeForRows(rows, options)
+    quarterChangePct:quarterChangeForRows(rows, options),
+    ...contextualStatsFromNormalized(rows)
   };
 }
 
@@ -114,7 +117,8 @@ function aggregateDongs(items, options = {}) {
       medianMonthlyRentWon:median(monthly.map(row => row.monthlyRentWon)),
       medianDepositWon:median(monthly.map(row => row.depositWon)),
       typicalAreaSqm:median(rows.map(row => row.areaSqm)),
-      quarterChangePct:quarterChangeForRows(rows, options)
+      quarterChangePct:quarterChangeForRows(rows, options),
+      ...contextualStatsFromNormalized(rows)
     };
   }).sort((a, b) => {
     if (b.contractCount !== a.contractCount) return b.contractCount - a.contractCount;
@@ -139,7 +143,13 @@ function buildDongSummary(items, { dong, referenceDate = new Date(), months = 6 
       depositWon:row.depositWon,
       monthlyRentWon:row.monthlyRentWon,
       contractDate:row.contractDate,
-      type:row.type
+      type:row.type,
+      contractType:row.contractType,
+      contractTypeRaw:row.contractTypeRaw,
+      contractTerm:row.contractTerm,
+      useRRRight:row.useRRRight,
+      preDepositWon:row.preDepositWon,
+      preMonthlyRentWon:row.preMonthlyRentWon
     }));
   return {
     dong:selectedDong,
@@ -153,6 +163,7 @@ function buildDongSummary(items, { dong, referenceDate = new Date(), months = 6 
     medianJeonseDepositWon:median(jeonse.map(row => row.depositWon)),
     typicalAreaSqm:median(rows.map(row => row.areaSqm)),
     quarterChangePct:quarterChangeForRows(rows, { referenceDate, months }),
+    ...contextualStatsFromNormalized(rows),
     recentTransactions,
     monthsUsed:months,
     dataThroughMonth:completedMonthKeys(referenceDate, months)[0]?.replace(/^(\d{4})(\d{2})$/, '$1-$2') || null
@@ -181,7 +192,61 @@ function buildMonthlyTrend(rows, { referenceDate = new Date(), months = 6 } = {}
   });
 }
 
-function buildBuildingDetail(items, { buildingKey, referenceDate = new Date(), months = 6 } = {}) {
+
+function normalizeSaleTransaction(item) {
+  if (!item) return null;
+  const areaSqm = Number(item.areaSqm ?? item.area);
+  const dealAmountWon = Number.isFinite(Number(item.dealAmountWon))
+    ? Number(item.dealAmountWon)
+    : numberFromManwon(item.dealAmount);
+  if (!Number.isFinite(areaSqm) || areaSqm <= 0 || !Number.isFinite(dealAmountWon) || dealAmountWon <= 0) return null;
+  return {
+    building:normalizeBuildingName(item.buildingName || item.building),
+    buildingName:normalizeBuildingName(item.buildingName || item.building),
+    dong:normalizeDongName(item.dong),
+    areaSqm,
+    dealAmountWon,
+    contractDate:String(item.contractDate || ''),
+    floor:item.floor == null || item.floor === '' ? null : Number(item.floor),
+    cancelled:Boolean(item.cancelled)
+  };
+}
+
+function buildSaleSummary(saleRows, { buildingName, dong } = {}) {
+  if (saleRows == null) return null;
+  const targetName = normalizeBuildingName(buildingName);
+  const targetDong = normalizeDongName(dong);
+  const rows = (saleRows || [])
+    .map(normalizeSaleTransaction)
+    .filter(Boolean)
+    .filter(row => !row.cancelled)
+    .filter(row => normalizeBuildingName(row.buildingName) === targetName)
+    .filter(row => !targetDong || normalizeDongName(row.dong) === targetDong)
+    .sort((a,b) => String(b.contractDate).localeCompare(String(a.contractDate)));
+  if (!rows.length) return null;
+  const groups = new Map();
+  for (const row of rows) {
+    const approxAreaSqm = Math.max(5, Math.round(row.areaSqm / 5) * 5);
+    if (!groups.has(approxAreaSqm)) groups.set(approxAreaSqm, []);
+    groups.get(approxAreaSqm).push(row);
+  }
+  const areaGroups = [...groups.entries()].sort((a,b) => a[0]-b[0]).map(([approxAreaSqm, matches]) => ({
+    approxAreaSqm,
+    count:matches.length,
+    medianAreaSqm:median(matches.map(row => row.areaSqm)),
+    medianSalePriceWon:median(matches.map(row => row.dealAmountWon)),
+    latestSalePriceWon:matches[0].dealAmountWon,
+    latestContractDate:matches[0].contractDate
+  }));
+  return {
+    contractCount:rows.length,
+    medianSalePriceWon:median(rows.map(row => row.dealAmountWon)),
+    areaGroups,
+    recentSales:rows.slice(0, 10)
+  };
+}
+
+function buildBuildingDetail(items, { buildingKey, referenceDate = new Date(), months = 6, saleRows = null } = {}) {
   const requestedKey = String(buildingKey || '').normalize('NFKC').trim().toLocaleLowerCase('en-US');
   if (!requestedKey) return null;
   const groups = groupBuildingRows(items, { referenceDate, months });
@@ -195,10 +260,13 @@ function buildBuildingDetail(items, { buildingKey, referenceDate = new Date(), m
   const recentTransactions = [...group.rows]
     .sort((a, b) => String(b.contractDate).localeCompare(String(a.contractDate)))
     .slice(0, 12);
+  const saleSummary = buildSaleSummary(saleRows, { buildingName:group.buildingName, dong:group.dong });
   return {
     ...summary,
     monthlyTrend:buildMonthlyTrend(group.rows, { referenceDate, months }),
-    recentTransactions
+    recentTransactions,
+    saleSummary,
+    recentSales:saleSummary ? saleSummary.recentSales : []
   };
 }
 
@@ -220,6 +288,8 @@ module.exports = {
   aggregateDongs,
   buildDongSummary,
   aggregateBuildings,
+  normalizeSaleTransaction,
+  buildSaleSummary,
   buildBuildingDetail,
   buildAreaSummary,
   buildMonthlyTrend

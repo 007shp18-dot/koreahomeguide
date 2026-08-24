@@ -1,5 +1,6 @@
 const { normalizeServiceKey, completedMonths, fetchRentalMonth } = require('../lib/real-price-core.cjs');
 const { buildRentMarketStats } = require('../lib/rent-market-core.cjs');
+const { aggregateDongs } = require('../providers/provider-utils.cjs');
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
@@ -12,7 +13,7 @@ module.exports = async function handler(req, res) {
   const type = String(req.query.type || 'apartment');
   const lawdCd = String(req.query.lawdCd || '');
   const months = 6;
-  if (!['apartment', 'officetel', 'villa'].includes(type)) {
+  if (!['apartment', 'officetel', 'villa', 'detached'].includes(type)) {
     return res.status(400).json({ error: 'Unsupported property type.' });
   }
   if (!/^\d{5}$/.test(lawdCd)) {
@@ -24,9 +25,12 @@ module.exports = async function handler(req, res) {
     const batches = await Promise.all(
       keys.map(dealYmd => fetchRentalMonth({ serviceKey, type, lawdCd, dealYmd }))
     );
-    const stats = buildRentMarketStats(batches.flat(), { referenceDate: new Date(), months });
+    const rows = batches.flat();
+    const referenceDate = new Date();
+    const stats = buildRentMarketStats(rows, { referenceDate, months });
+    const dongs = aggregateDongs(rows, { referenceDate, months });
     res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
-    return res.status(200).json({ districtCode: lawdCd, propertyType: type, ...stats });
+    return res.status(200).json({ districtCode: lawdCd, propertyType: type, ...stats, dongs });
   } catch (_) {
     return res.status(500).json({ error: 'Failed to load rent market statistics.' });
   }
