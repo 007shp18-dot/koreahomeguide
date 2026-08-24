@@ -112,7 +112,7 @@ async function loadFxRates() {
     if (!response.ok) throw new Error(data.error || 'FX unavailable');
     fxRates = data.rates || {};
     fxRateDate = data.date || null;
-    if (currencySelect) currencySelect.title = `Reference FX {date} · approximate only`.replace('{date}', fxRateDate || "latest");
+    if (currencySelect) currencySelect.title = `Reference FX {date} · approximate only`.replace('{date}', fxRateDate ? KHGDate.formatDate(fxRateDate, 'en-US') : "latest");
     const requested = selectedCurrency();
     if (!activateCurrency(requested) && currencySelect) {
       currencySelect.value = "KRW";
@@ -292,7 +292,7 @@ function renderRentCheckRows(items) {
       <td>${Number.isFinite(Number(item.areaSqm)) ? `${Number(item.areaSqm).toFixed(1)}㎡` : '-'}</td>
       <td>${moneyHtml(item.depositWon)}</td>
       <td>${moneyHtml(item.monthlyRentWon)}</td>
-      <td>${item.contractDate || '-'}</td>
+      <td>${KHGDate.formatDate(item.contractDate, 'en-US')}</td>
     </tr>
   `).join('');
 }
@@ -413,7 +413,7 @@ function renderPriceRows(items) {
     return;
   }
   priceTableBody.innerHTML = items.slice(0,40).map(item => `
-    <tr><td>${item.building || "-"}</td><td>${typeLabel(priceType.value)}</td><td>${item.area ? `${item.area}㎡` : "-"}</td><td>${formatMoneyFromManwon(item.deposit)}</td><td>${formatMoneyFromManwon(item.monthlyRent)}</td><td>${item.contractDate || "-"}</td></tr>`).join("");
+    <tr><td>${item.building || "-"}</td><td>${typeLabel(priceType.value)}</td><td>${item.area ? `${item.area}㎡` : "-"}</td><td>${formatMoneyFromManwon(item.deposit)}</td><td>${formatMoneyFromManwon(item.monthlyRent)}</td><td>${KHGDate.formatDate(item.contractDate, 'en-US')}</td></tr>`).join("");
 }
 
 async function loadRealPrices() {

@@ -42,7 +42,7 @@ function renderRecentContracts(recentContracts) {
       <td>${Number(item.areaSqm).toFixed(1)}㎡</td>
       <td>${moneyHtml(item.depositWon)}</td>
       <td>${moneyHtml(item.monthlyRentWon)}</td>
-      <td>${item.contractDate || '-'}</td>
+      <td>${KHGDate.formatDate(item.contractDate, 'en-US')}</td>
     </tr>
   `).join('');
 }
@@ -55,7 +55,7 @@ function renderMarket(data) {
   metricJeonse.innerHTML = data.jeonseCount ? moneyHtml(data.medianJeonseDepositWon) : '<span class="money-primary">No jeonse median</span>';
   const q = Number(data.quarterChangePct);
   quarterChange.textContent = Number.isFinite(q) ? `${q > 0 ? '+' : ''}${q.toFixed(1)}% vs prior 3 months` : 'Not enough data for a quarterly comparison';
-  dataThrough.textContent = data.dataThroughMonth ? `Data through ${data.dataThroughMonth}` : 'Latest completed months';
+  dataThrough.textContent = data.dataThroughMonth ? `Data through ${KHGDate.formatMonth(data.dataThroughMonth, 'en-US')}` : 'Latest completed months';
   renderSizeBands(data.sizeBands || []);
   renderRecentContracts(data.recentContracts || []);
   marketStatus.textContent = data.totalContracts
