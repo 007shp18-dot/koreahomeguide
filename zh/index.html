@@ -24,8 +24,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="preconnect" href="https://unpkg.com" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
@@ -79,21 +77,36 @@
         <div class="panel-heading">
           <div>
             <span class="eyebrow">找房</span>
-            <h2>通过近期真实签约租金比较首尔地区</h2>
+            <h2>按预算查找合适的首尔街区</h2>
           </div>
           <span class="beta-pill">BETA</span>
         </div>
 
         <div class="search-form">
-          <label class="field field-wide">
-            <span>地区、地铁站或大学</span>
-            <input id="areaSearch" type="search" placeholder="江南、圣水、弘大..." autocomplete="off" />
+          <label class="field">
+            <span>行政区</span>
+            <select id="findDistrict">
+              <option value="11680">江南区</option>
+              <option value="11440">麻浦区</option>
+              <option value="11170">龙山区</option>
+              <option value="11200">城东区</option>
+              <option value="11560">永登浦区</option>
+            </select>
           </label>
 
           <label class="field">
-            <span>已签约月租</span>
+            <span>房产类型</span>
+            <select id="homeType">
+              <option value="officetel">Officetel</option>
+              <option value="apartment">公寓</option>
+              <option value="villa">Villa / 多户住宅</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>月租预算</span>
             <select id="rentBudget">
-              <option value="">不限已签约月租</option>
+              <option value="">不限月租</option>
               <option value="800000">最高 ₩800,000</option>
               <option value="1200000">最高 ₩1,200,000</option>
               <option value="1800000">最高 ₩1,800,000</option>
@@ -102,9 +115,9 @@
           </label>
 
           <label class="field">
-            <span>已签约押金</span>
+            <span>押金预算</span>
             <select id="depositBudget">
-              <option value="">不限已签约押金</option>
+              <option value="">不限押金</option>
               <option value="5000000">最高 ₩5,000,000</option>
               <option value="10000000">最高 ₩10,000,000</option>
               <option value="20000000">最高 ₩20,000,000</option>
@@ -112,61 +125,13 @@
             </select>
           </label>
 
-          <label class="field">
-            <span>住宅类型</span>
-            <select id="homeType">
-              <option value="">不限房型</option>
-              <option value="studio">单间 / One-room</option>
-              <option value="officetel">Officetel（办公住宅）</option>
-              <option value="apartment">公寓（Apartment）</option>
-              <option value="villa">Villa / 多户住宅</option>
-            </select>
-          </label>
-
-          <button id="searchBtn" class="search-button" type="button">比较首尔租金</button>
+          <button id="searchBtn" class="search-button" type="button">查找合适地区</button>
         </div>
 
-        <div class="quick-links" aria-label="热门地区">
-          <button data-area="Gangnam">江南</button>
-          <button data-area="Seongsu">圣水</button>
-          <button data-area="Hongdae">弘大</button>
-          <button data-area="Itaewon">梨泰院</button>
-          <button data-area="Yeouido">汝矣岛</button>
-          <button data-area="Wangsimni">往十里</button>
+        <div class="find-home-note">
+          根据近期韩国官方真实签约合同的街区中位数进行筛选，不是实时房源或挂牌报价。
         </div>
       </div>
-    </section>
-
-    <section class="results-layout">
-      <div class="results-column">
-        <div class="results-heading">
-          <div>
-            <span class="eyebrow">搜索结果</span>
-            <h2 id="resultTitle">浏览首尔热门地区</h2>
-          </div>
-          <span id="resultCount">6 个地区</span>
-        </div>
-
-        <div class="notice neutral-notice">
-          <strong>这里不是实时房源搜索。</strong> 你可以按地区和条件查看各行政区近期官方真实签约租金。
-          挂牌报价与已完成的租赁成交价格会保持区分。
-        </div>
-
-        <div id="resultList" class="result-list"></div>
-      </div>
-
-      <aside class="map-column">
-        <div class="map-card">
-          <div class="map-heading">
-            <div>
-              <span class="eyebrow">地图</span>
-              <h3>浏览首尔</h3>
-            </div>
-            <span class="map-note">OpenStreetMap</span>
-          </div>
-          <div id="map" aria-label="首尔地区地图"></div>
-        </div>
-      </aside>
     </section>
 
     <section class="real-prices-section" id="real-prices">
@@ -458,7 +423,6 @@
     <small>© 2026 KoreaHomeGuide。内容仅供一般参考，不构成法律或房产中介意见。外币换算使用最新参考汇率，仅供估算。</small>
   </footer>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="/currency-utils.js"></script>
   <script src="/date-utils.js"></script>
   <script src="/real-price-utils.js"></script>

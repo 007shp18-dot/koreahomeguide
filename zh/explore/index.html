@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>首尔租金探索 | 韩国官方建筑级租赁数据</title>
-  <meta name="description" content="按首尔行政区、房型和建筑查看近期真实签约租金。比较典型月租、押金、面积和成交活跃度，数据来自韩国国土交通部。">
+  <meta name="description" content="按首尔行政区、街区、房型和建筑查看近期真实签约租金。比较典型月租、押金、面积和成交活跃度，数据来自韩国国土交通部。">
   <link rel="canonical" href="https://koreahomeguide.com/zh/explore/">
   <link rel="alternate" hreflang="en" href="https://koreahomeguide.com/explore/">
   <link rel="alternate" hreflang="zh-CN" href="https://koreahomeguide.com/zh/explore/">
@@ -43,7 +43,9 @@
     <section class="explorer-search-card" aria-label="探索首尔租金数据">
       <label class="field"><span>地区</span><select id="exploreArea"><option value="11680">江南区</option><option value="11440">麻浦区</option><option value="11170">龙山区</option><option value="11200">城东区</option><option value="11560">永登浦区</option></select></label>
       <label class="field"><span>房产类型</span><select id="exploreType"><option value="officetel">Officetel</option><option value="apartment">公寓</option><option value="villa">Villa / 多户住宅</option></select></label>
-      <button id="exploreButton" class="search-button" type="button">查看租金</button>
+      <label class="field"><span>月租预算</span><select id="exploreMaxRent"><option value="">不限月租</option><option value="800000">最高 ₩800,000</option><option value="1200000">最高 ₩1,200,000</option><option value="1800000">最高 ₩1,800,000</option><option value="2500000">最高 ₩2,500,000</option></select></label>
+      <label class="field"><span>押金预算</span><select id="exploreMaxDeposit"><option value="">不限押金</option><option value="5000000">最高 ₩5,000,000</option><option value="10000000">最高 ₩10,000,000</option><option value="20000000">最高 ₩20,000,000</option><option value="50000000">最高 ₩50,000,000</option></select></label>
+      <button id="exploreButton" class="search-button" type="button">查找合适街区</button>
     </section>
 
     <div class="explorer-chips" aria-label="热门首尔行政区">
@@ -67,6 +69,11 @@
         <div><span>签约数量</span><strong id="metricContracts">—</strong><small>最近 6 个完整月份</small></div>
         <div><span>近 3 个月变化</span><strong id="metricChange">—</strong><small>近 3 个月 vs 前 3 个月</small></div>
       </div>
+
+      <section class="dong-section">
+        <div class="building-section-head"><div><span class="eyebrow">街区</span><h2>符合预算的街区</h2></div><small id="budgetFilterNote">选择街区后查看具体建筑</small></div>
+        <div id="dongList" class="dong-list"><div class="explorer-empty">正在加载街区…</div></div>
+      </section>
 
       <section class="building-section">
         <div class="building-section-head"><div><span class="eyebrow">建筑</span><h2>近期有成交记录的建筑</h2></div><small>按近期官方成交数量排序</small></div>

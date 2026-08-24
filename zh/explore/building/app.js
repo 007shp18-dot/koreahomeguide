@@ -2,6 +2,7 @@ const query = new URLSearchParams(location.search);
 const lawdCd = query.get('lawdCd') || '';
 const type = query.get('type') || '';
 const buildingKey = query.get('buildingKey') || '';
+const requestedDong = query.get('dong') || '';
 const currencySelect = document.querySelector('#currencySelect');
 const languageSwitch = document.querySelector('#languageSwitch');
 const buildingName = document.querySelector('#buildingName');
@@ -21,6 +22,7 @@ let buildingData = null;
 
 const DISTRICT_NAMES = { '11680':'江南区', '11440':'麻浦区', '11170':'龙山区', '11200':'城东区', '11560':'永登浦区' };
 const TYPE_NAMES = { apartment:'公寓', officetel:'Officetel', villa:'Villa / 多户住宅' };
+const DONG_NAMES_ZH = { '연남동':'延南洞 (연남동)', '서교동':'西桥洞 (서교동)', '망원동':'望远洞 (망원동)', '합정동':'合井洞 (합정동)', '역삼동':'驿三洞 (역삼동)', '논현동':'论岘洞 (논현동)', '청담동':'清潭洞 (청담동)', '삼성동':'三成洞 (삼성동)', '한남동':'汉南洞 (한남동)', '이태원동':'梨泰院洞 (이태원동)', '성수동1가':'圣水洞1街 (성수동1가)', '성수동2가':'圣水洞2街 (성수동2가)', '여의도동':'汝矣岛洞 (여의도동)', '당산동':'堂山洞 (당산동)' };
 
 function selectedCurrency() { return currencySelect ? currencySelect.value : 'KRW'; }
 function moneyHtml(amountWon) {
@@ -30,7 +32,18 @@ function moneyHtml(amountWon) {
 function formatArea(value) { return value == null ? '数据不足' : `${Number(value).toFixed(1)}㎡`; }
 function districtName() { return DISTRICT_NAMES[lawdCd] || '首尔'; }
 function typeName() { return TYPE_NAMES[type] || KHGExplorer.propertyTypeLabel(type); }
-function matchingQuery() { return new URLSearchParams({ lawdCd, type, buildingKey }).toString(); }
+function dongDisplayName(dong) { return DONG_NAMES_ZH[dong] || dong; }
+function contextParams(data = {}) {
+  const params = new URLSearchParams({ lawdCd, type });
+  const dong = data.dong || requestedDong;
+  if (dong) params.set('dong', dong);
+  return params;
+}
+function matchingQuery(data = {}) {
+  const params = contextParams(data);
+  params.set('buildingKey', buildingKey);
+  return params.toString();
+}
 
 function renderTrend(points) {
   const usable = (points || []).filter(point => Number.isFinite(Number(point.medianMonthlyRentWon)) && Number(point.medianMonthlyRentWon) > 0);
@@ -65,7 +78,7 @@ function buildRentCheckUrl(data) {
 function renderBuilding(data) {
   buildingData = data;
   buildingName.textContent = data.buildingName;
-  buildingMeta.textContent = `${districtName()} · ${typeName()} · 首尔`;
+  buildingMeta.textContent = [districtName(), data.dong ? dongDisplayName(data.dong) : '', typeName(), '首尔'].filter(Boolean).join(' · ');
   document.title = `${data.buildingName} 租金数据 | 首尔租金探索`;
   buildingRent.innerHTML = data.medianMonthlyRentWon == null ? '数据不足' : moneyHtml(data.medianMonthlyRentWon);
   buildingDeposit.innerHTML = data.medianDepositWon == null ? '数据不足' : moneyHtml(data.medianDepositWon);
@@ -77,8 +90,8 @@ function renderBuilding(data) {
   renderContracts(data.recentTransactions || []);
   rentCheckCta.href = buildRentCheckUrl(data);
   rentCheckCta.textContent = '检查这个租金 →';
-  backToExplore.href = `/zh/explore/?${new URLSearchParams({ lawdCd, type }).toString()}`;
-  if (languageSwitch) languageSwitch.href = `/explore/building/?${matchingQuery()}`;
+  backToExplore.href = `/zh/explore/?${contextParams(data).toString()}`;
+  if (languageSwitch) languageSwitch.href = `/explore/building/?${matchingQuery(data)}`;
   buildingStatus.textContent = `基于最近 6 个完整月份中该建筑的 ${Number(data.contractCount || 0).toLocaleString('zh-CN')} 笔官方申报合同。`;
   buildingStatus.className = 'market-status success';
 }

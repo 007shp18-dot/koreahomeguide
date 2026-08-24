@@ -1,16 +1,4 @@
-const neighborhoods = [
-  { key:"gangnam", name:"Gangnam", district:"Gangnam-gu", lawdCd:"11680", lat:37.4979, lng:127.0276, description:"Major business district with dense transit, offices, shopping and late-night amenities.", tags:["Commute-first","Business district","Metro access"] },
-  { key:"seongsu", name:"Seongsu", district:"Seongdong-gu", lawdCd:"11200", lat:37.5445, lng:127.0560, description:"Lifestyle-heavy neighborhood known for cafés, creative spaces and access to eastern Seoul.", tags:["Cafés","Lifestyle","Line 2"] },
-  { key:"hongdae", name:"Hongdae", district:"Mapo-gu", lawdCd:"11440", lat:37.5563, lng:126.9237, description:"Lively university area with nightlife, restaurants and convenient airport-rail access.", tags:["Nightlife","Students","Airport rail"] },
-  { key:"itaewon", name:"Itaewon", district:"Yongsan-gu", lawdCd:"11170", lat:37.5345, lng:126.9946, description:"International dining and nightlife hub with a long-established foreign resident community.", tags:["International","Dining","Central Seoul"] },
-  { key:"yeouido", name:"Yeouido", district:"Yeongdeungpo-gu", lawdCd:"11560", lat:37.5219, lng:126.9245, description:"Finance and office district with strong subway access, parks and high-rise housing.", tags:["Finance","Office district","Parks"] },
-  { key:"wangsimni", name:"Wangsimni", district:"Seongdong-gu", lawdCd:"11200", lat:37.5611, lng:127.0379, description:"Practical multi-line transit hub for reaching several major parts of Seoul.", tags:["Transit hub","Practical","Central access"] }
-];
-
-const resultList = document.querySelector("#resultList");
-const resultTitle = document.querySelector("#resultTitle");
-const resultCount = document.querySelector("#resultCount");
-const areaSearch = document.querySelector("#areaSearch");
+const findDistrict = document.querySelector("#findDistrict");
 const rentBudget = document.querySelector("#rentBudget");
 const depositBudget = document.querySelector("#depositBudget");
 const homeType = document.querySelector("#homeType");
@@ -138,92 +126,16 @@ if (currencySelect) {
   });
 }
 
-function renderCards(items, query = "") {
-  resultList.innerHTML = "";
-  resultCount.textContent = `${items.length} ${items.length === 1 ? "area" : "areas"}`;
-  resultTitle.textContent = query ? `Results for “${query}”` : "Explore Seoul neighborhoods";
-
-  if (!items.length) {
-    resultList.innerHTML = `<div class="notice neutral-notice">No neighborhood in the starter index matches that search yet. Try Gangnam, Seongsu, Hongdae, Itaewon, Yeouido or Wangsimni.</div>`;
-    return;
-  }
-
-  items.forEach((item) => {
-    const card = document.createElement("article");
-    card.className = "result-card";
-    card.innerHTML = `
-      <div>
-        <h3>${item.name} <span style="font-size:11px;color:#7a857e;font-weight:600">${item.district}</span></h3>
-        <p>${item.description}</p>
-        <div class="tags">
-          ${item.tags.map(tag => `<span class="tag">${tag}</span>`).join("")}
-          ${homeType.value ? `<span class="tag">${homeType.options[homeType.selectedIndex].text}</span>` : ""}
-          ${rentBudget.value ? `<span class="tag">Signed rent filter</span>` : ""}
-          ${depositBudget.value ? `<span class="tag">Signed deposit filter</span>` : ""}
-        </div>
-      </div>
-      <div class="card-actions">
-        <button class="card-action" type="button" data-focus="${item.key}">Explore area</button>
-        <button class="card-action primary-action" type="button" data-real-price="${item.key}">View official rent data</button>
-      </div>`;
-    resultList.appendChild(card);
-  });
-
-  document.querySelectorAll("[data-focus]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const item = neighborhoods.find(n => n.key === button.dataset.focus);
-      if (item && map) {
-        map.setView([item.lat, item.lng], 14);
-        markerByKey[item.key].openPopup();
-      }
-    });
-  });
-
-  document.querySelectorAll("[data-real-price]").forEach((button) => {
-    button.addEventListener("click", async () => {
-      const item = neighborhoods.find(n => n.key === button.dataset.realPrice);
-      if (!item) return;
-      const selection = KHGRealPrices.buildRealPriceSelection(item, homeType.value);
-      priceArea.value = selection.lawdCd;
-      setPriceType(selection.priceType);
-      if (rentCheckArea) rentCheckArea.value = selection.lawdCd;
-      if (rentCheckType) rentCheckType.value = homeType.value || selection.priceType;
-      updateRentCheckStudioNote();
-      document.querySelector("#real-prices").scrollIntoView({ behavior:"smooth", block:"start" });
-      await loadRealPrices();
-    });
-  });
+function runFindHome() {
+  if (!findDistrict || !homeType) return;
+  const params = new URLSearchParams({ lawdCd:findDistrict.value, type:homeType.value });
+  if (rentBudget && rentBudget.value) params.set('maxRent', rentBudget.value);
+  if (depositBudget && depositBudget.value) params.set('maxDeposit', depositBudget.value);
+  window.location.href = `/explore/?${params.toString()}`;
 }
 
-function runSearch() {
-  const q = areaSearch.value.trim().toLowerCase();
-  const items = q ? neighborhoods.filter(n =>
-    n.name.toLowerCase().includes(q) || n.district.toLowerCase().includes(q) || n.description.toLowerCase().includes(q)
-  ) : neighborhoods;
-  renderCards(items, areaSearch.value.trim());
-  if (items.length && map) {
-    const bounds = L.latLngBounds(items.map(n => [n.lat, n.lng]));
-    map.fitBounds(bounds.pad(0.35));
-  }
-}
-
-document.querySelector("#searchBtn").addEventListener("click", runSearch);
-areaSearch.addEventListener("keydown", e => { if (e.key === "Enter") runSearch(); });
-[rentBudget, depositBudget, homeType].forEach(el => el.addEventListener("change", runSearch));
-document.querySelectorAll("[data-area]").forEach(btn => btn.addEventListener("click", () => { areaSearch.value = btn.dataset.area; runSearch(); }));
-
-let map = null;
-const markerByKey = {};
-if (window.L) {
-  map = L.map("map", { scrollWheelZoom:false }).setView([37.5665,126.9780],11);
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom:18, attribution:"&copy; OpenStreetMap contributors" }).addTo(map);
-  neighborhoods.forEach(item => {
-    const marker = L.marker([item.lat,item.lng]).addTo(map);
-    marker.bindPopup(`<strong>${item.name}</strong><br>${item.district}<br><small>${item.tags.join(" · ")}</small>`);
-    markerByKey[item.key] = marker;
-  });
-}
-
+const findHomeButton = document.querySelector("#searchBtn");
+if (findHomeButton) findHomeButton.addEventListener("click", runFindHome);
 
 // ---- Brokerage + move-in calculator ----
 const calcPropertyType = document.querySelector("#calcPropertyType");
@@ -267,7 +179,6 @@ homeType.addEventListener("change", () => {
   updateCalculator();
 });
 updateCalculator();
-renderCards(neighborhoods);
 
 // ---- Compare this rent ----
 function updateRentCheckStudioNote() {

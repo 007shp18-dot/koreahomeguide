@@ -1,16 +1,4 @@
-const neighborhoods = [
-  { key:"gangnam", name:"江南", aliases:["Gangnam","江南","강남"], district:"江南区", lawdCd:"11680", lat:37.4979, lng:127.0276, description:"首尔主要商务区之一，地铁密集，办公、购物和夜间生活都很方便。", tags:["通勤便利","商务区","地铁便利"] },
-  { key:"seongsu", name:"圣水", aliases:["Seongsu","圣水","성수"], district:"城东区", lawdCd:"11200", lat:37.5445, lng:127.0560, description:"以咖啡馆、创意空间和生活方式品牌闻名，前往首尔东部也很方便。", tags:["咖啡馆","生活方式","2号线"] },
-  { key:"hongdae", name:"弘大", aliases:["Hongdae","弘大","홍대"], district:"麻浦区", lawdCd:"11440", lat:37.5563, lng:126.9237, description:"大学商圈氛围活跃，餐饮、夜生活丰富，也方便搭乘机场铁路。", tags:["夜生活","学生区","机场铁路"] },
-  { key:"itaewon", name:"梨泰院", aliases:["Itaewon","梨泰院","이태원"], district:"龙山区", lawdCd:"11170", lat:37.5345, lng:126.9946, description:"国际餐饮和夜生活集中，也是首尔历史较久的外国居民聚集区之一。", tags:["国际化","餐饮","首尔中心"] },
-  { key:"yeouido", name:"汝矣岛", aliases:["Yeouido","汝矣岛","여의도"], district:"永登浦区", lawdCd:"11560", lat:37.5219, lng:126.9245, description:"金融和办公区，地铁交通方便，公园和高层住宅较多。", tags:["金融","办公区","公园"] },
-  { key:"wangsimni", name:"往十里", aliases:["Wangsimni","往十里","왕십리"], district:"城东区", lawdCd:"11200", lat:37.5611, lng:127.0379, description:"多条地铁线路交汇，前往首尔多个主要区域都比较方便。", tags:["交通枢纽","实用","中心通达"] }
-];
-
-const resultList = document.querySelector("#resultList");
-const resultTitle = document.querySelector("#resultTitle");
-const resultCount = document.querySelector("#resultCount");
-const areaSearch = document.querySelector("#areaSearch");
+const findDistrict = document.querySelector("#findDistrict");
 const rentBudget = document.querySelector("#rentBudget");
 const depositBudget = document.querySelector("#depositBudget");
 const homeType = document.querySelector("#homeType");
@@ -138,92 +126,16 @@ if (currencySelect) {
   });
 }
 
-function renderCards(items, query = "") {
-  resultList.innerHTML = "";
-  resultCount.textContent = `${items.length} 个地区`;
-  resultTitle.textContent = query ? `“${query}” 的搜索结果` : "浏览首尔热门地区";
-
-  if (!items.length) {
-    resultList.innerHTML = `<div class="notice neutral-notice">暂时没有匹配的地区。可以试试江南、圣水、弘大、梨泰院、汝矣岛或往十里。</div>`;
-    return;
-  }
-
-  items.forEach((item) => {
-    const card = document.createElement("article");
-    card.className = "result-card";
-    card.innerHTML = `
-      <div>
-        <h3>${item.name} <span style="font-size:11px;color:#7a857e;font-weight:600">${item.district}</span></h3>
-        <p>${item.description}</p>
-        <div class="tags">
-          ${item.tags.map(tag => `<span class="tag">${tag}</span>`).join("")}
-          ${homeType.value ? `<span class="tag">${homeType.options[homeType.selectedIndex].text}</span>` : ""}
-          ${rentBudget.value ? `<span class="tag">已签约月租筛选</span>` : ""}
-          ${depositBudget.value ? `<span class="tag">已签约押金筛选</span>` : ""}
-        </div>
-      </div>
-      <div class="card-actions">
-        <button class="card-action" type="button" data-focus="${item.key}">查看区域</button>
-        <button class="card-action primary-action" type="button" data-real-price="${item.key}">查看官方租金数据</button>
-      </div>`;
-    resultList.appendChild(card);
-  });
-
-  document.querySelectorAll("[data-focus]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const item = neighborhoods.find(n => n.key === button.dataset.focus);
-      if (item && map) {
-        map.setView([item.lat, item.lng], 14);
-        markerByKey[item.key].openPopup();
-      }
-    });
-  });
-
-  document.querySelectorAll("[data-real-price]").forEach((button) => {
-    button.addEventListener("click", async () => {
-      const item = neighborhoods.find(n => n.key === button.dataset.realPrice);
-      if (!item) return;
-      const selection = KHGRealPrices.buildRealPriceSelection(item, homeType.value);
-      priceArea.value = selection.lawdCd;
-      setPriceType(selection.priceType);
-      if (rentCheckArea) rentCheckArea.value = selection.lawdCd;
-      if (rentCheckType) rentCheckType.value = homeType.value || selection.priceType;
-      updateRentCheckStudioNote();
-      document.querySelector("#real-prices").scrollIntoView({ behavior:"smooth", block:"start" });
-      await loadRealPrices();
-    });
-  });
+function runFindHome() {
+  if (!findDistrict || !homeType) return;
+  const params = new URLSearchParams({ lawdCd:findDistrict.value, type:homeType.value });
+  if (rentBudget && rentBudget.value) params.set('maxRent', rentBudget.value);
+  if (depositBudget && depositBudget.value) params.set('maxDeposit', depositBudget.value);
+  window.location.href = `/zh/explore/?${params.toString()}`;
 }
 
-function runSearch() {
-  const q = areaSearch.value.trim().toLowerCase();
-  const items = q ? neighborhoods.filter(n =>
-    n.name.toLowerCase().includes(q) || n.district.toLowerCase().includes(q) || n.description.toLowerCase().includes(q) || (n.aliases || []).some(a => a.toLowerCase().includes(q))
-  ) : neighborhoods;
-  renderCards(items, areaSearch.value.trim());
-  if (items.length && map) {
-    const bounds = L.latLngBounds(items.map(n => [n.lat, n.lng]));
-    map.fitBounds(bounds.pad(0.35));
-  }
-}
-
-document.querySelector("#searchBtn").addEventListener("click", runSearch);
-areaSearch.addEventListener("keydown", e => { if (e.key === "Enter") runSearch(); });
-[rentBudget, depositBudget, homeType].forEach(el => el.addEventListener("change", runSearch));
-document.querySelectorAll("[data-area]").forEach(btn => btn.addEventListener("click", () => { areaSearch.value = btn.dataset.area; runSearch(); }));
-
-let map = null;
-const markerByKey = {};
-if (window.L) {
-  map = L.map("map", { scrollWheelZoom:false }).setView([37.5665,126.9780],11);
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom:18, attribution:"&copy; OpenStreetMap contributors" }).addTo(map);
-  neighborhoods.forEach(item => {
-    const marker = L.marker([item.lat,item.lng]).addTo(map);
-    marker.bindPopup(`<strong>${item.name}</strong><br>${item.district}<br><small>${item.tags.join(" · ")}</small>`);
-    markerByKey[item.key] = marker;
-  });
-}
-
+const findHomeButton = document.querySelector("#searchBtn");
+if (findHomeButton) findHomeButton.addEventListener("click", runFindHome);
 
 // ---- Brokerage + move-in calculator ----
 const calcPropertyType = document.querySelector("#calcPropertyType");
@@ -267,7 +179,6 @@ homeType.addEventListener("change", () => {
   updateCalculator();
 });
 updateCalculator();
-renderCards(neighborhoods);
 
 // ---- Compare this rent ----
 function updateRentCheckStudioNote() {

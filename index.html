@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>KoreaHomeGuide | Find a home in Seoul</title>
-  <meta name="description" content="Search Seoul neighborhoods, compare official rental transaction prices, calculate brokerage fees, and estimate move-in costs." />
+  <meta name="description" content="Find Seoul neighborhoods that fit your rent and deposit budget using official signed rental transactions, then compare buildings, rent quotes, and move-in costs." />
   <link rel="canonical" href="https://koreahomeguide.com/" />
   <link rel="alternate" hreflang="en" href="https://koreahomeguide.com/" />
   <link rel="alternate" hreflang="zh-CN" href="https://koreahomeguide.com/zh/" />
@@ -24,8 +24,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="preconnect" href="https://unpkg.com" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
@@ -79,21 +77,36 @@
         <div class="panel-heading">
           <div>
             <span class="eyebrow">Find a home</span>
-            <h2>Explore neighborhoods using recent signed rents</h2>
+            <h2>Find neighborhoods that fit your budget</h2>
           </div>
           <span class="beta-pill">BETA</span>
         </div>
 
         <div class="search-form">
-          <label class="field field-wide">
-            <span>Neighborhood, station or university</span>
-            <input id="areaSearch" type="search" placeholder="Gangnam, Seongsu, Hongdae..." autocomplete="off" />
+          <label class="field">
+            <span>District</span>
+            <select id="findDistrict">
+              <option value="11680">Gangnam-gu</option>
+              <option value="11440">Mapo-gu</option>
+              <option value="11170">Yongsan-gu</option>
+              <option value="11200">Seongdong-gu</option>
+              <option value="11560">Yeongdeungpo-gu</option>
+            </select>
           </label>
 
           <label class="field">
-            <span>Signed monthly rent</span>
+            <span>Property type</span>
+            <select id="homeType">
+              <option value="officetel">Officetel</option>
+              <option value="apartment">Apartment</option>
+              <option value="villa">Villa / Multi-family</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Monthly rent budget</span>
             <select id="rentBudget">
-              <option value="">Any signed rent</option>
+              <option value="">Any rent</option>
               <option value="800000">Up to ₩800K</option>
               <option value="1200000">Up to ₩1.2M</option>
               <option value="1800000">Up to ₩1.8M</option>
@@ -102,9 +115,9 @@
           </label>
 
           <label class="field">
-            <span>Signed deposit</span>
+            <span>Deposit budget</span>
             <select id="depositBudget">
-              <option value="">Any signed deposit</option>
+              <option value="">Any deposit</option>
               <option value="5000000">Up to ₩5M</option>
               <option value="10000000">Up to ₩10M</option>
               <option value="20000000">Up to ₩20M</option>
@@ -112,61 +125,13 @@
             </select>
           </label>
 
-          <label class="field">
-            <span>Property type</span>
-            <select id="homeType">
-              <option value="">Any type</option>
-              <option value="studio">Studio / One-room</option>
-              <option value="officetel">Officetel</option>
-              <option value="apartment">Apartment</option>
-              <option value="villa">Villa / Multi-family</option>
-            </select>
-          </label>
-
-          <button id="searchBtn" class="search-button" type="button">Compare Seoul rents</button>
+          <button id="searchBtn" class="search-button" type="button">Find neighborhoods</button>
         </div>
 
-        <div class="quick-links" aria-label="Popular neighborhoods">
-          <button data-area="Gangnam">Gangnam</button>
-          <button data-area="Seongsu">Seongsu</button>
-          <button data-area="Hongdae">Hongdae</button>
-          <button data-area="Itaewon">Itaewon</button>
-          <button data-area="Yeouido">Yeouido</button>
-          <button data-area="Wangsimni">Wangsimni</button>
+        <div class="find-home-note">
+          We compare neighborhood medians from recent official signed contracts — not live listings or asking prices.
         </div>
       </div>
-    </section>
-
-    <section class="results-layout">
-      <div class="results-column">
-        <div class="results-heading">
-          <div>
-            <span class="eyebrow">Search results</span>
-            <h2 id="resultTitle">Explore Seoul neighborhoods</h2>
-          </div>
-          <span id="resultCount">6 areas</span>
-        </div>
-
-        <div class="notice neutral-notice">
-          <strong>This is not a live-listings search.</strong> Use the filters to explore neighborhoods and view recent official signed-rent data for each district.
-          Asking prices and completed transaction prices are intentionally kept separate.
-        </div>
-
-        <div id="resultList" class="result-list"></div>
-      </div>
-
-      <aside class="map-column">
-        <div class="map-card">
-          <div class="map-heading">
-            <div>
-              <span class="eyebrow">Map view</span>
-              <h3>Explore Seoul</h3>
-            </div>
-            <span class="map-note">OpenStreetMap</span>
-          </div>
-          <div id="map" aria-label="Map of Seoul neighborhoods"></div>
-        </div>
-      </aside>
     </section>
 
     <section class="real-prices-section" id="real-prices">
@@ -458,7 +423,6 @@
     <small>© 2026 KoreaHomeGuide. General information only. Not legal or brokerage advice. Foreign-currency conversions use latest reference rates and are approximate.</small>
   </footer>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="/currency-utils.js"></script>
   <script src="/date-utils.js"></script>
   <script src="/real-price-utils.js"></script>
