@@ -77,7 +77,8 @@ function renderDongs(dongs) {
   const cards = items.map(item => {
     const active = item.dong === currentDong ? ' is-active' : '';
     const rent = item.medianMonthlyRentWon == null ? '—' : moneyHtml(item.medianMonthlyRentWon);
-    return `<button class="dong-chip${active}" type="button" data-dong="${escapeHtml(item.dong)}"><strong>${escapeHtml(item.dong)}</strong><span>${rent}</span><small>${Number(item.contractCount || 0).toLocaleString('en-US')} contracts</small></button>`;
+    const seoHref = KHGExplorer.buildDongSeoUrl({ lawdCd:areaSelect.value, type:typeSelect.value, dong:item.dong, lang:'en' });
+    return `<div class="dong-chip-wrap"><button class="dong-chip${active}" type="button" data-dong="${escapeHtml(item.dong)}"><strong>${escapeHtml(item.dong)}</strong><span>${rent}</span><small>${Number(item.contractCount || 0).toLocaleString('en-US')} contracts</small></button><a class="dong-seo-link" href="${escapeHtml(seoHref)}">Neighborhood page →</a></div>`;
   }).join('');
   dongList.innerHTML = all + cards;
   dongList.querySelectorAll('[data-dong]').forEach(button => button.addEventListener('click', () => {
@@ -126,15 +127,17 @@ function renderBuildings(buildings) {
     return;
   }
   buildingList.innerHTML = buildings.slice(0, 30).map(item => {
-    const href = KHGExplorer.buildBuildingDetailUrl({ lawdCd:areaSelect.value, type:typeSelect.value, dong:item.dong || currentDong, buildingKey:item.buildingKey });
-    const location = [item.dong, areaName(), typeName()].filter(Boolean).join(' · ');
+    const dong = item.dong || currentDong;
+    const interactiveHref = KHGExplorer.buildBuildingDetailUrl({ lawdCd:areaSelect.value, type:typeSelect.value, dong, buildingKey:item.buildingKey });
+    const seoHref = KHGExplorer.buildBuildingSeoUrl({ lawdCd:areaSelect.value, type:typeSelect.value, dong, buildingName:item.buildingName, buildingKey:item.buildingKey, lang:'en' });
+    const location = [dong, areaName(), typeName()].filter(Boolean).join(' · ');
     return `<article class="building-row">
       <div class="building-name"><strong>${escapeHtml(item.buildingName)}</strong><small>${escapeHtml(location)}</small></div>
       <div><span class="mobile-label">Typical size</span><strong>${formatArea(item.typicalAreaSqm)}</strong></div>
       <div class="building-money"><span class="mobile-label">Monthly rent</span><strong>${item.medianMonthlyRentWon == null ? '—' : moneyHtml(item.medianMonthlyRentWon)}</strong></div>
       <div class="building-money"><span class="mobile-label">Deposit</span><strong>${item.medianDepositWon == null ? '—' : moneyHtml(item.medianDepositWon)}</strong></div>
       <div><span class="mobile-label">Contracts</span><strong>${Number(item.contractCount || 0).toLocaleString('en-US')}</strong></div>
-      <a href="${href}">View building →</a>
+      <div class="building-actions"><a href="${escapeHtml(seoHref)}">Building page →</a><a class="secondary" href="${escapeHtml(interactiveHref)}">Interactive view</a></div>
     </article>`;
   }).join('');
 }

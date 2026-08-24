@@ -122,17 +122,32 @@ function buildDongSummary(items, { dong, referenceDate = new Date(), months = 6 
   const rows = filterCompletedRows(items, { referenceDate, months }).filter(row => normalizeDongName(row.explorerDong) === selectedDong);
   if (!rows.length) return null;
   const monthly = rows.filter(row => row.monthlyRentWon > 0);
+  const jeonse = rows.filter(row => row.monthlyRentWon === 0);
   const buildingNames = new Set(rows.map(row => normalizeBuildingName(row.explorerBuildingName)).filter(Boolean));
+  const recentTransactions = [...rows]
+    .sort((a, b) => String(b.contractDate).localeCompare(String(a.contractDate)))
+    .slice(0, 10)
+    .map(row => ({
+      building:normalizeBuildingName(row.explorerBuildingName) || row.building || '-',
+      areaSqm:row.areaSqm,
+      depositWon:row.depositWon,
+      monthlyRentWon:row.monthlyRentWon,
+      contractDate:row.contractDate,
+      type:row.type
+    }));
   return {
     dong:selectedDong,
     contractCount:rows.length,
     totalContracts:rows.length,
     monthlyRentCount:monthly.length,
+    jeonseCount:jeonse.length,
     buildingCount:buildingNames.size,
     medianMonthlyRentWon:median(monthly.map(row => row.monthlyRentWon)),
     medianDepositWon:median(monthly.map(row => row.depositWon)),
+    medianJeonseDepositWon:median(jeonse.map(row => row.depositWon)),
     typicalAreaSqm:median(rows.map(row => row.areaSqm)),
     quarterChangePct:quarterChangeForRows(rows, { referenceDate, months }),
+    recentTransactions,
     monthsUsed:months,
     dataThroughMonth:completedMonthKeys(referenceDate, months)[0]?.replace(/^(\d{4})(\d{2})$/, '$1-$2') || null
   };
