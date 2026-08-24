@@ -33,7 +33,7 @@ function renderSummary(data) {
   metricContracts.textContent = Number(summary.totalContracts || 0).toLocaleString('en-US');
   const change = Number(summary.quarterChangePct);
   metricChange.textContent = Number.isFinite(change) ? `${change > 0 ? '+' : ''}${change.toFixed(1)}%` : 'Not enough data';
-  dataThrough.textContent = summary.dataThroughMonth ? `Data through ${summary.dataThroughMonth}` : 'Latest completed months';
+  dataThrough.textContent = summary.dataThroughMonth ? `Data through ${KHGDate.formatMonth(summary.dataThroughMonth, 'en-US')}` : 'Latest completed months';
   renderBuildings(data.buildings || []);
   status.textContent = summary.totalContracts
     ? `Based on ${Number(summary.totalContracts).toLocaleString('en-US')} reported contracts from the latest ${summary.monthsUsed || 6} completed months.`

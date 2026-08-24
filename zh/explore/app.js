@@ -38,7 +38,7 @@ function renderSummary(data) {
   metricContracts.textContent = Number(summary.totalContracts || 0).toLocaleString('zh-CN');
   const change = Number(summary.quarterChangePct);
   metricChange.textContent = Number.isFinite(change) ? `${change > 0 ? '+' : ''}${change.toFixed(1)}%` : '数据不足';
-  dataThrough.textContent = summary.dataThroughMonth ? `数据截至 ${summary.dataThroughMonth}` : '最近已完成月份';
+  dataThrough.textContent = summary.dataThroughMonth ? `数据截至 ${KHGDate.formatMonth(summary.dataThroughMonth, 'zh-CN')}` : '最近已完成月份';
   renderBuildings(data.buildings || []);
   status.textContent = summary.totalContracts
     ? `基于最近 ${summary.monthsUsed || 6} 个完整月份的 ${Number(summary.totalContracts).toLocaleString('zh-CN')} 笔官方申报成交。`

@@ -36,7 +36,7 @@ function renderTrend(points) {
   trendChart.innerHTML = usable.map(point => {
     const value = Number(point.medianMonthlyRentWon);
     const height = Math.max(12, Math.round((value / max) * 100));
-    return `<div class="trend-column"><div class="trend-value">${moneyHtml(value)}</div><div class="trend-bar-track"><span class="trend-bar" style="height:${height}%"></span></div><strong>${point.month.slice(5)}</strong><small>${point.count} contract${point.count === 1 ? '' : 's'}</small></div>`;
+    return `<div class="trend-column"><div class="trend-value">${moneyHtml(value)}</div><div class="trend-bar-track"><span class="trend-bar" style="height:${height}%"></span></div><strong>${KHGDate.formatMonth(point.month, 'en-US')}</strong><small>${point.count} contract${point.count === 1 ? '' : 's'}</small></div>`;
   }).join('');
 }
 
@@ -45,7 +45,7 @@ function renderContracts(items) {
     recentBuildingContracts.innerHTML = '<tr class="empty-row"><td colspan="4">No recent reported contracts were available for this building.</td></tr>';
     return;
   }
-  recentBuildingContracts.innerHTML = items.map(item => `<tr><td>${item.contractDate || '—'}</td><td>${formatArea(item.areaSqm)}</td><td>${moneyHtml(item.depositWon)}</td><td>${Number(item.monthlyRentWon) === 0 ? '<span class="money-primary">Jeonse-style · ₩0</span>' : moneyHtml(item.monthlyRentWon)}</td></tr>`).join('');
+  recentBuildingContracts.innerHTML = items.map(item => `<tr><td>${KHGDate.formatDate(item.contractDate, 'en-US')}</td><td>${formatArea(item.areaSqm)}</td><td>${moneyHtml(item.depositWon)}</td><td>${Number(item.monthlyRentWon) === 0 ? '<span class="money-primary">Jeonse-style · ₩0</span>' : moneyHtml(item.monthlyRentWon)}</td></tr>`).join('');
 }
 
 function buildRentCheckUrl(data) {

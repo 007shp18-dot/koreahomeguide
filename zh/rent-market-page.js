@@ -54,7 +54,7 @@ function renderRecentContracts(recentContracts) {
       <td>${Number(item.areaSqm).toFixed(1)}㎡</td>
       <td>${moneyHtml(item.depositWon)}</td>
       <td>${moneyHtml(item.monthlyRentWon)}</td>
-      <td>${item.contractDate || '-'}</td>
+      <td>${KHGDate.formatDate(item.contractDate, 'zh-CN')}</td>
     </tr>
   `).join('');
 }
@@ -67,7 +67,7 @@ function renderMarket(data) {
   metricJeonse.innerHTML = data.jeonseCount ? moneyHtml(data.medianJeonseDepositWon) : '<span class="money-primary">暂无全租中位数</span>';
   const q = Number(data.quarterChangePct);
   quarterChange.textContent = Number.isFinite(q) ? `${q > 0 ? '+' : ''}${q.toFixed(1)}% · 近 3 个月 vs 前 3 个月` : '数据不足，暂无法比较近 3 个月走势';
-  dataThrough.textContent = data.dataThroughMonth ? `数据截至 ${data.dataThroughMonth}` : '最近已完成月份';
+  dataThrough.textContent = data.dataThroughMonth ? `数据截至 ${KHGDate.formatMonth(data.dataThroughMonth, 'zh-CN')}` : '最近已完成月份';
   renderSizeBands(data.sizeBands || []);
   renderRecentContracts(data.recentContracts || []);
   marketStatus.textContent = data.totalContracts
