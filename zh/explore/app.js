@@ -80,28 +80,21 @@ function renderDongs(dongs) {
     dongList.innerHTML = '<div class="explorer-empty">没有街区的月租和押金中位数同时符合当前预算。请提高月租或押金预算后再试。</div>';
     return;
   }
-  const allActive = currentDong ? '' : ' is-active';
-  const allLabel = hasBudgetFilter() ? '全部符合条件的街区' : '全部街区';
-  const all = `<button class="dong-chip${allActive}" type="button" data-dong=""><strong>${allLabel}</strong><small>${items.length} 个洞</small></button>`;
-  const cards = items.map(item => {
-    const active = item.dong === currentDong ? ' is-active' : '';
+  if (!items.length) {
+    dongList.innerHTML = '<div class="explorer-empty">当前条件下暂时没有可用的街区摘要。</div>';
+    return;
+  }
+  dongList.innerHTML = items.map(item => {
     const rent = item.medianMonthlyRentWon == null ? '—' : moneyHtml(item.medianMonthlyRentWon);
+    const deposit = item.medianDepositWon == null ? '—' : moneyHtml(item.medianDepositWon);
     const seoHref = KHGExplorer.buildDongSeoUrl({ lawdCd:areaSelect.value, type:typeSelect.value, dong:item.dong, lang:'zh' });
-    return `<div class="dong-chip-wrap"><button class="dong-chip${active}" type="button" data-dong="${escapeHtml(item.dong)}"><strong>${escapeHtml(dongDisplayName(item.dong))}</strong><span>${rent}</span><small>${Number(item.contractCount || 0).toLocaleString('zh-CN')} 笔合同</small></button><a class="dong-seo-link" href="${escapeHtml(seoHref)}">街区页面 →</a></div>`;
+    return `<a class="neighborhood-card" href="${escapeHtml(seoHref)}">
+      <span class="neighborhood-card-main"><strong>${escapeHtml(dongDisplayName(item.dong))}</strong><small>${Number(item.contractCount || 0).toLocaleString('zh-CN')} 笔近期成交</small></span>
+      <span class="neighborhood-card-metric"><small>典型月租</small><strong>${rent}</strong></span>
+      <span class="neighborhood-card-metric"><small>典型押金</small><strong>${deposit}</strong></span>
+      <span class="neighborhood-card-cta">查看街区 →</span>
+    </a>`;
   }).join('');
-  dongList.innerHTML = all + cards;
-  dongList.querySelectorAll('[data-dong]').forEach(button => button.addEventListener('click', () => {
-    const dong = button.dataset.dong || '';
-    if (!dong) {
-      currentDong = '';
-      renderDongs(currentAreaData ? currentAreaData.dongs : []);
-      if (currentAreaData) renderSummary(currentAreaData, '');
-      history.replaceState(null, '', `/zh/explore/?${currentParams(false).toString()}`);
-      updateLanguageSwitch();
-      return;
-    }
-    loadDong(dong);
-  }));
 }
 
 function renderSummary(data, dong = '') {
@@ -126,10 +119,13 @@ function renderSummary(data, dong = '') {
 }
 
 function renderBuildings(buildings) {
-  if (hasBudgetFilter() && !currentDong) {
-    buildingList.innerHTML = '<div class="explorer-empty">请先从上方符合预算的街区中选择一个，再查看具体建筑和近期合同。</div>';
+  const buildingSection = document.querySelector('.building-section');
+  if (!currentDong) {
+    if (buildingSection) buildingSection.hidden = true;
+    buildingList.innerHTML = '';
     return;
   }
+  if (buildingSection) buildingSection.hidden = false;
   if (!buildings.length) {
     buildingList.innerHTML = '<div class="explorer-empty">近期官方数据中没有可识别名称的建筑。</div>';
     return;

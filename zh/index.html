@@ -33,14 +33,11 @@
       <span>KoreaHomeGuide</span>
     </a>
     <nav aria-label="主导航">
-      <a href="#search">找房</a>
       <a href="/zh/explore/">租金探索</a>
-      <a href="#real-prices">实际成交价</a>
-      <a href="#calculator">费用计算器</a>
+      <a href="/zh/tools/seoul-rent-check/">租金检查</a>
       <a href="#guides">租房指南</a>
     </nav>
     <div class="header-actions">
-      <a class="header-cta" href="#search">比较租金</a>
       <label class="currency-picker" aria-label="显示货币">
         <select id="currencySelect">
           <option value="KRW">KRW</option>
@@ -58,16 +55,12 @@
   <main>
     <section class="hero">
       <div class="hero-copy">
-        <span class="eyebrow">面向外国人的首尔租房指南</span>
-        <h1>在首尔找房。<br><span>签约前先看看真实成交价。</span></h1>
-        <p>
-          使用韩国官方真实签约租金数据比较首尔不同地区，再决定住在哪里。查看近期成交、估算首尔法定中介费上限，
-          并在一个页面了解韩国租房合同的基本规则。
-        </p>
+        <span class="eyebrow">为初到首尔的人准备的住房数据</span>
+        <h1>用真实租金数据，在首尔找到适合你的家。</h1>
+        <p>先看别人实际签约的价格，比较街区，再检查你拿到的租金报价。</p>
         <div class="trust-row">
-          <span>✓ 简体中文</span>
-          <span>✓ 韩国官方成交数据</span>
-          <span>✓ 首尔中介费规则</span>
+          <span>韩国官方真实签约数据</span>
+          <span>简体中文租房指南</span>
         </div>
       </div>
     </section>
@@ -114,22 +107,29 @@
             </select>
           </label>
 
-          <label class="field">
-            <span>押金预算</span>
-            <select id="depositBudget">
-              <option value="">不限押金</option>
-              <option value="5000000">最高 ₩5,000,000</option>
-              <option value="10000000">最高 ₩10,000,000</option>
-              <option value="20000000">最高 ₩20,000,000</option>
-              <option value="50000000">最高 ₩50,000,000</option>
-            </select>
-          </label>
-
           <button id="searchBtn" class="search-button" type="button">查找合适地区</button>
+
+          <details class="advanced-filter">
+            <summary>押金预算（可选）</summary>
+            <div class="advanced-filter-content">
+              <label class="field">
+                <span>最高押金</span>
+                <select id="depositBudget">
+                  <option value="">不限押金</option>
+                  <option value="5000000">最高 ₩5,000,000</option>
+                  <option value="10000000">最高 ₩10,000,000</option>
+                  <option value="20000000">最高 ₩20,000,000</option>
+                  <option value="50000000">最高 ₩50,000,000</option>
+                </select>
+              </label>
+            </div>
+          </details>
         </div>
 
-        <div class="find-home-note">
-          根据近期韩国官方真实签约合同的街区中位数进行筛选，不是实时房源或挂牌报价。
+        <div class="find-home-note">根据近期韩国官方真实签约合同的街区中位数进行筛选，不是实时房源或挂牌报价。</div>
+        <div class="home-paths">
+          <a href="/zh/tools/seoul-rent-check/"><strong>已经拿到租金报价？</strong><span>检查价格是否合理 →</span></a>
+          <a href="/zh/explore/"><strong>想先看看不同街区？</strong><span>探索首尔真实租金 →</span></a>
         </div>
       </div>
     </section>

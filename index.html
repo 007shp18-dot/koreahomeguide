@@ -33,14 +33,11 @@
       <span>KoreaHomeGuide</span>
     </a>
     <nav aria-label="Primary navigation">
-      <a href="#search">Find a Home</a>
-      <a href="/explore/">Explore Rents</a>
-      <a href="#real-prices">Real Prices</a>
-      <a href="#calculator">Calculator</a>
+      <a href="/explore/">Explore</a>
+      <a href="/tools/seoul-rent-check/">Rent Check</a>
       <a href="#guides">Guides</a>
     </nav>
     <div class="header-actions">
-      <a class="header-cta" href="#search">Compare rents</a>
       <label class="currency-picker" aria-label="Display currency">
         <select id="currencySelect">
           <option value="KRW">KRW</option>
@@ -58,16 +55,12 @@
   <main>
     <section class="hero">
       <div class="hero-copy">
-        <span class="eyebrow">Seoul rentals, explained for foreigners</span>
-        <h1>Find a home in Seoul.<br><span>Know the real price before you sign.</span></h1>
-        <p>
-          Use official signed-rent data to compare Seoul neighborhoods before you choose. Check recent contracts, estimate your legal brokerage-fee ceiling,
-          and understand Korean rental terms in one place.
-        </p>
+        <span class="eyebrow">Housing data for people new to Seoul</span>
+        <h1>Find a home in Seoul with real rent data.</h1>
+        <p>See what people actually paid, compare neighborhoods, and check a rent quote before you sign.</p>
         <div class="trust-row">
-          <span>✓ English-first</span>
-          <span>✓ Official transaction data</span>
-          <span>✓ Seoul brokerage rules</span>
+          <span>Official signed transactions</span>
+          <span>English-first guidance</span>
         </div>
       </div>
     </section>
@@ -114,22 +107,29 @@
             </select>
           </label>
 
-          <label class="field">
-            <span>Deposit budget</span>
-            <select id="depositBudget">
-              <option value="">Any deposit</option>
-              <option value="5000000">Up to ₩5M</option>
-              <option value="10000000">Up to ₩10M</option>
-              <option value="20000000">Up to ₩20M</option>
-              <option value="50000000">Up to ₩50M</option>
-            </select>
-          </label>
-
           <button id="searchBtn" class="search-button" type="button">Find neighborhoods</button>
+
+          <details class="advanced-filter">
+            <summary>Deposit budget (optional)</summary>
+            <div class="advanced-filter-content">
+              <label class="field">
+                <span>Maximum deposit</span>
+                <select id="depositBudget">
+                  <option value="">Any deposit</option>
+                  <option value="5000000">Up to ₩5M</option>
+                  <option value="10000000">Up to ₩10M</option>
+                  <option value="20000000">Up to ₩20M</option>
+                  <option value="50000000">Up to ₩50M</option>
+                </select>
+              </label>
+            </div>
+          </details>
         </div>
 
-        <div class="find-home-note">
-          We compare neighborhood medians from recent official signed contracts — not live listings or asking prices.
+        <div class="find-home-note">We compare neighborhood medians from recent official signed contracts — not live listings or asking prices.</div>
+        <div class="home-paths">
+          <a href="/tools/seoul-rent-check/"><strong>Already have a rent quote?</strong><span>Check if it is fair →</span></a>
+          <a href="/explore/"><strong>Want to browse first?</strong><span>Explore Seoul rent data →</span></a>
         </div>
       </div>
     </section>
