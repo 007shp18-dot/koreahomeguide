@@ -17,7 +17,7 @@
 <body>
   <header class="compact-header">
     <a class="brand" href="/"><span class="brand-mark">K</span><span>KoreaHomeGuide</span></a>
-    <nav><a href="/explore/">Explore Rents</a><a href="/tools/seoul-rent-check/">Rent Check</a><a href="/tools/brokerage-fee-calculator/">Calculator</a><a href="/guides/wolse-vs-jeonse/">Guides</a></nav>
+    <nav><a href="/explore/">Explore</a><a href="/tools/seoul-rent-check/">Rent Check</a><a href="/guides/wolse-vs-jeonse/">Guides</a></nav>
     <div class="header-actions"><select id="currencySelect" class="currency-select" aria-label="Display currency"><option value="KRW">KRW</option><option value="USD" selected>USD</option><option value="CNY">CNY</option></select><a id="languageSwitch" class="language-link" href="/zh/explore/building/">中文</a></div>
   </header>
 
@@ -31,13 +31,20 @@
       <div class="explorer-trust">Historical signed rental transactions — not a live listing.</div>
     </section>
 
-    <div id="buildingStatus" class="market-status">Loading official rental transactions…</div>
+    <div class="product-layout building-product-layout">
+      <div class="product-main">
+<div id="buildingStatus" class="market-status">Loading official rental transactions…</div>
 
     <section class="building-detail-metrics">
       <div><span>Recent contracts</span><strong id="buildingContracts">—</strong><small>Latest 6 completed months</small></div>
       <div><span>New monthly-rent contracts</span><strong id="buildingNewContracts">—</strong><small>New contracts when identified</small></div>
       <div><span>Typical size</span><strong id="buildingArea">—</strong><small>Median reported floor area</small></div>
       <div><span>Median jeonse deposit</span><strong id="buildingJeonse">—</strong><small>Jeonse-style contracts only</small></div>
+    </section>
+
+    <section class="building-rent-check-card">
+      <div><span class="eyebrow">HAVE A QUOTE FOR THIS BUILDING?</span><h2>Check if the rent you were quoted looks high or fair.</h2><p>We will prefill this area, housing type, and typical recent values. Change them to match the actual quote you received.</p></div>
+      <a id="rentCheckCta" class="explorer-primary-link" href="/tools/seoul-rent-check/">Check this rent →</a>
     </section>
 
     <section class="building-trend-section">
@@ -71,10 +78,15 @@
       <div class="table-wrap"><table><thead><tr><th>Date</th><th>Size</th><th>Sale price</th><th>Floor</th></tr></thead><tbody id="recentBuildingSales"></tbody></table></div>
     </section>
 
-    <section class="building-rent-check-card">
-      <div><span class="eyebrow">HAVE A QUOTE FOR THIS BUILDING?</span><h2>Check if the rent you were quoted looks high or fair.</h2><p>We will prefill this area, housing type, and typical recent values. Change them to match the actual quote you received.</p></div>
-      <a id="rentCheckCta" class="explorer-primary-link" href="/tools/seoul-rent-check/">Check this rent →</a>
-    </section>
+
+      </div>
+      <aside class="context-rail" aria-label="Building context">
+        <section class="context-module soft"><span class="context-kicker">RENT CHECK</span><h3>Got a quote for this building?</h3><p>Compare the actual deposit, monthly rent, and size with recent official contracts.</p><a class="context-link" href="/tools/seoul-rent-check/">Check a rent quote →</a></section>
+        <section class="context-module"><span class="context-kicker">NEIGHBORHOOD</span><h3>Compare nearby options</h3><p>Return to Rent Explorer to compare neighborhoods and buildings in the same market.</p><a class="context-link" href="/explore/">Explore nearby rents →</a></section>
+        <section class="context-module"><span class="context-kicker">BEFORE YOU SIGN</span><h3>Protect a large deposit</h3><p>Check the registry, landlord, fixed date, and deposit-protection steps.</p><a class="context-link" href="/guides/before-you-sign/">Read the guide →</a></section>
+        <div class="ad-slot" data-slot="sidebar" aria-hidden="true"></div>
+      </aside>
+    </div>
   </main>
 
   <footer class="page-footer"><strong>KoreaHomeGuide</strong><small>Official transaction data for general market reference, not an appraisal, live listing, or legal advice. <a href="mailto:007shp18@gmail.com">Email us</a>.</small></footer>
