@@ -1,4 +1,20 @@
 {
-  "cleanUrls": true,
-  "trailingSlash": false
+  "rewrites": [
+    {
+      "source": "/zh/seoul/:district/:dong/:type/:building/",
+      "destination": "/api/seo-building-page?district=:district&dong=:dong&type=:type&building=:building&lang=zh"
+    },
+    {
+      "source": "/seoul/:district/:dong/:type/:building/",
+      "destination": "/api/seo-building-page?district=:district&dong=:dong&type=:type&building=:building&lang=en"
+    },
+    {
+      "source": "/zh/seoul/:district/:dong/:type/",
+      "destination": "/api/seo-dong-page?district=:district&dong=:dong&type=:type&lang=zh"
+    },
+    {
+      "source": "/seoul/:district/:dong/:type/",
+      "destination": "/api/seo-dong-page?district=:district&dong=:dong&type=:type&lang=en"
+    }
+  ]
 }

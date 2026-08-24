@@ -86,7 +86,8 @@ function renderDongs(dongs) {
   const cards = items.map(item => {
     const active = item.dong === currentDong ? ' is-active' : '';
     const rent = item.medianMonthlyRentWon == null ? '—' : moneyHtml(item.medianMonthlyRentWon);
-    return `<button class="dong-chip${active}" type="button" data-dong="${escapeHtml(item.dong)}"><strong>${escapeHtml(dongDisplayName(item.dong))}</strong><span>${rent}</span><small>${Number(item.contractCount || 0).toLocaleString('zh-CN')} 笔合同</small></button>`;
+    const seoHref = KHGExplorer.buildDongSeoUrl({ lawdCd:areaSelect.value, type:typeSelect.value, dong:item.dong, lang:'zh' });
+    return `<div class="dong-chip-wrap"><button class="dong-chip${active}" type="button" data-dong="${escapeHtml(item.dong)}"><strong>${escapeHtml(dongDisplayName(item.dong))}</strong><span>${rent}</span><small>${Number(item.contractCount || 0).toLocaleString('zh-CN')} 笔合同</small></button><a class="dong-seo-link" href="${escapeHtml(seoHref)}">街区页面 →</a></div>`;
   }).join('');
   dongList.innerHTML = all + cards;
   dongList.querySelectorAll('[data-dong]').forEach(button => button.addEventListener('click', () => {
@@ -135,10 +136,11 @@ function renderBuildings(buildings) {
   }
   buildingList.innerHTML = buildings.slice(0, 30).map(item => {
     const dong = item.dong || currentDong;
-    const params = new URLSearchParams({ lawdCd:areaSelect.value, type:typeSelect.value });
-    if (dong) params.set('dong', dong);
-    params.set('buildingKey', item.buildingKey);
-    const href = `/zh/explore/building/?${params.toString()}`;
+    const interactiveParams = new URLSearchParams({ lawdCd:areaSelect.value, type:typeSelect.value });
+    if (dong) interactiveParams.set('dong', dong);
+    interactiveParams.set('buildingKey', item.buildingKey);
+    const interactiveHref = `/zh/explore/building/?${interactiveParams.toString()}`;
+    const seoHref = KHGExplorer.buildBuildingSeoUrl({ lawdCd:areaSelect.value, type:typeSelect.value, dong, buildingName:item.buildingName, buildingKey:item.buildingKey, lang:'zh' });
     const location = [dong ? dongDisplayName(dong) : '', areaName(), typeName()].filter(Boolean).join(' · ');
     return `<article class="building-row">
       <div class="building-name"><strong>${escapeHtml(item.buildingName)}</strong><small>${escapeHtml(location)}</small></div>
@@ -146,7 +148,7 @@ function renderBuildings(buildings) {
       <div class="building-money"><span class="mobile-label">月租</span><strong>${item.medianMonthlyRentWon == null ? '—' : moneyHtml(item.medianMonthlyRentWon)}</strong></div>
       <div class="building-money"><span class="mobile-label">押金</span><strong>${item.medianDepositWon == null ? '—' : moneyHtml(item.medianDepositWon)}</strong></div>
       <div><span class="mobile-label">成交</span><strong>${Number(item.contractCount || 0).toLocaleString('zh-CN')}</strong></div>
-      <a href="${href}">查看建筑 →</a>
+      <div class="building-actions"><a href="${escapeHtml(seoHref)}">查看建筑页面 →</a><a class="secondary" href="${escapeHtml(interactiveHref)}">交互查看</a></div>
     </article>`;
   }).join('');
 }
