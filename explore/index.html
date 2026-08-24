@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Seoul Rent Explorer | Official Building-Level Rental Data</title>
+  <meta name="description" content="Explore recent signed Seoul rental transactions by district, housing type, and building. Compare typical rent, deposit, size, and recent contract activity using official MOLIT data.">
+  <link rel="canonical" href="https://koreahomeguide.com/explore/">
+  <link rel="alternate" hreflang="en" href="https://koreahomeguide.com/explore/">
+  <link rel="alternate" hreflang="zh-CN" href="https://koreahomeguide.com/zh/explore/">
+  <link rel="alternate" hreflang="x-default" href="https://koreahomeguide.com/explore/">
+  <meta property="og:title" content="Seoul Rent Explorer | KoreaHomeGuide">
+  <meta property="og:description" content="Understand Seoul rent by area and building using official signed rental transactions.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://koreahomeguide.com/explore/">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6SXH5BREDP"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6SXH5BREDP');</script>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="compact-header">
+    <a class="brand" href="/"><span class="brand-mark">K</span><span>KoreaHomeGuide</span></a>
+    <nav>
+      <a href="/explore/">Explore Rents</a>
+      <a href="/tools/seoul-rent-check/">Rent Check</a>
+      <a href="/tools/brokerage-fee-calculator/">Calculator</a>
+      <a href="/guides/wolse-vs-jeonse/">Guides</a>
+    </nav>
+    <div class="header-actions">
+      <select id="currencySelect" class="currency-select" aria-label="Display currency"><option value="KRW">KRW</option><option value="USD" selected>USD</option><option value="CNY">CNY</option></select>
+      <a id="languageSwitch" class="language-link" href="/zh/explore/">中文</a>
+    </div>
+  </header>
+
+  <main class="page-shell explorer-page" id="explorerPage">
+    <section class="explorer-hero">
+      <span class="eyebrow">SEOUL RENT EXPLORER</span>
+      <h1>Understand Seoul rent before you sign.</h1>
+      <p>Choose an area and housing type to see what people recently signed for, then drill down to buildings with reported contracts.</p>
+      <div class="explorer-trust">Official signed rental transactions — not live listings.</div>
+    </section>
+
+    <section class="explorer-search-card" aria-label="Explore Seoul rent data">
+      <label class="field"><span>Area</span><select id="exploreArea"><option value="11680">Gangnam-gu</option><option value="11440">Mapo-gu</option><option value="11170">Yongsan-gu</option><option value="11200">Seongdong-gu</option><option value="11560">Yeongdeungpo-gu</option></select></label>
+      <label class="field"><span>Property type</span><select id="exploreType"><option value="officetel">Officetel</option><option value="apartment">Apartment</option><option value="villa">Villa / Multi-family</option></select></label>
+      <button id="exploreButton" class="search-button" type="button">Explore rents</button>
+    </section>
+
+    <div class="explorer-chips" aria-label="Popular Seoul districts">
+      <button type="button" data-explore-area="11680">Gangnam</button>
+      <button type="button" data-explore-area="11440">Mapo</button>
+      <button type="button" data-explore-area="11170">Yongsan</button>
+      <button type="button" data-explore-area="11200">Seongdong</button>
+      <button type="button" data-explore-area="11560">Yeongdeungpo</button>
+    </div>
+
+    <section id="explorerResults" class="explorer-results" aria-live="polite">
+      <div class="explorer-results-head">
+        <div><span class="eyebrow">RECENT SIGNED RENTS</span><h2 id="explorerTitle">Gangnam-gu · Officetel</h2></div>
+        <span id="explorerDataThrough" class="explorer-data-through">Latest completed months</span>
+      </div>
+      <div id="explorerStatus" class="market-status">Loading official rental transactions…</div>
+
+      <div class="explorer-metrics">
+        <div><span>Median monthly rent</span><strong id="metricRent">—</strong><small>Monthly-rent contracts only</small></div>
+        <div><span>Median deposit</span><strong id="metricDeposit">—</strong><small>Monthly-rent contracts only</small></div>
+        <div><span>Signed contracts</span><strong id="metricContracts">—</strong><small>Latest 6 completed months</small></div>
+        <div><span>3-month change</span><strong id="metricChange">—</strong><small>Recent 3 months vs prior 3 months</small></div>
+      </div>
+
+      <section class="building-section">
+        <div class="building-section-head"><div><span class="eyebrow">BUILDINGS</span><h2>Buildings with recent contracts</h2></div><small>Ranked by recent reported contract count</small></div>
+        <div class="building-list-head" aria-hidden="true"><span>Building</span><span>Typical size</span><span>Monthly rent</span><span>Deposit</span><span>Contracts</span><span></span></div>
+        <div id="buildingList" class="building-list"><div class="explorer-empty">Loading buildings…</div></div>
+      </section>
+    </section>
+
+    <section class="explorer-next-step">
+      <div><span class="eyebrow">HAVE A QUOTE?</span><h2>Check the exact rent you were offered.</h2><p>Rent Check compares your deposit, monthly rent, size, and housing type with recent official contracts.</p></div>
+      <a class="explorer-primary-link" href="/tools/seoul-rent-check/">Check a rent quote →</a>
+    </section>
+  </main>
+
+  <footer class="page-footer"><strong>KoreaHomeGuide</strong><small>Historical signed rental data for market reference, not live listings or brokerage advice. Questions or data issues? <a href="mailto:007shp18@gmail.com">Email us</a>.</small></footer>
+  <script src="/currency-utils.js"></script>
+  <script src="/explore/explorer-utils.js"></script>
+  <script src="/explore/app.js"></script>
+</body>
+</html>

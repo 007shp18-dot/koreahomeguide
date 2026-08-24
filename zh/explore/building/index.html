@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>建筑租金数据 | 首尔租金探索</title>
+  <meta name="description" content="查看首尔具体建筑的近期官方真实签约租赁记录、典型月租、押金、面积和趋势。">
+  <meta name="robots" content="noindex,follow">
+  <link rel="canonical" href="https://koreahomeguide.com/zh/explore/building/">
+  <link rel="alternate" hreflang="en" href="https://koreahomeguide.com/explore/building/">
+  <link rel="alternate" hreflang="zh-CN" href="https://koreahomeguide.com/zh/explore/building/">
+  <link rel="alternate" hreflang="x-default" href="https://koreahomeguide.com/explore/building/">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6SXH5BREDP"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6SXH5BREDP');</script>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="compact-header">
+    <a class="brand" href="/zh/"><span class="brand-mark">K</span><span>KoreaHomeGuide</span></a>
+    <nav><a href="/zh/explore/">租金探索</a><a href="/zh/tools/seoul-rent-check/">租金检查</a><a href="/zh/tools/brokerage-fee-calculator/">中介费计算器</a><a href="/zh/guides/wolse-vs-jeonse/">租房指南</a></nav>
+    <div class="header-actions"><select id="currencySelect" class="currency-select" aria-label="显示货币"><option value="KRW">KRW</option><option value="USD">USD</option><option value="CNY" selected>CNY</option></select><a id="languageSwitch" class="language-link" href="/explore/building/">EN</a></div>
+  </header>
+
+  <main class="page-shell building-detail-page">
+    <a id="backToExplore" class="building-back" href="/zh/explore/">← 返回租金探索</a>
+    <section class="building-detail-hero">
+      <span class="eyebrow">建筑租金数据</span>
+      <h1 id="buildingName">正在加载建筑…</h1>
+      <p id="buildingMeta">首尔 · 韩国国土交通部官方租赁成交</p>
+      <div class="explorer-trust">历史真实签约租赁记录 — 不是实时房源。</div>
+    </section>
+
+    <div id="buildingStatus" class="market-status">正在加载官方租赁成交数据…</div>
+
+    <section class="building-detail-metrics">
+      <div><span>典型月租</span><strong id="buildingRent">—</strong><small>月租合同中位数</small></div>
+      <div><span>典型押金</span><strong id="buildingDeposit">—</strong><small>月租合同中位数</small></div>
+      <div><span>典型面积</span><strong id="buildingArea">—</strong><small>申报面积中位数</small></div>
+      <div><span>近期成交</span><strong id="buildingContracts">—</strong><small>最近 6 个完整月份</small></div>
+    </section>
+
+    <section class="building-trend-section">
+      <div class="building-section-head"><div><span class="eyebrow">6 个月趋势</span><h2>月租变化</h2></div><small id="buildingChange">近期变化：—</small></div>
+      <div id="trendChart" class="trend-chart"><div class="explorer-empty">正在加载月度趋势…</div></div>
+    </section>
+
+    <section class="building-contracts-section">
+      <div class="building-section-head"><div><span class="eyebrow">近期成交</span><h2>该建筑的官方申报合同</h2></div><small>月租为 0 时表示全租（Jeonse）形式</small></div>
+      <div class="table-wrap"><table><thead><tr><th>日期</th><th>面积</th><th>押金</th><th>月租</th></tr></thead><tbody id="recentBuildingContracts"><tr class="empty-row"><td colspan="4">正在加载申报合同…</td></tr></tbody></table></div>
+    </section>
+
+    <section class="building-rent-check-card">
+      <div><span class="eyebrow">拿到这个建筑的报价了吗？</span><h2>看看你收到的租金是偏高还是合理。</h2><p>系统会预填该地区、房型和近期典型值。请再改成你实际收到的报价。</p></div>
+      <a id="rentCheckCta" class="explorer-primary-link" href="/zh/tools/seoul-rent-check/">检查这个租金 →</a>
+    </section>
+  </main>
+
+  <footer class="page-footer"><strong>KoreaHomeGuide</strong><small>韩国官方成交数据仅供一般市场参考，不构成估值、实时房源或法律意见。<a href="mailto:007shp18@gmail.com">邮件联系我们</a>。</small></footer>
+  <script src="/currency-utils.js"></script>
+  <script src="/explore/explorer-utils.js"></script>
+  <script src="/zh/explore/building/app.js"></script>
+</body>
+</html>

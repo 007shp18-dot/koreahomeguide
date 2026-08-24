@@ -1,0 +1,30 @@
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+
+test('home navigation and footer discover the Rent Explorer', () => {
+  const html = fs.readFileSync('index.html','utf8');
+  assert.match(html, /href="\/explore\/"[^>]*>Explore Rents</);
+  const matches = html.match(/href="\/explore\/"/g) || [];
+  assert.ok(matches.length >= 2, 'home should link to explorer in navigation and footer');
+});
+
+test('all 15 rent SEO pages hand off to the explorer with matching district and property type', () => {
+  const districtCodes = {
+    'gangnam-gu':'11680','mapo-gu':'11440','yongsan-gu':'11170','seongdong-gu':'11200','yeongdeungpo-gu':'11560'
+  };
+  for (const [district, lawdCd] of Object.entries(districtCodes)) {
+    for (const type of ['apartment','officetel','villa']) {
+      const html = fs.readFileSync(path.join('rent',district,type,'index.html'),'utf8');
+      const href = `/explore/?lawdCd=${lawdCd}&amp;type=${type}`;
+      assert.ok(html.includes(href), `${district}/${type} should link to ${href}`);
+    }
+  }
+});
+
+test('sitemap indexes the explorer but never the query-driven building detail surface', () => {
+  const sitemap = fs.readFileSync('sitemap.xml','utf8');
+  assert.match(sitemap, /https:\/\/koreahomeguide\.com\/explore\//);
+  assert.doesNotMatch(sitemap, /https:\/\/koreahomeguide\.com\/explore\/building\//);
+});

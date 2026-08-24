@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Building Rent Data | Seoul Rent Explorer</title>
+  <meta name="description" content="Review recent official signed rental transactions and building-level rent statistics in Seoul.">
+  <meta name="robots" content="noindex,follow">
+  <link rel="canonical" href="https://koreahomeguide.com/explore/building/">
+  <link rel="alternate" hreflang="en" href="https://koreahomeguide.com/explore/building/">
+  <link rel="alternate" hreflang="zh-CN" href="https://koreahomeguide.com/zh/explore/building/">
+  <link rel="alternate" hreflang="x-default" href="https://koreahomeguide.com/explore/building/">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6SXH5BREDP"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6SXH5BREDP');</script>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="compact-header">
+    <a class="brand" href="/"><span class="brand-mark">K</span><span>KoreaHomeGuide</span></a>
+    <nav><a href="/explore/">Explore Rents</a><a href="/tools/seoul-rent-check/">Rent Check</a><a href="/tools/brokerage-fee-calculator/">Calculator</a><a href="/guides/wolse-vs-jeonse/">Guides</a></nav>
+    <div class="header-actions"><select id="currencySelect" class="currency-select" aria-label="Display currency"><option value="KRW">KRW</option><option value="USD" selected>USD</option><option value="CNY">CNY</option></select><a id="languageSwitch" class="language-link" href="/zh/explore/building/">中文</a></div>
+  </header>
+
+  <main class="page-shell building-detail-page">
+    <a id="backToExplore" class="building-back" href="/explore/">← Back to Rent Explorer</a>
+    <section class="building-detail-hero">
+      <span class="eyebrow">BUILDING RENT DATA</span>
+      <h1 id="buildingName">Loading building…</h1>
+      <p id="buildingMeta">Seoul · Official MOLIT rental transactions</p>
+      <div class="explorer-trust">Historical signed rental transactions — not a live listing.</div>
+    </section>
+
+    <div id="buildingStatus" class="market-status">Loading official rental transactions…</div>
+
+    <section class="building-detail-metrics">
+      <div><span>Typical monthly rent</span><strong id="buildingRent">—</strong><small>Median of monthly-rent contracts</small></div>
+      <div><span>Typical deposit</span><strong id="buildingDeposit">—</strong><small>Median of monthly-rent contracts</small></div>
+      <div><span>Typical size</span><strong id="buildingArea">—</strong><small>Median reported floor area</small></div>
+      <div><span>Recent contracts</span><strong id="buildingContracts">—</strong><small>Latest 6 completed months</small></div>
+    </section>
+
+    <section class="building-trend-section">
+      <div class="building-section-head"><div><span class="eyebrow">6-MONTH VIEW</span><h2>Monthly rent trend</h2></div><small id="buildingChange">Recent change: —</small></div>
+      <div id="trendChart" class="trend-chart"><div class="explorer-empty">Loading monthly trend…</div></div>
+    </section>
+
+    <section class="building-contracts-section">
+      <div class="building-section-head"><div><span class="eyebrow">RECENT CONTRACTS</span><h2>Reported contracts for this building</h2></div><small>Zero monthly rent indicates a jeonse-style contract</small></div>
+      <div class="table-wrap"><table><thead><tr><th>Date</th><th>Size</th><th>Deposit</th><th>Monthly rent</th></tr></thead><tbody id="recentBuildingContracts"><tr class="empty-row"><td colspan="4">Loading reported contracts…</td></tr></tbody></table></div>
+    </section>
+
+    <section class="building-rent-check-card">
+      <div><span class="eyebrow">HAVE A QUOTE FOR THIS BUILDING?</span><h2>Check if the rent you were quoted looks high or fair.</h2><p>We will prefill this area, housing type, and typical recent values. Change them to match the actual quote you received.</p></div>
+      <a id="rentCheckCta" class="explorer-primary-link" href="/tools/seoul-rent-check/">Check this rent →</a>
+    </section>
+  </main>
+
+  <footer class="page-footer"><strong>KoreaHomeGuide</strong><small>Official transaction data for general market reference, not an appraisal, live listing, or legal advice. <a href="mailto:007shp18@gmail.com">Email us</a>.</small></footer>
+  <script src="/currency-utils.js"></script>
+  <script src="/explore/explorer-utils.js"></script>
+  <script src="/explore/building/app.js"></script>
+</body>
+</html>

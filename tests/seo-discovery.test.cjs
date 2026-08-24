@@ -2,16 +2,17 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 
-test('homepage and sitemap expose Phase 1 SEO pages', () => {
+test('homepage and sitemap expose Phase 1 SEO pages plus the v9 Rent Explorer', () => {
   const home = fs.readFileSync('index.html','utf8');
   const zh = fs.readFileSync('zh/index.html','utf8');
   const sitemap = fs.readFileSync('sitemap.xml','utf8');
+  assert.match(home, /\/explore\//);
   assert.match(home, /\/tools\/seoul-rent-check\//);
   assert.match(home, /\/rent\/gangnam-gu\/officetel\//);
   assert.match(home, /\/guides\/wolse-vs-jeonse\//);
   assert.match(zh, /\/zh\/tools\/seoul-rent-check\//);
   assert.match(zh, /\/zh\/guides\/wolse-vs-jeonse\//);
-  assert.equal((sitemap.match(/<url>/g) || []).length, 27);
+  assert.equal((sitemap.match(/<url>/g) || []).length, 29);
   assert.equal(sitemap.includes('/api/'), false);
 });
 
