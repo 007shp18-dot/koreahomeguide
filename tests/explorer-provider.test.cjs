@@ -103,3 +103,39 @@ test('KoreaHousingProvider exposes city-neutral contract and reuses one six-mont
   assert.equal(detail.buildingName, 'Gangnam Prugio City');
   assert.equal(calls, 6, 'provider should cache fetched six-month area rows within one instance');
 });
+
+test('dong summaries aggregate recent transactions and buildings without mixing neighborhoods', () => {
+  const rows = [
+    { building:'Twin Villa', buildingName:'Twin Villa', dong:'연남동', area:'20', deposit:'1000', monthlyRent:'60', contractDate:'2026-07-01', type:'villa' },
+    { building:'Twin Villa', buildingName:'Twin Villa', dong:'연남동', area:'22', deposit:'1000', monthlyRent:'70', contractDate:'2026-06-01', type:'villa' },
+    { building:'Twin Villa', buildingName:'Twin Villa', dong:'서교동', area:'30', deposit:'2000', monthlyRent:'90', contractDate:'2026-07-02', type:'villa' },
+    { building:'Other House', buildingName:'Other House', dong:'서교동', area:'31', deposit:'2000', monthlyRent:'100', contractDate:'2026-06-02', type:'villa' }
+  ];
+  const dongs = utils.aggregateDongs(rows, { referenceDate:ref, months:6 });
+  assert.equal(dongs.length, 2);
+  const yeonnam = dongs.find(item => item.dong === '연남동');
+  const seogyo = dongs.find(item => item.dong === '서교동');
+  assert.equal(yeonnam.contractCount, 2);
+  assert.equal(yeonnam.medianMonthlyRentWon, 650000);
+  assert.equal(seogyo.contractCount, 2);
+
+  const yeonnamBuildings = utils.aggregateBuildings(rows, { referenceDate:ref, months:6, dong:'연남동' });
+  const seogyoBuildings = utils.aggregateBuildings(rows, { referenceDate:ref, months:6, dong:'서교동' });
+  assert.equal(yeonnamBuildings.length, 1);
+  assert.equal(seogyoBuildings.length, 2);
+  assert.notEqual(yeonnamBuildings[0].buildingKey, seogyoBuildings.find(item => item.buildingName === 'Twin Villa').buildingKey);
+  assert.match(yeonnamBuildings[0].buildingKey, /연남동/);
+  assert.match(seogyoBuildings.find(item => item.buildingName === 'Twin Villa').buildingKey, /서교동/);
+});
+
+test('building detail resolves dong-qualified keys and preserves dong metadata', () => {
+  const rows = [
+    { building:'Twin Villa', buildingName:'Twin Villa', dong:'연남동', area:'20', deposit:'1000', monthlyRent:'60', contractDate:'2026-07-01', type:'villa' },
+    { building:'Twin Villa', buildingName:'Twin Villa', dong:'서교동', area:'30', deposit:'2000', monthlyRent:'90', contractDate:'2026-07-02', type:'villa' }
+  ];
+  const key = utils.buildingKeyFromName('Twin Villa', '연남동');
+  const detail = utils.buildBuildingDetail(rows, { buildingKey:key, referenceDate:ref, months:6 });
+  assert.equal(detail.dong, '연남동');
+  assert.equal(detail.contractCount, 1);
+  assert.equal(detail.medianMonthlyRentWon, 600000);
+});

@@ -10,8 +10,18 @@ function normalizeBuildingName(name) {
   return normalized;
 }
 
-function buildingKeyFromName(name) {
-  return normalizeBuildingName(name).toLocaleLowerCase('en-US');
+function normalizeDongName(name) {
+  return String(name || '')
+    .normalize('NFKC')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function buildingKeyFromName(name, dong = '') {
+  const building = normalizeBuildingName(name).toLocaleLowerCase('en-US');
+  const dongKey = normalizeDongName(dong).toLocaleLowerCase('ko-KR');
+  if (!building) return '';
+  return dongKey ? `${dongKey}::${building}` : building;
 }
 
 function monthKey(date) {
@@ -27,7 +37,8 @@ function filterCompletedRows(items, { referenceDate = new Date(), months = 6 } =
       if (!normalized) return null;
       const hasExplicitBuildingName = Object.prototype.hasOwnProperty.call(item || {}, 'buildingName');
       const explorerBuildingName = normalizeBuildingName(hasExplicitBuildingName ? item.buildingName : item.building);
-      return { ...normalized, explorerBuildingName };
+      const explorerDong = normalizeDongName(item && item.dong);
+      return { ...normalized, explorerBuildingName, explorerDong };
     })
     .filter(Boolean)
     .filter(row => validMonths.has(monthKey(row.contractDate)));
@@ -49,12 +60,15 @@ function quarterChangeForRows(rows, { referenceDate = new Date(), months = 6 } =
 
 function groupBuildingRows(items, options = {}) {
   const groups = new Map();
+  const selectedDong = normalizeDongName(options.dong);
   for (const row of filterCompletedRows(items, options)) {
     const buildingName = normalizeBuildingName(row.explorerBuildingName);
+    const dong = normalizeDongName(row.explorerDong);
     if (!buildingName) continue;
-    const key = buildingKeyFromName(buildingName);
-    if (!groups.has(key)) groups.set(key, { key, buildingName, rows:[] });
-    groups.get(key).rows.push({ ...row, building:buildingName });
+    if (selectedDong && dong !== selectedDong) continue;
+    const key = buildingKeyFromName(buildingName, dong);
+    if (!groups.has(key)) groups.set(key, { key, buildingName, dong, rows:[] });
+    groups.get(key).rows.push({ ...row, building:buildingName, dong });
   }
   return groups;
 }
@@ -65,12 +79,62 @@ function summaryForBuilding(group, options = {}) {
   return {
     buildingKey:group.key,
     buildingName:group.buildingName,
+    dong:group.dong || '',
     contractCount:rows.length,
     monthlyRentCount:monthly.length,
     medianMonthlyRentWon:median(monthly.map(row => row.monthlyRentWon)),
     medianDepositWon:median(monthly.map(row => row.depositWon)),
     typicalAreaSqm:median(rows.map(row => row.areaSqm)),
     quarterChangePct:quarterChangeForRows(rows, options)
+  };
+}
+
+function aggregateDongs(items, options = {}) {
+  const groups = new Map();
+  for (const row of filterCompletedRows(items, options)) {
+    const dong = normalizeDongName(row.explorerDong);
+    if (!dong) continue;
+    if (!groups.has(dong)) groups.set(dong, []);
+    groups.get(dong).push(row);
+  }
+  return [...groups.entries()].map(([dong, rows]) => {
+    const monthly = rows.filter(row => row.monthlyRentWon > 0);
+    const buildingNames = new Set(rows.map(row => normalizeBuildingName(row.explorerBuildingName)).filter(Boolean));
+    return {
+      dong,
+      contractCount:rows.length,
+      monthlyRentCount:monthly.length,
+      buildingCount:buildingNames.size,
+      medianMonthlyRentWon:median(monthly.map(row => row.monthlyRentWon)),
+      medianDepositWon:median(monthly.map(row => row.depositWon)),
+      typicalAreaSqm:median(rows.map(row => row.areaSqm)),
+      quarterChangePct:quarterChangeForRows(rows, options)
+    };
+  }).sort((a, b) => {
+    if (b.contractCount !== a.contractCount) return b.contractCount - a.contractCount;
+    return a.dong.localeCompare(b.dong, 'ko');
+  });
+}
+
+function buildDongSummary(items, { dong, referenceDate = new Date(), months = 6 } = {}) {
+  const selectedDong = normalizeDongName(dong);
+  if (!selectedDong) return null;
+  const rows = filterCompletedRows(items, { referenceDate, months }).filter(row => normalizeDongName(row.explorerDong) === selectedDong);
+  if (!rows.length) return null;
+  const monthly = rows.filter(row => row.monthlyRentWon > 0);
+  const buildingNames = new Set(rows.map(row => normalizeBuildingName(row.explorerBuildingName)).filter(Boolean));
+  return {
+    dong:selectedDong,
+    contractCount:rows.length,
+    totalContracts:rows.length,
+    monthlyRentCount:monthly.length,
+    buildingCount:buildingNames.size,
+    medianMonthlyRentWon:median(monthly.map(row => row.monthlyRentWon)),
+    medianDepositWon:median(monthly.map(row => row.depositWon)),
+    typicalAreaSqm:median(rows.map(row => row.areaSqm)),
+    quarterChangePct:quarterChangeForRows(rows, { referenceDate, months }),
+    monthsUsed:months,
+    dataThroughMonth:completedMonthKeys(referenceDate, months)[0]?.replace(/^(\d{4})(\d{2})$/, '$1-$2') || null
   };
 }
 
@@ -97,9 +161,14 @@ function buildMonthlyTrend(rows, { referenceDate = new Date(), months = 6 } = {}
 }
 
 function buildBuildingDetail(items, { buildingKey, referenceDate = new Date(), months = 6 } = {}) {
-  const key = buildingKeyFromName(buildingKey);
-  if (!key) return null;
-  const group = groupBuildingRows(items, { referenceDate, months }).get(key);
+  const requestedKey = String(buildingKey || '').normalize('NFKC').trim().toLocaleLowerCase('en-US');
+  if (!requestedKey) return null;
+  const groups = groupBuildingRows(items, { referenceDate, months });
+  let group = groups.get(requestedKey);
+  if (!group && !requestedKey.includes('::')) {
+    const matches = [...groups.values()].filter(candidate => buildingKeyFromName(candidate.buildingName) === requestedKey);
+    if (matches.length === 1) group = matches[0];
+  }
   if (!group) return null;
   const summary = summaryForBuilding(group, { referenceDate, months });
   const recentTransactions = [...group.rows]
@@ -123,9 +192,12 @@ function buildAreaSummary(items, { referenceDate = new Date(), months = 6 } = {}
 
 module.exports = {
   normalizeBuildingName,
+  normalizeDongName,
   buildingKeyFromName,
   filterCompletedRows,
   quarterChangeForRows,
+  aggregateDongs,
+  buildDongSummary,
   aggregateBuildings,
   buildBuildingDetail,
   buildAreaSummary,

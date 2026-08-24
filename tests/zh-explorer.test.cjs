@@ -57,3 +57,22 @@ test('Chinese Rent Check loads the shared prefill parser and applies explorer qu
   assert.match(app, /readRentCheckPrefill\(location\.search\)/);
   assert.match(app, /applyExplorerPrefill\(\)/);
 });
+
+test('Chinese explorer includes neighborhood drill-down and uses curated dong labels with Korean fallback', () => {
+  const html = read('zh/explore/index.html');
+  const app = read('zh/explore/app.js');
+  assert.match(html, /街区/);
+  assert.match(html, /id="dongList"/);
+  assert.match(app, /\/api\/explore-dong/);
+  assert.match(app, /延南洞 \(연남동\)/);
+  assert.match(app, /DONG_NAMES_ZH\[dong\] \|\| dong/);
+  assert.match(app, /query\.get\('dong'\)/);
+});
+
+test('Chinese building detail includes dong context and keeps it across explorer and language links', () => {
+  const app = read('zh/explore/building/app.js');
+  assert.match(app, /requestedDong/);
+  assert.match(app, /data\.dong/);
+  assert.match(app, /params\.set\('dong'/);
+  assert.match(app, /dongDisplayName/);
+});

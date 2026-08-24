@@ -1,5 +1,5 @@
 const { completedMonths, fetchRentalMonth } = require('../lib/real-price-core.cjs');
-const { buildAreaSummary, aggregateBuildings, buildBuildingDetail } = require('./provider-utils.cjs');
+const { buildAreaSummary, aggregateDongs, buildDongSummary, aggregateBuildings, buildBuildingDetail } = require('./provider-utils.cjs');
 
 function createKoreaHousingProvider({ serviceKey, fetchImpl = fetch, referenceDate = new Date(), fetchMonth = fetchRentalMonth } = {}) {
   if (!serviceKey) throw new TypeError('serviceKey is required.');
@@ -26,9 +26,17 @@ function createKoreaHousingProvider({ serviceKey, fetchImpl = fetch, referenceDa
       const items = await rowsFor({ areaCode, propertyType, months });
       return buildAreaSummary(items, { referenceDate, months });
     },
-    async getBuildings({ areaCode, propertyType, months = 6 }) {
+    async getDongs({ areaCode, propertyType, months = 6 }) {
       const items = await rowsFor({ areaCode, propertyType, months });
-      return aggregateBuildings(items, { referenceDate, months });
+      return aggregateDongs(items, { referenceDate, months });
+    },
+    async getDongSummary({ areaCode, propertyType, dong, months = 6 }) {
+      const items = await rowsFor({ areaCode, propertyType, months });
+      return buildDongSummary(items, { dong, referenceDate, months });
+    },
+    async getBuildings({ areaCode, propertyType, dong = '', months = 6 }) {
+      const items = await rowsFor({ areaCode, propertyType, months });
+      return aggregateBuildings(items, { dong, referenceDate, months });
     },
     async getBuildingDetail({ areaCode, propertyType, buildingKey, months = 6 }) {
       const items = await rowsFor({ areaCode, propertyType, months });

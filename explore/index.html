@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Seoul Rent Explorer | Official Building-Level Rental Data</title>
-  <meta name="description" content="Explore recent signed Seoul rental transactions by district, housing type, and building. Compare typical rent, deposit, size, and recent contract activity using official MOLIT data.">
+  <meta name="description" content="Explore recent signed Seoul rental transactions by district, neighborhood, housing type, and building. Compare typical rent, deposit, size, and recent contract activity using official MOLIT data.">
   <link rel="canonical" href="https://koreahomeguide.com/explore/">
   <link rel="alternate" hreflang="en" href="https://koreahomeguide.com/explore/">
   <link rel="alternate" hreflang="zh-CN" href="https://koreahomeguide.com/zh/explore/">
@@ -43,7 +43,9 @@
     <section class="explorer-search-card" aria-label="Explore Seoul rent data">
       <label class="field"><span>Area</span><select id="exploreArea"><option value="11680">Gangnam-gu</option><option value="11440">Mapo-gu</option><option value="11170">Yongsan-gu</option><option value="11200">Seongdong-gu</option><option value="11560">Yeongdeungpo-gu</option></select></label>
       <label class="field"><span>Property type</span><select id="exploreType"><option value="officetel">Officetel</option><option value="apartment">Apartment</option><option value="villa">Villa / Multi-family</option></select></label>
-      <button id="exploreButton" class="search-button" type="button">Explore rents</button>
+      <label class="field"><span>Monthly rent budget</span><select id="exploreMaxRent"><option value="">Any rent</option><option value="800000">Up to ₩800K</option><option value="1200000">Up to ₩1.2M</option><option value="1800000">Up to ₩1.8M</option><option value="2500000">Up to ₩2.5M</option></select></label>
+      <label class="field"><span>Deposit budget</span><select id="exploreMaxDeposit"><option value="">Any deposit</option><option value="5000000">Up to ₩5M</option><option value="10000000">Up to ₩10M</option><option value="20000000">Up to ₩20M</option><option value="50000000">Up to ₩50M</option></select></label>
+      <button id="exploreButton" class="search-button" type="button">Find neighborhoods</button>
     </section>
 
     <div class="explorer-chips" aria-label="Popular Seoul districts">
@@ -67,6 +69,11 @@
         <div><span>Signed contracts</span><strong id="metricContracts">—</strong><small>Latest 6 completed months</small></div>
         <div><span>3-month change</span><strong id="metricChange">—</strong><small>Recent 3 months vs prior 3 months</small></div>
       </div>
+
+      <section class="dong-section">
+        <div class="building-section-head"><div><span class="eyebrow">NEIGHBORHOODS</span><h2>Neighborhoods that fit</h2></div><small id="budgetFilterNote">Choose a neighborhood to see buildings</small></div>
+        <div id="dongList" class="dong-list"><div class="explorer-empty">Loading neighborhoods…</div></div>
+      </section>
 
       <section class="building-section">
         <div class="building-section-head"><div><span class="eyebrow">BUILDINGS</span><h2>Buildings with recent contracts</h2></div><small>Ranked by recent reported contract count</small></div>

@@ -31,3 +31,29 @@ test('building detail URL helper preserves the selected area, type, and normaliz
     '/explore/building/?lawdCd=11680&type=officetel&buildingKey=%EA%B0%95%EB%82%A8+%ED%91%B8%EB%A5%B4%EC%A7%80%EC%98%A4%EC%8B%9C%ED%8B%B0'
   );
 });
+
+test('explorer includes a compact neighborhood drill-down and persists dong state in API and URLs', () => {
+  const html = fs.readFileSync('explore/index.html','utf8');
+  const js = fs.readFileSync('explore/app.js','utf8');
+  assert.match(html, /NEIGHBORHOODS/);
+  assert.match(html, /id="dongList"/);
+  assert.match(js, /\/api\/explore-dong/);
+  assert.match(js, /query\.get\('dong'\)/);
+  assert.match(js, /All neighborhoods/);
+  assert.match(js, /params\.set\('dong'/);
+});
+
+test('building detail URL helper can retain dong context without changing old links', () => {
+  assert.equal(
+    utils.buildBuildingDetailUrl({ lawdCd:'11440', type:'villa', dong:'연남동', buildingKey:'연남동::트윈빌라' }),
+    '/explore/building/?lawdCd=11440&type=villa&dong=%EC%97%B0%EB%82%A8%EB%8F%99&buildingKey=%EC%97%B0%EB%82%A8%EB%8F%99%3A%3A%ED%8A%B8%EC%9C%88%EB%B9%8C%EB%9D%BC'
+  );
+});
+
+test('building detail renders dong metadata and preserves dong when returning to explorer', () => {
+  const js = fs.readFileSync('explore/building/app.js','utf8');
+  const html = fs.readFileSync('explore/building/index.html','utf8');
+  assert.match(js, /data\.dong/);
+  assert.match(js, /params\.set\('dong'/);
+  assert.match(html, /Back to Rent Explorer/);
+});

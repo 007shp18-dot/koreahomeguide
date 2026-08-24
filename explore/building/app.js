@@ -2,6 +2,7 @@ const query = new URLSearchParams(location.search);
 const lawdCd = query.get('lawdCd') || '';
 const type = query.get('type') || '';
 const buildingKey = query.get('buildingKey') || '';
+const requestedDong = query.get('dong') || '';
 const currencySelect = document.querySelector('#currencySelect');
 const languageSwitch = document.querySelector('#languageSwitch');
 const buildingName = document.querySelector('#buildingName');
@@ -25,6 +26,17 @@ function moneyHtml(amountWon) {
   return KHGCurrency.formatMoneyHtml(amountWon, selectedCurrency(), fxRates, 'en-US');
 }
 function formatArea(value) { return value == null ? 'Not enough data' : `${Number(value).toFixed(1)}㎡`; }
+function contextParams(data = {}) {
+  const params = new URLSearchParams({ lawdCd, type });
+  const dong = data.dong || requestedDong;
+  if (dong) params.set('dong', dong);
+  return params;
+}
+function buildingLanguageParams(data = {}) {
+  const params = contextParams(data);
+  params.set('buildingKey', buildingKey);
+  return params;
+}
 
 function renderTrend(points) {
   const usable = (points || []).filter(point => Number.isFinite(Number(point.medianMonthlyRentWon)) && Number(point.medianMonthlyRentWon) > 0);
@@ -59,7 +71,7 @@ function buildRentCheckUrl(data) {
 function renderBuilding(data) {
   buildingData = data;
   buildingName.textContent = data.buildingName;
-  buildingMeta.textContent = `${data.districtName} · ${KHGExplorer.propertyTypeLabel(data.propertyType)} · Seoul`;
+  buildingMeta.textContent = [data.districtName, data.dong, KHGExplorer.propertyTypeLabel(data.propertyType), 'Seoul'].filter(Boolean).join(' · ');
   document.title = `${data.buildingName} Rent Data | Seoul Rent Explorer`;
   buildingRent.innerHTML = data.medianMonthlyRentWon == null ? 'Not enough data' : moneyHtml(data.medianMonthlyRentWon);
   buildingDeposit.innerHTML = data.medianDepositWon == null ? 'Not enough data' : moneyHtml(data.medianDepositWon);
@@ -70,8 +82,8 @@ function renderBuilding(data) {
   renderTrend(data.monthlyTrend || []);
   renderContracts(data.recentTransactions || []);
   rentCheckCta.href = buildRentCheckUrl(data);
-  backToExplore.href = `/explore/?${new URLSearchParams({ lawdCd, type }).toString()}`;
-  if (languageSwitch) languageSwitch.href = `/zh/explore/building/?${new URLSearchParams({ lawdCd, type, buildingKey }).toString()}`;
+  backToExplore.href = `/explore/?${contextParams(data).toString()}`;
+  if (languageSwitch) languageSwitch.href = `/zh/explore/building/?${buildingLanguageParams(data).toString()}`;
   buildingStatus.textContent = `Based on ${Number(data.contractCount || 0).toLocaleString('en-US')} reported contracts for this building in the latest 6 completed months.`;
   buildingStatus.className = 'market-status success';
 }
@@ -93,7 +105,7 @@ async function loadFx() {
 }
 
 async function loadBuilding() {
-  if (languageSwitch) languageSwitch.href = `/zh/explore/building/?${new URLSearchParams({ lawdCd, type, buildingKey }).toString()}`;
+  if (languageSwitch) languageSwitch.href = `/zh/explore/building/?${buildingLanguageParams().toString()}`;
   if (!lawdCd || !type || !buildingKey) {
     buildingName.textContent = 'Building data link is incomplete.';
     buildingStatus.textContent = 'Return to Rent Explorer and choose a building again.';

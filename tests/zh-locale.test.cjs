@@ -31,7 +31,7 @@ test('Chinese runtime localizes dynamic Rent Check and data statuses', () => {
   const ui = fs.readFileSync('zh/rent-check-ui-utils.js', 'utf8');
   assert.match(app, /正在查找类似的官方成交记录/);
   assert.match(app, /已加载/);
-  assert.match(app, /查看官方租金数据/);
+  assert.match(app, /window\.location\.href = `\/zh\/explore\/\?/);
   assert.match(ui, /above:\s*'高于近期成交水平'/);
   assert.match(ui, /fair:\s*'价格合理'/);
   assert.match(ui, /可信度高/);

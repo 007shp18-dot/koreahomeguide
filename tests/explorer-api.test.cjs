@@ -14,9 +14,10 @@ function responseRecorder() {
 
 const areaApi = require('../api/explore-area.js');
 const buildingApi = require('../api/explore-building.js');
+const dongApi = require('../api/explore-dong.js');
 
 test('explore-area validates method, Seoul district, and property type', async () => {
-  const fakeProvider = { getAreaSummary:async()=>({}), getBuildings:async()=>[] };
+  const fakeProvider = { getAreaSummary:async()=>({}), getDongs:async()=>[], getBuildings:async()=>[] };
   const handler = areaApi.createHandler(() => fakeProvider);
 
   let res = responseRecorder();
@@ -35,7 +36,8 @@ test('explore-area validates method, Seoul district, and property type', async (
 test('explore-area returns area summary and building aggregates with cache headers', async () => {
   const fakeProvider = {
     getAreaSummary:async()=>({ totalContracts:12, medianMonthlyRentWon:900000 }),
-    getBuildings:async()=>[{ buildingKey:'a', buildingName:'A', contractCount:5 }]
+    getDongs:async()=>[{ dong:'역삼동', contractCount:7 }],
+    getBuildings:async()=>[{ buildingKey:'역삼동::a', buildingName:'A', dong:'역삼동', contractCount:5 }]
   };
   const handler = areaApi.createHandler(() => fakeProvider);
   const res = responseRecorder();
@@ -46,6 +48,8 @@ test('explore-area returns area summary and building aggregates with cache heade
   assert.equal(res.body.propertyType, 'officetel');
   assert.equal(res.body.summary.totalContracts, 12);
   assert.equal(res.body.buildings.length, 1);
+  assert.equal(res.body.dongs.length, 1);
+  assert.equal(res.body.dongs[0].dong, '역삼동');
   assert.match(res.headers['Cache-Control'], /s-maxage=3600/);
 });
 
@@ -73,4 +77,35 @@ test('explore-building returns a selected building detail and cache header', asy
   assert.equal(res.statusCode, 200);
   assert.equal(res.body.buildingName, 'A');
   assert.match(res.headers['Cache-Control'], /s-maxage=3600/);
+});
+
+
+test('explore-dong validates dong and returns dong summary plus buildings', async () => {
+  const fakeProvider = {
+    getDongSummary:async({ dong }) => dong === '역삼동' ? { dong, totalContracts:8, medianMonthlyRentWon:950000 } : null,
+    getBuildings:async({ dong }) => dong === '역삼동' ? [{ buildingKey:'역삼동::a', buildingName:'A', dong, contractCount:4 }] : []
+  };
+  const handler = dongApi.createHandler(() => fakeProvider);
+  process.env.DATA_GO_KR_SERVICE_KEY = 'test';
+
+  let res = responseRecorder();
+  await handler({ method:'GET', query:{ lawdCd:'11680', type:'officetel' } }, res);
+  assert.equal(res.statusCode, 400);
+
+  res = responseRecorder();
+  await handler({ method:'GET', query:{ lawdCd:'11680', type:'officetel', dong:'역삼동' } }, res);
+  assert.equal(res.statusCode, 200);
+  assert.equal(res.body.dong, '역삼동');
+  assert.equal(res.body.summary.totalContracts, 8);
+  assert.equal(res.body.buildings[0].dong, '역삼동');
+  assert.match(res.headers['Cache-Control'], /s-maxage=3600/);
+});
+
+test('explore-dong returns 404 when the selected dong has no recent contracts', async () => {
+  const fakeProvider = { getDongSummary:async()=>null, getBuildings:async()=>[] };
+  const handler = dongApi.createHandler(() => fakeProvider);
+  process.env.DATA_GO_KR_SERVICE_KEY = 'test';
+  const res = responseRecorder();
+  await handler({ method:'GET', query:{ lawdCd:'11680', type:'officetel', dong:'없는동' } }, res);
+  assert.equal(res.statusCode, 404);
 });
