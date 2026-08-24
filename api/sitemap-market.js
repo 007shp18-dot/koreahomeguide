@@ -3,8 +3,7 @@ const { createKoreaHousingProvider } = require('../providers/korea-provider.cjs'
 const { districtCodeFromSlug, isSupportedPropertyType } = require('../providers/seoul-config.cjs');
 const { buildDongSeoUrl, buildBuildingSeoUrl } = require('../seo/seo-route-utils.cjs');
 const { isBuildingIndexable, ORIGIN } = require('../seo/seo-page-renderer.cjs');
-
-const MIN_DONG_CONTRACTS = 3;
+const { isDongIndexable, MIN_DONG_CONTRACTS } = require('../seo/dong-seo-v10-8.cjs');
 
 function xmlEscape(value) {
   return String(value || '')
@@ -52,7 +51,7 @@ function createHandler({
       ]);
 
       const eligibleDongs = (Array.isArray(dongs) ? dongs : [])
-        .filter(item => item && item.dong && Number(item.contractCount || 0) >= MIN_DONG_CONTRACTS);
+        .filter(item => item && item.dong && isDongIndexable(item));
       const eligibleDongNames = new Set(eligibleDongs.map(item => item.dong));
       const urls = [];
 

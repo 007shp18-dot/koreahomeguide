@@ -53,6 +53,14 @@ const DONG_SLUG_ALIASES = Object.freeze({
   '영등포동':'yeongdeungpo-dong'
 });
 
+const SEOUL_DONGS_BY_DISTRICT = Object.freeze({
+  '11680':Object.freeze(['역삼동','논현동','대치동','삼성동','청담동']),
+  '11440':Object.freeze(['연남동','서교동','망원동','합정동','공덕동','아현동']),
+  '11170':Object.freeze(['이태원동','한남동','후암동','보광동']),
+  '11200':Object.freeze(['성수동1가','성수동2가','옥수동','금호동1가','금호동2가','금호동3가','금호동4가']),
+  '11560':Object.freeze(['여의도동','당산동','문래동','영등포동'])
+});
+
 const PROPERTY_TYPES = Object.freeze(['apartment','officetel','villa','detached']);
 
 function isSupportedAreaCode(code) {
@@ -76,6 +84,7 @@ module.exports = {
   SEOUL_DISTRICTS,
   SEOUL_DISTRICT_SLUGS,
   DONG_SLUG_ALIASES,
+  SEOUL_DONGS_BY_DISTRICT,
   PROPERTY_TYPES,
   isSupportedAreaCode,
   isSupportedPropertyType,

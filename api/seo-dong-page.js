@@ -7,6 +7,7 @@ const {
 } = require('../providers/seoul-config.cjs');
 const { dongNameFromSlug } = require('../seo/seo-route-utils.cjs');
 const { renderDongPage, renderErrorPage, fetchFxRates } = require('../seo/seo-page-renderer.cjs');
+const { isDongIndexable, enhanceDongHtml } = require('../seo/dong-seo-v10-8.cjs');
 
 function normalizedLang(value) {
   return String(value || '').toLowerCase().startsWith('zh') ? 'zh' : 'en';
@@ -45,10 +46,10 @@ function createHandler({
         provider.getBuildings({ areaCode, propertyType, dong, months:6 }),
         fetchFxRates(fetchImpl)
       ]);
-      if (!summary || Number(summary.totalContracts || summary.contractCount || 0) < 1) {
+      if (!isDongIndexable(summary)) {
         return sendHtml(res, 404, renderErrorPage({ lang, status:404 }));
       }
-      return sendHtml(res, 200, renderDongPage({
+      const baseHtml = renderDongPage({
         lang,
         areaCode,
         districtName:SEOUL_DISTRICTS[areaCode],
@@ -57,6 +58,14 @@ function createHandler({
         summary,
         buildings,
         fxRates
+      });
+      return sendHtml(res, 200, enhanceDongHtml(baseHtml, {
+        lang,
+        areaCode,
+        districtName:SEOUL_DISTRICTS[areaCode],
+        dong,
+        propertyType,
+        summary
       }), { cache:true });
     } catch (_) {
       return sendHtml(res, 503, renderErrorPage({ lang, status:503 }));
