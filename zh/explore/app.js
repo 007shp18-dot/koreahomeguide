@@ -21,7 +21,7 @@ let currentData = null;
 let currentDong = '';
 
 const DISTRICT_NAMES = { '11680':'江南区', '11440':'麻浦区', '11170':'龙山区', '11200':'城东区', '11560':'永登浦区' };
-const TYPE_NAMES = { apartment:'公寓', officetel:'Officetel', villa:'Villa / 多户住宅' };
+const TYPE_NAMES = { apartment:'公寓', officetel:'Officetel', villa:'低层住宅（联排/多户住宅）', detached:'独栋 / 多户住宅' };
 const DONG_NAMES_ZH = {
   '연남동':'延南洞 (연남동)', '서교동':'西桥洞 (서교동)', '망원동':'望远洞 (망원동)', '합정동':'合井洞 (합정동)',
   '역삼동':'驿三洞 (역삼동)', '논현동':'论岘洞 (논현동)', '청담동':'清潭洞 (청담동)', '삼성동':'三成洞 (삼성동)',
@@ -71,6 +71,22 @@ function currentParams(includeDong = true) {
 }
 function updateLanguageSwitch() { if (languageSwitch) languageSwitch.href = `/explore/?${currentParams(true).toString()}`; }
 
+
+function representativeBand(item) {
+  const bands = Array.isArray(item && item.depositBands) ? item.depositBands : [];
+  if (!bands.length) return null;
+  const { maxRent, maxDeposit } = budgetValues();
+  const matches = bands.filter(band => {
+    const rent = Number(band.medianMonthlyRentWon);
+    const deposit = Number(band.medianDepositWon);
+    if (maxRent && (!Number.isFinite(rent) || rent > maxRent)) return false;
+    if (maxDeposit && (!Number.isFinite(deposit) || deposit > maxDeposit)) return false;
+    return true;
+  });
+  const pool = matches.length ? matches : bands;
+  return [...pool].sort((a,b) => Number(b.count || 0) - Number(a.count || 0))[0] || null;
+}
+
 function renderDongs(dongs) {
   if (!dongList) return;
   const allItems = Array.isArray(dongs) ? dongs : [];
@@ -85,13 +101,16 @@ function renderDongs(dongs) {
     return;
   }
   dongList.innerHTML = items.map(item => {
-    const rent = item.medianMonthlyRentWon == null ? '—' : moneyHtml(item.medianMonthlyRentWon);
-    const deposit = item.medianDepositWon == null ? '—' : moneyHtml(item.medianDepositWon);
+    const band = representativeBand(item);
+    const rentValue = band ? band.medianMonthlyRentWon : (item.contextualMedianMonthlyRentWon ?? item.medianMonthlyRentWon);
+    const depositValue = band ? band.medianDepositWon : (item.contextualMedianDepositWon ?? item.medianDepositWon);
+    const rent = rentValue == null ? '—' : moneyHtml(rentValue);
+    const deposit = depositValue == null ? '—' : moneyHtml(depositValue);
     const seoHref = KHGExplorer.buildDongSeoUrl({ lawdCd:areaSelect.value, type:typeSelect.value, dong:item.dong, lang:'zh' });
     return `<a class="neighborhood-card" href="${escapeHtml(seoHref)}">
       <span class="neighborhood-card-main"><strong>${escapeHtml(dongDisplayName(item.dong))}</strong><small>${Number(item.contractCount || 0).toLocaleString('zh-CN')} 笔近期成交</small></span>
-      <span class="neighborhood-card-metric"><small>典型月租</small><strong>${rent}</strong></span>
-      <span class="neighborhood-card-metric"><small>典型押金</small><strong>${deposit}</strong></span>
+      <span class="neighborhood-card-metric"><small>参考月租</small><strong>${rent}</strong></span>
+      <span class="neighborhood-card-metric"><small>参考押金</small><strong>${deposit}</strong></span>
       <span class="neighborhood-card-cta">查看街区 →</span>
     </a>`;
   }).join('');
@@ -102,8 +121,11 @@ function renderSummary(data, dong = '') {
   currentDong = dong || '';
   title.textContent = [areaName(), currentDong ? dongDisplayName(currentDong) : '', typeName(data.propertyType || typeSelect.value)].filter(Boolean).join(' · ');
   const summary = data.summary || {};
-  metricRent.innerHTML = summary.medianMonthlyRentWon == null ? '数据不足' : moneyHtml(summary.medianMonthlyRentWon);
-  metricDeposit.innerHTML = summary.medianDepositWon == null ? '数据不足' : moneyHtml(summary.medianDepositWon);
+  const band = representativeBand(summary);
+  const rentValue = band ? band.medianMonthlyRentWon : (summary.contextualMedianMonthlyRentWon ?? summary.medianMonthlyRentWon);
+  const depositValue = band ? band.medianDepositWon : (summary.contextualMedianDepositWon ?? summary.medianDepositWon);
+  metricRent.innerHTML = rentValue == null ? '数据不足' : moneyHtml(rentValue);
+  metricDeposit.innerHTML = depositValue == null ? '数据不足' : moneyHtml(depositValue);
   metricContracts.textContent = Number(summary.totalContracts || summary.contractCount || 0).toLocaleString('zh-CN');
   const change = Number(summary.quarterChangePct);
   metricChange.textContent = Number.isFinite(change) ? `${change > 0 ? '+' : ''}${change.toFixed(1)}%` : '数据不足';
@@ -142,8 +164,7 @@ function renderBuildings(buildings) {
     return `<article class="building-row">
       <div class="building-name"><strong>${escapeHtml(nameDisplay.primary)}</strong>${nameDisplay.secondary ? `<small class="building-official-name">${escapeHtml(nameDisplay.secondary)}</small>` : ''}<small>${escapeHtml(location)}</small></div>
       <div><span class="mobile-label">典型面积</span><strong>${formatArea(item.typicalAreaSqm)}</strong></div>
-      <div class="building-money"><span class="mobile-label">月租</span><strong>${item.medianMonthlyRentWon == null ? '—' : moneyHtml(item.medianMonthlyRentWon)}</strong></div>
-      <div class="building-money"><span class="mobile-label">押金</span><strong>${item.medianDepositWon == null ? '—' : moneyHtml(item.medianDepositWon)}</strong></div>
+      ${(() => { const band = representativeBand(item); const rentValue = band ? band.medianMonthlyRentWon : (item.contextualMedianMonthlyRentWon ?? item.medianMonthlyRentWon); const depositValue = band ? band.medianDepositWon : (item.contextualMedianDepositWon ?? item.medianDepositWon); return `<div class="building-money"><span class="mobile-label">参考月租</span><strong>${rentValue == null ? '—' : moneyHtml(rentValue)}</strong></div><div class="building-money"><span class="mobile-label">参考押金</span><strong>${depositValue == null ? '—' : moneyHtml(depositValue)}</strong></div>`; })()}
       <div><span class="mobile-label">成交</span><strong>${Number(item.contractCount || 0).toLocaleString('zh-CN')}</strong></div>
       <div class="building-actions"><a href="${escapeHtml(seoHref)}">查看建筑页面 →</a><a class="secondary" href="${escapeHtml(interactiveHref)}">交互查看</a></div>
     </article>`;

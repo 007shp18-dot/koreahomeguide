@@ -4,7 +4,7 @@
   root.KHGRentCheckPrefill = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this, function() {
   const AREAS = new Set(['11680','11200','11440','11170','11560']);
-  const TYPES = new Set(['apartment','officetel','villa','studio']);
+  const TYPES = new Set(['apartment','officetel','villa','detached','studio']);
 
   function nonNegativeNumber(value) {
     if (value == null || value === '') return null;

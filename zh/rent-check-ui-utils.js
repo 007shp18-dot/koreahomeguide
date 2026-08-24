@@ -23,7 +23,7 @@
   }
 
   function mapRentCheckType(type) {
-    if (type === 'studio') return { officialType: 'villa', isStudioMapped: true };
+    if (type === 'studio') return { officialType: 'detached', isStudioMapped: true };
     return { officialType: type, isStudioMapped: false };
   }
 

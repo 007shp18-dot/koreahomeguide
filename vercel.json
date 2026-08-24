@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/sitemaps/seoul/:district/:type/",
+      "destination": "/api/sitemap-market?district=:district&type=:type"
+    },
+    {
       "source": "/zh/seoul/:district/:dong/:type/:building/",
       "destination": "/api/seo-building-page?district=:district&dong=:dong&type=:type&building=:building&lang=zh"
     },

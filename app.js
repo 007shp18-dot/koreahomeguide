@@ -128,7 +128,8 @@ if (currencySelect) {
 
 function runFindHome() {
   if (!findDistrict || !homeType) return;
-  const params = new URLSearchParams({ lawdCd:findDistrict.value, type:homeType.value });
+  const officialHomeType = KHGRentCheckUI.mapRentCheckType(homeType.value).officialType;
+  const params = new URLSearchParams({ lawdCd:findDistrict.value, type:officialHomeType });
   if (rentBudget && rentBudget.value) params.set('maxRent', rentBudget.value);
   if (depositBudget && depositBudget.value) params.set('maxDeposit', depositBudget.value);
   window.location.href = `/explore/?${params.toString()}`;
@@ -305,7 +306,7 @@ if (priceMonth) {
 }
 
 function setPriceType(type) {
-  const supported = ["apartment","officetel","villa"];
+  const supported = ["apartment","officetel","villa","detached"];
   const next = supported.includes(type) ? type : "apartment";
   priceType.value = next;
   propertyTabs.forEach(tab => tab.classList.toggle("active", tab.dataset.priceType === next));
@@ -319,7 +320,7 @@ function formatMoneyFromManwon(value) {
   return moneyHtml(num * 10000);
 }
 function typeLabel(type) {
-  return type === "apartment" ? "Apartment" : type === "officetel" ? "Officetel" : "Villa / Multi-family";
+  return type === "apartment" ? "Apartment" : type === "officetel" ? "Officetel" : type === "detached" ? "Detached / Multi-family" : "Villa / Low-rise (연립·다세대)";
 }
 function renderPriceRows(items) {
   lastPriceItems = items;
@@ -353,7 +354,7 @@ async function loadRealPrices() {
     });
     renderPriceRows(filteredItems);
     const hasBudget = rentBudget.value || depositBudget.value;
-    const studioNote = homeType.value === "studio" && priceType.value === "villa" ? " Studio is not an official category, so villa/multi-family contracts are used as the nearest comparable set." : "";
+    const studioNote = homeType.value === "studio" && priceType.value === "detached" ? " Studio / one-room is not an official category; Detached / Multi-family (단독·다가구) is used as the closest default unless you know the actual registered housing type." : "";
     priceStatus.textContent = hasBudget
       ? `Showing ${filteredItems.length} of ${allItems.length} official contracts matching your search budget.${studioNote}`
       : `Loaded ${allItems.length} official signed-rent records.${studioNote}`;

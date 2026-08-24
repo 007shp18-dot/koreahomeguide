@@ -128,7 +128,8 @@ if (currencySelect) {
 
 function runFindHome() {
   if (!findDistrict || !homeType) return;
-  const params = new URLSearchParams({ lawdCd:findDistrict.value, type:homeType.value });
+  const officialHomeType = KHGRentCheckUI.mapRentCheckType(homeType.value).officialType;
+  const params = new URLSearchParams({ lawdCd:findDistrict.value, type:officialHomeType });
   if (rentBudget && rentBudget.value) params.set('maxRent', rentBudget.value);
   if (depositBudget && depositBudget.value) params.set('maxDeposit', depositBudget.value);
   window.location.href = `/zh/explore/?${params.toString()}`;
@@ -305,7 +306,7 @@ if (priceMonth) {
 }
 
 function setPriceType(type) {
-  const supported = ["apartment","officetel","villa"];
+  const supported = ["apartment","officetel","villa","detached"];
   const next = supported.includes(type) ? type : "apartment";
   priceType.value = next;
   propertyTabs.forEach(tab => tab.classList.toggle("active", tab.dataset.priceType === next));
@@ -319,7 +320,7 @@ function formatMoneyFromManwon(value) {
   return moneyHtml(num * 10000);
 }
 function typeLabel(type) {
-  return type === "apartment" ? "公寓" : type === "officetel" ? "Officetel" : "Villa / 多户住宅";
+  return type === "apartment" ? "公寓" : type === "officetel" ? "Officetel" : type === "detached" ? "独栋 / 多户住宅" : "低层住宅（联排/多户住宅）";
 }
 function renderPriceRows(items) {
   lastPriceItems = items;
@@ -353,7 +354,7 @@ async function loadRealPrices() {
     });
     renderPriceRows(filteredItems);
     const hasBudget = rentBudget.value || depositBudget.value;
-    const studioNote = homeType.value === "studio" && priceType.value === "villa" ? " 官方数据没有单独的“单间”类别，因此使用 Villa / 多户住宅作为最接近的参考。" : "";
+    const studioNote = homeType.value === "studio" && priceType.value === "detached" ? " “单间 / One-room”不是官方分类；不清楚实际登记的住宅类型时，默认使用独栋 / 多户住宅（단독·다가구）作为近似参考。" : "";
     priceStatus.textContent = hasBudget
       ? `显示 ${filteredItems.length} / ${allItems.length} 笔符合预算条件的官方成交记录。${studioNote}`
       : `已加载 ${allItems.length} 笔官方租赁成交记录。${studioNote}`;

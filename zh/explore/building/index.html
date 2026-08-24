@@ -34,10 +34,24 @@
     <div id="buildingStatus" class="market-status">正在加载官方租赁成交数据…</div>
 
     <section class="building-detail-metrics">
-      <div><span>典型月租</span><strong id="buildingRent">—</strong><small>月租合同中位数</small></div>
-      <div><span>典型押金</span><strong id="buildingDeposit">—</strong><small>月租合同中位数</small></div>
+      <div><span>近期合同</span><strong id="buildingContracts">—</strong><small>最近 6 个完整月份</small></div>
+      <div><span>新签月租合同</span><strong id="buildingNewContracts">—</strong><small>能够识别为新签的合同</small></div>
       <div><span>典型面积</span><strong id="buildingArea">—</strong><small>申报面积中位数</small></div>
-      <div><span>近期成交</span><strong id="buildingContracts">—</strong><small>最近 6 个完整月份</small></div>
+      <div><span>全租押金中位数</span><strong id="buildingJeonse">—</strong><small>仅全租式合同</small></div>
+    </section>
+
+    <section class="building-trend-section">
+      <div class="building-section-head"><div><span class="eyebrow">价格参考</span><h2>按押金区间看月租</h2></div><small>能够识别时优先使用新签合同</small></div>
+      <div id="buildingDepositBands" class="size-band-grid"><div class="explorer-empty">正在加载押金区间…</div></div>
+    </section>
+
+    <section class="building-trend-section">
+      <div class="building-section-head"><div><span class="eyebrow">按面积</span><h2>按使用面积比较</h2></div><small>约 59㎡ 与约 84㎡ 等面积组分开统计</small></div>
+      <div id="buildingAreaGroups" class="size-band-grid"><div class="explorer-empty">正在加载面积分组…</div></div>
+    </section>
+
+    <section class="building-trend-section">
+      <div class="building-section-head"><div><span class="eyebrow">合同类型</span><h2>新签 vs 续签</h2></div><small id="buildingContractMix">—</small></div>
     </section>
 
     <section class="building-trend-section">
@@ -47,7 +61,14 @@
 
     <section class="building-contracts-section">
       <div class="building-section-head"><div><span class="eyebrow">近期成交</span><h2>该建筑的官方申报合同</h2></div><small>月租为 0 时表示全租（Jeonse）形式</small></div>
-      <div class="table-wrap"><table><thead><tr><th>日期</th><th>面积</th><th>押金</th><th>月租</th></tr></thead><tbody id="recentBuildingContracts"><tr class="empty-row"><td colspan="4">正在加载申报合同…</td></tr></tbody></table></div>
+      <div class="table-wrap"><table><thead><tr><th>日期</th><th>类型</th><th>面积</th><th>押金</th><th>月租</th></tr></thead><tbody id="recentBuildingContracts"><tr class="empty-row"><td colspan="5">正在加载申报合同…</td></tr></tbody></table></div>
+    </section>
+
+
+    <section id="buildingSalesSection" class="building-contracts-section" hidden>
+      <div class="building-section-head"><div><span class="eyebrow">公寓买卖</span><h2>近期公寓买卖成交</h2></div><small>官方申报买卖成交，与租赁数据分开显示</small></div>
+      <div id="buildingSaleGroups" class="size-band-grid"></div>
+      <div class="table-wrap"><table><thead><tr><th>日期</th><th>面积</th><th>成交价</th><th>楼层</th></tr></thead><tbody id="recentBuildingSales"></tbody></table></div>
     </section>
 
     <section class="building-rent-check-card">

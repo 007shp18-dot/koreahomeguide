@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>KoreaHomeGuide | 首尔租房价格查询与租金比较</title>
-  <meta name="description" content="为在首尔租房的外国人提供租金报价比较、韩国官方实际租赁成交数据、中介费上限和入住费用估算。" />
+  <title>首尔真实租金与中介费说明 | KoreaHomeGuide</title>
+  <meta name="description" content="签约前查看首尔官方真实租赁成交、比较租金报价并估算中介费上限，为外国租客提供清晰的租房数据与指南。" />
   <link rel="canonical" href="https://koreahomeguide.com/zh/" />
   <link rel="alternate" hreflang="en" href="https://koreahomeguide.com/" />
   <link rel="alternate" hreflang="zh-CN" href="https://koreahomeguide.com/zh/" />
@@ -56,8 +56,8 @@
     <section class="hero">
       <div class="hero-copy">
         <span class="eyebrow">为初到首尔的人准备的住房数据</span>
-        <h1>用真实租金数据，在首尔找到适合你的家。</h1>
-        <p>先看别人实际签约的价格，比较街区，再检查你拿到的租金报价。</p>
+        <h1>签约前，先了解真实租金。</h1>
+        <p>查看韩国官方真实签约价格，比较不同街区，并检查你拿到的租金报价是否合理。</p>
         <div class="trust-row">
           <span>韩国官方真实签约数据</span>
           <span>简体中文租房指南</span>
@@ -69,8 +69,8 @@
       <div class="search-panel">
         <div class="panel-heading">
           <div>
-            <span class="eyebrow">找房</span>
-            <h2>按预算查找合适的首尔街区</h2>
+            <span class="eyebrow">查看首尔租金</span>
+            <h2>按预算比较首尔街区</h2>
           </div>
           <span class="beta-pill">BETA</span>
         </div>
@@ -84,6 +84,11 @@
               <option value="11170">龙山区</option>
               <option value="11200">城东区</option>
               <option value="11560">永登浦区</option>
+              <option value="11620">冠岳区</option>
+              <option value="11230">东大门区</option>
+              <option value="11410">西大门区</option>
+              <option value="11290">城北区</option>
+              <option value="11215">广津区</option>
             </select>
           </label>
 
@@ -92,7 +97,7 @@
             <select id="homeType">
               <option value="officetel">Officetel</option>
               <option value="apartment">公寓</option>
-              <option value="villa">Villa / 多户住宅</option>
+              <option value="villa">低层住宅（联排/多户住宅）</option><option value="detached">独栋 / 多户住宅</option>
             </select>
           </label>
 
@@ -107,7 +112,7 @@
             </select>
           </label>
 
-          <button id="searchBtn" class="search-button" type="button">查找合适地区</button>
+          <button id="searchBtn" class="search-button" type="button">查看租金</button>
 
           <details class="advanced-filter">
             <summary>押金预算（可选）</summary>
@@ -163,6 +168,11 @@
               <option value="11440">麻浦区</option>
               <option value="11170">龙山区</option>
               <option value="11560">永登浦区</option>
+              <option value="11620">冠岳区</option>
+              <option value="11230">东大门区</option>
+              <option value="11410">西大门区</option>
+              <option value="11290">城北区</option>
+              <option value="11215">广津区</option>
             </select>
           </label>
           <label class="field">
@@ -170,7 +180,7 @@
             <select id="rentCheckType">
               <option value="apartment">公寓（Apartment）</option>
               <option value="officetel">Officetel（办公住宅）</option>
-              <option value="villa">Villa / 多户住宅</option>
+              <option value="villa">低层住宅（联排/多户住宅）</option><option value="detached">独栋 / 多户住宅</option>
               <option value="studio">单间 / One-room</option>
             </select>
           </label>
@@ -190,7 +200,7 @@
         </form>
 
         <div id="rentCheckStudioNote" class="rent-check-note" hidden>
-          韩国官方数据没有单独的“单间”类别，因此这里使用 Villa / 多户住宅成交记录作为最接近的参考。
+          “单间 / One-room”不是韩国官方成交分类。不清楚登记类型时，KoreaHomeGuide 默认使用 独栋 / 多户住宅（单独·多户，단독·다가구）作为许多 one-room 的近似参考；如果知道实际登记的住宅类型，请直接选择该类型。
         </div>
         <div id="rentCheckStatus" class="rent-check-status">输入你收到的租金报价，与近期真实签约记录进行比较。</div>
 
@@ -250,12 +260,12 @@
         <div class="property-tabs" role="tablist" aria-label="房产类型">
           <button class="property-tab active" type="button" data-price-type="apartment">公寓</button>
           <button class="property-tab" type="button" data-price-type="officetel">Officetel</button>
-          <button class="property-tab" type="button" data-price-type="villa">Villa / 多户住宅</button>
+          <button class="property-tab" type="button" data-price-type="villa">低层住宅（联排/多户住宅）</button><button class="property-tab" type="button" data-price-type="detached">独栋 / 多户住宅</button>
         </div>
         <select id="priceType" class="visually-hidden" aria-hidden="true" tabindex="-1">
           <option value="apartment">公寓（Apartment）</option>
           <option value="officetel">Officetel（办公住宅）</option>
-          <option value="villa">Villa / 多户住宅</option>
+          <option value="villa">低层住宅（联排/多户住宅）</option><option value="detached">独栋 / 多户住宅</option>
         </select>
 
         <div class="price-controls">
@@ -267,6 +277,11 @@
               <option value="11440">麻浦区</option>
               <option value="11170">龙山区</option>
               <option value="11560">永登浦区</option>
+              <option value="11620">冠岳区</option>
+              <option value="11230">东大门区</option>
+              <option value="11410">西大门区</option>
+              <option value="11290">城北区</option>
+              <option value="11215">广津区</option>
             </select>
           </label>
 
@@ -404,9 +419,9 @@
           <span class="guide-number">02</span>
           <div><h3>首尔中介费</h3><p>了解韩国如何根据押金和月租计算租房中介费上限。</p></div>
         </article></a>
-        <a class="guide-card-link" href="/zh/guides/korea-rental-contract-checklist/"><article>
+        <a class="guide-card-link" href="/zh/guides/before-you-sign/"><article>
           <span class="guide-number">03</span>
-          <div><h3>签约前检查</h3><p>检查房屋、房东、押金、费用和合同条款，减少租房风险。</p></div>
+          <div><h3>签约前必看</h3><p>检查房屋、房东、押金、费用和合同条款，减少租房风险。</p></div>
         </article></a>
       </div>
     </section>
@@ -414,7 +429,7 @@
 
   <footer class="site-footer-rich">
     <div class="footer-grid">
-      <div class="footer-brand-block"><strong>KoreaHomeGuide</strong><p>用更清晰的信息在首尔找房，减少租房踩坑。</p><p class="footer-contact">如有问题、建议或数据问题，<a href="mailto:007shp18@gmail.com">邮件联系我们</a>。</p></div>
+      <div class="footer-brand-block"><strong>KoreaHomeGuide</strong><p>签约前先看真实租金数据，减少首尔租房的信息差。</p><p class="footer-contact">如有问题、建议或数据问题，<a href="mailto:007shp18@gmail.com">邮件联系我们</a>。</p></div>
       <div class="footer-nav-group"><strong>工具</strong><a href="/zh/explore/">首尔租金探索</a><a href="/zh/tools/seoul-rent-check/">首尔租金检查</a><a href="/zh/tools/brokerage-fee-calculator/">中介费计算器</a></div>
       <div class="footer-nav-group"><strong>指南</strong><a href="/zh/guides/wolse-vs-jeonse/">月租与全租</a><a href="/zh/guides/korea-rental-contract-checklist/">租房合同清单</a><a href="/zh/guides/seoul-brokerage-fees/">首尔中介费</a></div>
       <div class="footer-nav-group"><strong>英文官方租金数据</strong><a href="/rent/gangnam-gu/officetel/">江南区</a><a href="/rent/mapo-gu/officetel/">麻浦区</a><a href="/rent/yongsan-gu/officetel/">龙山区</a><a href="/rent/seongdong-gu/officetel/">城东区</a><a href="/rent/yeongdeungpo-gu/officetel/">永登浦区</a></div>

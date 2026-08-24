@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>KoreaHomeGuide | Find a home in Seoul</title>
-  <meta name="description" content="Find Seoul neighborhoods that fit your rent and deposit budget using official signed rental transactions, then compare buildings, rent quotes, and move-in costs." />
+  <title>Seoul Rent Prices & Brokerage Fees, Explained in English | KoreaHomeGuide</title>
+  <meta name="description" content="Understand Seoul rent prices, compare official signed rental transactions, check a rent quote, and estimate brokerage-fee ceilings before you sign." />
   <link rel="canonical" href="https://koreahomeguide.com/" />
   <link rel="alternate" hreflang="en" href="https://koreahomeguide.com/" />
   <link rel="alternate" hreflang="zh-CN" href="https://koreahomeguide.com/zh/" />
   <link rel="alternate" hreflang="x-default" href="https://koreahomeguide.com/" />
   <meta property="og:title" content="KoreaHomeGuide" />
-  <meta property="og:description" content="Find a home in Seoul. Know the real price before you sign." />
+  <meta property="og:description" content="Official Seoul rent data, rent-quote checks, and brokerage-fee guidance for foreign renters." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://koreahomeguide.com/" />
   <!-- Google tag (gtag.js) -->
@@ -56,8 +56,8 @@
     <section class="hero">
       <div class="hero-copy">
         <span class="eyebrow">Housing data for people new to Seoul</span>
-        <h1>Find a home in Seoul with real rent data.</h1>
-        <p>See what people actually paid, compare neighborhoods, and check a rent quote before you sign.</p>
+        <h1>Know the real price before you sign.</h1>
+        <p>Compare official signed rental transactions, understand neighborhood prices, and check a rent quote before you commit.</p>
         <div class="trust-row">
           <span>Official signed transactions</span>
           <span>English-first guidance</span>
@@ -69,8 +69,8 @@
       <div class="search-panel">
         <div class="panel-heading">
           <div>
-            <span class="eyebrow">Find a home</span>
-            <h2>Find neighborhoods that fit your budget</h2>
+            <span class="eyebrow">Check Seoul rents</span>
+            <h2>Compare neighborhoods by budget</h2>
           </div>
           <span class="beta-pill">BETA</span>
         </div>
@@ -84,6 +84,11 @@
               <option value="11170">Yongsan-gu</option>
               <option value="11200">Seongdong-gu</option>
               <option value="11560">Yeongdeungpo-gu</option>
+              <option value="11620">Gwanak-gu</option>
+              <option value="11230">Dongdaemun-gu</option>
+              <option value="11410">Seodaemun-gu</option>
+              <option value="11290">Seongbuk-gu</option>
+              <option value="11215">Gwangjin-gu</option>
             </select>
           </label>
 
@@ -92,7 +97,7 @@
             <select id="homeType">
               <option value="officetel">Officetel</option>
               <option value="apartment">Apartment</option>
-              <option value="villa">Villa / Multi-family</option>
+              <option value="villa">Villa / Low-rise (연립·다세대)</option><option value="detached">Detached / Multi-family</option>
             </select>
           </label>
 
@@ -107,7 +112,7 @@
             </select>
           </label>
 
-          <button id="searchBtn" class="search-button" type="button">Find neighborhoods</button>
+          <button id="searchBtn" class="search-button" type="button">Check rents</button>
 
           <details class="advanced-filter">
             <summary>Deposit budget (optional)</summary>
@@ -163,6 +168,11 @@
               <option value="11440">Mapo-gu</option>
               <option value="11170">Yongsan-gu</option>
               <option value="11560">Yeongdeungpo-gu</option>
+              <option value="11620">Gwanak-gu</option>
+              <option value="11230">Dongdaemun-gu</option>
+              <option value="11410">Seodaemun-gu</option>
+              <option value="11290">Seongbuk-gu</option>
+              <option value="11215">Gwangjin-gu</option>
             </select>
           </label>
           <label class="field">
@@ -170,7 +180,7 @@
             <select id="rentCheckType">
               <option value="apartment">Apartment</option>
               <option value="officetel">Officetel</option>
-              <option value="villa">Villa / Multi-family</option>
+              <option value="villa">Villa / Low-rise (연립·다세대)</option><option value="detached">Detached / Multi-family</option>
               <option value="studio">Studio / One-room</option>
             </select>
           </label>
@@ -190,7 +200,7 @@
         </form>
 
         <div id="rentCheckStudioNote" class="rent-check-note" hidden>
-          Studio is not an official transaction category, so villa / multi-family transactions are used as the nearest available comparison set.
+          Studio / one-room is not an official transaction category. If you do not know the registered housing type, KoreaHomeGuide uses Detached / Multi-family (단독·다가구) as the closest default for many one-room rentals. If you know the actual registered housing type, select it instead.
         </div>
         <div id="rentCheckStatus" class="rent-check-status">Enter the quote you received to compare it with recent signed contracts.</div>
 
@@ -250,12 +260,12 @@
         <div class="property-tabs" role="tablist" aria-label="Property type">
           <button class="property-tab active" type="button" data-price-type="apartment">Apartment</button>
           <button class="property-tab" type="button" data-price-type="officetel">Officetel</button>
-          <button class="property-tab" type="button" data-price-type="villa">Villa / Multi-family</button>
+          <button class="property-tab" type="button" data-price-type="villa">Villa / Low-rise (연립·다세대)</button><button class="property-tab" type="button" data-price-type="detached">Detached / Multi-family</button>
         </div>
         <select id="priceType" class="visually-hidden" aria-hidden="true" tabindex="-1">
           <option value="apartment">Apartment</option>
           <option value="officetel">Officetel</option>
-          <option value="villa">Villa / Multi-family</option>
+          <option value="villa">Villa / Low-rise (연립·다세대)</option><option value="detached">Detached / Multi-family</option>
         </select>
 
         <div class="price-controls">
@@ -267,6 +277,11 @@
               <option value="11440">Mapo-gu</option>
               <option value="11170">Yongsan-gu</option>
               <option value="11560">Yeongdeungpo-gu</option>
+              <option value="11620">Gwanak-gu</option>
+              <option value="11230">Dongdaemun-gu</option>
+              <option value="11410">Seodaemun-gu</option>
+              <option value="11290">Seongbuk-gu</option>
+              <option value="11215">Gwangjin-gu</option>
             </select>
           </label>
 
@@ -404,7 +419,7 @@
           <span class="guide-number">02</span>
           <div><h3>Seoul brokerage fees</h3><p>See how the legal ceiling is calculated from your deposit and monthly rent.</p></div>
         </article></a>
-        <a class="guide-card-link" href="/guides/korea-rental-contract-checklist/"><article>
+        <a class="guide-card-link" href="/guides/before-you-sign/"><article>
           <span class="guide-number">03</span>
           <div><h3>Before you sign</h3><p>Check the property, landlord, deposit, fees, and contract clauses before paying.</p></div>
         </article></a>
@@ -414,7 +429,7 @@
 
   <footer class="site-footer-rich">
     <div class="footer-grid">
-      <div class="footer-brand-block"><strong>KoreaHomeGuide</strong><p>Find a home in Seoul with more context and fewer surprises.</p><p class="footer-contact">Questions, feedback, or data issues? <a href="mailto:007shp18@gmail.com">Email us</a></p></div>
+      <div class="footer-brand-block"><strong>KoreaHomeGuide</strong><p>Official rent data and practical guidance before you sign in Seoul.</p><p class="footer-contact">Questions, feedback, or data issues? <a href="mailto:007shp18@gmail.com">Email us</a></p></div>
       <div class="footer-nav-group"><strong>Tools</strong><a href="/explore/">Explore Rents</a><a href="/tools/seoul-rent-check/">Seoul Rent Check</a><a href="/tools/brokerage-fee-calculator/">Brokerage Fee Calculator</a></div>
       <div class="footer-nav-group"><strong>Guides</strong><a href="/guides/wolse-vs-jeonse/">Wolse vs Jeonse</a><a href="/guides/korea-rental-contract-checklist/">Contract Checklist</a><a href="/guides/seoul-brokerage-fees/">Seoul Brokerage Fees</a></div>
       <div class="footer-nav-group footer-market-group"><strong>Official rent data</strong><span>Gangnam-gu</span><div><a href="/rent/gangnam-gu/apartment/">Apartment</a><a href="/rent/gangnam-gu/officetel/">Officetel</a><a href="/rent/gangnam-gu/villa/">Villa</a></div><span>Mapo-gu</span><div><a href="/rent/mapo-gu/apartment/">Apartment</a><a href="/rent/mapo-gu/officetel/">Officetel</a><a href="/rent/mapo-gu/villa/">Villa</a></div><span>Yongsan-gu</span><div><a href="/rent/yongsan-gu/apartment/">Apartment</a><a href="/rent/yongsan-gu/officetel/">Officetel</a><a href="/rent/yongsan-gu/villa/">Villa</a></div><span>Seongdong-gu</span><div><a href="/rent/seongdong-gu/apartment/">Apartment</a><a href="/rent/seongdong-gu/officetel/">Officetel</a><a href="/rent/seongdong-gu/villa/">Villa</a></div><span>Yeongdeungpo-gu</span><div><a href="/rent/yeongdeungpo-gu/apartment/">Apartment</a><a href="/rent/yeongdeungpo-gu/officetel/">Officetel</a><a href="/rent/yeongdeungpo-gu/villa/">Villa</a></div></div>
