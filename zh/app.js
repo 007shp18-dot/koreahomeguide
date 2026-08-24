@@ -35,19 +35,74 @@ const rentCheckComparableBody = document.querySelector("#rentCheckComparableBody
 const rentCheckStudioNote = document.querySelector("#rentCheckStudioNote");
 
 const currencySelect = document.querySelector("#currencySelect");
+const currencyInputs = [...document.querySelectorAll("[data-currency-input]")];
 let fxRates = {};
 let fxRateDate = null;
 let lastRentCheckData = null;
 let lastPriceItems = null;
+let activeInputCurrency = "KRW";
+
+currencyInputs.forEach((input) => {
+  input.dataset.wonValue = String(Number(input.value || 0));
+  input.dataset.krwStep = input.step || "1";
+});
+if (currencySelect) currencySelect.disabled = true;
+
+function selectedCurrency() {
+  return currencySelect ? currencySelect.value : "KRW";
+}
 
 function moneyHtml(amountWon) {
-  return KHGCurrency.formatMoneyHtml(amountWon, currencySelect ? currencySelect.value : "KRW", fxRates, "zh-CN");
+  return KHGCurrency.formatMoneyHtml(amountWon, selectedCurrency(), fxRates, "zh-CN");
+}
+
+function syncCurrencyInput(input) {
+  if (!input) return 0;
+  const won = KHGCurrency.convertToKrw(Number(input.value || 0), activeInputCurrency, fxRates);
+  if (won != null && Number.isFinite(won)) input.dataset.wonValue = String(Math.max(0, won));
+  return Number(input.dataset.wonValue || 0);
+}
+
+function syncCurrencyInputs() {
+  currencyInputs.forEach(syncCurrencyInput);
+}
+
+function getInputWon(input) {
+  return Number(input && input.dataset.wonValue || 0);
+}
+
+function renderCurrencyInputs(currency) {
+  if (currency !== "KRW") {
+    const rate = Number(fxRates[currency]);
+    if (!Number.isFinite(rate) || rate <= 0) return false;
+  }
+  currencyInputs.forEach((input) => {
+    const won = Number(input.dataset.wonValue || 0);
+    const shown = KHGCurrency.convertFromKrw(won, currency, fxRates);
+    if (shown == null) return;
+    input.value = KHGCurrency.formatInputAmount(shown, currency);
+    input.step = currency === "KRW" ? (input.dataset.krwStep || "1") : "1";
+    const reference = document.querySelector(`[data-krw-reference="${input.id}"]`);
+    if (reference) reference.textContent = currency === "KRW" ? "" : `≈ ${KHGCurrency.formatWon(won, "zh-CN")}`;
+  });
+  document.querySelectorAll("[data-currency-symbol]").forEach((el) => {
+    el.textContent = KHGCurrency.currencySymbol(currency);
+  });
+  activeInputCurrency = currency;
+  return true;
 }
 
 function refreshCurrencyDisplays() {
   updateCalculator();
   if (lastRentCheckData) renderRentCheckResult(lastRentCheckData);
   if (lastPriceItems) renderPriceRows(lastPriceItems);
+}
+
+function activateCurrency(currency) {
+  syncCurrencyInputs();
+  if (!renderCurrencyInputs(currency)) return false;
+  refreshCurrencyDisplays();
+  return true;
 }
 
 async function loadFxRates() {
@@ -57,17 +112,30 @@ async function loadFxRates() {
     if (!response.ok) throw new Error(data.error || 'FX unavailable');
     fxRates = data.rates || {};
     fxRateDate = data.date || null;
-    if (currencySelect) currencySelect.title = `参考汇率 ${fxRateDate || "latest"} · 仅供估算`;
-    refreshCurrencyDisplays();
+    if (currencySelect) currencySelect.title = `参考汇率 {date} · 仅供估算`.replace('{date}', fxRateDate || "latest");
+    const requested = selectedCurrency();
+    if (!activateCurrency(requested) && currencySelect) {
+      currencySelect.value = "KRW";
+      activateCurrency("KRW");
+    }
   } catch (error) {
     fxRates = {};
-    if (currencySelect) currencySelect.title = "参考汇率暂时无法加载";
+    if (currencySelect) {
+      currencySelect.value = "KRW";
+      currencySelect.title = "汇率暂时不可用 · 已切换为 KRW";
+    }
+    renderCurrencyInputs("KRW");
     refreshCurrencyDisplays();
+  } finally {
+    if (currencySelect) currencySelect.disabled = false;
   }
 }
 
 if (currencySelect) {
-  currencySelect.addEventListener('change', refreshCurrencyDisplays);
+  currencySelect.addEventListener('change', () => {
+    const requested = currencySelect.value;
+    if (!activateCurrency(requested)) currencySelect.value = activeInputCurrency;
+  });
 }
 
 function renderCards(items, query = "") {
@@ -166,15 +234,15 @@ const guaranteeInsurance = document.querySelector("#guaranteeInsurance");
 const movingCleaning = document.querySelector("#movingCleaning");
 
 function updateCalculator() {
-  const depositWon = Number(calcDeposit.value || 0);
-  const monthlyRentWon = Number(calcRent.value || 0);
+  const depositWon = getInputWon(calcDeposit);
+  const monthlyRentWon = getInputWon(calcRent);
   const summary = KHGBrokerage.calculateMoveInSummary({
     propertyType: calcPropertyType.value,
     depositWon,
     monthlyRentWon,
-    maintenanceWon: Number(calcMaintenance.value || 0),
-    guaranteeInsuranceWon: Number(guaranteeInsurance.value || 0),
-    movingCleaningWon: Number(movingCleaning.value || 0)
+    maintenanceWon: getInputWon(calcMaintenance),
+    guaranteeInsuranceWon: getInputWon(guaranteeInsurance),
+    movingCleaningWon: getInputWon(movingCleaning)
   });
   const value100 = Math.max(0, depositWon) + Math.max(0, monthlyRentWon) * 100;
   document.querySelector("#transactionValueResult").innerHTML = moneyHtml(summary.transactionValueWon);
@@ -188,10 +256,11 @@ function updateCalculator() {
 }
 
 document.querySelector("#calcForm").addEventListener("submit", e => e.preventDefault());
-[calcPropertyType,calcDeposit,calcRent,calcMaintenance,guaranteeInsurance,movingCleaning].forEach(el => {
-  el.addEventListener("input", updateCalculator);
-  el.addEventListener("change", updateCalculator);
+[calcDeposit,calcRent,calcMaintenance,guaranteeInsurance,movingCleaning].forEach(el => {
+  el.addEventListener("input", () => { syncCurrencyInput(el); updateCalculator(); });
+  el.addEventListener("change", () => { syncCurrencyInput(el); updateCalculator(); });
 });
+calcPropertyType.addEventListener("change", updateCalculator);
 homeType.addEventListener("change", () => {
   if (homeType.value === "officetel") calcPropertyType.value = "officetel";
   else if (homeType.value) calcPropertyType.value = "housing";
@@ -260,8 +329,10 @@ function renderRentCheckResult(data) {
 
 async function runRentCheck(event) {
   if (event) event.preventDefault();
-  const depositWon = Number(rentCheckDeposit.value);
-  const rentWon = Number(rentCheckRent.value);
+  syncCurrencyInput(rentCheckDeposit);
+  syncCurrencyInput(rentCheckRent);
+  const depositWon = getInputWon(rentCheckDeposit);
+  const rentWon = getInputWon(rentCheckRent);
   const areaSqm = Number(rentCheckAreaSqm.value);
   if (!Number.isFinite(depositWon) || depositWon < 0) return setRentCheckStatus('押金必须为 0 或更大的金额。', 'error');
   if (!Number.isFinite(rentWon) || rentWon < 0) return setRentCheckStatus('月租必须为 0 或更大的金额。', 'error');
@@ -299,6 +370,11 @@ async function runRentCheck(event) {
 }
 
 if (rentCheckForm) rentCheckForm.addEventListener('submit', runRentCheck);
+[rentCheckDeposit, rentCheckRent].forEach((el) => {
+  if (!el) return;
+  el.addEventListener('input', () => syncCurrencyInput(el));
+  el.addEventListener('change', () => syncCurrencyInput(el));
+});
 if (rentCheckType) rentCheckType.addEventListener('change', updateRentCheckStudioNote);
 updateRentCheckStudioNote();
 
