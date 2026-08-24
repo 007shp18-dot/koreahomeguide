@@ -127,8 +127,9 @@ function renderBuildings(buildings) {
     const interactiveHref = KHGExplorer.buildBuildingDetailUrl({ lawdCd:areaSelect.value, type:typeSelect.value, dong, buildingKey:item.buildingKey });
     const seoHref = KHGExplorer.buildBuildingSeoUrl({ lawdCd:areaSelect.value, type:typeSelect.value, dong, buildingName:item.buildingName, buildingKey:item.buildingKey, lang:'en' });
     const location = [dong, areaName(), typeName()].filter(Boolean).join(' · ');
+    const nameDisplay = KHGBuildingNames.getBuildingNameDisplay(item.buildingName, 'en');
     return `<article class="building-row">
-      <div class="building-name"><strong>${escapeHtml(item.buildingName)}</strong><small>${escapeHtml(location)}</small></div>
+      <div class="building-name"><strong>${escapeHtml(nameDisplay.primary)}</strong>${nameDisplay.secondary ? `<small class="building-official-name">${escapeHtml(nameDisplay.secondary)}</small>` : ''}<small>${escapeHtml(location)}</small></div>
       <div><span class="mobile-label">Typical size</span><strong>${formatArea(item.typicalAreaSqm)}</strong></div>
       <div class="building-money"><span class="mobile-label">Monthly rent</span><strong>${item.medianMonthlyRentWon == null ? '—' : moneyHtml(item.medianMonthlyRentWon)}</strong></div>
       <div class="building-money"><span class="mobile-label">Deposit</span><strong>${item.medianDepositWon == null ? '—' : moneyHtml(item.medianDepositWon)}</strong></div>

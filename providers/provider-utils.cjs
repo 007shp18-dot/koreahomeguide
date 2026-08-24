@@ -1,5 +1,6 @@
 const { median, completedMonthKeys, normalizeTransaction } = require('../lib/rent-check-core.cjs');
 const { buildRentMarketStats, pctChange } = require('../lib/rent-market-core.cjs');
+const { getBuildingNameDisplay } = require('../building-name-utils.js');
 
 function normalizeBuildingName(name) {
   const normalized = String(name || '')
@@ -76,9 +77,14 @@ function groupBuildingRows(items, options = {}) {
 function summaryForBuilding(group, options = {}) {
   const rows = group.rows;
   const monthly = rows.filter(row => row.monthlyRentWon > 0);
+  const enName = getBuildingNameDisplay(group.buildingName, 'en');
+  const zhName = getBuildingNameDisplay(group.buildingName, 'zh');
   return {
     buildingKey:group.key,
     buildingName:group.buildingName,
+    officialBuildingNameKo:enName.officialNameKo,
+    displayBuildingNameEn:enName.primary,
+    displayBuildingNameZh:zhName.primary,
     dong:group.dong || '',
     contractCount:rows.length,
     monthlyRentCount:monthly.length,

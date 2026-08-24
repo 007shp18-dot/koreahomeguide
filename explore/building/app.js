@@ -6,6 +6,7 @@ const requestedDong = query.get('dong') || '';
 const currencySelect = document.querySelector('#currencySelect');
 const languageSwitch = document.querySelector('#languageSwitch');
 const buildingName = document.querySelector('#buildingName');
+const buildingOfficialName = document.querySelector('#buildingOfficialName');
 const buildingMeta = document.querySelector('#buildingMeta');
 const buildingStatus = document.querySelector('#buildingStatus');
 const buildingRent = document.querySelector('#buildingRent');
@@ -70,9 +71,11 @@ function buildRentCheckUrl(data) {
 
 function renderBuilding(data) {
   buildingData = data;
-  buildingName.textContent = data.buildingName;
+  const nameDisplay = KHGBuildingNames.getBuildingNameDisplay(data.buildingName, 'en');
+  buildingName.textContent = nameDisplay.primary;
+  if (buildingOfficialName) { buildingOfficialName.textContent = nameDisplay.secondary; buildingOfficialName.hidden = !nameDisplay.secondary; }
   buildingMeta.textContent = [data.districtName, data.dong, KHGExplorer.propertyTypeLabel(data.propertyType), 'Seoul'].filter(Boolean).join(' · ');
-  document.title = `${data.buildingName} Rent Data | Seoul Rent Explorer`;
+  document.title = `${nameDisplay.primary} Rent Data | Seoul Rent Explorer`;
   buildingRent.innerHTML = data.medianMonthlyRentWon == null ? 'Not enough data' : moneyHtml(data.medianMonthlyRentWon);
   buildingDeposit.innerHTML = data.medianDepositWon == null ? 'Not enough data' : moneyHtml(data.medianDepositWon);
   buildingArea.textContent = formatArea(data.typicalAreaSqm);
