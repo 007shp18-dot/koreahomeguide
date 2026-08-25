@@ -9,7 +9,7 @@ const { normalizeGuideHubLinks } = require('../seo/seo-html-postprocess.cjs');
 function normalizedLang(value) { return String(value || '').toLowerCase().startsWith('zh') ? 'zh' : 'en'; }
 function sendHtml(res, status, html, { cache = false } = {}) {
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
-  res.setHeader('Cache-Control', cache ? 's-maxage=3600, stale-while-revalidate=86400' : (status === 503 ? 'no-store' : 's-maxage=300'));
+  res.setHeader('Cache-Control', cache ? 's-maxage=86400, stale-while-revalidate=86400' : (status === 503 ? 'no-store' : 's-maxage=300'));
   return res.status(status).send(html);
 }
 

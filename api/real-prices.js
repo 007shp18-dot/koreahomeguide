@@ -1,6 +1,6 @@
 const { tag, normalizeServiceKey, endpointForType, parseItems } = require('../lib/real-price-core.cjs');
 const { isSupportedAreaCode, isSupportedPropertyType } = require('../providers/seoul-config.cjs');
-const { trustedRequestSource, isRecentCompletedMonth, fetchWithTimeout, DEFAULT_UPSTREAM_TIMEOUT_MS, logApiError } = require('../lib/api-guard.cjs');
+const { trustedRequestSource, isRecentCompletedMonth, fetchWithRetry, DEFAULT_UPSTREAM_TIMEOUT_MS, logApiError } = require('../lib/api-guard.cjs');
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
@@ -21,7 +21,7 @@ module.exports = async function handler(req, res) {
   const params = new URLSearchParams({ serviceKey, LAWD_CD: lawdCd, DEAL_YMD: dealYmd, numOfRows: '100', pageNo: '1' });
 
   try {
-    const upstream = await fetchWithTimeout(fetch, `${endpoint}?${params.toString()}`, {
+    const upstream = await fetchWithRetry(fetch, `${endpoint}?${params.toString()}`, {
       headers: { Accept: 'application/xml,text/xml,*/*' }
     }, DEFAULT_UPSTREAM_TIMEOUT_MS);
     const xml = await upstream.text();

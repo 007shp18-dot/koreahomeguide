@@ -1,7 +1,7 @@
 const { tag, normalizeServiceKey, completedMonths, endpointForType, parseItems } = require('../lib/real-price-core.cjs');
 const { TIERS, validateRentCheckInput, buildResultForTier } = require('../lib/rent-check-core.cjs');
 const { isSupportedAreaCode, isSupportedPropertyType } = require('../providers/seoul-config.cjs');
-const { trustedRequestSource, fetchWithTimeout, DEFAULT_UPSTREAM_TIMEOUT_MS, logApiError } = require('../lib/api-guard.cjs');
+const { trustedRequestSource, fetchWithRetry, DEFAULT_UPSTREAM_TIMEOUT_MS, logApiError } = require('../lib/api-guard.cjs');
 
 const FRIENDLY_UPSTREAM_ERROR = 'Official transaction data is temporarily unavailable. Please try again shortly.';
 
@@ -26,7 +26,7 @@ async function fetchMonth({ endpoint, serviceKey, lawdCd, dealYmd }) {
     numOfRows:'1000',
     pageNo:'1'
   });
-  const upstream = await fetchWithTimeout(fetch, `${endpoint}?${params.toString()}`, {
+  const upstream = await fetchWithRetry(fetch, `${endpoint}?${params.toString()}`, {
     headers:{ Accept:'application/xml,text/xml,*/*' }
   }, DEFAULT_UPSTREAM_TIMEOUT_MS);
   const xml = await upstream.text();

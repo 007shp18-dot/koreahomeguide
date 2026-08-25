@@ -84,12 +84,12 @@ test('raw/client MOLIT APIs apply district/source guards and safe error logging'
   assert.match(realPrices, /isSupportedAreaCode/);
   assert.match(realPrices, /isRecentCompletedMonth/);
   assert.match(realPrices, /trustedRequestSource/);
-  assert.match(realPrices, /fetchWithTimeout/);
+  assert.match(realPrices, /fetchWithRetry/);
   assert.match(realPrices, /logApiError/);
 
   const rentCheck = source('api/rent-check.js');
   assert.match(rentCheck, /isSupportedAreaCode/);
-  assert.match(rentCheck, /fetchWithTimeout/);
+  assert.match(rentCheck, /fetchWithRetry/);
 
   for (const file of ['api/rent-check.js','api/rent-market.js','api/explore-area.js','api/explore-dong.js','api/explore-building.js']) {
     const text = source(file);
@@ -106,8 +106,8 @@ test('SEO and dynamic sitemap endpoints log upstream failures instead of swallow
   }
 });
 
-test('shared data.go.kr paging path uses the 5 second timeout helper', () => {
+test('shared data.go.kr paging path uses retry handling over the 5 second timeout', () => {
   const text = source('lib/real-price-core.cjs');
-  assert.match(text, /fetchWithTimeout/);
+  assert.match(text, /fetchWithRetry/);
   assert.match(text, /DEFAULT_UPSTREAM_TIMEOUT_MS/);
 });
