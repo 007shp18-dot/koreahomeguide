@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/api/maps-config",
+      "destination": "/api/fx?resource=maps-config"
+    },
+    {
       "source": "/sitemaps/seoul/:district/:type/",
       "destination": "/api/sitemap-market?district=:district&type=:type"
     },

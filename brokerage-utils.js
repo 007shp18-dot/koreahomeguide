@@ -28,8 +28,11 @@
     const transactionValueWon = calculateRentalTransactionValue(depositWon, monthlyRentWon);
     const rule = propertyType === 'officetel'
       ? { rate: 0.004, capWon: null }
-      : housingRentalRule(transactionValueWon);
-    const rawFee = Math.floor(transactionValueWon * rule.rate);
+      : propertyType === 'officetel-other'
+        ? { rate: 0.009, capWon: null }
+        : housingRentalRule(transactionValueWon);
+    const ratePermille = Math.round(rule.rate * 1000);
+    const rawFee = Math.floor((transactionValueWon * ratePermille) / 1000);
     const maxFeeWon = rule.capWon == null ? rawFee : Math.min(rawFee, rule.capWon);
 
     return {
