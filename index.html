@@ -25,8 +25,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/move-commerce.css" />
 </head>
-<body>
+<body data-commerce-city="seoul" data-commerce-language="en">
   <header class="site-header">
     <a class="brand" href="/">
       <span class="brand-mark">K</span>
@@ -35,7 +36,8 @@
     <nav aria-label="Primary navigation">
       <a href="/explore/">Explore</a>
       <a href="/tools/seoul-rent-check/">Rent Check</a>
-      <a href="#guides">Guides</a>
+      <a href="/guides/">Guides</a>
+      <a href="#move-to-seoul">Moving to Seoul</a>
     </nav>
     <div class="header-actions">
       <label class="currency-picker" aria-label="Display currency">
@@ -57,7 +59,11 @@
       <div class="hero-copy">
         <span class="eyebrow">Housing data for people new to Seoul</span>
         <h1>Know the real price before you sign.</h1>
-        <p>Compare official signed rental transactions, understand neighborhood prices, and check a rent quote before you commit.</p>
+        <p>Check what people actually pay, understand where to live, and make your move to Seoul easier.</p>
+        <div class="hero-actions">
+          <a class="search-button hero-primary-action" href="/tools/seoul-rent-check/">Check my rent</a>
+          <a class="hero-secondary-action" href="/explore/">Explore Seoul</a>
+        </div>
         <div class="trust-row">
           <span>Official signed transactions</span>
           <span>English-first guidance</span>
@@ -133,6 +139,93 @@
 
         <div class="find-home-note">We compare neighborhood medians from recent official signed contracts — not live listings or asking prices.</div>
         <div class="home-intents" aria-label="Primary ways to use KoreaHomeGuide"><a class="intent-card" href="/explore/"><span class="intent-kicker">EXPLORE</span><div><strong>Explore neighborhoods</strong><p>Compare recent signed rents by area, then drill down to buildings.</p></div><span class="intent-arrow">Explore Seoul →</span></a><a class="intent-card" href="/tools/seoul-rent-check/"><span class="intent-kicker">CHECK</span><div><strong>Check a rent quote</strong><p>Compare the deposit and rent you were offered with recent official contracts.</p></div><span class="intent-arrow">Check your quote →</span></a><a class="intent-card" href="/guides/before-you-sign/"><span class="intent-kicker">LEARN</span><div><strong>Before you sign</strong><p>Understand registry checks, deposit protection, fixed dates, and contract steps.</p></div><span class="intent-arrow">Read the guide →</span></a></div><div class="ad-slot" data-slot="content" aria-hidden="true"></div>
+      </div>
+    </section>
+
+
+    <section class="move-journey-section" id="move-to-seoul">
+      <div class="section-copy compact-copy">
+        <span class="eyebrow">Moving to Seoul</span>
+        <h2>Your move to Seoul, step by step</h2>
+        <p>Start with the home, then prepare, move in, and get settled.</p>
+      </div>
+
+      <div class="move-journey-grid">
+        <article class="move-stage-card active-tool">
+          <span class="move-stage-number">01</span>
+          <span class="move-stage-kicker">CHECK</span>
+          <h3>Check your home</h3>
+          <p>Compare official signed prices, neighborhoods, and the rent quote you received.</p>
+          <a href="/tools/seoul-rent-check/" data-move-stage="check">Check a rent quote →</a>
+        </article>
+        <article class="move-stage-card active-tool">
+          <span class="move-stage-number">02</span>
+          <span class="move-stage-kicker">PREPARE</span>
+          <h3>Prepare to sign</h3>
+          <p>Review registry checks, deposit protection, brokerage fees, and contract steps.</p>
+          <a href="/guides/before-you-sign/" data-move-stage="prepare">Before you sign →</a>
+        </article>
+        <article class="move-stage-card future-service">
+          <span class="move-stage-number">03</span>
+          <span class="move-stage-kicker">MOVE</span>
+          <h3>Move in</h3>
+          <p>Plan moving, cleaning, internet, and SIM/eSIM setup.</p>
+          <a href="#move-services" data-move-stage="move">See move-in services →</a>
+        </article>
+        <article class="move-stage-card future-service">
+          <span class="move-stage-number">04</span>
+          <span class="move-stage-kicker">SETTLE</span>
+          <h3>Settle in</h3>
+          <p>Get ready for utilities, insurance, banking, and relocation support.</p>
+          <a href="#move-services" data-move-stage="settle">See settling services →</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="move-services-section" id="move-services">
+      <div class="section-copy compact-copy">
+        <span class="eyebrow">Move services</span>
+        <h2>Make your move easier</h2>
+        <p>These services are not bookable yet. Tell us what would be useful so we know what to build first.</p>
+      </div>
+
+      <div class="move-services-grid">
+        <article class="move-service-card">
+          <span class="coming-soon-pill">Coming soon</span>
+          <h3>Internet</h3>
+          <p>Home internet setup after you move in.</p>
+          <button type="button" data-move-service="internet" data-label-done="Interest noted">I'm interested</button>
+        </article>
+        <article class="move-service-card">
+          <span class="coming-soon-pill">Coming soon</span>
+          <h3>SIM / eSIM</h3>
+          <p>Mobile connectivity for arrival and daily life in Korea.</p>
+          <button type="button" data-move-service="sim_esim" data-label-done="Interest noted">I'm interested</button>
+        </article>
+        <article class="move-service-card">
+          <span class="coming-soon-pill">Coming soon</span>
+          <h3>Moving</h3>
+          <p>Help moving your belongings into your new home.</p>
+          <button type="button" data-move-service="moving" data-label-done="Interest noted">I'm interested</button>
+        </article>
+        <article class="move-service-card">
+          <span class="coming-soon-pill">Coming soon</span>
+          <h3>Cleaning</h3>
+          <p>Move-in cleaning before you settle into the space.</p>
+          <button type="button" data-move-service="cleaning" data-label-done="Interest noted">I'm interested</button>
+        </article>
+        <article class="move-service-card">
+          <span class="coming-soon-pill">Coming soon</span>
+          <h3>Insurance</h3>
+          <p>Plain-language guidance for relevant renter coverage.</p>
+          <button type="button" data-move-service="insurance" data-label-done="Interest noted">I'm interested</button>
+        </article>
+        <article class="move-service-card">
+          <span class="coming-soon-pill">Coming soon</span>
+          <h3>Relocation support</h3>
+          <p>Practical help for the logistics of settling into Seoul.</p>
+          <button type="button" data-move-service="relocation" data-label-done="Interest noted">I'm interested</button>
+        </article>
       </div>
     </section>
 
@@ -442,5 +535,6 @@
   <script src="/api-error-utils.js"></script>
   <script src="/rent-check-ui-utils.js"></script>
   <script src="/app.js"></script>
+  <script src="/move-commerce.js"></script>
 </body>
 </html>

@@ -1,0 +1,234 @@
+/* v12 Seoul Move Commerce foundation
+   Isolated from the existing global stylesheet so the commerce layer can
+   evolve without changing Rent Check, Explorer, market, or SEO page styles. */
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.hero-primary-action,
+.hero-secondary-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  border-radius: 11px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.hero-primary-action {
+  height: 46px;
+  padding: 0 18px;
+}
+
+.hero-secondary-action {
+  padding: 0 16px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+}
+
+.hero-secondary-action:hover {
+  border-color: #bfdbfe;
+  color: var(--accent);
+}
+
+.move-journey-section,
+.move-services-section {
+  max-width: 1260px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 72px;
+}
+
+.move-journey-section .section-copy,
+.move-services-section .section-copy {
+  max-width: 760px;
+}
+
+.move-journey-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.move-stage-card,
+.move-service-card {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #fff;
+  padding: 21px;
+}
+
+.move-stage-card {
+  display: flex;
+  min-height: 264px;
+  flex-direction: column;
+}
+
+.move-stage-card.active-tool {
+  border-color: #dbeafe;
+}
+
+.move-stage-card.future-service,
+.move-service-card {
+  background: var(--surface-soft);
+  border-color: #eef2f7;
+}
+
+.move-stage-number {
+  display: block;
+  margin-bottom: 24px;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .05em;
+}
+
+.move-stage-kicker {
+  display: block;
+  color: var(--accent);
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: .09em;
+}
+
+.move-stage-card h3,
+.move-service-card h3 {
+  margin: 8px 0 7px;
+  color: var(--ink);
+  font-size: 18px;
+  letter-spacing: -.025em;
+}
+
+.move-stage-card p,
+.move-service-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.move-stage-card a {
+  display: inline-flex;
+  margin-top: auto;
+  padding-top: 18px;
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.move-stage-card a:hover {
+  text-decoration: underline;
+}
+
+.move-services-section {
+  padding-top: 60px;
+}
+
+.move-services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.move-service-card {
+  display: flex;
+  min-height: 208px;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.coming-soon-pill {
+  display: inline-flex;
+  padding: 5px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  color: #64748b;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.move-service-card button {
+  min-height: 40px;
+  margin-top: auto;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: #fff;
+  color: #334155;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.move-service-card button:hover:not(:disabled) {
+  border-color: #bfdbfe;
+  color: var(--accent);
+}
+
+.move-service-card button:disabled {
+  cursor: default;
+  color: #64748b;
+  background: #f8fafc;
+}
+
+@media (max-width: 900px) {
+  .move-journey-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .move-services-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .move-stage-card {
+    min-height: 230px;
+  }
+}
+
+@media (max-width: 560px) {
+  .hero-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .hero-primary-action,
+  .hero-secondary-action {
+    width: 100%;
+  }
+
+  .move-journey-section,
+  .move-services-section {
+    padding-top: 48px;
+  }
+
+  .move-journey-grid,
+  .move-services-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .move-stage-card,
+  .move-service-card {
+    min-height: 0;
+    padding: 18px;
+  }
+
+  .move-stage-card a,
+  .move-service-card button {
+    margin-top: 18px;
+  }
+}

@@ -25,8 +25,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/move-commerce.css" />
 </head>
-<body>
+<body data-commerce-city="seoul" data-commerce-language="zh">
   <header class="site-header">
     <a class="brand" href="/">
       <span class="brand-mark">K</span>
@@ -35,7 +36,8 @@
     <nav aria-label="主导航">
       <a href="/zh/explore/">租金探索</a>
       <a href="/zh/tools/seoul-rent-check/">租金检查</a>
-      <a href="#guides">租房指南</a>
+      <a href="/zh/guides/">租房指南</a>
+      <a href="#move-to-seoul">搬到首尔</a>
     </nav>
     <div class="header-actions">
       <label class="currency-picker" aria-label="显示货币">
@@ -57,7 +59,11 @@
       <div class="hero-copy">
         <span class="eyebrow">为初到首尔的人准备的住房数据</span>
         <h1>签约前，先了解真实租金。</h1>
-        <p>查看韩国官方真实签约价格，比较不同街区，并检查你拿到的租金报价是否合理。</p>
+        <p>查看真实签约价格，了解适合居住的街区，并让你搬到首尔的过程更简单。</p>
+        <div class="hero-actions">
+          <a class="search-button hero-primary-action" href="/zh/tools/seoul-rent-check/">检查我的租金</a>
+          <a class="hero-secondary-action" href="/zh/explore/">探索首尔</a>
+        </div>
         <div class="trust-row">
           <span>韩国官方真实签约数据</span>
           <span>简体中文租房指南</span>
@@ -133,6 +139,93 @@
 
         <div class="find-home-note">根据近期韩国官方真实签约合同的街区中位数进行筛选，不是实时房源或挂牌报价。</div>
         <div class="home-intents" aria-label="主要功能"><a class="intent-card" href="/zh/explore/"><span class="intent-kicker">EXPLORE</span><div><strong>探索街区</strong><p>用真实签约租金比较首尔不同区域，再进入具体建筑。</p></div><span class="intent-arrow">查看街区 →</span></a><a class="intent-card" href="/zh/tools/seoul-rent-check/"><span class="intent-kicker">CHECK</span><div><strong>检查租金报价</strong><p>把你拿到的押金和月租与近期官方可比成交进行核对。</p></div><span class="intent-arrow">检查报价 →</span></a><a class="intent-card" href="/zh/guides/before-you-sign/"><span class="intent-kicker">LEARN</span><div><strong>签约前必查</strong><p>了解房产登记、押金保护、确定日期和合同检查重点。</p></div><span class="intent-arrow">阅读指南 →</span></a></div><div class="ad-slot" data-slot="content" aria-hidden="true"></div>
+      </div>
+    </section>
+
+
+    <section class="move-journey-section" id="move-to-seoul">
+      <div class="section-copy compact-copy">
+        <span class="eyebrow">搬到首尔</span>
+        <h2>搬到首尔，一步一步来</h2>
+        <p>先确认住房与租金，再准备签约、搬家和安顿生活。</p>
+      </div>
+
+      <div class="move-journey-grid">
+        <article class="move-stage-card active-tool">
+          <span class="move-stage-number">01</span>
+          <span class="move-stage-kicker">CHECK</span>
+          <h3>确认住房</h3>
+          <p>查看官方真实成交、比较街区，并检查你收到的租金报价。</p>
+          <a href="/zh/tools/seoul-rent-check/" data-move-stage="check">检查租金报价 →</a>
+        </article>
+        <article class="move-stage-card active-tool">
+          <span class="move-stage-number">02</span>
+          <span class="move-stage-kicker">PREPARE</span>
+          <h3>准备签约</h3>
+          <p>了解房产登记、押金保护、中介费和合同检查步骤。</p>
+          <a href="/zh/guides/before-you-sign/" data-move-stage="prepare">签约前必查 →</a>
+        </article>
+        <article class="move-stage-card future-service">
+          <span class="move-stage-number">03</span>
+          <span class="move-stage-kicker">MOVE</span>
+          <h3>准备入住</h3>
+          <p>规划搬家、清洁、网络以及 SIM/eSIM 设置。</p>
+          <a href="#move-services" data-move-stage="move">查看入住服务 →</a>
+        </article>
+        <article class="move-stage-card future-service">
+          <span class="move-stage-number">04</span>
+          <span class="move-stage-kicker">SETTLE</span>
+          <h3>安顿生活</h3>
+          <p>了解水电燃气、保险、银行以及安家支持。</p>
+          <a href="#move-services" data-move-stage="settle">查看安家服务 →</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="move-services-section" id="move-services">
+      <div class="section-copy compact-copy">
+        <span class="eyebrow">搬家与安家服务</span>
+        <h2>让搬到首尔更简单</h2>
+        <p>这些服务目前还不能直接预订。告诉我们你最需要什么，我们会据此决定优先推出的服务。</p>
+      </div>
+
+      <div class="move-services-grid">
+        <article class="move-service-card">
+          <span class="coming-soon-pill">即将推出</span>
+          <h3>家庭网络</h3>
+          <p>入住后安装和开通家庭网络。</p>
+          <button type="button" data-move-service="internet" data-label-done="已记录兴趣">我感兴趣</button>
+        </article>
+        <article class="move-service-card">
+          <span class="coming-soon-pill">即将推出</span>
+          <h3>SIM / eSIM</h3>
+          <p>抵达韩国及日常生活所需的移动通信服务。</p>
+          <button type="button" data-move-service="sim_esim" data-label-done="已记录兴趣">我感兴趣</button>
+        </article>
+        <article class="move-service-card">
+          <span class="coming-soon-pill">即将推出</span>
+          <h3>搬家</h3>
+          <p>把行李和家具搬进新家的实用支持。</p>
+          <button type="button" data-move-service="moving" data-label-done="已记录兴趣">我感兴趣</button>
+        </article>
+        <article class="move-service-card">
+          <span class="coming-soon-pill">即将推出</span>
+          <h3>入住清洁</h3>
+          <p>入住前的房屋清洁服务。</p>
+          <button type="button" data-move-service="cleaning" data-label-done="已记录兴趣">我感兴趣</button>
+        </article>
+        <article class="move-service-card">
+          <span class="coming-soon-pill">即将推出</span>
+          <h3>保险</h3>
+          <p>以简单清楚的方式了解与租客相关的保险选择。</p>
+          <button type="button" data-move-service="insurance" data-label-done="已记录兴趣">我感兴趣</button>
+        </article>
+        <article class="move-service-card">
+          <span class="coming-soon-pill">即将推出</span>
+          <h3>安家支持</h3>
+          <p>处理搬到首尔和安顿生活过程中的实际事务。</p>
+          <button type="button" data-move-service="relocation" data-label-done="已记录兴趣">我感兴趣</button>
+        </article>
       </div>
     </section>
 
@@ -442,5 +535,6 @@
   <script src="/api-error-utils.js"></script>
   <script src="/zh/rent-check-ui-utils.js"></script>
   <script src="/zh/app.js"></script>
+  <script src="/move-commerce.js"></script>
 </body>
 </html>
