@@ -1,37 +1,35 @@
-KoreaHomeGuide v10.8.3 + v10.9 Phase 1
-
-Replace/add these files preserving repository paths:
+KoreaHomeGuide v11 — Fair Rent Intelligence
 
 REPLACE
-- seo/dong-seo-v10-8.cjs
-- explore/explorer-utils.js
+- lib/rent-check-core.cjs
+- rent-check-ui-utils.js
+- zh/rent-check-ui-utils.js
+- tools/seoul-rent-check/app.js
+- zh/tools/seoul-rent-check/app.js
 
 ADD
-- tests/v10-8-3-structured-data.test.cjs
-- tests/v10-9-explorer-ranking.test.cjs
+- tests/v11-fair-rent-intelligence.test.cjs
+- tests/v11-fair-rent-regression.test.cjs
+- docs/superpowers/specs/2026-08-25-fair-rent-intelligence-design.md
+- docs/superpowers/plans/2026-08-25-fair-rent-intelligence.md
 
-v10.8.3 — Chinese structured-data finish
-- Localizes Dong Dataset JSON-LD fields instead of leaving Korean/English-only values.
-- Dataset name uses localized Dong label.
-- spatialCoverage uses localized Dong + district + Seoul.
-- temporalCoverage becomes a machine-readable six-month interval, e.g. 2026-02/2026-07.
-- variableMeasured uses the localized property-type wording.
-- MOLIT creator label is localized while retaining the English official ministry name.
-- Existing canonical/hreflang/index logic is unchanged.
+What changes
+- Reliable Rent Check results now return P25, median, P75 and the asking quote's empirical percentile rank.
+- P25/P75 use deterministic linear interpolation on the exact same comparable set already used for the verdict.
+- Percentile rank is the share of comparable values <= the asking quote, rounded to 0–100.
+- Monthly-rent comparisons use monthly-rent values; jeonse comparisons use deposit values.
+- EN/ZH Rent Check dynamically inserts a Fair Rent Intelligence panel with the typical P25–P75 range and percentile sentence.
+- Insufficient results hide the intelligence panel and expose null distribution fields.
 
-v10.9 Phase 1 — Budget-fit neighborhood ranking
-- Existing budget filtering remains.
-- When a rent/deposit budget is selected, eligible neighborhoods are ranked by the strongest amount of matching signed-contract evidence.
-- Matching deposit-band contract count is the primary ranking signal.
-- Existing provider order is preserved when no budget is selected.
-- No new API provider, no new price model, no fabricated recommendation score.
-- EN and ZH Explorer both benefit because they share /explore/explorer-utils.js.
+Unchanged
+- Existing comparable tiers and sample minimums.
+- Existing +/-10% below/fair/above thresholds.
+- Existing MOLIT provider/API fetch logic and API inputs.
+- Currency calculations remain KRW internally.
+- No Safety Score, affiliate/referral, or advertising logic.
 
-Verification performed:
-- RED tests failed before implementation as expected.
-- GREEN + regression: 12/12 tests passed.
-- node --check passed for both modified JS/CJS files.
-
-GitHub connector note:
-- ChatGPT GitHub integration still returns HTTP 403 for write operations.
-- Upload these files manually to main, then Vercel should deploy automatically.
+Verification performed in isolated workspace
+- TDD RED confirmed before implementation.
+- v11 + regression tests: 13/13 passed.
+- node --check passed for all five modified JS/CJS files.
+- Source checks confirmed TIERS and +/-10% verdict thresholds unchanged.

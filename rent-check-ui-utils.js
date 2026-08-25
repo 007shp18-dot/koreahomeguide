@@ -41,6 +41,22 @@
       : 'This quote is close to recent comparable contracts.';
   }
 
+  function ordinal(value) {
+    const n = Math.max(0, Math.min(100, Math.round(Number(value))));
+    const mod100 = n % 100;
+    if (mod100 >= 11 && mod100 <= 13) return `${n}th`;
+    const suffix = { 1:'st', 2:'nd', 3:'rd' }[n % 10] || 'th';
+    return `${n}${suffix}`;
+  }
+
+  function percentileSentence(result) {
+    if (!result || result.rating === 'insufficient') return '';
+    const rank = Number(result.percentileRank);
+    if (!Number.isFinite(rank)) return '';
+    const subject = result.comparisonMode === 'jeonse-deposit' ? 'This jeonse deposit' : 'This quote';
+    return `${subject} is around the ${ordinal(rank)} percentile of comparable signed contracts.`;
+  }
+
   function humanizeRentCheckError(message) {
     const text = String(message || '').trim();
     if (!text) return UPSTREAM_MESSAGE;
@@ -68,6 +84,7 @@
     confidenceLabel,
     mapRentCheckType,
     resultSentence,
+    percentileSentence,
     humanizeRentCheckError,
     formatWon,
     formatDifference

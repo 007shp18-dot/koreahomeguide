@@ -41,6 +41,15 @@
       : '这个报价接近近期可比成交水平。';
   }
 
+  function percentileSentence(result) {
+    if (!result || result.rating === 'insufficient') return '';
+    const rank = Number(result.percentileRank);
+    if (!Number.isFinite(rank)) return '';
+    const rounded = Math.max(0, Math.min(100, Math.round(rank)));
+    const subject = result.comparisonMode === 'jeonse-deposit' ? '这笔全租（Jeonse）押金' : '这个报价';
+    return `${subject}约处于可比已签约成交的第 ${rounded} 百分位。`;
+  }
+
   function humanizeRentCheckError(message) {
     const text = String(message || '').trim();
     if (!text) return UPSTREAM_MESSAGE;
@@ -71,6 +80,7 @@
     confidenceLabel,
     mapRentCheckType,
     resultSentence,
+    percentileSentence,
     humanizeRentCheckError,
     formatWon,
     formatDifference
