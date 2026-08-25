@@ -12,28 +12,28 @@ test('currency utilities convert user-entered USD/CNY back to KRW', () => {
 });
 
 test('selected foreign currency is primary while KRW remains visible as reference', () => {
-  delete require.cache[require.resolve('../currency-utils.js')];
   const fx = require('../currency-utils.js');
   const html = fx.formatMoneyHtml(1_200_000, 'USD', { USD: 0.00072 }, 'en-US');
   assert.match(html, /money-primary[^>]*>\$864/);
   assert.match(html, /fx-secondary[^>]*>≈ ₩1,200,000/);
 });
 
-test('rent check and calculator money inputs are currency-aware on both locales', () => {
+test('cold-start home keeps the Rent Check money inputs currency-aware on both locales', () => {
   for (const file of ['index.html', 'zh/index.html']) {
     const html = fs.readFileSync(file, 'utf8');
-    for (const id of ['rentCheckDeposit','rentCheckRent','deposit','rent','maintenance','guaranteeInsurance','movingCleaning']) {
+    for (const id of ['rentCheckDeposit','rentCheckRent']) {
       assert.match(html, new RegExp(`data-currency-input[^>]*id="${id}"|id="${id}"[^>]*data-currency-input`));
     }
     assert.match(html, /data-currency-symbol/);
+    assert.doesNotMatch(html, /id="movingCleaning"/);
   }
 });
 
-test('runtimes convert displayed inputs into KRW before calculator and rent-check logic', () => {
+test('home runtimes convert displayed Rent Check inputs into KRW', () => {
   for (const file of ['app.js', 'zh/app.js']) {
     const js = fs.readFileSync(file, 'utf8');
     assert.match(js, /KHGCurrency\.convertToKrw/);
-    assert.match(js, /syncCurrencyInputs/);
+    assert.match(js, /syncCurrencyInput/);
     assert.match(js, /renderCurrencyInputs/);
   }
 });

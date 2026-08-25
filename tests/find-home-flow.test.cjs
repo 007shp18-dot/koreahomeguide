@@ -6,29 +6,24 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const read = rel => fs.readFileSync(path.join(root, rel), 'utf8');
 
-test('English Find a Home uses district/type/budget fields and routes to Explorer', () => {
+test('English homepage makes Rent Check primary and keeps Explorer as a secondary budget-discovery path', () => {
   const html = read('index.html');
-  const app = read('app.js');
-  assert.match(html, /id="findDistrict"/);
-  assert.match(html, /id="homeType"/);
-  assert.match(html, /id="rentBudget"/);
-  assert.match(html, /id="depositBudget"/);
-  assert.doesNotMatch(html, /id="areaSearch"/);
-  assert.match(html, />Check rents</);
-  assert.match(app, /\/explore\/\?/);
-  assert.match(app, /maxRent/);
-  assert.match(app, /maxDeposit/);
+  assert.match(html, /Is your Seoul rent actually fair\?/);
+  assert.match(html, /href="\/explore\/"/);
+  assert.match(html, /Explore Seoul by budget/);
+  assert.doesNotMatch(html, /id="findDistrict"/);
+  assert.doesNotMatch(html, /id="rentBudget"/);
+  assert.doesNotMatch(html, /id="depositBudget"/);
 });
 
-test('Chinese Find a Home routes the same filters to Chinese Explorer', () => {
+test('Chinese homepage mirrors the same Rent Check-first flow and keeps Chinese Explorer secondary', () => {
   const html = read('zh/index.html');
-  const app = read('zh/app.js');
-  assert.match(html, /id="findDistrict"/);
-  assert.doesNotMatch(html, /id="areaSearch"/);
-  assert.match(html, />查看租金</);
-  assert.match(app, /\/zh\/explore\/\?/);
-  assert.match(app, /maxRent/);
-  assert.match(app, /maxDeposit/);
+  assert.match(html, /你的首尔租金报价真的合理吗？/);
+  assert.match(html, /href="\/zh\/explore\/"/);
+  assert.match(html, /按预算比较首尔街区/);
+  assert.doesNotMatch(html, /id="findDistrict"/);
+  assert.doesNotMatch(html, /id="rentBudget"/);
+  assert.doesNotMatch(html, /id="depositBudget"/);
 });
 
 test('Explorer exposes budget filters and filters neighborhood medians', () => {
@@ -52,7 +47,6 @@ test('Chinese Explorer mirrors budget filtering controls', () => {
   assert.match(app, /maxRent/);
   assert.match(app, /maxDeposit/);
 });
-
 
 test('budget helper keeps only neighborhoods whose medians fit both limits', () => {
   const explorer = require('../explore/explorer-utils.js');

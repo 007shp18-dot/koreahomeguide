@@ -1,374 +1,53 @@
-const findDistrict = document.querySelector("#findDistrict");
-const rentBudget = document.querySelector("#rentBudget");
-const depositBudget = document.querySelector("#depositBudget");
-const homeType = document.querySelector("#homeType");
-const rentCheckForm = document.querySelector("#rentCheckForm");
-const rentCheckArea = document.querySelector("#rentCheckArea");
-const rentCheckType = document.querySelector("#rentCheckType");
-const rentCheckDeposit = document.querySelector("#rentCheckDeposit");
-const rentCheckRent = document.querySelector("#rentCheckRent");
-const rentCheckAreaSqm = document.querySelector("#rentCheckAreaSqm");
-const rentCheckButton = document.querySelector("#rentCheckButton");
-const rentCheckStatus = document.querySelector("#rentCheckStatus");
-const rentCheckResult = document.querySelector("#rentCheckResult");
-const rentCheckRating = document.querySelector("#rentCheckRating");
-const rentCheckConfidence = document.querySelector("#rentCheckConfidence");
-const rentCheckMessage = document.querySelector("#rentCheckMessage");
-const rentCheckMeta = document.querySelector("#rentCheckMeta");
-const rentCheckAsking = document.querySelector("#rentCheckAsking");
-const rentCheckMedian = document.querySelector("#rentCheckMedian");
-const rentCheckDifference = document.querySelector("#rentCheckDifference");
-const rentCheckEvidenceSummary = document.querySelector("#rentCheckEvidenceSummary");
-const rentCheckComparableBody = document.querySelector("#rentCheckComparableBody");
-const rentCheckStudioNote = document.querySelector("#rentCheckStudioNote");
+(function(){
+'use strict';
+const language = document.documentElement.lang === 'zh-CN' ? 'zh-CN' : 'en';
+const locale = language === 'zh-CN' ? 'zh-CN' : 'en-US';
+const zh = language === 'zh-CN';
+const currencySelect=document.querySelector('#currencySelect');
+const currencyInputs=[...document.querySelectorAll('[data-currency-input]')];
+let fxRates={}; let activeInputCurrency='KRW';
+function selectedCurrency(){return currencySelect?currencySelect.value:'KRW';}
+function getInputWon(input){const n=Number(input&&input.dataset.krwValue||0);return Number.isFinite(n)?n:0;}
+function syncCurrencyInput(input){if(!input)return;const won=KHGCurrency.convertToKrw(Number(input.value||0),activeInputCurrency,fxRates);if(won!=null)input.dataset.krwValue=String(Math.round(won));}
+function moneyHtml(won){return KHGCurrency.formatMoneyHtml(won,selectedCurrency(),fxRates,locale);}
+function escapeHtml(value){return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
+function renderCurrencyInputs(currency){if(currency!=='KRW'&&!Number(fxRates[currency]))return false;currencyInputs.forEach(input=>{const won=getInputWon(input);const shown=KHGCurrency.convertFromKrw(won,currency,fxRates);input.value=KHGCurrency.formatInputAmount(shown,currency);input.step=currency==='KRW'?(input.dataset.krwStep||'1'):'1';const ref=document.querySelector(`[data-currency-reference-for="${input.id}"]`);if(ref)ref.textContent=currency==='KRW'?'':`≈ ${KHGCurrency.formatWon(won,locale)}`;});document.querySelectorAll('[data-currency-symbol]').forEach(el=>el.textContent=KHGCurrency.currencySymbol(currency));activeInputCurrency=currency;return true;}
+async function loadFx(){if(!currencySelect)return;currencySelect.disabled=true;try{const r=await fetch('/api/fx');const d=await r.json();if(!r.ok)throw new Error();fxRates=d.rates||{};if(!renderCurrencyInputs(currencySelect.value)){currencySelect.value='KRW';renderCurrencyInputs('KRW');}}catch(_){fxRates={};currencySelect.value='KRW';renderCurrencyInputs('KRW');}finally{currencySelect.disabled=false;}}
+currencyInputs.forEach(input=>input.addEventListener('input',()=>syncCurrencyInput(input)));
+if(currencySelect)currencySelect.addEventListener('change',()=>{currencyInputs.forEach(syncCurrencyInput);if(!renderCurrencyInputs(currencySelect.value))currencySelect.value=activeInputCurrency;});
 
-const currencySelect = document.querySelector("#currencySelect");
-const currencyInputs = [...document.querySelectorAll("[data-currency-input]")];
-let fxRates = {};
-let fxRateDate = null;
-let lastRentCheckData = null;
-let lastPriceItems = null;
-let activeInputCurrency = "KRW";
+const form=document.querySelector('#rentCheckForm');
+const area=document.querySelector('#rentCheckArea');
+const type=document.querySelector('#rentCheckType');
+const deposit=document.querySelector('#rentCheckDeposit');
+const rent=document.querySelector('#rentCheckRent');
+const areaSqm=document.querySelector('#rentCheckAreaSqm');
+const button=document.querySelector('#rentCheckButton');
+const status=document.querySelector('#rentCheckStatus');
+const result=document.querySelector('#rentCheckResult');
+const rating=document.querySelector('#rentCheckRating');
+const confidence=document.querySelector('#rentCheckConfidence');
+const message=document.querySelector('#rentCheckMessage');
+const meta=document.querySelector('#rentCheckMeta');
+const asking=document.querySelector('#rentCheckAsking');
+const median=document.querySelector('#rentCheckMedian');
+const difference=document.querySelector('#rentCheckDifference');
+const summary=document.querySelector('#rentCheckEvidenceSummary');
+const body=document.querySelector('#rentCheckComparableBody');
+const studioNote=document.querySelector('#rentCheckStudioNote');
 
-currencyInputs.forEach((input) => {
-  input.dataset.wonValue = String(Number(input.value || 0));
-  input.dataset.krwStep = input.step || "1";
-});
-if (currencySelect) currencySelect.disabled = true;
+function safeTrack(eventName,params){try{if(typeof window.gtag==='function')window.gtag('event',eventName,params||{});}catch(_){}}
+function trackBase(mapped,data){return{language,source_page:location.pathname,district_code:area.value,property_type:mapped.officialType,rating:data&&data.rating||'',confidence:data&&data.confidence||'',sufficient:data?data.rating!=='insufficient':undefined};}
+function emitResult(data,mapped,depositWon,rentWon,sqm){const detail={language,sourcePage:location.pathname,districtCode:area.value,propertyType:mapped.officialType,depositWon,monthlyRentWon:rentWon,areaSqm:sqm,rating:data.rating||'insufficient',confidence:data.confidence||null,askingValueWon:data.askingValueWon??null,medianValueWon:data.medianValueWon??null,differencePct:data.differencePct??null,comparableCount:Number(data.comparableCount||0),monthsUsed:Number(data.monthsUsed||12),dataThroughMonth:data.dataThroughMonth||null};window.dispatchEvent(new CustomEvent('khg:rent-check-result',{detail}));safeTrack('rent_check_result',trackBase(mapped,data));}
+function applyExplorerPrefill(){if(!window.KHGRentCheckPrefill)return;const prefill=KHGRentCheckPrefill.readRentCheckPrefill(location.search);if(prefill.lawdCd&&[...area.options].some(option=>option.value===prefill.lawdCd))area.value=prefill.lawdCd;if(prefill.type&&[...type.options].some(option=>option.value===prefill.type))type.value=prefill.type;if(Object.prototype.hasOwnProperty.call(prefill,'depositWon'))deposit.dataset.krwValue=String(Math.round(prefill.depositWon));if(Object.prototype.hasOwnProperty.call(prefill,'rentWon'))rent.dataset.krwValue=String(Math.round(prefill.rentWon));if(Object.prototype.hasOwnProperty.call(prefill,'areaSqm'))areaSqm.value=String(prefill.areaSqm);}
+function setStatus(text,state=''){status.textContent=text;status.className=`rent-check-status${state?` ${state}`:''}`;}
+function updateStudio(){studioNote.hidden=type.value!=='studio';}
+function ensureDistributionPanel(){let distribution=document.querySelector('#rentCheckDistribution');if(!distribution){distribution=document.createElement('section');distribution.id='rentCheckDistribution';distribution.className='rent-check-intelligence';distribution.hidden=true;distribution.innerHTML=zh?`<div class="rent-check-evidence-head"><div><strong>公平租金参考</strong><span>基于同一组可比已签约成交的价格分布</span></div></div><div class="rent-check-metrics"><div><span>典型区间（P25–P75）</span><strong id="rentCheckRange">-</strong></div><div><span>在可比成交中的位置</span><strong id="rentCheckPercentile">-</strong></div></div>`:`<div class="rent-check-evidence-head"><div><strong>Fair Rent Intelligence</strong><span>Distribution of the same comparable signed contracts</span></div></div><div class="rent-check-metrics"><div><span>Typical range (P25–P75)</span><strong id="rentCheckRange">-</strong></div><div><span>Position in comparable market</span><strong id="rentCheckPercentile">-</strong></div></div>`;const evidenceHead=result.querySelector('.rent-check-evidence-head');if(evidenceHead)evidenceHead.insertAdjacentElement('beforebegin',distribution);else result.appendChild(distribution);}return{distribution,range:distribution.querySelector('#rentCheckRange'),percentile:distribution.querySelector('#rentCheckPercentile')};}
+function renderDistribution(data){const{distribution,range,percentile}=ensureDistributionPanel();const valid=data.rating!=='insufficient'&&[data.p25ValueWon,data.p75ValueWon,data.percentileRank].every(value=>Number.isFinite(Number(value)));distribution.hidden=!valid;if(!valid){range.textContent='-';percentile.textContent='';return;}range.innerHTML=`${moneyHtml(data.p25ValueWon)} <span aria-hidden="true">–</span> ${moneyHtml(data.p75ValueWon)}`;percentile.textContent=KHGRentCheckUI.percentileSentence(data);}
+function renderRows(items){body.innerHTML=(items&&items.length)?items.map(item=>`<tr><td>${escapeHtml(item.building||'-')}</td><td>${Number(item.areaSqm).toFixed(1)}㎡</td><td>${moneyHtml(item.depositWon)}</td><td>${moneyHtml(item.monthlyRentWon)}</td><td>${KHGDate.formatDate(item.contractDate,locale)}</td></tr>`).join(''):`<tr class="empty-row"><td colspan="5">${zh?'暂时没有足够可靠的可比成交记录。':'No reliable comparable set is available.'}</td></tr>`;}
+function renderResult(data){result.hidden=false;rating.textContent=KHGRentCheckUI.ratingLabel(data.rating);rating.className=`rent-rating ${data.rating||'insufficient'}`;message.textContent=KHGRentCheckUI.resultSentence(data);asking.innerHTML=moneyHtml(data.askingValueWon);median.innerHTML=data.medianValueWon==null?'-':moneyHtml(data.medianValueWon);difference.textContent=data.differencePct==null?'-':KHGRentCheckUI.formatDifference(data.differencePct);if(data.confidence){confidence.hidden=false;confidence.textContent=KHGRentCheckUI.confidenceLabel(data.confidence);confidence.className=`confidence-pill ${data.confidence}`;}else confidence.hidden=true;const count=Number(data.comparableCount||0),months=Number(data.monthsUsed||12);meta.textContent=data.rating==='insufficient'?(zh?`已搜索最近 ${months} 个完整月份，但数据仍不足以做出可靠判断。`:`Searched the latest ${months} completed months; not enough data for a reliable verdict.`):(zh?`${count} 笔可比成交 · 最近 ${months} 个完整月份。`:`${count} comparable contracts · latest ${months} completed months.`);summary.textContent=data.rating==='insufficient'?(zh?`找到 ${count} 笔可能匹配的成交；至少需要 3 笔合适记录才能判断。`:`${count} possible matches found; at least 3 suitable records are required.`):(zh?`${count} 笔已签约成交符合当前比较条件。`:`${count} signed contracts matched the current comparison.`);renderDistribution(data);renderRows(data.comparables||[]);}
 
-function selectedCurrency() {
-  return currencySelect ? currencySelect.value : "KRW";
-}
-
-function moneyHtml(amountWon) {
-  return KHGCurrency.formatMoneyHtml(amountWon, selectedCurrency(), fxRates, "en-US");
-}
-
-function syncCurrencyInput(input) {
-  if (!input) return 0;
-  const won = KHGCurrency.convertToKrw(Number(input.value || 0), activeInputCurrency, fxRates);
-  if (won != null && Number.isFinite(won)) input.dataset.wonValue = String(Math.max(0, won));
-  return Number(input.dataset.wonValue || 0);
-}
-
-function syncCurrencyInputs() {
-  currencyInputs.forEach(syncCurrencyInput);
-}
-
-function getInputWon(input) {
-  return Number(input && input.dataset.wonValue || 0);
-}
-
-function renderCurrencyInputs(currency) {
-  if (currency !== "KRW") {
-    const rate = Number(fxRates[currency]);
-    if (!Number.isFinite(rate) || rate <= 0) return false;
-  }
-  currencyInputs.forEach((input) => {
-    const won = Number(input.dataset.wonValue || 0);
-    const shown = KHGCurrency.convertFromKrw(won, currency, fxRates);
-    if (shown == null) return;
-    input.value = KHGCurrency.formatInputAmount(shown, currency);
-    input.step = currency === "KRW" ? (input.dataset.krwStep || "1") : "1";
-    const reference = document.querySelector(`[data-krw-reference="${input.id}"]`);
-    if (reference) reference.textContent = currency === "KRW" ? "" : `≈ ${KHGCurrency.formatWon(won, "en-US")}`;
-  });
-  document.querySelectorAll("[data-currency-symbol]").forEach((el) => {
-    el.textContent = KHGCurrency.currencySymbol(currency);
-  });
-  activeInputCurrency = currency;
-  return true;
-}
-
-function refreshCurrencyDisplays() {
-  updateCalculator();
-  if (lastRentCheckData) renderRentCheckResult(lastRentCheckData);
-  if (lastPriceItems) renderPriceRows(lastPriceItems);
-}
-
-function activateCurrency(currency) {
-  syncCurrencyInputs();
-  if (!renderCurrencyInputs(currency)) return false;
-  refreshCurrencyDisplays();
-  return true;
-}
-
-async function loadFxRates() {
-  try {
-    const response = await fetch('/api/fx');
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || 'FX unavailable');
-    fxRates = data.rates || {};
-    fxRateDate = data.date || null;
-    if (currencySelect) currencySelect.title = `Reference FX {date} · approximate only`.replace('{date}', fxRateDate ? KHGDate.formatDate(fxRateDate, 'en-US') : "latest");
-    const requested = selectedCurrency();
-    if (!activateCurrency(requested) && currencySelect) {
-      currencySelect.value = "KRW";
-      activateCurrency("KRW");
-    }
-  } catch (error) {
-    fxRates = {};
-    if (currencySelect) {
-      currencySelect.value = "KRW";
-      currencySelect.title = "FX reference temporarily unavailable · KRW mode";
-    }
-    renderCurrencyInputs("KRW");
-    refreshCurrencyDisplays();
-  } finally {
-    if (currencySelect) currencySelect.disabled = false;
-  }
-}
-
-if (currencySelect) {
-  currencySelect.addEventListener('change', () => {
-    const requested = currencySelect.value;
-    if (!activateCurrency(requested)) currencySelect.value = activeInputCurrency;
-  });
-}
-
-function runFindHome() {
-  if (!findDistrict || !homeType) return;
-  const officialHomeType = KHGRentCheckUI.mapRentCheckType(homeType.value).officialType;
-  const params = new URLSearchParams({ lawdCd:findDistrict.value, type:officialHomeType });
-  if (rentBudget && rentBudget.value) params.set('maxRent', rentBudget.value);
-  if (depositBudget && depositBudget.value) params.set('maxDeposit', depositBudget.value);
-  window.location.href = `/explore/?${params.toString()}`;
-}
-
-const findHomeButton = document.querySelector("#searchBtn");
-if (findHomeButton) findHomeButton.addEventListener("click", runFindHome);
-
-// ---- Brokerage + move-in calculator ----
-const calcPropertyType = document.querySelector("#calcPropertyType");
-const calcDeposit = document.querySelector("#deposit");
-const calcRent = document.querySelector("#rent");
-const calcMaintenance = document.querySelector("#maintenance");
-const guaranteeInsurance = document.querySelector("#guaranteeInsurance");
-const movingCleaning = document.querySelector("#movingCleaning");
-
-function updateCalculator() {
-  const depositWon = getInputWon(calcDeposit);
-  const monthlyRentWon = getInputWon(calcRent);
-  const summary = KHGBrokerage.calculateMoveInSummary({
-    propertyType: calcPropertyType.value,
-    depositWon,
-    monthlyRentWon,
-    maintenanceWon: getInputWon(calcMaintenance),
-    guaranteeInsuranceWon: getInputWon(guaranteeInsurance),
-    movingCleaningWon: getInputWon(movingCleaning)
-  });
-  const value100 = Math.max(0, depositWon) + Math.max(0, monthlyRentWon) * 100;
-  document.querySelector("#transactionValueResult").innerHTML = moneyHtml(summary.transactionValueWon);
-  document.querySelector("#transactionFormula").textContent = value100 < 50_000_000
-    ? "Below ₩50M → deposit + monthly rent × 70"
-    : "Deposit + monthly rent × 100";
-  document.querySelector("#brokerageRateResult").textContent = `${(summary.maxRate * 100).toFixed(1)}%`;
-  document.querySelector("#brokerageFeeResult").innerHTML = moneyHtml(summary.brokerageMaxWon);
-  document.querySelector("#calcResult").innerHTML = moneyHtml(summary.moveInCashWon);
-  document.querySelector("#monthlyCostResult").innerHTML = moneyHtml(summary.monthlyRecurringWon);
-}
-
-document.querySelector("#calcForm").addEventListener("submit", e => e.preventDefault());
-[calcDeposit,calcRent,calcMaintenance,guaranteeInsurance,movingCleaning].forEach(el => {
-  el.addEventListener("input", () => { syncCurrencyInput(el); updateCalculator(); });
-  el.addEventListener("change", () => { syncCurrencyInput(el); updateCalculator(); });
-});
-calcPropertyType.addEventListener("change", updateCalculator);
-homeType.addEventListener("change", () => {
-  if (homeType.value === "officetel") calcPropertyType.value = "officetel";
-  else if (homeType.value) calcPropertyType.value = "housing";
-  updateCalculator();
-});
-updateCalculator();
-
-// ---- Compare this rent ----
-function updateRentCheckStudioNote() {
-  if (!rentCheckStudioNote || !rentCheckType) return;
-  rentCheckStudioNote.hidden = rentCheckType.value !== 'studio';
-}
-
-function setRentCheckStatus(message, state = '') {
-  if (!rentCheckStatus) return;
-  rentCheckStatus.textContent = message;
-  rentCheckStatus.className = `rent-check-status${state ? ` ${state}` : ''}`;
-}
-
-function renderRentCheckRows(items) {
-  if (!items || !items.length) {
-    rentCheckComparableBody.innerHTML = '<tr class="empty-row"><td colspan="5">No reliable comparable set is available for this quote.</td></tr>';
-    return;
-  }
-  rentCheckComparableBody.innerHTML = items.map(item => `
-    <tr>
-      <td>${item.building || '-'}</td>
-      <td>${Number.isFinite(Number(item.areaSqm)) ? `${Number(item.areaSqm).toFixed(1)}㎡` : '-'}</td>
-      <td>${moneyHtml(item.depositWon)}</td>
-      <td>${moneyHtml(item.monthlyRentWon)}</td>
-      <td>${KHGDate.formatDate(item.contractDate, 'en-US')}</td>
-    </tr>
-  `).join('');
-}
-
-function renderRentCheckResult(data) {
-  lastRentCheckData = data;
-  rentCheckResult.hidden = false;
-  rentCheckRating.textContent = KHGRentCheckUI.ratingLabel(data.rating);
-  rentCheckRating.className = `rent-rating ${data.rating || 'insufficient'}`;
-  rentCheckMessage.textContent = KHGRentCheckUI.resultSentence(data);
-  rentCheckAsking.innerHTML = moneyHtml(data.askingValueWon);
-  rentCheckMedian.innerHTML = data.medianValueWon == null ? '-' : moneyHtml(data.medianValueWon);
-  rentCheckDifference.textContent = data.differencePct == null ? '-' : KHGRentCheckUI.formatDifference(data.differencePct);
-
-  if (data.confidence) {
-    rentCheckConfidence.hidden = false;
-    rentCheckConfidence.textContent = KHGRentCheckUI.confidenceLabel(data.confidence);
-    rentCheckConfidence.className = `confidence-pill ${data.confidence}`;
-  } else {
-    rentCheckConfidence.hidden = true;
-    rentCheckConfidence.textContent = '';
-  }
-
-  const count = Number(data.comparableCount || 0);
-  const months = Number(data.monthsUsed || 12);
-  rentCheckMeta.textContent = data.rating === 'insufficient'
-    ? `Searched up to ${months} completed months. The dataset is too thin for a reliable judgment.`
-    : `${count} comparable ${count === 1 ? 'contract' : 'contracts'} · last ${months} completed months.`;
-  rentCheckEvidenceSummary.textContent = data.rating === 'insufficient'
-    ? `${count} possible matches found; at least 3 suitable contracts are required.`
-    : `${count} signed contracts matched the selected comparison tier.`;
-  renderRentCheckRows(data.comparables || []);
-}
-
-async function runRentCheck(event) {
-  if (event) event.preventDefault();
-  syncCurrencyInput(rentCheckDeposit);
-  syncCurrencyInput(rentCheckRent);
-  const depositWon = getInputWon(rentCheckDeposit);
-  const rentWon = getInputWon(rentCheckRent);
-  const areaSqm = Number(rentCheckAreaSqm.value);
-  if (!Number.isFinite(depositWon) || depositWon < 0) return setRentCheckStatus('Deposit must be zero or greater.', 'error');
-  if (!Number.isFinite(rentWon) || rentWon < 0) return setRentCheckStatus('Monthly rent must be zero or greater.', 'error');
-  if (!Number.isFinite(areaSqm) || areaSqm <= 0) return setRentCheckStatus('Size must be greater than zero.', 'error');
-
-  const mappedType = KHGRentCheckUI.mapRentCheckType(rentCheckType.value);
-  updateRentCheckStudioNote();
-  setRentCheckStatus('Finding similar official signed contracts…', 'loading');
-  rentCheckButton.disabled = true;
-
-  try {
-    const params = new URLSearchParams({
-      lawdCd: rentCheckArea.value,
-      type: mappedType.officialType,
-      deposit: String(Math.round(depositWon)),
-      rent: String(Math.round(rentWon)),
-      area: String(areaSqm)
-    });
-    const response = await fetch(`/api/rent-check?${params.toString()}`);
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || 'Failed to compare this rent.');
-    renderRentCheckResult(data);
-    setRentCheckStatus(
-      data.rating === 'insufficient'
-        ? 'No market judgment was made because there are too few similar official contracts.'
-        : 'Comparison complete. Review the signed contracts used below.',
-      data.rating === 'insufficient' ? '' : 'success'
-    );
-  } catch (error) {
-    rentCheckResult.hidden = true;
-    setRentCheckStatus(KHGRentCheckUI.humanizeRentCheckError(error.message), 'error');
-  } finally {
-    rentCheckButton.disabled = false;
-  }
-}
-
-if (rentCheckForm) rentCheckForm.addEventListener('submit', runRentCheck);
-[rentCheckDeposit, rentCheckRent].forEach((el) => {
-  if (!el) return;
-  el.addEventListener('input', () => syncCurrencyInput(el));
-  el.addEventListener('change', () => syncCurrencyInput(el));
-});
-if (rentCheckType) rentCheckType.addEventListener('change', updateRentCheckStudioNote);
-updateRentCheckStudioNote();
-
-// ---- Official MOLIT rental transaction data ----
-const priceArea = document.querySelector("#priceArea");
-const priceType = document.querySelector("#priceType");
-const priceMonth = document.querySelector("#priceMonth");
-const priceStatus = document.querySelector("#priceStatus");
-const priceTableBody = document.querySelector("#priceTableBody");
-const loadPricesBtn = document.querySelector("#loadPricesBtn");
-const propertyTabs = [...document.querySelectorAll("[data-price-type]")];
-
-if (priceMonth) {
-  const values = KHGRealPrices.recentCompletedMonths(new Date(), 60);
-  priceMonth.innerHTML = values.map(value => `<option value="${value}">${KHGDate.formatMonth(value, 'en-US')}</option>`).join('');
-  priceMonth.value = KHGRealPrices.previousCompletedMonth(new Date());
-}
-
-function setPriceType(type) {
-  const supported = ["apartment","officetel","villa","detached"];
-  const next = supported.includes(type) ? type : "apartment";
-  priceType.value = next;
-  propertyTabs.forEach(tab => tab.classList.toggle("active", tab.dataset.priceType === next));
-}
-propertyTabs.forEach(tab => tab.addEventListener("click", () => setPriceType(tab.dataset.priceType)));
-setPriceType(priceType.value);
-
-function formatMoneyFromManwon(value) {
-  const num = Number(String(value || "0").replace(/,/g, "").trim());
-  if (!Number.isFinite(num)) return "-";
-  return moneyHtml(num * 10000);
-}
-function typeLabel(type) {
-  return type === "apartment" ? "Apartment" : type === "officetel" ? "Officetel" : type === "detached" ? "Detached / Multi-family" : "Villa / Low-rise (연립·다세대)";
-}
-function renderPriceRows(items) {
-  lastPriceItems = items;
-  if (!items.length) {
-    priceTableBody.innerHTML = `<tr class="empty-row"><td colspan="6">No matching contracts returned for this area and month.</td></tr>`;
-    return;
-  }
-  priceTableBody.innerHTML = items.slice(0,40).map(item => `
-    <tr><td>${item.building || "-"}</td><td>${typeLabel(priceType.value)}</td><td>${item.area ? `${item.area}㎡` : "-"}</td><td>${formatMoneyFromManwon(item.deposit)}</td><td>${formatMoneyFromManwon(item.monthlyRent)}</td><td>${KHGDate.formatDate(item.contractDate, 'en-US')}</td></tr>`).join("");
-}
-
-async function loadRealPrices() {
-  const ym = (priceMonth.value || "").replace("-","");
-  if (!/^\d{6}$/.test(ym)) {
-    priceStatus.textContent = "Choose a valid contract month.";
-    priceStatus.className = "price-status error";
-    return;
-  }
-  priceStatus.textContent = "Loading official signed-rent data...";
-  priceStatus.className = "price-status";
-  loadPricesBtn.disabled = true;
-  try {
-    const url = `/api/real-prices?type=${encodeURIComponent(priceType.value)}&lawdCd=${encodeURIComponent(priceArea.value)}&dealYmd=${encodeURIComponent(ym)}`;
-    const res = await fetch(url);
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Failed to load data.");
-    const allItems = data.items || [];
-    const filteredItems = KHGRealPrices.filterTransactions(allItems, {
-      rentBudgetWon:Number(rentBudget.value || 0),
-      depositBudgetWon:Number(depositBudget.value || 0)
-    });
-    renderPriceRows(filteredItems);
-    const hasBudget = rentBudget.value || depositBudget.value;
-    const studioNote = homeType.value === "studio" && priceType.value === "detached" ? " Studio / one-room is not an official category; Detached / Multi-family (단독·다가구) is used as the closest default unless you know the actual registered housing type." : "";
-    priceStatus.textContent = hasBudget
-      ? `Showing ${filteredItems.length} of ${allItems.length} official contracts matching your search budget.${studioNote}`
-      : `Loaded ${allItems.length} official signed-rent records.${studioNote}`;
-    priceStatus.className = "price-status success";
-  } catch (err) {
-    lastPriceItems = null;
-    const friendlyMessage = KHGApiErrors.humanizePriceError(err.message, priceType.value);
-    priceTableBody.innerHTML = `<tr class="empty-row"><td colspan="6">${friendlyMessage}</td></tr>`;
-    priceStatus.textContent = friendlyMessage;
-    priceStatus.className = "price-status error";
-  } finally {
-    loadPricesBtn.disabled = false;
-  }
-}
-loadPricesBtn.addEventListener("click", loadRealPrices);
-
-loadFxRates();
+if(form)form.addEventListener('submit',async e=>{e.preventDefault();syncCurrencyInput(deposit);syncCurrencyInput(rent);const depositWon=getInputWon(deposit),rentWon=getInputWon(rent),sqm=Number(areaSqm.value);if(!Number.isFinite(sqm)||sqm<=0)return setStatus(zh?'面积必须大于 0。':'Size must be greater than zero.','error');const mapped=KHGRentCheckUI.mapRentCheckType(type.value);updateStudio();setStatus(zh?'正在查找类似的官方成交记录…':'Finding similar official contracts…','loading');button.disabled=true;safeTrack('rent_check_start',trackBase(mapped,null));try{const q=new URLSearchParams({lawdCd:area.value,type:mapped.officialType,deposit:String(Math.round(depositWon)),rent:String(Math.round(rentWon)),area:String(sqm)});const r=await fetch(`/api/rent-check?${q}`);const data=await r.json();if(!r.ok)throw new Error(data.error||(zh?'租金比较失败。':'Rent comparison failed.'));renderResult(data);emitResult(data,mapped,depositWon,rentWon,sqm);setStatus(data.rating==='insufficient'?(zh?'相似的官方成交记录太少，因此没有给出价格判断。':'Too few similar official contracts for a price verdict.'):(zh?'比较完成。':'Comparison complete.'),'success');}catch(err){result.hidden=true;setStatus(KHGRentCheckUI.humanizeRentCheckError(err.message),'error');}finally{button.disabled=false;}});
+if(type)type.addEventListener('change',updateStudio);
+applyExplorerPrefill();updateStudio();loadFx();
+})();

@@ -7,37 +7,34 @@ const app = fs.readFileSync('app.js','utf8');
 const zhHome = fs.readFileSync('zh/index.html','utf8');
 const zhApp = fs.readFileSync('zh/app.js','utf8');
 
-test('homepage positions KoreaHomeGuide as rent understanding before signing, not a listings promise', () => {
-  assert.match(home, /Know the real price before you sign\./);
-  assert.match(home, /official signed rental transactions|signed contracts/i);
-  assert.match(home, /Compare neighborhoods by budget/i);
-  assert.match(home, /Monthly rent budget/i);
-  assert.match(home, /Deposit budget/i);
-  assert.match(home, />Check rents</);
-  assert.match(home, /not live listings or asking prices/i);
+test('homepage positions KoreaHomeGuide as one pre-signing Rent Check funnel, not a listings promise', () => {
+  assert.match(home, /Is your Seoul rent actually fair\?/);
+  assert.match(home, /Official signed transactions/);
+  assert.match(home, /Built for foreign renters/);
+  assert.match(home, />Check my rent</);
+  assert.match(home, /No live listings or asking-price promotion/);
+  assert.match(home, /data-lead-capture/);
   assert.doesNotMatch(home, /Find a home in Seoul/i);
-  assert.doesNotMatch(home, /Neighborhood, station or university/i);
   assert.doesNotMatch(home, /Current listings will be added separately/i);
 });
 
-test('home rent check hands the selected district, type, and optional budgets to Rent Explorer', () => {
-  assert.match(app, /findDistrict/);
-  assert.match(app, /mapRentCheckType\(homeType\.value\)\.officialType/);
-  assert.match(app, /new URLSearchParams\(\{ lawdCd:findDistrict\.value, type:officialHomeType \}\)/);
-  assert.match(app, /params\.set\('maxRent'/);
-  assert.match(app, /params\.set\('maxDeposit'/);
-  assert.match(app, /window\.location\.href = `\/explore\/\?/);
-  assert.doesNotMatch(app, /data-focus=/);
+test('homepage Rent Check stays inline and Explorer becomes the secondary discovery path', () => {
+  assert.match(home, /id="rentCheckForm"/);
+  assert.match(home, /href="\/explore\/"/);
+  assert.doesNotMatch(home, /id="findDistrict"/);
+  assert.doesNotMatch(home, /id="rentBudget"/);
+  assert.doesNotMatch(home, /id="depositBudget"/);
+  assert.match(app, /\/api\/rent-check\?/);
+  assert.match(app, /khg:rent-check-result/);
 });
 
-test('Chinese homepage carries the same pre-signing, budget-based non-listing flow', () => {
-  assert.match(zhHome, /签约前，先了解真实租金/);
-  assert.match(zhHome, /官方.*签约/);
-  assert.match(zhHome, /按预算比较首尔街区/);
-  assert.match(zhHome, /月租预算/);
-  assert.match(zhHome, /押金预算/);
-  assert.match(zhHome, />查看租金</);
-  assert.match(zhHome, /不是实时房源或挂牌报价/);
-  assert.doesNotMatch(zhHome, /找到适合你的家|<span class="eyebrow">找房<\/span>/);
-  assert.match(zhApp, /window\.location\.href = `\/zh\/explore\/\?/);
+test('Chinese homepage carries the same trust -> result -> lead funnel', () => {
+  assert.match(zhHome, /你的首尔租金报价真的合理吗？/);
+  assert.match(zhHome, /韩国官方真实签约成交/);
+  assert.match(zhHome, /检查我的租金/);
+  assert.match(zhHome, /data-lead-capture/);
+  assert.match(zhHome, /href="\/zh\/explore\/"/);
+  assert.doesNotMatch(zhHome, /id="findDistrict"/);
+  assert.match(zhApp, /\/api\/rent-check\?/);
+  assert.match(zhApp, /khg:rent-check-result/);
 });

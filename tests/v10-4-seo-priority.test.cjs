@@ -45,22 +45,24 @@ test('before-you-sign pillar guide exists in EN/ZH with substantive foreign-rent
   assert.match(en, /not legal advice|general information/i);
 });
 
-test('home guide card 03 points to the new before-you-sign pillar page in both locales', () => {
+test('homepage before-you-sign guide card points to the pillar page in both locales', () => {
   const en = read('index.html');
   const zh = read('zh/index.html');
-  assert.match(en, /guide-card-link" href="\/guides\/before-you-sign\/"[\s\S]{0,400}<h3>Before you sign<\/h3>/);
-  assert.match(zh, /guide-card-link" href="\/zh\/guides\/before-you-sign\/"[\s\S]{0,400}<h3>签约前/);
+  assert.match(en, /class="funnel-guide" href="\/guides\/before-you-sign\/"[\s\S]{0,400}<h3>Before you sign<\/h3>/);
+  assert.match(zh, /class="funnel-guide" href="\/zh\/guides\/before-you-sign\/"[\s\S]{0,400}<h3>签约前/);
 });
 
-test('homepage positioning promises rent understanding rather than finding listings', () => {
+test('homepage positioning is a Rent Check trust funnel rather than a listings promise', () => {
   const en = read('index.html');
   const zh = read('zh/index.html');
   assert.match(en, /<title>Seoul Rent Prices & Brokerage Fees, Explained in English \| KoreaHomeGuide<\/title>/);
-  assert.match(en, /<h1>Know the real price before you sign\.<\/h1>/);
-  assert.match(en, />Check rents</);
+  assert.match(en, /<h1>Is your Seoul rent actually fair\?<\/h1>/);
+  assert.match(en, />Check my rent</);
+  assert.match(en, /Official signed transactions/);
   assert.doesNotMatch(en, /Find a home in Seoul/i);
   assert.doesNotMatch(en, /<span class="eyebrow">Find a home<\/span>/i);
-  assert.match(zh, /签约前.*真实租金|签约前.*真实价格/);
+  assert.match(zh, /你的首尔租金报价真的合理吗？/);
+  assert.match(zh, /检查我的租金/);
   assert.doesNotMatch(zh, /找到适合你的家|<span class="eyebrow">找房<\/span>/);
 });
 
@@ -72,7 +74,7 @@ test('common Seoul studio rental brokerage example stays capped at KRW 300,000',
   assert.equal(fee.maxFeeWon, 300_000);
 });
 
-test('five student-heavy districts are supported by provider config and EN/ZH discovery controls', () => {
+test('five student-heavy districts are supported by provider config and EN/ZH Rent Check plus Explorer controls', () => {
   const enHome = read('index.html');
   const enExplore = read('explore/index.html');
   const zhHome = read('zh/index.html');
@@ -88,7 +90,7 @@ test('five student-heavy districts are supported by provider config and EN/ZH di
   }
 });
 
-test('sitemap includes the new EN/ZH pillar guide', () => {
+test('sitemap includes the EN/ZH before-you-sign pillar guide', () => {
   const sitemap = read('sitemap-static.xml');
   assert.match(sitemap, /https:\/\/koreahomeguide\.com\/guides\/before-you-sign\//);
   assert.match(sitemap, /https:\/\/koreahomeguide\.com\/zh\/guides\/before-you-sign\//);

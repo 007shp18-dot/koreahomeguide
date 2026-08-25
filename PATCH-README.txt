@@ -1,104 +1,87 @@
-KoreaHomeGuide v11.3 — MOLIT Regional Runtime Cache
-==================================================
+KoreaHomeGuide — Cold Start Funnel patch
+Date: 2026-08-25
 
-Goal
-----
-Reduce MOLIT HTTP 429 / user-visible SEO 503 errors caused by many Vercel
-serverless instances repeatedly fetching the same completed-month rental data.
+UPLOAD
+------
+Upload the CONTENTS of this folder to the repository root, preserving paths.
 
-Root cause addressed
---------------------
-The existing v11.1 cache coalesces requests only inside one warm serverless
-instance. Crawler requests to many distinct Building URLs are distributed across
-multiple instances, so the same district + property type + completed month is
-fetched repeatedly from MOLIT.
-
-What changes
+WHAT CHANGES
 ------------
-1. Adds Vercel Runtime Cache through @vercel/functions.
-2. Stores parsed MOLIT month rows for 24 hours using stable keys:
-   molit-v1:<rent|sale>:<propertyType>:<lawdCd>:<dealYmd>:<pageSize>
-3. The public API service key is NEVER included in a cache key or cache value.
-4. Keeps the existing 10-minute warm-instance cache and retry/concurrency guard.
-5. Runtime Cache is best-effort only:
-   - cache read failure -> use existing MOLIT path
-   - cache write failure -> still serve successful MOLIT data
-   - upstream failure -> re-check cache once in case another instance populated it
-6. Rental and apartment-sale month fetches use the same regional cache layer.
-7. Custom/mock fetch implementations do not use Vercel Runtime Cache unless a
-   cache provider is explicitly supplied, keeping tests and injected providers isolated.
+1. Homepage becomes a single acquisition funnel
+   Visitor -> Rent Check -> complete result -> email lead -> optional help request.
 
-Files
------
-NEW     package.json
-NEW     lib/runtime-cache.cjs
-MODIFY  lib/real-price-core.cjs
-NEW     tests/v11-3-runtime-cache.test.cjs
+2. Rent Check remains neutral
+   - Full result and comparable contracts appear BEFORE the email form.
+   - No affiliate, referral, sponsored, or paid-placement logic is added.
 
-No changes
+3. Shared lead capture
+   - EN and Simplified Chinese.
+   - Home + standalone Rent Check use the same /lead-capture.js.
+   - Japanese is intentionally NOT shipped yet.
+
+4. New POST /api/lead
+   - Validates email / locale / district / property type / amounts / area.
+   - 16 KB body ceiling.
+   - Same-origin production source guard.
+   - PII-safe server logging.
+   - no-store response caching.
+
+5. Google Sheet lightweight CRM
+   Browser -> /api/lead -> Google Apps Script -> Google Sheet.
+   Webhook URL and secret stay server-side.
+   Apps Script:
+   - validates a shared secret
+   - prevents spreadsheet formula injection
+   - serializes writes with LockService
+   - appends a fixed lead schema.
+
+6. GA4 funnel events, without PII
+   - rent_check_start
+   - rent_check_result
+   - lead_form_view
+   - lead_submit
+   - help_request
+
+7. v12 moving/commerce experiment
+   Its source files are NOT deleted.
+   Moving / SIM / internet / cleaning / insurance / relocation "Coming soon"
+   cards are simply removed from primary homepage attention during Cold Start.
+
+REQUIRED AFTER UPLOAD
+---------------------
+Lead storage will NOT work until Google Sheet / Apps Script is configured.
+
+Follow:
+docs/operations/google-sheet-lead-capture.md
+
+Required Vercel environment variables:
+- LEAD_SHEET_WEBHOOK_URL
+- LEAD_SHEET_SHARED_SECRET
+
+No real secret or real webhook URL is included in this patch.
+
+EMAIL DELIVERY
+--------------
+This patch captures leads in the Sheet, but does NOT implement automated outbound
+email delivery. The UI therefore does not falsely claim that a report was emailed.
+
+VERIFICATION
+------------
+Fresh isolated verification performed before packaging:
+- Core Cold Start + locally reproducible compatibility suite: 51/51 passed.
+- Updated homepage-only compatibility subsets: 6/6 passed.
+- Modified JS/CJS syntax checks: passed.
+- Apps Script syntax check through a temporary .js copy: passed.
+- Browser files contain no Sheet webhook URL or shared secret.
+- Funnel files contain no Wise / affiliate / referral / sponsored / commission CTA.
+- GA tracking sources contain no email/help-message parameter.
+- No Japanese site tree is included.
+
+LIMITATION
 ----------
-- No Rent Check threshold / Fair Rent Intelligence calculation changes
-- No provider aggregation / median / deposit-band calculation changes
-- No MOLIT endpoint changes
-- No API timeout/retry/concurrency changes
-- No SEO canonical/hreflang/sitemap changes
-- No Building noindex quarantine changes
-- No v12 Move Commerce changes
-- No external Redis/KV/database account required
-
-Dependency
-----------
-@vercel/functions is pinned to 3.9.5 in package.json.
-There was no package.json in the project before this patch.
-A package-lock is intentionally not included because this execution environment
-could not reach npm to generate one. Vercel's production build after upload is
-the required verification that dependency installation succeeds.
-
-Cache scope / caveat
---------------------
-Vercel Runtime Cache is regional. The current production deployment runs its
-functions in iad1, so distinct Vercel Function instances in that region can reuse
-the same MOLIT month entries.
-
-Runtime Cache does not provide a documented atomic single-flight lock in this
-implementation. A completely cold burst can therefore still produce more than
-one upstream request before the first cache entry is populated. The goal is to
-collapse repeated crawler traffic after the first successful month fill, not to
-claim that every possible 429 becomes impossible immediately.
-
-Verification performed before packaging
----------------------------------------
-RED:
-- v11.3 tests failed against the v11.2/v12 core because shared-cache functions,
-  adapter, and package metadata did not exist.
-
-GREEN / regression:
-- node --check lib/runtime-cache.cjs
-- node --check lib/real-price-core.cjs
-- node --test tests/v11-1-molit-resilience.test.cjs tests/v11-3-runtime-cache.test.cjs
-
-The focused suite verifies:
-- retry behavior remains intact
-- per-instance concurrency remains capped at 2
-- warm-instance coalescing remains intact
-- failed warm-cache requests are still evicted
-- stable service-key-free regional cache keys
-- cache hit avoids the upstream loader
-- cache miss writes with ttl=86400
-- read/write failures degrade safely
-- rental and apartment-sale paths use the shared layer
-- two simulated cold module instances reuse one shared month result
-
-Upload instructions
--------------------
-Extract the ZIP and upload/overwrite its contents at the GitHub repository root.
-Do not delete unrelated existing files.
-
-After Vercel deploys the commit, verify:
-1. build is READY and @vercel/functions installs successfully
-2. known Dong/Building pages still render
-3. Building remains noindex,follow and Dong remains index,follow
-4. recent runtime 503 and [seo-building-page] HTTP 429 counts fall over the next
-   several minutes as regional month keys populate
-5. do not declare the issue solved from a single short window; compare 2m, 5m,
-   and 10m windows after cache warm-up
+A full repository checkout cannot be created in this environment because outbound
+git clone/network access is blocked. Therefore the entire GitHub test suite was not
+run here. Existing tests whose assertions intentionally conflicted with the approved
+homepage strategy are included with updated expectations. After the user uploads the
+patch, run the repository's normal full test suite / deployment build before treating
+production as verified.

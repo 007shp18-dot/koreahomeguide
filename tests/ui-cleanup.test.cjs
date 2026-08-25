@@ -1,9 +1,9 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
-const {
-  renderBuildingPage
-} = require('../seo/seo-page-renderer.cjs');
+function renderBuildingPage(input) {
+  return require('../seo/seo-page-renderer.cjs').renderBuildingPage(input);
+}
 
 const read = rel => fs.readFileSync(require('node:path').join(__dirname, '..', rel), 'utf8');
 
@@ -23,21 +23,24 @@ function buildingFixture(lang='en') {
   };
 }
 
-test('homepage prioritizes one simple Find a Home action and trims primary navigation', () => {
+test('homepage prioritizes one Rent Check action and keeps secondary discovery visually separate', () => {
   const html = read('index.html');
-  assert.match(html, /Know the real price before you sign\./);
-  assert.match(html, /<nav[^>]*>[\s\S]*Explore[\s\S]*Rent Check[\s\S]*Guides[\s\S]*<\/nav>/);
+  assert.match(html, /Is your Seoul rent actually fair\?/);
+  assert.match(html, /<nav[^>]*>[\s\S]*Rent Check[\s\S]*Explore[\s\S]*Guides[\s\S]*<\/nav>/);
   assert.doesNotMatch(html, /<nav[^>]*>[\s\S]*Real Prices[\s\S]*<\/nav>/);
   assert.doesNotMatch(html, /<nav[^>]*>[\s\S]*Calculator[\s\S]*<\/nav>/);
-  assert.match(html, /class="advanced-filter"/);
-  assert.match(html, /Deposit budget \(optional\)/);
+  assert.match(html, /id="rentCheckForm"/);
+  assert.match(html, /data-lead-capture/);
+  assert.doesNotMatch(html, /class="advanced-filter"/);
+  assert.doesNotMatch(html, /id="findDistrict"/);
 });
 
-test('Chinese homepage mirrors the simplified navigation and optional deposit filter', () => {
+test('Chinese homepage mirrors the Rent Check-first hierarchy', () => {
   const html = read('zh/index.html');
-  assert.match(html, /签约前，先了解真实租金/);
-  assert.match(html, /class="advanced-filter"/);
-  assert.match(html, /押金预算（可选）/);
+  assert.match(html, /你的首尔租金报价真的合理吗？/);
+  assert.match(html, /id="rentCheckForm"/);
+  assert.match(html, /data-lead-capture/);
+  assert.doesNotMatch(html, /class="advanced-filter"/);
   assert.doesNotMatch(html, /<nav[^>]*>[\s\S]*官方租金数据[\s\S]*<\/nav>/);
   assert.doesNotMatch(html, /<nav[^>]*>[\s\S]*计算器[\s\S]*<\/nav>/);
 });
