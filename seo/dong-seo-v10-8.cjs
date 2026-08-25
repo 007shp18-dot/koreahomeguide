@@ -23,6 +23,14 @@ const ZH_PROPERTY_LABELS = Object.freeze({
   apartment:'公寓', officetel:'Officetel（办公住宅）', villa:'低层住宅（联排/多户住宅）', detached:'独栋 / 多户住宅'
 });
 
+const ZH_DISTRICT_LABELS = Object.freeze({
+  'Gangnam-gu':'江南区 (Gangnam-gu)', 'Mapo-gu':'麻浦区 (Mapo-gu)',
+  'Yongsan-gu':'龙山区 (Yongsan-gu)', 'Seongdong-gu':'城东区 (Seongdong-gu)',
+  'Yeongdeungpo-gu':'永登浦区 (Yeongdeungpo-gu)', 'Gwanak-gu':'冠岳区 (Gwanak-gu)',
+  'Dongdaemun-gu':'东大门区 (Dongdaemun-gu)', 'Seodaemun-gu':'西大门区 (Seodaemun-gu)',
+  'Seongbuk-gu':'城北区 (Seongbuk-gu)', 'Gwangjin-gu':'广津区 (Gwangjin-gu)'
+});
+
 function isZh(lang) {
   return String(lang || '').toLowerCase().startsWith('zh');
 }
@@ -59,6 +67,41 @@ function propertyLabel(propertyType, lang) {
   const raw = String(propertyType || '');
   if (isZh(lang)) return ZH_PROPERTY_LABELS[raw] || raw || '住宅';
   return raw || 'rental';
+}
+
+function sixMonthCoverage(value) {
+  const match = String(value || '').match(/^(\d{4})-?(\d{2})$/);
+  if (!match) return '';
+  const endYear = Number(match[1]);
+  const endMonth = Number(match[2]);
+  if (!Number.isInteger(endYear) || endMonth < 1 || endMonth > 12) return '';
+  const start = new Date(Date.UTC(endYear, endMonth - 6, 1));
+  const startKey = `${start.getUTCFullYear()}-${String(start.getUTCMonth() + 1).padStart(2, '0')}`;
+  const endKey = `${endYear}-${String(endMonth).padStart(2, '0')}`;
+  return `${startKey}/${endKey}`;
+}
+
+function localizeZhStructuredData(html, { lang = 'en', dong, districtName, propertyType, summary } = {}) {
+  const source = String(html || '');
+  if (!isZh(lang) || !source.includes('application/ld+json')) return source;
+  return source.replace(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/, (whole, raw) => {
+    let data;
+    try { data = JSON.parse(raw); } catch (_) { return whole; }
+    const graph = Array.isArray(data && data['@graph']) ? data['@graph'] : [];
+    const dataset = graph.find(item => item && item['@type'] === 'Dataset');
+    if (!dataset) return whole;
+    const dongText = dongLabel(dong, 'zh') || '该街区';
+    const districtText = ZH_DISTRICT_LABELS[String(districtName || '')] || String(districtName || '首尔');
+    dataset.name = `${dongText} 租赁成交统计`;
+    dataset.spatialCoverage = [dongText, districtText, '首尔'].filter(Boolean).join(', ');
+    dataset.temporalCoverage = sixMonthCoverage(summary && summary.dataThroughMonth) || '最近6个完整月份';
+    dataset.variableMeasured = `${propertyLabel(propertyType, 'zh')}租金`;
+    if (dataset.isBasedOn && dataset.isBasedOn.creator) {
+      dataset.isBasedOn.creator.name = '韩国国土交通部（Ministry of Land, Infrastructure and Transport）';
+    }
+    const safe = JSON.stringify(data).replace(/</g, '\\u003c');
+    return `<script type="application/ld+json">${safe}</script>`;
+  });
 }
 
 function buildRelatedDongLinks({ areaCode, dong, propertyType, lang = 'en' }) {
@@ -153,7 +196,7 @@ function enhanceDongHtml(html, options = {}) {
   const metrics = coreMetricsHtml(options);
   const snapshot = marketSnapshotHtml(options);
   const nearby = relatedNeighborhoodsHtml(options);
-  let out = source;
+  let out = localizeZhStructuredData(source, options);
   if (!zh) out = out.replace(/ Rent Prices \| Seoul/g, ' Rent Market | Seoul').replace(/ Rent Prices<\/h1>/g, ' Rent Market</h1>');
   out = out.replace(/<section class="seo-grid">[\s\S]*?<\/section><section class="seo-section"><h2>/, `${metrics}<section class="seo-section"><h2>`);
   out = addRecentContractContext(out, options);
@@ -169,6 +212,8 @@ module.exports = {
   coreMetricsHtml,
   marketSnapshotHtml,
   relatedNeighborhoodsHtml,
+  sixMonthCoverage,
+  localizeZhStructuredData,
   transactionTransparencyNoteHtml,
   addRecentContractContext,
   enhanceDongHtml
