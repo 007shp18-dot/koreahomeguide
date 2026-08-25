@@ -32,3 +32,21 @@ test('English and Chinese tool pages link to each other with hreflang', () => {
   assert.match(en, /hreflang="zh-CN"[^>]+\/zh\/tools\/seoul-rent-check\//);
   assert.match(zh, /hreflang="en"[^>]+\/tools\/seoul-rent-check\//);
 });
+
+test('calculator result amounts inherit the large result typography', () => {
+  const css = fs.readFileSync('styles.css', 'utf8');
+  assert.match(css, /\.breakdown-item>span,\.breakdown-item>small\{/);
+  assert.match(css, /\.calc-output>span,\.calc-output>small\{/);
+  assert.doesNotMatch(css, /\.breakdown-item span,\.breakdown-item small\{/);
+  assert.doesNotMatch(css, /\.calc-output span,\.calc-output small\{/);
+});
+
+test('calculator labels and supporting values meet the readable type floor', () => {
+  const css = fs.readFileSync('styles.css', 'utf8');
+  assert.match(css, /\.calculator-card label>span\{[^}]*font-size:12px/);
+  assert.match(css, /\.breakdown-item>span\{[^}]*font-size:11px/);
+  assert.match(css, /\.breakdown-item>small\{[^}]*font-size:11px/);
+  assert.match(css, /\.calc-output>span\{[^}]*font-size:11px/);
+  assert.match(css, /\.calc-output>small\{[^}]*font-size:11px/);
+  assert.match(css, /\.calculator-card \.fx-secondary\{[^}]*font-size:11px/);
+});
