@@ -12,7 +12,7 @@ function responseRecorder() {
   };
 }
 
-test('root sitemap is an index with static pages plus 10 districts x 3 proven property-type child sitemaps', () => {
+test('root sitemap is an index with expanded static pages plus 10 districts x 3 proven property-type child sitemaps', () => {
   const root = fs.readFileSync('sitemap.xml','utf8');
   const staticMap = fs.readFileSync('sitemap-static.xml','utf8');
   assert.match(root, /<sitemapindex/);
@@ -20,7 +20,7 @@ test('root sitemap is an index with static pages plus 10 districts x 3 proven pr
   assert.match(root, /https:\/\/koreahomeguide\.com\/sitemaps\/seoul\/mapo-gu\/villa\//);
   assert.doesNotMatch(root, /\/sitemaps\/seoul\/gwanak-gu\/detached\//);
   assert.equal((root.match(/<sitemap>/g) || []).length, 31);
-  assert.equal((staticMap.match(/<url>/g) || []).length, 46);
+  assert.equal((staticMap.match(/<url>/g) || []).length, 63);
   assert.equal(root.includes('/api/'), false);
 });
 
@@ -33,7 +33,7 @@ test('vercel exposes one shared child-sitemap endpoint without adding static HTM
   assert.match(route.destination, /type=:type/);
 });
 
-test('dynamic market sitemap emits EN/ZH Dong URLs and only index-quality buildings', async () => {
+test('dynamic market sitemap emits EN/ZH Dong URLs for localized districts and only index-quality buildings', async () => {
   const oldKey = process.env.DATA_GO_KR_SERVICE_KEY;
   process.env.DATA_GO_KR_SERVICE_KEY = 'test';
   delete require.cache[require.resolve('../api/sitemap-market.js')];

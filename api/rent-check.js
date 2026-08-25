@@ -1,44 +1,34 @@
-const {
-  tag,
-  normalizeServiceKey,
-  completedMonths,
-  endpointForType,
-  parseItems
-} = require('../lib/real-price-core.cjs');
-const {
-  TIERS,
-  validateRentCheckInput,
-  buildResultForTier
-} = require('../lib/rent-check-core.cjs');
+const { tag, normalizeServiceKey, completedMonths, endpointForType, parseItems } = require('../lib/real-price-core.cjs');
+const { TIERS, validateRentCheckInput, buildResultForTier } = require('../lib/rent-check-core.cjs');
+const { isSupportedAreaCode, isSupportedPropertyType } = require('../providers/seoul-config.cjs');
+const { trustedRequestSource, fetchWithTimeout, DEFAULT_UPSTREAM_TIMEOUT_MS, logApiError } = require('../lib/api-guard.cjs');
 
 const FRIENDLY_UPSTREAM_ERROR = 'Official transaction data is temporarily unavailable. Please try again shortly.';
 
 function parseRentCheckQuery(query = {}) {
   const lawdCd = String(query.lawdCd || '');
   const propertyType = String(query.type || '');
-  if (!/^\d{5}$/.test(lawdCd)) return { ok: false, error: 'Choose a valid Seoul district.' };
-  if (!['apartment', 'officetel', 'villa', 'detached'].includes(propertyType)) {
-    return { ok: false, error: 'Choose a supported property type.' };
-  }
+  if (!isSupportedAreaCode(lawdCd)) return { ok:false, error:'Choose a supported Seoul district.' };
+  if (!isSupportedPropertyType(propertyType)) return { ok:false, error:'Choose a supported property type.' };
   const depositWon = Number(query.deposit);
   const rentWon = Number(query.rent);
   const areaSqm = Number(query.area);
   const validation = validateRentCheckInput({ depositWon, rentWon, areaSqm });
   if (!validation.ok) return validation;
-  return { ok: true, value: { lawdCd, propertyType, ...validation.value } };
+  return { ok:true, value:{ lawdCd, propertyType, ...validation.value } };
 }
 
 async function fetchMonth({ endpoint, serviceKey, lawdCd, dealYmd }) {
   const params = new URLSearchParams({
     serviceKey,
-    LAWD_CD: lawdCd,
-    DEAL_YMD: dealYmd,
-    numOfRows: '1000',
-    pageNo: '1'
+    LAWD_CD:lawdCd,
+    DEAL_YMD:dealYmd,
+    numOfRows:'1000',
+    pageNo:'1'
   });
-  const upstream = await fetch(`${endpoint}?${params.toString()}`, {
-    headers: { Accept: 'application/xml,text/xml,*/*' }
-  });
+  const upstream = await fetchWithTimeout(fetch, `${endpoint}?${params.toString()}`, {
+    headers:{ Accept:'application/xml,text/xml,*/*' }
+  }, DEFAULT_UPSTREAM_TIMEOUT_MS);
   const xml = await upstream.text();
   if (!upstream.ok) throw new Error(FRIENDLY_UPSTREAM_ERROR);
   const resultCode = tag(xml, 'resultCode');
@@ -47,13 +37,14 @@ async function fetchMonth({ endpoint, serviceKey, lawdCd, dealYmd }) {
 }
 
 async function handler(req, res) {
-  if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
+  if (req.method !== 'GET') return res.status(405).json({ error:'Method not allowed' });
+  if (!trustedRequestSource(req)) return res.status(403).json({ error:'Request origin is not allowed.' });
 
   const parsed = parseRentCheckQuery(req.query);
-  if (!parsed.ok) return res.status(400).json({ error: parsed.error });
+  if (!parsed.ok) return res.status(400).json({ error:parsed.error });
 
   const serviceKey = normalizeServiceKey(process.env.DATA_GO_KR_SERVICE_KEY);
-  if (!serviceKey) return res.status(500).json({ error: 'Rent comparison is temporarily unavailable.' });
+  if (!serviceKey) return res.status(500).json({ error:'Rent comparison is temporarily unavailable.' });
 
   const { lawdCd, propertyType, depositWon, rentWon, areaSqm } = parsed.value;
   const endpoint = endpointForType(propertyType);
@@ -67,35 +58,23 @@ async function handler(req, res) {
       const neededMonths = months.slice(fetchedCount, tier.months);
       const groups = await Promise.all(neededMonths.map(dealYmd => fetchMonth({ endpoint, serviceKey, lawdCd, dealYmd })));
       for (const group of groups) {
-        for (const item of group) allItems.push({ ...item, type: propertyType });
+        for (const item of group) allItems.push({ ...item, type:propertyType });
       }
       fetchedCount = tier.months;
 
-      const result = buildResultForTier(allItems, {
-        depositWon,
-        rentWon,
-        areaSqm,
-        referenceDate,
-        propertyType
-      }, tier);
-
+      const result = buildResultForTier(allItems, { depositWon, rentWon, areaSqm, referenceDate, propertyType }, tier);
       if (result.rating !== 'insufficient') {
         res.setHeader('Cache-Control', 's-maxage=900, stale-while-revalidate=3600');
         return res.status(200).json(result);
       }
     }
 
-    const broad = buildResultForTier(allItems, {
-      depositWon,
-      rentWon,
-      areaSqm,
-      referenceDate,
-      propertyType
-    }, TIERS[2]);
+    const broad = buildResultForTier(allItems, { depositWon, rentWon, areaSqm, referenceDate, propertyType }, TIERS[2]);
     res.setHeader('Cache-Control', 's-maxage=900, stale-while-revalidate=3600');
     return res.status(200).json(broad);
-  } catch (_) {
-    return res.status(502).json({ error: FRIENDLY_UPSTREAM_ERROR });
+  } catch (err) {
+    logApiError('rent-check', err, { lawdCd, type:propertyType });
+    return res.status(502).json({ error:FRIENDLY_UPSTREAM_ERROR });
   }
 }
 

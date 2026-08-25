@@ -18,89 +18,28 @@
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <header class="compact-header">
-    <a class="brand" href="/"><span class="brand-mark">K</span><span>KoreaHomeGuide</span></a>
-    <nav>
-      <a href="/explore/">Explore Rents</a>
-      <a href="/tools/seoul-rent-check/">Rent Check</a>
-      <a href="/guides/wolse-vs-jeonse/">Guides</a>
-    </nav>
-    <div class="header-actions">
-      <select id="currencySelect" class="currency-select" aria-label="Display currency"><option value="KRW">KRW</option><option value="USD" selected>USD</option><option value="CNY">CNY</option></select>
-      <a id="languageSwitch" class="language-link" href="/zh/explore/">中文</a>
-    </div>
-  </header>
-
+  <header class="compact-header"><a class="brand" href="/"><span class="brand-mark">K</span><span>KoreaHomeGuide</span></a><nav><a href="/explore/">Explore Rents</a><a href="/tools/seoul-rent-check/">Rent Check</a><a href="/guides/">Guides</a></nav><div class="header-actions"><select id="currencySelect" class="currency-select" aria-label="Display currency"><option value="KRW">KRW</option><option value="USD" selected>USD</option><option value="CNY">CNY</option></select><a id="languageSwitch" class="language-link" href="/zh/explore/">中文</a></div></header>
   <main class="page-shell explorer-page" id="explorerPage">
-    <section class="explorer-hero">
-      <span class="eyebrow">SEOUL RENT EXPLORER</span>
-      <h1>Compare neighborhoods before you choose.</h1>
-      <p>Choose an area and housing type to see what people recently signed for, then drill down to buildings with reported contracts.</p>
-      <div class="explorer-trust">Official signed rental transactions — not live listings.</div>
-    </section>
-
+    <section class="explorer-hero"><span class="eyebrow">SEOUL RENT EXPLORER</span><h1>Compare neighborhoods before you choose.</h1><p>Choose an area and housing type to see what people recently signed for, then drill down to buildings with reported contracts.</p><div class="explorer-trust">Official signed rental transactions — not live listings.</div></section>
     <section class="explorer-search-card" aria-label="Explore Seoul rent data">
-      <label class="field"><span>Area</span><select id="exploreArea"><option value="11680">Gangnam-gu</option><option value="11440">Mapo-gu</option><option value="11170">Yongsan-gu</option><option value="11200">Seongdong-gu</option><option value="11560">Yeongdeungpo-gu</option><option value="11620">Gwanak-gu</option><option value="11230">Dongdaemun-gu</option><option value="11410">Seodaemun-gu</option><option value="11290">Seongbuk-gu</option><option value="11215">Gwangjin-gu</option></select></label>
+      <label class="field"><span>Area</span><select id="exploreArea"><option value="all">All supported Seoul</option><option value="11680">Gangnam-gu</option><option value="11440">Mapo-gu</option><option value="11170">Yongsan-gu</option><option value="11200">Seongdong-gu</option><option value="11560">Yeongdeungpo-gu</option><option value="11620">Gwanak-gu</option><option value="11230">Dongdaemun-gu</option><option value="11410">Seodaemun-gu</option><option value="11290">Seongbuk-gu</option><option value="11215">Gwangjin-gu</option></select></label>
       <label class="field"><span>Property type</span><select id="exploreType"><option value="officetel">Officetel</option><option value="apartment">Apartment</option><option value="villa">Villa / Low-rise (연립·다세대)</option><option value="detached">Detached / Multi-family</option></select></label>
       <label class="field"><span>Monthly rent budget</span><select id="exploreMaxRent"><option value="">Any rent</option><option value="800000">Up to ₩800K</option><option value="1200000">Up to ₩1.2M</option><option value="1800000">Up to ₩1.8M</option><option value="2500000">Up to ₩2.5M</option></select></label>
       <button id="exploreButton" class="search-button" type="button">Compare neighborhoods</button>
       <details class="advanced-filter explorer-advanced-filter"><summary>Deposit budget (optional)</summary><div class="advanced-filter-content"><label class="field"><span>Maximum deposit</span><select id="exploreMaxDeposit"><option value="">Any deposit</option><option value="5000000">Up to ₩5M</option><option value="10000000">Up to ₩10M</option><option value="20000000">Up to ₩20M</option><option value="50000000">Up to ₩50M</option></select></label></div></details>
     </section>
-
-    <div class="explorer-chips" aria-label="Popular Seoul districts">
-      <button type="button" data-explore-area="11680">Gangnam</button>
-      <button type="button" data-explore-area="11440">Mapo</button>
-      <button type="button" data-explore-area="11170">Yongsan</button>
-      <button type="button" data-explore-area="11200">Seongdong</button>
-      <button type="button" data-explore-area="11560">Yeongdeungpo</button>
-    </div>
-
-    <div class="product-layout explorer-product-layout">
-      <div class="product-main">
-<section id="explorerResults" class="explorer-results" aria-live="polite">
-      <div class="explorer-results-head">
-        <div><span class="eyebrow">RECENT SIGNED RENTS</span><h2 id="explorerTitle">Gangnam-gu · Officetel</h2></div>
-        <span id="explorerDataThrough" class="explorer-data-through">Latest completed months</span>
-      </div>
-      <div id="explorerStatus" class="market-status">Loading official rental transactions…</div>
-
-      <div class="explorer-metrics">
-        <div><span>Median monthly rent</span><strong id="metricRent">—</strong><small>Monthly-rent contracts only</small></div>
-        <div><span>Median deposit</span><strong id="metricDeposit">—</strong><small>Monthly-rent contracts only</small></div>
-        <div><span>Signed contracts</span><strong id="metricContracts">—</strong><small>Latest 6 completed months</small></div>
-        <div><span>3-month change</span><strong id="metricChange">—</strong><small>Recent 3 months vs prior 3 months</small></div>
-      </div>
-
-      <section class="dong-section">
-        <div class="building-section-head"><div><span class="eyebrow">COMPARE NEIGHBORHOODS</span><h2>Neighborhoods that fit</h2></div><small id="budgetFilterNote">Open a neighborhood for building-level detail</small></div>
-        <div id="dongList" class="dong-list"><div class="explorer-empty">Loading neighborhoods…</div></div>
+    <div class="explorer-chips" aria-label="Popular Seoul districts"><button type="button" data-explore-area="11680">Gangnam</button><button type="button" data-explore-area="11440">Mapo</button><button type="button" data-explore-area="11170">Yongsan</button><button type="button" data-explore-area="11200">Seongdong</button><button type="button" data-explore-area="11560">Yeongdeungpo</button></div>
+    <div class="product-layout explorer-product-layout"><div class="product-main">
+      <section id="explorerResults" class="explorer-results" aria-live="polite">
+        <div class="explorer-results-head"><div><span class="eyebrow">RECENT SIGNED RENTS</span><h2 id="explorerTitle">Gangnam-gu · Officetel</h2></div><span id="explorerDataThrough" class="explorer-data-through">Latest completed months</span></div>
+        <div id="explorerStatus" class="market-status">Loading official rental transactions…</div>
+        <div class="explorer-metrics"><div><span>Median monthly rent</span><strong id="metricRent">—</strong><small>Monthly-rent contracts only</small></div><div><span>Median deposit</span><strong id="metricDeposit">—</strong><small>Monthly-rent contracts only</small></div><div><span>Signed contracts</span><strong id="metricContracts">—</strong><small>Recent completed months</small></div><div><span>3-month change</span><strong id="metricChange">—</strong><small>Recent 3 months vs prior 3 months</small></div></div>
+        <section class="dong-section"><div class="building-section-head"><div><span class="eyebrow">COMPARE NEIGHBORHOODS</span><h2>Neighborhoods that fit</h2></div><small id="budgetFilterNote">Open a neighborhood for building-level detail</small></div><div id="dongList" class="dong-list"><div class="explorer-empty">Loading neighborhoods…</div></div></section>
+        <section class="building-section" hidden><div class="building-section-head"><div><span class="eyebrow">BUILDINGS</span><h2>Buildings with recent contracts</h2></div><small>Ranked by recent reported contract count</small></div><div class="building-list-head" aria-hidden="true"><span>Building</span><span>Typical size</span><span>Monthly rent</span><span>Deposit</span><span>Contracts</span><span></span></div><div id="buildingList" class="building-list"><div class="explorer-empty">Loading buildings…</div></div></section>
       </section>
-
-      <section class="building-section" hidden>
-        <div class="building-section-head"><div><span class="eyebrow">BUILDINGS</span><h2>Buildings with recent contracts</h2></div><small>Ranked by recent reported contract count</small></div>
-        <div class="building-list-head" aria-hidden="true"><span>Building</span><span>Typical size</span><span>Monthly rent</span><span>Deposit</span><span>Contracts</span><span></span></div>
-        <div id="buildingList" class="building-list"><div class="explorer-empty">Loading buildings…</div></div>
-      </section>
-    </section>
-      </div>
-      <aside class="context-rail" aria-label="Related tools">
-        <section class="context-module soft"><span class="context-kicker">NEXT STEP</span><h3>Already have a quote?</h3><p>Compare the deposit, rent, size, and housing type with recent official contracts.</p><a class="context-link" href="/tools/seoul-rent-check/">Check a rent quote →</a></section>
-        <section class="context-module"><span class="context-kicker">BEFORE YOU SIGN</span><h3>Protect a large deposit</h3><p>Review registry checks, residence reporting, fixed dates, and deposit protection.</p><a class="context-link" href="/guides/before-you-sign/">Read the signing guide →</a></section>
-        <div class="ad-slot" data-slot="sidebar" aria-hidden="true"></div>
-      </aside>
-    </div>
-
-    <section class="explorer-next-step">
-      <div><span class="eyebrow">HAVE A QUOTE?</span><h2>Check the exact rent you were offered.</h2><p>Rent Check compares your deposit, monthly rent, size, and housing type with recent official contracts.</p></div>
-      <a class="explorer-primary-link" href="/tools/seoul-rent-check/">Check a rent quote →</a>
-    </section>
+    </div><aside class="context-rail" aria-label="Related tools"><section class="context-module soft"><span class="context-kicker">NEXT STEP</span><h3>Already have a quote?</h3><p>Compare the deposit, rent, size, and housing type with recent official contracts.</p><a class="context-link" href="/tools/seoul-rent-check/">Check a rent quote →</a></section><section class="context-module"><span class="context-kicker">BEFORE YOU SIGN</span><h3>Protect a large deposit</h3><p>Review registry checks, residence reporting, fixed dates, and deposit protection.</p><a class="context-link" href="/guides/before-you-sign/">Read the signing guide →</a></section><div class="ad-slot" data-slot="sidebar" aria-hidden="true"></div></aside></div>
+    <section class="explorer-next-step"><div><span class="eyebrow">HAVE A QUOTE?</span><h2>Check the exact rent you were offered.</h2><p>Rent Check compares your deposit, monthly rent, size, and housing type with recent official contracts.</p></div><a class="explorer-primary-link" href="/tools/seoul-rent-check/">Check a rent quote →</a></section>
   </main>
-
   <footer class="page-footer"><strong>KoreaHomeGuide</strong><small>Historical signed rental data for market reference, not live listings or brokerage advice. Questions or data issues? <a href="mailto:007shp18@gmail.com">Email us</a>.</small></footer>
-  <script src="/currency-utils.js"></script>
-  <script src="/date-utils.js"></script>
-  <script src="/building-name-utils.js"></script>
-  <script src="/explore/explorer-utils.js"></script>
-  <script src="/explore/app.js"></script>
-</body>
-</html>
+  <script src="/currency-utils.js"></script><script src="/date-utils.js"></script><script src="/building-name-utils.js"></script><script src="/explore/explorer-utils.js"></script><script src="/explore/app.js"></script>
+</body></html>
