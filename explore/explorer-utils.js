@@ -1,8 +1,11 @@
 (function(root, factory) {
-  const api = factory();
+  const catalog = typeof module === 'object' && module.exports
+    ? require('../location-catalog.js')
+    : root.KHGLocations;
+  const api = factory(catalog);
   if (typeof module === 'object' && module.exports) module.exports = api;
   root.KHGExplorer = api;
-})(typeof globalThis !== 'undefined' ? globalThis : this, function() {
+})(typeof globalThis !== 'undefined' ? globalThis : this, function(catalog) {
   const DISTRICT_SLUGS = Object.freeze({
     '11680':'gangnam-gu', '11440':'mapo-gu', '11170':'yongsan-gu', '11200':'seongdong-gu', '11560':'yeongdeungpo-gu', '11620':'gwanak-gu', '11230':'dongdaemun-gu', '11410':'seodaemun-gu', '11290':'seongbuk-gu', '11215':'gwangjin-gu'
   });
@@ -69,77 +72,38 @@
     return `/explore/building/?${params.toString()}`;
   }
 
-  function budgetFitForDong(item, { maxRent = 0, maxDeposit = 0 } = {}) {
+  function filterDongsByBudget(items, { maxRent = 0, maxDeposit = 0 } = {}) {
     const rentLimit = Math.max(0, Number(maxRent) || 0);
     const depositLimit = Math.max(0, Number(maxDeposit) || 0);
-    const bands = Array.isArray(item && item.depositBands) ? item.depositBands : [];
-    const matchesLimit = band => {
-      const rent = Number(band && band.medianMonthlyRentWon);
-      const deposit = Number(band && band.medianDepositWon);
-      if (rentLimit && (!Number.isFinite(rent) || rent > rentLimit)) return false;
-      if (depositLimit && (!Number.isFinite(deposit) || deposit > depositLimit)) return false;
+    return (Array.isArray(items) ? items : []).filter(item => {
+      const bands = Array.isArray(item && item.depositBands) ? item.depositBands : [];
+      if ((rentLimit || depositLimit) && bands.length) {
+        return bands.some(band => {
+          const rent = Number(band.medianMonthlyRentWon);
+          const deposit = Number(band.medianDepositWon);
+          if (rentLimit && (!Number.isFinite(rent) || rent > rentLimit)) return false;
+          if (depositLimit && (!Number.isFinite(deposit) || deposit > depositLimit)) return false;
+          return true;
+        });
+      }
+      if (rentLimit) {
+        const rawRent = item && (item.contextualMedianMonthlyRentWon ?? item.medianMonthlyRentWon);
+        if (rawRent == null || rawRent === '') return false;
+        const rent = Number(rawRent);
+        if (!Number.isFinite(rent) || rent > rentLimit) return false;
+      }
+      if (depositLimit) {
+        const rawDeposit = item && (item.contextualMedianDepositWon ?? item.medianDepositWon);
+        if (rawDeposit == null || rawDeposit === '') return false;
+        const deposit = Number(rawDeposit);
+        if (!Number.isFinite(deposit) || deposit > depositLimit) return false;
+      }
       return true;
-    };
-
-    if (bands.length) {
-      const matches = bands.filter(matchesLimit);
-      if (!matches.length) return { fits:false, matchingContractCount:0, representativeBand:null };
-      const ranked = [...matches].sort((a, b) => {
-        const countDelta = Number(b && b.count || 0) - Number(a && a.count || 0);
-        if (countDelta) return countDelta;
-        const rentDelta = Number(a && a.medianMonthlyRentWon || Infinity) - Number(b && b.medianMonthlyRentWon || Infinity);
-        if (rentDelta) return rentDelta;
-        return Number(a && a.medianDepositWon || Infinity) - Number(b && b.medianDepositWon || Infinity);
-      });
-      return {
-        fits:true,
-        matchingContractCount:matches.reduce((sum, band) => sum + Math.max(0, Number(band && band.count) || 0), 0),
-        representativeBand:ranked[0] || null
-      };
-    }
-
-    const rentRaw = item && (item.contextualMedianMonthlyRentWon ?? item.medianMonthlyRentWon);
-    const depositRaw = item && (item.contextualMedianDepositWon ?? item.medianDepositWon);
-    const rent = rentRaw == null || rentRaw === '' ? NaN : Number(rentRaw);
-    const deposit = depositRaw == null || depositRaw === '' ? NaN : Number(depositRaw);
-    if (rentLimit && (!Number.isFinite(rent) || rent > rentLimit)) return { fits:false, matchingContractCount:0, representativeBand:null };
-    if (depositLimit && (!Number.isFinite(deposit) || deposit > depositLimit)) return { fits:false, matchingContractCount:0, representativeBand:null };
-    return {
-      fits:true,
-      matchingContractCount:Math.max(0, Number(item && item.contractCount) || 0),
-      representativeBand:Number.isFinite(rent) || Number.isFinite(deposit)
-        ? { medianMonthlyRentWon:Number.isFinite(rent) ? rent : null, medianDepositWon:Number.isFinite(deposit) ? deposit : null, count:Number(item && item.contractCount) || 0 }
-        : null
-    };
+    });
   }
 
-  function rankDongsByBudget(items, limits = {}) {
-    const rows = Array.isArray(items) ? items : [];
-    const rentLimit = Math.max(0, Number(limits && limits.maxRent) || 0);
-    const depositLimit = Math.max(0, Number(limits && limits.maxDeposit) || 0);
-    if (!rentLimit && !depositLimit) return [...rows];
-    return rows
-      .map((item, index) => ({ item, index, fit:budgetFitForDong(item, { maxRent:rentLimit, maxDeposit:depositLimit }) }))
-      .filter(entry => entry.fit.fits)
-      .sort((a, b) => {
-        const evidenceDelta = b.fit.matchingContractCount - a.fit.matchingContractCount;
-        if (evidenceDelta) return evidenceDelta;
-        const totalDelta = Number(b.item && b.item.contractCount || 0) - Number(a.item && a.item.contractCount || 0);
-        if (totalDelta) return totalDelta;
-        const ar = Number(a.fit.representativeBand && a.fit.representativeBand.medianMonthlyRentWon);
-        const br = Number(b.fit.representativeBand && b.fit.representativeBand.medianMonthlyRentWon);
-        if (Number.isFinite(ar) && Number.isFinite(br) && ar !== br) return ar - br;
-        return a.index - b.index;
-      })
-      .map(entry => entry.item);
-  }
-
-  function filterDongsByBudget(items, limits = {}) {
-    return rankDongsByBudget(items, limits);
-  }
-
-  function propertyTypeLabel(type) {
-    return ({ apartment:'Apartment', officetel:'Officetel', villa:'Villa / Low-rise (연립·다세대)', detached:'Detached / Multi-family' })[type] || type;
+  function propertyTypeLabel(type, locale = 'en') {
+    return catalog ? catalog.propertyTypeLabel(type, locale) : String(type || '');
   }
 
   return {
@@ -147,8 +111,6 @@
     buildBuildingSeoUrl,
     buildBuildingDetailUrl,
     filterDongsByBudget,
-    budgetFitForDong,
-    rankDongsByBudget,
     propertyTypeLabel,
     stableSuffix
   };

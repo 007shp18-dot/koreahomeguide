@@ -36,6 +36,12 @@ Redeploy production after setting the variables.
 
 ## 5. Verify
 
-Run one Rent Check, submit an email lead, and confirm exactly one new row appears in the `Leads` tab. Then submit the optional help form and confirm a second row with `kind=help_request` and `help_requested=true`.
+Run one Rent Check, submit an email lead, and confirm exactly one new row appears in the `Leads` tab. Submit the same address again with different capitalization or surrounding spaces and confirm that no second row is created. Then submit the optional help form and confirm the existing row changes to `kind=help_request`, `help_requested=true`, and receives an `updated_at` value.
+
+The normalized lowercase email is the unique lead key. A later help request enriches the original row so each person remains a single record. Do not remove the script lock: it prevents simultaneous submissions from racing into duplicate rows.
+
+## 6. Retention and deletion
+
+Keep lead rows for no longer than 12 months unless a shorter legal or operational period applies. Review and delete expired rows monthly. For access, correction, or deletion requests sent to `hello@koreahomeguide.com`, locate the normalized email, remove the row, and document only the completion date outside the lead sheet.
 
 If the webhook is unavailable, Rent Check must continue to show its normal result. Only the lead form should show a temporary storage error.

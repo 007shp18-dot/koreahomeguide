@@ -126,7 +126,7 @@ function renderBuilding(data) {
   const nameDisplay = KHGBuildingNames.getBuildingNameDisplay(data.buildingName, 'en');
   buildingName.textContent = nameDisplay.primary;
   if (buildingOfficialName) { buildingOfficialName.textContent = nameDisplay.secondary; buildingOfficialName.hidden = !nameDisplay.secondary; }
-  buildingMeta.textContent = [data.districtName, data.dong, KHGExplorer.propertyTypeLabel(data.propertyType), 'Seoul'].filter(Boolean).join(' · ');
+  buildingMeta.textContent = [KHGLocations.districtLabel(lawdCd, 'en'), data.dong ? KHGLocations.dongLabel(data.dong, 'en') : '', KHGLocations.propertyTypeLabel(data.propertyType, 'en'), 'Seoul'].filter(Boolean).join(' · ');
   document.title = `${nameDisplay.primary} Rent Data | Seoul Rent Explorer`;
   buildingContracts.textContent = Number(data.contractCount || 0).toLocaleString('en-US');
   buildingNewContracts.textContent = Number(data.newContractMonthlyRentCount || 0).toLocaleString('en-US');
