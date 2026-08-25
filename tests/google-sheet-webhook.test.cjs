@@ -30,3 +30,11 @@ test('Apps Script serializes Sheet writes to avoid duplicate header races', () =
   assert.match(source, /waitLock\(/);
   assert.match(source, /releaseLock\(\)/);
 });
+
+test('Apps Script exposes one locked upsert path for normalized email records', () => {
+  const source = fs.readFileSync('ops/google-apps-script/lead-webhook.gs','utf8');
+  assert.match(source, /function normalizeEmail_\(/);
+  assert.match(source, /function findEmailRow_\(/);
+  assert.match(source, /function upsertLeadRow_\(/);
+  assert.match(source, /'updated_at'/);
+});

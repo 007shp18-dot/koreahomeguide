@@ -1,25 +1,13 @@
 const KHGDate = require('../date-utils.js');
 const { getBuildingNameDisplay } = require('../building-name-utils.js');
+const KHGLocations = require('../location-catalog.js');
 const {
-  dongSlugFromName,
   buildDongSeoUrl,
   buildBuildingSeoUrl,
   buildingSlug
 } = require('./seo-route-utils.cjs');
 
 const ORIGIN = 'https://koreahomeguide.com';
-
-const ZH_DONG_LABELS = Object.freeze({
-  '연남동':'延南洞 (연남동)'
-});
-
-const ZH_DISTRICT_LABELS = Object.freeze({
-  'Gangnam-gu':'江南区 (Gangnam-gu)',
-  'Mapo-gu':'麻浦区 (Mapo-gu)',
-  'Yongsan-gu':'龙山区 (Yongsan-gu)',
-  'Seongdong-gu':'城东区 (Seongdong-gu)',
-  'Yeongdeungpo-gu':'永登浦区 (Yeongdeungpo-gu)'
-});
 
 function isZh(lang) {
   return String(lang || '').toLowerCase().startsWith('zh');
@@ -35,23 +23,19 @@ function jsonForHtml(value) {
   return JSON.stringify(value).replace(/</g, '\\u003c');
 }
 
-function districtDisplay(name, lang) {
-  if (isZh(lang)) return ZH_DISTRICT_LABELS[name] || name;
-  return name;
+function districtDisplay(name, lang, areaCode = '') {
+  const match = KHGLocations.DISTRICTS[String(areaCode || '')]
+    ? String(areaCode)
+    : Object.keys(KHGLocations.DISTRICTS).find(code => KHGLocations.DISTRICTS[code].en === name);
+  return match ? KHGLocations.districtLabel(match, isZh(lang) ? 'zh-CN' : 'en') : String(name || '');
 }
 
 function dongDisplay(dong, lang) {
-  const raw = String(dong || '');
-  if (isZh(lang)) return ZH_DONG_LABELS[raw] || raw;
-  const slug = dongSlugFromName(raw);
-  if (!slug || /[\p{Script=Hangul}]/u.test(slug)) return raw;
-  return slug.charAt(0).toUpperCase() + slug.slice(1);
+  return KHGLocations.dongLabel(dong, isZh(lang) ? 'zh-CN' : 'en');
 }
 
 function propertyDisplay(type, lang) {
-  const en = { apartment:'Apartment', officetel:'Officetel', villa:'Villa / Low-rise (연립·다세대)', detached:'Detached / Multi-family' };
-  const zh = { apartment:'公寓', officetel:'Officetel（办公住宅）', villa:'低层住宅（联排/多户住宅）', detached:'独栋 / 多户住宅' };
-  return (isZh(lang) ? zh : en)[type] || type;
+  return KHGLocations.propertyTypeLabel(type, isZh(lang) ? 'zh-CN' : 'en');
 }
 
 function wonText(amount, lang) {
@@ -106,7 +90,7 @@ function languagePairPaths({ areaCode, dong, propertyType, building }) {
 function pageHead({ lang, title, description, canonicalPath, alternateEn, alternateZh, robots = 'index,follow', jsonLd }) {
   const canonical = `${ORIGIN}${canonicalPath}`;
   const htmlLang = isZh(lang) ? 'zh-CN' : 'en';
-  return `<!doctype html><html lang="${htmlLang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(title)}</title><meta name="description" content="${escapeHtml(description)}"><meta name="robots" content="${escapeHtml(robots)}"><link rel="canonical" href="${escapeHtml(canonical)}"><link rel="alternate" hreflang="en" href="${escapeHtml(`${ORIGIN}${alternateEn}`)}"><link rel="alternate" hreflang="zh-CN" href="${escapeHtml(`${ORIGIN}${alternateZh}`)}"><link rel="alternate" hreflang="x-default" href="${escapeHtml(`${ORIGIN}${alternateEn}`)}"><meta property="og:type" content="website"><meta property="og:title" content="${escapeHtml(title)}"><meta property="og:description" content="${escapeHtml(description)}"><meta property="og:url" content="${escapeHtml(canonical)}"><script async src="https://www.googletagmanager.com/gtag/js?id=G-6SXH5BREDP"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6SXH5BREDP');</script><link rel="stylesheet" href="/styles.css"><style>.seo-page{max-width:1040px;margin:0 auto;padding:42px 22px 72px}.seo-breadcrumbs{font-size:14px;color:#667085;margin-bottom:20px}.seo-breadcrumbs a{color:inherit}.seo-hero h1{font-size:clamp(32px,5vw,54px);line-height:1.04;margin:8px 0 14px}.seo-hero p{max-width:780px;color:#475467;font-size:17px;line-height:1.65}.seo-eyebrow{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}.seo-fresh{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:18px;color:#667085;font-size:13px}.seo-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:28px 0}.seo-card,.seo-section{border:1px solid #e4e7ec;border-radius:18px;background:#fff}.seo-card{padding:18px}.seo-card span{display:block;color:#667085;font-size:13px}.seo-card strong{display:block;font-size:22px;margin-top:8px}.seo-money{display:block}.seo-krw{display:block;color:#667085;font-weight:500;margin-top:3px}.seo-section{padding:24px;margin-top:18px}.seo-section h2{margin:0 0 8px;font-size:24px}.seo-section p{color:#667085}.seo-buildings{display:grid;gap:10px;margin-top:16px}.seo-building-link{display:flex;justify-content:space-between;gap:16px;padding:14px 0;border-top:1px solid #eef0f3;color:inherit;text-decoration:none}.seo-building-link:first-child{border-top:0}.seo-building-link span:last-child{text-align:right;color:#667085}.seo-building-official{display:block;margin-top:3px;color:#667085;font-size:12px;font-weight:600}.seo-table-wrap{overflow-x:auto}.seo-table{width:100%;border-collapse:collapse;min-width:680px}.seo-table th,.seo-table td{padding:12px 10px;border-bottom:1px solid #eef0f3;text-align:left;vertical-align:top}.seo-table th{font-size:12px;color:#667085;text-transform:uppercase}.seo-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}.seo-action{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:12px;border:1px solid #d0d5dd;text-decoration:none;color:#101828;font-weight:700}.seo-action.primary{background:#101828;color:#fff;border-color:#101828}.seo-trend{display:flex;gap:10px;align-items:flex-end;overflow-x:auto;margin-top:18px}.seo-trend-item{min-width:96px;padding:12px;border:1px solid #eef0f3;border-radius:12px}.seo-trend-item strong,.seo-trend-item small{display:block}.seo-footer{margin-top:34px;color:#667085;font-size:13px}.seo-error{max-width:680px;margin:80px auto;padding:0 22px}.seo-error h1{font-size:38px}.seo-error p{color:#667085;line-height:1.6}@media(max-width:760px){.seo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.seo-page{padding-top:28px}.seo-building-link{display:block}.seo-building-link span:last-child{text-align:left;display:block;margin-top:6px}}@media(max-width:420px){.seo-grid{grid-template-columns:1fr}}.seo-building-page{max-width:980px}.seo-building-hero{display:flex;justify-content:space-between;align-items:flex-end;gap:28px;padding:18px 0 6px}.seo-building-title h1{font-size:clamp(36px,5vw,58px);line-height:1.02;letter-spacing:-.045em;margin:8px 0 10px}.seo-building-title p{margin:0;color:#667085}.seo-hero-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.seo-core-metrics{margin:24px 0 18px}.seo-card-primary{border-color:#cfded4;background:#f5f9f6}.seo-card small{display:block;color:#98a2b3;font-size:11px;margin-top:6px}.seo-comparison{display:flex;gap:10px;align-items:baseline;padding:14px 2px 22px;color:#475467}.seo-comparison strong{font-size:13px;color:#344054}.seo-comparison span{font-size:14px}.seo-jump-nav{display:flex;gap:8px;margin:0 0 12px;padding-top:8px;border-top:1px solid #eaecf0}.seo-jump-nav a{padding:9px 12px;border-radius:999px;background:#f2f4f7;color:#475467;font-size:12px;font-weight:700}.seo-market-note{margin:24px 0 0;color:#667085;font-size:12px;line-height:1.6}@media(max-width:760px){.seo-building-hero{align-items:flex-start;flex-direction:column}.seo-hero-actions{justify-content:flex-start}.seo-comparison{align-items:flex-start;flex-direction:column}.seo-jump-nav{overflow-x:auto}}</style>${jsonLd ? `<script type="application/ld+json">${jsonForHtml(jsonLd)}</script>` : ''}</head><body>`;
+  return `<!doctype html><html lang="${htmlLang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(title)}</title><meta name="description" content="${escapeHtml(description)}"><meta name="robots" content="${escapeHtml(robots)}"><link rel="canonical" href="${escapeHtml(canonical)}"><link rel="alternate" hreflang="en" href="${escapeHtml(`${ORIGIN}${alternateEn}`)}"><link rel="alternate" hreflang="zh-CN" href="${escapeHtml(`${ORIGIN}${alternateZh}`)}"><link rel="alternate" hreflang="x-default" href="${escapeHtml(`${ORIGIN}${alternateEn}`)}"><meta property="og:type" content="website"><meta property="og:title" content="${escapeHtml(title)}"><meta property="og:description" content="${escapeHtml(description)}"><meta property="og:url" content="${escapeHtml(canonical)}"><script defer src="/privacy-consent.js"></script><link rel="stylesheet" href="/styles.css"><style>.seo-page{max-width:1040px;margin:0 auto;padding:42px 22px 72px}.seo-breadcrumbs{font-size:14px;color:#667085;margin-bottom:20px}.seo-breadcrumbs a{color:inherit}.seo-hero h1{font-size:clamp(32px,5vw,54px);line-height:1.04;margin:8px 0 14px}.seo-hero p{max-width:780px;color:#475467;font-size:17px;line-height:1.65}.seo-eyebrow{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}.seo-fresh{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:18px;color:#667085;font-size:13px}.seo-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:28px 0}.seo-card,.seo-section{border:1px solid #e4e7ec;border-radius:18px;background:#fff}.seo-card{padding:18px}.seo-card span{display:block;color:#667085;font-size:13px}.seo-card strong{display:block;font-size:22px;margin-top:8px}.seo-money{display:block}.seo-krw{display:block;color:#667085;font-weight:500;margin-top:3px}.seo-section{padding:24px;margin-top:18px}.seo-section h2{margin:0 0 8px;font-size:24px}.seo-section p{color:#667085}.seo-buildings{display:grid;gap:10px;margin-top:16px}.seo-building-link{display:flex;justify-content:space-between;gap:16px;padding:14px 0;border-top:1px solid #eef0f3;color:inherit;text-decoration:none}.seo-building-link:first-child{border-top:0}.seo-building-link span:last-child{text-align:right;color:#667085}.seo-building-official{display:block;margin-top:3px;color:#667085;font-size:12px;font-weight:600}.seo-table-wrap{overflow-x:auto}.seo-table{width:100%;border-collapse:collapse;min-width:680px}.seo-table th,.seo-table td{padding:12px 10px;border-bottom:1px solid #eef0f3;text-align:left;vertical-align:top}.seo-table th{font-size:12px;color:#667085;text-transform:uppercase}.seo-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}.seo-action{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:12px;border:1px solid #d0d5dd;text-decoration:none;color:#101828;font-weight:700}.seo-action.primary{background:#101828;color:#fff;border-color:#101828}.seo-trend{display:flex;gap:10px;align-items:flex-end;overflow-x:auto;margin-top:18px}.seo-trend-item{min-width:96px;padding:12px;border:1px solid #eef0f3;border-radius:12px}.seo-trend-item strong,.seo-trend-item small{display:block}.seo-footer{margin-top:34px;color:#667085;font-size:13px}.seo-error{max-width:680px;margin:80px auto;padding:0 22px}.seo-error h1{font-size:38px}.seo-error p{color:#667085;line-height:1.6}@media(max-width:760px){.seo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.seo-page{padding-top:28px}.seo-building-link{display:block}.seo-building-link span:last-child{text-align:left;display:block;margin-top:6px}}@media(max-width:420px){.seo-grid{grid-template-columns:1fr}}.seo-building-page{max-width:980px}.seo-building-hero{display:flex;justify-content:space-between;align-items:flex-end;gap:28px;padding:18px 0 6px}.seo-building-title h1{font-size:clamp(36px,5vw,58px);line-height:1.02;letter-spacing:-.045em;margin:8px 0 10px}.seo-building-title p{margin:0;color:#667085}.seo-hero-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.seo-core-metrics{margin:24px 0 18px}.seo-card-primary{border-color:#cfded4;background:#f5f9f6}.seo-card small{display:block;color:#98a2b3;font-size:11px;margin-top:6px}.seo-comparison{display:flex;gap:10px;align-items:baseline;padding:14px 2px 22px;color:#475467}.seo-comparison strong{font-size:13px;color:#344054}.seo-comparison span{font-size:14px}.seo-jump-nav{display:flex;gap:8px;margin:0 0 12px;padding-top:8px;border-top:1px solid #eaecf0}.seo-jump-nav a{padding:9px 12px;border-radius:999px;background:#f2f4f7;color:#475467;font-size:12px;font-weight:700}.seo-market-note{margin:24px 0 0;color:#667085;font-size:12px;line-height:1.6}@media(max-width:760px){.seo-building-hero{align-items:flex-start;flex-direction:column}.seo-hero-actions{justify-content:flex-start}.seo-comparison{align-items:flex-start;flex-direction:column}.seo-jump-nav{overflow-x:auto}}</style>${jsonLd ? `<script type="application/ld+json">${jsonForHtml(jsonLd)}</script>` : ''}</head><body>`;
 }
 
 function header(lang, switchPath) {
@@ -115,7 +99,8 @@ function header(lang, switchPath) {
 }
 
 function footer(lang) {
-  return `<footer class="seo-footer"><strong>KoreaHomeGuide</strong> · ${isZh(lang) ? '韩国官方申报租赁成交数据的市场参考。' : 'Official reported rental transaction data for general market reference.'}</footer>`;
+  const zh = isZh(lang);
+  return `<footer class="seo-footer"><strong>KoreaHomeGuide</strong> · ${zh ? '韩国官方申报租赁成交数据的市场参考。' : 'Official reported rental transaction data for general market reference.'} <a href="${zh ? '/zh/privacy/' : '/privacy/'}">${zh ? '隐私说明' : 'Privacy'}</a>.</footer>`;
 }
 
 
@@ -209,7 +194,7 @@ function renderDongPage({ lang = 'en', areaCode, districtName, dong, propertyTyp
   const paths = languagePairPaths({ areaCode, dong, propertyType });
   const canonicalPath = zh ? paths.zh : paths.en;
   const dName = dongDisplay(dong, lang);
-  const district = districtDisplay(districtName, lang);
+  const district = districtDisplay(districtName, lang, areaCode);
   const pLabel = propertyDisplay(propertyType, lang);
   const title = zh ? `${dName} ${pLabel}租金行情 | 首尔` : `${dName} ${pLabel} Rent Prices | Seoul`;
   const description = zh
@@ -245,7 +230,7 @@ function renderBuildingPage({ lang = 'en', areaCode, districtName, dong, propert
   const paths = languagePairPaths({ areaCode, dong, propertyType, building:detail });
   const canonicalPath = zh ? paths.zh : paths.en;
   const dName = dongDisplay(dong, lang);
-  const district = districtDisplay(districtName, lang);
+  const district = districtDisplay(districtName, lang, areaCode);
   const pLabel = propertyDisplay(propertyType, lang);
   const safeBuildingName = detail && detail.buildingName ? detail.buildingName : (zh ? '建筑' : 'Building');
   const buildingNameDisplay = getBuildingNameDisplay(safeBuildingName, lang);

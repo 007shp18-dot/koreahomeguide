@@ -36,7 +36,11 @@ test('English Dong HTML has canonical, hreflang, index metadata, Dataset JSON-LD
   assert.match(html, /<link rel="canonical" href="https:\/\/koreahomeguide\.com\/seoul\/mapo-gu\/yeonnam-dong\/villa\/">/);
   assert.match(html, /hreflang="zh-CN" href="https:\/\/koreahomeguide\.com\/zh\/seoul\/mapo-gu\/yeonnam-dong\/villa\/"/);
   assert.match(html, /"@type":"Dataset"/);
-  assert.match(html, /G-6SXH5BREDP/);
+  assert.match(html, /<script defer src="\/privacy-consent\.js"><\/script>/);
+  assert.doesNotMatch(html, /googletagmanager\.com/);
+  assert.match(html, /Mapo-gu \(마포구\)/);
+  assert.match(html, /Yeonnam-dong \(연남동\)/);
+  assert.match(html, /Low-rise multifamily \/ Villa \(연립·다세대\)/);
   const buildingUrl = routes.buildBuildingSeoUrl({ areaCode:'11440', dong:'연남동', propertyType:'villa', building:buildings[0], lang:'en' });
   assert.ok(html.includes(`href="${buildingUrl}"`));
   assert.match(html, /Jul 31, 2026/);
@@ -48,7 +52,8 @@ test('English Dong HTML has canonical, hreflang, index metadata, Dataset JSON-LD
 test('Chinese Dong HTML is genuinely localized and uses CNY as primary display', () => {
   const html = renderDongPage(base('zh'));
   assert.match(html, /<html lang="zh-CN">/);
-  assert.match(html, /延南洞 \(연남동\)/);
+  assert.match(html, /麻浦区（마포구）/);
+  assert.match(html, /延南洞（연남동）/);
   assert.match(html, /租金行情/);
   assert.match(html, /2026年7月31日/);
   assert.match(html, /¥3,640/); // 700,000 KRW at injected test rate

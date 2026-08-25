@@ -9,12 +9,12 @@ test('English page advertises the Chinese alternate and sitemap lists /zh/', () 
   assert.match(sitemap,/<loc>https:\/\/koreahomeguide\.com\/zh\/<\/loc>/);
 });
 
-test('Chinese cold-start page has localized metadata, GA4, language switch, and rental terminology', () => {
+test('Chinese cold-start page has localized metadata, consent-first analytics, language switch, and rental terminology', () => {
   const html=fs.readFileSync('zh/index.html','utf8');
   assert.match(html,/<html lang="zh-CN">/);
   assert.match(html,/<link rel="canonical" href="https:\/\/koreahomeguide\.com\/zh\/"/);
   assert.match(html,/hreflang="en"[^>]+https:\/\/koreahomeguide\.com\//);
-  assert.match(html,/G-6SXH5BREDP/);
+  assert.match(html,/<script defer src="\/privacy-consent\.js"><\/script>/);
   assert.match(html,/检查这个租金/);
   assert.match(html,/href="\/"[^>]*>EN</);
   assert.match(html,/月租（Wolse）/);

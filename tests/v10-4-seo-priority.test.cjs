@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const { calculateBrokerageFee } = require('../brokerage-utils.js');
 const { SEOUL_DISTRICTS, SEOUL_DISTRICT_SLUGS } = require('../providers/seoul-config.cjs');
+const locations = require('../location-catalog.js');
 
 function read(path){ return fs.readFileSync(path,'utf8'); }
 function text(html){ return html.replace(/<script[\s\S]*?<\/script>/gi,' ').replace(/<style[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&[^;]+;/g,' ').replace(/\s+/g,' ').trim(); }
@@ -83,10 +84,10 @@ test('five student-heavy districts are supported by provider config and EN/ZH Re
     assert.equal(SEOUL_DISTRICTS[code], name, `${code} config`);
     const slug = name.toLowerCase();
     assert.equal(SEOUL_DISTRICT_SLUGS[slug], code, `${slug} slug`);
-    assert.match(enHome, new RegExp(`<option value="${code}">${name}<\\/option>`));
-    assert.match(enExplore, new RegExp(`<option value="${code}">${name}<\\/option>`));
-    assert.match(zhHome, new RegExp(`<option value="${code}">${zhDistrictLabels[code]}<\\/option>`));
-    assert.match(zhExplore, new RegExp(`<option value="${code}">${zhDistrictLabels[code]}<\\/option>`));
+    assert.ok(enHome.includes(`<option value="${code}">${locations.districtLabel(code, 'en')}</option>`));
+    assert.ok(enExplore.includes(`<option value="${code}">${locations.districtLabel(code, 'en')}</option>`));
+    assert.ok(zhHome.includes(`<option value="${code}">${locations.districtLabel(code, 'zh-CN')}</option>`));
+    assert.ok(zhExplore.includes(`<option value="${code}">${locations.districtLabel(code, 'zh-CN')}</option>`));
   }
 });
 

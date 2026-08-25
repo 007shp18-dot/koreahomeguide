@@ -112,9 +112,9 @@ test('apartment provider treats sale API as optional and non-fatal', async () =>
 
 test('property taxonomy distinguishes low-rise rowhouse/multifamily from detached/multi-family', () => {
   assert.ok(PROPERTY_TYPES.includes('detached'));
-  const explorer = fs.readFileSync('explore/explorer-utils.js','utf8');
-  assert.match(explorer, /Villa \/ Low-rise/);
-  assert.match(explorer, /Detached \/ Multi-family/);
+  const catalog = require('../location-catalog.js');
+  assert.equal(catalog.propertyTypeLabel('villa','en'), 'Low-rise multifamily / Villa (연립·다세대)');
+  assert.equal(catalog.propertyTypeLabel('detached','en'), 'Detached & multi-unit house (단독·다가구)');
   const home = fs.readFileSync('index.html','utf8');
   assert.match(home, /value="detached"/);
   const zh = fs.readFileSync('zh/index.html','utf8');
@@ -258,12 +258,12 @@ test('Studio fallback uses the detached/multi-family public category with an exp
   assert.equal(zhUi.mapRentCheckType('studio').officialType, 'detached');
   const en = fs.readFileSync('tools/seoul-rent-check/index.html','utf8');
   const zh = fs.readFileSync('zh/tools/seoul-rent-check/index.html','utf8');
-  assert.match(en, /Detached \/ Multi-family.*closest/i);
+  assert.match(en, /Detached &amp; multi-unit house.*closest/i);
   assert.match(en, /actual registered housing type/i);
-  assert.match(zh, /独栋 \/ 多户住宅/);
+  assert.match(zh, /独栋及多户住宅/);
   assert.match(zh, /实际登记的住宅类型/);
   const app = fs.readFileSync('app.js','utf8');
   const zhApp = fs.readFileSync('zh/app.js','utf8');
-  assert.match(app, /mapRentCheckType\(homeType\.value\)\.officialType/);
-  assert.match(zhApp, /mapRentCheckType\(homeType\.value\)\.officialType/);
+  assert.match(app, /mapRentCheckType\(type\.value\)/);
+  assert.match(zhApp, /mapRentCheckType\(type\.value\)/);
 });

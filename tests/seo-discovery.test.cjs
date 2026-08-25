@@ -12,8 +12,9 @@ test('homepage and sitemap expose guide hubs, expanded market pages, and Rent Ex
   assert.match(zh, /\/zh\/tools\/seoul-rent-check\//);
   assert.match(zh, /\/zh\/guides\/wolse-vs-jeonse\//);
   assert.match(sitemap, /https:\/\/koreahomeguide\.com\/guides\//);
-  assert.match(sitemap, /https:\/\/koreahomeguide\.com\/rent\/gwanak-gu\/apartment\//);
-  assert.equal((sitemap.match(/<url>/g)||[]).length,63);
+  assert.match(sitemap, /https:\/\/koreahomeguide\.com\/privacy\//);
+  assert.match(sitemap, /https:\/\/koreahomeguide\.com\/zh\/privacy\//);
+  assert.equal((sitemap.match(/<url>/g)||[]).length,48);
   assert.equal(sitemap.includes('/api/'),false);
 });
 

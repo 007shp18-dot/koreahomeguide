@@ -2,6 +2,17 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const utils = require('../explore/explorer-utils.js');
+const config = require('../providers/seoul-config.cjs');
+
+test('explorer utility exposes locale-aware housing labels', () => {
+  assert.equal(utils.propertyTypeLabel('villa','en'), 'Low-rise multifamily / Villa (연립·다세대)');
+  assert.equal(utils.propertyTypeLabel('villa','zh-CN'), '低层多户住宅 / Villa（연립·다세대）');
+});
+
+test('provider district codes remain unchanged after catalog adoption', () => {
+  assert.equal(config.SEOUL_DISTRICTS['11680'], 'Gangnam-gu');
+  assert.equal(config.SEOUL_DISTRICT_SLUGS['gangnam-gu'], '11680');
+});
 
 test('explorer page is a sparse, indexable Seoul rent-data surface rather than a listings search', () => {
   const html = fs.readFileSync('explore/index.html','utf8');
@@ -13,7 +24,7 @@ test('explorer page is a sparse, indexable Seoul rent-data surface rather than a
   for (const code of ['11680','11440','11170','11200','11560']) assert.match(html, new RegExp(`value="${code}"`));
   for (const type of ['apartment','officetel','villa']) assert.match(html, new RegExp(`value="${type}"`));
   for (const id of ['metricRent','metricDeposit','metricContracts','metricChange','buildingList']) assert.match(html, new RegExp(`id="${id}"`));
-  assert.match(html, /G-6SXH5BREDP/);
+  assert.match(html, /<script defer src="\/privacy-consent\.js"><\/script>/);
   assert.doesNotMatch(html, /For rent|Book a viewing|Contact landlord/i);
 });
 

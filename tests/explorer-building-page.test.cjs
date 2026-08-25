@@ -9,7 +9,7 @@ test('building detail is a non-indexed historical transaction view with a Rent C
   for (const id of ['buildingName','buildingArea','buildingContracts','buildingNewContracts','buildingJeonse','buildingDepositBands','buildingAreaGroups','buildingContractMix','trendChart','recentBuildingContracts','buildingSalesSection','rentCheckCta']) {
     assert.match(html, new RegExp(`id="${id}"`));
   }
-  assert.match(html, /G-6SXH5BREDP/);
+  assert.match(html, /<script defer src="\/privacy-consent\.js"><\/script>/);
   assert.doesNotMatch(html, /For rent|Book a viewing|Contact landlord/i);
 });
 
