@@ -7,9 +7,17 @@ const { logApiError } = require('../lib/api-guard.cjs');
 const { normalizeGuideHubLinks } = require('../seo/seo-html-postprocess.cjs');
 
 function normalizedLang(value) { return String(value || '').toLowerCase().startsWith('zh') ? 'zh' : 'en'; }
-function sendHtml(res, status, html, { cache = false } = {}) {
+function markBuildingNoindex(html) {
+  const text = String(html || '');
+  if (/<meta\s+name=["']robots["']\s+content=["'][^"']*["']\s*\/?>/i.test(text)) {
+    return text.replace(/<meta\s+name=["']robots["']\s+content=["'][^"']*["']\s*\/?>/i, '<meta name="robots" content="noindex,follow">');
+  }
+  return text.replace('</head>', '<meta name="robots" content="noindex,follow"></head>');
+}
+function sendHtml(res, status, html, { cache = false, noindex = false } = {}) {
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.setHeader('Cache-Control', cache ? 's-maxage=86400, stale-while-revalidate=86400' : (status === 503 ? 'no-store' : 's-maxage=300'));
+  if (noindex) res.setHeader('X-Robots-Tag', 'noindex, follow');
   return res.status(status).send(html);
 }
 
@@ -37,7 +45,7 @@ function createHandler({ providerFactory = options => createKoreaHousingProvider
       ]);
       if (!detail || !summary) return sendHtml(res, 404, renderErrorPage({ lang, status:404 }));
       const html = renderBuildingPage({ lang, areaCode, districtName:SEOUL_DISTRICTS[areaCode], dong, propertyType, summary, detail, fxRates });
-      return sendHtml(res, 200, normalizeGuideHubLinks(html, lang), { cache:true });
+      return sendHtml(res, 200, normalizeGuideHubLinks(markBuildingNoindex(html), lang), { cache:true, noindex:true });
     } catch (err) {
       logApiError('seo-building-page', err, { lawdCd:areaCode, type:propertyType, dong, buildingKey:requestedBuildingSlug });
       return sendHtml(res, 503, renderErrorPage({ lang, status:503 }));
@@ -47,3 +55,4 @@ function createHandler({ providerFactory = options => createKoreaHousingProvider
 const handler = createHandler();
 module.exports = handler;
 module.exports.createHandler = createHandler;
+module.exports.markBuildingNoindex = markBuildingNoindex;

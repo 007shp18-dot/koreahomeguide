@@ -8,6 +8,9 @@ const { logApiError } = require('../lib/api-guard.cjs');
 const { normalizeGuideHubLinks } = require('../seo/seo-html-postprocess.cjs');
 
 function normalizedLang(value) { return String(value || '').toLowerCase().startsWith('zh') ? 'zh' : 'en'; }
+function nofollowBuildingLinks(html) {
+  return String(html || '').replace(/<a class="seo-building-link"(?![^>]*\brel=)/g, '<a class="seo-building-link" rel="nofollow"');
+}
 function sendHtml(res, status, html, { cache = false } = {}) {
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.setHeader('Cache-Control', cache ? 's-maxage=86400, stale-while-revalidate=86400' : (status === 503 ? 'no-store' : 's-maxage=300'));
@@ -35,7 +38,7 @@ function createHandler({ providerFactory = options => createKoreaHousingProvider
       if (!isDongIndexable(summary)) return sendHtml(res, 404, renderErrorPage({ lang, status:404 }));
       const baseHtml = renderDongPage({ lang, areaCode, districtName:SEOUL_DISTRICTS[areaCode], dong, propertyType, summary, buildings, fxRates });
       const enhancedHtml = enhanceDongHtml(baseHtml, { lang, areaCode, districtName:SEOUL_DISTRICTS[areaCode], dong, propertyType, summary });
-      return sendHtml(res, 200, normalizeGuideHubLinks(enhancedHtml, lang), { cache:true });
+      return sendHtml(res, 200, normalizeGuideHubLinks(nofollowBuildingLinks(enhancedHtml), lang), { cache:true });
     } catch (err) {
       logApiError('seo-dong-page', err, { lawdCd:areaCode, type:propertyType, dong });
       return sendHtml(res, 503, renderErrorPage({ lang, status:503 }));
@@ -45,3 +48,4 @@ function createHandler({ providerFactory = options => createKoreaHousingProvider
 const handler = createHandler();
 module.exports = handler;
 module.exports.createHandler = createHandler;
+module.exports.nofollowBuildingLinks = nofollowBuildingLinks;

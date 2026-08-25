@@ -1,8 +1,8 @@
 const { normalizeServiceKey } = require('../lib/real-price-core.cjs');
 const { createKoreaHousingProvider } = require('../providers/korea-provider.cjs');
 const { districtCodeFromSlug, isSupportedPropertyType } = require('../providers/seoul-config.cjs');
-const { buildDongSeoUrl, buildBuildingSeoUrl } = require('../seo/seo-route-utils.cjs');
-const { isBuildingIndexable, ORIGIN } = require('../seo/seo-page-renderer.cjs');
+const { buildDongSeoUrl } = require('../seo/seo-route-utils.cjs');
+const { ORIGIN } = require('../seo/seo-page-renderer.cjs');
 const { isDongIndexable, MIN_DONG_CONTRACTS } = require('../seo/dong-seo-v10-8.cjs');
 const { logApiError } = require('../lib/api-guard.cjs');
 
@@ -31,21 +31,12 @@ function createHandler({ providerFactory = options => createKoreaHousingProvider
     if (!serviceKey) return sendXml(res, 503, urlset([]));
     try {
       const provider = providerFactory({ serviceKey, referenceDate:referenceDate || new Date() });
-      const [dongs, buildings] = await Promise.all([
-        provider.getDongs({ areaCode, propertyType, months:6 }),
-        provider.getBuildings({ areaCode, propertyType, months:6 })
-      ]);
+      const dongs = await provider.getDongs({ areaCode, propertyType, months:6 });
       const eligibleDongs = (Array.isArray(dongs) ? dongs : []).filter(item => item && item.dong && isDongIndexable(item));
-      const eligibleDongNames = new Set(eligibleDongs.map(item => item.dong));
       const urls = [];
       for (const item of eligibleDongs) {
         urls.push(absoluteUrl(buildDongSeoUrl({ areaCode, dong:item.dong, propertyType, lang:'en' })));
         if (supportsZhIndexing(areaCode)) urls.push(absoluteUrl(buildDongSeoUrl({ areaCode, dong:item.dong, propertyType, lang:'zh' })));
-      }
-      for (const item of (Array.isArray(buildings) ? buildings : [])) {
-        if (!item || !eligibleDongNames.has(item.dong) || !isBuildingIndexable(item)) continue;
-        urls.push(absoluteUrl(buildBuildingSeoUrl({ areaCode, dong:item.dong, propertyType, building:item, lang:'en' })));
-        if (supportsZhIndexing(areaCode)) urls.push(absoluteUrl(buildBuildingSeoUrl({ areaCode, dong:item.dong, propertyType, building:item, lang:'zh' })));
       }
       return sendXml(res, 200, urlset(urls), true);
     } catch (err) {
