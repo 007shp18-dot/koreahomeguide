@@ -12,17 +12,23 @@ function createKoreaHousingProvider({
   const cache = new Map();
   const saleCache = new Map();
 
+  async function fetchMonthsSequentially(keys, fetcher) {
+    const batches = [];
+    for (const dealYmd of keys) batches.push(await fetcher(dealYmd));
+    return batches.flat();
+  }
+
   async function rowsFor({ areaCode, propertyType, months = 6 }) {
     const keys = completedMonths(referenceDate, months);
     const cacheKey = `${areaCode}:${propertyType}:${keys.join(',')}`;
     if (!cache.has(cacheKey)) {
-      const promise = Promise.all(keys.map(dealYmd => fetchMonth({
+      const promise = fetchMonthsSequentially(keys, dealYmd => fetchMonth({
         serviceKey,
         type:propertyType,
         lawdCd:areaCode,
         dealYmd,
         fetchImpl
-      }))).then(batches => batches.flat());
+      }));
       cache.set(cacheKey, promise);
     }
     return cache.get(cacheKey);
@@ -33,13 +39,13 @@ function createKoreaHousingProvider({
     const keys = completedMonths(referenceDate, months);
     const cacheKey = `${areaCode}:${propertyType}:sale:${keys.join(',')}`;
     if (!saleCache.has(cacheKey)) {
-      const promise = Promise.all(keys.map(dealYmd => fetchSaleMonth({
+      const promise = fetchMonthsSequentially(keys, dealYmd => fetchSaleMonth({
         serviceKey,
         type:propertyType,
         lawdCd:areaCode,
         dealYmd,
         fetchImpl
-      }))).then(batches => batches.flat());
+      }));
       saleCache.set(cacheKey, promise);
     }
     return saleCache.get(cacheKey);

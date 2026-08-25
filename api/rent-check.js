@@ -1,9 +1,7 @@
 const {
-  tag,
   normalizeServiceKey,
   completedMonths,
-  endpointForType,
-  parseItems
+  fetchRentalMonth
 } = require('../lib/real-price-core.cjs');
 const {
   TIERS,
@@ -28,25 +26,8 @@ function parseRentCheckQuery(query = {}) {
   return { ok: true, value: { lawdCd, propertyType, ...validation.value } };
 }
 
-async function fetchMonth({ endpoint, serviceKey, lawdCd, dealYmd }) {
-  const params = new URLSearchParams({
-    serviceKey,
-    LAWD_CD: lawdCd,
-    DEAL_YMD: dealYmd,
-    numOfRows: '1000',
-    pageNo: '1'
-  });
-  const upstream = await fetch(`${endpoint}?${params.toString()}`, {
-    headers: { Accept: 'application/xml,text/xml,*/*' }
-  });
-  const xml = await upstream.text();
-  if (!upstream.ok) throw new Error(FRIENDLY_UPSTREAM_ERROR);
-  const resultCode = tag(xml, 'resultCode');
-  if (resultCode && resultCode !== '00' && resultCode !== '000') throw new Error(FRIENDLY_UPSTREAM_ERROR);
-  return parseItems(xml, null);
-}
-
-async function handler(req, res) {
+function createHandler({ fetchMonth = fetchRentalMonth, now = () => new Date() } = {}) {
+  return async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
 
   const parsed = parseRentCheckQuery(req.query);
@@ -56,8 +37,7 @@ async function handler(req, res) {
   if (!serviceKey) return res.status(500).json({ error: 'Rent comparison is temporarily unavailable.' });
 
   const { lawdCd, propertyType, depositWon, rentWon, areaSqm } = parsed.value;
-  const endpoint = endpointForType(propertyType);
-  const referenceDate = new Date();
+  const referenceDate = now();
   const months = completedMonths(referenceDate, 12);
   const allItems = [];
   let fetchedCount = 0;
@@ -65,8 +45,8 @@ async function handler(req, res) {
   try {
     for (const tier of TIERS) {
       const neededMonths = months.slice(fetchedCount, tier.months);
-      const groups = await Promise.all(neededMonths.map(dealYmd => fetchMonth({ endpoint, serviceKey, lawdCd, dealYmd })));
-      for (const group of groups) {
+      for (const dealYmd of neededMonths) {
+        const group = await fetchMonth({ serviceKey, type:propertyType, lawdCd, dealYmd });
         for (const item of group) allItems.push({ ...item, type: propertyType });
       }
       fetchedCount = tier.months;
@@ -97,8 +77,11 @@ async function handler(req, res) {
   } catch (_) {
     return res.status(502).json({ error: FRIENDLY_UPSTREAM_ERROR });
   }
+  };
 }
 
+const handler = createHandler();
 module.exports = handler;
+module.exports.createHandler = createHandler;
 module.exports.parseRentCheckQuery = parseRentCheckQuery;
 module.exports.FRIENDLY_UPSTREAM_ERROR = FRIENDLY_UPSTREAM_ERROR;
