@@ -10,10 +10,11 @@ Changes
 - Calculator labels and supporting converted values use a more readable size and contrast.
 - Standalone Rent Check uses a three-column layout inside the product content area.
 - Rent Check amount/size inputs can shrink without clipping the value or unit.
+- Homepage primary Rent Check CTA sits 6px closer to the hero copy.
 - Every public "Email us" mailto link now points to hello@koreahomeguide.com.
 
 Verification
-- Focused regression suite: 14 passed, 0 failed.
+- Focused regression suite: 17 passed, 0 failed.
 - No public HTML file contains 007shp18@gmail.com.
 
 Note

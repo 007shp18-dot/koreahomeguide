@@ -19,3 +19,9 @@ for (const [file, primary, secondary] of [
     assert.doesNotMatch(html,/class="intent-card/);
   });
 }
+
+test('homepage primary CTA sits closer to the hero copy', () => {
+  const css=read('cold-start.css');
+  const rule=(css.match(/\.funnel-hero \.hero-actions\{([^}]*)\}/)||[])[1]||'';
+  assert.match(rule,/margin-top:20px/);
+});
