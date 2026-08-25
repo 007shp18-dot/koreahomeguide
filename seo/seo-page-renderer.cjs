@@ -208,8 +208,11 @@ function renderDongPage({ lang = 'en', areaCode, districtName, dong, propertyTyp
     const href = buildBuildingSeoUrl({ areaCode, dong, propertyType, building:item, lang });
     const name = getBuildingNameDisplay(item.buildingName, lang);
     const band = representativeBand(item);
-    const context = band ? `${escapeHtml(depositRangeText(band, lang))} → ${escapeHtml(wonText(band.medianMonthlyRentWon, lang))}` : (Number(item.medianJeonseDepositWon) > 0 ? `${zh ? '全租' : 'Jeonse'} ${escapeHtml(wonText(item.medianJeonseDepositWon, lang))}` : '—');
-    return `<a class="seo-building-link" href="${escapeHtml(href)}"><span><strong>${escapeHtml(name.primary)}</strong>${name.secondary ? `<small class="seo-building-official">${escapeHtml(name.secondary)}</small>` : ''}<small>${escapeHtml(areaText(item.typicalAreaSqm))} · ${numberText(item.contractCount, lang)} ${zh ? '笔成交' : 'contracts'}</small></span><span>${context}</span></a>`;
+    const depositContext = band
+      ? escapeHtml(depositRangeText(band, lang))
+      : (Number(item.medianJeonseDepositWon) > 0 ? escapeHtml(wonText(item.medianJeonseDepositWon, lang)) : '—');
+    const rentContext = band ? escapeHtml(wonText(band.medianMonthlyRentWon, lang)) : '—';
+    return `<a class="seo-building-link" href="${escapeHtml(href)}"><div class="seo-building-main"><strong>${escapeHtml(name.primary)}</strong>${name.secondary ? `<small class="seo-building-official">${escapeHtml(name.secondary)}</small>` : ''}<div class="seo-building-meta"><span>${escapeHtml(areaText(item.typicalAreaSqm))}</span><span>${numberText(item.contractCount, lang)} ${zh ? '笔成交' : 'contracts'}</span></div></div><div class="seo-building-price-context"><div><span class="seo-context-label">${zh ? '押金' : 'Deposit'}</span><strong>${depositContext}</strong></div><div><span class="seo-context-label">${zh ? '月租' : 'Monthly rent'}</span><strong>${rentContext}</strong></div></div></a>`;
   }).join('');
   const exploreParams = new URLSearchParams({ lawdCd:String(areaCode), type:String(propertyType), dong:String(dong) }).toString();
   const rentCheckPath = `${zh ? '/zh' : ''}/tools/seoul-rent-check/?${new URLSearchParams({ lawdCd:String(areaCode), type:String(propertyType) }).toString()}`;
