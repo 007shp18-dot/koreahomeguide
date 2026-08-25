@@ -1,22 +1,26 @@
-KoreaHomeGuide v10.8 Dong SEO patch
+KoreaHomeGuide v10.8.1 patch
 
 Replace/add these repository files preserving paths:
-- providers/seoul-config.cjs (replace)
-- seo/dong-seo-v10-8.cjs (add)
-- api/seo-dong-page.js (replace)
-- api/sitemap-market.js (replace)
-- tests/v10-8-dong-seo.test.cjs (add)
+- seo/dong-seo-v10-8.cjs (replace)
+- tests/v10-8-1-dong-seo.test.cjs (add)
 
 What changes:
-- Dong quality gate aligned at >= 3 contracts for page + sitemap
-- Search-first 4 metrics: recent contracts / median monthly rent / median deposit / median size
-- Data-driven Market snapshot section
-- Same-district curated Nearby neighborhoods internal links
-- EN title shifts from Rent Prices to Rent Market; ZH remains localized
-- Existing MOLIT/provider calculations and routing are untouched
+- Completes Chinese localization for the new Market snapshot and Nearby neighborhoods modules.
+- Adds Chinese labels for curated Dong names used by internal links.
+- Localizes property-type wording in the Chinese market snapshot.
+- Does NOT heuristically delete duplicate-looking MOLIT rows.
+- Adds an explicit transparency note explaining that identical-looking rows may represent separate reported contracts.
+- Adds Floor to recent-contract tables when floor data is available, making apparently identical contracts easier to distinguish.
 
-Verification run in isolated harness:
-node --test tests/v10-8-dong-seo.test.cjs
-node --check on all changed JS/CJS files
+Duplicate-audit conclusion:
+- Current MOLIT rental response/docs do not provide a sufficiently stable transaction ID for safe heuristic deduplication.
+- Therefore matching building/date/size/deposit/rent alone is NOT used as a deletion criterion.
 
-Note: ChatGPT's connected GitHub integration returned HTTP 403 for both Contents and Git object write endpoints, so this patch could not be pushed automatically in this session.
+Verification:
+- node --test tests/v10-8-dong-seo.test.cjs tests/v10-8-1-dong-seo.test.cjs
+- 8/8 tests passed
+- node --check seo/dong-seo-v10-8.cjs
+- syntax checks passed
+
+Note:
+ChatGPT's connected GitHub integration still returns HTTP 403 for write operations, so this patch could not be pushed automatically.
