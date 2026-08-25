@@ -27,19 +27,15 @@ const backToExplore = document.querySelector('#backToExplore');
 let fxRates = {};
 let buildingData = null;
 
-const DISTRICT_NAMES = { '11680':'江南区', '11440':'麻浦区', '11170':'龙山区', '11200':'城东区', '11560':'永登浦区', '11620':'冠岳区', '11230':'东大门区', '11410':'西大门区', '11290':'城北区', '11215':'广津区' };
-const TYPE_NAMES = { apartment:'公寓', officetel:'Officetel', villa:'低层住宅（联排/多户住宅）', detached:'独栋 / 多户住宅' };
-const DONG_NAMES_ZH = { '연남동':'延南洞 (연남동)', '서교동':'西桥洞 (서교동)', '망원동':'望远洞 (망원동)', '합정동':'合井洞 (합정동)', '역삼동':'驿三洞 (역삼동)', '논현동':'论岘洞 (논현동)', '청담동':'清潭洞 (청담동)', '삼성동':'三成洞 (삼성동)', '한남동':'汉南洞 (한남동)', '이태원동':'梨泰院洞 (이태원동)', '성수동1가':'圣水洞1街 (성수동1가)', '성수동2가':'圣水洞2街 (성수동2가)', '여의도동':'汝矣岛洞 (여의도동)', '당산동':'堂山洞 (당산동)' };
-
 function selectedCurrency() { return currencySelect ? currencySelect.value : 'CNY'; }
 function moneyHtml(amountWon) {
   if (amountWon == null) return '<span class="money-primary">数据不足</span>';
   return KHGCurrency.formatMoneyHtml(amountWon, selectedCurrency(), fxRates, 'zh-CN');
 }
 function formatArea(value) { return value == null ? '数据不足' : `${Number(value).toFixed(1)}㎡`; }
-function districtName() { return DISTRICT_NAMES[lawdCd] || '首尔'; }
-function typeName() { return TYPE_NAMES[type] || KHGExplorer.propertyTypeLabel(type); }
-function dongDisplayName(dong) { return DONG_NAMES_ZH[dong] || dong; }
+function districtName() { return KHGLocations.districtLabel(lawdCd, 'zh-CN') || '首尔'; }
+function typeName() { return KHGLocations.propertyTypeLabel(type, 'zh-CN'); }
+function dongDisplayName(dong) { return KHGLocations.dongLabel(dong, 'zh-CN'); }
 function contextParams(data = {}) {
   const params = new URLSearchParams({ lawdCd, type });
   const dong = data.dong || requestedDong;

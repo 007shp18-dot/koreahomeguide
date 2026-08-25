@@ -1,22 +1,12 @@
-KoreaHomeGuide calculator readability + contact patch
+KoreaHomeGuide UI fixes included in the consolidated patch
 Date: 2026-08-25
 
-Apply
-1. Extract this ZIP over the repository root, preserving paths.
-2. Commit and deploy through the existing workflow.
+- Calculator result values retain large typography and readable supporting labels.
+- Standalone Rent Check uses a container-safe responsive layout.
+- Currency and size units no longer squeeze the user-entered value.
+- Homepage Rent Check CTA spacing is tightened.
+- Public contact links use hello@koreahomeguide.com.
+- Lead capture email/help forms no longer clip or expose hidden form content.
 
-Changes
-- Brokerage calculator result amounts now retain their intended large typography.
-- Calculator labels and supporting converted values use a more readable size and contrast.
-- Standalone Rent Check uses a three-column layout inside the product content area.
-- Rent Check amount/size inputs can shrink without clipping the value or unit.
-- Homepage primary Rent Check CTA sits 6px closer to the hero copy.
-- Every public "Email us" mailto link now points to hello@koreahomeguide.com.
-
-Verification
-- Focused regression suite: 17 passed, 0 failed.
-- No public HTML file contains 007shp18@gmail.com.
-
-Note
-The reconstructed source bundle has four pre-existing full-suite failures unrelated to
-this patch (legacy navigation/sitemap expectations and a missing lib/api-guard.cjs).
+These fixes are included in PATCH-README.txt and in the full verified project archive.
+Verification: 253 tests passed, 0 failed; JavaScript/CommonJS syntax checks passed.
