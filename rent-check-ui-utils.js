@@ -167,33 +167,34 @@
     return p25 >= 0 && p75 >= p25 && rank >= 0 && rank <= 100;
   }
 
-  function pricePositionModel(result) {
+  function marketPositionModel(result) {
     if (!result || !['below','fair','above'].includes(result.rating)) return null;
-    const rawValues = [result.p25ValueWon, result.medianValueWon, result.p75ValueWon, result.askingValueWon];
+    const rawValues = [result.p25ValueWon, result.p75ValueWon, result.askingValueWon];
     if (!rawValues.every(isNumericValue)) return null;
     const p25 = Number(result.p25ValueWon);
-    const median = Number(result.medianValueWon);
     const p75 = Number(result.p75ValueWon);
     const asking = Number(result.askingValueWon);
-    if ([p25, median, p75, asking].some(value => value < 0) || p25 > median || median > p75) return null;
-    if (p25 === p75) {
-      return {
-        medianPct:50,
-        quotePct:asking < p25 ? 0 : asking > p75 ? 100 : 50,
-        relation:asking < p25 ? 'below' : asking > p75 ? 'above' : 'within'
-      };
-    }
-    const position = value => Math.round(Math.max(0, Math.min(100, ((value - p25) / (p75 - p25)) * 100)) * 10) / 10;
-    return {
-      medianPct:position(median),
-      quotePct:position(asking),
-      relation:asking < p25 ? 'below' : asking > p75 ? 'above' : 'within'
-    };
+    if ([p25, p75, asking].some(value => value < 0) || p25 > p75) return null;
+    const relation = asking < p25 ? 'below' : asking > p75 ? 'above' : 'within';
+    const expectedRating = relation === 'within' ? 'fair' : relation;
+    if (result.rating !== expectedRating) return null;
+    const gapWon = relation === 'below' ? p25 - asking : relation === 'above' ? asking - p75 : 0;
+    const spread = Math.max(p75 - p25, Math.max(p25, p75) * .1, 1);
+    let quotePct = 50;
+    if (relation === 'within' && p75 > p25) quotePct = 28 + ((asking - p25) / (p75 - p25)) * 44;
+    if (relation === 'below') quotePct = 28 - Math.min(24, (gapWon / spread) * 24);
+    if (relation === 'above') quotePct = 72 + Math.min(24, (gapWon / spread) * 24);
+    quotePct = Math.round(quotePct * 10) / 10;
+    if (relation === 'below') quotePct = Math.min(26, quotePct);
+    if (relation === 'above') quotePct = Math.max(74, quotePct);
+    return { quotePct, relation, gapWon };
   }
 
-  function priceMarkerCollision(model) {
-    if (!model || !isNumericValue(model.medianPct) || !isNumericValue(model.quotePct)) return false;
-    return Math.abs(Number(model.medianPct) - Number(model.quotePct)) < 20;
+  function marketPositionSummary(model) {
+    if (!model) return '';
+    if (model.relation === 'above') return 'above the upper end of the typical range';
+    if (model.relation === 'below') return 'below the lower end of the typical range';
+    return 'inside the typical range';
   }
 
   function evidenceFacts(result) {
@@ -241,8 +242,8 @@
     formatWon,
     formatDifference,
     hasDistribution,
-    pricePositionModel,
-    priceMarkerCollision,
+    marketPositionModel,
+    marketPositionSummary,
     evidenceFacts,
     comparableDisclosure,
     percentileSentence

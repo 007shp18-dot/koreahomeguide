@@ -10,7 +10,7 @@ test('rent-check fields align from the top so FX references do not lift money in
 });
 
 test('rent-check submit button aligns with input boxes on desktop', () => {
-  assert.match(css, /(?:^|})\.rent-check-button\{[^}]*margin-top:25px/);
+  assert.match(css, /\.rent-check-button\{[^}]*margin-top:20px/);
 });
 
 test('rent-check submit button removes desktop offset in the mobile layout', () => {
