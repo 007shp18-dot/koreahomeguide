@@ -5,17 +5,10 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   const UPSTREAM_MESSAGE = 'Official transaction data is temporarily unavailable. Please try again shortly.';
 
-  function ratingLabel(rating, verdictBasis) {
-    if (verdictBasis === 'median-fallback') {
-      return {
-        above: 'Above sample median',
-        fair: 'Near sample median',
-        below: 'Below sample median'
-      }[rating] || 'Rent check';
-    }
+  function ratingLabel(rating) {
     return {
       above: 'Above market',
-      fair: 'Typical range',
+      fair: 'Fair',
       below: 'Below market',
       insufficient: 'Not enough comparable data'
     }[rating] || 'Rent check';
@@ -23,9 +16,9 @@
 
   function confidenceLabel(confidence) {
     return {
-      high: 'Strong sample',
-      medium: 'Moderate sample',
-      low: 'Limited sample'
+      high: 'High confidence',
+      medium: 'Medium confidence',
+      low: 'Low confidence'
     }[confidence] || '';
   }
 
@@ -100,24 +93,11 @@
     if (!result || result.rating === 'insufficient') {
       return 'There are not enough similar official contracts to make a reliable comparison.';
     }
-    const magnitude = Math.abs(Number(result.differencePct || 0));
-    const pct = magnitude.toFixed(1);
+    const pct = Math.abs(Number(result.differencePct || 0)).toFixed(1);
     const isJeonse = result.comparisonMode === 'jeonse-deposit';
     const subject = isJeonse ? 'This jeonse deposit' : 'This quote';
-    if (result.verdictBasis === 'median-fallback') {
-      if (result.rating === 'above') return `With limited data, ${subject.toLowerCase()} is ${pct}% above the sample median; the fallback threshold is 10%.`;
-      if (result.rating === 'below') return `With limited data, ${subject.toLowerCase()} is ${pct}% below the sample median; the fallback threshold is 10%.`;
-      return `With limited data, ${subject.toLowerCase()} is within 10% of the sample median.`;
-    }
-    if (result.rating === 'above' && magnitude < 0.05) return `${subject} is slightly above the recent comparable median.`;
-    if (result.rating === 'below' && magnitude < 0.05) return `${subject} is slightly below the recent comparable median.`;
-    if (result.rating === 'above') return `${subject} is ${pct}% above the recent comparable median.`;
-    if (result.rating === 'below') return `${subject} is ${pct}% below the recent comparable median.`;
-    if (result.verdictBasis === 'typical-range') {
-      return isJeonse
-        ? 'This jeonse deposit sits within the typical range of recent comparable contracts.'
-        : 'This quote sits within the typical range of recent comparable contracts.';
-    }
+    if (result.rating === 'above') return `${subject} is ${pct}% above recent comparable contracts.`;
+    if (result.rating === 'below') return `${subject} is ${pct}% below recent comparable contracts.`;
     return isJeonse
       ? 'This jeonse deposit is close to recent comparable contracts.'
       : 'This quote is close to recent comparable contracts.';
@@ -167,34 +147,33 @@
     return p25 >= 0 && p75 >= p25 && rank >= 0 && rank <= 100;
   }
 
-  function marketPositionModel(result) {
+  function pricePositionModel(result) {
     if (!result || !['below','fair','above'].includes(result.rating)) return null;
-    const rawValues = [result.p25ValueWon, result.p75ValueWon, result.askingValueWon];
+    const rawValues = [result.p25ValueWon, result.medianValueWon, result.p75ValueWon, result.askingValueWon];
     if (!rawValues.every(isNumericValue)) return null;
     const p25 = Number(result.p25ValueWon);
+    const median = Number(result.medianValueWon);
     const p75 = Number(result.p75ValueWon);
     const asking = Number(result.askingValueWon);
-    if ([p25, p75, asking].some(value => value < 0) || p25 > p75) return null;
-    const relation = asking < p25 ? 'below' : asking > p75 ? 'above' : 'within';
-    const expectedRating = relation === 'within' ? 'fair' : relation;
-    if (result.rating !== expectedRating) return null;
-    const gapWon = relation === 'below' ? p25 - asking : relation === 'above' ? asking - p75 : 0;
-    const spread = Math.max(p75 - p25, Math.max(p25, p75) * .1, 1);
-    let quotePct = 50;
-    if (relation === 'within' && p75 > p25) quotePct = 28 + ((asking - p25) / (p75 - p25)) * 44;
-    if (relation === 'below') quotePct = 28 - Math.min(24, (gapWon / spread) * 24);
-    if (relation === 'above') quotePct = 72 + Math.min(24, (gapWon / spread) * 24);
-    quotePct = Math.round(quotePct * 10) / 10;
-    if (relation === 'below') quotePct = Math.min(26, quotePct);
-    if (relation === 'above') quotePct = Math.max(74, quotePct);
-    return { quotePct, relation, gapWon };
+    if ([p25, median, p75, asking].some(value => value < 0) || p25 > median || median > p75) return null;
+    if (p25 === p75) {
+      return {
+        medianPct:50,
+        quotePct:asking < p25 ? 0 : asking > p75 ? 100 : 50,
+        relation:asking < p25 ? 'below' : asking > p75 ? 'above' : 'within'
+      };
+    }
+    const position = value => Math.round(Math.max(0, Math.min(100, ((value - p25) / (p75 - p25)) * 100)) * 10) / 10;
+    return {
+      medianPct:position(median),
+      quotePct:position(asking),
+      relation:asking < p25 ? 'below' : asking > p75 ? 'above' : 'within'
+    };
   }
 
-  function marketPositionSummary(model) {
-    if (!model) return '';
-    if (model.relation === 'above') return 'above the upper end of the typical range';
-    if (model.relation === 'below') return 'below the lower end of the typical range';
-    return 'inside the typical range';
+  function priceMarkerCollision(model) {
+    if (!model || !isNumericValue(model.medianPct) || !isNumericValue(model.quotePct)) return false;
+    return Math.abs(Number(model.medianPct) - Number(model.quotePct)) < 20;
   }
 
   function evidenceFacts(result) {
@@ -242,8 +221,8 @@
     formatWon,
     formatDifference,
     hasDistribution,
-    marketPositionModel,
-    marketPositionSummary,
+    pricePositionModel,
+    priceMarkerCollision,
     evidenceFacts,
     comparableDisclosure,
     percentileSentence

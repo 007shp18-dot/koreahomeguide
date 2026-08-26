@@ -364,34 +364,27 @@ html[lang="zh-CN"] h1,html[lang="zh-CN"] h2,html[lang="zh-CN"] h3{letter-spacing
 .rent-check-result[data-rating="above"]{--result-tone:#b5473f;--result-wash:#fff8f7}
 .rent-check-result[data-rating="fair"]{--result-tone:#287653;--result-wash:#f6fbf8}
 .rent-check-result[data-rating="below"]{--result-tone:#386da8;--result-wash:#f7faff}
-.rent-check-summary{padding:20px;border:1px solid var(--line);border-left:4px solid var(--result-tone);border-radius:16px;background:var(--result-wash);grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);align-items:start}
+.rent-check-summary{padding:20px;border:1px solid var(--line);border-left:4px solid var(--result-tone);border-radius:16px;background:var(--result-wash)}
 .rent-check-verdict h3{color:var(--ink);line-height:1.18}
 #rentCheckMeta.rent-check-evidence-facts{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}
 .rent-check-evidence-facts span{display:inline-flex;align-items:center;min-height:32px;padding:6px 10px;border:1px solid #dbe3ec;border-radius:10px;background:#fff;color:#344054;font-size:11px;font-weight:750;line-height:1.35}
 
-.rent-check-intelligence{grid-column:1/-1;margin-top:0;padding:17px 0 0;border:0;border-top:1px solid #dbe3ec;border-radius:0;background:transparent}
-.rent-check-intelligence .rent-check-evidence-head{margin:0 0 12px}
-.rent-check-intelligence .rent-check-metrics>div{padding:12px 14px}
-.rent-check-market-position{margin-top:14px;padding:16px 16px 14px;border:1px solid #dbe3ec;border-radius:13px;background:#fff}
-.rent-check-market-chart{position:relative;padding-top:28px}
-.rent-check-market-track{display:grid;grid-template-columns:28fr 44fr 28fr;height:18px;overflow:hidden;border:1px solid #cbd5e1;border-radius:999px;background:#f8fafc}
-.rent-check-market-zone.is-below{background:#dbeafe}
-.rent-check-market-zone.is-typical{background:#cfeedd;border-left:2px solid #fff;border-right:2px solid #fff}
-.rent-check-market-zone.is-above{background:#fee2e2}
-.rent-check-market-marker{position:absolute;z-index:2;top:17px;width:3px;height:34px;border-radius:2px;background:var(--result-tone);transform:translateX(-50%)}
-.rent-check-market-marker::after{content:"";position:absolute;left:50%;top:24px;width:10px;height:10px;border:3px solid #fff;border-radius:50%;background:var(--result-tone);box-shadow:0 0 0 2px var(--result-tone);transform:translate(-50%,-50%)}
-.rent-check-market-marker b{position:absolute;left:50%;bottom:35px;transform:translateX(-50%);color:var(--result-tone);font-size:10px;font-weight:850;line-height:1;white-space:nowrap}
-.rent-check-market-position[data-relation="below"] .rent-check-market-marker b{transform:none}
-.rent-check-market-position[data-relation="above"] .rent-check-market-marker b{transform:translateX(-100%)}
-.rent-check-market-labels{display:grid;grid-template-columns:28fr 44fr 28fr;gap:6px;margin-top:8px;color:#64748b;font-size:10px;font-weight:700;line-height:1.25;text-align:center}
-.rent-check-market-labels strong{color:#17633a;font-weight:850}
-.rent-check-market-caption{margin:14px 0 0;padding-top:12px;border-top:1px solid #eef2f6;color:#475569;font-size:12px;line-height:1.5;text-align:center}
-.rent-check-market-caption strong{color:var(--result-tone);font-weight:850}
-.rent-check-market-caption .money-primary,.rent-check-market-caption .fx-secondary{display:inline;margin:0}
-.rent-check-market-caption .fx-secondary{margin-left:4px;font-size:.86em}
+.rent-check-price-visual{margin-top:20px;padding-top:18px;border-top:1px solid #dbe3ec}
+.rent-check-price-track{position:relative;height:10px;margin:30px 12px 0;border-radius:999px;background:linear-gradient(90deg,#dbeafe 0%,#b7d4ff 50%,#dbeafe 100%)}
+.rent-check-price-median,.rent-check-price-quote{position:absolute;top:50%;width:14px;height:14px;border-radius:50%;transform:translate(-50%,-50%)}
+.rent-check-price-median{z-index:1;border:3px solid #fff;background:#475569;box-shadow:0 0 0 1px #475569}
+.rent-check-price-quote{z-index:2;width:17px;height:17px;border:3px solid #fff;background:var(--result-tone);box-shadow:0 0 0 2px var(--result-tone)}
+.rent-check-price-median b,.rent-check-price-quote b{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);color:#475569;font-size:10px;font-weight:800;line-height:1;white-space:nowrap}
+.rent-check-price-quote b{color:var(--result-tone)}
+.rent-check-price-visual[data-relation="below"] .rent-check-price-quote b{transform:none}
+.rent-check-price-visual[data-relation="above"] .rent-check-price-quote b{transform:translateX(-100%)}
+.rent-check-price-axis{display:flex;justify-content:space-between;margin-top:9px;color:#64748b;font-size:10px;font-weight:750}
+.rent-check-price-visual[data-collision="true"] .rent-check-price-track{margin-top:46px}
+.rent-check-price-visual[data-collision="true"] .rent-check-price-quote{top:calc(50% - 14px)}
+.rent-check-price-visual[data-collision="true"] .rent-check-price-median b{top:20px;bottom:auto}
+.rent-check-price-visual[data-collision="true"] .rent-check-price-axis{margin-top:30px}
 
 .rent-check-comparables-toggle{display:none;align-items:center;justify-content:center;min-height:44px;margin:10px 0 0;padding:0 14px;border:1px solid #cbd5e1;border-radius:11px;background:#fff;color:#1e3a5f;font:inherit;font-size:12px;font-weight:750;cursor:pointer}
 .rent-check-comparables-toggle:focus-visible{outline:3px solid rgba(37,99,235,.28);outline-offset:2px}
 
-@media(max-width:1050px){.rent-check-summary{grid-template-columns:1fr}}
-@media(max-width:760px){.rent-check-mobile-extra{display:none}.rent-check-summary{padding:16px}.rent-check-evidence-facts span{flex:1 1 150px}.rent-check-comparables-toggle:not([hidden]){display:inline-flex;width:100%}#rentCheckComparableBody.is-expanded .rent-check-mobile-extra{display:table-row}.rent-check-market-position{padding-left:10px;padding-right:10px}.rent-check-market-labels{font-size:9px}}
+@media(max-width:760px){.rent-check-mobile-extra{display:none}.rent-check-summary{padding:16px}.rent-check-evidence-facts span{flex:1 1 150px}.rent-check-comparables-toggle:not([hidden]){display:inline-flex;width:100%}#rentCheckComparableBody.is-expanded .rent-check-mobile-extra{display:table-row}.rent-check-price-track{margin-left:10px;margin-right:10px}}

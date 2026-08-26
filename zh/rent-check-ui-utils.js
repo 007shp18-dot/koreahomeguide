@@ -5,17 +5,10 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   const UPSTREAM_MESSAGE = '官方租赁成交数据暂时无法使用，请稍后再试。';
 
-  function ratingLabel(rating, verdictBasis) {
-    if (verdictBasis === 'median-fallback') {
-      return {
-        above: '高于样本中位数',
-        fair: '接近样本中位数',
-        below: '低于样本中位数'
-      }[rating] || '租金检查';
-    }
+  function ratingLabel(rating) {
     return {
       above: '高于近期成交水平',
-      fair: '典型区间',
+      fair: '价格合理',
       below: '低于近期成交水平',
       insufficient: '可比成交数据不足'
     }[rating] || '租金检查';
@@ -23,9 +16,9 @@
 
   function confidenceLabel(confidence) {
     return {
-      high: '样本充分',
-      medium: '样本一般',
-      low: '样本有限'
+      high: '可信度高',
+      medium: '可信度中等',
+      low: '可信度较低'
     }[confidence] || '';
   }
 
@@ -42,7 +35,7 @@
     const tier = MATCH_TIERS[Number(result.tier)];
     const count = Math.max(0, Math.round(Number(result.comparableCount || 0)));
     if (!tier || !count) return '';
-    const labels = { high:'样本充分', medium:'样本一般', low:'样本有限' };
+    const labels = { high:'高可信度', medium:'中等可信度', low:'较低可信度' };
     const category = isStudioMapped ? '单间回退使用的官方独栋及多户住宅分类' : '同一官方房屋分类';
     return `${labels[result.confidence] || '可信度'}：最近 ${tier.months} 个完整月份内，有 ${count} 笔同一区、${category}的成交符合面积 ±${tier.areaPct}% 和押金 ±${tier.depositPct}% 的范围。`;
   }
@@ -99,24 +92,11 @@
     if (!result || result.rating === 'insufficient') {
       return '相似的官方成交记录不足，暂时无法做出可靠判断。';
     }
-    const magnitude = Math.abs(Number(result.differencePct || 0));
-    const pct = magnitude.toFixed(1);
+    const pct = Math.abs(Number(result.differencePct || 0)).toFixed(1);
     const isJeonse = result.comparisonMode === 'jeonse-deposit';
     const subject = isJeonse ? '这笔全租（Jeonse）押金' : '这个报价';
-    if (result.verdictBasis === 'median-fallback') {
-      if (result.rating === 'above') return `样本有限时，${subject}比样本中位数高 ${pct}%；回退判断阈值为 10%。`;
-      if (result.rating === 'below') return `样本有限时，${subject}比样本中位数低 ${pct}%；回退判断阈值为 10%。`;
-      return `样本有限时，${subject}在样本中位数的 ±10% 范围内。`;
-    }
-    if (result.rating === 'above' && magnitude < 0.05) return `${subject}略高于近期可比成交中位数。`;
-    if (result.rating === 'below' && magnitude < 0.05) return `${subject}略低于近期可比成交中位数。`;
     if (result.rating === 'above') return `${subject}比近期可比成交中位数高 ${pct}%。`;
     if (result.rating === 'below') return `${subject}比近期可比成交中位数低 ${pct}%。`;
-    if (result.verdictBasis === 'typical-range') {
-      return isJeonse
-        ? '这笔全租（Jeonse）押金位于近期可比成交的典型区间内。'
-        : '这个报价位于近期可比成交的典型区间内。';
-    }
     return isJeonse
       ? '这笔全租（Jeonse）押金接近近期可比成交水平。'
       : '这个报价接近近期可比成交水平。';
@@ -160,34 +140,33 @@
     return p25 >= 0 && p75 >= p25 && rank >= 0 && rank <= 100;
   }
 
-  function marketPositionModel(result) {
+  function pricePositionModel(result) {
     if (!result || !['below','fair','above'].includes(result.rating)) return null;
-    const rawValues = [result.p25ValueWon, result.p75ValueWon, result.askingValueWon];
+    const rawValues = [result.p25ValueWon, result.medianValueWon, result.p75ValueWon, result.askingValueWon];
     if (!rawValues.every(isNumericValue)) return null;
     const p25 = Number(result.p25ValueWon);
+    const median = Number(result.medianValueWon);
     const p75 = Number(result.p75ValueWon);
     const asking = Number(result.askingValueWon);
-    if ([p25, p75, asking].some(value => value < 0) || p25 > p75) return null;
-    const relation = asking < p25 ? 'below' : asking > p75 ? 'above' : 'within';
-    const expectedRating = relation === 'within' ? 'fair' : relation;
-    if (result.rating !== expectedRating) return null;
-    const gapWon = relation === 'below' ? p25 - asking : relation === 'above' ? asking - p75 : 0;
-    const spread = Math.max(p75 - p25, Math.max(p25, p75) * .1, 1);
-    let quotePct = 50;
-    if (relation === 'within' && p75 > p25) quotePct = 28 + ((asking - p25) / (p75 - p25)) * 44;
-    if (relation === 'below') quotePct = 28 - Math.min(24, (gapWon / spread) * 24);
-    if (relation === 'above') quotePct = 72 + Math.min(24, (gapWon / spread) * 24);
-    quotePct = Math.round(quotePct * 10) / 10;
-    if (relation === 'below') quotePct = Math.min(26, quotePct);
-    if (relation === 'above') quotePct = Math.max(74, quotePct);
-    return { quotePct, relation, gapWon };
+    if ([p25, median, p75, asking].some(value => value < 0) || p25 > median || median > p75) return null;
+    if (p25 === p75) {
+      return {
+        medianPct:50,
+        quotePct:asking < p25 ? 0 : asking > p75 ? 100 : 50,
+        relation:asking < p25 ? 'below' : asking > p75 ? 'above' : 'within'
+      };
+    }
+    const position = value => Math.round(Math.max(0, Math.min(100, ((value - p25) / (p75 - p25)) * 100)) * 10) / 10;
+    return {
+      medianPct:position(median),
+      quotePct:position(asking),
+      relation:asking < p25 ? 'below' : asking > p75 ? 'above' : 'within'
+    };
   }
 
-  function marketPositionSummary(model) {
-    if (!model) return '';
-    if (model.relation === 'above') return '比典型区间上限高';
-    if (model.relation === 'below') return '比典型区间下限低';
-    return '处于典型区间内';
+  function priceMarkerCollision(model) {
+    if (!model || !isNumericValue(model.medianPct) || !isNumericValue(model.quotePct)) return false;
+    return Math.abs(Number(model.medianPct) - Number(model.quotePct)) < 20;
   }
 
   function evidenceFacts(result) {
@@ -233,8 +212,8 @@
     formatWon,
     formatDifference,
     hasDistribution,
-    marketPositionModel,
-    marketPositionSummary,
+    pricePositionModel,
+    priceMarkerCollision,
     evidenceFacts,
     comparableDisclosure,
     percentileSentence

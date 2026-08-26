@@ -12,7 +12,7 @@
 .funnel-section-head h2{font-size:clamp(28px,4vw,42px);margin:6px 0 8px;letter-spacing:-.035em}
 .funnel-section-head p{color:#667085;line-height:1.65}
 .funnel-rent-card{border:1px solid #e4e7ec;border-radius:24px;background:#fff;padding:24px;box-shadow:0 14px 40px rgba(16,24,40,.05)}
-.funnel-rent-card .rent-check-form{grid-template-columns:minmax(260px,1.35fr) minmax(250px,1.25fr) minmax(130px,.8fr) minmax(130px,.8fr) minmax(80px,.5fr) minmax(145px,.75fr);margin-top:0}
+.funnel-rent-card .rent-check-form{grid-template-columns:minmax(160px,.95fr) minmax(250px,1.35fr) minmax(160px,1fr) minmax(160px,1fr) minmax(110px,.65fr) max-content;margin-top:0}
 .lead-capture{margin-top:24px;border:1px solid #e5e7eb;border-radius:20px;background:#fff;padding:24px}
 .lead-capture[hidden]{display:none!important}
 .lead-capture-copy h3{margin:4px 0 8px;font-size:24px}
@@ -35,8 +35,7 @@
 .funnel-guides{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .funnel-guide{border:1px solid #e4e7ec;border-radius:18px;padding:20px;text-decoration:none;color:inherit;background:#fff}
 .funnel-guide h3{margin:6px 0 8px}.funnel-guide p{margin:0;color:#667085;line-height:1.55}
-@media(max-width:1280px){.funnel-rent-card .rent-check-form{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:960px){.funnel-rent-card .rent-check-form{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:1180px){.funnel-rent-card .rent-check-form{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:760px){.funnel-hero{padding-top:52px}.funnel-trust{grid-template-columns:1fr}.funnel-section{padding-left:16px;padding-right:16px}.funnel-rent-card{padding:16px}.funnel-rent-card .rent-check-form{grid-template-columns:1fr}.funnel-secondary-grid,.funnel-guides{grid-template-columns:1fr}.lead-capture [data-lead-form],.lead-capture [data-help-form]{grid-template-columns:1fr}.lead-capture form button{width:100%}.lead-capture .lead-consent-note{grid-column:1}}
 
 .lead-capture .lead-consent-note{grid-column:1/-1;display:block;margin-top:0;color:#667085;font-size:11px;line-height:1.5}
