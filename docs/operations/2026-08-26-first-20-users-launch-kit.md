@@ -81,3 +81,31 @@ Record the earliest stage where real users drop out. Do not use pageviews alone 
 | 10+ results and 2+ follow-ups | Begin one controlled partner-pilot interview cycle |
 
 Do not activate AdSense, a brokerage referral offer, or a paid partner placement during this first measurement window.
+
+## Day 1 execution
+
+### Institutional placement
+
+- Target: Seoul Foreign Resident Center housing/real-estate counseling team
+- Verified contact: `help@sfrc.seoul.kr`
+- Status: ready for owner send
+- Tracking URL:
+  `https://koreahomeguide.com/guides/before-you-sign/?utm_source=seoul_foreign_resident_center&utm_medium=referral&utm_campaign=first_20_rent_checks`
+
+Use a review request, not partnership language. State that KoreaHomeGuide is an independent free resource and ask the center to review it before deciding whether it is appropriate to share.
+
+### Community placement
+
+- `r/Living_in_Korea`: excluded because its current rules prohibit self-promotion
+- `r/korea`: excluded because its current rules prohibit advertisement and self-promotion posts
+- `r/SideProject`: first community launch; present the build honestly and request product feedback
+- `r/seoul`: reserve for a later renter-focused placement after moderator permission
+- Status: posted to `r/SideProject` on 2026-08-26; final Reddit post URL pending
+- Tracking URL:
+  `https://koreahomeguide.com/tools/seoul-rent-check/?utm_source=reddit&utm_medium=community&utm_campaign=first_20_rent_checks&utm_content=sideproject_launch`
+
+For `r/SideProject`, disclose that the poster built the project, avoid partnership or traction claims, and ask specific questions about clarity, trust, and usefulness. For other communities, do not post the link unless a moderator approves it or the current rules explicitly permit it.
+
+### Logging
+
+After each send, record the date, destination, final URL, and any reply. Check GA4 after 24 hours using both the source/medium and the Rent Check funnel events; do not judge the placement by pageviews alone.
