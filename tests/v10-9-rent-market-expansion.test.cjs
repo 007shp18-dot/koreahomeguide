@@ -55,11 +55,12 @@ test('static sitemap includes all 15 new English market URLs without thin Chines
 
 
 test('dynamic sitemap keeps Chinese Dong/Building indexing limited to the five localized districts', () => {
+  const catalog = require('../location-catalog.js');
   const source = read('api/sitemap-market.js');
   assert.match(source, /ZH_INDEXABLE_DISTRICT_CODES/);
   for (const code of Object.values(districts)) {
-    assert.doesNotMatch(source, new RegExp(`ZH_INDEXABLE_DISTRICT_CODES[^\n]*${code}`), `new district ${code} should not be whitelisted for zh indexing yet`);
+    assert.equal(catalog.supportsZhIndexing(code), false, `new district ${code} should not be whitelisted for zh indexing yet`);
   }
-  for (const code of ['11680','11440','11170','11200','11560']) assert.match(source, new RegExp(code));
+  for (const code of ['11680','11440','11170','11200','11560']) assert.equal(catalog.supportsZhIndexing(code), true);
   assert.match(source, /if \(supportsZhIndexing\(areaCode\)\)/);
 });

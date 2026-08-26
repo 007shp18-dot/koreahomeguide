@@ -75,6 +75,24 @@ test('logApiError logs safe context without upstream URL or service key fields',
   });
 });
 
+test('real-prices rejects an explicit foreign browser origin before upstream work', async () => {
+  const api = require('../api/real-prices.js');
+  const res = {
+    statusCode:200,
+    body:null,
+    status(code) { this.statusCode = code; return this; },
+    json(value) { this.body = value; return this; },
+    setHeader() {}
+  };
+  await api({
+    method:'GET',
+    headers:{ origin:'https://evil.example' },
+    query:{ type:'apartment', lawdCd:'11680', dealYmd:'202607' }
+  }, res);
+  assert.equal(res.statusCode, 403);
+  assert.deepEqual(res.body, { error:'Request origin is not allowed.' });
+});
+
 const fs = require('node:fs');
 const path = require('node:path');
 function source(rel) { return fs.readFileSync(path.join(__dirname, '..', rel), 'utf8'); }

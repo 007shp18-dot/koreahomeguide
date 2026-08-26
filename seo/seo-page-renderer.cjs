@@ -78,19 +78,42 @@ function languagePairPaths({ areaCode, dong, propertyType, building }) {
   if (building) {
     return {
       en:buildBuildingSeoUrl({ areaCode, dong, propertyType, building, lang:'en' }),
-      zh:buildBuildingSeoUrl({ areaCode, dong, propertyType, building, lang:'zh' })
+      zh:KHGLocations.supportsZhIndexing(areaCode)
+        ? buildBuildingSeoUrl({ areaCode, dong, propertyType, building, lang:'zh' })
+        : ''
     };
   }
   return {
     en:buildDongSeoUrl({ areaCode, dong, propertyType, lang:'en' }),
-    zh:buildDongSeoUrl({ areaCode, dong, propertyType, lang:'zh' })
+    zh:KHGLocations.supportsZhIndexing(areaCode)
+      ? buildDongSeoUrl({ areaCode, dong, propertyType, lang:'zh' })
+      : ''
   };
+}
+
+function zhExplorerFallback({ areaCode, propertyType, dong = '' }) {
+  const params = new URLSearchParams({ lawdCd:String(areaCode || ''), type:String(propertyType || '') });
+  if (dong) params.set('dong', String(dong));
+  return `/zh/explore/?${params.toString()}`;
+}
+
+function buildInteractiveBuildingUrl({ areaCode, dong, propertyType, buildingKey, lang = 'en' }) {
+  const params = new URLSearchParams({
+    lawdCd:String(areaCode || ''),
+    type:String(propertyType || ''),
+    dong:String(dong || ''),
+    buildingKey:String(buildingKey || '')
+  });
+  return `${isZh(lang) ? '/zh' : ''}/explore/building/?${params.toString()}`;
 }
 
 function pageHead({ lang, title, description, canonicalPath, alternateEn, alternateZh, robots = 'index,follow', jsonLd }) {
   const canonical = `${ORIGIN}${canonicalPath}`;
   const htmlLang = isZh(lang) ? 'zh-CN' : 'en';
-  return `<!doctype html><html lang="${htmlLang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(title)}</title><meta name="description" content="${escapeHtml(description)}"><meta name="robots" content="${escapeHtml(robots)}"><link rel="canonical" href="${escapeHtml(canonical)}"><link rel="alternate" hreflang="en" href="${escapeHtml(`${ORIGIN}${alternateEn}`)}"><link rel="alternate" hreflang="zh-CN" href="${escapeHtml(`${ORIGIN}${alternateZh}`)}"><link rel="alternate" hreflang="x-default" href="${escapeHtml(`${ORIGIN}${alternateEn}`)}"><meta property="og:type" content="website"><meta property="og:title" content="${escapeHtml(title)}"><meta property="og:description" content="${escapeHtml(description)}"><meta property="og:url" content="${escapeHtml(canonical)}"><script defer src="/privacy-consent.js"></script><link rel="stylesheet" href="/styles.css"><style>.seo-page{max-width:1040px;margin:0 auto;padding:42px 22px 72px}.seo-breadcrumbs{font-size:14px;color:#667085;margin-bottom:20px}.seo-breadcrumbs a{color:inherit}.seo-hero h1{font-size:clamp(32px,5vw,54px);line-height:1.04;margin:8px 0 14px}.seo-hero p{max-width:780px;color:#475467;font-size:17px;line-height:1.65}.seo-eyebrow{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}.seo-fresh{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:18px;color:#667085;font-size:13px}.seo-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:28px 0}.seo-card,.seo-section{border:1px solid #e4e7ec;border-radius:18px;background:#fff}.seo-card{padding:18px}.seo-card span{display:block;color:#667085;font-size:13px}.seo-card strong{display:block;font-size:22px;margin-top:8px}.seo-money{display:block}.seo-krw{display:block;color:#667085;font-weight:500;margin-top:3px}.seo-section{padding:24px;margin-top:18px}.seo-section h2{margin:0 0 8px;font-size:24px}.seo-section p{color:#667085}.seo-buildings{display:grid;gap:10px;margin-top:16px}.seo-building-link{display:flex;justify-content:space-between;gap:16px;padding:14px 0;border-top:1px solid #eef0f3;color:inherit;text-decoration:none}.seo-building-link:first-child{border-top:0}.seo-building-link span:last-child{text-align:right;color:#667085}.seo-building-official{display:block;margin-top:3px;color:#667085;font-size:12px;font-weight:600}.seo-table-wrap{overflow-x:auto}.seo-table{width:100%;border-collapse:collapse;min-width:680px}.seo-table th,.seo-table td{padding:12px 10px;border-bottom:1px solid #eef0f3;text-align:left;vertical-align:top}.seo-table th{font-size:12px;color:#667085;text-transform:uppercase}.seo-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}.seo-action{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:12px;border:1px solid #d0d5dd;text-decoration:none;color:#101828;font-weight:700}.seo-action.primary{background:#101828;color:#fff;border-color:#101828}.seo-trend{display:flex;gap:10px;align-items:flex-end;overflow-x:auto;margin-top:18px}.seo-trend-item{min-width:96px;padding:12px;border:1px solid #eef0f3;border-radius:12px}.seo-trend-item strong,.seo-trend-item small{display:block}.seo-footer{margin-top:34px;color:#667085;font-size:13px}.seo-error{max-width:680px;margin:80px auto;padding:0 22px}.seo-error h1{font-size:38px}.seo-error p{color:#667085;line-height:1.6}@media(max-width:760px){.seo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.seo-page{padding-top:28px}.seo-building-link{display:block}.seo-building-link span:last-child{text-align:left;display:block;margin-top:6px}}@media(max-width:420px){.seo-grid{grid-template-columns:1fr}}.seo-building-page{max-width:980px}.seo-building-hero{display:flex;justify-content:space-between;align-items:flex-end;gap:28px;padding:18px 0 6px}.seo-building-title h1{font-size:clamp(36px,5vw,58px);line-height:1.02;letter-spacing:-.045em;margin:8px 0 10px}.seo-building-title p{margin:0;color:#667085}.seo-hero-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.seo-core-metrics{margin:24px 0 18px}.seo-card-primary{border-color:#cfded4;background:#f5f9f6}.seo-card small{display:block;color:#98a2b3;font-size:11px;margin-top:6px}.seo-comparison{display:flex;gap:10px;align-items:baseline;padding:14px 2px 22px;color:#475467}.seo-comparison strong{font-size:13px;color:#344054}.seo-comparison span{font-size:14px}.seo-jump-nav{display:flex;gap:8px;margin:0 0 12px;padding-top:8px;border-top:1px solid #eaecf0}.seo-jump-nav a{padding:9px 12px;border-radius:999px;background:#f2f4f7;color:#475467;font-size:12px;font-weight:700}.seo-market-note{margin:24px 0 0;color:#667085;font-size:12px;line-height:1.6}@media(max-width:760px){.seo-building-hero{align-items:flex-start;flex-direction:column}.seo-hero-actions{justify-content:flex-start}.seo-comparison{align-items:flex-start;flex-direction:column}.seo-jump-nav{overflow-x:auto}}</style>${jsonLd ? `<script type="application/ld+json">${jsonForHtml(jsonLd)}</script>` : ''}</head><body>`;
+  const zhAlternate = alternateZh
+    ? `<link rel="alternate" hreflang="zh-CN" href="${escapeHtml(`${ORIGIN}${alternateZh}`)}">`
+    : '';
+  return `<!doctype html><html lang="${htmlLang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(title)}</title><meta name="description" content="${escapeHtml(description)}"><meta name="robots" content="${escapeHtml(robots)}"><link rel="canonical" href="${escapeHtml(canonical)}"><link rel="alternate" hreflang="en" href="${escapeHtml(`${ORIGIN}${alternateEn}`)}">${zhAlternate}<link rel="alternate" hreflang="x-default" href="${escapeHtml(`${ORIGIN}${alternateEn}`)}"><meta property="og:type" content="website"><meta property="og:title" content="${escapeHtml(title)}"><meta property="og:description" content="${escapeHtml(description)}"><meta property="og:url" content="${escapeHtml(canonical)}"><script defer src="/privacy-consent.js"></script><link rel="stylesheet" href="/styles.css"><style>.seo-page{max-width:1040px;margin:0 auto;padding:42px 22px 72px}.seo-breadcrumbs{font-size:14px;color:#667085;margin-bottom:20px}.seo-breadcrumbs a{color:inherit}.seo-hero h1{font-size:clamp(32px,5vw,54px);line-height:1.04;margin:8px 0 14px}.seo-hero p{max-width:780px;color:#475467;font-size:17px;line-height:1.65}.seo-eyebrow{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}.seo-fresh{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:18px;color:#667085;font-size:13px}.seo-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:28px 0}.seo-card,.seo-section{border:1px solid #e4e7ec;border-radius:18px;background:#fff}.seo-card{padding:18px}.seo-card span{display:block;color:#667085;font-size:13px}.seo-card strong{display:block;font-size:22px;margin-top:8px}.seo-money{display:block}.seo-krw{display:block;color:#667085;font-weight:500;margin-top:3px}.seo-section{padding:24px;margin-top:18px}.seo-section h2{margin:0 0 8px;font-size:24px}.seo-section p{color:#667085}.seo-buildings{display:grid;gap:10px;margin-top:16px}.seo-building-link{display:flex;justify-content:space-between;gap:16px;padding:14px 0;border-top:1px solid #eef0f3;color:inherit;text-decoration:none}.seo-building-link:first-child{border-top:0}.seo-building-link span:last-child{text-align:right;color:#667085}.seo-building-official{display:block;margin-top:3px;color:#667085;font-size:12px;font-weight:600}.seo-table-wrap{overflow-x:auto}.seo-table{width:100%;border-collapse:collapse;min-width:680px}.seo-table th,.seo-table td{padding:12px 10px;border-bottom:1px solid #eef0f3;text-align:left;vertical-align:top}.seo-table th{font-size:12px;color:#667085;text-transform:uppercase}.seo-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}.seo-action{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:12px;border:1px solid #d0d5dd;text-decoration:none;color:#101828;font-weight:700}.seo-action.primary{background:#101828;color:#fff;border-color:#101828}.seo-trend{display:flex;gap:10px;align-items:flex-end;overflow-x:auto;margin-top:18px}.seo-trend-item{min-width:96px;padding:12px;border:1px solid #eef0f3;border-radius:12px}.seo-trend-item strong,.seo-trend-item small{display:block}.seo-footer{margin-top:34px;color:#667085;font-size:13px}.seo-error{max-width:680px;margin:80px auto;padding:0 22px}.seo-error h1{font-size:38px}.seo-error p{color:#667085;line-height:1.6}@media(max-width:760px){.seo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.seo-page{padding-top:28px}.seo-building-link{display:block}.seo-building-link span:last-child{text-align:left;display:block;margin-top:6px}}@media(max-width:420px){.seo-grid{grid-template-columns:1fr}}.seo-building-page{max-width:980px}.seo-building-hero{display:flex;justify-content:space-between;align-items:flex-end;gap:28px;padding:18px 0 6px}.seo-building-title h1{font-size:clamp(36px,5vw,58px);line-height:1.02;letter-spacing:-.045em;margin:8px 0 10px}.seo-building-title p{margin:0;color:#667085}.seo-hero-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.seo-core-metrics{margin:24px 0 18px}.seo-card-primary{border-color:#cfded4;background:#f5f9f6}.seo-card small{display:block;color:#98a2b3;font-size:11px;margin-top:6px}.seo-comparison{display:flex;gap:10px;align-items:baseline;padding:14px 2px 22px;color:#475467}.seo-comparison strong{font-size:13px;color:#344054}.seo-comparison span{font-size:14px}.seo-jump-nav{display:flex;gap:8px;margin:0 0 12px;padding-top:8px;border-top:1px solid #eaecf0}.seo-jump-nav a{padding:9px 12px;border-radius:999px;background:#f2f4f7;color:#475467;font-size:12px;font-weight:700}.seo-market-note{margin:24px 0 0;color:#667085;font-size:12px;line-height:1.6}@media(max-width:760px){.seo-building-hero{align-items:flex-start;flex-direction:column}.seo-hero-actions{justify-content:flex-start}.seo-comparison{align-items:flex-start;flex-direction:column}.seo-jump-nav{overflow-x:auto}}</style>${jsonLd ? `<script type="application/ld+json">${jsonForHtml(jsonLd)}</script>` : ''}</head><body>`;
 }
 
 function header(lang, switchPath) {
@@ -192,7 +215,7 @@ function recentSalesTable(items, lang, rates) {
 function renderDongPage({ lang = 'en', areaCode, districtName, dong, propertyType, summary, buildings = [], fxRates = {} }) {
   const zh = isZh(lang);
   const paths = languagePairPaths({ areaCode, dong, propertyType });
-  const canonicalPath = zh ? paths.zh : paths.en;
+  const canonicalPath = zh ? (paths.zh || paths.en) : paths.en;
   const dName = dongDisplay(dong, lang);
   const district = districtDisplay(districtName, lang, areaCode);
   const pLabel = propertyDisplay(propertyType, lang);
@@ -202,17 +225,17 @@ function renderDongPage({ lang = 'en', areaCode, districtName, dong, propertyTyp
     : `See six completed months of official reported ${pLabel.toLowerCase()} rental transactions in ${dName}, ${districtName}, with monthly rent grouped by deposit and contract type.`;
   const jsonLd = webPageDatasetJsonLd({ lang, title, description, canonicalPath, districtName, dong, propertyType });
   const head = pageHead({ lang, title, description, canonicalPath, alternateEn:paths.en, alternateZh:paths.zh, robots:'index,follow', jsonLd });
-  const switchPath = zh ? paths.en : paths.zh;
+  const switchPath = zh ? paths.en : (paths.zh || zhExplorerFallback({ areaCode, propertyType, dong }));
   const dataMonth = summary && summary.dataThroughMonth ? KHGDate.formatMonth(summary.dataThroughMonth, zh ? 'zh-CN' : 'en-US') : (zh ? '最近完整月份' : 'Latest completed months');
   const buildingLinks = (Array.isArray(buildings) ? buildings : []).filter(item => item && item.buildingName && item.buildingKey).slice(0, 30).map(item => {
-    const href = buildBuildingSeoUrl({ areaCode, dong, propertyType, building:item, lang });
+    const href = buildInteractiveBuildingUrl({ areaCode, dong, propertyType, buildingKey:item.buildingKey, lang });
     const name = getBuildingNameDisplay(item.buildingName, lang);
     const band = representativeBand(item);
     const depositContext = band
       ? escapeHtml(depositRangeText(band, lang))
       : (Number(item.medianJeonseDepositWon) > 0 ? escapeHtml(wonText(item.medianJeonseDepositWon, lang)) : '—');
     const rentContext = band ? escapeHtml(wonText(band.medianMonthlyRentWon, lang)) : '—';
-    return `<a class="seo-building-link" href="${escapeHtml(href)}"><div class="seo-building-main"><strong>${escapeHtml(name.primary)}</strong>${name.secondary ? `<small class="seo-building-official">${escapeHtml(name.secondary)}</small>` : ''}<div class="seo-building-meta"><span>${escapeHtml(areaText(item.typicalAreaSqm))}</span><span>${numberText(item.contractCount, lang)} ${zh ? '笔成交' : 'contracts'}</span></div></div><div class="seo-building-price-context"><div><span class="seo-context-label">${zh ? '押金' : 'Deposit'}</span><strong>${depositContext}</strong></div><div><span class="seo-context-label">${zh ? '月租' : 'Monthly rent'}</span><strong>${rentContext}</strong></div></div></a>`;
+    return `<a class="seo-building-link" href="${escapeHtml(href)}" rel="nofollow"><div class="seo-building-main"><strong>${escapeHtml(name.primary)}</strong>${name.secondary ? `<small class="seo-building-official">${escapeHtml(name.secondary)}</small>` : ''}<div class="seo-building-meta"><span>${escapeHtml(areaText(item.typicalAreaSqm))}</span><span>${numberText(item.contractCount, lang)} ${zh ? '笔成交' : 'contracts'}</span></div></div><div class="seo-building-price-context"><div><span class="seo-context-label">${zh ? '押金' : 'Deposit'}</span><strong>${depositContext}</strong></div><div><span class="seo-context-label">${zh ? '月租' : 'Monthly rent'}</span><strong>${rentContext}</strong></div></div></a>`;
   }).join('');
   const exploreParams = new URLSearchParams({ lawdCd:String(areaCode), type:String(propertyType), dong:String(dong) }).toString();
   const rentCheckPath = `${zh ? '/zh' : ''}/tools/seoul-rent-check/?${new URLSearchParams({ lawdCd:String(areaCode), type:String(propertyType) }).toString()}`;
@@ -221,17 +244,13 @@ function renderDongPage({ lang = 'en', areaCode, districtName, dong, propertyTyp
 }
 
 function isBuildingIndexable(detail) {
-  if (!detail || Number(detail.contractCount || 0) < 3) return false;
-  const contextual = (Array.isArray(detail.depositBands) ? detail.depositBands : []).some(b => Number(b && b.medianMonthlyRentWon) > 0 && Number(b && b.count) > 0);
-  const jeonse = Number(detail.medianJeonseDepositWon) > 0;
-  const legacy = Number(detail.contextualMedianMonthlyRentWon || detail.medianMonthlyRentWon || detail.medianDepositWon) > 0;
-  return contextual || jeonse || legacy;
+  return false;
 }
 
 function renderBuildingPage({ lang = 'en', areaCode, districtName, dong, propertyType, summary, detail, fxRates = {} }) {
   const zh = isZh(lang);
   const paths = languagePairPaths({ areaCode, dong, propertyType, building:detail });
-  const canonicalPath = zh ? paths.zh : paths.en;
+  const canonicalPath = zh ? (paths.zh || paths.en) : paths.en;
   const dName = dongDisplay(dong, lang);
   const district = districtDisplay(districtName, lang, areaCode);
   const pLabel = propertyDisplay(propertyType, lang);
@@ -240,10 +259,10 @@ function renderBuildingPage({ lang = 'en', areaCode, districtName, dong, propert
   const displayBuildingName = buildingNameDisplay.primary || safeBuildingName;
   const title = zh ? `${displayBuildingName}租金与成交数据 | ${dName}` : `${displayBuildingName} Rent & Transaction Data | ${dName}, Seoul`;
   const description = zh ? `查看${displayBuildingName}近期韩国官方申报租赁成交，按押金和面积拆分月租，并区分新签与续签${propertyType === 'apartment' ? '，同时查看公寓买卖成交' : ''}。` : `See recent official reported transactions for ${displayBuildingName}, with monthly rent separated by deposit and floor area, plus new versus renewal contracts${propertyType === 'apartment' ? ' and apartment sale transactions' : ''}.`;
-  const robots = isBuildingIndexable(detail) ? 'index,follow' : 'noindex,follow';
+  const robots = 'noindex,follow';
   const jsonLd = webPageDatasetJsonLd({ lang, title, description, canonicalPath, districtName, dong, propertyType });
   const head = pageHead({ lang, title, description, canonicalPath, alternateEn:paths.en, alternateZh:paths.zh, robots, jsonLd });
-  const switchPath = zh ? paths.en : paths.zh;
+  const switchPath = zh ? paths.en : (paths.zh || zhExplorerFallback({ areaCode, propertyType, dong }));
   const dongPath = buildDongSeoUrl({ areaCode, dong, propertyType, lang });
   const trend = (detail.monthlyTrend || []).filter(point => Number(point.medianMonthlyRentWon) > 0).map(point => `<div class="seo-trend-item"><strong>${escapeHtml(KHGDate.formatMonth(point.month, zh ? 'zh-CN' : 'en-US'))}</strong>${moneyHtml(point.medianMonthlyRentWon, lang, fxRates)}<small>${numberText(point.count, lang)} ${zh ? '笔' : 'contracts'}</small></div>`).join('');
   const rentParams = new URLSearchParams({ lawdCd:String(areaCode), type:String(propertyType) });

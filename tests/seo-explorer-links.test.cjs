@@ -15,6 +15,11 @@ test('Explorer URL helpers match server canonical Dong paths in EN and ZH', () =
   );
 });
 
+test('Explorer exposes the shared Chinese localization policy', () => {
+  assert.equal(client.supportsZhIndexing('11440'), true);
+  assert.equal(client.supportsZhIndexing('11620'), false);
+});
+
 test('Explorer URL helpers match server collision-safe building paths', () => {
   const input = { lawdCd:'11440', type:'villa', dong:'연남동', buildingName:'Twin Villa', buildingKey:'연남동::twin villa', lang:'en' };
   assert.equal(
@@ -35,6 +40,8 @@ test('EN Explorer exposes canonical neighborhood/building pages and keeps intera
 test('ZH Explorer exposes localized canonical neighborhood/building page links', () => {
   const source = fs.readFileSync('zh/explore/app.js','utf8');
   assert.match(source, /buildDongSeoUrl/);
+  assert.match(source, /supportsZhIndexing\(districtCode\)/);
+  assert.match(source, /supportsZhIndexing\(areaSelect\.value\)/);
   assert.match(source, /查看街区/);
   assert.match(source, /buildBuildingSeoUrl/);
   assert.match(source, /交互查看/);

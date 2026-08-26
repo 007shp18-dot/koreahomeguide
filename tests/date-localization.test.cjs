@@ -66,7 +66,8 @@ test('pages that render transaction dates load date-utils before their app scrip
       }
     };
     walk(root);
-    assert.equal(files.length, 15, `${root} has 15 market pages`);
+    const expectedPages = root === 'rent' ? 30 : 15;
+    assert.equal(files.length, expectedPages, `${root} has ${expectedPages} market pages`);
     for (const file of files) {
       const html = fs.readFileSync(file, 'utf8');
       const datePos = html.indexOf('<script src="/date-utils.js"></script>');

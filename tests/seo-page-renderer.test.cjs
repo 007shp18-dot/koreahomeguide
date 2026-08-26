@@ -30,7 +30,7 @@ function base(lang='en') {
   return { lang, areaCode:'11440', districtName:'Mapo-gu', dong:'연남동', propertyType:'villa', summary, buildings, fxRates };
 }
 
-test('English Dong HTML has canonical, hreflang, index metadata, Dataset JSON-LD and plain building anchors', () => {
+test('English Dong HTML has canonical, hreflang, index metadata, Dataset JSON-LD and nofollow Explorer building links', () => {
   const html = renderDongPage(base('en'));
   assert.match(html, /<meta name="robots" content="index,follow">/);
   assert.match(html, /<link rel="canonical" href="https:\/\/koreahomeguide\.com\/seoul\/mapo-gu\/yeonnam-dong\/villa\/">/);
@@ -42,7 +42,8 @@ test('English Dong HTML has canonical, hreflang, index metadata, Dataset JSON-LD
   assert.match(html, /Yeonnam-dong \(연남동\)/);
   assert.match(html, /Low-rise multifamily \/ Villa \(연립·다세대\)/);
   const buildingUrl = routes.buildBuildingSeoUrl({ areaCode:'11440', dong:'연남동', propertyType:'villa', building:buildings[0], lang:'en' });
-  assert.ok(html.includes(`href="${buildingUrl}"`));
+  assert.ok(!html.includes(`href="${buildingUrl}"`));
+  assert.match(html, /href="\/explore\/building\/\?[^\"]+" rel="nofollow"/);
   assert.match(html, /Jul 31, 2026/);
   assert.match(html, /\$504/); // 700,000 KRW at injected test rate
   assert.ok(!html.includes('A <Villa>'), 'dynamic building names must be escaped');
@@ -61,20 +62,33 @@ test('Chinese Dong HTML is genuinely localized and uses CNY as primary display',
   assert.doesNotMatch(html, /Median monthly rent/);
 });
 
-test('building quality gate indexes substantive pages and noindexes sparse pages', () => {
-  assert.equal(isBuildingIndexable({ contractCount:3, medianMonthlyRentWon:700000 }), true);
+test('English Dong HTML omits Chinese hreflang outside localized districts', () => {
+  const html = renderDongPage({
+    ...base('en'),
+    areaCode:'11620',
+    districtName:'Gwanak-gu',
+    dong:'신림동'
+  });
+  assert.match(html, /<meta name="robots" content="index,follow">/);
+  assert.match(html, /<link rel="canonical" href="https:\/\/koreahomeguide\.com\/seoul\/gwanak-gu\//);
+  assert.doesNotMatch(html, /hreflang="zh-CN"/);
+  assert.match(html, /class="language-link" href="\/zh\/explore\/\?lawdCd=11620/);
+});
+
+test('building pages stay out of search regardless of transaction depth', () => {
+  assert.equal(isBuildingIndexable({ contractCount:3, medianMonthlyRentWon:700000 }), false);
   assert.equal(isBuildingIndexable({ contractCount:2, medianMonthlyRentWon:700000 }), false);
   assert.equal(isBuildingIndexable({ contractCount:5, medianMonthlyRentWon:null, medianDepositWon:null }), false);
 });
 
-test('building page includes contextual rent sections, recent contracts, back link and quality-gated robots', () => {
+test('building page includes contextual rent sections and remains noindex', () => {
   const detail = {
     ...buildings[0], contractCount:4, quarterChangePct:3.1, medianJeonseDepositWon:180000000, newContractMonthlyRentCount:3, renewalMonthlyRentCount:1, contractTypeCounts:{new:3,renewal:1,unknown:0}, areaGroups:[{approxAreaSqm:25,count:4,medianAreaSqm:23.5,depositBands:buildings[0].depositBands}],
     monthlyTrend:[{month:'2026-05',count:1,medianMonthlyRentWon:680000},{month:'2026-06',count:1,medianMonthlyRentWon:700000},{month:'2026-07',count:2,medianMonthlyRentWon:720000}],
     recentTransactions:[{contractDate:'2026-07-30',areaSqm:23.5,depositWon:20000000,monthlyRentWon:720000,contractType:'new'}]
   };
   const html = renderBuildingPage({ ...base('en'), detail });
-  assert.match(html, /<meta name="robots" content="index,follow">/);
+  assert.match(html, /<meta name="robots" content="noindex,follow">/);
   assert.match(html, /A &lt;Villa&gt;/);
   assert.match(html, /Monthly rent by deposit/i);
   assert.match(html, /New vs renewal/i);

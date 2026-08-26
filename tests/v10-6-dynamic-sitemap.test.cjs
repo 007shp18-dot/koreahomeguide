@@ -20,7 +20,7 @@ test('root sitemap is an index with static pages plus 10 districts x 3 proven pr
   assert.match(root, /https:\/\/koreahomeguide\.com\/sitemaps\/seoul\/mapo-gu\/villa\//);
   assert.doesNotMatch(root, /\/sitemaps\/seoul\/gwanak-gu\/detached\//);
   assert.equal((root.match(/<sitemap>/g) || []).length, 31);
-  assert.equal((staticMap.match(/<url>/g) || []).length, 48);
+  assert.equal((staticMap.match(/<url>/g) || []).length, 71);
   assert.equal(root.includes('/api/'), false);
 });
 
@@ -33,7 +33,7 @@ test('vercel exposes one shared child-sitemap endpoint without adding static HTM
   assert.match(route.destination, /type=:type/);
 });
 
-test('dynamic market sitemap emits EN/ZH Dong URLs and only index-quality buildings', async () => {
+test('dynamic market sitemap emits only substantial EN/ZH Dong URLs and never building URLs', async () => {
   const oldKey = process.env.DATA_GO_KR_SERVICE_KEY;
   process.env.DATA_GO_KR_SERVICE_KEY = 'test';
   delete require.cache[require.resolve('../api/sitemap-market.js')];
@@ -41,18 +41,10 @@ test('dynamic market sitemap emits EN/ZH Dong URLs and only index-quality buildi
   const provider = {
     getDongs: async () => [
       { dong:'연남동', contractCount:12 },
+      { dong:'서교동', contractCount:5 },
       { dong:'희우동', contractCount:2 }
     ],
-    getBuildings: async () => [
-      {
-        buildingName:'A Villa', buildingKey:'연남동::a villa', dong:'연남동', contractCount:5,
-        depositBands:[{ count:5, medianMonthlyRentWon:800000 }], medianJeonseDepositWon:null
-      },
-      {
-        buildingName:'Sparse Villa', buildingKey:'연남동::sparse villa', dong:'연남동', contractCount:2,
-        depositBands:[{ count:2, medianMonthlyRentWon:700000 }], medianJeonseDepositWon:null
-      }
-    ]
+    getBuildings: async () => { throw new Error('sitemap must not load buildings'); }
   };
   const handler = sitemapApi.createHandler({ providerFactory:() => provider, referenceDate:new Date('2026-08-25T00:00:00Z') });
   const res = responseRecorder();
@@ -62,10 +54,28 @@ test('dynamic market sitemap emits EN/ZH Dong URLs and only index-quality buildi
   assert.match(res.headers['Cache-Control'], /s-maxage=/);
   assert.match(res.body, /https:\/\/koreahomeguide\.com\/seoul\/mapo-gu\/yeonnam-dong\/villa\//);
   assert.match(res.body, /https:\/\/koreahomeguide\.com\/zh\/seoul\/mapo-gu\/yeonnam-dong\/villa\//);
+  assert.doesNotMatch(res.body, /seogyo-dong/);
   assert.doesNotMatch(res.body, /희우동/);
-  assert.match(res.body, /a-villa-[0-9a-f]{7}/);
-  assert.doesNotMatch(res.body, /sparse-villa/);
+  assert.doesNotMatch(res.body, /a-villa|sparse-villa/);
   if (oldKey == null) delete process.env.DATA_GO_KR_SERVICE_KEY; else process.env.DATA_GO_KR_SERVICE_KEY = oldKey;
+});
+
+test('new English districts do not emit thin Chinese Dong URLs', async () => {
+  const oldKey = process.env.DATA_GO_KR_SERVICE_KEY;
+  process.env.DATA_GO_KR_SERVICE_KEY = 'test';
+  const sitemapApi = require('../api/sitemap-market.js');
+  const handler = sitemapApi.createHandler({
+    providerFactory:() => ({
+      getDongs:async () => [{ dong:'신림동', contractCount:12 }]
+    })
+  });
+  const res = responseRecorder();
+  await handler({ method:'GET', query:{ district:'gwanak-gu', type:'villa' } }, res);
+  assert.equal(res.statusCode, 200);
+  assert.match(res.body, /https:\/\/koreahomeguide\.com\/seoul\/gwanak-gu\//);
+  assert.doesNotMatch(res.body, /https:\/\/koreahomeguide\.com\/zh\/seoul\/gwanak-gu\//);
+  if (oldKey == null) delete process.env.DATA_GO_KR_SERVICE_KEY;
+  else process.env.DATA_GO_KR_SERVICE_KEY = oldKey;
 });
 
 test('rent-market response and UI expose canonical neighborhood links', () => {

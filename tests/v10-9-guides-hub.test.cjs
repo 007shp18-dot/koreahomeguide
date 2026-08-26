@@ -6,16 +6,24 @@ const path = require('node:path');
 const root = path.join(__dirname, '..');
 function read(rel) { return fs.readFileSync(path.join(root, rel), 'utf8'); }
 
-const guideSlugs = ['wolse-vs-jeonse','korea-rental-contract-checklist','seoul-brokerage-fees','before-you-sign'];
+const guideSlugs = [
+  'wolse-vs-jeonse',
+  'korea-rental-contract-checklist',
+  'seoul-brokerage-fees',
+  'before-you-sign',
+  'rent-apartment-korea-foreigner',
+  'korea-rental-scams',
+  'seoul-officetel-rent'
+];
 
-test('EN guides hub exists with canonical, hreflang, and all four guide links', () => {
+test('EN guides hub exists with canonical, hreflang, and all guide links', () => {
   const html = read('guides/index.html');
   assert.match(html, /<link rel="canonical" href="https:\/\/koreahomeguide\.com\/guides\/"/);
   assert.match(html, /hreflang="zh-CN" href="https:\/\/koreahomeguide\.com\/zh\/guides\/"/);
   for (const slug of guideSlugs) assert.match(html, new RegExp(`href="/guides/${slug}/"`));
 });
 
-test('ZH guides hub exists with canonical, hreflang, and all four localized guide links', () => {
+test('ZH guides hub exists with canonical, hreflang, and all localized guide links', () => {
   const html = read('zh/guides/index.html');
   assert.match(html, /<link rel="canonical" href="https:\/\/koreahomeguide\.com\/zh\/guides\/"/);
   assert.match(html, /hreflang="en" href="https:\/\/koreahomeguide\.com\/guides\/"/);

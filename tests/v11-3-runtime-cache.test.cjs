@@ -120,6 +120,23 @@ test('runtime cache adapter is lazy and does not hard-fail outside Vercel', asyn
   }
 });
 
+test('runtime cache adapter passes its namespace through the SDK options object', async () => {
+  const runtime = require('../lib/runtime-cache.cjs');
+  const cache = { get:async () => undefined, set:async () => undefined };
+  let receivedOptions = null;
+  const result = await runtime.getRuntimeCache({
+    env:{ VERCEL:'1' },
+    moduleLoader:async () => ({
+      getCache(options) {
+        receivedOptions = options;
+        return cache;
+      }
+    })
+  });
+  assert.equal(result, cache);
+  assert.deepEqual(receivedOptions, { namespace:'khg-molit-v11-3' });
+});
+
 test('package metadata pins the Vercel Functions dependency used by Runtime Cache', () => {
   const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
   assert.equal(pkg.private, true);

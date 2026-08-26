@@ -16,7 +16,7 @@ const buildingApi = require('../api/seo-building-page.js');
 
 const fakeFxFetch = async () => ({ ok:true, json:async () => ({ rates:{ USD:0.00072, CNY:0.0052 } }) });
 const dongSummary = {
-  dong:'연남동', totalContracts:5, contractCount:5, monthlyRentCount:4, jeonseCount:1,
+  dong:'연남동', totalContracts:12, contractCount:12, monthlyRentCount:11, jeonseCount:1,
   medianMonthlyRentWon:700000, medianDepositWon:20000000, medianJeonseDepositWon:180000000,
   newContractMonthlyRentCount:4, renewalMonthlyRentCount:0, contractTypeCounts:{new:4,renewal:0,unknown:1},
   depositBands:[{minDepositWon:10000000,maxDepositWon:30000000,count:4,medianDepositWon:20000000,medianMonthlyRentWon:700000}], areaGroups:[],
@@ -40,7 +40,7 @@ test('Dong SEO endpoint returns localized HTML with cache headers', async () => 
   await handler({ method:'GET', query:{ district:'mapo-gu', dong:'yeonnam-dong', type:'villa', lang:'zh' } }, res);
   assert.equal(res.statusCode, 200);
   assert.match(res.headers['Content-Type'], /text\/html/);
-  assert.match(res.headers['Cache-Control'], /s-maxage=3600/);
+  assert.match(res.headers['Cache-Control'], /s-maxage=86400/);
   assert.match(res.body, /延南洞/);
   assert.match(res.body, /¥3,640/);
   assert.match(res.body, /index,follow/);
@@ -61,6 +61,48 @@ test('Dong SEO endpoint returns 404/noindex for invalid route or missing recent 
   assert.match(res.body, /noindex,follow/);
 });
 
+test('Dong SEO endpoint returns 404/noindex below the substantial-page threshold', async () => {
+  process.env.DATA_GO_KR_SERVICE_KEY = 'test';
+  const sparseSummary = { ...dongSummary, totalContracts:9, contractCount:9 };
+  const handler = dongApi.createHandler({
+    providerFactory:() => provider({ getDongSummary:async () => sparseSummary }),
+    fetchImpl:fakeFxFetch
+  });
+  const res = responseRecorder();
+  await handler({ method:'GET', query:{ district:'mapo-gu', dong:'yeonnam-dong', type:'villa', lang:'en' } }, res);
+  assert.equal(res.statusCode, 404);
+  assert.match(res.body, /noindex,follow/);
+});
+
+test('Chinese SEO endpoints reject districts without localized index pages before loading data', async () => {
+  process.env.DATA_GO_KR_SERVICE_KEY = 'test';
+  let providerCalls = 0;
+  const providerFactory = () => {
+    providerCalls += 1;
+    return provider();
+  };
+
+  let handler = dongApi.createHandler({ providerFactory, fetchImpl:fakeFxFetch });
+  let res = responseRecorder();
+  await handler({ method:'GET', query:{ district:'gwanak-gu', dong:'신림동', type:'villa', lang:'zh' } }, res);
+  assert.equal(res.statusCode, 404);
+  assert.match(res.body, /noindex,follow/);
+
+  const routes = require('../seo/seo-route-utils.cjs');
+  handler = buildingApi.createHandler({ providerFactory, fetchImpl:fakeFxFetch });
+  res = responseRecorder();
+  await handler({ method:'GET', query:{
+    district:'gwanak-gu',
+    dong:'신림동',
+    type:'villa',
+    building:routes.buildingSlug(building),
+    lang:'zh'
+  } }, res);
+  assert.equal(res.statusCode, 404);
+  assert.match(res.body, /noindex,follow/);
+  assert.equal(providerCalls, 0);
+});
+
 test('SEO endpoints return 503/noindex when official data is unconfigured or upstream fails', async () => {
   const old = process.env.DATA_GO_KR_SERVICE_KEY;
   delete process.env.DATA_GO_KR_SERVICE_KEY;
@@ -79,7 +121,7 @@ test('SEO endpoints return 503/noindex when official data is unconfigured or ups
   if (old == null) delete process.env.DATA_GO_KR_SERVICE_KEY; else process.env.DATA_GO_KR_SERVICE_KEY = old;
 });
 
-test('Building SEO endpoint resolves deterministic slug and applies index quality gate', async () => {
+test('Building SEO endpoint resolves deterministic slug but always blocks indexing', async () => {
   process.env.DATA_GO_KR_SERVICE_KEY = 'test';
   const routes = require('../seo/seo-route-utils.cjs');
   const slug = routes.buildingSlug(building);
@@ -88,7 +130,9 @@ test('Building SEO endpoint resolves deterministic slug and applies index qualit
   await handler({ method:'GET', query:{ district:'mapo-gu', dong:'yeonnam-dong', type:'villa', building:slug, lang:'en' } }, res);
   assert.equal(res.statusCode, 200);
   assert.match(res.body, /A Villa/);
-  assert.match(res.body, /content="index,follow"/);
+  assert.match(res.body, /content="noindex,follow"/);
+  assert.equal(res.headers['X-Robots-Tag'], 'noindex,follow');
+  assert.match(res.headers['Cache-Control'], /s-maxage=86400/);
 
   const sparseProvider = provider({ getBuildingDetail:async()=>({ ...building, contractCount:2, monthlyTrend:[], recentTransactions:[] }) });
   const sparseHandler = buildingApi.createHandler({ providerFactory:()=>sparseProvider, fetchImpl:fakeFxFetch });
@@ -96,6 +140,7 @@ test('Building SEO endpoint resolves deterministic slug and applies index qualit
   await sparseHandler({ method:'GET', query:{ district:'mapo-gu', dong:'yeonnam-dong', type:'villa', building:slug, lang:'en' } }, res);
   assert.equal(res.statusCode, 200);
   assert.match(res.body, /content="noindex,follow"/);
+  assert.equal(res.headers['X-Robots-Tag'], 'noindex,follow');
 });
 
 test('Building SEO endpoint returns 404 for an unresolved building slug', async () => {

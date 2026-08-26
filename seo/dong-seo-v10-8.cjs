@@ -4,7 +4,7 @@ const KHGDate = require('../date-utils.js');
 const { SEOUL_DONGS_BY_DISTRICT } = require('../providers/seoul-config.cjs');
 const { buildDongSeoUrl, dongSlugFromName } = require('./seo-route-utils.cjs');
 
-const MIN_DONG_CONTRACTS = 3;
+const MIN_DONG_CONTRACTS = 10;
 
 const ZH_DONG_LABELS = Object.freeze({
   '역삼동':'驿三洞 (역삼동)', '논현동':'论岘洞 (논현동)', '대치동':'大峙洞 (대치동)',

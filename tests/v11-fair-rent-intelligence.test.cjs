@@ -59,6 +59,16 @@ test('insufficient result never exposes distribution intelligence', () => {
   assert.equal(result.percentileRank, null);
 });
 
+test('a low-confidence three-comparable verdict hides distribution intelligence', () => {
+  const result = core.buildResultForTier(reliableItems.slice(0, 3), quote, core.TIERS[2]);
+  assert.notEqual(result.rating, 'insufficient');
+  assert.equal(result.p25ValueWon, null);
+  assert.equal(result.p75ValueWon, null);
+  assert.equal(result.percentileRank, null);
+  assert.equal(enUI.hasDistribution(result), false);
+  assert.equal(zhUI.hasDistribution(result), false);
+});
+
 test('existing verdict threshold stays unchanged at plus/minus 10 percent', () => {
   assert.equal(core.rateDifference(-10), 'below');
   assert.equal(core.rateDifference(-9.9), 'fair');
@@ -67,9 +77,10 @@ test('existing verdict threshold stays unchanged at plus/minus 10 percent', () =
 });
 
 test('EN and ZH helpers provide localized percentile wording and hide it for insufficient data', () => {
-  assert.equal(enUI.percentileSentence({ rating:'fair', percentileRank:60 }), 'This quote is around the 60th percentile of comparable signed contracts.');
+  const distribution = { rating:'fair', p25ValueWon:800_000, p75ValueWon:1_000_000, percentileRank:60 };
+  assert.equal(enUI.percentileSentence(distribution), 'This quote is around the 60th percentile of comparable signed contracts.');
   assert.equal(enUI.percentileSentence({ rating:'insufficient', percentileRank:null }), '');
-  assert.equal(zhUI.percentileSentence({ rating:'fair', percentileRank:60 }), '这个报价约处于可比已签约成交的第 60 百分位。');
+  assert.equal(zhUI.percentileSentence(distribution), '这个报价约处于可比已签约成交的第 60 百分位。');
   assert.equal(zhUI.percentileSentence({ rating:'insufficient', percentileRank:null }), '');
 });
 
@@ -82,14 +93,15 @@ test('EN and ZH apps create and render the Fair Rent Intelligence distribution p
     assert.match(source, /rentCheckPercentile/);
     assert.match(source, /p25ValueWon/);
     assert.match(source, /p75ValueWon/);
-    assert.match(source, /percentileRank/);
+    assert.match(source, /KHGRentCheckUI\.hasDistribution\(data\)/);
     assert.match(source, /distribution\.hidden/);
   }
 });
 
 test('English percentile wording uses correct ordinal suffixes and jeonse wording', () => {
-  assert.equal(enUI.percentileSentence({ rating:'below', percentileRank:1, comparisonMode:'monthly-rent' }), 'This quote is around the 1st percentile of comparable signed contracts.');
-  assert.equal(enUI.percentileSentence({ rating:'above', percentileRank:22, comparisonMode:'jeonse-deposit' }), 'This jeonse deposit is around the 22nd percentile of comparable signed contracts.');
+  const range = { p25ValueWon:800_000, p75ValueWon:1_000_000 };
+  assert.equal(enUI.percentileSentence({ ...range, rating:'below', percentileRank:1, comparisonMode:'monthly-rent' }), 'This quote is around the 1st percentile of comparable signed contracts.');
+  assert.equal(enUI.percentileSentence({ ...range, rating:'above', percentileRank:22, comparisonMode:'jeonse-deposit' }), 'This jeonse deposit is around the 22nd percentile of comparable signed contracts.');
 });
 
 test('jeonse intelligence derives percentiles from deposit values, not zero monthly rent', () => {

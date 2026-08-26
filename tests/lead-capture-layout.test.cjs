@@ -16,8 +16,8 @@ test('hidden lead subforms stay hidden despite authored form layout rules', () =
 
 test('lead form reserves a flexible email column and a separate consent row', () => {
   const css = fs.readFileSync('cold-start.css', 'utf8');
-  assert.match(css, /\.lead-capture \[data-lead-form\][^{]*\{[^}]*grid-template-columns\s*:\s*minmax\(240px,\s*1fr\)\s+max-content/);
-  assert.match(css, /\.lead-capture \.lead-consent-note\s*\{[^}]*grid-column\s*:\s*1\s*\/\s*-1/);
+  assert.match(css, /\.lead-capture \[data-lead-form\][^{]*\{[^}]*grid-template-columns\s*:\s*minmax\(0,\s*1fr\)\s+auto/);
+  assert.match(css, /\.lead-capture \[data-lead-form\] \.lead-consent-note\s*\{[^}]*grid-column\s*:\s*1\s*\/\s*-1/);
 });
 
 test('help form buttons use the shared primary action style in every locale and entry point', () => {

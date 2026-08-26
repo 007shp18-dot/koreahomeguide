@@ -28,7 +28,7 @@ test('Explorer clients call the Seoul-wide endpoint and preserve district identi
 });
 
 test('Seoul-wide API aggregates 10 districts over 3 completed months in bounded batches', async () => {
-  const api = require('../api/explore-seoul.js');
+  const api = require('../api/explore-area.js');
   assert.equal(api.SUPPORTED_DISTRICT_CODES.length, 10);
   let active = 0;
   let maxActive = 0;
@@ -52,7 +52,7 @@ test('Seoul-wide API aggregates 10 districts over 3 completed months in bounded 
   });
   process.env.DATA_GO_KR_SERVICE_KEY = 'test-key';
   const res = recorder();
-  await handler({ method:'GET', headers:{ origin:'https://koreahomeguide.com' }, query:{ type:'officetel' } }, res);
+  await handler({ method:'GET', headers:{ origin:'https://koreahomeguide.com' }, query:{ scope:'all', type:'officetel' } }, res);
   assert.equal(res.statusCode, 200);
   assert.equal(calls, 30);
   assert.ok(maxActive <= 15, `expected <=15 concurrent month fetches, got ${maxActive}`);
@@ -63,15 +63,23 @@ test('Seoul-wide API aggregates 10 districts over 3 completed months in bounded 
 });
 
 test('Seoul-wide API rejects unsupported property types and foreign browser origins', async () => {
-  const api = require('../api/explore-seoul.js');
+  const api = require('../api/explore-area.js');
   const handler = api.createHandler({
     fetchMonth:async()=>[], aggregateDongs:()=>[], buildAreaSummary:()=>({}), referenceDate:new Date('2026-08-25T00:00:00Z')
   });
   process.env.DATA_GO_KR_SERVICE_KEY='test-key';
   let res=recorder();
-  await handler({ method:'GET', headers:{ origin:'https://evil.example' }, query:{ type:'officetel' } }, res);
+  await handler({ method:'GET', headers:{ origin:'https://evil.example' }, query:{ scope:'all', type:'officetel' } }, res);
   assert.equal(res.statusCode, 403);
   res=recorder();
-  await handler({ method:'GET', headers:{ origin:'https://koreahomeguide.com' }, query:{ type:'castle' } }, res);
+  await handler({ method:'GET', headers:{ origin:'https://koreahomeguide.com' }, query:{ scope:'all', type:'castle' } }, res);
   assert.equal(res.statusCode, 400);
+});
+
+test('public Seoul-wide path rewrites to the consolidated area handler', () => {
+  const config = require('../vercel.json');
+  assert.equal(config.rewrites.some(route =>
+    route.source === '/api/explore-seoul' &&
+    route.destination === '/api/explore-area?scope=all'
+  ), true);
 });

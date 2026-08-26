@@ -39,3 +39,17 @@ test('budget fit exposes matching-contract evidence for future recommendation UI
   assert.equal(fit.matchingContractCount, 8);
   assert.equal(fit.representativeBand.medianMonthlyRentWon, 780000);
 });
+
+test('budget fit rejects missing constrained values instead of treating null as zero', () => {
+  const missingBandRent = Explorer.budgetFitForDong({
+    depositBands:[{ medianMonthlyRentWon:null, medianDepositWon:10_000_000, count:12 }]
+  }, { maxRent:800_000, maxDeposit:20_000_000 });
+  const missingFallbackRent = Explorer.budgetFitForDong({
+    medianMonthlyRentWon:null,
+    medianDepositWon:10_000_000,
+    contractCount:12
+  }, { maxRent:800_000, maxDeposit:20_000_000 });
+
+  assert.equal(missingBandRent.fits, false);
+  assert.equal(missingFallbackRent.fits, false);
+});

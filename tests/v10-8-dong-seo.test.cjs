@@ -16,10 +16,10 @@ const summary = {
   dataThroughMonth:'2026-07'
 };
 
-test('Dong index-quality gate requires at least three reported contracts', () => {
-  assert.equal(MIN_DONG_CONTRACTS, 3);
-  assert.equal(isDongIndexable({ contractCount:2 }), false);
-  assert.equal(isDongIndexable({ contractCount:3 }), true);
+test('Dong index-quality gate requires at least ten reported contracts', () => {
+  assert.equal(MIN_DONG_CONTRACTS, 10);
+  assert.equal(isDongIndexable({ contractCount:9 }), false);
+  assert.equal(isDongIndexable({ contractCount:10 }), true);
   assert.equal(isDongIndexable({ totalContracts:18 }), true);
 });
 
