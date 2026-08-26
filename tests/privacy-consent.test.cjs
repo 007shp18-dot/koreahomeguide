@@ -1,76 +1,81 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 
-test('analytics remains disabled without affirmative consent', () => {
-  const privacy = require('../privacy-consent.js');
-  assert.equal(privacy.shouldLoadAnalytics(null), false);
-  assert.equal(privacy.shouldLoadAnalytics('rejected'), false);
-  assert.equal(privacy.shouldLoadAnalytics('accepted'), true);
-  assert.equal(privacy.normalizeConsent('anything-else'), null);
-});
+function analyticsDocument(appended, created = []) {
+  return {
+    querySelector(selector) {
+      if (selector === '[data-khg-analytics]') return appended[0] || null;
+      if (selector === '[data-khg-consent-banner]' || selector === '[data-khg-privacy-settings]') return null;
+      return null;
+    },
+    createElement(tag) {
+      const node = { tagName:tag.toUpperCase(), dataset:{} };
+      created.push(node);
+      return node;
+    },
+    head:{ appendChild(node) { appended.push(node); } },
+    body:{ appendChild(node) { created.push(node); }, classList:{ add() {}, remove() {} } },
+    documentElement:{ lang:'en' }
+  };
+}
 
-test('accepted consent loads one GA script and is idempotent', () => {
+test('page initialization loads GA4 without waiting for a stored analytics choice', () => {
   const privacy = require('../privacy-consent.js');
   const appended = [];
-  const root = {};
-  const doc = {
-    querySelector:selector => selector === '[data-khg-analytics]' ? appended[0] || null : null,
-    createElement:tag => ({ tagName:tag.toUpperCase(), dataset:{} }),
-    head:{ appendChild:node => appended.push(node) }
+  const created = [];
+  const storage = {
+    getItem() { throw new Error('analytics initialization must not read consent storage'); },
+    setItem() { throw new Error('analytics initialization must not write consent storage'); }
   };
+  const root = {};
+  const controller = privacy.createController({ root, doc:analyticsDocument(appended, created), storage });
 
-  const first = privacy.loadAnalytics({ root, doc });
-  const second = privacy.loadAnalytics({ root, doc });
+  controller.init();
 
-  assert.equal(first, true);
-  assert.equal(second, true);
   assert.equal(appended.length, 1);
   assert.match(appended[0].src, /googletagmanager\.com\/gtag\/js\?id=G-6SXH5BREDP/);
   assert.equal(typeof root.gtag, 'function');
+  assert.equal(created.some(node => node.dataset && (node.dataset.khgConsentBanner || node.dataset.khgPrivacySettings)), false);
 });
 
-test('storage failure defaults to no analytics', () => {
+test('automatic analytics loading remains idempotent', () => {
   const privacy = require('../privacy-consent.js');
-  const storage = { getItem(){ throw new Error('blocked'); }, setItem(){ throw new Error('blocked'); } };
-  const controller = privacy.createController({ root:{}, doc:null, storage });
-  assert.equal(controller.getConsent(), null);
-  assert.equal(controller.setConsent('accepted'), false);
+  const appended = [];
+  const root = {};
+  const doc = analyticsDocument(appended);
+
+  assert.equal(privacy.loadAnalytics({ root, doc }), true);
+  assert.equal(privacy.loadAnalytics({ root, doc }), true);
+  assert.equal(appended.length, 1);
 });
 
-test('localized banner copy always offers accept and reject choices', () => {
+test('automatic pageview keeps campaign attribution but removes quote values from its URL', () => {
   const privacy = require('../privacy-consent.js');
-  assert.deepEqual(privacy.consentCopy('en'), {
-    message:'We use optional analytics to understand which rental tools are useful. You can change this choice later.',
-    accept:'Accept analytics', reject:'Reject', settings:'Privacy choices'
-  });
-  assert.equal(privacy.consentCopy('zh-CN').accept, '同意分析 Cookie');
-  assert.equal(privacy.consentCopy('zh-CN').reject, '拒绝');
+  const root = {
+    location:{ href:'https://koreahomeguide.com/tools/seoul-rent-check/?deposit=10000000&rent=1200000&area=25&utm_source=reddit&utm_medium=community' }
+  };
+
+  privacy.loadAnalytics({ root, doc:analyticsDocument([]) });
+
+  const commands = root.dataLayer.map(args => Array.from(args));
+  const config = commands.find(args => args[0] === 'config');
+  const pageview = commands.find(args => args[0] === 'event' && args[1] === 'page_view');
+  assert.equal(config[2].send_page_view, false);
+  assert.equal(pageview[2].page_location, 'https://koreahomeguide.com/tools/seoul-rent-check/?utm_source=reddit&utm_medium=community');
+  assert.doesNotMatch(JSON.stringify(commands), /10000000|1200000|[?&]area=25/);
 });
 
-test('controller announces normalized consent after init and successful changes', () => {
+test('controller announces analytics readiness after automatic initialization', () => {
   const privacy = require('../privacy-consent.js');
   const announcements = [];
-  let stored = 'accepted';
   const root = {
     CustomEvent:function(type, init) { return { type, detail:init.detail }; },
     dispatchEvent(event) { announcements.push(event); }
   };
-  const doc = {
-    querySelector() { return null; },
-    createElement(tag) { return { tagName:tag.toUpperCase(), dataset:{} }; },
-    head:{ appendChild() {} },
-    body:{ classList:{ remove() {} } }
-  };
-  const storage = { getItem(){ return stored; }, setItem(_, value){ stored = value; } };
-  const controller = privacy.createController({ root, doc, storage });
+  const controller = privacy.createController({ root, doc:analyticsDocument([]), storage:null });
 
   controller.init();
-  controller.setConsent('rejected');
-  controller.setConsent('accepted');
 
-  assert.deepEqual(announcements.map(event => [event.type, event.detail.consent]), [
-    ['khg:privacy-consent', 'accepted'],
-    ['khg:privacy-consent', 'rejected'],
-    ['khg:privacy-consent', 'accepted']
-  ]);
+  assert.deepEqual(announcements.map(event => event.type), ['khg:analytics-ready']);
+  assert.equal(root.KHGAnalyticsReady, true);
 });

@@ -43,10 +43,10 @@ function bootRentCheckRuntime(file, { districtCode = '11680', propertyType = 'ap
   vm.runInNewContext(fs.readFileSync(file, 'utf8'), context, { filename:file });
   return {
     async submit() { await formListeners.get('submit')({ preventDefault() {} }); },
-    consent(value) {
+    analyticsReady() {
       window.gtag = (...args) => gtagCalls.push(args);
-      const listener = listeners.get('khg:privacy-consent');
-      if (listener) listener({ detail:{ consent:value } });
+      const listener = listeners.get('khg:analytics-ready');
+      if (listener) listener({ detail:{ ready:true } });
     },
     gtagCalls,
     elements
@@ -83,14 +83,12 @@ test('all four Rent Check runtimes structurally preserve safe tool-view and fail
   }
 });
 
-test('Rent Check tool view waits for accepted consent and emits once across all runtimes', () => {
+test('Rent Check tool view emits once when automatic analytics becomes ready', () => {
   for (const file of files) {
     const runtime = bootRentCheckRuntime(file);
     assert.equal(runtime.gtagCalls.length, 0, file);
-    runtime.consent('rejected');
-    assert.equal(runtime.gtagCalls.length, 0, file);
-    runtime.consent('accepted');
-    runtime.consent('accepted');
+    runtime.analyticsReady();
+    runtime.analyticsReady();
     assert.deepEqual(runtime.gtagCalls.map(call => call[1]), ['rent_check_tool_view'], file);
   }
 });
@@ -98,7 +96,7 @@ test('Rent Check tool view waits for accepted consent and emits once across all 
 test('Rent Check calculations keep running but suppress analytics for manipulated context', async () => {
   for (const file of files) {
     const runtime = bootRentCheckRuntime(file, { districtCode:'99999', propertyType:'castle' });
-    runtime.consent('accepted');
+    runtime.analyticsReady();
     await runtime.submit();
     assert.equal(runtime.gtagCalls.length, 0, file);
     assert.equal(runtime.elements['#rentCheckResult'].hidden, true, file);

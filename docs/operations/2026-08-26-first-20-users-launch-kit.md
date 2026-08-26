@@ -56,7 +56,7 @@ hello@koreahomeguide.com
 
 ## Measurement
 
-Accept analytics on one separate test device only to confirm the funnel events. Do not count that device as a qualified visitor.
+Use one separate test device to confirm the automatic GA4 pageview and funnel events. Do not count that device as a qualified visitor.
 
 Check GA4 Realtime and then the standard Events report for:
 

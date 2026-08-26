@@ -17,7 +17,7 @@ WHAT CHANGES
    - Email is normalized and treated as the unique Google Sheet key.
    - Repeated captures update one row; help requests enrich that same row.
    - Privacy pages and point-of-collection notices are available in English and Chinese.
-   - GA4 loads only after affirmative analytics consent.
+   - GA4 loads automatically through the shared analytics loader.
 
 3. Localized market labels
    - Stable district/property values are preserved for URLs and APIs.

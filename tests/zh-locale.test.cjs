@@ -9,7 +9,7 @@ test('English page advertises the Chinese alternate and sitemap lists /zh/', () 
   assert.match(sitemap,/<loc>https:\/\/koreahomeguide\.com\/zh\/<\/loc>/);
 });
 
-test('Chinese cold-start page has localized metadata, consent-first analytics, language switch, and rental terminology', () => {
+test('Chinese cold-start page has localized metadata, automatic analytics, language switch, and rental terminology', () => {
   const html=fs.readFileSync('zh/index.html','utf8');
   assert.match(html,/<html lang="zh-CN">/);
   assert.match(html,/<link rel="canonical" href="https:\/\/koreahomeguide\.com\/zh\/"/);

@@ -27,9 +27,13 @@ test('localized privacy pages disclose operator, collected data, processors, ret
   assert.match(en, /delet/i);
   assert.match(zh, /邮箱/);
   assert.match(zh, /删除/);
+  assert.match(en, /Google Analytics loads when a page opens/);
+  assert.match(zh, /页面打开时会加载 Google Analytics/);
+  assert.doesNotMatch(en, /Accept analytics|Optional Google Analytics/);
+  assert.doesNotMatch(zh, /同意分析 Cookie|可选分析/);
 });
 
-test('every static page links to matching privacy details and uses the consent loader', () => {
+test('every static page links to matching privacy details and uses the shared analytics loader', () => {
   const pages = staticPages();
   assert.ok(pages.length > 40);
   for (const file of pages) {
@@ -48,7 +52,7 @@ test('all four lead forms link the point-of-collection notice to privacy details
   }
 });
 
-test('generated SEO pages emit consent-aware analytics and privacy links', () => {
+test('generated SEO pages emit shared analytics and privacy links', () => {
   const source = fs.readFileSync('seo/seo-page-renderer.cjs','utf8');
   assert.match(source, /privacy-consent\.js/);
   assert.match(source, /\/privacy\//);
