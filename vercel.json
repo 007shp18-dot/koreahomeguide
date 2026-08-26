@@ -5,6 +5,10 @@
       "destination": "/api/fx?resource=maps-config"
     },
     {
+      "source": "/api/explore-seoul",
+      "destination": "/api/explore-area?scope=all"
+    },
+    {
       "source": "/sitemaps/seoul/:district/:type/",
       "destination": "/api/sitemap-market?district=:district&type=:type"
     },
