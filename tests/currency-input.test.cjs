@@ -26,7 +26,9 @@ async function bootCurrencyRuntime(file) {
   const currencySelect = { value:'USD', disabled:false, addEventListener() {} };
   const domNode = () => ({
     hidden:false, open:false, textContent:'', innerHTML:'', dataset:{},
+    style:{ left:'' }, classList:{ toggle() {}, remove() {} },
     appendChild() {}, insertAdjacentElement() {}, addEventListener() {},
+    setAttribute() {}, querySelectorAll() { return []; },
     querySelector() { return domNode(); }
   });
   const elements = {

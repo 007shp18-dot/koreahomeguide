@@ -11,7 +11,9 @@ function bootRentCheckRuntime(file, { districtCode = '11680', propertyType = 'ap
   const formListeners = new Map();
   const domNode = () => ({
     hidden:false, open:false, textContent:'', innerHTML:'', dataset:{},
+    style:{ left:'' }, classList:{ toggle() {}, remove() {} },
     appendChild() {}, insertAdjacentElement() {}, addEventListener() {},
+    setAttribute() {}, querySelectorAll() { return []; },
     querySelector() { return domNode(); }
   });
   const elements = {

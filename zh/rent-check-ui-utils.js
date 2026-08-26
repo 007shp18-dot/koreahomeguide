@@ -126,10 +126,68 @@
     return `${n > 0 ? '+' : ''}${n.toFixed(1)}%`;
   }
 
+  function isNumericValue(value) {
+    return value !== null && value !== undefined && value !== '' && typeof value !== 'boolean' && Number.isFinite(Number(value));
+  }
+
   function hasDistribution(result) {
-    return Boolean(result && result.rating !== 'insufficient' &&
-      [result.p25ValueWon, result.p75ValueWon, result.percentileRank]
-        .every(value => value !== null && value !== undefined && Number.isFinite(Number(value))));
+    if (!result || !['below','fair','above'].includes(result.rating)) return false;
+    const rawValues = [result.p25ValueWon, result.p75ValueWon, result.percentileRank];
+    if (!rawValues.every(isNumericValue)) return false;
+    const p25 = Number(result.p25ValueWon);
+    const p75 = Number(result.p75ValueWon);
+    const rank = Number(result.percentileRank);
+    return p25 >= 0 && p75 >= p25 && rank >= 0 && rank <= 100;
+  }
+
+  function pricePositionModel(result) {
+    if (!result || !['below','fair','above'].includes(result.rating)) return null;
+    const rawValues = [result.p25ValueWon, result.medianValueWon, result.p75ValueWon, result.askingValueWon];
+    if (!rawValues.every(isNumericValue)) return null;
+    const p25 = Number(result.p25ValueWon);
+    const median = Number(result.medianValueWon);
+    const p75 = Number(result.p75ValueWon);
+    const asking = Number(result.askingValueWon);
+    if ([p25, median, p75, asking].some(value => value < 0) || p25 > median || median > p75) return null;
+    if (p25 === p75) {
+      return {
+        medianPct:50,
+        quotePct:asking < p25 ? 0 : asking > p75 ? 100 : 50,
+        relation:asking < p25 ? 'below' : asking > p75 ? 'above' : 'within'
+      };
+    }
+    const position = value => Math.round(Math.max(0, Math.min(100, ((value - p25) / (p75 - p25)) * 100)) * 10) / 10;
+    return {
+      medianPct:position(median),
+      quotePct:position(asking),
+      relation:asking < p25 ? 'below' : asking > p75 ? 'above' : 'within'
+    };
+  }
+
+  function priceMarkerCollision(model) {
+    if (!model || !isNumericValue(model.medianPct) || !isNumericValue(model.quotePct)) return false;
+    return Math.abs(Number(model.medianPct) - Number(model.quotePct)) < 20;
+  }
+
+  function evidenceFacts(result) {
+    const rawCount = result && result.comparableCount;
+    const rawMonths = result && result.monthsUsed;
+    const count = isNumericValue(rawCount) ? Math.max(0, Math.round(Number(rawCount))) : 0;
+    const months = isNumericValue(rawMonths) ? Math.max(1, Math.round(Number(rawMonths))) : 12;
+    return {
+      sampleLabel:`${count} 笔已签约成交`,
+      periodLabel:`最近 ${months} 个完整月份`
+    };
+  }
+
+  function comparableDisclosure(total, expanded) {
+    const count = Math.max(0, Math.round(Number(total || 0)));
+    if (count <= 3) return { showToggle:false, hiddenCount:0, label:'' };
+    return {
+      showToggle:true,
+      hiddenCount:expanded ? 0 : count - 3,
+      label:expanded ? '收起对比记录' : `查看全部 ${count} 条对比记录`
+    };
   }
 
   function percentileSentence(result) {
@@ -154,6 +212,10 @@
     formatWon,
     formatDifference,
     hasDistribution,
+    pricePositionModel,
+    priceMarkerCollision,
+    evidenceFacts,
+    comparableDisclosure,
     percentileSentence
   };
 });
