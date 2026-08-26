@@ -30,6 +30,23 @@ function base(lang='en') {
   return { lang, areaCode:'11440', districtName:'Mapo-gu', dong:'연남동', propertyType:'villa', summary, buildings, fxRates };
 }
 
+function datasetsFrom(html) {
+  const raw = (html.match(/<script type="application\/ld\+json">([^<]+)<\/script>/) || [])[1];
+  assert.ok(raw, 'page must include JSON-LD');
+  const graph = JSON.parse(raw)['@graph'];
+  const datasets = [];
+  const visit = value => {
+    if (!value || typeof value !== 'object') return;
+    if (value['@type'] === 'Dataset') datasets.push(value);
+    for (const child of Object.values(value)) {
+      if (Array.isArray(child)) child.forEach(visit);
+      else visit(child);
+    }
+  };
+  visit(graph);
+  return datasets;
+}
+
 test('English Dong HTML has canonical, hreflang, index metadata, Dataset JSON-LD and nofollow Explorer building links', () => {
   const html = renderDongPage(base('en'));
   assert.match(html, /<meta name="robots" content="index,follow">/);
@@ -60,6 +77,46 @@ test('Chinese Dong HTML is genuinely localized and uses CNY as primary display',
   assert.match(html, /¥3,640/); // 700,000 KRW at injected test rate
   assert.match(html, /韩国国土交通部/);
   assert.doesNotMatch(html, /Median monthly rent/);
+});
+
+test('every Dataset includes a description', () => {
+  for (const lang of ['en', 'zh']) {
+    for (const dataset of datasetsFrom(renderDongPage(base(lang)))) {
+      assert.ok(String(dataset.description || '').trim(), `${lang}: ${dataset.name} description`);
+    }
+  }
+});
+
+test('every Dataset description stays within Google’s 50–5000 character range', () => {
+  for (const lang of ['en', 'zh']) {
+    for (const dataset of datasetsFrom(renderDongPage(base(lang)))) {
+      const length = String(dataset.description || '').length;
+      assert.ok(length >= 50 && length <= 5000, `${lang}: ${dataset.name} description length ${length}`);
+    }
+  }
+});
+
+test('every Dataset declares the official public-data license URL', () => {
+  const license = 'https://www.data.go.kr/ugs/selectPortalPolicyView.do';
+  for (const lang of ['en', 'zh']) {
+    for (const dataset of datasetsFrom(renderDongPage(base(lang)))) {
+      assert.equal(dataset.license, license, `${lang}: ${dataset.name} license`);
+    }
+  }
+});
+
+test('every Dataset creator uses a Google-supported object type', () => {
+  for (const lang of ['en', 'zh']) {
+    for (const dataset of datasetsFrom(renderDongPage(base(lang)))) {
+      assert.ok(['Person', 'Organization'].includes(dataset.creator && dataset.creator['@type']), `${lang}: ${dataset.name} creator type`);
+    }
+  }
+});
+
+test('source Dataset preserves official MOLIT provenance without claiming source ownership', () => {
+  const [derived, source] = datasetsFrom(renderDongPage(base('en')));
+  assert.equal(derived.creator.name, 'KoreaHomeGuide');
+  assert.equal(source.creator.name, 'Ministry of Land, Infrastructure and Transport, Republic of Korea');
 });
 
 test('English Dong HTML omits Chinese hreflang outside localized districts', () => {

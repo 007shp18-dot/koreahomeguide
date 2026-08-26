@@ -8,6 +8,7 @@ const {
 } = require('./seo-route-utils.cjs');
 
 const ORIGIN = 'https://koreahomeguide.com';
+const PUBLIC_DATA_LICENSE = 'https://www.data.go.kr/ugs/selectPortalPolicyView.do';
 
 function isZh(lang) {
   return String(lang || '').toLowerCase().startsWith('zh');
@@ -136,11 +137,33 @@ function contextRailHtml({ lang, rentCheckPath, explorePath, guidePath, building
 }
 function webPageDatasetJsonLd({ lang, title, description, canonicalPath, districtName, dong, propertyType }) {
   const zh = isZh(lang);
+  const derivedDescription = zh
+    ? '该数据集汇总韩国国土交通部公开申报的租赁成交记录，展示首尔各法定洞最近六个完整月份的押金、月租、面积和合同类型统计。'
+    : 'Recent market statistics derived from rental transactions reported to Korea’s Ministry of Land, Infrastructure and Transport.';
+  const sourceDescription = zh
+    ? '韩国国土交通部根据相关法律收集并通过公共数据门户发布的官方租赁成交记录，包含押金、月租、面积、合同日期和合同类型等字段。'
+    : 'Official rental transaction records collected under Korean law and published by the Ministry of Land, Infrastructure and Transport through Korea’s Public Data Portal.';
   return {
     '@context':'https://schema.org',
     '@graph':[
       { '@type':'WebPage', name:title, description, url:`${ORIGIN}${canonicalPath}`, inLanguage:zh ? 'zh-CN' : 'en' },
-      { '@type':'Dataset', name:zh ? `${dong}租赁成交统计` : `${dong} rental transaction statistics`, description:zh ? '基于韩国国土交通部申报租赁成交数据整理的近期市场统计。' : 'Recent market statistics derived from rental transactions reported to Korea’s Ministry of Land, Infrastructure and Transport.', spatialCoverage:`${dong}, ${districtName}, Seoul`, temporalCoverage:'latest six completed months', variableMeasured:propertyType, creator:{ '@type':'Organization', name:'KoreaHomeGuide' }, isBasedOn:{ '@type':'Dataset', name:zh ? '韩国国土交通部租赁成交数据' : 'MOLIT reported rental transaction data', creator:{ '@type':'GovernmentOrganization', name:'Ministry of Land, Infrastructure and Transport, Republic of Korea' } } }
+      {
+        '@type':'Dataset',
+        name:zh ? `${dong}租赁成交统计` : `${dong} rental transaction statistics`,
+        description:derivedDescription,
+        license:PUBLIC_DATA_LICENSE,
+        spatialCoverage:`${dong}, ${districtName}, Seoul`,
+        temporalCoverage:'latest six completed months',
+        variableMeasured:propertyType,
+        creator:{ '@type':'Organization', name:'KoreaHomeGuide' },
+        isBasedOn:{
+          '@type':'Dataset',
+          name:zh ? '韩国国土交通部租赁成交数据' : 'MOLIT reported rental transaction data',
+          description:sourceDescription,
+          license:PUBLIC_DATA_LICENSE,
+          creator:{ '@type':'Organization', name:'Ministry of Land, Infrastructure and Transport, Republic of Korea' }
+        }
+      }
     ]
   };
 }
