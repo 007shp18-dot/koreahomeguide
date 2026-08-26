@@ -46,3 +46,31 @@ test('localized banner copy always offers accept and reject choices', () => {
   assert.equal(privacy.consentCopy('zh-CN').accept, '同意分析 Cookie');
   assert.equal(privacy.consentCopy('zh-CN').reject, '拒绝');
 });
+
+test('controller announces normalized consent after init and successful changes', () => {
+  const privacy = require('../privacy-consent.js');
+  const announcements = [];
+  let stored = 'accepted';
+  const root = {
+    CustomEvent:function(type, init) { return { type, detail:init.detail }; },
+    dispatchEvent(event) { announcements.push(event); }
+  };
+  const doc = {
+    querySelector() { return null; },
+    createElement(tag) { return { tagName:tag.toUpperCase(), dataset:{} }; },
+    head:{ appendChild() {} },
+    body:{ classList:{ remove() {} } }
+  };
+  const storage = { getItem(){ return stored; }, setItem(_, value){ stored = value; } };
+  const controller = privacy.createController({ root, doc, storage });
+
+  controller.init();
+  controller.setConsent('rejected');
+  controller.setConsent('accepted');
+
+  assert.deepEqual(announcements.map(event => [event.type, event.detail.consent]), [
+    ['khg:privacy-consent', 'accepted'],
+    ['khg:privacy-consent', 'rejected'],
+    ['khg:privacy-consent', 'accepted']
+  ]);
+});

@@ -23,6 +23,16 @@
     return normalizeConsent(value) === 'accepted';
   }
 
+  function announceConsent(root, value) {
+    const consent = normalizeConsent(value);
+    try {
+      if (!root) return;
+      root.KHGPrivacyConsent = consent;
+      if (typeof root.CustomEvent !== 'function' || typeof root.dispatchEvent !== 'function') return;
+      root.dispatchEvent(new root.CustomEvent('khg:privacy-consent', { detail:{ consent } }));
+    } catch (_) {}
+  }
+
   function consentCopy(language) {
     const zh = String(language || '').toLowerCase().startsWith('zh');
     return zh ? {
@@ -74,6 +84,7 @@
       else if (root && typeof root.gtag === 'function') {
         root.gtag('consent', 'update', { analytics_storage:'denied' });
       }
+      announceConsent(root, normalized);
       return true;
     }
 
@@ -119,6 +130,7 @@
       const consent = getConsent();
       if (shouldLoadAnalytics(consent)) loadAnalytics({ root, doc });
       else if (consent == null) showBanner();
+      announceConsent(root, consent);
       return consent;
     }
 

@@ -1,8 +1,57 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const vm = require('node:vm');
 
 const files = ['app.js','zh/app.js','tools/seoul-rent-check/app.js','zh/tools/seoul-rent-check/app.js'];
+
+function bootRentCheckRuntime(file, { districtCode = '11680', propertyType = 'apartment' } = {}) {
+  const listeners = new Map();
+  const gtagCalls = [];
+  const formListeners = new Map();
+  const elements = {
+    '#rentCheckForm': { addEventListener(type, handler) { formListeners.set(type, handler); } },
+    '#rentCheckArea': { value:districtCode, options:[] },
+    '#rentCheckType': { value:propertyType, options:[], addEventListener() {} },
+    '#rentCheckDeposit': { value:'0', dataset:{ krwValue:'0' } },
+    '#rentCheckRent': { value:'0', dataset:{ krwValue:'0' } },
+    '#rentCheckAreaSqm': { value:'25' },
+    '#rentCheckButton': { disabled:false },
+    '#rentCheckStatus': { textContent:'', className:'' },
+    '#rentCheckResult': { hidden:false },
+    '#rentCheckStudioNote': { hidden:false }
+  };
+  const doc = {
+    documentElement:{ lang:'en' },
+    querySelector(selector) { return elements[selector] || null; },
+    querySelectorAll() { return []; }
+  };
+  const window = {
+    addEventListener(type, handler) { listeners.set(type, handler); }
+  };
+  const context = {
+    window,
+    document:doc,
+    location:{ pathname:'/tools/seoul-rent-check/', search:'' },
+    KHGCurrency:{ convertToKrw(value) { return value; } },
+    KHGRentCheckUI:{
+      mapRentCheckType(value) { return { officialType:value === 'studio' ? 'detached' : value }; },
+      humanizeRentCheckError() { return 'Rent comparison failed.'; }
+    },
+    fetch:async () => ({ ok:false, json:async () => ({ error:'private failure detail' }) })
+  };
+  vm.runInNewContext(fs.readFileSync(file, 'utf8'), context, { filename:file });
+  return {
+    async submit() { await formListeners.get('submit')({ preventDefault() {} }); },
+    consent(value) {
+      window.gtag = (...args) => gtagCalls.push(args);
+      const listener = listeners.get('khg:privacy-consent');
+      if (listener) listener({ detail:{ consent:value } });
+    },
+    gtagCalls,
+    elements
+  };
+}
 
 test('all four Rent Check runtimes dispatch the shared result event', () => {
   for (const file of files) {
@@ -20,6 +69,39 @@ test('all four runtimes emit start and result analytics without PII', () => {
     assert.match(source, /rent_check_start/, file);
     assert.match(source, /rent_check_result/, file);
     assert.doesNotMatch(source, /gtag\([^\n]*email/, file);
+  }
+});
+
+test('all four Rent Check runtimes structurally preserve safe tool-view and failure analytics', () => {
+  for (const file of files) {
+    const source = fs.readFileSync(file, 'utf8');
+    assert.match(source, /rent_check_tool_view/, file);
+    assert.match(source, /rent_check_error/, file);
+    assert.match(source, /function errorCategory\(/, file);
+    assert.match(source, /error_category:errorCategory\(err\)/, file);
+    assert.doesNotMatch(source, /safeTrack\('rent_check_error',\{[^}]*?(?:err\.message|depositWon|rentWon|status:)/, file);
+  }
+});
+
+test('Rent Check tool view waits for accepted consent and emits once across all runtimes', () => {
+  for (const file of files) {
+    const runtime = bootRentCheckRuntime(file);
+    assert.equal(runtime.gtagCalls.length, 0, file);
+    runtime.consent('rejected');
+    assert.equal(runtime.gtagCalls.length, 0, file);
+    runtime.consent('accepted');
+    runtime.consent('accepted');
+    assert.deepEqual(runtime.gtagCalls.map(call => call[1]), ['rent_check_tool_view'], file);
+  }
+});
+
+test('Rent Check calculations keep running but suppress analytics for manipulated context', async () => {
+  for (const file of files) {
+    const runtime = bootRentCheckRuntime(file, { districtCode:'99999', propertyType:'castle' });
+    runtime.consent('accepted');
+    await runtime.submit();
+    assert.equal(runtime.gtagCalls.length, 0, file);
+    assert.equal(runtime.elements['#rentCheckResult'].hidden, true, file);
   }
 });
 

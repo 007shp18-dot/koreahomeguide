@@ -1,7 +1,11 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
-const { buildRentCheckUrl, wireRentCheckLinks } = require('../acquisition-links.js');
+const {
+  buildRentCheckUrl,
+  buildRentCheckCtaEvent,
+  wireRentCheckLinks
+} = require('../acquisition-links.js');
 const { ENTRY_PAGES } = require('../seo/acquisition-catalog.cjs');
 
 test('market link carries district, type, source page, and renamed campaign context', () => {
@@ -62,6 +66,63 @@ test('wire updates every generic Rent Check link on a market page', () => {
   );
   assert.match(anchors[0].value, /lawdCd=11440&type=villa/);
   assert.match(anchors[0].value, /from=%2Frent%2Fmapo-gu%2Fvilla%2F/);
+});
+
+test('contextual Rent Check CTA emits a bounded, non-blocking analytics event', () => {
+  let clickHandler;
+  const anchor = {
+    id: 'market-rent-check',
+    value: '/tools/seoul-rent-check/',
+    getAttribute() { return this.value; },
+    setAttribute(_, value) { this.value = value; },
+    addEventListener(type, handler) { if (type === 'click') clickHandler = handler; }
+  };
+  const events = [];
+  const doc = {
+    documentElement: { lang: 'en' },
+    querySelector(selector) {
+      return selector === '#rentMarketPage'
+        ? { dataset: { lawdCd: '11680', propertyType: 'apartment' } }
+        : null;
+    },
+    querySelectorAll() { return [anchor]; }
+  };
+
+  wireRentCheckLinks({
+    doc,
+    location: { pathname: '/rent/gangnam-gu/apartment/', search: '' },
+    track(eventName, params) { events.push({ eventName, params }); }
+  });
+  const click = { defaultPrevented: false, preventDefault() { this.defaultPrevented = true; } };
+  clickHandler(click);
+
+  assert.equal(click.defaultPrevented, false);
+  assert.deepEqual(events, [{
+    eventName: 'rent_check_cta_click',
+    params: {
+      source_page: '/rent/gangnam-gu/apartment/',
+      cta_id: 'market-rent-check',
+      locale: 'en-US',
+      district_code: '11680',
+      property_type: 'apartment'
+    }
+  }]);
+});
+
+test('CTA event builder falls back from an unsafe identifier without exposing it', () => {
+  assert.deepEqual(buildRentCheckCtaEvent({
+    sourcePage: '/rent/gangnam-gu/apartment/',
+    lawdCd: '11680',
+    propertyType: 'apartment',
+    ctaId: 'email@example.com',
+    locale: 'zh-CN'
+  }), {
+    source_page: '/rent/gangnam-gu/apartment/',
+    cta_id: 'rent_check_link',
+    locale: 'zh-CN',
+    district_code: '11680',
+    property_type: 'apartment'
+  });
 });
 
 test('all English acquisition pages load the contextual link helper', () => {

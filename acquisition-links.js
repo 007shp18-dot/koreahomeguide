@@ -8,7 +8,14 @@
   if (typeof module === 'object' && module.exports) module.exports = api;
   if (root) root.KHGAcquisitionLinks = api;
   if (root && root.document) {
-    const start = () => api.wireRentCheckLinks({ doc: root.document, location: root.location });
+    const track = (eventName, params) => {
+      try {
+        if (typeof root.gtag === 'function') root.gtag('event', eventName, params);
+      } catch (_) {
+        // Optional analytics must never interrupt navigation.
+      }
+    };
+    const start = () => api.wireRentCheckLinks({ doc: root.document, location: root.location, track });
     if (root.document.readyState === 'loading') {
       root.document.addEventListener('DOMContentLoaded', start, { once: true });
     } else {
@@ -34,6 +41,33 @@
 
   function safeSourcePage(value, lawdCd, propertyType) {
     return validatedEntrySource(value, lawdCd, propertyType);
+  }
+
+  function safeCtaId(value) {
+    const candidate = String(value || '').trim();
+    return /^[a-z0-9][a-z0-9_-]{0,63}$/i.test(candidate) ? candidate : 'rent_check_link';
+  }
+
+  function safeLocale(value) {
+    return String(value || '').toLowerCase().startsWith('zh') ? 'zh-CN' : 'en-US';
+  }
+
+  function buildRentCheckCtaEvent({
+    sourcePage = '',
+    lawdCd = '',
+    propertyType = '',
+    ctaId = '',
+    locale = ''
+  } = {}) {
+    const source = safeSourcePage(sourcePage, lawdCd, propertyType);
+    if (!source) return null;
+    return {
+      source_page: source,
+      cta_id: safeCtaId(ctaId),
+      locale: safeLocale(locale),
+      district_code: String(lawdCd),
+      property_type: String(propertyType)
+    };
   }
 
   function buildRentCheckUrl({
@@ -66,7 +100,7 @@
     return query ? `${basePath}?${query}` : basePath;
   }
 
-  function wireRentCheckLinks({ doc, location } = {}) {
+  function wireRentCheckLinks({ doc, location, track } = {}) {
     if (!doc || !location || typeof doc.querySelectorAll !== 'function') return 0;
 
     const market = typeof doc.querySelector === 'function'
@@ -84,11 +118,27 @@
       const current = String(anchor.getAttribute('href') || '').split('?', 1)[0];
       if (current !== '/tools/seoul-rent-check/') return;
       anchor.setAttribute('href', buildRentCheckUrl({ ...values, basePath: current }));
+      const cta = buildRentCheckCtaEvent({
+        ...values,
+        ctaId: anchor.dataset && anchor.dataset.rentCheckCta || anchor.id,
+        locale: doc.documentElement && doc.documentElement.lang
+      });
+      if (cta && typeof track === 'function' && typeof anchor.addEventListener === 'function') {
+        anchor.addEventListener('click', () => {
+          try { track('rent_check_cta_click', cta); } catch (_) {}
+        });
+      }
       changed += 1;
     });
 
     return changed;
   }
 
-  return { safeCampaign, safeSourcePage, buildRentCheckUrl, wireRentCheckLinks };
+  return {
+    safeCampaign,
+    safeSourcePage,
+    buildRentCheckCtaEvent,
+    buildRentCheckUrl,
+    wireRentCheckLinks
+  };
 });

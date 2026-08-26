@@ -2,11 +2,18 @@
 
 Status: Owner-review measurement procedure for the assumed 2026-08-26 deployment. Do not invent or backfill unavailable values.
 
+## Production verification recorded on 2026-08-26
+
+- Home, Rent Check, `robots.txt` and the root sitemap returned HTTP 200 from the public domain.
+- The public Rent Check completed one valid Gangnam apartment calculation with 13 comparables across three completed months.
+- This is a single smoke test, not proof of the 95% valid-request success target.
+- GA4, Search Console, Vercel telemetry and Google Sheets delivery still require the owner-console checks below.
+
 ## Baseline capture
 
 Before deployment, export Search Console performance data for the relevant entry pages and their page/query combinations. Retain the export date, comparison window, filters, and any data availability limits. Capture the fields: page, query, impressions, clicks, CTR, and average position.
 
-Before deployment, export GA4 acquisition and funnel events for the same baseline window. Capture qualified entry sessions, Rent Check starts, Rent Check results, lead form views, lead submits, help requests, and aggregate follow-up actions. Preserve the event definitions and reporting window used for each export.
+Before deployment, export GA4 acquisition and funnel events for the same baseline window. Capture qualified entry sessions, Rent Check CTA clicks, Rent Check tool views, Rent Check starts, Rent Check results, sanitized Rent Check errors, lead form views, lead submits, help requests, and aggregate follow-up actions. Preserve the event definitions and reporting window used for each export.
 
 Use these dimensions for both baseline and checkpoints where available: source page, query cluster, locale, district, property type, campaign, referrer host, and sufficient/insufficient result.
 
