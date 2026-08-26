@@ -36,10 +36,13 @@
     let referrerHost = '';
     try { referrerHost = root.document.referrer ? new URL(root.document.referrer).hostname : ''; } catch (_) {}
     const params = new URLSearchParams(root.location && root.location.search || '');
+    const acquisition = root.KHGRentCheckPrefill
+      ? root.KHGRentCheckPrefill.readRentCheckPrefill(root.location && root.location.search || '')
+      : {};
     return {
-      utmSource:params.get('utm_source') || '',
-      utmMedium:params.get('utm_medium') || '',
-      utmCampaign:params.get('utm_campaign') || '',
+      utmSource:acquisition.originSource || params.get('utm_source') || '',
+      utmMedium:acquisition.originMedium || params.get('utm_medium') || '',
+      utmCampaign:acquisition.originCampaign || params.get('utm_campaign') || '',
       referrerHost
     };
   }

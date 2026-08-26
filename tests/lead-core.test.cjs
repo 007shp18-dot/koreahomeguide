@@ -49,3 +49,35 @@ test('rejects impossible area and negative money while preserving optional null 
   assert.equal(ok.ok, true);
   assert.equal(ok.value.median_value_won, null);
 });
+
+test('lead storage accepts known source paths independently of mutable quote filters', () => {
+  const base = {
+    kind:'lead_capture',
+    email:'a@b.com',
+    language:'en',
+    districtCode:'11440',
+    propertyType:'villa',
+    areaSqm:25
+  };
+  const valid = normalizeLeadPayload({
+    ...base,
+    sourcePage:'/rent/mapo-gu/villa/'
+  });
+  const mismatch = normalizeLeadPayload({
+    ...base,
+    sourcePage:'/rent/gangnam-gu/apartment/'
+  });
+  const fake = normalizeLeadPayload({
+    ...base,
+    sourcePage:'/guides/not-real/'
+  });
+  const direct = normalizeLeadPayload({
+    ...base,
+    sourcePage:'/tools/seoul-rent-check/'
+  });
+
+  assert.equal(valid.value.source_page, '/rent/mapo-gu/villa/');
+  assert.equal(mismatch.value.source_page, '/rent/gangnam-gu/apartment/');
+  assert.equal(fake.value.source_page, '');
+  assert.equal(direct.value.source_page, '/tools/seoul-rent-check/');
+});

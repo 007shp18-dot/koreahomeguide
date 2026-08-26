@@ -22,3 +22,12 @@ test('all four runtimes emit start and result analytics without PII', () => {
     assert.doesNotMatch(source, /gtag\([^\n]*email/, file);
   }
 });
+
+test('Rent Check events distinguish the original source page from the tool page', () => {
+  for (const file of files) {
+    const source = fs.readFileSync(file, 'utf8');
+    assert.match(source, /source_page/, file);
+    assert.match(source, /tool_page/, file);
+    assert.match(source, /acquisitionContext/, file);
+  }
+});

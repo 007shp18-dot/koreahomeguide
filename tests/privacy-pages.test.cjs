@@ -4,7 +4,12 @@ const fs = require('node:fs');
 const { execFileSync } = require('node:child_process');
 
 function staticPages() {
-  return execFileSync('find', ['.', '-name', 'index.html', '-not', '-path', './docs/*'], { encoding:'utf8' })
+  return execFileSync('find', [
+    '.',
+    '-name', 'index.html',
+    '-not', '-path', './docs/*',
+    '-not', '-path', './.worktrees/*'
+  ], { encoding:'utf8' })
     .trim().split('\n').filter(Boolean).sort();
 }
 
