@@ -13,7 +13,7 @@ Status: Owner-review measurement procedure for the assumed 2026-08-26 deployment
 
 Before deployment, export Search Console performance data for the relevant entry pages and their page/query combinations. Retain the export date, comparison window, filters, and any data availability limits. Capture the fields: page, query, impressions, clicks, CTR, and average position.
 
-Before deployment, export GA4 acquisition and funnel events for the same baseline window. Capture qualified entry sessions, Rent Check CTA clicks, Rent Check tool views, Rent Check starts, Rent Check results, sanitized Rent Check errors, lead form views, lead submits, help requests, and aggregate follow-up actions. Preserve the event definitions and reporting window used for each export.
+Before deployment, export GA4 acquisition and funnel events for the same baseline window. Capture qualified entry sessions, Rent Check CTA clicks, Rent Check tool views, Rent Check starts, Rent Check results, sanitized Rent Check errors, privacy-safe result shares (`rent_check_result_share`), lead form views, lead submits, help requests, and aggregate follow-up actions. Preserve the event definitions and reporting window used for each export.
 
 Use these dimensions for both baseline and checkpoints where available: source page, query cluster, locale, district, property type, campaign, referrer host, and sufficient/insufficient result.
 
@@ -39,6 +39,7 @@ If actual deployment is later than 2026-08-26, shift all four dates by the same 
 3. Clicks with no Rent Check starts: review landing-page message match, CTA prominence, and the entry-page path to the tool.
 4. Rent Check starts with no results: investigate result-coverage sufficiency, form friction, validation failures, and result delivery before adding traffic.
 5. Rent Check results with no follow-up action: review result usefulness, follow-up CTA clarity, help availability, and next-step relevance.
+6. Rent Check results with no shares: review whether the summary is useful and safe enough to send before adding new social distribution channels.
 
 ## Handoff record
 

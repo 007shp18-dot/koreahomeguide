@@ -2,6 +2,15 @@
   'use strict';
 
   const SUPPORTED_LANGUAGES = new Set(['en','zh-CN']);
+  const SHAREABLE_PROPERTY_TYPES = new Set(['apartment','officetel','villa','detached']);
+  const SHARE_DISTRICTS = {
+    en:{ '11680':'Gangnam-gu', '11440':'Mapo-gu', '11170':'Yongsan-gu', '11200':'Seongdong-gu', '11560':'Yeongdeungpo-gu', '11620':'Gwanak-gu', '11230':'Dongdaemun-gu', '11410':'Seodaemun-gu', '11290':'Seongbuk-gu', '11215':'Gwangjin-gu' },
+    'zh-CN':{ '11680':'江南区', '11440':'麻浦区', '11170':'龙山区', '11200':'城东区', '11560':'永登浦区', '11620':'冠岳区', '11230':'东大门区', '11410':'西大门区', '11290':'城北区', '11215':'广津区' }
+  };
+  const SHARE_PROPERTY_LABELS = {
+    en:{ apartment:'apartment', officetel:'officetel', villa:'low-rise multifamily home', detached:'detached & multi-unit house' },
+    'zh-CN':{ apartment:'公寓', officetel:'Officetel', villa:'低层多户住宅', detached:'独栋及多户住宅' }
+  };
   let latestContext = null;
   let contextVersion = 0;
 
@@ -11,6 +20,81 @@
     if (count < 10) return '3-9';
     if (count < 30) return '10-29';
     return '30+';
+  }
+
+  function buildShareUrl(context){
+    const language = context && context.language === 'zh-CN' ? 'zh-CN' : 'en';
+    const path = language === 'zh-CN' ? '/zh/tools/seoul-rent-check/' : '/tools/seoul-rent-check/';
+    const url = new URL(path, 'https://koreahomeguide.com');
+    const districtCode = String(context && context.districtCode || '');
+    const propertyType = String(context && context.propertyType || '');
+    if (/^\d{5}$/.test(districtCode)) url.searchParams.set('lawdCd', districtCode);
+    if (SHAREABLE_PROPERTY_TYPES.has(propertyType)) url.searchParams.set('type', propertyType);
+    url.searchParams.set('utm_source', 'result_share');
+    url.searchParams.set('utm_medium', 'referral');
+    url.searchParams.set('utm_campaign', 'rent_check_share');
+    return url.toString();
+  }
+
+  function shareRatingText(rating, language){
+    const labels = language === 'zh-CN'
+      ? { below:'低于近期水平', fair:'接近近期水平', above:'高于近期水平', insufficient:'可比数据不足' }
+      : { below:'below recent levels', fair:'close to recent levels', above:'above recent levels', insufficient:'not enough comparable data' };
+    return labels[rating] || labels.insufficient;
+  }
+
+  function buildSharePayload(context){
+    const language = context && context.language === 'zh-CN' ? 'zh-CN' : 'en';
+    const district = SHARE_DISTRICTS[language][String(context && context.districtCode || '')] || (language === 'zh-CN' ? '首尔' : 'Seoul');
+    const property = SHARE_PROPERTY_LABELS[language][String(context && context.propertyType || '')] || (language === 'zh-CN' ? '住宅' : 'rental');
+    const count = Math.max(0, Number(context && context.comparableCount) || 0);
+    const rating = shareRatingText(context && context.rating, language);
+    const text = language === 'zh-CN'
+      ? `我用 KoreaHomeGuide 检查了${district || '首尔'}${property || '住宅'}租金：${rating}，参考了 ${count} 笔近期官方签约成交。`
+      : `I checked a ${district || 'Seoul'} ${property || 'rental'} quote with KoreaHomeGuide: ${rating}, based on ${count} recent official signed contracts.`;
+    return {
+      title:language === 'zh-CN' ? 'KoreaHomeGuide 首尔租金检查' : 'KoreaHomeGuide Seoul Rent Check',
+      text,
+      url:buildShareUrl(context || {})
+    };
+  }
+
+  async function deliverShare(payload, navigatorLike){
+    const nav = navigatorLike || {};
+    if (typeof nav.share === 'function') {
+      try {
+        await nav.share(payload);
+        return 'native';
+      } catch (error) {
+        if (error && error.name === 'AbortError') return 'cancelled';
+      }
+    }
+    if (nav.clipboard && typeof nav.clipboard.writeText === 'function') {
+      await nav.clipboard.writeText(`${payload.text}\n${payload.url}`);
+      return 'clipboard';
+    }
+    throw new Error('Sharing is unavailable.');
+  }
+
+  function shareAnalyticsParams(context, method){
+    return {
+      language:String(context && context.language || ''),
+      source_page:String(context && context.sourcePage || ''),
+      district_code:String(context && context.districtCode || ''),
+      property_type:String(context && context.propertyType || ''),
+      rating:String(context && context.rating || ''),
+      confidence:String(context && context.confidence || ''),
+      comparable_count_bucket:comparableCountBucket(context && context.comparableCount),
+      share_method:String(method || '')
+    };
+  }
+
+  function trackResultShare(context, method){
+    try {
+      if (typeof root.gtag === 'function') root.gtag('event', 'rent_check_result_share', shareAnalyticsParams(context, method));
+    } catch (_) {
+      // Analytics must never block sharing.
+    }
   }
 
   function safeTrack(eventName, context){
@@ -91,9 +175,61 @@
       saveError:zh ? '暂时无法保存邮箱。你的租金检查结果仍然有效，请稍后再试。' : 'We could not save your email right now. Your rent-check result is still available; please try again later.',
       helpSaving:zh ? '正在提交…' : 'Sending…',
       helpSaved:zh ? '已记录你的问题。' : 'Your question is saved.',
-      helpError:zh ? '暂时无法提交问题，请稍后再试。' : 'We could not save that request right now. Please try again later.'
+      helpError:zh ? '暂时无法提交问题，请稍后再试。' : 'We could not save that request right now. Please try again later.',
+      shareTitle:zh ? '分享这次检查' : 'Share this check',
+      shareDescription:zh ? '发送不含具体报价的结果摘要和检查链接。' : 'Send a privacy-safe summary with a link to check another quote.',
+      shareButton:zh ? '分享结果' : 'Share this result',
+      sharing:zh ? '正在打开分享…' : 'Opening share options…',
+      copied:zh ? '结果摘要和链接已复制。' : 'Result summary and link copied.',
+      shared:zh ? '已分享。' : 'Shared.',
+      shareError:zh ? '暂时无法分享，请稍后再试。' : 'Sharing is unavailable right now. Please try again.'
     };
     return text[key] || '';
+  }
+
+  function bindShareModule(module){
+    if (!module || module.dataset.shareBound === 'true') return;
+    module.dataset.shareBound = 'true';
+    const language = SUPPORTED_LANGUAGES.has(module.dataset.language) ? module.dataset.language : 'en';
+    const button = module.querySelector('[data-share-button]');
+    const status = module.querySelector('[data-share-status]');
+    if (!button) return;
+    button.addEventListener('click', async () => {
+      if (!latestContext || latestContext.language !== language) return;
+      button.disabled = true;
+      if (status) status.textContent = localText(language, 'sharing');
+      const payload = buildSharePayload(latestContext);
+      try {
+        const method = await deliverShare(payload, root.navigator);
+        if (method === 'cancelled') {
+          if (status) status.textContent = '';
+        } else {
+          if (status) status.textContent = localText(language, method === 'native' ? 'shared' : 'copied');
+          trackResultShare(latestContext, method);
+        }
+      } catch (_) {
+        if (status) status.textContent = localText(language, 'shareError');
+      } finally {
+        button.disabled = false;
+      }
+    });
+  }
+
+  function ensureShareModule(){
+    const result = root.document.querySelector('#rentCheckResult');
+    if (!result) return null;
+    let module = result.querySelector('[data-result-share]');
+    if (!module) {
+      const language = root.document.documentElement.lang === 'zh-CN' ? 'zh-CN' : 'en';
+      module = root.document.createElement('div');
+      module.className = 'result-share-panel';
+      module.dataset.resultShare = '';
+      module.dataset.language = language;
+      module.innerHTML = `<div class="result-share-copy"><strong>${localText(language, 'shareTitle')}</strong><span>${localText(language, 'shareDescription')}</span></div><button class="search-button result-share-button" type="button" data-share-button>${localText(language, 'shareButton')}</button><span class="result-share-status" data-share-status aria-live="polite"></span>`;
+      result.appendChild(module);
+    }
+    bindShareModule(module);
+    return module;
   }
 
   function resetModule(module, context){
@@ -165,6 +301,9 @@
     if (!context || !SUPPORTED_LANGUAGES.has(context.language)) return;
     latestContext = context;
     contextVersion += 1;
+    const shareModule = ensureShareModule();
+    const shareStatus = shareModule && shareModule.querySelector('[data-share-status]');
+    if (shareStatus) shareStatus.textContent = '';
     root.document.querySelectorAll('[data-lead-capture]').forEach(module => {
       bindModule(module);
       if ((module.dataset.language || 'en') === context.language) resetModule(module, context);
@@ -173,11 +312,12 @@
 
   function init(){
     if (!root || !root.document || typeof root.addEventListener !== 'function') return;
+    ensureShareModule();
     root.document.querySelectorAll('[data-lead-capture]').forEach(bindModule);
     root.addEventListener('khg:rent-check-result', event => revealForContext(event && event.detail));
   }
 
-  const api = { comparableCountBucket, buildPayload, revealForContext, init };
+  const api = { comparableCountBucket, buildPayload, buildShareUrl, buildSharePayload, deliverShare, shareAnalyticsParams, revealForContext, init };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (root && root.document) init();
 })(typeof window !== 'undefined' ? window : globalThis);

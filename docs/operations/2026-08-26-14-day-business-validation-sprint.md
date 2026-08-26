@@ -44,7 +44,7 @@ Complete one controlled end-to-end run before distributing links.
 1. Open one English market page with an approved test UTM URL and confirm the automatic GA4 pageview.
 2. Click its contextual Rent Check CTA and confirm district, property type and source context survive.
 3. Submit a valid quote and retain the response timestamp, result state and comparable count. Do not record the exact quote in analytics evidence.
-4. Confirm GA4 receives `rent_check_cta_click`, `rent_check_tool_view`, `rent_check_start`, `rent_check_result` and `lead_form_view` with no PII.
+4. Confirm GA4 receives `rent_check_cta_click`, `rent_check_tool_view`, `rent_check_start`, `rent_check_result`, `rent_check_result_share` and `lead_form_view` with no PII or exact quote values.
 5. Submit one controlled test email, then one optional help request. Confirm `lead_submit` and `help_request` in GA4 and one normalized row in the production Sheet.
 6. Repeat the email with different capitalization and confirm the same row is updated, not duplicated.
 7. Check Vercel logs for the run: response status, duration, retry/timeout/429 signal and absence of service-key leakage.
@@ -91,6 +91,7 @@ Calculate:
 | Tool-to-start | Rent Check starts / tool views | Observe baseline |
 | Start-to-result | Rent Check results / starts | At least 60% |
 | Valid-request success | successful valid requests / all valid requests | At least 95% |
+| Result-to-share | `rent_check_result_share` / Rent Check results | Observe baseline |
 | Result-to-follow-up | lead submits + help requests / results | At least 5% |
 
 Fix the earliest failing stage. Do not compensate for a broken calculation or conversion path by increasing traffic.
