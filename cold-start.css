@@ -5,7 +5,7 @@
 .funnel-hero .hero-actions{justify-content:center;margin-top:20px}
 .hero-primary-action{display:inline-flex;align-items:center;justify-content:center;min-height:48px;height:auto;padding:12px 22px;line-height:1.2}
 .funnel-trust{max-width:960px;margin:0 auto 28px;padding:0 24px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.funnel-trust span{border:1px solid #e4e7ec;border-radius:999px;background:#fff;padding:11px 14px;text-align:center;color:#475467;font-size:13px;font-weight:700}
+.funnel-trust span{border:1px solid #e4e7ec;border-radius:999px;background:#fff;padding:9px 14px;line-height:1.35;text-align:center;color:#475467;font-size:13px;font-weight:700}
 .funnel-section{max-width:1040px;margin:0 auto;padding:28px 24px 60px}
 .funnel-section#rent-check{max-width:1200px}
 .funnel-section-head{max-width:720px;margin-bottom:20px}
@@ -13,7 +13,7 @@
 .funnel-section-head p{color:#667085;line-height:1.65}
 .funnel-rent-card{border:1px solid #e4e7ec;border-radius:24px;background:#fff;padding:24px;box-shadow:0 14px 40px rgba(16,24,40,.05)}
 .funnel-rent-card .rent-check-form{grid-template-columns:minmax(160px,.95fr) minmax(250px,1.35fr) minmax(160px,1fr) minmax(160px,1fr) minmax(110px,.65fr) max-content;margin-top:0}
-.lead-capture{margin-top:18px;border:1px solid #d7e7dd;border-radius:20px;background:#f7fbf8;padding:22px}
+.lead-capture{margin-top:24px;border:1px solid #d7e7dd;border-radius:20px;background:#f7fbf8;padding:24px}
 .lead-capture[hidden]{display:none!important}
 .lead-capture-copy h3{margin:4px 0 8px;font-size:24px}
 .lead-capture-copy p{margin:0;color:#667085;line-height:1.6;max-width:680px}

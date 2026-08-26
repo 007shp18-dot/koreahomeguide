@@ -10,7 +10,7 @@ test('white-first design tokens use white canvas, neutral borders, and one blue 
   assert.match(css, /--surface:\s*#(?:fff|ffffff)/i);
   assert.match(css, /--surface-soft:\s*#f8fafc/i);
   assert.match(css, /--ink:\s*#111827/i);
-  assert.match(css, /--muted:\s*#64748b/i);
+  assert.match(css, /--muted:\s*#526174/i);
   assert.match(css, /--line:\s*#e5e7eb/i);
   assert.match(css, /--accent:\s*#2563eb/i);
 });
