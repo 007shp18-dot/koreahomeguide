@@ -145,7 +145,6 @@ function renderBuildings(buildings) {
   buildingList.innerHTML = buildings.slice(0, 30).map(item => {
     const dong = item.dong || currentDong;
     const interactiveHref = KHGExplorer.buildBuildingDetailUrl({ lawdCd:areaSelect.value, type:typeSelect.value, dong, buildingKey:item.buildingKey });
-    const seoHref = KHGExplorer.buildBuildingSeoUrl({ lawdCd:areaSelect.value, type:typeSelect.value, dong, buildingName:item.buildingName, buildingKey:item.buildingKey, lang:'en' });
     const location = [dongDisplayName(dong), areaName(), typeName()].filter(Boolean).join(' · ');
     const nameDisplay = KHGBuildingNames.getBuildingNameDisplay(item.buildingName, 'en');
     return `<article class="building-row">
@@ -153,7 +152,7 @@ function renderBuildings(buildings) {
       <div><span class="mobile-label">Typical size</span><strong>${formatArea(item.typicalAreaSqm)}</strong></div>
       ${(() => { const band = representativeBand(item); const rentValue = band ? band.medianMonthlyRentWon : (item.contextualMedianMonthlyRentWon ?? item.medianMonthlyRentWon); const depositValue = band ? band.medianDepositWon : (item.contextualMedianDepositWon ?? item.medianDepositWon); return `<div class="building-money"><span class="mobile-label">Rent context</span><strong>${rentValue == null ? '—' : moneyHtml(rentValue)}</strong></div><div class="building-money"><span class="mobile-label">Deposit context</span><strong>${depositValue == null ? '—' : moneyHtml(depositValue)}</strong></div>`; })()}
       <div><span class="mobile-label">Contracts</span><strong>${Number(item.contractCount || 0).toLocaleString('en-US')}</strong></div>
-      <div class="building-actions"><a href="${escapeHtml(seoHref)}">Building page →</a><a class="secondary" href="${escapeHtml(interactiveHref)}">Interactive view</a></div>
+      <div class="building-actions"><a rel="nofollow" href="${escapeHtml(interactiveHref)}">Open building details →</a></div>
     </article>`;
   }).join('');
 }

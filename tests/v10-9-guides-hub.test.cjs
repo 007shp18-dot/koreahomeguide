@@ -41,7 +41,7 @@ test('static sitemap includes both guide hubs', () => {
   assert.match(xml, /https:\/\/koreahomeguide\.com\/zh\/guides\//);
 });
 
-test('dynamic SEO page headers normalize Guides navigation to the new hub without changing contextual guide CTAs', () => {
+test('indexable dynamic Dong page headers normalize Guides navigation without changing contextual guide CTAs', () => {
   const post = require('../seo/seo-html-postprocess.cjs');
   assert.equal(
     post.normalizeGuideHubLinks('<a href="/guides/wolse-vs-jeonse/">Guides</a><a href="/guides/before-you-sign/">Before</a>', 'en'),
@@ -51,7 +51,5 @@ test('dynamic SEO page headers normalize Guides navigation to the new hub withou
     post.normalizeGuideHubLinks('<a href="/zh/guides/wolse-vs-jeonse/">指南</a><a href="/zh/guides/before-you-sign/">签约前</a>', 'zh'),
     '<a href="/zh/guides/">指南</a><a href="/zh/guides/before-you-sign/">签约前</a>'
   );
-  for (const file of ['api/seo-dong-page.js','api/seo-building-page.js']) {
-    assert.match(read(file), /normalizeGuideHubLinks/);
-  }
+  assert.match(read('api/seo-dong-page.js'), /normalizeGuideHubLinks/);
 });

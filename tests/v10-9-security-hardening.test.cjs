@@ -116,8 +116,8 @@ test('raw/client MOLIT APIs apply district/source guards and safe error logging'
   }
 });
 
-test('SEO and dynamic sitemap endpoints log upstream failures instead of swallowing them', () => {
-  for (const file of ['api/seo-dong-page.js','api/seo-building-page.js','api/sitemap-market.js']) {
+test('SEO and dynamic sitemap endpoints with upstream work log failures instead of swallowing them', () => {
+  for (const file of ['api/seo-dong-page.js','api/sitemap-market.js']) {
     const text = source(file);
     assert.match(text, /logApiError/, `${file} must log upstream failures safely`);
     assert.doesNotMatch(text, /catch \(_\)/, `${file} must not swallow the error object`);

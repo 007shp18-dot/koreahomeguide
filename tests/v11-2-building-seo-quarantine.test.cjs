@@ -7,7 +7,7 @@ function source(rel) {
   return fs.readFileSync(path.join(__dirname, '..', rel), 'utf8');
 }
 
-test('building SEO pages are marked noindex while remaining user-accessible', () => {
+test('building SEO retirement responses remain noindex and cacheable', () => {
   const text = source('api/seo-building-page.js');
   assert.match(text, /noindex,follow/);
   assert.match(text, /X-Robots-Tag/);
@@ -27,7 +27,7 @@ test('Dong pages keep building links clickable but tell crawlers not to follow t
   assert.match(text, /rel="nofollow"/);
 });
 
-test('Dong and Building successful pages keep 24-hour CDN caching', () => {
+test('Dong success and Building retirement responses keep 24-hour CDN caching', () => {
   for (const file of ['api/seo-dong-page.js', 'api/seo-building-page.js']) {
     const text = source(file);
     assert.match(text, /s-maxage=86400, stale-while-revalidate=86400/);

@@ -151,8 +151,6 @@ function renderBuildings(buildings) {
     if (dong) interactiveParams.set('dong', dong);
     interactiveParams.set('buildingKey', item.buildingKey);
     const interactiveHref = `/zh/explore/building/?${interactiveParams.toString()}`;
-    const linkLang = KHGExplorer.supportsZhIndexing(areaSelect.value) ? 'zh' : 'en';
-    const seoHref = KHGExplorer.buildBuildingSeoUrl({ lawdCd:areaSelect.value, type:typeSelect.value, dong, buildingName:item.buildingName, buildingKey:item.buildingKey, lang:linkLang });
     const location = [dong ? dongDisplayName(dong) : '', areaName(), typeName()].filter(Boolean).join(' · ');
     const nameDisplay = KHGBuildingNames.getBuildingNameDisplay(item.buildingName, 'zh');
     return `<article class="building-row">
@@ -160,7 +158,7 @@ function renderBuildings(buildings) {
       <div><span class="mobile-label">典型面积</span><strong>${formatArea(item.typicalAreaSqm)}</strong></div>
       ${(() => { const band = representativeBand(item); const rentValue = band ? band.medianMonthlyRentWon : (item.contextualMedianMonthlyRentWon ?? item.medianMonthlyRentWon); const depositValue = band ? band.medianDepositWon : (item.contextualMedianDepositWon ?? item.medianDepositWon); return `<div class="building-money"><span class="mobile-label">参考月租</span><strong>${rentValue == null ? '—' : moneyHtml(rentValue)}</strong></div><div class="building-money"><span class="mobile-label">参考押金</span><strong>${depositValue == null ? '—' : moneyHtml(depositValue)}</strong></div>`; })()}
       <div><span class="mobile-label">成交</span><strong>${Number(item.contractCount || 0).toLocaleString('zh-CN')}</strong></div>
-      <div class="building-actions"><a href="${escapeHtml(seoHref)}">查看建筑页面 →</a><a class="secondary" href="${escapeHtml(interactiveHref)}">交互查看</a></div>
+      <div class="building-actions"><a rel="nofollow" href="${escapeHtml(interactiveHref)}">查看建筑成交 →</a></div>
     </article>`;
   }).join('');
 }

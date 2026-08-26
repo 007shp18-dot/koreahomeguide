@@ -7,7 +7,7 @@ function source(rel) {
   return fs.readFileSync(path.join(__dirname, '..', rel), 'utf8');
 }
 
-test('dynamic Dong and Building SEO success pages cache for one day', () => {
+test('dynamic Dong success and Building retirement responses cache for one day', () => {
   for (const file of ['api/seo-dong-page.js', 'api/seo-building-page.js']) {
     const text = source(file);
     assert.match(

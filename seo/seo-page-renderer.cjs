@@ -296,13 +296,14 @@ async function fetchFxRates(fetchImpl = fetch) {
   }
 }
 
-function renderErrorPage({ lang = 'en', status = 404, title, message }) {
+function renderErrorPage({ lang = 'en', status = 404, title, message, actionHref, robots = 'noindex,follow' }) {
   const zh = isZh(lang);
   const safeTitle = title || (status === 503 ? (zh ? '数据暂时不可用' : 'Data temporarily unavailable') : (zh ? '未找到该市场页面' : 'Market page not found'));
   const safeMessage = message || (status === 503 ? (zh ? '官方成交数据暂时无法加载，请稍后再试。' : 'Official transaction data could not be loaded right now. Please try again later.') : (zh ? '该地址没有可用的近期官方成交数据。' : 'No recent official transaction data is available for this address.'));
+  const safeActionHref = actionHref || (zh ? '/zh/explore/' : '/explore/');
   const dummy = '/';
-  const head = pageHead({ lang, title:safeTitle, description:safeMessage, canonicalPath:dummy, alternateEn:'/', alternateZh:'/zh/', robots:'noindex,follow' });
-  return `${head}<main class="seo-error"><span class="seo-eyebrow">${status}</span><h1>${escapeHtml(safeTitle)}</h1><p>${escapeHtml(safeMessage)}</p><a class="seo-action" href="${zh ? '/zh/explore/' : '/explore/'}">${zh ? '打开租金探索' : 'Open Rent Explorer'}</a></main></body></html>`;
+  const head = pageHead({ lang, title:safeTitle, description:safeMessage, canonicalPath:dummy, alternateEn:'/', alternateZh:'/zh/', robots });
+  return `${head}<main class="seo-error"><span class="seo-eyebrow">${status}</span><h1>${escapeHtml(safeTitle)}</h1><p>${escapeHtml(safeMessage)}</p><a class="seo-action" href="${escapeHtml(safeActionHref)}">${zh ? '打开租金探索' : 'Open Rent Explorer'}</a></main></body></html>`;
 }
 
 module.exports = {

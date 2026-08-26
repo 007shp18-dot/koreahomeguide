@@ -28,21 +28,23 @@ test('Explorer URL helpers match server collision-safe building paths', () => {
   );
 });
 
-test('EN Explorer exposes canonical neighborhood/building pages and keeps interactive building view secondary', () => {
+test('EN Explorer keeps neighborhood SEO links but sends building actions only to the interactive view', () => {
   const source = fs.readFileSync('explore/app.js','utf8');
   assert.match(source, /buildDongSeoUrl/);
   assert.match(source, /View neighborhood/);
-  assert.match(source, /buildBuildingSeoUrl/);
-  assert.match(source, /Interactive view/);
+  assert.doesNotMatch(source, /buildBuildingSeoUrl/);
+  assert.match(source, /Open building details/);
   assert.match(source, /buildBuildingDetailUrl/);
+  assert.match(source, /<a rel="nofollow" href="\$\{escapeHtml\(interactiveHref\)\}"/);
 });
 
-test('ZH Explorer exposes localized canonical neighborhood/building page links', () => {
+test('ZH Explorer keeps localized neighborhood SEO links but sends building actions only to the interactive view', () => {
   const source = fs.readFileSync('zh/explore/app.js','utf8');
   assert.match(source, /buildDongSeoUrl/);
   assert.match(source, /supportsZhIndexing\(districtCode\)/);
-  assert.match(source, /supportsZhIndexing\(areaSelect\.value\)/);
   assert.match(source, /查看街区/);
-  assert.match(source, /buildBuildingSeoUrl/);
-  assert.match(source, /交互查看/);
+  assert.doesNotMatch(source, /buildBuildingSeoUrl/);
+  assert.match(source, /查看建筑成交/);
+  assert.match(source, /\/zh\/explore\/building/);
+  assert.match(source, /<a rel="nofollow" href="\$\{escapeHtml\(interactiveHref\)\}"/);
 });
