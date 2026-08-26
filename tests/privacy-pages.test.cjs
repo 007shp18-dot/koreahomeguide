@@ -1,16 +1,15 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
-const { execFileSync } = require('node:child_process');
+const path = require('node:path');
 
-function staticPages() {
-  return execFileSync('find', [
-    '.',
-    '-name', 'index.html',
-    '-not', '-path', './docs/*',
-    '-not', '-path', './.worktrees/*'
-  ], { encoding:'utf8' })
-    .trim().split('\n').filter(Boolean).sort();
+function staticPages(root = '.') {
+  return fs.readdirSync(root, { withFileTypes:true }).flatMap(entry => {
+    if (entry.isDirectory() && ['docs','.worktrees','.git','node_modules'].includes(entry.name)) return [];
+    const file = path.join(root, entry.name);
+    if (entry.isDirectory()) return staticPages(file);
+    return entry.name === 'index.html' ? [`./${file.replaceAll('\\', '/').replace(/^\.\//, '')}`] : [];
+  }).sort();
 }
 
 test('localized privacy pages disclose operator, collected data, processors, retention, and deletion contact', () => {

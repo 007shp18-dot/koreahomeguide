@@ -117,6 +117,7 @@ test('all EN and ZH Rent Check surfaces expose confidence details and next actio
     assert.match(app, /rentCheckNextStep/);
     assert.match(app, /rentCheckNextPrimary/);
     assert.match(app, /rentCheckNextSecondary/);
+    assert.match(app, /KHGRentCheckUI\.ratingLabel\(data\.rating,data\.verdictBasis\)/);
     assert.match(app, /KHGRentCheckUI\.confidenceExplanation\(data,mapped\.isStudioMapped\)/);
     assert.match(app, /KHGRentCheckUI\.resultNextStep\(data\.rating\)/);
     assert.match(app, /KHGRentCheckUI\.explorerUrl\(area\.value,mapped\.officialType,language\)/);

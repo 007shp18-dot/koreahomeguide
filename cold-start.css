@@ -20,6 +20,11 @@
 .lead-capture form[hidden]{display:none!important}
 .lead-capture [data-lead-form]{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:10px;margin-top:16px}
 .lead-capture [data-help-form]{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:10px;margin-top:16px}
+.lead-capture [data-help-form] .field{display:contents}
+.lead-capture [data-help-form] .field>span{grid-column:1;grid-row:1}
+.lead-capture [data-help-form] textarea{grid-column:1;grid-row:2}
+.lead-capture [data-help-form] button{grid-column:2;grid-row:2}
+.lead-capture [data-help-form] .lead-help-note{grid-column:1/-1;grid-row:3;margin-top:0}
 .lead-capture [data-lead-form] .lead-consent-note{grid-column:1/-1}
 .lead-capture [data-help-form] button{background:var(--accent);color:#fff;border-color:var(--accent)}
 .lead-capture form .field{min-width:0}
@@ -38,6 +43,7 @@
 @media(max-width:1280px){.funnel-rent-card .rent-check-form{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:960px){.funnel-rent-card .rent-check-form{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){.funnel-hero{padding-top:52px}.funnel-trust{grid-template-columns:1fr}.funnel-section{padding-left:16px;padding-right:16px}.funnel-rent-card{padding:16px}.funnel-rent-card .rent-check-form{grid-template-columns:1fr}.funnel-secondary-grid,.funnel-guides{grid-template-columns:1fr}.lead-capture [data-lead-form],.lead-capture [data-help-form]{grid-template-columns:1fr}.lead-capture form button{width:100%}.lead-capture .lead-consent-note{grid-column:1}}
+@media(max-width:760px){.lead-capture [data-help-form] textarea{grid-column:1;grid-row:2}.lead-capture [data-help-form] button{grid-column:1;grid-row:3}.lead-capture [data-help-form] .lead-help-note{grid-column:1;grid-row:4}}
 
 .lead-capture .lead-consent-note{grid-column:1/-1;display:block;margin-top:0;color:#667085;font-size:11px;line-height:1.5}
 .result-share-panel{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 16px;align-items:center;margin-top:18px;padding:16px;border:1px solid #dbe3ff;border-radius:14px;background:#f7f9ff}.result-share-copy strong{display:block;font-size:14px}.result-share-copy span{display:block;margin-top:4px;color:#667085;font-size:11px;line-height:1.5}.result-share-button{min-height:42px;padding:0 18px}.result-share-status{grid-column:1/-1;color:#315f9b;font-size:11px;line-height:1.5}.result-share-status:empty{display:none}@media(max-width:760px){.result-share-panel{grid-template-columns:1fr}.result-share-button{width:100%}}

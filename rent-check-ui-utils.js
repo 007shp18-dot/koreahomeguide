@@ -5,10 +5,17 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   const UPSTREAM_MESSAGE = 'Official transaction data is temporarily unavailable. Please try again shortly.';
 
-  function ratingLabel(rating) {
+  function ratingLabel(rating, verdictBasis) {
+    if (verdictBasis === 'median-fallback') {
+      return {
+        above: 'Above sample median',
+        fair: 'Near sample median',
+        below: 'Below sample median'
+      }[rating] || 'Rent check';
+    }
     return {
       above: 'Above market',
-      fair: 'Fair',
+      fair: 'Typical range',
       below: 'Below market',
       insufficient: 'Not enough comparable data'
     }[rating] || 'Rent check';
@@ -16,9 +23,9 @@
 
   function confidenceLabel(confidence) {
     return {
-      high: 'High confidence',
-      medium: 'Medium confidence',
-      low: 'Low confidence'
+      high: 'Strong sample',
+      medium: 'Moderate sample',
+      low: 'Limited sample'
     }[confidence] || '';
   }
 
@@ -93,11 +100,24 @@
     if (!result || result.rating === 'insufficient') {
       return 'There are not enough similar official contracts to make a reliable comparison.';
     }
-    const pct = Math.abs(Number(result.differencePct || 0)).toFixed(1);
+    const magnitude = Math.abs(Number(result.differencePct || 0));
+    const pct = magnitude.toFixed(1);
     const isJeonse = result.comparisonMode === 'jeonse-deposit';
     const subject = isJeonse ? 'This jeonse deposit' : 'This quote';
-    if (result.rating === 'above') return `${subject} is ${pct}% above recent comparable contracts.`;
-    if (result.rating === 'below') return `${subject} is ${pct}% below recent comparable contracts.`;
+    if (result.verdictBasis === 'median-fallback') {
+      if (result.rating === 'above') return `With limited data, ${subject.toLowerCase()} is ${pct}% above the sample median; the fallback threshold is 10%.`;
+      if (result.rating === 'below') return `With limited data, ${subject.toLowerCase()} is ${pct}% below the sample median; the fallback threshold is 10%.`;
+      return `With limited data, ${subject.toLowerCase()} is within 10% of the sample median.`;
+    }
+    if (result.rating === 'above' && magnitude < 0.05) return `${subject} is slightly above the recent comparable median.`;
+    if (result.rating === 'below' && magnitude < 0.05) return `${subject} is slightly below the recent comparable median.`;
+    if (result.rating === 'above') return `${subject} is ${pct}% above the recent comparable median.`;
+    if (result.rating === 'below') return `${subject} is ${pct}% below the recent comparable median.`;
+    if (result.verdictBasis === 'typical-range') {
+      return isJeonse
+        ? 'This jeonse deposit sits within the typical range of recent comparable contracts.'
+        : 'This quote sits within the typical range of recent comparable contracts.';
+    }
     return isJeonse
       ? 'This jeonse deposit is close to recent comparable contracts.'
       : 'This quote is close to recent comparable contracts.';
