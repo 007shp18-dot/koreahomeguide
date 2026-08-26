@@ -68,18 +68,7 @@ function updateLanguageSwitch() { if (languageSwitch) languageSwitch.href = `/ex
 
 
 function representativeBand(item) {
-  const bands = Array.isArray(item && item.depositBands) ? item.depositBands : [];
-  if (!bands.length) return null;
-  const { maxRent, maxDeposit } = budgetValues();
-  const matches = bands.filter(band => {
-    const rent = Number(band.medianMonthlyRentWon);
-    const deposit = Number(band.medianDepositWon);
-    if (maxRent && (!Number.isFinite(rent) || rent > maxRent)) return false;
-    if (maxDeposit && (!Number.isFinite(deposit) || deposit > maxDeposit)) return false;
-    return true;
-  });
-  const pool = matches.length ? matches : bands;
-  return [...pool].sort((a,b) => Number(b.count || 0) - Number(a.count || 0))[0] || null;
+  return KHGExplorer.budgetFitForDong(item, budgetValues()).representativeBand;
 }
 
 function renderDongs(dongs) {
@@ -98,14 +87,18 @@ function renderDongs(dongs) {
     return;
   }
   dongList.innerHTML = items.map(item => {
+    const districtCode = item.districtCode || areaSelect.value;
+    const districtName = KHGLocations.districtLabel(districtCode, 'zh-CN') || item.districtName;
+    const isAllSeoul = areaSelect.value === 'all';
     const band = representativeBand(item);
     const rentValue = band ? band.medianMonthlyRentWon : (item.contextualMedianMonthlyRentWon ?? item.medianMonthlyRentWon);
     const depositValue = band ? band.medianDepositWon : (item.contextualMedianDepositWon ?? item.medianDepositWon);
     const rent = rentValue == null ? '—' : moneyHtml(rentValue);
     const deposit = depositValue == null ? '—' : moneyHtml(depositValue);
-    const seoHref = KHGExplorer.buildDongSeoUrl({ lawdCd:areaSelect.value, type:typeSelect.value, dong:item.dong, lang:'zh' });
+    const linkLang = KHGExplorer.supportsZhIndexing(districtCode) ? 'zh' : 'en';
+    const seoHref = KHGExplorer.buildDongSeoUrl({ lawdCd:districtCode, type:typeSelect.value, dong:item.dong, lang:linkLang });
     return `<a class="neighborhood-card" data-dong="${escapeHtml(item.dong)}" href="${escapeHtml(seoHref)}">
-      <span class="neighborhood-card-main"><strong>${escapeHtml(dongDisplayName(item.dong))}</strong><small>${Number(item.contractCount || 0).toLocaleString('zh-CN')} 笔近期成交</small></span>
+      <span class="neighborhood-card-main"><strong>${escapeHtml(dongDisplayName(item.dong))}</strong><small>${isAllSeoul ? `${escapeHtml(districtName)} · ` : ''}${Number(item.contractCount || 0).toLocaleString('zh-CN')} 笔近期成交</small></span>
       <span class="neighborhood-card-metric"><small>参考月租</small><strong>${rent}</strong></span>
       <span class="neighborhood-card-metric"><small>参考押金</small><strong>${deposit}</strong></span>
       <span class="neighborhood-card-cta">查看街区 →</span>
@@ -117,11 +110,13 @@ function renderDongs(dongs) {
 function renderSummary(data, dong = '') {
   currentData = data;
   currentDong = dong || '';
-  title.textContent = [areaName(), currentDong ? dongDisplayName(currentDong) : '', typeName(data.propertyType || typeSelect.value)].filter(Boolean).join(' · ');
+  const selectedAreaName = areaSelect.value === 'all'
+    ? (data.districtName === 'All supported Seoul' ? '全首尔支持地区' : data.districtName)
+    : areaName();
+  title.textContent = [selectedAreaName, currentDong ? dongDisplayName(currentDong) : '', typeName(data.propertyType || typeSelect.value)].filter(Boolean).join(' · ');
   const summary = data.summary || {};
-  const band = representativeBand(summary);
-  const rentValue = band ? band.medianMonthlyRentWon : (summary.contextualMedianMonthlyRentWon ?? summary.medianMonthlyRentWon);
-  const depositValue = band ? band.medianDepositWon : (summary.contextualMedianDepositWon ?? summary.medianDepositWon);
+  const rentValue = summary.medianMonthlyRentWon;
+  const depositValue = summary.medianDepositWon;
   metricRent.innerHTML = rentValue == null ? '数据不足' : moneyHtml(rentValue);
   metricDeposit.innerHTML = depositValue == null ? '数据不足' : moneyHtml(depositValue);
   metricContracts.textContent = Number(summary.totalContracts || summary.contractCount || 0).toLocaleString('zh-CN');
@@ -156,7 +151,8 @@ function renderBuildings(buildings) {
     if (dong) interactiveParams.set('dong', dong);
     interactiveParams.set('buildingKey', item.buildingKey);
     const interactiveHref = `/zh/explore/building/?${interactiveParams.toString()}`;
-    const seoHref = KHGExplorer.buildBuildingSeoUrl({ lawdCd:areaSelect.value, type:typeSelect.value, dong, buildingName:item.buildingName, buildingKey:item.buildingKey, lang:'zh' });
+    const linkLang = KHGExplorer.supportsZhIndexing(areaSelect.value) ? 'zh' : 'en';
+    const seoHref = KHGExplorer.buildBuildingSeoUrl({ lawdCd:areaSelect.value, type:typeSelect.value, dong, buildingName:item.buildingName, buildingKey:item.buildingKey, lang:linkLang });
     const location = [dong ? dongDisplayName(dong) : '', areaName(), typeName()].filter(Boolean).join(' · ');
     const nameDisplay = KHGBuildingNames.getBuildingNameDisplay(item.buildingName, 'zh');
     return `<article class="building-row">
@@ -219,12 +215,16 @@ async function loadArea({ requestedDong = '' } = {}) {
   setLoading();
   try {
     const apiParams = new URLSearchParams({ lawdCd:areaSelect.value, type:typeSelect.value });
-    const response = await fetch(`/api/explore-area?${apiParams.toString()}`);
+    const isAllSeoul = areaSelect.value === 'all';
+    const endpoint = isAllSeoul
+      ? `/api/explore-seoul?type=${encodeURIComponent(typeSelect.value)}`
+      : `/api/explore-area?${apiParams.toString()}`;
+    const response = await fetch(endpoint);
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || 'Explorer data failed');
     currentAreaData = data;
     renderDongs(data.dongs || []);
-    const hasRequestedDong = currentDong && (data.dongs || []).some(item => item.dong === currentDong);
+    const hasRequestedDong = !isAllSeoul && currentDong && (data.dongs || []).some(item => item.dong === currentDong);
     if (hasRequestedDong) {
       await loadDong(currentDong);
       return;

@@ -23,6 +23,10 @@
     '11215':{ slug:'gwangjin-gu', ko:'광진구', en:'Gwangjin-gu', 'zh-CN':'广津区' }
   });
 
+  const ZH_INDEXABLE_DISTRICT_CODES = Object.freeze([
+    '11680', '11440', '11170', '11200', '11560'
+  ]);
+
   const DONGS = freezeRecords({
     '역삼동':{ slug:'yeoksam-dong', en:'Yeoksam-dong', 'zh-CN':'驿三洞' },
     '논현동':{ slug:'nonhyeon-dong', en:'Nonhyeon-dong', 'zh-CN':'论岘洞' },
@@ -96,8 +100,13 @@
     return record ? record.slug : '';
   }
 
+  function supportsZhIndexing(code) {
+    return ZH_INDEXABLE_DISTRICT_CODES.includes(String(code || ''));
+  }
+
   return Object.freeze({
-    DISTRICTS, DONGS, PROPERTY_TYPES,
-    districtLabel, dongLabel, propertyTypeLabel, districtSlug, localeKey
+    DISTRICTS, DONGS, PROPERTY_TYPES, ZH_INDEXABLE_DISTRICT_CODES,
+    districtLabel, dongLabel, propertyTypeLabel, districtSlug, localeKey,
+    supportsZhIndexing
   });
 });

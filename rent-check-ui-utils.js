@@ -62,6 +62,29 @@
     return `${n > 0 ? '+' : ''}${n.toFixed(1)}%`;
   }
 
+  function ordinal(value) {
+    const n = Math.max(0, Math.min(100, Math.round(Number(value))));
+    const mod100 = n % 100;
+    const suffix = mod100 >= 11 && mod100 <= 13
+      ? 'th'
+      : ({ 1:'st', 2:'nd', 3:'rd' }[n % 10] || 'th');
+    return `${n}${suffix}`;
+  }
+
+  function hasDistribution(result) {
+    return Boolean(result && result.rating !== 'insufficient' &&
+      [result.p25ValueWon, result.p75ValueWon, result.percentileRank]
+        .every(value => value !== null && value !== undefined && Number.isFinite(Number(value))));
+  }
+
+  function percentileSentence(result) {
+    if (!hasDistribution(result)) return '';
+    const subject = result.comparisonMode === 'jeonse-deposit'
+      ? 'This jeonse deposit'
+      : 'This quote';
+    return `${subject} is around the ${ordinal(result.percentileRank)} percentile of comparable signed contracts.`;
+  }
+
   return {
     UPSTREAM_MESSAGE,
     ratingLabel,
@@ -70,6 +93,8 @@
     resultSentence,
     humanizeRentCheckError,
     formatWon,
-    formatDifference
+    formatDifference,
+    hasDistribution,
+    percentileSentence
   };
 });

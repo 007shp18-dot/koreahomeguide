@@ -65,6 +65,18 @@
     return `${n > 0 ? '+' : ''}${n.toFixed(1)}%`;
   }
 
+  function hasDistribution(result) {
+    return Boolean(result && result.rating !== 'insufficient' &&
+      [result.p25ValueWon, result.p75ValueWon, result.percentileRank]
+        .every(value => value !== null && value !== undefined && Number.isFinite(Number(value))));
+  }
+
+  function percentileSentence(result) {
+    if (!hasDistribution(result)) return '';
+    const subject = result.comparisonMode === 'jeonse-deposit' ? '这笔全租押金' : '这个报价';
+    return `${subject}约处于可比已签约成交的第 ${Math.round(Number(result.percentileRank))} 百分位。`;
+  }
+
   return {
     UPSTREAM_MESSAGE,
     ratingLabel,
@@ -73,6 +85,8 @@
     resultSentence,
     humanizeRentCheckError,
     formatWon,
-    formatDifference
+    formatDifference,
+    hasDistribution,
+    percentileSentence
   };
 });
