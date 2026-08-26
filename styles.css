@@ -340,3 +340,21 @@ h1{font-weight:700;letter-spacing:-.048em}
 .rent-check-form .search-button{height:52px}
 .rent-check-metrics strong,.money-primary,.fx-secondary,.currency-input-reference,.calc-output strong{font-variant-numeric:tabular-nums}
 html[lang="zh-CN"] h1,html[lang="zh-CN"] h2,html[lang="zh-CN"] h3{letter-spacing:-.025em}
+
+/* Rent Check result clarity and follow-up actions */
+#rentCheckMeta{margin-top:8px;color:#344054;font-size:13px;font-weight:700;line-height:1.5}
+.rent-check-confidence-details{margin-top:10px;max-width:620px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.rent-check-confidence-details summary{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:44px;padding:8px 12px;color:#344054;font-size:12px;font-weight:750;cursor:pointer;list-style:none}
+.rent-check-confidence-details summary::-webkit-details-marker{display:none}
+.rent-check-confidence-details summary::after{content:"⌄";font-size:16px;line-height:1;transition:transform .16s ease}
+.rent-check-confidence-details[open] summary::after{transform:rotate(180deg)}
+.rent-check-confidence-details summary:focus-visible{outline:3px solid rgba(37,99,235,.28);outline-offset:2px;border-radius:10px}
+.rent-check-confidence-details p{margin:0;padding:0 12px 12px;color:var(--muted);font-size:12px;line-height:1.65}
+.rent-check-next-step{margin-top:20px;padding:20px;border:1px solid #cfdcfb;border-radius:16px;background:#f8fbff}
+.rent-check-next-step h3{margin:6px 0 7px;font-size:21px;letter-spacing:-.025em}
+.rent-check-next-step>p{margin:0;max-width:720px;color:#526174;font-size:13px;line-height:1.6}
+.rent-check-next-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:15px}
+.rent-check-next-actions .search-button,.rent-check-secondary-action{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 16px;border-radius:12px;font-size:12px;font-weight:750}
+.rent-check-secondary-action{border:1px solid #cbd5e1;background:#fff;color:#1e3a5f}
+.rent-check-secondary-action:hover{border-color:var(--accent);color:var(--accent)}
+@media(max-width:760px){.rent-check-next-actions{flex-direction:column}.rent-check-next-actions .search-button,.rent-check-secondary-action{width:100%}}
