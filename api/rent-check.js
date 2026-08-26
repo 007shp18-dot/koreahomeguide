@@ -1,8 +1,11 @@
 const {
   normalizeServiceKey,
   completedMonths,
-  fetchRentalMonth
+  fetchRentalMonth,
+  fetchWithRetry
 } = require('../lib/real-price-core.cjs');
+const { trustedRequestSource, logApiError } = require('../lib/api-guard.cjs');
+const { isSupportedAreaCode } = require('../providers/seoul-config.cjs');
 const {
   TIERS,
   validateRentCheckInput,
@@ -14,7 +17,7 @@ const FRIENDLY_UPSTREAM_ERROR = 'Official transaction data is temporarily unavai
 function parseRentCheckQuery(query = {}) {
   const lawdCd = String(query.lawdCd || '');
   const propertyType = String(query.type || '');
-  if (!/^\d{5}$/.test(lawdCd)) return { ok: false, error: 'Choose a valid Seoul district.' };
+  if (!isSupportedAreaCode(lawdCd)) return { ok: false, error: 'Choose a valid Seoul district.' };
   if (!['apartment', 'officetel', 'villa', 'detached'].includes(propertyType)) {
     return { ok: false, error: 'Choose a supported property type.' };
   }
@@ -29,6 +32,7 @@ function parseRentCheckQuery(query = {}) {
 function createHandler({ fetchMonth = fetchRentalMonth, now = () => new Date() } = {}) {
   return async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
+  if (!trustedRequestSource(req)) return res.status(403).json({ error: 'Request origin is not allowed.' });
 
   const parsed = parseRentCheckQuery(req.query);
   if (!parsed.ok) return res.status(400).json({ error: parsed.error });
@@ -46,7 +50,13 @@ function createHandler({ fetchMonth = fetchRentalMonth, now = () => new Date() }
     for (const tier of TIERS) {
       const neededMonths = months.slice(fetchedCount, tier.months);
       for (const dealYmd of neededMonths) {
-        const group = await fetchMonth({ serviceKey, type:propertyType, lawdCd, dealYmd });
+        const group = await fetchMonth({
+          serviceKey,
+          type:propertyType,
+          lawdCd,
+          dealYmd,
+          retryImpl:fetchWithRetry
+        });
         for (const item of group) allItems.push({ ...item, type: propertyType });
       }
       fetchedCount = tier.months;
@@ -74,7 +84,8 @@ function createHandler({ fetchMonth = fetchRentalMonth, now = () => new Date() }
     }, TIERS[2]);
     res.setHeader('Cache-Control', 's-maxage=900, stale-while-revalidate=3600');
     return res.status(200).json(broad);
-  } catch (_) {
+  } catch (error) {
+    logApiError('rent-check', error, { lawdCd, type:propertyType });
     return res.status(502).json({ error: FRIENDLY_UPSTREAM_ERROR });
   }
   };

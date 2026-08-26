@@ -68,18 +68,7 @@ function updateLanguageSwitch() {
 
 
 function representativeBand(item) {
-  const bands = Array.isArray(item && item.depositBands) ? item.depositBands : [];
-  if (!bands.length) return null;
-  const { maxRent, maxDeposit } = budgetValues();
-  const matches = bands.filter(band => {
-    const rent = Number(band.medianMonthlyRentWon);
-    const deposit = Number(band.medianDepositWon);
-    if (maxRent && (!Number.isFinite(rent) || rent > maxRent)) return false;
-    if (maxDeposit && (!Number.isFinite(deposit) || deposit > maxDeposit)) return false;
-    return true;
-  });
-  const pool = matches.length ? matches : bands;
-  return [...pool].sort((a,b) => Number(b.count || 0) - Number(a.count || 0))[0] || null;
+  return KHGExplorer.budgetFitForDong(item, budgetValues()).representativeBand;
 }
 
 function renderDongs(dongs) {
@@ -98,14 +87,17 @@ function renderDongs(dongs) {
     return;
   }
   dongList.innerHTML = items.map(item => {
+    const districtCode = item.districtCode || areaSelect.value;
+    const districtName = item.districtName || KHGLocations.districtLabel(districtCode, 'en');
+    const isAllSeoul = areaSelect.value === 'all';
     const band = representativeBand(item);
     const rentValue = band ? band.medianMonthlyRentWon : (item.contextualMedianMonthlyRentWon ?? item.medianMonthlyRentWon);
     const depositValue = band ? band.medianDepositWon : (item.contextualMedianDepositWon ?? item.medianDepositWon);
     const rent = rentValue == null ? '—' : moneyHtml(rentValue);
     const deposit = depositValue == null ? '—' : moneyHtml(depositValue);
-    const seoHref = KHGExplorer.buildDongSeoUrl({ lawdCd:areaSelect.value, type:typeSelect.value, dong:item.dong, lang:'en' });
+    const seoHref = KHGExplorer.buildDongSeoUrl({ lawdCd:districtCode, type:typeSelect.value, dong:item.dong, lang:'en' });
     return `<a class="neighborhood-card" data-dong="${escapeHtml(item.dong)}" href="${escapeHtml(seoHref)}">
-      <span class="neighborhood-card-main"><strong>${escapeHtml(dongDisplayName(item.dong))}</strong><small>${Number(item.contractCount || 0).toLocaleString('en-US')} recent contracts</small></span>
+      <span class="neighborhood-card-main"><strong>${escapeHtml(dongDisplayName(item.dong))}</strong><small>${isAllSeoul ? `${escapeHtml(districtName)} · ` : ''}${Number(item.contractCount || 0).toLocaleString('en-US')} recent contracts</small></span>
       <span class="neighborhood-card-metric"><small>Rent context</small><strong>${rent}</strong></span>
       <span class="neighborhood-card-metric"><small>Deposit context</small><strong>${deposit}</strong></span>
       <span class="neighborhood-card-cta">View neighborhood →</span>
@@ -117,11 +109,11 @@ function renderDongs(dongs) {
 function renderSummary(data, dong = '') {
   currentData = data;
   currentDong = dong || '';
-  title.textContent = [areaName(), currentDong ? dongDisplayName(currentDong) : '', typeName(data.propertyType || typeSelect.value)].filter(Boolean).join(' · ');
+  const selectedAreaName = areaSelect.value === 'all' ? data.districtName : areaName();
+  title.textContent = [selectedAreaName, currentDong ? dongDisplayName(currentDong) : '', typeName(data.propertyType || typeSelect.value)].filter(Boolean).join(' · ');
   const summary = data.summary || {};
-  const band = representativeBand(summary);
-  const rentValue = band ? band.medianMonthlyRentWon : (summary.contextualMedianMonthlyRentWon ?? summary.medianMonthlyRentWon);
-  const depositValue = band ? band.medianDepositWon : (summary.contextualMedianDepositWon ?? summary.medianDepositWon);
+  const rentValue = summary.medianMonthlyRentWon;
+  const depositValue = summary.medianDepositWon;
   metricRent.innerHTML = rentValue == null ? 'Not enough data' : moneyHtml(rentValue);
   metricDeposit.innerHTML = depositValue == null ? 'Not enough data' : moneyHtml(depositValue);
   metricContracts.textContent = Number(summary.totalContracts || summary.contractCount || 0).toLocaleString('en-US');
@@ -216,12 +208,16 @@ async function loadArea({ requestedDong = '' } = {}) {
   setLoading();
   try {
     const apiParams = new URLSearchParams({ lawdCd:areaSelect.value, type:typeSelect.value });
-    const response = await fetch(`/api/explore-area?${apiParams.toString()}`);
+    const isAllSeoul = areaSelect.value === 'all';
+    const endpoint = isAllSeoul
+      ? `/api/explore-seoul?type=${encodeURIComponent(typeSelect.value)}`
+      : `/api/explore-area?${apiParams.toString()}`;
+    const response = await fetch(endpoint);
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || 'Explorer data failed');
     currentAreaData = data;
     renderDongs(data.dongs || []);
-    const hasRequestedDong = currentDong && (data.dongs || []).some(item => item.dong === currentDong);
+    const hasRequestedDong = !isAllSeoul && currentDong && (data.dongs || []).some(item => item.dong === currentDong);
     if (hasRequestedDong) {
       await loadDong(currentDong);
       return;

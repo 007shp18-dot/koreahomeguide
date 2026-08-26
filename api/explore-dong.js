@@ -1,4 +1,5 @@
 const { normalizeServiceKey } = require('../lib/real-price-core.cjs');
+const { trustedRequestSource, logApiError } = require('../lib/api-guard.cjs');
 const { createKoreaHousingProvider } = require('../providers/korea-provider.cjs');
 const { normalizeDongName } = require('../providers/provider-utils.cjs');
 const { SEOUL_DISTRICTS, isSupportedAreaCode, isSupportedPropertyType } = require('../providers/seoul-config.cjs');
@@ -6,6 +7,7 @@ const { SEOUL_DISTRICTS, isSupportedAreaCode, isSupportedPropertyType } = requir
 function createHandler(providerFactory = options => createKoreaHousingProvider(options)) {
   return async function handler(req, res) {
     if (req.method !== 'GET') return res.status(405).json({ error:'Method not allowed' });
+    if (!trustedRequestSource(req)) return res.status(403).json({ error:'Request origin is not allowed.' });
 
     const areaCode = String(req.query.lawdCd || '');
     const propertyType = String(req.query.type || 'officetel');
@@ -34,7 +36,8 @@ function createHandler(providerFactory = options => createKoreaHousingProvider(o
         summary,
         buildings
       });
-    } catch (_) {
+    } catch (error) {
+      logApiError('explore-dong', error, { lawdCd:areaCode, type:propertyType });
       return res.status(500).json({ error:'Official transaction data is temporarily unavailable.' });
     }
   };

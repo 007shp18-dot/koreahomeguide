@@ -1,8 +1,22 @@
-const { tag, normalizeServiceKey, endpointForType, parseItems } = require('../lib/real-price-core.cjs');
+const {
+  normalizeServiceKey,
+  endpointForType,
+  fetchRentalMonth,
+  fetchWithRetry
+} = require('../lib/real-price-core.cjs');
+const {
+  trustedRequestSource,
+  isRecentCompletedMonth,
+  logApiError
+} = require('../lib/api-guard.cjs');
+const { isSupportedAreaCode } = require('../providers/seoul-config.cjs');
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+  if (!trustedRequestSource(req)) {
+    return res.status(403).json({ error: 'Request origin is not allowed.' });
   }
 
   const rawServiceKey = process.env.DATA_GO_KR_SERVICE_KEY;
@@ -13,41 +27,30 @@ module.exports = async function handler(req, res) {
   const serviceKey = normalizeServiceKey(rawServiceKey);
 
   const { type = 'apartment', lawdCd, dealYmd } = req.query;
-  if (!/^\d{5}$/.test(String(lawdCd || '')) || !/^\d{6}$/.test(String(dealYmd || ''))) {
+  if (!isSupportedAreaCode(lawdCd) || !isRecentCompletedMonth(dealYmd)) {
     return res.status(400).json({ error: 'Invalid lawdCd or dealYmd.' });
   }
 
   const endpoint = endpointForType(type);
   if (!endpoint) return res.status(400).json({ error: 'Unsupported property type.' });
 
-  const params = new URLSearchParams({
-    serviceKey,
-    LAWD_CD: String(lawdCd),
-    DEAL_YMD: String(dealYmd),
-    numOfRows: '100',
-    pageNo: '1'
-  });
-
   try {
-    const upstream = await fetch(`${endpoint}?${params.toString()}`, {
-      headers: { Accept: 'application/xml,text/xml,*/*' }
+    const items = await fetchRentalMonth({
+      serviceKey,
+      type,
+      lawdCd,
+      dealYmd,
+      pageSize:100,
+      retryImpl:fetchWithRetry
     });
-    const xml = await upstream.text();
-
-    if (!upstream.ok) {
-      return res.status(502).json({ error: `Public API returned HTTP ${upstream.status}.` });
-    }
-
-    const resultCode = tag(xml, 'resultCode');
-    const resultMsg = tag(xml, 'resultMsg');
-    if (resultCode && resultCode !== '00' && resultCode !== '000') {
-      return res.status(502).json({ error: resultMsg || `Public API error (${resultCode}).` });
-    }
-
-    const items = parseItems(xml, type);
     res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
     return res.status(200).json({ items });
-  } catch (_) {
-    return res.status(500).json({ error: 'Failed to reach the public transaction API.' });
+  } catch (error) {
+    logApiError('real-prices', error, { lawdCd, type, dealYmd });
+    const status = Number.isInteger(error && error.upstreamStatus) ? 502 : 500;
+    const message = status === 502
+      ? 'Public transaction data is temporarily unavailable.'
+      : 'Failed to reach the public transaction API.';
+    return res.status(status).json({ error:message });
   }
 };

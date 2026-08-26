@@ -1,12 +1,16 @@
 const { normalizeServiceKey } = require('../lib/real-price-core.cjs');
+const { logApiError } = require('../lib/api-guard.cjs');
 const { createKoreaHousingProvider } = require('../providers/korea-provider.cjs');
 const {
   SEOUL_DISTRICTS,
   districtCodeFromSlug,
-  isSupportedPropertyType
+  isSupportedPropertyType,
+  supportsZhIndexing
 } = require('../providers/seoul-config.cjs');
 const { dongNameFromSlug } = require('../seo/seo-route-utils.cjs');
 const { renderDongPage, renderErrorPage, fetchFxRates } = require('../seo/seo-page-renderer.cjs');
+const { normalizeGuideHubLinks } = require('../seo/seo-html-postprocess.cjs');
+const { isDongIndexable, enhanceDongHtml } = require('../seo/dong-seo-v10-8.cjs');
 
 function normalizedLang(value) {
   return String(value || '').toLowerCase().startsWith('zh') ? 'zh' : 'en';
@@ -14,8 +18,15 @@ function normalizedLang(value) {
 
 function sendHtml(res, status, html, { cache = false } = {}) {
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
-  res.setHeader('Cache-Control', cache ? 's-maxage=3600, stale-while-revalidate=86400' : (status === 503 ? 'no-store' : 's-maxage=300'));
+  res.setHeader('Cache-Control', cache ? 's-maxage=86400, stale-while-revalidate=86400' : (status === 503 ? 'no-store' : 's-maxage=300'));
   return res.status(status).send(html);
+}
+
+function nofollowBuildingLinks(html) {
+  return String(html || '').replace(
+    /(<a class="seo-building-link" href="[^"]+")(?![^>]*\brel=)/g,
+    '$1 rel="nofollow"'
+  );
 }
 
 function createHandler({
@@ -31,7 +42,7 @@ function createHandler({
     const areaCode = districtCodeFromSlug(query.district);
     const dong = dongNameFromSlug(query.dong);
     const propertyType = String(query.type || '');
-    if (!areaCode || !dong || !isSupportedPropertyType(propertyType)) {
+    if (!areaCode || !dong || !isSupportedPropertyType(propertyType) || (lang === 'zh' && !supportsZhIndexing(areaCode))) {
       return sendHtml(res, 404, renderErrorPage({ lang, status:404 }));
     }
 
@@ -45,10 +56,10 @@ function createHandler({
         provider.getBuildings({ areaCode, propertyType, dong, months:6 }),
         fetchFxRates(fetchImpl)
       ]);
-      if (!summary || Number(summary.totalContracts || summary.contractCount || 0) < 1) {
+      if (!isDongIndexable(summary)) {
         return sendHtml(res, 404, renderErrorPage({ lang, status:404 }));
       }
-      return sendHtml(res, 200, renderDongPage({
+      const rendered = renderDongPage({
         lang,
         areaCode,
         districtName:SEOUL_DISTRICTS[areaCode],
@@ -57,8 +68,19 @@ function createHandler({
         summary,
         buildings,
         fxRates
-      }), { cache:true });
-    } catch (_) {
+      });
+      const enhanced = enhanceDongHtml(rendered, {
+        lang,
+        areaCode,
+        districtName:SEOUL_DISTRICTS[areaCode],
+        dong,
+        propertyType,
+        summary
+      });
+      const html = normalizeGuideHubLinks(nofollowBuildingLinks(enhanced), lang);
+      return sendHtml(res, 200, html, { cache:true });
+    } catch (error) {
+      logApiError('seo-dong-page', error, { lawdCd:areaCode, type:propertyType });
       return sendHtml(res, 503, renderErrorPage({ lang, status:503 }));
     }
   };

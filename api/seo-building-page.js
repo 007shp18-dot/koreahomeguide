@@ -1,12 +1,15 @@
 const { normalizeServiceKey } = require('../lib/real-price-core.cjs');
+const { logApiError } = require('../lib/api-guard.cjs');
 const { createKoreaHousingProvider } = require('../providers/korea-provider.cjs');
 const {
   SEOUL_DISTRICTS,
   districtCodeFromSlug,
-  isSupportedPropertyType
+  isSupportedPropertyType,
+  supportsZhIndexing
 } = require('../providers/seoul-config.cjs');
 const { dongNameFromSlug, resolveBuildingSlug } = require('../seo/seo-route-utils.cjs');
 const { renderBuildingPage, renderErrorPage, fetchFxRates } = require('../seo/seo-page-renderer.cjs');
+const { normalizeGuideHubLinks } = require('../seo/seo-html-postprocess.cjs');
 
 function normalizedLang(value) {
   return String(value || '').toLowerCase().startsWith('zh') ? 'zh' : 'en';
@@ -14,7 +17,8 @@ function normalizedLang(value) {
 
 function sendHtml(res, status, html, { cache = false } = {}) {
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
-  res.setHeader('Cache-Control', cache ? 's-maxage=3600, stale-while-revalidate=86400' : (status === 503 ? 'no-store' : 's-maxage=300'));
+  res.setHeader('X-Robots-Tag', 'noindex,follow');
+  res.setHeader('Cache-Control', cache ? 's-maxage=86400, stale-while-revalidate=86400' : (status === 503 ? 'no-store' : 's-maxage=300'));
   return res.status(status).send(html);
 }
 
@@ -32,7 +36,7 @@ function createHandler({
     const dong = dongNameFromSlug(query.dong);
     const propertyType = String(query.type || '');
     const requestedBuildingSlug = String(query.building || '').trim();
-    if (!areaCode || !dong || !isSupportedPropertyType(propertyType) || !requestedBuildingSlug) {
+    if (!areaCode || !dong || !isSupportedPropertyType(propertyType) || !requestedBuildingSlug || (lang === 'zh' && !supportsZhIndexing(areaCode))) {
       return sendHtml(res, 404, renderErrorPage({ lang, status:404 }));
     }
 
@@ -52,7 +56,7 @@ function createHandler({
       ]);
       if (!detail || !summary) return sendHtml(res, 404, renderErrorPage({ lang, status:404 }));
 
-      return sendHtml(res, 200, renderBuildingPage({
+      return sendHtml(res, 200, normalizeGuideHubLinks(renderBuildingPage({
         lang,
         areaCode,
         districtName:SEOUL_DISTRICTS[areaCode],
@@ -61,8 +65,9 @@ function createHandler({
         summary,
         detail,
         fxRates
-      }), { cache:true });
-    } catch (_) {
+      }), lang), { cache:true });
+    } catch (error) {
+      logApiError('seo-building-page', error, { lawdCd:areaCode, type:propertyType });
       return sendHtml(res, 503, renderErrorPage({ lang, status:503 }));
     }
   };

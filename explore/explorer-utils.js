@@ -72,46 +72,74 @@
     return `/explore/building/?${params.toString()}`;
   }
 
-  function filterDongsByBudget(items, { maxRent = 0, maxDeposit = 0 } = {}) {
+  function numericBudgetValue(value) {
+    if (value == null || String(value).trim() === '') return null;
+    const number = Number(value);
+    return Number.isFinite(number) ? number : null;
+  }
+
+  function budgetFitForDong(item, { maxRent = 0, maxDeposit = 0 } = {}) {
     const rentLimit = Math.max(0, Number(maxRent) || 0);
     const depositLimit = Math.max(0, Number(maxDeposit) || 0);
-    return (Array.isArray(items) ? items : []).filter(item => {
-      const bands = Array.isArray(item && item.depositBands) ? item.depositBands : [];
-      if ((rentLimit || depositLimit) && bands.length) {
-        return bands.some(band => {
-          const rent = Number(band.medianMonthlyRentWon);
-          const deposit = Number(band.medianDepositWon);
-          if (rentLimit && (!Number.isFinite(rent) || rent > rentLimit)) return false;
-          if (depositLimit && (!Number.isFinite(deposit) || deposit > depositLimit)) return false;
-          return true;
-        });
-      }
-      if (rentLimit) {
-        const rawRent = item && (item.contextualMedianMonthlyRentWon ?? item.medianMonthlyRentWon);
-        if (rawRent == null || rawRent === '') return false;
-        const rent = Number(rawRent);
-        if (!Number.isFinite(rent) || rent > rentLimit) return false;
-      }
-      if (depositLimit) {
-        const rawDeposit = item && (item.contextualMedianDepositWon ?? item.medianDepositWon);
-        if (rawDeposit == null || rawDeposit === '') return false;
-        const deposit = Number(rawDeposit);
-        if (!Number.isFinite(deposit) || deposit > depositLimit) return false;
-      }
+    const bands = Array.isArray(item?.depositBands) ? item.depositBands : [];
+    const matching = bands.filter(band => {
+      const rent = numericBudgetValue(band.medianMonthlyRentWon);
+      const deposit = numericBudgetValue(band.medianDepositWon);
+      if (rentLimit && (rent === null || rent > rentLimit)) return false;
+      if (depositLimit && (deposit === null || deposit > depositLimit)) return false;
       return true;
     });
+    if (bands.length) {
+      const representativeBand = [...matching]
+        .sort((a, b) => Number(b.count || 0) - Number(a.count || 0))[0] || null;
+      return {
+        fits:matching.length > 0,
+        matchingContractCount:matching.reduce((sum, band) => sum + Number(band.count || 0), 0),
+        representativeBand
+      };
+    }
+    const rent = numericBudgetValue(item?.contextualMedianMonthlyRentWon ?? item?.medianMonthlyRentWon);
+    const deposit = numericBudgetValue(item?.contextualMedianDepositWon ?? item?.medianDepositWon);
+    const fits = (!rentLimit || (rent !== null && rent <= rentLimit)) &&
+      (!depositLimit || (deposit !== null && deposit <= depositLimit));
+    return {
+      fits,
+      matchingContractCount:fits ? Number(item?.contractCount || 0) : 0,
+      representativeBand:null
+    };
+  }
+
+  function filterDongsByBudget(items, limits = {}) {
+    const source = Array.isArray(items) ? items : [];
+    const rentLimit = Math.max(0, Number(limits.maxRent) || 0);
+    const depositLimit = Math.max(0, Number(limits.maxDeposit) || 0);
+    if (!rentLimit && !depositLimit) return [...source];
+
+    return source
+      .map((item, index) => ({ item, index, fit:budgetFitForDong(item, limits) }))
+      .filter(entry => entry.fit.fits)
+      .sort((a, b) =>
+        b.fit.matchingContractCount - a.fit.matchingContractCount || a.index - b.index
+      )
+      .map(entry => entry.item);
   }
 
   function propertyTypeLabel(type, locale = 'en') {
     return catalog ? catalog.propertyTypeLabel(type, locale) : String(type || '');
   }
 
+  function supportsZhIndexing(areaCode) {
+    return Boolean(catalog && catalog.supportsZhIndexing(areaCode));
+  }
+
   return {
     buildDongSeoUrl,
     buildBuildingSeoUrl,
     buildBuildingDetailUrl,
+    budgetFitForDong,
     filterDongsByBudget,
     propertyTypeLabel,
+    supportsZhIndexing,
     stableSuffix
   };
 });
