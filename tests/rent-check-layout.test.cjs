@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 
 const css = fs.readFileSync('styles.css', 'utf8');
+const cold = fs.readFileSync('cold-start.css', 'utf8');
 
 test('rent-check fields align from the top so FX references do not lift money inputs', () => {
   assert.match(css, /\.rent-check-form\{[^}]*align-items:start/);
@@ -47,4 +48,13 @@ test('standalone tool layout uses two columns inside its narrower product column
 test('Rent Check controls stay inside their assigned grid tracks', () => {
   assert.match(css, /\.rent-check-money,\.rent-check-size\{[^}]*min-width:0/);
   assert.match(css, /\.rent-check-button\{[^}]*min-width:0[^}]*width:100%/);
+});
+
+test('homepage gives long bilingual district names enough desktop width', () => {
+  assert.match(
+    cold,
+    /\.funnel-rent-card \.rent-check-form\{[^}]*grid-template-columns:minmax\(260px,1\.35fr\) minmax\(250px,1\.25fr\)/
+  );
+  assert.match(cold, /@media\(max-width:1280px\)\{\.funnel-rent-card \.rent-check-form\{[^}]*repeat\(3,minmax\(0,1fr\)\)/);
+  assert.match(cold, /@media\(max-width:960px\)\{\.funnel-rent-card \.rent-check-form\{[^}]*repeat\(2,minmax\(0,1fr\)\)/);
 });
