@@ -36,6 +36,22 @@ test('explorer runtime calls area API, supports FX presentation, and links to bu
   assert.match(js, /quarterChangePct/);
 });
 
+test('Rent Explorer waits for Compare before revealing or loading neighborhood results', () => {
+  const css = fs.readFileSync('styles.css', 'utf8');
+  assert.match(css, /#explorerChips\[hidden\],#explorerResultsShell\[hidden\]\{display:none!important\}/);
+
+  for (const root of ['explore', 'zh/explore']) {
+    const html = fs.readFileSync(`${root}/index.html`, 'utf8');
+    const js = fs.readFileSync(`${root}/app.js`, 'utf8');
+    assert.match(html, /id="explorerChips"[^>]*hidden/);
+    assert.match(html, /id="explorerResultsShell"[^>]*hidden/);
+    assert.match(js, /function showExploreResults\(\)[^]*?explorerChips\.hidden=false;[^]*?explorerResults\.hidden=false;[^]*?return loadArea\(\);/);
+    assert.match(js, /exploreButton\.addEventListener\('click',showExploreResults\)/);
+    assert.doesNotMatch(js, /(?:areaSelect|typeSelect|maxRentSelect|maxDepositSelect)[^\n]*addEventListener\('change',\(\)=>loadArea\(\)\)/);
+    assert.doesNotMatch(js, /\(async \(\) => \{[^]*?await loadArea/);
+  }
+});
+
 test('building detail URL helper preserves the selected area, type, and normalized key safely', () => {
   assert.equal(
     utils.buildBuildingDetailUrl({ lawdCd:'11680', type:'officetel', buildingKey:'강남 푸르지오시티' }),

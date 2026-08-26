@@ -5,6 +5,13 @@ const fs = require('node:fs');
 const css = fs.readFileSync('styles.css', 'utf8');
 const cold = fs.readFileSync('cold-start.css', 'utf8');
 
+test('English Rent Check submit actions use the compact Check label', () => {
+  for (const file of ['index.html', 'tools/seoul-rent-check/index.html']) {
+    const html = fs.readFileSync(file, 'utf8');
+    assert.match(html, /id="rentCheckButton"[^>]*>Check<\/button>/, file);
+  }
+});
+
 test('rent-check fields align from the top so FX references do not lift money inputs', () => {
   assert.match(css, /\.rent-check-form\{[^}]*align-items:start/);
 });

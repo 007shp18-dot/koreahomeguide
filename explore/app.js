@@ -15,6 +15,8 @@ const metricChange = document.querySelector('#metricChange');
 const dongList = document.querySelector('#dongList');
 const buildingList = document.querySelector('#buildingList');
 const budgetFilterNote = document.querySelector('#budgetFilterNote');
+const explorerChips = document.querySelector('#explorerChips');
+const explorerResults = document.querySelector('#explorerResultsShell');
 let fxRates = {};
 let currentAreaData = null;
 let currentData = null;
@@ -258,11 +260,13 @@ function applyQuerySelection() {
   return dong;
 }
 
-exploreButton.addEventListener('click', () => loadArea());
-areaSelect.addEventListener('change', () => loadArea());
-typeSelect.addEventListener('change', () => loadArea());
-if (maxRentSelect) maxRentSelect.addEventListener('change', () => loadArea());
-if (maxDepositSelect) maxDepositSelect.addEventListener('change', () => loadArea());
+function showExploreResults() {
+  explorerChips.hidden=false;
+  explorerResults.hidden=false;
+  return loadArea();
+}
+
+exploreButton.addEventListener('click',showExploreResults);
 document.querySelectorAll('[data-explore-area]').forEach(button => button.addEventListener('click', () => {
   areaSelect.value = button.dataset.exploreArea;
   loadArea();
@@ -280,7 +284,6 @@ window.addEventListener('khg:map-select-dong', event => {
 });
 
 (async () => {
-  const requestedDong = applyQuerySelection();
+  applyQuerySelection();
   await loadFx();
-  await loadArea({ requestedDong });
 })();

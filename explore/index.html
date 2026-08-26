@@ -48,7 +48,7 @@
       <details class="advanced-filter explorer-advanced-filter"><summary>Deposit budget (optional)</summary><div class="advanced-filter-content"><label class="field"><span>Maximum deposit</span><select id="exploreMaxDeposit"><option value="">Any deposit</option><option value="5000000">Up to ₩5M</option><option value="10000000">Up to ₩10M</option><option value="20000000">Up to ₩20M</option><option value="50000000">Up to ₩50M</option></select></label></div></details>
     </section>
 
-    <div class="explorer-chips" aria-label="Popular Seoul districts">
+    <div id="explorerChips" class="explorer-chips" aria-label="Popular Seoul districts" hidden>
       <button type="button" data-explore-area="11680">Gangnam</button>
       <button type="button" data-explore-area="11440">Mapo</button>
       <button type="button" data-explore-area="11170">Yongsan</button>
@@ -56,7 +56,7 @@
       <button type="button" data-explore-area="11560">Yeongdeungpo</button>
     </div>
 
-    <div class="explorer-map-layout">
+    <div id="explorerResultsShell" class="explorer-map-layout" hidden>
       <div class="product-main explorer-map-main">
 <section id="explorerResults" class="explorer-results" aria-live="polite">
       <div class="explorer-results-head">
