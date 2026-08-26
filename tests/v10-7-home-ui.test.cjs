@@ -5,8 +5,8 @@ const path = require('node:path');
 const read = rel => fs.readFileSync(path.join(__dirname,'..',rel),'utf8');
 
 for (const [file, primary, secondary] of [
-  ['index.html','Check my rent',['Explore Seoul','Before you sign']],
-  ['zh/index.html','检查我的租金',['探索首尔','签约前']]
+  ['index.html','Check my rent',['Explore Seoul','Protect the deposit']],
+  ['zh/index.html','检查我的租金',['探索首尔','先保护好押金']]
 ]) {
   test(`${file} presents one primary action with secondary discovery paths`, () => {
     const html=read(file);

@@ -1,32 +1,8 @@
-# KoreaHomeGuide 90-Day Global Acquisition Roadmap
+# KoreaHomeGuide 90-Day Acquisition and Singapore Seed Design
 
 **Date:** 2026-08-26
-**Status:** Canonical roadmap; approved for phased execution
-**Current allocation:** Seoul validation 60% / Singapore foundation 40%
-**Gate-based allocation:** Seoul 40% / Singapore 60% only after URA access and use rights are documented and the Seoul measurement baseline is reliable
-
-## 0. How to Read This Roadmap
-
-This is the single product-and-growth roadmap. Earlier UI labels such as A, B, and C are retired; completed interface polish is maintenance work, not a competing roadmap.
-
-The market sequence is:
-
-```text
-Release baseline recovery
-  -> Seoul acquisition validation + Singapore data foundation (60/40)
-  -> Singapore private prototype and data validation
-  -> Singapore-led allocation after launch gates (40/60)
-  -> Dubai only after the Singapore market adapter and product loop are repeatable
-```
-
-The immediate execution unit is the release baseline: keep the repository tests coherent, verify the current production funnel once, and capture the owner-console measurement baseline. New acquisition distribution waits until that gate is clean.
-
-Current execution status as of 2026-08-27:
-
-- local repository baseline restored: 446 of 446 automated tests pass;
-- Rent Check and help-request alignment verified at desktop and mobile sizes;
-- next release gate: deploy the reviewed changes, complete one production funnel smoke test, and confirm GA4, Search Console, Google Sheets, and Vercel evidence; and
-- Singapore remains a 40% private foundation track until URA access and use conditions are documented.
+**Status:** Approved for implementation planning
+**Allocation:** Seoul acquisition proof 80% / Singapore seed work 20%
 
 ## 1. Context
 
@@ -34,7 +10,7 @@ KoreaHomeGuide has moved beyond its initial product and stability build. The pro
 
 The site previously experienced excessive crawl discovery with almost no search exposure. The response for this phase is therefore a narrow, evidence-led acquisition system rather than another programmatic page expansion.
 
-Singapore is the first expansion market. The likely requested source is Singapore's Urban Redevelopment Authority (URA), which covers private residential property data. Housing and Development Board (HDB) public-housing rental data is a separate source. Singapore work remains private until access, use rights, data quality, and brand architecture are confirmed. Dubai is a later candidate and receives no implementation allocation until the Singapore adapter and launch process are proven reusable.
+Singapore is the first expansion candidate. The likely requested source is Singapore's Urban Redevelopment Authority (URA), which covers private residential property data. Housing and Development Board (HDB) public-housing rental data is a separate source. Singapore work remains a seed track until access, use rights, data quality, and brand architecture are confirmed.
 
 Official source references:
 
@@ -71,12 +47,6 @@ Three acquisition models were considered:
 
 The approved model is tool-led mixed acquisition.
 
-Market allocation is controlled by evidence rather than a fixed calendar:
-
-- before the Singapore access gate: Seoul 60% / Singapore 40%;
-- after URA permissions are documented and the Seoul measurement baseline is trustworthy: Seoul 40% / Singapore 60%; and
-- Dubai: research backlog only until Singapore validates a reusable source adapter, comparison contract, and launch playbook.
-
 Within the Seoul track, effort is allocated as follows:
 
 - 40%: improve the existing English market pages and guides as search entry points;
@@ -100,8 +70,6 @@ Within the Seoul track, effort is allocated as follows:
 ## 5. Twelve-Week Roadmap
 
 ### Phase 1: Measurement and search readiness (Weeks 1-2)
-
-Allocation: Seoul 60% / Singapore 40%.
 
 Seoul work:
 
@@ -127,8 +95,6 @@ Exit gate:
 
 ### Phase 2: Entry-page and tool connection (Weeks 3-5)
 
-Allocation: remain Seoul 60% / Singapore 40% unless every allocation gate is already satisfied.
-
 Seoul work:
 
 - rewrite titles, descriptions, introductions, and FAQs around the approved query map;
@@ -153,8 +119,6 @@ Exit gate:
 
 ### Phase 3: Controlled acquisition (Weeks 6-9)
 
-Allocation: maintain the current split until the Seoul baseline is reliable and Singapore access terms are documented; then move to Seoul 40% / Singapore 60%.
-
 Seoul work:
 
 - review Search Console query and page data every week;
@@ -178,8 +142,6 @@ Exit gate:
 - new content is justified by evidence rather than publishing cadence alone.
 
 ### Phase 4: Concentration and expansion decision (Weeks 10-12)
-
-Allocation: Seoul 40% / Singapore 60% only if the earlier gate has passed; otherwise remain 60% / 40% and keep Singapore private.
 
 Seoul work:
 
@@ -280,7 +242,6 @@ URA data must not be scraped from consumer-facing search pages as a substitute f
 - indexable building-result or user-result pages;
 - paid acquisition before funnel validation;
 - Japanese localization;
-- Dubai implementation before the Singapore adapter and product loop are validated;
 - listings, brokerage, payments, advertising, or partner commissions;
 - public Singapore launch before all four gates are satisfied;
 - mixing Singapore feature implementation into the first Seoul acquisition release; and
@@ -300,7 +261,7 @@ URA data must not be scraped from consumer-facing search pages as a substitute f
 
 This design is ready for implementation planning when:
 
-- the Seoul 60% / Singapore 40% starting allocation and the gated 40% / 60% shift are explicit;
+- the Seoul 80% / Singapore 20% allocation is explicit;
 - the tool-led mixed acquisition model is preserved;
 - the 12-week phases, KPI targets, and diagnostic rules are implementable without hidden assumptions;
 - public Singapore work is gated by access, provenance, reliability, and brand decisions; and

@@ -46,11 +46,15 @@ test('before-you-sign pillar guide exists in EN/ZH with substantive foreign-rent
   assert.match(en, /not legal advice|general information/i);
 });
 
-test('homepage before-you-sign guide card points to the pillar page in both locales', () => {
+test('homepage keeps the before-you-sign pillar prominent without duplicating it in the three-card guide grid', () => {
   const en = read('index.html');
   const zh = read('zh/index.html');
-  assert.match(en, /class="funnel-guide" href="\/guides\/before-you-sign\/"[\s\S]{0,400}<h3>Before you sign<\/h3>/);
-  assert.match(zh, /class="funnel-guide" href="\/zh\/guides\/before-you-sign\/"[\s\S]{0,400}<h3>签约前/);
+  assert.match(en, /class="funnel-secondary-card" href="\/guides\/before-you-sign\/"[\s\S]{0,400}<h3>Protect the deposit<\/h3>/);
+  assert.match(zh, /class="funnel-secondary-card" href="\/zh\/guides\/before-you-sign\/"[\s\S]{0,400}<h3>先保护好押金<\/h3>/);
+  const enGrid=(en.match(/<div class="funnel-guides">([\s\S]*?)<\/div>/)||[])[1]||'';
+  const zhGrid=(zh.match(/<div class="funnel-guides">([\s\S]*?)<\/div>/)||[])[1]||'';
+  assert.doesNotMatch(enGrid, /before-you-sign/);
+  assert.doesNotMatch(zhGrid, /before-you-sign/);
 });
 
 test('homepage positioning is a Rent Check trust funnel rather than a listings promise', () => {

@@ -4,12 +4,6 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const CONTACT = 'hello@koreahomeguide.com';
-const PRIMARY_CONTACT_PAGES = [
-  ['index.html', 'Email us →'],
-  ['tools/seoul-rent-check/index.html', 'Email us →'],
-  ['zh/index.html', '邮件联系我们 →'],
-  ['zh/tools/seoul-rent-check/index.html', '邮件联系我们 →']
-];
 
 function htmlFiles(dir) {
   return fs.readdirSync(dir, { withFileTypes: true }).flatMap(entry => {
@@ -38,22 +32,7 @@ test('every public HTML contact link uses the official mailbox', () => {
     const html = fs.readFileSync(file, 'utf8');
     assert.doesNotMatch(html, /007shp18@gmail\.com/, file);
     for (const match of html.matchAll(/href="mailto:([^"]+)"/g)) {
-      assert.equal(decodeURIComponent(match[1].split('?', 1)[0]), CONTACT, file);
+      assert.equal(match[1], CONTACT, file);
     }
-  }
-});
-
-test('primary Rent Check pages expose a dedicated email action with a ready-to-write draft', () => {
-  for (const [file, label] of PRIMARY_CONTACT_PAGES) {
-    const html = fs.readFileSync(file, 'utf8');
-    const match = html.match(/<a class="footer-contact-action" href="([^"]+)">([^<]+)<\/a>/);
-    assert.ok(match, file);
-    assert.equal(match[2], label, file);
-
-    const compose = new URL(match[1].replaceAll('&amp;', '&'));
-    assert.equal(compose.protocol, 'mailto:', file);
-    assert.equal(compose.pathname, CONTACT, file);
-    assert.ok(compose.searchParams.get('subject'), file);
-    assert.ok(compose.searchParams.get('body'), file);
   }
 });

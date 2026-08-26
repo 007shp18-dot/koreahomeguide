@@ -10,7 +10,8 @@ test('rent-check fields align from the top so FX references do not lift money in
 });
 
 test('rent-check submit button aligns with input boxes on desktop', () => {
-  assert.match(css, /\.rent-check-button\{[^}]*margin-top:20px/);
+  assert.match(css, /\.rent-check-form \.field>span\{[^}]*min-height:18px/);
+  assert.match(css, /\.rent-check-button\{[^}]*margin-top:25px/);
 });
 
 test('rent-check submit button removes desktop offset in the mobile layout', () => {
@@ -55,6 +56,7 @@ test('homepage gives long bilingual district names enough desktop width', () => 
     cold,
     /\.funnel-rent-card \.rent-check-form\{[^}]*grid-template-columns:minmax\(260px,1\.35fr\) minmax\(250px,1\.25fr\)/
   );
-  assert.match(cold, /@media\(max-width:1280px\)\{\.funnel-rent-card \.rent-check-form\{[^}]*repeat\(3,minmax\(0,1fr\)\)/);
-  assert.match(cold, /@media\(max-width:960px\)\{\.funnel-rent-card \.rent-check-form\{[^}]*repeat\(2,minmax\(0,1fr\)\)/);
+  assert.match(cold, /@media\(max-width:1220px\)\{\.funnel-rent-card \.rent-check-form\{[^}]*repeat\(3,minmax\(0,1fr\)\)/);
+  assert.match(cold, /@media\(max-width:980px\)\{\.funnel-rent-card \.rent-check-form\{[^}]*repeat\(2,minmax\(0,1fr\)\)/);
+  assert.doesNotMatch(cold, /@media\(max-width:(?:1280|1200|960)px\)\{\.funnel-rent-card \.rent-check-form/);
 });

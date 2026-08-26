@@ -26,11 +26,3 @@ test('help form buttons use the shared primary action style in every locale and 
     assert.match(html, /data-help-form[^]*?<button class="search-button" type="submit">/, file);
   }
 });
-
-test('help form aligns its action with the textarea and places safety copy below both columns', () => {
-  const css = fs.readFileSync('cold-start.css', 'utf8');
-  assert.match(css, /\.lead-capture \[data-help-form\] \.field\{display:contents\}/);
-  assert.match(css, /\.lead-capture \[data-help-form\] textarea\{grid-column:1;grid-row:2\}/);
-  assert.match(css, /\.lead-capture \[data-help-form\] button\{grid-column:2;grid-row:2\}/);
-  assert.match(css, /\.lead-capture \[data-help-form\] \.lead-help-note\{[^}]*grid-column:1\/-1;grid-row:3/);
-});

@@ -23,6 +23,10 @@ test('cold-start homepage guide section opens the real guide pages in both langu
   const zh=fs.readFileSync('zh/index.html','utf8');
   const enGrid=(home.match(/<div class="funnel-guides">([\s\S]*?)<\/div>/)||[])[1]||'';
   const zhGrid=(zh.match(/<div class="funnel-guides">([\s\S]*?)<\/div>/)||[])[1]||'';
-  for(const href of ['/guides/wolse-vs-jeonse/','/guides/before-you-sign/','/guides/seoul-brokerage-fees/']) assert.match(enGrid,new RegExp(`href="${href.replaceAll('/','\\/')}"`));
-  for(const href of ['/zh/guides/wolse-vs-jeonse/','/zh/guides/before-you-sign/','/zh/guides/seoul-brokerage-fees/']) assert.match(zhGrid,new RegExp(`href="${href.replaceAll('/','\\/')}"`));
+  assert.equal((enGrid.match(/class="funnel-guide"/g)||[]).length,3);
+  assert.equal((zhGrid.match(/class="funnel-guide"/g)||[]).length,3);
+  for(const href of ['/guides/rent-apartment-korea-foreigner/','/guides/wolse-vs-jeonse/','/guides/seoul-officetel-rent/']) assert.match(enGrid,new RegExp(`href="${href.replaceAll('/','\\/')}"`));
+  for(const href of ['/zh/guides/rent-apartment-korea-foreigner/','/zh/guides/wolse-vs-jeonse/','/zh/guides/seoul-officetel-rent/']) assert.match(zhGrid,new RegExp(`href="${href.replaceAll('/','\\/')}"`));
+  assert.match(home, /class="funnel-guides-link" href="\/guides\/">View all 7 rental guides/);
+  assert.match(zh, /class="funnel-guides-link" href="\/zh\/guides\/">查看全部 7 篇租房指南/);
 });
