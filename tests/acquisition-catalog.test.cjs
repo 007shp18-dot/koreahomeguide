@@ -30,3 +30,33 @@ test('lookup normalizes trailing slashes but rejects non-entry surfaces', () => 
   assert.equal(findEntryPage('/rent/gangnam-gu/apartment/').lawdCd, '11680');
   assert.equal(findEntryPage('/explore/building/'), null);
 });
+
+const DEEP_PATHS = [
+  '/guides/wolse-vs-jeonse/',
+  '/guides/korea-rental-contract-checklist/',
+  '/guides/seoul-brokerage-fees/',
+  '/guides/before-you-sign/',
+  '/guides/rent-apartment-korea-foreigner/',
+  '/guides/korea-rental-scams/',
+  '/guides/seoul-officetel-rent/',
+  '/rent/gangnam-gu/apartment/',
+  '/rent/mapo-gu/officetel/',
+  '/rent/yongsan-gu/villa/'
+];
+
+test('catalogue exposes one complete search contract per entry page', () => {
+  for (const item of ENTRY_PAGES) {
+    assert.ok(item.userQuestion && item.userQuestion.length >= 20, item.path);
+    assert.ok(item.pagePromise && item.pagePromise.length >= 30, item.path);
+    assert.ok(['deep', 'metadata'].includes(item.priorityTier), item.path);
+  }
+});
+
+test('catalogue locks exactly the ten approved deep-improvement pages', () => {
+  const actual = ENTRY_PAGES
+    .filter(item => item.priorityTier === 'deep')
+    .map(item => item.path)
+    .sort();
+  assert.deepEqual(actual, [...DEEP_PATHS].sort());
+  assert.equal(ENTRY_PAGES.filter(item => item.priorityTier === 'metadata').length, 27);
+});
