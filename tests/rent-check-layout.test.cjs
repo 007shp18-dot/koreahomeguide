@@ -26,16 +26,25 @@ test('rent-check input values flex without clipping their currency or size units
   );
 });
 
-test('standalone tool layout uses a container-appropriate three-column form', () => {
+test('embedded Rent Check uses three columns instead of compressing all controls into one row', () => {
   assert.match(
     css,
-    /\.tool-product-layout \.rent-check-form\{[^}]*grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/
+    /\.rent-check-form\{[^}]*grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/
+  );
+  assert.doesNotMatch(
+    css,
+    /\.rent-check-form\{[^}]*grid-template-columns:1\.15fr 1\.15fr 1\.1fr 1\.1fr \.8fr auto/
   );
 });
 
-test('mid-width rent-check layouts switch before the six-column form compresses', () => {
-  const mediumStart = css.indexOf('@media (max-width:1120px)');
-  assert.notEqual(mediumStart, -1);
-  const mediumCss = css.slice(mediumStart, css.indexOf('@media (max-width:1050px)'));
-  assert.match(mediumCss, /\.rent-check-form\{[^}]*grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
+test('standalone tool layout uses two columns inside its narrower product column', () => {
+  assert.match(
+    css,
+    /\.tool-product-layout \.rent-check-form\{[^}]*grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/
+  );
+});
+
+test('Rent Check controls stay inside their assigned grid tracks', () => {
+  assert.match(css, /\.rent-check-money,\.rent-check-size\{[^}]*min-width:0/);
+  assert.match(css, /\.rent-check-button\{[^}]*min-width:0[^}]*width:100%/);
 });
