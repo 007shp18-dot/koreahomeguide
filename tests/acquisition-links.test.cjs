@@ -136,3 +136,62 @@ test('all English acquisition pages load the contextual link helper', () => {
     );
   }
 });
+
+test('hub links preserve source attribution without inventing quote values', () => {
+  assert.equal(
+    buildRentCheckUrl({
+      sourcePage:'/guides/',
+      search:'?utm_source=google&utm_medium=organic'
+    }),
+    '/tools/seoul-rent-check/?from=%2Fguides%2F&origin_source=google&origin_medium=organic'
+  );
+});
+
+test('existing Dong CTA query is preserved and attributed without sensitive values', () => {
+  assert.equal(
+    buildRentCheckUrl({
+      sourcePage:'/seoul/gangnam-gu/%EC%97%AD%EC%82%BC%EB%8F%99/officetel/',
+      linkSearch:'?lawdCd=11680&type=officetel&deposit=10000000&rent=1200000&area=25'
+    }),
+    '/tools/seoul-rent-check/?lawdCd=11680&type=officetel&from=%2Fseoul%2Fgangnam-gu%2F%25EC%2597%25AD%25EC%2582%25BC%25EB%258F%2599%2Fofficetel%2F'
+  );
+});
+
+test('officetel guide defaults the tool type without guessing a district or quote', () => {
+  assert.equal(
+    buildRentCheckUrl({ sourcePage:'/guides/seoul-officetel-rent/' }),
+    '/tools/seoul-rent-check/?type=officetel&from=%2Fguides%2Fseoul-officetel-rent%2F'
+  );
+});
+
+test('wire handles localized Rent Check links that already contain safe query values', () => {
+  const anchor = {
+    id:'dong-rent-check',
+    value:'/zh/tools/seoul-rent-check/?lawdCd=11440&type=villa',
+    getAttribute() { return this.value; },
+    setAttribute(_, value) { this.value = value; },
+    addEventListener() {}
+  };
+  const doc = {
+    documentElement:{ lang:'zh-CN' },
+    querySelector() { return null; },
+    querySelectorAll() { return [anchor]; }
+  };
+  assert.equal(wireRentCheckLinks({
+    doc,
+    location:{ pathname:'/zh/seoul/mapo-gu/%EC%84%9C%EA%B5%90%EB%8F%99/villa/', search:'' }
+  }), 1);
+  assert.equal(
+    anchor.value,
+    '/zh/tools/seoul-rent-check/?lawdCd=11440&type=villa&from=%2Fzh%2Fseoul%2Fmapo-gu%2F%25EC%2584%259C%25EA%25B5%2590%25EB%258F%2599%2Fvilla%2F'
+  );
+});
+
+test('hub pages load acquisition context before link wiring', () => {
+  for (const file of ['guides/index.html','explore/index.html','zh/guides/index.html','zh/explore/index.html']) {
+    const html = fs.readFileSync(file, 'utf8');
+    assert.match(html, /src="\/acquisition-context\.js"/, file);
+    assert.match(html, /src="\/acquisition-links\.js"/, file);
+    assert.ok(html.indexOf('/acquisition-context.js') < html.indexOf('/acquisition-links.js'), file);
+  }
+});

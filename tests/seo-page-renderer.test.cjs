@@ -61,6 +61,9 @@ test('English Dong HTML has canonical, hreflang, index metadata, Dataset JSON-LD
   const buildingUrl = routes.buildBuildingSeoUrl({ areaCode:'11440', dong:'연남동', propertyType:'villa', building:buildings[0], lang:'en' });
   assert.ok(!html.includes(`href="${buildingUrl}"`));
   assert.match(html, /href="\/explore\/building\/\?[^\"]+" rel="nofollow"/);
+  assert.match(html, /src="\/acquisition-context\.js"/);
+  assert.match(html, /src="\/acquisition-links\.js"/);
+  assert.ok(html.indexOf('/acquisition-context.js') < html.indexOf('/acquisition-links.js'));
   assert.match(html, /Jul 31, 2026/);
   assert.match(html, /\$504/); // 700,000 KRW at injected test rate
   assert.ok(!html.includes('A <Villa>'), 'dynamic building names must be escaped');

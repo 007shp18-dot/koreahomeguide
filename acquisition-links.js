@@ -31,6 +31,8 @@
   const validatedEntrySource = acquisitionContext && acquisitionContext.validatedEntrySource
     ? acquisitionContext.validatedEntrySource
     : () => '';
+  const DISTRICT_CODES = new Set(['11680','11440','11170','11200','11560','11620','11230','11410','11290','11215']);
+  const PROPERTY_TYPES = new Set(['apartment','officetel','villa','detached','studio']);
 
   function safeCampaign(value) {
     return String(value || '')
@@ -50,6 +52,16 @@
 
   function safeLocale(value) {
     return String(value || '').toLowerCase().startsWith('zh') ? 'zh-CN' : 'en-US';
+  }
+
+  function safeDistrictCode(value) {
+    const candidate = String(value || '');
+    return DISTRICT_CODES.has(candidate) ? candidate : '';
+  }
+
+  function safePropertyType(value) {
+    const candidate = String(value || '');
+    return PROPERTY_TYPES.has(candidate) ? candidate : '';
   }
 
   function buildRentCheckCtaEvent({
@@ -75,15 +87,25 @@
     sourcePage = '',
     lawdCd = '',
     propertyType = '',
-    search = ''
+    search = '',
+    linkSearch = ''
   } = {}) {
     const current = new URLSearchParams(String(search || ''));
+    const linked = new URLSearchParams(String(linkSearch || ''));
     const next = new URLSearchParams();
-    const source = safeSourcePage(sourcePage, lawdCd, propertyType);
+    const effectiveLawdCd = safeDistrictCode(lawdCd) || safeDistrictCode(linked.get('lawdCd'));
+    const effectivePropertyType = safePropertyType(propertyType) || safePropertyType(linked.get('type'));
+    const source = safeSourcePage(sourcePage, effectiveLawdCd, effectivePropertyType);
     const entry = source ? findEntryContext(source) : null;
-    if (entry && entry.kind === 'market') {
+    if (entry && (entry.kind === 'market' || entry.kind === 'dong')) {
       next.set('lawdCd', entry.lawdCd);
       next.set('type', entry.propertyType);
+    } else if (entry) {
+      if (effectiveLawdCd) next.set('lawdCd', effectiveLawdCd);
+      if (effectivePropertyType) next.set('type', effectivePropertyType);
+      if (entry && entry.kind === 'guide' && entry.slug === 'seoul-officetel-rent') {
+        next.set('type', 'officetel');
+      }
     }
     if (source) next.set('from', source);
 
@@ -114,12 +136,27 @@
     };
     let changed = 0;
 
-    doc.querySelectorAll('a[href^="/tools/seoul-rent-check/"]').forEach(anchor => {
-      const current = String(anchor.getAttribute('href') || '').split('?', 1)[0];
-      if (current !== '/tools/seoul-rent-check/') return;
-      anchor.setAttribute('href', buildRentCheckUrl({ ...values, basePath: current }));
-      const cta = buildRentCheckCtaEvent({
+    doc.querySelectorAll('a[href^="/tools/seoul-rent-check/"],a[href^="/zh/tools/seoul-rent-check/"]').forEach(anchor => {
+      let current;
+      try {
+        current = new URL(String(anchor.getAttribute('href') || ''), 'https://koreahomeguide.com');
+      } catch (_) {
+        return;
+      }
+      if (!['/tools/seoul-rent-check/', '/zh/tools/seoul-rent-check/'].includes(current.pathname)) return;
+      const linked = new URLSearchParams(current.search);
+      const effectiveValues = {
         ...values,
+        lawdCd: values.lawdCd || safeDistrictCode(linked.get('lawdCd')),
+        propertyType: values.propertyType || safePropertyType(linked.get('type'))
+      };
+      anchor.setAttribute('href', buildRentCheckUrl({
+        ...effectiveValues,
+        basePath: current.pathname,
+        linkSearch: current.search
+      }));
+      const cta = buildRentCheckCtaEvent({
+        ...effectiveValues,
         ctaId: anchor.dataset && anchor.dataset.rentCheckCta || anchor.id,
         locale: doc.documentElement && doc.documentElement.lang
       });
