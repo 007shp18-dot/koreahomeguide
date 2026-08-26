@@ -24,6 +24,11 @@ async function bootCurrencyRuntime(file) {
   const depositReference = { textContent:'' };
   const rentReference = { textContent:'' };
   const currencySelect = { value:'USD', disabled:false, addEventListener() {} };
+  const domNode = () => ({
+    hidden:false, open:false, textContent:'', innerHTML:'', dataset:{},
+    appendChild() {}, insertAdjacentElement() {}, addEventListener() {},
+    querySelector() { return domNode(); }
+  });
   const elements = {
     '#currencySelect':currencySelect,
     '#rentCheckForm':null,
@@ -34,11 +39,12 @@ async function bootCurrencyRuntime(file) {
     '#rentCheckAreaSqm':{ value:'25' },
     '#rentCheckButton':{ disabled:false },
     '#rentCheckStatus':{ textContent:'', className:'' },
-    '#rentCheckResult':{ hidden:true },
+    '#rentCheckResult':{ hidden:true, querySelector() { return domNode(); } },
     '#rentCheckStudioNote':{ hidden:true }
   };
   const document = {
     documentElement:{ lang:file.startsWith('zh/') ? 'zh-CN' : 'en' },
+    createElement() { return domNode(); },
     querySelector(selector) {
       if (selector === '[data-currency-reference-for="rentCheckDeposit"]') return depositReference;
       if (selector === '[data-currency-reference-for="rentCheckRent"]') return rentReference;

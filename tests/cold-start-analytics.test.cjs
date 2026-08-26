@@ -9,6 +9,11 @@ function bootRentCheckRuntime(file, { districtCode = '11680', propertyType = 'ap
   const listeners = new Map();
   const gtagCalls = [];
   const formListeners = new Map();
+  const domNode = () => ({
+    hidden:false, open:false, textContent:'', innerHTML:'', dataset:{},
+    appendChild() {}, insertAdjacentElement() {}, addEventListener() {},
+    querySelector() { return domNode(); }
+  });
   const elements = {
     '#rentCheckForm': { addEventListener(type, handler) { formListeners.set(type, handler); } },
     '#rentCheckArea': { value:districtCode, options:[] },
@@ -18,11 +23,12 @@ function bootRentCheckRuntime(file, { districtCode = '11680', propertyType = 'ap
     '#rentCheckAreaSqm': { value:'25' },
     '#rentCheckButton': { disabled:false },
     '#rentCheckStatus': { textContent:'', className:'' },
-    '#rentCheckResult': { hidden:false },
+    '#rentCheckResult': { hidden:false, querySelector() { return domNode(); } },
     '#rentCheckStudioNote': { hidden:false }
   };
   const doc = {
     documentElement:{ lang:'en' },
+    createElement() { return domNode(); },
     querySelector(selector) { return elements[selector] || null; },
     querySelectorAll() { return []; }
   };

@@ -84,6 +84,18 @@ test('EN and ZH helpers provide localized percentile wording and hide it for ins
   assert.equal(zhUI.percentileSentence({ rating:'insufficient', percentileRank:null }), '');
 });
 
+test('extreme percentile wording avoids false precision when comparable values tie', () => {
+  const range = { rating:'above', p25ValueWon:800_000, p75ValueWon:1_000_000, percentileRank:100 };
+  assert.equal(
+    enUI.percentileSentence(range),
+    'This quote is at or near the top of this comparable set.'
+  );
+  assert.equal(
+    zhUI.percentileSentence(range),
+    '这个报价处于或接近这组可比成交的最高水平。'
+  );
+});
+
 test('EN and ZH apps create and render the Fair Rent Intelligence distribution panel', () => {
   const en = fs.readFileSync('tools/seoul-rent-check/app.js','utf8');
   const zh = fs.readFileSync('zh/tools/seoul-rent-check/app.js','utf8');
