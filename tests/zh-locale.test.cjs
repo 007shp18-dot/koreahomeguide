@@ -29,6 +29,6 @@ test('Chinese runtime localizes Rent Check and emits the shared funnel event', (
   assert.match(app,/rent_check_start/);
   assert.match(app,/rent_check_result/);
   assert.match(ui,/above:\s*'高于近期成交水平'/);
-  assert.match(ui,/fair:\s*'价格合理'/);
-  assert.match(ui,/可信度高/);
+  assert.match(ui,/fair:\s*'典型区间'/);
+  assert.match(ui,/high:\s*'样本充分'/);
 });

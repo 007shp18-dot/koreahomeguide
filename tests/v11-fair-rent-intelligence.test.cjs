@@ -44,36 +44,56 @@ test('percentile uses linear interpolation and percentile rank is empirical <= a
 test('reliable Rent Check result returns P25, median, P75 and quote percentile from the same comparable set', () => {
   const result = core.buildResultForTier(reliableItems, quote, tier1);
   assert.equal(result.rating, 'fair');
+  assert.equal(result.verdictBasis, 'typical-range');
   assert.equal(result.comparableCount, 5);
+  assert.equal(result.minValueWon, 700_000);
   assert.equal(result.p25ValueWon, 800_000);
   assert.equal(result.medianValueWon, 900_000);
   assert.equal(result.p75ValueWon, 1_000_000);
+  assert.equal(result.maxValueWon, 1_100_000);
   assert.equal(result.percentileRank, 60);
+});
+
+test('a reliable verdict follows the displayed P25-P75 typical range including its boundaries', () => {
+  assert.equal(core.buildResultForTier(reliableItems, { ...quote, rentWon:700_000 }, tier1).rating, 'below');
+  assert.equal(core.buildResultForTier(reliableItems, { ...quote, rentWon:800_000 }, tier1).rating, 'fair');
+  assert.equal(core.buildResultForTier(reliableItems, { ...quote, rentWon:1_000_000 }, tier1).rating, 'fair');
+  assert.equal(core.buildResultForTier(reliableItems, { ...quote, rentWon:1_100_000 }, tier1).rating, 'above');
 });
 
 test('insufficient result never exposes distribution intelligence', () => {
   const result = core.buildResultForTier(reliableItems.slice(0, 2), quote, tier1);
   assert.equal(result.rating, 'insufficient');
+  assert.equal(result.verdictBasis, null);
+  assert.equal(result.minValueWon, null);
   assert.equal(result.p25ValueWon, null);
   assert.equal(result.p75ValueWon, null);
+  assert.equal(result.maxValueWon, null);
   assert.equal(result.percentileRank, null);
 });
 
 test('a low-confidence three-comparable verdict hides distribution intelligence', () => {
   const result = core.buildResultForTier(reliableItems.slice(0, 3), quote, core.TIERS[2]);
   assert.notEqual(result.rating, 'insufficient');
+  assert.equal(result.verdictBasis, 'median-fallback');
+  assert.equal(result.minValueWon, null);
   assert.equal(result.p25ValueWon, null);
   assert.equal(result.p75ValueWon, null);
+  assert.equal(result.maxValueWon, null);
   assert.equal(result.percentileRank, null);
   assert.equal(enUI.hasDistribution(result), false);
   assert.equal(zhUI.hasDistribution(result), false);
 });
 
-test('existing verdict threshold stays unchanged at plus/minus 10 percent', () => {
+test('three-to-four comparable fallback keeps the median plus/minus 10 percent threshold', () => {
   assert.equal(core.rateDifference(-10), 'below');
   assert.equal(core.rateDifference(-9.9), 'fair');
   assert.equal(core.rateDifference(9.9), 'fair');
   assert.equal(core.rateDifference(10), 'above');
+
+  const fallback = core.buildResultForTier(reliableItems.slice(0, 3), quote, core.TIERS[2]);
+  assert.equal(fallback.rating, 'above');
+  assert.equal(fallback.verdictBasis, 'median-fallback');
 });
 
 test('EN and ZH helpers provide localized percentile wording and hide it for insufficient data', () => {

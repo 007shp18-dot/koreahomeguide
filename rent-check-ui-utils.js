@@ -5,10 +5,17 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   const UPSTREAM_MESSAGE = 'Official transaction data is temporarily unavailable. Please try again shortly.';
 
-  function ratingLabel(rating) {
+  function ratingLabel(rating, verdictBasis) {
+    if (verdictBasis === 'median-fallback') {
+      return {
+        above: 'Above sample median',
+        fair: 'Near sample median',
+        below: 'Below sample median'
+      }[rating] || 'Rent check';
+    }
     return {
       above: 'Above market',
-      fair: 'Fair',
+      fair: 'Typical range',
       below: 'Below market',
       insufficient: 'Not enough comparable data'
     }[rating] || 'Rent check';
@@ -16,9 +23,9 @@
 
   function confidenceLabel(confidence) {
     return {
-      high: 'High confidence',
-      medium: 'Medium confidence',
-      low: 'Low confidence'
+      high: 'Strong sample',
+      medium: 'Moderate sample',
+      low: 'Limited sample'
     }[confidence] || '';
   }
 
@@ -93,11 +100,24 @@
     if (!result || result.rating === 'insufficient') {
       return 'There are not enough similar official contracts to make a reliable comparison.';
     }
-    const pct = Math.abs(Number(result.differencePct || 0)).toFixed(1);
+    const magnitude = Math.abs(Number(result.differencePct || 0));
+    const pct = magnitude.toFixed(1);
     const isJeonse = result.comparisonMode === 'jeonse-deposit';
     const subject = isJeonse ? 'This jeonse deposit' : 'This quote';
-    if (result.rating === 'above') return `${subject} is ${pct}% above recent comparable contracts.`;
-    if (result.rating === 'below') return `${subject} is ${pct}% below recent comparable contracts.`;
+    if (result.verdictBasis === 'median-fallback') {
+      if (result.rating === 'above') return `With limited data, ${subject.toLowerCase()} is ${pct}% above the sample median; the fallback threshold is 10%.`;
+      if (result.rating === 'below') return `With limited data, ${subject.toLowerCase()} is ${pct}% below the sample median; the fallback threshold is 10%.`;
+      return `With limited data, ${subject.toLowerCase()} is within 10% of the sample median.`;
+    }
+    if (result.rating === 'above' && magnitude < 0.05) return `${subject} is slightly above the recent comparable median.`;
+    if (result.rating === 'below' && magnitude < 0.05) return `${subject} is slightly below the recent comparable median.`;
+    if (result.rating === 'above') return `${subject} is ${pct}% above the recent comparable median.`;
+    if (result.rating === 'below') return `${subject} is ${pct}% below the recent comparable median.`;
+    if (result.verdictBasis === 'typical-range') {
+      return isJeonse
+        ? 'This jeonse deposit sits within the typical range of recent comparable contracts.'
+        : 'This quote sits within the typical range of recent comparable contracts.';
+    }
     return isJeonse
       ? 'This jeonse deposit is close to recent comparable contracts.'
       : 'This quote is close to recent comparable contracts.';
@@ -147,25 +167,36 @@
     return p25 >= 0 && p75 >= p25 && rank >= 0 && rank <= 100;
   }
 
-  function pricePositionModel(result) {
+  function boxPlotModel(result) {
     if (!result || !['below','fair','above'].includes(result.rating)) return null;
-    const rawValues = [result.p25ValueWon, result.medianValueWon, result.p75ValueWon, result.askingValueWon];
+    const rawValues = [result.minValueWon, result.p25ValueWon, result.medianValueWon, result.p75ValueWon, result.maxValueWon, result.askingValueWon];
     if (!rawValues.every(isNumericValue)) return null;
+    const min = Number(result.minValueWon);
     const p25 = Number(result.p25ValueWon);
     const median = Number(result.medianValueWon);
     const p75 = Number(result.p75ValueWon);
+    const max = Number(result.maxValueWon);
     const asking = Number(result.askingValueWon);
-    if ([p25, median, p75, asking].some(value => value < 0) || p25 > median || median > p75) return null;
-    if (p25 === p75) {
+    if ([min, p25, median, p75, max, asking].some(value => value < 0) || min > p25 || p25 > median || median > p75 || p75 > max) return null;
+    if (min === max) {
       return {
+        minPct:50,
+        p25Pct:50,
         medianPct:50,
-        quotePct:asking < p25 ? 0 : asking > p75 ? 100 : 50,
-        relation:asking < p25 ? 'below' : asking > p75 ? 'above' : 'within'
+        p75Pct:50,
+        maxPct:50,
+        quotePct:asking < p25 ? 15 : asking > p75 ? 85 : 50,
+        relation:asking < p25 ? 'below' : asking > p75 ? 'above' : 'within',
+        collapsed:true
       };
     }
-    const position = value => Math.round(Math.max(0, Math.min(100, ((value - p25) / (p75 - p25)) * 100)) * 10) / 10;
+    const position = value => Math.round(Math.max(0, Math.min(100, ((value - min) / (max - min)) * 100)) * 10) / 10;
     return {
+      minPct:0,
+      p25Pct:position(p25),
       medianPct:position(median),
+      p75Pct:position(p75),
+      maxPct:100,
       quotePct:position(asking),
       relation:asking < p25 ? 'below' : asking > p75 ? 'above' : 'within'
     };
@@ -221,7 +252,7 @@
     formatWon,
     formatDifference,
     hasDistribution,
-    pricePositionModel,
+    boxPlotModel,
     priceMarkerCollision,
     evidenceFacts,
     comparableDisclosure,

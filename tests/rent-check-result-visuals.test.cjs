@@ -5,39 +5,47 @@ const fs = require('node:fs');
 const enUI = require('../rent-check-ui-utils.js');
 const zhUI = require('../zh/rent-check-ui-utils.js');
 
-test('price position maps the quote and median onto the interquartile range', () => {
+test('box plot maps min, quartiles, median, max and quote onto the full comparable range', () => {
   assert.deepEqual(
-    enUI.pricePositionModel({
+    enUI.boxPlotModel({
       rating:'above',
+      minValueWon:700_000,
       p25ValueWon:830_000,
       medianValueWon:1_000_000,
       p75ValueWon:1_200_000,
+      maxValueWon:1_400_000,
       askingValueWon:1_400_000
     }),
-    { medianPct:45.9, quotePct:100, relation:'above' }
+    { minPct:0, p25Pct:18.6, medianPct:42.9, p75Pct:71.4, maxPct:100, quotePct:100, relation:'above' }
   );
   assert.deepEqual(
-    enUI.pricePositionModel({
+    enUI.boxPlotModel({
       rating:'below',
+      minValueWon:700_000,
       p25ValueWon:830_000,
       medianValueWon:1_000_000,
       p75ValueWon:1_200_000,
+      maxValueWon:1_400_000,
       askingValueWon:700_000
     }),
-    { medianPct:45.9, quotePct:0, relation:'below' }
+    { minPct:0, p25Pct:18.6, medianPct:42.9, p75Pct:71.4, maxPct:100, quotePct:0, relation:'below' }
   );
 });
 
-test('price position rejects missing, reversed, and insufficient distributions', () => {
-  assert.equal(enUI.pricePositionModel({ rating:'insufficient' }), null);
-  assert.equal(enUI.pricePositionModel({ rating:'unknown', p25ValueWon:10, medianValueWon:15, p75ValueWon:20, askingValueWon:12 }), null);
-  assert.equal(enUI.pricePositionModel({ rating:'fair', p25ValueWon:null, medianValueWon:10, p75ValueWon:20, askingValueWon:12 }), null);
-  assert.equal(enUI.pricePositionModel({ rating:'fair', p25ValueWon:10, medianValueWon:15, p75ValueWon:20, askingValueWon:'' }), null);
-  assert.equal(enUI.pricePositionModel({ rating:'fair', p25ValueWon:-1, medianValueWon:10, p75ValueWon:20, askingValueWon:12 }), null);
-  assert.equal(enUI.pricePositionModel({ rating:'fair', p25ValueWon:10, medianValueWon:5, p75ValueWon:20, askingValueWon:12 }), null);
+test('box plot rejects missing, reversed, and insufficient distributions', () => {
+  assert.equal(enUI.boxPlotModel({ rating:'insufficient' }), null);
+  assert.equal(enUI.boxPlotModel({ rating:'unknown', minValueWon:5, p25ValueWon:10, medianValueWon:15, p75ValueWon:20, maxValueWon:25, askingValueWon:12 }), null);
+  assert.equal(enUI.boxPlotModel({ rating:'fair', minValueWon:5, p25ValueWon:null, medianValueWon:15, p75ValueWon:20, maxValueWon:25, askingValueWon:12 }), null);
+  assert.equal(enUI.boxPlotModel({ rating:'fair', minValueWon:5, p25ValueWon:10, medianValueWon:15, p75ValueWon:20, maxValueWon:25, askingValueWon:'' }), null);
+  assert.equal(enUI.boxPlotModel({ rating:'fair', minValueWon:-1, p25ValueWon:10, medianValueWon:15, p75ValueWon:20, maxValueWon:25, askingValueWon:12 }), null);
+  assert.equal(enUI.boxPlotModel({ rating:'fair', minValueWon:5, p25ValueWon:10, medianValueWon:8, p75ValueWon:20, maxValueWon:25, askingValueWon:12 }), null);
   assert.deepEqual(
-    enUI.pricePositionModel({ rating:'fair', p25ValueWon:10, medianValueWon:10, p75ValueWon:10, askingValueWon:10 }),
-    { medianPct:50, quotePct:50, relation:'within' }
+    enUI.boxPlotModel({ rating:'fair', minValueWon:10, p25ValueWon:10, medianValueWon:10, p75ValueWon:10, maxValueWon:10, askingValueWon:10 }),
+    { minPct:50, p25Pct:50, medianPct:50, p75Pct:50, maxPct:50, quotePct:50, relation:'within', collapsed:true }
+  );
+  assert.deepEqual(
+    enUI.boxPlotModel({ rating:'above', minValueWon:10, p25ValueWon:10, medianValueWon:10, p75ValueWon:10, maxValueWon:10, askingValueWon:12 }),
+    { minPct:50, p25Pct:50, medianPct:50, p75Pct:50, maxPct:50, quotePct:85, relation:'above', collapsed:true }
   );
   assert.equal(enUI.hasDistribution({ rating:'fair', p25ValueWon:10, medianValueWon:15, p75ValueWon:20, askingValueWon:12, percentileRank:null }), false);
   assert.equal(enUI.hasDistribution({ rating:'fair', p25ValueWon:10, medianValueWon:15, p75ValueWon:20, askingValueWon:12, percentileRank:101 }), false);
@@ -87,8 +95,10 @@ test('evidence facts and mobile disclosure are localized from real result counts
 test('all four Rent Check runtimes wire the visual model and bounded UI events', () => {
   for (const file of ['app.js','zh/app.js','tools/seoul-rent-check/app.js','zh/tools/seoul-rent-check/app.js']) {
     const source = fs.readFileSync(file, 'utf8');
-    assert.match(source, /KHGRentCheckUI\.pricePositionModel\(data\)/, file);
+    assert.match(source, /KHGRentCheckUI\.boxPlotModel\(data\)/, file);
+    assert.match(source, /KHGRentCheckUI\.ratingLabel\(data\.rating,data\.verdictBasis\)/, file);
     assert.match(source, /KHGRentCheckUI\.hasDistribution\(data\)&&Boolean\(model\)/, file);
+    assert.match(source, /visual\.dataset\.collapsed=String\(Boolean\(model\.collapsed\)\)/, file);
     assert.match(source, /KHGRentCheckUI\.priceMarkerCollision\(model\)/, file);
     assert.match(source, /KHGRentCheckUI\.evidenceFacts\(data\)/, file);
     assert.match(source, /KHGRentCheckUI\.comparableDisclosure\(/, file);
@@ -101,8 +111,12 @@ test('all four Rent Check runtimes wire the visual model and bounded UI events',
 test('result visuals keep mobile evidence compact and controls touchable', () => {
   const css = fs.readFileSync('styles.css', 'utf8');
   const cold = fs.readFileSync('cold-start.css', 'utf8');
-  assert.match(css, /\.rent-check-price-track/);
-  assert.match(css, /\.rent-check-price-quote/);
+  assert.match(css, /\.rent-check-box-plot/);
+  assert.match(css, /\.rent-check-box-whisker/);
+  assert.match(css, /\.rent-check-box-range/);
+  assert.match(css, /\.rent-check-box-median/);
+  assert.match(css, /\.rent-check-box-quote/);
+  assert.match(css, /\[data-collapsed="true"\]/);
   assert.match(css, /\[data-collision="true"\]/);
   assert.match(css, /\.rent-check-evidence-facts/);
   assert.match(css, /\.rent-check-comparables-toggle\{[^}]*min-height:44px/);

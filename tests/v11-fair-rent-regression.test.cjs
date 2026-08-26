@@ -13,12 +13,12 @@ test('existing comparable tier configuration is unchanged', () => {
   ]);
 });
 
-test('existing result labels and error copy remain available in both locales', () => {
+test('result labels describe the typical range and error copy remains available in both locales', () => {
   assert.equal(enUI.ratingLabel('above'), 'Above market');
-  assert.equal(enUI.ratingLabel('fair'), 'Fair');
+  assert.equal(enUI.ratingLabel('fair'), 'Typical range');
   assert.equal(enUI.ratingLabel('below'), 'Below market');
   assert.equal(zhUI.ratingLabel('above'), '高于近期成交水平');
-  assert.equal(zhUI.ratingLabel('fair'), '价格合理');
+  assert.equal(zhUI.ratingLabel('fair'), '典型区间');
   assert.equal(zhUI.ratingLabel('below'), '低于近期成交水平');
   assert.match(enUI.humanizeRentCheckError('Public API returned HTTP 500.'), /temporarily unavailable/i);
   assert.match(zhUI.humanizeRentCheckError('Public API returned HTTP 500.'), /暂时无法使用/);

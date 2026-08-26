@@ -6,17 +6,21 @@ const enUI = require('../rent-check-ui-utils.js');
 const zhUI = require('../zh/rent-check-ui-utils.js');
 
 test('confidence explanation names the actual matched sample and tier boundaries', () => {
+  assert.equal(enUI.confidenceLabel('high'), 'Strong sample');
+  assert.equal(enUI.confidenceLabel('medium'), 'Moderate sample');
+  assert.equal(enUI.confidenceLabel('low'), 'Limited sample');
+  assert.equal(zhUI.confidenceLabel('high'), '样本充分');
   assert.equal(
     enUI.confidenceExplanation({ confidence:'high', tier:1, comparableCount:72 }),
-    'High confidence: 72 contracts matched the same district and the same official property category within ±15% size and ±25% deposit across the latest 3 completed months.'
+    'Strong sample: 72 contracts matched the same district and the same official property category within ±15% size and ±25% deposit across the latest 3 completed months.'
   );
   assert.equal(
     enUI.confidenceExplanation({ confidence:'medium', tier:2, comparableCount:5 }),
-    'Medium confidence: 5 contracts matched the same district and the same official property category within ±20% size and ±35% deposit across the latest 6 completed months.'
+    'Moderate sample: 5 contracts matched the same district and the same official property category within ±20% size and ±35% deposit across the latest 6 completed months.'
   );
   assert.equal(
     zhUI.confidenceExplanation({ confidence:'high', tier:1, comparableCount:72 }),
-    '高可信度：最近 3 个完整月份内，有 72 笔同一区、同一官方房屋分类的成交符合面积 ±15% 和押金 ±25% 的范围。'
+    '样本充分：最近 3 个完整月份内，有 72 笔同一区、同一官方房屋分类的成交符合面积 ±15% 和押金 ±25% 的范围。'
   );
   assert.equal(enUI.confidenceExplanation({ rating:'insufficient', tier:null }), '');
   assert.match(
@@ -26,6 +30,45 @@ test('confidence explanation names the actual matched sample and tier boundaries
   assert.match(
     zhUI.confidenceExplanation({ confidence:'high', tier:1, comparableCount:9 }, true),
     /单间回退使用的官方独栋及多户住宅分类/
+  );
+});
+
+test('a distribution verdict describes the displayed typical range instead of a median threshold', () => {
+  assert.equal(enUI.ratingLabel('fair', 'typical-range'), 'Typical range');
+  assert.equal(
+    enUI.resultSentence({ rating:'fair', verdictBasis:'typical-range', differencePct:20 }),
+    'This quote sits within the typical range of recent comparable contracts.'
+  );
+  assert.equal(zhUI.ratingLabel('fair', 'typical-range'), '典型区间');
+  assert.equal(
+    zhUI.resultSentence({ rating:'fair', verdictBasis:'typical-range', differencePct:20 }),
+    '这个报价位于近期可比成交的典型区间内。'
+  );
+  assert.equal(
+    enUI.resultSentence({ rating:'above', verdictBasis:'typical-range', differencePct:25 }),
+    'This quote is 25.0% above the recent comparable median.'
+  );
+  assert.equal(
+    enUI.resultSentence({ rating:'above', verdictBasis:'typical-range', differencePct:0 }),
+    'This quote is slightly above the recent comparable median.'
+  );
+});
+
+test('a three-to-four-comparable verdict explicitly names the median fallback', () => {
+  assert.equal(enUI.ratingLabel('fair', 'median-fallback'), 'Near sample median');
+  assert.equal(enUI.ratingLabel('above', 'median-fallback'), 'Above sample median');
+  assert.equal(
+    enUI.resultSentence({ rating:'fair', verdictBasis:'median-fallback', differencePct:7 }),
+    'With limited data, this quote is within 10% of the sample median.'
+  );
+  assert.equal(
+    enUI.resultSentence({ rating:'above', verdictBasis:'median-fallback', differencePct:12 }),
+    'With limited data, this quote is 12.0% above the sample median; the fallback threshold is 10%.'
+  );
+  assert.equal(zhUI.ratingLabel('fair', 'median-fallback'), '接近样本中位数');
+  assert.equal(
+    zhUI.resultSentence({ rating:'fair', verdictBasis:'median-fallback', differencePct:7 }),
+    '样本有限时，这个报价在样本中位数的 ±10% 范围内。'
   );
 });
 
