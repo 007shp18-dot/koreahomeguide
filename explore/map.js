@@ -3,6 +3,8 @@
   const canvas = document.querySelector('#explorerMap');
   const status = document.querySelector('#explorerMapStatus');
   const backButton = document.querySelector('#explorerMapBack');
+  const selectionPanel = document.querySelector('#explorerMapSelection');
+  const selectionDrag = document.querySelector('#explorerMapSelectionDrag');
   if (!canvas || !status) return;
 
   const zh = String(document.documentElement.lang || '').toLowerCase().startsWith('zh');
@@ -30,7 +32,56 @@
   let useAdvancedMarkers = false;
   let geocoder = null;
   let buildingLayerRequestId = 0;
+  let panelDrag = null;
   const geocodeCache = new Map();
+
+  function buildingViewportPadding() {
+    const mobile = window.matchMedia && window.matchMedia('(max-width: 760px)').matches;
+    const panelVisible = selectionPanel && !selectionPanel.hidden;
+    if (mobile) return { top:70, right:44, bottom:panelVisible ? 230 : 80, left:44 };
+    return { top:80, right:80, bottom:100, left:panelVisible ? 460 : 80 };
+  }
+
+  function capBuildingZoom() {
+    if (!map || markerScope !== 'building' || typeof map.getZoom !== 'function') return;
+    const zoom = Number(map.getZoom());
+    if (Number.isFinite(zoom) && zoom > 15) map.setZoom(15);
+  }
+
+  function clampPanelPosition(left, top) {
+    if (!selectionPanel || !selectionPanel.parentElement) return null;
+    const surface = selectionPanel.parentElement.getBoundingClientRect();
+    const panel = selectionPanel.getBoundingClientRect();
+    const width = Math.min(panel.width, Math.max(0, surface.width - 16));
+    const height = Math.min(panel.height, Math.max(0, surface.height - 16));
+    return {
+      left:Math.min(Math.max(8, left), Math.max(8, surface.width - width - 8)),
+      top:Math.min(Math.max(8, top), Math.max(8, surface.height - height - 8)),
+      width
+    };
+  }
+
+  function moveSelectionPanel(left, top) {
+    const position = clampPanelPosition(left, top);
+    if (!position) return;
+    selectionPanel.classList.add('is-user-positioned');
+    selectionPanel.style.left = `${position.left}px`;
+    selectionPanel.style.top = `${position.top}px`;
+    selectionPanel.style.right = 'auto';
+    selectionPanel.style.bottom = 'auto';
+    selectionPanel.style.width = `${position.width}px`;
+  }
+
+  function keepSelectionPanelInMap() {
+    if (!selectionPanel || !selectionPanel.classList.contains('is-user-positioned')) return;
+    moveSelectionPanel(parseFloat(selectionPanel.style.left) || 8, parseFloat(selectionPanel.style.top) || 8);
+  }
+
+  function resetSelectionPanelPosition() {
+    if (!selectionPanel) return;
+    selectionPanel.classList.remove('is-user-positioned');
+    for (const property of ['left','top','right','bottom','width']) selectionPanel.style.removeProperty(property);
+  }
 
   function clearMarkers() {
     markers.forEach(entry => {
@@ -151,8 +202,15 @@
       else marker.addListener('click', selectMarker);
       return { model, marker, pin, advanced:useAdvancedMarkers };
     });
-    if (models.length === 1) { map.setCenter({ lat:models[0].lat, lng:models[0].lng }); map.setZoom(14); }
-    else map.fitBounds(bounds, 34);
+    if (models.length === 1) {
+      map.setCenter({ lat:models[0].lat, lng:models[0].lng });
+      map.setZoom(14);
+    } else if (markerScope === 'building') {
+      map.fitBounds(bounds, buildingViewportPadding());
+      if (google.maps.event && typeof google.maps.event.addListenerOnce === 'function') {
+        google.maps.event.addListenerOnce(map, 'idle', capBuildingZoom);
+      } else window.setTimeout(capBuildingZoom, 0);
+    } else map.fitBounds(bounds, 34);
     highlight(selectedMarkerId, false);
     status.textContent = markerScope === 'building' ? copy.readyBuildings(models.length) : copy.ready(models.length);
     trackView(models);
@@ -327,6 +385,45 @@
     renderMarkers();
     window.dispatchEvent(new CustomEvent('khg:map-back-neighborhoods'));
   });
+
+  if (selectionDrag && selectionPanel) {
+    selectionDrag.addEventListener('pointerdown', event => {
+      if (event.button !== 0) return;
+      const surface = selectionPanel.parentElement.getBoundingClientRect();
+      const panel = selectionPanel.getBoundingClientRect();
+      panelDrag = { pointerId:event.pointerId, offsetX:event.clientX - panel.left, offsetY:event.clientY - panel.top, surfaceLeft:surface.left, surfaceTop:surface.top };
+      selectionDrag.setPointerCapture(event.pointerId);
+      selectionDrag.classList.add('is-dragging');
+      event.preventDefault();
+    });
+    selectionDrag.addEventListener('pointermove', event => {
+      if (!panelDrag || event.pointerId !== panelDrag.pointerId) return;
+      moveSelectionPanel(event.clientX - panelDrag.surfaceLeft - panelDrag.offsetX, event.clientY - panelDrag.surfaceTop - panelDrag.offsetY);
+    });
+    const finishPanelDrag = event => {
+      if (!panelDrag || event.pointerId !== panelDrag.pointerId) return;
+      panelDrag = null;
+      selectionDrag.classList.remove('is-dragging');
+      if (selectionDrag.hasPointerCapture(event.pointerId)) selectionDrag.releasePointerCapture(event.pointerId);
+    };
+    selectionDrag.addEventListener('pointerup', finishPanelDrag);
+    selectionDrag.addEventListener('pointercancel', finishPanelDrag);
+    selectionDrag.addEventListener('keydown', event => {
+      if (!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home'].includes(event.key)) return;
+      if (event.key === 'Home') resetSelectionPanelPosition();
+      else {
+        const step = event.shiftKey ? 40 : 16;
+        const panel = selectionPanel.getBoundingClientRect();
+        const surface = selectionPanel.parentElement.getBoundingClientRect();
+        const left = panel.left - surface.left + (event.key === 'ArrowLeft' ? -step : event.key === 'ArrowRight' ? step : 0);
+        const top = panel.top - surface.top + (event.key === 'ArrowUp' ? -step : event.key === 'ArrowDown' ? step : 0);
+        moveSelectionPanel(left, top);
+      }
+      event.preventDefault();
+    });
+    if ('ResizeObserver' in window) new ResizeObserver(keepSelectionPanelInMap).observe(selectionPanel);
+    window.addEventListener('resize', keepSelectionPanelInMap);
+  }
 
   if ('IntersectionObserver' in window) {
     const observer = new IntersectionObserver(entries => {

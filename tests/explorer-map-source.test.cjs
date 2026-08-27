@@ -84,7 +84,20 @@ test('building map layer verifies precise geocodes, caps candidates, and support
   assert.match(source, /\.slice\(0, 12\)/);
   assert.match(source, /Promise\.all\(candidates\.map/);
   assert.match(source, /buildingLayerRequestId/);
+  assert.match(source, /zoom > 15/);
+  assert.match(source, /buildingViewportPadding/);
   assert.match(source, /khg:explorer-buildings/);
   assert.match(source, /khg:map-select-building/);
   assert.match(source, /khg:map-back-neighborhoods/);
+});
+
+test('map details panel can be moved without leaving the map surface', () => {
+  const source = fs.readFileSync('explore/map.js','utf8');
+  assert.match(source, /explorerMapSelectionDrag/);
+  assert.match(source, /setPointerCapture/);
+  assert.match(source, /clampPanelPosition/);
+  assert.match(source, /ArrowLeft/);
+  for (const file of ['explore/index.html','zh/explore/index.html']) {
+    assert.match(fs.readFileSync(file,'utf8'), /id="explorerMapSelectionDrag"/);
+  }
 });
