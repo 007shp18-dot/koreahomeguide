@@ -133,7 +133,7 @@
   function advancedPinVisual(model = {}, selected = false) {
     const visual = markerVisual(model, selected);
     const count = normalizedCount(model.contractCount);
-    const glyphFontSize = count > 999 ? '7px' : count >= 100 ? '8px' : '9px';
+    const glyphFontSize = count > 999 ? '9px' : count >= 100 ? '10px' : '11px';
     return Object.freeze({
       background:visual.fillColor,
       borderColor:visual.strokeColor,

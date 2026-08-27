@@ -155,7 +155,7 @@ test('advanced pin visuals preserve marker meaning, count, and selected state', 
     borderColor:'#ffffff',
     glyphColor:'#ffffff',
     glyphText:'12',
-    glyphFontSize:'9px',
+    glyphFontSize:'11px',
     scale:1.17
   });
   assert.equal(controller.advancedPinVisual({ tone:'outside', scale:10, contractCount:0 }).glyphText, '');
@@ -164,11 +164,11 @@ test('advanced pin visuals preserve marker meaning, count, and selected state', 
 });
 
 test('advanced pin glyphs shrink as contract counts gain digits', () => {
-  assert.equal(controller.advancedPinVisual({ contractCount:8 }).glyphFontSize, '9px');
-  assert.equal(controller.advancedPinVisual({ contractCount:66 }).glyphFontSize, '9px');
-  assert.equal(controller.advancedPinVisual({ contractCount:159 }).glyphFontSize, '8px');
-  assert.equal(controller.advancedPinVisual({ contractCount:885 }).glyphFontSize, '8px');
-  assert.equal(controller.advancedPinVisual({ contractCount:1250 }).glyphFontSize, '7px');
+  assert.equal(controller.advancedPinVisual({ contractCount:8 }).glyphFontSize, '11px');
+  assert.equal(controller.advancedPinVisual({ contractCount:66 }).glyphFontSize, '11px');
+  assert.equal(controller.advancedPinVisual({ contractCount:159 }).glyphFontSize, '10px');
+  assert.equal(controller.advancedPinVisual({ contractCount:885 }).glyphFontSize, '10px');
+  assert.equal(controller.advancedPinVisual({ contractCount:1250 }).glyphFontSize, '9px');
 });
 
 test('advanced marker badge applies the explicit digit-aware font outside Google pin internals', () => {
@@ -177,7 +177,7 @@ test('advanced marker badge applies the explicit digit-aware font outside Google
 
   assert.equal(updated, badge);
   assert.equal(badge.textContent, '885');
-  assert.equal(badge.style.fontSize, '8px');
+  assert.equal(badge.style.fontSize, '10px');
   assert.equal(badge.style.backgroundColor, '#15803d');
   assert.equal(badge.style.borderColor, '#ffffff');
   assert.equal(badge.style.transform, 'scale(1.17)');
