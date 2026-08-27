@@ -2,6 +2,7 @@
 
 function createHandler({
   apiKey = process.env.GOOGLE_MAPS_BROWSER_KEY,
+  mapId = process.env.GOOGLE_MAPS_MAP_ID,
   fetchImpl = (...args) => globalThis.fetch(...args)
 } = {}) {
   return async function handler(req, res) {
@@ -9,7 +10,11 @@ function createHandler({
       if (req.method !== 'GET') return res.status(405).json({ error:'Method not allowed' });
       res.setHeader('Cache-Control', 'private, max-age=300');
       const key = String(apiKey || '').trim();
-      return res.status(200).json(key ? { enabled:true, apiKey:key } : { enabled:false });
+      const configuredMapId = String(mapId || '').trim();
+      const productionMapId = configuredMapId === 'DEMO_MAP_ID' ? '' : configuredMapId;
+      return res.status(200).json(key
+        ? { enabled:true, apiKey:key, ...(productionMapId ? { mapId:productionMapId } : {}) }
+        : { enabled:false });
     }
 
     try {

@@ -4,7 +4,8 @@ const fs = require('node:fs');
 const {
   buildRentCheckUrl,
   buildRentCheckCtaEvent,
-  wireRentCheckLinks
+  wireRentCheckLinks,
+  updateRentCheckLinksForSelection
 } = require('../acquisition-links.js');
 const { ENTRY_PAGES } = require('../seo/acquisition-catalog.cjs');
 
@@ -109,6 +110,47 @@ test('contextual Rent Check CTA emits a bounded, non-blocking analytics event', 
   }]);
 });
 
+test('Explorer CTA analytics reads the final selected district and property type at click time', () => {
+  let clickHandler;
+  const anchor = {
+    id:'explorer-filter-handoff',
+    value:'/tools/seoul-rent-check/',
+    getAttribute() { return this.value; },
+    setAttribute(_, value) { this.value = value; },
+    addEventListener(type, handler) { if (type === 'click') clickHandler = handler; }
+  };
+  const events = [];
+  const doc = {
+    documentElement:{ lang:'en' },
+    querySelector() { return null; },
+    querySelectorAll() { return [anchor]; }
+  };
+
+  wireRentCheckLinks({
+    doc,
+    location:{
+      pathname:'/explore/',
+      search:'?maxRent=987654&maxDeposit=87654321',
+      href:'https://koreahomeguide.com/explore/?maxRent=987654&maxDeposit=87654321'
+    },
+    track(eventName, params) { events.push({ eventName, params }); }
+  });
+  anchor.value = '/tools/seoul-rent-check/?lawdCd=11440&type=villa&from=%2Fexplore%2F';
+  clickHandler({ defaultPrevented:false });
+
+  assert.deepEqual(events, [{
+    eventName:'rent_check_cta_click',
+    params:{
+      source_page:'/explore/',
+      cta_id:'explorer-filter-handoff',
+      locale:'en-US',
+      district_code:'11440',
+      property_type:'villa',
+      page_location:'https://koreahomeguide.com/explore/'
+    }
+  }]);
+});
+
 test('CTA event builder falls back from an unsafe identifier without exposing it', () => {
   assert.deepEqual(buildRentCheckCtaEvent({
     sourcePage: '/rent/gangnam-gu/apartment/',
@@ -145,6 +187,54 @@ test('hub links preserve source attribution without inventing quote values', () 
     }),
     '/tools/seoul-rent-check/?from=%2Fguides%2F&origin_source=google&origin_medium=organic'
   );
+});
+
+test('Explorer selection updates every scoped Rent Check handoff without inventing quote values', () => {
+  const anchors = [
+    {
+      value:'/tools/seoul-rent-check/',
+      getAttribute() { return this.value; },
+      setAttribute(_, value) { this.value = value; }
+    },
+    {
+      value:'/tools/seoul-rent-check/?from=%2Fexplore%2F',
+      getAttribute() { return this.value; },
+      setAttribute(_, value) { this.value = value; }
+    }
+  ];
+  const doc = {
+    querySelectorAll(selector) {
+      assert.equal(selector, '[data-explorer-rent-check]');
+      return anchors;
+    }
+  };
+
+  assert.equal(updateRentCheckLinksForSelection({
+    doc,
+    location:{ pathname:'/explore/', search:'?utm_source=google&utm_medium=organic&utm_campaign=launch' },
+    lawdCd:'11680',
+    propertyType:'officetel'
+  }), 2);
+  for (const anchor of anchors) {
+    assert.equal(
+      anchor.value,
+      '/tools/seoul-rent-check/?lawdCd=11680&type=officetel&from=%2Fexplore%2F&origin_source=google&origin_medium=organic&origin_campaign=launch'
+    );
+    assert.doesNotMatch(anchor.value, /(?:deposit|rent|area)=/);
+  }
+
+  updateRentCheckLinksForSelection({
+    doc,
+    location:{ pathname:'/explore/', search:'?lawdCd=11440&type=villa' },
+    lawdCd:'11440',
+    propertyType:'villa'
+  });
+  for (const anchor of anchors) {
+    assert.equal(
+      anchor.value,
+      '/tools/seoul-rent-check/?lawdCd=11440&type=villa&from=%2Fexplore%2F&origin_source=google&origin_medium=organic&origin_campaign=launch'
+    );
+  }
 });
 
 test('existing Dong CTA query is preserved and attributed without sensitive values', () => {

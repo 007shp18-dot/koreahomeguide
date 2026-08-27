@@ -18,7 +18,7 @@
   <script defer src="/acquisition-links.js"></script>
   <link rel="stylesheet" href="/styles.css">
 </head>
-<body>
+<body class="core-ui">
   <header class="compact-header">
     <a class="brand" href="/"><span class="brand-mark">K</span><span>KoreaHomeGuide</span></a>
     <nav>
@@ -46,6 +46,7 @@
       <label class="field"><span>Monthly rent budget</span><select id="exploreMaxRent"><option value="">Any rent</option><option value="800000">Up to ₩800K</option><option value="1200000">Up to ₩1.2M</option><option value="1800000">Up to ₩1.8M</option><option value="2500000">Up to ₩2.5M</option></select></label>
       <button id="exploreButton" class="search-button" type="button">Compare neighborhoods</button>
       <details class="advanced-filter explorer-advanced-filter"><summary>Deposit budget (optional)</summary><div class="advanced-filter-content"><label class="field"><span>Maximum deposit</span><select id="exploreMaxDeposit"><option value="">Any deposit</option><option value="5000000">Up to ₩5M</option><option value="10000000">Up to ₩10M</option><option value="20000000">Up to ₩20M</option><option value="50000000">Up to ₩50M</option></select></label></div></details>
+      <div class="explorer-search-handoff"><span>Already have a quote for this selection?</span><a data-explorer-rent-check data-rent-check-cta="explorer_filter_handoff" href="/tools/seoul-rent-check/">Check this area and housing type →</a></div>
     </section>
 
     <div id="explorerChips" class="explorer-chips" aria-label="Popular Seoul districts" hidden>
@@ -86,9 +87,20 @@
       </div>
       <aside class="explorer-map-column" aria-label="Neighborhood map and related tools">
         <div class="explorer-map-sticky">
-        <section class="explorer-map-card"><div class="explorer-map-heading"><span class="eyebrow">NEIGHBORHOOD MAP</span><h2>See where the neighborhoods are.</h2></div><div id="explorerMap" class="explorer-map-canvas" role="region" aria-label="Map of selected Seoul neighborhoods"></div><p id="explorerMapStatus" class="explorer-map-status" aria-live="polite">Map loads when it enters view.</p></section>
-        <section class="context-module soft"><span class="context-kicker">NEXT STEP</span><h3>Already have a quote?</h3><p>Compare the deposit, rent, size, and housing type with recent official contracts.</p><a class="context-link" href="/tools/seoul-rent-check/">Check a rent quote →</a></section>
-        <section class="context-module"><span class="context-kicker">BEFORE YOU SIGN</span><h3>Protect a large deposit</h3><p>Review registry checks, residence reporting, fixed dates, and deposit protection.</p><a class="context-link" href="/guides/before-you-sign/">Read the signing guide →</a></section>
+        <section class="explorer-map-card">
+          <div class="explorer-map-heading"><span class="eyebrow">NEIGHBORHOOD MAP</span><h2>See where your budget has support.</h2></div>
+          <div class="explorer-map-legend" aria-label="Map marker meaning"><span><i class="is-strong"></i>Strong evidence</span><span><i class="is-limited"></i>Limited evidence</span><span><i class="is-outside"></i>Outside budget</span></div>
+          <div id="explorerMap" class="explorer-map-canvas" role="region" aria-label="Map of selected Seoul neighborhoods"></div>
+          <p id="explorerMapStatus" class="explorer-map-status" aria-live="polite">Map loads when it enters view.</p>
+          <section id="explorerMapSelection" class="explorer-map-selection" aria-live="polite" hidden>
+            <div class="explorer-map-selection-head"><div><span id="explorerMapSelectionStatus" class="explorer-map-selection-status"></span><h3 id="explorerMapSelectionName"></h3></div><span id="explorerMapSelectionContracts" class="explorer-map-selection-count"></span></div>
+            <div class="explorer-map-selection-metrics"><div><span>Monthly rent context</span><strong id="explorerMapSelectionRent">—</strong></div><div><span>Deposit context</span><strong id="explorerMapSelectionDeposit">—</strong></div></div>
+            <p id="explorerMapSelectionEvidence" class="explorer-map-selection-evidence"></p>
+            <a class="explorer-map-selection-action" data-explorer-rent-check data-rent-check-cta="explorer_map_handoff" href="/tools/seoul-rent-check/">Check a quote for this area →</a>
+          </section>
+        </section>
+        <a class="context-module context-card soft" data-explorer-rent-check data-rent-check-cta="explorer_context_handoff" href="/tools/seoul-rent-check/"><span class="context-kicker">NEXT STEP</span><h3>Already have a quote?</h3><p>Compare the deposit, rent, size, and housing type with recent official contracts.</p><strong class="context-card-action">Check a rent quote →</strong></a>
+        <a class="context-module context-card" href="/guides/before-you-sign/"><span class="context-kicker">BEFORE YOU SIGN</span><h3>Protect a large deposit</h3><p>Review registry checks, residence reporting, fixed dates, and deposit protection.</p><strong class="context-card-action">Read the signing guide →</strong></a>
         <div class="ad-slot" data-slot="sidebar" aria-hidden="true"></div>
         </div>
       </aside>
@@ -96,7 +108,7 @@
 
     <section class="explorer-next-step">
       <div><span class="eyebrow">HAVE A QUOTE?</span><h2>Check the exact rent you were offered.</h2><p>Rent Check compares your deposit, monthly rent, size, and housing type with recent official contracts.</p></div>
-      <a class="explorer-primary-link" href="/tools/seoul-rent-check/">Check a rent quote →</a>
+      <a class="explorer-primary-link" data-explorer-rent-check data-rent-check-cta="explorer_final_handoff" href="/tools/seoul-rent-check/">Check a rent quote →</a>
     </section>
   </main>
 
@@ -109,6 +121,6 @@
   <script src="/explore/map-locations.js"></script>
   <script src="/explore/map-controller.js"></script>
   <script src="/explore/map.js"></script>
-  <script src="/explore/app.js"></script>
+  <script defer src="/explore/app.js"></script>
 </body>
 </html>

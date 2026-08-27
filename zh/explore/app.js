@@ -17,10 +17,18 @@ const buildingList = document.querySelector('#buildingList');
 const budgetFilterNote = document.querySelector('#budgetFilterNote');
 const explorerChips = document.querySelector('#explorerChips');
 const explorerResults = document.querySelector('#explorerResultsShell');
+const mapSelection = document.querySelector('#explorerMapSelection');
+const mapSelectionStatus = document.querySelector('#explorerMapSelectionStatus');
+const mapSelectionName = document.querySelector('#explorerMapSelectionName');
+const mapSelectionContracts = document.querySelector('#explorerMapSelectionContracts');
+const mapSelectionRent = document.querySelector('#explorerMapSelectionRent');
+const mapSelectionDeposit = document.querySelector('#explorerMapSelectionDeposit');
+const mapSelectionEvidence = document.querySelector('#explorerMapSelectionEvidence');
 let fxRates = {};
 let currentAreaData = null;
 let currentData = null;
 let currentDong = '';
+let currentMapSelection = null;
 
 const LISTING_NOTE = '没有实时房源；这里展示的是历史真实签约数据。';
 
@@ -56,7 +64,7 @@ function updateBudgetNote(filteredCount, totalCount) {
     : '选择街区后查看具体建筑';
 }
 function publishMapDongs(dongs) {
-  window.dispatchEvent(new CustomEvent('khg:explorer-dongs', { detail:{ lawdCd:areaSelect.value, locale:'zh-CN', dongs:Array.isArray(dongs) ? dongs : [] } }));
+  window.dispatchEvent(new CustomEvent('khg:explorer-dongs', { detail:{ lawdCd:areaSelect.value, propertyType:typeSelect.value, locale:'zh-CN', limits:budgetValues(), dongs:Array.isArray(dongs) ? dongs : [] } }));
 }
 function currentParams(includeDong = true) {
   const params = new URLSearchParams({ lawdCd:areaSelect.value, type:typeSelect.value });
@@ -68,6 +76,61 @@ function currentParams(includeDong = true) {
 }
 function updateLanguageSwitch() { if (languageSwitch) languageSwitch.href = `/explore/?${currentParams(true).toString()}`; }
 
+function updateRentCheckHandoff({ lawdCd = areaSelect.value, propertyType = typeSelect.value } = {}) {
+  if (!window.KHGAcquisitionLinks || typeof KHGAcquisitionLinks.updateRentCheckLinksForSelection !== 'function') return;
+  KHGAcquisitionLinks.updateRentCheckLinksForSelection({
+    doc:document,
+    location,
+    lawdCd,
+    propertyType
+  });
+}
+
+function highlightMapCard(dong) {
+  const selected = String(dong || '');
+  document.querySelectorAll('.neighborhood-card[data-dong]').forEach(card => {
+    card.classList.toggle('is-map-selected', card.dataset.dong === selected);
+  });
+}
+
+function clearMapSelection() {
+  currentMapSelection = null;
+  if (mapSelection) mapSelection.hidden = true;
+  highlightMapCard('');
+  window.dispatchEvent(new CustomEvent('khg:map-clear-selection'));
+}
+
+function handleSelectionChange() {
+  clearMapSelection();
+  updateRentCheckHandoff();
+}
+
+function renderMapSelection(model) {
+  if (!mapSelection || !model || !model.dong) return;
+  currentMapSelection = model;
+  const evidenceCount = Number(model.evidenceCount || 0);
+  const totalCount = Number(model.contractCount || 0);
+  const statusCopy = model.budgetStatus === 'outside'
+    ? '超出所选预算'
+    : model.evidenceLevel === 'strong' ? '较强依据' : '有限依据';
+  mapSelectionStatus.textContent = statusCopy;
+  mapSelectionStatus.className = `explorer-map-selection-status is-${model.tone || 'limited'}`;
+  mapSelectionName.textContent = model.label || dongDisplayName(model.dong);
+  mapSelectionContracts.textContent = model.budgetStatus === 'unfiltered'
+    ? `${totalCount.toLocaleString('zh-CN')} 笔申报成交`
+    : `${evidenceCount.toLocaleString('zh-CN')} 笔符合预算的成交`;
+  mapSelectionRent.innerHTML = model.rentWon == null ? '—' : moneyHtml(model.rentWon);
+  mapSelectionDeposit.innerHTML = model.depositWon == null ? '—' : moneyHtml(model.depositWon);
+  mapSelectionEvidence.textContent = model.budgetStatus === 'outside'
+    ? `近期价格条件没有同时符合全部预算限制。上方数值是该街区 ${totalCount.toLocaleString('zh-CN')} 笔申报成交的较宽市场参考。`
+    : model.evidenceLevel === 'strong'
+      ? `由 ${evidenceCount.toLocaleString('zh-CN')} 笔相关申报成交支持。这是历史市场参考，并非实时房源。`
+      : `只有 ${evidenceCount.toLocaleString('zh-CN')} 笔相关申报成交支持这个标记，请将其视为方向性参考。`;
+  mapSelection.hidden = false;
+  highlightMapCard(model.dong);
+  updateRentCheckHandoff({ lawdCd:model.districtCode, propertyType:model.propertyType });
+}
+
 
 function representativeBand(item) {
   return KHGExplorer.budgetFitForDong(item, budgetValues()).representativeBand;
@@ -78,14 +141,13 @@ function renderDongs(dongs) {
   const allItems = Array.isArray(dongs) ? dongs : [];
   const items = filterDongsByBudget(allItems);
   updateBudgetNote(items.length, allItems.length);
+  publishMapDongs(allItems);
   if (hasBudgetFilter() && !items.length) {
     dongList.innerHTML = '<div class="explorer-empty">没有街区的月租和押金中位数同时符合当前预算。请提高月租或押金预算后再试。</div>';
-    publishMapDongs([]);
     return;
   }
   if (!items.length) {
     dongList.innerHTML = '<div class="explorer-empty">当前条件下暂时没有可用的街区摘要。</div>';
-    publishMapDongs([]);
     return;
   }
   dongList.innerHTML = items.map(item => {
@@ -106,7 +168,6 @@ function renderDongs(dongs) {
       <span class="neighborhood-card-cta">查看街区 →</span>
     </a>`;
   }).join('');
-  publishMapDongs(items);
 }
 
 function renderSummary(data, dong = '') {
@@ -186,6 +247,7 @@ function setLoading(message = '正在加载官方租赁成交数据…') {
   status.textContent = message;
   status.className = 'market-status loading';
   buildingList.innerHTML = '<div class="explorer-empty">正在加载建筑…</div>';
+  clearMapSelection();
   exploreButton.disabled = true;
 }
 
@@ -263,30 +325,40 @@ function applyQuerySelection() {
   if (maxDepositSelect && [...maxDepositSelect.options].some(option => option.value === maxDeposit)) maxDepositSelect.value = maxDeposit;
   currentDong = dong;
   updateLanguageSwitch();
+  updateRentCheckHandoff();
   return dong;
 }
 
 function showExploreResults() {
   explorerChips.hidden=false;
   explorerResults.hidden=false;
+  updateRentCheckHandoff();
   return loadArea();
 }
 
 exploreButton.addEventListener('click',showExploreResults);
+areaSelect.addEventListener('change',handleSelectionChange);
+typeSelect.addEventListener('change',handleSelectionChange);
+maxRentSelect.addEventListener('change',handleSelectionChange);
+maxDepositSelect.addEventListener('change',handleSelectionChange);
 document.querySelectorAll('[data-explore-area]').forEach(button => button.addEventListener('click', () => {
   areaSelect.value = button.dataset.exploreArea;
+  handleSelectionChange();
   loadArea();
 }));
 if (currencySelect) currencySelect.addEventListener('change', () => {
   if (currentAreaData) renderDongs(currentAreaData.dongs || []);
   if (currentData) renderSummary(currentData, currentDong);
+  if (currentMapSelection) renderMapSelection(currentMapSelection);
 });
 window.addEventListener('khg:map-select-dong', event => {
   const dong = String(event.detail && event.detail.dong || '');
+  const model = event.detail && event.detail.model;
   const cards = [...document.querySelectorAll('.neighborhood-card[data-dong]')];
-  cards.forEach(card => card.classList.toggle('is-map-selected', card.dataset.dong === dong));
+  highlightMapCard(model.dong);
   const card = cards.find(item => item.dataset.dong === dong);
   if (card) { card.scrollIntoView({ block:'nearest' }); card.focus({ preventScroll:true }); }
+  renderMapSelection(model);
 });
 
 (async () => {

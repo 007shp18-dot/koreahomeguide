@@ -41,6 +41,62 @@ test('percentile uses linear interpolation and percentile rank is empirical <= a
   assert.equal(core.percentileRank([100, 200, 300, 400], 300), 75);
 });
 
+test('monthly-rent comparison converts each comparable to the entered deposit level', () => {
+  assert.equal(core.DEPOSIT_CONVERSION_REFERENCE.annualRate, 0.05);
+  assert.equal(core.DEPOSIT_CONVERSION_REFERENCE.asOf, '2026-08-27');
+  assert.equal(
+    core.monthlyRentAtDeposit(900_000, 12_000_000, 10_000_000),
+    908_333.3333333334
+  );
+  assert.equal(
+    core.monthlyRentAtDeposit(900_000, 8_000_000, 10_000_000),
+    891_666.6666666666
+  );
+});
+
+test('monthly-rent verdict reflects deposit differences inside the comparable band', () => {
+  const items = [10_000_000, 10_500_000, 11_000_000, 11_500_000, 12_000_000].map((depositWon, index) => ({
+    building:`Deposit ${index + 1}`,
+    area:'25',
+    deposit:String(depositWon / 10_000),
+    monthlyRent:'90',
+    contractDate:['2026-07-03','2026-07-10','2026-06-12','2026-06-20','2026-05-08'][index],
+    type:'apartment',
+    contractType:'신규'
+  }));
+  const result = core.buildResultForTier(items, { ...quote, rentWon:902_000 }, tier1);
+
+  assert.equal(result.rating, 'below');
+  assert.equal(result.comparisonMode, 'monthly-rent');
+  assert.equal(result.comparisonBasis, 'deposit-adjusted-monthly-rent');
+  assert.equal(result.conversionAnnualRate, 0.05);
+  assert.equal(result.p25ValueWon, 902_083.3333333334);
+  assert.equal(result.medianValueWon, 904_166.6666666666);
+  assert.equal(result.p75ValueWon, 906_250);
+});
+
+test('non-positive deposit-adjusted rents are excluded before checking sample sufficiency', () => {
+  const items = [75_000_000, 80_000_000, 100_000_000, 120_000_000, 125_000_000].map((depositWon, index) => ({
+    building:`Low rent ${index + 1}`,
+    area:'25',
+    deposit:String(depositWon / 10_000),
+    monthlyRent:'5',
+    contractDate:['2026-07-03','2026-07-10','2026-06-12','2026-06-20','2026-05-08'][index],
+    type:'apartment',
+    contractType:'신규'
+  }));
+  const result = core.buildResultForTier(items, {
+    ...quote,
+    depositWon:100_000_000,
+    rentWon:50_000
+  }, tier1);
+
+  assert.equal(result.rating, 'insufficient');
+  assert.equal(result.comparableCount, 3);
+  assert.equal(result.p25ValueWon, null);
+  assert.equal(result.verdictBasis, null);
+});
+
 test('reliable Rent Check result returns P25, median, P75 and quote percentile from the same comparable set', () => {
   const result = core.buildResultForTier(reliableItems, quote, tier1);
   assert.equal(result.rating, 'fair');

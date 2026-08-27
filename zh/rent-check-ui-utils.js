@@ -29,6 +29,14 @@
     }[confidence] || '';
   }
 
+  function confidenceQuestion(result) {
+    return {
+      high: '为什么这组样本充分？',
+      medium: '为什么这组样本一般？',
+      low: '为什么这组样本有限？'
+    }[result && result.confidence] || '为什么是这个样本强度？';
+  }
+
   const MATCH_TIERS = Object.freeze({
     1:{ months:3, areaPct:15, depositPct:25 },
     2:{ months:6, areaPct:20, depositPct:35 },
@@ -195,9 +203,13 @@
     const rawMonths = result && result.monthsUsed;
     const count = isNumericValue(rawCount) ? Math.max(0, Math.round(Number(rawCount))) : 0;
     const months = isNumericValue(rawMonths) ? Math.max(1, Math.round(Number(rawMonths))) : 12;
+    const rate = Number(result && result.conversionAnnualRate);
     return {
       sampleLabel:`${count} 笔已签约成交`,
-      periodLabel:`最近 ${months} 个完整月份`
+      periodLabel:`最近 ${months} 个完整月份`,
+      ...(result && result.comparisonMode === 'monthly-rent' && Number.isFinite(rate)
+        ? { methodLabel:`按法定参考年率 ${(rate * 100).toFixed(1)}% 将月租换算到你的押金水平` }
+        : {})
     };
   }
 
@@ -224,6 +236,7 @@
     UPSTREAM_MESSAGE,
     ratingLabel,
     confidenceLabel,
+    confidenceQuestion,
     confidenceExplanation,
     resultNextStep,
     explorerUrl,
