@@ -39,10 +39,15 @@
     };
   }
 
+  function applyAdvancedPinVisual(pin, model, selected) {
+    const { glyphFontSize, ...visual } = KHGMapController.advancedPinVisual(model, selected);
+    Object.assign(pin, visual);
+    pin.style.fontSize = glyphFontSize;
+  }
+
   function updateMarkerVisual(entry, selected) {
     if (entry.advanced) {
-      const visual = KHGMapController.advancedPinVisual(entry.model, selected);
-      Object.assign(entry.pin, visual);
+      applyAdvancedPinVisual(entry.pin, entry.model, selected);
       entry.marker.zIndex = selected ? 1000 : 1;
       return;
     }
@@ -109,16 +114,19 @@
       let marker;
       let pin = null;
       if (useAdvancedMarkers) {
-        pin = new google.maps.marker.PinElement(KHGMapController.advancedPinVisual(model, false));
+        const { glyphFontSize, ...pinOptions } = KHGMapController.advancedPinVisual(model, false);
+        pin = new google.maps.marker.PinElement(pinOptions);
+        pin.style.fontSize = glyphFontSize;
         marker = new google.maps.marker.AdvancedMarkerElement({ map, position, title, zIndex:1, gmpClickable:true });
         marker.append(pin);
       } else {
+        const pinVisual = KHGMapController.advancedPinVisual(model, false);
         marker = new google.maps.Marker({
           map,
           position,
           title,
           icon:markerIcon(model, false),
-          label:model.contractCount ? { text:String(model.contractCount), color:'#ffffff', fontSize:'10px', fontWeight:'700' } : undefined
+          label:pinVisual.glyphText ? { text:pinVisual.glyphText, color:'#ffffff', fontSize:pinVisual.glyphFontSize, fontWeight:'700' } : undefined
         });
       }
       bounds.extend(position);
