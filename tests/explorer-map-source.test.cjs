@@ -41,12 +41,17 @@ test('Explorer runtimes publish raw dong models after rendering', () => {
     assert.match(source, /function renderMapSelection\(model\)/);
     assert.match(source, /function clearMapSelection\(\)/);
     assert.match(source, /function highlightMapCard\(dong\)/);
+    assert.match(source, /function setExplorerView\(view = 'map'\)/);
+    assert.match(source, /explorerViewButtons\.forEach/);
+    assert.match(source, /mapSelectionClose\.addEventListener\('click', clearMapSelection\)/);
+    assert.match(source, /mapSelectionDetail\.href = KHGExplorer\.buildDongSeoUrl/);
     assert.match(source, /highlightMapCard\(model\.dong\)/);
     assert.match(source, /updateRentCheckHandoff\(\{ lawdCd:model\.districtCode, propertyType:model\.propertyType \}\)/);
     assert.match(source, /areaSelect\.addEventListener\('change',handleSelectionChange\)/);
     assert.match(source, /typeSelect\.addEventListener\('change',handleSelectionChange\)/);
     assert.match(source, /maxRentSelect\.addEventListener\('change',handleSelectionChange\)/);
     assert.match(source, /maxDepositSelect\.addEventListener\('change',handleSelectionChange\)/);
+    assert.doesNotMatch(source, /scrollIntoView/);
   }
 });
 

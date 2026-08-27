@@ -13,6 +13,10 @@ test('both Explorer locales contain an accessible map with a visible fallback', 
     assert.match(html, /id="explorerMapSelectionRent"/);
     assert.match(html, /id="explorerMapSelectionDeposit"/);
     assert.match(html, /id="explorerMapSelectionEvidence"/);
+    assert.match(html, /id="explorerMapSelectionClose"/);
+    assert.match(html, /id="explorerMapSelectionDetail"/);
+    assert.match(html, /data-explorer-view="map"/);
+    assert.match(html, /data-explorer-view="list"/);
     assert.match(html, /data-rent-check-cta="explorer_map_handoff"/);
   }
 });
@@ -30,15 +34,15 @@ test('map decision copy is localized and describes evidence instead of listings'
   assert.doesNotMatch(zh, /在租房源/);
 });
 
-test('map layout is right-hand sticky on desktop and first on mobile', () => {
+test('map layout is full-width first with a large desktop and mobile canvas', () => {
   const css = fs.readFileSync('styles.css','utf8');
-  assert.match(css, /grid-template-areas:"main map"/);
+  assert.match(css, /grid-template-areas:"map map" "main support"/);
   assert.match(css, /\.explorer-map-column\{[^}]*grid-area:map/);
-  assert.match(css, /@media\(max-width:980px\)[^]*grid-template-areas:"map" "main"/);
-  assert.match(css, /\.explorer-map-layout\{[^}]*grid-template-columns:minmax\(0,1\.45fr\) minmax\(390px,1fr\)/);
-  assert.match(css, /\.explorer-map-canvas\{[^}]*height:480px/);
-  assert.match(css, /@media\(max-width:980px\)[^]*\.explorer-map-canvas\{height:400px\}/);
-  assert.match(css, /@media\(max-width:560px\)[^]*\.explorer-map-canvas\{height:310px\}/);
+  assert.match(css, /\.explorer-support-column\{[^}]*grid-area:support/);
+  assert.match(css, /@media\(max-width:980px\)[^]*grid-template-areas:"map" "main" "support"/);
+  assert.match(css, /\.explorer-map-surface\{[^}]*min-height:640px/);
+  assert.match(css, /\.explorer-map-canvas\{[^}]*height:640px/);
+  assert.match(css, /@media\(max-width:760px\)[^]*height:clamp\(470px,68dvh,620px\)/);
 });
 
 test('map legend and decision card have selected, evidence, and narrow-screen states', () => {
@@ -51,5 +55,8 @@ test('map legend and decision card have selected, evidence, and narrow-screen st
   assert.match(css, /\.explorer-map-selection-status\.is-strong/);
   assert.match(css, /\.explorer-map-selection-status\.is-limited/);
   assert.match(css, /\.explorer-map-selection-status\.is-outside/);
-  assert.match(css, /@media\(max-width:560px\)[^]*\.explorer-map-selection-metrics\{grid-template-columns:1fr\}/);
+  assert.match(css, /\.explorer-map-selection\{[^}]*position:absolute/);
+  assert.match(css, /@media\(max-width:760px\)[^]*\.explorer-map-layout\.is-map-view \.explorer-map-main/);
+  assert.match(css, /@media\(max-width:760px\)[^]*\.explorer-map-layout\.is-list-view \.explorer-map-legend,\.explorer-map-layout\.is-list-view \.explorer-map-surface/);
+  assert.match(css, /@media\(max-width:760px\)[^]*border-radius:20px 20px 0 0/);
 });

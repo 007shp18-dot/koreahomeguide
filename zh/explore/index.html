@@ -58,6 +58,32 @@
     </div>
 
     <div id="explorerResultsShell" class="explorer-map-layout" hidden>
+      <aside class="explorer-map-column" aria-label="街区地图">
+        <section class="explorer-map-card">
+          <div class="explorer-map-toolbar">
+            <div class="explorer-map-heading"><span class="eyebrow">街区地图</span><h2>点击标记查看租金参考。</h2></div>
+            <div class="explorer-view-toggle" aria-label="探索视图">
+              <button type="button" class="is-active" data-explorer-view="map" aria-pressed="true">地图</button>
+              <button type="button" data-explorer-view="list" aria-pressed="false">列表</button>
+            </div>
+          </div>
+          <div class="explorer-map-legend" aria-label="地图标记说明"><span><i class="is-strong"></i>较强依据</span><span><i class="is-limited"></i>有限依据</span><span><i class="is-outside"></i>超出预算</span></div>
+          <div class="explorer-map-surface">
+            <div id="explorerMap" class="explorer-map-canvas" role="region" aria-label="所选首尔街区地图"></div>
+            <p id="explorerMapStatus" class="explorer-map-status" aria-live="polite">地图进入屏幕时加载。</p>
+            <section id="explorerMapSelection" class="explorer-map-selection" aria-live="polite" hidden>
+              <button id="explorerMapSelectionClose" class="explorer-map-selection-close" type="button" aria-label="关闭街区详情">×</button>
+              <div class="explorer-map-selection-head"><div><span id="explorerMapSelectionStatus" class="explorer-map-selection-status"></span><h3 id="explorerMapSelectionName"></h3></div><span id="explorerMapSelectionContracts" class="explorer-map-selection-count"></span></div>
+              <div class="explorer-map-selection-metrics"><div><span>月租参考</span><strong id="explorerMapSelectionRent">—</strong></div><div><span>押金参考</span><strong id="explorerMapSelectionDeposit">—</strong></div></div>
+              <p id="explorerMapSelectionEvidence" class="explorer-map-selection-evidence"></p>
+              <div class="explorer-map-selection-actions">
+                <a id="explorerMapSelectionDetail" class="explorer-map-selection-detail" href="/zh/explore/">查看街区详情 →</a>
+                <a class="explorer-map-selection-action" data-explorer-rent-check data-rent-check-cta="explorer_map_handoff" href="/zh/tools/seoul-rent-check/">检查报价 →</a>
+              </div>
+            </section>
+          </div>
+        </section>
+      </aside>
       <div class="product-main explorer-map-main">
 <section id="explorerResults" class="explorer-results" aria-live="polite">
       <div class="explorer-results-head">
@@ -85,24 +111,10 @@
       </section>
     </section>
       </div>
-      <aside class="explorer-map-column" aria-label="街区地图与相关工具">
-        <div class="explorer-map-sticky">
-        <section class="explorer-map-card">
-          <div class="explorer-map-heading"><span class="eyebrow">街区地图</span><h2>查看哪些街区有预算依据。</h2></div>
-          <div class="explorer-map-legend" aria-label="地图标记说明"><span><i class="is-strong"></i>较强依据</span><span><i class="is-limited"></i>有限依据</span><span><i class="is-outside"></i>超出预算</span></div>
-          <div id="explorerMap" class="explorer-map-canvas" role="region" aria-label="所选首尔街区地图"></div>
-          <p id="explorerMapStatus" class="explorer-map-status" aria-live="polite">地图进入屏幕时加载。</p>
-          <section id="explorerMapSelection" class="explorer-map-selection" aria-live="polite" hidden>
-            <div class="explorer-map-selection-head"><div><span id="explorerMapSelectionStatus" class="explorer-map-selection-status"></span><h3 id="explorerMapSelectionName"></h3></div><span id="explorerMapSelectionContracts" class="explorer-map-selection-count"></span></div>
-            <div class="explorer-map-selection-metrics"><div><span>月租参考</span><strong id="explorerMapSelectionRent">—</strong></div><div><span>押金参考</span><strong id="explorerMapSelectionDeposit">—</strong></div></div>
-            <p id="explorerMapSelectionEvidence" class="explorer-map-selection-evidence"></p>
-            <a class="explorer-map-selection-action" data-explorer-rent-check data-rent-check-cta="explorer_map_handoff" href="/zh/tools/seoul-rent-check/">检查这个地区的租金报价 →</a>
-          </section>
-        </section>
+      <aside class="explorer-support-column" aria-label="相关工具">
         <a class="context-module context-card soft" data-explorer-rent-check data-rent-check-cta="explorer_context_handoff" href="/zh/tools/seoul-rent-check/"><span class="context-kicker">下一步</span><h3>已经拿到报价？</h3><p>用押金、月租、面积和房型与近期官方可比成交核对。</p><strong class="context-card-action">检查租金报价 →</strong></a>
         <a class="context-module context-card" href="/zh/guides/before-you-sign/"><span class="context-kicker">签约前</span><h3>先检查押金和合同风险</h3><p>了解房产登记、居所申报、确定日期和押金保障。</p><strong class="context-card-action">阅读签约指南 →</strong></a>
         <div class="ad-slot" data-slot="sidebar" aria-hidden="true"></div>
-        </div>
       </aside>
     </div>
 

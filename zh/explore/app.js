@@ -24,6 +24,9 @@ const mapSelectionContracts = document.querySelector('#explorerMapSelectionContr
 const mapSelectionRent = document.querySelector('#explorerMapSelectionRent');
 const mapSelectionDeposit = document.querySelector('#explorerMapSelectionDeposit');
 const mapSelectionEvidence = document.querySelector('#explorerMapSelectionEvidence');
+const mapSelectionDetail = document.querySelector('#explorerMapSelectionDetail');
+const mapSelectionClose = document.querySelector('#explorerMapSelectionClose');
+const explorerViewButtons = [...document.querySelectorAll('[data-explorer-view]')];
 let fxRates = {};
 let currentAreaData = null;
 let currentData = null;
@@ -86,6 +89,18 @@ function updateRentCheckHandoff({ lawdCd = areaSelect.value, propertyType = type
   });
 }
 
+function setExplorerView(view = 'map') {
+  const nextView = view === 'list' ? 'list' : 'map';
+  explorerResults.classList.toggle('is-map-view', nextView === 'map');
+  explorerResults.classList.toggle('is-list-view', nextView === 'list');
+  explorerViewButtons.forEach(button => {
+    const active = button.dataset.explorerView === nextView;
+    button.classList.toggle('is-active', active);
+    button.setAttribute('aria-pressed', String(active));
+  });
+  if (nextView === 'map') requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
+}
+
 function highlightMapCard(dong) {
   const selected = String(dong || '');
   document.querySelectorAll('.neighborhood-card[data-dong]').forEach(card => {
@@ -126,6 +141,15 @@ function renderMapSelection(model) {
     : model.evidenceLevel === 'strong'
       ? `由 ${evidenceCount.toLocaleString('zh-CN')} 笔相关申报成交支持。这是历史市场参考，并非实时房源。`
       : `只有 ${evidenceCount.toLocaleString('zh-CN')} 笔相关申报成交支持这个标记，请将其视为方向性参考。`;
+  if (mapSelectionDetail) {
+    const detailLang = KHGExplorer.supportsZhIndexing(model.districtCode) ? 'zh' : 'en';
+    mapSelectionDetail.href = KHGExplorer.buildDongSeoUrl({
+      lawdCd:model.districtCode,
+      type:model.propertyType,
+      dong:model.dong,
+      lang:detailLang
+    });
+  }
   mapSelection.hidden = false;
   highlightMapCard(model.dong);
   updateRentCheckHandoff({ lawdCd:model.districtCode, propertyType:model.propertyType });
@@ -332,6 +356,7 @@ function applyQuerySelection() {
 function showExploreResults() {
   explorerChips.hidden=false;
   explorerResults.hidden=false;
+  setExplorerView('map');
   updateRentCheckHandoff();
   return loadArea();
 }
@@ -341,6 +366,8 @@ areaSelect.addEventListener('change',handleSelectionChange);
 typeSelect.addEventListener('change',handleSelectionChange);
 maxRentSelect.addEventListener('change',handleSelectionChange);
 maxDepositSelect.addEventListener('change',handleSelectionChange);
+explorerViewButtons.forEach(button => button.addEventListener('click', () => setExplorerView(button.dataset.explorerView)));
+if (mapSelectionClose) mapSelectionClose.addEventListener('click', clearMapSelection);
 document.querySelectorAll('[data-explore-area]').forEach(button => button.addEventListener('click', () => {
   areaSelect.value = button.dataset.exploreArea;
   handleSelectionChange();
@@ -354,10 +381,8 @@ if (currencySelect) currencySelect.addEventListener('change', () => {
 window.addEventListener('khg:map-select-dong', event => {
   const dong = String(event.detail && event.detail.dong || '');
   const model = event.detail && event.detail.model;
-  const cards = [...document.querySelectorAll('.neighborhood-card[data-dong]')];
+  if (!dong || !model) return;
   highlightMapCard(model.dong);
-  const card = cards.find(item => item.dataset.dong === dong);
-  if (card) { card.scrollIntoView({ block:'nearest' }); card.focus({ preventScroll:true }); }
   renderMapSelection(model);
 });
 

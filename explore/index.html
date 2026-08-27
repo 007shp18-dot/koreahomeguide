@@ -58,6 +58,32 @@
     </div>
 
     <div id="explorerResultsShell" class="explorer-map-layout" hidden>
+      <aside class="explorer-map-column" aria-label="Neighborhood map">
+        <section class="explorer-map-card">
+          <div class="explorer-map-toolbar">
+            <div class="explorer-map-heading"><span class="eyebrow">NEIGHBORHOOD MAP</span><h2>Tap a marker to see the rent context.</h2></div>
+            <div class="explorer-view-toggle" aria-label="Explorer view">
+              <button type="button" class="is-active" data-explorer-view="map" aria-pressed="true">Map</button>
+              <button type="button" data-explorer-view="list" aria-pressed="false">List</button>
+            </div>
+          </div>
+          <div class="explorer-map-legend" aria-label="Map marker meaning"><span><i class="is-strong"></i>Strong evidence</span><span><i class="is-limited"></i>Limited evidence</span><span><i class="is-outside"></i>Outside budget</span></div>
+          <div class="explorer-map-surface">
+            <div id="explorerMap" class="explorer-map-canvas" role="region" aria-label="Map of selected Seoul neighborhoods"></div>
+            <p id="explorerMapStatus" class="explorer-map-status" aria-live="polite">Map loads when it enters view.</p>
+            <section id="explorerMapSelection" class="explorer-map-selection" aria-live="polite" hidden>
+              <button id="explorerMapSelectionClose" class="explorer-map-selection-close" type="button" aria-label="Close neighborhood details">×</button>
+              <div class="explorer-map-selection-head"><div><span id="explorerMapSelectionStatus" class="explorer-map-selection-status"></span><h3 id="explorerMapSelectionName"></h3></div><span id="explorerMapSelectionContracts" class="explorer-map-selection-count"></span></div>
+              <div class="explorer-map-selection-metrics"><div><span>Monthly rent context</span><strong id="explorerMapSelectionRent">—</strong></div><div><span>Deposit context</span><strong id="explorerMapSelectionDeposit">—</strong></div></div>
+              <p id="explorerMapSelectionEvidence" class="explorer-map-selection-evidence"></p>
+              <div class="explorer-map-selection-actions">
+                <a id="explorerMapSelectionDetail" class="explorer-map-selection-detail" href="/explore/">View neighborhood details →</a>
+                <a class="explorer-map-selection-action" data-explorer-rent-check data-rent-check-cta="explorer_map_handoff" href="/tools/seoul-rent-check/">Check a quote →</a>
+              </div>
+            </section>
+          </div>
+        </section>
+      </aside>
       <div class="product-main explorer-map-main">
 <section id="explorerResults" class="explorer-results" aria-live="polite">
       <div class="explorer-results-head">
@@ -85,24 +111,10 @@
       </section>
     </section>
       </div>
-      <aside class="explorer-map-column" aria-label="Neighborhood map and related tools">
-        <div class="explorer-map-sticky">
-        <section class="explorer-map-card">
-          <div class="explorer-map-heading"><span class="eyebrow">NEIGHBORHOOD MAP</span><h2>See where your budget has support.</h2></div>
-          <div class="explorer-map-legend" aria-label="Map marker meaning"><span><i class="is-strong"></i>Strong evidence</span><span><i class="is-limited"></i>Limited evidence</span><span><i class="is-outside"></i>Outside budget</span></div>
-          <div id="explorerMap" class="explorer-map-canvas" role="region" aria-label="Map of selected Seoul neighborhoods"></div>
-          <p id="explorerMapStatus" class="explorer-map-status" aria-live="polite">Map loads when it enters view.</p>
-          <section id="explorerMapSelection" class="explorer-map-selection" aria-live="polite" hidden>
-            <div class="explorer-map-selection-head"><div><span id="explorerMapSelectionStatus" class="explorer-map-selection-status"></span><h3 id="explorerMapSelectionName"></h3></div><span id="explorerMapSelectionContracts" class="explorer-map-selection-count"></span></div>
-            <div class="explorer-map-selection-metrics"><div><span>Monthly rent context</span><strong id="explorerMapSelectionRent">—</strong></div><div><span>Deposit context</span><strong id="explorerMapSelectionDeposit">—</strong></div></div>
-            <p id="explorerMapSelectionEvidence" class="explorer-map-selection-evidence"></p>
-            <a class="explorer-map-selection-action" data-explorer-rent-check data-rent-check-cta="explorer_map_handoff" href="/tools/seoul-rent-check/">Check a quote for this area →</a>
-          </section>
-        </section>
+      <aside class="explorer-support-column" aria-label="Related tools">
         <a class="context-module context-card soft" data-explorer-rent-check data-rent-check-cta="explorer_context_handoff" href="/tools/seoul-rent-check/"><span class="context-kicker">NEXT STEP</span><h3>Already have a quote?</h3><p>Compare the deposit, rent, size, and housing type with recent official contracts.</p><strong class="context-card-action">Check a rent quote →</strong></a>
         <a class="context-module context-card" href="/guides/before-you-sign/"><span class="context-kicker">BEFORE YOU SIGN</span><h3>Protect a large deposit</h3><p>Review registry checks, residence reporting, fixed dates, and deposit protection.</p><strong class="context-card-action">Read the signing guide →</strong></a>
         <div class="ad-slot" data-slot="sidebar" aria-hidden="true"></div>
-        </div>
       </aside>
     </div>
 

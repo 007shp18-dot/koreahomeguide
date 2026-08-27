@@ -53,7 +53,9 @@ test('Rent Check fields name the selected currency and size unit at the point of
 test('contextual recommendation cards use one full-card link instead of nested button-like boxes', () => {
   for (const file of contextualPages) {
     const html = read(file);
-    const rail = (html.match(/<aside[^>]*>[\s\S]*?<\/aside>/) || [''])[0];
+    const rail = (html.match(/<aside class="explorer-support-column"[^>]*>[\s\S]*?<\/aside>/)
+      || html.match(/<aside[^>]*>[\s\S]*?<\/aside>/)
+      || [''])[0];
     assert.ok(rail, `${file} context rail`);
     assert.doesNotMatch(rail, /<section class="context-module/, file);
     assert.ok((rail.match(/<a class="context-module context-card/g) || []).length >= 2, file);
