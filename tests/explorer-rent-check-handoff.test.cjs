@@ -21,10 +21,10 @@ for (const entry of [
   test(`${entry.html} exposes contextual Rent Check handoffs for the active Explorer selection`, () => {
     const html = read(entry.html);
     const handoffs = html.match(/data-explorer-rent-check/g) || [];
-    assert.equal(handoffs.length, 3, `${entry.html} should expose filter, context-rail, and final handoffs`);
+    assert.equal(handoffs.length, 4, `${entry.html} should expose filter, map, context-rail, and final handoffs`);
     assert.match(html, new RegExp(`class="explorer-search-handoff"[^]*?${entry.action}`));
     assert.match(html, new RegExp(`href="${entry.toolPath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`));
-    for (const id of ['explorer_filter_handoff','explorer_context_handoff','explorer_final_handoff']) {
+    for (const id of ['explorer_filter_handoff','explorer_map_handoff','explorer_context_handoff','explorer_final_handoff']) {
       assert.match(html, new RegExp(`data-rent-check-cta="${id}"`));
     }
     const appPath = entry.app === 'explore/app.js' ? '/explore/app.js' : '/zh/explore/app.js';
@@ -32,15 +32,19 @@ for (const entry of [
     assert.ok(html.indexOf('/acquisition-links.js') < html.indexOf(appPath));
   });
 
-  test(`${entry.app} refreshes Rent Check handoffs from area and property-type changes`, () => {
+  test(`${entry.app} refreshes Rent Check handoffs and clears stale map selections when filters change`, () => {
     const app = read(entry.app);
-    const updater = (app.match(/function updateRentCheckHandoff\(\)\s*\{([^]*?)\n\}/) || [])[1] || '';
+    const updater = (app.match(/function updateRentCheckHandoff\([^)]*\)\s*\{([^]*?)\n\}/) || [])[1] || '';
     assert.match(updater, /KHGAcquisitionLinks\.updateRentCheckLinksForSelection/);
-    assert.match(updater, /lawdCd:areaSelect\.value/);
-    assert.match(updater, /propertyType:typeSelect\.value/);
+    assert.match(app, /function updateRentCheckHandoff\(\{ lawdCd = areaSelect\.value, propertyType = typeSelect\.value \} = \{\}\)/);
+    assert.match(updater, /lawdCd,/);
+    assert.match(updater, /propertyType/);
     assert.doesNotMatch(updater, /maxRent|maxDeposit|budgetValues/);
-    assert.match(app, /areaSelect\.addEventListener\('change',updateRentCheckHandoff\)/);
-    assert.match(app, /typeSelect\.addEventListener\('change',updateRentCheckHandoff\)/);
+    assert.match(app, /function handleSelectionChange\(\)\s*\{[^]*?clearMapSelection\(\);[^]*?updateRentCheckHandoff\(\);[^]*?\}/);
+    assert.match(app, /areaSelect\.addEventListener\('change',handleSelectionChange\)/);
+    assert.match(app, /typeSelect\.addEventListener\('change',handleSelectionChange\)/);
+    assert.match(app, /maxRentSelect\.addEventListener\('change',handleSelectionChange\)/);
+    assert.match(app, /maxDepositSelect\.addEventListener\('change',handleSelectionChange\)/);
     assert.ok((app.match(/updateRentCheckHandoff\(\)/g) || []).length >= 3);
   });
 }

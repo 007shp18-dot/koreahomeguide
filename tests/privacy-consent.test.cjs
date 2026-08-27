@@ -52,7 +52,7 @@ test('automatic analytics loading remains idempotent', () => {
 test('automatic pageview keeps campaign attribution but removes quote values from its URL', () => {
   const privacy = require('../privacy-consent.js');
   const root = {
-    location:{ href:'https://koreahomeguide.com/tools/seoul-rent-check/?deposit=10000000&rent=1200000&area=25&utm_source=reddit&utm_medium=community' }
+    location:{ href:'https://koreahomeguide.com/tools/seoul-rent-check/?deposit=10000000&rent=1200000&area=25&maxRent=987654&maxDeposit=87654321&utm_source=reddit&utm_medium=community' }
   };
 
   privacy.loadAnalytics({ root, doc:analyticsDocument([]) });
@@ -62,7 +62,7 @@ test('automatic pageview keeps campaign attribution but removes quote values fro
   const pageview = commands.find(args => args[0] === 'event' && args[1] === 'page_view');
   assert.equal(config[2].send_page_view, false);
   assert.equal(pageview[2].page_location, 'https://koreahomeguide.com/tools/seoul-rent-check/?utm_source=reddit&utm_medium=community');
-  assert.doesNotMatch(JSON.stringify(commands), /10000000|1200000|[?&]area=25/);
+  assert.doesNotMatch(JSON.stringify(commands), /10000000|1200000|987654|87654321|[?&]area=25/);
 });
 
 test('controller announces analytics readiness after automatic initialization', () => {

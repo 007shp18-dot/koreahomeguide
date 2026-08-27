@@ -3,8 +3,130 @@ const assert = require('node:assert/strict');
 const controller = require('../explore/map-controller.js');
 
 test('marker models preserve raw dong IDs and localize labels', () => {
-  const models = controller.buildMarkerModels({ lawdCd:'11440', locale:'zh-CN', dongs:[{ dong:'연남동', contractCount:12 }] });
-  assert.deepEqual(models, [{ id:'dong:연남동', dong:'연남동', label:'延南洞（연남동）', lat:37.5624, lng:126.9217, contractCount:12 }]);
+  const models = controller.buildMarkerModels({ lawdCd:'11440', propertyType:'villa', locale:'zh-CN', dongs:[{ dong:'연남동', contractCount:12, contextualMedianMonthlyRentWon:900000, contextualMedianDepositWon:10000000 }] });
+  assert.deepEqual(models, [{
+    id:'dong:연남동',
+    dong:'연남동',
+    label:'延南洞（연남동）',
+    lat:37.5624,
+    lng:126.9217,
+    districtCode:'11440',
+    propertyType:'villa',
+    contractCount:12,
+    evidenceCount:12,
+    rentWon:900000,
+    depositWon:10000000,
+    evidenceLevel:'strong',
+    budgetStatus:'unfiltered',
+    tone:'strong',
+    scale:12
+  }]);
+});
+
+test('budget marker uses matching deposit-band evidence and price context', () => {
+  const [model] = controller.buildMarkerModels({
+    lawdCd:'11440',
+    propertyType:'apartment',
+    locale:'en',
+    limits:{ maxRent:1200000, maxDeposit:10000000 },
+    dongs:[{
+      dong:'연남동',
+      contractCount:30,
+      contextualMedianMonthlyRentWon:1500000,
+      contextualMedianDepositWon:20000000,
+      depositBands:[
+        { medianMonthlyRentWon:1100000, medianDepositWon:10000000, count:8 },
+        { medianMonthlyRentWon:900000, medianDepositWon:20000000, count:22 }
+      ]
+    }]
+  });
+
+  assert.equal(model.rentWon, 1100000);
+  assert.equal(model.depositWon, 10000000);
+  assert.equal(model.evidenceCount, 8);
+  assert.equal(model.evidenceLevel, 'limited');
+  assert.equal(model.budgetStatus, 'fit');
+  assert.equal(model.tone, 'limited');
+  assert.equal(model.scale, 10);
+});
+
+test('non-fitting neighborhood stays mapped with outside-budget classification', () => {
+  const [model] = controller.buildMarkerModels({
+    lawdCd:'11440',
+    propertyType:'officetel',
+    limits:{ maxRent:800000, maxDeposit:5000000 },
+    dongs:[{
+      dong:'연남동',
+      contractCount:25,
+      contextualMedianMonthlyRentWon:1300000,
+      contextualMedianDepositWon:10000000
+    }]
+  });
+
+  assert.equal(model.evidenceCount, 0);
+  assert.equal(model.evidenceLevel, 'limited');
+  assert.equal(model.budgetStatus, 'outside');
+  assert.equal(model.tone, 'outside');
+  assert.equal(model.rentWon, 1300000);
+  assert.equal(model.depositWon, 10000000);
+});
+
+test('map analytics exposes only bounded decision context', () => {
+  assert.deepEqual(controller.buildMapAnalyticsEvent('explorer_map_view', {
+    locale:'zh-CN', lawdCd:'11440', propertyType:'villa', hasBudget:true,
+    markerCount:12, fittingCount:8, budgetStatus:'fit', evidenceLevel:'strong',
+    monthlyRentWon:900000, email:'person@example.com',
+    pageLocation:'https://koreahomeguide.com/explore/?lawdCd=11440&type=villa&maxRent=1200000&maxDeposit=10000000'
+  }), {
+    locale:'zh-CN',
+    district_code:'11440',
+    property_type:'villa',
+    budget_filter:'active',
+    marker_count:12,
+    fitting_count:8,
+    page_location:'https://koreahomeguide.com/explore/'
+  });
+
+  assert.deepEqual(controller.buildMapAnalyticsEvent('explorer_map_select', {
+    locale:'en', lawdCd:'all', propertyType:'apartment', hasBudget:false,
+    markerCount:200, fittingCount:200, budgetStatus:'unfiltered', evidenceLevel:'limited',
+    pageLocation:'https://koreahomeguide.com/zh/explore/?maxRent=800000#map'
+  }), {
+    locale:'en-US',
+    district_code:'all',
+    property_type:'apartment',
+    budget_filter:'none',
+    budget_status:'unfiltered',
+    evidence_level:'limited',
+    page_location:'https://koreahomeguide.com/zh/explore/'
+  });
+  assert.equal(controller.buildMapAnalyticsEvent('not_allowed', {}), null);
+});
+
+test('marker visuals map decision tones to accessible colors and preserve evidence scale', () => {
+  assert.deepEqual(controller.markerVisual({ tone:'strong', scale:14 }), {
+    fillColor:'#15803d',
+    strokeColor:'#ffffff',
+    fillOpacity:0.94,
+    strokeWeight:2,
+    scale:14
+  });
+  assert.deepEqual(controller.markerVisual({ tone:'limited', scale:10 }), {
+    fillColor:'#d97706',
+    strokeColor:'#ffffff',
+    fillOpacity:0.94,
+    strokeWeight:2,
+    scale:10
+  });
+  assert.deepEqual(controller.markerVisual({ tone:'outside', scale:12 }), {
+    fillColor:'#94a3b8',
+    strokeColor:'#ffffff',
+    fillOpacity:0.86,
+    strokeWeight:2,
+    scale:12
+  });
+  assert.equal(controller.markerVisual({ tone:'strong', scale:14 }, true).fillColor, '#2563eb');
+  assert.equal(controller.markerVisual({ tone:'strong', scale:99 }).scale, 16);
 });
 
 test('missing neighborhood coordinates are omitted rather than guessed', () => {

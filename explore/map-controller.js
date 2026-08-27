@@ -1,27 +1,118 @@
 (function(root, factory) {
   const locations = typeof module === 'object' && module.exports ? require('./map-locations.js') : root.KHGMapLocations;
   const labels = typeof module === 'object' && module.exports ? require('../location-catalog.js') : root.KHGLocations;
-  const api = factory(locations, labels);
+  const explorer = typeof module === 'object' && module.exports ? require('./explorer-utils.js') : root.KHGExplorer;
+  const api = factory(locations, labels, explorer);
   if (typeof module === 'object' && module.exports) module.exports = api;
   root.KHGMapController = api;
-})(typeof globalThis !== 'undefined' ? globalThis : this, function(locations, labels) {
+})(typeof globalThis !== 'undefined' ? globalThis : this, function(locations, labels, explorer) {
   'use strict';
 
-  function buildMarkerModels({ lawdCd, dongs, locale = 'en' } = {}) {
+  const MAP_EVENTS = new Set(['explorer_map_view', 'explorer_map_select']);
+
+  function finiteMoney(value) {
+    if (value == null || String(value).trim() === '') return null;
+    const amount = Number(value);
+    return Number.isFinite(amount) && amount >= 0 ? amount : null;
+  }
+
+  function normalizedCount(value) {
+    const count = Number(value);
+    return Number.isFinite(count) ? Math.max(0, Math.floor(count)) : 0;
+  }
+
+  function sanitizedPageLocation(value) {
+    try {
+      const url = new URL(String(value || ''));
+      if (!['http:', 'https:'].includes(url.protocol)) return '';
+      return `${url.origin}${url.pathname}`;
+    } catch (_) {
+      return '';
+    }
+  }
+
+  function markerScale(evidenceCount) {
+    if (evidenceCount >= 25) return 14;
+    if (evidenceCount >= 10) return 12;
+    return 10;
+  }
+
+  function buildMarkerModels({ lawdCd, propertyType = '', dongs, locale = 'en', limits = {} } = {}) {
+    const hasBudget = Boolean(Math.max(0, Number(limits.maxRent) || 0) || Math.max(0, Number(limits.maxDeposit) || 0));
     return (Array.isArray(dongs) ? dongs : []).flatMap(item => {
       const dong = String(item && item.dong || '');
       const point = locations && locations.neighborhood(dong);
       if (!dong || !point) return [];
-      const rawCount = Number(item && item.contractCount);
-      const contractCount = Number.isFinite(rawCount) ? Math.max(0, Math.floor(rawCount)) : 0;
+      const contractCount = normalizedCount(item && item.contractCount);
+      const fit = explorer && typeof explorer.budgetFitForDong === 'function'
+        ? explorer.budgetFitForDong(item, limits)
+        : { fits:true, matchingContractCount:contractCount, representativeBand:null };
+      const band = fit.representativeBand;
+      const evidenceCount = hasBudget ? normalizedCount(fit.matchingContractCount) : contractCount;
+      const evidenceLevel = evidenceCount >= 10 ? 'strong' : 'limited';
+      const budgetStatus = hasBudget ? (fit.fits ? 'fit' : 'outside') : 'unfiltered';
       return [Object.freeze({
         id:`dong:${dong}`,
         dong,
         label:labels.dongLabel(dong, locale),
         lat:point.lat,
         lng:point.lng,
-        contractCount
+        districtCode:String(item && item.districtCode || lawdCd || ''),
+        propertyType:String(propertyType || ''),
+        contractCount,
+        evidenceCount,
+        rentWon:finiteMoney(band ? band.medianMonthlyRentWon : (item.contextualMedianMonthlyRentWon ?? item.medianMonthlyRentWon)),
+        depositWon:finiteMoney(band ? band.medianDepositWon : (item.contextualMedianDepositWon ?? item.medianDepositWon)),
+        evidenceLevel,
+        budgetStatus,
+        tone:budgetStatus === 'outside' ? 'outside' : evidenceLevel,
+        scale:markerScale(evidenceCount)
       })];
+    });
+  }
+
+  function buildMapAnalyticsEvent(name, context = {}) {
+    if (!MAP_EVENTS.has(String(name || ''))) return null;
+    const locale = String(context.locale || '').toLowerCase().startsWith('zh') ? 'zh-CN' : 'en-US';
+    const district = /^(?:all|\d{5})$/.test(String(context.lawdCd || '')) ? String(context.lawdCd) : '';
+    const propertyType = ['apartment','officetel','villa','detached','studio'].includes(String(context.propertyType || ''))
+      ? String(context.propertyType)
+      : '';
+    const common = {
+      locale,
+      district_code:district,
+      property_type:propertyType,
+      budget_filter:context.hasBudget ? 'active' : 'none'
+    };
+    const pageLocation = sanitizedPageLocation(context.pageLocation);
+    if (pageLocation) common.page_location = pageLocation;
+    if (name === 'explorer_map_view') {
+      return Object.freeze({
+        ...common,
+        marker_count:Math.min(999, normalizedCount(context.markerCount)),
+        fitting_count:Math.min(999, normalizedCount(context.fittingCount))
+      });
+    }
+    return Object.freeze({
+      ...common,
+      budget_status:['fit','outside','unfiltered'].includes(context.budgetStatus) ? context.budgetStatus : 'unfiltered',
+      evidence_level:context.evidenceLevel === 'strong' ? 'strong' : 'limited'
+    });
+  }
+
+  function markerVisual(model = {}, selected = false) {
+    const colors = {
+      strong:'#15803d',
+      limited:'#d97706',
+      outside:'#94a3b8'
+    };
+    const tone = ['strong','limited','outside'].includes(model.tone) ? model.tone : 'limited';
+    return Object.freeze({
+      fillColor:selected ? '#2563eb' : colors[tone],
+      strokeColor:'#ffffff',
+      fillOpacity:tone === 'outside' && !selected ? 0.86 : 0.94,
+      strokeWeight:2,
+      scale:Math.min(16, Math.max(9, Number(model.scale) || 10))
     });
   }
 
@@ -29,5 +120,5 @@
     return Object.freeze({ ...(state || {}), selectedDong:String(dong || '') });
   }
 
-  return Object.freeze({ buildMarkerModels, selectDong });
+  return Object.freeze({ buildMarkerModels, buildMapAnalyticsEvent, markerVisual, selectDong });
 });

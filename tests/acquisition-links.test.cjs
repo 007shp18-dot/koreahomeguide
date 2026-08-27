@@ -128,7 +128,11 @@ test('Explorer CTA analytics reads the final selected district and property type
 
   wireRentCheckLinks({
     doc,
-    location:{ pathname:'/explore/', search:'' },
+    location:{
+      pathname:'/explore/',
+      search:'?maxRent=987654&maxDeposit=87654321',
+      href:'https://koreahomeguide.com/explore/?maxRent=987654&maxDeposit=87654321'
+    },
     track(eventName, params) { events.push({ eventName, params }); }
   });
   anchor.value = '/tools/seoul-rent-check/?lawdCd=11440&type=villa&from=%2Fexplore%2F';
@@ -141,7 +145,8 @@ test('Explorer CTA analytics reads the final selected district and property type
       cta_id:'explorer-filter-handoff',
       locale:'en-US',
       district_code:'11440',
-      property_type:'villa'
+      property_type:'villa',
+      page_location:'https://koreahomeguide.com/explore/'
     }
   }]);
 });

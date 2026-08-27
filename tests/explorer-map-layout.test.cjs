@@ -8,7 +8,26 @@ test('both Explorer locales contain an accessible map with a visible fallback', 
     assert.match(html, /id="explorerMap"/);
     assert.match(html, /id="explorerMapStatus"[^>]*aria-live="polite"/);
     assert.match(html, /class="explorer-map-layout"/);
+    assert.match(html, /class="explorer-map-legend"[^>]*aria-label=/);
+    assert.match(html, /id="explorerMapSelection"[^>]*aria-live="polite"[^>]*hidden/);
+    assert.match(html, /id="explorerMapSelectionRent"/);
+    assert.match(html, /id="explorerMapSelectionDeposit"/);
+    assert.match(html, /id="explorerMapSelectionEvidence"/);
+    assert.match(html, /data-rent-check-cta="explorer_map_handoff"/);
   }
+});
+
+test('map decision copy is localized and describes evidence instead of listings', () => {
+  const en = fs.readFileSync('explore/index.html','utf8');
+  const zh = fs.readFileSync('zh/explore/index.html','utf8');
+  assert.match(en, /Strong evidence/);
+  assert.match(en, /Limited evidence/);
+  assert.match(en, /Outside budget/);
+  assert.match(zh, /较强依据/);
+  assert.match(zh, /有限依据/);
+  assert.match(zh, /超出预算/);
+  assert.doesNotMatch(en, /Available listings/i);
+  assert.doesNotMatch(zh, /在租房源/);
 });
 
 test('map layout is right-hand sticky on desktop and first on mobile', () => {
@@ -16,4 +35,17 @@ test('map layout is right-hand sticky on desktop and first on mobile', () => {
   assert.match(css, /grid-template-areas:"main map"/);
   assert.match(css, /\.explorer-map-column\{[^}]*grid-area:map/);
   assert.match(css, /@media\(max-width:980px\)[^]*grid-template-areas:"map" "main"/);
+});
+
+test('map legend and decision card have selected, evidence, and narrow-screen states', () => {
+  const css = fs.readFileSync('styles.css','utf8');
+  assert.match(css, /\.explorer-map-legend\{/);
+  assert.match(css, /\.explorer-map-legend i\.is-strong\{[^}]*#15803d/);
+  assert.match(css, /\.explorer-map-legend i\.is-limited\{[^}]*#d97706/);
+  assert.match(css, /\.explorer-map-legend i\.is-outside\{[^}]*#94a3b8/);
+  assert.match(css, /\.explorer-map-selection\[hidden\]\{display:none!important\}/);
+  assert.match(css, /\.explorer-map-selection-status\.is-strong/);
+  assert.match(css, /\.explorer-map-selection-status\.is-limited/);
+  assert.match(css, /\.explorer-map-selection-status\.is-outside/);
+  assert.match(css, /@media\(max-width:560px\)[^]*\.explorer-map-selection-metrics\{grid-template-columns:1fr\}/);
 });

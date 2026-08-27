@@ -17,10 +17,18 @@ const buildingList = document.querySelector('#buildingList');
 const budgetFilterNote = document.querySelector('#budgetFilterNote');
 const explorerChips = document.querySelector('#explorerChips');
 const explorerResults = document.querySelector('#explorerResultsShell');
+const mapSelection = document.querySelector('#explorerMapSelection');
+const mapSelectionStatus = document.querySelector('#explorerMapSelectionStatus');
+const mapSelectionName = document.querySelector('#explorerMapSelectionName');
+const mapSelectionContracts = document.querySelector('#explorerMapSelectionContracts');
+const mapSelectionRent = document.querySelector('#explorerMapSelectionRent');
+const mapSelectionDeposit = document.querySelector('#explorerMapSelectionDeposit');
+const mapSelectionEvidence = document.querySelector('#explorerMapSelectionEvidence');
 let fxRates = {};
 let currentAreaData = null;
 let currentData = null;
 let currentDong = '';
+let currentMapSelection = null;
 
 function selectedCurrency() { return currencySelect ? currencySelect.value : 'KRW'; }
 function moneyHtml(amountWon) {
@@ -54,7 +62,7 @@ function updateBudgetNote(filteredCount, totalCount) {
     : 'Choose a neighborhood to see buildings';
 }
 function publishMapDongs(dongs) {
-  window.dispatchEvent(new CustomEvent('khg:explorer-dongs', { detail:{ lawdCd:areaSelect.value, locale:'en', dongs:Array.isArray(dongs) ? dongs : [] } }));
+  window.dispatchEvent(new CustomEvent('khg:explorer-dongs', { detail:{ lawdCd:areaSelect.value, propertyType:typeSelect.value, locale:'en', limits:budgetValues(), dongs:Array.isArray(dongs) ? dongs : [] } }));
 }
 function currentParams(includeDong = true) {
   const params = new URLSearchParams({ lawdCd:areaSelect.value, type:typeSelect.value });
@@ -68,14 +76,59 @@ function updateLanguageSwitch() {
   if (languageSwitch) languageSwitch.href = `/zh/explore/?${currentParams(true).toString()}`;
 }
 
-function updateRentCheckHandoff() {
+function updateRentCheckHandoff({ lawdCd = areaSelect.value, propertyType = typeSelect.value } = {}) {
   if (!window.KHGAcquisitionLinks || typeof KHGAcquisitionLinks.updateRentCheckLinksForSelection !== 'function') return;
   KHGAcquisitionLinks.updateRentCheckLinksForSelection({
     doc:document,
     location,
-    lawdCd:areaSelect.value,
-    propertyType:typeSelect.value
+    lawdCd,
+    propertyType
   });
+}
+
+function highlightMapCard(dong) {
+  const selected = String(dong || '');
+  document.querySelectorAll('.neighborhood-card[data-dong]').forEach(card => {
+    card.classList.toggle('is-map-selected', card.dataset.dong === selected);
+  });
+}
+
+function clearMapSelection() {
+  currentMapSelection = null;
+  if (mapSelection) mapSelection.hidden = true;
+  highlightMapCard('');
+  window.dispatchEvent(new CustomEvent('khg:map-clear-selection'));
+}
+
+function handleSelectionChange() {
+  clearMapSelection();
+  updateRentCheckHandoff();
+}
+
+function renderMapSelection(model) {
+  if (!mapSelection || !model || !model.dong) return;
+  currentMapSelection = model;
+  const evidenceCount = Number(model.evidenceCount || 0);
+  const totalCount = Number(model.contractCount || 0);
+  const statusCopy = model.budgetStatus === 'outside'
+    ? 'Outside selected budget'
+    : model.evidenceLevel === 'strong' ? 'Strong evidence' : 'Limited evidence';
+  mapSelectionStatus.textContent = statusCopy;
+  mapSelectionStatus.className = `explorer-map-selection-status is-${model.tone || 'limited'}`;
+  mapSelectionName.textContent = model.label || dongDisplayName(model.dong);
+  mapSelectionContracts.textContent = model.budgetStatus === 'unfiltered'
+    ? `${totalCount.toLocaleString('en-US')} reported contracts`
+    : `${evidenceCount.toLocaleString('en-US')} budget-matching contracts`;
+  mapSelectionRent.innerHTML = model.rentWon == null ? '—' : moneyHtml(model.rentWon);
+  mapSelectionDeposit.innerHTML = model.depositWon == null ? '—' : moneyHtml(model.depositWon);
+  mapSelectionEvidence.textContent = model.budgetStatus === 'outside'
+    ? `No recent price context matched every active budget limit. The values above show this neighborhood's broader context from ${totalCount.toLocaleString('en-US')} reported contracts.`
+    : model.evidenceLevel === 'strong'
+      ? `Supported by ${evidenceCount.toLocaleString('en-US')} relevant reported contracts. This is historical market context, not a live listing.`
+      : `Only ${evidenceCount.toLocaleString('en-US')} relevant reported contracts support this marker, so treat it as directional context.`;
+  mapSelection.hidden = false;
+  highlightMapCard(model.dong);
+  updateRentCheckHandoff({ lawdCd:model.districtCode, propertyType:model.propertyType });
 }
 
 
@@ -88,14 +141,13 @@ function renderDongs(dongs) {
   const allItems = Array.isArray(dongs) ? dongs : [];
   const items = filterDongsByBudget(allItems);
   updateBudgetNote(items.length, allItems.length);
+  publishMapDongs(allItems);
   if (hasBudgetFilter() && !items.length) {
     dongList.innerHTML = '<div class="explorer-empty">No neighborhood median fits both selected budget limits. Try a higher rent or deposit budget.</div>';
-    publishMapDongs([]);
     return;
   }
   if (!items.length) {
     dongList.innerHTML = '<div class="explorer-empty">No neighborhood summary is available for this selection yet.</div>';
-    publishMapDongs([]);
     return;
   }
   dongList.innerHTML = items.map(item => {
@@ -115,7 +167,6 @@ function renderDongs(dongs) {
       <span class="neighborhood-card-cta">View neighborhood →</span>
     </a>`;
   }).join('');
-  publishMapDongs(items);
 }
 
 function renderSummary(data, dong = '') {
@@ -190,6 +241,7 @@ function setLoading(message = 'Loading official rental transactions…') {
   status.textContent = message;
   status.className = 'market-status loading';
   buildingList.innerHTML = '<div class="explorer-empty">Loading buildings…</div>';
+  clearMapSelection();
   exploreButton.disabled = true;
 }
 
@@ -279,23 +331,28 @@ function showExploreResults() {
 }
 
 exploreButton.addEventListener('click',showExploreResults);
-areaSelect.addEventListener('change',updateRentCheckHandoff);
-typeSelect.addEventListener('change',updateRentCheckHandoff);
+areaSelect.addEventListener('change',handleSelectionChange);
+typeSelect.addEventListener('change',handleSelectionChange);
+maxRentSelect.addEventListener('change',handleSelectionChange);
+maxDepositSelect.addEventListener('change',handleSelectionChange);
 document.querySelectorAll('[data-explore-area]').forEach(button => button.addEventListener('click', () => {
   areaSelect.value = button.dataset.exploreArea;
-  updateRentCheckHandoff();
+  handleSelectionChange();
   loadArea();
 }));
 if (currencySelect) currencySelect.addEventListener('change', () => {
   if (currentAreaData) renderDongs(currentAreaData.dongs || []);
   if (currentData) renderSummary(currentData, currentDong);
+  if (currentMapSelection) renderMapSelection(currentMapSelection);
 });
 window.addEventListener('khg:map-select-dong', event => {
   const dong = String(event.detail && event.detail.dong || '');
+  const model = event.detail && event.detail.model;
   const cards = [...document.querySelectorAll('.neighborhood-card[data-dong]')];
-  cards.forEach(card => card.classList.toggle('is-map-selected', card.dataset.dong === dong));
+  highlightMapCard(model.dong);
   const card = cards.find(item => item.dataset.dong === dong);
   if (card) { card.scrollIntoView({ block:'nearest' }); card.focus({ preventScroll:true }); }
+  renderMapSelection(model);
 });
 
 (async () => {

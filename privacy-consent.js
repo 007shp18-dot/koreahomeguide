@@ -29,7 +29,7 @@
       if (!href) return null;
       const Url = root.URL || URL;
       const page = new Url(href);
-      ['deposit', 'rent', 'area'].forEach(name => page.searchParams.delete(name));
+      ['deposit', 'rent', 'area', 'maxRent', 'maxDeposit'].forEach(name => page.searchParams.delete(name));
       return page.toString();
     } catch (_) {
       return null;

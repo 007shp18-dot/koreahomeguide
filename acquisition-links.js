@@ -64,22 +64,36 @@
     return PROPERTY_TYPES.has(candidate) ? candidate : '';
   }
 
+  function safePageLocation(value) {
+    try {
+      const page = new URL(String(value || ''));
+      if (!['http:', 'https:'].includes(page.protocol)) return '';
+      return `${page.origin}${page.pathname}`;
+    } catch (_) {
+      return '';
+    }
+  }
+
   function buildRentCheckCtaEvent({
     sourcePage = '',
     lawdCd = '',
     propertyType = '',
     ctaId = '',
-    locale = ''
+    locale = '',
+    pageLocation = ''
   } = {}) {
     const source = safeSourcePage(sourcePage, lawdCd, propertyType);
     if (!source) return null;
-    return {
+    const event = {
       source_page: source,
       cta_id: safeCtaId(ctaId),
       locale: safeLocale(locale),
       district_code: String(lawdCd),
       property_type: String(propertyType)
     };
+    const safeLocation = safePageLocation(pageLocation);
+    if (safeLocation) event.page_location = safeLocation;
+    return event;
   }
 
   function buildRentCheckUrl({
@@ -156,7 +170,8 @@
       sourcePage: location.pathname,
       lawdCd: market && market.dataset ? market.dataset.lawdCd : '',
       propertyType: market && market.dataset ? market.dataset.propertyType : '',
-      search: location.search || ''
+      search: location.search || '',
+      pageLocation: location.href || ''
     };
     let changed = 0;
 
