@@ -101,4 +101,3 @@ test('Dong building rows render name, metadata, deposit, and monthly rent as sep
   assert.match(html, /class="seo-context-label">Deposit<\/span>/);
   assert.match(html, /class="seo-context-label">Monthly rent<\/span>/);
 });
-

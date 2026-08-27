@@ -79,4 +79,3 @@ test('core headers compact brand and utilities without overlap on narrow phones'
   assert.match(css, /@media\(max-width:360px\)\{[\s\S]*?\.core-ui \.header-actions\{gap:4px\}/);
   assert.match(css, /@media\(max-width:360px\)\{[\s\S]*?min-width:48px[^}]*padding:0 6px/);
 });
-

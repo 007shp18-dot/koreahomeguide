@@ -43,4 +43,3 @@
 .lead-capture .lead-consent-note{grid-column:1/-1;display:block;margin-top:0;color:#667085;font-size:11px;line-height:1.5}
 .result-share-panel{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 16px;align-items:center;margin-top:18px;padding:16px;border:1px solid #dbe3ff;border-radius:14px;background:#f7f9ff}.result-share-copy strong{display:block;font-size:14px}.result-share-copy span{display:block;margin-top:4px;color:#667085;font-size:11px;line-height:1.5}.result-share-button{min-height:42px;padding:0 18px}.result-share-status{grid-column:1/-1;color:#315f9b;font-size:11px;line-height:1.5}.result-share-status:empty{display:none}@media(max-width:760px){.result-share-panel{grid-template-columns:1fr}.result-share-button{width:100%}}
 .funnel-fx-note{font-size:12px!important;color:#667085!important}
-

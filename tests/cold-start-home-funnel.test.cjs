@@ -56,4 +56,3 @@ test('lead module is hidden by default and comes after the complete Rent Check r
     assert.match(html,/class="lead-capture"[^>]*data-lead-capture[^>]*hidden/,file);
   }
 });
-

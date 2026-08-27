@@ -40,4 +40,3 @@ test('Chinese homepage carries the same trust -> result -> lead funnel', () => {
   assert.match(zhApp, /\/api\/rent-check\?/);
   assert.match(zhApp, /khg:rent-check-result/);
 });
-

@@ -102,4 +102,3 @@ test('sitemap includes the EN/ZH before-you-sign pillar guide', () => {
   assert.match(sitemap, /https:\/\/koreahomeguide\.com\/guides\/before-you-sign\//);
   assert.match(sitemap, /https:\/\/koreahomeguide\.com\/zh\/guides\/before-you-sign\//);
 });
-

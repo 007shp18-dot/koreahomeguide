@@ -27,4 +27,3 @@ test('homepage moves directly from its promise to the Rent Check form', () => {
     assert.match(html,/id="rent-check"/,file);
   }
 });
-

@@ -84,4 +84,3 @@ if(confidenceDetails)confidenceDetails.addEventListener('toggle',()=>{if(confide
 if(comparablesToggle)comparablesToggle.addEventListener('click',()=>{comparablesExpanded=!comparablesExpanded;updateComparablesDisclosure(body.querySelectorAll('tr:not(.empty-row)').length);if(comparablesExpanded&&latestResultContext){const context=trackBase(latestResultContext.mapped,latestResultContext.data);if(context)safeTrack('rent_check_comparables_expand',context);}});
 applyExplorerPrefill();if(typeof window.addEventListener==='function')window.addEventListener('khg:analytics-ready',emitToolView);if(window.KHGAnalyticsReady===true)emitToolView();updateStudio();loadFx();
 })();
-

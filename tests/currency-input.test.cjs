@@ -140,4 +140,3 @@ test('Rent Check labels follow the selected display currency on every runtime', 
     assert.deepEqual(runtime.currencyCodes.map(node => node.textContent), ['CNY', 'CNY'], file);
   }
 });
-

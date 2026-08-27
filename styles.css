@@ -422,4 +422,3 @@ html[lang="zh-CN"] h1,html[lang="zh-CN"] h2,html[lang="zh-CN"] h3{letter-spacing
 html[lang="zh-CN"] .core-ui h1,html[lang="zh-CN"] .core-ui h2,html[lang="zh-CN"] .core-ui h3{letter-spacing:-.012em}
 @media(max-width:760px){.core-ui{font-size:16px}.core-ui .header-actions{gap:7px}.core-ui .header-actions .currency-select,.core-ui .header-actions .language-link{height:40px;min-width:54px;padding:0 9px}.core-ui .tool-hero p,.core-ui .explorer-hero p{line-height:1.65}}
 @media(max-width:360px){.core-ui .site-header,.core-ui .compact-header{column-gap:12px}.core-ui .brand{gap:7px;font-size:14px}.core-ui .brand-mark{width:30px;height:30px}.core-ui .header-actions{gap:4px}.core-ui .header-actions .currency-select,.core-ui .header-actions .language-link{height:38px;min-width:48px;padding:0 6px;font-size:11px}}
-
