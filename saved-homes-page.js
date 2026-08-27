@@ -6,7 +6,9 @@
   const zh = language === 'zh-CN';
   const locale = zh ? 'zh-CN' : 'en-US';
   let storage = null;
+  let sessionStorage = null;
   try { storage = root.localStorage; } catch (_) {}
+  try { sessionStorage = root.sessionStorage; } catch (_) {}
   const store = root.KHGSavedQuotes.createStore({ storage });
   const listNode = doc.querySelector('#savedHomesList');
   const compareNode = doc.querySelector('#savedHomesComparison');
@@ -14,6 +16,7 @@
   const countNode = doc.querySelector('#savedHomesCount');
   const currencySelect = doc.querySelector('#currencySelect');
   const clearButton = doc.querySelector('#savedHomesClear');
+  const statusNode = doc.querySelector('#savedHomesStatus');
   let selected = new Set();
   let rates = {};
   let openedTracked = false;
@@ -57,6 +60,12 @@
     return quote.label || root.KHGSavedQuotes.defaultLabel(quote, language);
   }
 
+  function setStatus(message, tone = '') {
+    if (!statusNode) return;
+    statusNode.textContent = message || '';
+    statusNode.className = `saved-homes-page-status${tone ? ` ${tone}` : ''}`;
+  }
+
   function safeTrack(eventName, count) {
     try {
       if (typeof root.gtag !== 'function') return false;
@@ -68,7 +77,51 @@
   function trackOpened() {
     if (openedTracked) return;
     const count = store.list().length;
-    if (safeTrack('saved_quotes_opened', count)) openedTracked = true;
+    if (!safeTrack('saved_quotes_opened', count)) return;
+    if (count > 0 && root.KHGSavedQuotes.markComparisonVisit(storage)) {
+      safeTrack('saved_quotes_return_visit', count);
+    }
+    openedTracked = true;
+  }
+
+  function comparisonRows() {
+    return [
+      [zh ? '地区与类型' : 'Area and type', quote => `${root.KHGSavedQuotes.districtLabel(quote.districtCode, language)} · ${root.KHGSavedQuotes.propertyLabel(quote.propertyType, language)}`],
+      [zh ? '面积' : 'Size', quote => `${quote.areaSqm.toLocaleString(locale)}㎡`],
+      [zh ? '押金' : 'Deposit', quote => ({ money:quote.depositWon })],
+      [zh ? '月租' : 'Monthly rent', quote => ({ money:quote.monthlyRentWon })],
+      [zh ? '可比成交中位数' : 'Comparable median', quote => quote.medianValueWon == null ? '—' : ({ money:quote.medianValueWon })],
+      [zh ? '与中位数的差异' : 'Difference from median', quote => percentText(quote.differencePct)],
+      [zh ? '近期成交判断' : 'Recent-contract verdict', quote => ratingLabel(quote.rating)],
+      [zh ? '依据等级' : 'Evidence level', quote => confidenceLabel(quote.confidence)],
+      [zh ? '可比成交数量' : 'Comparable contracts', quote => String(quote.comparableCount)],
+      [zh ? '数据截至月份' : 'Data through', quote => quote.dataThroughMonth || '—'],
+      [zh ? '保存日期' : 'Saved', quote => new Date(quote.savedAt).toLocaleDateString(locale)]
+    ];
+  }
+
+  function renderComparisonCards(chosen, rows) {
+    const cards = doc.createElement('div');
+    cards.className = 'saved-homes-comparison-cards';
+    chosen.forEach(quote => {
+      const card = doc.createElement('article');
+      const heading = doc.createElement('h3');
+      heading.textContent = displayName(quote);
+      card.appendChild(heading);
+      rows.forEach(([label, valueFor]) => {
+        const item = doc.createElement('div');
+        const name = doc.createElement('span');
+        const value = doc.createElement('strong');
+        name.textContent = label;
+        const output = valueFor(quote);
+        if (output && typeof output === 'object') value.innerHTML = moneyHtml(output.money);
+        else value.textContent = output;
+        item.append(name, value);
+        card.appendChild(item);
+      });
+      cards.appendChild(card);
+    });
+    return cards;
   }
 
   function renderComparison(quotes) {
@@ -93,19 +146,7 @@
     head.appendChild(headRow);
     table.appendChild(head);
     const body = doc.createElement('tbody');
-    const rows = [
-      [zh ? '地区与类型' : 'Area and type', quote => `${root.KHGSavedQuotes.districtLabel(quote.districtCode, language)} · ${root.KHGSavedQuotes.propertyLabel(quote.propertyType, language)}`],
-      [zh ? '面积' : 'Size', quote => `${quote.areaSqm.toLocaleString(locale)}㎡`],
-      [zh ? '押金' : 'Deposit', quote => ({ money:quote.depositWon })],
-      [zh ? '月租' : 'Monthly rent', quote => ({ money:quote.monthlyRentWon })],
-      [zh ? '可比成交中位数' : 'Comparable median', quote => quote.medianValueWon == null ? '—' : ({ money:quote.medianValueWon })],
-      [zh ? '与中位数的差异' : 'Difference from median', quote => percentText(quote.differencePct)],
-      [zh ? '近期成交判断' : 'Recent-contract verdict', quote => ratingLabel(quote.rating)],
-      [zh ? '依据等级' : 'Evidence level', quote => confidenceLabel(quote.confidence)],
-      [zh ? '可比成交数量' : 'Comparable contracts', quote => String(quote.comparableCount)],
-      [zh ? '数据截至月份' : 'Data through', quote => quote.dataThroughMonth || '—'],
-      [zh ? '保存日期' : 'Saved', quote => new Date(quote.savedAt).toLocaleDateString(locale)]
-    ];
+    const rows = comparisonRows();
     rows.forEach(([label, valueFor]) => {
       const row = doc.createElement('tr');
       row.appendChild(textCell(label, 'th'));
@@ -118,6 +159,7 @@
     table.appendChild(body);
     tableWrap.appendChild(table);
     compareNode.appendChild(tableWrap);
+    compareNode.appendChild(renderComparisonCards(chosen, rows));
     const note = doc.createElement('p');
     note.className = 'saved-homes-limit-note';
     note.textContent = zh
@@ -172,6 +214,61 @@
       const verdict = doc.createElement('p');
       verdict.className = `saved-home-verdict ${quote.rating}`;
       verdict.textContent = `${ratingLabel(quote.rating)} · ${confidenceLabel(quote.confidence)}`;
+      const actions = doc.createElement('div');
+      actions.className = 'saved-home-actions';
+      const edit = doc.createElement('button');
+      edit.type = 'button';
+      edit.className = 'saved-home-edit';
+      edit.textContent = zh ? '修改备注' : 'Edit label';
+      const editForm = doc.createElement('form');
+      editForm.className = 'saved-home-edit-form';
+      editForm.hidden = true;
+      const editInput = doc.createElement('input');
+      editInput.type = 'text';
+      editInput.maxLength = 60;
+      editInput.autocomplete = 'off';
+      editInput.value = quote.label;
+      editInput.setAttribute('aria-label', zh ? '房源备注' : 'Home label');
+      const editSave = doc.createElement('button');
+      editSave.type = 'submit';
+      editSave.textContent = zh ? '保存' : 'Save';
+      const editCancel = doc.createElement('button');
+      editCancel.type = 'button';
+      editCancel.textContent = zh ? '取消' : 'Cancel';
+      edit.addEventListener('click', () => {
+        editForm.hidden = false;
+        edit.hidden = true;
+        editInput.focus();
+      });
+      editCancel.addEventListener('click', () => {
+        editForm.hidden = true;
+        edit.hidden = false;
+      });
+      editForm.addEventListener('submit', event => {
+        event.preventDefault();
+        if (!store.updateLabel(quote.id, editInput.value)) {
+          setStatus(zh ? '无法修改备注。请检查浏览器存储设置。' : 'The label could not be updated. Check browser storage settings.', 'error');
+          return;
+        }
+        setStatus(zh ? '房源备注已更新。' : 'Home label updated.', 'success');
+        safeTrack('saved_quote_label_updated', store.list().length);
+        render();
+      });
+      editForm.append(editInput, editSave, editCancel);
+      const recheck = doc.createElement('a');
+      recheck.className = 'saved-home-recheck';
+      const sourcePath = zh ? '/zh/saved-homes/' : '/saved-homes/';
+      const rentCheckPath = zh ? '/zh/tools/seoul-rent-check/' : '/tools/seoul-rent-check/';
+      recheck.href = `${rentCheckPath}?${new URLSearchParams({ lawdCd:quote.districtCode, type:quote.propertyType, from:sourcePath })}`;
+      recheck.textContent = zh ? '按原条件重新检查' : 'Recheck this quote';
+      recheck.addEventListener('click', event => {
+        if (!root.KHGSavedQuotes.writeRecheckPrefill(sessionStorage, quote, { from:sourcePath })) {
+          event.preventDefault();
+          setStatus(zh ? '当前浏览器无法安全传递报价，请重新输入。' : 'This browser could not pass the quote safely. Please enter it again.', 'error');
+          return;
+        }
+        safeTrack('saved_quote_recheck', store.list().length);
+      });
       const remove = doc.createElement('button');
       remove.type = 'button';
       remove.className = 'saved-home-remove';
@@ -182,7 +279,8 @@
         safeTrack('saved_quote_removed', store.list().length);
         render();
       });
-      card.append(selectLabel, meta, price, verdict, remove);
+      actions.append(edit, recheck, remove);
+      card.append(selectLabel, meta, price, verdict, actions, editForm);
       listNode.appendChild(card);
     });
     renderComparison(quotes);

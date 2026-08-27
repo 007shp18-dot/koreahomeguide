@@ -33,6 +33,15 @@ test('normalizes only supported, bounded rent-check fields and sanitizes labels'
   assert.equal(saved.normalizeQuote(quote({ districtCode:'99999' })), null);
 });
 
+test('studio quotes can be saved and localized', () => {
+  const result = saved.normalizeQuote(quote({ propertyType:'studio' }), {
+    now:Date.UTC(2026, 7, 27), idFactory:() => 'studio-1'
+  });
+  assert.equal(result.propertyType, 'studio');
+  assert.equal(saved.propertyLabel('studio', 'en'), 'Studio / One-room');
+  assert.equal(saved.propertyLabel('studio', 'zh-CN'), '单间 / One-room');
+});
+
 test('store keeps at most eight newest quotes and supports remove and clear', () => {
   const storage = memoryStorage();
   let clock = Date.UTC(2026, 7, 27);
@@ -46,6 +55,32 @@ test('store keeps at most eight newest quotes and supports remove and clear', ()
   assert.equal(store.list().some(item => item.id === removed), false);
   assert.equal(store.clear(), true);
   assert.deepEqual(store.list(), []);
+});
+
+test('store updates an identical labeled quote instead of adding a duplicate', () => {
+  const storage = memoryStorage();
+  let clock = Date.UTC(2026, 7, 27);
+  let id = 0;
+  const store = saved.createStore({ storage, now:() => clock++, idFactory:() => `q-${++id}` });
+  const first = store.save(quote({ label:'Mapo A', medianValueWon:1_100_000 }));
+  const updated = store.save(quote({ label:'  Mapo A  ', medianValueWon:1_250_000 }));
+  assert.equal(store.list().length, 1);
+  assert.equal(updated.id, first.id);
+  assert.equal(store.list()[0].medianValueWon, 1_250_000);
+  const separate = store.save(quote({ label:'Mapo B' }));
+  assert.notEqual(separate.id, first.id);
+  assert.equal(store.list().length, 2);
+});
+
+test('store edits only the saved home label', () => {
+  const storage = memoryStorage();
+  const store = saved.createStore({ storage, now:() => Date.UTC(2026, 7, 27), idFactory:() => 'q-1' });
+  const original = store.save(quote({ label:'Old label' }));
+  const updated = store.updateLabel(original.id, '  New\u0000 label  ');
+  assert.equal(updated.label, 'New label');
+  assert.equal(updated.id, original.id);
+  assert.equal(updated.depositWon, original.depositWon);
+  assert.equal(store.updateLabel('missing', 'Nope'), null);
 });
 
 test('expired quotes are pruned on read', () => {
@@ -63,4 +98,27 @@ test('analytics uses only a saved-count bucket', () => {
   assert.equal(saved.countBucket(0), '0');
   assert.equal(saved.countBucket(2), '2');
   assert.equal(saved.countBucket(3), '3+');
+});
+
+test('recheck prefill is private, short-lived, and consumed once', () => {
+  const storage = memoryStorage();
+  const now = Date.UTC(2026, 7, 27, 10);
+  assert.equal(saved.writeRecheckPrefill(storage, quote({ label:'Private label' }), { now }), true);
+  const raw = storage.values.get(saved.RECHECK_STORAGE_KEY);
+  assert.doesNotMatch(raw, /Private label|medianValueWon|differencePct/);
+  assert.deepEqual(saved.takeRecheckPrefill(storage, { now:now + 1000 }), {
+    lawdCd:'11440', type:'officetel', depositWon:10000000, rentWon:1200000, areaSqm:25,
+    from:'/saved-homes/'
+  });
+  assert.equal(saved.takeRecheckPrefill(storage, { now:now + 2000 }), null);
+  saved.writeRecheckPrefill(storage, quote(), { now });
+  assert.equal(saved.takeRecheckPrefill(storage, { now:now + saved.RECHECK_TTL_MS + 1 }), null);
+});
+
+test('comparison visit marker detects a return only after the cooldown', () => {
+  const storage = memoryStorage();
+  const start = Date.UTC(2026, 7, 27, 10);
+  assert.equal(saved.markComparisonVisit(storage, { now:start }), false);
+  assert.equal(saved.markComparisonVisit(storage, { now:start + saved.RETURN_VISIT_MS - 1 }), false);
+  assert.equal(saved.markComparisonVisit(storage, { now:start + saved.RETURN_VISIT_MS + 1 }), true);
 });

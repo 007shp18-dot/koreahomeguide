@@ -63,3 +63,40 @@ test('comparison includes market context and keeps row labels visible while scro
   assert.match(source, /可比成交中位数/);
   assert.match(css, /\.saved-homes-table th:first-child\{position:sticky/);
 });
+
+test('saved-home comparison supports editing, private rechecks, and mobile cards', () => {
+  const source = fs.readFileSync('saved-homes-page.js', 'utf8');
+  const css = fs.readFileSync('styles.css', 'utf8');
+  assert.match(source, /saved-home-edit/);
+  assert.match(source, /updateLabel\(/);
+  assert.match(source, /writeRecheckPrefill\(/);
+  assert.match(source, /saved-home-recheck/);
+  assert.match(source, /saved-homes-comparison-cards/);
+  assert.match(source, /saved_quotes_return_visit/);
+  assert.match(css, /\.saved-homes-comparison-cards/);
+  assert.match(css, /@media\(max-width:760px\)[^{]*\{[^}]*\.saved-homes-table-wrap\{display:none\}/s);
+  for (const file of ['saved-homes/index.html','zh/saved-homes/index.html']) {
+    const html = fs.readFileSync(file, 'utf8');
+    assert.match(html, /id="savedHomesStatus"/);
+  }
+});
+
+test('Rent Check consumes saved-home recheck values without putting prices in the page URL', () => {
+  const comparisonSource = fs.readFileSync('saved-homes-page.js', 'utf8');
+  assert.match(comparisonSource, /new URLSearchParams\(\{ lawdCd:quote\.districtCode, type:quote\.propertyType, from:sourcePath \}\)/);
+  assert.doesNotMatch(comparisonSource, /new URLSearchParams\(\{[^}]+(?:depositWon|monthlyRentWon|areaSqm)/);
+  for (const file of ['app.js','zh/app.js','tools/seoul-rent-check/app.js','zh/tools/seoul-rent-check/app.js']) {
+    const source = fs.readFileSync(file, 'utf8');
+    assert.match(source, /takeRecheckPrefill\(window\.sessionStorage/);
+  }
+});
+
+test('studio results keep their user-facing type when saved while APIs use the official fallback', () => {
+  const savedSource = fs.readFileSync('saved-rent-quotes.js', 'utf8');
+  assert.match(savedSource, /savedPropertyType/);
+  for (const file of ['app.js','zh/app.js','tools/seoul-rent-check/app.js','zh/tools/seoul-rent-check/app.js']) {
+    const source = fs.readFileSync(file, 'utf8');
+    assert.match(source, /savedPropertyType:type\.value/, file);
+    assert.match(source, /propertyType:mapped\.officialType/, file);
+  }
+});
