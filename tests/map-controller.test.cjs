@@ -10,8 +10,16 @@ test('map SDK URL requests asynchronous loading and the advanced-marker library'
     v:'weekly',
     loading:'async',
     libraries:'marker',
-    callback:'maps-ready'
+    callback:'maps-ready',
+    language:'en',
+    region:'KR'
   });
+});
+
+test('map SDK follows the Explorer locale while keeping Korean regional bias', () => {
+  const url = new URL(controller.buildMapsSdkUrl({ apiKey:'browser key', callback:'maps-ready', locale:'zh-CN' }));
+  assert.equal(url.searchParams.get('language'), 'zh-CN');
+  assert.equal(url.searchParams.get('region'), 'KR');
 });
 
 test('marker models preserve raw dong IDs and localize labels', () => {
@@ -192,6 +200,13 @@ test('advanced markers require a production map ID and runtime capability suppor
 
 test('missing neighborhood coordinates are omitted rather than guessed', () => {
   assert.deepEqual(controller.buildMarkerModels({ lawdCd:'11440', locale:'en', dongs:[{ dong:'없는동', contractCount:1 }] }), []);
+});
+
+test('all ten supported districts include mapped, localized legal neighborhoods', () => {
+  const [model] = controller.buildMarkerModels({ lawdCd:'11620', locale:'en', dongs:[{ dong:'봉천동', contractCount:7 }] });
+  assert.equal(model.label, 'Bongcheon-dong (봉천동)');
+  assert.equal(model.districtCode, '11620');
+  assert.equal(Number.isFinite(model.lat) && Number.isFinite(model.lng), true);
 });
 
 test('selection returns a new immutable state', () => {

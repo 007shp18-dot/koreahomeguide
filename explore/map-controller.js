@@ -37,13 +37,16 @@
     return 10;
   }
 
-  function buildMapsSdkUrl({ apiKey = '', callback = '' } = {}) {
+  function buildMapsSdkUrl({ apiKey = '', callback = '', locale = 'en' } = {}) {
+    const language = String(locale || '').toLowerCase().startsWith('zh') ? 'zh-CN' : 'en';
     const params = new URLSearchParams({
       key:String(apiKey),
       v:'weekly',
       loading:'async',
       libraries:'marker',
-      callback:String(callback)
+      callback:String(callback),
+      language,
+      region:'KR'
     });
     return `https://maps.googleapis.com/maps/api/js?${params.toString()}`;
   }
