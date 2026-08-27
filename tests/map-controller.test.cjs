@@ -151,7 +151,7 @@ test('advanced pin visuals preserve marker meaning, count, and selected state', 
     scale:1.17
   });
   assert.equal(controller.advancedPinVisual({ tone:'outside', scale:10, contractCount:0 }).glyphText, '');
-  assert.equal(controller.advancedPinVisual({ tone:'strong', scale:14, contractCount:1250 }).glyphText, '999+');
+  assert.equal(controller.advancedPinVisual({ tone:'strong', scale:14, contractCount:1250 }).glyphText, '99+');
   assert.equal(controller.advancedPinVisual({ tone:'limited', scale:10, contractCount:8 }, true).background, '#2563eb');
 });
 
@@ -160,7 +160,13 @@ test('advanced pin glyphs shrink as contract counts gain digits', () => {
   assert.equal(controller.advancedPinVisual({ contractCount:66 }).glyphFontSize, '9px');
   assert.equal(controller.advancedPinVisual({ contractCount:159 }).glyphFontSize, '8px');
   assert.equal(controller.advancedPinVisual({ contractCount:885 }).glyphFontSize, '8px');
-  assert.equal(controller.advancedPinVisual({ contractCount:1250 }).glyphFontSize, '7px');
+  assert.equal(controller.advancedPinVisual({ contractCount:1250 }).glyphFontSize, '8px');
+});
+
+test('advanced pin glyphs cap three-digit counts while titles retain the exact total', () => {
+  assert.equal(controller.advancedPinVisual({ contractCount:99 }).glyphText, '99');
+  assert.equal(controller.advancedPinVisual({ contractCount:100 }).glyphText, '99+');
+  assert.equal(controller.advancedPinVisual({ contractCount:885 }).glyphText, '99+');
 });
 
 test('advanced markers require a production map ID and runtime capability support', () => {
