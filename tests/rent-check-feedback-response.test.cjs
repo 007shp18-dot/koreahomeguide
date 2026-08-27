@@ -115,16 +115,17 @@ test('result-specific next step makes an above-market verdict actionable', () =>
   assert.deepEqual(enUI.resultNextStep('above'), {
     heading:'Before you accept this quote',
     body:'Review the price difference and the contract checks that matter before you sign or transfer money.',
-    primary:{ id:'signing_questions', label:'Review questions before signing', href:'/guides/before-you-sign/' },
-    secondary:{ id:'explore_signed_rents', label:'Explore recent signed rents', href:'explore' }
+    primary:{ id:'explore_signed_rents', label:'Explore recent signed rents', href:'explore' }
   });
   assert.deepEqual(zhUI.resultNextStep('above'), {
     heading:'接受这个报价之前',
     body:'签约或转账前，请先核对价格差异以及合同中需要确认的事项。',
-    primary:{ id:'signing_questions', label:'查看签约前应问的问题', href:'/zh/guides/before-you-sign/' },
-    secondary:{ id:'explore_signed_rents', label:'查看近期已签约租金', href:'explore' }
+    primary:{ id:'explore_signed_rents', label:'查看近期已签约租金', href:'explore' }
   });
-  assert.equal(enUI.resultNextStep('fair').primary.href, 'explore');
+  assert.equal(enUI.resultNextStep('fair').primary.href, '/guides/before-you-sign/');
+  assert.equal(enUI.resultNextStep('below').primary.href, '/guides/before-you-sign/');
+  assert.equal(enUI.resultNextStep('insufficient').primary.href, 'explore');
+  assert.equal(zhUI.resultNextStep('fair').primary.href, '/zh/guides/before-you-sign/');
 });
 
 test('next-step Explorer URL preserves only an approved district and property type', () => {
@@ -155,14 +156,16 @@ test('all EN and ZH Rent Check surfaces expose confidence details and next actio
     assert.match(app, /rentCheckConfidenceExplanation/);
     assert.match(app, /rentCheckNextStep/);
     assert.match(app, /rentCheckNextPrimary/);
-    assert.match(app, /rentCheckNextSecondary/);
+    assert.doesNotMatch(app, /rentCheckNextSecondary/);
+    assert.doesNotMatch(html, /rentCheckNextSecondary/);
     assert.match(app, /KHGRentCheckUI\.confidenceExplanation\(data,mapped\.isStudioMapped\)/);
     assert.match(app, /confidenceSummary\.textContent=KHGRentCheckUI\.confidenceQuestion\(data\)/);
     assert.match(app, /facts\.methodLabel/);
     assert.match(app, /KHGRentCheckUI\.resultNextStep\(data\.rating\)/);
     assert.match(app, /KHGRentCheckUI\.explorerUrl\(area\.value,mapped\.officialType,language\)/);
     assert.match(app, /rent_check_next_action/);
-    assert.match(app, /summaryPanel\.insertAdjacentElement\('afterend',nextStep\)/);
+    assert.match(app, /savedMount\.insertAdjacentElement\('beforebegin',nextStep\)/);
+    assert.ok(html.indexOf('id="rentCheckComparableBody"') < html.indexOf('data-saved-quote-mount'), htmlFile);
   }
 });
 

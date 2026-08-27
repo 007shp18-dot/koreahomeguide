@@ -185,8 +185,8 @@
       panel.innerHTML = language === 'zh-CN'
         ? '<div><span class="eyebrow">保存到本机</span><h3>之后和其他房源一起比较</h3><p>只保存在当前浏览器90天。不要填写房东、中介或准确房号。</p></div><div class="saved-quote-form"><label><span>房源备注（可选）</span><input type="text" maxlength="60" autocomplete="off" placeholder="例如：麻浦办公住宅 A"></label><button type="button" class="saved-quote-save">保存这个报价</button></div><p class="saved-quote-status" aria-live="polite"></p><a class="saved-quote-compare" href="/zh/saved-homes/" hidden>查看已保存房源 →</a>'
         : '<div><span class="eyebrow">SAVE ON THIS DEVICE</span><h3>Compare this home later</h3><p>Saved in this browser for 90 days. Do not enter a landlord, broker, or exact unit number.</p></div><div class="saved-quote-form"><label><span>Home label (optional)</span><input type="text" maxlength="60" autocomplete="off" placeholder="For example: Mapo officetel A"></label><button type="button" class="saved-quote-save">Save this quote</button></div><p class="saved-quote-status" aria-live="polite"></p><a class="saved-quote-compare" href="/saved-homes/" hidden>View saved homes →</a>';
-      const summary = result.querySelector('.rent-check-summary');
-      if (summary) summary.insertAdjacentElement('afterend', panel);
+      const mount = result.querySelector('[data-saved-quote-mount]');
+      if (mount) mount.appendChild(panel);
       else result.appendChild(panel);
       const input = panel.querySelector('input');
       const button = panel.querySelector('button');

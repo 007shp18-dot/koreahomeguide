@@ -38,12 +38,21 @@ test('saved comparison code avoids account, address, landlord, and broker data f
   assert.doesNotMatch(source, /fetch\(/);
 });
 
-test('saved quote flow surfaces the comparison action and prevents duplicate saves', () => {
+test('saved quote flow mounts after result evidence and prevents duplicate saves', () => {
   const source = fs.readFileSync('saved-rent-quotes.js', 'utf8');
-  assert.match(source, /summary\.insertAdjacentElement\('afterend', panel\)/);
+  assert.match(source, /result\.querySelector\('\[data-saved-quote-mount\]'\)/);
+  assert.match(source, /mount\.appendChild\(panel\)/);
   assert.match(source, /savedCurrentResult = true/);
   assert.match(source, /button\.disabled = true/);
   assert.match(source, /class="saved-quote-compare"/);
+  for (const file of ['index.html','zh/index.html','tools/seoul-rent-check/index.html','zh/tools/seoul-rent-check/index.html']) {
+    const html = fs.readFileSync(file, 'utf8');
+    const evidence = html.indexOf('id="rentCheckComparableBody"');
+    const mount = html.indexOf('data-saved-quote-mount');
+    assert.ok(evidence >= 0 && mount > evidence, file);
+    const next = html.indexOf('id="rentCheckNextPrimary"');
+    if (next >= 0) assert.ok(mount > next, file);
+  }
 });
 
 test('comparison includes market context and keeps row labels visible while scrolling', () => {

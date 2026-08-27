@@ -62,31 +62,27 @@
       return {
         heading:'接受这个报价之前',
         body:'签约或转账前，请先核对价格差异以及合同中需要确认的事项。',
-        primary:signing,
-        secondary:explore
+        primary:explore
       };
     }
     if (rating === 'below') {
       return {
         heading:'较低的报价仍需要核对合同',
         body:'先比较附近的已签约租金，再确认房东、登记簿、费用和押金保障。',
-        primary:explore,
-        secondary:signing
+        primary:signing
       };
     }
     if (rating === 'insufficient') {
       return {
         heading:'下一步查看更广泛的市场',
         body:'相近成交数量不足，无法给出判断；请先查看近期已签约租金。',
-        primary:explore,
-        secondary:signing
+        primary:explore
       };
     }
     return {
       heading:'价格接近市场水平，下一步核对合同',
       body:'价格看起来合理，并不代表房东、登记簿、费用或押金保障已经确认。',
-      primary:explore,
-      secondary:signing
+      primary:signing
     };
   }
 

@@ -40,8 +40,8 @@ test('primary navigation stays focused on Explore, Rent Check, and Guides on key
 test('calculator and market modules are fully converted from the old dark/green theme', () => {
   const css = read('styles.css');
   assert.match(css, /\.calculator-card\.white-first-calculator|\.calculator-card\{[^}]*color:\s*var\(--ink\)/s);
-  assert.match(css, /\.breakdown-item\.white-first-breakdown|\.calculator-card\s+\.breakdown-item\{[^}]*background:\s*#fff/s);
-  assert.match(css, /\.market-metric-grid>div\.white-first-market|\.market-page\s+\.market-metric-grid>div\{[^}]*background:\s*#fff/s);
+  assert.match(css, /\.breakdown-item\.white-first-breakdown|\.calculator-card\s+\.breakdown-item\{[^}]*background:\s*var\(--surface\)/s);
+  assert.match(css, /\.market-metric-grid>div\.white-first-market|\.market-page\s+\.market-metric-grid>div\{[^}]*background:\s*var\(--surface\)/s);
   assert.match(css, /\.market-page\s+\.market-note\{[^}]*border-left[^;]*var\(--accent\)/s);
 });
 

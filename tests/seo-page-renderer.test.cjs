@@ -65,19 +65,21 @@ test('English Dong HTML has canonical, hreflang, index metadata, Dataset JSON-LD
   assert.match(html, /src="\/acquisition-links\.js"/);
   assert.ok(html.indexOf('/acquisition-context.js') < html.indexOf('/acquisition-links.js'));
   assert.match(html, /Jul 31, 2026/);
-  assert.match(html, /\$504/); // 700,000 KRW at injected test rate
+  assert.match(html, /class="seo-money money-primary">₩700,000/);
+  assert.match(html, /class="seo-fx fx-secondary">≈ \$504/); // 700,000 KRW at injected test rate
   assert.ok(!html.includes('A <Villa>'), 'dynamic building names must be escaped');
   assert.ok(html.includes('A &lt;Villa&gt;'));
 });
 
-test('Chinese Dong HTML is genuinely localized and uses CNY as primary display', () => {
+test('Chinese Dong HTML is genuinely localized and keeps KRW primary', () => {
   const html = renderDongPage(base('zh'));
   assert.match(html, /<html lang="zh-CN">/);
   assert.match(html, /麻浦区（마포구）/);
   assert.match(html, /延南洞（연남동）/);
   assert.match(html, /租金行情/);
   assert.match(html, /2026年7月31日/);
-  assert.match(html, /¥3,640/); // 700,000 KRW at injected test rate
+  assert.match(html, /class="seo-money money-primary">₩700,000/);
+  assert.match(html, /class="seo-fx fx-secondary">≈ ¥3,640/); // 700,000 KRW at injected test rate
   assert.match(html, /韩国国土交通部/);
   assert.doesNotMatch(html, /Median monthly rent/);
 });

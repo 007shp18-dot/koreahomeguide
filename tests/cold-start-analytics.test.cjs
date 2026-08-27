@@ -41,7 +41,10 @@ function bootRentCheckRuntime(file, { districtCode = '11680', propertyType = 'ap
     window,
     document:doc,
     location:{ pathname:'/tools/seoul-rent-check/', search:'' },
-    KHGCurrency:{ convertToKrw(value) { return value; } },
+    KHGCurrency:{
+      parseInputAmount(value) { return Number(String(value).replace(/,/g, '')); },
+      convertToKrw(value) { return value; }
+    },
     KHGRentCheckUI:{
       mapRentCheckType(value) { return { officialType:value === 'studio' ? 'detached' : value }; },
       humanizeRentCheckError() { return 'Rent comparison failed.'; }

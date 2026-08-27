@@ -14,14 +14,15 @@ async function bootCurrencyRuntime(file) {
   const currency = require('../currency-utils.js');
   const inputListeners = new Map();
   const controlListeners = new Map();
-  const deposit = {
-    id:'rentCheckDeposit', value:'', dataset:{ krwValue:'10000000', krwStep:'100000' },
-    addEventListener(type, handler) { inputListeners.set(`deposit:${type}`, handler); }
-  };
-  const rent = {
-    id:'rentCheckRent', value:'', dataset:{ krwValue:'1200000', krwStep:'10000' },
-    addEventListener(type, handler) { inputListeners.set(`rent:${type}`, handler); }
-  };
+  const fetchUrls = [];
+  const inputNode = (id, krwValue, krwStep) => ({
+    id, value:'', dataset:{ krwValue, krwStep },
+    addEventListener(type, handler) { inputListeners.set(`${id === 'rentCheckDeposit' ? 'deposit' : 'rent'}:${type}`, handler); },
+    setAttribute(name, value) { this[name] = String(value); },
+    removeAttribute(name) { delete this[name]; }
+  });
+  const deposit = inputNode('rentCheckDeposit', '10000000', '100000');
+  const rent = inputNode('rentCheckRent', '1200000', '10000');
   const depositReference = { textContent:'' };
   const rentReference = { textContent:'' };
   const currencyCodes = [{ textContent:'' }, { textContent:'' }];
@@ -29,6 +30,8 @@ async function bootCurrencyRuntime(file) {
     value:'USD', disabled:false,
     addEventListener(type, handler) { controlListeners.set(type, handler); }
   };
+  const form = { addEventListener(type, handler) { controlListeners.set(`form:${type}`, handler); } };
+  const status = { textContent:'', className:'' };
   const domNode = () => ({
     hidden:false, open:false, textContent:'', innerHTML:'', dataset:{},
     style:{ left:'' }, classList:{ toggle() {}, remove() {} },
@@ -38,14 +41,14 @@ async function bootCurrencyRuntime(file) {
   });
   const elements = {
     '#currencySelect':currencySelect,
-    '#rentCheckForm':null,
+    '#rentCheckForm':form,
     '#rentCheckArea':{ value:'11680', options:[] },
     '#rentCheckType':{ value:'apartment', options:[], addEventListener() {} },
     '#rentCheckDeposit':deposit,
     '#rentCheckRent':rent,
     '#rentCheckAreaSqm':{ value:'25' },
     '#rentCheckButton':{ disabled:false },
-    '#rentCheckStatus':{ textContent:'', className:'' },
+    '#rentCheckStatus':status,
     '#rentCheckResult':{ hidden:true, querySelector() { return domNode(); } },
     '#rentCheckStudioNote':{ hidden:true }
   };
@@ -70,7 +73,10 @@ async function bootCurrencyRuntime(file) {
     location:{ pathname:file.includes('/tools/') ? '/tools/seoul-rent-check/' : '/', search:'' },
     KHGCurrency:currency,
     KHGRentCheckUI:{ mapRentCheckType(value) { return { officialType:value }; } },
-    fetch:async () => ({ ok:true, json:async () => ({ rates:{ USD:0.00072, CNY:0.0052 } }) })
+    fetch:async url => {
+      fetchUrls.push(String(url));
+      return { ok:true, json:async () => ({ rates:{ USD:0.00072, CNY:0.0052 } }) };
+    }
   };
   vm.runInNewContext(fs.readFileSync(file, 'utf8'), context, { filename:file });
   await new Promise(resolve => setImmediate(resolve));
@@ -79,9 +85,56 @@ async function bootCurrencyRuntime(file) {
     depositReference,
     currencyCodes,
     currencySelect,
+    status,
+    fetchUrls,
     changeCurrency:controlListeners.get('change'),
-    input:inputListeners.get('deposit:input')
+    input:inputListeners.get('deposit:input'),
+    submit:controlListeners.get('form:submit')
   };
+}
+
+async function bootCalculatorRuntime(file) {
+  const currency = require('../currency-utils.js');
+  const brokerage = require('../brokerage-utils.js');
+  const listeners = new Map();
+  const values = {
+    deposit:'10000000', rent:'1000000', maintenance:'100000',
+    guaranteeInsurance:'0', movingCleaning:'0'
+  };
+  const inputs = Object.fromEntries(Object.entries(values).map(([id, krwValue]) => [id, {
+    id, value:'', dataset:{ krwValue },
+    addEventListener(type, handler) { listeners.set(`${id}:${type}`, handler); },
+    setAttribute(name, value) { this[name] = String(value); },
+    removeAttribute(name) { delete this[name]; }
+  }]));
+  const currencySelect = { value:'KRW', disabled:false, addEventListener(type, handler) { listeners.set(`currency:${type}`, handler); } };
+  const property = { value:'housing', addEventListener(type, handler) { listeners.set(`property:${type}`, handler); } };
+  const outputs = Object.fromEntries(['transactionValueResult','brokerageRateResult','brokerageFeeResult','calcResult','monthlyCostResult','transactionFormula'].map(id => [id, { innerHTML:'', textContent:'' }]));
+  const references = Object.fromEntries(Object.keys(inputs).map(id => [id, { textContent:'' }]));
+  const document = {
+    documentElement:{ lang:file.startsWith('zh/') ? 'zh-CN' : 'en' },
+    querySelector(selector) {
+      if (selector === '#currencySelect') return currencySelect;
+      if (selector === '#calcPropertyType') return property;
+      if (selector === '#calcForm') return { addEventListener() {} };
+      if (selector.startsWith('#')) return inputs[selector.slice(1)] || outputs[selector.slice(1)] || null;
+      const reference = selector.match(/^\[data-currency-reference-for="([^"]+)"\]$/);
+      return reference ? references[reference[1]] : null;
+    },
+    querySelectorAll(selector) {
+      if (selector === '[data-currency-input]') return Object.values(inputs);
+      if (selector === '[data-currency-symbol]') return [];
+      return [];
+    }
+  };
+  vm.runInNewContext(fs.readFileSync(file, 'utf8'), {
+    document,
+    KHGCurrency:currency,
+    KHGBrokerage:brokerage,
+    fetch:async () => ({ ok:true, json:async () => ({ rates:{ USD:0.00072, CNY:0.0052 } }) })
+  }, { filename:file });
+  await new Promise(resolve => setImmediate(resolve));
+  return { inputs, outputs, input:listeners.get('deposit:input') };
 }
 
 test('currency utilities convert user-entered USD/CNY back to KRW', () => {
@@ -93,11 +146,11 @@ test('currency utilities convert user-entered USD/CNY back to KRW', () => {
   assert.equal(fx.convertToKrw(1_200_000, 'KRW', {}), 1_200_000);
 });
 
-test('selected foreign currency is primary while KRW remains visible as reference', () => {
+test('official KRW stays primary while selected foreign currency remains visible as reference', () => {
   const fx = require('../currency-utils.js');
   const html = fx.formatMoneyHtml(1_200_000, 'USD', { USD: 0.00072 }, 'en-US');
-  assert.match(html, /money-primary[^>]*>\$864/);
-  assert.match(html, /fx-secondary[^>]*>≈ ₩1,200,000/);
+  assert.match(html, /money-primary[^>]*>₩1,200,000/);
+  assert.match(html, /fx-secondary[^>]*>≈ \$864/);
 });
 
 test('cold-start home keeps the Rent Check money inputs currency-aware on both locales', () => {
@@ -105,6 +158,7 @@ test('cold-start home keeps the Rent Check money inputs currency-aware on both l
     const html = fs.readFileSync(file, 'utf8');
     for (const id of ['rentCheckDeposit','rentCheckRent']) {
       assert.match(html, new RegExp(`data-currency-input[^>]*id="${id}"|id="${id}"[^>]*data-currency-input`));
+      assert.match(html, new RegExp(`id="${id}"[^>]*type="text"[^>]*inputmode="numeric"`));
     }
     assert.match(html, /data-currency-symbol/);
     assert.doesNotMatch(html, /id="movingCleaning"/);
@@ -125,8 +179,34 @@ test('editing a foreign-currency Rent Check amount refreshes its KRW reference i
     const runtime = await bootCurrencyRuntime(file);
     runtime.deposit.value = '10000';
     runtime.input();
+    assert.equal(runtime.deposit.value, '10,000', file);
     assert.equal(runtime.deposit.dataset.krwValue, '13888889', file);
     assert.equal(runtime.depositReference.textContent, '≈ ₩13,888,889', file);
+  }
+});
+
+test('invalid or negative Rent Check money never reuses a stale KRW value or calls the API', async () => {
+  for (const file of rentCheckRuntimeFiles) {
+    for (const invalid of ['abc', '-1']) {
+      const runtime = await bootCurrencyRuntime(file);
+      runtime.deposit.value = invalid;
+      runtime.input();
+      assert.equal(Object.hasOwn(runtime.deposit.dataset, 'krwValue'), false, `${file}: ${invalid}`);
+      await runtime.submit({ preventDefault() {} });
+      assert.match(runtime.status.className, /error/, `${file}: ${invalid}`);
+      assert.equal(runtime.fetchUrls.some(url => url.startsWith('/api/rent-check?')), false, `${file}: ${invalid}`);
+    }
+  }
+});
+
+test('invalid calculator money clears stale computed results', async () => {
+  for (const file of ['tools/brokerage-fee-calculator/app.js','zh/tools/brokerage-fee-calculator/app.js']) {
+    const runtime = await bootCalculatorRuntime(file);
+    runtime.inputs.deposit.value = 'abc';
+    runtime.input();
+    assert.equal(Object.hasOwn(runtime.inputs.deposit.dataset, 'krwValue'), false, file);
+    assert.equal(runtime.outputs.calcResult.innerHTML, '—', file);
+    assert.equal(runtime.outputs.monthlyCostResult.innerHTML, '—', file);
   }
 });
 

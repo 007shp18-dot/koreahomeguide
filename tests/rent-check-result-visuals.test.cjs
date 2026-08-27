@@ -124,5 +124,5 @@ test('result visuals keep mobile evidence compact and controls touchable', () =>
   assert.match(css, /\.rent-check-evidence-facts/);
   assert.match(css, /\.rent-check-comparables-toggle\{[^}]*min-height:44px/);
   assert.match(css, /@media\(max-width:760px\)[^{]*\{[^}]*\.rent-check-mobile-extra\{[^}]*display:none/);
-  assert.match(cold, /\.lead-capture\{[^}]*background:#fff/);
+  assert.match(cold, /\.lead-capture\{[^}]*background:var\(--surface\)/);
 });

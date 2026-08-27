@@ -43,10 +43,10 @@ test('calculator result amounts inherit the large result typography', () => {
 
 test('calculator labels and supporting values meet the readable type floor', () => {
   const css = fs.readFileSync('styles.css', 'utf8');
-  assert.match(css, /\.calculator-card label>span\{[^}]*font-size:12px/);
-  assert.match(css, /\.breakdown-item>span\{[^}]*font-size:11px/);
-  assert.match(css, /\.breakdown-item>small\{[^}]*font-size:11px/);
-  assert.match(css, /\.calc-output>span\{[^}]*font-size:11px/);
-  assert.match(css, /\.calc-output>small\{[^}]*font-size:11px/);
-  assert.match(css, /\.calculator-card \.fx-secondary\{[^}]*font-size:11px/);
+  assert.match(css, /\.calculator-card label>span\{[^}]*font-size:var\(--text-xs\)/);
+  assert.match(css, /\.breakdown-item>span\{[^}]*font-size:var\(--text-xs\)/);
+  assert.match(css, /\.breakdown-item>small\{[^}]*font-size:var\(--text-xs\)/);
+  assert.match(css, /\.calc-output>span\{[^}]*font-size:var\(--text-xs\)/);
+  assert.match(css, /\.calc-output>small\{[^}]*font-size:var\(--text-xs\)/);
+  assert.match(css, /\.calculator-card \.fx-secondary\{[^}]*font-size:var\(--text-xs\)/);
 });

@@ -24,7 +24,7 @@ test('all 15 Chinese rent market pages exist and are localized', () => {
       assert.match(html, new RegExp(`https://koreahomeguide.com/zh/rent/${district}/${type}/`));
       assert.match(html, new RegExp(`hreflang="en" href="https://koreahomeguide.com/rent/${district}/${type}/"`));
       assert.match(html, new RegExp(`hreflang="zh-CN" href="https://koreahomeguide.com/zh/rent/${district}/${type}/"`));
-      assert.match(html, /<option value="CNY" selected>/);
+      assert.match(html, /<option value="KRW" selected>/);
       assert.match(html, /\/zh\/explore\/\?lawdCd=/);
       assert.match(html, /\/zh\/tools\/seoul-rent-check\//);
       assert.match(html, /\/zh\/tools\/brokerage-fee-calculator\//);

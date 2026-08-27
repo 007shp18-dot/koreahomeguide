@@ -63,31 +63,27 @@
       return {
         heading:'Before you accept this quote',
         body:'Review the price difference and the contract checks that matter before you sign or transfer money.',
-        primary:signing,
-        secondary:explore
+        primary:explore
       };
     }
     if (rating === 'below') {
       return {
         heading:'A lower quote still needs contract checks',
         body:'Compare nearby signed rents, then verify the owner, registry, fees, and deposit protection before paying.',
-        primary:explore,
-        secondary:signing
+        primary:signing
       };
     }
     if (rating === 'insufficient') {
       return {
         heading:'Compare the broader market next',
         body:'There were too few close matches for a verdict, so review recent signed rents before deciding.',
-        primary:explore,
-        secondary:signing
+        primary:explore
       };
     }
     return {
       heading:'Price looks close—check the contract next',
       body:'A fair-looking price does not verify the owner, registry, fees, or deposit protection.',
-      primary:explore,
-      secondary:signing
+      primary:signing
     };
   }
 
