@@ -130,15 +130,27 @@
   function advancedPinVisual(model = {}, selected = false) {
     const visual = markerVisual(model, selected);
     const count = normalizedCount(model.contractCount);
-    const glyphFontSize = count >= 100 ? '8px' : '9px';
+    const glyphFontSize = count > 999 ? '7px' : count >= 100 ? '8px' : '9px';
     return Object.freeze({
       background:visual.fillColor,
       borderColor:visual.strokeColor,
       glyphColor:'#ffffff',
-      glyphText:count >= 100 ? '99+' : count ? String(count) : '',
+      glyphText:count > 999 ? '999+' : count ? String(count) : '',
       glyphFontSize,
       scale:Math.round(Math.min(1.34, Math.max(0.75, visual.scale / 12)) * 100) / 100
     });
+  }
+
+  function applyAdvancedMarkerBadge(element, model = {}, selected = false) {
+    if (!element || !element.style) return null;
+    const visual = advancedPinVisual(model, selected);
+    element.textContent = visual.glyphText;
+    element.style.backgroundColor = visual.background;
+    element.style.borderColor = visual.borderColor;
+    element.style.color = visual.glyphColor;
+    element.style.fontSize = visual.glyphFontSize;
+    element.style.transform = `scale(${visual.scale})`;
+    return element;
   }
 
   function advancedMarkersAvailable(map, mapId) {
@@ -156,5 +168,5 @@
     return Object.freeze({ ...(state || {}), selectedDong:String(dong || '') });
   }
 
-  return Object.freeze({ buildMapsSdkUrl, buildMarkerModels, buildMapAnalyticsEvent, markerVisual, advancedPinVisual, advancedMarkersAvailable, selectDong });
+  return Object.freeze({ buildMapsSdkUrl, buildMarkerModels, buildMapAnalyticsEvent, markerVisual, advancedPinVisual, applyAdvancedMarkerBadge, advancedMarkersAvailable, selectDong });
 });

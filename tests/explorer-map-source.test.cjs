@@ -19,7 +19,9 @@ test('map adapter applies decision visuals and emits bounded view and selection 
   assert.match(source, /safeTrack\('explorer_map_select'/);
   assert.match(source, /detail:\{ dong:model\.dong, model \}/);
   assert.match(source, /AdvancedMarkerElement/);
-  assert.match(source, /PinElement/);
+  assert.doesNotMatch(source, /PinElement/);
+  assert.match(source, /document\.createElement\('span'\)/);
+  assert.match(source, /applyAdvancedMarkerBadge/);
   assert.match(source, /config\.mapId/);
   assert.match(source, /advancedMarkersAvailable\(map, configuredMapId\)/);
   assert.match(source, /gmpClickable:true/);

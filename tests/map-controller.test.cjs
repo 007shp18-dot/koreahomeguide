@@ -151,7 +151,7 @@ test('advanced pin visuals preserve marker meaning, count, and selected state', 
     scale:1.17
   });
   assert.equal(controller.advancedPinVisual({ tone:'outside', scale:10, contractCount:0 }).glyphText, '');
-  assert.equal(controller.advancedPinVisual({ tone:'strong', scale:14, contractCount:1250 }).glyphText, '99+');
+  assert.equal(controller.advancedPinVisual({ tone:'strong', scale:14, contractCount:1250 }).glyphText, '999+');
   assert.equal(controller.advancedPinVisual({ tone:'limited', scale:10, contractCount:8 }, true).background, '#2563eb');
 });
 
@@ -160,13 +160,22 @@ test('advanced pin glyphs shrink as contract counts gain digits', () => {
   assert.equal(controller.advancedPinVisual({ contractCount:66 }).glyphFontSize, '9px');
   assert.equal(controller.advancedPinVisual({ contractCount:159 }).glyphFontSize, '8px');
   assert.equal(controller.advancedPinVisual({ contractCount:885 }).glyphFontSize, '8px');
-  assert.equal(controller.advancedPinVisual({ contractCount:1250 }).glyphFontSize, '8px');
+  assert.equal(controller.advancedPinVisual({ contractCount:1250 }).glyphFontSize, '7px');
 });
 
-test('advanced pin glyphs cap three-digit counts while titles retain the exact total', () => {
-  assert.equal(controller.advancedPinVisual({ contractCount:99 }).glyphText, '99');
-  assert.equal(controller.advancedPinVisual({ contractCount:100 }).glyphText, '99+');
-  assert.equal(controller.advancedPinVisual({ contractCount:885 }).glyphText, '99+');
+test('advanced marker badge applies the explicit digit-aware font outside Google pin internals', () => {
+  const badge = { textContent:'', style:{} };
+  const updated = controller.applyAdvancedMarkerBadge(badge, { tone:'strong', scale:14, contractCount:885 });
+
+  assert.equal(updated, badge);
+  assert.equal(badge.textContent, '885');
+  assert.equal(badge.style.fontSize, '8px');
+  assert.equal(badge.style.backgroundColor, '#15803d');
+  assert.equal(badge.style.borderColor, '#ffffff');
+  assert.equal(badge.style.transform, 'scale(1.17)');
+
+  controller.applyAdvancedMarkerBadge(badge, { tone:'strong', scale:14, contractCount:885 }, true);
+  assert.equal(badge.style.backgroundColor, '#2563eb');
 });
 
 test('advanced markers require a production map ID and runtime capability support', () => {

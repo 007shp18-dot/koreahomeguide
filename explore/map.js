@@ -39,15 +39,16 @@
     };
   }
 
-  function applyAdvancedPinVisual(pin, model, selected) {
-    const { glyphFontSize, ...visual } = KHGMapController.advancedPinVisual(model, selected);
-    Object.assign(pin, visual);
-    pin.style.fontSize = glyphFontSize;
+  function createAdvancedMarkerBadge(model, selected) {
+    const badge = document.createElement('span');
+    badge.className = 'explorer-map-marker-badge';
+    KHGMapController.applyAdvancedMarkerBadge(badge, model, selected);
+    return badge;
   }
 
   function updateMarkerVisual(entry, selected) {
     if (entry.advanced) {
-      applyAdvancedPinVisual(entry.pin, entry.model, selected);
+      KHGMapController.applyAdvancedMarkerBadge(entry.pin, entry.model, selected);
       entry.marker.zIndex = selected ? 1000 : 1;
       return;
     }
@@ -114,9 +115,7 @@
       let marker;
       let pin = null;
       if (useAdvancedMarkers) {
-        const { glyphFontSize, ...pinOptions } = KHGMapController.advancedPinVisual(model, false);
-        pin = new google.maps.marker.PinElement(pinOptions);
-        pin.style.fontSize = glyphFontSize;
+        pin = createAdvancedMarkerBadge(model, false);
         marker = new google.maps.marker.AdvancedMarkerElement({ map, position, title, zIndex:1, gmpClickable:true });
         marker.append(pin);
       } else {
@@ -149,7 +148,7 @@
   function createMap(mapId = '') {
     const center = KHGMapLocations.centerFor(latest.lawdCd, '') || { lat:37.5665, lng:126.9780 };
     const configuredMapId = String(mapId || '').trim();
-    const hasMarkerLibrary = Boolean(google.maps.marker && google.maps.marker.AdvancedMarkerElement && google.maps.marker.PinElement);
+    const hasMarkerLibrary = Boolean(google.maps.marker && google.maps.marker.AdvancedMarkerElement);
     const hasProductionMapId = Boolean(configuredMapId && configuredMapId !== 'DEMO_MAP_ID');
     map = new google.maps.Map(canvas, {
       center,
