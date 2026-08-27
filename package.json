@@ -3,6 +3,7 @@
   "private": true,
   "version": "11.3.0",
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "@vercel/functions": "3.9.5"
   }
 }
