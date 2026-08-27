@@ -13,6 +13,7 @@ const rentCheckRuntimeFiles = [
 async function bootCurrencyRuntime(file) {
   const currency = require('../currency-utils.js');
   const inputListeners = new Map();
+  const controlListeners = new Map();
   const deposit = {
     id:'rentCheckDeposit', value:'', dataset:{ krwValue:'10000000', krwStep:'100000' },
     addEventListener(type, handler) { inputListeners.set(`deposit:${type}`, handler); }
@@ -23,7 +24,11 @@ async function bootCurrencyRuntime(file) {
   };
   const depositReference = { textContent:'' };
   const rentReference = { textContent:'' };
-  const currencySelect = { value:'USD', disabled:false, addEventListener() {} };
+  const currencyCodes = [{ textContent:'' }, { textContent:'' }];
+  const currencySelect = {
+    value:'USD', disabled:false,
+    addEventListener(type, handler) { controlListeners.set(type, handler); }
+  };
   const domNode = () => ({
     hidden:false, open:false, textContent:'', innerHTML:'', dataset:{},
     style:{ left:'' }, classList:{ toggle() {}, remove() {} },
@@ -55,6 +60,7 @@ async function bootCurrencyRuntime(file) {
     querySelectorAll(selector) {
       if (selector === '[data-currency-input]') return [deposit, rent];
       if (selector === '[data-currency-symbol]') return [];
+      if (selector === '[data-currency-code]') return currencyCodes;
       return [];
     }
   };
@@ -64,11 +70,18 @@ async function bootCurrencyRuntime(file) {
     location:{ pathname:file.includes('/tools/') ? '/tools/seoul-rent-check/' : '/', search:'' },
     KHGCurrency:currency,
     KHGRentCheckUI:{ mapRentCheckType(value) { return { officialType:value }; } },
-    fetch:async () => ({ ok:true, json:async () => ({ rates:{ USD:0.00072 } }) })
+    fetch:async () => ({ ok:true, json:async () => ({ rates:{ USD:0.00072, CNY:0.0052 } }) })
   };
   vm.runInNewContext(fs.readFileSync(file, 'utf8'), context, { filename:file });
   await new Promise(resolve => setImmediate(resolve));
-  return { deposit, depositReference, input:inputListeners.get('deposit:input') };
+  return {
+    deposit,
+    depositReference,
+    currencyCodes,
+    currencySelect,
+    changeCurrency:controlListeners.get('change'),
+    input:inputListeners.get('deposit:input')
+  };
 }
 
 test('currency utilities convert user-entered USD/CNY back to KRW', () => {
@@ -114,5 +127,16 @@ test('editing a foreign-currency Rent Check amount refreshes its KRW reference i
     runtime.input();
     assert.equal(runtime.deposit.dataset.krwValue, '13888889', file);
     assert.equal(runtime.depositReference.textContent, '≈ ₩13,888,889', file);
+  }
+});
+
+test('Rent Check labels follow the selected display currency on every runtime', async () => {
+  for (const file of rentCheckRuntimeFiles) {
+    const runtime = await bootCurrencyRuntime(file);
+    assert.deepEqual(runtime.currencyCodes.map(node => node.textContent), ['USD', 'USD'], file);
+
+    runtime.currencySelect.value = 'CNY';
+    runtime.changeCurrency();
+    assert.deepEqual(runtime.currencyCodes.map(node => node.textContent), ['CNY', 'CNY'], file);
   }
 });

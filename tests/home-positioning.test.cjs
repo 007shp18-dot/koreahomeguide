@@ -11,7 +11,8 @@ test('homepage positions KoreaHomeGuide as one pre-signing Rent Check funnel, no
   assert.match(home, /Is your Seoul rent actually fair\?/);
   assert.match(home, /Official signed transactions/);
   assert.match(home, /Built for foreign renters/);
-  assert.match(home, />Check my rent</);
+  assert.match(home, /id="rentCheckButton"[^>]*>Check</);
+  assert.doesNotMatch(home, /class="hero-primary-action"/);
   assert.match(home, /No live listings or asking-price promotion/);
   assert.match(home, /data-lead-capture/);
   assert.doesNotMatch(home, /Find a home in Seoul/i);
@@ -31,7 +32,8 @@ test('homepage Rent Check stays inline and Explorer becomes the secondary discov
 test('Chinese homepage carries the same trust -> result -> lead funnel', () => {
   assert.match(zhHome, /你的首尔租金报价真的合理吗？/);
   assert.match(zhHome, /韩国官方真实签约成交/);
-  assert.match(zhHome, /检查我的租金/);
+  assert.match(zhHome, /id="rentCheckButton"[^>]*>检查这个租金</);
+  assert.doesNotMatch(zhHome, /class="hero-primary-action"/);
   assert.match(zhHome, /data-lead-capture/);
   assert.match(zhHome, /href="\/zh\/explore\/"/);
   assert.doesNotMatch(zhHome, /id="findDistrict"/);

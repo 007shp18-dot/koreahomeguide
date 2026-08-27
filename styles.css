@@ -398,3 +398,27 @@ html[lang="zh-CN"] h1,html[lang="zh-CN"] h2,html[lang="zh-CN"] h3{letter-spacing
 
 @media(max-width:1050px){.rent-check-summary{grid-template-columns:1fr}}
 @media(max-width:760px){.rent-check-mobile-extra{display:none}.rent-check-summary{padding:16px}.rent-check-evidence-facts span{flex:1 1 150px}.rent-check-comparables-toggle:not([hidden]){display:inline-flex;width:100%}#rentCheckComparableBody.is-expanded .rent-check-mobile-extra{display:table-row}.rent-check-market-position{padding-left:10px;padding-right:10px}.rent-check-market-labels{font-size:9px}}
+
+/* Core funnel readability and interaction consistency. */
+.core-ui{font-size:16px;line-height:1.6}
+.core-ui .header-actions .currency-select,.core-ui .header-actions .language-link{display:inline-flex;align-items:center;justify-content:center;height:38px;min-width:58px;padding:0 11px;border:1px solid var(--line);border-radius:10px;background:#fff;color:#344054;font-size:12px;font-weight:800;line-height:1;outline:none}
+.core-ui .header-actions .currency-select:focus,.core-ui .header-actions .language-link:focus-visible{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+.core-ui .field>span{font-size:13px;line-height:1.35;letter-spacing:0}
+.core-ui .field-unit{display:inline;color:#64748b;font-size:12px;font-weight:650;letter-spacing:0;text-transform:none}
+.core-ui .field-unit b{color:inherit;font:inherit}
+.core-ui .tool-hero h1,.core-ui .explorer-hero h1{line-height:1.1;letter-spacing:-.03em}
+.core-ui .tool-hero p,.core-ui .explorer-hero p{font-size:16px;line-height:1.7;color:#475569}
+.core-ui .context-module .context-kicker{font-size:11px;line-height:1.35}
+.core-ui .context-module h3{font-size:19px;line-height:1.35;letter-spacing:-.015em}
+.core-ui .context-module p{font-size:14px;line-height:1.65}
+.context-card{display:block;color:inherit;text-decoration:none;transition:border-color .16s ease,background .16s ease,transform .16s ease,box-shadow .16s ease}
+.context-card:hover{border-color:#93c5fd;background:#f8fbff;transform:translateY(-1px);box-shadow:0 8px 22px rgba(15,23,42,.05)}
+.context-card:focus-visible{outline:3px solid rgba(37,99,235,.25);outline-offset:3px}
+.context-card .context-card-action{display:inline-flex;margin-top:14px;color:var(--accent);font-size:14px;font-weight:800}
+.core-ui .funnel-secondary-card,.core-ui .funnel-guide,.core-ui .related-links a{transition:border-color .16s ease,background .16s ease,transform .16s ease,box-shadow .16s ease}
+.core-ui .funnel-secondary-card:hover,.core-ui .funnel-guide:hover,.core-ui .related-links a:hover{border-color:#93c5fd;background:#f8fbff;transform:translateY(-1px);box-shadow:0 8px 22px rgba(15,23,42,.05)}
+.core-ui .funnel-secondary-card:focus-visible,.core-ui .funnel-guide:focus-visible,.core-ui .related-links a:focus-visible,.core-ui .neighborhood-card:focus-visible{outline:3px solid rgba(37,99,235,.25);outline-offset:3px}
+.core-ui .related-links span{font-size:14px;line-height:1.6}
+html[lang="zh-CN"] .core-ui h1,html[lang="zh-CN"] .core-ui h2,html[lang="zh-CN"] .core-ui h3{letter-spacing:-.012em}
+@media(max-width:760px){.core-ui{font-size:16px}.core-ui .header-actions{gap:7px}.core-ui .header-actions .currency-select,.core-ui .header-actions .language-link{height:40px;min-width:54px;padding:0 9px}.core-ui .tool-hero p,.core-ui .explorer-hero p{line-height:1.65}}
+@media(max-width:360px){.core-ui .site-header,.core-ui .compact-header{column-gap:12px}.core-ui .brand{gap:7px;font-size:14px}.core-ui .brand-mark{width:30px;height:30px}.core-ui .header-actions{gap:4px}.core-ui .header-actions .currency-select,.core-ui .header-actions .language-link{height:38px;min-width:48px;padding:0 6px;font-size:11px}}
