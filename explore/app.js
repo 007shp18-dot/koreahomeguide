@@ -44,6 +44,11 @@ function escapeHtml(value) {
 function areaName() { return KHGLocations.districtLabel(areaSelect.value, 'en'); }
 function typeName(type = typeSelect.value) { return KHGLocations.propertyTypeLabel(type, 'en'); }
 function dongDisplayName(dong) { return KHGLocations.dongLabel(dong, 'en'); }
+function dongDisplayHtml(dong) {
+  const parts = KHGExplorer.localizedDongParts(dong, 'en');
+  const korean = parts.korean ? `<span class="location-name-ko">(${escapeHtml(parts.korean)})</span>` : '';
+  return `<span class="localized-location-name${parts.breakKorean ? ' is-long' : ''}"><span class="location-name-primary">${escapeHtml(parts.primary)}</span>${korean}</span>`;
+}
 function formatArea(area) { return area == null ? '—' : `${Number(area).toFixed(1)}㎡`; }
 function budgetValues() {
   return {
@@ -66,6 +71,9 @@ function updateBudgetNote(filteredCount, totalCount) {
 }
 function publishMapDongs(dongs) {
   window.dispatchEvent(new CustomEvent('khg:explorer-dongs', { detail:{ lawdCd:areaSelect.value, propertyType:typeSelect.value, locale:'en', limits:budgetValues(), dongs:Array.isArray(dongs) ? dongs : [] } }));
+}
+function publishMapBuildings(dong, buildings) {
+  window.dispatchEvent(new CustomEvent('khg:explorer-buildings', { detail:{ lawdCd:areaSelect.value, propertyType:typeSelect.value, locale:'en', limits:budgetValues(), dong:String(dong || ''), buildings:Array.isArray(buildings) ? buildings : [] } }));
 }
 function currentParams(includeDong = true) {
   const params = new URLSearchParams({ lawdCd:areaSelect.value, type:typeSelect.value });
@@ -125,28 +133,33 @@ function renderMapSelection(model) {
   currentMapSelection = model;
   const evidenceCount = Number(model.evidenceCount || 0);
   const totalCount = Number(model.contractCount || 0);
+  const isBuilding = model.kind === 'building';
   const statusCopy = model.budgetStatus === 'outside'
     ? 'Outside selected budget'
     : model.evidenceLevel === 'strong' ? 'Strong evidence' : 'Limited evidence';
   mapSelectionStatus.textContent = statusCopy;
   mapSelectionStatus.className = `explorer-map-selection-status is-${model.tone || 'limited'}`;
-  mapSelectionName.textContent = model.label || dongDisplayName(model.dong);
+  mapSelectionName.innerHTML = isBuilding
+    ? `<span>${escapeHtml(model.label || model.buildingName)}</span>${model.secondaryLabel ? `<small class="building-official-name">${escapeHtml(model.secondaryLabel)}</small>` : ''}`
+    : dongDisplayHtml(model.dong);
   mapSelectionContracts.textContent = model.budgetStatus === 'unfiltered'
     ? `${totalCount.toLocaleString('en-US')} reported contracts`
     : `${evidenceCount.toLocaleString('en-US')} budget-matching contracts`;
   mapSelectionRent.innerHTML = model.rentWon == null ? '—' : moneyHtml(model.rentWon);
   mapSelectionDeposit.innerHTML = model.depositWon == null ? '—' : moneyHtml(model.depositWon);
-  mapSelectionEvidence.textContent = model.budgetStatus === 'outside'
+  mapSelectionEvidence.textContent = isBuilding
+    ? `This marker represents a verified building location and ${evidenceCount.toLocaleString('en-US')} relevant historical contracts, not an available unit or live listing.`
+    : model.budgetStatus === 'outside'
     ? `No recent price context matched every active budget limit. The values above show this neighborhood's broader context from ${totalCount.toLocaleString('en-US')} reported contracts.`
     : model.evidenceLevel === 'strong'
       ? `Supported by ${evidenceCount.toLocaleString('en-US')} relevant reported contracts. This is historical market context, not a live listing.`
       : `Only ${evidenceCount.toLocaleString('en-US')} relevant reported contracts support this marker, so treat it as directional context.`;
-  if (mapSelectionDetail) mapSelectionDetail.href = KHGExplorer.buildDongSeoUrl({
-    lawdCd:model.districtCode,
-    type:model.propertyType,
-    dong:model.dong,
-    lang:'en'
-  });
+  if (mapSelectionDetail) {
+    mapSelectionDetail.href = isBuilding
+      ? KHGExplorer.buildBuildingDetailUrl({ lawdCd:model.districtCode, type:model.propertyType, dong:model.dong, buildingKey:model.buildingKey })
+      : KHGExplorer.buildDongSeoUrl({ lawdCd:model.districtCode, type:model.propertyType, dong:model.dong, lang:'en' });
+    mapSelectionDetail.textContent = isBuilding ? 'Open building details →' : 'View neighborhood details →';
+  }
   mapSelection.hidden = false;
   highlightMapCard(model.dong);
   updateRentCheckHandoff({ lawdCd:model.districtCode, propertyType:model.propertyType });
@@ -182,7 +195,7 @@ function renderDongs(dongs) {
     const deposit = depositValue == null ? '—' : moneyHtml(depositValue);
     const seoHref = KHGExplorer.buildDongSeoUrl({ lawdCd:districtCode, type:typeSelect.value, dong:item.dong, lang:'en' });
     return `<a class="neighborhood-card" data-dong="${escapeHtml(item.dong)}" href="${escapeHtml(seoHref)}">
-      <span class="neighborhood-card-main"><strong>${escapeHtml(dongDisplayName(item.dong))}</strong><small>${isAllSeoul ? `${escapeHtml(districtName)} · ` : ''}${Number(item.contractCount || 0).toLocaleString('en-US')} recent contracts</small></span>
+      <span class="neighborhood-card-main"><strong>${dongDisplayHtml(item.dong)}</strong><small>${isAllSeoul ? `${escapeHtml(districtName)} · ` : ''}${Number(item.contractCount || 0).toLocaleString('en-US')} recent contracts</small></span>
       <span class="neighborhood-card-metric"><small>Rent context</small><strong>${rent}</strong></span>
       <span class="neighborhood-card-metric"><small>Deposit context</small><strong>${deposit}</strong></span>
       <span class="neighborhood-card-cta">View neighborhood →</span>
@@ -194,7 +207,9 @@ function renderSummary(data, dong = '') {
   currentData = data;
   currentDong = dong || '';
   const selectedAreaName = areaSelect.value === 'all' ? data.districtName : areaName();
-  title.textContent = [selectedAreaName, currentDong ? dongDisplayName(currentDong) : '', typeName(data.propertyType || typeSelect.value)].filter(Boolean).join(' · ');
+  title.innerHTML = currentDong
+    ? `${escapeHtml(selectedAreaName)} · ${dongDisplayHtml(currentDong)} · ${escapeHtml(typeName(data.propertyType || typeSelect.value))}`
+    : `${escapeHtml(selectedAreaName)} · ${escapeHtml(typeName(data.propertyType || typeSelect.value))}`;
   const summary = data.summary || {};
   const rentValue = summary.medianMonthlyRentWon;
   const depositValue = summary.medianDepositWon;
@@ -266,7 +281,7 @@ function setLoading(message = 'Loading official rental transactions…') {
   exploreButton.disabled = true;
 }
 
-async function loadDong(dong) {
+async function loadDong(dong, { showBuildingsOnMap = false } = {}) {
   currentDong = String(dong || '').trim();
   if (!currentDong) return;
   setLoading(`Loading ${dongDisplayName(currentDong)} official rental transactions…`);
@@ -277,6 +292,7 @@ async function loadDong(dong) {
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || 'Neighborhood data failed');
     renderSummary(data, data.dong || currentDong);
+    if (showBuildingsOnMap) publishMapBuildings(data.dong || currentDong, data.buildings || []);
     history.replaceState(null, '', `/explore/?${currentParams(false).toString()}`);
   } catch (_) {
     status.textContent = 'Official transaction data for this neighborhood is temporarily unavailable.';
@@ -375,7 +391,14 @@ window.addEventListener('khg:map-select-dong', event => {
   if (!dong || !model) return;
   highlightMapCard(model.dong);
   renderMapSelection(model);
+  if (currentDong === dong && currentData && Array.isArray(currentData.buildings)) publishMapBuildings(dong, currentData.buildings);
+  else void loadDong(dong, { showBuildingsOnMap:true });
 });
+window.addEventListener('khg:map-select-building', event => {
+  const model = event.detail && event.detail.model;
+  if (model) renderMapSelection(model);
+});
+window.addEventListener('khg:map-back-neighborhoods', clearMapSelection);
 
 (async () => {
   applyQuerySelection();

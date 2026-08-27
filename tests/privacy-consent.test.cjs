@@ -22,6 +22,7 @@ function fakeDocument(language = 'en') {
     createElement:node,
     querySelector(selector) {
       if (selector === '[data-khg-analytics]') return scripts.find(item => item.dataset.khgAnalytics) || null;
+      if (selector === '[data-khg-vercel-analytics]') return scripts.find(item => item.dataset.khgVercelAnalytics) || null;
       return null;
     },
     head:{ appendChild(item) { scripts.push(item); } },
@@ -43,7 +44,9 @@ test('a first visit defaults analytics to denied and does not load Google Analyt
   const controller = privacy.createController({ root, doc, storage:memoryStorage() });
 
   assert.equal(controller.init(), null);
-  assert.equal(doc.scripts.length, 0);
+  assert.equal(doc.scripts.filter(item => item.dataset.khgAnalytics).length, 0);
+  assert.equal(doc.scripts.filter(item => item.dataset.khgVercelAnalytics).length, 1);
+  assert.equal(doc.scripts.find(item => item.dataset.khgVercelAnalytics).src, '/_vercel/insights/script.js');
   assert.equal(root.gtag, undefined);
   assert.equal(root.KHGAnalyticsConsent, null);
   assert.equal(doc.bodyNodes.some(item => item.dataset.khgConsentBanner), true);
@@ -60,7 +63,8 @@ test('essential-only choice persists without loading analytics', () => {
   controller.init();
   assert.equal(controller.applyChoice(privacy.ESSENTIAL), privacy.ESSENTIAL);
   assert.equal(storage.values.get(privacy.STORAGE_KEY), privacy.ESSENTIAL);
-  assert.equal(doc.scripts.length, 0);
+  assert.equal(doc.scripts.filter(item => item.dataset.khgAnalytics).length, 0);
+  assert.equal(doc.scripts.filter(item => item.dataset.khgVercelAnalytics).length, 1);
 });
 
 test('stored analytics choice loads GA once and announces readiness', () => {
@@ -75,10 +79,10 @@ test('stored analytics choice loads GA once and announces readiness', () => {
   const controller = privacy.createController({ root, doc, storage:memoryStorage(privacy.ANALYTICS) });
 
   assert.equal(controller.init(), privacy.ANALYTICS);
-  assert.equal(doc.scripts.length, 1);
-  assert.match(doc.scripts[0].src, /googletagmanager\.com\/gtag\/js\?id=G-6SXH5BREDP/);
+  assert.equal(doc.scripts.filter(item => item.dataset.khgAnalytics).length, 1);
+  assert.match(doc.scripts.find(item => item.dataset.khgAnalytics).src, /googletagmanager\.com\/gtag\/js\?id=G-6SXH5BREDP/);
   assert.equal(privacy.loadAnalytics({ root, doc }), true);
-  assert.equal(doc.scripts.length, 1);
+  assert.equal(doc.scripts.filter(item => item.dataset.khgAnalytics).length, 1);
   assert.equal(root.KHGAnalyticsReady, true);
   assert.deepEqual(announcements.map(item => item.type), ['khg:analytics-ready']);
 
@@ -99,7 +103,7 @@ test('changing back to essential-only disables future app tracking without remov
   assert.equal(root.gtag, undefined);
   assert.equal(root.KHGAnalyticsReady, false);
   assert.equal(controller.getChoice(), privacy.ESSENTIAL);
-  assert.equal(doc.scripts.length, 1);
+  assert.equal(doc.scripts.filter(item => item.dataset.khgAnalytics).length, 1);
 });
 
 test('localized consent copy links to matching privacy and terms pages', () => {

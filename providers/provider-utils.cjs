@@ -18,6 +18,13 @@ function normalizeDongName(name) {
     .trim();
 }
 
+function normalizeAddressPart(value) {
+  return String(value || '')
+    .normalize('NFKC')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 function buildingKeyFromName(name, dong = '') {
   const building = normalizeBuildingName(name).toLocaleLowerCase('en-US');
   const dongKey = normalizeDongName(dong).toLocaleLowerCase('ko-KR');
@@ -39,7 +46,15 @@ function filterCompletedRows(items, { referenceDate = new Date(), months = 6 } =
       const hasExplicitBuildingName = Object.prototype.hasOwnProperty.call(item || {}, 'buildingName');
       const explorerBuildingName = normalizeBuildingName(hasExplicitBuildingName ? item.buildingName : item.building);
       const explorerDong = normalizeDongName(item && item.dong);
-      return { ...normalized, explorerBuildingName, explorerDong };
+      return {
+        ...normalized,
+        explorerBuildingName,
+        explorerDong,
+        explorerJibun:normalizeAddressPart(item && item.jibun),
+        explorerRoadName:normalizeAddressPart(item && item.roadName),
+        explorerRoadMainNumber:normalizeAddressPart(item && item.roadMainNumber),
+        explorerRoadSubNumber:normalizeAddressPart(item && item.roadSubNumber)
+      };
     })
     .filter(Boolean)
     .filter(row => validMonths.has(monthKey(row.contractDate)));
@@ -79,6 +94,19 @@ function summaryForBuilding(group, options = {}) {
   const monthly = rows.filter(row => row.monthlyRentWon > 0);
   const enName = getBuildingNameDisplay(group.buildingName, 'en');
   const zhName = getBuildingNameDisplay(group.buildingName, 'zh');
+  const propertyType = String(rows[0] && rows[0].type || '');
+  const jibuns = [...new Set(rows.map(row => normalizeAddressPart(row.explorerJibun)).filter(Boolean))];
+  const roadAddresses = [...new Set(rows.map(row => {
+    const road = normalizeAddressPart(row.explorerRoadName);
+    const main = normalizeAddressPart(row.explorerRoadMainNumber).replace(/^0+/, '') || '0';
+    const sub = normalizeAddressPart(row.explorerRoadSubNumber).replace(/^0+/, '');
+    if (!road || main === '0') return '';
+    return `${road} ${main}${sub && sub !== '0' ? `-${sub}` : ''}`;
+  }).filter(Boolean))];
+  const singleJibun = jibuns.length === 1 ? jibuns[0] : '';
+  const singleRoadAddress = roadAddresses.length === 1 ? roadAddresses[0] : '';
+  const mapEligible = ['apartment','officetel'].includes(propertyType) ||
+    (propertyType === 'villa' && rows.length >= 3 && Boolean(singleJibun || singleRoadAddress));
   return {
     buildingKey:group.key,
     buildingName:group.buildingName,
@@ -86,6 +114,14 @@ function summaryForBuilding(group, options = {}) {
     displayBuildingNameEn:enName.primary,
     displayBuildingNameZh:zhName.primary,
     dong:group.dong || '',
+    propertyType,
+    mapLocation:mapEligible ? {
+      buildingName:group.buildingName,
+      dong:group.dong || '',
+      jibun:singleJibun,
+      roadAddress:singleRoadAddress,
+      basis:singleJibun || singleRoadAddress ? 'official-address' : 'named-building'
+    } : null,
     contractCount:rows.length,
     monthlyRentCount:monthly.length,
     // Legacy fields kept for existing consumers; contextual fields below are safer for display.

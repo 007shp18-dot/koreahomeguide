@@ -17,6 +17,19 @@
   const ANALYTICS = 'analytics';
   const ESSENTIAL = 'essential';
 
+  function loadAggregateAnalytics({ root = globalThis, doc = root && root.document } = {}) {
+    if (!root || !doc || !doc.head || typeof doc.createElement !== 'function') return false;
+    const existing = typeof doc.querySelector === 'function' && doc.querySelector('[data-khg-vercel-analytics]');
+    root.va = root.va || function va(){ (root.vaq = root.vaq || []).push(arguments); };
+    if (existing) return true;
+    const script = doc.createElement('script');
+    script.defer = true;
+    script.src = '/_vercel/insights/script.js';
+    script.dataset.khgVercelAnalytics = 'true';
+    doc.head.appendChild(script);
+    return true;
+  }
+
   function announceAnalyticsReady(root) {
     try {
       if (!root) return;
@@ -92,12 +105,12 @@
     const zh = language === 'zh-CN';
     return zh ? {
       title:'你的隐私选择',
-      body:'我们仅在你同意后使用 Google Analytics。保存房源时，必要数据只存于当前浏览器。',
+      body:'我们使用无 Cookie 的 Vercel Web Analytics 统计匿名总访问量；仅在你同意后使用 Google Analytics。保存房源时，必要数据只存于当前浏览器。',
       allow:'允许分析', essential:'仅必要功能', settings:'隐私设置',
       privacy:'隐私说明', terms:'使用条款', privacyHref:'/zh/privacy/', termsHref:'/zh/terms/'
     } : {
       title:'Your privacy choices',
-      body:'We use Google Analytics only if you allow it. Essential data for saved homes stays in this browser.',
+      body:'We use cookie-free Vercel Web Analytics for anonymous aggregate traffic. Google Analytics runs only if you allow it. Essential saved-home data stays in this browser.',
       allow:'Allow analytics', essential:'Essential only', settings:'Privacy choices',
       privacy:'Privacy', terms:'Terms', privacyHref:'/privacy/', termsHref:'/terms/'
     };
@@ -161,6 +174,7 @@
     }
 
     function init() {
+      loadAggregateAnalytics({ root, doc });
       consentCommand(root, ESSENTIAL);
       const copy = localizedCopy(language());
       ensureBanner(copy);
@@ -178,7 +192,7 @@
 
   return {
     MEASUREMENT_ID, STORAGE_KEY, ANALYTICS, ESSENTIAL,
-    announceAnalyticsReady, analyticsPageLocation, consentCommand,
+    announceAnalyticsReady, analyticsPageLocation, consentCommand, loadAggregateAnalytics,
     loadAnalytics, readChoice, writeChoice, localizedCopy, createController
   };
 });

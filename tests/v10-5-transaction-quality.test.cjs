@@ -31,7 +31,7 @@ function rentRow({ building='e편한세상영등포아델포레', dong='대림�
 
 test('rental XML parser preserves contract context fields and detached endpoint exists', () => {
   const xml = `<response><body><items><item>
-    <aptNm>e편한세상영등포아델포레</aptNm><umdNm>대림동</umdNm><excluUseAr>59.97</excluUseAr>
+    <aptNm>e편한세상영등포아델포레</aptNm><umdNm>대림동</umdNm><jibun>1120</jibun><roadNm>신길로</roadNm><roadNmBonbun>29</roadNmBonbun><roadNmBubun>0</roadNmBubun><excluUseAr>59.97</excluUseAr>
     <dealYear>2026</dealYear><dealMonth>7</dealMonth><dealDay>10</dealDay>
     <deposit>15,000</deposit><monthlyRent>220</monthlyRent>
     <contractTerm>2026.07~2028.07</contractTerm><contractType>신규</contractType><useRRRight></useRRRight>
@@ -42,6 +42,9 @@ test('rental XML parser preserves contract context fields and detached endpoint 
   assert.equal(row.contractTerm, '2026.07~2028.07');
   assert.equal(row.preDeposit, '14,000');
   assert.equal(row.preMonthlyRent, '200');
+  assert.equal(row.jibun, '1120');
+  assert.equal(row.roadName, '신길로');
+  assert.equal(row.roadMainNumber, '29');
   assert.match(realPrice.endpointForType('detached'), /RTMSDataSvcSHRent/);
 });
 

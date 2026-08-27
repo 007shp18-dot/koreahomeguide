@@ -2,27 +2,34 @@
   'use strict';
   const canvas = document.querySelector('#explorerMap');
   const status = document.querySelector('#explorerMapStatus');
+  const backButton = document.querySelector('#explorerMapBack');
   if (!canvas || !status) return;
 
   const zh = String(document.documentElement.lang || '').toLowerCase().startsWith('zh');
   const copy = zh ? {
     loading:'正在加载地图…', disabled:'地图暂时不可用；街区卡片仍可正常使用。',
     unavailable:'地图暂时不可用；请使用下方街区卡片。', ready:n => `地图显示 ${n} 个街区中心点。`, empty:'当前条件下没有可显示的街区中心点。',
-    strong:'较强依据', limited:'有限依据', outside:'超出预算'
+    strong:'较强依据', limited:'有限依据', outside:'超出预算',
+    locating:'正在核验建筑位置…', readyBuildings:n => `显示 ${n} 个已核验建筑位置。`, noBuildings:'没有可安全核验的建筑位置；继续显示街区中心点。'
   } : {
     loading:'Loading map…', disabled:'Map temporarily unavailable. Neighborhood cards still work.',
     unavailable:'Map temporarily unavailable. Use the neighborhood cards below.', ready:n => `Showing ${n} neighborhood centers.`, empty:'No mapped neighborhood centers match this selection.',
-    strong:'Strong evidence', limited:'Limited evidence', outside:'Outside budget'
+    strong:'Strong evidence', limited:'Limited evidence', outside:'Outside budget',
+    locating:'Verifying building locations…', readyBuildings:n => `Showing ${n} verified building locations.`, noBuildings:'No building locations could be safely verified. Neighborhood centers remain visible.'
   };
 
   let map = null;
   let markers = [];
   let latest = { lawdCd:'11680', locale:zh ? 'zh-CN' : 'en', dongs:[] };
+  let latestBuildings = [];
+  let markerScope = 'neighborhood';
   let started = false;
-  let selectedDong = '';
+  let selectedMarkerId = '';
   let latestModels = [];
   let viewTracked = false;
   let useAdvancedMarkers = false;
+  let geocoder = null;
+  const geocodeCache = new Map();
 
   function clearMarkers() {
     markers.forEach(entry => {
@@ -41,7 +48,7 @@
 
   function createAdvancedMarkerBadge(model, selected) {
     const badge = document.createElement('span');
-    badge.className = 'explorer-map-marker-badge';
+    badge.className = `explorer-map-marker-badge${model.kind === 'building' ? ' is-building-marker' : ''}`;
     KHGMapController.applyAdvancedMarkerBadge(badge, model, selected);
     return badge;
   }
@@ -74,6 +81,7 @@
       locale:latest.locale,
       lawdCd:model ? model.districtCode : latest.lawdCd,
       propertyType:latest.propertyType,
+      markerScope:model && model.kind === 'building' ? 'building' : markerScope,
       hasBudget,
       markerCount:models.length,
       fittingCount:models.filter(item => item.budgetStatus !== 'outside').length,
@@ -87,25 +95,28 @@
     if (!viewTracked && models.length) viewTracked = safeTrack('explorer_map_view', analyticsContext(models));
   }
 
-  function highlight(dong, pan) {
-    selectedDong = String(dong || '');
+  function highlight(identifier, pan) {
+    const value = String(identifier || '');
+    selectedMarkerId = value && !value.includes(':') ? `dong:${value}` : value;
     markers.forEach(entry => {
-      const selected = entry.model.dong === selectedDong;
+      const selected = entry.model.id === selectedMarkerId;
       updateMarkerVisual(entry, selected);
     });
-    const entry = markers.find(item => item.model.dong === selectedDong);
+    const entry = markers.find(item => item.model.id === selectedMarkerId);
     if (entry && pan && map) map.panTo({ lat:entry.model.lat, lng:entry.model.lng });
   }
 
   function renderMarkers() {
     if (!map || !window.KHGMapController) return;
     clearMarkers();
-    const models = KHGMapController.buildMarkerModels(latest);
+    const models = markerScope === 'building'
+      ? KHGMapController.buildBuildingMarkerModels({ ...latest, buildings:latestBuildings })
+      : KHGMapController.buildMarkerModels(latest);
     latestModels = models;
     const districtCenter = KHGMapLocations.centerFor(latest.lawdCd, '');
     if (!models.length) {
       if (districtCenter) { map.setCenter(districtCenter); map.setZoom(12); }
-      status.textContent = copy.empty;
+      status.textContent = markerScope === 'building' ? copy.noBuildings : copy.empty;
       return;
     }
     const bounds = new google.maps.LatLngBounds();
@@ -130,9 +141,10 @@
       }
       bounds.extend(position);
       const selectMarker = () => {
-        highlight(model.dong, false);
+        highlight(model.id, false);
         safeTrack('explorer_map_select', analyticsContext(models, model));
-        window.dispatchEvent(new CustomEvent('khg:map-select-dong', { detail:{ dong:model.dong, model } }));
+        const eventName = model.kind === 'building' ? 'khg:map-select-building' : 'khg:map-select-dong';
+        window.dispatchEvent(new CustomEvent(eventName, { detail:{ dong:model.dong, model } }));
       };
       if (useAdvancedMarkers) marker.addEventListener('gmp-click', selectMarker);
       else marker.addListener('click', selectMarker);
@@ -140,9 +152,81 @@
     });
     if (models.length === 1) { map.setCenter({ lat:models[0].lat, lng:models[0].lng }); map.setZoom(14); }
     else map.fitBounds(bounds, 34);
-    highlight(selectedDong, false);
-    status.textContent = copy.ready(models.length);
+    highlight(selectedMarkerId, false);
+    status.textContent = markerScope === 'building' ? copy.readyBuildings(models.length) : copy.ready(models.length);
     trackView(models);
+  }
+
+  function distanceKm(a, b) {
+    const radians = value => Number(value) * Math.PI / 180;
+    const dLat = radians(b.lat - a.lat);
+    const dLng = radians(b.lng - a.lng);
+    const lat1 = radians(a.lat);
+    const lat2 = radians(b.lat);
+    const h = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
+    return 6371 * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(1 - h));
+  }
+
+  function buildingGeocodeQuery(item) {
+    const location = item && item.mapLocation;
+    if (!location || !location.buildingName || !location.dong) return '';
+    const district = KHGMapLocations && KHGMapLocations.districtKorean
+      ? KHGMapLocations.districtKorean(latest.lawdCd)
+      : '';
+    const address = location.roadAddress || (location.jibun ? `${location.dong} ${location.jibun}` : location.dong);
+    return [location.buildingName, address, district, '서울특별시', '대한민국'].filter(Boolean).join(', ');
+  }
+
+  async function ensureGeocoder() {
+    if (geocoder) return geocoder;
+    if (google.maps.importLibrary) {
+      const library = await google.maps.importLibrary('geocoding');
+      geocoder = new library.Geocoder();
+    } else geocoder = new google.maps.Geocoder();
+    return geocoder;
+  }
+
+  async function verifiedBuildingPoint(item) {
+    const query = buildingGeocodeQuery(item);
+    if (!query) return null;
+    if (geocodeCache.has(query)) return geocodeCache.get(query);
+    try {
+      const service = await ensureGeocoder();
+      const response = await service.geocode({ address:query, region:'KR' });
+      const result = response && response.results && response.results[0];
+      const type = result && result.geometry && result.geometry.location_type;
+      const location = result && result.geometry && result.geometry.location;
+      const point = location ? { lat:location.lat(), lng:location.lng() } : null;
+      const center = KHGMapLocations.centerFor(latest.lawdCd, item.dong);
+      const precise = ['ROOFTOP','GEOMETRIC_CENTER'].includes(String(type || ''));
+      const verified = point && center && precise && !result.partial_match && distanceKm(center, point) <= 4;
+      const value = verified ? point : null;
+      geocodeCache.set(query, value);
+      return value;
+    } catch (_) {
+      geocodeCache.set(query, null);
+      return null;
+    }
+  }
+
+  async function showBuildingLayer(detail = {}) {
+    const candidates = (Array.isArray(detail.buildings) ? detail.buildings : [])
+      .filter(item => item && item.mapLocation)
+      .slice(0, 12);
+    if (!candidates.length) { status.textContent = copy.noBuildings; return; }
+    status.textContent = copy.locating;
+    const located = [];
+    for (const item of candidates) {
+      const point = await verifiedBuildingPoint(item);
+      if (point) located.push({ ...item, ...point });
+    }
+    if (!located.length) { status.textContent = copy.noBuildings; return; }
+    markerScope = 'building';
+    latestBuildings = located;
+    selectedMarkerId = '';
+    viewTracked = false;
+    if (backButton) backButton.hidden = false;
+    renderMarkers();
   }
 
   function createMap(mapId = '') {
@@ -205,19 +289,39 @@
   }
 
   window.addEventListener('khg:explorer-dongs', event => {
-    latest = { ...latest, ...(event.detail || {}) };
+    const detail = event.detail || {};
+    const selectionChanged = String(detail.lawdCd || latest.lawdCd) !== String(latest.lawdCd) ||
+      String(detail.propertyType || latest.propertyType) !== String(latest.propertyType);
+    latest = { ...latest, ...detail };
+    if (selectionChanged) {
+      markerScope = 'neighborhood';
+      latestBuildings = [];
+      selectedMarkerId = '';
+      if (backButton) backButton.hidden = true;
+    }
     renderMarkers();
   });
+  window.addEventListener('khg:explorer-buildings', event => { void showBuildingLayer(event.detail || {}); });
   window.addEventListener('khg:map-clear-selection', () => highlight('', false));
   window.addEventListener('khg:analytics-ready', () => trackView(latestModels));
 
   document.addEventListener('pointerover', event => {
     const card = event.target.closest && event.target.closest('.neighborhood-card[data-dong]');
-    if (card) highlight(card.dataset.dong, true);
+    if (card && markerScope === 'neighborhood') highlight(card.dataset.dong, true);
   });
   document.addEventListener('focusin', event => {
     const card = event.target.closest && event.target.closest('.neighborhood-card[data-dong]');
-    if (card) highlight(card.dataset.dong, true);
+    if (card && markerScope === 'neighborhood') highlight(card.dataset.dong, true);
+  });
+
+  if (backButton) backButton.addEventListener('click', () => {
+    markerScope = 'neighborhood';
+    latestBuildings = [];
+    selectedMarkerId = '';
+    backButton.hidden = true;
+    viewTracked = false;
+    renderMarkers();
+    window.dispatchEvent(new CustomEvent('khg:map-back-neighborhoods'));
   });
 
   if ('IntersectionObserver' in window) {

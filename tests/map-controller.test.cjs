@@ -26,6 +26,7 @@ test('marker models preserve raw dong IDs and localize labels', () => {
   const models = controller.buildMarkerModels({ lawdCd:'11440', propertyType:'villa', locale:'zh-CN', dongs:[{ dong:'연남동', contractCount:12, contextualMedianMonthlyRentWon:900000, contextualMedianDepositWon:10000000 }] });
   assert.deepEqual(models, [{
     id:'dong:연남동',
+    kind:'neighborhood',
     dong:'연남동',
     label:'延南洞（연남동）',
     lat:37.5624,
@@ -41,6 +42,36 @@ test('marker models preserve raw dong IDs and localize labels', () => {
     tone:'strong',
     scale:12
   }]);
+});
+
+test('building marker models preserve verified coordinates and building identity', () => {
+  const [model] = controller.buildBuildingMarkerModels({
+    lawdCd:'11680',
+    propertyType:'apartment',
+    locale:'en',
+    buildings:[{
+      buildingKey:'역삼동::테헤란아이파크',
+      buildingName:'테헤란아이파크',
+      dong:'역삼동',
+      lat:37.5012,
+      lng:127.0396,
+      contractCount:14,
+      contextualMedianMonthlyRentWon:2400000,
+      contextualMedianDepositWon:100000000
+    }]
+  });
+
+  assert.equal(model.kind, 'building');
+  assert.equal(model.id, 'building:역삼동::테헤란아이파크');
+  assert.equal(model.buildingKey, '역삼동::테헤란아이파크');
+  assert.equal(model.buildingName, '테헤란아이파크');
+  assert.equal(model.dong, '역삼동');
+  assert.equal(model.lat, 37.5012);
+  assert.equal(model.lng, 127.0396);
+  assert.equal(model.contractCount, 14);
+  assert.equal(model.rentWon, 2400000);
+  assert.equal(model.depositWon, 100000000);
+  assert.equal(model.evidenceLevel, 'strong');
 });
 
 test('budget marker uses matching deposit-band evidence and price context', () => {
@@ -101,6 +132,7 @@ test('map analytics exposes only bounded decision context', () => {
     locale:'zh-CN',
     district_code:'11440',
     property_type:'villa',
+    marker_scope:'neighborhood',
     budget_filter:'active',
     marker_count:12,
     fitting_count:8,
@@ -115,6 +147,7 @@ test('map analytics exposes only bounded decision context', () => {
     locale:'en-US',
     district_code:'all',
     property_type:'apartment',
+    marker_scope:'neighborhood',
     budget_filter:'none',
     budget_status:'unfiltered',
     evidence_level:'limited',

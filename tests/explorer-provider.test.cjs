@@ -139,3 +139,39 @@ test('building detail resolves dong-qualified keys and preserves dong metadata',
   assert.equal(detail.contractCount, 1);
   assert.equal(detail.medianMonthlyRentWon, 600000);
 });
+
+test('building map eligibility is strict by housing type and address consistency', () => {
+  const apartment = utils.aggregateBuildings([
+    { building:'Named Apartment', buildingName:'Named Apartment', dong:'역삼동', area:'25', deposit:'1000', monthlyRent:'100', contractDate:'2026-07-01', type:'apartment' }
+  ], { referenceDate:ref, months:6 })[0];
+  assert.equal(apartment.mapLocation.basis, 'named-building');
+
+  const sparseVilla = utils.aggregateBuildings([
+    { building:'Safe Villa', buildingName:'Safe Villa', dong:'연남동', jibun:'123-4', area:'20', deposit:'1000', monthlyRent:'60', contractDate:'2026-07-01', type:'villa' },
+    { building:'Safe Villa', buildingName:'Safe Villa', dong:'연남동', jibun:'123-4', area:'21', deposit:'1000', monthlyRent:'65', contractDate:'2026-06-01', type:'villa' }
+  ], { referenceDate:ref, months:6 })[0];
+  assert.equal(sparseVilla.mapLocation, null);
+
+  const verifiedVillaRows = [
+    { building:'Safe Villa', buildingName:'Safe Villa', dong:'연남동', jibun:'123-4', area:'20', deposit:'1000', monthlyRent:'60', contractDate:'2026-07-01', type:'villa' },
+    { building:'Safe Villa', buildingName:'Safe Villa', dong:'연남동', jibun:'123-4', area:'21', deposit:'1000', monthlyRent:'65', contractDate:'2026-06-01', type:'villa' },
+    { building:'Safe Villa', buildingName:'Safe Villa', dong:'연남동', jibun:'123-4', area:'22', deposit:'1000', monthlyRent:'70', contractDate:'2026-05-01', type:'villa' }
+  ];
+  const verifiedVilla = utils.aggregateBuildings(verifiedVillaRows, { referenceDate:ref, months:6 })[0];
+  assert.deepEqual(verifiedVilla.mapLocation, {
+    buildingName:'Safe Villa', dong:'연남동', jibun:'123-4', roadAddress:'', basis:'official-address'
+  });
+
+  const conflictingVilla = utils.aggregateBuildings([
+    ...verifiedVillaRows,
+    { ...verifiedVillaRows[2], jibun:'999-1', contractDate:'2026-04-01' }
+  ], { referenceDate:ref, months:6 })[0];
+  assert.equal(conflictingVilla.mapLocation, null);
+
+  const detached = utils.aggregateBuildings([
+    { building:'Detached Home', buildingName:'Detached Home', dong:'연남동', jibun:'123-4', area:'50', deposit:'1000', monthlyRent:'90', contractDate:'2026-07-01', type:'detached' },
+    { building:'Detached Home', buildingName:'Detached Home', dong:'연남동', jibun:'123-4', area:'50', deposit:'1000', monthlyRent:'90', contractDate:'2026-06-01', type:'detached' },
+    { building:'Detached Home', buildingName:'Detached Home', dong:'연남동', jibun:'123-4', area:'50', deposit:'1000', monthlyRent:'90', contractDate:'2026-05-01', type:'detached' }
+  ], { referenceDate:ref, months:6 })[0];
+  assert.equal(detached.mapLocation, null);
+});

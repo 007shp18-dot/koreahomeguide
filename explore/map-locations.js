@@ -13,6 +13,10 @@
     '11230':{ lat:37.5744, lng:127.0396 }, '11410':{ lat:37.5791, lng:126.9368 },
     '11290':{ lat:37.5894, lng:127.0167 }, '11215':{ lat:37.5385, lng:127.0823 }
   });
+  const DISTRICT_KOREAN = Object.freeze({
+    '11680':'강남구', '11440':'마포구', '11170':'용산구', '11200':'성동구', '11560':'영등포구',
+    '11620':'관악구', '11230':'동대문구', '11410':'서대문구', '11290':'성북구', '11215':'광진구'
+  });
 
   const DONGS = frozen({
     '역삼동':{ lat:37.5007, lng:127.0365 }, '논현동':{ lat:37.5112, lng:127.0287 },
@@ -214,6 +218,7 @@
   function district(code) { return DISTRICTS[String(code || '')] || null; }
   function neighborhood(name) { return DONGS[String(name || '')] || null; }
   function centerFor(code, name) { return neighborhood(name) || district(code); }
+  function districtKorean(code) { return DISTRICT_KOREAN[String(code || '')] || ''; }
 
-  return Object.freeze({ DISTRICTS, DONGS, district, neighborhood, centerFor });
+  return Object.freeze({ DISTRICTS, DONGS, DISTRICT_KOREAN, district, neighborhood, centerFor, districtKorean });
 });

@@ -121,6 +121,17 @@
     return catalog ? catalog.propertyTypeLabel(type, locale) : String(type || '');
   }
 
+  function localizedDongParts(dong, locale = 'en') {
+    const korean = normalizeSegment(dong);
+    const primary = catalog ? catalog.dongLabel(korean, locale, { includeKorean:false }) : korean;
+    const secondary = primary && primary !== korean ? korean : '';
+    return Object.freeze({
+      primary:primary || korean,
+      korean:secondary,
+      breakKorean:Boolean(secondary && (String(primary).length >= 17 || String(primary).length + secondary.length >= 24))
+    });
+  }
+
   function supportsZhIndexing(areaCode) {
     return Boolean(catalog && catalog.supportsZhIndexing(areaCode));
   }
@@ -131,6 +142,7 @@
     buildBuildingDetailUrl,
     budgetFitForDong,
     filterDongsByBudget,
+    localizedDongParts,
     propertyTypeLabel,
     supportsZhIndexing,
     stableSuffix

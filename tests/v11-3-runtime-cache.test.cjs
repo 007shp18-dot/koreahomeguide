@@ -15,11 +15,11 @@ test('v11.3 exposes stable service-key-free shared month keys', () => {
   const prices = freshPrices();
   assert.equal(
     prices.runtimeMonthCacheKey({ kind:'rent', type:'villa', lawdCd:'11680', dealYmd:'202607', pageSize:1000 }),
-    'molit-v1:rent:villa:11680:202607:1000'
+    'molit-v2:rent:villa:11680:202607:1000'
   );
   assert.equal(
     prices.runtimeMonthCacheKey({ kind:'sale', type:'apartment', lawdCd:'11680', dealYmd:'202607', pageSize:1000 }),
-    'molit-v1:sale:apartment:11680:202607:1000'
+    'molit-v2:sale:apartment:11680:202607:1000'
   );
   assert.doesNotMatch(
     prices.runtimeMonthCacheKey({ kind:'rent', type:'villa', lawdCd:'11680', dealYmd:'202607', pageSize:1000 }),
@@ -32,14 +32,14 @@ test('shared cache hit returns cached rows without calling upstream loader', asy
   let loads = 0;
   const cache = {
     async get(key) {
-      assert.equal(key, 'molit-v1:rent:villa:11680:202607:1000');
+      assert.equal(key, 'molit-v2:rent:villa:11680:202607:1000');
       return [{ building:'cached' }];
     },
     async set() { throw new Error('set must not run on a hit'); }
   };
   const result = await prices.loadWithRuntimeCache({
     cacheProvider: async () => cache,
-    cacheKey:'molit-v1:rent:villa:11680:202607:1000',
+    cacheKey:'molit-v2:rent:villa:11680:202607:1000',
     loader:async () => { loads += 1; return [{ building:'origin' }]; }
   });
   assert.deepEqual(result, [{ building:'cached' }]);
@@ -55,12 +55,12 @@ test('shared cache miss writes origin rows for 24 hours', async () => {
   };
   const result = await prices.loadWithRuntimeCache({
     cacheProvider: async () => cache,
-    cacheKey:'molit-v1:rent:officetel:11170:202607:1000',
+    cacheKey:'molit-v2:rent:officetel:11170:202607:1000',
     loader:async () => [{ building:'origin' }]
   });
   assert.deepEqual(result, [{ building:'origin' }]);
   assert.equal(writes.length, 1);
-  assert.equal(writes[0].key, 'molit-v1:rent:officetel:11170:202607:1000');
+  assert.equal(writes[0].key, 'molit-v2:rent:officetel:11170:202607:1000');
   assert.deepEqual(writes[0].value, [{ building:'origin' }]);
   assert.equal(writes[0].options.ttl, 86400);
   assert.deepEqual(writes[0].options.tags, ['molit-month']);
@@ -75,7 +75,7 @@ test('runtime cache read failure degrades to upstream and still returns data', a
   };
   const result = await prices.loadWithRuntimeCache({
     cacheProvider: async () => cache,
-    cacheKey:'molit-v1:rent:apartment:11440:202607:1000',
+    cacheKey:'molit-v2:rent:apartment:11440:202607:1000',
     loader:async () => { loads += 1; return [{ building:'origin' }]; }
   });
   assert.equal(loads, 1);
@@ -90,7 +90,7 @@ test('runtime cache write failure never discards successful MOLIT data', async (
   };
   const result = await prices.loadWithRuntimeCache({
     cacheProvider: async () => cache,
-    cacheKey:'molit-v1:rent:apartment:11440:202607:1000',
+    cacheKey:'molit-v2:rent:apartment:11440:202607:1000',
     loader:async () => [{ building:'origin' }]
   });
   assert.deepEqual(result, [{ building:'origin' }]);
@@ -101,7 +101,7 @@ test('missing runtime cache preserves legacy loader behavior', async () => {
   let loads = 0;
   const result = await prices.loadWithRuntimeCache({
     cacheProvider: async () => null,
-    cacheKey:'molit-v1:rent:detached:11170:202607:1000',
+    cacheKey:'molit-v2:rent:detached:11170:202607:1000',
     loader:async () => { loads += 1; return [{ building:'origin' }]; }
   });
   assert.equal(loads, 1);
@@ -167,7 +167,7 @@ test('fetchRentalMonth uses a supplied regional cache before MOLIT', async () =>
     fetchImpl:fakeFetch,
     runtimeCacheProvider:async () => ({
       async get(key) {
-        assert.equal(key, 'molit-v1:rent:apartment:11680:202607:1000');
+        assert.equal(key, 'molit-v2:rent:apartment:11680:202607:1000');
         return cached;
       },
       async set() { throw new Error('must not write hit'); }
@@ -197,7 +197,7 @@ test('fetchRentalMonth writes parsed MOLIT rows to the supplied regional cache o
   assert.equal(result.length, 1);
   assert.equal(result[0].building, 'Origin');
   assert.equal(writes.length, 1);
-  assert.equal(writes[0].key, 'molit-v1:rent:apartment:11680:202607:1000');
+  assert.equal(writes[0].key, 'molit-v2:rent:apartment:11680:202607:1000');
   assert.deepEqual(writes[0].value, result);
   assert.equal(writes[0].options.ttl, 86400);
 });
@@ -215,7 +215,7 @@ test('fetchSaleMonth uses the same regional month-cache layer', async () => {
     fetchImpl:fakeFetch,
     runtimeCacheProvider:async () => ({
       async get(key) {
-        assert.equal(key, 'molit-v1:sale:apartment:11680:202607:1000');
+        assert.equal(key, 'molit-v2:sale:apartment:11680:202607:1000');
         return cached;
       },
       async set() { throw new Error('must not write hit'); }

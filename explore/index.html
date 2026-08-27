@@ -62,9 +62,12 @@
         <section class="explorer-map-card">
           <div class="explorer-map-toolbar">
             <div class="explorer-map-heading"><span class="eyebrow">NEIGHBORHOOD MAP</span><h2>Tap a marker to see the rent context.</h2></div>
-            <div class="explorer-view-toggle" aria-label="Explorer view">
-              <button type="button" class="is-active" data-explorer-view="map" aria-pressed="true">Map</button>
-              <button type="button" data-explorer-view="list" aria-pressed="false">List</button>
+            <div class="explorer-map-toolbar-actions">
+              <button id="explorerMapBack" class="explorer-map-back" type="button" hidden>← Neighborhoods</button>
+              <div class="explorer-view-toggle" aria-label="Explorer view">
+                <button type="button" class="is-active" data-explorer-view="map" aria-pressed="true">Map</button>
+                <button type="button" data-explorer-view="list" aria-pressed="false">List</button>
+              </div>
             </div>
           </div>
           <div class="explorer-map-legend" aria-label="Map marker meaning"><span><i class="is-strong"></i>Strong evidence</span><span><i class="is-limited"></i>Limited evidence</span><span><i class="is-outside"></i>Outside budget</span></div>

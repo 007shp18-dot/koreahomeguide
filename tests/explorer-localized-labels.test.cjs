@@ -1,6 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const explorer = require('../explore/explorer-utils.js');
 
 test('explorer pages load the catalog before explorer utilities', () => {
   for (const file of ['explore/index.html','zh/explore/index.html','explore/building/index.html','zh/explore/building/index.html']) {
@@ -30,6 +31,18 @@ test('static filters show locale labels while preserving stable values', () => {
   const zh = fs.readFileSync('zh/explore/index.html','utf8');
   assert.match(en, /value="11680">Gangnam-gu \(강남구\)</);
   assert.match(en, /value="officetel">Officetel \(오피스텔\)</);
-  assert.match(zh, /value="11680">江南区（강남구）</);
-  assert.match(zh, /value="villa">低层多户住宅 \/ Villa（연립·다세대）</);
+  assert.match(zh, /value="11680">江南区（강남구）/);
+  assert.match(zh, /value="villa">低层多户住宅 \/ Villa（연립·다세대）/);
+});
+
+test('short localized dong labels keep Korean inline', () => {
+  assert.deepEqual(explorer.localizedDongParts('연남동', 'en'), {
+    primary:'Yeonnam-dong', korean:'연남동', breakKorean:false
+  });
+});
+
+test('long localized dong labels move Korean to a second line', () => {
+  assert.deepEqual(explorer.localizedDongParts('영등포동1가', 'en'), {
+    primary:'Yeongdeungpo-dong 1-ga', korean:'영등포동1가', breakKorean:true
+  });
 });

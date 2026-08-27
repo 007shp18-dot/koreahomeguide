@@ -46,6 +46,11 @@ function escapeHtml(value) {
 function areaName() { return KHGLocations.districtLabel(areaSelect.value, 'zh-CN'); }
 function typeName(type = typeSelect.value) { return KHGLocations.propertyTypeLabel(type, 'zh-CN'); }
 function dongDisplayName(dong) { return KHGLocations.dongLabel(dong, 'zh-CN'); }
+function dongDisplayHtml(dong) {
+  const parts = KHGExplorer.localizedDongParts(dong, 'zh-CN');
+  const korean = parts.korean ? `<span class="location-name-ko">（${escapeHtml(parts.korean)}）</span>` : '';
+  return `<span class="localized-location-name${parts.breakKorean ? ' is-long' : ''}"><span class="location-name-primary">${escapeHtml(parts.primary)}</span>${korean}</span>`;
+}
 function formatArea(area) { return area == null ? '—' : `${Number(area).toFixed(1)}㎡`; }
 function budgetValues() {
   return {
@@ -68,6 +73,9 @@ function updateBudgetNote(filteredCount, totalCount) {
 }
 function publishMapDongs(dongs) {
   window.dispatchEvent(new CustomEvent('khg:explorer-dongs', { detail:{ lawdCd:areaSelect.value, propertyType:typeSelect.value, locale:'zh-CN', limits:budgetValues(), dongs:Array.isArray(dongs) ? dongs : [] } }));
+}
+function publishMapBuildings(dong, buildings) {
+  window.dispatchEvent(new CustomEvent('khg:explorer-buildings', { detail:{ lawdCd:areaSelect.value, propertyType:typeSelect.value, locale:'zh-CN', limits:budgetValues(), dong:String(dong || ''), buildings:Array.isArray(buildings) ? buildings : [] } }));
 }
 function currentParams(includeDong = true) {
   const params = new URLSearchParams({ lawdCd:areaSelect.value, type:typeSelect.value });
@@ -125,30 +133,36 @@ function renderMapSelection(model) {
   currentMapSelection = model;
   const evidenceCount = Number(model.evidenceCount || 0);
   const totalCount = Number(model.contractCount || 0);
+  const isBuilding = model.kind === 'building';
   const statusCopy = model.budgetStatus === 'outside'
     ? '超出所选预算'
     : model.evidenceLevel === 'strong' ? '较强依据' : '有限依据';
   mapSelectionStatus.textContent = statusCopy;
   mapSelectionStatus.className = `explorer-map-selection-status is-${model.tone || 'limited'}`;
-  mapSelectionName.textContent = model.label || dongDisplayName(model.dong);
+  mapSelectionName.innerHTML = isBuilding
+    ? `<span>${escapeHtml(model.label || model.buildingName)}</span>${model.secondaryLabel ? `<small class="building-official-name">${escapeHtml(model.secondaryLabel)}</small>` : ''}`
+    : dongDisplayHtml(model.dong);
   mapSelectionContracts.textContent = model.budgetStatus === 'unfiltered'
     ? `${totalCount.toLocaleString('zh-CN')} 笔申报成交`
     : `${evidenceCount.toLocaleString('zh-CN')} 笔符合预算的成交`;
   mapSelectionRent.innerHTML = model.rentWon == null ? '—' : moneyHtml(model.rentWon);
   mapSelectionDeposit.innerHTML = model.depositWon == null ? '—' : moneyHtml(model.depositWon);
-  mapSelectionEvidence.textContent = model.budgetStatus === 'outside'
+  mapSelectionEvidence.textContent = isBuilding
+    ? `该标记代表经过核验的建筑位置和 ${evidenceCount.toLocaleString('zh-CN')} 笔相关历史合同，并非具体可租单元或实时房源。`
+    : model.budgetStatus === 'outside'
     ? `近期价格条件没有同时符合全部预算限制。上方数值是该街区 ${totalCount.toLocaleString('zh-CN')} 笔申报成交的较宽市场参考。`
     : model.evidenceLevel === 'strong'
       ? `由 ${evidenceCount.toLocaleString('zh-CN')} 笔相关申报成交支持。这是历史市场参考，并非实时房源。`
       : `只有 ${evidenceCount.toLocaleString('zh-CN')} 笔相关申报成交支持这个标记，请将其视为方向性参考。`;
   if (mapSelectionDetail) {
-    const detailLang = KHGExplorer.supportsZhIndexing(model.districtCode) ? 'zh' : 'en';
-    mapSelectionDetail.href = KHGExplorer.buildDongSeoUrl({
-      lawdCd:model.districtCode,
-      type:model.propertyType,
-      dong:model.dong,
-      lang:detailLang
-    });
+    if (isBuilding) {
+      mapSelectionDetail.href = KHGExplorer.buildBuildingDetailUrl({ lawdCd:model.districtCode, type:model.propertyType, dong:model.dong, buildingKey:model.buildingKey });
+      mapSelectionDetail.textContent = '查看建筑详情 →';
+    } else {
+      const detailLang = KHGExplorer.supportsZhIndexing(model.districtCode) ? 'zh' : 'en';
+      mapSelectionDetail.href = KHGExplorer.buildDongSeoUrl({ lawdCd:model.districtCode, type:model.propertyType, dong:model.dong, lang:detailLang });
+      mapSelectionDetail.textContent = '查看街区详情 →';
+    }
   }
   mapSelection.hidden = false;
   highlightMapCard(model.dong);
@@ -186,7 +200,7 @@ function renderDongs(dongs) {
     const linkLang = KHGExplorer.supportsZhIndexing(districtCode) ? 'zh' : 'en';
     const seoHref = KHGExplorer.buildDongSeoUrl({ lawdCd:districtCode, type:typeSelect.value, dong:item.dong, lang:linkLang });
     return `<a class="neighborhood-card" data-dong="${escapeHtml(item.dong)}" href="${escapeHtml(seoHref)}">
-      <span class="neighborhood-card-main"><strong>${escapeHtml(dongDisplayName(item.dong))}</strong><small>${isAllSeoul ? `${escapeHtml(districtName)} · ` : ''}${Number(item.contractCount || 0).toLocaleString('zh-CN')} 笔近期成交</small></span>
+      <span class="neighborhood-card-main"><strong>${dongDisplayHtml(item.dong)}</strong><small>${isAllSeoul ? `${escapeHtml(districtName)} · ` : ''}${Number(item.contractCount || 0).toLocaleString('zh-CN')} 笔近期成交</small></span>
       <span class="neighborhood-card-metric"><small>参考月租</small><strong>${rent}</strong></span>
       <span class="neighborhood-card-metric"><small>参考押金</small><strong>${deposit}</strong></span>
       <span class="neighborhood-card-cta">查看街区 →</span>
@@ -200,7 +214,9 @@ function renderSummary(data, dong = '') {
   const selectedAreaName = areaSelect.value === 'all'
     ? (data.districtName === 'All supported Seoul' ? '全首尔支持地区' : data.districtName)
     : areaName();
-  title.textContent = [selectedAreaName, currentDong ? dongDisplayName(currentDong) : '', typeName(data.propertyType || typeSelect.value)].filter(Boolean).join(' · ');
+  title.innerHTML = currentDong
+    ? `${escapeHtml(selectedAreaName)} · ${dongDisplayHtml(currentDong)} · ${escapeHtml(typeName(data.propertyType || typeSelect.value))}`
+    : `${escapeHtml(selectedAreaName)} · ${escapeHtml(typeName(data.propertyType || typeSelect.value))}`;
   const summary = data.summary || {};
   const rentValue = summary.medianMonthlyRentWon;
   const depositValue = summary.medianDepositWon;
@@ -275,7 +291,7 @@ function setLoading(message = '正在加载官方租赁成交数据…') {
   exploreButton.disabled = true;
 }
 
-async function loadDong(dong) {
+async function loadDong(dong, { showBuildingsOnMap = false } = {}) {
   currentDong = String(dong || '').trim();
   if (!currentDong) return;
   setLoading(`正在加载 ${dongDisplayName(currentDong)} 的官方租赁成交数据…`);
@@ -286,6 +302,7 @@ async function loadDong(dong) {
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || 'Neighborhood data failed');
     renderSummary(data, data.dong || currentDong);
+    if (showBuildingsOnMap) publishMapBuildings(data.dong || currentDong, data.buildings || []);
     history.replaceState(null, '', `/zh/explore/?${currentParams(false).toString()}`);
   } catch (_) {
     status.textContent = '该街区的官方成交数据暂时无法加载，请稍后再试。';
@@ -384,7 +401,14 @@ window.addEventListener('khg:map-select-dong', event => {
   if (!dong || !model) return;
   highlightMapCard(model.dong);
   renderMapSelection(model);
+  if (currentDong === dong && currentData && Array.isArray(currentData.buildings)) publishMapBuildings(dong, currentData.buildings);
+  else void loadDong(dong, { showBuildingsOnMap:true });
 });
+window.addEventListener('khg:map-select-building', event => {
+  const model = event.detail && event.detail.model;
+  if (model) renderMapSelection(model);
+});
+window.addEventListener('khg:map-back-neighborhoods', clearMapSelection);
 
 (async () => {
   applyQuerySelection();

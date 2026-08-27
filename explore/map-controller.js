@@ -2,10 +2,11 @@
   const locations = typeof module === 'object' && module.exports ? require('./map-locations.js') : root.KHGMapLocations;
   const labels = typeof module === 'object' && module.exports ? require('../location-catalog.js') : root.KHGLocations;
   const explorer = typeof module === 'object' && module.exports ? require('./explorer-utils.js') : root.KHGExplorer;
-  const api = factory(locations, labels, explorer);
+  const buildingNames = typeof module === 'object' && module.exports ? require('../building-name-utils.js') : root.KHGBuildingNames;
+  const api = factory(locations, labels, explorer, buildingNames);
   if (typeof module === 'object' && module.exports) module.exports = api;
   root.KHGMapController = api;
-})(typeof globalThis !== 'undefined' ? globalThis : this, function(locations, labels, explorer) {
+})(typeof globalThis !== 'undefined' ? globalThis : this, function(locations, labels, explorer, buildingNames) {
   'use strict';
 
   const MAP_EVENTS = new Set(['explorer_map_view', 'explorer_map_select']);
@@ -67,12 +68,56 @@
       const budgetStatus = hasBudget ? (fit.fits ? 'fit' : 'outside') : 'unfiltered';
       return [Object.freeze({
         id:`dong:${dong}`,
+        kind:'neighborhood',
         dong,
         label:labels.dongLabel(dong, locale),
         lat:point.lat,
         lng:point.lng,
         districtCode:String(item && item.districtCode || lawdCd || ''),
         propertyType:String(propertyType || ''),
+        contractCount,
+        evidenceCount,
+        rentWon:finiteMoney(band ? band.medianMonthlyRentWon : (item.contextualMedianMonthlyRentWon ?? item.medianMonthlyRentWon)),
+        depositWon:finiteMoney(band ? band.medianDepositWon : (item.contextualMedianDepositWon ?? item.medianDepositWon)),
+        evidenceLevel,
+        budgetStatus,
+        tone:budgetStatus === 'outside' ? 'outside' : evidenceLevel,
+        scale:markerScale(evidenceCount)
+      })];
+    });
+  }
+
+  function buildBuildingMarkerModels({ lawdCd, propertyType = '', buildings, locale = 'en', limits = {} } = {}) {
+    const hasBudget = Boolean(Math.max(0, Number(limits.maxRent) || 0) || Math.max(0, Number(limits.maxDeposit) || 0));
+    return (Array.isArray(buildings) ? buildings : []).flatMap(item => {
+      const lat = Number(item && item.lat);
+      const lng = Number(item && item.lng);
+      const buildingKey = String(item && item.buildingKey || '');
+      const buildingName = String(item && item.buildingName || '');
+      if (!Number.isFinite(lat) || !Number.isFinite(lng) || !buildingKey || !buildingName) return [];
+      const contractCount = normalizedCount(item.contractCount);
+      const fit = explorer && typeof explorer.budgetFitForDong === 'function'
+        ? explorer.budgetFitForDong(item, limits)
+        : { fits:true, matchingContractCount:contractCount, representativeBand:null };
+      const band = fit.representativeBand;
+      const evidenceCount = hasBudget ? normalizedCount(fit.matchingContractCount) : contractCount;
+      const evidenceLevel = evidenceCount >= 10 ? 'strong' : 'limited';
+      const budgetStatus = hasBudget ? (fit.fits ? 'fit' : 'outside') : 'unfiltered';
+      const display = buildingNames && typeof buildingNames.getBuildingNameDisplay === 'function'
+        ? buildingNames.getBuildingNameDisplay(buildingName, locale)
+        : { primary:buildingName, secondary:'' };
+      return [Object.freeze({
+        id:`building:${buildingKey}`,
+        kind:'building',
+        buildingKey,
+        buildingName,
+        label:display.primary || buildingName,
+        secondaryLabel:display.secondary || '',
+        dong:String(item.dong || ''),
+        lat,
+        lng,
+        districtCode:String(lawdCd || ''),
+        propertyType:String(propertyType || item.propertyType || ''),
         contractCount,
         evidenceCount,
         rentWon:finiteMoney(band ? band.medianMonthlyRentWon : (item.contextualMedianMonthlyRentWon ?? item.medianMonthlyRentWon)),
@@ -96,6 +141,7 @@
       locale,
       district_code:district,
       property_type:propertyType,
+      marker_scope:context.markerScope === 'building' ? 'building' : 'neighborhood',
       budget_filter:context.hasBudget ? 'active' : 'none'
     };
     const pageLocation = sanitizedPageLocation(context.pageLocation);
@@ -171,5 +217,5 @@
     return Object.freeze({ ...(state || {}), selectedDong:String(dong || '') });
   }
 
-  return Object.freeze({ buildMapsSdkUrl, buildMarkerModels, buildMapAnalyticsEvent, markerVisual, advancedPinVisual, applyAdvancedMarkerBadge, advancedMarkersAvailable, selectDong });
+  return Object.freeze({ buildMapsSdkUrl, buildMarkerModels, buildBuildingMarkerModels, buildMapAnalyticsEvent, markerVisual, advancedPinVisual, applyAdvancedMarkerBadge, advancedMarkersAvailable, selectDong });
 });

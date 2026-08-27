@@ -44,7 +44,10 @@ test('Explorer runtimes publish raw dong models after rendering', () => {
     assert.match(source, /function setExplorerView\(view = 'map'\)/);
     assert.match(source, /explorerViewButtons\.forEach/);
     assert.match(source, /mapSelectionClose\.addEventListener\('click', clearMapSelection\)/);
-    assert.match(source, /mapSelectionDetail\.href = KHGExplorer\.buildDongSeoUrl/);
+    assert.match(source, /KHGExplorer\.buildDongSeoUrl/);
+    assert.match(source, /KHGExplorer\.buildBuildingDetailUrl/);
+    assert.match(source, /khg:explorer-buildings/);
+    assert.match(source, /khg:map-select-building/);
     assert.match(source, /highlightMapCard\(model\.dong\)/);
     assert.match(source, /updateRentCheckHandoff\(\{ lawdCd:model\.districtCode, propertyType:model\.propertyType \}\)/);
     assert.match(source, /areaSelect\.addEventListener\('change',handleSelectionChange\)/);
@@ -66,5 +69,18 @@ test('Explorer pages load map dependencies before their locale runtime', () => {
   for (const file of ['explore/index.html','zh/explore/index.html']) {
     const html = fs.readFileSync(file,'utf8');
     for (const script of ['/explore/map-locations.js','/explore/map-controller.js','/explore/map.js']) assert.ok(html.includes(script), `${file}: ${script}`);
+    assert.match(html, /id="explorerMapBack"/);
   }
+});
+
+test('building map layer verifies precise geocodes, caps candidates, and supports returning', () => {
+  const source = fs.readFileSync('explore/map.js','utf8');
+  assert.match(source, /importLibrary\('geocoding'\)/);
+  assert.match(source, /\['ROOFTOP','GEOMETRIC_CENTER'\]/);
+  assert.match(source, /!result\.partial_match/);
+  assert.match(source, /distanceKm\(center, point\) <= 4/);
+  assert.match(source, /\.slice\(0, 12\)/);
+  assert.match(source, /khg:explorer-buildings/);
+  assert.match(source, /khg:map-select-building/);
+  assert.match(source, /khg:map-back-neighborhoods/);
 });
