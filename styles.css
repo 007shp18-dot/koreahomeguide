@@ -194,6 +194,7 @@ body{background:#fff;color:var(--ink)}
 .explorer-page{max-width:1200px}.explorer-hero{max-width:760px}.explorer-hero h1{font-size:clamp(40px,5.2vw,60px)}
 .explorer-trust{background:var(--surface-soft);border:1px solid #eef2f7;color:#475569;border-radius:9px}
 .explorer-search-card{border-color:var(--line);border-radius:16px;box-shadow:none}
+.explorer-search-handoff{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:11px 2px 0;border-top:1px solid #eef2f7;color:var(--muted);font-size:12px;line-height:1.5}.explorer-search-handoff a{display:inline-flex;align-items:center;min-height:44px;color:var(--accent);font-weight:800;text-decoration:none;white-space:nowrap}.explorer-search-handoff a:hover{text-decoration:underline}
 #explorerChips[hidden],#explorerResultsShell[hidden]{display:none!important}.explorer-chips button{border-color:var(--line);color:var(--muted)}.explorer-chips button:hover{border-color:#bfdbfe;color:var(--accent);background:#f8fbff}
 .explorer-results{border-top:0;padding-top:0}.explorer-results-head{padding-top:4px}
 .explorer-metrics{grid-template-columns:repeat(4,minmax(0,1fr));margin:14px 0 34px}
@@ -261,6 +262,7 @@ body{background:#fff;color:var(--ink)}
 }
 @media(max-width:620px){
   .hero{padding-top:38px}.home-intents{margin-top:14px}.intent-card{min-height:0;padding:18px}
+  .explorer-search-handoff{align-items:flex-start;flex-direction:column;gap:2px}.explorer-search-handoff a{white-space:normal}
   .page-shell{padding-left:18px;padding-right:18px}.seo-page.product-layout{padding-left:18px!important;padding-right:18px!important}
 }
 

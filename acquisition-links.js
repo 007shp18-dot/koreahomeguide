@@ -114,12 +114,36 @@
       ['utm_medium', 'origin_medium'],
       ['utm_campaign', 'origin_campaign']
     ]) {
-      const value = safeCampaign(current.get(input) || current.get(output));
+      const value = safeCampaign(current.get(input) || current.get(output) || linked.get(output));
       if (value) next.set(output, value);
     }
 
     const query = next.toString();
     return query ? `${basePath}?${query}` : basePath;
+  }
+
+  function updateRentCheckLinksForSelection({ doc, location, lawdCd = '', propertyType = '' } = {}) {
+    if (!doc || !location || typeof doc.querySelectorAll !== 'function') return 0;
+    let changed = 0;
+    doc.querySelectorAll('[data-explorer-rent-check]').forEach(anchor => {
+      let current;
+      try {
+        current = new URL(String(anchor.getAttribute('href') || ''), 'https://koreahomeguide.com');
+      } catch (_) {
+        return;
+      }
+      if (!['/tools/seoul-rent-check/', '/zh/tools/seoul-rent-check/'].includes(current.pathname)) return;
+      anchor.setAttribute('href', buildRentCheckUrl({
+        basePath: current.pathname,
+        sourcePage: location.pathname,
+        lawdCd,
+        propertyType,
+        search: location.search || '',
+        linkSearch: current.search
+      }));
+      changed += 1;
+    });
+    return changed;
   }
 
   function wireRentCheckLinks({ doc, location, track } = {}) {
@@ -162,7 +186,20 @@
       });
       if (cta && typeof track === 'function' && typeof anchor.addEventListener === 'function') {
         anchor.addEventListener('click', () => {
-          try { track('rent_check_cta_click', cta); } catch (_) {}
+          try {
+            const clicked = new URL(String(anchor.getAttribute('href') || ''), 'https://koreahomeguide.com');
+            const clickedValues = {
+              ...values,
+              lawdCd: values.lawdCd || safeDistrictCode(clicked.searchParams.get('lawdCd')),
+              propertyType: values.propertyType || safePropertyType(clicked.searchParams.get('type'))
+            };
+            const clickedCta = buildRentCheckCtaEvent({
+              ...clickedValues,
+              ctaId: anchor.dataset && anchor.dataset.rentCheckCta || anchor.id,
+              locale: doc.documentElement && doc.documentElement.lang
+            });
+            if (clickedCta) track('rent_check_cta_click', clickedCta);
+          } catch (_) {}
         });
       }
       changed += 1;
@@ -176,6 +213,7 @@
     safeSourcePage,
     buildRentCheckCtaEvent,
     buildRentCheckUrl,
+    updateRentCheckLinksForSelection,
     wireRentCheckLinks
   };
 });
