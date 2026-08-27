@@ -59,17 +59,17 @@ test('evidence facts disclose the deposit conversion used for monthly-rent compa
   );
 });
 
-test('homepage desktop grid leaves enough room for a two-digit size without growing wider', () => {
+test('homepage desktop grid gives rough-size controls a full second row', () => {
   const css = fs.readFileSync('cold-start.css', 'utf8');
   const match = css.match(/\.funnel-rent-card \.rent-check-form\{grid-template-columns:([^;}]+)/);
   assert.ok(match, 'homepage Rent Check desktop grid is present');
   const minimums = [...match[1].matchAll(/minmax\((\d+)px,/g)].map(item => Number(item[1]));
-  assert.equal(minimums.length, 6);
-  assert.ok(minimums[0] >= 260, 'Area keeps the longest bilingual option readable');
-  assert.ok(minimums[1] >= 250, 'Property type keeps the longest bilingual option readable');
-  assert.ok(minimums[3] >= 185, 'Monthly-rent label stays on one line');
-  assert.ok(minimums[4] >= 96, 'Size input has room for its number and unit');
-  assert.ok(minimums.reduce((sum, width) => sum + width, 0) <= 1040, 'six columns still fit before the responsive breakpoint');
+  assert.equal(minimums.length, 4);
+  assert.ok(minimums[0] >= 220, 'Area keeps its bilingual option readable');
+  assert.ok(minimums[1] >= 220, 'Property type keeps its bilingual option readable');
+  assert.ok(minimums[2] >= 170, 'Deposit remains readable');
+  assert.ok(minimums[3] >= 170, 'Monthly-rent label stays on one line');
+  assert.match(css, /\.funnel-rent-card \.rent-check-size-field\{grid-column:span 3\}/);
 });
 
 test('a distribution verdict describes the displayed typical range instead of a median threshold', () => {

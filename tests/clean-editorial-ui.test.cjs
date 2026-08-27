@@ -7,8 +7,11 @@ const read = file => fs.readFileSync(file, 'utf8');
 test('core product pages share the approved editorial spacing and radius contract', () => {
   const css = read('styles.css');
 
-  assert.match(css, /--radius-card:\s*16px/);
-  assert.match(css, /--radius-action:\s*11px/);
+  assert.match(css, /--radius-sm:\s*8px/);
+  assert.match(css, /--radius-md:\s*12px/);
+  assert.match(css, /--radius-lg:\s*16px/);
+  assert.match(css, /--radius-card:\s*var\(--radius-lg\)/);
+  assert.match(css, /--radius-action:\s*var\(--radius-md\)/);
   assert.match(css, /--section-space:\s*80px/);
   assert.match(css, /--section-space-mobile:\s*56px/);
   assert.match(

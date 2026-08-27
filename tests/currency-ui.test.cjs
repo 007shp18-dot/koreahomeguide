@@ -3,13 +3,15 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 
 for (const [file, locale, expected] of [
-  ['index.html', 'en', 'USD'],
-  ['zh/index.html', 'zh-CN', 'CNY'],
+  ['index.html', 'en', 'KRW'],
+  ['zh/index.html', 'zh-CN', 'KRW'],
+  ['tools/seoul-rent-check/index.html', 'en tool', 'KRW'],
+  ['zh/tools/seoul-rent-check/index.html', 'zh-CN tool', 'KRW'],
 ]) {
   test(`${locale} page includes KRW/USD/CNY currency selector and currency runtime`, () => {
     const html = fs.readFileSync(file, 'utf8');
     assert.match(html, /id="currencySelect"/);
-    assert.match(html, /<option value="KRW">KRW<\/option>/);
+    assert.match(html, /<option value="KRW"[^>]*>KRW<\/option>/);
     assert.match(html, /<option value="USD"[^>]*>USD<\/option>/);
     assert.match(html, /<option value="CNY"[^>]*>CNY<\/option>/);
     assert.match(html, new RegExp(`<option value="${expected}"[^>]*selected`));

@@ -24,7 +24,9 @@ test('shared typography uses Geist with explicit Korean and Chinese fallbacks', 
 });
 
 test('typography polish keeps secondary copy readable and chips breathable', () => {
-  assert.match(css, /--muted:\s*#526174/);
+  assert.match(css, /--ink-soft:\s*#475569/);
+  assert.match(css, /--muted:\s*#64748b/);
+  assert.match(css, /--muted-light:\s*#94a3b8/);
   assert.match(coldCss, /\.funnel-trust span[^\{]*\{[^}]*padding:\s*9px 14px[^}]*line-height:\s*1\.35/s);
   assert.match(css, /\.trust-row span[^\{]*\{[^}]*padding:\s*9px 14px[^}]*line-height:\s*1\.35/s);
   assert.match(css, /html\[lang="zh-CN"\][^\{]*h1[^\{]*\{[^}]*letter-spacing:\s*-\.025em/s);

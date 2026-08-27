@@ -61,11 +61,12 @@ test('Rent Check controls stay inside their assigned grid tracks', () => {
 test('homepage balances bilingual selects with a no-wrap monthly-rent label', () => {
   assert.match(
     cold,
-    /\.funnel-rent-card \.rent-check-form\{[^}]*grid-template-columns:minmax\(260px,1\.35fr\) minmax\(250px,1\.25fr\) minmax\(130px,\.65fr\) minmax\(185px,\.95fr\)/
+    /\.funnel-rent-card \.rent-check-form\{[^}]*grid-template-columns:minmax\(220px,1\.1fr\) minmax\(220px,1\.1fr\) minmax\(170px,\.9fr\) minmax\(170px,\.9fr\)/
   );
+  assert.match(cold, /\.funnel-rent-card \.rent-check-size-field\{grid-column:span 3\}/);
   assert.match(css, /\.rent-check-form \.field>span\{[^}]*gap:6px[^}]*white-space:nowrap/);
   assert.match(css, /\.core-ui \.field-unit\{[^}]*flex:0 0 auto[^}]*white-space:nowrap/);
-  assert.match(cold, /@media\(max-width:1220px\)\{\.funnel-rent-card \.rent-check-form\{[^}]*repeat\(3,minmax\(0,1fr\)\)/);
+  assert.match(cold, /@media\(max-width:1220px\)\{\.funnel-rent-card \.rent-check-form\{[^}]*repeat\(2,minmax\(0,1fr\)\)[^}]*\}\.funnel-rent-card \.rent-check-size-field\{grid-column:auto\}/);
   assert.match(cold, /@media\(max-width:980px\)\{\.funnel-rent-card \.rent-check-form\{[^}]*repeat\(2,minmax\(0,1fr\)\)/);
   assert.doesNotMatch(cold, /@media\(max-width:(?:1280|1200|960)px\)\{\.funnel-rent-card \.rent-check-form/);
 });
