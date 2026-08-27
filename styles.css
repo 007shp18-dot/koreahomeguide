@@ -337,7 +337,7 @@ h1{font-weight:700;letter-spacing:-.048em}
 .hero-copy>p,.section-copy p,.calculator-copy p,.tool-hero p,.article-body p{color:var(--muted)}
 .trust-row{gap:12px}
 .trust-row span{padding:9px 14px;line-height:1.35}
-.rent-check-form .field>span{min-height:18px;display:flex;align-items:flex-end;line-height:1.25}
+.rent-check-form .field>span{min-height:18px;display:flex;align-items:flex-end;gap:6px;line-height:1.25;white-space:nowrap}
 .rent-check-money,.rent-check-size{height:52px}
 .rent-check-money input,.rent-check-size input{height:48px}
 .rent-check-form .search-button{height:52px}
@@ -404,7 +404,7 @@ html[lang="zh-CN"] h1,html[lang="zh-CN"] h2,html[lang="zh-CN"] h3{letter-spacing
 .core-ui .header-actions .currency-select,.core-ui .header-actions .language-link{display:inline-flex;align-items:center;justify-content:center;height:38px;min-width:58px;padding:0 11px;border:1px solid var(--line);border-radius:10px;background:#fff;color:#344054;font-size:12px;font-weight:800;line-height:1;outline:none}
 .core-ui .header-actions .currency-select:focus,.core-ui .header-actions .language-link:focus-visible{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
 .core-ui .field>span{font-size:13px;line-height:1.35;letter-spacing:0}
-.core-ui .field-unit{display:inline;color:#64748b;font-size:12px;font-weight:650;letter-spacing:0;text-transform:none}
+.core-ui .field-unit{display:inline;flex:0 0 auto;color:#64748b;font-size:12px;font-weight:650;letter-spacing:0;white-space:nowrap;text-transform:none}
 .core-ui .field-unit b{color:inherit;font:inherit}
 .core-ui .tool-hero h1,.core-ui .explorer-hero h1{line-height:1.1;letter-spacing:-.03em}
 .core-ui .tool-hero p,.core-ui .explorer-hero p{font-size:16px;line-height:1.7;color:#475569}

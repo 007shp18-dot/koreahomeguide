@@ -11,7 +11,7 @@
 .funnel-section-head h2{font-size:clamp(28px,4vw,42px);margin:6px 0 8px;line-height:1.18;letter-spacing:-.02em}
 .funnel-section-head p{color:#526174;font-size:16px;line-height:1.7}
 .funnel-rent-card{border:1px solid #e4e7ec;border-radius:24px;background:#fff;padding:24px;box-shadow:0 14px 40px rgba(16,24,40,.05)}
-.funnel-rent-card .rent-check-form{grid-template-columns:minmax(260px,1.35fr) minmax(250px,1.25fr) minmax(130px,.8fr) minmax(130px,.8fr) minmax(80px,.5fr) minmax(145px,.75fr);margin-top:0}
+.funnel-rent-card .rent-check-form{grid-template-columns:minmax(260px,1.35fr) minmax(250px,1.25fr) minmax(130px,.65fr) minmax(185px,.95fr) minmax(80px,.4fr) minmax(135px,.7fr);margin-top:0}
 .lead-capture{margin-top:24px;border:1px solid #e5e7eb;border-radius:20px;background:#fff;padding:24px}
 .lead-capture[hidden]{display:none!important}
 .lead-capture-copy h3{margin:4px 0 8px;font-size:24px}
