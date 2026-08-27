@@ -10,7 +10,8 @@ const guideSlugs = [
   'before-you-sign',
   'rent-apartment-korea-foreigner',
   'korea-rental-scams',
-  'seoul-officetel-rent'
+  'seoul-officetel-rent',
+  'korea-rent-deposit-protection-foreigners'
 ];
 
 test('every English entry page sends its header Guides action to the hub', () => {

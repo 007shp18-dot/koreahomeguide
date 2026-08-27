@@ -37,4 +37,12 @@ test('Apps Script exposes one locked upsert path for normalized email records', 
   assert.match(source, /function findEmailRow_\(/);
   assert.match(source, /function upsertLeadRow_\(/);
   assert.match(source, /'updated_at'/);
+  assert.match(source, /'privacy_consent','privacy_notice_version'/);
+});
+
+test('operations guide requires Apps Script redeployment and consent-record verification', () => {
+  const doc = fs.readFileSync('docs/operations/google-sheet-lead-capture.md','utf8');
+  assert.match(doc, /does not update the Apps Script deployment automatically/);
+  assert.match(doc, /privacy_consent=true/);
+  assert.match(doc, /privacy_notice_version=2026-08-27/);
 });

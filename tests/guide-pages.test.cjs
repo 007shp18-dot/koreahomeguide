@@ -9,7 +9,8 @@ const slugs = [
   'before-you-sign',
   'rent-apartment-korea-foreigner',
   'korea-rental-scams',
-  'seoul-officetel-rent'
+  'seoul-officetel-rent',
+  'korea-rent-deposit-protection-foreigners'
 ];
 
 test('guide pairs exist, are substantial, and cross-link via hreflang', () => {

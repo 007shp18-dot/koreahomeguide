@@ -1,9 +1,11 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { normalizeLeadPayload, normalizeEmail, normalizeLocale } = require('../lib/lead-core.cjs');
+const consent = { privacyConsent:true, privacyNoticeVersion:'2026-08-27' };
 
 test('normalizes email and accepts a valid lead_capture payload', () => {
   const result = normalizeLeadPayload({
+    ...consent,
     kind:'lead_capture', email:'  USER@Example.COM ', language:'en', districtCode:'11440', propertyType:'villa',
     depositWon:10000000, monthlyRentWon:800000, areaSqm:25, rating:'fair', confidence:'medium',
     askingValueWon:800000, medianValueWon:780000, differencePct:2.6, comparableCount:14, monthsUsed:6,
@@ -15,6 +17,14 @@ test('normalizes email and accepts a valid lead_capture payload', () => {
   assert.equal(result.value.district_code, '11440');
   assert.equal(result.value.help_requested, false);
   assert.equal(result.value.created_at, '2026-08-25T00:00:00.000Z');
+  assert.equal(result.value.privacy_consent, true);
+  assert.equal(result.value.privacy_notice_version, '2026-08-27');
+});
+
+test('rejects email submission without explicit, versioned privacy consent', () => {
+  const base = { kind:'lead_capture', email:'a@b.com', language:'en', districtCode:'11440', propertyType:'villa', areaSqm:25 };
+  assert.equal(normalizeLeadPayload(base).ok, false);
+  assert.equal(normalizeLeadPayload({ ...base, privacyConsent:true }).ok, false);
 });
 
 test('rejects unsupported locale, district, property type, and invalid email', () => {
@@ -27,11 +37,11 @@ test('rejects unsupported locale, district, property type, and invalid email', (
 });
 
 test('help_request requires a valid normalized email and caps message length', () => {
-  const good = normalizeLeadPayload({ kind:'help_request', email:'user@example.com', language:'zh-CN', districtCode:'11440', propertyType:'villa', areaSqm:25, helpMessage:'I am signing next week.' });
+  const good = normalizeLeadPayload({ ...consent, kind:'help_request', email:'user@example.com', language:'zh-CN', districtCode:'11440', propertyType:'villa', areaSqm:25, helpMessage:'I am signing next week.' });
   assert.equal(good.ok, true);
   assert.equal(good.value.help_requested, true);
   assert.equal(good.value.help_message, 'I am signing next week.');
-  const tooLong = normalizeLeadPayload({ kind:'help_request', email:'user@example.com', language:'en', districtCode:'11440', propertyType:'villa', areaSqm:25, helpMessage:'x'.repeat(2001) });
+  const tooLong = normalizeLeadPayload({ ...consent, kind:'help_request', email:'user@example.com', language:'en', districtCode:'11440', propertyType:'villa', areaSqm:25, helpMessage:'x'.repeat(2001) });
   assert.equal(tooLong.ok, false);
 });
 
@@ -43,15 +53,16 @@ test('locale contract deliberately excludes Japanese for this release', () => {
 });
 
 test('rejects impossible area and negative money while preserving optional null metrics', () => {
-  assert.equal(normalizeLeadPayload({ kind:'lead_capture', email:'a@b.com', language:'en', districtCode:'11440', propertyType:'villa', areaSqm:0 }).ok, false);
-  assert.equal(normalizeLeadPayload({ kind:'lead_capture', email:'a@b.com', language:'en', districtCode:'11440', propertyType:'villa', areaSqm:25, depositWon:-1 }).ok, false);
-  const ok = normalizeLeadPayload({ kind:'lead_capture', email:'a@b.com', language:'en', districtCode:'11440', propertyType:'villa', areaSqm:25 });
+  assert.equal(normalizeLeadPayload({ ...consent, kind:'lead_capture', email:'a@b.com', language:'en', districtCode:'11440', propertyType:'villa', areaSqm:0 }).ok, false);
+  assert.equal(normalizeLeadPayload({ ...consent, kind:'lead_capture', email:'a@b.com', language:'en', districtCode:'11440', propertyType:'villa', areaSqm:25, depositWon:-1 }).ok, false);
+  const ok = normalizeLeadPayload({ ...consent, kind:'lead_capture', email:'a@b.com', language:'en', districtCode:'11440', propertyType:'villa', areaSqm:25 });
   assert.equal(ok.ok, true);
   assert.equal(ok.value.median_value_won, null);
 });
 
 test('lead storage accepts known source paths independently of mutable quote filters', () => {
   const base = {
+    ...consent,
     kind:'lead_capture',
     email:'a@b.com',
     language:'en',

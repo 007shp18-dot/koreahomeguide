@@ -14,7 +14,7 @@ test('homepage and sitemap expose guide hubs, expanded market pages, and Rent Ex
   assert.match(sitemap, /https:\/\/koreahomeguide\.com\/guides\//);
   assert.match(sitemap, /https:\/\/koreahomeguide\.com\/privacy\//);
   assert.match(sitemap, /https:\/\/koreahomeguide\.com\/zh\/privacy\//);
-  assert.equal((sitemap.match(/<url>/g)||[]).length,71);
+  assert.equal((sitemap.match(/<url>/g)||[]).length,73);
   assert.equal(sitemap.includes('/api/'),false);
 });
 
@@ -27,6 +27,6 @@ test('cold-start homepage guide section opens the real guide pages in both langu
   assert.equal((zhGrid.match(/class="funnel-guide"/g)||[]).length,3);
   for(const href of ['/guides/rent-apartment-korea-foreigner/','/guides/wolse-vs-jeonse/','/guides/seoul-officetel-rent/']) assert.match(enGrid,new RegExp(`href="${href.replaceAll('/','\\/')}"`));
   for(const href of ['/zh/guides/rent-apartment-korea-foreigner/','/zh/guides/wolse-vs-jeonse/','/zh/guides/seoul-officetel-rent/']) assert.match(zhGrid,new RegExp(`href="${href.replaceAll('/','\\/')}"`));
-  assert.match(home, /class="funnel-guides-link" href="\/guides\/">View all 7 rental guides/);
-  assert.match(zh, /class="funnel-guides-link" href="\/zh\/guides\/">查看全部 7 篇租房指南/);
+  assert.match(home, /class="funnel-guides-link" href="\/guides\/">View all 8 rental guides/);
+  assert.match(zh, /class="funnel-guides-link" href="\/zh\/guides\/">查看全部 8 篇租房指南/);
 });

@@ -14,8 +14,8 @@ function metadata(item) {
 
 test('all acquisition metadata is unique and within the sprint guardrails', () => {
   const rows = ENTRY_PAGES.map(item => ({ item, ...metadata(item) }));
-  assert.equal(new Set(rows.map(row => row.title)).size, 37);
-  assert.equal(new Set(rows.map(row => row.description)).size, 37);
+  assert.equal(new Set(rows.map(row => row.title)).size, 38);
+  assert.equal(new Set(rows.map(row => row.description)).size, 38);
   for (const row of rows) {
     assert.ok(row.title.length > 0 && row.title.length <= 65, `${row.item.path}: title ${row.title.length}`);
     assert.ok(row.description.length >= 110 && row.description.length <= 160, `${row.item.path}: description ${row.description.length}`);

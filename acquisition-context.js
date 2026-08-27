@@ -14,7 +14,8 @@
     'before-you-sign',
     'rent-apartment-korea-foreigner',
     'korea-rental-scams',
-    'seoul-officetel-rent'
+    'seoul-officetel-rent',
+    'korea-rent-deposit-protection-foreigners'
   ];
   const DISTRICTS = [
     ['gangnam-gu', 'Gangnam-gu', '11680'],

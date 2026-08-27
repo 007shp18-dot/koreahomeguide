@@ -3,12 +3,12 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const { ENTRY_PAGES, findEntryPage } = require('../seo/acquisition-catalog.cjs');
 
-test('catalogue contains exactly seven guides and 30 market pages', () => {
-  assert.equal(ENTRY_PAGES.length, 37);
-  assert.equal(ENTRY_PAGES.filter(item => item.kind === 'guide').length, 7);
+test('catalogue contains exactly eight guides and 30 market pages', () => {
+  assert.equal(ENTRY_PAGES.length, 38);
+  assert.equal(ENTRY_PAGES.filter(item => item.kind === 'guide').length, 8);
   assert.equal(ENTRY_PAGES.filter(item => item.kind === 'market').length, 30);
-  assert.equal(new Set(ENTRY_PAGES.map(item => item.path)).size, 37);
-  assert.equal(new Set(ENTRY_PAGES.map(item => item.primaryQuery)).size, 37);
+  assert.equal(new Set(ENTRY_PAGES.map(item => item.path)).size, 38);
+  assert.equal(new Set(ENTRY_PAGES.map(item => item.primaryQuery)).size, 38);
 });
 
 test('every catalogued page exists and owns its canonical metadata', () => {
@@ -39,6 +39,7 @@ const DEEP_PATHS = [
   '/guides/rent-apartment-korea-foreigner/',
   '/guides/korea-rental-scams/',
   '/guides/seoul-officetel-rent/',
+  '/guides/korea-rent-deposit-protection-foreigners/',
   '/rent/gangnam-gu/apartment/',
   '/rent/mapo-gu/officetel/',
   '/rent/yongsan-gu/villa/'
@@ -52,7 +53,7 @@ test('catalogue exposes one complete search contract per entry page', () => {
   }
 });
 
-test('catalogue locks exactly the ten approved deep-improvement pages', () => {
+test('catalogue locks exactly the eleven approved deep-improvement pages', () => {
   const actual = ENTRY_PAGES
     .filter(item => item.priorityTier === 'deep')
     .map(item => item.path)

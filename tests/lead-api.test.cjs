@@ -54,7 +54,7 @@ test('lead endpoint stores a valid lead and disables caching', async () => {
   let row = null;
   const handler = leadApi.createHandler({ storeLead:async(value)=>{ row=value; return {ok:true}; }, now:()=>new Date('2026-08-25T00:00:00Z') });
   const res = responseRecorder();
-  await handler({ method:'POST', headers:{ origin:'https://koreahomeguide.com' }, body:{ kind:'lead_capture', email:'u@example.com', language:'en', districtCode:'11440', propertyType:'villa', areaSqm:25 } }, res);
+  await handler({ method:'POST', headers:{ origin:'https://koreahomeguide.com' }, body:{ kind:'lead_capture', privacyConsent:true, privacyNoticeVersion:'2026-08-27', email:'u@example.com', language:'en', districtCode:'11440', propertyType:'villa', areaSqm:25 } }, res);
   assert.equal(res.statusCode, 201);
   assert.equal(res.body.ok, true);
   assert.equal(row.email, 'u@example.com');
@@ -68,7 +68,7 @@ test('storage failure returns 503 without exposing PII', async () => {
   let logged = '';
   console.error = (...args) => { logged += JSON.stringify(args); };
   try {
-    await handler({ method:'POST', headers:{ origin:'https://koreahomeguide.com' }, body:{ kind:'lead_capture', email:'private@example.com', language:'en', districtCode:'11440', propertyType:'villa', areaSqm:25 } }, res);
+    await handler({ method:'POST', headers:{ origin:'https://koreahomeguide.com' }, body:{ kind:'lead_capture', privacyConsent:true, privacyNoticeVersion:'2026-08-27', email:'private@example.com', language:'en', districtCode:'11440', propertyType:'villa', areaSqm:25 } }, res);
   } finally { console.error = oldError; }
   assert.equal(res.statusCode, 503);
   assert.doesNotMatch(JSON.stringify(res.body), /private@example\.com/);

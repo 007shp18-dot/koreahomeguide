@@ -47,6 +47,12 @@ const GUIDE_META = {
     primaryQuery: 'seoul officetel rent',
     userQuestion: 'What does a Seoul officetel really cost after deposit, rent, management fees, and trade-offs?',
     pagePromise: 'Compare the full monthly structure, usable area, registered use, and contract checks before choosing.'
+  },
+  'korea-rent-deposit-protection-foreigners': {
+    cluster: 'contract-safety',
+    primaryQuery: 'korea rent deposit protection for foreigners',
+    userQuestion: 'How can a foreign tenant protect a rental deposit in Korea and check guarantee eligibility?',
+    pagePromise: 'Put registry, residence reporting, fixed-date, evidence, and current HUG or HF checks in the correct order.'
   }
 };
 const DEEP_PATHS = new Set([
@@ -57,6 +63,7 @@ const DEEP_PATHS = new Set([
   '/guides/rent-apartment-korea-foreigner/',
   '/guides/korea-rental-scams/',
   '/guides/seoul-officetel-rent/',
+  '/guides/korea-rent-deposit-protection-foreigners/',
   '/rent/gangnam-gu/apartment/',
   '/rent/mapo-gu/officetel/',
   '/rent/yongsan-gu/villa/'

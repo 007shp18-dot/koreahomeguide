@@ -2,7 +2,8 @@ const COLUMNS = [
   'kind','email','language','district_code','property_type',
   'deposit_won','monthly_rent_won','area_sqm','rating','confidence',
   'asking_value_won','median_value_won','difference_pct','comparable_count','months_used','data_through_month',
-  'source_page','utm_source','utm_medium','utm_campaign','referrer_host','help_requested','help_message','created_at','updated_at'
+  'source_page','utm_source','utm_medium','utm_campaign','referrer_host','help_requested','help_message','created_at','updated_at',
+  'privacy_consent','privacy_notice_version'
 ];
 
 function jsonResponse_(payload) {

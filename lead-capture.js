@@ -135,6 +135,8 @@
     return {
       kind,
       email:String(email || '').trim(),
+      privacyConsent:true,
+      privacyNoticeVersion:'2026-08-27',
       language:context.language,
       districtCode:context.districtCode,
       propertyType:context.propertyType,
@@ -182,7 +184,8 @@
       sharing:zh ? '正在打开分享…' : 'Opening share options…',
       copied:zh ? '结果摘要和链接已复制。' : 'Result summary and link copied.',
       shared:zh ? '已分享。' : 'Shared.',
-      shareError:zh ? '暂时无法分享，请稍后再试。' : 'Sharing is unavailable right now. Please try again.'
+      shareError:zh ? '暂时无法分享，请稍后再试。' : 'Sharing is unavailable right now. Please try again.',
+      consentRequired:zh ? '请先同意隐私说明，才能保存邮箱和本次租金检查信息。' : 'Please agree to the privacy notice before saving your email and rent-check context.'
     };
     return text[key] || '';
   }
@@ -247,6 +250,21 @@
     }
   }
 
+  function ensureLeadConsent(leadForm, language){
+    if (!leadForm) return null;
+    let note = leadForm.querySelector('.lead-consent-note');
+    if (!note) {
+      note = root.document.createElement('small');
+      note.className = 'lead-consent-note';
+      leadForm.appendChild(note);
+    }
+    const zh = language === 'zh-CN';
+    note.innerHTML = zh
+      ? '<label class="lead-consent-choice"><input type="checkbox" name="privacyConsent" required> <span>我同意 KoreaHomeGuide 为保存并回复本次请求而处理我的邮箱和租金检查信息。未经另行同意，不发送推广邮件。<a href="/zh/privacy/">隐私说明</a></span></label>'
+      : '<label class="lead-consent-choice"><input type="checkbox" name="privacyConsent" required> <span>I agree that KoreaHomeGuide may process my email and rent-check context to save and respond to this request. No promotional email without separate consent. <a href="/privacy/">Privacy</a></span></label>';
+    return note.querySelector('input[name="privacyConsent"]');
+  }
+
   function bindModule(module){
     if (!module || module.dataset.leadBound === 'true') return;
     module.dataset.leadBound = 'true';
@@ -254,6 +272,7 @@
     const leadForm = module.querySelector('[data-lead-form]');
     const helpForm = module.querySelector('[data-help-form]');
     const status = module.querySelector('[data-lead-status]');
+    const consent = ensureLeadConsent(leadForm, language);
     let savedEmail = '';
 
     if (leadForm) leadForm.addEventListener('submit', async event => {
@@ -262,6 +281,11 @@
       const input = leadForm.querySelector('input[name="email"]');
       const button = leadForm.querySelector('button[type="submit"]');
       const value = input ? input.value : '';
+      if (!consent || !consent.checked) {
+        if (status) { status.textContent = localText(language, 'consentRequired'); status.className = 'lead-capture-status error'; }
+        if (consent && typeof consent.reportValidity === 'function') consent.reportValidity();
+        return;
+      }
       if (button) button.disabled = true;
       if (status) status.textContent = localText(language, 'saving');
       try {

@@ -1,16 +1,26 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
-const { execFileSync } = require('node:child_process');
+const path = require('node:path');
 
 function staticPages() {
-  return execFileSync('find', [
-    '.',
-    '-name', 'index.html',
-    '-not', '-path', './docs/*',
-    '-not', '-path', './.worktrees/*'
-  ], { encoding:'utf8' })
-    .trim().split('\n').filter(Boolean).sort();
+  const pages = [];
+  const excludedDirectories = new Set(['.git', '.worktrees', 'docs', 'node_modules']);
+
+  function visit(directory) {
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+      if (entry.isDirectory() && excludedDirectories.has(entry.name)) continue;
+
+      const file = path.join(directory, entry.name);
+      if (entry.isDirectory()) visit(file);
+      if (entry.isFile() && entry.name === 'index.html') {
+        pages.push(`./${file.split(path.sep).join('/').replace(/^\.\//, '')}`);
+      }
+    }
+  }
+
+  visit('.');
+  return pages.sort();
 }
 
 test('localized privacy pages disclose operator, collected data, processors, retention, and deletion contact', () => {
@@ -27,10 +37,12 @@ test('localized privacy pages disclose operator, collected data, processors, ret
   assert.match(en, /delet/i);
   assert.match(zh, /邮箱/);
   assert.match(zh, /删除/);
-  assert.match(en, /Google Analytics loads when a page opens/);
-  assert.match(zh, /页面打开时会加载 Google Analytics/);
-  assert.doesNotMatch(en, /Accept analytics|Optional Google Analytics/);
-  assert.doesNotMatch(zh, /同意分析 Cookie|可选分析/);
+  assert.match(en, /does not load unless you select “Allow analytics.”/);
+  assert.match(zh, /只有选择“允许分析”后/);
+  assert.match(en, /Saved homes stay in your browser/);
+  assert.match(zh, /保存的房源只留在浏览器中/);
+  assert.match(en, /90 days/);
+  assert.match(zh, /90 天/);
 });
 
 test('every static page links to matching privacy details and uses the shared analytics loader', () => {
@@ -58,4 +70,18 @@ test('generated SEO pages emit shared analytics and privacy links', () => {
   assert.match(source, /\/privacy\//);
   assert.match(source, /\/zh\/privacy\//);
   assert.doesNotMatch(source, /googletagmanager\.com/);
+});
+
+test('localized terms explain market-reference and saved-comparison limits', () => {
+  const en = fs.readFileSync('terms/index.html','utf8');
+  const zh = fs.readFileSync('zh/terms/index.html','utf8');
+  for (const html of [en, zh]) {
+    assert.match(html, /noindex,follow/);
+    assert.match(html, /privacy-consent\.js/);
+    assert.match(html, /90/);
+  }
+  assert.match(en, /not a real-estate brokerage/);
+  assert.match(en, /Do not transfer money/);
+  assert.match(zh, /不是房地产中介/);
+  assert.match(zh, /不要仅凭 KoreaHomeGuide 的结果转账/);
 });

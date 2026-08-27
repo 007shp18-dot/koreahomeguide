@@ -12,6 +12,8 @@ Open **Extensions → Apps Script** from the Sheet and paste the contents of:
 
 `ops/google-apps-script/lead-webhook.gs`
 
+When this repository file changes, paste the new version and create a new Web App deployment. Updating GitHub or Vercel does not update the Apps Script deployment automatically. The August 27, 2026 schema adds `privacy_consent` and `privacy_notice_version` at the end of each row so older columns remain aligned.
+
 In **Project Settings → Script Properties**, add:
 
 - `LEAD_SHARED_SECRET`: a long random secret
@@ -36,7 +38,7 @@ Redeploy production after setting the variables.
 
 ## 5. Verify
 
-Run one Rent Check, submit an email lead, and confirm exactly one new row appears in the `Leads` tab. Submit the same address again with different capitalization or surrounding spaces and confirm that no second row is created. Then submit the optional help form and confirm the existing row changes to `kind=help_request`, `help_requested=true`, and receives an `updated_at` value.
+Run one Rent Check, agree to the point-of-collection privacy notice, submit an email lead, and confirm exactly one new row appears in the `Leads` tab. Confirm that `privacy_consent=true` and `privacy_notice_version=2026-08-27` are present. Submit the same address again with different capitalization or surrounding spaces and confirm that no second row is created. Then submit the optional help form and confirm the existing row changes to `kind=help_request`, `help_requested=true`, and receives an `updated_at` value.
 
 The normalized lowercase email is the unique lead key. A later help request enriches the original row so each person remains a single record. Do not remove the script lock: it prevents simultaneous submissions from racing into duplicate rows.
 

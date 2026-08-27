@@ -13,7 +13,8 @@ const guideSlugs = [
   'before-you-sign',
   'rent-apartment-korea-foreigner',
   'korea-rental-scams',
-  'seoul-officetel-rent'
+  'seoul-officetel-rent',
+  'korea-rent-deposit-protection-foreigners'
 ];
 
 test('EN guides hub exists with canonical, hreflang, and all guide links', () => {

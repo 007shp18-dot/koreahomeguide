@@ -11,7 +11,8 @@ const GUIDES = [
   'before-you-sign',
   'rent-apartment-korea-foreigner',
   'korea-rental-scams',
-  'seoul-officetel-rent'
+  'seoul-officetel-rent',
+  'korea-rent-deposit-protection-foreigners'
 ];
 
 test('all deep guides expose the approved answer-to-Rent-Check contract', () => {

@@ -7,9 +7,9 @@ const {
   validatedResultSource
 } = require('../acquisition-context.js');
 
-test('shared acquisition context contains only the 37 canonical entry pages', () => {
-  assert.equal(ENTRY_CONTEXTS.length, 37);
-  assert.equal(new Set(ENTRY_CONTEXTS.map(item => item.path)).size, 37);
+test('shared acquisition context contains only the 38 canonical entry pages', () => {
+  assert.equal(ENTRY_CONTEXTS.length, 38);
+  assert.equal(new Set(ENTRY_CONTEXTS.map(item => item.path)).size, 38);
   assert.equal(findEntryContext('/guides/wolse-vs-jeonse').kind, 'guide');
   assert.equal(findEntryContext('/rent/gangnam-gu/apartment/').lawdCd, '11680');
   assert.equal(findEntryContext('/guides/not-real/'), null);
