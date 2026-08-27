@@ -17,6 +17,10 @@
   --accent-soft:#eff6ff;
   --warning:#fff7e6;
   --shadow:0 8px 24px rgba(15,23,42,.055);
+  --radius-card:16px;
+  --radius-action:11px;
+  --section-space:80px;
+  --section-space-mobile:56px;
   --font-sans:"Geist Sans","Noto Sans KR","Noto Sans SC","Microsoft YaHei",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   --font-cjk:"Geist Sans","Noto Sans SC","PingFang SC","Microsoft YaHei","Noto Sans KR",system-ui,sans-serif;
 }
@@ -423,3 +427,26 @@ html[lang="zh-CN"] h1,html[lang="zh-CN"] h2,html[lang="zh-CN"] h3{letter-spacing
 html[lang="zh-CN"] .core-ui h1,html[lang="zh-CN"] .core-ui h2,html[lang="zh-CN"] .core-ui h3{letter-spacing:-.012em}
 @media(max-width:760px){.core-ui{font-size:16px}.core-ui .header-actions{gap:7px}.core-ui .header-actions .currency-select,.core-ui .header-actions .language-link{height:40px;min-width:54px;padding:0 9px}.core-ui .tool-hero p,.core-ui .explorer-hero p{line-height:1.65}}
 @media(max-width:360px){.core-ui .site-header,.core-ui .compact-header{column-gap:12px}.core-ui .brand{gap:7px;font-size:14px}.core-ui .brand-mark{width:30px;height:30px}.core-ui .header-actions{gap:4px}.core-ui .header-actions .currency-select,.core-ui .header-actions .language-link{height:38px;min-width:48px;padding:0 6px;font-size:11px}}
+
+/* v13 clean editorial system: one calm visual contract across core entry pages. */
+.core-ui .site-header,.core-ui .compact-header{padding-top:14px;padding-bottom:14px;background:rgba(255,255,255,.94);border-bottom:1px solid rgba(226,232,240,.92);backdrop-filter:blur(16px)}
+.core-ui .rent-check-card,.core-ui .tool-card,.core-ui .explorer-search-card,.core-ui .explorer-map-card{border:1px solid var(--line);border-radius:var(--radius-card);box-shadow:none}
+.core-ui .search-button,.core-ui .explorer-primary-link{border-radius:var(--radius-action)}
+.core-ui .funnel-hero h1,.core-ui .tool-hero h1,.core-ui .explorer-hero h1{font-size:clamp(40px,5vw,56px);line-height:1.08;letter-spacing:-.04em}
+.core-ui .context-module,.core-ui .related-links a,.core-ui .explorer-metrics>div{border-radius:var(--radius-card)}
+.core-ui .context-card:hover,.core-ui .related-links a:hover,.core-ui .neighborhood-card:hover{box-shadow:0 6px 18px rgba(15,23,42,.04)}
+@media(max-width:760px){.core-ui .funnel-hero h1,.core-ui .tool-hero h1,.core-ui .explorer-hero h1{font-size:clamp(36px,10vw,44px)}}
+
+/* v13 product surfaces: utility controls stay flat and evidence gets a soft layer. */
+.core-ui .page-shell{padding-top:40px;padding-bottom:var(--section-space)}
+.core-ui .tool-hero,.core-ui .explorer-hero{margin-bottom:24px}
+.core-ui .tool-card,.core-ui .explorer-search-card{padding:24px}
+.core-ui .explorer-map-selection,.core-ui .tool-explainer{background:var(--surface-soft)}
+.core-ui .tool-explainer{max-width:none;padding:24px;border:1px solid var(--line);border-radius:var(--radius-card)}
+.core-ui .tool-explainer h2{margin-top:0}
+.core-ui .tool-explainer p:last-child{margin-bottom:0}
+.core-ui .tool-explainer,.core-ui .explorer-next-step{margin-top:56px}
+.core-ui .explorer-map-heading{padding:20px 20px 12px}
+.core-ui .explorer-map-legend{padding-left:20px;padding-right:20px}
+.core-ui .explorer-metrics>div{padding:18px;background:#fff}
+@media(max-width:760px){.core-ui .page-shell{padding-top:32px;padding-left:16px;padding-right:16px;padding-bottom:var(--section-space-mobile)}.core-ui .tool-card,.core-ui .explorer-search-card{padding:18px}.core-ui .tool-explainer{padding:20px}.core-ui .tool-explainer,.core-ui .explorer-next-step{margin-top:var(--section-space-mobile)}}
