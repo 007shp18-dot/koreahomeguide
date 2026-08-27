@@ -13,6 +13,7 @@ test('localized saved-home pages are private browser tools with clear limits', (
     assert.match(html, /(?:(?:current|this) browser|当前浏览器)/, file);
     assert.match(html, /href="\/(?:zh\/)?privacy\/"/, file);
     assert.match(html, /href="\/(?:zh\/)?terms\/"/, file);
+    assert.match(html, /href="\/(?:zh\/)?tools\/seoul-rent-check\/"/, file);
   }
 });
 
@@ -35,4 +36,21 @@ test('saved comparison code avoids account, address, landlord, and broker data f
   assert.match(source, /RETENTION_MS = 90/);
   assert.doesNotMatch(source, /name=["'](?:email|address|landlord|broker)/i);
   assert.doesNotMatch(source, /fetch\(/);
+});
+
+test('saved quote flow surfaces the comparison action and prevents duplicate saves', () => {
+  const source = fs.readFileSync('saved-rent-quotes.js', 'utf8');
+  assert.match(source, /summary\.insertAdjacentElement\('afterend', panel\)/);
+  assert.match(source, /savedCurrentResult = true/);
+  assert.match(source, /button\.disabled = true/);
+  assert.match(source, /class="saved-quote-compare"/);
+});
+
+test('comparison includes market context and keeps row labels visible while scrolling', () => {
+  const source = fs.readFileSync('saved-homes-page.js', 'utf8');
+  const css = fs.readFileSync('styles.css', 'utf8');
+  assert.match(source, /Comparable median/);
+  assert.match(source, /Difference from median/);
+  assert.match(source, /可比成交中位数/);
+  assert.match(css, /\.saved-homes-table th:first-child\{position:sticky/);
 });

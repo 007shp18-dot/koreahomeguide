@@ -157,6 +157,7 @@
     let latest = null;
     let panel = null;
     let dock = null;
+    let savedCurrentResult = false;
 
     function compareHref() { return language === 'zh-CN' ? '/zh/saved-homes/' : '/saved-homes/'; }
 
@@ -182,14 +183,17 @@
       panel.className = 'saved-quote-module';
       panel.hidden = true;
       panel.innerHTML = language === 'zh-CN'
-        ? '<div><span class="eyebrow">保存到本机</span><h3>之后和其他房源一起比较</h3><p>只保存在当前浏览器90天。不要填写房东、中介或准确房号。</p></div><div class="saved-quote-form"><label><span>房源备注（可选）</span><input type="text" maxlength="60" autocomplete="off" placeholder="例如：麻浦办公住宅 A"></label><button type="button" class="saved-quote-save">保存这个报价</button></div><p class="saved-quote-status" aria-live="polite"></p>'
-        : '<div><span class="eyebrow">SAVE ON THIS DEVICE</span><h3>Compare this home later</h3><p>Saved in this browser for 90 days. Do not enter a landlord, broker, or exact unit number.</p></div><div class="saved-quote-form"><label><span>Home label (optional)</span><input type="text" maxlength="60" autocomplete="off" placeholder="For example: Mapo officetel A"></label><button type="button" class="saved-quote-save">Save this quote</button></div><p class="saved-quote-status" aria-live="polite"></p>';
-      result.appendChild(panel);
+        ? '<div><span class="eyebrow">保存到本机</span><h3>之后和其他房源一起比较</h3><p>只保存在当前浏览器90天。不要填写房东、中介或准确房号。</p></div><div class="saved-quote-form"><label><span>房源备注（可选）</span><input type="text" maxlength="60" autocomplete="off" placeholder="例如：麻浦办公住宅 A"></label><button type="button" class="saved-quote-save">保存这个报价</button></div><p class="saved-quote-status" aria-live="polite"></p><a class="saved-quote-compare" href="/zh/saved-homes/" hidden>查看已保存房源 →</a>'
+        : '<div><span class="eyebrow">SAVE ON THIS DEVICE</span><h3>Compare this home later</h3><p>Saved in this browser for 90 days. Do not enter a landlord, broker, or exact unit number.</p></div><div class="saved-quote-form"><label><span>Home label (optional)</span><input type="text" maxlength="60" autocomplete="off" placeholder="For example: Mapo officetel A"></label><button type="button" class="saved-quote-save">Save this quote</button></div><p class="saved-quote-status" aria-live="polite"></p><a class="saved-quote-compare" href="/saved-homes/" hidden>View saved homes →</a>';
+      const summary = result.querySelector('.rent-check-summary');
+      if (summary) summary.insertAdjacentElement('afterend', panel);
+      else result.appendChild(panel);
       const input = panel.querySelector('input');
       const button = panel.querySelector('button');
       const status = panel.querySelector('.saved-quote-status');
+      const compare = panel.querySelector('.saved-quote-compare');
       button.addEventListener('click', () => {
-        if (!latest) return;
+        if (!latest || savedCurrentResult) return;
         const quote = store.save({ ...latest, label:input.value });
         if (!quote) {
           status.textContent = language === 'zh-CN' ? '当前浏览器无法保存。请检查隐私或存储设置。' : 'This browser could not save the quote. Check its privacy or storage settings.';
@@ -199,7 +203,10 @@
         const count = store.list().length;
         status.textContent = language === 'zh-CN' ? `已保存。现在共有 ${count} 个房源可比较。` : `Saved. You now have ${count} home${count === 1 ? '' : 's'} to compare.`;
         status.className = 'saved-quote-status success';
-        button.textContent = language === 'zh-CN' ? '再次保存' : 'Save another copy';
+        savedCurrentResult = true;
+        button.disabled = true;
+        button.textContent = language === 'zh-CN' ? '已保存' : 'Saved';
+        compare.hidden = false;
         updateDock();
         safeTrack(root, 'quote_saved', count, language);
         root.dispatchEvent(new root.CustomEvent('khg:saved-quotes-changed', { detail:{ count } }));
@@ -212,9 +219,14 @@
       if (!latest) return;
       const currentPanel = ensurePanel();
       if (!currentPanel) return;
+      savedCurrentResult = false;
       currentPanel.hidden = false;
       const input = currentPanel.querySelector('input');
       input.value = defaultLabel(latest, language);
+      const button = currentPanel.querySelector('.saved-quote-save');
+      button.disabled = false;
+      button.textContent = language === 'zh-CN' ? '保存这个报价' : 'Save this quote';
+      currentPanel.querySelector('.saved-quote-compare').hidden = true;
       const status = currentPanel.querySelector('.saved-quote-status');
       status.textContent = '';
       status.className = 'saved-quote-status';

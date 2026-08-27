@@ -47,6 +47,12 @@
     return cell;
   }
 
+  function percentText(value) {
+    if (!Number.isFinite(value)) return '—';
+    const formatted = value.toLocaleString(locale, { maximumFractionDigits:1 });
+    return `${value > 0 ? '+' : ''}${formatted}%`;
+  }
+
   function displayName(quote) {
     return quote.label || root.KHGSavedQuotes.defaultLabel(quote, language);
   }
@@ -92,6 +98,8 @@
       [zh ? '面积' : 'Size', quote => `${quote.areaSqm.toLocaleString(locale)}㎡`],
       [zh ? '押金' : 'Deposit', quote => ({ money:quote.depositWon })],
       [zh ? '月租' : 'Monthly rent', quote => ({ money:quote.monthlyRentWon })],
+      [zh ? '可比成交中位数' : 'Comparable median', quote => quote.medianValueWon == null ? '—' : ({ money:quote.medianValueWon })],
+      [zh ? '与中位数的差异' : 'Difference from median', quote => percentText(quote.differencePct)],
       [zh ? '近期成交判断' : 'Recent-contract verdict', quote => ratingLabel(quote.rating)],
       [zh ? '依据等级' : 'Evidence level', quote => confidenceLabel(quote.confidence)],
       [zh ? '可比成交数量' : 'Comparable contracts', quote => String(quote.comparableCount)],
