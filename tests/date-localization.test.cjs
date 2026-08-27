@@ -15,6 +15,12 @@ const affectedScripts = [
   'zh/tools/seoul-rent-check/app.js'
 ];
 
+function scriptPosition(html, src) {
+  const escaped = src.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const match = new RegExp(`<script\\b[^>]*\\bsrc="${escaped}"[^>]*><\\/script>`).exec(html);
+  return match ? match.index : -1;
+}
+
 test('date formatter renders English and Chinese calendar dates without timezone shifts', () => {
   const KHGDate = require('../date-utils.js');
   assert.equal(KHGDate.formatDate('2026-07-31', 'en-US'), 'Jul 31, 2026');
@@ -50,8 +56,8 @@ test('pages that render transaction dates load date-utils before their app scrip
   ];
   for (const [file, appSrc] of pages) {
     const html = fs.readFileSync(file, 'utf8');
-    const datePos = html.indexOf('<script src="/date-utils.js"></script>');
-    const appPos = html.indexOf(`<script src="${appSrc}"></script>`);
+    const datePos = scriptPosition(html, '/date-utils.js');
+    const appPos = scriptPosition(html, appSrc);
     assert.ok(datePos >= 0, `${file} loads date-utils`);
     assert.ok(appPos > datePos, `${file} loads date-utils before app`);
   }
@@ -70,9 +76,9 @@ test('pages that render transaction dates load date-utils before their app scrip
     assert.equal(files.length, expectedPages, `${root} has ${expectedPages} market pages`);
     for (const file of files) {
       const html = fs.readFileSync(file, 'utf8');
-      const datePos = html.indexOf('<script src="/date-utils.js"></script>');
+      const datePos = scriptPosition(html, '/date-utils.js');
       const runtime = root.startsWith('zh/') ? '/zh/rent-market-page.js' : '/rent-market-page.js';
-      const appPos = html.indexOf(`<script src="${runtime}"></script>`);
+      const appPos = scriptPosition(html, runtime);
       assert.ok(datePos >= 0, `${file} loads date-utils`);
       assert.ok(appPos > datePos, `${file} loads date-utils before market runtime`);
     }

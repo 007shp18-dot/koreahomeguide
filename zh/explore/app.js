@@ -68,6 +68,16 @@ function currentParams(includeDong = true) {
 }
 function updateLanguageSwitch() { if (languageSwitch) languageSwitch.href = `/explore/?${currentParams(true).toString()}`; }
 
+function updateRentCheckHandoff() {
+  if (!window.KHGAcquisitionLinks || typeof KHGAcquisitionLinks.updateRentCheckLinksForSelection !== 'function') return;
+  KHGAcquisitionLinks.updateRentCheckLinksForSelection({
+    doc:document,
+    location,
+    lawdCd:areaSelect.value,
+    propertyType:typeSelect.value
+  });
+}
+
 
 function representativeBand(item) {
   return KHGExplorer.budgetFitForDong(item, budgetValues()).representativeBand;
@@ -263,18 +273,23 @@ function applyQuerySelection() {
   if (maxDepositSelect && [...maxDepositSelect.options].some(option => option.value === maxDeposit)) maxDepositSelect.value = maxDeposit;
   currentDong = dong;
   updateLanguageSwitch();
+  updateRentCheckHandoff();
   return dong;
 }
 
 function showExploreResults() {
   explorerChips.hidden=false;
   explorerResults.hidden=false;
+  updateRentCheckHandoff();
   return loadArea();
 }
 
 exploreButton.addEventListener('click',showExploreResults);
+areaSelect.addEventListener('change',updateRentCheckHandoff);
+typeSelect.addEventListener('change',updateRentCheckHandoff);
 document.querySelectorAll('[data-explore-area]').forEach(button => button.addEventListener('click', () => {
   areaSelect.value = button.dataset.exploreArea;
+  updateRentCheckHandoff();
   loadArea();
 }));
 if (currencySelect) currencySelect.addEventListener('change', () => {
