@@ -29,6 +29,14 @@
     }[confidence] || '';
   }
 
+  function confidenceQuestion(result) {
+    return {
+      high: 'Why is this a strong sample?',
+      medium: 'Why is this a moderate sample?',
+      low: 'Why is this a limited sample?'
+    }[result && result.confidence] || 'Why this sample strength?';
+  }
+
   const MATCH_TIERS = Object.freeze({
     1:{ months:3, areaPct:15, depositPct:25 },
     2:{ months:6, areaPct:20, depositPct:35 },
@@ -202,9 +210,13 @@
     const rawMonths = result && result.monthsUsed;
     const count = isNumericValue(rawCount) ? Math.max(0, Math.round(Number(rawCount))) : 0;
     const months = isNumericValue(rawMonths) ? Math.max(1, Math.round(Number(rawMonths))) : 12;
+    const rate = Number(result && result.conversionAnnualRate);
     return {
       sampleLabel:`${count} signed contract${count === 1 ? '' : 's'}`,
-      periodLabel:`Latest ${months} completed month${months === 1 ? '' : 's'}`
+      periodLabel:`Latest ${months} completed month${months === 1 ? '' : 's'}`,
+      ...(result && result.comparisonMode === 'monthly-rent' && Number.isFinite(rate)
+        ? { methodLabel:`Monthly rents normalized to your deposit at ${(rate * 100).toFixed(1)}%/year statutory reference` }
+        : {})
     };
   }
 
@@ -233,6 +245,7 @@
     UPSTREAM_MESSAGE,
     ratingLabel,
     confidenceLabel,
+    confidenceQuestion,
     confidenceExplanation,
     resultNextStep,
     explorerUrl,

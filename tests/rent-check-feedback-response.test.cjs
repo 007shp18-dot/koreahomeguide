@@ -33,6 +33,45 @@ test('confidence explanation names the actual matched sample and tier boundaries
   );
 });
 
+test('sample-strength prompt names the actual level instead of the price verdict', () => {
+  assert.equal(enUI.confidenceQuestion({ confidence:'high' }), 'Why is this a strong sample?');
+  assert.equal(enUI.confidenceQuestion({ confidence:'medium' }), 'Why is this a moderate sample?');
+  assert.equal(enUI.confidenceQuestion({ confidence:'low' }), 'Why is this a limited sample?');
+  assert.equal(zhUI.confidenceQuestion({ confidence:'high' }), '为什么这组样本充分？');
+});
+
+test('evidence facts disclose the deposit conversion used for monthly-rent comparison', () => {
+  assert.deepEqual(
+    enUI.evidenceFacts({ comparableCount:7, monthsUsed:3, comparisonMode:'monthly-rent', conversionAnnualRate:0.05 }),
+    {
+      sampleLabel:'7 signed contracts',
+      periodLabel:'Latest 3 completed months',
+      methodLabel:'Monthly rents normalized to your deposit at 5.0%/year statutory reference'
+    }
+  );
+  assert.deepEqual(
+    zhUI.evidenceFacts({ comparableCount:7, monthsUsed:3, comparisonMode:'monthly-rent', conversionAnnualRate:0.05 }),
+    {
+      sampleLabel:'7 笔已签约成交',
+      periodLabel:'最近 3 个完整月份',
+      methodLabel:'按法定参考年率 5.0% 将月租换算到你的押金水平'
+    }
+  );
+});
+
+test('homepage desktop grid leaves enough room for a two-digit size without growing wider', () => {
+  const css = fs.readFileSync('cold-start.css', 'utf8');
+  const match = css.match(/\.funnel-rent-card \.rent-check-form\{grid-template-columns:([^;}]+)/);
+  assert.ok(match, 'homepage Rent Check desktop grid is present');
+  const minimums = [...match[1].matchAll(/minmax\((\d+)px,/g)].map(item => Number(item[1]));
+  assert.equal(minimums.length, 6);
+  assert.ok(minimums[0] >= 260, 'Area keeps the longest bilingual option readable');
+  assert.ok(minimums[1] >= 250, 'Property type keeps the longest bilingual option readable');
+  assert.ok(minimums[3] >= 185, 'Monthly-rent label stays on one line');
+  assert.ok(minimums[4] >= 96, 'Size input has room for its number and unit');
+  assert.ok(minimums.reduce((sum, width) => sum + width, 0) <= 1040, 'six columns still fit before the responsive breakpoint');
+});
+
 test('a distribution verdict describes the displayed typical range instead of a median threshold', () => {
   assert.equal(enUI.ratingLabel('fair', 'typical-range'), 'Typical range');
   assert.equal(
@@ -118,6 +157,8 @@ test('all EN and ZH Rent Check surfaces expose confidence details and next actio
     assert.match(app, /rentCheckNextPrimary/);
     assert.match(app, /rentCheckNextSecondary/);
     assert.match(app, /KHGRentCheckUI\.confidenceExplanation\(data,mapped\.isStudioMapped\)/);
+    assert.match(app, /confidenceSummary\.textContent=KHGRentCheckUI\.confidenceQuestion\(data\)/);
+    assert.match(app, /facts\.methodLabel/);
     assert.match(app, /KHGRentCheckUI\.resultNextStep\(data\.rating\)/);
     assert.match(app, /KHGRentCheckUI\.explorerUrl\(area\.value,mapped\.officialType,language\)/);
     assert.match(app, /rent_check_next_action/);
