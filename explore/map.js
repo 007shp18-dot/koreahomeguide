@@ -29,6 +29,7 @@
   let viewTracked = false;
   let useAdvancedMarkers = false;
   let geocoder = null;
+  let buildingLayerRequestId = 0;
   const geocodeCache = new Map();
 
   function clearMarkers() {
@@ -210,16 +211,17 @@
   }
 
   async function showBuildingLayer(detail = {}) {
+    const requestId = ++buildingLayerRequestId;
     const candidates = (Array.isArray(detail.buildings) ? detail.buildings : [])
       .filter(item => item && item.mapLocation)
       .slice(0, 12);
     if (!candidates.length) { status.textContent = copy.noBuildings; return; }
     status.textContent = copy.locating;
-    const located = [];
-    for (const item of candidates) {
+    const located = (await Promise.all(candidates.map(async item => {
       const point = await verifiedBuildingPoint(item);
-      if (point) located.push({ ...item, ...point });
-    }
+      return point ? { ...item, ...point } : null;
+    }))).filter(Boolean);
+    if (requestId !== buildingLayerRequestId) return;
     if (!located.length) { status.textContent = copy.noBuildings; return; }
     markerScope = 'building';
     latestBuildings = located;
@@ -294,6 +296,7 @@
       String(detail.propertyType || latest.propertyType) !== String(latest.propertyType);
     latest = { ...latest, ...detail };
     if (selectionChanged) {
+      buildingLayerRequestId += 1;
       markerScope = 'neighborhood';
       latestBuildings = [];
       selectedMarkerId = '';
@@ -315,6 +318,7 @@
   });
 
   if (backButton) backButton.addEventListener('click', () => {
+    buildingLayerRequestId += 1;
     markerScope = 'neighborhood';
     latestBuildings = [];
     selectedMarkerId = '';

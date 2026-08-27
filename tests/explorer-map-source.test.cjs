@@ -48,6 +48,8 @@ test('Explorer runtimes publish raw dong models after rendering', () => {
     assert.match(source, /KHGExplorer\.buildBuildingDetailUrl/);
     assert.match(source, /khg:explorer-buildings/);
     assert.match(source, /khg:map-select-building/);
+    assert.match(source, /areaSnapshotForDong\(currentAreaData, dong\)/);
+    assert.match(source, /publishMapBuildings\(dong, snapshot\.buildings/);
     assert.match(source, /highlightMapCard\(model\.dong\)/);
     assert.match(source, /updateRentCheckHandoff\(\{ lawdCd:model\.districtCode, propertyType:model\.propertyType \}\)/);
     assert.match(source, /areaSelect\.addEventListener\('change',handleSelectionChange\)/);
@@ -80,6 +82,8 @@ test('building map layer verifies precise geocodes, caps candidates, and support
   assert.match(source, /!result\.partial_match/);
   assert.match(source, /distanceKm\(center, point\) <= 4/);
   assert.match(source, /\.slice\(0, 12\)/);
+  assert.match(source, /Promise\.all\(candidates\.map/);
+  assert.match(source, /buildingLayerRequestId/);
   assert.match(source, /khg:explorer-buildings/);
   assert.match(source, /khg:map-select-building/);
   assert.match(source, /khg:map-back-neighborhoods/);

@@ -132,6 +132,27 @@
     });
   }
 
+  function areaSnapshotForDong(data, dong) {
+    const selectedDong = normalizeSegment(dong);
+    const dongs = Array.isArray(data && data.dongs) ? data.dongs : [];
+    const dongSummary = dongs.find(item => normalizeSegment(item && item.dong) === selectedDong);
+    if (!selectedDong || !dongSummary) return null;
+    const areaSummary = data && data.summary || {};
+    const buildings = (Array.isArray(data && data.buildings) ? data.buildings : [])
+      .filter(item => normalizeSegment(item && item.dong) === selectedDong);
+    return Object.freeze({
+      ...(data || {}),
+      dong:selectedDong,
+      summary:Object.freeze({
+        ...dongSummary,
+        totalContracts:Number(dongSummary.totalContracts || dongSummary.contractCount || 0),
+        monthsUsed:Number(areaSummary.monthsUsed || 6),
+        dataThroughMonth:areaSummary.dataThroughMonth || null
+      }),
+      buildings:Object.freeze(buildings)
+    });
+  }
+
   function supportsZhIndexing(areaCode) {
     return Boolean(catalog && catalog.supportsZhIndexing(areaCode));
   }
@@ -142,6 +163,7 @@
     buildBuildingDetailUrl,
     budgetFitForDong,
     filterDongsByBudget,
+    areaSnapshotForDong,
     localizedDongParts,
     propertyTypeLabel,
     supportsZhIndexing,

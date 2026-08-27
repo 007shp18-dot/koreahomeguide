@@ -46,3 +46,25 @@ test('long localized dong labels move Korean to a second line', () => {
     primary:'Yeongdeungpo-dong 1-ga', korean:'영등포동1가', breakKorean:true
   });
 });
+
+test('area response creates an instant Dong snapshot without another request', () => {
+  const snapshot = explorer.areaSnapshotForDong({
+    districtCode:'11680',
+    propertyType:'apartment',
+    summary:{ monthsUsed:6, dataThroughMonth:'2026-07' },
+    dongs:[
+      { dong:'역삼동', contractCount:1065, medianMonthlyRentWon:1700000, quarterChangePct:21 },
+      { dong:'삼성동', contractCount:823 }
+    ],
+    buildings:[
+      { dong:'역삼동', buildingKey:'역삼동::a', buildingName:'A' },
+      { dong:'삼성동', buildingKey:'삼성동::b', buildingName:'B' }
+    ]
+  }, '역삼동');
+
+  assert.equal(snapshot.summary.totalContracts, 1065);
+  assert.equal(snapshot.summary.monthsUsed, 6);
+  assert.equal(snapshot.summary.dataThroughMonth, '2026-07');
+  assert.deepEqual(snapshot.buildings.map(item => item.buildingName), ['A']);
+  assert.equal(explorer.areaSnapshotForDong({ dongs:[] }, '없는동'), null);
+});

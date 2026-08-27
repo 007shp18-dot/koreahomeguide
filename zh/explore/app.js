@@ -74,8 +74,8 @@ function updateBudgetNote(filteredCount, totalCount) {
 function publishMapDongs(dongs) {
   window.dispatchEvent(new CustomEvent('khg:explorer-dongs', { detail:{ lawdCd:areaSelect.value, propertyType:typeSelect.value, locale:'zh-CN', limits:budgetValues(), dongs:Array.isArray(dongs) ? dongs : [] } }));
 }
-function publishMapBuildings(dong, buildings) {
-  window.dispatchEvent(new CustomEvent('khg:explorer-buildings', { detail:{ lawdCd:areaSelect.value, propertyType:typeSelect.value, locale:'zh-CN', limits:budgetValues(), dong:String(dong || ''), buildings:Array.isArray(buildings) ? buildings : [] } }));
+function publishMapBuildings(dong, buildings, lawdCd = areaSelect.value) {
+  window.dispatchEvent(new CustomEvent('khg:explorer-buildings', { detail:{ lawdCd:String(lawdCd || areaSelect.value), propertyType:typeSelect.value, locale:'zh-CN', limits:budgetValues(), dong:String(dong || ''), buildings:Array.isArray(buildings) ? buildings : [] } }));
 }
 function currentParams(includeDong = true) {
   const params = new URLSearchParams({ lawdCd:areaSelect.value, type:typeSelect.value });
@@ -250,7 +250,7 @@ function renderBuildings(buildings) {
   }
   buildingList.innerHTML = buildings.slice(0, 30).map(item => {
     const dong = item.dong || currentDong;
-    const interactiveParams = new URLSearchParams({ lawdCd:areaSelect.value, type:typeSelect.value });
+    const interactiveParams = new URLSearchParams({ lawdCd:currentData && currentData.districtCode || areaSelect.value, type:typeSelect.value });
     if (dong) interactiveParams.set('dong', dong);
     interactiveParams.set('buildingKey', item.buildingKey);
     const interactiveHref = `/zh/explore/building/?${interactiveParams.toString()}`;
@@ -291,18 +291,19 @@ function setLoading(message = '正在加载官方租赁成交数据…') {
   exploreButton.disabled = true;
 }
 
-async function loadDong(dong, { showBuildingsOnMap = false } = {}) {
+async function loadDong(dong, { showBuildingsOnMap = false, lawdCd = areaSelect.value } = {}) {
   currentDong = String(dong || '').trim();
   if (!currentDong) return;
   setLoading(`正在加载 ${dongDisplayName(currentDong)} 的官方租赁成交数据…`);
   updateLanguageSwitch();
   try {
     const params = currentParams(true);
+    params.set('lawdCd', String(lawdCd || areaSelect.value));
     const response = await fetch(`/api/explore-dong?${params.toString()}`);
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || 'Neighborhood data failed');
     renderSummary(data, data.dong || currentDong);
-    if (showBuildingsOnMap) publishMapBuildings(data.dong || currentDong, data.buildings || []);
+    if (showBuildingsOnMap) publishMapBuildings(data.dong || currentDong, data.buildings || [], data.districtCode || lawdCd);
     history.replaceState(null, '', `/zh/explore/?${currentParams(false).toString()}`);
   } catch (_) {
     status.textContent = '该街区的官方成交数据暂时无法加载，请稍后再试。';
@@ -401,8 +402,16 @@ window.addEventListener('khg:map-select-dong', event => {
   if (!dong || !model) return;
   highlightMapCard(model.dong);
   renderMapSelection(model);
-  if (currentDong === dong && currentData && Array.isArray(currentData.buildings)) publishMapBuildings(dong, currentData.buildings);
-  else void loadDong(dong, { showBuildingsOnMap:true });
+  const snapshot = areaSelect.value !== 'all' && KHGExplorer.areaSnapshotForDong(currentAreaData, dong);
+  if (snapshot) {
+    renderSummary(snapshot, dong);
+    publishMapBuildings(dong, snapshot.buildings || [], model.districtCode);
+    history.replaceState(null, '', `/zh/explore/?${currentParams(false).toString()}`);
+  } else if (currentDong === dong && currentData && Array.isArray(currentData.buildings)) {
+    publishMapBuildings(dong, currentData.buildings, model.districtCode);
+  } else {
+    void loadDong(dong, { showBuildingsOnMap:true, lawdCd:model.districtCode });
+  }
 });
 window.addEventListener('khg:map-select-building', event => {
   const model = event.detail && event.detail.model;

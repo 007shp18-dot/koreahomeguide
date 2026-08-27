@@ -72,8 +72,8 @@ function updateBudgetNote(filteredCount, totalCount) {
 function publishMapDongs(dongs) {
   window.dispatchEvent(new CustomEvent('khg:explorer-dongs', { detail:{ lawdCd:areaSelect.value, propertyType:typeSelect.value, locale:'en', limits:budgetValues(), dongs:Array.isArray(dongs) ? dongs : [] } }));
 }
-function publishMapBuildings(dong, buildings) {
-  window.dispatchEvent(new CustomEvent('khg:explorer-buildings', { detail:{ lawdCd:areaSelect.value, propertyType:typeSelect.value, locale:'en', limits:budgetValues(), dong:String(dong || ''), buildings:Array.isArray(buildings) ? buildings : [] } }));
+function publishMapBuildings(dong, buildings, lawdCd = areaSelect.value) {
+  window.dispatchEvent(new CustomEvent('khg:explorer-buildings', { detail:{ lawdCd:String(lawdCd || areaSelect.value), propertyType:typeSelect.value, locale:'en', limits:budgetValues(), dong:String(dong || ''), buildings:Array.isArray(buildings) ? buildings : [] } }));
 }
 function currentParams(includeDong = true) {
   const params = new URLSearchParams({ lawdCd:areaSelect.value, type:typeSelect.value });
@@ -243,7 +243,7 @@ function renderBuildings(buildings) {
   }
   buildingList.innerHTML = buildings.slice(0, 30).map(item => {
     const dong = item.dong || currentDong;
-    const interactiveHref = KHGExplorer.buildBuildingDetailUrl({ lawdCd:areaSelect.value, type:typeSelect.value, dong, buildingKey:item.buildingKey });
+    const interactiveHref = KHGExplorer.buildBuildingDetailUrl({ lawdCd:currentData && currentData.districtCode || areaSelect.value, type:typeSelect.value, dong, buildingKey:item.buildingKey });
     const location = [dongDisplayName(dong), areaName(), typeName()].filter(Boolean).join(' · ');
     const nameDisplay = KHGBuildingNames.getBuildingNameDisplay(item.buildingName, 'en');
     return `<article class="building-row">
@@ -281,18 +281,19 @@ function setLoading(message = 'Loading official rental transactions…') {
   exploreButton.disabled = true;
 }
 
-async function loadDong(dong, { showBuildingsOnMap = false } = {}) {
+async function loadDong(dong, { showBuildingsOnMap = false, lawdCd = areaSelect.value } = {}) {
   currentDong = String(dong || '').trim();
   if (!currentDong) return;
   setLoading(`Loading ${dongDisplayName(currentDong)} official rental transactions…`);
   updateLanguageSwitch();
   try {
     const params = currentParams(true);
+    params.set('lawdCd', String(lawdCd || areaSelect.value));
     const response = await fetch(`/api/explore-dong?${params.toString()}`);
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || 'Neighborhood data failed');
     renderSummary(data, data.dong || currentDong);
-    if (showBuildingsOnMap) publishMapBuildings(data.dong || currentDong, data.buildings || []);
+    if (showBuildingsOnMap) publishMapBuildings(data.dong || currentDong, data.buildings || [], data.districtCode || lawdCd);
     history.replaceState(null, '', `/explore/?${currentParams(false).toString()}`);
   } catch (_) {
     status.textContent = 'Official transaction data for this neighborhood is temporarily unavailable.';
@@ -391,8 +392,16 @@ window.addEventListener('khg:map-select-dong', event => {
   if (!dong || !model) return;
   highlightMapCard(model.dong);
   renderMapSelection(model);
-  if (currentDong === dong && currentData && Array.isArray(currentData.buildings)) publishMapBuildings(dong, currentData.buildings);
-  else void loadDong(dong, { showBuildingsOnMap:true });
+  const snapshot = areaSelect.value !== 'all' && KHGExplorer.areaSnapshotForDong(currentAreaData, dong);
+  if (snapshot) {
+    renderSummary(snapshot, dong);
+    publishMapBuildings(dong, snapshot.buildings || [], model.districtCode);
+    history.replaceState(null, '', `/explore/?${currentParams(false).toString()}`);
+  } else if (currentDong === dong && currentData && Array.isArray(currentData.buildings)) {
+    publishMapBuildings(dong, currentData.buildings, model.districtCode);
+  } else {
+    void loadDong(dong, { showBuildingsOnMap:true, lawdCd:model.districtCode });
+  }
 });
 window.addEventListener('khg:map-select-building', event => {
   const model = event.detail && event.detail.model;
