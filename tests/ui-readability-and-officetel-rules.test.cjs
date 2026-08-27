@@ -54,11 +54,11 @@ test('homepage Rent Check gives bilingual area and property selectors dedicated 
   assert.match(html, /class="field rent-check-property-field"[^>]*><span>Property type<\/span>/);
 });
 
-test('homepage primary CTA has an explicit full-height inline-flex button rule', () => {
-  const css = read('cold-start.css');
+test('homepage Rent Check submit action keeps the shared full-height button rule', () => {
+  const css = read('styles.css');
   assert.match(
     css,
-    /\.hero-primary-action\{[^}]*display:inline-flex[^}]*align-items:center[^}]*min-height:48px/
+    /\.rent-check-form \.search-button\{[^}]*height:52px/
   );
 });
 
@@ -101,3 +101,4 @@ test('Dong building rows render name, metadata, deposit, and monthly rent as sep
   assert.match(html, /class="seo-context-label">Deposit<\/span>/);
   assert.match(html, /class="seo-context-label">Monthly rent<\/span>/);
 });
+

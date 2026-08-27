@@ -18,7 +18,7 @@
   <script defer src="/acquisition-links.js"></script>
   <link rel="stylesheet" href="/styles.css">
 </head>
-<body>
+<body class="core-ui">
   <header class="compact-header">
     <a class="brand" href="/zh/"><span class="brand-mark">K</span><span>KoreaHomeGuide</span></a>
     <nav>
@@ -88,8 +88,8 @@
       <aside class="explorer-map-column" aria-label="街区地图与相关工具">
         <div class="explorer-map-sticky">
         <section class="explorer-map-card"><div class="explorer-map-heading"><span class="eyebrow">街区地图</span><h2>查看各街区的位置。</h2></div><div id="explorerMap" class="explorer-map-canvas" role="region" aria-label="所选首尔街区地图"></div><p id="explorerMapStatus" class="explorer-map-status" aria-live="polite">地图进入屏幕时加载。</p></section>
-        <section class="context-module soft"><span class="context-kicker">下一步</span><h3>已经拿到报价？</h3><p>用押金、月租、面积和房型与近期官方可比成交核对。</p><a class="context-link" data-explorer-rent-check data-rent-check-cta="explorer_context_handoff" href="/zh/tools/seoul-rent-check/">检查租金报价 →</a></section>
-        <section class="context-module"><span class="context-kicker">签约前</span><h3>先检查押金和合同风险</h3><p>了解房产登记、居所申报、确定日期和押金保障。</p><a class="context-link" href="/zh/guides/before-you-sign/">阅读签约指南 →</a></section>
+        <a class="context-module context-card soft" data-explorer-rent-check data-rent-check-cta="explorer_context_handoff" href="/zh/tools/seoul-rent-check/"><span class="context-kicker">下一步</span><h3>已经拿到报价？</h3><p>用押金、月租、面积和房型与近期官方可比成交核对。</p><strong class="context-card-action">检查租金报价 →</strong></a>
+        <a class="context-module context-card" href="/zh/guides/before-you-sign/"><span class="context-kicker">签约前</span><h3>先检查押金和合同风险</h3><p>了解房产登记、居所申报、确定日期和押金保障。</p><strong class="context-card-action">阅读签约指南 →</strong></a>
         <div class="ad-slot" data-slot="sidebar" aria-hidden="true"></div>
         </div>
       </aside>
@@ -113,3 +113,4 @@
   <script defer src="/zh/explore/app.js"></script>
 </body>
 </html>
+

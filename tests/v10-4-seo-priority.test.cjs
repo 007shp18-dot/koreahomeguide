@@ -62,12 +62,14 @@ test('homepage positioning is a Rent Check trust funnel rather than a listings p
   const zh = read('zh/index.html');
   assert.match(en, /<title>Seoul Rent Prices & Brokerage Fees, Explained in English \| KoreaHomeGuide<\/title>/);
   assert.match(en, /<h1>Is your Seoul rent actually fair\?<\/h1>/);
-  assert.match(en, />Check my rent</);
+  assert.match(en, /id="rentCheckButton"[^>]*>Check</);
+  assert.doesNotMatch(en, /class="hero-primary-action"/);
   assert.match(en, /Official signed transactions/);
   assert.doesNotMatch(en, /Find a home in Seoul/i);
   assert.doesNotMatch(en, /<span class="eyebrow">Find a home<\/span>/i);
   assert.match(zh, /你的首尔租金报价真的合理吗？/);
-  assert.match(zh, /检查我的租金/);
+  assert.match(zh, /id="rentCheckButton"[^>]*>检查这个租金</);
+  assert.doesNotMatch(zh, /class="hero-primary-action"/);
   assert.doesNotMatch(zh, /找到适合你的家|<span class="eyebrow">找房<\/span>/);
 });
 
@@ -100,3 +102,4 @@ test('sitemap includes the EN/ZH before-you-sign pillar guide', () => {
   assert.match(sitemap, /https:\/\/koreahomeguide\.com\/guides\/before-you-sign\//);
   assert.match(sitemap, /https:\/\/koreahomeguide\.com\/zh\/guides\/before-you-sign\//);
 });
+

@@ -5,8 +5,8 @@ const path = require('node:path');
 const read = rel => fs.readFileSync(path.join(__dirname,'..',rel),'utf8');
 
 for (const [file, primary, secondary] of [
-  ['index.html','Check my rent',['Explore Seoul','Protect the deposit']],
-  ['zh/index.html','检查我的租金',['探索首尔','先保护好押金']]
+  ['index.html','id="rentCheckButton"',['Explore Seoul','Protect the deposit']],
+  ['zh/index.html','id="rentCheckButton"',['探索首尔','先保护好押金']]
 ]) {
   test(`${file} presents one primary action with secondary discovery paths`, () => {
     const html=read(file);
@@ -20,8 +20,11 @@ for (const [file, primary, secondary] of [
   });
 }
 
-test('homepage primary CTA sits closer to the hero copy', () => {
-  const css=read('cold-start.css');
-  const rule=(css.match(/\.funnel-hero \.hero-actions\{([^}]*)\}/)||[])[1]||'';
-  assert.match(rule,/margin-top:20px/);
+test('homepage moves directly from its promise to the Rent Check form', () => {
+  for (const file of ['index.html','zh/index.html']) {
+    const html=read(file);
+    assert.doesNotMatch(html,/hero-primary-action/,file);
+    assert.match(html,/id="rent-check"/,file);
+  }
 });
+

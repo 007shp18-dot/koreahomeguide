@@ -5,7 +5,8 @@ const fs=require('node:fs');
 test('English homepage presents Rent Check as the single primary action',()=>{
   const html=fs.readFileSync('index.html','utf8');
   assert.match(html,/Is your Seoul rent actually fair\?/);
-  assert.match(html,/>Check my rent</);
+  assert.match(html,/id="rentCheckButton"[^>]*>Check</);
+  assert.doesNotMatch(html,/class="hero-primary-action"/);
   assert.match(html,/Official signed transactions/);
   assert.match(html,/Built for foreign renters/);
   assert.match(html,/data-lead-capture/);
@@ -55,3 +56,4 @@ test('lead module is hidden by default and comes after the complete Rent Check r
     assert.match(html,/class="lead-capture"[^>]*data-lead-capture[^>]*hidden/,file);
   }
 });
+

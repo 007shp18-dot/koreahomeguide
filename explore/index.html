@@ -18,7 +18,7 @@
   <script defer src="/acquisition-links.js"></script>
   <link rel="stylesheet" href="/styles.css">
 </head>
-<body>
+<body class="core-ui">
   <header class="compact-header">
     <a class="brand" href="/"><span class="brand-mark">K</span><span>KoreaHomeGuide</span></a>
     <nav>
@@ -88,8 +88,8 @@
       <aside class="explorer-map-column" aria-label="Neighborhood map and related tools">
         <div class="explorer-map-sticky">
         <section class="explorer-map-card"><div class="explorer-map-heading"><span class="eyebrow">NEIGHBORHOOD MAP</span><h2>See where the neighborhoods are.</h2></div><div id="explorerMap" class="explorer-map-canvas" role="region" aria-label="Map of selected Seoul neighborhoods"></div><p id="explorerMapStatus" class="explorer-map-status" aria-live="polite">Map loads when it enters view.</p></section>
-        <section class="context-module soft"><span class="context-kicker">NEXT STEP</span><h3>Already have a quote?</h3><p>Compare the deposit, rent, size, and housing type with recent official contracts.</p><a class="context-link" data-explorer-rent-check data-rent-check-cta="explorer_context_handoff" href="/tools/seoul-rent-check/">Check a rent quote →</a></section>
-        <section class="context-module"><span class="context-kicker">BEFORE YOU SIGN</span><h3>Protect a large deposit</h3><p>Review registry checks, residence reporting, fixed dates, and deposit protection.</p><a class="context-link" href="/guides/before-you-sign/">Read the signing guide →</a></section>
+        <a class="context-module context-card soft" data-explorer-rent-check data-rent-check-cta="explorer_context_handoff" href="/tools/seoul-rent-check/"><span class="context-kicker">NEXT STEP</span><h3>Already have a quote?</h3><p>Compare the deposit, rent, size, and housing type with recent official contracts.</p><strong class="context-card-action">Check a rent quote →</strong></a>
+        <a class="context-module context-card" href="/guides/before-you-sign/"><span class="context-kicker">BEFORE YOU SIGN</span><h3>Protect a large deposit</h3><p>Review registry checks, residence reporting, fixed dates, and deposit protection.</p><strong class="context-card-action">Read the signing guide →</strong></a>
         <div class="ad-slot" data-slot="sidebar" aria-hidden="true"></div>
         </div>
       </aside>
@@ -113,3 +113,4 @@
   <script defer src="/explore/app.js"></script>
 </body>
 </html>
+
