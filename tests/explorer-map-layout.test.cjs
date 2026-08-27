@@ -35,6 +35,10 @@ test('map layout is right-hand sticky on desktop and first on mobile', () => {
   assert.match(css, /grid-template-areas:"main map"/);
   assert.match(css, /\.explorer-map-column\{[^}]*grid-area:map/);
   assert.match(css, /@media\(max-width:980px\)[^]*grid-template-areas:"map" "main"/);
+  assert.match(css, /\.explorer-map-layout\{[^}]*grid-template-columns:minmax\(0,1\.45fr\) minmax\(390px,1fr\)/);
+  assert.match(css, /\.explorer-map-canvas\{[^}]*height:480px/);
+  assert.match(css, /@media\(max-width:980px\)[^]*\.explorer-map-canvas\{height:400px\}/);
+  assert.match(css, /@media\(max-width:560px\)[^]*\.explorer-map-canvas\{height:310px\}/);
 });
 
 test('map legend and decision card have selected, evidence, and narrow-screen states', () => {

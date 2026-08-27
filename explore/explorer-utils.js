@@ -9,14 +9,6 @@
   const DISTRICT_SLUGS = Object.freeze({
     '11680':'gangnam-gu', '11440':'mapo-gu', '11170':'yongsan-gu', '11200':'seongdong-gu', '11560':'yeongdeungpo-gu', '11620':'gwanak-gu', '11230':'dongdaemun-gu', '11410':'seodaemun-gu', '11290':'seongbuk-gu', '11215':'gwangjin-gu'
   });
-  const DONG_SLUGS = Object.freeze({
-    '역삼동':'yeoksam-dong','논현동':'nonhyeon-dong','대치동':'daechi-dong','삼성동':'samseong-dong','청담동':'cheongdam-dong',
-    '연남동':'yeonnam-dong','서교동':'seogyo-dong','망원동':'mangwon-dong','합정동':'hapjeong-dong','공덕동':'gongdeok-dong','아현동':'ahyeon-dong',
-    '이태원동':'itaewon-dong','한남동':'hannam-dong','후암동':'huam-dong','보광동':'bogwang-dong',
-    '성수동1가':'seongsu-dong-1-ga','성수동2가':'seongsu-dong-2-ga','옥수동':'oksu-dong',
-    '금호동1가':'geumho-dong-1-ga','금호동2가':'geumho-dong-2-ga','금호동3가':'geumho-dong-3-ga','금호동4가':'geumho-dong-4-ga',
-    '여의도동':'yeouido-dong','당산동':'dangsan-dong','문래동':'mullae-dong','영등포동':'yeongdeungpo-dong'
-  });
 
   function normalizeSegment(value) {
     return String(value || '').normalize('NFKC').trim();
@@ -44,7 +36,8 @@
 
   function dongSlug(dong) {
     const normalized = normalizeSegment(dong);
-    return DONG_SLUGS[normalized] || normalized;
+    const record = catalog && catalog.DONGS && catalog.DONGS[normalized];
+    return record && record.slug ? record.slug : normalized;
   }
 
   function buildDongSeoUrl({ lawdCd, type, dong, lang = 'en' }) {

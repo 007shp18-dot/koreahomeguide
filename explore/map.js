@@ -182,7 +182,7 @@
       window[callback] = () => { cleanup(); resolve(); };
       script.async = true;
       script.defer = true;
-      script.src = KHGMapController.buildMapsSdkUrl({ apiKey, callback });
+      script.src = KHGMapController.buildMapsSdkUrl({ apiKey, callback, locale:latest.locale });
       script.addEventListener('error', () => { cleanup(); reject(new Error('Maps script failed')); }, { once:true });
       document.head.appendChild(script);
     });

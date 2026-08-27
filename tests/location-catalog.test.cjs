@@ -1,6 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const catalog = require('../location-catalog.js');
+const mapLocations = require('../explore/map-locations.js');
 
 test('district labels preserve Korean search and contract names', () => {
   assert.equal(catalog.districtLabel('11680','en'), 'Gangnam-gu (강남구)');
@@ -12,6 +13,15 @@ test('dong labels use established localized names and Korean references', () => 
   assert.equal(catalog.dongLabel('연남동','en'), 'Yeonnam-dong (연남동)');
   assert.equal(catalog.dongLabel('연남동','zh-CN'), '延南洞（연남동）');
   assert.equal(catalog.dongLabel('성수동1가','zh'), '圣水洞1街（성수동1가）');
+  assert.equal(catalog.dongLabel('봉천동','en'), 'Bongcheon-dong (봉천동)');
+  assert.equal(catalog.dongLabel('봉천동','zh-CN'), 'Bongcheon-dong（봉천동）');
+});
+
+test('the location catalog covers all 206 legal dongs plus the supported Mullae aggregate', () => {
+  assert.equal(Object.keys(catalog.DONGS).length, 207);
+  assert.deepEqual(Object.keys(catalog.DONGS).filter(name => !mapLocations.neighborhood(name)), []);
+  assert.equal(catalog.DONGS['신림동'].slug, 'sillim-dong');
+  assert.equal(catalog.DONGS['압구정동'].en, 'Apgujeong-dong');
 });
 
 test('housing labels avoid globally misleading standalone villa copy', () => {
