@@ -5,11 +5,14 @@ KoreaHomeGuide uses only the Google Maps JavaScript API on the English and Chine
 ## Key and restrictions
 
 - Vercel environment variable: `GOOGLE_MAPS_BROWSER_KEY`
+- Create a production JavaScript map ID in Google Cloud and set it as the Vercel environment variable `GOOGLE_MAPS_MAP_ID`.
 - Website referrers: `https://koreahomeguide.com/*` and `https://www.koreahomeguide.com/*`
 - Add only the exact Vercel Preview hostname while testing; remove it afterward if no longer needed.
 - API restriction: Maps JavaScript API only
 
 Browser keys are visible by design. Security comes from both Website/HTTP-referrer restrictions and the API restriction. Use a separate key for this website and never reuse a server-side key.
+
+The Explorer requests the Maps JavaScript API with asynchronous loading. When `GOOGLE_MAPS_MAP_ID` is configured, it uses `AdvancedMarkerElement` and `PinElement`. Without a map ID, it deliberately keeps the legacy marker path so the map remains available; do not use Google's demo map ID in production.
 
 ## Cost controls
 
@@ -23,4 +26,4 @@ References: [Google Maps pricing](https://developers.google.com/maps/billing-and
 
 ## Verification
 
-Without the environment variable, both Explore pages must show a localized unavailable message while all rent data, filters, and cards continue working. With the restricted key, verify the map on the two production hostnames and confirm that an unapproved hostname fails safely.
+Without `GOOGLE_MAPS_BROWSER_KEY`, both Explore pages must show a localized unavailable message while all rent data, filters, and cards continue working. With the restricted key and production map ID, verify the map on the two production hostnames, confirm marker selection works, and confirm that an unapproved hostname fails safely.

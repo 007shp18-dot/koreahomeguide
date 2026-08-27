@@ -2,6 +2,18 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const controller = require('../explore/map-controller.js');
 
+test('map SDK URL requests asynchronous loading and the advanced-marker library', () => {
+  const url = new URL(controller.buildMapsSdkUrl({ apiKey:'browser key', callback:'maps-ready' }));
+  assert.equal(url.origin + url.pathname, 'https://maps.googleapis.com/maps/api/js');
+  assert.deepEqual(Object.fromEntries(url.searchParams), {
+    key:'browser key',
+    v:'weekly',
+    loading:'async',
+    libraries:'marker',
+    callback:'maps-ready'
+  });
+});
+
 test('marker models preserve raw dong IDs and localize labels', () => {
   const models = controller.buildMarkerModels({ lawdCd:'11440', propertyType:'villa', locale:'zh-CN', dongs:[{ dong:'연남동', contractCount:12, contextualMedianMonthlyRentWon:900000, contextualMedianDepositWon:10000000 }] });
   assert.deepEqual(models, [{
@@ -127,6 +139,31 @@ test('marker visuals map decision tones to accessible colors and preserve eviden
   });
   assert.equal(controller.markerVisual({ tone:'strong', scale:14 }, true).fillColor, '#2563eb');
   assert.equal(controller.markerVisual({ tone:'strong', scale:99 }).scale, 16);
+});
+
+test('advanced pin visuals preserve marker meaning, count, and selected state', () => {
+  assert.deepEqual(controller.advancedPinVisual({ tone:'strong', scale:14, contractCount:12 }), {
+    background:'#15803d',
+    borderColor:'#ffffff',
+    glyphColor:'#ffffff',
+    glyphText:'12',
+    scale:1.17
+  });
+  assert.equal(controller.advancedPinVisual({ tone:'outside', scale:10, contractCount:0 }).glyphText, '');
+  assert.equal(controller.advancedPinVisual({ tone:'strong', scale:14, contractCount:1250 }).glyphText, '999+');
+  assert.equal(controller.advancedPinVisual({ tone:'limited', scale:10, contractCount:8 }, true).background, '#2563eb');
+});
+
+test('advanced markers require a production map ID and runtime capability support', () => {
+  const supportedMap = { getMapCapabilities:() => ({ isAdvancedMarkersAvailable:true }) };
+  const unsupportedMap = { getMapCapabilities:() => ({ isAdvancedMarkersAvailable:false }) };
+  const brokenMap = { getMapCapabilities:() => { throw new Error('not ready'); } };
+
+  assert.equal(controller.advancedMarkersAvailable(supportedMap, 'production-map-id'), true);
+  assert.equal(controller.advancedMarkersAvailable(unsupportedMap, 'production-map-id'), false);
+  assert.equal(controller.advancedMarkersAvailable(supportedMap, 'DEMO_MAP_ID'), false);
+  assert.equal(controller.advancedMarkersAvailable({}, 'production-map-id'), false);
+  assert.equal(controller.advancedMarkersAvailable(brokenMap, 'production-map-id'), false);
 });
 
 test('missing neighborhood coordinates are omitted rather than guessed', () => {

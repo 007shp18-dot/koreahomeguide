@@ -6,7 +6,7 @@ test('map adapter is lazy and has explicit failure states', () => {
   const source = fs.readFileSync('explore/map.js','utf8');
   assert.match(source, /IntersectionObserver/);
   assert.match(source, /\/api\/maps-config/);
-  assert.match(source, /maps\.googleapis\.com\/maps\/api\/js/);
+  assert.match(source, /buildMapsSdkUrl/);
   assert.match(source, /Map temporarily unavailable/);
 });
 
@@ -18,6 +18,13 @@ test('map adapter applies decision visuals and emits bounded view and selection 
   assert.match(source, /safeTrack\('explorer_map_view'/);
   assert.match(source, /safeTrack\('explorer_map_select'/);
   assert.match(source, /detail:\{ dong:model\.dong, model \}/);
+  assert.match(source, /AdvancedMarkerElement/);
+  assert.match(source, /PinElement/);
+  assert.match(source, /config\.mapId/);
+  assert.match(source, /advancedMarkersAvailable\(map, configuredMapId\)/);
+  assert.match(source, /gmpClickable:true/);
+  assert.match(source, /addEventListener\('gmp-click'/);
+  assert.match(source, /mapcapabilities_changed/);
 });
 
 test('Explorer runtimes publish raw dong models after rendering', () => {

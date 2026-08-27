@@ -22,9 +22,13 @@
   let selectedDong = '';
   let latestModels = [];
   let viewTracked = false;
+  let useAdvancedMarkers = false;
 
   function clearMarkers() {
-    markers.forEach(entry => entry.marker.setMap(null));
+    markers.forEach(entry => {
+      if (entry.advanced) entry.marker.map = null;
+      else entry.marker.setMap(null);
+    });
     markers = [];
   }
 
@@ -33,6 +37,17 @@
       path:google.maps.SymbolPath.CIRCLE,
       ...KHGMapController.markerVisual(model, selected)
     };
+  }
+
+  function updateMarkerVisual(entry, selected) {
+    if (entry.advanced) {
+      const visual = KHGMapController.advancedPinVisual(entry.model, selected);
+      Object.assign(entry.pin, visual);
+      entry.marker.zIndex = selected ? 1000 : 1;
+      return;
+    }
+    entry.marker.setZIndex(selected ? 1000 : undefined);
+    entry.marker.setIcon(markerIcon(entry.model, selected));
   }
 
   function safeTrack(name, context) {
@@ -70,8 +85,7 @@
     selectedDong = String(dong || '');
     markers.forEach(entry => {
       const selected = entry.model.dong === selectedDong;
-      entry.marker.setZIndex(selected ? 1000 : undefined);
-      entry.marker.setIcon(markerIcon(entry.model, selected));
+      updateMarkerVisual(entry, selected);
     });
     const entry = markers.find(item => item.model.dong === selectedDong);
     if (entry && pan && map) map.panTo({ lat:entry.model.lat, lng:entry.model.lng });
@@ -90,20 +104,32 @@
     }
     const bounds = new google.maps.LatLngBounds();
     markers = models.map(model => {
-      const marker = new google.maps.Marker({
-        map,
-        position:{ lat:model.lat, lng:model.lng },
-        title:`${model.label} · ${copy[model.tone]} · ${model.contractCount}`,
-        icon:markerIcon(model, false),
-        label:model.contractCount ? { text:String(model.contractCount), color:'#ffffff', fontSize:'10px', fontWeight:'700' } : undefined
-      });
-      bounds.extend(marker.getPosition());
-      marker.addListener('click', () => {
+      const position = { lat:model.lat, lng:model.lng };
+      const title = `${model.label} · ${copy[model.tone]} · ${model.contractCount}`;
+      let marker;
+      let pin = null;
+      if (useAdvancedMarkers) {
+        pin = new google.maps.marker.PinElement(KHGMapController.advancedPinVisual(model, false));
+        marker = new google.maps.marker.AdvancedMarkerElement({ map, position, title, zIndex:1, gmpClickable:true });
+        marker.append(pin);
+      } else {
+        marker = new google.maps.Marker({
+          map,
+          position,
+          title,
+          icon:markerIcon(model, false),
+          label:model.contractCount ? { text:String(model.contractCount), color:'#ffffff', fontSize:'10px', fontWeight:'700' } : undefined
+        });
+      }
+      bounds.extend(position);
+      const selectMarker = () => {
         highlight(model.dong, false);
         safeTrack('explorer_map_select', analyticsContext(models, model));
         window.dispatchEvent(new CustomEvent('khg:map-select-dong', { detail:{ dong:model.dong, model } }));
-      });
-      return { model, marker };
+      };
+      if (useAdvancedMarkers) marker.addEventListener('gmp-click', selectMarker);
+      else marker.addListener('click', selectMarker);
+      return { model, marker, pin, advanced:useAdvancedMarkers };
     });
     if (models.length === 1) { map.setCenter({ lat:models[0].lat, lng:models[0].lng }); map.setZoom(14); }
     else map.fitBounds(bounds, 34);
@@ -112,8 +138,11 @@
     trackView(models);
   }
 
-  function createMap() {
+  function createMap(mapId = '') {
     const center = KHGMapLocations.centerFor(latest.lawdCd, '') || { lat:37.5665, lng:126.9780 };
+    const configuredMapId = String(mapId || '').trim();
+    const hasMarkerLibrary = Boolean(google.maps.marker && google.maps.marker.AdvancedMarkerElement && google.maps.marker.PinElement);
+    const hasProductionMapId = Boolean(configuredMapId && configuredMapId !== 'DEMO_MAP_ID');
     map = new google.maps.Map(canvas, {
       center,
       zoom:12,
@@ -121,8 +150,18 @@
       fullscreenControl:false,
       mapTypeControl:false,
       clickableIcons:false,
-      gestureHandling:'cooperative'
+      gestureHandling:'cooperative',
+      ...(hasProductionMapId ? { mapId:configuredMapId } : {})
     });
+    useAdvancedMarkers = hasMarkerLibrary && KHGMapController.advancedMarkersAvailable(map, configuredMapId);
+    if (hasProductionMapId && typeof map.addListener === 'function') {
+      map.addListener('mapcapabilities_changed', () => {
+        const nextMode = hasMarkerLibrary && KHGMapController.advancedMarkersAvailable(map, configuredMapId);
+        if (nextMode === useAdvancedMarkers) return;
+        useAdvancedMarkers = nextMode;
+        renderMarkers();
+      });
+    }
     renderMarkers();
   }
 
@@ -136,7 +175,7 @@
       window[callback] = () => { cleanup(); resolve(); };
       script.async = true;
       script.defer = true;
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(apiKey)}&v=weekly&callback=${encodeURIComponent(callback)}`;
+      script.src = KHGMapController.buildMapsSdkUrl({ apiKey, callback });
       script.addEventListener('error', () => { cleanup(); reject(new Error('Maps script failed')); }, { once:true });
       document.head.appendChild(script);
     });
@@ -151,7 +190,7 @@
       const config = await response.json();
       if (!response.ok || !config.enabled || !config.apiKey) { status.textContent = copy.disabled; canvas.classList.add('is-map-fallback'); return; }
       await loadSdk(config.apiKey);
-      createMap();
+      createMap(config.mapId);
     } catch (_) {
       status.textContent = copy.unavailable;
       canvas.classList.add('is-map-fallback');

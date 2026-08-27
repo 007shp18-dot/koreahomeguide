@@ -37,6 +37,17 @@
     return 10;
   }
 
+  function buildMapsSdkUrl({ apiKey = '', callback = '' } = {}) {
+    const params = new URLSearchParams({
+      key:String(apiKey),
+      v:'weekly',
+      loading:'async',
+      libraries:'marker',
+      callback:String(callback)
+    });
+    return `https://maps.googleapis.com/maps/api/js?${params.toString()}`;
+  }
+
   function buildMarkerModels({ lawdCd, propertyType = '', dongs, locale = 'en', limits = {} } = {}) {
     const hasBudget = Boolean(Math.max(0, Number(limits.maxRent) || 0) || Math.max(0, Number(limits.maxDeposit) || 0));
     return (Array.isArray(dongs) ? dongs : []).flatMap(item => {
@@ -116,9 +127,32 @@
     });
   }
 
+  function advancedPinVisual(model = {}, selected = false) {
+    const visual = markerVisual(model, selected);
+    const count = normalizedCount(model.contractCount);
+    return Object.freeze({
+      background:visual.fillColor,
+      borderColor:visual.strokeColor,
+      glyphColor:'#ffffff',
+      glyphText:count > 999 ? '999+' : count ? String(count) : '',
+      scale:Math.round(Math.min(1.34, Math.max(0.75, visual.scale / 12)) * 100) / 100
+    });
+  }
+
+  function advancedMarkersAvailable(map, mapId) {
+    const configuredMapId = String(mapId || '').trim();
+    if (!configuredMapId || configuredMapId === 'DEMO_MAP_ID' || !map || typeof map.getMapCapabilities !== 'function') return false;
+    try {
+      const capabilities = map.getMapCapabilities();
+      return Boolean(capabilities && capabilities.isAdvancedMarkersAvailable);
+    } catch (_) {
+      return false;
+    }
+  }
+
   function selectDong(state, dong) {
     return Object.freeze({ ...(state || {}), selectedDong:String(dong || '') });
   }
 
-  return Object.freeze({ buildMarkerModels, buildMapAnalyticsEvent, markerVisual, selectDong });
+  return Object.freeze({ buildMapsSdkUrl, buildMarkerModels, buildMapAnalyticsEvent, markerVisual, advancedPinVisual, advancedMarkersAvailable, selectDong });
 });
