@@ -14,7 +14,16 @@ test('Apps Script validates secret and appends a fixed schema', () => {
 
 test('operations guide documents the two Vercel env vars and Apps Script properties', () => {
   const doc = fs.readFileSync('docs/operations/google-sheet-lead-capture.md','utf8');
-  for (const term of ['LEAD_SHEET_WEBHOOK_URL','LEAD_SHEET_SHARED_SECRET','LEAD_SHARED_SECRET','LEAD_SHEET_ID']) assert.match(doc, new RegExp(term));
+  for (const term of ['LEAD_SHEET_WEBHOOK_URL','LEAD_SHEET_SHARED_SECRET','LEAD_SHARED_SECRET','LEAD_SHEET_ID','LEAD_NOTIFICATION_EMAIL']) assert.match(doc, new RegExp(term));
+});
+
+test('Apps Script sends only a minimal owner notification after a successful new write', () => {
+  const source = fs.readFileSync('ops/google-apps-script/lead-webhook.gs','utf8');
+  assert.match(source, /MailApp\.sendEmail/);
+  assert.match(source, /LEAD_NOTIFICATION_EMAIL/);
+  assert.match(source, /result\.duplicate/);
+  assert.match(source, /exact quote amounts and the help message are not copied/);
+  assert.match(source, /Lead notification failed/);
 });
 
 test('Apps Script neutralizes spreadsheet formula prefixes before appendRow', () => {

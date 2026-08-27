@@ -4,7 +4,8 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 
 function loadWebhook() {
-  const context = { console };
+  const sent = [];
+  const context = { console:{ error() {} }, MailApp:{ sendEmail:message => sent.push(message) }, sent };
   vm.createContext(context);
   vm.runInContext(fs.readFileSync('ops/google-apps-script/lead-webhook.gs', 'utf8'), context);
   return context;
@@ -54,6 +55,31 @@ test('repeated lead capture keeps one row using normalized email as the key', ()
   assert.deepEqual(JSON.parse(JSON.stringify(duplicate)), { ok:true, duplicate:true });
   assert.equal(sheet.rows.length, 2);
   assert.equal(sheet.rows[1][1], 'user@example.com');
+});
+
+test('owner notification is minimal and duplicate-safe', () => {
+  const webhook = loadWebhook();
+  const properties = { getProperty:key => key === 'LEAD_NOTIFICATION_EMAIL' ? 'owner@example.com' : '' };
+  const row = {
+    kind:'lead_capture', email:' User@Example.com ', language:'en', district_code:'11440',
+    property_type:'officetel', source_page:'/guides/seoul-officetel-rent/', created_at:'2026-08-27T00:00:00Z',
+    deposit_won:10000000, monthly_rent_won:1200000, help_message:'private contract concern'
+  };
+
+  assert.equal(webhook.notifyOwner_(properties, row, { created:true }, 'sheet-id'), true);
+  assert.equal(webhook.sent.length, 1);
+  assert.match(webhook.sent[0].body, /user@example\.com/);
+  assert.match(webhook.sent[0].body, /docs\.google\.com\/spreadsheets\/d\/sheet-id\/edit/);
+  assert.doesNotMatch(webhook.sent[0].body, /10000000|1200000|private contract concern/);
+  assert.equal(webhook.notifyOwner_(properties, row, { duplicate:true }, 'sheet-id'), false);
+  assert.equal(webhook.sent.length, 1);
+});
+
+test('mail failure never changes a successful Sheet write into an exception', () => {
+  const webhook = loadWebhook();
+  webhook.MailApp.sendEmail = () => { throw new Error('quota'); };
+  const properties = { getProperty:() => 'owner@example.com' };
+  assert.equal(webhook.notifyOwner_(properties, { kind:'help_request', email:'user@example.com' }, { updated:true }, 'sheet-id'), false);
 });
 
 test('help request merges into the existing email row instead of appending', () => {

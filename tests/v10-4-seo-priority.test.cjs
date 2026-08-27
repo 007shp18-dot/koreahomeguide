@@ -44,6 +44,11 @@ test('before-you-sign pillar guide exists in EN/ZH with substantive foreign-rent
   assert.match(en, /khug\.or\.kr/);
   assert.match(en, /immigration\.go\.kr|gov\.kr/);
   assert.match(en, /not legal advice|general information/i);
+  assert.match(en, /senior deposits or unpaid tax exposure/);
+  assert.match(en, /lease report with the contract attached/);
+  assert.match(en, /rtms\.molit\.go\.kr/);
+  assert.match(zh, /先顺位押金或欠税风险/);
+  assert.match(zh, /自动获得确定日期/);
 });
 
 test('homepage keeps the before-you-sign pillar prominent without duplicating it in the three-card guide grid', () => {

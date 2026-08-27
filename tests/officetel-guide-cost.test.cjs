@@ -12,4 +12,11 @@ test('officetel guides calculate all-in monthly housing cost in both locales', (
   assert.match(zh, /每月实际支出约116万韩元/);
   assert.match(en, /korea-rent-deposit-protection-foreigners/);
   assert.match(zh, /korea-rent-deposit-protection-foreigners/);
+  assert.match(en, /fixed monthly management fee of KRW 100,000 or more/);
+  assert.match(zh, /月固定管理费达到10万韩元以上/);
+  assert.match(en, /molit\.go\.kr/);
+  assert.match(zh, /molit\.go\.kr/);
+  assert.match(zh, /data-search-answer="true"/);
+  assert.match(zh, /article-primary-cta/);
+  assert.ok((zh.match(/<details(?:\s|>)/g) || []).length >= 3);
 });

@@ -21,6 +21,50 @@ function normalizeEmail_(value) {
   return String(value || '').trim().toLowerCase();
 }
 
+function notificationValue_(value) {
+  return String(value == null ? '' : value)
+    .replace(/[\r\n\u0000-\u001f\u007f]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 120);
+}
+
+function notificationBody_(row, sheetId) {
+  const kind = row.kind === 'help_request' ? 'Help request' : 'Rent Check lead';
+  return [
+    'A new KoreaHomeGuide submission was saved.',
+    '',
+    'Type: ' + kind,
+    'Email: ' + notificationValue_(normalizeEmail_(row.email)),
+    'Language: ' + notificationValue_(row.language),
+    'Area: ' + notificationValue_(row.district_code),
+    'Property type: ' + notificationValue_(row.property_type),
+    'Source page: ' + notificationValue_(row.source_page),
+    'Created at: ' + notificationValue_(row.created_at),
+    '',
+    'Open the lead sheet: https://docs.google.com/spreadsheets/d/' + encodeURIComponent(sheetId) + '/edit',
+    '',
+    'For privacy, exact quote amounts and the help message are not copied into this email.'
+  ].join('\n');
+}
+
+function notifyOwner_(properties, row, result, sheetId) {
+  if (!result || result.duplicate) return false;
+  const recipient = notificationValue_(properties.getProperty('LEAD_NOTIFICATION_EMAIL'));
+  if (!recipient) return false;
+  try {
+    MailApp.sendEmail({
+      to:recipient,
+      subject:row.kind === 'help_request' ? '[KoreaHomeGuide] New help request' : '[KoreaHomeGuide] New Rent Check lead',
+      body:notificationBody_(row, sheetId)
+    });
+    return true;
+  } catch (error) {
+    console.error('Lead notification failed');
+    return false;
+  }
+}
+
 function ensureHeaders_(sheet) {
   if (sheet.getLastRow() === 0) {
     sheet.appendRow(COLUMNS);
@@ -84,6 +128,7 @@ function doPost(e) {
     } finally {
       lock.releaseLock();
     }
+    result.notified = notifyOwner_(properties, row, result, sheetId);
     return jsonResponse_(result);
   } catch (error) {
     console.error('Lead webhook failed');

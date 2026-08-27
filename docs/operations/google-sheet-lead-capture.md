@@ -18,6 +18,9 @@ In **Project Settings → Script Properties**, add:
 
 - `LEAD_SHARED_SECRET`: a long random secret
 - `LEAD_SHEET_ID`: the spreadsheet ID from the Google Sheet URL
+- `LEAD_NOTIFICATION_EMAIL`: the owner email that should receive a minimal new-lead alert
+
+The notification contains the submitted email, language, district, property type, source page and a link to the Sheet. It deliberately excludes exact quote amounts and the optional help message. A notification failure never rolls back a lead that was already saved, and repeated duplicate lead submissions do not trigger another alert.
 
 ## 3. Deploy as a Web App
 
@@ -39,6 +42,8 @@ Redeploy production after setting the variables.
 ## 5. Verify
 
 Run one Rent Check, agree to the point-of-collection privacy notice, submit an email lead, and confirm exactly one new row appears in the `Leads` tab. Confirm that `privacy_consent=true` and `privacy_notice_version=2026-08-27` are present. Submit the same address again with different capitalization or surrounding spaces and confirm that no second row is created. Then submit the optional help form and confirm the existing row changes to `kind=help_request`, `help_requested=true`, and receives an `updated_at` value.
+
+Confirm that the owner receives one minimal lead alert for the new row, no second alert for the duplicate submission, and a separate alert for the help request. Check the Apps Script execution log if the row is saved but the alert is missing; mail quota or an invalid `LEAD_NOTIFICATION_EMAIL` must not turn a successful Sheet write into a visitor-facing error.
 
 The normalized lowercase email is the unique lead key. A later help request enriches the original row so each person remains a single record. Do not remove the script lock: it prevents simultaneous submissions from racing into duplicate rows.
 
