@@ -84,6 +84,24 @@ test('Chinese Dong HTML is genuinely localized and keeps KRW primary', () => {
   assert.doesNotMatch(html, /Median monthly rent/);
 });
 
+test('dynamic evidence rows carry localized mobile labels', () => {
+  const en = renderDongPage(base('en'));
+  const zh = renderDongPage(base('zh'));
+  assert.match(en, /data-label="Building"/);
+  assert.match(en, /data-label="Monthly rent"/);
+  assert.match(en, /data-label="Contract date"/);
+  assert.match(zh, /data-label="建筑"/);
+  assert.match(zh, /data-label="月租"/);
+  assert.match(zh, /data-label="签约日期"/);
+});
+
+test('dynamic evidence tables become mobile cards without a forced wide table', () => {
+  const html = renderDongPage(base('en'));
+  assert.match(html, /@media\(max-width:640px\)\{[^}]*\.seo-table\{min-width:0/);
+  assert.match(html, /\.seo-table td::before\{content:attr\(data-label\)/);
+  assert.match(html, /\.seo-table thead\{display:none/);
+});
+
 test('every Dataset includes a description', () => {
   for (const lang of ['en', 'zh']) {
     for (const dataset of datasetsFrom(renderDongPage(base(lang)))) {

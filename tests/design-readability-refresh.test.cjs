@@ -15,7 +15,7 @@ test('core actions stay blue while map status colors retain accessible semantic 
   assert.match(css, /--accent:#2563eb/);
   assert.match(css, /\.site-header\{[^}]*background:rgba\(255,255,255/);
   assert.match(css, /\.explorer-map-legend i\.is-limited\{[^}]*#b45309/);
-  assert.match(css, /\.explorer-map-legend i\.is-outside\{[^}]*#64748b/);
+  assert.match(css, /\.explorer-map-legend i\.is-outside\{[^}]*var\(--muted\)/);
   assert.match(map, /limited:'[^']*#b45309/);
   assert.match(map, /outside:'[^']*#64748b/);
 });

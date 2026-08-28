@@ -222,6 +222,12 @@
     return known.length >= 2 ? Math.min(...known) : null;
   }
 
+  function comparisonCompleteness(values) {
+    const rows = Array.isArray(values) ? values : [];
+    const known = rows.filter(quote => fixedMonthlyCostWon(quote) != null).length;
+    return { selected:rows.length, known, missing:rows.length - known };
+  }
+
   function comparisonSelectionLimit(isMobile) {
     return isMobile ? 3 : 4;
   }
@@ -418,7 +424,7 @@
     STORAGE_KEY, RECHECK_STORAGE_KEY, VISIT_STORAGE_KEY,
     MAX_QUOTES, RETENTION_MS, RECHECK_TTL_MS, RETURN_VISIT_MS,
     normalizeQuote, quoteFingerprint, createStore, cleanLabel,
-    fixedMonthlyCostWon, sortForComparison, lowestKnownMonthlyCost, comparisonSelectionLimit, parseManagementFeeWon,
+    fixedMonthlyCostWon, sortForComparison, lowestKnownMonthlyCost, comparisonCompleteness, comparisonSelectionLimit, parseManagementFeeWon,
     writeRecheckPrefill, takeRecheckPrefill, markComparisonVisit,
     districtLabel, propertyLabel, defaultLabel, countBucket, mount
   };

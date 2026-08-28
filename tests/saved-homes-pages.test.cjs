@@ -85,8 +85,17 @@ test('saved-home comparison supports editing, private rechecks, and mobile cards
   assert.match(source, /writeRecheckPrefill\(/);
   assert.match(source, /saved-home-recheck/);
   assert.match(source, /saved-homes-comparison-cards/);
+  assert.match(source, /data-add-fee-for/);
+  assert.match(source, /data-fee-input-for/);
+  assert.match(source, /Add fee to compare/);
+  assert.match(source, /填写管理费后比较/);
+  assert.match(source, /saved-homes-completeness-note/);
+  assert.match(source, /comparisonCompleteness\(chosen\)/);
+  assert.match(source, /completeness\.missing === 1 \? 'is' : 'are'/);
+  assert.match(source, /reduceMotionQuery[^]*behavior:reduceMotionQuery && reduceMotionQuery\.matches \? 'auto' : 'smooth'/);
   assert.match(source, /saved_quotes_return_visit/);
   assert.match(css, /\.saved-homes-comparison-cards/);
+  assert.match(css, /\.saved-home-add-fee\{[^}]*min-height:44px/);
   assert.match(css, /@media\(max-width:760px\)[^{]*\{[^}]*\.saved-homes-table-wrap\{display:none\}/s);
   for (const file of ['saved-homes/index.html','zh/saved-homes/index.html']) {
     const html = fs.readFileSync(file, 'utf8');

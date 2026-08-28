@@ -50,7 +50,7 @@ test('map legend and decision card have selected, evidence, and narrow-screen st
   assert.match(css, /\.explorer-map-legend\{/);
   assert.match(css, /\.explorer-map-legend i\.is-strong\{[^}]*#15803d/);
   assert.match(css, /\.explorer-map-legend i\.is-limited\{[^}]*#b45309/);
-  assert.match(css, /\.explorer-map-legend i\.is-outside\{[^}]*#64748b/);
+  assert.match(css, /\.explorer-map-legend i\.is-outside\{[^}]*var\(--muted\)/);
   assert.match(css, /\.explorer-map-selection\[hidden\]\{display:none!important\}/);
   assert.match(css, /\.explorer-map-selection-status\.is-strong/);
   assert.match(css, /\.explorer-map-selection-status\.is-limited/);
@@ -58,5 +58,5 @@ test('map legend and decision card have selected, evidence, and narrow-screen st
   assert.match(css, /\.explorer-map-selection\{[^}]*position:absolute/);
   assert.match(css, /@media\(max-width:760px\)[^]*\.explorer-map-layout\.is-map-view \.explorer-map-main/);
   assert.match(css, /@media\(max-width:760px\)[^]*\.explorer-map-layout\.is-list-view \.explorer-map-legend,\.explorer-map-layout\.is-list-view \.explorer-map-surface/);
-  assert.match(css, /@media\(max-width:760px\)[^]*border-radius:20px 20px 0 0/);
+  assert.match(css, /@media\(max-width:760px\)[^]*border-radius:var\(--radius-lg\) var\(--radius-lg\) 0 0/);
 });

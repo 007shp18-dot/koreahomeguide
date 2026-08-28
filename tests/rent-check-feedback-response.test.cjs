@@ -124,8 +124,39 @@ test('result-specific next step makes an above-market verdict actionable', () =>
   });
   assert.equal(enUI.resultNextStep('fair').primary.href, '/guides/before-you-sign/');
   assert.equal(enUI.resultNextStep('below').primary.href, '/guides/before-you-sign/');
-  assert.equal(enUI.resultNextStep('insufficient').primary.href, 'explore');
+  assert.equal(enUI.resultNextStep('insufficient').primary.href, 'market');
   assert.equal(zhUI.resultNextStep('fair').primary.href, '/zh/guides/before-you-sign/');
+});
+
+test('verdict presentation leads with text, icon, difference, and evidence count', () => {
+  assert.deepEqual(
+    enUI.verdictPresentation({ rating:'above', differencePct:12.4, comparableCount:24 }),
+    {
+      icon:'↑',
+      label:'Above market',
+      difference:'+12.4% vs comparable median',
+      sample:'Based on 24 signed contracts'
+    }
+  );
+  assert.deepEqual(
+    enUI.verdictPresentation({ rating:'fair', differencePct:1, comparableCount:1 }),
+    {
+      icon:'✓',
+      label:'Typical range',
+      difference:'+1.0% vs comparable median',
+      sample:'Based on 1 signed contract'
+    }
+  );
+  assert.match(zhUI.verdictPresentation({ rating:'insufficient', comparableCount:2 }).label, /可比/);
+  assert.match(zhUI.verdictPresentation({ rating:'below', differencePct:-8, comparableCount:9 }).sample, /9 笔/);
+});
+
+test('insufficient data links only to an existing static market page', () => {
+  assert.equal(enUI.marketPageUrl('11440', 'officetel', 'en'), '/rent/mapo-gu/officetel/');
+  assert.equal(zhUI.marketPageUrl('11440', 'villa', 'zh-CN'), '/zh/rent/mapo-gu/villa/');
+  assert.equal(enUI.marketPageUrl('11350', 'officetel', 'en'), null);
+  assert.equal(enUI.marketPageUrl('11680', 'detached', 'en'), null);
+  assert.equal(enUI.marketPageUrl('11680', 'studio', 'en'), null);
 });
 
 test('next-step Explorer URL preserves only an approved district and property type', () => {
@@ -162,6 +193,8 @@ test('all EN and ZH Rent Check surfaces expose confidence details and next actio
     assert.match(app, /confidenceSummary\.textContent=KHGRentCheckUI\.confidenceQuestion\(data\)/);
     assert.match(app, /facts\.methodLabel/);
     assert.match(app, /KHGRentCheckUI\.resultNextStep\(data\.rating\)/);
+    assert.match(app, /KHGRentCheckUI\.verdictPresentation\(data\)/);
+    assert.match(app, /KHGRentCheckUI\.marketPageUrl\(area\.value,mapped\.officialType,language\)/);
     assert.match(app, /KHGRentCheckUI\.explorerUrl\(area\.value,mapped\.officialType,language\)/);
     assert.match(app, /rent_check_next_action/);
     assert.match(app, /savedMount\.insertAdjacentElement\('beforebegin',nextStep\)/);
@@ -171,6 +204,9 @@ test('all EN and ZH Rent Check surfaces expose confidence details and next actio
 
 test('confidence disclosure and next actions remain readable and touchable on mobile', () => {
   const css = fs.readFileSync('styles.css', 'utf8');
+  assert.match(css, /\.rent-check-verdict-primary>\[data-rent-verdict-label\]\{[^}]*font-size:var\(--text-3xl\)/);
+  assert.match(css, /\.rent-check-verdict-primary>\[data-rent-verdict-difference\]\{[^}]*font-size:var\(--text-lg\)/);
+  assert.match(css, /@media\(max-width:760px\)\{[\s\S]*?\.rent-check-verdict-primary>\[data-rent-verdict-label\]\{[^}]*font-size:var\(--text-2xl\)/);
   assert.match(css, /#rentCheckMeta\{[^}]*font-weight:700/);
   assert.match(css, /\.rent-check-confidence-details summary\{[^}]*min-height:44px/);
   assert.match(css, /\.rent-check-confidence-details summary::after/);

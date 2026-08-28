@@ -42,8 +42,15 @@
     2:{ months:6, areaPct:20, depositPct:35 },
     3:{ months:12, areaPct:25, depositPct:50 }
   });
-  const DISTRICT_CODES = new Set(['11680','11200','11440','11170','11560','11620','11230','11410','11290','11215']);
+  const MARKET_DISTRICTS = Object.freeze({
+    '11680':'gangnam-gu','11440':'mapo-gu','11170':'yongsan-gu','11200':'seongdong-gu',
+    '11560':'yeongdeungpo-gu','11620':'gwanak-gu','11230':'dongdaemun-gu','11410':'seodaemun-gu',
+    '11290':'seongbuk-gu','11215':'gwangjin-gu','11650':'seocho-gu','11710':'songpa-gu',
+    '11740':'gangdong-gu','11110':'jongno-gu','11140':'jung-gu'
+  });
+  const DISTRICT_CODES = new Set(Object.keys(MARKET_DISTRICTS));
   const PROPERTY_TYPES = new Set(['apartment','officetel','villa','detached']);
+  const MARKET_PROPERTY_TYPES = new Set(['apartment','officetel','villa']);
 
   function confidenceExplanation(result, isStudioMapped = false) {
     if (!result || !result.confidence) return '';
@@ -77,7 +84,7 @@
       return {
         heading:'Compare the broader market next',
         body:'There were too few close matches for a verdict, so review recent signed rents before deciding.',
-        primary:explore
+        primary:{ id:'open_market_page', label:'Open the broader market view', href:'market' }
       };
     }
     return {
@@ -85,6 +92,28 @@
       body:'A fair-looking price does not verify the owner, registry, fees, or deposit protection.',
       primary:signing
     };
+  }
+
+  function verdictPresentation(result) {
+    const rating = result && result.rating || 'insufficient';
+    const count = Math.max(0, Math.round(Number(result && result.comparableCount || 0)));
+    const difference = Number(result && result.differencePct);
+    return {
+      icon:{ above:'↑', fair:'✓', below:'↓', insufficient:'?' }[rating] || '?',
+      label:ratingLabel(rating,result && result.verdictBasis),
+      difference:rating === 'insufficient' || !Number.isFinite(difference)
+        ? 'No price verdict from this sample'
+        : `${difference > 0 ? '+' : ''}${difference.toFixed(1)}% vs comparable median`,
+      sample:`Based on ${count} signed contract${count === 1 ? '' : 's'}`
+    };
+  }
+
+  function marketPageUrl(lawdCd, propertyType, language) {
+    const district = MARKET_DISTRICTS[String(lawdCd || '')];
+    const type = String(propertyType || '');
+    if (!district || !MARKET_PROPERTY_TYPES.has(type)) return null;
+    const prefix = String(language || '').toLowerCase().startsWith('zh') ? '/zh' : '';
+    return `${prefix}/rent/${district}/${type}/`;
   }
 
   function explorerUrl(lawdCd, propertyType, language) {
@@ -244,6 +273,8 @@
     confidenceQuestion,
     confidenceExplanation,
     resultNextStep,
+    verdictPresentation,
+    marketPageUrl,
     explorerUrl,
     mapRentCheckType,
     resultSentence,

@@ -42,8 +42,15 @@
     2:{ months:6, areaPct:20, depositPct:35 },
     3:{ months:12, areaPct:25, depositPct:50 }
   });
-  const DISTRICT_CODES = new Set(['11680','11200','11440','11170','11560','11620','11230','11410','11290','11215']);
+  const MARKET_DISTRICTS = Object.freeze({
+    '11680':'gangnam-gu','11440':'mapo-gu','11170':'yongsan-gu','11200':'seongdong-gu',
+    '11560':'yeongdeungpo-gu','11620':'gwanak-gu','11230':'dongdaemun-gu','11410':'seodaemun-gu',
+    '11290':'seongbuk-gu','11215':'gwangjin-gu','11650':'seocho-gu','11710':'songpa-gu',
+    '11740':'gangdong-gu','11110':'jongno-gu','11140':'jung-gu'
+  });
+  const DISTRICT_CODES = new Set(Object.keys(MARKET_DISTRICTS));
   const PROPERTY_TYPES = new Set(['apartment','officetel','villa','detached']);
+  const MARKET_PROPERTY_TYPES = new Set(['apartment','officetel','villa']);
 
   function confidenceExplanation(result, isStudioMapped = false) {
     if (!result || !result.confidence) return '';
@@ -76,7 +83,7 @@
       return {
         heading:'下一步查看更广泛的市场',
         body:'相近成交数量不足，无法给出判断；请先查看近期已签约租金。',
-        primary:explore
+        primary:{ id:'open_market_page', label:'查看更广泛的市场页面', href:'market' }
       };
     }
     return {
@@ -84,6 +91,28 @@
       body:'价格看起来合理，并不代表房东、登记簿、费用或押金保障已经确认。',
       primary:signing
     };
+  }
+
+  function verdictPresentation(result) {
+    const rating = result && result.rating || 'insufficient';
+    const count = Math.max(0, Math.round(Number(result && result.comparableCount || 0)));
+    const difference = Number(result && result.differencePct);
+    return {
+      icon:{ above:'↑', fair:'✓', below:'↓', insufficient:'?' }[rating] || '?',
+      label:ratingLabel(rating,result && result.verdictBasis),
+      difference:rating === 'insufficient' || !Number.isFinite(difference)
+        ? '当前样本无法给出价格判断'
+        : `比可比成交中位数${difference >= 0 ? '高 ' : '低 '}${Math.abs(difference).toFixed(1)}%`,
+      sample:`基于 ${count} 笔已签约成交`
+    };
+  }
+
+  function marketPageUrl(lawdCd, propertyType, language) {
+    const district = MARKET_DISTRICTS[String(lawdCd || '')];
+    const type = String(propertyType || '');
+    if (!district || !MARKET_PROPERTY_TYPES.has(type)) return null;
+    const prefix = String(language || '').toLowerCase().startsWith('zh') ? '/zh' : '';
+    return `${prefix}/rent/${district}/${type}/`;
   }
 
   function explorerUrl(lawdCd, propertyType, language) {
@@ -235,6 +264,8 @@
     confidenceQuestion,
     confidenceExplanation,
     resultNextStep,
+    verdictPresentation,
+    marketPageUrl,
     explorerUrl,
     mapRentCheckType,
     resultSentence,

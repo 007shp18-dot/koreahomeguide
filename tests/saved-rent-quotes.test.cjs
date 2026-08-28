@@ -162,6 +162,15 @@ test('lowest known monthly cost requires at least two complete totals', () => {
   assert.equal(saved.lowestKnownMonthlyCost([knownA, unknown]), null);
 });
 
+test('comparison completeness counts missing fees without treating them as zero', () => {
+  assert.deepEqual(saved.comparisonCompleteness([
+    saved.normalizeQuote(quote({ managementFeeWon:100000 })),
+    saved.normalizeQuote(quote({ managementFeeWon:null })),
+    saved.normalizeQuote(quote({ managementFeeWon:0 }))
+  ]), { selected:3, known:2, missing:1 });
+  assert.deepEqual(saved.comparisonCompleteness([]), { selected:0, known:0, missing:0 });
+});
+
 test('comparison selection limit is three on mobile and four on wider screens', () => {
   assert.equal(saved.comparisonSelectionLimit(true), 3);
   assert.equal(saved.comparisonSelectionLimit(false), 4);

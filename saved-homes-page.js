@@ -20,6 +20,7 @@
   const mobileSelectionLimit = root.KHGSavedQuotes.comparisonSelectionLimit(true);
   const desktopSelectionLimit = root.KHGSavedQuotes.comparisonSelectionLimit(false);
   const mobileQuery = typeof root.matchMedia === 'function' ? root.matchMedia('(max-width: 760px)') : null;
+  const reduceMotionQuery = typeof root.matchMedia === 'function' ? root.matchMedia('(prefers-reduced-motion: reduce)') : null;
   let selected = new Set();
   let rates = {};
   let openedTracked = false;
@@ -50,6 +51,35 @@
   function moneyCell(value) {
     const cell = doc.createElement('td');
     cell.innerHTML = moneyHtml(value);
+    return cell;
+  }
+
+  function missingFeeOutput(quote) {
+    return { missingFee:true, quoteId:quote.id, text:zh ? '未填写' : 'Not added' };
+  }
+
+  function appendComparisonValue(node, output) {
+    if (output && typeof output === 'object' && Object.hasOwn(output, 'money')) {
+      node.innerHTML = moneyHtml(output.money);
+      return;
+    }
+    if (output && output.missingFee) {
+      const text = doc.createElement('span');
+      text.textContent = output.text;
+      const button = doc.createElement('button');
+      button.type = 'button';
+      button.className = 'saved-home-add-fee';
+      button.setAttribute('data-add-fee-for', output.quoteId);
+      button.textContent = zh ? '填写管理费后比较' : 'Add fee to compare';
+      node.append(text, button);
+      return;
+    }
+    node.textContent = output;
+  }
+
+  function comparisonCell(output) {
+    const cell = doc.createElement('td');
+    appendComparisonValue(cell, output);
     return cell;
   }
 
@@ -101,8 +131,8 @@
       [zh ? '面积' : 'Size', quote => `${quote.areaSqm.toLocaleString(locale)}㎡`],
       [zh ? '押金' : 'Deposit', quote => ({ money:quote.depositWon })],
       [zh ? '月租' : 'Monthly rent', quote => ({ money:quote.monthlyRentWon })],
-      [zh ? '固定管理费' : 'Fixed management fee', quote => quote.managementFeeWon == null ? (zh ? '未填写' : 'Not added') : ({ money:quote.managementFeeWon })],
-      [zh ? '每月固定支出' : 'Known monthly total', quote => fixedCost(quote) == null ? '—' : ({ money:fixedCost(quote) })],
+      [zh ? '固定管理费' : 'Fixed management fee', quote => quote.managementFeeWon == null ? missingFeeOutput(quote) : ({ money:quote.managementFeeWon })],
+      [zh ? '每月固定支出' : 'Known monthly total', quote => fixedCost(quote) == null ? missingFeeOutput(quote) : ({ money:fixedCost(quote) })],
       [zh ? '可比成交中位数' : 'Comparable median', quote => quote.medianValueWon == null ? '—' : ({ money:quote.medianValueWon })],
       [zh ? '与中位数的差异' : 'Difference from median', quote => percentText(quote.differencePct)],
       [zh ? '近期成交判断' : 'Recent-contract verdict', quote => ratingLabel(quote.rating)],
@@ -135,8 +165,7 @@
         const value = doc.createElement('strong');
         name.textContent = label;
         const output = valueFor(quote);
-        if (output && typeof output === 'object') value.innerHTML = moneyHtml(output.money);
-        else value.textContent = output;
+        appendComparisonValue(value, output);
         item.append(name, value);
         card.appendChild(item);
       });
@@ -157,6 +186,16 @@
         : `Select one to ${limit} homes for a side-by-side comparison.`;
       compareNode.appendChild(message);
       return;
+    }
+
+    const completeness = root.KHGSavedQuotes.comparisonCompleteness(chosen);
+    if (completeness.missing > 0) {
+      const completenessNote = doc.createElement('p');
+      completenessNote.className = 'saved-homes-completeness-note';
+      completenessNote.textContent = zh
+        ? `所选 ${completeness.selected} 个房源中有 ${completeness.missing} 个尚未填写固定管理费。补充后才能准确比较每月固定支出。`
+        : `${completeness.missing} of ${completeness.selected} selected homes ${completeness.missing === 1 ? 'is' : 'are'} missing a fixed management fee. Add it to compare known monthly totals accurately.`;
+      compareNode.appendChild(completenessNote);
     }
 
     const tableWrap = doc.createElement('div');
@@ -186,7 +225,7 @@
       row.appendChild(textCell(label, 'th'));
       chosen.forEach(quote => {
         const value = valueFor(quote);
-        row.appendChild(value && typeof value === 'object' ? moneyCell(value.money) : textCell(value));
+        row.appendChild(comparisonCell(value));
       });
       body.appendChild(row);
     });
@@ -283,6 +322,7 @@
       costInput.step = '1000';
       costInput.value = quote.managementFeeWon == null ? '' : String(quote.managementFeeWon);
       costInput.placeholder = zh ? '不知道可留空' : 'Leave blank if unknown';
+      costInput.setAttribute('data-fee-input-for', quote.id);
       costLabel.append(costLabelText, costInput);
       const costSave = doc.createElement('button');
       costSave.type = 'submit';
@@ -396,6 +436,27 @@
   }
 
   if (currencySelect) currencySelect.addEventListener('change', render);
+  if (compareNode) compareNode.addEventListener('click', event => {
+    const button = event.target && typeof event.target.closest === 'function'
+      ? event.target.closest('[data-add-fee-for]')
+      : null;
+    if (!button) return;
+    const quoteId = button.getAttribute('data-add-fee-for');
+    const input = [...doc.querySelectorAll('[data-fee-input-for]')]
+      .find(candidate => candidate.getAttribute('data-fee-input-for') === quoteId);
+    if (!input) {
+      setStatus(zh ? '找不到对应房源的管理费输入框。' : 'The management-fee editor for this home is unavailable.', 'error');
+      return;
+    }
+    if (typeof input.getBoundingClientRect === 'function') {
+      const rect = input.getBoundingClientRect();
+      const viewportHeight = Number(root.innerHeight || doc.documentElement.clientHeight || 0);
+      if (rect.top < 0 || (viewportHeight && rect.bottom > viewportHeight)) {
+        input.scrollIntoView({ behavior:reduceMotionQuery && reduceMotionQuery.matches ? 'auto' : 'smooth', block:'center' });
+      }
+    }
+    input.focus();
+  });
   if (mobileQuery && typeof mobileQuery.addEventListener === 'function') mobileQuery.addEventListener('change', render);
   if (clearButton) clearButton.addEventListener('click', () => {
     const confirmed = root.confirm(zh ? '删除当前浏览器中保存的全部房源？' : 'Remove every saved home from this browser?');
