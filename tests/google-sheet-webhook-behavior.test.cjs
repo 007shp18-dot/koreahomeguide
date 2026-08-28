@@ -40,6 +40,22 @@ class FakeSheet {
   }
 }
 
+class FakeSpreadsheet {
+  constructor() {
+    this.sheets = {};
+  }
+
+  getSheetByName(name) {
+    return this.sheets[name] || null;
+  }
+
+  insertSheet(name) {
+    const sheet = new FakeSheet();
+    this.sheets[name] = sheet;
+    return sheet;
+  }
+}
+
 test('repeated lead capture keeps one row using normalized email as the key', () => {
   const webhook = loadWebhook();
   const sheet = new FakeSheet();
@@ -113,4 +129,36 @@ test('help request without an earlier capture creates the canonical row', () => 
   assert.equal(sheet.rows.length, 2);
   assert.equal(sheet.rows[1][1], 'first@example.com');
   assert.equal(sheet.rows[1][21], true);
+});
+
+test('experience reports use a separate sheet and deduplicate by report ID', () => {
+  const webhook = loadWebhook();
+  const spreadsheet = new FakeSpreadsheet();
+  const report = {
+    kind:'experience_report', report_id:'rpt_0123456789abcdef', language:'en', district_code:'11440',
+    property_type:'apartment', deposit_won:10000000, monthly_rent_won:800000, area_sqm:59,
+    agent_fee_paid_won:360000, deposit_outcome:'returned_late', legal_cap_won:300000,
+    fee_above_cap:true, cap_status:'calculated', brokerage_rule_version:'seoul-2026-08-28',
+    created_at:'2026-08-28T05:00:00Z', privacy_consent:true, privacy_notice_version:'2026-08-28'
+  };
+
+  const created = webhook.storeSubmission_(spreadsheet, report);
+  const duplicate = webhook.storeSubmission_(spreadsheet, report);
+
+  assert.deepEqual(JSON.parse(JSON.stringify(created)), { ok:true, created:true });
+  assert.deepEqual(JSON.parse(JSON.stringify(duplicate)), { ok:true, duplicate:true });
+  assert.equal(spreadsheet.sheets.Experiences.rows.length, 2);
+  assert.equal(spreadsheet.sheets.Leads, undefined);
+  assert.equal(spreadsheet.sheets.Experiences.rows[1][0], 'rpt_0123456789abcdef');
+});
+
+test('lead submissions retain the existing Leads sheet behavior', () => {
+  const webhook = loadWebhook();
+  const spreadsheet = new FakeSpreadsheet();
+  const result = webhook.storeSubmission_(spreadsheet, {
+    kind:'lead_capture', email:'user@example.com', created_at:'2026-08-28T05:00:00Z'
+  });
+  assert.deepEqual(JSON.parse(JSON.stringify(result)), { ok:true, created:true });
+  assert.equal(spreadsheet.sheets.Leads.rows.length, 2);
+  assert.equal(spreadsheet.sheets.Experiences, undefined);
 });

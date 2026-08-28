@@ -6,6 +6,13 @@ const COLUMNS = [
   'privacy_consent','privacy_notice_version'
 ];
 
+const EXPERIENCE_COLUMNS = [
+  'report_id','kind','language','district_code','property_type',
+  'deposit_won','monthly_rent_won','area_sqm','agent_fee_paid_won','deposit_outcome',
+  'legal_cap_won','fee_above_cap','cap_status','brokerage_rule_version','source_page','created_at',
+  'privacy_consent','privacy_notice_version'
+];
+
 function jsonResponse_(payload) {
   return ContentService.createTextOutput(JSON.stringify(payload)).setMimeType(ContentService.MimeType.JSON);
 }
@@ -65,12 +72,13 @@ function notifyOwner_(properties, row, result, sheetId) {
   }
 }
 
-function ensureHeaders_(sheet) {
+function ensureHeaders_(sheet, columns) {
+  const targetColumns = columns || COLUMNS;
   if (sheet.getLastRow() === 0) {
-    sheet.appendRow(COLUMNS);
+    sheet.appendRow(targetColumns);
     return;
   }
-  sheet.getRange(1, 1, 1, COLUMNS.length).setValues([COLUMNS]);
+  sheet.getRange(1, 1, 1, targetColumns.length).setValues([targetColumns]);
 }
 
 function findEmailRow_(sheet, email) {
@@ -107,6 +115,32 @@ function upsertLeadRow_(sheet, incomingRow) {
   return { ok:true, created:true };
 }
 
+function findExperienceRow_(sheet, reportId) {
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) return 0;
+  const target = String(reportId || '').trim();
+  const values = sheet.getRange(2, 1, lastRow - 1, 1).getValues();
+  const index = values.findIndex(item => String(item[0] || '').trim() === target);
+  return index < 0 ? 0 : index + 2;
+}
+
+function appendExperienceRow_(sheet, incomingRow) {
+  const row = Object.assign({}, incomingRow || {});
+  ensureHeaders_(sheet, EXPERIENCE_COLUMNS);
+  if (findExperienceRow_(sheet, row.report_id)) return { ok:true, duplicate:true };
+  sheet.appendRow(EXPERIENCE_COLUMNS.map(key => sanitizeCell_(row[key])));
+  return { ok:true, created:true };
+}
+
+function storeSubmission_(spreadsheet, row) {
+  if (row && row.kind === 'experience_report') {
+    const experienceSheet = spreadsheet.getSheetByName('Experiences') || spreadsheet.insertSheet('Experiences');
+    return appendExperienceRow_(experienceSheet, row);
+  }
+  const leadSheet = spreadsheet.getSheetByName('Leads') || spreadsheet.insertSheet('Leads');
+  return upsertLeadRow_(leadSheet, row);
+}
+
 function doPost(e) {
   try {
     const properties = PropertiesService.getScriptProperties();
@@ -123,12 +157,11 @@ function doPost(e) {
     let result;
     try {
       const spreadsheet = SpreadsheetApp.openById(sheetId);
-      const sheet = spreadsheet.getSheetByName('Leads') || spreadsheet.insertSheet('Leads');
-      result = upsertLeadRow_(sheet, row);
+      result = storeSubmission_(spreadsheet, row);
     } finally {
       lock.releaseLock();
     }
-    result.notified = notifyOwner_(properties, row, result, sheetId);
+    result.notified = row.kind === 'experience_report' ? false : notifyOwner_(properties, row, result, sheetId);
     return jsonResponse_(result);
   } catch (error) {
     console.error('Lead webhook failed');

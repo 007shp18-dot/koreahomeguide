@@ -61,6 +61,35 @@ test('lead endpoint stores a valid lead and disables caching', async () => {
   assert.equal(res.headers['Cache-Control'], 'no-store');
 });
 
+test('lead endpoint stores a valid anonymous experience through its dedicated schema', async () => {
+  let row = null;
+  const handler = leadApi.createHandler({ storeLead:async(value)=>{ row=value; return {ok:true}; }, now:()=>new Date('2026-08-28T05:00:00Z') });
+  const res = responseRecorder();
+  await handler({ method:'POST', headers:{ origin:'https://koreahomeguide.com' }, body:{
+    kind:'experience_report', reportId:'rpt_0123456789abcdef', privacyConsent:true, privacyNoticeVersion:'2026-08-28',
+    language:'en', districtCode:'11440', propertyType:'apartment', depositWon:10000000,
+    monthlyRentWon:800000, areaSqm:59, agentFeePaidWon:360000, depositOutcome:'returned_late'
+  } }, res);
+  assert.equal(res.statusCode, 201);
+  assert.equal(row.report_id, 'rpt_0123456789abcdef');
+  assert.equal(row.email, undefined);
+  assert.equal(row.legal_cap_won, 300000);
+  assert.equal(row.fee_above_cap, true);
+});
+
+test('lead endpoint rejects an invalid experience before storage', async () => {
+  let calls = 0;
+  const handler = leadApi.createHandler({ storeLead:async()=>{ calls += 1; } });
+  const res = responseRecorder();
+  await handler({ method:'POST', headers:{ origin:'https://koreahomeguide.com' }, body:{
+    kind:'experience_report', reportId:'rpt_0123456789abcdef', privacyConsent:true, privacyNoticeVersion:'2026-08-28',
+    language:'en', districtCode:'11440', propertyType:'apartment', depositWon:10000000,
+    monthlyRentWon:800000, areaSqm:59, depositOutcome:'not-a-real-outcome'
+  } }, res);
+  assert.equal(res.statusCode, 400);
+  assert.equal(calls, 0);
+});
+
 test('storage failure returns 503 without exposing PII', async () => {
   const handler = leadApi.createHandler({ storeLead:async()=>{ throw new Error('storage unavailable private@example.com'); } });
   const res = responseRecorder();

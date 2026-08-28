@@ -1,6 +1,6 @@
 # Lead endpoint rate limit
 
-Protect `POST /api/lead` at Vercel's edge before the serverless function or Google Apps Script runs.
+Protect `POST /api/lead` at Vercel's edge before the serverless function or Google Apps Script runs. The same rule covers email/help submissions and `experience_report` submissions.
 
 ## Production rule
 
@@ -22,6 +22,6 @@ In the Vercel project, open **Firewall → Configure → Custom Rules**, create 
 4. In Vercel Firewall logs, verify the rule name, path, method, and rate-limit action.
 5. After the one-hour window, confirm a new request succeeds.
 
-Do not log request bodies or email addresses in the firewall rule. Review 429 counts after launch; increase the threshold only when verified legitimate users are blocked.
+Do not log request bodies, email addresses, or retain raw IP data in application or Sheet records. The edge rate-limit key may use the transient client IP available to Vercel, but KoreaHomeGuide must not forward or store it with a submission. Review 429 counts after launch; increase the threshold only when verified legitimate users are blocked.
 
 Reference: [Vercel WAF rate limiting](https://vercel.com/docs/vercel-firewall/vercel-waf/rate-limiting)

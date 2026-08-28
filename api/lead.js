@@ -2,6 +2,7 @@
 
 const { trustedRequestSource } = require('../lib/api-guard.cjs');
 const { normalizeLeadPayload } = require('../lib/lead-core.cjs');
+const { normalizeExperiencePayload } = require('../lib/experience-report.cjs');
 const { createLeadStore } = require('../lib/lead-store.cjs');
 
 const MAX_BODY_BYTES = 16 * 1024;
@@ -32,7 +33,9 @@ function createHandler({
 
     const body = parseBody(req.body);
     if (!body) return res.status(400).json({ error:'Invalid request body.' });
-    const parsed = normalizeLeadPayload(body, now());
+    const parsed = body.kind === 'experience_report'
+      ? normalizeExperiencePayload(body, now())
+      : normalizeLeadPayload(body, now());
     if (!parsed.ok) return res.status(400).json({ error:parsed.error });
 
     try {

@@ -45,6 +45,21 @@ test('localized privacy pages disclose operator, collected data, processors, ret
   assert.match(zh, /90 天/);
 });
 
+test('privacy pages disclose structured experience reports without claiming absolute anonymity', () => {
+  const en = fs.readFileSync('privacy/index.html','utf8');
+  const zh = fs.readFileSync('zh/privacy/index.html','utf8');
+  assert.match(en, /structured rental experience/i);
+  for (const term of [/district/i, /housing type/i, /brokerage fee/i, /deposit outcome/i]) assert.match(en, term);
+  assert.match(en, /report reference/i);
+  assert.match(en, /does not ask for your name, email, agency, or address/i);
+  assert.doesNotMatch(en, /completely anonymous|fully anonymous/i);
+  assert.match(zh, /结构化租房经历/);
+  for (const term of [/地区/, /房型/, /中介费/, /押金结果/]) assert.match(zh, term);
+  assert.match(zh, /报告编号/);
+  assert.match(zh, /不会要求姓名、邮箱、中介名称或地址/);
+  assert.doesNotMatch(zh, /完全匿名/);
+});
+
 test('every static page links to matching privacy details and uses the shared analytics loader', () => {
   const pages = staticPages();
   assert.ok(pages.length > 40);
