@@ -17,8 +17,8 @@ test('dong labels use established localized names and Korean references', () => 
   assert.equal(catalog.dongLabel('봉천동','zh-CN'), 'Bongcheon-dong（봉천동）');
 });
 
-test('the location catalog covers all 206 legal dongs plus the supported Mullae aggregate', () => {
-  assert.equal(Object.keys(catalog.DONGS).length, 207);
+test('the location catalog covers 231 curated legal dongs plus the supported Mullae aggregate', () => {
+  assert.equal(Object.keys(catalog.DONGS).length, 232);
   assert.deepEqual(Object.keys(catalog.DONGS).filter(name => !mapLocations.neighborhood(name)), []);
   assert.equal(catalog.DONGS['신림동'].slug, 'sillim-dong');
   assert.equal(catalog.DONGS['압구정동'].en, 'Apgujeong-dong');

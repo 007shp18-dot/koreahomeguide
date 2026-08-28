@@ -20,7 +20,12 @@
     '11230':{ slug:'dongdaemun-gu', ko:'동대문구', en:'Dongdaemun-gu', 'zh-CN':'东大门区' },
     '11410':{ slug:'seodaemun-gu', ko:'서대문구', en:'Seodaemun-gu', 'zh-CN':'西大门区' },
     '11290':{ slug:'seongbuk-gu', ko:'성북구', en:'Seongbuk-gu', 'zh-CN':'城北区' },
-    '11215':{ slug:'gwangjin-gu', ko:'광진구', en:'Gwangjin-gu', 'zh-CN':'广津区' }
+    '11215':{ slug:'gwangjin-gu', ko:'광진구', en:'Gwangjin-gu', 'zh-CN':'广津区' },
+    '11650':{ slug:'seocho-gu', ko:'서초구', en:'Seocho-gu', 'zh-CN':'瑞草区' },
+    '11710':{ slug:'songpa-gu', ko:'송파구', en:'Songpa-gu', 'zh-CN':'松坡区' },
+    '11740':{ slug:'gangdong-gu', ko:'강동구', en:'Gangdong-gu', 'zh-CN':'江东区' },
+    '11110':{ slug:'jongno-gu', ko:'종로구', en:'Jongno-gu', 'zh-CN':'钟路区' },
+    '11140':{ slug:'jung-gu', ko:'중구', en:'Jung-gu', 'zh-CN':'中区' }
   });
 
   const RENT_CHECK_DISTRICTS = freezeRecords({
@@ -253,7 +258,32 @@
     '율현동':{ slug:'yulhyeon-dong', en:'Yulhyeon-dong' },
     '일원동':{ slug:'irwon-dong', en:'Irwon-dong' },
     '수서동':{ slug:'suseo-dong', en:'Suseo-dong' },
-    '도곡동':{ slug:'dogok-dong', en:'Dogok-dong' }
+    '도곡동':{ slug:'dogok-dong', en:'Dogok-dong' },
+    '서초동':{ slug:'seocho-dong', en:'Seocho-dong', 'zh-CN':'瑞草洞' },
+    '잠실동':{ slug:'jamsil-dong', en:'Jamsil-dong', 'zh-CN':'蚕室洞' },
+    '천호동':{ slug:'cheonho-dong', en:'Cheonho-dong', 'zh-CN':'千户洞' },
+    '숭인동':{ slug:'sungin-dong', en:'Sungin-dong', 'zh-CN':'崇仁洞' },
+    '신당동':{ slug:'sindang-dong', en:'Sindang-dong', 'zh-CN':'新堂洞' },
+    '반포동':{ slug:'banpo-dong', en:'Banpo-dong', 'zh-CN':'盘浦洞' },
+    '잠원동':{ slug:'jamwon-dong', en:'Jamwon-dong', 'zh-CN':'蚕院洞' },
+    '방배동':{ slug:'bangbae-dong', en:'Bangbae-dong', 'zh-CN':'方背洞' },
+    '양재동':{ slug:'yangjae-dong', en:'Yangjae-dong', 'zh-CN':'良才洞' },
+    '송파동':{ slug:'songpa-dong', en:'Songpa-dong', 'zh-CN':'松坡洞' },
+    '가락동':{ slug:'garak-dong', en:'Garak-dong', 'zh-CN':'可乐洞' },
+    '문정동':{ slug:'munjeong-dong', en:'Munjeong-dong', 'zh-CN':'文井洞' },
+    '방이동':{ slug:'bangi-dong', en:'Bangi-dong', 'zh-CN':'芳荑洞' },
+    '성내동':{ slug:'seongnae-dong', en:'Seongnae-dong', 'zh-CN':'城内洞' },
+    '암사동':{ slug:'amsa-dong', en:'Amsa-dong', 'zh-CN':'岩寺洞' },
+    '명일동':{ slug:'myeongil-dong', en:'Myeongil-dong', 'zh-CN':'明逸洞' },
+    '고덕동':{ slug:'godeok-dong', en:'Godeok-dong', 'zh-CN':'高德洞' },
+    '창신동':{ slug:'changsin-dong', en:'Changsin-dong', 'zh-CN':'昌信洞' },
+    '무악동':{ slug:'muak-dong', en:'Muak-dong', 'zh-CN':'毋岳洞' },
+    '내수동':{ slug:'naesu-dong', en:'Naesu-dong', 'zh-CN':'内需洞' },
+    '혜화동':{ slug:'hyehwa-dong', en:'Hyehwa-dong', 'zh-CN':'惠化洞' },
+    '황학동':{ slug:'hwanghak-dong', en:'Hwanghak-dong', 'zh-CN':'黄鹤洞' },
+    '중림동':{ slug:'jungnim-dong', en:'Jungnim-dong', 'zh-CN':'中林洞' },
+    '순화동':{ slug:'sunhwa-dong', en:'Sunhwa-dong', 'zh-CN':'巡和洞' },
+    '장충동2가':{ slug:'jangchung-dong-2-ga', en:'Jangchung-dong 2-ga', 'zh-CN':'奖忠洞2街' }
   });
 
   const PROPERTY_TYPES = freezeRecords({

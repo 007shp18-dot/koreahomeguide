@@ -15,6 +15,22 @@ test('Explorer URL helpers match server canonical Dong paths in EN and ZH', () =
   );
 });
 
+test('new non-indexed Explorer districts fall back to a localized interactive Dong URL', () => {
+  assert.equal(
+    client.buildDongSeoUrl({ lawdCd:'11650', type:'officetel', dong:'서초동', lang:'en' }),
+    ''
+  );
+  assert.equal(
+    client.buildExplorerDongUrl({ lawdCd:'11650', type:'officetel', dong:'서초동', lang:'en' }),
+    '/explore/?lawdCd=11650&type=officetel&dong=%EC%84%9C%EC%B4%88%EB%8F%99'
+  );
+  assert.equal(
+    client.buildExplorerDongUrl({ lawdCd:'11710', type:'apartment', dong:'잠실동', lang:'zh' }),
+    '/zh/explore/?lawdCd=11710&type=apartment&dong=%EC%9E%A0%EC%8B%A4%EB%8F%99'
+  );
+  assert.equal(client.buildExplorerDongUrl({ lawdCd:'99999', type:'apartment', dong:'잠실동' }), '');
+});
+
 test('Explorer exposes the shared Chinese localization policy', () => {
   assert.equal(client.supportsZhIndexing('11440'), true);
   assert.equal(client.supportsZhIndexing('11620'), false);

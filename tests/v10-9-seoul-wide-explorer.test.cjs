@@ -27,9 +27,9 @@ test('Explorer clients call the Seoul-wide endpoint and preserve district identi
   }
 });
 
-test('Seoul-wide API aggregates 10 districts over 3 completed months in bounded batches', async () => {
+test('Seoul-wide API aggregates 15 districts over 3 completed months in bounded batches', async () => {
   const api = require('../api/explore-area.js');
-  assert.equal(api.SUPPORTED_DISTRICT_CODES.length, 10);
+  assert.equal(api.SUPPORTED_DISTRICT_CODES.length, 15);
   let active = 0;
   let maxActive = 0;
   let calls = 0;
@@ -54,9 +54,9 @@ test('Seoul-wide API aggregates 10 districts over 3 completed months in bounded 
   const res = recorder();
   await handler({ method:'GET', headers:{ origin:'https://koreahomeguide.com' }, query:{ scope:'all', type:'officetel' } }, res);
   assert.equal(res.statusCode, 200);
-  assert.equal(calls, 30);
+  assert.equal(calls, 45);
   assert.ok(maxActive <= 15, `expected <=15 concurrent month fetches, got ${maxActive}`);
-  assert.equal(res.body.dongs.length, 10);
+  assert.equal(res.body.dongs.length, 15);
   assert.ok(res.body.dongs.every(item => item.districtCode && item.districtName));
   assert.equal(res.body.summary.monthsUsed, 3);
   assert.match(res.headers['Cache-Control'], /s-maxage=21600/);

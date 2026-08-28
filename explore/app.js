@@ -157,7 +157,8 @@ function renderMapSelection(model) {
   if (mapSelectionDetail) {
     mapSelectionDetail.href = isBuilding
       ? KHGExplorer.buildBuildingDetailUrl({ lawdCd:model.districtCode, type:model.propertyType, dong:model.dong, buildingKey:model.buildingKey })
-      : KHGExplorer.buildDongSeoUrl({ lawdCd:model.districtCode, type:model.propertyType, dong:model.dong, lang:'en' });
+      : KHGExplorer.buildDongSeoUrl({ lawdCd:model.districtCode, type:model.propertyType, dong:model.dong, lang:'en' }) ||
+        KHGExplorer.buildExplorerDongUrl({ lawdCd:model.districtCode, type:model.propertyType, dong:model.dong, lang:'en' });
     mapSelectionDetail.textContent = isBuilding ? 'Open building details →' : 'View neighborhood details →';
   }
   mapSelection.hidden = false;
@@ -193,7 +194,8 @@ function renderDongs(dongs) {
     const depositValue = band ? band.medianDepositWon : (item.contextualMedianDepositWon ?? item.medianDepositWon);
     const rent = rentValue == null ? '—' : moneyHtml(rentValue);
     const deposit = depositValue == null ? '—' : moneyHtml(depositValue);
-    const seoHref = KHGExplorer.buildDongSeoUrl({ lawdCd:districtCode, type:typeSelect.value, dong:item.dong, lang:'en' });
+    const seoHref = KHGExplorer.buildDongSeoUrl({ lawdCd:districtCode, type:typeSelect.value, dong:item.dong, lang:'en' }) ||
+      KHGExplorer.buildExplorerDongUrl({ lawdCd:districtCode, type:typeSelect.value, dong:item.dong, lang:'en' });
     return `<a class="neighborhood-card" data-dong="${escapeHtml(item.dong)}" href="${escapeHtml(seoHref)}">
       <span class="neighborhood-card-main"><strong>${dongDisplayHtml(item.dong)}</strong><small>${isAllSeoul ? `${escapeHtml(districtName)} · ` : ''}${Number(item.contractCount || 0).toLocaleString('en-US')} recent contracts</small></span>
       <span class="neighborhood-card-metric"><small>Rent context</small><strong>${rent}</strong></span>
@@ -361,15 +363,15 @@ function applyQuerySelection() {
   return dong;
 }
 
-function showExploreResults() {
+function showExploreResults({ requestedDong = '' } = {}) {
   explorerChips.hidden=false;
   explorerResults.hidden=false;
   setExplorerView('map');
   updateRentCheckHandoff();
-  return loadArea();
+  return loadArea({ requestedDong });
 }
 
-exploreButton.addEventListener('click',showExploreResults);
+exploreButton.addEventListener('click', () => { void showExploreResults(); });
 areaSelect.addEventListener('change',handleSelectionChange);
 typeSelect.addEventListener('change',handleSelectionChange);
 maxRentSelect.addEventListener('change',handleSelectionChange);
@@ -410,6 +412,7 @@ window.addEventListener('khg:map-select-building', event => {
 window.addEventListener('khg:map-back-neighborhoods', clearMapSelection);
 
 (async () => {
-  applyQuerySelection();
+  const requestedDong = applyQuerySelection();
   await loadFx();
+  if (requestedDong) await showExploreResults({ requestedDong });
 })();

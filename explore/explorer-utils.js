@@ -48,6 +48,16 @@
     return `${prefix}/seoul/${encodeURIComponent(district)}/${encodeURIComponent(dSlug)}/${encodeURIComponent(type)}/`.replace(/%2F/gi, '/');
   }
 
+  function buildExplorerDongUrl({ lawdCd, type, dong, lang = 'en' }) {
+    const districtCode = String(lawdCd || '');
+    const propertyType = String(type || '');
+    const neighborhood = normalizeSegment(dong);
+    if (!catalog?.DISTRICTS?.[districtCode] || !['apartment','officetel','villa','detached'].includes(propertyType) || !neighborhood) return '';
+    const prefix = String(lang || '').toLowerCase().startsWith('zh') ? '/zh' : '';
+    const params = new URLSearchParams({ lawdCd:districtCode, type:propertyType, dong:neighborhood });
+    return `${prefix}/explore/?${params.toString()}`;
+  }
+
   function buildBuildingSeoUrl({ lawdCd, type, dong, buildingName, buildingKey, lang = 'en' }) {
     const base = buildDongSeoUrl({ lawdCd, type, dong, lang });
     if (!base || !normalizeSegment(buildingName) || !normalizeSegment(buildingKey)) return '';
@@ -159,6 +169,7 @@
 
   return {
     buildDongSeoUrl,
+    buildExplorerDongUrl,
     buildBuildingSeoUrl,
     buildBuildingDetailUrl,
     budgetFitForDong,

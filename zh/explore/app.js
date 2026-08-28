@@ -160,7 +160,8 @@ function renderMapSelection(model) {
       mapSelectionDetail.textContent = '查看建筑详情 →';
     } else {
       const detailLang = KHGExplorer.supportsZhIndexing(model.districtCode) ? 'zh' : 'en';
-      mapSelectionDetail.href = KHGExplorer.buildDongSeoUrl({ lawdCd:model.districtCode, type:model.propertyType, dong:model.dong, lang:detailLang });
+      mapSelectionDetail.href = KHGExplorer.buildDongSeoUrl({ lawdCd:model.districtCode, type:model.propertyType, dong:model.dong, lang:detailLang }) ||
+        KHGExplorer.buildExplorerDongUrl({ lawdCd:model.districtCode, type:model.propertyType, dong:model.dong, lang:'zh' });
       mapSelectionDetail.textContent = '查看街区详情 →';
     }
   }
@@ -198,7 +199,8 @@ function renderDongs(dongs) {
     const rent = rentValue == null ? '—' : moneyHtml(rentValue);
     const deposit = depositValue == null ? '—' : moneyHtml(depositValue);
     const linkLang = KHGExplorer.supportsZhIndexing(districtCode) ? 'zh' : 'en';
-    const seoHref = KHGExplorer.buildDongSeoUrl({ lawdCd:districtCode, type:typeSelect.value, dong:item.dong, lang:linkLang });
+    const seoHref = KHGExplorer.buildDongSeoUrl({ lawdCd:districtCode, type:typeSelect.value, dong:item.dong, lang:linkLang }) ||
+      KHGExplorer.buildExplorerDongUrl({ lawdCd:districtCode, type:typeSelect.value, dong:item.dong, lang:'zh' });
     return `<a class="neighborhood-card" data-dong="${escapeHtml(item.dong)}" href="${escapeHtml(seoHref)}">
       <span class="neighborhood-card-main"><strong>${dongDisplayHtml(item.dong)}</strong><small>${isAllSeoul ? `${escapeHtml(districtName)} · ` : ''}${Number(item.contractCount || 0).toLocaleString('zh-CN')} 笔近期成交</small></span>
       <span class="neighborhood-card-metric"><small>参考月租</small><strong>${rent}</strong></span>
@@ -371,15 +373,15 @@ function applyQuerySelection() {
   return dong;
 }
 
-function showExploreResults() {
+function showExploreResults({ requestedDong = '' } = {}) {
   explorerChips.hidden=false;
   explorerResults.hidden=false;
   setExplorerView('map');
   updateRentCheckHandoff();
-  return loadArea();
+  return loadArea({ requestedDong });
 }
 
-exploreButton.addEventListener('click',showExploreResults);
+exploreButton.addEventListener('click', () => { void showExploreResults(); });
 areaSelect.addEventListener('change',handleSelectionChange);
 typeSelect.addEventListener('change',handleSelectionChange);
 maxRentSelect.addEventListener('change',handleSelectionChange);
@@ -420,6 +422,7 @@ window.addEventListener('khg:map-select-building', event => {
 window.addEventListener('khg:map-back-neighborhoods', clearMapSelection);
 
 (async () => {
-  applyQuerySelection();
+  const requestedDong = applyQuerySelection();
   await loadFx();
+  if (requestedDong) await showExploreResults({ requestedDong });
 })();
