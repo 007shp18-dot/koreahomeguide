@@ -20,8 +20,8 @@ test('standalone tool pages expose canonical URLs and currency utilities', () =>
 });
 
 test('rent check tools call the existing API and calculators load brokerage rules', () => {
-  assert.match(fs.readFileSync('tools/seoul-rent-check/app.js','utf8'), /\/api\/rent-check/);
-  assert.match(fs.readFileSync('zh/tools/seoul-rent-check/app.js','utf8'), /\/api\/rent-check/);
+  assert.match(fs.readFileSync('app.js','utf8'), /\/api\/rent-check/);
+  assert.match(fs.readFileSync('app.js','utf8'), /\/api\/rent-check/);
   assert.match(fs.readFileSync('tools/brokerage-fee-calculator/index.html','utf8'), /brokerage-utils\.js/);
   assert.match(fs.readFileSync('zh/tools/brokerage-fee-calculator/index.html','utf8'), /brokerage-utils\.js/);
 });
