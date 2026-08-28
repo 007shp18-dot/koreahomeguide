@@ -1,7 +1,7 @@
 # KoreaHomeGuide Trust, Home, and Filter Unification Design
 
-**Date:** 2026-08-28  
-**Status:** Approved direction, awaiting written-spec review  
+**Date:** 2026-08-28
+**Status:** Approved direction, awaiting written-spec review
 **Scope:** English and Simplified Chinese homepages, About & Methodology pages, and district/property selectors across Home Rent Check, standalone Rent Check, and Rent Explorer
 
 ## 1. Goal
