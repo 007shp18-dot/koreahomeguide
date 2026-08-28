@@ -96,12 +96,15 @@ test('saved-home comparison supports editing, private rechecks, and mobile cards
 
 test('Rent Check consumes saved-home recheck values without putting prices in the page URL', () => {
   const comparisonSource = fs.readFileSync('saved-homes-page.js', 'utf8');
+  const savedSource = fs.readFileSync('saved-rent-quotes.js', 'utf8');
   assert.match(comparisonSource, /new URLSearchParams\(\{ lawdCd:quote\.districtCode, type:quote\.propertyType, from:sourcePath \}\)/);
   assert.doesNotMatch(comparisonSource, /new URLSearchParams\(\{[^}]+(?:depositWon|monthlyRentWon|areaSqm)/);
   for (const file of ['app.js','zh/app.js','tools/seoul-rent-check/app.js','zh/tools/seoul-rent-check/app.js']) {
     const source = fs.readFileSync(file, 'utf8');
     assert.match(source, /takeRecheckPrefill\(window\.sessionStorage/);
+    assert.match(source, /savedQuoteId:acquisitionContext\.savedQuoteId\|\|null/, file);
   }
+  assert.match(savedSource, /id:detail\.savedQuoteId\s*\|\|\s*''/);
 });
 
 test('studio results keep their user-facing type when saved while APIs use the official fallback', () => {

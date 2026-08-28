@@ -49,6 +49,11 @@
     return Number.isFinite(timestamp) ? new Date(timestamp).toISOString() : fallback;
   }
 
+  function optionalWon(value, max = 100000000) {
+    if (value == null || value === '') return null;
+    return finiteNumber(value, 0, max);
+  }
+
   function normalizeQuote(input, { now = Date.now(), idFactory } = {}) {
     input = input || {};
     const districtCode = String(input.districtCode || '');
@@ -67,6 +72,8 @@
       propertyType,
       depositWon:Math.round(depositWon),
       monthlyRentWon:Math.round(monthlyRentWon),
+      managementFeeWon:optionalWon(input.managementFeeWon) == null ? null : Math.round(Number(input.managementFeeWon)),
+      isFavorite:input.isFavorite === true,
       areaSqm:Math.round(areaSqm * 10) / 10,
       rating:RATINGS.has(input.rating) ? input.rating : 'insufficient',
       confidence:CONFIDENCE.has(input.confidence) ? input.confidence : null,
@@ -128,9 +135,16 @@
       const quote = normalizeQuote(input, { now:now(), idFactory });
       if (!quote) return null;
       const existing = parse();
-      const duplicate = existing.find(value => quoteFingerprint(value) === quoteFingerprint(quote));
+      const exact = quote.id ? existing.find(value => value.id === quote.id) : null;
+      const duplicate = exact || existing.find(value => quoteFingerprint(value) === quoteFingerprint(quote));
       const stored = duplicate
-        ? normalizeQuote({ ...quote, id:duplicate.id }, { now:Date.parse(quote.savedAt), idFactory:() => duplicate.id })
+        ? normalizeQuote({
+            ...quote,
+            id:duplicate.id,
+            label:exact ? exact.label : quote.label,
+            managementFeeWon:duplicate.managementFeeWon,
+            isFavorite:duplicate.isFavorite
+          }, { now:Date.parse(quote.savedAt), idFactory:() => duplicate.id })
         : quote;
       const values = [stored, ...existing.filter(value => value.id !== stored.id)].slice(0, MAX_QUOTES);
       return write(values) ? stored : null;
@@ -145,6 +159,23 @@
       const updated = normalizeQuote({ ...current, label:cleanLabel(label) }, {
         now:Date.parse(current.savedAt), idFactory:() => current.id
       });
+      if (!updated) return null;
+      values[index] = updated;
+      return write(values) ? updated : null;
+    }
+
+    function updateComparisonDetails(id, details = {}) {
+      if (!catalogReady) return null;
+      const values = parse();
+      const index = values.findIndex(value => value.id === String(id || ''));
+      if (index < 0) return null;
+      const current = values[index];
+      const fee = optionalWon(details.managementFeeWon);
+      const updated = normalizeQuote({
+        ...current,
+        managementFeeWon:fee,
+        isFavorite:details.isFavorite === true
+      }, { now:Date.parse(current.savedAt), idFactory:() => current.id });
       if (!updated) return null;
       values[index] = updated;
       return write(values) ? updated : null;
@@ -166,10 +197,45 @@
       }
     }
 
-    return Object.freeze({ list, save, updateLabel, remove, clear });
+    return Object.freeze({ list, save, updateLabel, updateComparisonDetails, remove, clear });
+  }
+
+  function fixedMonthlyCostWon(quote) {
+    if (!quote || !Number.isFinite(quote.monthlyRentWon) || !Number.isFinite(quote.managementFeeWon)) return null;
+    return quote.monthlyRentWon + quote.managementFeeWon;
+  }
+
+  function sortForComparison(values) {
+    return [...(Array.isArray(values) ? values : [])].sort((left, right) => {
+      if (left.isFavorite !== right.isFavorite) return left.isFavorite ? -1 : 1;
+      const leftCost = fixedMonthlyCostWon(left);
+      const rightCost = fixedMonthlyCostWon(right);
+      if (leftCost == null && rightCost != null) return 1;
+      if (leftCost != null && rightCost == null) return -1;
+      if (leftCost != null && rightCost != null && leftCost !== rightCost) return leftCost - rightCost;
+      return Date.parse(right.savedAt || 0) - Date.parse(left.savedAt || 0);
+    });
+  }
+
+  function lowestKnownMonthlyCost(values) {
+    const known = (Array.isArray(values) ? values : []).map(fixedMonthlyCostWon).filter(Number.isFinite);
+    return known.length >= 2 ? Math.min(...known) : null;
+  }
+
+  function comparisonSelectionLimit(isMobile) {
+    return isMobile ? 3 : 4;
+  }
+
+  function parseManagementFeeWon(value) {
+    if (value == null || value === '') return { valid:true, value:null };
+    const parsed = finiteNumber(value, 0, 100000000);
+    return parsed == null
+      ? { valid:false, value:null }
+      : { valid:true, value:Math.round(parsed) };
   }
 
   function writeRecheckPrefill(storage, input, { now = Date.now(), from = '/saved-homes/' } = {}) {
+    const savedQuoteId = cleanLabel(input && input.id);
     const quote = normalizeQuote(input, { now, idFactory:() => 'recheck' });
     if (!quote || !storage || typeof storage.setItem !== 'function') return false;
     const sourcePage = from === '/zh/saved-homes/' ? from : '/saved-homes/';
@@ -182,6 +248,7 @@
       from:sourcePage,
       expiresAt:now + RECHECK_TTL_MS
     };
+    if (savedQuoteId) payload.savedQuoteId = savedQuoteId;
     try {
       storage.setItem(RECHECK_STORAGE_KEY, JSON.stringify(payload));
       return true;
@@ -206,7 +273,7 @@
         areaSqm:value.areaSqm
       }, { now, idFactory:() => 'recheck' });
       if (!quote) return null;
-      return {
+      const result = {
         lawdCd:quote.districtCode,
         type:quote.propertyType,
         depositWon:quote.depositWon,
@@ -214,6 +281,9 @@
         areaSqm:quote.areaSqm,
         from:value.from === '/zh/saved-homes/' ? value.from : '/saved-homes/'
       };
+      const savedQuoteId = cleanLabel(value.savedQuoteId);
+      if (savedQuoteId) result.savedQuoteId = savedQuoteId;
+      return result;
     } catch (_) {
       return null;
     }
@@ -321,6 +391,7 @@
       const detail = event && event.detail || {};
       latest = normalizeQuote({
         ...detail,
+        id:detail.savedQuoteId || '',
         propertyType:detail.savedPropertyType || detail.propertyType
       }, { idFactory:() => '' });
       if (!latest) return;
@@ -347,6 +418,7 @@
     STORAGE_KEY, RECHECK_STORAGE_KEY, VISIT_STORAGE_KEY,
     MAX_QUOTES, RETENTION_MS, RECHECK_TTL_MS, RETURN_VISIT_MS,
     normalizeQuote, quoteFingerprint, createStore, cleanLabel,
+    fixedMonthlyCostWon, sortForComparison, lowestKnownMonthlyCost, comparisonSelectionLimit, parseManagementFeeWon,
     writeRecheckPrefill, takeRecheckPrefill, markComparisonVisit,
     districtLabel, propertyLabel, defaultLabel, countBucket, mount
   };

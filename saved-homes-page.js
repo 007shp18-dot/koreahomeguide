@@ -17,6 +17,9 @@
   const currencySelect = doc.querySelector('#currencySelect');
   const clearButton = doc.querySelector('#savedHomesClear');
   const statusNode = doc.querySelector('#savedHomesStatus');
+  const mobileSelectionLimit = root.KHGSavedQuotes.comparisonSelectionLimit(true);
+  const desktopSelectionLimit = root.KHGSavedQuotes.comparisonSelectionLimit(false);
+  const mobileQuery = typeof root.matchMedia === 'function' ? root.matchMedia('(max-width: 760px)') : null;
   let selected = new Set();
   let rates = {};
   let openedTracked = false;
@@ -60,6 +63,14 @@
     return quote.label || root.KHGSavedQuotes.defaultLabel(quote, language);
   }
 
+  function selectionLimit() {
+    return mobileQuery && mobileQuery.matches ? mobileSelectionLimit : desktopSelectionLimit;
+  }
+
+  function fixedCost(quote) {
+    return root.KHGSavedQuotes.fixedMonthlyCostWon(quote);
+  }
+
   function setStatus(message, tone = '') {
     if (!statusNode) return;
     statusNode.textContent = message || '';
@@ -90,6 +101,8 @@
       [zh ? '面积' : 'Size', quote => `${quote.areaSqm.toLocaleString(locale)}㎡`],
       [zh ? '押金' : 'Deposit', quote => ({ money:quote.depositWon })],
       [zh ? '月租' : 'Monthly rent', quote => ({ money:quote.monthlyRentWon })],
+      [zh ? '固定管理费' : 'Fixed management fee', quote => quote.managementFeeWon == null ? (zh ? '未填写' : 'Not added') : ({ money:quote.managementFeeWon })],
+      [zh ? '每月固定支出' : 'Known monthly total', quote => fixedCost(quote) == null ? '—' : ({ money:fixedCost(quote) })],
       [zh ? '可比成交中位数' : 'Comparable median', quote => quote.medianValueWon == null ? '—' : ({ money:quote.medianValueWon })],
       [zh ? '与中位数的差异' : 'Difference from median', quote => percentText(quote.differencePct)],
       [zh ? '近期成交判断' : 'Recent-contract verdict', quote => ratingLabel(quote.rating)],
@@ -103,11 +116,19 @@
   function renderComparisonCards(chosen, rows) {
     const cards = doc.createElement('div');
     cards.className = 'saved-homes-comparison-cards';
+    const lowestCost = root.KHGSavedQuotes.lowestKnownMonthlyCost(chosen);
     chosen.forEach(quote => {
       const card = doc.createElement('article');
+      if (lowestCost != null && fixedCost(quote) === lowestCost) card.classList.add('saved-home-lowest-cost');
       const heading = doc.createElement('h3');
-      heading.textContent = displayName(quote);
+      heading.textContent = `${quote.isFavorite ? '★ ' : ''}${displayName(quote)}`;
       card.appendChild(heading);
+      if (lowestCost != null && fixedCost(quote) === lowestCost) {
+        const badge = doc.createElement('p');
+        badge.className = 'saved-home-lowest-badge';
+        badge.textContent = zh ? '所选房源中每月固定支出最低' : 'Lowest known monthly total selected';
+        card.appendChild(badge);
+      }
       rows.forEach(([label, valueFor]) => {
         const item = doc.createElement('div');
         const name = doc.createElement('span');
@@ -126,11 +147,14 @@
 
   function renderComparison(quotes) {
     compareNode.textContent = '';
-    const chosen = quotes.filter(quote => selected.has(quote.id)).slice(0, 4);
+    const limit = selectionLimit();
+    const chosen = quotes.filter(quote => selected.has(quote.id)).slice(0, limit);
     if (!chosen.length) {
       const message = doc.createElement('p');
       message.className = 'saved-homes-select-note';
-      message.textContent = zh ? '选择1至4个房源进行并排比较。' : 'Select one to four homes for a side-by-side comparison.';
+      message.textContent = zh
+        ? `选择1至${limit}个房源进行并排比较。`
+        : `Select one to ${limit} homes for a side-by-side comparison.`;
       compareNode.appendChild(message);
       return;
     }
@@ -142,7 +166,17 @@
     const head = doc.createElement('thead');
     const headRow = doc.createElement('tr');
     headRow.appendChild(textCell(zh ? '比较项目' : 'Compare', 'th'));
-    chosen.forEach(quote => headRow.appendChild(textCell(displayName(quote), 'th')));
+    const lowestCost = root.KHGSavedQuotes.lowestKnownMonthlyCost(chosen);
+    chosen.forEach(quote => {
+      const heading = textCell(`${quote.isFavorite ? '★ ' : ''}${displayName(quote)}`, 'th');
+      if (lowestCost != null && fixedCost(quote) === lowestCost) {
+        const badge = doc.createElement('span');
+        badge.className = 'saved-home-table-lowest-badge';
+        badge.textContent = zh ? '所选房源中每月固定支出最低' : 'Lowest known monthly total selected';
+        heading.appendChild(badge);
+      }
+      headRow.appendChild(heading);
+    });
     head.appendChild(headRow);
     table.appendChild(head);
     const body = doc.createElement('tbody');
@@ -163,8 +197,8 @@
     const note = doc.createElement('p');
     note.className = 'saved-homes-limit-note';
     note.textContent = zh
-      ? '此表不包含管理费、水电、楼层、装修、通勤或押金安全。它只整理你输入的报价与当时的官方成交参考。'
-      : 'This table does not include management fees, utilities, floor, condition, commute, or deposit safety. It only organizes your quotes and the official transaction reference shown when saved.';
+      ? '每月固定支出只计算月租加固定管理费，不包含按用量计费的水电、网络、停车、楼层、装修、通勤或押金安全。'
+      : 'Known monthly total means monthly rent plus fixed management fee. It excludes usage-based utilities, internet, parking, floor, condition, commute, and deposit safety.';
     compareNode.appendChild(note);
     const signature = chosen.map(quote => quote.id).sort().join('|');
     if (signature !== comparedSignature) {
@@ -174,9 +208,10 @@
   }
 
   function render() {
-    const quotes = store.list();
-    if (!selected.size) quotes.slice(0, Math.min(4, quotes.length)).forEach(quote => selected.add(quote.id));
-    selected = new Set([...selected].filter(id => quotes.some(quote => quote.id === id)).slice(0, 4));
+    const quotes = root.KHGSavedQuotes.sortForComparison(store.list());
+    const limit = selectionLimit();
+    if (!selected.size) quotes.slice(0, Math.min(limit, quotes.length)).forEach(quote => selected.add(quote.id));
+    selected = new Set([...selected].filter(id => quotes.some(quote => quote.id === id)).slice(0, limit));
     listNode.textContent = '';
     countNode.textContent = zh ? `当前浏览器中保存了 ${quotes.length} 个房源` : `${quotes.length} saved home${quotes.length === 1 ? '' : 's'} in this browser`;
     emptyNode.hidden = quotes.length > 0;
@@ -184,7 +219,25 @@
 
     quotes.forEach(quote => {
       const card = doc.createElement('article');
-      card.className = 'saved-home-card';
+      card.className = `saved-home-card${quote.isFavorite ? ' is-favorite' : ''}`;
+      const favorite = doc.createElement('button');
+      favorite.type = 'button';
+      favorite.className = 'saved-home-favorite';
+      favorite.setAttribute('aria-pressed', quote.isFavorite ? 'true' : 'false');
+      favorite.setAttribute('aria-label', zh ? `${displayName(quote)} 收藏` : `Favorite ${displayName(quote)}`);
+      favorite.textContent = quote.isFavorite ? '★' : '☆';
+      favorite.addEventListener('click', () => {
+        const updated = store.updateComparisonDetails(quote.id, {
+          managementFeeWon:quote.managementFeeWon,
+          isFavorite:!quote.isFavorite
+        });
+        if (!updated) {
+          setStatus(zh ? '无法更新收藏。请检查浏览器存储设置。' : 'The favorite could not be updated. Check browser storage settings.', 'error');
+          return;
+        }
+        safeTrack('saved_quote_favorite_toggled', store.list().length);
+        render();
+      });
       const selectLabel = doc.createElement('label');
       selectLabel.className = 'saved-home-select';
       const checkbox = doc.createElement('input');
@@ -192,8 +245,9 @@
       checkbox.checked = selected.has(quote.id);
       checkbox.setAttribute('aria-label', zh ? `比较 ${displayName(quote)}` : `Compare ${displayName(quote)}`);
       checkbox.addEventListener('change', () => {
-        if (checkbox.checked && selected.size >= 4) {
+        if (checkbox.checked && selected.size >= selectionLimit()) {
           checkbox.checked = false;
+          setStatus(zh ? `当前屏幕最多可比较${selectionLimit()}个房源。` : `You can compare up to ${selectionLimit()} homes on this screen.`);
           return;
         }
         if (checkbox.checked) selected.add(quote.id); else selected.delete(quote.id);
@@ -210,7 +264,45 @@
       deposit.innerHTML = `${zh ? '押金' : 'Deposit'} ${moneyHtml(quote.depositWon)}`;
       const rent = doc.createElement('span');
       rent.innerHTML = `${zh ? '月租' : 'Rent'} ${moneyHtml(quote.monthlyRentWon)}`;
-      price.append(deposit, rent);
+      const fee = doc.createElement('span');
+      fee.innerHTML = `${zh ? '固定管理费' : 'Fixed fee'} ${quote.managementFeeWon == null ? (zh ? '未填写' : 'Not added') : moneyHtml(quote.managementFeeWon)}`;
+      const total = doc.createElement('span');
+      total.className = 'saved-home-total';
+      total.innerHTML = `${zh ? '每月固定支出' : 'Known monthly total'} ${fixedCost(quote) == null ? '—' : moneyHtml(fixedCost(quote))}`;
+      price.append(deposit, rent, fee, total);
+      const costForm = doc.createElement('form');
+      costForm.className = 'saved-home-cost-editor';
+      const costLabel = doc.createElement('label');
+      const costLabelText = doc.createElement('span');
+      costLabelText.textContent = zh ? '固定管理费（韩元/月）' : 'Fixed management fee (KRW/month)';
+      const costInput = doc.createElement('input');
+      costInput.type = 'number';
+      costInput.inputMode = 'numeric';
+      costInput.min = '0';
+      costInput.max = '100000000';
+      costInput.step = '1000';
+      costInput.value = quote.managementFeeWon == null ? '' : String(quote.managementFeeWon);
+      costInput.placeholder = zh ? '不知道可留空' : 'Leave blank if unknown';
+      costLabel.append(costLabelText, costInput);
+      const costSave = doc.createElement('button');
+      costSave.type = 'submit';
+      costSave.textContent = zh ? '更新月支出' : 'Update monthly cost';
+      costForm.append(costLabel, costSave);
+      costForm.addEventListener('submit', event => {
+        event.preventDefault();
+        const parsedFee = root.KHGSavedQuotes.parseManagementFeeWon(costInput.value);
+        if (!parsedFee.valid) {
+          setStatus(zh ? '请输入0至1亿韩元之间的管理费，或留空。' : 'Enter a management fee from KRW 0 to 100,000,000, or leave it blank.', 'error');
+          return;
+        }
+        if (!store.updateComparisonDetails(quote.id, { managementFeeWon:parsedFee.value, isFavorite:quote.isFavorite })) {
+          setStatus(zh ? '无法更新管理费。请检查浏览器存储设置。' : 'The management fee could not be updated. Check browser storage settings.', 'error');
+          return;
+        }
+        setStatus(zh ? '每月固定支出已更新。' : 'Known monthly total updated.', 'success');
+        safeTrack('saved_quote_management_fee_updated', store.list().length);
+        render();
+      });
       const verdict = doc.createElement('p');
       verdict.className = `saved-home-verdict ${quote.rating}`;
       verdict.textContent = `${ratingLabel(quote.rating)} · ${confidenceLabel(quote.confidence)}`;
@@ -280,7 +372,7 @@
         render();
       });
       actions.append(edit, recheck, remove);
-      card.append(selectLabel, meta, price, verdict, actions, editForm);
+      card.append(favorite, selectLabel, meta, price, costForm, verdict, actions, editForm);
       listNode.appendChild(card);
     });
     renderComparison(quotes);
@@ -304,6 +396,7 @@
   }
 
   if (currencySelect) currencySelect.addEventListener('change', render);
+  if (mobileQuery && typeof mobileQuery.addEventListener === 'function') mobileQuery.addEventListener('change', render);
   if (clearButton) clearButton.addEventListener('click', () => {
     const confirmed = root.confirm(zh ? '删除当前浏览器中保存的全部房源？' : 'Remove every saved home from this browser?');
     if (!confirmed) return;
