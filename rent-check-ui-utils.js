@@ -64,32 +64,32 @@
   }
 
   function resultNextStep(rating) {
-    const explore = { id:'explore_signed_rents', label:'Explore recent signed rents', href:'explore' };
-    const signing = { id:'signing_questions', label:'Review questions before signing', href:'/guides/before-you-sign/' };
+    const explore = { id:'explore_signed_rents', label:'See nearby signed rents', href:'explore' };
+    const signing = { id:'signing_questions', label:'Review the signing checklist', href:'/guides/before-you-sign/' };
     if (rating === 'above') {
       return {
-        heading:'Before you accept this quote',
-        body:'Review the price difference and the contract checks that matter before you sign or transfer money.',
+        heading:'Check the price before you decide',
+        body:'This quote is above the recent comparable range. Compare nearby signed rents before agreeing to it.',
         primary:explore
       };
     }
     if (rating === 'below') {
       return {
-        heading:'A lower quote still needs contract checks',
-        body:'Compare nearby signed rents, then verify the owner, registry, fees, and deposit protection before paying.',
+        heading:'A low price is not the whole check',
+        body:'Confirm the owner, registry, fees, and deposit protection before paying.',
         primary:signing
       };
     }
     if (rating === 'insufficient') {
       return {
-        heading:'Compare the broader market next',
-        body:'There were too few close matches for a verdict, so review recent signed rents before deciding.',
-        primary:{ id:'open_market_page', label:'Open the broader market view', href:'market' }
+        heading:'Not enough close matches',
+        body:'Use the broader market view, then check the quote again with the registered housing type if you know it.',
+        primary:{ id:'open_market_page', label:'See the broader market', href:'market' }
       };
     }
     return {
-      heading:'Price looks close—check the contract next',
-      body:'A fair-looking price does not verify the owner, registry, fees, or deposit protection.',
+      heading:'Check the contract next',
+      body:'The price is close to recent comparable contracts. Now verify the owner, registry, fees, and deposit protection.',
       primary:signing
     };
   }
@@ -102,9 +102,18 @@
       icon:{ above:'↑', fair:'✓', below:'↓', insufficient:'?' }[rating] || '?',
       label:ratingLabel(rating,result && result.verdictBasis),
       difference:rating === 'insufficient' || !Number.isFinite(difference)
-        ? 'No price verdict from this sample'
-        : `${difference > 0 ? '+' : ''}${difference.toFixed(1)}% vs comparable median`,
+        ? 'No price comparison available'
+        : `${Math.abs(difference).toFixed(1)}% ${difference >= 0 ? 'above' : 'below'} comparable median`,
       sample:`Based on ${count} signed contract${count === 1 ? '' : 's'}`
+    };
+  }
+
+  function distributionCopy() {
+    return {
+      title:'Recent comparable range',
+      subtitle:'Middle 50% of the comparable signed contracts',
+      rangeLabel:'Middle 50% (P25–P75)',
+      positionLabel:'Where this quote sits'
     };
   }
 
@@ -274,6 +283,7 @@
     confidenceExplanation,
     resultNextStep,
     verdictPresentation,
+    distributionCopy,
     marketPageUrl,
     explorerUrl,
     mapRentCheckType,

@@ -63,32 +63,32 @@
   }
 
   function resultNextStep(rating) {
-    const explore = { id:'explore_signed_rents', label:'查看近期已签约租金', href:'explore' };
-    const signing = { id:'signing_questions', label:'查看签约前应问的问题', href:'/zh/guides/before-you-sign/' };
+    const explore = { id:'explore_signed_rents', label:'查看附近已签约租金', href:'explore' };
+    const signing = { id:'signing_questions', label:'查看签约前清单', href:'/zh/guides/before-you-sign/' };
     if (rating === 'above') {
       return {
-        heading:'接受这个报价之前',
-        body:'签约或转账前，请先核对价格差异以及合同中需要确认的事项。',
+        heading:'决定前再核对一下价格',
+        body:'这个报价高于近期可比区间。接受前，可先查看附近的已签约租金。',
         primary:explore
       };
     }
     if (rating === 'below') {
       return {
-        heading:'较低的报价仍需要核对合同',
-        body:'先比较附近的已签约租金，再确认房东、登记簿、费用和押金保障。',
+        heading:'价格低，合同也要查',
+        body:'付款前，请确认房东、登记簿、费用和押金保障。',
         primary:signing
       };
     }
     if (rating === 'insufficient') {
       return {
-        heading:'下一步查看更广泛的市场',
-        body:'相近成交数量不足，无法给出判断；请先查看近期已签约租金。',
-        primary:{ id:'open_market_page', label:'查看更广泛的市场页面', href:'market' }
+        heading:'相近成交还不够',
+        body:'先查看更广泛的市场；如果知道登记房屋类型，也可以换成该类型再检查一次。',
+        primary:{ id:'open_market_page', label:'查看更广泛的市场', href:'market' }
       };
     }
     return {
-      heading:'价格接近市场水平，下一步核对合同',
-      body:'价格看起来合理，并不代表房东、登记簿、费用或押金保障已经确认。',
+      heading:'下一步核对合同',
+      body:'价格接近近期可比成交。接下来请确认房东、登记簿、费用和押金保障。',
       primary:signing
     };
   }
@@ -104,6 +104,15 @@
         ? '当前样本无法给出价格判断'
         : `比可比成交中位数${difference >= 0 ? '高 ' : '低 '}${Math.abs(difference).toFixed(1)}%`,
       sample:`基于 ${count} 笔已签约成交`
+    };
+  }
+
+  function distributionCopy() {
+    return {
+      title:'近期可比成交区间',
+      subtitle:'可比已签约成交中间 50% 的价格范围',
+      rangeLabel:'中间 50%（P25–P75）',
+      positionLabel:'这个报价的位置'
     };
   }
 
@@ -265,6 +274,7 @@
     confidenceExplanation,
     resultNextStep,
     verdictPresentation,
+    distributionCopy,
     marketPageUrl,
     explorerUrl,
     mapRentCheckType,

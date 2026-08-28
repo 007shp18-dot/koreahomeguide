@@ -113,14 +113,14 @@ test('a three-to-four-comparable verdict explicitly names the median fallback', 
 
 test('result-specific next step makes an above-market verdict actionable', () => {
   assert.deepEqual(enUI.resultNextStep('above'), {
-    heading:'Before you accept this quote',
-    body:'Review the price difference and the contract checks that matter before you sign or transfer money.',
-    primary:{ id:'explore_signed_rents', label:'Explore recent signed rents', href:'explore' }
+    heading:'Check the price before you decide',
+    body:'This quote is above the recent comparable range. Compare nearby signed rents before agreeing to it.',
+    primary:{ id:'explore_signed_rents', label:'See nearby signed rents', href:'explore' }
   });
   assert.deepEqual(zhUI.resultNextStep('above'), {
-    heading:'接受这个报价之前',
-    body:'签约或转账前，请先核对价格差异以及合同中需要确认的事项。',
-    primary:{ id:'explore_signed_rents', label:'查看近期已签约租金', href:'explore' }
+    heading:'决定前再核对一下价格',
+    body:'这个报价高于近期可比区间。接受前，可先查看附近的已签约租金。',
+    primary:{ id:'explore_signed_rents', label:'查看附近已签约租金', href:'explore' }
   });
   assert.equal(enUI.resultNextStep('fair').primary.href, '/guides/before-you-sign/');
   assert.equal(enUI.resultNextStep('below').primary.href, '/guides/before-you-sign/');
@@ -134,7 +134,7 @@ test('verdict presentation leads with text, icon, difference, and evidence count
     {
       icon:'↑',
       label:'Above market',
-      difference:'+12.4% vs comparable median',
+      difference:'12.4% above comparable median',
       sample:'Based on 24 signed contracts'
     }
   );
@@ -143,12 +143,27 @@ test('verdict presentation leads with text, icon, difference, and evidence count
     {
       icon:'✓',
       label:'Typical range',
-      difference:'+1.0% vs comparable median',
+      difference:'1.0% above comparable median',
       sample:'Based on 1 signed contract'
     }
   );
   assert.match(zhUI.verdictPresentation({ rating:'insufficient', comparableCount:2 }).label, /可比/);
   assert.match(zhUI.verdictPresentation({ rating:'below', differencePct:-8, comparableCount:9 }).sample, /9 笔/);
+});
+
+test('distribution copy reads like a plain market reference in both languages', () => {
+  assert.deepEqual(enUI.distributionCopy(), {
+    title:'Recent comparable range',
+    subtitle:'Middle 50% of the comparable signed contracts',
+    rangeLabel:'Middle 50% (P25–P75)',
+    positionLabel:'Where this quote sits'
+  });
+  assert.deepEqual(zhUI.distributionCopy(), {
+    title:'近期可比成交区间',
+    subtitle:'可比已签约成交中间 50% 的价格范围',
+    rangeLabel:'中间 50%（P25–P75）',
+    positionLabel:'这个报价的位置'
+  });
 });
 
 test('insufficient data links only to an existing static market page', () => {
@@ -194,6 +209,7 @@ test('all EN and ZH Rent Check surfaces expose confidence details and next actio
     assert.match(app, /facts\.methodLabel/);
     assert.match(app, /KHGRentCheckUI\.resultNextStep\(data\.rating\)/);
     assert.match(app, /KHGRentCheckUI\.verdictPresentation\(data\)/);
+    assert.match(app, /KHGRentCheckUI\.distributionCopy\(\)/);
     assert.match(app, /KHGRentCheckUI\.marketPageUrl\(area\.value,mapped\.officialType,language\)/);
     assert.match(app, /KHGRentCheckUI\.explorerUrl\(area\.value,mapped\.officialType,language\)/);
     assert.match(app, /rent_check_next_action/);
@@ -204,8 +220,8 @@ test('all EN and ZH Rent Check surfaces expose confidence details and next actio
 
 test('confidence disclosure and next actions remain readable and touchable on mobile', () => {
   const css = fs.readFileSync('styles.css', 'utf8');
-  assert.match(css, /\.rent-check-verdict-primary>\[data-rent-verdict-label\]\{[^}]*font-size:var\(--text-3xl\)/);
-  assert.match(css, /\.rent-check-verdict-primary>\[data-rent-verdict-difference\]\{[^}]*font-size:var\(--text-lg\)/);
+  assert.match(css, /\.rent-check-verdict-primary>\[data-rent-verdict-label\]\{[^}]*font-size:var\(--text-2xl\)/);
+  assert.match(css, /\.rent-check-verdict-primary>\[data-rent-verdict-difference\]\{[^}]*font-size:var\(--text-base\)/);
   assert.match(css, /@media\(max-width:760px\)\{[\s\S]*?\.rent-check-verdict-primary>\[data-rent-verdict-label\]\{[^}]*font-size:var\(--text-2xl\)/);
   assert.match(css, /#rentCheckMeta\{[^}]*font-weight:700/);
   assert.match(css, /\.rent-check-confidence-details summary\{[^}]*min-height:44px/);
