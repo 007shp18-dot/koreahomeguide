@@ -46,30 +46,30 @@ test('primary navigation stays concise and consistent across localized pages', (
   }
 });
 
-test('core rent forms use clear housing-type labels and preserve Korean registered categories', () => {
+test('core rent forms use plain home-type labels and compact choices', () => {
   const english = ['index.html', 'tools/seoul-rent-check/index.html', 'explore/index.html'];
   const chinese = ['zh/index.html', 'zh/tools/seoul-rent-check/index.html', 'zh/explore/index.html'];
 
-  for (const file of english) assert.match(read(file), /<span>Housing type<\/span>/, file);
-  for (const file of chinese) assert.match(read(file), /<span>住宅类型<\/span>/, file);
+  for (const file of english) assert.match(read(file), /<span>Home type<\/span>/, file);
+  for (const file of chinese) assert.match(read(file), /<span>房型<\/span>/, file);
 
   assert.deepEqual(optionLabels(read('explore/index.html'), 'exploreType'), [
-    'Officetel (오피스텔)', 'Apartment (아파트)', 'Villa / low-rise multifamily (연립·다세대)', 'Detached / multi-unit housing (단독·다가구)'
+    'Officetel', 'Apartment', 'Villa / low-rise', 'House'
   ]);
   assert.deepEqual(optionLabels(read('zh/explore/index.html'), 'exploreType'), [
-    '办公住宅两用楼 (Officetel / 오피스텔)', '公寓 (아파트)', '低层多户住宅 (Villa / 연립·다세대)', '独栋及多户住宅 (단독·다가구)'
+    'Officetel', '公寓', '低层住宅', '独栋 / 多户住宅'
   ]);
 
   for (const file of english.slice(0, 2)) {
     assert.deepEqual(optionLabels(read(file), 'rentCheckType'), [
-      'Apartment (아파트)', 'Officetel (오피스텔)', 'Villa / low-rise multifamily (연립·다세대)', 'Detached / multi-unit housing (단독·다가구)', 'Studio / one-room (원룸)'
+      'Apartment', 'Officetel', 'Villa / low-rise', 'House', 'Studio / one-room'
     ], file);
-    assert.match(read(file), /data-property-type-guide[^>]*data-for="rentCheckType"[^>]*data-locale="en"/, file);
+    assert.match(read(file), /Use the registered home type if known\./, file);
   }
   for (const file of chinese.slice(0, 2)) {
     assert.deepEqual(optionLabels(read(file), 'rentCheckType'), [
-      '公寓 (아파트)', '办公住宅两用楼 (Officetel / 오피스텔)', '低层多户住宅 (Villa / 연립·다세대)', '独栋及多户住宅 (단독·다가구)', '单间住宅 (One-room / 원룸)'
+      '公寓', 'Officetel', '低层住宅', '独栋 / 多户住宅', '单间 / One-room'
     ], file);
-    assert.match(read(file), /data-property-type-guide[^>]*data-for="rentCheckType"[^>]*data-locale="zh-CN"/, file);
+    assert.match(read(file), /如知道登记房型，请按登记类型选择。/, file);
   }
 });

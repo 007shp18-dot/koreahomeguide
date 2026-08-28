@@ -1,6 +1,6 @@
 # Google Maps setup
 
-KoreaHomeGuide uses the Google Maps JavaScript API for the English and Chinese Rent Explorer base map. Building markers use Google geocoding only to place a marker when a precise, nearby result can be verified. Places and Routes are not enabled. Nearby building street view is a separate, click-triggered NAVER Panorama integration documented in `docs/operations/naver-panorama.md`.
+KoreaHomeGuide uses only the Google Maps JavaScript API on the English and Chinese Rent Explorer pages. The implementation does not enable Places, Routes, Geocoding, Street View, or building-level locations.
 
 ## Key and restrictions
 
@@ -12,7 +12,7 @@ KoreaHomeGuide uses the Google Maps JavaScript API for the English and Chinese R
 
 Browser keys are visible by design. Security comes from both Website/HTTP-referrer restrictions and the API restriction. Use a separate key for this website and never reuse a server-side key.
 
-The Explorer requests the Maps JavaScript API with asynchronous loading. When `GOOGLE_MAPS_MAP_ID` is configured, it uses `AdvancedMarkerElement`. Without a map ID, it deliberately keeps the legacy marker path so the map remains available; do not use Google's demo map ID in production.
+The Explorer requests the Maps JavaScript API with asynchronous loading. When `GOOGLE_MAPS_MAP_ID` is configured, it uses `AdvancedMarkerElement` and `PinElement`. Without a map ID, it deliberately keeps the legacy marker path so the map remains available; do not use Google's demo map ID in production.
 
 ## Cost controls
 

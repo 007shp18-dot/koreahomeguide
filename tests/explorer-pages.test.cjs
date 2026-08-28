@@ -21,7 +21,7 @@ const utils = require('../explore/explorer-utils.js');
 const config = require('../providers/seoul-config.cjs');
 
 test('explorer utility exposes locale-aware housing labels', () => {
-  assert.equal(utils.propertyTypeLabel('villa','en'), 'Villa / low-rise multifamily (연립·다세대)');
+  assert.equal(utils.propertyTypeLabel('villa','en'), 'Low-rise multifamily / Villa (연립·다세대)');
   assert.equal(utils.propertyTypeLabel('villa','zh-CN'), '低层多户住宅 / Villa（연립·다세대）');
 });
 

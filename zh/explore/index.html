@@ -42,7 +42,7 @@
 
     <section class="explorer-search-card" aria-label="探索首尔租金数据">
       <label class="field explorer-area-field"><span>地区</span><select id="exploreArea"><option value="11680">江南区（강남구）</option><option value="11440">麻浦区（마포구）</option><option value="11170">龙山区（용산구）</option><option value="11200">城东区（성동구）</option><option value="11560">永登浦区（영등포구）</option><option value="11620">冠岳区（관악구）</option><option value="11230">东大门区（동대문구）</option><option value="11410">西大门区（서대문구）</option><option value="11290">城北区（성북구）</option><option value="11215">广津区（광진구）</option><option value="11650">瑞草区（서초구）</option><option value="11710">松坡区（송파구）</option><option value="11740">江东区（강동구）</option><option value="11110">钟路区（종로구）</option><option value="11140">中区（중구）</option><option value="all">全首尔支持地区</option></select></label>
-      <label class="field explorer-type-field"><span>住宅类型</span><select id="exploreType" class="selection-native"><option value="officetel">办公住宅两用楼 (Officetel / 오피스텔)</option><option value="apartment">公寓 (아파트)</option><option value="villa">低层多户住宅 (Villa / 연립·다세대)</option><option value="detached">独栋及多户住宅 (단독·다가구)</option></select><small class="property-type-hint" data-property-type-guide data-for="exploreType" data-locale="zh-CN"></small></label>
+      <label class="field explorer-type-field"><span>房型</span><select id="exploreType" class="selection-native"><option value="officetel">Officetel</option><option value="apartment">公寓</option><option value="villa">低层住宅</option><option value="detached">独栋 / 多户住宅</option></select></label>
       <label class="field explorer-budget-field"><span>月租预算</span><select id="exploreMaxRent"><option value="">不限月租</option><option value="800000">最高 ₩800,000</option><option value="1200000">最高 ₩1,200,000</option><option value="1800000">最高 ₩1,800,000</option><option value="2500000">最高 ₩2,500,000</option></select></label>
       <button id="exploreButton" class="search-button" type="button">比较街区</button>
       <details class="advanced-filter explorer-advanced-filter"><summary>押金预算（可选）</summary><div class="advanced-filter-content"><label class="field"><span>最高押金</span><select id="exploreMaxDeposit"><option value="">不限押金</option><option value="5000000">最高 ₩5,000,000</option><option value="10000000">最高 ₩10,000,000</option><option value="20000000">最高 ₩20,000,000</option><option value="50000000">最高 ₩50,000,000</option></select></label></div></details>
@@ -78,7 +78,6 @@
               <button id="explorerMapSelectionDrag" class="explorer-map-selection-drag" type="button" aria-label="移动详情面板" title="拖动以移动面板"><span aria-hidden="true"></span></button>
               <button id="explorerMapSelectionClose" class="explorer-map-selection-close" type="button" aria-label="关闭街区详情">×</button>
               <div class="explorer-map-selection-head"><div><span id="explorerMapSelectionStatus" class="explorer-map-selection-status"></span><h3 id="explorerMapSelectionName"></h3></div><span id="explorerMapSelectionContracts" class="explorer-map-selection-count"></span></div>
-              <section id="explorerStreetView" class="explorer-street-view" aria-labelledby="explorerStreetViewHeading" hidden><div class="explorer-street-view-head"><strong id="explorerStreetViewHeading">该建筑附近街景</strong><span id="explorerStreetViewMeta"></span></div><div id="explorerStreetViewCanvas" class="explorer-street-view-canvas" hidden></div><p id="explorerStreetViewStatus" aria-live="polite"></p><small>附近街景，并非出租房源照片。</small></section>
               <div class="explorer-map-selection-metrics"><div><span>月租参考</span><strong id="explorerMapSelectionRent">—</strong></div><div><span>押金参考</span><strong id="explorerMapSelectionDeposit">—</strong></div></div>
               <p id="explorerMapSelectionEvidence" class="explorer-map-selection-evidence"></p>
               <div class="explorer-map-selection-actions">
@@ -92,7 +91,7 @@
       <div class="product-main explorer-map-main">
 <section id="explorerResults" class="explorer-results" aria-live="polite">
       <div class="explorer-results-head">
-        <div><span class="eyebrow">近期真实签约租金</span><h2 id="explorerTitle">江南区租赁市场</h2><dl class="explorer-summary-context"><div><dt>地区</dt><dd id="explorerSummaryArea">江南区（강남구）</dd></div><div><dt>住宅类型</dt><dd id="explorerSummaryType">办公住宅两用楼 / Officetel（오피스텔）</dd></div></dl><div id="explorerFilterSummary" class="explorer-filter-summary"><span>不限月租 · 不限押金</span><button id="explorerChangeFilters" type="button">修改条件</button></div></div>
+        <div><span class="eyebrow">近期真实签约租金</span><h2 id="explorerTitle">江南区 · Officetel</h2><div id="explorerFilterSummary" class="explorer-filter-summary"><span>不限月租 · 不限押金</span><button id="explorerChangeFilters" type="button">修改条件</button></div></div>
         <span id="explorerDataThrough" class="explorer-data-through">最近已完成月份</span>
       </div>
       <div id="explorerStatus" class="market-status">正在加载官方租赁成交数据…</div>
@@ -134,12 +133,10 @@
   <script src="/date-utils.js"></script>
   <script src="/building-name-utils.js"></script>
   <script src="/location-catalog.js"></script>
-  <script src="/property-type-guide.js"></script>
   <script src="/district-combobox.js"></script>
   <script src="/explore/explorer-utils.js"></script>
   <script src="/explore/map-locations.js"></script>
   <script src="/explore/map-controller.js"></script>
-  <script src="/explore/panorama.js"></script>
   <script src="/explore/map.js"></script>
   <script defer src="/zh/explore/app.js"></script>
 </body>

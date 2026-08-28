@@ -51,10 +51,3 @@ test('shared mobile pages keep titles, sections, and navigation compact', () => 
   assert.match(sharedCss, /\.mobile-primary-nav-link\{[^}]*min-height:54px/);
   assert.match(sharedCss, /@media\(max-width:760px\)\{body\{padding-bottom:calc\(58px \+ env\(safe-area-inset-bottom\)\)/);
 });
-
-test('mobile page footer does not keep a fixed width after adding side margins', () => {
-  assert.match(
-    sharedCss,
-    /@media\(max-width:620px\)[^]*\.page-footer\{[^}]*width:auto[^}]*max-width:none[^}]*margin:0 18px 24px/
-  );
-});

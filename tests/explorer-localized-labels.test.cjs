@@ -30,9 +30,9 @@ test('static filters show locale labels while preserving stable values', () => {
   const en = fs.readFileSync('explore/index.html','utf8');
   const zh = fs.readFileSync('zh/explore/index.html','utf8');
   assert.match(en, /value="11680">Gangnam-gu \(강남구\)</);
-  assert.match(en, /value="officetel">Officetel \(오피스텔\)<\/option>/);
+  assert.match(en, /value="officetel">Officetel<\/option>/);
   assert.match(zh, /value="11680">江南区（강남구）/);
-  assert.match(zh, /value="villa">低层多户住宅 \(Villa \/ 연립·다세대\)<\/option>/);
+  assert.match(zh, /value="villa">低层住宅<\/option>/);
 });
 
 test('short localized dong labels keep Korean inline', () => {

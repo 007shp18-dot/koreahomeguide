@@ -20,15 +20,15 @@ test('Explorer keeps area and housing type as the compact primary filter row', (
   assert.match(css, /\.explorer-search-card \.explorer-budget-field[^}]*grid-column:1\/-1/);
 });
 
-test('Explorer filter labels preserve the Korean registered category', () => {
+test('Explorer uses short filter labels without shortening evidence labels', () => {
   const en = read('explore/index.html');
   const zh = read('zh/explore/index.html');
 
-  assert.match(en, /value="villa">Villa \/ low-rise multifamily \(연립·다세대\)<\/option>/);
-  assert.match(en, /value="detached">Detached \/ multi-unit housing \(단독·다가구\)<\/option>/);
-  assert.match(zh, /value="villa">低层多户住宅 \(Villa \/ 연립·다세대\)<\/option>/);
-  assert.match(zh, /value="detached">独栋及多户住宅 \(단독·다가구\)<\/option>/);
-  assert.equal(require('../explore/explorer-utils.js').propertyTypeLabel('villa', 'en'), 'Villa / low-rise multifamily (연립·다세대)');
+  assert.match(en, /value="villa">Villa \/ low-rise<\/option>/);
+  assert.match(en, /value="detached">House<\/option>/);
+  assert.match(zh, /value="villa">低层住宅<\/option>/);
+  assert.match(zh, /value="detached">独栋 \/ 多户住宅<\/option>/);
+  assert.equal(require('../explore/explorer-utils.js').propertyTypeLabel('villa', 'en'), 'Low-rise multifamily / Villa (연립·다세대)');
 });
 
 test('Explorer keeps its top navigation label concise', () => {

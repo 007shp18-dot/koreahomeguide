@@ -131,20 +131,6 @@
     return catalog ? catalog.propertyTypeLabel(type, locale) : String(type || '');
   }
 
-  function summaryHeading({ lawdCd, districtName = '', dong = '', propertyType, locale = 'en' } = {}) {
-    const zh = String(locale || '').toLowerCase().startsWith('zh');
-    const districtPrimary = catalog && catalog.districtLabel(lawdCd, locale, { includeKorean:false }) || String(districtName || '');
-    const districtFull = catalog && catalog.districtLabel(lawdCd, locale) || String(districtName || '');
-    const dongPrimary = dong && catalog ? catalog.dongLabel(dong, locale, { includeKorean:false }) : String(dong || '');
-    const dongFull = dong && catalog ? catalog.dongLabel(dong, locale) : String(dong || '');
-    const titleSubject = dongPrimary || districtPrimary || (zh ? '首尔' : 'Seoul');
-    return Object.freeze({
-      title:zh ? `${titleSubject}租赁市场` : `${titleSubject} rent market`,
-      area:[districtFull, dongFull].filter(Boolean).join(' · '),
-      housingType:propertyTypeLabel(propertyType, locale)
-    });
-  }
-
   function localizedDongParts(dong, locale = 'en') {
     const korean = normalizeSegment(dong);
     const primary = catalog ? catalog.dongLabel(korean, locale, { includeKorean:false }) : korean;
@@ -207,7 +193,6 @@
     areaSnapshotForDong,
     localizedDongParts,
     propertyTypeLabel,
-    summaryHeading,
     supportsZhIndexing,
     initialViewForWidth,
     buildLabeledTableRow,

@@ -6,8 +6,6 @@ const exploreButton = document.querySelector('#exploreButton');
 const currencySelect = document.querySelector('#currencySelect');
 const languageSwitch = document.querySelector('#languageSwitch');
 const title = document.querySelector('#explorerTitle');
-const summaryArea = document.querySelector('#explorerSummaryArea');
-const summaryType = document.querySelector('#explorerSummaryType');
 const status = document.querySelector('#explorerStatus');
 const dataThrough = document.querySelector('#explorerDataThrough');
 const metricRent = document.querySelector('#metricRent');
@@ -231,16 +229,9 @@ function renderSummary(data, dong = '') {
   const selectedAreaName = areaSelect.value === 'all'
     ? (data.districtName === 'All supported Seoul' ? '全首尔支持地区' : data.districtName)
     : areaName();
-  const heading = KHGExplorer.summaryHeading({
-    lawdCd:data.districtCode || areaSelect.value,
-    districtName:selectedAreaName,
-    dong:currentDong,
-    propertyType:data.propertyType || typeSelect.value,
-    locale:'zh-CN'
-  });
-  title.textContent = heading.title;
-  if (summaryArea) summaryArea.textContent = heading.area;
-  if (summaryType) summaryType.textContent = heading.housingType;
+  title.innerHTML = currentDong
+    ? `${escapeHtml(selectedAreaName)} · ${dongDisplayHtml(currentDong)} · ${escapeHtml(typeName(data.propertyType || typeSelect.value))}`
+    : `${escapeHtml(selectedAreaName)} · ${escapeHtml(typeName(data.propertyType || typeSelect.value))}`;
   const summary = data.summary || {};
   const rentValue = summary.medianMonthlyRentWon;
   const depositValue = summary.medianDepositWon;

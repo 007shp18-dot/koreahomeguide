@@ -25,16 +25,6 @@ test('maps config exposes an optional production map ID for advanced markers', (
   assert.deepEqual(res.body, { enabled:true, apiKey:'browser-key', mapId:'production-map-id' });
 });
 
-test('maps config exposes the NAVER browser key only when configured', () => {
-  const configured = responseRecorder();
-  maps.createHandler({ apiKey:'google-key', naverKeyId:'naver-key' })({ method:'GET', query:{ resource:'maps-config' } }, configured);
-  assert.deepEqual(configured.body, { enabled:true, apiKey:'google-key', naverKeyId:'naver-key' });
-
-  const absent = responseRecorder();
-  maps.createHandler({ apiKey:'google-key', naverKeyId:'   ' })({ method:'GET', query:{ resource:'maps-config' } }, absent);
-  assert.deepEqual(absent.body, { enabled:true, apiKey:'google-key' });
-});
-
 test('maps config never exposes the Google demo map ID in production', () => {
   const res = responseRecorder();
   maps.createHandler({ apiKey:'browser-key', mapId:'DEMO_MAP_ID' })({ method:'GET', query:{ resource:'maps-config' } }, res);

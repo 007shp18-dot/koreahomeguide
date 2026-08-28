@@ -116,8 +116,8 @@ test('apartment provider treats sale API as optional and non-fatal', async () =>
 test('property taxonomy distinguishes low-rise rowhouse/multifamily from detached/multi-family', () => {
   assert.ok(PROPERTY_TYPES.includes('detached'));
   const catalog = require('../location-catalog.js');
-  assert.equal(catalog.propertyTypeLabel('villa','en'), 'Villa / low-rise multifamily (연립·다세대)');
-  assert.equal(catalog.propertyTypeLabel('detached','en'), 'Detached / multi-unit housing (단독·다가구)');
+  assert.equal(catalog.propertyTypeLabel('villa','en'), 'Low-rise multifamily / Villa (연립·다세대)');
+  assert.equal(catalog.propertyTypeLabel('detached','en'), 'Detached & multi-unit house (단독·다가구)');
   const home = fs.readFileSync('index.html','utf8');
   assert.match(home, /value="detached"/);
   const zh = fs.readFileSync('zh/index.html','utf8');
