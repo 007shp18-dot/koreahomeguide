@@ -17,10 +17,10 @@ The key ID is used in the browser and is therefore public by design. Restrict it
 ## Safety behavior
 
 - The NAVER SDK loads only after a building marker click.
-- NAVER may find the nearest panorama within 300 metres. KoreaHomeGuide reads the returned capture coordinate and displays it only when it is within 50 metres of the verified building coordinate.
-- A missing key, failed SDK request, failed panorama request, or capture beyond 50 metres does not affect the base map or transaction data.
+- NAVER finds the nearest panorama within its documented 300-metre search radius. KoreaHomeGuide displays a successful result as nearby street view and, when NAVER returns the capture coordinate, shows its distance from the mapped building.
+- A missing key, failed SDK request, or failed panorama request does not affect the base map or transaction data.
 - Panorama IDs are not stored.
-- When available, the capture date is displayed.
+- When available, the capture date and distance from the mapped building are displayed.
 
 ## Production verification
 
@@ -30,7 +30,7 @@ Verify both `/explore/` and `/zh/explore/` on desktop and mobile:
 2. Open a neighborhood and then a building marker.
 3. Confirm the nearby street-view heading is localized.
 4. Confirm a nearby panorama displays and remains interactive.
-5. Confirm a building without a nearby panorama shows the localized unavailable state rather than an unrelated image.
+5. Confirm NAVER's `ERROR` result shows the localized unavailable state.
 6. Confirm neighborhood markers never request or display panorama content.
 
 Reference: [NAVER Maps JavaScript Panorama](https://navermaps.github.io/maps.js.ncp/docs/naver.maps.Panorama.html)

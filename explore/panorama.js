@@ -8,7 +8,6 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function() {
   'use strict';
 
-  const MAX_DISTANCE_METERS = 50;
   const PANORAMA_MODULE_URL = 'https://oapi.map.naver.com/openapi/v3/maps-panorama.js';
 
   function number(value) {
@@ -36,16 +35,14 @@
     return 6371000 * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(1 - h));
   }
 
-  function isNearby(target, capture, maxDistance = MAX_DISTANCE_METERS) {
-    return distanceMeters(target, capture) <= Number(maxDistance);
-  }
-
   function evaluateResult({ status, target, location } = {}) {
     const capture = location && location.coord;
-    const available = status === 'OK' && isNearby(target, capture);
+    const available = status === 'OK';
+    const captureDistance = distanceMeters(target, capture);
     return Object.freeze({
       available,
-      photoDate:available ? String(location && location.photodate || '') : ''
+      photoDate:available ? String(location && location.photodate || '') : '',
+      distanceMeters:available && Number.isFinite(captureDistance) ? Math.round(captureDistance) : null
     });
   }
 
@@ -86,14 +83,20 @@
   function statusCopy(zh) {
     return zh ? {
       loading:'正在查找建筑附近的街景…',
-      unavailable:'该建筑 50 米范围内暂无可用街景。',
+      unavailable:'该建筑附近暂无可用街景。',
       error:'街景暂时无法加载，请稍后再试。',
-      captured:date => date ? `街景拍摄时间：${date}` : '建筑附近街景'
+      captured:(date, distance) => {
+        const label = date ? `街景拍摄时间：${date}` : '建筑附近街景';
+        return Number.isFinite(distance) ? `${label} · 距地图中的建筑 ${distance} 米` : label;
+      }
     } : {
       loading:'Finding street view near this building…',
-      unavailable:'No street view is available within 50 m of this building.',
+      unavailable:'No nearby street view is available for this building.',
       error:'Street view could not be loaded. Please try again later.',
-      captured:date => date ? `Street view captured ${date}` : 'Street view near this building'
+      captured:(date, distance) => {
+        const label = date ? `Street view captured ${date}` : 'Nearby street view';
+        return Number.isFinite(distance) ? `${label} · ${distance} m from mapped building` : label;
+      }
     };
   }
 
@@ -165,7 +168,7 @@
           }
           status.textContent = '';
           section.dataset.state = 'ready';
-          meta.textContent = copy.captured(result.photoDate);
+          meta.textContent = copy.captured(result.photoDate, result.distanceMeters);
           if (panel) panel.classList.add('has-street-view');
         });
       } catch (_) {
@@ -184,5 +187,5 @@
     return Object.freeze({ show, reset });
   }
 
-  return Object.freeze({ MAX_DISTANCE_METERS, PANORAMA_MODULE_URL, distanceMeters, isNearby, evaluateResult, buildCoreSdkUrl, loadSdk, statusCopy, install });
+  return Object.freeze({ PANORAMA_MODULE_URL, distanceMeters, evaluateResult, buildCoreSdkUrl, loadSdk, statusCopy, install });
 });
