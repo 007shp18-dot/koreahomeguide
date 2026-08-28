@@ -124,6 +124,19 @@ test('building locator stops after 36 verified markers instead of spending the f
   assert.equal(located.length, 36);
 });
 
+test('building geocoding tries precise official addresses before a building-name fallback', () => {
+  const controller = require('../explore/map-controller.js');
+  const queries = controller.buildingGeocodeQueries({
+    mapLocation:{ buildingName:'역삼래미안', dong:'역삼동', jibun:'757', roadAddress:'선릉로69길 19' }
+  }, '강남구');
+
+  assert.deepEqual(queries, [
+    '서울특별시 강남구 선릉로69길 19',
+    '서울특별시 강남구 역삼동 757',
+    '역삼래미안, 역삼동, 강남구, 서울특별시'
+  ]);
+});
+
 test('Explorer building lists expose up to 60 recent named buildings', () => {
   for (const file of ['explore/app.js','zh/explore/app.js']) {
     const source = fs.readFileSync(file, 'utf8');

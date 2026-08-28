@@ -25,6 +25,15 @@ function normalizeAddressPart(value) {
     .trim();
 }
 
+function formatRoadAddress(roadName, mainNumber, subNumber) {
+  const road = normalizeAddressPart(roadName);
+  const main = normalizeAddressPart(mainNumber).replace(/^0+/, '') || '0';
+  const sub = normalizeAddressPart(subNumber).replace(/^0+/, '');
+  if (!road || main === '0') return '';
+  const number = `${main}${sub && sub !== '0' ? `-${sub}` : ''}`;
+  return new RegExp(`(?:^|\\s)${number.replace('-', '\\-')}$`).test(road) ? road : `${road} ${number}`;
+}
+
 function buildingKeyFromName(name, dong = '') {
   const building = normalizeBuildingName(name).toLocaleLowerCase('en-US');
   const dongKey = normalizeDongName(dong).toLocaleLowerCase('ko-KR');
@@ -97,11 +106,7 @@ function summaryForBuilding(group, options = {}) {
   const propertyType = String(rows[0] && rows[0].type || '');
   const jibuns = [...new Set(rows.map(row => normalizeAddressPart(row.explorerJibun)).filter(Boolean))];
   const roadAddresses = [...new Set(rows.map(row => {
-    const road = normalizeAddressPart(row.explorerRoadName);
-    const main = normalizeAddressPart(row.explorerRoadMainNumber).replace(/^0+/, '') || '0';
-    const sub = normalizeAddressPart(row.explorerRoadSubNumber).replace(/^0+/, '');
-    if (!road || main === '0') return '';
-    return `${road} ${main}${sub && sub !== '0' ? `-${sub}` : ''}`;
+    return formatRoadAddress(row.explorerRoadName, row.explorerRoadMainNumber, row.explorerRoadSubNumber);
   }).filter(Boolean))];
   const singleJibun = jibuns.length === 1 ? jibuns[0] : '';
   const singleRoadAddress = roadAddresses.length === 1 ? roadAddresses[0] : '';
@@ -318,6 +323,7 @@ function buildAreaSummary(items, { referenceDate = new Date(), months = 6 } = {}
 module.exports = {
   normalizeBuildingName,
   normalizeDongName,
+  formatRoadAddress,
   buildingKeyFromName,
   filterCompletedRows,
   quarterChangeForRows,

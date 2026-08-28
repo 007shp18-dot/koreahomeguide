@@ -175,3 +175,11 @@ test('building map eligibility is strict by housing type and address consistency
   ], { referenceDate:ref, months:6 })[0];
   assert.equal(detached.mapLocation, null);
 });
+
+test('official road addresses do not duplicate a building number already present in the road name', () => {
+  const building = utils.aggregateBuildings([
+    { building:'Numbered Road Apartment', buildingName:'Numbered Road Apartment', dong:'역삼동', roadName:'선릉로69길 19', roadMainNumber:'19', roadSubNumber:'0', area:'59', deposit:'50000', monthlyRent:'200', contractDate:'2026-07-01', type:'apartment' }
+  ], { referenceDate:ref, months:6 })[0];
+
+  assert.equal(building.mapLocation.roadAddress, '선릉로69길 19');
+});

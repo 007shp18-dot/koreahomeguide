@@ -232,14 +232,11 @@
     return 6371 * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(1 - h));
   }
 
-  function buildingGeocodeQuery(item) {
-    const location = item && item.mapLocation;
-    if (!location || !location.buildingName || !location.dong) return '';
+  function buildingGeocodeQueries(item) {
     const district = KHGMapLocations && KHGMapLocations.districtKorean
       ? KHGMapLocations.districtKorean(latest.lawdCd)
       : '';
-    const address = location.roadAddress || (location.jibun ? `${location.dong} ${location.jibun}` : location.dong);
-    return [location.buildingName, address, district, '서울특별시', '대한민국'].filter(Boolean).join(', ');
+    return KHGMapController.buildingGeocodeQueries(item, district);
   }
 
   async function ensureGeocoder() {
@@ -252,26 +249,31 @@
   }
 
   async function verifiedBuildingPoint(item) {
-    const query = buildingGeocodeQuery(item);
-    if (!query) return null;
-    if (geocodeCache.has(query)) return geocodeCache.get(query);
-    try {
-      const service = await ensureGeocoder();
-      const response = await service.geocode({ address:query, region:'KR' });
-      const result = response && response.results && response.results[0];
-      const type = result && result.geometry && result.geometry.location_type;
-      const location = result && result.geometry && result.geometry.location;
-      const point = location ? { lat:location.lat(), lng:location.lng() } : null;
-      const center = KHGMapLocations.centerFor(latest.lawdCd, item.dong);
-      const precise = ['ROOFTOP','GEOMETRIC_CENTER'].includes(String(type || ''));
-      const verified = point && center && precise && !result.partial_match && distanceKm(center, point) <= 4;
-      const value = verified ? point : null;
-      geocodeCache.set(query, value);
-      return value;
-    } catch (_) {
-      geocodeCache.set(query, null);
-      return null;
+    const queries = buildingGeocodeQueries(item);
+    for (const query of queries) {
+      if (geocodeCache.has(query)) {
+        const cached = geocodeCache.get(query);
+        if (cached) return cached;
+        continue;
+      }
+      try {
+        const service = await ensureGeocoder();
+        const response = await service.geocode({ address:query, region:'KR' });
+        const result = response && response.results && response.results[0];
+        const type = result && result.geometry && result.geometry.location_type;
+        const location = result && result.geometry && result.geometry.location;
+        const point = location ? { lat:location.lat(), lng:location.lng() } : null;
+        const center = KHGMapLocations.centerFor(latest.lawdCd, item.dong);
+        const precise = ['ROOFTOP','GEOMETRIC_CENTER'].includes(String(type || ''));
+        const verified = point && center && precise && !result.partial_match && distanceKm(center, point) <= 4;
+        const value = verified ? point : null;
+        geocodeCache.set(query, value);
+        if (value) return value;
+      } catch (_) {
+        geocodeCache.set(query, null);
+      }
     }
+    return null;
   }
 
   async function showBuildingLayer(detail = {}) {

@@ -153,6 +153,17 @@
     return located.slice(0, target);
   }
 
+  function buildingGeocodeQueries(item, district = '') {
+    const location = item && item.mapLocation;
+    if (!location || !location.buildingName || !location.dong) return [];
+    const prefix = ['서울특별시', district].filter(Boolean).join(' ');
+    return [...new Set([
+      location.roadAddress ? `${prefix} ${location.roadAddress}`.trim() : '',
+      location.jibun ? `${prefix} ${location.dong} ${location.jibun}`.trim() : '',
+      [location.buildingName, location.dong, district, '서울특별시'].filter(Boolean).join(', ')
+    ].filter(Boolean))];
+  }
+
   function buildMapAnalyticsEvent(name, context = {}) {
     if (!MAP_EVENTS.has(String(name || ''))) return null;
     const locale = String(context.locale || '').toLowerCase().startsWith('zh') ? 'zh-CN' : 'en-US';
@@ -240,5 +251,5 @@
     return Object.freeze({ ...(state || {}), selectedDong:String(dong || '') });
   }
 
-  return Object.freeze({ buildMapsSdkUrl, buildMarkerModels, buildBuildingMarkerModels, locateBuildingCandidates, buildMapAnalyticsEvent, markerVisual, advancedPinVisual, applyAdvancedMarkerBadge, advancedMarkersAvailable, selectDong });
+  return Object.freeze({ buildMapsSdkUrl, buildMarkerModels, buildBuildingMarkerModels, locateBuildingCandidates, buildingGeocodeQueries, buildMapAnalyticsEvent, markerVisual, advancedPinVisual, applyAdvancedMarkerBadge, advancedMarkersAvailable, selectDong });
 });
