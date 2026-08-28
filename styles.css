@@ -531,6 +531,27 @@ html[lang="zh-CN"] .core-ui .funnel-hero h1,html[lang="zh-CN"] .core-ui .tool-he
 .core-ui .explorer-metrics>div{padding:18px;background:var(--surface)}
 @media(max-width:760px){.core-ui .page-shell{padding-top:32px;padding-left:16px;padding-right:16px;padding-bottom:var(--section-space-mobile)}.core-ui .tool-card,.core-ui .explorer-search-card{padding:18px}.core-ui .tool-explainer{padding:20px}.core-ui .tool-explainer,.core-ui .explorer-next-step{margin-top:var(--section-space-mobile)}}
 
+/* Explorer mobile: lead with comparable results and keep the map as an optional detail view. */
+@media(max-width:760px){
+  .core-ui .explorer-map-layout{gap:16px;margin-top:22px}
+  .core-ui .explorer-map-layout.is-list-view .explorer-map-card{overflow:visible;border:0;background:transparent}
+  .core-ui .explorer-map-layout.is-list-view .explorer-map-toolbar{justify-content:flex-end;padding:0}
+  .core-ui .explorer-map-layout.is-list-view .explorer-map-heading,.core-ui .explorer-map-layout.is-list-view .explorer-map-back{display:none}
+  .core-ui .explorer-map-heading{padding:0}
+  .core-ui .explorer-map-surface,.core-ui .explorer-map-canvas{height:clamp(400px,56dvh,520px);min-height:400px}
+  .core-ui .explorer-results{padding-top:20px}
+  .core-ui .explorer-results-head{margin-bottom:14px}
+  .core-ui .explorer-metrics{gap:0;margin:10px 0 30px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .core-ui .explorer-metrics>div{padding:14px 12px;border:0;border-radius:0;background:transparent}
+  .core-ui .explorer-metrics>div:nth-child(odd){border-right:1px solid var(--line)}
+  .core-ui .explorer-metrics>div:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  .core-ui .explorer-metrics strong{font-size:20px}
+  .core-ui .dong-list{gap:0;border-bottom:1px solid var(--line)}
+  .core-ui .neighborhood-card{gap:12px;padding:16px 0;border-width:1px 0 0;border-radius:0;background:transparent;transition:none}
+  .core-ui .neighborhood-card:hover{border-color:var(--line);background:transparent;box-shadow:none;transform:none}
+  .core-ui .neighborhood-card-cta{justify-self:start}
+}
+
 /* Product data labels: readable without reintroducing visual noise. */
 .core-ui .explorer-trust{border-color:var(--line);background:var(--surface-soft);color:var(--ink-soft)}
 .core-ui .explorer-metrics span,.core-ui .explorer-metrics small,.core-ui .building-detail-metrics span,.core-ui .building-detail-metrics small{font-size:var(--text-xs);color:var(--muted)}

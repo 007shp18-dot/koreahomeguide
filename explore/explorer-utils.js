@@ -167,6 +167,11 @@
     return Boolean(catalog && catalog.supportsZhIndexing(areaCode));
   }
 
+  function initialViewForWidth(width) {
+    const viewportWidth = Number(width);
+    return Number.isFinite(viewportWidth) && viewportWidth > 0 && viewportWidth <= 760 ? 'list' : 'map';
+  }
+
   return {
     buildDongSeoUrl,
     buildExplorerDongUrl,
@@ -178,6 +183,7 @@
     localizedDongParts,
     propertyTypeLabel,
     supportsZhIndexing,
+    initialViewForWidth,
     stableSuffix
   };
 });

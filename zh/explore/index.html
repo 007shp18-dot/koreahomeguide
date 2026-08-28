@@ -50,7 +50,7 @@
       <label class="field"><span>月租预算</span><select id="exploreMaxRent"><option value="">不限月租</option><option value="800000">最高 ₩800,000</option><option value="1200000">最高 ₩1,200,000</option><option value="1800000">最高 ₩1,800,000</option><option value="2500000">最高 ₩2,500,000</option></select></label>
       <button id="exploreButton" class="search-button" type="button">比较街区</button>
       <details class="advanced-filter explorer-advanced-filter"><summary>押金预算（可选）</summary><div class="advanced-filter-content"><label class="field"><span>最高押金</span><select id="exploreMaxDeposit"><option value="">不限押金</option><option value="5000000">最高 ₩5,000,000</option><option value="10000000">最高 ₩10,000,000</option><option value="20000000">最高 ₩20,000,000</option><option value="50000000">最高 ₩50,000,000</option></select></label></div></details>
-      <div class="explorer-search-handoff"><span>已经有这个条件下的具体报价？</span><a data-explorer-rent-check data-rent-check-cta="explorer_filter_handoff" href="/zh/tools/seoul-rent-check/">检查这个区域和住宅类型 →</a></div>
+      <div class="explorer-search-handoff"><span>核对具体租房报价</span><a data-explorer-rent-check data-rent-check-cta="explorer_filter_handoff" href="/zh/tools/seoul-rent-check/">检查这个区域和住宅类型 →</a></div>
     </section>
 
     <div id="explorerChips" class="explorer-chips" aria-label="热门首尔行政区" hidden>
@@ -69,8 +69,8 @@
             <div class="explorer-map-toolbar-actions">
               <button id="explorerMapBack" class="explorer-map-back" type="button" hidden>← 返回街区</button>
               <div class="explorer-view-toggle" aria-label="探索视图">
+                <button type="button" data-explorer-view="list" aria-pressed="false">结果</button>
                 <button type="button" class="is-active" data-explorer-view="map" aria-pressed="true">地图</button>
-                <button type="button" data-explorer-view="list" aria-pressed="false">列表</button>
               </div>
             </div>
           </div>
@@ -120,15 +120,15 @@
     </section>
       </div>
       <aside class="explorer-support-column" aria-label="相关工具">
-        <a class="context-module context-card soft" data-explorer-rent-check data-rent-check-cta="explorer_context_handoff" href="/zh/tools/seoul-rent-check/"><span class="context-kicker">下一步</span><h3>已经拿到报价？</h3><p>用押金、月租、面积和房型与近期官方可比成交核对。</p><strong class="context-card-action">检查租金报价 →</strong></a>
+        <a class="context-module context-card soft" data-explorer-rent-check data-rent-check-cta="explorer_context_handoff" href="/zh/tools/seoul-rent-check/"><span class="context-kicker">租金检查</span><h3>核对具体租房报价</h3><p>把押金、月租、面积和房型与近期官方可比成交进行比较。</p><strong class="context-card-action">打开租金检查 →</strong></a>
         <a class="context-module context-card" href="/zh/guides/before-you-sign/"><span class="context-kicker">签约前</span><h3>先检查押金和合同风险</h3><p>了解房产登记、居所申报、确定日期和押金保障。</p><strong class="context-card-action">阅读签约指南 →</strong></a>
         <div class="ad-slot" data-slot="sidebar" aria-hidden="true"></div>
       </aside>
     </div>
 
     <section class="explorer-next-step">
-      <div><span class="eyebrow">已经拿到报价？</span><h2>检查你收到的具体租金。</h2><p>租金检查会把你的押金、月租、面积和房型与近期官方成交记录进行比较。</p></div>
-      <a class="explorer-primary-link" data-explorer-rent-check data-rent-check-cta="explorer_final_handoff" href="/zh/tools/seoul-rent-check/">检查租金报价 →</a>
+      <div><span class="eyebrow">下一步</span><h2>核对具体租房报价。</h2><p>租金检查会把押金、月租、面积和房型与近期官方成交记录进行比较。</p></div>
+      <a class="explorer-primary-link" data-explorer-rent-check data-rent-check-cta="explorer_final_handoff" href="/zh/tools/seoul-rent-check/">打开租金检查 →</a>
     </section>
   </main>
 

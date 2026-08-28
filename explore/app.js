@@ -366,7 +366,7 @@ function applyQuerySelection() {
 function showExploreResults({ requestedDong = '' } = {}) {
   explorerChips.hidden=false;
   explorerResults.hidden=false;
-  setExplorerView('map');
+  setExplorerView(KHGExplorer.initialViewForWidth(window.innerWidth));
   updateRentCheckHandoff();
   return loadArea({ requestedDong });
 }

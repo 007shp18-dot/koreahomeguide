@@ -50,7 +50,7 @@
       <label class="field"><span>Monthly rent budget</span><select id="exploreMaxRent"><option value="">Any rent</option><option value="800000">Up to ₩800K</option><option value="1200000">Up to ₩1.2M</option><option value="1800000">Up to ₩1.8M</option><option value="2500000">Up to ₩2.5M</option></select></label>
       <button id="exploreButton" class="search-button" type="button">Compare neighborhoods</button>
       <details class="advanced-filter explorer-advanced-filter"><summary>Deposit budget (optional)</summary><div class="advanced-filter-content"><label class="field"><span>Maximum deposit</span><select id="exploreMaxDeposit"><option value="">Any deposit</option><option value="5000000">Up to ₩5M</option><option value="10000000">Up to ₩10M</option><option value="20000000">Up to ₩20M</option><option value="50000000">Up to ₩50M</option></select></label></div></details>
-      <div class="explorer-search-handoff"><span>Already have a quote for this selection?</span><a data-explorer-rent-check data-rent-check-cta="explorer_filter_handoff" href="/tools/seoul-rent-check/">Check this area and housing type →</a></div>
+      <div class="explorer-search-handoff"><span>Check a specific rental offer</span><a data-explorer-rent-check data-rent-check-cta="explorer_filter_handoff" href="/tools/seoul-rent-check/">Check this area and housing type →</a></div>
     </section>
 
     <div id="explorerChips" class="explorer-chips" aria-label="Popular Seoul districts" hidden>
@@ -69,8 +69,8 @@
             <div class="explorer-map-toolbar-actions">
               <button id="explorerMapBack" class="explorer-map-back" type="button" hidden>← Neighborhoods</button>
               <div class="explorer-view-toggle" aria-label="Explorer view">
+                <button type="button" data-explorer-view="list" aria-pressed="false">Results</button>
                 <button type="button" class="is-active" data-explorer-view="map" aria-pressed="true">Map</button>
-                <button type="button" data-explorer-view="list" aria-pressed="false">List</button>
               </div>
             </div>
           </div>
@@ -120,15 +120,15 @@
     </section>
       </div>
       <aside class="explorer-support-column" aria-label="Related tools">
-        <a class="context-module context-card soft" data-explorer-rent-check data-rent-check-cta="explorer_context_handoff" href="/tools/seoul-rent-check/"><span class="context-kicker">NEXT STEP</span><h3>Already have a quote?</h3><p>Compare the deposit, rent, size, and housing type with recent official contracts.</p><strong class="context-card-action">Check a rent quote →</strong></a>
+        <a class="context-module context-card soft" data-explorer-rent-check data-rent-check-cta="explorer_context_handoff" href="/tools/seoul-rent-check/"><span class="context-kicker">RENT CHECK</span><h3>Check a specific rental offer</h3><p>Compare its deposit, rent, size, and housing type with recent official contracts.</p><strong class="context-card-action">Open Rent Check →</strong></a>
         <a class="context-module context-card" href="/guides/before-you-sign/"><span class="context-kicker">BEFORE YOU SIGN</span><h3>Protect a large deposit</h3><p>Review registry checks, residence reporting, fixed dates, and deposit protection.</p><strong class="context-card-action">Read the signing guide →</strong></a>
         <div class="ad-slot" data-slot="sidebar" aria-hidden="true"></div>
       </aside>
     </div>
 
     <section class="explorer-next-step">
-      <div><span class="eyebrow">HAVE A QUOTE?</span><h2>Check the exact rent you were offered.</h2><p>Rent Check compares your deposit, monthly rent, size, and housing type with recent official contracts.</p></div>
-      <a class="explorer-primary-link" data-explorer-rent-check data-rent-check-cta="explorer_final_handoff" href="/tools/seoul-rent-check/">Check a rent quote →</a>
+      <div><span class="eyebrow">NEXT STEP</span><h2>Check a specific rental offer.</h2><p>Rent Check compares its deposit, monthly rent, size, and housing type with recent official contracts.</p></div>
+      <a class="explorer-primary-link" data-explorer-rent-check data-rent-check-cta="explorer_final_handoff" href="/tools/seoul-rent-check/">Open Rent Check →</a>
     </section>
   </main>
 
