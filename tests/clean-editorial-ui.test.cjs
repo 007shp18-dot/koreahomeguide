@@ -44,35 +44,35 @@ for (const [file, explorerPath, guidePath] of [
   test(`${file} follows the quote to evidence to action editorial flow`, () => {
     const html = read(file);
     const rentCheckAt = html.indexOf('id="rent-check"');
-    const howAt = html.indexOf('class="funnel-section funnel-how"');
+    const stageAt = html.indexOf('home-stage-route');
+    const trustAt = html.indexOf('class="home-trust-note"');
     const proofAt = html.indexOf('class="funnel-proof-band"');
     const guidesAt = html.indexOf('class="funnel-section funnel-updated-guides"');
-    const finalAt = html.indexOf('class="funnel-final-cta"');
 
     assert.ok(rentCheckAt >= 0, `${file} Rent Check`);
-    assert.ok(rentCheckAt < howAt, `${file} keeps Rent Check before explanation`);
-    assert.ok(howAt < proofAt, `${file} explains before showing map evidence`);
+    assert.ok(stageAt < rentCheckAt, `${file} routes the renter before Rent Check`);
+    assert.ok(rentCheckAt < trustAt, `${file} keeps the independence note after the tool`);
+    assert.ok(trustAt < proofAt, `${file} states the method before map evidence`);
     assert.ok(proofAt < guidesAt, `${file} places updated content after product proof`);
-    assert.ok(guidesAt < finalAt, `${file} ends with one restrained CTA`);
-    assert.equal((html.match(/data-home-how-step/g) || []).length, 3, `${file} three steps`);
+    assert.doesNotMatch(html, /funnel-how|funnel-final-cta/);
     assert.match(html, new RegExp(`class="funnel-proof-action" href="${explorerPath}"`));
     assert.match(html, /class="funnel-section funnel-updated-guides"/);
-    assert.equal((html.match(/class="funnel-guide"/g) || []).length, 3, `${file} guide cards`);
+    assert.equal((html.match(/class="home-guide-row"/g) || []).length, 4, `${file} guide rows`);
     assert.match(html, new RegExp(`class="funnel-guides-link" href="${guidePath}"`));
-    assert.match(html, /class="funnel-final-action" href="#rent-check"/);
   });
 }
 
 test('homepage editorial bands retain readable contrast and stack in task order on mobile', () => {
   const css = read('cold-start.css');
 
-  assert.match(css, /\.funnel-how-grid\{[^}]*grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
+  assert.match(css, /\.home-stage-route \.home-stage-grid\{[^}]*grid-template-columns:repeat\(4,minmax\(0,1fr\)\)/);
   assert.match(css, /\.funnel-proof-band\{[^}]*background:#0b1f3a[^}]*color:#fff/);
   assert.match(css, /\.funnel-proof-action\{[^}]*min-height:44px[^}]*border-radius:var\(--radius-action\)/);
-  assert.match(css, /\.funnel-final-cta\{[^}]*border-radius:var\(--radius-card\)/);
+  assert.match(css, /\.home-trust-note\{[^}]*border-top:1px solid var\(--line\)/);
+  assert.match(css, /\.home-guide-row\{[^}]*border-radius:0[^}]*background:transparent/);
   assert.match(
     css,
-    /@media\(max-width:760px\)[^]*\.funnel-how-grid,\.funnel-proof-inner,\.funnel-proof-grid\{grid-template-columns:1fr\}/
+    /@media\(max-width:720px\)[^]*\.home-stage-route \.home-stage-grid\{grid-template-columns:1fr 1fr\}/
   );
 });
 

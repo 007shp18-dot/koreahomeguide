@@ -46,7 +46,7 @@
 
     <section class="explorer-search-card" aria-label="Explore Seoul rent data">
       <label class="field"><span>Area</span><select id="exploreArea"><option value="11680">Gangnam-gu (강남구)</option><option value="11440">Mapo-gu (마포구)</option><option value="11170">Yongsan-gu (용산구)</option><option value="11200">Seongdong-gu (성동구)</option><option value="11560">Yeongdeungpo-gu (영등포구)</option><option value="11620">Gwanak-gu (관악구)</option><option value="11230">Dongdaemun-gu (동대문구)</option><option value="11410">Seodaemun-gu (서대문구)</option><option value="11290">Seongbuk-gu (성북구)</option><option value="11215">Gwangjin-gu (광진구)</option><option value="11650">Seocho-gu (서초구)</option><option value="11710">Songpa-gu (송파구)</option><option value="11740">Gangdong-gu (강동구)</option><option value="11110">Jongno-gu (종로구)</option><option value="11140">Jung-gu (중구)</option><option value="all">All supported Seoul</option></select></label>
-      <label class="field"><span>Property type</span><select id="exploreType"><option value="officetel">Officetel (오피스텔)</option><option value="apartment">Apartment (아파트)</option><option value="villa">Low-rise multifamily / Villa (연립·다세대)</option><option value="detached">Detached &amp; multi-unit house (단독·다가구)</option></select></label>
+      <label class="field"><span>Property type</span><select id="exploreType" class="selection-native"><option value="officetel">Officetel (오피스텔)</option><option value="apartment">Apartment (아파트)</option><option value="villa">Low-rise multifamily / Villa (연립·다세대)</option><option value="detached">Detached &amp; multi-unit house (단독·다가구)</option></select></label>
       <label class="field"><span>Monthly rent budget</span><select id="exploreMaxRent"><option value="">Any rent</option><option value="800000">Up to ₩800K</option><option value="1200000">Up to ₩1.2M</option><option value="1800000">Up to ₩1.8M</option><option value="2500000">Up to ₩2.5M</option></select></label>
       <button id="exploreButton" class="search-button" type="button">Compare neighborhoods</button>
       <details class="advanced-filter explorer-advanced-filter"><summary>Deposit budget (optional)</summary><div class="advanced-filter-content"><label class="field"><span>Maximum deposit</span><select id="exploreMaxDeposit"><option value="">Any deposit</option><option value="5000000">Up to ₩5M</option><option value="10000000">Up to ₩10M</option><option value="20000000">Up to ₩20M</option><option value="50000000">Up to ₩50M</option></select></label></div></details>
@@ -132,11 +132,12 @@
     </section>
   </main>
 
-  <footer class="page-footer"><strong>KoreaHomeGuide</strong><small>Historical signed rental data for market reference, not live listings or brokerage advice. Questions or data issues? <a href="mailto:hello@koreahomeguide.com">Email us</a>. <a href="/privacy/">Privacy</a>.</small></footer>
+  <footer class="page-footer"><strong>KoreaHomeGuide</strong><small>Historical signed rental data for market reference, not live listings or brokerage advice. Questions or data issues? <a href="mailto:hello@koreahomeguide.com">Email us</a>. <a href="/about/">About &amp; Method</a> · <a href="/privacy/">Privacy</a>.</small></footer>
   <script src="/currency-utils.js"></script>
   <script src="/date-utils.js"></script>
   <script src="/building-name-utils.js"></script>
   <script src="/location-catalog.js"></script>
+  <script src="/district-combobox.js"></script>
   <script src="/explore/explorer-utils.js"></script>
   <script src="/explore/map-locations.js"></script>
   <script src="/explore/map-controller.js"></script>

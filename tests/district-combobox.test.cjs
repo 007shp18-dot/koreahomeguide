@@ -149,12 +149,76 @@ test('opening the district list omits the current selection while search can sti
   assert.deepEqual(listbox.children.map(option => option.dataset.districtCode), ['11680']);
 });
 
+test('select-backed district rows keep Explorer options and localized All Seoul', () => {
+  const combo = require(comboPath);
+  const select = fakeElement('select');
+  select.options = [
+    { value: '11680', textContent: 'Gangnam-gu (강남구)' },
+    { value: '11440', textContent: 'Mapo-gu (마포구)' },
+    { value: 'all', textContent: 'All supported Seoul' }
+  ];
+  const rows = combo.buildSelectOptions(select, locations.RENT_CHECK_DISTRICTS, 'en');
+  assert.deepEqual(rows.map(row => row.code), ['11680', '11440', 'all']);
+  assert.deepEqual(combo.filterDistricts(rows, '서울 전체').map(row => row.code), ['all']);
+  assert.deepEqual(combo.filterDistricts(rows, '江南').map(row => row.code), ['11680']);
+});
+
+test('Explorer mount selects All Seoul and dispatches the existing change event', () => {
+  const combo = require(comboPath);
+  const label = fakeElement('label');
+  const select = fakeElement('select');
+  select.id = 'exploreArea';
+  select.value = '11680';
+  select.options = [
+    { value: '11680', textContent: 'Gangnam-gu (강남구)' },
+    { value: '11440', textContent: 'Mapo-gu (마포구)' },
+    { value: 'all', textContent: 'All supported Seoul' }
+  ];
+  label.appendChild(select);
+  const doc = {
+    documentElement: { lang: 'en' },
+    querySelector(selector) { return selector === '#exploreArea' ? select : null; },
+    createElement: fakeElement
+  };
+  const root = {
+    KHGLocations: locations,
+    localStorage: memoryStorage(),
+    Event: class FakeEvent { constructor(type, options) { this.type = type; this.bubbles = options.bubbles; } },
+    setTimeout(callback) { callback(); }
+  };
+  const wrapper = combo.mount({ root, doc, selector: '#exploreArea' });
+  const input = wrapper.children[0];
+  input.listeners.focus();
+  input.value = 'All Seoul';
+  input.listeners.input();
+  input.listeners.keydown({ key: 'Enter', preventDefault() {} });
+  assert.equal(select.value, 'all');
+  assert.equal(select.lastEvent.type, 'change');
+  assert.equal(input.value, 'All supported Seoul');
+});
+
+test('mountAll enhances Rent Check and Explorer independently', () => {
+  const combo = require(comboPath);
+  assert.equal(typeof combo.mountAll, 'function');
+  assert.match(fs.readFileSync(comboPath, 'utf8'), /mountAll\(\{root,doc:root\.document\}\)/);
+});
+
 test('all four Rent Check surfaces load progressive enhancement in the safe order', () => {
   for (const file of ['index.html', 'zh/index.html', 'tools/seoul-rent-check/index.html', 'zh/tools/seoul-rent-check/index.html']) {
     const html = fs.readFileSync(path.join(__dirname, '..', file), 'utf8');
     assert.equal((html.match(/id="rentCheckArea"/g) || []).length, 1, file);
     assert.ok(html.indexOf('/location-catalog.js') < html.indexOf('/district-combobox.js'), file);
     assert.ok(html.indexOf('/district-combobox.js') < html.indexOf('/saved-rent-quotes.js'), file);
+  }
+});
+
+test('both Explorer pages load district search before their locale app', () => {
+  for (const file of ['explore/index.html', 'zh/explore/index.html']) {
+    const html = fs.readFileSync(path.join(__dirname, '..', file), 'utf8');
+    assert.equal((html.match(/id="exploreArea"/g) || []).length, 1, file);
+    assert.ok(html.indexOf('/location-catalog.js') < html.indexOf('/district-combobox.js'), file);
+    assert.ok(html.indexOf('/district-combobox.js') < html.indexOf(file.startsWith('zh/') ? '/zh/explore/app.js' : '/explore/app.js'), file);
+    assert.match(html, /id="exploreType"[^>]*class="[^"]*selection-native/);
   }
 });
 

@@ -85,3 +85,50 @@ html[lang="zh-CN"] .funnel-updated-guides .funnel-guide:after{content:"阅读指
 .funnel-final-action{display:inline-flex;flex:0 0 auto;align-items:center;justify-content:center;min-height:48px;padding:0 20px;border-radius:var(--radius-action);background:var(--accent);color:#fff;font-size:14px;font-weight:800}
 .funnel-final-action:hover{background:var(--accent-dark)}.funnel-final-action:focus-visible{outline:3px solid rgba(37,99,235,.25);outline-offset:3px}
 @media(max-width:760px){.funnel-how{padding-top:var(--section-space-mobile);padding-bottom:var(--section-space-mobile)}.funnel-how-grid,.funnel-proof-inner,.funnel-proof-grid{grid-template-columns:1fr}.funnel-proof-band{border-radius:var(--radius-card)}.funnel-proof-inner{gap:30px;padding:40px 20px}.funnel-updated-guides{padding-top:var(--section-space-mobile);padding-bottom:var(--section-space-mobile)}.funnel-final-cta{align-items:stretch;flex-direction:column;margin-left:16px;margin-right:16px;padding:24px}.funnel-final-action{width:100%}}
+
+/* Editorial home: a working rent tool, not a repeated card template. */
+.home-evidence-line{max-width:680px!important;margin:22px auto 0!important;color:var(--muted)!important;font-size:14px!important}
+.home-evidence-line a{color:var(--accent);font-weight:750;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+.home-stage-route{padding-top:18px;padding-bottom:44px}
+.home-stage-route .home-stage-entry-head{margin-bottom:18px}
+.home-stage-route .home-stage-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);counter-reset:stage}
+.home-stage-route .home-stage-grid a{position:relative;min-height:96px;padding:20px 22px 18px 48px;border:0;border-right:1px solid var(--line);border-radius:0;background:transparent;box-shadow:none;counter-increment:stage}
+.home-stage-route .home-stage-grid a:before{position:absolute;top:20px;left:18px;content:"0" counter(stage);color:var(--muted-light);font-size:11px;font-weight:750;letter-spacing:.04em}
+.home-stage-route .home-stage-grid a:last-child{border-right:0}
+.home-stage-route .home-stage-grid a:hover{border-color:var(--line);background:var(--surface-soft)}
+.home-stage-route .home-stage-grid a.is-return-stage{border-color:var(--line);background:var(--accent-soft);box-shadow:none}
+.home-rent-workspace{padding-top:56px;padding-bottom:78px}
+.home-rent-workspace .funnel-section-head{margin-bottom:24px}
+.home-rent-workspace .funnel-rent-card{border-color:#dbe3ee;border-radius:var(--radius-md);box-shadow:0 20px 52px rgba(15,23,42,.06)}
+.home-trust-note{display:flex;max-width:1040px;margin:-42px auto 92px;padding:20px 0;gap:8px;flex-wrap:wrap;border-top:1px solid var(--line);border-bottom:1px solid var(--line);color:var(--muted);font-size:14px;line-height:1.65}
+.home-trust-note strong{color:var(--ink)}
+.home-trust-note a{margin-left:auto;color:var(--accent);font-weight:750;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+.funnel-proof-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.funnel-proof-grid>div[data-home-proof-metric]{padding:22px 20px;border:1px solid rgba(255,255,255,.15);border-radius:var(--radius-md);background:rgba(255,255,255,.055)}
+.funnel-proof-grid>div[data-home-proof-metric] strong{font-size:38px;letter-spacing:-.04em}
+.home-proof-source{grid-column:1/-1;margin:8px 0 0;color:rgba(255,255,255,.74);font-size:13px;line-height:1.55}
+.funnel-updated-guides{padding-top:96px;padding-bottom:96px}
+.funnel-guides{display:block;border-top:1px solid var(--line)}
+.home-guide-row{display:grid;grid-template-columns:minmax(110px,.35fr) minmax(220px,.8fr) minmax(260px,1.2fr);gap:28px;align-items:baseline;padding:22px 12px;border-bottom:1px solid var(--line);border-radius:0;background:transparent;color:inherit;text-decoration:none}
+.home-guide-row:hover{background:var(--surface-soft)}
+.home-guide-row>span{color:var(--accent);font-size:11px;font-weight:750;letter-spacing:.04em;text-transform:none}
+.home-guide-row h3{margin:0;font-size:19px;line-height:1.35;letter-spacing:-.02em}
+.home-guide-row p{margin:0;color:var(--muted);font-size:14px;line-height:1.6}
+@media(max-width:720px){
+  .funnel-hero{padding-bottom:20px}
+  .home-stage-route{padding:10px 16px 36px}
+  .home-stage-route .home-stage-grid{grid-template-columns:1fr 1fr}
+  .home-stage-route .home-stage-grid a{min-height:108px;padding:18px 14px 16px 42px}
+  .home-stage-route .home-stage-grid a:before{top:18px;left:14px}
+  .home-stage-route .home-stage-grid a:nth-child(2){border-right:0}
+  .home-stage-route .home-stage-grid a:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  .home-rent-workspace{padding-top:42px;padding-bottom:62px}
+  .home-trust-note{display:block;margin:-28px 16px 64px;padding:18px 0}
+  .home-trust-note a{display:block;margin:8px 0 0}
+  .funnel-proof-inner{gap:36px;padding:42px 22px}
+  .funnel-proof-grid{grid-template-columns:1fr 1fr}
+  .funnel-proof-grid>div[data-home-proof-metric]{padding:18px 14px}
+  .funnel-proof-grid>div[data-home-proof-metric] strong{font-size:32px}
+  .funnel-updated-guides{padding-top:70px;padding-bottom:70px}
+  .home-guide-row{grid-template-columns:1fr;gap:6px;padding:20px 6px}
+}

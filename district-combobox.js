@@ -3,7 +3,7 @@
   if(typeof module==='object'&&module.exports) module.exports=api;
   else root.KHGDistrictCombobox=api;
   if(root&&root.document){
-    const start=()=>api.mount({root,doc:root.document});
+    const start=()=>api.mountAll({root,doc:root.document});
     root.document.readyState==='loading'
       ? root.document.addEventListener('DOMContentLoaded',start,{once:true})
       : start();
@@ -35,6 +35,33 @@
     return needle?(rows||[]).filter(row=>row.search.includes(needle)):[...(rows||[])];
   }
 
+  function optionValues(select){
+    return Array.from(select&&select.options||[]).map(option=>({
+      code:String(option.value||''),
+      text:String(option.textContent||option.label||'').trim()
+    })).filter(option=>option.code);
+  }
+
+  function buildSelectOptions(select,catalog,language='en'){
+    const options=optionValues(select);
+    if(!options.length) return buildDistrictOptions(catalog,language);
+    const catalogRows=new Map(buildDistrictOptions(catalog,language).map(row=>[row.code,row]));
+    return options.map(option=>{
+      if(catalogRows.has(option.code)) return catalogRows.get(option.code);
+      if(option.code==='all'){
+        const fallback=language==='zh-CN'?'全首尔支持地区':'All supported Seoul';
+        return {
+          code:'all',
+          primary:option.text||fallback,
+          secondary:language==='zh-CN'?'15个地图覆盖行政区':'15 mapped districts',
+          label:option.text||fallback,
+          search:normalizeSearchText(`${option.text} all seoul 서울 전체 全首尔`)
+        };
+      }
+      return null;
+    }).filter(Boolean);
+  }
+
   function validCodes(catalog){ return new Set(Object.keys(catalog||{})); }
 
   function readRecent(storage,catalog){
@@ -55,8 +82,8 @@
     return value;
   }
 
-  function mount({root=globalThis,doc=root&&root.document,storage,catalog}={}){
-    const select=doc&&doc.querySelector&&doc.querySelector('#rentCheckArea');
+  function mount({root=globalThis,doc=root&&root.document,storage,catalog,selector='#rentCheckArea'}={}){
+    const select=doc&&doc.querySelector&&doc.querySelector(selector);
     const districts=catalog||(root&&root.KHGLocations&&root.KHGLocations.RENT_CHECK_DISTRICTS);
     if(!select||!districts||select.dataset.districtComboboxMounted==='true'||!doc.createElement) return null;
     const parent=select.parentNode;
@@ -64,7 +91,7 @@
     let wrapper=null;
     try{
       const language=doc.documentElement&&doc.documentElement.lang==='zh-CN'?'zh-CN':'en';
-      const rows=buildDistrictOptions(districts,language);
+      const rows=buildSelectOptions(select,districts,language);
       const byCode=new Map(rows.map(row=>[row.code,row]));
       if(!rows.length||!byCode.has(String(select.value||''))) return null;
       let targetStorage=storage;
@@ -118,7 +145,7 @@
         if(!row) return;
         select.value=row.code;
         input.value=row.label;
-        writeRecent(targetStorage,row.code,districts);
+        if(row.code!=='all') writeRecent(targetStorage,row.code,districts);
         const EventCtor=root.Event||(typeof Event==='function'?Event:null);
         if(EventCtor&&typeof select.dispatchEvent==='function') select.dispatchEvent(new EventCtor('change',{bubbles:true}));
         close();
@@ -200,5 +227,12 @@
     }
   }
 
-  return {STORAGE_KEY,normalizeSearchText,buildDistrictOptions,filterDistricts,readRecent,writeRecent,mount};
+  function mountAll({root=globalThis,doc=root&&root.document}={}){
+    if(!doc) return [];
+    return ['#rentCheckArea','#exploreArea']
+      .map(selector=>mount({root,doc,selector}))
+      .filter(Boolean);
+  }
+
+  return {STORAGE_KEY,normalizeSearchText,buildDistrictOptions,optionValues,buildSelectOptions,filterDistricts,readRecent,writeRecent,mount,mountAll};
 });

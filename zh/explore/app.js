@@ -390,7 +390,7 @@ explorerViewButtons.forEach(button => button.addEventListener('click', () => set
 if (mapSelectionClose) mapSelectionClose.addEventListener('click', clearMapSelection);
 document.querySelectorAll('[data-explore-area]').forEach(button => button.addEventListener('click', () => {
   areaSelect.value = button.dataset.exploreArea;
-  handleSelectionChange();
+  areaSelect.dispatchEvent(new Event('change',{bubbles:true}));
   loadArea();
 }));
 if (currencySelect) currencySelect.addEventListener('change', () => {

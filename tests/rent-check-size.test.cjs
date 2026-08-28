@@ -114,9 +114,9 @@ test('all Rent Check runtimes read normalized square metres and label mobile evi
   }
 });
 
-test('homepage next checks include the brokerage-fee calculator in both languages', () => {
-  assert.match(fs.readFileSync('index.html', 'utf8'), /href="\/tools\/brokerage-fee-calculator\/"/);
-  assert.match(fs.readFileSync('zh/index.html', 'utf8'), /href="\/zh\/tools\/brokerage-fee-calculator\/"/);
+test('homepage next checks include the before-you-sign guide in both languages', () => {
+  assert.match(fs.readFileSync('index.html', 'utf8'), /href="\/guides\/before-you-sign\/"/);
+  assert.match(fs.readFileSync('zh/index.html', 'utf8'), /href="\/zh\/guides\/before-you-sign\/"/);
 });
 
 test('mobile comparable contracts use cards without horizontal scrolling', () => {

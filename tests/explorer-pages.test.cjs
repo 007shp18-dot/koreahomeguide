@@ -1,6 +1,22 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+
+test('Explorer keeps native area and property values for progressive enhancement', () => {
+  for (const file of ['explore/index.html', 'zh/explore/index.html']) {
+    const html = fs.readFileSync(file, 'utf8');
+    assert.match(html, /id="exploreArea"/);
+    assert.match(html, /value="all"/);
+    for (const type of ['officetel', 'apartment', 'villa', 'detached']) assert.match(html, new RegExp(`value="${type}"`));
+  }
+});
+
+test('popular Explorer districts notify the enhanced native selector', () => {
+  for (const file of ['explore/app.js', 'zh/explore/app.js']) {
+    const script = fs.readFileSync(file, 'utf8');
+    assert.match(script, /areaSelect\.dispatchEvent\(new Event\('change',\{bubbles:true\}\)\)/, file);
+  }
+});
 const utils = require('../explore/explorer-utils.js');
 const config = require('../providers/seoul-config.cjs');
 

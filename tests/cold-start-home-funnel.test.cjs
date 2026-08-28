@@ -7,8 +7,8 @@ test('English homepage presents Rent Check as the single primary action',()=>{
   assert.match(html,/Is your Seoul rent actually fair\?/);
   assert.match(html,/id="rentCheckButton"[^>]*>Check</);
   assert.doesNotMatch(html,/class="hero-primary-action"/);
-  assert.match(html,/Official signed transactions/);
-  assert.match(html,/Built for foreign renters/);
+  assert.match(html,/Official transaction data, explained for foreign renters/);
+  assert.match(html,/Independent and evidence-led/);
   assert.match(html,/data-lead-capture/);
   assert.match(html,/Explore Seoul by budget/);
   assert.doesNotMatch(html,/Make your move easier/);

@@ -51,15 +51,15 @@ test('before-you-sign pillar guide exists in EN/ZH with substantive foreign-rent
   assert.match(zh, /自动获得确定日期/);
 });
 
-test('homepage keeps the before-you-sign pillar prominent without duplicating it in the three-card guide grid', () => {
+test('homepage keeps the before-you-sign pillar prominent in the editorial guide rows', () => {
   const en = read('index.html');
   const zh = read('zh/index.html');
-  assert.match(en, /class="funnel-secondary-card" href="\/guides\/before-you-sign\/"[\s\S]{0,400}<h3>Protect the deposit<\/h3>/);
-  assert.match(zh, /class="funnel-secondary-card" href="\/zh\/guides\/before-you-sign\/"[\s\S]{0,400}<h3>先保护好押金<\/h3>/);
+  assert.match(en, /class="home-guide-row"[^>]*href="\/guides\/before-you-sign\/"[\s\S]{0,220}<h3>Protect the deposit before you pay<\/h3>/);
+  assert.match(zh, /class="home-guide-row"[^>]*href="\/zh\/guides\/before-you-sign\/"[\s\S]{0,220}<h3>付款前，先保护好押金<\/h3>/);
   const enGrid=(en.match(/<div class="funnel-guides">([\s\S]*?)<\/div>/)||[])[1]||'';
   const zhGrid=(zh.match(/<div class="funnel-guides">([\s\S]*?)<\/div>/)||[])[1]||'';
-  assert.doesNotMatch(enGrid, /before-you-sign/);
-  assert.doesNotMatch(zhGrid, /before-you-sign/);
+  assert.equal((enGrid.match(/before-you-sign/g) || []).length, 1);
+  assert.equal((zhGrid.match(/before-you-sign/g) || []).length, 1);
 });
 
 test('homepage positioning is a Rent Check trust funnel rather than a listings promise', () => {
@@ -69,7 +69,7 @@ test('homepage positioning is a Rent Check trust funnel rather than a listings p
   assert.match(en, /<h1>Is your Seoul rent actually fair\?<\/h1>/);
   assert.match(en, /id="rentCheckButton"[^>]*>Check</);
   assert.doesNotMatch(en, /class="hero-primary-action"/);
-  assert.match(en, /Official signed transactions/);
+  assert.match(en, /Official transaction data, explained for foreign renters/);
   assert.doesNotMatch(en, /Find a home in Seoul/i);
   assert.doesNotMatch(en, /<span class="eyebrow">Find a home<\/span>/i);
   assert.match(zh, /你的首尔租金报价真的合理吗？/);
