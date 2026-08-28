@@ -37,6 +37,9 @@ let currentAreaData = null;
 let currentData = null;
 let currentDong = '';
 let currentMapSelection = null;
+const explorerAnalytics = window.KHGProductAnalytics
+  ? window.KHGProductAnalytics.createTracker(window)
+  : null;
 
 function selectedCurrency() { return currencySelect ? currencySelect.value : 'KRW'; }
 function moneyHtml(amountWon) {
@@ -60,6 +63,18 @@ function budgetValues() {
     maxRent:Number(maxRentSelect && maxRentSelect.value || 0),
     maxDeposit:Number(maxDepositSelect && maxDepositSelect.value || 0)
   };
+}
+function trackExplorer(eventName, data = {}, resultState = '') {
+  if (!explorerAnalytics) return false;
+  const budget = budgetValues();
+  return explorerAnalytics.emit(eventName, {
+    language:'en', districtCode:data.districtCode || areaSelect.value,
+    propertyType:data.propertyType || typeSelect.value,
+    maxRent:budget.maxRent, maxDeposit:budget.maxDeposit,
+    resultCount:Array.isArray(data.dongs) ? data.dongs.length : 0,
+    contractCount:Number(data.contractCount || 0), resultState,
+    errorCategory:data.errorCategory || ''
+  });
 }
 function hasBudgetFilter() {
   const { maxRent, maxDeposit } = budgetValues();
@@ -330,6 +345,7 @@ async function loadDong(dong, { showBuildingsOnMap = false, lawdCd = areaSelect.
 
 async function loadArea({ requestedDong = '' } = {}) {
   currentDong = String(requestedDong || '').trim();
+  trackExplorer('explorer_search_start');
   setLoading();
   try {
     const apiParams = new URLSearchParams({ lawdCd:areaSelect.value, type:typeSelect.value });
@@ -339,9 +355,14 @@ async function loadArea({ requestedDong = '' } = {}) {
       : `/api/explore-area?${apiParams.toString()}`;
     const response = await fetch(endpoint);
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error || 'Explorer data failed');
+    if (!response.ok) {
+      const error = new Error(data.error || 'Explorer data failed');
+      error.status = response.status;
+      throw error;
+    }
     currentAreaData = data;
     renderDongs(data.dongs || []);
+    trackExplorer('explorer_search_result', data, (data.dongs || []).length ? 'success' : 'empty');
     const hasRequestedDong = !isAllSeoul && currentDong && (data.dongs || []).some(item => item.dong === currentDong);
     if (hasRequestedDong) {
       await loadDong(currentDong);
@@ -350,7 +371,10 @@ async function loadArea({ requestedDong = '' } = {}) {
     currentDong = '';
     renderSummary(data, '');
     history.replaceState(null, '', `/explore/?${currentParams(false).toString()}`);
-  } catch (_) {
+  } catch (error) {
+    trackExplorer('explorer_search_error', {
+      errorCategory:window.KHGProductAnalytics && window.KHGProductAnalytics.errorCategory(error)
+    }, 'error');
     currentAreaData = null;
     currentData = null;
     currentDong = '';

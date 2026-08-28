@@ -26,6 +26,18 @@ const rentCheckCta = document.querySelector('#rentCheckCta');
 const backToExplore = document.querySelector('#backToExplore');
 let fxRates = {};
 let buildingData = null;
+const buildingAnalytics = window.KHGProductAnalytics
+  ? window.KHGProductAnalytics.createTracker(window)
+  : null;
+
+function trackBuilding(data = {}, resultState = '', errorCategory = '') {
+  if (!buildingAnalytics) return false;
+  return buildingAnalytics.emit('explorer_building_detail_view', {
+    language:'en', districtCode:data.districtCode || lawdCd,
+    propertyType:data.propertyType || type,
+    contractCount:Number(data.contractCount || 0), resultState, errorCategory
+  });
+}
 
 function selectedCurrency() { return currencySelect ? currencySelect.value : 'KRW'; }
 function moneyHtml(amountWon) {
@@ -182,15 +194,22 @@ async function loadBuilding() {
     buildingName.textContent = 'Building data link is incomplete.';
     buildingStatus.textContent = 'Return to Rent Explorer and choose a building again.';
     buildingStatus.className = 'market-status error';
+    trackBuilding({}, 'error', 'request');
     return;
   }
   try {
     const params = new URLSearchParams({ lawdCd, type, buildingKey });
     const response = await fetch(`/api/explore-building?${params.toString()}`);
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error || 'Building data failed');
+    if (!response.ok) {
+      const error = new Error(data.error || 'Building data failed');
+      error.status = response.status;
+      throw error;
+    }
     renderBuilding(data);
-  } catch (_) {
+    trackBuilding(data, Number(data.contractCount || 0) > 0 ? 'success' : 'empty');
+  } catch (error) {
+    trackBuilding({}, 'error', window.KHGProductAnalytics && window.KHGProductAnalytics.errorCategory(error));
     buildingName.textContent = 'Building data is unavailable.';
     buildingStatus.textContent = 'This building may not have reported contracts in the selected recent period, or official data may be temporarily unavailable.';
     buildingStatus.className = 'market-status error';

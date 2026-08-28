@@ -26,6 +26,18 @@ const rentCheckCta = document.querySelector('#rentCheckCta');
 const backToExplore = document.querySelector('#backToExplore');
 let fxRates = {};
 let buildingData = null;
+const buildingAnalytics = window.KHGProductAnalytics
+  ? window.KHGProductAnalytics.createTracker(window)
+  : null;
+
+function trackBuilding(data = {}, resultState = '', errorCategory = '') {
+  if (!buildingAnalytics) return false;
+  return buildingAnalytics.emit('explorer_building_detail_view', {
+    language:'zh-CN', districtCode:data.districtCode || lawdCd,
+    propertyType:data.propertyType || type,
+    contractCount:Number(data.contractCount || 0), resultState, errorCategory
+  });
+}
 
 function selectedCurrency() { return currencySelect ? currencySelect.value : 'CNY'; }
 function moneyHtml(amountWon) {
@@ -150,13 +162,15 @@ async function loadFx() {
 }
 async function loadBuilding() {
   if (languageSwitch) languageSwitch.href = `/explore/building/?${matchingQuery()}`;
-  if (!lawdCd || !type || !buildingKey) { buildingName.textContent = '建筑数据链接不完整。'; buildingStatus.textContent = '请返回租金探索并重新选择建筑。'; buildingStatus.className = 'market-status error'; return; }
+  if (!lawdCd || !type || !buildingKey) { buildingName.textContent = '建筑数据链接不完整。'; buildingStatus.textContent = '请返回租金探索并重新选择建筑。'; buildingStatus.className = 'market-status error'; trackBuilding({}, 'error', 'request'); return; }
   try {
     const params = new URLSearchParams({ lawdCd, type, buildingKey });
     const response = await fetch(`/api/explore-building?${params.toString()}`); const data = await response.json();
-    if (!response.ok) throw new Error(data.error || 'Building data failed');
+    if (!response.ok) { const error = new Error(data.error || 'Building data failed'); error.status = response.status; throw error; }
     renderBuilding(data);
-  } catch (_) {
+    trackBuilding(data, Number(data.contractCount || 0) > 0 ? 'success' : 'empty');
+  } catch (error) {
+    trackBuilding({}, 'error', window.KHGProductAnalytics && window.KHGProductAnalytics.errorCategory(error));
     buildingName.textContent = '建筑数据暂时不可用。';
     buildingStatus.textContent = '该建筑近期可能没有官方申报合同，或官方数据暂时无法加载。';
     buildingStatus.className = 'market-status error';

@@ -110,6 +110,9 @@
     if (!section || !canvas || !status || !meta) return null;
     const zh = String(documentObject.documentElement.lang || '').toLowerCase().startsWith('zh');
     const copy = statusCopy(zh);
+    const analytics = windowObject.KHGProductAnalytics
+      ? windowObject.KHGProductAnalytics.createTracker(windowObject)
+      : null;
     let requestId = 0;
     let panorama = null;
     let configPromise = null;
@@ -140,13 +143,22 @@
       reset();
       if (!model || model.kind !== 'building' || !point(model)) return;
       const currentRequest = requestId;
+      let outcomeTracked = false;
+      const trackOutcome = (resultState, errorCategory = '') => {
+        if (outcomeTracked || !analytics) return false;
+        outcomeTracked = true;
+        return analytics.emit('explorer_street_view_result', {
+          language:zh ? 'zh-CN' : 'en', districtCode:model.districtCode,
+          propertyType:model.propertyType, resultState, errorCategory
+        });
+      };
       section.hidden = false;
       section.dataset.state = 'loading';
       status.textContent = copy.loading;
       try {
         const config = await getConfig();
         if (currentRequest !== requestId) return;
-        if (!config.naverKeyId) { reset(); return; }
+        if (!config.naverKeyId) { trackOutcome('unconfigured', 'config'); reset(); return; }
         await loadSdk(windowObject, config.naverKeyId);
         if (currentRequest !== requestId) return;
         canvas.hidden = false;
@@ -164,12 +176,14 @@
             section.dataset.state = 'empty';
             status.textContent = copy.unavailable;
             meta.textContent = '';
+            trackOutcome('empty');
             return;
           }
           status.textContent = '';
           section.dataset.state = 'ready';
           meta.textContent = copy.captured(result.photoDate, result.distanceMeters);
           if (panel) panel.classList.add('has-street-view');
+          trackOutcome('ready');
         });
       } catch (_) {
         if (currentRequest !== requestId) return;
@@ -177,6 +191,7 @@
         section.dataset.state = 'error';
         status.textContent = copy.error;
         meta.textContent = '';
+        trackOutcome('error', 'sdk');
       }
     }
 
