@@ -1,6 +1,9 @@
 (function(root, factory) {
   'use strict';
-  const api = factory();
+  const locations = typeof module === 'object' && module.exports
+    ? require('./location-catalog.js')
+    : root && root.KHGLocations;
+  const api = factory(locations);
   if (typeof module === 'object' && module.exports) module.exports = api;
   if (root) root.KHGSavedQuotes = api;
 
@@ -9,7 +12,7 @@
     if (root.document.readyState === 'loading') root.document.addEventListener('DOMContentLoaded', start, { once:true });
     else start();
   }
-})(typeof window !== 'undefined' ? window : globalThis, function() {
+})(typeof window !== 'undefined' ? window : globalThis, function(locations) {
   'use strict';
 
   const STORAGE_KEY = 'khg_saved_rent_quotes_v1';
@@ -19,18 +22,13 @@
   const RETENTION_MS = 90 * 24 * 60 * 60 * 1000;
   const RECHECK_TTL_MS = 10 * 60 * 1000;
   const RETURN_VISIT_MS = 6 * 60 * 60 * 1000;
-  const DISTRICT_CODES = new Set(['11680','11200','11440','11170','11560','11620','11230','11410','11290','11215']);
+  const districts = locations && locations.RENT_CHECK_DISTRICTS || {};
+  const catalogReady = Object.keys(districts).length === 25;
+  const DISTRICT_CODES = new Set(Object.keys(districts));
   const PROPERTY_TYPES = new Set(['apartment','officetel','villa','detached','studio']);
   const RATINGS = new Set(['above','fair','below','insufficient']);
   const CONFIDENCE = new Set(['high','medium','low']);
 
-  const districts = {
-    '11680':['Gangnam-gu','江南区'], '11200':['Seongdong-gu','城东区'],
-    '11440':['Mapo-gu','麻浦区'], '11170':['Yongsan-gu','龙山区'],
-    '11560':['Yeongdeungpo-gu','永登浦区'], '11620':['Gwanak-gu','冠岳区'],
-    '11230':['Dongdaemun-gu','东大门区'], '11410':['Seodaemun-gu','西大门区'],
-    '11290':['Seongbuk-gu','城北区'], '11215':['Gwangjin-gu','广津区']
-  };
   const propertyTypes = {
     apartment:['Apartment','公寓'], officetel:['Officetel','办公住宅'],
     villa:['Low-rise multifamily','低层多户住宅'], detached:['Detached & multi-unit','独栋及多户住宅'],
@@ -93,6 +91,7 @@
 
   function createStore({ storage, now = () => Date.now(), idFactory } = {}) {
     function parse() {
+      if (!catalogReady) return [];
       try {
         const raw = storage && storage.getItem(STORAGE_KEY);
         const values = raw ? JSON.parse(raw) : [];
@@ -108,7 +107,7 @@
     }
 
     function write(values) {
-      if (!storage || typeof storage.setItem !== 'function') return false;
+      if (!catalogReady || !storage || typeof storage.setItem !== 'function') return false;
       try {
         storage.setItem(STORAGE_KEY, JSON.stringify(values.slice(0, MAX_QUOTES)));
         return true;
@@ -118,12 +117,14 @@
     }
 
     function list() {
+      if (!catalogReady) return [];
       const values = parse();
       write(values);
       return values;
     }
 
     function save(input) {
+      if (!catalogReady) return null;
       const quote = normalizeQuote(input, { now:now(), idFactory });
       if (!quote) return null;
       const existing = parse();
@@ -136,6 +137,7 @@
     }
 
     function updateLabel(id, label) {
+      if (!catalogReady) return null;
       const values = parse();
       const index = values.findIndex(value => value.id === String(id || ''));
       if (index < 0) return null;
@@ -149,11 +151,13 @@
     }
 
     function remove(id) {
+      if (!catalogReady) return false;
       const values = parse().filter(value => value.id !== String(id || ''));
       return write(values);
     }
 
     function clear() {
+      if (!catalogReady) return false;
       try {
         if (storage && typeof storage.removeItem === 'function') storage.removeItem(STORAGE_KEY);
         return true;
@@ -228,7 +232,11 @@
   }
 
   function localeIndex(language) { return language === 'zh-CN' ? 1 : 0; }
-  function districtLabel(code, language) { return (districts[code] || [code, code])[localeIndex(language)]; }
+  function districtLabel(code, language) {
+    const record = districts[String(code || '')];
+    if (!record) return String(code || '');
+    return language === 'zh-CN' ? (record['zh-CN'] || record.en || record.ko) : (record.en || record.ko);
+  }
   function propertyLabel(type, language) { return (propertyTypes[type] || [type, type])[localeIndex(language)]; }
   function defaultLabel(quote, language) { return `${districtLabel(quote.districtCode, language)} · ${propertyLabel(quote.propertyType, language)}`; }
   function countBucket(count) { return count >= 3 ? '3+' : String(Math.max(0, count)); }
@@ -242,7 +250,7 @@
   }
 
   function mount({ root = globalThis, doc = root && root.document } = {}) {
-    if (!root || !doc || doc.documentElement.dataset.savedQuotesMounted === 'true') return null;
+    if (!catalogReady || !root || !doc || doc.documentElement.dataset.savedQuotesMounted === 'true') return null;
     doc.documentElement.dataset.savedQuotesMounted = 'true';
     const language = doc.documentElement.lang === 'zh-CN' ? 'zh-CN' : 'en';
     let storage = null;

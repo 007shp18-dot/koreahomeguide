@@ -4,9 +4,13 @@ const fs = require('node:fs');
 
 const en = fs.readFileSync('tools/seoul-rent-check/index.html','utf8');
 const zh = fs.readFileSync('zh/tools/seoul-rent-check/index.html','utf8');
-const codes = ['11680','11200','11440','11170','11560','11620','11230','11410','11290','11215'];
+const codes = [
+  '11680','11440','11170','11200','11560','11620','11230','11410','11290','11215',
+  '11110','11140','11260','11305','11320','11350','11380','11470','11500','11530',
+  '11545','11590','11650','11710','11740'
+];
 
-test('Rent Check exposes all 10 supported Seoul districts in EN and ZH', () => {
+test('Rent Check exposes all 25 Seoul districts in EN and ZH', () => {
   for (const code of codes) {
     assert.match(en, new RegExp(`value="${code}"`));
     assert.match(zh, new RegExp(`value="${code}"`));
@@ -16,11 +20,15 @@ test('Rent Check exposes all 10 supported Seoul districts in EN and ZH', () => {
   assert.match(en, /Seodaemun-gu/);
   assert.match(en, /Seongbuk-gu/);
   assert.match(en, /Gwangjin-gu/);
+  assert.match(en, /Songpa-gu/);
+  assert.match(en, /Jongno-gu/);
   assert.match(zh, /冠岳区/);
   assert.match(zh, /东大门区/);
   assert.match(zh, /西大门区/);
   assert.match(zh, /城北区/);
   assert.match(zh, /广津区/);
+  assert.match(zh, /松坡区/);
+  assert.match(zh, /钟路区/);
 });
 
 test('Rent Check header Guides links go to the guide hubs', () => {
@@ -48,7 +56,7 @@ test('Rent Check keeps canonical, hreflang, currency and v11 script wiring intac
   }
 });
 
-test('Area selector contains exactly the 10 supported district options', () => {
+test('Area selector contains exactly the 25 Rent Check district options', () => {
   for (const html of [en, zh]) {
     const match = html.match(/<select id="rentCheckArea">([\s\S]*?)<\/select>/);
     assert.ok(match);

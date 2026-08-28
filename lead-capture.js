@@ -4,8 +4,8 @@
   const SUPPORTED_LANGUAGES = new Set(['en','zh-CN']);
   const SHAREABLE_PROPERTY_TYPES = new Set(['apartment','officetel','villa','detached']);
   const SHARE_DISTRICTS = {
-    en:{ '11680':'Gangnam-gu', '11440':'Mapo-gu', '11170':'Yongsan-gu', '11200':'Seongdong-gu', '11560':'Yeongdeungpo-gu', '11620':'Gwanak-gu', '11230':'Dongdaemun-gu', '11410':'Seodaemun-gu', '11290':'Seongbuk-gu', '11215':'Gwangjin-gu' },
-    'zh-CN':{ '11680':'江南区', '11440':'麻浦区', '11170':'龙山区', '11200':'城东区', '11560':'永登浦区', '11620':'冠岳区', '11230':'东大门区', '11410':'西大门区', '11290':'城北区', '11215':'广津区' }
+    en:{ '11680':'Gangnam-gu', '11440':'Mapo-gu', '11170':'Yongsan-gu', '11200':'Seongdong-gu', '11560':'Yeongdeungpo-gu', '11620':'Gwanak-gu', '11230':'Dongdaemun-gu', '11410':'Seodaemun-gu', '11290':'Seongbuk-gu', '11215':'Gwangjin-gu', '11110':'Jongno-gu', '11140':'Jung-gu', '11260':'Jungnang-gu', '11305':'Gangbuk-gu', '11320':'Dobong-gu', '11350':'Nowon-gu', '11380':'Eunpyeong-gu', '11470':'Yangcheon-gu', '11500':'Gangseo-gu', '11530':'Guro-gu', '11545':'Geumcheon-gu', '11590':'Dongjak-gu', '11650':'Seocho-gu', '11710':'Songpa-gu', '11740':'Gangdong-gu' },
+    'zh-CN':{ '11680':'江南区', '11440':'麻浦区', '11170':'龙山区', '11200':'城东区', '11560':'永登浦区', '11620':'冠岳区', '11230':'东大门区', '11410':'西大门区', '11290':'城北区', '11215':'广津区', '11110':'钟路区', '11140':'中区', '11260':'中浪区', '11305':'江北区', '11320':'道峰区', '11350':'芦原区', '11380':'恩平区', '11470':'阳川区', '11500':'江西区', '11530':'九老区', '11545':'衿川区', '11590':'铜雀区', '11650':'瑞草区', '11710':'松坡区', '11740':'江东区' }
   };
   const SHARE_PROPERTY_LABELS = {
     en:{ apartment:'apartment', officetel:'officetel', villa:'low-rise multifamily home', detached:'detached & multi-unit house' },

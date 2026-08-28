@@ -106,7 +106,7 @@ test('raw/client MOLIT APIs apply district/source guards and safe error logging'
   assert.match(realPrices, /logApiError/);
 
   const rentCheck = source('api/rent-check.js');
-  assert.match(rentCheck, /isSupportedAreaCode/);
+  assert.match(rentCheck, /isRentCheckAreaCode/);
   assert.match(rentCheck, /fetchWithRetry/);
 
   for (const file of ['api/rent-check.js','api/rent-market.js','api/explore-area.js','api/explore-dong.js','api/explore-building.js']) {

@@ -1,5 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const vm = require('node:vm');
 const saved = require('../saved-rent-quotes.js');
 
 function quote(overrides = {}) {
@@ -40,6 +42,38 @@ test('studio quotes can be saved and localized', () => {
   assert.equal(result.propertyType, 'studio');
   assert.equal(saved.propertyLabel('studio', 'en'), 'Studio / One-room');
   assert.equal(saved.propertyLabel('studio', 'zh-CN'), '单间 / One-room');
+});
+
+test('new Seoul districts survive save, compare labels, and recheck normalization', () => {
+  const result = saved.normalizeQuote(quote({ districtCode:'11710' }), {
+    now:Date.UTC(2026, 7, 28), idFactory:() => 'songpa-1'
+  });
+  assert.equal(result.districtCode, '11710');
+  assert.equal(saved.districtLabel('11710', 'en'), 'Songpa-gu');
+  assert.equal(saved.districtLabel('11710', 'zh-CN'), '松坡区');
+  assert.equal(saved.normalizeQuote(quote({ districtCode:'11110' })).districtCode, '11110');
+});
+
+test('a missing browser district catalog never erases existing saved quotes', () => {
+  const source = fs.readFileSync('saved-rent-quotes.js', 'utf8');
+  const existing = JSON.stringify([{
+    ...quote(), id:'existing-1', label:'Mapo A', savedAt:'2026-08-28T00:00:00.000Z', expiresAt:'2099-01-01T00:00:00.000Z'
+  }]);
+  let stored = existing;
+  let writes = 0;
+  const storage = {
+    getItem:() => stored,
+    setItem:(_key, value) => { stored = value; writes += 1; },
+    removeItem:() => {}
+  };
+  const root = { localStorage:storage };
+  vm.runInNewContext(source, { window:root, globalThis:root, console });
+  const store = root.KHGSavedQuotes.createStore({ storage });
+  const listed = store.list();
+  assert.equal(Array.isArray(listed), true);
+  assert.equal(listed.length, 0);
+  assert.equal(writes, 0);
+  assert.equal(stored, existing);
 });
 
 test('store keeps at most eight newest quotes and supports remove and clear', () => {

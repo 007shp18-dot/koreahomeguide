@@ -21,6 +21,22 @@ test('normalizes email and accepts a valid lead_capture payload', () => {
   assert.equal(result.value.privacy_notice_version, '2026-08-27');
 });
 
+test('lead and help flows accept districts added to Rent Check coverage', () => {
+  const base = {
+    ...consent,
+    email:'user@example.com',
+    language:'en',
+    propertyType:'officetel',
+    areaSqm:28
+  };
+  const lead = normalizeLeadPayload({ ...base, kind:'lead_capture', districtCode:'11710' });
+  const help = normalizeLeadPayload({ ...base, kind:'help_request', districtCode:'11110', helpMessage:'Signing next week.' });
+  assert.equal(lead.ok, true);
+  assert.equal(lead.value.district_code, '11710');
+  assert.equal(help.ok, true);
+  assert.equal(help.value.district_code, '11110');
+});
+
 test('rejects email submission without explicit, versioned privacy consent', () => {
   const base = { kind:'lead_capture', email:'a@b.com', language:'en', districtCode:'11440', propertyType:'villa', areaSqm:25 };
   assert.equal(normalizeLeadPayload(base).ok, false);

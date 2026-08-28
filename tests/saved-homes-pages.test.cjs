@@ -30,6 +30,19 @@ test('all four Rent Check entry points bind saved quotes before their result run
   }
 });
 
+test('every saved-home entry point loads the shared district catalog first', () => {
+  for (const file of [
+    'index.html','tools/seoul-rent-check/index.html','saved-homes/index.html',
+    'zh/index.html','zh/tools/seoul-rent-check/index.html','zh/saved-homes/index.html'
+  ]) {
+    const html = fs.readFileSync(file, 'utf8');
+    const catalog = html.indexOf('/location-catalog.js');
+    const saved = html.indexOf('/saved-rent-quotes.js');
+    assert.ok(catalog >= 0, `${file} loads the shared location catalog`);
+    assert.ok(catalog < saved, `${file} loads locations before saved quotes`);
+  }
+});
+
 test('saved comparison code avoids account, address, landlord, and broker data fields', () => {
   const source = fs.readFileSync('saved-rent-quotes.js', 'utf8');
   assert.match(source, /MAX_QUOTES = 8/);

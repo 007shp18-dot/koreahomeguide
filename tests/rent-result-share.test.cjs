@@ -52,6 +52,18 @@ test('Chinese share summary uses localized labels without Korean parentheticals'
   assert.doesNotMatch(payload.text, /[（）()]|강남구|아파트/);
 });
 
+test('share summaries localize districts added to Rent Check coverage', () => {
+  const share = require('../lead-capture.js');
+  const en = share.buildSharePayload({
+    language:'en', districtCode:'11710', propertyType:'officetel', rating:'fair', comparableCount:9
+  });
+  const zh = share.buildSharePayload({
+    language:'zh-CN', districtCode:'11710', propertyType:'officetel', rating:'fair', comparableCount:9
+  });
+  assert.match(en.text, /Songpa-gu officetel/i);
+  assert.match(zh.text, /松坡区Officetel/);
+});
+
 test('share action uses Web Share and falls back to clipboard copy', async () => {
   const share = require('../lead-capture.js');
   const payload = { title:'KoreaHomeGuide Rent Check', text:'Fair result', url:'https://example.com/' };

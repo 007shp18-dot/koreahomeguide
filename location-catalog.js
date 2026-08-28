@@ -23,6 +23,25 @@
     '11215':{ slug:'gwangjin-gu', ko:'광진구', en:'Gwangjin-gu', 'zh-CN':'广津区' }
   });
 
+  const RENT_CHECK_DISTRICTS = freezeRecords({
+    ...DISTRICTS,
+    '11110':{ slug:'jongno-gu', ko:'종로구', en:'Jongno-gu', 'zh-CN':'钟路区' },
+    '11140':{ slug:'jung-gu', ko:'중구', en:'Jung-gu', 'zh-CN':'中区' },
+    '11260':{ slug:'jungnang-gu', ko:'중랑구', en:'Jungnang-gu', 'zh-CN':'中浪区' },
+    '11305':{ slug:'gangbuk-gu', ko:'강북구', en:'Gangbuk-gu', 'zh-CN':'江北区' },
+    '11320':{ slug:'dobong-gu', ko:'도봉구', en:'Dobong-gu', 'zh-CN':'道峰区' },
+    '11350':{ slug:'nowon-gu', ko:'노원구', en:'Nowon-gu', 'zh-CN':'芦原区' },
+    '11380':{ slug:'eunpyeong-gu', ko:'은평구', en:'Eunpyeong-gu', 'zh-CN':'恩平区' },
+    '11470':{ slug:'yangcheon-gu', ko:'양천구', en:'Yangcheon-gu', 'zh-CN':'阳川区' },
+    '11500':{ slug:'gangseo-gu', ko:'강서구', en:'Gangseo-gu', 'zh-CN':'江西区' },
+    '11530':{ slug:'guro-gu', ko:'구로구', en:'Guro-gu', 'zh-CN':'九老区' },
+    '11545':{ slug:'geumcheon-gu', ko:'금천구', en:'Geumcheon-gu', 'zh-CN':'衿川区' },
+    '11590':{ slug:'dongjak-gu', ko:'동작구', en:'Dongjak-gu', 'zh-CN':'铜雀区' },
+    '11650':{ slug:'seocho-gu', ko:'서초구', en:'Seocho-gu', 'zh-CN':'瑞草区' },
+    '11710':{ slug:'songpa-gu', ko:'송파구', en:'Songpa-gu', 'zh-CN':'松坡区' },
+    '11740':{ slug:'gangdong-gu', ko:'강동구', en:'Gangdong-gu', 'zh-CN':'江东区' }
+  });
+
   const ZH_INDEXABLE_DISTRICT_CODES = Object.freeze([
     '11680', '11440', '11170', '11200', '11560'
   ]);
@@ -286,7 +305,7 @@
   }
 
   return Object.freeze({
-    DISTRICTS, DONGS, PROPERTY_TYPES, ZH_INDEXABLE_DISTRICT_CODES,
+    DISTRICTS, RENT_CHECK_DISTRICTS, DONGS, PROPERTY_TYPES, ZH_INDEXABLE_DISTRICT_CODES,
     districtLabel, dongLabel, propertyTypeLabel, districtSlug, localeKey,
     supportsZhIndexing
   });
