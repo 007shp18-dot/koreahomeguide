@@ -87,12 +87,9 @@ test('saved-home comparison supports editing, private rechecks, and mobile cards
   assert.match(source, /saved-homes-comparison-cards/);
   assert.match(source, /data-add-fee-for/);
   assert.match(source, /data-fee-input-for/);
-  assert.match(source, /Add fee to compare/);
-  assert.match(source, /填写管理费后比较/);
   assert.match(source, /saved-homes-completeness-note/);
   assert.match(source, /comparisonCompleteness\(chosen\)/);
   assert.match(source, /completeness\.missing === 1 \? 'is' : 'are'/);
-  assert.match(source, /reduceMotionQuery[^]*behavior:reduceMotionQuery && reduceMotionQuery\.matches \? 'auto' : 'smooth'/);
   assert.match(source, /saved_quotes_return_visit/);
   assert.match(css, /\.saved-homes-comparison-cards/);
   assert.match(css, /\.saved-home-add-fee\{[^}]*min-height:44px/);
@@ -101,6 +98,21 @@ test('saved-home comparison supports editing, private rechecks, and mobile cards
     const html = fs.readFileSync(file, 'utf8');
     assert.match(html, /id="savedHomesStatus"/);
   }
+});
+
+test('comparison edits a missing management fee inline without duplicate boxed actions', () => {
+  const source = fs.readFileSync('saved-homes-page.js', 'utf8');
+  const css = fs.readFileSync('styles.css', 'utf8');
+
+  assert.match(source, /className = 'saved-home-inline-fee-editor'/);
+  assert.match(source, /data-inline-fee-input-for/);
+  assert.match(source, /data-inline-fee-save-for/);
+  assert.match(source, /Add fee above/);
+  assert.match(source, /请在上方填写管理费/);
+  assert.doesNotMatch(source, /scrollIntoView\(/);
+  assert.match(css, /\.saved-home-inline-fee-editor\{[^}]*display:inline-grid/);
+  assert.match(css, /\.saved-home-add-fee\{[^}]*border:0[^}]*min-height:44px/);
+  assert.match(css, /\.saved-homes-table tr\.is-monthly-cost-row>th[^}]*vertical-align:middle/);
 });
 
 test('saved-home comparison supports private decision notes, visit state, candidates, and checks', () => {

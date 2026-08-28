@@ -270,10 +270,10 @@ test('mobile comparison keeps decision-critical rows visible and moves secondary
 
   assert.deepEqual(grouped.summary.map(row => row.key), [
     'areaType', 'contractCandidate', 'contractChecks', 'deposit',
-    'monthlyRent', 'monthlyTotal', 'verdict'
+    'monthlyRent', 'fixedFee', 'monthlyTotal', 'verdict'
   ]);
   assert.deepEqual(grouped.details.map(row => row.key), [
-    'size', 'note', 'visitStatus', 'fixedFee', 'median', 'difference',
+    'size', 'note', 'visitStatus', 'median', 'difference',
     'evidence', 'comparableCount', 'dataThrough', 'saved'
   ]);
   assert.deepEqual(saved.splitMobileComparisonRows([]), { summary:[], details:[] });

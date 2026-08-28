@@ -289,7 +289,7 @@
     const values = Array.isArray(rows) ? rows : [];
     const summaryKeys = new Set([
       'areaType', 'contractCandidate', 'contractChecks', 'deposit',
-      'monthlyRent', 'monthlyTotal', 'verdict'
+      'monthlyRent', 'fixedFee', 'monthlyTotal', 'verdict'
     ]);
     return {
       summary:values.filter(row => row && summaryKeys.has(row.key)),

@@ -20,7 +20,6 @@
   const mobileSelectionLimit = root.KHGSavedQuotes.comparisonSelectionLimit(true);
   const desktopSelectionLimit = root.KHGSavedQuotes.comparisonSelectionLimit(false);
   const mobileQuery = typeof root.matchMedia === 'function' ? root.matchMedia('(max-width: 760px)') : null;
-  const reduceMotionQuery = typeof root.matchMedia === 'function' ? root.matchMedia('(prefers-reduced-motion: reduce)') : null;
   let selected = new Set();
   let rates = {};
   let openedTracked = false;
@@ -58,20 +57,26 @@
     return { missingFee:true, quoteId:quote.id, text:zh ? '未填写' : 'Not added' };
   }
 
+  function missingTotalOutput() {
+    return { missingFeeTotal:true, text:zh ? '请在上方填写管理费' : 'Add fee above' };
+  }
+
   function appendComparisonValue(node, output) {
     if (output && typeof output === 'object' && Object.hasOwn(output, 'money')) {
       node.innerHTML = moneyHtml(output.money);
       return;
     }
     if (output && output.missingFee) {
-      const text = doc.createElement('span');
-      text.textContent = output.text;
       const button = doc.createElement('button');
       button.type = 'button';
       button.className = 'saved-home-add-fee';
       button.setAttribute('data-add-fee-for', output.quoteId);
-      button.textContent = zh ? '填写管理费后比较' : 'Add fee to compare';
-      node.append(text, button);
+      button.textContent = zh ? '填写管理费' : 'Add fee';
+      node.appendChild(button);
+      return;
+    }
+    if (output && output.missingFeeTotal) {
+      node.textContent = output.text;
       return;
     }
     node.textContent = output;
@@ -141,7 +146,7 @@
       { key:'deposit', label:zh ? '押金' : 'Deposit', valueFor:quote => ({ money:quote.depositWon }) },
       { key:'monthlyRent', label:zh ? '月租' : 'Monthly rent', valueFor:quote => ({ money:quote.monthlyRentWon }) },
       { key:'fixedFee', label:zh ? '固定管理费' : 'Fixed management fee', valueFor:quote => quote.managementFeeWon == null ? missingFeeOutput(quote) : ({ money:quote.managementFeeWon }) },
-      { key:'monthlyTotal', label:zh ? '每月固定支出' : 'Known monthly total', valueFor:quote => fixedCost(quote) == null ? missingFeeOutput(quote) : ({ money:fixedCost(quote) }) },
+      { key:'monthlyTotal', label:zh ? '每月固定支出' : 'Known monthly total', valueFor:quote => fixedCost(quote) == null ? missingTotalOutput() : ({ money:fixedCost(quote) }) },
       { key:'median', label:zh ? '可比成交中位数' : 'Comparable median', valueFor:quote => quote.medianValueWon == null ? '—' : ({ money:quote.medianValueWon }) },
       { key:'difference', label:zh ? '与中位数的差异' : 'Difference from median', valueFor:quote => percentText(quote.differencePct) },
       { key:'verdict', label:zh ? '近期成交判断' : 'Recent-contract verdict', valueFor:quote => ratingLabel(quote.rating) },
@@ -243,6 +248,9 @@
     const rows = comparisonRows();
     rows.forEach(rowDefinition => {
       const row = doc.createElement('tr');
+      if (rowDefinition.key === 'fixedFee' || rowDefinition.key === 'monthlyTotal') {
+        row.className = 'is-monthly-cost-row';
+      }
       row.appendChild(textCell(rowDefinition.label, 'th'));
       chosen.forEach(quote => {
         const value = rowDefinition.valueFor(quote);
@@ -558,19 +566,56 @@
       : null;
     if (!button) return;
     const quoteId = button.getAttribute('data-add-fee-for');
-    const input = [...doc.querySelectorAll('[data-fee-input-for]')]
-      .find(candidate => candidate.getAttribute('data-fee-input-for') === quoteId);
-    if (!input) {
+    const quote = store.list().find(candidate => candidate.id === quoteId);
+    const host = button.parentElement;
+    if (!quote || !host) {
       setStatus(zh ? '找不到对应房源的管理费输入框。' : 'The management-fee editor for this home is unavailable.', 'error');
       return;
     }
-    if (typeof input.getBoundingClientRect === 'function') {
-      const rect = input.getBoundingClientRect();
-      const viewportHeight = Number(root.innerHeight || doc.documentElement.clientHeight || 0);
-      if (rect.top < 0 || (viewportHeight && rect.bottom > viewportHeight)) {
-        input.scrollIntoView({ behavior:reduceMotionQuery && reduceMotionQuery.matches ? 'auto' : 'smooth', block:'center' });
+
+    const form = doc.createElement('form');
+    form.className = 'saved-home-inline-fee-editor';
+    const label = doc.createElement('label');
+    const labelText = doc.createElement('span');
+    labelText.className = 'visually-hidden';
+    labelText.textContent = zh ? '固定管理费（韩元/月）' : 'Fixed management fee (KRW/month)';
+    const input = doc.createElement('input');
+    input.type = 'number';
+    input.inputMode = 'numeric';
+    input.min = '0';
+    input.max = '100000000';
+    input.step = '1000';
+    input.placeholder = zh ? '例如 150000' : 'e.g. 150000';
+    input.setAttribute('data-inline-fee-input-for', quoteId);
+    label.append(labelText, input);
+    const save = doc.createElement('button');
+    save.type = 'submit';
+    save.setAttribute('data-inline-fee-save-for', quoteId);
+    save.textContent = zh ? '保存' : 'Save';
+    form.append(label, save);
+    form.addEventListener('submit', submitEvent => {
+      submitEvent.preventDefault();
+      const parsedFee = root.KHGSavedQuotes.parseManagementFeeWon(input.value);
+      if (!parsedFee.valid || parsedFee.value == null) {
+        setStatus(zh ? '请输入0至1亿韩元之间的管理费。' : 'Enter a management fee from KRW 0 to 100,000,000.', 'error');
+        input.focus();
+        return;
       }
-    }
+      const current = store.list().find(candidate => candidate.id === quoteId);
+      const updated = current && store.updateComparisonDetails(quoteId, {
+        managementFeeWon:parsedFee.value,
+        isFavorite:current.isFavorite
+      });
+      if (!updated) {
+        setStatus(zh ? '无法更新管理费。请检查浏览器存储设置。' : 'The management fee could not be updated. Check browser storage settings.', 'error');
+        return;
+      }
+      setStatus(zh ? '每月固定支出已更新。' : 'Known monthly total updated.', 'success');
+      safeTrack('saved_quote_management_fee_updated', store.list().length);
+      render();
+    });
+    host.textContent = '';
+    host.appendChild(form);
     input.focus();
   });
   if (mobileQuery && typeof mobileQuery.addEventListener === 'function') mobileQuery.addEventListener('change', render);

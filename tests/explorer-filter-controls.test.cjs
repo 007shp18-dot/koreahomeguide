@@ -20,6 +20,14 @@ test('Explorer keeps area and housing type as the compact primary filter row', (
   assert.match(css, /\.explorer-search-card \.explorer-budget-field[^}]*grid-column:1\/-1/);
 });
 
+test('Explorer aligns primary labels and controls instead of lifting the housing-type field', () => {
+  const css = read('styles.css');
+
+  assert.match(css, /\.explorer-search-card\{[^}]*align-items:start/);
+  assert.match(css, /\.explorer-search-card \.search-button\{[^}]*margin-top:22px/);
+  assert.match(css, /@media\(max-width:900px\)[^]*\.explorer-search-card \.search-button\{[^}]*margin-top:0/);
+});
+
 test('Explorer filter labels preserve the Korean registered category', () => {
   const en = read('explore/index.html');
   const zh = read('zh/explore/index.html');
