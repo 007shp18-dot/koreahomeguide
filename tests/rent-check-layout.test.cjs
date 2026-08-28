@@ -33,6 +33,8 @@ test('rent-check input values flex without clipping their currency or size units
     css,
     /\.rent-check-money input,\.rent-check-size input\{[^}]*flex:1[^}]*min-width:0[^}]*width:auto/
   );
+  assert.match(css, /\.rent-check-size>b\{[^}]*flex:0 0 auto[^}]*min-width:20px/);
+  assert.match(css, /\.rent-check-size input::-webkit-inner-spin-button[^}]*appearance:none/);
 });
 
 test('embedded Rent Check uses three columns instead of compressing all controls into one row', () => {
@@ -63,10 +65,24 @@ test('homepage balances bilingual selects with a no-wrap monthly-rent label', ()
     cold,
     /\.funnel-rent-card \.rent-check-form\{[^}]*grid-template-columns:minmax\(220px,1\.1fr\) minmax\(220px,1\.1fr\) minmax\(170px,\.9fr\) minmax\(170px,\.9fr\)/
   );
-  assert.match(cold, /\.funnel-rent-card \.rent-check-size-field\{grid-column:span 3\}/);
+  assert.match(cold, /@media\(min-width:1221px\)[^]*\.funnel-rent-card \.rent-check-size-field\{[^}]*grid-column:span 3[^}]*display:grid[^}]*grid-template-columns:minmax\(180px,\.8fr\) minmax\(0,2\.2fr\)/);
+  assert.match(cold, /@media\(min-width:1221px\)[^]*\.funnel-rent-card \.rent-size-controls\{[^}]*grid-column:2[^}]*grid-row:2\/4/);
   assert.match(css, /\.rent-check-form \.field>span\{[^}]*gap:6px[^}]*white-space:nowrap/);
   assert.match(css, /\.core-ui \.field-unit\{[^}]*flex:0 0 auto[^}]*white-space:nowrap/);
   assert.match(cold, /@media\(max-width:1220px\)\{\.funnel-rent-card \.rent-check-form\{[^}]*repeat\(2,minmax\(0,1fr\)\)[^}]*\}\.funnel-rent-card \.rent-check-size-field\{grid-column:auto\}/);
   assert.match(cold, /@media\(max-width:980px\)\{\.funnel-rent-card \.rent-check-form\{[^}]*repeat\(2,minmax\(0,1fr\)\)/);
   assert.doesNotMatch(cold, /@media\(max-width:(?:1280|1200|960)px\)\{\.funnel-rent-card \.rent-check-form/);
+});
+
+test('desktop homepage hero keeps the short promise on one line and releases it on narrower screens', () => {
+  assert.match(cold, /\.funnel-hero\{[^}]*max-width:1240px/);
+  assert.match(cold, /@media\(min-width:981px\)[^]*\.funnel-hero h1\{[^}]*max-width:none[^}]*white-space:nowrap/);
+  assert.match(cold, /@media\(max-width:980px\)[^]*\.funnel-hero h1\{[^}]*white-space:normal/);
+});
+
+test('mobile Explorer panel cannot overflow horizontally or keep a dragged desktop width', () => {
+  const mobile = css.slice(css.indexOf('@media(max-width:760px)'));
+  assert.match(mobile, /\.explorer-map-selection\{[^}]*max-width:100%[^}]*overflow-x:hidden/);
+  assert.match(mobile, /\.explorer-map-selection-head>div\{[^}]*min-width:0/);
+  assert.match(mobile, /\.explorer-map-selection-head h3\{[^}]*overflow-wrap:anywhere/);
 });

@@ -280,7 +280,7 @@ function renderBuildings(buildings) {
     buildingList.innerHTML = '<div class="explorer-empty">No named buildings had reported contracts in this recent period.</div>';
     return;
   }
-  buildingList.innerHTML = buildings.slice(0, 30).map(item => {
+  buildingList.innerHTML = buildings.slice(0, 60).map(item => {
     const dong = item.dong || currentDong;
     const interactiveHref = KHGExplorer.buildBuildingDetailUrl({ lawdCd:currentData && currentData.districtCode || areaSelect.value, type:typeSelect.value, dong, buildingKey:item.buildingKey });
     const location = [dongDisplayName(dong), areaName(), typeName()].filter(Boolean).join(' · ');

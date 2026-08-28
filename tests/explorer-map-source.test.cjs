@@ -81,8 +81,7 @@ test('building map layer verifies precise geocodes, caps candidates, and support
   assert.match(source, /\['ROOFTOP','GEOMETRIC_CENTER'\]/);
   assert.match(source, /!result\.partial_match/);
   assert.match(source, /distanceKm\(center, point\) <= 4/);
-  assert.match(source, /\.slice\(0, 12\)/);
-  assert.match(source, /Promise\.all\(candidates\.map/);
+  assert.match(source, /locateBuildingCandidates/);
   assert.match(source, /buildingLayerRequestId/);
   assert.match(source, /zoom > 15/);
   assert.match(source, /buildingViewportPadding/);
@@ -91,12 +90,55 @@ test('building map layer verifies precise geocodes, caps candidates, and support
   assert.match(source, /khg:map-back-neighborhoods/);
 });
 
+test('building locator fills a useful map progressively without geocoding every reported building', async () => {
+  const controller = require('../explore/map-controller.js');
+  const buildings = Array.from({ length:88 }, (_, index) => ({
+    buildingKey:`building-${index + 1}`,
+    mapLocation:{ buildingName:`Building ${index + 1}` }
+  }));
+  let attempts = 0;
+  const located = await controller.locateBuildingCandidates(buildings, async building => {
+    attempts += 1;
+    return Number(building.buildingKey.split('-')[1]) % 2 === 0 ? { lat:37.5, lng:127 } : null;
+  });
+
+  assert.equal(attempts, 60);
+  assert.equal(located.length, 30);
+  assert.equal(located[0].buildingKey, 'building-2');
+  assert.equal(located.at(-1).buildingKey, 'building-60');
+});
+
+test('building locator stops after 36 verified markers instead of spending the full candidate budget', async () => {
+  const controller = require('../explore/map-controller.js');
+  const buildings = Array.from({ length:88 }, (_, index) => ({
+    buildingKey:`building-${index + 1}`,
+    mapLocation:{ buildingName:`Building ${index + 1}` }
+  }));
+  let attempts = 0;
+  const located = await controller.locateBuildingCandidates(buildings, async () => {
+    attempts += 1;
+    return { lat:37.5, lng:127 };
+  });
+
+  assert.equal(attempts, 36);
+  assert.equal(located.length, 36);
+});
+
+test('Explorer building lists expose up to 60 recent named buildings', () => {
+  for (const file of ['explore/app.js','zh/explore/app.js']) {
+    const source = fs.readFileSync(file, 'utf8');
+    assert.match(source, /buildings\.slice\(0, 60\)/, file);
+  }
+});
+
 test('map details panel can be moved without leaving the map surface', () => {
   const source = fs.readFileSync('explore/map.js','utf8');
   assert.match(source, /explorerMapSelectionDrag/);
   assert.match(source, /setPointerCapture/);
   assert.match(source, /clampPanelPosition/);
   assert.match(source, /ArrowLeft/);
+  assert.match(source, /mobileMapLayout\(\)/);
+  assert.match(source, /if \(mobileMapLayout\(\)\) \{ resetSelectionPanelPosition\(\); return; \}/);
   for (const file of ['explore/index.html','zh/explore/index.html']) {
     assert.match(fs.readFileSync(file,'utf8'), /id="explorerMapSelectionDrag"/);
   }

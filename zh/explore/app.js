@@ -287,7 +287,7 @@ function renderBuildings(buildings) {
     buildingList.innerHTML = '<div class="explorer-empty">近期官方数据中没有可识别名称的建筑。</div>';
     return;
   }
-  buildingList.innerHTML = buildings.slice(0, 30).map(item => {
+  buildingList.innerHTML = buildings.slice(0, 60).map(item => {
     const dong = item.dong || currentDong;
     const interactiveParams = new URLSearchParams({ lawdCd:currentData && currentData.districtCode || areaSelect.value, type:typeSelect.value });
     if (dong) interactiveParams.set('dong', dong);

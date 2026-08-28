@@ -130,6 +130,29 @@
     });
   }
 
+  async function locateBuildingCandidates(buildings, locate, {
+    candidateLimit = 60,
+    targetCount = 36,
+    batchSize = 12
+  } = {}) {
+    if (typeof locate !== 'function') return [];
+    const candidates = (Array.isArray(buildings) ? buildings : [])
+      .filter(item => item && item.mapLocation)
+      .slice(0, Math.max(1, Number(candidateLimit) || 60));
+    const located = [];
+    const width = Math.max(1, Number(batchSize) || 12);
+    const target = Math.max(1, Number(targetCount) || 36);
+    for (let index = 0; index < candidates.length && located.length < target; index += width) {
+      const batch = candidates.slice(index, index + width);
+      const results = await Promise.all(batch.map(async item => {
+        const point = await locate(item);
+        return point ? { ...item, ...point } : null;
+      }));
+      located.push(...results.filter(Boolean));
+    }
+    return located.slice(0, target);
+  }
+
   function buildMapAnalyticsEvent(name, context = {}) {
     if (!MAP_EVENTS.has(String(name || ''))) return null;
     const locale = String(context.locale || '').toLowerCase().startsWith('zh') ? 'zh-CN' : 'en-US';
@@ -217,5 +240,5 @@
     return Object.freeze({ ...(state || {}), selectedDong:String(dong || '') });
   }
 
-  return Object.freeze({ buildMapsSdkUrl, buildMarkerModels, buildBuildingMarkerModels, buildMapAnalyticsEvent, markerVisual, advancedPinVisual, applyAdvancedMarkerBadge, advancedMarkersAvailable, selectDong });
+  return Object.freeze({ buildMapsSdkUrl, buildMarkerModels, buildBuildingMarkerModels, locateBuildingCandidates, buildMapAnalyticsEvent, markerVisual, advancedPinVisual, applyAdvancedMarkerBadge, advancedMarkersAvailable, selectDong });
 });

@@ -23,6 +23,7 @@
 .funnel-section-head p{color:var(--muted);font-size:16px;line-height:1.7}
 .funnel-rent-card{border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--surface);padding:24px;box-shadow:none}
 .funnel-rent-card .rent-check-form{grid-template-columns:minmax(220px,1.1fr) minmax(220px,1.1fr) minmax(170px,.9fr) minmax(170px,.9fr);margin-top:0}.funnel-rent-card .rent-check-size-field{grid-column:span 3}
+@media(min-width:1221px){.funnel-rent-card .rent-check-size-field{grid-column:span 3;display:grid;grid-template-columns:minmax(180px,.8fr) minmax(0,2.2fr);grid-template-rows:auto 52px auto;column-gap:12px;align-items:start}.funnel-rent-card .rent-check-size-field>span{grid-column:1;grid-row:1}.funnel-rent-card .rent-check-size{grid-column:1;grid-row:2}.funnel-rent-card .rent-size-hint{grid-column:1;grid-row:3}.funnel-rent-card .rent-size-controls{grid-column:2;grid-row:2/4;align-self:start;margin-top:0}}
 .lead-capture{margin-top:24px;border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--surface);padding:24px}
 .lead-capture[hidden]{display:none!important}
 .lead-capture-copy h3{margin:4px 0 8px;font-size:24px}
@@ -158,6 +159,8 @@ html[lang="zh-CN"] .funnel-updated-guides .funnel-guide:after{content:"阅读指
 .funnel-hero{max-width:1040px;padding:54px 24px 16px;text-align:left}
 .funnel-hero h1{max-width:760px;margin:0 0 12px;font-size:clamp(42px,5.4vw,64px);line-height:1.03;letter-spacing:-.045em}
 .funnel-hero p{max-width:650px;margin:0;color:var(--ink-soft);font-size:17px}
+@media(min-width:981px){.funnel-hero{max-width:1240px}.funnel-hero h1{max-width:none;white-space:nowrap}}
+@media(max-width:980px){.funnel-hero h1{white-space:normal}}
 .home-rent-workspace{padding-top:0;padding-bottom:76px}
 .home-rent-workspace .funnel-rent-card{border-color:var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-home)}
 .home-primary-trust{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:14px 2px 0;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:12px;line-height:1.55}

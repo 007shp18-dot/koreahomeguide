@@ -12,18 +12,19 @@
     loading:'正在加载地图…', disabled:'地图暂时不可用；街区卡片仍可正常使用。',
     unavailable:'地图暂时不可用；请使用下方街区卡片。', ready:n => `地图显示 ${n} 个街区中心点。`, empty:'当前条件下没有可显示的街区中心点。',
     strong:'较强依据', limited:'有限依据', outside:'超出预算',
-    locating:'正在核验建筑位置…', readyBuildings:n => `显示 ${n} 个已核验建筑位置。`, noBuildings:'没有可安全核验的建筑位置；继续显示街区中心点。'
+    locating:'正在核验建筑位置…', readyBuildings:(shown, total) => `显示 ${shown} 个已核验建筑位置（共 ${total} 个近期建筑）。`, noBuildings:'没有可安全核验的建筑位置；继续显示街区中心点。'
   } : {
     loading:'Loading map…', disabled:'Map temporarily unavailable. Neighborhood cards still work.',
     unavailable:'Map temporarily unavailable. Use the neighborhood cards below.', ready:n => `Showing ${n} neighborhood centers.`, empty:'No mapped neighborhood centers match this selection.',
     strong:'Strong evidence', limited:'Limited evidence', outside:'Outside budget',
-    locating:'Verifying building locations…', readyBuildings:n => `Showing ${n} verified building locations.`, noBuildings:'No building locations could be safely verified. Neighborhood centers remain visible.'
+    locating:'Verifying building locations…', readyBuildings:(shown, total) => `Showing ${shown} verified locations from ${total} recent buildings.`, noBuildings:'No building locations could be safely verified. Neighborhood centers remain visible.'
   };
 
   let map = null;
   let markers = [];
   let latest = { lawdCd:'11680', locale:zh ? 'zh-CN' : 'en', dongs:[] };
   let latestBuildings = [];
+  let latestBuildingTotal = 0;
   let markerScope = 'neighborhood';
   let started = false;
   let selectedMarkerId = '';
@@ -34,6 +35,10 @@
   let buildingLayerRequestId = 0;
   let panelDrag = null;
   const geocodeCache = new Map();
+
+  function mobileMapLayout() {
+    return Boolean(window.matchMedia && window.matchMedia('(max-width: 760px)').matches);
+  }
 
   function buildingViewportPadding() {
     const mobile = window.matchMedia && window.matchMedia('(max-width: 760px)').matches;
@@ -73,6 +78,7 @@
   }
 
   function keepSelectionPanelInMap() {
+    if (mobileMapLayout()) { resetSelectionPanelPosition(); return; }
     if (!selectionPanel || !selectionPanel.classList.contains('is-user-positioned')) return;
     moveSelectionPanel(parseFloat(selectionPanel.style.left) || 8, parseFloat(selectionPanel.style.top) || 8);
   }
@@ -212,7 +218,7 @@
       } else window.setTimeout(capBuildingZoom, 0);
     } else map.fitBounds(bounds, 34);
     highlight(selectedMarkerId, false);
-    status.textContent = markerScope === 'building' ? copy.readyBuildings(models.length) : copy.ready(models.length);
+    status.textContent = markerScope === 'building' ? copy.readyBuildings(models.length, latestBuildingTotal) : copy.ready(models.length);
     trackView(models);
   }
 
@@ -270,15 +276,11 @@
 
   async function showBuildingLayer(detail = {}) {
     const requestId = ++buildingLayerRequestId;
-    const candidates = (Array.isArray(detail.buildings) ? detail.buildings : [])
-      .filter(item => item && item.mapLocation)
-      .slice(0, 12);
+    const candidates = (Array.isArray(detail.buildings) ? detail.buildings : []).filter(item => item && item.mapLocation);
+    latestBuildingTotal = candidates.length;
     if (!candidates.length) { status.textContent = copy.noBuildings; return; }
     status.textContent = copy.locating;
-    const located = (await Promise.all(candidates.map(async item => {
-      const point = await verifiedBuildingPoint(item);
-      return point ? { ...item, ...point } : null;
-    }))).filter(Boolean);
+    const located = await KHGMapController.locateBuildingCandidates(candidates, verifiedBuildingPoint);
     if (requestId !== buildingLayerRequestId) return;
     if (!located.length) { status.textContent = copy.noBuildings; return; }
     markerScope = 'building';
@@ -357,6 +359,7 @@
       buildingLayerRequestId += 1;
       markerScope = 'neighborhood';
       latestBuildings = [];
+      latestBuildingTotal = 0;
       selectedMarkerId = '';
       if (backButton) backButton.hidden = true;
     }
@@ -379,6 +382,7 @@
     buildingLayerRequestId += 1;
     markerScope = 'neighborhood';
     latestBuildings = [];
+    latestBuildingTotal = 0;
     selectedMarkerId = '';
     backButton.hidden = true;
     viewTracked = false;
@@ -388,6 +392,7 @@
 
   if (selectionDrag && selectionPanel) {
     selectionDrag.addEventListener('pointerdown', event => {
+      if (mobileMapLayout()) { resetSelectionPanelPosition(); return; }
       if (event.button !== 0) return;
       const surface = selectionPanel.parentElement.getBoundingClientRect();
       const panel = selectionPanel.getBoundingClientRect();
