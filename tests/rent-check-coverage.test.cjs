@@ -47,7 +47,7 @@ test('Rent Check keeps canonical, hreflang, currency and v11 script wiring intac
     assert.match(html, /id="currencySelect"/);
     assert.match(html, /\/currency-utils\.js/);
     assert.match(html, /rent-check-ui-utils\.js/);
-    assert.match(html, /seoul-rent-check\/app\.js/);
+    assert.match(html, /<script src="\/app\.js"><\/script>/);
     assert.match(html, /value="apartment"/);
     assert.match(html, /value="officetel"/);
     assert.match(html, /value="villa"/);
