@@ -4,15 +4,13 @@ const fs = require('node:fs');
 
 const affectedScripts = [
   'app.js',
-  'zh/app.js',
   'explore/app.js',
   'zh/explore/app.js',
   'explore/building/app.js',
   'zh/explore/building/app.js',
   'rent-market-page.js',
   'zh/rent-market-page.js',
-  'tools/seoul-rent-check/app.js',
-  'zh/tools/seoul-rent-check/app.js'
+  'app.js'
 ];
 
 function scriptPosition(html, src) {
@@ -46,13 +44,13 @@ test('all transaction UIs use the shared locale-aware date formatter', () => {
 test('pages that render transaction dates load date-utils before their app script', () => {
   const pages = [
     ['index.html', '/app.js'],
-    ['zh/index.html', '/zh/app.js'],
+    ['zh/index.html', '/app.js'],
     ['explore/index.html', '/explore/app.js'],
     ['zh/explore/index.html', '/zh/explore/app.js'],
     ['explore/building/index.html', '/explore/building/app.js'],
     ['zh/explore/building/index.html', '/zh/explore/building/app.js'],
-    ['tools/seoul-rent-check/index.html', '/tools/seoul-rent-check/app.js'],
-    ['zh/tools/seoul-rent-check/index.html', '/zh/tools/seoul-rent-check/app.js']
+    ['tools/seoul-rent-check/index.html', '/app.js'],
+    ['zh/tools/seoul-rent-check/index.html', '/app.js']
   ];
   for (const [file, appSrc] of pages) {
     const html = fs.readFileSync(file, 'utf8');
