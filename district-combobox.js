@@ -128,6 +128,10 @@
         const recentCodes=query?[]:readRecent(targetStorage,districts);
         const recentRows=recentCodes.map(code=>byCode.get(code)).filter(Boolean);
         visible=[...recentRows,...filtered.filter(row=>!recentCodes.includes(row.code))];
+        if(!normalizeSearchText(query)){
+          const currentCode=String(select.value||'');
+          visible=visible.filter(row=>row.code!==currentCode);
+        }
         listbox.textContent='';
         visible.forEach((row,index)=>{
           const option=doc.createElement('div');

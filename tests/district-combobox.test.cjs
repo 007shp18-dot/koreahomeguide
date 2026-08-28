@@ -114,6 +114,41 @@ test('Enter selects a filtered district while Escape preserves the native value'
   assert.equal(input.attributes['aria-expanded'], 'false');
 });
 
+test('opening the district list omits the current selection while search can still find it', () => {
+  const combo = require(comboPath);
+  const label = fakeElement('label');
+  const select = fakeElement('select');
+  select.id = 'rentCheckArea';
+  select.value = '11680';
+  label.appendChild(select);
+  const doc = {
+    documentElement: { lang: 'en' },
+    querySelector(selector) { return selector === '#rentCheckArea' ? select : null; },
+    createElement: fakeElement
+  };
+  const storage = memoryStorage({
+    [combo.STORAGE_KEY]: JSON.stringify(['11680', '11440'])
+  });
+  const root = {
+    KHGLocations: locations,
+    localStorage: storage,
+    Event: class FakeEvent { constructor(type, options) { this.type = type; this.bubbles = options.bubbles; } },
+    setTimeout(callback) { callback(); }
+  };
+  const wrapper = combo.mount({ root, doc });
+  const input = wrapper.children[0];
+  const listbox = wrapper.children[1];
+
+  input.listeners.focus();
+  const openCodes = listbox.children.map(option => option.dataset.districtCode);
+  assert.equal(openCodes.includes('11680'), false);
+  assert.equal(openCodes.filter(code => code === '11440').length, 1);
+
+  input.value = '江南';
+  input.listeners.input();
+  assert.deepEqual(listbox.children.map(option => option.dataset.districtCode), ['11680']);
+});
+
 test('all four Rent Check surfaces load progressive enhancement in the safe order', () => {
   for (const file of ['index.html', 'zh/index.html', 'tools/seoul-rent-check/index.html', 'zh/tools/seoul-rent-check/index.html']) {
     const html = fs.readFileSync(path.join(__dirname, '..', file), 'utf8');
