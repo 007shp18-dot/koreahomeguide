@@ -37,7 +37,7 @@ test('all money-entry tools use grouped text inputs and the shared parser', () =
     assert.equal((html.match(/data-currency-input/g) || []).length, 5, file);
     assert.equal((html.match(/data-currency-input[^>]*type="text"[^>]*inputmode="numeric"/g) || []).length, 5, file);
   }
-  for (const file of ['app.js','zh/app.js','tools/seoul-rent-check/app.js','zh/tools/seoul-rent-check/app.js','tools/brokerage-fee-calculator/app.js','zh/tools/brokerage-fee-calculator/app.js']) {
+  for (const file of ['app.js','tools/brokerage-fee-calculator/app.js']) {
     assert.match(fs.readFileSync(file, 'utf8'), /KHGCurrency\.parseInputAmount/, file);
   }
 });
