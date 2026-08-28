@@ -408,54 +408,70 @@ html[lang="zh-CN"] h1,html[lang="zh-CN"] h2,html[lang="zh-CN"] h3{letter-spacing
 .rent-check-next-actions .search-button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 16px;border-radius:var(--radius-action);font-size:var(--text-sm);font-weight:750}
 @media(max-width:760px){.rent-check-next-actions{flex-direction:column}.rent-check-next-actions .search-button{width:100%}}
 
-/* Rent Check result hierarchy: verdict first, evidence second, action third. */
-.rent-check-result{--result-tone:var(--muted);--result-wash:var(--surface-soft)}
-.rent-check-result[data-rating="above"]{--result-tone:#b5473f;--result-wash:#fff8f7}
-.rent-check-result[data-rating="fair"]{--result-tone:#287653;--result-wash:#f6fbf8}
-.rent-check-result[data-rating="below"]{--result-tone:#386da8;--result-wash:#f7faff}
-.rent-check-summary{padding:20px 0 0;border:0;border-top:2px solid var(--ink);border-radius:0;background:transparent;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);align-items:start}
+/* Rent Check: compact financial-data hierarchy inspired by market terminals, not listing portals. */
+.rent-check-page .tool-product-layout{grid-template-columns:minmax(0,1fr);max-width:1120px}
+.rent-check-page .product-main{min-width:0}
+.rent-check-page .context-rail{display:none}
+.rent-check-page .tool-hero{max-width:900px}
+.rent-check-page .rent-check-card{background:var(--surface);box-shadow:0 20px 60px rgba(15,23,42,.055)}
+.rent-check-result{--result-tone:var(--muted);--result-wash:var(--surface-soft);font-variant-numeric:tabular-nums}
+.rent-check-result[data-rating="above"]{--result-tone:#a53c36;--result-wash:#fff8f7}
+.rent-check-result[data-rating="fair"]{--result-tone:#23734d;--result-wash:#f5faf7}
+.rent-check-result[data-rating="below"]{--result-tone:#315f9b;--result-wash:#f5f8fc}
+.rent-check-summary{padding:28px 0 0;border:0;border-top:1px solid var(--ink);border-radius:0;background:transparent;grid-template-columns:minmax(260px,.9fr) minmax(360px,1.1fr);gap:26px 40px;align-items:start}
 .rent-check-badges{display:none}
-.rent-check-verdict-primary{display:grid;grid-template-columns:20px minmax(0,1fr);gap:3px 10px;margin:0;padding:0;border:0;border-radius:0;background:transparent}
-.rent-check-verdict-primary>[data-rent-verdict-icon]{display:block;grid-row:1/4;width:auto;height:auto;border:0;border-radius:0;color:var(--result-tone);font-size:18px;font-weight:800;line-height:1.45}
-.rent-check-verdict-primary>[data-rent-verdict-label]{align-self:center;color:var(--ink);font-size:var(--text-2xl);line-height:var(--leading-tight);letter-spacing:var(--tracking-tight)}
-.rent-check-verdict-primary>[data-rent-verdict-difference]{color:var(--ink-soft);font-size:var(--text-base);font-weight:700;line-height:1.45}
-.rent-check-verdict-primary>[data-rent-verdict-sample]{color:var(--muted);font-size:var(--text-xs);font-weight:600;line-height:1.45}
+.rent-check-verdict-primary{display:grid;grid-template-columns:14px minmax(0,1fr);grid-template-areas:"icon label" ". difference" ". comparison" ". sample";column-gap:10px;margin:0;padding:0;border:0;border-radius:0;background:transparent}
+.rent-check-verdict-primary>[data-rent-verdict-icon]{grid-area:icon;align-self:center;color:var(--result-tone);font-size:11px;font-weight:900;line-height:1}
+.rent-check-verdict-primary>[data-rent-verdict-label]{grid-area:label;align-self:center;color:var(--ink-soft);font-size:var(--text-sm);font-weight:800;line-height:1.2;letter-spacing:.055em;text-transform:uppercase}
+.rent-check-verdict-primary>[data-rent-verdict-difference]{grid-area:difference;margin:10px 0 0;color:var(--result-tone);font-size:clamp(46px,6vw,64px);font-weight:760;line-height:.98;letter-spacing:-.055em}
+.rent-check-verdict-primary>[data-rent-verdict-comparison]{grid-area:comparison;margin-top:7px;color:var(--ink-soft);font-size:var(--text-sm);font-weight:650;line-height:1.4}
+.rent-check-verdict-primary>[data-rent-verdict-sample]{grid-area:sample;margin:3px 0 0;color:var(--muted);font-size:var(--text-xs);font-weight:650;line-height:1.45}
 .rent-check-verdict>h2{display:none}
-#rentCheckMeta.rent-check-evidence-facts{display:flex;flex-wrap:wrap;gap:5px 12px;margin-top:12px}
+.rent-check-basis{grid-column:1/-1;padding-top:14px;border-top:1px solid var(--line)}
+#rentCheckMeta.rent-check-evidence-facts{display:flex;flex-wrap:wrap;gap:5px 12px;margin:0}
 .rent-check-evidence-facts span{display:inline-flex;align-items:center;min-height:0;padding:0;border:0;border-radius:0;background:transparent;color:var(--ink-soft);font-size:var(--text-xs);font-weight:650;line-height:1.45}
 .rent-check-evidence-facts span:not(:last-child)::after{content:"·";margin-left:12px;color:var(--muted-light)}
-.rent-check-summary>.rent-check-metrics{align-self:start;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.rent-check-summary>.rent-check-metrics>div{padding:13px 14px;border:0;border-radius:0;background:transparent}
+.rent-check-basis .rent-check-confidence-details{max-width:none;margin-top:6px}
+.rent-check-summary>.rent-check-metrics{grid-template-columns:repeat(2,minmax(0,1fr));align-self:start;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.rent-check-summary>.rent-check-metrics>div{min-width:0;padding:16px 18px;border:0;border-radius:0;background:transparent}
 .rent-check-summary>.rent-check-metrics>div+div{border-left:1px solid var(--line)}
+.rent-check-summary>.rent-check-metrics span{font-size:11px}
+.rent-check-summary>.rent-check-metrics strong{margin-top:8px;font-size:clamp(24px,3vw,32px);font-weight:750;line-height:1.15;letter-spacing:-.04em}
+.rent-check-summary>.rent-check-metrics .fx-secondary{font-size:11px;letter-spacing:0}
 
-.rent-check-intelligence{grid-column:1/-1;margin-top:0;padding:17px 0 0;border:0;border-top:1px solid #dbe3ec;border-radius:0;background:transparent}
-.rent-check-intelligence .rent-check-evidence-head{margin:0 0 12px}
-.rent-check-intelligence .rent-check-metrics{border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.rent-check-intelligence .rent-check-metrics>div{padding:12px 14px;border:0;border-radius:0;background:transparent}
-.rent-check-intelligence .rent-check-metrics>div+div{border-left:1px solid var(--line)}
-.rent-check-market-position{margin-top:14px;padding:12px 0 0;border:0;border-radius:0;background:transparent}
-.rent-check-market-chart{position:relative;padding-top:28px}
-.rent-check-market-track{display:grid;grid-template-columns:28fr 44fr 28fr;height:18px;overflow:hidden;border:1px solid #cbd5e1;border-radius:999px;background:var(--surface-soft)}
-.rent-check-market-zone.is-below{background:#dbeafe}
-.rent-check-market-zone.is-typical{background:#cfeedd;border-left:2px solid var(--surface);border-right:2px solid var(--surface)}
-.rent-check-market-zone.is-above{background:#fee2e2}
-.rent-check-market-marker{position:absolute;z-index:2;top:17px;width:3px;height:34px;border-radius:var(--radius-sm);background:var(--result-tone);transform:translateX(-50%)}
-.rent-check-market-marker::after{content:"";position:absolute;left:50%;top:24px;width:10px;height:10px;border:3px solid var(--surface);border-radius:50%;background:var(--result-tone);box-shadow:0 0 0 2px var(--result-tone);transform:translate(-50%,-50%)}
-.rent-check-market-marker b{position:absolute;left:50%;bottom:35px;transform:translateX(-50%);color:var(--result-tone);font-size:var(--text-xs);font-weight:850;line-height:1;white-space:nowrap}
+.rent-check-intelligence{grid-column:1/-1;margin-top:0;padding:22px 0 0;border:0;border-top:1px solid var(--line);border-radius:0;background:transparent}
+.rent-check-intelligence .rent-check-evidence-head{margin:0 0 8px}
+.rent-check-intelligence .rent-check-evidence-head strong{font-size:var(--text-base)}
+.rent-check-market-position{margin-top:0;padding:22px 4px 0;border:0;border-radius:0;background:transparent}
+.rent-check-market-chart{position:relative;padding-top:26px}
+.rent-check-market-track{display:grid;grid-template-columns:28fr 44fr 28fr;height:9px;overflow:hidden;border:0;border-radius:999px;background:#e2e8f0}
+.rent-check-market-zone.is-below,.rent-check-market-zone.is-above{background:#e2e8f0}
+.rent-check-market-zone.is-typical{background:var(--muted-light);border-left:2px solid var(--surface);border-right:2px solid var(--surface)}
+.rent-check-market-marker{position:absolute;z-index:2;top:19px;width:2px;height:24px;border-radius:999px;background:var(--result-tone);transform:translateX(-50%)}
+.rent-check-market-marker::after{content:"";position:absolute;left:50%;top:11px;width:8px;height:8px;border:2px solid var(--surface);border-radius:50%;background:var(--result-tone);box-shadow:0 0 0 2px var(--result-tone);transform:translate(-50%,-50%)}
+.rent-check-market-marker b{position:absolute;left:50%;bottom:27px;transform:translateX(-50%);color:var(--result-tone);font-size:11px;font-weight:850;line-height:1;white-space:nowrap}
 .rent-check-market-position[data-relation="below"] .rent-check-market-marker b{transform:none}
 .rent-check-market-position[data-relation="above"] .rent-check-market-marker b{transform:translateX(-100%)}
-.rent-check-market-labels{display:grid;grid-template-columns:28fr 44fr 28fr;gap:6px;margin-top:8px;color:var(--muted);font-size:var(--text-xs);font-weight:700;line-height:1.25;text-align:center}
-.rent-check-market-labels strong{color:#17633a;font-weight:850}
-.rent-check-market-caption{margin:14px 0 0;padding-top:12px;border-top:1px solid #eef2f6;color:var(--ink-soft);font-size:var(--text-xs);line-height:1.5;text-align:center}
-.rent-check-market-caption strong{color:var(--result-tone);font-weight:850}
-.rent-check-market-caption .money-primary,.rent-check-market-caption .fx-secondary{display:inline;margin:0}
-.rent-check-market-caption .fx-secondary{margin-left:4px;font-size:.86em}
+.rent-check-market-axis{position:relative;height:50px;margin-top:10px}
+.rent-check-market-axis>span{position:absolute;display:grid;gap:2px;transform:translateX(-50%);color:var(--muted);font-size:10px;line-height:1.25;text-align:center;white-space:nowrap}
+.rent-check-market-axis .is-p25{left:28%}.rent-check-market-axis .is-median{left:50%}.rent-check-market-axis .is-p75{left:72%}
+.rent-check-market-axis small{font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.rent-check-market-axis strong{color:var(--ink-soft);font-size:11px;font-weight:750;letter-spacing:0}
+.rent-check-market-axis .money-primary{display:inline}.rent-check-market-axis .fx-secondary{display:none}
+.rent-check-market-caption{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:0;padding:12px 0 0;border-top:1px solid var(--line);color:var(--muted);font-size:var(--text-xs);line-height:1.5;text-align:left}
+.rent-check-market-caption span{min-width:0}.rent-check-market-caption strong{flex:0 0 auto;color:var(--result-tone);font-weight:850;text-transform:none}
+.rent-check-market-caption .money-primary,.rent-check-market-caption .fx-secondary{display:inline;margin:0}.rent-check-market-caption .fx-secondary{margin-left:4px;font-size:.86em}
+.rent-check-result>.rent-check-evidence-head{margin-top:28px;padding-top:22px;border-top:1px solid var(--ink)}
+.rent-check-result>.table-wrap{margin-top:10px;border-top:1px solid var(--line)}
+.rent-check-result>.table-wrap thead{background:var(--surface-soft)}
+.rent-check-result>.table-wrap th{padding:10px 12px}.rent-check-result>.table-wrap td{padding:12px}
+.rent-check-result .rent-check-disclaimer{margin-top:12px}
 
 .rent-check-comparables-toggle{display:none;align-items:center;justify-content:center;min-height:44px;margin:10px 0 0;padding:0 14px;border:1px solid #cbd5e1;border-radius:var(--radius-sm);background:var(--surface);color:#1e3a5f;font:inherit;font-size:12px;font-weight:750;cursor:pointer}
 .rent-check-comparables-toggle:focus-visible{outline:3px solid rgba(37,99,235,.28);outline-offset:2px}
 
 @media(max-width:1050px){.rent-check-summary{grid-template-columns:1fr}}
-@media(max-width:760px){.rent-check-mobile-extra{display:none}.rent-check-summary{padding:15px 0 0}.rent-check-verdict-primary{grid-template-columns:18px minmax(0,1fr);padding:0}.rent-check-verdict-primary>[data-rent-verdict-icon]{width:auto;height:auto;font-size:16px}.rent-check-verdict-primary>[data-rent-verdict-label]{font-size:var(--text-2xl)}.rent-check-evidence-facts span{flex:1 1 100%}.rent-check-evidence-facts span:not(:last-child)::after{display:none}.rent-check-summary>.rent-check-metrics{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:3px}.rent-check-summary>.rent-check-metrics>div:last-child{grid-column:1/-1;border-top:1px solid var(--line);border-left:0}.rent-check-intelligence .rent-check-metrics{grid-template-columns:1fr}.rent-check-intelligence .rent-check-metrics>div+div{border-top:1px solid var(--line);border-left:0}.rent-check-comparables-toggle:not([hidden]){display:inline-flex;width:100%}#rentCheckComparableBody.is-expanded .rent-check-mobile-extra{display:table-row}.rent-check-market-position{padding-left:0;padding-right:0}}
+@media(max-width:760px){.rent-check-mobile-extra{display:none}.rent-check-summary{padding:20px 0 0;gap:22px}.rent-check-verdict-primary>[data-rent-verdict-difference]{font-size:clamp(44px,15vw,58px)}.rent-check-evidence-facts{display:grid!important;gap:4px!important}.rent-check-evidence-facts span{display:block}.rent-check-evidence-facts span:not(:last-child)::after{display:none}.rent-check-summary>.rent-check-metrics{margin-top:0}.rent-check-summary>.rent-check-metrics>div{padding:14px 10px}.rent-check-summary>.rent-check-metrics strong{font-size:clamp(20px,6.5vw,28px)}.rent-check-market-position{padding-left:0;padding-right:0}.rent-check-market-axis>span{white-space:normal}.rent-check-market-caption{align-items:flex-start;flex-direction:column;gap:5px}.rent-check-comparables-toggle:not([hidden]){display:inline-flex;width:100%}#rentCheckComparableBody.is-expanded .rent-check-mobile-extra{display:table-row}}
 
 /* Core funnel readability and interaction consistency. */
 .core-ui{font-size:16px;line-height:1.6}

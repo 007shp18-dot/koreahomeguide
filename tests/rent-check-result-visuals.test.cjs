@@ -66,19 +66,23 @@ test('market position summary states the useful distance from the typical range'
 test('evidence facts and mobile disclosure are localized from real result counts', () => {
   assert.deepEqual(enUI.evidenceFacts({ comparableCount:13, monthsUsed:3 }), {
     sampleLabel:'13 signed contracts',
-    periodLabel:'Latest 3 completed months'
+    periodLabel:'Latest 3 completed months',
+    sourceLabel:'Source: Ministry of Land (MOLIT)'
   });
   assert.deepEqual(enUI.evidenceFacts({ comparableCount:1, monthsUsed:1 }), {
     sampleLabel:'1 signed contract',
-    periodLabel:'Latest 1 completed month'
+    periodLabel:'Latest 1 completed month',
+    sourceLabel:'Source: Ministry of Land (MOLIT)'
   });
   assert.deepEqual(enUI.evidenceFacts({ comparableCount:'invalid', monthsUsed:NaN }), {
     sampleLabel:'0 signed contracts',
-    periodLabel:'Latest 12 completed months'
+    periodLabel:'Latest 12 completed months',
+    sourceLabel:'Source: Ministry of Land (MOLIT)'
   });
   assert.deepEqual(zhUI.evidenceFacts({ comparableCount:13, monthsUsed:3 }), {
     sampleLabel:'13 笔已签约成交',
-    periodLabel:'最近 3 个完整月份'
+    periodLabel:'最近 3 个完整月份',
+    sourceLabel:'数据来源：韩国国土交通部（MOLIT）'
   });
   assert.deepEqual(enUI.comparableDisclosure(10, false), {
     showToggle:true,
@@ -100,10 +104,10 @@ test('evidence facts and mobile disclosure are localized from real result counts
 test('all four Rent Check runtimes wire the market-position visual and bounded UI events', () => {
   for (const file of ['app.js','zh/app.js','tools/seoul-rent-check/app.js','zh/tools/seoul-rent-check/app.js']) {
     const source = fs.readFileSync(file, 'utf8');
-    assert.match(source, /KHGRentCheckUI\.marketPositionModel\(data\)/, file);
+    assert.match(source, /KHGRentCheckUI\.distributionModel\(data\)/, file);
     assert.match(source, /KHGRentCheckUI\.marketPositionSummary\(model\)/, file);
     assert.match(source, /KHGRentCheckUI\.ratingLabel\(data\.rating,data\.verdictBasis\)/, file);
-    assert.match(source, /KHGRentCheckUI\.hasDistribution\(data\)&&Boolean\(model\)/, file);
+    assert.match(source, /distribution\.hidden=!model;visual\.hidden=!model/, file);
     assert.doesNotMatch(source, /boxPlotModel|rent-check-box-whisker|rent-check-box-cap/, file);
     assert.match(source, /KHGRentCheckUI\.evidenceFacts\(data\)/, file);
     assert.match(source, /KHGRentCheckUI\.comparableDisclosure\(/, file);

@@ -97,13 +97,13 @@
     const rating = result && result.rating || 'insufficient';
     const count = Math.max(0, Math.round(Number(result && result.comparableCount || 0)));
     const difference = Number(result && result.differencePct);
+    const hasDifference = rating !== 'insufficient' && Number.isFinite(difference);
     return {
-      icon:{ above:'↑', fair:'✓', below:'↓', insufficient:'?' }[rating] || '?',
+      icon:{ above:'▲', fair:'●', below:'▼', insufficient:'─' }[rating] || '─',
       label:ratingLabel(rating,result && result.verdictBasis),
-      difference:rating === 'insufficient' || !Number.isFinite(difference)
-        ? '当前样本无法给出价格判断'
-        : `比可比成交中位数${difference >= 0 ? '高 ' : '低 '}${Math.abs(difference).toFixed(1)}%`,
-      sample:`基于 ${count} 笔已签约成交`
+      difference:hasDifference ? `${difference >= 0 ? '+' : '−'}${Math.abs(difference).toFixed(1)}%` : '—',
+      comparison:hasDifference ? '与可比成交中位数相比' : '当前样本无法给出价格判断',
+      sample:`${count} 笔已签约成交`
     };
   }
 
@@ -225,6 +225,20 @@
     return { quotePct, relation, gapWon };
   }
 
+  function distributionModel(result) {
+    if (!hasDistribution(result)) return null;
+    const position = marketPositionModel(result);
+    const median = Number(result.medianValueWon);
+    if (!position || !isNumericValue(result.medianValueWon) || median < Number(result.p25ValueWon) || median > Number(result.p75ValueWon)) return null;
+    return {
+      p25ValueWon:Number(result.p25ValueWon),
+      medianValueWon:median,
+      p75ValueWon:Number(result.p75ValueWon),
+      percentileRank:Math.round(Number(result.percentileRank)),
+      ...position
+    };
+  }
+
   function marketPositionSummary(model) {
     if (!model) return '';
     if (model.relation === 'above') return '比典型区间上限高';
@@ -243,7 +257,8 @@
       periodLabel:`最近 ${months} 个完整月份`,
       ...(result && result.comparisonMode === 'monthly-rent' && Number.isFinite(rate)
         ? { methodLabel:`按法定参考年率 ${(rate * 100).toFixed(1)}% 将月租换算到你的押金水平` }
-        : {})
+        : {}),
+      sourceLabel:'数据来源：韩国国土交通部（MOLIT）'
     };
   }
 
@@ -284,6 +299,7 @@
     formatDifference,
     hasDistribution,
     marketPositionModel,
+    distributionModel,
     marketPositionSummary,
     evidenceFacts,
     comparableDisclosure,

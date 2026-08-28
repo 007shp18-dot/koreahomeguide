@@ -98,13 +98,13 @@
     const rating = result && result.rating || 'insufficient';
     const count = Math.max(0, Math.round(Number(result && result.comparableCount || 0)));
     const difference = Number(result && result.differencePct);
+    const hasDifference = rating !== 'insufficient' && Number.isFinite(difference);
     return {
-      icon:{ above:'↑', fair:'✓', below:'↓', insufficient:'?' }[rating] || '?',
+      icon:{ above:'▲', fair:'●', below:'▼', insufficient:'─' }[rating] || '─',
       label:ratingLabel(rating,result && result.verdictBasis),
-      difference:rating === 'insufficient' || !Number.isFinite(difference)
-        ? 'No price comparison available'
-        : `${Math.abs(difference).toFixed(1)}% ${difference >= 0 ? 'above' : 'below'} comparable median`,
-      sample:`Based on ${count} signed contract${count === 1 ? '' : 's'}`
+      difference:hasDifference ? `${difference >= 0 ? '+' : '−'}${Math.abs(difference).toFixed(1)}%` : '—',
+      comparison:hasDifference ? 'vs comparable median' : 'Price verdict unavailable',
+      sample:`${count} signed contract${count === 1 ? '' : 's'}`
     };
   }
 
@@ -232,6 +232,20 @@
     return { quotePct, relation, gapWon };
   }
 
+  function distributionModel(result) {
+    if (!hasDistribution(result)) return null;
+    const position = marketPositionModel(result);
+    const median = Number(result.medianValueWon);
+    if (!position || !isNumericValue(result.medianValueWon) || median < Number(result.p25ValueWon) || median > Number(result.p75ValueWon)) return null;
+    return {
+      p25ValueWon:Number(result.p25ValueWon),
+      medianValueWon:median,
+      p75ValueWon:Number(result.p75ValueWon),
+      percentileRank:Math.round(Number(result.percentileRank)),
+      ...position
+    };
+  }
+
   function marketPositionSummary(model) {
     if (!model) return '';
     if (model.relation === 'above') return 'above the upper end of the typical range';
@@ -250,7 +264,8 @@
       periodLabel:`Latest ${months} completed month${months === 1 ? '' : 's'}`,
       ...(result && result.comparisonMode === 'monthly-rent' && Number.isFinite(rate)
         ? { methodLabel:`Monthly rents normalized to your deposit at ${(rate * 100).toFixed(1)}%/year statutory reference` }
-        : {})
+        : {}),
+      sourceLabel:'Source: Ministry of Land (MOLIT)'
     };
   }
 
@@ -293,6 +308,7 @@
     formatDifference,
     hasDistribution,
     marketPositionModel,
+    distributionModel,
     marketPositionSummary,
     evidenceFacts,
     comparableDisclosure,

@@ -25,7 +25,7 @@ test('Rent Check result uses its real h2 and keeps evidence labels at least 12px
   assert.match(css, /\.rent-rating,\.confidence-pill\{[^}]*font-size:var\(--text-xs\)/);
   assert.match(css, /\.rent-check-metrics span\{[^}]*font-size:var\(--text-xs\)/);
   assert.match(css, /\.rent-check-evidence-facts span\{[^}]*font-size:var\(--text-xs\)/);
-  assert.match(css, /\.rent-check-market-labels\{[^}]*font-size:var\(--text-xs\)/);
+  assert.match(css, /\.rent-check-market-axis>span\{[^}]*font-size:10px/);
   assert.doesNotMatch(css, /rentCheckNextSecondary|rent-check-secondary-action/);
 });
 

@@ -46,7 +46,8 @@ test('evidence facts disclose the deposit conversion used for monthly-rent compa
     {
       sampleLabel:'7 signed contracts',
       periodLabel:'Latest 3 completed months',
-      methodLabel:'Monthly rents normalized to your deposit at 5.0%/year statutory reference'
+      methodLabel:'Monthly rents normalized to your deposit at 5.0%/year statutory reference',
+      sourceLabel:'Source: Ministry of Land (MOLIT)'
     }
   );
   assert.deepEqual(
@@ -54,7 +55,8 @@ test('evidence facts disclose the deposit conversion used for monthly-rent compa
     {
       sampleLabel:'7 笔已签约成交',
       periodLabel:'最近 3 个完整月份',
-      methodLabel:'按法定参考年率 5.0% 将月租换算到你的押金水平'
+      methodLabel:'按法定参考年率 5.0% 将月租换算到你的押金水平',
+      sourceLabel:'数据来源：韩国国土交通部（MOLIT）'
     }
   );
 });
@@ -132,23 +134,48 @@ test('verdict presentation leads with text, icon, difference, and evidence count
   assert.deepEqual(
     enUI.verdictPresentation({ rating:'above', differencePct:12.4, comparableCount:24 }),
     {
-      icon:'↑',
+      icon:'▲',
       label:'Above market',
-      difference:'12.4% above comparable median',
-      sample:'Based on 24 signed contracts'
+      difference:'+12.4%',
+      comparison:'vs comparable median',
+      sample:'24 signed contracts'
     }
   );
   assert.deepEqual(
-    enUI.verdictPresentation({ rating:'fair', differencePct:1, comparableCount:1 }),
+    enUI.verdictPresentation({ rating:'fair', differencePct:-2, comparableCount:1 }),
     {
-      icon:'✓',
+      icon:'●',
       label:'Typical range',
-      difference:'1.0% above comparable median',
-      sample:'Based on 1 signed contract'
+      difference:'−2.0%',
+      comparison:'vs comparable median',
+      sample:'1 signed contract'
     }
   );
   assert.match(zhUI.verdictPresentation({ rating:'insufficient', comparableCount:2 }).label, /可比/);
   assert.match(zhUI.verdictPresentation({ rating:'below', differencePct:-8, comparableCount:9 }).sample, /9 笔/);
+});
+
+test('distribution model provides one compact P25-median-P75 scale', () => {
+  assert.deepEqual(
+    enUI.distributionModel({
+      rating:'fair',
+      p25ValueWon:950_000,
+      medianValueWon:1_225_000,
+      p75ValueWon:2_400_000,
+      askingValueWon:1_200_000,
+      percentileRank:50
+    }),
+    {
+      p25ValueWon:950_000,
+      medianValueWon:1_225_000,
+      p75ValueWon:2_400_000,
+      percentileRank:50,
+      quotePct:35.6,
+      relation:'within',
+      gapWon:0
+    }
+  );
+  assert.equal(enUI.distributionModel({ rating:'insufficient' }), null);
 });
 
 test('distribution copy reads like a plain market reference in both languages', () => {
@@ -220,9 +247,9 @@ test('all EN and ZH Rent Check surfaces expose confidence details and next actio
 
 test('confidence disclosure and next actions remain readable and touchable on mobile', () => {
   const css = fs.readFileSync('styles.css', 'utf8');
-  assert.match(css, /\.rent-check-verdict-primary>\[data-rent-verdict-label\]\{[^}]*font-size:var\(--text-2xl\)/);
-  assert.match(css, /\.rent-check-verdict-primary>\[data-rent-verdict-difference\]\{[^}]*font-size:var\(--text-base\)/);
-  assert.match(css, /@media\(max-width:760px\)\{[\s\S]*?\.rent-check-verdict-primary>\[data-rent-verdict-label\]\{[^}]*font-size:var\(--text-2xl\)/);
+  assert.match(css, /\.rent-check-verdict-primary>\[data-rent-verdict-difference\]\{[^}]*font-size:clamp\(46px,6vw,64px\)/);
+  assert.match(css, /\.rent-check-verdict-primary>\[data-rent-verdict-comparison\]/);
+  assert.match(css, /@media\(max-width:760px\)\{[\s\S]*?\.rent-check-verdict-primary>\[data-rent-verdict-difference\]\{[^}]*font-size:clamp\(44px,15vw,58px\)/);
   assert.match(css, /#rentCheckMeta\{[^}]*font-weight:700/);
   assert.match(css, /\.rent-check-confidence-details summary\{[^}]*min-height:44px/);
   assert.match(css, /\.rent-check-confidence-details summary::after/);
