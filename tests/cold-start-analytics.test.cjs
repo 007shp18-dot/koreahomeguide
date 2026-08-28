@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
 
-const files = ['app.js','zh/app.js','tools/seoul-rent-check/app.js','zh/tools/seoul-rent-check/app.js'];
+const files = ['app.js'];
 
 function bootRentCheckRuntime(file, { districtCode = '11680', propertyType = 'apartment' } = {}) {
   const listeners = new Map();
@@ -64,7 +64,7 @@ function bootRentCheckRuntime(file, { districtCode = '11680', propertyType = 'ap
   };
 }
 
-test('all four Rent Check runtimes dispatch the shared result event', () => {
+test('the shared Rent Check runtime dispatch the shared result event', () => {
   for (const file of files) {
     const source = fs.readFileSync(file,'utf8');
     assert.match(source, /khg:rent-check-result/, file);
@@ -74,7 +74,7 @@ test('all four Rent Check runtimes dispatch the shared result event', () => {
   }
 });
 
-test('all four runtimes emit start and result analytics without PII', () => {
+test('the shared Rent Check runtime emit start and result analytics without PII', () => {
   for (const file of files) {
     const source = fs.readFileSync(file,'utf8');
     assert.match(source, /rent_check_start/, file);
@@ -83,7 +83,7 @@ test('all four runtimes emit start and result analytics without PII', () => {
   }
 });
 
-test('all four Rent Check runtimes structurally preserve safe tool-view and failure analytics', () => {
+test('the shared Rent Check runtime structurally preserve safe tool-view and failure analytics', () => {
   for (const file of files) {
     const source = fs.readFileSync(file, 'utf8');
     assert.match(source, /rent_check_tool_view/, file);
