@@ -75,6 +75,17 @@ test('Explorer pages load map dependencies before their locale runtime', () => {
   }
 });
 
+test('Explorer relies on the complete area selector instead of a partial district chip list', () => {
+  for (const file of ['explore/index.html','zh/explore/index.html']) {
+    const html = fs.readFileSync(file, 'utf8');
+    assert.doesNotMatch(html, /explorerChips|data-explore-area/, file);
+  }
+  for (const file of ['explore/app.js','zh/explore/app.js']) {
+    const source = fs.readFileSync(file, 'utf8');
+    assert.doesNotMatch(source, /explorerChips|data-explore-area/, file);
+  }
+});
+
 test('building map layer verifies precise geocodes, caps candidates, and supports returning', () => {
   const source = fs.readFileSync('explore/map.js','utf8');
   assert.match(source, /importLibrary\('geocoding'\)/);

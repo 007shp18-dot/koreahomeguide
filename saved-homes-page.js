@@ -61,7 +61,38 @@
     return { missingFeeTotal:true, text:zh ? '请在上方填写管理费' : 'Add fee above' };
   }
 
+  function feeAction(quoteId, action, text) {
+    const button = doc.createElement('button');
+    button.type = 'button';
+    button.setAttribute('data-fee-action', action);
+    button.setAttribute('data-fee-for', quoteId);
+    button.textContent = text;
+    return button;
+  }
+
+  function editableFeeOutput(quote) {
+    return quote.managementFeeWon == null
+      ? missingFeeOutput(quote)
+      : { editableFee:true, quoteId:quote.id, money:quote.managementFeeWon };
+  }
+
   function appendComparisonValue(node, output) {
+    if (output && output.editableFee) {
+      const value = doc.createElement('span');
+      value.className = 'saved-home-fee-value';
+      value.innerHTML = moneyHtml(output.money);
+      const actions = doc.createElement('span');
+      actions.className = 'saved-home-fee-actions';
+      actions.append(
+        feeAction(output.quoteId, 'edit', zh ? '修改' : 'Edit'),
+        feeAction(output.quoteId, 'remove', zh ? '删除' : 'Remove')
+      );
+      const wrapper = doc.createElement('span');
+      wrapper.className = 'saved-home-editable-fee';
+      wrapper.append(value, actions);
+      node.appendChild(wrapper);
+      return;
+    }
     if (output && typeof output === 'object' && Object.hasOwn(output, 'money')) {
       node.innerHTML = moneyHtml(output.money);
       return;
@@ -70,7 +101,8 @@
       const button = doc.createElement('button');
       button.type = 'button';
       button.className = 'saved-home-add-fee';
-      button.setAttribute('data-add-fee-for', output.quoteId);
+      button.setAttribute('data-fee-action', 'edit');
+      button.setAttribute('data-fee-for', output.quoteId);
       button.textContent = zh ? '填写管理费' : 'Add fee';
       node.appendChild(button);
       return;
@@ -145,7 +177,7 @@
       { key:'contractChecks', label:zh ? '签约前检查' : 'Contract checks', valueFor:quote => checklistText(quote) },
       { key:'deposit', label:zh ? '押金' : 'Deposit', valueFor:quote => ({ money:quote.depositWon }) },
       { key:'monthlyRent', label:zh ? '月租' : 'Monthly rent', valueFor:quote => ({ money:quote.monthlyRentWon }) },
-      { key:'fixedFee', label:zh ? '固定管理费' : 'Fixed management fee', valueFor:quote => quote.managementFeeWon == null ? missingFeeOutput(quote) : ({ money:quote.managementFeeWon }) },
+      { key:'fixedFee', label:zh ? '固定管理费' : 'Fixed management fee', valueFor:editableFeeOutput },
       { key:'monthlyTotal', label:zh ? '每月固定支出' : 'Known monthly total', valueFor:quote => fixedCost(quote) == null ? missingTotalOutput() : ({ money:fixedCost(quote) }) },
       { key:'median', label:zh ? '可比成交中位数' : 'Comparable median', valueFor:quote => quote.medianValueWon == null ? '—' : ({ money:quote.medianValueWon }) },
       { key:'difference', label:zh ? '与中位数的差异' : 'Difference from median', valueFor:quote => percentText(quote.differencePct) },
@@ -562,16 +594,38 @@
   if (currencySelect) currencySelect.addEventListener('change', render);
   if (compareNode) compareNode.addEventListener('click', event => {
     const button = event.target && typeof event.target.closest === 'function'
-      ? event.target.closest('[data-add-fee-for]')
+      ? event.target.closest('[data-fee-action]')
       : null;
     if (!button) return;
-    const quoteId = button.getAttribute('data-add-fee-for');
+    const action = button.getAttribute('data-fee-action');
+    if (action === 'cancel') {
+      render();
+      return;
+    }
+    const quoteId = button.getAttribute('data-fee-for');
     const quote = store.list().find(candidate => candidate.id === quoteId);
-    const host = button.parentElement;
+    const host = button.closest('td') || button.closest('strong') || button.parentElement;
     if (!quote || !host) {
       setStatus(zh ? '找不到对应房源的管理费输入框。' : 'The management-fee editor for this home is unavailable.', 'error');
       return;
     }
+
+    if (action === 'remove') {
+      const updated = store.updateComparisonDetails(quoteId, {
+        managementFeeWon:null,
+        isFavorite:quote.isFavorite
+      });
+      if (!updated) {
+        setStatus(zh ? '无法删除管理费。请检查浏览器存储设置。' : 'The management fee could not be removed. Check browser storage settings.', 'error');
+        return;
+      }
+      setStatus(zh ? '管理费已删除。' : 'Management fee removed.', 'success');
+      safeTrack('saved_quote_management_fee_updated', store.list().length);
+      render();
+      return;
+    }
+
+    if (action !== 'edit') return;
 
     const form = doc.createElement('form');
     form.className = 'saved-home-inline-fee-editor';
@@ -585,19 +639,21 @@
     input.min = '0';
     input.max = '100000000';
     input.step = '1000';
+    input.value = quote.managementFeeWon == null ? '' : String(quote.managementFeeWon);
     input.placeholder = zh ? '例如 150000' : 'e.g. 150000';
     input.setAttribute('data-inline-fee-input-for', quoteId);
     label.append(labelText, input);
     const save = doc.createElement('button');
     save.type = 'submit';
-    save.setAttribute('data-inline-fee-save-for', quoteId);
     save.textContent = zh ? '保存' : 'Save';
-    form.append(label, save);
+    const cancel = feeAction(quoteId, 'cancel', zh ? '取消' : 'Cancel');
+    cancel.className = 'saved-home-fee-cancel';
+    form.append(label, save, cancel);
     form.addEventListener('submit', submitEvent => {
       submitEvent.preventDefault();
       const parsedFee = root.KHGSavedQuotes.parseManagementFeeWon(input.value);
-      if (!parsedFee.valid || parsedFee.value == null) {
-        setStatus(zh ? '请输入0至1亿韩元之间的管理费。' : 'Enter a management fee from KRW 0 to 100,000,000.', 'error');
+      if (!parsedFee.valid) {
+        setStatus(zh ? '请输入0至1亿韩元之间的管理费，或留空删除。' : 'Enter a management fee from KRW 0 to 100,000,000, or leave it blank to remove it.', 'error');
         input.focus();
         return;
       }

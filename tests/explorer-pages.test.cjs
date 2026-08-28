@@ -11,10 +11,12 @@ test('Explorer keeps native area and property values for progressive enhancement
   }
 });
 
-test('popular Explorer districts notify the enhanced native selector', () => {
-  for (const file of ['explore/app.js', 'zh/explore/app.js']) {
-    const script = fs.readFileSync(file, 'utf8');
-    assert.match(script, /areaSelect\.dispatchEvent\(new Event\('change',\{bubbles:true\}\)\)/, file);
+test('Explorer avoids a partial popular-district shortcut beside the complete selector', () => {
+  for (const root of ['explore', 'zh/explore']) {
+    const html = fs.readFileSync(`${root}/index.html`, 'utf8');
+    const script = fs.readFileSync(`${root}/app.js`, 'utf8');
+    assert.doesNotMatch(html, /explorerChips|data-explore-area/, root);
+    assert.doesNotMatch(script, /explorerChips|data-explore-area/, root);
   }
 });
 const utils = require('../explore/explorer-utils.js');
@@ -54,14 +56,13 @@ test('explorer runtime calls area API, supports FX presentation, and links to bu
 
 test('Rent Explorer waits for Compare unless a direct neighborhood URL requests results', () => {
   const css = fs.readFileSync('styles.css', 'utf8');
-  assert.match(css, /#explorerChips\[hidden\],#explorerResultsShell\[hidden\]\{display:none!important\}/);
+  assert.match(css, /#explorerResultsShell\[hidden\]\{display:none!important\}/);
 
   for (const root of ['explore', 'zh/explore']) {
     const html = fs.readFileSync(`${root}/index.html`, 'utf8');
     const js = fs.readFileSync(`${root}/app.js`, 'utf8');
-    assert.match(html, /id="explorerChips"[^>]*hidden/);
     assert.match(html, /id="explorerResultsShell"[^>]*hidden/);
-    assert.match(js, /function showExploreResults\(\{ requestedDong = '' \} = \{\}\)[^]*?explorerChips\.hidden=false;[^]*?explorerResults\.hidden=false;[^]*?return loadArea\(\{ requestedDong \}\);/);
+    assert.match(js, /function showExploreResults\(\{ requestedDong = '' \} = \{\}\)[^]*?explorerResults\.hidden=false;[^]*?return loadArea\(\{ requestedDong \}\);/);
     assert.match(js, /exploreButton\.addEventListener\('click', \(\) => \{ void showExploreResults\(\); \}\)/);
     assert.match(js, /const requestedDong = applyQuerySelection\(\);[^]*?await loadFx\(\);[^]*?if \(requestedDong\) await showExploreResults\(\{ requestedDong \}\);/);
     assert.doesNotMatch(js, /(?:areaSelect|typeSelect|maxRentSelect|maxDepositSelect)[^\n]*addEventListener\('change',\(\)=>loadArea\(\)\)/);

@@ -131,6 +131,20 @@ test('saved quotes keep optional management fees and favorite state without chan
   assert.equal(saved.normalizeQuote(quote({ managementFeeWon:-1 })).managementFeeWon, null);
 });
 
+test('management fee can be edited and removed while known monthly total follows persisted state', () => {
+  const storage = memoryStorage();
+  const store = saved.createStore({ storage, now:() => Date.UTC(2026, 7, 28), idFactory:() => 'q-1' });
+  const original = store.save(quote({ monthlyRentWon:1200000, managementFeeWon:150000 }));
+
+  const edited = store.updateComparisonDetails(original.id, { managementFeeWon:175000, isFavorite:false });
+  assert.equal(edited.managementFeeWon, 175000);
+  assert.equal(saved.fixedMonthlyCostWon(store.list()[0]), 1375000);
+
+  const removed = store.updateComparisonDetails(original.id, { managementFeeWon:null, isFavorite:false });
+  assert.equal(removed.managementFeeWon, null);
+  assert.equal(saved.fixedMonthlyCostWon(store.list()[0]), null);
+});
+
 test('old saved quotes gain empty private decision fields and a four-item checklist', () => {
   const oldQuote = saved.normalizeQuote(quote(), {
     now:Date.UTC(2026, 7, 28), idFactory:() => 'old-q'

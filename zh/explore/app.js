@@ -17,7 +17,6 @@ const metricChange = document.querySelector('#metricChange');
 const dongList = document.querySelector('#dongList');
 const buildingList = document.querySelector('#buildingList');
 const budgetFilterNote = document.querySelector('#budgetFilterNote');
-const explorerChips = document.querySelector('#explorerChips');
 const explorerResults = document.querySelector('#explorerResultsShell');
 const explorerSearchCard = document.querySelector('.explorer-search-card');
 const explorerFilterSummary = document.querySelector('#explorerFilterSummary');
@@ -420,7 +419,6 @@ function applyQuerySelection() {
 }
 
 function showExploreResults({ requestedDong = '' } = {}) {
-  explorerChips.hidden=false;
   explorerResults.hidden=false;
   setExplorerView(KHGExplorer.initialViewForWidth(window.innerWidth));
   updateRentCheckHandoff();
@@ -441,11 +439,6 @@ if (explorerChangeFilters) explorerChangeFilters.addEventListener('click', () =>
   const areaInput = explorerSearchCard.querySelector('.district-combobox-input') || areaSelect;
   window.setTimeout(() => areaInput.focus(), 320);
 });
-document.querySelectorAll('[data-explore-area]').forEach(button => button.addEventListener('click', () => {
-  areaSelect.value = button.dataset.exploreArea;
-  areaSelect.dispatchEvent(new Event('change',{bubbles:true}));
-  loadArea();
-}));
 if (currencySelect) currencySelect.addEventListener('change', () => {
   if (currentAreaData) renderDongs(currentAreaData.dongs || []);
   if (currentData) renderSummary(currentData, currentDong);

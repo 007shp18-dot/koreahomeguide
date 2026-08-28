@@ -5,10 +5,10 @@ const path = require('node:path');
 
 const CONTACT = 'hello@koreahomeguide.com';
 const PRIMARY_CONTACT_PAGES = [
-  ['index.html', 'Email us →'],
-  ['tools/seoul-rent-check/index.html', 'Email us →'],
-  ['zh/index.html', '邮件联系我们 →'],
-  ['zh/tools/seoul-rent-check/index.html', '邮件联系我们 →']
+  ['index.html', 'Contact · hello@koreahomeguide.com'],
+  ['tools/seoul-rent-check/index.html', 'Contact · hello@koreahomeguide.com'],
+  ['zh/index.html', '联系 · hello@koreahomeguide.com'],
+  ['zh/tools/seoul-rent-check/index.html', '联系 · hello@koreahomeguide.com']
 ];
 
 function htmlFiles(dir) {
@@ -21,16 +21,16 @@ function htmlFiles(dir) {
 
 test('English footer provides a mailto contact link', () => {
   const html = fs.readFileSync('index.html', 'utf8');
-  assert.match(html, /Questions, feedback, or data issues\?/);
   assert.match(html, new RegExp(`href="mailto:${CONTACT.replace('.', '\\.')}`));
-  assert.match(html, />Email us →</);
+  assert.match(html, />Contact · hello@koreahomeguide\.com</);
+  assert.doesNotMatch(html, /Questions, feedback, or data issues\?|Email us →/);
 });
 
 test('Chinese footer provides the same contact mailto link', () => {
   const html = fs.readFileSync('zh/index.html', 'utf8');
-  assert.match(html, /如有问题、建议或数据问题/);
   assert.match(html, new RegExp(`href="mailto:${CONTACT.replace('.', '\\.')}`));
-  assert.match(html, />邮件联系我们 →</);
+  assert.match(html, />联系 · hello@koreahomeguide\.com</);
+  assert.doesNotMatch(html, /如有问题、建议或数据问题|邮件联系我们 →/);
 });
 
 test('every public HTML contact link uses the official mailbox', () => {
