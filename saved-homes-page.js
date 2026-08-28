@@ -132,29 +132,40 @@
 
   function comparisonRows() {
     return [
-      [zh ? '地区与类型' : 'Area and type', quote => `${root.KHGSavedQuotes.districtLabel(quote.districtCode, language)} · ${root.KHGSavedQuotes.propertyLabel(quote.propertyType, language)}`],
-      [zh ? '面积' : 'Size', quote => `${quote.areaSqm.toLocaleString(locale)}㎡`],
-      [zh ? '私人备注' : 'Private note', quote => quote.note || '—'],
-      [zh ? '看房状态' : 'Visit status', quote => quote.isVisited ? (zh ? '已看房' : 'Visited') : (zh ? '未标记为已看房' : 'Not marked visited')],
-      [zh ? '签约候选' : 'Contract candidate', quote => quote.isContractCandidate ? (zh ? '是' : 'Yes') : (zh ? '否' : 'No')],
-      [zh ? '签约前检查' : 'Contract checks', quote => checklistText(quote)],
-      [zh ? '押金' : 'Deposit', quote => ({ money:quote.depositWon })],
-      [zh ? '月租' : 'Monthly rent', quote => ({ money:quote.monthlyRentWon })],
-      [zh ? '固定管理费' : 'Fixed management fee', quote => quote.managementFeeWon == null ? missingFeeOutput(quote) : ({ money:quote.managementFeeWon })],
-      [zh ? '每月固定支出' : 'Known monthly total', quote => fixedCost(quote) == null ? missingFeeOutput(quote) : ({ money:fixedCost(quote) })],
-      [zh ? '可比成交中位数' : 'Comparable median', quote => quote.medianValueWon == null ? '—' : ({ money:quote.medianValueWon })],
-      [zh ? '与中位数的差异' : 'Difference from median', quote => percentText(quote.differencePct)],
-      [zh ? '近期成交判断' : 'Recent-contract verdict', quote => ratingLabel(quote.rating)],
-      [zh ? '依据等级' : 'Evidence level', quote => confidenceLabel(quote.confidence)],
-      [zh ? '可比成交数量' : 'Comparable contracts', quote => String(quote.comparableCount)],
-      [zh ? '数据截至月份' : 'Data through', quote => quote.dataThroughMonth || '—'],
-      [zh ? '保存日期' : 'Saved', quote => new Date(quote.savedAt).toLocaleDateString(locale)]
+      { key:'areaType', label:zh ? '地区与类型' : 'Area and type', valueFor:quote => `${root.KHGSavedQuotes.districtLabel(quote.districtCode, language)} · ${root.KHGSavedQuotes.propertyLabel(quote.propertyType, language)}` },
+      { key:'size', label:zh ? '面积' : 'Size', valueFor:quote => `${quote.areaSqm.toLocaleString(locale)}㎡` },
+      { key:'note', label:zh ? '私人备注' : 'Private note', valueFor:quote => quote.note || '—' },
+      { key:'visitStatus', label:zh ? '看房状态' : 'Visit status', valueFor:quote => quote.isVisited ? (zh ? '已看房' : 'Visited') : (zh ? '未标记为已看房' : 'Not marked visited') },
+      { key:'contractCandidate', label:zh ? '签约候选' : 'Contract candidate', valueFor:quote => quote.isContractCandidate ? (zh ? '是' : 'Yes') : (zh ? '否' : 'No') },
+      { key:'contractChecks', label:zh ? '签约前检查' : 'Contract checks', valueFor:quote => checklistText(quote) },
+      { key:'deposit', label:zh ? '押金' : 'Deposit', valueFor:quote => ({ money:quote.depositWon }) },
+      { key:'monthlyRent', label:zh ? '月租' : 'Monthly rent', valueFor:quote => ({ money:quote.monthlyRentWon }) },
+      { key:'fixedFee', label:zh ? '固定管理费' : 'Fixed management fee', valueFor:quote => quote.managementFeeWon == null ? missingFeeOutput(quote) : ({ money:quote.managementFeeWon }) },
+      { key:'monthlyTotal', label:zh ? '每月固定支出' : 'Known monthly total', valueFor:quote => fixedCost(quote) == null ? missingFeeOutput(quote) : ({ money:fixedCost(quote) }) },
+      { key:'median', label:zh ? '可比成交中位数' : 'Comparable median', valueFor:quote => quote.medianValueWon == null ? '—' : ({ money:quote.medianValueWon }) },
+      { key:'difference', label:zh ? '与中位数的差异' : 'Difference from median', valueFor:quote => percentText(quote.differencePct) },
+      { key:'verdict', label:zh ? '近期成交判断' : 'Recent-contract verdict', valueFor:quote => ratingLabel(quote.rating) },
+      { key:'evidence', label:zh ? '依据等级' : 'Evidence level', valueFor:quote => confidenceLabel(quote.confidence) },
+      { key:'comparableCount', label:zh ? '可比成交数量' : 'Comparable contracts', valueFor:quote => String(quote.comparableCount) },
+      { key:'dataThrough', label:zh ? '数据截至月份' : 'Data through', valueFor:quote => quote.dataThroughMonth || '—' },
+      { key:'saved', label:zh ? '保存日期' : 'Saved', valueFor:quote => new Date(quote.savedAt).toLocaleDateString(locale) }
     ];
+  }
+
+  function comparisonCardItem(row, quote) {
+    const item = doc.createElement('div');
+    const name = doc.createElement('span');
+    const value = doc.createElement('strong');
+    name.textContent = row.label;
+    appendComparisonValue(value, row.valueFor(quote));
+    item.append(name, value);
+    return item;
   }
 
   function renderComparisonCards(chosen, rows) {
     const cards = doc.createElement('div');
     cards.className = 'saved-homes-comparison-cards';
+    const groupedRows = root.KHGSavedQuotes.splitMobileComparisonRows(rows);
     const lowestCost = root.KHGSavedQuotes.lowestKnownMonthlyCost(chosen);
     chosen.forEach(quote => {
       const card = doc.createElement('article');
@@ -169,16 +180,16 @@
         badge.textContent = zh ? '所选房源中每月固定支出最低' : 'Lowest known monthly total selected';
         card.appendChild(badge);
       }
-      rows.forEach(([label, valueFor]) => {
-        const item = doc.createElement('div');
-        const name = doc.createElement('span');
-        const value = doc.createElement('strong');
-        name.textContent = label;
-        const output = valueFor(quote);
-        appendComparisonValue(value, output);
-        item.append(name, value);
-        card.appendChild(item);
-      });
+      groupedRows.summary.forEach(row => card.appendChild(comparisonCardItem(row, quote)));
+      if (groupedRows.details.length) {
+        const details = doc.createElement('details');
+        details.className = 'saved-home-comparison-details';
+        const summary = doc.createElement('summary');
+        summary.textContent = zh ? '更多依据与保存信息' : 'More evidence & saved details';
+        details.appendChild(summary);
+        groupedRows.details.forEach(row => details.appendChild(comparisonCardItem(row, quote)));
+        card.appendChild(details);
+      }
       cards.appendChild(card);
     });
     return cards;
@@ -230,11 +241,11 @@
     table.appendChild(head);
     const body = doc.createElement('tbody');
     const rows = comparisonRows();
-    rows.forEach(([label, valueFor]) => {
+    rows.forEach(rowDefinition => {
       const row = doc.createElement('tr');
-      row.appendChild(textCell(label, 'th'));
+      row.appendChild(textCell(rowDefinition.label, 'th'));
       chosen.forEach(quote => {
-        const value = valueFor(quote);
+        const value = rowDefinition.valueFor(quote);
         row.appendChild(comparisonCell(value));
       });
       body.appendChild(row);
@@ -330,6 +341,7 @@
       const rent = doc.createElement('span');
       rent.innerHTML = `${zh ? '月租' : 'Rent'} ${moneyHtml(quote.monthlyRentWon)}`;
       const fee = doc.createElement('span');
+      fee.className = 'saved-home-fee';
       fee.innerHTML = `${zh ? '固定管理费' : 'Fixed fee'} ${quote.managementFeeWon == null ? (zh ? '未填写' : 'Not added') : moneyHtml(quote.managementFeeWon)}`;
       const total = doc.createElement('span');
       total.className = 'saved-home-total';
@@ -372,7 +384,7 @@
       const decisionDetails = doc.createElement('details');
       decisionDetails.className = 'saved-home-decision';
       const decisionSummary = doc.createElement('summary');
-      decisionSummary.textContent = zh ? '决策备注与签约前检查' : 'Decision notes & checks';
+      decisionSummary.textContent = zh ? '费用、备注与签约前检查' : 'Costs, notes & checks';
       const decisionForm = doc.createElement('form');
       decisionForm.className = 'saved-home-decision-editor';
       const noteLabel = doc.createElement('label');
@@ -446,7 +458,7 @@
         safeTrack('saved_quote_decision_updated', store.list().length);
         render();
       });
-      decisionDetails.append(decisionSummary, decisionForm);
+      decisionDetails.append(decisionSummary, costForm, decisionForm);
       const verdict = doc.createElement('p');
       verdict.className = `saved-home-verdict ${quote.rating}`;
       verdict.textContent = `${ratingLabel(quote.rating)} · ${confidenceLabel(quote.confidence)}`;
@@ -515,8 +527,8 @@
         safeTrack('saved_quote_removed', store.list().length);
         render();
       });
-      actions.append(edit, recheck, remove);
-      card.append(favorite, selectLabel, meta, decisionBadges, price, costForm, decisionDetails, verdict, actions, editForm);
+      actions.append(recheck, edit, remove);
+      card.append(favorite, selectLabel, meta, decisionBadges, price, decisionDetails, verdict, actions, editForm);
       listNode.appendChild(card);
     });
     renderComparison(quotes);

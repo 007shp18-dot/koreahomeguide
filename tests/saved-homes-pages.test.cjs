@@ -129,6 +129,21 @@ test('saved-home comparison supports private decision notes, visit state, candid
   assert.match(css, /\.saved-home-decision-save\{[^}]*min-height:44px/);
 });
 
+test('mobile saved-home UI progressively reveals editing and secondary comparison evidence', () => {
+  const source = fs.readFileSync('saved-homes-page.js', 'utf8');
+  const css = fs.readFileSync('styles.css', 'utf8');
+
+  assert.match(source, /Costs, notes & checks/);
+  assert.match(source, /费用、备注与签约前检查/);
+  assert.match(source, /decisionDetails\.append\(decisionSummary, costForm, decisionForm\)/);
+  assert.match(source, /splitMobileComparisonRows\(rows\)/);
+  assert.match(source, /saved-home-comparison-details/);
+  assert.match(source, /More evidence & saved details/);
+  assert.match(source, /更多依据与保存信息/);
+  assert.match(css, /@media\(max-width:760px\)[^]*\.saved-home-price \.saved-home-total\{[^}]*grid-column:1\/-1[^}]*grid-row:1/s);
+  assert.match(css, /\.saved-home-comparison-details>summary\{[^}]*min-height:44px/);
+});
+
 test('saved-home pages describe checklist progress without claiming legal verification or a risk score', () => {
   const english = fs.readFileSync('saved-homes/index.html', 'utf8');
   const chinese = fs.readFileSync('zh/saved-homes/index.html', 'utf8');

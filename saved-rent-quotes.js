@@ -285,6 +285,18 @@
     return isMobile ? 3 : 4;
   }
 
+  function splitMobileComparisonRows(rows) {
+    const values = Array.isArray(rows) ? rows : [];
+    const summaryKeys = new Set([
+      'areaType', 'contractCandidate', 'contractChecks', 'deposit',
+      'monthlyRent', 'monthlyTotal', 'verdict'
+    ]);
+    return {
+      summary:values.filter(row => row && summaryKeys.has(row.key)),
+      details:values.filter(row => row && !summaryKeys.has(row.key))
+    };
+  }
+
   function parseManagementFeeWon(value) {
     if (value == null || value === '') return { valid:true, value:null };
     const parsed = finiteNumber(value, 0, 100000000);
@@ -477,7 +489,7 @@
     STORAGE_KEY, RECHECK_STORAGE_KEY, VISIT_STORAGE_KEY,
     MAX_QUOTES, RETENTION_MS, RECHECK_TTL_MS, RETURN_VISIT_MS, CHECKLIST_KEYS,
     normalizeQuote, quoteFingerprint, createStore, cleanLabel, cleanNote,
-    fixedMonthlyCostWon, sortForComparison, lowestKnownMonthlyCost, comparisonCompleteness, checklistProgress, comparisonSelectionLimit, parseManagementFeeWon,
+    fixedMonthlyCostWon, sortForComparison, lowestKnownMonthlyCost, comparisonCompleteness, checklistProgress, comparisonSelectionLimit, splitMobileComparisonRows, parseManagementFeeWon,
     writeRecheckPrefill, takeRecheckPrefill, markComparisonVisit,
     districtLabel, propertyLabel, defaultLabel, countBucket, mount
   };

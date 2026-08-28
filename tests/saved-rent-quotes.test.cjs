@@ -257,6 +257,28 @@ test('comparison selection limit is three on mobile and four on wider screens', 
   assert.equal(saved.comparisonSelectionLimit(false), 4);
 });
 
+test('mobile comparison keeps decision-critical rows visible and moves secondary evidence into details', () => {
+  const rows = [
+    { key:'areaType' }, { key:'size' }, { key:'note' }, { key:'visitStatus' },
+    { key:'contractCandidate' }, { key:'contractChecks' }, { key:'deposit' },
+    { key:'monthlyRent' }, { key:'fixedFee' }, { key:'monthlyTotal' },
+    { key:'median' }, { key:'difference' }, { key:'verdict' }, { key:'evidence' },
+    { key:'comparableCount' }, { key:'dataThrough' }, { key:'saved' }
+  ];
+
+  const grouped = saved.splitMobileComparisonRows(rows);
+
+  assert.deepEqual(grouped.summary.map(row => row.key), [
+    'areaType', 'contractCandidate', 'contractChecks', 'deposit',
+    'monthlyRent', 'monthlyTotal', 'verdict'
+  ]);
+  assert.deepEqual(grouped.details.map(row => row.key), [
+    'size', 'note', 'visitStatus', 'fixedFee', 'median', 'difference',
+    'evidence', 'comparableCount', 'dataThrough', 'saved'
+  ]);
+  assert.deepEqual(saved.splitMobileComparisonRows([]), { summary:[], details:[] });
+});
+
 test('management fee input distinguishes unknown, zero, valid, and invalid amounts', () => {
   assert.deepEqual(saved.parseManagementFeeWon(''), { valid:true, value:null });
   assert.deepEqual(saved.parseManagementFeeWon('0'), { valid:true, value:0 });
