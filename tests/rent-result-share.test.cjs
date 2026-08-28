@@ -22,14 +22,31 @@ test('share summary communicates evidence without exposing the exact quote', () 
   const share = require('../lead-capture.js');
   const context = {
     language:'en', districtCode:'11680', propertyType:'apartment', rating:'fair',
-    comparableCount:13, depositWon:12345678, monthlyRentWon:987654, areaSqm:25
+    confidence:'high', comparableCount:13, depositWon:12345678, monthlyRentWon:987654, areaSqm:25
   };
   const payload = share.buildSharePayload(context);
 
   assert.match(payload.text, /Gangnam-gu apartment/i);
   assert.match(payload.text, /13 recent official signed contracts/i);
+  assert.match(payload.text, /Evidence: strong/i);
+  assert.match(payload.text, /Next: review the contract and safety checks/i);
   assert.doesNotMatch(payload.text, /12345678|987654|25\s?(?:m|㎡)/i);
   assert.doesNotMatch(payload.url, /12345678|987654/);
+});
+
+test('share card model presents verdict, evidence, count and a useful next action', () => {
+  const share = require('../lead-capture.js');
+  const model = share.buildShareCardModel({
+    language:'en', districtCode:'11680', propertyType:'apartment', rating:'above',
+    confidence:'medium', comparableCount:7
+  });
+
+  assert.deepEqual(model, {
+    verdict:'Above recent levels',
+    evidence:'Moderate',
+    comparableCount:'7',
+    nextAction:'Ask what explains the premium, then compare the contract and safety checks.'
+  });
 });
 
 test('share summary stays bound to the completed result context', () => {
@@ -80,11 +97,30 @@ test('share action uses Web Share and falls back to clipboard copy', async () =>
   assert.equal(copied, 'Fair result\nhttps://example.com/');
 });
 
+test('copy summary always uses the clipboard even when Web Share is available', async () => {
+  const share = require('../lead-capture.js');
+  const payload = { title:'KoreaHomeGuide Rent Check', text:'Fair result', url:'https://example.com/' };
+  let nativeCalls = 0;
+  let copied = '';
+  assert.equal(await share.copySharePayload(payload, {
+    share:async () => { nativeCalls += 1; },
+    clipboard:{ writeText:async value => { copied = value; } }
+  }), 'clipboard');
+  assert.equal(nativeCalls, 0);
+  assert.equal(copied, 'Fair result\nhttps://example.com/');
+});
+
 test('the shared module exposes a localized result share action on all Rent Check surfaces', () => {
   const source = fs.readFileSync('lead-capture.js', 'utf8');
   assert.match(source, /data-result-share/);
   assert.match(source, /Share this result/);
   assert.match(source, /分享结果/);
+  assert.match(source, /Copy summary/);
+  assert.match(source, /复制摘要/);
+  assert.match(source, /data-share-verdict/);
+  assert.match(source, /data-share-evidence/);
+  assert.match(source, /data-share-count/);
+  assert.match(source, /No exact quote is included/);
   const surfaces = [
     ['index.html', 'en'],
     ['tools/seoul-rent-check/index.html', 'en'],
@@ -96,6 +132,13 @@ test('the shared module exposes a localized result share action on all Rent Chec
     assert.match(html, /src="\/lead-capture\.js"/, file);
     assert.match(html, new RegExp(`<html lang="${language}"`), file);
   }
+});
+
+test('share card actions remain touch-friendly and collapse cleanly on mobile', () => {
+  const css = fs.readFileSync('cold-start.css', 'utf8');
+  assert.match(css, /\.result-share-actions[^}]*display:flex/);
+  assert.match(css, /\.result-share-(?:button|action)[^}]*min-height:44px/);
+  assert.match(css, /@media\(max-width:760px\)[^{]*\{[^}]*\.result-share-metrics[^}]*grid-template-columns:1fr/s);
 });
 
 test('result share analytics excludes exact quote and personal data fields', () => {

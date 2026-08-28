@@ -43,15 +43,46 @@
     return labels[rating] || labels.insufficient;
   }
 
+  function buildShareCardModel(context){
+    const language = context && context.language === 'zh-CN' ? 'zh-CN' : 'en';
+    const zh = language === 'zh-CN';
+    const rating = String(context && context.rating || 'insufficient');
+    const confidence = String(context && context.confidence || '');
+    const verdicts = zh
+      ? { below:'低于近期水平', fair:'接近近期水平', above:'高于近期水平', insufficient:'可比数据不足' }
+      : { below:'Below recent levels', fair:'Close to recent levels', above:'Above recent levels', insufficient:'Not enough comparable data' };
+    const evidence = zh
+      ? { high:'较强', medium:'一般', low:'有限' }
+      : { high:'Strong', medium:'Moderate', low:'Limited' };
+    const nextActions = zh
+      ? {
+          above:'询问溢价原因，再核对合同与安全检查项目。',
+          insufficient:'扩大条件重新检查，并在签约前核对登记与合同。',
+          default:'继续核对合同与签约前安全检查项目。'
+        }
+      : {
+          above:'Ask what explains the premium, then compare the contract and safety checks.',
+          insufficient:'Run a broader check, then verify the registry and contract before signing.',
+          default:'Review the contract and safety checks before signing.'
+        };
+    return {
+      verdict:verdicts[rating] || verdicts.insufficient,
+      evidence:evidence[confidence] || (zh ? '未评级' : 'Not rated'),
+      comparableCount:String(Math.max(0, Number(context && context.comparableCount) || 0)),
+      nextAction:nextActions[rating] || nextActions.default
+    };
+  }
+
   function buildSharePayload(context){
     const language = context && context.language === 'zh-CN' ? 'zh-CN' : 'en';
     const district = SHARE_DISTRICTS[language][String(context && context.districtCode || '')] || (language === 'zh-CN' ? '首尔' : 'Seoul');
     const property = SHARE_PROPERTY_LABELS[language][String(context && context.propertyType || '')] || (language === 'zh-CN' ? '住宅' : 'rental');
     const count = Math.max(0, Number(context && context.comparableCount) || 0);
     const rating = shareRatingText(context && context.rating, language);
+    const model = buildShareCardModel(context || {});
     const text = language === 'zh-CN'
-      ? `我用 KoreaHomeGuide 检查了${district || '首尔'}${property || '住宅'}租金：${rating}，参考了 ${count} 笔近期官方签约成交。`
-      : `I checked a ${district || 'Seoul'} ${property || 'rental'} quote with KoreaHomeGuide: ${rating}, based on ${count} recent official signed contracts.`;
+      ? `我用 KoreaHomeGuide 检查了${district || '首尔'}${property || '住宅'}租金：${rating}，参考了 ${count} 笔近期官方签约成交。依据：${model.evidence}。下一步：${model.nextAction}`
+      : `I checked a ${district || 'Seoul'} ${property || 'rental'} quote with KoreaHomeGuide: ${rating}, based on ${count} recent official signed contracts. Evidence: ${model.evidence}. Next: ${model.nextAction}`;
     return {
       title:language === 'zh-CN' ? 'KoreaHomeGuide 首尔租金检查' : 'KoreaHomeGuide Seoul Rent Check',
       text,
@@ -74,6 +105,15 @@
       return 'clipboard';
     }
     throw new Error('Sharing is unavailable.');
+  }
+
+  async function copySharePayload(payload, navigatorLike){
+    const nav = navigatorLike || {};
+    if (nav.clipboard && typeof nav.clipboard.writeText === 'function') {
+      await nav.clipboard.writeText(`${payload.text}\n${payload.url}`);
+      return 'clipboard';
+    }
+    throw new Error('Clipboard is unavailable.');
   }
 
   function shareAnalyticsParams(context, method){
@@ -181,6 +221,12 @@
       shareTitle:zh ? '分享这次检查' : 'Share this check',
       shareDescription:zh ? '发送不含具体报价的结果摘要和检查链接。' : 'Send a privacy-safe summary with a link to check another quote.',
       shareButton:zh ? '分享结果' : 'Share this result',
+      copyButton:zh ? '复制摘要' : 'Copy summary',
+      verdictLabel:zh ? '判断' : 'Verdict',
+      evidenceLabel:zh ? '依据等级' : 'Evidence',
+      countLabel:zh ? '可比成交' : 'Comparables',
+      nextLabel:zh ? '建议下一步' : 'Suggested next step',
+      privacyNote:zh ? '不含具体报价、押金、面积或个人信息。' : 'No exact quote is included—nor deposit, area or personal details.',
       sharing:zh ? '正在打开分享…' : 'Opening share options…',
       copied:zh ? '结果摘要和链接已复制。' : 'Result summary and link copied.',
       shared:zh ? '已分享。' : 'Shared.',
@@ -195,15 +241,18 @@
     module.dataset.shareBound = 'true';
     const language = SUPPORTED_LANGUAGES.has(module.dataset.language) ? module.dataset.language : 'en';
     const button = module.querySelector('[data-share-button]');
+    const copyButton = module.querySelector('[data-copy-button]');
     const status = module.querySelector('[data-share-status]');
     if (!button) return;
-    button.addEventListener('click', async () => {
+    const runAction = async (actionButton, forceCopy) => {
       if (!latestContext || latestContext.language !== language) return;
-      button.disabled = true;
-      if (status) status.textContent = localText(language, 'sharing');
+      actionButton.disabled = true;
+      if (status) status.textContent = forceCopy ? '' : localText(language, 'sharing');
       const payload = buildSharePayload(latestContext);
       try {
-        const method = await deliverShare(payload, root.navigator);
+        const method = forceCopy
+          ? await copySharePayload(payload, root.navigator)
+          : await deliverShare(payload, root.navigator);
         if (method === 'cancelled') {
           if (status) status.textContent = '';
         } else {
@@ -213,8 +262,25 @@
       } catch (_) {
         if (status) status.textContent = localText(language, 'shareError');
       } finally {
-        button.disabled = false;
+        actionButton.disabled = false;
       }
+    };
+    button.addEventListener('click', () => runAction(button, false));
+    if (copyButton) copyButton.addEventListener('click', () => runAction(copyButton, true));
+  }
+
+  function updateShareModule(module, context){
+    if (!module || !context) return;
+    const model = buildShareCardModel(context);
+    const values = {
+      '[data-share-verdict]':model.verdict,
+      '[data-share-evidence]':model.evidence,
+      '[data-share-count]':model.comparableCount,
+      '[data-share-next]':model.nextAction
+    };
+    Object.entries(values).forEach(([selector, value]) => {
+      const node = module.querySelector(selector);
+      if (node) node.textContent = value;
     });
   }
 
@@ -228,7 +294,7 @@
       module.className = 'result-share-panel';
       module.dataset.resultShare = '';
       module.dataset.language = language;
-      module.innerHTML = `<div class="result-share-copy"><strong>${localText(language, 'shareTitle')}</strong><span>${localText(language, 'shareDescription')}</span></div><button class="search-button result-share-button" type="button" data-share-button>${localText(language, 'shareButton')}</button><span class="result-share-status" data-share-status aria-live="polite"></span>`;
+      module.innerHTML = `<div class="result-share-copy"><strong>${localText(language, 'shareTitle')}</strong><span>${localText(language, 'shareDescription')}</span></div><dl class="result-share-metrics"><div><dt>${localText(language, 'verdictLabel')}</dt><dd data-share-verdict>—</dd></div><div><dt>${localText(language, 'evidenceLabel')}</dt><dd data-share-evidence>—</dd></div><div><dt>${localText(language, 'countLabel')}</dt><dd data-share-count>—</dd></div></dl><div class="result-share-next"><span>${localText(language, 'nextLabel')}</span><strong data-share-next>—</strong></div><small class="result-share-privacy">${localText(language, 'privacyNote')}</small><div class="result-share-actions"><button class="search-button result-share-action" type="button" data-share-button>${localText(language, 'shareButton')}</button><button class="result-share-action result-share-copy-button" type="button" data-copy-button>${localText(language, 'copyButton')}</button></div><span class="result-share-status" data-share-status aria-live="polite"></span>`;
       result.appendChild(module);
     }
     bindShareModule(module);
@@ -326,6 +392,7 @@
     latestContext = context;
     contextVersion += 1;
     const shareModule = ensureShareModule();
+    updateShareModule(shareModule, context);
     const shareStatus = shareModule && shareModule.querySelector('[data-share-status]');
     if (shareStatus) shareStatus.textContent = '';
     root.document.querySelectorAll('[data-lead-capture]').forEach(module => {
@@ -341,7 +408,7 @@
     root.addEventListener('khg:rent-check-result', event => revealForContext(event && event.detail));
   }
 
-  const api = { comparableCountBucket, buildPayload, buildShareUrl, buildSharePayload, deliverShare, shareAnalyticsParams, revealForContext, init };
+  const api = { comparableCountBucket, buildPayload, buildShareUrl, buildShareCardModel, buildSharePayload, deliverShare, copySharePayload, shareAnalyticsParams, revealForContext, init };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (root && root.document) init();
 })(typeof window !== 'undefined' ? window : globalThis);
