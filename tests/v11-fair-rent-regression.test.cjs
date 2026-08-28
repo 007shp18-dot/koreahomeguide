@@ -30,8 +30,8 @@ test('studio mapping remains detached and ordinary property types remain unchang
   assert.deepEqual(zhUI.mapRentCheckType('studio'), { officialType:'detached', isStudioMapped:true });
 });
 
-test('Rent Check browser apps preserve API, FX, prefill, and evidence flows', () => {
-  for (const path of ['tools/seoul-rent-check/app.js','zh/tools/seoul-rent-check/app.js']) {
+test('the shared Rent Check browser app preserve API, FX, prefill, and evidence flows', () => {
+  for (const path of ['app.js']) {
     const source = fs.readFileSync(path,'utf8');
     assert.match(source, /\/api\/fx/);
     assert.match(source, /\/api\/rent-check\?/);
@@ -46,8 +46,7 @@ test('new Fair Rent Intelligence does not add a provider, endpoint, affiliate, o
     'lib/rent-check-core.cjs',
     'rent-check-ui-utils.js',
     'zh/rent-check-ui-utils.js',
-    'tools/seoul-rent-check/app.js',
-    'zh/tools/seoul-rent-check/app.js'
+    'app.js'
   ];
   const combined = files.map(path => fs.readFileSync(path,'utf8')).join('\n');
   assert.doesNotMatch(combined, /Wise|affiliate|referral/i);
