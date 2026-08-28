@@ -26,8 +26,8 @@ test('the location catalog covers 231 curated legal dongs plus the supported Mul
 
 test('housing labels avoid globally misleading standalone villa copy', () => {
   assert.equal(catalog.propertyTypeLabel('officetel','en'), 'Officetel (오피스텔)');
-  assert.equal(catalog.propertyTypeLabel('villa','en'), 'Low-rise multifamily / Villa (연립·다세대)');
-  assert.equal(catalog.propertyTypeLabel('studio','en'), 'Studio / One-room (원룸)');
+  assert.equal(catalog.propertyTypeLabel('villa','en'), 'Villa / low-rise multifamily (연립·다세대)');
+  assert.equal(catalog.propertyTypeLabel('studio','en'), 'Studio / one-room (원룸)');
 });
 
 test('unknown values use deterministic fallbacks', () => {

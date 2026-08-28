@@ -258,7 +258,7 @@
     '율현동':{ slug:'yulhyeon-dong', en:'Yulhyeon-dong' },
     '일원동':{ slug:'irwon-dong', en:'Irwon-dong' },
     '수서동':{ slug:'suseo-dong', en:'Suseo-dong' },
-    '도곡동':{ slug:'dogok-dong', en:'Dogok-dong' },
+    '도곡동':{ slug:'dogok-dong', en:'Dogok-dong', 'zh-CN':'道谷洞' },
     '서초동':{ slug:'seocho-dong', en:'Seocho-dong', 'zh-CN':'瑞草洞' },
     '잠실동':{ slug:'jamsil-dong', en:'Jamsil-dong', 'zh-CN':'蚕室洞' },
     '천호동':{ slug:'cheonho-dong', en:'Cheonho-dong', 'zh-CN':'千户洞' },
@@ -288,10 +288,10 @@
 
   const PROPERTY_TYPES = freezeRecords({
     apartment:{ ko:'아파트', en:'Apartment', 'zh-CN':'公寓' },
-    officetel:{ ko:'오피스텔', en:'Officetel', 'zh-CN':'Officetel' },
-    villa:{ ko:'연립·다세대', en:'Low-rise multifamily / Villa', 'zh-CN':'低层多户住宅 / Villa' },
-    detached:{ ko:'단독·다가구', en:'Detached & multi-unit house', 'zh-CN':'独栋及多户住宅' },
-    studio:{ ko:'원룸', en:'Studio / One-room', 'zh-CN':'单间 / One-room' }
+    officetel:{ ko:'오피스텔', en:'Officetel', 'zh-CN':'办公住宅两用楼 / Officetel' },
+    villa:{ ko:'연립·다세대', en:'Villa / low-rise multifamily', 'zh-CN':'低层多户住宅 / Villa' },
+    detached:{ ko:'단독·다가구', en:'Detached / multi-unit housing', 'zh-CN':'独栋及多户住宅' },
+    studio:{ ko:'원룸', en:'Studio / one-room', 'zh-CN':'单间住宅 / One-room' }
   });
 
   function localeKey(locale) {
