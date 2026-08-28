@@ -6,10 +6,9 @@ KoreaHomeGuide keeps Google Maps as the Explorer base map and loads NAVER Panora
 
 1. Create a Maps application in NAVER Cloud Platform.
 2. Enable Web Dynamic Map and its `panorama` submodule.
-3. Register these web service URLs:
-   - `https://koreahomeguide.com`
-   - `https://www.koreahomeguide.com`
-   - Add an exact preview or local origin only while testing.
+3. Register the main web service URL: `https://koreahomeguide.com`.
+   - Do not add a path, port, or separate `www` entry. NAVER's current application guide asks for the main domain only and says to exclude `www`.
+   - Add a stable preview or local origin only while testing and remove it afterward.
 4. Add the public key ID to Vercel Production and Preview as `NAVER_MAPS_NCP_KEY_ID`.
 5. Redeploy after changing the environment variable.
 
