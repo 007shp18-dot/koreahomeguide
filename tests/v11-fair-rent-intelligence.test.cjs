@@ -172,9 +172,9 @@ test('extreme percentile wording avoids false precision when comparable values t
   );
 });
 
-test('EN and ZH apps create and render the recent comparable range panel', () => {
-  const en = fs.readFileSync('tools/seoul-rent-check/app.js','utf8');
-  const zh = fs.readFileSync('zh/tools/seoul-rent-check/app.js','utf8');
+test('the shared locale-aware app create and render the recent comparable range panel', () => {
+  const en = fs.readFileSync('app.js','utf8');
+  const zh = fs.readFileSync('app.js','utf8');
   for (const source of [en, zh]) {
     assert.match(source, /rentCheckDistribution/);
     assert.match(source, /rentCheckRange/);
