@@ -262,9 +262,9 @@ test('Studio fallback uses the detached/multi-family public category with an exp
   const en = fs.readFileSync('tools/seoul-rent-check/index.html','utf8');
   const zh = fs.readFileSync('zh/tools/seoul-rent-check/index.html','utf8');
   assert.match(en, /Detached &amp; multi-unit house.*closest/i);
-  assert.match(en, /actual registered housing type/i);
+  assert.match(en, /actual registered home type/i);
   assert.match(zh, /独栋及多户住宅/);
-  assert.match(zh, /实际登记的住宅类型/);
+  assert.match(zh, /实际登记房型/);
   const app = fs.readFileSync('app.js','utf8');
   const zhApp = fs.readFileSync('zh/app.js','utf8');
   assert.match(app, /mapRentCheckType\(type\.value\)/);

@@ -2,20 +2,23 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 
-test('English product selectors use explanatory Korean market labels', () => {
+test('English product selectors stay compact while the Studio caveat names its public-data category', () => {
   for (const file of ['index.html','tools/seoul-rent-check/index.html']) {
     const html = fs.readFileSync(file,'utf8');
-    assert.match(html, />Officetel \(오피스텔\)</, file);
-    assert.match(html, />Low-rise multifamily \/ Villa \(연립·다세대\)</, file);
-    assert.match(html, />Detached &amp; multi-unit house \(단독·다가구\)</, file);
+    assert.match(html, /value="officetel">Officetel</, file);
+    assert.match(html, /value="villa">Villa \/ low-rise</, file);
+    assert.match(html, /value="detached">House</, file);
+    assert.match(html, /Detached &amp; multi-unit house \(단독·다가구\).*closest public-data category/, file);
   }
 });
 
-test('Chinese product selectors preserve Korean reference names', () => {
+test('Chinese product selectors stay compact while the Studio caveat names its public-data category', () => {
   for (const file of ['zh/index.html','zh/tools/seoul-rent-check/index.html']) {
     const html = fs.readFileSync(file,'utf8');
-    assert.match(html, />Officetel（오피스텔）</, file);
-    assert.match(html, />低层多户住宅 \/ Villa（연립·다세대）</, file);
+    assert.match(html, /value="officetel">Officetel</, file);
+    assert.match(html, /value="villa">低层住宅</, file);
+    assert.match(html, /value="detached">独栋 \/ 多户住宅</, file);
+    assert.match(html, /独栋及多户住宅（단독·다가구）.*公开数据分类/, file);
   }
 });
 

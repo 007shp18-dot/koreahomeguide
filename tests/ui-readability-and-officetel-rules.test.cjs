@@ -48,10 +48,10 @@ test('English and Chinese calculators expose both officetel legal branches', () 
   assert.match(zh, /value="officetel-other">不符合上述条件的 Officetel — 最高 0\.9%/);
 });
 
-test('homepage Rent Check gives bilingual area and property selectors dedicated width hooks', () => {
+test('homepage Rent Check gives area and home-type selectors dedicated width hooks', () => {
   const html = read('index.html');
   assert.match(html, /class="field rent-check-area-field"[^>]*><span>Area<\/span>/);
-  assert.match(html, /class="field rent-check-property-field"[^>]*><span>Property type<\/span>/);
+  assert.match(html, /class="field rent-check-property-field"[^>]*><span>Home type<\/span>/);
 });
 
 test('homepage Rent Check submit action keeps the shared full-height button rule', () => {

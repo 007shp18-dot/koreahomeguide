@@ -26,7 +26,7 @@ function buildingFixture(lang='en') {
 test('homepage prioritizes one Rent Check action and keeps secondary discovery visually separate', () => {
   const html = read('index.html');
   assert.match(html, /Is your Seoul rent actually fair\?/);
-  assert.match(html, /<nav[^>]*>[\s\S]*Rent Check[\s\S]*Explore[\s\S]*Guides[\s\S]*<\/nav>/);
+  assert.match(html, /<nav[^>]*>[\s\S]*Explore[\s\S]*Rent Check[\s\S]*Guides[\s\S]*<\/nav>/);
   assert.doesNotMatch(html, /<nav[^>]*>[\s\S]*Real Prices[\s\S]*<\/nav>/);
   assert.doesNotMatch(html, /<nav[^>]*>[\s\S]*Calculator[\s\S]*<\/nav>/);
   assert.match(html, /id="rentCheckForm"/);
