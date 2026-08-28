@@ -97,9 +97,9 @@ test('mobile layout reserves safe space and keeps overlays above the navigation'
   const css=fs.readFileSync(path.join(__dirname,'..','styles.css'),'utf8');
   assert.match(css,/\.mobile-primary-nav\{position:fixed;/);
   assert.match(css,/\.mobile-primary-nav\{[^}]*gap:0;/);
-  assert.match(css,/@media\(max-width:760px\)\{[\s\S]*?body\{padding-bottom:calc\(64px \+ env\(safe-area-inset-bottom\)\)\}/);
+  assert.match(css,/@media\(max-width:760px\)\{[\s\S]*?body\{padding-bottom:calc\(58px \+ env\(safe-area-inset-bottom\)\)\}/);
   assert.match(css,/@media\(max-width:760px\)\{[\s\S]*?\.saved-homes-dock\{display:none\}/);
-  assert.match(css,/@media\(max-width:760px\)\{[\s\S]*?\.khg-consent-banner\{bottom:calc\(76px \+ env\(safe-area-inset-bottom\)\)\}/);
+  assert.match(css,/@media\(max-width:760px\)\{[\s\S]*?\.khg-consent-banner\{bottom:calc\(70px \+ env\(safe-area-inset-bottom\)\)\}/);
 });
 
 test('home pages distinguish 25-district Rent Check coverage from the 15-district map', () => {

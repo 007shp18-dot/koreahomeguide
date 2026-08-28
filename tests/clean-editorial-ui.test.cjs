@@ -72,7 +72,7 @@ test('homepage editorial bands retain readable contrast and stack in task order 
   assert.match(css, /\.home-guide-row\{[^}]*border-radius:0[^}]*background:transparent/);
   assert.match(
     css,
-    /@media\(max-width:720px\)[^]*\.home-stage-route \.home-stage-grid\{grid-template-columns:1fr 1fr\}/
+    /@media\(max-width:420px\)[^]*\.home-stage-route \.home-stage-grid\{grid-template-columns:1fr\}/
   );
 });
 
