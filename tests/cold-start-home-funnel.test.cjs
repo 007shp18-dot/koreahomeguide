@@ -7,10 +7,10 @@ test('English homepage presents Rent Check as the single primary action',()=>{
   assert.match(html,/Is your Seoul rent actually fair\?/);
   assert.match(html,/id="rentCheckButton"[^>]*>Check</);
   assert.doesNotMatch(html,/class="hero-primary-action"/);
-  assert.match(html,/Official transaction data, explained for foreign renters/);
-  assert.match(html,/Independent and evidence-led/);
+  assert.match(html,/Official signed contracts/);
+  assert.match(html,/No listings/);
   assert.match(html,/data-lead-capture/);
-  assert.match(html,/Explore Seoul by budget/);
+  assert.match(html,/Compare Seoul before you choose an area/);
   assert.doesNotMatch(html,/Make your move easier/);
   assert.doesNotMatch(html,/Coming soon/);
 });

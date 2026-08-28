@@ -15,7 +15,7 @@
   align-items: center;
   justify-content: center;
   min-height: 46px;
-  border-radius: 11px;
+  border-radius: var(--radius-md);
   text-decoration: none;
   font-size: 13px;
   font-weight: 800;
@@ -29,12 +29,12 @@
 .hero-secondary-action {
   padding: 0 16px;
   border: 1px solid var(--line);
-  background: #fff;
+  background: var(--surface);
   color: var(--ink);
 }
 
 .hero-secondary-action:hover {
-  border-color: #bfdbfe;
+  border-color: var(--accent-line);
   color: var(--accent);
 }
 
@@ -62,8 +62,8 @@
 .move-service-card {
   min-width: 0;
   border: 1px solid var(--line);
-  border-radius: 16px;
-  background: #fff;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
   padding: 21px;
 }
 
@@ -74,19 +74,19 @@
 }
 
 .move-stage-card.active-tool {
-  border-color: #dbeafe;
+  border-color: var(--line);
 }
 
 .move-stage-card.future-service,
 .move-service-card {
   background: var(--surface-soft);
-  border-color: #eef2f7;
+  border-color: var(--surface-muted);
 }
 
 .move-stage-number {
   display: block;
   margin-bottom: 24px;
-  color: #94a3b8;
+  color: var(--muted-light);
   font-size: 11px;
   font-weight: 800;
   letter-spacing: .05em;
@@ -153,8 +153,8 @@
   padding: 5px 8px;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: #fff;
-  color: #64748b;
+  background: var(--surface);
+  color: var(--muted);
   font-size: 9px;
   font-weight: 800;
   letter-spacing: .06em;
@@ -166,9 +166,9 @@
   margin-top: auto;
   padding: 0 12px;
   border: 1px solid var(--line);
-  border-radius: 9px;
-  background: #fff;
-  color: #334155;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--editorial-muted);
   font: inherit;
   font-size: 11px;
   font-weight: 800;
@@ -176,14 +176,14 @@
 }
 
 .move-service-card button:hover:not(:disabled) {
-  border-color: #bfdbfe;
+  border-color: var(--accent-line);
   color: var(--accent);
 }
 
 .move-service-card button:disabled {
   cursor: default;
-  color: #64748b;
-  background: #f8fafc;
+  color: var(--muted);
+  background: var(--surface-soft);
 }
 
 @media (max-width: 900px) {

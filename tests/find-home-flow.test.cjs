@@ -10,7 +10,7 @@ test('English homepage makes Rent Check primary and keeps Explorer as a secondar
   const html = read('index.html');
   assert.match(html, /Is your Seoul rent actually fair\?/);
   assert.match(html, /href="\/explore\/"/);
-  assert.match(html, /Explore Seoul by budget/);
+  assert.match(html, /Compare Seoul before you choose an area/);
   assert.doesNotMatch(html, /id="findDistrict"/);
   assert.doesNotMatch(html, /id="rentBudget"/);
   assert.doesNotMatch(html, /id="depositBudget"/);
@@ -20,7 +20,7 @@ test('Chinese homepage mirrors the same Rent Check-first flow and keeps Chinese 
   const html = read('zh/index.html');
   assert.match(html, /你的首尔租金报价真的合理吗？/);
   assert.match(html, /href="\/zh\/explore\/"/);
-  assert.match(html, /按预算比较首尔街区/);
+  assert.match(html, /选地区前，先比较首尔真实租金/);
   assert.doesNotMatch(html, /id="findDistrict"/);
   assert.doesNotMatch(html, /id="rentBudget"/);
   assert.doesNotMatch(html, /id="depositBudget"/);

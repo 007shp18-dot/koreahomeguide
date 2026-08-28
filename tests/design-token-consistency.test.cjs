@@ -33,8 +33,8 @@ test('calculator surfaces use neutral product colors and shared radii', () => {
   const start = css.indexOf('.calculator-card{');
   const end = css.indexOf('.guides{', start);
   const block = css.slice(start, end);
-  assert.match(block, /\.calculator-card\{[^}]*background:var\(--surface\)[^}]*color:var\(--ink\)[^}]*border-radius:var\(--radius-card\)/);
-  assert.match(block, /\.breakdown-item\{[^}]*border:1px solid var\(--line\)[^}]*border-radius:var\(--radius-card\)[^}]*background:var\(--surface\)/);
+  assert.match(block, /\.calculator-card\{[^}]*background:var\(--surface\)[^}]*color:var\(--ink\)[^}]*border-radius:var\(--radius-lg\)/);
+  assert.match(block, /\.breakdown-item\{[^}]*border:1px solid var\(--line\)[^}]*border-radius:var\(--radius-lg\)[^}]*background:var\(--surface\)/);
   assert.match(block, /\.secondary-output\{[^}]*background:var\(--surface-soft\)[^}]*border:1px solid var\(--line\)/);
   assert.doesNotMatch(block, /#(?:34423a|18261f|213129|394940|3c4a42|eaf5ef)/i);
 });
@@ -43,8 +43,8 @@ test('market cards use slate-blue product tokens and shared radii', () => {
   const start = css.indexOf('.market-page{');
   const end = css.indexOf('/* Editorial guides */', start);
   const block = css.slice(start, end);
-  assert.match(block, /\.market-summary-card\{[^}]*border:1px solid var\(--line\)[^}]*border-radius:var\(--radius-card\)/);
-  assert.match(block, /\.market-metric-grid>div\{[^}]*border:1px solid var\(--line\)[^}]*border-radius:var\(--radius-card\)[^}]*background:var\(--surface\)/);
+  assert.match(block, /\.market-summary-card\{[^}]*border:1px solid var\(--line\)[^}]*border-radius:var\(--radius-lg\)/);
+  assert.match(block, /\.market-metric-grid>div\{[^}]*border:1px solid var\(--line\)[^}]*border-radius:var\(--radius-lg\)[^}]*background:var\(--surface\)/);
   assert.match(block, /\.market-note\{[^}]*border-left:3px solid var\(--accent\)[^}]*background:var\(--surface-soft\)/);
   assert.doesNotMatch(block, /#(?:edf4ef|4e6357|dfe6e1|f6f8f6|506b59|f5f8f5)/i);
 });
@@ -52,10 +52,10 @@ test('market cards use slate-blue product tokens and shared radii', () => {
 test('saved-home controls use final tokenized type and radius declarations', () => {
   const start = css.indexOf('/* Browser-only saved home comparison */');
   const block = css.slice(start);
-  assert.match(block, /\.saved-quote-form input\{[^}]*border-radius:var\(--radius-action\)/);
-  assert.match(block, /\.saved-quote-save\{[^}]*border-radius:var\(--radius-action\)/);
-  assert.match(block, /\.saved-homes-toolbar button,\.saved-home-remove\{[^}]*border-radius:var\(--radius-action\)/);
-  assert.match(block, /\.saved-home-price>span\{[^}]*border-radius:var\(--radius-action\)[^}]*font-size:var\(--text-xs\)/);
+  assert.match(block, /\.saved-quote-form input\{[^}]*border-radius:var\(--radius-md\)/);
+  assert.match(block, /\.saved-quote-save\{[^}]*border-radius:var\(--radius-md\)/);
+  assert.match(block, /\.saved-homes-toolbar button,\.saved-home-remove\{[^}]*border-radius:var\(--radius-md\)/);
+  assert.match(block, /\.saved-home-price>span\{[^}]*border-radius:var\(--radius-md\)[^}]*font-size:var\(--text-xs\)/);
   assert.match(block, /\.saved-home-price \.fx-secondary\{font-size:var\(--text-xs\)\}/);
   assert.match(block, /\.saved-home-card \.saved-home-verdict\{[^}]*font-size:var\(--text-xs\)/);
 });

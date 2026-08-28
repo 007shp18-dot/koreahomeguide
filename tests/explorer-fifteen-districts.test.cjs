@@ -33,9 +33,13 @@ test('EN and ZH Explorer selectors expose the same fifteen localized districts b
   }
 });
 
-test('home coverage proof reports fifteen Explorer districts in both languages', () => {
-  assert.match(read('index.html'), /<strong>15<\/strong><span>districts currently mapped in Explorer<\/span>/);
-  assert.match(read('zh/index.html'), /<strong>15<\/strong><span>租金探索地图目前覆盖的行政区<\/span>/);
+test('home preview links live district medians instead of a static coverage claim', () => {
+  for (const file of ['index.html', 'zh/index.html']) {
+    const html = read(file);
+    assert.match(html, /data-home-market-preview/);
+    assert.match(html, /src="\/home-market-preview\.js"/);
+    assert.doesNotMatch(html, /districts currently mapped|目前覆盖的行政区/);
+  }
 });
 
 test('common neighborhoods in every new district have EN, ZH and Korean display labels', () => {

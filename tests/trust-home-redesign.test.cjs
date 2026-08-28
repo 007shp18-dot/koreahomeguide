@@ -13,12 +13,12 @@ test('homepages use the approved five-part editorial structure', () => {
     assert.match(html, /class="funnel-hero"/);
     assert.match(html, /class="home-stage-entry[^\"]*home-stage-route/);
     assert.match(html, /id="rent-check"[^>]*class="[^"]*home-rent-workspace|class="[^"]*home-rent-workspace[^"]*"[^>]*id="rent-check"/);
-    assert.match(html, /class="home-trust-note"/);
+    assert.match(html, /class="home-primary-trust"/);
     assert.match(html, /class="funnel-proof-band"/);
     assert.match(html, /class="[^"]*funnel-updated-guides/);
     assert.doesNotMatch(html, /funnel-how|funnel-final-cta/);
-    assert.equal((html.match(/data-home-proof-metric/g) || []).length, 2, page.file);
-    assert.equal((html.match(/data-home-guide-row/g) || []).length, 4, page.file);
+    assert.match(html, /data-home-market-preview/);
+    assert.equal((html.match(/data-home-guide-row/g) || []).length, 3, page.file);
     assert.match(html, new RegExp(`href="${page.about}"`));
     assert.match(html, new RegExp(`href="${page.guide}"`));
   }
@@ -42,9 +42,9 @@ test('editorial home styling varies section rhythm and avoids card repetition', 
   assert.match(css, /\.home-stage-route\{/);
   assert.match(css, /\.home-stage-route\s+\.home-stage-grid\{/);
   assert.match(css, /\.home-rent-workspace\{/);
-  assert.match(css, /\.home-trust-note\{/);
+  assert.match(css, /\.home-primary-trust\{/);
   assert.match(css, /\.home-guide-row\{/);
-  assert.match(css, /\.home-proof-source\{/);
+  assert.match(css, /\.home-market-preview\{/);
   assert.match(css, /@media\(max-width:720px\)/);
   assert.doesNotMatch(css, /\.home-guide-row\{[^}]*box-shadow:/);
 });

@@ -55,11 +55,11 @@ test('storage failures never block a valid stage selection', () => {
   assert.equal(stage.writeStage(storage, 'budget'), 'budget');
 });
 
-test('localized home pages expose four measurable stage links before Rent Check', () => {
+test('localized home pages keep four measurable stage links after the primary Rent Check', () => {
   for (const [file, language] of [['index.html', 'en'], ['zh/index.html', 'zh-CN']]) {
     const html = fs.readFileSync(path.join(__dirname, '..', file), 'utf8');
     assert.equal((html.match(/data-home-stage="(?:budget|looking|quote|signed)"/g) || []).length, 4, file);
-    assert.ok(html.indexOf('data-home-stage-entry') < html.indexOf('id="rent-check"'), file);
+    assert.ok(html.indexOf('id="rent-check"') < html.indexOf('data-home-stage-entry'), file);
     assert.match(html, /<script src="\/home-stage-entry\.js"><\/script>/, file);
     assert.match(html, new RegExp(`data-language="${language}"`), file);
   }

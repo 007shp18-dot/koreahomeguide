@@ -102,11 +102,11 @@ test('mobile layout reserves safe space and keeps overlays above the navigation'
   assert.match(css,/@media\(max-width:760px\)\{[\s\S]*?\.khg-consent-banner\{bottom:calc\(70px \+ env\(safe-area-inset-bottom\)\)\}/);
 });
 
-test('home pages distinguish 25-district Rent Check coverage from the 15-district map', () => {
+test('home pages replace static coverage counters with live district evidence', () => {
   const en=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
   const zh=fs.readFileSync(path.join(__dirname,'..','zh','index.html'),'utf8');
-  assert.match(en,/<strong>25<\/strong><span>Seoul districts available in Rent Check<\/span>/);
-  assert.match(en,/<strong>15<\/strong><span>districts currently mapped in Explorer<\/span>/);
-  assert.match(zh,/<strong>25<\/strong><span>租金检查支持的首尔行政区<\/span>/);
-  assert.match(zh,/<strong>15<\/strong><span>租金探索地图目前覆盖的行政区<\/span>/);
+  assert.match(en,/data-home-market-preview/);
+  assert.match(zh,/data-home-market-preview/);
+  assert.doesNotMatch(en,/districts currently mapped/);
+  assert.doesNotMatch(zh,/目前覆盖的行政区/);
 });

@@ -9,10 +9,10 @@ const zhApp = fs.readFileSync('zh/app.js','utf8');
 
 test('homepage positions KoreaHomeGuide as one pre-signing Rent Check funnel, not a listings promise', () => {
   assert.match(home, /Is your Seoul rent actually fair\?/);
-  assert.match(home, /Official transaction data, explained for foreign renters/);
+  assert.match(home, /Official signed contracts/);
   assert.match(home, /id="rentCheckButton"[^>]*>Check</);
   assert.doesNotMatch(home, /class="hero-primary-action"/);
-  assert.match(home, /does not promote live listings/);
+  assert.match(home, /No listings/);
   assert.match(home, /data-lead-capture/);
   assert.doesNotMatch(home, /Find a home in Seoul/i);
   assert.doesNotMatch(home, /Current listings will be added separately/i);
@@ -30,7 +30,7 @@ test('homepage Rent Check stays inline and Explorer becomes the secondary discov
 
 test('Chinese homepage carries the same trust -> result -> lead funnel', () => {
   assert.match(zhHome, /你的首尔租金报价真的合理吗？/);
-  assert.match(zhHome, /韩国官方真实签约成交/);
+  assert.match(zhHome, /官方真实签约/);
   assert.match(zhHome, /id="rentCheckButton"[^>]*>检查这个租金</);
   assert.doesNotMatch(zhHome, /class="hero-primary-action"/);
   assert.match(zhHome, /data-lead-capture/);

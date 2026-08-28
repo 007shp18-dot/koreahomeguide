@@ -69,7 +69,7 @@ test('homepage positioning is a Rent Check trust funnel rather than a listings p
   assert.match(en, /<h1>Is your Seoul rent actually fair\?<\/h1>/);
   assert.match(en, /id="rentCheckButton"[^>]*>Check</);
   assert.doesNotMatch(en, /class="hero-primary-action"/);
-  assert.match(en, /Official transaction data, explained for foreign renters/);
+  assert.match(en, /Official signed contracts/);
   assert.doesNotMatch(en, /Find a home in Seoul/i);
   assert.doesNotMatch(en, /<span class="eyebrow">Find a home<\/span>/i);
   assert.match(zh, /你的首尔租金报价真的合理吗？/);

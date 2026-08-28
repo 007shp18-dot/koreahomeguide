@@ -18,7 +18,7 @@ test('mobile home uses a compact left-aligned editorial hierarchy', () => {
 });
 
 test('mobile renter stages become short rows on narrow phones', () => {
-  const compactAt = homeCss.lastIndexOf('@media(max-width:420px)');
+  const compactAt = homeCss.lastIndexOf('@media(max-width:360px)');
   const editorialMobileAt = homeCss.lastIndexOf('@media(max-width:720px)');
 
   assert.ok(compactAt > editorialMobileAt, 'the narrow-phone override comes after the editorial mobile rules');
@@ -26,7 +26,7 @@ test('mobile renter stages become short rows on narrow phones', () => {
     homeCss.slice(compactAt),
     /\.home-stage-route \.home-stage-grid\{grid-template-columns:1fr\}/
   );
-  assert.match(homeCss.slice(compactAt), /\.home-stage-route \.home-stage-grid a\{[^}]*min-height:64px/);
+  assert.match(homeCss.slice(compactAt), /\.home-rent-workspace \.rent-check-form\{grid-template-columns:1fr\}/);
 });
 
 test('mobile Rent Check and evidence sections shed nested-card weight', () => {
@@ -34,12 +34,9 @@ test('mobile Rent Check and evidence sections shed nested-card weight', () => {
     homeCss,
     /@media\(max-width:720px\)[^]*\.home-rent-workspace \.funnel-rent-card\{[^}]*border-left:0[^}]*border-right:0[^}]*border-radius:0[^}]*box-shadow:none/
   );
-  assert.match(homeCss, /@media\(max-width:720px\)[^]*\.home-rent-workspace\{[^}]*padding-top:28px[^}]*padding-bottom:40px/);
+  assert.match(homeCss, /@media\(max-width:720px\)[^]*\.home-rent-workspace\{[^}]*padding-top:0[^}]*padding-bottom:48px/);
   assert.match(homeCss, /@media\(max-width:720px\)[^]*\.funnel-proof-band\{border-radius:0/);
-  assert.match(
-    homeCss,
-    /@media\(max-width:720px\)[^]*\.funnel-proof-grid>div\[data-home-proof-metric\]\{[^}]*border-left:0[^}]*border-right:0[^}]*border-radius:0[^}]*background:transparent/
-  );
+  assert.match(homeCss, /@media\(max-width:720px\)[^]*\.home-market-preview-head\{[^}]*display:grid/);
 });
 
 test('shared mobile pages keep titles, sections, and navigation compact', () => {

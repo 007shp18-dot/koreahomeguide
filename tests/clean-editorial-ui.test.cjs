@@ -10,17 +10,16 @@ test('core product pages share the approved editorial spacing and radius contrac
   assert.match(css, /--radius-sm:\s*8px/);
   assert.match(css, /--radius-md:\s*12px/);
   assert.match(css, /--radius-lg:\s*16px/);
-  assert.match(css, /--radius-card:\s*var\(--radius-lg\)/);
-  assert.match(css, /--radius-action:\s*var\(--radius-md\)/);
+  assert.doesNotMatch(css, /--radius-(?:card|action)\s*:/);
   assert.match(css, /--section-space:\s*80px/);
   assert.match(css, /--section-space-mobile:\s*56px/);
   assert.match(
     css,
-    /\.core-ui \.rent-check-card,\.core-ui \.tool-card,\.core-ui \.explorer-search-card,\.core-ui \.explorer-map-card\{[^}]*border:1px solid var\(--line\)[^}]*border-radius:var\(--radius-card\)[^}]*box-shadow:none/
+    /\.core-ui \.rent-check-card,\.core-ui \.tool-card,\.core-ui \.explorer-search-card,\.core-ui \.explorer-map-card\{[^}]*border:1px solid var\(--line\)[^}]*border-radius:var\(--radius-lg\)[^}]*box-shadow:none/
   );
   assert.match(
     css,
-    /\.core-ui \.search-button,\.core-ui \.explorer-primary-link\{[^}]*border-radius:var\(--radius-action\)/
+    /\.core-ui \.search-button,\.core-ui \.explorer-primary-link\{[^}]*border-radius:var\(--radius-md\)/
   );
 });
 
@@ -50,15 +49,18 @@ for (const [file, explorerPath, guidePath] of [
     const guidesAt = html.indexOf('class="funnel-section funnel-updated-guides"');
 
     assert.ok(rentCheckAt >= 0, `${file} Rent Check`);
-    assert.ok(stageAt < rentCheckAt, `${file} routes the renter before Rent Check`);
-    assert.ok(rentCheckAt < trustAt, `${file} keeps the independence note after the tool`);
-    assert.ok(trustAt < proofAt, `${file} states the method before map evidence`);
+    assert.ok(rentCheckAt < stageAt, `${file} puts Rent Check before stage routing`);
+    assert.ok(stageAt < proofAt, `${file} keeps stage routing after the result workspace`);
     assert.ok(proofAt < guidesAt, `${file} places updated content after product proof`);
+    assert.equal(trustAt, -1, `${file} removes the oversized independence panel`);
     assert.doesNotMatch(html, /funnel-how|funnel-final-cta/);
     assert.match(html, new RegExp(`class="funnel-proof-action" href="${explorerPath}"`));
     assert.match(html, /class="funnel-section funnel-updated-guides"/);
-    assert.equal((html.match(/class="home-guide-row"/g) || []).length, 4, `${file} guide rows`);
+    assert.equal((html.match(/class="home-guide-row"/g) || []).length, 3, `${file} guide rows`);
     assert.match(html, new RegExp(`class="funnel-guides-link" href="${guidePath}"`));
+    assert.match(html, /class="home-primary-trust"/);
+    assert.match(html, /data-home-market-preview/);
+    assert.doesNotMatch(html, /SEOUL RENT CHECK|KEEP THIS RENT CHECK|保存这次租金检查/);
   });
 }
 
@@ -66,13 +68,15 @@ test('homepage editorial bands retain readable contrast and stack in task order 
   const css = read('cold-start.css');
 
   assert.match(css, /\.home-stage-route \.home-stage-grid\{[^}]*grid-template-columns:repeat\(4,minmax\(0,1fr\)\)/);
-  assert.match(css, /\.funnel-proof-band\{[^}]*background:#0b1f3a[^}]*color:#fff/);
-  assert.match(css, /\.funnel-proof-action\{[^}]*min-height:44px[^}]*border-radius:var\(--radius-action\)/);
-  assert.match(css, /\.home-trust-note\{[^}]*border-top:1px solid var\(--line\)/);
+  assert.match(css, /\.home-market-preview\{[^}]*border-top:1px solid var\(--line\)/);
+  assert.match(css, /\.funnel-proof-action\{[^}]*min-height:44px[^}]*border-radius:var\(--radius-md\)/);
+  assert.match(css, /\.home-primary-trust\{[^}]*border-top:1px solid var\(--line\)/);
   assert.match(css, /\.home-guide-row\{[^}]*border-radius:0[^}]*background:transparent/);
+  assert.match(css, /@media\(max-width:720px\)[^]*\.home-rent-workspace \.rent-check-form\{[^}]*grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
+  assert.match(css, /@media\(max-width:720px\)[^]*\.home-rent-workspace \.rent-check-size-field[^}]*grid-column:1\/-1/);
   assert.match(
     css,
-    /@media\(max-width:420px\)[^]*\.home-stage-route \.home-stage-grid\{grid-template-columns:1fr\}/
+    /@media\(max-width:360px\)[^]*\.home-rent-workspace \.rent-check-form\{grid-template-columns:1fr\}/
   );
 });
 

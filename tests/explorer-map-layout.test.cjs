@@ -48,8 +48,8 @@ test('map layout is full-width first with a large desktop and mobile canvas', ()
 test('map legend and decision card have selected, evidence, and narrow-screen states', () => {
   const css = fs.readFileSync('styles.css','utf8');
   assert.match(css, /\.explorer-map-legend\{/);
-  assert.match(css, /\.explorer-map-legend i\.is-strong\{[^}]*#15803d/);
-  assert.match(css, /\.explorer-map-legend i\.is-limited\{[^}]*#b45309/);
+  assert.match(css, /\.explorer-map-legend i\.is-strong\{[^}]*var\(--success\)/);
+  assert.match(css, /\.explorer-map-legend i\.is-limited\{[^}]*var\(--caution\)/);
   assert.match(css, /\.explorer-map-legend i\.is-outside\{[^}]*var\(--muted\)/);
   assert.match(css, /\.explorer-map-selection\[hidden\]\{display:none!important\}/);
   assert.match(css, /\.explorer-map-selection-status\.is-strong/);
