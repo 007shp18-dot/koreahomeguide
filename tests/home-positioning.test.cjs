@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const home = fs.readFileSync('index.html','utf8');
 const app = fs.readFileSync('app.js','utf8');
 const zhHome = fs.readFileSync('zh/index.html','utf8');
-const zhApp = fs.readFileSync('zh/app.js','utf8');
+const zhApp = fs.readFileSync('app.js','utf8');
 
 test('homepage positions KoreaHomeGuide as one pre-signing Rent Check funnel, not a listings promise', () => {
   assert.match(home, /Is your Seoul rent actually fair\?/);
