@@ -97,8 +97,8 @@ test('evidence facts and mobile disclosure are localized from real result counts
   });
 });
 
-test('all four Rent Check runtimes wire the market-position visual and bounded UI events', () => {
-  for (const file of ['app.js','zh/app.js','tools/seoul-rent-check/app.js','zh/tools/seoul-rent-check/app.js']) {
+test('the shared Rent Check runtime wire the market-position visual and bounded UI events', () => {
+  for (const file of ['app.js']) {
     const source = fs.readFileSync(file, 'utf8');
     assert.match(source, /KHGRentCheckUI\.marketPositionModel\(data\)/, file);
     assert.match(source, /KHGRentCheckUI\.marketPositionSummary\(model\)/, file);
