@@ -28,6 +28,12 @@
   const PROPERTY_TYPES = new Set(['apartment','officetel','villa','detached','studio']);
   const RATINGS = new Set(['above','fair','below','insufficient']);
   const CONFIDENCE = new Set(['high','medium','low']);
+  const CHECKLIST_KEYS = Object.freeze([
+    'registryOwner',
+    'depositProtection',
+    'managementFeeBreakdown',
+    'contractTerms'
+  ]);
 
   const propertyTypes = {
     apartment:['Apartment','公寓'], officetel:['Officetel','办公住宅'],
@@ -37,6 +43,18 @@
 
   function cleanLabel(value) {
     return String(value || '').replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 60);
+  }
+
+  function cleanNote(value) {
+    return String(value || '').replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 240);
+  }
+
+  function normalizeChecklist(value) {
+    const source = value && typeof value === 'object' ? value : {};
+    return Object.freeze(CHECKLIST_KEYS.reduce((result, key) => {
+      result[key] = source[key] === true;
+      return result;
+    }, {}));
   }
 
   function finiteNumber(value, min, max, fallback = null) {
@@ -74,6 +92,10 @@
       monthlyRentWon:Math.round(monthlyRentWon),
       managementFeeWon:optionalWon(input.managementFeeWon) == null ? null : Math.round(Number(input.managementFeeWon)),
       isFavorite:input.isFavorite === true,
+      note:cleanNote(input.note),
+      isVisited:input.isVisited === true,
+      isContractCandidate:input.isContractCandidate === true,
+      checklist:normalizeChecklist(input.checklist),
       areaSqm:Math.round(areaSqm * 10) / 10,
       rating:RATINGS.has(input.rating) ? input.rating : 'insufficient',
       confidence:CONFIDENCE.has(input.confidence) ? input.confidence : null,
@@ -143,7 +165,11 @@
             id:duplicate.id,
             label:exact ? exact.label : quote.label,
             managementFeeWon:duplicate.managementFeeWon,
-            isFavorite:duplicate.isFavorite
+            isFavorite:duplicate.isFavorite,
+            note:duplicate.note,
+            isVisited:duplicate.isVisited,
+            isContractCandidate:duplicate.isContractCandidate,
+            checklist:duplicate.checklist
           }, { now:Date.parse(quote.savedAt), idFactory:() => duplicate.id })
         : quote;
       const values = [stored, ...existing.filter(value => value.id !== stored.id)].slice(0, MAX_QUOTES);
@@ -181,6 +207,24 @@
       return write(values) ? updated : null;
     }
 
+    function updateDecisionDetails(id, details = {}) {
+      if (!catalogReady) return null;
+      const values = parse();
+      const index = values.findIndex(value => value.id === String(id || ''));
+      if (index < 0) return null;
+      const current = values[index];
+      const updated = normalizeQuote({
+        ...current,
+        note:cleanNote(details.note),
+        isVisited:details.isVisited === true,
+        isContractCandidate:details.isContractCandidate === true,
+        checklist:normalizeChecklist(details.checklist)
+      }, { now:Date.parse(current.savedAt), idFactory:() => current.id });
+      if (!updated) return null;
+      values[index] = updated;
+      return write(values) ? updated : null;
+    }
+
     function remove(id) {
       if (!catalogReady) return false;
       const values = parse().filter(value => value.id !== String(id || ''));
@@ -197,7 +241,7 @@
       }
     }
 
-    return Object.freeze({ list, save, updateLabel, updateComparisonDetails, remove, clear });
+    return Object.freeze({ list, save, updateLabel, updateComparisonDetails, updateDecisionDetails, remove, clear });
   }
 
   function fixedMonthlyCostWon(quote) {
@@ -207,6 +251,7 @@
 
   function sortForComparison(values) {
     return [...(Array.isArray(values) ? values : [])].sort((left, right) => {
+      if (left.isContractCandidate !== right.isContractCandidate) return left.isContractCandidate ? -1 : 1;
       if (left.isFavorite !== right.isFavorite) return left.isFavorite ? -1 : 1;
       const leftCost = fixedMonthlyCostWon(left);
       const rightCost = fixedMonthlyCostWon(right);
@@ -226,6 +271,14 @@
     const rows = Array.isArray(values) ? values : [];
     const known = rows.filter(quote => fixedMonthlyCostWon(quote) != null).length;
     return { selected:rows.length, known, missing:rows.length - known };
+  }
+
+  function checklistProgress(quote) {
+    const checklist = normalizeChecklist(quote && quote.checklist);
+    return {
+      completed:CHECKLIST_KEYS.filter(key => checklist[key]).length,
+      total:CHECKLIST_KEYS.length
+    };
   }
 
   function comparisonSelectionLimit(isMobile) {
@@ -422,9 +475,9 @@
 
   return {
     STORAGE_KEY, RECHECK_STORAGE_KEY, VISIT_STORAGE_KEY,
-    MAX_QUOTES, RETENTION_MS, RECHECK_TTL_MS, RETURN_VISIT_MS,
-    normalizeQuote, quoteFingerprint, createStore, cleanLabel,
-    fixedMonthlyCostWon, sortForComparison, lowestKnownMonthlyCost, comparisonCompleteness, comparisonSelectionLimit, parseManagementFeeWon,
+    MAX_QUOTES, RETENTION_MS, RECHECK_TTL_MS, RETURN_VISIT_MS, CHECKLIST_KEYS,
+    normalizeQuote, quoteFingerprint, createStore, cleanLabel, cleanNote,
+    fixedMonthlyCostWon, sortForComparison, lowestKnownMonthlyCost, comparisonCompleteness, checklistProgress, comparisonSelectionLimit, parseManagementFeeWon,
     writeRecheckPrefill, takeRecheckPrefill, markComparisonVisit,
     districtLabel, propertyLabel, defaultLabel, countBucket, mount
   };

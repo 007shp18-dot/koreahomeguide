@@ -103,6 +103,42 @@ test('saved-home comparison supports editing, private rechecks, and mobile cards
   }
 });
 
+test('saved-home comparison supports private decision notes, visit state, candidates, and checks', () => {
+  const source = fs.readFileSync('saved-homes-page.js', 'utf8');
+  const css = fs.readFileSync('styles.css', 'utf8');
+
+  assert.match(source, /saved-home-decision-editor/);
+  assert.match(source, /updateDecisionDetails\(/);
+  assert.match(source, /noteInput\.maxLength = 240/);
+  assert.match(source, /isVisited/);
+  assert.match(source, /isContractCandidate/);
+  for (const key of ['registryOwner','depositProtection','managementFeeBreakdown','contractTerms']) {
+    assert.match(source, new RegExp(key));
+  }
+  assert.match(source, /checklistProgress\(quote\)/);
+  assert.match(source, /Private note/);
+  assert.match(source, /Visit status/);
+  assert.match(source, /Contract candidate/);
+  assert.match(source, /Contract checks/);
+  assert.match(source, /私人备注/);
+  assert.match(source, /看房状态/);
+  assert.match(source, /签约候选/);
+  assert.match(source, /签约前检查/);
+  assert.match(source, /saved_quote_decision_updated/);
+  assert.match(css, /\.saved-home-decision-editor/);
+  assert.match(css, /\.saved-home-decision-save\{[^}]*min-height:44px/);
+});
+
+test('saved-home pages describe checklist progress without claiming legal verification or a risk score', () => {
+  const english = fs.readFileSync('saved-homes/index.html', 'utf8');
+  const chinese = fs.readFileSync('zh/saved-homes/index.html', 'utf8');
+
+  assert.match(english, /not legal verification or a risk score/i);
+  assert.match(chinese, /不代表法律核验或风险评分/);
+  assert.match(english, /notes, visit status, contract candidates/i);
+  assert.match(chinese, /备注、看房状态、签约候选/);
+});
+
 test('Rent Check consumes saved-home recheck values without putting prices in the page URL', () => {
   const comparisonSource = fs.readFileSync('saved-homes-page.js', 'utf8');
   const savedSource = fs.readFileSync('saved-rent-quotes.js', 'utf8');

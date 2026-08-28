@@ -81,6 +81,16 @@ function ensureHeaders_(sheet, columns) {
   sheet.getRange(1, 1, 1, targetColumns.length).setValues([targetColumns]);
 }
 
+function appendSubmissionRow_(sheet, columns, row) {
+  const rowNumber = sheet.getLastRow() + 1;
+  const privacyVersionColumn = columns.indexOf('privacy_notice_version') + 1;
+  if (privacyVersionColumn > 0) {
+    sheet.getRange(rowNumber, privacyVersionColumn, 1, 1).setNumberFormat('@');
+  }
+  sheet.getRange(rowNumber, 1, 1, columns.length)
+    .setValues([columns.map(key => sanitizeCell_(row[key]))]);
+}
+
 function findEmailRow_(sheet, email) {
   const lastRow = sheet.getLastRow();
   if (lastRow < 2) return 0;
@@ -111,7 +121,7 @@ function upsertLeadRow_(sheet, incomingRow) {
 
   row.help_requested = row.kind === 'help_request' || row.help_requested === true;
   row.updated_at = row.created_at;
-  sheet.appendRow(COLUMNS.map(key => sanitizeCell_(row[key])));
+  appendSubmissionRow_(sheet, COLUMNS, row);
   return { ok:true, created:true };
 }
 
@@ -128,7 +138,7 @@ function appendExperienceRow_(sheet, incomingRow) {
   const row = Object.assign({}, incomingRow || {});
   ensureHeaders_(sheet, EXPERIENCE_COLUMNS);
   if (findExperienceRow_(sheet, row.report_id)) return { ok:true, duplicate:true };
-  sheet.appendRow(EXPERIENCE_COLUMNS.map(key => sanitizeCell_(row[key])));
+  appendSubmissionRow_(sheet, EXPERIENCE_COLUMNS, row);
   return { ok:true, created:true };
 }
 

@@ -14,6 +14,7 @@ function loadWebhook() {
 class FakeSheet {
   constructor(rows = []) {
     this.rows = rows.map(row => [...row]);
+    this.formats = new Map();
   }
 
   getLastRow() {
@@ -21,7 +22,19 @@ class FakeSheet {
   }
 
   appendRow(row) {
-    this.rows.push([...row]);
+    const targetRow = this.rows.length + 1;
+    this.rows.push([]);
+    row.forEach((value, index) => this.writeCell(targetRow, index + 1, value));
+  }
+
+  writeCell(row, column, value) {
+    const targetRow = row - 1;
+    if (!this.rows[targetRow]) this.rows[targetRow] = [];
+    const format = this.formats.get(`${row}:${column}`);
+    const dateLike = typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value);
+    this.rows[targetRow][column - 1] = dateLike && format !== '@'
+      ? Date.parse(`${value}T00:00:00Z`) / 86400000 + 25569
+      : value;
   }
 
   getRange(row, column, rowCount, columnCount) {
@@ -31,10 +44,15 @@ class FakeSheet {
           this.rows[row - 1 + rowOffset]?.[column - 1 + columnOffset] ?? ''
         )
       ),
+      setNumberFormat:format => {
+        for (let rowOffset = 0; rowOffset < rowCount; rowOffset += 1) {
+          for (let columnOffset = 0; columnOffset < columnCount; columnOffset += 1) {
+            this.formats.set(`${row + rowOffset}:${column + columnOffset}`, format);
+          }
+        }
+      },
       setValues:values => values.forEach((sourceRow, rowOffset) => sourceRow.forEach((value, columnOffset) => {
-        const targetRow = row - 1 + rowOffset;
-        if (!this.rows[targetRow]) this.rows[targetRow] = [];
-        this.rows[targetRow][column - 1 + columnOffset] = value;
+        this.writeCell(row + rowOffset, column + columnOffset, value);
       }))
     };
   }
@@ -161,4 +179,23 @@ test('lead submissions retain the existing Leads sheet behavior', () => {
   assert.deepEqual(JSON.parse(JSON.stringify(result)), { ok:true, created:true });
   assert.equal(spreadsheet.sheets.Leads.rows.length, 2);
   assert.equal(spreadsheet.sheets.Experiences, undefined);
+});
+
+test('privacy notice versions stay literal text in both submission sheets', () => {
+  const webhook = loadWebhook();
+  const spreadsheet = new FakeSpreadsheet();
+
+  webhook.storeSubmission_(spreadsheet, {
+    kind:'lead_capture', email:'user@example.com', created_at:'2026-08-28T05:00:00Z',
+    privacy_consent:true, privacy_notice_version:'2026-08-28'
+  });
+  webhook.storeSubmission_(spreadsheet, {
+    kind:'experience_report', report_id:'rpt_0123456789abcdef', created_at:'2026-08-28T05:00:00Z',
+    privacy_consent:true, privacy_notice_version:'2026-08-28'
+  });
+
+  const leadVersionIndex = spreadsheet.sheets.Leads.rows[0].indexOf('privacy_notice_version');
+  const experienceVersionIndex = spreadsheet.sheets.Experiences.rows[0].indexOf('privacy_notice_version');
+  assert.equal(spreadsheet.sheets.Leads.rows[1][leadVersionIndex], '2026-08-28');
+  assert.equal(spreadsheet.sheets.Experiences.rows[1][experienceVersionIndex], '2026-08-28');
 });

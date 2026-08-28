@@ -131,6 +131,78 @@ test('saved quotes keep optional management fees and favorite state without chan
   assert.equal(saved.normalizeQuote(quote({ managementFeeWon:-1 })).managementFeeWon, null);
 });
 
+test('old saved quotes gain empty private decision fields and a four-item checklist', () => {
+  const oldQuote = saved.normalizeQuote(quote(), {
+    now:Date.UTC(2026, 7, 28), idFactory:() => 'old-q'
+  });
+
+  assert.equal(oldQuote.note, '');
+  assert.equal(oldQuote.isVisited, false);
+  assert.equal(oldQuote.isContractCandidate, false);
+  assert.deepEqual(oldQuote.checklist, {
+    registryOwner:false,
+    depositProtection:false,
+    managementFeeBreakdown:false,
+    contractTerms:false
+  });
+  assert.deepEqual(saved.checklistProgress(oldQuote), { completed:0, total:4 });
+});
+
+test('decision fields are bounded and accept only the four approved checklist keys', () => {
+  const normalized = saved.normalizeQuote(quote({
+    note:`  Visit\u0000 again ${'x'.repeat(300)}  `,
+    isVisited:true,
+    isContractCandidate:true,
+    checklist:{
+      registryOwner:true,
+      depositProtection:true,
+      managementFeeBreakdown:false,
+      contractTerms:true,
+      brokerRecommended:true
+    }
+  }));
+
+  assert.equal(normalized.note.length, 240);
+  assert.match(normalized.note, /^Visit again /);
+  assert.equal(normalized.isVisited, true);
+  assert.equal(normalized.isContractCandidate, true);
+  assert.deepEqual(normalized.checklist, {
+    registryOwner:true,
+    depositProtection:true,
+    managementFeeBreakdown:false,
+    contractTerms:true
+  });
+  assert.equal(Object.hasOwn(normalized.checklist, 'brokerRecommended'), false);
+  assert.deepEqual(saved.checklistProgress(normalized), { completed:3, total:4 });
+});
+
+test('store updates private decision state without changing quote evidence', () => {
+  const storage = memoryStorage();
+  const store = saved.createStore({ storage, now:() => Date.UTC(2026, 7, 28), idFactory:() => 'q-1' });
+  const original = store.save(quote({ label:'Mapo A', managementFeeWon:150000, isFavorite:true }));
+  const updated = store.updateDecisionDetails(original.id, {
+    note:'  Near subway\nvisit after work  ',
+    isVisited:true,
+    isContractCandidate:true,
+    checklist:{ registryOwner:true, contractTerms:true }
+  });
+
+  assert.equal(updated.note, 'Near subway visit after work');
+  assert.equal(updated.isVisited, true);
+  assert.equal(updated.isContractCandidate, true);
+  assert.deepEqual(updated.checklist, {
+    registryOwner:true,
+    depositProtection:false,
+    managementFeeBreakdown:false,
+    contractTerms:true
+  });
+  assert.equal(updated.label, original.label);
+  assert.equal(updated.managementFeeWon, original.managementFeeWon);
+  assert.equal(updated.isFavorite, original.isFavorite);
+  assert.equal(updated.comparableCount, original.comparableCount);
+  assert.equal(store.updateDecisionDetails('missing', {}), null);
+});
+
 test('store updates comparison details and derives fixed monthly cost only when fee is known', () => {
   const storage = memoryStorage();
   const store = saved.createStore({ storage, now:() => Date.UTC(2026, 7, 28), idFactory:() => 'q-1' });
@@ -152,6 +224,15 @@ test('comparison priority keeps favorites first and then lower known fixed month
     saved.normalizeQuote(quote({ id:'favorite', monthlyRentWon:1400000, managementFeeWon:200000, isFavorite:true }), { idFactory:() => 'favorite' })
   ];
   assert.deepEqual(saved.sortForComparison(values).map(item => item.id), ['favorite', 'lower', 'unknown']);
+});
+
+test('comparison priority puts contract candidates before favorites', () => {
+  const values = [
+    saved.normalizeQuote(quote({ id:'favorite', isFavorite:true }), { idFactory:() => 'favorite' }),
+    saved.normalizeQuote(quote({ id:'candidate', isContractCandidate:true }), { idFactory:() => 'candidate' }),
+    saved.normalizeQuote(quote({ id:'other' }), { idFactory:() => 'other' })
+  ];
+  assert.deepEqual(saved.sortForComparison(values).map(item => item.id), ['candidate', 'favorite', 'other']);
 });
 
 test('lowest known monthly cost requires at least two complete totals', () => {
@@ -191,9 +272,17 @@ test('saving a checked quote again preserves its private comparison details', ()
   const store = saved.createStore({ storage, now:() => clock++, idFactory:() => 'q-1' });
   const original = store.save(quote({ label:'Mapo A' }));
   store.updateComparisonDetails(original.id, { managementFeeWon:170000, isFavorite:true });
+  store.updateDecisionDetails(original.id, {
+    note:'Second visit needed', isVisited:true, isContractCandidate:true,
+    checklist:{ registryOwner:true, depositProtection:true }
+  });
   const refreshed = store.save(quote({ label:'Mapo A', comparableCount:30 }));
   assert.equal(refreshed.managementFeeWon, 170000);
   assert.equal(refreshed.isFavorite, true);
+  assert.equal(refreshed.note, 'Second visit needed');
+  assert.equal(refreshed.isVisited, true);
+  assert.equal(refreshed.isContractCandidate, true);
+  assert.deepEqual(saved.checklistProgress(refreshed), { completed:2, total:4 });
   assert.equal(refreshed.comparableCount, 30);
 });
 

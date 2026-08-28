@@ -34,11 +34,11 @@ test('Apps Script sends only a minimal owner notification after a successful new
   assert.match(source, /Lead notification failed/);
 });
 
-test('Apps Script neutralizes spreadsheet formula prefixes before appendRow', () => {
+test('Apps Script neutralizes spreadsheet formula prefixes before row writes', () => {
   const source = fs.readFileSync('ops/google-apps-script/lead-webhook.gs','utf8');
   assert.match(source, /sanitizeCell_/);
   assert.equal(source.includes('/^[=+\\-@]/'), true);
-  assert.match(source, /COLUMNS\.map\(key => sanitizeCell_/);
+  assert.match(source, /columns\.map\(key => sanitizeCell_/);
 });
 
 test('Apps Script serializes Sheet writes to avoid duplicate header races', () => {

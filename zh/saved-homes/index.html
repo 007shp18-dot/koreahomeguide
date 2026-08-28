@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>比较已保存房源 | KoreaHomeGuide</title>
-  <meta name="description" content="无需注册账号，在当前浏览器中比较已保存房源的押金、月租、固定管理费、每月固定支出、判断结果和成交依据。">
+  <meta name="description" content="无需注册账号，在当前浏览器中比较已保存房源的备注、看房状态、签约候选、每月固定支出和签约前检查。">
   <meta name="robots" content="noindex,follow">
   <link rel="canonical" href="https://koreahomeguide.com/zh/saved-homes/">
   <link rel="alternate" hreflang="en" href="https://koreahomeguide.com/saved-homes/">
@@ -16,12 +16,12 @@
 <body class="core-ui saved-homes-page">
   <header class="compact-header"><a class="brand" href="/zh/"><span class="brand-mark">K</span><span>KoreaHomeGuide</span></a><nav><a href="/zh/explore/">租金探索</a><a href="/zh/tools/seoul-rent-check/">租金检查</a><a href="/zh/guides/">租房指南</a></nav><div class="header-actions"><select id="currencySelect" class="currency-select" aria-label="显示货币"><option value="KRW" selected>KRW</option><option value="USD">USD</option><option value="CNY">CNY</option></select><a class="language-link" href="/saved-homes/">EN</a></div></header>
   <main class="page-shell">
-    <section class="tool-hero saved-homes-hero"><span class="eyebrow">保存在当前设备</span><h1>比较你检查过的房源。</h1><p>最多将八个报价保存在当前浏览器中90天。填写固定管理费后可比较月租加固定管理费、收藏重点房源，并在手机端一次比较最多三个房源。</p></section>
+    <section class="tool-hero saved-homes-hero"><span class="eyebrow">保存在当前设备</span><h1>比较你检查过的房源。</h1><p>最多将八个报价保存在当前浏览器中90天。添加私人备注、看房状态、签约候选、固定管理费和签约前确认项。</p></section>
     <section class="saved-homes-toolbar"><div><strong id="savedHomesCount">当前浏览器中保存了 0 个房源</strong><p>这些房源不会同步到账号，也不会发送给 KoreaHomeGuide。</p></div><div class="saved-homes-toolbar-actions"><a href="/zh/tools/seoul-rent-check/">继续检查其他房源</a><button id="savedHomesClear" type="button" hidden>全部删除</button></div></section>
     <p id="savedHomesStatus" class="saved-homes-page-status" aria-live="polite"></p>
     <section id="savedHomesEmpty" class="saved-homes-empty"><h2>还没有保存房源</h2><p>完成租金检查后，在结果下方选择“保存这个报价”。</p><a class="search-button" href="/zh/tools/seoul-rent-check/">检查租金报价</a></section>
     <section id="savedHomesList" class="saved-homes-list" aria-label="已保存房源"></section>
-    <section class="saved-homes-compare-section"><div class="section-heading"><span class="eyebrow">并排比较</span><h2>报价比较</h2><p>电脑端最多比较四个房源，手机端最多三个。“每月固定支出”只计算你填写的月租和固定管理费，不是完整水电估算或推荐结果。</p></div><div id="savedHomesComparison"></div></section>
+    <section class="saved-homes-compare-section"><div class="section-heading"><span class="eyebrow">并排比较</span><h2>报价比较</h2><p>电脑端最多比较四个房源，手机端最多三个。“每月固定支出”只计算你填写的月租和固定管理费。检查进度仅记录你自己的步骤，不代表法律核验或风险评分。</p></div><div id="savedHomesComparison"></div></section>
     <section class="saved-homes-privacy-note"><h2>数据只留在你的浏览器</h2><p>已保存房源只保留在当前设备中，并在90天后到期。备注中请勿填写房东、中介、租客姓名或准确房号。你可以随时删除单个房源或清空全部数据。</p><p><a href="/zh/privacy/">隐私说明</a> · <a href="/zh/terms/">服务条款</a></p></section>
   </main>
   <footer class="page-footer"><strong>KoreaHomeGuide</strong><small>韩国官方申报租赁成交数据的市场参考。<a href="/zh/privacy/">隐私说明</a> · <a href="/zh/terms/">服务条款</a></small></footer>

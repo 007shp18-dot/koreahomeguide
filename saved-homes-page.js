@@ -101,6 +101,11 @@
     return root.KHGSavedQuotes.fixedMonthlyCostWon(quote);
   }
 
+  function checklistText(quote) {
+    const progress = root.KHGSavedQuotes.checklistProgress(quote);
+    return zh ? `${progress.completed}/${progress.total} 项已确认` : `${progress.completed}/${progress.total} checked`;
+  }
+
   function setStatus(message, tone = '') {
     if (!statusNode) return;
     statusNode.textContent = message || '';
@@ -129,6 +134,10 @@
     return [
       [zh ? '地区与类型' : 'Area and type', quote => `${root.KHGSavedQuotes.districtLabel(quote.districtCode, language)} · ${root.KHGSavedQuotes.propertyLabel(quote.propertyType, language)}`],
       [zh ? '面积' : 'Size', quote => `${quote.areaSqm.toLocaleString(locale)}㎡`],
+      [zh ? '私人备注' : 'Private note', quote => quote.note || '—'],
+      [zh ? '看房状态' : 'Visit status', quote => quote.isVisited ? (zh ? '已看房' : 'Visited') : (zh ? '未标记为已看房' : 'Not marked visited')],
+      [zh ? '签约候选' : 'Contract candidate', quote => quote.isContractCandidate ? (zh ? '是' : 'Yes') : (zh ? '否' : 'No')],
+      [zh ? '签约前检查' : 'Contract checks', quote => checklistText(quote)],
       [zh ? '押金' : 'Deposit', quote => ({ money:quote.depositWon })],
       [zh ? '月租' : 'Monthly rent', quote => ({ money:quote.monthlyRentWon })],
       [zh ? '固定管理费' : 'Fixed management fee', quote => quote.managementFeeWon == null ? missingFeeOutput(quote) : ({ money:quote.managementFeeWon })],
@@ -150,8 +159,9 @@
     chosen.forEach(quote => {
       const card = doc.createElement('article');
       if (lowestCost != null && fixedCost(quote) === lowestCost) card.classList.add('saved-home-lowest-cost');
+      if (quote.isContractCandidate) card.classList.add('is-contract-candidate');
       const heading = doc.createElement('h3');
-      heading.textContent = `${quote.isFavorite ? '★ ' : ''}${displayName(quote)}`;
+      heading.textContent = `${quote.isContractCandidate ? '◆ ' : ''}${quote.isFavorite ? '★ ' : ''}${displayName(quote)}`;
       card.appendChild(heading);
       if (lowestCost != null && fixedCost(quote) === lowestCost) {
         const badge = doc.createElement('p');
@@ -207,7 +217,7 @@
     headRow.appendChild(textCell(zh ? '比较项目' : 'Compare', 'th'));
     const lowestCost = root.KHGSavedQuotes.lowestKnownMonthlyCost(chosen);
     chosen.forEach(quote => {
-      const heading = textCell(`${quote.isFavorite ? '★ ' : ''}${displayName(quote)}`, 'th');
+      const heading = textCell(`${quote.isContractCandidate ? '◆ ' : ''}${quote.isFavorite ? '★ ' : ''}${displayName(quote)}`, 'th');
       if (lowestCost != null && fixedCost(quote) === lowestCost) {
         const badge = doc.createElement('span');
         badge.className = 'saved-home-table-lowest-badge';
@@ -258,7 +268,7 @@
 
     quotes.forEach(quote => {
       const card = doc.createElement('article');
-      card.className = `saved-home-card${quote.isFavorite ? ' is-favorite' : ''}`;
+      card.className = `saved-home-card${quote.isFavorite ? ' is-favorite' : ''}${quote.isContractCandidate ? ' is-contract-candidate' : ''}`;
       const favorite = doc.createElement('button');
       favorite.type = 'button';
       favorite.className = 'saved-home-favorite';
@@ -297,6 +307,22 @@
       selectLabel.append(checkbox, name);
       const meta = doc.createElement('p');
       meta.textContent = `${root.KHGSavedQuotes.districtLabel(quote.districtCode, language)} · ${root.KHGSavedQuotes.propertyLabel(quote.propertyType, language)} · ${quote.areaSqm.toLocaleString(locale)}㎡`;
+      const decisionBadges = doc.createElement('div');
+      decisionBadges.className = 'saved-home-decision-badges';
+      if (quote.isContractCandidate) {
+        const candidateBadge = doc.createElement('span');
+        candidateBadge.className = 'is-candidate';
+        candidateBadge.textContent = zh ? '签约候选' : 'Contract candidate';
+        decisionBadges.appendChild(candidateBadge);
+      }
+      if (quote.isVisited) {
+        const visitedBadge = doc.createElement('span');
+        visitedBadge.textContent = zh ? '已看房' : 'Visited';
+        decisionBadges.appendChild(visitedBadge);
+      }
+      const progressBadge = doc.createElement('span');
+      progressBadge.textContent = checklistText(quote);
+      decisionBadges.appendChild(progressBadge);
       const price = doc.createElement('div');
       price.className = 'saved-home-price';
       const deposit = doc.createElement('span');
@@ -343,6 +369,84 @@
         safeTrack('saved_quote_management_fee_updated', store.list().length);
         render();
       });
+      const decisionDetails = doc.createElement('details');
+      decisionDetails.className = 'saved-home-decision';
+      const decisionSummary = doc.createElement('summary');
+      decisionSummary.textContent = zh ? '决策备注与签约前检查' : 'Decision notes & checks';
+      const decisionForm = doc.createElement('form');
+      decisionForm.className = 'saved-home-decision-editor';
+      const noteLabel = doc.createElement('label');
+      noteLabel.className = 'saved-home-note-field';
+      const noteText = doc.createElement('span');
+      noteText.textContent = zh ? '私人备注（最多240个字符）' : 'Private note (up to 240 characters)';
+      const noteInput = doc.createElement('textarea');
+      noteInput.maxLength = 240;
+      noteInput.rows = 3;
+      noteInput.value = quote.note;
+      noteInput.placeholder = zh ? '例如：采光好，确认停车费' : 'For example: Good light; confirm parking fee';
+      noteLabel.append(noteText, noteInput);
+      const decisionFlags = doc.createElement('div');
+      decisionFlags.className = 'saved-home-decision-flags';
+      const visitedLabel = doc.createElement('label');
+      const visitedInput = doc.createElement('input');
+      visitedInput.type = 'checkbox';
+      visitedInput.checked = quote.isVisited;
+      visitedLabel.append(visitedInput, doc.createTextNode(zh ? ' 已看房' : ' Visited'));
+      const candidateLabel = doc.createElement('label');
+      const candidateInput = doc.createElement('input');
+      candidateInput.type = 'checkbox';
+      candidateInput.checked = quote.isContractCandidate;
+      candidateLabel.append(candidateInput, doc.createTextNode(zh ? ' 标记为签约候选' : ' Mark as contract candidate'));
+      decisionFlags.append(visitedLabel, candidateLabel);
+      const checklistFieldset = doc.createElement('fieldset');
+      checklistFieldset.className = 'saved-home-checklist';
+      const checklistLegend = doc.createElement('legend');
+      checklistLegend.textContent = zh ? '签约前确认项' : 'Before-contract checks';
+      checklistFieldset.appendChild(checklistLegend);
+      const checklistLabels = {
+        registryOwner:zh ? '已核对登记簿与出租人/所有人' : 'Registry and owner checked',
+        depositProtection:zh ? '已确认押金保护条件' : 'Deposit-protection eligibility checked',
+        managementFeeBreakdown:zh ? '已确认管理费明细' : 'Management-fee breakdown checked',
+        contractTerms:zh ? '已理解合同条款' : 'Contract terms understood'
+      };
+      const checklistInputs = new Map();
+      root.KHGSavedQuotes.CHECKLIST_KEYS.forEach(key => {
+        const label = doc.createElement('label');
+        const input = doc.createElement('input');
+        input.type = 'checkbox';
+        input.checked = quote.checklist[key] === true;
+        label.append(input, doc.createTextNode(` ${checklistLabels[key]}`));
+        checklistInputs.set(key, input);
+        checklistFieldset.appendChild(label);
+      });
+      const checklistNotice = doc.createElement('p');
+      checklistNotice.textContent = zh
+        ? '仅记录你已完成的确认项，不代表法律核验或风险评分。'
+        : 'Tracks only what you checked. It is not legal verification or a risk score.';
+      const decisionSave = doc.createElement('button');
+      decisionSave.type = 'submit';
+      decisionSave.className = 'saved-home-decision-save';
+      decisionSave.textContent = zh ? '保存决策信息' : 'Save decision details';
+      decisionForm.append(noteLabel, decisionFlags, checklistFieldset, checklistNotice, decisionSave);
+      decisionForm.addEventListener('submit', event => {
+        event.preventDefault();
+        const checklist = {};
+        checklistInputs.forEach((input, key) => { checklist[key] = input.checked; });
+        const updated = store.updateDecisionDetails(quote.id, {
+          note:noteInput.value,
+          isVisited:visitedInput.checked,
+          isContractCandidate:candidateInput.checked,
+          checklist
+        });
+        if (!updated) {
+          setStatus(zh ? '无法保存决策信息。请检查浏览器存储设置。' : 'Decision details could not be saved. Check browser storage settings.', 'error');
+          return;
+        }
+        setStatus(zh ? '决策信息已保存在当前浏览器。' : 'Decision details saved in this browser.', 'success');
+        safeTrack('saved_quote_decision_updated', store.list().length);
+        render();
+      });
+      decisionDetails.append(decisionSummary, decisionForm);
       const verdict = doc.createElement('p');
       verdict.className = `saved-home-verdict ${quote.rating}`;
       verdict.textContent = `${ratingLabel(quote.rating)} · ${confidenceLabel(quote.confidence)}`;
@@ -392,7 +496,7 @@
       const sourcePath = zh ? '/zh/saved-homes/' : '/saved-homes/';
       const rentCheckPath = zh ? '/zh/tools/seoul-rent-check/' : '/tools/seoul-rent-check/';
       recheck.href = `${rentCheckPath}?${new URLSearchParams({ lawdCd:quote.districtCode, type:quote.propertyType, from:sourcePath })}`;
-      recheck.textContent = zh ? '按原条件重新检查' : 'Recheck this quote';
+      recheck.textContent = zh ? '按原条件再次运行租金检查' : 'Run Rent Check again';
       recheck.addEventListener('click', event => {
         if (!root.KHGSavedQuotes.writeRecheckPrefill(sessionStorage, quote, { from:sourcePath })) {
           event.preventDefault();
@@ -412,7 +516,7 @@
         render();
       });
       actions.append(edit, recheck, remove);
-      card.append(favorite, selectLabel, meta, price, costForm, verdict, actions, editForm);
+      card.append(favorite, selectLabel, meta, decisionBadges, price, costForm, decisionDetails, verdict, actions, editForm);
       listNode.appendChild(card);
     });
     renderComparison(quotes);
