@@ -2,6 +2,9 @@
   "name": "koreahomeguide",
   "private": true,
   "version": "11.3.0",
+  "scripts": {
+    "test": "node --test"
+  },
   "dependencies": {
     "@vercel/functions": "3.9.5"
   }
