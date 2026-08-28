@@ -42,7 +42,7 @@ test('prefill drops fake sources and market sources with a mismatched tuple', ()
 
 test('standalone Rent Check page loads and applies explorer prefill before FX rendering', () => {
   const html = fs.readFileSync('tools/seoul-rent-check/index.html','utf8');
-  const js = fs.readFileSync('tools/seoul-rent-check/app.js','utf8');
+  const js = fs.readFileSync('app.js','utf8');
   assert.match(html, /acquisition-context\.js/);
   assert.match(html, /prefill-utils\.js/);
   assert.ok(html.indexOf('acquisition-context.js') < html.indexOf('prefill-utils.js'));
