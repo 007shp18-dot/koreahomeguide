@@ -36,10 +36,15 @@
   }
 
   function optionValues(select){
+    const seen=new Set();
     return Array.from(select&&select.options||[]).map(option=>({
       code:String(option.value||''),
       text:String(option.textContent||option.label||'').trim()
-    })).filter(option=>option.code);
+    })).filter(option=>{
+      if(!option.code||seen.has(option.code)) return false;
+      seen.add(option.code);
+      return true;
+    });
   }
 
   function buildSelectOptions(select,catalog,language='en'){
@@ -154,7 +159,13 @@
         const filtered=filterDistricts(rows,query);
         const recentCodes=query?[]:readRecent(targetStorage,districts);
         const recentRows=recentCodes.map(code=>byCode.get(code)).filter(Boolean);
-        visible=[...recentRows,...filtered.filter(row=>!recentCodes.includes(row.code))];
+        const seenCodes=new Set();
+        visible=[...recentRows,...filtered.filter(row=>!recentCodes.includes(row.code))]
+          .filter(row=>{
+            if(seenCodes.has(row.code)) return false;
+            seenCodes.add(row.code);
+            return true;
+          });
         if(!normalizeSearchText(query)){
           const currentCode=String(select.value||'');
           visible=visible.filter(row=>row.code!==currentCode);

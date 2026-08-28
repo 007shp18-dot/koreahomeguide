@@ -144,6 +144,11 @@ test('opening the district list omits the current selection while search can sti
   assert.equal(openCodes.includes('11680'), false);
   assert.equal(openCodes.filter(code => code === '11440').length, 1);
 
+  input.listeners.input();
+  const unchangedInputCodes = listbox.children.map(option => option.dataset.districtCode);
+  assert.equal(unchangedInputCodes.includes('11680'), false);
+  assert.equal(new Set(unchangedInputCodes).size, unchangedInputCodes.length);
+
   input.value = '江南';
   input.listeners.input();
   assert.deepEqual(listbox.children.map(option => option.dataset.districtCode), ['11680']);
@@ -153,6 +158,7 @@ test('select-backed district rows keep Explorer options and localized All Seoul'
   const combo = require(comboPath);
   const select = fakeElement('select');
   select.options = [
+    { value: '11680', textContent: 'Gangnam-gu (강남구)' },
     { value: '11680', textContent: 'Gangnam-gu (강남구)' },
     { value: '11440', textContent: 'Mapo-gu (마포구)' },
     { value: 'all', textContent: 'All supported Seoul' }

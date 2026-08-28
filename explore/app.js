@@ -17,6 +17,9 @@ const buildingList = document.querySelector('#buildingList');
 const budgetFilterNote = document.querySelector('#budgetFilterNote');
 const explorerChips = document.querySelector('#explorerChips');
 const explorerResults = document.querySelector('#explorerResultsShell');
+const explorerSearchCard = document.querySelector('.explorer-search-card');
+const explorerFilterSummary = document.querySelector('#explorerFilterSummary');
+const explorerChangeFilters = document.querySelector('#explorerChangeFilters');
 const mapSelection = document.querySelector('#explorerMapSelection');
 const mapSelectionStatus = document.querySelector('#explorerMapSelectionStatus');
 const mapSelectionName = document.querySelector('#explorerMapSelectionName');
@@ -59,6 +62,15 @@ function budgetValues() {
 function hasBudgetFilter() {
   const { maxRent, maxDeposit } = budgetValues();
   return Boolean(maxRent || maxDeposit);
+}
+function selectedOptionText(select) {
+  const option = select && select.options && select.options[select.selectedIndex];
+  return option ? String(option.textContent || '').trim() : '';
+}
+function updateFilterSummary() {
+  if (!explorerFilterSummary) return;
+  const text = explorerFilterSummary.querySelector('span');
+  if (text) text.textContent = [selectedOptionText(maxRentSelect), selectedOptionText(maxDepositSelect)].filter(Boolean).join(' · ');
 }
 function filterDongsByBudget(items) {
   return KHGExplorer.filterDongsByBudget(items, budgetValues());
@@ -126,6 +138,7 @@ function clearMapSelection() {
 function handleSelectionChange() {
   clearMapSelection();
   updateRentCheckHandoff();
+  updateFilterSummary();
 }
 
 function renderMapSelection(model) {
@@ -368,6 +381,7 @@ function showExploreResults({ requestedDong = '' } = {}) {
   explorerResults.hidden=false;
   setExplorerView(KHGExplorer.initialViewForWidth(window.innerWidth));
   updateRentCheckHandoff();
+  updateFilterSummary();
   return loadArea({ requestedDong });
 }
 
@@ -378,6 +392,12 @@ maxRentSelect.addEventListener('change',handleSelectionChange);
 maxDepositSelect.addEventListener('change',handleSelectionChange);
 explorerViewButtons.forEach(button => button.addEventListener('click', () => setExplorerView(button.dataset.explorerView)));
 if (mapSelectionClose) mapSelectionClose.addEventListener('click', clearMapSelection);
+if (explorerChangeFilters) explorerChangeFilters.addEventListener('click', () => {
+  if (!explorerSearchCard) return;
+  window.scrollTo({ top:Math.max(0, explorerSearchCard.offsetTop - 16), behavior:'smooth' });
+  const areaInput = explorerSearchCard.querySelector('.district-combobox-input') || areaSelect;
+  window.setTimeout(() => areaInput.focus(), 320);
+});
 document.querySelectorAll('[data-explore-area]').forEach(button => button.addEventListener('click', () => {
   areaSelect.value = button.dataset.exploreArea;
   areaSelect.dispatchEvent(new Event('change',{bubbles:true}));

@@ -45,9 +45,9 @@
     </section>
 
     <section class="explorer-search-card" aria-label="探索首尔租金数据">
-      <label class="field"><span>地区</span><select id="exploreArea"><option value="11680">江南区（강남구）</option><option value="11440">麻浦区（마포구）</option><option value="11170">龙山区（용산구）</option><option value="11200">城东区（성동구）</option><option value="11560">永登浦区（영등포구）</option><option value="11620">冠岳区（관악구）</option><option value="11230">东大门区（동대문구）</option><option value="11410">西大门区（서대문구）</option><option value="11290">城北区（성북구）</option><option value="11215">广津区（광진구）</option><option value="11650">瑞草区（서초구）</option><option value="11710">松坡区（송파구）</option><option value="11740">江东区（강동구）</option><option value="11110">钟路区（종로구）</option><option value="11140">中区（중구）</option><option value="all">全首尔支持地区</option></select></label>
-      <label class="field"><span>房产类型</span><select id="exploreType" class="selection-native"><option value="officetel">Officetel（오피스텔）</option><option value="apartment">公寓（아파트）</option><option value="villa">低层多户住宅 / Villa（연립·다세대）</option><option value="detached">独栋及多户住宅（단독·다가구）</option></select></label>
-      <label class="field"><span>月租预算</span><select id="exploreMaxRent"><option value="">不限月租</option><option value="800000">最高 ₩800,000</option><option value="1200000">最高 ₩1,200,000</option><option value="1800000">最高 ₩1,800,000</option><option value="2500000">最高 ₩2,500,000</option></select></label>
+      <label class="field explorer-area-field"><span>地区</span><select id="exploreArea"><option value="11680">江南区（강남구）</option><option value="11440">麻浦区（마포구）</option><option value="11170">龙山区（용산구）</option><option value="11200">城东区（성동구）</option><option value="11560">永登浦区（영등포구）</option><option value="11620">冠岳区（관악구）</option><option value="11230">东大门区（동대문구）</option><option value="11410">西大门区（서대문구）</option><option value="11290">城北区（성북구）</option><option value="11215">广津区（광진구）</option><option value="11650">瑞草区（서초구）</option><option value="11710">松坡区（송파구）</option><option value="11740">江东区（강동구）</option><option value="11110">钟路区（종로구）</option><option value="11140">中区（중구）</option><option value="all">全首尔支持地区</option></select></label>
+      <label class="field explorer-type-field"><span>房产类型</span><select id="exploreType" class="selection-native"><option value="officetel">Officetel</option><option value="apartment">公寓</option><option value="villa">低层住宅</option><option value="detached">独栋 / 多户住宅</option></select></label>
+      <label class="field explorer-budget-field"><span>月租预算</span><select id="exploreMaxRent"><option value="">不限月租</option><option value="800000">最高 ₩800,000</option><option value="1200000">最高 ₩1,200,000</option><option value="1800000">最高 ₩1,800,000</option><option value="2500000">最高 ₩2,500,000</option></select></label>
       <button id="exploreButton" class="search-button" type="button">比较街区</button>
       <details class="advanced-filter explorer-advanced-filter"><summary>押金预算（可选）</summary><div class="advanced-filter-content"><label class="field"><span>最高押金</span><select id="exploreMaxDeposit"><option value="">不限押金</option><option value="5000000">最高 ₩5,000,000</option><option value="10000000">最高 ₩10,000,000</option><option value="20000000">最高 ₩20,000,000</option><option value="50000000">最高 ₩50,000,000</option></select></label></div></details>
       <div class="explorer-search-handoff"><span>核对具体租房报价</span><a data-explorer-rent-check data-rent-check-cta="explorer_filter_handoff" href="/zh/tools/seoul-rent-check/">检查这个区域和住宅类型 →</a></div>
@@ -95,7 +95,7 @@
       <div class="product-main explorer-map-main">
 <section id="explorerResults" class="explorer-results" aria-live="polite">
       <div class="explorer-results-head">
-        <div><span class="eyebrow">近期真实签约租金</span><h2 id="explorerTitle">江南区 · Officetel</h2></div>
+        <div><span class="eyebrow">近期真实签约租金</span><h2 id="explorerTitle">江南区 · Officetel</h2><div id="explorerFilterSummary" class="explorer-filter-summary"><span>不限月租 · 不限押金</span><button id="explorerChangeFilters" type="button">修改条件</button></div></div>
         <span id="explorerDataThrough" class="explorer-data-through">最近已完成月份</span>
       </div>
       <div id="explorerStatus" class="market-status">正在加载官方租赁成交数据…</div>
