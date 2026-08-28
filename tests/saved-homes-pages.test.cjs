@@ -19,9 +19,9 @@ test('localized saved-home pages are private browser tools with clear limits', (
 
 test('all four Rent Check entry points bind saved quotes before their result runtime', () => {
   const files = [
-    ['index.html','/app.js'], ['zh/index.html','/zh/app.js'],
-    ['tools/seoul-rent-check/index.html','/tools/seoul-rent-check/app.js'],
-    ['zh/tools/seoul-rent-check/index.html','/zh/tools/seoul-rent-check/app.js']
+    ['index.html','/app.js'], ['zh/index.html','/app.js'],
+    ['tools/seoul-rent-check/index.html','/app.js'],
+    ['zh/tools/seoul-rent-check/index.html','/app.js']
   ];
   for (const [file, runtime] of files) {
     const html = fs.readFileSync(file, 'utf8');
@@ -171,7 +171,7 @@ test('Rent Check consumes saved-home recheck values without putting prices in th
   const savedSource = fs.readFileSync('saved-rent-quotes.js', 'utf8');
   assert.match(comparisonSource, /new URLSearchParams\(\{ lawdCd:quote\.districtCode, type:quote\.propertyType, from:sourcePath \}\)/);
   assert.doesNotMatch(comparisonSource, /new URLSearchParams\(\{[^}]+(?:depositWon|monthlyRentWon|areaSqm)/);
-  for (const file of ['app.js','zh/app.js','tools/seoul-rent-check/app.js','zh/tools/seoul-rent-check/app.js']) {
+  for (const file of ['app.js']) {
     const source = fs.readFileSync(file, 'utf8');
     assert.match(source, /takeRecheckPrefill\(window\.sessionStorage/);
     assert.match(source, /savedQuoteId:acquisitionContext\.savedQuoteId\|\|null/, file);
@@ -182,7 +182,7 @@ test('Rent Check consumes saved-home recheck values without putting prices in th
 test('studio results keep their user-facing type when saved while APIs use the official fallback', () => {
   const savedSource = fs.readFileSync('saved-rent-quotes.js', 'utf8');
   assert.match(savedSource, /savedPropertyType/);
-  for (const file of ['app.js','zh/app.js','tools/seoul-rent-check/app.js','zh/tools/seoul-rent-check/app.js']) {
+  for (const file of ['app.js']) {
     const source = fs.readFileSync(file, 'utf8');
     assert.match(source, /savedPropertyType:type\.value/, file);
     assert.match(source, /propertyType:mapped\.officialType/, file);
