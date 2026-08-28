@@ -6,6 +6,8 @@ const exploreButton = document.querySelector('#exploreButton');
 const currencySelect = document.querySelector('#currencySelect');
 const languageSwitch = document.querySelector('#languageSwitch');
 const title = document.querySelector('#explorerTitle');
+const summaryArea = document.querySelector('#explorerSummaryArea');
+const summaryType = document.querySelector('#explorerSummaryType');
 const status = document.querySelector('#explorerStatus');
 const dataThrough = document.querySelector('#explorerDataThrough');
 const metricRent = document.querySelector('#metricRent');
@@ -222,9 +224,16 @@ function renderSummary(data, dong = '') {
   currentData = data;
   currentDong = dong || '';
   const selectedAreaName = areaSelect.value === 'all' ? data.districtName : areaName();
-  title.innerHTML = currentDong
-    ? `${escapeHtml(selectedAreaName)} · ${dongDisplayHtml(currentDong)} · ${escapeHtml(typeName(data.propertyType || typeSelect.value))}`
-    : `${escapeHtml(selectedAreaName)} · ${escapeHtml(typeName(data.propertyType || typeSelect.value))}`;
+  const heading = KHGExplorer.summaryHeading({
+    lawdCd:data.districtCode || areaSelect.value,
+    districtName:selectedAreaName,
+    dong:currentDong,
+    propertyType:data.propertyType || typeSelect.value,
+    locale:'en'
+  });
+  title.textContent = heading.title;
+  if (summaryArea) summaryArea.textContent = heading.area;
+  if (summaryType) summaryType.textContent = heading.housingType;
   const summary = data.summary || {};
   const rentValue = summary.medianMonthlyRentWon;
   const depositValue = summary.medianDepositWon;
@@ -264,175 +273,4 @@ function renderBuildings(buildings) {
     return `<article class="building-row">
       <div class="building-name"><strong>${escapeHtml(nameDisplay.primary)}</strong>${nameDisplay.secondary ? `<small class="building-official-name">${escapeHtml(nameDisplay.secondary)}</small>` : ''}<small>${escapeHtml(location)}</small></div>
       <div><span class="mobile-label">Typical size</span><strong>${formatArea(item.typicalAreaSqm)}</strong></div>
-      ${(() => { const band = representativeBand(item); const rentValue = band ? band.medianMonthlyRentWon : (item.contextualMedianMonthlyRentWon ?? item.medianMonthlyRentWon); const depositValue = band ? band.medianDepositWon : (item.contextualMedianDepositWon ?? item.medianDepositWon); return `<div class="building-money"><span class="mobile-label">Rent context</span><strong>${rentValue == null ? '—' : moneyHtml(rentValue)}</strong></div><div class="building-money"><span class="mobile-label">Deposit context</span><strong>${depositValue == null ? '—' : moneyHtml(depositValue)}</strong></div>`; })()}
-      <div><span class="mobile-label">Contracts</span><strong>${Number(item.contractCount || 0).toLocaleString('en-US')}</strong></div>
-      <div class="building-actions"><a rel="nofollow" href="${escapeHtml(interactiveHref)}">Open building details →</a></div>
-    </article>`;
-  }).join('');
-}
-
-async function loadFx() {
-  if (!currencySelect) return;
-  currencySelect.disabled = true;
-  try {
-    const response = await fetch('/api/fx');
-    const data = await response.json();
-    if (!response.ok) throw new Error('FX unavailable');
-    fxRates = data.rates || {};
-    if (!fxRates[currencySelect.value] && currencySelect.value !== 'KRW') currencySelect.value = 'KRW';
-  } catch (_) {
-    fxRates = {};
-    currencySelect.value = 'KRW';
-  } finally {
-    currencySelect.disabled = false;
-  }
-}
-
-function setLoading(message = 'Loading official rental transactions…') {
-  status.textContent = message;
-  status.className = 'market-status loading';
-  buildingList.innerHTML = '<div class="explorer-empty">Loading buildings…</div>';
-  clearMapSelection();
-  exploreButton.disabled = true;
-}
-
-async function loadDong(dong, { showBuildingsOnMap = false, lawdCd = areaSelect.value } = {}) {
-  currentDong = String(dong || '').trim();
-  if (!currentDong) return;
-  setLoading(`Loading ${dongDisplayName(currentDong)} official rental transactions…`);
-  updateLanguageSwitch();
-  try {
-    const params = currentParams(true);
-    params.set('lawdCd', String(lawdCd || areaSelect.value));
-    const response = await fetch(`/api/explore-dong?${params.toString()}`);
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || 'Neighborhood data failed');
-    renderSummary(data, data.dong || currentDong);
-    if (showBuildingsOnMap) publishMapBuildings(data.dong || currentDong, data.buildings || [], data.districtCode || lawdCd);
-    history.replaceState(null, '', `/explore/?${currentParams(false).toString()}`);
-  } catch (_) {
-    status.textContent = 'Official transaction data for this neighborhood is temporarily unavailable.';
-    status.className = 'market-status error';
-    buildingList.innerHTML = '<div class="explorer-empty">We could not load neighborhood building data right now.</div>';
-  } finally {
-    exploreButton.disabled = false;
-  }
-}
-
-async function loadArea({ requestedDong = '' } = {}) {
-  currentDong = String(requestedDong || '').trim();
-  setLoading();
-  try {
-    const apiParams = new URLSearchParams({ lawdCd:areaSelect.value, type:typeSelect.value });
-    const isAllSeoul = areaSelect.value === 'all';
-    const endpoint = isAllSeoul
-      ? `/api/explore-seoul?type=${encodeURIComponent(typeSelect.value)}`
-      : `/api/explore-area?${apiParams.toString()}`;
-    const response = await fetch(endpoint);
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || 'Explorer data failed');
-    currentAreaData = data;
-    renderDongs(data.dongs || []);
-    const hasRequestedDong = !isAllSeoul && currentDong && (data.dongs || []).some(item => item.dong === currentDong);
-    if (hasRequestedDong) {
-      await loadDong(currentDong);
-      return;
-    }
-    currentDong = '';
-    renderSummary(data, '');
-    history.replaceState(null, '', `/explore/?${currentParams(false).toString()}`);
-  } catch (_) {
-    currentAreaData = null;
-    currentData = null;
-    currentDong = '';
-    status.textContent = 'Official transaction data is temporarily unavailable. Please try again later.';
-    status.className = 'market-status error';
-    metricRent.textContent = '—';
-    metricDeposit.textContent = '—';
-    metricContracts.textContent = '—';
-    metricChange.textContent = '—';
-    if (dongList) dongList.innerHTML = '<div class="explorer-empty">Neighborhood data is unavailable.</div>';
-    publishMapDongs([]);
-    buildingList.innerHTML = '<div class="explorer-empty">We could not load building-level transaction data right now.</div>';
-  } finally {
-    exploreButton.disabled = false;
-  }
-}
-
-function applyQuerySelection() {
-  const query = new URLSearchParams(location.search);
-  const area = query.get('lawdCd');
-  const type = query.get('type');
-  const dong = query.get('dong') || '';
-  const maxRent = query.get('maxRent') || '';
-  const maxDeposit = query.get('maxDeposit') || '';
-  if ([...areaSelect.options].some(option => option.value === area)) areaSelect.value = area;
-  if ([...typeSelect.options].some(option => option.value === type)) typeSelect.value = type;
-  if (maxRentSelect && [...maxRentSelect.options].some(option => option.value === maxRent)) maxRentSelect.value = maxRent;
-  if (maxDepositSelect && [...maxDepositSelect.options].some(option => option.value === maxDeposit)) maxDepositSelect.value = maxDeposit;
-  currentDong = dong;
-  updateLanguageSwitch();
-  updateRentCheckHandoff();
-  return dong;
-}
-
-function showExploreResults({ requestedDong = '' } = {}) {
-  explorerChips.hidden=false;
-  explorerResults.hidden=false;
-  setExplorerView(KHGExplorer.initialViewForWidth(window.innerWidth));
-  updateRentCheckHandoff();
-  updateFilterSummary();
-  return loadArea({ requestedDong });
-}
-
-exploreButton.addEventListener('click', () => { void showExploreResults(); });
-areaSelect.addEventListener('change',handleSelectionChange);
-typeSelect.addEventListener('change',handleSelectionChange);
-maxRentSelect.addEventListener('change',handleSelectionChange);
-maxDepositSelect.addEventListener('change',handleSelectionChange);
-explorerViewButtons.forEach(button => button.addEventListener('click', () => setExplorerView(button.dataset.explorerView)));
-if (mapSelectionClose) mapSelectionClose.addEventListener('click', clearMapSelection);
-if (explorerChangeFilters) explorerChangeFilters.addEventListener('click', () => {
-  if (!explorerSearchCard) return;
-  window.scrollTo({ top:Math.max(0, explorerSearchCard.offsetTop - 16), behavior:'smooth' });
-  const areaInput = explorerSearchCard.querySelector('.district-combobox-input') || areaSelect;
-  window.setTimeout(() => areaInput.focus(), 320);
-});
-document.querySelectorAll('[data-explore-area]').forEach(button => button.addEventListener('click', () => {
-  areaSelect.value = button.dataset.exploreArea;
-  areaSelect.dispatchEvent(new Event('change',{bubbles:true}));
-  loadArea();
-}));
-if (currencySelect) currencySelect.addEventListener('change', () => {
-  if (currentAreaData) renderDongs(currentAreaData.dongs || []);
-  if (currentData) renderSummary(currentData, currentDong);
-  if (currentMapSelection) renderMapSelection(currentMapSelection);
-});
-window.addEventListener('khg:map-select-dong', event => {
-  const dong = String(event.detail && event.detail.dong || '');
-  const model = event.detail && event.detail.model;
-  if (!dong || !model) return;
-  highlightMapCard(model.dong);
-  renderMapSelection(model);
-  const snapshot = areaSelect.value !== 'all' && KHGExplorer.areaSnapshotForDong(currentAreaData, dong);
-  if (snapshot) {
-    renderSummary(snapshot, dong);
-    publishMapBuildings(dong, snapshot.buildings || [], model.districtCode);
-    history.replaceState(null, '', `/explore/?${currentParams(false).toString()}`);
-  } else if (currentDong === dong && currentData && Array.isArray(currentData.buildings)) {
-    publishMapBuildings(dong, currentData.buildings, model.districtCode);
-  } else {
-    void loadDong(dong, { showBuildingsOnMap:true, lawdCd:model.districtCode });
-  }
-});
-window.addEventListener('khg:map-select-building', event => {
-  const model = event.detail && event.detail.model;
-  if (model) renderMapSelection(model);
-});
-window.addEventListener('khg:map-back-neighborhoods', clearMapSelection);
-
-(async () => {
-  const requestedDong = applyQuerySelection();
-  await loadFx();
-  if (requestedDong) await showExploreResults({ requestedDong });
-})();
+      ${(() => { const band = representativeBand(item); const rentValue = band ? band.medianMonthlyRentWon : (item.contextualMedianMonthlyRentWon ?? item.medianMonthlyRentWon); const depositValue = band ? band.medianDepositWon : (item.contextualMedianDepositWon ?? item.medianDepositWon); return `<div class="building-money"><span class="mobile-label">Rent context</span><strong>${rentValue == null ? '—' : moneyHtml(rentValue)}</strong></div><div class="building-money"><span class="mobile-label">Deposit context</span><strong>${depositValue == null ? '—' : moneyHtml(de

@@ -42,7 +42,7 @@
 
     <section class="explorer-search-card" aria-label="Explore Seoul rent data">
       <label class="field explorer-area-field"><span>Area</span><select id="exploreArea"><option value="11680">Gangnam-gu (강남구)</option><option value="11440">Mapo-gu (마포구)</option><option value="11170">Yongsan-gu (용산구)</option><option value="11200">Seongdong-gu (성동구)</option><option value="11560">Yeongdeungpo-gu (영등포구)</option><option value="11620">Gwanak-gu (관악구)</option><option value="11230">Dongdaemun-gu (동대문구)</option><option value="11410">Seodaemun-gu (서대문구)</option><option value="11290">Seongbuk-gu (성북구)</option><option value="11215">Gwangjin-gu (광진구)</option><option value="11650">Seocho-gu (서초구)</option><option value="11710">Songpa-gu (송파구)</option><option value="11740">Gangdong-gu (강동구)</option><option value="11110">Jongno-gu (종로구)</option><option value="11140">Jung-gu (중구)</option><option value="all">All supported Seoul</option></select></label>
-      <label class="field explorer-type-field"><span>Home type</span><select id="exploreType" class="selection-native"><option value="officetel">Officetel</option><option value="apartment">Apartment</option><option value="villa">Villa / low-rise</option><option value="detached">House</option></select></label>
+      <label class="field explorer-type-field"><span>Housing type</span><select id="exploreType" class="selection-native"><option value="officetel">Officetel (오피스텔)</option><option value="apartment">Apartment (아파트)</option><option value="villa">Villa / low-rise multifamily (연립·다세대)</option><option value="detached">Detached / multi-unit housing (단독·다가구)</option></select><small class="property-type-hint" data-property-type-guide data-for="exploreType" data-locale="en"></small></label>
       <label class="field explorer-budget-field"><span>Monthly rent budget</span><select id="exploreMaxRent"><option value="">Any rent</option><option value="800000">Up to ₩800K</option><option value="1200000">Up to ₩1.2M</option><option value="1800000">Up to ₩1.8M</option><option value="2500000">Up to ₩2.5M</option></select></label>
       <button id="exploreButton" class="search-button" type="button">Compare neighborhoods</button>
       <details class="advanced-filter explorer-advanced-filter"><summary>Deposit budget (optional)</summary><div class="advanced-filter-content"><label class="field"><span>Maximum deposit</span><select id="exploreMaxDeposit"><option value="">Any deposit</option><option value="5000000">Up to ₩5M</option><option value="10000000">Up to ₩10M</option><option value="20000000">Up to ₩20M</option><option value="50000000">Up to ₩50M</option></select></label></div></details>
@@ -78,6 +78,7 @@
               <button id="explorerMapSelectionDrag" class="explorer-map-selection-drag" type="button" aria-label="Move details panel" title="Drag to move this panel"><span aria-hidden="true"></span></button>
               <button id="explorerMapSelectionClose" class="explorer-map-selection-close" type="button" aria-label="Close neighborhood details">×</button>
               <div class="explorer-map-selection-head"><div><span id="explorerMapSelectionStatus" class="explorer-map-selection-status"></span><h3 id="explorerMapSelectionName"></h3></div><span id="explorerMapSelectionContracts" class="explorer-map-selection-count"></span></div>
+              <section id="explorerStreetView" class="explorer-street-view" aria-labelledby="explorerStreetViewHeading" hidden><div class="explorer-street-view-head"><strong id="explorerStreetViewHeading">Street view near this building</strong><span id="explorerStreetViewMeta"></span></div><div id="explorerStreetViewCanvas" class="explorer-street-view-canvas" hidden></div><p id="explorerStreetViewStatus" aria-live="polite"></p><small>Nearby street view, not a listing photo.</small></section>
               <div class="explorer-map-selection-metrics"><div><span>Monthly rent context</span><strong id="explorerMapSelectionRent">—</strong></div><div><span>Deposit context</span><strong id="explorerMapSelectionDeposit">—</strong></div></div>
               <p id="explorerMapSelectionEvidence" class="explorer-map-selection-evidence"></p>
               <div class="explorer-map-selection-actions">
@@ -91,7 +92,7 @@
       <div class="product-main explorer-map-main">
 <section id="explorerResults" class="explorer-results" aria-live="polite">
       <div class="explorer-results-head">
-        <div><span class="eyebrow">RECENT SIGNED RENTS</span><h2 id="explorerTitle">Gangnam-gu · Officetel</h2><div id="explorerFilterSummary" class="explorer-filter-summary"><span>Any rent · Any deposit</span><button id="explorerChangeFilters" type="button">Change filters</button></div></div>
+        <div><span class="eyebrow">RECENT SIGNED RENTS</span><h2 id="explorerTitle">Gangnam-gu rent market</h2><dl class="explorer-summary-context"><div><dt>Area</dt><dd id="explorerSummaryArea">Gangnam-gu (강남구)</dd></div><div><dt>Housing type</dt><dd id="explorerSummaryType">Officetel (오피스텔)</dd></div></dl><div id="explorerFilterSummary" class="explorer-filter-summary"><span>Any rent · Any deposit</span><button id="explorerChangeFilters" type="button">Change filters</button></div></div>
         <span id="explorerDataThrough" class="explorer-data-through">Latest completed months</span>
       </div>
       <div id="explorerStatus" class="market-status">Loading official rental transactions…</div>
@@ -133,10 +134,12 @@
   <script src="/date-utils.js"></script>
   <script src="/building-name-utils.js"></script>
   <script src="/location-catalog.js"></script>
+  <script src="/property-type-guide.js"></script>
   <script src="/district-combobox.js"></script>
   <script src="/explore/explorer-utils.js"></script>
   <script src="/explore/map-locations.js"></script>
   <script src="/explore/map-controller.js"></script>
+  <script src="/explore/panorama.js"></script>
   <script src="/explore/map.js"></script>
   <script defer src="/explore/app.js"></script>
 </body>
