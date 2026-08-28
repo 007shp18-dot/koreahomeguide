@@ -189,9 +189,9 @@ test('next-step Explorer URL preserves only an approved district and property ty
 test('all EN and ZH Rent Check surfaces expose confidence details and next actions', () => {
   const surfaces = [
     ['index.html', 'app.js'],
-    ['zh/index.html', 'zh/app.js'],
-    ['tools/seoul-rent-check/index.html', 'tools/seoul-rent-check/app.js'],
-    ['zh/tools/seoul-rent-check/index.html', 'zh/tools/seoul-rent-check/app.js']
+    ['zh/index.html', 'app.js'],
+    ['tools/seoul-rent-check/index.html', 'app.js'],
+    ['zh/tools/seoul-rent-check/index.html', 'app.js']
   ];
   for (const [htmlFile, appFile] of surfaces) {
     const html = fs.readFileSync(htmlFile, 'utf8');
