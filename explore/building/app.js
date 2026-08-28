@@ -92,7 +92,13 @@ function renderContracts(items) {
     recentBuildingContracts.innerHTML = '<tr class="empty-row"><td colspan="5">No recent reported contracts were available for this building.</td></tr>';
     return;
   }
-  recentBuildingContracts.innerHTML = items.map(item => `<tr><td>${KHGDate.formatDate(item.contractDate, 'en-US')}</td><td>${contractTypeLabel(item.contractType)}</td><td>${formatArea(item.areaSqm)}</td><td>${moneyHtml(item.depositWon)}</td><td>${Number(item.monthlyRentWon) === 0 ? '<span class="money-primary">Jeonse-style · ₩0</span>' : moneyHtml(item.monthlyRentWon)}</td></tr>`).join('');
+  recentBuildingContracts.innerHTML = items.map(item => KHGExplorer.buildLabeledTableRow([
+    { label:'Date', html:KHGDate.formatDate(item.contractDate, 'en-US') },
+    { label:'Type', html:contractTypeLabel(item.contractType) },
+    { label:'Size', html:formatArea(item.areaSqm) },
+    { label:'Deposit', html:moneyHtml(item.depositWon) },
+    { label:'Monthly rent', html:Number(item.monthlyRentWon) === 0 ? '<span class="money-primary">Jeonse-style · ₩0</span>' : moneyHtml(item.monthlyRentWon) }
+  ])).join('');
 }
 
 function renderSales(data) {
@@ -104,7 +110,12 @@ function renderSales(data) {
   }
   buildingSalesSection.hidden = false;
   buildingSaleGroups.innerHTML = (summary.areaGroups || []).map(group => `<div class="size-band-card"><span>About ${group.approxAreaSqm}㎡</span><strong>${moneyHtml(group.medianSalePriceWon)}</strong><small>${group.count} reported sale${group.count === 1 ? '' : 's'} · latest ${KHGDate.formatDate(group.latestContractDate, 'en-US')}</small></div>`).join('');
-  recentBuildingSales.innerHTML = (summary.recentSales || []).map(item => `<tr><td>${KHGDate.formatDate(item.contractDate, 'en-US')}</td><td>${formatArea(item.areaSqm)}</td><td>${moneyHtml(item.dealAmountWon)}</td><td>${item.floor == null ? '—' : `${item.floor}F`}</td></tr>`).join('');
+  recentBuildingSales.innerHTML = (summary.recentSales || []).map(item => KHGExplorer.buildLabeledTableRow([
+    { label:'Date', html:KHGDate.formatDate(item.contractDate, 'en-US') },
+    { label:'Size', html:formatArea(item.areaSqm) },
+    { label:'Sale price', html:moneyHtml(item.dealAmountWon) },
+    { label:'Floor', html:item.floor == null ? '—' : `${item.floor}F` }
+  ])).join('');
 }
 
 function buildRentCheckUrl(data) {

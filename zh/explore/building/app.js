@@ -79,7 +79,13 @@ function renderTrend(points) {
 }
 function renderContracts(items) {
   if (!items || !items.length) { recentBuildingContracts.innerHTML = '<tr class="empty-row"><td colspan="5">该建筑近期没有可用的官方申报合同。</td></tr>'; return; }
-  recentBuildingContracts.innerHTML = items.map(item => `<tr><td>${KHGDate.formatDate(item.contractDate, 'zh-CN')}</td><td>${contractTypeLabel(item.contractType)}</td><td>${formatArea(item.areaSqm)}</td><td>${moneyHtml(item.depositWon)}</td><td>${Number(item.monthlyRentWon) === 0 ? '<span class="money-primary">全租 · ₩0</span>' : moneyHtml(item.monthlyRentWon)}</td></tr>`).join('');
+  recentBuildingContracts.innerHTML = items.map(item => KHGExplorer.buildLabeledTableRow([
+    { label:'日期', html:KHGDate.formatDate(item.contractDate, 'zh-CN') },
+    { label:'类型', html:contractTypeLabel(item.contractType) },
+    { label:'面积', html:formatArea(item.areaSqm) },
+    { label:'押金', html:moneyHtml(item.depositWon) },
+    { label:'月租', html:Number(item.monthlyRentWon) === 0 ? '<span class="money-primary">全租 · ₩0</span>' : moneyHtml(item.monthlyRentWon) }
+  ])).join('');
 }
 function renderSales(data) {
   const summary = data && data.saleSummary;
@@ -87,7 +93,12 @@ function renderSales(data) {
   if (!summary || !summary.contractCount) { buildingSalesSection.hidden = true; return; }
   buildingSalesSection.hidden = false;
   buildingSaleGroups.innerHTML = (summary.areaGroups || []).map(group => `<div class="size-band-card"><span>约 ${group.approxAreaSqm}㎡</span><strong>${moneyHtml(group.medianSalePriceWon)}</strong><small>${group.count} 笔买卖 · 最近 ${KHGDate.formatDate(group.latestContractDate, 'zh-CN')}</small></div>`).join('');
-  recentBuildingSales.innerHTML = (summary.recentSales || []).map(item => `<tr><td>${KHGDate.formatDate(item.contractDate, 'zh-CN')}</td><td>${formatArea(item.areaSqm)}</td><td>${moneyHtml(item.dealAmountWon)}</td><td>${item.floor == null ? '—' : `${item.floor}层`}</td></tr>`).join('');
+  recentBuildingSales.innerHTML = (summary.recentSales || []).map(item => KHGExplorer.buildLabeledTableRow([
+    { label:'日期', html:KHGDate.formatDate(item.contractDate, 'zh-CN') },
+    { label:'面积', html:formatArea(item.areaSqm) },
+    { label:'成交价', html:moneyHtml(item.dealAmountWon) },
+    { label:'楼层', html:item.floor == null ? '—' : `${item.floor}层` }
+  ])).join('');
 }
 function buildRentCheckUrl(data) {
   const params = new URLSearchParams({ lawdCd, type });

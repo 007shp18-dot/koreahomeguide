@@ -172,6 +172,17 @@
     return Number.isFinite(viewportWidth) && viewportWidth > 0 && viewportWidth <= 760 ? 'list' : 'map';
   }
 
+  function buildLabeledTableRow(cells) {
+    const values = Array.isArray(cells) ? cells : [];
+    const escapeLabel = value => String(value || '')
+      .replace(/&/g, '&amp;')
+      .replace(/"/g, '&quot;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/'/g, '&#39;');
+    return `<tr>${values.map(cell => `<td data-label="${escapeLabel(cell && cell.label)}">${String(cell && cell.html || '')}</td>`).join('')}</tr>`;
+  }
+
   return {
     buildDongSeoUrl,
     buildExplorerDongUrl,
@@ -184,6 +195,7 @@
     propertyTypeLabel,
     supportsZhIndexing,
     initialViewForWidth,
+    buildLabeledTableRow,
     stableSuffix
   };
 });
