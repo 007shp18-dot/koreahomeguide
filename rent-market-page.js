@@ -56,7 +56,8 @@ function renderAreaGroups(areaGroups) {
     if (!evidence.render) return [];
     const rent = evidence.sufficient ? `${moneyHtml(group.medianMonthlyRentWon)} / month` : evidence.limitedLabel;
     const deposit = evidence.sufficient ? ` · median deposit ${moneyHtml(group.medianDepositWon)}` : '';
-    return [`<div class="size-band-card market-evidence-row"><span>Around ${Number(group.approxAreaSqm).toFixed(0)}㎡</span><strong class="market-evidence-rent">${rent}</strong><small class="market-evidence-count">${evidence.sampleLabel}${deposit}</small><small>Median observed size ${Number(group.medianAreaSqm).toFixed(1)}㎡</small></div>`];
+    const observedSize = evidence.sufficient ? `<small>Median observed size ${Number(group.medianAreaSqm).toFixed(1)}㎡</small>` : '';
+    return [`<div class="size-band-card market-evidence-row"><span>Around ${Number(group.approxAreaSqm).toFixed(0)}㎡</span><strong class="market-evidence-rent">${rent}</strong><small class="market-evidence-count">${evidence.sampleLabel}${deposit}</small>${observedSize}</div>`];
   }).join('');
 }
 

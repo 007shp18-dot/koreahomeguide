@@ -225,8 +225,8 @@ function areaGroupsHtml(groups, lang, rates) {
   return `<div class="seo-grid">${rows.slice(0,10).map(group => {
     const count = Number(group.count || 0);
     if (count < 5) return `<div class="seo-card"><span>${zh ? '约' : 'Around'} ${escapeHtml(areaText(group.approxAreaSqm))}</span><strong>${evidenceCountText(count, lang)}</strong><small>${zh ? '样本不足，暂不显示价格或中位数。' : 'Prices and medians are hidden until at least 5 contracts are observed.'}</small></div>`;
-    const band = representativeBand(group);
-    return `<div class="seo-card"><span>${zh ? '约' : 'Around'} ${escapeHtml(areaText(group.approxAreaSqm))}</span><strong>${evidenceCountText(count, lang)}</strong>${band ? `<small>${escapeHtml(depositRangeText(band, lang))} ${zh ? '押金 → 月租' : 'deposit → rent'} ${escapeHtml(wonText(band.medianMonthlyRentWon, lang))}</small>` : ''}<small>${zh ? '实际面积中位数' : 'Median observed size'}: ${escapeHtml(areaText(group.medianAreaSqm))}</small></div>`;
+    const deposit = group.medianDepositWon == null ? '' : ` · ${zh ? '押金中位数' : 'Median deposit'}: ${escapeHtml(wonText(group.medianDepositWon, lang))}`;
+    return `<div class="seo-card"><span>${zh ? '约' : 'Around'} ${escapeHtml(areaText(group.approxAreaSqm))}</span><strong>${moneyHtml(group.medianMonthlyRentWon, lang, rates)}</strong><small>${zh ? '月租中位数' : 'Median monthly rent'} · ${evidenceCountText(count, lang)}${deposit}</small><small>${zh ? '实际面积中位数' : 'Median observed size'}: ${escapeHtml(areaText(group.medianAreaSqm))}</small></div>`;
   }).join('')}</div>`;
 }
 

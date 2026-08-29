@@ -68,7 +68,8 @@ function renderAreaGroups(areaGroups) {
     if (!evidence.render) return [];
     const rent = evidence.sufficient ? `${moneyHtml(group.medianMonthlyRentWon)} / 月` : evidence.limitedLabel;
     const deposit = evidence.sufficient ? ` · 押金中位数 ${moneyHtml(group.medianDepositWon)}` : '';
-    return [`<div class="size-band-card market-evidence-row"><span>约 ${Number(group.approxAreaSqm).toFixed(0)}㎡</span><strong class="market-evidence-rent">${rent}</strong><small class="market-evidence-count">${evidence.sampleLabel}${deposit}</small><small>实际面积中位数 ${Number(group.medianAreaSqm).toFixed(1)}㎡</small></div>`];
+    const observedSize = evidence.sufficient ? `<small>实际面积中位数 ${Number(group.medianAreaSqm).toFixed(1)}㎡</small>` : '';
+    return [`<div class="size-band-card market-evidence-row"><span>约 ${Number(group.approxAreaSqm).toFixed(0)}㎡</span><strong class="market-evidence-rent">${rent}</strong><small class="market-evidence-count">${evidence.sampleLabel}${deposit}</small>${observedSize}</div>`];
   }).join('');
 }
 
