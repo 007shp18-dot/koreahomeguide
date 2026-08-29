@@ -99,6 +99,8 @@ test('final Rent Check geometry uses two equal three-column rows and one compact
   assert.match(finalLayer, /\.rent-check-form>\.rent-check-area-field\{grid-area:area\}/);
   assert.match(finalLayer, /\.rent-check-form>\.rent-check-property-field\{grid-area:type\}/);
   assert.match(finalLayer, /\.rent-check-form>\.rent-check-size-field\{grid-area:size/);
+  assert.match(finalLayer, /\.rent-check-form>\.rent-check-size-field\{[^}]*grid-template-rows:auto 52px(?:;|})/);
+  assert.doesNotMatch(finalLayer, /\.rent-check-form>\.rent-check-size-field\{[^}]*grid-template-rows:auto 52px auto/);
   assert.match(finalLayer, /\.rent-check-form>\.rent-check-deposit-field\{grid-area:deposit\}/);
   assert.match(finalLayer, /\.rent-check-form>\.rent-check-monthly-field\{grid-area:rent\}/);
   assert.match(finalLayer, /\.rent-check-form>\.rent-check-button\{[^}]*grid-area:submit[^}]*height:52px[^}]*margin-top:25px/);
