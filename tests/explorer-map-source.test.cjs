@@ -101,6 +101,13 @@ test('building map layer verifies precise geocodes, caps candidates, and support
   assert.match(source, /khg:map-back-neighborhoods/);
 });
 
+test('opening a building from the mobile list starts the lazy map before locating street view', () => {
+  const source = fs.readFileSync('explore/map.js','utf8');
+  assert.match(source, /async function publishBuildingWindowLocation\(selection\)/);
+  assert.match(source, /if \(!map && !started\) await start\(\)/);
+  assert.match(source, /void publishBuildingWindowLocation\(selection\)/);
+});
+
 test('building locator fills a useful map progressively without geocoding every reported building', async () => {
   const controller = require('../explore/map-controller.js');
   const buildings = Array.from({ length:88 }, (_, index) => ({

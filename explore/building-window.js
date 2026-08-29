@@ -53,6 +53,16 @@
     return `${isZh(locale) ? '/zh' : ''}/tools/seoul-rent-check/?${params.toString()}`;
   }
 
+  function buildDetailApiUrl(selection, legalCode = '') {
+    const params = new URLSearchParams({
+      lawdCd:String(selection.districtCode || ''),
+      type:String(selection.propertyType || ''),
+      buildingKey:String(selection.buildingKey || '')
+    });
+    if (/^\d{10}$/.test(String(legalCode || ''))) params.set('legalCode', String(legalCode));
+    return `/api/explore-building?${params.toString()}`;
+  }
+
   function selectionFromBuilding(item, context = {}) {
     const mapLocation = item && item.mapLocation && typeof item.mapLocation === 'object' ? item.mapLocation : null;
     const zh = isZh(context.locale);
@@ -122,6 +132,8 @@
     const cache = new Map();
     const store = windowObject.KHGSavedExplorerBuildings ? windowObject.KHGSavedExplorerBuildings.createStore(windowObject.localStorage) : null;
     let current = null;
+    let currentDetail = null;
+    let pendingLegalCode = '';
     let trigger = null;
     let requestId = 0;
 
@@ -140,9 +152,44 @@
       const button = overlay.querySelector('[data-building-save]');
       if (button) button.textContent = store && current && store.has(current.buildingKey) ? copy.saved : copy.save;
     }
+    function cacheKey(selection, legalCode = '') {
+      return `${selection.districtCode}:${selection.propertyType}:${selection.buildingKey}:${legalCode}`;
+    }
+    function fetchDetail(selection, legalCode = '') {
+      const key = cacheKey(selection, legalCode);
+      if (!cache.has(key)) {
+        cache.set(key, windowObject.fetch(buildDetailApiUrl(selection, legalCode), { headers:{ Accept:'application/json' } }).then(async response => {
+          const data = await response.json(); if (!response.ok) throw new Error(data.error || 'detail'); return data;
+        }).catch(error => { cache.delete(key); throw error; }));
+      }
+      return cache.get(key);
+    }
+    function renderDetail(detail, selection) {
+      const selectedTab = [...overlay.querySelectorAll('[data-building-tab]')].findIndex(button => button.getAttribute('aria-selected') === 'true');
+      const address = detail.profile && (detail.profile.roadAddress || detail.profile.officialAddress) || detail.mapLocation && (detail.mapLocation.roadAddress || detail.mapLocation.jibun) || selection.roadAddress || selection.jibun || '';
+      overlay.querySelector('#buildingStatusAddress').textContent = address;
+      overlay.querySelector('#buildingStatusProfile').innerHTML = profileHtml(detail.profile, copy);
+      body.innerHTML = renderContent(detail, selection, locale);
+      overlay.querySelector('[data-building-rent-check]').href = buildRentCheckUrl(selection, detail, locale);
+      setTab(selectedTab < 0 ? 0 : selectedTab);
+    }
+    async function enrichCurrentProfile() {
+      const selection = current;
+      const legalCode = pendingLegalCode;
+      const enrichmentRequest = requestId;
+      if (!selection || !currentDetail || !legalCode || currentDetail.profile && currentDetail.profile.status === 'matched') return;
+      try {
+        const enriched = await fetchDetail(selection, legalCode);
+        if (enrichmentRequest !== requestId || current !== selection) return;
+        currentDetail = enriched;
+        renderDetail(enriched, selection);
+      } catch (_) {
+        // The signed-rent detail remains usable when the optional registry lookup fails.
+      }
+    }
     async function open(selection, source) {
       if (!selection || !selection.buildingKey) return;
-      current = selection; trigger = source || doc.activeElement; const currentRequest = ++requestId;
+      current = selection; currentDetail = null; pendingLegalCode = ''; trigger = source || doc.activeElement; const currentRequest = ++requestId;
       overlay.hidden = false; doc.body.classList.add('has-building-status-window');
       overlay.querySelector('#buildingStatusTitle').textContent = selection.label || selection.buildingName || selection.buildingKey;
       overlay.querySelector('#buildingStatusMeta').textContent = [selection.dong, selection.districtName, selection.propertyType].filter(Boolean).join(' · ');
@@ -154,21 +201,11 @@
       updateSave(); overlay.querySelector('.building-status-close').focus();
       windowObject.dispatchEvent(new CustomEvent('khg:building-window-location-request', { detail:{ selection } }));
       try {
-        const key = `${selection.districtCode}:${selection.propertyType}:${selection.buildingKey}`;
-        if (!cache.has(key)) {
-          const params = new URLSearchParams({ lawdCd:selection.districtCode, type:selection.propertyType, buildingKey:selection.buildingKey });
-          cache.set(key, windowObject.fetch(`/api/explore-building?${params.toString()}`, { headers:{ Accept:'application/json' } }).then(async response => {
-            const data = await response.json(); if (!response.ok) throw new Error(data.error || 'detail'); return data;
-          }).catch(error => { cache.delete(key); throw error; }));
-        }
-        const detail = await cache.get(key);
+        const detail = await fetchDetail(selection);
         if (currentRequest !== requestId) return;
-        const address = detail.profile && (detail.profile.roadAddress || detail.profile.officialAddress) || detail.mapLocation && (detail.mapLocation.roadAddress || detail.mapLocation.jibun) || selection.roadAddress || selection.jibun || '';
-        overlay.querySelector('#buildingStatusAddress').textContent = address;
-        overlay.querySelector('#buildingStatusProfile').innerHTML = profileHtml(detail.profile, copy);
-        body.innerHTML = renderContent(detail, selection, locale);
-        overlay.querySelector('[data-building-rent-check]').href = buildRentCheckUrl(selection, detail, locale);
-        setTab(0);
+        currentDetail = detail;
+        renderDetail(detail, selection);
+        void enrichCurrentProfile();
       } catch (_) {
         if (currentRequest !== requestId) return;
         body.innerHTML = `<div class="building-window-error"><p>${escapeHtml(copy.error)}</p><button type="button" data-building-retry>${escapeHtml(copy.retry)}</button></div>`;
@@ -178,7 +215,7 @@
       if (event.target === overlay || event.target.closest('.building-status-close')) { close(); return; }
       const tab = event.target.closest('[data-building-tab]');
       if (tab) { setTab(Number(tab.dataset.buildingTab)); return; }
-      if (event.target.closest('[data-building-retry]')) { const selection = current; cache.delete(`${selection.districtCode}:${selection.propertyType}:${selection.buildingKey}`); void open(selection, trigger); return; }
+      if (event.target.closest('[data-building-retry]')) { const selection = current; for (const key of cache.keys()) if (key.startsWith(`${selection.districtCode}:${selection.propertyType}:${selection.buildingKey}:`)) cache.delete(key); void open(selection, trigger); return; }
       if (event.target.closest('[data-building-save]') && store && current) {
         store.toggle(current); updateSave();
       }
@@ -203,8 +240,17 @@
     });
     windowObject.addEventListener('khg:building-window-open', event => { void open(event.detail && event.detail.selection, event.detail && event.detail.trigger); });
     windowObject.addEventListener('khg:map-select-building', event => { void open(event.detail && event.detail.model, null); });
+    windowObject.addEventListener('khg:building-window-legal-code', event => {
+      const detail = event.detail || {};
+      const model = detail.model || {};
+      const legalCode = String(detail.legalCode || '');
+      if (!current || model.buildingKey !== current.buildingKey || model.dong !== current.dong) return;
+      if (!new RegExp(`^${current.districtCode}\\d{5}$`).test(legalCode)) return;
+      pendingLegalCode = legalCode;
+      void enrichCurrentProfile();
+    });
     return Object.freeze({ open, close });
   }
 
-  return Object.freeze({ escapeHtml, copyForLocale, buildDetailUrl, buildRentCheckUrl, selectionFromBuilding, renderContent, install });
+  return Object.freeze({ escapeHtml, copyForLocale, buildDetailUrl, buildRentCheckUrl, buildDetailApiUrl, selectionFromBuilding, renderContent, install });
 });

@@ -61,10 +61,16 @@ function profileFromItem(item) {
   return profile;
 }
 
-async function fetchBuildingProfile({ serviceKey, transaction, fetchImpl = fetch, endpoint = DEFAULT_ENDPOINT } = {}) {
+async function fetchBuildingProfile({ serviceKey, transaction, legalCode = '', fetchImpl = fetch, endpoint = DEFAULT_ENDPOINT } = {}) {
   const parcel = parseParcel(transaction && transaction.jibun || transaction && transaction.explorerJibun);
-  const sggCd = cleanText(transaction && transaction.sggCd);
-  const umdCd = cleanText(transaction && transaction.umdCd);
+  const rowSggCd = cleanText(transaction && transaction.sggCd);
+  const rowUmdCd = cleanText(transaction && transaction.umdCd);
+  const verifiedLegalCode = cleanText(legalCode);
+  if (verifiedLegalCode && !/^\d{10}$/.test(verifiedLegalCode)) return { status:'unavailable' };
+  if (verifiedLegalCode && rowSggCd && verifiedLegalCode.slice(0, 5) !== rowSggCd) return { status:'unavailable' };
+  if (verifiedLegalCode && rowUmdCd && verifiedLegalCode.slice(5) !== rowUmdCd) return { status:'unavailable' };
+  const sggCd = rowSggCd || verifiedLegalCode.slice(0, 5);
+  const umdCd = rowUmdCd || verifiedLegalCode.slice(5);
   if (!serviceKey || !parcel || !/^\d{5}$/.test(sggCd) || !/^\d{5}$/.test(umdCd)) return { status:'unavailable' };
   const params = new URLSearchParams({
     serviceKey:String(serviceKey), sigunguCd:sggCd, bjdongCd:umdCd,

@@ -47,7 +47,39 @@
   }
 
   function buildCoreSdkUrl(keyId) {
-    return `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${encodeURIComponent(String(keyId || '').trim())}`;
+    return `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${encodeURIComponent(String(keyId || '').trim())}&submodules=geocoder`;
+  }
+
+  function legalCodeFromResponse(response, model = {}) {
+    const results = response && response.v2 && Array.isArray(response.v2.results) ? response.v2.results : [];
+    const legal = results.find(result => result && result.name === 'legalcode');
+    const code = String(legal && legal.code && legal.code.id || '').trim();
+    const districtCode = String(model.districtCode || '').trim();
+    const dong = String(model.dong || '').normalize('NFKC').trim();
+    const resultDong = String(legal && legal.region && legal.region.area3 && legal.region.area3.name || '').normalize('NFKC').trim();
+    if (!/^\d{10}$/.test(code) || !/^\d{5}$/.test(districtCode)) return '';
+    if (code.slice(0, 5) !== districtCode || !dong || resultDong !== dong) return '';
+    return code;
+  }
+
+  function reverseLegalCode(windowObject, model) {
+    return new Promise(resolve => {
+      const maps = windowObject && windowObject.naver && windowObject.naver.maps;
+      if (!maps || !maps.Service || typeof maps.Service.reverseGeocode !== 'function') { resolve(''); return; }
+      const target = point(model);
+      if (!target) { resolve(''); return; }
+      try {
+        maps.Service.reverseGeocode({
+          coords:new maps.LatLng(target.lat, target.lng),
+          orders:'legalcode'
+        }, (status, response) => {
+          if (status !== maps.Service.Status.OK) { resolve(''); return; }
+          resolve(legalCodeFromResponse(response, model));
+        });
+      } catch (_) {
+        resolve('');
+      }
+    });
   }
 
   function loadScript(windowObject, src, message) {
@@ -161,6 +193,10 @@
         if (!config.naverKeyId) { trackOutcome('unconfigured', 'config'); reset(); return; }
         await loadSdk(windowObject, config.naverKeyId);
         if (currentRequest !== requestId) return;
+        void reverseLegalCode(windowObject, model).then(legalCode => {
+          if (!legalCode || currentRequest !== requestId) return;
+          windowObject.dispatchEvent(new CustomEvent('khg:building-window-legal-code', { detail:{ model, legalCode } }));
+        });
         canvas.hidden = false;
         panorama = new windowObject.naver.maps.Panorama(canvas, {
           position:new windowObject.naver.maps.LatLng(Number(model.lat), Number(model.lng)),
@@ -204,5 +240,5 @@
     return Object.freeze({ show, reset });
   }
 
-  return Object.freeze({ PANORAMA_MODULE_URL, distanceMeters, evaluateResult, buildCoreSdkUrl, loadSdk, statusCopy, install });
+  return Object.freeze({ PANORAMA_MODULE_URL, distanceMeters, evaluateResult, buildCoreSdkUrl, legalCodeFromResponse, reverseLegalCode, loadSdk, statusCopy, install });
 });

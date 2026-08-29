@@ -6,7 +6,7 @@ const panorama = require('../explore/panorama.js');
 test('NAVER panorama SDK resources load the core before the panorama module', () => {
   assert.equal(
     panorama.buildCoreSdkUrl('key with/slash'),
-    'https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=key%20with%2Fslash'
+    'https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=key%20with%2Fslash&submodules=geocoder'
   );
   assert.equal(panorama.PANORAMA_MODULE_URL, 'https://oapi.map.naver.com/openapi/v3/maps-panorama.js');
 });
@@ -32,7 +32,7 @@ test('NAVER loader waits for the core before requesting the panorama module', as
 
   const loaded = panorama.loadSdk(windowObject, 'browser-key');
   assert.equal(scripts.length, 1);
-  assert.match(scripts[0].src, /maps\.js\?ncpKeyId=browser-key$/);
+  assert.match(scripts[0].src, /maps\.js\?ncpKeyId=browser-key&submodules=geocoder$/);
 
   windowObject.naver = { maps:{} };
   scripts[0].fire('load');
@@ -94,4 +94,14 @@ test('panorama result keeps a successful viewer when location metadata is delaye
     panorama.evaluateResult({ status:'OK', target:{ lat:37.5, lng:127 }, location:null }),
     { available:true, photoDate:'', distanceMeters:null }
   );
+});
+
+test('NAVER reverse-geocode result exposes only a matching legal-dong code', () => {
+  const response = { v2:{ results:[{
+    name:'legalcode', code:{ id:'1168010100' },
+    region:{ area2:{ name:'강남구' }, area3:{ name:'역삼동' } }
+  }] } };
+  assert.equal(panorama.legalCodeFromResponse(response, { districtCode:'11680', dong:'역삼동' }), '1168010100');
+  assert.equal(panorama.legalCodeFromResponse(response, { districtCode:'11440', dong:'역삼동' }), '');
+  assert.equal(panorama.legalCodeFromResponse(response, { districtCode:'11680', dong:'논현동' }), '');
 });

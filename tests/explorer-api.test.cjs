@@ -79,6 +79,22 @@ test('explore-building returns a selected building detail and cache header', asy
   assert.match(res.headers['Cache-Control'], /s-maxage=3600/);
 });
 
+test('explore-building accepts only a legal code inside the requested district', async () => {
+  let received = null;
+  const fakeProvider = { getBuildingDetail:async options => { received = options; return { buildingKey:'a', buildingName:'A' }; } };
+  const handler = buildingApi.createHandler(() => fakeProvider);
+  process.env.DATA_GO_KR_SERVICE_KEY = 'test';
+
+  let res = responseRecorder();
+  await handler({ method:'GET', query:{ lawdCd:'11680', type:'apartment', buildingKey:'a', legalCode:'1168010100' } }, res);
+  assert.equal(res.statusCode, 200);
+  assert.equal(received.legalCode, '1168010100');
+
+  res = responseRecorder();
+  await handler({ method:'GET', query:{ lawdCd:'11680', type:'apartment', buildingKey:'a', legalCode:'1144010100' } }, res);
+  assert.equal(res.statusCode, 400);
+});
+
 
 test('explore-dong validates dong and returns dong summary plus buildings', async () => {
   const fakeProvider = {

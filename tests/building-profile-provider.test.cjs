@@ -54,3 +54,30 @@ test('parcel parser handles mountain land and safely rejects invalid parcel text
   assert.deepEqual(parseParcel('산 12-3'), { platGbCd:'1', bun:'0012', ji:'0003' });
   assert.equal(parseParcel('도로명 주소'), null);
 });
+
+test('building profile uses a district-validated NAVER legal code when rental rows omit region codes', async () => {
+  let requestedUrl = '';
+  await fetchBuildingProfile({
+    serviceKey:'secret',
+    legalCode:'1168010100',
+    transaction:{ jibun:'757', dong:'역삼동', explorerBuildingName:'역삼래미안' },
+    fetchImpl:async url => {
+      requestedUrl = String(url);
+      return { ok:true, json:async () => ({ response:{ header:{ resultCode:'00' }, body:{ items:{ item:{ bldNm:'역삼래미안' } } } } }) };
+    }
+  });
+  const url = new URL(requestedUrl);
+  assert.equal(url.searchParams.get('sigunguCd'), '11680');
+  assert.equal(url.searchParams.get('bjdongCd'), '10100');
+});
+
+test('building profile rejects malformed legal codes', async () => {
+  let called = false;
+  const profile = await fetchBuildingProfile({
+    serviceKey:'secret', legalCode:'1144010100',
+    transaction:{ sggCd:'11680', jibun:'757', explorerBuildingName:'역삼래미안' },
+    fetchImpl:async () => { called = true; return { ok:true, json:async () => ({}) }; }
+  });
+  assert.equal(called, false);
+  assert.deepEqual(profile, { status:'unavailable' });
+});

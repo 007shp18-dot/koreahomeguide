@@ -70,7 +70,7 @@ function createKoreaHousingProvider({
       const items = await rowsFor({ areaCode, propertyType, months });
       return aggregateBuildings(items, { dong, referenceDate, months });
     },
-    async getBuildingDetail({ areaCode, propertyType, buildingKey, months = 6 }) {
+    async getBuildingDetail({ areaCode, propertyType, buildingKey, legalCode = '', months = 6 }) {
       const items = await rowsFor({ areaCode, propertyType, months });
       let saleRows = null;
       if (propertyType === 'apartment') {
@@ -84,7 +84,7 @@ function createKoreaHousingProvider({
       if (!detail) return null;
       const transaction = detail.recentTransactions && detail.recentTransactions[0];
       if (transaction) {
-        detail.profile = await fetchProfile({ serviceKey, transaction, fetchImpl });
+        detail.profile = await fetchProfile({ serviceKey, transaction, legalCode, fetchImpl });
       }
       return detail;
     }

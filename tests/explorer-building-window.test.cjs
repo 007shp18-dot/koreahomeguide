@@ -1,6 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { renderContent, copyForLocale, buildDetailUrl, buildRentCheckUrl, selectionFromBuilding } = require('../explore/building-window.js');
+const fs = require('node:fs');
+const { renderContent, copyForLocale, buildDetailUrl, buildRentCheckUrl, buildDetailApiUrl, selectionFromBuilding } = require('../explore/building-window.js');
 
 const selection = { districtCode:'11680', propertyType:'officetel', dong:'역삼동', buildingKey:'역삼동::테스트', label:'Test Tower', secondaryLabel:'테스트' };
 const detail = {
@@ -47,6 +48,13 @@ test('building actions preserve identity without inventing quote prices', () => 
   assert.equal(rentCheck.searchParams.has('deposit'), false);
 });
 
+test('building detail enrichment carries only the verified legal code', () => {
+  const url = new URL(buildDetailApiUrl(selection, '1168010100'), 'https://example.com');
+  assert.equal(url.pathname, '/api/explore-building');
+  assert.equal(url.searchParams.get('legalCode'), '1168010100');
+  assert.equal(url.searchParams.get('buildingKey'), '역삼동::테스트');
+});
+
 test('localized copy defines accessible mobile tab names', () => {
   assert.deepEqual(copyForLocale('en').tabs, ['Overview','Market','Contracts']);
   assert.deepEqual(copyForLocale('zh-CN').tabs, ['概览','市场','合同']);
@@ -61,4 +69,15 @@ test('building row selection carries stable identity and official address only',
     dong:'역삼동', propertyType:'officetel', districtCode:'11680', districtName:'Gangnam-gu', roadAddress:'테헤란로 1', jibun:'1-2',
     mapLocation:{ roadAddress:'테헤란로 1', jibun:'1-2', basis:'official-address' }
   });
+});
+
+test('mobile building status keeps verified NAVER street view visible', () => {
+  const css = fs.readFileSync('styles.css', 'utf8');
+  const mobileRules = css.slice(css.indexOf('@media(max-width:860px)'));
+  assert.ok(
+    mobileRules.lastIndexOf('.building-status-window .building-window-street-view{display:block}') >
+      mobileRules.indexOf('.building-status-window .building-window-street-view{display:none}'),
+    'mobile visible rule must override the earlier compact-layout rule'
+  );
+  assert.match(mobileRules, /\.building-status-window \.explorer-street-view-canvas\{height:120px\}/);
 });
