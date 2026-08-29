@@ -35,3 +35,21 @@ test('curated SEO neighborhoods resolve by raw Korean name', () => {
   assert.deepEqual(locations.neighborhood('연남동'), { lat:37.5624, lng:126.9217 });
   assert.deepEqual(locations.centerFor('11440','unknown'), locations.district('11440'));
 });
+
+test('Dongjak district and every neighborhood returned by the current rent API have map centers', () => {
+  assert.deepEqual(locations.district('11590'), { lat:37.5124, lng:126.9393 });
+  assert.equal(locations.districtKorean('11590'), '동작구');
+  for (const dong of ['노량진동','신대방동','사당동','대방동','상도1동','상도동']) {
+    const point = locations.neighborhood(dong);
+    assert.ok(point, `${dong} has a map center`);
+    assert.ok(point.lat > 37.45 && point.lat < 37.55);
+    assert.ok(point.lng > 126.88 && point.lng < 127.01);
+  }
+});
+
+test('Explorer locales cache-bust the expanded neighborhood center catalog', () => {
+  const fs = require('node:fs');
+  for (const file of ['explore/index.html','zh/explore/index.html']) {
+    assert.match(fs.readFileSync(file,'utf8'), /\/explore\/map-locations\.js\?v=32/);
+  }
+});
