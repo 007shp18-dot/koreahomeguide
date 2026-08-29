@@ -56,7 +56,9 @@
       : null;
     const measuredWidth = Number(element && element.clientWidth) || Number(rect && rect.width);
     const width = Math.max(240, Math.round(Number.isFinite(measuredWidth) && measuredWidth > 0 ? measuredWidth : 320));
-    return Object.freeze({ width, height:Math.round(width * 9 / 16) });
+    const measuredHeight = Number(element && element.clientHeight) || Number(rect && rect.height);
+    const height = Math.max(160, Math.round(Number.isFinite(measuredHeight) && measuredHeight > 0 ? measuredHeight : width * 9 / 16));
+    return Object.freeze({ width, height });
   }
 
   function evaluateResult({ status, target, location } = {}) {
@@ -213,6 +215,10 @@
     }
 
     function prepare() {
+      if (!section.hidden && section.dataset.state === 'loading') {
+        status.textContent = copy.loading;
+        return;
+      }
       reset();
       section.hidden = false;
       section.dataset.state = 'loading';
@@ -303,6 +309,7 @@
     windowObject.addEventListener('khg:map-select-building', event => { void show(event.detail && event.detail.model); });
     windowObject.addEventListener('khg:building-window-location', event => { void show(event.detail && event.detail.model); });
     windowObject.addEventListener('khg:building-window-reset', reset);
+    windowObject.addEventListener('khg:building-window-prepare-street-view', prepare);
     windowObject.addEventListener('khg:building-window-close', reset);
     windowObject.addEventListener('khg:map-select-dong', reset);
     windowObject.addEventListener('khg:map-back-neighborhoods', reset);

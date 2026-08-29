@@ -44,7 +44,8 @@ test('Explorer runtimes publish raw dong models after rendering', () => {
     assert.match(source, /function setExplorerView\(view = 'map'\)/);
     assert.match(source, /explorerViewButtons\.forEach/);
     assert.match(source, /mapSelectionClose\.addEventListener\('click', \(\) => \{/);
-    assert.match(source, /cancelDongLoad\(\{ restoreArea:true \}\)/);
+    assert.doesNotMatch(source, /restoreArea/);
+    assert.match(source, /function activateNeighborhood\(model/);
     assert.match(source, /KHGExplorer\.buildDongSeoUrl/);
     assert.match(source, /KHGExplorer\.buildBuildingDetailUrl/);
     assert.match(source, /khg:explorer-buildings/);

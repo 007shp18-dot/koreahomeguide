@@ -121,12 +121,15 @@ test('building drawer prepares a stable loading frame before reveal', () => {
   const openBody = source.slice(start, end);
   const preparing = openBody.indexOf("overlay.dataset.state = 'preparing'");
   const reset = openBody.indexOf("'khg:building-window-reset'");
+  const prepareStreetView = openBody.indexOf("'khg:building-window-prepare-street-view'");
   const loading = openBody.indexOf('building-window-loading');
   const reveal = openBody.indexOf('overlay.hidden = false');
   const publishOpen = openBody.indexOf("'khg:building-window-state'");
 
   assert.ok(preparing >= 0, 'opening state is explicit');
   assert.ok(reset > preparing, 'Street View reset follows the new opening token');
+  assert.ok(prepareStreetView > reset, 'the reserved Street View frame is prepared after stale media is reset');
+  assert.ok(prepareStreetView < reveal, 'the reserved Street View frame exists before the sheet is revealed');
   assert.ok(loading > reset, 'the final-size skeleton is prepared after stale media is reset');
   assert.ok(reveal > loading, 'the drawer is not revealed until its loading frame exists');
   assert.ok(publishOpen > reveal, 'workspace state changes only after the stable drawer is visible');

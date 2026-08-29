@@ -85,9 +85,9 @@ test('both Explorer locales merge map title actions and legend into one command 
 test('both Explorer locales version the drawer, Panorama and workspace CSS assets', () => {
   for (const file of ['explore/index.html', 'zh/explore/index.html']) {
     const html = fs.readFileSync(file, 'utf8');
-    assert.match(html, /styles\.css\?v=22/, file);
-    assert.match(html, /building-window\.js\?v=19/, file);
-    assert.match(html, /panorama\.js\?v=20/, file);
+    assert.match(html, /styles\.css\?v=24/, file);
+    assert.match(html, /building-window\.js\?v=24/, file);
+    assert.match(html, /panorama\.js\?v=24/, file);
   }
 });
 
@@ -96,7 +96,8 @@ test('Explorer CSS gives the map most desktop space and mobile document-flow res
   assert.match(css, /\.explorer-page\{max-width:1440px/);
   assert.match(css, /\.map-first-workspace\{[^}]*grid-template-columns:minmax\(0,1\.8fr\) minmax\(360px,1fr\)/);
   assert.match(css, /@media\(max-width:760px\)/);
-  const finalMobile = css.slice(css.lastIndexOf('@media(max-width:760px)'));
+  const start = css.indexOf('@media(max-width:760px)', css.indexOf('/* v22 P0 document-flow Explorer'));
+  const finalMobile = css.slice(start, css.indexOf('/* v23 mobile Rent Check completion */'));
   assert.match(finalMobile, /grid-template-areas:"map" "main"/);
   assert.match(finalMobile, /\.explorer-map-main\{position:relative/);
   assert.match(css, /\.explorer-search-area/);

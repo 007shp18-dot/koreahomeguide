@@ -171,7 +171,7 @@ test('a building without verified coordinates never leaves Street View loading f
   assert.equal(fetchCalls, 0);
 });
 
-test('opening a result card stays idle until a verified Street View location arrives', () => {
+test('opening a result card reserves the final Street View frame before location arrives', () => {
   const nodes = new Map();
   const listeners = new Map();
   const node = extra => ({
@@ -197,10 +197,11 @@ test('opening a result card stays idle until a verified Street View location arr
   });
 
   listeners.get('khg:building-window-reset')({ detail:{ selection:{ buildingKey:'result-card' } } });
+  listeners.get('khg:building-window-prepare-street-view')({ detail:{ selection:{ buildingKey:'result-card' } } });
 
-  assert.equal(nodes.get('#explorerStreetView').hidden, true);
-  assert.equal(nodes.get('#explorerStreetView').dataset.state, 'idle');
-  assert.equal(nodes.get('#explorerStreetViewStatus').textContent, '');
+  assert.equal(nodes.get('#explorerStreetView').hidden, false);
+  assert.equal(nodes.get('#explorerStreetView').dataset.state, 'loading');
+  assert.equal(nodes.get('#explorerStreetViewStatus').textContent, 'Finding street view near this building…');
 });
 
 test('successful panorama result synchronizes size and faces the building', async () => {

@@ -11,21 +11,17 @@ test('workspace state follows neighborhood then building selection', () => {
   assert.equal(Explorer.workspaceState({ buildingKey:'orphan' }), 'neighborhoods');
 });
 
-test('a neighborhood marker previews context and only the explicit action activates buildings', () => {
+test('a neighborhood selection activates buildings on the first click', () => {
   const model = { kind:'neighborhood', dong:'역삼동', districtCode:'11680' };
-  const preview = Explorer.neighborhoodSelectionTransition(null, { type:'select', model });
-  assert.equal(preview.phase, 'preview');
-  assert.equal(preview.model, model);
-
-  const activate = Explorer.neighborhoodSelectionTransition(preview, { type:'activate' });
+  const activate = Explorer.neighborhoodSelectionTransition(null, { type:'select', model });
   assert.equal(activate.phase, 'activate');
   assert.equal(activate.model, model);
 
-  const ignored = Explorer.neighborhoodSelectionTransition(null, { type:'activate' });
+  const ignored = Explorer.neighborhoodSelectionTransition(null, { type:'select', model:{ kind:'building', dong:'역삼동' } });
   assert.deepEqual(ignored, { phase:'idle', model:null });
 });
 
-test('a newer neighborhood preview invalidates a delayed activation response', async () => {
+test('a newer neighborhood selection invalidates a delayed building response', async () => {
   const gate = Explorer.createRequestGate();
   const effects = [];
   let resolveFirst;
@@ -44,6 +40,18 @@ test('a newer neighborhood preview invalidates a delayed activation response', a
 
   await activate('B', Promise.resolve());
   assert.deepEqual(effects, ['B']);
+});
+
+test('both locale runtimes use one direct neighborhood activation path', () => {
+  for (const file of ['explore/app.js','zh/explore/app.js']) {
+    const source = fs.readFileSync(file, 'utf8');
+    assert.match(source, /function activateNeighborhood\(model, \{ historyMode = 'push' \} = \{\}\)/, file);
+    assert.match(source, /dongList\.addEventListener\('click',[\s\S]*?activateNeighborhood\(/, file);
+    assert.match(source, /khg:map-select-dong[\s\S]*?activateNeighborhood\(model\)/, file);
+    assert.doesNotMatch(source, /cancelDongLoad\(\{ restoreArea:true \}\)/, file);
+    assert.match(source, /<button class="neighborhood-card"[^>]*data-dong=/, file);
+    assert.match(source, /areaSelect\.value === 'all'[\s\S]*?areaSelect\.value = String\(selected\.districtCode\)/, file);
+  }
 });
 
 test('both locales expose a switching discovery rail', () => {
@@ -86,12 +94,21 @@ test('Street View loading and ready states share one stable media frame', () => 
   assert.doesNotMatch(finalLayer, /explorer-street-view-canvas\{[^}]*height:(?:120|126|170|190)px/);
 });
 
+test('building detail is a centered bottom sheet with bounded Street View height', () => {
+  const css = fs.readFileSync('styles.css', 'utf8');
+  const finalLayer = css.slice(css.indexOf('/* v24 Explorer direct drill-down and building sheet */'));
+  assert.match(finalLayer, /\.building-status-overlay\{[^}]*display:grid[^}]*align-items:end[^}]*justify-items:center/);
+  assert.match(finalLayer, /\.building-status-window\{[^}]*position:relative[^}]*width:min\(1120px,calc\(100vw - 32px\)\)[^}]*max-height:calc\(100dvh - 80px\)/);
+  assert.match(finalLayer, /\.building-window-media-frame\{[^}]*height:clamp\(280px,38dvh,420px\)[^}]*aspect-ratio:auto/);
+  assert.match(finalLayer, /\.building-window-stack\{[^}]*grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
+});
+
 test('both Explorer locales load the cache-busted Street View assets', () => {
   for (const file of ['explore/index.html','zh/explore/index.html']) {
     const html = fs.readFileSync(file, 'utf8');
-    assert.match(html, /href="\/styles\.css\?v=22"/);
-    assert.match(html, /src="\/explore\/building-window\.js\?v=19"/);
-    assert.match(html, /src="\/explore\/panorama\.js\?v=20"/);
-    assert.match(html, /src="\/explore\/explorer-utils\.js\?v=22"/);
+    assert.match(html, /href="\/styles\.css\?v=24"/);
+    assert.match(html, /src="\/explore\/building-window\.js\?v=24"/);
+    assert.match(html, /src="\/explore\/panorama\.js\?v=24"/);
+    assert.match(html, /src="\/explore\/explorer-utils\.js\?v=24"/);
   }
 });
