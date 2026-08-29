@@ -49,6 +49,22 @@ test('share card model presents verdict, evidence, count and a useful next actio
   });
 });
 
+test('downloadable card model ignores exact quote and personal fields', () => {
+  const share = require('../lead-capture.js');
+  assert.deepEqual(
+    share.buildShareCardModel({
+      language:'en', rating:'fair', confidence:'high', comparableCount:12,
+      depositWon:50_000_000, monthlyRentWon:2_000_000, areaSqm:72, email:'private@example.com'
+    }),
+    {
+      verdict:'Close to recent levels',
+      evidence:'Strong',
+      comparableCount:'12',
+      nextAction:'Review the contract and safety checks before signing.'
+    }
+  );
+});
+
 test('share summary stays bound to the completed result context', () => {
   const share = require('../lead-capture.js');
   const payload = share.buildSharePayload({

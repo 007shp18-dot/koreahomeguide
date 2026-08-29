@@ -122,6 +122,7 @@
         evidenceCount,
         rentWon:finiteMoney(band ? band.medianMonthlyRentWon : (item.contextualMedianMonthlyRentWon ?? item.medianMonthlyRentWon)),
         depositWon:finiteMoney(band ? band.medianDepositWon : (item.contextualMedianDepositWon ?? item.medianDepositWon)),
+        adjustedPerSqmWon:finiteMoney(item.adjustedPerSqmWon),
         evidenceLevel,
         budgetStatus,
         tone:budgetStatus === 'outside' ? 'outside' : evidenceLevel,
@@ -213,12 +214,17 @@
   function advancedPinVisual(model = {}, selected = false) {
     const visual = markerVisual(model, selected);
     const count = normalizedCount(model.contractCount);
-    const glyphFontSize = count > 999 ? '9px' : count >= 100 ? '10px' : '11px';
+    const adjusted = finiteMoney(model.adjustedPerSqmWon);
+    const buildingPriceGlyph = model.kind === 'building' && adjusted !== null
+      ? `₩${Math.round(adjusted / 1000)}k`
+      : '';
+    const glyphText = buildingPriceGlyph || (count > 999 ? '999+' : count ? String(count) : '');
+    const glyphFontSize = glyphText.length >= 5 || count > 999 ? '9px' : count >= 100 ? '10px' : '11px';
     return Object.freeze({
       background:visual.fillColor,
       borderColor:visual.strokeColor,
       glyphColor:'#ffffff',
-      glyphText:count > 999 ? '999+' : count ? String(count) : '',
+      glyphText,
       glyphFontSize,
       scale:Math.round(Math.min(1.34, Math.max(0.75, visual.scale / 12)) * 100) / 100
     });

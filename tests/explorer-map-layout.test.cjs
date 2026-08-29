@@ -7,7 +7,7 @@ test('both Explorer locales contain an accessible map with a visible fallback', 
     const html = fs.readFileSync(file,'utf8');
     assert.match(html, /id="explorerMap"/);
     assert.match(html, /id="explorerMapStatus"[^>]*aria-live="polite"/);
-    assert.match(html, /class="explorer-map-layout"/);
+    assert.match(html, /class="explorer-map-layout(?:\s[^\"]*)?"/);
     assert.match(html, /class="explorer-map-legend"[^>]*aria-label=/);
     assert.match(html, /id="explorerMapSelection"[^>]*aria-live="polite"[^>]*hidden/);
     assert.match(html, /id="explorerMapSelectionRent"/);

@@ -41,6 +41,18 @@ function buildingKeyFromName(name, dong = '') {
   return dongKey ? `${dongKey}::${building}` : building;
 }
 
+function adjustedMonthlyPerSqmWon({ monthlyRentWon, depositWon, areaSqm } = {}) {
+  const monthly = Number(monthlyRentWon);
+  const deposit = Number(depositWon);
+  const area = Number(areaSqm);
+  if (!Number.isFinite(monthly) || monthly < 0 || !Number.isFinite(deposit) || deposit < 0 || !Number.isFinite(area) || area <= 0) return null;
+  return Math.round((monthly + deposit * 0.05 / 12) / area);
+}
+
+function adjustedValuesForRows(rows) {
+  return (rows || []).map(adjustedMonthlyPerSqmWon).filter(Number.isFinite);
+}
+
 function monthKey(date) {
   const match = String(date || '').match(/^(\d{4})-(\d{2})-/);
   return match ? `${match[1]}${match[2]}` : '';
@@ -104,6 +116,7 @@ function groupBuildingRows(items, options = {}) {
 function summaryForBuilding(group, options = {}) {
   const rows = group.rows;
   const monthly = rows.filter(row => row.monthlyRentWon > 0);
+  const adjustedValues = adjustedValuesForRows(rows);
   const enName = getBuildingNameDisplay(group.buildingName, 'en');
   const zhName = getBuildingNameDisplay(group.buildingName, 'zh');
   const propertyType = String(rows[0] && rows[0].type || '');
@@ -131,12 +144,14 @@ function summaryForBuilding(group, options = {}) {
       basis:singleJibun || singleRoadAddress ? 'official-address' : 'named-building'
     } : null,
     contractCount:rows.length,
+    latestContractDate:[...rows].sort((a,b) => String(b.contractDate).localeCompare(String(a.contractDate)))[0]?.contractDate || null,
     monthlyRentCount:monthly.length,
     // Legacy fields kept for existing consumers; contextual fields below are safer for display.
     medianMonthlyRentWon:median(monthly.map(row => row.monthlyRentWon)),
     medianDepositWon:median(monthly.map(row => row.depositWon)),
     medianJeonseDepositWon:median(rows.filter(row => row.monthlyRentWon === 0).map(row => row.depositWon)),
     typicalAreaSqm:median(rows.map(row => row.areaSqm)),
+    adjustedPerSqmWon:adjustedValues.length >= 3 ? median(adjustedValues) : null,
     quarterChangePct:quarterChangeForRows(rows, options),
     ...contextualStatsFromNormalized(rows)
   };
@@ -161,6 +176,7 @@ function aggregateDongs(items, options = {}) {
       medianMonthlyRentWon:median(monthly.map(row => row.monthlyRentWon)),
       medianDepositWon:median(monthly.map(row => row.depositWon)),
       typicalAreaSqm:median(rows.map(row => row.areaSqm)),
+      adjustedPerSqmWon:median(adjustedValuesForRows(rows)),
       quarterChangePct:quarterChangeForRows(rows, options),
       ...contextualStatsFromNormalized(rows)
     };
@@ -206,6 +222,7 @@ function buildDongSummary(items, { dong, referenceDate = new Date(), months = 6 
     medianDepositWon:median(monthly.map(row => row.depositWon)),
     medianJeonseDepositWon:median(jeonse.map(row => row.depositWon)),
     typicalAreaSqm:median(rows.map(row => row.areaSqm)),
+    adjustedPerSqmWon:median(adjustedValuesForRows(rows)),
     quarterChangePct:quarterChangeForRows(rows, { referenceDate, months }),
     ...contextualStatsFromNormalized(rows),
     recentTransactions,
@@ -239,44 +256,45 @@ function buildMonthlyTrend(rows, { referenceDate = new Date(), months = 6 } = {}
 function buildingComparisonResult(rows, representative, { minimumContracts, minimumBuildings }) {
   const buildingCount = new Set(rows.map(row => buildingKeyFromName(row.explorerBuildingName, row.explorerDong)).filter(Boolean)).size;
   const comparableCount = rows.length;
-  if (comparableCount < minimumContracts || buildingCount < minimumBuildings) {
-    return { status:'insufficient', percentile:null, comparableCount, buildingCount, reason:'minimum-evidence' };
+  if (comparableCount < minimumContracts || buildingCount < minimumBuildings || !Number.isFinite(Number(representative && representative.adjustedPerSqmWon))) {
+    return { status:'insufficient', percentile:null, comparableCount, buildingCount, medianAdjustedPerSqmWon:null, reason:'minimum-evidence' };
   }
-  const adjusted = rows.map(row => monthlyRentAtDeposit(
-    row.monthlyRentWon,
-    row.depositWon,
-    representative.depositWon
-  )).filter(value => Number.isFinite(value) && value > 0);
-  const rank = percentileRank(adjusted, representative.monthlyRentWon);
+  const adjusted = adjustedValuesForRows(rows);
+  const rank = percentileRank(adjusted, Number(representative.adjustedPerSqmWon));
   return {
     status:'sufficient',
     percentile:rank == null ? null : rank / 100,
     comparableCount,
     buildingCount,
+    medianAdjustedPerSqmWon:Math.round(median(adjusted)),
     reason:null
   };
 }
 
 function buildBuildingMarketPosition(items, { buildingKey, referenceDate = new Date(), months = 6 } = {}) {
   const requestedKey = String(buildingKey || '').normalize('NFKC').trim().toLocaleLowerCase('en-US');
-  const rows = filterCompletedRows(items, { referenceDate, months }).filter(row => row.monthlyRentWon > 0 && row.areaSqm > 0);
+  const rows = filterCompletedRows(items, { referenceDate, months })
+    .filter(row => row.areaSqm > 0 && Number.isFinite(adjustedMonthlyPerSqmWon(row)));
   const selected = rows.filter(row => buildingKeyFromName(row.explorerBuildingName, row.explorerDong) === requestedKey);
   const representative = selected.length >= 3 ? (() => {
-    const depositWon = median(selected.map(row => row.depositWon));
-    const monthlyRentWon = median(selected.map(row => monthlyRentAtDeposit(row.monthlyRentWon, row.depositWon, depositWon)));
+    const monthly = selected.filter(row => row.monthlyRentWon > 0);
+    const depositWon = monthly.length ? median(monthly.map(row => row.depositWon)) : null;
+    const monthlyRentWon = monthly.length ? median(monthly.map(row => monthlyRentAtDeposit(row.monthlyRentWon, row.depositWon, depositWon))) : null;
     return {
       depositWon,
-      monthlyRentWon:Math.round(monthlyRentWon),
+      monthlyRentWon:Number.isFinite(monthlyRentWon) ? Math.round(monthlyRentWon) : null,
       areaSqm:median(selected.map(row => row.areaSqm)),
+      adjustedPerSqmWon:median(adjustedValuesForRows(selected)),
       contractCount:selected.length
     };
   })() : null;
-  const empty = { status:'insufficient', percentile:null, comparableCount:0, buildingCount:0, reason:'minimum-evidence' };
+  const empty = { status:'insufficient', percentile:null, comparableCount:0, buildingCount:0, medianAdjustedPerSqmWon:null, reason:'minimum-evidence' };
   if (!selected.length) return { buildingRepresentative:null, dong:{ ...empty }, district:{ ...empty } };
   const context = representative || {
     depositWon:median(selected.map(row => row.depositWon)),
     monthlyRentWon:median(selected.map(row => row.monthlyRentWon)),
-    areaSqm:median(selected.map(row => row.areaSqm))
+    areaSqm:median(selected.map(row => row.areaSqm)),
+    adjustedPerSqmWon:null
   };
   const areaMin = context.areaSqm * 0.8;
   const areaMax = context.areaSqm * 1.2;
@@ -360,7 +378,8 @@ function buildBuildingDetail(items, { buildingKey, referenceDate = new Date(), m
   const summary = summaryForBuilding(group, { referenceDate, months });
   const recentTransactions = [...group.rows]
     .sort((a, b) => String(b.contractDate).localeCompare(String(a.contractDate)))
-    .slice(0, 12);
+    .slice(0, 12)
+    .map(row => ({ ...row, adjustedPerSqmWon:adjustedMonthlyPerSqmWon(row) }));
   const saleSummary = buildSaleSummary(saleRows, { buildingName:group.buildingName, dong:group.dong });
   return {
     ...summary,
@@ -378,6 +397,7 @@ function buildAreaSummary(items, { referenceDate = new Date(), months = 6 } = {}
   const rows = filterCompletedRows(items, { referenceDate, months });
   return {
     ...stats,
+    adjustedPerSqmWon:median(adjustedValuesForRows(rows)),
     quarterChangePct:quarterChangeForRows(rows, { referenceDate, months })
   };
 }
@@ -387,6 +407,7 @@ module.exports = {
   normalizeDongName,
   formatRoadAddress,
   buildingKeyFromName,
+  adjustedMonthlyPerSqmWon,
   filterCompletedRows,
   quarterChangeForRows,
   aggregateDongs,

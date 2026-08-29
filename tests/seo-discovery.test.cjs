@@ -14,7 +14,7 @@ test('homepage and sitemap expose guide hubs, expanded market pages, and Rent Ex
   assert.match(sitemap, /https:\/\/koreahomeguide\.com\/guides\//);
   assert.match(sitemap, /https:\/\/koreahomeguide\.com\/privacy\//);
   assert.match(sitemap, /https:\/\/koreahomeguide\.com\/zh\/privacy\//);
-  assert.equal((sitemap.match(/<url>/g)||[]).length,75);
+  assert.equal((sitemap.match(/<url>/g)||[]).length,78);
   assert.equal(sitemap.includes('/api/'),false);
 });
 

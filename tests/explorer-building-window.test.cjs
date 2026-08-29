@@ -9,11 +9,11 @@ const detail = {
   mapLocation:{ roadAddress:'테헤란로 1', jibun:'1-2' },
   profile:{ status:'matched', useApprovalYear:2019, householdCount:84, householdLabel:'households', groundFloors:12, source:'MOLIT Building HUB' },
   marketPosition:{
-    buildingRepresentative:{ depositWon:10_000_000, monthlyRentWon:1_150_000, areaSqm:33.6, contractCount:9 },
-    dong:{ status:'sufficient', percentile:0.62, comparableCount:42, buildingCount:11 },
-    district:{ status:'insufficient', percentile:null, comparableCount:12, buildingCount:4, reason:'minimum-evidence' }
+    buildingRepresentative:{ depositWon:10_000_000, monthlyRentWon:1_150_000, areaSqm:33.6, adjustedPerSqmWon:35_466, contractCount:9 },
+    dong:{ status:'sufficient', percentile:0.62, comparableCount:42, buildingCount:11, medianAdjustedPerSqmWon:32_000 },
+    district:{ status:'insufficient', percentile:null, comparableCount:12, buildingCount:4, medianAdjustedPerSqmWon:null, reason:'minimum-evidence' }
   },
-  recentTransactions:[{ contractDate:'2026-07-10', floor:8, areaSqm:33.6, depositWon:10_000_000, monthlyRentWon:1_150_000 }]
+  recentTransactions:[{ contractDate:'2026-07-10', floor:8, areaSqm:33.6, depositWon:10_000_000, monthlyRentWon:1_150_000, adjustedPerSqmWon:35_466 }]
 };
 
 test('building status window renders three decision panels and escapes external text', () => {
@@ -22,6 +22,9 @@ test('building status window renders three decision panels and escapes external 
   assert.match(html, /Against the market/);
   assert.match(html, /Recent contracts/);
   assert.match(html, /Higher than 62% of comparable recent contracts/);
+  assert.match(html, /Deposit-adjusted ₩\/㎡/);
+  assert.match(html, /₩35,466\/㎡/);
+  assert.match(html, /₩35,466\/㎡ \/ ₩32,000\/㎡/);
   assert.match(html, /Limited evidence/);
   assert.doesNotMatch(html, /<img src=x/);
   assert.match(html, /2019/);
@@ -35,6 +38,22 @@ test('Chinese building status window uses native labels and no fake profile valu
   assert.match(html, /最近合同/);
   assert.match(html, /建筑登记信息暂不可用/);
   assert.doesNotMatch(html, />0 户</);
+});
+
+test('missing money and adjusted square-metre values never render as zero', () => {
+  const missing = {
+    ...detail,
+    marketPosition:{
+      buildingRepresentative:{ areaSqm:33.6, contractCount:2, depositWon:null, monthlyRentWon:null, adjustedPerSqmWon:null },
+      dong:{ status:'insufficient', comparableCount:2, buildingCount:1 },
+      district:{ status:'insufficient', comparableCount:2, buildingCount:1 }
+    },
+    recentTransactions:[{ contractDate:'2026-07-10', floor:null, areaSqm:33.6, depositWon:null, monthlyRentWon:null, adjustedPerSqmWon:null }]
+  };
+  const html = renderContent(missing, selection, 'en');
+  assert.doesNotMatch(html, /₩0(?:\/㎡)?/);
+  assert.match(html, /<dd>—<\/dd>/);
+  assert.doesNotMatch(html, /—\/㎡/);
 });
 
 test('building actions preserve identity without inventing quote prices', () => {
@@ -80,4 +99,14 @@ test('mobile building status keeps verified NAVER street view visible', () => {
     'mobile visible rule must override the earlier compact-layout rule'
   );
   assert.match(mobileRules, /\.building-status-window \.explorer-street-view-canvas\{height:120px\}/);
+});
+
+test('street view is panel content and mobile tabs resync when the viewport changes', () => {
+  const source = fs.readFileSync('explore/building-window.js', 'utf8');
+  assert.match(source, /querySelector\('#buildingWindowPanel0'\)\.appendChild\(streetView\)/);
+  assert.match(source, /matchMedia\('\(max-width: 860px\)'\)/);
+  assert.match(source, /addEventListener\('change', syncLayout\)/);
+  const headerTemplate = source.match(/overlay\.innerHTML = `([\s\S]*?)`;/)?.[1] || '';
+  const header = headerTemplate.match(/<header class="building-status-head">([\s\S]*?)<\/header>/)?.[1] || '';
+  assert.doesNotMatch(header, /explorerStreetView/);
 });

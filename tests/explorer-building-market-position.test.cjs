@@ -33,6 +33,7 @@ test('building market position deposit-adjusts area-matched comparables and expo
     depositWon:10_000_000,
     monthlyRentWon:1_000_000,
     areaSqm:40,
+    adjustedPerSqmWon:26_042,
     contractCount:3
   });
   assert.equal(result.dong.status, 'sufficient');
@@ -43,6 +44,28 @@ test('building market position deposit-adjusts area-matched comparables and expo
   assert.equal(result.district.comparableCount, 24);
   assert.equal(result.district.buildingCount, 8);
   assert.equal(result.district.percentile, 0.42);
+});
+
+test('market gauge ranks the same adjusted square-metre metric shown beside it', () => {
+  const rows = [
+    rentRow({ building:'선택빌딩', rent:100, area:40 }),
+    rentRow({ building:'선택빌딩', rent:100, area:40, date:'2026-06-10' }),
+    rentRow({ building:'선택빌딩', rent:100, area:40, date:'2026-05-10' })
+  ];
+  for (let index = 0; index < 24; index += 1) {
+    rows.push(rentRow({
+      building:`비교${Math.floor(index / 3) + 1}`,
+      dong:index < 12 ? '역삼동' : '논현동',
+      rent:100,
+      area:index % 2 ? 32 : 48,
+      date:index % 3 === 0 ? '2026-07-12' : index % 3 === 1 ? '2026-06-12' : '2026-05-12'
+    }));
+  }
+  const result = buildBuildingMarketPosition(rows, {
+    buildingKey:'역삼동::선택빌딩', referenceDate:new Date('2026-08-29T00:00:00Z')
+  });
+  assert.equal(result.dong.medianAdjustedPerSqmWon, 27_127);
+  assert.equal(result.dong.percentile, 0.5);
 });
 
 test('building market position withholds claims below evidence thresholds', () => {
@@ -62,6 +85,7 @@ test('building market position withholds claims below evidence thresholds', () =
     percentile:null,
     comparableCount:2,
     buildingCount:2,
+    medianAdjustedPerSqmWon:null,
     reason:'minimum-evidence'
   });
   assert.equal(result.district.status, 'insufficient');

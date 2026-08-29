@@ -14,8 +14,11 @@ const metricRent = document.querySelector('#metricRent');
 const metricDeposit = document.querySelector('#metricDeposit');
 const metricContracts = document.querySelector('#metricContracts');
 const metricChange = document.querySelector('#metricChange');
+const metricPerSqm = document.querySelector('#metricPerSqm');
 const dongList = document.querySelector('#dongList');
 const buildingList = document.querySelector('#buildingList');
+const buildingSort = document.querySelector('#explorerBuildingSort');
+const sheetToggle = document.querySelector('#explorerSheetToggle');
 const budgetFilterNote = document.querySelector('#budgetFilterNote');
 const explorerResults = document.querySelector('#explorerResultsShell');
 const explorerSearchCard = document.querySelector('.explorer-search-card');
@@ -36,6 +39,8 @@ let currentAreaData = null;
 let currentData = null;
 let currentDong = '';
 let currentMapSelection = null;
+let currentVisibleDongs = null;
+let currentVisibleBuildingKeys = null;
 const explorerAnalytics = window.KHGProductAnalytics
   ? window.KHGProductAnalytics.createTracker(window)
   : null;
@@ -59,6 +64,7 @@ function dongDisplayHtml(dong) {
   return `<span class="localized-location-name${parts.breakKorean ? ' is-long' : ''}"><span class="location-name-primary">${escapeHtml(parts.primary)}</span>${korean}</span>`;
 }
 function formatArea(area) { return area == null ? '—' : `${Number(area).toFixed(1)}㎡`; }
+function formatAdjustedPerSqm(value) { return value == null ? '—' : `₩${Math.round(Number(value)).toLocaleString('zh-CN')}/㎡`; }
 function budgetValues() {
   return {
     maxRent:Number(maxRentSelect && maxRentSelect.value || 0),
@@ -153,6 +159,8 @@ function clearMapSelection() {
 
 function handleSelectionChange() {
   clearMapSelection();
+  currentVisibleDongs = null;
+  currentVisibleBuildingKeys = null;
   updateRentCheckHandoff();
   updateFilterSummary();
 }
@@ -204,12 +212,15 @@ function representativeBand(item) {
   return KHGExplorer.budgetFitForDong(item, budgetValues()).representativeBand;
 }
 
-function renderDongs(dongs) {
+function renderDongs(dongs, { publish = true } = {}) {
   if (!dongList) return;
   const allItems = Array.isArray(dongs) ? dongs : [];
-  const items = filterDongsByBudget(allItems);
+  const budgetItems = filterDongsByBudget(allItems);
+  const items = currentVisibleDongs instanceof Set
+    ? budgetItems.filter(item => currentVisibleDongs.has(String(item.dong || '')))
+    : budgetItems;
   updateBudgetNote(items.length, allItems.length);
-  publishMapDongs(allItems);
+  if (publish) publishMapDongs(allItems);
   if (hasBudgetFilter() && !items.length) {
     dongList.innerHTML = '<div class="explorer-empty">没有街区的月租和押金中位数同时符合当前预算。请提高月租或押金预算后再试。</div>';
     return;
@@ -263,6 +274,7 @@ function renderSummary(data, dong = '') {
   metricContracts.textContent = Number(summary.totalContracts || summary.contractCount || 0).toLocaleString('zh-CN');
   const change = Number(summary.quarterChangePct);
   metricChange.textContent = Number.isFinite(change) ? `${change > 0 ? '+' : ''}${change.toFixed(1)}%` : '数据不足';
+  if (metricPerSqm) metricPerSqm.textContent = formatAdjustedPerSqm(summary.adjustedPerSqmWon);
   dataThrough.textContent = summary.dataThroughMonth ? `数据截至 ${KHGDate.formatMonth(summary.dataThroughMonth, 'zh-CN')}` : '最近已完成月份';
   renderBuildings(data.buildings || []);
   const count = Number(summary.totalContracts || summary.contractCount || 0);
@@ -270,7 +282,7 @@ function renderSummary(data, dong = '') {
     ? `基于最近 ${summary.monthsUsed || 6} 个完整月份${currentDong ? `中 ${dongDisplayName(currentDong)}` : ''}的 ${count.toLocaleString('zh-CN')} 笔官方申报合同。${LISTING_NOTE}`
     : '近期官方申报交易不足，暂时无法形成可靠的市场参考。';
   status.className = `market-status ${count ? 'success' : ''}`;
-  if (currentAreaData) renderDongs(currentAreaData.dongs || []);
+  if (currentAreaData) renderDongs(currentAreaData.dongs || [], { publish:false });
   updateLanguageSwitch();
 }
 
@@ -282,25 +294,26 @@ function renderBuildings(buildings) {
     return;
   }
   if (buildingSection) buildingSection.hidden = false;
-  if (!buildings.length) {
+  const visible = currentVisibleBuildingKeys instanceof Set
+    ? buildings.filter(item => currentVisibleBuildingKeys.has(String(item.buildingKey || '')))
+    : buildings;
+  const items = KHGExplorer.sortBuildings(visible, buildingSort ? buildingSort.value : 'evidence');
+  if (!items.length) {
     buildingList.innerHTML = '<div class="explorer-empty">近期官方数据中没有可识别名称的建筑。</div>';
     return;
   }
-  buildingList.innerHTML = buildings.slice(0, 60).map(item => {
+  buildingList.innerHTML = items.slice(0, 60).map(item => {
     const dong = item.dong || currentDong;
-    const interactiveParams = new URLSearchParams({ lawdCd:currentData && currentData.districtCode || areaSelect.value, type:typeSelect.value });
-    if (dong) interactiveParams.set('dong', dong);
-    interactiveParams.set('buildingKey', item.buildingKey);
-    const interactiveHref = `/zh/explore/building/?${interactiveParams.toString()}`;
     const location = [dong ? dongDisplayName(dong) : '', areaName(), typeName()].filter(Boolean).join(' · ');
     const nameDisplay = KHGBuildingNames.getBuildingNameDisplay(item.buildingName, 'zh');
-    return `<article class="building-row" role="button" tabindex="0" data-building-key="${escapeHtml(item.buildingKey)}" aria-label="打开 ${escapeHtml(nameDisplay.primary)} 建筑状态">
+    return `<button class="building-row" type="button" data-building-key="${escapeHtml(item.buildingKey)}" aria-label="打开 ${escapeHtml(nameDisplay.primary)} 建筑状态">
       <div class="building-name"><strong>${escapeHtml(nameDisplay.primary)}</strong>${nameDisplay.secondary ? `<small class="building-official-name">${escapeHtml(nameDisplay.secondary)}</small>` : ''}<small>${escapeHtml(location)}</small></div>
       <div><span class="mobile-label">典型面积</span><strong>${formatArea(item.typicalAreaSqm)}</strong></div>
-      ${(() => { const band = representativeBand(item); const rentValue = band ? band.medianMonthlyRentWon : (item.contextualMedianMonthlyRentWon ?? item.medianMonthlyRentWon); const depositValue = band ? band.medianDepositWon : (item.contextualMedianDepositWon ?? item.medianDepositWon); return `<div class="building-money"><span class="mobile-label">参考月租</span><strong>${rentValue == null ? '—' : moneyHtml(rentValue)}</strong></div><div class="building-money"><span class="mobile-label">参考押金</span><strong>${depositValue == null ? '—' : moneyHtml(depositValue)}</strong></div>`; })()}
+      <div class="building-per-sqm"><span class="mobile-label">校正 ₩/㎡</span><strong>${formatAdjustedPerSqm(item.adjustedPerSqmWon)}</strong></div>
+      ${(() => { const band = representativeBand(item); const rentValue = band ? band.medianMonthlyRentWon : (item.contextualMedianMonthlyRentWon ?? item.medianMonthlyRentWon); const depositValue = band ? band.medianDepositWon : (item.contextualMedianDepositWon ?? item.medianDepositWon); return `<div class="building-money building-price-pair"><span class="mobile-label">月租 / 押金</span><strong>${rentValue == null ? '—' : moneyHtml(rentValue)}</strong><small>${depositValue == null ? '—' : moneyHtml(depositValue)}</small></div>`; })()}
       <div><span class="mobile-label">成交</span><strong>${Number(item.contractCount || 0).toLocaleString('zh-CN')}</strong></div>
-      <div class="building-actions"><a rel="nofollow" href="${escapeHtml(interactiveHref)}">查看建筑成交 →</a></div>
-    </article>`;
+      <div class="building-actions"><span>查看状态 →</span></div>
+    </button>`;
   }).join('');
 }
 
@@ -393,6 +406,7 @@ async function loadArea({ requestedDong = '' } = {}) {
     metricDeposit.textContent = '—';
     metricContracts.textContent = '—';
     metricChange.textContent = '—';
+    if (metricPerSqm) metricPerSqm.textContent = '—';
     if (dongList) dongList.innerHTML = '<div class="explorer-empty">街区数据暂时不可用。</div>';
     publishMapDongs([]);
     buildingList.innerHTML = '<div class="explorer-empty">目前无法加载建筑级成交数据。</div>';
@@ -431,6 +445,14 @@ areaSelect.addEventListener('change',handleSelectionChange);
 typeSelect.addEventListener('change',handleSelectionChange);
 maxRentSelect.addEventListener('change',handleSelectionChange);
 maxDepositSelect.addEventListener('change',handleSelectionChange);
+if (buildingSort) buildingSort.addEventListener('change', () => {
+  if (currentData) renderBuildings(currentData.buildings || []);
+});
+if (sheetToggle) sheetToggle.addEventListener('click', () => {
+  const expanded = !explorerResults.classList.contains('is-sheet-expanded');
+  explorerResults.classList.toggle('is-sheet-expanded', expanded);
+  sheetToggle.setAttribute('aria-expanded', String(expanded));
+});
 explorerViewButtons.forEach(button => button.addEventListener('click', () => setExplorerView(button.dataset.explorerView)));
 if (mapSelectionClose) mapSelectionClose.addEventListener('click', clearMapSelection);
 if (explorerChangeFilters) explorerChangeFilters.addEventListener('click', () => {
@@ -440,7 +462,7 @@ if (explorerChangeFilters) explorerChangeFilters.addEventListener('click', () =>
   window.setTimeout(() => areaInput.focus(), 320);
 });
 if (currencySelect) currencySelect.addEventListener('change', () => {
-  if (currentAreaData) renderDongs(currentAreaData.dongs || []);
+  if (currentAreaData) renderDongs(currentAreaData.dongs || [], { publish:false });
   if (currentData) renderSummary(currentData, currentDong);
   if (currentMapSelection) renderMapSelection(currentMapSelection);
 });
@@ -465,6 +487,16 @@ window.addEventListener('khg:map-select-building', event => {
   if (mapSelection) mapSelection.hidden = true;
 });
 window.addEventListener('khg:map-back-neighborhoods', clearMapSelection);
+window.addEventListener('khg:map-viewport-change', event => {
+  const detail = event.detail || {};
+  if (detail.markerScope === 'building') {
+    currentVisibleBuildingKeys = new Set(Array.isArray(detail.visibleBuildingKeys) ? detail.visibleBuildingKeys : []);
+    if (currentData) renderBuildings(currentData.buildings || []);
+    return;
+  }
+  currentVisibleDongs = new Set(Array.isArray(detail.visibleDongs) ? detail.visibleDongs : []);
+  if (currentAreaData) renderDongs(currentAreaData.dongs || [], { publish:false });
+});
 
 function openBuildingFromRow(row) {
   if (!row || !currentData || !window.KHGExplorerBuildingWindow) return;
@@ -478,12 +510,7 @@ function openBuildingFromRow(row) {
 }
 if (buildingList) {
   buildingList.addEventListener('click', event => {
-    if (event.target.closest('a')) return;
     openBuildingFromRow(event.target.closest('.building-row[data-building-key]'));
-  });
-  buildingList.addEventListener('keydown', event => {
-    if (!['Enter',' '].includes(event.key) || event.target.closest('a')) return;
-    event.preventDefault(); openBuildingFromRow(event.target.closest('.building-row[data-building-key]'));
   });
 }
 

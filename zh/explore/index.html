@@ -50,7 +50,7 @@
     </section>
 
 
-    <div id="explorerResultsShell" class="explorer-map-layout" hidden>
+    <div id="explorerResultsShell" class="explorer-map-layout map-first-workspace" hidden>
       <aside class="explorer-map-column" aria-label="街区地图">
         <section class="explorer-map-card">
           <div class="explorer-map-toolbar">
@@ -66,6 +66,7 @@
           <div class="explorer-map-legend" aria-label="地图标记说明"><span><i class="is-strong"></i>较强依据</span><span><i class="is-limited"></i>有限依据</span><span><i class="is-outside"></i>超出预算</span></div>
           <div class="explorer-map-surface">
             <div id="explorerMap" class="explorer-map-canvas" role="region" aria-label="所选首尔街区地图"></div>
+            <button id="explorerSearchArea" class="explorer-search-area" type="button" hidden>搜索此区域</button>
             <p id="explorerMapStatus" class="explorer-map-status" aria-live="polite">地图进入屏幕时加载。</p>
             <section id="explorerMapSelection" class="explorer-map-selection" aria-live="polite" hidden>
               <button id="explorerMapSelectionDrag" class="explorer-map-selection-drag" type="button" aria-label="移动详情面板" title="拖动以移动面板"><span aria-hidden="true"></span></button>
@@ -83,6 +84,7 @@
       </aside>
       <div class="product-main explorer-map-main">
 <section id="explorerResults" class="explorer-results" aria-live="polite">
+      <button id="explorerSheetToggle" class="explorer-sheet-toggle" type="button" aria-expanded="false"><span aria-hidden="true"></span>结果</button>
       <div class="explorer-results-head">
         <div><span class="eyebrow">近期真实签约租金</span><h2 id="explorerTitle">江南区租赁市场</h2><dl class="explorer-summary-context"><div><dt>地区</dt><dd id="explorerSummaryArea">江南区（강남구）</dd></div><div><dt>住宅类型</dt><dd id="explorerSummaryType">办公住宅两用楼 / Officetel（오피스텔）</dd></div></dl><div id="explorerFilterSummary" class="explorer-filter-summary"><span>不限月租 · 不限押金</span><button id="explorerChangeFilters" type="button">修改条件</button></div></div>
         <span id="explorerDataThrough" class="explorer-data-through">最近已完成月份</span>
@@ -94,6 +96,7 @@
         <div><span>押金中位数</span><strong id="metricDeposit">—</strong><small>仅月租合同</small></div>
         <div><span>签约数量</span><strong id="metricContracts">—</strong><small>最近 6 个完整月份</small></div>
         <div><span>近 3 个月变化</span><strong id="metricChange">—</strong><small>近 3 个月 vs 前 3 个月</small></div>
+        <div class="is-key"><span>押金校正 ₩/㎡</span><strong id="metricPerSqm">—</strong><small>月成本含押金年化 5% 机会成本</small></div>
       </div>
 
       <section class="dong-section">
@@ -102,8 +105,9 @@
       </section>
 
       <section class="building-section" hidden>
-        <div class="building-section-head"><div><span class="eyebrow">建筑</span><h2>近期有成交记录的建筑</h2></div><small>按近期官方成交数量排序</small></div>
-        <div class="building-list-head" aria-hidden="true"><span>建筑</span><span>典型面积</span><span>月租</span><span>押金</span><span>成交</span><span></span></div>
+        <div class="building-section-head"><div><span class="eyebrow">建筑</span><h2>近期有成交记录的建筑</h2></div><label class="explorer-building-sort"><span>排序</span><select id="explorerBuildingSort"><option value="evidence">依据最强</option><option value="adjusted-per-sqm">校正 ₩/㎡ 最低</option><option value="recent">最近成交</option></select></label></div>
+        <p class="explorer-per-sqm-note">校正 ₩/㎡ 将押金按年化 5% 机会成本计入月成本，避免不同押金结构造成误导。</p>
+        <div class="building-list-head" aria-hidden="true"><span>建筑</span><span>典型面积</span><span>校正 ₩/㎡</span><span>月租 / 押金</span><span>成交</span><span></span></div>
         <div id="buildingList" class="building-list"><div class="explorer-empty">正在加载建筑…</div></div>
       </section>
     </section>
@@ -130,6 +134,7 @@
   <script src="/district-combobox.js"></script>
   <script src="/explore/explorer-utils.js"></script>
   <script src="/explore/map-locations.js"></script>
+  <script src="/explore/map-viewport.js"></script>
   <script src="/explore/map-controller.js"></script>
   <script src="/product-analytics.js"></script>
   <script src="/explore/saved-buildings.js"></script>

@@ -158,7 +158,7 @@ test('building geocoding tries precise official addresses before a building-name
 test('Explorer building lists expose up to 60 recent named buildings', () => {
   for (const file of ['explore/app.js','zh/explore/app.js']) {
     const source = fs.readFileSync(file, 'utf8');
-    assert.match(source, /buildings\.slice\(0, 60\)/, file);
+    assert.match(source, /items\.slice\(0, 60\)/, file);
   }
 });
 

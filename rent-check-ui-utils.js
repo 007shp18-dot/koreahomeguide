@@ -99,12 +99,30 @@
     const count = Math.max(0, Math.round(Number(result && result.comparableCount || 0)));
     const difference = Number(result && result.differencePct);
     const hasDifference = rating !== 'insufficient' && Number.isFinite(difference);
+    const hasMoneyPair = result && result.askingValueWon != null && result.medianValueWon != null;
+    const asking = Number(hasMoneyPair && result.askingValueWon);
+    const median = Number(hasMoneyPair && result.medianValueWon);
+    const isJeonse = result && result.comparisonMode === 'jeonse-deposit';
+    const moneyDifference = hasDifference && hasMoneyPair && Number.isFinite(asking) && Number.isFinite(median)
+      ? Math.round(asking - median)
+      : null;
+    const compactWon = value => {
+      const absolute = Math.abs(value);
+      if (absolute >= 1_000_000) return `₩${(absolute / 1_000_000).toFixed(2).replace(/\.00$/, '').replace(/(\.\d)0$/, '$1')}M`;
+      if (absolute >= 1_000) return `₩${Math.round(absolute / 1_000)}k`;
+      return `₩${Math.round(absolute)}`;
+    };
     return {
       icon:{ above:'▲', fair:'●', below:'▼', insufficient:'─' }[rating] || '─',
       label:ratingLabel(rating,result && result.verdictBasis),
       difference:hasDifference ? `${difference >= 0 ? '+' : '−'}${Math.abs(difference).toFixed(1)}%` : '—',
       comparison:hasDifference ? 'vs comparable median' : 'Price verdict unavailable',
-      sample:`${count} signed contract${count === 1 ? '' : 's'}`
+      sample:`${count} signed contract${count === 1 ? '' : 's'}`,
+      annualized:moneyDifference == null || moneyDifference === 0
+        ? ''
+        : isJeonse
+          ? `About ${compactWon(moneyDifference)} ${moneyDifference > 0 ? 'more' : 'less'} deposit`
+          : `About ${compactWon(moneyDifference * 12)} ${moneyDifference > 0 ? 'more' : 'less'} per year`
     };
   }
 

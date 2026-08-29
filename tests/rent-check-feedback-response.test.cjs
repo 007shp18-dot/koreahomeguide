@@ -1,6 +1,9 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const path = require('node:path');
+
+const ROOT = path.resolve(__dirname,'..');
 
 const enUI = require('../rent-check-ui-utils.js');
 const zhUI = require('../zh/rent-check-ui-utils.js');
@@ -132,27 +135,55 @@ test('result-specific next step makes an above-market verdict actionable', () =>
 
 test('verdict presentation leads with text, icon, difference, and evidence count', () => {
   assert.deepEqual(
-    enUI.verdictPresentation({ rating:'above', differencePct:12.4, comparableCount:24 }),
+    enUI.verdictPresentation({ rating:'above', differencePct:12.4, comparableCount:24, askingValueWon:1_124_000, medianValueWon:1_000_000 }),
     {
       icon:'▲',
       label:'Above market',
       difference:'+12.4%',
       comparison:'vs comparable median',
-      sample:'24 signed contracts'
+      sample:'24 signed contracts',
+      annualized:'About ₩1.49M more per year'
     }
   );
   assert.deepEqual(
-    enUI.verdictPresentation({ rating:'fair', differencePct:-2, comparableCount:1 }),
+    enUI.verdictPresentation({ rating:'fair', differencePct:-2, comparableCount:1, askingValueWon:980_000, medianValueWon:1_000_000 }),
     {
       icon:'●',
       label:'Typical range',
       difference:'−2.0%',
       comparison:'vs comparable median',
-      sample:'1 signed contract'
+      sample:'1 signed contract',
+      annualized:'About ₩240k less per year'
     }
   );
   assert.match(zhUI.verdictPresentation({ rating:'insufficient', comparableCount:2 }).label, /可比/);
   assert.match(zhUI.verdictPresentation({ rating:'below', differencePct:-8, comparableCount:9 }).sample, /9 笔/);
+  assert.equal(zhUI.verdictPresentation({ rating:'above', differencePct:10, comparableCount:9, askingValueWon:1_100_000, medianValueWon:1_000_000 }).annualized, '每年约多 ₩1.2M');
+  assert.equal(enUI.verdictPresentation({ rating:'insufficient', comparableCount:2 }).annualized, '');
+  assert.equal(
+    enUI.verdictPresentation({
+      rating:'above', comparisonMode:'jeonse-deposit', differencePct:10,
+      comparableCount:9, askingValueWon:110_000_000, medianValueWon:100_000_000
+    }).annualized,
+    'About ₩10M more deposit'
+  );
+  assert.equal(
+    zhUI.verdictPresentation({
+      rating:'below', comparisonMode:'jeonse-deposit', differencePct:-10,
+      comparableCount:9, askingValueWon:90_000_000, medianValueWon:100_000_000
+    }).annualized,
+    '押金约少 ₩10M'
+  );
+});
+
+test('rent check status uses explicit UI state instead of occupying the idle layout', () => {
+  for (const appPath of ['app.js','tools/seoul-rent-check/app.js','zh/app.js','zh/tools/seoul-rent-check/app.js']) {
+    const app = fs.readFileSync(path.join(ROOT,appPath),'utf8');
+    assert.match(app, /status\.dataset\.state=state\|\|'idle'/);
+    assert.match(app, /data-rent-verdict-annualized/);
+  }
+  const css = fs.readFileSync(path.join(ROOT,'styles.css'),'utf8');
+  assert.match(css, /\.rent-check-status(?:\:not\(\[data-state\]\)|\[data-state=['"]idle['"]\])/);
 });
 
 test('distribution model provides one compact P25-median-P75 scale', () => {

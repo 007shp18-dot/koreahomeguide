@@ -50,7 +50,7 @@
     </section>
 
 
-    <div id="explorerResultsShell" class="explorer-map-layout" hidden>
+    <div id="explorerResultsShell" class="explorer-map-layout map-first-workspace" hidden>
       <aside class="explorer-map-column" aria-label="Neighborhood map">
         <section class="explorer-map-card">
           <div class="explorer-map-toolbar">
@@ -66,6 +66,7 @@
           <div class="explorer-map-legend" aria-label="Map marker meaning"><span><i class="is-strong"></i>Strong evidence</span><span><i class="is-limited"></i>Limited evidence</span><span><i class="is-outside"></i>Outside budget</span></div>
           <div class="explorer-map-surface">
             <div id="explorerMap" class="explorer-map-canvas" role="region" aria-label="Map of selected Seoul neighborhoods"></div>
+            <button id="explorerSearchArea" class="explorer-search-area" type="button" hidden>Search this area</button>
             <p id="explorerMapStatus" class="explorer-map-status" aria-live="polite">Map loads when it enters view.</p>
             <section id="explorerMapSelection" class="explorer-map-selection" aria-live="polite" hidden>
               <button id="explorerMapSelectionDrag" class="explorer-map-selection-drag" type="button" aria-label="Move details panel" title="Drag to move this panel"><span aria-hidden="true"></span></button>
@@ -83,6 +84,7 @@
       </aside>
       <div class="product-main explorer-map-main">
 <section id="explorerResults" class="explorer-results" aria-live="polite">
+      <button id="explorerSheetToggle" class="explorer-sheet-toggle" type="button" aria-expanded="false"><span aria-hidden="true"></span>Results</button>
       <div class="explorer-results-head">
         <div><span class="eyebrow">RECENT SIGNED RENTS</span><h2 id="explorerTitle">Gangnam-gu rent market</h2><dl class="explorer-summary-context"><div><dt>Area</dt><dd id="explorerSummaryArea">Gangnam-gu (강남구)</dd></div><div><dt>Housing type</dt><dd id="explorerSummaryType">Officetel (오피스텔)</dd></div></dl><div id="explorerFilterSummary" class="explorer-filter-summary"><span>Any rent · Any deposit</span><button id="explorerChangeFilters" type="button">Change filters</button></div></div>
         <span id="explorerDataThrough" class="explorer-data-through">Latest completed months</span>
@@ -94,6 +96,7 @@
         <div><span>Median deposit</span><strong id="metricDeposit">—</strong><small>Monthly-rent contracts only</small></div>
         <div><span>Signed contracts</span><strong id="metricContracts">—</strong><small>Latest 6 completed months</small></div>
         <div><span>3-month change</span><strong id="metricChange">—</strong><small>Recent 3 months vs prior 3 months</small></div>
+        <div class="is-key"><span>Deposit-adjusted ₩/㎡</span><strong id="metricPerSqm">—</strong><small>Monthly cost including 5% annual deposit cost</small></div>
       </div>
 
       <section class="dong-section">
@@ -102,8 +105,9 @@
       </section>
 
       <section class="building-section" hidden>
-        <div class="building-section-head"><div><span class="eyebrow">BUILDINGS</span><h2>Buildings with recent contracts</h2></div><small>Ranked by recent reported contract count</small></div>
-        <div class="building-list-head" aria-hidden="true"><span>Building</span><span>Typical size</span><span>Monthly rent</span><span>Deposit</span><span>Contracts</span><span></span></div>
+        <div class="building-section-head"><div><span class="eyebrow">BUILDINGS</span><h2>Buildings with recent contracts</h2></div><label class="explorer-building-sort"><span>Sort</span><select id="explorerBuildingSort"><option value="evidence">Strongest evidence</option><option value="adjusted-per-sqm">Lowest adjusted ₩/㎡</option><option value="recent">Most recent contract</option></select></label></div>
+        <p class="explorer-per-sqm-note">Adjusted ₩/㎡ includes a 5% annual opportunity cost for the deposit so different deposit structures remain comparable.</p>
+        <div class="building-list-head" aria-hidden="true"><span>Building</span><span>Typical size</span><span>Adjusted ₩/㎡</span><span>Rent / deposit</span><span>Contracts</span><span></span></div>
         <div id="buildingList" class="building-list"><div class="explorer-empty">Loading buildings…</div></div>
       </section>
     </section>
@@ -130,6 +134,7 @@
   <script src="/district-combobox.js"></script>
   <script src="/explore/explorer-utils.js"></script>
   <script src="/explore/map-locations.js"></script>
+  <script src="/explore/map-viewport.js"></script>
   <script src="/explore/map-controller.js"></script>
   <script src="/product-analytics.js"></script>
   <script src="/explore/saved-buildings.js"></script>

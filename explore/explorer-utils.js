@@ -182,8 +182,27 @@
   }
 
   function initialViewForWidth(width) {
-    const viewportWidth = Number(width);
-    return Number.isFinite(viewportWidth) && viewportWidth > 0 && viewportWidth <= 760 ? 'list' : 'map';
+    return 'map';
+  }
+
+  function sortBuildings(items, mode = 'evidence') {
+    const source = Array.isArray(items) ? [...items] : [];
+    const finite = value => value != null && String(value).trim() !== '' && Number.isFinite(Number(value)) ? Number(value) : null;
+    return source.sort((a, b) => {
+      if (mode === 'adjusted-per-sqm') {
+        const left = finite(a && a.adjustedPerSqmWon);
+        const right = finite(b && b.adjustedPerSqmWon);
+        if (left === null && right !== null) return 1;
+        if (left !== null && right === null) return -1;
+        if (left !== right) return left - right;
+      } else if (mode === 'recent') {
+        const dateOrder = String(b && b.latestContractDate || '').localeCompare(String(a && a.latestContractDate || ''));
+        if (dateOrder) return dateOrder;
+      }
+      const evidenceOrder = Number(b && b.contractCount || 0) - Number(a && a.contractCount || 0);
+      if (evidenceOrder) return evidenceOrder;
+      return String(a && (a.buildingName || a.buildingKey) || '').localeCompare(String(b && (b.buildingName || b.buildingKey) || ''), 'ko');
+    });
   }
 
   function buildLabeledTableRow(cells) {
@@ -210,6 +229,7 @@
     summaryHeading,
     supportsZhIndexing,
     initialViewForWidth,
+    sortBuildings,
     buildLabeledTableRow,
     stableSuffix
   };

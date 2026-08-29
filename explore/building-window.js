@@ -17,26 +17,32 @@
     return isZh(locale) ? {
       close:'关闭建筑详情', loading:'正在读取该建筑的官方签约数据…', error:'建筑数据暂时无法读取。', retry:'重试',
       tabs:['概览','市场','合同'], signed:'近期签约', market:'市场位置', contracts:'最近合同',
-      rent:'月租中位数', deposit:'押金中位数', area:'典型面积', evidence:'建筑内月租合同',
+      rent:'月租中位数', deposit:'押金中位数', area:'典型面积', perSqm:'押金校正 ₩/㎡', evidence:'建筑内月租合同',
       dong:'所在街区', district:'所在行政区', limited:'依据有限', profileUnavailable:'建筑登记信息暂不可用。',
       saved:'已收藏', save:'收藏建筑', check:'检查我的报价', full:'打开完整详情', noContracts:'暂无近期合同。',
-      source:'韩国国土交通部官方数据', higher:p => `高于 ${p}% 的近期可比合同`, lower:p => `低于 ${p}% 的近期可比合同`,
+      source:'韩国国土交通部官方数据', higher:p => `高于 ${p}% 的近期可比合同`, lower:p => `低于 ${p}% 的近期可比合同`, aboveMedian:p => `高于市场中位数 ${p}%`, belowMedian:p => `低于市场中位数 ${p}%`,
       profile:{ year:'使用批准', households:'户', families:'家庭', floors:'地上层数' }
     } : {
       close:'Close building details', loading:'Loading official signed contracts for this building…', error:'Building data is temporarily unavailable.', retry:'Retry',
       tabs:['Overview','Market','Contracts'], signed:'What people signed', market:'Against the market', contracts:'Recent contracts',
-      rent:'Median monthly rent', deposit:'Median deposit', area:'Typical size', evidence:'monthly-rent contracts in this building',
+      rent:'Median monthly rent', deposit:'Median deposit', area:'Typical size', perSqm:'Deposit-adjusted ₩/㎡', evidence:'monthly-rent contracts in this building',
       dong:'This neighborhood', district:'This district', limited:'Limited evidence', profileUnavailable:'Building registry details are temporarily unavailable.',
       saved:'Saved', save:'Save building', check:'Check my quote', full:'Open full details', noContracts:'No recent contracts are available.',
-      source:'Official MOLIT signed-rental data', higher:p => `Higher than ${p}% of comparable recent contracts`, lower:p => `Lower than ${p}% of comparable recent contracts`,
+      source:'Official MOLIT signed-rental data', higher:p => `Higher than ${p}% of comparable recent contracts`, lower:p => `Lower than ${p}% of comparable recent contracts`, aboveMedian:p => `${p}% above the market median`, belowMedian:p => `${p}% below the market median`,
       profile:{ year:'Use approved', households:'households', families:'families', floors:'above-ground floors' }
     };
   }
 
   function money(value) {
+    if (value == null || value === '') return '—';
     const number = Number(value);
     if (!Number.isFinite(number)) return '—';
     return `₩${Math.round(number).toLocaleString('en-US')}`;
+  }
+
+  function perSqmMoney(value) {
+    const formatted = money(value);
+    return formatted === '—' ? formatted : `${formatted}/㎡`;
   }
 
   function buildDetailUrl(selection, locale) {
@@ -91,12 +97,21 @@
     return facts.length ? `<div class="building-profile-facts">${facts.join('')}</div>` : `<p class="building-status-muted">${escapeHtml(copy.profileUnavailable)}</p>`;
   }
 
-  function positionHtml(label, position, copy) {
+  function positionHtml(label, position, copy, buildingAdjustedPerSqmWon) {
     const sufficient = position && position.status === 'sufficient' && Number.isFinite(Number(position.percentile));
     if (!sufficient) return `<div class="building-market-row"><div><span>${escapeHtml(label)}</span><strong>${escapeHtml(copy.limited)}</strong></div><small>${Number(position && position.comparableCount || 0)} contracts · ${Number(position && position.buildingCount || 0)} buildings</small></div>`;
     const rank = Math.round(Number(position.percentile) * 100);
     const phrase = rank >= 50 ? copy.higher(rank) : copy.lower(100 - rank);
-    return `<div class="building-market-row"><div><span>${escapeHtml(label)}</span><strong>${escapeHtml(phrase)}</strong></div><div class="building-market-gauge" style="--building-position:${rank}%" role="img" aria-label="${escapeHtml(phrase)}"><i></i></div><small>${Number(position.comparableCount || 0)} contracts · ${Number(position.buildingCount || 0)} buildings</small></div>`;
+    const marketValue = Number(position.medianAdjustedPerSqmWon);
+    const buildingValue = Number(buildingAdjustedPerSqmWon);
+    const difference = Number.isFinite(marketValue) && marketValue > 0 && Number.isFinite(buildingValue)
+      ? Math.round(Math.abs(buildingValue / marketValue - 1) * 1000) / 10
+      : null;
+    const relation = difference == null ? phrase : buildingValue >= marketValue ? copy.aboveMedian(difference) : copy.belowMedian(difference);
+    const pair = Number.isFinite(marketValue) && Number.isFinite(buildingValue)
+      ? `<b class="building-market-pair">${perSqmMoney(buildingValue)} / ${perSqmMoney(marketValue)}</b>`
+      : '';
+    return `<div class="building-market-row"><div><span>${escapeHtml(label)}</span>${pair}<strong>${escapeHtml(relation)}</strong></div><div class="building-market-gauge" style="--building-position:${rank}%" role="img" aria-label="${escapeHtml(phrase)}"><i></i></div><small>${Number(position.comparableCount || 0)} contracts · ${Number(position.buildingCount || 0)} buildings</small></div>`;
   }
 
   function renderContent(detail, selection, locale) {
@@ -104,15 +119,15 @@
     const representative = detail && detail.marketPosition && detail.marketPosition.buildingRepresentative;
     const position = detail && detail.marketPosition || {};
     const transactions = Array.isArray(detail && detail.recentTransactions) ? detail.recentTransactions.slice(0, 5) : [];
-    const contracts = transactions.length ? transactions.map(row => `<li><time>${escapeHtml(row.contractDate || '—')}</time><span>${row.floor == null ? '—' : `${escapeHtml(row.floor)}F`} · ${Number(row.areaSqm || 0).toFixed(1)}㎡</span><strong>${money(row.depositWon)} + ${money(row.monthlyRentWon)}/mo</strong></li>`).join('') : `<li class="is-empty">${escapeHtml(copy.noContracts)}</li>`;
+    const contracts = transactions.length ? transactions.map(row => `<li><time>${escapeHtml(row.contractDate || '—')}</time><span>${row.floor == null ? '—' : `${escapeHtml(row.floor)}F`} · ${Number(row.areaSqm || 0).toFixed(1)}㎡</span><strong>${money(row.depositWon)} + ${money(row.monthlyRentWon)}/mo</strong><b>${perSqmMoney(row.adjustedPerSqmWon)}</b></li>`).join('') : `<li class="is-empty">${escapeHtml(copy.noContracts)}</li>`;
     return `<div class="building-window-tabs" role="tablist" aria-label="${escapeHtml(copy.market)}">${copy.tabs.map((tab, index) => `<button type="button" role="tab" id="buildingWindowTab${index}" aria-controls="buildingWindowPanel${index}" aria-selected="${index === 0}" data-building-tab="${index}">${escapeHtml(tab)}</button>`).join('')}</div>
       <div class="building-window-grid">
         <section id="buildingWindowPanel0" class="building-window-panel" role="tabpanel" aria-labelledby="buildingWindowTab0" data-building-panel="0"><span class="building-window-kicker">01</span><h3>${escapeHtml(copy.signed)}</h3>
-          <dl class="building-snapshot"><div><dt>${escapeHtml(copy.rent)}</dt><dd>${money(representative && representative.monthlyRentWon)}</dd></div><div><dt>${escapeHtml(copy.deposit)}</dt><dd>${money(representative && representative.depositWon)}</dd></div><div><dt>${escapeHtml(copy.area)}</dt><dd>${representative ? `${Number(representative.areaSqm).toFixed(1)}㎡` : '—'}</dd></div></dl>
+          <dl class="building-snapshot"><div><dt>${escapeHtml(copy.rent)}</dt><dd>${money(representative && representative.monthlyRentWon)}</dd></div><div><dt>${escapeHtml(copy.deposit)}</dt><dd>${money(representative && representative.depositWon)}</dd></div><div><dt>${escapeHtml(copy.area)}</dt><dd>${representative ? `${Number(representative.areaSqm).toFixed(1)}㎡` : '—'}</dd></div><div class="is-key"><dt>${escapeHtml(copy.perSqm)}</dt><dd>${perSqmMoney(representative && representative.adjustedPerSqmWon)}</dd></div></dl>
           <p class="building-status-muted">${representative ? `${Number(representative.contractCount)} ${escapeHtml(copy.evidence)}` : escapeHtml(copy.limited)}</p>
           <div class="building-window-profile">${profileHtml(detail && detail.profile, copy)}</div>
         </section>
-        <section id="buildingWindowPanel1" class="building-window-panel" role="tabpanel" aria-labelledby="buildingWindowTab1" data-building-panel="1"><span class="building-window-kicker">02</span><h3>${escapeHtml(copy.market)}</h3>${positionHtml(copy.dong, position.dong, copy)}${positionHtml(copy.district, position.district, copy)}<p class="building-status-muted">${escapeHtml(copy.source)}</p></section>
+        <section id="buildingWindowPanel1" class="building-window-panel" role="tabpanel" aria-labelledby="buildingWindowTab1" data-building-panel="1"><span class="building-window-kicker">02</span><h3>${escapeHtml(copy.market)}</h3>${positionHtml(copy.dong, position.dong, copy, representative && representative.adjustedPerSqmWon)}${positionHtml(copy.district, position.district, copy, representative && representative.adjustedPerSqmWon)}<p class="building-status-muted">${escapeHtml(copy.source)}</p></section>
         <section id="buildingWindowPanel2" class="building-window-panel" role="tabpanel" aria-labelledby="buildingWindowTab2" data-building-panel="2"><span class="building-window-kicker">03</span><h3>${escapeHtml(copy.contracts)}</h3><ol class="building-contract-list">${contracts}</ol></section>
       </div>`;
   }
@@ -125,10 +140,12 @@
     overlay.id = 'buildingStatusOverlay';
     overlay.className = 'building-status-overlay';
     overlay.hidden = true;
-    overlay.innerHTML = `<section class="building-status-window" role="dialog" aria-modal="true" aria-labelledby="buildingStatusTitle"><header class="building-status-head"><div class="building-status-identity"><span id="buildingStatusMeta" class="eyebrow"></span><h2 id="buildingStatusTitle"></h2><p id="buildingStatusAddress"></p><div id="buildingStatusProfile"></div></div><section id="explorerStreetView" class="explorer-street-view building-window-street-view" aria-labelledby="explorerStreetViewHeading" hidden><div class="explorer-street-view-head"><strong id="explorerStreetViewHeading">${isZh(locale) ? '该建筑附近街景' : 'Street view near this building'}</strong><span id="explorerStreetViewMeta"></span></div><div id="explorerStreetViewCanvas" class="explorer-street-view-canvas" hidden></div><p id="explorerStreetViewStatus" aria-live="polite"></p><small>${isZh(locale) ? '附近街景，并非出租房源照片。' : 'Nearby street view, not a listing photo.'}</small></section><button type="button" class="building-status-close" aria-label="${escapeHtml(copy.close)}">×</button></header><div id="buildingStatusBody" class="building-status-body"></div><footer class="building-status-actions"><button type="button" data-building-save>${escapeHtml(copy.save)}</button><a data-building-rent-check href="#">${escapeHtml(copy.check)} →</a><a data-building-full href="#">${escapeHtml(copy.full)} →</a></footer></section>`;
+    overlay.innerHTML = `<section class="building-status-window" role="dialog" aria-modal="true" aria-labelledby="buildingStatusTitle"><header class="building-status-head"><div class="building-status-identity"><span id="buildingStatusMeta" class="eyebrow"></span><h2 id="buildingStatusTitle"></h2><p id="buildingStatusAddress"></p><div id="buildingStatusProfile"></div></div><button type="button" class="building-status-close" aria-label="${escapeHtml(copy.close)}">×</button></header><section id="explorerStreetView" class="explorer-street-view building-window-street-view" aria-labelledby="explorerStreetViewHeading" hidden><div class="explorer-street-view-head"><strong id="explorerStreetViewHeading">${isZh(locale) ? '该建筑附近街景' : 'Street view near this building'}</strong><span id="explorerStreetViewMeta"></span></div><div id="explorerStreetViewCanvas" class="explorer-street-view-canvas" hidden></div><p id="explorerStreetViewStatus" aria-live="polite"></p><small>${isZh(locale) ? '附近街景，并非出租房源照片。' : 'Nearby street view, not a listing photo.'}</small></section><div id="buildingStatusBody" class="building-status-body"></div><footer class="building-status-actions"><button type="button" data-building-save>${escapeHtml(copy.save)}</button><a data-building-rent-check href="#">${escapeHtml(copy.check)} →</a><a data-building-full href="#">${escapeHtml(copy.full)} →</a></footer></section>`;
     doc.body.appendChild(overlay);
     const dialog = overlay.querySelector('.building-status-window');
     const body = overlay.querySelector('#buildingStatusBody');
+    const streetView = overlay.querySelector('#explorerStreetView');
+    const layoutQuery = windowObject.matchMedia && windowObject.matchMedia('(max-width: 860px)');
     const cache = new Map();
     const store = windowObject.KHGSavedExplorerBuildings ? windowObject.KHGSavedExplorerBuildings.createStore(windowObject.localStorage) : null;
     let current = null;
@@ -136,6 +153,17 @@
     let pendingLegalCode = '';
     let trigger = null;
     let requestId = 0;
+    let activeTabIndex = 0;
+
+    function syncLayout() {
+      const mobile = Boolean(layoutQuery && layoutQuery.matches);
+      const tabs = overlay.querySelector('.building-window-tabs');
+      if (tabs) tabs.hidden = !mobile;
+      overlay.querySelectorAll('[data-building-panel]').forEach((panel, panelIndex) => {
+        panel.hidden = mobile && panelIndex !== activeTabIndex;
+      });
+    }
+    if (layoutQuery && typeof layoutQuery.addEventListener === 'function') layoutQuery.addEventListener('change', syncLayout);
 
     function close() {
       if (overlay.hidden) return;
@@ -144,9 +172,9 @@
       if (trigger && typeof trigger.focus === 'function') trigger.focus();
     }
     function setTab(index) {
+      activeTabIndex = Number.isInteger(Number(index)) ? Number(index) : 0;
       overlay.querySelectorAll('[data-building-tab]').forEach((button, buttonIndex) => button.setAttribute('aria-selected', String(buttonIndex === index)));
-      const mobile = windowObject.matchMedia && windowObject.matchMedia('(max-width: 860px)').matches;
-      overlay.querySelectorAll('[data-building-panel]').forEach((panel, panelIndex) => panel.hidden = mobile && panelIndex !== index);
+      syncLayout();
     }
     function updateSave() {
       const button = overlay.querySelector('[data-building-save]');
@@ -170,6 +198,7 @@
       overlay.querySelector('#buildingStatusAddress').textContent = address;
       overlay.querySelector('#buildingStatusProfile').innerHTML = profileHtml(detail.profile, copy);
       body.innerHTML = renderContent(detail, selection, locale);
+      body.querySelector('#buildingWindowPanel0').appendChild(streetView);
       overlay.querySelector('[data-building-rent-check]').href = buildRentCheckUrl(selection, detail, locale);
       setTab(selectedTab < 0 ? 0 : selectedTab);
     }
