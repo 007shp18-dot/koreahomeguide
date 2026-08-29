@@ -1,14 +1,16 @@
 const LOCATIONS = require('../location-catalog.js');
 
 const SEOUL_DISTRICTS = Object.freeze(Object.fromEntries(
-  Object.entries(LOCATIONS.DISTRICTS).map(([code, record]) => [code, record.en])
+  Object.entries(LOCATIONS.RENT_CHECK_DISTRICTS).map(([code, record]) => [code, record.en])
 ));
 
 const RENT_CHECK_DISTRICTS = Object.freeze(Object.fromEntries(
   Object.entries(LOCATIONS.RENT_CHECK_DISTRICTS).map(([code, record]) => [code, record.en])
 ));
 
-const SEOUL_MARKET_DISTRICTS = RENT_CHECK_DISTRICTS;
+const SEOUL_MARKET_DISTRICTS = Object.freeze(Object.fromEntries(
+  Object.entries(LOCATIONS.DISTRICTS).map(([code, record]) => [code, record.en])
+));
 
 const SEOUL_DISTRICT_SLUGS = Object.freeze(Object.fromEntries(
   Object.entries(LOCATIONS.RENT_CHECK_DISTRICTS).map(([code, record]) => [record.slug, code])

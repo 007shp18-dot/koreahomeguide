@@ -23,12 +23,17 @@
 
   let map = null;
   let markers = [];
+  let districtLabels = [];
+  let districtRows = new Map();
+  let districtGeometryReady = false;
+  let districtGeometryPromise = null;
+  let activeDistrictMetric = 'adjusted-per-sqm';
   let latest = { lawdCd:'11680', locale:zh ? 'zh-CN' : 'en', dongs:[] };
   let latestBuildings = [];
   let latestBuildingTotal = 0;
   let latestBuildingAttemptedCount = 0;
   let latestBuildingDetail = null;
-  let markerScope = 'neighborhood';
+  let markerScope = 'district';
   let started = false;
   let selectedMarkerId = '';
   let latestModels = [];
@@ -111,6 +116,104 @@
     markers = [];
   }
 
+  function clearDistrictLabels() {
+    districtLabels.forEach(entry => {
+      if (entry.advanced) entry.marker.map = null;
+      else entry.marker.setMap(null);
+    });
+    districtLabels = [];
+  }
+
+  function districtMetricText(row) {
+    const value = window.KHGExplorerDistrictMap && KHGExplorerDistrictMap.metricValue(row, activeDistrictMetric);
+    if (value == null) return '—';
+    if (activeDistrictMetric === 'adjusted-per-sqm') return `₩${Math.round(value / 1000)}k/㎡`;
+    if (value >= 1000000) return `₩${(value / 1000000).toFixed(value >= 10000000 ? 0 : 1)}M`;
+    return `₩${Math.round(value / 1000)}k`;
+  }
+
+  function districtFeatureCenter(feature) {
+    if (!feature || !feature.getGeometry || !window.google) return null;
+    const bounds = new google.maps.LatLngBounds();
+    feature.getGeometry().forEachLatLng(point => bounds.extend(point));
+    const center = bounds.getCenter();
+    return center ? { lat:center.lat(), lng:center.lng() } : null;
+  }
+
+  function dispatchDistrictSelection(districtCode) {
+    if (!districtCode) return;
+    window.dispatchEvent(new CustomEvent('khg:map-select-district', { detail:{ districtCode } }));
+  }
+
+  function createDistrictLabel(feature, row) {
+    const position = districtFeatureCenter(feature);
+    if (!position || !row) return null;
+    const districtCode = String(row.districtCode || '');
+    const title = `${row.districtName || districtCode} · ${districtMetricText(row)}`;
+    if (useAdvancedMarkers) {
+      const badge = document.createElement('button');
+      badge.type = 'button';
+      badge.className = 'explorer-district-label';
+      badge.innerHTML = `<strong>${row.districtName || districtCode}</strong><span>${districtMetricText(row)}</span>`;
+      const marker = new google.maps.marker.AdvancedMarkerElement({ map, position, title, zIndex:2, gmpClickable:true });
+      marker.append(badge);
+      marker.addEventListener('gmp-click', () => dispatchDistrictSelection(districtCode));
+      return { marker, advanced:true };
+    }
+    const marker = new google.maps.Marker({
+      map, position, title, zIndex:2,
+      icon:{ path:google.maps.SymbolPath.CIRCLE, scale:0 },
+      label:{ text:districtMetricText(row), color:'#152017', fontSize:'11px', fontWeight:'800' }
+    });
+    marker.addListener('click', () => dispatchDistrictSelection(districtCode));
+    return { marker, advanced:false };
+  }
+
+  function districtFill(feature) {
+    const code = window.KHGExplorerDistrictMap ? KHGExplorerDistrictMap.featureDistrictCode(feature) : '';
+    const row = districtRows.get(code);
+    const range = window.KHGExplorerDistrictMap ? KHGExplorerDistrictMap.metricRange([...districtRows.values()], activeDistrictMetric) : { min:0, max:1 };
+    const index = window.KHGExplorerDistrictMap ? KHGExplorerDistrictMap.rampIndex(KHGExplorerDistrictMap.metricValue(row, activeDistrictMetric), range) : -1;
+    const colors = ['#e9f3e8','#cfe4cd','#a8cda7','#75ad78','#3e7f4a'];
+    return index < 0 ? '#dfe4df' : colors[index];
+  }
+
+  function renderDistrictLayer() {
+    if (!map || !map.data) return;
+    clearMarkers();
+    clearDistrictLabels();
+    map.data.setStyle(feature => ({
+      fillColor:districtFill(feature), fillOpacity:.76,
+      strokeColor:'#ffffff', strokeOpacity:.94, strokeWeight:1.4,
+      clickable:markerScope === 'district', visible:markerScope === 'district'
+    }));
+    if (markerScope !== 'district' || !districtGeometryReady) return;
+    map.data.forEach(feature => {
+      const code = KHGExplorerDistrictMap.featureDistrictCode(feature);
+      const entry = createDistrictLabel(feature, districtRows.get(code));
+      if (entry) districtLabels.push(entry);
+    });
+    status.textContent = zh ? '地图显示首尔 25 个行政区。' : 'Showing all 25 Seoul districts.';
+  }
+
+  function loadDistrictGeometry() {
+    if (!map || !map.data) return Promise.resolve();
+    if (districtGeometryPromise) return districtGeometryPromise;
+    districtGeometryPromise = fetch('/data/seoul-districts.geojson', { headers:{ Accept:'application/geo+json,application/json' } })
+      .then(response => {
+        if (!response.ok) throw new Error('District geometry unavailable');
+        return response.json();
+      })
+      .then(geojson => {
+        map.data.addGeoJson(geojson);
+        districtGeometryReady = true;
+        map.data.addListener('click', event => dispatchDistrictSelection(KHGExplorerDistrictMap.featureDistrictCode(event.feature)));
+        renderDistrictLayer();
+      })
+      .catch(() => { status.textContent = copy.unavailable; });
+    return districtGeometryPromise;
+  }
+
   function markerIcon(model, selected) {
     return {
       path:google.maps.SymbolPath.CIRCLE,
@@ -180,6 +283,12 @@
 
   function renderMarkers({ fitViewport = true } = {}) {
     if (!map || !window.KHGMapController) return;
+    if (markerScope === 'district') {
+      void loadDistrictGeometry().then(renderDistrictLayer);
+      return;
+    }
+    if (map.data) map.data.setStyle({ visible:false });
+    clearDistrictLabels();
     clearMarkers();
     const layerContext = KHGMapController.mapLayerContext(latest, latestBuildingDetail, markerScope);
     const models = markerScope === 'building'
@@ -390,7 +499,7 @@
     const hasProductionMapId = Boolean(configuredMapId && configuredMapId !== 'DEMO_MAP_ID');
     map = new google.maps.Map(canvas, {
       center,
-      zoom:12,
+      zoom:11,
       streetViewControl:false,
       fullscreenControl:false,
       mapTypeControl:false,
@@ -408,6 +517,7 @@
         renderMarkers({ fitViewport:false });
       });
     }
+    void loadDistrictGeometry();
     renderMarkers();
   }
 
@@ -458,6 +568,24 @@
     if (backButton) backButton.hidden = true;
     if (searchAreaButton) searchAreaButton.hidden = true;
     renderMarkers();
+  });
+  window.addEventListener('khg:explorer-districts', event => {
+    const detail = event.detail || {};
+    latest = { ...latest, ...detail };
+    activeDistrictMetric = String(detail.metric || activeDistrictMetric);
+    districtRows = new Map((Array.isArray(detail.districts) ? detail.districts : []).map(row => [String(row.districtCode || ''), KHGExplorerDistrictMap.normalizeDistrict(row)]));
+    buildingLayerRequestId += 1;
+    markerScope = 'district';
+    latestBuildings = [];
+    latestBuildingDetail = null;
+    selectedMarkerId = '';
+    if (backButton) backButton.hidden = true;
+    if (searchAreaButton) searchAreaButton.hidden = true;
+    renderMarkers();
+  });
+  window.addEventListener('khg:map-metric-change', event => {
+    activeDistrictMetric = String(event.detail && event.detail.metric || 'adjusted-per-sqm');
+    if (markerScope === 'district') renderDistrictLayer();
   });
   window.addEventListener('khg:explorer-buildings', event => { void showBuildingLayer(event.detail || {}); });
   async function publishBuildingWindowLocation(selection) {

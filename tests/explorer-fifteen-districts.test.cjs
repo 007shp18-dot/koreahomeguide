@@ -11,15 +11,19 @@ function read(relativePath) {
 
 const EXPLORER_CODES = Object.freeze([
   '11680','11440','11170','11200','11560','11620','11230','11410','11290','11215',
-  '11650','11710','11740','11110','11140'
+  '11110','11140','11260','11305','11320','11350','11380','11470','11500','11530',
+  '11545','11590','11650','11710','11740'
 ]);
-const CATALOG_CODES = Object.freeze([...EXPLORER_CODES].sort());
+const CATALOG_CODES = Object.freeze([
+  '11110','11140','11170','11200','11215','11230','11290','11410','11440','11560',
+  '11620','11650','11680','11710','11740'
+]);
 
 test('Explorer catalog exposes the approved fifteen districts in a stable order', () => {
   assert.deepEqual(Object.keys(catalog.DISTRICTS), CATALOG_CODES);
 });
 
-test('EN and ZH Explorer selectors expose the same fifteen localized districts before All Seoul', () => {
+test('EN and ZH Explorer selectors expose all 25 localized districts before All Seoul', () => {
   for (const [file, expectedLabel] of [
     ['explore/index.html', 'Songpa-gu (송파구)'],
     ['zh/explore/index.html', '松坡区（송파구）']

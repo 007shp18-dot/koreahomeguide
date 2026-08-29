@@ -20,7 +20,7 @@
   <script defer src="/privacy-consent.js"></script><script defer src="/mobile-navigation.js"></script>
   <script defer src="/acquisition-context.js"></script>
   <script defer src="/acquisition-links.js"></script>
-  <link rel="stylesheet" href="/styles.css?v=25">
+  <link rel="stylesheet" href="/styles.css?v=30">
 </head>
 <body class="core-ui">
   <header class="compact-header">
@@ -41,7 +41,7 @@
     </section>
 
     <section class="explorer-search-card" aria-label="Explore Seoul rent data">
-      <label class="field explorer-area-field"><span>Area</span><select id="exploreArea"><option value="11680">Gangnam-gu (강남구)</option><option value="11440">Mapo-gu (마포구)</option><option value="11170">Yongsan-gu (용산구)</option><option value="11200">Seongdong-gu (성동구)</option><option value="11560">Yeongdeungpo-gu (영등포구)</option><option value="11620">Gwanak-gu (관악구)</option><option value="11230">Dongdaemun-gu (동대문구)</option><option value="11410">Seodaemun-gu (서대문구)</option><option value="11290">Seongbuk-gu (성북구)</option><option value="11215">Gwangjin-gu (광진구)</option><option value="11650">Seocho-gu (서초구)</option><option value="11710">Songpa-gu (송파구)</option><option value="11740">Gangdong-gu (강동구)</option><option value="11110">Jongno-gu (종로구)</option><option value="11140">Jung-gu (중구)</option><option value="all">All supported Seoul</option></select></label>
+      <label class="field explorer-area-field"><span>Area</span><select id="exploreArea"><option value="11680">Gangnam-gu (강남구)</option><option value="11440">Mapo-gu (마포구)</option><option value="11170">Yongsan-gu (용산구)</option><option value="11200">Seongdong-gu (성동구)</option><option value="11560">Yeongdeungpo-gu (영등포구)</option><option value="11620">Gwanak-gu (관악구)</option><option value="11230">Dongdaemun-gu (동대문구)</option><option value="11410">Seodaemun-gu (서대문구)</option><option value="11290">Seongbuk-gu (성북구)</option><option value="11215">Gwangjin-gu (광진구)</option><option value="11110">Jongno-gu (종로구)</option><option value="11140">Jung-gu (중구)</option><option value="11260">Jungnang-gu (중랑구)</option><option value="11305">Gangbuk-gu (강북구)</option><option value="11320">Dobong-gu (도봉구)</option><option value="11350">Nowon-gu (노원구)</option><option value="11380">Eunpyeong-gu (은평구)</option><option value="11470">Yangcheon-gu (양천구)</option><option value="11500">Gangseo-gu (강서구)</option><option value="11530">Guro-gu (구로구)</option><option value="11545">Geumcheon-gu (금천구)</option><option value="11590">Dongjak-gu (동작구)</option><option value="11650">Seocho-gu (서초구)</option><option value="11710">Songpa-gu (송파구)</option><option value="11740">Gangdong-gu (강동구)</option><option value="all">All Seoul</option></select></label>
       <label class="field explorer-type-field"><span>Housing type</span><select id="exploreType" class="selection-native"><option value="officetel">Officetel (오피스텔)</option><option value="apartment">Apartment (아파트)</option><option value="villa">Villa / low-rise multifamily (연립·다세대)</option><option value="detached">Detached / multi-unit housing (단독·다가구)</option></select><small class="property-type-hint" data-property-type-guide data-for="exploreType" data-locale="en"></small></label>
       <label class="field explorer-budget-field"><span>Monthly rent budget</span><select id="exploreMaxRent"><option value="">Any rent</option><option value="800000">Up to ₩800K</option><option value="1200000">Up to ₩1.2M</option><option value="1800000">Up to ₩1.8M</option><option value="2500000">Up to ₩2.5M</option></select></label>
       <button id="exploreButton" class="search-button" type="button">Compare neighborhoods</button>
@@ -50,7 +50,7 @@
     </section>
 
 
-    <div id="explorerResultsShell" class="explorer-map-layout map-first-workspace" hidden>
+    <div id="explorerResultsShell" class="explorer-map-layout map-first-workspace" data-workspace-state="districts" hidden>
       <aside class="explorer-map-column" aria-label="Neighborhood map">
         <section class="explorer-map-card">
           <div class="explorer-map-commandbar">
@@ -68,6 +68,11 @@
           </div>
           <div class="explorer-map-surface">
             <div id="explorerMap" class="explorer-map-canvas" role="region" aria-label="Map of selected Seoul neighborhoods"></div>
+            <div class="explorer-map-segments" aria-label="Map controls">
+              <div class="kg-segmented" role="group" aria-label="Housing type"><button type="button" data-map-housing="officetel" aria-pressed="true">Officetel</button><button type="button" data-map-housing="apartment" aria-pressed="false">Apartment</button><button type="button" data-map-housing="villa" aria-pressed="false">Villa</button></div>
+              <div class="kg-segmented" role="group" aria-label="Metric shown"><button type="button" data-map-metric="adjusted-per-sqm" aria-pressed="true">Adjusted /㎡</button><button type="button" data-map-metric="monthly" aria-pressed="false">Monthly</button><button type="button" data-map-metric="deposit" aria-pressed="false">Deposit</button></div>
+            </div>
+            <div class="kg-map-legend" aria-live="polite"><strong data-map-legend-title>Deposit-adjusted monthly cost per ㎡</strong><div data-map-legend-ramp><i></i><i></i><i></i><i></i><i></i></div><small data-map-legend-method>District colors use the latest 3 completed months. Monthly rent + deposit × 5% ÷ 12, divided by floor area.</small></div>
             <button id="explorerSearchArea" class="explorer-search-area" type="button" hidden>Search this area</button>
             <p id="explorerMapStatus" class="explorer-map-status" aria-live="polite">Map loads when it enters view.</p>
             <section id="explorerMapSelection" class="explorer-map-selection" aria-live="polite" hidden>
@@ -93,6 +98,11 @@
         <span id="explorerDataThrough" class="explorer-data-through">Latest completed months</span>
       </div>
       <div id="explorerStatus" class="market-status">Loading official rental transactions…</div>
+
+      <section class="district-section">
+        <div class="building-section-head"><div><span class="eyebrow">SEOUL DISTRICTS</span><h2>Choose a district</h2></div><small>Price color uses the metric selected on the map</small></div>
+        <div id="districtList" class="district-list"><div class="explorer-empty">Loading all 25 districts…</div></div>
+      </section>
 
       <div class="explorer-metrics">
         <div><span>Median monthly rent</span><strong id="metricRent">—</strong><small>Monthly-rent contracts only</small></div>
@@ -122,8 +132,6 @@
         <div class="ad-slot" data-slot="sidebar" aria-hidden="true"></div>
       </aside>
     </div>
-    <section id="explorerBuildingDetailMount" class="explorer-building-detail-mount" aria-live="polite" hidden></section>
-
     <section class="explorer-static-directory" aria-labelledby="neighborhoodDirectoryEn"><div><span class="eyebrow">BROWSE BY NEIGHBORHOOD</span><h2 id="neighborhoodDirectoryEn">Seoul neighborhood rent guides</h2><p>Browse recent official transactions without loading the map.</p></div><div class="explorer-static-directory-grid"><div><h3>Yongsan-gu (용산구)</h3><a href="/seoul/yongsan-gu/itaewon-dong/officetel/">Itaewon-dong (이태원동)</a><a href="/seoul/yongsan-gu/hannam-dong/officetel/">Hannam-dong (한남동)</a><a href="/seoul/yongsan-gu/huam-dong/officetel/">Huam-dong (후암동)</a><a href="/seoul/yongsan-gu/bogwang-dong/officetel/">Bogwang-dong (보광동)</a></div><div><h3>Seongdong-gu (성동구)</h3><a href="/seoul/seongdong-gu/seongsu-dong-1-ga/officetel/">Seongsu-dong 1-ga (성수동1가)</a><a href="/seoul/seongdong-gu/seongsu-dong-2-ga/officetel/">Seongsu-dong 2-ga (성수동2가)</a><a href="/seoul/seongdong-gu/oksu-dong/officetel/">Oksu-dong (옥수동)</a><a href="/seoul/seongdong-gu/geumho-dong-1-ga/officetel/">Geumho-dong 1-ga (금호동1가)</a><a href="/seoul/seongdong-gu/geumho-dong-2-ga/officetel/">Geumho-dong 2-ga (금호동2가)</a><a href="/seoul/seongdong-gu/geumho-dong-3-ga/officetel/">Geumho-dong 3-ga (금호동3가)</a><a href="/seoul/seongdong-gu/geumho-dong-4-ga/officetel/">Geumho-dong 4-ga (금호동4가)</a></div><div><h3>Mapo-gu (마포구)</h3><a href="/seoul/mapo-gu/yeonnam-dong/officetel/">Yeonnam-dong (연남동)</a><a href="/seoul/mapo-gu/seogyo-dong/officetel/">Seogyo-dong (서교동)</a><a href="/seoul/mapo-gu/mangwon-dong/officetel/">Mangwon-dong (망원동)</a><a href="/seoul/mapo-gu/hapjeong-dong/officetel/">Hapjeong-dong (합정동)</a><a href="/seoul/mapo-gu/gongdeok-dong/officetel/">Gongdeok-dong (공덕동)</a><a href="/seoul/mapo-gu/ahyeon-dong/officetel/">Ahyeon-dong (아현동)</a></div><div><h3>Yeongdeungpo-gu (영등포구)</h3><a href="/seoul/yeongdeungpo-gu/yeouido-dong/officetel/">Yeouido-dong (여의도동)</a><a href="/seoul/yeongdeungpo-gu/dangsan-dong/officetel/">Dangsan-dong (당산동)</a><a href="/seoul/yeongdeungpo-gu/mullae-dong/officetel/">Mullae-dong (문래동)</a><a href="/seoul/yeongdeungpo-gu/yeongdeungpo-dong/officetel/">Yeongdeungpo-dong (영등포동)</a></div><div><h3>Gangnam-gu (강남구)</h3><a href="/seoul/gangnam-gu/yeoksam-dong/officetel/">Yeoksam-dong (역삼동)</a><a href="/seoul/gangnam-gu/nonhyeon-dong/officetel/">Nonhyeon-dong (논현동)</a><a href="/seoul/gangnam-gu/daechi-dong/officetel/">Daechi-dong (대치동)</a><a href="/seoul/gangnam-gu/samseong-dong/officetel/">Samseong-dong (삼성동)</a><a href="/seoul/gangnam-gu/cheongdam-dong/officetel/">Cheongdam-dong (청담동)</a></div></div></section>
     <section class="explorer-next-step">
       <div><span class="eyebrow">NEXT STEP</span><h2>Check a specific rental offer.</h2><p>Rent Check compares its deposit, monthly rent, size, and housing type with recent official contracts.</p></div>
@@ -139,15 +147,16 @@
   <script src="/location-catalog.js"></script>
   <script src="/property-type-guide.js"></script>
   <script src="/district-combobox.js"></script>
-  <script src="/explore/explorer-utils.js?v=25"></script>
+  <script src="/explore/explorer-utils.js?v=30"></script>
   <script src="/explore/map-locations.js"></script>
   <script src="/explore/map-viewport.js"></script>
   <script src="/explore/map-controller.js?v=21"></script>
   <script src="/product-analytics.js"></script>
   <script src="/explore/saved-buildings.js"></script>
-  <script src="/explore/building-window.js?v=25"></script>
-  <script src="/explore/panorama.js?v=25"></script>
-  <script src="/explore/map.js?v=21"></script>
-  <script defer src="/explore/app.js?v=25"></script>
+  <script src="/explore/building-window.js?v=30"></script>
+  <script src="/explore/panorama.js?v=30"></script>
+  <script src="/explore/district-map.js?v=30"></script>
+  <script src="/explore/map.js?v=30"></script>
+  <script defer src="/explore/app.js?v=30"></script>
 </body>
 </html>

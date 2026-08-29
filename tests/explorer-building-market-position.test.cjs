@@ -2,6 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const { buildBuildingMarketPosition, buildBuildingDetail } = require('../providers/provider-utils.cjs');
 const { parseItems } = require('../lib/real-price-core.cjs');
+const { renderContent } = require('../explore/building-window.js');
 
 function rentRow({ building, dong = '역삼동', area = 40, deposit = 1000, rent, date = '2026-07-10', type = 'officetel' }) {
   return { building, buildingName:building, dong, area, deposit, monthlyRent:rent, contractDate:date, type };
@@ -103,6 +104,21 @@ test('building detail exposes the market position additively', () => {
   });
   assert.equal(detail.marketPosition.buildingRepresentative.contractCount, 3);
   assert.equal(detail.profile.status, 'unavailable');
+});
+
+test('building comparison labels both operands and discloses the adjusted-cost basis', () => {
+  const html = renderContent({
+    profile:{ status:'unavailable' }, recentTransactions:[],
+    marketPosition:{
+      buildingRepresentative:{ depositWon:10_000_000, monthlyRentWon:1_000_000, areaSqm:40, adjustedPerSqmWon:26_042, contractCount:3 },
+      dong:{ status:'sufficient', percentile:.6, comparableCount:18, buildingCount:6, medianAdjustedPerSqmWon:24_000 },
+      district:{ status:'sufficient', percentile:.4, comparableCount:30, buildingCount:10, medianAdjustedPerSqmWon:28_000 }
+    }
+  }, { districtCode:'11680', propertyType:'officetel', buildingKey:'역삼동::테스트' }, 'en');
+  assert.match(html, /<dt>This building<\/dt><dd>₩26,042\/㎡<\/dd>/);
+  assert.match(html, /<dt>Neighborhood median<\/dt><dd>₩24,000\/㎡<\/dd>/);
+  assert.match(html, /<dt>District median<\/dt><dd>₩28,000\/㎡<\/dd>/);
+  assert.doesNotMatch(html, /monthlyRentWon\s*\//);
 });
 
 test('rental parser preserves floor and legal-region identifiers for exact profile matching', () => {
