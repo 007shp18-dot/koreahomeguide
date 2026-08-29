@@ -54,7 +54,7 @@
     const rect = element && typeof element.getBoundingClientRect === 'function'
       ? element.getBoundingClientRect()
       : null;
-    const measuredWidth = Number(rect && rect.width) || Number(element && element.clientWidth);
+    const measuredWidth = Number(element && element.clientWidth) || Number(rect && rect.width);
     const width = Math.max(240, Math.round(Number.isFinite(measuredWidth) && measuredWidth > 0 ? measuredWidth : 320));
     return Object.freeze({ width, height:Math.round(width * 9 / 16) });
   }
@@ -174,6 +174,7 @@
     let panorama = null;
     let configPromise = null;
     let frameObserver = null;
+    let lastPanoramaSize = '';
 
     function disconnectFrameObserver() {
       if (frameObserver && typeof frameObserver.disconnect === 'function') frameObserver.disconnect();
@@ -183,6 +184,9 @@
     function syncPanoramaSize() {
       if (!panorama || typeof panorama.setSize !== 'function') return;
       const size = panoramaFrameSize(frame);
+      const signature = `${size.width}x${size.height}`;
+      if (signature === lastPanoramaSize) return;
+      lastPanoramaSize = signature;
       panorama.setSize(new windowObject.naver.maps.Size(size.width, size.height));
     }
 
@@ -198,6 +202,7 @@
       disconnectFrameObserver();
       if (panorama && typeof panorama.setVisible === 'function') panorama.setVisible(false);
       panorama = null;
+      lastPanoramaSize = '';
       canvas.replaceChildren();
       canvas.hidden = true;
       meta.textContent = '';

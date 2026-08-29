@@ -42,6 +42,7 @@ let currentData = null;
 let currentDong = '';
 let currentBuildingKey = '';
 let currentMapSelection = null;
+let neighborhoodSelectionState = KHGExplorer.neighborhoodSelectionTransition(null);
 let currentVisibleDongs = null;
 let currentVisibleBuildingKeys = null;
 const explorerAnalytics = window.KHGProductAnalytics
@@ -161,6 +162,7 @@ function highlightMapCard(dong) {
 
 function clearMapSelection() {
   currentMapSelection = null;
+  neighborhoodSelectionState = KHGExplorer.neighborhoodSelectionTransition(null);
   if (mapSelection) mapSelection.hidden = true;
   highlightMapCard('');
   window.dispatchEvent(new CustomEvent('khg:map-clear-selection'));
@@ -221,7 +223,7 @@ function renderMapSelection(model) {
       const detailLang = KHGExplorer.supportsZhIndexing(model.districtCode) ? 'zh' : 'en';
       mapSelectionDetail.href = KHGExplorer.buildDongSeoUrl({ lawdCd:model.districtCode, type:model.propertyType, dong:model.dong, lang:detailLang }) ||
         KHGExplorer.buildExplorerDongUrl({ lawdCd:model.districtCode, type:model.propertyType, dong:model.dong, lang:'zh' });
-      mapSelectionDetail.textContent = '查看街区详情 →';
+      mapSelectionDetail.textContent = '在地图上查看建筑 →';
     }
   }
   mapSelection.hidden = false;
@@ -498,8 +500,19 @@ window.addEventListener('khg:map-select-dong', event => {
   const dong = String(event.detail && event.detail.dong || '');
   const model = event.detail && event.detail.model;
   if (!dong || !model) return;
+  neighborhoodSelectionState = KHGExplorer.neighborhoodSelectionTransition(neighborhoodSelectionState, { type:'select', model });
+  if (neighborhoodSelectionState.phase !== 'preview') return;
   highlightMapCard(model.dong);
   renderMapSelection(model);
+});
+if (mapSelectionDetail) mapSelectionDetail.addEventListener('click', event => {
+  if (!currentMapSelection || currentMapSelection.kind !== 'neighborhood') return;
+  const transition = KHGExplorer.neighborhoodSelectionTransition(neighborhoodSelectionState, { type:'activate' });
+  if (transition.phase !== 'activate') return;
+  event.preventDefault();
+  const model = transition.model;
+  const dong = String(model.dong || '');
+  clearMapSelection();
   const snapshot = areaSelect.value !== 'all' && KHGExplorer.areaSnapshotForDong(currentAreaData, dong);
   if (snapshot) {
     renderSummary(snapshot, dong);

@@ -28,7 +28,7 @@ for (const entry of [
       assert.match(html, new RegExp(`data-rent-check-cta="${id}"`));
     }
     const appPath = entry.app === 'explore/app.js' ? '/explore/app.js' : '/zh/explore/app.js';
-    assert.match(html, new RegExp(`<script defer src="${appPath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"></script>`));
+    assert.match(html, new RegExp(`<script defer src="${appPath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?:\\?v=\\d+)?"></script>`));
     assert.ok(html.indexOf('/acquisition-links.js') < html.indexOf(appPath));
   });
 

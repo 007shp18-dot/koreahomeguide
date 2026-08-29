@@ -85,9 +85,9 @@ test('both Explorer locales merge map title actions and legend into one command 
 test('both Explorer locales version the drawer, Panorama and workspace CSS assets', () => {
   for (const file of ['explore/index.html', 'zh/explore/index.html']) {
     const html = fs.readFileSync(file, 'utf8');
-    assert.match(html, /styles\.css\?v=20/, file);
+    assert.match(html, /styles\.css\?v=21/, file);
     assert.match(html, /building-window\.js\?v=19/, file);
-    assert.match(html, /panorama\.js\?v=19/, file);
+    assert.match(html, /panorama\.js\?v=20/, file);
   }
 });
 

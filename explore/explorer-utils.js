@@ -191,6 +191,19 @@
     return String(buildingKey || '').trim() ? 'building-detail' : 'buildings';
   }
 
+  function neighborhoodSelectionTransition(state, action = {}) {
+    if (action.type === 'select') {
+      const model = action.model;
+      if (model && model.kind === 'neighborhood' && normalizeSegment(model.dong)) {
+        return Object.freeze({ phase:'preview', model });
+      }
+    }
+    if (action.type === 'activate' && state && state.phase === 'preview' && state.model) {
+      return Object.freeze({ phase:'activate', model:state.model });
+    }
+    return Object.freeze({ phase:'idle', model:null });
+  }
+
   function sortBuildings(items, mode = 'evidence') {
     const source = Array.isArray(items) ? [...items] : [];
     const finite = value => value != null && String(value).trim() !== '' && Number.isFinite(Number(value)) ? Number(value) : null;
@@ -236,6 +249,7 @@
     supportsZhIndexing,
     initialViewForWidth,
     workspaceState,
+    neighborhoodSelectionTransition,
     sortBuildings,
     buildLabeledTableRow,
     stableSuffix

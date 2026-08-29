@@ -21,7 +21,7 @@ test('Chinese explorer uses Chinese UI scripts and links building details inside
   const explorer = read('zh/explore/index.html');
   const app = read('zh/explore/app.js');
   const buildingWindow = read('explore/building-window.js');
-  assert.match(explorer, /src="\/zh\/explore\/app\.js"/);
+  assert.match(explorer, /src="\/zh\/explore\/app\.js(?:\?v=\d+)?"/);
   assert.match(buildingWindow, /\/explore\/building\/\?\$\{params\.toString\(\)\}/);
   assert.match(buildingWindow, /isZh\(locale\) \? '\/zh' : ''/);
   assert.match(app, /查看建筑/);

@@ -262,3 +262,58 @@ test('successful panorama result synchronizes size and faces the building', asyn
   assert.equal(panoramaInstance.povCalls.at(-1).fov, 90);
   assert.equal(classNames.has('has-street-view'), true);
 });
+
+test('panorama resize synchronization never feeds a bordered frame width back into itself', async () => {
+  let canvasWidth = 420;
+  const nodes = new Map();
+  const node = extra => ({ hidden:false, dataset:{}, textContent:'', replaceChildren() {}, ...extra });
+  const frame = node({
+    get clientWidth() { return canvasWidth; },
+    clientHeight:0,
+    getBoundingClientRect() { return { width:canvasWidth + 2, height:(canvasWidth + 2) * 9 / 16 }; }
+  });
+  nodes.set('#explorerStreetView', node());
+  nodes.set('#explorerStreetViewFrame', frame);
+  nodes.set('#explorerStreetViewCanvas', node({ hidden:true }));
+  nodes.set('#explorerStreetViewStatus', node());
+  nodes.set('#explorerStreetViewMeta', node());
+
+  let resizeCallback = null;
+  let panoramaInstance = null;
+  const listeners = {};
+  function Panorama(_canvas, options) {
+    this.options = options;
+    this.sizeCalls = [];
+    this.setSize = size => { this.sizeCalls.push(size); canvasWidth = size.width; };
+    this.setPov = () => {};
+    this.setVisible = () => {};
+    this.getLocation = () => ({ coord:{ lat:() => 37.5, lng:() => 127 }, photodate:'2026.07' });
+    panoramaInstance = this;
+  }
+  const windowObject = {
+    document:{ documentElement:{ lang:'en' }, querySelector:selector => nodes.get(selector) || null },
+    naver:{ maps:{
+      Panorama,
+      LatLng:function LatLng(lat, lng) { this.lat = lat; this.lng = lng; },
+      Size:function Size(width, height) { this.width = width; this.height = height; },
+      Event:{ addListener(_target, type, handler) { listeners[type] = handler; } }
+    } },
+    ResizeObserver:function ResizeObserver(callback) {
+      resizeCallback = callback;
+      this.observe = () => {};
+      this.disconnect = () => {};
+    },
+    fetch:async () => ({ ok:true, json:async () => ({ naverKeyId:'key' }) }),
+    addEventListener() {}, dispatchEvent() {}, requestAnimationFrame:callback => callback(), setTimeout, clearTimeout
+  };
+
+  const controller = panorama.install(windowObject);
+  await controller.show({ kind:'building', lat:37.501, lng:127, districtCode:'11680', propertyType:'apartment' });
+  listeners.pano_status('OK');
+  resizeCallback();
+  resizeCallback();
+  resizeCallback();
+
+  assert.deepEqual(panoramaInstance.sizeCalls.map(size => size.width), [420]);
+  assert.equal(canvasWidth, 420);
+});
