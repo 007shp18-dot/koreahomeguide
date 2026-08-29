@@ -8,7 +8,10 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function(acquisitionContext) {
   const AREAS = new Set([
     '11680','11200','11440','11170','11560',
-    '11620','11230','11410','11290','11215'
+    '11620','11230','11410','11290','11215',
+    '11110','11140','11260','11305','11320',
+    '11350','11380','11470','11500','11530',
+    '11545','11590','11650','11710','11740'
   ]);
   const TYPES = new Set(['apartment','officetel','villa','detached','studio']);
   const validatedEntrySource = acquisitionContext && acquisitionContext.validatedEntrySource
