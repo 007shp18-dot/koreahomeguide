@@ -7,8 +7,8 @@ const {
   ZH_INDEXABLE_DISTRICT_CODES,
   supportsZhIndexing
 } = require('../providers/seoul-config.cjs');
-const { buildDongSeoUrl } = require('../seo/seo-route-utils.cjs');
-const { ORIGIN } = require('../seo/seo-page-renderer.cjs');
+const { buildDongSeoUrl, buildBuildingSeoUrl } = require('../seo/seo-route-utils.cjs');
+const { ORIGIN, isBuildingIndexable } = require('../seo/seo-page-renderer.cjs');
 const { MIN_DONG_CONTRACTS, isDongIndexable } = require('../seo/dong-seo-v10-8.cjs');
 
 function xmlEscape(value) {
@@ -35,6 +35,24 @@ function sendXml(res, status, body, cache = false) {
   return res.status(status).send(body);
 }
 
+// Buildings cost no extra upstream request here. The provider caches the
+// district's six months of contracts under one key and every method reads it,
+// so getDongs has already paid for the fetch and getBuildings({ dong:'' }) is a
+// second aggregation over the same rows — one pass for the whole district.
+//
+// It is still allowed to fail on its own: the Dong URLs are the established
+// surface and must not be lost along with the new building ones.
+async function publishableBuildings(provider, { areaCode, propertyType, publishedDongs }) {
+  try {
+    const buildings = await provider.getBuildings({ areaCode, propertyType, dong:'', months:6 });
+    return (Array.isArray(buildings) ? buildings : []).filter(item =>
+      item && publishedDongs.has(item.dong) && isBuildingIndexable(item));
+  } catch (error) {
+    logApiError('sitemap-market:buildings', error, { lawdCd:areaCode, type:propertyType });
+    return [];
+  }
+}
+
 function createHandler({
   providerFactory = options => createKoreaHousingProvider(options),
   referenceDate = null
@@ -55,12 +73,25 @@ function createHandler({
 
       const eligibleDongs = (Array.isArray(dongs) ? dongs : [])
         .filter(item => item && item.dong && isDongIndexable(item));
+      const publishedDongs = new Set(eligibleDongs.map(item => item.dong));
+      const zh = supportsZhIndexing(areaCode);
       const urls = [];
 
       for (const item of eligibleDongs) {
         urls.push(absoluteUrl(buildDongSeoUrl({ areaCode, dong:item.dong, propertyType, lang:'en' })));
-        if (supportsZhIndexing(areaCode)) {
+        if (zh) {
           urls.push(absoluteUrl(buildDongSeoUrl({ areaCode, dong:item.dong, propertyType, lang:'zh' })));
+        }
+      }
+
+      // A building is only offered when its Dong page is offered too: the Dong
+      // page is its parent and its breadcrumb, and a building hanging under a
+      // 404 has nowhere to send a crawler next.
+      const buildings = await publishableBuildings(provider, { areaCode, propertyType, publishedDongs });
+      for (const building of buildings) {
+        urls.push(absoluteUrl(buildBuildingSeoUrl({ areaCode, dong:building.dong, propertyType, building, lang:'en' })));
+        if (zh) {
+          urls.push(absoluteUrl(buildBuildingSeoUrl({ areaCode, dong:building.dong, propertyType, building, lang:'zh' })));
         }
       }
 

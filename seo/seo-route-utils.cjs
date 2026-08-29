@@ -52,17 +52,47 @@ function stableSuffix(value) {
   return (hash >>> 0).toString(16).padStart(8, '0').slice(0, 7);
 }
 
+// Prefer a supplied English name when the source actually has one. Never
+// transliterate: an invented romanization gets brand names wrong exactly where
+// the search value sits (푸르지오 = "Prugio", not "pureujio").
+function slugSourceName(building) {
+  const korean = normalizeSegment(building && building.buildingName);
+  const english = normalizeSegment(building && building.displayBuildingNameEn);
+  if (!english || english === korean) return korean;
+  const hasLatin = /\p{Script=Latin}/u.test(english);
+  const hasHangul = /\p{Script=Hangul}/u.test(english);
+  return hasLatin && !hasHangul ? english : korean;
+}
+
 function buildingSlug(building) {
-  const name = building && building.buildingName;
+  const name = slugSourceName(building);
   const key = building && building.buildingKey;
-  if (!normalizeSegment(name) || !normalizeSegment(key)) return '';
+  if (!name || !normalizeSegment(key)) return '';
   return `${readableSlug(name)}-${stableSuffix(key)}`;
+}
+
+// The trailing suffix is the stable identity; the readable half is cosmetic.
+// Matching on the suffix keeps old links alive if the readable half ever changes.
+function suffixOfSlug(slug) {
+  const match = /-([0-9a-f]{7})$/.exec(normalizeSegment(slug).toLocaleLowerCase('en-US'));
+  return match ? match[1] : '';
+}
+
+// Same normalization resolveBuildingSlug applies, exported so a caller can ask
+// "is the slug I was given already the canonical one?" without guessing.
+function normalizeBuildingSlug(slug) {
+  return safelyDecode(slug);
 }
 
 function resolveBuildingSlug(buildings, slug) {
   const normalized = safelyDecode(slug);
   if (!normalized) return null;
-  return (Array.isArray(buildings) ? buildings : []).find(item => buildingSlug(item) === normalized) || null;
+  const list = Array.isArray(buildings) ? buildings : [];
+  const exact = list.find(item => buildingSlug(item) === normalized);
+  if (exact) return exact;
+  const suffix = suffixOfSlug(normalized);
+  if (!suffix) return null;
+  return list.find(item => stableSuffix(item && item.buildingKey) === suffix) || null;
 }
 
 function languagePrefix(lang) {
@@ -89,7 +119,10 @@ module.exports = {
   dongNameFromSlug,
   readableSlug,
   stableSuffix,
+  slugSourceName,
   buildingSlug,
+  suffixOfSlug,
+  normalizeBuildingSlug,
   resolveBuildingSlug,
   buildDongSeoUrl,
   buildBuildingSeoUrl

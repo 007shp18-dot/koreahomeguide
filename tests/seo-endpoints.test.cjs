@@ -121,24 +121,19 @@ test('Dong SEO endpoint returns 503/noindex when official data is unconfigured o
   if (old == null) delete process.env.DATA_GO_KR_SERVICE_KEY; else process.env.DATA_GO_KR_SERVICE_KEY = old;
 });
 
-test('Building SEO endpoint retires deterministic slugs with a cached noindex response', async () => {
+// The shared `building` fixture has a four-contract sample, which sits below the
+// publishing floor. It stands in here for the long tail: a real URL shape that
+// resolves to a real building the site will not publish yet.
+// Depth-based behaviour lives in tests/building-seo-publishing-floor.test.cjs.
+test('Building SEO endpoint 404s a building whose sample is too thin to publish', async () => {
   const routes = require('../seo/seo-route-utils.cjs');
   const slug = routes.buildingSlug(building);
-  let providerCalls = 0;
-  const handler = buildingApi.createHandler({
-    providerFactory:() => {
-      providerCalls += 1;
-      return provider();
-    },
-    fetchImpl:fakeFxFetch
-  });
+  const handler = buildingApi.createHandler({ providerFactory:() => provider(), fetchImpl:fakeFxFetch });
   const res = responseRecorder();
   await handler({ method:'GET', query:{ district:'mapo-gu', dong:'yeonnam-dong', type:'villa', building:slug, lang:'en' } }, res);
-  assert.equal(res.statusCode, 410);
-  assert.equal(providerCalls, 0);
-  assert.match(res.body, /content="noindex,nofollow"/);
-  assert.equal(res.headers['X-Robots-Tag'], 'noindex,nofollow');
-  assert.match(res.headers['Cache-Control'], /s-maxage=86400/);
+  assert.equal(res.statusCode, 404);
+  assert.equal(res.headers['X-Robots-Tag'], 'noindex,follow');
+  assert.match(res.body, /noindex,follow/);
 });
 
 test('Building SEO endpoint returns 404 when the building slug is missing', async () => {

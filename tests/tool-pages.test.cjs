@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const pages = [
   ['tools/seoul-rent-check/index.html','https://koreahomeguide.com/tools/seoul-rent-check/'],
   ['tools/brokerage-fee-calculator/index.html','https://koreahomeguide.com/tools/brokerage-fee-calculator/'],
+  ['tools/salary-to-housing/index.html','https://koreahomeguide.com/tools/salary-to-housing/'],
   ['zh/tools/seoul-rent-check/index.html','https://koreahomeguide.com/zh/tools/seoul-rent-check/'],
   ['zh/tools/brokerage-fee-calculator/index.html','https://koreahomeguide.com/zh/tools/brokerage-fee-calculator/']
 ];

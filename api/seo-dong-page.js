@@ -22,13 +22,6 @@ function sendHtml(res, status, html, { cache = false } = {}) {
   return res.status(status).send(html);
 }
 
-function nofollowBuildingLinks(html) {
-  return String(html || '').replace(
-    /(<a class="seo-building-link" href="[^"]+")(?![^>]*\brel=)/g,
-    '$1 rel="nofollow"'
-  );
-}
-
 function createHandler({
   providerFactory = options => createKoreaHousingProvider(options),
   fetchImpl = fetch,
@@ -77,7 +70,7 @@ function createHandler({
         propertyType,
         summary
       });
-      const html = normalizeGuideHubLinks(nofollowBuildingLinks(enhanced), lang);
+      const html = normalizeGuideHubLinks(enhanced, lang);
       return sendHtml(res, 200, html, { cache:true });
     } catch (error) {
       logApiError('seo-dong-page', error, { lawdCd:areaCode, type:propertyType });

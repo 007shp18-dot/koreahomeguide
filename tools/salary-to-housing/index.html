@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Salary to Seoul Housing | What Rent Can You Actually Afford?</title>
+<meta name="description" content="Enter a Seoul salary and the cash you have for a deposit. See which neighborhoods you can actually reach, priced from real signed contracts — and what the deposit gap costs you every month.">
+<link rel="canonical" href="https://koreahomeguide.com/tools/salary-to-housing/">
+<link rel="alternate" hreflang="en" href="https://koreahomeguide.com/tools/salary-to-housing/">
+<link rel="alternate" hreflang="x-default" href="https://koreahomeguide.com/tools/salary-to-housing/">
+<script defer src="/privacy-consent.js"></script>
+<script defer src="/mobile-navigation.js"></script>
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header class="compact-header">
+  <a class="brand" href="/"><span class="brand-mark">K</span><span>KoreaHomeGuide</span></a>
+  <nav>
+    <a href="/explore/">Explore</a>
+    <a href="/tools/seoul-rent-check/">Rent Check</a>
+    <a href="/guides/">Guides</a>
+  </nav>
+  <div class="header-actions">
+    <select id="currencySelect" class="currency-select" aria-label="Display currency">
+      <option value="KRW" selected>KRW</option>
+      <option value="USD">USD</option>
+      <option value="CNY">CNY</option>
+    </select>
+    <a class="language-link" href="/zh/">中文</a>
+  </div>
+</header>
+
+<main class="page-shell">
+  <section class="tool-hero">
+    <span class="eyebrow">SALARY TO SEOUL HOUSING</span>
+    <h1>Your deposit decides where you live. Not your salary.</h1>
+    <p>Every salary calculator stops at the monthly rent. In Korea the number that actually shuts doors is the <strong>deposit</strong> — the lump sum you must have on day one. Put in what you earn and what you have saved, and see the difference against real signed contracts.</p>
+  </section>
+
+  <form id="planForm" class="calculator-card tool-card">
+    <div class="calc-topline">
+      <div><span class="calc-kicker">Home type</span><strong>Which kind of home are you pricing?</strong></div>
+      <label class="calc-property-select">
+        <select id="propertyType">
+          <option value="officetel" selected>Officetel (오피스텔)</option>
+          <option value="apartment">Apartment (아파트)</option>
+          <option value="villa">Villa / low-rise (빌라·연립)</option>
+        </select>
+        <small class="calc-rule-help">Neighborhood figures are medians of monthly-rent contracts reported to MOLIT in the recent window.</small>
+      </label>
+    </div>
+
+    <div class="calc-input-grid">
+      <label>
+        <span>Annual salary <em>before tax</em></span>
+        <div class="money-input">
+          <b data-currency-symbol>₩</b>
+          <input id="salary" data-currency-input data-krw-value="65000000" data-krw-step="1000000" type="text" inputmode="numeric" autocomplete="off">
+        </div>
+        <small class="fx-input-reference" data-currency-reference-for="salary"></small>
+      </label>
+
+      <label>
+        <span>Cash you have for a deposit</span>
+        <div class="money-input">
+          <b data-currency-symbol>₩</b>
+          <input id="cash" data-currency-input data-krw-value="20000000" data-krw-step="1000000" type="text" inputmode="numeric" autocomplete="off">
+        </div>
+        <small class="fx-input-reference" data-currency-reference-for="cash"></small>
+      </label>
+
+      <label>
+        <span>Monthly take-home <em>optional — more accurate</em></span>
+        <div class="money-input">
+          <b data-currency-symbol>₩</b>
+          <input id="netMonthly" data-currency-input data-krw-value="0" data-krw-step="100000" type="text" inputmode="numeric" autocomplete="off">
+        </div>
+        <small class="fx-input-reference" data-currency-reference-for="netMonthly"></small>
+      </label>
+
+      <label>
+        <span>Share of income for rent</span>
+        <select id="budgetShare">
+          <option value="0.20">20%</option>
+          <option value="0.25">25%</option>
+          <option value="0.30" selected>30%</option>
+          <option value="0.35">35%</option>
+        </select>
+        <small class="calc-rule-help">A common guideline, not a rule. Adjust it to your own situation.</small>
+      </label>
+    </div>
+
+    <div class="calc-output-grid">
+      <div class="calc-output primary-output">
+        <span>Your monthly rent budget</span>
+        <strong id="budgetResult">—</strong>
+        <small id="budgetBasis">—</small>
+      </div>
+      <div class="calc-output secondary-output">
+        <span>What the deposit gap costs you</span>
+        <strong id="penaltyResult">—</strong>
+        <small id="penaltyBasis">—</small>
+      </div>
+    </div>
+  </form>
+
+  <section class="tool-card" id="resultsCard">
+    <h2 id="resultsTitle">Neighborhoods you can reach</h2>
+    <p id="resultsStatus">Loading recent contracts…</p>
+    <div class="table-wrap">
+      <table id="resultsTable" hidden>
+        <thead>
+          <tr>
+            <th scope="col">Neighborhood</th>
+            <th scope="col">Typical deposit</th>
+            <th scope="col">Typical rent</th>
+            <th scope="col">Your rent<br><small>at your cash</small></th>
+            <th scope="col">Deposit gap<br><small>per month</small></th>
+            <th scope="col">Contracts</th>
+          </tr>
+        </thead>
+        <tbody id="resultsBody"></tbody>
+      </table>
+    </div>
+    <p id="resultsMore" class="calc-rule-help" hidden></p>
+  </section>
+
+  <section class="tool-explainer">
+    <h2>Why the deposit changes the rent</h2>
+    <p>A Korean lease trades deposit against rent: hand over more cash up front and the monthly payment falls. So an advertised rent is only true at the deposit it was signed with, and a neighborhood with a low rent and a large deposit can be the expensive one once both are stated on the same terms.</p>
+    <p>The “Your rent” column restates every neighborhood at <em>your</em> deposit, which is what makes them comparable at all. The gap column is the part nobody shows you: the extra rent you pay each month purely because your cash sits below what that neighborhood normally expects.</p>
+    <p class="calc-rule-help">Your cash moves every neighborhood by the same amount, so it changes which ones you can afford — not their order. The reordering worth noticing is between the advertised rent and the restated one.</p>
+    <p id="conversionNote" class="calc-rule-help"></p>
+    <p class="calc-rule-help">Medians describe what was signed recently — not an offer, and not what a landlord will quote you. Neighborhoods with fewer than five reported monthly-rent contracts in the window are left out, because a median of three contracts is noise.</p>
+  </section>
+
+  <section class="related-links">
+    <a href="/tools/seoul-rent-check/"><strong>Check a specific quote</strong><span>Compare one rent against recent signed contracts.</span></a>
+    <a href="/tools/brokerage-fee-calculator/"><strong>Estimate move-in cash</strong><span>Deposit, first rent and the agent fee ceiling.</span></a>
+    <a href="/explore/"><strong>Explore neighborhoods</strong><span>Browse the same data on a map.</span></a>
+  </section>
+</main>
+
+<footer>
+  <strong>KoreaHomeGuide</strong>
+  <small>Questions or data issues? <a href="mailto:hello@koreahomeguide.com">Email us</a>. <a href="/privacy/">Privacy</a>.</small>
+</footer>
+
+<script src="/currency-utils.js"></script>
+<script src="/deposit-conversion.js"></script>
+<script src="/tools/salary-to-housing/app.js"></script>
+</body>
+</html>

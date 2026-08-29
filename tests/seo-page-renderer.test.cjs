@@ -155,13 +155,37 @@ test('English Dong HTML omits Chinese hreflang outside localized districts', () 
   assert.match(html, /class="language-link" href="\/zh\/explore\/\?lawdCd=11620/);
 });
 
-test('building pages stay out of search regardless of transaction depth', () => {
-  assert.equal(isBuildingIndexable({ contractCount:3, medianMonthlyRentWon:700000 }), false);
-  assert.equal(isBuildingIndexable({ contractCount:2, medianMonthlyRentWon:700000 }), false);
-  assert.equal(isBuildingIndexable({ contractCount:5, medianMonthlyRentWon:null, medianDepositWon:null }), false);
+test('a thin building sample is not published', () => {
+  assert.equal(isBuildingIndexable({ buildingName:'A', buildingKey:'k', contractCount:3, monthlyRentCount:3, medianMonthlyRentWon:700000 }), false);
+  assert.equal(isBuildingIndexable({ buildingName:'A', buildingKey:'k', contractCount:2, monthlyRentCount:2, medianMonthlyRentWon:700000 }), false);
+  // Deep on paper, but with no price to report there is nothing to say.
+  assert.equal(isBuildingIndexable({ buildingName:'A', buildingKey:'k', contractCount:50, monthlyRentCount:20, medianMonthlyRentWon:null, medianDepositWon:null }), false);
+  // Deep in contracts but almost all jeonse: the monthly-rent page would be a stub.
+  assert.equal(isBuildingIndexable({ buildingName:'A', buildingKey:'k', contractCount:50, monthlyRentCount:1, medianMonthlyRentWon:700000 }), false);
+  // A building with no identity cannot own a URL.
+  assert.equal(isBuildingIndexable({ contractCount:50, monthlyRentCount:20, medianMonthlyRentWon:700000 }), false);
 });
 
-test('building page includes contextual rent sections and remains noindex', () => {
+test('a building above the publishing floor is published', () => {
+  const { BUILDING_INDEX_MIN_CONTRACTS, BUILDING_INDEX_MIN_RENT_CONTRACTS } = require('../seo/seo-page-renderer.cjs');
+  assert.equal(isBuildingIndexable({
+    buildingName:'A Villa',
+    buildingKey:'연남동::a villa',
+    contractCount:BUILDING_INDEX_MIN_CONTRACTS,
+    monthlyRentCount:BUILDING_INDEX_MIN_RENT_CONTRACTS,
+    medianMonthlyRentWon:700000
+  }), true);
+  // One contract short of the floor is still short of the floor.
+  assert.equal(isBuildingIndexable({
+    buildingName:'A Villa',
+    buildingKey:'연남동::a villa',
+    contractCount:BUILDING_INDEX_MIN_CONTRACTS - 1,
+    monthlyRentCount:BUILDING_INDEX_MIN_RENT_CONTRACTS,
+    medianMonthlyRentWon:700000
+  }), false);
+});
+
+test('a below-floor building page still renders in full, but noindex', () => {
   const detail = {
     ...buildings[0], contractCount:4, quarterChangePct:3.1, medianJeonseDepositWon:180000000, newContractMonthlyRentCount:3, renewalMonthlyRentCount:1, contractTypeCounts:{new:3,renewal:1,unknown:0}, areaGroups:[{approxAreaSqm:25,count:4,medianAreaSqm:23.5,depositBands:buildings[0].depositBands}],
     monthlyTrend:[{month:'2026-05',count:1,medianMonthlyRentWon:680000},{month:'2026-06',count:1,medianMonthlyRentWon:700000},{month:'2026-07',count:2,medianMonthlyRentWon:720000}],

@@ -293,14 +293,18 @@ function renderDongPage({ lang = 'en', areaCode, districtName, dong, propertyTyp
   const switchPath = zh ? paths.en : (paths.zh || zhExplorerFallback({ areaCode, propertyType, dong }));
   const dataMonth = summary && summary.dataThroughMonth ? KHGDate.formatMonth(summary.dataThroughMonth, zh ? 'zh-CN' : 'en-US') : (zh ? '最近完整月份' : 'Latest completed months');
   const buildingLinks = (Array.isArray(buildings) ? buildings : []).filter(item => item && item.buildingName && item.buildingKey).slice(0, 30).map(item => {
-    const href = buildInteractiveBuildingUrl({ areaCode, dong, propertyType, buildingKey:item.buildingKey, lang });
+    const seoHref = isBuildingIndexable(item)
+      ? buildBuildingSeoUrl({ areaCode, dong, propertyType, building:item, lang })
+      : '';
+    const href = seoHref || buildInteractiveBuildingUrl({ areaCode, dong, propertyType, buildingKey:item.buildingKey, lang });
+    const relAttr = seoHref ? '' : ' rel="nofollow"';
     const name = getBuildingNameDisplay(item.buildingName, lang);
     const band = representativeBand(item);
     const depositContext = band
       ? escapeHtml(depositRangeText(band, lang))
       : (Number(item.medianJeonseDepositWon) > 0 ? escapeHtml(wonText(item.medianJeonseDepositWon, lang)) : '—');
     const rentContext = band ? escapeHtml(wonText(band.medianMonthlyRentWon, lang)) : '—';
-    return `<a class="seo-building-link" href="${escapeHtml(href)}" rel="nofollow"><div class="seo-building-main"><strong>${escapeHtml(name.primary)}</strong>${name.secondary ? `<small class="seo-building-official">${escapeHtml(name.secondary)}</small>` : ''}<div class="seo-building-meta"><span><small>${zh ? '典型面积' : 'Typical size'}</small><strong>${escapeHtml(areaText(item.typicalAreaSqm))}</strong></span><span><small>${zh ? '成交数' : 'Contracts'}</small><strong>${numberText(item.contractCount, lang)}</strong></span></div></div><div class="seo-building-price-context"><div><span class="seo-context-label">${zh ? '押金' : 'Deposit'}</span><strong>${depositContext}</strong></div><div><span class="seo-context-label">${zh ? '月租' : 'Monthly rent'}</span><strong>${rentContext}</strong></div></div></a>`;
+    return `<a class="seo-building-link" href="${escapeHtml(href)}"${relAttr}><div class="seo-building-main"><strong>${escapeHtml(name.primary)}</strong>${name.secondary ? `<small class="seo-building-official">${escapeHtml(name.secondary)}</small>` : ''}<div class="seo-building-meta"><span><small>${zh ? '典型面积' : 'Typical size'}</small><strong>${escapeHtml(areaText(item.typicalAreaSqm))}</strong></span><span><small>${zh ? '成交数' : 'Contracts'}</small><strong>${numberText(item.contractCount, lang)}</strong></span></div></div><div class="seo-building-price-context"><div><span class="seo-context-label">${zh ? '押金' : 'Deposit'}</span><strong>${depositContext}</strong></div><div><span class="seo-context-label">${zh ? '月租' : 'Monthly rent'}</span><strong>${rentContext}</strong></div></div></a>`;
   }).join('');
   const exploreParams = new URLSearchParams({ lawdCd:String(areaCode), type:String(propertyType), dong:String(dong) }).toString();
   const rentCheckPath = `${zh ? '/zh' : ''}/tools/seoul-rent-check/?${new URLSearchParams({ lawdCd:String(areaCode), type:String(propertyType) }).toString()}`;
@@ -308,8 +312,23 @@ function renderDongPage({ lang = 'en', areaCode, districtName, dong, propertyTyp
   return `${head}${header(lang, switchPath)}<main class="seo-page product-layout"><div class="seo-breadcrumbs"><a href="${zh ? '/zh/' : '/'}">${zh ? '首尔' : 'Seoul'}</a> → <a href="${zh ? `/zh/rent/${districtName.toLowerCase()}/${propertyType}/` : `/rent/${districtName.toLowerCase()}/${propertyType}/`}">${escapeHtml(district)}</a> → ${escapeHtml(dName)}</div><div class="product-main"><section class="seo-hero"><span class="seo-eyebrow">${zh ? '韩国官方租赁成交' : 'OFFICIAL RENTAL TRANSACTIONS'}</span><h1>${escapeHtml(visibleTitle)}</h1><div class="seo-location-meta" aria-label="${zh ? '地区' : 'Location'}"><span>${escapeHtml(dong)}</span><span>${escapeHtml(districtPrimary)}</span></div><p>${zh ? `这里展示${escapeHtml(dName)}近期已申报并完成的租赁成交。月租必须和押金一起看，因此本页按押金区间展示，而不是把不同押金结构混成一个“典型月租”。` : `These are recently reported completed rental contracts in ${escapeHtml(dName)}. Monthly rent is shown together with deposit bands so very different deposit structures are not blended into one misleading typical price.`}</p><div class="seo-fresh"><span>${zh ? '数据截至' : 'Data through'} ${escapeHtml(dataMonth)}</span><span>${zh ? '近6个完整月份' : '6-month rolling view'}</span><span>${zh ? '韩国国土交通部数据' : 'Official MOLIT data'}</span></div></section><section class="seo-grid"><div class="seo-card"><span>${zh ? '申报成交数' : 'Reported contracts'}</span><strong>${numberText(summary && (summary.totalContracts || summary.contractCount), lang)}</strong></div><div class="seo-card"><span>${zh ? '新签月租合同' : 'New monthly-rent contracts'}</span><strong>${numberText(summary && summary.newContractMonthlyRentCount, lang)}</strong></div><div class="seo-card"><span>${zh ? '续签月租合同' : 'Renewal contracts'}</span><strong>${numberText(summary && summary.renewalMonthlyRentCount, lang)}</strong></div><div class="seo-card"><span>${zh ? '全租押金中位数' : 'Median jeonse deposit'}</span><strong>${moneyHtml(summary && summary.medianJeonseDepositWon, lang, fxRates)}</strong></div></section><section class="seo-section"><h2>${zh ? '按押金区间看月租' : 'Monthly rent by deposit'}</h2><p>${zh ? '新签合同数量足够时优先使用新签合同；否则使用已申报的月租合同。每个卡片中的押金与月租来自同一组合同。' : 'When enough new contracts are identified, they are preferred. Each card keeps deposit and monthly rent within the same group of contracts.'}</p>${depositBandsHtml(summary && summary.depositBands, lang, fxRates)}</section><section class="seo-section"><h2>${zh ? '按使用面积比较' : 'By floor area'}</h2>${areaGroupsHtml(summary && summary.areaGroups, lang, fxRates)}</section><section class="seo-section"><h2>${zh ? '新签 vs 续签' : 'New vs renewal'}</h2>${contractMixHtml(summary && summary.contractTypeCounts, lang)}</section><section class="seo-section"><h2>${zh ? '近期签约成交' : 'Recently signed contracts'}</h2><p>${zh ? '以下均为已申报成交记录。月租为0时，表示全租式合同。' : 'These are completed reported contracts. A zero monthly rent indicates a jeonse-style contract.'}</p>${recentContractsTable(summary && summary.recentTransactions, lang, fxRates, true)}</section><section class="seo-section"><h2>${zh ? '建筑' : 'Buildings'}</h2><p>${zh ? `${escapeHtml(dName)}近期有申报成交的建筑。押金与月租使用同一押金区间，不把不同押金结构合成一个数字。` : `Buildings with recent reported contracts in ${escapeHtml(dName)}. Rent and deposit stay within the same deposit band instead of being combined from different contract structures.`}</p><div class="seo-buildings">${buildingLinks || `<p>${zh ? '近期数据中没有足够的具名建筑记录。' : 'No named buildings had enough recent reported activity.'}</p>`}</div></section><section class="seo-section"><h2>${zh ? '继续比较' : 'Continue comparing'}</h2><div class="seo-actions"><a class="seo-action primary" href="${zh ? '/zh/explore/' : '/explore/'}?${escapeHtml(exploreParams)}">${zh ? '在租金探索中打开' : 'Open in Rent Explorer'}</a><a class="seo-action" href="${escapeHtml(rentCheckPath)}">${zh ? '检查你的实际报价' : 'Check your actual rent quote'}</a>${otherTypes}</div></section></div>${contextRailHtml({ lang, rentCheckPath, explorePath:(zh ? '/zh/explore/' : '/explore/'), building:false })}${footer(lang)}</main></body></html>`;
 }
 
+const BUILDING_INDEX_MIN_CONTRACTS = 20;
+const BUILDING_INDEX_MIN_RENT_CONTRACTS = 3;
+
+// Accepts either a getBuildingDetail() result or a getBuildings() list item;
+// both carry contractCount / monthlyRentCount and at least one price metric.
 function isBuildingIndexable(detail) {
-  return false;
+  if (!detail || !detail.buildingName || !detail.buildingKey) return false;
+  const contracts = Number(detail.contractCount);
+  if (!Number.isFinite(contracts) || contracts < BUILDING_INDEX_MIN_CONTRACTS) return false;
+  const rentContracts = Number(detail.monthlyRentCount);
+  if (!Number.isFinite(rentContracts) || rentContracts < BUILDING_INDEX_MIN_RENT_CONTRACTS) return false;
+  return [
+    detail.medianMonthlyRentWonNew,
+    detail.contextualMedianMonthlyRentWon,
+    detail.medianMonthlyRentWon,
+    detail.medianJeonseDepositWon
+  ].some(value => Number(value) > 0);
 }
 
 function renderBuildingPage({ lang = 'en', areaCode, districtName, dong, propertyType, summary, detail, fxRates = {} }) {
@@ -324,7 +343,7 @@ function renderBuildingPage({ lang = 'en', areaCode, districtName, dong, propert
   const displayBuildingName = buildingNameDisplay.primary || safeBuildingName;
   const title = zh ? `${displayBuildingName}租金与成交数据 | ${dName}` : `${displayBuildingName} Rent & Transaction Data | ${dName}, Seoul`;
   const description = zh ? `查看${displayBuildingName}近期韩国官方申报租赁成交，按押金和面积拆分月租，并区分新签与续签${propertyType === 'apartment' ? '，同时查看公寓买卖成交' : ''}。` : `See recent official reported transactions for ${displayBuildingName}, with monthly rent separated by deposit and floor area, plus new versus renewal contracts${propertyType === 'apartment' ? ' and apartment sale transactions' : ''}.`;
-  const robots = 'noindex,follow';
+  const robots = isBuildingIndexable(detail) ? 'index,follow' : 'noindex,follow';
   const jsonLd = webPageDatasetJsonLd({ lang, title, description, canonicalPath, districtName, dong, propertyType });
   const head = pageHead({ lang, title, description, canonicalPath, alternateEn:paths.en, alternateZh:paths.zh, robots, jsonLd });
   const switchPath = zh ? paths.en : (paths.zh || zhExplorerFallback({ areaCode, propertyType, dong }));
@@ -373,6 +392,8 @@ function renderErrorPage({ lang = 'en', status = 404, title, message, actionHref
 
 module.exports = {
   ORIGIN,
+  BUILDING_INDEX_MIN_CONTRACTS,
+  BUILDING_INDEX_MIN_RENT_CONTRACTS,
   escapeHtml,
   moneyHtml,
   districtDisplay,
