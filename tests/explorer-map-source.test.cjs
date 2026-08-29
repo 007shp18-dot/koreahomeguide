@@ -115,6 +115,10 @@ test('All-Seoul building layers keep the selected neighborhood district context'
   });
   assert.equal(context.lawdCd, '11680');
   assert.equal(model.districtCode, '11680');
+  const source = fs.readFileSync('explore/map.js', 'utf8');
+  assert.match(source, /function activeBuildingContext\(item = null\)/);
+  assert.match(source, /latestBuildingDetail \|\| itemContext/);
+  assert.match(source, /buildingGeocodeQueries\(item\)[\s\S]*?activeBuildingContext\(item\)/);
 });
 
 test('opening a building from the mobile list starts the lazy map before locating street view', () => {

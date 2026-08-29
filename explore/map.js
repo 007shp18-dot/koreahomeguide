@@ -236,6 +236,14 @@
     trackView(models);
   }
 
+  function activeBuildingContext(item = null) {
+    const itemContext = item && item.districtCode
+      ? { lawdCd:item.districtCode, propertyType:item.propertyType, dong:item.dong }
+      : null;
+    const detail = latestBuildingDetail || itemContext;
+    return KHGMapController.mapLayerContext(latest, detail, detail ? 'building' : markerScope);
+  }
+
   function publishViewport() {
     if (!map || !window.KHGMapViewport || typeof map.getBounds !== 'function') return;
     const bounds = currentMapBounds();
@@ -274,7 +282,7 @@
   }
 
   function buildingGeocodeQueries(item) {
-    const layerContext = KHGMapController.mapLayerContext(latest, latestBuildingDetail, markerScope);
+    const layerContext = activeBuildingContext(item);
     const district = KHGMapLocations && KHGMapLocations.districtKorean
       ? KHGMapLocations.districtKorean(layerContext.lawdCd)
       : '';
@@ -310,7 +318,7 @@
         const type = result && result.geometry && result.geometry.location_type;
         const location = result && result.geometry && result.geometry.location;
         const point = location ? { lat:location.lat(), lng:location.lng() } : null;
-        const layerContext = KHGMapController.mapLayerContext(latest, latestBuildingDetail, markerScope);
+        const layerContext = activeBuildingContext(item);
         const center = KHGMapLocations.centerFor(layerContext.lawdCd, item.dong);
         const precise = ['ROOFTOP','GEOMETRIC_CENTER'].includes(String(type || ''));
         const verified = point && center && precise && !result.partial_match && distanceKm(center, point) <= 4;
