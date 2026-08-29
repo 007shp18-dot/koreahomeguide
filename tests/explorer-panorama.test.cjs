@@ -171,6 +171,38 @@ test('a building without verified coordinates never leaves Street View loading f
   assert.equal(fetchCalls, 0);
 });
 
+test('opening a result card stays idle until a verified Street View location arrives', () => {
+  const nodes = new Map();
+  const listeners = new Map();
+  const node = extra => ({
+    hidden:false,
+    dataset:{},
+    textContent:'',
+    replaceChildren() {},
+    ...extra
+  });
+  nodes.set('#explorerStreetView', node());
+  nodes.set('#explorerStreetViewCanvas', node({ hidden:true }));
+  nodes.set('#explorerStreetViewStatus', node());
+  nodes.set('#explorerStreetViewMeta', node());
+  panorama.install({
+    document:{
+      documentElement:{ lang:'en' },
+      querySelector:selector => nodes.get(selector) || null
+    },
+    fetch:async () => ({ ok:true, json:async () => ({ naverKeyId:'key' }) }),
+    addEventListener(type, handler) { listeners.set(type, handler); },
+    setTimeout,
+    clearTimeout
+  });
+
+  listeners.get('khg:building-window-reset')({ detail:{ selection:{ buildingKey:'result-card' } } });
+
+  assert.equal(nodes.get('#explorerStreetView').hidden, true);
+  assert.equal(nodes.get('#explorerStreetView').dataset.state, 'idle');
+  assert.equal(nodes.get('#explorerStreetViewStatus').textContent, '');
+});
+
 test('successful panorama result synchronizes size and faces the building', async () => {
   const nodes = new Map();
   const classNames = new Set();
