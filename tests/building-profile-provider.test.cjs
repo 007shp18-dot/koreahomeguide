@@ -50,6 +50,31 @@ test('building profile refuses ambiguous names and degrades unavailable upstream
   assert.deepEqual(unavailable, { status:'unavailable' });
 });
 
+test('building profile safely aggregates same-name titles on one apartment parcel', async () => {
+  const profile = await fetchBuildingProfile({
+    serviceKey:'secret', transaction:{ sggCd:'11680', umdCd:'10100', jibun:'757', explorerBuildingName:'역삼래미안' },
+    fetchImpl:async () => ({ ok:true, json:async () => ({ response:{ header:{ resultCode:'00' }, body:{ items:{ item:[
+      { bldNm:'역삼래미안', platPlc:'서울특별시 강남구 역삼동 757', newPlatPlc:'서울특별시 강남구 선릉로69길 19', useAprDay:'20051014', hhldCnt:'84', grndFlrCnt:'22' },
+      { bldNm:'역삼래미안', platPlc:'서울특별시 강남구 역삼동 757', newPlatPlc:'서울특별시 강남구 선릉로69길 19', useAprDay:'20051014', hhldCnt:'96', grndFlrCnt:'24' }
+    ] } } } }) })
+  });
+  assert.deepEqual(profile, {
+    status:'matched', officialAddress:'서울특별시 강남구 역삼동 757', roadAddress:'서울특별시 강남구 선릉로69길 19',
+    useApprovalYear:2005, householdCount:180, householdLabel:'households', source:'MOLIT Building HUB'
+  });
+});
+
+test('building profile never aggregates different official building identities', async () => {
+  const profile = await fetchBuildingProfile({
+    serviceKey:'secret', transaction:{ sggCd:'11680', umdCd:'10100', jibun:'1', explorerBuildingName:'선택빌딩' },
+    fetchImpl:async () => ({ ok:true, json:async () => ({ response:{ header:{ resultCode:'00' }, body:{ items:{ item:[
+      { bldNm:'선택빌딩 A', platPlc:'서울특별시 강남구 역삼동 1' },
+      { bldNm:'선택빌딩 B', platPlc:'서울특별시 강남구 역삼동 1' }
+    ] } } } }) })
+  });
+  assert.deepEqual(profile, { status:'ambiguous' });
+});
+
 test('parcel parser handles mountain land and safely rejects invalid parcel text', () => {
   assert.deepEqual(parseParcel('산 12-3'), { platGbCd:'1', bun:'0012', ji:'0003' });
   assert.equal(parseParcel('도로명 주소'), null);

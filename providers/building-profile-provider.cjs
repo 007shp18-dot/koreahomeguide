@@ -61,6 +61,31 @@ function profileFromItem(item) {
   return profile;
 }
 
+function aggregateSameBuildingTitles(items) {
+  const names = [...new Set(items.map(item => comparableName(item && item.bldNm)).filter(Boolean))];
+  const officialAddresses = [...new Set(items.map(item => cleanText(item && item.platPlc)).filter(Boolean))];
+  const roadAddresses = [...new Set(items.map(item => cleanText(item && item.newPlatPlc)).filter(Boolean))];
+  if (names.length !== 1 || officialAddresses.length > 1 || roadAddresses.length > 1) return null;
+
+  const profiles = items.map(profileFromItem);
+  const years = [...new Set(profiles.map(profile => profile.useApprovalYear).filter(Boolean))];
+  const countProfiles = profiles.filter(profile => profile.householdCount && profile.householdLabel);
+  const countLabels = [...new Set(countProfiles.map(profile => profile.householdLabel))];
+  const profile = {
+    status:'matched',
+    officialAddress:officialAddresses[0],
+    roadAddress:roadAddresses[0],
+    useApprovalYear:years.length === 1 ? years[0] : null,
+    householdCount:countLabels.length === 1 ? countProfiles.reduce((sum, item) => sum + item.householdCount, 0) : null,
+    householdLabel:countLabels.length === 1 ? countLabels[0] : null,
+    source:'MOLIT Building HUB'
+  };
+  for (const key of Object.keys(profile)) {
+    if (profile[key] == null || profile[key] === '') delete profile[key];
+  }
+  return profile;
+}
+
 async function fetchBuildingProfile({ serviceKey, transaction, legalCode = '', fetchImpl = fetch, endpoint = DEFAULT_ENDPOINT } = {}) {
   const parcel = parseParcel(transaction && transaction.jibun || transaction && transaction.explorerJibun);
   const rowSggCd = cleanText(transaction && transaction.sggCd);
@@ -87,11 +112,11 @@ async function fetchBuildingProfile({ serviceKey, transaction, legalCode = '', f
     if (resultCode && resultCode !== '00' && resultCode !== '000') return { status:'unavailable' };
     const candidates = itemArray(payload).filter(item => compatibleCandidate(item, transaction));
     if (!candidates.length) return { status:'empty' };
-    if (candidates.length !== 1) return { status:'ambiguous' };
+    if (candidates.length > 1) return aggregateSameBuildingTitles(candidates) || { status:'ambiguous' };
     return profileFromItem(candidates[0]);
   } catch (_) {
     return { status:'unavailable' };
   }
 }
 
-module.exports = { DEFAULT_ENDPOINT, parseParcel, fetchBuildingProfile, profileFromItem };
+module.exports = { DEFAULT_ENDPOINT, parseParcel, fetchBuildingProfile, profileFromItem, aggregateSameBuildingTitles };
