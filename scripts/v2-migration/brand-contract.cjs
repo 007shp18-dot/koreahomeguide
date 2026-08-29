@@ -17,6 +17,7 @@ function buildBrandContract() {
     }),
     descriptors: Object.freeze([
       'Real prices. Local rules. Trusted experts.',
+      'Real prices. Better property decisions.',
       'Global property intelligence and transaction network.'
     ]),
     logoAssets: Object.freeze([

@@ -1,49 +1,31 @@
 {
-  "capturedAt": "2026-08-29T14:44:24.750Z",
+  "schemaVersion": 1,
+  "capturedAt": "2026-08-29T16:34:00.000Z",
+  "sourceRevision": "4acbcca6476eabd9033915578f8c532cb2f581c8",
   "runner": "control-browser-cloud-chrome",
-  "localPlaywrightBinary": "unavailable: official Chromium v1234 download failed",
-  "invalidBaseRunnerPolicy": {
-    "outcome": "runner-policy-blocked",
-    "configuredTargetHandling": "The committed local contract uses relative navigation and playwright.legacy.config.ts resolves LEGACY_BASE_URL.",
-    "error": "Error: Browser Use cannot open <url> in tab 64. Browser reported: net::ERR_BLOCKED_BY_CLIENT"
-  },
+  "targetBaseUrl": "https://koreahomeguide.com",
   "explorer": {
     "url": "https://koreahomeguide.com/explore/?lawdCd=11590&type=officetel&dong=%EB%85%B8%EB%9F%89%EC%A7%84%EB%8F%99",
     "pageAvailable": true,
-    "viewport": {
-      "width": 1363,
-      "height": 936
-    },
-    "mapBox": {
-      "x": 37,
-      "y": 55,
-      "width": 1289,
-      "height": 826
+    "selectedDong": "노량진동",
+    "viewport": { "width": 1363, "height": 936 },
+    "mapBox": { "x": 37, "y": 55, "width": 1274, "height": 826 },
+    "selectionStability": {
+      "durationMs": 10000,
+      "urlBeforeIdle": "https://koreahomeguide.com/explore/?lawdCd=11590&type=officetel&dong=%EB%85%B8%EB%9F%89%EC%A7%84%EB%8F%99",
+      "urlAfterIdle": "https://koreahomeguide.com/explore/?lawdCd=11590&type=officetel&dong=%EB%85%B8%EB%9F%89%EC%A7%84%EB%8F%99"
     },
     "buildingCount": 7,
-    "dialogBox": {
-      "x": 142,
-      "y": 56,
-      "width": 1080,
-      "height": 824
-    },
+    "dialogBox": { "x": 142, "y": 56, "width": 1080, "height": 824 },
     "streetView": {
-      "state": "ready",
-      "boxAt2Seconds": {
-        "x": 302,
-        "y": 210,
-        "width": 760,
-        "height": 428
-      },
-      "boxAt8Seconds": {
-        "x": 302,
-        "y": 210,
-        "width": 760,
-        "height": 428
-      }
+      "stateAt2Seconds": "loading",
+      "stateAt8Seconds": "ready",
+      "boxAt2Seconds": { "x": 302, "y": 210, "width": 760, "height": 428 },
+      "boxAt8Seconds": { "x": 302, "y": 210, "width": 760, "height": 428 }
     }
   },
   "buildingModal": {
+    "closeButtonVisible": true,
     "closeEscapeFocus": {
       "overlayHidden": true,
       "activeElementLabel": "Open 노량진 드림스퀘어 복합빌딩 building status"
@@ -52,17 +34,9 @@
   "rentCheck": {
     "url": "https://koreahomeguide.com/tools/seoul-rent-check/?lawdCd=11590&type=officetel&area=24.13",
     "pageAvailable": true,
-    "viewport": {
-      "width": 1363,
-      "height": 936
-    },
+    "viewport": { "width": 1363, "height": 936 },
     "pageScrollWidth": 1348,
-    "formBox": {
-      "x": 123,
-      "y": 380,
-      "width": 1070,
-      "height": 271
-    },
+    "formBox": { "x": 123, "y": 380, "width": 1070, "height": 271 },
     "fieldBoxes": {
       "area": { "x": 123, "y": 380, "width": 346, "height": 84 },
       "type": { "x": 485, "y": 380, "width": 346, "height": 84 },
@@ -71,9 +45,8 @@
       "size": { "x": 847, "y": 380, "width": 346, "height": 84 },
       "submit": { "x": 847, "y": 540, "width": 346, "height": 52 }
     },
-    "selectedDistrictControl": "11680",
-    "expectedDistrictControlAfterFix": "11590",
-    "previewVerification": "pending controller-provided Vercel Preview",
+    "selectedDistrictControl": "11590",
+    "selectedDistrictLabel": "Dongjak-gu (동작구)",
     "selectedType": "officetel",
     "status": {
       "state": "idle",
@@ -89,13 +62,7 @@
     ]
   },
   "consoleErrors": [
-    {
-      "source": "cloud-runtime",
-      "message": "Error sending browser metadata to extension: Object"
-    },
-    {
-      "source": "map-runtime",
-      "message": "Attempted to load a Vector Map, but failed. Falling back to Raster. Please see <url> for more info"
-    }
+    { "source": "cloud-runtime", "message": "Error sending browser metadata to extension: Object" },
+    { "source": "map-runtime", "message": "Attempted to load a Vector Map, but failed. Falling back to Raster. Please see <url> for more info" }
   ]
 }

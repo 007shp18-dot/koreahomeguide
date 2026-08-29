@@ -1,6 +1,10 @@
 [
   {
     "route": "/api/explore-area",
+    "source": {
+      "file": "api/explore-area.js",
+      "sha256": "45f7b031a83aeb34b67cde7cc8846c049e81cb9097c48ed2c0cdbbc824d99296"
+    },
     "methods": [
       "GET"
     ],
@@ -161,6 +165,10 @@
   },
   {
     "route": "/api/explore-building",
+    "source": {
+      "file": "api/explore-building.js",
+      "sha256": "7945b7619de56c30073f5760be435fb1eddf9c678aa1cefc46f4ace8440ef95d"
+    },
     "methods": [
       "GET"
     ],
@@ -372,6 +380,10 @@
   },
   {
     "route": "/api/explore-dong",
+    "source": {
+      "file": "api/explore-dong.js",
+      "sha256": "805713968ea0eced49eda61881a6c49f9d0dc99af2ca7a1d4ecf678eeb9ec110"
+    },
     "methods": [
       "GET"
     ],
@@ -506,6 +518,10 @@
   },
   {
     "route": "/api/fx",
+    "source": {
+      "file": "api/fx.js",
+      "sha256": "ef1b26595142e153c38cbc1f918c89070557487991c82c694d0d66b7a9f7b0c6"
+    },
     "methods": [
       "GET"
     ],
@@ -610,6 +626,10 @@
   },
   {
     "route": "/api/lead",
+    "source": {
+      "file": "api/lead.js",
+      "sha256": "275be1a0240b6b6dfc89e18a6cf036219f6506b2b8562910a4a72b359675b27d"
+    },
     "methods": [
       "POST"
     ],
@@ -762,6 +782,10 @@
   },
   {
     "route": "/api/real-prices",
+    "source": {
+      "file": "api/real-prices.js",
+      "sha256": "443f53fc7cd6361489bdf8237722e5f62cede4b71a5a3d2174cf51dc4dd760c4"
+    },
     "methods": [
       "GET"
     ],
@@ -884,6 +908,10 @@
   },
   {
     "route": "/api/rent-check",
+    "source": {
+      "file": "api/rent-check.js",
+      "sha256": "2f2f5c6b7fbcf303eede2212a4c7c4c565b8f9f3327ed4dd56a7ad5ed014b703"
+    },
     "methods": [
       "GET"
     ],
@@ -1041,6 +1069,10 @@
   },
   {
     "route": "/api/rent-market",
+    "source": {
+      "file": "api/rent-market.js",
+      "sha256": "7b6bfdbcc9b38e6201fb13ba780ca6bead386f66b1d045441bf69320a518dcbd"
+    },
     "methods": [
       "GET"
     ],
@@ -1210,6 +1242,10 @@
   },
   {
     "route": "/api/seo-building-page",
+    "source": {
+      "file": "api/seo-building-page.js",
+      "sha256": "902e119be414bc4f9e16f70edee985e099410c86e934b33b01e3c373fe477a9d"
+    },
     "methods": [
       "GET"
     ],
@@ -1320,6 +1356,10 @@
   },
   {
     "route": "/api/seo-dong-page",
+    "source": {
+      "file": "api/seo-dong-page.js",
+      "sha256": "478cde024641ceabdd744f680b2df636f68dab9cd352364392ed5888bc8fd054"
+    },
     "methods": [
       "GET"
     ],
@@ -1446,6 +1486,10 @@
   },
   {
     "route": "/api/sitemap-market",
+    "source": {
+      "file": "api/sitemap-market.js",
+      "sha256": "8af5c41dab20aa7f7e36ffc0f4bdb249a547584de5fe8206f5914db8f87d7531"
+    },
     "methods": [
       "GET"
     ],

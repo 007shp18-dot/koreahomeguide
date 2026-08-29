@@ -1,5 +1,6 @@
 'use strict';
 
+const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 
@@ -142,6 +143,14 @@ function sourceMethods(source) {
   return [...methods].sort();
 }
 
+function sourceDigest(rootDir, relativeFile) {
+  const file = path.resolve(rootDir, ...relativeFile.split('/'));
+  return {
+    file:relativeFile,
+    sha256:crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')
+  };
+}
+
 function collectApiContracts(rootDir) {
   if (typeof rootDir !== 'string' || !rootDir) throw new TypeError('rootDir must be a non-empty string');
   const apiDir = path.resolve(rootDir, 'api');
@@ -156,6 +165,7 @@ function collectApiContracts(rootDir) {
     const source = fs.readFileSync(path.join(apiDir, file), 'utf8');
     return {
       route:`/api/${routeName}`,
+      source:sourceDigest(rootDir, `api/${file}`),
       methods:sourceMethods(source),
       requiredInputs:fields.requiredInputs,
       responseKeys:responseKeys(fields.successes),
@@ -178,9 +188,21 @@ function calculateFixture(input) {
   };
 }
 
-const CALCULATION_FIXTURES = Object.freeze([
-  calculateFixture({ depositKrw:100_000_000, monthlyRentKrw:1_000_000, areaSqm:50, annualRate:0.05 })
-]);
+function collectCalculationFixtures(rootDir) {
+  if (typeof rootDir !== 'string' || !rootDir) throw new TypeError('rootDir must be a non-empty string');
+  return [{
+    ...calculateFixture({
+      depositKrw:100_000_000,
+      monthlyRentKrw:1_000_000,
+      areaSqm:50,
+      annualRate:0.05
+    }),
+    sourceDigests:[
+      sourceDigest(rootDir, 'deposit-conversion.js'),
+      sourceDigest(rootDir, 'lib/rent-check-core.cjs')
+    ]
+  }];
+}
 
 function writeJson(outputFile, value) {
   const outputPath = path.resolve(outputFile);
@@ -196,8 +218,14 @@ if (require.main === module) {
     process.exitCode = 1;
   } else {
     writeJson(process.argv[writeIndex + 1], collectApiContracts(process.cwd()));
-    writeJson(process.argv[fixturesIndex + 1], CALCULATION_FIXTURES);
+    writeJson(process.argv[fixturesIndex + 1], collectCalculationFixtures(process.cwd()));
   }
 }
 
-module.exports = { CALCULATION_FIXTURES, calculateFixture, collectApiContracts, writeJson };
+module.exports = {
+  calculateFixture,
+  collectApiContracts,
+  collectCalculationFixtures,
+  sourceDigest,
+  writeJson
+};

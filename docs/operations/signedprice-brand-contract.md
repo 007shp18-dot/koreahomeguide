@@ -9,6 +9,7 @@ or make official-data claims for Singapore or Dubai.
 - Public brand: `signedprice` (lowercase)
 - Primary domain: `signedprice.com`
 - Descriptor: “Real prices. Local rules. Trusted experts.”
+- Descriptor: “Real prices. Better property decisions.”
 - Descriptor: “Global property intelligence and transaction network.”
 
 ## Visual tokens

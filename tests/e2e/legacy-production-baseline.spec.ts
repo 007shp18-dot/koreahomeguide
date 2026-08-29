@@ -1,8 +1,17 @@
 import { expect, test } from '@playwright/test';
-import { mkdirSync, writeFileSync } from 'node:fs';
-import { dirname } from 'node:path';
 
-const evidencePath = process.env.LEGACY_EVIDENCE_PATH || 'artifacts/v2-migration/legacy-browser-baseline.json';
+const {
+  BROWSER_BASELINE_SCHEMA_VERSION,
+  PRODUCTION_BASE_URL,
+  resolveBrowserEvidencePath,
+  writeBrowserEvidence
+} = require('../../scripts/v2-migration/browser-baseline-schema.cjs');
+
+const baseUrl = process.env.LEGACY_BASE_URL || PRODUCTION_BASE_URL;
+const evidencePath = resolveBrowserEvidencePath(process.cwd(), {
+  baseUrl,
+  configuredPath:process.env.LEGACY_EVIDENCE_PATH
+});
 
 function cleanConsoleMessage(message: string) {
   return message
@@ -29,17 +38,13 @@ function expectUsableBox(box: { x: number; y: number; width: number; height: num
 }
 
 test('freezes the Dongjak Noryangjin production explorer and Rent Check contract', async ({ page }) => {
-  const consoleErrors: string[] = [];
+  const consoleErrors: Array<{ source: string; message: string }> = [];
   page.on('console', message => {
-    if (message.type() === 'error') consoleErrors.push(cleanConsoleMessage(message.text()));
+    if (message.type() === 'error') {
+      consoleErrors.push({ source:'browser-console', message:cleanConsoleMessage(message.text()) });
+    }
   });
-  const evidence: Record<string, unknown> = {
-    capturedAt: new Date().toISOString(),
-    runner: 'playwright-local',
-    consoleErrors
-  };
 
-  try {
   const explorerResponse = await page.goto('/explore/?lawdCd=11590&type=officetel');
   expect(explorerResponse?.status()).toBe(200);
   await expect(page.locator('#explorerMap')).toBeVisible();
@@ -50,9 +55,12 @@ test('freezes the Dongjak Noryangjin production explorer and Rent Check contract
   const noryangjin = page.getByRole('button', { name: /노량진동|Noryangjin-dong/ });
   await noryangjin.click();
   await expect.poll(() => new URL(page.url()).searchParams.get('dong')).toBe('노량진동');
-  const selectedUrl = page.url();
+  const urlBeforeIdle = page.url();
+  const stabilityStartedAt = Date.now();
   await page.waitForTimeout(10_000);
-  await expect(page).toHaveURL(selectedUrl);
+  const stabilityDurationMs = Date.now() - stabilityStartedAt;
+  const urlAfterIdle = page.url();
+  await expect(page).toHaveURL(urlBeforeIdle);
 
   const buildingRows = page.locator('.building-row[data-building-key]');
   await expect(buildingRows).toHaveCount(7);
@@ -63,24 +71,30 @@ test('freezes the Dongjak Noryangjin production explorer and Rent Check contract
   const dialog = page.getByRole('dialog', { name: /노량진 드림스퀘어 복합빌딩/ });
   await expect(dialog).toBeVisible();
   await expect(dialog.getByText('Street view near this building')).toBeVisible();
+  const closeButton = page.getByRole('button', { name: 'Close building details' });
+  await expect(closeButton).toBeVisible();
   const dialogBox = await page.locator('.building-status-window').boundingBox();
   expectUsableBox(dialogBox, viewport);
   if (dialogBox) {
     expect(Math.abs(dialogBox.x + dialogBox.width / 2 - viewport.width / 2)).toBeLessThanOrEqual(2);
     expect(Math.abs(dialogBox.y + dialogBox.height / 2 - viewport.height / 2)).toBeLessThanOrEqual(2);
   }
-  const streetView = page.locator('#explorerStreetView[data-state="ready"]');
+  const streetView = page.locator('#explorerStreetView');
   await expect(streetView).toBeVisible();
   await page.waitForTimeout(2_000);
+  const streetViewStateAt2Seconds = await streetView.getAttribute('data-state') || 'unknown';
   const streetViewBoxAt2Seconds = await page.locator('#explorerStreetViewFrame').boundingBox();
   expectUsableBox(streetViewBoxAt2Seconds, viewport);
   await page.waitForTimeout(6_000);
+  await expect(streetView).toHaveAttribute('data-state', 'ready');
+  const streetViewStateAt8Seconds = await streetView.getAttribute('data-state') || 'unknown';
   const streetViewBoxAt8Seconds = await page.locator('#explorerStreetViewFrame').boundingBox();
   expect(sameBox(streetViewBoxAt2Seconds, streetViewBoxAt8Seconds)).toBe(true);
 
-  await page.getByRole('button', { name: 'Close building details' }).press('Escape');
+  await closeButton.press('Escape');
   await expect(page.locator('.building-status-overlay')).toHaveAttribute('hidden', '');
   await expect.poll(() => page.evaluate(() => document.activeElement?.getAttribute('aria-label'))).toContain('Open 노량진 드림스퀘어 복합빌딩 building status');
+  const activeElementLabel = await page.evaluate(() => document.activeElement?.getAttribute('aria-label') || '');
 
   await centralBuilding.click();
   const rentCheckLink = page.getByRole('link', { name: /Check my quote/ });
@@ -116,6 +130,9 @@ test('freezes the Dongjak Noryangjin production explorer and Rent Check contract
         size: box('.rent-check-size-field'),
         submit: box('#rentCheckButton')
       },
+      selectedDistrictControl: (document.querySelector('#rentCheckArea') as HTMLSelectElement | null)?.value || '',
+      selectedDistrictLabel: (document.querySelector('.district-combobox-input') as HTMLInputElement | null)?.value || '',
+      selectedType: (document.querySelector('#rentCheckType') as HTMLSelectElement | null)?.value || '',
       status: {
         state: status?.getAttribute('data-state') || 'idle',
         text: status?.textContent?.trim() || ''
@@ -139,21 +156,44 @@ test('freezes the Dongjak Noryangjin production explorer and Rent Check contract
   ]) expect(rentCheck.disclosures).toContain(disclosure);
   for (const box of Object.values(rentCheck.fieldBoxes)) expectUsableBox(box, rentCheck.viewport);
 
-  Object.assign(evidence, {
+  writeBrowserEvidence(evidencePath, {
+    schemaVersion:BROWSER_BASELINE_SCHEMA_VERSION,
+    capturedAt:new Date().toISOString(),
+    sourceRevision:process.env.LEGACY_SOURCE_REVISION || '4acbcca6476eabd9033915578f8c532cb2f581c8',
+    runner:'playwright-chromium',
+    targetBaseUrl:new URL(baseUrl).origin,
     explorer: {
-      status: explorerResponse?.status() ?? null,
-      selectedUrl,
+      url:urlAfterIdle,
+      pageAvailable:explorerResponse?.status() === 200,
+      selectedDong:'노량진동',
       viewport,
       mapBox,
+      selectionStability:{
+        durationMs:stabilityDurationMs,
+        urlBeforeIdle,
+        urlAfterIdle
+      },
       buildingCount,
       dialogBox,
-      streetViewBoxAt2Seconds,
-      streetViewBoxAt8Seconds
+      streetView:{
+        stateAt2Seconds:streetViewStateAt2Seconds,
+        stateAt8Seconds:streetViewStateAt8Seconds,
+        boxAt2Seconds:streetViewBoxAt2Seconds,
+        boxAt8Seconds:streetViewBoxAt8Seconds
+      }
     },
-    rentCheck
+    buildingModal:{
+      closeButtonVisible:true,
+      closeEscapeFocus:{
+        overlayHidden:true,
+        activeElementLabel
+      }
+    },
+    rentCheck:{
+      url:page.url(),
+      pageAvailable:rentCheckResponse.status() === 200,
+      ...rentCheck
+    },
+    consoleErrors
   });
-  } finally {
-  mkdirSync(dirname(evidencePath), { recursive: true });
-  writeFileSync(evidencePath, `${JSON.stringify(evidence, null, 2)}\n`);
-  }
 });

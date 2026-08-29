@@ -2,13 +2,20 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const crypto = require('node:crypto');
 const fs = require('node:fs');
+const os = require('node:os');
 const path = require('node:path');
 
 const {
   calculateFixture,
+  collectCalculationFixtures,
   collectApiContracts
 } = require('../scripts/v2-migration/collect-api-contracts.cjs');
+
+function sha256File(file) {
+  return crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+}
 
 test('locks the signedprice comparison assumption at five percent', () => {
   const fixture = calculateFixture({
@@ -42,8 +49,13 @@ test('captures all eleven Vercel API functions', () => {
   ]);
   for (const contract of contracts) {
     assert.deepEqual(Object.keys(contract), [
-      'route', 'methods', 'requiredInputs', 'responseKeys', 'errorCodes', 'successes', 'errors'
+      'route', 'source', 'methods', 'requiredInputs', 'responseKeys', 'errorCodes', 'successes', 'errors'
     ]);
+    const sourceFile = `${contract.route.slice('/api/'.length)}.js`;
+    assert.deepEqual(contract.source, {
+      file: `api/${sourceFile}`,
+      sha256: sha256File(path.join(process.cwd(), 'api', sourceFile))
+    });
     assert.ok(contract.methods.length > 0);
     assert.ok(contract.successes.length > 0);
     assert.ok(contract.errors.length > 0);
@@ -168,7 +180,7 @@ test('captures every route input, response, error, and header contract exhaustiv
   assert.doesNotMatch(serialized, /DATA_GO_KR_SERVICE_KEY|GOOGLE_MAPS_BROWSER_KEY|test-key|secret-value/i);
 });
 
-test('generated artifacts are deterministic and match the exported contracts', () => {
+test('generated artifacts are deterministic, source-bound, and match the exported contracts', (t) => {
   const rootDir = process.cwd();
   const contracts = collectApiContracts(rootDir);
   const artifact = JSON.parse(fs.readFileSync(
@@ -179,13 +191,31 @@ test('generated artifacts are deterministic and match the exported contracts', (
   ));
   assert.deepEqual(artifact, contracts);
   assert.ok(Array.isArray(fixtures));
-  assert.deepEqual(fixtures[0], calculateFixture({
-    depositKrw:100_000_000,
-    monthlyRentKrw:1_000_000,
-    areaSqm:50,
-    annualRate:0.05
-  }));
+  assert.deepEqual(fixtures, collectCalculationFixtures(rootDir));
+  assert.deepEqual(fixtures[0].sourceDigests, [
+    { file:'deposit-conversion.js', sha256:sha256File(path.join(rootDir, 'deposit-conversion.js')) },
+    { file:'lib/rent-check-core.cjs', sha256:sha256File(path.join(rootDir, 'lib/rent-check-core.cjs')) }
+  ]);
   assert.equal(fixtures[0].assumption, 'signedprice comparison assumption');
   assert.equal(fixtures[0].legalRate, false);
   assert.equal(fixtures[0].statutoryRate, false);
+
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'signedprice-source-digests-'));
+  t.after(() => fs.rmSync(tempDir, { recursive:true, force:true }));
+  fs.cpSync(path.join(rootDir, 'api'), path.join(tempDir, 'api'), { recursive:true });
+  fs.mkdirSync(path.join(tempDir, 'lib'), { recursive:true });
+  fs.copyFileSync(path.join(rootDir, 'deposit-conversion.js'), path.join(tempDir, 'deposit-conversion.js'));
+  fs.copyFileSync(path.join(rootDir, 'lib/rent-check-core.cjs'), path.join(tempDir, 'lib/rent-check-core.cjs'));
+
+  fs.appendFileSync(path.join(tempDir, 'api/fx.js'), '\n// source drift\n');
+  const changedContracts = collectApiContracts(tempDir);
+  assert.notEqual(
+    changedContracts.find((item) => item.route === '/api/fx').source.sha256,
+    contracts.find((item) => item.route === '/api/fx').source.sha256
+  );
+  fs.appendFileSync(path.join(tempDir, 'lib/rent-check-core.cjs'), '\n// calculation source drift\n');
+  assert.notEqual(
+    collectCalculationFixtures(tempDir)[0].sourceDigests[1].sha256,
+    fixtures[0].sourceDigests[1].sha256
+  );
 });

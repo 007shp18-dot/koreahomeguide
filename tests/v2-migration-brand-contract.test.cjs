@@ -15,7 +15,11 @@ test('locks the approved signedprice identity', () => {
     domain: 'signedprice.com',
     casing: 'lowercase-public',
     colors: { ink:'#0f172a', white:'#ffffff', accent:'#2563eb', accentLight:'#60a5fa', muted:'#64748b' },
-    descriptors: ['Real prices. Local rules. Trusted experts.', 'Global property intelligence and transaction network.'],
+    descriptors: [
+      'Real prices. Local rules. Trusted experts.',
+      'Real prices. Better property decisions.',
+      'Global property intelligence and transaction network.'
+    ],
     logoAssets: ['logo-mark.svg', 'logo-mark-16.svg', 'logo-mark-inverse.svg', 'logo-mark-mono.svg', 'favicon.svg', 'favicon.ico', 'apple-touch-icon.png', 'og-image.svg'],
     ogRules: { defaultClaim: 'Property intelligence for Seoul, Singapore and Dubai', requireMarketCapabilityEvidence: true },
   });
