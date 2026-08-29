@@ -1,0 +1,698 @@
+[
+  {
+    "path": "/",
+    "sourceFile": "index.html",
+    "kind": "page",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/about/",
+    "sourceFile": "about/index.html",
+    "kind": "page",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/community/",
+    "sourceFile": "community/index.html",
+    "kind": "community",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/community/add/",
+    "sourceFile": "community/add/index.html",
+    "kind": "community",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/compare/",
+    "sourceFile": "compare/index.html",
+    "kind": "compare",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/embed/",
+    "sourceFile": "embed/index.html",
+    "kind": "page",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/explore/",
+    "sourceFile": "explore/index.html",
+    "kind": "explore",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/explore/building/",
+    "sourceFile": "explore/building/index.html",
+    "kind": "explore",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/guides/",
+    "sourceFile": "guides/index.html",
+    "kind": "guide",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/guides/before-you-sign/",
+    "sourceFile": "guides/before-you-sign/index.html",
+    "kind": "guide",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/guides/korea-rent-deposit-protection-foreigners/",
+    "sourceFile": "guides/korea-rent-deposit-protection-foreigners/index.html",
+    "kind": "guide",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/guides/korea-rental-contract-checklist/",
+    "sourceFile": "guides/korea-rental-contract-checklist/index.html",
+    "kind": "guide",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/guides/korea-rental-scams/",
+    "sourceFile": "guides/korea-rental-scams/index.html",
+    "kind": "guide",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/guides/rent-apartment-korea-foreigner/",
+    "sourceFile": "guides/rent-apartment-korea-foreigner/index.html",
+    "kind": "guide",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/guides/seoul-brokerage-fees/",
+    "sourceFile": "guides/seoul-brokerage-fees/index.html",
+    "kind": "guide",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/guides/seoul-officetel-rent/",
+    "sourceFile": "guides/seoul-officetel-rent/index.html",
+    "kind": "guide",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/guides/wolse-vs-jeonse/",
+    "sourceFile": "guides/wolse-vs-jeonse/index.html",
+    "kind": "guide",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/privacy/",
+    "sourceFile": "privacy/index.html",
+    "kind": "page",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/rent/dongdaemun-gu/apartment/",
+    "sourceFile": "rent/dongdaemun-gu/apartment/index.html",
+    "kind": "rent",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/rent/dongdaemun-gu/officetel/",
+    "sourceFile": "rent/dongdaemun-gu/officetel/index.html",
+    "kind": "rent",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/rent/dongdaemun-gu/villa/",
+    "sourceFile": "rent/dongdaemun-gu/villa/index.html",
+    "kind": "rent",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/rent/gangnam-gu/apartment/",
+    "sourceFile": "rent/gangnam-gu/apartment/index.html",
+    "kind": "rent",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/rent/gangnam-gu/officetel/",
+    "sourceFile": "rent/gangnam-gu/officetel/index.html",
+    "kind": "rent",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/rent/gangnam-gu/villa/",
+    "sourceFile": "rent/gangnam-gu/villa/index.html",
+    "kind": "rent",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/rent/gwanak-gu/apartment/",
+    "sourceFile": "rent/gwanak-gu/apartment/index.html",
+    "kind": "rent",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/rent/gwanak-gu/officetel/",
+    "sourceFile": "rent/gwanak-gu/officetel/index.html",
+    "kind": "rent",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/rent/gwanak-gu/villa/",
+    "sourceFile": "rent/gwanak-gu/villa/index.html",
+    "kind": "rent",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/rent/gwangjin-gu/apartment/",
+    "sourceFile": "rent/gwangjin-gu/apartment/index.html",
+    "kind": "rent",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/rent/gwangjin-gu/officetel/",
+    "sourceFile": "rent/gwangjin-gu/officetel/index.html",
+    "kind": "rent",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/rent/gwangjin-gu/villa/",
+    "sourceFile": "rent/gwangjin-gu/villa/index.html",
+    "kind": "rent",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/rent/mapo-gu/apartment/",
+    "sourceFile": "rent/mapo-gu/apartment/index.html",
+    "kind": "rent",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/rent/mapo-gu/officetel/",
+    "sourceFile": "rent/mapo-gu/officetel/index.html",
+    "kind": "rent",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/rent/mapo-gu/villa/",
+    "sourceFile": "rent/mapo-gu/villa/index.html",
+    "kind": "rent",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/rent/seodaemun-gu/apartment/",
+    "sourceFile": "rent/seodaemun-gu/apartment/index.html",
+    "kind": "rent",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/rent/seodaemun-gu/officetel/",
+    "sourceFile": "rent/seodaemun-gu/officetel/index.html",
+    "kind": "rent",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/rent/seodaemun-gu/villa/",
+    "sourceFile": "rent/seodaemun-gu/villa/index.html",
+    "kind": "rent",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/rent/seongbuk-gu/apartment/",
+    "sourceFile": "rent/seongbuk-gu/apartment/index.html",
+    "kind": "rent",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/rent/seongbuk-gu/officetel/",
+    "sourceFile": "rent/seongbuk-gu/officetel/index.html",
+    "kind": "rent",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/rent/seongbuk-gu/villa/",
+    "sourceFile": "rent/seongbuk-gu/villa/index.html",
+    "kind": "rent",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/rent/seongdong-gu/apartment/",
+    "sourceFile": "rent/seongdong-gu/apartment/index.html",
+    "kind": "rent",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/rent/seongdong-gu/officetel/",
+    "sourceFile": "rent/seongdong-gu/officetel/index.html",
+    "kind": "rent",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/rent/seongdong-gu/villa/",
+    "sourceFile": "rent/seongdong-gu/villa/index.html",
+    "kind": "rent",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/rent/yeongdeungpo-gu/apartment/",
+    "sourceFile": "rent/yeongdeungpo-gu/apartment/index.html",
+    "kind": "rent",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/rent/yeongdeungpo-gu/officetel/",
+    "sourceFile": "rent/yeongdeungpo-gu/officetel/index.html",
+    "kind": "rent",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/rent/yeongdeungpo-gu/villa/",
+    "sourceFile": "rent/yeongdeungpo-gu/villa/index.html",
+    "kind": "rent",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/rent/yongsan-gu/apartment/",
+    "sourceFile": "rent/yongsan-gu/apartment/index.html",
+    "kind": "rent",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/rent/yongsan-gu/officetel/",
+    "sourceFile": "rent/yongsan-gu/officetel/index.html",
+    "kind": "rent",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/rent/yongsan-gu/villa/",
+    "sourceFile": "rent/yongsan-gu/villa/index.html",
+    "kind": "rent",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/saved-homes/",
+    "sourceFile": "saved-homes/index.html",
+    "kind": "page",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/terms/",
+    "sourceFile": "terms/index.html",
+    "kind": "page",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/tools/brokerage-fee-calculator/",
+    "sourceFile": "tools/brokerage-fee-calculator/index.html",
+    "kind": "tool",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/tools/salary-to-housing/",
+    "sourceFile": "tools/salary-to-housing/index.html",
+    "kind": "tool",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/tools/seoul-rent-check/",
+    "sourceFile": "tools/seoul-rent-check/index.html",
+    "kind": "tool",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/zh/",
+    "sourceFile": "zh/index.html",
+    "kind": "page",
+    "locales": [
+      "zh-CN"
+    ]
+  },
+  {
+    "path": "/zh/about/",
+    "sourceFile": "zh/about/index.html",
+    "kind": "page",
+    "locales": [
+      "zh-CN"
+    ]
+  },
+  {
+    "path": "/zh/compare/",
+    "sourceFile": "zh/compare/index.html",
+    "kind": "compare",
+    "locales": [
+      "zh-CN"
+    ]
+  },
+  {
+    "path": "/zh/explore/",
+    "sourceFile": "zh/explore/index.html",
+    "kind": "explore",
+    "locales": [
+      "zh-CN"
+    ]
+  },
+  {
+    "path": "/zh/explore/building/",
+    "sourceFile": "zh/explore/building/index.html",
+    "kind": "explore",
+    "locales": [
+      "zh-CN"
+    ]
+  },
+  {
+    "path": "/zh/guides/",
+    "sourceFile": "zh/guides/index.html",
+    "kind": "guide",
+    "locales": [
+      "zh-CN"
+    ]
+  },
+  {
+    "path": "/zh/guides/before-you-sign/",
+    "sourceFile": "zh/guides/before-you-sign/index.html",
+    "kind": "guide",
+    "locales": [
+      "zh-CN"
+    ]
+  },
+  {
+    "path": "/zh/guides/korea-rent-deposit-protection-foreigners/",
+    "sourceFile": "zh/guides/korea-rent-deposit-protection-foreigners/index.html",
+    "kind": "guide",
+    "locales": [
+      "zh-CN"
+    ]
+  },
+  {
+    "path": "/zh/guides/korea-rental-contract-checklist/",
+    "sourceFile": "zh/guides/korea-rental-contract-checklist/index.html",
+    "kind": "guide",
+    "locales": [
+      "zh-CN"
+    ]
+  },
+  {
+    "path": "/zh/guides/korea-rental-scams/",
+    "sourceFile": "zh/guides/korea-rental-scams/index.html",
+    "kind": "guide",
+    "locales": [
+      "zh-CN"
+    ]
+  },
+  {
+    "path": "/zh/guides/rent-apartment-korea-foreigner/",
+    "sourceFile": "zh/guides/rent-apartment-korea-foreigner/index.html",
+    "kind": "guide",
+    "locales": [
+      "zh-CN"
+    ]
+  },
+  {
+    "path": "/zh/guides/seoul-brokerage-fees/",
+    "sourceFile": "zh/guides/seoul-brokerage-fees/index.html",
+    "kind": "guide",
+    "locales": [
+      "zh-CN"
+    ]
+  },
+  {
+    "path": "/zh/guides/seoul-officetel-rent/",
+    "sourceFile": "zh/guides/seoul-officetel-rent/index.html",
+    "kind": "guide",
+    "locales": [
+      "zh-CN"
+    ]
+  },
+  {
+    "path": "/zh/guides/wolse-vs-jeonse/",
+    "sourceFile": "zh/guides/wolse-vs-jeonse/index.html",
+    "kind": "guide",
+    "locales": [
+      "zh-CN"
+    ]
+  },
+  {
+    "path": "/zh/privacy/",
+    "sourceFile": "zh/privacy/index.html",
+    "kind": "page",
+    "locales": [
+      "zh-CN"
+    ]
+  },
+  {
+    "path": "/zh/rent/gangnam-gu/apartment/",
+    "sourceFile": "zh/rent/gangnam-gu/apartment/index.html",
+    "kind": "rent",
+    "locales": [
+      "zh-CN"
+    ]
+  },
+  {
+    "path": "/zh/rent/gangnam-gu/officetel/",
+    "sourceFile": "zh/rent/gangnam-gu/officetel/index.html",
+    "kind": "rent",
+    "locales": [
+      "zh-CN"
+    ]
+  },
+  {
+    "path": "/zh/rent/gangnam-gu/villa/",
+    "sourceFile": "zh/rent/gangnam-gu/villa/index.html",
+    "kind": "rent",
+    "locales": [
+      "zh-CN"
+    ]
+  },
+  {
+    "path": "/zh/rent/mapo-gu/apartment/",
+    "sourceFile": "zh/rent/mapo-gu/apartment/index.html",
+    "kind": "rent",
+    "locales": [
+      "zh-CN"
+    ]
+  },
+  {
+    "path": "/zh/rent/mapo-gu/officetel/",
+    "sourceFile": "zh/rent/mapo-gu/officetel/index.html",
+    "kind": "rent",
+    "locales": [
+      "zh-CN"
+    ]
+  },
+  {
+    "path": "/zh/rent/mapo-gu/villa/",
+    "sourceFile": "zh/rent/mapo-gu/villa/index.html",
+    "kind": "rent",
+    "locales": [
+      "zh-CN"
+    ]
+  },
+  {
+    "path": "/zh/rent/seongdong-gu/apartment/",
+    "sourceFile": "zh/rent/seongdong-gu/apartment/index.html",
+    "kind": "rent",
+    "locales": [
+      "zh-CN"
+    ]
+  },
+  {
+    "path": "/zh/rent/seongdong-gu/officetel/",
+    "sourceFile": "zh/rent/seongdong-gu/officetel/index.html",
+    "kind": "rent",
+    "locales": [
+      "zh-CN"
+    ]
+  },
+  {
+    "path": "/zh/rent/seongdong-gu/villa/",
+    "sourceFile": "zh/rent/seongdong-gu/villa/index.html",
+    "kind": "rent",
+    "locales": [
+      "zh-CN"
+    ]
+  },
+  {
+    "path": "/zh/rent/yeongdeungpo-gu/apartment/",
+    "sourceFile": "zh/rent/yeongdeungpo-gu/apartment/index.html",
+    "kind": "rent",
+    "locales": [
+      "zh-CN"
+    ]
+  },
+  {
+    "path": "/zh/rent/yeongdeungpo-gu/officetel/",
+    "sourceFile": "zh/rent/yeongdeungpo-gu/officetel/index.html",
+    "kind": "rent",
+    "locales": [
+      "zh-CN"
+    ]
+  },
+  {
+    "path": "/zh/rent/yeongdeungpo-gu/villa/",
+    "sourceFile": "zh/rent/yeongdeungpo-gu/villa/index.html",
+    "kind": "rent",
+    "locales": [
+      "zh-CN"
+    ]
+  },
+  {
+    "path": "/zh/rent/yongsan-gu/apartment/",
+    "sourceFile": "zh/rent/yongsan-gu/apartment/index.html",
+    "kind": "rent",
+    "locales": [
+      "zh-CN"
+    ]
+  },
+  {
+    "path": "/zh/rent/yongsan-gu/officetel/",
+    "sourceFile": "zh/rent/yongsan-gu/officetel/index.html",
+    "kind": "rent",
+    "locales": [
+      "zh-CN"
+    ]
+  },
+  {
+    "path": "/zh/rent/yongsan-gu/villa/",
+    "sourceFile": "zh/rent/yongsan-gu/villa/index.html",
+    "kind": "rent",
+    "locales": [
+      "zh-CN"
+    ]
+  },
+  {
+    "path": "/zh/saved-homes/",
+    "sourceFile": "zh/saved-homes/index.html",
+    "kind": "page",
+    "locales": [
+      "zh-CN"
+    ]
+  },
+  {
+    "path": "/zh/terms/",
+    "sourceFile": "zh/terms/index.html",
+    "kind": "page",
+    "locales": [
+      "zh-CN"
+    ]
+  },
+  {
+    "path": "/zh/tools/brokerage-fee-calculator/",
+    "sourceFile": "zh/tools/brokerage-fee-calculator/index.html",
+    "kind": "tool",
+    "locales": [
+      "zh-CN"
+    ]
+  },
+  {
+    "path": "/zh/tools/seoul-rent-check/",
+    "sourceFile": "zh/tools/seoul-rent-check/index.html",
+    "kind": "tool",
+    "locales": [
+      "zh-CN"
+    ]
+  }
+]

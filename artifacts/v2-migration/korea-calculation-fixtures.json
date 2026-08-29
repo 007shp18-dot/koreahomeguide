@@ -1,0 +1,13 @@
+[
+  {
+    "depositKrw": 100000000,
+    "monthlyRentKrw": 1000000,
+    "areaSqm": 50,
+    "annualRate": 0.05,
+    "assumption": "signedprice comparison assumption",
+    "legalRate": false,
+    "statutoryRate": false,
+    "adjustedMonthlyKrw": 1416667,
+    "adjustedPerSqmKrw": 28333
+  }
+]
