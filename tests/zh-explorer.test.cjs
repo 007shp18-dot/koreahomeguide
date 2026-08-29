@@ -67,7 +67,7 @@ test('Chinese explorer includes neighborhood drill-down and uses the shared loca
   assert.match(html, /id="dongList"/);
   assert.match(app, /\/api\/explore-dong/);
   assert.match(app, /KHGLocations\.dongLabel\(dong, 'zh-CN'\)/);
-  assert.match(html, /src="\/location-catalog\.js"/);
+  assert.match(html, /src="\/location-catalog\.js\?v=31"/);
   assert.match(app, /query\.get\('dong'\)/);
 });
 

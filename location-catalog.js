@@ -311,7 +311,7 @@
   }
 
   function districtLabel(code, locale, options) {
-    return display(DISTRICTS[String(code || '')], locale, code, options);
+    return display(RENT_CHECK_DISTRICTS[String(code || '')], locale, code, options);
   }
 
   function dongLabel(koreanName, locale, options) {

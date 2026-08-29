@@ -80,11 +80,18 @@ test('both locales expose a switching discovery rail', () => {
 test('desktop Explorer keeps map and discovery results inside one bounded workspace', () => {
   const css = fs.readFileSync('styles.css', 'utf8');
   const spatial = css.slice(css.indexOf('/* v27 choropleth Explorer workspace */'));
-  assert.match(spatial, /\.map-first-workspace\{[^}]*height:calc\(100dvh - 148px\)[^}]*transform:none[^}]*overflow:hidden/);
+  assert.match(spatial, /\.map-first-workspace\{[^}]*height:calc\(100dvh - 108px\)[^}]*transform:none[^}]*overflow:hidden/);
   assert.match(spatial, /\.map-first-workspace \.explorer-map-column\{[^}]*grid-area:auto[^}]*height:100%/);
   assert.match(spatial, /\.map-first-workspace \.explorer-discovery-rail\{[^}]*position:absolute[^}]*top:16px[^}]*bottom:16px[^}]*width:370px[^}]*overflow:hidden/);
   assert.match(spatial, /\.map-first-workspace \.explorer-discovery-rail \.explorer-results\{[^}]*height:100%[^}]*overflow-y:auto/);
   assert.doesNotMatch(spatial, /height:auto;[^}]*overflow:visible/);
+});
+
+test('desktop Explorer gives the map a compact single-row command bar', () => {
+  const css = fs.readFileSync('styles.css', 'utf8');
+  const spatial = css.slice(css.indexOf('/* v27 choropleth Explorer workspace */'));
+  assert.match(spatial, /\.map-first-workspace \.explorer-map-commandbar\{[^}]*display:flex[^}]*align-items:center/);
+  assert.match(spatial, /\.map-first-workspace \.explorer-map-commandbar \.explorer-map-legend\{display:none/);
 });
 
 test('mobile Explorer uses a bounded map bottom sheet instead of a long document list', () => {
@@ -157,7 +164,7 @@ test('Street View initializes only after the inline detail requests a verified l
 test('both Explorer locales load the cache-busted Street View assets', () => {
   for (const file of ['explore/index.html','zh/explore/index.html']) {
     const html = fs.readFileSync(file, 'utf8');
-    assert.match(html, /href="\/styles\.css\?v=30"/);
+    assert.match(html, /href="\/styles\.css\?v=31"/);
     assert.match(html, /src="\/explore\/building-window\.js\?v=30"/);
     assert.match(html, /src="\/explore\/panorama\.js\?v=30"/);
     assert.match(html, /src="\/explore\/explorer-utils\.js\?v=30"/);

@@ -54,8 +54,6 @@ let currentMapMetric = 'adjusted-per-sqm';
 const areaLoadGate = KHGExplorer.createRequestGate();
 const dongLoadGate = KHGExplorer.createRequestGate();
 let dongLoadPending = false;
-let currentVisibleDongs = null;
-let currentVisibleBuildingKeys = null;
 let buildingVisibleCount = 10;
 const explorerAnalytics = window.KHGProductAnalytics
   ? window.KHGProductAnalytics.createTracker(window)
@@ -209,7 +207,6 @@ function clearMapSelection() {
 function returnToNeighborhoods() {
   currentDong = '';
   currentBuildingKey = '';
-  currentVisibleBuildingKeys = null;
   clearMapSelection();
   setExplorerLevel('neighborhoods', { districtCode:areaSelect.value });
   if (currentAreaData) {
@@ -236,8 +233,6 @@ function returnToDistricts() {
 function handleSelectionChange() {
   areaLoadGate.invalidate();
   clearMapSelection();
-  currentVisibleDongs = null;
-  currentVisibleBuildingKeys = null;
   updateRentCheckHandoff();
   updateFilterSummary();
 }
@@ -289,9 +284,7 @@ function renderDongs(dongs, { publish = true } = {}) {
   if (!dongList) return;
   const allItems = Array.isArray(dongs) ? dongs : [];
   const budgetItems = filterDongsByBudget(allItems);
-  const items = currentVisibleDongs instanceof Set
-    ? budgetItems.filter(item => currentVisibleDongs.has(String(item.dong || '')))
-    : budgetItems;
+  const items = budgetItems;
   updateBudgetNote(items.length, allItems.length);
   if (publish) publishMapDongs(allItems);
   if (hasBudgetFilter() && !items.length) {
@@ -355,8 +348,6 @@ function activateDistrict(districtCode, { historyMode = 'push' } = {}) {
   selectedDistrictCode = code;
   areaSelect.value = code;
   currentDong = '';
-  currentVisibleDongs = null;
-  currentVisibleBuildingKeys = null;
   setExplorerLevel('neighborhoods', { districtCode:code });
   updateRentCheckHandoff({ lawdCd:code, propertyType:typeSelect.value });
   void loadArea({ historyMode });
@@ -407,10 +398,7 @@ function renderBuildings(buildings) {
     return;
   }
   if (buildingSection) buildingSection.hidden = false;
-  const visible = currentVisibleBuildingKeys instanceof Set
-    ? buildings.filter(item => currentVisibleBuildingKeys.has(String(item.buildingKey || '')))
-    : buildings;
-  const items = KHGExplorer.sortBuildings(visible, buildingSort ? buildingSort.value : 'evidence');
+  const items = KHGExplorer.sortBuildings(buildings, buildingSort ? buildingSort.value : 'evidence');
   if (!items.length) {
     buildingList.innerHTML = '<div class="explorer-empty">No named buildings had reported contracts in this recent period.</div>';
     return;
@@ -501,7 +489,6 @@ function activateNeighborhood(model, { historyMode = 'push' } = {}) {
   if (areaSelect.value === 'all' && /^\d{5}$/.test(String(selected.districtCode || ''))) {
     areaSelect.value = String(selected.districtCode);
     currentAreaData = null;
-    currentVisibleDongs = null;
     updateRentCheckHandoff({ lawdCd:selected.districtCode, propertyType:typeSelect.value });
   }
   currentMapSelection = null;
@@ -671,17 +658,6 @@ window.addEventListener('khg:building-window-state', event => {
   currentBuildingKey = detail.open && detail.selection ? String(detail.selection.buildingKey || '') : '';
   syncWorkspaceState();
 });
-window.addEventListener('khg:map-viewport-change', event => {
-  const detail = event.detail || {};
-  if (detail.markerScope === 'building') {
-    currentVisibleBuildingKeys = new Set(Array.isArray(detail.visibleBuildingKeys) ? detail.visibleBuildingKeys : []);
-    if (currentData) renderBuildings(currentData.buildings || []);
-    return;
-  }
-  currentVisibleDongs = new Set(Array.isArray(detail.visibleDongs) ? detail.visibleDongs : []);
-  if (currentAreaData) renderDongs(currentAreaData.dongs || [], { publish:false });
-});
-
 function openBuildingFromRow(row) {
   if (!row || !currentData || !window.KHGExplorerBuildingWindow) return;
   const item = (currentData.buildings || []).find(building => building.buildingKey === row.dataset.buildingKey);

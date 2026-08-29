@@ -91,7 +91,9 @@ test('both Explorer locales merge map title actions and legend into one command 
 test('both Explorer locales version the drawer, Panorama and workspace CSS assets', () => {
   for (const file of ['explore/index.html', 'zh/explore/index.html']) {
     const html = fs.readFileSync(file, 'utf8');
-    assert.match(html, /styles\.css\?v=30/, file);
+    assert.match(html, /styles\.css\?v=31/, file);
+    assert.match(html, /location-catalog\.js\?v=31/, file);
+    assert.match(html, /(?:zh\/)?explore\/app\.js\?v=31/, file);
     assert.match(html, /building-window\.js\?v=30/, file);
     assert.match(html, /panorama\.js\?v=30/, file);
   }
@@ -101,17 +103,17 @@ test('Explorer CSS gives the map a bounded desktop workspace and mobile bottom s
   const css = fs.readFileSync('styles.css', 'utf8');
   assert.match(css, /\.explorer-page\{max-width:1440px/);
   const finalLayer = css.slice(css.indexOf('/* v27 choropleth Explorer workspace */'));
-  assert.match(finalLayer, /\.map-first-workspace\{[^}]*height:calc\(100dvh - 148px\)[^}]*overflow:hidden/);
+  assert.match(finalLayer, /\.map-first-workspace\{[^}]*height:calc\(100dvh - 108px\)[^}]*overflow:hidden/);
   assert.match(finalLayer, /@media\(max-width:760px\)/);
   assert.match(finalLayer, /max-height:58dvh/);
   assert.match(css, /\.explorer-search-area/);
 });
 
-test('viewport-only list updates never republish markers or refit the map', () => {
+test('viewport movement never mutates the discovery list and explicit area search never refits the map', () => {
   for (const file of ['explore/app.js','zh/explore/app.js']) {
     const app = fs.readFileSync(file, 'utf8');
     assert.match(app, /function renderDongs\(dongs, \{ publish = true \} = \{\}\)/);
-    assert.match(app, /khg:map-viewport-change[\s\S]*?renderDongs\(currentAreaData\.dongs \|\| \[\], \{ publish:false \}\)/);
+    assert.doesNotMatch(app, /khg:map-viewport-change|currentVisibleDongs|currentVisibleBuildingKeys/);
   }
   const map = fs.readFileSync('explore/map.js', 'utf8');
   assert.match(map, /function renderMarkers\(\{ fitViewport = true \} = \{\}\)/);

@@ -47,3 +47,12 @@ test('all Rent Check forms keep size assistance outside primary fields', () => {
     assert.match(assist, /data-size-unit-toggle/, file);
   }
 });
+
+test('Explorer keeps crawlable rent guides in a collapsed disclosure', () => {
+  for (const file of ['explore/index.html','zh/explore/index.html']) {
+    const html = fs.readFileSync(file, 'utf8');
+    assert.match(html, /<details class="explorer-static-directory">/);
+    assert.match(html, /<summary>[^<]*(?:rent guides|租金指南)[^<]*<\/summary>/i);
+    assert.doesNotMatch(html, /<section class="explorer-static-directory"/);
+  }
+});

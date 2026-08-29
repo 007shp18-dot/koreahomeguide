@@ -7,6 +7,8 @@ test('district labels preserve Korean search and contract names', () => {
   assert.equal(catalog.districtLabel('11680','en'), 'Gangnam-gu (강남구)');
   assert.equal(catalog.districtLabel('11680','zh-CN'), '江南区（강남구）');
   assert.equal(catalog.districtLabel('11440','en'), 'Mapo-gu (마포구)');
+  assert.equal(catalog.districtLabel('11590','en'), 'Dongjak-gu (동작구)');
+  assert.equal(catalog.districtLabel('11590','zh-CN'), '铜雀区（동작구）');
 });
 
 test('dong labels use established localized names and Korean references', () => {
