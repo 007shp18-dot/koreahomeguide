@@ -105,3 +105,96 @@ test('NAVER reverse-geocode result exposes only a matching legal-dong code', () 
   assert.equal(panorama.legalCodeFromResponse(response, { districtCode:'11440', dong:'역삼동' }), '');
   assert.equal(panorama.legalCodeFromResponse(response, { districtCode:'11680', dong:'논현동' }), '');
 });
+
+test('initial panorama bearing faces the selected building from the capture point', () => {
+  assert.equal(panorama.bearingDegrees({ lat:0, lng:0 }, { lat:1, lng:0 }), 0);
+  assert.equal(panorama.bearingDegrees({ lat:0, lng:0 }, { lat:0, lng:1 }), 90);
+  assert.equal(panorama.bearingDegrees({ lat:0, lng:0 }, { lat:-1, lng:0 }), 180);
+  assert.equal(panorama.bearingDegrees({ lat:0, lng:0 }, { lat:0, lng:-1 }), -90);
+  assert.equal(Math.round(panorama.bearingDegrees({ lat:0, lng:0 }, { lat:1, lng:1 })), 45);
+  assert.equal(panorama.bearingDegrees(null, { lat:1, lng:1 }), null);
+});
+
+test('NAVER LatLng instance methods keep their receiver during bearing calculation', () => {
+  const capture = {
+    _lat:37.5,
+    _lng:127,
+    lat() { return this._lat; },
+    lng() { return this._lng; }
+  };
+  assert.equal(Math.round(panorama.bearingDegrees(capture, { lat:37.6, lng:127 })), 0);
+  assert.equal(panorama.evaluateResult({
+    status:'OK',
+    target:{ lat:37.5001, lng:127 },
+    location:{ coord:capture, photodate:'2026-07' }
+  }).available, true);
+});
+
+test('panorama frame size stays 16 by 9 even when a hidden canvas reports zero height', () => {
+  const element = {
+    clientWidth:422,
+    clientHeight:0,
+    getBoundingClientRect() { return { width:422, height:0 }; }
+  };
+  assert.deepEqual(panorama.panoramaFrameSize(element), { width:422, height:237 });
+});
+
+test('successful panorama result synchronizes size and faces the building', async () => {
+  const nodes = new Map();
+  const classNames = new Set();
+  const node = extra => ({
+    hidden:false,
+    dataset:{},
+    textContent:'',
+    clientWidth:422,
+    clientHeight:0,
+    replaceChildren() {},
+    getBoundingClientRect() { return { width:422, height:0 }; },
+    ...extra
+  });
+  nodes.set('#explorerStreetView', node());
+  nodes.set('#explorerStreetViewCanvas', node({ hidden:true }));
+  nodes.set('#explorerStreetViewStatus', node());
+  nodes.set('#explorerStreetViewMeta', node());
+  nodes.set('.building-status-window', node({ classList:{ add:value => classNames.add(value), remove:value => classNames.delete(value) } }));
+
+  let panoramaInstance = null;
+  const listeners = {};
+  function Panorama(_canvas, options) {
+    this.options = options;
+    this.sizeCalls = [];
+    this.povCalls = [];
+    this.setSize = size => this.sizeCalls.push(size);
+    this.setPov = pov => this.povCalls.push(pov);
+    this.setVisible = () => {};
+    this.getLocation = () => ({ coord:{ lat:() => 37.5, lng:() => 127.0 }, photodate:'2026.07' });
+    panoramaInstance = this;
+  }
+  const windowObject = {
+    document:{
+      documentElement:{ lang:'en' },
+      querySelector:selector => nodes.get(selector) || null
+    },
+    naver:{ maps:{
+      Panorama,
+      LatLng:function LatLng(lat, lng) { this.lat = lat; this.lng = lng; },
+      Size:function Size(width, height) { this.width = width; this.height = height; },
+      Event:{ addListener(_target, type, handler) { listeners[type] = handler; } }
+    } },
+    fetch:async () => ({ ok:true, json:async () => ({ naverKeyId:'key' }) }),
+    addEventListener() {},
+    dispatchEvent() {},
+    setTimeout,
+    clearTimeout
+  };
+  const controller = panorama.install(windowObject);
+  await controller.show({ kind:'building', lat:37.501, lng:127.0, districtCode:'11680', propertyType:'officetel' });
+  listeners.pano_status('OK');
+
+  assert.equal(panoramaInstance.sizeCalls.at(-1).width, 422);
+  assert.equal(panoramaInstance.sizeCalls.at(-1).height, 237);
+  assert.equal(panoramaInstance.povCalls.at(-1).pan, 0);
+  assert.equal(panoramaInstance.povCalls.at(-1).tilt, 0);
+  assert.equal(panoramaInstance.povCalls.at(-1).fov, 90);
+  assert.equal(classNames.has('has-street-view'), true);
+});

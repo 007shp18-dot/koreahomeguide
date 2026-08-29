@@ -19,18 +19,58 @@ test('root sitemap is an index with static pages plus 10 districts x 3 proven pr
   assert.match(root, /https:\/\/koreahomeguide\.com\/sitemap-static\.xml/);
   assert.match(root, /https:\/\/koreahomeguide\.com\/sitemaps\/seoul\/mapo-gu\/villa\//);
   assert.doesNotMatch(root, /\/sitemaps\/seoul\/gwanak-gu\/detached\//);
-  assert.equal((root.match(/<sitemap>/g) || []).length, 31);
+  for (const type of ['apartment','officetel','villa']) {
+    assert.match(root, new RegExp(`https://koreahomeguide\\.com/sitemaps/seoul/opportunities/${type}/`));
+  }
+  assert.equal((root.match(/<sitemap>/g) || []).length, 34);
   assert.equal((staticMap.match(/<url>/g) || []).length, 78);
   assert.equal(root.includes('/api/'), false);
 });
 
+test('opportunity sitemap emits only evidence-qualified approved routes in both locales', async () => {
+  const oldKey = process.env.DATA_GO_KR_SERVICE_KEY;
+  process.env.DATA_GO_KR_SERVICE_KEY = 'test';
+  delete require.cache[require.resolve('../api/sitemap-market.js')];
+  const sitemapApi = require('../api/sitemap-market.js');
+  const dongs = [
+    { dong:'회기동', districtCode:'11230', districtName:'Dongdaemun-gu', depositBands:[{ minDepositWon:10_000_000, maxDepositWon:30_000_000, count:5, medianDepositWon:20_000_000, medianMonthlyRentWon:520_000 }] },
+    { dong:'신림동', districtCode:'11620', districtName:'Gwanak-gu', depositBands:[{ minDepositWon:10_000_000, maxDepositWon:30_000_000, count:6, medianDepositWon:10_000_000, medianMonthlyRentWon:560_000 }] },
+    { dong:'연희동', districtCode:'11410', districtName:'Seodaemun-gu', depositBands:[{ minDepositWon:10_000_000, maxDepositWon:30_000_000, count:4, medianDepositWon:15_000_000, medianMonthlyRentWon:650_000 }] }
+  ];
+  const loadedTypes = [];
+  const handler = sitemapApi.createHandler({ opportunityLoader:async ({ propertyType }) => {
+    loadedTypes.push(propertyType);
+    return { dongs };
+  } });
+  const res = responseRecorder();
+  await handler({ method:'GET', query:{ mode:'opportunities', type:'officetel' } }, res);
+  assert.equal(res.statusCode, 200);
+  assert.match(res.body, /https:\/\/koreahomeguide\.com\/seoul\/officetel\/under-700000-won\//);
+  assert.doesNotMatch(res.body, /\/seoul\/apartment\/under-700000-won\//);
+  assert.doesNotMatch(res.body, /\/seoul\/villa\/under-700000-won\//);
+  assert.match(res.body, /https:\/\/koreahomeguide\.com\/zh\/seoul\/officetel\/under-700000-won\//);
+  assert.match(res.body, /https:\/\/koreahomeguide\.com\/seoul\/deposit\/10-million-won\//);
+  assert.doesNotMatch(res.body, /50-million-won/);
+  assert.doesNotMatch(res.body, /\/building\//);
+  assert.deepEqual(loadedTypes, ['officetel']);
+
+  const apartment = responseRecorder();
+  await handler({ method:'GET', query:{ mode:'opportunities', type:'apartment' } }, apartment);
+  assert.equal(apartment.statusCode, 200);
+  assert.match(apartment.body, /\/seoul\/apartment\/under-700000-won\//);
+  assert.doesNotMatch(apartment.body, /\/seoul\/deposit\//);
+  assert.deepEqual(loadedTypes, ['officetel','apartment']);
+  if (oldKey == null) delete process.env.DATA_GO_KR_SERVICE_KEY; else process.env.DATA_GO_KR_SERVICE_KEY = oldKey;
+});
+
 test('vercel exposes one shared child-sitemap endpoint without adding static HTML files', () => {
   const config = JSON.parse(fs.readFileSync('vercel.json','utf8'));
-  const route = config.rewrites.find(item => item.destination.includes('sitemap-market'));
+  const route = config.rewrites.find(item => item.destination.includes('sitemap-market') && item.destination.includes('district=:district'));
   assert.ok(route);
   assert.equal(route.source, '/sitemaps/seoul/:district/:type/');
   assert.match(route.destination, /district=:district/);
   assert.match(route.destination, /type=:type/);
+  assert.equal(config.rewrites.some(item => item.source === '/sitemaps/seoul/opportunities/:type/' && item.destination.includes('mode=opportunities') && item.destination.includes('type=:type')), true);
 });
 
 test('dynamic market sitemap emits only substantial EN/ZH Dong URLs and never building URLs', async () => {

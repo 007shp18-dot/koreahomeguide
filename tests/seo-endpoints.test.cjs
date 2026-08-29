@@ -155,6 +155,9 @@ test('vercel rewrites map EN/ZH Dong and building paths to two shared HTML endpo
   assert.match(serialized, /seo-dong-page/);
   assert.match(serialized, /seo-building-page/);
   assert.match(serialized, /\/zh\/seoul\//);
-  const seoRewrites = config.rewrites.filter(route => /seo-(?:dong|building)-page/.test(route.destination));
+  const seoRewrites = config.rewrites.filter(route =>
+    /seo-(?:dong|building)-page/.test(route.destination) &&
+    !route.destination.includes('mode=')
+  );
   assert.equal(seoRewrites.length, 4);
 });

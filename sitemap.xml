@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap><loc>https://koreahomeguide.com/sitemap-static.xml</loc></sitemap>
+  <sitemap><loc>https://koreahomeguide.com/sitemaps/seoul/opportunities/apartment/</loc></sitemap>
+  <sitemap><loc>https://koreahomeguide.com/sitemaps/seoul/opportunities/officetel/</loc></sitemap>
+  <sitemap><loc>https://koreahomeguide.com/sitemaps/seoul/opportunities/villa/</loc></sitemap>
   <sitemap><loc>https://koreahomeguide.com/sitemaps/seoul/gangnam-gu/apartment/</loc></sitemap>
   <sitemap><loc>https://koreahomeguide.com/sitemaps/seoul/gangnam-gu/officetel/</loc></sitemap>
   <sitemap><loc>https://koreahomeguide.com/sitemaps/seoul/gangnam-gu/villa/</loc></sitemap>

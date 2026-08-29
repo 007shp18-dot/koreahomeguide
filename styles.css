@@ -953,6 +953,17 @@ html[lang="zh-CN"] .core-ui .funnel-hero h1,html[lang="zh-CN"] .core-ui .tool-he
 .rent-check-form :where(.rent-check-money,.rent-check-size){height:52px;border-color:var(--line-strong);box-shadow:0 1px 2px var(--shadow-color)}
 .rent-check-form .search-button,.explorer-search-card>.search-button{height:52px;min-height:52px;box-shadow:0 6px 16px var(--focus-ring-soft)}
 
+/* v19 Street View stability and narrow-rail controls */
+.building-window-media-frame{position:relative;width:100%;min-height:0;aspect-ratio:16/9;overflow:hidden;border:1px solid var(--line);border-radius:var(--radius-md);background:var(--surface-soft)}
+.building-window-media-frame .building-window-loading-visual{position:absolute;inset:0;display:none;width:100%;height:100%;aspect-ratio:auto;border-radius:0}
+.building-status-window .explorer-street-view-canvas{position:absolute;inset:0;width:100%;height:100%;min-height:0;aspect-ratio:auto;border:0;border-radius:0}
+.building-window-media-frame #explorerStreetViewStatus{position:absolute;inset:0;display:grid;place-items:center;margin:0;padding:24px;color:var(--muted);font-size:12px;line-height:1.5;text-align:center}
+.explorer-street-view[data-state="ready"] #explorerStreetViewStatus{display:none}
+.map-first-workspace .building-section>.building-section-head{display:grid;grid-template-columns:minmax(0,1fr);align-items:start;gap:12px}
+.explorer-building-sort{width:100%;max-width:none}
+.explorer-building-sort select{width:100%;font-size:12px;text-overflow:clip}
+.explorer-opportunity-links{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin-top:22px;padding:16px 2px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:11px}.explorer-opportunity-links span{color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.045em}.explorer-opportunity-links a{color:var(--accent);font-weight:800;text-decoration:none}.explorer-opportunity-links a:hover{text-decoration:underline}
+
 /* v18 compact Rent Check decision and evidence disclosure */
 .rent-check-result{margin-top:24px;padding-top:0;border-top:0}
 .rent-check-result>.rent-check-summary{padding:28px;border:1px solid var(--line-strong);border-top:3px solid var(--result-tone);border-radius:var(--radius-lg);background:var(--surface);box-shadow:0 14px 38px var(--shadow-color)}

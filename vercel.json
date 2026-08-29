@@ -9,8 +9,28 @@
       "destination": "/api/explore-area?scope=all"
     },
     {
+      "source": "/sitemaps/seoul/opportunities/:type/",
+      "destination": "/api/sitemap-market?mode=opportunities&type=:type"
+    },
+    {
       "source": "/sitemaps/seoul/:district/:type/",
       "destination": "/api/sitemap-market?district=:district&type=:type"
+    },
+    {
+      "source": "/zh/seoul/deposit/:slug/",
+      "destination": "/api/seo-dong-page?mode=deposit&slug=:slug&type=officetel&lang=zh"
+    },
+    {
+      "source": "/seoul/deposit/:slug/",
+      "destination": "/api/seo-dong-page?mode=deposit&slug=:slug&type=officetel&lang=en"
+    },
+    {
+      "source": "/zh/seoul/:type/:slug/",
+      "destination": "/api/seo-dong-page?mode=budget&slug=:slug&type=:type&lang=zh"
+    },
+    {
+      "source": "/seoul/:type/:slug/",
+      "destination": "/api/seo-dong-page?mode=budget&slug=:slug&type=:type&lang=en"
     },
     {
       "source": "/zh/seoul/:district/:dong/:type/:building/",

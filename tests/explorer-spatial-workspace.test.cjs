@@ -29,3 +29,21 @@ test('full-canvas map layer stretches to the workspace height', () => {
   const spatial = css.slice(css.indexOf('/* v17 Explorer spatial workspace'));
   assert.match(spatial, /\.map-first-workspace \.explorer-map-column\{[^}]*height:100%[^}]*align-self:stretch/);
 });
+
+test('Street View loading and ready states share one stable media frame', () => {
+  const css = fs.readFileSync('styles.css', 'utf8');
+  const finalLayer = css.slice(css.indexOf('/* v19 Street View stability'));
+  assert.match(finalLayer, /\.building-window-media-frame\{[^}]*aspect-ratio:16\/9/);
+  assert.match(finalLayer, /\.building-window-media-frame\{[^}]*min-height:0/);
+  assert.match(finalLayer, /\.building-status-window \.explorer-street-view-canvas\{[^}]*position:absolute[^}]*inset:0[^}]*width:100%[^}]*height:100%/);
+  assert.doesNotMatch(finalLayer, /explorer-street-view-canvas\{[^}]*height:(?:120|126|170|190)px/);
+});
+
+test('both Explorer locales load the cache-busted Street View assets', () => {
+  for (const file of ['explore/index.html','zh/explore/index.html']) {
+    const html = fs.readFileSync(file, 'utf8');
+    assert.match(html, /href="\/styles\.css\?v=20"/);
+    assert.match(html, /src="\/explore\/building-window\.js\?v=19"/);
+    assert.match(html, /src="\/explore\/panorama\.js\?v=19"/);
+  }
+});

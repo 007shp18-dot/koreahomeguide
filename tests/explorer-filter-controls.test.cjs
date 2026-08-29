@@ -57,3 +57,11 @@ test('Explorer results expose current filters and a direct way back to editing t
     assert.match(script, /window\.scrollTo\(\{ top:Math\.max\(0, explorerSearchCard\.offsetTop - 16\), behavior:'smooth' \}\)/);
   }
 });
+
+test('building sort occupies its own full-width row without clipping the selected label', () => {
+  const css = read('styles.css');
+  const finalLayer = css.slice(css.indexOf('/* v19 Street View stability'));
+  assert.match(finalLayer, /\.map-first-workspace \.building-section>\.building-section-head\{[^}]*grid-template-columns:minmax\(0,1fr\)[^}]*\}/);
+  assert.match(finalLayer, /\.explorer-building-sort\{[^}]*width:100%[^}]*\}/);
+  assert.match(finalLayer, /\.explorer-building-sort select\{[^}]*width:100%[^}]*font-size:12px[^}]*\}/);
+});
