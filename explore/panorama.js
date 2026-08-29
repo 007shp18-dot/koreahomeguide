@@ -224,8 +224,8 @@
     }
 
     async function show(model) {
+      if (!model || model.kind !== 'building' || !point(model)) { reset(); return; }
       prepare();
-      if (!model || model.kind !== 'building' || !point(model)) return;
       const currentRequest = requestId;
       let outcomeTracked = false;
       const trackOutcome = (resultState, errorCategory = '') => {

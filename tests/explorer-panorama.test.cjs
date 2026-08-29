@@ -139,6 +139,38 @@ test('panorama frame size stays 16 by 9 even when a hidden canvas reports zero h
   assert.deepEqual(panorama.panoramaFrameSize(element), { width:422, height:237 });
 });
 
+test('a building without verified coordinates never leaves Street View loading forever', async () => {
+  const nodes = new Map();
+  const node = extra => ({
+    hidden:false,
+    dataset:{},
+    textContent:'',
+    replaceChildren() {},
+    ...extra
+  });
+  nodes.set('#explorerStreetView', node());
+  nodes.set('#explorerStreetViewCanvas', node({ hidden:true }));
+  nodes.set('#explorerStreetViewStatus', node());
+  nodes.set('#explorerStreetViewMeta', node());
+  let fetchCalls = 0;
+  const controller = panorama.install({
+    document:{
+      documentElement:{ lang:'en' },
+      querySelector:selector => nodes.get(selector) || null
+    },
+    fetch:async () => { fetchCalls += 1; return { ok:true, json:async () => ({ naverKeyId:'key' }) }; },
+    addEventListener() {},
+    setTimeout,
+    clearTimeout
+  });
+
+  await controller.show({ kind:'building', districtCode:'11680', propertyType:'apartment' });
+
+  assert.equal(nodes.get('#explorerStreetView').hidden, true);
+  assert.equal(nodes.get('#explorerStreetView').dataset.state, 'idle');
+  assert.equal(fetchCalls, 0);
+});
+
 test('successful panorama result synchronizes size and faces the building', async () => {
   const nodes = new Map();
   const classNames = new Set();
