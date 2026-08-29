@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "historicalSummary": {
+    "tests": 887,
+    "pass": 864,
+    "fail": 23,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "currentSummary": {
+    "tests": 890,
+    "pass": 867,
+    "fail": 23,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "failures": [
+    {
+      "file": "tests/analytics-pages.test.cjs",
+      "title": "every new indexable Phase 1 page defers GA4 to the shared analytics loader"
+    },
+    {
+      "file": "tests/building-seo-publishing-floor.test.cjs",
+      "title": "a building above the publishing floor is served and offered to search"
+    },
+    {
+      "file": "tests/building-seo-publishing-floor.test.cjs",
+      "title": "a building below the publishing floor is 404, not 410 — it was never published"
+    },
+    {
+      "file": "tests/building-seo-publishing-floor.test.cjs",
+      "title": "a redirect keeps the Chinese path prefix"
+    },
+    {
+      "file": "tests/building-seo-publishing-floor.test.cjs",
+      "title": "an unconfigured service key answers 503, never a half-built page"
+    },
+    {
+      "file": "tests/building-seo-publishing-floor.test.cjs",
+      "title": "an upstream failure answers 503 and is never cached as a 200"
+    },
+    {
+      "file": "tests/building-seo-publishing-floor.test.cjs",
+      "title": "the canonical URL itself does not redirect"
+    },
+    {
+      "file": "tests/building-seo-publishing-floor.test.cjs",
+      "title": "the hash suffix is the identity: a stale readable half 301s to the canonical URL"
+    },
+    {
+      "file": "tests/currency-defaults.test.cjs",
+      "title": "every currency-enabled page renders KRW first and loads persistent preference support"
+    },
+    {
+      "file": "tests/seo-discovery.test.cjs",
+      "title": "homepage and sitemap expose guide hubs, expanded market pages, and Rent Explorer"
+    },
+    {
+      "file": "tests/seo-endpoints.test.cjs",
+      "title": "Building SEO endpoint 404s a building whose sample is too thin to publish"
+    },
+    {
+      "file": "tests/seo-endpoints.test.cjs",
+      "title": "Dong SEO endpoint returns localized HTML with cache headers"
+    },
+    {
+      "file": "tests/seo-endpoints.test.cjs",
+      "title": "vercel rewrites map EN/ZH Dong and building paths to two shared HTML endpoints"
+    },
+    {
+      "file": "tests/seo-page-renderer.test.cjs",
+      "title": "a below-floor building page still renders in full, but noindex"
+    },
+    {
+      "file": "tests/seo-page-renderer.test.cjs",
+      "title": "a building above the publishing floor is published"
+    },
+    {
+      "file": "tests/seo-page-renderer.test.cjs",
+      "title": "a thin building sample is not published"
+    },
+    {
+      "file": "tests/seo-page-renderer.test.cjs",
+      "title": "Chinese Dong HTML is genuinely localized and keeps KRW primary"
+    },
+    {
+      "file": "tests/seo-page-renderer.test.cjs",
+      "title": "English Dong HTML has canonical, hreflang, index metadata, Dataset JSON-LD and nofollow Explorer building links"
+    },
+    {
+      "file": "tests/v10-6-dynamic-sitemap.test.cjs",
+      "title": "root sitemap is an index with static pages plus 10 districts x 3 proven property-type child sitemaps"
+    },
+    {
+      "file": "tests/v10-6-dynamic-sitemap.test.cjs",
+      "title": "vercel exposes one shared child-sitemap endpoint without adding static HTML files"
+    },
+    {
+      "file": "tests/v11-2-building-seo-quarantine.test.cjs",
+      "title": "Dong pages link to a building page only when that page is publishable"
+    },
+    {
+      "file": "tests/v11-2-building-seo-quarantine.test.cjs",
+      "title": "dynamic market sitemaps publish buildings without a second upstream fetch"
+    },
+    {
+      "file": "tests/v11-2-building-seo-quarantine.test.cjs",
+      "title": "the publishing floor is a named constant, not a number buried in a branch"
+    }
+  ]
+}

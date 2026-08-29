@@ -1,0 +1,2286 @@
+[
+  {
+    "path": "/",
+    "canonical": "https://koreahomeguide.com/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/"
+      }
+    ],
+    "title": "Seoul Rent Prices & Brokerage Fees, Explained in English | KoreaHomeGuide",
+    "description": "Check whether a Seoul rent quote looks fair using recent official signed rental transactions, then learn what to verify before you sign.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/about/",
+    "canonical": "https://koreahomeguide.com/about/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/about/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/about/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/about/"
+      }
+    ],
+    "title": "About the Data and Method | KoreaHomeGuide",
+    "description": "See where KoreaHomeGuide rental data comes from, how Rent Check works, its limits, and the project's commercial independence policy.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/community/",
+    "canonical": "https://koreahomeguide.com/community/",
+    "alternates": [],
+    "title": "Renter-contributed costs | KoreaHomeGuide",
+    "description": "How KoreaHomeGuide will aggregate renter-reported management fees, brokerage fees and deposit outcomes without publishing individual reports.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/community/add/",
+    "canonical": "",
+    "alternates": [],
+    "title": "Contribute a rent contract | KoreaHomeGuide",
+    "description": "",
+    "robots": "noindex,follow",
+    "schemaTypes": [],
+    "sitemapSources": []
+  },
+  {
+    "path": "/compare/",
+    "canonical": "https://koreahomeguide.com/compare/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/compare/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/compare/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/compare/"
+      }
+    ],
+    "title": "Compare Seoul Rent Markets | KoreaHomeGuide",
+    "description": "Compare two Seoul districts using recent official signed rental contracts and deposit-adjusted rent per square metre.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/embed/",
+    "canonical": "",
+    "alternates": [],
+    "title": "Seoul rent market snapshot | KoreaHomeGuide",
+    "description": "",
+    "robots": "noindex,follow",
+    "schemaTypes": [],
+    "sitemapSources": []
+  },
+  {
+    "path": "/explore/",
+    "canonical": "https://koreahomeguide.com/explore/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/explore/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/explore/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/explore/"
+      }
+    ],
+    "title": "Seoul Rent Explorer | Official Building-Level Rental Data",
+    "description": "Explore recent signed Seoul rental transactions by district, neighborhood, housing type, and building. Compare typical rent, deposit, size, and recent contract activity using official MOLIT data.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/explore/building/",
+    "canonical": "https://koreahomeguide.com/explore/building/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/explore/building/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/explore/building/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/explore/building/"
+      }
+    ],
+    "title": "Building Rent Data | Seoul Rent Explorer",
+    "description": "Review recent official signed rental transactions and building-level rent statistics in Seoul.",
+    "robots": "noindex,follow",
+    "schemaTypes": [],
+    "sitemapSources": []
+  },
+  {
+    "path": "/guides/",
+    "canonical": "https://koreahomeguide.com/guides/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/guides/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/guides/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/guides/"
+      }
+    ],
+    "title": "Korea Rental Guides | Seoul Rent, Contracts & Fees",
+    "description": "Practical Korea rental guides for foreign renters: wolse vs jeonse, contract checks, deposit protection, and Seoul brokerage fees.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/guides/before-you-sign/",
+    "canonical": "https://koreahomeguide.com/guides/before-you-sign/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/guides/before-you-sign/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/guides/before-you-sign/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/guides/before-you-sign/"
+      }
+    ],
+    "title": "Before Signing a Korea Rental Contract: 10 Checks",
+    "description": "Check the registry, landlord, deposit protections, special clauses and move-in steps before signing a rental contract in Korea.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/guides/korea-rent-deposit-protection-foreigners/",
+    "canonical": "https://koreahomeguide.com/guides/korea-rent-deposit-protection-foreigners/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/guides/korea-rent-deposit-protection-foreigners/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/guides/korea-rent-deposit-protection-foreigners/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/guides/korea-rent-deposit-protection-foreigners/"
+      }
+    ],
+    "title": "Korea Rent Deposit Protection for Foreigners | 2026 Guide",
+    "description": "Learn how foreign renters can protect a Korea rental deposit with registry checks, residence reporting, a fixed date, and current HUG rules.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/guides/korea-rental-contract-checklist/",
+    "canonical": "https://koreahomeguide.com/guides/korea-rental-contract-checklist/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/guides/korea-rental-contract-checklist/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/guides/korea-rental-contract-checklist/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/guides/korea-rental-contract-checklist/"
+      }
+    ],
+    "title": "Korea Rental Contract Checklist for Foreign Tenants",
+    "description": "Use a practical Korea rental contract checklist covering the property, landlord, deposit, fees, clauses and move-in protections.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/guides/korea-rental-scams/",
+    "canonical": "https://koreahomeguide.com/guides/korea-rental-scams/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/guides/korea-rental-scams/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/guides/korea-rental-scams/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/guides/korea-rental-scams/"
+      }
+    ],
+    "title": "Korea Rental Scams: 7 Deposit Red Flags",
+    "description": "Recognize seven Korea rental scam and deposit-risk warning signs before paying a reservation fee, signing or transferring money.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/guides/rent-apartment-korea-foreigner/",
+    "canonical": "https://koreahomeguide.com/guides/rent-apartment-korea-foreigner/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/guides/rent-apartment-korea-foreigner/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/guides/rent-apartment-korea-foreigner/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/guides/rent-apartment-korea-foreigner/"
+      }
+    ],
+    "title": "How Foreigners Can Rent an Apartment in Korea",
+    "description": "Follow the Korea apartment rental process for foreigners, from budgeting and housing types to contract checks, payment and move-in.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/guides/seoul-brokerage-fees/",
+    "canonical": "https://koreahomeguide.com/guides/seoul-brokerage-fees/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/guides/seoul-brokerage-fees/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/guides/seoul-brokerage-fees/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/guides/seoul-brokerage-fees/"
+      }
+    ],
+    "title": "Seoul Rental Brokerage Fees: Maximum Rates Explained",
+    "description": "Understand Seoul rental brokerage fee ceilings, the deposit-plus-rent formula, officetel rules, VAT and what renters can negotiate.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/guides/seoul-officetel-rent/",
+    "canonical": "https://koreahomeguide.com/guides/seoul-officetel-rent/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/guides/seoul-officetel-rent/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/guides/seoul-officetel-rent/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/guides/seoul-officetel-rent/"
+      }
+    ],
+    "title": "Seoul Officetel Rent: Deposits, Fees and Trade-offs",
+    "description": "Compare Seoul officetel deposits, monthly rent, management fees, usable area and contract checks before choosing a unit.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/guides/wolse-vs-jeonse/",
+    "canonical": "https://koreahomeguide.com/guides/wolse-vs-jeonse/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/guides/wolse-vs-jeonse/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/guides/wolse-vs-jeonse/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/guides/wolse-vs-jeonse/"
+      }
+    ],
+    "title": "Wolse vs Jeonse: Which Korean Rental Fits You?",
+    "description": "Compare wolse and jeonse in Korea: deposits, monthly rent, cash needs and contract risks, with practical checks for foreign renters.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/privacy/",
+    "canonical": "https://koreahomeguide.com/privacy/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/privacy/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/privacy/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/privacy/"
+      }
+    ],
+    "title": "Privacy | KoreaHomeGuide",
+    "description": "How KoreaHomeGuide handles browser-saved homes, analytics choices, and information submitted with a rent-check request.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/rent/dongdaemun-gu/apartment/",
+    "canonical": "https://koreahomeguide.com/rent/dongdaemun-gu/apartment/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/dongdaemun-gu/apartment/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/dongdaemun-gu/apartment/"
+      }
+    ],
+    "title": "Dongdaemun-gu Apartment Rent Prices | Official Seoul Data",
+    "description": "See official MOLIT apartment rents for Dongdaemun-gu, grouped by deposit and floor area with recent contract dates for its east-Seoul market.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/rent/dongdaemun-gu/officetel/",
+    "canonical": "https://koreahomeguide.com/rent/dongdaemun-gu/officetel/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/dongdaemun-gu/officetel/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/dongdaemun-gu/officetel/"
+      }
+    ],
+    "title": "Dongdaemun-gu Officetel Rent Prices | Official Seoul Data",
+    "description": "Compare official MOLIT officetel rents for Dongdaemun-gu, grouped by deposit and floor area with recent contract dates for its east-Seoul market.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/rent/dongdaemun-gu/villa/",
+    "canonical": "https://koreahomeguide.com/rent/dongdaemun-gu/villa/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/dongdaemun-gu/villa/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/dongdaemun-gu/villa/"
+      }
+    ],
+    "title": "Dongdaemun-gu Villa/Low-rise Rent Prices | Official Seoul Data",
+    "description": "Review official MOLIT villa/low-rise rents for Dongdaemun-gu, grouped by deposit and floor area with recent contract dates for its east-Seoul market.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/rent/gangnam-gu/apartment/",
+    "canonical": "https://koreahomeguide.com/rent/gangnam-gu/apartment/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/gangnam-gu/apartment/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/rent/gangnam-gu/apartment/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/gangnam-gu/apartment/"
+      }
+    ],
+    "title": "Gangnam-gu Apartment Rent Prices | Official Seoul Data",
+    "description": "See official MOLIT apartment rents for Gangnam-gu, grouped by deposit and floor area with recent contract dates for its office and transit market.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/rent/gangnam-gu/officetel/",
+    "canonical": "https://koreahomeguide.com/rent/gangnam-gu/officetel/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/gangnam-gu/officetel/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/rent/gangnam-gu/officetel/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/gangnam-gu/officetel/"
+      }
+    ],
+    "title": "Gangnam-gu Officetel Rent Prices | Official Seoul Data",
+    "description": "Compare official MOLIT officetel rents for Gangnam-gu, grouped by deposit and floor area with recent contract dates for its office and transit market.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/rent/gangnam-gu/villa/",
+    "canonical": "https://koreahomeguide.com/rent/gangnam-gu/villa/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/gangnam-gu/villa/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/rent/gangnam-gu/villa/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/gangnam-gu/villa/"
+      }
+    ],
+    "title": "Gangnam-gu Villa/Low-rise Rent Prices | Official Seoul Data",
+    "description": "Review official MOLIT villa/low-rise rents for Gangnam-gu, grouped by deposit and floor area with recent contract dates for its office and transit market.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/rent/gwanak-gu/apartment/",
+    "canonical": "https://koreahomeguide.com/rent/gwanak-gu/apartment/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/gwanak-gu/apartment/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/gwanak-gu/apartment/"
+      }
+    ],
+    "title": "Gwanak-gu Apartment Rent Prices | Official Seoul Data",
+    "description": "See official MOLIT apartment rents for Gwanak-gu, grouped by deposit and floor area with recent contract dates for its student and commuter market.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/rent/gwanak-gu/officetel/",
+    "canonical": "https://koreahomeguide.com/rent/gwanak-gu/officetel/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/gwanak-gu/officetel/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/gwanak-gu/officetel/"
+      }
+    ],
+    "title": "Gwanak-gu Officetel Rent Prices | Official Seoul Data",
+    "description": "Compare official MOLIT officetel rents for Gwanak-gu, grouped by deposit and floor area with recent contract dates for its student and commuter market.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/rent/gwanak-gu/villa/",
+    "canonical": "https://koreahomeguide.com/rent/gwanak-gu/villa/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/gwanak-gu/villa/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/gwanak-gu/villa/"
+      }
+    ],
+    "title": "Gwanak-gu Villa/Low-rise Rent Prices | Official Seoul Data",
+    "description": "Review official MOLIT villa/low-rise rents for Gwanak-gu, grouped by deposit and floor area with recent contract dates for its student and commuter market.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/rent/gwangjin-gu/apartment/",
+    "canonical": "https://koreahomeguide.com/rent/gwangjin-gu/apartment/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/gwangjin-gu/apartment/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/gwangjin-gu/apartment/"
+      }
+    ],
+    "title": "Gwangjin-gu Apartment Rent Prices | Official Seoul Data",
+    "description": "See official MOLIT apartment rents for Gwangjin-gu, grouped by deposit and floor area with recent contract dates for its east-Seoul riverside market.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/rent/gwangjin-gu/officetel/",
+    "canonical": "https://koreahomeguide.com/rent/gwangjin-gu/officetel/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/gwangjin-gu/officetel/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/gwangjin-gu/officetel/"
+      }
+    ],
+    "title": "Gwangjin-gu Officetel Rent Prices | Official Seoul Data",
+    "description": "Compare official MOLIT officetel rents for Gwangjin-gu, grouped by deposit and floor area with recent contract dates for its east-Seoul riverside market.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/rent/gwangjin-gu/villa/",
+    "canonical": "https://koreahomeguide.com/rent/gwangjin-gu/villa/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/gwangjin-gu/villa/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/gwangjin-gu/villa/"
+      }
+    ],
+    "title": "Gwangjin-gu Villa/Low-rise Rent Prices | Official Seoul Data",
+    "description": "Review official MOLIT villa/low-rise rents for Gwangjin-gu, grouped by deposit and floor area with recent contract dates for its east-Seoul riverside market.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/rent/mapo-gu/apartment/",
+    "canonical": "https://koreahomeguide.com/rent/mapo-gu/apartment/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/mapo-gu/apartment/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/rent/mapo-gu/apartment/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/mapo-gu/apartment/"
+      }
+    ],
+    "title": "Mapo-gu Apartment Rent Prices | Official Seoul Data",
+    "description": "See official MOLIT apartment rents for Mapo-gu, grouped by deposit and floor area with recent contract dates for its western Seoul market.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/rent/mapo-gu/officetel/",
+    "canonical": "https://koreahomeguide.com/rent/mapo-gu/officetel/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/mapo-gu/officetel/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/rent/mapo-gu/officetel/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/mapo-gu/officetel/"
+      }
+    ],
+    "title": "Mapo-gu Officetel Rent Prices | Official Seoul Data",
+    "description": "Compare official MOLIT officetel rents for Mapo-gu, grouped by deposit and floor area with recent contract dates for its western Seoul market.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/rent/mapo-gu/villa/",
+    "canonical": "https://koreahomeguide.com/rent/mapo-gu/villa/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/mapo-gu/villa/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/rent/mapo-gu/villa/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/mapo-gu/villa/"
+      }
+    ],
+    "title": "Mapo-gu Villa/Low-rise Rent Prices | Official Seoul Data",
+    "description": "Review official MOLIT villa/low-rise rents for Mapo-gu, grouped by deposit and floor area with recent contract dates for its western Seoul market.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/rent/seodaemun-gu/apartment/",
+    "canonical": "https://koreahomeguide.com/rent/seodaemun-gu/apartment/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/seodaemun-gu/apartment/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/seodaemun-gu/apartment/"
+      }
+    ],
+    "title": "Seodaemun-gu Apartment Rent Prices | Official Seoul Data",
+    "description": "See official MOLIT apartment rents for Seodaemun-gu, grouped by deposit and floor area with recent contract dates for its northwest university market.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/rent/seodaemun-gu/officetel/",
+    "canonical": "https://koreahomeguide.com/rent/seodaemun-gu/officetel/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/seodaemun-gu/officetel/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/seodaemun-gu/officetel/"
+      }
+    ],
+    "title": "Seodaemun-gu Officetel Rent Prices | Official Seoul Data",
+    "description": "Compare official MOLIT officetel rents for Seodaemun-gu, grouped by deposit and floor area with recent contract dates for its northwest university market.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/rent/seodaemun-gu/villa/",
+    "canonical": "https://koreahomeguide.com/rent/seodaemun-gu/villa/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/seodaemun-gu/villa/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/seodaemun-gu/villa/"
+      }
+    ],
+    "title": "Seodaemun-gu Villa/Low-rise Rent Prices | Official Seoul Data",
+    "description": "Review official MOLIT villa/low-rise rents for Seodaemun-gu, grouped by deposit and floor area with recent contract dates for its northwest university market.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/rent/seongbuk-gu/apartment/",
+    "canonical": "https://koreahomeguide.com/rent/seongbuk-gu/apartment/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/seongbuk-gu/apartment/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/seongbuk-gu/apartment/"
+      }
+    ],
+    "title": "Seongbuk-gu Apartment Rent Prices | Official Seoul Data",
+    "description": "See official MOLIT apartment rents for Seongbuk-gu, grouped by deposit and floor area with recent contract dates for its northeast university market.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/rent/seongbuk-gu/officetel/",
+    "canonical": "https://koreahomeguide.com/rent/seongbuk-gu/officetel/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/seongbuk-gu/officetel/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/seongbuk-gu/officetel/"
+      }
+    ],
+    "title": "Seongbuk-gu Officetel Rent Prices | Official Seoul Data",
+    "description": "Compare official MOLIT officetel rents for Seongbuk-gu, grouped by deposit and floor area with recent contract dates for its northeast university market.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/rent/seongbuk-gu/villa/",
+    "canonical": "https://koreahomeguide.com/rent/seongbuk-gu/villa/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/seongbuk-gu/villa/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/seongbuk-gu/villa/"
+      }
+    ],
+    "title": "Seongbuk-gu Villa/Low-rise Rent Prices | Official Seoul Data",
+    "description": "Review official MOLIT villa/low-rise rents for Seongbuk-gu, grouped by deposit and floor area with recent contract dates for its northeast university market.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/rent/seongdong-gu/apartment/",
+    "canonical": "https://koreahomeguide.com/rent/seongdong-gu/apartment/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/seongdong-gu/apartment/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/rent/seongdong-gu/apartment/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/seongdong-gu/apartment/"
+      }
+    ],
+    "title": "Seongdong-gu Apartment Rent Prices | Official Seoul Data",
+    "description": "See official MOLIT apartment rents for Seongdong-gu, grouped by deposit and floor area with recent contract dates for its eastern-central market.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/rent/seongdong-gu/officetel/",
+    "canonical": "https://koreahomeguide.com/rent/seongdong-gu/officetel/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/seongdong-gu/officetel/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/rent/seongdong-gu/officetel/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/seongdong-gu/officetel/"
+      }
+    ],
+    "title": "Seongdong-gu Officetel Rent Prices | Official Seoul Data",
+    "description": "Compare official MOLIT officetel rents for Seongdong-gu, grouped by deposit and floor area with recent contract dates for its eastern-central market.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/rent/seongdong-gu/villa/",
+    "canonical": "https://koreahomeguide.com/rent/seongdong-gu/villa/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/seongdong-gu/villa/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/rent/seongdong-gu/villa/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/seongdong-gu/villa/"
+      }
+    ],
+    "title": "Seongdong-gu Villa/Low-rise Rent Prices | Official Seoul Data",
+    "description": "Review official MOLIT villa/low-rise rents for Seongdong-gu, grouped by deposit and floor area with recent contract dates for its eastern-central market.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/rent/yeongdeungpo-gu/apartment/",
+    "canonical": "https://koreahomeguide.com/rent/yeongdeungpo-gu/apartment/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/yeongdeungpo-gu/apartment/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/rent/yeongdeungpo-gu/apartment/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/yeongdeungpo-gu/apartment/"
+      }
+    ],
+    "title": "Yeongdeungpo-gu Apartment Rent Prices | Official Seoul Data",
+    "description": "See official MOLIT apartment rents for Yeongdeungpo-gu, grouped by deposit and floor area with recent contract dates for its Yeouido-area market.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/rent/yeongdeungpo-gu/officetel/",
+    "canonical": "https://koreahomeguide.com/rent/yeongdeungpo-gu/officetel/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/yeongdeungpo-gu/officetel/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/rent/yeongdeungpo-gu/officetel/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/yeongdeungpo-gu/officetel/"
+      }
+    ],
+    "title": "Yeongdeungpo-gu Officetel Rent Prices | Official Seoul Data",
+    "description": "Compare official MOLIT officetel rents for Yeongdeungpo-gu, grouped by deposit and floor area with recent contract dates for its Yeouido-area market.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/rent/yeongdeungpo-gu/villa/",
+    "canonical": "https://koreahomeguide.com/rent/yeongdeungpo-gu/villa/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/yeongdeungpo-gu/villa/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/rent/yeongdeungpo-gu/villa/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/yeongdeungpo-gu/villa/"
+      }
+    ],
+    "title": "Yeongdeungpo-gu Villa/Low-rise Rent Prices | Official Seoul Data",
+    "description": "Review official MOLIT villa/low-rise rents for Yeongdeungpo-gu, grouped by deposit and floor area with recent contract dates for its Yeouido-area market.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/rent/yongsan-gu/apartment/",
+    "canonical": "https://koreahomeguide.com/rent/yongsan-gu/apartment/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/yongsan-gu/apartment/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/rent/yongsan-gu/apartment/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/yongsan-gu/apartment/"
+      }
+    ],
+    "title": "Yongsan-gu Apartment Rent Prices | Official Seoul Data",
+    "description": "See official MOLIT apartment rents for Yongsan-gu, grouped by deposit and floor area with recent contract dates for its central Seoul market.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/rent/yongsan-gu/officetel/",
+    "canonical": "https://koreahomeguide.com/rent/yongsan-gu/officetel/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/yongsan-gu/officetel/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/rent/yongsan-gu/officetel/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/yongsan-gu/officetel/"
+      }
+    ],
+    "title": "Yongsan-gu Officetel Rent Prices | Official Seoul Data",
+    "description": "Compare official MOLIT officetel rents for Yongsan-gu, grouped by deposit and floor area with recent contract dates for its central Seoul market.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/rent/yongsan-gu/villa/",
+    "canonical": "https://koreahomeguide.com/rent/yongsan-gu/villa/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/yongsan-gu/villa/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/rent/yongsan-gu/villa/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/yongsan-gu/villa/"
+      }
+    ],
+    "title": "Yongsan-gu Villa/Low-rise Rent Prices | Official Seoul Data",
+    "description": "Review official MOLIT villa/low-rise rents for Yongsan-gu, grouped by deposit and floor area with recent contract dates for its central Seoul market.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/saved-homes/",
+    "canonical": "https://koreahomeguide.com/saved-homes/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/saved-homes/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/saved-homes/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/saved-homes/"
+      }
+    ],
+    "title": "Compare Saved Homes | KoreaHomeGuide",
+    "description": "Compare browser-saved rent quotes with private notes, visit status, contract candidates, monthly costs, and a before-contract checklist.",
+    "robots": "noindex,follow",
+    "schemaTypes": [],
+    "sitemapSources": []
+  },
+  {
+    "path": "/seoul/:district/:dong/:type/",
+    "canonical": "https://koreahomeguide.com/seoul/mapo-gu/yeonnam-dong/apartment/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/seoul/mapo-gu/yeonnam-dong/apartment/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/seoul/mapo-gu/yeonnam-dong/apartment/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/seoul/mapo-gu/yeonnam-dong/apartment/"
+      }
+    ],
+    "title": "Yeonnam-dong (연남동) Apartment (아파트) Rent Market | Seoul",
+    "description": "See six completed months of official reported apartment (아파트) rental transactions in Yeonnam-dong (연남동), Mapo-gu, with monthly rent grouped by deposit and contract type.",
+    "robots": "index,follow",
+    "schemaTypes": [
+      "Dataset",
+      "WebPage"
+    ],
+    "sitemapSources": [
+      "/sitemaps/seoul/mapo-gu/apartment/",
+      "api/sitemap-market.js"
+    ]
+  },
+  {
+    "path": "/seoul/:district/:dong/:type/:building/",
+    "canonical": "https://koreahomeguide.com/seoul/mapo-gu/yeonnam-dong/apartment/yeonnam-central-heights-9d4b8e1/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/seoul/mapo-gu/yeonnam-dong/apartment/yeonnam-central-heights-9d4b8e1/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/seoul/mapo-gu/yeonnam-dong/apartment/yeonnam-central-heights-9d4b8e1/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/seoul/mapo-gu/yeonnam-dong/apartment/yeonnam-central-heights-9d4b8e1/"
+      }
+    ],
+    "title": "Yeonnam Central Heights Rent & Transaction Data | Yeonnam-dong (연남동), Seoul",
+    "description": "See recent official reported transactions for Yeonnam Central Heights, with monthly rent separated by deposit and floor area, plus new versus renewal contracts and apartment sale transactions.",
+    "robots": "index,follow",
+    "schemaTypes": [
+      "Dataset",
+      "WebPage"
+    ],
+    "sitemapSources": [
+      "/sitemaps/seoul/mapo-gu/apartment/buildings/",
+      "api/sitemap-market.js"
+    ]
+  },
+  {
+    "path": "/seoul/:type/:slug/",
+    "canonical": "https://koreahomeguide.com/seoul/apartment/under-1000000-won/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/seoul/apartment/under-1000000-won/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/seoul/apartment/under-1000000-won/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/seoul/apartment/under-1000000-won/"
+      }
+    ],
+    "title": "Seoul apartments under ₩1,000,000 | KoreaHomeGuide",
+    "description": "Seoul apartments under ₩1,000,000, ranked from three completed months of official reported rental contracts while keeping monthly rent and deposit in the same evidence band.",
+    "robots": "index,follow",
+    "schemaTypes": [
+      "Dataset"
+    ],
+    "sitemapSources": [
+      "/sitemaps/seoul/opportunities/apartment/",
+      "api/sitemap-market.js"
+    ]
+  },
+  {
+    "path": "/seoul/deposit/:slug/",
+    "canonical": "https://koreahomeguide.com/seoul/deposit/10-million-won/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/seoul/deposit/10-million-won/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/seoul/deposit/10-million-won/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/seoul/deposit/10-million-won/"
+      }
+    ],
+    "title": "Seoul officetels in the ₩10,000,000 deposit band | KoreaHomeGuide",
+    "description": "Seoul officetels in the ₩10,000,000 deposit band, ranked from three completed months of official reported rental contracts while keeping monthly rent and deposit in the same evidence band.",
+    "robots": "index,follow",
+    "schemaTypes": [
+      "Dataset"
+    ],
+    "sitemapSources": [
+      "/sitemaps/seoul/opportunities/officetel/",
+      "api/sitemap-market.js"
+    ]
+  },
+  {
+    "path": "/terms/",
+    "canonical": "https://koreahomeguide.com/terms/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/terms/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/terms/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/terms/"
+      }
+    ],
+    "title": "Terms of Use | KoreaHomeGuide",
+    "description": "Important limits and user responsibilities when using KoreaHomeGuide rental data, Rent Check, and saved comparisons.",
+    "robots": "noindex,follow",
+    "schemaTypes": [],
+    "sitemapSources": []
+  },
+  {
+    "path": "/tools/brokerage-fee-calculator/",
+    "canonical": "https://koreahomeguide.com/tools/brokerage-fee-calculator/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/tools/brokerage-fee-calculator/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/tools/brokerage-fee-calculator/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/tools/brokerage-fee-calculator/"
+      }
+    ],
+    "title": "Korea Brokerage Fee Calculator | Seoul Rental Agent Fee",
+    "description": "Calculate the Seoul rental brokerage-fee ceiling and estimated move-in cash. Enter KRW, USD, or CNY while legal brackets remain calculated in KRW.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/tools/salary-to-housing/",
+    "canonical": "https://koreahomeguide.com/tools/salary-to-housing/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/tools/salary-to-housing/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/tools/salary-to-housing/"
+      }
+    ],
+    "title": "Salary to Seoul Housing | What Rent Can You Actually Afford?",
+    "description": "Enter a Seoul salary and the cash you have for a deposit. See which neighborhoods you can actually reach, priced from real signed contracts — and what the deposit gap costs you every month.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/tools/seoul-rent-check/",
+    "canonical": "https://koreahomeguide.com/tools/seoul-rent-check/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/tools/seoul-rent-check/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/tools/seoul-rent-check/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/tools/seoul-rent-check/"
+      }
+    ],
+    "title": "Seoul Rent Check | Compare Your Quote with Official Rental Data",
+    "description": "Check whether a Seoul rent quote looks high, fair, or low by comparing it with recent official Korean rental transactions.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/zh/",
+    "canonical": "https://koreahomeguide.com/zh/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/"
+      }
+    ],
+    "title": "首尔租金检查与真实成交价格 | KoreaHomeGuide",
+    "description": "面向外国租客，用韩国官方真实签约数据检查首尔租金报价是否合理，并了解签约前需要确认的事项。",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/zh/about/",
+    "canonical": "https://koreahomeguide.com/zh/about/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/about/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/about/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/about/"
+      }
+    ],
+    "title": "关于数据与方法 | KoreaHomeGuide",
+    "description": "了解 KoreaHomeGuide 的租赁数据来源、租金检查方法、局限，以及商业合作不会改变结果的原则。",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/zh/compare/",
+    "canonical": "https://koreahomeguide.com/zh/compare/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/compare/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/compare/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/compare/"
+      }
+    ],
+    "title": "比较首尔租赁市场 | KoreaHomeGuide",
+    "description": "使用近期官方真实签约合同，对比首尔两个行政区的押金校正每平方米租金、月租、押金和成交数量。",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/zh/explore/",
+    "canonical": "https://koreahomeguide.com/zh/explore/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/explore/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/explore/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/explore/"
+      }
+    ],
+    "title": "首尔租金探索 | 韩国官方建筑级租赁数据",
+    "description": "按首尔行政区、街区、房型和建筑查看近期真实签约租金。比较典型月租、押金、面积和成交活跃度，数据来自韩国国土交通部。",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/zh/explore/building/",
+    "canonical": "https://koreahomeguide.com/zh/explore/building/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/explore/building/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/explore/building/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/explore/building/"
+      }
+    ],
+    "title": "建筑租金数据 | 首尔租金探索",
+    "description": "查看首尔具体建筑的近期官方真实签约租赁记录、典型月租、押金、面积和趋势。",
+    "robots": "noindex,follow",
+    "schemaTypes": [],
+    "sitemapSources": []
+  },
+  {
+    "path": "/zh/guides/",
+    "canonical": "https://koreahomeguide.com/zh/guides/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/guides/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/guides/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/guides/"
+      }
+    ],
+    "title": "韩国租房指南 | 首尔租金、合同与费用",
+    "description": "面向在韩外国租客的实用指南：月租与全租、签约检查、押金保障和首尔中介费。",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/zh/guides/before-you-sign/",
+    "canonical": "https://koreahomeguide.com/zh/guides/before-you-sign/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/guides/before-you-sign/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/guides/before-you-sign/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/guides/before-you-sign/"
+      }
+    ],
+    "title": "在韩国签租房合同前要检查什么 | 外国租客指南",
+    "description": "外国人在韩国签租房合同前应检查的事项：房产登记、房东身份、外国人登记和居所申报、确定日期、押金返还保证及合同特约条款。",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/zh/guides/korea-rent-deposit-protection-foreigners/",
+    "canonical": "https://koreahomeguide.com/zh/guides/korea-rent-deposit-protection-foreigners/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/guides/korea-rent-deposit-protection-foreigners/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/guides/korea-rent-deposit-protection-foreigners/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/guides/korea-rent-deposit-protection-foreigners/"
+      }
+    ],
+    "title": "外国人在韩国如何保护租房押金 | 2026指南",
+    "description": "外国租客在韩国保护租房押金的实用顺序：查不动产登记、完成居所申报和确定日期，并核对HUG与HF当前保证条件。",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/zh/guides/korea-rental-contract-checklist/",
+    "canonical": "https://koreahomeguide.com/zh/guides/korea-rental-contract-checklist/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/guides/korea-rental-contract-checklist/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/guides/korea-rental-contract-checklist/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/guides/korea-rental-contract-checklist/"
+      }
+    ],
+    "title": "韩国租房合同检查清单 | 外国租客签约前必看",
+    "description": "面向外国租客的韩国租房合同检查清单：房屋、房东、押金、管理费、中介费、特约和入住手续。",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/zh/guides/korea-rental-scams/",
+    "canonical": "https://koreahomeguide.com/zh/guides/korea-rental-scams/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/guides/korea-rental-scams/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/guides/korea-rental-scams/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/guides/korea-rental-scams/"
+      }
+    ],
+    "title": "韩国租房骗局：支付押金前必须检查的7个危险信号",
+    "description": "外国人在韩国租房时应警惕的七个危险信号，包括假房东、登记簿、抵押权、地址不符、口头承诺和押金保护。",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/zh/guides/rent-apartment-korea-foreigner/",
+    "canonical": "https://koreahomeguide.com/zh/guides/rent-apartment-korea-foreigner/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/guides/rent-apartment-korea-foreigner/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/guides/rent-apartment-korea-foreigner/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/guides/rent-apartment-korea-foreigner/"
+      }
+    ],
+    "title": "外国人如何在韩国租房 | 从找房到入住完整流程",
+    "description": "外国人在韩国租公寓的完整步骤：预算、证件、看房、核对房东与登记簿、签合同、付款和入住手续。",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/zh/guides/seoul-brokerage-fees/",
+    "canonical": "https://koreahomeguide.com/zh/guides/seoul-brokerage-fees/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/guides/seoul-brokerage-fees/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/guides/seoul-brokerage-fees/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/guides/seoul-brokerage-fees/"
+      }
+    ],
+    "title": "首尔租房中介费怎么算 | 韩国中介费上限指南",
+    "description": "解释首尔租房中介费交易金额、最高费率、Officetel 规则、协商和增值税。",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/zh/guides/seoul-officetel-rent/",
+    "canonical": "https://koreahomeguide.com/zh/guides/seoul-officetel-rent/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/guides/seoul-officetel-rent/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/guides/seoul-officetel-rent/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/guides/seoul-officetel-rent/"
+      }
+    ],
+    "title": "首尔办公住宅租金：押金、管理费与隐藏成本",
+    "description": "了解首尔Officetel办公住宅的押金、月租、管理费、实际面积、水电费和签约前检查事项。",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/zh/guides/wolse-vs-jeonse/",
+    "canonical": "https://koreahomeguide.com/zh/guides/wolse-vs-jeonse/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/guides/wolse-vs-jeonse/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/guides/wolse-vs-jeonse/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/guides/wolse-vs-jeonse/"
+      }
+    ],
+    "title": "韩国月租和全租区别 | 外国人首尔租房指南",
+    "description": "解释韩国月租（Wolse）与全租（Jeonse）的押金、月租、风险和外国租客签约前需要确认的事项。",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/zh/privacy/",
+    "canonical": "https://koreahomeguide.com/zh/privacy/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/privacy/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/privacy/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/privacy/"
+      }
+    ],
+    "title": "隐私说明 | KoreaHomeGuide",
+    "description": "了解 KoreaHomeGuide 如何处理浏览器内保存的房源比较、网站分析选择及你主动提交的租金检查请求。",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/zh/rent/gangnam-gu/apartment/",
+    "canonical": "https://koreahomeguide.com/zh/rent/gangnam-gu/apartment/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/gangnam-gu/apartment/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/rent/gangnam-gu/apartment/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/gangnam-gu/apartment/"
+      }
+    ],
+    "title": "江南区 公寓租金行情 | 韩国官方租赁成交数据",
+    "description": "查看首尔江南区近期公寓真实租赁成交：最近 6 个月月租中位数、押金、面积区间和韩国国土交通部申报合同。",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/zh/rent/gangnam-gu/officetel/",
+    "canonical": "https://koreahomeguide.com/zh/rent/gangnam-gu/officetel/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/gangnam-gu/officetel/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/rent/gangnam-gu/officetel/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/gangnam-gu/officetel/"
+      }
+    ],
+    "title": "江南区 Officetel租金行情 | 韩国官方租赁成交数据",
+    "description": "查看首尔江南区近期Officetel真实租赁成交：最近 6 个月月租中位数、押金、面积区间和韩国国土交通部申报合同。",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/zh/rent/gangnam-gu/villa/",
+    "canonical": "https://koreahomeguide.com/zh/rent/gangnam-gu/villa/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/gangnam-gu/villa/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/rent/gangnam-gu/villa/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/gangnam-gu/villa/"
+      }
+    ],
+    "title": "江南区 低层住宅（联排/多户住宅）租金行情 | 韩国官方租赁成交数据",
+    "description": "查看首尔江南区近期低层住宅（联排/多户住宅）真实租赁成交：最近 6 个月月租中位数、押金、面积区间和韩国国土交通部申报合同。",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/zh/rent/mapo-gu/apartment/",
+    "canonical": "https://koreahomeguide.com/zh/rent/mapo-gu/apartment/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/mapo-gu/apartment/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/rent/mapo-gu/apartment/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/mapo-gu/apartment/"
+      }
+    ],
+    "title": "麻浦区 公寓租金行情 | 韩国官方租赁成交数据",
+    "description": "查看首尔麻浦区近期公寓真实租赁成交：最近 6 个月月租中位数、押金、面积区间和韩国国土交通部申报合同。",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/zh/rent/mapo-gu/officetel/",
+    "canonical": "https://koreahomeguide.com/zh/rent/mapo-gu/officetel/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/mapo-gu/officetel/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/rent/mapo-gu/officetel/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/mapo-gu/officetel/"
+      }
+    ],
+    "title": "麻浦区 Officetel租金行情 | 韩国官方租赁成交数据",
+    "description": "查看首尔麻浦区近期Officetel真实租赁成交：最近 6 个月月租中位数、押金、面积区间和韩国国土交通部申报合同。",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/zh/rent/mapo-gu/villa/",
+    "canonical": "https://koreahomeguide.com/zh/rent/mapo-gu/villa/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/mapo-gu/villa/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/rent/mapo-gu/villa/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/mapo-gu/villa/"
+      }
+    ],
+    "title": "麻浦区 低层住宅（联排/多户住宅）租金行情 | 韩国官方租赁成交数据",
+    "description": "查看首尔麻浦区近期低层住宅（联排/多户住宅）真实租赁成交：最近 6 个月月租中位数、押金、面积区间和韩国国土交通部申报合同。",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/zh/rent/seongdong-gu/apartment/",
+    "canonical": "https://koreahomeguide.com/zh/rent/seongdong-gu/apartment/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/seongdong-gu/apartment/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/rent/seongdong-gu/apartment/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/seongdong-gu/apartment/"
+      }
+    ],
+    "title": "城东区 公寓租金行情 | 韩国官方租赁成交数据",
+    "description": "查看首尔城东区近期公寓真实租赁成交：最近 6 个月月租中位数、押金、面积区间和韩国国土交通部申报合同。",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/zh/rent/seongdong-gu/officetel/",
+    "canonical": "https://koreahomeguide.com/zh/rent/seongdong-gu/officetel/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/seongdong-gu/officetel/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/rent/seongdong-gu/officetel/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/seongdong-gu/officetel/"
+      }
+    ],
+    "title": "城东区 Officetel租金行情 | 韩国官方租赁成交数据",
+    "description": "查看首尔城东区近期Officetel真实租赁成交：最近 6 个月月租中位数、押金、面积区间和韩国国土交通部申报合同。",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/zh/rent/seongdong-gu/villa/",
+    "canonical": "https://koreahomeguide.com/zh/rent/seongdong-gu/villa/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/seongdong-gu/villa/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/rent/seongdong-gu/villa/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/seongdong-gu/villa/"
+      }
+    ],
+    "title": "城东区 低层住宅（联排/多户住宅）租金行情 | 韩国官方租赁成交数据",
+    "description": "查看首尔城东区近期低层住宅（联排/多户住宅）真实租赁成交：最近 6 个月月租中位数、押金、面积区间和韩国国土交通部申报合同。",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/zh/rent/yeongdeungpo-gu/apartment/",
+    "canonical": "https://koreahomeguide.com/zh/rent/yeongdeungpo-gu/apartment/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/yeongdeungpo-gu/apartment/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/rent/yeongdeungpo-gu/apartment/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/yeongdeungpo-gu/apartment/"
+      }
+    ],
+    "title": "永登浦区 公寓租金行情 | 韩国官方租赁成交数据",
+    "description": "查看首尔永登浦区近期公寓真实租赁成交：最近 6 个月月租中位数、押金、面积区间和韩国国土交通部申报合同。",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/zh/rent/yeongdeungpo-gu/officetel/",
+    "canonical": "https://koreahomeguide.com/zh/rent/yeongdeungpo-gu/officetel/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/yeongdeungpo-gu/officetel/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/rent/yeongdeungpo-gu/officetel/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/yeongdeungpo-gu/officetel/"
+      }
+    ],
+    "title": "永登浦区 Officetel租金行情 | 韩国官方租赁成交数据",
+    "description": "查看首尔永登浦区近期Officetel真实租赁成交：最近 6 个月月租中位数、押金、面积区间和韩国国土交通部申报合同。",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/zh/rent/yeongdeungpo-gu/villa/",
+    "canonical": "https://koreahomeguide.com/zh/rent/yeongdeungpo-gu/villa/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/yeongdeungpo-gu/villa/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/rent/yeongdeungpo-gu/villa/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/yeongdeungpo-gu/villa/"
+      }
+    ],
+    "title": "永登浦区 低层住宅（联排/多户住宅）租金行情 | 韩国官方租赁成交数据",
+    "description": "查看首尔永登浦区近期低层住宅（联排/多户住宅）真实租赁成交：最近 6 个月月租中位数、押金、面积区间和韩国国土交通部申报合同。",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/zh/rent/yongsan-gu/apartment/",
+    "canonical": "https://koreahomeguide.com/zh/rent/yongsan-gu/apartment/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/yongsan-gu/apartment/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/rent/yongsan-gu/apartment/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/yongsan-gu/apartment/"
+      }
+    ],
+    "title": "龙山区 公寓租金行情 | 韩国官方租赁成交数据",
+    "description": "查看首尔龙山区近期公寓真实租赁成交：最近 6 个月月租中位数、押金、面积区间和韩国国土交通部申报合同。",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/zh/rent/yongsan-gu/officetel/",
+    "canonical": "https://koreahomeguide.com/zh/rent/yongsan-gu/officetel/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/yongsan-gu/officetel/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/rent/yongsan-gu/officetel/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/yongsan-gu/officetel/"
+      }
+    ],
+    "title": "龙山区 Officetel租金行情 | 韩国官方租赁成交数据",
+    "description": "查看首尔龙山区近期Officetel真实租赁成交：最近 6 个月月租中位数、押金、面积区间和韩国国土交通部申报合同。",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/zh/rent/yongsan-gu/villa/",
+    "canonical": "https://koreahomeguide.com/zh/rent/yongsan-gu/villa/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/rent/yongsan-gu/villa/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/rent/yongsan-gu/villa/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/rent/yongsan-gu/villa/"
+      }
+    ],
+    "title": "龙山区 低层住宅（联排/多户住宅）租金行情 | 韩国官方租赁成交数据",
+    "description": "查看首尔龙山区近期低层住宅（联排/多户住宅）真实租赁成交：最近 6 个月月租中位数、押金、面积区间和韩国国土交通部申报合同。",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/zh/saved-homes/",
+    "canonical": "https://koreahomeguide.com/zh/saved-homes/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/saved-homes/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/saved-homes/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/saved-homes/"
+      }
+    ],
+    "title": "比较已保存房源 | KoreaHomeGuide",
+    "description": "无需注册账号，在当前浏览器中比较已保存房源的备注、看房状态、签约候选、每月固定支出和签约前检查。",
+    "robots": "noindex,follow",
+    "schemaTypes": [],
+    "sitemapSources": []
+  },
+  {
+    "path": "/zh/seoul/:district/:dong/:type/",
+    "canonical": "https://koreahomeguide.com/zh/seoul/mapo-gu/yeonnam-dong/apartment/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/seoul/mapo-gu/yeonnam-dong/apartment/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/seoul/mapo-gu/yeonnam-dong/apartment/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/seoul/mapo-gu/yeonnam-dong/apartment/"
+      }
+    ],
+    "title": "延南洞（연남동） 公寓（아파트）租金行情 | 首尔",
+    "description": "查看麻浦区（마포구）延南洞（연남동）公寓（아파트）近6个完整月份的韩国官方申报租赁成交，按押金区间和面积理解月租，并区分新签与续签合同。",
+    "robots": "index,follow",
+    "schemaTypes": [
+      "Dataset",
+      "WebPage"
+    ],
+    "sitemapSources": [
+      "/sitemaps/seoul/mapo-gu/apartment/",
+      "api/sitemap-market.js"
+    ]
+  },
+  {
+    "path": "/zh/seoul/:district/:dong/:type/:building/",
+    "canonical": "https://koreahomeguide.com/zh/seoul/mapo-gu/yeonnam-dong/apartment/yeonnam-central-heights-9d4b8e1/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/seoul/mapo-gu/yeonnam-dong/apartment/yeonnam-central-heights-9d4b8e1/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/seoul/mapo-gu/yeonnam-dong/apartment/yeonnam-central-heights-9d4b8e1/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/seoul/mapo-gu/yeonnam-dong/apartment/yeonnam-central-heights-9d4b8e1/"
+      }
+    ],
+    "title": "Yeonnam Central Heights租金与成交数据 | 延南洞（연남동）",
+    "description": "查看Yeonnam Central Heights近期韩国官方申报租赁成交，按押金和面积拆分月租，并区分新签与续签，同时查看公寓买卖成交。",
+    "robots": "index,follow",
+    "schemaTypes": [
+      "Dataset",
+      "WebPage"
+    ],
+    "sitemapSources": [
+      "/sitemaps/seoul/mapo-gu/apartment/buildings/",
+      "api/sitemap-market.js"
+    ]
+  },
+  {
+    "path": "/zh/seoul/:type/:slug/",
+    "canonical": "https://koreahomeguide.com/zh/seoul/apartment/under-1000000-won/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/seoul/apartment/under-1000000-won/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/seoul/apartment/under-1000000-won/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/seoul/apartment/under-1000000-won/"
+      }
+    ],
+    "title": "首尔月租不超过₩1,000,000的公寓 | KoreaHomeGuide",
+    "description": "首尔月租不超过₩1,000,000的公寓：基于韩国国土交通部近3个完整月份的已申报租赁成交，按押金区间比较地区。",
+    "robots": "index,follow",
+    "schemaTypes": [
+      "Dataset"
+    ],
+    "sitemapSources": [
+      "/sitemaps/seoul/opportunities/apartment/",
+      "api/sitemap-market.js"
+    ]
+  },
+  {
+    "path": "/zh/seoul/deposit/:slug/",
+    "canonical": "https://koreahomeguide.com/zh/seoul/deposit/10-million-won/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/seoul/deposit/10-million-won/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/seoul/deposit/10-million-won/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/seoul/deposit/10-million-won/"
+      }
+    ],
+    "title": "首尔押金1,000万韩元的办公公寓 | KoreaHomeGuide",
+    "description": "首尔押金1,000万韩元的办公公寓：基于韩国国土交通部近3个完整月份的已申报租赁成交，按押金区间比较地区。",
+    "robots": "index,follow",
+    "schemaTypes": [
+      "Dataset"
+    ],
+    "sitemapSources": [
+      "/sitemaps/seoul/opportunities/officetel/",
+      "api/sitemap-market.js"
+    ]
+  },
+  {
+    "path": "/zh/terms/",
+    "canonical": "https://koreahomeguide.com/zh/terms/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/terms/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/terms/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/terms/"
+      }
+    ],
+    "title": "使用条款 | KoreaHomeGuide",
+    "description": "使用 KoreaHomeGuide 租赁数据、租金检查及房源比较时的重要限制与用户责任。",
+    "robots": "noindex,follow",
+    "schemaTypes": [],
+    "sitemapSources": []
+  },
+  {
+    "path": "/zh/tools/brokerage-fee-calculator/",
+    "canonical": "https://koreahomeguide.com/zh/tools/brokerage-fee-calculator/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/tools/brokerage-fee-calculator/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/tools/brokerage-fee-calculator/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/tools/brokerage-fee-calculator/"
+      }
+    ],
+    "title": "韩国租房中介费计算器 | 首尔中介费上限",
+    "description": "计算首尔租房中介费上限和入住现金，可用韩元、美元或人民币输入，法定费率区间仍按韩元计算。",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
+    "path": "/zh/tools/seoul-rent-check/",
+    "canonical": "https://koreahomeguide.com/zh/tools/seoul-rent-check/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/tools/seoul-rent-check/"
+      },
+      {
+        "hreflang": "zh-CN",
+        "href": "https://koreahomeguide.com/zh/tools/seoul-rent-check/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/tools/seoul-rent-check/"
+      }
+    ],
+    "title": "首尔租金检查 | 用韩国官方成交数据比较报价",
+    "description": "输入首尔租房押金、月租、面积和房型，用韩国国土交通部近期真实租赁成交数据判断报价偏高、合理或偏低。",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  }
+]

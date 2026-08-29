@@ -4,5 +4,8 @@
   "version": "11.3.0",
   "dependencies": {
     "@vercel/functions": "3.9.5"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.1"
   }
 }

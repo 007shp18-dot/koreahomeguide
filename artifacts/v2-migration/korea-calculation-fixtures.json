@@ -1,0 +1,23 @@
+[
+  {
+    "depositKrw": 100000000,
+    "monthlyRentKrw": 1000000,
+    "areaSqm": 50,
+    "annualRate": 0.05,
+    "assumption": "signedprice comparison assumption",
+    "legalRate": false,
+    "statutoryRate": false,
+    "adjustedMonthlyKrw": 1416667,
+    "adjustedPerSqmKrw": 28333,
+    "sourceDigests": [
+      {
+        "file": "deposit-conversion.js",
+        "sha256": "84d9cc616d1c35be46cec195383520dc41aa09c742c819a6348f85977ec808d0"
+      },
+      {
+        "file": "lib/rent-check-core.cjs",
+        "sha256": "1f54ae89fcd828b8d73765f733667b4a1b14540441dd779b39c7be132077e4c0"
+      }
+    ]
+  }
+]
