@@ -49,8 +49,30 @@ test('editorial home styling varies section rhythm and avoids card repetition', 
   assert.doesNotMatch(css, /\.home-guide-row\{[^}]*box-shadow:/);
 });
 
-test('closed native property selectors share the district control geometry', () => {
+test('district combobox and native property selectors share one polished control geometry', () => {
   const css = fs.readFileSync('styles.css', 'utf8');
-  assert.match(css, /\.selection-native\{[^}]*min-height:49px/);
+  assert.match(css, /:is\(\.rent-check-form,\.explorer-search-card\) :is\(\.selection-native,\.district-combobox-input,select\)\{[^}]*height:52px/);
+  assert.match(css, /:is\(\.rent-check-form,\.explorer-search-card\) :is\(\.selection-native,select\)\{[^}]*appearance:none[^}]*background-image:/);
   assert.match(css, /\.selection-native:focus-visible\{[^}]*box-shadow:/);
+});
+
+test('core Rent Check pages version the polished CSS and runtime assets', () => {
+  for (const file of ['index.html','zh/index.html','tools/seoul-rent-check/index.html','zh/tools/seoul-rent-check/index.html']) {
+    const html = fs.readFileSync(file, 'utf8');
+    assert.match(html, /styles\.css\?v=29/, file);
+    assert.match(html, /cold-start\.css\?v=19/, file);
+    assert.match(html, /rent-check-ui-utils\.js\?v=18/, file);
+    assert.match(html, /app\.js\?v=19/, file);
+  }
+});
+
+test('desktop homepage Rent Check uses two aligned rows with size beside the primary selectors', () => {
+  const css = fs.readFileSync('cold-start.css', 'utf8');
+  const finalPass = css.slice(css.indexOf('/* v18 rent decision controls */'));
+  assert.match(finalPass, /@media\(min-width:900px\)/);
+  assert.match(finalPass, /\.home-rent-workspace \.rent-check-area-field\{[^}]*grid-area:area/);
+  assert.match(finalPass, /\.home-rent-workspace \.rent-check-property-field\{[^}]*grid-area:type/);
+  assert.match(finalPass, /\.home-rent-workspace \.rent-check-size-field\{[^}]*grid-area:size/);
+  assert.match(finalPass, /\.home-rent-workspace \.rent-check-form>\.field:nth-child\(3\)\{[^}]*grid-area:deposit/);
+  assert.match(finalPass, /\.home-rent-workspace \.rent-check-button\{[^}]*grid-area:submit/);
 });

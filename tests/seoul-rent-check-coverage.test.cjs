@@ -27,11 +27,11 @@ const ALL_DISTRICT_CODES = Object.freeze([
   '11545','11590','11650','11710','11740'
 ]);
 
-test('Rent Check keeps all 25 Seoul districts while Explorer expands to 15 without widening indexed ZH markets', () => {
+test('Explorer supports all 25 Seoul districts without widening the indexed district catalog', () => {
   assert.equal(Object.keys(catalog.RENT_CHECK_DISTRICTS).length, 25);
   assert.equal(Object.keys(catalog.DISTRICTS).length, 15);
   assert.equal(Object.keys(config.RENT_CHECK_DISTRICTS).length, 25);
-  assert.equal(Object.keys(config.SEOUL_DISTRICTS).length, 15);
+  assert.equal(Object.keys(config.SEOUL_DISTRICTS).length, 25);
   assert.deepEqual(catalog.ZH_INDEXABLE_DISTRICT_CODES, ['11680','11440','11170','11200','11560']);
 
   assert.equal(config.isRentCheckAreaCode('11710'), true);

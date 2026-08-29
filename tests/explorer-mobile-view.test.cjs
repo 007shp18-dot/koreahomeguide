@@ -1,11 +1,12 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
 
 const Explorer = require('../explore/explorer-utils.js');
 
-test('Explorer opens results first on mobile and keeps the map first on wider screens', () => {
-  assert.equal(Explorer.initialViewForWidth(375), 'list');
-  assert.equal(Explorer.initialViewForWidth(760), 'list');
+test('Explorer opens the map first at every viewport width', () => {
+  assert.equal(Explorer.initialViewForWidth(375), 'map');
+  assert.equal(Explorer.initialViewForWidth(760), 'map');
   assert.equal(Explorer.initialViewForWidth(761), 'map');
   assert.equal(Explorer.initialViewForWidth(1440), 'map');
 });
@@ -13,4 +14,17 @@ test('Explorer opens results first on mobile and keeps the map first on wider sc
 test('Explorer defaults safely to the map when a viewport width is unavailable', () => {
   assert.equal(Explorer.initialViewForWidth(undefined), 'map');
   assert.equal(Explorer.initialViewForWidth('unknown'), 'map');
+});
+
+test('mobile workspace keeps map and results in document flow without sheet height traps', () => {
+  const css = fs.readFileSync('styles.css', 'utf8');
+  const start = css.indexOf('@media(max-width:760px)', css.indexOf('/* v22 P0 document-flow Explorer'));
+  const mobile = css.slice(start, css.indexOf('/* v23 mobile Rent Check completion */'));
+  assert.match(mobile, /grid-template-areas:"map" "main"/);
+  assert.match(mobile, /explorer-discovery-rail\{[^}]*max-height:none[^}]*overflow:visible/);
+  assert.match(mobile, /explorer-sheet-toggle\{display:none\}/);
+  for (const file of ['explore/app.js','zh/explore/app.js']) {
+    const source = fs.readFileSync(file, 'utf8');
+    assert.match(source, /khg:building-window-state/);
+  }
 });

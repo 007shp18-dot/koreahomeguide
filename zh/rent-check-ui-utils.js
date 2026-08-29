@@ -98,12 +98,30 @@
     const count = Math.max(0, Math.round(Number(result && result.comparableCount || 0)));
     const difference = Number(result && result.differencePct);
     const hasDifference = rating !== 'insufficient' && Number.isFinite(difference);
+    const hasMoneyPair = result && result.askingValueWon != null && result.medianValueWon != null;
+    const asking = Number(hasMoneyPair && result.askingValueWon);
+    const median = Number(hasMoneyPair && result.medianValueWon);
+    const isJeonse = result && result.comparisonMode === 'jeonse-deposit';
+    const moneyDifference = hasDifference && hasMoneyPair && Number.isFinite(asking) && Number.isFinite(median)
+      ? Math.round(asking - median)
+      : null;
+    const compactWon = value => {
+      const absolute = Math.abs(value);
+      if (absolute >= 1_000_000) return `₩${(absolute / 1_000_000).toFixed(2).replace(/\.00$/, '').replace(/(\.\d)0$/, '$1')}M`;
+      if (absolute >= 1_000) return `₩${Math.round(absolute / 1_000)}k`;
+      return `₩${Math.round(absolute)}`;
+    };
     return {
       icon:{ above:'▲', fair:'●', below:'▼', insufficient:'─' }[rating] || '─',
       label:ratingLabel(rating,result && result.verdictBasis),
       difference:hasDifference ? `${difference >= 0 ? '+' : '−'}${Math.abs(difference).toFixed(1)}%` : '—',
       comparison:hasDifference ? '与可比成交中位数相比' : '当前样本无法给出价格判断',
-      sample:`${count} 笔已签约成交`
+      sample:`${count} 笔已签约成交`,
+      annualized:moneyDifference == null || moneyDifference === 0
+        ? ''
+        : isJeonse
+          ? `押金约${moneyDifference > 0 ? '多' : '少'} ${compactWon(moneyDifference)}`
+          : `每年约${moneyDifference > 0 ? '多' : '少'} ${compactWon(moneyDifference * 12)}`
     };
   }
 
@@ -272,6 +290,49 @@
     };
   }
 
+  function evidenceDisclosureCopy() {
+    return {
+      label:'查看已签约成交',
+      hint:'市场区间、样本质量和官方成交依据'
+    };
+  }
+
+  function mountEvidenceDisclosure(result, documentObject) {
+    if (!result || !documentObject || typeof documentObject.createElement !== 'function') return { root:null, body:null };
+    let root = result.querySelector('#rentCheckEvidenceDisclosure');
+    if (!root) {
+      const copy = evidenceDisclosureCopy();
+      root = documentObject.createElement('details');
+      root.id = 'rentCheckEvidenceDisclosure';
+      root.className = 'rent-check-evidence-disclosure';
+      const summary = documentObject.createElement('summary');
+      const label = documentObject.createElement('strong');
+      const hint = documentObject.createElement('span');
+      const body = documentObject.createElement('div');
+      label.textContent = copy.label;
+      hint.textContent = copy.hint;
+      body.className = 'rent-check-evidence-disclosure-body';
+      summary.appendChild(label);
+      summary.appendChild(hint);
+      root.appendChild(summary);
+      root.appendChild(body);
+      const nextStep = result.querySelector('#rentCheckNextStep');
+      const savedMount = result.querySelector('[data-saved-quote-mount]');
+      result.insertBefore(root, nextStep || savedMount || null);
+    }
+    const body = root.querySelector('.rent-check-evidence-disclosure-body');
+    const directChildren = Array.from(result.children || []);
+    const targets = [
+      result.querySelector('#rentCheckConfidenceDetails'),
+      directChildren.find(node => node.classList && node.classList.contains('rent-check-evidence-head')),
+      directChildren.find(node => node.classList && node.classList.contains('table-wrap')),
+      result.querySelector('#rentCheckComparablesToggle'),
+      directChildren.find(node => node.classList && node.classList.contains('rent-check-disclaimer'))
+    ].filter(Boolean);
+    targets.forEach(node => body.appendChild(node));
+    return { root, body };
+  }
+
   function percentileSentence(result) {
     if (!hasDistribution(result)) return '';
     const subject = result.comparisonMode === 'jeonse-deposit' ? '这笔全租押金' : '这个报价';
@@ -303,6 +364,8 @@
     marketPositionSummary,
     evidenceFacts,
     comparableDisclosure,
+    evidenceDisclosureCopy,
+    mountEvidenceDisclosure,
     percentileSentence
   };
 });

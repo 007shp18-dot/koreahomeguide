@@ -182,8 +182,66 @@
   }
 
   function initialViewForWidth(width) {
-    const viewportWidth = Number(width);
-    return Number.isFinite(viewportWidth) && viewportWidth > 0 && viewportWidth <= 760 ? 'list' : 'map';
+    return 'map';
+  }
+
+  function workspaceState({ dong = '', buildingKey = '' } = {}) {
+    const neighborhood = String(dong || '').trim();
+    if (!neighborhood) return 'neighborhoods';
+    return String(buildingKey || '').trim() ? 'building-detail' : 'buildings';
+  }
+
+  function neighborhoodSelectionTransition(state, action = {}) {
+    if (action.type === 'select') {
+      const model = action.model;
+      if (model && model.kind === 'neighborhood' && normalizeSegment(model.dong)) {
+        return Object.freeze({ phase:'activate', model });
+      }
+    }
+    return Object.freeze({ phase:'idle', model:null });
+  }
+
+  function createRequestGate() {
+    let version = 0;
+    return Object.freeze({
+      begin() {
+        const requestVersion = ++version;
+        return Object.freeze({ isCurrent:() => requestVersion === version });
+      },
+      invalidate() { version += 1; }
+    });
+  }
+
+  function marketEvidencePresentation(value, locale = 'en') {
+    const count = Math.max(0, Math.floor(Number(value) || 0));
+    const zh = String(locale || '').toLowerCase().startsWith('zh');
+    return Object.freeze({
+      count,
+      render:count > 0,
+      sufficient:count >= 5,
+      sampleLabel:count > 0 ? (zh ? `${count} 份合同` : `${count} contract${count === 1 ? '' : 's'}`) : '',
+      limitedLabel:count > 0 && count < 5 ? (zh ? '少于 5 份' : 'Under 5') : ''
+    });
+  }
+
+  function sortBuildings(items, mode = 'evidence') {
+    const source = Array.isArray(items) ? [...items] : [];
+    const finite = value => value != null && String(value).trim() !== '' && Number.isFinite(Number(value)) ? Number(value) : null;
+    return source.sort((a, b) => {
+      if (mode === 'adjusted-per-sqm') {
+        const left = finite(a && a.adjustedPerSqmWon);
+        const right = finite(b && b.adjustedPerSqmWon);
+        if (left === null && right !== null) return 1;
+        if (left !== null && right === null) return -1;
+        if (left !== right) return left - right;
+      } else if (mode === 'recent') {
+        const dateOrder = String(b && b.latestContractDate || '').localeCompare(String(a && a.latestContractDate || ''));
+        if (dateOrder) return dateOrder;
+      }
+      const evidenceOrder = Number(b && b.contractCount || 0) - Number(a && a.contractCount || 0);
+      if (evidenceOrder) return evidenceOrder;
+      return String(a && (a.buildingName || a.buildingKey) || '').localeCompare(String(b && (b.buildingName || b.buildingKey) || ''), 'ko');
+    });
   }
 
   function buildLabeledTableRow(cells) {
@@ -210,6 +268,11 @@
     summaryHeading,
     supportsZhIndexing,
     initialViewForWidth,
+    workspaceState,
+    neighborhoodSelectionTransition,
+    createRequestGate,
+    marketEvidencePresentation,
+    sortBuildings,
     buildLabeledTableRow,
     stableSuffix
   };

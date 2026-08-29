@@ -50,8 +50,9 @@ test('EN Explorer keeps neighborhood SEO links but sends building actions only t
   assert.match(source, /View neighborhood/);
   assert.doesNotMatch(source, /buildBuildingSeoUrl/);
   assert.match(source, /Open building details/);
-  assert.match(source, /buildBuildingDetailUrl/);
-  assert.match(source, /<a rel="nofollow" href="\$\{escapeHtml\(interactiveHref\)\}"/);
+  assert.match(source, /<button class="building-row" type="button"/);
+  assert.doesNotMatch(source, /building-row[^`]*<a/);
+  assert.match(fs.readFileSync('explore/building-window.js','utf8'), /buildDetailUrl/);
 });
 
 test('ZH Explorer keeps localized neighborhood SEO links but sends building actions only to the interactive view', () => {
@@ -60,7 +61,8 @@ test('ZH Explorer keeps localized neighborhood SEO links but sends building acti
   assert.match(source, /supportsZhIndexing\(districtCode\)/);
   assert.match(source, /查看街区/);
   assert.doesNotMatch(source, /buildBuildingSeoUrl/);
-  assert.match(source, /查看建筑成交/);
-  assert.match(source, /\/zh\/explore\/building/);
-  assert.match(source, /<a rel="nofollow" href="\$\{escapeHtml\(interactiveHref\)\}"/);
+  assert.match(source, /查看状态/);
+  assert.match(source, /<button class="building-row" type="button"/);
+  assert.doesNotMatch(source, /building-row[^`]*<a/);
+  assert.match(fs.readFileSync('explore/building-window.js','utf8'), /isZh\(locale\) \? '\/zh' : ''/);
 });

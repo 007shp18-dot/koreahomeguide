@@ -31,3 +31,15 @@ test('every guide article links at least two sibling guides', () => {
     assert.ok(siblings.length >= 2, `${slug}: ${siblings.join(', ')}`);
   }
 });
+
+test('Explorer exposes localized budget and deposit discovery pages without replacing the map workflow', () => {
+  const en = fs.readFileSync('explore/index.html', 'utf8');
+  const zh = fs.readFileSync('zh/explore/index.html', 'utf8');
+  assert.match(en, /class="explorer-opportunity-links"/);
+  assert.match(en, /href="\/seoul\/officetel\/under-700000-won\/"/);
+  assert.match(en, /href="\/seoul\/deposit\/10-million-won\/"/);
+  assert.match(zh, /href="\/zh\/seoul\/officetel\/under-700000-won\/"/);
+  assert.match(zh, /href="\/zh\/seoul\/deposit\/10-million-won\/"/);
+  assert.ok(en.indexOf('id="explorerMap"') < en.indexOf('class="explorer-opportunity-links"'));
+  assert.ok(zh.indexOf('id="explorerMap"') < zh.indexOf('class="explorer-opportunity-links"'));
+});

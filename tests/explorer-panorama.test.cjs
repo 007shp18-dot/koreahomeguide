@@ -105,3 +105,216 @@ test('NAVER reverse-geocode result exposes only a matching legal-dong code', () 
   assert.equal(panorama.legalCodeFromResponse(response, { districtCode:'11440', dong:'역삼동' }), '');
   assert.equal(panorama.legalCodeFromResponse(response, { districtCode:'11680', dong:'논현동' }), '');
 });
+
+test('initial panorama bearing faces the selected building from the capture point', () => {
+  assert.equal(panorama.bearingDegrees({ lat:0, lng:0 }, { lat:1, lng:0 }), 0);
+  assert.equal(panorama.bearingDegrees({ lat:0, lng:0 }, { lat:0, lng:1 }), 90);
+  assert.equal(panorama.bearingDegrees({ lat:0, lng:0 }, { lat:-1, lng:0 }), 180);
+  assert.equal(panorama.bearingDegrees({ lat:0, lng:0 }, { lat:0, lng:-1 }), -90);
+  assert.equal(Math.round(panorama.bearingDegrees({ lat:0, lng:0 }, { lat:1, lng:1 })), 45);
+  assert.equal(panorama.bearingDegrees(null, { lat:1, lng:1 }), null);
+});
+
+test('NAVER LatLng instance methods keep their receiver during bearing calculation', () => {
+  const capture = {
+    _lat:37.5,
+    _lng:127,
+    lat() { return this._lat; },
+    lng() { return this._lng; }
+  };
+  assert.equal(Math.round(panorama.bearingDegrees(capture, { lat:37.6, lng:127 })), 0);
+  assert.equal(panorama.evaluateResult({
+    status:'OK',
+    target:{ lat:37.5001, lng:127 },
+    location:{ coord:capture, photodate:'2026-07' }
+  }).available, true);
+});
+
+test('panorama frame size stays 16 by 9 even when a hidden canvas reports zero height', () => {
+  const element = {
+    clientWidth:422,
+    clientHeight:0,
+    getBoundingClientRect() { return { width:422, height:0 }; }
+  };
+  assert.deepEqual(panorama.panoramaFrameSize(element), { width:422, height:237 });
+});
+
+test('a building without verified coordinates never leaves Street View loading forever', async () => {
+  const nodes = new Map();
+  const node = extra => ({
+    hidden:false,
+    dataset:{},
+    textContent:'',
+    replaceChildren() {},
+    ...extra
+  });
+  nodes.set('#explorerStreetView', node());
+  nodes.set('#explorerStreetViewCanvas', node({ hidden:true }));
+  nodes.set('#explorerStreetViewStatus', node());
+  nodes.set('#explorerStreetViewMeta', node());
+  let fetchCalls = 0;
+  const controller = panorama.install({
+    document:{
+      documentElement:{ lang:'en' },
+      querySelector:selector => nodes.get(selector) || null
+    },
+    fetch:async () => { fetchCalls += 1; return { ok:true, json:async () => ({ naverKeyId:'key' }) }; },
+    addEventListener() {},
+    setTimeout,
+    clearTimeout
+  });
+
+  await controller.show({ kind:'building', districtCode:'11680', propertyType:'apartment' });
+
+  assert.equal(nodes.get('#explorerStreetView').hidden, true);
+  assert.equal(nodes.get('#explorerStreetView').dataset.state, 'idle');
+  assert.equal(fetchCalls, 0);
+});
+
+test('opening a result card reserves the final Street View frame before location arrives', () => {
+  const nodes = new Map();
+  const listeners = new Map();
+  const node = extra => ({
+    hidden:false,
+    dataset:{},
+    textContent:'',
+    replaceChildren() {},
+    ...extra
+  });
+  nodes.set('#explorerStreetView', node());
+  nodes.set('#explorerStreetViewCanvas', node({ hidden:true }));
+  nodes.set('#explorerStreetViewStatus', node());
+  nodes.set('#explorerStreetViewMeta', node());
+  panorama.install({
+    document:{
+      documentElement:{ lang:'en' },
+      querySelector:selector => nodes.get(selector) || null
+    },
+    fetch:async () => ({ ok:true, json:async () => ({ naverKeyId:'key' }) }),
+    addEventListener(type, handler) { listeners.set(type, handler); },
+    setTimeout,
+    clearTimeout
+  });
+
+  listeners.get('khg:building-window-reset')({ detail:{ selection:{ buildingKey:'result-card' } } });
+  listeners.get('khg:building-window-prepare-street-view')({ detail:{ selection:{ buildingKey:'result-card' } } });
+
+  assert.equal(nodes.get('#explorerStreetView').hidden, false);
+  assert.equal(nodes.get('#explorerStreetView').dataset.state, 'loading');
+  assert.equal(nodes.get('#explorerStreetViewStatus').textContent, 'Finding street view near this building…');
+});
+
+test('successful panorama result synchronizes size and faces the building', async () => {
+  const nodes = new Map();
+  const classNames = new Set();
+  const node = extra => ({
+    hidden:false,
+    dataset:{},
+    textContent:'',
+    clientWidth:422,
+    clientHeight:0,
+    replaceChildren() {},
+    getBoundingClientRect() { return { width:422, height:0 }; },
+    ...extra
+  });
+  nodes.set('#explorerStreetView', node());
+  nodes.set('#explorerStreetViewCanvas', node({ hidden:true }));
+  nodes.set('#explorerStreetViewStatus', node());
+  nodes.set('#explorerStreetViewMeta', node());
+  nodes.set('.building-status-window', node({ classList:{ add:value => classNames.add(value), remove:value => classNames.delete(value) } }));
+
+  let panoramaInstance = null;
+  const listeners = {};
+  function Panorama(_canvas, options) {
+    this.options = options;
+    this.sizeCalls = [];
+    this.povCalls = [];
+    this.setSize = size => this.sizeCalls.push(size);
+    this.setPov = pov => this.povCalls.push(pov);
+    this.setVisible = () => {};
+    this.getLocation = () => ({ coord:{ lat:() => 37.5, lng:() => 127.0 }, photodate:'2026.07' });
+    panoramaInstance = this;
+  }
+  const windowObject = {
+    document:{
+      documentElement:{ lang:'en' },
+      querySelector:selector => nodes.get(selector) || null
+    },
+    naver:{ maps:{
+      Panorama,
+      LatLng:function LatLng(lat, lng) { this.lat = lat; this.lng = lng; },
+      Size:function Size(width, height) { this.width = width; this.height = height; },
+      Event:{ addListener(_target, type, handler) { listeners[type] = handler; } }
+    } },
+    fetch:async () => ({ ok:true, json:async () => ({ naverKeyId:'key' }) }),
+    addEventListener() {},
+    dispatchEvent() {},
+    setTimeout,
+    clearTimeout
+  };
+  const controller = panorama.install(windowObject);
+  await controller.show({ kind:'building', lat:37.501, lng:127.0, districtCode:'11680', propertyType:'officetel' });
+  listeners.pano_status('OK');
+
+  assert.equal(panoramaInstance.sizeCalls.at(-1).width, 422);
+  assert.equal(panoramaInstance.sizeCalls.at(-1).height, 237);
+  assert.equal(panoramaInstance.povCalls.at(-1).pan, 0);
+  assert.equal(panoramaInstance.povCalls.at(-1).tilt, 0);
+  assert.equal(panoramaInstance.povCalls.at(-1).fov, 90);
+  assert.equal(classNames.has('has-street-view'), true);
+});
+
+test('panorama resize synchronization never feeds a bordered frame width back into itself', async () => {
+  let canvasWidth = 420;
+  const nodes = new Map();
+  const node = extra => ({ hidden:false, dataset:{}, textContent:'', replaceChildren() {}, ...extra });
+  const frame = node({
+    get clientWidth() { return canvasWidth; },
+    clientHeight:0,
+    getBoundingClientRect() { return { width:canvasWidth + 2, height:(canvasWidth + 2) * 9 / 16 }; }
+  });
+  nodes.set('#explorerStreetView', node());
+  nodes.set('#explorerStreetViewFrame', frame);
+  nodes.set('#explorerStreetViewCanvas', node({ hidden:true }));
+  nodes.set('#explorerStreetViewStatus', node());
+  nodes.set('#explorerStreetViewMeta', node());
+
+  let resizeCallback = null;
+  let panoramaInstance = null;
+  const listeners = {};
+  function Panorama(_canvas, options) {
+    this.options = options;
+    this.sizeCalls = [];
+    this.setSize = size => { this.sizeCalls.push(size); canvasWidth = size.width; };
+    this.setPov = () => {};
+    this.setVisible = () => {};
+    this.getLocation = () => ({ coord:{ lat:() => 37.5, lng:() => 127 }, photodate:'2026.07' });
+    panoramaInstance = this;
+  }
+  const windowObject = {
+    document:{ documentElement:{ lang:'en' }, querySelector:selector => nodes.get(selector) || null },
+    naver:{ maps:{
+      Panorama,
+      LatLng:function LatLng(lat, lng) { this.lat = lat; this.lng = lng; },
+      Size:function Size(width, height) { this.width = width; this.height = height; },
+      Event:{ addListener(_target, type, handler) { listeners[type] = handler; } }
+    } },
+    ResizeObserver:function ResizeObserver(callback) {
+      resizeCallback = callback;
+      this.observe = () => {};
+      this.disconnect = () => {};
+    },
+    fetch:async () => ({ ok:true, json:async () => ({ naverKeyId:'key' }) }),
+    addEventListener() {}, dispatchEvent() {}, requestAnimationFrame:callback => callback(), setTimeout, clearTimeout
+  };
+
+  const controller = panorama.install(windowObject);
+  await controller.show({ kind:'building', lat:37.501, lng:127, districtCode:'11680', propertyType:'apartment' });
+  listeners.pano_status('OK');
+  resizeCallback();
+  resizeCallback();
+  resizeCallback();
+
+  assert.deepEqual(panoramaInstance.sizeCalls.map(size => size.width), [420]);
+  assert.equal(canvasWidth, 420);
+});

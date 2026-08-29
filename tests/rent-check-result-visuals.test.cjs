@@ -99,6 +99,25 @@ test('evidence facts and mobile disclosure are localized from real result counts
     hiddenCount:0,
     label:''
   });
+  assert.deepEqual(enUI.evidenceDisclosureCopy(), {
+    label:'See signed contracts',
+    hint:'Market range, sample quality and official contract evidence'
+  });
+  assert.deepEqual(zhUI.evidenceDisclosureCopy(), {
+    label:'查看已签约成交',
+    hint:'市场区间、样本质量和官方成交依据'
+  });
+});
+
+test('all four Rent Check runtimes move secondary evidence into one disclosure', () => {
+  for (const file of ['app.js','zh/app.js','tools/seoul-rent-check/app.js','zh/tools/seoul-rent-check/app.js']) {
+    const source = fs.readFileSync(file, 'utf8');
+    assert.match(source, /KHGRentCheckUI\.mountEvidenceDisclosure\(result,document\)/, file);
+    assert.match(source, /evidenceDisclosure\.body\.appendChild\(distribution\)/, file);
+  }
+  const css = fs.readFileSync('styles.css', 'utf8');
+  assert.match(css, /\.rent-check-evidence-disclosure\{[^}]*border-top:1px solid var\(--ink\)/);
+  assert.match(css, /\.rent-check-evidence-disclosure>summary\{[^}]*min-height:56px/);
 });
 
 test('all four Rent Check runtimes wire the market-position visual and bounded UI events', () => {

@@ -12,9 +12,11 @@ const {
 } = require('../providers/provider-utils.cjs');
 const {
   SEOUL_DISTRICTS,
+  districtSlugFromCode,
   isSupportedAreaCode,
   isSupportedPropertyType
 } = require('../providers/seoul-config.cjs');
+const LOCATIONS = require('../location-catalog.js');
 const { trustedRequestSource, logApiError } = require('../lib/api-guard.cjs');
 
 const SUPPORTED_DISTRICT_CODES = Object.freeze(Object.keys(SEOUL_DISTRICTS));
@@ -47,6 +49,7 @@ async function loadAllSeoul({
   const monthKeys = completedMonths(referenceDate, SEOUL_WIDE_MONTHS);
   const allRows = [];
   const dongs = [];
+  const districts = [];
 
   for (const districtBatch of chunk(SUPPORTED_DISTRICT_CODES, batchSize)) {
     const districtResults = await Promise.all(districtBatch.map(async areaCode => {
@@ -66,12 +69,31 @@ async function loadAllSeoul({
         districtCode:areaCode,
         districtName:SEOUL_DISTRICTS[areaCode]
       }));
-      return { rows, districtDongs };
+      const districtSummary = buildSummary(rows, {
+        referenceDate,
+        months:SEOUL_WIDE_MONTHS
+      });
+      if (districtSummary && districtSummary.monthsUsed == null) {
+        districtSummary.monthsUsed = SEOUL_WIDE_MONTHS;
+      }
+      return {
+        rows,
+        districtDongs,
+        district:{
+          districtCode:areaCode,
+          slug:districtSlugFromCode(areaCode),
+          districtName:SEOUL_DISTRICTS[areaCode],
+          districtNameKo:LOCATIONS.RENT_CHECK_DISTRICTS[areaCode]?.ko || '',
+          summary:districtSummary,
+          contractCount:Number(districtSummary?.totalContracts || 0)
+        }
+      };
     }));
 
     for (const result of districtResults) {
       allRows.push(...result.rows);
       dongs.push(...result.districtDongs);
+      districts.push(result.district);
     }
   }
 
@@ -87,6 +109,7 @@ async function loadAllSeoul({
     districtName:'All supported Seoul',
     propertyType,
     summary,
+    districts,
     dongs,
     buildings:[]
   };

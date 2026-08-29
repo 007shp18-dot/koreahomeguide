@@ -6,6 +6,14 @@
   const SERVICES = new Set(['internet', 'sim_esim', 'moving', 'cleaning', 'insurance', 'relocation']);
   const STAGES = new Set(['check', 'prepare', 'move', 'settle']);
 
+  function approvedSponsorInventory(items, placement) {
+    if (placement !== 'post-result') return [];
+    return (Array.isArray(items) ? items : [])
+      .filter(item => item && item.status === 'approved' && SERVICES.has(String(item.category || '')))
+      .slice(0, 3)
+      .map(item => ({ ...item }));
+  }
+
   function buildServiceEvent({ city, language, service }) {
     if (!SERVICES.has(service)) return null;
     return {
@@ -96,6 +104,7 @@
   const api = {
     buildServiceEvent,
     buildJourneyEvent,
+    approvedSponsorInventory,
     safeTrack,
     markServiceInterest,
     init

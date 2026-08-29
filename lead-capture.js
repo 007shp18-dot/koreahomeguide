@@ -222,6 +222,7 @@
       shareDescription:zh ? '发送不含具体报价的结果摘要和检查链接。' : 'Send a privacy-safe summary with a link to check another quote.',
       shareButton:zh ? '分享结果' : 'Share this result',
       copyButton:zh ? '复制摘要' : 'Copy summary',
+      downloadButton:zh ? '下载结果卡片' : 'Download result card',
       verdictLabel:zh ? '判断' : 'Verdict',
       evidenceLabel:zh ? '依据等级' : 'Evidence',
       countLabel:zh ? '可比成交' : 'Comparables',
@@ -230,10 +231,28 @@
       sharing:zh ? '正在打开分享…' : 'Opening share options…',
       copied:zh ? '结果摘要和链接已复制。' : 'Result summary and link copied.',
       shared:zh ? '已分享。' : 'Shared.',
+      downloaded:zh ? '结果卡片已下载。' : 'Result card downloaded.',
       shareError:zh ? '暂时无法分享，请稍后再试。' : 'Sharing is unavailable right now. Please try again.',
       consentRequired:zh ? '请先同意隐私说明，才能保存邮箱和本次租金检查信息。' : 'Please agree to the privacy notice before saving your email and rent-check context.'
     };
     return text[key] || '';
+  }
+
+  function loadShareCardLibrary(){
+    if (root.KHGResultShareCard) return Promise.resolve(root.KHGResultShareCard);
+    return new Promise((resolve,reject) => {
+      const existing = root.document.querySelector('script[data-result-share-card]');
+      if (existing) {
+        existing.addEventListener('load', () => resolve(root.KHGResultShareCard), { once:true });
+        existing.addEventListener('error', reject, { once:true });
+        return;
+      }
+      const script = root.document.createElement('script');
+      script.src = '/result-share-card.js'; script.async = true; script.dataset.resultShareCard = '';
+      script.addEventListener('load', () => root.KHGResultShareCard ? resolve(root.KHGResultShareCard) : reject(new Error('Card library unavailable.')), { once:true });
+      script.addEventListener('error', reject, { once:true });
+      root.document.head.appendChild(script);
+    });
   }
 
   function bindShareModule(module){
@@ -242,6 +261,7 @@
     const language = SUPPORTED_LANGUAGES.has(module.dataset.language) ? module.dataset.language : 'en';
     const button = module.querySelector('[data-share-button]');
     const copyButton = module.querySelector('[data-copy-button]');
+    const downloadButton = module.querySelector('[data-download-card]');
     const status = module.querySelector('[data-share-status]');
     if (!button) return;
     const runAction = async (actionButton, forceCopy) => {
@@ -267,6 +287,17 @@
     };
     button.addEventListener('click', () => runAction(button, false));
     if (copyButton) copyButton.addEventListener('click', () => runAction(copyButton, true));
+    if (downloadButton) downloadButton.addEventListener('click', async () => {
+      if (!latestContext || latestContext.language !== language) return;
+      downloadButton.disabled = true;
+      try {
+        const card = await loadShareCardLibrary();
+        await card.downloadCard(buildShareCardModel(latestContext), { language, filename:'koreahomeguide-rent-check.svg' });
+        if (status) status.textContent = localText(language, 'downloaded');
+        trackResultShare(latestContext, 'download');
+      } catch (_) { if (status) status.textContent = localText(language, 'shareError'); }
+      finally { downloadButton.disabled = false; }
+    });
   }
 
   function updateShareModule(module, context){
@@ -294,7 +325,7 @@
       module.className = 'result-share-panel';
       module.dataset.resultShare = '';
       module.dataset.language = language;
-      module.innerHTML = `<div class="result-share-copy"><strong>${localText(language, 'shareTitle')}</strong><span>${localText(language, 'shareDescription')}</span></div><dl class="result-share-metrics"><div><dt>${localText(language, 'verdictLabel')}</dt><dd data-share-verdict>—</dd></div><div><dt>${localText(language, 'evidenceLabel')}</dt><dd data-share-evidence>—</dd></div><div><dt>${localText(language, 'countLabel')}</dt><dd data-share-count>—</dd></div></dl><div class="result-share-next"><span>${localText(language, 'nextLabel')}</span><strong data-share-next>—</strong></div><small class="result-share-privacy">${localText(language, 'privacyNote')}</small><div class="result-share-actions"><button class="search-button result-share-action" type="button" data-share-button>${localText(language, 'shareButton')}</button><button class="result-share-action result-share-copy-button" type="button" data-copy-button>${localText(language, 'copyButton')}</button></div><span class="result-share-status" data-share-status aria-live="polite"></span>`;
+      module.innerHTML = `<div class="result-share-copy"><strong>${localText(language, 'shareTitle')}</strong><span>${localText(language, 'shareDescription')}</span></div><dl class="result-share-metrics"><div><dt>${localText(language, 'verdictLabel')}</dt><dd data-share-verdict>—</dd></div><div><dt>${localText(language, 'evidenceLabel')}</dt><dd data-share-evidence>—</dd></div><div><dt>${localText(language, 'countLabel')}</dt><dd data-share-count>—</dd></div></dl><div class="result-share-next"><span>${localText(language, 'nextLabel')}</span><strong data-share-next>—</strong></div><small class="result-share-privacy">${localText(language, 'privacyNote')}</small><div class="result-share-actions"><button class="search-button result-share-action" type="button" data-share-button>${localText(language, 'shareButton')}</button><button class="result-share-action result-share-copy-button" type="button" data-copy-button>${localText(language, 'copyButton')}</button><button class="result-share-action result-share-copy-button" type="button" data-download-card>${localText(language, 'downloadButton')}</button></div><span class="result-share-status" data-share-status aria-live="polite"></span>`;
       result.appendChild(module);
     }
     bindShareModule(module);

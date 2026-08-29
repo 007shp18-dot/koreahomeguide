@@ -20,7 +20,7 @@
   <script defer src="/privacy-consent.js"></script><script defer src="/mobile-navigation.js"></script>
   <script defer src="/acquisition-context.js"></script>
   <script defer src="/acquisition-links.js"></script>
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/styles.css?v=30">
 </head>
 <body class="core-ui">
   <header class="compact-header">
@@ -41,7 +41,7 @@
     </section>
 
     <section class="explorer-search-card" aria-label="探索首尔租金数据">
-      <label class="field explorer-area-field"><span>地区</span><select id="exploreArea"><option value="11680">江南区（강남구）</option><option value="11440">麻浦区（마포구）</option><option value="11170">龙山区（용산구）</option><option value="11200">城东区（성동구）</option><option value="11560">永登浦区（영등포구）</option><option value="11620">冠岳区（관악구）</option><option value="11230">东大门区（동대문구）</option><option value="11410">西大门区（서대문구）</option><option value="11290">城北区（성북구）</option><option value="11215">广津区（광진구）</option><option value="11650">瑞草区（서초구）</option><option value="11710">松坡区（송파구）</option><option value="11740">江东区（강동구）</option><option value="11110">钟路区（종로구）</option><option value="11140">中区（중구）</option><option value="all">全首尔支持地区</option></select></label>
+      <label class="field explorer-area-field"><span>地区</span><select id="exploreArea"><option value="11680">江南区（강남구）</option><option value="11440">麻浦区（마포구）</option><option value="11170">龙山区（용산구）</option><option value="11200">城东区（성동구）</option><option value="11560">永登浦区（영등포구）</option><option value="11620">冠岳区（관악구）</option><option value="11230">东大门区（동대문구）</option><option value="11410">西大门区（서대문구）</option><option value="11290">城北区（성북구）</option><option value="11215">广津区（광진구）</option><option value="11110">钟路区（종로구）</option><option value="11140">中区（중구）</option><option value="11260">中浪区（중랑구）</option><option value="11305">江北区（강북구）</option><option value="11320">道峰区（도봉구）</option><option value="11350">芦原区（노원구）</option><option value="11380">恩平区（은평구）</option><option value="11470">阳川区（양천구）</option><option value="11500">江西区（강서구）</option><option value="11530">九老区（구로구）</option><option value="11545">衿川区（금천구）</option><option value="11590">铜雀区（동작구）</option><option value="11650">瑞草区（서초구）</option><option value="11710">松坡区（송파구）</option><option value="11740">江东区（강동구）</option><option value="all">全首尔</option></select></label>
       <label class="field explorer-type-field"><span>住宅类型</span><select id="exploreType" class="selection-native"><option value="officetel">办公住宅两用楼 (Officetel / 오피스텔)</option><option value="apartment">公寓 (아파트)</option><option value="villa">低层多户住宅 (Villa / 연립·다세대)</option><option value="detached">独栋及多户住宅 (단독·다가구)</option></select><small class="property-type-hint" data-property-type-guide data-for="exploreType" data-locale="zh-CN"></small></label>
       <label class="field explorer-budget-field"><span>月租预算</span><select id="exploreMaxRent"><option value="">不限月租</option><option value="800000">最高 ₩800,000</option><option value="1200000">最高 ₩1,200,000</option><option value="1800000">最高 ₩1,800,000</option><option value="2500000">最高 ₩2,500,000</option></select></label>
       <button id="exploreButton" class="search-button" type="button">比较街区</button>
@@ -50,22 +50,30 @@
     </section>
 
 
-    <div id="explorerResultsShell" class="explorer-map-layout" hidden>
+    <div id="explorerResultsShell" class="explorer-map-layout map-first-workspace" data-workspace-state="districts" hidden>
       <aside class="explorer-map-column" aria-label="街区地图">
         <section class="explorer-map-card">
-          <div class="explorer-map-toolbar">
-            <div class="explorer-map-heading"><span class="eyebrow">街区地图</span><h2>点击标记查看租金参考。</h2></div>
-            <div class="explorer-map-toolbar-actions">
-              <button id="explorerMapBack" class="explorer-map-back" type="button" hidden>← 返回街区</button>
-              <div class="explorer-view-toggle" aria-label="探索视图">
-                <button type="button" data-explorer-view="list" aria-pressed="false">结果</button>
-                <button type="button" class="is-active" data-explorer-view="map" aria-pressed="true">地图</button>
+          <div class="explorer-map-commandbar">
+            <div class="explorer-map-toolbar">
+              <div class="explorer-map-heading"><span class="eyebrow">街区地图</span><h2>点击标记查看租金参考。</h2></div>
+              <div class="explorer-map-toolbar-actions">
+                <button id="explorerMapBack" class="explorer-map-back" type="button" hidden>← 返回街区</button>
+                <div class="explorer-view-toggle" aria-label="探索视图">
+                  <button type="button" data-explorer-view="list" aria-pressed="false">结果</button>
+                  <button type="button" class="is-active" data-explorer-view="map" aria-pressed="true">地图</button>
+                </div>
               </div>
             </div>
+            <div class="explorer-map-legend" aria-label="地图标记说明"><span><i class="is-strong"></i>较强依据</span><span><i class="is-limited"></i>有限依据</span><span><i class="is-outside"></i>超出预算</span></div>
           </div>
-          <div class="explorer-map-legend" aria-label="地图标记说明"><span><i class="is-strong"></i>较强依据</span><span><i class="is-limited"></i>有限依据</span><span><i class="is-outside"></i>超出预算</span></div>
           <div class="explorer-map-surface">
             <div id="explorerMap" class="explorer-map-canvas" role="region" aria-label="所选首尔街区地图"></div>
+            <div class="explorer-map-segments" aria-label="地图控件">
+              <div class="kg-segmented" role="group" aria-label="住宅类型"><button type="button" data-map-housing="officetel" aria-pressed="true">办公住宅</button><button type="button" data-map-housing="apartment" aria-pressed="false">公寓</button><button type="button" data-map-housing="villa" aria-pressed="false">低层住宅</button></div>
+              <div class="kg-segmented" role="group" aria-label="地图指标"><button type="button" data-map-metric="adjusted-per-sqm" aria-pressed="true">校正 /㎡</button><button type="button" data-map-metric="monthly" aria-pressed="false">月租</button><button type="button" data-map-metric="deposit" aria-pressed="false">押金</button></div>
+            </div>
+            <div class="kg-map-legend" aria-live="polite"><strong data-map-legend-title>押金调整后每月每㎡成本</strong><div data-map-legend-ramp><i></i><i></i><i></i><i></i><i></i></div><small data-map-legend-method>行政区颜色采用按合同日期统计的最近 3 个完整月份；申报记录之后可能更正或解除。（月租 + 押金 × 5% ÷ 12）÷ 建筑面积。</small></div>
+            <button id="explorerSearchArea" class="explorer-search-area" type="button" hidden>搜索此区域</button>
             <p id="explorerMapStatus" class="explorer-map-status" aria-live="polite">地图进入屏幕时加载。</p>
             <section id="explorerMapSelection" class="explorer-map-selection" aria-live="polite" hidden>
               <button id="explorerMapSelectionDrag" class="explorer-map-selection-drag" type="button" aria-label="移动详情面板" title="拖动以移动面板"><span aria-hidden="true"></span></button>
@@ -81,44 +89,55 @@
           </div>
         </section>
       </aside>
-      <div class="product-main explorer-map-main">
+      <aside class="product-main explorer-map-main explorer-discovery-rail" aria-label="浏览街区和建筑">
 <section id="explorerResults" class="explorer-results" aria-live="polite">
+      <button id="explorerSheetToggle" class="explorer-sheet-toggle" type="button" aria-expanded="false"><span aria-hidden="true"></span>结果</button>
+      <button id="explorerRailBack" class="explorer-rail-back" type="button" hidden>← 返回街区</button>
       <div class="explorer-results-head">
         <div><span class="eyebrow">近期真实签约租金</span><h2 id="explorerTitle">江南区租赁市场</h2><dl class="explorer-summary-context"><div><dt>地区</dt><dd id="explorerSummaryArea">江南区（강남구）</dd></div><div><dt>住宅类型</dt><dd id="explorerSummaryType">办公住宅两用楼 / Officetel（오피스텔）</dd></div></dl><div id="explorerFilterSummary" class="explorer-filter-summary"><span>不限月租 · 不限押金</span><button id="explorerChangeFilters" type="button">修改条件</button></div></div>
         <span id="explorerDataThrough" class="explorer-data-through">最近已完成月份</span>
       </div>
       <div id="explorerStatus" class="market-status">正在加载官方租赁成交数据…</div>
 
+      <section class="district-section">
+        <div class="building-section-head"><div><span class="eyebrow">首尔行政区</span><h2>选择一个区</h2></div><small>地图颜色采用当前所选价格指标</small></div>
+        <div id="districtList" class="district-list"><div class="explorer-empty">正在加载首尔 25 个区…</div></div>
+      </section>
+
       <div class="explorer-metrics">
         <div><span>月租中位数</span><strong id="metricRent">—</strong><small>仅月租合同</small></div>
         <div><span>押金中位数</span><strong id="metricDeposit">—</strong><small>仅月租合同</small></div>
         <div><span>签约数量</span><strong id="metricContracts">—</strong><small>最近 6 个完整月份</small></div>
-        <div><span>近 3 个月变化</span><strong id="metricChange">—</strong><small>近 3 个月 vs 前 3 个月</small></div>
+        <div><span>原始近 3 个月变化</span><strong id="metricChange">—</strong><small>包含押金、面积和合同构成变化</small></div>
+        <div class="is-key"><span>押金校正 ₩/㎡</span><strong id="metricPerSqm">—</strong><small>月成本含押金年化 5% 机会成本</small></div>
       </div>
+
+      <section class="building-section" hidden>
+        <div class="building-section-head"><div><span class="eyebrow">建筑</span><h2>近期有成交记录的建筑</h2></div><label class="explorer-building-sort"><span>排序</span><select id="explorerBuildingSort"><option value="evidence">依据最强</option><option value="adjusted-per-sqm">校正 ₩/㎡ 最低</option><option value="recent">最近成交</option></select></label></div>
+        <p class="explorer-per-sqm-note">校正 ₩/㎡ 将押金按年化 5% 机会成本计入月成本，避免不同押金结构造成误导。</p>
+        <div class="building-list-head" aria-hidden="true"><span>建筑</span><span>典型面积</span><span>校正 ₩/㎡</span><span>月租 / 押金</span><span>成交</span><span></span></div>
+        <div id="buildingList" class="building-list"><div class="explorer-empty">正在加载建筑…</div></div>
+        <button id="buildingListMore" class="building-list-more" type="button" hidden>再显示 10 栋建筑</button>
+      </section>
 
       <section class="dong-section">
         <div class="building-section-head"><div><span class="eyebrow">比较街区</span><h2>符合预算的街区</h2></div><small id="budgetFilterNote">打开街区页面后查看具体建筑</small></div>
         <div id="dongList" class="dong-list"><div class="explorer-empty">正在加载街区…</div></div>
       </section>
-
-      <section class="building-section" hidden>
-        <div class="building-section-head"><div><span class="eyebrow">建筑</span><h2>近期有成交记录的建筑</h2></div><small>按近期官方成交数量排序</small></div>
-        <div class="building-list-head" aria-hidden="true"><span>建筑</span><span>典型面积</span><span>月租</span><span>押金</span><span>成交</span><span></span></div>
-        <div id="buildingList" class="building-list"><div class="explorer-empty">正在加载建筑…</div></div>
-      </section>
     </section>
-      </div>
+      </aside>
       <aside class="explorer-support-column" aria-label="相关工具">
         <a class="context-module context-card soft" data-explorer-rent-check data-rent-check-cta="explorer_context_handoff" href="/zh/tools/seoul-rent-check/"><span class="context-kicker">租金检查</span><h3>核对具体租房报价</h3><p>把押金、月租、面积和房型与近期官方可比成交进行比较。</p><strong class="context-card-action">打开租金检查 →</strong></a>
         <a class="context-module context-card" href="/zh/guides/before-you-sign/"><span class="context-kicker">签约前</span><h3>先检查押金和合同风险</h3><p>了解房产登记、居所申报、确定日期和押金保障。</p><strong class="context-card-action">阅读签约指南 →</strong></a>
         <div class="ad-slot" data-slot="sidebar" aria-hidden="true"></div>
       </aside>
     </div>
-
+    <section class="explorer-static-directory" aria-labelledby="neighborhoodDirectoryZh"><div><span class="eyebrow">按街区浏览</span><h2 id="neighborhoodDirectoryZh">首尔街区租金指南</h2><p>这些链接无需加载地图即可浏览近期官方成交。</p></div><div class="explorer-static-directory-grid"><div><h3>龙山区（용산구）</h3><a href="/zh/seoul/yongsan-gu/itaewon-dong/officetel/">梨泰院洞（이태원동）</a><a href="/zh/seoul/yongsan-gu/hannam-dong/officetel/">汉南洞（한남동）</a><a href="/zh/seoul/yongsan-gu/huam-dong/officetel/">厚岩洞（후암동）</a><a href="/zh/seoul/yongsan-gu/bogwang-dong/officetel/">普光洞（보광동）</a></div><div><h3>城东区（성동구）</h3><a href="/zh/seoul/seongdong-gu/seongsu-dong-1-ga/officetel/">圣水洞1街（성수동1가）</a><a href="/zh/seoul/seongdong-gu/seongsu-dong-2-ga/officetel/">圣水洞2街（성수동2가）</a><a href="/zh/seoul/seongdong-gu/oksu-dong/officetel/">玉水洞（옥수동）</a><a href="/zh/seoul/seongdong-gu/geumho-dong-1-ga/officetel/">金湖洞1街（금호동1가）</a><a href="/zh/seoul/seongdong-gu/geumho-dong-2-ga/officetel/">金湖洞2街（금호동2가）</a><a href="/zh/seoul/seongdong-gu/geumho-dong-3-ga/officetel/">金湖洞3街（금호동3가）</a><a href="/zh/seoul/seongdong-gu/geumho-dong-4-ga/officetel/">金湖洞4街（금호동4가）</a></div><div><h3>麻浦区（마포구）</h3><a href="/zh/seoul/mapo-gu/yeonnam-dong/officetel/">延南洞（연남동）</a><a href="/zh/seoul/mapo-gu/seogyo-dong/officetel/">西桥洞（서교동）</a><a href="/zh/seoul/mapo-gu/mangwon-dong/officetel/">望远洞（망원동）</a><a href="/zh/seoul/mapo-gu/hapjeong-dong/officetel/">合井洞（합정동）</a><a href="/zh/seoul/mapo-gu/gongdeok-dong/officetel/">孔德洞（공덕동）</a><a href="/zh/seoul/mapo-gu/ahyeon-dong/officetel/">阿岘洞（아현동）</a></div><div><h3>永登浦区（영등포구）</h3><a href="/zh/seoul/yeongdeungpo-gu/yeouido-dong/officetel/">汝矣岛洞（여의도동）</a><a href="/zh/seoul/yeongdeungpo-gu/dangsan-dong/officetel/">堂山洞（당산동）</a><a href="/zh/seoul/yeongdeungpo-gu/mullae-dong/officetel/">文来洞（문래동）</a><a href="/zh/seoul/yeongdeungpo-gu/yeongdeungpo-dong/officetel/">永登浦洞（영등포동）</a></div><div><h3>江南区（강남구）</h3><a href="/zh/seoul/gangnam-gu/yeoksam-dong/officetel/">驿三洞（역삼동）</a><a href="/zh/seoul/gangnam-gu/nonhyeon-dong/officetel/">论岘洞（논현동）</a><a href="/zh/seoul/gangnam-gu/daechi-dong/officetel/">大峙洞（대치동）</a><a href="/zh/seoul/gangnam-gu/samseong-dong/officetel/">三成洞（삼성동）</a><a href="/zh/seoul/gangnam-gu/cheongdam-dong/officetel/">清潭洞（청담동）</a></div></div></section>
     <section class="explorer-next-step">
       <div><span class="eyebrow">下一步</span><h2>核对具体租房报价。</h2><p>租金检查会把押金、月租、面积和房型与近期官方成交记录进行比较。</p></div>
       <a class="explorer-primary-link" data-explorer-rent-check data-rent-check-cta="explorer_final_handoff" href="/zh/tools/seoul-rent-check/">打开租金检查 →</a>
     </section>
+    <nav class="explorer-opportunity-links" aria-label="按预算或押金浏览首尔租金"><span>从你已知的条件开始</span><a href="/zh/seoul/officetel/under-700000-won/">月租70万韩元以下的办公公寓</a><a href="/zh/seoul/deposit/10-million-won/">押金1,000万韩元的地区</a></nav>
   </main>
 
   <footer class="page-footer"><strong>KoreaHomeGuide</strong><small>历史真实签约租赁数据，仅供市场参考，不是实时房源，也不构成房产中介建议。如有问题或数据错误，<a href="mailto:hello@koreahomeguide.com">邮件联系我们</a>。 <a href="/zh/about/">关于与方法</a> · <a href="/zh/privacy/">隐私说明</a>。</small></footer>
@@ -128,14 +147,16 @@
   <script src="/location-catalog.js"></script>
   <script src="/property-type-guide.js"></script>
   <script src="/district-combobox.js"></script>
-  <script src="/explore/explorer-utils.js"></script>
+  <script src="/explore/explorer-utils.js?v=30"></script>
   <script src="/explore/map-locations.js"></script>
-  <script src="/explore/map-controller.js"></script>
+  <script src="/explore/map-viewport.js"></script>
+  <script src="/explore/map-controller.js?v=21"></script>
   <script src="/product-analytics.js"></script>
   <script src="/explore/saved-buildings.js"></script>
-  <script src="/explore/building-window.js"></script>
-  <script src="/explore/panorama.js"></script>
-  <script src="/explore/map.js"></script>
-  <script defer src="/zh/explore/app.js"></script>
+  <script src="/explore/building-window.js?v=30"></script>
+  <script src="/explore/panorama.js?v=30"></script>
+  <script src="/explore/district-map.js?v=30"></script>
+  <script src="/explore/map.js?v=30"></script>
+  <script defer src="/zh/explore/app.js?v=30"></script>
 </body>
 </html>

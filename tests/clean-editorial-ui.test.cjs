@@ -95,7 +95,7 @@ test('Rent Check and Explorer align utility surfaces while keeping evidence visu
 
   for (const file of ['explore/index.html', 'zh/explore/index.html']) {
     const html = read(file);
-    assert.match(html, /class="explorer-map-layout"/);
+    assert.match(html, /class="[^"]*explorer-map-layout[^"]*"/);
     assert.match(html, /class="explorer-map-selection"/);
   }
 });

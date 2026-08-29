@@ -77,6 +77,20 @@ test('invalid service and stage values are rejected from analytics', () => {
   assert.equal(mod.buildJourneyEvent({ city: 'seoul', language: 'en', stage: 'unknown' }), null);
 });
 
+test('sponsor inventory is approved, post-result only, non-broker and capped at three', () => {
+  const inventory = [
+    { id:'a', status:'approved', category:'internet', name:'Fiber' },
+    { id:'b', status:'approved', category:'moving', name:'Move' },
+    { id:'c', status:'approved', category:'cleaning', name:'Clean' },
+    { id:'d', status:'approved', category:'insurance', name:'Cover' },
+    { id:'e', status:'approved', category:'brokerage', name:'Broker' },
+    { id:'f', status:'draft', category:'internet', name:'Draft' }
+  ];
+  assert.deepEqual(mod.approvedSponsorInventory(inventory, 'post-result').map(item => item.id), ['a','b','c']);
+  assert.deepEqual(mod.approvedSponsorInventory(inventory, 'homepage'), []);
+  assert.deepEqual(mod.approvedSponsorInventory([], 'post-result'), []);
+});
+
 test('init binds service and journey controls without depending on a backend', () => {
   function element(attrs) {
     const listeners = {};

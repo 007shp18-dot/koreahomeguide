@@ -37,6 +37,24 @@
     <priority>0.85</priority>
   </url>
   <url>
+    <loc>https://koreahomeguide.com/compare/</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.78</priority>
+  </url>
+  <url>
+    <loc>https://koreahomeguide.com/zh/compare/</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.74</priority>
+  </url>
+  <url>
+    <loc>https://koreahomeguide.com/community/</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.55</priority>
+  </url>
+  <url>
     <loc>https://koreahomeguide.com/tools/seoul-rent-check/</loc>
     <lastmod>2026-08-24</lastmod>
     <changefreq>weekly</changefreq>

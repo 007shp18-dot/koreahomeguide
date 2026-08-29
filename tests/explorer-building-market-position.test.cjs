@@ -2,6 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const { buildBuildingMarketPosition, buildBuildingDetail } = require('../providers/provider-utils.cjs');
 const { parseItems } = require('../lib/real-price-core.cjs');
+const { renderContent } = require('../explore/building-window.js');
 
 function rentRow({ building, dong = '역삼동', area = 40, deposit = 1000, rent, date = '2026-07-10', type = 'officetel' }) {
   return { building, buildingName:building, dong, area, deposit, monthlyRent:rent, contractDate:date, type };
@@ -33,6 +34,7 @@ test('building market position deposit-adjusts area-matched comparables and expo
     depositWon:10_000_000,
     monthlyRentWon:1_000_000,
     areaSqm:40,
+    adjustedPerSqmWon:26_042,
     contractCount:3
   });
   assert.equal(result.dong.status, 'sufficient');
@@ -43,6 +45,28 @@ test('building market position deposit-adjusts area-matched comparables and expo
   assert.equal(result.district.comparableCount, 24);
   assert.equal(result.district.buildingCount, 8);
   assert.equal(result.district.percentile, 0.42);
+});
+
+test('market gauge ranks the same adjusted square-metre metric shown beside it', () => {
+  const rows = [
+    rentRow({ building:'선택빌딩', rent:100, area:40 }),
+    rentRow({ building:'선택빌딩', rent:100, area:40, date:'2026-06-10' }),
+    rentRow({ building:'선택빌딩', rent:100, area:40, date:'2026-05-10' })
+  ];
+  for (let index = 0; index < 24; index += 1) {
+    rows.push(rentRow({
+      building:`비교${Math.floor(index / 3) + 1}`,
+      dong:index < 12 ? '역삼동' : '논현동',
+      rent:100,
+      area:index % 2 ? 32 : 48,
+      date:index % 3 === 0 ? '2026-07-12' : index % 3 === 1 ? '2026-06-12' : '2026-05-12'
+    }));
+  }
+  const result = buildBuildingMarketPosition(rows, {
+    buildingKey:'역삼동::선택빌딩', referenceDate:new Date('2026-08-29T00:00:00Z')
+  });
+  assert.equal(result.dong.medianAdjustedPerSqmWon, 27_127);
+  assert.equal(result.dong.percentile, 0.5);
 });
 
 test('building market position withholds claims below evidence thresholds', () => {
@@ -62,6 +86,7 @@ test('building market position withholds claims below evidence thresholds', () =
     percentile:null,
     comparableCount:2,
     buildingCount:2,
+    medianAdjustedPerSqmWon:null,
     reason:'minimum-evidence'
   });
   assert.equal(result.district.status, 'insufficient');
@@ -79,6 +104,21 @@ test('building detail exposes the market position additively', () => {
   });
   assert.equal(detail.marketPosition.buildingRepresentative.contractCount, 3);
   assert.equal(detail.profile.status, 'unavailable');
+});
+
+test('building comparison labels both operands and discloses the adjusted-cost basis', () => {
+  const html = renderContent({
+    profile:{ status:'unavailable' }, recentTransactions:[],
+    marketPosition:{
+      buildingRepresentative:{ depositWon:10_000_000, monthlyRentWon:1_000_000, areaSqm:40, adjustedPerSqmWon:26_042, contractCount:3 },
+      dong:{ status:'sufficient', percentile:.6, comparableCount:18, buildingCount:6, medianAdjustedPerSqmWon:24_000 },
+      district:{ status:'sufficient', percentile:.4, comparableCount:30, buildingCount:10, medianAdjustedPerSqmWon:28_000 }
+    }
+  }, { districtCode:'11680', propertyType:'officetel', buildingKey:'역삼동::테스트' }, 'en');
+  assert.match(html, /<dt>This building<\/dt><dd>₩26,042\/㎡<\/dd>/);
+  assert.match(html, /<dt>Neighborhood median<\/dt><dd>₩24,000\/㎡<\/dd>/);
+  assert.match(html, /<dt>District median<\/dt><dd>₩28,000\/㎡<\/dd>/);
+  assert.doesNotMatch(html, /monthlyRentWon\s*\//);
 });
 
 test('rental parser preserves floor and legal-region identifiers for exact profile matching', () => {

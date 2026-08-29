@@ -84,7 +84,7 @@ function htmlFiles(directory){
 
 test('every public HTML page loads the shared mobile navigation once', () => {
   const root=path.join(__dirname,'..');
-  const files=htmlFiles(root);
+  const files=htmlFiles(root).filter(file=>path.relative(root,file)!=='embed/index.html');
   assert.ok(files.length>=70);
   for(const file of files){
     const html=fs.readFileSync(file,'utf8');

@@ -39,16 +39,25 @@ function depositRangeLabel(band) {
 function renderDepositBands(bands) {
   if (!depositBandGrid) return;
   if (!bands || !bands.length) { depositBandGrid.innerHTML = '<div class="explorer-empty">Not enough monthly-rent contracts to show deposit bands.</div>'; return; }
-  depositBandGrid.innerHTML = bands.map(band => `<div class="size-band-card"><span>${depositRangeLabel(band)}</span><strong>${moneyHtml(band.medianMonthlyRentWon)} / month</strong><small>${band.count} contract${band.count === 1 ? '' : 's'} · median deposit ${moneyHtml(band.medianDepositWon)}</small></div>`).join('');
+  depositBandGrid.innerHTML = bands.flatMap(band => {
+    const evidence = KHGExplorer.marketEvidencePresentation(band.count, 'en');
+    if (!evidence.render) return [];
+    const rent = evidence.sufficient ? `${moneyHtml(band.medianMonthlyRentWon)} / month` : evidence.limitedLabel;
+    const deposit = evidence.sufficient ? ` · median deposit ${moneyHtml(band.medianDepositWon)}` : '';
+    return [`<div class="size-band-card market-evidence-row"><span>${depositRangeLabel(band)}</span><strong class="market-evidence-rent">${rent}</strong><small class="market-evidence-count">${evidence.sampleLabel}${deposit}</small></div>`];
+  }).join('');
 }
 
 function renderAreaGroups(areaGroups) {
   if (!sizeBandGrid) return;
   if (!areaGroups || !areaGroups.length) { sizeBandGrid.innerHTML = '<div class="explorer-empty">Not enough monthly-rent contracts to show area groups.</div>'; return; }
-  sizeBandGrid.innerHTML = areaGroups.map(group => {
-    const bands = Array.isArray(group.depositBands) ? [...group.depositBands].sort((a,b) => Number(b.count || 0) - Number(a.count || 0)) : [];
-    const band = bands[0];
-    return `<div class="size-band-card"><span>Around ${Number(group.approxAreaSqm).toFixed(0)}㎡</span><strong>${group.count} contract${group.count === 1 ? '' : 's'}</strong>${band ? `<small>${depositRangeLabel(band)} → ${moneyHtml(band.medianMonthlyRentWon)} / month</small>` : ''}<small>Median observed size ${Number(group.medianAreaSqm).toFixed(1)}㎡</small></div>`;
+  sizeBandGrid.innerHTML = areaGroups.flatMap(group => {
+    const evidence = KHGExplorer.marketEvidencePresentation(group.count, 'en');
+    if (!evidence.render) return [];
+    const rent = evidence.sufficient ? `${moneyHtml(group.medianMonthlyRentWon)} / month` : evidence.limitedLabel;
+    const deposit = evidence.sufficient ? ` · median deposit ${moneyHtml(group.medianDepositWon)}` : '';
+    const observedSize = evidence.sufficient ? `<small>Median observed size ${Number(group.medianAreaSqm).toFixed(1)}㎡</small>` : '';
+    return [`<div class="size-band-card market-evidence-row"><span>Around ${Number(group.approxAreaSqm).toFixed(0)}㎡</span><strong class="market-evidence-rent">${rent}</strong><small class="market-evidence-count">${evidence.sampleLabel}${deposit}</small>${observedSize}</div>`];
   }).join('');
 }
 
@@ -72,7 +81,7 @@ function renderRecentContracts(recentContracts) {
 
 function renderNeighborhoodLinks(dongs) {
   if (!neighborhoodLinks || !window.KHGExplorer) return;
-  const rows = (Array.isArray(dongs) ? dongs : []).filter(item => item && item.dong && Number(item.contractCount || 0) >= 3).slice(0, 10);
+  const rows = (Array.isArray(dongs) ? dongs : []).filter(item => item && item.dong && Number(item.contractCount || 0) >= 10);
   if (!rows.length) {
     neighborhoodLinks.innerHTML = '<span class="explorer-empty">No neighborhood-level pages had enough recent contracts.</span>';
     return;
@@ -92,7 +101,7 @@ function renderMarket(data) {
   metricDeposit.textContent = Number(data.renewalMonthlyRentCount || 0).toLocaleString('en-US');
   metricJeonse.innerHTML = data.jeonseCount ? moneyHtml(data.medianJeonseDepositWon) : '<span class="money-primary">No jeonse median</span>';
   const q = Number(data.quarterChangePct);
-  quarterChange.textContent = Number.isFinite(q) ? `${q > 0 ? '+' : ''}${q.toFixed(1)}% vs prior 3 months` : 'Not enough data for a quarterly comparison';
+  quarterChange.textContent = Number.isFinite(q) ? `${q > 0 ? '+' : ''}${q.toFixed(1)}% vs prior 3 months · includes deposit, size, and contract mix effects` : 'Not enough data for a quarterly comparison';
   dataThrough.textContent = data.dataThroughMonth ? `Data through ${KHGDate.formatMonth(data.dataThroughMonth, 'en-US')}` : 'Latest completed months';
   renderDepositBands(data.depositBands || []);
   renderAreaGroups(data.areaGroups || []);

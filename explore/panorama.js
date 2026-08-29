@@ -10,15 +10,15 @@
 
   const PANORAMA_MODULE_URL = 'https://oapi.map.naver.com/openapi/v3/maps-panorama.js';
 
-  function number(value) {
-    const result = typeof value === 'function' ? value() : value;
+  function number(value, receiver) {
+    const result = typeof value === 'function' ? value.call(receiver) : value;
     return Number(result);
   }
 
   function point(value) {
     if (!value) return null;
-    const lat = number(value.lat);
-    const lng = number(value.lng);
+    const lat = number(value.lat, value);
+    const lng = number(value.lng, value);
     return Number.isFinite(lat) && Number.isFinite(lng) ? { lat, lng } : null;
   }
 
@@ -33,6 +33,32 @@
     const lat2 = radians(second.lat);
     const h = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
     return 6371000 * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(1 - h));
+  }
+
+  function bearingDegrees(from, to) {
+    const first = point(from);
+    const second = point(to);
+    if (!first || !second) return null;
+    const radians = value => value * Math.PI / 180;
+    const degrees = value => value * 180 / Math.PI;
+    const fromLat = radians(first.lat);
+    const toLat = radians(second.lat);
+    const deltaLng = radians(second.lng - first.lng);
+    const y = Math.sin(deltaLng) * Math.cos(toLat);
+    const x = Math.cos(fromLat) * Math.sin(toLat) - Math.sin(fromLat) * Math.cos(toLat) * Math.cos(deltaLng);
+    const normalized = ((degrees(Math.atan2(y, x)) + 180) % 360 + 360) % 360 - 180;
+    return normalized === -180 ? 180 : normalized;
+  }
+
+  function panoramaFrameSize(element) {
+    const rect = element && typeof element.getBoundingClientRect === 'function'
+      ? element.getBoundingClientRect()
+      : null;
+    const measuredWidth = Number(element && element.clientWidth) || Number(rect && rect.width);
+    const width = Math.max(240, Math.round(Number.isFinite(measuredWidth) && measuredWidth > 0 ? measuredWidth : 320));
+    const measuredHeight = Number(element && element.clientHeight) || Number(rect && rect.height);
+    const height = Math.max(160, Math.round(Number.isFinite(measuredHeight) && measuredHeight > 0 ? measuredHeight : width * 9 / 16));
+    return Object.freeze({ width, height });
   }
 
   function evaluateResult({ status, target, location } = {}) {
@@ -138,6 +164,7 @@
     const canvas = documentObject.querySelector('#explorerStreetViewCanvas');
     const status = documentObject.querySelector('#explorerStreetViewStatus');
     const meta = documentObject.querySelector('#explorerStreetViewMeta');
+    const frame = documentObject.querySelector('#explorerStreetViewFrame') || canvas;
     const panel = documentObject.querySelector('.building-status-window');
     if (!section || !canvas || !status || !meta) return null;
     const zh = String(documentObject.documentElement.lang || '').toLowerCase().startsWith('zh');
@@ -148,11 +175,36 @@
     let requestId = 0;
     let panorama = null;
     let configPromise = null;
+    let frameObserver = null;
+    let lastPanoramaSize = '';
+
+    function disconnectFrameObserver() {
+      if (frameObserver && typeof frameObserver.disconnect === 'function') frameObserver.disconnect();
+      frameObserver = null;
+    }
+
+    function syncPanoramaSize() {
+      if (!panorama || typeof panorama.setSize !== 'function') return;
+      const size = panoramaFrameSize(frame);
+      const signature = `${size.width}x${size.height}`;
+      if (signature === lastPanoramaSize) return;
+      lastPanoramaSize = signature;
+      panorama.setSize(new windowObject.naver.maps.Size(size.width, size.height));
+    }
+
+    function faceBuilding(model) {
+      if (!panorama || typeof panorama.setPov !== 'function') return;
+      const location = typeof panorama.getLocation === 'function' ? panorama.getLocation() : null;
+      const pan = bearingDegrees(location && location.coord, model);
+      panorama.setPov({ pan:Number.isFinite(pan) ? pan : 0, tilt:0, fov:90 });
+    }
 
     function reset() {
       requestId += 1;
+      disconnectFrameObserver();
       if (panorama && typeof panorama.setVisible === 'function') panorama.setVisible(false);
       panorama = null;
+      lastPanoramaSize = '';
       canvas.replaceChildren();
       canvas.hidden = true;
       meta.textContent = '';
@@ -160,6 +212,17 @@
       section.dataset.state = 'idle';
       section.hidden = true;
       if (panel) panel.classList.remove('has-street-view');
+    }
+
+    function prepare() {
+      if (!section.hidden && section.dataset.state === 'loading') {
+        status.textContent = copy.loading;
+        return;
+      }
+      reset();
+      section.hidden = false;
+      section.dataset.state = 'loading';
+      status.textContent = copy.loading;
     }
 
     function getConfig() {
@@ -172,8 +235,8 @@
     }
 
     async function show(model) {
-      reset();
-      if (!model || model.kind !== 'building' || !point(model)) return;
+      if (!model || model.kind !== 'building' || !point(model)) { reset(); return; }
+      prepare();
       const currentRequest = requestId;
       let outcomeTracked = false;
       const trackOutcome = (resultState, errorCategory = '') => {
@@ -184,9 +247,6 @@
           propertyType:model.propertyType, resultState, errorCategory
         });
       };
-      section.hidden = false;
-      section.dataset.state = 'loading';
-      status.textContent = copy.loading;
       try {
         const config = await getConfig();
         if (currentRequest !== requestId) return;
@@ -197,12 +257,18 @@
           if (!legalCode || currentRequest !== requestId) return;
           windowObject.dispatchEvent(new CustomEvent('khg:building-window-legal-code', { detail:{ model, legalCode } }));
         });
-        canvas.hidden = false;
+        const initialSize = panoramaFrameSize(frame);
         panorama = new windowObject.naver.maps.Panorama(canvas, {
           position:new windowObject.naver.maps.LatLng(Number(model.lat), Number(model.lng)),
-          size:new windowObject.naver.maps.Size(Math.max(canvas.clientWidth || 320, 240), Math.max(canvas.clientHeight || 160, 140)),
+          size:new windowObject.naver.maps.Size(initialSize.width, initialSize.height),
           pov:{ pan:0, tilt:0, fov:90 }
         });
+        if (typeof windowObject.ResizeObserver === 'function') {
+          frameObserver = new windowObject.ResizeObserver(() => {
+            if (currentRequest === requestId) syncPanoramaSize();
+          });
+          frameObserver.observe(frame);
+        }
         windowObject.naver.maps.Event.addListener(panorama, 'pano_status', panoramaStatus => {
           if (currentRequest !== requestId) return;
           const result = evaluateResult({ status:panoramaStatus, target:model, location:panorama.getLocation() });
@@ -215,10 +281,19 @@
             trackOutcome('empty');
             return;
           }
-          status.textContent = '';
           section.dataset.state = 'ready';
+          canvas.hidden = false;
+          status.textContent = '';
           meta.textContent = copy.captured(result.photoDate, result.distanceMeters);
           if (panel) panel.classList.add('has-street-view');
+          const reveal = typeof windowObject.requestAnimationFrame === 'function'
+            ? windowObject.requestAnimationFrame.bind(windowObject)
+            : callback => callback();
+          reveal(() => {
+            if (currentRequest !== requestId) return;
+            syncPanoramaSize();
+            faceBuilding(model);
+          });
           trackOutcome('ready');
         });
       } catch (_) {
@@ -231,14 +306,17 @@
       }
     }
 
-    windowObject.addEventListener('khg:map-select-building', event => { void show(event.detail && event.detail.model); });
+    // Building detail owns the open lifecycle. Waiting for its location event avoids
+    // initializing NAVER Panorama twice while the inline mount is still hidden.
     windowObject.addEventListener('khg:building-window-location', event => { void show(event.detail && event.detail.model); });
+    windowObject.addEventListener('khg:building-window-reset', reset);
+    windowObject.addEventListener('khg:building-window-prepare-street-view', prepare);
     windowObject.addEventListener('khg:building-window-close', reset);
     windowObject.addEventListener('khg:map-select-dong', reset);
     windowObject.addEventListener('khg:map-back-neighborhoods', reset);
     windowObject.addEventListener('khg:map-clear-selection', reset);
-    return Object.freeze({ show, reset });
+    return Object.freeze({ show, reset, prepare });
   }
 
-  return Object.freeze({ PANORAMA_MODULE_URL, distanceMeters, evaluateResult, buildCoreSdkUrl, legalCodeFromResponse, reverseLegalCode, loadSdk, statusCopy, install });
+  return Object.freeze({ PANORAMA_MODULE_URL, distanceMeters, bearingDegrees, panoramaFrameSize, evaluateResult, buildCoreSdkUrl, legalCodeFromResponse, reverseLegalCode, loadSdk, statusCopy, install });
 });

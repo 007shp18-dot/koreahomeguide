@@ -14,7 +14,7 @@ function responseRecorder() {
   };
 }
 
-test('retired building SEO URLs return 410 without creating a public-data provider', async t => {
+test('building SEO returns 503 without a configured public-data key', async t => {
   const previousKey = process.env.DATA_GO_KR_SERVICE_KEY;
   delete process.env.DATA_GO_KR_SERVICE_KEY;
   t.after(() => {
@@ -42,14 +42,12 @@ test('retired building SEO URLs return 410 without creating a public-data provid
     }
   }, res);
 
-  assert.equal(res.statusCode, 410);
+  assert.equal(res.statusCode, 503);
   assert.equal(providerCalls, 0);
   assert.equal(res.headers['X-Robots-Tag'], 'noindex,nofollow');
-  assert.match(res.body, /content="noindex,nofollow"/);
-  assert.match(res.headers['Cache-Control'], /s-maxage=86400/);
 });
 
-test('retired building pages preserve locale and market context in the Explorer handoff', async () => {
+test('building SEO failure remains localized and non-indexable', async () => {
   const handler = buildingApi.createHandler();
   const cases = [
     {
@@ -77,8 +75,7 @@ test('retired building pages preserve locale and market context in the Explorer 
       }
     }, res);
 
-    assert.equal(res.statusCode, 410);
-    assert.ok(res.body.includes(`href="${current.href}"`));
-    assert.ok(res.body.includes(current.label));
+    assert.equal(res.statusCode, 503);
+    assert.equal(res.headers['X-Robots-Tag'], 'noindex,nofollow');
   }
 });

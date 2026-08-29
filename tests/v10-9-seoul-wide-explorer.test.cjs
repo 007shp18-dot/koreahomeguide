@@ -14,8 +14,8 @@ function recorder() {
 }
 
 test('EN and ZH Explorer offer an all-Seoul area option', () => {
-  assert.match(read('explore/index.html'), /<option value="all">All supported Seoul<\/option>/);
-  assert.match(read('zh/explore/index.html'), /<option value="all">全首尔支持地区<\/option>/);
+  assert.match(read('explore/index.html'), /<option value="all">All Seoul<\/option>/);
+  assert.match(read('zh/explore/index.html'), /<option value="all">全首尔<\/option>/);
 });
 
 test('Explorer clients call the Seoul-wide endpoint and preserve district identity for links', () => {
@@ -27,9 +27,9 @@ test('Explorer clients call the Seoul-wide endpoint and preserve district identi
   }
 });
 
-test('Seoul-wide API aggregates 15 districts over 3 completed months in bounded batches', async () => {
+test('Seoul-wide API aggregates 25 districts over 3 completed months in bounded batches', async () => {
   const api = require('../api/explore-area.js');
-  assert.equal(api.SUPPORTED_DISTRICT_CODES.length, 15);
+  assert.equal(api.SUPPORTED_DISTRICT_CODES.length, 25);
   let active = 0;
   let maxActive = 0;
   let calls = 0;
@@ -42,7 +42,7 @@ test('Seoul-wide API aggregates 15 districts over 3 completed months in bounded 
     return [{ dong:`동-${lawdCd}`, buildingName:'', building:`동-${lawdCd}`, area:'25', deposit:'1,000', monthlyRent:'50', contractDate:`${dealYmd.slice(0,4)}-${dealYmd.slice(4)}-10`, type }];
   };
   const aggregateDongs = (_rows, { areaCode }) => [{ dong:`동-${areaCode}`, contractCount:3, medianMonthlyRentWon:500000, medianDepositWon:10000000, depositBands:[] }];
-  const buildAreaSummary = rows => ({ totalContracts:rows.length, medianMonthlyRentWon:500000, medianDepositWon:10000000, monthsUsed:3, dataThroughMonth:'2026-07' });
+  const buildAreaSummary = rows => ({ totalContracts:rows.length, medianMonthlyRentWon:500000, medianDepositWon:10000000, adjustedPerSqmWon:22000, monthsUsed:3, dataThroughMonth:'2026-07' });
   const handler = api.createHandler({
     fetchMonth,
     aggregateDongs,
@@ -54,10 +54,13 @@ test('Seoul-wide API aggregates 15 districts over 3 completed months in bounded 
   const res = recorder();
   await handler({ method:'GET', headers:{ origin:'https://koreahomeguide.com' }, query:{ scope:'all', type:'officetel' } }, res);
   assert.equal(res.statusCode, 200);
-  assert.equal(calls, 45);
+  assert.equal(calls, 75);
   assert.ok(maxActive <= 15, `expected <=15 concurrent month fetches, got ${maxActive}`);
-  assert.equal(res.body.dongs.length, 15);
+  assert.equal(res.body.dongs.length, 25);
   assert.ok(res.body.dongs.every(item => item.districtCode && item.districtName));
+  assert.equal(res.body.districts.length, 25);
+  assert.ok(res.body.districts.every(item => item.districtCode && item.slug && item.summary));
+  assert.ok(res.body.districts.every(item => item.summary.adjustedPerSqmWon === 22000));
   assert.equal(res.body.summary.monthsUsed, 3);
   assert.match(res.headers['Cache-Control'], /s-maxage=21600/);
 });

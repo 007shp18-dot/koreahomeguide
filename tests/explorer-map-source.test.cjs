@@ -43,7 +43,9 @@ test('Explorer runtimes publish raw dong models after rendering', () => {
     assert.match(source, /function highlightMapCard\(dong\)/);
     assert.match(source, /function setExplorerView\(view = 'map'\)/);
     assert.match(source, /explorerViewButtons\.forEach/);
-    assert.match(source, /mapSelectionClose\.addEventListener\('click', clearMapSelection\)/);
+    assert.match(source, /mapSelectionClose\.addEventListener\('click', \(\) => \{/);
+    assert.doesNotMatch(source, /restoreArea/);
+    assert.match(source, /function activateNeighborhood\(model/);
     assert.match(source, /KHGExplorer\.buildDongSeoUrl/);
     assert.match(source, /KHGExplorer\.buildBuildingDetailUrl/);
     assert.match(source, /khg:explorer-buildings/);
@@ -101,6 +103,25 @@ test('building map layer verifies precise geocodes, caps candidates, and support
   assert.match(source, /khg:map-back-neighborhoods/);
 });
 
+test('All-Seoul building layers keep the selected neighborhood district context', () => {
+  const controller = require('../explore/map-controller.js');
+  const context = controller.mapLayerContext(
+    { lawdCd:'all', propertyType:'apartment', locale:'en' },
+    { lawdCd:'11680', dong:'역삼동' },
+    'building'
+  );
+  const [model] = controller.buildBuildingMarkerModels({
+    ...context,
+    buildings:[{ buildingKey:'역삼동::테스트', buildingName:'테스트', dong:'역삼동', lat:37.5, lng:127, contractCount:3 }]
+  });
+  assert.equal(context.lawdCd, '11680');
+  assert.equal(model.districtCode, '11680');
+  const source = fs.readFileSync('explore/map.js', 'utf8');
+  assert.match(source, /function activeBuildingContext\(item = null\)/);
+  assert.match(source, /latestBuildingDetail \|\| itemContext/);
+  assert.match(source, /buildingGeocodeQueries\(item\)[\s\S]*?activeBuildingContext\(item\)/);
+});
+
 test('opening a building from the mobile list starts the lazy map before locating street view', () => {
   const source = fs.readFileSync('explore/map.js','utf8');
   assert.match(source, /async function publishBuildingWindowLocation\(selection\)/);
@@ -155,10 +176,11 @@ test('building geocoding tries precise official addresses before a building-name
   ]);
 });
 
-test('Explorer building lists expose up to 60 recent named buildings', () => {
+test('Explorer building lists reveal ten recent named buildings at a time', () => {
   for (const file of ['explore/app.js','zh/explore/app.js']) {
     const source = fs.readFileSync(file, 'utf8');
-    assert.match(source, /buildings\.slice\(0, 60\)/, file);
+    assert.match(source, /buildingVisibleCount = 10/, file);
+    assert.match(source, /items\.slice\(0, buildingVisibleCount\)/, file);
   }
 });
 

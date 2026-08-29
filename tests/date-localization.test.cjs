@@ -17,7 +17,7 @@ const affectedScripts = [
 
 function scriptPosition(html, src) {
   const escaped = src.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const match = new RegExp(`<script\\b[^>]*\\bsrc="${escaped}"[^>]*><\\/script>`).exec(html);
+  const match = new RegExp(`<script\\b[^>]*\\bsrc="${escaped}(?:\\?[^"#]*)?"[^>]*><\\/script>`).exec(html);
   return match ? match.index : -1;
 }
 
