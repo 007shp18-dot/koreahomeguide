@@ -7,8 +7,8 @@ const {
   ZH_INDEXABLE_DISTRICT_CODES,
   supportsZhIndexing
 } = require('../providers/seoul-config.cjs');
-const { buildDongSeoUrl } = require('../seo/seo-route-utils.cjs');
-const { ORIGIN } = require('../seo/seo-page-renderer.cjs');
+const { buildDongSeoUrl, buildBuildingSeoUrl } = require('../seo/seo-route-utils.cjs');
+const { ORIGIN, isBuildingIndexable } = require('../seo/seo-page-renderer.cjs');
 const { MIN_DONG_CONTRACTS, isDongIndexable } = require('../seo/dong-seo-v10-8.cjs');
 const { aggregateDongs, buildAreaSummary } = require('../providers/provider-utils.cjs');
 const { loadAllSeoul, DEFAULT_BATCH_SIZE } = require('./explore-area.js');
@@ -89,6 +89,15 @@ function createHandler({
 
     try {
       const provider = providerFactory({ serviceKey, referenceDate:referenceDate || new Date() });
+      if (query.mode === 'buildings') {
+        const buildings = await provider.getBuildings({ areaCode, propertyType, months:6 });
+        const urls = [];
+        for (const building of (Array.isArray(buildings) ? buildings : []).filter(isBuildingIndexable)) {
+          urls.push(absoluteUrl(buildBuildingSeoUrl({ areaCode, dong:building.dong, propertyType, building, lang:'en' })));
+          if (supportsZhIndexing(areaCode)) urls.push(absoluteUrl(buildBuildingSeoUrl({ areaCode, dong:building.dong, propertyType, building, lang:'zh' })));
+        }
+        return sendXml(res, 200, urlset(urls), true);
+      }
       const dongs = await provider.getDongs({ areaCode, propertyType, months:6 });
 
       const eligibleDongs = (Array.isArray(dongs) ? dongs : [])

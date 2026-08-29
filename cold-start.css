@@ -256,7 +256,7 @@ html[lang="zh-CN"] .funnel-updated-guides .funnel-guide:after{content:"阅读指
 
 /* v18 rent decision controls */
 @media(min-width:900px){
-  .home-rent-workspace .rent-check-form{grid-template-columns:repeat(6,minmax(0,1fr));grid-template-areas:"area area type type size size" "deposit deposit rent rent submit submit";gap:16px 12px;align-items:start}
+  .home-rent-workspace .rent-check-form{grid-template-columns:repeat(6,minmax(0,1fr));grid-template-areas:"area area type type size size" "assist assist assist assist assist assist" "deposit deposit rent rent submit submit";gap:12px;align-items:start}
   .home-rent-workspace .rent-check-area-field{grid-area:area}
   .home-rent-workspace .rent-check-property-field{grid-area:type}
   .home-rent-workspace .rent-check-size-field{grid-area:size}
@@ -264,3 +264,22 @@ html[lang="zh-CN"] .funnel-updated-guides .funnel-guide:after{content:"阅读指
   .home-rent-workspace .rent-check-form>.field:nth-child(4){grid-area:rent}
   .home-rent-workspace .rent-check-button{grid-area:submit;align-self:start;margin-top:27px}
 }
+
+/* v19 equal primary rows with a deliberate compact assist bar. */
+.home-rent-workspace .rent-check-size-field{display:flex;grid-template-columns:none;grid-template-rows:none}
+.home-rent-workspace .rent-check-size-field>span,.home-rent-workspace .rent-check-size{grid-column:auto;grid-row:auto}
+.home-rent-workspace .rent-check-assist-row{display:grid;grid-template-columns:minmax(180px,.8fr) minmax(0,2.2fr);grid-area:assist;gap:14px;align-items:center;min-width:0;padding:10px 12px;border:1px solid var(--line);border-radius:var(--radius-md);background:var(--surface-soft)}
+.home-rent-workspace .rent-check-assist-row .property-type-hint{min-height:0;margin:0;color:var(--muted);font-size:11px;line-height:1.45}
+.home-rent-workspace .rent-check-assist-row .rent-size-controls{display:grid;grid-template-columns:auto minmax(240px,1fr) auto;gap:10px;align-items:center;min-width:0;margin:0}
+.home-rent-workspace .rent-check-assist-row .rent-size-hint{margin:0;color:var(--muted);font-size:11px;white-space:nowrap}
+.home-rent-workspace .rent-check-form :is(select,input,.rent-check-money,.rent-check-size,.rent-check-button){min-height:52px}
+@media(max-width:899px){.home-rent-workspace .rent-check-assist-row{grid-column:1/-1;grid-template-columns:1fr}.home-rent-workspace .rent-check-assist-row .rent-size-controls{grid-template-columns:1fr auto}.home-rent-workspace .rent-check-assist-row .rent-size-hint{grid-column:1/-1}}
+@media(max-width:639px){.home-rent-workspace .rent-check-assist-row{grid-column:auto}.home-rent-workspace .rent-check-assist-row .rent-size-controls{grid-template-columns:1fr}.home-rent-workspace .rent-check-assist-row .rent-size-unit-toggle{justify-self:start}}
+/* v19 — crawlable neighborhood entry points */
+.home-neighborhood-entry{max-width:1120px;margin:0 auto;padding:28px 22px 34px;display:grid;grid-template-columns:minmax(220px,.75fr) minmax(0,1.25fr);gap:28px;align-items:end}
+.home-neighborhood-entry h2{margin:5px 0 7px;font-size:clamp(24px,3vw,34px);letter-spacing:-.035em}
+.home-neighborhood-entry p{margin:0;color:var(--muted)}
+.home-neighborhood-entry nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.home-neighborhood-entry nav a{display:flex;align-items:center;min-height:44px;padding:0 13px;border:1px solid var(--line);border-radius:var(--radius-md);background:var(--surface);color:var(--ink-soft);text-decoration:none;font-size:14px;font-weight:750}
+.home-neighborhood-entry nav a:hover{border-color:var(--muted-light);background:var(--surface-soft)}
+@media(max-width:760px){.home-neighborhood-entry{grid-template-columns:1fr}.home-neighborhood-entry nav{grid-template-columns:repeat(2,minmax(0,1fr))}}

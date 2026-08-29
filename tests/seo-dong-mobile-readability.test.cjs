@@ -19,6 +19,7 @@ const buildings = [{
   buildingName: '신길센트럴자이',
   buildingKey: '신길동::신길센트럴자이',
   contractCount: 17,
+  monthlyRentCount: 12,
   typicalAreaSqm: 59.8,
   depositBands: [],
 }];

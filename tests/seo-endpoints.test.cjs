@@ -122,7 +122,7 @@ test('Dong SEO endpoint returns 503/noindex when official data is unconfigured o
   if (old == null) delete process.env.DATA_GO_KR_SERVICE_KEY; else process.env.DATA_GO_KR_SERVICE_KEY = old;
 });
 
-test('Building SEO endpoint retires deterministic slugs with a cached noindex response', async () => {
+test('Building SEO endpoint rejects a non-qualified deterministic slug', async () => {
   const routes = require('../seo/seo-route-utils.cjs');
   const slug = routes.buildingSlug(building);
   let providerCalls = 0;
@@ -135,8 +135,8 @@ test('Building SEO endpoint retires deterministic slugs with a cached noindex re
   });
   const res = responseRecorder();
   await handler({ method:'GET', query:{ district:'mapo-gu', dong:'yeonnam-dong', type:'villa', building:slug, lang:'en' } }, res);
-  assert.equal(res.statusCode, 410);
-  assert.equal(providerCalls, 0);
+  assert.equal(res.statusCode, 404);
+  assert.equal(providerCalls, 1);
   assert.match(res.body, /content="noindex,nofollow"/);
   assert.equal(res.headers['X-Robots-Tag'], 'noindex,nofollow');
   assert.match(res.headers['Cache-Control'], /s-maxage=86400/);
@@ -148,6 +148,25 @@ test('Building SEO endpoint returns 404 when the building slug is missing', asyn
   await handler({ method:'GET', query:{ district:'mapo-gu', dong:'yeonnam-dong', type:'villa', lang:'en' } }, res);
   assert.equal(res.statusCode, 404);
   assert.match(res.body, /noindex,follow/);
+});
+
+test('Building SEO endpoint publishes a qualified canonical page', async () => {
+  process.env.DATA_GO_KR_SERVICE_KEY = 'test';
+  const routes = require('../seo/seo-route-utils.cjs');
+  const qualified = { ...building, contractCount:6, monthlyRentCount:5 };
+  const handler = buildingApi.createHandler({
+    providerFactory:() => provider({
+      getBuildings:async()=>[qualified],
+      getBuildingDetail:async()=>({ ...qualified, monthlyTrend:[], recentTransactions:[] })
+    }),
+    fetchImpl:fakeFxFetch
+  });
+  const res = responseRecorder();
+  await handler({ method:'GET', query:{ district:'mapo-gu', dong:'yeonnam-dong', type:'villa', building:routes.buildingSlug(qualified), lang:'en' } }, res);
+  assert.equal(res.statusCode, 200);
+  assert.equal(res.headers['X-Robots-Tag'], 'index,follow');
+  assert.match(res.body, /content="index,follow"/);
+  assert.match(res.body, new RegExp(`rel="canonical" href="https://koreahomeguide\\.com${routes.buildBuildingSeoUrl({ areaCode:'11440', dong:'연남동', propertyType:'villa', building:qualified, lang:'en' }).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`));
 });
 
 test('vercel rewrites map EN/ZH Dong and building paths to two shared HTML endpoints', () => {

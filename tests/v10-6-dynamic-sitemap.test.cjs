@@ -20,11 +20,12 @@ test('root sitemap is an index with static pages plus all 25 Seoul districts x 3
   assert.match(root, /https:\/\/koreahomeguide\.com\/sitemaps\/seoul\/mapo-gu\/villa\//);
   assert.match(root, /https:\/\/koreahomeguide\.com\/sitemaps\/seoul\/gangbuk-gu\/apartment\//);
   assert.match(root, /https:\/\/koreahomeguide\.com\/sitemaps\/seoul\/geumcheon-gu\/officetel\//);
+  assert.match(root, /https:\/\/koreahomeguide\.com\/sitemaps\/seoul\/gangnam-gu\/officetel\/buildings\//);
   assert.doesNotMatch(root, /\/sitemaps\/seoul\/gwanak-gu\/detached\//);
   for (const type of ['apartment','officetel','villa']) {
     assert.match(root, new RegExp(`https://koreahomeguide\\.com/sitemaps/seoul/opportunities/${type}/`));
   }
-  assert.equal((root.match(/<sitemap>/g) || []).length, 79);
+  assert.equal((root.match(/<sitemap>/g) || []).length, 154);
   assert.equal((staticMap.match(/<url>/g) || []).length, 78);
   assert.equal(root.includes('/api/'), false);
 });
@@ -67,11 +68,14 @@ test('opportunity sitemap emits only evidence-qualified approved routes in both 
 
 test('vercel exposes one shared child-sitemap endpoint without adding static HTML files', () => {
   const config = JSON.parse(fs.readFileSync('vercel.json','utf8'));
-  const route = config.rewrites.find(item => item.destination.includes('sitemap-market') && item.destination.includes('district=:district'));
+  const route = config.rewrites.find(item => item.destination.includes('sitemap-market') && item.destination.includes('district=:district') && !item.destination.includes('mode=buildings'));
   assert.ok(route);
   assert.equal(route.source, '/sitemaps/seoul/:district/:type/');
   assert.match(route.destination, /district=:district/);
   assert.match(route.destination, /type=:type/);
+  const buildingRoute = config.rewrites.find(item => item.destination.includes('mode=buildings'));
+  assert.ok(buildingRoute);
+  assert.equal(buildingRoute.source, '/sitemaps/seoul/:district/:type/buildings/');
   assert.equal(config.rewrites.some(item => item.source === '/sitemaps/seoul/opportunities/:type/' && item.destination.includes('mode=opportunities') && item.destination.includes('type=:type')), true);
 });
 

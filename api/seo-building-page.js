@@ -4,7 +4,11 @@ const {
   supportsZhIndexing
 } = require('../providers/seoul-config.cjs');
 const { dongNameFromSlug } = require('../seo/seo-route-utils.cjs');
-const { renderErrorPage } = require('../seo/seo-page-renderer.cjs');
+const { resolveBuildingSlug } = require('../seo/seo-route-utils.cjs');
+const { normalizeServiceKey } = require('../lib/real-price-core.cjs');
+const { createKoreaHousingProvider } = require('../providers/korea-provider.cjs');
+const { SEOUL_MARKET_DISTRICTS } = require('../providers/seoul-config.cjs');
+const { renderErrorPage, renderBuildingPage, isBuildingIndexable, fetchFxRates } = require('../seo/seo-page-renderer.cjs');
 
 function normalizedLang(value) {
   return String(value || '').toLowerCase().startsWith('zh') ? 'zh' : 'en';
@@ -17,7 +21,7 @@ function sendHtml(res, status, html, { cache = false, robots = 'noindex,follow' 
   return res.status(status).send(html);
 }
 
-function createHandler() {
+function createHandler({ providerFactory = options => createKoreaHousingProvider(options), fetchImpl = fetch, referenceDate = null } = {}) {
   return async function handler(req, res) {
     const lang = normalizedLang(req && req.query && req.query.lang);
     if (!req || req.method !== 'GET') {
@@ -37,22 +41,24 @@ function createHandler() {
       return sendHtml(res, 404, renderErrorPage({ lang, status:404 }));
     }
 
-    const exploreParams = new URLSearchParams({
-      lawdCd:areaCode,
-      type:propertyType,
-      dong
-    });
-    const actionHref = `${lang === 'zh' ? '/zh' : ''}/explore/?${exploreParams.toString()}`;
-    return sendHtml(res, 410, renderErrorPage({
-      lang,
-      status:410,
-      title:lang === 'zh' ? '建筑市场页面已迁移' : 'Building market page moved',
-      message:lang === 'zh'
-        ? '请在租金探索中查看近期建筑成交。'
-        : 'Use Rent Explorer to view recent building transactions.',
-      actionHref,
-      robots:'noindex,nofollow'
-    }), { cache:true, robots:'noindex,nofollow' });
+    const serviceKey = normalizeServiceKey(process.env.DATA_GO_KR_SERVICE_KEY);
+    if (!serviceKey) return sendHtml(res, 503, renderErrorPage({ lang, status:503, robots:'noindex,nofollow' }), { robots:'noindex,nofollow' });
+    try {
+      const provider = providerFactory({ serviceKey, referenceDate:referenceDate || new Date() });
+      const buildings = await provider.getBuildings({ areaCode, propertyType, dong, months:6 });
+      const building = resolveBuildingSlug(buildings, requestedBuildingSlug);
+      if (!building || !isBuildingIndexable(building)) return sendHtml(res, 404, renderErrorPage({ lang, status:404, robots:'noindex,nofollow' }), { cache:true, robots:'noindex,nofollow' });
+      const [detail, summary, fxRates] = await Promise.all([
+        provider.getBuildingDetail({ areaCode, propertyType, buildingKey:building.buildingKey, months:6 }),
+        provider.getDongSummary({ areaCode, propertyType, dong, months:6 }),
+        fetchFxRates(fetchImpl)
+      ]);
+      if (!isBuildingIndexable(detail)) return sendHtml(res, 404, renderErrorPage({ lang, status:404, robots:'noindex,nofollow' }), { cache:true, robots:'noindex,nofollow' });
+      const html = renderBuildingPage({ lang, areaCode, districtName:SEOUL_MARKET_DISTRICTS[areaCode], dong, propertyType, summary, detail, fxRates });
+      return sendHtml(res, 200, html, { cache:true, robots:'index,follow' });
+    } catch (_) {
+      return sendHtml(res, 503, renderErrorPage({ lang, status:503, robots:'noindex,nofollow' }), { robots:'noindex,nofollow' });
+    }
   };
 }
 

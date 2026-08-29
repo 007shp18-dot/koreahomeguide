@@ -14,17 +14,16 @@ test('building SEO retirement responses remain noindex and cacheable', () => {
   assert.match(text, /cache:true/);
 });
 
-test('dynamic market sitemaps publish Dong URLs only', () => {
+test('dynamic market sitemaps publish qualified Dong and building URLs', () => {
   const text = source('api/sitemap-market.js');
   assert.match(text, /buildDongSeoUrl/);
-  assert.doesNotMatch(text, /buildBuildingSeoUrl/);
-  assert.doesNotMatch(text, /provider\.getBuildings/);
+  assert.match(text, /buildBuildingSeoUrl/);
+  assert.match(text, /provider\.getBuildings/);
 });
 
-test('Dong pages keep building links clickable but tell crawlers not to follow them', () => {
+test('Dong pages do not post-process qualified building links as nofollow', () => {
   const text = source('api/seo-dong-page.js');
-  assert.match(text, /nofollowBuildingLinks/);
-  assert.match(text, /rel="nofollow"/);
+  assert.doesNotMatch(text, /nofollowBuildingLinks/);
 });
 
 test('Dong success and Building retirement responses keep 24-hour CDN caching', () => {

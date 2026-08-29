@@ -85,6 +85,7 @@ test('Dong building rows render name, metadata, deposit, and monthly rent as sep
       buildingName: '강남 IBC 오피스텔',
       buildingKey: '역삼동::강남 ibc 오피스텔',
       contractCount: 15,
+      monthlyRentCount: 12,
       typicalAreaSqm: 27.9,
       depositBands: [{
         minDepositWon: 10_000_000,
