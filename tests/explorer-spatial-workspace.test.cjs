@@ -23,3 +23,9 @@ test('both locales expose a switching discovery rail', () => {
     assert.match(source, /resultsShell\.dataset\.workspaceState\s*=\s*KHGExplorer\.workspaceState/);
   }
 });
+
+test('full-canvas map layer stretches to the workspace height', () => {
+  const css = fs.readFileSync('styles.css', 'utf8');
+  const spatial = css.slice(css.indexOf('/* v17 Explorer spatial workspace'));
+  assert.match(spatial, /\.map-first-workspace \.explorer-map-column\{[^}]*height:100%[^}]*align-self:stretch/);
+});
