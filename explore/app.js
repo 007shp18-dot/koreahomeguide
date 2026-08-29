@@ -388,7 +388,7 @@ function renderSummary(data, dong = '') {
   const change = Number(summary.quarterChangePct);
   metricChange.textContent = Number.isFinite(change) ? `${change > 0 ? '+' : ''}${change.toFixed(1)}%` : 'Not enough data';
   if (metricPerSqm) metricPerSqm.textContent = formatAdjustedPerSqm(summary.adjustedPerSqmWon);
-  dataThrough.textContent = summary.dataThroughMonth ? `Data through ${KHGDate.formatMonth(summary.dataThroughMonth, 'en-US')}` : 'Latest completed months';
+  dataThrough.textContent = summary.dataThroughMonth ? `Data through ${KHGDate.formatMonth(summary.dataThroughMonth, 'en-US')} · Contract date` : 'Latest completed months · Contract date';
   renderBuildings(data.buildings || []);
   const count = Number(summary.totalContracts || summary.contractCount || 0);
   status.textContent = count

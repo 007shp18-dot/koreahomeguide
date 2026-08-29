@@ -395,7 +395,7 @@ function renderSummary(data, dong = '') {
   const change = Number(summary.quarterChangePct);
   metricChange.textContent = Number.isFinite(change) ? `${change > 0 ? '+' : ''}${change.toFixed(1)}%` : '数据不足';
   if (metricPerSqm) metricPerSqm.textContent = formatAdjustedPerSqm(summary.adjustedPerSqmWon);
-  dataThrough.textContent = summary.dataThroughMonth ? `数据截至 ${KHGDate.formatMonth(summary.dataThroughMonth, 'zh-CN')}` : '最近已完成月份';
+  dataThrough.textContent = summary.dataThroughMonth ? `数据截至 ${KHGDate.formatMonth(summary.dataThroughMonth, 'zh-CN')} · 合同日期` : '最近已完成月份 · 合同日期';
   renderBuildings(data.buildings || []);
   const count = Number(summary.totalContracts || summary.contractCount || 0);
   status.textContent = count

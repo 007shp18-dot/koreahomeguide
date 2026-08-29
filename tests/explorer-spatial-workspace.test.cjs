@@ -107,6 +107,17 @@ test('both Explorer locales expose district and price controls for the map', () 
   }
 });
 
+test('Explorer states the official contract-date basis and revision caveat', () => {
+  const enHtml = fs.readFileSync('explore/index.html', 'utf8');
+  const zhHtml = fs.readFileSync('zh/explore/index.html', 'utf8');
+  const enApp = fs.readFileSync('explore/app.js', 'utf8');
+  const zhApp = fs.readFileSync('zh/explore/app.js', 'utf8');
+  assert.match(enHtml, /by contract date[^<]*Reports can be revised or cancelled/);
+  assert.match(zhHtml, /按合同日期[^<]*申报记录之后可能更正或解除/);
+  assert.match(enApp, /Data through[^`]*Contract date/);
+  assert.match(zhApp, /数据截至[^`]*合同日期/);
+});
+
 test('both locale runtimes use explicit district neighborhood and building states', () => {
   for (const file of ['explore/app.js','zh/explore/app.js']) {
     const source = fs.readFileSync(file, 'utf8');
