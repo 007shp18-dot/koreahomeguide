@@ -306,7 +306,8 @@
       }
     }
 
-    windowObject.addEventListener('khg:map-select-building', event => { void show(event.detail && event.detail.model); });
+    // Building detail owns the open lifecycle. Waiting for its location event avoids
+    // initializing NAVER Panorama twice while the inline mount is still hidden.
     windowObject.addEventListener('khg:building-window-location', event => { void show(event.detail && event.detail.model); });
     windowObject.addEventListener('khg:building-window-reset', reset);
     windowObject.addEventListener('khg:building-window-prepare-street-view', prepare);

@@ -176,10 +176,11 @@ test('building geocoding tries precise official addresses before a building-name
   ]);
 });
 
-test('Explorer building lists expose up to 60 recent named buildings', () => {
+test('Explorer building lists reveal ten recent named buildings at a time', () => {
   for (const file of ['explore/app.js','zh/explore/app.js']) {
     const source = fs.readFileSync(file, 'utf8');
-    assert.match(source, /items\.slice\(0, 60\)/, file);
+    assert.match(source, /buildingVisibleCount = 10/, file);
+    assert.match(source, /items\.slice\(0, buildingVisibleCount\)/, file);
   }
 });
 

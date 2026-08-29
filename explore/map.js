@@ -37,6 +37,7 @@
   let geocoder = null;
   let buildingLayerRequestId = 0;
   let buildingDrawerOpen = false;
+  let openBuildingKey = '';
   let panelDrag = null;
   const geocodeCache = new Map();
   const knownBuildingPoints = new Map();
@@ -461,15 +462,18 @@
   window.addEventListener('khg:explorer-buildings', event => { void showBuildingLayer(event.detail || {}); });
   async function publishBuildingWindowLocation(selection) {
     if (!selection || selection.kind !== 'building') return;
+    const requestedKey = String(selection.buildingKey || '');
+    if (!requestedKey || requestedKey !== openBuildingKey) return;
     const located = latestModels.find(model => model.kind === 'building' && model.buildingKey === selection.buildingKey);
     if (located) {
+      if (requestedKey !== openBuildingKey) return;
       window.dispatchEvent(new CustomEvent('khg:building-window-location', { detail:{ model:located } }));
       return;
     }
     if (!map && !started) await start();
     if (!map || !selection.mapLocation) return;
     const point = await verifiedBuildingPoint(selection);
-    if (!point) return;
+    if (!point || requestedKey !== openBuildingKey) return;
     window.dispatchEvent(new CustomEvent('khg:building-window-location', { detail:{ model:{ ...selection, ...point } } }));
   }
 
@@ -479,6 +483,7 @@
   });
   window.addEventListener('khg:building-window-state', event => {
     buildingDrawerOpen = Boolean(event.detail && event.detail.open);
+    openBuildingKey = buildingDrawerOpen && event.detail && event.detail.selection ? String(event.detail.selection.buildingKey || '') : '';
     if (selectedMarkerId) highlight(selectedMarkerId, true);
   });
   window.addEventListener('khg:map-clear-selection', () => highlight('', false));

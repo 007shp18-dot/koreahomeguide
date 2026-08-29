@@ -60,9 +60,9 @@ function moneyHtml(amount, lang, rates = {}) {
   const symbol = zh ? '¥' : '$';
   const rate = Number(rates && rates[currency]);
   const won = wonText(numeric, lang);
-  if (!Number.isFinite(rate) || rate <= 0) return `<span class="seo-money money-primary">${escapeHtml(won)}</span>`;
+  if (!Number.isFinite(rate) || rate <= 0) return `<span class="seo-money" data-won="${numeric}"><span class="money-primary">${escapeHtml(won)}</span></span>`;
   const converted = Math.round(numeric * rate).toLocaleString(zh ? 'zh-CN' : 'en-US');
-  return `<span class="seo-money money-primary">${escapeHtml(won)}</span><small class="seo-fx fx-secondary">≈ ${symbol}${converted}</small>`;
+  return `<span class="seo-money" data-won="${numeric}"><span class="money-primary">${escapeHtml(won)}</span><small class="seo-fx fx-secondary">≈ ${symbol}${converted}</small></span>`;
 }
 
 function numberText(value, lang) {
@@ -129,12 +129,12 @@ function pageHead({ lang, title, description, canonicalPath, alternateEn, altern
 
 function header(lang, switchPath) {
   const zh = isZh(lang);
-  return `<header class="compact-header"><a class="brand" href="${zh ? '/zh/' : '/'}"><span class="brand-mark">K</span><span>KoreaHomeGuide</span></a><nav><a href="${zh ? '/zh/explore/' : '/explore/'}">${zh ? '租金探索' : 'Explore'}</a><a href="${zh ? '/zh/tools/seoul-rent-check/' : '/tools/seoul-rent-check/'}">${zh ? '租金检查' : 'Rent Check'}</a><a href="${zh ? '/zh/guides/' : '/guides/'}">${zh ? '租房指南' : 'Guides'}</a></nav><div class="header-actions"><a class="language-link" href="${escapeHtml(switchPath)}">${zh ? 'English' : '中文'}</a></div></header>`;
+  return `<header class="compact-header"><a class="brand" href="${zh ? '/zh/' : '/'}"><span class="brand-mark">K</span><span>KoreaHomeGuide</span></a><nav><a href="${zh ? '/zh/explore/' : '/explore/'}">${zh ? '租金探索' : 'Explore'}</a><a href="${zh ? '/zh/tools/seoul-rent-check/' : '/tools/seoul-rent-check/'}">${zh ? '租金检查' : 'Rent Check'}</a><a href="${zh ? '/zh/guides/' : '/guides/'}">${zh ? '租房指南' : 'Guides'}</a></nav><div class="header-actions"><select id="currencySelect" class="currency-select" aria-label="${zh ? '显示货币' : 'Display currency'}"><option value="KRW">KRW</option><option value="USD">USD</option><option value="CNY">CNY</option></select><a class="language-link" href="${escapeHtml(switchPath)}">${zh ? 'English' : '中文'}</a></div></header>`;
 }
 
 function footer(lang) {
   const zh = isZh(lang);
-  return `<footer class="seo-footer"><strong>KoreaHomeGuide</strong> · ${zh ? '韩国官方申报租赁成交数据的市场参考。' : 'Official reported rental transaction data for general market reference.'} <a href="${zh ? '/zh/privacy/' : '/privacy/'}">${zh ? '隐私说明' : 'Privacy'}</a>.</footer>`;
+  return `<footer class="seo-footer"><strong>KoreaHomeGuide</strong> · ${zh ? '韩国官方申报租赁成交数据的市场参考。' : 'Official reported rental transaction data for general market reference.'} <a href="${zh ? '/zh/privacy/' : '/privacy/'}">${zh ? '隐私说明' : 'Privacy'}</a>.</footer><script src="/currency-utils.js"></script><script src="/seo/seo-currency.js"></script>`;
 }
 
 
@@ -240,7 +240,9 @@ function saleAreaGroupsHtml(saleSummary, lang, rates) {
   const zh = isZh(lang);
   const rows = saleSummary && Array.isArray(saleSummary.areaGroups) ? saleSummary.areaGroups : [];
   if (!rows.length) return '';
-  return `<div class="seo-grid">${rows.slice(0,8).map(group => `<div class="seo-card"><span>${zh ? '约' : 'Around'} ${escapeHtml(areaText(group.approxAreaSqm))}</span><strong>${moneyHtml(group.medianSalePriceWon, lang, rates)}</strong><small>${zh ? '买卖成交中位价' : 'Median sale price'} · ${numberText(group.count, lang)} ${zh ? '笔' : 'sales'}</small><small>${zh ? '最近成交' : 'Latest'}: ${moneyHtml(group.latestSalePriceWon, lang, rates)} · ${escapeHtml(KHGDate.formatDate(group.latestContractDate, zh ? 'zh-CN' : 'en-US'))}</small></div>`).join('')}</div>`;
+  return `<div class="seo-grid">${rows.slice(0,8).map(group => Number(group.count || 0) < 5
+    ? `<div class="seo-card"><span>${zh ? '约' : 'Around'} ${escapeHtml(areaText(group.approxAreaSqm))}</span><strong>${evidenceCountText(group.count, lang)}</strong><small>${zh ? '样本不足，暂不显示价格或中位数。' : 'Prices and medians are hidden until at least 5 sales are observed.'}</small></div>`
+    : `<div class="seo-card"><span>${zh ? '约' : 'Around'} ${escapeHtml(areaText(group.approxAreaSqm))}</span><strong>${moneyHtml(group.medianSalePriceWon, lang, rates)}</strong><small>${zh ? '买卖成交中位价' : 'Median sale price'} · ${numberText(group.count, lang)} ${zh ? '笔' : 'sales'}</small><small>${zh ? '最近成交' : 'Latest'}: ${moneyHtml(group.latestSalePriceWon, lang, rates)} · ${escapeHtml(KHGDate.formatDate(group.latestContractDate, zh ? 'zh-CN' : 'en-US'))}</small></div>`).join('')}</div>`;
 }
 
 function labeledCell(label, html, className = '') {
@@ -304,16 +306,20 @@ function renderDongPage({ lang = 'en', areaCode, districtName, dong, propertyTyp
   const head = pageHead({ lang, title, description, canonicalPath, alternateEn:paths.en, alternateZh:paths.zh, robots:'index,follow', jsonLd, acquisition:true });
   const switchPath = zh ? paths.en : (paths.zh || zhExplorerFallback({ areaCode, propertyType, dong }));
   const dataMonth = summary && summary.dataThroughMonth ? KHGDate.formatMonth(summary.dataThroughMonth, zh ? 'zh-CN' : 'en-US') : (zh ? '最近完整月份' : 'Latest completed months');
-  const buildingLinks = (Array.isArray(buildings) ? buildings : []).filter(item => item && item.buildingName && item.buildingKey).slice(0, 30).map(item => {
-    const href = buildInteractiveBuildingUrl({ areaCode, dong, propertyType, buildingKey:item.buildingKey, lang });
+  const renderBuildingLink = item => {
+    const href = buildBuildingSeoUrl({ areaCode, dong, propertyType, building:item, lang });
     const name = getBuildingNameDisplay(item.buildingName, lang);
     const band = representativeBand(item);
     const depositContext = band
       ? escapeHtml(depositRangeText(band, lang))
       : (Number(item.medianJeonseDepositWon) > 0 ? escapeHtml(wonText(item.medianJeonseDepositWon, lang)) : '—');
     const rentContext = band ? escapeHtml(wonText(band.medianMonthlyRentWon, lang)) : '—';
-    return `<a class="seo-building-link" href="${escapeHtml(href)}" rel="nofollow"><div class="seo-building-main"><strong>${escapeHtml(name.primary)}</strong>${name.secondary ? `<small class="seo-building-official">${escapeHtml(name.secondary)}</small>` : ''}<div class="seo-building-meta"><span><small>${zh ? '典型面积' : 'Typical size'}</small><strong>${escapeHtml(areaText(item.typicalAreaSqm))}</strong></span><span><small>${zh ? '成交数' : 'Contracts'}</small><strong>${numberText(item.contractCount, lang)}</strong></span></div></div><div class="seo-building-price-context"><div><span class="seo-context-label">${zh ? '押金' : 'Deposit'}</span><strong>${depositContext}</strong></div><div><span class="seo-context-label">${zh ? '月租' : 'Monthly rent'}</span><strong>${rentContext}</strong></div></div></a>`;
-  }).join('');
+    return `<a class="seo-building-link" href="${escapeHtml(href)}"><div class="seo-building-main"><strong>${escapeHtml(name.primary)}</strong>${name.secondary ? `<small class="seo-building-official">${escapeHtml(name.secondary)}</small>` : ''}<div class="seo-building-meta"><span><small>${zh ? '典型面积' : 'Typical size'}</small><strong>${escapeHtml(areaText(item.typicalAreaSqm))}</strong></span><span><small>${zh ? '成交数' : 'Contracts'}</small><strong>${numberText(item.contractCount, lang)}</strong></span></div></div><div class="seo-building-price-context"><div><span class="seo-context-label">${zh ? '押金' : 'Deposit'}</span><strong>${depositContext}</strong></div><div><span class="seo-context-label">${zh ? '月租' : 'Monthly rent'}</span><strong>${rentContext}</strong></div></div></a>`;
+  };
+  const qualifiedBuildings = (Array.isArray(buildings) ? buildings : []).filter(item => item && item.buildingName && item.buildingKey && isBuildingIndexable(item)).slice(0, 30);
+  const primaryBuildingLinks = qualifiedBuildings.slice(0, 8).map(renderBuildingLink).join('');
+  const remainingBuildingLinks = qualifiedBuildings.slice(8).map(renderBuildingLink).join('');
+  const buildingLinks = `${primaryBuildingLinks}${remainingBuildingLinks ? `<details class="seo-buildings-more"><summary>${zh ? `再查看 ${qualifiedBuildings.length - 8} 栋建筑` : `View ${qualifiedBuildings.length - 8} more buildings`}</summary>${remainingBuildingLinks}</details>` : ''}`;
   const exploreParams = new URLSearchParams({ lawdCd:String(areaCode), type:String(propertyType), dong:String(dong) }).toString();
   const rentCheckPath = `${zh ? '/zh' : ''}/tools/seoul-rent-check/?${new URLSearchParams({ lawdCd:String(areaCode), type:String(propertyType) }).toString()}`;
   const otherTypes = ['apartment','officetel','villa','detached'].filter(t => t !== propertyType).map(t => `<a class="seo-action" href="${escapeHtml(buildDongSeoUrl({ areaCode, dong, propertyType:t, lang }))}">${escapeHtml(propertyDisplay(t, lang))}</a>`).join('');
@@ -321,7 +327,7 @@ function renderDongPage({ lang = 'en', areaCode, districtName, dong, propertyTyp
 }
 
 function isBuildingIndexable(detail) {
-  return false;
+  return Number(detail && detail.contractCount || 0) >= 5 && Number(detail && detail.monthlyRentCount || 0) >= 3;
 }
 
 function renderBuildingPage({ lang = 'en', areaCode, districtName, dong, propertyType, summary, detail, fxRates = {} }) {
@@ -336,12 +342,12 @@ function renderBuildingPage({ lang = 'en', areaCode, districtName, dong, propert
   const displayBuildingName = buildingNameDisplay.primary || safeBuildingName;
   const title = zh ? `${displayBuildingName}租金与成交数据 | ${dName}` : `${displayBuildingName} Rent & Transaction Data | ${dName}, Seoul`;
   const description = zh ? `查看${displayBuildingName}近期韩国官方申报租赁成交，按押金和面积拆分月租，并区分新签与续签${propertyType === 'apartment' ? '，同时查看公寓买卖成交' : ''}。` : `See recent official reported transactions for ${displayBuildingName}, with monthly rent separated by deposit and floor area, plus new versus renewal contracts${propertyType === 'apartment' ? ' and apartment sale transactions' : ''}.`;
-  const robots = 'noindex,follow';
+  const robots = isBuildingIndexable(detail) ? 'index,follow' : 'noindex,follow';
   const jsonLd = webPageDatasetJsonLd({ lang, title, description, canonicalPath, districtName, dong, propertyType });
   const head = pageHead({ lang, title, description, canonicalPath, alternateEn:paths.en, alternateZh:paths.zh, robots, jsonLd });
   const switchPath = zh ? paths.en : (paths.zh || zhExplorerFallback({ areaCode, propertyType, dong }));
   const dongPath = buildDongSeoUrl({ areaCode, dong, propertyType, lang });
-  const trend = (detail.monthlyTrend || []).filter(point => Number(point.medianMonthlyRentWon) > 0).map(point => `<div class="seo-trend-item"><strong>${escapeHtml(KHGDate.formatMonth(point.month, zh ? 'zh-CN' : 'en-US'))}</strong>${moneyHtml(point.medianMonthlyRentWon, lang, fxRates)}<small>${numberText(point.count, lang)} ${zh ? '笔' : 'contracts'}</small></div>`).join('');
+  const trend = (detail.monthlyTrend || []).filter(point => Number(point.count || 0) >= 5 && Number(point.medianMonthlyRentWon) > 0).map(point => `<div class="seo-trend-item"><strong>${escapeHtml(KHGDate.formatMonth(point.month, zh ? 'zh-CN' : 'en-US'))}</strong>${moneyHtml(point.medianMonthlyRentWon, lang, fxRates)}<small>${numberText(point.count, lang)} ${zh ? '笔' : 'contracts'}</small></div>`).join('');
   const rentParams = new URLSearchParams({ lawdCd:String(areaCode), type:String(propertyType) });
   const txRows = Array.isArray(detail.recentTransactions) ? detail.recentTransactions : [];
   const quoteTx = txRows.find(row => row && row.contractType === 'new' && Number(row.monthlyRentWon) > 0) || txRows.find(row => row && Number(row.monthlyRentWon) > 0);

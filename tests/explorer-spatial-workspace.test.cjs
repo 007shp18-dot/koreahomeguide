@@ -51,7 +51,17 @@ test('both locale runtimes use one direct neighborhood activation path', () => {
     assert.doesNotMatch(source, /cancelDongLoad\(\{ restoreArea:true \}\)/, file);
     assert.match(source, /<button class="neighborhood-card"[^>]*data-dong=/, file);
     assert.match(source, /areaSelect\.value === 'all'[\s\S]*?areaSelect\.value = String\(selected\.districtCode\)/, file);
+    assert.match(source, /const areaLoadGate = KHGExplorer\.createRequestGate\(\)/, file);
+    assert.match(source, /async function loadArea[\s\S]*?const request = areaLoadGate\.begin\(\)[\s\S]*?if \(!request\.isCurrent\(\)\) return/, file);
+    assert.match(source, /function handleSelectionChange\(\) \{\s*areaLoadGate\.invalidate\(\)/, file);
   }
+});
+
+test('map location publishing rejects stale building geocodes', () => {
+  const source = fs.readFileSync('explore/map.js', 'utf8');
+  assert.match(source, /let openBuildingKey = ''/);
+  assert.match(source, /requestedKey !== openBuildingKey/);
+  assert.match(source, /!point \|\| requestedKey !== openBuildingKey/);
 });
 
 test('both locales expose a switching discovery rail', () => {
@@ -94,21 +104,27 @@ test('Street View loading and ready states share one stable media frame', () => 
   assert.doesNotMatch(finalLayer, /explorer-street-view-canvas\{[^}]*height:(?:120|126|170|190)px/);
 });
 
-test('building detail is a centered bottom sheet with bounded Street View height', () => {
+test('building detail is inline with a stable full-width Street View frame', () => {
   const css = fs.readFileSync('styles.css', 'utf8');
-  const finalLayer = css.slice(css.indexOf('/* v24 Explorer direct drill-down and building sheet */'));
-  assert.match(finalLayer, /\.building-status-overlay\{[^}]*display:grid[^}]*align-items:end[^}]*justify-items:center/);
-  assert.match(finalLayer, /\.building-status-window\{[^}]*position:relative[^}]*width:min\(1120px,calc\(100vw - 32px\)\)[^}]*max-height:calc\(100dvh - 80px\)/);
-  assert.match(finalLayer, /\.building-window-media-frame\{[^}]*height:clamp\(280px,38dvh,420px\)[^}]*aspect-ratio:auto/);
-  assert.match(finalLayer, /\.building-window-stack\{[^}]*grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
+  const finalLayer = css.slice(css.indexOf('/* v25 final Explorer directory'));
+  assert.match(finalLayer, /\.explorer-building-detail-mount \.building-status-overlay\{[^}]*position:relative/);
+  assert.match(finalLayer, /\.explorer-building-detail-mount \.building-status-window\{[^}]*width:100%[^}]*max-height:none[^}]*overflow:visible/);
+  assert.match(finalLayer, /\/\* v26 final inline-detail stability overrides \*\/[\s\S]*\.explorer-building-detail-mount \.building-window-media-frame\{[^}]*width:min\(100%,996px\)[^}]*aspect-ratio:16\/9[^}]*contain:layout paint/);
+  assert.doesNotMatch(finalLayer, /overflow-y:(?:auto|scroll)/);
+});
+
+test('Street View initializes only after the inline detail requests a verified location', () => {
+  const source = fs.readFileSync('explore/panorama.js', 'utf8');
+  assert.match(source, /addEventListener\('khg:building-window-location'/);
+  assert.doesNotMatch(source, /addEventListener\('khg:map-select-building'/);
 });
 
 test('both Explorer locales load the cache-busted Street View assets', () => {
   for (const file of ['explore/index.html','zh/explore/index.html']) {
     const html = fs.readFileSync(file, 'utf8');
-    assert.match(html, /href="\/styles\.css\?v=24"/);
-    assert.match(html, /src="\/explore\/building-window\.js\?v=24"/);
-    assert.match(html, /src="\/explore\/panorama\.js\?v=24"/);
-    assert.match(html, /src="\/explore\/explorer-utils\.js\?v=24"/);
+    assert.match(html, /href="\/styles\.css\?v=25"/);
+    assert.match(html, /src="\/explore\/building-window\.js\?v=25"/);
+    assert.match(html, /src="\/explore\/panorama\.js\?v=25"/);
+    assert.match(html, /src="\/explore\/explorer-utils\.js\?v=25"/);
   }
 });

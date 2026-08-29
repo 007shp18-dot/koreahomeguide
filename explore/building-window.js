@@ -135,12 +135,13 @@
     const doc = windowObject.document;
     const locale = doc.documentElement.lang || 'en';
     const copy = copyForLocale(locale);
+    const mount = doc.querySelector('#explorerBuildingDetailMount') || doc.body;
     const overlay = doc.createElement('div');
     overlay.id = 'buildingStatusOverlay';
     overlay.className = 'building-status-overlay';
     overlay.hidden = true;
     overlay.innerHTML = `<section class="building-status-window" role="complementary" aria-modal="false" aria-labelledby="buildingStatusTitle"><header class="building-status-head"><div class="building-status-identity"><span id="buildingStatusMeta" class="eyebrow"></span><h2 id="buildingStatusTitle"></h2><p id="buildingStatusAddress"></p><div id="buildingStatusProfile"></div></div><button type="button" class="building-status-close" aria-label="${escapeHtml(copy.close)}">×</button></header><section id="explorerStreetView" class="explorer-street-view building-window-street-view" aria-labelledby="explorerStreetViewHeading" hidden><div class="explorer-street-view-head"><strong id="explorerStreetViewHeading">${isZh(locale) ? '该建筑附近街景' : 'Street view near this building'}</strong><span id="explorerStreetViewMeta"></span></div><div id="explorerStreetViewFrame" class="building-window-media-frame"><div class="building-window-loading-visual" aria-hidden="true"></div><div id="explorerStreetViewCanvas" class="explorer-street-view-canvas" hidden></div><p id="explorerStreetViewStatus" aria-live="polite"></p></div><small>${isZh(locale) ? '附近街景，并非出租房源照片。' : 'Nearby street view, not a listing photo.'}</small></section><div id="buildingStatusBody" class="building-status-body"></div><footer class="building-status-actions"><button type="button" data-building-save>${escapeHtml(copy.save)}</button><a data-building-rent-check href="#">${escapeHtml(copy.check)} →</a><a data-building-full href="#">${escapeHtml(copy.full)} →</a></footer></section>`;
-    doc.body.appendChild(overlay);
+    mount.appendChild(overlay);
     const dialog = overlay.querySelector('.building-status-window');
     const body = overlay.querySelector('#buildingStatusBody');
     const streetView = overlay.querySelector('#explorerStreetView');
@@ -154,17 +155,16 @@
     let requestId = 0;
 
     function syncLayout() {
-      const mobile = Boolean(layoutQuery && layoutQuery.matches);
-      dialog.setAttribute('role', mobile ? 'dialog' : 'complementary');
-      dialog.setAttribute('aria-modal', String(mobile));
-      doc.body.classList.toggle('has-building-status-window', mobile && !overlay.hidden);
+      dialog.setAttribute('role', 'complementary');
+      dialog.setAttribute('aria-modal', 'false');
+      doc.body.classList.remove('has-building-status-window');
     }
     if (layoutQuery && typeof layoutQuery.addEventListener === 'function') layoutQuery.addEventListener('change', syncLayout);
 
     function close() {
       if (overlay.hidden) return;
       const selection = current;
-      requestId += 1; overlay.hidden = true; overlay.dataset.state = 'closed'; doc.body.classList.remove('has-building-status-window');
+      requestId += 1; overlay.hidden = true; mount.hidden = true; overlay.dataset.state = 'closed'; doc.body.classList.remove('has-building-status-window');
       windowObject.dispatchEvent(new CustomEvent('khg:building-window-state', { detail:{ open:false, selection } }));
       windowObject.dispatchEvent(new CustomEvent('khg:building-window-close'));
       if (trigger && typeof trigger.focus === 'function') trigger.focus();
@@ -222,9 +222,10 @@
       overlay.querySelector('[data-building-rent-check]').href = buildRentCheckUrl(selection, null, locale);
       updateSave();
       overlay.dataset.state = 'loading';
-      overlay.hidden = false; syncLayout();
+      mount.hidden = false; overlay.hidden = false; syncLayout();
       windowObject.dispatchEvent(new CustomEvent('khg:building-window-state', { detail:{ open:true, selection } }));
-      overlay.querySelector('.building-status-close').focus();
+      const reduceMotion = windowObject.matchMedia && windowObject.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      windowObject.requestAnimationFrame(() => mount.scrollIntoView({ behavior:reduceMotion ? 'auto' : 'smooth', block:'start' }));
       windowObject.dispatchEvent(new CustomEvent('khg:building-window-location-request', { detail:{ selection } }));
       try {
         const detail = await fetchDetail(selection);
@@ -249,13 +250,6 @@
     doc.addEventListener('keydown', event => {
       if (overlay.hidden) return;
       if (event.key === 'Escape') { close(); return; }
-      if (event.key === 'Tab' && layoutQuery && layoutQuery.matches) {
-        const focusable = [...dialog.querySelectorAll('button:not([disabled]),a[href],select,input,[tabindex]:not([tabindex="-1"])')].filter(element => !element.hidden);
-        if (!focusable.length) return;
-        const first = focusable[0]; const last = focusable[focusable.length - 1];
-        if (event.shiftKey && doc.activeElement === first) { last.focus(); event.preventDefault(); }
-        else if (!event.shiftKey && doc.activeElement === last) { first.focus(); event.preventDefault(); }
-      }
     });
     windowObject.addEventListener('khg:building-window-open', event => { void open(event.detail && event.detail.selection, event.detail && event.detail.trigger); });
     windowObject.addEventListener('khg:map-select-building', event => { void open(event.detail && event.detail.model, null); });

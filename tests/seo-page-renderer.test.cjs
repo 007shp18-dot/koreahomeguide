@@ -21,7 +21,7 @@ const summary = {
   ]
 };
 const buildings = [
-  { buildingName:'A <Villa>', buildingKey:'연남동::a <villa>', dong:'연남동', contractCount:8, medianMonthlyRentWon:720000, medianDepositWon:20000000, typicalAreaSqm:23.5, depositBands:[{minDepositWon:10000000,maxDepositWon:30000000,count:8,medianDepositWon:20000000,medianMonthlyRentWon:720000}] },
+  { buildingName:'A <Villa>', buildingKey:'연남동::a <villa>', dong:'연남동', contractCount:8, monthlyRentCount:8, medianMonthlyRentWon:720000, medianDepositWon:20000000, typicalAreaSqm:23.5, depositBands:[{minDepositWon:10000000,maxDepositWon:30000000,count:8,medianDepositWon:20000000,medianMonthlyRentWon:720000}] },
   { buildingName:'B House', buildingKey:'연남동::b house', dong:'연남동', contractCount:2, medianMonthlyRentWon:650000, medianDepositWon:10000000, typicalAreaSqm:20, depositBands:[{minDepositWon:10000000,maxDepositWon:30000000,count:2,medianDepositWon:10000000,medianMonthlyRentWon:650000}] }
 ];
 const fxRates = { USD:0.00072, CNY:0.0052 };
@@ -47,7 +47,7 @@ function datasetsFrom(html) {
   return datasets;
 }
 
-test('English Dong HTML has canonical, hreflang, index metadata, Dataset JSON-LD and nofollow Explorer building links', () => {
+test('English Dong HTML links qualified canonical building pages', () => {
   const html = renderDongPage(base('en'));
   assert.match(html, /<nav><a href="\/explore\/">Explore<\/a><a href="\/tools\/seoul-rent-check\/">Rent Check<\/a><a href="\/guides\/">Guides<\/a><\/nav>/);
   assert.match(html, /<meta name="robots" content="index,follow">/);
@@ -60,13 +60,13 @@ test('English Dong HTML has canonical, hreflang, index metadata, Dataset JSON-LD
   assert.match(html, /Yeonnam-dong \(연남동\)/);
   assert.match(html, /Villa \/ low-rise multifamily \(연립·다세대\)/);
   const buildingUrl = routes.buildBuildingSeoUrl({ areaCode:'11440', dong:'연남동', propertyType:'villa', building:buildings[0], lang:'en' });
-  assert.ok(!html.includes(`href="${buildingUrl}"`));
-  assert.match(html, /href="\/explore\/building\/\?[^\"]+" rel="nofollow"/);
+  assert.ok(html.includes(`href="${buildingUrl}"`));
+  assert.doesNotMatch(html, /rel="nofollow"/);
   assert.match(html, /src="\/acquisition-context\.js"/);
   assert.match(html, /src="\/acquisition-links\.js"/);
   assert.ok(html.indexOf('/acquisition-context.js') < html.indexOf('/acquisition-links.js'));
   assert.match(html, /Jul 31, 2026/);
-  assert.match(html, /class="seo-money money-primary">₩700,000/);
+  assert.match(html, /class="seo-money" data-won="700000"><span class="money-primary">₩700,000/);
   assert.match(html, /class="seo-fx fx-secondary">≈ \$504/); // 700,000 KRW at injected test rate
   assert.ok(!html.includes('A <Villa>'), 'dynamic building names must be escaped');
   assert.ok(html.includes('A &lt;Villa&gt;'));
@@ -79,7 +79,7 @@ test('Chinese Dong HTML is genuinely localized and keeps KRW primary', () => {
   assert.match(html, /延南洞（연남동）/);
   assert.match(html, /租金行情/);
   assert.match(html, /2026年7月31日/);
-  assert.match(html, /class="seo-money money-primary">₩700,000/);
+  assert.match(html, /class="seo-money" data-won="700000"><span class="money-primary">₩700,000/);
   assert.match(html, /class="seo-fx fx-secondary">≈ ¥3,640/); // 700,000 KRW at injected test rate
   assert.match(html, /韩国国土交通部/);
   assert.doesNotMatch(html, /Median monthly rent/);
@@ -111,9 +111,9 @@ test('dynamic SEO cards suppress prices and medians below five observations', ()
 test('sufficient dynamic SEO area cards lead with rent and keep count as context', () => {
   const en = renderDongPage(base('en'));
   const zh = renderDongPage(base('zh'));
-  assert.match(en, /Around 25\.0㎡<\/span><strong><span class="seo-money money-primary">₩700,000/);
+  assert.match(en, /Around 25\.0㎡<\/span><strong><span class="seo-money" data-won="700000"><span class="money-primary">₩700,000/);
   assert.match(en, /10 contracts.*Median deposit/s);
-  assert.match(zh, /约 25\.0㎡<\/span><strong><span class="seo-money money-primary">₩700,000/);
+  assert.match(zh, /约 25\.0㎡<\/span><strong><span class="seo-money" data-won="700000"><span class="money-primary">₩700,000/);
   assert.match(zh, /10 份合同.*押金中位数/s);
 });
 
@@ -188,29 +188,50 @@ test('English Dong HTML omits Chinese hreflang outside localized districts', () 
   assert.match(html, /class="language-link" href="\/zh\/explore\/\?lawdCd=11620/);
 });
 
-test('building pages stay out of search regardless of transaction depth', () => {
-  assert.equal(isBuildingIndexable({ contractCount:3, medianMonthlyRentWon:700000 }), false);
-  assert.equal(isBuildingIndexable({ contractCount:2, medianMonthlyRentWon:700000 }), false);
-  assert.equal(isBuildingIndexable({ contractCount:5, medianMonthlyRentWon:null, medianDepositWon:null }), false);
+test('building pages require five contracts and three monthly-rent contracts', () => {
+  assert.equal(isBuildingIndexable({ contractCount:5, monthlyRentCount:3 }), true);
+  assert.equal(isBuildingIndexable({ contractCount:4, monthlyRentCount:3 }), false);
+  assert.equal(isBuildingIndexable({ contractCount:5, monthlyRentCount:2 }), false);
 });
 
-test('building page includes contextual rent sections and remains noindex', () => {
+test('qualified building page includes contextual rent sections and is indexable', () => {
   const detail = {
-    ...buildings[0], contractCount:4, quarterChangePct:3.1, medianJeonseDepositWon:180000000, newContractMonthlyRentCount:3, renewalMonthlyRentCount:1, contractTypeCounts:{new:3,renewal:1,unknown:0}, areaGroups:[{approxAreaSqm:25,count:4,medianAreaSqm:23.5,depositBands:buildings[0].depositBands}],
-    monthlyTrend:[{month:'2026-05',count:1,medianMonthlyRentWon:680000},{month:'2026-06',count:1,medianMonthlyRentWon:700000},{month:'2026-07',count:2,medianMonthlyRentWon:720000}],
+    ...buildings[0], contractCount:5, monthlyRentCount:3, quarterChangePct:3.1, medianJeonseDepositWon:180000000, newContractMonthlyRentCount:3, renewalMonthlyRentCount:1, contractTypeCounts:{new:3,renewal:1,unknown:0}, areaGroups:[{approxAreaSqm:25,count:5,medianAreaSqm:23.5,depositBands:buildings[0].depositBands}],
+    monthlyTrend:[{month:'2026-05',count:1,medianMonthlyRentWon:680000},{month:'2026-06',count:4,medianMonthlyRentWon:700000},{month:'2026-07',count:5,medianMonthlyRentWon:720000}],
     recentTransactions:[{contractDate:'2026-07-30',areaSqm:23.5,depositWon:20000000,monthlyRentWon:720000,contractType:'new'}]
   };
   const html = renderBuildingPage({ ...base('en'), detail });
-  assert.match(html, /<meta name="robots" content="noindex,follow">/);
+  assert.match(html, /<meta name="robots" content="index,follow">/);
   assert.match(html, /A &lt;Villa&gt;/);
   assert.match(html, /Monthly rent by deposit/i);
   assert.match(html, /New vs renewal/i);
   assert.match(html, /Back to Yeonnam-dong/);
   assert.match(html, /Check a rent quote/);
   assert.match(html, /Jul 2026/);
+  assert.doesNotMatch(html, /May 2026|Jun 2026/);
 
   const sparse = renderBuildingPage({ ...base('en'), detail:{ ...detail, contractCount:2 } });
   assert.match(sparse, /<meta name="robots" content="noindex,follow">/);
+});
+
+test('building sale groups hide aggregate prices below five observations', () => {
+  const detail = {
+    ...buildings[0], contractCount:5, monthlyRentCount:3, newContractMonthlyRentCount:3,
+    contractTypeCounts:{new:3,renewal:0,unknown:2}, areaGroups:[], monthlyTrend:[], recentTransactions:[],
+    saleSummary:{ areaGroups:[{ approxAreaSqm:25, count:4, medianSalePriceWon:999_999_999, latestSalePriceWon:888_888_888, latestContractDate:'2026-07-01' }], recentSales:[] }
+  };
+  const html = renderBuildingPage({ ...base('en'), propertyType:'apartment', detail });
+  assert.match(html, /Under 5 contracts/);
+  assert.doesNotMatch(html, /₩999,999,999|₩888,888,888/);
+});
+
+test('SEO currency runtime uses immutable KRW data and never reparses mutable text', () => {
+  const html = renderDongPage(base('en'));
+  const source = require('node:fs').readFileSync('seo/seo-currency.js', 'utf8');
+  assert.match(html, /class="seo-money" data-won="700000"/);
+  assert.match(source, /querySelectorAll\('\.seo-money\[data-won\]'\)/);
+  assert.match(source, /Number\(node\.dataset\.won\)/);
+  assert.doesNotMatch(source, /textContent[\s\S]*replace\(\/\[\^0-9/);
 });
 
 test('error pages are noindex and neutral', () => {

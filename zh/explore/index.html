@@ -20,7 +20,7 @@
   <script defer src="/privacy-consent.js"></script><script defer src="/mobile-navigation.js"></script>
   <script defer src="/acquisition-context.js"></script>
   <script defer src="/acquisition-links.js"></script>
-  <link rel="stylesheet" href="/styles.css?v=24">
+  <link rel="stylesheet" href="/styles.css?v=25">
 </head>
 <body class="core-ui">
   <header class="compact-header">
@@ -107,6 +107,7 @@
         <p class="explorer-per-sqm-note">校正 ₩/㎡ 将押金按年化 5% 机会成本计入月成本，避免不同押金结构造成误导。</p>
         <div class="building-list-head" aria-hidden="true"><span>建筑</span><span>典型面积</span><span>校正 ₩/㎡</span><span>月租 / 押金</span><span>成交</span><span></span></div>
         <div id="buildingList" class="building-list"><div class="explorer-empty">正在加载建筑…</div></div>
+        <button id="buildingListMore" class="building-list-more" type="button" hidden>再显示 10 栋建筑</button>
       </section>
 
       <section class="dong-section">
@@ -121,7 +122,9 @@
         <div class="ad-slot" data-slot="sidebar" aria-hidden="true"></div>
       </aside>
     </div>
+    <section id="explorerBuildingDetailMount" class="explorer-building-detail-mount" aria-live="polite" hidden></section>
 
+    <section class="explorer-static-directory" aria-labelledby="neighborhoodDirectoryZh"><div><span class="eyebrow">按街区浏览</span><h2 id="neighborhoodDirectoryZh">首尔街区租金指南</h2><p>这些链接无需加载地图即可浏览近期官方成交。</p></div><div class="explorer-static-directory-grid"><div><h3>龙山区（용산구）</h3><a href="/zh/seoul/yongsan-gu/itaewon-dong/officetel/">梨泰院洞（이태원동）</a><a href="/zh/seoul/yongsan-gu/hannam-dong/officetel/">汉南洞（한남동）</a><a href="/zh/seoul/yongsan-gu/huam-dong/officetel/">厚岩洞（후암동）</a><a href="/zh/seoul/yongsan-gu/bogwang-dong/officetel/">普光洞（보광동）</a></div><div><h3>城东区（성동구）</h3><a href="/zh/seoul/seongdong-gu/seongsu-dong-1-ga/officetel/">圣水洞1街（성수동1가）</a><a href="/zh/seoul/seongdong-gu/seongsu-dong-2-ga/officetel/">圣水洞2街（성수동2가）</a><a href="/zh/seoul/seongdong-gu/oksu-dong/officetel/">玉水洞（옥수동）</a><a href="/zh/seoul/seongdong-gu/geumho-dong-1-ga/officetel/">金湖洞1街（금호동1가）</a><a href="/zh/seoul/seongdong-gu/geumho-dong-2-ga/officetel/">金湖洞2街（금호동2가）</a><a href="/zh/seoul/seongdong-gu/geumho-dong-3-ga/officetel/">金湖洞3街（금호동3가）</a><a href="/zh/seoul/seongdong-gu/geumho-dong-4-ga/officetel/">金湖洞4街（금호동4가）</a></div><div><h3>麻浦区（마포구）</h3><a href="/zh/seoul/mapo-gu/yeonnam-dong/officetel/">延南洞（연남동）</a><a href="/zh/seoul/mapo-gu/seogyo-dong/officetel/">西桥洞（서교동）</a><a href="/zh/seoul/mapo-gu/mangwon-dong/officetel/">望远洞（망원동）</a><a href="/zh/seoul/mapo-gu/hapjeong-dong/officetel/">合井洞（합정동）</a><a href="/zh/seoul/mapo-gu/gongdeok-dong/officetel/">孔德洞（공덕동）</a><a href="/zh/seoul/mapo-gu/ahyeon-dong/officetel/">阿岘洞（아현동）</a></div><div><h3>永登浦区（영등포구）</h3><a href="/zh/seoul/yeongdeungpo-gu/yeouido-dong/officetel/">汝矣岛洞（여의도동）</a><a href="/zh/seoul/yeongdeungpo-gu/dangsan-dong/officetel/">堂山洞（당산동）</a><a href="/zh/seoul/yeongdeungpo-gu/mullae-dong/officetel/">文来洞（문래동）</a><a href="/zh/seoul/yeongdeungpo-gu/yeongdeungpo-dong/officetel/">永登浦洞（영등포동）</a></div><div><h3>江南区（강남구）</h3><a href="/zh/seoul/gangnam-gu/yeoksam-dong/officetel/">驿三洞（역삼동）</a><a href="/zh/seoul/gangnam-gu/nonhyeon-dong/officetel/">论岘洞（논현동）</a><a href="/zh/seoul/gangnam-gu/daechi-dong/officetel/">大峙洞（대치동）</a><a href="/zh/seoul/gangnam-gu/samseong-dong/officetel/">三成洞（삼성동）</a><a href="/zh/seoul/gangnam-gu/cheongdam-dong/officetel/">清潭洞（청담동）</a></div></div></section>
     <section class="explorer-next-step">
       <div><span class="eyebrow">下一步</span><h2>核对具体租房报价。</h2><p>租金检查会把押金、月租、面积和房型与近期官方成交记录进行比较。</p></div>
       <a class="explorer-primary-link" data-explorer-rent-check data-rent-check-cta="explorer_final_handoff" href="/zh/tools/seoul-rent-check/">打开租金检查 →</a>
@@ -136,15 +139,15 @@
   <script src="/location-catalog.js"></script>
   <script src="/property-type-guide.js"></script>
   <script src="/district-combobox.js"></script>
-  <script src="/explore/explorer-utils.js?v=24"></script>
+  <script src="/explore/explorer-utils.js?v=25"></script>
   <script src="/explore/map-locations.js"></script>
   <script src="/explore/map-viewport.js"></script>
   <script src="/explore/map-controller.js?v=21"></script>
   <script src="/product-analytics.js"></script>
   <script src="/explore/saved-buildings.js"></script>
-  <script src="/explore/building-window.js?v=24"></script>
-  <script src="/explore/panorama.js?v=24"></script>
+  <script src="/explore/building-window.js?v=25"></script>
+  <script src="/explore/panorama.js?v=25"></script>
   <script src="/explore/map.js?v=21"></script>
-  <script defer src="/zh/explore/app.js?v=24"></script>
+  <script defer src="/zh/explore/app.js?v=25"></script>
 </body>
 </html>

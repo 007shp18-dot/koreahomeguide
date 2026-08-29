@@ -93,7 +93,7 @@ function renderRecentContracts(recentContracts) {
 
 function renderNeighborhoodLinks(dongs) {
   if (!neighborhoodLinks || !window.KHGExplorer) return;
-  const rows = (Array.isArray(dongs) ? dongs : []).filter(item => item && item.dong && Number(item.contractCount || 0) >= 3).slice(0, 10);
+  const rows = (Array.isArray(dongs) ? dongs : []).filter(item => item && item.dong && Number(item.contractCount || 0) >= 10);
   if (!rows.length) {
     neighborhoodLinks.innerHTML = '<span class="explorer-empty">近期成交不足，暂时没有可展示的街区页面。</span>';
     return;

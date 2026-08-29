@@ -17,6 +17,7 @@ const metricChange = document.querySelector('#metricChange');
 const metricPerSqm = document.querySelector('#metricPerSqm');
 const dongList = document.querySelector('#dongList');
 const buildingList = document.querySelector('#buildingList');
+const buildingListMore = document.querySelector('#buildingListMore');
 const buildingSort = document.querySelector('#explorerBuildingSort');
 const sheetToggle = document.querySelector('#explorerSheetToggle');
 const budgetFilterNote = document.querySelector('#budgetFilterNote');
@@ -42,10 +43,12 @@ let currentData = null;
 let currentDong = '';
 let currentBuildingKey = '';
 let currentMapSelection = null;
+const areaLoadGate = KHGExplorer.createRequestGate();
 const dongLoadGate = KHGExplorer.createRequestGate();
 let dongLoadPending = false;
 let currentVisibleDongs = null;
 let currentVisibleBuildingKeys = null;
+let buildingVisibleCount = 10;
 const explorerAnalytics = window.KHGProductAnalytics
   ? window.KHGProductAnalytics.createTracker(window)
   : null;
@@ -192,6 +195,7 @@ function returnToNeighborhoods() {
 }
 
 function handleSelectionChange() {
+  areaLoadGate.invalidate();
   clearMapSelection();
   currentVisibleDongs = null;
   currentVisibleBuildingKeys = null;
@@ -287,7 +291,7 @@ function renderDongs(dongs, { publish = true } = {}) {
 function renderSummary(data, dong = '') {
   currentData = data;
   const nextDong = dong || '';
-  if (currentDong !== nextDong) currentBuildingKey = '';
+  if (currentDong !== nextDong) { currentBuildingKey = ''; buildingVisibleCount = 10; }
   currentDong = nextDong;
   syncWorkspaceState();
   const selectedAreaName = areaSelect.value === 'all'
@@ -339,7 +343,7 @@ function renderBuildings(buildings) {
     buildingList.innerHTML = '<div class="explorer-empty">近期官方数据中没有可识别名称的建筑。</div>';
     return;
   }
-  buildingList.innerHTML = items.slice(0, 60).map(item => {
+  buildingList.innerHTML = items.slice(0, buildingVisibleCount).map(item => {
     const dong = item.dong || currentDong;
     const location = [dong ? dongDisplayName(dong) : '', areaName(), typeName()].filter(Boolean).join(' · ');
     const nameDisplay = KHGBuildingNames.getBuildingNameDisplay(item.buildingName, 'zh');
@@ -352,6 +356,10 @@ function renderBuildings(buildings) {
       <div class="building-actions"><span>查看状态 →</span></div>
     </button>`;
   }).join('');
+  if (buildingListMore) {
+    buildingListMore.hidden = items.length <= buildingVisibleCount;
+    buildingListMore.textContent = `再显示 10 栋建筑 · 已显示 ${Math.min(buildingVisibleCount, items.length)} / ${items.length}`;
+  }
 }
 
 async function loadFx() {
@@ -437,6 +445,7 @@ function activateNeighborhood(model, { historyMode = 'push' } = {}) {
 }
 
 async function loadArea({ requestedDong = '' } = {}) {
+  const request = areaLoadGate.begin();
   currentDong = String(requestedDong || '').trim();
   trackExplorer('explorer_search_start');
   setLoading();
@@ -448,6 +457,7 @@ async function loadArea({ requestedDong = '' } = {}) {
       : `/api/explore-area?${apiParams.toString()}`;
     const response = await fetch(endpoint);
     const data = await response.json();
+    if (!request.isCurrent()) return;
     if (!response.ok) {
       const error = new Error(data.error || 'Explorer data failed');
       error.status = response.status;
@@ -465,6 +475,7 @@ async function loadArea({ requestedDong = '' } = {}) {
     renderSummary(data, '');
     history.replaceState(null, '', `/zh/explore/?${currentParams(false).toString()}`);
   } catch (error) {
+    if (!request.isCurrent()) return;
     trackExplorer('explorer_search_error', {
       errorCategory:window.KHGProductAnalytics && window.KHGProductAnalytics.errorCategory(error)
     }, 'error');
@@ -482,7 +493,7 @@ async function loadArea({ requestedDong = '' } = {}) {
     publishMapDongs([]);
     buildingList.innerHTML = '<div class="explorer-empty">目前无法加载建筑级成交数据。</div>';
   } finally {
-    exploreButton.disabled = false;
+    if (request.isCurrent()) exploreButton.disabled = false;
   }
 }
 
@@ -519,6 +530,11 @@ typeSelect.addEventListener('change',handleSelectionChange);
 maxRentSelect.addEventListener('change',handleSelectionChange);
 maxDepositSelect.addEventListener('change',handleSelectionChange);
 if (buildingSort) buildingSort.addEventListener('change', () => {
+  buildingVisibleCount = 10;
+  if (currentData) renderBuildings(currentData.buildings || []);
+});
+if (buildingListMore) buildingListMore.addEventListener('click', () => {
+  buildingVisibleCount += 10;
   if (currentData) renderBuildings(currentData.buildings || []);
 });
 if (sheetToggle) sheetToggle.addEventListener('click', () => {
