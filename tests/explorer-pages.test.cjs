@@ -84,7 +84,8 @@ test('explorer includes a compact neighborhood drill-down and persists dong stat
   assert.match(html, /id="dongList"/);
   assert.match(js, /\/api\/explore-dong/);
   assert.match(js, /query\.get\('dong'\)/);
-  assert.match(js, /View neighborhood/);
+  assert.match(js, /neighborhood-guide-link[^]*View neighborhood guide/);
+  assert.match(html, /<details class="explorer-static-directory">/);
   assert.match(js, /params\.set\('dong'/);
 });
 

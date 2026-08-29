@@ -44,10 +44,13 @@ test('Explorer URL helpers match server collision-safe building paths', () => {
   );
 });
 
-test('EN Explorer keeps neighborhood SEO links but sends building actions only to the interactive view', () => {
+test('EN Explorer keeps neighborhood guide links and building actions stay interactive', () => {
   const source = fs.readFileSync('explore/app.js','utf8');
+  const html = fs.readFileSync('explore/index.html','utf8');
   assert.match(source, /buildDongSeoUrl/);
-  assert.match(source, /View neighborhood/);
+  assert.match(source, /neighborhood-guide-link[^]*View neighborhood guide/);
+  assert.match(html, /id="explorerMapSelectionDetail"[^>]*>View neighborhood details/);
+  assert.match(html, /<details class="explorer-static-directory">/);
   assert.doesNotMatch(source, /buildBuildingSeoUrl/);
   assert.match(source, /Open building details/);
   assert.match(source, /<button class="building-row" type="button"/);
@@ -55,11 +58,14 @@ test('EN Explorer keeps neighborhood SEO links but sends building actions only t
   assert.match(fs.readFileSync('explore/building-window.js','utf8'), /buildDetailUrl/);
 });
 
-test('ZH Explorer keeps localized neighborhood SEO links but sends building actions only to the interactive view', () => {
+test('ZH Explorer keeps localized neighborhood guide links and building actions stay interactive', () => {
   const source = fs.readFileSync('zh/explore/app.js','utf8');
+  const html = fs.readFileSync('zh/explore/index.html','utf8');
   assert.match(source, /buildDongSeoUrl/);
   assert.match(source, /supportsZhIndexing\(districtCode\)/);
-  assert.match(source, /查看街区/);
+  assert.match(source, /neighborhood-guide-link[^]*查看街区指南/);
+  assert.match(html, /id="explorerMapSelectionDetail"[^>]*>查看街区详情/);
+  assert.match(html, /<details class="explorer-static-directory">/);
   assert.doesNotMatch(source, /buildBuildingSeoUrl/);
   assert.match(source, /查看状态/);
   assert.match(source, /<button class="building-row" type="button"/);

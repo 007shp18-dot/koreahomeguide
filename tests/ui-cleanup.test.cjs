@@ -51,7 +51,8 @@ test('Explorer presents neighborhoods as the primary result cards instead of a b
   assert.match(html, /Compare neighborhoods/);
   assert.match(html, /id="dongList"/);
   assert.match(app, /class="neighborhood-card/);
-  assert.match(app, /View neighborhood/);
+  assert.match(app, /neighborhood-guide-link[^]*View neighborhood guide/);
+  assert.match(html, /id="explorerMapSelectionDetail"[^>]*>View neighborhood details/);
   assert.doesNotMatch(app, /class="dong-chip-wrap"/);
   assert.match(html, /class="building-section"[^>]*hidden/);
 });
@@ -61,7 +62,8 @@ test('Chinese Explorer uses the same neighborhood-first result pattern', () => {
   const app = read('zh/explore/app.js');
   assert.match(html, /比较街区/);
   assert.match(app, /class="neighborhood-card/);
-  assert.match(app, /查看街区/);
+  assert.match(app, /neighborhood-guide-link[^]*查看街区指南/);
+  assert.match(html, /id="explorerMapSelectionDetail"[^>]*>查看街区详情/);
   assert.match(html, /class="building-section"[^>]*hidden/);
 });
 

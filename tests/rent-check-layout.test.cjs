@@ -103,5 +103,8 @@ test('final Rent Check geometry uses two equal three-column rows and one compact
   assert.match(finalLayer, /\.rent-check-form>\.rent-check-monthly-field\{grid-area:rent\}/);
   assert.match(finalLayer, /\.rent-check-form>\.rent-check-button\{[^}]*grid-area:submit[^}]*height:52px[^}]*margin-top:25px/);
   assert.match(finalLayer, /\.rent-check-form>\.rent-check-assist-row\{[^}]*grid-area:assist[^}]*min-height:0/);
+  assert.match(finalLayer, /\.rent-check-form>\.rent-check-assist-row\{[^}]*display:grid[^}]*grid-template-columns:minmax\(0,1fr\) auto/);
+  assert.match(finalLayer, /\.rent-check-assist-row \.rent-size-hint\{display:none/);
+  assert.match(finalLayer, /\.rent-check-assist-row>\.rent-size-controls\{[^}]*flex-wrap:nowrap/);
   assert.match(finalLayer, /@media\(max-width:760px\)\{[\s\S]*?\.rent-check-form\{[^}]*grid-template-columns:1fr[^}]*grid-template-areas:"area" "type" "size" "assist" "deposit" "rent" "submit"/);
 });

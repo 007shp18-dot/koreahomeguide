@@ -59,6 +59,20 @@ test('Explorer runtimes publish raw dong models after rendering', () => {
     assert.match(source, /maxRentSelect\.addEventListener\('change',handleSelectionChange\)/);
     assert.match(source, /maxDepositSelect\.addEventListener\('change',handleSelectionChange\)/);
     assert.doesNotMatch(source, /scrollIntoView/);
+    assert.match(source, /neighborhood-guide-link/);
+  }
+});
+
+test('Chinese district rows sent to the map use localized catalog labels', () => {
+  const source = fs.readFileSync('zh/explore/app.js','utf8');
+  assert.match(source, /function publishMapDistricts\(districts\)[^]*districtName:KHGLocations\.districtLabel\(row\.districtCode, 'zh-CN'\)/);
+});
+
+test('map viewport movement never re-filters or re-renders the discovery rail', () => {
+  for (const file of ['explore/app.js','zh/explore/app.js']) {
+    const source = fs.readFileSync(file,'utf8');
+    assert.doesNotMatch(source, /khg:map-viewport-change/);
+    assert.doesNotMatch(source, /currentVisibleDongs|currentVisibleBuildingKeys/);
   }
 });
 
