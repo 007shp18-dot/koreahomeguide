@@ -129,7 +129,7 @@ function pageHead({ lang, title, description, canonicalPath, alternateEn, altern
 
 function header(lang, switchPath) {
   const zh = isZh(lang);
-  return `<header class="compact-header"><a class="brand" href="${zh ? '/zh/' : '/'}"><span class="brand-mark">K</span><span>KoreaHomeGuide</span></a><nav><a href="${zh ? '/zh/explore/' : '/explore/'}">${zh ? '租金探索' : 'Rent Explorer'}</a><a href="${zh ? '/zh/tools/seoul-rent-check/' : '/tools/seoul-rent-check/'}">${zh ? '租金检查' : 'Rent Check'}</a><a href="${zh ? '/zh/guides/wolse-vs-jeonse/' : '/guides/wolse-vs-jeonse/'}">${zh ? '指南' : 'Guides'}</a></nav><div class="header-actions"><a class="language-link" href="${escapeHtml(switchPath)}">${zh ? 'English' : '中文'}</a></div></header>`;
+  return `<header class="compact-header"><a class="brand" href="${zh ? '/zh/' : '/'}"><span class="brand-mark">K</span><span>KoreaHomeGuide</span></a><nav><a href="${zh ? '/zh/explore/' : '/explore/'}">${zh ? '租金探索' : 'Explore'}</a><a href="${zh ? '/zh/tools/seoul-rent-check/' : '/tools/seoul-rent-check/'}">${zh ? '租金检查' : 'Rent Check'}</a><a href="${zh ? '/zh/guides/' : '/guides/'}">${zh ? '租房指南' : 'Guides'}</a></nav><div class="header-actions"><a class="language-link" href="${escapeHtml(switchPath)}">${zh ? 'English' : '中文'}</a></div></header>`;
 }
 
 function footer(lang) {
@@ -196,16 +196,26 @@ function depositRangeText(band, lang) {
 }
 
 function representativeBand(item) {
-  const bands = Array.isArray(item && item.depositBands) ? item.depositBands.filter(b => Number(b && b.count) > 0) : [];
+  const bands = Array.isArray(item && item.depositBands) ? item.depositBands.filter(b => Number(b && b.count) >= 5) : [];
   if (!bands.length) return null;
   return [...bands].sort((a,b) => Number(b.count || 0) - Number(a.count || 0))[0];
+}
+
+function evidenceCountText(count, lang) {
+  if (Number(count) < 5) return isZh(lang) ? '少于 5 份合同' : 'Under 5 contracts';
+  return `${numberText(count, lang)} ${isZh(lang) ? '份合同' : Number(count) === 1 ? 'contract' : 'contracts'}`;
 }
 
 function depositBandsHtml(bands, lang, rates) {
   const zh = isZh(lang);
   const rows = (Array.isArray(bands) ? bands : []).filter(b => Number(b && b.count) > 0);
   if (!rows.length) return `<p>${zh ? '没有足够的月租成交可按押金区间展示。' : 'Not enough monthly-rent contracts to show deposit-based rent context.'}</p>`;
-  return `<div class="seo-grid">${rows.slice(0,8).map(band => `<div class="seo-card"><span>${zh ? '押金区间' : 'Deposit range'} · ${escapeHtml(depositRangeText(band, lang))}</span><strong>${moneyHtml(band.medianMonthlyRentWon, lang, rates)}</strong><small>${zh ? '月租中位数' : 'Median monthly rent'} · ${numberText(band.count, lang)} ${zh ? '笔' : 'contracts'}</small><small>${zh ? '该组押金中位数' : 'Median deposit in this group'}: ${escapeHtml(wonText(band.medianDepositWon, lang))}</small></div>`).join('')}</div>`;
+  return `<div class="seo-grid">${rows.slice(0,8).map(band => {
+    const count = Number(band.count || 0);
+    const heading = `<span>${zh ? '押金区间' : 'Deposit range'} · ${escapeHtml(depositRangeText(band, lang))}</span>`;
+    if (count < 5) return `<div class="seo-card">${heading}<strong>${evidenceCountText(count, lang)}</strong><small>${zh ? '样本不足，暂不显示价格。' : 'Prices are hidden until at least 5 contracts are observed.'}</small></div>`;
+    return `<div class="seo-card">${heading}<strong>${moneyHtml(band.medianMonthlyRentWon, lang, rates)}</strong><small>${zh ? '月租中位数' : 'Median monthly rent'} · ${evidenceCountText(count, lang)}</small><small>${zh ? '该组押金中位数' : 'Median deposit in this group'}: ${escapeHtml(wonText(band.medianDepositWon, lang))}</small></div>`;
+  }).join('')}</div>`;
 }
 
 function areaGroupsHtml(groups, lang, rates) {
@@ -213,8 +223,10 @@ function areaGroupsHtml(groups, lang, rates) {
   const rows = (Array.isArray(groups) ? groups : []).filter(g => Number(g && g.count) > 0);
   if (!rows.length) return `<p>${zh ? '面积分组数据不足。' : 'Not enough observations for floor-area groups.'}</p>`;
   return `<div class="seo-grid">${rows.slice(0,10).map(group => {
+    const count = Number(group.count || 0);
+    if (count < 5) return `<div class="seo-card"><span>${zh ? '约' : 'Around'} ${escapeHtml(areaText(group.approxAreaSqm))}</span><strong>${evidenceCountText(count, lang)}</strong><small>${zh ? '样本不足，暂不显示价格或中位数。' : 'Prices and medians are hidden until at least 5 contracts are observed.'}</small></div>`;
     const band = representativeBand(group);
-    return `<div class="seo-card"><span>${zh ? '约' : 'Around'} ${escapeHtml(areaText(group.approxAreaSqm))}</span><strong>${numberText(group.count, lang)} ${zh ? '笔成交' : 'contracts'}</strong>${band ? `<small>${escapeHtml(depositRangeText(band, lang))} ${zh ? '押金 → 月租' : 'deposit → rent'} ${escapeHtml(wonText(band.medianMonthlyRentWon, lang))}</small>` : ''}<small>${zh ? '实际面积中位数' : 'Median observed size'}: ${escapeHtml(areaText(group.medianAreaSqm))}</small></div>`;
+    return `<div class="seo-card"><span>${zh ? '约' : 'Around'} ${escapeHtml(areaText(group.approxAreaSqm))}</span><strong>${evidenceCountText(count, lang)}</strong>${band ? `<small>${escapeHtml(depositRangeText(band, lang))} ${zh ? '押金 → 月租' : 'deposit → rent'} ${escapeHtml(wonText(band.medianMonthlyRentWon, lang))}</small>` : ''}<small>${zh ? '实际面积中位数' : 'Median observed size'}: ${escapeHtml(areaText(group.medianAreaSqm))}</small></div>`;
   }).join('')}</div>`;
 }
 

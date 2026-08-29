@@ -7,6 +7,8 @@ const routes = require('../seo/seo-route-utils.cjs');
 test('district slugs resolve both directions', () => {
   assert.equal(config.districtCodeFromSlug('mapo-gu'), '11440');
   assert.equal(config.districtSlugFromCode('11440'), 'mapo-gu');
+  assert.equal(config.districtCodeFromSlug('gangbuk-gu'), '11305');
+  assert.equal(config.districtSlugFromCode('11545'), 'geumcheon-gu');
   assert.equal(config.districtCodeFromSlug('nope-gu'), null);
 });
 

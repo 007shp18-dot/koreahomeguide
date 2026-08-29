@@ -8,8 +8,10 @@ const RENT_CHECK_DISTRICTS = Object.freeze(Object.fromEntries(
   Object.entries(LOCATIONS.RENT_CHECK_DISTRICTS).map(([code, record]) => [code, record.en])
 ));
 
+const SEOUL_MARKET_DISTRICTS = RENT_CHECK_DISTRICTS;
+
 const SEOUL_DISTRICT_SLUGS = Object.freeze(Object.fromEntries(
-  Object.entries(LOCATIONS.DISTRICTS).map(([code, record]) => [record.slug, code])
+  Object.entries(LOCATIONS.RENT_CHECK_DISTRICTS).map(([code, record]) => [record.slug, code])
 ));
 
 const DONG_SLUG_ALIASES = Object.freeze(Object.fromEntries(
@@ -53,6 +55,7 @@ function supportsZhIndexing(code) {
 
 module.exports = {
   SEOUL_DISTRICTS,
+  SEOUL_MARKET_DISTRICTS,
   RENT_CHECK_DISTRICTS,
   SEOUL_DISTRICT_SLUGS,
   DONG_SLUG_ALIASES,

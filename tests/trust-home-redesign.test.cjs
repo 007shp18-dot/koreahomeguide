@@ -59,10 +59,10 @@ test('district combobox and native property selectors share one polished control
 test('core Rent Check pages version the polished CSS and runtime assets', () => {
   for (const file of ['index.html','zh/index.html','tools/seoul-rent-check/index.html','zh/tools/seoul-rent-check/index.html']) {
     const html = fs.readFileSync(file, 'utf8');
-    assert.match(html, /styles\.css\?v=19/, file);
+    assert.match(html, /styles\.css\?v=23/, file);
     assert.match(html, /cold-start\.css\?v=18/, file);
     assert.match(html, /rent-check-ui-utils\.js\?v=18/, file);
-    assert.match(html, /app\.js\?v=18/, file);
+    assert.match(html, /app\.js\?v=19/, file);
   }
 });
 

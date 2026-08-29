@@ -250,7 +250,20 @@ test('district market pages label unconditioned quarter change as a raw all-depo
   const zh = fs.readFileSync('zh/rent/mapo-gu/villa/index.html','utf8');
   assert.match(en, /Raw monthly-rent direction/i);
   assert.match(zh, /原始月租走势/);
+  assert.match(en, /Includes deposit, size, and contract mix effects/i);
+  assert.match(zh, /包含押金、面积和合同构成变化/);
   assert.doesNotMatch(en, /<span>Recent direction<\/span>/);
+});
+
+test('every quarter-change UI discloses deposit, size, and contract mix effects', () => {
+  for (const file of ['explore/index.html', 'rent-market-page.js', 'explore/building/app.js']) {
+    const source = fs.readFileSync(file, 'utf8');
+    assert.match(source, /deposit, size, and contract mix effects/i, file);
+  }
+  for (const file of ['zh/explore/index.html', 'zh/rent-market-page.js', 'zh/explore/building/app.js']) {
+    const source = fs.readFileSync(file, 'utf8');
+    assert.match(source, /押金、面积和合同构成变化/, file);
+  }
 });
 
 

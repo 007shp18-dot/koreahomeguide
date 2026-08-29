@@ -215,6 +215,18 @@
     });
   }
 
+  function marketEvidencePresentation(value, locale = 'en') {
+    const count = Math.max(0, Math.floor(Number(value) || 0));
+    const zh = String(locale || '').toLowerCase().startsWith('zh');
+    return Object.freeze({
+      count,
+      render:count > 0,
+      sufficient:count >= 5,
+      sampleLabel:count > 0 ? (zh ? `${count} 份合同` : `${count} contract${count === 1 ? '' : 's'}`) : '',
+      limitedLabel:count > 0 && count < 5 ? (zh ? '少于 5 份' : 'Under 5') : ''
+    });
+  }
+
   function sortBuildings(items, mode = 'evidence') {
     const source = Array.isArray(items) ? [...items] : [];
     const finite = value => value != null && String(value).trim() !== '' && Number.isFinite(Number(value)) ? Number(value) : null;
@@ -262,6 +274,7 @@
     workspaceState,
     neighborhoodSelectionTransition,
     createRequestGate,
+    marketEvidencePresentation,
     sortBuildings,
     buildLabeledTableRow,
     stableSuffix

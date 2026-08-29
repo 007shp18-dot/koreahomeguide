@@ -59,10 +59,22 @@ test('both locales expose a switching discovery rail', () => {
   }
 });
 
-test('full-canvas map layer stretches to the workspace height', () => {
+test('desktop Explorer keeps the map sticky while results stay in document flow', () => {
   const css = fs.readFileSync('styles.css', 'utf8');
-  const spatial = css.slice(css.indexOf('/* v17 Explorer spatial workspace'));
-  assert.match(spatial, /\.map-first-workspace \.explorer-map-column\{[^}]*height:100%[^}]*align-self:stretch/);
+  const spatial = css.slice(css.indexOf('/* v22 P0 document-flow Explorer'));
+  assert.match(spatial, /\.map-first-workspace\{[^}]*display:grid[^}]*grid-template-columns:minmax\(0,1\.8fr\) minmax\(340px,1fr\)[^}]*height:auto[^}]*overflow:visible/);
+  assert.match(spatial, /\.map-first-workspace \.explorer-map-column\{[^}]*position:sticky[^}]*top:76px[^}]*align-self:start/);
+  assert.match(spatial, /\.map-first-workspace \.explorer-discovery-rail\{[^}]*position:relative[^}]*width:auto[^}]*max-height:none[^}]*overflow:visible/);
+  assert.match(spatial, /\.map-first-workspace \.explorer-discovery-rail \.explorer-results\{[^}]*height:auto[^}]*overflow:visible/);
+  assert.doesNotMatch(spatial, /overflow-y:(?:auto|scroll)/);
+  assert.doesNotMatch(spatial, /overscroll-behavior/);
+});
+
+test('mobile Explorer stacks map then results without a clipped bottom sheet', () => {
+  const css = fs.readFileSync('styles.css', 'utf8');
+  const spatial = css.slice(css.indexOf('/* v22 P0 document-flow Explorer'));
+  assert.match(spatial, /@media\(max-width:760px\)\{[\s\S]*?\.map-first-workspace\{[^}]*grid-template-columns:1fr[^}]*height:auto[^}]*overflow:visible/);
+  assert.match(spatial, /@media\(max-width:760px\)\{[\s\S]*?\.map-first-workspace \.explorer-discovery-rail\{[^}]*position:relative[^}]*max-height:none/);
 });
 
 test('Street View loading and ready states share one stable media frame', () => {
@@ -77,9 +89,9 @@ test('Street View loading and ready states share one stable media frame', () => 
 test('both Explorer locales load the cache-busted Street View assets', () => {
   for (const file of ['explore/index.html','zh/explore/index.html']) {
     const html = fs.readFileSync(file, 'utf8');
-    assert.match(html, /href="\/styles\.css\?v=21"/);
+    assert.match(html, /href="\/styles\.css\?v=22"/);
     assert.match(html, /src="\/explore\/building-window\.js\?v=19"/);
     assert.match(html, /src="\/explore\/panorama\.js\?v=20"/);
-    assert.match(html, /src="\/explore\/explorer-utils\.js\?v=21"/);
+    assert.match(html, /src="\/explore\/explorer-utils\.js\?v=22"/);
   }
 });

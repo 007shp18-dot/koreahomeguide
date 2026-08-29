@@ -42,7 +42,8 @@ test('Dong SEO endpoint returns localized HTML with cache headers', async () => 
   assert.match(res.headers['Content-Type'], /text\/html/);
   assert.match(res.headers['Cache-Control'], /s-maxage=86400/);
   assert.match(res.body, /延南洞/);
-  assert.match(res.body, /¥3,640/);
+  assert.match(res.body, /少于 5 份合同/);
+  assert.doesNotMatch(res.body, /¥3,640/);
   assert.match(res.body, /index,follow/);
 });
 
