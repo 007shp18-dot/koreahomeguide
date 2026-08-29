@@ -1,6 +1,7 @@
 const { completedMonths, fetchRentalMonth, fetchSaleMonth: defaultFetchSaleMonth } = require('../lib/real-price-core.cjs');
 const { buildAreaSummary, aggregateDongs, buildDongSummary, aggregateBuildings, buildBuildingDetail } = require('./provider-utils.cjs');
 const { fetchBuildingProfile } = require('./building-profile-provider.cjs');
+const { resolveSeoulLegalDongCode } = require('./seoul-legal-dong-codes.cjs');
 
 function createKoreaHousingProvider({
   serviceKey,
@@ -84,7 +85,8 @@ function createKoreaHousingProvider({
       if (!detail) return null;
       const transaction = detail.recentTransactions && detail.recentTransactions[0];
       if (transaction) {
-        detail.profile = await fetchProfile({ serviceKey, transaction, legalCode, fetchImpl });
+        const verifiedLegalCode = legalCode || resolveSeoulLegalDongCode(areaCode, transaction.dong);
+        detail.profile = await fetchProfile({ serviceKey, transaction, legalCode:verifiedLegalCode, fetchImpl });
       }
       return detail;
     }

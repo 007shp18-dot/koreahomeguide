@@ -104,6 +104,31 @@ test('KoreaHousingProvider exposes city-neutral contract and reuses one six-mont
   assert.equal(calls, 6, 'provider should cache fetched six-month area rows within one instance');
 });
 
+test('KoreaHousingProvider supplies the official Seoul legal-dong code when rental rows omit it', async () => {
+  let receivedLegalCode = '';
+  const rows = [{
+    building:'역삼래미안', buildingName:'역삼래미안', explorerBuildingName:'역삼래미안',
+    dong:'역삼동', jibun:'757', area:'59', deposit:'50000', monthlyRent:'200',
+    contractDate:'2026-07-01', type:'apartment'
+  }];
+  const provider = createKoreaHousingProvider({
+    serviceKey:'test-key', referenceDate:ref,
+    fetchMonth:async () => rows,
+    fetchSaleMonth:async () => [],
+    fetchProfile:async ({ legalCode }) => {
+      receivedLegalCode = legalCode;
+      return { status:'matched', useApprovalYear:2005 };
+    }
+  });
+
+  const detail = await provider.getBuildingDetail({
+    areaCode:'11680', propertyType:'apartment', buildingKey:'역삼동::역삼래미안', months:6
+  });
+
+  assert.equal(receivedLegalCode, '1168010100');
+  assert.equal(detail.profile.useApprovalYear, 2005);
+});
+
 test('dong summaries aggregate recent transactions and buildings without mixing neighborhoods', () => {
   const rows = [
     { building:'Twin Villa', buildingName:'Twin Villa', dong:'연남동', area:'20', deposit:'1000', monthlyRent:'60', contractDate:'2026-07-01', type:'villa' },
