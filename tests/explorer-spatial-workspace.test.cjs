@@ -80,7 +80,8 @@ test('both locales expose a switching discovery rail', () => {
 test('desktop Explorer keeps map and discovery results inside one bounded workspace', () => {
   const css = fs.readFileSync('styles.css', 'utf8');
   const spatial = css.slice(css.indexOf('/* v27 choropleth Explorer workspace */'));
-  assert.match(spatial, /\.map-first-workspace\{[^}]*height:calc\(100dvh - 148px\)[^}]*overflow:hidden/);
+  assert.match(spatial, /\.map-first-workspace\{[^}]*height:calc\(100dvh - 148px\)[^}]*transform:none[^}]*overflow:hidden/);
+  assert.match(spatial, /\.map-first-workspace \.explorer-map-column\{[^}]*grid-area:auto[^}]*height:100%/);
   assert.match(spatial, /\.map-first-workspace \.explorer-discovery-rail\{[^}]*position:absolute[^}]*top:16px[^}]*bottom:16px[^}]*width:370px[^}]*overflow:hidden/);
   assert.match(spatial, /\.map-first-workspace \.explorer-discovery-rail \.explorer-results\{[^}]*height:100%[^}]*overflow-y:auto/);
   assert.doesNotMatch(spatial, /height:auto;[^}]*overflow:visible/);
