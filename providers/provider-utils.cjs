@@ -1,4 +1,4 @@
-const { median, completedMonthKeys, normalizeTransaction, numberFromManwon } = require('../lib/rent-check-core.cjs');
+const { median, completedMonthKeys, normalizeTransaction, numberFromManwon, monthlyRentAtDeposit, percentileRank } = require('../lib/rent-check-core.cjs');
 const { buildRentMarketStats, pctChange, contextualStatsFromNormalized } = require('../lib/rent-market-core.cjs');
 const { getBuildingNameDisplay } = require('../building-name-utils.js');
 
@@ -62,7 +62,10 @@ function filterCompletedRows(items, { referenceDate = new Date(), months = 6 } =
         explorerJibun:normalizeAddressPart(item && item.jibun),
         explorerRoadName:normalizeAddressPart(item && item.roadName),
         explorerRoadMainNumber:normalizeAddressPart(item && item.roadMainNumber),
-        explorerRoadSubNumber:normalizeAddressPart(item && item.roadSubNumber)
+        explorerRoadSubNumber:normalizeAddressPart(item && item.roadSubNumber),
+        jibun:normalizeAddressPart(item && item.jibun),
+        sggCd:normalizeAddressPart(item && item.sggCd),
+        umdCd:normalizeAddressPart(item && item.umdCd)
       };
     })
     .filter(Boolean)
@@ -233,6 +236,63 @@ function buildMonthlyTrend(rows, { referenceDate = new Date(), months = 6 } = {}
   });
 }
 
+function buildingComparisonResult(rows, representative, { minimumContracts, minimumBuildings }) {
+  const buildingCount = new Set(rows.map(row => buildingKeyFromName(row.explorerBuildingName, row.explorerDong)).filter(Boolean)).size;
+  const comparableCount = rows.length;
+  if (comparableCount < minimumContracts || buildingCount < minimumBuildings) {
+    return { status:'insufficient', percentile:null, comparableCount, buildingCount, reason:'minimum-evidence' };
+  }
+  const adjusted = rows.map(row => monthlyRentAtDeposit(
+    row.monthlyRentWon,
+    row.depositWon,
+    representative.depositWon
+  )).filter(value => Number.isFinite(value) && value > 0);
+  const rank = percentileRank(adjusted, representative.monthlyRentWon);
+  return {
+    status:'sufficient',
+    percentile:rank == null ? null : rank / 100,
+    comparableCount,
+    buildingCount,
+    reason:null
+  };
+}
+
+function buildBuildingMarketPosition(items, { buildingKey, referenceDate = new Date(), months = 6 } = {}) {
+  const requestedKey = String(buildingKey || '').normalize('NFKC').trim().toLocaleLowerCase('en-US');
+  const rows = filterCompletedRows(items, { referenceDate, months }).filter(row => row.monthlyRentWon > 0 && row.areaSqm > 0);
+  const selected = rows.filter(row => buildingKeyFromName(row.explorerBuildingName, row.explorerDong) === requestedKey);
+  const representative = selected.length >= 3 ? (() => {
+    const depositWon = median(selected.map(row => row.depositWon));
+    const monthlyRentWon = median(selected.map(row => monthlyRentAtDeposit(row.monthlyRentWon, row.depositWon, depositWon)));
+    return {
+      depositWon,
+      monthlyRentWon:Math.round(monthlyRentWon),
+      areaSqm:median(selected.map(row => row.areaSqm)),
+      contractCount:selected.length
+    };
+  })() : null;
+  const empty = { status:'insufficient', percentile:null, comparableCount:0, buildingCount:0, reason:'minimum-evidence' };
+  if (!selected.length) return { buildingRepresentative:null, dong:{ ...empty }, district:{ ...empty } };
+  const context = representative || {
+    depositWon:median(selected.map(row => row.depositWon)),
+    monthlyRentWon:median(selected.map(row => row.monthlyRentWon)),
+    areaSqm:median(selected.map(row => row.areaSqm))
+  };
+  const areaMin = context.areaSqm * 0.8;
+  const areaMax = context.areaSqm * 1.2;
+  const selectedDong = normalizeDongName(selected[0].explorerDong);
+  const comparableRows = rows.filter(row => {
+    const key = buildingKeyFromName(row.explorerBuildingName, row.explorerDong);
+    return key && key !== requestedKey && row.areaSqm >= areaMin && row.areaSqm <= areaMax;
+  });
+  const dongRows = comparableRows.filter(row => normalizeDongName(row.explorerDong) === selectedDong);
+  return {
+    buildingRepresentative:representative,
+    dong:buildingComparisonResult(dongRows, context, { minimumContracts:8, minimumBuildings:3 }),
+    district:buildingComparisonResult(comparableRows, context, { minimumContracts:20, minimumBuildings:5 })
+  };
+}
+
 
 function normalizeSaleTransaction(item) {
   if (!item) return null;
@@ -304,6 +364,8 @@ function buildBuildingDetail(items, { buildingKey, referenceDate = new Date(), m
   const saleSummary = buildSaleSummary(saleRows, { buildingName:group.buildingName, dong:group.dong });
   return {
     ...summary,
+    marketPosition:buildBuildingMarketPosition(items, { buildingKey:group.key, referenceDate, months }),
+    profile:{ status:'unavailable' },
     monthlyTrend:buildMonthlyTrend(group.rows, { referenceDate, months }),
     recentTransactions,
     saleSummary,
@@ -334,5 +396,6 @@ module.exports = {
   buildSaleSummary,
   buildBuildingDetail,
   buildAreaSummary,
-  buildMonthlyTrend
+  buildMonthlyTrend,
+  buildBuildingMarketPosition
 };

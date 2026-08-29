@@ -284,12 +284,12 @@ function renderBuildings(buildings) {
     const interactiveHref = KHGExplorer.buildBuildingDetailUrl({ lawdCd:currentData && currentData.districtCode || areaSelect.value, type:typeSelect.value, dong, buildingKey:item.buildingKey });
     const location = [dongDisplayName(dong), areaName(), typeName()].filter(Boolean).join(' · ');
     const nameDisplay = KHGBuildingNames.getBuildingNameDisplay(item.buildingName, 'en');
-    return `<article class="building-row">
+    return `<article class="building-row" role="button" tabindex="0" data-building-key="${escapeHtml(item.buildingKey)}" aria-label="Open ${escapeHtml(nameDisplay.primary)} building status">
       <div class="building-name"><strong>${escapeHtml(nameDisplay.primary)}</strong>${nameDisplay.secondary ? `<small class="building-official-name">${escapeHtml(nameDisplay.secondary)}</small>` : ''}<small>${escapeHtml(location)}</small></div>
       <div><span class="mobile-label">Typical size</span><strong>${formatArea(item.typicalAreaSqm)}</strong></div>
       ${(() => { const band = representativeBand(item); const rentValue = band ? band.medianMonthlyRentWon : (item.contextualMedianMonthlyRentWon ?? item.medianMonthlyRentWon); const depositValue = band ? band.medianDepositWon : (item.contextualMedianDepositWon ?? item.medianDepositWon); return `<div class="building-money"><span class="mobile-label">Rent context</span><strong>${rentValue == null ? '—' : moneyHtml(rentValue)}</strong></div><div class="building-money"><span class="mobile-label">Deposit context</span><strong>${depositValue == null ? '—' : moneyHtml(depositValue)}</strong></div>`; })()}
       <div><span class="mobile-label">Contracts</span><strong>${Number(item.contractCount || 0).toLocaleString('en-US')}</strong></div>
-      <div class="building-actions"><a rel="nofollow" href="${escapeHtml(interactiveHref)}">Open building details →</a></div>
+      <div class="building-actions"><a rel="nofollow" href="${escapeHtml(interactiveHref)}">Full page →</a></div>
     </article>`;
   }).join('');
 }
@@ -452,10 +452,30 @@ window.addEventListener('khg:map-select-dong', event => {
   }
 });
 window.addEventListener('khg:map-select-building', event => {
-  const model = event.detail && event.detail.model;
-  if (model) renderMapSelection(model);
+  if (mapSelection) mapSelection.hidden = true;
 });
 window.addEventListener('khg:map-back-neighborhoods', clearMapSelection);
+
+function openBuildingFromRow(row) {
+  if (!row || !currentData || !window.KHGExplorerBuildingWindow) return;
+  const item = (currentData.buildings || []).find(building => building.buildingKey === row.dataset.buildingKey);
+  if (!item) return;
+  const selection = KHGExplorerBuildingWindow.selectionFromBuilding(item, {
+    districtCode:currentData.districtCode || areaSelect.value,
+    districtName:currentData.districtName || areaName(), propertyType:typeSelect.value, locale:'en'
+  });
+  window.dispatchEvent(new CustomEvent('khg:building-window-open', { detail:{ selection, trigger:row } }));
+}
+if (buildingList) {
+  buildingList.addEventListener('click', event => {
+    if (event.target.closest('a')) return;
+    openBuildingFromRow(event.target.closest('.building-row[data-building-key]'));
+  });
+  buildingList.addEventListener('keydown', event => {
+    if (!['Enter',' '].includes(event.key) || event.target.closest('a')) return;
+    event.preventDefault(); openBuildingFromRow(event.target.closest('.building-row[data-building-key]'));
+  });
+}
 
 (async () => {
   const requestedDong = applyQuerySelection();

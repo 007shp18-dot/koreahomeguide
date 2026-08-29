@@ -294,7 +294,7 @@ function renderBuildings(buildings) {
     const interactiveHref = `/zh/explore/building/?${interactiveParams.toString()}`;
     const location = [dong ? dongDisplayName(dong) : '', areaName(), typeName()].filter(Boolean).join(' · ');
     const nameDisplay = KHGBuildingNames.getBuildingNameDisplay(item.buildingName, 'zh');
-    return `<article class="building-row">
+    return `<article class="building-row" role="button" tabindex="0" data-building-key="${escapeHtml(item.buildingKey)}" aria-label="打开 ${escapeHtml(nameDisplay.primary)} 建筑状态">
       <div class="building-name"><strong>${escapeHtml(nameDisplay.primary)}</strong>${nameDisplay.secondary ? `<small class="building-official-name">${escapeHtml(nameDisplay.secondary)}</small>` : ''}<small>${escapeHtml(location)}</small></div>
       <div><span class="mobile-label">典型面积</span><strong>${formatArea(item.typicalAreaSqm)}</strong></div>
       ${(() => { const band = representativeBand(item); const rentValue = band ? band.medianMonthlyRentWon : (item.contextualMedianMonthlyRentWon ?? item.medianMonthlyRentWon); const depositValue = band ? band.medianDepositWon : (item.contextualMedianDepositWon ?? item.medianDepositWon); return `<div class="building-money"><span class="mobile-label">参考月租</span><strong>${rentValue == null ? '—' : moneyHtml(rentValue)}</strong></div><div class="building-money"><span class="mobile-label">参考押金</span><strong>${depositValue == null ? '—' : moneyHtml(depositValue)}</strong></div>`; })()}
@@ -462,10 +462,30 @@ window.addEventListener('khg:map-select-dong', event => {
   }
 });
 window.addEventListener('khg:map-select-building', event => {
-  const model = event.detail && event.detail.model;
-  if (model) renderMapSelection(model);
+  if (mapSelection) mapSelection.hidden = true;
 });
 window.addEventListener('khg:map-back-neighborhoods', clearMapSelection);
+
+function openBuildingFromRow(row) {
+  if (!row || !currentData || !window.KHGExplorerBuildingWindow) return;
+  const item = (currentData.buildings || []).find(building => building.buildingKey === row.dataset.buildingKey);
+  if (!item) return;
+  const selection = KHGExplorerBuildingWindow.selectionFromBuilding(item, {
+    districtCode:currentData.districtCode || areaSelect.value,
+    districtName:currentData.districtName || areaName(), propertyType:typeSelect.value, locale:'zh-CN'
+  });
+  window.dispatchEvent(new CustomEvent('khg:building-window-open', { detail:{ selection, trigger:row } }));
+}
+if (buildingList) {
+  buildingList.addEventListener('click', event => {
+    if (event.target.closest('a')) return;
+    openBuildingFromRow(event.target.closest('.building-row[data-building-key]'));
+  });
+  buildingList.addEventListener('keydown', event => {
+    if (!['Enter',' '].includes(event.key) || event.target.closest('a')) return;
+    event.preventDefault(); openBuildingFromRow(event.target.closest('.building-row[data-building-key]'));
+  });
+}
 
 (async () => {
   const requestedDong = applyQuerySelection();

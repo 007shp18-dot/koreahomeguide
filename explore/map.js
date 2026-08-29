@@ -368,6 +368,20 @@
     renderMarkers();
   });
   window.addEventListener('khg:explorer-buildings', event => { void showBuildingLayer(event.detail || {}); });
+  window.addEventListener('khg:building-window-location-request', event => {
+    const selection = event.detail && event.detail.selection;
+    if (!selection || selection.kind !== 'building') return;
+    const located = latestModels.find(model => model.kind === 'building' && model.buildingKey === selection.buildingKey);
+    if (located) {
+      window.dispatchEvent(new CustomEvent('khg:building-window-location', { detail:{ model:located } }));
+      return;
+    }
+    if (!map || !selection.mapLocation) return;
+    void verifiedBuildingPoint(selection).then(point => {
+      if (!point) return;
+      window.dispatchEvent(new CustomEvent('khg:building-window-location', { detail:{ model:{ ...selection, ...point } } }));
+    });
+  });
   window.addEventListener('khg:map-clear-selection', () => highlight('', false));
   window.addEventListener('khg:analytics-ready', () => trackView(latestModels));
 

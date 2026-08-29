@@ -106,7 +106,7 @@
     const canvas = documentObject.querySelector('#explorerStreetViewCanvas');
     const status = documentObject.querySelector('#explorerStreetViewStatus');
     const meta = documentObject.querySelector('#explorerStreetViewMeta');
-    const panel = documentObject.querySelector('#explorerMapSelection');
+    const panel = documentObject.querySelector('.building-status-window');
     if (!section || !canvas || !status || !meta) return null;
     const zh = String(documentObject.documentElement.lang || '').toLowerCase().startsWith('zh');
     const copy = statusCopy(zh);
@@ -196,6 +196,8 @@
     }
 
     windowObject.addEventListener('khg:map-select-building', event => { void show(event.detail && event.detail.model); });
+    windowObject.addEventListener('khg:building-window-location', event => { void show(event.detail && event.detail.model); });
+    windowObject.addEventListener('khg:building-window-close', reset);
     windowObject.addEventListener('khg:map-select-dong', reset);
     windowObject.addEventListener('khg:map-back-neighborhoods', reset);
     windowObject.addEventListener('khg:map-clear-selection', reset);

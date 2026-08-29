@@ -1,12 +1,14 @@
 const { completedMonths, fetchRentalMonth, fetchSaleMonth: defaultFetchSaleMonth } = require('../lib/real-price-core.cjs');
 const { buildAreaSummary, aggregateDongs, buildDongSummary, aggregateBuildings, buildBuildingDetail } = require('./provider-utils.cjs');
+const { fetchBuildingProfile } = require('./building-profile-provider.cjs');
 
 function createKoreaHousingProvider({
   serviceKey,
   fetchImpl = fetch,
   referenceDate = new Date(),
   fetchMonth = fetchRentalMonth,
-  fetchSaleMonth = defaultFetchSaleMonth
+  fetchSaleMonth = defaultFetchSaleMonth,
+  fetchProfile = fetchBuildingProfile
 } = {}) {
   if (!serviceKey) throw new TypeError('serviceKey is required.');
   const cache = new Map();
@@ -78,7 +80,13 @@ function createKoreaHousingProvider({
           saleRows = null;
         }
       }
-      return buildBuildingDetail(items, { buildingKey, referenceDate, months, saleRows });
+      const detail = buildBuildingDetail(items, { buildingKey, referenceDate, months, saleRows });
+      if (!detail) return null;
+      const transaction = detail.recentTransactions && detail.recentTransactions[0];
+      if (transaction) {
+        detail.profile = await fetchProfile({ serviceKey, transaction, fetchImpl });
+      }
+      return detail;
     }
   };
 }
