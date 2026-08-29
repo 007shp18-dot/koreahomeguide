@@ -32,6 +32,13 @@ test('map viewport filters located points without inventing coordinates', () => 
   assert.equal(viewport.hasCompleteViewportCoverage({ markerScope:'neighborhood', locatedCount:15, totalCount:15 }), true);
 });
 
+test('workspace padding keeps selected markers clear of desktop panels', () => {
+  const viewport = require('../explore/map-viewport.js');
+  assert.deepEqual(viewport.workspacePadding({ viewportWidth:1440, mobile:false, drawerOpen:false }), { top:72, right:32, bottom:72, left:392 });
+  assert.deepEqual(viewport.workspacePadding({ viewportWidth:1440, mobile:false, drawerOpen:true }), { top:72, right:552, bottom:72, left:392 });
+  assert.deepEqual(viewport.workspacePadding({ viewportWidth:390, mobile:true, drawerOpen:true }), { top:56, right:32, bottom:300, left:32 });
+});
+
 test('building map pins use the same adjusted square-metre value as the list', () => {
   const controller = require('../explore/map-controller.js');
   const [model] = controller.buildBuildingMarkerModels({

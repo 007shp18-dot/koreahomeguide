@@ -185,6 +185,12 @@
     return 'map';
   }
 
+  function workspaceState({ dong = '', buildingKey = '' } = {}) {
+    const neighborhood = String(dong || '').trim();
+    if (!neighborhood) return 'neighborhoods';
+    return String(buildingKey || '').trim() ? 'building-detail' : 'buildings';
+  }
+
   function sortBuildings(items, mode = 'evidence') {
     const source = Array.isArray(items) ? [...items] : [];
     const finite = value => value != null && String(value).trim() !== '' && Number.isFinite(Number(value)) ? Number(value) : null;
@@ -229,6 +235,7 @@
     summaryHeading,
     supportsZhIndexing,
     initialViewForWidth,
+    workspaceState,
     sortBuildings,
     buildLabeledTableRow,
     stableSuffix

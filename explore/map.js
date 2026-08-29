@@ -36,6 +36,7 @@
   let useAdvancedMarkers = false;
   let geocoder = null;
   let buildingLayerRequestId = 0;
+  let buildingDrawerOpen = false;
   let panelDrag = null;
   const geocodeCache = new Map();
   const knownBuildingPoints = new Map();
@@ -52,10 +53,11 @@
   }
 
   function buildingViewportPadding() {
-    const mobile = window.matchMedia && window.matchMedia('(max-width: 760px)').matches;
-    const panelVisible = selectionPanel && !selectionPanel.hidden;
-    if (mobile) return { top:70, right:44, bottom:panelVisible ? 230 : 80, left:44 };
-    return { top:80, right:80, bottom:100, left:panelVisible ? 460 : 80 };
+    const mobile = mobileMapLayout();
+    if (window.KHGMapViewport && typeof window.KHGMapViewport.workspacePadding === 'function') {
+      return window.KHGMapViewport.workspacePadding({ viewportWidth:window.innerWidth, mobile, drawerOpen:buildingDrawerOpen });
+    }
+    return mobile ? { top:56, right:32, bottom:220, left:32 } : { top:72, right:32, bottom:72, left:392 };
   }
 
   function capBuildingZoom() {
@@ -463,6 +465,10 @@
   window.addEventListener('khg:building-window-location-request', event => {
     const selection = event.detail && event.detail.selection;
     void publishBuildingWindowLocation(selection);
+  });
+  window.addEventListener('khg:building-window-state', event => {
+    buildingDrawerOpen = Boolean(event.detail && event.detail.open);
+    if (selectedMarkerId) highlight(selectedMarkerId, true);
   });
   window.addEventListener('khg:map-clear-selection', () => highlight('', false));
   window.addEventListener('khg:analytics-ready', () => trackView(latestModels));

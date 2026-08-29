@@ -240,3 +240,16 @@ html[lang="zh-CN"] .funnel-updated-guides .funnel-guide:after{content:"阅读指
   .home-rent-workspace .rent-check-size-field,.home-rent-workspace .rent-check-button{grid-column:auto}
   .home-rent-workspace .rent-size-unit-toggle{margin-left:0}
 }
+
+/* v17 homepage size-field containment */
+.home-rent-workspace .rent-check-size-field{display:grid;min-width:0;grid-template-columns:1fr;grid-template-rows:auto 52px auto auto}
+.home-rent-workspace .rent-check-size-field>span,.home-rent-workspace .rent-check-size,.home-rent-workspace .rent-size-hint,.home-rent-workspace .rent-size-controls{grid-column:1}
+.home-rent-workspace .rent-check-size-field>span{grid-row:1}
+.home-rent-workspace .rent-check-size{grid-row:2}
+.home-rent-workspace .rent-size-hint{grid-row:3}
+.home-rent-workspace .rent-check-size{width:100%;min-width:0;box-sizing:border-box}
+.home-rent-workspace .rent-check-size input{width:100%;min-width:0}
+.home-rent-workspace .rent-size-controls{display:grid;grid-row:4;grid-template-columns:1fr;gap:6px;min-width:0;margin-top:7px}
+.home-rent-workspace .rent-size-presets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;min-width:0;width:100%}
+.home-rent-workspace .rent-size-presets button{min-width:0;width:100%;white-space:nowrap}
+.home-rent-workspace .rent-size-unit-toggle{justify-self:end;margin-left:0}

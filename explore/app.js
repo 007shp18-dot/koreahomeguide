@@ -20,7 +20,9 @@ const buildingList = document.querySelector('#buildingList');
 const buildingSort = document.querySelector('#explorerBuildingSort');
 const sheetToggle = document.querySelector('#explorerSheetToggle');
 const budgetFilterNote = document.querySelector('#budgetFilterNote');
-const explorerResults = document.querySelector('#explorerResultsShell');
+const resultsShell = document.querySelector('#explorerResultsShell');
+const explorerResults = resultsShell;
+const explorerRailBack = document.querySelector('#explorerRailBack');
 const explorerSearchCard = document.querySelector('.explorer-search-card');
 const explorerFilterSummary = document.querySelector('#explorerFilterSummary');
 const explorerChangeFilters = document.querySelector('#explorerChangeFilters');
@@ -38,12 +40,19 @@ let fxRates = {};
 let currentAreaData = null;
 let currentData = null;
 let currentDong = '';
+let currentBuildingKey = '';
 let currentMapSelection = null;
 let currentVisibleDongs = null;
 let currentVisibleBuildingKeys = null;
 const explorerAnalytics = window.KHGProductAnalytics
   ? window.KHGProductAnalytics.createTracker(window)
   : null;
+
+function syncWorkspaceState() {
+  if (!resultsShell) return;
+  resultsShell.dataset.workspaceState = KHGExplorer.workspaceState({ dong:currentDong, buildingKey:currentBuildingKey });
+  if (explorerRailBack) explorerRailBack.hidden = !currentDong;
+}
 
 function selectedCurrency() { return currencySelect ? currencySelect.value : 'KRW'; }
 function moneyHtml(amountWon) {
@@ -157,6 +166,19 @@ function clearMapSelection() {
   window.dispatchEvent(new CustomEvent('khg:map-clear-selection'));
 }
 
+function returnToNeighborhoods() {
+  currentDong = '';
+  currentBuildingKey = '';
+  currentVisibleBuildingKeys = null;
+  clearMapSelection();
+  if (currentAreaData) {
+    renderSummary(currentAreaData, '');
+    publishMapDongs(currentAreaData.dongs || []);
+  }
+  syncWorkspaceState();
+  history.replaceState(null, '', `/explore/?${currentParams(false).toString()}`);
+}
+
 function handleSelectionChange() {
   clearMapSelection();
   currentVisibleDongs = null;
@@ -247,7 +269,10 @@ function renderDongs(dongs, { publish = true } = {}) {
 
 function renderSummary(data, dong = '') {
   currentData = data;
-  currentDong = dong || '';
+  const nextDong = dong || '';
+  if (currentDong !== nextDong) currentBuildingKey = '';
+  currentDong = nextDong;
+  syncWorkspaceState();
   const selectedAreaName = areaSelect.value === 'all' ? data.districtName : areaName();
   const heading = KHGExplorer.summaryHeading({
     lawdCd:data.districtCode || areaSelect.value,
@@ -420,6 +445,8 @@ function applyQuerySelection() {
   if (maxRentSelect && [...maxRentSelect.options].some(option => option.value === maxRent)) maxRentSelect.value = maxRent;
   if (maxDepositSelect && [...maxDepositSelect.options].some(option => option.value === maxDeposit)) maxDepositSelect.value = maxDeposit;
   currentDong = dong;
+  currentBuildingKey = '';
+  syncWorkspaceState();
   updateLanguageSwitch();
   updateRentCheckHandoff();
   return dong;
@@ -448,6 +475,7 @@ if (sheetToggle) sheetToggle.addEventListener('click', () => {
 });
 explorerViewButtons.forEach(button => button.addEventListener('click', () => setExplorerView(button.dataset.explorerView)));
 if (mapSelectionClose) mapSelectionClose.addEventListener('click', clearMapSelection);
+if (explorerRailBack) explorerRailBack.addEventListener('click', returnToNeighborhoods);
 if (explorerChangeFilters) explorerChangeFilters.addEventListener('click', () => {
   if (!explorerSearchCard) return;
   window.scrollTo({ top:Math.max(0, explorerSearchCard.offsetTop - 16), behavior:'smooth' });
@@ -479,7 +507,12 @@ window.addEventListener('khg:map-select-dong', event => {
 window.addEventListener('khg:map-select-building', event => {
   if (mapSelection) mapSelection.hidden = true;
 });
-window.addEventListener('khg:map-back-neighborhoods', clearMapSelection);
+window.addEventListener('khg:map-back-neighborhoods', returnToNeighborhoods);
+window.addEventListener('khg:building-window-state', event => {
+  const detail = event.detail || {};
+  currentBuildingKey = detail.open && detail.selection ? String(detail.selection.buildingKey || '') : '';
+  syncWorkspaceState();
+});
 window.addEventListener('khg:map-viewport-change', event => {
   const detail = event.detail || {};
   if (detail.markerScope === 'building') {
@@ -499,6 +532,8 @@ function openBuildingFromRow(row) {
     districtCode:currentData.districtCode || areaSelect.value,
     districtName:currentData.districtName || areaName(), propertyType:typeSelect.value, locale:'en'
   });
+  currentBuildingKey = selection.buildingKey;
+  syncWorkspaceState();
   window.dispatchEvent(new CustomEvent('khg:building-window-open', { detail:{ selection, trigger:row } }));
 }
 if (buildingList) {
