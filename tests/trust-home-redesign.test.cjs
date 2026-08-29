@@ -51,9 +51,19 @@ test('editorial home styling varies section rhythm and avoids card repetition', 
 
 test('district combobox and native property selectors share one polished control geometry', () => {
   const css = fs.readFileSync('styles.css', 'utf8');
-  assert.match(css, /:where\(\.rent-check-form,\.explorer-search-card\) :where\(\.selection-native,\.district-combobox-input,select\)\{[^}]*height:52px/);
-  assert.match(css, /:where\(\.rent-check-form,\.explorer-search-card\) :where\(\.selection-native,select\)\{[^}]*appearance:none[^}]*background-image:/);
+  assert.match(css, /:is\(\.rent-check-form,\.explorer-search-card\) :is\(\.selection-native,\.district-combobox-input,select\)\{[^}]*height:52px/);
+  assert.match(css, /:is\(\.rent-check-form,\.explorer-search-card\) :is\(\.selection-native,select\)\{[^}]*appearance:none[^}]*background-image:/);
   assert.match(css, /\.selection-native:focus-visible\{[^}]*box-shadow:/);
+});
+
+test('core Rent Check pages version the polished CSS and runtime assets', () => {
+  for (const file of ['index.html','zh/index.html','tools/seoul-rent-check/index.html','zh/tools/seoul-rent-check/index.html']) {
+    const html = fs.readFileSync(file, 'utf8');
+    assert.match(html, /styles\.css\?v=18/, file);
+    assert.match(html, /cold-start\.css\?v=18/, file);
+    assert.match(html, /rent-check-ui-utils\.js\?v=18/, file);
+    assert.match(html, /app\.js\?v=18/, file);
+  }
 });
 
 test('desktop homepage Rent Check uses two aligned rows with size beside the primary selectors', () => {

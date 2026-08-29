@@ -82,6 +82,15 @@ test('both Explorer locales merge map title actions and legend into one command 
   assert.match(finalPass, /\.map-first-workspace \.explorer-map-legend\{[^}]*position:static/);
 });
 
+test('both Explorer locales version the drawer, Panorama and workspace CSS assets', () => {
+  for (const file of ['explore/index.html', 'zh/explore/index.html']) {
+    const html = fs.readFileSync(file, 'utf8');
+    assert.match(html, /styles\.css\?v=18/, file);
+    assert.match(html, /building-window\.js\?v=18/, file);
+    assert.match(html, /panorama\.js\?v=18/, file);
+  }
+});
+
 test('Explorer CSS gives the map most desktop space and a mobile result sheet', () => {
   const css = fs.readFileSync('styles.css', 'utf8');
   assert.match(css, /\.explorer-page\{max-width:1440px/);

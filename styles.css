@@ -941,13 +941,13 @@ html[lang="zh-CN"] .core-ui .funnel-hero h1,html[lang="zh-CN"] .core-ui .tool-he
 }
 
 /* v18 rent decision controls */
-:where(.rent-check-form,.explorer-search-card) :where(.selection-native,.district-combobox-input,select){height:52px;min-height:52px;border:1px solid var(--line-strong);border-radius:var(--radius-md);background-color:var(--surface);color:var(--ink);font-size:14px;font-weight:650;line-height:1.2;box-shadow:0 1px 2px var(--shadow-color);transition:border-color .16s ease,box-shadow .16s ease,background-color .16s ease}
-:where(.rent-check-form,.explorer-search-card) :where(.selection-native,select){appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 18px) 22px,calc(100% - 13px) 22px;background-repeat:no-repeat;background-size:5px 5px;padding-right:40px}
-:where(.rent-check-form,.explorer-search-card) .district-combobox::after{content:"";position:absolute;top:21px;right:17px;width:7px;height:7px;pointer-events:none;border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);transform:rotate(45deg)}
-:where(.rent-check-form,.explorer-search-card) .district-combobox-input{padding-right:40px;text-overflow:ellipsis}
-:where(.rent-check-form,.explorer-search-card) :where(.selection-native,.district-combobox-input,select):hover{border-color:var(--muted-light);background-color:var(--surface-soft)}
-:where(.rent-check-form,.explorer-search-card) :where(.selection-native,.district-combobox-input,select):focus,:where(.rent-check-form,.explorer-search-card) :where(.selection-native,.district-combobox-input,select):focus-visible{border-color:var(--accent);outline:0;box-shadow:0 0 0 3px var(--focus-ring-soft)}
-:where(.rent-check-form,.explorer-search-card) .field>span{min-height:20px;align-items:center;color:var(--ink-soft);font-size:12px;font-weight:750}
+:is(.rent-check-form,.explorer-search-card) :is(.selection-native,.district-combobox-input,select){height:52px;min-height:52px;border:1px solid var(--line-strong);border-radius:var(--radius-md);background-color:var(--surface);color:var(--ink);font-size:14px;font-weight:650;line-height:1.2;box-shadow:0 1px 2px var(--shadow-color);transition:border-color .16s ease,box-shadow .16s ease,background-color .16s ease}
+:is(.rent-check-form,.explorer-search-card) :is(.selection-native,select){appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 18px) 22px,calc(100% - 13px) 22px;background-repeat:no-repeat;background-size:5px 5px;padding-right:40px}
+:is(.rent-check-form,.explorer-search-card) .district-combobox::after{content:"";position:absolute;top:21px;right:17px;width:7px;height:7px;pointer-events:none;border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);transform:rotate(45deg)}
+:is(.rent-check-form,.explorer-search-card) .district-combobox-input{padding-right:40px;text-overflow:ellipsis}
+:is(.rent-check-form,.explorer-search-card) :is(.selection-native,.district-combobox-input,select):hover{border-color:var(--muted-light);background-color:var(--surface-soft)}
+:is(.rent-check-form,.explorer-search-card) :is(.selection-native,.district-combobox-input,select):focus,:is(.rent-check-form,.explorer-search-card) :is(.selection-native,.district-combobox-input,select):focus-visible{border-color:var(--accent);outline:0;box-shadow:0 0 0 3px var(--focus-ring-soft)}
+:is(.rent-check-form,.explorer-search-card) .field>span{min-height:20px;align-items:center;color:var(--ink-soft);font-size:12px;font-weight:750}
 .rent-check-form :where(.rent-check-money,.rent-check-size){height:52px;border-color:var(--line-strong);box-shadow:0 1px 2px var(--shadow-color)}
 .rent-check-form .search-button,.explorer-search-card>.search-button{height:52px;min-height:52px;box-shadow:0 6px 16px var(--focus-ring-soft)}
 
