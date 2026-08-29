@@ -930,10 +930,12 @@ html[lang="zh-CN"] .core-ui .funnel-hero h1,html[lang="zh-CN"] .core-ui .tool-he
 .building-status-actions{position:relative;z-index:3;display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 14px;border-top:1px solid var(--line);background:var(--surface)}
 .building-status-actions [data-building-save]{grid-column:1/-1}
 @media(max-width:1439px) and (min-width:861px){.building-status-window{width:460px}}
+@media(min-width:861px){.building-status-window.has-street-view{max-height:none}}
 
 @media(max-width:860px){
   .building-status-overlay{display:grid;align-items:end;pointer-events:auto;background:var(--muted-alpha);backdrop-filter:blur(3px)}
   .building-status-window{position:relative;top:auto;right:auto;bottom:auto;width:100%;max-height:92dvh;border-right:0;border-bottom:0;border-left:0;border-radius:var(--radius-lg) var(--radius-lg) 0 0}
+  .building-status-window.has-street-view{max-height:92dvh}
   .building-status-window .building-window-street-view{display:block}
   .building-status-window .explorer-street-view-canvas{height:auto;min-height:190px;aspect-ratio:16/9}
   .building-window-stack .building-window-panel{padding:20px 16px 24px}

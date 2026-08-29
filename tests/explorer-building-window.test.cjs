@@ -142,4 +142,7 @@ test('building drawer loading skeleton reserves the final visual regions', () =>
   assert.match(css, /\.building-status-overlay\[data-state="preparing"\]\{[^}]*visibility:hidden/);
   assert.match(css, /\.building-window-loading-visual\{[^}]*aspect-ratio:16\/9/);
   assert.match(css, /@media\(prefers-reduced-motion:reduce\)\{\.building-window-loading-visual\{animation:none\}\}/);
+  assert.match(css, /@media\(min-width:861px\)\{\.building-status-window\.has-street-view\{max-height:none\}\}/);
+  const mobileDrawer = css.slice(css.lastIndexOf('@media(max-width:860px)'));
+  assert.match(mobileDrawer, /\.building-status-window\.has-street-view\{max-height:92dvh\}/);
 });
