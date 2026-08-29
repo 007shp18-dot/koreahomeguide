@@ -204,6 +204,17 @@
     return Object.freeze({ phase:'idle', model:null });
   }
 
+  function createRequestGate() {
+    let version = 0;
+    return Object.freeze({
+      begin() {
+        const requestVersion = ++version;
+        return Object.freeze({ isCurrent:() => requestVersion === version });
+      },
+      invalidate() { version += 1; }
+    });
+  }
+
   function sortBuildings(items, mode = 'evidence') {
     const source = Array.isArray(items) ? [...items] : [];
     const finite = value => value != null && String(value).trim() !== '' && Number.isFinite(Number(value)) ? Number(value) : null;
@@ -250,6 +261,7 @@
     initialViewForWidth,
     workspaceState,
     neighborhoodSelectionTransition,
+    createRequestGate,
     sortBuildings,
     buildLabeledTableRow,
     stableSuffix

@@ -25,6 +25,27 @@ test('a neighborhood marker previews context and only the explicit action activa
   assert.deepEqual(ignored, { phase:'idle', model:null });
 });
 
+test('a newer neighborhood preview invalidates a delayed activation response', async () => {
+  const gate = Explorer.createRequestGate();
+  const effects = [];
+  let resolveFirst;
+  const firstResponse = new Promise(resolve => { resolveFirst = resolve; });
+  const activate = async (name, response) => {
+    const request = gate.begin();
+    await response;
+    if (request.isCurrent()) effects.push(name);
+  };
+
+  const first = activate('A', firstResponse);
+  gate.invalidate();
+  resolveFirst();
+  await first;
+  assert.deepEqual(effects, []);
+
+  await activate('B', Promise.resolve());
+  assert.deepEqual(effects, ['B']);
+});
+
 test('both locales expose a switching discovery rail', () => {
   for (const file of ['explore/index.html','zh/explore/index.html']) {
     const html = fs.readFileSync(file, 'utf8');
@@ -59,5 +80,6 @@ test('both Explorer locales load the cache-busted Street View assets', () => {
     assert.match(html, /href="\/styles\.css\?v=21"/);
     assert.match(html, /src="\/explore\/building-window\.js\?v=19"/);
     assert.match(html, /src="\/explore\/panorama\.js\?v=20"/);
+    assert.match(html, /src="\/explore\/explorer-utils\.js\?v=21"/);
   }
 });

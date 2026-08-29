@@ -43,7 +43,8 @@ test('Explorer runtimes publish raw dong models after rendering', () => {
     assert.match(source, /function highlightMapCard\(dong\)/);
     assert.match(source, /function setExplorerView\(view = 'map'\)/);
     assert.match(source, /explorerViewButtons\.forEach/);
-    assert.match(source, /mapSelectionClose\.addEventListener\('click', clearMapSelection\)/);
+    assert.match(source, /mapSelectionClose\.addEventListener\('click', \(\) => \{/);
+    assert.match(source, /cancelDongLoad\(\{ restoreArea:true \}\)/);
     assert.match(source, /KHGExplorer\.buildDongSeoUrl/);
     assert.match(source, /KHGExplorer\.buildBuildingDetailUrl/);
     assert.match(source, /khg:explorer-buildings/);
@@ -99,6 +100,21 @@ test('building map layer verifies precise geocodes, caps candidates, and support
   assert.match(source, /khg:explorer-buildings/);
   assert.match(source, /khg:map-select-building/);
   assert.match(source, /khg:map-back-neighborhoods/);
+});
+
+test('All-Seoul building layers keep the selected neighborhood district context', () => {
+  const controller = require('../explore/map-controller.js');
+  const context = controller.mapLayerContext(
+    { lawdCd:'all', propertyType:'apartment', locale:'en' },
+    { lawdCd:'11680', dong:'역삼동' },
+    'building'
+  );
+  const [model] = controller.buildBuildingMarkerModels({
+    ...context,
+    buildings:[{ buildingKey:'역삼동::테스트', buildingName:'테스트', dong:'역삼동', lat:37.5, lng:127, contractCount:3 }]
+  });
+  assert.equal(context.lawdCd, '11680');
+  assert.equal(model.districtCode, '11680');
 });
 
 test('opening a building from the mobile list starts the lazy map before locating street view', () => {

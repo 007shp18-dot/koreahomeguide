@@ -131,6 +131,12 @@
     });
   }
 
+  function mapLayerContext(latest = {}, buildingDetail = null, markerScope = 'neighborhood') {
+    return markerScope === 'building' && buildingDetail
+      ? Object.freeze({ ...latest, ...buildingDetail })
+      : Object.freeze({ ...latest });
+  }
+
   async function locateBuildingCandidates(buildings, locate, {
     candidateLimit = 60,
     targetCount = 36,
@@ -257,5 +263,5 @@
     return Object.freeze({ ...(state || {}), selectedDong:String(dong || '') });
   }
 
-  return Object.freeze({ buildMapsSdkUrl, buildMarkerModels, buildBuildingMarkerModels, locateBuildingCandidates, buildingGeocodeQueries, buildMapAnalyticsEvent, markerVisual, advancedPinVisual, applyAdvancedMarkerBadge, advancedMarkersAvailable, selectDong });
+  return Object.freeze({ buildMapsSdkUrl, buildMarkerModels, buildBuildingMarkerModels, mapLayerContext, locateBuildingCandidates, buildingGeocodeQueries, buildMapAnalyticsEvent, markerVisual, advancedPinVisual, applyAdvancedMarkerBadge, advancedMarkersAvailable, selectDong });
 });

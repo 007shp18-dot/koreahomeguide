@@ -180,11 +180,12 @@
   function renderMarkers({ fitViewport = true } = {}) {
     if (!map || !window.KHGMapController) return;
     clearMarkers();
+    const layerContext = KHGMapController.mapLayerContext(latest, latestBuildingDetail, markerScope);
     const models = markerScope === 'building'
-      ? KHGMapController.buildBuildingMarkerModels({ ...latest, buildings:latestBuildings })
+      ? KHGMapController.buildBuildingMarkerModels({ ...layerContext, buildings:latestBuildings })
       : KHGMapController.buildMarkerModels(latest);
     latestModels = models;
-    const districtCenter = KHGMapLocations.centerFor(latest.lawdCd, '');
+    const districtCenter = KHGMapLocations.centerFor(layerContext.lawdCd, '');
     if (!models.length) {
       if (fitViewport && districtCenter) { map.setCenter(districtCenter); map.setZoom(12); }
       status.textContent = markerScope === 'building' ? copy.noBuildings : copy.empty;
@@ -273,8 +274,9 @@
   }
 
   function buildingGeocodeQueries(item) {
+    const layerContext = KHGMapController.mapLayerContext(latest, latestBuildingDetail, markerScope);
     const district = KHGMapLocations && KHGMapLocations.districtKorean
-      ? KHGMapLocations.districtKorean(latest.lawdCd)
+      ? KHGMapLocations.districtKorean(layerContext.lawdCd)
       : '';
     return KHGMapController.buildingGeocodeQueries(item, district);
   }
@@ -308,7 +310,8 @@
         const type = result && result.geometry && result.geometry.location_type;
         const location = result && result.geometry && result.geometry.location;
         const point = location ? { lat:location.lat(), lng:location.lng() } : null;
-        const center = KHGMapLocations.centerFor(latest.lawdCd, item.dong);
+        const layerContext = KHGMapController.mapLayerContext(latest, latestBuildingDetail, markerScope);
+        const center = KHGMapLocations.centerFor(layerContext.lawdCd, item.dong);
         const precise = ['ROOFTOP','GEOMETRIC_CENTER'].includes(String(type || ''));
         const verified = point && center && precise && !result.partial_match && distanceKm(center, point) <= 4;
         const value = verified ? point : null;
