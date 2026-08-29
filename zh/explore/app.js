@@ -42,7 +42,6 @@ let currentData = null;
 let currentDong = '';
 let currentBuildingKey = '';
 let currentMapSelection = null;
-let neighborhoodSelectionState = KHGExplorer.neighborhoodSelectionTransition(null);
 const dongLoadGate = KHGExplorer.createRequestGate();
 let dongLoadPending = false;
 let currentVisibleDongs = null;
@@ -162,23 +161,16 @@ function highlightMapCard(dong) {
   });
 }
 
-function cancelDongLoad({ restoreArea = false } = {}) {
+function cancelDongLoad() {
   const hadPending = dongLoadPending;
   dongLoadGate.invalidate();
   dongLoadPending = false;
   if (hadPending) exploreButton.disabled = false;
-  if (restoreArea && hadPending && currentAreaData) {
-    currentDong = '';
-    renderSummary(currentAreaData, '');
-    publishMapDongs(currentAreaData.dongs || []);
-    syncWorkspaceState();
-  }
 }
 
 function clearMapSelection() {
   cancelDongLoad();
   currentMapSelection = null;
-  neighborhoodSelectionState = KHGExplorer.neighborhoodSelectionTransition(null);
   if (mapSelection) mapSelection.hidden = true;
   highlightMapCard('');
   window.dispatchEvent(new CustomEvent('khg:map-clear-selection'));
@@ -192,6 +184,8 @@ function returnToNeighborhoods() {
   if (currentAreaData) {
     renderSummary(currentAreaData, '');
     publishMapDongs(currentAreaData.dongs || []);
+  } else {
+    void loadArea();
   }
   syncWorkspaceState();
   history.replaceState(null, '', `/zh/explore/?${currentParams(false).toString()}`);
@@ -281,12 +275,12 @@ function renderDongs(dongs, { publish = true } = {}) {
     const linkLang = KHGExplorer.supportsZhIndexing(districtCode) ? 'zh' : 'en';
     const seoHref = KHGExplorer.buildDongSeoUrl({ lawdCd:districtCode, type:typeSelect.value, dong:item.dong, lang:linkLang }) ||
       KHGExplorer.buildExplorerDongUrl({ lawdCd:districtCode, type:typeSelect.value, dong:item.dong, lang:'zh' });
-    return `<a class="neighborhood-card" data-dong="${escapeHtml(item.dong)}" href="${escapeHtml(seoHref)}">
+    return `<div class="neighborhood-result"><button class="neighborhood-card" type="button" data-dong="${escapeHtml(item.dong)}" data-district-code="${escapeHtml(districtCode)}">
       <span class="neighborhood-card-main"><strong>${dongDisplayHtml(item.dong)}</strong><small>${isAllSeoul ? `${escapeHtml(districtName)} · ` : ''}${Number(item.contractCount || 0).toLocaleString('zh-CN')} 笔近期成交</small></span>
       <span class="neighborhood-card-metric"><small>参考月租</small><strong>${rent}</strong></span>
       <span class="neighborhood-card-metric"><small>参考押金</small><strong>${deposit}</strong></span>
-      <span class="neighborhood-card-cta">查看街区 →</span>
-    </a>`;
+      <span class="neighborhood-card-cta">查看建筑 →</span>
+    </button><a class="neighborhood-guide-link" href="${escapeHtml(seoHref)}">查看街区指南 ↗</a></div>`;
   }).join('');
 }
 
@@ -385,7 +379,7 @@ function setLoading(message = '正在加载官方租赁成交数据…') {
   exploreButton.disabled = true;
 }
 
-async function loadDong(dong, { showBuildingsOnMap = false, lawdCd = areaSelect.value } = {}) {
+async function loadDong(dong, { showBuildingsOnMap = false, lawdCd = areaSelect.value, historyMode = 'replace' } = {}) {
   currentDong = String(dong || '').trim();
   if (!currentDong) return;
   setLoading(`正在加载 ${dongDisplayName(currentDong)} 的官方租赁成交数据…`);
@@ -401,7 +395,7 @@ async function loadDong(dong, { showBuildingsOnMap = false, lawdCd = areaSelect.
     if (!response.ok) throw new Error(data.error || 'Neighborhood data failed');
     renderSummary(data, data.dong || currentDong);
     if (showBuildingsOnMap) publishMapBuildings(data.dong || currentDong, data.buildings || [], data.districtCode || lawdCd);
-    history.replaceState(null, '', `/zh/explore/?${currentParams(false).toString()}`);
+    history[historyMode === 'push' ? 'pushState' : 'replaceState'](null, '', `/zh/explore/?${currentParams(true).toString()}`);
   } catch (_) {
     if (!request.isCurrent()) return;
     status.textContent = '该街区的官方成交数据暂时无法加载，请稍后再试。';
@@ -413,6 +407,33 @@ async function loadDong(dong, { showBuildingsOnMap = false, lawdCd = areaSelect.
       exploreButton.disabled = false;
     }
   }
+}
+
+function activateNeighborhood(model, { historyMode = 'push' } = {}) {
+  const transition = KHGExplorer.neighborhoodSelectionTransition(null, { type:'select', model });
+  if (transition.phase !== 'activate') return;
+  const selected = transition.model;
+  const dong = String(selected.dong || '');
+  if (!dong) return;
+  cancelDongLoad();
+  if (areaSelect.value === 'all' && /^\d{5}$/.test(String(selected.districtCode || ''))) {
+    areaSelect.value = String(selected.districtCode);
+    currentAreaData = null;
+    currentVisibleDongs = null;
+    updateRentCheckHandoff({ lawdCd:selected.districtCode, propertyType:typeSelect.value });
+  }
+  currentMapSelection = null;
+  if (mapSelection) mapSelection.hidden = true;
+  highlightMapCard(dong);
+  window.dispatchEvent(new CustomEvent('khg:map-clear-selection'));
+  const snapshot = areaSelect.value !== 'all' && KHGExplorer.areaSnapshotForDong(currentAreaData, dong);
+  if (snapshot) {
+    renderSummary(snapshot, dong);
+    publishMapBuildings(dong, snapshot.buildings || [], selected.districtCode);
+    history[historyMode === 'push' ? 'pushState' : 'replaceState'](null, '', `/zh/explore/?${currentParams(true).toString()}`);
+    return;
+  }
+  void loadDong(dong, { showBuildingsOnMap:true, lawdCd:selected.districtCode, historyMode });
 }
 
 async function loadArea({ requestedDong = '' } = {}) {
@@ -507,7 +528,6 @@ if (sheetToggle) sheetToggle.addEventListener('click', () => {
 });
 explorerViewButtons.forEach(button => button.addEventListener('click', () => setExplorerView(button.dataset.explorerView)));
 if (mapSelectionClose) mapSelectionClose.addEventListener('click', () => {
-  cancelDongLoad({ restoreArea:true });
   clearMapSelection();
 });
 if (explorerRailBack) explorerRailBack.addEventListener('click', returnToNeighborhoods);
@@ -526,30 +546,7 @@ window.addEventListener('khg:map-select-dong', event => {
   const dong = String(event.detail && event.detail.dong || '');
   const model = event.detail && event.detail.model;
   if (!dong || !model) return;
-  cancelDongLoad({ restoreArea:true });
-  neighborhoodSelectionState = KHGExplorer.neighborhoodSelectionTransition(neighborhoodSelectionState, { type:'select', model });
-  if (neighborhoodSelectionState.phase !== 'preview') return;
-  highlightMapCard(model.dong);
-  renderMapSelection(model);
-});
-if (mapSelectionDetail) mapSelectionDetail.addEventListener('click', event => {
-  if (!currentMapSelection || currentMapSelection.kind !== 'neighborhood') return;
-  const transition = KHGExplorer.neighborhoodSelectionTransition(neighborhoodSelectionState, { type:'activate' });
-  if (transition.phase !== 'activate') return;
-  event.preventDefault();
-  const model = transition.model;
-  const dong = String(model.dong || '');
-  clearMapSelection();
-  const snapshot = areaSelect.value !== 'all' && KHGExplorer.areaSnapshotForDong(currentAreaData, dong);
-  if (snapshot) {
-    renderSummary(snapshot, dong);
-    publishMapBuildings(dong, snapshot.buildings || [], model.districtCode);
-    history.replaceState(null, '', `/zh/explore/?${currentParams(false).toString()}`);
-  } else if (currentDong === dong && currentData && Array.isArray(currentData.buildings)) {
-    publishMapBuildings(dong, currentData.buildings, model.districtCode);
-  } else {
-    void loadDong(dong, { showBuildingsOnMap:true, lawdCd:model.districtCode });
-  }
+  activateNeighborhood(model);
 });
 window.addEventListener('khg:map-select-building', event => {
   if (mapSelection) mapSelection.hidden = true;
@@ -586,6 +583,22 @@ function openBuildingFromRow(row) {
 if (buildingList) {
   buildingList.addEventListener('click', event => {
     openBuildingFromRow(event.target.closest('.building-row[data-building-key]'));
+  });
+}
+if (dongList) {
+  dongList.addEventListener('click', event => {
+    const card = event.target.closest('.neighborhood-card[data-dong]');
+    if (!card) return;
+    const dong = String(card.dataset.dong || '');
+    const districtCode = String(card.dataset.districtCode || areaSelect.value);
+    const item = (currentAreaData && currentAreaData.dongs || []).find(candidate =>
+      String(candidate.dong || '') === dong && String(candidate.districtCode || areaSelect.value) === districtCode
+    );
+    activateNeighborhood({
+      ...(item || {}), kind:'neighborhood', dong, districtCode,
+      districtName:KHGLocations.districtLabel(districtCode, 'zh-CN') || item && item.districtName,
+      propertyType:typeSelect.value
+    });
   });
 }
 

@@ -195,11 +195,8 @@
     if (action.type === 'select') {
       const model = action.model;
       if (model && model.kind === 'neighborhood' && normalizeSegment(model.dong)) {
-        return Object.freeze({ phase:'preview', model });
+        return Object.freeze({ phase:'activate', model });
       }
-    }
-    if (action.type === 'activate' && state && state.phase === 'preview' && state.model) {
-      return Object.freeze({ phase:'activate', model:state.model });
     }
     return Object.freeze({ phase:'idle', model:null });
   }

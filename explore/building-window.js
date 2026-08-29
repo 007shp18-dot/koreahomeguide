@@ -212,6 +212,7 @@
       current = selection; currentDetail = null; pendingLegalCode = ''; trigger = source || doc.activeElement; const currentRequest = ++requestId;
       overlay.dataset.state = 'preparing';
       windowObject.dispatchEvent(new CustomEvent('khg:building-window-reset', { detail:{ selection } }));
+      windowObject.dispatchEvent(new CustomEvent('khg:building-window-prepare-street-view', { detail:{ selection } }));
       overlay.querySelector('#buildingStatusTitle').textContent = selection.label || selection.buildingName || selection.buildingKey;
       overlay.querySelector('#buildingStatusMeta').textContent = [selection.dong, selection.districtName, selection.propertyType].filter(Boolean).join(' · ');
       overlay.querySelector('#buildingStatusAddress').textContent = selection.roadAddress || selection.jibun || '';

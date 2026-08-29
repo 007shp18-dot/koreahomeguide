@@ -18,7 +18,8 @@ test('Explorer defaults safely to the map when a viewport width is unavailable',
 
 test('mobile workspace keeps map and results in document flow without sheet height traps', () => {
   const css = fs.readFileSync('styles.css', 'utf8');
-  const mobile = css.slice(css.lastIndexOf('@media(max-width:760px)'));
+  const start = css.indexOf('@media(max-width:760px)', css.indexOf('/* v22 P0 document-flow Explorer'));
+  const mobile = css.slice(start, css.indexOf('/* v23 mobile Rent Check completion */'));
   assert.match(mobile, /grid-template-areas:"map" "main"/);
   assert.match(mobile, /explorer-discovery-rail\{[^}]*max-height:none[^}]*overflow:visible/);
   assert.match(mobile, /explorer-sheet-toggle\{display:none\}/);
