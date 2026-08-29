@@ -113,3 +113,33 @@ test('building drawer keeps Street View before every evidence section', () => {
   assert.doesNotMatch(html, /building-window-tabs/);
   assert.match(source, /khg:building-window-state/);
 });
+
+test('building drawer prepares a stable loading frame before reveal', () => {
+  const source = fs.readFileSync('explore/building-window.js', 'utf8');
+  const start = source.indexOf('async function open(selection, source)');
+  const end = source.indexOf("overlay.addEventListener('click'", start);
+  const openBody = source.slice(start, end);
+  const preparing = openBody.indexOf("overlay.dataset.state = 'preparing'");
+  const reset = openBody.indexOf("'khg:building-window-reset'");
+  const loading = openBody.indexOf('building-window-loading');
+  const reveal = openBody.indexOf('overlay.hidden = false');
+  const publishOpen = openBody.indexOf("'khg:building-window-state'");
+
+  assert.ok(preparing >= 0, 'opening state is explicit');
+  assert.ok(reset > preparing, 'Street View reset follows the new opening token');
+  assert.ok(loading > reset, 'the final-size skeleton is prepared after stale media is reset');
+  assert.ok(reveal > loading, 'the drawer is not revealed until its loading frame exists');
+  assert.ok(publishOpen > reveal, 'workspace state changes only after the stable drawer is visible');
+  assert.match(openBody, /overlay\.dataset\.state = 'ready'/);
+  assert.match(openBody, /overlay\.dataset\.state = 'error'/);
+});
+
+test('building drawer loading skeleton reserves the final visual regions', () => {
+  const source = fs.readFileSync('explore/building-window.js', 'utf8');
+  assert.match(source, /building-window-loading-visual/);
+  assert.match(source, /building-window-loading-lines/);
+  const css = fs.readFileSync('styles.css', 'utf8');
+  assert.match(css, /\.building-status-overlay\[data-state="preparing"\]\{[^}]*visibility:hidden/);
+  assert.match(css, /\.building-window-loading-visual\{[^}]*aspect-ratio:16\/9/);
+  assert.match(css, /@media\(prefers-reduced-motion:reduce\)\{\.building-window-loading-visual\{animation:none\}\}/);
+});

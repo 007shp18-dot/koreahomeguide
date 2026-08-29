@@ -66,6 +66,22 @@ test('both Explorer locales expose one map-first workspace and comparable contro
   }
 });
 
+test('both Explorer locales merge map title actions and legend into one command bar', () => {
+  for (const file of ['explore/index.html', 'zh/explore/index.html']) {
+    const html = fs.readFileSync(file, 'utf8');
+    const commandStart = html.indexOf('class="explorer-map-commandbar"');
+    const toolbar = html.indexOf('class="explorer-map-toolbar"');
+    const legend = html.indexOf('class="explorer-map-legend"');
+    const surface = html.indexOf('class="explorer-map-surface"');
+    assert.ok(commandStart >= 0, file);
+    assert.ok(commandStart < toolbar && toolbar < legend && legend < surface, file);
+  }
+  const css = fs.readFileSync('styles.css', 'utf8');
+  const finalPass = css.slice(css.indexOf('/* v18 unified Explorer command bar */'));
+  assert.match(finalPass, /\.map-first-workspace \.explorer-map-commandbar\{[^}]*position:absolute/);
+  assert.match(finalPass, /\.map-first-workspace \.explorer-map-legend\{[^}]*position:static/);
+});
+
 test('Explorer CSS gives the map most desktop space and a mobile result sheet', () => {
   const css = fs.readFileSync('styles.css', 'utf8');
   assert.match(css, /\.explorer-page\{max-width:1440px/);

@@ -253,3 +253,14 @@ html[lang="zh-CN"] .funnel-updated-guides .funnel-guide:after{content:"阅读指
 .home-rent-workspace .rent-size-presets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;min-width:0;width:100%}
 .home-rent-workspace .rent-size-presets button{min-width:0;width:100%;white-space:nowrap}
 .home-rent-workspace .rent-size-unit-toggle{justify-self:end;margin-left:0}
+
+/* v18 rent decision controls */
+@media(min-width:900px){
+  .home-rent-workspace .rent-check-form{grid-template-columns:repeat(6,minmax(0,1fr));grid-template-areas:"area area type type size size" "deposit deposit rent rent submit submit";gap:16px 12px;align-items:start}
+  .home-rent-workspace .rent-check-area-field{grid-area:area}
+  .home-rent-workspace .rent-check-property-field{grid-area:type}
+  .home-rent-workspace .rent-check-size-field{grid-area:size}
+  .home-rent-workspace .rent-check-form>.field:nth-child(3){grid-area:deposit}
+  .home-rent-workspace .rent-check-form>.field:nth-child(4){grid-area:rent}
+  .home-rent-workspace .rent-check-button{grid-area:submit;align-self:start;margin-top:27px}
+}

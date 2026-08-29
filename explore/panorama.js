@@ -162,6 +162,13 @@
       if (panel) panel.classList.remove('has-street-view');
     }
 
+    function prepare() {
+      reset();
+      section.hidden = false;
+      section.dataset.state = 'loading';
+      status.textContent = copy.loading;
+    }
+
     function getConfig() {
       if (!configPromise) {
         configPromise = windowObject.fetch('/api/maps-config', { headers:{ Accept:'application/json' } })
@@ -172,7 +179,7 @@
     }
 
     async function show(model) {
-      reset();
+      prepare();
       if (!model || model.kind !== 'building' || !point(model)) return;
       const currentRequest = requestId;
       let outcomeTracked = false;
@@ -184,9 +191,6 @@
           propertyType:model.propertyType, resultState, errorCategory
         });
       };
-      section.hidden = false;
-      section.dataset.state = 'loading';
-      status.textContent = copy.loading;
       try {
         const config = await getConfig();
         if (currentRequest !== requestId) return;
@@ -233,11 +237,12 @@
 
     windowObject.addEventListener('khg:map-select-building', event => { void show(event.detail && event.detail.model); });
     windowObject.addEventListener('khg:building-window-location', event => { void show(event.detail && event.detail.model); });
+    windowObject.addEventListener('khg:building-window-reset', prepare);
     windowObject.addEventListener('khg:building-window-close', reset);
     windowObject.addEventListener('khg:map-select-dong', reset);
     windowObject.addEventListener('khg:map-back-neighborhoods', reset);
     windowObject.addEventListener('khg:map-clear-selection', reset);
-    return Object.freeze({ show, reset });
+    return Object.freeze({ show, reset, prepare });
   }
 
   return Object.freeze({ PANORAMA_MODULE_URL, distanceMeters, evaluateResult, buildCoreSdkUrl, legalCodeFromResponse, reverseLegalCode, loadSdk, statusCopy, install });

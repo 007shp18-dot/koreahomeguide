@@ -139,7 +139,7 @@
     overlay.id = 'buildingStatusOverlay';
     overlay.className = 'building-status-overlay';
     overlay.hidden = true;
-    overlay.innerHTML = `<section class="building-status-window" role="complementary" aria-modal="false" aria-labelledby="buildingStatusTitle"><header class="building-status-head"><div class="building-status-identity"><span id="buildingStatusMeta" class="eyebrow"></span><h2 id="buildingStatusTitle"></h2><p id="buildingStatusAddress"></p><div id="buildingStatusProfile"></div></div><button type="button" class="building-status-close" aria-label="${escapeHtml(copy.close)}">×</button></header><section id="explorerStreetView" class="explorer-street-view building-window-street-view" aria-labelledby="explorerStreetViewHeading" hidden><div class="explorer-street-view-head"><strong id="explorerStreetViewHeading">${isZh(locale) ? '该建筑附近街景' : 'Street view near this building'}</strong><span id="explorerStreetViewMeta"></span></div><div id="explorerStreetViewCanvas" class="explorer-street-view-canvas" hidden></div><p id="explorerStreetViewStatus" aria-live="polite"></p><small>${isZh(locale) ? '附近街景，并非出租房源照片。' : 'Nearby street view, not a listing photo.'}</small></section><div id="buildingStatusBody" class="building-status-body"></div><footer class="building-status-actions"><button type="button" data-building-save>${escapeHtml(copy.save)}</button><a data-building-rent-check href="#">${escapeHtml(copy.check)} →</a><a data-building-full href="#">${escapeHtml(copy.full)} →</a></footer></section>`;
+    overlay.innerHTML = `<section class="building-status-window" role="complementary" aria-modal="false" aria-labelledby="buildingStatusTitle"><header class="building-status-head"><div class="building-status-identity"><span id="buildingStatusMeta" class="eyebrow"></span><h2 id="buildingStatusTitle"></h2><p id="buildingStatusAddress"></p><div id="buildingStatusProfile"></div></div><button type="button" class="building-status-close" aria-label="${escapeHtml(copy.close)}">×</button></header><section id="explorerStreetView" class="explorer-street-view building-window-street-view" aria-labelledby="explorerStreetViewHeading" hidden><div class="explorer-street-view-head"><strong id="explorerStreetViewHeading">${isZh(locale) ? '该建筑附近街景' : 'Street view near this building'}</strong><span id="explorerStreetViewMeta"></span></div><div class="building-window-loading-visual" aria-hidden="true"></div><div id="explorerStreetViewCanvas" class="explorer-street-view-canvas" hidden></div><p id="explorerStreetViewStatus" aria-live="polite"></p><small>${isZh(locale) ? '附近街景，并非出租房源照片。' : 'Nearby street view, not a listing photo.'}</small></section><div id="buildingStatusBody" class="building-status-body"></div><footer class="building-status-actions"><button type="button" data-building-save>${escapeHtml(copy.save)}</button><a data-building-rent-check href="#">${escapeHtml(copy.check)} →</a><a data-building-full href="#">${escapeHtml(copy.full)} →</a></footer></section>`;
     doc.body.appendChild(overlay);
     const dialog = overlay.querySelector('.building-status-window');
     const body = overlay.querySelector('#buildingStatusBody');
@@ -164,7 +164,7 @@
     function close() {
       if (overlay.hidden) return;
       const selection = current;
-      requestId += 1; overlay.hidden = true; doc.body.classList.remove('has-building-status-window');
+      requestId += 1; overlay.hidden = true; overlay.dataset.state = 'closed'; doc.body.classList.remove('has-building-status-window');
       windowObject.dispatchEvent(new CustomEvent('khg:building-window-state', { detail:{ open:false, selection } }));
       windowObject.dispatchEvent(new CustomEvent('khg:building-window-close'));
       if (trigger && typeof trigger.focus === 'function') trigger.focus();
@@ -210,25 +210,31 @@
     async function open(selection, source) {
       if (!selection || !selection.buildingKey) return;
       current = selection; currentDetail = null; pendingLegalCode = ''; trigger = source || doc.activeElement; const currentRequest = ++requestId;
-      overlay.hidden = false; syncLayout();
-      windowObject.dispatchEvent(new CustomEvent('khg:building-window-state', { detail:{ open:true, selection } }));
+      overlay.dataset.state = 'preparing';
+      windowObject.dispatchEvent(new CustomEvent('khg:building-window-reset', { detail:{ selection } }));
       overlay.querySelector('#buildingStatusTitle').textContent = selection.label || selection.buildingName || selection.buildingKey;
       overlay.querySelector('#buildingStatusMeta').textContent = [selection.dong, selection.districtName, selection.propertyType].filter(Boolean).join(' · ');
       overlay.querySelector('#buildingStatusAddress').textContent = selection.roadAddress || selection.jibun || '';
       overlay.querySelector('#buildingStatusProfile').innerHTML = '';
-      body.innerHTML = `<div class="building-window-loading"><span></span><p>${escapeHtml(copy.loading)}</p></div>`;
+      body.innerHTML = `<div class="building-window-loading"><div class="building-window-loading-lines" aria-hidden="true"><i></i><i></i><i></i><i></i></div><p>${escapeHtml(copy.loading)}</p></div>`;
       overlay.querySelector('[data-building-full]').href = buildDetailUrl(selection, locale);
       overlay.querySelector('[data-building-rent-check]').href = buildRentCheckUrl(selection, null, locale);
-      updateSave(); overlay.querySelector('.building-status-close').focus();
+      updateSave();
+      overlay.dataset.state = 'loading';
+      overlay.hidden = false; syncLayout();
+      windowObject.dispatchEvent(new CustomEvent('khg:building-window-state', { detail:{ open:true, selection } }));
+      overlay.querySelector('.building-status-close').focus();
       windowObject.dispatchEvent(new CustomEvent('khg:building-window-location-request', { detail:{ selection } }));
       try {
         const detail = await fetchDetail(selection);
         if (currentRequest !== requestId) return;
         currentDetail = detail;
         renderDetail(detail, selection);
+        overlay.dataset.state = 'ready';
         void enrichCurrentProfile();
       } catch (_) {
         if (currentRequest !== requestId) return;
+        overlay.dataset.state = 'error';
         body.innerHTML = `<div class="building-window-error"><p>${escapeHtml(copy.error)}</p><button type="button" data-building-retry>${escapeHtml(copy.retry)}</button></div>`;
       }
     }

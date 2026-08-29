@@ -905,11 +905,15 @@ html[lang="zh-CN"] .core-ui .funnel-hero h1,html[lang="zh-CN"] .core-ui .tool-he
 
 /* v17 building detail: non-blocking desktop drawer, Street View first. */
 .building-status-overlay{position:fixed;inset:0;z-index:1000;display:block;padding:0;pointer-events:none;background:transparent;backdrop-filter:none}
+.building-status-overlay[data-state="preparing"]{visibility:hidden}
 .building-status-window{position:absolute;top:72px;right:16px;bottom:16px;display:grid;grid-template-rows:auto auto minmax(0,1fr) auto;width:520px;max-height:none;overflow:hidden;pointer-events:auto;border:1px solid var(--line-strong);border-radius:var(--radius-lg);background:var(--surface);box-shadow:0 24px 70px var(--shadow-color-strong)}
 .building-status-head{position:relative;z-index:3;display:block;padding:20px 56px 16px 20px;border-bottom:1px solid var(--line);background:var(--surface)}
 .building-status-head h2{font-size:clamp(25px,2.8vw,36px)}
 .building-status-head #buildingStatusProfile{display:none}
 .building-status-window .building-window-street-view{display:block;margin:0;padding:14px 18px 16px;border-bottom:1px solid var(--line);background:var(--surface-soft)}
+.building-window-loading-visual{display:none;width:100%;aspect-ratio:16/9;border-radius:var(--radius-md);background:linear-gradient(100deg,var(--line) 24%,var(--surface) 38%,var(--line) 52%);background-size:220% 100%;animation:building-window-shimmer 1.25s linear infinite}
+.explorer-street-view[data-state="loading"] .building-window-loading-visual{display:block}
+.explorer-street-view[data-state="ready"] .building-window-loading-visual,.explorer-street-view[data-state="empty"] .building-window-loading-visual,.explorer-street-view[data-state="error"] .building-window-loading-visual{display:none}
 .building-status-window .explorer-street-view-canvas{height:auto;aspect-ratio:16/9;border-radius:var(--radius-md)}
 .building-status-body{min-height:0;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain}
 .building-window-grid.building-window-stack{display:block;min-height:0}
@@ -917,6 +921,12 @@ html[lang="zh-CN"] .core-ui .funnel-hero h1,html[lang="zh-CN"] .core-ui .tool-he
 .building-window-stack .building-window-panel+.building-window-panel{border-top:1px solid var(--line);border-left:0}
 .building-window-stack .building-window-panel h3{margin:10px 0 16px}
 .building-window-stack .building-window-profile{display:block}
+.building-window-loading{align-content:start;min-height:0;padding:24px 20px;text-align:left}
+.building-window-loading-lines{display:grid;width:100%;gap:12px}
+.building-window-loading-lines i{display:block;height:12px;border-radius:999px;background:var(--line)}
+.building-window-loading-lines i:nth-child(1){width:72%}.building-window-loading-lines i:nth-child(2){width:92%}.building-window-loading-lines i:nth-child(3){width:84%}.building-window-loading-lines i:nth-child(4){width:58%}
+@keyframes building-window-shimmer{to{background-position:-220% 0}}
+@media(prefers-reduced-motion:reduce){.building-window-loading-visual{animation:none}}
 .building-status-actions{position:relative;z-index:3;display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 14px;border-top:1px solid var(--line);background:var(--surface)}
 .building-status-actions [data-building-save]{grid-column:1/-1}
 @media(max-width:1439px) and (min-width:861px){.building-status-window{width:460px}}
@@ -929,3 +939,46 @@ html[lang="zh-CN"] .core-ui .funnel-hero h1,html[lang="zh-CN"] .core-ui .tool-he
   .building-window-stack .building-window-panel{padding:20px 16px 24px}
   .building-status-actions{padding-bottom:calc(12px + env(safe-area-inset-bottom))}
 }
+
+/* v18 rent decision controls */
+:where(.rent-check-form,.explorer-search-card) :where(.selection-native,.district-combobox-input,select){height:52px;min-height:52px;border:1px solid var(--line-strong);border-radius:var(--radius-md);background-color:var(--surface);color:var(--ink);font-size:14px;font-weight:650;line-height:1.2;box-shadow:0 1px 2px var(--shadow-color);transition:border-color .16s ease,box-shadow .16s ease,background-color .16s ease}
+:where(.rent-check-form,.explorer-search-card) :where(.selection-native,select){appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 18px) 22px,calc(100% - 13px) 22px;background-repeat:no-repeat;background-size:5px 5px;padding-right:40px}
+:where(.rent-check-form,.explorer-search-card) .district-combobox::after{content:"";position:absolute;top:21px;right:17px;width:7px;height:7px;pointer-events:none;border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);transform:rotate(45deg)}
+:where(.rent-check-form,.explorer-search-card) .district-combobox-input{padding-right:40px;text-overflow:ellipsis}
+:where(.rent-check-form,.explorer-search-card) :where(.selection-native,.district-combobox-input,select):hover{border-color:var(--muted-light);background-color:var(--surface-soft)}
+:where(.rent-check-form,.explorer-search-card) :where(.selection-native,.district-combobox-input,select):focus,:where(.rent-check-form,.explorer-search-card) :where(.selection-native,.district-combobox-input,select):focus-visible{border-color:var(--accent);outline:0;box-shadow:0 0 0 3px var(--focus-ring-soft)}
+:where(.rent-check-form,.explorer-search-card) .field>span{min-height:20px;align-items:center;color:var(--ink-soft);font-size:12px;font-weight:750}
+.rent-check-form :where(.rent-check-money,.rent-check-size){height:52px;border-color:var(--line-strong);box-shadow:0 1px 2px var(--shadow-color)}
+.rent-check-form .search-button,.explorer-search-card>.search-button{height:52px;min-height:52px;box-shadow:0 6px 16px var(--focus-ring-soft)}
+
+/* v18 compact Rent Check decision and evidence disclosure */
+.rent-check-result{margin-top:24px;padding-top:0;border-top:0}
+.rent-check-result>.rent-check-summary{padding:28px;border:1px solid var(--line-strong);border-top:3px solid var(--result-tone);border-radius:var(--radius-lg);background:var(--surface);box-shadow:0 14px 38px var(--shadow-color)}
+.rent-check-result>.rent-check-summary>.rent-check-basis{padding-top:18px}
+.rent-check-evidence-disclosure{margin-top:18px;border-top:1px solid var(--ink);border-bottom:1px solid var(--line);background:transparent}
+.rent-check-evidence-disclosure>summary{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 20px;min-height:56px;align-items:center;padding:10px 4px;color:var(--ink);cursor:pointer;list-style:none}
+.rent-check-evidence-disclosure>summary::-webkit-details-marker{display:none}
+.rent-check-evidence-disclosure>summary strong{font-size:15px;line-height:1.3}
+.rent-check-evidence-disclosure>summary span{grid-column:1;color:var(--muted);font-size:11px;line-height:1.4}
+.rent-check-evidence-disclosure>summary::after{content:"+";grid-column:2;grid-row:1/3;align-self:center;color:var(--accent);font-size:24px;font-weight:500;line-height:1}
+.rent-check-evidence-disclosure[open]>summary::after{content:"−"}
+.rent-check-evidence-disclosure>summary:focus-visible{outline:3px solid var(--focus-ring);outline-offset:3px;border-radius:var(--radius-sm)}
+.rent-check-evidence-disclosure-body{padding:2px 4px 24px}
+.rent-check-evidence-disclosure-body>.rent-check-intelligence{margin:0;padding:22px 0;border-top:1px solid var(--line)}
+.rent-check-evidence-disclosure-body>.rent-check-confidence-details{margin:0;border-top:1px solid var(--line)}
+.rent-check-evidence-disclosure-body>.rent-check-evidence-head{margin-top:0;padding-top:22px;border-top:1px solid var(--line)}
+.rent-check-evidence-disclosure-body>.table-wrap{margin-top:10px;border-top:1px solid var(--line)}
+.rent-check-evidence-disclosure-body>.rent-check-disclaimer{margin-top:12px}
+.rent-check-result>.rent-check-next-step{margin-top:20px;padding:22px 24px;border:1px solid var(--accent-line);border-radius:var(--radius-lg);background:var(--accent-soft)}
+.rent-check-result :where(.saved-quote-module,.experience-capture,.result-share-panel){border-color:var(--line);background:var(--surface);box-shadow:none}
+@media (max-width:760px){.rent-check-result>.rent-check-summary{padding:20px 16px}.rent-check-evidence-disclosure>summary{grid-template-columns:minmax(0,1fr) auto}.rent-check-result>.rent-check-next-step{padding:18px 16px}}
+
+/* v18 unified Explorer command bar */
+.map-first-workspace .explorer-map-commandbar{position:absolute;top:14px;right:16px;left:392px;z-index:4;display:grid;overflow:hidden;border:1px solid var(--line);border-radius:var(--radius-md);background:var(--glass);box-shadow:0 6px 22px var(--shadow-color);backdrop-filter:blur(14px)}
+.map-first-workspace .explorer-map-commandbar .explorer-map-toolbar{position:static;width:auto;padding:10px 12px 8px;border:0;border-radius:0;background:transparent;box-shadow:none}
+.map-first-workspace .explorer-map-heading .eyebrow{font-size:9px}
+.map-first-workspace .explorer-map-heading h2{margin-top:2px;font-size:16px;line-height:1.25}
+.map-first-workspace .explorer-map-legend{position:static;display:flex;gap:7px 14px;max-width:none;padding:8px 12px;border:0;border-top:1px solid var(--line);border-radius:0;background:var(--surface-soft);box-shadow:none;font-size:10px}
+.map-first-workspace .explorer-map-legend i{width:8px;height:8px}
+@media(max-width:1080px){.map-first-workspace .explorer-map-commandbar{left:352px}}
+@media (max-width:760px){.map-first-workspace .explorer-map-commandbar{top:10px;right:10px;left:10px}.map-first-workspace .explorer-map-commandbar .explorer-map-toolbar{padding:9px 10px 7px}.map-first-workspace .explorer-map-heading h2{font-size:14px}.map-first-workspace .explorer-map-legend{gap:6px 10px;padding:7px 10px;overflow-x:auto;white-space:nowrap}}

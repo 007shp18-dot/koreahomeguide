@@ -297,6 +297,49 @@
     };
   }
 
+  function evidenceDisclosureCopy() {
+    return {
+      label:'See signed contracts',
+      hint:'Market range, sample quality and official contract evidence'
+    };
+  }
+
+  function mountEvidenceDisclosure(result, documentObject) {
+    if (!result || !documentObject || typeof documentObject.createElement !== 'function') return { root:null, body:null };
+    let root = result.querySelector('#rentCheckEvidenceDisclosure');
+    if (!root) {
+      const copy = evidenceDisclosureCopy();
+      root = documentObject.createElement('details');
+      root.id = 'rentCheckEvidenceDisclosure';
+      root.className = 'rent-check-evidence-disclosure';
+      const summary = documentObject.createElement('summary');
+      const label = documentObject.createElement('strong');
+      const hint = documentObject.createElement('span');
+      const body = documentObject.createElement('div');
+      label.textContent = copy.label;
+      hint.textContent = copy.hint;
+      body.className = 'rent-check-evidence-disclosure-body';
+      summary.appendChild(label);
+      summary.appendChild(hint);
+      root.appendChild(summary);
+      root.appendChild(body);
+      const nextStep = result.querySelector('#rentCheckNextStep');
+      const savedMount = result.querySelector('[data-saved-quote-mount]');
+      result.insertBefore(root, nextStep || savedMount || null);
+    }
+    const body = root.querySelector('.rent-check-evidence-disclosure-body');
+    const directChildren = Array.from(result.children || []);
+    const targets = [
+      result.querySelector('#rentCheckConfidenceDetails'),
+      directChildren.find(node => node.classList && node.classList.contains('rent-check-evidence-head')),
+      directChildren.find(node => node.classList && node.classList.contains('table-wrap')),
+      result.querySelector('#rentCheckComparablesToggle'),
+      directChildren.find(node => node.classList && node.classList.contains('rent-check-disclaimer'))
+    ].filter(Boolean);
+    targets.forEach(node => body.appendChild(node));
+    return { root, body };
+  }
+
   function percentileSentence(result) {
     if (!hasDistribution(result)) return '';
     const subject = result.comparisonMode === 'jeonse-deposit'
@@ -330,6 +373,8 @@
     marketPositionSummary,
     evidenceFacts,
     comparableDisclosure,
+    evidenceDisclosureCopy,
+    mountEvidenceDisclosure,
     percentileSentence
   };
 });

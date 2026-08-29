@@ -53,17 +53,19 @@
     <div id="explorerResultsShell" class="explorer-map-layout map-first-workspace" hidden>
       <aside class="explorer-map-column" aria-label="街区地图">
         <section class="explorer-map-card">
-          <div class="explorer-map-toolbar">
-            <div class="explorer-map-heading"><span class="eyebrow">街区地图</span><h2>点击标记查看租金参考。</h2></div>
-            <div class="explorer-map-toolbar-actions">
-              <button id="explorerMapBack" class="explorer-map-back" type="button" hidden>← 返回街区</button>
-              <div class="explorer-view-toggle" aria-label="探索视图">
-                <button type="button" data-explorer-view="list" aria-pressed="false">结果</button>
-                <button type="button" class="is-active" data-explorer-view="map" aria-pressed="true">地图</button>
+          <div class="explorer-map-commandbar">
+            <div class="explorer-map-toolbar">
+              <div class="explorer-map-heading"><span class="eyebrow">街区地图</span><h2>点击标记查看租金参考。</h2></div>
+              <div class="explorer-map-toolbar-actions">
+                <button id="explorerMapBack" class="explorer-map-back" type="button" hidden>← 返回街区</button>
+                <div class="explorer-view-toggle" aria-label="探索视图">
+                  <button type="button" data-explorer-view="list" aria-pressed="false">结果</button>
+                  <button type="button" class="is-active" data-explorer-view="map" aria-pressed="true">地图</button>
+                </div>
               </div>
             </div>
+            <div class="explorer-map-legend" aria-label="地图标记说明"><span><i class="is-strong"></i>较强依据</span><span><i class="is-limited"></i>有限依据</span><span><i class="is-outside"></i>超出预算</span></div>
           </div>
-          <div class="explorer-map-legend" aria-label="地图标记说明"><span><i class="is-strong"></i>较强依据</span><span><i class="is-limited"></i>有限依据</span><span><i class="is-outside"></i>超出预算</span></div>
           <div class="explorer-map-surface">
             <div id="explorerMap" class="explorer-map-canvas" role="region" aria-label="所选首尔街区地图"></div>
             <button id="explorerSearchArea" class="explorer-search-area" type="button" hidden>搜索此区域</button>
