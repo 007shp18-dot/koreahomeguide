@@ -74,7 +74,13 @@ function renderDepositBands(items) {
     buildingDepositBands.innerHTML = '<div class="explorer-empty">Not enough monthly-rent contracts to show deposit bands.</div>';
     return;
   }
-  buildingDepositBands.innerHTML = items.map(band => `<div class="size-band-card"><span>${depositRangeLabel(band)}</span><strong>${moneyHtml(band.medianMonthlyRentWon)} / month</strong><small>${band.count} contract${band.count === 1 ? '' : 's'} · median deposit ${moneyHtml(band.medianDepositWon)}</small></div>`).join('');
+  buildingDepositBands.innerHTML = items.flatMap(band => {
+    const evidence = KHGExplorer.marketEvidencePresentation(band.count, 'en');
+    if (!evidence.render) return [];
+    const rent = evidence.sufficient ? `${moneyHtml(band.medianMonthlyRentWon)} / month` : evidence.limitedLabel;
+    const deposit = evidence.sufficient ? ` · median deposit ${moneyHtml(band.medianDepositWon)}` : '';
+    return [`<div class="size-band-card market-evidence-row"><span>${depositRangeLabel(band)}</span><strong class="market-evidence-rent">${rent}</strong><small class="market-evidence-count">${evidence.sampleLabel}${deposit}</small></div>`];
+  }).join('');
 }
 
 function renderAreaGroups(items) {
@@ -82,7 +88,13 @@ function renderAreaGroups(items) {
     buildingAreaGroups.innerHTML = '<div class="explorer-empty">Not enough monthly-rent contracts to separate floor-area groups.</div>';
     return;
   }
-  buildingAreaGroups.innerHTML = items.map(group => `<div class="size-band-card"><span>About ${group.approxAreaSqm}㎡</span><strong>${moneyHtml(group.medianMonthlyRentWon)} / month</strong><small>${group.count} contract${group.count === 1 ? '' : 's'} · median deposit ${moneyHtml(group.medianDepositWon)}</small></div>`).join('');
+  buildingAreaGroups.innerHTML = items.flatMap(group => {
+    const evidence = KHGExplorer.marketEvidencePresentation(group.count, 'en');
+    if (!evidence.render) return [];
+    const rent = evidence.sufficient ? `${moneyHtml(group.medianMonthlyRentWon)} / month` : evidence.limitedLabel;
+    const deposit = evidence.sufficient ? ` · median deposit ${moneyHtml(group.medianDepositWon)}` : '';
+    return [`<div class="size-band-card market-evidence-row"><span>About ${group.approxAreaSqm}㎡</span><strong class="market-evidence-rent">${rent}</strong><small class="market-evidence-count">${evidence.sampleLabel}${deposit}</small></div>`];
+  }).join('');
 }
 
 function renderTrend(points) {
@@ -160,7 +172,7 @@ function renderBuilding(data) {
   renderDepositBands(data.depositBands || []);
   renderAreaGroups(data.areaGroups || []);
   const change = Number(data.quarterChangePct);
-  buildingChange.textContent = Number.isFinite(change) ? `Raw monthly-rent median change: ${change > 0 ? '+' : ''}${change.toFixed(1)}%` : 'Raw trend: Not enough data';
+  buildingChange.textContent = Number.isFinite(change) ? `Raw monthly-rent median change: ${change > 0 ? '+' : ''}${change.toFixed(1)}% · includes deposit, size, and contract mix effects` : 'Raw trend: Not enough data';
   renderTrend(data.monthlyTrend || []);
   renderContracts(data.recentTransactions || []);
   renderSales(data);

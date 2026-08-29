@@ -1,5 +1,5 @@
 const { median, completedMonthKeys, normalizeTransaction, numberFromManwon, monthlyRentAtDeposit, percentileRank } = require('../lib/rent-check-core.cjs');
-const { buildRentMarketStats, pctChange, contextualStatsFromNormalized } = require('../lib/rent-market-core.cjs');
+const { buildRentMarketStats, pctChange, contextualStatsFromNormalized, observedFieldStats } = require('../lib/rent-market-core.cjs');
 const { getBuildingNameDisplay } = require('../building-name-utils.js');
 
 function normalizeBuildingName(name) {
@@ -153,7 +153,8 @@ function summaryForBuilding(group, options = {}) {
     typicalAreaSqm:median(rows.map(row => row.areaSqm)),
     adjustedPerSqmWon:adjustedValues.length >= 3 ? median(adjustedValues) : null,
     quarterChangePct:quarterChangeForRows(rows, options),
-    ...contextualStatsFromNormalized(rows)
+    ...contextualStatsFromNormalized(rows),
+    ...observedFieldStats(rows)
   };
 }
 
@@ -178,7 +179,8 @@ function aggregateDongs(items, options = {}) {
       typicalAreaSqm:median(rows.map(row => row.areaSqm)),
       adjustedPerSqmWon:median(adjustedValuesForRows(rows)),
       quarterChangePct:quarterChangeForRows(rows, options),
-      ...contextualStatsFromNormalized(rows)
+      ...contextualStatsFromNormalized(rows),
+      ...observedFieldStats(rows)
     };
   }).sort((a, b) => {
     if (b.contractCount !== a.contractCount) return b.contractCount - a.contractCount;
@@ -209,7 +211,9 @@ function buildDongSummary(items, { dong, referenceDate = new Date(), months = 6 
       contractTerm:row.contractTerm,
       useRRRight:row.useRRRight,
       preDepositWon:row.preDepositWon,
-      preMonthlyRentWon:row.preMonthlyRentWon
+      preMonthlyRentWon:row.preMonthlyRentWon,
+      buildYear:row.buildYear,
+      floor:row.floor
     }));
   return {
     dong:selectedDong,
@@ -225,6 +229,7 @@ function buildDongSummary(items, { dong, referenceDate = new Date(), months = 6 
     adjustedPerSqmWon:median(adjustedValuesForRows(rows)),
     quarterChangePct:quarterChangeForRows(rows, { referenceDate, months }),
     ...contextualStatsFromNormalized(rows),
+    ...observedFieldStats(rows),
     recentTransactions,
     monthsUsed:months,
     dataThroughMonth:completedMonthKeys(referenceDate, months)[0]?.replace(/^(\d{4})(\d{2})$/, '$1-$2') || null

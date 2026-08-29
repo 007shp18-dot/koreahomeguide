@@ -13,7 +13,7 @@ const summary = {
   medianMonthlyRentWon:700000, medianDepositWon:20000000, medianJeonseDepositWon:180000000,
   newContractMonthlyRentCount:10, renewalMonthlyRentCount:2, contractTypeCounts:{new:10,renewal:2,unknown:6},
   depositBands:[{minDepositWon:10000000,maxDepositWon:30000000,count:10,medianDepositWon:20000000,medianMonthlyRentWon:700000}],
-  areaGroups:[{approxAreaSqm:25,count:10,medianAreaSqm:24.5,depositBands:[{minDepositWon:10000000,maxDepositWon:30000000,count:10,medianDepositWon:20000000,medianMonthlyRentWon:700000}]}],
+  areaGroups:[{approxAreaSqm:25,count:10,medianAreaSqm:24.5,medianDepositWon:20000000,medianMonthlyRentWon:700000,depositBands:[{minDepositWon:10000000,maxDepositWon:30000000,count:10,medianDepositWon:20000000,medianMonthlyRentWon:700000}]}],
   typicalAreaSqm:24.5, quarterChangePct:4.2, monthsUsed:6, dataThroughMonth:'2026-07',
   recentTransactions:[
     { building:'A <Villa>', areaSqm:23.1, depositWon:20000000, monthlyRentWon:700000, contractDate:'2026-07-31', contractType:'new' },
@@ -49,6 +49,7 @@ function datasetsFrom(html) {
 
 test('English Dong HTML has canonical, hreflang, index metadata, Dataset JSON-LD and nofollow Explorer building links', () => {
   const html = renderDongPage(base('en'));
+  assert.match(html, /<nav><a href="\/explore\/">Explore<\/a><a href="\/tools\/seoul-rent-check\/">Rent Check<\/a><a href="\/guides\/">Guides<\/a><\/nav>/);
   assert.match(html, /<meta name="robots" content="index,follow">/);
   assert.match(html, /<link rel="canonical" href="https:\/\/koreahomeguide\.com\/seoul\/mapo-gu\/yeonnam-dong\/villa\/">/);
   assert.match(html, /hreflang="zh-CN" href="https:\/\/koreahomeguide\.com\/zh\/seoul\/mapo-gu\/yeonnam-dong\/villa\/"/);
@@ -82,6 +83,38 @@ test('Chinese Dong HTML is genuinely localized and keeps KRW primary', () => {
   assert.match(html, /class="seo-fx fx-secondary">≈ ¥3,640/); // 700,000 KRW at injected test rate
   assert.match(html, /韩国国土交通部/);
   assert.doesNotMatch(html, /Median monthly rent/);
+});
+
+test('dynamic SEO cards suppress prices and medians below five observations', () => {
+  const sparseBand = {
+    minDepositWon:10_000_000,
+    maxDepositWon:30_000_000,
+    count:4,
+    medianDepositWon:88_888_888,
+    medianMonthlyRentWon:9_999_999
+  };
+  const sparseSummary = {
+    ...summary,
+    depositBands:[sparseBand],
+    areaGroups:[{ approxAreaSqm:25, count:4, medianAreaSqm:24.5, medianDepositWon:88_888_888, medianMonthlyRentWon:9_999_999, depositBands:[sparseBand] }]
+  };
+
+  const en = renderDongPage({ ...base('en'), summary:sparseSummary });
+  const zh = renderDongPage({ ...base('zh'), summary:sparseSummary });
+
+  assert.match(en, /Under 5 contracts/);
+  assert.match(zh, /少于 5 份合同/);
+  assert.doesNotMatch(en, /₩9,999,999|₩88,888,888|Median observed size/);
+  assert.doesNotMatch(zh, /₩9,999,999|₩88,888,888|实际面积中位数/);
+});
+
+test('sufficient dynamic SEO area cards lead with rent and keep count as context', () => {
+  const en = renderDongPage(base('en'));
+  const zh = renderDongPage(base('zh'));
+  assert.match(en, /Around 25\.0㎡<\/span><strong><span class="seo-money money-primary">₩700,000/);
+  assert.match(en, /10 contracts.*Median deposit/s);
+  assert.match(zh, /约 25\.0㎡<\/span><strong><span class="seo-money money-primary">₩700,000/);
+  assert.match(zh, /10 份合同.*押金中位数/s);
 });
 
 test('dynamic evidence rows carry localized mobile labels', () => {

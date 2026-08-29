@@ -16,13 +16,12 @@ test('Explorer defaults safely to the map when a viewport width is unavailable',
   assert.equal(Explorer.initialViewForWidth('unknown'), 'map');
 });
 
-test('mobile workspace exposes collapsed, list, and detail sheet heights', () => {
+test('mobile workspace keeps map and results in document flow without sheet height traps', () => {
   const css = fs.readFileSync('styles.css', 'utf8');
   const mobile = css.slice(css.lastIndexOf('@media(max-width:760px)'));
-  assert.match(mobile, /data-workspace-state='neighborhoods'[^}]*max-height:96px/);
-  assert.match(mobile, /data-workspace-state='buildings'[^}]*max-height:62dvh/);
-  assert.match(mobile, /data-workspace-state='building-detail'[^}]*max-height:92dvh/);
-  assert.match(mobile, /building-window-street-view\{[^}]*display:block/);
+  assert.match(mobile, /grid-template-areas:"map" "main"/);
+  assert.match(mobile, /explorer-discovery-rail\{[^}]*max-height:none[^}]*overflow:visible/);
+  assert.match(mobile, /explorer-sheet-toggle\{display:none\}/);
   for (const file of ['explore/app.js','zh/explore/app.js']) {
     const source = fs.readFileSync(file, 'utf8');
     assert.match(source, /khg:building-window-state/);

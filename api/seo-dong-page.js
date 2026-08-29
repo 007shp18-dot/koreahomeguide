@@ -2,7 +2,7 @@ const { normalizeServiceKey, fetchRentalMonth } = require('../lib/real-price-cor
 const { logApiError } = require('../lib/api-guard.cjs');
 const { createKoreaHousingProvider } = require('../providers/korea-provider.cjs');
 const {
-  SEOUL_DISTRICTS,
+  SEOUL_MARKET_DISTRICTS,
   districtCodeFromSlug,
   isSupportedPropertyType,
   supportsZhIndexing
@@ -102,7 +102,7 @@ function createHandler({
       const rendered = renderDongPage({
         lang,
         areaCode,
-        districtName:SEOUL_DISTRICTS[areaCode],
+        districtName:SEOUL_MARKET_DISTRICTS[areaCode],
         dong,
         propertyType,
         summary,
@@ -112,7 +112,7 @@ function createHandler({
       const enhanced = enhanceDongHtml(rendered, {
         lang,
         areaCode,
-        districtName:SEOUL_DISTRICTS[areaCode],
+        districtName:SEOUL_MARKET_DISTRICTS[areaCode],
         dong,
         propertyType,
         summary

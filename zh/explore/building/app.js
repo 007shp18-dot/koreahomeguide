@@ -73,11 +73,23 @@ function depositRangeLabel(band) {
 }
 function renderDepositBands(items) {
   if (!items || !items.length) { buildingDepositBands.innerHTML = '<div class="explorer-empty">月租合同样本不足，无法按押金区间展示。</div>'; return; }
-  buildingDepositBands.innerHTML = items.map(band => `<div class="size-band-card"><span>${depositRangeLabel(band)}</span><strong>${moneyHtml(band.medianMonthlyRentWon)} / 月</strong><small>${band.count} 笔合同 · 押金中位数 ${moneyHtml(band.medianDepositWon)}</small></div>`).join('');
+  buildingDepositBands.innerHTML = items.flatMap(band => {
+    const evidence = KHGExplorer.marketEvidencePresentation(band.count, 'zh-CN');
+    if (!evidence.render) return [];
+    const rent = evidence.sufficient ? `${moneyHtml(band.medianMonthlyRentWon)} / 月` : evidence.limitedLabel;
+    const deposit = evidence.sufficient ? ` · 押金中位数 ${moneyHtml(band.medianDepositWon)}` : '';
+    return [`<div class="size-band-card market-evidence-row"><span>${depositRangeLabel(band)}</span><strong class="market-evidence-rent">${rent}</strong><small class="market-evidence-count">${evidence.sampleLabel}${deposit}</small></div>`];
+  }).join('');
 }
 function renderAreaGroups(items) {
   if (!items || !items.length) { buildingAreaGroups.innerHTML = '<div class="explorer-empty">样本不足，无法按面积分组。</div>'; return; }
-  buildingAreaGroups.innerHTML = items.map(group => `<div class="size-band-card"><span>约 ${group.approxAreaSqm}㎡</span><strong>${moneyHtml(group.medianMonthlyRentWon)} / 月</strong><small>${group.count} 笔合同 · 押金中位数 ${moneyHtml(group.medianDepositWon)}</small></div>`).join('');
+  buildingAreaGroups.innerHTML = items.flatMap(group => {
+    const evidence = KHGExplorer.marketEvidencePresentation(group.count, 'zh-CN');
+    if (!evidence.render) return [];
+    const rent = evidence.sufficient ? `${moneyHtml(group.medianMonthlyRentWon)} / 月` : evidence.limitedLabel;
+    const deposit = evidence.sufficient ? ` · 押金中位数 ${moneyHtml(group.medianDepositWon)}` : '';
+    return [`<div class="size-band-card market-evidence-row"><span>约 ${group.approxAreaSqm}㎡</span><strong class="market-evidence-rent">${rent}</strong><small class="market-evidence-count">${evidence.sampleLabel}${deposit}</small></div>`];
+  }).join('');
 }
 function renderTrend(points) {
   const usable = (points || []).filter(point => Number.isFinite(Number(point.medianMonthlyRentWon)) && Number(point.medianMonthlyRentWon) > 0);
@@ -138,7 +150,7 @@ function renderBuilding(data) {
   renderDepositBands(data.depositBands || []);
   renderAreaGroups(data.areaGroups || []);
   const change = Number(data.quarterChangePct);
-  buildingChange.textContent = Number.isFinite(change) ? `原始月租中位数变化：${change > 0 ? '+' : ''}${change.toFixed(1)}%` : '原始趋势：数据不足';
+  buildingChange.textContent = Number.isFinite(change) ? `原始月租中位数变化：${change > 0 ? '+' : ''}${change.toFixed(1)}% · 包含押金、面积和合同构成变化` : '原始趋势：数据不足';
   renderTrend(data.monthlyTrend || []);
   renderContracts(data.recentTransactions || []);
   renderSales(data);

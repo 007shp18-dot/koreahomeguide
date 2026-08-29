@@ -12,17 +12,19 @@ function responseRecorder() {
   };
 }
 
-test('root sitemap is an index with static pages plus 10 districts x 3 proven property-type child sitemaps', () => {
+test('root sitemap is an index with static pages plus all 25 Seoul districts x 3 property types', () => {
   const root = fs.readFileSync('sitemap.xml','utf8');
   const staticMap = fs.readFileSync('sitemap-static.xml','utf8');
   assert.match(root, /<sitemapindex/);
   assert.match(root, /https:\/\/koreahomeguide\.com\/sitemap-static\.xml/);
   assert.match(root, /https:\/\/koreahomeguide\.com\/sitemaps\/seoul\/mapo-gu\/villa\//);
+  assert.match(root, /https:\/\/koreahomeguide\.com\/sitemaps\/seoul\/gangbuk-gu\/apartment\//);
+  assert.match(root, /https:\/\/koreahomeguide\.com\/sitemaps\/seoul\/geumcheon-gu\/officetel\//);
   assert.doesNotMatch(root, /\/sitemaps\/seoul\/gwanak-gu\/detached\//);
   for (const type of ['apartment','officetel','villa']) {
     assert.match(root, new RegExp(`https://koreahomeguide\\.com/sitemaps/seoul/opportunities/${type}/`));
   }
-  assert.equal((root.match(/<sitemap>/g) || []).length, 34);
+  assert.equal((root.match(/<sitemap>/g) || []).length, 79);
   assert.equal((staticMap.match(/<url>/g) || []).length, 78);
   assert.equal(root.includes('/api/'), false);
 });
