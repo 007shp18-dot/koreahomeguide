@@ -64,17 +64,15 @@ test('evidence facts disclose the deposit conversion used for monthly-rent compa
   );
 });
 
-test('homepage desktop grid gives rough-size controls a full second row', () => {
+test('homepage desktop grid keeps all six primary actions in two balanced rows', () => {
   const css = fs.readFileSync('cold-start.css', 'utf8');
-  const match = css.match(/\.funnel-rent-card \.rent-check-form\{grid-template-columns:([^;}]+)/);
-  assert.ok(match, 'homepage Rent Check desktop grid is present');
-  const minimums = [...match[1].matchAll(/minmax\((\d+)px,/g)].map(item => Number(item[1]));
-  assert.equal(minimums.length, 4);
-  assert.ok(minimums[0] >= 220, 'Area keeps its bilingual option readable');
-  assert.ok(minimums[1] >= 220, 'Property type keeps its bilingual option readable');
-  assert.ok(minimums[2] >= 170, 'Deposit remains readable');
-  assert.ok(minimums[3] >= 170, 'Monthly-rent label stays on one line');
-  assert.match(css, /\.funnel-rent-card \.rent-check-size-field\{grid-column:span 3\}/);
+  assert.match(css, /@media\(min-width:900px\)[^]*\.home-rent-workspace \.rent-check-form\{grid-template-columns:repeat\(6,minmax\(0,1fr\)\)/);
+  assert.match(css, /\.home-rent-workspace \.rent-check-area-field\{grid-column:1\/3;grid-row:1\}/);
+  assert.match(css, /\.home-rent-workspace \.rent-check-property-field\{grid-column:3\/5;grid-row:1\}/);
+  assert.match(css, /\.home-rent-workspace \.rent-check-size-field\{grid-column:5\/7;grid-row:1[^}]*\}/);
+  assert.match(css, /\.home-rent-workspace \.rent-check-form>\.field:nth-child\(3\)\{grid-column:1\/3;grid-row:2\}/);
+  assert.match(css, /\.home-rent-workspace \.rent-check-form>\.field:nth-child\(4\)\{grid-column:3\/5;grid-row:2\}/);
+  assert.match(css, /\.home-rent-workspace \.rent-check-button\{grid-column:5\/7;grid-row:2[^}]*\}/);
 });
 
 test('a distribution verdict describes the displayed typical range instead of a median threshold', () => {
