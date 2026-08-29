@@ -280,4 +280,3 @@ Run the requesting-code-review and finishing-a-development-branch skills. Push t
 - [ ] **Step 6: Verify production**
 
 Repeat the critical browser and raw-HTML checks against `https://koreahomeguide.com`, then scan production error logs.
-

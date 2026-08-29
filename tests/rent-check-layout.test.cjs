@@ -92,3 +92,16 @@ test('mobile Explorer panel cannot overflow horizontally or keep a dragged deskt
   assert.match(mobile, /\.explorer-map-selection-head>div\{[^}]*min-width:0/);
   assert.match(mobile, /\.explorer-map-selection-head h3\{[^}]*overflow-wrap:anywhere/);
 });
+
+test('final Rent Check geometry uses two equal three-column rows and one compact assist row', () => {
+  const finalLayer = css.slice(css.indexOf('/* v29 aligned Rent Check controls */'));
+  assert.match(finalLayer, /\.rent-check-form\{[^}]*grid-template-columns:repeat\(6,minmax\(0,1fr\)\)[^}]*grid-template-areas:"area area type type size size" "deposit deposit rent rent submit submit" "assist assist assist assist assist assist"/);
+  assert.match(finalLayer, /\.rent-check-form>\.rent-check-area-field\{grid-area:area\}/);
+  assert.match(finalLayer, /\.rent-check-form>\.rent-check-property-field\{grid-area:type\}/);
+  assert.match(finalLayer, /\.rent-check-form>\.rent-check-size-field\{grid-area:size/);
+  assert.match(finalLayer, /\.rent-check-form>\.rent-check-deposit-field\{grid-area:deposit\}/);
+  assert.match(finalLayer, /\.rent-check-form>\.rent-check-monthly-field\{grid-area:rent\}/);
+  assert.match(finalLayer, /\.rent-check-form>\.rent-check-button\{[^}]*grid-area:submit[^}]*height:52px[^}]*margin-top:25px/);
+  assert.match(finalLayer, /\.rent-check-form>\.rent-check-assist-row\{[^}]*grid-area:assist[^}]*min-height:0/);
+  assert.match(finalLayer, /@media\(max-width:760px\)\{[\s\S]*?\.rent-check-form\{[^}]*grid-template-columns:1fr[^}]*grid-template-areas:"area" "type" "size" "assist" "deposit" "rent" "submit"/);
+});

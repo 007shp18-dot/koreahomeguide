@@ -30,6 +30,12 @@ test('map viewport filters located points without inventing coordinates', () => 
   assert.equal(viewport.hasCompleteViewportCoverage({ markerScope:'building', locatedCount:36, totalCount:60 }), false);
   assert.equal(viewport.hasCompleteViewportCoverage({ markerScope:'building', locatedCount:60, totalCount:60 }), true);
   assert.equal(viewport.hasCompleteViewportCoverage({ markerScope:'neighborhood', locatedCount:15, totalCount:15 }), true);
+  assert.equal(viewport.normalizedBounds(null), null);
+  assert.equal(viewport.normalizedBounds(undefined), null);
+  assert.deepEqual(
+    viewport.selectModelsForViewport(models, null, 10).map(item => item.id),
+    ['inside', 'north', 'missing']
+  );
 });
 
 test('workspace padding keeps selected markers clear of desktop panels', () => {
@@ -85,21 +91,19 @@ test('both Explorer locales merge map title actions and legend into one command 
 test('both Explorer locales version the drawer, Panorama and workspace CSS assets', () => {
   for (const file of ['explore/index.html', 'zh/explore/index.html']) {
     const html = fs.readFileSync(file, 'utf8');
-    assert.match(html, /styles\.css\?v=25/, file);
-    assert.match(html, /building-window\.js\?v=25/, file);
-    assert.match(html, /panorama\.js\?v=25/, file);
+    assert.match(html, /styles\.css\?v=30/, file);
+    assert.match(html, /building-window\.js\?v=30/, file);
+    assert.match(html, /panorama\.js\?v=30/, file);
   }
 });
 
-test('Explorer CSS gives the map most desktop space and mobile document-flow results', () => {
+test('Explorer CSS gives the map a bounded desktop workspace and mobile bottom sheet', () => {
   const css = fs.readFileSync('styles.css', 'utf8');
   assert.match(css, /\.explorer-page\{max-width:1440px/);
-  assert.match(css, /\.map-first-workspace\{[^}]*grid-template-columns:minmax\(0,1\.8fr\) minmax\(360px,1fr\)/);
-  assert.match(css, /@media\(max-width:760px\)/);
-  const start = css.indexOf('@media(max-width:760px)', css.indexOf('/* v22 P0 document-flow Explorer'));
-  const finalMobile = css.slice(start, css.indexOf('/* v23 mobile Rent Check completion */'));
-  assert.match(finalMobile, /grid-template-areas:"map" "main"/);
-  assert.match(finalMobile, /\.explorer-map-main\{position:relative/);
+  const finalLayer = css.slice(css.indexOf('/* v27 choropleth Explorer workspace */'));
+  assert.match(finalLayer, /\.map-first-workspace\{[^}]*height:calc\(100dvh - 148px\)[^}]*overflow:hidden/);
+  assert.match(finalLayer, /@media\(max-width:760px\)/);
+  assert.match(finalLayer, /max-height:58dvh/);
   assert.match(css, /\.explorer-search-area/);
 });
 

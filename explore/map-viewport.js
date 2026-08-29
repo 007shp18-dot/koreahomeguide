@@ -8,7 +8,8 @@
   const STORAGE_KEY = 'khg:explorer-map-points:v1';
   const MAX_POINTS = 180;
 
-  function normalizedBounds(bounds = {}) {
+  function normalizedBounds(bounds) {
+    if (!bounds || typeof bounds !== 'object') return null;
     const value = {
       north:Number(bounds.north), south:Number(bounds.south),
       east:Number(bounds.east), west:Number(bounds.west)

@@ -73,26 +73,60 @@ test('both locales expose a switching discovery rail', () => {
   }
   for (const file of ['explore/app.js','zh/explore/app.js']) {
     const source = fs.readFileSync(file, 'utf8');
-    assert.match(source, /resultsShell\.dataset\.workspaceState\s*=\s*KHGExplorer\.workspaceState/);
+    assert.match(source, /resultsShell\.dataset\.workspaceState\s*=\s*explorerLevel/);
   }
 });
 
-test('desktop Explorer keeps the map sticky while results stay in document flow', () => {
+test('desktop Explorer keeps map and discovery results inside one bounded workspace', () => {
   const css = fs.readFileSync('styles.css', 'utf8');
-  const spatial = css.slice(css.indexOf('/* v22 P0 document-flow Explorer'));
-  assert.match(spatial, /\.map-first-workspace\{[^}]*display:grid[^}]*grid-template-columns:minmax\(0,1\.8fr\) minmax\(340px,1fr\)[^}]*height:auto[^}]*overflow:visible/);
-  assert.match(spatial, /\.map-first-workspace \.explorer-map-column\{[^}]*position:sticky[^}]*top:76px[^}]*align-self:start/);
-  assert.match(spatial, /\.map-first-workspace \.explorer-discovery-rail\{[^}]*position:relative[^}]*width:auto[^}]*max-height:none[^}]*overflow:visible/);
-  assert.match(spatial, /\.map-first-workspace \.explorer-discovery-rail \.explorer-results\{[^}]*height:auto[^}]*overflow:visible/);
-  assert.doesNotMatch(spatial, /overflow-y:(?:auto|scroll)/);
-  assert.doesNotMatch(spatial, /overscroll-behavior/);
+  const spatial = css.slice(css.indexOf('/* v27 choropleth Explorer workspace */'));
+  assert.match(spatial, /\.map-first-workspace\{[^}]*height:calc\(100dvh - 148px\)[^}]*transform:none[^}]*overflow:hidden/);
+  assert.match(spatial, /\.map-first-workspace \.explorer-map-column\{[^}]*grid-area:auto[^}]*height:100%/);
+  assert.match(spatial, /\.map-first-workspace \.explorer-discovery-rail\{[^}]*position:absolute[^}]*top:16px[^}]*bottom:16px[^}]*width:370px[^}]*overflow:hidden/);
+  assert.match(spatial, /\.map-first-workspace \.explorer-discovery-rail \.explorer-results\{[^}]*height:100%[^}]*overflow-y:auto/);
+  assert.doesNotMatch(spatial, /height:auto;[^}]*overflow:visible/);
 });
 
-test('mobile Explorer stacks map then results without a clipped bottom sheet', () => {
+test('mobile Explorer uses a bounded map bottom sheet instead of a long document list', () => {
   const css = fs.readFileSync('styles.css', 'utf8');
-  const spatial = css.slice(css.indexOf('/* v22 P0 document-flow Explorer'));
-  assert.match(spatial, /@media\(max-width:760px\)\{[\s\S]*?\.map-first-workspace\{[^}]*grid-template-columns:1fr[^}]*height:auto[^}]*overflow:visible/);
-  assert.match(spatial, /@media\(max-width:760px\)\{[\s\S]*?\.map-first-workspace \.explorer-discovery-rail\{[^}]*position:relative[^}]*max-height:none/);
+  const spatial = css.slice(css.indexOf('/* v27 choropleth Explorer workspace */'));
+  assert.match(spatial, /@media\(max-width:760px\)\{[\s\S]*?\.map-first-workspace\{[^}]*height:calc\(100dvh - 64px\)[^}]*overflow:hidden/);
+  assert.match(spatial, /@media\(max-width:760px\)\{[\s\S]*?\.map-first-workspace \.explorer-discovery-rail\{[^}]*position:absolute[^}]*bottom:0[^}]*max-height:58dvh/);
+});
+
+test('both Explorer locales expose district and price controls for the map', () => {
+  for (const file of ['explore/index.html','zh/explore/index.html']) {
+    const html = fs.readFileSync(file, 'utf8');
+    assert.match(html, /data-map-housing="officetel"[^>]*aria-pressed="true"/);
+    assert.match(html, /data-map-metric="adjusted-per-sqm"[^>]*aria-pressed="true"/);
+    assert.match(html, /data-map-legend-title/);
+    assert.match(html, /data-map-legend-method/);
+    assert.match(html, /id="districtList"/);
+    assert.match(html, /data-workspace-state="districts"/);
+    assert.match(html, /src="\/explore\/district-map\.js\?v=30"/);
+  }
+});
+
+test('Explorer states the official contract-date basis and revision caveat', () => {
+  const enHtml = fs.readFileSync('explore/index.html', 'utf8');
+  const zhHtml = fs.readFileSync('zh/explore/index.html', 'utf8');
+  const enApp = fs.readFileSync('explore/app.js', 'utf8');
+  const zhApp = fs.readFileSync('zh/explore/app.js', 'utf8');
+  assert.match(enHtml, /by contract date[^<]*Reports can be revised or cancelled/);
+  assert.match(zhHtml, /按合同日期[^<]*申报记录之后可能更正或解除/);
+  assert.match(enApp, /Data through[^`]*Contract date/);
+  assert.match(zhApp, /数据截至[^`]*合同日期/);
+});
+
+test('both locale runtimes use explicit district neighborhood and building states', () => {
+  for (const file of ['explore/app.js','zh/explore/app.js']) {
+    const source = fs.readFileSync(file, 'utf8');
+    assert.match(source, /let explorerLevel = 'districts'/);
+    assert.match(source, /function setExplorerLevel\(level/);
+    assert.match(source, /\['districts','neighborhoods','buildings'\]/);
+    assert.match(source, /khg:explorer-districts/);
+    assert.match(source, /khg:map-select-district/);
+  }
 });
 
 test('Street View loading and ready states share one stable media frame', () => {
@@ -104,13 +138,14 @@ test('Street View loading and ready states share one stable media frame', () => 
   assert.doesNotMatch(finalLayer, /explorer-street-view-canvas\{[^}]*height:(?:120|126|170|190)px/);
 });
 
-test('building detail is inline with a stable full-width Street View frame', () => {
+test('building detail is a centered bounded modal with internal scrolling', () => {
   const css = fs.readFileSync('styles.css', 'utf8');
-  const finalLayer = css.slice(css.indexOf('/* v25 final Explorer directory'));
-  assert.match(finalLayer, /\.explorer-building-detail-mount \.building-status-overlay\{[^}]*position:relative/);
-  assert.match(finalLayer, /\.explorer-building-detail-mount \.building-status-window\{[^}]*width:100%[^}]*max-height:none[^}]*overflow:visible/);
-  assert.match(finalLayer, /\/\* v26 final inline-detail stability overrides \*\/[\s\S]*\.explorer-building-detail-mount \.building-window-media-frame\{[^}]*width:min\(100%,996px\)[^}]*aspect-ratio:16\/9[^}]*contain:layout paint/);
-  assert.doesNotMatch(finalLayer, /overflow-y:(?:auto|scroll)/);
+  const finalLayer = css.slice(css.indexOf('/* v28 centered building modal */'));
+  assert.match(finalLayer, /\.building-status-overlay\{[^}]*position:fixed[^}]*display:grid[^}]*place-items:center/);
+  assert.match(finalLayer, /\.building-status-window\{[^}]*width:min\(1080px,calc\(100vw - 32px\)\)[^}]*max-height:88dvh/);
+  assert.match(finalLayer, /\.building-status-body\{[^}]*overflow-y:auto/);
+  assert.match(finalLayer, /\.building-window-media-frame\{[^}]*aspect-ratio:16\/9/);
+  assert.match(finalLayer, /\.building-status-close\{[^}]*min-width:44px[^}]*min-height:44px/);
 });
 
 test('Street View initializes only after the inline detail requests a verified location', () => {
@@ -122,9 +157,9 @@ test('Street View initializes only after the inline detail requests a verified l
 test('both Explorer locales load the cache-busted Street View assets', () => {
   for (const file of ['explore/index.html','zh/explore/index.html']) {
     const html = fs.readFileSync(file, 'utf8');
-    assert.match(html, /href="\/styles\.css\?v=25"/);
-    assert.match(html, /src="\/explore\/building-window\.js\?v=25"/);
-    assert.match(html, /src="\/explore\/panorama\.js\?v=25"/);
-    assert.match(html, /src="\/explore\/explorer-utils\.js\?v=25"/);
+    assert.match(html, /href="\/styles\.css\?v=30"/);
+    assert.match(html, /src="\/explore\/building-window\.js\?v=30"/);
+    assert.match(html, /src="\/explore\/panorama\.js\?v=30"/);
+    assert.match(html, /src="\/explore\/explorer-utils\.js\?v=30"/);
   }
 });

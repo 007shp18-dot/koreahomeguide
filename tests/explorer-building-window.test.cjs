@@ -24,7 +24,12 @@ test('building status window renders three decision panels and escapes external 
   assert.match(html, /Higher than 62% of comparable recent contracts/);
   assert.match(html, /Deposit-adjusted ₩\/㎡/);
   assert.match(html, /₩35,466\/㎡/);
-  assert.match(html, /₩35,466\/㎡ \/ ₩32,000\/㎡/);
+  assert.match(html, /This building/);
+  assert.match(html, /Neighborhood median/);
+  assert.match(html, /₩32,000\/㎡/);
+  assert.match(html, /Adjusted monthly cost = monthly rent \+ deposit × 5% ÷ 12; divided by floor area\./);
+  assert.match(html, /Latest 6 completed months/);
+  assert.doesNotMatch(html, /₩35,466\/㎡ \/ ₩32,000\/㎡/);
   assert.match(html, /Limited evidence/);
   assert.doesNotMatch(html, /<img src=x/);
   assert.match(html, /2019/);
@@ -35,6 +40,9 @@ test('Chinese building status window uses native labels and no fake profile valu
   const html = renderContent({ ...detail, profile:{ status:'unavailable' } }, selection, 'zh-CN');
   assert.match(html, /近期签约/);
   assert.match(html, /市场位置/);
+  assert.match(html, /本建筑/);
+  assert.match(html, /街区中位数/);
+  assert.match(html, /校正月成本 = 月租 \+ 押金 × 5% ÷ 12，再除以建筑面积/);
   assert.match(html, /最近合同/);
   assert.match(html, /建筑登记信息暂不可用/);
   assert.doesNotMatch(html, />0 户</);
@@ -112,6 +120,21 @@ test('building drawer keeps Street View before every evidence section', () => {
   assert.ok(html.indexOf('building-window-profile') < html.indexOf('building-contract-list'));
   assert.doesNotMatch(html, /building-window-tabs/);
   assert.match(source, /khg:building-window-state/);
+});
+
+test('building detail is one accessible modal with complete close and focus lifecycle', () => {
+  const source = fs.readFileSync('explore/building-window.js', 'utf8');
+  const shell = source.match(/overlay\.innerHTML = `([\s\S]*?)`;/)?.[1] || '';
+  assert.match(shell, /role="dialog"/);
+  assert.match(shell, /aria-modal="true"/);
+  assert.match(source, /doc\.body\.appendChild\(overlay\)/);
+  assert.match(source, /let triggerEl = null/);
+  assert.match(source, /event\.target === overlay/);
+  assert.match(source, /event\.key === 'Escape'/);
+  assert.match(source, /triggerEl\.isConnected/);
+  assert.match(source, /doc\.body\.classList\.add\('has-building-status-window'\)/);
+  assert.match(source, /doc\.body\.classList\.remove\('has-building-status-window'\)/);
+  assert.doesNotMatch(source, /scrollIntoView/);
 });
 
 test('building drawer prepares a stable loading frame before reveal', () => {

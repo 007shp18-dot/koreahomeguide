@@ -33,13 +33,17 @@ test('selected-neighborhood flow presents buildings before nearby neighborhoods 
   }
 });
 
-test('homepage size controls use a contained two-row layout', () => {
-  const css = fs.readFileSync('cold-start.css', 'utf8');
-  const repair = css.slice(css.indexOf('/* v17 homepage size-field containment */'));
-  assert.match(repair, /\.home-rent-workspace \.rent-check-size-field\{[^}]*min-width:0[^}]*grid-template-columns:1fr/);
-  assert.match(repair, /\.home-rent-workspace \.rent-check-size-field>span,\.home-rent-workspace \.rent-check-size,\.home-rent-workspace \.rent-size-hint,\.home-rent-workspace \.rent-size-controls\{grid-column:1\}/);
-  assert.match(repair, /\.home-rent-workspace \.rent-size-controls\{[^}]*grid-row:4/);
-  assert.match(repair, /\.home-rent-workspace \.rent-check-size\{[^}]*width:100%[^}]*min-width:0/);
-  assert.match(repair, /\.home-rent-workspace \.rent-size-presets\{[^}]*grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
-  assert.doesNotMatch(repair, /flex:1 1 210px/);
+test('all Rent Check forms keep size assistance outside primary fields', () => {
+  for (const file of ['index.html','tools/seoul-rent-check/index.html','zh/index.html','zh/tools/seoul-rent-check/index.html']) {
+    const html = fs.readFileSync(file, 'utf8');
+    const form = html.match(/<form id="rentCheckForm"[\s\S]*?<\/form>/)?.[0] || '';
+    assert.equal((form.match(/class="rent-check-assist-row"/g) || []).length, 1, file);
+    const sizeField = form.match(/<label class="field rent-check-size-field">[\s\S]*?<\/label>/)?.[0] || '';
+    assert.ok(sizeField, `${file} has size field`);
+    assert.doesNotMatch(sizeField, /rent-size-presets|data-size-unit-toggle/, file);
+    const assist = form.match(/<div class="rent-check-assist-row">[\s\S]*?<\/div><\/div>/)?.[0] || '';
+    assert.match(assist, /data-property-type-guide/, file);
+    assert.match(assist, /rent-size-presets/, file);
+    assert.match(assist, /data-size-unit-toggle/, file);
+  }
 });

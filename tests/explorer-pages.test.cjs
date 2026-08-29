@@ -54,7 +54,7 @@ test('explorer runtime calls area API, supports FX presentation, and links to bu
   assert.match(js, /quarterChangePct/);
 });
 
-test('Rent Explorer waits for Compare unless a direct neighborhood URL requests results', () => {
+test('Rent Explorer opens on all-Seoul districts and honors direct neighborhood URLs', () => {
   const css = fs.readFileSync('styles.css', 'utf8');
   assert.match(css, /#explorerResultsShell\[hidden\]\{display:none!important\}/);
 
@@ -64,9 +64,9 @@ test('Rent Explorer waits for Compare unless a direct neighborhood URL requests 
     assert.match(html, /id="explorerResultsShell"[^>]*hidden/);
     assert.match(js, /function showExploreResults\(\{ requestedDong = '' \} = \{\}\)[^]*?explorerResults\.hidden=false;[^]*?return loadArea\(\{ requestedDong \}\);/);
     assert.match(js, /exploreButton\.addEventListener\('click', \(\) => \{ void showExploreResults\(\); \}\)/);
-    assert.match(js, /const requestedDong = applyQuerySelection\(\);[^]*?await loadFx\(\);[^]*?if \(requestedDong\) await showExploreResults\(\{ requestedDong \}\);/);
+    assert.match(js, /const requestedDong = applyQuerySelection\(\);[^]*?await loadFx\(\);[^]*?await showExploreResults\(\{ requestedDong \}\);/);
     assert.doesNotMatch(js, /(?:areaSelect|typeSelect|maxRentSelect|maxDepositSelect)[^\n]*addEventListener\('change',\(\)=>loadArea\(\)\)/);
-    assert.doesNotMatch(js, /\(async \(\) => \{[^]*?await loadArea/);
+    assert.match(js, /else areaSelect\.value = 'all'/);
   }
 });
 
