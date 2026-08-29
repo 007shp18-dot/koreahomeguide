@@ -32,3 +32,12 @@ test('selected-neighborhood flow presents buildings before nearby neighborhoods 
     assert.ok(buildingIndex < neighborhoodIndex, `${file} shows buildings before nearby neighborhoods`);
   }
 });
+
+test('homepage size controls use a contained two-row layout', () => {
+  const css = fs.readFileSync('cold-start.css', 'utf8');
+  const repair = css.slice(css.indexOf('/* v17 homepage size-field containment */'));
+  assert.match(repair, /\.home-rent-workspace \.rent-check-size-field\{[^}]*min-width:0[^}]*grid-template-columns:1fr/);
+  assert.match(repair, /\.home-rent-workspace \.rent-check-size\{[^}]*width:100%[^}]*min-width:0/);
+  assert.match(repair, /\.home-rent-workspace \.rent-size-presets\{[^}]*grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
+  assert.doesNotMatch(repair, /flex:1 1 210px/);
+});

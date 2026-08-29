@@ -101,12 +101,15 @@ test('mobile building status keeps verified NAVER street view visible', () => {
   assert.match(mobileRules, /\.building-status-window \.explorer-street-view-canvas\{height:120px\}/);
 });
 
-test('street view is panel content and mobile tabs resync when the viewport changes', () => {
+test('building drawer keeps Street View before every evidence section', () => {
   const source = fs.readFileSync('explore/building-window.js', 'utf8');
-  assert.match(source, /querySelector\('#buildingWindowPanel0'\)\.appendChild\(streetView\)/);
-  assert.match(source, /matchMedia\('\(max-width: 860px\)'\)/);
-  assert.match(source, /addEventListener\('change', syncLayout\)/);
-  const headerTemplate = source.match(/overlay\.innerHTML = `([\s\S]*?)`;/)?.[1] || '';
-  const header = headerTemplate.match(/<header class="building-status-head">([\s\S]*?)<\/header>/)?.[1] || '';
-  assert.doesNotMatch(header, /explorerStreetView/);
+  const shell = source.match(/overlay\.innerHTML = `([\s\S]*?)`;/)?.[1] || '';
+  assert.ok(shell.indexOf('id="explorerStreetView"') > shell.indexOf('building-status-head'));
+  assert.ok(shell.indexOf('id="explorerStreetView"') < shell.indexOf('id="buildingStatusBody"'));
+  assert.doesNotMatch(source, /appendChild\(streetView\)/);
+  const html = renderContent(detail, selection, 'en');
+  assert.ok(html.indexOf('building-snapshot') < html.indexOf('building-market-stack'));
+  assert.ok(html.indexOf('building-window-profile') < html.indexOf('building-contract-list'));
+  assert.doesNotMatch(html, /building-window-tabs/);
+  assert.match(source, /khg:building-window-state/);
 });

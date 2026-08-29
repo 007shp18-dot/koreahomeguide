@@ -43,6 +43,17 @@
     return Number(locatedCount || 0) >= Number(totalCount || 0);
   }
 
+  function workspacePadding({ viewportWidth = 0, mobile = false, drawerOpen = false } = {}) {
+    if (mobile) return { top:56, right:32, bottom:drawerOpen ? 300 : 220, left:32 };
+    const wide = Number(viewportWidth) >= 1440;
+    return {
+      top:72,
+      right:drawerOpen ? (wide ? 552 : 492) : 32,
+      bottom:72,
+      left:wide ? 392 : 352
+    };
+  }
+
   function readPoint(storage, key) {
     if (!storage || !key) return null;
     try {
@@ -67,5 +78,5 @@
     } catch (_) { return false; }
   }
 
-  return Object.freeze({ normalizedBounds, pointWithinBounds, filterModelsByBounds, selectModelsForViewport, hasCompleteViewportCoverage, readPoint, writePoint });
+  return Object.freeze({ normalizedBounds, pointWithinBounds, filterModelsByBounds, selectModelsForViewport, hasCompleteViewportCoverage, workspacePadding, readPoint, writePoint });
 });
