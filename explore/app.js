@@ -317,7 +317,7 @@ function renderDongs(dongs, { publish = true } = {}) {
 
 function districtMetricHtml(row) {
   const value = KHGExplorerDistrictMap.metricValue(row, currentMapMetric);
-  if (value == null) return 'Not enough data';
+  if (value == null) return 'Not shown';
   return currentMapMetric === 'adjusted-per-sqm' ? formatAdjustedPerSqm(value) : moneyHtml(value);
 }
 

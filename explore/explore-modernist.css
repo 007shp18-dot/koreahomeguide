@@ -126,12 +126,12 @@ body.core-ui :focus-visible{outline:2px solid var(--kg-a5);outline-offset:2px}
 .map-first-workspace .explorer-map-commandbar .explorer-map-toolbar{padding:9px 12px;background:transparent}
 .map-first-workspace .explorer-map-commandbar .explorer-map-heading h2{font-size:13px}
 .explorer-view-toggle{gap:0;border:0;border-left:2px solid var(--kg-ink);border-radius:0;background:transparent}
-.explorer-view-toggle button{min-height:40px;border-radius:0}
+.explorer-view-toggle button{min-height:44px;border-radius:0}
 .explorer-view-toggle button[aria-pressed="true"]{background:var(--kg-ink);color:white}
 
 .explorer-map-segments{position:absolute;top:76px;right:auto;left:16px;z-index:5;display:grid;gap:8px;justify-items:start}
 .kg-segmented{display:flex;gap:2px;padding:2px;border:0;border-radius:0;background:var(--kg-ink);box-shadow:none;backdrop-filter:none}
-.kg-segmented button{min-height:40px;padding:8px 13px;border:0;border-radius:0;background:var(--kg-ink);color:var(--kg-ground);text-align:left}
+.kg-segmented button{min-height:44px;padding:8px 13px;border:0;border-radius:0;background:var(--kg-ink);color:var(--kg-ground);text-align:left}
 .kg-segmented button:hover{background:#444141;color:white}
 .kg-segmented button[aria-pressed="true"]{background:var(--kg-ground);color:var(--kg-ink);box-shadow:none}
 
@@ -146,8 +146,9 @@ body.core-ui :focus-visible{outline:2px solid var(--kg-a5);outline-offset:2px}
 .explorer-district-label{min-width:72px;padding:6px 8px;border:2px solid var(--kg-ink);border-radius:0;background:var(--kg-ground);box-shadow:none;color:var(--kg-ink);text-align:left}
 .explorer-district-label:hover{border-color:var(--kg-a7)}
 .explorer-district-label span{color:var(--kg-a7)}
+.explorer-district-label small{display:block;color:var(--kg-mute);font-size:9px}
 .explorer-district-label[data-evidence="insufficient"]{background-color:var(--kg-ink);background-image:repeating-linear-gradient(-45deg,rgba(255,255,255,.3) 0 2px,transparent 2px 7px);color:white}
-.explorer-district-label[data-evidence="insufficient"] span{color:white}
+.explorer-district-label[data-evidence="insufficient"] :is(span,small){color:white}
 
 .explorer-map-selection{border:2px solid var(--kg-ink);border-radius:0;background:var(--kg-ground);box-shadow:none}
 .explorer-map-selection :is(button,a){border-radius:0}

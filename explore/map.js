@@ -156,7 +156,8 @@
       badge.type = 'button';
       badge.className = 'explorer-district-label';
       badge.dataset.evidence = KHGExplorerDistrictMap.evidenceState(row);
-      badge.innerHTML = `<strong>${row.districtName || districtCode}</strong><span>${districtMetricText(row)}</span>`;
+      badge.setAttribute('aria-label', title);
+      badge.innerHTML = `<strong>${row.districtName || districtCode}</strong><span>${districtMetricText(row)}</span><small>${Number(row.contractCount || 0).toLocaleString()} contracts</small>`;
       badge.addEventListener('click', selectDistrict);
       const marker = new google.maps.marker.AdvancedMarkerElement({ map, position, title, zIndex:2, gmpClickable:true });
       marker.append(badge);

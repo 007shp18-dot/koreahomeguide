@@ -24,14 +24,20 @@ test('Modernist Explorer uses the approved type stack and low-card geometry', ()
   assert.match(css, /\.map-first-workspace \.explorer-discovery-rail\{[^}]*right:0[^}]*width:380px[^}]*border-radius:0/);
   assert.match(css, /\.district-card\{[^}]*border-radius:0[^}]*box-shadow:none/);
   assert.match(css, /\.building-status-window\{[^}]*border-radius:0/);
+  assert.match(css, /\.explorer-view-toggle button\{[^}]*min-height:44px/);
   assert.match(css, /@media\(max-width:760px\)[\s\S]*?\.map-first-workspace \.explorer-discovery-rail\{[^}]*max-height:64dvh/);
 });
 
 test('district presentation exposes an explicit insufficient-evidence state', () => {
   const app = fs.readFileSync('explore/app.js', 'utf8');
+  const zhApp = fs.readFileSync('zh/explore/app.js', 'utf8');
   const map = fs.readFileSync('explore/map.js', 'utf8');
   assert.match(app, /data-evidence="\$\{KHGExplorerDistrictMap\.evidenceState\(row\)\}"/);
+  assert.match(app, /if \(value == null\) return 'Not shown'/);
+  assert.match(zhApp, /if \(value == null\) return '未显示'/);
   assert.match(map, /badge\.dataset\.evidence = KHGExplorerDistrictMap\.evidenceState\(row\)/);
+  assert.match(map, /badge\.setAttribute\('aria-label', title\)/);
+  assert.match(map, /<small>\$\{Number\(row\.contractCount \|\| 0\)\.toLocaleString\(\)\} contracts<\/small>/);
   assert.match(map, /badge\.addEventListener\('click', selectDistrict\)/);
   assert.match(map, /Not shown/);
 });
