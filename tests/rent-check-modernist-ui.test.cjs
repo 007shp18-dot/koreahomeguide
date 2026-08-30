@@ -62,6 +62,10 @@ test('reparented evidence and generated Rent Check controls retain Modernist run
   assert.match(css, /\.core-ui \.result-share-panel :is\(\.result-share-action,\.result-share-metrics\)\{[^}]*border:2px solid var\(--rcm-ink\)[^}]*border-radius:0/);
   assert.doesNotMatch(css, /\.core-ui \.saved-quote-module :is\([^}]*\.saved-quote-save/, 'the neutral saved-quote control group must not override its primary save action');
   assert.match(css, /\.core-ui \.rent-check-result \.saved-quote-save\{[^}]*min-height:44px[^}]*border:2px solid var\(--rcm-ink\)[^}]*border-radius:0[^}]*background:var\(--rcm-action\)[^}]*color:var\(--rcm-on-action\)/, 'the saved-quote primary action owns its full Modernist geometry and cobalt state');
+  const saveHoverIndex = css.indexOf('.core-ui .rent-check-result .saved-quote-save:hover');
+  const saveDisabledIndex = css.indexOf('.core-ui .rent-check-result .saved-quote-save:disabled,');
+  assert.ok(saveDisabledIndex > saveHoverIndex, 'the saved-quote disabled override follows the primary hover rule');
+  assert.match(css, /\.core-ui \.rent-check-result \.saved-quote-save:disabled,\.core-ui \.rent-check-result \.saved-quote-save:disabled:hover\{[^}]*background:var\(--rcm-muted\)[^}]*color:var\(--rcm-on-action\)[^}]*cursor:not-allowed/, 'a disabled saved quote remains muted even when hovered');
   assert.match(css, /\.core-ui \.result-share-panel \.result-share-metrics>div\{[^}]*border-right:2px solid var\(--rcm-divider\)/);
   assert.match(css, /\.core-ui \.rent-check-comparables-toggle\{[^}]*min-height:44px[^}]*border:2px solid var\(--rcm-ink\)[^}]*border-radius:0/);
   assert.match(css, /\.core-ui \.district-combobox-listbox\{[^}]*border:2px solid var\(--rcm-ink\)[^}]*border-radius:0[^}]*background:var\(--rcm-ground\)/);
