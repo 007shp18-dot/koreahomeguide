@@ -1,0 +1,30 @@
+export const SEOUL_RENT_CHECK_DISTRICTS = [
+  { lawdCd: '11110', nameEn: 'Jongno-gu', nameKo: '종로구' },
+  { lawdCd: '11140', nameEn: 'Jung-gu', nameKo: '중구' },
+  { lawdCd: '11170', nameEn: 'Yongsan-gu', nameKo: '용산구' },
+  { lawdCd: '11200', nameEn: 'Seongdong-gu', nameKo: '성동구' },
+  { lawdCd: '11215', nameEn: 'Gwangjin-gu', nameKo: '광진구' },
+  { lawdCd: '11230', nameEn: 'Dongdaemun-gu', nameKo: '동대문구' },
+  { lawdCd: '11260', nameEn: 'Jungnang-gu', nameKo: '중랑구' },
+  { lawdCd: '11290', nameEn: 'Seongbuk-gu', nameKo: '성북구' },
+  { lawdCd: '11305', nameEn: 'Gangbuk-gu', nameKo: '강북구' },
+  { lawdCd: '11320', nameEn: 'Dobong-gu', nameKo: '도봉구' },
+  { lawdCd: '11350', nameEn: 'Nowon-gu', nameKo: '노원구' },
+  { lawdCd: '11380', nameEn: 'Eunpyeong-gu', nameKo: '은평구' },
+  { lawdCd: '11410', nameEn: 'Seodaemun-gu', nameKo: '서대문구' },
+  { lawdCd: '11440', nameEn: 'Mapo-gu', nameKo: '마포구' },
+  { lawdCd: '11470', nameEn: 'Yangcheon-gu', nameKo: '양천구' },
+  { lawdCd: '11500', nameEn: 'Gangseo-gu', nameKo: '강서구' },
+  { lawdCd: '11530', nameEn: 'Guro-gu', nameKo: '구로구' },
+  { lawdCd: '11545', nameEn: 'Geumcheon-gu', nameKo: '금천구' },
+  { lawdCd: '11560', nameEn: 'Yeongdeungpo-gu', nameKo: '영등포구' },
+  { lawdCd: '11590', nameEn: 'Dongjak-gu', nameKo: '동작구' },
+  { lawdCd: '11620', nameEn: 'Gwanak-gu', nameKo: '관악구' },
+  { lawdCd: '11650', nameEn: 'Seocho-gu', nameKo: '서초구' },
+  { lawdCd: '11680', nameEn: 'Gangnam-gu', nameKo: '강남구' },
+  { lawdCd: '11710', nameEn: 'Songpa-gu', nameKo: '송파구' },
+  { lawdCd: '11740', nameEn: 'Gangdong-gu', nameKo: '강동구' },
+] as const;
+
+export type SeoulRentCheckDistrict = (typeof SEOUL_RENT_CHECK_DISTRICTS)[number];
+export type SeoulLawdCd = SeoulRentCheckDistrict['lawdCd'];

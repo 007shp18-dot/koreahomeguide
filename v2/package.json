@@ -8,6 +8,7 @@
     "typecheck": "pnpm -r typecheck",
     "test": "vitest run",
     "build": "pnpm --filter @signedprice/web build",
+    "check:rent-client-boundary": "node scripts/scan-rent-check-client-boundary.mjs apps/web/.next",
     "e2e": "playwright test"
   },
   "devDependencies": {

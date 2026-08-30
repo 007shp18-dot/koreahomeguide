@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { publicRoutes } from './e2e/public-route-contract';
 
 describe('browser route coverage contract', () => {
-  it('covers the literal fourteen-route Phase 1 surface exactly once', () => {
+  it('covers the literal fifteen-route release surface exactly once', () => {
     const paths = publicRoutes.map((route) => route.path);
 
     expect(paths).toEqual([
@@ -11,6 +11,7 @@ describe('browser route coverage contract', () => {
       '/sg/singapore/',
       '/ae/dubai/',
       '/kr/seoul/rent/',
+      '/kr/seoul/tools/rent-check/',
       '/kr/seoul/buy/',
       '/kr/seoul/invest/',
       '/sg/singapore/rent/',
@@ -21,7 +22,7 @@ describe('browser route coverage contract', () => {
       '/ae/dubai/invest/',
       '/compare/',
     ]);
-    expect(paths).toHaveLength(14);
-    expect(new Set(paths).size).toBe(14);
+    expect(paths).toHaveLength(15);
+    expect(new Set(paths).size).toBe(15);
   });
 });

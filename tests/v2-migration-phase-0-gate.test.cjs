@@ -14,7 +14,7 @@ const {
 
 const ROOT = path.resolve(__dirname, '..');
 const CURRENT_SUMMARY = Object.freeze({
-  tests:895, pass:872, fail:23, cancelled:0, skipped:0, todo:0
+  tests:898, pass:875, fail:23, cancelled:0, skipped:0, todo:0
 });
 
 function historicalFailureEvidence(rootDir = ROOT) {
@@ -64,8 +64,8 @@ test('phase zero artifacts form a complete reproducible baseline', () => {
 
   const parsed = parseLegacyTestOutput([
     '✖ replacement failure with the same total (1ms)',
-    'ℹ tests 895',
-    'ℹ pass 872',
+    'ℹ tests 898',
+    'ℹ pass 875',
     'ℹ fail 23',
     'ℹ cancelled 0',
     'ℹ skipped 0',

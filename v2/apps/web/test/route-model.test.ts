@@ -148,6 +148,28 @@ describe('market route model', () => {
 });
 
 describe('intent route model', () => {
+  it('makes Seoul Rent Check the primary action for the Seoul rent intent only', () => {
+    const seoulRent = buildIntentPageModel('kr', 'seoul', 'rent');
+
+    expect(seoulRent?.overviewActions[0]).toMatchObject({
+      label: 'Check a Seoul rent quote',
+      href: '/kr/seoul/tools/rent-check/',
+      external: false,
+    });
+    for (const params of expectedIntentParams.filter(
+      ({ country, city, intent }) =>
+        country !== 'kr' || city !== 'seoul' || intent !== 'rent',
+    )) {
+      expect(
+        buildIntentPageModel(params.country, params.city, params.intent)?.overviewActions,
+      ).not.toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ href: '/kr/seoul/tools/rent-check/' }),
+        ]),
+      );
+    }
+  });
+
   it('gives every route a real comparison scope, usable source class, and blocked boundary', () => {
     for (const { country, city, intent } of expectedIntentParams) {
       const model = buildIntentPageModel(country, city, intent);

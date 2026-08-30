@@ -44,6 +44,8 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm build
+      - name: Reject server-only Rent Check data from client assets
+        run: pnpm check:rent-client-boundary
       - name: Run full Phase 0 legacy gate
         working-directory: .
         run: node scripts/v2-migration/verify-phase-0.cjs

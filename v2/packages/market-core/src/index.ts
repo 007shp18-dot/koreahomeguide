@@ -19,3 +19,18 @@ export {
   type RouteReadiness,
 } from './readiness';
 export { getIntentHref, getMarketByRoute, getMarketHref } from './routes';
+export {
+  median,
+  percentile,
+  percentileRank,
+  roundDifferencePct,
+  roundWon,
+  type ComparableRentContract,
+  type RentComparisonConfidence,
+  type RentComparisonRating,
+  type RentComparisonResult,
+  type RentComparisonVerdictBasis,
+  type RentQuote,
+  type SourceCoverage,
+  type SourceRetrievalWindow,
+} from './rent-check';

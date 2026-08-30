@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
+import { createExplorerRentCheckHref } from '../components/explorer-workspace';
 import { intentRouteParams, marketRouteParams } from '../lib/route-model';
 
 type ExplorerPageModule = {
@@ -66,6 +67,9 @@ const buildingWithMissingEvidence = {
   },
 };
 
+const verifiedRentCheckHref =
+  '/kr/seoul/tools/rent-check/?lawdCd=11590&type=officetel&dong=noryangjin-dong&building=noryangjin-dream-square';
+
 describe('/kr/seoul/explore/ route contract', () => {
   it('renders the new noindex Seoul Explorer with an explicit three-step discovery rail', async () => {
     const { default: ExplorerPage, metadata } = await loadExplorerPage();
@@ -97,6 +101,60 @@ describe('/kr/seoul/explore/ route contract', () => {
       'explore',
     );
   });
+
+  it.each([
+    {
+      name: 'wrong district',
+      query: {
+        lawdCd: '11680',
+        type: 'officetel',
+        dong: 'noryangjin-dong',
+        building: 'noryangjin-dream-square',
+      },
+    },
+    {
+      name: 'repeated complete context',
+      query: {
+        lawdCd: ['11590', '11680'],
+        type: ['officetel', 'studio'],
+        dong: ['noryangjin-dong', 'sindaebang-dong'],
+        building: ['noryangjin-dream-square', 'megastudy-tower'],
+      },
+    },
+    {
+      name: 'missing district',
+      query: {
+        type: 'officetel',
+        dong: 'noryangjin-dong',
+        building: 'noryangjin-dream-square',
+      },
+    },
+    {
+      name: 'missing property type',
+      query: {
+        lawdCd: '11590',
+        dong: 'noryangjin-dong',
+        building: 'noryangjin-dream-square',
+      },
+    },
+    {
+      name: 'wrong dong-building relationship',
+      query: {
+        lawdCd: '11590',
+        type: 'officetel',
+        dong: 'sindaebang-dong',
+        building: 'noryangjin-dream-square',
+      },
+    },
+  ])('does not promote $name into a verified handoff seed', async ({ query }) => {
+    const { default: ExplorerPage } = await loadExplorerPage();
+    const page = await ExplorerPage({ searchParams: Promise.resolve(query) });
+    const markup = renderToStaticMarkup(page as never);
+
+    expect(markup).not.toContain('/kr/seoul/tools/rent-check');
+    expect(markup).not.toContain('Check my quote');
+    expect(markup).not.toContain('Verified Explorer context');
+  });
 });
 
 describe('building dialog information flow', () => {
@@ -106,6 +164,7 @@ describe('building dialog information flow', () => {
       createElement(BuildingDialog as never, {
         building: buildingWithMissingEvidence,
         open: true,
+        rentCheckHref: verifiedRentCheckHref,
       }),
     );
 
@@ -132,12 +191,114 @@ describe('building dialog information flow', () => {
       createElement(BuildingDialog as never, {
         building: buildingWithMissingEvidence,
         open: true,
+        rentCheckHref: null,
       }),
     );
 
     expect(markup).not.toMatch(/₩\s*0|0\s*contracts?|0(?:\.0+)?\s*㎡/i);
     expect(markup).not.toMatch(/undefined|null/i);
     expect(markup).toMatch(/Unavailable|Not provided by the official source/i);
+  });
+
+  it('hands the complete verified Explorer selection to Rent Check without quote values', async () => {
+    const rentCheckHref = createExplorerRentCheckHref({
+      lawdCd: '11590',
+      type: 'officetel',
+      dong: 'noryangjin-dong',
+      building: 'noryangjin-dream-square',
+    });
+    const { default: ExplorerPage } = await loadExplorerPage();
+    const page = await ExplorerPage({
+      searchParams: Promise.resolve({
+        lawdCd: '11590',
+        type: 'officetel',
+        dong: 'noryangjin-dong',
+        building: 'noryangjin-dream-square',
+      }),
+    });
+    const markup = renderToStaticMarkup(page as never).replaceAll('&amp;', '&');
+    const actionHref = markup.match(/href="([^"]+)"[^>]*>Check my quote<\/a>/)?.[1];
+
+    expect(rentCheckHref).toBe(
+      '/kr/seoul/tools/rent-check/?lawdCd=11590&type=officetel&dong=noryangjin-dong&building=noryangjin-dream-square',
+    );
+    expect(actionHref).toBe(
+      '/kr/seoul/tools/rent-check?lawdCd=11590&type=officetel&dong=noryangjin-dong&building=noryangjin-dream-square',
+    );
+    const handoffQuery = new URLSearchParams(rentCheckHref?.split('?')[1] ?? '');
+    expect([...handoffQuery.keys()]).toEqual([
+      'lawdCd',
+      'type',
+      'dong',
+      'building',
+    ]);
+    for (const forbiddenParameter of ['deposit', 'rent', 'monthlyRent', 'area']) {
+      expect(handoffQuery.has(forbiddenParameter)).toBe(false);
+    }
+  });
+
+  it.each([
+    {
+      name: 'orphan building',
+      query: {
+        lawdCd: '11590',
+        type: 'officetel',
+        building: 'noryangjin-dream-square',
+      },
+    },
+    {
+      name: 'wrong district',
+      query: {
+        lawdCd: '11680',
+        type: 'officetel',
+        dong: 'noryangjin-dong',
+        building: 'noryangjin-dream-square',
+      },
+    },
+    {
+      name: 'raw HTML',
+      query: {
+        lawdCd: '11590',
+        type: 'officetel',
+        dong: '<b>Noryangjin</b>',
+        building: '<img src=x onerror=alert(1)>',
+      },
+    },
+    {
+      name: 'unknown context',
+      query: {
+        lawdCd: '11590',
+        type: 'unknown',
+        dong: 'unknown-dong',
+        building: 'unknown-building',
+      },
+    },
+    {
+      name: 'repeated context',
+      query: {
+        lawdCd: ['11590', '11680'],
+        type: ['officetel', 'studio'],
+        dong: ['noryangjin-dong', 'sindaebang-dong'],
+        building: ['noryangjin-dream-square', 'megastudy-tower'],
+      },
+    },
+  ])('does not render a Rent Check action for $name', async ({ query }) => {
+    const { BuildingDialog } = await loadBuildingDialog();
+    const rentCheckHref = createExplorerRentCheckHref(query);
+    const markup = renderToStaticMarkup(
+      createElement(BuildingDialog as never, {
+        building: buildingWithMissingEvidence,
+        open: true,
+        rentCheckHref,
+      }),
+    );
+
+    expect(rentCheckHref).toBeNull();
+    expect(markup).not.toMatch(
+      /href="\/kr\/seoul\/(?:tools\/rent-check\/|rent\/)/,
+    );
+    expect(markup).not.toContain('Check my quote');
+    expect(markup).not.toMatch(/<b>Noryangjin<\/b>|onerror=alert/);
   });
 });
 

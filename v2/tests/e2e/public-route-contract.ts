@@ -4,6 +4,10 @@ export const publicRoutes = [
   { path: '/sg/singapore/', heading: 'Singapore' },
   { path: '/ae/dubai/', heading: 'Dubai' },
   { path: '/kr/seoul/rent/', heading: 'Rent in Seoul' },
+  {
+    path: '/kr/seoul/tools/rent-check/',
+    heading: 'Check the quote against reported contracts.',
+  },
   { path: '/kr/seoul/buy/', heading: 'Buy in Seoul' },
   { path: '/kr/seoul/invest/', heading: 'Invest in Seoul' },
   { path: '/sg/singapore/rent/', heading: 'Rent in Singapore' },

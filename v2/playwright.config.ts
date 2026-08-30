@@ -17,6 +17,7 @@ export function createPlaywrightConfig(
     env: {
       VERCEL_ENV: target.expectedEnvironment,
       VERCEL_GIT_COMMIT_SHA: target.expectedCommit,
+      VERCEL_URL: '127.0.0.1:3100',
     },
     reuseExistingServer: false,
     stderr: 'pipe',

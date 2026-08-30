@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { ExplorerWorkspace } from '../../../../components/explorer-workspace';
 import { SiteFooter } from '../../../../components/site-footer';
 import { SiteHeader } from '../../../../components/site-header';
+import { resolveExplorerRentCheckContext } from '../../../../lib/rent-check/explorer-context';
 import type { SiteFooterModel, SiteHeaderModel } from '../../../../lib/site-copy';
 
 type ExplorerPageProps = {
@@ -38,22 +39,26 @@ const footer: SiteFooterModel = {
     'Market information only. Not a listing, appraisal, legal opinion or financial recommendation.',
 };
 
-function firstValue(value: string | string[] | undefined): string | undefined {
-  return Array.isArray(value) ? value[0] : value;
+function singleValue(value: string | string[] | undefined): string | undefined {
+  return typeof value === 'string' ? value : undefined;
 }
 
 export default async function ExplorerPage({ searchParams }: ExplorerPageProps) {
   const query = await searchParams;
+  const resolvedContext = resolveExplorerRentCheckContext(query);
+  const completeContext = resolvedContext?.neighborhoodId && resolvedContext.buildingId
+    ? resolvedContext
+    : null;
 
   return (
     <div id="top" className="explorer-page">
       <SiteHeader copy={header} />
       <main>
         <ExplorerWorkspace
-          initialDistrictCode={firstValue(query.lawdCd) ?? '11590'}
-          initialPropertyType={firstValue(query.type) ?? 'officetel'}
-          initialNeighborhoodId={firstValue(query.dong)}
-          initialBuildingId={firstValue(query.building)}
+          initialDistrictCode={singleValue(query.lawdCd) ?? '11590'}
+          initialPropertyType={singleValue(query.type) ?? 'officetel'}
+          initialNeighborhoodId={completeContext?.neighborhoodId}
+          initialBuildingId={completeContext?.buildingId}
         />
       </main>
       <SiteFooter copy={footer} />
