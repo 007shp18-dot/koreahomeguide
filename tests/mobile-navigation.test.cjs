@@ -74,10 +74,10 @@ test('mount creates one accessible mobile navigation, tracks clicks, and stays i
   assert.equal(body.children.length,1);
 });
 
-function htmlFiles(directory){
+function htmlFiles(directory, rootDirectory=directory){
   return fs.readdirSync(directory,{ withFileTypes:true }).flatMap(entry=>{
     const target=path.join(directory,entry.name);
-    if(entry.isDirectory()&&entry.name!=='.git'&&entry.name!=='node_modules') return htmlFiles(target);
+    if(entry.isDirectory()&&entry.name!=='.git'&&entry.name!=='node_modules'&&!(directory===rootDirectory&&entry.name==='v2')) return htmlFiles(target,rootDirectory);
     return entry.isFile()&&entry.name.endsWith('.html')?[target]:[];
   });
 }

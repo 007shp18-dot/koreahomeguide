@@ -326,7 +326,7 @@ function renderDongs(dongs, { publish = true } = {}) {
 
 function districtMetricHtml(row) {
   const value = KHGExplorerDistrictMap.metricValue(row, currentMapMetric);
-  if (value == null) return '数据不足';
+  if (value == null) return '未显示';
   return currentMapMetric === 'adjusted-per-sqm' ? formatAdjustedPerSqm(value) : moneyHtml(value);
 }
 
@@ -337,7 +337,7 @@ function renderDistricts(rows) {
     districtList.innerHTML = '<div class="explorer-empty">行政区价格数据暂时不可用。</div>';
     return;
   }
-  districtList.innerHTML = districts.map(row => `<button class="district-card" type="button" data-district-code="${escapeHtml(row.districtCode)}"><span><strong>${escapeHtml(KHGLocations.districtLabel(row.districtCode, 'zh-CN'))}</strong><small>${Number(row.contractCount || 0).toLocaleString('zh-CN')} 笔签约</small></span><strong>${districtMetricHtml(row)}</strong><span aria-hidden="true">→</span></button>`).join('');
+  districtList.innerHTML = districts.map(row => `<button class="district-card" type="button" data-district-code="${escapeHtml(row.districtCode)}" data-evidence="${KHGExplorerDistrictMap.evidenceState(row)}"><span><strong>${escapeHtml(KHGLocations.districtLabel(row.districtCode, 'zh-CN'))}</strong><small>${Number(row.contractCount || 0).toLocaleString('zh-CN')} 笔签约</small></span><strong>${districtMetricHtml(row)}</strong><span aria-hidden="true">→</span></button>`).join('');
 }
 
 function updateMapMetric(metric) {

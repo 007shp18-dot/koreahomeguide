@@ -26,11 +26,31 @@ test('district rows expose the same server-computed metric used by map labels', 
 test('district metric ranges ignore missing evidence and use five stable steps', () => {
   const districtMap = require('../explore/district-map.js');
   const rows = [10, 20, null, 30, 40, 50].map((value, index) => ({
-    districtCode:String(index), summary:{ adjustedPerSqmWon:value }
+    districtCode:String(index), contractCount:5, summary:{ adjustedPerSqmWon:value }
   }));
   const range = districtMap.metricRange(rows, 'adjusted-per-sqm');
   assert.deepEqual(range, { min:10, max:50 });
   assert.equal(districtMap.rampIndex(10, range), 0);
   assert.equal(districtMap.rampIndex(50, range), 4);
   assert.equal(districtMap.rampIndex(null, range), -1);
+});
+
+test('district metrics hide medians below the five-contract evidence floor', () => {
+  const districtMap = require('../explore/district-map.js');
+  const thin = districtMap.normalizeDistrict({
+    districtCode:'11545', districtName:'Geumcheon-gu', contractCount:4,
+    summary:{ adjustedPerSqmWon:24100, medianMonthlyRentWon:620000, medianDepositWon:10000000 }
+  });
+  const sufficient = districtMap.normalizeDistrict({
+    districtCode:'11545', districtName:'Geumcheon-gu', contractCount:5,
+    summary:{ adjustedPerSqmWon:24100 }
+  });
+
+  assert.equal(districtMap.evidenceState(thin), 'insufficient');
+  assert.equal(districtMap.metricValue(thin, 'adjusted-per-sqm'), null);
+  assert.equal(districtMap.metricValue(thin, 'monthly'), null);
+  assert.equal(districtMap.metricValue(thin, 'deposit'), null);
+  assert.equal(districtMap.evidenceState(sufficient), 'sufficient');
+  assert.equal(districtMap.metricValue(sufficient, 'adjusted-per-sqm'), 24100);
+  assert.equal(districtMap.MIN_EVIDENCE, 5);
 });

@@ -317,7 +317,7 @@ function renderDongs(dongs, { publish = true } = {}) {
 
 function districtMetricHtml(row) {
   const value = KHGExplorerDistrictMap.metricValue(row, currentMapMetric);
-  if (value == null) return 'Not enough data';
+  if (value == null) return 'Not shown';
   return currentMapMetric === 'adjusted-per-sqm' ? formatAdjustedPerSqm(value) : moneyHtml(value);
 }
 
@@ -328,7 +328,7 @@ function renderDistricts(rows) {
     districtList.innerHTML = '<div class="explorer-empty">District price context is temporarily unavailable.</div>';
     return;
   }
-  districtList.innerHTML = districts.map(row => `<button class="district-card" type="button" data-district-code="${escapeHtml(row.districtCode)}"><span><strong>${escapeHtml(KHGLocations.districtLabel(row.districtCode, 'en'))}</strong><small>${Number(row.contractCount || 0).toLocaleString('en-US')} signed contracts</small></span><strong>${districtMetricHtml(row)}</strong><span aria-hidden="true">→</span></button>`).join('');
+  districtList.innerHTML = districts.map(row => `<button class="district-card" type="button" data-district-code="${escapeHtml(row.districtCode)}" data-evidence="${KHGExplorerDistrictMap.evidenceState(row)}"><span><strong>${escapeHtml(KHGLocations.districtLabel(row.districtCode, 'en'))}</strong><small>${Number(row.contractCount || 0).toLocaleString('en-US')} signed contracts</small></span><strong>${districtMetricHtml(row)}</strong><span aria-hidden="true">→</span></button>`).join('');
 }
 
 function updateMapMetric(metric) {

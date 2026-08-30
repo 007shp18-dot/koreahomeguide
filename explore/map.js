@@ -126,7 +126,7 @@
 
   function districtMetricText(row) {
     const value = window.KHGExplorerDistrictMap && KHGExplorerDistrictMap.metricValue(row, activeDistrictMetric);
-    if (value == null) return '—';
+    if (value == null) return zh ? '未显示' : 'Not shown';
     if (activeDistrictMetric === 'adjusted-per-sqm') return `₩${Math.round(value / 1000)}k/㎡`;
     if (value >= 1000000) return `₩${(value / 1000000).toFixed(value >= 10000000 ? 0 : 1)}M`;
     return `₩${Math.round(value / 1000)}k`;
@@ -149,15 +149,18 @@
     const position = districtFeatureCenter(feature);
     if (!position || !row) return null;
     const districtCode = String(row.districtCode || '');
-    const title = `${row.districtName || districtCode} · ${districtMetricText(row)}`;
+    const title = `${row.districtName || districtCode} · ${districtMetricText(row)} · ${Number(row.contractCount || 0).toLocaleString()} contracts`;
+    const selectDistrict = () => dispatchDistrictSelection(districtCode);
     if (useAdvancedMarkers) {
       const badge = document.createElement('button');
       badge.type = 'button';
       badge.className = 'explorer-district-label';
-      badge.innerHTML = `<strong>${row.districtName || districtCode}</strong><span>${districtMetricText(row)}</span>`;
+      badge.dataset.evidence = KHGExplorerDistrictMap.evidenceState(row);
+      badge.setAttribute('aria-label', title);
+      badge.innerHTML = `<strong>${row.districtName || districtCode}</strong><span>${districtMetricText(row)}</span><small>${Number(row.contractCount || 0).toLocaleString()} contracts</small>`;
+      badge.addEventListener('click', selectDistrict);
       const marker = new google.maps.marker.AdvancedMarkerElement({ map, position, title, zIndex:2, gmpClickable:true });
       marker.append(badge);
-      marker.addEventListener('gmp-click', () => dispatchDistrictSelection(districtCode));
       return { marker, advanced:true };
     }
     const marker = new google.maps.Marker({
@@ -165,7 +168,7 @@
       icon:{ path:google.maps.SymbolPath.CIRCLE, scale:0 },
       label:{ text:districtMetricText(row), color:'#152017', fontSize:'11px', fontWeight:'800' }
     });
-    marker.addListener('click', () => dispatchDistrictSelection(districtCode));
+    marker.addListener('click', selectDistrict);
     return { marker, advanced:false };
   }
 
@@ -174,8 +177,8 @@
     const row = districtRows.get(code);
     const range = window.KHGExplorerDistrictMap ? KHGExplorerDistrictMap.metricRange([...districtRows.values()], activeDistrictMetric) : { min:0, max:1 };
     const index = window.KHGExplorerDistrictMap ? KHGExplorerDistrictMap.rampIndex(KHGExplorerDistrictMap.metricValue(row, activeDistrictMetric), range) : -1;
-    const colors = ['#e9f3e8','#cfe4cd','#a8cda7','#75ad78','#3e7f4a'];
-    return index < 0 ? '#dfe4df' : colors[index];
+    const colors = ['#dbe4ff','#b9c9ff','#7d9bff','#1d4ed8','#16358f'];
+    return index < 0 ? '#201e1d' : colors[index];
   }
 
   function renderDistrictLayer() {
@@ -184,7 +187,7 @@
     clearDistrictLabels();
     map.data.setStyle(feature => ({
       fillColor:districtFill(feature), fillOpacity:.76,
-      strokeColor:'#ffffff', strokeOpacity:.94, strokeWeight:1.4,
+      strokeColor:'#f3f2f2', strokeOpacity:.96, strokeWeight:1.6,
       clickable:markerScope === 'district', visible:markerScope === 'district'
     }));
     if (markerScope !== 'district' || !districtGeometryReady) return;

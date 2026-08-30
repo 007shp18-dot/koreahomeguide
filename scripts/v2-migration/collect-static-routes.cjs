@@ -14,6 +14,11 @@ const EXCLUDED_DIRECTORY_NAMES = new Set([
   'worktrees',
 ]);
 
+function isExcludedDirectory(entryName, relativeDirectory) {
+  return EXCLUDED_DIRECTORY_NAMES.has(entryName)
+    || (relativeDirectory === '' && entryName === 'v2');
+}
+
 function toPosix(value) {
   return value.split(path.sep).join('/');
 }
@@ -26,7 +31,7 @@ function walkHtml(rootDir) {
       .sort((a, b) => a.name.localeCompare(b.name));
 
     for (const entry of entries) {
-      if (entry.isDirectory() && !EXCLUDED_DIRECTORY_NAMES.has(entry.name)) {
+      if (entry.isDirectory() && !isExcludedDirectory(entry.name, relativeDirectory)) {
         visit(
           path.join(directory, entry.name),
           relativeDirectory ? `${relativeDirectory}/${entry.name}` : entry.name,

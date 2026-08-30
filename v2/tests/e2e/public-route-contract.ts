@@ -1,0 +1,16 @@
+export const publicRoutes = [
+  { path: '/', heading: 'Real prices. Better property decisions.' },
+  { path: '/kr/seoul/', heading: 'Seoul' },
+  { path: '/sg/singapore/', heading: 'Singapore' },
+  { path: '/ae/dubai/', heading: 'Dubai' },
+  { path: '/kr/seoul/rent/', heading: 'Rent in Seoul' },
+  { path: '/kr/seoul/buy/', heading: 'Buy in Seoul' },
+  { path: '/kr/seoul/invest/', heading: 'Invest in Seoul' },
+  { path: '/sg/singapore/rent/', heading: 'Rent in Singapore' },
+  { path: '/sg/singapore/buy/', heading: 'Buy in Singapore' },
+  { path: '/sg/singapore/invest/', heading: 'Invest in Singapore' },
+  { path: '/ae/dubai/rent/', heading: 'Rent in Dubai' },
+  { path: '/ae/dubai/buy/', heading: 'Buy in Dubai' },
+  { path: '/ae/dubai/invest/', heading: 'Invest in Dubai' },
+  { path: '/compare/', heading: 'Compare what each market can support.' },
+] as const;

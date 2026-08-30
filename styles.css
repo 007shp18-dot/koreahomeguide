@@ -1151,12 +1151,13 @@ html[lang="zh-CN"] .core-ui .funnel-hero h1,html[lang="zh-CN"] .core-ui .tool-he
 body.has-building-status-window{overflow:hidden}
 .building-status-overlay{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:clamp(12px,3vw,32px);pointer-events:auto;background:var(--modal-backdrop);backdrop-filter:blur(5px)}
 .building-status-overlay[hidden]{display:none!important}
-.building-status-window{position:relative;inset:auto;display:grid;grid-template-rows:auto auto minmax(0,1fr) auto;width:min(1080px,calc(100vw - 32px));height:min(88dvh,900px);max-height:88dvh;overflow:hidden;border:1px solid var(--line-strong);border-radius:var(--radius-lg);background:var(--surface);box-shadow:0 28px 90px var(--modal-shadow)}.building-status-window.has-street-view{max-height:88dvh}
+.building-status-window{position:relative;inset:auto;display:grid;grid-template-rows:auto minmax(0,1fr) auto;width:min(1080px,calc(100vw - 32px));height:min(88dvh,900px);max-height:88dvh;overflow:hidden;border:1px solid var(--line-strong);border-radius:var(--radius-lg);background:var(--surface);box-shadow:0 28px 90px var(--modal-shadow)}.building-status-window.has-street-view{max-height:88dvh}
 .building-status-head{position:relative;top:auto;z-index:5;display:flex;min-height:76px;padding:16px 64px 14px 20px;border-bottom:1px solid var(--line);background:var(--surface)}
 .building-status-close{position:absolute;top:10px;right:10px;z-index:7;display:grid;place-items:center;min-width:44px;min-height:44px;padding:0;border:1px solid var(--line);border-radius:50%;background:var(--surface);color:var(--ink);font-size:26px;line-height:1;cursor:pointer}.building-status-close:hover{background:var(--surface-soft)}.building-status-close:focus-visible{outline:3px solid var(--focus-ring);outline-offset:2px}
 .building-status-window .building-window-street-view{display:block;min-width:0;padding:14px 20px 16px;border-bottom:1px solid var(--line);background:var(--surface-soft)}
 .building-status-window .building-window-media-frame{width:min(100%,760px);height:auto;min-height:0;max-height:none;margin-inline:auto;aspect-ratio:16/9;contain:layout paint}
-.building-status-body{min-height:0;overflow-y:auto;overscroll-behavior:contain}
+.building-status-scroll{min-height:0;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain}
+.building-status-body{min-height:0;overflow:visible}
 .building-window-grid.building-window-stack{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;min-height:0}
 .building-window-stack .building-window-panel{min-width:0;padding:18px 20px 22px}.building-window-stack .building-window-panel+.building-window-panel{border-top:0;border-left:1px solid var(--line)}.building-window-stack .building-window-panel:nth-child(n+3){border-top:1px solid var(--line)}
 .building-status-actions{position:relative;bottom:auto;z-index:5;display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,1fr);gap:8px;padding:10px 14px;border-top:1px solid var(--line);background:var(--surface)}.building-status-actions [data-building-save]{grid-column:auto}

@@ -20,7 +20,12 @@
   <script defer src="/privacy-consent.js"></script><script defer src="/mobile-navigation.js"></script>
   <script defer src="/acquisition-context.js"></script>
   <script defer src="/acquisition-links.js"></script>
-  <link rel="stylesheet" href="/styles.css?v=31">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&amp;family=Noto+Sans+SC:wght@400;500;700;900&amp;display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css">
+  <link rel="stylesheet" href="/styles.css?v=32">
+  <link rel="stylesheet" href="/explore/explore-modernist.css?v=1">
 </head>
 <body class="core-ui">
   <header class="compact-header">
@@ -67,7 +72,7 @@
             <div class="explorer-map-legend" aria-label="地图标记说明"><span><i class="is-strong"></i>较强依据</span><span><i class="is-limited"></i>有限依据</span><span><i class="is-outside"></i>超出预算</span></div>
           </div>
           <div class="explorer-map-surface">
-            <div id="explorerMap" class="explorer-map-canvas" role="region" aria-label="所选首尔街区地图"></div>
+            <div id="explorerMap" class="explorer-map-canvas" role="application" aria-label="首尔行政区、街区和已核验建筑的交互式地图"></div>
             <div class="explorer-map-segments" aria-label="地图控件">
               <div class="kg-segmented" role="group" aria-label="住宅类型"><button type="button" data-map-housing="officetel" aria-pressed="true">办公住宅</button><button type="button" data-map-housing="apartment" aria-pressed="false">公寓</button><button type="button" data-map-housing="villa" aria-pressed="false">低层住宅</button></div>
               <div class="kg-segmented" role="group" aria-label="地图指标"><button type="button" data-map-metric="adjusted-per-sqm" aria-pressed="true">校正 /㎡</button><button type="button" data-map-metric="monthly" aria-pressed="false">月租</button><button type="button" data-map-metric="deposit" aria-pressed="false">押金</button></div>
@@ -153,10 +158,10 @@
   <script src="/explore/map-controller.js?v=21"></script>
   <script src="/product-analytics.js"></script>
   <script src="/explore/saved-buildings.js"></script>
-  <script src="/explore/building-window.js?v=30"></script>
+  <script src="/explore/building-window.js?v=31"></script>
   <script src="/explore/panorama.js?v=30"></script>
-  <script src="/explore/district-map.js?v=30"></script>
-  <script src="/explore/map.js?v=30"></script>
-  <script defer src="/zh/explore/app.js?v=31"></script>
+  <script src="/explore/district-map.js?v=31"></script>
+  <script src="/explore/map.js?v=31"></script>
+  <script defer src="/zh/explore/app.js?v=32"></script>
 </body>
 </html>

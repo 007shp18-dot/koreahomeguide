@@ -1,0 +1,82 @@
+name: signedprice V2 CI
+
+on:
+  push:
+    paths:
+      - 'v2/**'
+      - 'artifacts/v2-migration/**'
+      - 'scripts/v2-migration/**'
+      - 'tests/**/*.test.cjs'
+      - '.github/workflows/signedprice-v2-ci.yml'
+  pull_request:
+    paths:
+      - 'v2/**'
+      - 'artifacts/v2-migration/**'
+      - 'scripts/v2-migration/**'
+      - 'tests/**/*.test.cjs'
+      - '.github/workflows/signedprice-v2-ci.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: signedprice-v2-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: v2
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: v2/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build
+      - name: Run full Phase 0 legacy gate
+        working-directory: .
+        run: node scripts/v2-migration/verify-phase-0.cjs
+
+  browser:
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: v2
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: v2/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - name: Install locked Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Run desktop and mobile browser release gate
+        run: pnpm e2e --project=desktop-chromium --project=mobile-chromium
+      - name: Upload browser failure diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: signedprice-v2-browser-diagnostics
+          path: |
+            v2/test-results
+            v2/playwright-report
+          if-no-files-found: ignore
+          retention-days: 7
