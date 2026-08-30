@@ -40,8 +40,8 @@ async function expectContainedTouchTargets(
     expect(box).not.toBeNull();
     if (!box) throw new Error('Visible touch target has no bounding box');
 
-    expect(box.width).toBeGreaterThanOrEqual(24);
-    expect(box.height).toBeGreaterThanOrEqual(24);
+    expect(box.width).toBeGreaterThanOrEqual(44);
+    expect(box.height).toBeGreaterThanOrEqual(44);
     expect(box.x).toBeGreaterThanOrEqual(0);
     expect(box.y).toBeGreaterThanOrEqual(0);
     expect(box.x + box.width).toBeLessThanOrEqual(viewport.width);
@@ -167,6 +167,38 @@ test('mobile primary navigation remains tappable and reaches the market flow', a
     await visibleLinks.all(),
   );
   expectTargetsNotToOverlap(primaryBoxes);
+
+  const intentButtons = page.locator('.intent-tabs__trigger');
+  await expect(intentButtons).toHaveCount(3);
+  const intentBoxes = await expectContainedTouchTargets(
+    page,
+    await intentButtons.all(),
+  );
+  expectTargetsNotToOverlap(intentBoxes);
+
+  await page.getByRole('button', { name: /Buy/ }).tap();
+  await expect(page.getByRole('button', { name: /Buy/ })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
+  await expect(page.getByRole('heading', { name: 'Buy — market depth' }))
+    .toBeVisible();
+  await expect(page.getByRole('link', { name: 'Buy in Seoul' })).toHaveAttribute(
+    'href',
+    '/kr/seoul/buy/',
+  );
+
+  await page.getByRole('button', { name: /Invest/ }).tap();
+  await expect(page.getByRole('heading', { name: 'Invest — market depth' }))
+    .toBeVisible();
+  await expect(page.getByRole('link', { name: 'Invest in Seoul' })).toHaveAttribute(
+    'href',
+    '/kr/seoul/invest/',
+  );
+
+  for (const marketAction of await page.locator('.market-card__intent-link').all()) {
+    await expectContainedTouchTargets(page, [marketAction]);
+  }
 
   await primaryNavigation.getByRole('link', { name: 'Markets' }).tap();
   await expect(page).toHaveURL(/\/#markets$/);

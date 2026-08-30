@@ -100,6 +100,62 @@ describe('signedprice homepage copy', () => {
     ]);
   });
 
+  it('derives each intent decision state and route from the market registry', () => {
+    expect(
+      homepageMarketCards.map((market) => ({
+        id: market.id,
+        rent: market.intentCapabilities.rent,
+        buy: market.intentCapabilities.buy,
+      })),
+    ).toEqual([
+      {
+        id: 'kr-seoul',
+        rent: {
+          label: 'Rent decision path',
+          href: '/kr/seoul/rent/',
+          state: 'available',
+          stateLabel: 'Available',
+        },
+        buy: {
+          label: 'Buy decision path',
+          href: '/kr/seoul/buy/',
+          state: 'available',
+          stateLabel: 'Available',
+        },
+      },
+      {
+        id: 'sg-singapore',
+        rent: {
+          label: 'Rent decision path',
+          href: '/sg/singapore/rent/',
+          state: 'limited',
+          stateLabel: 'Limited',
+        },
+        buy: {
+          label: 'Buy decision path',
+          href: '/sg/singapore/buy/',
+          state: 'limited',
+          stateLabel: 'Limited',
+        },
+      },
+      {
+        id: 'ae-dubai',
+        rent: {
+          label: 'Rent decision path',
+          href: '/ae/dubai/rent/',
+          state: 'limited',
+          stateLabel: 'Limited',
+        },
+        buy: {
+          label: 'Buy decision path',
+          href: '/ae/dubai/buy/',
+          state: 'limited',
+          stateLabel: 'Limited',
+        },
+      },
+    ]);
+  });
+
   it('states the Phase 1 disclosure limits instead of claiming unpublished methodology', () => {
     const trustCopy = JSON.stringify(homepageCopy.trust);
     const markup = renderToStaticMarkup(createElement(Home));
@@ -123,8 +179,8 @@ describe('signedprice homepage copy', () => {
     expect(markup).toContain('>Market truth</h3>');
     expect(markup).toContain('>Decision tools</h3>');
     expect(markup).toContain('>Verified connections</h3>');
-    expect(markup).toContain('>Full product</dd>');
-    expect(markup).toContain('>Market intelligence</dd>');
+    expect(markup).toContain('>Full product</span>');
+    expect(markup).toContain('>Market intelligence</span>');
     expect(markup).toContain('>Available</span>');
     expect(markup).toContain('>Rights blocked</span>');
 
@@ -146,5 +202,21 @@ describe('signedprice homepage copy', () => {
     }
 
     expect(markup).not.toMatch(/enquir|sign[ -]?in|create account/i);
+  });
+
+  it('keeps the approved English decision model while changing only its presentation', () => {
+    const markup = renderToStaticMarkup(createElement(Home));
+
+    for (const label of ['Rent', 'Buy', 'Invest']) {
+      expect(markup).toContain(`>${label}</span>`);
+    }
+    for (const city of ['Seoul', 'Singapore', 'Dubai']) {
+      expect(markup).toContain(`>${city}</a></h3>`);
+    }
+    for (const rule of ['Market truth', 'Decision tools', 'Verified connections']) {
+      expect(markup).toContain(`>${rule}</h3>`);
+    }
+
+    expect(homepageCopy.metadata.robots).toEqual({ index: false, follow: true });
   });
 });
