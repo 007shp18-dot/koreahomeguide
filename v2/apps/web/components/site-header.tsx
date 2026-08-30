@@ -16,7 +16,13 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
           <ul className="site-header__links">
             {copy.links.map((link) => (
               <li key={link.href}>
-                <a href={link.href}>{link.label}</a>
+                <a
+                  href={link.href}
+                  aria-label={link.ariaLabel}
+                  aria-current={link.isCurrent ? 'page' : undefined}
+                >
+                  {link.label}
+                </a>
               </li>
             ))}
           </ul>

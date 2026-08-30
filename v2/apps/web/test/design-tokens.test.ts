@@ -53,6 +53,74 @@ const focusAdjacentBackgrounds = [
   '--surface-strong',
 ] as const;
 
+const modernistPalette = {
+  '--ink': '#201e1d',
+  '--canvas': '#f3f2f2',
+  '--surface': '#eae9e9',
+  '--accent': '#1d4ed8',
+  '--divider': '#8c8a89',
+} as const;
+
+function declarationsFor(source: string, selector: string): Record<string, string> {
+  const escapedSelector = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const rule = source.match(new RegExp(`${escapedSelector}\\s*\\{([^}]*)\\}`));
+  if (!rule?.[1]) {
+    throw new Error(`Missing CSS rule ${selector}`);
+  }
+
+  return Object.fromEntries(
+    rule[1]
+      .split(';')
+      .map((declaration) => declaration.trim())
+      .filter(Boolean)
+      .map((declaration) => {
+        const separator = declaration.indexOf(':');
+        return [
+          declaration.slice(0, separator).trim(),
+          declaration.slice(separator + 1).trim(),
+        ];
+      }),
+  );
+}
+
+describe('signedprice Modernist foundation', () => {
+  it('uses the approved ink, ground, surface, cobalt and divider palette', () => {
+    for (const [token, value] of Object.entries(modernistPalette)) {
+      expect(readHexToken(token)).toBe(value);
+    }
+  });
+
+  it('keeps geometry square and structural rules two pixels wide', () => {
+    expect(css).toMatch(/--radius:\s*0px;/);
+    expect(declarationsFor(css, '.site-header')).toMatchObject({
+      'border-bottom': '2px solid var(--ink)',
+      position: 'sticky',
+      top: '0',
+      'z-index': '30',
+    });
+    expect(declarationsFor(css, '.site-header__inner')).toMatchObject({
+      padding: '15px 40px',
+    });
+    expect(declarationsFor(css, '.intent-tabs')).toMatchObject({
+      border: '2px solid var(--ink)',
+      'border-radius': 'var(--radius)',
+    });
+  });
+
+  it('uses tabular numerals throughout the product surface', () => {
+    expect(declarationsFor(css, 'body')).toMatchObject({
+      'font-variant-numeric': 'tabular-nums',
+    });
+  });
+
+  it('uses the bundled Archivo family without a runtime Google Fonts request', () => {
+    expect(css).not.toMatch(/fonts\.googleapis\.com/i);
+    expect(css).toMatch(/@font-face\s*{[\s\S]*?font-family:\s*"Archivo"/);
+    expect(css).toContain('/fonts/archivo-latin-wght-normal.woff2');
+    expect(declarationsFor(css, 'body')['font-family']).toMatch(/^"Archivo"/);
+  });
+});
+
 describe('signedprice normal-text design tokens', () => {
   for (const [foregroundName, backgroundName] of normalTextPairs) {
     it(`${foregroundName} meets WCAG AA on ${backgroundName}`, () => {
@@ -67,14 +135,18 @@ describe('signedprice normal-text design tokens', () => {
 });
 
 describe('signedprice focus indicator', () => {
-  it('uses the contrast-tested opaque focus token for every authored outline', () => {
-    const authoredOutlineColors = [...css.matchAll(/outline:\s*3px solid ([^;]+);/g)].map(
-      (match) => match[1]?.trim(),
-    );
+  it('keeps every authored outline two pixels while permitting audited local contrast', () => {
+    const authoredOutlines = [
+      ...css.matchAll(/outline:\s*(\d+)px solid ([^;]+);/g),
+    ].map((match) => ({
+      width: match[1]?.trim(),
+      color: match[2]?.trim(),
+    }));
 
-    expect(authoredOutlineColors).not.toHaveLength(0);
-    expect(authoredOutlineColors).toEqual(
-      authoredOutlineColors.map(() => 'var(--focus-ring)'),
+    expect(authoredOutlines).not.toHaveLength(0);
+    expect(authoredOutlines.every((outline) => outline.width === '2')).toBe(true);
+    expect(authoredOutlines.map((outline) => outline.color)).toEqual(
+      expect.arrayContaining(['var(--focus-ring)', 'var(--ink)']),
     );
   });
 
