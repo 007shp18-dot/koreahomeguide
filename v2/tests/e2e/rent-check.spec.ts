@@ -273,10 +273,15 @@ type Box = NonNullable<Awaited<ReturnType<Locator['boundingBox']>>>;
 async function box(locator: Locator): Promise<Box> {
   await locator.scrollIntoViewIfNeeded();
   await expect(locator).toBeVisible();
-  const result = await locator.boundingBox();
-  expect(result).not.toBeNull();
-  if (result === null) throw new Error('Visible element did not expose a bounding box');
-  return result;
+  return locator.evaluate((element) => {
+    const bounds = element.getBoundingClientRect();
+    return {
+      x: bounds.x + window.scrollX,
+      y: bounds.y + window.scrollY,
+      width: bounds.width,
+      height: bounds.height,
+    };
+  });
 }
 
 async function expectAtLeast44(locator: Locator) {
@@ -457,7 +462,9 @@ test('completes the quote in the real desktop and mobile form', async ({ page },
   await expect(resultHeading).toBeFocused();
   await expect(page.getByText('Source completeness through 2026-07')).toBeVisible();
   await expect(page.getByText('3 completed months used')).toBeVisible();
-  await expect(page.getByText('5 compatible contracts')).toBeVisible();
+  await expect(
+    page.getByLabel('Market evidence').getByText('5 compatible contracts', { exact: true }),
+  ).toBeVisible();
   await expect(page.getByText('MOLIT · Officetel rental contracts')).toBeVisible();
   await expect(page.getByText(
     'Ministry of Land, Infrastructure and Transport (MOLIT)',
@@ -592,7 +599,9 @@ test('renders insufficient official evidence as a completed state', async ({ pag
   await expect(page.getByRole('heading', {
     name: 'Official evidence is insufficient.',
   })).toBeFocused();
-  await expect(page.getByText('0 compatible contracts')).toBeVisible();
+  await expect(
+    page.getByLabel('Market evidence').getByText('0 compatible contracts', { exact: true }),
+  ).toBeVisible();
   await expect(page.getByText('Latest contract month: Unavailable')).toBeVisible();
   await expect(page.getByText('No market estimate is shown.')).toBeVisible();
   await expect(page.getByRole('table')).toHaveCount(0);

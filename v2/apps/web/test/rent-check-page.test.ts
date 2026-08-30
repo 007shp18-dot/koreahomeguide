@@ -171,6 +171,7 @@ describe('Modernist responsive form contract', () => {
   it('keeps every housing and unit target at least 44px wide without 720px overflow', () => {
     expect(css).toMatch(/\.unit-toggle button[\s\S]*?min-inline-size:\s*44px;/);
     expect(css).toMatch(/\.housing-choice\s*\{[\s\S]*?min-inline-size:\s*44px;/);
+    expect(css).toMatch(/\.housing-choice\s*\{[\s\S]*?min-height:\s*48px;/);
     expect(css).toMatch(
       /\.housing-choices\s*\{[\s\S]*?grid-template-columns:\s*repeat\(5,\s*minmax\(44px,\s*1fr\)\);/,
     );
