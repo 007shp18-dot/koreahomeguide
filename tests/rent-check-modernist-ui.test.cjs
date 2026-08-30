@@ -65,6 +65,11 @@ test('reparented evidence and generated Rent Check controls retain Modernist run
   assert.match(css, /\.core-ui \.district-combobox-listbox\{[^}]*border:2px solid var\(--rcm-ink\)[^}]*border-radius:0[^}]*background:var\(--rcm-ground\)/);
   assert.match(css, /\.core-ui \.district-combobox-option\{[^}]*min-height:44px[^}]*border-bottom:2px solid var\(--rcm-divider\)[^}]*border-radius:0/);
   assert.match(css, /\.core-ui :is\(\.rent-check-comparables-toggle,\.district-combobox-option\):focus-visible\{[^}]*outline:2px solid var\(--rcm-action\)[^}]*outline-offset:2px[^}]*box-shadow:none/);
+  assert.match(css, /\.core-ui \.experience-capture \.search-button,\.core-ui \.result-share-panel \.search-button\.result-share-action\{[^}]*background:var\(--rcm-action\)[^}]*color:var\(--rcm-on-action\)/, 'Experience and share primary actions retain the cobalt primary state');
+  assert.match(css, /\.core-ui \.experience-capture \.search-button:hover,\.core-ui \.result-share-panel \.search-button\.result-share-action:hover\{[^}]*background:var\(--rcm-action-dark\)/, 'Experience and share primary actions retain the dark cobalt hover state');
+  assert.match(css, /\.core-ui \.experience-capture \.experience-open:hover,\.core-ui \.result-share-panel \.result-share-copy-button:hover\{[^}]*border-color:var\(--rcm-action\)[^}]*background:var\(--rcm-action-wash\)/, 'secondary generated actions retain visible hover feedback');
+  const mobileCss = css.slice(css.indexOf('@media(max-width:760px){'));
+  assert.match(mobileCss, /\.core-ui \.result-share-panel \.result-share-metrics>div\{[^}]*border-right:0[^}]*border-bottom:2px solid var\(--rcm-divider\)/, 'mobile share metrics clear desktop right borders before adding row dividers');
 });
 
 test('Modernist Rent Check layer leaves legacy grid areas and mobile field order untouched', () => {

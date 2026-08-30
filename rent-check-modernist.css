@@ -103,6 +103,9 @@ body.core-ui :focus-visible{outline:2px solid var(--rcm-action);outline-offset:2
 .core-ui .result-share-panel .result-share-metrics>div:last-child{border-right:0}
 .core-ui .result-share-panel .result-share-action{min-height:44px;color:var(--rcm-ink)}
 .core-ui :is(.saved-quote-module,.experience-capture,.result-share-panel) :is(.saved-quote-form input,.saved-quote-save,.saved-quote-compare,.experience-open,.experience-context select,.experience-money,.search-button,.result-share-action):focus-visible,.core-ui .experience-capture .experience-outcome input:focus-visible+span{outline:2px solid var(--rcm-action);outline-offset:2px;box-shadow:none}
+.core-ui .experience-capture .search-button,.core-ui .result-share-panel .search-button.result-share-action{background:var(--rcm-action);color:var(--rcm-on-action)}
+.core-ui .experience-capture .search-button:hover,.core-ui .result-share-panel .search-button.result-share-action:hover{border-color:var(--rcm-action-dark);background:var(--rcm-action-dark)}
+.core-ui .experience-capture .experience-open:hover,.core-ui .result-share-panel .result-share-copy-button:hover{border-color:var(--rcm-action);background:var(--rcm-action-wash);color:var(--rcm-ink)}
 .core-ui .rent-check-result .saved-quote-save{background:var(--rcm-action);color:var(--rcm-on-action)}
 .core-ui .rent-check-result .saved-quote-save:hover{background:var(--rcm-action-dark)}
 .core-ui .rent-check-result .experience-outcome input:checked+span{border-color:var(--rcm-action);background:var(--rcm-action-wash)}
@@ -132,7 +135,7 @@ body.core-ui :focus-visible{outline:2px solid var(--rcm-action);outline-offset:2
   .core-ui :is(.funnel-hero,.page-shell){padding-right:16px;padding-left:16px}
   .core-ui .funnel-hero{padding-top:34px}
   .core-ui :is(.funnel-rent-card,.rent-check-page .rent-check-card){padding:16px}
-  .core-ui .result-share-panel .result-share-metrics>div{border-bottom:2px solid var(--rcm-divider)}
+  .core-ui .result-share-panel .result-share-metrics>div{border-right:0;border-bottom:2px solid var(--rcm-divider)}
   .core-ui .result-share-panel .result-share-metrics>div:last-child{border-bottom:0}
 }
 
