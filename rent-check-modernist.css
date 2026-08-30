@@ -56,6 +56,9 @@ body.core-ui :focus-visible{outline:2px solid var(--rcm-action);outline-offset:2
 .core-ui .rent-check-form :is(select,.district-combobox-input,.selection-native,.rent-check-money,.rent-check-size){border:2px solid var(--rcm-ink);border-radius:0;background-color:var(--rcm-ground);box-shadow:none}
 .core-ui .rent-check-form :is(.rent-check-money,.rent-check-size) input{border:0;border-radius:0;box-shadow:none}
 .core-ui .rent-check-form>.rent-check-button{border:2px solid var(--rcm-ink);border-radius:0}
+.core-ui .rent-check-form :is(select,.district-combobox-input,.selection-native):focus-visible{outline:2px solid var(--rcm-action);outline-offset:2px;box-shadow:none}
+.core-ui .rent-check-form :is(.rent-check-money,.rent-check-size):focus-within{border-color:var(--rcm-action);outline:2px solid var(--rcm-action);outline-offset:2px;box-shadow:none}
+.core-ui .rent-check-form>.rent-check-button:focus-visible{outline:2px solid var(--rcm-action);outline-offset:2px;box-shadow:none}
 .core-ui .property-type-hint,.core-ui .rent-check-status,.core-ui .fx-input-reference{color:var(--rcm-muted)}
 
 .core-ui :is(.search-button,.rent-size-presets button,.rent-size-unit-toggle){
@@ -83,6 +86,7 @@ body.core-ui :focus-visible{outline:2px solid var(--rcm-action);outline-offset:2
 .core-ui .rent-check-summary>.rent-check-metrics>div+div{border-left:2px solid var(--rcm-divider)}
 .core-ui .rent-check-form>.rent-check-assist-row{border-top:2px solid var(--rcm-divider)}
 .core-ui .rent-check-form>.rent-check-assist-row :is(.rent-size-presets button,.rent-size-unit-toggle){min-height:44px;border:2px solid var(--rcm-ink);border-radius:0;box-shadow:none}
+.core-ui .rent-check-form>.rent-check-assist-row :is(.rent-size-presets button,.rent-size-unit-toggle):focus-visible{outline:2px solid var(--rcm-action);outline-offset:2px;box-shadow:none}
 .core-ui .rent-check-result>.rent-check-evidence-head{border-top:2px solid var(--rcm-ink)}
 .core-ui .rent-check-result>.table-wrap{border-top:2px solid var(--rcm-ink)}
 .core-ui .rent-check-result>.table-wrap thead{background:var(--rcm-surface)}
