@@ -5,6 +5,8 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function() {
   'use strict';
 
+  const MIN_EVIDENCE = 5;
+
   const METRICS = Object.freeze({
     'adjusted-per-sqm':Object.freeze({ en:'Deposit-adjusted monthly cost per ㎡', zh:'押金调整后每月每㎡成本' }),
     monthly:Object.freeze({ en:'Median monthly rent', zh:'月租中位数' }),
@@ -29,7 +31,14 @@
     };
   }
 
+  function evidenceState(row = {}) {
+    const summary = row.summary || {};
+    const count = Number(row.contractCount ?? summary.totalContracts ?? summary.contractCount ?? 0);
+    return count >= MIN_EVIDENCE ? 'sufficient' : 'insufficient';
+  }
+
   function metricValue(row, metric = 'adjusted-per-sqm') {
+    if (evidenceState(row) !== 'sufficient') return null;
     const summary = row && row.summary || {};
     if (metric === 'monthly') return finite(summary.medianMonthlyRentWon);
     if (metric === 'deposit') return finite(summary.medianDepositWon);
@@ -62,5 +71,5 @@
     return String(feature.properties && feature.properties.districtCode || '');
   }
 
-  return Object.freeze({ normalizeDistrict, metricValue, metricRange, rampIndex, metricLabel, featureDistrictCode });
+  return Object.freeze({ MIN_EVIDENCE, normalizeDistrict, evidenceState, metricValue, metricRange, rampIndex, metricLabel, featureDistrictCode });
 });

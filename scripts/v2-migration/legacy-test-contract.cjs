@@ -13,8 +13,8 @@ const HISTORICAL_SUMMARY = Object.freeze({
 });
 
 const CURRENT_SUMMARY = Object.freeze({
-  tests:890,
-  pass:867,
+  tests:895,
+  pass:872,
   fail:23,
   cancelled:0,
   skipped:0,

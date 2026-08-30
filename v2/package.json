@@ -1,0 +1,21 @@
+{
+  "name": "signedprice-platform",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.19.0",
+  "scripts": {
+    "lint": "pnpm --filter @signedprice/web lint",
+    "typecheck": "pnpm -r typecheck",
+    "test": "vitest run",
+    "build": "pnpm --filter @signedprice/web build",
+    "e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.62.1",
+    "typescript": "5.9.3",
+    "vitest": "4.1.11"
+  },
+  "dependencies": {
+    "zod": "4.5.1"
+  }
+}

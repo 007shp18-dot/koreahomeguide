@@ -7,9 +7,9 @@ function staticPages() {
   const pages = [];
   const excludedDirectories = new Set(['.git', '.worktrees', 'docs', 'node_modules']);
 
-  function visit(directory) {
+  function visit(directory, isRoot = false) {
     for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
-      if (entry.isDirectory() && excludedDirectories.has(entry.name)) continue;
+      if (entry.isDirectory() && (excludedDirectories.has(entry.name) || (isRoot && entry.name === 'v2'))) continue;
 
       const file = path.join(directory, entry.name);
       if (entry.isDirectory()) visit(file);
@@ -19,7 +19,7 @@ function staticPages() {
     }
   }
 
-  visit('.');
+  visit('.', true);
   return pages.sort();
 }
 

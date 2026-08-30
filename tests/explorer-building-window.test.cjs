@@ -122,6 +122,28 @@ test('building drawer keeps Street View before every evidence section', () => {
   assert.match(source, /khg:building-window-state/);
 });
 
+test('building detail scrolls Street View and evidence in one container on desktop and mobile', () => {
+  const source = fs.readFileSync('explore/building-window.js', 'utf8');
+  const shell = source.match(/overlay\.innerHTML = `([\s\S]*?)`;/)?.[1] || '';
+  const scrollStart = shell.indexOf('class="building-status-scroll"');
+  const streetView = shell.indexOf('id="explorerStreetView"');
+  const evidence = shell.indexOf('id="buildingStatusBody"');
+  const actions = shell.indexOf('class="building-status-actions"');
+
+  assert.ok(scrollStart >= 0, 'dialog exposes one named scroll container');
+  assert.ok(streetView > scrollStart, 'Street View is inside the scroll container');
+  assert.ok(evidence > streetView, 'evidence follows Street View in the same scroll container');
+  assert.ok(actions > evidence, 'persistent actions remain outside the scrolling content');
+
+  const css = fs.readFileSync('styles.css', 'utf8');
+  const modalLayer = css.slice(css.indexOf('/* v28 centered building modal */'));
+  assert.match(modalLayer, /\.building-status-window\{[^}]*grid-template-rows:auto minmax\(0,1fr\) auto/);
+  assert.match(modalLayer, /\.building-status-scroll\{[^}]*min-height:0[^}]*overflow-y:auto/);
+  assert.match(modalLayer, /\.building-status-body\{[^}]*overflow:visible/);
+  assert.doesNotMatch(modalLayer, /\.building-status-window\{[^}]*grid-template-rows:auto auto minmax\(0,1fr\) auto/);
+  assert.match(source, /scroll\.scrollTop = 0/);
+});
+
 test('building detail is one accessible modal with complete close and focus lifecycle', () => {
   const source = fs.readFileSync('explore/building-window.js', 'utf8');
   const shell = source.match(/overlay\.innerHTML = `([\s\S]*?)`;/)?.[1] || '';

@@ -110,7 +110,7 @@ test('both Explorer locales expose district and price controls for the map', () 
     assert.match(html, /data-map-legend-method/);
     assert.match(html, /id="districtList"/);
     assert.match(html, /data-workspace-state="districts"/);
-    assert.match(html, /src="\/explore\/district-map\.js\?v=30"/);
+    assert.match(html, /src="\/explore\/district-map\.js\?v=31"/);
   }
 });
 
@@ -145,12 +145,13 @@ test('Street View loading and ready states share one stable media frame', () => 
   assert.doesNotMatch(finalLayer, /explorer-street-view-canvas\{[^}]*height:(?:120|126|170|190)px/);
 });
 
-test('building detail is a centered bounded modal with internal scrolling', () => {
+test('building detail is a centered bounded modal with one media-and-evidence scroller', () => {
   const css = fs.readFileSync('styles.css', 'utf8');
   const finalLayer = css.slice(css.indexOf('/* v28 centered building modal */'));
   assert.match(finalLayer, /\.building-status-overlay\{[^}]*position:fixed[^}]*display:grid[^}]*place-items:center/);
   assert.match(finalLayer, /\.building-status-window\{[^}]*width:min\(1080px,calc\(100vw - 32px\)\)[^}]*max-height:88dvh/);
-  assert.match(finalLayer, /\.building-status-body\{[^}]*overflow-y:auto/);
+  assert.match(finalLayer, /\.building-status-scroll\{[^}]*overflow-y:auto/);
+  assert.match(finalLayer, /\.building-status-body\{[^}]*overflow:visible/);
   assert.match(finalLayer, /\.building-window-media-frame\{[^}]*aspect-ratio:16\/9/);
   assert.match(finalLayer, /\.building-status-close\{[^}]*min-width:44px[^}]*min-height:44px/);
 });
@@ -164,8 +165,8 @@ test('Street View initializes only after the inline detail requests a verified l
 test('both Explorer locales load the cache-busted Street View assets', () => {
   for (const file of ['explore/index.html','zh/explore/index.html']) {
     const html = fs.readFileSync(file, 'utf8');
-    assert.match(html, /href="\/styles\.css\?v=31"/);
-    assert.match(html, /src="\/explore\/building-window\.js\?v=30"/);
+    assert.match(html, /href="\/styles\.css\?v=32"/);
+    assert.match(html, /src="\/explore\/building-window\.js\?v=31"/);
     assert.match(html, /src="\/explore\/panorama\.js\?v=30"/);
     assert.match(html, /src="\/explore\/explorer-utils\.js\?v=30"/);
   }
