@@ -202,7 +202,7 @@ test('mobile primary navigation remains tappable and reaches the market flow', a
 
   await primaryNavigation.getByRole('link', { name: 'Markets' }).tap();
   await expect(page).toHaveURL(/\/#markets$/);
-  await expect(page.getByRole('heading', { name: 'Local evidence, honestly scoped.' }))
+  await expect(page.getByRole('heading', { name: 'Invest — market depth' }))
     .toBeInViewport();
 
   const exploreSeoul = page.getByRole('link', { name: 'Explore Seoul' });
