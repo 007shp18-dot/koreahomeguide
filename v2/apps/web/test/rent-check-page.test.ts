@@ -111,7 +111,7 @@ describe('Seoul Rent Check page shell', () => {
 });
 
 describe('route metadata and authored head contract', () => {
-  it('keeps route metadata on the Server Component without canonical, hreflang or robots override', async () => {
+  it('keeps explicit noindex metadata on the Server Component without canonical or hreflang', async () => {
     const page = await loadPage();
     const source = readFileSync(
       new URL('../app/kr/seoul/tools/rent-check/page.tsx', import.meta.url),
@@ -122,8 +122,8 @@ describe('route metadata and authored head contract', () => {
     expect(page.metadata).toEqual({
       title: 'Seoul Rent Check | signedprice',
       description: 'Compare a Seoul rent quote with compatible official reported contracts.',
+      robots: { index: false, follow: true },
     });
-    expect(page.metadata).not.toHaveProperty('robots');
     expect(page.metadata).not.toHaveProperty('alternates');
     expect(JSON.stringify(page.metadata)).not.toMatch(/canonical|languages|hreflang/i);
   });

@@ -278,7 +278,7 @@ describe('bundled Archivo and pre-launch route safety', () => {
     expect(css).not.toMatch(/fonts\.(googleapis|gstatic)\.com/i);
   });
 
-  it('preserves the three market and nine intent routes behind noindex follow', async () => {
+  it('keeps only Korea routes public while the shared shell remains noindex', async () => {
     const layoutModule = await import('../app/layout');
     const intentModule = await import('../app/[country]/[city]/[intent]/page');
 
@@ -287,7 +287,11 @@ describe('bundled Archivo and pre-launch route safety', () => {
       { country: 'sg', city: 'singapore' },
       { country: 'ae', city: 'dubai' },
     ]);
-    expect(intentModule.generateStaticParams()).toHaveLength(9);
+    expect(intentModule.generateStaticParams()).toEqual([
+      { country: 'kr', city: 'seoul', intent: 'rent' },
+      { country: 'kr', city: 'seoul', intent: 'buy' },
+      { country: 'kr', city: 'seoul', intent: 'invest' },
+    ]);
     expect(layoutModule.metadata.robots).toEqual({ index: false, follow: true });
     expect(layoutModule.metadata).not.toHaveProperty('alternates');
   });

@@ -1,0 +1,503 @@
+.marketEvidence {
+  --public-ground: #f3f2f2;
+  --public-ink: #201e1d;
+  --public-accent: #1d4ed8;
+  color: var(--public-ink);
+  background: var(--public-ground);
+  border-radius: 0;
+  box-shadow: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.strokeState {
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.strokeSwatch {
+  width: 1.5rem;
+  height: 1rem;
+  flex: 0 0 auto;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.strokeLabel {
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.filled {
+  border: 2px solid var(--public-ink);
+  background: var(--public-ink);
+}
+
+.outlined {
+  border: 2px solid var(--public-ink);
+  background: transparent;
+}
+
+.hatched {
+  border: 2px solid var(--public-ink);
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent 0 3px,
+    var(--public-ink) 3px 4px
+  );
+}
+
+.hairline {
+  height: 2px;
+  border: 0;
+  background: var(--public-ink);
+}
+
+.boxPlot,
+.withheldPlot {
+  width: 100%;
+  border: 2px solid var(--public-ink);
+}
+
+.plotCanvas {
+  position: relative;
+  height: 112px;
+  border-bottom: 2px solid var(--public-ink);
+  overflow: hidden;
+}
+
+.whisker,
+.interquartile,
+.medianLine,
+.quoteMarker {
+  position: absolute;
+  display: block;
+}
+
+.whisker {
+  top: 55px;
+  left: var(--min-pct);
+  width: max(2px, calc(var(--max-pct) - var(--min-pct)));
+  height: 2px;
+  background: var(--public-ink);
+}
+
+.whisker::before,
+.whisker::after {
+  position: absolute;
+  top: -12px;
+  width: 2px;
+  height: 26px;
+  background: var(--public-ink);
+  content: "";
+}
+
+.whisker::before {
+  left: 0;
+}
+
+.whisker::after {
+  right: 0;
+}
+
+.interquartile {
+  top: 32px;
+  left: var(--p25-pct);
+  width: max(2px, calc(var(--p75-pct) - var(--p25-pct)));
+  height: 48px;
+  border: 2px solid var(--public-ink);
+  background: var(--public-ground);
+}
+
+.medianLine {
+  top: 26px;
+  left: var(--med-pct);
+  width: 2px;
+  height: 60px;
+  background: var(--public-ink);
+}
+
+.quoteMarker {
+  top: 12px;
+  left: var(--marker-pct);
+  width: 2px;
+  height: 88px;
+  background: var(--public-accent);
+}
+
+.quoteMarker::before {
+  position: absolute;
+  top: -1px;
+  left: -5px;
+  width: 12px;
+  height: 12px;
+  background: var(--public-accent);
+  content: "";
+  transform: rotate(45deg);
+}
+
+.plotLabels {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  border-bottom: 1px solid var(--public-ink);
+}
+
+.plotLabels > div {
+  min-width: 0;
+  padding: 0.7rem;
+  border-right: 1px solid var(--public-ink);
+}
+
+.plotLabels > div:last-child {
+  border-right: 0;
+}
+
+.plotLabels dt {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.plotLabels dd {
+  margin-top: 0.25rem;
+  overflow-wrap: anywhere;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.plotCaption,
+.withheldCopy {
+  padding: 0.85rem;
+  display: grid;
+  gap: 0.2rem;
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+.plotCaption span,
+.withheldCopy span,
+.verdictWithheld p {
+  color: #5d5958;
+}
+
+.withheldHatch {
+  min-height: 112px;
+  border-bottom: 2px solid var(--public-ink);
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent 0 7px,
+    var(--public-ink) 7px 8px
+  );
+}
+
+.verdictLine,
+.verdictWithheld {
+  min-height: 64px;
+  padding: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border: 2px solid var(--public-ink);
+}
+
+.verdictLine p,
+.verdictWithheld p {
+  display: grid;
+  gap: 0.15rem;
+  text-align: right;
+}
+
+.verdictLine strong {
+  color: var(--public-accent);
+  font-size: 1rem;
+}
+
+.verdictLine p span,
+.verdictWithheld p {
+  font-size: 0.72rem;
+}
+
+.quoteIsland {
+  width: 100%;
+  display: grid;
+  gap: 1rem;
+}
+
+.quoteFields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  border: 2px solid var(--public-ink);
+}
+
+.quoteField {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(112px, 0.4fr) minmax(0, 1fr);
+  align-items: stretch;
+}
+
+.quoteField + .quoteField {
+  border-left: 2px solid var(--public-ink);
+}
+
+.quoteField > span {
+  min-height: 44px;
+  padding: 0.65rem;
+  display: grid;
+  align-content: center;
+  gap: 0.1rem;
+  border-right: 1px solid var(--public-ink);
+  font-size: 0.68rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.quoteField small {
+  color: #5d5958;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.quoteControl {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0.65rem;
+  border: 0;
+  border-radius: 0;
+  color: var(--public-ink);
+  background: var(--public-ground);
+  box-shadow: none;
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+}
+
+.quoteControl:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: 2px solid var(--public-accent);
+  outline-offset: 2px;
+}
+
+.quoteError {
+  padding: 0.65rem;
+  border-left: 2px solid var(--public-accent);
+  font-size: 0.75rem;
+  font-weight: 750;
+}
+
+.quoteResult {
+  min-width: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.publicPage {
+  min-height: 100dvh;
+  color: var(--public-ink);
+  background: var(--public-ground);
+}
+
+.publicMain {
+  width: min(100%, 1240px);
+  margin-inline: auto;
+  border-right: 2px solid var(--public-ink);
+  border-left: 2px solid var(--public-ink);
+}
+
+.publicHero {
+  min-height: 360px;
+  padding: clamp(2rem, 8vw, 6rem);
+  display: grid;
+  align-content: end;
+  gap: 1.25rem;
+  border-bottom: 2px solid var(--public-ink);
+}
+
+.publicHero > p:first-child,
+.publicSectionHeading p {
+  color: var(--public-accent);
+  font-size: 0.7rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.publicHero h1 {
+  max-width: 900px;
+  font-size: clamp(2.7rem, 8vw, 7.5rem);
+  font-weight: 900;
+  letter-spacing: -0.065em;
+  line-height: 0.88;
+}
+
+.publicHero > p:last-child {
+  max-width: 680px;
+  color: #5d5958;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.publicEvidence,
+.publicDisclosure {
+  padding: clamp(1rem, 4vw, 3.5rem);
+  display: grid;
+  gap: 1.5rem;
+  border-bottom: 2px solid var(--public-ink);
+}
+
+.publicSectionHeading {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.publicSectionHeading h2 {
+  font-size: clamp(1.45rem, 3vw, 2.7rem);
+  letter-spacing: -0.04em;
+}
+
+.publicDisclosure dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 2px solid var(--public-ink);
+  border-left: 2px solid var(--public-ink);
+}
+
+.publicDisclosure dl > div {
+  min-height: 96px;
+  padding: 1rem;
+  display: grid;
+  align-content: space-between;
+  gap: 0.75rem;
+  border-right: 2px solid var(--public-ink);
+  border-bottom: 2px solid var(--public-ink);
+}
+
+.publicDisclosure dt {
+  font-size: 0.65rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.publicDisclosure dd,
+.publicDisclosure > p {
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.publicDisclosure > p {
+  max-width: 760px;
+  color: #5d5958;
+}
+
+.publicLinks {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-bottom: 2px solid var(--public-ink);
+}
+
+.publicLinks a {
+  min-height: 52px;
+  padding: 0.75rem;
+  display: grid;
+  place-items: center;
+  border-right: 2px solid var(--public-ink);
+  color: var(--public-ink);
+  font-size: 0.72rem;
+  font-weight: 850;
+  text-align: center;
+  text-decoration: none;
+}
+
+.publicLinks a:last-child {
+  border-right: 0;
+}
+
+.publicLinks a:hover,
+.publicLinks a:focus-visible {
+  color: var(--public-ground);
+  background: var(--public-accent);
+}
+
+.publicLinks a:focus-visible {
+  outline: 2px solid var(--public-accent);
+  outline-offset: 2px;
+}
+
+@media (max-width: 720px) {
+  .publicMain {
+    border-right: 0;
+    border-left: 0;
+  }
+
+  .publicHero {
+    min-height: 320px;
+    padding: 2rem 1rem;
+  }
+
+  .publicDisclosure dl,
+  .publicLinks {
+    grid-template-columns: 1fr;
+  }
+
+  .publicLinks a {
+    min-height: 44px;
+    border-right: 0;
+    border-bottom: 2px solid var(--public-ink);
+  }
+
+  .publicLinks a:last-child {
+    border-bottom: 0;
+  }
+
+  .quoteFields {
+    grid-template-columns: 1fr;
+  }
+
+  .quoteField {
+    grid-template-columns: minmax(104px, 0.38fr) minmax(0, 1fr);
+  }
+
+  .quoteField + .quoteField {
+    border-top: 2px solid var(--public-ink);
+    border-left: 0;
+  }
+
+  .plotLabels {
+    grid-template-columns: 1fr;
+  }
+
+  .plotLabels > div {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    border-right: 0;
+    border-bottom: 1px solid var(--public-ink);
+  }
+
+  .plotLabels > div:last-child {
+    border-bottom: 0;
+  }
+
+  .verdictLine,
+  .verdictWithheld {
+    min-height: 88px;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .verdictLine p,
+  .verdictWithheld p {
+    text-align: left;
+  }
+}

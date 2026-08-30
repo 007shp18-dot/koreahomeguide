@@ -49,7 +49,7 @@ const unsupportedClaimPattern =
 describe('market route model', () => {
   it('publishes exactly the three approved market overview contracts', () => {
     expect(marketRouteParams).toEqual(expectedMarketParams);
-    expect(generateMarketStaticParams()).toEqual(expectedMarketParams);
+    expect(generateMarketStaticParams()).toEqual(expectedMarketParams.slice(0, 1));
     expect(
       marketRouteParams.map(({ country, city }) =>
         buildMarketPageModel(country, city)?.marketId,
@@ -59,7 +59,7 @@ describe('market route model', () => {
 
   it('publishes exactly nine approved intent contracts', () => {
     expect(intentRouteParams).toEqual(expectedIntentParams);
-    expect(generateIntentStaticParams()).toEqual(expectedIntentParams);
+    expect(generateIntentStaticParams()).toEqual(expectedIntentParams.slice(0, 3));
     expect(
       intentRouteParams.map(({ country, city, intent }) =>
         buildIntentPageModel(country, city, intent)?.href,

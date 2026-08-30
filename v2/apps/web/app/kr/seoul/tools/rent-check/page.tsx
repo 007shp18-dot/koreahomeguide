@@ -18,6 +18,7 @@ type RentCheckPageProps = {
 export const metadata: Metadata = {
   title: 'Seoul Rent Check | signedprice',
   description: 'Compare a Seoul rent quote with compatible official reported contracts.',
+  robots: { index: false, follow: true },
 };
 
 const header: SiteHeaderModel = {

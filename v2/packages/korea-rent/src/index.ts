@@ -54,6 +54,7 @@ export {
   type MolitSourceErrorCode,
   type ProviderCallBudget,
 } from './xml';
+export { MOLIT_RIGHTS_POLICY_ID } from './versions';
 export {
   DERIVED_FRESH_SECONDS,
   DERIVED_STALE_SECONDS,
@@ -72,3 +73,8 @@ export {
   type SeoulRentCheckService,
   type SeoulRentCheckServiceDependencies,
 } from './service';
+export {
+  buildKoreaPublicMarketSummary,
+  type KoreaPublicSummaryInput,
+  type KoreaPublicSummarySource,
+} from './public-summary';

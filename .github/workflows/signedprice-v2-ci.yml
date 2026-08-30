@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - 'v2/**'
+      - 'artifacts/public-p1/**'
+      - 'docs/operations/signedprice-public-p1-release-gate.md'
       - 'artifacts/v2-migration/**'
       - 'scripts/v2-migration/**'
       - 'tests/**/*.test.cjs'
@@ -11,6 +13,8 @@ on:
   pull_request:
     paths:
       - 'v2/**'
+      - 'artifacts/public-p1/**'
+      - 'docs/operations/signedprice-public-p1-release-gate.md'
       - 'artifacts/v2-migration/**'
       - 'scripts/v2-migration/**'
       - 'tests/**/*.test.cjs'
@@ -43,6 +47,8 @@ jobs:
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test
+      - name: Verify workbook QA mapping
+        run: pnpm exec vitest run tests/public-p1-workbook-qa.test.ts
       - run: pnpm build
       - name: Reject server-only Rent Check data from client assets
         run: pnpm check:rent-client-boundary
@@ -70,7 +76,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Install locked Playwright Chromium
         run: pnpm exec playwright install --with-deps chromium
-      - name: Run desktop and mobile browser release gate
+      - name: Run desktop and mobile workbook release gate
         run: pnpm e2e --project=desktop-chromium --project=mobile-chromium
       - name: Upload browser failure diagnostics
         if: failure()

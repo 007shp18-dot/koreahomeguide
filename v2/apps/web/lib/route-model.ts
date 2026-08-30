@@ -554,6 +554,14 @@ export const intentRouteParams = initialMarketIds.flatMap((marketId) => {
   }));
 });
 
+export const publicMarketRouteParams = marketRouteParams.filter(
+  ({ country, city }) => country === 'kr' && city === 'seoul',
+);
+
+export const publicIntentRouteParams = intentRouteParams.filter(
+  ({ country, city }) => country === 'kr' && city === 'seoul',
+);
+
 function isIntent(value: string): value is Intent {
   return intents.some((intent) => intent === value);
 }

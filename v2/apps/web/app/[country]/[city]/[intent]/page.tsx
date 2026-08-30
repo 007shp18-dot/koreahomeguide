@@ -6,7 +6,7 @@ import { SiteFooter } from '../../../../components/site-footer';
 import { SiteHeader } from '../../../../components/site-header';
 import {
   buildIntentPageModel,
-  intentRouteParams,
+  publicIntentRouteParams,
 } from '../../../../lib/route-model';
 
 type IntentPageProps = {
@@ -20,7 +20,7 @@ type IntentPageProps = {
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return intentRouteParams;
+  return publicIntentRouteParams;
 }
 
 export async function generateMetadata({ params }: IntentPageProps): Promise<Metadata> {
