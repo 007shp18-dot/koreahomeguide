@@ -12,6 +12,7 @@ import {
   PUBLIC_SUMMARY_ARTIFACT_VERSION,
   createPublicSummaryRepository,
 } from './summary-repository.server';
+import { parsePublicSummaryArtifact } from './summary-schema';
 
 export { PUBLIC_SUMMARY_ARTIFACT_VERSION } from './summary-repository.server';
 
@@ -133,8 +134,52 @@ const navigation = {
   ],
 } as const;
 
+export type PublicSummaryEnvironmentDiagnosticCode =
+  | 'artifact_missing'
+  | 'period_missing'
+  | 'artifact_json_invalid'
+  | 'artifact_contract_invalid'
+  | 'required_summary_missing'
+  | 'ready';
+
+export function diagnosePublicSummaryEnvironment(
+  serialized: string | undefined,
+  period: string | undefined,
+): Readonly<{ code: PublicSummaryEnvironmentDiagnosticCode }> {
+  if (serialized === undefined) return { code: 'artifact_missing' };
+  if (period === undefined || period === '') return { code: 'period_missing' };
+
+  let source: unknown;
+  try {
+    source = JSON.parse(serialized);
+  } catch {
+    return { code: 'artifact_json_invalid' };
+  }
+
+  try {
+    const artifact = parsePublicSummaryArtifact(source, {
+      artifactVersion: PUBLIC_SUMMARY_ARTIFACT_VERSION,
+      marketId: 'kr-seoul',
+      period,
+    });
+    const requiredSummary = artifact.summaries.some((summary) => (
+      summary.area === 'seoul' &&
+      summary.deal === 'rent' &&
+      summary.band === 'all-homes'
+    ));
+    return { code: requiredSummary ? 'ready' : 'required_summary_missing' };
+  } catch {
+    return { code: 'artifact_contract_invalid' };
+  }
+}
+
 function environmentDependencies(): KoreaPublicRouteDependencies {
   const serialized = process.env.SIGNEDPRICE_PUBLIC_SUMMARY_ARTIFACT;
+  const period = process.env.SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD;
+  const diagnostic = diagnosePublicSummaryEnvironment(serialized, period);
+  if (process.env.VERCEL_ENV === 'preview' && diagnostic.code !== 'ready') {
+    console.warn(`[signedprice:public-summary] ${diagnostic.code}`);
+  }
   let source: unknown;
   try {
     source = serialized === undefined ? undefined : JSON.parse(serialized);
@@ -143,7 +188,7 @@ function environmentDependencies(): KoreaPublicRouteDependencies {
   }
   return {
     source,
-    period: process.env.SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD ?? '',
+    period: period ?? '',
   };
 }
 
