@@ -30,6 +30,11 @@ export interface MarketHeroModel {
     readonly label: string;
     readonly value: string;
   }[];
+  readonly layout?: 'overview';
+  readonly tier?: {
+    readonly state: CapabilityState;
+    readonly label: string;
+  };
 }
 
 export interface CapabilityItemModel {
@@ -57,6 +62,21 @@ export interface MarketLimitationsModel {
   readonly items: readonly string[];
   readonly actionsLabel: string;
   readonly actions: readonly NavigationActionModel[];
+}
+
+export interface MarketOverviewRowModel {
+  readonly number: string;
+  readonly title: string;
+  readonly description: string;
+  readonly state: CapabilityState | 'not_built';
+  readonly stateLabel: string;
+  readonly items: readonly {
+    readonly label: string;
+    readonly description?: string;
+    readonly state?: CapabilityState | 'not_built';
+    readonly stateLabel?: string;
+    readonly href?: string;
+  }[];
 }
 
 export interface ComparisonCellModel {
@@ -96,6 +116,8 @@ export interface MarketPageModel {
   readonly intentGrid: CapabilityGridModel;
   readonly capabilityGrid: CapabilityGridModel;
   readonly capabilities: readonly CapabilityItemModel[];
+  readonly overviewRows: readonly MarketOverviewRowModel[];
+  readonly overviewActions: readonly NavigationActionModel[];
   readonly limitations: MarketLimitationsModel;
   readonly nextAction: NavigationActionModel;
 }
@@ -111,6 +133,8 @@ export interface IntentPageModel {
   readonly hero: MarketHeroModel;
   readonly comparisonScope: CapabilityGridModel;
   readonly sourcePosture: CapabilityGridModel;
+  readonly decisionRows: readonly MarketOverviewRowModel[];
+  readonly overviewActions: readonly NavigationActionModel[];
   readonly limitations: MarketLimitationsModel;
 }
 
@@ -127,7 +151,9 @@ export interface ComparisonPageModel {
 type MarketRouteCopy = {
   heroDescription: string;
   sourcePosture: string;
-  capabilities: readonly CapabilityItemModel[];
+  capabilities: readonly (CapabilityItemModel & {
+    readonly overviewCategory: 'evidence' | 'workflow';
+  })[];
   nextAction: NavigationActionModel;
 };
 
@@ -209,15 +235,19 @@ const stateLabels = {
   rights_blocked: 'rights blocked',
 } as const satisfies Record<CapabilityState, string>;
 
+const overviewStateLabels = {
+  ...stateLabels,
+  not_built: 'not built',
+} as const;
+
 const routeShellCopy = {
   header: {
     brand: 'signedprice',
     homeLabel: 'signedprice home',
     navigationLabel: 'Primary navigation',
     links: [
-      { label: 'Markets', href: '/#markets' },
-      { label: 'Compare markets', href: '/compare/' },
-      { label: 'Methodology', href: '/#methodology' },
+      { label: 'Global home', href: '/' },
+      { label: 'Market overview', href: '/#markets' },
     ],
   } satisfies SiteHeaderModel,
   footer: {
@@ -346,6 +376,7 @@ const marketCopyById = {
         state: seoulOfficialState,
         stateLabel: stateLabels[seoulOfficialState],
         housingSector: null,
+        overviewCategory: 'evidence',
       },
       {
         label: 'Live rent exploration',
@@ -354,6 +385,7 @@ const marketCopyById = {
         stateLabel: stateLabels.available,
         housingSector: null,
         href: 'https://koreahomeguide.com/explore/',
+        overviewCategory: 'workflow',
       },
       {
         label: 'Professional connection detail',
@@ -361,6 +393,7 @@ const marketCopyById = {
         state: 'rights_blocked',
         stateLabel: stateLabels.rights_blocked,
         housingSector: null,
+        overviewCategory: 'workflow',
       },
     ],
     nextAction: {
@@ -382,6 +415,7 @@ const marketCopyById = {
         state: singaporeHdb.state,
         stateLabel: stateLabels[singaporeHdb.state],
         housingSector: 'hdb',
+        overviewCategory: 'evidence',
       },
       {
         label: 'Private residential detail',
@@ -389,6 +423,7 @@ const marketCopyById = {
         state: singaporePrivate.state,
         stateLabel: stateLabels[singaporePrivate.state],
         housingSector: 'private_residential',
+        overviewCategory: 'evidence',
       },
       {
         label: 'Professional connection detail',
@@ -397,6 +432,7 @@ const marketCopyById = {
         state: 'rights_blocked',
         stateLabel: stateLabels.rights_blocked,
         housingSector: null,
+        overviewCategory: 'workflow',
       },
     ],
     nextAction: {
@@ -418,6 +454,7 @@ const marketCopyById = {
         state: 'limited',
         stateLabel: stateLabels.limited,
         housingSector: null,
+        overviewCategory: 'evidence',
       },
       {
         label: 'Transaction detail',
@@ -425,6 +462,7 @@ const marketCopyById = {
         state: dubaiTransactions.state,
         stateLabel: stateLabels[dubaiTransactions.state],
         housingSector: null,
+        overviewCategory: 'evidence',
       },
       {
         label: 'Professional connection detail',
@@ -433,6 +471,7 @@ const marketCopyById = {
         state: 'rights_blocked',
         stateLabel: stateLabels.rights_blocked,
         housingSector: null,
+        overviewCategory: 'workflow',
       },
     ],
     nextAction: {
@@ -529,6 +568,30 @@ function marketOverviewAction(marketId: MarketId): NavigationActionModel {
   };
 }
 
+function marketHeader(profile: MarketProfile, isCurrent: boolean): SiteHeaderModel {
+  return {
+    brand: routeShellCopy.header.brand,
+    homeLabel: routeShellCopy.header.homeLabel,
+    navigationLabel: routeShellCopy.header.navigationLabel,
+    links: [
+      { label: 'Global home', href: '/' },
+      {
+        label: 'Market overview',
+        href: getMarketHref(profile.id),
+        isCurrent,
+      },
+    ],
+  };
+}
+
+function denySafeOverviewState(
+  states: readonly CapabilityState[],
+): CapabilityState {
+  if (states.every((state) => state === 'available')) return 'available';
+  if (states.every((state) => state === 'rights_blocked')) return 'rights_blocked';
+  return 'limited';
+}
+
 export function buildMarketPageModel(
   countryCode: string,
   citySlug: string,
@@ -545,6 +608,79 @@ export function buildMarketPageModel(
     housingSector: null,
     href: getIntentHref(profile.id, intent),
   }));
+  const evidenceCapabilities = copy.capabilities.filter(
+    (capability) => capability.overviewCategory === 'evidence',
+  );
+  const evidenceState = denySafeOverviewState(
+    evidenceCapabilities.map((capability) => capability.state),
+  );
+  const decisionState = denySafeOverviewState(
+    intents.map((intent) => profile.capabilities[intent]),
+  );
+  const depthState = profile.productDepth === 'full_product' ? 'available' : 'limited';
+  const overviewRows: readonly MarketOverviewRowModel[] = [
+    {
+      number: '01',
+      title: 'Current product depth',
+      description: `${productDepthLabels[profile.productDepth]} in ${profile.nativeCurrency}.`,
+      state: depthState,
+      stateLabel: overviewStateLabels[depthState],
+      items: [],
+    },
+    {
+      number: '02',
+      title: 'Available evidence',
+      description: copy.sourcePosture,
+      state: evidenceState,
+      stateLabel: overviewStateLabels[evidenceState],
+      items: evidenceCapabilities.map((capability) => ({
+        label: capability.label,
+        description: capability.description,
+        state: capability.state,
+        stateLabel: capability.stateLabel,
+      })),
+    },
+    {
+      number: '03',
+      title: 'Supported decisions',
+      description: 'Rent, buy and invest paths keep their market-specific capability boundaries.',
+      state: decisionState,
+      stateLabel: overviewStateLabels[decisionState],
+      items: intentItems.map((item) => ({
+        label: item.label,
+        description: item.description,
+        state: item.state,
+        stateLabel: item.stateLabel,
+        href: item.href,
+      })),
+    },
+    {
+      number: '04',
+      title: 'Known limitations',
+      description: 'These limits remain visible until the exact evidence and operating gates pass.',
+      state: 'limited',
+      stateLabel: overviewStateLabels.limited,
+      items: profile.limitations.map((limitation) => ({ label: limitation })),
+    },
+    {
+      number: '05',
+      title: 'Local rules and costs',
+      description:
+        'Dated eligibility, tax and ownership-cost detail is not yet published on this Preview route.',
+      state: 'not_built',
+      stateLabel: overviewStateLabels.not_built,
+      items: [],
+    },
+    {
+      number: '06',
+      title: 'Source and methodology status',
+      description:
+        'Market-level source posture is visible; dataset identifiers, periods, correction status and methodology notes are not yet published.',
+      state: 'limited',
+      stateLabel: overviewStateLabels.limited,
+      items: [],
+    },
+  ];
 
   return {
     metadata: routeMetadataCopy.market(profile),
@@ -552,21 +688,19 @@ export function buildMarketPageModel(
     productDepth: profile.productDepth,
     nativeCurrency: profile.nativeCurrency,
     readiness: previewReadiness,
-    header: routeShellCopy.header,
+    header: marketHeader(profile, true),
     footer: routeShellCopy.footer,
     hero: {
       sectionLabel: `${profile.cityName} market overview`,
       eyebrow: `${profile.cityName} market`,
       heading: profile.cityName,
       description: copy.heroDescription,
-      facts: [
-        {
-          label: routeSectionCopy.facts.productDepth,
-          value: productDepthLabels[profile.productDepth],
-        },
-        { label: routeSectionCopy.facts.currency, value: profile.nativeCurrency },
-        { label: routeSectionCopy.facts.sourcePosture, value: copy.sourcePosture },
-      ],
+      facts: [],
+      layout: 'overview',
+      tier: {
+        state: depthState,
+        label: productDepthLabels[profile.productDepth],
+      },
     },
     intentGrid: {
       ...routeSectionCopy.marketIntents,
@@ -577,6 +711,8 @@ export function buildMarketPageModel(
       items: copy.capabilities,
     },
     capabilities: copy.capabilities,
+    overviewRows,
+    overviewActions: [copy.nextAction, commonActions.compare],
     limitations: {
       ...routeSectionCopy.limitations,
       items: profile.limitations,
@@ -602,6 +738,62 @@ export function buildIntentPageModel(
     stateLabel: stateLabels[state],
     housingSector: null,
   }));
+  const sourceItems = intentSourceCopyByMarket[profile.id];
+  const usableSources = sourceItems.filter(
+    (item) => item.state !== 'rights_blocked',
+  );
+  const blockedSources = sourceItems.filter(
+    (item) => item.state === 'rights_blocked',
+  );
+  const usableState = denySafeOverviewState(
+    usableSources.map((item) => item.state),
+  );
+  const decisionRows: readonly MarketOverviewRowModel[] = [
+    {
+      number: '01',
+      title: 'Decision scope',
+      description: routeSectionCopy.intentComparison.description,
+      state,
+      stateLabel: overviewStateLabels[state],
+      items: comparisonItems.map((item) => ({
+        label: item.label,
+        description: item.description,
+        state: item.state,
+        stateLabel: item.stateLabel,
+      })),
+    },
+    {
+      number: '02',
+      title: 'Usable source classes',
+      description:
+        'Only source classes cleared for this market remain in the usable evidence set.',
+      state: usableState,
+      stateLabel: overviewStateLabels[usableState],
+      items: usableSources.map((item) => ({
+        label: item.label,
+        description: item.description,
+        state: item.state,
+        stateLabel: item.stateLabel,
+      })),
+    },
+    {
+      number: '03',
+      title: 'Blocked detail',
+      description:
+        'Blocked source classes stay separate and are never inferred from usable evidence.',
+      state: blockedSources.length > 0 ? 'rights_blocked' : 'not_built',
+      stateLabel:
+        blockedSources.length > 0
+          ? overviewStateLabels.rights_blocked
+          : overviewStateLabels.not_built,
+      items: blockedSources.map((item) => ({
+        label: item.label,
+        description: item.description,
+        state: item.state,
+        stateLabel: item.stateLabel,
+      })),
+    },
+  ];
 
   return {
     metadata: routeMetadataCopy.intent(profile, intentValue),
@@ -609,7 +801,7 @@ export function buildIntentPageModel(
     intent: intentValue,
     href: getIntentHref(profile.id, intentValue),
     readiness: previewReadiness,
-    header: routeShellCopy.header,
+    header: marketHeader(profile, false),
     footer: routeShellCopy.footer,
     hero: {
       sectionLabel: `${intentLabel} in ${profile.cityName}`,
@@ -631,8 +823,10 @@ export function buildIntentPageModel(
     },
     sourcePosture: {
       ...routeSectionCopy.intentSources,
-      items: intentSourceCopyByMarket[profile.id],
+      items: sourceItems,
     },
+    decisionRows,
+    overviewActions: [marketOverviewAction(profile.id), commonActions.compare],
     limitations: {
       ...routeSectionCopy.limitations,
       items: profile.limitations,
@@ -756,7 +950,13 @@ export function buildComparisonPageModel(): ComparisonPageModel {
   return {
     metadata: routeMetadataCopy.compare,
     readiness: previewReadiness,
-    header: routeShellCopy.header,
+    header: {
+      ...routeShellCopy.header,
+      links: [
+        { label: 'Global home', href: '/' },
+        { label: 'Compare markets', href: '/compare/', isCurrent: true },
+      ],
+    },
     footer: routeShellCopy.footer,
     hero: {
       sectionLabel: 'Market capability comparison',

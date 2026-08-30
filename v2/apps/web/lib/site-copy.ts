@@ -44,6 +44,8 @@ const englishMetadata = {
 export interface NavigationLinkModel {
   readonly label: string;
   readonly href: string;
+  readonly ariaLabel?: string;
+  readonly isCurrent?: boolean;
 }
 
 export interface SiteHeaderModel {
@@ -77,9 +79,8 @@ const englishHeaderCopy = {
   homeLabel: 'signedprice home',
   navigationLabel: 'Primary navigation',
   links: [
-    { label: 'Markets', href: '#markets' },
-    { label: 'How it works', href: '#principles' },
-    { label: 'Methodology', href: '#methodology' },
+    { label: 'Global home', href: '/', ariaLabel: 'Global home', isCurrent: true },
+    { label: 'Market overview', href: '#markets', ariaLabel: 'Markets' },
   ],
 } as const satisfies SiteHeaderModel;
 
@@ -176,6 +177,7 @@ export const homepageCopy = {
 export type IntentGroupModel = {
   id: Intent;
   label: string;
+  description: string;
   destinations: {
     label: string;
     ariaLabel: string;
@@ -186,6 +188,11 @@ export type IntentGroupModel = {
 export const homepageIntentGroups: IntentGroupModel[] = intents.map((intent) => ({
   id: intent,
   label: intentLabels[intent],
+  description: {
+    rent: 'Compare contracted rents and local rental rules.',
+    buy: 'Read signed sale prices before asking prices.',
+    invest: 'Test yield only where every input is supported.',
+  }[intent],
   destinations: marketIds.map((marketId) => {
     const market = getMarketProfile(marketId);
 
@@ -209,6 +216,12 @@ export type MarketCardModel = {
   dataRightsLabel: string;
   limitationsLabel: string;
   limitations: readonly string[];
+  intentCapabilities: Record<Intent, {
+    label: string;
+    href: string;
+    state: CapabilityState;
+    stateLabel: string;
+  }>;
   dataCapabilities: {
     label: string;
     state: CapabilityState;
@@ -229,6 +242,17 @@ function createMarketCardModel(profile: MarketProfile): MarketCardModel {
     dataRightsLabel: homepageCopy.markets.dataRightsLabel,
     limitationsLabel: homepageCopy.markets.limitationsLabel,
     limitations: profile.limitations,
+    intentCapabilities: Object.fromEntries(
+      intents.map((intent) => [
+        intent,
+        {
+          label: `${intentLabels[intent]} decision path`,
+          href: getIntentHref(profile.id, intent),
+          state: profile.capabilities[intent],
+          stateLabel: capabilityStateLabels[profile.capabilities[intent]],
+        },
+      ]),
+    ) as MarketCardModel['intentCapabilities'],
     dataCapabilities: profile.dataCapabilities.map((capability) => ({
       label: capability.label,
       state: capability.state,

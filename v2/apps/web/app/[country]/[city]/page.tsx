@@ -1,8 +1,7 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { CapabilityGrid } from '../../../components/capability-grid';
 import { MarketHero } from '../../../components/market-hero';
-import { MarketLimitations } from '../../../components/market-limitations';
+import { MarketOverviewRows } from '../../../components/market-overview-rows';
 import { SiteFooter } from '../../../components/site-footer';
 import { SiteHeader } from '../../../components/site-header';
 import {
@@ -43,9 +42,12 @@ export default async function MarketOverviewPage({ params }: MarketPageProps) {
       <SiteHeader copy={model.header} />
       <main>
         <MarketHero model={model.hero} />
-        <CapabilityGrid model={model.intentGrid} />
-        <CapabilityGrid model={model.capabilityGrid} />
-        <MarketLimitations model={model.limitations} />
+        <MarketOverviewRows
+          rows={model.overviewRows}
+          actions={model.overviewActions}
+          actionsLabel={model.limitations.actionsLabel}
+          primaryAction={model.productDepth === 'full_product'}
+        />
       </main>
       <SiteFooter copy={model.footer} />
     </div>

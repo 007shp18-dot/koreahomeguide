@@ -1,5 +1,4 @@
-import { IntentTabs } from '../components/intent-tabs';
-import { MarketCard } from '../components/market-card';
+import { HomeMarketBrowser } from '../components/home-market-browser';
 import { SiteFooter } from '../components/site-footer';
 import { SiteHeader } from '../components/site-header';
 import { TrustStrip } from '../components/trust-strip';
@@ -14,44 +13,11 @@ export default function Home() {
     <div id="top">
       <SiteHeader copy={homepageCopy.header} />
       <main>
-        <section className="hero site-shell" aria-labelledby="home-headline">
-          <div className="hero__copy">
-            <div className="hero__statement">
-              <p className="section-eyebrow">{homepageCopy.hero.eyebrow}</p>
-              <h1 id="home-headline">{homepageCopy.hero.headline}</h1>
-            </div>
-            <p className="hero__description">{homepageCopy.hero.description}</p>
-          </div>
-          <div className="hero__intents">
-            <div className="hero__intents-heading">
-              <h2>{homepageCopy.hero.intentHeading}</h2>
-              <p>{homepageCopy.hero.intentDescription}</p>
-            </div>
-            <IntentTabs
-              label={homepageCopy.hero.intentNavigationLabel}
-              groups={homepageIntentGroups}
-            />
-          </div>
-        </section>
-
-        <section
-          className="markets site-shell"
-          id="markets"
-          aria-label={homepageCopy.markets.sectionLabel}
-        >
-          <div className="section-heading">
-            <div>
-              <p className="section-eyebrow">{homepageCopy.markets.eyebrow}</p>
-              <h2>{homepageCopy.markets.heading}</h2>
-            </div>
-            <p>{homepageCopy.markets.description}</p>
-          </div>
-          <div className="market-grid">
-            {homepageMarketCards.map((market) => (
-              <MarketCard key={market.id} market={market} />
-            ))}
-          </div>
-        </section>
+        <HomeMarketBrowser
+          copy={homepageCopy}
+          groups={homepageIntentGroups}
+          markets={homepageMarketCards}
+        />
 
         <section
           className="principles site-shell"

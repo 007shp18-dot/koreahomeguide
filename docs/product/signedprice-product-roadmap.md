@@ -27,7 +27,7 @@
 - Seoul Rent Explorer, Rent Check, building details, Street View, and guides.
 - Official reported contract-data pipeline.
 - Existing indexed URLs, canonical, hreflang, and sitemaps.
-- Approved legacy test baseline: `890 total / 867 pass / 23 known failures`.
+- Approved legacy test baseline: `898 total / 875 pass / 23 known failures`.
 
 ### signedprice V2 foundation
 

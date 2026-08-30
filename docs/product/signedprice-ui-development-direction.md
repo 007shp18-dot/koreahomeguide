@@ -135,7 +135,7 @@ Unbuilt layers remain absent or explicitly unavailable. They are not rendered as
 
 The default visual language for the entire signedprice site is Claude's Modernist concept. The current reference package is `signedprice-ui.zip`, containing global home, comparison, Buy or Rent, mobile, building Rent/Buy, neighborhood, and map mockups plus design tokens.
 
-The concept extends the existing product language rather than introducing an unrelated theme: strong typographic hierarchy, white and soft-neutral surfaces, restrained cobalt actions, thin structural lines, compact evidence panels, and minimal decoration. Future UI handoffs should remain visually compatible with this reference unless the user explicitly approves a new direction.
+The approved implementation baseline is the later Claude Modernist global handoff: strong Archivo typography, an off-white canvas, restrained cobalt actions, square geometry, 2px structural rules, compact evidence panels, and minimal decoration. Earlier soft-card references remain useful for product flow only; they do not override the approved visual baseline. Future UI handoffs must remain visually compatible with this reference unless the user explicitly approves a new direction.
 
 The package is a static design reference, not production logic. Interactive controls shown as drawings must be implemented and tested, mockup figures must be mapped to verified data contracts, unavailable SignedValue fields must remain empty or blocked, and global CSS must be adapted to the V2 component boundary rather than pasted verbatim.
 
@@ -151,25 +151,27 @@ The package is a static design reference, not production logic. Interactive cont
 
 | Token | Role | Current value |
 | --- | --- | --- |
-| Ink | Primary text and strong structure | `#0f172a` |
-| Canvas | Warm editorial background | `#f7f3ea` |
-| Surface | Cards and working panels | white or approved warm surface |
-| Accent | Primary action and focus | `#2563eb` |
-| Accent light | Secondary emphasis | `#60a5fa` |
+| Ink | Primary text and strong structure | `#201e1d` |
+| Canvas | Editorial background | `#f3f2f2` |
+| Surface | Secondary panels | `#eae9e9` |
+| Accent | Primary action and focus | `#1d4ed8` |
+| Divider | Secondary structural rule | `#8c8a89` |
 | Muted | Supporting text with AA contrast | implementation token, contrast-tested |
-| Available | Verified/available state only | restrained lime/green |
-| Limited | Partial capability or evidence | amber family |
-| Blocked | Rights or availability block | red/earth family |
+| Available | Verified/available state only | solid ink fill |
+| Limited | Partial capability or evidence | `2px` ink outline |
+| Rights blocked | Rights or availability block | `45°` hatch over ink |
+| Not built | Unbuilt or inactive capability | `1px` divider hairline |
 
-Status must never be communicated by color alone. Every status includes explicit text.
+Status must never be communicated by color alone. Every state uses its named structural treatment and an explicit text label; accent color is reserved for actions, focus, and attention.
 
 ### Typography and shape
 
-- Geist is the default product typeface.
+- Archivo Variable is the default Latin product typeface and is self-hosted.
+- Korean and Chinese releases require approved self-hosted fallback families before locale activation.
 - Headlines are concise and editorial, not oversized marketing statements.
 - Body copy prioritizes readable measures and clear hierarchy.
-- Default radii are square-to-soft, approximately `8–12px`.
-- Borders are thin and structural.
+- Default radii are `0px`.
+- Primary structural borders are `2px`; 1px rules are reserved for internal supporting divisions.
 - Pills are reserved for compact status or filter values, not general layout.
 - Focus indicators must meet non-text contrast requirements on every adjacent surface.
 

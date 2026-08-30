@@ -15,7 +15,7 @@ function copyRepository() {
     recursive: true,
     filter(source) {
       const name = basename(source);
-      return name !== '.git' && name !== 'node_modules';
+      return name !== '.git' && name !== 'node_modules' && name !== '.next';
     },
   });
   return target;

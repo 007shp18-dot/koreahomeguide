@@ -39,52 +39,154 @@ function cssBetween(start: string, end: string): string {
 }
 
 describe('signedprice hero layout structure', () => {
-  it('keeps the eyebrow and headline together opposite the description', () => {
+  it('keeps the headline and description in one flush-left editorial column', () => {
     const markup = renderToStaticMarkup(createElement(Home));
 
     expect(markup).toContain(
-      '<div class="hero__copy"><div class="hero__statement"><p class="section-eyebrow">Property intelligence for Seoul, Singapore and Dubai</p><h1 id="home-headline">Real prices. Better property decisions.</h1></div><p class="hero__description">',
+      '<div class="hero__copy"><div class="hero__statement"><h1 id="home-headline">Real prices. Better property decisions.</h1></div><p class="hero__description">',
+    );
+    expect(markup).not.toContain(
+      '<p class="section-eyebrow">Property intelligence for Seoul, Singapore and Dubai</p>',
     );
     expect(markup).toContain('<div id="top">');
 
     expect(declarationsFor(css, '.hero__copy')).toMatchObject({
-      'grid-template-areas': '"statement description"',
+      display: 'block',
+      'text-align': 'left',
     });
-    expect(declarationsFor(css, '.hero__statement')).toMatchObject({
-      'grid-area': 'statement',
+    expect(declarationsFor(css, '.hero h1')).toMatchObject({
+      'max-width': '19ch',
+      'font-size': 'clamp(38px, 5.6vw, 76px)',
+      'line-height': '0.98',
     });
     expect(declarationsFor(css, '.hero__description')).toMatchObject({
-      'grid-area': 'description',
+      'max-width': '56ch',
     });
   });
 
-  it('uses direct compact rules and stacks named areas on mobile', () => {
-    const compactCss = cssBetween(
-      '@media (min-width: 901px) and (max-height: 800px)',
-      '@media (max-width: 900px)',
-    );
+  it('stacks the connected intent control on mobile without horizontal scrolling', () => {
     const mobileCss = cssBetween(
-      '@media (max-width: 900px)',
       '@media (max-width: 640px)',
+      '@media (prefers-reduced-motion: reduce)',
     );
 
-    expect(declarationsFor(compactCss, '.site-header__inner')).toMatchObject({
-      'min-height': '64px',
+    expect(declarationsFor(mobileCss, '.intent-tabs')).toMatchObject({
+      'grid-template-columns': '1fr',
     });
-    expect(declarationsFor(compactCss, '.hero')).toMatchObject({
-      'padding-block': '24px 12px',
+    expect(mobileCss).not.toMatch(/overflow-x:\s*(auto|scroll)/);
+  });
+
+  it('uses full-width ruled home sections with a forty-pixel left gutter', () => {
+    expect(
+      declarationsFor(
+        css,
+        '.hero.site-shell,\n.markets.site-shell,\n.principles.site-shell',
+      ),
+    ).toMatchObject({
+      width: '100%',
+      'max-width': 'none',
+      margin: '0',
+      'padding-inline': '40px',
     });
-    expect(declarationsFor(compactCss, '.hero__intents')).toMatchObject({
-      'margin-top': '16px',
+    expect(declarationsFor(css, '.hero')).toMatchObject({
+      'border-bottom': '2px solid var(--ink)',
     });
-    expect(declarationsFor(compactCss, '.markets')).toMatchObject({
-      'padding-top': '20px',
+    expect(declarationsFor(css, '.markets')).toMatchObject({
+      'border-bottom': '2px solid var(--ink)',
     });
-    expect(declarationsFor(compactCss, '.markets .section-heading')).toMatchObject({
-      'margin-bottom': '16px',
+  });
+});
+
+describe('signedprice connected decision surfaces', () => {
+  it('renders three connected intent tiles with Rent visibly active', () => {
+    const markup = renderToStaticMarkup(createElement(Home));
+
+    expect(markup.match(/class="intent-tabs__group/g)).toHaveLength(3);
+    expect(
+      markup.match(/<button[^>]+aria-pressed="(?:true|false)"/g) ?? [],
+    ).toHaveLength(3);
+    expect(markup.match(/<button[^>]+aria-pressed="true"/g) ?? []).toHaveLength(1);
+    expect(markup).toContain('class="intent-tabs__group intent-tabs__group--active"');
+    expect(declarationsFor(css, '.intent-tabs')).toMatchObject({
+      'grid-template-columns': 'repeat(3, minmax(0, 1fr))',
+      gap: '0',
     });
-    expect(declarationsFor(mobileCss, '.hero__copy')).toMatchObject({
-      'grid-template-areas': '"statement" "description"',
+    expect(declarationsFor(css, '.intent-tabs__group--active')).toMatchObject({
+      background: 'var(--accent)',
+      color: 'var(--canvas)',
+    });
+    expect(declarationsFor(css, '.intent-tabs__trigger')).toMatchObject({
+      'min-height': '44px',
+    });
+    expect(declarationsFor(css, '.intent-tabs__destinations[hidden]')).toMatchObject({
+      display: 'none',
+    });
+  });
+
+  it('renders exactly two Modernist header controls', () => {
+    const markup = renderToStaticMarkup(createElement(Home));
+    const navigation = markup.match(
+      /<nav aria-label="Primary navigation">([\s\S]*?)<\/nav>/,
+    )?.[1] ?? '';
+
+    expect(navigation.match(/<a /g) ?? []).toHaveLength(2);
+    expect(navigation).toContain('aria-current="page">Global home</a>');
+    expect(navigation).toContain('>Market overview</a>');
+    expect(declarationsFor(css, '.site-header__links a[aria-current="page"]')).toMatchObject({
+      color: 'var(--canvas)',
+      background: 'var(--ink)',
+    });
+    expect(
+      declarationsFor(css, '.site-header__links a[aria-current="page"]:focus-visible'),
+    ).toMatchObject({
+      'box-shadow': 'inset 0 0 0 2px var(--canvas)',
+    });
+    expect(css).not.toMatch(/\.site-header__links li:(first|last)-child a/);
+  });
+
+  it('renders the three markets as one connected structural row', () => {
+    const markup = renderToStaticMarkup(createElement(Home));
+
+    expect(markup.match(/<article class="market-card"/g)).toHaveLength(3);
+    expect(declarationsFor(css, '.market-grid')).toMatchObject({
+      'grid-template-columns': 'repeat(3, minmax(0, 1fr))',
+      gap: '0',
+      border: '2px solid var(--ink)',
+    });
+    expect(declarationsFor(css, '.market-card')).toMatchObject({
+      border: '0',
+      'border-radius': 'var(--radius)',
+    });
+    expect(declarationsFor(css, '.market-card + .market-card')).toMatchObject({
+      'border-left': '2px solid var(--ink)',
+    });
+  });
+});
+
+describe('signedprice methodology and not-yet disclosure', () => {
+  it('presents the approved three-rule methodology row as one connected section', () => {
+    const markup = renderToStaticMarkup(createElement(Home));
+
+    expect(markup).toContain('class="principles site-shell" id="principles"');
+    expect(markup.match(/<article class="principle"/g)).toHaveLength(3);
+    expect(declarationsFor(css, '.principles__grid')).toMatchObject({
+      'grid-template-columns': 'repeat(3, minmax(0, 1fr))',
+    });
+  });
+
+  it('separates unpublished work into a full-width dark section', () => {
+    const markup = renderToStaticMarkup(createElement(Home));
+
+    expect(markup).toContain('class="trust-strip" id="methodology"');
+    expect(markup).toContain('>Not yet published</dt>');
+    expect(declarationsFor(css, '.trust-strip-wrap')).toMatchObject({
+      width: '100%',
+      'max-width': 'none',
+    });
+    expect(declarationsFor(css, '.trust-strip')).toMatchObject({
+      background: 'var(--ink)',
+      color: 'var(--canvas)',
+      'border-radius': 'var(--radius)',
     });
   });
 });
