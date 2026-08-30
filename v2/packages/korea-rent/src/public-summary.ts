@@ -15,7 +15,6 @@ import {
   MOLIT_ENDPOINT_VERSION,
   MOLIT_PARSER_VERSION,
   MOLIT_RIGHTS_POLICY_ID,
-  RENT_CHECK_ANNUAL_DEPOSIT_RATE,
 } from './versions';
 
 export type KoreaPublicSummarySource = Readonly<{
@@ -40,6 +39,9 @@ export type KoreaPublicSummaryInput = Readonly<{
 
 const MONTH_PATTERN = /^\d{4}-(?:0[1-9]|1[0-2])$/;
 const DATE_PATTERN = /^(\d{4})-((?:0[1-9]|1[0-2]))-((?:0[1-9]|[12]\d|3[01]))$/;
+const PUBLIC_BAND = '45-55sqm';
+const REQUIRED_PUBLIC_MONTHS = 7;
+const MIN_PUBLISHABLE_RECORDS = 5;
 
 function invalidSummary(message: string): never {
   throw new TypeError(message);
@@ -69,7 +71,10 @@ function assertCompletedMonths(input: KoreaPublicSummaryInput): ReadonlySet<stri
   if (!input.sourceComplete) {
     invalidSummary('Public summary requires a complete source period.');
   }
-  if (input.completedMonths.length === 0 || input.completedMonths.some(
+  if (input.completedMonths.length !== REQUIRED_PUBLIC_MONTHS) {
+    invalidSummary('Public summary requires exactly seven completed source months.');
+  }
+  if (input.completedMonths.some(
     (month) => !MONTH_PATTERN.test(month),
   )) {
     invalidSummary('Completed source months are invalid.');
@@ -82,6 +87,9 @@ function assertCompletedMonths(input: KoreaPublicSummaryInput): ReadonlySet<stri
   const expectedPeriod = `${input.completedMonths[0]}/${input.completedMonths.at(-1)}`;
   if (input.period !== expectedPeriod) {
     invalidSummary('Public summary period must equal the completed source period.');
+  }
+  if (input.band !== PUBLIC_BAND) {
+    invalidSummary(`Public summary band must be ${PUBLIC_BAND}.`);
   }
   return new Set(input.completedMonths);
 }
@@ -133,10 +141,37 @@ function assertRecord(record: KoreaRentRecord, completedMonths: ReadonlySet<stri
   }
 }
 
-function monthlyEquivalent(record: KoreaRentRecord): number {
-  return record.monthlyRentWon + (
-    record.depositWon * RENT_CHECK_ANNUAL_DEPOSIT_RATE / 12
+function isEligibleJeonse(record: KoreaRentRecord): boolean {
+  return (
+    record.recordStatus !== 'cancelled' &&
+    record.depositWon > 0 &&
+    record.monthlyRentWon === 0 &&
+    record.areaSqm >= 45 &&
+    record.areaSqm <= 55
   );
+}
+
+function change3m(
+  records: readonly KoreaRentRecord[],
+  completedMonths: readonly string[],
+): number | null {
+  const precedingMonths = new Set(completedMonths.slice(-6, -3));
+  const latestMonths = new Set(completedMonths.slice(-3));
+  const preceding = records
+    .filter((record) => precedingMonths.has(record.contractDate.slice(0, 7)))
+    .map((record) => record.depositWon);
+  const latest = records
+    .filter((record) => latestMonths.has(record.contractDate.slice(0, 7)))
+    .map((record) => record.depositWon);
+
+  if (
+    preceding.length < MIN_PUBLISHABLE_RECORDS ||
+    latest.length < MIN_PUBLISHABLE_RECORDS
+  ) {
+    return null;
+  }
+
+  return Math.round(((median(latest) - median(preceding)) / median(preceding)) * 1_000) / 10;
 }
 
 export function buildKoreaPublicMarketSummary(
@@ -146,16 +181,15 @@ export function buildKoreaPublicMarketSummary(
   const completedMonths = assertCompletedMonths(input);
   input.records.forEach((record) => assertRecord(record, completedMonths));
 
-  const values = input.records
-    .filter((record) => record.recordStatus !== 'cancelled')
-    .map(monthlyEquivalent);
+  const eligibleRecords = input.records.filter(isEligibleJeonse);
+  const values = eligibleRecords.map((record) => record.depositWon);
 
-  if (values.length < 5) {
+  if (values.length < MIN_PUBLISHABLE_RECORDS) {
     return createPublicMarketSummary({
       marketId: 'kr-seoul',
       area: input.area,
       parent: input.parent,
-      deal: 'rent',
+      deal: 'jeonse',
       band: input.band,
       period: input.period,
       n: values.length,
@@ -166,7 +200,7 @@ export function buildKoreaPublicMarketSummary(
     marketId: 'kr-seoul',
     area: input.area,
     parent: input.parent,
-    deal: 'rent',
+    deal: 'jeonse',
     band: input.band,
     period: input.period,
     n: values.length,
@@ -175,6 +209,6 @@ export function buildKoreaPublicMarketSummary(
     med: roundWon(median(values)),
     p75: roundWon(percentile(values, 0.75)),
     max: roundWon(Math.max(...values)),
-    chg3m: null,
+    chg3m: change3m(eligibleRecords, input.completedMonths),
   });
 }

@@ -11,7 +11,7 @@ test('public quote editing is keyboard-safe and performs zero network requests',
       clientRequests.push(request.url());
     }
   });
-  const quote = page.getByLabel('Monthly rent');
+  const quote = page.getByLabel('Refundable deposit');
   await quote.focus();
   await expect(quote).toBeFocused();
   await quote.fill('');
@@ -19,7 +19,7 @@ test('public quote editing is keyboard-safe and performs zero network requests',
   expect(page.url()).toBe(initialUrl);
 
   let expectedQuote = '';
-  for (const digit of '3500000') {
+  for (const digit of '350') {
     expectedQuote += digit;
     await quote.press(digit);
     await expect(quote).toHaveValue(expectedQuote);
@@ -29,7 +29,7 @@ test('public quote editing is keyboard-safe and performs zero network requests',
 
   await page.waitForLoadState('networkidle');
   await expect(page.getByText('Within the typical range')).toBeVisible();
-  await expect(quote).toHaveValue('3500000');
+  await expect(quote).toHaveValue('350');
   expect(clientRequests).toEqual([]);
   expect(page.url()).toBe(initialUrl);
 });
@@ -38,10 +38,10 @@ test('public quote controls retain 44px targets and natural mobile scrolling', a
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/kr/check/seoul');
 
-  for (const control of [page.getByLabel('Area'), page.getByLabel('Monthly rent')]) {
+  for (const control of [page.getByLabel('Area'), page.getByLabel('Refundable deposit')]) {
     const box = await control.boundingBox();
     expect(box?.height).toBeGreaterThanOrEqual(44);
   }
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
-  await page.getByLabel('Monthly rent').press('Tab');
+  await page.getByLabel('Refundable deposit').press('Tab');
 });

@@ -11,14 +11,14 @@ import {
   buildKoreaPublicRouteModel,
 } from '../lib/public-market/route-model.server';
 
-const period = '2026-05/2026-07';
+const period = '2026-01/2026-07';
 
 function publishedSummary() {
   return {
-    marketId: 'kr-seoul', area: 'seoul', parent: 'kr', deal: 'rent',
-    band: 'all-homes', period, n: 20, published: true,
-    min: 1_000_000, p25: 2_000_000, med: 3_000_000,
-    p75: 4_000_000, max: 5_000_000, chg3m: null,
+    marketId: 'kr-seoul', area: 'seoul', parent: 'kr', deal: 'jeonse',
+    band: '45-55sqm', period, n: 20, published: true,
+    min: 180_000_000, p25: 280_000_000, med: 380_000_000,
+    p75: 480_000_000, max: 580_000_000, chg3m: null,
   } as const;
 }
 
@@ -67,17 +67,20 @@ describe('Korea public SSR routes', () => {
     ['home', async () => KoreaHomePage()],
     ['check', async () => KoreaCheckPage({ params: Promise.resolve({ area: 'seoul' }) })],
     ['area', async () => KoreaAreaPage({ params: Promise.resolve({ area: 'seoul' }) })],
-  ])('puts every published number and sample count in initial %s HTML', async (_name, render) => {
+  ])('puts every published number and sample count in initial %s HTML', async (name, render) => {
     useArtifact();
     const html = renderToStaticMarkup(await render());
 
-    for (const value of ['₩1,000,000', '₩2,000,000', '₩3,000,000', '₩4,000,000', '₩5,000,000']) {
+    for (const value of ['₩180,000,000', '₩280,000,000', '₩380,000,000', '₩480,000,000', '₩580,000,000']) {
       expect(html).toContain(value);
     }
     expect(html).toContain('20 reported contracts');
-    expect(html).toContain('2026-05/2026-07');
+    expect(html).toContain('2026-01/2026-07');
     expect(html).toContain('MOLIT reported rental contracts');
-    expect(html).toContain('5.0%/year signedprice comparison assumption');
+    expect(html).toContain('Seven completed months · 45–55㎡ · zero-rent jeonse');
+    expect(html).toContain('refundable deposit');
+    if (name === 'area') expect(html).toContain('Reported refundable-deposit distribution.');
+    expect(html).not.toMatch(/monthly-rent distribution|5\.0%\/year/i);
     expect(html).not.toMatch(/statutory|legal rate/i);
     expect(html).not.toContain('/kr/seoul/tools/rent-check');
   });
@@ -100,8 +103,8 @@ describe('Korea public SSR routes', () => {
 
   it('withholds sparse evidence recursively without monetary or marker leakage', async () => {
     useArtifact(artifact({
-      marketId: 'kr-seoul', area: 'seoul', parent: 'kr', deal: 'rent',
-      band: 'all-homes', period, n: 4, published: false,
+      marketId: 'kr-seoul', area: 'seoul', parent: 'kr', deal: 'jeonse',
+      band: '45-55sqm', period, n: 4, published: false,
     }));
     const html = renderToStaticMarkup(await KoreaCheckPage({
       params: Promise.resolve({ area: 'seoul' }),

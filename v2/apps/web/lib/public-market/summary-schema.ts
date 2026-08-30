@@ -9,7 +9,7 @@ import {
 } from '@signedprice/korea-rent/browser';
 
 export const PUBLIC_SUMMARY_ARTIFACT_VERSION =
-  'signedprice-public-summary-v1' as const;
+  'signedprice-public-summary-v2' as const;
 
 export type PublicSummaryArtifactProvenanceInput = Readonly<{
   marketId: unknown;

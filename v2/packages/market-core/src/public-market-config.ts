@@ -13,6 +13,7 @@ type PublicMarketConfigDefinition = {
   formatLocale: string;
   quoteLabel: string;
   quoteUnit: string;
+  quoteInputMultiplier: number;
   geographyNoun: string;
   parentGeographyNoun: string;
   registryLabel: string;
@@ -47,13 +48,14 @@ const configsById = deepFreeze<Record<MarketId, PublicMarketConfigDefinition>>({
     currencyCode: 'KRW',
     currencySymbol: '₩',
     formatLocale: 'ko-KR',
-    quoteLabel: 'Monthly rent',
-    quoteUnit: 'KRW/month',
+    quoteLabel: 'Refundable deposit',
+    quoteUnit: 'KRW million',
+    quoteInputMultiplier: 1_000_000,
     geographyNoun: 'area',
     parentGeographyNoun: 'country',
     registryLabel: 'MOLIT reported rental contracts',
-    axis: { min: 0, max: 5_000_000, step: 10_000 },
-    dealTypes: ['rent'],
+    axis: { min: 160_000_000, max: 620_000_000, step: 10_000_000 },
+    dealTypes: ['jeonse'],
     guideFamilies: ['rent', 'buy', 'invest'],
   },
   'sg-singapore': {
@@ -67,6 +69,7 @@ const configsById = deepFreeze<Record<MarketId, PublicMarketConfigDefinition>>({
     formatLocale: 'en-SG',
     quoteLabel: 'Monthly rent',
     quoteUnit: 'SGD/month',
+    quoteInputMultiplier: 1,
     geographyNoun: 'area',
     parentGeographyNoun: 'country',
     registryLabel: 'HDB public market data',
@@ -85,6 +88,7 @@ const configsById = deepFreeze<Record<MarketId, PublicMarketConfigDefinition>>({
     formatLocale: 'en-AE',
     quoteLabel: 'Annual rent',
     quoteUnit: 'AED/year',
+    quoteInputMultiplier: 1,
     geographyNoun: 'area',
     parentGeographyNoun: 'emirate',
     registryLabel: 'DLD and Ejari market data',

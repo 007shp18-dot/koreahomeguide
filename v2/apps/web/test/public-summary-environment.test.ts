@@ -7,7 +7,7 @@ import {
   diagnosePublicSummaryEnvironment,
 } from '../lib/public-market/route-model.server';
 
-const period = '2026-05/2026-07';
+const period = '2026-01/2026-07';
 
 function artifact(summaries: readonly unknown[] = [summary()]) {
   return {
@@ -31,8 +31,8 @@ function summary() {
     marketId: 'kr-seoul',
     area: 'seoul',
     parent: 'kr',
-    deal: 'rent',
-    band: 'all-homes',
+    deal: 'jeonse',
+    band: '45-55sqm',
     period,
     n: 20,
     published: true,

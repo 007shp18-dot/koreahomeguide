@@ -12,7 +12,7 @@ import {
 const expected = {
   artifactVersion: PUBLIC_SUMMARY_ARTIFACT_VERSION,
   marketId: 'kr-seoul',
-  period: '2026-05/2026-07',
+  period: '2026-01/2026-07',
 } as const;
 
 function publishedSummary() {
@@ -20,9 +20,9 @@ function publishedSummary() {
     marketId: 'kr-seoul',
     area: 'seoul',
     parent: 'kr',
-    deal: 'rent',
-    band: 'all-homes',
-    period: '2026-05/2026-07',
+    deal: 'jeonse',
+    band: '45-55sqm',
+    period: '2026-01/2026-07',
     n: 20,
     published: true,
     min: 1_000_000,
@@ -42,7 +42,7 @@ function artifact(
     generatedAt: '2026-08-30T00:00:00.000Z',
     provenance: {
       marketId: 'kr-seoul',
-      period: '2026-05/2026-07',
+      period: '2026-01/2026-07',
       provider: 'MOLIT',
       endpointVersion: 'v1',
       parserVersion: 'kr-molit-rent-parser-v2',
@@ -62,11 +62,17 @@ function repository(...sources: [] | [unknown]) {
 }
 
 describe('verified public summary repository', () => {
+  it('refuses the retired v1 artifact contract', () => {
+    expect(() => repository(artifact({
+      artifactVersion: 'signedprice-public-summary-v1',
+    }))).toThrow(PublicSummaryUnavailableError);
+  });
+
   it('loads a published Seoul summary from the exact versioned artifact', () => {
     expect(repository().getSummary({
       area: 'seoul',
-      deal: 'rent',
-      band: 'all-homes',
+      deal: 'jeonse',
+      band: '45-55sqm',
     })).toEqual(publishedSummary());
   });
 
@@ -75,16 +81,16 @@ describe('verified public summary repository', () => {
       marketId: 'kr-seoul',
       area: 'seoul',
       parent: 'kr',
-      deal: 'rent',
-      band: 'all-homes',
-      period: '2026-05/2026-07',
+      deal: 'jeonse',
+      band: '45-55sqm',
+      period: '2026-01/2026-07',
       n: 4,
       published: false,
     } as const;
     const summary = repository(artifact({ summaries: [withheld] })).getSummary({
       area: 'seoul',
-      deal: 'rent',
-      band: 'all-homes',
+      deal: 'jeonse',
+      band: '45-55sqm',
     });
 
     expect(summary).toEqual(withheld);
@@ -133,8 +139,8 @@ describe('verified public summary repository', () => {
   it('fails closed for an absent area without revealing the lookup', () => {
     expect(() => repository().getSummary({
       area: 'secret-area',
-      deal: 'rent',
-      band: 'all-homes',
+      deal: 'jeonse',
+      band: '45-55sqm',
     })).toThrow('Verified public market summary is unavailable.');
   });
 
@@ -154,7 +160,7 @@ describe('verified public summary repository', () => {
 
   it('returns a deeply frozen public boundary', () => {
     const store = repository();
-    const summary = store.getSummary({ area: 'seoul', deal: 'rent', band: 'all-homes' });
+    const summary = store.getSummary({ area: 'seoul', deal: 'jeonse', band: '45-55sqm' });
 
     expect(Object.isFrozen(store)).toBe(true);
     expect(Object.isFrozen(summary)).toBe(true);

@@ -25,14 +25,18 @@ export type PublicQuoteViewModel = Readonly<{
   error: string | null;
 }>;
 
-const INVALID_QUOTE_COPY = 'Enter a whole, non-negative amount without commas.';
+const INVALID_QUOTE_COPY =
+  'Enter a non-negative amount with up to two decimal places, without commas.';
 
-export function parsePublicQuoteInput(raw: string): ParsedPublicQuote {
+export function parsePublicQuoteInput(
+  raw: string,
+  multiplier: number,
+): ParsedPublicQuote {
   if (raw === '') return { status: 'empty' };
-  if (!/^\d+$/.test(raw)) return { status: 'invalid' };
-  const value = Number(raw);
-  return Number.isSafeInteger(value)
-    ? { status: 'valid', value }
+  if (!/^(?:0|[1-9]\d*)(?:\.\d{1,2})?$/.test(raw)) return { status: 'invalid' };
+  const storedValue = Number(raw) * multiplier;
+  return Number.isSafeInteger(storedValue)
+    ? { status: 'valid', value: storedValue }
     : { status: 'invalid' };
 }
 
@@ -40,8 +44,9 @@ export function buildPublicQuoteViewModel(
   summary: PublicMarketSummary,
   draft: string,
   axis: QuotePositionAxis,
+  multiplier: number,
 ): PublicQuoteViewModel {
-  const parsed = parsePublicQuoteInput(draft);
+  const parsed = parsePublicQuoteInput(draft, multiplier);
   return {
     draft,
     parsed,
@@ -69,10 +74,17 @@ export function QuoteInput({ config, summary, initialQuote }: Readonly<{
 }>) {
   const [area, setArea] = useState(summary.area);
   const [quoteDraft, setQuoteDraft] = useState(
-    initialQuote ?? (summary.published ? String(summary.med) : ''),
+    initialQuote ?? (
+      summary.published ? String(summary.med / config.quoteInputMultiplier) : ''
+    ),
   );
   const errorId = useId();
-  const view = buildPublicQuoteViewModel(summary, quoteDraft, config.axis);
+  const view = buildPublicQuoteViewModel(
+    summary,
+    quoteDraft,
+    config.axis,
+    config.quoteInputMultiplier,
+  );
   const formatValue = useMemo(
     () => valueFormatter(config),
     [config],
@@ -101,7 +113,7 @@ export function QuoteInput({ config, summary, initialQuote }: Readonly<{
             className={styles.quoteControl}
             name="quote"
             type="text"
-            inputMode="numeric"
+            inputMode="decimal"
             autoComplete="off"
             spellCheck="false"
             value={quoteDraft}

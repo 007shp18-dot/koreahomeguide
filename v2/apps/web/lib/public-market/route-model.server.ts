@@ -42,9 +42,9 @@ export type KoreaPublicRouteModel = Readonly<{
 }>;
 
 export const koreaPublicMetadata = {
-  title: 'Seoul rent prices | signedprice',
+  title: 'Seoul jeonse deposits | signedprice',
   description:
-    'Compare a monthly rent quote with a verified distribution of officially reported Seoul rental contracts.',
+    'Compare a refundable deposit with verified Seoul jeonse contracts reported for 45–55㎡ homes.',
   robots: { index: false, follow: true },
 } as const satisfies Metadata;
 
@@ -81,18 +81,18 @@ const header = {
   navigationLabel: 'Korea navigation',
   links: [
     { label: 'Korea', href: '/kr/', ariaLabel: 'Korea market home' },
-    { label: 'Rent check', href: '/kr/check/seoul', ariaLabel: 'Check Seoul rent' },
+    { label: 'Deposit check', href: '/kr/check/seoul', ariaLabel: 'Check Seoul jeonse deposit' },
     { label: 'Seoul evidence', href: '/kr/seoul', ariaLabel: 'Seoul market evidence' },
   ],
 } as const satisfies SiteHeaderModel;
 
 const footer = {
   brand: 'signedprice',
-  descriptor: 'Verified Seoul rental evidence, with publication limits shown.',
+  descriptor: 'Verified Seoul jeonse-deposit evidence, with publication limits shown.',
   navigationLabel: 'Korea footer navigation',
   links: [
     { label: 'Korea home', href: '/kr/' },
-    { label: 'Check rent', href: '/kr/check/seoul' },
+    { label: 'Check deposit', href: '/kr/check/seoul' },
     { label: 'Evidence', href: '/kr/seoul' },
   ],
   status: 'Korea public P1 preview. Production launch is not authorized.',
@@ -100,36 +100,36 @@ const footer = {
 
 const pageCopy = {
   home: {
-    eyebrow: 'Korea · Seoul rental evidence',
-    heading: 'Put a rent quote against reported contracts.',
+    eyebrow: 'Korea · Seoul jeonse evidence',
+    heading: 'Put a refundable deposit against reported contracts.',
     description:
-      'Choose the area and edit the quote. The market distribution is already in this page; your input never requests new market data.',
+      'Compare a 45–55㎡ jeonse deposit with the verified distribution already embedded in this page.',
   },
   check: {
-    eyebrow: 'Seoul rent check',
-    heading: 'Where does this monthly rent sit?',
+    eyebrow: 'Seoul jeonse deposit check',
+    heading: 'Where does this refundable deposit sit?',
     description:
       'Your marker is calculated in the browser from the verified five-number distribution shown below.',
   },
   area: {
-    eyebrow: 'Seoul market evidence',
-    heading: 'Reported monthly-rent distribution.',
+    eyebrow: 'Seoul jeonse market evidence',
+    heading: 'Reported refundable-deposit distribution.',
     description:
-      'This server-rendered evidence page shows the verified period, publication count and full published distribution.',
+      'This page shows the verified seven-month period, publication count and 45–55㎡ jeonse distribution.',
   },
 } as const;
 
 const methodology = {
-  label: '5.0%/year signedprice comparison assumption',
+  label: 'Seven completed months · 45–55㎡ · zero-rent jeonse',
   disclosure:
-    'Deposit conversion is a signedprice comparison assumption, not an official conversion rule.',
+    'Amounts are reported refundable deposits; canceled contracts and contracts with monthly rent are excluded.',
 } as const;
 
 const navigation = {
   label: 'Korea public pages',
   links: [
     { href: '/kr/', label: 'Korea home' },
-    { href: '/kr/check/seoul', label: 'Check a Seoul quote' },
+    { href: '/kr/check/seoul', label: 'Check a Seoul deposit' },
     { href: '/kr/seoul', label: 'Read Seoul evidence' },
   ],
 } as const;
@@ -164,8 +164,8 @@ export function diagnosePublicSummaryEnvironment(
     });
     const requiredSummary = artifact.summaries.some((summary) => (
       summary.area === 'seoul' &&
-      summary.deal === 'rent' &&
-      summary.band === 'all-homes'
+      summary.deal === 'jeonse' &&
+      summary.band === '45-55sqm'
     ));
     return { code: requiredSummary ? 'ready' : 'required_summary_missing' };
   } catch {
@@ -209,7 +209,7 @@ export function buildKoreaPublicRouteModel(
   });
   return Object.freeze({
     config,
-    summary: repository.getSummary({ area, deal: 'rent', band: 'all-homes' }),
+    summary: repository.getSummary({ area, deal: 'jeonse', band: '45-55sqm' }),
     header,
     footer,
     pageCopy,

@@ -9,16 +9,21 @@ import {
   type KoreaRentRecord,
 } from '../src';
 
-function record(
-  monthlyRentWon: number,
+const COMPLETED_MONTHS = [
+  '2026-01', '2026-02', '2026-03', '2026-04', '2026-05', '2026-06', '2026-07',
+] as const;
+
+function jeonse(
+  depositWon: number,
+  month = '2026-07',
   overrides: Partial<KoreaRentRecord> = {},
 ): KoreaRentRecord {
   return {
     sourceHousingType: 'apartment',
-    areaSqm: 60,
-    depositWon: 0,
-    monthlyRentWon,
-    contractDate: '2026-07-15',
+    areaSqm: 50,
+    depositWon,
+    monthlyRentWon: 0,
+    contractDate: `${month}-15`,
     contractType: 'new',
     recordStatus: 'active',
     ...overrides,
@@ -32,9 +37,9 @@ function input(
   return {
     area: 'seoul',
     parent: 'kr',
-    band: 'all-homes',
-    period: '2026-05/2026-07',
-    completedMonths: ['2026-05', '2026-06', '2026-07'],
+    band: '45-55sqm',
+    period: '2026-01/2026-07',
+    completedMonths: COMPLETED_MONTHS,
     sourceComplete: true,
     source: {
       marketId: 'kr-seoul',
@@ -52,129 +57,137 @@ function input(
 }
 
 describe('Korea public market summary adapter', () => {
-  it('publishes nothing monetary below five eligible contracts', () => {
+  it('publishes nothing monetary below five eligible jeonse contracts', () => {
     const summary = buildKoreaPublicMarketSummary(input([
-      record(1_000_000),
-      record(2_000_000),
-      record(3_000_000),
-      record(4_000_000),
+      jeonse(100_000_000), jeonse(200_000_000), jeonse(300_000_000), jeonse(400_000_000),
     ]));
 
     expect(summary).toEqual({
       marketId: 'kr-seoul',
       area: 'seoul',
       parent: 'kr',
-      deal: 'rent',
-      band: 'all-homes',
-      period: '2026-05/2026-07',
+      deal: 'jeonse',
+      band: '45-55sqm',
+      period: '2026-01/2026-07',
       n: 4,
       published: false,
     });
     expect(JSON.stringify(summary)).not.toMatch(/min|p25|med|p75|max|chg3m/);
   });
 
-  it('publishes the ordered five-number monthly-equivalent summary at five', () => {
+  it('publishes the ordered seven-month deposit distribution at five', () => {
     const summary = buildKoreaPublicMarketSummary(input([
-      record(1_000_000),
-      record(2_000_000),
-      record(3_000_000),
-      record(4_000_000),
-      record(5_000_000),
+      jeonse(100_000_000), jeonse(200_000_000), jeonse(300_000_000),
+      jeonse(400_000_000), jeonse(500_000_000),
     ]));
 
     expect(summary).toEqual({
       marketId: 'kr-seoul',
       area: 'seoul',
       parent: 'kr',
-      deal: 'rent',
-      band: 'all-homes',
-      period: '2026-05/2026-07',
+      deal: 'jeonse',
+      band: '45-55sqm',
+      period: '2026-01/2026-07',
       n: 5,
       published: true,
-      min: 1_000_000,
-      p25: 2_000_000,
-      med: 3_000_000,
-      p75: 4_000_000,
-      max: 5_000_000,
+      min: 100_000_000,
+      p25: 200_000_000,
+      med: 300_000_000,
+      p75: 400_000_000,
+      max: 500_000_000,
       chg3m: null,
     });
   });
 
   it('calculates even percentiles before whole-won rounding', () => {
     const summary = buildKoreaPublicMarketSummary(input([
-      record(1_000_001),
-      record(2_000_001),
-      record(3_000_001),
-      record(4_000_001),
-      record(5_000_001),
-      record(6_000_001),
+      jeonse(100_000_001), jeonse(200_000_001), jeonse(300_000_001),
+      jeonse(400_000_001), jeonse(500_000_001), jeonse(600_000_001),
     ]));
 
     expect(summary).toMatchObject({
       n: 6,
       published: true,
-      p25: 2_250_001,
-      med: 3_500_001,
-      p75: 4_750_001,
+      p25: 225_000_001,
+      med: 350_000_001,
+      p75: 475_000_001,
     });
   });
 
-  it('uses the signedprice 5% annual assumption for a zero-deposit monthly equivalent', () => {
+  it('includes only zero-rent jeonse records within the inclusive 45-55sqm band', () => {
     const summary = buildKoreaPublicMarketSummary(input([
-      record(0, { depositWon: 120_000_000 }),
-      record(1_000_000),
-      record(2_000_000),
-      record(3_000_000),
-      record(4_000_000),
+      jeonse(100_000_000, '2026-07', { areaSqm: 45 }),
+      jeonse(200_000_000), jeonse(300_000_000), jeonse(400_000_000),
+      jeonse(500_000_000, '2026-07', { areaSqm: 55 }),
+      jeonse(900_000_000, '2026-07', { areaSqm: 44.99 }),
+      jeonse(910_000_000, '2026-07', { areaSqm: 55.01 }),
+      jeonse(920_000_000, '2026-07', { monthlyRentWon: 1 }),
     ]));
 
     expect(summary).toMatchObject({
       n: 5,
       published: true,
-      min: 500_000,
-      med: 2_000_000,
+      min: 100_000_000,
+      max: 500_000_000,
     });
   });
 
-  it('includes unknown status but excludes known cancellations', () => {
+  it('includes unknown status and contract type but excludes known cancellations', () => {
     const summary = buildKoreaPublicMarketSummary(input([
-      record(1_000_000),
-      record(2_000_000, { recordStatus: 'unknown' }),
-      record(3_000_000),
-      record(4_000_000),
-      record(5_000_000),
-      record(99_000_000, { recordStatus: 'cancelled' }),
+      jeonse(100_000_000),
+      jeonse(200_000_000, '2026-07', { recordStatus: 'unknown' }),
+      jeonse(300_000_000, '2026-07', { contractType: 'unknown' }),
+      jeonse(400_000_000), jeonse(500_000_000),
+      jeonse(990_000_000, '2026-07', { recordStatus: 'cancelled' }),
     ]));
 
-    expect(summary).toMatchObject({ n: 5, published: true, max: 5_000_000 });
+    expect(summary).toMatchObject({ n: 5, published: true, max: 500_000_000 });
+  });
+
+  it('computes one-decimal change from the preceding three months to the latest three', () => {
+    const summary = buildKoreaPublicMarketSummary(input([
+      ...Array.from({ length: 5 }, () => jeonse(200_000_000, '2026-04')),
+      ...Array.from({ length: 5 }, () => jeonse(220_000_000, '2026-07')),
+    ]));
+
+    expect(summary).toMatchObject({ n: 10, published: true, chg3m: 10 });
+  });
+
+  it('withholds change when either comparison window has fewer than five records', () => {
+    const summary = buildKoreaPublicMarketSummary(input([
+      ...Array.from({ length: 4 }, () => jeonse(200_000_000, '2026-04')),
+      ...Array.from({ length: 5 }, () => jeonse(220_000_000, '2026-07')),
+    ]));
+
+    expect(summary).toMatchObject({ n: 9, published: true, chg3m: null });
   });
 
   it.each([
     [{ sourceComplete: false }, 'complete'],
-    [{ period: '2026-04/2026-07' }, 'period'],
-    [{ completedMonths: ['2026-05', '2026-07'] }, 'contiguous'],
+    [{ period: '2026-01/2026-06', completedMonths: COMPLETED_MONTHS.slice(0, 6) }, 'seven'],
+    [{ period: '2026-01/2026-08', completedMonths: [...COMPLETED_MONTHS, '2026-08'] }, 'seven'],
+    [{ period: '2026-01/2026-08' }, 'period'],
+    [{ completedMonths: ['2026-01', '2026-02', '2026-03', '2026-05', '2026-06', '2026-07', '2026-08'] }, 'contiguous'],
+    [{ band: 'all-homes' }, '45-55sqm'],
     [{ source: { marketId: 'kr-seoul', provider: 'MOLIT', endpointVersion: MOLIT_ENDPOINT_VERSION, parserVersion: 'old', rightsPolicyId: MOLIT_RIGHTS_POLICY_ID } }, 'provenance'],
     [{ source: { marketId: 'kr-seoul', provider: 'MOLIT', endpointVersion: MOLIT_ENDPOINT_VERSION, parserVersion: MOLIT_PARSER_VERSION, rightsPolicyId: 'unknown' } }, 'provenance'],
     [{ rightsLookup: () => undefined }, 'permitted'],
   ] as const)('fails closed on invalid source boundary %#', (overrides, message) => {
     expect(() => buildKoreaPublicMarketSummary(input([
-      record(1_000_000),
-      record(2_000_000),
-      record(3_000_000),
-      record(4_000_000),
-      record(5_000_000),
+      jeonse(100_000_000), jeonse(200_000_000), jeonse(300_000_000),
+      jeonse(400_000_000), jeonse(500_000_000),
     ], overrides as Partial<KoreaPublicSummaryInput>))).toThrow(message);
   });
 
   it('rejects a record outside the completed source period', () => {
     expect(() => buildKoreaPublicMarketSummary(input([
-      record(1_000_000, { contractDate: '2026-08-01' }),
+      jeonse(100_000_000, '2026-08'),
     ]))).toThrow('completed source period');
   });
 
   it('rejects an impossible calendar date even when its month is completed', () => {
     expect(() => buildKoreaPublicMarketSummary(input([
-      record(1_000_000, { contractDate: '2026-06-31' }),
+      jeonse(100_000_000, '2026-06', { contractDate: '2026-06-31' }),
     ]))).toThrow('calendar date');
   });
 

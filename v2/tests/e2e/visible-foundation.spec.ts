@@ -94,7 +94,7 @@ test('navigates the first signedprice decision flow', async ({ page }) => {
   await expect(page).toHaveURL(/\/kr\/seoul\/$/);
   await expect(page.getByRole('heading', {
     level: 1,
-    name: 'Reported monthly-rent distribution.',
+    name: 'Reported refundable-deposit distribution.',
   })).toBeVisible();
 
   await page.getByRole('link', { name: 'Check a Seoul quote' }).click();
@@ -102,7 +102,7 @@ test('navigates the first signedprice decision flow', async ({ page }) => {
   await expect(
     page.getByRole('heading', {
       level: 1,
-      name: 'Where does this monthly rent sit?',
+      name: 'Where does this refundable deposit sit?',
     }),
   ).toBeVisible();
 });
@@ -237,7 +237,7 @@ test('mobile primary navigation remains tappable and reaches the market flow', a
   await expect(
     page.getByRole('heading', {
       level: 1,
-      name: 'Where does this monthly rent sit?',
+      name: 'Where does this refundable deposit sit?',
     }),
   ).toBeVisible();
 });

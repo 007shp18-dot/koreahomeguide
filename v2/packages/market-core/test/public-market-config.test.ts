@@ -25,13 +25,14 @@ describe('public market configuration', () => {
       currencyCode: 'KRW',
       currencySymbol: '₩',
       formatLocale: 'ko-KR',
-      quoteLabel: 'Monthly rent',
-      quoteUnit: 'KRW/month',
+      quoteLabel: 'Refundable deposit',
+      quoteUnit: 'KRW million',
+      quoteInputMultiplier: 1_000_000,
       geographyNoun: 'area',
       parentGeographyNoun: 'country',
       registryLabel: 'MOLIT reported rental contracts',
-      axis: { min: 0, max: 5_000_000, step: 10_000 },
-      dealTypes: ['rent'],
+      axis: { min: 160_000_000, max: 620_000_000, step: 10_000_000 },
+      dealTypes: ['jeonse'],
       guideFamilies: ['rent', 'buy', 'invest'],
     });
   });

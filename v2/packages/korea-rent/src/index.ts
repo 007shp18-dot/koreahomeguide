@@ -65,6 +65,12 @@ export {
   type RuntimeCachePort,
 } from './cache';
 export {
+  createSourceMonthStore,
+  type SourceMonthIdentity,
+  type SourceMonthStore,
+  type SourceMonthStorePolicy,
+} from './source-month-store';
+export {
   KoreaRentServiceError,
   createSeoulRentCheckService,
   deriveCoverageNamespace,
@@ -78,3 +84,12 @@ export {
   type KoreaPublicSummaryInput,
   type KoreaPublicSummarySource,
 } from './public-summary';
+export {
+  buildKoreaPublicSummaryPlan,
+  finalizeKoreaPublicSummaryJob,
+  runKoreaPublicSummaryBatch,
+  type KoreaPublicSummaryBatchResult,
+  type KoreaPublicSummaryCoordinate,
+  type KoreaPublicSummaryFinalization,
+  type KoreaPublicSummaryJobDependencies,
+} from './public-summary-job';

@@ -18,15 +18,15 @@ const css = readFileSync(
 );
 
 const published: PublishedMarketSummary = {
-  marketId: 'kr-seoul', area: 'seoul', parent: 'kr', deal: 'rent',
-  band: 'all-homes', period: '2026-05/2026-07', n: 20, published: true,
+  marketId: 'kr-seoul', area: 'seoul', parent: 'kr', deal: 'jeonse',
+  band: '45-55sqm', period: '2026-01/2026-07', n: 20, published: true,
   min: 1_000_000, p25: 2_000_000, med: 3_000_000,
   p75: 4_000_000, max: 5_000_000, chg3m: null,
 };
 
 const withheld: WithheldMarketSummary = {
-  marketId: 'kr-seoul', area: 'seoul', parent: 'kr', deal: 'rent',
-  band: 'all-homes', period: '2026-05/2026-07', n: 4, published: false,
+  marketId: 'kr-seoul', area: 'seoul', parent: 'kr', deal: 'jeonse',
+  band: '45-55sqm', period: '2026-01/2026-07', n: 4, published: false,
 };
 
 const position: QuotePosition = {

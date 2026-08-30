@@ -1,23 +1,17 @@
 import {
   isDerivedCacheEntry,
-  isSourceManifest,
-  isSourcePage,
   type DerivedRentCheckCacheEntry,
   type DerivedRentCheckCachePayload,
-  type SourceManifestEntry,
-  type SourcePageEntry,
 } from './cache-validation';
-import type { KoreaRentRecord, RentCheckQuote, SourceHousingType } from './input';
+import type { RentCheckQuote } from './input';
+import { createSourceMonthStore, type SourceMonthIdentity } from './source-month-store';
 import { MolitSourceError, type MolitRentalMonth } from './xml';
 import {
-  MOLIT_ENDPOINT_VERSION,
   MOLIT_PARSER_VERSION,
   MOLIT_RIGHTS_POLICY_ID,
   RENT_CHECK_METHODOLOGY_CACHE_VERSION,
   RENT_CHECK_METHODOLOGY_POLICY_ID,
   RENT_CHECK_METHODOLOGY_VERSION,
-  SOURCE_MANIFEST_CACHE_KIND,
-  SOURCE_PAGE_CACHE_KIND,
 } from './versions';
 
 export type {
@@ -51,23 +45,15 @@ export const RENT_CHECK_CACHE_TAGS = Object.freeze([
   `rights:${MOLIT_RIGHTS_POLICY_ID}`,
 ] as const);
 
-export function sourceCacheNamespace(input: {
-  readonly sourceHousingType: SourceHousingType;
-  readonly lawdCd: string;
-  readonly dealYmd: string;
-  readonly pageSize: number;
-}): string {
-  return [
-    'kr-seoul-rent-check:source',
-    'market=kr-seoul',
-    `endpoint=${MOLIT_ENDPOINT_VERSION}`,
-    `type=${input.sourceHousingType}`,
-    `lawd=${input.lawdCd}`,
-    `month=${input.dealYmd}`,
-    `pageSize=${input.pageSize}`,
-    `parser=${MOLIT_PARSER_VERSION}`,
-    `rights=${MOLIT_RIGHTS_POLICY_ID}`,
-  ].join(':');
+const RENT_CHECK_SOURCE_STORE = createSourceMonthStore({
+  namespacePrefix: 'kr-seoul-rent-check:source',
+  ttlSeconds: SOURCE_CACHE_TTL_SECONDS,
+  tags: RENT_CHECK_CACHE_TAGS,
+  corruptTag: STABLE_RENT_CHECK_TAG,
+});
+
+export function sourceCacheNamespace(input: SourceMonthIdentity): string {
+  return RENT_CHECK_SOURCE_STORE.namespace(input);
 }
 
 export function derivedCacheKey(quote: RentCheckQuote, coverageNamespace: string): string {
@@ -134,29 +120,6 @@ async function safeGet<T>(
   }
 }
 
-async function sourceGeneration(
-  month: MolitRentalMonth,
-  deadlineSignal?: AbortSignal,
-): Promise<string> {
-  const content = JSON.stringify({
-    sourceHousingType: month.sourceHousingType,
-    lawdCd: month.lawdCd,
-    dealYmd: month.dealYmd,
-    pageSize: month.pageSize,
-    totalCount: month.totalCount,
-    pages: month.pages,
-    records: month.records,
-    retrievedAt: month.retrievedAt,
-  });
-  const digest = await withDeadline(
-    crypto.subtle.digest('SHA-256', new TextEncoder().encode(content)),
-    deadlineSignal,
-  );
-  return [...new Uint8Array(digest)]
-    .map((value) => value.toString(16).padStart(2, '0'))
-    .join('');
-}
-
 function canonicalJson(value: unknown): string {
   if (value === null || typeof value !== 'object') return JSON.stringify(value);
   if (Array.isArray(value)) return `[${value.map(canonicalJson).join(',')}]`;
@@ -196,88 +159,12 @@ async function invalidateCorruptCache(
   return null;
 }
 
-function reconstructRecords(
-  chunks: readonly SourcePageEntry[],
-): readonly KoreaRentRecord[] | null {
-  const records: KoreaRentRecord[] = [];
-  const stableRecords = new Map<string, string>();
-  const priorAnonymousRecords = new Set<string>();
-  for (const chunk of chunks) {
-    const anonymousOnPage: string[] = [];
-    for (let index = 0; index < chunk.rows.length; index += 1) {
-      const record = chunk.rows[index]!;
-      const fingerprintDigest = chunk.rowFingerprintDigests[index]!;
-      if (record.sourceRecordId !== undefined) {
-        const prior = stableRecords.get(record.sourceRecordId);
-        if (prior !== undefined) {
-          if (prior !== fingerprintDigest) return null;
-          continue;
-        }
-        stableRecords.set(record.sourceRecordId, fingerprintDigest);
-      } else {
-        if (priorAnonymousRecords.has(fingerprintDigest)) return null;
-        anonymousOnPage.push(fingerprintDigest);
-      }
-      records.push(record);
-    }
-    anonymousOnPage.forEach((digest) => priorAnonymousRecords.add(digest));
-  }
-  return Object.freeze(records);
-}
-
 export async function readSourceMonthCache(
   cache: RuntimeCachePort,
-  input: {
-    readonly sourceHousingType: SourceHousingType;
-    readonly lawdCd: string;
-    readonly dealYmd: string;
-    readonly pageSize: number;
-  },
+  input: SourceMonthIdentity,
   deadlineSignal?: AbortSignal,
 ): Promise<MolitRentalMonth | null> {
-  const namespace = sourceCacheNamespace(input);
-  const manifest = await safeGet<unknown>(cache, `${namespace}:manifest`, deadlineSignal);
-  if (manifest === null) return null;
-  if (!isSourceManifest(manifest, namespace)) {
-    return invalidateCorruptCache(cache, deadlineSignal);
-  }
-  if (
-    manifest.sourceHousingType !== input.sourceHousingType ||
-    manifest.lawdCd !== input.lawdCd ||
-    manifest.dealYmd !== input.dealYmd ||
-    manifest.pageSize !== input.pageSize
-  ) {
-    return invalidateCorruptCache(cache, deadlineSignal);
-  }
-
-  const chunks: SourcePageEntry[] = [];
-  for (let index = 0; index < manifest.chunkKeys.length; index += 1) {
-    const chunk = await safeGet<unknown>(cache, manifest.chunkKeys[index]!, deadlineSignal);
-    if (!isSourcePage(chunk, index + 1, manifest)) {
-      return invalidateCorruptCache(cache, deadlineSignal);
-    }
-    chunks.push(chunk);
-  }
-  const records = reconstructRecords(chunks);
-  if (records === null) return invalidateCorruptCache(cache, deadlineSignal);
-  const month: MolitRentalMonth = Object.freeze({
-    sourceHousingType: manifest.sourceHousingType,
-    lawdCd: manifest.lawdCd,
-    dealYmd: manifest.dealYmd,
-    pageSize: manifest.pageSize,
-    totalCount: manifest.totalCount,
-    pages: Object.freeze(chunks.map((chunk) => Object.freeze({
-      pageNo: chunk.pageNo,
-      rows: chunk.rows,
-      rowFingerprintDigests: chunk.rowFingerprintDigests,
-    }))),
-    records,
-    retrievedAt: manifest.retrievedAt,
-  });
-  if (await sourceGeneration(month, deadlineSignal) !== manifest.generation) {
-    return invalidateCorruptCache(cache, deadlineSignal);
-  }
-  return month;
+  return RENT_CHECK_SOURCE_STORE.read(cache, input, deadlineSignal);
 }
 
 export async function writeSourceMonthCache(
@@ -286,62 +173,7 @@ export async function writeSourceMonthCache(
   beforeWrite?: () => void,
   deadlineSignal?: AbortSignal,
 ): Promise<void> {
-  const namespace = sourceCacheNamespace(month);
-  const generation = await sourceGeneration(month, deadlineSignal);
-  const chunkKeys = month.pages.map(
-    (page) => `${namespace}:generation=${generation}:page=${page.pageNo}`,
-  );
-  for (let index = 0; index < month.pages.length; index += 1) {
-    const page = month.pages[index]!;
-    const entry: SourcePageEntry = Object.freeze({
-      kind: SOURCE_PAGE_CACHE_KIND,
-      parserVersion: MOLIT_PARSER_VERSION,
-      rightsPolicyId: MOLIT_RIGHTS_POLICY_ID,
-      pageNo: page.pageNo,
-      rows: page.rows,
-      rowFingerprintDigests: page.rowFingerprintDigests,
-    });
-    beforeWrite?.();
-    try {
-      await withDeadline(
-        Promise.resolve().then(() => cache.set(chunkKeys[index]!, entry, {
-          ttlSeconds: SOURCE_CACHE_TTL_SECONDS,
-          tags: RENT_CHECK_CACHE_TAGS,
-        })),
-        deadlineSignal,
-      );
-    } catch (error) {
-      if (isDeadlineError(error)) throw error;
-      return;
-    }
-  }
-
-  const manifest: SourceManifestEntry = Object.freeze({
-    kind: SOURCE_MANIFEST_CACHE_KIND,
-    parserVersion: MOLIT_PARSER_VERSION,
-    rightsPolicyId: MOLIT_RIGHTS_POLICY_ID,
-    sourceHousingType: month.sourceHousingType,
-    lawdCd: month.lawdCd,
-    dealYmd: month.dealYmd,
-    pageSize: month.pageSize,
-    totalCount: month.totalCount,
-    retrievedAt: month.retrievedAt,
-    generation,
-    chunkKeys: Object.freeze(chunkKeys),
-  });
-  beforeWrite?.();
-  try {
-    await withDeadline(
-      Promise.resolve().then(() => cache.set(`${namespace}:manifest`, manifest, {
-        ttlSeconds: SOURCE_CACHE_TTL_SECONDS,
-        tags: RENT_CHECK_CACHE_TAGS,
-      })),
-      deadlineSignal,
-    );
-  } catch (error) {
-    if (isDeadlineError(error)) throw error;
-    // A missing manifest makes any partially written chunks unreachable.
-  }
+  return RENT_CHECK_SOURCE_STORE.write(cache, month, beforeWrite, deadlineSignal);
 }
 
 export async function readDerivedCache(

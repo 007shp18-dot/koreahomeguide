@@ -14,12 +14,12 @@ import {
   buildKoreaPublicRouteModel,
 } from '../lib/public-market/route-model.server';
 
-const period = '2026-05/2026-07';
+const period = '2026-01/2026-07';
 
 function artifact(published: boolean) {
   const identity = {
-    marketId: 'kr-seoul', area: 'seoul', parent: 'kr', deal: 'rent',
-    band: 'all-homes', period, n: published ? 20 : 4, published,
+    marketId: 'kr-seoul', area: 'seoul', parent: 'kr', deal: 'jeonse',
+    band: '45-55sqm', period, n: published ? 20 : 4, published,
   };
   return {
     artifactVersion: PUBLIC_SUMMARY_ARTIFACT_VERSION,
