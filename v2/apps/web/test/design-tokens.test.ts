@@ -115,6 +115,8 @@ describe('signedprice Modernist foundation', () => {
 
   it('uses the bundled Archivo family without a runtime Google Fonts request', () => {
     expect(css).not.toMatch(/fonts\.googleapis\.com/i);
+    expect(css).toMatch(/@font-face\s*{[\s\S]*?font-family:\s*"Archivo"/);
+    expect(css).toContain('/fonts/archivo-latin-wght-normal.woff2');
     expect(declarationsFor(css, 'body')['font-family']).toMatch(/^"Archivo"/);
   });
 });
