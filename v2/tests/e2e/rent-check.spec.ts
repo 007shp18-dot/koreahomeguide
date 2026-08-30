@@ -577,8 +577,8 @@ test('keeps the mobile form in one-column order with contained 44px targets', as
     page.getByLabel('Size', { exact: true }),
     page.getByLabel('Deposit (KRW)'),
     page.getByLabel('Monthly rent (KRW)'),
-    page.getByRole('button', { name: '㎡' }),
-    page.getByRole('button', { name: 'pyeong' }),
+    page.getByRole('button', { name: '㎡', exact: true }),
+    page.getByRole('button', { name: 'pyeong', exact: true }),
     page.getByRole('button', { name: 'Check this quote' }),
   ]) {
     await expectAtLeast44(target);
