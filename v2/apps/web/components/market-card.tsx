@@ -1,4 +1,5 @@
 import type { MarketCardModel } from '../lib/site-copy';
+import { StatusLabel } from './status-label';
 
 type MarketCardProps = {
   market: MarketCardModel;
@@ -45,17 +46,16 @@ export function MarketCard({
           {intentCapability ? (
             <li key={`${intentCapability.label}-${intentCapability.state}`}>
               <span>{intentCapability.label}</span>
-              <span className={`market-status market-status--${intentCapability.state}`}>
-                {intentCapability.stateLabel}
-              </span>
+              <StatusLabel
+                state={intentCapability.state}
+                label={intentCapability.stateLabel}
+              />
             </li>
           ) : null}
           {market.dataCapabilities.map((capability) => (
             <li key={`${capability.label}-${capability.state}`}>
               <span>{capability.label}</span>
-              <span className={`market-status market-status--${capability.state}`}>
-                {capability.stateLabel}
-              </span>
+              <StatusLabel state={capability.state} label={capability.stateLabel} />
             </li>
           ))}
         </ul>

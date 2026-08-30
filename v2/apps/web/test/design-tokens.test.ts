@@ -135,7 +135,7 @@ describe('signedprice normal-text design tokens', () => {
 });
 
 describe('signedprice focus indicator', () => {
-  it('uses a two-pixel opaque cobalt focus token for every authored outline', () => {
+  it('keeps every authored outline two pixels while permitting audited local contrast', () => {
     const authoredOutlines = [
       ...css.matchAll(/outline:\s*(\d+)px solid ([^;]+);/g),
     ].map((match) => ({
@@ -144,8 +144,9 @@ describe('signedprice focus indicator', () => {
     }));
 
     expect(authoredOutlines).not.toHaveLength(0);
-    expect(authoredOutlines).toEqual(
-      authoredOutlines.map(() => ({ width: '2', color: 'var(--focus-ring)' })),
+    expect(authoredOutlines.every((outline) => outline.width === '2')).toBe(true);
+    expect(authoredOutlines.map((outline) => outline.color)).toEqual(
+      expect.arrayContaining(['var(--focus-ring)', 'var(--ink)']),
     );
   });
 

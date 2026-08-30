@@ -1,4 +1,5 @@
 import type { ComparisonMatrixModel } from '../lib/route-model';
+import { StatusLabel } from './status-label';
 
 export interface ComparisonMatrixProps {
   readonly model: ComparisonMatrixModel;
@@ -38,9 +39,14 @@ export function ComparisonMatrix({ model }: ComparisonMatrixProps) {
             </tr>
           </thead>
           <tbody>
-            {model.rows.map((row) => (
+            {model.rows.map((row, index) => (
               <tr key={row.label}>
-                <th scope="row">{row.label}</th>
+                <th scope="row">
+                  <span className="comparison-matrix__row-number">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                  {row.label}
+                </th>
                 {model.columns.map((column) => {
                   const cell = row.cells.find(
                     (candidate) => candidate.marketId === column.marketId,
@@ -50,9 +56,7 @@ export function ComparisonMatrix({ model }: ComparisonMatrixProps) {
 
                   return (
                     <td key={cell.marketId}>
-                      <span className={`market-status market-status--${cell.state}`}>
-                        {cell.stateLabel}
-                      </span>
+                      <StatusLabel state={cell.state} label={cell.stateLabel} />
                       <p>{cell.description}</p>
                     </td>
                   );

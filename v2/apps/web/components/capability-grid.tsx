@@ -1,4 +1,5 @@
 import type { CapabilityGridModel } from '../lib/route-model';
+import { StatusLabel } from './status-label';
 
 export interface CapabilityGridProps {
   readonly model: CapabilityGridModel;
@@ -22,9 +23,7 @@ export function CapabilityGrid({ model }: CapabilityGridProps) {
             <>
               <div className="capability-card__status-row">
                 <h3>{item.label}</h3>
-                <span className={`market-status market-status--${item.state}`}>
-                  {item.stateLabel}
-                </span>
+                <StatusLabel state={item.state} label={item.stateLabel} />
               </div>
               <p>{item.description}</p>
             </>

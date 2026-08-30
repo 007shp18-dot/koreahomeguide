@@ -129,15 +129,16 @@ describe('signedprice connected decision surfaces', () => {
     expect(navigation.match(/<a /g) ?? []).toHaveLength(2);
     expect(navigation).toContain('aria-current="page">Global home</a>');
     expect(navigation).toContain('>Market overview</a>');
-    expect(declarationsFor(css, '.site-header__links li:last-child a')).toMatchObject({
+    expect(declarationsFor(css, '.site-header__links a[aria-current="page"]')).toMatchObject({
       color: 'var(--canvas)',
       background: 'var(--ink)',
     });
     expect(
-      declarationsFor(css, '.site-header__links li:last-child a:focus-visible'),
+      declarationsFor(css, '.site-header__links a[aria-current="page"]:focus-visible'),
     ).toMatchObject({
       'box-shadow': 'inset 0 0 0 2px var(--canvas)',
     });
+    expect(css).not.toMatch(/\.site-header__links li:(first|last)-child a/);
   });
 
   it('renders the three markets as one connected structural row', () => {
