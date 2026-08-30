@@ -58,7 +58,7 @@ test('reparented evidence and generated Rent Check controls retain Modernist run
   assert.match(css, /\.core-ui \.rent-check-evidence-disclosure-body>\.table-wrap thead\{background:var\(--rcm-surface\)\}/);
   assert.match(css, /\.core-ui \.rent-check-result :is\(\.saved-quote-module,\.experience-capture,\.result-share-panel\)\{[^}]*border:2px solid var\(--rcm-ink\)[^}]*border-radius:0[^}]*background:var\(--rcm-ground\)/);
   assert.match(css, /\.core-ui \.saved-quote-module :is\(\.saved-quote-form input,\.saved-quote-save,\.saved-quote-compare\)\{[^}]*min-height:44px[^}]*border:2px solid var\(--rcm-ink\)[^}]*border-radius:0/);
-  assert.match(css, /\.core-ui \.experience-capture :is\(\.experience-open,\.experience-context select,\.experience-money,\.experience-outcome span,\.search-button\)\{[^}]*min-height:44px[^}]*border:2px solid var\(--rcm-ink\)[^}]*border-radius:0/);
+  assert.match(css, /\.core-ui \.experience-capture :is\(\.experience-open,\.experience-context select,\.experience-money,\.experience-outcome span\)\{[^}]*min-height:44px[^}]*border:2px solid var\(--rcm-ink\)[^}]*border-radius:0/);
   assert.match(css, /\.core-ui \.result-share-panel :is\(\.result-share-action,\.result-share-metrics\)\{[^}]*border:2px solid var\(--rcm-ink\)[^}]*border-radius:0/);
   assert.match(css, /\.core-ui \.result-share-panel \.result-share-metrics>div\{[^}]*border-right:2px solid var\(--rcm-divider\)/);
   assert.match(css, /\.core-ui \.rent-check-comparables-toggle\{[^}]*min-height:44px[^}]*border:2px solid var\(--rcm-ink\)[^}]*border-radius:0/);
@@ -66,6 +66,7 @@ test('reparented evidence and generated Rent Check controls retain Modernist run
   assert.match(css, /\.core-ui \.district-combobox-option\{[^}]*min-height:44px[^}]*border-bottom:2px solid var\(--rcm-divider\)[^}]*border-radius:0/);
   assert.match(css, /\.core-ui :is\(\.rent-check-comparables-toggle,\.district-combobox-option\):focus-visible\{[^}]*outline:2px solid var\(--rcm-action\)[^}]*outline-offset:2px[^}]*box-shadow:none/);
   assert.match(css, /\.core-ui \.experience-capture \.search-button,\.core-ui \.result-share-panel \.search-button\.result-share-action\{[^}]*background:var\(--rcm-action\)[^}]*color:var\(--rcm-on-action\)/, 'Experience and share primary actions retain the cobalt primary state');
+  assert.doesNotMatch(css, /\.core-ui \.experience-capture :is\([^}]*\.search-button/, 'the neutral Experience control group must not override its primary submit action');
   assert.match(css, /\.core-ui \.experience-capture \.search-button:hover,\.core-ui \.result-share-panel \.search-button\.result-share-action:hover\{[^}]*background:var\(--rcm-action-dark\)/, 'Experience and share primary actions retain the dark cobalt hover state');
   assert.match(css, /\.core-ui \.experience-capture \.experience-open:hover,\.core-ui \.result-share-panel \.result-share-copy-button:hover\{[^}]*border-color:var\(--rcm-action\)[^}]*background:var\(--rcm-action-wash\)/, 'secondary generated actions retain visible hover feedback');
   const mobileCss = css.slice(css.indexOf('@media(max-width:760px){'));

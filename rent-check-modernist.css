@@ -97,7 +97,7 @@ body.core-ui :focus-visible{outline:2px solid var(--rcm-action);outline-offset:2
 .core-ui .rent-check-result>.rent-check-next-step{border:2px solid var(--rcm-ink);border-radius:0;background:var(--rcm-action-wash)}
 .core-ui .rent-check-result :is(.saved-quote-module,.experience-capture,.result-share-panel){border:2px solid var(--rcm-ink);border-radius:0;background:var(--rcm-ground);box-shadow:none}
 .core-ui .saved-quote-module :is(.saved-quote-form input,.saved-quote-save,.saved-quote-compare){min-height:44px;border:2px solid var(--rcm-ink);border-radius:0;background:var(--rcm-ground);color:var(--rcm-ink);box-shadow:none}
-.core-ui .experience-capture :is(.experience-open,.experience-context select,.experience-money,.experience-outcome span,.search-button){min-height:44px;border:2px solid var(--rcm-ink);border-radius:0;background:var(--rcm-ground);color:var(--rcm-ink);box-shadow:none}
+.core-ui .experience-capture :is(.experience-open,.experience-context select,.experience-money,.experience-outcome span){min-height:44px;border:2px solid var(--rcm-ink);border-radius:0;background:var(--rcm-ground);color:var(--rcm-ink);box-shadow:none}
 .core-ui .result-share-panel :is(.result-share-action,.result-share-metrics){border:2px solid var(--rcm-ink);border-radius:0;background:var(--rcm-ground);box-shadow:none}
 .core-ui .result-share-panel .result-share-metrics>div{border-right:2px solid var(--rcm-divider)}
 .core-ui .result-share-panel .result-share-metrics>div:last-child{border-right:0}
