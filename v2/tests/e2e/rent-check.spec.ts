@@ -244,14 +244,14 @@ async function gotoRentCheck(page: Page) {
 
 async function fillMonthlyQuote(page: Page) {
   await page.getByRole('radio', { name: 'Officetel' }).check();
-  await page.getByLabel('Size').fill('28');
+  await page.getByLabel('Size', { exact: true }).fill('28');
   await page.getByLabel('Deposit (KRW)').fill('10000000');
   await page.getByLabel('Monthly rent (KRW)').fill('1100200');
 }
 
 async function fillJeonseQuote(page: Page) {
   await page.getByRole('radio', { name: 'Villa' }).check();
-  await page.getByLabel('Size').fill('60');
+  await page.getByLabel('Size', { exact: true }).fill('60');
   await page.getByLabel('Deposit (KRW)').fill('250000000');
   await page.getByLabel('Monthly rent (KRW)').fill('0');
 }
@@ -484,7 +484,7 @@ test('completes a Tab-only keyboard flow with computed visible focus', async ({ 
     status: 200,
   });
 
-  const area = page.getByLabel('Area');
+  const area = page.getByLabel('Area', { exact: true });
   await tabTo(page, area);
   await expectVisibleKeyboardFocus(area);
 
@@ -492,7 +492,7 @@ test('completes a Tab-only keyboard flow with computed visible focus', async ({ 
   await tabTo(page, officetel);
   await expectVisibleKeyboardFocus(officetel, officetel.locator('..'));
 
-  const size = page.getByLabel('Size');
+  const size = page.getByLabel('Size', { exact: true });
   await tabTo(page, size);
   await expectVisibleKeyboardFocus(size);
   await page.keyboard.type('28');
@@ -521,11 +521,11 @@ test('keeps desktop controls aligned at 52px', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium');
   await gotoRentCheck(page);
 
-  const area = await box(page.getByLabel('Area'));
+  const area = await box(page.getByLabel('Area', { exact: true }));
   const housing = await box(
     page.locator('fieldset').filter({ hasText: 'Housing type' }).locator(':scope > div'),
   );
-  const size = await box(page.getByLabel('Size'));
+  const size = await box(page.getByLabel('Size', { exact: true }));
   const deposit = await box(page.getByLabel('Deposit (KRW)'));
   const monthly = await box(page.getByLabel('Monthly rent (KRW)'));
   const submit = await box(page.getByRole('button', { name: 'Check this quote' }));
@@ -547,9 +547,9 @@ test('keeps the mobile form in one-column order with contained 44px targets', as
   await gotoRentCheck(page);
 
   const controls = [
-    page.getByLabel('Area'),
+    page.getByLabel('Area', { exact: true }),
     page.locator('fieldset').filter({ hasText: 'Housing type' }),
-    page.getByLabel('Size'),
+    page.getByLabel('Size', { exact: true }),
     page.getByLabel('Deposit (KRW)'),
     page.getByLabel('Monthly rent (KRW)'),
     page.getByRole('button', { name: 'Check this quote' }),
@@ -566,8 +566,8 @@ test('keeps the mobile form in one-column order with contained 44px targets', as
     await expectAtLeast44(radio.locator('..'));
   }
   for (const target of [
-    page.getByLabel('Area'),
-    page.getByLabel('Size'),
+    page.getByLabel('Area', { exact: true }),
+    page.getByLabel('Size', { exact: true }),
     page.getByLabel('Deposit (KRW)'),
     page.getByLabel('Monthly rent (KRW)'),
     page.getByRole('button', { name: '㎡' }),
@@ -645,9 +645,9 @@ test('accepts only the exact Explorer handoff and never prefills quote values', 
   await expect(page.getByText(
     'Dongjak-gu (동작구) · Officetel · Noryangjin-dong (노량진동) · Noryangjin Dream Square Complex (노량진 드림스퀘어 복합빌딩)',
   )).toBeVisible();
-  await expect(page.getByLabel('Area')).toHaveValue('11590');
+  await expect(page.getByLabel('Area', { exact: true })).toHaveValue('11590');
   await expect(page.getByRole('radio', { name: 'Officetel' })).toBeChecked();
-  await expect(page.getByLabel('Size')).toHaveValue('');
+  await expect(page.getByLabel('Size', { exact: true })).toHaveValue('');
   await expect(page.getByLabel('Deposit (KRW)')).toHaveValue('');
   await expect(page.getByLabel('Monthly rent (KRW)')).toHaveValue('');
   expect(new URL(page.url()).searchParams.has('deposit')).toBe(false);
@@ -663,7 +663,7 @@ test('accepts only the exact Explorer handoff and never prefills quote values', 
   for (const query of rejectedQueries) {
     await page.goto(`${RENT_CHECK_PATH}${query}`);
     await expect(page.getByText('Verified Explorer context')).toHaveCount(0);
-    await expect(page.getByLabel('Size')).toHaveValue('');
+    await expect(page.getByLabel('Size', { exact: true })).toHaveValue('');
     await expect(page.getByLabel('Deposit (KRW)')).toHaveValue('');
     await expect(page.getByLabel('Monthly rent (KRW)')).toHaveValue('');
   }
