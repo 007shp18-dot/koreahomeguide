@@ -25,7 +25,7 @@ test('home and Rent Check locales load the scoped Modernist layer after legacy s
   }
 });
 
-test('runtime Rent Check controls retain visible focus after the legacy outline reset', () => {
+test('reparented evidence and generated Rent Check controls retain Modernist runtime geometry and focus', () => {
   assert.equal(fs.existsSync('rent-check-modernist.css'), true, 'the scoped stylesheet exists');
   if (!fs.existsSync('rent-check-modernist.css')) return;
 
@@ -53,6 +53,18 @@ test('runtime Rent Check controls retain visible focus after the legacy outline 
   assert.match(css, /\.core-ui \.rent-check-form :is\(\.rent-check-money,\.rent-check-size\):focus-within\{[^}]*outline:2px solid var\(--rcm-action\)[^}]*outline-offset:2px[^}]*box-shadow:none/);
   assert.match(css, /\.core-ui \.rent-check-form>\.rent-check-button:focus-visible\{[^}]*outline:2px solid var\(--rcm-action\)[^}]*outline-offset:2px[^}]*box-shadow:none/);
   assert.match(css, /\.core-ui \.rent-check-form>\.rent-check-assist-row :is\(\.rent-size-presets button,\.rent-size-unit-toggle\):focus-visible\{[^}]*outline:2px solid var\(--rcm-action\)[^}]*outline-offset:2px[^}]*box-shadow:none/);
+  assert.match(css, /\.core-ui \.rent-check-evidence-disclosure\{[^}]*border:2px solid var\(--rcm-ink\)[^}]*border-radius:0[^}]*background:var\(--rcm-ground\)/);
+  assert.match(css, /\.core-ui \.rent-check-evidence-disclosure-body>:is\(\.rent-check-evidence-head,\.table-wrap\)\{[^}]*border-top:2px solid var\(--rcm-divider\)[^}]*border-radius:0[^}]*background:var\(--rcm-ground\)/);
+  assert.match(css, /\.core-ui \.rent-check-evidence-disclosure-body>\.table-wrap thead\{background:var\(--rcm-surface\)\}/);
+  assert.match(css, /\.core-ui \.rent-check-result :is\(\.saved-quote-module,\.experience-capture,\.result-share-panel\)\{[^}]*border:2px solid var\(--rcm-ink\)[^}]*border-radius:0[^}]*background:var\(--rcm-ground\)/);
+  assert.match(css, /\.core-ui \.saved-quote-module :is\(\.saved-quote-form input,\.saved-quote-save,\.saved-quote-compare\)\{[^}]*min-height:44px[^}]*border:2px solid var\(--rcm-ink\)[^}]*border-radius:0/);
+  assert.match(css, /\.core-ui \.experience-capture :is\(\.experience-open,\.experience-context select,\.experience-money,\.experience-outcome span,\.search-button\)\{[^}]*min-height:44px[^}]*border:2px solid var\(--rcm-ink\)[^}]*border-radius:0/);
+  assert.match(css, /\.core-ui \.result-share-panel :is\(\.result-share-action,\.result-share-metrics\)\{[^}]*border:2px solid var\(--rcm-ink\)[^}]*border-radius:0/);
+  assert.match(css, /\.core-ui \.result-share-panel \.result-share-metrics>div\{[^}]*border-right:2px solid var\(--rcm-divider\)/);
+  assert.match(css, /\.core-ui \.rent-check-comparables-toggle\{[^}]*min-height:44px[^}]*border:2px solid var\(--rcm-ink\)[^}]*border-radius:0/);
+  assert.match(css, /\.core-ui \.district-combobox-listbox\{[^}]*border:2px solid var\(--rcm-ink\)[^}]*border-radius:0[^}]*background:var\(--rcm-ground\)/);
+  assert.match(css, /\.core-ui \.district-combobox-option\{[^}]*min-height:44px[^}]*border-bottom:2px solid var\(--rcm-divider\)[^}]*border-radius:0/);
+  assert.match(css, /\.core-ui :is\(\.rent-check-comparables-toggle,\.district-combobox-option\):focus-visible\{[^}]*outline:2px solid var\(--rcm-action\)[^}]*outline-offset:2px[^}]*box-shadow:none/);
 });
 
 test('Modernist Rent Check layer leaves legacy grid areas and mobile field order untouched', () => {

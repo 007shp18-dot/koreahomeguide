@@ -90,8 +90,28 @@ body.core-ui :focus-visible{outline:2px solid var(--rcm-action);outline-offset:2
 .core-ui .rent-check-result>.rent-check-evidence-head{border-top:2px solid var(--rcm-ink)}
 .core-ui .rent-check-result>.table-wrap{border-top:2px solid var(--rcm-ink)}
 .core-ui .rent-check-result>.table-wrap thead{background:var(--rcm-surface)}
+.core-ui .rent-check-evidence-disclosure{border:2px solid var(--rcm-ink);border-radius:0;background:var(--rcm-ground);box-shadow:none}
+.core-ui .rent-check-evidence-disclosure-body>:is(.rent-check-evidence-head,.table-wrap){border-top:2px solid var(--rcm-divider);border-radius:0;background:var(--rcm-ground)}
+.core-ui .rent-check-evidence-disclosure-body>.table-wrap thead{background:var(--rcm-surface)}
 .core-ui :is(.rent-rating,.confidence-pill){border:2px solid var(--rcm-ink);border-radius:0}
 .core-ui .rent-check-result>.rent-check-next-step{border:2px solid var(--rcm-ink);border-radius:0;background:var(--rcm-action-wash)}
+.core-ui .rent-check-result :is(.saved-quote-module,.experience-capture,.result-share-panel){border:2px solid var(--rcm-ink);border-radius:0;background:var(--rcm-ground);box-shadow:none}
+.core-ui .saved-quote-module :is(.saved-quote-form input,.saved-quote-save,.saved-quote-compare){min-height:44px;border:2px solid var(--rcm-ink);border-radius:0;background:var(--rcm-ground);color:var(--rcm-ink);box-shadow:none}
+.core-ui .experience-capture :is(.experience-open,.experience-context select,.experience-money,.experience-outcome span,.search-button){min-height:44px;border:2px solid var(--rcm-ink);border-radius:0;background:var(--rcm-ground);color:var(--rcm-ink);box-shadow:none}
+.core-ui .result-share-panel :is(.result-share-action,.result-share-metrics){border:2px solid var(--rcm-ink);border-radius:0;background:var(--rcm-ground);box-shadow:none}
+.core-ui .result-share-panel .result-share-metrics>div{border-right:2px solid var(--rcm-divider)}
+.core-ui .result-share-panel .result-share-metrics>div:last-child{border-right:0}
+.core-ui .result-share-panel .result-share-action{min-height:44px;color:var(--rcm-ink)}
+.core-ui :is(.saved-quote-module,.experience-capture,.result-share-panel) :is(.saved-quote-form input,.saved-quote-save,.saved-quote-compare,.experience-open,.experience-context select,.experience-money,.search-button,.result-share-action):focus-visible,.core-ui .experience-capture .experience-outcome input:focus-visible+span{outline:2px solid var(--rcm-action);outline-offset:2px;box-shadow:none}
+.core-ui .rent-check-result .saved-quote-save{background:var(--rcm-action);color:var(--rcm-on-action)}
+.core-ui .rent-check-result .saved-quote-save:hover{background:var(--rcm-action-dark)}
+.core-ui .rent-check-result .experience-outcome input:checked+span{border-color:var(--rcm-action);background:var(--rcm-action-wash)}
+.core-ui .rent-check-comparables-toggle{min-height:44px;border:2px solid var(--rcm-ink);border-radius:0;background:var(--rcm-ground);color:var(--rcm-ink);box-shadow:none}
+.core-ui .rent-check-comparables-toggle:hover{border-color:var(--rcm-action);background:var(--rcm-action-wash)}
+.core-ui .district-combobox-listbox{border:2px solid var(--rcm-ink);border-radius:0;background:var(--rcm-ground);box-shadow:none}
+.core-ui .district-combobox-option{min-height:44px;border:0;border-bottom:2px solid var(--rcm-divider);border-radius:0;background:var(--rcm-ground);color:var(--rcm-ink)}
+.core-ui .district-combobox-option:is(:hover,.is-active){border-color:var(--rcm-action);background:var(--rcm-action-wash)}
+.core-ui :is(.rent-check-comparables-toggle,.district-combobox-option):focus-visible{outline:2px solid var(--rcm-action);outline-offset:2px;box-shadow:none}
 
 .core-ui .lead-capture,
 .core-ui :is(.context-module,.related-links a,.home-stage-grid a,.home-guide-row){
@@ -112,6 +132,8 @@ body.core-ui :focus-visible{outline:2px solid var(--rcm-action);outline-offset:2
   .core-ui :is(.funnel-hero,.page-shell){padding-right:16px;padding-left:16px}
   .core-ui .funnel-hero{padding-top:34px}
   .core-ui :is(.funnel-rent-card,.rent-check-page .rent-check-card){padding:16px}
+  .core-ui .result-share-panel .result-share-metrics>div{border-bottom:2px solid var(--rcm-divider)}
+  .core-ui .result-share-panel .result-share-metrics>div:last-child{border-bottom:0}
 }
 
 @media(prefers-reduced-motion:reduce){
