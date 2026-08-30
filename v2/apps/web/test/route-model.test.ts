@@ -400,6 +400,7 @@ describe('locale-ready component contracts', () => {
     expect(markup).toContain('Ville exemple');
     expect(markup).toContain('Données publiques');
     expect(markup).toContain('Détail indisponible.');
+    expect(markup).toContain('aria-label="Retour"');
     expect(markup).toContain('Preuves locatives');
   });
 });

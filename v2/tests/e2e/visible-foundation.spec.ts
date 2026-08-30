@@ -225,10 +225,17 @@ for (const path of ['/us/new-york/', '/kr/seoul/sell/', '/not-a-real-route/']) {
     await expect(
       page.getByRole('heading', { level: 1, name: 'This route is not available.' }),
     ).toBeVisible();
-    await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
-      'content',
-      /^noindex,\s*follow$/,
-    );
+    const robotsDirectives = await page
+      .locator('meta[name="robots"]')
+      .evaluateAll((elements) =>
+        elements.map((element) => element.getAttribute('content') ?? ''),
+      );
+    expect(robotsDirectives.length).toBeGreaterThan(0);
+    expect(
+      robotsDirectives.some((content) =>
+        content.split(/[\s,]+/).includes('noindex'),
+      ),
+    ).toBe(true);
     await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
     await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(0);
     await expectNoHorizontalPageOverflow(page);

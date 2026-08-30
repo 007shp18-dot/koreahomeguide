@@ -22,6 +22,7 @@ export function MarketLimitations({ model }: MarketLimitationsProps) {
       <nav className="market-limitations__actions" aria-label={model.actionsLabel}>
         {model.actions.map((action) => (
           <a
+            aria-label={action.label}
             className="route-action"
             href={action.href}
             key={action.href}
