@@ -118,6 +118,9 @@ describe('signedprice connected decision surfaces', () => {
     expect(declarationsFor(css, '.intent-tabs__trigger')).toMatchObject({
       'min-height': '44px',
     });
+    expect(declarationsFor(css, '.intent-tabs__destinations[hidden]')).toMatchObject({
+      display: 'none',
+    });
   });
 
   it('renders exactly two Modernist header controls', () => {

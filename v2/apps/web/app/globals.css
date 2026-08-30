@@ -834,6 +834,10 @@ h1 {
   padding-top: 14px;
 }
 
+.intent-tabs__destinations[hidden] {
+  display: none;
+}
+
 .intent-tabs__destinations a {
   color: var(--muted);
   font-size: 0.83rem;
