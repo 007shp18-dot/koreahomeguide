@@ -57,9 +57,11 @@ test('reparented evidence and generated Rent Check controls retain Modernist run
   assert.match(css, /\.core-ui \.rent-check-evidence-disclosure-body>:is\(\.rent-check-evidence-head,\.table-wrap\)\{[^}]*border-top:2px solid var\(--rcm-divider\)[^}]*border-radius:0[^}]*background:var\(--rcm-ground\)/);
   assert.match(css, /\.core-ui \.rent-check-evidence-disclosure-body>\.table-wrap thead\{background:var\(--rcm-surface\)\}/);
   assert.match(css, /\.core-ui \.rent-check-result :is\(\.saved-quote-module,\.experience-capture,\.result-share-panel\)\{[^}]*border:2px solid var\(--rcm-ink\)[^}]*border-radius:0[^}]*background:var\(--rcm-ground\)/);
-  assert.match(css, /\.core-ui \.saved-quote-module :is\(\.saved-quote-form input,\.saved-quote-save,\.saved-quote-compare\)\{[^}]*min-height:44px[^}]*border:2px solid var\(--rcm-ink\)[^}]*border-radius:0/);
+  assert.match(css, /\.core-ui \.saved-quote-module :is\(\.saved-quote-form input,\.saved-quote-compare\)\{[^}]*min-height:44px[^}]*border:2px solid var\(--rcm-ink\)[^}]*border-radius:0/);
   assert.match(css, /\.core-ui \.experience-capture :is\(\.experience-open,\.experience-context select,\.experience-money,\.experience-outcome span\)\{[^}]*min-height:44px[^}]*border:2px solid var\(--rcm-ink\)[^}]*border-radius:0/);
   assert.match(css, /\.core-ui \.result-share-panel :is\(\.result-share-action,\.result-share-metrics\)\{[^}]*border:2px solid var\(--rcm-ink\)[^}]*border-radius:0/);
+  assert.doesNotMatch(css, /\.core-ui \.saved-quote-module :is\([^}]*\.saved-quote-save/, 'the neutral saved-quote control group must not override its primary save action');
+  assert.match(css, /\.core-ui \.rent-check-result \.saved-quote-save\{[^}]*min-height:44px[^}]*border:2px solid var\(--rcm-ink\)[^}]*border-radius:0[^}]*background:var\(--rcm-action\)[^}]*color:var\(--rcm-on-action\)/, 'the saved-quote primary action owns its full Modernist geometry and cobalt state');
   assert.match(css, /\.core-ui \.result-share-panel \.result-share-metrics>div\{[^}]*border-right:2px solid var\(--rcm-divider\)/);
   assert.match(css, /\.core-ui \.rent-check-comparables-toggle\{[^}]*min-height:44px[^}]*border:2px solid var\(--rcm-ink\)[^}]*border-radius:0/);
   assert.match(css, /\.core-ui \.district-combobox-listbox\{[^}]*border:2px solid var\(--rcm-ink\)[^}]*border-radius:0[^}]*background:var\(--rcm-ground\)/);
