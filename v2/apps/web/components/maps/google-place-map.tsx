@@ -1,7 +1,13 @@
 'use client';
 
 import Script from 'next/script';
-import { useCallback, useRef, useState, type FormEvent } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type FormEvent,
+} from 'react';
 
 import styles from './interactive-map.module.css';
 
@@ -45,10 +51,41 @@ export type GooglePlaceMapRuntime = Readonly<{
   geocoder: GoogleGeocoderInstance;
 }>;
 
+export const GOOGLE_MAPS_READY_CALLBACK = '__signedpriceGoogleMapsReady' as const;
+const GOOGLE_MAPS_READY_EVENT = 'signedprice:google-maps-ready' as const;
+const GOOGLE_MAPS_READY_FLAG = '__signedpriceGoogleMapsLoaded' as const;
+
+type GoogleMapsReadyScope = {
+  [GOOGLE_MAPS_READY_CALLBACK]?: () => void;
+  [GOOGLE_MAPS_READY_FLAG]?: boolean;
+};
+
+export function installGoogleMapsReadyCallback(
+  scope: GoogleMapsReadyScope,
+  onReady: () => void,
+): () => void {
+  const previous = scope[GOOGLE_MAPS_READY_CALLBACK];
+  scope[GOOGLE_MAPS_READY_CALLBACK] = onReady;
+  return () => {
+    if (scope[GOOGLE_MAPS_READY_CALLBACK] !== onReady) return;
+    if (previous === undefined) delete scope[GOOGLE_MAPS_READY_CALLBACK];
+    else scope[GOOGLE_MAPS_READY_CALLBACK] = previous;
+  };
+}
+
+if (typeof window !== 'undefined') {
+  const scope = window as Window & GoogleMapsReadyScope;
+  installGoogleMapsReadyCallback(scope, () => {
+    scope[GOOGLE_MAPS_READY_FLAG] = true;
+    window.dispatchEvent(new Event(GOOGLE_MAPS_READY_EVENT));
+  });
+}
+
 export function buildGoogleMapsScriptUrl(browserKey: string): string {
   const url = new URL('https://maps.googleapis.com/maps/api/js');
   url.searchParams.set('key', browserKey);
   url.searchParams.set('loading', 'async');
+  url.searchParams.set('callback', GOOGLE_MAPS_READY_CALLBACK);
   url.searchParams.set('v', 'weekly');
   url.searchParams.set('language', 'en');
   url.searchParams.set('region', 'SG');
@@ -103,13 +140,21 @@ export function GooglePlaceMap({ browserKey }: Readonly<{ browserKey: string | n
     const sdk = (globalThis as typeof globalThis & {
       google?: Readonly<{ maps: GoogleMapsSdk }>;
     }).google?.maps;
-    if (sdk === undefined || container.current === null) {
+    if (sdk === undefined || container.current === null) return;
+    try {
+      runtime.current = mountGooglePlaceMap({ sdk, element: container.current });
+      setMapState('ready');
+    } catch {
       setMapState('error');
-      return;
     }
-    runtime.current = mountGooglePlaceMap({ sdk, element: container.current });
-    setMapState('ready');
   }, []);
+
+  useEffect(() => {
+    const scope = window as Window & GoogleMapsReadyScope;
+    window.addEventListener(GOOGLE_MAPS_READY_EVENT, initialize);
+    if (scope[GOOGLE_MAPS_READY_FLAG] === true) queueMicrotask(initialize);
+    return () => window.removeEventListener(GOOGLE_MAPS_READY_EVENT, initialize);
+  }, [initialize]);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -161,7 +206,6 @@ export function GooglePlaceMap({ browserKey }: Readonly<{ browserKey: string | n
       <Script
         src={buildGoogleMapsScriptUrl(browserKey)}
         strategy="afterInteractive"
-        onReady={initialize}
         onError={() => setMapState('error')}
       />
     </div>

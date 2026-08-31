@@ -7,17 +7,32 @@ vi.mock('next/script', () => ({
 }));
 
 import {
+  GOOGLE_MAPS_READY_CALLBACK,
   GooglePlaceMap,
   buildGoogleMapsScriptUrl,
   geocodeGoogleAddress,
+  installGoogleMapsReadyCallback,
   mountGooglePlaceMap,
 } from '../components/maps/google-place-map';
 
 describe('Google place map', () => {
   it('loads the async weekly Maps JavaScript API for Singapore', () => {
     expect(buildGoogleMapsScriptUrl('key/value + test')).toBe(
-      'https://maps.googleapis.com/maps/api/js?key=key%2Fvalue+%2B+test&loading=async&v=weekly&language=en&region=SG',
+      'https://maps.googleapis.com/maps/api/js?key=key%2Fvalue+%2B+test&loading=async&callback=__signedpriceGoogleMapsReady&v=weekly&language=en&region=SG',
     );
+  });
+
+  it('initializes only from the API completion callback and restores prior state', () => {
+    const calls: string[] = [];
+    const previous = () => calls.push('previous');
+    const scope = { [GOOGLE_MAPS_READY_CALLBACK]: previous };
+    const cleanup = installGoogleMapsReadyCallback(scope, () => calls.push('ready'));
+
+    scope[GOOGLE_MAPS_READY_CALLBACK]();
+    expect(calls).toEqual(['ready']);
+    cleanup();
+    scope[GOOGLE_MAPS_READY_CALLBACK]();
+    expect(calls).toEqual(['ready', 'previous']);
   });
 
   it('renders a Singapore address search with a map fallback', () => {
