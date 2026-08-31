@@ -1,0 +1,151 @@
+/* Buy or rent — scoped to .buy-or-rent-page so nothing here can reach the rest
+   of the site. Colours come from the tokens already defined in styles.css. */
+
+.buy-or-rent-page .bor-shell { display: flex; flex-direction: column; gap: 24px; }
+
+.buy-or-rent-page .bor-hero h1 { margin: 8px 0 0; letter-spacing: -.03em; }
+.buy-or-rent-page .bor-hero p { margin: 10px 0 0; max-width: 74ch; color: var(--ink-soft, #475569); line-height: 1.7; }
+
+/* ---- inputs ---- */
+.buy-or-rent-page .bor-inputs {
+  background: var(--surface, #fff);
+  border: 1px solid var(--line-strong, #cbd5e1);
+  border-radius: var(--radius-lg, 16px);
+  padding: 22px 24px;
+  box-shadow: var(--shadow, 0 8px 24px rgba(15, 23, 42, .055));
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 18px 22px;
+}
+.buy-or-rent-page .bor-field { display: flex; flex-direction: column; gap: 6px; }
+.buy-or-rent-page .bor-field > span {
+  font-size: 11px; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--muted, #64748b);
+}
+.buy-or-rent-page .bor-field input,
+.buy-or-rent-page .bor-field select {
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  padding: 10px 12px;
+  border: 1px solid var(--line, #e5e7eb);
+  border-radius: var(--radius-sm, 8px);
+  background: var(--surface-soft, #f8fafc);
+  color: var(--ink, #111827);
+  width: 100%;
+}
+.buy-or-rent-page .bor-field input:focus-visible,
+.buy-or-rent-page .bor-field select:focus-visible {
+  outline: 2px solid var(--accent, #2563eb);
+  outline-offset: 1px;
+}
+.buy-or-rent-page .bor-field small { font-size: 12px; color: var(--muted-light, #94a3b8); }
+
+.buy-or-rent-page .bor-slider { width: 100%; accent-color: var(--accent, #2563eb); }
+.buy-or-rent-page .bor-slider-scale {
+  display: flex; justify-content: space-between;
+  font-size: 11px; color: var(--muted-light, #94a3b8);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- the two columns ---- */
+.buy-or-rent-page .bor-columns {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px;
+}
+.buy-or-rent-page .bor-side {
+  background: var(--surface, #fff);
+  border: 1px solid var(--line, #e5e7eb);
+  border-radius: var(--radius-lg, 16px);
+  overflow: hidden;
+}
+.buy-or-rent-page .bor-side--rent { border: 2px solid var(--success-line, #86efac); }
+.buy-or-rent-page .bor-side-head {
+  padding: 16px 22px; border-bottom: 1px solid var(--line, #e5e7eb);
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.buy-or-rent-page .bor-side-head h2 { margin: 0; font-size: 17px; }
+.buy-or-rent-page .bor-tag {
+  padding: 4px 10px; border-radius: 999px; font-size: 11.5px; font-weight: 700;
+  background: var(--surface-muted, #f1f5f9); color: var(--ink-soft, #475569);
+  border: 1px solid var(--line, #e5e7eb);
+}
+.buy-or-rent-page .bor-side--rent .bor-tag {
+  background: var(--success-soft, #ecfdf3); color: var(--success, #166534);
+  border-color: var(--success-line, #86efac);
+}
+.buy-or-rent-page .bor-figure { padding: 22px 22px 4px; }
+.buy-or-rent-page .bor-figure b {
+  font-size: 46px; font-weight: 700; letter-spacing: -.045em; line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.buy-or-rent-page .bor-side--rent .bor-figure b { color: var(--success, #166534); }
+.buy-or-rent-page .bor-figure span { font-size: 17px; color: var(--muted, #64748b); margin-left: 6px; }
+.buy-or-rent-page .bor-basis {
+  padding: 8px 22px 0; font-size: 13px; color: var(--muted, #64748b);
+  font-variant-numeric: tabular-nums;
+}
+.buy-or-rent-page .bor-warning {
+  margin: 14px 22px 0; padding: 11px 13px; font-size: 13px; line-height: 1.6;
+  background: var(--danger-soft, #fef2f2); border: 1px solid var(--danger-line, #fca5a5);
+  color: var(--danger, #991b1b); border-radius: var(--radius-sm, 8px);
+}
+.buy-or-rent-page .bor-breakdown { padding: 16px 22px 22px; }
+.buy-or-rent-page .bor-breakdown div {
+  display: flex; justify-content: space-between; gap: 16px;
+  padding: 10px 0; border-top: 1px solid var(--line, #e5e7eb); font-size: 13.5px;
+}
+.buy-or-rent-page .bor-breakdown span:last-child {
+  font-weight: 700; font-variant-numeric: tabular-nums; color: var(--ink, #111827); white-space: nowrap;
+}
+.buy-or-rent-page .bor-credit span { color: var(--success, #166534) !important; }
+
+/* ---- verdict ---- */
+.buy-or-rent-page .bor-verdict {
+  background: var(--ink-strong, #0f172a); color: #fff;
+  border-radius: var(--radius-lg, 16px); padding: 28px 30px;
+  display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 32px; align-items: center;
+}
+@media (max-width: 720px) { .buy-or-rent-page .bor-verdict { grid-template-columns: 1fr; gap: 22px; } }
+.buy-or-rent-page .bor-verdict h2 {
+  margin: 8px 0 0; font-size: 25px; letter-spacing: -.02em; line-height: 1.35; color: #fff;
+}
+.buy-or-rent-page .bor-verdict p { margin: 12px 0 0; font-size: 14px; line-height: 1.7; color: #cbd5e1; }
+.buy-or-rent-page .bor-verdict .eyebrow { color: #94a3b8; }
+.buy-or-rent-page .bor-stats { display: flex; flex-direction: column; gap: 16px; }
+.buy-or-rent-page .bor-stat small { display: block; font-size: 12.5px; color: #94a3b8; }
+.buy-or-rent-page .bor-stat b {
+  display: block; font-size: 27px; font-weight: 700; letter-spacing: -.03em;
+  font-variant-numeric: tabular-nums; margin-top: 2px;
+}
+.buy-or-rent-page .bor-stat--key b { color: #86efac; }
+
+/* ---- sensitivity ---- */
+.buy-or-rent-page .bor-sens {
+  background: var(--surface, #fff); border: 1px solid var(--line, #e5e7eb);
+  border-radius: var(--radius-lg, 16px); padding: 22px 24px;
+}
+.buy-or-rent-page .bor-sens h2 { margin: 0; font-size: 16px; }
+.buy-or-rent-page .bor-sens > p { margin: 6px 0 16px; font-size: 13.5px; color: var(--muted, #64748b); }
+.buy-or-rent-page .bor-sens-row {
+  display: grid; grid-template-columns: 58px 1fr 62px; gap: 14px; align-items: center;
+  padding: 5px 8px; margin: 0 -8px; border-radius: var(--radius-sm, 8px);
+}
+.buy-or-rent-page .bor-sens-row.is-current { background: var(--accent-soft, #eff6ff); }
+.buy-or-rent-page .bor-sens-rate,
+.buy-or-rent-page .bor-sens-val {
+  font-size: 13px; font-variant-numeric: tabular-nums; color: var(--ink, #111827);
+}
+.buy-or-rent-page .bor-sens-val { text-align: right; font-weight: 700; }
+.buy-or-rent-page .bor-sens-row.is-current .bor-sens-val { color: var(--accent-dark, #1d4ed8); }
+.buy-or-rent-page .bor-sens-track {
+  height: 14px; background: var(--surface-muted, #f1f5f9);
+  border: 1px solid var(--line, #e5e7eb); border-radius: 4px; overflow: hidden;
+}
+.buy-or-rent-page .bor-sens-fill { display: block; height: 100%; background: var(--accent, #2563eb); }
+
+/* ---- disclosure ---- */
+.buy-or-rent-page .bor-caution {
+  background: var(--caution-soft, #fff7e6); border: 1px solid var(--caution-line, #f2c94c);
+  color: var(--caution, #92400e); border-radius: var(--radius-lg, 16px);
+  padding: 18px 22px; font-size: 13.5px; line-height: 1.7;
+}
+.buy-or-rent-page .bor-method { font-size: 12.5px; line-height: 1.75; color: var(--muted-light, #94a3b8); }

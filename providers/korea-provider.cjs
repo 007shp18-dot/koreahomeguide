@@ -1,7 +1,6 @@
 const { completedMonths, fetchRentalMonth, fetchSaleMonth: defaultFetchSaleMonth } = require('../lib/real-price-core.cjs');
 const { buildAreaSummary, aggregateDongs, buildDongSummary, aggregateBuildings, buildBuildingDetail } = require('./provider-utils.cjs');
 const { fetchBuildingProfile } = require('./building-profile-provider.cjs');
-const { resolveSeoulLegalDongCode } = require('./seoul-legal-dong-codes.cjs');
 
 function createKoreaHousingProvider({
   serviceKey,
@@ -74,19 +73,25 @@ function createKoreaHousingProvider({
     async getBuildingDetail({ areaCode, propertyType, buildingKey, legalCode = '', months = 6 }) {
       const items = await rowsFor({ areaCode, propertyType, months });
       let saleRows = null;
+      let saleError = null;
       if (propertyType === 'apartment') {
         try {
           saleRows = await saleRowsFor({ areaCode, propertyType, months });
-        } catch (_) {
+        } catch (error) {
+          // Swallowing this made "the sale API rejected us" look exactly like
+          // "this building had no sales", which is the wrong thing to be unable
+          // to tell apart. Keep failing soft — the rent half of the page must
+          // still render — but say why.
           saleRows = null;
+          saleError = (error && error.message) || String(error);
         }
       }
       const detail = buildBuildingDetail(items, { buildingKey, referenceDate, months, saleRows });
       if (!detail) return null;
+      if (saleError) detail.saleUnavailableReason = saleError;
       const transaction = detail.recentTransactions && detail.recentTransactions[0];
       if (transaction) {
-        const verifiedLegalCode = legalCode || resolveSeoulLegalDongCode(areaCode, transaction.dong);
-        detail.profile = await fetchProfile({ serviceKey, transaction, legalCode:verifiedLegalCode, fetchImpl });
+        detail.profile = await fetchProfile({ serviceKey, transaction, legalCode, fetchImpl });
       }
       return detail;
     }

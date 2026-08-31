@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Buy or Rent in Seoul | KoreaHomeGuide</title>
+  <meta name="description" content="The same home, the same cash, one monthly figure each. Restate a rental contract at your deposit, compare it with the monthly cost of owning, and see how much the price would have to rise for buying to break even.">
+  <link rel="canonical" href="https://koreahomeguide.com/buy-or-rent/">
+  <link rel="alternate" hreflang="en" href="https://koreahomeguide.com/buy-or-rent/">
+  <link rel="alternate" hreflang="x-default" href="https://koreahomeguide.com/buy-or-rent/">
+  <script defer src="/privacy-consent.js"></script>
+  <script defer src="/mobile-navigation.js"></script>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/buy-or-rent/buy-or-rent.css">
+</head>
+<body class="core-ui buy-or-rent-page">
+  <header class="compact-header"><a class="brand" href="/"><span class="brand-mark">K</span><span>KoreaHomeGuide</span></a><nav><a href="/explore/">Explore</a><a href="/tools/seoul-rent-check/">Rent Check</a><a href="/buy-or-rent/">Buy or Rent</a><a href="/guides/">Guides</a></nav><div class="header-actions"><a class="language-link" href="/zh/">中文</a></div></header>
+
+  <main class="page-shell bor-shell">
+
+    <section class="bor-hero">
+      <span class="eyebrow">SIGNEDRENT</span>
+      <h1>Buy it or rent it.</h1>
+      <p>같은 집, 같은 현금. 빌릴 때와 살 때를 각각 월 단위 숫자 하나로 놓고 비교합니다. 임대는 보증금을 묶고 매매는 계약금을 묶습니다 — 현금을 한 번 정하면 둘이 비교 가능해집니다.</p>
+    </section>
+
+    <p id="borStatus" class="market-status" aria-live="polite"></p>
+
+    <!-- inputs -->
+    <section class="bor-inputs" aria-label="입력">
+      <label class="bor-field">
+        <span>가진 현금</span>
+        <input id="inCash" type="text" inputmode="numeric" value="5,000만" autocomplete="off">
+        <input id="inCashSlider" class="bor-slider" type="range" min="0" max="35000" step="500" value="5000" aria-label="가진 현금 슬라이더">
+        <span class="bor-slider-scale" aria-hidden="true"><span>0</span><span>1억</span><span>2억</span><span>3억</span><span>3.5억</span></span>
+      </label>
+
+      <label class="bor-field">
+        <span>매매 호가</span>
+        <input id="inPrice" type="text" inputmode="numeric" value="7억 5000만" autocomplete="off">
+        <small>보고 있는 매물의 가격을 넣으세요</small>
+      </label>
+
+      <label class="bor-field">
+        <span>비교할 임대 계약 · 보증금</span>
+        <input id="inRentDeposit" type="text" inputmode="numeric" value="5,000만" autocomplete="off">
+      </label>
+
+      <label class="bor-field">
+        <span>비교할 임대 계약 · 월세</span>
+        <input id="inRentMonthly" type="text" inputmode="numeric" value="114만" autocomplete="off">
+      </label>
+
+      <label class="bor-field">
+        <span>주택 유형</span>
+        <select id="inAssetType">
+          <option value="apartment">아파트</option>
+          <option value="officetel">오피스텔</option>
+        </select>
+        <small>전환율이 유형별로 다릅니다</small>
+      </label>
+    </section>
+
+    <!-- the two sides -->
+    <section class="bor-columns" aria-label="비교 결과">
+
+      <article class="bor-side bor-side--rent">
+        <div class="bor-side-head"><h2>빌린다</h2><span class="bor-tag">SignedRent</span></div>
+        <p class="bor-figure"><b id="rentFigure">114만</b><span>원 / 월</span></p>
+        <p class="bor-basis" id="rentBasis"></p>
+        <p class="bor-warning" id="rentWarning" hidden></p>
+        <div class="bor-breakdown">
+          <div><span>보증금으로 묶이는 돈</span><span>이사 나갈 때 전액 반환</span></div>
+        </div>
+      </article>
+
+      <article class="bor-side">
+        <div class="bor-side-head"><h2>산다</h2><span class="bor-tag">월 보유비용</span></div>
+        <p class="bor-figure"><b id="ownFigure">258만</b><span>원 / 월</span></p>
+        <p class="bor-basis" id="ownBasis"></p>
+        <div class="bor-breakdown">
+          <div><span id="rowLoan"></span><span id="valLoan"></span></div>
+          <div><span id="rowHolding"></span><span id="valHolding"></span></div>
+          <div><span id="rowAcq"></span><span id="valAcq"></span></div>
+          <div class="bor-credit"><span>원금상환분 — 저축이므로 비용에서 제외</span><span id="valPrincipal"></span></div>
+        </div>
+      </article>
+    </section>
+
+    <!-- verdict -->
+    <section class="bor-verdict" aria-live="polite">
+      <div>
+        <span class="eyebrow">결론</span>
+        <h2 id="verdictLine"></h2>
+        <p id="breakEvenSentence"></p>
+      </div>
+      <div class="bor-stats">
+        <div class="bor-stat"><small id="statGapLabel">월 차액</small><b id="statGap"></b></div>
+        <div class="bor-stat bor-stat--key"><small>손익분기 상승률</small><b id="statBreakEven"></b></div>
+        <div class="bor-stat"><small>사는 쪽 월 총지출 (원금 포함)</small><b id="statOutflow"></b></div>
+      </div>
+    </section>
+
+    <!-- assumptions -->
+    <section class="bor-inputs" aria-label="가정">
+      <label class="bor-field">
+        <span>대출 금리 (연 %)</span>
+        <input id="inRate" type="number" min="0" max="15" step="0.1" value="4.0">
+      </label>
+      <label class="bor-field">
+        <span>대출 기간 (년)</span>
+        <input id="inTerm" type="number" min="1" max="50" step="1" value="30">
+      </label>
+      <label class="bor-field">
+        <span>보유비용 (연 %)</span>
+        <input id="inHolding" type="number" min="0" max="5" step="0.01" value="0.15">
+        <small>재산세·관리비 등</small>
+      </label>
+      <label class="bor-field">
+        <span>취득세 등</span>
+        <input id="inAcqTax" type="text" inputmode="numeric" autocomplete="off">
+        <small>1주택 기본값 — 본인 상황에 맞게 수정하세요</small>
+      </label>
+      <label class="bor-field">
+        <span>보유 예정 기간 (년)</span>
+        <input id="inHoldYears" type="number" min="1" max="40" step="1" value="7">
+        <small>취득세를 이 기간으로 나눕니다</small>
+      </label>
+    </section>
+
+    <!-- sensitivity -->
+    <section class="bor-sens">
+      <h2>금리가 바뀌면 손익분기는 이렇게 움직입니다</h2>
+      <p>집값이 매년 몇 % 올라야 사는 쪽이 본전인지 — 다른 조건은 그대로 두고 금리만 바꿨을 때.</p>
+      <div id="sensitivityRows"></div>
+    </section>
+
+    <div class="bor-caution">
+      <strong>이건 가정이 명시된 계산이지 투자 권유가 아닙니다.</strong>
+      화면의 모든 입력값은 편집할 수 있고, 숨겨진 숫자는 없습니다. 손익분기 상승률은
+      시장이 어떻게 되어야 하는지를 말할 뿐 어떻게 될지를 말하지 않습니다.
+      실제 대출 한도는 LTV·DSR 규제로 더 낮을 수 있고, 취득세율은 보유 주택 수·지역·면적에 따라 달라집니다.
+      세무·금융 판단은 전문가와 확인하세요.
+    </div>
+
+    <p class="bor-method">
+      임대 쪽 환산에 쓰는 보증금↔월세 전환율은 가정값이 아니라 실측값입니다 — 같은 건물,
+      같은 면적, 보증금만 다른 국토부 신고 계약 쌍에서 측정했고, 보증금이 커질수록 낮아지며
+      주택 유형별로 다릅니다. 이 페이지는 계약과 계약을 비교하며, 광고 호가와 비교하지 않습니다.
+      매매가는 사용자가 입력한 값이고 이 사이트의 추정가가 아닙니다.
+    </p>
+
+  </main>
+
+  <footer class="page-footer"><strong>KoreaHomeGuide</strong><small>Official reported rental contracts for market reference. <a href="/about/">Method and limitations</a> · <a href="/privacy/">Privacy</a>.</small></footer>
+
+  <script src="/signed-conversion.js"></script>
+  <script src="/buy-or-rent/app.js"></script>
+</body>
+</html>
