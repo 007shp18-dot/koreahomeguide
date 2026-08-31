@@ -398,7 +398,10 @@ describe('fetchMolitRentalMonth', () => {
           now: () => new Date('2026-09-01T00:00:00.000Z'),
         },
       ),
-    ).rejects.toMatchObject({ code: 'source_malformed' });
+    ).rejects.toMatchObject({
+      code: 'source_malformed',
+      diagnostic: 'contract_month_mismatch',
+    });
   });
 
   test('rejects a complete response whose supplied district identity mismatches LAWD_CD', async () => {
@@ -554,7 +557,10 @@ describe('fetchMolitRentalMonth', () => {
           now: () => new Date('2026-09-01T00:00:00.000Z'),
         },
       ),
-    ).rejects.toMatchObject({ code: 'source_malformed' });
+    ).rejects.toMatchObject({
+      code: 'source_malformed',
+      diagnostic: 'record_id_conflict',
+    });
   });
 
   test.runIf(Boolean(MOLIT_RENT_ENDPOINTS))(
@@ -579,7 +585,10 @@ describe('fetchMolitRentalMonth', () => {
             now: () => new Date('2026-09-01T00:00:00.000Z'),
           },
         ),
-      ).rejects.toMatchObject({ code: 'source_malformed' });
+      ).rejects.toMatchObject({
+        code: 'source_malformed',
+        diagnostic: 'anonymous_page_overlap',
+      });
     },
   );
 

@@ -48,7 +48,8 @@ export type MolitMalformedDiagnostic =
   | 'monthly_rent'
   | 'page_completeness'
   | 'page_total_changed'
-  | 'page_overlap';
+  | 'record_id_conflict'
+  | 'anonymous_page_overlap';
 
 export class MolitSourceError extends Error {
   constructor(
@@ -620,12 +621,14 @@ export async function fetchMolitRentalMonth(
       if (record.sourceRecordId !== undefined) {
         const priorFingerprint = stableIds.get(record.sourceRecordId);
         if (priorFingerprint !== undefined) {
-          if (priorFingerprint !== itemFingerprint) malformed('page_overlap');
+          if (priorFingerprint !== itemFingerprint) malformed('record_id_conflict');
           return;
         }
         stableIds.set(record.sourceRecordId, itemFingerprint);
       } else {
-        if (previousAnonymousFingerprints.has(itemFingerprint)) malformed('page_overlap');
+        if (previousAnonymousFingerprints.has(itemFingerprint)) {
+          malformed('anonymous_page_overlap');
+        }
         anonymousOnThisPage.push(itemFingerprint);
       }
       records.push(record);
