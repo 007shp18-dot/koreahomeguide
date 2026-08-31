@@ -16,7 +16,9 @@ import {
 } from './public-versions';
 
 export {
+  getSeoulDistrictBySlug,
   SEOUL_RENT_CHECK_DISTRICTS,
+  type SeoulDistrictSlug,
   type SeoulLawdCd,
   type SeoulRentCheckDistrict,
 } from './districts';

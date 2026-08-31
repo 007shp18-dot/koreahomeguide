@@ -3,8 +3,10 @@ import { describe, expect, it } from 'vitest';
 import {
   KR_MOLIT_RENT_RIGHTS,
   MolitSourceError,
+  SEOUL_RENT_CHECK_DISTRICTS,
   buildKoreaPublicSummaryPlan,
   createSourceMonthStore,
+  finalizeKoreaPublicAreaSummaryJob,
   finalizeKoreaPublicSummaryJob,
   runKoreaPublicSummaryBatch,
   type KoreaPublicSummaryCoordinate,
@@ -110,6 +112,24 @@ function eligibleRecord(
     recordStatus,
     sourceRecordId: `record-${index}`,
   };
+}
+
+function fixedEligibleRecords(
+  coordinate: KoreaPublicSummaryCoordinate,
+  count: number,
+  depositWon: number,
+  identity: string,
+): readonly KoreaRentRecord[] {
+  return Array.from({ length: count }, (_, index) => ({
+    sourceHousingType: coordinate.sourceHousingType,
+    areaSqm: 50,
+    depositWon,
+    monthlyRentWon: 0,
+    contractDate: `${coordinate.dealYmd.slice(0, 4)}-${coordinate.dealYmd.slice(4)}-15`,
+    contractType: 'new' as const,
+    recordStatus: 'active' as const,
+    sourceRecordId: `${identity}-${index}`,
+  }));
 }
 
 describe('Korea public summary coordinate plan', () => {
@@ -281,4 +301,93 @@ describe('Korea public summary finalization', () => {
   it('maps provider source errors to the public retryable code', () => {
     expect(new MolitSourceError('source_timeout').code).toBe('source_timeout');
   });
+
+  it('derives the city and all 25 districts from only their legal-code records', async () => {
+    const cache = new MemoryCache();
+    const store = createSourceMonthStore({
+      namespacePrefix: 'signedprice:kr-public-summary-job:v1',
+      ttlSeconds: 86_400,
+      tags: [JOB_TAG],
+      corruptTag: JOB_TAG,
+    });
+    const plan = buildKoreaPublicSummaryPlan(REFERENCE_INSTANT);
+    for (const coordinate of plan) {
+      let records: readonly KoreaRentRecord[] = [];
+      if (coordinate.index === 1) {
+        records = fixedEligibleRecords(coordinate, 5, 200_000_000, 'jongno-prior');
+      } else if (coordinate.index === 4) {
+        records = fixedEligibleRecords(coordinate, 5, 220_000_000, 'jongno-latest');
+      } else if (coordinate.index === 29) {
+        records = fixedEligibleRecords(coordinate, 4, 200_000_000, 'jung-prior');
+      } else if (coordinate.index === 32) {
+        records = fixedEligibleRecords(coordinate, 5, 220_000_000, 'jung-latest');
+      } else if (coordinate.index === 60) {
+        records = fixedEligibleRecords(coordinate, 4, 900_000_000, 'yongsan-thin');
+      }
+      await store.write(cache, emptyMonth(coordinate, records));
+    }
+
+    const finalized = await finalizeKoreaPublicAreaSummaryJob(
+      { referenceInstant: REFERENCE_INSTANT },
+      {
+        cache,
+        now: () => new Date(REFERENCE_INSTANT),
+        rightsLookup,
+      },
+    );
+
+    expect(finalized.districtSummaries).toHaveLength(25);
+    expect(finalized.districtSummaries.map(({ area }) => area)).toEqual(
+      SEOUL_RENT_CHECK_DISTRICTS.map(({ slug }) => slug),
+    );
+    expect(finalized.citySummary).toMatchObject({
+      area: 'seoul',
+      parent: 'kr',
+      n: 23,
+      published: true,
+    });
+    expect(finalized.districtSummaries[0]).toMatchObject({
+      area: 'jongno-gu',
+      parent: 'seoul',
+      n: 10,
+      published: true,
+      med: 210_000_000,
+      chg3m: 10,
+    });
+    expect(finalized.districtSummaries[1]).toMatchObject({
+      area: 'jung-gu',
+      parent: 'seoul',
+      n: 9,
+      published: true,
+      chg3m: null,
+    });
+    expect(finalized.districtSummaries[2]).toEqual({
+      marketId: 'kr-seoul',
+      area: 'yongsan-gu',
+      parent: 'seoul',
+      deal: 'jeonse',
+      band: '45-55sqm',
+      period: '2026-01/2026-07',
+      n: 4,
+      published: false,
+    });
+    expect(JSON.stringify(finalized.districtSummaries[2])).not.toMatch(
+      /min|p25|med|p75|max|chg3m/,
+    );
+    expect(finalized.citySummary.n).toBe(
+      finalized.districtSummaries.reduce((sum, summary) => sum + summary.n, 0),
+    );
+
+    const missingManifest = [...cache.entries.keys()].find((key) =>
+      key.includes('lawd=11740') && key.endsWith(':manifest'))!;
+    cache.entries.delete(missingManifest);
+    await expect(finalizeKoreaPublicAreaSummaryJob(
+      { referenceInstant: REFERENCE_INSTANT },
+      {
+        cache,
+        now: () => new Date(REFERENCE_INSTANT),
+        rightsLookup,
+      },
+    )).rejects.toThrow('Public summary source coverage is incomplete.');
+  }, 30_000);
 });

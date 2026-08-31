@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
+import { createHash } from 'node:crypto';
 
 vi.mock('server-only', () => ({}));
 
@@ -69,6 +70,9 @@ describe('public summary artifact builder', () => {
     expect(Object.isFrozen(built.artifact.summaries)).toBe(true);
     expect(Object.isFrozen((built.artifact.summaries as readonly object[])[0])).toBe(true);
     expect(built.sha256).toMatch(/^[0-9a-f]{64}$/);
+    expect(built.sha256).toBe(
+      createHash('sha256').update(built.serialized).digest('hex'),
+    );
     expect(parsePublicSummaryArtifact(JSON.parse(built.serialized), {
       artifactVersion: PUBLIC_SUMMARY_ARTIFACT_VERSION,
       marketId: 'kr-seoul',

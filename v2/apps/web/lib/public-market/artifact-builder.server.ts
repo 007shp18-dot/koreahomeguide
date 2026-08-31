@@ -12,22 +12,13 @@ import {
   parsePublicSummaryArtifact,
   type PublicSummaryArtifactInput,
 } from './summary-schema';
+import { encodeArtifact } from './artifact-encoding.server';
 
 export type BuiltPublicSummaryArtifact = Readonly<{
   artifact: PublicSummaryArtifactInput;
   serialized: string;
   sha256: string;
 }>;
-
-function canonicalJson(value: unknown): string {
-  if (value === null || typeof value !== 'object') return JSON.stringify(value);
-  if (Array.isArray(value)) return `[${value.map(canonicalJson).join(',')}]`;
-  const object = value as Readonly<Record<string, unknown>>;
-  return `{${Object.keys(object)
-    .sort()
-    .map((key) => `${JSON.stringify(key)}:${canonicalJson(object[key])}`)
-    .join(',')}}`;
-}
 
 function freezeArtifact(
   finalization: KoreaPublicSummaryFinalization,
@@ -65,13 +56,6 @@ export async function buildPublicSummaryArtifact(
     marketId: 'kr-seoul',
     period: finalization.period,
   });
-  const serialized = canonicalJson(artifact);
-  const digest = await crypto.subtle.digest(
-    'SHA-256',
-    new TextEncoder().encode(serialized),
-  );
-  const sha256 = [...new Uint8Array(digest)]
-    .map((value) => value.toString(16).padStart(2, '0'))
-    .join('');
-  return Object.freeze({ artifact, serialized, sha256 });
+  const encoded = await encodeArtifact(artifact);
+  return Object.freeze({ artifact, ...encoded });
 }

@@ -1,6 +1,7 @@
 export {
   HOUSING_TYPE_PRESETS,
   canonicalAreaFromPyeong,
+  getSeoulDistrictBySlug,
   SEOUL_RENT_CHECK_DISTRICTS,
   type ComparableContract,
   type ContractTypeCounts,
@@ -13,6 +14,7 @@ export {
   type SeoulRentCheckEnvelope,
   type SeoulRentCheckErrorCode,
   type SeoulRentCheckErrorEnvelope,
+  type SeoulDistrictSlug,
   type SeoulLawdCd,
   type SeoulRentCheckDistrict,
   type SeoulRentCheckResult,
@@ -87,10 +89,12 @@ export {
 } from './public-summary';
 export {
   buildKoreaPublicSummaryPlan,
+  finalizeKoreaPublicAreaSummaryJob,
   finalizeKoreaPublicSummaryJob,
   runKoreaPublicSummaryBatch,
   type KoreaPublicSummaryBatchResult,
   type KoreaPublicSummaryCoordinate,
+  type KoreaPublicAreaSummaryFinalization,
   type KoreaPublicSummaryFinalization,
   type KoreaPublicSummaryJobDependencies,
 } from './public-summary-job';

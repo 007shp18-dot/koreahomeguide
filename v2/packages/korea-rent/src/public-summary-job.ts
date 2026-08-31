@@ -73,6 +73,15 @@ export type KoreaPublicSummaryFinalization = Readonly<{
   unknownContracts: number;
 }>;
 
+export type KoreaPublicAreaSummaryFinalization = Readonly<{
+  citySummary: PublicMarketSummary;
+  districtSummaries: readonly PublicMarketSummary[];
+  period: string;
+  generatedAt: string;
+  completedCoordinates: typeof TOTAL_COORDINATES;
+  eligibleRecords: number;
+}>;
+
 export type KoreaPublicSummaryJobDependencies = Readonly<{
   serviceKey: string;
   cache: RuntimeCachePort;
@@ -262,15 +271,22 @@ function isEligible(record: KoreaRentRecord): boolean {
   );
 }
 
-export async function finalizeKoreaPublicSummaryJob(
-  input: Readonly<{ referenceInstant: string }>,
-  dependencies: Omit<KoreaPublicSummaryJobDependencies, 'serviceKey' | 'fetch'>,
-): Promise<KoreaPublicSummaryFinalization> {
-  assertJobRights(dependencies, ['cache', 'derive', 'display', 'commercial']);
-  const plan = buildKoreaPublicSummaryPlan(input.referenceInstant);
+type LoadedPublicSummaryRecords = Readonly<{
+  all: readonly KoreaRentRecord[];
+  byDistrict: ReadonlyMap<SeoulLawdCd, readonly KoreaRentRecord[]>;
+}>;
+
+async function loadPublicSummaryRecords(
+  referenceInstant: string,
+  cache: RuntimeCachePort,
+): Promise<LoadedPublicSummaryRecords> {
+  const plan = buildKoreaPublicSummaryPlan(referenceInstant);
   const records: KoreaRentRecord[] = [];
+  const recordsByDistrict = new Map<SeoulLawdCd, KoreaRentRecord[]>(
+    SEOUL_RENT_CHECK_DISTRICTS.map(({ lawdCd }) => [lawdCd, []]),
+  );
   for (const coordinate of plan) {
-    const month = await JOB_STORE.read(dependencies.cache, {
+    const month = await JOB_STORE.read(cache, {
       ...coordinate,
       pageSize: PAGE_SIZE,
     });
@@ -278,17 +294,41 @@ export async function finalizeKoreaPublicSummaryJob(
       throw new TypeError('Public summary source coverage is incomplete.');
     }
     records.push(...month.records);
+    recordsByDistrict.get(coordinate.lawdCd)!.push(...month.records);
   }
+  return {
+    all: records,
+    byDistrict: recordsByDistrict,
+  };
+}
 
-  const eligible = records.filter(isEligible);
-  const completedMonths = completedSeoulMonthKeys(input.referenceInstant, 7).reverse();
-  const period = `${completedMonths[0]}/${completedMonths.at(-1)}`;
-  const summary = buildKoreaPublicMarketSummary({
-    area: 'seoul',
-    parent: 'kr',
-    band: '45-55sqm',
-    period,
+function completedPeriod(referenceInstant: string): Readonly<{
+  completedMonths: readonly string[];
+  period: string;
+}> {
+  const completedMonths = completedSeoulMonthKeys(referenceInstant, 7).reverse();
+  return {
     completedMonths,
+    period: `${completedMonths[0]}/${completedMonths.at(-1)}`,
+  };
+}
+
+function publicSummaryFor(
+  input: Readonly<{
+    area: string;
+    parent: string;
+    period: string;
+    completedMonths: readonly string[];
+    records: readonly KoreaRentRecord[];
+  }>,
+  dependencies: { readonly rightsLookup?: MolitRightsLookup },
+): PublicMarketSummary {
+  return buildKoreaPublicMarketSummary({
+    area: input.area,
+    parent: input.parent,
+    band: '45-55sqm',
+    period: input.period,
+    completedMonths: input.completedMonths,
     sourceComplete: true,
     source: {
       marketId: 'kr-seoul',
@@ -298,8 +338,25 @@ export async function finalizeKoreaPublicSummaryJob(
       rightsPolicyId: MOLIT_RIGHTS_POLICY_ID,
     },
     rightsLookup: rightsLookup(dependencies),
-    records,
+    records: input.records,
   });
+}
+
+export async function finalizeKoreaPublicSummaryJob(
+  input: Readonly<{ referenceInstant: string }>,
+  dependencies: Omit<KoreaPublicSummaryJobDependencies, 'serviceKey' | 'fetch'>,
+): Promise<KoreaPublicSummaryFinalization> {
+  assertJobRights(dependencies, ['cache', 'derive', 'display', 'commercial']);
+  const loaded = await loadPublicSummaryRecords(input.referenceInstant, dependencies.cache);
+  const eligible = loaded.all.filter(isEligible);
+  const { completedMonths, period } = completedPeriod(input.referenceInstant);
+  const summary = publicSummaryFor({
+    area: 'seoul',
+    parent: 'kr',
+    period,
+    completedMonths,
+    records: loaded.all,
+  }, dependencies);
 
   return Object.freeze({
     summary,
@@ -312,5 +369,39 @@ export async function finalizeKoreaPublicSummaryJob(
     newContracts: eligible.filter((record) => record.contractType === 'new').length,
     renewalContracts: eligible.filter((record) => record.contractType === 'renewal').length,
     unknownContracts: eligible.filter((record) => record.contractType === 'unknown').length,
+  });
+}
+
+export async function finalizeKoreaPublicAreaSummaryJob(
+  input: Readonly<{ referenceInstant: string }>,
+  dependencies: Omit<KoreaPublicSummaryJobDependencies, 'serviceKey' | 'fetch'>,
+): Promise<KoreaPublicAreaSummaryFinalization> {
+  assertJobRights(dependencies, ['cache', 'derive', 'display', 'commercial']);
+  const loaded = await loadPublicSummaryRecords(input.referenceInstant, dependencies.cache);
+  const { completedMonths, period } = completedPeriod(input.referenceInstant);
+  const citySummary = publicSummaryFor({
+    area: 'seoul',
+    parent: 'kr',
+    period,
+    completedMonths,
+    records: loaded.all,
+  }, dependencies);
+  const districtSummaries = Object.freeze(SEOUL_RENT_CHECK_DISTRICTS.map((district) => (
+    publicSummaryFor({
+      area: district.slug,
+      parent: 'seoul',
+      period,
+      completedMonths,
+      records: loaded.byDistrict.get(district.lawdCd)!,
+    }, dependencies)
+  )));
+
+  return Object.freeze({
+    citySummary,
+    districtSummaries,
+    period,
+    generatedAt: validNow(dependencies),
+    completedCoordinates: TOTAL_COORDINATES,
+    eligibleRecords: loaded.all.filter(isEligible).length,
   });
 }
