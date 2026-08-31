@@ -113,9 +113,7 @@ async function generation(month: MolitRentalMonth, signal?: AbortSignal): Promis
 function reconstructRecords(chunks: readonly SourcePageEntry[]): readonly KoreaRentRecord[] | null {
   const records: KoreaRentRecord[] = [];
   const stableRecords = new Map<string, string>();
-  const priorAnonymousRecords = new Set<string>();
   for (const chunk of chunks) {
-    const anonymousOnPage: string[] = [];
     for (let index = 0; index < chunk.rows.length; index += 1) {
       const record = chunk.rows[index]!;
       const fingerprintDigest = chunk.rowFingerprintDigests[index]!;
@@ -127,12 +125,11 @@ function reconstructRecords(chunks: readonly SourcePageEntry[]): readonly KoreaR
         }
         stableRecords.set(record.sourceRecordId, fingerprintDigest);
       } else {
-        if (priorAnonymousRecords.has(fingerprintDigest)) return null;
-        anonymousOnPage.push(fingerprintDigest);
+        // Redacted contracts can have identical public fingerprints. Preserve
+        // their provider row multiplicity when no stable ID is available.
       }
       records.push(record);
     }
-    anonymousOnPage.forEach((digest) => priorAnonymousRecords.add(digest));
   }
   return Object.freeze(records);
 }

@@ -48,8 +48,7 @@ export type MolitMalformedDiagnostic =
   | 'monthly_rent'
   | 'page_completeness'
   | 'page_total_changed'
-  | 'record_id_conflict'
-  | 'anonymous_page_overlap';
+  | 'record_id_conflict';
 
 export class MolitSourceError extends Error {
   constructor(
@@ -613,9 +612,7 @@ export async function fetchMolitRentalMonth(
   const records: KoreaRentRecord[] = [];
   const pageChunks: MolitPageChunk[] = [];
   const stableIds = new Map<string, string>();
-  const previousAnonymousFingerprints = new Set<string>();
   for (const page of pages) {
-    const anonymousOnThisPage: string[] = [];
     page.rows.forEach((record, index) => {
       const itemFingerprint = page.rowFingerprints[index]!;
       if (record.sourceRecordId !== undefined) {
@@ -626,14 +623,11 @@ export async function fetchMolitRentalMonth(
         }
         stableIds.set(record.sourceRecordId, itemFingerprint);
       } else {
-        if (previousAnonymousFingerprints.has(itemFingerprint)) {
-          malformed('anonymous_page_overlap');
-        }
-        anonymousOnThisPage.push(itemFingerprint);
+        // Public MOLIT rows can be byte-identical after unit identity is redacted.
+        // Without a stable provider ID each row still represents one counted contract.
       }
       records.push(record);
     });
-    anonymousOnThisPage.forEach((value) => previousAnonymousFingerprints.add(value));
     const rowFingerprintDigests = await awaitWithSignals(
       Promise.all(page.rowFingerprints.map(fingerprintDigest)),
       [dependencies.deadlineSignal],

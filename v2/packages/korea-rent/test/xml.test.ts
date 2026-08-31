@@ -564,31 +564,33 @@ describe('fetchMolitRentalMonth', () => {
   });
 
   test.runIf(Boolean(MOLIT_RENT_ENDPOINTS))(
-    'rejects observed cross-page overlap when no provider identity exists',
+    'preserves exact anonymous rows because redacted contracts can be publicly identical',
     async () => {
       const bodies = [DUPLICATE_NO_ID_PAGE_ONE, DUPLICATE_NO_ID_PAGE_TWO];
 
-      await expect(
-        fetchMolitRentalMonth(
-          {
-            serviceKey: 'top-secret-test-key',
-            sourceHousingType: 'apartment',
-            lawdCd: '11590',
-            dealYmd: '202608',
-            pageSize: 1,
-          },
-          {
-            fetch: async () => response(bodies.shift()!),
-            budget: budget(),
-            deadlineSignal: NEVER_ABORTS,
-            attemptSignal: () => NEVER_ABORTS,
-            now: () => new Date('2026-09-01T00:00:00.000Z'),
-          },
-        ),
-      ).rejects.toMatchObject({
-        code: 'source_malformed',
-        diagnostic: 'anonymous_page_overlap',
-      });
+      const result = await fetchMolitRentalMonth(
+        {
+          serviceKey: 'top-secret-test-key',
+          sourceHousingType: 'apartment',
+          lawdCd: '11590',
+          dealYmd: '202608',
+          pageSize: 1,
+        },
+        {
+          fetch: async () => response(bodies.shift()!),
+          budget: budget(),
+          deadlineSignal: NEVER_ABORTS,
+          attemptSignal: () => NEVER_ABORTS,
+          now: () => new Date('2026-09-01T00:00:00.000Z'),
+        },
+      );
+
+      expect(result.totalCount).toBe(2);
+      expect(result.records).toHaveLength(2);
+      expect(result.records[0]).toEqual(result.records[1]);
+      expect(result.pages[0]?.rowFingerprintDigests).toEqual(
+        result.pages[1]?.rowFingerprintDigests,
+      );
     },
   );
 

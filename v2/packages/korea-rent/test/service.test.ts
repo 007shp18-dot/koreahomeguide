@@ -667,14 +667,17 @@ describe('source cache runtime validation', () => {
     ]);
   });
 
-  test('rejects an exact anonymous raw overlap reconstructed from immutable chunks', async () => {
+  test('replays exact anonymous rows because redacted contracts can be publicly identical', async () => {
     const cache = new MemoryRuntimeCache(() => Date.parse('2026-09-15T00:00:00.000Z'));
     const month = anonymousSourceMonth(['a'.repeat(64), 'a'.repeat(64)]);
 
     await writeSourceMonthCache(cache, month);
 
-    await expect(readSourceMonthCache(cache, cacheInput)).resolves.toBeNull();
-    expect(cache.hardDeleteCalls).toBe(1);
+    const replayed = await readSourceMonthCache(cache, cacheInput);
+
+    expect(replayed?.records).toHaveLength(2);
+    expect(replayed?.records[0]).toEqual(replayed?.records[1]);
+    expect(cache.hardDeleteCalls).toBe(0);
   });
 
   test('deduplicates an exact stable-ID overlap reconstructed from immutable chunks', async () => {
