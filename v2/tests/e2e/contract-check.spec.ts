@@ -102,8 +102,11 @@ test('Contract Check stays ordered, touch-sized, and keyboard reachable', async 
     .toHaveAttribute('href', '/kr/');
   await expect(primaryNavigation.getByRole('link', { name: 'Explore', exact: true }))
     .toHaveAttribute('href', '/kr/seoul/explore/');
-  await expect(page.getByText('News', { exact: true })).not.toHaveAttribute('href');
-  await expect(page.getByText('Guide', { exact: true })).not.toHaveAttribute('href');
+  const plannedNavigation = primaryNavigation.locator(':scope > span');
+  await expect(plannedNavigation.filter({ hasText: /^NewsPlanned$/ }))
+    .not.toHaveAttribute('href');
+  await expect(plannedNavigation.filter({ hasText: /^GuidePlanned$/ }))
+    .not.toHaveAttribute('href');
   await expect(page.getByRole('link', {
     name: 'Check one offer against its local distribution',
   })).toHaveAttribute('href', '/kr/seoul/tools/rent-check');
