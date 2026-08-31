@@ -40,11 +40,29 @@
   line-height: 0.9;
 }
 
-.hero > p:last-child {
+.hero > p:nth-of-type(2) {
   max-width: 720px;
   color: var(--area-muted);
   font-size: 0.86rem;
   line-height: 1.6;
+}
+
+.rankingsLink {
+  min-height: 44px;
+  width: fit-content;
+  padding: 0.65rem 0.85rem;
+  display: inline-grid;
+  place-items: center;
+  border: 2px solid var(--area-ink);
+  color: var(--area-ink);
+  font-size: 0.7rem;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.rankingsLink:hover {
+  color: var(--area-ground);
+  background: var(--area-accent);
 }
 
 .workspace {
@@ -339,6 +357,7 @@
 }
 
 .districtButton:focus-visible,
+.rankingsLink:focus-visible,
 .selectedLink:focus-visible,
 .detailLink:focus-visible {
   position: relative;

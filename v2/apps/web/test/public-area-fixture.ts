@@ -36,6 +36,16 @@ type MutableWithheldSummary = {
 
 export type MutableAreaSummary = MutablePublishedSummary | MutableWithheldSummary;
 
+export type PublishedSummaryOverrides = Readonly<Partial<{
+  n: number;
+  min: number;
+  p25: number;
+  med: number;
+  p75: number;
+  max: number;
+  chg3m: number | null;
+}>>;
+
 export type PublicAreaFixtureArtifact = {
   artifactVersion: string;
   generatedAt: string;
@@ -55,6 +65,7 @@ export type PublicAreaFixtureArtifact = {
 export type PublicAreaFixtureOptions = Readonly<{
   publishedMedians?: Readonly<Partial<Record<SeoulDistrictSlug, number>>>;
   withheldCounts?: Readonly<Partial<Record<SeoulDistrictSlug, number>>>;
+  publishedOverrides?: Readonly<Partial<Record<SeoulDistrictSlug, PublishedSummaryOverrides>>>;
 }>;
 
 function publishedSummary(
@@ -87,15 +98,19 @@ export function createPublicAreaFixture(
 ): PublicAreaFixtureArtifact {
   const districtSummaries = SEOUL_RENT_CHECK_DISTRICTS.map((district, index) => {
     const configuredMedian = options.publishedMedians?.[district.slug];
+    const overrides = options.publishedOverrides?.[district.slug];
     const publishEveryDistrict = options.publishedMedians === undefined;
     if (publishEveryDistrict || configuredMedian !== undefined) {
-      return publishedSummary(
+      return {
+        ...publishedSummary(
         district.slug,
         'seoul',
         configuredMedian ?? 100_000_000 + index * 10_000_000,
         5,
         index % 2 === 0 ? null : 1.2,
-      );
+        ),
+        ...overrides,
+      } satisfies MutablePublishedSummary;
     }
     return {
       marketId: 'kr-seoul',

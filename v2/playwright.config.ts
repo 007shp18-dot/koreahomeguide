@@ -68,6 +68,14 @@ export function createPlaywrightConfig(
         },
       },
       {
+        name: 'tablet-chromium',
+        testMatch: /rankings\.spec\.ts/,
+        use: {
+          ...devices['Desktop Chrome'],
+          viewport: { width: 720, height: 900 },
+        },
+      },
+      {
         name: 'wide-chromium',
         testMatch: /area-explore\.spec\.ts/,
         use: {

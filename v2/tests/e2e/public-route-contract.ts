@@ -22,6 +22,11 @@ export const publicRoutes = [
     heading: 'Compare refundable jeonse deposits by district.',
     indexing: 'noindex',
   },
+  {
+    path: '/kr/seoul/rankings/',
+    heading: 'Seoul district rankings',
+    indexing: 'noindex',
+  },
   ...PUBLIC_AREA_TEST_DISTRICTS.map((district) => ({
     path: `/kr/seoul/${district.slug}/`,
     heading: new RegExp(`${district.nameEn}:`),
