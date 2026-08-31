@@ -9,7 +9,7 @@ const RELEVANT_EXTENSIONS = new Set([
 
 const SKIPPED_DIRECTORIES = new Set([
   '.git', '.next', '.superpowers', '.worktrees', 'artifacts', 'build', 'coverage', 'dist',
-  'generated', 'internal', 'node_modules', 'tests', 'tmp', 'vendor'
+  'docs', 'generated', 'internal', 'node_modules', 'tests', 'tmp', 'vendor'
 ]);
 
 const AUDITOR_FILE = 'scripts/v2-migration/audit-methodology-copy.cjs';
