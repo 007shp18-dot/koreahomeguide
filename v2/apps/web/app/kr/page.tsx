@@ -16,7 +16,7 @@ export function generateMetadata() {
     throw error;
   }
   if (model === null) notFound();
-  return buildKoreaPublicPageMetadata(model, '/kr/');
+  return buildKoreaPublicPageMetadata('/kr/');
 }
 
 export default function KoreaHomePage() {

@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: KoreaAreaPageProps) {
     throw error;
   }
   if (model === null) notFound();
-  return buildKoreaPublicPageMetadata(model, '/kr/seoul/');
+  return buildKoreaPublicPageMetadata('/kr/seoul/');
 }
 
 export default async function KoreaAreaPage({ params }: KoreaAreaPageProps) {
