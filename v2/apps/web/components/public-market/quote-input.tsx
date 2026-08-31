@@ -34,9 +34,12 @@ export function parsePublicQuoteInput(
 ): ParsedPublicQuote {
   if (raw === '') return { status: 'empty' };
   if (!/^(?:0|[1-9]\d*)(?:\.\d{1,2})?$/.test(raw)) return { status: 'invalid' };
-  const storedValue = Number(raw) * multiplier;
-  return Number.isSafeInteger(storedValue)
-    ? { status: 'valid', value: storedValue }
+  const [whole, fraction = ''] = raw.split('.');
+  const scale = 10 ** fraction.length;
+  const decimalInteger = Number(`${whole}${fraction}`);
+  const scaledValue = decimalInteger * multiplier;
+  return Number.isSafeInteger(scaledValue) && scaledValue % scale === 0
+    ? { status: 'valid', value: scaledValue / scale }
     : { status: 'invalid' };
 }
 

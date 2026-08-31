@@ -40,6 +40,7 @@ describe('public quote input model', () => {
     ['0', { status: 'valid', value: 0 }],
     ['380', { status: 'valid', value: 380_000_000 }],
     ['380.5', { status: 'valid', value: 380_500_000 }],
+    ['264.6', { status: 'valid', value: 264_600_000 }],
     ['3,500', { status: 'invalid' }],
     ['-1', { status: 'invalid' }],
     ['380.555', { status: 'invalid' }],
