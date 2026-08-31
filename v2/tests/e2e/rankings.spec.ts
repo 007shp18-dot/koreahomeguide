@@ -54,10 +54,11 @@ test('rankings server HTML exposes four complete evidence lists', async ({ page 
   await expect(page.getByRole('heading', { name: 'Qualifying reported contracts' }))
     .toBeVisible();
   expect(await page.locator('[data-ranking-row]').count()).toBeGreaterThan(0);
-  await expect(page.locator('[data-change-centre="true"]')).toHaveCount(1);
-  await expect(page.locator('[data-change-direction]')).toHaveCount(
-    await page.locator('[data-ranking-section="change"] [data-ranking-row]').count(),
-  );
+  const changeRowCount = await page
+    .locator('[data-ranking-section="change"] [data-ranking-row]')
+    .count();
+  await expect(page.locator('[data-change-centre="true"]')).toHaveCount(changeRowCount);
+  await expect(page.locator('[data-change-direction]')).toHaveCount(changeRowCount);
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
     'content',
     /^noindex,\s*follow$/,
