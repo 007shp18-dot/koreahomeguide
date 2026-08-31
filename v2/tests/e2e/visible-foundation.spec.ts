@@ -97,7 +97,7 @@ test('navigates the first signedprice decision flow', async ({ page }) => {
     name: 'Reported refundable-deposit distribution.',
   })).toBeVisible();
 
-  await page.getByRole('link', { name: 'Check a Seoul quote' }).click();
+  await page.getByRole('link', { name: 'Check a Seoul deposit' }).click();
   await expect(page).toHaveURL(/\/kr\/check\/seoul\/$/);
   await expect(
     page.getByRole('heading', {
@@ -232,7 +232,7 @@ test('mobile primary navigation remains tappable and reaches the market flow', a
   );
   expectTargetsNotToOverlap(actionBoxes);
 
-  await actionsRegion.getByRole('link', { name: 'Check a Seoul quote' }).tap();
+  await actionsRegion.getByRole('link', { name: 'Check a Seoul deposit' }).tap();
   await expect(page).toHaveURL(/\/kr\/check\/seoul\/$/);
   await expect(
     page.getByRole('heading', {
@@ -253,8 +253,8 @@ test('keyboard traversal activates the Home to Seoul to Check flow', async ({
   await page.keyboard.press('Enter');
   await expect(page).toHaveURL(/\/kr\/seoul\/$/);
 
-  const checkQuote = page.getByRole('link', { name: 'Check a Seoul quote' });
-  await tabTo(page, checkQuote);
+  const checkDeposit = page.getByRole('link', { name: 'Check a Seoul deposit' });
+  await tabTo(page, checkDeposit);
   await page.keyboard.press('Enter');
   await expect(page).toHaveURL(/\/kr\/check\/seoul\/$/);
 });

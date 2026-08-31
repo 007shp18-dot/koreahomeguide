@@ -1,6 +1,10 @@
 export const publicRoutes = [
   { path: '/', heading: 'Real prices. Better property decisions.', indexing: 'noindex' },
-  { path: '/kr/', heading: 'Put a rent quote against reported contracts.', indexing: 'index' },
+  {
+    path: '/kr/',
+    heading: 'Put a refundable deposit against reported contracts.',
+    indexing: 'index',
+  },
   { path: '/kr/check/seoul/', heading: 'Where does this refundable deposit sit?', indexing: 'index' },
   { path: '/kr/seoul/', heading: 'Reported refundable-deposit distribution.', indexing: 'index' },
   { path: '/kr/seoul/rent/', heading: 'Rent in Seoul', indexing: 'noindex' },
