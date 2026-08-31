@@ -66,7 +66,10 @@ test('initial HTML and hydration expose one synchronized 25-district Explorer', 
   })).toBeVisible();
   await expect(page.locator('[data-district-path]')).toHaveCount(25);
   await expect(page.locator('[data-district-row]')).toHaveCount(25);
-  await expect(page.getByRole('row', { name: /Jongno-gu 종로구/ })).toBeVisible();
+  const jongnoRow = page.locator('[data-district-row="jongno-gu"]');
+  await expect(jongnoRow).toBeVisible();
+  await expect(jongnoRow).toContainText('Jongno-gu');
+  await expect(jongnoRow).toContainText('종로구');
   await expect(page.getByRole('link', { name: /Open Jongno-gu evidence/ }))
     .toHaveAttribute('href', '/kr/seoul/jongno-gu/');
 
@@ -163,6 +166,7 @@ test('mobile controls keep 44px focus targets and natural document scrolling', a
   }
   await expectNoHorizontalOverflow(page);
   const scroll = await page.evaluate(() => {
+    window.scrollTo({ top: 0 });
     const before = window.scrollY;
     window.scrollTo({ top: document.documentElement.scrollHeight });
     return {
