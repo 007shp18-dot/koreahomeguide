@@ -14,8 +14,18 @@ async function expectNoOverflow(page: Page) {
 }
 
 for (const route of [
-  { path: '/trust/', heading: 'How SignedPrice publishes evidence' },
-  { path: '/kr/seoul/corrections/', heading: 'Seoul evidence corrections' },
+  {
+    path: '/trust/',
+    heading: 'How SignedPrice publishes evidence',
+    robots: /^index,\s*follow$/,
+    canonical: 'https://www.signedprice.com/trust/',
+  },
+  {
+    path: '/kr/seoul/corrections/',
+    heading: 'Seoul evidence corrections',
+    robots: /^noindex,\s*follow$/,
+    canonical: null,
+  },
 ] as const) {
   test(`${route.path} exposes complete Trust HTML without runtime failure`, async ({
     page,
@@ -38,9 +48,16 @@ for (const route of [
     await expect(page.getByRole('heading', { level: 1, name: route.heading })).toBeVisible();
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
       'content',
-      /^noindex,\s*follow$/,
+      route.robots,
     );
-    await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
+    if (route.canonical === null) {
+      await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
+    } else {
+      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+        'href',
+        route.canonical,
+      );
+    }
     await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(0);
     await expectNoOverflow(page);
     expect(runtimeErrors).toEqual([]);

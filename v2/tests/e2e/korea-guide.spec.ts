@@ -10,7 +10,7 @@ async function expectContained(page: Page) {
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(0);
 }
 
-test('Guide index and documents remain complete, noindex, and keyboard reachable', async ({ page }) => {
+test('Guide index and documents remain complete, indexable, and keyboard reachable', async ({ page }) => {
   await page.goto('/kr/seoul/guide/');
   await expect(page.locator('[data-public-tab]')).toHaveCount(3);
   await expect(page.locator('[data-public-tab="guide"]')).toHaveAttribute('aria-current', 'page');
@@ -20,8 +20,11 @@ test('Guide index and documents remain complete, noindex, and keyboard reachable
     await page.goto(`/kr/seoul/guide/${slug}/`);
     await expect(page.getByRole('heading', { level: 1, name: title })).toBeVisible();
     await expect(page.getByText('Evidence boundary', { exact: true })).toBeVisible();
-    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /^noindex,\s*follow$/);
-    await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /^index,\s*follow$/);
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+      'href',
+      `https://www.signedprice.com/kr/seoul/guide/${slug}/`,
+    );
     await expectContained(page);
     await page.goto('/kr/seoul/guide/');
   }

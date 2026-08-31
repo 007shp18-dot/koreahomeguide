@@ -3,7 +3,7 @@ import { publicRoutes } from './e2e/public-route-contract';
 import { PUBLIC_AREA_TEST_DISTRICTS } from './e2e/public-area-summary-fixture';
 
 describe('browser route coverage contract', () => {
-  it('covers the literal noindex release surface exactly once', () => {
+  it('covers the literal mixed-indexing release surface exactly once', () => {
     const paths = publicRoutes.map((route) => route.path);
 
     expect(paths).toEqual([
@@ -62,7 +62,16 @@ describe('browser route coverage contract', () => {
     expect(new Set(paths).size).toBe(74);
     expect(publicRoutes.find(({ path }) => path === '/kr/')).toMatchObject({
       heading: 'Which rent offer actually costs less?',
+      indexing: 'index',
+      canonical: '/kr/',
+    });
+    expect(publicRoutes.find(({ path }) => path === '/sg/')).toMatchObject({
       indexing: 'noindex',
     });
+    expect(publicRoutes.find(({ path }) => path === '/kr/seoul/gangnam-gu/'))
+      .toMatchObject({
+        indexing: 'noindex',
+        canonical: '/kr/seoul/explore/gangnam-gu/',
+      });
   });
 });

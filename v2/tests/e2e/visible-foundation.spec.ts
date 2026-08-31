@@ -116,20 +116,16 @@ for (const route of publicRoutes) {
     await expect(
       page.getByRole('heading', { level: 1, name: route.heading }),
     ).toBeVisible();
-    if (route.indexing === 'index') {
-      await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
-        'content',
-        /^index,\s*follow$/,
-      );
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
+      'content',
+      route.indexing === 'index' ? /^index,\s*follow$/ : /^noindex,\s*follow$/,
+    );
+    if ('canonical' in route) {
       await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
         'href',
-        `https://signedprice.com${route.path}`,
+        `https://www.signedprice.com${route.canonical}`,
       );
     } else {
-      await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
-        'content',
-        /^noindex,\s*follow$/,
-      );
       await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
     }
     await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(0);
@@ -298,15 +294,18 @@ for (const path of [
   });
 }
 
-test('sitemap excludes Explore and every district detail route', async ({ request }) => {
+test('sitemap includes only indexable canonical public routes', async ({ request }) => {
   const response = await request.get('/sitemap.xml');
   expect(response.status()).toBe(200);
   const xml = await response.text();
 
-  expect(xml).not.toContain('/kr/seoul/explore/');
-  for (const route of publicRoutes.filter(({ path }) => /\/kr\/seoul\/(?:explore\/)?[^/]+-gu\/$/.test(path))) {
-    expect(xml).not.toContain(route.path);
+  for (const route of publicRoutes) {
+    const expected = route.indexing === 'index' && 'canonical' in route;
+    expect(xml.includes(`<loc>https://www.signedprice.com${route.path}</loc>`)).toBe(expected);
   }
+  expect(xml).not.toContain('/sg/');
+  expect(xml).not.toContain('/kr/seoul/tools/rent-check/');
+  expect(xml).not.toContain('/synthetic-test-building/');
 });
 
 test('status API returns only public release readiness', async ({ request }) => {
@@ -319,6 +318,6 @@ test('status API returns only public release readiness', async ({ request }) => 
     commit: releaseTarget.expectedCommit,
     environment: releaseTarget.expectedEnvironment,
     markets: ['kr-seoul', 'sg-singapore', 'ae-dubai'],
-    indexing: 'blocked',
+    indexing: 'enabled',
   });
 });

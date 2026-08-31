@@ -70,7 +70,7 @@ test('initial HTML and hydration expose one synchronized 25-district Explorer', 
   await expect(jongnoRow).toBeVisible();
   await expect(jongnoRow).toContainText('Jongno-gu');
   await expect(jongnoRow).toContainText('종로구');
-  await expect(jongnoRow.getByRole('link', { name: 'Open Jongno-gu evidence' }))
+  await expect(jongnoRow.getByRole('link', { name: 'Open Jongno-gu evidence' }).first())
     .toHaveAttribute('href', '/kr/seoul/explore/jongno-gu/');
 
   const gangnamRow = page.locator('[data-district-row="gangnam-gu"]');

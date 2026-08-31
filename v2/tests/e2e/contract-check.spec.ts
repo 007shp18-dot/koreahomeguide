@@ -59,9 +59,12 @@ test('Contract Check server HTML is ready, contained, and claim-safe', async ({ 
   await expect(page.locator('input[inputmode="numeric"]')).toHaveCount(4);
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
     'content',
-    /^noindex,\s*follow$/,
+    /^index,\s*follow$/,
   );
-  await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    'href',
+    'https://www.signedprice.com/kr/',
+  );
   await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(0);
 
   const htmlResponse = await page.request.get('/kr/');
@@ -74,7 +77,7 @@ test('Contract Check server HTML is ready, contained, and claim-safe', async ({ 
 
   const sitemap = await page.request.get('/sitemap.xml');
   expect(sitemap.status()).toBe(200);
-  expect(await sitemap.text()).not.toContain('/kr/');
+  expect(await sitemap.text()).toContain('<loc>https://www.signedprice.com/kr/</loc>');
   assertNoRuntimeFailures();
 });
 
@@ -102,11 +105,9 @@ test('Contract Check stays ordered, touch-sized, and keyboard reachable', async 
     .toHaveAttribute('href', '/kr/');
   await expect(primaryNavigation.getByRole('link', { name: 'Explore', exact: true }))
     .toHaveAttribute('href', '/kr/seoul/explore/');
-  const plannedNavigation = primaryNavigation.locator(':scope > span');
-  await expect(plannedNavigation.filter({ hasText: /^NewsPlanned$/ }))
-    .not.toHaveAttribute('href');
-  await expect(plannedNavigation.filter({ hasText: /^GuidePlanned$/ }))
-    .not.toHaveAttribute('href');
+  await expect(primaryNavigation.getByRole('link', { name: 'Guide', exact: true }))
+    .toHaveAttribute('href', '/kr/seoul/guide/');
+  await expect(primaryNavigation.getByText('Planned')).toHaveCount(0);
   await expect(page.getByRole('link', {
     name: 'Check one offer against its local distribution',
   })).toHaveAttribute('href', '/kr/seoul/tools/rent-check/');

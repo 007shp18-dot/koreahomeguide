@@ -61,9 +61,12 @@ test('rankings server HTML exposes four complete evidence lists', async ({ page 
   await expect(page.locator('[data-change-direction]')).toHaveCount(changeRowCount);
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
     'content',
-    /^noindex,\s*follow$/,
+    /^index,\s*follow$/,
   );
-  await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    'href',
+    'https://www.signedprice.com/kr/seoul/rankings/',
+  );
   await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(0);
 
   const htmlResponse = await page.request.get('/kr/seoul/rankings/');
@@ -120,7 +123,9 @@ test('rankings remain contained and keyboard-readable at every release width', a
 
   const sitemap = await page.request.get('/sitemap.xml');
   expect(sitemap.status()).toBe(200);
-  expect(await sitemap.text()).not.toContain('/kr/seoul/rankings/');
+  expect(await sitemap.text()).toContain(
+    '<loc>https://www.signedprice.com/kr/seoul/rankings/</loc>',
+  );
   assertNoRuntimeFailures();
 });
 
