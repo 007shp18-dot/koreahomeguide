@@ -63,6 +63,9 @@ export interface SiteFooterModel {
   readonly status: string;
 }
 
+export const KOREA_PUBLIC_RELEASE_STATUS =
+  'Korea public evidence. Publication limits shown.' as const;
+
 export interface TrustStripModel {
   readonly sectionLabel: string;
   readonly eyebrow: string;

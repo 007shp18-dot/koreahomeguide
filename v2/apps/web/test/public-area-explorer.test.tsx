@@ -106,6 +106,8 @@ describe('public Seoul area Explorer', () => {
     });
     expect(route.metadata).not.toHaveProperty('alternates');
     expect(markup).toContain('Selected · Mapo-gu');
+    expect(markup).toContain('Korea public evidence. Publication limits shown.');
+    expect(markup).not.toMatch(/public P2 preview|Production launch is not authorized/i);
     expect(markup).not.toMatch(/Neighborhood|Building discovery|Search this area/);
   });
 

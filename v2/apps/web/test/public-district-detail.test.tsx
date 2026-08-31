@@ -62,6 +62,8 @@ describe('public district detail page', () => {
     expect(html).toContain(PUBLIC_AREA_FIXTURE_PERIOD);
     expect(html).toContain('MOLIT');
     expect(html).toContain('KOSTAT census boundaries via southkorea/seoul-maps (Apache-2.0)');
+    expect(html).toContain('Korea public evidence. Publication limits shown.');
+    expect(html).not.toMatch(/public P2 preview|Production launch is not authorized/i);
     expect(html).toContain('href="/kr/seoul/explore?district=gangnam-gu"');
     for (const nearby of model.nearby) {
       expect(html).toContain(`href="/kr/seoul/${nearby.slug}"`);

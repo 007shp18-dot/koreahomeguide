@@ -8,7 +8,11 @@ import {
 import { KR_MOLIT_RENT_RIGHTS } from '@signedprice/korea-rent';
 import type { Metadata } from 'next';
 
-import type { SiteFooterModel, SiteHeaderModel } from '../site-copy';
+import {
+  KOREA_PUBLIC_RELEASE_STATUS,
+  type SiteFooterModel,
+  type SiteHeaderModel,
+} from '../site-copy';
 import type { PublicSourceBoundaryModel } from './area-route-types';
 import {
   PUBLIC_SUMMARY_ARTIFACT_VERSION,
@@ -98,7 +102,7 @@ const footer = {
     { label: 'Check deposit', href: '/kr/check/seoul' },
     { label: 'Evidence', href: '/kr/seoul' },
   ],
-  status: 'Korea public P1 preview. Production launch is not authorized.',
+  status: KOREA_PUBLIC_RELEASE_STATUS,
 } as const satisfies SiteFooterModel;
 
 const pageCopy = {

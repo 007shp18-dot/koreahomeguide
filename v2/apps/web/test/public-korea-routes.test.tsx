@@ -97,6 +97,8 @@ describe('Korea public SSR routes', () => {
     expect(html).toContain('Unknown contract type');
     expect(html).toContain('Unknown record status');
     expect(html).toContain('n &lt; 5');
+    expect(html).toContain('Korea public evidence. Publication limits shown.');
+    expect(html).not.toMatch(/public P1 preview|Production launch is not authorized/i);
     if (name === 'area') expect(html).toContain('Reported refundable-deposit distribution.');
     expect(html).not.toMatch(/monthly-rent distribution|5\.0%\/year/i);
     expect(html).not.toMatch(/statutory|legal rate/i);

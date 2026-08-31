@@ -2,7 +2,11 @@ import { getPublicMarketConfig } from '@signedprice/market-core';
 import Link from 'next/link';
 
 import type { PublicDistrictModel } from '../../lib/public-market/area-route-types';
-import type { SiteFooterModel, SiteHeaderModel } from '../../lib/site-copy';
+import {
+  KOREA_PUBLIC_RELEASE_STATUS,
+  type SiteFooterModel,
+  type SiteHeaderModel,
+} from '../../lib/site-copy';
 import { SiteFooter } from '../site-footer';
 import { SiteHeader } from '../site-header';
 import { BoxPlot } from './box-plot';
@@ -42,7 +46,7 @@ const footer: SiteFooterModel = {
     { label: 'Seoul market', href: '/kr/seoul/' },
     { label: 'District Explorer', href: '/kr/seoul/explore/' },
   ],
-  status: 'Korea public P2 preview. Production launch is not authorized.',
+  status: KOREA_PUBLIC_RELEASE_STATUS,
 };
 
 function safeJson(value: Readonly<Record<string, unknown>>): string {

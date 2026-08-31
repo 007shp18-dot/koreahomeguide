@@ -3,7 +3,11 @@ import { AreaExplorer } from '../../../../components/public-market/area-explorer
 import { SiteFooter } from '../../../../components/site-footer';
 import { SiteHeader } from '../../../../components/site-header';
 import { buildPublicAreaExploreModel } from '../../../../lib/public-market/area-route-model.server';
-import type { SiteFooterModel, SiteHeaderModel } from '../../../../lib/site-copy';
+import {
+  KOREA_PUBLIC_RELEASE_STATUS,
+  type SiteFooterModel,
+  type SiteHeaderModel,
+} from '../../../../lib/site-copy';
 
 type ExplorerPageProps = {
   readonly searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -35,7 +39,7 @@ const footer: SiteFooterModel = {
     { label: 'Seoul market', href: '/kr/seoul/' },
     { label: 'Compare markets', href: '/compare/' },
   ],
-  status: 'Korea public P2 preview. Production launch is not authorized.',
+  status: KOREA_PUBLIC_RELEASE_STATUS,
 };
 
 function singleValue(value: string | string[] | undefined): string | undefined {
