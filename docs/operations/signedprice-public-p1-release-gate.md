@@ -124,3 +124,10 @@ public routes, served the same sample count in initial HTML, emitted canonical
 metadata, and included only those public pages in the sitemap. No Production
 environment value, deployment promotion, DNS, redirect, indexing, Firewall or
 Runtime Cache mutation was performed.
+
+The cleanup candidate `73c1970c1900190986af66de18fb2fe36f276b39` on
+deployment `dpl_2JuknRtUUAzit2nA5xfJMMhqLBKT` removed the temporary job route;
+the removed endpoint returns 404 while the three artifact-backed public routes
+remain 200. The exact default `264.6` million quote renders without a validation
+error, and an edited `380` million quote is positioned as ₩380,000,000 without
+network submission.
