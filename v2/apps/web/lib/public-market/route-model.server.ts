@@ -55,31 +55,19 @@ export const koreaPublicMetadata = {
   robots: { index: false, follow: true },
 } as const satisfies Metadata;
 
-const PUBLISHED_PATHS = [
+const KOREA_PUBLIC_PATHS = [
   '/kr/',
   '/kr/check/seoul/',
   '/kr/seoul/',
 ] as const;
 
 export function buildKoreaPublicPageMetadata(
-  model: KoreaPublicRouteModel,
   path: string,
 ): Metadata {
-  if (!PUBLISHED_PATHS.includes(path as (typeof PUBLISHED_PATHS)[number])) {
+  if (!KOREA_PUBLIC_PATHS.includes(path as (typeof KOREA_PUBLIC_PATHS)[number])) {
     throw new TypeError('Unknown Korea public canonical path.');
   }
-  if (!model.summary.published) return koreaPublicMetadata;
-
-  return {
-    ...koreaPublicMetadata,
-    robots: { index: true, follow: true },
-    alternates: { canonical: new URL(path, 'https://signedprice.com').href },
-  };
-}
-
-export function koreaPublishedSitemapUrls(model: KoreaPublicRouteModel): readonly string[] {
-  if (!model.summary.published) return [];
-  return PUBLISHED_PATHS.map((path) => new URL(path, 'https://signedprice.com').href);
+  return koreaPublicMetadata;
 }
 
 const header = {
