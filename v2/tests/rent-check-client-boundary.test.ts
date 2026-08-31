@@ -1,6 +1,7 @@
-import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
+import { access, mkdtemp, mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { extname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { afterEach, describe, expect, test } from 'vitest';
 
@@ -9,6 +10,18 @@ import {
 } from '../scripts/scan-rent-check-client-boundary.mjs';
 
 const temporaryDirectories: string[] = [];
+const webRoot = fileURLToPath(new URL('../apps/web/', import.meta.url));
+
+async function sourceFiles(directory: string): Promise<string[]> {
+  const entries = await readdir(directory, { withFileTypes: true });
+  const nested = await Promise.all(entries.map((entry) => {
+    const path = join(directory, entry.name);
+    return entry.isDirectory()
+      ? sourceFiles(path)
+      : ['.ts', '.tsx'].includes(extname(entry.name)) ? [path] : [];
+  }));
+  return nested.flat();
+}
 
 async function fixtureNextDirectory(): Promise<string> {
   const directory = await mkdtemp(join(tmpdir(), 'rent-check-client-boundary-'));
@@ -24,6 +37,23 @@ afterEach(async () => {
 });
 
 describe('Rent Check client boundary scan', () => {
+  test('ships no temporary public-summary execution route or app import', async () => {
+    const temporaryFiles = [
+      'app/api/internal/public-summary-job/route.ts',
+      'lib/public-market/job-handler.server.ts',
+      'lib/public-market/public-summary-job-cache.server.ts',
+    ];
+    for (const relativePath of temporaryFiles) {
+      await expect(access(join(webRoot, relativePath))).rejects.toThrow();
+    }
+
+    const appSources = await sourceFiles(join(webRoot, 'app'));
+    const appText = (await Promise.all(appSources.map((path) => readFile(path, 'utf8')))).join('\n');
+    expect(appText).not.toMatch(
+      /\/api\/internal\/public-summary-job|runKoreaPublicSummaryBatch|finalizeKoreaPublicSummaryJob/,
+    );
+  });
+
   test('reports raw provider, rights evidence, and credential markers in client artifacts', async () => {
     const directory = await fixtureNextDirectory();
     await writeFile(

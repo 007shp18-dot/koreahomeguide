@@ -49,7 +49,7 @@ Acceptance:
 The Preview requires both server-only values:
 
 - `SIGNEDPRICE_PUBLIC_SUMMARY_ARTIFACT`: exact JSON matching
-  `signedprice-public-summary-v1`;
+  `signedprice-public-summary-v2`;
 - `SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD`: the artifact provenance period, exactly
   `YYYY-MM/YYYY-MM`.
 
@@ -108,3 +108,19 @@ Stop there. The internal Rent Check cache purge and ordered live MOLIT
 miss→hit→UI proof remain the separate protected-proof gate. Production,
 redirect, DNS, indexing activation and Firewall publication each require a new
 explicit authorization.
+
+## 6. Verified Preview artifact evidence
+
+The reviewed generator candidate `e4d06f5f21ad60f3d442f0c167da0a9bc37fdc30`
+completed all 700 Seoul coordinates for `2026-01/2026-07` on Preview deployment
+`dpl_Fiq68bZSzdu4A88ActsV492UUBFr`. The aggregate contains 13,008 eligible
+zero-rent jeonse contracts in the 45–55㎡ band and has SHA-256
+`e1e7f8adbe1297b0807232c8e864b5217eb4cd79e8860c012da50054f012eb72`.
+
+Both server-only values are installed as Config variables for Preview and the
+exact `codex/signedprice-seoul-rent-check-v2` branch. The artifact-backed
+deployment `dpl_GaB1Z7sRsbNpSQCdiN4iZsUvRGoF` returned 200 for all three Korea
+public routes, served the same sample count in initial HTML, emitted canonical
+metadata, and included only those public pages in the sitemap. No Production
+environment value, deployment promotion, DNS, redirect, indexing, Firewall or
+Runtime Cache mutation was performed.
