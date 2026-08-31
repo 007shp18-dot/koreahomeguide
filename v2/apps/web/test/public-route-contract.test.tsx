@@ -9,6 +9,7 @@ import sitemap from '../app/sitemap';
 import { generateStaticParams as marketStaticParams } from '../app/[country]/[city]/page';
 import { generateStaticParams as intentStaticParams } from '../app/[country]/[city]/[intent]/page';
 import { metadata as proofMetadata } from '../app/kr/seoul/tools/rent-check/page';
+import { metadata as rankingsMetadata } from '../app/kr/seoul/rankings/page';
 import {
   PUBLIC_SUMMARY_ARTIFACT_VERSION,
   buildKoreaPublicPageMetadata,
@@ -85,6 +86,12 @@ describe('public migration containment', () => {
   it('keeps the protected exact-record proof noindex without canonical or hreflang', () => {
     expect(proofMetadata.robots).toEqual({ index: false, follow: true });
     expect(proofMetadata).not.toHaveProperty('alternates');
+  });
+
+  it('keeps Rankings noindex without canonical, hreflang, or sitemap promotion', () => {
+    expect(rankingsMetadata.robots).toEqual({ index: false, follow: true });
+    expect(rankingsMetadata).not.toHaveProperty('alternates');
+    expect(sitemap()).toEqual([]);
   });
 
   it('keeps the published Korea cohort out of the sitemap before migration', () => {

@@ -48,6 +48,47 @@ export type PublicAreaSourceBoundaryModel = PublicSourceBoundaryModel & Readonly
   geometryAttribution: 'KOSTAT census boundaries via southkorea/seoul-maps (Apache-2.0)';
 }>;
 
+export type RankingKind = 'cheapest' | 'change' | 'spread' | 'sample';
+
+export type SignedRankingBar = Readonly<{
+  direction: 'negative' | 'zero' | 'positive';
+  startPct: number;
+  endPct: number;
+  extentPct: number;
+}>;
+
+export type PublicDistrictRankingRow = Readonly<{
+  kind: RankingKind;
+  rank: number;
+  lawdCd: SeoulLawdCd;
+  slug: SeoulDistrictSlug;
+  nameEn: string;
+  nameKo: string;
+  href: `/kr/seoul/${string}/`;
+  metric: number;
+  valueLabel: string;
+  bar: SignedRankingBar | null;
+}>;
+
+export type PublicAreaRankingsModel =
+  | Readonly<{
+      status: 'ready';
+      cheapest: readonly PublicDistrictRankingRow[];
+      change: readonly PublicDistrictRankingRow[];
+      spread: readonly PublicDistrictRankingRow[];
+      sample: readonly PublicDistrictRankingRow[];
+      withheldDistrictCount: number;
+      changeExcludedDistrictCount: number;
+      hasNegativeChange: boolean;
+      changeAxisLabel: Readonly<{ minimum: string; maximum: string }>;
+      source: PublicSourceBoundaryModel;
+    }>
+  | Readonly<{
+      status: 'unavailable';
+      message: 'Verified district summary unavailable';
+      source: PublicSourceBoundaryModel;
+    }>;
+
 export type PublicAreaExploreModel =
   | Readonly<{
       status: 'ready';

@@ -21,9 +21,14 @@ describe('Playwright release target configuration', () => {
     expect(config.projects?.map((project) => project.name)).toEqual([
       'desktop-chromium',
       'mobile-chromium',
+      'tablet-chromium',
       'wide-chromium',
     ]);
     expect(config.projects?.[2]).toMatchObject({
+      testMatch: /rankings\.spec\.ts/,
+      use: { viewport: { width: 720, height: 900 } },
+    });
+    expect(config.projects?.[3]).toMatchObject({
       testMatch: /area-explore\.spec\.ts/,
       use: { viewport: { width: 1440, height: 900 } },
     });

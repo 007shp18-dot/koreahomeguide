@@ -15,6 +15,7 @@ describe('browser route coverage contract', () => {
       '/kr/seoul/buy/',
       '/kr/seoul/invest/',
       '/kr/seoul/explore/',
+      '/kr/seoul/rankings/',
       '/kr/seoul/jongno-gu/',
       '/kr/seoul/jung-gu/',
       '/kr/seoul/yongsan-gu/',
@@ -42,7 +43,7 @@ describe('browser route coverage contract', () => {
       '/kr/seoul/gangdong-gu/',
       '/compare/',
     ]);
-    expect(paths).toHaveLength(35);
-    expect(new Set(paths).size).toBe(35);
+    expect(paths).toHaveLength(36);
+    expect(new Set(paths).size).toBe(36);
   });
 });
