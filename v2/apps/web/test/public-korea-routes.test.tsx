@@ -90,6 +90,17 @@ describe('Korea public route model', () => {
     });
     expect(model?.summary).toEqual(publishedSummary());
     expect(model?.source).toEqual({
+      evidence: {
+        marketId: 'kr-seoul',
+        provider: 'MOLIT',
+        dataset: 'reported rent contracts',
+        period,
+        generatedAt: '2026-08-30T00:00:00.000Z',
+        state: 'ready',
+        publicationMinimum: 5,
+        methodologyId: 'kr-jeonse-45-55-v1',
+        rightsPolicyId: 'kr-molit-rent-v1',
+      },
       provider: 'MOLIT',
       period,
       attribution: ['Ministry of Land, Infrastructure and Transport (MOLIT)'],

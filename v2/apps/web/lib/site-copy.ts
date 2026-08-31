@@ -9,6 +9,7 @@ import {
   type MarketProfile,
 } from '@signedprice/market-core';
 import type { Metadata } from 'next';
+import type { SingaporeEntryModel } from './singapore/route-types';
 
 const brand = 'signedprice';
 const headline = 'Real prices. Better property decisions.';
@@ -88,24 +89,24 @@ const englishHeaderCopy = {
 } as const satisfies SiteHeaderModel;
 
 const englishTrustCopy = {
-  sectionLabel: 'Phase 1 disclosure and publication principles',
-  eyebrow: 'Phase 1 disclosure',
-  heading: 'Current source posture, without invented detail.',
+  sectionLabel: 'Evidence and publication principles',
+  eyebrow: 'Trust and evidence',
+  heading: 'Every number travels with its boundary.',
   description:
-    'These preview pages show market-level source posture, product depth and data-rights limits. Dataset identifiers, periods, correction status and methodology notes are not yet published.',
+    'SignedPrice publishes source, period, methodology, rights and correction context with verified evidence. Unsupported accuracy figures stay unpublished.',
   items: [
     {
-      term: 'Published now',
-      description: 'Market-level source posture and rights limitations',
+      term: 'Evidence',
+      description: 'Source, completed period, generation time and publication minimum',
     },
     {
-      term: 'Not yet published',
-      description: 'Dataset identifiers, periods, correction status and methodology notes',
+      term: 'Rights and method',
+      description: 'Market-specific methodology and operation-level rights limits',
     },
     {
-      term: 'Publication principle',
+      term: 'Corrections',
       description:
-        'Future evidence will carry its source, period, methodology, correction and rights labels',
+        'Fixed and upheld reports remain visible in market correction ledgers',
     },
   ],
 } as const satisfies TrustStripModel;
@@ -116,7 +117,7 @@ const englishFooterCopy = {
   navigationLabel: 'Footer navigation',
   links: [
     { label: 'Markets', href: '#markets' },
-    { label: 'Methodology', href: '#methodology' },
+    { label: 'Trust', href: '/trust/' },
     { label: 'Back to top', href: '#top' },
   ],
   status: 'Preview foundation. Public launch is not yet authorized.',
@@ -267,3 +268,60 @@ function createMarketCardModel(profile: MarketProfile): MarketCardModel {
 export const homepageMarketCards = marketIds.map((marketId) =>
   createMarketCardModel(getMarketProfile(marketId)),
 );
+
+export function buildHomepagePresentation(singapore: SingaporeEntryModel): Readonly<{
+  copy: typeof homepageCopy & Readonly<{ marketIds: readonly MarketId[]; header: SiteHeaderModel }>;
+  groups: readonly IntentGroupModel[];
+  markets: readonly MarketCardModel[];
+}> {
+  const singaporeReady = singapore.status === 'ready';
+  const visibleMarketIds: readonly MarketId[] = singaporeReady
+    ? ['kr-seoul', 'sg-singapore']
+    : ['kr-seoul'];
+  const copy = {
+    ...homepageCopy,
+    marketIds: visibleMarketIds,
+    header: {
+      ...homepageCopy.header,
+      links: singaporeReady
+        ? [...homepageCopy.header.links, {
+            label: 'Singapore evidence', href: '/sg/', ariaLabel: 'Singapore evidence',
+          }]
+        : homepageCopy.header.links,
+    },
+  } as typeof homepageCopy & Readonly<{ marketIds: readonly MarketId[]; header: SiteHeaderModel }>;
+  const groups = intents.map((intent) => ({
+    id: intent,
+    label: intentLabels[intent],
+    description: {
+      rent: 'Compare contracted rents and local rental rules.',
+      buy: 'Read signed sale prices before asking prices.',
+      invest: 'Test yield only where every input is supported.',
+    }[intent],
+    destinations: visibleMarketIds.map((marketId) => {
+      const market = getMarketProfile(marketId);
+      return {
+        label: market.cityName,
+        ariaLabel: `${intentLabels[intent]} in ${market.cityName}`,
+        href: marketId === 'sg-singapore' ? '/sg/' : getIntentHref(marketId, intent),
+      };
+    }),
+  }));
+  return Object.freeze({
+    copy,
+    groups: Object.freeze(groups),
+    markets: Object.freeze(visibleMarketIds.map((marketId) => {
+      const card = createMarketCardModel(getMarketProfile(marketId));
+      if (marketId !== 'sg-singapore') return card;
+      return {
+        ...card,
+        overviewHref: '/sg/',
+        overviewLabel: 'Explore Singapore evidence',
+        intentCapabilities: Object.fromEntries(intents.map((intent) => [
+          intent,
+          { ...card.intentCapabilities[intent], href: '/sg/' },
+        ])) as MarketCardModel['intentCapabilities'],
+      };
+    })),
+  });
+}

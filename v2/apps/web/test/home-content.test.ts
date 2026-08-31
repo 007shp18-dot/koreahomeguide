@@ -1,6 +1,7 @@
-import { describe, expect, it } from 'vitest';
-import { createElement } from 'react';
+import { describe, expect, it, vi } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
+
+vi.mock('server-only', () => ({}));
 import Home from '../app/page';
 import {
   homepageCopy,
@@ -34,13 +35,13 @@ describe('signedprice homepage copy', () => {
     expect(JSON.stringify(layoutModule.metadata)).not.toMatch(/canonical|languages|hreflang/i);
   });
 
-  it('keeps every visible model claim-safe with market-specific rights associations', () => {
+  it('keeps every visible model claim-safe with market-specific rights associations', async () => {
     const completeVisibleModel = JSON.stringify({
       homepageCopy,
       homepageIntentGroups,
       homepageMarketCards,
     });
-    const markup = renderToStaticMarkup(createElement(Home));
+    const markup = renderToStaticMarkup(await Home());
 
     expect(completeVisibleModel).not.toMatch(
       /DwellSpan|millions of listings|guaranteed return|licensed broker|enquir|create account|sign[ -]?in/i,
@@ -95,23 +96,21 @@ describe('signedprice homepage copy', () => {
     ]);
   });
 
-  it('states the Phase 1 disclosure limits instead of claiming unpublished methodology', () => {
+  it('points readers to the published Trust policy without unsupported accuracy claims', async () => {
     const trustCopy = JSON.stringify(homepageCopy.trust);
-    const markup = renderToStaticMarkup(createElement(Home));
+    const markup = renderToStaticMarkup(await Home());
 
-    expect(trustCopy).toMatch(/Phase 1/i);
-    expect(trustCopy).toMatch(/not yet published/i);
-    expect(trustCopy).toMatch(/dataset identifiers/i);
-    expect(trustCopy).toMatch(/periods/i);
+    expect(trustCopy).toMatch(/evidence/i);
+    expect(trustCopy).toMatch(/rights/i);
     expect(trustCopy).toMatch(/correction/i);
     expect(trustCopy).toMatch(/methodology/i);
-    expect(trustCopy).toMatch(/future evidence will/i);
-    expect(trustCopy).not.toMatch(/remain visible|named by market and dataset/i);
-    expect(markup).toContain('Dataset identifiers, periods, correction status and methodology notes');
+    expect(trustCopy).not.toMatch(/Phase 1|not yet published/i);
+    expect(markup).toContain('href="/trust/"');
+    expect(markup).not.toMatch(/191,067|8\.2%/);
   });
 
-  it('renders an anonymous, navigable market and intent overview', () => {
-    const markup = renderToStaticMarkup(createElement(Home));
+  it('renders an anonymous, navigable market and intent overview', async () => {
+    const markup = renderToStaticMarkup(await Home());
 
     expect(markup).toContain('>signedprice</a>');
     expect(markup).toContain('>Real prices. Better property decisions.</h1>');
@@ -134,8 +133,8 @@ describe('signedprice homepage copy', () => {
     expect(markup).not.toMatch(/enquir|sign[ -]?in|create account/i);
   });
 
-  it('keeps the approved English decision model while changing only its presentation', () => {
-    const markup = renderToStaticMarkup(createElement(Home));
+  it('keeps the approved English decision model while changing only its presentation', async () => {
+    const markup = renderToStaticMarkup(await Home());
 
     for (const label of ['Rent', 'Buy', 'Invest']) {
       expect(markup).toContain(`>${label}</span>`);

@@ -29,8 +29,7 @@ const curves: readonly KoreaConversionCurveProjection[] = Object.freeze([
 const navigation = Object.freeze([
   Object.freeze({ label: 'Check', href: '/kr/', available: true }),
   Object.freeze({ label: 'Explore', href: '/kr/seoul/explore', available: true }),
-  Object.freeze({ label: 'News', href: null, available: false }),
-  Object.freeze({ label: 'Guide', href: null, available: false }),
+  Object.freeze({ label: 'Guide', href: '/kr/seoul/guide/', available: true }),
 ] as const);
 
 const readyModel: ContractCheckRouteModel = Object.freeze({
@@ -72,8 +71,8 @@ describe('Contract Check workspace SSR contract', () => {
     expect(html).toContain('href="/kr/seoul/tools/rent-check"');
     expect(html).toContain('Check one offer against its local distribution');
     expect(html).toContain('href="/kr/seoul/explore"');
-    expect(html).toContain('News<span>Planned</span>');
-    expect(html).toContain('Guide<span>Planned</span>');
+    expect(html).toContain('href="/kr/seoul/guide"');
+    expect(html).not.toMatch(/News|Planned/);
   });
 
   test('does not expose unreleased markets or unverified marketing claims', () => {

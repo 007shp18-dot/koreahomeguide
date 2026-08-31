@@ -1,12 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { publicRoutes } from './e2e/public-route-contract';
+import { PUBLIC_AREA_TEST_DISTRICTS } from './e2e/public-area-summary-fixture';
 
 describe('browser route coverage contract', () => {
-  it('covers the literal Korea-only release surface exactly once', () => {
+  it('covers the literal noindex release surface exactly once', () => {
     const paths = publicRoutes.map((route) => route.path);
 
     expect(paths).toEqual([
       '/',
+      '/trust/',
       '/kr/',
       '/kr/check/seoul/',
       '/kr/seoul/',
@@ -16,6 +18,17 @@ describe('browser route coverage contract', () => {
       '/kr/seoul/invest/',
       '/kr/seoul/explore/',
       '/kr/seoul/rankings/',
+      '/kr/seoul/corrections/',
+      '/sg/',
+      '/sg/singapore/explore/',
+      '/sg/singapore/explore/ccr/',
+      '/sg/singapore/explore/rcr/',
+      '/sg/singapore/explore/ocr/',
+      '/sg/singapore/corrections/',
+      '/kr/seoul/guide/',
+      '/kr/seoul/guide/compare-two-contracts/',
+      '/kr/seoul/guide/read-district-evidence/',
+      '/kr/seoul/guide/understand-publication-limits/',
       '/kr/seoul/jongno-gu/',
       '/kr/seoul/jung-gu/',
       '/kr/seoul/yongsan-gu/',
@@ -41,10 +54,12 @@ describe('browser route coverage contract', () => {
       '/kr/seoul/gangnam-gu/',
       '/kr/seoul/songpa-gu/',
       '/kr/seoul/gangdong-gu/',
+      ...PUBLIC_AREA_TEST_DISTRICTS.map(({ slug }) => `/kr/seoul/explore/${slug}/`),
+      '/kr/seoul/explore/jongno-gu/synthetic-test-building/',
       '/compare/',
     ]);
-    expect(paths).toHaveLength(36);
-    expect(new Set(paths).size).toBe(36);
+    expect(paths).toHaveLength(74);
+    expect(new Set(paths).size).toBe(74);
     expect(publicRoutes.find(({ path }) => path === '/kr/')).toMatchObject({
       heading: 'Which rent offer actually costs less?',
       indexing: 'noindex',

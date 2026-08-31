@@ -109,6 +109,29 @@ miss→hit→UI proof remain the separate protected-proof gate. Production,
 redirect, DNS, indexing activation and Firewall publication each require a new
 explicit authorization.
 
+## 5A. Korea detail, Rankings, and Guide candidate
+
+The current candidate extends the protected, non-indexed Korea evidence cohort.
+It does not change Production, KoreaHomeGuide, DNS, redirects, or indexing.
+
+- `/kr/seoul/explore/[district]/` has exactly 25 static district paths. Existing
+  `/kr/seoul/[district]/` paths remain compatibility renders.
+- Explore map activation, district table links, nearby links, and Rankings links
+  resolve to the same nested district documents.
+- A building path exists only when
+  `SIGNEDPRICE_PUBLIC_BUILDING_SUMMARY_ARTIFACT` passes exact schema, rights,
+  period, count, and digest validation. The deterministic browser building is a
+  local test fixture and must never be installed as a Preview or Production
+  artifact.
+- `/kr/seoul/guide/` and its three static methodology documents contain no live
+  market statistic or legal deadline. News remains absent until an automated
+  data/editorial and correction pipeline exists.
+- Trust, corrections, Rankings, Guide, district, and building paths remain
+  `noindex, follow`, without canonical, hreflang, or sitemap entries.
+- Release browser coverage is collected at 390, 720, 1366, and 1440 pixels. A
+  machine without the locked Chromium binary may collect tests but cannot mark
+  this browser gate passed; the exact-SHA CI or protected Preview run must pass.
+
 ## 6. Verified Preview artifact evidence
 
 The reviewed generator candidate `e4d06f5f21ad60f3d442f0c167da0a9bc37fdc30`

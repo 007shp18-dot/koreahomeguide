@@ -77,7 +77,7 @@ function rowFor(
     slug: identity.slug,
     nameEn: identity.nameEn,
     nameKo: identity.nameKo,
-    href: `/kr/seoul/${identity.slug}/`,
+    href: `/kr/seoul/explore/${identity.slug}/`,
     metric,
     valueLabel,
     bar,
@@ -131,7 +131,7 @@ function changeRows(
 export function buildPublicAreaRankingsModel(
   dependencies: PublicAreaRouteDependencies = environmentDependencies(),
 ): PublicAreaRankingsModel {
-  const unavailableSource = buildPublicSourceBoundary(dependencies.period);
+  const unavailableSource = buildPublicSourceBoundary(dependencies.period, null);
   try {
     const repository = createPublicAreaSummaryRepository({
       source: dependencies.source,
@@ -153,7 +153,10 @@ export function buildPublicAreaRankingsModel(
       changeExcludedDistrictCount: allDistricts.length - change.rows.length,
       hasNegativeChange: change.rows.some(({ metric }) => metric < 0),
       changeAxisLabel: change.axis,
-      source: buildPublicSourceBoundary(citySummary.period),
+      source: buildPublicSourceBoundary(
+        citySummary.period,
+        repository.getEvidenceDescriptor(),
+      ),
     });
   } catch {
     return Object.freeze({

@@ -114,8 +114,7 @@ describe('Contract Check route model', () => {
       navigation: [
         { label: 'Check', href: '/kr/', available: true },
         { label: 'Explore', href: '/kr/seoul/explore', available: true },
-        { label: 'News', href: null, available: false },
-        { label: 'Guide', href: null, available: false },
+        { label: 'Guide', href: '/kr/seoul/guide/', available: true },
       ],
     });
     if (model.status !== 'ready') throw new Error('Expected ready fixture.');
@@ -140,8 +139,7 @@ describe('Contract Check route model', () => {
       navigation: [
         { label: 'Check', href: '/kr/', available: true },
         { label: 'Explore', href: '/kr/seoul/explore', available: true },
-        { label: 'News', href: null, available: false },
-        { label: 'Guide', href: null, available: false },
+        { label: 'Guide', href: '/kr/seoul/guide/', available: true },
       ],
     });
     expect(JSON.stringify(model)).not.toMatch(/72,291|29\.4|annualRate|pairCount/);

@@ -64,3 +64,14 @@ export {
   type RentContractComparison,
   type RentContractOffer,
 } from './contract-check';
+export {
+  createCorrectionLedger,
+  createEvidenceDescriptor,
+  createEvidenceEmptyState,
+  type Correction,
+  type CorrectionStatus,
+  type EmptyReason,
+  type EvidenceDescriptor,
+  type EvidenceEmptyState,
+  type EvidenceState,
+} from './trust';

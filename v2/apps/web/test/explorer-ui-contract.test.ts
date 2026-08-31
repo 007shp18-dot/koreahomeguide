@@ -10,6 +10,9 @@ import {
 } from './public-area-fixture';
 
 vi.mock('server-only', () => ({}));
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ push: vi.fn() }),
+}));
 
 type ExplorerPageModule = {
   default: (props: {

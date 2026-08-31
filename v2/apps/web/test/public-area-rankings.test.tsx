@@ -44,8 +44,8 @@ describe('Seoul district rankings page', () => {
     expect(html).toContain('Middle-half spread (P75 − P25)');
     expect(html).toContain('Qualifying reported contracts');
     expect(html.match(/data-ranking-section=/g)).toHaveLength(4);
-    expect(html).toContain('href="/kr/seoul/jongno-gu"');
-    expect(html).toContain('href="/kr/seoul/jung-gu"');
+    expect(html).toContain('href="/kr/seoul/explore/jongno-gu"');
+    expect(html).toContain('href="/kr/seoul/explore/jung-gu"');
     expect(html).toContain('₩100,000,000');
     expect(html).toContain('-2.0%');
     expect(html).toContain('+3.0%');

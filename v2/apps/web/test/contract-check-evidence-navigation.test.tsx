@@ -2,6 +2,9 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, test, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ push: vi.fn() }),
+}));
 
 import { AreaExplorer } from '../components/public-market/area-explorer';
 import { DistrictDetailPage } from '../components/public-market/district-detail-page';
@@ -16,16 +19,17 @@ import {
 } from './public-area-fixture';
 
 describe('Contract Check evidence navigation', () => {
-  test.each(['check', 'explore'] as const)(
-    'keeps Check and Explore primary while News and Guide remain non-links from %s',
+  test.each(['check', 'explore', 'guide'] as const)(
+    'keeps Check, Explore, and Guide primary while News remains absent from %s',
     (current) => {
       const html = renderToStaticMarkup(<PublicSectionTabs current={current} />);
 
       expect(html).toContain('href="/kr"');
       expect(html).toContain('href="/kr/seoul/explore"');
-      expect(html).toContain('data-public-tab="news"');
       expect(html).toContain('data-public-tab="guide"');
-      expect((html.match(/<a\b/g) ?? [])).toHaveLength(2);
+      expect(html).toContain('href="/kr/seoul/guide"');
+      expect(html).not.toMatch(/data-public-tab="news"|>News</);
+      expect((html.match(/<a\b/g) ?? [])).toHaveLength(3);
       expect(html).not.toContain('data-public-tab="rankings"');
     },
   );
@@ -42,6 +46,7 @@ describe('Contract Check evidence navigation', () => {
     expect(html).toContain('href="/kr"');
     expect(html).toContain('href="/kr/seoul/rankings"');
     expect(html).toContain('View district rankings');
+    expect(html).toContain('href="/kr/seoul/guide"');
   });
 
   test.each([
@@ -63,5 +68,6 @@ describe('Contract Check evidence navigation', () => {
     expect(html).toContain('href="/kr"');
     expect(html).toContain('href="/kr/seoul/rankings"');
     expect(html).toContain('View district rankings');
+    expect(html).toContain('href="/kr/seoul/guide"');
   });
 });

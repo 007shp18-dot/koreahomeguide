@@ -109,6 +109,7 @@ test('navigates the first signedprice decision flow', async ({ page }) => {
 
 for (const route of publicRoutes) {
   test(`${route.path} is usable, contained, and follows its indexing cohort`, async ({ page }) => {
+    test.skip('fixtureOnly' in route && route.fixtureOnly && releaseTarget.usesExternalServer);
     const response = await page.goto(route.path);
 
     expect(response?.status()).toBe(200);
@@ -303,7 +304,7 @@ test('sitemap excludes Explore and every district detail route', async ({ reques
   const xml = await response.text();
 
   expect(xml).not.toContain('/kr/seoul/explore/');
-  for (const route of publicRoutes.filter(({ path }) => /\/kr\/seoul\/.+-gu\/$/.test(path))) {
+  for (const route of publicRoutes.filter(({ path }) => /\/kr\/seoul\/(?:explore\/)?[^/]+-gu\/$/.test(path))) {
     expect(xml).not.toContain(route.path);
   }
 });

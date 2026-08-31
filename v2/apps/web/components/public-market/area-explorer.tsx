@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useReducer } from 'react';
 
 import {
@@ -25,7 +26,7 @@ const bucketClasses = [
 
 function mapTitle(district: ExploreDistrictModel): string {
   return [
-    district.nameEn,
+    `Open ${district.nameEn} evidence`,
     district.nameKo,
     district.medianLabel ?? 'Not published',
     district.sampleLabel,
@@ -35,6 +36,7 @@ function mapTitle(district: ExploreDistrictModel): string {
 function ReadyAreaExplorer({
   model,
 }: Readonly<{ model: Extract<PublicAreaExploreModel, { status: 'ready' }> }>) {
+  const router = useRouter();
   const initial: AreaExplorerState = Object.freeze({
     selectedSlug: model.selectedSlug,
     districtSlugs: Object.freeze(model.districts.map(({ slug }) => slug)),
@@ -99,7 +101,10 @@ function ReadyAreaExplorer({
                 data-map-bucket={district.bucket ?? undefined}
                 data-map-state={district.state}
                 aria-hidden="true"
-                onPointerUp={() => dispatch({ type: 'select', slug: district.slug })}
+                onPointerUp={() => {
+                  dispatch({ type: 'select', slug: district.slug });
+                  router.push(district.href);
+                }}
               >
                 <title>{mapTitle(district)}</title>
               </path>
@@ -161,17 +166,18 @@ function ReadyAreaExplorer({
                       data-district-row={district.slug}
                     >
                       <th scope="row">
-                        <button
+                        <Link
                           className={styles.districtButton}
-                          type="button"
-                          aria-label={`Select ${district.nameEn}`}
-                          aria-pressed={isSelected}
-                          onClick={() => dispatch({ type: 'select', slug: district.slug })}
+                          href={district.href}
+                          aria-label={`Open ${district.nameEn} evidence`}
+                          aria-current={isSelected ? 'true' : undefined}
+                          onPointerEnter={() => dispatch({ type: 'select', slug: district.slug })}
+                          onFocus={() => dispatch({ type: 'select', slug: district.slug })}
                         >
                           <strong>{district.nameEn}</strong>
                           <span lang="ko">{district.nameKo}</span>
                           {isSelected ? <small>Selected</small> : null}
-                        </button>
+                        </Link>
                       </th>
                       <td>
                         <strong>{district.medianLabel ?? 'Not published'}</strong>

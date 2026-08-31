@@ -57,8 +57,8 @@ describe('Korea-only public route availability', () => {
       .not.toMatch(/singapore|dubai|\bsg\b|\bae\b/);
   });
 
-  it('removes future-market destinations from public home navigation', () => {
-    const html = renderToStaticMarkup(<Home />);
+  it('removes future-market destinations from public home navigation', async () => {
+    const html = renderToStaticMarkup(await Home());
     expect(html).toContain('/kr/seoul/');
     expect(html).not.toMatch(/href="\/(?:sg|ae)\//);
     expect(html).not.toMatch(/Explore (?:Singapore|Dubai)/);

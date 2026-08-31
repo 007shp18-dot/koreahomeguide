@@ -40,6 +40,8 @@ const footer: SiteFooterModel = {
     { label: 'Home', href: '/' },
     { label: 'Seoul market', href: '/kr/seoul/' },
     { label: 'Seoul Explorer', href: '/kr/seoul/explore/' },
+    { label: 'Trust', href: '/trust/' },
+    { label: 'Corrections', href: '/kr/seoul/corrections/' },
   ],
   status: 'Market reference only. Not an appraisal, legal opinion or financial recommendation.',
 };

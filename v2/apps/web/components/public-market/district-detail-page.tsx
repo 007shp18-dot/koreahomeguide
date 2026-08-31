@@ -9,6 +9,7 @@ import {
 } from '../../lib/site-copy';
 import { SiteFooter } from '../site-footer';
 import { SiteHeader } from '../site-header';
+import { EvidenceEmptyStatePanel } from '../trust/evidence-empty-state';
 import { BoxPlot } from './box-plot';
 import styles from './district-detail.module.css';
 import { QuoteInput } from './quote-input';
@@ -45,6 +46,8 @@ const footer: SiteFooterModel = {
     { label: 'Home', href: '/' },
     { label: 'Seoul market', href: '/kr/seoul/' },
     { label: 'District Explorer', href: '/kr/seoul/explore/' },
+    { label: 'Trust', href: '/trust/' },
+    { label: 'Corrections', href: '/kr/seoul/corrections/' },
   ],
   status: KOREA_PUBLIC_RELEASE_STATUS,
 };
@@ -68,13 +71,52 @@ function DistrictNavigation({ model }: Readonly<{ model: PublicDistrictModel }>)
       <div className={styles.nearby}>
         <p>Nearby districts</p>
         {model.nearby.map((district) => (
-          <Link href={`/kr/seoul/${district.slug}/`} key={district.slug}>
+          <Link href={`/kr/seoul/explore/${district.slug}/`} key={district.slug}>
             <strong>{district.nameEn}</strong>
             <span lang="ko">{district.nameKo}</span>
           </Link>
         ))}
       </div>
     </nav>
+  );
+}
+
+function Breadcrumb({ model }: Readonly<{ model: PublicDistrictModel }>) {
+  return (
+    <nav className={styles.breadcrumb} aria-label="Breadcrumb">
+      <ol>
+        <li><Link href="/kr/seoul/explore/">Explore</Link></li>
+        <li aria-current="page">{model.identity.nameEn}</li>
+      </ol>
+    </nav>
+  );
+}
+
+function BuildingEvidence({ model }: Readonly<{ model: PublicDistrictModel }>) {
+  return (
+    <section className={styles.buildingEvidence} aria-labelledby="building-evidence-heading">
+      <div className={styles.sectionHeading}>
+        <p>04 / Building evidence</p>
+        <h2 id="building-evidence-heading">Verified buildings in {model.identity.nameEn}</h2>
+      </div>
+      {model.buildingAvailability.status === 'ready' ? (
+        <ul className={styles.buildingList}>
+          {model.buildingAvailability.buildings.map((building) => (
+            <li key={building.id}>
+              <Link href={building.href}>
+                <strong>{building.name}</strong>
+                <span>{building.housingType} · {building.sampleLabel}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <EvidenceEmptyStatePanel state={model.buildingAvailability.empty} />
+      )}
+      <Link className={styles.correctionLink} href="/kr/seoul/corrections/">
+        Review Seoul evidence corrections
+      </Link>
+    </section>
   );
 }
 
@@ -173,8 +215,10 @@ export function DistrictDetailPage({ model }: Readonly<{ model: PublicDistrictMo
       <SiteHeader copy={headerFor(model)} />
       <PublicSectionTabs current="explore" />
       <main className={styles.main}>
+        <Breadcrumb model={model} />
         <Finding model={model} />
         <Evidence model={model} />
+        <BuildingEvidence model={model} />
         {model.status === 'unavailable' ? null : <Faq model={model} />}
         <PublicSourceBoundary model={model.source} />
         <DistrictNavigation model={model} />

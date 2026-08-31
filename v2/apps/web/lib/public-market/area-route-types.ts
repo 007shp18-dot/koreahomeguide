@@ -1,4 +1,6 @@
 import type {
+  EvidenceDescriptor,
+  EvidenceEmptyState,
   PublishedMarketSummary,
   PublicMarketSummary,
   WithheldMarketSummary,
@@ -14,7 +16,7 @@ export type ExploreDistrictModel = Readonly<{
   slug: SeoulDistrictSlug;
   nameEn: string;
   nameKo: string;
-  href: `/kr/seoul/${string}/`;
+  href: `/kr/seoul/explore/${string}/`;
   path: string;
   summary: PublicMarketSummary;
   state: 'published' | 'withheld';
@@ -33,6 +35,7 @@ export type PublicAreaLegendBucket = Readonly<{
 }>;
 
 export type PublicSourceBoundaryModel = Readonly<{
+  evidence: EvidenceDescriptor | null;
   provider: 'MOLIT';
   period: string;
   attribution: readonly string[];
@@ -64,7 +67,7 @@ export type PublicDistrictRankingRow = Readonly<{
   slug: SeoulDistrictSlug;
   nameEn: string;
   nameKo: string;
-  href: `/kr/seoul/${string}/`;
+  href: `/kr/seoul/explore/${string}/`;
   metric: number;
   valueLabel: string;
   bar: SignedRankingBar | null;
@@ -120,6 +123,24 @@ export type PublicDistrictDisplayModel = Readonly<{
   changeLabel: string | null;
 }>;
 
+export type DistrictBuildingLink = Readonly<{
+  id: string;
+  name: string;
+  housingType: string;
+  sampleLabel: string;
+  href: `/kr/seoul/explore/${string}/${string}/`;
+}>;
+
+export type DistrictBuildingAvailability =
+  | Readonly<{
+      status: 'ready';
+      buildings: readonly DistrictBuildingLink[];
+    }>
+  | Readonly<{
+      status: 'not_loaded';
+      empty: EvidenceEmptyState;
+    }>;
+
 export type PublicDistrictModel =
   | Readonly<{
       status: 'published';
@@ -131,6 +152,7 @@ export type PublicDistrictModel =
       datasetJsonLd: Readonly<Record<string, unknown>>;
       faqJsonLd: Readonly<Record<string, unknown>>;
       source: PublicAreaSourceBoundaryModel;
+      buildingAvailability: DistrictBuildingAvailability;
     }>
   | Readonly<{
       status: 'withheld';
@@ -142,11 +164,13 @@ export type PublicDistrictModel =
       datasetJsonLd: Readonly<Record<string, unknown>>;
       faqJsonLd: Readonly<Record<string, unknown>>;
       source: PublicAreaSourceBoundaryModel;
+      buildingAvailability: DistrictBuildingAvailability;
     }>
   | Readonly<{
       status: 'unavailable';
       identity: SeoulRentCheckDistrict;
       nearby: readonly SeoulRentCheckDistrict[];
       source: PublicAreaSourceBoundaryModel;
+      buildingAvailability: DistrictBuildingAvailability;
       message: 'Verified district summary unavailable';
     }>;

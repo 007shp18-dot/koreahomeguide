@@ -4,6 +4,9 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ push: vi.fn() }),
+}));
 
 import { AreaExplorer } from '../components/public-market/area-explorer';
 import {
@@ -70,6 +73,9 @@ describe('public Seoul area Explorer', () => {
     expect(markup).toContain('data-map-state="withheld"');
     expect(markup).toContain('Not published');
     expect(markup).toContain('Selected · Gangnam-gu');
+    expect(markup).toContain('href="/kr/seoul/explore/gangnam-gu"');
+    expect(markup).toContain('Open Gangnam-gu evidence');
+    expect(markup).toContain('Open Jongno-gu');
     expect(markup).toContain('href="/kr/seoul/rankings"');
     expect(markup).toContain('View district rankings');
     expect(markup).not.toContain(`₩${CITY_MEDIAN_SENTINEL.toLocaleString('en-US')}`);

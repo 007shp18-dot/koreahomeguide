@@ -38,6 +38,8 @@ const footer: SiteFooterModel = {
     { label: 'Home', href: '/' },
     { label: 'Seoul market', href: '/kr/seoul/' },
     { label: 'Compare markets', href: '/compare/' },
+    { label: 'Trust', href: '/trust/' },
+    { label: 'Corrections', href: '/kr/seoul/corrections/' },
   ],
   status: KOREA_PUBLIC_RELEASE_STATUS,
 };

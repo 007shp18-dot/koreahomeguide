@@ -354,9 +354,6 @@ const singaporeProfile = getMarketProfile('sg-singapore');
 const dubaiProfile = getMarketProfile('ae-dubai');
 
 const seoulOfficialState = seoulProfile.dataCapabilities[0]!.state;
-const singaporeHdb = singaporeProfile.dataCapabilities.find(
-  (capability) => capability.housingSector === 'hdb',
-)!;
 const singaporePrivate = singaporeProfile.dataCapabilities.find(
   (capability) => capability.housingSector === 'private_residential',
 )!;
@@ -406,20 +403,12 @@ const marketCopyById = {
   },
   'sg-singapore': {
     heroDescription:
-      'HDB public market intelligence is available with sector-specific limits. Private residential detail remains a separate rights-blocked capability.',
-    sourcePosture: 'HDB public intelligence; private detail rights-blocked',
+      'URA private residential sale intelligence is limited until verified snapshot and display-rights gates pass.',
+    sourcePosture: 'URA private residential sale intelligence; release-gated',
     capabilities: [
       {
-        label: 'HDB public intelligence',
-        description: 'Public HDB market intelligence is usable within its own housing sector.',
-        state: singaporeHdb.state,
-        stateLabel: stateLabels[singaporeHdb.state],
-        housingSector: 'hdb',
-        overviewCategory: 'evidence',
-      },
-      {
-        label: 'Private residential detail',
-        description: 'Commercial publication rights have not been approved for this dataset.',
+        label: 'URA private residential sale intelligence',
+        description: 'Publication stays closed until verified evidence and display-rights gates pass.',
         state: singaporePrivate.state,
         stateLabel: stateLabels[singaporePrivate.state],
         housingSector: 'private_residential',
@@ -436,9 +425,9 @@ const marketCopyById = {
       },
     ],
     nextAction: {
-      label: 'Review Singapore rent scope',
-      href: '/sg/singapore/rent/',
-      description: 'See how the HDB public boundary applies to a rent decision.',
+      label: 'Review the evidence policy',
+      href: '/trust/',
+      description: 'Review how SignedPrice gates source rights, publication minimums, and corrections.',
       external: false,
     },
   },
@@ -502,18 +491,18 @@ const intentSourceCopyByMarket = {
   ],
   'sg-singapore': [
     {
-      label: 'HDB public market intelligence',
-      description: 'Usable only within the HDB housing sector and its stated limitations.',
-      state: singaporeHdb.state,
-      stateLabel: stateLabels[singaporeHdb.state],
-      housingSector: 'hdb',
-    },
-    {
-      label: 'Private residential detail',
-      description: 'Private residential publication rights remain unapproved.',
+      label: 'URA private residential sale intelligence',
+      description: 'Limited to verified private-sale evidence after release gates pass.',
       state: singaporePrivate.state,
       stateLabel: stateLabels[singaporePrivate.state],
       housingSector: 'private_residential',
+    },
+    {
+      label: 'Rental and professional detail',
+      description: 'No rental evidence or professional connection workflow is active.',
+      state: 'rights_blocked',
+      stateLabel: stateLabels.rights_blocked,
+      housingSector: null,
     },
   ],
   'ae-dubai': [
@@ -876,7 +865,7 @@ const comparisonMatrix = {
   description:
     'Statuses describe publication capability, not a numeric market result. Missing or incompatible inputs remain unavailable.',
   sectorBoundary:
-    'Singapore HDB public intelligence is not combined with private residential detail.',
+    'Singapore private residential sales are not combined with rentals or public housing.',
   tableLabel: 'Seoul, Singapore and Dubai capability comparison',
   rowHeaderLabel: 'Capability',
   columns: initialMarketIds.map((marketId) => ({
@@ -888,7 +877,7 @@ const comparisonMatrix = {
       label: 'Rent evidence',
       cells: [
         comparisonCell('kr-seoul', 'available', 'Official reported rent contracts.'),
-        comparisonCell('sg-singapore', 'available', 'HDB public rent intelligence only.'),
+        comparisonCell('sg-singapore', 'rights_blocked', 'No Singapore rental evidence is active.'),
         comparisonCell(
           'ae-dubai',
           'rights_blocked',
@@ -900,7 +889,7 @@ const comparisonMatrix = {
       label: 'Sale evidence',
       cells: [
         comparisonCell('kr-seoul', 'available', 'Official reported sale contracts.'),
-        comparisonCell('sg-singapore', 'available', 'HDB public sale intelligence only.'),
+        comparisonCell('sg-singapore', 'limited', 'URA private residential sales remain release-gated.'),
         comparisonCell(
           'ae-dubai',
           'rights_blocked',
@@ -935,7 +924,7 @@ const comparisonMatrix = {
         comparisonCell(
           'sg-singapore',
           'limited',
-          'HDB inputs remain sector-specific; private detail is excluded.',
+          'Private-sale evidence does not supply rental inputs.',
         ),
         comparisonCell(
           'ae-dubai',
@@ -955,7 +944,7 @@ const comparisonMatrix = {
         comparisonCell(
           'sg-singapore',
           'rights_blocked',
-          'Private detail and professional connections are not active.',
+          'Private-sale publication and professional connections are not active.',
         ),
         comparisonCell(
           'ae-dubai',

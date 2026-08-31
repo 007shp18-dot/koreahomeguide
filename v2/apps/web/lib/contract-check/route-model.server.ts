@@ -9,7 +9,7 @@ import {
 import { createConversionRepository } from './conversion-repository.server';
 
 export type ContractCheckNavigationItem = Readonly<{
-  label: 'Check' | 'Explore' | 'News' | 'Guide';
+  label: 'Check' | 'Explore' | 'Guide';
   href: string | null;
   available: boolean;
 }>;
@@ -56,8 +56,7 @@ export type ConversionEnvironmentDiagnosticCode =
 const navigation = Object.freeze([
   Object.freeze({ label: 'Check', href: '/kr/', available: true }),
   Object.freeze({ label: 'Explore', href: '/kr/seoul/explore', available: true }),
-  Object.freeze({ label: 'News', href: null, available: false }),
-  Object.freeze({ label: 'Guide', href: null, available: false }),
+  Object.freeze({ label: 'Guide', href: '/kr/seoul/guide/', available: true }),
 ] as const satisfies readonly ContractCheckNavigationItem[]);
 
 const rightsLookup: MolitRightsLookup = (policyId) =>

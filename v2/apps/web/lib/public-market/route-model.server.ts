@@ -1,6 +1,7 @@
 import 'server-only';
 
 import {
+  type EvidenceDescriptor,
   getPublicMarketConfig,
   type PublicMarketConfig,
   type PublicMarketSummary,
@@ -89,6 +90,8 @@ const footer = {
     { label: 'Korea home', href: '/kr/' },
     { label: 'Check deposit', href: '/kr/check/seoul' },
     { label: 'Evidence', href: '/kr/seoul' },
+    { label: 'Trust', href: '/trust/' },
+    { label: 'Corrections', href: '/kr/seoul/corrections/' },
   ],
   status: KOREA_PUBLIC_RELEASE_STATUS,
 } as const satisfies SiteFooterModel;
@@ -129,8 +132,12 @@ const navigation = {
   ],
 } as const;
 
-function sourceBoundary(period: string): PublicSourceBoundaryModel {
+function sourceBoundary(
+  period: string,
+  evidence: EvidenceDescriptor,
+): PublicSourceBoundaryModel {
   return Object.freeze({
+    evidence,
     provider: 'MOLIT',
     period,
     attribution: Object.freeze([...KR_MOLIT_RENT_RIGHTS.attribution]),
@@ -223,7 +230,7 @@ export function buildKoreaPublicRouteModel(
     footer,
     pageCopy,
     methodology,
-    source: sourceBoundary(summary.period),
+    source: sourceBoundary(summary.period, repository.getEvidenceDescriptor()),
     navigation,
   });
 }
