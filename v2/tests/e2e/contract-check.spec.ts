@@ -101,7 +101,7 @@ test('Contract Check stays ordered, touch-sized, and keyboard reachable', async 
   await expect(primaryNavigation.getByRole('link', { name: 'Check', exact: true }))
     .toHaveAttribute('href', '/kr/');
   await expect(primaryNavigation.getByRole('link', { name: 'Explore', exact: true }))
-    .toHaveAttribute('href', '/kr/seoul/explore');
+    .toHaveAttribute('href', '/kr/seoul/explore/');
   await expect(page.getByText('News', { exact: true })).not.toHaveAttribute('href');
   await expect(page.getByText('Guide', { exact: true })).not.toHaveAttribute('href');
   await expect(page.getByRole('link', {

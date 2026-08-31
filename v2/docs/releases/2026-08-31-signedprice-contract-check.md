@@ -42,6 +42,7 @@ The deterministic local browser fixture uses period `2026-03/2026-08` and a non-
 - That Preview correctly failed closed because no verified conversion artifact was installed. It rendered no inputs, rates or unsupported claims.
 - Manual Preview checks passed for no horizontal overflow, claim-safe Contract Check fallback, 25-row Explorer, 100-row Rankings, per-row change axes, primary navigation containment, `noindex, follow`, and no canonical or hreflang output.
 - The first browser CI run exposed two assertion defects: hidden Next not-found copy named unreleased markets, and an ambiguous `Check` link locator. The follow-up adds a Seoul-only not-found boundary and scopes the locator to primary navigation.
+- The second browser CI run confirmed those fixes and exposed only a trailing-slash expectation mismatch. The assertion now matches Next's rendered `/kr/seoul/explore/` URL.
 - Current candidate commit SHA and Vercel deployment: record from the PR checks after the correction is uploaded.
 - Verified artifact period and digest identity: pending; do not record the raw artifact or secret values here.
 - Required visible checks: ready evidence, Offer A → Offer B → Result order, interpolation, held-range label, tie, ranking flip, 44px controls, keyboard order, no horizontal overflow, no console errors or 5xx responses, no canonical/hreflang, and no sitemap URL.
