@@ -1,7 +1,9 @@
 import { readFileSync } from 'node:fs';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+
+vi.mock('server-only', () => ({}));
 
 import { RentCheckForm } from '../components/rent-check/rent-check-form';
 import { revealRentCheckResult } from '../components/rent-check/rent-check-workspace';

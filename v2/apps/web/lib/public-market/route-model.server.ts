@@ -5,9 +5,11 @@ import {
   type PublicMarketConfig,
   type PublicMarketSummary,
 } from '@signedprice/market-core';
+import { KR_MOLIT_RENT_RIGHTS } from '@signedprice/korea-rent';
 import type { Metadata } from 'next';
 
 import type { SiteFooterModel, SiteHeaderModel } from '../site-copy';
+import type { PublicSourceBoundaryModel } from './area-route-types';
 import {
   PUBLIC_SUMMARY_ARTIFACT_VERSION,
   createPublicSummaryRepository,
@@ -35,6 +37,7 @@ export type KoreaPublicRouteModel = Readonly<{
     label: string;
     disclosure: string;
   }>;
+  source: PublicSourceBoundaryModel;
   navigation: Readonly<{
     label: string;
     links: readonly Readonly<{ href: string; label: string }>[];
@@ -134,6 +137,19 @@ const navigation = {
   ],
 } as const;
 
+function sourceBoundary(period: string): PublicSourceBoundaryModel {
+  return Object.freeze({
+    provider: 'MOLIT',
+    period,
+    attribution: Object.freeze([...KR_MOLIT_RENT_RIGHTS.attribution]),
+    band: '45–55㎡',
+    publicationMinimum: 5,
+    includesNewAndRenewal: true,
+    includesUnknownContractType: true,
+    includesUnknownRecordStatus: true,
+  });
+}
+
 export type PublicSummaryEnvironmentDiagnosticCode =
   | 'artifact_missing'
   | 'period_missing'
@@ -207,13 +223,15 @@ export function buildKoreaPublicRouteModel(
       period: dependencies.period,
     },
   });
+  const summary = repository.getSummary({ area, deal: 'jeonse', band: '45-55sqm' });
   return Object.freeze({
     config,
-    summary: repository.getSummary({ area, deal: 'jeonse', band: '45-55sqm' }),
+    summary,
     header,
     footer,
     pageCopy,
     methodology,
+    source: sourceBoundary(summary.period),
     navigation,
   });
 }

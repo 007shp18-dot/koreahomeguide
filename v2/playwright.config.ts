@@ -4,6 +4,9 @@ import {
   type ReleaseTestEnvironment,
 } from './release-test-target';
 import {
+  PUBLIC_AREA_SUMMARY_TEST_ARTIFACT,
+} from './tests/e2e/public-area-summary-fixture';
+import {
   PUBLIC_SUMMARY_TEST_ARTIFACT,
   PUBLIC_SUMMARY_TEST_PERIOD,
 } from './tests/e2e/public-summary-fixture';
@@ -24,6 +27,7 @@ export function createPlaywrightConfig(
       VERCEL_URL: '127.0.0.1:3100',
       SIGNEDPRICE_PUBLIC_SUMMARY_ARTIFACT: PUBLIC_SUMMARY_TEST_ARTIFACT,
       SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD: PUBLIC_SUMMARY_TEST_PERIOD,
+      SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT: PUBLIC_AREA_SUMMARY_TEST_ARTIFACT,
     },
     reuseExistingServer: false,
     stderr: 'pipe',
@@ -61,6 +65,14 @@ export function createPlaywrightConfig(
         use: {
           ...devices['Pixel 7'],
           viewport: { width: 390, height: 844 },
+        },
+      },
+      {
+        name: 'wide-chromium',
+        testMatch: /area-explore\.spec\.ts/,
+        use: {
+          ...devices['Desktop Chrome'],
+          viewport: { width: 1440, height: 900 },
         },
       },
     ],

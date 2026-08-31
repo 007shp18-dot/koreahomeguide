@@ -10,6 +10,16 @@ const MARKERS = Object.freeze([
   Object.freeze({ marker: 'MOLIT raw endpoint', pattern: /apis\.data\.go\.kr/i }),
   Object.freeze({ marker: 'MOLIT endpoint family', pattern: /RTMSDataSvc/i }),
   Object.freeze({ marker: 'rights evidence URL', pattern: /(?:https?:\/\/)?(?:www\.)?data\.go\.kr\/data\//i }),
+  Object.freeze({
+    marker: 'area artifact environment',
+    pattern: /SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT/,
+  }),
+  Object.freeze({
+    marker: 'area artifact contract',
+    pattern: /signedprice-public-area-summary-v1/,
+  }),
+  Object.freeze({ marker: 'raw source record', pattern: /sourceRecordId/ }),
+  Object.freeze({ marker: 'temporary area job', pattern: /public-area-summary-job/ }),
 ]);
 
 async function filesBelow(directory) {

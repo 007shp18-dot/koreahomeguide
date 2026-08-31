@@ -32,12 +32,19 @@ export type PublicAreaLegendBucket = Readonly<{
   label: string;
 }>;
 
-export type PublicAreaSourceBoundaryModel = Readonly<{
+export type PublicSourceBoundaryModel = Readonly<{
   provider: 'MOLIT';
   period: string;
-  attribution: readonly ['Ministry of Land, Infrastructure and Transport (MOLIT)'];
-  bandLabel: '45–55㎡';
+  attribution: readonly string[];
+  band: '45–55㎡';
   publicationMinimum: 5;
+  includesNewAndRenewal: true;
+  includesUnknownContractType: true;
+  includesUnknownRecordStatus: true;
+  geometryAttribution?: 'KOSTAT census boundaries via southkorea/seoul-maps (Apache-2.0)';
+}>;
+
+export type PublicAreaSourceBoundaryModel = PublicSourceBoundaryModel & Readonly<{
   geometryAttribution: 'KOSTAT census boundaries via southkorea/seoul-maps (Apache-2.0)';
 }>;
 

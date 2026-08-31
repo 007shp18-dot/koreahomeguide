@@ -5,6 +5,7 @@ on:
     paths:
       - 'v2/**'
       - 'artifacts/public-p1/**'
+      - 'artifacts/public-p2/**'
       - 'docs/operations/signedprice-public-p1-release-gate.md'
       - 'artifacts/v2-migration/**'
       - 'scripts/v2-migration/**'
@@ -14,6 +15,7 @@ on:
     paths:
       - 'v2/**'
       - 'artifacts/public-p1/**'
+      - 'artifacts/public-p2/**'
       - 'docs/operations/signedprice-public-p1-release-gate.md'
       - 'artifacts/v2-migration/**'
       - 'scripts/v2-migration/**'
@@ -50,6 +52,8 @@ jobs:
       - name: Verify workbook QA mapping
         run: pnpm exec vitest run tests/public-p1-workbook-qa.test.ts
       - run: pnpm build
+      - name: Confirm the temporary P2 generator is absent from the build
+        run: pnpm exec vitest run tests/public-area-runner-absence.test.ts
       - name: Reject server-only Rent Check data from client assets
         run: pnpm check:rent-client-boundary
       - name: Run full Phase 0 legacy gate
@@ -76,8 +80,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Install locked Playwright Chromium
         run: pnpm exec playwright install --with-deps chromium
-      - name: Run desktop and mobile workbook release gate
-        run: pnpm e2e --project=desktop-chromium --project=mobile-chromium
+      - name: Run wide, desktop and mobile workbook release gate
+        run: pnpm e2e --project=desktop-chromium --project=mobile-chromium --project=wide-chromium
       - name: Upload browser failure diagnostics
         if: failure()
         uses: actions/upload-artifact@v4.6.2

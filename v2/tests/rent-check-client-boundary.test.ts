@@ -37,7 +37,7 @@ afterEach(async () => {
 });
 
 describe('Rent Check client boundary scan', () => {
-  test('ships no temporary public-summary execution route or app import', async () => {
+  test('ships no retired P1 public-summary execution route or app import', async () => {
     const temporaryFiles = [
       'app/api/internal/public-summary-job/route.ts',
       'lib/public-market/job-handler.server.ts',
@@ -50,7 +50,7 @@ describe('Rent Check client boundary scan', () => {
     const appSources = await sourceFiles(join(webRoot, 'app'));
     const appText = (await Promise.all(appSources.map((path) => readFile(path, 'utf8')))).join('\n');
     expect(appText).not.toMatch(
-      /\/api\/internal\/public-summary-job|runKoreaPublicSummaryBatch|finalizeKoreaPublicSummaryJob/,
+      /\/api\/internal\/public-summary-job|finalizeKoreaPublicSummaryJob/,
     );
   });
 
@@ -72,6 +72,28 @@ describe('Rent Check client boundary scan', () => {
       'MOLIT raw endpoint',
       'MOLIT endpoint family',
       'rights evidence URL',
+    ]);
+  });
+
+  test('reports public area artifact, source-record, and temporary generator markers', async () => {
+    const directory = await fixtureNextDirectory();
+    await writeFile(
+      join(directory, 'static', 'chunks', 'area-explore.js'),
+      [
+        'SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT',
+        'signedprice-public-area-summary-v1',
+        'sourceRecordId',
+        'public-area-summary-job',
+      ].join('\n'),
+    );
+
+    const findings = await scanRentCheckClientBoundary(directory);
+
+    expect(findings.map((finding) => finding.marker)).toEqual([
+      'area artifact environment',
+      'area artifact contract',
+      'raw source record',
+      'temporary area job',
     ]);
   });
 

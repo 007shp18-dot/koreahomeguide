@@ -299,7 +299,21 @@
   gap: 0.75rem;
 }
 
+.medianComparison {
+  min-height: 44px;
+  padding: 0.75rem;
+  display: grid;
+  align-items: center;
+  border-left: 2px solid var(--public-accent);
+  color: #5d5958;
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
 .publicPage {
+  --public-ground: #f3f2f2;
+  --public-ink: #201e1d;
+  --public-accent: #1d4ed8;
   min-height: 100dvh;
   color: var(--public-ink);
   background: var(--public-ground);
@@ -346,11 +360,163 @@
 }
 
 .publicEvidence,
-.publicDisclosure {
+.publicDisclosure,
+.publicSourceBoundary {
   padding: clamp(1rem, 4vw, 3.5rem);
   display: grid;
   gap: 1.5rem;
   border-bottom: 2px solid var(--public-ink);
+}
+
+.publicSectionTabs,
+.publicSourceBoundary {
+  --public-ground: #f3f2f2;
+  --public-ink: #201e1d;
+  --public-accent: #1d4ed8;
+  color: var(--public-ink);
+  background: var(--public-ground);
+}
+
+.publicSectionTabs {
+  width: min(100%, 1240px);
+  margin-inline: auto;
+  border-right: 2px solid var(--public-ink);
+  border-left: 2px solid var(--public-ink);
+}
+
+.publicSectionTabs ul {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-bottom: 2px solid var(--public-ink);
+  list-style: none;
+}
+
+.publicSectionTabs li {
+  min-width: 0;
+  border-right: 1px solid var(--public-ink);
+}
+
+.publicSectionTabs li:last-child {
+  border-right: 0;
+}
+
+.publicSectionTabLink,
+.publicSectionTabFuture {
+  padding: 0.65rem 0.8rem;
+  display: grid;
+  place-items: center;
+  color: var(--public-ink);
+  background: transparent;
+  font-size: 0.72rem;
+  font-weight: 850;
+  text-align: center;
+  text-decoration: none;
+}
+
+.publicSectionTabLink {
+  min-height: 44px;
+}
+
+.publicSectionTabFuture {
+  min-height: 44px;
+}
+
+.publicSectionTabLink[aria-current='page'] {
+  color: var(--public-ground);
+  background: var(--public-accent);
+}
+
+.publicSectionTabLink:hover {
+  box-shadow: inset 0 -4px 0 var(--public-accent);
+}
+
+.publicSectionTabLink:focus-visible {
+  position: relative;
+  z-index: 2;
+  outline: 2px solid var(--public-accent);
+  outline-offset: 2px;
+}
+
+.publicSectionTabFuture {
+  grid-template-columns: auto auto;
+  gap: 0.45rem;
+  color: #5d5958;
+  cursor: not-allowed;
+}
+
+.publicSectionTabFuture small {
+  font-size: 0.56rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.publicSourceHeading {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.publicSourceHeading > p {
+  color: var(--public-accent);
+  font-size: 0.7rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.publicSourceHeading h2 {
+  font-size: clamp(1.45rem, 3vw, 2.7rem);
+  letter-spacing: -0.04em;
+}
+
+.publicSourceBoundary dl {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 2px solid var(--public-ink);
+  border-left: 2px solid var(--public-ink);
+}
+
+.publicSourceBoundary dl > div {
+  min-height: 96px;
+  padding: 1rem;
+  display: grid;
+  align-content: space-between;
+  gap: 0.75rem;
+  border-right: 2px solid var(--public-ink);
+  border-bottom: 2px solid var(--public-ink);
+}
+
+.publicSourceBoundary dt {
+  font-size: 0.65rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.publicSourceBoundary dd,
+.publicSourceBoundary > p {
+  color: #5d5958;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.publicSourceBoundary .publicSourceRights {
+  color: var(--public-ink);
+  font-weight: 850;
+}
+
+.publicMethodSummary {
+  padding: 1rem clamp(1rem, 4vw, 3.5rem);
+  display: grid;
+  gap: 0.3rem;
+  border-bottom: 2px solid var(--public-ink);
+  color: #5d5958;
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
+.publicMethodSummary p:first-child {
+  color: var(--public-ink);
+  font-weight: 850;
 }
 
 .publicSectionHeading {
@@ -433,6 +599,23 @@
 }
 
 @media (max-width: 720px) {
+  .publicSectionTabs {
+    border-right: 0;
+    border-left: 0;
+  }
+
+  .publicSectionTabs ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .publicSectionTabs li:nth-child(2) {
+    border-right: 0;
+  }
+
+  .publicSectionTabs li:nth-child(-n + 2) {
+    border-bottom: 1px solid var(--public-ink);
+  }
+
   .publicMain {
     border-right: 0;
     border-left: 0;
@@ -444,6 +627,7 @@
   }
 
   .publicDisclosure dl,
+  .publicSourceBoundary dl,
   .publicLinks {
     grid-template-columns: 1fr;
   }

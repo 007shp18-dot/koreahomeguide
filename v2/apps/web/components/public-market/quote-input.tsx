@@ -70,10 +70,29 @@ function valueFormatter(config: PublicMarketConfig): (value: number) => string {
   return (value) => formatter.format(value);
 }
 
-export function QuoteInput({ config, summary, initialQuote }: Readonly<{
+function medianComparison(position: QuotePosition, areaLabel: string): string {
+  const differencePct = position.differencePct;
+  if (differencePct === null) {
+    return `The difference from the reported median for ${areaLabel} is unavailable.`;
+  }
+  const relation = differencePct === 0 || Object.is(differencePct, -0)
+    ? 'equal to'
+    : differencePct < 0 ? 'below' : 'above';
+  return `This typed deposit is ${relation} the reported median for ${areaLabel}.`;
+}
+
+export function QuoteInput({
+  config,
+  summary,
+  initialQuote,
+  areaLabel = config.marketLabel,
+  showMedianFaq = false,
+}: Readonly<{
   config: PublicMarketConfig;
   summary: PublicMarketSummary;
   initialQuote?: string;
+  areaLabel?: string;
+  showMedianFaq?: boolean;
 }>) {
   const [area, setArea] = useState(summary.area);
   const [quoteDraft, setQuoteDraft] = useState(
@@ -104,7 +123,7 @@ export function QuoteInput({ config, summary, initialQuote }: Readonly<{
             value={area}
             onChange={(event) => setArea(event.currentTarget.value)}
           >
-            <option value={summary.area}>{config.marketLabel}</option>
+            <option value={summary.area}>{areaLabel}</option>
           </select>
         </label>
         <label className={styles.quoteField}>
@@ -147,6 +166,11 @@ export function QuoteInput({ config, summary, initialQuote }: Readonly<{
         ) : (
           <VerdictLine position={null} />
         )}
+        {showMedianFaq && view.position !== null ? (
+          <p className={styles.medianComparison} data-median-comparison="true">
+            {medianComparison(view.position, areaLabel)}
+          </p>
+        ) : null}
       </div>
     </section>
   );

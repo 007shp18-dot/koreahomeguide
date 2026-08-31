@@ -5,11 +5,14 @@ import type {
 import Link from 'next/link';
 
 import type { SiteFooterModel, SiteHeaderModel } from '../../lib/site-copy';
+import type { PublicSourceBoundaryModel } from '../../lib/public-market/area-route-types';
 import { SiteFooter } from '../site-footer';
 import { SiteHeader } from '../site-header';
 import { BoxPlot } from './box-plot';
 import styles from './public-market.module.css';
 import { QuoteInput } from './quote-input';
+import { PublicSectionTabs } from './public-section-tabs';
+import { PublicSourceBoundary } from './public-source-boundary';
 
 export type PublicMarketPageMode = 'home' | 'check' | 'area';
 
@@ -31,6 +34,7 @@ export function PublicMarketPage({
   footer,
   pageCopy,
   methodology,
+  source,
   navigation,
 }: Readonly<{
   mode: PublicMarketPageMode;
@@ -44,6 +48,7 @@ export function PublicMarketPage({
     description: string;
   }>>>;
   methodology: Readonly<{ label: string; disclosure: string }>;
+  source: PublicSourceBoundaryModel;
   navigation: Readonly<{
     label: string;
     links: readonly Readonly<{ href: string; label: string }>[];
@@ -54,6 +59,7 @@ export function PublicMarketPage({
   return (
     <div id="top" className={styles.publicPage}>
       <SiteHeader copy={header} />
+      <PublicSectionTabs current="check" />
       <main className={styles.publicMain}>
         <header className={styles.publicHero}>
           <p>{currentCopy.eyebrow}</p>
@@ -79,33 +85,10 @@ export function PublicMarketPage({
           )}
         </section>
 
-        <section className={styles.publicDisclosure} aria-labelledby="public-source-heading">
-          <div className={styles.publicSectionHeading}>
-            <p>02 / Source and method</p>
-            <h2 id="public-source-heading">Read the boundary with the number.</h2>
-          </div>
-          <dl>
-            <div>
-              <dt>Registry</dt>
-              <dd>{config.registryLabel}</dd>
-            </div>
-            <div>
-              <dt>Completed period</dt>
-              <dd>{summary.period}</dd>
-            </div>
-            <div>
-              <dt>Publication rule</dt>
-              <dd>Money is withheld when fewer than 5 compatible contracts are present.</dd>
-            </div>
-            <div>
-              <dt>Quote method</dt>
-              <dd>{methodology.label}</dd>
-            </div>
-          </dl>
-          <p>
-            Official reported contracts are not current listings, an appraisal or legal advice.
-            {' '}{methodology.disclosure}
-          </p>
+        <PublicSourceBoundary model={source} />
+        <section className={styles.publicMethodSummary} aria-label="Method summary">
+          <p>{methodology.label}</p>
+          <p>{methodology.disclosure}</p>
         </section>
 
         <nav className={styles.publicLinks} aria-label={navigation.label}>

@@ -1,6 +1,10 @@
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+
+vi.mock('server-only', () => ({}));
+
+import { SEOUL_RENT_CHECK_DISTRICTS } from '@signedprice/korea-rent/browser';
 import MarketOverviewPage, {
   generateStaticParams as generateMarketStaticParams,
 } from '../app/[country]/[city]/page';
@@ -43,6 +47,13 @@ const expectedIntentParams = [
   { country: 'ae', city: 'dubai', intent: 'invest' },
 ] as const;
 
+const expectedPublicThirdSegmentParams = [
+  ...expectedIntentParams.slice(0, 3),
+  ...SEOUL_RENT_CHECK_DISTRICTS.map(({ slug }) => ({
+    country: 'kr', city: 'seoul', intent: slug,
+  })),
+];
+
 const unsupportedClaimPattern =
   /median|transaction count|guaranteed return|active partner marketplace|create account|sign[ -]?in|enquir|\b\d+(?:\.\d+)?%/i;
 
@@ -59,7 +70,7 @@ describe('market route model', () => {
 
   it('publishes exactly nine approved intent contracts', () => {
     expect(intentRouteParams).toEqual(expectedIntentParams);
-    expect(generateIntentStaticParams()).toEqual(expectedIntentParams.slice(0, 3));
+    expect(generateIntentStaticParams()).toEqual(expectedPublicThirdSegmentParams);
     expect(
       intentRouteParams.map(({ country, city, intent }) =>
         buildIntentPageModel(country, city, intent)?.href,

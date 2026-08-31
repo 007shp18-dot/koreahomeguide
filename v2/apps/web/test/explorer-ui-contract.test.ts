@@ -1,9 +1,15 @@
 import { readFileSync } from 'node:fs';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createExplorerRentCheckHref } from '../components/explorer-workspace';
 import { intentRouteParams, marketRouteParams } from '../lib/route-model';
+import {
+  PUBLIC_AREA_FIXTURE_PERIOD,
+  createPublicAreaFixture,
+} from './public-area-fixture';
+
+vi.mock('server-only', () => ({}));
 
 type ExplorerPageModule = {
   default: (props: {
@@ -70,25 +76,30 @@ const buildingWithMissingEvidence = {
 const verifiedRentCheckHref =
   '/kr/seoul/tools/rent-check/?lawdCd=11590&type=officetel&dong=noryangjin-dong&building=noryangjin-dream-square';
 
+afterEach(() => {
+  vi.unstubAllEnvs();
+});
+
 describe('/kr/seoul/explore/ route contract', () => {
-  it('renders the new noindex Seoul Explorer with an explicit three-step discovery rail', async () => {
+  it('renders the noindex Seoul district evidence map and complete table', async () => {
+    vi.stubEnv(
+      'SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT',
+      JSON.stringify(createPublicAreaFixture()),
+    );
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', PUBLIC_AREA_FIXTURE_PERIOD);
     const { default: ExplorerPage, metadata } = await loadExplorerPage();
     const page = await ExplorerPage({
-      searchParams: Promise.resolve({ lawdCd: '11590' }),
+      searchParams: Promise.resolve({ district: 'dongjak-gu' }),
     });
     const markup = renderToStaticMarkup(page as never);
 
-    expect(metadata.robots).toEqual({ index: false, follow: false });
-    expect(markup).toContain('Dongjak-gu (동작구)');
-    expect(markup).not.toMatch(/>\s*11590\s*</);
-    expect(markup).toContain('data-discovery-step="district"');
-    expect(markup).toContain('data-discovery-step="neighborhood"');
-    expect(markup).toContain('data-discovery-step="building"');
-    expect(markup).toContain('Search this area');
-    expect(markup).toContain('Interact with map');
-    expect(markup).toContain('role="region"');
-    expect(markup).not.toContain('role="img"');
-    expect(markup).toContain('class="explorer-marker"');
+    expect(metadata.robots).toEqual({ index: false, follow: true });
+    expect(markup).toContain('Selected · Dongjak-gu');
+    expect(markup).toContain('role="img"');
+    expect(markup).toContain('viewBox="0 0 720 560"');
+    expect((markup.match(/data-district-path=/g) ?? [])).toHaveLength(25);
+    expect((markup.match(/data-district-row=/g) ?? [])).toHaveLength(25);
+    expect(markup).not.toMatch(/data-discovery-step|Search this area|Interact with map/);
   });
 
   it('is a separate route without widening the approved market and intent route registries', async () => {
@@ -146,7 +157,12 @@ describe('/kr/seoul/explore/ route contract', () => {
         building: 'noryangjin-dream-square',
       },
     },
-  ])('does not promote $name into a verified handoff seed', async ({ query }) => {
+  ])('ignores legacy discovery context for $name', async ({ query }) => {
+    vi.stubEnv(
+      'SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT',
+      JSON.stringify(createPublicAreaFixture()),
+    );
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', PUBLIC_AREA_FIXTURE_PERIOD);
     const { default: ExplorerPage } = await loadExplorerPage();
     const page = await ExplorerPage({ searchParams: Promise.resolve(query) });
     const markup = renderToStaticMarkup(page as never);
@@ -154,6 +170,7 @@ describe('/kr/seoul/explore/ route contract', () => {
     expect(markup).not.toContain('/kr/seoul/tools/rent-check');
     expect(markup).not.toContain('Check my quote');
     expect(markup).not.toContain('Verified Explorer context');
+    expect(markup).not.toMatch(/Noryangjin|Sindaebang|Megastudy/);
   });
 });
 
@@ -207,23 +224,9 @@ describe('building dialog information flow', () => {
       dong: 'noryangjin-dong',
       building: 'noryangjin-dream-square',
     });
-    const { default: ExplorerPage } = await loadExplorerPage();
-    const page = await ExplorerPage({
-      searchParams: Promise.resolve({
-        lawdCd: '11590',
-        type: 'officetel',
-        dong: 'noryangjin-dong',
-        building: 'noryangjin-dream-square',
-      }),
-    });
-    const markup = renderToStaticMarkup(page as never).replaceAll('&amp;', '&');
-    const actionHref = markup.match(/href="([^"]+)"[^>]*>Check my quote<\/a>/)?.[1];
 
     expect(rentCheckHref).toBe(
       '/kr/seoul/tools/rent-check/?lawdCd=11590&type=officetel&dong=noryangjin-dong&building=noryangjin-dream-square',
-    );
-    expect(actionHref).toBe(
-      '/kr/seoul/tools/rent-check?lawdCd=11590&type=officetel&dong=noryangjin-dong&building=noryangjin-dream-square',
     );
     const handoffQuery = new URLSearchParams(rentCheckHref?.split('?')[1] ?? '');
     expect([...handoffQuery.keys()]).toEqual([

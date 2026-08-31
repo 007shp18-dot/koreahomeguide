@@ -129,6 +129,25 @@ describe('public quote input markup', () => {
     expect(html).not.toContain('data-quote-marker');
   });
 
+  it.each([
+    ['300', 'below'],
+    ['400', 'equal to'],
+    ['500', 'above'],
+  ])('describes a district quote at %s million as %s its median', (initialQuote, relation) => {
+    const html = renderToStaticMarkup(createElement(QuoteInput, {
+      config,
+      summary: published,
+      initialQuote,
+      areaLabel: 'Gangnam-gu (강남구)',
+      showMedianFaq: true,
+    }));
+
+    expect(html).toContain('<option value="seoul" selected="">Gangnam-gu (강남구)</option>');
+    expect(html).toContain('data-median-comparison="true"');
+    expect(html).toContain(`${relation} the reported median for Gangnam-gu (강남구)`);
+    expect(html).not.toMatch(/\b(?:fair|unfair|good|bad)\b/i);
+  });
+
   it('keeps the quote draft but withholds every position for sparse evidence', () => {
     const html = renderToStaticMarkup(createElement(QuoteInput, {
       config,

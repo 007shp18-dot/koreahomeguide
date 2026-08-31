@@ -89,8 +89,11 @@ describe('public area Explore model', () => {
       provider: 'MOLIT',
       period: PUBLIC_AREA_FIXTURE_PERIOD,
       attribution: ['Ministry of Land, Infrastructure and Transport (MOLIT)'],
-      bandLabel: '45–55㎡',
+      band: '45–55㎡',
       publicationMinimum: 5,
+      includesNewAndRenewal: true,
+      includesUnknownContractType: true,
+      includesUnknownRecordStatus: true,
       geometryAttribution: 'KOSTAT census boundaries via southkorea/seoul-maps (Apache-2.0)',
     });
   });

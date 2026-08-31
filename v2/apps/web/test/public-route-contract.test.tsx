@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 
+import { SEOUL_RENT_CHECK_DISTRICTS } from '@signedprice/korea-rent/browser';
 import Home from '../app/page';
 import sitemap from '../app/sitemap';
 import { generateStaticParams as marketStaticParams } from '../app/[country]/[city]/page';
@@ -51,12 +52,15 @@ function model(published: boolean) {
 afterEach(() => vi.unstubAllEnvs());
 
 describe('Korea-only public route availability', () => {
-  it('generates no Singapore or Dubai overview or intent path', () => {
+  it('generates Seoul overview, three intents, and exactly 25 district paths', () => {
     expect(marketStaticParams()).toEqual([{ country: 'kr', city: 'seoul' }]);
     expect(intentStaticParams()).toEqual([
       { country: 'kr', city: 'seoul', intent: 'rent' },
       { country: 'kr', city: 'seoul', intent: 'buy' },
       { country: 'kr', city: 'seoul', intent: 'invest' },
+      ...SEOUL_RENT_CHECK_DISTRICTS.map(({ slug }) => ({
+        country: 'kr', city: 'seoul', intent: slug,
+      })),
     ]);
     expect(JSON.stringify([marketStaticParams(), intentStaticParams()]))
       .not.toMatch(/singapore|dubai|\bsg\b|\bae\b/);

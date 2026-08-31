@@ -44,10 +44,21 @@ afterEach(() => vi.unstubAllEnvs());
 
 describe('Korea public route model', () => {
   it('accepts only the ready Seoul area and exact verified feed', () => {
-    expect(buildKoreaPublicRouteModel('seoul', {
+    const model = buildKoreaPublicRouteModel('seoul', {
       source: artifact(),
       period,
-    })?.summary).toEqual(publishedSummary());
+    });
+    expect(model?.summary).toEqual(publishedSummary());
+    expect(model?.source).toEqual({
+      provider: 'MOLIT',
+      period,
+      attribution: ['Ministry of Land, Infrastructure and Transport (MOLIT)'],
+      band: '45–55㎡',
+      publicationMinimum: 5,
+      includesNewAndRenewal: true,
+      includesUnknownContractType: true,
+      includesUnknownRecordStatus: true,
+    });
     expect(buildKoreaPublicRouteModel('unknown', {
       source: artifact(),
       period,
@@ -79,6 +90,13 @@ describe('Korea public SSR routes', () => {
     expect(html).toContain('MOLIT reported rental contracts');
     expect(html).toContain('Seven completed months · 45–55㎡ · zero-rent jeonse');
     expect(html).toContain('refundable deposit');
+    expect(html).toContain('href="/kr/check/seoul"');
+    expect(html).toContain('href="/kr/seoul/explore"');
+    expect(html).toContain('Canceled records are excluded');
+    expect(html).toContain('New and renewal contracts are combined');
+    expect(html).toContain('Unknown contract type');
+    expect(html).toContain('Unknown record status');
+    expect(html).toContain('n &lt; 5');
     if (name === 'area') expect(html).toContain('Reported refundable-deposit distribution.');
     expect(html).not.toMatch(/monthly-rent distribution|5\.0%\/year/i);
     expect(html).not.toMatch(/statutory|legal rate/i);

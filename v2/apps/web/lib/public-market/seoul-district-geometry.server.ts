@@ -1,11 +1,11 @@
 import 'server-only';
 
-import { readFileSync } from 'node:fs';
 import {
   SEOUL_RENT_CHECK_DISTRICTS,
   type SeoulDistrictSlug,
   type SeoulLawdCd,
 } from '@signedprice/korea-rent/browser';
+import seoulDistrictGeometrySource from '../../../../../data/seoul-districts.geojson' with { type: 'json' };
 
 export const SEOUL_DISTRICT_ADJACENCY_VERSION =
   'seoul-district-adjacency-v1' as const;
@@ -185,10 +185,7 @@ export function parseSeoulDistrictGeometry(value: unknown): readonly SeoulDistri
   }
 }
 
-const geometry = parseSeoulDistrictGeometry(JSON.parse(readFileSync(
-  new URL('../../../../../data/seoul-districts.geojson', import.meta.url),
-  'utf8',
-)));
+const geometry = parseSeoulDistrictGeometry(seoulDistrictGeometrySource);
 
 export function listSeoulDistrictGeometry(): readonly SeoulDistrictGeometry[] {
   return geometry;

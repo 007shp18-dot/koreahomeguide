@@ -270,6 +270,7 @@ for (const path of [
   '/ae/dubai/invest/',
   '/us/new-york/',
   '/kr/seoul/sell/',
+  '/kr/seoul/not-a-district/',
   '/not-a-real-route/',
 ]) {
   test(`${path} returns the custom 404`, async ({ page }) => {
@@ -295,6 +296,17 @@ for (const path of [
     await expectNoHorizontalPageOverflow(page);
   });
 }
+
+test('sitemap excludes Explore and every district detail route', async ({ request }) => {
+  const response = await request.get('/sitemap.xml');
+  expect(response.status()).toBe(200);
+  const xml = await response.text();
+
+  expect(xml).not.toContain('/kr/seoul/explore/');
+  for (const route of publicRoutes.filter(({ path }) => /\/kr\/seoul\/.+-gu\/$/.test(path))) {
+    expect(xml).not.toContain(route.path);
+  }
+});
 
 test('status API returns only public release readiness', async ({ request }) => {
   const response = await request.get('/api/status');

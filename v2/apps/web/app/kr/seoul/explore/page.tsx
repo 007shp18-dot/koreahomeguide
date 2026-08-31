@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
-import { ExplorerWorkspace } from '../../../../components/explorer-workspace';
+import { AreaExplorer } from '../../../../components/public-market/area-explorer';
 import { SiteFooter } from '../../../../components/site-footer';
 import { SiteHeader } from '../../../../components/site-header';
-import { resolveExplorerRentCheckContext } from '../../../../lib/rent-check/explorer-context';
+import { buildPublicAreaExploreModel } from '../../../../lib/public-market/area-route-model.server';
 import type { SiteFooterModel, SiteHeaderModel } from '../../../../lib/site-copy';
 
 type ExplorerPageProps = {
@@ -10,33 +10,32 @@ type ExplorerPageProps = {
 };
 
 export const metadata: Metadata = {
-  title: 'Seoul Explorer preview | signedprice',
-  description: 'Explicit district, neighborhood and building discovery for Seoul.',
-  robots: { index: false, follow: false },
+  title: 'Seoul district jeonse evidence | signedprice',
+  description: 'Compare verified 45–55㎡ refundable jeonse deposits across Seoul districts.',
+  robots: { index: false, follow: true },
 };
 
 const header: SiteHeaderModel = {
   brand: 'signedprice',
   homeLabel: 'signedprice home',
-  navigationLabel: 'Explorer navigation',
+  navigationLabel: 'Seoul evidence navigation',
   links: [
     { label: 'Global home', href: '/' },
     { label: 'Seoul market', href: '/kr/seoul/' },
-    { label: 'Explorer', href: '/kr/seoul/explore/', isCurrent: true },
+    { label: 'District evidence', href: '/kr/seoul/explore/', isCurrent: true },
   ],
 };
 
 const footer: SiteFooterModel = {
   brand: 'signedprice',
-  descriptor: 'Property intelligence for Seoul, Singapore and Dubai.',
+  descriptor: 'Verified Seoul jeonse-deposit evidence, with publication limits shown.',
   navigationLabel: 'Footer navigation',
   links: [
     { label: 'Home', href: '/' },
     { label: 'Seoul market', href: '/kr/seoul/' },
     { label: 'Compare markets', href: '/compare/' },
   ],
-  status:
-    'Market information only. Not a listing, appraisal, legal opinion or financial recommendation.',
+  status: 'Korea public P2 preview. Production launch is not authorized.',
 };
 
 function singleValue(value: string | string[] | undefined): string | undefined {
@@ -45,21 +44,13 @@ function singleValue(value: string | string[] | undefined): string | undefined {
 
 export default async function ExplorerPage({ searchParams }: ExplorerPageProps) {
   const query = await searchParams;
-  const resolvedContext = resolveExplorerRentCheckContext(query);
-  const completeContext = resolvedContext?.neighborhoodId && resolvedContext.buildingId
-    ? resolvedContext
-    : null;
+  const model = buildPublicAreaExploreModel(singleValue(query.district));
 
   return (
     <div id="top" className="explorer-page">
       <SiteHeader copy={header} />
       <main>
-        <ExplorerWorkspace
-          initialDistrictCode={singleValue(query.lawdCd) ?? '11590'}
-          initialPropertyType={singleValue(query.type) ?? 'officetel'}
-          initialNeighborhoodId={completeContext?.neighborhoodId}
-          initialBuildingId={completeContext?.buildingId}
-        />
+        <AreaExplorer model={model} />
       </main>
       <SiteFooter copy={footer} />
     </div>

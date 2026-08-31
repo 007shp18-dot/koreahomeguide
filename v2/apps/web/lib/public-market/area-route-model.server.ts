@@ -10,6 +10,7 @@ import {
   type SeoulDistrictSlug,
   type SeoulRentCheckDistrict,
 } from '@signedprice/korea-rent/browser';
+import { KR_MOLIT_RENT_RIGHTS } from '@signedprice/korea-rent';
 
 import {
   createPublicAreaSummaryRepository,
@@ -56,11 +57,12 @@ function sourceBoundary(period: string): PublicAreaSourceBoundaryModel {
   return Object.freeze({
     provider: 'MOLIT',
     period,
-    attribution: Object.freeze([
-      'Ministry of Land, Infrastructure and Transport (MOLIT)',
-    ] as const),
-    bandLabel: '45–55㎡',
+    attribution: Object.freeze([...KR_MOLIT_RENT_RIGHTS.attribution]),
+    band: '45–55㎡',
     publicationMinimum: 5,
+    includesNewAndRenewal: true,
+    includesUnknownContractType: true,
+    includesUnknownRecordStatus: true,
     geometryAttribution:
       'KOSTAT census boundaries via southkorea/seoul-maps (Apache-2.0)',
   });
@@ -130,12 +132,14 @@ export function buildPublicAreaExploreModel(
   selectedSlug: string | undefined,
   dependencies: PublicAreaRouteDependencies = environmentDependencies(),
 ): PublicAreaExploreModel {
-  const source = sourceBoundary(dependencies.period);
+  const unavailableSource = sourceBoundary(dependencies.period);
   try {
     const repository = createPublicAreaSummaryRepository({
       source: dependencies.source,
       expected: { marketId: 'kr-seoul', period: dependencies.period },
     });
+    const citySummary = repository.getCitySummary();
+    const source = sourceBoundary(citySummary.period);
     const summaries = repository.listDistrictSummaries();
     const buckets = bucketAssignments(summaries);
     const geometryBySlug = new Map(
@@ -166,7 +170,7 @@ export function buildPublicAreaExploreModel(
     return Object.freeze({
       status: 'ready',
       selectedSlug: selected,
-      citySummary: repository.getCitySummary(),
+      citySummary,
       districts,
       legend: legendFor(districts),
       source,
@@ -176,7 +180,7 @@ export function buildPublicAreaExploreModel(
       status: 'unavailable',
       selectedSlug: null,
       districts: Object.freeze([] as []),
-      source,
+      source: unavailableSource,
       message: 'Verified district summary unavailable',
     });
   }

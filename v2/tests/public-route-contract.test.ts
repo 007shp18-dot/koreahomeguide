@@ -14,9 +14,35 @@ describe('browser route coverage contract', () => {
       '/kr/seoul/tools/rent-check/',
       '/kr/seoul/buy/',
       '/kr/seoul/invest/',
+      '/kr/seoul/explore/',
+      '/kr/seoul/jongno-gu/',
+      '/kr/seoul/jung-gu/',
+      '/kr/seoul/yongsan-gu/',
+      '/kr/seoul/seongdong-gu/',
+      '/kr/seoul/gwangjin-gu/',
+      '/kr/seoul/dongdaemun-gu/',
+      '/kr/seoul/jungnang-gu/',
+      '/kr/seoul/seongbuk-gu/',
+      '/kr/seoul/gangbuk-gu/',
+      '/kr/seoul/dobong-gu/',
+      '/kr/seoul/nowon-gu/',
+      '/kr/seoul/eunpyeong-gu/',
+      '/kr/seoul/seodaemun-gu/',
+      '/kr/seoul/mapo-gu/',
+      '/kr/seoul/yangcheon-gu/',
+      '/kr/seoul/gangseo-gu/',
+      '/kr/seoul/guro-gu/',
+      '/kr/seoul/geumcheon-gu/',
+      '/kr/seoul/yeongdeungpo-gu/',
+      '/kr/seoul/dongjak-gu/',
+      '/kr/seoul/gwanak-gu/',
+      '/kr/seoul/seocho-gu/',
+      '/kr/seoul/gangnam-gu/',
+      '/kr/seoul/songpa-gu/',
+      '/kr/seoul/gangdong-gu/',
       '/compare/',
     ]);
-    expect(paths).toHaveLength(9);
-    expect(new Set(paths).size).toBe(9);
+    expect(paths).toHaveLength(35);
+    expect(new Set(paths).size).toBe(35);
   });
 });
