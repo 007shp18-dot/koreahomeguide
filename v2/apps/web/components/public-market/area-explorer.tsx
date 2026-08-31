@@ -52,6 +52,9 @@ function ReadyAreaExplorer({
           One official-data boundary, 25 districts and the same 45–55㎡ filter.
           Select a district to read its published evidence or explicit refusal.
         </p>
+        <Link className={styles.rankingsLink} href="/kr/seoul/rankings/">
+          View district rankings
+        </Link>
       </header>
 
       <div className={styles.workspace}>

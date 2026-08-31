@@ -16,12 +16,12 @@ function anchorFor(html: string, href: string): string {
 
 describe('public evidence section tabs', () => {
   it.each([
-    ['check', '/kr/check/seoul/'],
+    ['check', '/kr/'],
     ['explore', '/kr/seoul/explore/'],
   ] as const)('marks only the %s destination as current', (current, currentHref) => {
     const html = renderToStaticMarkup(<PublicSectionTabs current={current} />);
 
-    expect(anchorFor(html, '/kr/check/seoul/')).not.toBe('');
+    expect(anchorFor(html, '/kr/')).not.toBe('');
     expect(anchorFor(html, '/kr/seoul/explore/')).not.toBe('');
     expect(anchorFor(html, currentHref)).toContain('aria-current="page"');
     expect((html.match(/aria-current="page"/g) ?? [])).toHaveLength(1);

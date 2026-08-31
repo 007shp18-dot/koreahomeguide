@@ -3,7 +3,7 @@ import Link from 'next/link';
 import styles from './public-market.module.css';
 
 const destinations = [
-  { id: 'check', label: 'Check', href: '/kr/check/seoul/' },
+  { id: 'check', label: 'Check', href: '/kr/' },
   { id: 'explore', label: 'Explore', href: '/kr/seoul/explore/' },
 ] as const;
 

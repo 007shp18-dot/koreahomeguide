@@ -70,6 +70,8 @@ describe('public Seoul area Explorer', () => {
     expect(markup).toContain('data-map-state="withheld"');
     expect(markup).toContain('Not published');
     expect(markup).toContain('Selected · Gangnam-gu');
+    expect(markup).toContain('href="/kr/seoul/rankings"');
+    expect(markup).toContain('View district rankings');
     expect(markup).not.toContain(`₩${CITY_MEDIAN_SENTINEL.toLocaleString('en-US')}`);
   });
 

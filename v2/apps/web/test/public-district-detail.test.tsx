@@ -65,6 +65,8 @@ describe('public district detail page', () => {
     expect(html).toContain('Korea public evidence. Publication limits shown.');
     expect(html).not.toMatch(/public P2 preview|Production launch is not authorized/i);
     expect(html).toContain('href="/kr/seoul/explore?district=gangnam-gu"');
+    expect(html).toContain('href="/kr/seoul/rankings"');
+    expect(html).toContain('View district rankings');
     for (const nearby of model.nearby) {
       expect(html).toContain(`href="/kr/seoul/${nearby.slug}"`);
     }
@@ -82,6 +84,7 @@ describe('public district detail page', () => {
     expect(html).toContain('data-structured-data="dataset"');
     expect(html).toContain('data-structured-data="faq"');
     expect(html).toContain('href="/kr/seoul/explore?district=gangnam-gu"');
+    expect(html).toContain('href="/kr/seoul/rankings"');
     expect(html).not.toContain('name="quote"');
     expect(html).not.toContain('data-quote-marker');
     expect(html).not.toMatch(/<dt>(?:Minimum|25th percentile|Median|75th percentile|Maximum)<\/dt>/);
@@ -101,6 +104,7 @@ describe('public district detail page', () => {
     expect(html).toContain('data-district-detail="unavailable"');
     expect(html).toContain('Verified district summary unavailable');
     expect(html).toContain('href="/kr/seoul/explore?district=gangnam-gu"');
+    expect(html).toContain('href="/kr/seoul/rankings"');
     expect(html).not.toContain('data-structured-data');
     expect(html).not.toContain('₩');
     expect(html).not.toContain(String(CITY_MEDIAN_SENTINEL));

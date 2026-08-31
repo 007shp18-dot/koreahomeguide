@@ -57,9 +57,14 @@ function DistrictNavigation({ model }: Readonly<{ model: PublicDistrictModel }>)
   const exploreHref = `/kr/seoul/explore/?district=${model.identity.slug}`;
   return (
     <nav className={styles.navigation} aria-label="District evidence navigation">
-      <Link className={styles.exploreLink} href={exploreHref}>
-        Return to Explore with {model.identity.nameEn} selected
-      </Link>
+      <div className={styles.primaryLinks}>
+        <Link className={styles.exploreLink} href={exploreHref}>
+          Return to Explore with {model.identity.nameEn} selected
+        </Link>
+        <Link className={styles.rankingsLink} href="/kr/seoul/rankings/">
+          View district rankings
+        </Link>
+      </div>
       <div className={styles.nearby}>
         <p>Nearby districts</p>
         {model.nearby.map((district) => (

@@ -54,3 +54,13 @@ export {
   type QuotePositionAxis,
   type QuotePositionVerdict,
 } from './quote-position';
+export {
+  compareRentOffers,
+  conversionRateAt,
+  type AppliedConversionRate,
+  type ConversionCurve,
+  type ConversionCurveAnchor,
+  type NormalizedRentContractOffer,
+  type RentContractComparison,
+  type RentContractOffer,
+} from './contract-check';

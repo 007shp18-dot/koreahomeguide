@@ -97,6 +97,21 @@ describe('Rent Check client boundary scan', () => {
     ]);
   });
 
+  test('reports conversion artifact environment names in client artifacts', async () => {
+    const directory = await fixtureNextDirectory();
+    await writeFile(
+      join(directory, 'static', 'chunks', 'contract-check.js'),
+      'SIGNEDPRICE_CONVERSION_CURVE_ARTIFACT SIGNEDPRICE_CONVERSION_CURVE_SHA256',
+    );
+
+    const findings = await scanRentCheckClientBoundary(directory);
+
+    expect(findings).toEqual([{
+      file: 'static/chunks/contract-check.js',
+      marker: 'conversion artifact environment',
+    }]);
+  });
+
   test('scans client manifests but ignores server-only route output', async () => {
     const directory = await fixtureNextDirectory();
     await writeFile(

@@ -4,7 +4,7 @@ export const publicRoutes = [
   { path: '/', heading: 'Real prices. Better property decisions.', indexing: 'noindex' },
   {
     path: '/kr/',
-    heading: 'Put a refundable deposit against reported contracts.',
+    heading: 'Which rent offer actually costs less?',
     indexing: 'noindex',
   },
   { path: '/kr/check/seoul/', heading: 'Where does this refundable deposit sit?', indexing: 'noindex' },
@@ -20,6 +20,11 @@ export const publicRoutes = [
   {
     path: '/kr/seoul/explore/',
     heading: 'Compare refundable jeonse deposits by district.',
+    indexing: 'noindex',
+  },
+  {
+    path: '/kr/seoul/rankings/',
+    heading: 'Seoul district rankings',
     indexing: 'noindex',
   },
   ...PUBLIC_AREA_TEST_DISTRICTS.map((district) => ({

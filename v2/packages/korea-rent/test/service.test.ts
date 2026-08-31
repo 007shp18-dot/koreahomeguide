@@ -892,19 +892,21 @@ describe('versioned cache-aware Seoul Rent Check service', () => {
           version: 1,
         },
       });
-      expect(checked.envelope.coverage.sourceRetrievedAt.earliest).toBe(
-        '2026-09-15T00:00:01.000Z',
-      );
-      expect(checked.envelope.coverage.sourceRetrievedAt.latest).toBe(
-        '2026-09-15T00:00:06.000Z',
-      );
-
       const sourceWrites = harness.cache.writes.filter((write) => write.key.includes(':source:'));
       const sourcePageWrites = sourceWrites.filter((write) => write.key.includes(':page='));
       const sourceManifestWrites = sourceWrites.filter((write) => write.key.endsWith(':manifest'));
       expect(sourcePageWrites).toHaveLength(12);
       expect(sourceManifestWrites).toHaveLength(12);
       expect(sourceWrites.every((write) => write.options.ttlSeconds === 86_400)).toBe(true);
+      const usedRetrievalInstants = [...sourceManifestWrites]
+        .sort((left, right) => right.key.localeCompare(left.key))
+        .slice(0, checked.envelope.coverage.monthsUsed)
+        .map((write) => (write.value as { readonly retrievedAt: string }).retrievedAt)
+        .sort();
+      expect(checked.envelope.coverage.sourceRetrievedAt).toEqual({
+        earliest: usedRetrievalInstants[0],
+        latest: usedRetrievalInstants.at(-1),
+      });
       for (const manifest of sourceManifestWrites) {
         const chunkKeys = (manifest.value as { readonly chunkKeys: readonly string[] }).chunkKeys;
         const manifestIndex = harness.cache.writes.indexOf(manifest);

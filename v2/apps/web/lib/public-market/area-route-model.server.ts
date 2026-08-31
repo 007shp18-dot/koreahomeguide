@@ -23,6 +23,7 @@ import type {
   PublicDistrictDisplayModel,
   PublicDistrictFaq,
   PublicDistrictModel,
+  PublicSourceBoundaryModel,
 } from './area-route-types';
 import {
   listAdjacentDistrictSlugs,
@@ -53,8 +54,18 @@ function changeLabel(chg3m: number | null): string {
   return `${chg3m > 0 ? '+' : ''}${chg3m.toFixed(1)}% over the prior 3 months`;
 }
 
-function sourceBoundary(period: string): PublicAreaSourceBoundaryModel {
-  return Object.freeze({
+export function buildPublicSourceBoundary(
+  period: string,
+): PublicSourceBoundaryModel;
+export function buildPublicSourceBoundary(
+  period: string,
+  includeGeometry: true,
+): PublicAreaSourceBoundaryModel;
+export function buildPublicSourceBoundary(
+  period: string,
+  includeGeometry = false,
+): PublicSourceBoundaryModel | PublicAreaSourceBoundaryModel {
+  const common = {
     provider: 'MOLIT',
     period,
     attribution: Object.freeze([...KR_MOLIT_RENT_RIGHTS.attribution]),
@@ -63,9 +74,14 @@ function sourceBoundary(period: string): PublicAreaSourceBoundaryModel {
     includesNewAndRenewal: true,
     includesUnknownContractType: true,
     includesUnknownRecordStatus: true,
-    geometryAttribution:
-      'KOSTAT census boundaries via southkorea/seoul-maps (Apache-2.0)',
-  });
+  } as const;
+  return includeGeometry
+    ? Object.freeze({
+        ...common,
+        geometryAttribution:
+          'KOSTAT census boundaries via southkorea/seoul-maps (Apache-2.0)',
+      })
+    : Object.freeze(common);
 }
 
 function environmentDependencies(): PublicAreaRouteDependencies {
@@ -132,14 +148,14 @@ export function buildPublicAreaExploreModel(
   selectedSlug: string | undefined,
   dependencies: PublicAreaRouteDependencies = environmentDependencies(),
 ): PublicAreaExploreModel {
-  const unavailableSource = sourceBoundary(dependencies.period);
+  const unavailableSource = buildPublicSourceBoundary(dependencies.period, true);
   try {
     const repository = createPublicAreaSummaryRepository({
       source: dependencies.source,
       expected: { marketId: 'kr-seoul', period: dependencies.period },
     });
     const citySummary = repository.getCitySummary();
-    const source = sourceBoundary(citySummary.period);
+    const source = buildPublicSourceBoundary(citySummary.period, true);
     const summaries = repository.listDistrictSummaries();
     const buckets = bucketAssignments(summaries);
     const geometryBySlug = new Map(
@@ -317,7 +333,7 @@ export function buildPublicDistrictModel(
   const identity = getSeoulDistrictBySlug(slug);
   if (identity === null) return null;
   const nearby = nearbyDistricts(identity.slug);
-  const source = sourceBoundary(dependencies.period);
+  const source = buildPublicSourceBoundary(dependencies.period, true);
   try {
     const config = getPublicMarketConfig('kr-seoul');
     if (config.availability !== 'ready') throw new TypeError('Market unavailable.');

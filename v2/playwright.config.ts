@@ -10,6 +10,11 @@ import {
   PUBLIC_SUMMARY_TEST_ARTIFACT,
   PUBLIC_SUMMARY_TEST_PERIOD,
 } from './tests/e2e/public-summary-fixture';
+import {
+  CONVERSION_TEST_ARTIFACT,
+  CONVERSION_TEST_PERIOD,
+  CONVERSION_TEST_SHA256,
+} from './tests/e2e/conversion-artifact-fixture';
 
 const port = 3100;
 
@@ -28,6 +33,9 @@ export function createPlaywrightConfig(
       SIGNEDPRICE_PUBLIC_SUMMARY_ARTIFACT: PUBLIC_SUMMARY_TEST_ARTIFACT,
       SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD: PUBLIC_SUMMARY_TEST_PERIOD,
       SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT: PUBLIC_AREA_SUMMARY_TEST_ARTIFACT,
+      SIGNEDPRICE_CONVERSION_CURVE_ARTIFACT: CONVERSION_TEST_ARTIFACT,
+      SIGNEDPRICE_CONVERSION_CURVE_PERIOD: CONVERSION_TEST_PERIOD,
+      SIGNEDPRICE_CONVERSION_CURVE_SHA256: CONVERSION_TEST_SHA256,
     },
     reuseExistingServer: false,
     stderr: 'pipe',
@@ -68,8 +76,16 @@ export function createPlaywrightConfig(
         },
       },
       {
+        name: 'tablet-chromium',
+        testMatch: /(?:rankings|contract-check)\.spec\.ts/,
+        use: {
+          ...devices['Desktop Chrome'],
+          viewport: { width: 720, height: 900 },
+        },
+      },
+      {
         name: 'wide-chromium',
-        testMatch: /area-explore\.spec\.ts/,
+        testMatch: /(?:area-explore|contract-check)\.spec\.ts/,
         use: {
           ...devices['Desktop Chrome'],
           viewport: { width: 1440, height: 900 },
