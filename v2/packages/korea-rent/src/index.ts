@@ -46,6 +46,7 @@ export {
   parseMolitRentalPage,
   type FetchMolitRentalMonthDependencies,
   type MolitFetch,
+  type MolitMalformedDiagnostic,
   type MolitFetchResponse,
   type MolitPageChunk,
   type MolitParsedPage,

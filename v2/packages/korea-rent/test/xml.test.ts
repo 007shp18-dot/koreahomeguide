@@ -287,6 +287,41 @@ describe('MOLIT XML registry and parser', () => {
     ).toThrow(MolitSourceError);
   });
 
+  test('classifies a provider error envelope without exposing its message or payload', () => {
+    expect.assertions(3);
+    try {
+      parseMolitRentalPage(API_ERROR_PAGE, {
+        sourceHousingType: 'apartment',
+        expectedPageNo: 1,
+        expectedPageSize: 100,
+      });
+    } catch (error) {
+      expect(error).toMatchObject({
+        code: 'source_malformed',
+        diagnostic: 'provider_access_denied',
+      });
+      expect(JSON.stringify(error)).not.toContain('SERVICE ACCESS DENIED');
+      expect(JSON.stringify(error)).not.toContain(API_ERROR_PAGE);
+    }
+  });
+
+  test('classifies a contract month mismatch at the field boundary', () => {
+    const wrongMonth = PAGE_ONE
+      .replace('<dealMonth>8</dealMonth>', '<dealMonth>7</dealMonth>')
+      .replace('<totalCount>2</totalCount>', '<totalCount>1</totalCount>');
+
+    expect(() => parseMolitRentalPage(wrongMonth, {
+      sourceHousingType: 'apartment',
+      expectedPageNo: 1,
+      expectedPageSize: 1,
+      expectedDealYmd: '202608',
+      expectedLawdCd: '11590',
+    })).toThrow(expect.objectContaining({
+      code: 'source_malformed',
+      diagnostic: 'contract_month_mismatch',
+    }));
+  });
+
   test('accepts whitespace before a self-closing slash', () => {
     const page = parseMolitRentalPage(ZERO_PAGE.replace('<items></items>', '<items />'), {
       sourceHousingType: 'apartment',

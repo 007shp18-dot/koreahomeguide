@@ -193,6 +193,29 @@ describe('Korea public summary resumable batch', () => {
       code: 'source_timeout',
     });
   });
+
+  it('returns only a categorical parser diagnostic for a malformed source coordinate', async () => {
+    const cache = new MemoryCache();
+    const providerError = `<?xml version="1.0" encoding="UTF-8"?>
+<response><header><resultCode>20</resultCode><resultMsg>SECRET PROVIDER MESSAGE</resultMsg></header>
+<body><items></items><numOfRows>1000</numOfRows><pageNo>1</pageNo>
+<totalCount>0</totalCount></body></response>`;
+
+    const result = await runKoreaPublicSummaryBatch(
+      { referenceInstant: REFERENCE_INSTANT, cursor: 84 },
+      dependencies(cache, async () => response(providerError)),
+    );
+
+    expect(result).toEqual({
+      status: 'retryable',
+      nextCursor: 84,
+      completedCoordinates: 84,
+      totalCoordinates: 700,
+      code: 'source_malformed',
+      diagnostic: 'provider_access_denied',
+    });
+    expect(JSON.stringify(result)).not.toContain('SECRET PROVIDER MESSAGE');
+  });
 });
 
 describe('Korea public summary finalization', () => {

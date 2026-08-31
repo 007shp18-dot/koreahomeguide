@@ -157,6 +157,33 @@ describe('public summary Preview job handler', () => {
     expectNoLeak(body);
   });
 
+  it('preserves a categorical parser diagnostic without exposing provider data', async () => {
+    const response = await createPublicSummaryJobPostHandler(dependencies({
+      async runBatch() {
+        return {
+          status: 'retryable',
+          nextCursor: 84,
+          completedCoordinates: 84,
+          totalCoordinates: 700,
+          code: 'source_malformed',
+          diagnostic: 'provider_access_denied',
+        };
+      },
+    }))(request({ action: 'batch', referenceInstant: REFERENCE, cursor: 84 }));
+
+    expect(response.status).toBe(503);
+    const body = await expectProtected(response);
+    expect(body).toEqual({
+      status: 'retryable',
+      nextCursor: 84,
+      completedCoordinates: 84,
+      totalCoordinates: 700,
+      code: 'source_malformed',
+      diagnostic: 'provider_access_denied',
+    });
+    expectNoLeak(body);
+  });
+
   it('returns only the aggregate artifact and operational report on finalization', async () => {
     const response = await createPublicSummaryJobPostHandler(dependencies())(
       request({ action: 'finalize', referenceInstant: REFERENCE }),

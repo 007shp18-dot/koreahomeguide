@@ -16,6 +16,7 @@ import {
   MolitSourceError,
   fetchMolitRentalMonth,
   type MolitFetch,
+  type MolitMalformedDiagnostic,
   type ProviderCallBudget,
 } from './xml';
 import {
@@ -56,6 +57,7 @@ export type KoreaPublicSummaryBatchResult = Readonly<{
   completedCoordinates: number;
   totalCoordinates: typeof TOTAL_COORDINATES;
   code?: 'source_timeout' | 'source_unavailable' | 'source_malformed' | 'rights_blocked';
+  diagnostic?: MolitMalformedDiagnostic;
 }>;
 
 export type KoreaPublicSummaryFinalization = Readonly<{
@@ -153,6 +155,10 @@ function sourceCode(error: unknown): KoreaPublicSummaryBatchResult['code'] {
   return 'source_unavailable';
 }
 
+function sourceDiagnostic(error: unknown): MolitMalformedDiagnostic | undefined {
+  return error instanceof MolitSourceError ? error.diagnostic : undefined;
+}
+
 export async function runKoreaPublicSummaryBatch(
   input: Readonly<{ referenceInstant: string; cursor: number }>,
   dependencies: KoreaPublicSummaryJobDependencies,
@@ -184,7 +190,10 @@ export async function runKoreaPublicSummaryBatch(
 
   const processCoordinate = async (
     coordinate: KoreaPublicSummaryCoordinate,
-  ): Promise<KoreaPublicSummaryBatchResult['code'] | null> => {
+  ): Promise<Readonly<{
+    code: NonNullable<KoreaPublicSummaryBatchResult['code']>;
+    diagnostic?: MolitMalformedDiagnostic;
+  }> | null> => {
     try {
       const identity = { ...coordinate, pageSize: PAGE_SIZE };
       if (await JOB_STORE.read(dependencies.cache, identity, signal) !== null) return null;
@@ -205,25 +214,31 @@ export async function runKoreaPublicSummaryBatch(
       );
       await JOB_STORE.write(dependencies.cache, loaded, undefined, signal);
       return await JOB_STORE.read(dependencies.cache, identity, signal) === null
-        ? 'source_unavailable'
+        ? { code: 'source_unavailable' }
         : null;
     } catch (error) {
-      return sourceCode(error);
+      const diagnostic = sourceDiagnostic(error);
+      return {
+        code: sourceCode(error)!,
+        ...(diagnostic === undefined ? {} : { diagnostic }),
+      };
     }
   };
 
   for (let offset = 0; offset < coordinates.length; offset += 2) {
     const pair = coordinates.slice(offset, offset + 2);
     const results = await Promise.all(pair.map(processCoordinate));
-    const failed = results.findIndex((code) => code !== null);
+    const failed = results.findIndex((failure) => failure !== null);
     if (failed !== -1) {
       const nextCursor = input.cursor + offset + failed;
+      const failure = results[failed]!;
       return {
-        status: results[failed] === 'rights_blocked' ? 'blocked' : 'retryable',
+        status: failure.code === 'rights_blocked' ? 'blocked' : 'retryable',
         nextCursor,
         completedCoordinates: nextCursor,
         totalCoordinates: TOTAL_COORDINATES,
-        code: results[failed]!,
+        code: failure.code,
+        ...(failure.diagnostic === undefined ? {} : { diagnostic: failure.diagnostic }),
       };
     }
   }

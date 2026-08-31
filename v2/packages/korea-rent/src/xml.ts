@@ -31,8 +31,30 @@ export type MolitSourceErrorCode =
   | 'source_malformed'
   | 'source_unavailable';
 
+export type MolitMalformedDiagnostic =
+  | 'xml_structure'
+  | 'response_structure'
+  | 'provider_access_denied'
+  | 'provider_quota_exceeded'
+  | 'provider_rate_limited'
+  | 'provider_error'
+  | 'pagination'
+  | 'item_structure'
+  | 'contract_date'
+  | 'contract_month_mismatch'
+  | 'district_mismatch'
+  | 'area'
+  | 'deposit'
+  | 'monthly_rent'
+  | 'page_completeness'
+  | 'page_total_changed'
+  | 'page_overlap';
+
 export class MolitSourceError extends Error {
-  constructor(readonly code: MolitSourceErrorCode) {
+  constructor(
+    readonly code: MolitSourceErrorCode,
+    readonly diagnostic?: MolitMalformedDiagnostic,
+  ) {
     const message = {
       source_timeout: 'The official rental source timed out.',
       source_malformed: 'The official rental source returned an invalid response.',
@@ -105,8 +127,8 @@ type XmlNode = {
 const ATTEMPT_TIMEOUT_MS = 5_000;
 const MAX_ATTEMPTS = 3;
 
-function malformed(): never {
-  throw new MolitSourceError('source_malformed');
+function malformed(diagnostic: MolitMalformedDiagnostic = 'xml_structure'): never {
+  throw new MolitSourceError('source_malformed', diagnostic);
 }
 
 function localName(name: string): string {
@@ -221,16 +243,24 @@ function children(node: XmlNode, name: string): XmlNode[] {
   return node.children.filter((child) => localName(child.name) === name);
 }
 
-function onlyChild(node: XmlNode, name: string): XmlNode {
+function onlyChild(
+  node: XmlNode,
+  name: string,
+  diagnostic: MolitMalformedDiagnostic = 'response_structure',
+): XmlNode {
   const matches = children(node, name);
-  if (matches.length !== 1) malformed();
+  if (matches.length !== 1) malformed(diagnostic);
   return matches[0]!;
 }
 
-function optionalText(node: XmlNode, names: readonly string[]): string | undefined {
+function optionalText(
+  node: XmlNode,
+  names: readonly string[],
+  diagnostic: MolitMalformedDiagnostic = 'item_structure',
+): string | undefined {
   for (const name of names) {
     const matches = children(node, name);
-    if (matches.length > 1) malformed();
+    if (matches.length > 1) malformed(diagnostic);
     if (matches.length === 1) {
       const value = matches[0]!.text.trim();
       if (value.length > 0) return value;
@@ -239,39 +269,46 @@ function optionalText(node: XmlNode, names: readonly string[]): string | undefin
   return undefined;
 }
 
-function requiredText(node: XmlNode, names: readonly string[]): string {
-  const value = optionalText(node, names);
-  if (value === undefined) malformed();
+function requiredText(
+  node: XmlNode,
+  names: readonly string[],
+  diagnostic: MolitMalformedDiagnostic = 'item_structure',
+): string {
+  const value = optionalText(node, names, diagnostic);
+  if (value === undefined) malformed(diagnostic);
   return value;
 }
 
-function unsignedInteger(value: string): number {
-  if (!/^\d+$/.test(value)) malformed();
+function unsignedInteger(
+  value: string,
+  diagnostic: MolitMalformedDiagnostic = 'item_structure',
+): number {
+  if (!/^\d+$/.test(value)) malformed(diagnostic);
   const number = Number(value);
-  if (!Number.isSafeInteger(number) || number < 0) malformed();
+  if (!Number.isSafeInteger(number) || number < 0) malformed(diagnostic);
   return number;
 }
 
-function wonFromManwon(value: string): number {
+function wonFromManwon(value: string, diagnostic: 'deposit' | 'monthly_rent'): number {
   const compact = value.replace(/[\s,]/g, '');
-  const manwon = unsignedInteger(compact);
+  const manwon = unsignedInteger(compact, diagnostic);
   const won = manwon * 10_000;
-  if (!Number.isSafeInteger(won)) malformed();
+  if (!Number.isSafeInteger(won)) malformed(diagnostic);
   return won;
 }
 
 function positiveArea(value: string): number {
   const compact = value.replace(/,/g, '').trim();
-  if (!/^\d+(?:\.\d+)?$/.test(compact)) malformed();
+  if (!/^\d+(?:\.\d+)?$/.test(compact)) malformed('area');
   const area = Number(compact);
-  if (!Number.isFinite(area) || area <= 0 || area > 2_000) malformed();
+  if (!Number.isFinite(area) || area <= 0 || area > 2_000) malformed('area');
   return area;
 }
 
 function contractDate(item: XmlNode): string {
-  const year = unsignedInteger(requiredText(item, ['dealYear']));
-  const month = unsignedInteger(requiredText(item, ['dealMonth']));
-  const day = unsignedInteger(requiredText(item, ['dealDay']));
+  const year = unsignedInteger(requiredText(item, ['dealYear'], 'contract_date'), 'contract_date');
+  const month = unsignedInteger(requiredText(item, ['dealMonth'], 'contract_date'), 'contract_date');
+  const day = unsignedInteger(requiredText(item, ['dealDay'], 'contract_date'), 'contract_date');
   const candidate = `${String(year).padStart(4, '0')}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
   const instant = new Date(`${candidate}T00:00:00.000Z`);
   if (
@@ -281,7 +318,7 @@ function contractDate(item: XmlNode): string {
     instant.getUTCMonth() + 1 !== month ||
     instant.getUTCDate() !== day
   ) {
-    malformed();
+    malformed('contract_date');
   }
   return candidate;
 }
@@ -354,14 +391,19 @@ function normalizeItem(
     (suppliedLawdCd !== undefined &&
       (!/^\d{5}$/.test(suppliedLawdCd) || suppliedLawdCd !== expected.lawdCd))
   ) {
-    malformed();
+    malformed(normalizedContractDate.slice(0, 7).replace('-', '') !== expected.dealYmd
+      ? 'contract_month_mismatch'
+      : 'district_mismatch');
   }
   return {
     ...(buildingLabel === undefined ? {} : { buildingLabel }),
     sourceHousingType,
-    areaSqm: positiveArea(requiredText(item, ['excluUseAr', 'totalFloorAr', 'rentArea'])),
-    depositWon: wonFromManwon(requiredText(item, ['deposit'])),
-    monthlyRentWon: wonFromManwon(requiredText(item, ['monthlyRent'])),
+    areaSqm: positiveArea(requiredText(item, ['excluUseAr', 'totalFloorAr', 'rentArea'], 'area')),
+    depositWon: wonFromManwon(requiredText(item, ['deposit'], 'deposit'), 'deposit'),
+    monthlyRentWon: wonFromManwon(
+      requiredText(item, ['monthlyRent'], 'monthly_rent'),
+      'monthly_rent',
+    ),
     contractDate: normalizedContractDate,
     contractType: contractType(optionalText(item, ['contractType'])),
     recordStatus: recordStatus(item),
@@ -380,27 +422,36 @@ export function parseMolitRentalPage(
   },
 ): MolitParsedPage {
   const root = parseXml(xml);
-  if (localName(root.name) !== 'response') malformed();
-  const header = onlyChild(root, 'header');
-  const body = onlyChild(root, 'body');
-  const resultCode = requiredText(header, ['resultCode']);
-  requiredText(header, ['resultMsg']);
-  if (resultCode !== '00' && resultCode !== '000') malformed();
+  if (localName(root.name) !== 'response') malformed('response_structure');
+  const header = onlyChild(root, 'header', 'response_structure');
+  const body = onlyChild(root, 'body', 'response_structure');
+  const resultCode = requiredText(header, ['resultCode'], 'response_structure');
+  requiredText(header, ['resultMsg'], 'response_structure');
+  if (resultCode !== '00' && resultCode !== '000') {
+    if (resultCode === '20' || resultCode === '30' || resultCode === '31') {
+      malformed('provider_access_denied');
+    }
+    if (resultCode === '22') malformed('provider_quota_exceeded');
+    if (resultCode === '23') malformed('provider_rate_limited');
+    malformed('provider_error');
+  }
 
-  const items = onlyChild(body, 'items');
-  const pageSize = unsignedInteger(requiredText(body, ['numOfRows']));
-  const pageNo = unsignedInteger(requiredText(body, ['pageNo']));
-  const totalCount = unsignedInteger(requiredText(body, ['totalCount']));
+  const items = onlyChild(body, 'items', 'response_structure');
+  const pageSize = unsignedInteger(requiredText(body, ['numOfRows'], 'pagination'), 'pagination');
+  const pageNo = unsignedInteger(requiredText(body, ['pageNo'], 'pagination'), 'pagination');
+  const totalCount = unsignedInteger(requiredText(body, ['totalCount'], 'pagination'), 'pagination');
   if (
     pageSize <= 0 ||
     pageSize !== input.expectedPageSize ||
     pageNo !== input.expectedPageNo
   ) {
-    malformed();
+    malformed('pagination');
   }
 
   const itemNodes = children(items, 'item');
-  if (itemNodes.length !== items.children.length || itemNodes.length > pageSize) malformed();
+  if (itemNodes.length !== items.children.length || itemNodes.length > pageSize) {
+    malformed('item_structure');
+  }
   const rows = itemNodes.map((item) => normalizeItem(item, input.sourceHousingType, {
     ...(input.expectedDealYmd === undefined ? {} : { dealYmd: input.expectedDealYmd }),
     ...(input.expectedLawdCd === undefined ? {} : { lawdCd: input.expectedLawdCd }),
@@ -537,7 +588,7 @@ function validatePageCompleteness(page: MolitParsedPage, pageCount: number): voi
   const expectedRows = page.pageNo < pageCount
     ? page.pageSize
     : page.totalCount - page.pageSize * (pageCount - 1);
-  if (page.rows.length !== expectedRows) malformed();
+  if (page.rows.length !== expectedRows) malformed('page_completeness');
 }
 
 export async function fetchMolitRentalMonth(
@@ -553,7 +604,7 @@ export async function fetchMolitRentalMonth(
   const pages: MolitParsedPage[] = [first];
   for (let pageNo = 2; pageNo <= pageCount; pageNo += 1) {
     const page = await fetchPage(input, pageSize, pageNo, dependencies);
-    if (page.totalCount !== first.totalCount) malformed();
+    if (page.totalCount !== first.totalCount) malformed('page_total_changed');
     validatePageCompleteness(page, pageCount);
     pages.push(page);
   }
@@ -569,12 +620,12 @@ export async function fetchMolitRentalMonth(
       if (record.sourceRecordId !== undefined) {
         const priorFingerprint = stableIds.get(record.sourceRecordId);
         if (priorFingerprint !== undefined) {
-          if (priorFingerprint !== itemFingerprint) malformed();
+          if (priorFingerprint !== itemFingerprint) malformed('page_overlap');
           return;
         }
         stableIds.set(record.sourceRecordId, itemFingerprint);
       } else {
-        if (previousAnonymousFingerprints.has(itemFingerprint)) malformed();
+        if (previousAnonymousFingerprints.has(itemFingerprint)) malformed('page_overlap');
         anonymousOnThisPage.push(itemFingerprint);
       }
       records.push(record);
