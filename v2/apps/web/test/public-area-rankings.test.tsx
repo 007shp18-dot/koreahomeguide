@@ -19,9 +19,11 @@ function install(source: unknown) {
 }
 
 describe('Seoul district rankings page', () => {
-  it('keeps the route in the contained Explore SEO cohort', () => {
-    expect(metadata.robots).toEqual({ index: false, follow: true });
-    expect(metadata).not.toHaveProperty('alternates');
+  it('keeps the route in the indexable Explore SEO cohort', () => {
+    expect(metadata.robots).toEqual({ index: true, follow: true });
+    expect(metadata.alternates).toEqual({
+      canonical: 'https://www.signedprice.com/kr/seoul/rankings/',
+    });
   });
 
   it('server-renders all four complete lists, definitions, and linked values', async () => {

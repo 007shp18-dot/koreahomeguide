@@ -255,7 +255,7 @@ describe('comparison route model', () => {
 });
 
 describe('real route rendering contracts', () => {
-  it('exports route-specific metadata without overriding the inherited SEO gate', async () => {
+  it('contains generated routes while indexing only the comparison page', async () => {
     const marketModule = await import('../app/[country]/[city]/page');
     const intentModule = await import('../app/[country]/[city]/[intent]/page');
     const compareModule = await import('../app/compare/page');
@@ -286,29 +286,30 @@ describe('real route rendering contracts', () => {
         title: 'Seoul property intelligence | signedprice',
         description:
           'Review Seoul Phase 1 product depth, source posture, supported property intents and current data-rights limits.',
+        robots: { index: false, follow: true },
       },
       {
         title: 'Buy in Singapore | signedprice',
         description:
           'Review the Phase 1 buy comparison scope, source posture and data-rights limits for Singapore.',
+        robots: { index: false, follow: true },
       },
       {
         title: 'Compare Seoul, Singapore and Dubai | signedprice',
         description:
           'Compare the Phase 1 capability and rights posture for rent, buy and invest decisions across Seoul, Singapore and Dubai.',
+        robots: { index: true, follow: true },
+        alternates: { canonical: 'https://www.signedprice.com/compare/' },
       },
       {
         title: 'Route not available | signedprice',
         description:
           'This signedprice Preview route is not available. Return to the approved market and comparison routes.',
+        robots: { index: false, follow: false },
       },
     ]);
-
-    for (const metadata of metadataByRoute) {
-      expect(metadata).not.toHaveProperty('robots');
-      expect(metadata).not.toHaveProperty('alternates');
-      expect(JSON.stringify(metadata)).not.toMatch(/canonical|languages|hreflang/i);
-    }
+    expect(metadataByRoute.filter((metadata) => Reflect.has(metadata as object, 'alternates')))
+      .toHaveLength(1);
   });
 
   it('renders all thirteen Task 4 routes from their static contracts', async () => {

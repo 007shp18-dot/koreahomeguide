@@ -10,12 +10,13 @@ import {
   type SiteFooterModel,
   type SiteHeaderModel,
 } from '../../../../lib/site-copy';
+import { indexableMetadata } from '../../../../lib/public-metadata';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = indexableMetadata({
+  path: '/kr/seoul/rankings/',
   title: 'Seoul district jeonse rankings | signedprice',
   description: 'Compare verified Seoul district refundable jeonse deposits, change, spread and sample depth.',
-  robots: { index: false, follow: true },
-};
+});
 
 const header: SiteHeaderModel = {
   brand: 'signedprice',

@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: NestedDistrictPageProps): Pro
   const { district } = await params;
   const model = buildPublicDistrictModel(district);
   if (model === null) notFound();
-  return buildDistrictMetadata(model);
+  return buildDistrictMetadata(model, { indexPublished: true });
 }
 
 export default async function NestedDistrictPage({ params }: NestedDistrictPageProps) {

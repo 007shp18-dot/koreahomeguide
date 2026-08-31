@@ -4,12 +4,13 @@ import { SiteFooter } from '../../components/site-footer';
 import { SiteHeader } from '../../components/site-header';
 import type { SiteFooterModel, SiteHeaderModel } from '../../lib/site-copy';
 import styles from '../../components/trust/trust.module.css';
+import { indexableMetadata } from '../../lib/public-metadata';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = indexableMetadata({
+  path: '/trust/',
   title: 'Trust and evidence | signedprice',
   description: 'How SignedPrice handles sources, periods, rights, publication limits and corrections.',
-  robots: { index: false, follow: true },
-};
+});
 
 const header: SiteHeaderModel = {
   brand: 'signedprice',

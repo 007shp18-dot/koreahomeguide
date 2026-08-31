@@ -10,6 +10,7 @@ import {
 } from '@signedprice/market-core';
 import type { Metadata } from 'next';
 import type { SingaporeEntryModel } from './singapore/route-types';
+import { indexableMetadata } from './public-metadata';
 
 const brand = 'signedprice';
 const headline = 'Real prices. Better property decisions.';
@@ -32,15 +33,12 @@ const capabilityStateLabels = {
   rights_blocked: 'Rights blocked',
 } as const satisfies Record<CapabilityState, string>;
 
-const englishMetadata = {
+const englishMetadata = indexableMetadata({
+  path: '/',
   title: 'signedprice | Real prices. Better property decisions.',
   description:
     'Verified Seoul property intelligence with official-source context and publication limits shown clearly.',
-  robots: {
-    index: false,
-    follow: true,
-  },
-} as const satisfies Metadata;
+}) satisfies Metadata;
 
 export interface NavigationLinkModel {
   readonly label: string;
@@ -120,7 +118,7 @@ const englishFooterCopy = {
     { label: 'Trust', href: '/trust/' },
     { label: 'Back to top', href: '#top' },
   ],
-  status: 'Preview foundation. Public launch is not yet authorized.',
+  status: 'Global platform live. Market evidence remains rights-gated.',
 } as const satisfies SiteFooterModel;
 
 export const homepageCopy = {

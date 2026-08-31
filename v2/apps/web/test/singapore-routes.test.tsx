@@ -3,6 +3,9 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
+vi.mock('next/script', () => ({
+  default: ({ src }: Readonly<{ src: string }>) => <script async src={src} />,
+}));
 
 import {
   buildSingaporeSnapshot,
@@ -23,6 +26,7 @@ import {
   metadata as projectMetadata,
 } from '../app/sg/singapore/explore/[area]/[projectId]/page';
 import { metadata as correctionMetadata } from '../app/sg/singapore/corrections/page';
+import SingaporeExplorePage from '../app/sg/singapore/explore/page';
 import sitemap from '../app/sitemap';
 import {
   buildSingaporeExploreModel,
@@ -37,15 +41,19 @@ const fixture = JSON.parse(readFileSync(
 )) as unknown;
 const rights = { operations: { aggregate: 'allowed', display: 'allowed' } } as const;
 
-async function repository() {
-  const snapshot = buildSingaporeSnapshot({
+function snapshot() {
+  return buildSingaporeSnapshot({
     records: [1, 2, 3, 4].flatMap((batch) => parseUraPrivateSaleEnvelope(fixture, batch)),
     generatedAt: '2026-08-31T09:00:00.000Z',
     rights,
   });
+}
+
+async function repository() {
+  const source = snapshot();
   return createSingaporeSnapshotRepository({
-    serialized: stringifySingaporeSnapshot(snapshot),
-    expectedDigest: snapshot.digest,
+    serialized: stringifySingaporeSnapshot(source),
+    expectedDigest: source.digest,
     expectedPeriod: '2026-06..2026-08',
     rights,
   });
@@ -54,7 +62,10 @@ async function repository() {
 describe('Singapore route SSR', () => {
   it('renders Explore and ready segment/project evidence in initial HTML', async () => {
     const store = await repository();
-    const explore = renderToStaticMarkup(<SingaporeExplorer model={buildSingaporeExploreModel(store)} />);
+    const explore = renderToStaticMarkup(<SingaporeExplorer
+      model={buildSingaporeExploreModel(store)}
+      googleMapsBrowserKey="test-google-key"
+    />);
     const segmentModel = buildSingaporeSegmentModel(store, 'ccr');
     if (segmentModel === null) throw new Error('missing segment');
     const segment = renderToStaticMarkup(<SingaporeSegmentDetail model={segmentModel} />);
@@ -70,10 +81,26 @@ describe('Singapore route SSR', () => {
       '/trust/', '/sg/singapore/corrections/',
     ]) expect(html).toContain(label);
     expect(html).toContain('12 private residential sale transactions');
+    expect(html).toContain('Search a Singapore address');
+    expect(html).toContain('key=test-google-key');
     expect(html).toContain('href="/sg/singapore/explore/ccr/');
     expect(html).toContain(`href="/sg/singapore/explore/ccr/${projectIdentity.id}"`);
     expect(html).not.toMatch(/KRW|jeonse|HDB|forecast|valuation|asking-price|recommendation/i);
     expect(html).not.toMatch(/use client/);
+  });
+
+  it('passes the server-only Google key into the Singapore Explore map', async () => {
+    const source = snapshot();
+    vi.stubEnv('SIGNEDPRICE_SINGAPORE_SNAPSHOT_ARTIFACT', stringifySingaporeSnapshot(source));
+    vi.stubEnv('SIGNEDPRICE_SINGAPORE_SNAPSHOT_SHA256', source.digest);
+    vi.stubEnv('SIGNEDPRICE_SINGAPORE_SNAPSHOT_PERIOD', '2026-06..2026-08');
+    vi.stubEnv('GOOGLE_MAPS_API_KEY', 'page-google-key');
+
+    const html = renderToStaticMarkup(await SingaporeExplorePage());
+
+    expect(html).toContain('data-map-provider="google"');
+    expect(html).toContain('key=page-google-key');
+    vi.unstubAllEnvs();
   });
 
   it('renders explicit insufficient and unavailable states without monetary claims', async () => {
@@ -113,6 +140,6 @@ describe('Singapore route containment', () => {
   });
 
   it('keeps Singapore out of the sitemap', () => {
-    expect(sitemap()).toEqual([]);
+    expect(sitemap().map(({ url }) => url).join('\n')).not.toMatch(/\/sg\//);
   });
 });

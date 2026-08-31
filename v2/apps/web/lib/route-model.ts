@@ -13,6 +13,7 @@ import {
 } from '@signedprice/market-core';
 import type { Metadata } from 'next';
 import type { SiteFooterModel, SiteHeaderModel } from './site-copy';
+import { indexableMetadata } from './public-metadata';
 
 export interface NavigationActionModel {
   readonly label: string;
@@ -259,7 +260,7 @@ const routeShellCopy = {
       { label: 'Markets', href: '/#markets' },
       { label: 'Compare markets', href: '/compare/' },
     ],
-    status: 'Preview foundation. Public launch is not yet authorized.',
+    status: 'Global platform live. Market evidence remains rights-gated.',
   } satisfies SiteFooterModel,
 } as const;
 
@@ -314,23 +315,27 @@ const routeMetadataCopy = {
     return {
       title: `${profile.cityName} property intelligence | signedprice`,
       description: `Review ${profile.cityName} Phase 1 product depth, source posture, supported property intents and current data-rights limits.`,
+      robots: { index: false, follow: true },
     };
   },
   intent(profile: MarketProfile, intent: Intent): Metadata {
     return {
       title: `${intentLabels[intent]} in ${profile.cityName} | signedprice`,
       description: `Review the Phase 1 ${intent} comparison scope, source posture and data-rights limits for ${profile.cityName}.`,
+      robots: { index: false, follow: true },
     };
   },
-  compare: {
+  compare: indexableMetadata({
+    path: '/compare/',
     title: 'Compare Seoul, Singapore and Dubai | signedprice',
     description:
       'Compare the Phase 1 capability and rights posture for rent, buy and invest decisions across Seoul, Singapore and Dubai.',
-  },
+  }),
   notFound: {
     title: 'Route not available | signedprice',
     description:
       'This signedprice Preview route is not available. Return to the approved market and comparison routes.',
+    robots: { index: false, follow: false },
   },
 } as const;
 

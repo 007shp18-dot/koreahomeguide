@@ -33,7 +33,7 @@ describe('nested Seoul district route', () => {
     );
   });
 
-  it('renders a reload-safe nested district page with noindex metadata', async () => {
+  it('renders a reload-safe nested district page with indexable self-canonical metadata', async () => {
     installArtifact();
     const params = Promise.resolve({ district: 'gangnam-gu' });
     const metadata = await generateMetadata({ params });
@@ -42,9 +42,11 @@ describe('nested Seoul district route', () => {
 
     expect(metadata).toMatchObject({
       title: 'Gangnam-gu jeonse evidence | signedprice',
-      robots: { index: false, follow: true },
+      robots: { index: true, follow: true },
+      alternates: {
+        canonical: 'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/',
+      },
     });
-    expect(metadata).not.toHaveProperty('alternates');
     expect(html).toContain('data-district-detail="published"');
     expect(html).toContain('Gangnam-gu');
     expect(html).toContain('href="/kr/seoul/explore?district=gangnam-gu"');

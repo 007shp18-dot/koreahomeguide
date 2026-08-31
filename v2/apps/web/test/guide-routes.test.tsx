@@ -36,11 +36,13 @@ describe('Korea methodology guides', () => {
     for (const entry of GUIDE_GLOSSARY) expect(entry.whyItMatters.length).toBeGreaterThan(0);
   });
 
-  it('renders a noindex index with every guide and glossary definition', () => {
+  it('renders an indexable guide hub with every guide and glossary definition', () => {
     const html = renderToStaticMarkup(<GuideIndexPage />);
 
-    expect(indexMetadata.robots).toEqual({ index: false, follow: true });
-    expect(indexMetadata).not.toHaveProperty('alternates');
+    expect(indexMetadata.robots).toEqual({ index: true, follow: true });
+    expect(indexMetadata.alternates).toEqual({
+      canonical: 'https://www.signedprice.com/kr/seoul/guide/',
+    });
     for (const guide of GUIDES) {
       expect(html).toContain(guide.title);
       expect(html).toContain(`href="/kr/seoul/guide/${guide.slug}"`);
@@ -61,9 +63,11 @@ describe('Korea methodology guides', () => {
       const html = renderToStaticMarkup(await GuideDocumentPage({ params }));
       expect(metadata).toMatchObject({
         title: `${guide.title} | signedprice`,
-        robots: { index: false, follow: true },
+        robots: { index: true, follow: true },
+        alternates: {
+          canonical: `https://www.signedprice.com/kr/seoul/guide/${guide.slug}/`,
+        },
       });
-      expect(metadata).not.toHaveProperty('alternates');
       expect(html).toContain(guide.title);
       expect(html).toContain(`dateTime="${guide.lastVerified}"`);
       expect(html).toContain(guide.evidenceBoundary);

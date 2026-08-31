@@ -8,6 +8,7 @@ import {
   areaExplorerReducer,
   type AreaExplorerState,
 } from '../../lib/public-market/area-explorer-state';
+import { NaverDistrictMap } from '../maps/naver-district-map';
 import type {
   ExploreDistrictModel,
   PublicAreaExploreModel,
@@ -35,7 +36,11 @@ function mapTitle(district: ExploreDistrictModel): string {
 
 function ReadyAreaExplorer({
   model,
-}: Readonly<{ model: Extract<PublicAreaExploreModel, { status: 'ready' }> }>) {
+  naverMapClientId,
+}: Readonly<{
+  model: Extract<PublicAreaExploreModel, { status: 'ready' }>;
+  naverMapClientId: string | null;
+}>) {
   const router = useRouter();
   const initial: AreaExplorerState = Object.freeze({
     selectedSlug: model.selectedSlug,
@@ -65,12 +70,21 @@ function ReadyAreaExplorer({
             <p>01 / District map</p>
             <h2 id="area-map-heading">District median refundable jeonse deposit</h2>
           </div>
-          <svg
-            className={styles.map}
-            viewBox="0 0 720 560"
-            role="img"
-            aria-labelledby="area-map-title area-map-description"
-          >
+          <NaverDistrictMap
+            clientId={naverMapClientId}
+            districts={model.districts.map((district) => ({
+              slug: district.slug,
+              nameEn: district.nameEn,
+              href: district.href,
+              latitude: district.latitude,
+              longitude: district.longitude,
+            }))}
+            fallback={<svg
+              className={styles.map}
+              viewBox="0 0 720 560"
+              role="img"
+              aria-labelledby="area-map-title area-map-description"
+            >
             <title id="area-map-title">Seoul district refundable jeonse deposit map</title>
             <desc id="area-map-description">
               Five ranked median steps. Hatched districts are not published.
@@ -109,7 +123,8 @@ function ReadyAreaExplorer({
                 <title>{mapTitle(district)}</title>
               </path>
             ))}
-          </svg>
+            </svg>}
+          />
 
           <div className={styles.legend} aria-label="Map legend">
             <p>District median refundable jeonse deposit · {model.source.band}</p>
@@ -226,12 +241,18 @@ function UnavailableAreaExplorer({
   );
 }
 
-export function AreaExplorer({ model }: Readonly<{ model: PublicAreaExploreModel }>) {
+export function AreaExplorer({
+  model,
+  naverMapClientId = null,
+}: Readonly<{
+  model: PublicAreaExploreModel;
+  naverMapClientId?: string | null;
+}>) {
   return (
     <>
       <PublicSectionTabs current="explore" />
       {model.status === 'ready'
-        ? <ReadyAreaExplorer model={model} />
+        ? <ReadyAreaExplorer model={model} naverMapClientId={naverMapClientId} />
         : <UnavailableAreaExplorer model={model} />}
     </>
   );

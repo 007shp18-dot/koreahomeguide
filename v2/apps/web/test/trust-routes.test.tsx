@@ -84,13 +84,16 @@ describe('Trust routes', () => {
     expect(html).not.toContain('A display label was corrected.');
   });
 
-  it.each([
-    ['global', trustMetadata],
-    ['Korea', koreaCorrectionsMetadata],
-  ])('keeps the %s Trust route noindex without migration metadata', (_label, metadata) => {
-    expect(metadata.robots).toEqual({ index: false, follow: true });
-    expect(metadata).not.toHaveProperty('alternates');
-    expect(sitemap()).toEqual([]);
+  it('indexes Global Trust and keeps the correction ledger contained', () => {
+    expect(trustMetadata.robots).toEqual({ index: true, follow: true });
+    expect(trustMetadata.alternates).toEqual({
+      canonical: 'https://www.signedprice.com/trust/',
+    });
+    expect(koreaCorrectionsMetadata.robots).toEqual({ index: false, follow: true });
+    expect(koreaCorrectionsMetadata).not.toHaveProperty('alternates');
+    const urls = sitemap().map(({ url }) => url);
+    expect(urls).toContain('https://www.signedprice.com/trust/');
+    expect(urls).not.toContain('https://www.signedprice.com/kr/seoul/corrections/');
   });
 
   it('links global and Korea evidence surfaces to the correct Trust routes', async () => {

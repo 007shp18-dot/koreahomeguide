@@ -4,7 +4,10 @@ import { preload } from "react-dom";
 import { homepageCopy } from "../lib/site-copy";
 import "./globals.css";
 
-export const metadata: Metadata = homepageCopy.metadata;
+export const metadata: Metadata = {
+  title: homepageCopy.metadata.title,
+  description: homepageCopy.metadata.description,
+};
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   preload("/fonts/archivo-latin-wght-normal.woff2", {

@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 
 vi.mock('server-only', () => ({}));
-import Home from '../app/page';
+import Home, { metadata as homeMetadata } from '../app/page';
 import {
   homepageCopy,
   homepageIntentGroups,
@@ -19,20 +19,20 @@ describe('signedprice homepage copy', () => {
     );
   });
 
-  it('exports the exact pre-launch metadata contract from the actual layout', async () => {
+  it('keeps the root neutral and exports the indexable homepage metadata on the page', async () => {
     const layoutModule = await import('../app/layout');
 
     expect(layoutModule.metadata).toEqual({
       title: 'signedprice | Real prices. Better property decisions.',
       description:
         'Verified Seoul property intelligence with official-source context and publication limits shown clearly.',
-      robots: {
-        index: false,
-        follow: true,
-      },
     });
     expect(layoutModule.metadata).not.toHaveProperty('alternates');
     expect(JSON.stringify(layoutModule.metadata)).not.toMatch(/canonical|languages|hreflang/i);
+    expect(homeMetadata).toMatchObject({
+      robots: { index: true, follow: true },
+      alternates: { canonical: 'https://www.signedprice.com/' },
+    });
   });
 
   it('keeps every visible model claim-safe with market-specific rights associations', async () => {
@@ -145,6 +145,6 @@ describe('signedprice homepage copy', () => {
       expect(markup).toContain(`>${rule}</h3>`);
     }
 
-    expect(homepageCopy.metadata.robots).toEqual({ index: false, follow: true });
+    expect(homepageCopy.metadata.robots).toEqual({ index: true, follow: true });
   });
 });

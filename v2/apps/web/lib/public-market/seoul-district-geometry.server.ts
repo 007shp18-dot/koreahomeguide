@@ -26,6 +26,8 @@ export type SeoulDistrictGeometry = Readonly<{
   lawdCd: SeoulLawdCd;
   slug: SeoulDistrictSlug;
   path: string;
+  latitude: number;
+  longitude: number;
 }>;
 
 const ADJACENCY = {
@@ -166,6 +168,14 @@ function project(features: readonly ParsedFeature[]): readonly SeoulDistrictGeom
     path: feature.rings.map((ring) => (
       `M${point(ring[0]!)}${ring.slice(1).map((value) => `L${point(value)}`).join('')}Z`
     )).join(''),
+    latitude: (
+      Math.min(...feature.rings.flatMap((ring) => ring.map(([, latitude]) => latitude)))
+      + Math.max(...feature.rings.flatMap((ring) => ring.map(([, latitude]) => latitude)))
+    ) / 2,
+    longitude: (
+      Math.min(...feature.rings.flatMap((ring) => ring.map(([longitude]) => longitude)))
+      + Math.max(...feature.rings.flatMap((ring) => ring.map(([longitude]) => longitude)))
+    ) / 2,
   })));
 }
 

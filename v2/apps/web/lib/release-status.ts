@@ -14,7 +14,7 @@ export type ReleaseStatus = {
   readonly commit: string;
   readonly environment: ReleaseEnvironment;
   readonly markets: typeof marketIds;
-  readonly indexing: 'blocked';
+  readonly indexing: 'enabled';
 };
 
 export type ReleaseStatusInput = {
@@ -42,6 +42,6 @@ export function buildReleaseStatus(input: ReleaseStatusInput): ReleaseStatus {
     commit: sanitizeCommit(input.commit),
     environment: sanitizeEnvironment(input.environment),
     markets: marketIds,
-    indexing: 'blocked',
+    indexing: 'enabled',
   };
 }

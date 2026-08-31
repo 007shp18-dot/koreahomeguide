@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
 import type { SingaporeExploreModel } from '../../lib/singapore/route-types';
+import { GooglePlaceMap } from '../maps/google-place-map';
 import {
   SingaporeEvidence,
   SingaporePage,
@@ -8,7 +9,23 @@ import {
   singaporeStyles as styles,
 } from './singapore-shell';
 
-export function SingaporeExplorer({ model }: Readonly<{ model: SingaporeExploreModel }>) {
+function SingaporeMapSection({ browserKey }: Readonly<{ browserKey: string | null }>) {
+  return (
+    <section className={styles.section} aria-labelledby="singapore-map-heading">
+      <p className={styles.sectionLabel}>01 / Location search</p>
+      <h2 id="singapore-map-heading">Find a Singapore address on Google Maps.</h2>
+      <GooglePlaceMap browserKey={browserKey} />
+    </section>
+  );
+}
+
+export function SingaporeExplorer({
+  model,
+  googleMapsBrowserKey = null,
+}: Readonly<{
+  model: SingaporeExploreModel;
+  googleMapsBrowserKey?: string | null;
+}>) {
   if (model.status === 'unavailable') return (
     <SingaporePage>
       <section className={styles.unavailable} data-singapore-evidence="unavailable">
@@ -20,6 +37,7 @@ export function SingaporeExplorer({ model }: Readonly<{ model: SingaporeExploreM
           <Link href={model.correctionHref}>Review corrections</Link>
         </div>
       </section>
+      <SingaporeMapSection browserKey={googleMapsBrowserKey} />
     </SingaporePage>
   );
   return (
@@ -30,8 +48,9 @@ export function SingaporeExplorer({ model }: Readonly<{ model: SingaporeExploreM
         <p>{model.transactionLabel} · {model.periodLabel}</p>
         <SingaporeScope />
       </header>
+      <SingaporeMapSection browserKey={googleMapsBrowserKey} />
       <section className={styles.section} aria-labelledby="segment-heading">
-        <p className={styles.sectionLabel}>01 / Market segments</p>
+        <p className={styles.sectionLabel}>02 / Market segments</p>
         <h2 id="segment-heading">Native Singapore regions, kept separate.</h2>
         <div className={styles.grid}>
           {model.segments.map((segment) => (

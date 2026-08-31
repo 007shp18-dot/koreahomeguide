@@ -18,6 +18,8 @@ export type ExploreDistrictModel = Readonly<{
   nameKo: string;
   href: `/kr/seoul/explore/${string}/`;
   path: string;
+  latitude: number;
+  longitude: number;
   summary: PublicMarketSummary;
   state: 'published' | 'withheld';
   bucket: 0 | 1 | 2 | 3 | 4 | null;

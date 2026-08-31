@@ -194,6 +194,8 @@ export function buildPublicAreaExploreModel(
         ...identity,
         href: `/kr/seoul/explore/${identity.slug}/` as const,
         path: geometry.path,
+        latitude: geometry.latitude,
+        longitude: geometry.longitude,
         summary,
         state: summary.published ? 'published' : 'withheld',
         bucket: summary.published ? buckets.get(identity.slug) ?? null : null,

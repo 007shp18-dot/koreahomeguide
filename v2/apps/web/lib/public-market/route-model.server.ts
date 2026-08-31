@@ -20,6 +20,7 @@ import {
   createPublicSummaryRepository,
 } from './summary-repository.server';
 import { parsePublicSummaryArtifact } from './summary-schema';
+import { indexableMetadata } from '../public-metadata';
 
 export { PUBLIC_SUMMARY_ARTIFACT_VERSION } from './summary-repository.server';
 
@@ -49,13 +50,6 @@ export type KoreaPublicRouteModel = Readonly<{
   }>;
 }>;
 
-export const koreaPublicMetadata = {
-  title: 'Seoul jeonse deposits | signedprice',
-  description:
-    'Compare a refundable deposit with verified Seoul jeonse contracts reported for 45–55㎡ homes.',
-  robots: { index: false, follow: true },
-} as const satisfies Metadata;
-
 const KOREA_PUBLIC_PATHS = [
   '/kr/',
   '/kr/check/seoul/',
@@ -68,7 +62,12 @@ export function buildKoreaPublicPageMetadata(
   if (!KOREA_PUBLIC_PATHS.includes(path as (typeof KOREA_PUBLIC_PATHS)[number])) {
     throw new TypeError('Unknown Korea public canonical path.');
   }
-  return koreaPublicMetadata;
+  return indexableMetadata({
+    path: path as (typeof KOREA_PUBLIC_PATHS)[number],
+    title: 'Seoul jeonse deposits | signedprice',
+    description:
+      'Compare a refundable deposit with verified Seoul jeonse contracts reported for 45–55㎡ homes.',
+  });
 }
 
 const header = {

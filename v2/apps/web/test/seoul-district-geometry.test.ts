@@ -90,6 +90,10 @@ describe('Seoul district geometry', () => {
         expect(value).toBeGreaterThanOrEqual(0);
         expect(value).toBeLessThanOrEqual(index % 2 === 0 ? 720 : 560);
       });
+      expect(district.latitude).toBeGreaterThan(37.4);
+      expect(district.latitude).toBeLessThan(37.8);
+      expect(district.longitude).toBeGreaterThan(126.7);
+      expect(district.longitude).toBeLessThan(127.3);
     }
   });
 
