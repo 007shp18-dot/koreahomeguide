@@ -1,0 +1,209 @@
+{
+  "schemaVersion": 1,
+  "source": "signedprice-build-spec.xlsx#QA",
+  "scope": "Korea-first public P1",
+  "reviewedOn": "2026-08-30",
+  "summary": {
+    "total": 23,
+    "automated": 13,
+    "manual": 1,
+    "deferred": 9
+  },
+  "rows": [
+    {
+      "id": 1,
+      "check": "No market name outside the config",
+      "disposition": "automated",
+      "owner": "Web platform",
+      "evidence": [
+        "v2/apps/web/test/public-korea-routes.test.tsx: shared public template market-neutral scan",
+        "v2/packages/market-core/test/public-market-config.test.ts"
+      ]
+    },
+    {
+      "id": 2,
+      "check": "Market switch changes every market-varying value",
+      "disposition": "deferred",
+      "owner": "Product engineering",
+      "reason": "Public P1 intentionally exposes Korea only; Singapore and Dubai routes are 404 until verified feeds and native payment models exist.",
+      "evidence": ["v2/packages/market-core/test/public-market-config.test.ts: config-level market variance"]
+    },
+    {
+      "id": 3,
+      "check": "Thin sample publishes nothing",
+      "disposition": "automated",
+      "owner": "Data platform",
+      "evidence": [
+        "v2/packages/market-core/test/public-summary.test.ts",
+        "v2/packages/korea-rent/test/public-summary.test.ts",
+        "v2/apps/web/test/public-summary-repository.test.ts"
+      ]
+    },
+    {
+      "id": 4,
+      "check": "Thin sample renders as refusal",
+      "disposition": "automated",
+      "owner": "Web platform",
+      "evidence": [
+        "v2/apps/web/test/public-market-components.test.tsx",
+        "v2/apps/web/test/public-korea-routes.test.tsx"
+      ]
+    },
+    {
+      "id": 5,
+      "check": "Greyscale render",
+      "disposition": "manual",
+      "owner": "Release reviewer",
+      "reason": "Pixel-level greyscale distinction is a visual judgment; DOM labels and stroke states are automated separately.",
+      "evidence": [
+        "Capture /kr/, /kr/check/seoul/, /kr/seoul/ and a withheld fixture at desktop and 390px with a greyscale filter; confirm filled, outlined, hatched and hairline states remain distinguishable."
+      ]
+    },
+    {
+      "id": 6,
+      "check": "Missing feed does not leak the primary type",
+      "disposition": "deferred",
+      "owner": "Product engineering",
+      "reason": "P1 has one public deal type and no type switch. Missing verified feed fails closed to 404; multi-type UI is a later cohort.",
+      "evidence": ["v2/apps/web/test/public-korea-routes.test.tsx: missing-feed 404"]
+    },
+    {
+      "id": 7,
+      "check": "Missing feed names the loaded type",
+      "disposition": "deferred",
+      "owner": "Product engineering",
+      "reason": "No alternate public deal type is exposed in Korea-first P1."
+    },
+    {
+      "id": 8,
+      "check": "No email gate on reading",
+      "disposition": "automated",
+      "owner": "Web platform",
+      "evidence": ["v2/tests/e2e/visible-foundation.spec.ts: every release route has zero email fields"]
+    },
+    {
+      "id": 9,
+      "check": "Contract type persists across routes",
+      "disposition": "deferred",
+      "owner": "Product engineering",
+      "reason": "The global contract-type switch is outside the two-input Korea P1 and will be gated with the multi-type cohort."
+    },
+    {
+      "id": 10,
+      "check": "Every prose figure derives from its array",
+      "disposition": "automated",
+      "owner": "Web platform",
+      "evidence": [
+        "v2/apps/web/test/public-market-components.test.tsx",
+        "v2/apps/web/test/public-korea-routes.test.tsx"
+      ]
+    },
+    {
+      "id": 11,
+      "check": "Signed bars encode direction",
+      "disposition": "deferred",
+      "owner": "Product engineering",
+      "reason": "Rankings and signed bars are P2 and are not shipped or linked by P1."
+    },
+    {
+      "id": 12,
+      "check": "Zoomed axes print their endpoints",
+      "disposition": "deferred",
+      "owner": "Product engineering",
+      "reason": "P1 uses the configured zero-based market axis; no zoomed non-zero-based chart is shipped."
+    },
+    {
+      "id": 13,
+      "check": "Singular / plural correct at every count",
+      "disposition": "automated",
+      "owner": "Web platform",
+      "evidence": ["v2/apps/web/test/public-market-components.test.tsx: n=0, n=1 and n=2 literal cases"]
+    },
+    {
+      "id": 14,
+      "check": "Quote marker never leaves the plot",
+      "disposition": "automated",
+      "owner": "Web platform",
+      "evidence": [
+        "v2/packages/market-core/test/quote-position.test.ts",
+        "v2/apps/web/test/public-market-components.test.tsx"
+      ]
+    },
+    {
+      "id": 15,
+      "check": "Quote recalculation makes no request",
+      "disposition": "automated",
+      "owner": "Web platform",
+      "evidence": [
+        "v2/apps/web/test/public-quote-input.test.tsx",
+        "v2/tests/e2e/public-quote.spec.ts"
+      ]
+    },
+    {
+      "id": 16,
+      "check": "Server HTML carries the figures",
+      "disposition": "automated",
+      "owner": "Web platform",
+      "evidence": ["v2/apps/web/test/public-korea-routes.test.tsx: all five values and n before hydration"]
+    },
+    {
+      "id": 17,
+      "check": "Thin-sample area is noindex",
+      "disposition": "automated",
+      "owner": "SEO engineering",
+      "evidence": ["v2/apps/web/test/public-route-contract.test.tsx: withheld cohort has noindex and no canonical"]
+    },
+    {
+      "id": 18,
+      "check": "Redirects preserve guide slugs",
+      "disposition": "deferred",
+      "owner": "Migration owner",
+      "reason": "Legacy 301 publication is an explicitly separate Production/DNS authorization and is not part of this branch."
+    },
+    {
+      "id": 19,
+      "check": "Contrast on graphical objects",
+      "disposition": "automated",
+      "owner": "Design systems",
+      "evidence": [
+        "v2/apps/web/test/design-tokens.test.ts",
+        "v2/apps/web/test/public-market-components.test.tsx"
+      ]
+    },
+    {
+      "id": 20,
+      "check": "Focus visible on every control",
+      "disposition": "automated",
+      "owner": "Accessibility reviewer",
+      "evidence": [
+        "v2/apps/web/test/public-quote-input.test.tsx",
+        "v2/tests/e2e/visible-foundation.spec.ts"
+      ]
+    },
+    {
+      "id": 21,
+      "check": "Mobile map legend present",
+      "disposition": "deferred",
+      "owner": "Product engineering",
+      "reason": "The public P1 has no map; the 88px mobile legend is a P3 map requirement."
+    },
+    {
+      "id": 22,
+      "check": "Bottom sheet has two detents",
+      "disposition": "deferred",
+      "owner": "Product engineering",
+      "reason": "The public P1 has no map bottom sheet; the two-detent design is P3."
+    },
+    {
+      "id": 23,
+      "check": "Touch targets",
+      "disposition": "automated",
+      "owner": "Accessibility reviewer",
+      "evidence": [
+        "v2/apps/web/test/public-quote-input.test.tsx",
+        "v2/tests/e2e/public-quote.spec.ts",
+        "v2/tests/e2e/visible-foundation.spec.ts"
+      ]
+    }
+  ]
+}

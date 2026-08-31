@@ -1,0 +1,20 @@
+{
+  "jobId": null,
+  "generatorSha": "e4d06f5f21ad60f3d442f0c167da0a9bc37fdc30",
+  "finalCandidateSha": "73c1970c1900190986af66de18fb2fe36f276b39",
+  "artifactSha256": "e1e7f8adbe1297b0807232c8e864b5217eb4cd79e8860c012da50054f012eb72",
+  "generatedAt": "2026-08-31T01:13:24.787Z",
+  "period": "2026-01/2026-07",
+  "expectedCoordinates": 700,
+  "completedCoordinates": 700,
+  "eligibleRecords": 13008,
+  "activeRecords": 0,
+  "unknownStatusRecords": 13008,
+  "newContracts": 7503,
+  "renewalContracts": 5201,
+  "unknownContracts": 304,
+  "parserVersion": "kr-molit-rent-parser-v2",
+  "rightsPolicyId": "kr-molit-rent-v1",
+  "generationDeploymentId": "dpl_Fiq68bZSzdu4A88ActsV492UUBFr",
+  "finalDeploymentId": "dpl_2JuknRtUUAzit2nA5xfJMMhqLBKT"
+}

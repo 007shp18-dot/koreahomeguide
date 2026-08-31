@@ -1,0 +1,54 @@
+import 'server-only';
+
+import type { PublicMarketSummary } from '@signedprice/market-core';
+import type { SeoulDistrictSlug } from '@signedprice/korea-rent/browser';
+
+import {
+  parsePublicAreaSummaryArtifact,
+  type PublicAreaSummaryArtifactExpectation,
+} from './area-summary-schema';
+
+export type PublicAreaSummaryRepository = Readonly<{
+  getCitySummary(): PublicMarketSummary;
+  listDistrictSummaries(): readonly PublicMarketSummary[];
+  getDistrictSummary(slug: SeoulDistrictSlug): PublicMarketSummary;
+}>;
+
+export class PublicAreaSummaryUnavailableError extends Error {
+  readonly code = 'public_area_summary_unavailable' as const;
+
+  constructor() {
+    super('Verified public area summary is unavailable.');
+    this.name = 'PublicAreaSummaryUnavailableError';
+  }
+}
+
+export function createPublicAreaSummaryRepository(input: Readonly<{
+  source: unknown;
+  expected: PublicAreaSummaryArtifactExpectation;
+}>): PublicAreaSummaryRepository {
+  try {
+    const artifact = parsePublicAreaSummaryArtifact(input.source, input.expected);
+    const districts = Object.freeze([...artifact.districtSummaries]);
+    const districtsBySlug = new Map(
+      districts.map((summary) => [summary.area, summary] as const),
+    );
+
+    return Object.freeze({
+      getCitySummary(): PublicMarketSummary {
+        return artifact.citySummary;
+      },
+      listDistrictSummaries(): readonly PublicMarketSummary[] {
+        return districts;
+      },
+      getDistrictSummary(slug: SeoulDistrictSlug): PublicMarketSummary {
+        const summary = districtsBySlug.get(slug);
+        if (summary === undefined) throw new PublicAreaSummaryUnavailableError();
+        return summary;
+      },
+    });
+  } catch (error) {
+    if (error instanceof PublicAreaSummaryUnavailableError) throw error;
+    throw new PublicAreaSummaryUnavailableError();
+  }
+}

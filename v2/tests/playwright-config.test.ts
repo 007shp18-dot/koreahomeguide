@@ -15,13 +15,18 @@ describe('Playwright release target configuration', () => {
     });
   });
 
-  it('defines both release viewports and a retained HTML failure report', () => {
+  it('defines all release viewports and a retained HTML failure report', () => {
     const config = createPlaywrightConfig({});
 
     expect(config.projects?.map((project) => project.name)).toEqual([
       'desktop-chromium',
       'mobile-chromium',
+      'wide-chromium',
     ]);
+    expect(config.projects?.[2]).toMatchObject({
+      testMatch: /area-explore\.spec\.ts/,
+      use: { viewport: { width: 1440, height: 900 } },
+    });
     expect(config.reporter).toEqual([
       ['line'],
       ['html', { open: 'never' }],

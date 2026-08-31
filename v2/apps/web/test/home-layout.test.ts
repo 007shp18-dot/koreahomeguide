@@ -144,12 +144,12 @@ describe('signedprice connected decision surfaces', () => {
     expect(css).not.toMatch(/\.site-header__links li:(first|last)-child a/);
   });
 
-  it('renders the three markets as one connected structural row', () => {
+  it('renders the Korea-only market as one connected structural row', () => {
     const markup = renderToStaticMarkup(createElement(Home));
 
-    expect(markup.match(/<article class="market-card"/g)).toHaveLength(3);
+    expect(markup.match(/<article class="market-card"/g)).toHaveLength(1);
     expect(declarationsFor(css, '.market-grid')).toMatchObject({
-      'grid-template-columns': 'repeat(3, minmax(0, 1fr))',
+      'grid-template-columns': 'minmax(0, 1fr)',
       gap: '0',
       border: '2px solid var(--ink)',
     });

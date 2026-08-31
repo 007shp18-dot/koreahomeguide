@@ -12,11 +12,7 @@ describe('signedprice homepage copy', () => {
   it('uses the approved identity and avoids unsupported claims', () => {
     expect(homepageCopy.brand).toBe('signedprice');
     expect(homepageCopy.headline).toBe('Real prices. Better property decisions.');
-    expect(homepageCopy.marketIds).toEqual([
-      'kr-seoul',
-      'sg-singapore',
-      'ae-dubai',
-    ]);
+    expect(homepageCopy.marketIds).toEqual(['kr-seoul']);
     expect(JSON.stringify(homepageCopy)).not.toMatch(
       /millions of listings|guaranteed return|licensed broker/i,
     );
@@ -28,7 +24,7 @@ describe('signedprice homepage copy', () => {
     expect(layoutModule.metadata).toEqual({
       title: 'signedprice | Real prices. Better property decisions.',
       description:
-        'Property intelligence for Seoul, Singapore and Dubai, with market-specific sources, product depth and data-rights limits shown clearly.',
+        'Verified Seoul property intelligence with official-source context and publication limits shown clearly.',
       robots: {
         index: false,
         follow: true,
@@ -70,33 +66,6 @@ describe('signedprice homepage copy', () => {
           },
         ],
       },
-      {
-        id: 'sg-singapore',
-        productDepth: 'Market intelligence',
-        capabilities: [
-          {
-            label: 'HDB public market intelligence',
-            state: 'available',
-            stateLabel: 'Available',
-          },
-          {
-            label: 'Private residential detail',
-            state: 'rights_blocked',
-            stateLabel: 'Rights blocked',
-          },
-        ],
-      },
-      {
-        id: 'ae-dubai',
-        productDepth: 'Market intelligence',
-        capabilities: [
-          {
-            label: 'Transaction detail',
-            state: 'rights_blocked',
-            stateLabel: 'Rights blocked',
-          },
-        ],
-      },
     ]);
   });
 
@@ -121,36 +90,6 @@ describe('signedprice homepage copy', () => {
           href: '/kr/seoul/buy/',
           state: 'available',
           stateLabel: 'Available',
-        },
-      },
-      {
-        id: 'sg-singapore',
-        rent: {
-          label: 'Rent decision path',
-          href: '/sg/singapore/rent/',
-          state: 'limited',
-          stateLabel: 'Limited',
-        },
-        buy: {
-          label: 'Buy decision path',
-          href: '/sg/singapore/buy/',
-          state: 'limited',
-          stateLabel: 'Limited',
-        },
-      },
-      {
-        id: 'ae-dubai',
-        rent: {
-          label: 'Rent decision path',
-          href: '/ae/dubai/rent/',
-          state: 'limited',
-          stateLabel: 'Limited',
-        },
-        buy: {
-          label: 'Buy decision path',
-          href: '/ae/dubai/buy/',
-          state: 'limited',
-          stateLabel: 'Limited',
         },
       },
     ]);
@@ -180,26 +119,17 @@ describe('signedprice homepage copy', () => {
     expect(markup).toContain('>Decision tools</h3>');
     expect(markup).toContain('>Verified connections</h3>');
     expect(markup).toContain('>Full product</span>');
-    expect(markup).toContain('>Market intelligence</span>');
     expect(markup).toContain('>Available</span>');
-    expect(markup).toContain('>Rights blocked</span>');
 
     for (const href of [
       '/kr/seoul/',
-      '/sg/singapore/',
-      '/ae/dubai/',
       '/kr/seoul/rent/',
       '/kr/seoul/buy/',
       '/kr/seoul/invest/',
-      '/sg/singapore/rent/',
-      '/sg/singapore/buy/',
-      '/sg/singapore/invest/',
-      '/ae/dubai/rent/',
-      '/ae/dubai/buy/',
-      '/ae/dubai/invest/',
     ]) {
       expect(markup).toContain(`href="${href}"`);
     }
+    expect(markup).not.toMatch(/href="\/(?:sg|ae)\//);
 
     expect(markup).not.toMatch(/enquir|sign[ -]?in|create account/i);
   });
@@ -210,9 +140,8 @@ describe('signedprice homepage copy', () => {
     for (const label of ['Rent', 'Buy', 'Invest']) {
       expect(markup).toContain(`>${label}</span>`);
     }
-    for (const city of ['Seoul', 'Singapore', 'Dubai']) {
-      expect(markup).toContain(`>${city}</a></h3>`);
-    }
+    expect(markup).toContain('>Seoul</a></h3>');
+    expect(markup).not.toMatch(/>(?:Singapore|Dubai)<\/a><\/h3>/);
     for (const rule of ['Market truth', 'Decision tools', 'Verified connections']) {
       expect(markup).toContain(`>${rule}</h3>`);
     }

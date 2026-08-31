@@ -7,6 +7,7 @@ import type { ExplorerBuilding } from '../lib/seoul-explorer-data';
 type BuildingDialogProps = {
   readonly building: ExplorerBuilding;
   readonly open: boolean;
+  readonly rentCheckHref: string | null;
   readonly onClose?: () => void;
 };
 
@@ -14,7 +15,12 @@ function evidenceValue(value: number | null, formatter: (value: number) => strin
   return value === null ? 'Unavailable — not provided by the official source' : formatter(value);
 }
 
-export function BuildingDialog({ building, open, onClose }: BuildingDialogProps) {
+export function BuildingDialog({
+  building,
+  open,
+  rentCheckHref,
+  onClose,
+}: BuildingDialogProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLElement>(null);
 
@@ -131,7 +137,7 @@ export function BuildingDialog({ building, open, onClose }: BuildingDialogProps)
         </div>
 
         <footer className="building-dialog__footer">
-          <Link href="/kr/seoul/rent/">Check my quote</Link>
+          {rentCheckHref ? <Link href={rentCheckHref}>Check my quote</Link> : null}
           <button type="button" onClick={onClose}>Close details</button>
         </footer>
       </section>

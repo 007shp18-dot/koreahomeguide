@@ -784,7 +784,7 @@
     "route": "/api/real-prices",
     "source": {
       "file": "api/real-prices.js",
-      "sha256": "443f53fc7cd6361489bdf8237722e5f62cede4b71a5a3d2174cf51dc4dd760c4"
+      "sha256": "fd5ab594ca5da4a17661a6fd88ca347a9f46b21d81661e1ebc63690d45f75a60"
     },
     "methods": [
       "GET"

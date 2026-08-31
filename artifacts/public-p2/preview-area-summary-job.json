@@ -1,0 +1,14 @@
+{
+  "commit": "c969998edcee7d4fe62d6bfcc012a28e896c1f88",
+  "deploymentId": "dpl_8x7BzF8rH3qa8JA8P4jfVvwZEDTp",
+  "branch": "codex/signedprice-seoul-rent-check-v2",
+  "target": null,
+  "period": "2026-01/2026-07",
+  "generatedAt": "2026-08-31T03:22:34.924Z",
+  "completedCoordinates": 700,
+  "cityN": 13008,
+  "districtCount": 25,
+  "districtNSum": 13008,
+  "artifactVersion": "signedprice-public-area-summary-v1",
+  "sha256": "44dc2601ee6e47df2eb6301b561d1fdecc201419b108c549b3c8f3d4bff16df6"
+}

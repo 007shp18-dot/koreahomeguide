@@ -12,7 +12,7 @@ import type { Metadata } from 'next';
 
 const brand = 'signedprice';
 const headline = 'Real prices. Better property decisions.';
-const marketIds = ['kr-seoul', 'sg-singapore', 'ae-dubai'] as const satisfies readonly MarketId[];
+const marketIds = ['kr-seoul'] as const satisfies readonly MarketId[];
 
 const intentLabels = {
   rent: 'Rent',
@@ -34,7 +34,7 @@ const capabilityStateLabels = {
 const englishMetadata = {
   title: 'signedprice | Real prices. Better property decisions.',
   description:
-    'Property intelligence for Seoul, Singapore and Dubai, with market-specific sources, product depth and data-rights limits shown clearly.',
+    'Verified Seoul property intelligence with official-source context and publication limits shown clearly.',
   robots: {
     index: false,
     follow: true,
@@ -62,6 +62,9 @@ export interface SiteFooterModel {
   readonly links: readonly NavigationLinkModel[];
   readonly status: string;
 }
+
+export const KOREA_PUBLIC_RELEASE_STATUS =
+  'Korea public evidence. Publication limits shown.' as const;
 
 export interface TrustStripModel {
   readonly sectionLabel: string;
@@ -109,7 +112,7 @@ const englishTrustCopy = {
 
 const englishFooterCopy = {
   brand,
-  descriptor: 'Property intelligence for Seoul, Singapore and Dubai.',
+  descriptor: 'Verified property intelligence for Seoul.',
   navigationLabel: 'Footer navigation',
   links: [
     { label: 'Markets', href: '#markets' },

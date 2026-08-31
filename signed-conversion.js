@@ -1,7 +1,7 @@
 // Measured deposit ↔ monthly-rent conversion, by asset type.
 //
-// This is NOT the statutory reference in deposit-conversion.js. That module
-// states the legal 5.0% figure and stays where it is; the rent check and the
+// This is NOT the fixed reference in deposit-conversion.js. That module
+// states a separate 5.0% policy benchmark and stays where it is; the rent check and the
 // salary tool keep using it. This module states what filed contracts actually
 // converted at, which is a different claim and belongs in a different place.
 //

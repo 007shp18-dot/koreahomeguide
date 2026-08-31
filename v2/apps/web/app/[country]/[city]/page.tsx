@@ -6,7 +6,7 @@ import { SiteFooter } from '../../../components/site-footer';
 import { SiteHeader } from '../../../components/site-header';
 import {
   buildMarketPageModel,
-  marketRouteParams,
+  publicMarketRouteParams,
 } from '../../../lib/route-model';
 
 type MarketPageProps = {
@@ -19,7 +19,7 @@ type MarketPageProps = {
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return marketRouteParams;
+  return publicMarketRouteParams;
 }
 
 export async function generateMetadata({ params }: MarketPageProps): Promise<Metadata> {

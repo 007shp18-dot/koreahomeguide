@@ -554,6 +554,14 @@ export const intentRouteParams = initialMarketIds.flatMap((marketId) => {
   }));
 });
 
+export const publicMarketRouteParams = marketRouteParams.filter(
+  ({ country, city }) => country === 'kr' && city === 'seoul',
+);
+
+export const publicIntentRouteParams = intentRouteParams.filter(
+  ({ country, city }) => country === 'kr' && city === 'seoul',
+);
+
 function isIntent(value: string): value is Intent {
   return intents.some((intent) => intent === value);
 }
@@ -748,6 +756,19 @@ export function buildIntentPageModel(
   const usableState = denySafeOverviewState(
     usableSources.map((item) => item.state),
   );
+  const overviewActions: readonly NavigationActionModel[] =
+    profile.id === 'kr-seoul' && intentValue === 'rent'
+      ? [
+          {
+            label: 'Check a Seoul rent quote',
+            href: '/kr/seoul/tools/rent-check/',
+            description: 'Compare a quote with compatible official reported contracts.',
+            external: false,
+          },
+          marketOverviewAction(profile.id),
+          commonActions.compare,
+        ]
+      : [marketOverviewAction(profile.id), commonActions.compare];
   const decisionRows: readonly MarketOverviewRowModel[] = [
     {
       number: '01',
@@ -826,7 +847,7 @@ export function buildIntentPageModel(
       items: sourceItems,
     },
     decisionRows,
-    overviewActions: [marketOverviewAction(profile.id), commonActions.compare],
+    overviewActions,
     limitations: {
       ...routeSectionCopy.limitations,
       items: profile.limitations,

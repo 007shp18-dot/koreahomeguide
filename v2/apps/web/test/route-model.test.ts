@@ -1,6 +1,10 @@
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+
+vi.mock('server-only', () => ({}));
+
+import { SEOUL_RENT_CHECK_DISTRICTS } from '@signedprice/korea-rent/browser';
 import MarketOverviewPage, {
   generateStaticParams as generateMarketStaticParams,
 } from '../app/[country]/[city]/page';
@@ -43,13 +47,20 @@ const expectedIntentParams = [
   { country: 'ae', city: 'dubai', intent: 'invest' },
 ] as const;
 
+const expectedPublicThirdSegmentParams = [
+  ...expectedIntentParams.slice(0, 3),
+  ...SEOUL_RENT_CHECK_DISTRICTS.map(({ slug }) => ({
+    country: 'kr', city: 'seoul', intent: slug,
+  })),
+];
+
 const unsupportedClaimPattern =
   /median|transaction count|guaranteed return|active partner marketplace|create account|sign[ -]?in|enquir|\b\d+(?:\.\d+)?%/i;
 
 describe('market route model', () => {
   it('publishes exactly the three approved market overview contracts', () => {
     expect(marketRouteParams).toEqual(expectedMarketParams);
-    expect(generateMarketStaticParams()).toEqual(expectedMarketParams);
+    expect(generateMarketStaticParams()).toEqual(expectedMarketParams.slice(0, 1));
     expect(
       marketRouteParams.map(({ country, city }) =>
         buildMarketPageModel(country, city)?.marketId,
@@ -59,7 +70,7 @@ describe('market route model', () => {
 
   it('publishes exactly nine approved intent contracts', () => {
     expect(intentRouteParams).toEqual(expectedIntentParams);
-    expect(generateIntentStaticParams()).toEqual(expectedIntentParams);
+    expect(generateIntentStaticParams()).toEqual(expectedPublicThirdSegmentParams);
     expect(
       intentRouteParams.map(({ country, city, intent }) =>
         buildIntentPageModel(country, city, intent)?.href,
@@ -148,6 +159,28 @@ describe('market route model', () => {
 });
 
 describe('intent route model', () => {
+  it('makes Seoul Rent Check the primary action for the Seoul rent intent only', () => {
+    const seoulRent = buildIntentPageModel('kr', 'seoul', 'rent');
+
+    expect(seoulRent?.overviewActions[0]).toMatchObject({
+      label: 'Check a Seoul rent quote',
+      href: '/kr/seoul/tools/rent-check/',
+      external: false,
+    });
+    for (const params of expectedIntentParams.filter(
+      ({ country, city, intent }) =>
+        country !== 'kr' || city !== 'seoul' || intent !== 'rent',
+    )) {
+      expect(
+        buildIntentPageModel(params.country, params.city, params.intent)?.overviewActions,
+      ).not.toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ href: '/kr/seoul/tools/rent-check/' }),
+        ]),
+      );
+    }
+  });
+
   it('gives every route a real comparison scope, usable source class, and blocked boundary', () => {
     for (const { country, city, intent } of expectedIntentParams) {
       const model = buildIntentPageModel(country, city, intent);
