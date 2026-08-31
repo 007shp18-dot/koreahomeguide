@@ -12,9 +12,10 @@ async function expectContained(page: Page) {
 
 test('Guide index and documents remain complete, indexable, and keyboard reachable', async ({ page }) => {
   await page.goto('/kr/seoul/guide/');
-  await expect(page.locator('[data-public-tab]')).toHaveCount(3);
+  await expect(page.locator('[data-public-tab]')).toHaveCount(4);
   await expect(page.locator('[data-public-tab="guide"]')).toHaveAttribute('aria-current', 'page');
-  await expect(page.locator('body')).not.toContainText('News');
+  await expect(page.locator('[data-public-tab="news"]'))
+    .toHaveAttribute('href', '/kr/seoul/news/');
   for (const [slug, title] of guides) {
     await expect(page.getByRole('heading', { name: title })).toBeVisible();
     await page.goto(`/kr/seoul/guide/${slug}/`);
