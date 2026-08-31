@@ -1,12 +1,14 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useReducer } from 'react';
 
 import {
   areaExplorerReducer,
   type AreaExplorerState,
 } from '../../lib/public-market/area-explorer-state';
+import { NaverDistrictMap } from '../maps/naver-district-map';
 import type {
   ExploreDistrictModel,
   PublicAreaExploreModel,
@@ -25,7 +27,7 @@ const bucketClasses = [
 
 function mapTitle(district: ExploreDistrictModel): string {
   return [
-    district.nameEn,
+    `Open ${district.nameEn} evidence`,
     district.nameKo,
     district.medianLabel ?? 'Not published',
     district.sampleLabel,
@@ -34,7 +36,12 @@ function mapTitle(district: ExploreDistrictModel): string {
 
 function ReadyAreaExplorer({
   model,
-}: Readonly<{ model: Extract<PublicAreaExploreModel, { status: 'ready' }> }>) {
+  naverMapClientId,
+}: Readonly<{
+  model: Extract<PublicAreaExploreModel, { status: 'ready' }>;
+  naverMapClientId: string | null;
+}>) {
+  const router = useRouter();
   const initial: AreaExplorerState = Object.freeze({
     selectedSlug: model.selectedSlug,
     districtSlugs: Object.freeze(model.districts.map(({ slug }) => slug)),
@@ -52,6 +59,9 @@ function ReadyAreaExplorer({
           One official-data boundary, 25 districts and the same 45–55㎡ filter.
           Select a district to read its published evidence or explicit refusal.
         </p>
+        <Link className={styles.rankingsLink} href="/kr/seoul/rankings/">
+          View district rankings
+        </Link>
       </header>
 
       <div className={styles.workspace}>
@@ -60,12 +70,21 @@ function ReadyAreaExplorer({
             <p>01 / District map</p>
             <h2 id="area-map-heading">District median refundable jeonse deposit</h2>
           </div>
-          <svg
-            className={styles.map}
-            viewBox="0 0 720 560"
-            role="img"
-            aria-labelledby="area-map-title area-map-description"
-          >
+          <NaverDistrictMap
+            clientId={naverMapClientId}
+            districts={model.districts.map((district) => ({
+              slug: district.slug,
+              nameEn: district.nameEn,
+              href: district.href,
+              latitude: district.latitude,
+              longitude: district.longitude,
+            }))}
+            fallback={<svg
+              className={styles.map}
+              viewBox="0 0 720 560"
+              role="img"
+              aria-labelledby="area-map-title area-map-description"
+            >
             <title id="area-map-title">Seoul district refundable jeonse deposit map</title>
             <desc id="area-map-description">
               Five ranked median steps. Hatched districts are not published.
@@ -96,12 +115,16 @@ function ReadyAreaExplorer({
                 data-map-bucket={district.bucket ?? undefined}
                 data-map-state={district.state}
                 aria-hidden="true"
-                onPointerUp={() => dispatch({ type: 'select', slug: district.slug })}
+                onPointerUp={() => {
+                  dispatch({ type: 'select', slug: district.slug });
+                  router.push(district.href);
+                }}
               >
                 <title>{mapTitle(district)}</title>
               </path>
             ))}
-          </svg>
+            </svg>}
+          />
 
           <div className={styles.legend} aria-label="Map legend">
             <p>District median refundable jeonse deposit · {model.source.band}</p>
@@ -158,17 +181,18 @@ function ReadyAreaExplorer({
                       data-district-row={district.slug}
                     >
                       <th scope="row">
-                        <button
+                        <Link
                           className={styles.districtButton}
-                          type="button"
-                          aria-label={`Select ${district.nameEn}`}
-                          aria-pressed={isSelected}
-                          onClick={() => dispatch({ type: 'select', slug: district.slug })}
+                          href={district.href}
+                          aria-label={`Open ${district.nameEn} evidence`}
+                          aria-current={isSelected ? 'true' : undefined}
+                          onPointerEnter={() => dispatch({ type: 'select', slug: district.slug })}
+                          onFocus={() => dispatch({ type: 'select', slug: district.slug })}
                         >
                           <strong>{district.nameEn}</strong>
                           <span lang="ko">{district.nameKo}</span>
                           {isSelected ? <small>Selected</small> : null}
-                        </button>
+                        </Link>
                       </th>
                       <td>
                         <strong>{district.medianLabel ?? 'Not published'}</strong>
@@ -217,12 +241,18 @@ function UnavailableAreaExplorer({
   );
 }
 
-export function AreaExplorer({ model }: Readonly<{ model: PublicAreaExploreModel }>) {
+export function AreaExplorer({
+  model,
+  naverMapClientId = null,
+}: Readonly<{
+  model: PublicAreaExploreModel;
+  naverMapClientId?: string | null;
+}>) {
   return (
     <>
       <PublicSectionTabs current="explore" />
       {model.status === 'ready'
-        ? <ReadyAreaExplorer model={model} />
+        ? <ReadyAreaExplorer model={model} naverMapClientId={naverMapClientId} />
         : <UnavailableAreaExplorer model={model} />}
     </>
   );

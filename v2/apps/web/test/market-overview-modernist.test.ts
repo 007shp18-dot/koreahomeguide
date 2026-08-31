@@ -282,7 +282,7 @@ describe('bundled Archivo and pre-launch route safety', () => {
     expect(css).not.toMatch(/fonts\.(googleapis|gstatic)\.com/i);
   });
 
-  it('keeps only Korea routes public while the shared shell remains noindex', async () => {
+  it('keeps the shared shell SEO-neutral while generated market routes stay contained', async () => {
     const layoutModule = await import('../app/layout');
     const intentModule = await import('../app/[country]/[city]/[intent]/page');
 
@@ -299,7 +299,7 @@ describe('bundled Archivo and pre-launch route safety', () => {
         country: 'kr', city: 'seoul', intent: slug,
       })),
     ]);
-    expect(layoutModule.metadata.robots).toEqual({ index: false, follow: true });
+    expect(layoutModule.metadata).not.toHaveProperty('robots');
     expect(layoutModule.metadata).not.toHaveProperty('alternates');
   });
 });

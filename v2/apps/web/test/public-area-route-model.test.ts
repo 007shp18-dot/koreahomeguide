@@ -73,12 +73,15 @@ describe('public area Explore model', () => {
       slug: 'jongno-gu',
       nameEn: 'Jongno-gu',
       nameKo: '종로구',
-      href: '/kr/seoul/jongno-gu/',
+      href: '/kr/seoul/explore/jongno-gu/',
       state: 'published',
       sampleLabel: '5 reported contracts',
       medianLabel: '₩500,000,000',
     });
     expect(model.districts[0]!.path).toMatch(/^M/);
+    expect(model.districts.map(({ href }) => href)).toEqual(
+      SEOUL_RENT_CHECK_DISTRICTS.map(({ slug }) => `/kr/seoul/explore/${slug}/`),
+    );
     expect(model.districts[7]).toMatchObject({
       state: 'withheld',
       sampleLabel: '1 reported contract',
@@ -86,6 +89,17 @@ describe('public area Explore model', () => {
       changeLabel: null,
     });
     expect(model.source).toEqual({
+      evidence: {
+        marketId: 'kr-seoul',
+        provider: 'MOLIT',
+        dataset: 'reported rent contracts',
+        period: PUBLIC_AREA_FIXTURE_PERIOD,
+        generatedAt: '2026-08-31T01:13:24.787Z',
+        state: 'ready',
+        publicationMinimum: 5,
+        methodologyId: 'kr-jeonse-45-55-v1',
+        rightsPolicyId: 'kr-molit-rent-v1',
+      },
       provider: 'MOLIT',
       period: PUBLIC_AREA_FIXTURE_PERIOD,
       attribution: ['Ministry of Land, Infrastructure and Transport (MOLIT)'],
@@ -108,6 +122,7 @@ describe('public area Explore model', () => {
       source: expect.objectContaining({ period: PUBLIC_AREA_FIXTURE_PERIOD }),
       message: 'Verified district summary unavailable',
     });
+    expect(model.source.evidence).toBeNull();
     expect(JSON.stringify(model)).not.toContain(String(CITY_MEDIAN_SENTINEL));
   });
 });

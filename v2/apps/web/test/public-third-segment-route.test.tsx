@@ -62,7 +62,7 @@ describe('public third-segment resolver', () => {
 });
 
 describe('public district route integration', () => {
-  it('uses the district resolver for noindex metadata and page rendering', async () => {
+  it('keeps the legacy district render noindex with the Explore canonical', async () => {
     vi.stubEnv(
       'SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT',
       JSON.stringify(createPublicAreaFixture()),
@@ -79,8 +79,10 @@ describe('public district route integration', () => {
     expect(metadata).toMatchObject({
       title: 'Gangnam-gu jeonse evidence | signedprice',
       robots: { index: false, follow: true },
+      alternates: {
+        canonical: 'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/',
+      },
     });
-    expect(metadata).not.toHaveProperty('alternates');
     expect(html).toContain('Gangnam-gu');
     expect(html).toContain('reported contracts');
     expect(html).toContain('data-district-detail="published"');

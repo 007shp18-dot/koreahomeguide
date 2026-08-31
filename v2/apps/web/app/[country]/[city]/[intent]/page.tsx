@@ -5,7 +5,7 @@ import { IntentDecisionRows } from '../../../../components/intent-decision-rows'
 import { MarketHero } from '../../../../components/market-hero';
 import { SiteFooter } from '../../../../components/site-footer';
 import { SiteHeader } from '../../../../components/site-header';
-import type { PublicDistrictModel } from '../../../../lib/public-market/area-route-types';
+import { buildDistrictMetadata } from '../../../../lib/public-market/district-metadata';
 import {
   publicThirdSegmentRouteParams,
   resolvePublicThirdSegment,
@@ -25,19 +25,6 @@ export function generateStaticParams() {
   return [...publicThirdSegmentRouteParams];
 }
 
-function districtMetadata(model: PublicDistrictModel): Metadata {
-  const description = model.status === 'published'
-    ? `${model.display.medianLabel} median from ${model.display.sampleLabel} for 45–55㎡ refundable jeonse deposits.`
-    : model.status === 'withheld'
-      ? `${model.display.sampleLabel} met the fixed filter; monetary evidence is not published.`
-      : 'Verified district summary unavailable; no city figure is substituted.';
-  return {
-    title: `${model.identity.nameEn} jeonse evidence | signedprice`,
-    description,
-    robots: { index: false, follow: true },
-  };
-}
-
 export async function generateMetadata({ params }: IntentPageProps): Promise<Metadata> {
   const { country, city, intent } = await params;
   const resolved = resolvePublicThirdSegment(country, city, intent);
@@ -46,7 +33,7 @@ export async function generateMetadata({ params }: IntentPageProps): Promise<Met
 
   return resolved.kind === 'intent'
     ? resolved.model.metadata
-    : districtMetadata(resolved.model);
+    : buildDistrictMetadata(resolved.model);
 }
 
 export default async function IntentPage({ params }: IntentPageProps) {

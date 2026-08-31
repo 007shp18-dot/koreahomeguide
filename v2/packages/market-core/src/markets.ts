@@ -90,10 +90,10 @@ const marketProfilesById = deepFreeze<Record<MarketId, MarketProfileDefinition>>
     cityName: 'Singapore',
     nativeCurrency: 'SGD',
     productDepth: 'market_intelligence',
-    dataLabel: 'HDB public market intelligence',
+    dataLabel: 'URA private residential sale intelligence',
     limitations: [
-      'Private residential detail is rights-blocked until commercial rights permit publication.',
-      'Partner and developer-project interest flows require advertising and referral review.',
+      'Private residential sale publication remains subject to verified snapshot and display rights.',
+      'Rentals, public housing, forecasts, valuations, and recommendations are outside this release.',
     ],
     capabilities: {
       rent: 'limited',
@@ -103,18 +103,11 @@ const marketProfilesById = deepFreeze<Record<MarketId, MarketProfileDefinition>>
     dataCapabilities: [
       {
         dataScope: 'market_intelligence',
-        housingSector: 'hdb',
-        state: 'available',
-        label: 'HDB public market intelligence',
-        limitations: ['HDB public intelligence has sector-specific limitations.'],
-      },
-      {
-        dataScope: 'property_detail',
         housingSector: 'private_residential',
-        state: 'rights_blocked',
-        label: 'Private residential detail',
+        state: 'limited',
+        label: 'URA private residential sale intelligence',
         limitations: [
-          'Private residential detail is rights-blocked until commercial rights permit publication.',
+          'Routes remain unavailable until snapshot, rights, and release gates pass.',
         ],
       },
     ],

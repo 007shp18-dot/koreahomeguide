@@ -20,6 +20,10 @@ const MARKERS = Object.freeze([
   }),
   Object.freeze({ marker: 'raw source record', pattern: /sourceRecordId/ }),
   Object.freeze({ marker: 'temporary area job', pattern: /public-area-summary-job/ }),
+  Object.freeze({
+    marker: 'conversion artifact environment',
+    pattern: /SIGNEDPRICE_CONVERSION_CURVE_(?:ARTIFACT|PERIOD|SHA256)/,
+  }),
 ]);
 
 async function filesBelow(directory) {

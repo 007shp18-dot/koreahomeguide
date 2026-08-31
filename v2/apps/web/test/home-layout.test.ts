@@ -1,7 +1,8 @@
 import { readFileSync } from 'node:fs';
-import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+
+vi.mock('server-only', () => ({}));
 import Home from '../app/page';
 
 const css = readFileSync(new URL('../app/globals.css', import.meta.url), 'utf8');
@@ -39,8 +40,8 @@ function cssBetween(start: string, end: string): string {
 }
 
 describe('signedprice hero layout structure', () => {
-  it('keeps the headline and description in one flush-left editorial column', () => {
-    const markup = renderToStaticMarkup(createElement(Home));
+  it('keeps the headline and description in one flush-left editorial column', async () => {
+    const markup = renderToStaticMarkup(await Home());
 
     expect(markup).toContain(
       '<div class="hero__copy"><div class="hero__statement"><h1 id="home-headline">Real prices. Better property decisions.</h1></div><p class="hero__description">',
@@ -98,8 +99,8 @@ describe('signedprice hero layout structure', () => {
 });
 
 describe('signedprice connected decision surfaces', () => {
-  it('renders three connected intent tiles with Rent visibly active', () => {
-    const markup = renderToStaticMarkup(createElement(Home));
+  it('renders three connected intent tiles with Rent visibly active', async () => {
+    const markup = renderToStaticMarkup(await Home());
 
     expect(markup.match(/class="intent-tabs__group/g)).toHaveLength(3);
     expect(
@@ -123,8 +124,8 @@ describe('signedprice connected decision surfaces', () => {
     });
   });
 
-  it('renders exactly two Modernist header controls', () => {
-    const markup = renderToStaticMarkup(createElement(Home));
+  it('renders exactly two Modernist header controls', async () => {
+    const markup = renderToStaticMarkup(await Home());
     const navigation = markup.match(
       /<nav aria-label="Primary navigation">([\s\S]*?)<\/nav>/,
     )?.[1] ?? '';
@@ -144,8 +145,8 @@ describe('signedprice connected decision surfaces', () => {
     expect(css).not.toMatch(/\.site-header__links li:(first|last)-child a/);
   });
 
-  it('renders the Korea-only market as one connected structural row', () => {
-    const markup = renderToStaticMarkup(createElement(Home));
+  it('renders the Korea-only market as one connected structural row', async () => {
+    const markup = renderToStaticMarkup(await Home());
 
     expect(markup.match(/<article class="market-card"/g)).toHaveLength(1);
     expect(declarationsFor(css, '.market-grid')).toMatchObject({
@@ -163,9 +164,9 @@ describe('signedprice connected decision surfaces', () => {
   });
 });
 
-describe('signedprice methodology and not-yet disclosure', () => {
-  it('presents the approved three-rule methodology row as one connected section', () => {
-    const markup = renderToStaticMarkup(createElement(Home));
+describe('signedprice methodology and Trust disclosure', () => {
+  it('presents the approved three-rule methodology row as one connected section', async () => {
+    const markup = renderToStaticMarkup(await Home());
 
     expect(markup).toContain('class="principles site-shell" id="principles"');
     expect(markup.match(/<article class="principle"/g)).toHaveLength(3);
@@ -174,11 +175,12 @@ describe('signedprice methodology and not-yet disclosure', () => {
     });
   });
 
-  it('separates unpublished work into a full-width dark section', () => {
-    const markup = renderToStaticMarkup(createElement(Home));
+  it('separates Trust principles into a full-width dark section', async () => {
+    const markup = renderToStaticMarkup(await Home());
 
     expect(markup).toContain('class="trust-strip" id="methodology"');
-    expect(markup).toContain('>Not yet published</dt>');
+    expect(markup).toContain('>Rights and method</dt>');
+    expect(markup).toContain('>Corrections</dt>');
     expect(declarationsFor(css, '.trust-strip-wrap')).toMatchObject({
       width: '100%',
       'max-width': 'none',

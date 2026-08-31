@@ -8,16 +8,17 @@ import {
   type SiteFooterModel,
   type SiteHeaderModel,
 } from '../../../../lib/site-copy';
+import { indexableMetadata } from '../../../../lib/public-metadata';
 
 type ExplorerPageProps = {
   readonly searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
-export const metadata: Metadata = {
+export const metadata: Metadata = indexableMetadata({
+  path: '/kr/seoul/explore/',
   title: 'Seoul district jeonse evidence | signedprice',
   description: 'Compare verified 45–55㎡ refundable jeonse deposits across Seoul districts.',
-  robots: { index: false, follow: true },
-};
+});
 
 const header: SiteHeaderModel = {
   brand: 'signedprice',
@@ -38,6 +39,8 @@ const footer: SiteFooterModel = {
     { label: 'Home', href: '/' },
     { label: 'Seoul market', href: '/kr/seoul/' },
     { label: 'Compare markets', href: '/compare/' },
+    { label: 'Trust', href: '/trust/' },
+    { label: 'Corrections', href: '/kr/seoul/corrections/' },
   ],
   status: KOREA_PUBLIC_RELEASE_STATUS,
 };
@@ -49,12 +52,13 @@ function singleValue(value: string | string[] | undefined): string | undefined {
 export default async function ExplorerPage({ searchParams }: ExplorerPageProps) {
   const query = await searchParams;
   const model = buildPublicAreaExploreModel(singleValue(query.district));
+  const naverMapClientId = process.env.NAVER_MAP_CLIENT_ID?.trim() || null;
 
   return (
     <div id="top" className="explorer-page">
       <SiteHeader copy={header} />
       <main>
-        <AreaExplorer model={model} />
+        <AreaExplorer model={model} naverMapClientId={naverMapClientId} />
       </main>
       <SiteFooter copy={footer} />
     </div>

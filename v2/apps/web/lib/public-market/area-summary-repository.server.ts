@@ -1,6 +1,10 @@
 import 'server-only';
 
-import type { PublicMarketSummary } from '@signedprice/market-core';
+import {
+  createEvidenceDescriptor,
+  type EvidenceDescriptor,
+  type PublicMarketSummary,
+} from '@signedprice/market-core';
 import type { SeoulDistrictSlug } from '@signedprice/korea-rent/browser';
 
 import {
@@ -10,6 +14,7 @@ import {
 
 export type PublicAreaSummaryRepository = Readonly<{
   getCitySummary(): PublicMarketSummary;
+  getEvidenceDescriptor(): EvidenceDescriptor;
   listDistrictSummaries(): readonly PublicMarketSummary[];
   getDistrictSummary(slug: SeoulDistrictSlug): PublicMarketSummary;
 }>;
@@ -33,10 +38,24 @@ export function createPublicAreaSummaryRepository(input: Readonly<{
     const districtsBySlug = new Map(
       districts.map((summary) => [summary.area, summary] as const),
     );
+    const evidence = createEvidenceDescriptor({
+      marketId: artifact.marketId,
+      provider: 'MOLIT',
+      dataset: 'reported rent contracts',
+      period: artifact.period,
+      generatedAt: artifact.generatedAt,
+      state: 'ready',
+      publicationMinimum: 5,
+      methodologyId: 'kr-jeonse-45-55-v1',
+      rightsPolicyId: 'kr-molit-rent-v1',
+    });
 
     return Object.freeze({
       getCitySummary(): PublicMarketSummary {
         return artifact.citySummary;
+      },
+      getEvidenceDescriptor(): EvidenceDescriptor {
+        return evidence;
       },
       listDistrictSummaries(): readonly PublicMarketSummary[] {
         return districts;

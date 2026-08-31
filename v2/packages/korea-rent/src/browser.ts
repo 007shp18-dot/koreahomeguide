@@ -39,6 +39,10 @@ export type RentCheckHousingType =
   | 'studio';
 
 export type SourceHousingType = Exclude<RentCheckHousingType, 'studio'>;
+export type {
+  KoreaConversionCurveProjection,
+  KoreaConversionHousingType,
+} from './conversion-artifact';
 export type KoreaContractType = 'new' | 'renewal' | 'unknown';
 export type KoreaRecordStatus = 'active' | 'cancelled' | 'unknown';
 export type RentCheckTier = 1 | 2 | 3;

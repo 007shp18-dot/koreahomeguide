@@ -16,6 +16,36 @@
   border-left: 2px solid var(--district-ink);
 }
 
+.breadcrumb {
+  min-height: 44px;
+  padding-inline: clamp(1rem, 4vw, 3.5rem);
+  display: flex;
+  align-items: center;
+  border-bottom: 2px solid var(--district-ink);
+}
+
+.breadcrumb ol {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  list-style: none;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.breadcrumb li + li::before {
+  margin-right: 0.6rem;
+  content: '/';
+  color: var(--district-muted);
+}
+
+.breadcrumb a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--district-ink);
+}
+
 .hero {
   min-height: 390px;
   padding: clamp(2rem, 7vw, 5.5rem);
@@ -83,12 +113,50 @@
 
 .evidence,
 .faq,
+.buildingEvidence,
 .source,
 .unavailable {
   padding: clamp(1rem, 4vw, 3.5rem);
   display: grid;
   gap: 1.5rem;
   border-bottom: 2px solid var(--district-ink);
+}
+
+.buildingList {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 2px solid var(--district-ink);
+  border-left: 2px solid var(--district-ink);
+  list-style: none;
+}
+
+.buildingList a {
+  min-height: 72px;
+  padding: 1rem;
+  display: grid;
+  gap: 0.35rem;
+  border-right: 2px solid var(--district-ink);
+  border-bottom: 2px solid var(--district-ink);
+  color: var(--district-ink);
+  text-decoration: none;
+}
+
+.buildingList span {
+  color: var(--district-muted);
+  font-size: 0.7rem;
+}
+
+.correctionLink {
+  width: fit-content;
+  min-height: 44px;
+  padding: 0.75rem 0.9rem;
+  display: inline-grid;
+  place-items: center;
+  border: 2px solid var(--district-ink);
+  color: var(--district-ink);
+  font-size: 0.72rem;
+  font-weight: 850;
+  text-decoration: none;
 }
 
 .sectionHeading {
@@ -180,7 +248,13 @@
   border-bottom: 2px solid var(--district-ink);
 }
 
+.primaryLinks {
+  display: grid;
+  border-right: 2px solid var(--district-ink);
+}
+
 .exploreLink,
+.rankingsLink,
 .nearby a {
   min-height: 44px;
   padding: 0.8rem;
@@ -196,7 +270,7 @@
 }
 
 .exploreLink {
-  border-right: 2px solid var(--district-ink);
+  border-bottom: 1px solid var(--district-ink);
 }
 
 .nearby {
@@ -223,13 +297,18 @@
 }
 
 .exploreLink:hover,
+.rankingsLink:hover,
 .nearby a:hover {
   color: var(--district-ground);
   background: var(--district-accent);
 }
 
 .exploreLink:focus-visible,
-.nearby a:focus-visible {
+.rankingsLink:focus-visible,
+.nearby a:focus-visible,
+.breadcrumb a:focus-visible,
+.buildingList a:focus-visible,
+.correctionLink:focus-visible {
   position: relative;
   z-index: 2;
   outline: 2px solid var(--district-accent);
@@ -260,13 +339,14 @@
   }
 
   .findingGrid,
-  .source dl,
-  .faqGrid,
-  .navigation {
+    .source dl,
+    .faqGrid,
+    .buildingList,
+    .navigation {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .exploreLink {
+  .primaryLinks {
     border-right: 0;
     border-bottom: 2px solid var(--district-ink);
   }

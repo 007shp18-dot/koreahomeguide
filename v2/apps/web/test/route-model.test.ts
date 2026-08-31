@@ -105,26 +105,26 @@ describe('market route model', () => {
     expect(JSON.stringify(model)).not.toMatch(unsupportedClaimPattern);
   });
 
-  it('keeps Singapore HDB public intelligence separate from private rights', () => {
+  it('keeps Singapore private-sale intelligence limited and workflows blocked', () => {
     const model = buildMarketPageModel('sg', 'singapore');
 
     expect(model?.capabilities).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          label: 'HDB public intelligence',
-          state: 'available',
-          housingSector: 'hdb',
+          label: 'URA private residential sale intelligence',
+          state: 'limited',
+          housingSector: 'private_residential',
         }),
         expect.objectContaining({
-          label: 'Private residential detail',
+          label: 'Professional connection detail',
           state: 'rights_blocked',
-          housingSector: 'private_residential',
+          housingSector: null,
         }),
       ]),
     );
     expect(model?.capabilities).not.toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ label: expect.stringMatching(/HDB.*private|private.*HDB/i) }),
+        expect.objectContaining({ label: expect.stringMatching(/HDB/i) }),
       ]),
     );
   });
@@ -196,7 +196,7 @@ describe('intent route model', () => {
     }
   });
 
-  it('does not use private residential detail as a Singapore source class', () => {
+  it('uses only release-gated private-sale evidence as a Singapore source class', () => {
     for (const intent of ['rent', 'buy', 'invest'] as const) {
       const model = buildIntentPageModel('sg', 'singapore', intent);
       const usableSources = model?.sourcePosture.items.filter(
@@ -205,11 +205,11 @@ describe('intent route model', () => {
 
       expect(usableSources).toEqual([
         expect.objectContaining({
-          label: 'HDB public market intelligence',
-          housingSector: 'hdb',
+          label: 'URA private residential sale intelligence',
+          housingSector: 'private_residential',
         }),
       ]);
-      expect(JSON.stringify(usableSources)).not.toMatch(/private residential/i);
+      expect(JSON.stringify(usableSources)).not.toMatch(/HDB|rental/i);
     }
   });
 });
@@ -237,16 +237,16 @@ describe('comparison route model', () => {
     );
   });
 
-  it('limits Singapore comparison cells to HDB or a separate rights boundary', () => {
+  it('separates Singapore private sales from rental and public-housing boundaries', () => {
     const model = buildComparisonPageModel();
     const singaporeCells = model.matrix.rows.map((row) =>
       row.cells.find((cell) => cell.marketId === 'sg-singapore'),
     );
 
-    expect(model.matrix.sectorBoundary).toMatch(/HDB.*not combined.*private residential/i);
+    expect(model.matrix.sectorBoundary).toMatch(/private residential sales.*not combined.*rentals.*public housing/i);
     expect(singaporeCells.slice(0, 2)).toEqual([
-      expect.objectContaining({ description: expect.stringMatching(/^HDB public/) }),
-      expect.objectContaining({ description: expect.stringMatching(/^HDB public/) }),
+      expect.objectContaining({ state: 'rights_blocked', description: expect.stringMatching(/^No Singapore rental/) }),
+      expect.objectContaining({ state: 'limited', description: expect.stringMatching(/^URA private residential/) }),
     ]);
     expect(JSON.stringify(singaporeCells.slice(0, 2))).not.toMatch(
       /aggregate|blend|combined/i,
@@ -255,7 +255,7 @@ describe('comparison route model', () => {
 });
 
 describe('real route rendering contracts', () => {
-  it('exports route-specific metadata without overriding the inherited SEO gate', async () => {
+  it('contains generated routes while indexing only the comparison page', async () => {
     const marketModule = await import('../app/[country]/[city]/page');
     const intentModule = await import('../app/[country]/[city]/[intent]/page');
     const compareModule = await import('../app/compare/page');
@@ -286,29 +286,30 @@ describe('real route rendering contracts', () => {
         title: 'Seoul property intelligence | signedprice',
         description:
           'Review Seoul Phase 1 product depth, source posture, supported property intents and current data-rights limits.',
+        robots: { index: false, follow: true },
       },
       {
         title: 'Buy in Singapore | signedprice',
         description:
           'Review the Phase 1 buy comparison scope, source posture and data-rights limits for Singapore.',
+        robots: { index: false, follow: true },
       },
       {
         title: 'Compare Seoul, Singapore and Dubai | signedprice',
         description:
           'Compare the Phase 1 capability and rights posture for rent, buy and invest decisions across Seoul, Singapore and Dubai.',
+        robots: { index: true, follow: true },
+        alternates: { canonical: 'https://www.signedprice.com/compare/' },
       },
       {
         title: 'Route not available | signedprice',
         description:
           'This signedprice Preview route is not available. Return to the approved market and comparison routes.',
+        robots: { index: false, follow: false },
       },
     ]);
-
-    for (const metadata of metadataByRoute) {
-      expect(metadata).not.toHaveProperty('robots');
-      expect(metadata).not.toHaveProperty('alternates');
-      expect(JSON.stringify(metadata)).not.toMatch(/canonical|languages|hreflang/i);
-    }
+    expect(metadataByRoute.filter((metadata) => Reflect.has(metadata as object, 'alternates')))
+      .toHaveLength(1);
   });
 
   it('renders all thirteen Task 4 routes from their static contracts', async () => {
@@ -355,6 +356,7 @@ describe('real route rendering contracts', () => {
 
     expect(markup).toContain('>This route is not available.</h1>');
     expect(markup).toContain('>Return to signedprice home</span>');
+    expect(markup).not.toMatch(/Singapore|Dubai/i);
     expect(markup).not.toMatch(unsupportedClaimPattern);
   });
 });

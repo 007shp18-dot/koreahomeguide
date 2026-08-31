@@ -1,6 +1,7 @@
 import 'server-only';
 
 import {
+  type EvidenceDescriptor,
   getPublicMarketConfig,
   type PublicMarketSummary,
 } from '@signedprice/market-core';
@@ -15,7 +16,9 @@ import { KR_MOLIT_RENT_RIGHTS } from '@signedprice/korea-rent';
 import {
   createPublicAreaSummaryRepository,
 } from './area-summary-repository.server';
+import { createPublicBuildingRepository } from './building-summary-repository.server';
 import type {
+  DistrictBuildingAvailability,
   ExploreDistrictModel,
   PublicAreaExploreModel,
   PublicAreaLegendBucket,
@@ -23,6 +26,7 @@ import type {
   PublicDistrictDisplayModel,
   PublicDistrictFaq,
   PublicDistrictModel,
+  PublicSourceBoundaryModel,
 } from './area-route-types';
 import {
   listAdjacentDistrictSlugs,
@@ -32,6 +36,7 @@ import {
 export type PublicAreaRouteDependencies = Readonly<{
   source: unknown;
   period: string;
+  buildingSource?: unknown;
 }>;
 
 const money = new Intl.NumberFormat('ko-KR', {
@@ -53,8 +58,22 @@ function changeLabel(chg3m: number | null): string {
   return `${chg3m > 0 ? '+' : ''}${chg3m.toFixed(1)}% over the prior 3 months`;
 }
 
-function sourceBoundary(period: string): PublicAreaSourceBoundaryModel {
-  return Object.freeze({
+export function buildPublicSourceBoundary(
+  period: string,
+  evidence: EvidenceDescriptor | null,
+): PublicSourceBoundaryModel;
+export function buildPublicSourceBoundary(
+  period: string,
+  evidence: EvidenceDescriptor | null,
+  includeGeometry: true,
+): PublicAreaSourceBoundaryModel;
+export function buildPublicSourceBoundary(
+  period: string,
+  evidence: EvidenceDescriptor | null,
+  includeGeometry = false,
+): PublicSourceBoundaryModel | PublicAreaSourceBoundaryModel {
+  const common = {
+    evidence,
     provider: 'MOLIT',
     period,
     attribution: Object.freeze([...KR_MOLIT_RENT_RIGHTS.attribution]),
@@ -63,21 +82,34 @@ function sourceBoundary(period: string): PublicAreaSourceBoundaryModel {
     includesNewAndRenewal: true,
     includesUnknownContractType: true,
     includesUnknownRecordStatus: true,
-    geometryAttribution:
-      'KOSTAT census boundaries via southkorea/seoul-maps (Apache-2.0)',
-  });
+  } as const;
+  return includeGeometry
+    ? Object.freeze({
+        ...common,
+        geometryAttribution:
+          'KOSTAT census boundaries via southkorea/seoul-maps (Apache-2.0)',
+      })
+    : Object.freeze(common);
 }
 
 function environmentDependencies(): PublicAreaRouteDependencies {
   const serialized = process.env.SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT;
+  const serializedBuildings = process.env.SIGNEDPRICE_PUBLIC_BUILDING_SUMMARY_ARTIFACT;
   let source: unknown;
+  let buildingSource: unknown;
   try {
     source = serialized === undefined ? undefined : JSON.parse(serialized);
   } catch {
     source = undefined;
   }
+  try {
+    buildingSource = serializedBuildings === undefined ? undefined : JSON.parse(serializedBuildings);
+  } catch {
+    buildingSource = undefined;
+  }
   return Object.freeze({
     source,
+    buildingSource,
     period: process.env.SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD ?? '',
   });
 }
@@ -132,14 +164,18 @@ export function buildPublicAreaExploreModel(
   selectedSlug: string | undefined,
   dependencies: PublicAreaRouteDependencies = environmentDependencies(),
 ): PublicAreaExploreModel {
-  const unavailableSource = sourceBoundary(dependencies.period);
+  const unavailableSource = buildPublicSourceBoundary(dependencies.period, null, true);
   try {
     const repository = createPublicAreaSummaryRepository({
       source: dependencies.source,
       expected: { marketId: 'kr-seoul', period: dependencies.period },
     });
     const citySummary = repository.getCitySummary();
-    const source = sourceBoundary(citySummary.period);
+    const source = buildPublicSourceBoundary(
+      citySummary.period,
+      repository.getEvidenceDescriptor(),
+      true,
+    );
     const summaries = repository.listDistrictSummaries();
     const buckets = bucketAssignments(summaries);
     const geometryBySlug = new Map(
@@ -156,8 +192,10 @@ export function buildPublicAreaExploreModel(
       }
       return Object.freeze({
         ...identity,
-        href: `/kr/seoul/${identity.slug}/` as const,
+        href: `/kr/seoul/explore/${identity.slug}/` as const,
         path: geometry.path,
+        latitude: geometry.latitude,
+        longitude: geometry.longitude,
         summary,
         state: summary.published ? 'published' : 'withheld',
         bucket: summary.published ? buckets.get(identity.slug) ?? null : null,
@@ -192,6 +230,40 @@ function nearbyDistricts(slug: SeoulDistrictSlug): readonly SeoulRentCheckDistri
     if (district === null) throw new TypeError('Invalid adjacent district identity.');
     return district;
   }));
+}
+
+const buildingNotLoadedAvailability = Object.freeze({
+  status: 'not_loaded',
+  empty: Object.freeze({
+    title: 'Building evidence is not loaded',
+    reason: 'The verified district artifact does not contain building records',
+    nextAction: 'Use district evidence or return after a verified building snapshot is installed',
+    detail: Object.freeze({ code: 'NOT_LOADED', market: 'Seoul buildings' }),
+  }),
+} as const);
+
+function buildingAvailabilityFor(
+  slug: SeoulDistrictSlug,
+  dependencies: PublicAreaRouteDependencies,
+): DistrictBuildingAvailability {
+  try {
+    const repository = createPublicBuildingRepository({
+      source: dependencies.buildingSource,
+      expected: { marketId: 'kr-seoul', period: dependencies.period },
+    });
+    const buildings = Object.freeze(repository.listByDistrict(slug).map((building) => Object.freeze({
+      id: building.buildingId,
+      name: building.name,
+      housingType: building.housingType,
+      sampleLabel: sampleLabel(building.overall.n),
+      href: `/kr/seoul/explore/${slug}/${building.buildingId}/` as const,
+    })));
+    return buildings.length === 0
+      ? buildingNotLoadedAvailability
+      : Object.freeze({ status: 'ready', buildings });
+  } catch {
+    return buildingNotLoadedAvailability;
+  }
 }
 
 function displayFor(
@@ -317,7 +389,7 @@ export function buildPublicDistrictModel(
   const identity = getSeoulDistrictBySlug(slug);
   if (identity === null) return null;
   const nearby = nearbyDistricts(identity.slug);
-  const source = sourceBoundary(dependencies.period);
+  let source = buildPublicSourceBoundary(dependencies.period, null, true);
   try {
     const config = getPublicMarketConfig('kr-seoul');
     if (config.availability !== 'ready') throw new TypeError('Market unavailable.');
@@ -326,7 +398,13 @@ export function buildPublicDistrictModel(
       expected: { marketId: 'kr-seoul', period: dependencies.period },
     });
     const summary = repository.getDistrictSummary(identity.slug);
+    source = buildPublicSourceBoundary(
+      summary.period,
+      repository.getEvidenceDescriptor(),
+      true,
+    );
     const faq = faqFor(identity, summary);
+    const buildingAvailability = buildingAvailabilityFor(identity.slug, dependencies);
     const common = {
       identity,
       display: displayFor(identity, summary),
@@ -335,6 +413,7 @@ export function buildPublicDistrictModel(
       datasetJsonLd: datasetFor(identity, summary),
       faqJsonLd: faqJsonLdFor(faq),
       source,
+      buildingAvailability,
     } as const;
     if (summary.published) {
       return Object.freeze({ status: 'published', summary, ...common });
@@ -346,6 +425,7 @@ export function buildPublicDistrictModel(
       identity,
       nearby,
       source,
+      buildingAvailability: buildingNotLoadedAvailability,
       message: 'Verified district summary unavailable',
     });
   }

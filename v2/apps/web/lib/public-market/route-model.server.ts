@@ -1,6 +1,7 @@
 import 'server-only';
 
 import {
+  type EvidenceDescriptor,
   getPublicMarketConfig,
   type PublicMarketConfig,
   type PublicMarketSummary,
@@ -19,6 +20,7 @@ import {
   createPublicSummaryRepository,
 } from './summary-repository.server';
 import { parsePublicSummaryArtifact } from './summary-schema';
+import { indexableMetadata } from '../public-metadata';
 
 export { PUBLIC_SUMMARY_ARTIFACT_VERSION } from './summary-repository.server';
 
@@ -48,13 +50,6 @@ export type KoreaPublicRouteModel = Readonly<{
   }>;
 }>;
 
-export const koreaPublicMetadata = {
-  title: 'Seoul jeonse deposits | signedprice',
-  description:
-    'Compare a refundable deposit with verified Seoul jeonse contracts reported for 45–55㎡ homes.',
-  robots: { index: false, follow: true },
-} as const satisfies Metadata;
-
 const KOREA_PUBLIC_PATHS = [
   '/kr/',
   '/kr/check/seoul/',
@@ -67,7 +62,12 @@ export function buildKoreaPublicPageMetadata(
   if (!KOREA_PUBLIC_PATHS.includes(path as (typeof KOREA_PUBLIC_PATHS)[number])) {
     throw new TypeError('Unknown Korea public canonical path.');
   }
-  return koreaPublicMetadata;
+  return indexableMetadata({
+    path: path as (typeof KOREA_PUBLIC_PATHS)[number],
+    title: 'Seoul jeonse deposits | signedprice',
+    description:
+      'Compare a refundable deposit with verified Seoul jeonse contracts reported for 45–55㎡ homes.',
+  });
 }
 
 const header = {
@@ -89,6 +89,8 @@ const footer = {
     { label: 'Korea home', href: '/kr/' },
     { label: 'Check deposit', href: '/kr/check/seoul' },
     { label: 'Evidence', href: '/kr/seoul' },
+    { label: 'Trust', href: '/trust/' },
+    { label: 'Corrections', href: '/kr/seoul/corrections/' },
   ],
   status: KOREA_PUBLIC_RELEASE_STATUS,
 } as const satisfies SiteFooterModel;
@@ -129,8 +131,12 @@ const navigation = {
   ],
 } as const;
 
-function sourceBoundary(period: string): PublicSourceBoundaryModel {
+function sourceBoundary(
+  period: string,
+  evidence: EvidenceDescriptor,
+): PublicSourceBoundaryModel {
   return Object.freeze({
+    evidence,
     provider: 'MOLIT',
     period,
     attribution: Object.freeze([...KR_MOLIT_RENT_RIGHTS.attribution]),
@@ -223,7 +229,7 @@ export function buildKoreaPublicRouteModel(
     footer,
     pageCopy,
     methodology,
-    source: sourceBoundary(summary.period),
+    source: sourceBoundary(summary.period, repository.getEvidenceDescriptor()),
     navigation,
   });
 }

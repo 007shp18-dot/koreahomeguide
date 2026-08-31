@@ -12,6 +12,7 @@ import {
   PUBLIC_AREA_FIXTURE_PERIOD,
   createPublicAreaFixture,
 } from './public-area-fixture';
+import { createPublicBuildingFixture } from './public-building-fixture';
 
 function publishedModel() {
   const model = buildPublicDistrictModel('gangnam-gu', {
@@ -44,6 +45,8 @@ describe('public district detail page', () => {
     const html = renderToStaticMarkup(createElement(DistrictDetailPage, { model }));
 
     expect(html).toContain('data-district-detail="published"');
+    expect(html).toContain('aria-label="Breadcrumb"');
+    expect(html).toContain('Explore');
     expect(html).toContain(model.identity.nameEn);
     expect(html).toContain(model.identity.nameKo);
     expect(html).toContain(model.display.medianLabel!);
@@ -61,13 +64,23 @@ describe('public district detail page', () => {
     expect(html).toContain('https://schema.org');
     expect(html).toContain(PUBLIC_AREA_FIXTURE_PERIOD);
     expect(html).toContain('MOLIT');
+    expect(html).toContain('href="/kr/seoul/corrections/"');
     expect(html).toContain('KOSTAT census boundaries via southkorea/seoul-maps (Apache-2.0)');
     expect(html).toContain('Korea public evidence. Publication limits shown.');
     expect(html).not.toMatch(/public P2 preview|Production launch is not authorized/i);
     expect(html).toContain('href="/kr/seoul/explore?district=gangnam-gu"');
+    expect(html).toContain('href="/kr/seoul/rankings"');
+    expect(html).toContain('View district rankings');
     for (const nearby of model.nearby) {
-      expect(html).toContain(`href="/kr/seoul/${nearby.slug}"`);
+      expect(html).toContain(`href="/kr/seoul/explore/${nearby.slug}"`);
     }
+    expect(model.buildingAvailability).toMatchObject({ status: 'not_loaded' });
+    expect(html).toContain('Building evidence is not loaded');
+    expect(html).toContain('The verified district artifact does not contain building records');
+    expect(html).toContain(
+      'Use district evidence or return after a verified building snapshot is installed',
+    );
+    expect(html).not.toMatch(/community|save this building/i);
   });
 
   it('renders a money-free refusal with real count, hatch, FAQ, and navigation', () => {
@@ -82,12 +95,29 @@ describe('public district detail page', () => {
     expect(html).toContain('data-structured-data="dataset"');
     expect(html).toContain('data-structured-data="faq"');
     expect(html).toContain('href="/kr/seoul/explore?district=gangnam-gu"');
+    expect(html).toContain('href="/kr/seoul/rankings"');
     expect(html).not.toContain('name="quote"');
     expect(html).not.toContain('data-quote-marker');
     expect(html).not.toMatch(/<dt>(?:Minimum|25th percentile|Median|75th percentile|Maximum)<\/dt>/);
     expect(html).not.toContain('₩');
     expect(html).not.toContain(String(CITY_MEDIAN_SENTINEL));
     expect(html).not.toMatch(/"unitCode":"KRW"|"(?:min|p25|med|p75|max|chg3m)":/);
+    expect(html).toContain('Building evidence is not loaded');
+  });
+
+  it('shows building links only when a verified same-period artifact is installed', () => {
+    const model = buildPublicDistrictModel('gangnam-gu', {
+      source: createPublicAreaFixture(),
+      buildingSource: createPublicBuildingFixture(),
+      period: PUBLIC_AREA_FIXTURE_PERIOD,
+    });
+    if (model === null) throw new Error('Expected district identity.');
+    const html = renderToStaticMarkup(<DistrictDetailPage model={model} />);
+
+    expect(model.buildingAvailability).toMatchObject({ status: 'ready' });
+    expect(html).toContain('Evidence Tower');
+    expect(html).toContain('href="/kr/seoul/explore/gangnam-gu/gangnam-evidence-tower"');
+    expect(html).not.toContain('Building evidence is not loaded');
   });
 
   it('fails closed without city money or structured data when the artifact is unavailable', () => {
@@ -101,9 +131,11 @@ describe('public district detail page', () => {
     expect(html).toContain('data-district-detail="unavailable"');
     expect(html).toContain('Verified district summary unavailable');
     expect(html).toContain('href="/kr/seoul/explore?district=gangnam-gu"');
+    expect(html).toContain('href="/kr/seoul/rankings"');
     expect(html).not.toContain('data-structured-data');
     expect(html).not.toContain('₩');
     expect(html).not.toContain(String(CITY_MEDIAN_SENTINEL));
+    expect(html).toContain('Building evidence is not loaded');
   });
 
   it('escapes less-than characters in model-owned structured data', () => {

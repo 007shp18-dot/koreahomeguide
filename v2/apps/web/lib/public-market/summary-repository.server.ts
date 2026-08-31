@@ -1,6 +1,10 @@
 import 'server-only';
 
-import type { PublicMarketSummary } from '@signedprice/market-core';
+import {
+  createEvidenceDescriptor,
+  type EvidenceDescriptor,
+  type PublicMarketSummary,
+} from '@signedprice/market-core';
 
 import {
   parsePublicSummaryArtifact,
@@ -21,6 +25,7 @@ export type PublicSummaryQuery = Readonly<{
 
 export type PublicSummaryRepository = Readonly<{
   getSummary(query: PublicSummaryQuery): PublicMarketSummary;
+  getEvidenceDescriptor(): EvidenceDescriptor;
 }>;
 
 export class PublicSummaryUnavailableError extends Error {
@@ -45,8 +50,22 @@ export function createPublicSummaryRepository(input: Readonly<{
     const summaries = new Map(
       artifact.summaries.map((summary) => [key(summary), summary] as const),
     );
+    const evidence = createEvidenceDescriptor({
+      marketId: artifact.marketId,
+      provider: 'MOLIT',
+      dataset: 'reported rent contracts',
+      period: artifact.period,
+      generatedAt: artifact.generatedAt,
+      state: 'ready',
+      publicationMinimum: 5,
+      methodologyId: 'kr-jeonse-45-55-v1',
+      rightsPolicyId: 'kr-molit-rent-v1',
+    });
 
     return Object.freeze({
+      getEvidenceDescriptor(): EvidenceDescriptor {
+        return evidence;
+      },
       getSummary(query: PublicSummaryQuery): PublicMarketSummary {
         const summary = summaries.get(key(query));
         if (summary === undefined) throw new PublicSummaryUnavailableError();

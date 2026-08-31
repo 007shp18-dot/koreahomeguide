@@ -1,0 +1,90 @@
+.frame {
+  position: relative;
+  min-width: 0;
+}
+
+.canvas {
+  width: 100%;
+  min-height: clamp(360px, 56vw, 620px);
+  border: 2px solid #201e1d;
+  background: #fafafa;
+}
+
+.fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  background: #fafafa;
+}
+
+.fallbackHidden {
+  display: none;
+}
+
+.placeWorkspace {
+  display: grid;
+  gap: 1rem;
+}
+
+.toolbar {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.toolbar > label {
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.toolbar > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.toolbar input,
+.toolbar button {
+  min-height: 48px;
+  padding: 0.75rem;
+  border: 2px solid #201e1d;
+  border-radius: 0;
+  font: inherit;
+}
+
+.toolbar button {
+  color: white;
+  background: #1d4ed8;
+  border-left: 0;
+  font-weight: 850;
+}
+
+.toolbar button:disabled {
+  color: #5d5958;
+  background: #dedcdc;
+}
+
+.toolbar p {
+  min-height: 1.4em;
+  color: #5d5958;
+  font-size: 0.76rem;
+}
+
+.unavailable {
+  min-height: 240px;
+  padding: 1.25rem;
+  display: grid;
+  place-items: center;
+  border: 2px solid #201e1d;
+  background: repeating-linear-gradient(-45deg, #f3f2f2 0 9px, #dedcdc 9px 10px);
+  text-align: center;
+}
+
+@media (max-width: 560px) {
+  .toolbar > div {
+    grid-template-columns: 1fr;
+  }
+
+  .toolbar button {
+    border-top: 0;
+    border-left: 2px solid #201e1d;
+  }
+}

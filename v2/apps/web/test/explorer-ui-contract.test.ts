@@ -10,6 +10,9 @@ import {
 } from './public-area-fixture';
 
 vi.mock('server-only', () => ({}));
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ push: vi.fn() }),
+}));
 
 type ExplorerPageModule = {
   default: (props: {
@@ -81,7 +84,7 @@ afterEach(() => {
 });
 
 describe('/kr/seoul/explore/ route contract', () => {
-  it('renders the noindex Seoul district evidence map and complete table', async () => {
+  it('renders the indexable Seoul district evidence map and complete table', async () => {
     vi.stubEnv(
       'SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT',
       JSON.stringify(createPublicAreaFixture()),
@@ -93,7 +96,10 @@ describe('/kr/seoul/explore/ route contract', () => {
     });
     const markup = renderToStaticMarkup(page as never);
 
-    expect(metadata.robots).toEqual({ index: false, follow: true });
+    expect(metadata.robots).toEqual({ index: true, follow: true });
+    expect(Reflect.get(metadata, 'alternates')).toEqual({
+      canonical: 'https://www.signedprice.com/kr/seoul/explore/',
+    });
     expect(markup).toContain('Selected · Dongjak-gu');
     expect(markup).toContain('role="img"');
     expect(markup).toContain('viewBox="0 0 720 560"');

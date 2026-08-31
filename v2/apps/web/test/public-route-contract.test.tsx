@@ -9,6 +9,13 @@ import sitemap from '../app/sitemap';
 import { generateStaticParams as marketStaticParams } from '../app/[country]/[city]/page';
 import { generateStaticParams as intentStaticParams } from '../app/[country]/[city]/[intent]/page';
 import { metadata as proofMetadata } from '../app/kr/seoul/tools/rent-check/page';
+import { metadata as rankingsMetadata } from '../app/kr/seoul/rankings/page';
+import { metadata as explorerMetadata } from '../app/kr/seoul/explore/page';
+import { metadata as trustMetadata } from '../app/trust/page';
+import { metadata as compareMetadata } from '../app/compare/page';
+import { homepageCopy } from '../lib/site-copy';
+import { GUIDES } from '../lib/guide/guide-content';
+import { createPublicAreaFixture } from './public-area-fixture';
 import {
   PUBLIC_SUMMARY_ARTIFACT_VERSION,
   buildKoreaPublicPageMetadata,
@@ -56,8 +63,8 @@ describe('Korea-only public route availability', () => {
       .not.toMatch(/singapore|dubai|\bsg\b|\bae\b/);
   });
 
-  it('removes future-market destinations from public home navigation', () => {
-    const html = renderToStaticMarkup(<Home />);
+  it('removes future-market destinations from public home navigation', async () => {
+    const html = renderToStaticMarkup(await Home());
     expect(html).toContain('/kr/seoul/');
     expect(html).not.toMatch(/href="\/(?:sg|ae)\//);
     expect(html).not.toMatch(/Explore (?:Singapore|Dubai)/);
@@ -69,17 +76,19 @@ describe('public migration containment', () => {
     '/kr/',
     '/kr/check/seoul/',
     '/kr/seoul/',
-  ])('keeps published Korea page %s noindex without migration metadata', (path) => {
+  ])('indexes published Korea page %s with one self canonical', (path) => {
     const metadata = buildKoreaPublicPageMetadata(path);
 
-    expect(metadata.robots).toEqual({ index: false, follow: true });
-    expect(metadata).not.toHaveProperty('alternates');
+    expect(metadata.robots).toEqual({ index: true, follow: true });
+    expect(metadata.alternates).toEqual({
+      canonical: `https://www.signedprice.com${path}`,
+    });
   });
 
-  it('keeps withheld Korea pages noindex with no canonical', () => {
-    const metadata = buildKoreaPublicPageMetadata('/kr/check/seoul/');
-    expect(metadata.robots).toEqual({ index: false, follow: true });
-    expect(metadata).not.toHaveProperty('alternates');
+  it('refuses metadata for paths outside the approved Korea cohort', () => {
+    expect(() => buildKoreaPublicPageMetadata('/kr/unknown/')).toThrow(
+      'Unknown Korea public canonical path.',
+    );
   });
 
   it('keeps the protected exact-record proof noindex without canonical or hreflang', () => {
@@ -87,18 +96,76 @@ describe('public migration containment', () => {
     expect(proofMetadata).not.toHaveProperty('alternates');
   });
 
-  it('keeps the published Korea cohort out of the sitemap before migration', () => {
-    vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_ARTIFACT', JSON.stringify(artifact(true)));
-    vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', period);
-    expect(sitemap()).toEqual([]);
+  it('indexes the global and verified Korea discovery surfaces with self canonicals', () => {
+    for (const [metadata, path] of [
+      [homepageCopy.metadata, '/'],
+      [compareMetadata, '/compare/'],
+      [trustMetadata, '/trust/'],
+      [explorerMetadata, '/kr/seoul/explore/'],
+      [rankingsMetadata, '/kr/seoul/rankings/'],
+    ] as const) {
+      expect(metadata.robots).toEqual({ index: true, follow: true });
+      expect(metadata.alternates).toEqual({
+        canonical: `https://www.signedprice.com${path}`,
+      });
+    }
   });
 
-  it('emits no sitemap URL for withheld or missing evidence', () => {
+  it('publishes only the approved global, Korea, and guide cohort in the sitemap', () => {
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_ARTIFACT', JSON.stringify(artifact(true)));
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', period);
+    const urls = sitemap().map(({ url }) => url);
+    expect(urls).toEqual([
+      'https://www.signedprice.com/',
+      'https://www.signedprice.com/compare/',
+      'https://www.signedprice.com/trust/',
+      'https://www.signedprice.com/kr/',
+      'https://www.signedprice.com/kr/check/seoul/',
+      'https://www.signedprice.com/kr/seoul/',
+      'https://www.signedprice.com/kr/seoul/guide/',
+      ...GUIDES.map(({ slug }) => `https://www.signedprice.com/kr/seoul/guide/${slug}/`),
+    ]);
+  });
+
+  it('adds Explore, Rankings, and only published canonical district URLs with area evidence', () => {
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_ARTIFACT', JSON.stringify(artifact(true)));
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', period);
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT', JSON.stringify(
+      createPublicAreaFixture({
+        publishedMedians: {
+          'jongno-gu': 300_000_000,
+          'gangnam-gu': 500_000_000,
+        },
+      }),
+    ));
+
+    const urls = sitemap().map(({ url }) => url);
+    expect(urls).toContain('https://www.signedprice.com/kr/seoul/explore/');
+    expect(urls).toContain('https://www.signedprice.com/kr/seoul/rankings/');
+    expect(urls).toContain('https://www.signedprice.com/kr/seoul/explore/jongno-gu/');
+    expect(urls).toContain('https://www.signedprice.com/kr/seoul/explore/gangnam-gu/');
+    expect(urls).not.toContain('https://www.signedprice.com/kr/seoul/explore/mapo-gu/');
+    expect(urls).not.toContain('https://www.signedprice.com/kr/seoul/gangnam-gu/');
+  });
+
+  it('keeps evidence-dependent Korea pages out when evidence is withheld or missing', () => {
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_ARTIFACT', JSON.stringify(artifact(false)));
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', period);
-    expect(sitemap()).toEqual([]);
+    expect(sitemap().map(({ url }) => url)).toEqual([
+      'https://www.signedprice.com/',
+      'https://www.signedprice.com/compare/',
+      'https://www.signedprice.com/trust/',
+      'https://www.signedprice.com/kr/seoul/guide/',
+      ...GUIDES.map(({ slug }) => `https://www.signedprice.com/kr/seoul/guide/${slug}/`),
+    ]);
 
     vi.unstubAllEnvs();
-    expect(sitemap()).toEqual([]);
+    expect(sitemap().map(({ url }) => url)).toEqual([
+      'https://www.signedprice.com/',
+      'https://www.signedprice.com/compare/',
+      'https://www.signedprice.com/trust/',
+      'https://www.signedprice.com/kr/seoul/guide/',
+      ...GUIDES.map(({ slug }) => `https://www.signedprice.com/kr/seoul/guide/${slug}/`),
+    ]);
   });
 });

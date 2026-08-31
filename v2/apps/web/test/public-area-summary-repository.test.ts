@@ -37,8 +37,20 @@ describe('verified public area summary repository', () => {
     expect(store.getDistrictSummary('gangnam-gu')).toBe(
       districts.find(({ area }) => area === 'gangnam-gu'),
     );
+    expect(store.getEvidenceDescriptor()).toEqual({
+      marketId: 'kr-seoul',
+      provider: 'MOLIT',
+      dataset: 'reported rent contracts',
+      period: PUBLIC_AREA_FIXTURE_PERIOD,
+      generatedAt: '2026-08-31T01:13:24.787Z',
+      state: 'ready',
+      publicationMinimum: 5,
+      methodologyId: 'kr-jeonse-45-55-v1',
+      rightsPolicyId: 'kr-molit-rent-v1',
+    });
     expect(Object.isFrozen(store)).toBe(true);
     expect(Object.isFrozen(districts)).toBe(true);
+    expect(Object.isFrozen(store.getEvidenceDescriptor())).toBe(true);
   });
 
   it.each([

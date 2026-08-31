@@ -24,7 +24,7 @@ describe('release status', () => {
       commit: 'abc123',
       environment: 'preview',
       markets: expectedMarkets,
-      indexing: 'blocked',
+      indexing: 'enabled',
     });
     expect(Object.keys(status)).toEqual([
       'brand',
@@ -84,7 +84,7 @@ describe('GET /api/status', () => {
       commit: '0123456789abcdef',
       environment: 'preview',
       markets: expectedMarkets,
-      indexing: 'blocked',
+      indexing: 'enabled',
     });
   });
 });

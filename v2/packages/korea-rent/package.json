@@ -6,6 +6,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./browser": "./src/browser.ts",
+    "./conversion-artifact": "./src/conversion-artifact.ts",
     "./result-validation": "./src/result-validation.ts"
   },
   "scripts": {

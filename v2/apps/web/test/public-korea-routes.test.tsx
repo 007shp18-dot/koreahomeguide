@@ -12,6 +12,7 @@ import {
 } from '../lib/public-market/route-model.server';
 
 const period = '2026-01/2026-07';
+const conversionSha256 = 'a'.repeat(64);
 
 function publishedSummary() {
   return {
@@ -40,6 +41,45 @@ function useArtifact(value = artifact()) {
   vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', period);
 }
 
+function useConversionArtifact() {
+  vi.stubEnv('SIGNEDPRICE_CONVERSION_CURVE_ARTIFACT', JSON.stringify({
+    artifactVersion: 1,
+    generatedAt: '2026-08-30T00:00:00.000Z',
+    provenance: {
+      marketId: 'kr-seoul', period, provider: 'MOLIT', endpointVersion: 'v1',
+      parserVersion: 'kr-molit-rent-parser-v2', rightsPolicyId: 'kr-molit-rent-v1',
+      sourceComplete: true, sha256: conversionSha256,
+    },
+    readiness: { state: 'ready', maximumAgeDays: 45, minimumPairsPerAnchor: 120 },
+    totals: {
+      eligiblePairCount: 620,
+      excluded: { cancelled: 4, invalidMoney: 2, differentBuildingOrArea: 10 },
+    },
+    curves: [
+      {
+        housingType: 'apartment',
+        observedMinDepositWon: 30_000_000,
+        observedMaxDepositWon: 100_000_000,
+        anchors: [
+          { depositWon: 30_000_000, annualRate: 0.05, pairCount: 140 },
+          { depositWon: 100_000_000, annualRate: 0.04, pairCount: 160 },
+        ],
+      },
+      {
+        housingType: 'officetel',
+        observedMinDepositWon: 20_000_000,
+        observedMaxDepositWon: 80_000_000,
+        anchors: [
+          { depositWon: 20_000_000, annualRate: 0.06, pairCount: 150 },
+          { depositWon: 80_000_000, annualRate: 0.05, pairCount: 170 },
+        ],
+      },
+    ],
+  }));
+  vi.stubEnv('SIGNEDPRICE_CONVERSION_CURVE_PERIOD', period);
+  vi.stubEnv('SIGNEDPRICE_CONVERSION_CURVE_SHA256', conversionSha256);
+}
+
 afterEach(() => vi.unstubAllEnvs());
 
 describe('Korea public route model', () => {
@@ -50,6 +90,17 @@ describe('Korea public route model', () => {
     });
     expect(model?.summary).toEqual(publishedSummary());
     expect(model?.source).toEqual({
+      evidence: {
+        marketId: 'kr-seoul',
+        provider: 'MOLIT',
+        dataset: 'reported rent contracts',
+        period,
+        generatedAt: '2026-08-30T00:00:00.000Z',
+        state: 'ready',
+        publicationMinimum: 5,
+        methodologyId: 'kr-jeonse-45-55-v1',
+        rightsPolicyId: 'kr-molit-rent-v1',
+      },
       provider: 'MOLIT',
       period,
       attribution: ['Ministry of Land, Infrastructure and Transport (MOLIT)'],
@@ -75,7 +126,6 @@ describe('Korea public route model', () => {
 
 describe('Korea public SSR routes', () => {
   it.each([
-    ['home', async () => KoreaHomePage()],
     ['check', async () => KoreaCheckPage({ params: Promise.resolve({ area: 'seoul' }) })],
     ['area', async () => KoreaAreaPage({ params: Promise.resolve({ area: 'seoul' }) })],
   ])('puts every published number and sample count in initial %s HTML', async (name, render) => {
@@ -105,8 +155,9 @@ describe('Korea public SSR routes', () => {
     expect(html).not.toContain('/kr/seoul/tools/rent-check');
   });
 
-  it('renders the two-input quote on home and check but a static graph on area detail', async () => {
+  it('renders the contract decision workspace on home, the quote on check, and a static area graph', async () => {
     useArtifact();
+    useConversionArtifact();
     const home = renderToStaticMarkup(await KoreaHomePage());
     const check = renderToStaticMarkup(await KoreaCheckPage({
       params: Promise.resolve({ area: 'seoul' }),
@@ -115,10 +166,24 @@ describe('Korea public SSR routes', () => {
       params: Promise.resolve({ area: 'seoul' }),
     }));
 
-    expect((home.match(/<(?:input|select)\b/g) ?? [])).toHaveLength(2);
+    expect((home.match(/<(?:input|select)\b/g) ?? [])).toHaveLength(7);
+    expect(home).toContain('Offer A');
+    expect(home).toContain('Offer B');
+    expect(home).toContain('Which rent offer');
+    expect(home).toContain('MOLIT reported rental contracts');
+    expect(home).toContain('href="/kr/seoul/tools/rent-check"');
     expect((check.match(/<(?:input|select)\b/g) ?? [])).toHaveLength(2);
     expect(area).not.toMatch(/<(?:input|select)\b/);
     expect(area).toContain('data-evidence-state="published"');
+  });
+
+  it('fails closed on home without conversion evidence instead of returning a 404', async () => {
+    const home = renderToStaticMarkup(await KoreaHomePage());
+
+    expect(home).toContain('Verified conversion evidence is unavailable.');
+    expect(home).toContain('data-evidence-state="unavailable"');
+    expect(home).not.toMatch(/<(?:input|select|button)\b/);
+    expect(home).not.toMatch(/annualRate|pairCount|72,291|29\.4%/i);
   });
 
   it('withholds sparse evidence recursively without monetary or marker leakage', async () => {

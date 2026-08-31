@@ -1,4 +1,7 @@
 import type { PublicSourceBoundaryModel } from '../../lib/public-market/area-route-types';
+import { createEvidenceEmptyState } from '@signedprice/market-core';
+import { EvidenceDisclosure } from '../trust/evidence-disclosure';
+import { EvidenceEmptyStatePanel } from '../trust/evidence-empty-state';
 import styles from './public-market.module.css';
 
 export function PublicSourceBoundary({
@@ -13,6 +16,20 @@ export function PublicSourceBoundary({
         <p>Source and limits</p>
         <h2 id="public-source-boundary-heading">Read the evidence with its boundary.</h2>
       </div>
+      {model.evidence === null ? (
+        <EvidenceEmptyStatePanel
+          state={createEvidenceEmptyState({
+            code: 'SOURCE_UNAVAILABLE',
+            retryable: true,
+          })}
+        />
+      ) : (
+        <EvidenceDisclosure
+          model={model.evidence}
+          boundary="Reported completed-period contracts, not current listings."
+          attribution={model.attribution}
+        />
+      )}
       <dl>
         <div>
           <dt>Registry</dt>
@@ -41,7 +58,6 @@ export function PublicSourceBoundary({
           </div>
         )}
       </dl>
-      <p className={styles.publicSourceRights}>{model.attribution.join(', ')}</p>
       <p>
         New and renewal contracts are combined. Unknown contract type and Unknown record status
         are included when the other fixed filters pass.

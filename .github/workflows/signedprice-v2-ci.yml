@@ -7,6 +7,7 @@ on:
       - 'artifacts/public-p1/**'
       - 'artifacts/public-p2/**'
       - 'docs/operations/signedprice-public-p1-release-gate.md'
+      - 'docs/operations/signedprice-singapore-release-gate.md'
       - 'artifacts/v2-migration/**'
       - 'scripts/v2-migration/**'
       - 'tests/**/*.test.cjs'
@@ -17,6 +18,7 @@ on:
       - 'artifacts/public-p1/**'
       - 'artifacts/public-p2/**'
       - 'docs/operations/signedprice-public-p1-release-gate.md'
+      - 'docs/operations/signedprice-singapore-release-gate.md'
       - 'artifacts/v2-migration/**'
       - 'scripts/v2-migration/**'
       - 'tests/**/*.test.cjs'
@@ -56,6 +58,8 @@ jobs:
         run: pnpm exec vitest run tests/public-area-runner-absence.test.ts
       - name: Reject server-only Rent Check data from client assets
         run: pnpm check:rent-client-boundary
+      - name: Reject server-only Singapore provider data from client assets
+        run: pnpm check:singapore-client-boundary
       - name: Run full Phase 0 legacy gate
         working-directory: .
         run: node scripts/v2-migration/verify-phase-0.cjs
@@ -81,7 +85,7 @@ jobs:
       - name: Install locked Playwright Chromium
         run: pnpm exec playwright install --with-deps chromium
       - name: Run wide, desktop and mobile workbook release gate
-        run: pnpm e2e --project=desktop-chromium --project=mobile-chromium --project=wide-chromium
+        run: pnpm e2e --project=desktop-chromium --project=mobile-chromium --project=tablet-chromium --project=wide-chromium
       - name: Upload browser failure diagnostics
         if: failure()
         uses: actions/upload-artifact@v4.6.2

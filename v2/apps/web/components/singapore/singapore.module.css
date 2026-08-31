@@ -1,0 +1,197 @@
+.page {
+  min-height: 100vh;
+  color: #1f1e1d;
+  background: #f3f2f2;
+  font-variant-numeric: tabular-nums;
+}
+
+.main {
+  width: min(1180px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 3rem 0 5rem;
+}
+
+.eyebrow,
+.sectionLabel {
+  margin: 0 0 0.75rem;
+  color: #1d4ed8;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.hero {
+  display: grid;
+  gap: 1rem;
+  padding: 3rem 0;
+  border-top: 2px solid #1f1e1d;
+  border-bottom: 2px solid #1f1e1d;
+}
+
+.hero h1 {
+  max-width: 920px;
+  margin: 0;
+  font-size: clamp(2.5rem, 7vw, 6.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.055em;
+}
+
+.hero > p:not(.eyebrow) {
+  max-width: 740px;
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.actions,
+.scope,
+.breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.actions a,
+.breadcrumbs a,
+.scope span {
+  min-height: 44px;
+  padding: 0.65rem 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  border: 2px solid #1f1e1d;
+  color: inherit;
+  background: transparent;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.actions a:first-child {
+  color: white;
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+}
+
+.section {
+  padding: 3rem 0;
+  border-bottom: 2px solid #1f1e1d;
+}
+
+.section h2 {
+  margin: 0 0 1.5rem;
+  font-size: clamp(1.65rem, 4vw, 3rem);
+  letter-spacing: -0.035em;
+}
+
+.grid,
+.stats,
+.projectGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 2px solid #1f1e1d;
+  border-left: 2px solid #1f1e1d;
+}
+
+.card,
+.stat,
+.projectCard {
+  min-width: 0;
+  padding: 1.25rem;
+  display: grid;
+  align-content: start;
+  gap: 0.65rem;
+  border-right: 2px solid #1f1e1d;
+  border-bottom: 2px solid #1f1e1d;
+}
+
+.card h2,
+.projectCard h3,
+.stat dd,
+.stat dt,
+.card p,
+.projectCard p {
+  margin: 0;
+}
+
+.card h2 {
+  font-size: clamp(2rem, 5vw, 4rem);
+}
+
+.card a,
+.projectCard a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: #1d4ed8;
+  font-weight: 800;
+}
+
+.stat dt {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.stat dd {
+  overflow-wrap: anywhere;
+  font-size: clamp(1.2rem, 3vw, 2rem);
+  font-weight: 800;
+}
+
+.withheld,
+.unavailable {
+  padding: 2rem;
+  border: 2px solid #1f1e1d;
+  background: repeating-linear-gradient(-45deg, transparent 0 9px, #dedcdc 9px 10px);
+}
+
+.withheld h1,
+.unavailable h1,
+.withheld h2,
+.unavailable h2 {
+  margin-top: 0;
+}
+
+.tableWrap {
+  max-width: 100%;
+  overflow-x: auto;
+  border: 2px solid #1f1e1d;
+}
+
+.table {
+  width: 100%;
+  min-width: 940px;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.table th,
+.table td {
+  padding: 0.85rem;
+  border-right: 1px solid #1f1e1d;
+  border-bottom: 1px solid #1f1e1d;
+  vertical-align: top;
+}
+
+.table th {
+  background: #dedcdc;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+
+.limitations {
+  margin: 1.25rem 0 0;
+  padding-left: 1.25rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 760px) {
+  .main { width: min(100% - 1rem, 1180px); padding-top: 1.5rem; }
+  .hero { padding: 2rem 0; }
+  .grid,
+  .stats,
+  .projectGrid { grid-template-columns: 1fr; }
+}

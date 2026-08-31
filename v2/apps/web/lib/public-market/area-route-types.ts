@@ -1,4 +1,6 @@
 import type {
+  EvidenceDescriptor,
+  EvidenceEmptyState,
   PublishedMarketSummary,
   PublicMarketSummary,
   WithheldMarketSummary,
@@ -14,8 +16,10 @@ export type ExploreDistrictModel = Readonly<{
   slug: SeoulDistrictSlug;
   nameEn: string;
   nameKo: string;
-  href: `/kr/seoul/${string}/`;
+  href: `/kr/seoul/explore/${string}/`;
   path: string;
+  latitude: number;
+  longitude: number;
   summary: PublicMarketSummary;
   state: 'published' | 'withheld';
   bucket: 0 | 1 | 2 | 3 | 4 | null;
@@ -33,6 +37,7 @@ export type PublicAreaLegendBucket = Readonly<{
 }>;
 
 export type PublicSourceBoundaryModel = Readonly<{
+  evidence: EvidenceDescriptor | null;
   provider: 'MOLIT';
   period: string;
   attribution: readonly string[];
@@ -47,6 +52,47 @@ export type PublicSourceBoundaryModel = Readonly<{
 export type PublicAreaSourceBoundaryModel = PublicSourceBoundaryModel & Readonly<{
   geometryAttribution: 'KOSTAT census boundaries via southkorea/seoul-maps (Apache-2.0)';
 }>;
+
+export type RankingKind = 'cheapest' | 'change' | 'spread' | 'sample';
+
+export type SignedRankingBar = Readonly<{
+  direction: 'negative' | 'zero' | 'positive';
+  startPct: number;
+  endPct: number;
+  extentPct: number;
+}>;
+
+export type PublicDistrictRankingRow = Readonly<{
+  kind: RankingKind;
+  rank: number;
+  lawdCd: SeoulLawdCd;
+  slug: SeoulDistrictSlug;
+  nameEn: string;
+  nameKo: string;
+  href: `/kr/seoul/explore/${string}/`;
+  metric: number;
+  valueLabel: string;
+  bar: SignedRankingBar | null;
+}>;
+
+export type PublicAreaRankingsModel =
+  | Readonly<{
+      status: 'ready';
+      cheapest: readonly PublicDistrictRankingRow[];
+      change: readonly PublicDistrictRankingRow[];
+      spread: readonly PublicDistrictRankingRow[];
+      sample: readonly PublicDistrictRankingRow[];
+      withheldDistrictCount: number;
+      changeExcludedDistrictCount: number;
+      hasNegativeChange: boolean;
+      changeAxisLabel: Readonly<{ minimum: string; maximum: string }>;
+      source: PublicSourceBoundaryModel;
+    }>
+  | Readonly<{
+      status: 'unavailable';
+      message: 'Verified district summary unavailable';
+      source: PublicSourceBoundaryModel;
+    }>;
 
 export type PublicAreaExploreModel =
   | Readonly<{
@@ -79,6 +125,24 @@ export type PublicDistrictDisplayModel = Readonly<{
   changeLabel: string | null;
 }>;
 
+export type DistrictBuildingLink = Readonly<{
+  id: string;
+  name: string;
+  housingType: string;
+  sampleLabel: string;
+  href: `/kr/seoul/explore/${string}/${string}/`;
+}>;
+
+export type DistrictBuildingAvailability =
+  | Readonly<{
+      status: 'ready';
+      buildings: readonly DistrictBuildingLink[];
+    }>
+  | Readonly<{
+      status: 'not_loaded';
+      empty: EvidenceEmptyState;
+    }>;
+
 export type PublicDistrictModel =
   | Readonly<{
       status: 'published';
@@ -90,6 +154,7 @@ export type PublicDistrictModel =
       datasetJsonLd: Readonly<Record<string, unknown>>;
       faqJsonLd: Readonly<Record<string, unknown>>;
       source: PublicAreaSourceBoundaryModel;
+      buildingAvailability: DistrictBuildingAvailability;
     }>
   | Readonly<{
       status: 'withheld';
@@ -101,11 +166,13 @@ export type PublicDistrictModel =
       datasetJsonLd: Readonly<Record<string, unknown>>;
       faqJsonLd: Readonly<Record<string, unknown>>;
       source: PublicAreaSourceBoundaryModel;
+      buildingAvailability: DistrictBuildingAvailability;
     }>
   | Readonly<{
       status: 'unavailable';
       identity: SeoulRentCheckDistrict;
       nearby: readonly SeoulRentCheckDistrict[];
       source: PublicAreaSourceBoundaryModel;
+      buildingAvailability: DistrictBuildingAvailability;
       message: 'Verified district summary unavailable';
     }>;

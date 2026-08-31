@@ -9,14 +9,17 @@
     "test": "vitest run",
     "build": "pnpm --filter @signedprice/web build",
     "check:rent-client-boundary": "node scripts/scan-rent-check-client-boundary.mjs apps/web/.next",
+    "check:singapore-client-boundary": "node scripts/scan-singapore-client-boundary.mjs apps/web/.next",
     "e2e": "playwright test"
   },
   "devDependencies": {
     "@playwright/test": "1.62.1",
+    "@types/node": "20.19.43",
     "typescript": "5.9.3",
     "vitest": "4.1.11"
   },
   "dependencies": {
+    "@signedprice/singapore-property": "workspace:*",
     "zod": "4.5.1"
   }
 }

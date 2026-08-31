@@ -11,8 +11,12 @@ describe('Playwright release target configuration', () => {
       env: {
         VERCEL_ENV: 'preview',
         VERCEL_GIT_COMMIT_SHA: '0123456789abcdef',
+        SIGNEDPRICE_CONVERSION_CURVE_PERIOD: '2026-03/2026-08',
+        SIGNEDPRICE_CONVERSION_CURVE_SHA256: 'a'.repeat(64),
       },
     });
+    expect(config.webServer?.env).toHaveProperty('SIGNEDPRICE_CONVERSION_CURVE_ARTIFACT');
+    expect(config.webServer?.env).toHaveProperty('SIGNEDPRICE_PUBLIC_BUILDING_SUMMARY_ARTIFACT');
   });
 
   it('defines all release viewports and a retained HTML failure report', () => {
@@ -21,12 +25,21 @@ describe('Playwright release target configuration', () => {
     expect(config.projects?.map((project) => project.name)).toEqual([
       'desktop-chromium',
       'mobile-chromium',
+      'tablet-chromium',
       'wide-chromium',
     ]);
     expect(config.projects?.[2]).toMatchObject({
-      testMatch: /area-explore\.spec\.ts/,
+      testMatch: /(?:rankings|contract-check|trust|korea-detail|korea-guide)\.spec\.ts/,
+      use: { viewport: { width: 720, height: 900 } },
+    });
+    expect(config.projects?.[3]).toMatchObject({
+      testMatch: /(?:area-explore|contract-check|trust|korea-detail|korea-guide)\.spec\.ts/,
       use: { viewport: { width: 1440, height: 900 } },
     });
+    expect((config.projects?.[2]?.testMatch as RegExp).test('trust.spec.ts')).toBe(true);
+    expect((config.projects?.[3]?.testMatch as RegExp).test('trust.spec.ts')).toBe(true);
+    expect((config.projects?.[2]?.testMatch as RegExp).test('korea-detail.spec.ts')).toBe(true);
+    expect((config.projects?.[3]?.testMatch as RegExp).test('korea-guide.spec.ts')).toBe(true);
     expect(config.reporter).toEqual([
       ['line'],
       ['html', { open: 'never' }],

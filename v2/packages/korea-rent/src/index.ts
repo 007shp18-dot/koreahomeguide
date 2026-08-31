@@ -30,6 +30,17 @@ export {
 } from './calculation';
 export { isPublishedRentCheckResultTuplePossible } from './result-validation';
 export {
+  KOREA_CONVERSION_ARTIFACT_VERSION,
+  parseKoreaConversionArtifact,
+  toBrowserConversionCurves,
+  type KoreaConversionArtifactExpectation,
+  type KoreaConversionCurveProjection,
+  type KoreaConversionHousingType,
+  type VerifiedKoreaConversionAnchor,
+  type VerifiedKoreaConversionArtifact,
+  type VerifiedKoreaConversionCurve,
+} from './conversion-artifact';
+export {
   KR_MOLIT_RENT_RIGHTS,
   RightsViolationError,
   assertMolitRights,

@@ -103,7 +103,7 @@ describe('market contracts', () => {
         (capability) => capability.housingSector === 'private_residential',
       ),
     ).toMatchObject({
-      state: 'rights_blocked',
+      state: 'limited',
       limitations: expect.not.arrayContaining(['invented limitation']),
     });
   });
@@ -125,22 +125,18 @@ describe('market contracts', () => {
 
   it('models sector and detail rights separately from route intent', () => {
     const singapore = getMarketProfile('sg-singapore');
-    const hdbPublicIntelligence = singapore.dataCapabilities.find(
-      (capability) =>
-        capability.housingSector === 'hdb' &&
-        capability.dataScope === 'market_intelligence',
-    );
-    const privateResidentialDetail = singapore.dataCapabilities.find(
+    const privateSaleIntelligence = singapore.dataCapabilities.find(
       (capability) =>
         capability.housingSector === 'private_residential' &&
-        capability.dataScope === 'property_detail',
+        capability.dataScope === 'market_intelligence',
     );
     const dubaiTransactionDetails = getMarketProfile('ae-dubai').dataCapabilities.filter(
       (capability) => capability.dataScope === 'transaction_detail',
     );
 
-    expect(hdbPublicIntelligence?.state).toBe('available');
-    expect(privateResidentialDetail?.state).toBe('rights_blocked');
+    expect(singapore.dataLabel).toBe('URA private residential sale intelligence');
+    expect(privateSaleIntelligence?.state).toBe('limited');
+    expect(singapore.dataCapabilities).toHaveLength(1);
     expect(dubaiTransactionDetails).toEqual([
       expect.objectContaining({
         housingSector: null,

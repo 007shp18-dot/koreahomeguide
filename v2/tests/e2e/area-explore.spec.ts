@@ -70,13 +70,14 @@ test('initial HTML and hydration expose one synchronized 25-district Explorer', 
   await expect(jongnoRow).toBeVisible();
   await expect(jongnoRow).toContainText('Jongno-gu');
   await expect(jongnoRow).toContainText('종로구');
-  await expect(jongnoRow.getByRole('link', { name: 'Open Jongno-gu evidence' }))
-    .toHaveAttribute('href', '/kr/seoul/jongno-gu/');
+  await expect(jongnoRow.getByRole('link', { name: 'Open Jongno-gu evidence' }).first())
+    .toHaveAttribute('href', '/kr/seoul/explore/jongno-gu/');
 
-  await page.getByRole('button', { name: 'Select Gangnam-gu' }).click();
+  const gangnamRow = page.locator('[data-district-row="gangnam-gu"]');
+  const gangnamPrimary = gangnamRow.getByRole('link', { name: 'Open Gangnam-gu evidence' }).first();
+  await gangnamPrimary.focus();
   await expect(page.getByText('Selected · Gangnam-gu')).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Select Gangnam-gu' }))
-    .toHaveAttribute('aria-pressed', 'true');
+  await expect(gangnamPrimary).toHaveAttribute('aria-current', 'true');
   await expect(page.locator('[data-district-path="gangnam-gu"]'))
     .toHaveClass(/selectedPath/);
   await expectNoHorizontalOverflow(page);
@@ -121,7 +122,7 @@ test('published quote stays local and any withheld detail stays money-free', asy
   expect(publishedSlug).not.toBeNull();
   if (publishedSlug === null) throw new Error('A published district is required.');
 
-  await page.goto(`/kr/seoul/${publishedSlug}/`);
+  await page.goto(`/kr/seoul/explore/${publishedSlug}/`);
   await expect(page.locator('[data-district-detail="published"]')).toBeVisible();
   await page.waitForLoadState('networkidle');
   const observedRequests: string[] = [];
@@ -139,7 +140,7 @@ test('published quote stays local and any withheld detail stays money-free', asy
     .first()
     .getAttribute('data-district-path');
   if (withheldSlug !== null) {
-    await page.goto(`/kr/seoul/${withheldSlug}/`);
+    await page.goto(`/kr/seoul/explore/${withheldSlug}/`);
     await expect(page.locator('[data-district-detail="withheld"]')).toBeVisible();
     await expect(page.locator('input[name="quote"]')).toHaveCount(0);
     await expect(page.locator('body')).not.toContainText('₩');
@@ -158,9 +159,10 @@ test('mobile controls keep 44px focus targets and natural document scrolling', a
 
   const checkTab = page.locator('[data-public-tab="check"]');
   const exploreTab = page.locator('[data-public-tab="explore"]');
-  const districtButton = page.getByRole('button', { name: 'Select Gangnam-gu' });
-  const detailLink = page.getByRole('link', { name: 'Open Gangnam-gu evidence' });
-  for (const target of [checkTab, exploreTab, districtButton, detailLink]) {
+  const districtLink = page.locator('[data-district-row="gangnam-gu"]')
+    .getByRole('link', { name: 'Open Gangnam-gu evidence' }).first();
+  const detailLink = page.getByRole('link', { name: 'Open Gangnam-gu evidence' }).last();
+  for (const target of [checkTab, exploreTab, districtLink, detailLink]) {
     await expectTouchTarget(target);
     await expectCobaltFocus(target);
   }

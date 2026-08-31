@@ -3,13 +3,14 @@ import Link from 'next/link';
 import styles from './public-market.module.css';
 
 const destinations = [
-  { id: 'check', label: 'Check', href: '/kr/check/seoul/' },
+  { id: 'check', label: 'Check', href: '/kr/' },
   { id: 'explore', label: 'Explore', href: '/kr/seoul/explore/' },
+  { id: 'guide', label: 'Guide', href: '/kr/seoul/guide/' },
 ] as const;
 
 export function PublicSectionTabs({
   current,
-}: Readonly<{ current: 'check' | 'explore' }>) {
+}: Readonly<{ current: 'check' | 'explore' | 'guide' }>) {
   return (
     <nav className={styles.publicSectionTabs} aria-label="Public evidence sections">
       <ul>
@@ -23,18 +24,6 @@ export function PublicSectionTabs({
             >
               {destination.label}
             </Link>
-          </li>
-        ))}
-        {(['news', 'guide'] as const).map((id) => (
-          <li key={id}>
-            <span
-              className={styles.publicSectionTabFuture}
-              data-public-tab={id}
-              aria-disabled="true"
-            >
-              <span>{id === 'news' ? 'News' : 'Guide'}</span>
-              <small>Future</small>
-            </span>
           </li>
         ))}
       </ul>

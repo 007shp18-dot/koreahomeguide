@@ -4,6 +4,12 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ push: vi.fn() }),
+}));
+vi.mock('next/script', () => ({
+  default: ({ src }: Readonly<{ src: string }>) => createElement('script', { src }),
+}));
 
 import { AreaExplorer } from '../components/public-market/area-explorer';
 import {
@@ -44,8 +50,13 @@ afterEach(() => {
 describe('public Seoul area Explorer', () => {
   it('renders the complete map, legend, table, and allowed evidence in initial HTML', () => {
     const model = readyModel();
-    const markup = renderToStaticMarkup(createElement(AreaExplorer, { model }));
+    const markup = renderToStaticMarkup(createElement(AreaExplorer, {
+      model,
+      naverMapClientId: 'test-naver-client',
+    }));
 
+    expect(markup).toContain('data-map-provider="naver"');
+    expect(markup).toContain('ncpKeyId=test-naver-client');
     expect(markup).toContain('viewBox="0 0 720 560"');
     expect(markup).toContain('District median refundable jeonse deposit');
     expect(markup).toContain(PUBLIC_AREA_FIXTURE_PERIOD);
@@ -70,6 +81,11 @@ describe('public Seoul area Explorer', () => {
     expect(markup).toContain('data-map-state="withheld"');
     expect(markup).toContain('Not published');
     expect(markup).toContain('Selected · Gangnam-gu');
+    expect(markup).toContain('href="/kr/seoul/explore/gangnam-gu"');
+    expect(markup).toContain('Open Gangnam-gu evidence');
+    expect(markup).toContain('Open Jongno-gu');
+    expect(markup).toContain('href="/kr/seoul/rankings"');
+    expect(markup).toContain('View district rankings');
     expect(markup).not.toContain(`₩${CITY_MEDIAN_SENTINEL.toLocaleString('en-US')}`);
   });
 
@@ -89,9 +105,10 @@ describe('public Seoul area Explorer', () => {
     expect(markup).not.toMatch(/data-district-path|data-district-row|₩/);
   });
 
-  it('wires the page to one district query and static noindex metadata', async () => {
+  it('wires the page to one district query and indexable canonical metadata', async () => {
     vi.stubEnv('SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT', JSON.stringify(rankedFixture()));
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', PUBLIC_AREA_FIXTURE_PERIOD);
+    vi.stubEnv('NAVER_MAP_CLIENT_ID', 'page-naver-client');
     const modulePath = '../app/kr/seoul/explore/page';
     const route = await import(/* @vite-ignore */ modulePath);
     const page = await route.default({
@@ -102,10 +119,13 @@ describe('public Seoul area Explorer', () => {
     expect(route.metadata).toEqual({
       title: 'Seoul district jeonse evidence | signedprice',
       description: 'Compare verified 45–55㎡ refundable jeonse deposits across Seoul districts.',
-      robots: { index: false, follow: true },
+      robots: { index: true, follow: true },
+      alternates: {
+        canonical: 'https://www.signedprice.com/kr/seoul/explore/',
+      },
     });
-    expect(route.metadata).not.toHaveProperty('alternates');
     expect(markup).toContain('Selected · Mapo-gu');
+    expect(markup).toContain('ncpKeyId=page-naver-client');
     expect(markup).toContain('Korea public evidence. Publication limits shown.');
     expect(markup).not.toMatch(/public P2 preview|Production launch is not authorized/i);
     expect(markup).not.toMatch(/Neighborhood|Building discovery|Search this area/);
