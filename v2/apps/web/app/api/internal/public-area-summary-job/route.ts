@@ -29,6 +29,7 @@ export const POST = createPublicAreaSummaryJobPostHandler({
       cache,
       fetch: globalThis.fetch,
       now: () => new Date(),
+      coordinateLimit: 20,
     });
   },
   finalize(input) {
