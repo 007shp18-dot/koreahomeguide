@@ -36,6 +36,12 @@ Record before merge:
 
 Preview must use the existing verified public-summary artifact and matching period. Do not expose the artifact value, provider endpoint, service key, raw rows, cache contents, rights evidence, or share tokens.
 
+The first exact-SHA Preview (`dpl_BCv9YhVCWX7YFy8rVhoDtCR326Aw`) correctly
+failed closed because the verified P2 area artifact and period were still limited
+to the earlier P1–P2 branch. Their existing Preview entries were broadened to all
+Preview branches without changing either value. A fresh deployment is required
+before any live-data or browser assertion is accepted.
+
 ## Production gate
 
 Promote only the reviewed exact SHA. Re-run the Preview assertions against `https://www.signedprice.com`, confirm apex redirect behavior, verify no new runtime errors or 5xx responses, and confirm the existing KoreaHomeGuide home and Rent Check routes retain their prior canonical and hreflang contracts.
