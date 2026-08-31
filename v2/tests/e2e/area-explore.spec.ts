@@ -70,7 +70,7 @@ test('initial HTML and hydration expose one synchronized 25-district Explorer', 
   await expect(jongnoRow).toBeVisible();
   await expect(jongnoRow).toContainText('Jongno-gu');
   await expect(jongnoRow).toContainText('종로구');
-  await expect(page.getByRole('link', { name: /Open Jongno-gu evidence/ }))
+  await expect(jongnoRow.getByRole('link', { name: 'Open Jongno-gu evidence' }))
     .toHaveAttribute('href', '/kr/seoul/jongno-gu/');
 
   await page.getByRole('button', { name: 'Select Gangnam-gu' }).click();
@@ -166,15 +166,19 @@ test('mobile controls keep 44px focus targets and natural document scrolling', a
   }
   await expectNoHorizontalOverflow(page);
   const scroll = await page.evaluate(() => {
-    window.scrollTo({ top: 0 });
+    const previousScrollBehavior = document.documentElement.style.scrollBehavior;
+    document.documentElement.style.scrollBehavior = 'auto';
+    window.scrollTo(0, 0);
     const before = window.scrollY;
-    window.scrollTo({ top: document.documentElement.scrollHeight });
-    return {
+    window.scrollTo(0, document.documentElement.scrollHeight);
+    const result = {
       before,
       after: window.scrollY,
       height: document.documentElement.scrollHeight,
       viewport: window.innerHeight,
     };
+    document.documentElement.style.scrollBehavior = previousScrollBehavior;
+    return result;
   });
   expect(scroll.height).toBeGreaterThan(scroll.viewport);
   expect(scroll.after).toBeGreaterThan(scroll.before);
