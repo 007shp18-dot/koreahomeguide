@@ -1014,11 +1014,14 @@ export function buildComparisonPageModel(): ComparisonPageModel {
 export const notFoundPageModel = {
   metadata: routeMetadataCopy.notFound,
   header: routeShellCopy.header,
-  footer: routeShellCopy.footer,
+  footer: {
+    ...routeShellCopy.footer,
+    descriptor: 'Verified property decisions, starting with Seoul.',
+  },
   sectionLabel: 'Page not found',
   eyebrow: 'Not found',
   heading: 'This route is not available.',
   description:
-    'Browse the approved Seoul, Singapore and Dubai routes from the signedprice homepage.',
+    'Return to signedprice to review the currently available Seoul experience.',
   action: commonActions.home,
 } as const;

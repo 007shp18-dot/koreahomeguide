@@ -97,8 +97,10 @@ test('Contract Check stays ordered, touch-sized, and keyboard reachable', async 
   await page.keyboard.press('Tab');
   await expect(page.locator('input[name="a-label"]')).toBeFocused();
 
-  await expect(page.getByRole('link', { name: 'Check' })).toHaveAttribute('href', '/kr/');
-  await expect(page.getByRole('link', { name: 'Explore' }))
+  const primaryNavigation = page.getByRole('navigation', { name: 'Primary' });
+  await expect(primaryNavigation.getByRole('link', { name: 'Check', exact: true }))
+    .toHaveAttribute('href', '/kr/');
+  await expect(primaryNavigation.getByRole('link', { name: 'Explore', exact: true }))
     .toHaveAttribute('href', '/kr/seoul/explore');
   await expect(page.getByText('News', { exact: true })).not.toHaveAttribute('href');
   await expect(page.getByText('Guide', { exact: true })).not.toHaveAttribute('href');
