@@ -9,7 +9,12 @@ import { buildDistrictMetadata } from '../../../../../lib/public-market/district
 
 type NestedDistrictPageProps = Readonly<{
   params: Promise<Readonly<{ district: string }>>;
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }>;
+
+function singleValue(value: string | string[] | undefined): string | undefined {
+  return typeof value === 'string' ? value : undefined;
+}
 
 export const dynamicParams = false;
 
@@ -24,9 +29,17 @@ export async function generateMetadata({ params }: NestedDistrictPageProps): Pro
   return buildDistrictMetadata(model, { indexPublished: true });
 }
 
-export default async function NestedDistrictPage({ params }: NestedDistrictPageProps) {
+export default async function NestedDistrictPage({
+  params,
+  searchParams,
+}: NestedDistrictPageProps) {
   const { district } = await params;
-  const model = buildPublicDistrictModel(district);
+  const query = searchParams === undefined ? {} : await searchParams;
+  const model = buildPublicDistrictModel(
+    district,
+    undefined,
+    singleValue(query.contract),
+  );
   if (model === null) notFound();
   return <DistrictDetailPage model={model} />;
 }

@@ -52,6 +52,7 @@ function input(
       ? KR_MOLIT_RENT_RIGHTS
       : undefined,
     records,
+    contractGroup: 'all',
     ...overrides,
   };
 }
@@ -144,6 +145,47 @@ describe('Korea public market summary adapter', () => {
     expect(summary).toMatchObject({ n: 5, published: true, max: 500_000_000 });
   });
 
+  it('computes all, new and renewal distributions from only their contract groups', () => {
+    const records = [
+      ...[100, 110, 120, 130, 140, 150].map((value) =>
+        jeonse(value * 1_000_000, '2026-07', { contractType: 'new' })),
+      ...[400, 410, 420, 430, 440].map((value) =>
+        jeonse(value * 1_000_000, '2026-07', { contractType: 'renewal' })),
+      ...[250, 260, 270, 280].map((value) =>
+        jeonse(value * 1_000_000, '2026-07', { contractType: 'unknown' })),
+    ];
+
+    expect(buildKoreaPublicMarketSummary(input(records, {
+      contractGroup: 'all',
+    }))).toMatchObject({ n: 15, published: true, med: 260_000_000 });
+    expect(buildKoreaPublicMarketSummary(input(records, {
+      contractGroup: 'new',
+    }))).toMatchObject({ n: 6, published: true, med: 125_000_000 });
+    expect(buildKoreaPublicMarketSummary(input(records, {
+      contractGroup: 'renewal',
+    }))).toMatchObject({ n: 5, published: true, med: 420_000_000 });
+  });
+
+  it('computes three-month change independently for each contract group', () => {
+    const records = [
+      ...Array.from({ length: 5 }, () =>
+        jeonse(100_000_000, '2026-04', { contractType: 'new' })),
+      ...Array.from({ length: 5 }, () =>
+        jeonse(110_000_000, '2026-07', { contractType: 'new' })),
+      ...Array.from({ length: 5 }, () =>
+        jeonse(200_000_000, '2026-04', { contractType: 'renewal' })),
+      ...Array.from({ length: 5 }, () =>
+        jeonse(200_000_000, '2026-07', { contractType: 'renewal' })),
+    ];
+
+    expect(buildKoreaPublicMarketSummary(input(records, {
+      contractGroup: 'new',
+    }))).toMatchObject({ n: 10, published: true, chg3m: 10 });
+    expect(buildKoreaPublicMarketSummary(input(records, {
+      contractGroup: 'renewal',
+    }))).toMatchObject({ n: 10, published: true, chg3m: 0 });
+  });
+
   it('computes one-decimal change from the preceding three months to the latest three', () => {
     const summary = buildKoreaPublicMarketSummary(input([
       ...Array.from({ length: 5 }, () => jeonse(200_000_000, '2026-04')),
@@ -172,6 +214,7 @@ describe('Korea public market summary adapter', () => {
     [{ source: { marketId: 'kr-seoul', provider: 'MOLIT', endpointVersion: MOLIT_ENDPOINT_VERSION, parserVersion: 'old', rightsPolicyId: MOLIT_RIGHTS_POLICY_ID } }, 'provenance'],
     [{ source: { marketId: 'kr-seoul', provider: 'MOLIT', endpointVersion: MOLIT_ENDPOINT_VERSION, parserVersion: MOLIT_PARSER_VERSION, rightsPolicyId: 'unknown' } }, 'provenance'],
     [{ rightsLookup: () => undefined }, 'permitted'],
+    [{ contractGroup: 'other' }, 'contract group'],
   ] as const)('fails closed on invalid source boundary %#', (overrides, message) => {
     expect(() => buildKoreaPublicMarketSummary(input([
       jeonse(100_000_000), jeonse(200_000_000), jeonse(300_000_000),

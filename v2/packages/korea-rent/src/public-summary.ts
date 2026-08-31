@@ -25,6 +25,8 @@ export type KoreaPublicSummarySource = Readonly<{
   rightsPolicyId: typeof MOLIT_RIGHTS_POLICY_ID;
 }>;
 
+export type KoreaPublicContractGroup = 'all' | 'new' | 'renewal';
+
 export type KoreaPublicSummaryInput = Readonly<{
   area: string;
   parent: string;
@@ -35,6 +37,7 @@ export type KoreaPublicSummaryInput = Readonly<{
   source: KoreaPublicSummarySource;
   rightsLookup: MolitRightsLookup;
   records: readonly KoreaRentRecord[];
+  contractGroup: KoreaPublicContractGroup;
 }>;
 
 const MONTH_PATTERN = /^\d{4}-(?:0[1-9]|1[0-2])$/;
@@ -111,6 +114,10 @@ function assertSource(input: KoreaPublicSummaryInput): void {
     policyId: source.rightsPolicyId,
     operations: ['derive', 'display', 'commercial'],
   });
+
+  if (!['all', 'new', 'renewal'].includes(input.contractGroup)) {
+    invalidSummary('Public summary contract group is invalid.');
+  }
 }
 
 function assertRecord(record: KoreaRentRecord, completedMonths: ReadonlySet<string>): void {
@@ -151,6 +158,13 @@ function isEligibleJeonse(record: KoreaRentRecord): boolean {
   );
 }
 
+function belongsToContractGroup(
+  record: KoreaRentRecord,
+  contractGroup: KoreaPublicContractGroup,
+): boolean {
+  return contractGroup === 'all' || record.contractType === contractGroup;
+}
+
 function change3m(
   records: readonly KoreaRentRecord[],
   completedMonths: readonly string[],
@@ -181,7 +195,8 @@ export function buildKoreaPublicMarketSummary(
   const completedMonths = assertCompletedMonths(input);
   input.records.forEach((record) => assertRecord(record, completedMonths));
 
-  const eligibleRecords = input.records.filter(isEligibleJeonse);
+  const eligibleRecords = input.records.filter((record) =>
+    isEligibleJeonse(record) && belongsToContractGroup(record, input.contractGroup));
   const values = eligibleRecords.map((record) => record.depositWon);
 
   if (values.length < MIN_PUBLISHABLE_RECORDS) {

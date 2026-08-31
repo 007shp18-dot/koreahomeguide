@@ -3,7 +3,10 @@ import type { PublicMarketSummary } from '@signedprice/market-core';
 import { completedSeoulMonthKeys } from './calculation';
 import { SEOUL_RENT_CHECK_DISTRICTS, type SeoulLawdCd } from './districts';
 import type { KoreaRentRecord, SourceHousingType } from './input';
-import { buildKoreaPublicMarketSummary } from './public-summary';
+import {
+  buildKoreaPublicMarketSummary,
+  type KoreaPublicContractGroup,
+} from './public-summary';
 import {
   KR_MOLIT_RENT_RIGHTS,
   RightsViolationError,
@@ -73,9 +76,17 @@ export type KoreaPublicSummaryFinalization = Readonly<{
   unknownContracts: number;
 }>;
 
-export type KoreaPublicAreaSummaryFinalization = Readonly<{
+export type KoreaPublicAreaSummaryGroup = Readonly<{
   citySummary: PublicMarketSummary;
   districtSummaries: readonly PublicMarketSummary[];
+}>;
+
+export type KoreaPublicAreaSummaryFinalization = Readonly<{
+  groups: Readonly<Record<KoreaPublicContractGroup, KoreaPublicAreaSummaryGroup>>;
+  unknownContractCounts: Readonly<{
+    city: number;
+    districts: readonly number[];
+  }>;
   period: string;
   generatedAt: string;
   completedCoordinates: typeof TOTAL_COORDINATES;
@@ -320,6 +331,7 @@ function publicSummaryFor(
     period: string;
     completedMonths: readonly string[];
     records: readonly KoreaRentRecord[];
+    contractGroup: KoreaPublicContractGroup;
   }>,
   dependencies: { readonly rightsLookup?: MolitRightsLookup },
 ): PublicMarketSummary {
@@ -339,6 +351,7 @@ function publicSummaryFor(
     },
     rightsLookup: rightsLookup(dependencies),
     records: input.records,
+    contractGroup: input.contractGroup,
   });
 }
 
@@ -356,6 +369,7 @@ export async function finalizeKoreaPublicSummaryJob(
     period,
     completedMonths,
     records: loaded.all,
+    contractGroup: 'all',
   }, dependencies);
 
   return Object.freeze({
@@ -379,26 +393,44 @@ export async function finalizeKoreaPublicAreaSummaryJob(
   assertJobRights(dependencies, ['cache', 'derive', 'display', 'commercial']);
   const loaded = await loadPublicSummaryRecords(input.referenceInstant, dependencies.cache);
   const { completedMonths, period } = completedPeriod(input.referenceInstant);
-  const citySummary = publicSummaryFor({
-    area: 'seoul',
-    parent: 'kr',
-    period,
-    completedMonths,
-    records: loaded.all,
-  }, dependencies);
-  const districtSummaries = Object.freeze(SEOUL_RENT_CHECK_DISTRICTS.map((district) => (
-    publicSummaryFor({
-      area: district.slug,
-      parent: 'seoul',
+  const groupFor = (
+    contractGroup: KoreaPublicContractGroup,
+  ): KoreaPublicAreaSummaryGroup => Object.freeze({
+    citySummary: publicSummaryFor({
+      area: 'seoul',
+      parent: 'kr',
       period,
       completedMonths,
-      records: loaded.byDistrict.get(district.lawdCd)!,
-    }, dependencies)
-  )));
+      records: loaded.all,
+      contractGroup,
+    }, dependencies),
+    districtSummaries: Object.freeze(SEOUL_RENT_CHECK_DISTRICTS.map((district) => (
+      publicSummaryFor({
+        area: district.slug,
+        parent: 'seoul',
+        period,
+        completedMonths,
+        records: loaded.byDistrict.get(district.lawdCd)!,
+        contractGroup,
+      }, dependencies)
+    ))),
+  });
+  const groups = Object.freeze({
+    all: groupFor('all'),
+    new: groupFor('new'),
+    renewal: groupFor('renewal'),
+  });
+  const unknownContractCounts = Object.freeze({
+    city: loaded.all.filter((record) =>
+      isEligible(record) && record.contractType === 'unknown').length,
+    districts: Object.freeze(SEOUL_RENT_CHECK_DISTRICTS.map((district) =>
+      loaded.byDistrict.get(district.lawdCd)!.filter((record) =>
+        isEligible(record) && record.contractType === 'unknown').length)),
+  });
 
   return Object.freeze({
-    citySummary,
-    districtSummaries,
+    groups,
+    unknownContractCounts,
     period,
     generatedAt: validNow(dependencies),
     completedCoordinates: TOTAL_COORDINATES,

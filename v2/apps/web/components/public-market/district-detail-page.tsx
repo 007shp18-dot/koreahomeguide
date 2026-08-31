@@ -9,9 +9,12 @@ import {
 } from '../../lib/site-copy';
 import { SiteFooter } from '../site-footer';
 import { SiteHeader } from '../site-header';
+import { CommunitySignal } from '../community/community-signal';
+import { DetailNewsList } from '../news/detail-news-list';
 import { EvidenceEmptyStatePanel } from '../trust/evidence-empty-state';
 import { BoxPlot } from './box-plot';
 import styles from './district-detail.module.css';
+import { DistrictEvidenceSummary } from './district-evidence-summary';
 import { QuoteInput } from './quote-input';
 import { SampleChip } from './sample-chip';
 import { PublicSectionTabs } from './public-section-tabs';
@@ -62,7 +65,7 @@ function DistrictNavigation({ model }: Readonly<{ model: PublicDistrictModel }>)
     <nav className={styles.navigation} aria-label="District evidence navigation">
       <div className={styles.primaryLinks}>
         <Link className={styles.exploreLink} href={exploreHref}>
-          Return to Explore with {model.identity.nameEn} selected
+          Back to Seoul map
         </Link>
         <Link className={styles.rankingsLink} href="/kr/seoul/rankings/">
           View district rankings
@@ -217,11 +220,20 @@ export function DistrictDetailPage({ model }: Readonly<{ model: PublicDistrictMo
       <main className={styles.main}>
         <Breadcrumb model={model} />
         <Finding model={model} />
-        <Evidence model={model} />
-        <BuildingEvidence model={model} />
-        {model.status === 'unavailable' ? null : <Faq model={model} />}
-        <PublicSourceBoundary model={model.source} />
-        <DistrictNavigation model={model} />
+        <div className={styles.detailLayout}>
+          <div className={styles.detailMain} data-detail-main="true">
+            <DistrictEvidenceSummary model={model.contractEvidence} mode="full" />
+            <Evidence model={model} />
+            <BuildingEvidence model={model} />
+            {model.status === 'unavailable' ? null : <Faq model={model} />}
+            <PublicSourceBoundary model={model.source} />
+          </div>
+          <aside className={styles.detailRail} data-detail-rail="true" aria-label="District context">
+            <DetailNewsList news={model.news} />
+            <CommunitySignal model={model.communitySignal} />
+            <DistrictNavigation model={model} />
+          </aside>
+        </div>
       </main>
       {model.status === 'unavailable' ? null : (
         <>

@@ -1,0 +1,206 @@
+.summary {
+  min-width: 0;
+  display: grid;
+  border: 2px solid var(--ink);
+  color: var(--ink);
+  background: var(--canvas);
+}
+
+.header,
+.finding,
+.refusal,
+.unavailable,
+.footer {
+  padding: 1rem;
+}
+
+.header,
+.finding,
+.refusal,
+.unavailable {
+  border-bottom: 2px solid var(--ink);
+}
+
+.header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 0.25rem 1rem;
+}
+
+.header > p:first-child {
+  grid-column: 1 / -1;
+  color: var(--accent);
+  font-size: 0.65rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.header h2 {
+  overflow-wrap: anywhere;
+  font-size: clamp(1.7rem, 4vw, 3rem);
+  letter-spacing: -0.05em;
+  line-height: 0.95;
+}
+
+.header > p:last-child {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 750;
+}
+
+.finding {
+  display: grid;
+  gap: 0.65rem;
+  background: var(--surface);
+}
+
+.finding span,
+.metrics dt,
+.footer p {
+  font-size: 0.62rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.finding strong {
+  overflow-wrap: anywhere;
+  font-size: clamp(1.8rem, 4vw, 3.35rem);
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+
+.finding p,
+.refusal p,
+.unavailable p,
+.footer p {
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-bottom: 2px solid var(--ink);
+}
+
+.metrics > div {
+  min-height: 92px;
+  padding: 0.9rem;
+  display: grid;
+  align-content: space-between;
+  gap: 0.7rem;
+  border-right: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+}
+
+.metrics > div:nth-child(2n) {
+  border-right: 0;
+}
+
+.metrics > div:nth-last-child(-n + 2) {
+  border-bottom: 0;
+}
+
+.metrics dd {
+  overflow-wrap: anywhere;
+  font-size: 0.8rem;
+  font-weight: 850;
+}
+
+.refusal,
+.unavailable {
+  min-height: 210px;
+  display: grid;
+  align-content: center;
+  gap: 0.65rem;
+}
+
+.refusal > span {
+  width: 3rem;
+  height: 1.5rem;
+  border: 2px solid var(--ink);
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent 0 4px,
+    var(--muted) 4px 6px
+  );
+}
+
+.refusal h3,
+.unavailable h3 {
+  font-size: 1.35rem;
+  letter-spacing: -0.035em;
+}
+
+.unknownCount {
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid var(--ink);
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.footer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+}
+
+.footer a {
+  min-height: 44px;
+  padding: 0.7rem 0.85rem;
+  display: inline-grid;
+  place-items: center;
+  border: 2px solid var(--ink);
+  color: var(--ink);
+  font-size: 0.7rem;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  color: var(--canvas);
+  background: var(--accent);
+}
+
+.footer a:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.summary[data-summary-mode='full'] .header,
+.summary[data-summary-mode='full'] .finding,
+.summary[data-summary-mode='full'] .refusal,
+.summary[data-summary-mode='full'] .unavailable,
+.summary[data-summary-mode='full'] .footer {
+  padding: clamp(1rem, 3vw, 2rem);
+}
+
+@media (max-width: 480px) {
+  .metrics,
+  .footer {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .metrics > div,
+  .metrics > div:nth-child(2n),
+  .metrics > div:nth-last-child(-n + 2) {
+    border-right: 0;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .metrics > div:last-child {
+    border-bottom: 0;
+  }
+
+  .footer a {
+    width: 100%;
+  }
+}

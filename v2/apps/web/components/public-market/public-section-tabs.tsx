@@ -5,12 +5,13 @@ import styles from './public-market.module.css';
 const destinations = [
   { id: 'check', label: 'Check', href: '/kr/' },
   { id: 'explore', label: 'Explore', href: '/kr/seoul/explore/' },
+  { id: 'news', label: 'News', href: '/kr/seoul/news/' },
   { id: 'guide', label: 'Guide', href: '/kr/seoul/guide/' },
 ] as const;
 
 export function PublicSectionTabs({
   current,
-}: Readonly<{ current: 'check' | 'explore' | 'guide' }>) {
+}: Readonly<{ current: 'check' | 'explore' | 'news' | 'guide' }>) {
   return (
     <nav className={styles.publicSectionTabs} aria-label="Public evidence sections">
       <ul>

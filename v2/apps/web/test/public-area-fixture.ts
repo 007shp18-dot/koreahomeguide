@@ -62,6 +62,18 @@ export type PublicAreaFixtureArtifact = {
   districtSummaries: MutableAreaSummary[];
 };
 
+export type PublicAreaV2FixtureArtifact = {
+  artifactVersion: string;
+  generatedAt: string;
+  provenance: PublicAreaFixtureArtifact['provenance'];
+  groups: {
+    all: { citySummary: MutablePublishedSummary; districtSummaries: MutableAreaSummary[] };
+    new: { citySummary: MutablePublishedSummary; districtSummaries: MutableAreaSummary[] };
+    renewal: { citySummary: MutablePublishedSummary; districtSummaries: MutableAreaSummary[] };
+  };
+  unknownContractCounts: { city: number; districts: number[] };
+};
+
 export type PublicAreaFixtureOptions = Readonly<{
   publishedMedians?: Readonly<Partial<Record<SeoulDistrictSlug, number>>>;
   withheldCounts?: Readonly<Partial<Record<SeoulDistrictSlug, number>>>;
@@ -145,5 +157,60 @@ export function createPublicAreaFixture(
       2.5,
     ),
     districtSummaries,
+  };
+}
+
+export function createPublicAreaV1Fixture(
+  options: PublicAreaFixtureOptions = {},
+): PublicAreaFixtureArtifact {
+  return createPublicAreaFixture(options);
+}
+
+function publishedGroup(
+  n: number,
+  medianOffset: number,
+): { citySummary: MutablePublishedSummary; districtSummaries: MutableAreaSummary[] } {
+  const districtSummaries = SEOUL_RENT_CHECK_DISTRICTS.map((district, index) =>
+    publishedSummary(
+      district.slug,
+      'seoul',
+      100_000_000 + index * 10_000_000 + medianOffset,
+      n,
+      index % 2 === 0 ? null : 1.2,
+    ));
+  return {
+    citySummary: publishedSummary(
+      'seoul',
+      'kr',
+      CITY_MEDIAN_SENTINEL + medianOffset,
+      districtSummaries.reduce((sum, summary) => sum + summary.n, 0),
+      2.5,
+    ),
+    districtSummaries,
+  };
+}
+
+export function createPublicAreaV2Fixture(): PublicAreaV2FixtureArtifact {
+  return {
+    artifactVersion: 'signedprice-public-area-summary-v2',
+    generatedAt: '2026-08-31T01:13:24.787Z',
+    provenance: {
+      marketId: 'kr-seoul',
+      period: PUBLIC_AREA_FIXTURE_PERIOD,
+      provider: 'MOLIT',
+      endpointVersion: 'v1',
+      parserVersion: 'kr-molit-rent-parser-v2',
+      rightsPolicyId: 'kr-molit-rent-v1',
+      sourceComplete: true,
+    },
+    groups: {
+      all: publishedGroup(11, 0),
+      new: publishedGroup(5, -20_000_000),
+      renewal: publishedGroup(5, 20_000_000),
+    },
+    unknownContractCounts: {
+      city: 25,
+      districts: Array.from({ length: 25 }, () => 1),
+    },
   };
 }

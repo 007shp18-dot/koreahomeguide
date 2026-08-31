@@ -8,7 +8,10 @@ import {
 } from '../../lib/site-copy';
 import { SiteFooter } from '../site-footer';
 import { SiteHeader } from '../site-header';
+import { CommunitySignal } from '../community/community-signal';
+import { DetailNewsList } from '../news/detail-news-list';
 import { EvidenceDisclosure } from '../trust/evidence-disclosure';
+import { PublicSectionTabs } from './public-section-tabs';
 import styles from './building-detail.module.css';
 
 const money = new Intl.NumberFormat('ko-KR', {
@@ -45,10 +48,26 @@ function dealLabel(deal: PublicBuildingModel['building']['supportedDeals'][numbe
   return deal;
 }
 
+function BuildingNavigation({ model }: Readonly<{ model: PublicBuildingModel }>) {
+  return (
+    <nav className={styles.navigation} aria-label="Building evidence navigation">
+      <Link href={`/kr/seoul/explore/${model.district.slug}/`}>
+        Back to {model.district.nameEn} evidence
+      </Link>
+      <Link href={`/kr/seoul/explore/?district=${model.district.slug}`}>
+        Back to Seoul map
+      </Link>
+      <Link href="/kr/seoul/rankings/">View district rankings</Link>
+      <Link href="/kr/seoul/corrections/">Review Seoul corrections</Link>
+    </nav>
+  );
+}
+
 export function BuildingDetailPage({ model }: Readonly<{ model: PublicBuildingModel }>) {
   return (
     <div id="top" className={styles.page} data-building-detail="ready">
       <SiteHeader copy={headerFor(model)} />
+      <PublicSectionTabs current="explore" />
       <main className={styles.main}>
         <nav className={styles.breadcrumb} aria-label="Breadcrumb">
           <ol>
@@ -68,87 +87,96 @@ export function BuildingDetailPage({ model }: Readonly<{ model: PublicBuildingMo
           <p>{model.building.housingType} · {model.display.sampleLabel}</p>
         </header>
 
-        <section className={styles.evidence} aria-labelledby="building-distribution-heading">
-          <div className={styles.sectionHeading}>
-            <p>01 / Reported distribution</p>
-            <h2 id="building-distribution-heading">Completed-period contract evidence</h2>
-          </div>
-          <dl className={styles.findingGrid}>
-            <div><dt>Median</dt><dd>{model.display.medianLabel}</dd></div>
-            <div><dt>Middle half</dt><dd>{model.display.middleHalfLabel}</dd></div>
-            <div><dt>Full range</dt><dd>{model.display.rangeLabel}</dd></div>
-            <div><dt>Recent change</dt><dd>{model.display.changeLabel}</dd></div>
-          </dl>
-        </section>
+        <div className={styles.detailLayout}>
+          <div className={styles.detailMain} data-detail-main="true">
+            <section className={styles.evidence} aria-labelledby="building-distribution-heading">
+              <div className={styles.sectionHeading}>
+                <p>01 / Reported distribution</p>
+                <h2 id="building-distribution-heading">Completed-period contract evidence</h2>
+              </div>
+              <dl className={styles.findingGrid}>
+                <div><dt>Median</dt><dd>{model.display.medianLabel}</dd></div>
+                <div><dt>Middle half</dt><dd>{model.display.middleHalfLabel}</dd></div>
+                <div><dt>Full range</dt><dd>{model.display.rangeLabel}</dd></div>
+                <div><dt>Recent change</dt><dd>{model.display.changeLabel}</dd></div>
+              </dl>
+            </section>
 
-        <section className={styles.areaBands} aria-labelledby="building-area-heading">
-          <div className={styles.sectionHeading}>
-            <p>02 / Area bands</p>
-            <h2 id="building-area-heading">Evidence by filed area band</h2>
-          </div>
-          {model.building.areaBands.length === 0 ? (
-            <p>No area-band distribution is published for this record.</p>
-          ) : (
-            <ul>
-              {model.building.areaBands.map(({ band, summary }) => (
-                <li key={band}>
-                  <strong>{band}</strong>
-                  <span>{summary.n} reported contract{summary.n === 1 ? '' : 's'}</span>
-                  <span>{summary.published ? money.format(summary.med) : 'Not published'}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
-
-        <section className={styles.contracts} aria-labelledby="recent-contracts-heading">
-          <div className={styles.sectionHeading}>
-            <p>03 / Recent records</p>
-            <h2 id="recent-contracts-heading">Privacy-safe reported contracts</h2>
-          </div>
-          {model.building.recentContracts.length === 0 ? (
-            <p>No recent public contract rows are included in this artifact.</p>
-          ) : (
-            <div className={styles.tableWrap}>
-              <table>
-                <thead><tr><th>Filed month</th><th>Area</th><th>Deal</th><th>Deposit / price</th><th>Monthly rent</th></tr></thead>
-                <tbody>
-                  {model.building.recentContracts.map((contract, index) => (
-                    <tr key={`${contract.filedMonth}-${contract.areaSqm}-${index}`}>
-                      <td>{contract.filedMonth}</td>
-                      <td>{contract.areaSqm}㎡</td>
-                      <td>{dealLabel(contract.deal)}</td>
-                      <td>{money.format(contract.depositWon)}</td>
-                      <td>{money.format(contract.monthlyRentWon)}</td>
-                    </tr>
+            <section className={styles.areaBands} aria-labelledby="building-area-heading">
+              <div className={styles.sectionHeading}>
+                <p>02 / Area bands</p>
+                <h2 id="building-area-heading">Evidence by filed area band</h2>
+              </div>
+              {model.building.areaBands.length === 0 ? (
+                <p>No area-band distribution is published for this record.</p>
+              ) : (
+                <ul>
+                  {model.building.areaBands.map(({ band, summary }) => (
+                    <li key={band}>
+                      <strong>{band}</strong>
+                      <span>{summary.n} reported contract{summary.n === 1 ? '' : 's'}</span>
+                      <span>{summary.published ? money.format(summary.med) : 'Not published'}</span>
+                    </li>
                   ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </section>
+                </ul>
+              )}
+            </section>
 
-        <section className={styles.source} aria-labelledby="building-source-heading">
-          <div className={styles.sectionHeading}>
-            <p>04 / Source and limits</p>
-            <h2 id="building-source-heading">Use this evidence within its boundary</h2>
+            <section className={styles.contracts} aria-labelledby="recent-contracts-heading">
+              <div className={styles.sectionHeading}>
+                <p>03 / Recent records</p>
+                <h2 id="recent-contracts-heading">Privacy-safe reported contracts</h2>
+              </div>
+              {model.building.recentContracts.length === 0 ? (
+                <p>No recent public contract rows are included in this artifact.</p>
+              ) : (
+                <div className={styles.tableWrap}>
+                  <table>
+                    <thead><tr><th>Filed month</th><th>Area</th><th>Deal</th><th>Deposit / price</th><th>Monthly rent</th></tr></thead>
+                    <tbody>
+                      {model.building.recentContracts.map((contract, index) => (
+                        <tr key={`${contract.filedMonth}-${contract.areaSqm}-${index}`}>
+                          <td>{contract.filedMonth}</td>
+                          <td>{contract.areaSqm}㎡</td>
+                          <td>{dealLabel(contract.deal)}</td>
+                          <td>{money.format(contract.depositWon)}</td>
+                          <td>{money.format(contract.monthlyRentWon)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </section>
+
+            <section className={styles.source} aria-labelledby="building-source-heading">
+              <div className={styles.sectionHeading}>
+                <p>04 / Source and limits</p>
+                <h2 id="building-source-heading">Use this evidence within its boundary</h2>
+              </div>
+              <EvidenceDisclosure
+                model={model.evidence.descriptor}
+                boundary="Completed-period reported building contracts, not a listing, appraisal, or legal review."
+                attribution={['Ministry of Land, Infrastructure and Transport (MOLIT)']}
+              />
+              <dl className={styles.sourceGrid}>
+                <div><dt>Supported deals</dt><dd>{model.building.supportedDeals.map(dealLabel).join(', ')}</dd></div>
+                <div><dt>Completed period</dt><dd>{model.evidence.period}</dd></div>
+                <div><dt>Publication minimum</dt><dd>{model.evidence.publicationMinimum}</dd></div>
+                <div><dt>Exclusions</dt><dd>{model.evidence.exclusions.join(' · ')}</dd></div>
+              </dl>
+              <div className={styles.actions}>
+                <Link href="/trust/">Read SignedPrice Trust</Link>
+                <Link href="/kr/seoul/corrections/">Review Seoul corrections</Link>
+              </div>
+            </section>
           </div>
-          <EvidenceDisclosure
-            model={model.evidence.descriptor}
-            boundary="Completed-period reported building contracts, not a listing, appraisal, or legal review."
-            attribution={['Ministry of Land, Infrastructure and Transport (MOLIT)']}
-          />
-          <dl className={styles.sourceGrid}>
-            <div><dt>Supported deals</dt><dd>{model.building.supportedDeals.map(dealLabel).join(', ')}</dd></div>
-            <div><dt>Completed period</dt><dd>{model.evidence.period}</dd></div>
-            <div><dt>Publication minimum</dt><dd>{model.evidence.publicationMinimum}</dd></div>
-            <div><dt>Exclusions</dt><dd>{model.evidence.exclusions.join(' · ')}</dd></div>
-          </dl>
-          <div className={styles.actions}>
-            <Link href="/trust/">Read SignedPrice Trust</Link>
-            <Link href="/kr/seoul/corrections/">Review Seoul corrections</Link>
-          </div>
-        </section>
+          <aside className={styles.detailRail} data-detail-rail="true" aria-label="Building context">
+            <DetailNewsList news={model.news} />
+            <CommunitySignal model={model.communitySignal} />
+            <BuildingNavigation model={model} />
+          </aside>
+        </div>
       </main>
       <SiteFooter copy={footer} />
     </div>

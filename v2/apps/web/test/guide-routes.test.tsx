@@ -51,7 +51,8 @@ describe('Korea methodology guides', () => {
       expect(html).toContain(entry.term);
       expect(html).toContain(entry.whyItMatters);
     }
-    expect(html).not.toMatch(/data-public-tab="news"|>News</);
+    expect(html).toContain('data-public-tab="news"');
+    expect(html).toContain('href="/kr/seoul/news"');
   });
 
   it('generates exact static params and renders every shareable guide', async () => {

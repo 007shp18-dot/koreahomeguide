@@ -6,6 +6,10 @@ import {
   type SeoulRentCheckDistrict,
 } from '@signedprice/korea-rent/browser';
 
+import { buildCommunitySignalModel } from '../community/community-signal-model.server';
+import type { CommunitySignalModel } from '../community/community-signal-model';
+import type { NewsCardModel } from '../news/news-card-model';
+import { buildNewsCardModels } from '../news/news-card-model.server';
 import {
   createPublicBuildingRepository,
   publicBuildingRepositoryFromEnvironment,
@@ -45,6 +49,8 @@ export type PublicBuildingModel = Readonly<{
     changeLabel: string;
   }>;
   evidence: PublicBuildingEvidenceModel;
+  communitySignal: CommunitySignalModel;
+  news: readonly NewsCardModel[];
 }>;
 
 const money = new Intl.NumberFormat('ko-KR', {
@@ -107,6 +113,13 @@ export function buildPublicBuildingModel(
         exclusions: context.exclusions,
         descriptor,
       }),
+      communitySignal: buildCommunitySignalModel(Object.freeze({
+        marketId: 'kr-seoul',
+        scopeType: 'building',
+        scopeId: building.buildingId,
+        evidenceId: `kr-seoul:${context.period}:building:v1:all`,
+      })),
+      news: buildNewsCardModels(),
     });
   } catch {
     return null;

@@ -51,7 +51,11 @@ function singleValue(value: string | string[] | undefined): string | undefined {
 
 export default async function ExplorerPage({ searchParams }: ExplorerPageProps) {
   const query = await searchParams;
-  const model = buildPublicAreaExploreModel(singleValue(query.district));
+  const model = buildPublicAreaExploreModel(
+    singleValue(query.district),
+    undefined,
+    singleValue(query.contract),
+  );
   const naverMapClientId = process.env.NAVER_MAP_CLIENT_ID?.trim() || null;
 
   return (

@@ -1,0 +1,347 @@
+.page {
+  --news-ground: #f3f2f2;
+  --news-ink: #201e1d;
+  --news-muted: #5d5958;
+  --news-accent: #1d4ed8;
+  color: var(--news-ink);
+  background: var(--news-ground);
+}
+
+.main {
+  width: min(100%, 1240px);
+  margin-inline: auto;
+  border-right: 2px solid var(--news-ink);
+  border-left: 2px solid var(--news-ink);
+}
+
+.hero,
+.documentHero {
+  min-height: 360px;
+  padding: clamp(2rem, 7vw, 5.5rem) clamp(1rem, 5vw, 4rem);
+  display: grid;
+  align-content: end;
+  gap: 1rem;
+  border-bottom: 2px solid var(--news-ink);
+}
+
+.hero > p:first-child,
+.documentHero > p:first-child,
+.sectionHeading > p,
+.citation > p:first-child {
+  color: var(--news-accent);
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.hero h1,
+.documentHero h1 {
+  max-width: 960px;
+  font-size: clamp(3rem, 8vw, 7.5rem);
+  font-weight: 900;
+  letter-spacing: -0.07em;
+  line-height: 0.86;
+}
+
+.hero > p:last-child,
+.documentHero > p:nth-of-type(2) {
+  max-width: 720px;
+  color: var(--news-muted);
+  line-height: 1.6;
+}
+
+.feed {
+  border-bottom: 2px solid var(--news-ink);
+}
+
+.sectionHeading {
+  padding: 1rem clamp(1rem, 4vw, 3rem);
+  display: grid;
+  grid-template-columns: minmax(130px, 0.25fr) minmax(0, 1fr);
+  align-items: baseline;
+  gap: 1rem;
+  border-bottom: 2px solid var(--news-ink);
+}
+
+.sectionHeading h2 {
+  font-size: clamp(1.4rem, 3vw, 2.7rem);
+  letter-spacing: -0.045em;
+}
+
+.cards {
+  list-style: none;
+}
+
+.cards > li {
+  border-bottom: 1px solid var(--news-ink);
+}
+
+.cards > li:last-child {
+  border-bottom: 0;
+}
+
+.card {
+  display: grid;
+  grid-template-columns: minmax(170px, 0.28fr) minmax(0, 1fr);
+}
+
+.cardMeta {
+  padding: 1.4rem;
+  display: grid;
+  align-content: start;
+  gap: 0.55rem;
+  border-right: 1px solid var(--news-ink);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.cardMeta > span {
+  color: var(--news-accent);
+  font-size: 2.2rem;
+  font-weight: 900;
+}
+
+.cardMeta time {
+  color: var(--news-muted);
+}
+
+.cardBody {
+  min-width: 0;
+  padding: clamp(1.4rem, 4vw, 3rem);
+  display: grid;
+  gap: 1rem;
+}
+
+.cardBody h3 {
+  font-size: clamp(1.55rem, 4vw, 3.6rem);
+  letter-spacing: -0.055em;
+  line-height: 0.98;
+}
+
+.cardBody h3 a {
+  color: inherit;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.16em;
+}
+
+.cardBody h3 a:focus-visible,
+.source a:focus-visible,
+.citation a:focus-visible,
+.actions a:focus-visible,
+.breadcrumb a:focus-visible {
+  outline: 2px solid var(--news-accent);
+  outline-offset: 2px;
+}
+
+.cardBody > p:not(.evidence, .source) {
+  max-width: 720px;
+  color: var(--news-muted);
+  line-height: 1.55;
+}
+
+.evidence,
+.source {
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--news-ink);
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.source {
+  display: grid;
+  grid-template-columns: minmax(110px, 0.22fr) minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.source span {
+  color: var(--news-muted);
+  font-weight: 800;
+}
+
+.source a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--news-ink);
+  overflow-wrap: anywhere;
+}
+
+.boundary,
+.evidencePanel {
+  padding: clamp(1rem, 4vw, 3rem);
+  display: grid;
+  grid-template-columns: minmax(160px, 0.28fr) minmax(0, 1fr);
+  gap: 1rem;
+  border-bottom: 2px solid var(--news-ink);
+  background: #dbe4ff;
+  line-height: 1.55;
+}
+
+.breadcrumb {
+  min-height: 52px;
+  padding-inline: clamp(1rem, 4vw, 3rem);
+  display: flex;
+  align-items: center;
+  border-bottom: 2px solid var(--news-ink);
+}
+
+.breadcrumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+  font-size: 0.75rem;
+}
+
+.breadcrumb li + li::before {
+  margin-right: 0.5rem;
+  content: '/';
+}
+
+.breadcrumb a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: inherit;
+}
+
+.documentHero dl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  font-size: 0.75rem;
+}
+
+.documentHero dl div {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.documentHero dt {
+  color: var(--news-muted);
+  font-weight: 800;
+}
+
+.evidencePanel {
+  border-bottom-width: 2px;
+}
+
+.evidencePanel p:last-child {
+  font-size: 0.75rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.body {
+  padding: clamp(2rem, 7vw, 5rem) clamp(1rem, 12vw, 9rem);
+  display: grid;
+  gap: 1.4rem;
+  border-bottom: 2px solid var(--news-ink);
+}
+
+.body h2 {
+  margin-top: 1.4rem;
+  font-size: clamp(1.5rem, 4vw, 3rem);
+  letter-spacing: -0.045em;
+}
+
+.body p,
+.body li {
+  max-width: 780px;
+  font-size: clamp(1rem, 1.8vw, 1.18rem);
+  line-height: 1.72;
+}
+
+.body ul {
+  padding-left: 1.3rem;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.citation {
+  padding: clamp(1.4rem, 5vw, 4rem);
+  display: grid;
+  gap: 0.7rem;
+  border-bottom: 2px solid var(--news-ink);
+}
+
+.citation h2 {
+  font-size: clamp(1.4rem, 3vw, 2.6rem);
+  letter-spacing: -0.04em;
+}
+
+.citation a,
+.actions a {
+  min-height: 48px;
+  padding: 0.8rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--news-ink);
+  color: var(--news-ink);
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.citation a {
+  width: fit-content;
+}
+
+.citation a:hover,
+.actions a:hover {
+  color: var(--news-ground);
+  background: var(--news-accent);
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.actions a {
+  border-top: 0;
+  border-right: 0;
+  border-bottom: 0;
+}
+
+.actions a:last-child {
+  border-left-width: 1px;
+}
+
+@media (max-width: 720px) {
+  .main {
+    border-right: 0;
+    border-left: 0;
+  }
+
+  .hero,
+  .documentHero {
+    min-height: 300px;
+  }
+
+  .sectionHeading,
+  .card,
+  .boundary,
+  .evidencePanel,
+  .source,
+  .actions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cardMeta {
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    border-right: 0;
+    border-bottom: 1px solid var(--news-ink);
+  }
+
+  .cardMeta > span {
+    font-size: 1.25rem;
+  }
+
+  .actions a:last-child {
+    border-top: 1px solid var(--news-ink);
+    border-left-width: 0;
+  }
+}

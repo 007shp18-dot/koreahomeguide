@@ -5,7 +5,9 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 vi.mock('next/navigation', () => ({
-  useRouter: () => ({ push: vi.fn() }),
+  usePathname: () => '/kr/seoul/explore/',
+  useRouter: () => ({ push: vi.fn(), replace: vi.fn() }),
+  useSearchParams: () => new URLSearchParams(),
 }));
 vi.mock('next/script', () => ({
   default: ({ src }: Readonly<{ src: string }>) => createElement('script', { src }),
@@ -19,6 +21,7 @@ import {
   CITY_MEDIAN_SENTINEL,
   PUBLIC_AREA_FIXTURE_PERIOD,
   createPublicAreaFixture,
+  createPublicAreaV2Fixture,
 } from './public-area-fixture';
 
 const rankedFixture = () => createPublicAreaFixture({
@@ -81,6 +84,8 @@ describe('public Seoul area Explorer', () => {
     expect(markup).toContain('data-map-state="withheld"');
     expect(markup).toContain('Not published');
     expect(markup).toContain('Selected · Gangnam-gu');
+    expect(markup).toContain('data-selected-evidence="gangnam-gu"');
+    expect(markup).toContain('New/renewal split not available in this snapshot');
     expect(markup).toContain('href="/kr/seoul/explore/gangnam-gu"');
     expect(markup).toContain('Open Gangnam-gu evidence');
     expect(markup).toContain('Open Jongno-gu');
@@ -106,13 +111,13 @@ describe('public Seoul area Explorer', () => {
   });
 
   it('wires the page to one district query and indexable canonical metadata', async () => {
-    vi.stubEnv('SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT', JSON.stringify(rankedFixture()));
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT', JSON.stringify(createPublicAreaV2Fixture()));
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', PUBLIC_AREA_FIXTURE_PERIOD);
     vi.stubEnv('NAVER_MAP_CLIENT_ID', 'page-naver-client');
     const modulePath = '../app/kr/seoul/explore/page';
     const route = await import(/* @vite-ignore */ modulePath);
     const page = await route.default({
-      searchParams: Promise.resolve({ district: 'mapo-gu' }),
+      searchParams: Promise.resolve({ district: 'mapo-gu', contract: 'new' }),
     });
     const markup = renderToStaticMarkup(page);
 
@@ -125,6 +130,8 @@ describe('public Seoul area Explorer', () => {
       },
     });
     expect(markup).toContain('Selected · Mapo-gu');
+    expect(markup).toContain('New contracts');
+    expect(markup).toContain('Contract type unknown · 1');
     expect(markup).toContain('ncpKeyId=page-naver-client');
     expect(markup).toContain('Korea public evidence. Publication limits shown.');
     expect(markup).not.toMatch(/public P2 preview|Production launch is not authorized/i);
@@ -137,7 +144,7 @@ describe('public Seoul area Explorer', () => {
       'utf8',
     );
 
-    expect(css).toMatch(/grid-template-columns:\s*minmax\(0,\s*1fr\)\s+380px/);
+    expect(css).toMatch(/grid-template-columns:\s*minmax\(0,\s*1fr\)\s+460px/);
     expect(css).toMatch(/\.districtButton[\s\S]*min-height:\s*44px/);
     expect(css).toMatch(/\.detailLink[\s\S]*min-height:\s*44px/);
     expect(css).toMatch(/:focus-visible[\s\S]*outline:\s*2px solid var\(--area-accent\)[\s\S]*outline-offset:\s*2px/);
