@@ -44,6 +44,7 @@ The deterministic local browser fixture uses period `2026-03/2026-08` and a non-
 - The first browser CI run exposed two assertion defects: hidden Next not-found copy named unreleased markets, and an ambiguous `Check` link locator. The follow-up adds a Seoul-only not-found boundary and scopes the locator to primary navigation.
 - The second browser CI run confirmed those fixes and exposed only a trailing-slash expectation mismatch. The assertion now matches Next's rendered `/kr/seoul/explore/` URL.
 - The third browser CI run reached the planned navigation assertion. It confirmed the links above, then showed that nested `Planned` text makes each inactive item's exact text `NewsPlanned` or `GuidePlanned`; the non-link checks now target those direct navigation children.
+- The fourth browser CI run confirmed every preceding navigation check and exposed the same framework-normalized trailing slash on the secondary Rent Check link. All href assertions in this spec now match rendered Next output.
 - Current candidate commit SHA and Vercel deployment: record from the PR checks after the correction is uploaded.
 - Verified artifact period and digest identity: pending; do not record the raw artifact or secret values here.
 - Required visible checks: ready evidence, Offer A → Offer B → Result order, interpolation, held-range label, tie, ranking flip, 44px controls, keyboard order, no horizontal overflow, no console errors or 5xx responses, no canonical/hreflang, and no sitemap URL.

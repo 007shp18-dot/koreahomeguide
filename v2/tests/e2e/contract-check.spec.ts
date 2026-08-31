@@ -109,7 +109,7 @@ test('Contract Check stays ordered, touch-sized, and keyboard reachable', async 
     .not.toHaveAttribute('href');
   await expect(page.getByRole('link', {
     name: 'Check one offer against its local distribution',
-  })).toHaveAttribute('href', '/kr/seoul/tools/rent-check');
+  })).toHaveAttribute('href', '/kr/seoul/tools/rent-check/');
   assertNoRuntimeFailures();
 });
 
