@@ -26,6 +26,7 @@ import { createPublicBuildingRepository } from './building-summary-repository.se
 import type {
   ContractGroupEvidenceModel,
   DistrictBuildingAvailability,
+  ExploreBuildingAvailability,
   ExploreDistrictModel,
   PublicAreaExploreModel,
   PublicAreaLegendBucket,
@@ -310,6 +311,45 @@ function legendFor(
   }));
 }
 
+function exploreBuildingsFor(
+  dependencies: PublicAreaRouteDependencies,
+): ExploreBuildingAvailability {
+  try {
+    const repository = createPublicBuildingRepository({
+      source: dependencies.buildingSource,
+      expected: { marketId: 'kr-seoul', period: dependencies.period },
+    });
+    const buildings = Object.freeze(repository.listRouteParams().map(({ district, buildingId }) => {
+      const building = repository.getById(district, buildingId);
+      if (!building.groups.all.published) throw new TypeError('Unpublished building route.');
+      const groupLabel = (group: typeof building.groups.new) => (
+        group.published ? formatMoney(group.med) : null
+      );
+      return Object.freeze({
+        id: building.buildingId,
+        districtSlug: building.districtSlug,
+        neighborhoodId: building.neighborhoodId,
+        neighborhoodName: building.neighborhoodName,
+        name: building.name,
+        housingType: building.housingType,
+        latitude: building.latitude,
+        longitude: building.longitude,
+        sampleLabel: sampleLabel(building.groups.all.n),
+        medianLabel: formatMoney(building.groups.all.med),
+        newSampleLabel: sampleLabel(building.groups.new.n),
+        newMedianLabel: groupLabel(building.groups.new),
+        renewalSampleLabel: sampleLabel(building.groups.renewal.n),
+        renewalMedianLabel: groupLabel(building.groups.renewal),
+        unknownContractCount: building.unknownContractCount,
+        href: `/kr/seoul/explore/${building.districtSlug}/${building.buildingId}/` as const,
+      });
+    }));
+    return Object.freeze({ status: 'ready', buildings });
+  } catch {
+    return Object.freeze({ status: 'not_loaded' });
+  }
+}
+
 export function buildPublicAreaExploreModel(
   selectedSlug: string | undefined,
   dependencies: PublicAreaRouteDependencies = environmentDependencies(),
@@ -369,6 +409,7 @@ export function buildPublicAreaExploreModel(
       citySummary,
       districts,
       legend: legendFor(districts),
+      buildingAvailability: exploreBuildingsFor(dependencies),
       source,
     });
   } catch {
