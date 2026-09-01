@@ -31,7 +31,7 @@ test('studio mapping remains detached and ordinary property types remain unchang
 });
 
 test('Rent Check browser apps preserve API, FX, prefill, and evidence flows', () => {
-  for (const path of ['tools/seoul-rent-check/app.js',]) {
+  for (const path of ['tools/seoul-rent-check/app.js']) {
     const source = fs.readFileSync(path,'utf8');
     assert.match(source, /\/api\/fx/);
     assert.match(source, /\/api\/rent-check\?/);
@@ -46,8 +46,7 @@ test('new Fair Rent Intelligence does not add a provider, endpoint, affiliate, o
     'lib/rent-check-core.cjs',
     'rent-check-ui-utils.js',
     'zh/rent-check-ui-utils.js',
-    'tools/seoul-rent-check/app.js',
-    ];
+    'tools/seoul-rent-check/app.js'];
   const combined = files.map(path => fs.readFileSync(path,'utf8')).join('\n');
   assert.doesNotMatch(combined, /Wise|affiliate|referral/i);
   assert.doesNotMatch(combined, /Safety Score|Rent Safety/i);
