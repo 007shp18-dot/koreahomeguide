@@ -3,7 +3,7 @@
   "private": true,
   "version": "11.3.0",
   "scripts": {
-    "test:runtime-assets": "node --test tests/shared-runtime-assets.test.cjs",
+    "test:runtime-migration": "node --test tests/shared-runtime-assets.test.cjs tests/currency-input.test.cjs tests/currency-ui.test.cjs tests/date-localization.test.cjs tests/home-positioning.test.cjs tests/month-picker-localization.test.cjs tests/rent-check-feedback-response.test.cjs tests/rent-check-mobile-completion.test.cjs tests/rent-check-prefill.test.cjs tests/rent-check-result-visuals.test.cjs tests/rent-check-size.test.cjs tests/saved-homes-pages.test.cjs tests/seoul-rent-check-coverage.test.cjs tests/tool-pages.test.cjs tests/v10-5-transaction-quality.test.cjs tests/v11-fair-rent-intelligence.test.cjs tests/v11-fair-rent-regression.test.cjs tests/zh-explorer.test.cjs tests/zh-locale.test.cjs",
     "seo:build-migration": "node scripts/seo/build-signedprice-migration.cjs && node scripts/seo/render-signedprice-migration.cjs",
     "seo:validate-migration": "node scripts/seo/validate-signedprice-migration.cjs"
   },
