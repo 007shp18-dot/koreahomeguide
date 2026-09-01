@@ -32,3 +32,6 @@ jobs:
         run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Verify runtime migration coverage
         run: npm run test:runtime-migration
+      - name: Diagnose baseline-sensitive migrated tests
+        continue-on-error: true
+        run: node --test tests/cold-start-analytics.test.cjs tests/currency-defaults.test.cjs
