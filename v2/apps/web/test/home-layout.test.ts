@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -5,6 +6,22 @@ vi.mock('server-only', () => ({}));
 import Home from '../app/page';
 
 describe('signedprice Evidence Editorial homepage', () => {
+  it('keeps the wide hero copy gutter bounded on the panel side', () => {
+    const css = readFileSync(
+      new URL('../components/home-editorial.module.css', import.meta.url),
+      'utf8',
+    );
+    const heroCopy = css.match(/\.heroCopy\s*\{([^}]+)\}/)?.[1] ?? '';
+
+    expect(heroCopy).toContain(
+      'padding-left: max(40px, calc((100vw - var(--site-width)) / 2))',
+    );
+    expect(heroCopy).toContain('padding-right: clamp(40px, 5vw, 80px)');
+    expect(heroCopy).not.toMatch(
+      /padding:\s*[^;]+max\(40px,\s*calc\(\(100vw - var\(--site-width\)\) \/ 2\)\)/,
+    );
+  });
+
   it('uses one decision headline before the evidence and deeper product sections', async () => {
     const markup = renderToStaticMarkup(await Home());
     const h1s = markup.match(/<h1/g) ?? [];
