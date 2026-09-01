@@ -128,7 +128,7 @@ test('Contract Check stays ordered, touch-sized, and keyboard reachable', async 
   assertNoRuntimeFailures();
 });
 
-test('fixture curve covers interpolation, held range, tie, and ranking flip', async ({ page }) => {
+test('fixture curve covers interpolation, range rejection, tie, and ranking flip', async ({ page }) => {
   test.skip(releaseTarget.usesExternalServer, 'Exact fixture calculations are local-release only.');
   await page.goto('/kr/seoul/check/');
 
@@ -148,7 +148,10 @@ test('fixture curve covers interpolation, held range, tie, and ranking flip', as
   await expect(result.locator('svg text')).toHaveCount(0);
 
   await page.locator('input[name="a-deposit"]').fill('120000000');
-  await expect(result).toContainText('Outside measured range — held, not extended.');
+  await expect(page.locator('#a-offer-error')).toContainText(
+    'Deposit falls outside the measured range. No comparison is produced.',
+  );
+  await expect(result.locator('[data-result-state="invalid"]')).toBeVisible();
 
   await fillOffer(page, 'a', '30000000', '300000');
   await fillOffer(page, 'b', '30000000', '300000');
