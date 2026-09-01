@@ -26,6 +26,7 @@ const PAGE_ONE = `<?xml version="1.0" encoding="UTF-8"?>
         <monthlyRent>90</monthlyRent>
         <excluUseAr>25.00</excluUseAr>
         <aptNm>한강 &amp; 서울</aptNm>
+        <umdNm>여의도동</umdNm>
         <contractType>신규</contractType>
         <cdealDay>20260820</cdealDay>
         <cdealType>O</cdealType>
@@ -144,6 +145,7 @@ const DUPLICATE_ID_PAGE_TWO = `<?xml version="1.0" encoding="UTF-8"?>
         <dealYear>2026</dealYear><dealMonth>8</dealMonth><dealDay>15</dealDay>
         <deposit>1,000</deposit><monthlyRent>90</monthlyRent><excluUseAr>25.00</excluUseAr>
         <aptNm>한강 &amp; 서울</aptNm><contractType>신규</contractType>
+        <umdNm>여의도동</umdNm>
         <cdealDay>20260820</cdealDay><cdealType>O</cdealType>
       </item>
     </items>
@@ -244,6 +246,7 @@ describe('MOLIT XML registry and parser', () => {
           sourceHousingType: 'apartment',
           sourceRecordId: 'APT-202608-001',
           buildingLabel: '한강 & 서울',
+          legalDong: '여의도동',
           areaSqm: 25,
           depositWon: 10_000_000,
           monthlyRentWon: 900_000,
