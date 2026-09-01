@@ -214,6 +214,7 @@ export type MarketCardModel = {
   overviewHref: string;
   overviewLabel: string;
   productDepthLabel: string;
+  productDepthKind: MarketProfile['productDepth'];
   productDepth: string;
   dataRightsLabel: string;
   limitationsLabel: string;
@@ -240,6 +241,7 @@ function createMarketCardModel(profile: MarketProfile): MarketCardModel {
     overviewHref: getMarketHref(profile.id),
     overviewLabel: `Explore ${profile.cityName}`,
     productDepthLabel: homepageCopy.markets.productDepthLabel,
+    productDepthKind: profile.productDepth,
     productDepth: productDepthLabels[profile.productDepth],
     dataRightsLabel: homepageCopy.markets.dataRightsLabel,
     limitationsLabel: homepageCopy.markets.limitationsLabel,
