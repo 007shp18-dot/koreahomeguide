@@ -11,7 +11,6 @@ describe('browser route coverage contract', () => {
       '/trust/',
       '/kr/',
       '/kr/check/seoul/',
-      '/kr/seoul/',
       '/kr/seoul/rent/',
       '/kr/seoul/tools/rent-check/',
       '/kr/seoul/buy/',
@@ -58,8 +57,8 @@ describe('browser route coverage contract', () => {
       '/kr/seoul/explore/jongno-gu/synthetic-test-building/',
       '/compare/',
     ]);
-    expect(paths).toHaveLength(74);
-    expect(new Set(paths).size).toBe(74);
+    expect(paths).toHaveLength(73);
+    expect(new Set(paths).size).toBe(73);
     expect(publicRoutes.find(({ path }) => path === '/kr/')).toMatchObject({
       heading: 'Which rent offer actually costs less?',
       indexing: 'index',
