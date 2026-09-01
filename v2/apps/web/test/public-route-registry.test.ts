@@ -10,6 +10,7 @@ import {
 
 const ready = () => true;
 const areaReady = (state: PublicRouteReadiness) => state.areaReady;
+const conversionReady = (state: PublicRouteReadiness) => state.conversionReady;
 
 function route(
   overrides: Partial<PublicRouteDefinition> = {},
@@ -30,6 +31,11 @@ describe('SignedPrice public route registry', () => {
     const registry = createPublicRouteRegistry([
       route(),
       route({
+        path: '/kr/seoul/check/',
+        pageKind: 'check',
+        isReady: conversionReady,
+      }),
+      route({
         path: '/kr/seoul/explore/',
         pageKind: 'explore',
         legacySourcePath: '/explore/',
@@ -37,9 +43,16 @@ describe('SignedPrice public route registry', () => {
       }),
     ]);
 
-    expect(registry.listSitemapPaths({ areaReady: false })).toEqual(['/']);
-    expect(registry.listSitemapPaths({ areaReady: true })).toEqual([
+    expect(registry.listSitemapPaths({
+      areaReady: false,
+      conversionReady: false,
+    })).toEqual(['/']);
+    expect(registry.listSitemapPaths({
+      areaReady: true,
+      conversionReady: true,
+    })).toEqual([
       '/',
+      '/kr/seoul/check/',
       '/kr/seoul/explore/',
     ]);
     expect(registry.listMigrationCandidates({ areaReady: true })).toEqual([

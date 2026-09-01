@@ -108,7 +108,13 @@ test('verified synthetic building detail is server rendered only in the local re
   const response = await page.goto('/kr/seoul/explore/jongno-gu/synthetic-test-building/');
   expect(response?.status()).toBe(200);
   await expect(page.getByRole('heading', { level: 1, name: PUBLIC_BUILDING_TEST_NAME })).toBeVisible();
-  await expect(page.getByText('Privacy-safe reported contracts')).toBeVisible();
+  await page.getByRole('button', {
+    name: 'See records, adjustments, and methodology',
+  }).click();
+  await expect(page.getByRole('heading', {
+    level: 2,
+    name: 'Privacy-safe reported contracts',
+  })).toBeVisible();
   await expect(page.locator('[data-detail-main="true"]')).toBeVisible();
   await expect(page.locator('[data-detail-rail="true"]')).toContainText('Latest verified News');
   await expect(page.locator('[data-detail-rail="true"]')).toContainText('Community signal');

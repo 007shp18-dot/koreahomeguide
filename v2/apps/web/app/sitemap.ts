@@ -2,6 +2,7 @@ import 'server-only';
 
 import type { MetadataRoute } from 'next';
 import { GUIDES } from '../lib/guide/guide-content';
+import { buildContractCheckRouteModel } from '../lib/contract-check/route-model.server';
 import { buildNewsIndexModel } from '../lib/news/news-route-model.server';
 import { publicCanonical } from '../lib/public-metadata';
 import { buildKoreaPublicRouteModel } from '../lib/public-market/route-model.server';
@@ -13,6 +14,7 @@ import {
 import { operatorProfileFromEnvironment } from '../lib/operator/operator-profile.server';
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  const conversionReady = buildContractCheckRouteModel().status === 'ready';
   let summaryReady = false;
   try {
     if (buildKoreaPublicRouteModel('seoul')?.summary.published === true) {
@@ -34,6 +36,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     summaryReady,
     areaReady: area.status === 'ready',
     newsReady,
+    conversionReady,
   });
   const entries: MetadataRoute.Sitemap = [];
   const operatorReady = operatorProfileFromEnvironment().status === 'ready';
