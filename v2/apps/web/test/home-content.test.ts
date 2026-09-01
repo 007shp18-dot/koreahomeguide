@@ -8,6 +8,10 @@ import {
   homepageIntentGroups,
   homepageMarketCards,
 } from '../lib/site-copy';
+import {
+  createPublicAreaV2Fixture,
+  PUBLIC_AREA_FIXTURE_PERIOD,
+} from './public-area-fixture';
 
 describe('signedprice homepage copy', () => {
   it('uses the approved identity and avoids unsupported claims', () => {
@@ -58,12 +62,12 @@ describe('signedprice homepage copy', () => {
     ).toEqual([
       {
         id: 'kr-seoul',
-        productDepth: 'Full product',
+        productDepth: 'Evidence hub',
         capabilities: [
           {
             label: 'Official rent and sale intelligence',
             state: 'available',
-            stateLabel: 'Available',
+            stateLabel: 'Live evidence',
           },
         ],
       },
@@ -84,13 +88,13 @@ describe('signedprice homepage copy', () => {
           label: 'Rent decision path',
           href: '/kr/seoul/rent/',
           state: 'available',
-          stateLabel: 'Available',
+          stateLabel: 'Live evidence',
         },
         buy: {
           label: 'Buy decision path',
           href: '/kr/seoul/buy/',
           state: 'available',
-          stateLabel: 'Available',
+          stateLabel: 'Live evidence',
         },
       },
     ]);
@@ -117,8 +121,8 @@ describe('signedprice homepage copy', () => {
     expect(markup).toContain('>Market truth</h3>');
     expect(markup).toContain('>Decision tools</h3>');
     expect(markup).toContain('>Verified connections</h3>');
-    expect(markup).toContain('>Full product</span>');
-    expect(markup).toContain('>Available</span>');
+    expect(markup).toContain('>Evidence hub</span>');
+    expect(markup).toContain('>Live evidence</span>');
 
     for (const href of [
       '/kr/seoul/',
@@ -131,6 +135,31 @@ describe('signedprice homepage copy', () => {
     expect(markup).not.toMatch(/href="\/(?:sg|ae)\//);
 
     expect(markup).not.toMatch(/enquir|sign[ -]?in|create account/i);
+  });
+
+  it('puts the shipped Seoul evidence products on the root entry page', async () => {
+    vi.stubEnv(
+      'SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT',
+      JSON.stringify(createPublicAreaV2Fixture()),
+    );
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', PUBLIC_AREA_FIXTURE_PERIOD);
+
+    const markup = renderToStaticMarkup(await Home());
+
+    expect(markup).toContain('Seoul live');
+    expect(markup).toContain('New contracts');
+    expect(markup).toContain('Renewals');
+    for (const href of [
+      '/kr',
+      '/kr/seoul/explore',
+      '/kr/seoul/rankings',
+      '/kr/seoul/news',
+      '/kr/seoul/guide',
+    ]) {
+      expect(markup).toContain(`href="${href}"`);
+    }
+
+    vi.unstubAllEnvs();
   });
 
   it('keeps the approved English decision model while changing only its presentation', async () => {
