@@ -11,8 +11,7 @@ const affectedScripts = [
   'zh/explore/building/app.js',
   'rent-market-page.js',
   'zh/rent-market-page.js',
-  'tools/seoul-rent-check/app.js',
-  ];
+  'tools/seoul-rent-check/app.js'];
 
 function scriptPosition(html, src) {
   const escaped = src.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
