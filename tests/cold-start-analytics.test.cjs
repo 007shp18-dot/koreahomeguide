@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
 
-const files = ['app.js','tools/seoul-rent-check/app.js',];
+const files = ['app.js','tools/seoul-rent-check/app.js'];
 
 function bootRentCheckRuntime(file, { districtCode = '11680', propertyType = 'apartment' } = {}) {
   const listeners = new Map();
