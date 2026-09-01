@@ -23,7 +23,7 @@ test('Chinese cold-start page has localized metadata, consent-first analytics, l
 });
 
 test('Chinese runtime localizes Rent Check and emits the shared funnel event', () => {
-  const app=fs.readFileSync('zh/app.js','utf8'); const ui=fs.readFileSync('zh/rent-check-ui-utils.js','utf8');
+  const app=fs.readFileSync('app.js','utf8'); const ui=fs.readFileSync('zh/rent-check-ui-utils.js','utf8');
   assert.match(app,/正在查找类似的官方成交记录/);
   assert.match(app,/khg:rent-check-result/);
   assert.match(app,/rent_check_start/);
