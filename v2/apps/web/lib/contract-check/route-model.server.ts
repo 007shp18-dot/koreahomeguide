@@ -9,7 +9,7 @@ import {
 import { createConversionRepository } from './conversion-repository.server';
 
 export type ContractCheckNavigationItem = Readonly<{
-  label: 'Check' | 'Explore' | 'Guide';
+  label: 'Check' | 'Explore' | 'News' | 'Guide';
   href: string | null;
   available: boolean;
 }>;
@@ -56,6 +56,7 @@ export type ConversionEnvironmentDiagnosticCode =
 const navigation = Object.freeze([
   Object.freeze({ label: 'Check', href: '/kr/', available: true }),
   Object.freeze({ label: 'Explore', href: '/kr/seoul/explore', available: true }),
+  Object.freeze({ label: 'News', href: '/kr/seoul/news/', available: true }),
   Object.freeze({ label: 'Guide', href: '/kr/seoul/guide/', available: true }),
 ] as const satisfies readonly ContractCheckNavigationItem[]);
 

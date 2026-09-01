@@ -3,7 +3,7 @@
 import type { KoreaConversionCurveProjection } from '@signedprice/korea-rent';
 import type { AppliedConversionRate } from '@signedprice/market-core';
 import Link from 'next/link';
-import { useEffect, useReducer, useRef } from 'react';
+import { useEffect, useReducer, useRef, type ReactNode } from 'react';
 
 import type { ContractCheckRouteModel } from '../../lib/contract-check/route-model.server';
 import {
@@ -277,12 +277,14 @@ function ReadyWorkspace({ model }: Readonly<{
   );
 }
 
-export function ContractCheckWorkspace({ model }: Readonly<{
+export function ContractCheckWorkspace({ model, entry }: Readonly<{
   model: ContractCheckRouteModel;
+  entry?: ReactNode;
 }>) {
   return (
     <div className={styles.page}>
       <WorkspaceHeader model={model} />
+      {entry}
       {model.status === 'ready' ? (
         <ReadyWorkspace model={model} />
       ) : (

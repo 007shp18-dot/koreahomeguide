@@ -3,6 +3,7 @@ import type {
   PublicMarketSummary,
 } from '@signedprice/market-core';
 import Link from 'next/link';
+import type { ReactNode } from 'react';
 
 import type { SiteFooterModel, SiteHeaderModel } from '../../lib/site-copy';
 import type { PublicSourceBoundaryModel } from '../../lib/public-market/area-route-types';
@@ -36,6 +37,7 @@ export function PublicMarketPage({
   methodology,
   source,
   navigation,
+  entry,
 }: Readonly<{
   mode: PublicMarketPageMode;
   config: PublicMarketConfig;
@@ -53,6 +55,7 @@ export function PublicMarketPage({
     label: string;
     links: readonly Readonly<{ href: string; label: string }>[];
   }>;
+  entry?: ReactNode;
 }>) {
   const currentCopy = pageCopy[mode];
 
@@ -60,6 +63,7 @@ export function PublicMarketPage({
     <div id="top" className={styles.publicPage}>
       <SiteHeader copy={header} />
       <PublicSectionTabs current="check" />
+      {entry}
       <main className={styles.publicMain}>
         <header className={styles.publicHero}>
           <p>{currentCopy.eyebrow}</p>

@@ -33,6 +33,7 @@ describe('public building detail', () => {
     for (const value of [
       'Evidence Tower', 'Gangnam-gu', 'apartment', '6 reported contracts',
       '₩320,000,000', '45-55sqm', '2026-07', '50㎡', 'MOLIT',
+      'New contracts', 'Renewal contracts', 'Unclassified type',
       PUBLIC_BUILDING_FIXTURE_PERIOD, 'Canceled records', 'Private fields',
     ]) {
       expect(html).toContain(value);

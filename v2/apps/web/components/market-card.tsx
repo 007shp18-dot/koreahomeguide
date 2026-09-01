@@ -15,7 +15,7 @@ export function MarketCard({
   intentCapability,
 }: MarketCardProps) {
   const headingId = `market-${market.id}`;
-  const isFullProduct = market.productDepth === 'Full product';
+  const isFullProduct = market.productDepthKind === 'full_product';
   const primaryHref = isFullProduct && intentHref ? intentHref : market.overviewHref;
   const primaryLabel = isFullProduct && intentLabel
     ? `${intentLabel} in ${market.cityName}`

@@ -31,6 +31,7 @@ export {
 export type KoreaRentRecord = Omit<ComparableContract, 'recordStatus'> & {
   readonly sourceHousingType: SourceHousingType;
   readonly recordStatus: KoreaRecordStatus;
+  readonly legalDong?: string;
   readonly sourceRecordId?: string;
 };
 

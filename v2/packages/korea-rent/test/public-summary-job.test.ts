@@ -7,6 +7,7 @@ import {
   buildKoreaPublicSummaryPlan,
   createSourceMonthStore,
   finalizeKoreaPublicAreaSummaryJob,
+  finalizeKoreaPublicBuildingSummaryJob,
   finalizeKoreaPublicSummaryJob,
   runKoreaPublicSummaryBatch,
   type KoreaPublicSummaryCoordinate,
@@ -240,6 +241,43 @@ describe('Korea public summary resumable batch', () => {
 });
 
 describe('Korea public summary finalization', () => {
+  it('derives privacy-safe building rows from the complete cached cohort', async () => {
+    const cache = new MemoryCache();
+    const store = createSourceMonthStore({
+      namespacePrefix: 'signedprice:kr-public-summary-job:v1',
+      ttlSeconds: 86_400,
+      tags: [JOB_TAG],
+      corruptTag: JOB_TAG,
+    });
+    const plan = buildKoreaPublicSummaryPlan(REFERENCE_INSTANT);
+    const contractTypes = ['new', 'new', 'new', 'renewal', 'renewal', 'unknown'] as const;
+    for (const coordinate of plan) {
+      const records = coordinate.index < contractTypes.length
+        ? [{
+            ...eligibleRecord(coordinate, coordinate.index, contractTypes[coordinate.index]),
+            legalDong: '청운동',
+            buildingLabel: '검증타워',
+          }]
+        : [];
+      await store.write(cache, emptyMonth(coordinate, records));
+    }
+
+    const finalized = await finalizeKoreaPublicBuildingSummaryJob(
+      { referenceInstant: REFERENCE_INSTANT },
+      { cache, now: () => new Date(REFERENCE_INSTANT), rightsLookup },
+    );
+
+    expect(finalized).toMatchObject({
+      period: '2026-01/2026-07', completedCoordinates: 700,
+      eligibleRecords: 6, publishedBuildings: 1,
+      records: [{
+        districtSlug: 'jongno-gu', neighborhoodName: '청운동', name: '검증타워',
+        groups: { all: { n: 6 }, new: { n: 3 }, renewal: { n: 2 } },
+        unknownContractCount: 1,
+      }],
+    });
+  }, 30_000);
+
   it('requires all 700 verified months and reports exact eligible counts', async () => {
     const cache = new MemoryCache();
     const store = createSourceMonthStore({

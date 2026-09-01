@@ -12,6 +12,7 @@ import {
   type SeoulRentCheckDistrict,
 } from '@signedprice/korea-rent/browser';
 import { KR_MOLIT_RENT_RIGHTS } from '@signedprice/korea-rent';
+import installedBuildingArtifact from '../../data/public-building-summary.json';
 
 import {
   buildCommunitySignalModel,
@@ -26,6 +27,7 @@ import { createPublicBuildingRepository } from './building-summary-repository.se
 import type {
   ContractGroupEvidenceModel,
   DistrictBuildingAvailability,
+  ExploreBuildingAvailability,
   ExploreDistrictModel,
   PublicAreaExploreModel,
   PublicAreaLegendBucket,
@@ -257,6 +259,14 @@ function environmentDependencies(): PublicAreaRouteDependencies {
   } catch {
     buildingSource = undefined;
   }
+  if (
+    process.env.NODE_ENV !== 'test'
+    && (
+      typeof buildingSource !== 'object' || buildingSource === null
+      || (buildingSource as { artifactVersion?: unknown }).artifactVersion
+        !== 'signedprice-public-building-summary-v2'
+    )
+  ) buildingSource = installedBuildingArtifact;
   return Object.freeze({
     source,
     buildingSource,
@@ -308,6 +318,45 @@ function legendFor(
         : `${formatMoney(minimumMedian)}–${formatMoney(maximumMedian)}`,
     })];
   }));
+}
+
+function exploreBuildingsFor(
+  dependencies: PublicAreaRouteDependencies,
+): ExploreBuildingAvailability {
+  try {
+    const repository = createPublicBuildingRepository({
+      source: dependencies.buildingSource,
+      expected: { marketId: 'kr-seoul', period: dependencies.period },
+    });
+    const buildings = Object.freeze(repository.listRouteParams().map(({ district, buildingId }) => {
+      const building = repository.getById(district, buildingId);
+      if (!building.groups.all.published) throw new TypeError('Unpublished building route.');
+      const groupLabel = (group: typeof building.groups.new) => (
+        group.published ? formatMoney(group.med) : null
+      );
+      return Object.freeze({
+        id: building.buildingId,
+        districtSlug: building.districtSlug,
+        neighborhoodId: building.neighborhoodId,
+        neighborhoodName: building.neighborhoodName,
+        name: building.name,
+        housingType: building.housingType,
+        latitude: building.latitude,
+        longitude: building.longitude,
+        sampleLabel: sampleLabel(building.groups.all.n),
+        medianLabel: formatMoney(building.groups.all.med),
+        newSampleLabel: sampleLabel(building.groups.new.n),
+        newMedianLabel: groupLabel(building.groups.new),
+        renewalSampleLabel: sampleLabel(building.groups.renewal.n),
+        renewalMedianLabel: groupLabel(building.groups.renewal),
+        unknownContractCount: building.unknownContractCount,
+        href: `/kr/seoul/explore/${building.districtSlug}/${building.buildingId}/` as const,
+      });
+    }));
+    return Object.freeze({ status: 'ready', buildings });
+  } catch {
+    return Object.freeze({ status: 'not_loaded' });
+  }
 }
 
 export function buildPublicAreaExploreModel(
@@ -369,6 +418,7 @@ export function buildPublicAreaExploreModel(
       citySummary,
       districts,
       legend: legendFor(districts),
+      buildingAvailability: exploreBuildingsFor(dependencies),
       source,
     });
   } catch {

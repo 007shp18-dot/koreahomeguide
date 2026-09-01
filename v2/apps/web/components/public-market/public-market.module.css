@@ -63,7 +63,7 @@
 
 .plotCanvas {
   position: relative;
-  height: 112px;
+  min-height: 180px;
   border-bottom: 2px solid var(--public-ink);
   overflow: hidden;
 }
@@ -77,7 +77,7 @@
 }
 
 .whisker {
-  top: 55px;
+  top: 104px;
   left: var(--min-pct);
   width: max(2px, calc(var(--max-pct) - var(--min-pct)));
   height: 2px;
@@ -103,7 +103,7 @@
 }
 
 .interquartile {
-  top: 32px;
+  top: 80px;
   left: var(--p25-pct);
   width: max(2px, calc(var(--p75-pct) - var(--p25-pct)));
   height: 48px;
@@ -112,7 +112,7 @@
 }
 
 .medianLine {
-  top: 26px;
+  top: 74px;
   left: var(--med-pct);
   width: 2px;
   height: 60px;
@@ -120,7 +120,7 @@
 }
 
 .quoteMarker {
-  top: 12px;
+  top: 62px;
   left: var(--marker-pct);
   width: 2px;
   height: 88px;
@@ -138,34 +138,80 @@
   transform: rotate(45deg);
 }
 
-.plotLabels {
+.plotAnnotation {
+  position: absolute;
+  left: var(--label-pct);
+  z-index: 2;
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  border-bottom: 1px solid var(--public-ink);
+  gap: 0.15rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
-.plotLabels > div {
-  min-width: 0;
-  padding: 0.7rem;
-  border-right: 1px solid var(--public-ink);
-}
-
-.plotLabels > div:last-child {
-  border-right: 0;
-}
-
-.plotLabels dt {
-  font-size: 0.62rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
+.plotAnnotation small {
+  color: #5d5958;
+  font-size: 0.56rem;
+  font-weight: 850;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
-.plotLabels dd {
-  margin-top: 0.25rem;
-  overflow-wrap: anywhere;
-  font-size: 0.78rem;
-  font-weight: 800;
+.plotAnnotation strong {
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.middleAnnotation {
+  top: calc(8px + var(--label-lane) * 22px);
+  max-width: 150px;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+.medianAnnotation,
+.medianAnnotation small {
+  color: var(--public-accent);
+}
+
+.endpointAnnotation {
+  bottom: 8px;
+}
+
+.minimumAnnotation {
+  transform: none;
+  text-align: left;
+}
+
+.maximumAnnotation {
+  transform: translateX(-100%);
+  text-align: right;
+}
+
+.quoteAnnotation {
+  top: 82px;
+  color: var(--public-accent);
+  transform: translateX(-50%);
+}
+
+.quoteAnnotation small {
+  color: inherit;
+}
+
+.endpointShort,
+.quartileShort {
+  display: none;
+}
+
+.screenReaderDescription {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .plotCaption,
@@ -655,22 +701,30 @@
     border-left: 0;
   }
 
-  .plotLabels {
-    grid-template-columns: 1fr;
+  .plotCanvas {
+    min-height: 196px;
   }
 
-  .plotLabels > div {
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    border-right: 0;
-    border-bottom: 1px solid var(--public-ink);
+  .plotAnnotation strong {
+    font-size: 0.66rem;
   }
 
-  .plotLabels > div:last-child {
-    border-bottom: 0;
+  .endpointLong,
+  .quartileLong {
+    display: none;
+  }
+
+  .endpointShort,
+  .quartileShort {
+    display: inline;
+  }
+
+  .middleAnnotation {
+    top: calc(10px + var(--label-lane) * 24px);
+  }
+
+  .quoteAnnotation {
+    top: 90px;
   }
 
   .verdictLine,

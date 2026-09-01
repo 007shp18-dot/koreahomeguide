@@ -119,6 +119,7 @@ function isSourceRecord(
     'contractType',
     'recordStatus',
     ...(value.buildingLabel === undefined ? [] : ['buildingLabel']),
+    ...(value.legalDong === undefined ? [] : ['legalDong']),
     ...(value.sourceRecordId === undefined ? [] : ['sourceRecordId']),
   ];
   return (
@@ -141,6 +142,8 @@ function isSourceRecord(
       value.recordStatus === 'unknown') &&
     (value.buildingLabel === undefined ||
       (typeof value.buildingLabel === 'string' && value.buildingLabel.trim().length > 0)) &&
+    (value.legalDong === undefined ||
+      (typeof value.legalDong === 'string' && value.legalDong.trim().length > 0)) &&
     (value.sourceRecordId === undefined ||
       (typeof value.sourceRecordId === 'string' && value.sourceRecordId.trim().length > 0))
   );

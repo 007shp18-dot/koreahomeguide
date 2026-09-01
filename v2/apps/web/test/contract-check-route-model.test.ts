@@ -114,6 +114,7 @@ describe('Contract Check route model', () => {
       navigation: [
         { label: 'Check', href: '/kr/', available: true },
         { label: 'Explore', href: '/kr/seoul/explore', available: true },
+        { label: 'News', href: '/kr/seoul/news/', available: true },
         { label: 'Guide', href: '/kr/seoul/guide/', available: true },
       ],
     });
@@ -139,6 +140,7 @@ describe('Contract Check route model', () => {
       navigation: [
         { label: 'Check', href: '/kr/', available: true },
         { label: 'Explore', href: '/kr/seoul/explore', available: true },
+        { label: 'News', href: '/kr/seoul/news/', available: true },
         { label: 'Guide', href: '/kr/seoul/guide/', available: true },
       ],
     });

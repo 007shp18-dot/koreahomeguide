@@ -23,6 +23,7 @@ import {
   createPublicAreaFixture,
   createPublicAreaV2Fixture,
 } from './public-area-fixture';
+import { createPublicBuildingFixture } from './public-building-fixture';
 
 const rankedFixture = () => createPublicAreaFixture({
   publishedMedians: {
@@ -40,6 +41,7 @@ const rankedFixture = () => createPublicAreaFixture({
 function readyModel() {
   const model = buildPublicAreaExploreModel('gangnam-gu', {
     source: rankedFixture(),
+    buildingSource: createPublicBuildingFixture(),
     period: PUBLIC_AREA_FIXTURE_PERIOD,
   });
   if (model.status !== 'ready') throw new Error('Fixture model must be ready.');
@@ -91,6 +93,8 @@ describe('public Seoul area Explorer', () => {
     expect(markup).toContain('Open Jongno-gu');
     expect(markup).toContain('href="/kr/seoul/rankings"');
     expect(markup).toContain('View district rankings');
+    expect(markup).toContain('Evidence Tower');
+    expect(markup).toContain('역삼동');
     expect(markup).not.toContain(`₩${CITY_MEDIAN_SENTINEL.toLocaleString('en-US')}`);
   });
 
@@ -135,7 +139,8 @@ describe('public Seoul area Explorer', () => {
     expect(markup).toContain('ncpKeyId=page-naver-client');
     expect(markup).toContain('Korea public evidence. Publication limits shown.');
     expect(markup).not.toMatch(/public P2 preview|Production launch is not authorized/i);
-    expect(markup).not.toMatch(/Neighborhood|Building discovery|Search this area/);
+    expect(markup).toContain('Neighborhoods &amp; buildings');
+    expect(markup).toContain('Verified building artifact is not loaded.');
   });
 
   it('keeps the Modernist workspace responsive, focused, and touch-safe', () => {

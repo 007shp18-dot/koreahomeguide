@@ -6,6 +6,8 @@ import {
   buildKoreaPublicRouteModel,
 } from '../../../lib/public-market/route-model.server';
 import { PublicSummaryUnavailableError } from '../../../lib/public-market/summary-repository.server';
+import { SeoulLive } from '../../../components/public-market/seoul-live';
+import { buildSeoulLiveModel } from '../../../lib/public-market/seoul-live-model.server';
 
 type KoreaAreaPageProps = Readonly<{
   params: Promise<Readonly<{ area: string }>>;
@@ -40,5 +42,11 @@ export default async function KoreaAreaPage({ params }: KoreaAreaPageProps) {
     throw error;
   }
   if (model === null) notFound();
-  return <PublicMarketPage mode="area" {...model} />;
+  return (
+    <PublicMarketPage
+      mode="area"
+      {...model}
+      entry={<SeoulLive model={buildSeoulLiveModel()} mode="seoul" />}
+    />
+  );
 }

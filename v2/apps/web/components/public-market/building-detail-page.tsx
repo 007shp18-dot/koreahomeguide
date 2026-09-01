@@ -43,9 +43,10 @@ const footer: SiteFooterModel = {
   status: KOREA_PUBLIC_RELEASE_STATUS,
 };
 
-function dealLabel(deal: PublicBuildingModel['building']['supportedDeals'][number]): string {
-  if (deal === 'monthly_rent') return 'monthly rent';
-  return deal;
+function contractTypeLabel(value: 'new' | 'renewal' | 'unknown'): string {
+  if (value === 'new') return 'New';
+  if (value === 'renewal') return 'Renewal';
+  return 'Unclassified';
 }
 
 function BuildingNavigation({ model }: Readonly<{ model: PublicBuildingModel }>) {
@@ -100,6 +101,21 @@ export function BuildingDetailPage({ model }: Readonly<{ model: PublicBuildingMo
                 <div><dt>Full range</dt><dd>{model.display.rangeLabel}</dd></div>
                 <div><dt>Recent change</dt><dd>{model.display.changeLabel}</dd></div>
               </dl>
+              <dl className={styles.findingGrid} aria-label="Contract type evidence">
+                <div>
+                  <dt>New contracts</dt>
+                  <dd>{model.building.groups.new.published
+                    ? `${money.format(model.building.groups.new.med)} · ${model.building.groups.new.n} records`
+                    : `Not published · ${model.building.groups.new.n} records`}</dd>
+                </div>
+                <div>
+                  <dt>Renewal contracts</dt>
+                  <dd>{model.building.groups.renewal.published
+                    ? `${money.format(model.building.groups.renewal.med)} · ${model.building.groups.renewal.n} records`
+                    : `Not published · ${model.building.groups.renewal.n} records`}</dd>
+                </div>
+                <div><dt>Unclassified type</dt><dd>{model.building.unknownContractCount} records</dd></div>
+              </dl>
             </section>
 
             <section className={styles.areaBands} aria-labelledby="building-area-heading">
@@ -132,15 +148,14 @@ export function BuildingDetailPage({ model }: Readonly<{ model: PublicBuildingMo
               ) : (
                 <div className={styles.tableWrap}>
                   <table>
-                    <thead><tr><th>Filed month</th><th>Area</th><th>Deal</th><th>Deposit / price</th><th>Monthly rent</th></tr></thead>
+                    <thead><tr><th>Filed month</th><th>Area</th><th>Contract</th><th>Jeonse deposit</th></tr></thead>
                     <tbody>
                       {model.building.recentContracts.map((contract, index) => (
                         <tr key={`${contract.filedMonth}-${contract.areaSqm}-${index}`}>
                           <td>{contract.filedMonth}</td>
                           <td>{contract.areaSqm}㎡</td>
-                          <td>{dealLabel(contract.deal)}</td>
+                          <td>{contractTypeLabel(contract.contractType)}</td>
                           <td>{money.format(contract.depositWon)}</td>
-                          <td>{money.format(contract.monthlyRentWon)}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -160,7 +175,7 @@ export function BuildingDetailPage({ model }: Readonly<{ model: PublicBuildingMo
                 attribution={['Ministry of Land, Infrastructure and Transport (MOLIT)']}
               />
               <dl className={styles.sourceGrid}>
-                <div><dt>Supported deals</dt><dd>{model.building.supportedDeals.map(dealLabel).join(', ')}</dd></div>
+                <div><dt>Supported deals</dt><dd>jeonse</dd></div>
                 <div><dt>Completed period</dt><dd>{model.evidence.period}</dd></div>
                 <div><dt>Publication minimum</dt><dd>{model.evidence.publicationMinimum}</dd></div>
                 <div><dt>Exclusions</dt><dd>{model.evidence.exclusions.join(' · ')}</dd></div>

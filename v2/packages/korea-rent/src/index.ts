@@ -100,14 +100,25 @@ export {
   type KoreaPublicSummarySource,
 } from './public-summary';
 export {
+  buildKoreaPublicBuildingSummaries,
+  type KoreaPublicBuildingDistribution,
+  type KoreaPublicBuildingGeocode,
+  type KoreaPublicBuildingHousingType,
+  type KoreaPublicBuildingRecord,
+  type KoreaPublicBuildingSourceRecord,
+  type KoreaPublicBuildingSummaryInput,
+} from './public-building-summary';
+export {
   buildKoreaPublicSummaryPlan,
   finalizeKoreaPublicAreaSummaryJob,
+  finalizeKoreaPublicBuildingSummaryJob,
   finalizeKoreaPublicSummaryJob,
   runKoreaPublicSummaryBatch,
   type KoreaPublicSummaryBatchResult,
   type KoreaPublicSummaryCoordinate,
   type KoreaPublicAreaSummaryGroup,
   type KoreaPublicAreaSummaryFinalization,
+  type KoreaPublicBuildingSummaryFinalization,
   type KoreaPublicSummaryFinalization,
   type KoreaPublicSummaryJobDependencies,
 } from './public-summary-job';

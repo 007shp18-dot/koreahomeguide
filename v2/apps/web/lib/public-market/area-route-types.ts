@@ -147,6 +147,7 @@ export type PublicAreaExploreModel =
       citySummary: PublicMarketSummary;
       districts: readonly ExploreDistrictModel[];
       legend: readonly PublicAreaLegendBucket[];
+      buildingAvailability: ExploreBuildingAvailability;
       source: PublicAreaSourceBoundaryModel;
     }>
   | Readonly<{
@@ -156,6 +157,29 @@ export type PublicAreaExploreModel =
       source: PublicAreaSourceBoundaryModel;
       message: 'Verified district summary unavailable';
     }>;
+
+export type ExploreBuildingModel = Readonly<{
+  id: string;
+  districtSlug: SeoulDistrictSlug;
+  neighborhoodId: string;
+  neighborhoodName: string;
+  name: string;
+  housingType: string;
+  latitude: number | null;
+  longitude: number | null;
+  sampleLabel: string;
+  medianLabel: string;
+  newSampleLabel: string;
+  newMedianLabel: string | null;
+  renewalSampleLabel: string;
+  renewalMedianLabel: string | null;
+  unknownContractCount: number;
+  href: `/kr/seoul/explore/${string}/${string}/`;
+}>;
+
+export type ExploreBuildingAvailability =
+  | Readonly<{ status: 'ready'; buildings: readonly ExploreBuildingModel[] }>
+  | Readonly<{ status: 'not_loaded' }>;
 
 export type PublicDistrictFaq = Readonly<{
   question: string;

@@ -23,12 +23,12 @@ const intentLabels = {
 } as const satisfies Record<Intent, string>;
 
 const productDepthLabels = {
-  full_product: 'Full product',
+  full_product: 'Evidence hub',
   market_intelligence: 'Market intelligence',
 } as const satisfies Record<MarketProfile['productDepth'], string>;
 
 const capabilityStateLabels = {
-  available: 'Available',
+  available: 'Live evidence',
   limited: 'Limited',
   rights_blocked: 'Rights blocked',
 } as const satisfies Record<CapabilityState, string>;
@@ -214,6 +214,7 @@ export type MarketCardModel = {
   overviewHref: string;
   overviewLabel: string;
   productDepthLabel: string;
+  productDepthKind: MarketProfile['productDepth'];
   productDepth: string;
   dataRightsLabel: string;
   limitationsLabel: string;
@@ -240,6 +241,7 @@ function createMarketCardModel(profile: MarketProfile): MarketCardModel {
     overviewHref: getMarketHref(profile.id),
     overviewLabel: `Explore ${profile.cityName}`,
     productDepthLabel: homepageCopy.markets.productDepthLabel,
+    productDepthKind: profile.productDepth,
     productDepth: productDepthLabels[profile.productDepth],
     dataRightsLabel: homepageCopy.markets.dataRightsLabel,
     limitationsLabel: homepageCopy.markets.limitationsLabel,
