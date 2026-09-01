@@ -175,7 +175,7 @@ test('verdict presentation leads with text, icon, difference, and evidence count
 });
 
 test('rent check status uses explicit UI state instead of occupying the idle layout', () => {
-  for (const appPath of ['app.js','tools/seoul-rent-check/app.js','zh/app.js','zh/tools/seoul-rent-check/app.js']) {
+  for (const appPath of ['app.js','tools/seoul-rent-check/app.js','app.js','tools/seoul-rent-check/app.js']) {
     const app = fs.readFileSync(path.join(ROOT,appPath),'utf8');
     assert.match(app, /status\.dataset\.state=state\|\|'idle'/);
     assert.match(app, /data-rent-verdict-annualized/);
@@ -245,9 +245,9 @@ test('next-step Explorer URL preserves only an approved district and property ty
 test('all EN and ZH Rent Check surfaces expose confidence details and next actions', () => {
   const surfaces = [
     ['index.html', 'app.js'],
-    ['zh/index.html', 'zh/app.js'],
+    ['zh/index.html', 'app.js'],
     ['tools/seoul-rent-check/index.html', 'tools/seoul-rent-check/app.js'],
-    ['zh/tools/seoul-rent-check/index.html', 'zh/tools/seoul-rent-check/app.js']
+    ['zh/tools/seoul-rent-check/index.html', 'tools/seoul-rent-check/app.js']
   ];
   for (const [htmlFile, appFile] of surfaces) {
     const html = fs.readFileSync(htmlFile, 'utf8');
