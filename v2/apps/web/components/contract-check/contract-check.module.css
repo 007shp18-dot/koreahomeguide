@@ -4,7 +4,7 @@
 }
 
 .main {
-  width: min(calc(100% - 48px), 1120px);
+  width: min(calc(100% - (2 * var(--page-gutter))), 1040px);
   margin: 24px auto 0;
   border: var(--rule-strong);
 }
@@ -610,7 +610,7 @@
 }
 
 .footer {
-  width: min(calc(100% - 48px), 1120px);
+  width: min(calc(100% - (2 * var(--page-gutter))), 1040px);
   min-height: 96px;
   margin: 0 auto;
   padding: 24px 0 36px;
@@ -624,7 +624,7 @@
 }
 
 .unavailable {
-  width: min(calc(100% - 48px), 1120px);
+  width: min(calc(100% - (2 * var(--page-gutter))), 1040px);
   min-height: 500px;
   margin: 24px auto;
   padding: clamp(34px, 7vw, 80px);
@@ -662,7 +662,7 @@
   .main,
   .unavailable,
   .footer {
-    width: min(calc(100% - 28px), 1120px);
+    width: min(calc(100% - (2 * var(--page-gutter))), 1040px);
   }
 
   .comparisonGrid {

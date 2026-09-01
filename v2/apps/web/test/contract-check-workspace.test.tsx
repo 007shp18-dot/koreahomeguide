@@ -136,7 +136,7 @@ describe('Contract Check workspace SSR contract', () => {
     expect(html).toContain('data-navigation-tier="market"');
     expect(html).toContain('data-navigation-tier="product"');
     expect(html).toContain('data-product-index="01"');
-    expect(css).toMatch(/\.main\s*\{[\s\S]*?width:\s*min\(calc\(100% - 48px\),\s*1120px\)/);
+    expect(css).toMatch(/\.main\s*\{[\s\S]*?width:\s*min\(calc\(100% - \(2 \* var\(--page-gutter\)\)\),\s*1040px\)/);
     expect(css).toMatch(/\.comparisonGrid\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
     expect(css).toMatch(/\.resultPanel\s*\{[\s\S]*?border-bottom:\s*var\(--rule-strong\)/);
     expect(css).not.toMatch(/outline:\s*3px/);

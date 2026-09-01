@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 
@@ -31,6 +32,17 @@ const model: PublicAreaSourceBoundaryModel = {
 };
 
 describe('public source boundary', () => {
+  it('contains source metadata in the standard density frame', () => {
+    const css = readFileSync(
+      new URL('../components/public-market/public-market.module.css', import.meta.url),
+      'utf8',
+    );
+
+    expect(css).toMatch(/\.publicSourceBoundary\s*\{[\s\S]*?width:\s*min\(calc\(100% - \(2 \* var\(--page-gutter\)\)\),\s*var\(--content-frame\)\)/);
+    expect(css).toMatch(/\.publicSourceBoundary\s*\{[\s\S]*?margin-inline:\s*auto/);
+    expect(css).toMatch(/\.publicSourceBoundary dl\s*\{[\s\S]*?grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/);
+  });
+
   it('renders the complete reviewed source, filter, rights, and refusal boundary', () => {
     const html = renderToStaticMarkup(<PublicSourceBoundary model={model} />);
 

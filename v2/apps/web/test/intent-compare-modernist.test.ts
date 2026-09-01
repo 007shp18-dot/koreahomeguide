@@ -150,6 +150,20 @@ describe('nine intent routes use one connected decision hierarchy', () => {
 });
 
 describe('intent rows follow the square Modernist system', () => {
+  it('contains the rows and keeps status labels adjacent to their copy', () => {
+    expect(declarationsFor(css, '.intent-decision.site-shell')).toMatchObject({
+      width: 'min(calc(100% - (2 * var(--page-gutter))), var(--content-frame))',
+      margin: '24px auto 0',
+      padding: '0',
+    });
+    expect(declarationsFor(css, '.intent-decision-row__summary')).toMatchObject({
+      'grid-template-columns': 'minmax(0, 1fr) minmax(96px, max-content)',
+    });
+    expect(declarationsFor(css, '.intent-decision-row__items li')).toMatchObject({
+      'grid-template-columns': 'minmax(0, 1fr) minmax(96px, max-content)',
+    });
+  });
+
   it('uses connected zero-radius rows with two-pixel structural rules', () => {
     expect(declarationsFor(css, '.intent-decision-rows')).toMatchObject({
       'border-top': '2px solid var(--ink)',

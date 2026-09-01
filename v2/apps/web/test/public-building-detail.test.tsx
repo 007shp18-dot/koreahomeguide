@@ -221,6 +221,7 @@ describe('public building detail', () => {
       new URL('../components/public-market/building-detail.module.css', import.meta.url),
       'utf8',
     );
+    expect(css).toMatch(/\.main\s*\{[\s\S]*?width:\s*min\(calc\(100% - \(2 \* var\(--page-gutter\)\)\),\s*var\(--workspace-frame\)\)/);
     expect(css).toMatch(/min-height:\s*44px/);
     expect(css).toMatch(/@media \(max-width:\s*720px\)[\s\S]*grid-template-columns:\s*minmax\(0,\s*1fr\)/);
     expect(css).toMatch(/max-width:\s*100%/);

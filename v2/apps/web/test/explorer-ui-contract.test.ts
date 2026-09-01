@@ -380,9 +380,9 @@ describe('map and mobile scroll safety', () => {
     expect(workspaceSource).toContain('state.map.revision');
   });
 
-  it('uses one modern product stack with Korean system fallbacks', () => {
+  it('uses bundled Archivo with Korean system fallbacks', () => {
     expect(declarationsFor(css, 'body')['font-family']).toMatch(
-      /Inter.*Pretendard.*Noto Sans KR.*Apple SD Gothic Neo.*Malgun Gothic.*sans-serif/,
+      /Archivo.*Pretendard.*Noto Sans KR.*Apple SD Gothic Neo.*Malgun Gothic.*sans-serif/,
     );
   });
 });

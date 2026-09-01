@@ -122,7 +122,7 @@ describe('Seoul district rankings page', () => {
     expect(html).toContain('data-ranking-frame="contained"');
     expect(html).toContain('data-ranking-method="published-context"');
     expect(html).toContain(PUBLIC_AREA_FIXTURE_PERIOD);
-    expect(css).toMatch(/\.frame\s*\{[\s\S]*?width:\s*min\(calc\(100% - 48px\),\s*var\(--content-frame\)\)/);
+    expect(css).toMatch(/\.frame\s*\{[\s\S]*?width:\s*min\(calc\(100% - \(2 \* var\(--page-gutter\)\)\),\s*var\(--content-frame\)\)/);
     expect(css).toMatch(/\.hero\s*\{[\s\S]*?min-height:\s*0/);
     expect(css).toMatch(/\.hero\s*\{[\s\S]*?border-bottom:\s*var\(--rule-strong\)/);
     expect(css).toMatch(/\.row,[\s\S]*?border-bottom:\s*var\(--rule-subtle\)/);

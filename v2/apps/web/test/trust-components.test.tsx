@@ -3,6 +3,7 @@ import {
   createEvidenceDescriptor,
   createEvidenceEmptyState,
 } from '@signedprice/market-core';
+import { readFileSync } from 'node:fs';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 
@@ -23,6 +24,15 @@ const evidence = createEvidenceDescriptor({
 });
 
 describe('shared trust components', () => {
+  it('uses a compact four-column desktop disclosure grid', () => {
+    const css = readFileSync(
+      new URL('../components/trust/trust.module.css', import.meta.url),
+      'utf8',
+    );
+
+    expect(css).toMatch(/\.disclosureGrid\s*\{[\s\S]*?grid-template-columns:\s*repeat\(4,\s*minmax\(0,\s*1fr\)\)/);
+  });
+
   it('renders every evidence field and explicit boundary in server HTML', () => {
     const html = renderToStaticMarkup(
       <EvidenceDisclosure
