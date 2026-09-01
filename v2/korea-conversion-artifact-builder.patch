@@ -1,0 +1,1053 @@
+From 9ad680ea01b5b513174d44b6c01868eaa4623d12 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Tue, 1 Sep 2026 06:40:08 +0000
+Subject: [PATCH] feat(v2): build the Korea conversion-curve artifact from
+ filed pairs
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Contract Check is not unbuilt, it is starved: buildContractCheckRouteModel
+reads SIGNEDPRICE_CONVERSION_CURVE_ARTIFACT/_PERIOD/_SHA256 and degrades the
+whole screen to "Comparison paused" when the artifact is absent. Production
+build logs confirm [signedprice:conversion-curve] artifact_missing. Nothing in
+the repository could produce that artifact: the published summaries carry
+depositWon only, because the fixed filter is zero-rent jeonse, which excludes
+exactly the rent-bearing contracts a conversion rate is measured between.
+
+Adds the missing pipeline. A pair is same building x same filed area x two
+deposits, and the rate is read at the LOWER deposit, the one written on the
+contract carrying the rent. Anchors are band medians of implied rates over
+observed deposits, never band edges.
+
+The refusals are the point. A band under minimumPairsPerAnchor is dropped
+rather than published with a wider error bar; a curve left with fewer than two
+anchors is omitted rather than extrapolated; a missing required curve fails the
+run rather than writing a half artifact that deploys cleanly and still shows a
+paused screen; a collector checkpoint carrying holes is refused outright. The
+artifact is parsed with the site's own parseKoreaConversionArtifact before it
+is written, so anything on disk is something the deployment accepts.
+
+The sha256 is over the source extract bytes, sealing which extract produced
+these anchors.
+
+Tests: 17 new (9 pairing, 8 runner), including the 만원 to 원 factor and the
+exact eligiblePairCount the parser recomputes. Full suite 1139 passed,
+typecheck clean.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01U2amRGaTDxWN7HMcpdeHBb
+---
+ v2/package.json                               |   1 +
+ .../korea-rent/src/conversion-pairs.ts        | Bin 0 -> 14666 bytes
+ v2/packages/korea-rent/src/index.ts           |  10 +
+ .../korea-rent/test/conversion-pairs.test.ts  | 214 ++++++++++
+ v2/pnpm-lock.yaml                             |   3 +
+ .../build-korea-conversion-artifact.mts       | 400 ++++++++++++++++++
+ v2/tests/korea-conversion-runner.test.ts      | 205 +++++++++
+ 7 files changed, 833 insertions(+)
+ create mode 100644 v2/packages/korea-rent/src/conversion-pairs.ts
+ create mode 100644 v2/packages/korea-rent/test/conversion-pairs.test.ts
+ create mode 100644 v2/scripts/build-korea-conversion-artifact.mts
+ create mode 100644 v2/tests/korea-conversion-runner.test.ts
+
+diff --git a/v2/package.json b/v2/package.json
+index 67995fd..bdf803a 100644
+--- a/v2/package.json
++++ b/v2/package.json
+@@ -19,6 +19,7 @@
+     "vitest": "4.1.11"
+   },
+   "dependencies": {
++    "@signedprice/korea-rent": "workspace:*",
+     "@signedprice/singapore-property": "workspace:*",
+     "zod": "4.5.1"
+   }
+diff --git a/v2/packages/korea-rent/src/conversion-pairs.ts b/v2/packages/korea-rent/src/conversion-pairs.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..fc00217d259f52397838a982b99fc3ce12fa2d97
+GIT binary patch
+literal 14666
+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
+
+literal 0
+HcmV?d00001
+
+diff --git a/v2/packages/korea-rent/src/index.ts b/v2/packages/korea-rent/src/index.ts
+index 230bfff..d618370 100644
+--- a/v2/packages/korea-rent/src/index.ts
++++ b/v2/packages/korea-rent/src/index.ts
+@@ -40,6 +40,16 @@ export {
+   type VerifiedKoreaConversionArtifact,
+   type VerifiedKoreaConversionCurve,
+ } from './conversion-artifact';
++export {
++  DEFAULT_CONVERSION_PAIR_OPTIONS,
++  buildKoreaConversionCurves,
++  type ConversionCurveBuild,
++  type ConversionCurveDiagnostics,
++  type ConversionPairExclusions,
++  type ConversionPairOptions,
++  type ConversionPairRejections,
++  type DroppedAnchor,
++} from './conversion-pairs';
+ export {
+   KR_MOLIT_RENT_RIGHTS,
+   RightsViolationError,
+diff --git a/v2/packages/korea-rent/test/conversion-pairs.test.ts b/v2/packages/korea-rent/test/conversion-pairs.test.ts
+new file mode 100644
+index 0000000..dee9694
+--- /dev/null
++++ b/v2/packages/korea-rent/test/conversion-pairs.test.ts
+@@ -0,0 +1,214 @@
++import { describe, expect, it } from 'vitest';
++
++import {
++  DEFAULT_CONVERSION_PAIR_OPTIONS,
++  buildKoreaConversionCurves,
++  type ConversionPairOptions,
++} from '../src/conversion-pairs';
++import type { KoreaRentRecord } from '../src/input';
++
++/**
++ * Every case here plants a rate the arithmetic must recover exactly. A pair
++ * with a 240,000,000 won deposit gap and a 1,000,000 won monthly difference
++ * implies 12,000,000 / 240,000,000 = 0.05 a year, so the assertions below are
++ * checking the measurement, not a tolerance.
++ */
++
++const options: ConversionPairOptions = {
++  ...DEFAULT_CONVERSION_PAIR_OPTIONS,
++  // Real runs demand 120 pairs an anchor; the fixtures here are deliberately
++  // small, so the floor moves and nothing else does.
++  minimumPairsPerAnchor: 2,
++};
++
++function record(input: Partial<KoreaRentRecord> & Pick<KoreaRentRecord, 'depositWon' | 'monthlyRentWon'>): KoreaRentRecord {
++  return {
++    contractType: 'new',
++    contractDate: '2026-03-10',
++    areaSqm: 84.97,
++    buildingLabel: '성산시영',
++    legalDong: '성산동',
++    sourceHousingType: 'apartment',
++    recordStatus: 'active',
++    ...input,
++  } as KoreaRentRecord;
++}
++
++/** `count` pairs keyed at `depositWon`, each implying exactly `annualRate`. */
++function pairsAt(input: Readonly<{
++  count: number;
++  depositWon: number;
++  annualRate: number;
++  building?: string;
++  housingType?: 'apartment' | 'officetel';
++}>): KoreaRentRecord[] {
++  const gap = 240_000_000;
++  const monthlyRentWon = (input.annualRate * gap) / 12;
++  const out: KoreaRentRecord[] = [];
++  for (let i = 0; i < input.count; i += 1) {
++    // A distinct building per pair keeps every group at exactly two records,
++    // so `count` pairs means `count` pairs and not a combinatorial explosion.
++    const buildingLabel = `${input.building ?? 'B'}-${i}`;
++    const common = { buildingLabel, sourceHousingType: input.housingType ?? 'apartment' } as const;
++    out.push(record({ ...common, depositWon: input.depositWon, monthlyRentWon }));
++    out.push(record({ ...common, depositWon: input.depositWon + gap, monthlyRentWon: 0 }));
++  }
++  return out;
++}
++
++describe('buildKoreaConversionCurves', () => {
++  it('recovers the planted rate and keys it at the lower deposit', () => {
++    const build = buildKoreaConversionCurves(
++      [
++        ...pairsAt({ count: 3, depositWon: 60_000_000, annualRate: 0.05 }),
++        ...pairsAt({ count: 3, depositWon: 200_000_000, annualRate: 0.045, building: 'H' }),
++      ],
++      options,
++    );
++
++    const apartment = build.curves.find((curve) => curve.housingType === 'apartment');
++    expect(apartment).toBeDefined();
++    expect(apartment!.anchors).toEqual([
++      { depositWon: 60_000_000, annualRate: 0.05, pairCount: 3 },
++      { depositWon: 200_000_000, annualRate: 0.045, pairCount: 3 },
++    ]);
++    expect(apartment!.observedMinDepositWon).toBe(60_000_000);
++    expect(apartment!.observedMaxDepositWon).toBe(200_000_000);
++  });
++
++  it('reports eligiblePairCount as exactly the sum of published anchors', () => {
++    const build = buildKoreaConversionCurves(
++      [
++        ...pairsAt({ count: 4, depositWon: 60_000_000, annualRate: 0.05 }),
++        ...pairsAt({ count: 5, depositWon: 200_000_000, annualRate: 0.045, building: 'H' }),
++        // One lone band under the floor: its pairs must NOT reach the total.
++        ...pairsAt({ count: 1, depositWon: 460_000_000, annualRate: 0.04, building: 'T' }),
++      ],
++      options,
++    );
++
++    const published = build.curves.flatMap((curve) => curve.anchors);
++    const summed = published.reduce((sum, anchor) => sum + anchor.pairCount, 0);
++    expect(build.eligiblePairCount).toBe(summed);
++    expect(build.eligiblePairCount).toBe(9);
++  });
++
++  it('drops a band below the minimum instead of publishing a thin anchor', () => {
++    const build = buildKoreaConversionCurves(
++      [
++        ...pairsAt({ count: 3, depositWon: 60_000_000, annualRate: 0.05 }),
++        ...pairsAt({ count: 3, depositWon: 200_000_000, annualRate: 0.045, building: 'H' }),
++        ...pairsAt({ count: 1, depositWon: 460_000_000, annualRate: 0.04, building: 'T' }),
++      ],
++      options,
++    );
++
++    const apartment = build.curves.find((curve) => curve.housingType === 'apartment')!;
++    expect(apartment.anchors).toHaveLength(2);
++    expect(apartment.observedMaxDepositWon).toBe(200_000_000);
++    expect(build.diagnostics.droppedAnchors).toContainEqual({
++      housingType: 'apartment',
++      bandFloorWon: 450_000_000,
++      bandCeilingWon: null,
++      pairCount: 1,
++      reason: 'below_minimum_pairs',
++    });
++  });
++
++  it('omits a housing type that cannot reach two anchors', () => {
++    const build = buildKoreaConversionCurves(
++      [
++        ...pairsAt({ count: 3, depositWon: 60_000_000, annualRate: 0.05 }),
++        ...pairsAt({ count: 3, depositWon: 200_000_000, annualRate: 0.045, building: 'H' }),
++        ...pairsAt({
++          count: 3,
++          depositWon: 50_000_000,
++          annualRate: 0.06,
++          building: 'O',
++          housingType: 'officetel',
++        }),
++      ],
++      options,
++    );
++
++    expect(build.curves.map((curve) => curve.housingType)).toEqual(['apartment']);
++    expect(build.diagnostics.omittedHousingTypes).toEqual(['officetel']);
++  });
++
++  it('rejects a pair whose rent did not fall as the deposit rose', () => {
++    const build = buildKoreaConversionCurves(
++      [
++        record({ buildingLabel: 'X', depositWon: 60_000_000, monthlyRentWon: 500_000 }),
++        record({ buildingLabel: 'X', depositWon: 300_000_000, monthlyRentWon: 900_000 }),
++      ],
++      options,
++    );
++
++    expect(build.diagnostics.pairsFormed).toBe(0);
++    expect(build.diagnostics.rejections.rentDidNotFall).toBe(1);
++    expect(build.curves).toEqual([]);
++  });
++
++  it('rejects a pair signed outside the date window', () => {
++    const build = buildKoreaConversionCurves(
++      [
++        record({
++          buildingLabel: 'X',
++          contractDate: '2026-01-05',
++          depositWon: 60_000_000,
++          monthlyRentWon: 1_000_000,
++        }),
++        record({
++          buildingLabel: 'X',
++          contractDate: '2026-07-20',
++          depositWon: 300_000_000,
++          monthlyRentWon: 0,
++        }),
++      ],
++      options,
++    );
++
++    expect(build.diagnostics.rejections.outsideDateWindow).toBe(1);
++    expect(build.diagnostics.pairsFormed).toBe(0);
++  });
++
++  it('counts cancelled filings and unusable money separately from unpaired records', () => {
++    const build = buildKoreaConversionCurves(
++      [
++        record({ depositWon: 60_000_000, monthlyRentWon: 1_000_000, recordStatus: 'cancelled' }),
++        record({ depositWon: 0, monthlyRentWon: 900_000 }),
++        record({ buildingLabel: 'LONELY', depositWon: 200_000_000, monthlyRentWon: 500_000 }),
++      ],
++      options,
++    );
++
++    expect(build.excluded.cancelled).toBe(1);
++    expect(build.excluded.invalidMoney).toBe(1);
++    expect(build.excluded.differentBuildingOrArea).toBe(1);
++  });
++
++  it('does not pair across different filed areas in the same building', () => {
++    const build = buildKoreaConversionCurves(
++      [
++        record({ areaSqm: 84.97, depositWon: 60_000_000, monthlyRentWon: 1_000_000 }),
++        record({ areaSqm: 59.94, depositWon: 300_000_000, monthlyRentWon: 0 }),
++      ],
++      options,
++    );
++
++    expect(build.diagnostics.pairsFormed).toBe(0);
++    expect(build.excluded.differentBuildingOrArea).toBe(2);
++  });
++
++  it('does not pair across legal dongs that share a building name', () => {
++    const build = buildKoreaConversionCurves(
++      [
++        record({ legalDong: '성산동', depositWon: 60_000_000, monthlyRentWon: 1_000_000 }),
++        record({ legalDong: '망원동', depositWon: 300_000_000, monthlyRentWon: 0 }),
++      ],
++      options,
++    );
++
++    expect(build.diagnostics.pairsFormed).toBe(0);
++  });
++});
+diff --git a/v2/pnpm-lock.yaml b/v2/pnpm-lock.yaml
+index ce45ad8..32a553b 100644
+--- a/v2/pnpm-lock.yaml
++++ b/v2/pnpm-lock.yaml
+@@ -8,6 +8,9 @@ importers:
+ 
+   .:
+     dependencies:
++      '@signedprice/korea-rent':
++        specifier: workspace:*
++        version: link:packages/korea-rent
+       '@signedprice/singapore-property':
+         specifier: workspace:*
+         version: link:packages/singapore-property
+diff --git a/v2/scripts/build-korea-conversion-artifact.mts b/v2/scripts/build-korea-conversion-artifact.mts
+new file mode 100644
+index 0000000..f46f833
+--- /dev/null
++++ b/v2/scripts/build-korea-conversion-artifact.mts
+@@ -0,0 +1,400 @@
++import { createHash } from 'node:crypto';
++import { mkdir, readFile, writeFile } from 'node:fs/promises';
++import { dirname, resolve } from 'node:path';
++import { pathToFileURL } from 'node:url';
++
++import {
++  DEFAULT_CONVERSION_PAIR_OPTIONS,
++  KOREA_CONVERSION_ARTIFACT_VERSION,
++  KR_MOLIT_RENT_RIGHTS,
++  buildKoreaConversionCurves,
++  parseKoreaConversionArtifact,
++  type ConversionCurveBuild,
++  type ConversionPairOptions,
++  type KoreaRentRecord,
++  type MolitRightsLookup,
++} from '@signedprice/korea-rent';
++
++/**
++ * Builds the Korea conversion-curve artifact the Contract Check screen runs on.
++ *
++ * The screen is not unbuilt - it is starved. `buildContractCheckRouteModel`
++ * reads three environment variables, and if the artifact is absent or fails its
++ * schema the whole screen degrades to "Comparison paused." This script produces
++ * the artifact and prints the three values to set.
++ *
++ * The one rule that governs everything here: NEVER WRITE AN ARTIFACT THE SITE
++ * WOULD REJECT, AND NEVER WRITE A NUMBER NOBODY MEASURED. The output is parsed
++ * with the site's own `parseKoreaConversionArtifact` before it is written, so a
++ * file that lands on disk is a file the deployment will accept. Bands too thin
++ * to measure are dropped upstream rather than filled in.
++ *
++ *   MOLIT contracts in -> pairs -> band medians + real pair counts -> artifact
++ *
++ * Usage:
++ *   node --experimental-strip-types v2/scripts/build-korea-conversion-artifact.mts \
++ *     --input data/molit/apartment-rent.json \
++ *     --output v2/apps/web/data/korea-conversion-curve.json \
++ *     --period 2026-01/2026-07
++ *
++ * The input is either a `KoreaRentRecord[]` (or `{ records: [...] }`), or raw
++ * MOLIT 전월세 rows, which are normalised below. Contracts WITH monthly rent are
++ * required: a conversion rate only exists between a deposit-heavy filing and a
++ * rent-bearing one, so a zero-rent-only extract cannot produce this artifact.
++ */
++
++export type KoreaConversionRunnerOptions = Readonly<{
++  inputPath: string;
++  outputPath: string;
++  /** `YYYY-MM/YYYY-MM`, and it must match the deployed period exactly. */
++  period: string;
++  maximumAgeDays?: number;
++  pairOptions?: ConversionPairOptions;
++  now?: () => Date;
++  log?: (line: string) => void;
++}>;
++
++export type KoreaConversionRunnerResult = Readonly<{
++  artifact: string;
++  sha256: string;
++  period: string;
++  build: ConversionCurveBuild;
++}>;
++
++const rightsLookup: MolitRightsLookup = (policyId) =>
++  policyId === KR_MOLIT_RENT_RIGHTS.id ? KR_MOLIT_RENT_RIGHTS : undefined;
++
++/** Both curves are required: the route model asks for each by name and fails if either is absent. */
++const REQUIRED_HOUSING_TYPES = ['apartment', 'officetel'] as const;
++
++const PERIOD_PATTERN = /^\d{4}-(?:0[1-9]|1[0-2])\/\d{4}-(?:0[1-9]|1[0-2])$/;
++
++export class ConversionBuildError extends Error {
++  readonly code: string;
++
++  constructor(code: string, message: string) {
++    super(message);
++    this.name = 'ConversionBuildError';
++    this.code = code;
++  }
++}
++
++// ---------------------------------------------------------------- normalise
++
++function text(value: unknown): string {
++  return typeof value === 'string' ? value.trim() : typeof value === 'number' ? String(value) : '';
++}
++
++/**
++ * MOLIT money arrives in 만원 as a comma-grouped string ("25,000"). Multiplying
++ * by 10,000 late - after parsing, never during string handling - is what keeps
++ * the ten-times error out of this file.
++ */
++function manwonToWon(value: unknown): number | null {
++  const raw = text(value).replace(/,/g, '');
++  if (raw === '') return 0;
++  const manwon = Number(raw);
++  if (!Number.isFinite(manwon) || manwon < 0) return null;
++  return Math.round(manwon * 10_000);
++}
++
++function looksLikeMolitRow(value: Record<string, unknown>): boolean {
++  return 'deposit' in value && ('dealYear' in value || 'dealDay' in value);
++}
++
++/**
++ * Raw MOLIT 전월세 row -> `KoreaRentRecord`. The building-name field differs per
++ * endpoint (`aptNm`, `offiNm`, `mhouseNm`), so the housing type is inferred from
++ * whichever is present unless the caller already tagged the row.
++ */
++function normaliseMolitRow(row: Record<string, unknown>): KoreaRentRecord | null {
++  const apartmentName = text(row.aptNm);
++  const officetelName = text(row.offiNm);
++  const buildingLabel = apartmentName || officetelName || text(row.mhouseNm);
++  if (buildingLabel === '') return null;
++
++  const sourceHousingType = officetelName !== '' ? 'officetel' : 'apartment';
++
++  const year = Number(text(row.dealYear));
++  const month = Number(text(row.dealMonth));
++  const day = Number(text(row.dealDay));
++  if (!Number.isFinite(year) || !Number.isFinite(month) || !Number.isFinite(day)) return null;
++  const contractDate =
++    `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
++
++  const depositWon = manwonToWon(row.deposit);
++  const monthlyRentWon = manwonToWon(row.monthlyRent);
++  if (depositWon === null || monthlyRentWon === null) return null;
++
++  const areaSqm = Number(text(row.excluUseAr));
++  if (!Number.isFinite(areaSqm) || areaSqm <= 0) return null;
++
++  const filedType = text(row.contractType);
++  const contractType = filedType === '신규' ? 'new' : filedType === '갱신' ? 'renewal' : 'unknown';
++
++  // The rent endpoints carry no cancellation flag today. If one appears it is
++  // honoured; absence is recorded as unknown rather than asserted as active.
++  const cancelled = text(row.cancelDealType) !== '' || text(row.해제여부) !== '';
++
++  return {
++    contractType,
++    contractDate,
++    areaSqm,
++    depositWon,
++    monthlyRentWon,
++    buildingLabel,
++    legalDong: text(row.umdNm),
++    sourceHousingType,
++    recordStatus: cancelled ? 'cancelled' : 'unknown',
++  } as KoreaRentRecord;
++}
++
++/**
++ * Accepts a plain array, `{ records: [...] }`, or the collector's
++ * `{ cells: { "gu:ym": [rows] }, holes: [...] }` checkpoint.
++ *
++ * A checkpoint carrying holes is REFUSED. A hole is a district-month the
++ * collector could not read, and a curve built over one is a curve with a gap
++ * it cannot see - exactly the failure that once produced a half-empty panel.
++ */
++export function extractRecords(source: unknown): readonly KoreaRentRecord[] {
++  let rows: unknown[];
++
++  if (Array.isArray(source)) {
++    rows = source;
++  } else if (source !== null && typeof source === 'object') {
++    const record = source as Record<string, unknown>;
++    if (Array.isArray(record.holes) && record.holes.length > 0) {
++      throw new ConversionBuildError(
++        'input_has_holes',
++        `Input has ${record.holes.length} uncollected district-months. Re-run the collector to fill them; do not model on a panel with holes.`,
++      );
++    }
++    if (Array.isArray(record.records)) {
++      rows = record.records;
++    } else if (record.cells !== null && typeof record.cells === 'object') {
++      rows = Object.values(record.cells as Record<string, unknown>).flatMap((cell) =>
++        Array.isArray(cell) ? cell : [],
++      );
++    } else {
++      throw new ConversionBuildError('input_unrecognised', 'Input is an object with no records, cells or array payload.');
++    }
++  } else {
++    throw new ConversionBuildError('input_unrecognised', 'Input is neither an array nor an object.');
++  }
++
++  const out: KoreaRentRecord[] = [];
++  let unusableRows = 0;
++  for (const row of rows) {
++    if (row === null || typeof row !== 'object') {
++      unusableRows += 1;
++      continue;
++    }
++    const value = row as Record<string, unknown>;
++    if (looksLikeMolitRow(value)) {
++      const normalised = normaliseMolitRow(value);
++      if (normalised === null) unusableRows += 1;
++      else out.push(normalised);
++      continue;
++    }
++    if (typeof value.depositWon === 'number' && typeof value.monthlyRentWon === 'number') {
++      out.push(value as unknown as KoreaRentRecord);
++      continue;
++    }
++    unusableRows += 1;
++  }
++
++  if (out.length === 0) {
++    throw new ConversionBuildError(
++      'input_empty',
++      `No usable contracts in the input (${unusableRows} rows unreadable). An empty result is a failure, not an answer.`,
++    );
++  }
++  return out;
++}
++
++// -------------------------------------------------------------------- build
++
++export function buildConversionArtifact(input: Readonly<{
++  records: readonly KoreaRentRecord[];
++  period: string;
++  sha256: string;
++  generatedAt: string;
++  maximumAgeDays: number;
++  pairOptions: ConversionPairOptions;
++}>): Readonly<{ artifact: string; build: ConversionCurveBuild }> {
++  if (!PERIOD_PATTERN.test(input.period)) {
++    throw new ConversionBuildError('period_invalid', `Period must be YYYY-MM/YYYY-MM, received "${input.period}".`);
++  }
++
++  const build = buildKoreaConversionCurves(input.records, input.pairOptions);
++
++  const present = new Set(build.curves.map((curve) => curve.housingType));
++  const missing = REQUIRED_HOUSING_TYPES.filter((type) => !present.has(type));
++  if (missing.length > 0) {
++    // Writing a one-curve artifact would deploy cleanly and still leave the
++    // screen paused, with nothing on the page to say why.
++    throw new ConversionBuildError(
++      'curve_missing',
++      `No publishable curve for: ${missing.join(', ')}. Contract Check needs both, and each needs at least two bands holding ${input.pairOptions.minimumPairsPerAnchor}+ pairs. Widen the collection period or lower the minimum deliberately - do not invent anchors.`,
++    );
++  }
++
++  const artifact = {
++    artifactVersion: KOREA_CONVERSION_ARTIFACT_VERSION,
++    generatedAt: input.generatedAt,
++    provenance: {
++      marketId: 'kr-seoul',
++      period: input.period,
++      provider: 'MOLIT',
++      endpointVersion: 'v1',
++      parserVersion: 'kr-molit-rent-parser-v2',
++      rightsPolicyId: 'kr-molit-rent-v1',
++      sourceComplete: true,
++      sha256: input.sha256,
++    },
++    readiness: {
++      state: 'ready',
++      maximumAgeDays: input.maximumAgeDays,
++      minimumPairsPerAnchor: input.pairOptions.minimumPairsPerAnchor,
++    },
++    totals: {
++      eligiblePairCount: build.eligiblePairCount,
++      excluded: build.excluded,
++    },
++    curves: build.curves,
++  };
++
++  const serialised = JSON.stringify(artifact);
++
++  // The gate. Anything the site would refuse fails here, with the input still
++  // on disk and the previous artifact untouched.
++  parseKoreaConversionArtifact(
++    JSON.parse(serialised),
++    { marketId: 'kr-seoul', period: input.period, sha256: input.sha256, rightsLookup },
++    input.generatedAt,
++  );
++
++  return Object.freeze({ artifact: serialised, build });
++}
++
++// ------------------------------------------------------------------- runner
++
++export async function runKoreaConversionArtifactBuild(
++  options: KoreaConversionRunnerOptions,
++): Promise<KoreaConversionRunnerResult> {
++  const log = options.log ?? (() => {});
++  const now = options.now ?? (() => new Date());
++  const pairOptions = options.pairOptions ?? DEFAULT_CONVERSION_PAIR_OPTIONS;
++  const maximumAgeDays = options.maximumAgeDays ?? 45;
++
++  const inputPath = resolve(options.inputPath);
++  const bytes = await readFile(inputPath);
++
++  // The digest is over the SOURCE bytes, not the artifact. It answers the only
++  // question worth sealing: which extract produced these anchors.
++  const sha256 = createHash('sha256').update(bytes).digest('hex');
++
++  const records = extractRecords(JSON.parse(bytes.toString('utf8')));
++  const generatedAt = now().toISOString();
++
++  const { artifact, build } = buildConversionArtifact({
++    records,
++    period: options.period,
++    sha256,
++    generatedAt,
++    maximumAgeDays,
++    pairOptions,
++  });
++
++  const outputPath = resolve(options.outputPath);
++  await mkdir(dirname(outputPath), { recursive: true });
++  await writeFile(outputPath, `${artifact}\n`, 'utf8');
++
++  const { diagnostics } = build;
++  log(`records in            ${diagnostics.recordsIn.toLocaleString()}`);
++  log(`records usable        ${diagnostics.recordsUsable.toLocaleString()}`);
++  log(`building x area groups ${diagnostics.groupsConsidered.toLocaleString()}`);
++  log(`pairs formed          ${diagnostics.pairsFormed.toLocaleString()}`);
++  log(`pairs published       ${build.eligiblePairCount.toLocaleString()}`);
++  log('');
++  log('rejected pairs');
++  log(`  rent did not fall   ${diagnostics.rejections.rentDidNotFall.toLocaleString()}`);
++  log(`  deposit gap small   ${diagnostics.rejections.depositGapTooSmall.toLocaleString()}`);
++  log(`  outside date window ${diagnostics.rejections.outsideDateWindow.toLocaleString()}`);
++  log(`  implausible rate    ${diagnostics.rejections.implausibleRate.toLocaleString()}`);
++  log('');
++  for (const curve of build.curves) {
++    log(`${curve.housingType}`);
++    for (const anchor of curve.anchors) {
++      const eok = (anchor.depositWon / 100_000_000).toFixed(2);
++      const percent = (anchor.annualRate * 100).toFixed(2);
++      log(`  ${eok.padStart(6)}억  ${percent.padStart(5)}%/yr   ${anchor.pairCount.toLocaleString()} pairs`);
++    }
++  }
++  if (diagnostics.droppedAnchors.length > 0) {
++    log('');
++    log('dropped bands (measured, but under the publication floor)');
++    for (const dropped of diagnostics.droppedAnchors) {
++      const ceiling = dropped.bandCeilingWon === null
++        ? 'and up'
++        : `to ${(dropped.bandCeilingWon / 100_000_000).toFixed(2)}억`;
++      log(`  ${dropped.housingType} ${(dropped.bandFloorWon / 100_000_000).toFixed(2)}억 ${ceiling} — ${dropped.pairCount} pairs (${dropped.reason})`);
++    }
++  }
++  log('');
++  log(`wrote ${outputPath}`);
++  log('');
++  log('Set these three on the signedprice project (Production AND Preview):');
++  log(`  SIGNEDPRICE_CONVERSION_CURVE_PERIOD=${options.period}`);
++  log(`  SIGNEDPRICE_CONVERSION_CURVE_SHA256=${sha256}`);
++  log('  SIGNEDPRICE_CONVERSION_CURVE_ARTIFACT=<the file contents, one line>');
++  log('');
++  log(`This artifact expires ${maximumAgeDays} days after ${generatedAt}. After that the screen pauses again by design — rebuild and reset the variables.`);
++
++  return Object.freeze({ artifact, sha256, period: options.period, build });
++}
++
++// ---------------------------------------------------------------------- cli
++
++function argValue(argv: readonly string[], name: string): string | undefined {
++  const index = argv.indexOf(name);
++  return index >= 0 ? argv[index + 1] : undefined;
++}
++
++async function main(argv: readonly string[]): Promise<void> {
++  const inputPath = argValue(argv, '--input');
++  const outputPath = argValue(argv, '--output') ?? 'v2/apps/web/data/korea-conversion-curve.json';
++  const period = argValue(argv, '--period');
++  const minimumPairs = argValue(argv, '--minimum-pairs');
++  const maximumAgeDays = argValue(argv, '--maximum-age-days');
++
++  if (inputPath === undefined || period === undefined) {
++    throw new ConversionBuildError(
++      'usage',
++      'Usage: --input <contracts.json> --period <YYYY-MM/YYYY-MM> [--output <path>] [--minimum-pairs N] [--maximum-age-days N]',
++    );
++  }
++
++  const pairOptions: ConversionPairOptions = minimumPairs === undefined
++    ? DEFAULT_CONVERSION_PAIR_OPTIONS
++    : { ...DEFAULT_CONVERSION_PAIR_OPTIONS, minimumPairsPerAnchor: Number(minimumPairs) };
++
++  await runKoreaConversionArtifactBuild({
++    inputPath,
++    outputPath,
++    period,
++    maximumAgeDays: maximumAgeDays === undefined ? undefined : Number(maximumAgeDays),
++    pairOptions,
++    log: (line) => console.log(line),
++  });
++}
++
++if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
++  main(process.argv.slice(2)).catch((error: unknown) => {
++    const message = error instanceof Error ? error.message : String(error);
++    console.error(`\nbuild failed: ${message}`);
++    console.error('Nothing was written. The deployed artifact is untouched.');
++    process.exit(1);
++  });
++}
+diff --git a/v2/tests/korea-conversion-runner.test.ts b/v2/tests/korea-conversion-runner.test.ts
+new file mode 100644
+index 0000000..b4679cf
+--- /dev/null
++++ b/v2/tests/korea-conversion-runner.test.ts
+@@ -0,0 +1,205 @@
++import { mkdtemp, readFile, writeFile } from 'node:fs/promises';
++import { tmpdir } from 'node:os';
++import { join } from 'node:path';
++
++import { describe, expect, it } from 'vitest';
++
++import {
++  DEFAULT_CONVERSION_PAIR_OPTIONS,
++  KR_MOLIT_RENT_RIGHTS,
++  parseKoreaConversionArtifact,
++  type MolitRightsLookup,
++} from '@signedprice/korea-rent';
++
++import {
++  ConversionBuildError,
++  extractRecords,
++  runKoreaConversionArtifactBuild,
++} from '../scripts/build-korea-conversion-artifact.mts';
++
++const PERIOD = '2026-01/2026-07';
++const rightsLookup: MolitRightsLookup = (policyId) =>
++  policyId === KR_MOLIT_RENT_RIGHTS.id ? KR_MOLIT_RENT_RIGHTS : undefined;
++
++const pairOptions = { ...DEFAULT_CONVERSION_PAIR_OPTIONS, minimumPairsPerAnchor: 2 };
++
++/**
++ * Rows in MOLIT's own wire shape: money in 만원 as comma-grouped strings, date
++ * split across three fields. A 24,000 만원 gap against a 100 만원 monthly
++ * difference implies 0.05 a year.
++ */
++function molitPairs(input: Readonly<{
++  count: number;
++  depositManwon: number;
++  annualRate: number;
++  building: string;
++  officetel?: boolean;
++}>): unknown[] {
++  const gapManwon = 24_000;
++  const monthlyRentManwon = (input.annualRate * gapManwon) / 12;
++  const rows: unknown[] = [];
++  for (let i = 0; i < input.count; i += 1) {
++    const name = `${input.building}-${i}`;
++    const nameField = input.officetel === true ? { offiNm: name } : { aptNm: name };
++    rows.push({
++      ...nameField,
++      umdNm: '성산동',
++      excluUseAr: '84.97',
++      dealYear: '2026',
++      dealMonth: '3',
++      dealDay: '10',
++      deposit: input.depositManwon.toLocaleString('en-US'),
++      monthlyRent: String(monthlyRentManwon),
++      contractType: '신규',
++    });
++    rows.push({
++      ...nameField,
++      umdNm: '성산동',
++      excluUseAr: '84.97',
++      dealYear: '2026',
++      dealMonth: '4',
++      dealDay: '2',
++      deposit: (input.depositManwon + gapManwon).toLocaleString('en-US'),
++      monthlyRent: '0',
++      contractType: '신규',
++    });
++  }
++  return rows;
++}
++
++function completeInput(): unknown[] {
++  return [
++    ...molitPairs({ count: 3, depositManwon: 6_000, annualRate: 0.05, building: 'A' }),
++    ...molitPairs({ count: 3, depositManwon: 20_000, annualRate: 0.045, building: 'B' }),
++    ...molitPairs({ count: 3, depositManwon: 5_000, annualRate: 0.06, building: 'C', officetel: true }),
++    ...molitPairs({ count: 3, depositManwon: 13_000, annualRate: 0.05, building: 'D', officetel: true }),
++  ];
++}
++
++async function workspace(rows: unknown): Promise<Readonly<{ inputPath: string; outputPath: string }>> {
++  const dir = await mkdtemp(join(tmpdir(), 'conversion-'));
++  const inputPath = join(dir, 'contracts.json');
++  await writeFile(inputPath, JSON.stringify(rows), 'utf8');
++  return { inputPath, outputPath: join(dir, 'curve.json') };
++}
++
++describe('runKoreaConversionArtifactBuild', () => {
++  it('writes an artifact the deployed parser accepts unchanged', async () => {
++    const { inputPath, outputPath } = await workspace(completeInput());
++
++    const result = await runKoreaConversionArtifactBuild({
++      inputPath,
++      outputPath,
++      period: PERIOD,
++      pairOptions,
++      now: () => new Date('2026-09-01T00:00:00.000Z'),
++    });
++
++    const written = JSON.parse(await readFile(outputPath, 'utf8'));
++
++    // The site's own parser, not a copy of its rules.
++    const parsed = parseKoreaConversionArtifact(
++      written,
++      { marketId: 'kr-seoul', period: PERIOD, sha256: result.sha256, rightsLookup },
++      '2026-09-02T00:00:00.000Z',
++    );
++
++    expect(parsed.curves.map((curve) => curve.housingType).sort()).toEqual([
++      'apartment',
++      'officetel',
++    ]);
++    expect(parsed.sha256).toMatch(/^[a-f0-9]{64}$/);
++  });
++
++  it('converts 만원 to 원 without the ten-times error', async () => {
++    const { inputPath, outputPath } = await workspace(completeInput());
++
++    const result = await runKoreaConversionArtifactBuild({
++      inputPath,
++      outputPath,
++      period: PERIOD,
++      pairOptions,
++      now: () => new Date('2026-09-01T00:00:00.000Z'),
++    });
++
++    const apartment = result.build.curves.find((curve) => curve.housingType === 'apartment')!;
++    // 6,000 만원 is 60,000,000 원. 600,000,000 would be the classic slip.
++    expect(apartment.anchors[0]!.depositWon).toBe(60_000_000);
++    expect(apartment.anchors[0]!.annualRate).toBe(0.05);
++    expect(apartment.anchors[1]!.depositWon).toBe(200_000_000);
++    expect(apartment.anchors[1]!.annualRate).toBe(0.045);
++  });
++
++  it('reports eligiblePairCount as the exact sum the parser recomputes', async () => {
++    const { inputPath, outputPath } = await workspace(completeInput());
++
++    const result = await runKoreaConversionArtifactBuild({
++      inputPath,
++      outputPath,
++      period: PERIOD,
++      pairOptions,
++      now: () => new Date('2026-09-01T00:00:00.000Z'),
++    });
++
++    const artifact = JSON.parse(result.artifact);
++    const summed = artifact.curves.reduce(
++      (sum: number, curve: { anchors: readonly { pairCount: number }[] }) =>
++        sum + curve.anchors.reduce((inner, anchor) => inner + anchor.pairCount, 0),
++      0,
++    );
++    expect(artifact.totals.eligiblePairCount).toBe(summed);
++  });
++
++  it('refuses to write when a required curve cannot be measured', async () => {
++    // Apartments only: Contract Check asks for both curves by name.
++    const { inputPath, outputPath } = await workspace([
++      ...molitPairs({ count: 3, depositManwon: 6_000, annualRate: 0.05, building: 'A' }),
++      ...molitPairs({ count: 3, depositManwon: 20_000, annualRate: 0.045, building: 'B' }),
++    ]);
++
++    await expect(
++      runKoreaConversionArtifactBuild({ inputPath, outputPath, period: PERIOD, pairOptions }),
++    ).rejects.toThrow(/officetel/);
++
++    await expect(readFile(outputPath, 'utf8')).rejects.toThrow();
++  });
++
++  it('refuses an input panel that still has collection holes', () => {
++    expect(() =>
++      extractRecords({ cells: {}, holes: [{ gu: '11440', ym: '202603', reason: 'HTTP 500' }] }),
++    ).toThrow(ConversionBuildError);
++  });
++
++  it('treats an empty extract as a failure, not an answer', () => {
++    expect(() => extractRecords({ records: [] })).toThrow(/failure, not an answer/);
++  });
++
++  it('rejects a malformed period before doing any work', async () => {
++    const { inputPath, outputPath } = await workspace(completeInput());
++
++    await expect(
++      runKoreaConversionArtifactBuild({
++        inputPath,
++        outputPath,
++        period: '2026-01..2026-07',
++        pairOptions,
++      }),
++    ).rejects.toThrow(/YYYY-MM/);
++  });
++
++  it('produces a digest that changes when the source extract changes', async () => {
++    const first = await workspace(completeInput());
++    const second = await workspace([...completeInput(), ...molitPairs({
++      count: 2,
++      depositManwon: 9_000,
++      annualRate: 0.048,
++      building: 'E',
++    })]);
++
++    const now = () => new Date('2026-09-01T00:00:00.000Z');
++    const a = await runKoreaConversionArtifactBuild({ ...first, period: PERIOD, pairOptions, now });
++    const b = await runKoreaConversionArtifactBuild({ ...second, period: PERIOD, pairOptions, now });
++
++    expect(a.sha256).not.toBe(b.sha256);
++  });
++});
+-- 
+2.43.0
+
