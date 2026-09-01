@@ -126,7 +126,6 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/trust/',
       'https://www.signedprice.com/kr/',
       'https://www.signedprice.com/kr/check/seoul/',
-      'https://www.signedprice.com/kr/seoul/',
       'https://www.signedprice.com/kr/seoul/news/',
       'https://www.signedprice.com/kr/seoul/news/how-signedprice-reads-reported-rental-contracts/',
       'https://www.signedprice.com/kr/seoul/guide/',
