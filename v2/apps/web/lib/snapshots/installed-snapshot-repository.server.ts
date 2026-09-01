@@ -1,6 +1,9 @@
 import 'server-only';
 
 import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { gunzipSync } from 'node:zlib';
 
 import {
   parseInstalledSnapshotRegistry,
@@ -8,6 +11,8 @@ import {
   type MarketDataset,
   type SnapshotMarketId,
 } from '@signedprice/market-core';
+
+import installedSnapshotRegistry from '../../data/installed-snapshots.json';
 
 export type VerifiedInstalledSnapshot = Readonly<{
   metadata: InstalledSnapshot;
@@ -27,9 +32,43 @@ export class InstalledSnapshotUnavailableError extends Error {
   }
 }
 
+let checkedInObservedBuildingInventory: unknown;
+
+function parseCompressedInventory(source: Buffer): unknown {
+  return JSON.parse(gunzipSync(source).toString('utf8'));
+}
+
+function readCheckedInObservedBuildingInventory(): unknown {
+  if (checkedInObservedBuildingInventory !== undefined) {
+    return checkedInObservedBuildingInventory;
+  }
+  try {
+    checkedInObservedBuildingInventory = parseCompressedInventory(readFileSync(resolve(
+      process.cwd(),
+      'data/observed-building-inventory.json.gz',
+    )));
+  } catch {
+    try {
+      checkedInObservedBuildingInventory = parseCompressedInventory(readFileSync(resolve(
+        process.cwd(),
+        'apps/web/data/observed-building-inventory.json.gz',
+      )));
+    } catch {
+      return undefined;
+    }
+  }
+  return checkedInObservedBuildingInventory;
+}
+
 export function resolveInstalledSnapshotObject(objectUrl: string): unknown {
-  void objectUrl;
+  if (objectUrl === 'installed://kr-building-registry') {
+    return readCheckedInObservedBuildingInventory();
+  }
   return undefined;
+}
+
+export function resolveInstalledSnapshotRegistry(): unknown {
+  return installedSnapshotRegistry;
 }
 
 function isObject(value: unknown): value is Readonly<Record<string, unknown>> {

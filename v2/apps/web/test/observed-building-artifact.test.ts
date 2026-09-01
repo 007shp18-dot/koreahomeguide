@@ -210,4 +210,26 @@ describe('observed building artifact boundary', () => {
     expect(repository?.listRecords()).toHaveLength(2);
     expect(repository?.getArtifact().sha256).toBe(source.sha256);
   });
+
+  it('loads the checked-in inventory when no explicit artifact is supplied', () => {
+    vi.stubEnv('SIGNEDPRICE_INSTALLED_SNAPSHOT_REGISTRY', undefined);
+    vi.stubEnv('SIGNEDPRICE_OBSERVED_BUILDING_ARTIFACT', undefined);
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', period);
+
+    const repository = observedBuildingRepositoryFromEnvironment({
+      useCheckedInSnapshot: true,
+    });
+
+    expect(repository?.listRecords()).toHaveLength(48_866);
+    expect(repository?.getArtifact().period).toBe('2026-02/2026-08');
+    expect(new Set(repository?.listRecords().map(({ districtSlug }) => districtSlug)).size).toBe(25);
+  });
+
+  it('does not install the production snapshot implicitly in unit-test route models', () => {
+    vi.stubEnv('SIGNEDPRICE_INSTALLED_SNAPSHOT_REGISTRY', undefined);
+    vi.stubEnv('SIGNEDPRICE_OBSERVED_BUILDING_ARTIFACT', undefined);
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', period);
+
+    expect(observedBuildingRepositoryFromEnvironment()).toBeNull();
+  });
 });

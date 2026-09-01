@@ -6,6 +6,7 @@ vi.mock('server-only', () => ({}));
 import {
   InstalledSnapshotUnavailableError,
   createInstalledSnapshotRepository,
+  resolveInstalledSnapshotObject,
 } from '../lib/snapshots/installed-snapshot-repository.server';
 
 const period = '2026-01/2026-07';
@@ -54,6 +55,18 @@ function registry(
 }
 
 describe('installed snapshot repository', () => {
+  it('resolves only the checked-in building registry object', () => {
+    const installed = resolveInstalledSnapshotObject('installed://kr-building-registry');
+
+    expect(installed).toMatchObject({
+      artifactVersion: 'signedprice-observed-building-inventory-v1',
+      provenance: { marketId: 'kr-seoul', period: '2026-02/2026-08' },
+      stats: { observedBuildingCount: 48_866 },
+    });
+    expect(resolveInstalledSnapshotObject('installed://kr-sale')).toBeUndefined();
+    expect(resolveInstalledSnapshotObject('https://example.com/snapshot.json')).toBeUndefined();
+  });
+
   it('returns a digest, schema, identity and count verified payload', () => {
     const source = payload();
     const repository = createInstalledSnapshotRepository({

@@ -5,6 +5,7 @@ import type { SeoulDistrictSlug } from '@signedprice/korea-rent/browser';
 import {
   createInstalledSnapshotRepository,
   resolveInstalledSnapshotObject,
+  resolveInstalledSnapshotRegistry,
 } from '../snapshots/installed-snapshot-repository.server';
 
 import {
@@ -59,6 +60,7 @@ let cached: Readonly<{
   installedRegistry: string | undefined;
   legacyArtifact: string | undefined;
   period: string;
+  useCheckedInSnapshot: boolean;
   resolveObject: (objectUrl: string) => unknown;
   repository: ObservedBuildingRepository | null;
 }> | null = null;
@@ -66,17 +68,21 @@ let cached: Readonly<{
 export function observedBuildingRepositoryFromEnvironment(
   dependencies: Readonly<{
     resolveObject?: (objectUrl: string) => unknown;
+    useCheckedInSnapshot?: boolean;
   }> = Object.freeze({}),
 ): ObservedBuildingRepository | null {
   const installedRegistry = process.env.SIGNEDPRICE_INSTALLED_SNAPSHOT_REGISTRY;
   const legacyArtifact = process.env.SIGNEDPRICE_OBSERVED_BUILDING_ARTIFACT;
   const period = process.env.SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD ?? '';
+  const useCheckedInSnapshot = dependencies.useCheckedInSnapshot
+    ?? process.env.NODE_ENV !== 'test';
   const resolveObject = dependencies.resolveObject ?? resolveInstalledSnapshotObject;
   const current = cached;
   if (current !== null
     && current.installedRegistry === installedRegistry
     && current.legacyArtifact === legacyArtifact
     && current.period === period
+    && current.useCheckedInSnapshot === useCheckedInSnapshot
     && current.resolveObject === resolveObject) {
     return current.repository;
   }
@@ -87,17 +93,23 @@ export function observedBuildingRepositoryFromEnvironment(
         registrySource: JSON.parse(installedRegistry),
         resolveObject,
       }).get('kr-seoul', 'kr-building-registry');
-      if (period !== '' && installed.metadata.period !== period) {
-        throw new ObservedBuildingInventoryUnavailableError();
-      }
       repository = createObservedBuildingRepository({
         source: installed.payload,
         expected: { marketId: 'kr-seoul', period: installed.metadata.period },
       });
-    } else {
+    } else if (legacyArtifact !== undefined) {
       repository = createObservedBuildingRepository({
-        source: legacyArtifact === undefined ? undefined : JSON.parse(legacyArtifact),
+        source: JSON.parse(legacyArtifact),
         expected: { marketId: 'kr-seoul', period },
+      });
+    } else if (useCheckedInSnapshot) {
+      const installed = createInstalledSnapshotRepository({
+        registrySource: resolveInstalledSnapshotRegistry(),
+        resolveObject,
+      }).get('kr-seoul', 'kr-building-registry');
+      repository = createObservedBuildingRepository({
+        source: installed.payload,
+        expected: { marketId: 'kr-seoul', period: installed.metadata.period },
       });
     }
   } catch {
@@ -107,6 +119,7 @@ export function observedBuildingRepositoryFromEnvironment(
     installedRegistry,
     legacyArtifact,
     period,
+    useCheckedInSnapshot,
     resolveObject,
     repository,
   });

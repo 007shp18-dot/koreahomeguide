@@ -1,0 +1,18 @@
+{
+  "registryVersion": "signedprice-installed-snapshots-v1",
+  "snapshots": [
+    {
+      "marketId": "kr-seoul",
+      "dataset": "kr-building-registry",
+      "schemaVersion": "signedprice-observed-building-inventory-v1",
+      "sourceVersion": "molit-rent-v1",
+      "parserVersion": "kr-molit-building-parser-v2",
+      "rightsPolicyId": "kr-molit-rent-v1",
+      "period": "2026-02/2026-08",
+      "generatedAt": "2026-09-01T15:54:22.850Z",
+      "objectUrl": "installed://kr-building-registry",
+      "sha256": "2609c16eafd2f3be1de6b0f05da525d32e07f1f39555958a4a8042f20fcbcd41",
+      "recordCount": 48866
+    }
+  ]
+}

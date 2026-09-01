@@ -12,6 +12,9 @@ const nextConfig: NextConfig = {
     root: repositoryRoot,
   },
   outputFileTracingRoot: repositoryRoot,
+  outputFileTracingIncludes: {
+    '/*': ['./data/observed-building-inventory.json.gz'],
+  },
 };
 
 export default nextConfig;

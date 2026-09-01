@@ -37,6 +37,7 @@ const dependencies = (source: unknown = rankedFixture()) => ({
   source,
   period: PUBLIC_AREA_FIXTURE_PERIOD,
   referenceInstant: '2026-09-01T00:00:00.000Z',
+  observedBuildingSource: null,
 });
 
 function canonicalJson(value: unknown): string {
