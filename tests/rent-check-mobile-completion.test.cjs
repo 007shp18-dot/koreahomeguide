@@ -43,8 +43,7 @@ test('all Rent Check runtimes reveal the result and leave status idle after succ
   const runtimes = [
     'app.js',
     
-    'tools/seoul-rent-check/app.js',
-    ];
+    'tools/seoul-rent-check/app.js'];
 
   for (const runtime of runtimes) {
     const source = read(runtime);
