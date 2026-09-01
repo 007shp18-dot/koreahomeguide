@@ -4,7 +4,11 @@
 .cityTab:last-child, .cityTabActive:last-child { border-right: 0; }
 .cityTabActive { color: var(--ink); box-shadow: inset 0 -3px 0 var(--accent); }
 .heroGrid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(360px, .85fr); min-height: 650px; }
-.heroCopy { padding: clamp(44px, 6vw, 88px) max(40px, calc((100vw - var(--site-width)) / 2)); }
+.heroCopy {
+  padding-block: clamp(44px, 6vw, 88px);
+  padding-left: max(40px, calc((100vw - var(--site-width)) / 2));
+  padding-right: clamp(40px, 5vw, 80px);
+}
 .eyebrow, .sectionHeading > div > p, .exploreCopy > p:first-child, .decisionGrid article > span, .briefLedger article > span { color: var(--accent); font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 .heroCopy h1 { max-width: 12ch; margin-top: 18px; font-size: clamp(46px, 6vw, 84px); line-height: .98; letter-spacing: -.06em; }
 .deck { max-width: 58ch; margin-top: 24px; color: var(--muted); font-size: 17px; line-height: 1.7; }
