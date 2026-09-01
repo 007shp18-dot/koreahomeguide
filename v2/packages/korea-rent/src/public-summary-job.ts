@@ -13,6 +13,10 @@ import {
   type KoreaPublicBuildingSourceRecord,
 } from './public-building-summary';
 import {
+  buildKoreaObservedBuildingInventory,
+  type KoreaObservedBuildingInventory,
+} from './observed-building-inventory';
+import {
   KR_MOLIT_RENT_RIGHTS,
   RightsViolationError,
   assertMolitRights,
@@ -105,6 +109,13 @@ export type KoreaPublicBuildingSummaryFinalization = Readonly<{
   completedCoordinates: typeof TOTAL_COORDINATES;
   eligibleRecords: number;
   publishedBuildings: number;
+}>;
+
+export type KoreaObservedBuildingInventoryFinalization = Readonly<{
+  inventory: KoreaObservedBuildingInventory;
+  period: string;
+  generatedAt: string;
+  completedCoordinates: typeof TOTAL_COORDINATES;
 }>;
 
 export type KoreaPublicSummaryJobDependencies = Readonly<{
@@ -338,6 +349,18 @@ function completedPeriod(referenceInstant: string): Readonly<{
   };
 }
 
+function toBuildingSourceRecords(
+  loaded: LoadedPublicSummaryRecords,
+): readonly KoreaPublicBuildingSourceRecord[] {
+  const sourceRecords: KoreaPublicBuildingSourceRecord[] = [];
+  for (const district of SEOUL_RENT_CHECK_DISTRICTS) {
+    for (const record of loaded.byDistrict.get(district.lawdCd)!) {
+      sourceRecords.push(Object.freeze({ districtSlug: district.slug, record }));
+    }
+  }
+  return sourceRecords;
+}
+
 function publicSummaryFor(
   input: Readonly<{
     area: string;
@@ -460,16 +483,10 @@ export async function finalizeKoreaPublicBuildingSummaryJob(
   const loaded = await loadPublicSummaryRecords(input.referenceInstant, dependencies.cache);
   const { period } = completedPeriod(input.referenceInstant);
   const generatedAt = validNow(dependencies);
-  const sourceRecords: KoreaPublicBuildingSourceRecord[] = [];
-  for (const district of SEOUL_RENT_CHECK_DISTRICTS) {
-    for (const record of loaded.byDistrict.get(district.lawdCd)!) {
-      sourceRecords.push(Object.freeze({ districtSlug: district.slug, record }));
-    }
-  }
   const records = Object.freeze(buildKoreaPublicBuildingSummaries({
     period,
     generatedAt,
-    records: sourceRecords,
+    records: toBuildingSourceRecords(loaded),
     geocodes: [],
   }).filter(({ groups }) => groups.all.published));
   return Object.freeze({
@@ -479,5 +496,28 @@ export async function finalizeKoreaPublicBuildingSummaryJob(
     completedCoordinates: TOTAL_COORDINATES,
     eligibleRecords: loaded.all.filter(isEligible).length,
     publishedBuildings: records.length,
+  });
+}
+
+export async function finalizeKoreaObservedBuildingInventoryJob(
+  input: Readonly<{ referenceInstant: string }>,
+  dependencies: Omit<KoreaPublicSummaryJobDependencies, 'serviceKey' | 'fetch'>,
+): Promise<KoreaObservedBuildingInventoryFinalization> {
+  assertJobRights(dependencies, ['cache', 'derive', 'display', 'commercial']);
+  const loaded = await loadPublicSummaryRecords(input.referenceInstant, dependencies.cache);
+  const { period } = completedPeriod(input.referenceInstant);
+  const generatedAt = validNow(dependencies);
+  const inventory = buildKoreaObservedBuildingInventory({
+    period,
+    generatedAt,
+    records: toBuildingSourceRecords(loaded),
+    geocodes: [],
+  });
+
+  return Object.freeze({
+    inventory,
+    period,
+    generatedAt,
+    completedCoordinates: TOTAL_COORDINATES,
   });
 }

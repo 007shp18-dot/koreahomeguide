@@ -23,6 +23,19 @@ export {
 } from './browser';
 export { parseSeoulRentCheckQuery, type KoreaRentRecord } from './input';
 export {
+  buildKoreaBuildingIdentity,
+  type KoreaBuildingHousingType,
+  type KoreaBuildingIdentity,
+} from './building-identity';
+export {
+  buildKoreaObservedBuildingInventory,
+  type KoreaObservedBuildingCoordinate,
+  type KoreaObservedBuildingInventory,
+  type KoreaObservedBuildingInventoryInput,
+  type KoreaObservedBuildingInventoryStats,
+  type KoreaObservedBuildingRecord,
+} from './observed-building-inventory';
+export {
   buildKoreaRentCheckResult,
   completedSeoulMonthKeys,
   restateMonthlyRentAtDeposit,
@@ -112,6 +125,7 @@ export {
   buildKoreaPublicSummaryPlan,
   finalizeKoreaPublicAreaSummaryJob,
   finalizeKoreaPublicBuildingSummaryJob,
+  finalizeKoreaObservedBuildingInventoryJob,
   finalizeKoreaPublicSummaryJob,
   runKoreaPublicSummaryBatch,
   type KoreaPublicSummaryBatchResult,
@@ -119,6 +133,7 @@ export {
   type KoreaPublicAreaSummaryGroup,
   type KoreaPublicAreaSummaryFinalization,
   type KoreaPublicBuildingSummaryFinalization,
+  type KoreaObservedBuildingInventoryFinalization,
   type KoreaPublicSummaryFinalization,
   type KoreaPublicSummaryJobDependencies,
 } from './public-summary-job';
