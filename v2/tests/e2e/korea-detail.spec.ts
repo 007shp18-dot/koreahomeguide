@@ -102,19 +102,83 @@ test('district detail composes official evidence before verified context', async
   noFailures();
 });
 
-test('verified synthetic building detail is server rendered only in the local release fixture', async ({ page }) => {
+test('verified synthetic building detail keeps decision state, evidence, and layout accessible', async ({
+  page,
+}, testInfo) => {
   test.skip(releaseTarget.usesExternalServer, 'Synthetic building exists only in the local release fixture.');
   const noFailures = observeFailures(page);
   const response = await page.goto('/kr/seoul/explore/jongno-gu/synthetic-test-building/');
   expect(response?.status()).toBe(200);
   await expect(page.getByRole('heading', { level: 1, name: PUBLIC_BUILDING_TEST_NAME })).toBeVisible();
+  await expect(page.getByRole('tab', { name: 'Overview' }))
+    .toHaveAttribute('aria-selected', 'true');
+  await expect(page.getByText('Verified building image is not available')).toBeVisible();
+  await expectTouchTarget(
+    page,
+    '[aria-label="Building detail market navigation"] a[aria-current="location"]',
+  );
+  await expectTouchTarget(page, '[data-selected-mode="overview"] a');
+  for (let index = 1; index <= 5; index += 1) {
+    await expectTouchTarget(page, `[role="tab"]:nth-child(${index})`);
+  }
+
+  const identityColumns = await page.locator('[data-identity-hero="true"]').evaluate(
+    (hero) => getComputedStyle(hero).gridTemplateColumns.split(' ').filter(Boolean).length,
+  );
+  if (testInfo.project.name === 'desktop-chromium' || testInfo.project.name === 'wide-chromium') {
+    expect(identityColumns).toBe(2);
+  } else {
+    expect(identityColumns).toBe(1);
+  }
+
+  await page.getByRole('tab', { name: 'Rent' }).click();
+  await expect(page).toHaveURL(/\?mode=rent$/);
+  await page.getByRole('button', { name: 'All' }).click();
+  await expect(page).toHaveURL(/\?mode=rent&contract=all$/);
+  await expect(page.locator('[data-plot-variant="full"]')).toBeVisible();
+
+  await page.getByRole('tab', { name: 'Buy' }).click();
+  await expect(page.getByText('Official sale evidence is not ready')).toBeVisible();
+  await expect(page.getByRole('tabpanel').getByText(/₩/)).toHaveCount(0);
+
+  await page.getByRole('tab', { name: 'Invest' }).click();
+  await expect(page.getByText('Investment evidence is incomplete')).toBeVisible();
+  await page.goBack();
+  await expect(page.getByRole('tab', { name: 'Buy' }))
+    .toHaveAttribute('aria-selected', 'true');
+  await page.reload();
+  await expect(page.getByRole('tab', { name: 'Buy' }))
+    .toHaveAttribute('aria-selected', 'true');
+
+  await page.getByRole('tab', { name: 'Evidence' }).click();
+  await expect(page.getByRole('tabpanel').getByText('kr-molit-rent-v1')).toBeVisible();
+  const disclosure = page.locator('details');
+  const summary = disclosure.locator('summary');
+  await expectTouchTarget(page, 'details > summary');
+  await summary.focus();
+  await page.keyboard.press('Enter');
+  await expect(disclosure).toHaveAttribute('open', '');
   await expect(page.getByText('Privacy-safe reported contracts')).toBeVisible();
-  await expect(page.locator('[data-detail-main="true"]')).toBeVisible();
-  await expect(page.locator('[data-detail-rail="true"]')).toContainText('Latest verified News');
-  await expect(page.locator('[data-detail-rail="true"]')).toContainText('Community signal');
+  await expectContained(page);
+
+  const overviewTab = page.getByRole('tab', { name: 'Overview' });
+  await overviewTab.focus();
+  await page.keyboard.press('Enter');
+  await expect(overviewTab).toHaveAttribute('aria-selected', 'true');
+  await expect(page.getByRole('tabpanel'))
+    .toHaveAttribute('aria-labelledby', 'building-mode-overview-tab');
+
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /^noindex,\s*follow$/);
   await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
   await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(0);
+
+  if (testInfo.project.name === 'mobile-chromium') {
+    await page.setViewportSize({ width: 320, height: 844 });
+    await expect(page.locator('[aria-label="Building detail market navigation"]')).toBeVisible();
+    await expect(page.getByRole('tablist')).toBeVisible();
+    await expect(page.getByRole('tabpanel')).toBeVisible();
+    await expect(page.locator('details > summary')).toBeVisible();
+  }
   await expectContained(page);
   noFailures();
 });
