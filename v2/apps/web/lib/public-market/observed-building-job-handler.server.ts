@@ -52,6 +52,100 @@ function isCanonicalInstant(value: unknown): value is string {
   return Number.isFinite(instant.getTime()) && instant.toISOString() === value;
 }
 
+export function createObservedBuildingRunnerPage(environment: string | undefined): Response {
+  if (environment !== 'preview') {
+    return new Response(null, { status: 404, headers: { 'cache-control': 'no-store' } });
+  }
+
+  const html = `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Observed building inventory runner</title>
+  <style>
+    body{font:16px/1.5 system-ui,sans-serif;max-width:720px;margin:48px auto;padding:0 20px;color:#171717}
+    main{border:1px solid #d4d4d4;border-radius:12px;padding:24px}label{display:block;font-weight:650;margin-bottom:8px}
+    input,button,a{font:inherit}input{box-sizing:border-box;width:100%;padding:12px;border:1px solid #a3a3a3;border-radius:8px}
+    button,a{display:inline-block;margin-top:16px;padding:10px 16px;border:0;border-radius:8px;background:#171717;color:white;text-decoration:none;cursor:pointer}
+    button:disabled{opacity:.5;cursor:wait}#download[hidden]{display:none}#status{min-height:24px;margin-top:16px;white-space:pre-wrap}
+  </style>
+</head>
+<body>
+  <main data-observed-building-runner>
+    <h1>Observed building inventory</h1>
+    <p>Preview-only runner. The bearer token stays in this browser session and is sent only to the same-origin internal endpoint.</p>
+    <label for="token">Preview job token</label>
+    <input id="token" type="password" autocomplete="off" spellcheck="false">
+    <button id="run" type="button">Run 700-coordinate job</button>
+    <p id="status" role="status">Ready.</p>
+    <a id="download" download="observed-building-inventory.json" hidden>Download verified artifact</a>
+  </main>
+  <script>
+    const endpoint = '/api/internal/observed-building-inventory/';
+    const run = document.getElementById('run');
+    const tokenInput = document.getElementById('token');
+    const status = document.getElementById('status');
+    const download = document.getElementById('download');
+
+    async function post(body, token) {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { authorization: 'Bearer ' + token, 'content-type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      if (!response.ok) throw new Error('request_failed_' + response.status);
+      return response.json();
+    }
+
+    run.addEventListener('click', async () => {
+      const token = tokenInput.value;
+      if (token.length < 24) { status.textContent = 'Enter the Preview job token.'; return; }
+      run.disabled = true;
+      download.hidden = true;
+      const referenceInstant = new Date().toISOString();
+      try {
+        let cursor = 0;
+        while (cursor < 700) {
+          status.textContent = 'Processing ' + cursor + '/700 coordinates…';
+          const result = await post({ action: 'batch', referenceInstant, cursor }, token);
+          if (result.status !== 'progress' || !Number.isSafeInteger(result.nextCursor) || result.nextCursor <= cursor || result.nextCursor > 700 || result.totalCoordinates !== 700) {
+            throw new Error('invalid_progress');
+          }
+          cursor = result.nextCursor;
+        }
+        status.textContent = 'Finalizing verified artifact…';
+        const result = await post({ action: 'finalize', referenceInstant }, token);
+        if (result.status !== 'ready' || result.completedCoordinates !== 700 || typeof result.artifact !== 'object' || result.artifact === null) {
+          throw new Error('invalid_artifact');
+        }
+        const blob = new Blob([JSON.stringify(result.artifact, null, 2) + '\\n'], { type: 'application/json' });
+        download.href = URL.createObjectURL(blob);
+        download.hidden = false;
+        tokenInput.value = '';
+        status.textContent = 'Ready: 700/700 coordinates. Period ' + result.period + '. SHA-256 ' + result.sha256 + '.';
+      } catch (error) {
+        status.textContent = 'Job failed. Review the Preview function logs and retry.';
+      } finally {
+        run.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>`;
+
+  return new Response(html, {
+    status: 200,
+    headers: {
+      'cache-control': 'no-store',
+      'content-type': 'text/html; charset=utf-8',
+      'content-security-policy': "default-src 'none'; connect-src 'self'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'none'; base-uri 'none'; form-action 'none'",
+      'x-robots-tag': 'noindex, nofollow',
+    },
+  });
+}
+
 export function createObservedBuildingJobHandler(
   dependencies: ObservedBuildingJobHandlerDependencies,
 ): (request: Request) => Promise<Response> {

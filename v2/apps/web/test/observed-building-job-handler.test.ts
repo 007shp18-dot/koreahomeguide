@@ -2,7 +2,10 @@ import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 
-import { createObservedBuildingJobHandler } from '../lib/public-market/observed-building-job-handler.server';
+import {
+  createObservedBuildingJobHandler,
+  createObservedBuildingRunnerPage,
+} from '../lib/public-market/observed-building-job-handler.server';
 
 const token = 'preview-secret-token-with-enough-entropy';
 const referenceInstant = '2026-08-30T00:00:00.000Z';
@@ -43,6 +46,22 @@ function dependencies(overrides: Record<string, unknown> = {}) {
 }
 
 describe('observed building internal job handler', () => {
+  it('serves a secret-free runner in Preview and stays absent in Production', async () => {
+    const preview = createObservedBuildingRunnerPage('preview');
+    const production = createObservedBuildingRunnerPage('production');
+    const html = await preview.text();
+
+    expect(preview.status).toBe(200);
+    expect(preview.headers.get('content-type')).toContain('text/html');
+    expect(html).toContain('data-observed-building-runner');
+    expect(html).toContain('/api/internal/observed-building-inventory/');
+    expect(html).toContain("method: 'POST'");
+    expect(html).toContain("type=\"password\"");
+    expect(html).not.toContain(token);
+    expect(html).not.toContain('provider-key');
+    expect(production.status).toBe(404);
+  });
+
   it('allows POST only and requires exact bearer authentication', async () => {
     const handler = createObservedBuildingJobHandler(dependencies() as never);
     const get = await handler(new Request('https://preview.example', { method: 'GET' }));
