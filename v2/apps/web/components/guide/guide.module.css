@@ -1,8 +1,8 @@
 .main {
-  --guide-ground: #f3f2f2;
-  --guide-ink: #201e1d;
-  --guide-muted: #5d5958;
-  --guide-accent: #1d4ed8;
+  --guide-ground: var(--canvas);
+  --guide-ink: var(--ink);
+  --guide-muted: var(--muted);
+  --guide-accent: var(--accent);
   width: min(100%, 1240px);
   max-width: 100%;
   margin-inline: auto;

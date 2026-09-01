@@ -1,12 +1,87 @@
 .marketEvidence {
-  --public-ground: #f3f2f2;
-  --public-ink: #201e1d;
-  --public-accent: #1d4ed8;
+  --public-ground: var(--canvas);
+  --public-ink: var(--ink);
+  --public-accent: var(--accent);
   color: var(--public-ink);
   background: var(--public-ground);
   border-radius: 0;
   box-shadow: none;
   font-variant-numeric: tabular-nums;
+}
+
+.periodEvidence {
+  display: grid;
+  gap: 0;
+  border: 2px solid var(--public-ink, var(--ink));
+  color: var(--public-ink, var(--ink));
+  background: var(--public-ground, var(--canvas));
+}
+
+.periodStrip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+  list-style: none;
+}
+
+.periodStrip li {
+  min-height: 54px;
+  padding: 0.65rem;
+  display: grid;
+  place-items: center;
+  border-right: 1px solid var(--public-ink, var(--ink));
+  border-bottom: 1px solid var(--public-ink, var(--ink));
+  font-size: 0.68rem;
+  font-weight: 850;
+}
+
+.periodComplete {
+  background: var(--public-ground, var(--canvas));
+}
+
+.periodFiling {
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent 0 7px,
+    var(--line) 7px 9px
+  );
+}
+
+.periodLegend {
+  padding: 0.7rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  border-bottom: 1px solid var(--public-ink, var(--ink));
+}
+
+.periodLegend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.68rem;
+  font-weight: 800;
+}
+
+.periodLegend i {
+  width: 1.2rem;
+  height: 0.8rem;
+  display: block;
+  border: 1px solid var(--public-ink, var(--ink));
+}
+
+.periodLegend [data-period-legend-state='filing_in_progress'] i {
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent 0 4px,
+    var(--line) 4px 6px
+  );
+}
+
+.periodCaveat {
+  padding: 0.75rem;
+  color: var(--muted);
+  font-size: 0.7rem;
+  line-height: 1.5;
 }
 
 .strokeState {
@@ -149,7 +224,7 @@
 }
 
 .plotAnnotation small {
-  color: #5d5958;
+  color: var(--muted);
   font-size: 0.56rem;
   font-weight: 850;
   letter-spacing: 0.05em;
@@ -226,7 +301,20 @@
 .plotCaption span,
 .withheldCopy span,
 .verdictWithheld p {
-  color: #5d5958;
+  color: var(--muted);
+}
+
+.compactPlot .plotCanvas {
+  min-height: 148px;
+}
+
+.compactPlot .plotCaption {
+  padding: 0.6rem;
+  font-size: 0.66rem;
+}
+
+.compactPlot .plotAnnotation strong {
+  font-size: 0.64rem;
 }
 
 .withheldHatch {
@@ -304,7 +392,7 @@
 }
 
 .quoteField small {
-  color: #5d5958;
+  color: var(--muted);
   font-size: 0.58rem;
   font-weight: 700;
   letter-spacing: 0;
@@ -351,15 +439,15 @@
   display: grid;
   align-items: center;
   border-left: 2px solid var(--public-accent);
-  color: #5d5958;
+  color: var(--muted);
   font-size: 0.75rem;
   line-height: 1.5;
 }
 
 .publicPage {
-  --public-ground: #f3f2f2;
-  --public-ink: #201e1d;
-  --public-accent: #1d4ed8;
+  --public-ground: var(--canvas);
+  --public-ink: var(--ink);
+  --public-accent: var(--accent);
   min-height: 100dvh;
   color: var(--public-ink);
   background: var(--public-ground);
@@ -400,7 +488,7 @@
 
 .publicHero > p:last-child {
   max-width: 680px;
-  color: #5d5958;
+  color: var(--muted);
   font-size: 0.9rem;
   line-height: 1.6;
 }
@@ -416,9 +504,9 @@
 
 .publicSectionTabs,
 .publicSourceBoundary {
-  --public-ground: #f3f2f2;
-  --public-ink: #201e1d;
-  --public-accent: #1d4ed8;
+  --public-ground: var(--canvas);
+  --public-ink: var(--ink);
+  --public-accent: var(--accent);
   color: var(--public-ink);
   background: var(--public-ground);
 }
@@ -486,7 +574,7 @@
 .publicSectionTabFuture {
   grid-template-columns: auto auto;
   gap: 0.45rem;
-  color: #5d5958;
+  color: var(--muted);
   cursor: not-allowed;
 }
 
@@ -540,7 +628,7 @@
 
 .publicSourceBoundary dd,
 .publicSourceBoundary > p {
-  color: #5d5958;
+  color: var(--muted);
   font-size: 0.78rem;
   line-height: 1.5;
 }
@@ -555,7 +643,7 @@
   display: grid;
   gap: 0.3rem;
   border-bottom: 2px solid var(--public-ink);
-  color: #5d5958;
+  color: var(--muted);
   font-size: 0.72rem;
   line-height: 1.5;
 }
@@ -607,7 +695,7 @@
 
 .publicDisclosure > p {
   max-width: 760px;
-  color: #5d5958;
+  color: var(--muted);
 }
 
 .publicLinks {
@@ -703,6 +791,10 @@
 
   .plotCanvas {
     min-height: 196px;
+  }
+
+  .compactPlot .plotCanvas {
+    min-height: 174px;
   }
 
   .plotAnnotation strong {

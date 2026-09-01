@@ -16,11 +16,14 @@ import {
   createPublicBuildingFixture,
 } from './public-building-fixture';
 
+const REFERENCE_INSTANT = '2026-09-01T00:00:00.000Z';
+
 afterEach(() => vi.unstubAllEnvs());
 
 function model() {
   const result = buildPublicBuildingModel('gangnam-gu', 'gangnam-evidence-tower', {
     source: createPublicBuildingFixture(), period: PUBLIC_BUILDING_FIXTURE_PERIOD,
+    referenceInstant: REFERENCE_INSTANT,
   });
   if (result === null) throw new Error('Expected ready building model.');
   return result;
@@ -32,7 +35,7 @@ describe('public building detail', () => {
 
     for (const value of [
       'Evidence Tower', 'Gangnam-gu', 'apartment', '6 reported contracts',
-      '₩320,000,000', '45-55sqm', '2026-07', '50㎡', 'MOLIT',
+      '₩320,000,000', '45–55㎡', '2026-07', '50㎡', 'MOLIT',
       'New contracts', 'Renewal contracts', 'Unclassified type',
       PUBLIC_BUILDING_FIXTURE_PERIOD, 'Canceled records', 'Private fields',
     ]) {
@@ -49,6 +52,44 @@ describe('public building detail', () => {
     expect(html).toContain('data-detail-rail="true"');
     expect(html).toContain('Latest verified News');
     expect(html).toContain('How SignedPrice reads reported rental contracts');
+    expect(html).toContain('<th>Floor</th>');
+    expect(html).toContain('Floor was not retained in this verified snapshot.');
+    expect(html).not.toContain('45-55sqm');
+  });
+
+  it('renders the six-pair gate basis and the exact single-band empty state', () => {
+    const html = renderToStaticMarkup(<BuildingDetailPage model={model()} />);
+
+    expect(html).toContain('data-floor-coefficient="unavailable"');
+    expect(html).toContain('Contract evidence insufficient');
+    expect(html).toContain('0 eligible pairs');
+    expect(html).toContain(
+      'Compared filed contracts in the same building and exact floor area where floor was the differing retained field. Coefficients stay blank when fewer than six eligible pairs remain.',
+    );
+    expect(html).toContain('data-area-band-state="single-fixed-band"');
+    expect(html).toContain('Other floor-area bands are not available yet.');
+    expect(html).toContain('Published contract evidence is currently fixed to the 45–55㎡ floor-area band.');
+    expect(html).toContain('Additional bands will open after the collection scope expands.');
+  });
+
+  it('renders the published distribution while withholding an unassessable comparison', () => {
+    const html = renderToStaticMarkup(<BuildingDetailPage model={model()} />);
+
+    expect(html).toContain('Declared-period contract evidence');
+    expect(html).toContain('data-building-distribution="true"');
+    expect(html).toContain('data-plot-variant="full"');
+    for (const key of ['min', 'p25', 'median', 'p75', 'max']) {
+      expect(html).toContain(`data-plot-label="${key}"`);
+    }
+    expect(html).toContain('3-month change not assessable');
+    expect(html).toContain('Prior/latest sample counts were not retained in this snapshot.');
+    expect(html).not.toContain('+1.2%');
+    expect(html).not.toMatch(/completed[- ]period/i);
+    expect(html.match(/data-month-state="complete"/g)).toHaveLength(6);
+    expect(html.match(/data-month-state="filing_in_progress"/g)).toHaveLength(1);
+    expect(html).toContain('Complete');
+    expect(html).toContain('Filing in progress');
+    expect(html).toContain('aggregate period distribution includes filing-in-progress months');
   });
 
   it('generates only ready params and keeps the route noindex', async () => {

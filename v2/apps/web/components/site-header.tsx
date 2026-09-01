@@ -1,6 +1,8 @@
 import type { SiteHeaderModel } from '../lib/site-copy';
 import Link from 'next/link';
 
+import { BrandWordmark } from './brand-mark';
+
 type SiteHeaderProps = {
   copy: SiteHeaderModel;
 };
@@ -10,7 +12,7 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
     <header className="site-header">
       <div className="site-shell site-header__inner">
         <Link className="wordmark" href="/" aria-label={copy.homeLabel}>
-          {copy.brand}
+          <BrandWordmark />
         </Link>
         <nav aria-label={copy.navigationLabel}>
           <ul className="site-header__links">

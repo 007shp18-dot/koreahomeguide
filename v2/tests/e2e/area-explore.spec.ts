@@ -5,6 +5,10 @@ import {
   PUBLIC_AREA_TEST_LEGEND_LABELS,
   PUBLIC_AREA_WITHHELD_SLUG,
 } from './public-area-summary-fixture';
+import {
+  PUBLIC_BUILDING_TEST_ID,
+  PUBLIC_BUILDING_TEST_NAME,
+} from './public-building-summary-fixture';
 
 const releaseTarget = resolveReleaseTestTarget();
 
@@ -109,6 +113,17 @@ test('synthetic release fixture shows exact five buckets and a money-free refusa
   await expect(withheldRow).toContainText('Not published');
   await expect(withheldRow).toContainText('4 reported contracts');
   await expect(withheldRow).not.toContainText('₩');
+});
+
+test('rail selection opens the canonical building panel and full-detail CTA', async ({ page }) => {
+  test.skip(releaseTarget.usesExternalServer, 'Exact fixture values are local-release only.');
+  await page.goto('/kr/seoul/explore/?district=jongno-gu');
+
+  await page.getByRole('button', { name: new RegExp(PUBLIC_BUILDING_TEST_NAME) }).click();
+  const panel = page.locator(`[data-building-panel="${PUBLIC_BUILDING_TEST_ID}"]`);
+  await expect(panel).toBeVisible();
+  await expect(panel.getByRole('link', { name: 'Open full building evidence' }))
+    .toHaveAttribute('href', `/kr/seoul/explore/jongno-gu/${PUBLIC_BUILDING_TEST_ID}/`);
 });
 
 test('published quote stays local and any withheld detail stays money-free', async ({ page }) => {

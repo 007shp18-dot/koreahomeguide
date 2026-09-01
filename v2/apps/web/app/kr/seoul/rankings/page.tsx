@@ -16,6 +16,10 @@ export const metadata: Metadata = indexableMetadata({
   path: '/kr/seoul/rankings/',
   title: 'Seoul district jeonse rankings | signedprice',
   description: 'Compare verified Seoul district refundable jeonse deposits, change, spread and sample depth.',
+  languageAlternates: {
+    en: '/kr/seoul/rankings/',
+    ko: '/ko/kr/seoul/rankings/',
+  },
 });
 
 const header: SiteHeaderModel = {

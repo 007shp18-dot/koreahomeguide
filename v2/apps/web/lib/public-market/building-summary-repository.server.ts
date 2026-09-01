@@ -24,6 +24,7 @@ export type PublicBuildingArtifactContext = Readonly<{
 }>;
 
 export type PublicBuildingRepository = Readonly<{
+  listRetainedRecords(): readonly PublicBuildingRecord[];
   listByDistrict(slug: SeoulDistrictSlug): readonly PublicBuildingRecord[];
   getById(districtSlug: SeoulDistrictSlug, buildingId: string): PublicBuildingRecord;
   listRouteParams(): readonly PublicBuildingRouteParam[];
@@ -63,6 +64,9 @@ export function createPublicBuildingRepository(input: Readonly<{
       exclusions: artifact.exclusions,
     });
     return Object.freeze({
+      listRetainedRecords(): readonly PublicBuildingRecord[] {
+        return artifact.records;
+      },
       listByDistrict(slug: SeoulDistrictSlug): readonly PublicBuildingRecord[] {
         return Object.freeze(published.filter(({ districtSlug }) => districtSlug === slug));
       },

@@ -45,7 +45,14 @@ describe('public building artifact builder', () => {
       neighborhoodName: '역삼동', latitude: 37.5001, longitude: 127.0352,
       groups: { all: { n: 6 }, new: { n: 3 }, renewal: { n: 2 } },
       unknownContractCount: 1,
+      areaBands: [{ band: '45–55㎡' }],
+      recentContracts: [{
+        floor: null,
+        floorMissingReason: 'not_retained_in_v2_snapshot',
+      }],
     });
+    expect(decoded.records[0].recentContracts[0]).not.toHaveProperty('floor');
+    expect(decoded.records[0].recentContracts[0]).not.toHaveProperty('floorMissingReason');
     expect(built.sha256).toBe(createHash('sha256').update(built.serialized).digest('hex'));
     expect(built.serialized).not.toMatch(/serviceKey|sourceRecordId|monthlyRentWon|raw xml/i);
   });

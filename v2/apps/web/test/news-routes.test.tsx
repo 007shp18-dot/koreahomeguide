@@ -50,6 +50,8 @@ describe('verified Seoul News routes', () => {
     expect(html).toContain('data-news-evidence="not-applicable"');
     expect(html).toContain('data-public-tab="news"');
     expect(html).toContain('aria-current="page"');
+    expect(html).toContain('data-public-tab="check"');
+    expect(html).toContain('href="/kr/seoul/check/">Contract Check</a>');
     expect(html).not.toMatch(/articleText|<iframe|dangerouslySetInnerHTML/);
   });
 
@@ -86,6 +88,7 @@ describe('verified Seoul News routes', () => {
       expect(html).toContain('target="_blank"');
       expect(html).toContain('rel="noopener noreferrer"');
       expect(html).toContain('href="/kr/seoul/corrections"');
+      expect(html).toContain('href="/kr/seoul/check"');
       expect(html).toContain('application/ld+json');
       expect(html).not.toMatch(/articleText|copied body/);
     }

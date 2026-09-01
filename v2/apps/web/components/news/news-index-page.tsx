@@ -27,7 +27,7 @@ const footer: SiteFooterModel = {
   descriptor: 'Official sources paired with SignedPrice evidence checks.',
   navigationLabel: 'News footer navigation',
   links: [
-    { label: 'Contract Check', href: '/kr/' },
+    { label: 'Contract Check', href: '/kr/seoul/check/' },
     { label: 'Explore', href: '/kr/seoul/explore/' },
     { label: 'Guide', href: '/kr/seoul/guide/' },
     { label: 'Corrections', href: '/kr/seoul/corrections/' },

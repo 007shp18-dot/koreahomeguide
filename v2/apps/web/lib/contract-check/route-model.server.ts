@@ -29,7 +29,7 @@ export type ContractCheckReadyRouteModel = Readonly<{
     period: string;
     boundary: string;
   }>;
-  secondaryCheckHref: '/kr/seoul/tools/rent-check';
+  secondaryCheckHref: '/kr/seoul/tools/rent-check/';
   navigation: readonly ContractCheckNavigationItem[];
 }>;
 
@@ -54,8 +54,8 @@ export type ConversionEnvironmentDiagnosticCode =
   | 'ready';
 
 const navigation = Object.freeze([
-  Object.freeze({ label: 'Check', href: '/kr/', available: true }),
-  Object.freeze({ label: 'Explore', href: '/kr/seoul/explore', available: true }),
+  Object.freeze({ label: 'Check', href: '/kr/seoul/check/', available: true }),
+  Object.freeze({ label: 'Explore', href: '/kr/seoul/explore/', available: true }),
   Object.freeze({ label: 'News', href: '/kr/seoul/news/', available: true }),
   Object.freeze({ label: 'Guide', href: '/kr/seoul/guide/', available: true }),
 ] as const satisfies readonly ContractCheckNavigationItem[]);
@@ -160,7 +160,7 @@ export function buildContractCheckRouteModel(
         boundary:
           'Between verified anchors rates are interpolated. Outside the observed range, the nearest verified rate is held and labeled.',
       }),
-      secondaryCheckHref: '/kr/seoul/tools/rent-check',
+      secondaryCheckHref: '/kr/seoul/tools/rent-check/',
       navigation,
     });
   } catch {

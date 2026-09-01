@@ -16,6 +16,34 @@ const curve = Object.freeze({
   ]),
 } as const satisfies ConversionCurve<'apartment'>);
 
+const v5ApartmentCurve = Object.freeze({
+  housingType: 'apartment',
+  period: 'v5-contract-fixture',
+  anchors: Object.freeze([
+    Object.freeze({ deposit: 30_000_000, annualRate: 0.0495, pairCount: 1 }),
+    Object.freeze({ deposit: 50_000_000, annualRate: 0.0481, pairCount: 1 }),
+    Object.freeze({ deposit: 100_000_000, annualRate: 0.0472, pairCount: 1 }),
+    Object.freeze({ deposit: 150_000_000, annualRate: 0.0466, pairCount: 1 }),
+    Object.freeze({ deposit: 200_000_000, annualRate: 0.0461, pairCount: 1 }),
+    Object.freeze({ deposit: 300_000_000, annualRate: 0.0455, pairCount: 1 }),
+    Object.freeze({ deposit: 400_000_000, annualRate: 0.0450, pairCount: 1 }),
+    Object.freeze({ deposit: 500_000_000, annualRate: 0.0447, pairCount: 1 }),
+  ]),
+} as const satisfies ConversionCurve<'apartment'>);
+
+const v5OfficetelCurve = Object.freeze({
+  housingType: 'officetel',
+  period: 'v5-contract-fixture',
+  anchors: Object.freeze([
+    Object.freeze({ deposit: 30_000_000, annualRate: 0.0600, pairCount: 1 }),
+    Object.freeze({ deposit: 50_000_000, annualRate: 0.0572, pairCount: 1 }),
+    Object.freeze({ deposit: 75_000_000, annualRate: 0.0545, pairCount: 1 }),
+    Object.freeze({ deposit: 100_000_000, annualRate: 0.0524, pairCount: 1 }),
+    Object.freeze({ deposit: 150_000_000, annualRate: 0.0500, pairCount: 1 }),
+    Object.freeze({ deposit: 200_000_000, annualRate: 0.0480, pairCount: 1 }),
+  ]),
+} as const satisfies ConversionCurve<'officetel'>);
+
 function offer(
   id: 'a' | 'b',
   overrides: Partial<RentContractOffer<'apartment'>> = {},
@@ -30,6 +58,25 @@ function offer(
 }
 
 describe('conversionRateAt', () => {
+  test('honors the exact v5 filed-deposit anchors and held boundaries', () => {
+    expect(conversionRateAt(v5ApartmentCurve, 50_000_000)).toMatchObject({
+      annualRate: 0.0481,
+      rangeState: 'observed',
+    });
+    expect(conversionRateAt(v5ApartmentCurve, 500_000_000)).toMatchObject({
+      annualRate: 0.0447,
+      rangeState: 'observed',
+    });
+    expect(conversionRateAt(v5OfficetelCurve, 300_000_000)).toMatchObject({
+      annualRate: 0.0480,
+      rangeState: 'held-above',
+    });
+    expect(conversionRateAt(v5ApartmentCurve, 20_000_000)).toMatchObject({
+      annualRate: 0.0495,
+      rangeState: 'held-below',
+    });
+  });
+
   test('interpolates between verified anchors without mutating evidence', () => {
     const anchorsBefore = curve.anchors.map((anchor) => ({ ...anchor }));
 
@@ -80,6 +127,32 @@ describe('conversionRateAt', () => {
 });
 
 describe('compareRentOffers', () => {
+  test('excludes refundable principal and uses the lower filed deposit as reference', () => {
+    const result = compareRentOffers({
+      curve: v5ApartmentCurve,
+      offers: [
+        {
+          id: 'a', housingType: 'apartment',
+          deposit: 50_000_000, monthlyRent: 1_000_000,
+        },
+        {
+          id: 'b', housingType: 'apartment',
+          deposit: 150_000_000, monthlyRent: 620_000,
+        },
+      ],
+    });
+
+    expect(result.referenceDeposit).toBe(50_000_000);
+    expect(result.offers[0]?.normalizedMonthlyCost).toBe(1_000_000);
+    expect(result.offers[1]?.normalizedMonthlyCost).toBeCloseTo(1_008_333.3333333334);
+    expect(result.offers[1]?.normalizedMonthlyCost).toBeLessThan(2_000_000);
+    expect(result).toMatchObject({
+      winner: 'a',
+      rankingFlipped: true,
+      roundedMonthlyDifference: 8_333,
+    });
+  });
+
   test('normalizes both offers at the lower deposit and detects a flipped rent ranking', () => {
     const result = compareRentOffers({
       curve,

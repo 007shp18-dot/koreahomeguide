@@ -1,69 +1,83 @@
 import type { PublicSourceBoundaryModel } from '../../lib/public-market/area-route-types';
 import { createEvidenceEmptyState } from '@signedprice/market-core';
+import {
+  PUBLIC_MARKET_COPY,
+  type ProductLocale,
+} from '../../lib/locale/product-copy';
 import { EvidenceDisclosure } from '../trust/evidence-disclosure';
 import { EvidenceEmptyStatePanel } from '../trust/evidence-empty-state';
 import styles from './public-market.module.css';
 
 export function PublicSourceBoundary({
   model,
-}: Readonly<{ model: PublicSourceBoundaryModel }>) {
+  locale = 'en',
+}: Readonly<{ model: PublicSourceBoundaryModel; locale?: ProductLocale }>) {
+  const copy = PUBLIC_MARKET_COPY[locale].source;
   return (
     <section
       className={styles.publicSourceBoundary}
       aria-labelledby="public-source-boundary-heading"
     >
       <div className={styles.publicSourceHeading}>
-        <p>Source and limits</p>
-        <h2 id="public-source-boundary-heading">Read the evidence with its boundary.</h2>
+        <p>{copy.eyebrow}</p>
+        <h2 id="public-source-boundary-heading">{copy.heading}</h2>
       </div>
       {model.evidence === null ? (
         <EvidenceEmptyStatePanel
-          state={createEvidenceEmptyState({
-            code: 'SOURCE_UNAVAILABLE',
-            retryable: true,
-          })}
+          state={{
+            ...createEvidenceEmptyState({ code: 'SOURCE_UNAVAILABLE', retryable: true }),
+            title: copy.unavailableTitle,
+            reason: copy.unavailableReason,
+            nextAction: copy.unavailableAction,
+          }}
         />
       ) : (
         <EvidenceDisclosure
           model={model.evidence}
-          boundary="Reported completed-period contracts, not current listings."
+          boundary={copy.boundary}
           attribution={model.attribution}
+          locale={locale}
         />
       )}
       <dl>
         <div>
-          <dt>Registry</dt>
-          <dd>{model.provider} reported rental contracts</dd>
+          <dt>{copy.registry}</dt>
+          <dd>{copy.registryValue}</dd>
         </div>
         <div>
-          <dt>Completed period</dt>
-          <dd>{model.period || 'Configured period unavailable'}</dd>
+          <dt>{copy.declaredPeriod}</dt>
+          <dd>{model.period || copy.unavailablePeriod}</dd>
         </div>
         <div>
-          <dt>Filed area</dt>
+          <dt>{copy.filedArea}</dt>
           <dd>{model.band}</dd>
         </div>
         <div>
-          <dt>Fixed filter</dt>
-          <dd>Refundable zero-rent jeonse. Canceled records are excluded.</dd>
+          <dt>{copy.fixedFilter}</dt>
+          <dd>{copy.fixedFilterValue}</dd>
         </div>
         <div>
-          <dt>Publication rule</dt>
-          <dd>Money is not published when n &lt; {model.publicationMinimum}.</dd>
+          <dt>{copy.publicationRule}</dt>
+          <dd>{copy.publicationRuleValue} {model.publicationMinimum}.</dd>
         </div>
+        {model.nextUpdate === null ? null : (
+          <div>
+            <dt>{copy.nextUpdate}</dt>
+            <dd><time dateTime={model.nextUpdate.instant}>{model.nextUpdate.instant}</time></dd>
+          </div>
+        )}
         {model.geometryAttribution === undefined ? null : (
           <div>
-            <dt>Geometry</dt>
+            <dt>{copy.geometry}</dt>
             <dd>{model.geometryAttribution}</dd>
           </div>
         )}
       </dl>
       <p>
-        New and renewal contracts are combined. Unknown contract type and Unknown record status
-        are included when the other fixed filters pass.
+        {copy.combinedBoundary}
       </p>
       <p>
-        Official reported contracts are not current listings, not an appraisal, and not legal advice.
+        {copy.legalBoundary}
       </p>
     </section>
   );

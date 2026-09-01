@@ -1,0 +1,72 @@
+.banner {
+  position: fixed;
+  right: clamp(0.75rem, 3vw, 2rem);
+  bottom: clamp(0.75rem, 3vw, 2rem);
+  z-index: 1000;
+  width: min(calc(100% - 1.5rem), 520px);
+  padding: 1.25rem;
+  display: grid;
+  gap: 0.85rem;
+  border: 2px solid var(--ink);
+  border-left: 0.65rem solid var(--accent);
+  background: var(--canvas);
+  color: var(--ink);
+}
+
+.banner h2 {
+  font-size: 1.2rem;
+  font-weight: 900;
+}
+
+.banner p {
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+
+.banner a {
+  color: var(--ink);
+  font-weight: 850;
+  text-underline-offset: 0.2em;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.actions button,
+.preferences {
+  min-height: 44px;
+  padding: 0.7rem 0.9rem;
+  border: 2px solid var(--ink);
+  border-radius: 0;
+  background: var(--ink);
+  color: var(--canvas);
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.actions button:last-child {
+  background: var(--canvas);
+  color: var(--ink);
+}
+
+.preferences {
+  position: fixed;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  z-index: 999;
+  background: var(--canvas);
+  color: var(--ink);
+}
+
+.actions button:focus-visible,
+.preferences:focus-visible,
+.banner a:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}

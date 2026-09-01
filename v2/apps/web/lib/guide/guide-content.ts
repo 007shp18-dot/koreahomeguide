@@ -36,7 +36,7 @@ export const GUIDES = Object.freeze([
     ],
     evidenceBoundary: 'The comparison uses a verified conversion curve from matched reported contracts. It is not a forecast, appraisal, or promise of an obtainable rate.',
     links: [
-      { label: 'Open Contract Check', href: '/kr/' },
+      { label: 'Open Contract Check', href: '/kr/seoul/check/' },
       { label: 'Explore district evidence', href: '/kr/seoul/explore/' },
       { label: 'Read SignedPrice Trust', href: '/trust/' },
     ],

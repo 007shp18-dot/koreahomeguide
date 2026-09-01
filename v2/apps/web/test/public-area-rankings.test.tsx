@@ -23,10 +23,15 @@ describe('Seoul district rankings page', () => {
     expect(metadata.robots).toEqual({ index: true, follow: true });
     expect(metadata.alternates).toEqual({
       canonical: 'https://www.signedprice.com/kr/seoul/rankings/',
+      languages: {
+        en: 'https://www.signedprice.com/kr/seoul/rankings/',
+        ko: 'https://www.signedprice.com/ko/kr/seoul/rankings/',
+        'x-default': 'https://www.signedprice.com/kr/seoul/rankings/',
+      },
     });
   });
 
-  it('server-renders all four complete lists, definitions, and linked values', async () => {
+  it('server-renders retained rankings and an honest unavailable change section', async () => {
     install(createPublicAreaFixture({
       publishedMedians: {
         'jongno-gu': 200_000_000,
@@ -42,18 +47,18 @@ describe('Seoul district rankings page', () => {
 
     expect(html).toContain('Seoul district rankings');
     expect(html).toContain('Median refundable jeonse deposit');
-    expect(html).toContain('Median change: latest 3 months vs prior 3 months');
+    expect(html).toContain('Three-month change not assessable');
+    expect(html).toContain('Prior/latest sample counts were not retained in this snapshot.');
     expect(html).toContain('Middle-half spread (P75 − P25)');
     expect(html).toContain('Qualifying reported contracts');
     expect(html.match(/data-ranking-section=/g)).toHaveLength(4);
     expect(html).toContain('href="/kr/seoul/explore/jongno-gu"');
     expect(html).toContain('href="/kr/seoul/explore/jung-gu"');
     expect(html).toContain('₩100,000,000');
-    expect(html).toContain('-2.0%');
-    expect(html).toContain('+3.0%');
-    expect(html).toContain('data-change-centre="true"');
-    expect(html).toContain('data-change-direction="negative"');
-    expect(html).toContain('data-change-direction="positive"');
+    expect(html).not.toContain('-2.0%');
+    expect(html).not.toContain('+3.0%');
+    expect(html).not.toContain('data-change-centre="true"');
+    expect(html).not.toContain('data-change-direction=');
     expect(html).toContain('23 districts excluded');
     expect(html).toContain('aria-current="page"');
     expect(html).toContain('data-public-tab="explore"');
@@ -61,7 +66,7 @@ describe('Seoul district rankings page', () => {
     expect(html).toContain('href="/kr/seoul/guide"');
   });
 
-  it('states when no eligible district fell without hiding positive rows', async () => {
+  it('does not reinterpret a positive stored change without retained counts', async () => {
     install(createPublicAreaFixture({
       publishedMedians: { 'jongno-gu': 100_000_000 },
       publishedOverrides: { 'jongno-gu': { chg3m: 1.5 } },
@@ -69,8 +74,9 @@ describe('Seoul district rankings page', () => {
 
     const html = renderToStaticMarkup(await RankingsPage());
 
-    expect(html).toContain('No eligible district fell in the latest comparison.');
-    expect(html).toContain('+1.5%');
+    expect(html).toContain('Three-month change not assessable');
+    expect(html).not.toContain('No eligible district fell in the latest comparison.');
+    expect(html).not.toContain('+1.5%');
   });
 
   it('renders explicit empty sections without numeric rows', () => {

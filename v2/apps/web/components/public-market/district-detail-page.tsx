@@ -15,6 +15,7 @@ import { EvidenceEmptyStatePanel } from '../trust/evidence-empty-state';
 import { BoxPlot } from './box-plot';
 import styles from './district-detail.module.css';
 import { DistrictEvidenceSummary } from './district-evidence-summary';
+import { EvidencePeriodStrip } from './evidence-period-strip';
 import { QuoteInput } from './quote-input';
 import { SampleChip } from './sample-chip';
 import { PublicSectionTabs } from './public-section-tabs';
@@ -182,11 +183,29 @@ function Evidence({ model }: Readonly<{ model: PublicDistrictModel }>) {
       </div>
       {model.status === 'published' ? (
         <>
+          <EvidencePeriodStrip model={model.period} label="District evidence period" />
           <dl className={styles.findingGrid}>
             <div><dt>Median</dt><dd>{model.display.medianLabel}</dd></div>
             <div><dt>Middle half</dt><dd>{model.display.middleHalfLabel}</dd></div>
             <div><dt>Full range</dt><dd>{model.display.rangeLabel}</dd></div>
-            <div><dt>Recent change</dt><dd>{model.display.changeLabel}</dd></div>
+            {model.display.spread === null ? null : (
+              <div>
+                <dt>Spread interpretation</dt>
+                <dd>
+                  <strong>{model.display.spread.label}</strong>
+                  <span>{model.display.spread.explanation}</span>
+                </dd>
+              </div>
+            )}
+            {model.display.change === null ? null : (
+              <div>
+                <dt>Recent change</dt>
+                <dd>
+                  <strong>{model.display.change.label}</strong>
+                  {model.display.change.reasons.map((reason) => <span key={reason}>{reason}</span>)}
+                </dd>
+              </div>
+            )}
           </dl>
           <div className={styles.quoteBlock}>
             <div className={styles.sectionHeading}>

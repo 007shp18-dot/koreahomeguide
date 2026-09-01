@@ -18,6 +18,10 @@ export const metadata: Metadata = indexableMetadata({
   path: '/kr/seoul/explore/',
   title: 'Seoul district jeonse evidence | signedprice',
   description: 'Compare verified 45–55㎡ refundable jeonse deposits across Seoul districts.',
+  languageAlternates: {
+    en: '/kr/seoul/explore/',
+    ko: '/ko/kr/seoul/explore/',
+  },
 });
 
 const header: SiteHeaderModel = {

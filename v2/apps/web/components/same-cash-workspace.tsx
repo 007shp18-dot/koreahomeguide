@@ -168,7 +168,7 @@ export function SameCashWorkspace() {
   const comparison = result?.comparison;
   const reversed = comparison?.orderReversed ?? false;
 
-  let verdictLine = copy.incomplete;
+  let verdictLine: string = copy.incomplete;
   let verdictBody = '';
 
   if (comparison) {

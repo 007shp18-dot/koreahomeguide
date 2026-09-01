@@ -14,10 +14,13 @@ import {
 } from './public-area-fixture';
 import { createPublicBuildingFixture } from './public-building-fixture';
 
+const REFERENCE_INSTANT = '2026-09-01T00:00:00.000Z';
+
 function publishedModel() {
   const model = buildPublicDistrictModel('gangnam-gu', {
     source: createPublicAreaFixture(),
     period: PUBLIC_AREA_FIXTURE_PERIOD,
+    referenceInstant: REFERENCE_INSTANT,
   });
   if (model === null || model.status !== 'published') {
     throw new Error('Expected published Gangnam fixture.');
@@ -32,6 +35,7 @@ function withheldModel() {
       withheldCounts: { 'gangnam-gu': 4 },
     }),
     period: PUBLIC_AREA_FIXTURE_PERIOD,
+    referenceInstant: REFERENCE_INSTANT,
   });
   if (model === null || model.status !== 'withheld') {
     throw new Error('Expected withheld Gangnam fixture.');
@@ -93,6 +97,65 @@ describe('public district detail page', () => {
     expect(html).not.toMatch(/save this building/i);
   });
 
+  it('renders model-owned spread and unavailable-change copy without false count precision', () => {
+    const model = buildPublicDistrictModel('gangnam-gu', {
+      source: createPublicAreaFixture({
+        publishedOverrides: { 'gangnam-gu': { chg3m: 8.4 } },
+      }),
+      period: PUBLIC_AREA_FIXTURE_PERIOD,
+      referenceInstant: REFERENCE_INSTANT,
+    });
+    if (model === null || model.status !== 'published') throw new Error('Expected publication.');
+    const spread = model.display.spread;
+    const change = model.display.change;
+    if (spread === null || change === null) throw new Error('Expected interpretation copy.');
+
+    const html = renderToStaticMarkup(<DistrictDetailPage model={model} />);
+
+    expect(spread).toEqual({
+      status: 'interpretable',
+      bucket: 'narrow',
+      ratio: 0.0625,
+      label: 'Narrow middle-half spread',
+      explanation: 'The middle half spans 6.3% of the median.',
+    });
+    expect(change).toEqual({
+      status: 'not_assessable',
+      label: '3-month change not assessable',
+      sampleLabel: null,
+      reasons: ['Prior/latest sample counts were not retained in this snapshot.'],
+    });
+    expect(html).toContain(spread.label);
+    expect(html).toContain(spread.explanation);
+    expect(html).toContain(change.label);
+    expect(html).toContain(change.reasons[0]!);
+    expect(html).not.toContain('+8.4%');
+    expect(html).not.toMatch(/n 5 → 5|n \d+ → \d+/);
+  });
+
+  it('renders real period labels, filing hatch, and both legend states from the server model', () => {
+    const model = publishedModel();
+    const html = renderToStaticMarkup(<DistrictDetailPage model={model} />);
+
+    expect(model.period.months).toEqual([
+      { month: '2026-01', label: 'Jan 2026', state: 'complete' },
+      { month: '2026-02', label: 'Feb 2026', state: 'complete' },
+      { month: '2026-03', label: 'Mar 2026', state: 'complete' },
+      { month: '2026-04', label: 'Apr 2026', state: 'complete' },
+      { month: '2026-05', label: 'May 2026', state: 'complete' },
+      { month: '2026-06', label: 'Jun 2026', state: 'complete' },
+      { month: '2026-07', label: 'Jul 2026', state: 'filing_in_progress' },
+    ]);
+    expect(html.match(/data-month-state="complete"/g)).toHaveLength(6);
+    expect(html.match(/data-month-state="filing_in_progress"/g)).toHaveLength(1);
+    expect(html).toContain('Jan 2026');
+    expect(html).toContain('Jul 2026');
+    expect(html).toContain('Complete');
+    expect(html).toContain('Filing in progress');
+    expect(html).toContain(model.period.caveat!);
+    expect(html).not.toMatch(/Completed period|completed-period/);
+  });
+
   it('renders a money-free refusal with real count, hatch, FAQ, and navigation', () => {
     const model = withheldModel();
     const html = renderToStaticMarkup(createElement(DistrictDetailPage, { model }));
@@ -121,6 +184,7 @@ describe('public district detail page', () => {
       source: createPublicAreaFixture(),
       buildingSource: createPublicBuildingFixture(),
       period: PUBLIC_AREA_FIXTURE_PERIOD,
+      referenceInstant: REFERENCE_INSTANT,
     });
     if (model === null) throw new Error('Expected district identity.');
     const html = renderToStaticMarkup(<DistrictDetailPage model={model} />);
@@ -136,6 +200,7 @@ describe('public district detail page', () => {
     const model = buildPublicDistrictModel('gangnam-gu', {
       source: { invalid: true },
       period: PUBLIC_AREA_FIXTURE_PERIOD,
+      referenceInstant: REFERENCE_INSTANT,
     });
     if (model === null) throw new Error('Expected unavailable district identity.');
     const html = renderToStaticMarkup(createElement(DistrictDetailPage, { model }));

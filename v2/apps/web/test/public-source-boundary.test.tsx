@@ -25,6 +25,7 @@ const model: PublicAreaSourceBoundaryModel = {
   includesNewAndRenewal: true,
   includesUnknownContractType: true,
   includesUnknownRecordStatus: true,
+  nextUpdate: null,
   geometryAttribution:
     'KOSTAT census boundaries via southkorea/seoul-maps (Apache-2.0)',
 };
@@ -74,6 +75,18 @@ describe('public source boundary', () => {
 
     expect(html).not.toContain('Geometry');
     expect(html).not.toContain('southkorea/seoul-maps');
+  });
+
+  it('renders only a configured model-driven next update instant', () => {
+    const configured = renderToStaticMarkup(<PublicSourceBoundary model={{
+      ...model,
+      nextUpdate: { cadence: 'monthly', instant: '2026-10-01T08:30:00.000Z' },
+    }} />);
+    const absent = renderToStaticMarkup(<PublicSourceBoundary model={model} />);
+
+    expect(configured).toContain('Next update');
+    expect(configured).toContain('2026-10-01T08:30:00.000Z');
+    expect(absent).not.toContain('Next update');
   });
 
   it('shows an explicit evidence-unavailable state when no verified descriptor exists', () => {

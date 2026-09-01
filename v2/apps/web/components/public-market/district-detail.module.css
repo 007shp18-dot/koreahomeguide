@@ -1,8 +1,8 @@
 .page {
-  --district-ground: #f3f2f2;
-  --district-ink: #201e1d;
-  --district-muted: #5d5958;
-  --district-accent: #1d4ed8;
+  --district-ground: var(--canvas);
+  --district-ink: var(--ink);
+  --district-muted: var(--muted);
+  --district-accent: var(--accent);
   min-height: 100dvh;
   color: var(--district-ink);
   background: var(--district-ground);

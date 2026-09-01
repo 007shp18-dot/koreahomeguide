@@ -95,6 +95,12 @@ describe('public Seoul area Explorer', () => {
     expect(markup).toContain('View district rankings');
     expect(markup).toContain('Evidence Tower');
     expect(markup).toContain('역삼동');
+    expect(markup).toContain('data-coverage-panel="verified"');
+    expect(markup).toContain('7 of 25');
+    expect(markup).toContain('1 of 1');
+    expect(markup).toContain('104 eligible contracts');
+    expect(markup).toContain('18 districts below publication minimum');
+    expect(markup).toContain('Source candidate building counts are not retained');
     expect(markup).not.toContain(`₩${CITY_MEDIAN_SENTINEL.toLocaleString('en-US')}`);
   });
 
@@ -131,6 +137,11 @@ describe('public Seoul area Explorer', () => {
       robots: { index: true, follow: true },
       alternates: {
         canonical: 'https://www.signedprice.com/kr/seoul/explore/',
+        languages: {
+          en: 'https://www.signedprice.com/kr/seoul/explore/',
+          ko: 'https://www.signedprice.com/ko/kr/seoul/explore/',
+          'x-default': 'https://www.signedprice.com/kr/seoul/explore/',
+        },
       },
     });
     expect(markup).toContain('Selected · Mapo-gu');

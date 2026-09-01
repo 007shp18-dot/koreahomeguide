@@ -98,28 +98,28 @@ describe('signedprice hero layout structure', () => {
   });
 });
 
-describe('signedprice connected decision surfaces', () => {
-  it('renders three connected intent tiles with Rent visibly active', async () => {
+describe('signedprice connected market surfaces', () => {
+  it('renders three connected city tabs with Seoul visibly active', async () => {
     const markup = renderToStaticMarkup(await Home());
 
-    expect(markup.match(/class="intent-tabs__group/g)).toHaveLength(3);
+    expect(markup.match(/class="market-tabs__trigger/g)).toHaveLength(3);
     expect(
-      markup.match(/<button[^>]+aria-pressed="(?:true|false)"/g) ?? [],
+      markup.match(/<button[^>]+role="tab"[^>]+aria-selected="(?:true|false)"/g) ?? [],
     ).toHaveLength(3);
-    expect(markup.match(/<button[^>]+aria-pressed="true"/g) ?? []).toHaveLength(1);
-    expect(markup).toContain('class="intent-tabs__group intent-tabs__group--active"');
-    expect(declarationsFor(css, '.intent-tabs')).toMatchObject({
+    expect(markup.match(/<button[^>]+aria-selected="true"/g) ?? []).toHaveLength(1);
+    expect(markup).toContain('class="market-tabs__trigger market-tabs__trigger--active"');
+    expect(declarationsFor(css, '.market-tabs__list')).toMatchObject({
       'grid-template-columns': 'repeat(3, minmax(0, 1fr))',
       gap: '0',
     });
-    expect(declarationsFor(css, '.intent-tabs__group--active')).toMatchObject({
+    expect(declarationsFor(css, '.market-tabs__trigger--active')).toMatchObject({
       background: 'var(--accent)',
       color: 'var(--canvas)',
     });
-    expect(declarationsFor(css, '.intent-tabs__trigger')).toMatchObject({
+    expect(declarationsFor(css, '.market-tabs__trigger')).toMatchObject({
       'min-height': '44px',
     });
-    expect(declarationsFor(css, '.intent-tabs__destinations[hidden]')).toMatchObject({
+    expect(declarationsFor(css, '.market-tabs__panel[hidden]')).toMatchObject({
       display: 'none',
     });
   });
@@ -145,21 +145,20 @@ describe('signedprice connected decision surfaces', () => {
     expect(css).not.toMatch(/\.site-header__links li:(first|last)-child a/);
   });
 
-  it('renders the Korea-only market as one connected structural row', async () => {
+  it('renders six consistent product slots beneath the active city', async () => {
     const markup = renderToStaticMarkup(await Home());
 
-    expect(markup.match(/<article class="market-card"/g)).toHaveLength(1);
-    expect(declarationsFor(css, '.market-grid')).toMatchObject({
-      'grid-template-columns': 'minmax(0, 1fr)',
+    const seoulPanel = markup.match(
+      /<section[^>]+id="market-panel-seoul"[\s\S]*?<\/section>/,
+    )?.[0] ?? '';
+    for (const label of ['Check', 'Explore', 'Rankings', 'News', 'Guide', 'Community']) {
+      expect(seoulPanel).toContain(`>${label}<`);
+    }
+    expect(seoulPanel.match(/class="market-product/g)).toHaveLength(6);
+    expect(declarationsFor(css, '.market-products')).toMatchObject({
+      'grid-template-columns': 'repeat(3, minmax(0, 1fr))',
       gap: '0',
       border: '2px solid var(--ink)',
-    });
-    expect(declarationsFor(css, '.market-card')).toMatchObject({
-      border: '0',
-      'border-radius': 'var(--radius)',
-    });
-    expect(declarationsFor(css, '.market-card + .market-card')).toMatchObject({
-      'border-left': '2px solid var(--ink)',
     });
   });
 });

@@ -135,7 +135,7 @@
 
 .comparisonGrid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   border-bottom: 2px solid var(--ink);
 }
 
@@ -147,8 +147,14 @@
 }
 
 .resultPanel {
+  grid-column: 1 / -1;
+  border-top: 2px solid var(--ink);
   border-right: 0;
   outline-offset: -5px;
+}
+
+.offerPanel:nth-child(2) {
+  border-right: 0;
 }
 
 .offerPanel legend,
@@ -235,21 +241,38 @@
 }
 
 .resultEmpty {
-  min-height: 330px;
+  min-height: 240px;
   display: grid;
-  align-content: space-between;
+  align-content: center;
+  gap: 18px;
 }
 
-.resultEmpty p:first-child {
+.resultEmpty h3 {
   font-size: 1.5rem;
   font-weight: 900;
   letter-spacing: -0.04em;
 }
 
-.resultEmpty p:last-child {
+.resultEmpty p {
+  max-width: 660px;
   color: var(--muted);
   font-size: 0.78rem;
   line-height: 1.5;
+}
+
+.resultEmpty p:last-child {
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.resultBody {
+  padding: 0;
+}
+
+.verdictPanel {
+  padding: clamp(26px, 5vw, 58px);
+  color: var(--canvas);
+  background: var(--ink);
 }
 
 .verdict {
@@ -269,47 +292,192 @@
 .difference span {
   display: block;
   margin-top: 5px;
-  color: var(--muted);
+  color: var(--accent-soft);
   font-size: 0.68rem;
   letter-spacing: 0;
 }
 
-.resultBody dl {
-  margin-top: 28px;
-  display: grid;
-  gap: 14px;
-}
-
-.resultBody dl > div {
-  padding-top: 12px;
-  border-top: 1px solid var(--divider);
-}
-
-.resultBody dt {
-  margin-bottom: 6px;
-  color: var(--accent);
-  font-size: 0.68rem;
-  font-weight: 900;
-}
-
-.resultBody dd {
-  margin-top: 3px;
+.reference {
+  margin-top: 22px;
+  color: var(--accent-soft);
   font-size: 0.72rem;
-}
-
-.resultBody dd:first-of-type {
-  font-size: 1rem;
-  font-weight: 900;
+  font-weight: 800;
 }
 
 .flip {
   margin-top: 18px;
-  padding: 12px;
-  color: var(--canvas);
-  background: var(--accent);
+  padding-top: 14px;
+  border-top: 2px solid var(--accent-soft);
+  color: var(--accent-soft);
   font-size: 0.72rem;
   font-weight: 800;
   line-height: 1.4;
+}
+
+.curve {
+  padding: clamp(24px, 4vw, 48px);
+  border-bottom: 2px solid var(--ink);
+}
+
+.curve figcaption {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  font-size: 0.72rem;
+}
+
+.curve figcaption strong {
+  font-size: 0.82rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.curve figcaption span,
+.heldNotice {
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.curvePlot {
+  position: relative;
+  min-height: 310px;
+  margin-top: 28px;
+  border: 2px solid var(--ink);
+  overflow: hidden;
+  background: var(--surface-strong);
+}
+
+.curvePlot svg {
+  width: 100%;
+  height: 310px;
+  display: block;
+  overflow: visible;
+}
+
+.curveAxis,
+.curveMarkerLine {
+  stroke: var(--divider);
+  stroke-width: 0.45;
+  vector-effect: non-scaling-stroke;
+}
+
+.curveMeasured,
+.curveHeld {
+  fill: none;
+  stroke: var(--petrol);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.curveHeld {
+  stroke-dasharray: 7 7;
+}
+
+.curveMarker {
+  fill: var(--accent);
+  stroke: var(--surface-strong);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.curveLabel,
+.curveCallout {
+  position: absolute;
+  z-index: 1;
+  padding: 5px 7px;
+  border: 1px solid var(--ink);
+  color: var(--ink);
+  background: var(--surface-strong);
+  font-size: 0.62rem;
+  white-space: nowrap;
+}
+
+.curveLabel {
+  transform: translate(-50%, -115%);
+}
+
+.curveLabel strong,
+.curveLabel small {
+  display: block;
+}
+
+.curveLabel small {
+  margin-top: 2px;
+  color: var(--muted);
+}
+
+.curveCallout {
+  bottom: 10px;
+  transform: translateX(-50%);
+  border-width: 2px;
+  font-weight: 900;
+}
+
+.heldNotice {
+  margin-top: 14px;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.auditTableWrap {
+  overflow-x: auto;
+  border-bottom: 2px solid var(--ink);
+}
+
+.auditTable {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 0.75rem;
+}
+
+.auditTable caption {
+  padding: 18px 20px;
+  border-bottom: 2px solid var(--ink);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.auditTable th,
+.auditTable td {
+  padding: 16px 18px;
+  border-right: 1px solid var(--divider);
+  border-bottom: 1px solid var(--divider);
+  line-height: 1.45;
+  text-align: left;
+  vertical-align: top;
+}
+
+.auditTable tr > :last-child {
+  border-right: 0;
+}
+
+.auditTable tbody tr:last-child > * {
+  border-bottom: 0;
+  font-weight: 900;
+}
+
+.auditTable thead th {
+  color: var(--accent);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.auditTable thead th:first-child,
+.auditTable tbody th {
+  width: 42%;
+}
+
+.principalBoundary {
+  padding: 18px 20px;
+  border-bottom: 2px solid var(--ink);
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 800;
 }
 
 .actions {
@@ -335,8 +503,8 @@
 }
 
 .actions button:first-child {
-  color: var(--canvas);
-  background: var(--accent);
+  color: var(--ink);
+  background: var(--canvas);
 }
 
 .actions button:disabled {
@@ -415,6 +583,10 @@
   line-height: 1.5;
 }
 
+.footer p + p {
+  margin-top: 8px;
+}
+
 .unavailable {
   width: min(100%, var(--site-width));
   min-height: calc(100dvh - 64px);
@@ -433,6 +605,11 @@
   margin-top: 14px;
   color: var(--muted);
   line-height: 1.5;
+}
+
+.unavailable a {
+  color: var(--ink);
+  font-weight: 900;
 }
 
 .wordmark:focus-visible,
@@ -486,6 +663,10 @@
     border-bottom: 0;
   }
 
+  .offerPanel:nth-child(2) {
+    border-bottom: 0;
+  }
+
   .evidence > dl {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -525,8 +706,7 @@
   }
 
   .actions {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
+    display: flex;
   }
 
   .actions button {
@@ -536,6 +716,18 @@
 
   .actions button + button {
     border-left: 2px solid var(--ink);
+  }
+
+  .curve {
+    padding-inline: 14px;
+  }
+
+  .curve figcaption {
+    display: grid;
+  }
+
+  .curveLabel:nth-of-type(even) {
+    display: none;
   }
 
   .evidence > dl,

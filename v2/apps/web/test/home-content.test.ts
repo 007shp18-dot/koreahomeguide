@@ -8,6 +8,7 @@ import {
   homepageIntentGroups,
   homepageMarketCards,
 } from '../lib/site-copy';
+import { buildSeoulLiveModel } from '../lib/public-market/seoul-live-model.server';
 import {
   createPublicAreaV2Fixture,
   PUBLIC_AREA_FIXTURE_PERIOD,
@@ -17,7 +18,11 @@ describe('signedprice homepage copy', () => {
   it('uses the approved identity and avoids unsupported claims', () => {
     expect(homepageCopy.brand).toBe('signedprice');
     expect(homepageCopy.headline).toBe('Real prices. Better property decisions.');
-    expect(homepageCopy.marketIds).toEqual(['kr-seoul']);
+    expect(homepageCopy.marketIds).toEqual([
+      'kr-seoul',
+      'sg-singapore',
+      'ae-dubai',
+    ]);
     expect(JSON.stringify(homepageCopy)).not.toMatch(
       /millions of listings|guaranteed return|licensed broker/i,
     );
@@ -53,37 +58,19 @@ describe('signedprice homepage copy', () => {
     expect(markup).not.toMatch(
       /DwellSpan|millions of listings|guaranteed return|licensed broker|enquir|create account|sign[ -]?in/i,
     );
-    expect(
-      homepageMarketCards.map((market) => ({
-        id: market.id,
-        productDepth: market.productDepth,
-        capabilities: market.dataCapabilities,
-      })),
-    ).toEqual([
-      {
-        id: 'kr-seoul',
-        productDepth: 'Evidence hub',
-        capabilities: [
-          {
-            label: 'Official rent and sale intelligence',
-            state: 'available',
-            stateLabel: 'Live evidence',
-          },
-        ],
-      },
+    expect(homepageMarketCards.map(({ id }) => id)).toEqual([
+      'kr-seoul',
+      'sg-singapore',
+      'ae-dubai',
     ]);
   });
 
-  it('derives each intent decision state and route from the market registry', () => {
-    expect(
-      homepageMarketCards.map((market) => ({
-        id: market.id,
-        rent: market.intentCapabilities.rent,
-        buy: market.intentCapabilities.buy,
-      })),
-    ).toEqual([
-      {
-        id: 'kr-seoul',
+  it('keeps the shipped Seoul intent routes derived from the market registry', () => {
+    const seoul = homepageMarketCards.find((market) => market.id === 'kr-seoul');
+
+    expect(seoul).toMatchObject({
+      id: 'kr-seoul',
+      intentCapabilities: {
         rent: {
           label: 'Rent decision path',
           href: '/kr/seoul/rent/',
@@ -97,7 +84,7 @@ describe('signedprice homepage copy', () => {
           stateLabel: 'Live evidence',
         },
       },
-    ]);
+    });
   });
 
   it('points readers to the published Trust policy without unsupported accuracy claims', async () => {
@@ -116,33 +103,40 @@ describe('signedprice homepage copy', () => {
   it('renders an anonymous, navigable market and intent overview', async () => {
     const markup = renderToStaticMarkup(await Home());
 
-    expect(markup).toContain('>signedprice</a>');
+    expect(markup).toContain('data-brand-wordmark="true"');
+    expect(markup).toContain('class="brand-wordmark__signed">signed</span>');
+    expect(markup).toContain('class="brand-wordmark__price">price</span>');
     expect(markup).toContain('>Real prices. Better property decisions.</h1>');
     expect(markup).toContain('>Market truth</h3>');
     expect(markup).toContain('>Decision tools</h3>');
     expect(markup).toContain('>Verified connections</h3>');
-    expect(markup).toContain('>Evidence hub</span>');
-    expect(markup).toContain('>Live evidence</span>');
+    expect(markup).toContain('role="tablist"');
+    expect(markup).toContain('>Seoul</button>');
+    expect(markup).toContain('>Singapore</button>');
+    expect(markup).toContain('>Dubai</button>');
 
-    for (const href of [
-      '/kr/seoul/',
-      '/kr/seoul/rent/',
-      '/kr/seoul/buy/',
-      '/kr/seoul/invest/',
-    ]) {
-      expect(markup).toContain(`href="${href}"`);
+    const seoulHrefs = [
+      '/kr/seoul/check/',
+      '/kr/seoul/explore/',
+      '/kr/seoul/rankings/',
+      '/kr/seoul/news/',
+      '/kr/seoul/guide/',
+    ];
+    expect(buildSeoulLiveModel().links.map(({ href }) => href)).toEqual(seoulHrefs);
+    for (const href of seoulHrefs) {
+      expect(markup).toContain(`href="${href.slice(0, -1)}"`);
     }
     expect(markup).not.toMatch(/href="\/(?:sg|ae)\//);
 
     expect(markup).not.toMatch(/enquir|sign[ -]?in|create account/i);
   });
 
-  it('keeps the default rent decision link when the full-product display label changes', async () => {
+  it('does not turn unavailable market tabs into dead public links', async () => {
     const markup = renderToStaticMarkup(await Home());
 
-    expect(markup).toContain(
-      '<a class="market-card__intent-link" href="/kr/seoul/rent/">Rent in Seoul',
-    );
+    expect(markup).toContain('Verified Singapore evidence unavailable');
+    expect(markup).toContain('DLD and RERA display-rights clearance is incomplete.');
+    expect(markup).not.toMatch(/href="\/(?:sg|ae)\//);
   });
 
   it('puts the shipped Seoul evidence products on the root entry page', async () => {
@@ -158,7 +152,7 @@ describe('signedprice homepage copy', () => {
     expect(markup).toContain('New contracts');
     expect(markup).toContain('Renewals');
     for (const href of [
-      '/kr',
+      '/kr/seoul/check',
       '/kr/seoul/explore',
       '/kr/seoul/rankings',
       '/kr/seoul/news',
@@ -170,7 +164,7 @@ describe('signedprice homepage copy', () => {
     vi.unstubAllEnvs();
   });
 
-  it('renders live Seoul evidence before the generic portal hero', async () => {
+  it('places the three-city selector before the selected Seoul evidence', async () => {
     vi.stubEnv(
       'SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT',
       JSON.stringify(createPublicAreaV2Fixture()),
@@ -178,24 +172,26 @@ describe('signedprice homepage copy', () => {
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', PUBLIC_AREA_FIXTURE_PERIOD);
 
     const markup = renderToStaticMarkup(await Home());
+    const cityTabsIndex = markup.indexOf('role="tablist"');
     const liveEvidenceIndex = markup.indexOf('data-seoul-live="ready"');
-    const portalHeroIndex = markup.indexOf('id="home-headline"');
 
+    expect(cityTabsIndex).toBeGreaterThanOrEqual(0);
     expect(liveEvidenceIndex).toBeGreaterThanOrEqual(0);
-    expect(portalHeroIndex).toBeGreaterThanOrEqual(0);
-    expect(liveEvidenceIndex).toBeLessThan(portalHeroIndex);
+    expect(cityTabsIndex).toBeLessThan(liveEvidenceIndex);
 
     vi.unstubAllEnvs();
   });
 
-  it('keeps the approved English decision model while changing only its presentation', async () => {
+  it('keeps all city tabs visible while only Seoul is selected initially', async () => {
     const markup = renderToStaticMarkup(await Home());
 
-    for (const label of ['Rent', 'Buy', 'Invest']) {
-      expect(markup).toContain(`>${label}</span>`);
+    for (const label of ['Seoul', 'Singapore', 'Dubai']) {
+      expect(markup).toContain(`>${label}</button>`);
     }
-    expect(markup).toContain('>Seoul</a></h3>');
-    expect(markup).not.toMatch(/>(?:Singapore|Dubai)<\/a><\/h3>/);
+    expect(markup).toContain('id="market-tab-seoul" role="tab" aria-selected="true"');
+    expect(markup).toContain('id="market-tab-singapore" role="tab" aria-selected="false"');
+    expect(markup).toContain('id="market-tab-dubai" role="tab" aria-selected="false"');
+    expect(markup).not.toMatch(/>(?:Rent|Buy|Invest)<\/span>/);
     for (const rule of ['Market truth', 'Decision tools', 'Verified connections']) {
       expect(markup).toContain(`>${rule}</h3>`);
     }

@@ -141,8 +141,13 @@ test('desktop exposes live Seoul evidence in the 1366 by 768 first viewport', as
   test.skip(testInfo.project.name !== 'desktop-chromium');
   await page.goto('/');
 
+  const cityTabs = page.getByRole('tablist', { name: 'Choose a city' });
+  await expect(cityTabs).toBeInViewport({ ratio: 1 });
+  for (const city of ['Seoul', 'Singapore', 'Dubai']) {
+    await expect(cityTabs.getByRole('tab', { name: city })).toBeInViewport({ ratio: 1 });
+  }
   const liveSeoul = page.locator('[data-seoul-live="ready"]');
-  await expect(liveSeoul).toBeInViewport({ ratio: 1 });
+  await expect(liveSeoul).toBeVisible();
   for (const label of ['New contracts', 'Renewals']) {
     await expect(liveSeoul.getByText(label, { exact: true })).toBeInViewport({ ratio: 1 });
   }
@@ -163,51 +168,40 @@ test('mobile primary navigation remains tappable and reaches the market flow', a
     name: 'Primary navigation',
   });
   const visibleLinks = primaryNavigation.getByRole('link').filter({ visible: true });
-  await expect(visibleLinks).toHaveCount(2);
+  await expect(visibleLinks).toHaveCount(3);
   const primaryBoxes = await expectContainedTouchTargets(
     page,
     await visibleLinks.all(),
   );
   expectTargetsNotToOverlap(primaryBoxes);
 
-  const intentButtons = page.locator('.intent-tabs__trigger');
-  await expect(intentButtons).toHaveCount(3);
-  const intentBoxes = await expectContainedTouchTargets(
+  const marketTabs = page.getByRole('tablist', { name: 'Choose a city' }).getByRole('tab');
+  await expect(marketTabs).toHaveCount(3);
+  const marketTabBoxes = await expectContainedTouchTargets(
     page,
-    await intentButtons.all(),
+    await marketTabs.all(),
   );
-  expectTargetsNotToOverlap(intentBoxes);
+  expectTargetsNotToOverlap(marketTabBoxes);
 
-  await page.getByRole('button', { name: /Buy/ }).tap();
-  await expect(page.getByRole('button', { name: /Buy/ })).toHaveAttribute(
-    'aria-pressed',
+  await page.getByRole('tab', { name: 'Singapore' }).tap();
+  await expect(page.getByRole('tab', { name: 'Singapore' })).toHaveAttribute(
+    'aria-selected',
     'true',
   );
-  await expect(page.getByRole('heading', { name: 'Buy — market depth' }))
-    .toBeVisible();
-  await expect(page.getByRole('link', { name: 'Buy in Seoul' })).toHaveAttribute(
-    'href',
-    '/kr/seoul/buy/',
-  );
+  await expect(page.getByRole('tabpanel', { name: 'Singapore' })).toBeVisible();
 
-  await page.getByRole('button', { name: /Invest/ }).tap();
-  await expect(page.getByRole('heading', { name: 'Invest — market depth' }))
-    .toBeVisible();
-  await expect(page.getByRole('link', { name: 'Invest in Seoul' })).toHaveAttribute(
-    'href',
-    '/kr/seoul/invest/',
+  await page.getByRole('tab', { name: 'Dubai' }).tap();
+  await expect(page.getByRole('tabpanel', { name: 'Dubai' })).toContainText(
+    'DLD and RERA display-rights clearance is incomplete.',
   );
-
-  for (const marketAction of await page.locator('.market-card__intent-link').all()) {
-    await expectContainedTouchTargets(page, [marketAction]);
-  }
 
   await primaryNavigation.getByRole('link', { name: 'Markets' }).tap();
   await expect(page).toHaveURL(/\/#markets$/);
-  await expect(page.getByRole('heading', { name: 'Invest — market depth' }))
-    .toBeInViewport();
+  await expect(page.getByRole('tablist', { name: 'Choose a city' })).toBeInViewport();
 
-  const exploreSeoul = page.getByRole('link', { name: 'Explore Seoul' });
+  await page.getByRole('tab', { name: 'Seoul' }).tap();
+  const exploreSeoul = page.getByRole('tabpanel', { name: 'Seoul' })
+    .getByRole('link', { name: /Explore/ });
   await expectContainedTouchTargets(page, [exploreSeoul]);
   await exploreSeoul.tap();
   await expect(page).toHaveURL(/\/kr\/seoul\/explore\/$/);
@@ -237,6 +231,18 @@ test('keyboard traversal activates the Home to Seoul to Check flow', async ({
 }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium');
   await page.goto('/');
+
+  const seoulTab = page.getByRole('tab', { name: 'Seoul' });
+  await seoulTab.focus();
+  await page.keyboard.press('ArrowRight');
+  await expect(page.getByRole('tab', { name: 'Singapore' })).toBeFocused();
+  await expect(page.getByRole('tabpanel', { name: 'Singapore' })).toBeVisible();
+  await page.keyboard.press('End');
+  await expect(page.getByRole('tab', { name: 'Dubai' })).toBeFocused();
+  await expect(page.getByRole('tabpanel', { name: 'Dubai' })).toBeVisible();
+  await page.keyboard.press('Home');
+  await expect(seoulTab).toBeFocused();
+  await expect(page.getByRole('tabpanel', { name: 'Seoul' })).toBeVisible();
 
   const exploreSeoul = page.getByRole('link', { name: 'Explore Seoul' });
   await tabTo(page, exploreSeoul);

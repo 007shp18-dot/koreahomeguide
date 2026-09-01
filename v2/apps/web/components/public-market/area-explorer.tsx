@@ -2,10 +2,12 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useReducer, useState } from 'react';
+import { useCallback, useMemo, useReducer, useState } from 'react';
 
 import {
   areaExplorerReducer,
+  buildingExplorerSelectionReducer,
+  resolveSelectedExploreBuilding,
   type AreaExplorerState,
 } from '../../lib/public-market/area-explorer-state';
 import { NaverDistrictMap } from '../maps/naver-district-map';
@@ -14,6 +16,13 @@ import type {
   ExploreBuildingModel,
   PublicAreaExploreModel,
 } from '../../lib/public-market/area-route-types';
+import {
+  PUBLIC_MARKET_COPY,
+  localizeEvidenceMessage,
+  localizedSeoulHref,
+  localizeSampleLabel,
+  type ProductLocale,
+} from '../../lib/locale/product-copy';
 import styles from './area-explorer.module.css';
 import { DistrictEvidenceSummary } from './district-evidence-summary';
 import { PublicSectionTabs } from './public-section-tabs';
@@ -27,22 +36,27 @@ const bucketClasses = [
   styles.bucket4,
 ] as const;
 
-function mapTitle(district: ExploreDistrictModel): string {
+function mapTitle(district: ExploreDistrictModel, locale: ProductLocale): string {
+  const copy = PUBLIC_MARKET_COPY[locale].area;
   return [
-    `Open ${district.nameEn} evidence`,
-    district.nameKo,
-    district.medianLabel ?? 'Not published',
-    district.sampleLabel,
+    locale === 'ko' ? `${district.nameKo} 근거 열기` : `Open ${district.nameEn} evidence`,
+    locale === 'ko' ? district.nameEn : district.nameKo,
+    district.medianLabel ?? copy.notPublished,
+    localizeSampleLabel(district.sampleLabel, locale),
   ].join(' · ');
 }
 
 function ReadyAreaExplorer({
   model,
   naverMapClientId,
+  locale,
 }: Readonly<{
   model: Extract<PublicAreaExploreModel, { status: 'ready' }>;
   naverMapClientId: string | null;
+  locale: ProductLocale;
 }>) {
+  const copy = PUBLIC_MARKET_COPY[locale].area;
+  const countSeparator = locale === 'en' ? ' ' : '';
   const router = useRouter();
   const initial: AreaExplorerState = Object.freeze({
     selectedSlug: model.selectedSlug,
@@ -50,81 +64,139 @@ function ReadyAreaExplorer({
   });
   const [state, dispatch] = useReducer(areaExplorerReducer, initial);
   const [selectedNeighborhood, setSelectedNeighborhood] = useState<string>('all');
-  const [selectedBuildingId, setSelectedBuildingId] = useState<string | null>(null);
+  const [buildingSelection, dispatchBuildingSelection] = useReducer(
+    buildingExplorerSelectionReducer,
+    Object.freeze({ selectedBuildingId: null }),
+  );
+  const { selectedBuildingId } = buildingSelection;
   const [visibleBuildingCount, setVisibleBuildingCount] = useState(10);
   const selected = model.districts.find(({ slug }) => slug === state.selectedSlug)
     ?? model.districts[0]!;
-  const districtBuildings = model.buildingAvailability.status === 'ready'
-    ? model.buildingAvailability.buildings.filter(({ districtSlug }) => districtSlug === selected.slug)
-    : [];
-  const neighborhoods = [...new Map(districtBuildings.map((building) => [
+  const districtBuildings = useMemo(() => (
+    model.buildingAvailability.status === 'ready'
+      ? model.buildingAvailability.buildings.filter(({ districtSlug }) => districtSlug === selected.slug)
+      : []
+  ), [model.buildingAvailability, selected.slug]);
+  const neighborhoods = useMemo(() => [...new Map(districtBuildings.map((building) => [
     building.neighborhoodId, building.neighborhoodName,
-  ] as const))];
-  const filteredBuildings = districtBuildings.filter((building) => (
+  ] as const))], [districtBuildings]);
+  const filteredBuildings = useMemo(() => districtBuildings.filter((building) => (
     selectedNeighborhood === 'all' || building.neighborhoodId === selectedNeighborhood
-  ));
-  const visibleBuildings = filteredBuildings.slice(0, visibleBuildingCount);
-  const selectedBuilding = districtBuildings.find(({ id }) => id === selectedBuildingId) ?? null;
+  )), [districtBuildings, selectedNeighborhood]);
+  const visibleBuildings = useMemo(
+    () => filteredBuildings.slice(0, visibleBuildingCount),
+    [filteredBuildings, visibleBuildingCount],
+  );
+  const selectedBuilding = resolveSelectedExploreBuilding(
+    districtBuildings,
+    selectedBuildingId,
+  );
 
-  function selectDistrict(slug: string): void {
+  const mapDistricts = useMemo(() => model.districts.map((district) => ({
+    slug: district.slug,
+    nameEn: locale === 'ko' ? district.nameKo : district.nameEn,
+    href: district.href,
+    latitude: district.latitude,
+    longitude: district.longitude,
+  })), [locale, model.districts]);
+  const mapBuildings = useMemo(() => visibleBuildings.map((building) => ({
+    id: building.id,
+    title: building.name,
+    href: building.href,
+    addressQuery: `서울특별시 ${selected.nameKo} ${building.neighborhoodName} ${building.name}`,
+    latitude: building.latitude,
+    longitude: building.longitude,
+  })), [selected.nameKo, visibleBuildings]);
+
+  const selectDistrict = useCallback((slug: string): void => {
     dispatch({ type: 'select', slug });
     setSelectedNeighborhood('all');
-    setSelectedBuildingId(null);
+    dispatchBuildingSelection({ type: 'clear_building' });
     setVisibleBuildingCount(10);
-    router.replace(`/kr/seoul/explore/?district=${slug}`, { scroll: false });
-  }
+    router.replace(
+      localizedSeoulHref(`/kr/seoul/explore/?district=${slug}`, locale),
+      { scroll: false },
+    );
+  }, [locale, router]);
+  const selectBuildingFromMarker = useCallback((buildingId: string) => {
+    dispatchBuildingSelection({ type: 'select_building', source: 'marker', buildingId });
+  }, []);
 
   return (
     <section className={styles.explorer} aria-labelledby="area-explorer-heading">
       <header className={styles.hero}>
-        <p>Seoul · Verified district evidence</p>
-        <h1 id="area-explorer-heading">Compare refundable jeonse deposits by district.</h1>
-        <p>
-          One official-data boundary, 25 districts and the same 45–55㎡ filter.
-          Select a district to read its published evidence or explicit refusal.
-        </p>
-        <Link className={styles.rankingsLink} href="/kr/seoul/rankings/">
-          View district rankings
+        <p>{copy.heroEyebrow}</p>
+        <h1 id="area-explorer-heading">{copy.heroHeading}</h1>
+        <p>{copy.heroDescription}</p>
+        <Link
+          className={styles.rankingsLink}
+          href={localizedSeoulHref('/kr/seoul/rankings/', locale)}
+        >
+          {copy.rankingsLink}
         </Link>
       </header>
+
+      <section
+        className={styles.coverage}
+        data-coverage-panel="verified"
+        aria-labelledby="coverage-heading"
+      >
+        <div className={styles.coverageHeading}>
+          <p>{copy.coverageEyebrow}</p>
+          <h2 id="coverage-heading">{copy.coverageHeading}</h2>
+        </div>
+        <dl className={styles.coverageGrid}>
+          <div>
+            <dt>{copy.districtsPublished}</dt>
+            <dd>{model.coverage.districts.published} {copy.of} {model.coverage.districts.retained}</dd>
+          </div>
+          <div>
+            <dt>{copy.buildingsPublished}</dt>
+            <dd>{model.coverage.buildings.status === 'ready'
+              ? `${model.coverage.buildings.published} ${copy.of} ${model.coverage.buildings.retained}`
+              : copy.unavailable}</dd>
+          </div>
+          <div>
+            <dt>{copy.eligibleContracts}</dt>
+            <dd>{model.coverage.eligibleContracts} {copy.eligibleSuffix}</dd>
+          </div>
+        </dl>
+        <div className={styles.coverageLimits}>
+          <p>{model.coverage.unpublished.districtsBelowMinimum}{countSeparator}{copy.districtsBelowMinimum}</p>
+          {model.coverage.unpublished.retainedBuildingsBelowMinimum === null ? (
+            <p>{copy.buildingArtifactMissing}</p>
+          ) : (
+            <p>{model.coverage.unpublished.retainedBuildingsBelowMinimum}{countSeparator}{copy.retainedBuildingsBelowMinimum}</p>
+          )}
+          <p>{locale === 'ko'
+            ? copy.sourceCandidatesMissing
+            : model.coverage.unpublished.sourceBuildingCandidates.reason}</p>
+        </div>
+      </section>
 
       <div className={styles.workspace}>
         <section className={styles.mapPanel} aria-labelledby="area-map-heading">
           <div className={styles.sectionHeading}>
-            <p>01 / District map</p>
-            <h2 id="area-map-heading">District median refundable jeonse deposit</h2>
+            <p>{copy.mapEyebrow}</p>
+            <h2 id="area-map-heading">{copy.mapHeading}</h2>
           </div>
           <NaverDistrictMap
-            key={`${selected.slug}:${selectedBuildingId ?? 'none'}`}
             clientId={naverMapClientId}
-            districts={model.districts.map((district) => ({
-              slug: district.slug,
-              nameEn: district.nameEn,
-              href: district.href,
-              latitude: district.latitude,
-              longitude: district.longitude,
-            }))}
+            districts={mapDistricts}
             selectedDistrict={selected}
-            buildings={visibleBuildings.map((building) => ({
-              id: building.id,
-              title: building.name,
-              href: building.href,
-              addressQuery: `서울특별시 ${selected.nameKo} ${building.neighborhoodName} ${building.name}`,
-              latitude: building.latitude,
-              longitude: building.longitude,
-            }))}
+            buildings={mapBuildings}
             onSelectDistrict={selectDistrict}
-            onSelectBuilding={setSelectedBuildingId}
+            onSelectBuilding={selectBuildingFromMarker}
+            locale={locale}
             fallback={<svg
               className={styles.map}
               viewBox="0 0 720 560"
               role="img"
               aria-labelledby="area-map-title area-map-description"
             >
-            <title id="area-map-title">Seoul district refundable jeonse deposit map</title>
+            <title id="area-map-title">{copy.mapTitle}</title>
             <desc id="area-map-description">
-              Five ranked median steps. Hatched districts are not published.
-              The adjacent district table provides keyboard controls and exact values.
+              {copy.mapDescription}
             </desc>
             <defs>
               <pattern
@@ -155,35 +227,38 @@ function ReadyAreaExplorer({
                   selectDistrict(district.slug);
                 }}
               >
-                <title>{mapTitle(district)}</title>
+                <title>{mapTitle(district, locale)}</title>
               </path>
             ))}
             </svg>}
           />
 
-          <div className={styles.legend} aria-label="Map legend">
-            <p>District median refundable jeonse deposit · {model.source.band}</p>
+          <div className={styles.legend} aria-label={copy.mapHeading}>
+            <p>{copy.mapLegend} · {model.source.band}</p>
             <ol>
               {model.legend.map((bucket) => (
                 <li key={bucket.bucket}>
                   <span className={bucketClasses[bucket.bucket]} aria-hidden="true" />
-                  <span>{bucket.label} · {bucket.count} district{bucket.count === 1 ? '' : 's'}</span>
+                  <span>{bucket.label} · {bucket.count}{copy.districtCount}</span>
                 </li>
               ))}
               <li>
                 <span className={styles.legendHatch} aria-hidden="true" />
-                <span>Not published · fewer than {model.source.publicationMinimum} contracts</span>
+                <span>{copy.notPublished} · {copy.fewerThan} {model.source.publicationMinimum} {copy.contracts}</span>
               </li>
             </ol>
           </div>
 
           <div className={styles.selectedDetail} aria-live="polite">
-            <p className={styles.selectedLabel}>Selected · {selected.nameEn}</p>
+            <p className={styles.selectedLabel}>
+              {copy.selected} · {locale === 'ko' ? selected.nameKo : selected.nameEn}
+            </p>
             <DistrictEvidenceSummary
               key={selected.slug}
               model={selected.contractEvidence}
               mode="compact"
-              selectionHref={`/kr/seoul/explore/?district=${selected.slug}`}
+              selectionHref={localizedSeoulHref(`/kr/seoul/explore/?district=${selected.slug}`, locale)}
+              locale={locale}
             />
           </div>
         </section>
@@ -191,27 +266,27 @@ function ReadyAreaExplorer({
         <section className={styles.rail} aria-labelledby="district-table-heading">
           <div className={styles.buildingBrowser} data-building-browser={selected.slug}>
             <div className={styles.sectionHeading}>
-              <p>02 / Neighborhoods &amp; buildings</p>
-              <h2>{selected.nameEn} building evidence</h2>
+              <p>{copy.buildingsEyebrow}</p>
+              <h2>{locale === 'ko' ? selected.nameKo : selected.nameEn} {copy.buildingEvidence}</h2>
             </div>
             {model.buildingAvailability.status === 'not_loaded' ? (
               <div className={styles.buildingEmpty}>
-                <strong>Verified building artifact is not loaded.</strong>
-                <span>District evidence stays available while the building snapshot is installed.</span>
+                <strong>{copy.buildingArtifactMissing}</strong>
+                <span>{copy.buildingArtifactReason}</span>
               </div>
             ) : districtBuildings.length === 0 ? (
               <div className={styles.buildingEmpty}>
-                <strong>No building passes the five-contract publication rule here yet.</strong>
-                <span>Nothing synthetic is substituted.</span>
+                <strong>{copy.noPublishedBuildings}</strong>
+                <span>{copy.noSyntheticBuildings}</span>
               </div>
             ) : (
               <>
-                <div className={styles.neighborhoods} aria-label="Neighborhood filter">
+                <div className={styles.neighborhoods} aria-label={copy.neighborhoodFilter}>
                   <button
                     type="button"
                     aria-pressed={selectedNeighborhood === 'all'}
                     onClick={() => { setSelectedNeighborhood('all'); setVisibleBuildingCount(10); }}
-                  >All · {districtBuildings.length}</button>
+                  >{copy.all} · {districtBuildings.length}</button>
                   {neighborhoods.map(([id, name]) => (
                     <button
                       key={id}
@@ -227,7 +302,9 @@ function ReadyAreaExplorer({
                       <button
                         type="button"
                         aria-pressed={selectedBuilding?.id === building.id}
-                        onClick={() => setSelectedBuildingId(building.id)}
+                        onClick={() => dispatchBuildingSelection({
+                          type: 'select_building', source: 'rail', buildingId: building.id,
+                        })}
                       >
                         <span><strong>{building.name}</strong><small>{building.neighborhoodName} · {building.housingType}</small></span>
                         <span><strong>{building.medianLabel}</strong><small>{building.sampleLabel}</small></span>
@@ -240,27 +317,27 @@ function ReadyAreaExplorer({
                     type="button"
                     className={styles.moreBuildings}
                     onClick={() => setVisibleBuildingCount((count) => count + 10)}
-                  >Show 10 more buildings</button>
+                  >{copy.showMore}</button>
                 ) : null}
                 {selectedBuilding === null ? null : (
-                  <BuildingEvidencePanel building={selectedBuilding} />
+                  <BuildingEvidencePanel building={selectedBuilding} locale={locale} />
                 )}
               </>
             )}
           </div>
           <div className={styles.sectionHeading}>
-            <p>03 / Complete table</p>
-            <h2 id="district-table-heading">All 25 districts</h2>
+            <p>{copy.completeTableEyebrow}</p>
+            <h2 id="district-table-heading">{copy.completeTableHeading}</h2>
           </div>
           <div className={styles.tableWrap}>
             <table className={styles.table}>
-              <caption>Seoul district evidence in legal-code order</caption>
+              <caption>{copy.tableCaption}</caption>
               <thead>
                 <tr>
-                  <th scope="col">District</th>
-                  <th scope="col">Median</th>
-                  <th scope="col">Sample</th>
-                  <th scope="col">Evidence</th>
+                  <th scope="col">{copy.district}</th>
+                  <th scope="col">{copy.median}</th>
+                  <th scope="col">{copy.sample}</th>
+                  <th scope="col">{copy.evidence}</th>
                 </tr>
               </thead>
               <tbody>
@@ -276,29 +353,37 @@ function ReadyAreaExplorer({
                         <Link
                           className={styles.districtButton}
                           href={district.href}
-                          aria-label={`Open ${district.nameEn} evidence`}
+                          aria-label={locale === 'ko'
+                            ? `${district.nameKo} 근거 열기`
+                            : `Open ${district.nameEn} evidence`}
                           aria-current={isSelected ? 'true' : undefined}
                           onPointerEnter={() => dispatch({ type: 'select', slug: district.slug })}
                           onFocus={() => dispatch({ type: 'select', slug: district.slug })}
                           onClick={(event) => { event.preventDefault(); selectDistrict(district.slug); }}
                         >
-                          <strong>{district.nameEn}</strong>
-                          <span lang="ko">{district.nameKo}</span>
-                          {isSelected ? <small>Selected</small> : null}
+                          <strong>{locale === 'ko' ? district.nameKo : district.nameEn}</strong>
+                          <span lang={locale === 'ko' ? 'en' : 'ko'}>
+                            {locale === 'ko' ? district.nameEn : district.nameKo}
+                          </span>
+                          {isSelected ? <small>{copy.selected}</small> : null}
                         </Link>
                       </th>
                       <td>
-                        <strong>{district.medianLabel ?? 'Not published'}</strong>
-                        {district.changeLabel === null ? null : <small>{district.changeLabel}</small>}
+                        <strong>{district.medianLabel ?? copy.notPublished}</strong>
+                        {district.changeLabel === null ? null : (
+                          <small>{localizeEvidenceMessage(district.changeLabel, locale)}</small>
+                        )}
                       </td>
-                      <td>{district.sampleLabel}</td>
+                      <td>{localizeSampleLabel(district.sampleLabel, locale)}</td>
                       <td>
                         <Link
                           className={styles.detailLink}
                           href={district.href}
-                          aria-label={`Open ${district.nameEn} evidence`}
+                          aria-label={locale === 'ko'
+                            ? `${district.nameKo} 근거 열기`
+                            : `Open ${district.nameEn} evidence`}
                         >
-                          Open
+                          {copy.open}
                         </Link>
                       </td>
                     </tr>
@@ -310,47 +395,71 @@ function ReadyAreaExplorer({
         </section>
       </div>
 
-      <PublicSourceBoundary model={model.source} />
+      <PublicSourceBoundary model={model.source} locale={locale} />
     </section>
   );
 }
 
-function groupEvidence(sample: string, median: string | null): string {
-  return median === null ? `Not published · ${sample}` : `${median} · ${sample}`;
+function groupEvidence(
+  sample: string,
+  median: string | null,
+  locale: ProductLocale,
+): string {
+  const copy = PUBLIC_MARKET_COPY[locale].area;
+  const localizedSample = localizeSampleLabel(sample, locale);
+  return median === null
+    ? `${copy.notPublished} · ${localizedSample}`
+    : `${median} · ${localizedSample}`;
 }
 
-function BuildingEvidencePanel({ building }: Readonly<{ building: ExploreBuildingModel }>) {
+function BuildingEvidencePanel({
+  building,
+  locale,
+}: Readonly<{ building: ExploreBuildingModel; locale: ProductLocale }>) {
+  const copy = PUBLIC_MARKET_COPY[locale].area;
   return (
     <article className={styles.buildingPanel} aria-live="polite" data-building-panel={building.id}>
-      <p>Selected building</p>
+      <p>{copy.selectedBuilding}</p>
       <h3>{building.name}</h3>
-      <span>{building.neighborhoodName} · {building.sampleLabel}</span>
+      <span>{building.neighborhoodName} · {localizeSampleLabel(building.sampleLabel, locale)}</span>
       <dl>
-        <div><dt>All</dt><dd>{building.medianLabel}</dd></div>
-        <div><dt>New</dt><dd>{groupEvidence(building.newSampleLabel, building.newMedianLabel)}</dd></div>
-        <div><dt>Renewal</dt><dd>{groupEvidence(building.renewalSampleLabel, building.renewalMedianLabel)}</dd></div>
-        <div><dt>Unclassified</dt><dd>{building.unknownContractCount}</dd></div>
+        <div><dt>{copy.all}</dt><dd>{building.medianLabel}</dd></div>
+        <div><dt>{copy.new}</dt><dd>{groupEvidence(building.newSampleLabel, building.newMedianLabel, locale)}</dd></div>
+        <div><dt>{copy.renewal}</dt><dd>{groupEvidence(building.renewalSampleLabel, building.renewalMedianLabel, locale)}</dd></div>
+        <div><dt>{copy.unclassified}</dt><dd>{building.unknownContractCount}</dd></div>
       </dl>
-      <Link href={building.href}>Open full building evidence</Link>
+      <Link href={building.href}>{copy.fullBuildingEvidence}</Link>
     </article>
   );
 }
 
 function UnavailableAreaExplorer({
   model,
-}: Readonly<{ model: Extract<PublicAreaExploreModel, { status: 'unavailable' }> }>) {
+  locale,
+}: Readonly<{
+  model: Extract<PublicAreaExploreModel, { status: 'unavailable' }>;
+  locale: ProductLocale;
+}>) {
+  const copy = PUBLIC_MARKET_COPY[locale].area;
   return (
     <section className={styles.explorer} aria-labelledby="area-unavailable-heading">
       <header className={styles.hero}>
-        <p>Seoul · District evidence</p>
-        <h1 id="area-unavailable-heading">{model.message}</h1>
-        <p>The verified district artifact failed closed. No district money is substituted.</p>
+        <p>{copy.unavailableEyebrow}</p>
+        <h1 id="area-unavailable-heading">
+          {locale === 'ko' ? '검증된 구별 자료를 확인할 수 없습니다.' : model.message}
+        </h1>
+        <p>{copy.unavailableReason}</p>
       </header>
       <div className={styles.unavailableFrame} data-map-state="unavailable">
-        <p>Verified evidence is required before this map can publish figures.</p>
-        <Link className={styles.selectedLink} href="/kr/seoul/">Return to Seoul evidence</Link>
+        <p>{copy.unavailableAction}</p>
+        <Link
+          className={styles.selectedLink}
+          href={localizedSeoulHref('/kr/seoul/', locale)}
+        >
+          {copy.unavailableActionLink}
+        </Link>
       </div>
-      <PublicSourceBoundary model={model.source} />
+      <PublicSourceBoundary model={model.source} locale={locale} />
     </section>
   );
 }
@@ -358,16 +467,18 @@ function UnavailableAreaExplorer({
 export function AreaExplorer({
   model,
   naverMapClientId = null,
+  locale = 'en',
 }: Readonly<{
   model: PublicAreaExploreModel;
   naverMapClientId?: string | null;
+  locale?: ProductLocale;
 }>) {
   return (
     <>
-      <PublicSectionTabs current="explore" />
+      <PublicSectionTabs current="explore" locale={locale} />
       {model.status === 'ready'
-        ? <ReadyAreaExplorer model={model} naverMapClientId={naverMapClientId} />
-        : <UnavailableAreaExplorer model={model} />}
+        ? <ReadyAreaExplorer model={model} naverMapClientId={naverMapClientId} locale={locale} />
+        : <UnavailableAreaExplorer model={model} locale={locale} />}
     </>
   );
 }

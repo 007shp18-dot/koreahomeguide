@@ -11,6 +11,8 @@ import { SiteHeader } from '../site-header';
 import { CommunitySignal } from '../community/community-signal';
 import { DetailNewsList } from '../news/detail-news-list';
 import { EvidenceDisclosure } from '../trust/evidence-disclosure';
+import { BoxPlot } from './box-plot';
+import { EvidencePeriodStrip } from './evidence-period-strip';
 import { PublicSectionTabs } from './public-section-tabs';
 import styles from './building-detail.module.css';
 
@@ -47,6 +49,11 @@ function contractTypeLabel(value: 'new' | 'renewal' | 'unknown'): string {
   if (value === 'new') return 'New';
   if (value === 'renewal') return 'Renewal';
   return 'Unclassified';
+}
+
+function floorLabel(contract: PublicBuildingModel['building']['recentContracts'][number]): string {
+  if (contract.floor !== null) return String(contract.floor);
+  return 'Floor was not retained in this verified snapshot.';
 }
 
 function BuildingNavigation({ model }: Readonly<{ model: PublicBuildingModel }>) {
@@ -93,13 +100,26 @@ export function BuildingDetailPage({ model }: Readonly<{ model: PublicBuildingMo
             <section className={styles.evidence} aria-labelledby="building-distribution-heading">
               <div className={styles.sectionHeading}>
                 <p>01 / Reported distribution</p>
-                <h2 id="building-distribution-heading">Completed-period contract evidence</h2>
+                <h2 id="building-distribution-heading">{model.presentation.distributionHeading}</h2>
+              </div>
+              <EvidencePeriodStrip model={model.period} label="Building evidence period" />
+              <div data-building-distribution="true">
+                <BoxPlot
+                  summary={model.distribution}
+                  axis={model.plotAxis}
+                  formatValue={(value) => money.format(value)}
+                />
               </div>
               <dl className={styles.findingGrid}>
-                <div><dt>Median</dt><dd>{model.display.medianLabel}</dd></div>
-                <div><dt>Middle half</dt><dd>{model.display.middleHalfLabel}</dd></div>
-                <div><dt>Full range</dt><dd>{model.display.rangeLabel}</dd></div>
-                <div><dt>Recent change</dt><dd>{model.display.changeLabel}</dd></div>
+                <div>
+                  <dt>Recent change</dt>
+                  <dd>
+                    <strong>{model.display.changeLabel}</strong>
+                    {model.display.change.reasons.map((reason) => (
+                      <span key={reason}>{reason}</span>
+                    ))}
+                  </dd>
+                </div>
               </dl>
               <dl className={styles.findingGrid} aria-label="Contract type evidence">
                 <div>
@@ -118,12 +138,35 @@ export function BuildingDetailPage({ model }: Readonly<{ model: PublicBuildingMo
               </dl>
             </section>
 
+            <section className={styles.areaBands} aria-labelledby="floor-coefficient-heading">
+              <div className={styles.sectionHeading}>
+                <p>02 / Floor evidence</p>
+                <h2 id="floor-coefficient-heading">Floor adjustment evidence</h2>
+              </div>
+              <div data-floor-coefficient={model.floorCoefficient.status}>
+                {model.floorCoefficient.status === 'unavailable' ? (
+                  <strong>{model.floorCoefficient.reason}</strong>
+                ) : (
+                  <strong>{model.floorCoefficient.coefficient}</strong>
+                )}
+                <p>{model.floorCoefficient.pairCount} eligible pairs</p>
+                <p>{model.floorCoefficient.basis}</p>
+              </div>
+            </section>
+
             <section className={styles.areaBands} aria-labelledby="building-area-heading">
               <div className={styles.sectionHeading}>
-                <p>02 / Area bands</p>
+                <p>03 / Area bands</p>
                 <h2 id="building-area-heading">Evidence by filed area band</h2>
               </div>
-              {model.building.areaBands.length === 0 ? (
+              {model.building.areaBands.length === 1
+                && model.building.areaBands[0]?.band === '45–55㎡' ? (
+                <div data-area-band-state="single-fixed-band">
+                  <strong>Other floor-area bands are not available yet.</strong>
+                  <p>Published contract evidence is currently fixed to the 45–55㎡ floor-area band.</p>
+                  <p>Additional bands will open after the collection scope expands.</p>
+                </div>
+              ) : model.building.areaBands.length === 0 ? (
                 <p>No area-band distribution is published for this record.</p>
               ) : (
                 <ul>
@@ -140,7 +183,7 @@ export function BuildingDetailPage({ model }: Readonly<{ model: PublicBuildingMo
 
             <section className={styles.contracts} aria-labelledby="recent-contracts-heading">
               <div className={styles.sectionHeading}>
-                <p>03 / Recent records</p>
+                <p>04 / Recent records</p>
                 <h2 id="recent-contracts-heading">Privacy-safe reported contracts</h2>
               </div>
               {model.building.recentContracts.length === 0 ? (
@@ -148,12 +191,13 @@ export function BuildingDetailPage({ model }: Readonly<{ model: PublicBuildingMo
               ) : (
                 <div className={styles.tableWrap}>
                   <table>
-                    <thead><tr><th>Filed month</th><th>Area</th><th>Contract</th><th>Jeonse deposit</th></tr></thead>
+                    <thead><tr><th>Filed month</th><th>Area</th><th>Floor</th><th>Contract</th><th>Jeonse deposit</th></tr></thead>
                     <tbody>
                       {model.building.recentContracts.map((contract, index) => (
                         <tr key={`${contract.filedMonth}-${contract.areaSqm}-${index}`}>
                           <td>{contract.filedMonth}</td>
                           <td>{contract.areaSqm}㎡</td>
+                          <td>{floorLabel(contract)}</td>
                           <td>{contractTypeLabel(contract.contractType)}</td>
                           <td>{money.format(contract.depositWon)}</td>
                         </tr>
@@ -166,17 +210,17 @@ export function BuildingDetailPage({ model }: Readonly<{ model: PublicBuildingMo
 
             <section className={styles.source} aria-labelledby="building-source-heading">
               <div className={styles.sectionHeading}>
-                <p>04 / Source and limits</p>
+                <p>05 / Source and limits</p>
                 <h2 id="building-source-heading">Use this evidence within its boundary</h2>
               </div>
               <EvidenceDisclosure
                 model={model.evidence.descriptor}
-                boundary="Completed-period reported building contracts, not a listing, appraisal, or legal review."
+                boundary={model.presentation.sourceBoundary}
                 attribution={['Ministry of Land, Infrastructure and Transport (MOLIT)']}
               />
               <dl className={styles.sourceGrid}>
                 <div><dt>Supported deals</dt><dd>jeonse</dd></div>
-                <div><dt>Completed period</dt><dd>{model.evidence.period}</dd></div>
+                <div><dt>{model.presentation.periodLabel}</dt><dd>{model.evidence.period}</dd></div>
                 <div><dt>Publication minimum</dt><dd>{model.evidence.publicationMinimum}</dd></div>
                 <div><dt>Exclusions</dt><dd>{model.evidence.exclusions.join(' · ')}</dd></div>
               </dl>

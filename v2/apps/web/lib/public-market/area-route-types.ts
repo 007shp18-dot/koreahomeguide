@@ -3,6 +3,7 @@ import type {
   EvidenceEmptyState,
   PublishedMarketSummary,
   PublicMarketSummary,
+  QuotePositionAxis,
   WithheldMarketSummary,
 } from '@signedprice/market-core';
 import type {
@@ -12,6 +13,11 @@ import type {
 } from '@signedprice/korea-rent/browser';
 import type { CommunitySignalModel } from '../community/community-signal-model';
 import type { NewsCardModel } from '../news/news-card-model';
+import type {
+  ChangeReliability,
+  EvidencePeriodModel,
+  SpreadVerdict,
+} from './evidence-interpretation';
 
 export type ExploreDistrictModel = Readonly<{
   lawdCd: SeoulLawdCd;
@@ -48,10 +54,13 @@ export type PublicDistrictEvidenceSummaryModel =
   | (PublicDistrictEvidenceIdentity & Readonly<{
       status: 'published';
       sampleLabel: string;
+      medianValue: number;
       medianLabel: string;
       middleHalfLabel: string;
       rangeLabel: string;
       changeLabel: string;
+      spread: SpreadVerdict;
+      change: ChangeReliability;
     }>)
   | (PublicDistrictEvidenceIdentity & Readonly<{
       status: 'withheld';
@@ -71,7 +80,39 @@ export type ContractGroupEvidenceModel = Readonly<{
   selected: PublicContractGroup;
   splitStatus: 'ready' | 'snapshot_v1' | 'unavailable';
   unknownContractCount: number | null;
+  allLowerThanNew: boolean;
   groups: Readonly<Record<PublicContractGroup, PublicDistrictEvidenceSummaryModel>>;
+}>;
+
+export type PublicAreaCoverageModel = Readonly<{
+  districts: Readonly<{ published: number; retained: number }>;
+  buildings:
+    | Readonly<{ status: 'ready'; published: number; retained: number }>
+    | Readonly<{
+        status: 'unavailable';
+        reason: 'Verified building artifact is not loaded.';
+      }>;
+  eligibleContracts: number;
+  unpublished: Readonly<{
+    districtsBelowMinimum: number;
+    retainedBuildingsBelowMinimum: number | null;
+    sourceBuildingCandidates: Readonly<{
+      status: 'unavailable';
+      reason: 'Source candidate building counts are not retained in this verified artifact.';
+    }>;
+  }>;
+}>;
+
+export type PublicMonthlyUpdateSchedule = Readonly<{
+  cadence: 'monthly';
+  dayOfMonth: number;
+  hourUtc: number;
+  minuteUtc: number;
+}>;
+
+export type PublicNextUpdateModel = Readonly<{
+  cadence: 'monthly';
+  instant: string;
 }>;
 
 export type PublicAreaLegendBucket = Readonly<{
@@ -92,6 +133,7 @@ export type PublicSourceBoundaryModel = Readonly<{
   includesNewAndRenewal: true;
   includesUnknownContractType: true;
   includesUnknownRecordStatus: true;
+  nextUpdate: PublicNextUpdateModel | null;
   geometryAttribution?: 'KOSTAT census boundaries via southkorea/seoul-maps (Apache-2.0)';
 }>;
 
@@ -119,6 +161,8 @@ export type PublicDistrictRankingRow = Readonly<{
   metric: number;
   valueLabel: string;
   bar: SignedRankingBar | null;
+  distribution: PublishedMarketSummary | null;
+  plotAxis: QuotePositionAxis | null;
 }>;
 
 export type PublicAreaRankingsModel =
@@ -132,6 +176,13 @@ export type PublicAreaRankingsModel =
       changeExcludedDistrictCount: number;
       hasNegativeChange: boolean;
       changeAxisLabel: Readonly<{ minimum: string; maximum: string }>;
+      changeInterpretation: Readonly<{
+        status: 'not_assessable';
+        title: 'Three-month change not assessable';
+        definition: 'Prior/latest sample counts were not retained in this snapshot.';
+        note: 'Stored change values are excluded from rankings until both comparison counts are retained.';
+      }>;
+      period: EvidencePeriodModel;
       source: PublicSourceBoundaryModel;
     }>
   | Readonly<{
@@ -147,6 +198,7 @@ export type PublicAreaExploreModel =
       citySummary: PublicMarketSummary;
       districts: readonly ExploreDistrictModel[];
       legend: readonly PublicAreaLegendBucket[];
+      coverage: PublicAreaCoverageModel;
       buildingAvailability: ExploreBuildingAvailability;
       source: PublicAreaSourceBoundaryModel;
     }>
@@ -193,6 +245,8 @@ export type PublicDistrictDisplayModel = Readonly<{
   rangeLabel: string | null;
   middleHalfLabel: string | null;
   changeLabel: string | null;
+  spread: SpreadVerdict | null;
+  change: ChangeReliability | null;
 }>;
 
 export type DistrictBuildingLink = Readonly<{
@@ -219,6 +273,7 @@ export type PublicDistrictModel =
       identity: SeoulRentCheckDistrict;
       summary: PublishedMarketSummary;
       display: PublicDistrictDisplayModel;
+      period: EvidencePeriodModel;
       nearby: readonly SeoulRentCheckDistrict[];
       faq: readonly PublicDistrictFaq[];
       datasetJsonLd: Readonly<Record<string, unknown>>;
@@ -235,6 +290,7 @@ export type PublicDistrictModel =
       identity: SeoulRentCheckDistrict;
       summary: WithheldMarketSummary;
       display: PublicDistrictDisplayModel;
+      period: EvidencePeriodModel;
       nearby: readonly SeoulRentCheckDistrict[];
       faq: readonly PublicDistrictFaq[];
       datasetJsonLd: Readonly<Record<string, unknown>>;

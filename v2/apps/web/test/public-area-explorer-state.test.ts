@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   areaExplorerReducer,
+  buildingExplorerSelectionReducer,
   type AreaExplorerState,
 } from '../lib/public-market/area-explorer-state';
 
@@ -38,5 +39,19 @@ describe('public area Explorer selection state', () => {
     expect(areaExplorerReducer(initial, {
       type: 'select', slug: 'unknown-gu',
     })).toBe(initial);
+  });
+
+  it('converges marker and rail building selection on one selected panel ID', () => {
+    const initial = Object.freeze({ selectedBuildingId: null });
+    const fromMarker = buildingExplorerSelectionReducer(initial, {
+      type: 'select_building', source: 'marker', buildingId: 'evidence-tower',
+    });
+    const fromRail = buildingExplorerSelectionReducer(initial, {
+      type: 'select_building', source: 'rail', buildingId: 'evidence-tower',
+    });
+
+    expect(fromMarker).toEqual(fromRail);
+    expect(fromMarker).toEqual({ selectedBuildingId: 'evidence-tower' });
+    expect(Object.isFrozen(fromMarker)).toBe(true);
   });
 });

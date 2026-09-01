@@ -1,36 +1,53 @@
 import type { EvidenceDescriptor } from '@signedprice/market-core';
 
+import {
+  PUBLIC_MARKET_COPY,
+  type ProductLocale,
+} from '../../lib/locale/product-copy';
 import styles from './trust.module.css';
 
 export function EvidenceDisclosure({
   model,
   boundary,
   attribution = [],
+  locale = 'en',
 }: Readonly<{
   model: EvidenceDescriptor;
   boundary: string;
   attribution?: readonly string[];
+  locale?: ProductLocale;
 }>) {
+  const copy = PUBLIC_MARKET_COPY[locale].source;
+  const [source, dataset, period, generated, method, rights, publicationMinimum, boundaryLabel]
+    = copy.disclosureLabels;
+  const datasetValue = locale === 'ko' && model.dataset === 'reported rent contracts'
+    ? '신고 임대차 계약'
+    : model.dataset;
+  const localizedAttribution = attribution.map((value) => (
+    locale === 'ko' && value === 'Ministry of Land, Infrastructure and Transport (MOLIT)'
+      ? '국토교통부(MOLIT)'
+      : value
+  ));
   return (
-    <section className={styles.disclosure} aria-label="Evidence disclosure">
+    <section className={styles.disclosure} aria-label={copy.disclosureAria}>
       <dl className={styles.disclosureGrid}>
-        <div><dt>Source</dt><dd>{model.provider}</dd></div>
-        <div><dt>Dataset</dt><dd>{model.dataset}</dd></div>
-        <div><dt>Period</dt><dd>{model.period}</dd></div>
+        <div><dt>{source}</dt><dd>{model.provider}</dd></div>
+        <div><dt>{dataset}</dt><dd>{datasetValue}</dd></div>
+        <div><dt>{period}</dt><dd>{model.period}</dd></div>
         <div>
-          <dt>Generated</dt>
+          <dt>{generated}</dt>
           <dd><time dateTime={model.generatedAt}>{model.generatedAt}</time></dd>
         </div>
-        <div><dt>Method</dt><dd>{model.methodologyId}</dd></div>
-        <div><dt>Rights</dt><dd>{model.rightsPolicyId}</dd></div>
+        <div><dt>{method}</dt><dd>{model.methodologyId}</dd></div>
+        <div><dt>{rights}</dt><dd>{model.rightsPolicyId}</dd></div>
         <div>
-          <dt>Publication minimum</dt>
-          <dd>{model.publicationMinimum ?? 'Not configured'}</dd>
+          <dt>{publicationMinimum}</dt>
+          <dd>{model.publicationMinimum ?? (locale === 'ko' ? '설정되지 않음' : 'Not configured')}</dd>
         </div>
-        <div><dt>Boundary</dt><dd>{boundary}</dd></div>
+        <div><dt>{boundaryLabel}</dt><dd>{boundary}</dd></div>
       </dl>
-      {attribution.length === 0 ? null : (
-        <p className={styles.attribution}>{attribution.join(', ')}</p>
+      {localizedAttribution.length === 0 ? null : (
+        <p className={styles.attribution}>{localizedAttribution.join(', ')}</p>
       )}
     </section>
   );
