@@ -13,7 +13,6 @@ export const publicRoutes = [
     canonical: '/kr/',
   },
   { path: '/kr/check/seoul/', heading: 'Where does this refundable deposit sit?', indexing: 'index', canonical: '/kr/check/seoul/' },
-  { path: '/kr/seoul/', heading: 'Reported refundable-deposit distribution.', indexing: 'index', canonical: '/kr/seoul/' },
   { path: '/kr/seoul/rent/', heading: 'Rent in Seoul', indexing: 'noindex' },
   {
     path: '/kr/seoul/tools/rent-check/',
