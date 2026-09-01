@@ -382,6 +382,7 @@ function normalizeItem(
     'houseType',
     'buildingName',
   ]);
+  const legalDong = optionalText(item, ['umdNm']);
   const sourceRecordId = optionalText(item, ['dealSn', 'transactionId', 'dealNo']);
   const normalizedContractDate = contractDate(item);
   const suppliedLawdCd = optionalText(item, ['sggCd', 'lawdCd']);
@@ -397,6 +398,7 @@ function normalizeItem(
   }
   return {
     ...(buildingLabel === undefined ? {} : { buildingLabel }),
+    ...(legalDong === undefined ? {} : { legalDong }),
     sourceHousingType,
     areaSqm: positiveArea(requiredText(item, ['excluUseAr', 'totalFloorAr', 'rentArea'], 'area')),
     depositWon: wonFromManwon(requiredText(item, ['deposit'], 'deposit'), 'deposit'),
