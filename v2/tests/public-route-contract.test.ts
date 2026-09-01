@@ -9,7 +9,7 @@ describe('browser route coverage contract', () => {
     expect(paths).toEqual([
       '/',
       '/trust/',
-      '/kr/',
+      '/kr/seoul/check/',
       '/kr/check/seoul/',
       '/kr/seoul/rent/',
       '/kr/seoul/tools/rent-check/',
@@ -59,10 +59,10 @@ describe('browser route coverage contract', () => {
     ]);
     expect(paths).toHaveLength(73);
     expect(new Set(paths).size).toBe(73);
-    expect(publicRoutes.find(({ path }) => path === '/kr/')).toMatchObject({
+    expect(publicRoutes.find(({ path }) => path === '/kr/seoul/check/')).toMatchObject({
       heading: 'Which rent offer actually costs less?',
       indexing: 'index',
-      canonical: '/kr/',
+      canonical: '/kr/seoul/check/',
     });
     expect(publicRoutes.find(({ path }) => path === '/sg/')).toMatchObject({
       indexing: 'noindex',
