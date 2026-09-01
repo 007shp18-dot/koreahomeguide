@@ -81,6 +81,24 @@ describe('NAVER district map', () => {
     expect(html).not.toContain('oapi.map.naver.com');
   });
 
+  it('does not request NAVER when every selected building coordinate is pending', () => {
+    const html = renderToStaticMarkup(createElement(NaverDistrictMap, {
+      clientId: 'test-client-id',
+      districts,
+      selectedDistrict: districts[0],
+      buildings: [{
+        id: 'pending', title: 'Pending Tower', href: '/pending/',
+        addressQuery: '서울특별시 종로구 Pending Tower', latitude: null, longitude: null,
+      }],
+      fallback: createElement('p', null, 'Static Seoul district map'),
+    }));
+
+    expect(html).toContain('data-map-provider="static"');
+    expect(html).toContain('data-map-state="coordinate-pending"');
+    expect(html).toContain('Map marker unavailable for 1 building');
+    expect(html).not.toContain('oapi.map.naver.com');
+  });
+
   it('rejects a partially initialized SDK after domain authentication fails', () => {
     expect(isNaverMapsSdkReady({
       Map: class {},
