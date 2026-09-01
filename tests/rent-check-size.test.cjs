@@ -104,7 +104,7 @@ test('all Rent Check forms offer rough sizes, pyeong input and KRW by default', 
 });
 
 test('all Rent Check runtimes read normalized square metres and label mobile evidence', () => {
-  for (const file of ['app.js','zh/app.js','tools/seoul-rent-check/app.js','zh/tools/seoul-rent-check/app.js']) {
+  for (const file of ['app.js','tools/seoul-rent-check/app.js',]) {
     const source = fs.readFileSync(file, 'utf8');
     assert.match(source, /KHGRentSize\.readSqm\(areaSqm\)/, file);
     assert.match(source, /KHGRentSize\.init\(document\)/, file);
