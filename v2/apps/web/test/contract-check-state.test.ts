@@ -64,31 +64,27 @@ describe('contract check client state', () => {
     });
     expect(calculated.result).not.toBeNull();
 
-    const edited = edit(calculated, 'a', 'depositWon', '120,000,000');
+    const edited = edit(calculated, 'a', 'depositWon', '90,000,000');
 
-    expect(edited.offers.a.depositWon).toBe('120000000');
-    expect(edited.result).toMatchObject({
-      referenceDeposit: 30_000_000,
-      winner: 'b',
-      roundedMonthlyDifference: 100_000,
-    });
+    expect(edited.offers.a.depositWon).toBe('90000000');
+    expect(edited.result).not.toBeNull();
     expect(edited.errors).toEqual({});
   });
 
   test.each([
-    '₩1,000',
-    '₩ 1,000',
-    '1,000원',
-    '1,000 원',
-    '1,000won',
-    '1,000 won',
-    '1,000 WON',
-    '₩ 1,000 원',
-    '₩1,000won',
+    '₩30,000,000',
+    '₩ 30,000,000',
+    '30,000,000원',
+    '30,000,000 원',
+    '30,000,000won',
+    '30,000,000 won',
+    '30,000,000 WON',
+    '₩ 30,000,000 원',
+    '₩30,000,000won',
   ])('normalizes strict decorated whole-won syntax %s', (draft) => {
     const state = edit(validDraft(), 'a', 'depositWon', draft);
 
-    expect(state.offers.a.depositWon).toBe('1000');
+    expect(state.offers.a.depositWon).toBe('30000000');
     expect(state.errors).toEqual({});
     expect(state.result).not.toBeNull();
   });
@@ -119,32 +115,45 @@ describe('contract check client state', () => {
     expect(calculated.result).toMatchObject({
       winner: 'b',
       rankingFlipped: true,
-      referenceDeposit: 30_000_000,
-      roundedMonthlyDifference: 33_333,
+      roundedMonthlyDifference: 8_333,
       offers: [
         {
           offer: { id: 'a', label: 'Near the station' },
-          roundedNormalizedMonthlyCost: 333_333,
+          roundedNormalizedMonthlyCost: 433_333,
           appliedRate: { annualRate: 0.04, rangeState: 'observed' },
         },
         {
           offer: { id: 'b' },
-          roundedNormalizedMonthlyCost: 300_000,
+          roundedNormalizedMonthlyCost: 425_000,
           appliedRate: { annualRate: 0.05, rangeState: 'observed' },
         },
       ],
     });
   });
 
-  test('fails closed on missing, zero-only, and out-of-range money inputs', () => {
+  test('accepts empty or zero monthly rent but fails closed on missing deposits and limits', () => {
     const empty = contractCheckReducer(createContractCheckState(), {
       type: 'CALCULATE',
       curve: apartmentCurve,
     });
     expect(empty.result).toBeNull();
     expect(empty.errors).toMatchObject({
-      a: { depositWon: 'Enter a deposit.', monthlyRentWon: 'Enter monthly rent.' },
-      b: { depositWon: 'Enter a deposit.', monthlyRentWon: 'Enter monthly rent.' },
+      a: { depositWon: 'Enter a deposit.' },
+      b: { depositWon: 'Enter a deposit.' },
+    });
+    expect(empty.errors.a).not.toHaveProperty('monthlyRentWon');
+    expect(empty.errors.b).not.toHaveProperty('monthlyRentWon');
+
+    let jeonse = createContractCheckState();
+    jeonse = edit(jeonse, 'a', 'depositWon', '30000000');
+    jeonse = edit(jeonse, 'b', 'depositWon', '100000000');
+    jeonse = edit(jeonse, 'b', 'monthlyRentWon', '0');
+    expect(jeonse.errors).toEqual({});
+    expect(jeonse.result).toMatchObject({
+      offers: [
+        { offer: { monthlyRent: 0 }, roundedNormalizedMonthlyCost: 125_000 },
+        { offer: { monthlyRent: 0 }, roundedNormalizedMonthlyCost: 333_333 },
+      ],
     });
 
     let zero = createContractCheckState();
@@ -156,11 +165,9 @@ describe('contract check client state', () => {
     expect(zero.errors).toMatchObject({
       a: {
         depositWon: 'Deposit must be a positive whole-won amount.',
-        monthlyRentWon: 'Monthly rent must be a positive whole-won amount.',
       },
       b: {
         depositWon: 'Deposit must be a positive whole-won amount.',
-        monthlyRentWon: 'Monthly rent must be a positive whole-won amount.',
       },
     });
 
@@ -175,6 +182,18 @@ describe('contract check client state', () => {
       a: { depositWon: 'Deposit must be ₩20,000,000,000 or less.' },
       b: { monthlyRentWon: 'Monthly rent must be ₩100,000,000 or less.' },
     });
+  });
+
+  test('holds the comparison when either deposit is outside the measured range', () => {
+    let below = validDraft();
+    below = edit(below, 'a', 'depositWon', '20000000');
+    expect(below.result).toBeNull();
+    expect(below.errors.a?.offer).toBe('Deposit falls outside the measured range. No comparison is produced.');
+
+    let above = validDraft();
+    above = edit(above, 'b', 'depositWon', '120000000');
+    expect(above.result).toBeNull();
+    expect(above.errors.b?.offer).toBe('Deposit falls outside the measured range. No comparison is produced.');
   });
 
   test('rejects every non-decimal whole-won syntax without throwing', () => {

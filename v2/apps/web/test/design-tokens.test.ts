@@ -155,14 +155,20 @@ describe('signedprice brand foundation', () => {
 
   it('keeps geometry square and structural rules two pixels wide', () => {
     expect(css).toMatch(/--radius:\s*0px;/);
+    expect(css).toMatch(/--content-frame:\s*1240px;/);
+    expect(css).toMatch(/--workspace-frame:\s*1440px;/);
+    expect(css).toMatch(/--rule-strong:\s*2px solid var\(--ink\);/);
+    expect(css).toMatch(/--rule-default:\s*1px solid var\(--divider\);/);
+    expect(css).toMatch(/--rule-subtle:\s*1px solid var\(--line\);/);
     expect(declarationsFor(css, '.site-header')).toMatchObject({
-      'border-bottom': '2px solid var(--ink)',
+      'border-bottom': 'var(--rule-strong)',
       position: 'sticky',
       top: '0',
       'z-index': '30',
     });
     expect(declarationsFor(css, '.site-header__inner')).toMatchObject({
-      padding: '0 40px',
+      width: 'min(calc(100% - 48px), var(--content-frame))',
+      padding: '0',
     });
     expect(declarationsFor(css, '.site-header__market-link')).toMatchObject({
       'min-height': '44px',
@@ -196,11 +202,20 @@ describe('signedprice brand foundation', () => {
     });
   });
 
-  it('uses the bundled Archivo family without a runtime Google Fonts request', () => {
+  it('uses one neutral product stack while keeping bundled Archivo for the wordmark', () => {
     expect(css).not.toMatch(/fonts\.googleapis\.com/i);
     expect(css).toMatch(/@font-face\s*{[\s\S]*?font-family:\s*"Archivo"/);
     expect(css).toContain('/fonts/archivo-latin-wght-normal.woff2');
-    expect(declarationsFor(css, 'body')['font-family']).toMatch(/^"Archivo"/);
+    expect(declarationsFor(css, 'body')['font-family']).toMatch(/^"Inter", "Pretendard"/);
+    expect(declarationsFor(css, '.brand-wordmark')['font-family']).toBe('"Archivo", sans-serif');
+  });
+
+  it('caps product display tracking and keeps body copy readable', () => {
+    expect(declarationsFor(css, 'body')).toMatchObject({
+      'letter-spacing': 'normal',
+      'line-height': '1.6',
+    });
+    expect(css).toMatch(/--tracking-display:\s*-0\.03em;/);
   });
 });
 

@@ -64,7 +64,7 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
         </div>
       </div>
       <div className="site-header__product-tier" data-navigation-tier="product">
-        <nav aria-label={copy.navigationLabel}>
+        <nav aria-label={copy.navigationLabel} className="site-shell site-header__product-inner">
           <ul className="site-header__links">
             {productNavigationLinks.map((link) => (
               <li key={link.href}>

@@ -141,7 +141,7 @@ describe('three market overview routes', () => {
         await MarketOverviewPage({ params: Promise.resolve(params) }),
       );
       const navigation = markup.match(
-        /<nav aria-label="Primary navigation">([\s\S]*?)<\/nav>/,
+        /<nav aria-label="Primary navigation"[^>]*>([\s\S]*?)<\/nav>/,
       )?.[1] ?? '';
 
       expect(navigation.match(/<a /g) ?? []).toHaveLength(5);
@@ -158,7 +158,7 @@ describe('three market overview routes', () => {
       }),
     );
     const navigation = markup.match(
-      /<nav aria-label="Primary navigation">([\s\S]*?)<\/nav>/,
+      /<nav aria-label="Primary navigation"[^>]*>([\s\S]*?)<\/nav>/,
     )?.[1] ?? '';
 
     expect(navigation.match(/<a /g) ?? []).toHaveLength(5);

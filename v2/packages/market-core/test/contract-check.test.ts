@@ -127,7 +127,7 @@ describe('conversionRateAt', () => {
 });
 
 describe('compareRentOffers', () => {
-  test('excludes refundable principal and uses the lower filed deposit as reference', () => {
+  test('converts each full refundable deposit into its own monthly opportunity cost', () => {
     const result = compareRentOffers({
       curve: v5ApartmentCurve,
       offers: [
@@ -142,18 +142,18 @@ describe('compareRentOffers', () => {
       ],
     });
 
-    expect(result.referenceDeposit).toBe(50_000_000);
-    expect(result.offers[0]?.normalizedMonthlyCost).toBe(1_000_000);
-    expect(result.offers[1]?.normalizedMonthlyCost).toBeCloseTo(1_008_333.3333333334);
+    expect(result).not.toHaveProperty('referenceDeposit');
+    expect(result.offers[0]?.normalizedMonthlyCost).toBeCloseTo(1_200_416.6666666667);
+    expect(result.offers[1]?.normalizedMonthlyCost).toBeCloseTo(1_202_500);
     expect(result.offers[1]?.normalizedMonthlyCost).toBeLessThan(2_000_000);
     expect(result).toMatchObject({
       winner: 'a',
       rankingFlipped: true,
-      roundedMonthlyDifference: 8_333,
+      roundedMonthlyDifference: 2_083,
     });
   });
 
-  test('normalizes both offers at the lower deposit and detects a flipped rent ranking', () => {
+  test('normalizes both full deposits and detects a flipped rent ranking', () => {
     const result = compareRentOffers({
       curve,
       offers: [offer('a'), offer('b')],
@@ -161,21 +161,31 @@ describe('compareRentOffers', () => {
 
     expect(result).toMatchObject({
       housingType: 'apartment',
-      referenceDeposit: 30_000_000,
       winner: 'a',
-      roundedMonthlyDifference: 33_333,
+      roundedMonthlyDifference: 8_333,
       effectivelyEqual: false,
       rankingFlipped: true,
     });
-    expect(result.monthlyDifference).toBeCloseTo(33_333.3333333333);
+    expect(result.monthlyDifference).toBeCloseTo(8_333.3333333333);
     expect(result.offers[0]).toMatchObject({
-      roundedNormalizedMonthlyCost: 1_000_000,
+      roundedNormalizedMonthlyCost: 1_125_000,
       appliedRate: { annualRate: 0.05, rangeState: 'observed' },
     });
     expect(result.offers[1]).toMatchObject({
-      roundedNormalizedMonthlyCost: 1_033_333,
+      roundedNormalizedMonthlyCost: 1_133_333,
       appliedRate: { annualRate: 0.04, rangeState: 'observed' },
     });
+  });
+
+  test('rejects a comparison when either deposit is outside the measured curve', () => {
+    expect(() => compareRentOffers({
+      curve,
+      offers: [offer('a', { deposit: 20_000_000 }), offer('b')],
+    })).toThrow('outside the measured range');
+    expect(() => compareRentOffers({
+      curve,
+      offers: [offer('a'), offer('b', { deposit: 120_000_000 })],
+    })).toThrow('outside the measured range');
   });
 
   test('is independent of offer tuple order while preserving offer IDs', () => {
@@ -183,7 +193,6 @@ describe('compareRentOffers', () => {
     const reverse = compareRentOffers({ curve, offers: [offer('b'), offer('a')] });
 
     expect(reverse).toMatchObject({
-      referenceDeposit: forward.referenceDeposit,
       winner: forward.winner,
       roundedMonthlyDifference: forward.roundedMonthlyDifference,
       rankingFlipped: forward.rankingFlipped,
@@ -226,7 +235,7 @@ describe('compareRentOffers', () => {
       ],
     });
 
-    expect(equalAtDisplayPrecision.monthlyDifference).toBeCloseTo(0.025);
+    expect(equalAtDisplayPrecision.monthlyDifference).toBeCloseTo(0.0228571428);
     expect(equalAtDisplayPrecision.roundedMonthlyDifference).toBe(0);
     expect(equalAtDisplayPrecision.effectivelyEqual).toBe(true);
     expect(equalAtDisplayPrecision.winner).toBe('equal');

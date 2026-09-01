@@ -380,9 +380,9 @@ describe('map and mobile scroll safety', () => {
     expect(workspaceSource).toContain('state.map.revision');
   });
 
-  it('includes Korean system fallbacks after the local Latin display face', () => {
+  it('uses one modern product stack with Korean system fallbacks', () => {
     expect(declarationsFor(css, 'body')['font-family']).toMatch(
-      /Archivo.*Noto Sans KR.*Apple SD Gothic Neo.*Malgun Gothic.*sans-serif/,
+      /Inter.*Pretendard.*Noto Sans KR.*Apple SD Gothic Neo.*Malgun Gothic.*sans-serif/,
     );
   });
 });

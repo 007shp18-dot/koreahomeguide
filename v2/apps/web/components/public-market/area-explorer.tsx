@@ -175,17 +175,23 @@ function ReadyAreaExplorer({
           <h1 id="area-explorer-heading">{copy.heroHeading}</h1>
           <p>{copy.heroDescription}</p>
         </div>
-        <nav className={styles.transactionTabs} data-transaction-tabs="true" aria-label="Transaction type">
-          <Link href={localizedSeoulHref('/kr/seoul/explore/', locale)} aria-current="page">{locale === 'ko' ? '전세' : 'Jeonse'}</Link>
-          <span aria-disabled="true">{locale === 'ko' ? '월세' : 'Monthly rent'}</span>
-          <span aria-disabled="true">{locale === 'ko' ? '매매' : 'Sale'}</span>
-        </nav>
         <Link className={styles.rankingsLink} href={localizedSeoulHref('/kr/seoul/rankings/', locale)}>
           {copy.rankingsLink}
         </Link>
       </header>
 
       <div className={styles.exploreToolbar}>
+        <div
+          className={styles.transactionFilter}
+          data-transaction-filter="verified-availability"
+          role="group"
+          aria-label={locale === 'ko' ? '거래 유형' : 'Transaction type'}
+        >
+          <span aria-disabled="true" data-transaction-mode="all">{copy.all}</span>
+          <span aria-disabled="true" data-transaction-mode="sale">{locale === 'ko' ? '매매' : 'Sale'}</span>
+          <button type="button" aria-pressed="true" data-transaction-mode="jeonse">{locale === 'ko' ? '전세' : 'Jeonse'}</button>
+          <span aria-disabled="true" data-transaction-mode="monthly-rent">{locale === 'ko' ? '월세' : 'Monthly rent'}</span>
+        </div>
         <div className={styles.buildingSearch} data-building-search="retained">
           <label htmlFor="explore-building-query">
             {locale === 'ko' ? '구·동·건물·유형 검색' : 'Search district, neighborhood, building or type'}
@@ -229,6 +235,30 @@ function ReadyAreaExplorer({
       </div>
 
       <div className={styles.workspace}>
+        <aside className={styles.districtRail} data-district-rail="all-25" aria-label={locale === 'ko' ? '서울 25개 구' : 'All 25 Seoul districts'}>
+          <div className={styles.districtRailHeading}>
+            <span>{locale === 'ko' ? '지역' : 'Districts'}</span>
+            <strong>25</strong>
+          </div>
+          <ol>
+            {model.districts.map((district) => (
+              <li key={district.slug}>
+                <button
+                  type="button"
+                  aria-pressed={district.slug === selected.slug}
+                  data-district-option={district.slug}
+                  onClick={() => selectDistrict(district.slug)}
+                >
+                  <span>
+                    <strong>{locale === 'ko' ? district.nameKo : district.nameEn}</strong>
+                    <small>{locale === 'ko' ? district.nameEn : district.nameKo}</small>
+                  </span>
+                  <small>{district.medianLabel ?? copy.notPublished}</small>
+                </button>
+              </li>
+            ))}
+          </ol>
+        </aside>
         <section className={styles.mapPanel} aria-labelledby="area-map-heading">
           <div className={styles.sectionHeading}>
             <p>{copy.mapEyebrow}</p>

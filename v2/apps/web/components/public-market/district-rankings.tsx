@@ -203,25 +203,33 @@ function ReadyRankings({
   const [activeView, setActiveView] = useState<RankingView>('median');
   return (
     <section className={styles.rankings} aria-labelledby="district-rankings-heading">
-      <header className={styles.hero}>
-        <p>{copy.eyebrow}</p>
-        <h1 id="district-rankings-heading">{copy.heading}</h1>
-        <p>
-          {copy.descriptionLead} {model.source.period}. {copy.descriptionMiddle}{' '}
-          {model.source.publicationMinimum}{locale === 'en' ? ' ' : ''}{copy.descriptionTail}
-        </p>
-        <p className={styles.exclusion}>
-          {model.withheldDistrictCount}{locale === 'en' ? ' ' : ''}{copy.exclusionTail}
-        </p>
-      </header>
+      <div className={styles.frame} data-ranking-frame="contained">
+        <header className={styles.hero}>
+          <div className={styles.heroCopy}>
+            <p>{copy.eyebrow}</p>
+            <h1 id="district-rankings-heading">{copy.heading}</h1>
+            <p>
+              {copy.descriptionLead} {model.source.period}. {copy.descriptionMiddle}{' '}
+              {model.source.publicationMinimum}{locale === 'en' ? ' ' : ''}{copy.descriptionTail}
+            </p>
+            <p className={styles.exclusion}>
+              {model.withheldDistrictCount}{locale === 'en' ? ' ' : ''}{copy.exclusionTail}
+            </p>
+          </div>
+          <dl className={styles.heroMeta} data-ranking-method="published-context">
+            <div><dt>{locale === 'ko' ? '기간' : 'Period'}</dt><dd>{model.source.period}</dd></div>
+            <div><dt>{locale === 'ko' ? '게시 구' : 'Published districts'}</dt><dd>{25 - model.withheldDistrictCount} / 25</dd></div>
+            <div><dt>{locale === 'ko' ? '최소 표본' : 'Minimum sample'}</dt><dd>{model.source.publicationMinimum}</dd></div>
+          </dl>
+        </header>
 
-      <EvidencePeriodStrip
-        model={model.period}
-        label={copy.periodLabel}
-        locale={locale}
-      />
+        <EvidencePeriodStrip
+          model={model.period}
+          label={copy.periodLabel}
+          locale={locale}
+        />
 
-      <div className={styles.viewWorkspace}>
+        <div className={styles.viewWorkspace}>
         <div className={styles.viewTabs} role="tablist" aria-label="Ranking measure">
           {rankingViews.map((view) => (
             <button
@@ -303,12 +311,13 @@ function ReadyRankings({
             />
           </div>
         </div>
-      </div>
+        </div>
 
-      <aside className={styles.limit} aria-label={copy.limitationAria}>
-        <p>{copy.limitation}</p>
-      </aside>
-      <PublicSourceBoundary model={model.source} locale={locale} />
+        <aside className={styles.limit} aria-label={copy.limitationAria}>
+          <p>{copy.limitation}</p>
+        </aside>
+        <PublicSourceBoundary model={model.source} locale={locale} />
+      </div>
     </section>
   );
 }

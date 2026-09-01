@@ -4,6 +4,7 @@ import type {
 } from '@signedprice/korea-rent';
 import {
   compareRentOffers,
+  conversionRateAt,
   type RentContractComparison,
 } from '@signedprice/market-core';
 
@@ -75,23 +76,26 @@ function moneyValue(
   kind: 'deposit' | 'monthlyRent',
 ): Readonly<{ value?: number; error?: string }> {
   if (value === '') {
-    return { error: kind === 'deposit' ? 'Enter a deposit.' : 'Enter monthly rent.' };
+    return kind === 'deposit' ? { error: 'Enter a deposit.' } : { value: 0 };
   }
   const digits = wholeWonDigits(value);
   if (digits === undefined) {
     return {
       error: kind === 'deposit'
         ? 'Deposit must be a positive whole-won amount.'
-        : 'Monthly rent must be a positive whole-won amount.',
+        : 'Monthly rent must be a non-negative whole-won amount.',
     };
   }
   const parsed = Number(digits);
   const maximum = kind === 'deposit' ? MAX_DEPOSIT_WON : MAX_MONTHLY_RENT_WON;
-  if (!Number.isSafeInteger(parsed) || parsed <= 0) {
+  if (
+    !Number.isSafeInteger(parsed)
+    || (kind === 'deposit' ? parsed <= 0 : parsed < 0)
+  ) {
     return {
       error: kind === 'deposit'
         ? 'Deposit must be a positive whole-won amount.'
-        : 'Monthly rent must be a positive whole-won amount.',
+        : 'Monthly rent must be a non-negative whole-won amount.',
     };
   }
   if (parsed > maximum) {
@@ -140,6 +144,19 @@ function calculate(
   if (Object.keys(b.errors).length > 0) errors.b = b.errors;
   if (errors.a !== undefined || errors.b !== undefined) {
     return { ...state, errors, result: null };
+  }
+
+  const rangeErrors: { a?: ContractOfferErrors; b?: ContractOfferErrors } = {};
+  for (const [offerId, deposit] of [['a', a.deposit!], ['b', b.deposit!]] as const) {
+    const appliedRate = conversionRateAt(curve, deposit);
+    if (appliedRate.rangeState !== 'observed') {
+      rangeErrors[offerId] = {
+        offer: 'Deposit falls outside the measured range. No comparison is produced.',
+      };
+    }
+  }
+  if (rangeErrors.a !== undefined || rangeErrors.b !== undefined) {
+    return { ...state, errors: rangeErrors, result: null };
   }
 
   try {

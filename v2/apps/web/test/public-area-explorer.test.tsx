@@ -67,16 +67,20 @@ describe('public Seoul area Explorer', () => {
     expect(markup).toContain('name="housing-type"');
   });
 
-  it('puts transaction context and the map workspace before coverage detail', () => {
+  it('uses one availability-safe transaction filter before the map workspace', () => {
     const markup = renderToStaticMarkup(createElement(AreaExplorer, {
       model: readyModel(),
       naverMapClientId: 'test-naver-client',
     }));
 
-    expect(markup).toContain('data-transaction-tabs="true"');
-    expect(markup).toMatch(/<a[^>]+aria-current="page"[^>]*href="\/kr\/seoul\/explore">Jeonse<\/a>/);
-    expect(markup).toContain('aria-disabled="true">Monthly rent');
-    expect(markup).toContain('aria-disabled="true">Sale');
+    expect(markup).not.toContain('data-transaction-tabs="true"');
+    expect(markup).toContain('data-transaction-filter="verified-availability"');
+    expect(markup.match(/data-transaction-mode=/g)).toHaveLength(4);
+    expect(markup).toMatch(/<button[^>]+aria-pressed="true"[^>]+data-transaction-mode="jeonse"[^>]*>Jeonse<\/button>/);
+    expect(markup).toMatch(/<span[^>]+aria-disabled="true"[^>]+data-transaction-mode="all"[^>]*>All<\/span>/);
+    expect(markup).toMatch(/<span[^>]+aria-disabled="true"[^>]+data-transaction-mode="sale"[^>]*>Sale<\/span>/);
+    expect(markup).toMatch(/<span[^>]+aria-disabled="true"[^>]+data-transaction-mode="monthly-rent"[^>]*>Monthly rent<\/span>/);
+    expect(markup).not.toMatch(/data-transaction-mode="(?:all|sale|monthly-rent)"[^>]+(?:href|aria-pressed="true")/);
     expect(markup).toContain('Price-ready buildings');
     expect(markup.indexOf('class="_workspace_')).toBeLessThan(markup.indexOf('data-coverage-panel="verified"'));
   });
@@ -89,6 +93,8 @@ describe('public Seoul area Explorer', () => {
     }));
 
     expect(markup).toContain('data-map-provider="naver"');
+    expect(markup).toContain('data-district-rail="all-25"');
+    expect(markup.match(/data-district-option=/g)).toHaveLength(25);
     expect(markup).toContain('ncpKeyId=test-naver-client');
     expect(markup).toContain('viewBox="0 0 720 560"');
     expect(markup).toContain('District median refundable jeonse deposit');
@@ -199,8 +205,11 @@ describe('public Seoul area Explorer', () => {
       'utf8',
     );
 
-    expect(css).toMatch(/grid-template-columns:\s*minmax\(0,\s*65fr\)\s+minmax\(340px,\s*35fr\)/);
+    expect(css).toMatch(/\.hero,[\s\S]*?\.workspace,[\s\S]*?\{[\s\S]*?width:\s*min\(calc\(100% - 48px\),\s*var\(--workspace-frame\)\)/);
+    expect(css).toMatch(/grid-template-columns:\s*196px\s+minmax\(0,\s*1fr\)\s+minmax\(360px,\s*400px\)/);
     expect(css).toMatch(/\.exploreToolbar[\s\S]*position:\s*sticky/);
+    expect(css).toMatch(/\.transactionFilter[\s\S]*border:\s*var\(--rule-default\)/);
+    expect(css).toMatch(/\.districtRail[\s\S]*overflow-y:\s*auto/);
     expect(css).toMatch(/\.districtButton[\s\S]*min-height:\s*44px/);
     expect(css).toMatch(/\.detailLink[\s\S]*min-height:\s*44px/);
     expect(css).toMatch(/:focus-visible[\s\S]*outline:\s*2px solid var\(--area-accent\)[\s\S]*outline-offset:\s*2px/);

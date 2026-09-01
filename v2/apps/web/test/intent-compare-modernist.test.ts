@@ -53,7 +53,7 @@ function declarationsFor(source: string, selector: string): Record<string, strin
 
 function navigationMarkup(markup: string): string {
   return (
-    markup.match(/<nav aria-label="Primary navigation">([\s\S]*?)<\/nav>/)?.[1] ?? ''
+    markup.match(/<nav aria-label="Primary navigation"[^>]*>([\s\S]*?)<\/nav>/)?.[1] ?? ''
   );
 }
 

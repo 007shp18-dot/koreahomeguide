@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import type { KoreaConversionCurveProjection } from '@signedprice/korea-rent';
 import { compareRentOffers } from '@signedprice/market-core';
 import { renderToStaticMarkup } from 'react-dom/server';
@@ -68,6 +69,9 @@ describe('Contract Check workspace SSR contract', () => {
     expect(result).toBeGreaterThan(offerB);
     expect((html.match(/inputMode="numeric"/g) ?? [])).toHaveLength(4);
     expect(html).toContain('data-contract-check-form="ready"');
+    expect(html).toContain('data-check-mode-selector="true"');
+    expect(html).toMatch(/<span[^>]+aria-disabled="true"[^>]+data-check-mode="budget"[^>]*>My budget/);
+    expect(html).toMatch(/<button[^>]+aria-pressed="true"[^>]+data-check-mode="compare"[^>]*>Compare two offers/);
     expect(html).toContain('data-result-focus-target="true"');
     expect(html).toContain('aria-live="polite"');
     expect(html).not.toMatch(/<button[^>]*type="submit"|Compare offers/);
@@ -91,7 +95,7 @@ describe('Contract Check workspace SSR contract', () => {
     const comparison = compareRentOffers({
       curve: curves[0]!,
       offers: [
-        { id: 'a', housingType: 'apartment', deposit: 120_000_000, monthlyRent: 100_000 },
+        { id: 'a', housingType: 'apartment', deposit: 90_000_000, monthlyRent: 100_000 },
         { id: 'b', housingType: 'apartment', deposit: 30_000_000, monthlyRent: 300_000 },
       ],
     });
@@ -103,22 +107,39 @@ describe('Contract Check workspace SSR contract', () => {
     expect(svg).not.toContain('<text');
     expect(html).toContain('data-curve-label="true"');
     expect(html).toContain('data-offer-marker="a"');
-    expect(html).toContain('data-marker-deposit="120000000"');
+    expect(html).toContain('data-marker-deposit="90000000"');
     expect(html).toContain('data-offer-marker="b"');
     expect(html).toContain('data-marker-deposit="30000000"');
-    expect(html).toContain('data-range-segment="held"');
+    expect(html.match(/data-range-segment="held"/g)).toHaveLength(2);
     expect(html).toContain('Outside measured range — held, not extended.');
     expect((html.match(/data-calculation-row=/g) ?? [])).toHaveLength(4);
-    expect(html.indexOf('Rate at filed deposit')).toBeLessThan(html.indexOf('Difference from reference deposit'));
-    expect(html.indexOf('Difference from reference deposit')).toBeLessThan(html.indexOf('Difference × annual rate ÷ 12'));
-    expect(html.indexOf('Difference × annual rate ÷ 12')).toBeLessThan(html.indexOf('Monthly rent + row 3'));
+    expect(html.match(/data-monthly-equivalent=/g)).toHaveLength(2);
+    expect(html.indexOf('Deposit as filed')).toBeLessThan(html.indexOf('Monthly rent as filed'));
+    expect(html.indexOf('Monthly rent as filed')).toBeLessThan(html.indexOf('Verified annual rate'));
+    expect(html.indexOf('Verified annual rate')).toBeLessThan(html.indexOf('Monthly equivalent'));
+    expect(auditCells(html, 'deposit')).toEqual(['₩90,000,000', '₩30,000,000']);
+    expect(auditCells(html, 'monthly')).toEqual(['₩100,000', '₩300,000']);
     expect(auditCells(html, 'rate')).toEqual([
-      '4.00% · Outside measured range — held, not extended.',
+      '4.14% · Within measured range',
       '5.00% · Within measured range',
     ]);
-    expect(auditCells(html, 'difference')).toEqual(['₩90,000,000', '₩0']);
-    expect(auditCells(html, 'conversion')).toEqual(['₩300,000', '₩0']);
-    expect(auditCells(html, 'normalized')).toEqual(['₩400,000', '₩300,000']);
+    expect(auditCells(html, 'equivalent')).toEqual(['₩410,714', '₩425,000']);
+  });
+
+  test('uses the global header, contained frame, and shared rule hierarchy', () => {
+    const html = renderToStaticMarkup(<ContractCheckWorkspace model={readyModel} />);
+    const css = readFileSync(
+      new URL('../components/contract-check/contract-check.module.css', import.meta.url),
+      'utf8',
+    );
+
+    expect(html).toContain('data-navigation-tier="market"');
+    expect(html).toContain('data-navigation-tier="product"');
+    expect(html).toContain('data-product-index="01"');
+    expect(css).toMatch(/\.main\s*\{[\s\S]*?width:\s*min\(calc\(100% - 48px\),\s*1120px\)/);
+    expect(css).toMatch(/\.comparisonGrid\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
+    expect(css).toMatch(/\.resultPanel\s*\{[\s\S]*?border-bottom:\s*var\(--rule-strong\)/);
+    expect(css).not.toMatch(/outline:\s*3px/);
   });
 
   test('discloses evidence and keeps the single-offer tool secondary', () => {
@@ -135,10 +156,11 @@ describe('Contract Check workspace SSR contract', () => {
     expect(html).not.toMatch(/News|Planned/);
   });
 
-  test('does not expose unreleased markets or unverified marketing claims', () => {
+  test('keeps global market navigation separate from unverified marketing claims', () => {
     const html = renderToStaticMarkup(<ContractCheckWorkspace model={readyModel} />);
 
-    expect(html).not.toMatch(/Singapore|Dubai|72,291|29\.4%/i);
+    expect(html).toMatch(/Singapore|Dubai/);
+    expect(html).not.toMatch(/72,291|29\.4%/i);
     expect(html).not.toMatch(/statutory|legal rate/i);
   });
 
