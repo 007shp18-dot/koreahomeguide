@@ -36,12 +36,14 @@ export const POST = createPublicBuildingJobPostHandler({
 export function GET(): Response {
   if (process.env.VERCEL_ENV !== 'preview') return new Response(null, { status: 404 });
   const html = `<!doctype html><html><head><meta name="robots" content="noindex,nofollow"><title>Building artifact runner</title></head>
-<body><button id="run" type="button">Run verified building artifact</button><pre id="status">Idle</pre><textarea id="artifact" hidden></textarea>
+<body><button id="run" type="button">Run verified building artifact</button><button id="finalize" type="button">Finalize cached artifact</button><pre id="status">Idle</pre><textarea id="artifact" hidden></textarea><a id="download" hidden>Download verified artifact</a>
 <script>
-const button=document.getElementById('run');const status=document.getElementById('status');const artifact=document.getElementById('artifact');
+const button=document.getElementById('run');const finalize=document.getElementById('finalize');const status=document.getElementById('status');const artifact=document.getElementById('artifact');const download=document.getElementById('download');
 const referenceInstant='2026-08-30T00:00:00.000Z';
 async function post(body){const response=await fetch(location.pathname,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const value=await response.json();if(!response.ok)throw new Error(JSON.stringify(value));return value;}
-button.addEventListener('click',async()=>{button.disabled=true;let cursor=0;try{while(cursor<700){let retries=0;for(;;){try{const value=await post({action:'batch',referenceInstant,cursor});cursor=value.nextCursor;status.textContent='Source '+cursor+'/700';break;}catch(error){if(++retries>5)throw error;status.textContent='Retry '+cursor+'/700';await new Promise(resolve=>setTimeout(resolve,1500));}}}const result=await post({action:'finalize',referenceInstant});artifact.value=result.artifact;status.textContent='COMPLETE '+JSON.stringify({...result,artifact:undefined});}catch(error){status.textContent='ERROR '+String(error);}finally{button.disabled=false;}});
+function publish(result){artifact.value=result.artifact;download.href=URL.createObjectURL(new Blob([result.artifact],{type:'application/json'}));download.download='public-building-summary.json';download.hidden=false;status.textContent='COMPLETE '+JSON.stringify({...result,artifact:undefined});}
+button.addEventListener('click',async()=>{button.disabled=true;let cursor=0;try{while(cursor<700){let retries=0;for(;;){try{const value=await post({action:'batch',referenceInstant,cursor});cursor=value.nextCursor;status.textContent='Source '+cursor+'/700';break;}catch(error){if(++retries>5)throw error;status.textContent='Retry '+cursor+'/700';await new Promise(resolve=>setTimeout(resolve,1500));}}}publish(await post({action:'finalize',referenceInstant}));}catch(error){status.textContent='ERROR '+String(error);}finally{button.disabled=false;}});
+finalize.addEventListener('click',async()=>{finalize.disabled=true;try{publish(await post({action:'finalize',referenceInstant}));}catch(error){status.textContent='ERROR '+String(error);}finally{finalize.disabled=false;}});
 </script></body></html>`;
   return new Response(html, {
     status: 200,
