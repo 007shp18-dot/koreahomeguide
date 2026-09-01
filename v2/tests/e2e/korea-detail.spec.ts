@@ -115,9 +115,10 @@ test('verified synthetic building detail is server rendered only in the local re
     level: 2,
     name: 'Privacy-safe reported contracts',
   })).toBeVisible();
-  await expect(page.locator('[data-detail-main="true"]')).toBeVisible();
-  await expect(page.locator('[data-detail-rail="true"]')).toContainText('Latest verified News');
-  await expect(page.locator('[data-detail-rail="true"]')).toContainText('Community signal');
+  const evidenceDetails = page.locator('details');
+  await expect(evidenceDetails).toHaveAttribute('open', '');
+  await expect(evidenceDetails).toContainText('Latest verified News');
+  await expect(evidenceDetails).toContainText('Community signal');
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /^noindex,\s*follow$/);
   await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
   await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(0);
