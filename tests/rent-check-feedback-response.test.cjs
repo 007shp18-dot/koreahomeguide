@@ -175,7 +175,7 @@ test('verdict presentation leads with text, icon, difference, and evidence count
 });
 
 test('rent check status uses explicit UI state instead of occupying the idle layout', () => {
-  for (const appPath of ['app.js','tools/seoul-rent-check/app.js','app.js','tools/seoul-rent-check/app.js']) {
+  for (const appPath of ['app.js','tools/seoul-rent-check/app.js']) {
     const app = fs.readFileSync(path.join(ROOT,appPath),'utf8');
     assert.match(app, /status\.dataset\.state=state\|\|'idle'/);
     assert.match(app, /data-rent-verdict-annualized/);
