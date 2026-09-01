@@ -67,7 +67,11 @@ export default async function ExplorerPage({ searchParams }: ExplorerPageProps) 
     <div id="top" className="explorer-page">
       <SiteHeader copy={header} />
       <main>
-        <AreaExplorer model={model} naverMapClientId={naverMapClientId} />
+        <AreaExplorer
+          model={model}
+          naverMapClientId={naverMapClientId}
+          initialQuery={singleValue(query.q)}
+        />
       </main>
       <PublicBreadcrumbJsonLd items={[
         { name: 'Home', path: '/' },

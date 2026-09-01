@@ -12,6 +12,7 @@ export function MarketHero({ model }: MarketHeroProps) {
     <section
       className={`market-hero${model.layout === 'overview' ? ' market-hero--overview' : ''} site-shell`}
       aria-labelledby={headingId}
+      data-product-intro="true"
     >
       <div className="market-hero__statement">
         <div className="market-hero__kicker">

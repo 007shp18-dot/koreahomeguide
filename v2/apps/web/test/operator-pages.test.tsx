@@ -41,6 +41,7 @@ describe('SignedPrice operator configuration', () => {
       missing: ['operator name', 'privacy contact'],
     });
     for (const html of [privacyHtml, contactHtml]) {
+      expect(html).toContain('data-product-intro="true"');
       expect(html).toContain('Operator details are not configured');
       expect(html).not.toMatch(/privacy@signedprice\.com|SignedPrice Labs Ltd\./);
     }

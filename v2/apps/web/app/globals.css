@@ -361,7 +361,7 @@ body {
   border: 2px solid var(--ink);
   border-radius: 0;
   background: var(--canvas);
-  box-shadow: 12px 12px 0 var(--ink);
+  box-shadow: none;
 }
 
 .building-dialog__header {
@@ -636,11 +636,11 @@ ul {
   min-height: 0;
   margin: 0;
   padding: 15px 40px;
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   justify-content: space-between;
   gap: 32px;
-  flex-wrap: wrap;
 }
 
 .wordmark {
@@ -763,6 +763,15 @@ ul {
 
 .site-header__links a[aria-current="page"]:focus-visible {
   box-shadow: inset 0 0 0 2px var(--canvas);
+}
+
+.site-header__market {
+  justify-self: end;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .hero {
@@ -2578,6 +2587,31 @@ h1 {
   margin-top: 18px;
 }
 
+.same-cash__evidence {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 20px;
+  border: 2px solid var(--ink);
+}
+
+.same-cash-evidence-card {
+  min-width: 0;
+  padding: 24px 26px;
+  border-right: 1px solid var(--ink);
+  background: var(--surface-strong);
+}
+
+.same-cash-evidence-card:last-child {
+  border-right: 0;
+}
+
+.same-cash-evidence-card > h3 {
+  font-size: 0.74rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
 .same-cash-card__breakdown {
   margin: 20px 0 0;
   padding-top: 16px;
@@ -2841,5 +2875,18 @@ h1 {
   .same-cash-verdict__stats {
     width: 100%;
     justify-content: space-between;
+  }
+
+  .same-cash__evidence {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .same-cash-evidence-card {
+    border-right: 0;
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .same-cash-evidence-card:last-child {
+    border-bottom: 0;
   }
 }

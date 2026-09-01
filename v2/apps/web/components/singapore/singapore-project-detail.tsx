@@ -16,14 +16,14 @@ export function SingaporeProjectDetail({ model }: Readonly<{
 }>) {
   if (model.status === 'unavailable') return (
     <SingaporePage>
-      <section className={styles.unavailable} data-singapore-project="unavailable">
+      <section className={styles.unavailable} data-singapore-project="unavailable" data-product-intro="true">
         <h1>{model.message}</h1><p>No project value is substituted.</p>
       </section>
     </SingaporePage>
   );
   if (model.status === 'insufficient') return (
     <SingaporePage>
-      <section className={styles.withheld} data-singapore-project="insufficient">
+      <section className={styles.withheld} data-singapore-project="insufficient" data-product-intro="true">
         <p className={styles.eyebrow}>Singapore · {model.identity.marketSegment}</p>
         <h1>{model.identity.project}: distribution not published.</h1>
         <p>{model.count} reported transactions. At least {model.threshold} are required.</p>
@@ -40,7 +40,7 @@ export function SingaporeProjectDetail({ model }: Readonly<{
         </Link>
         <span>{model.identity.project}</span>
       </nav>
-      <header className={styles.hero} data-singapore-project="ready">
+      <header className={styles.hero} data-singapore-project="ready" data-product-intro="true">
         <p className={styles.eyebrow}>Singapore · {model.identity.marketSegment} · District {model.identity.district}</p>
         <h1>{model.identity.project}: {model.display.medianPriceLabel} median.</h1>
         <p>{model.identity.street} · {model.display.sampleLabel}</p>

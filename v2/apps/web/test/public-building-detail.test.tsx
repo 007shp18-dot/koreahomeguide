@@ -56,14 +56,14 @@ function detailProps(
 }
 
 describe('public building detail', () => {
-  it('renders compact market navigation and URL-backed decision tabs', () => {
+  it('renders shared product navigation and URL-backed decision tabs', () => {
     const header = renderToStaticMarkup(<BuildingDetailHeader />);
     expect(header).toContain('aria-label="signedprice home"');
-    expect(header).toContain('Seoul');
-    expect(header).toContain('Singapore');
-    expect(header).toContain('Dubai');
-    expect(header).toContain('Explore');
-    expect(header).not.toMatch(/<a[^>]*>Dubai<\/a>/);
+    for (const label of ['Check', 'Explore', 'Briefs', 'Guide']) {
+      expect(header).toContain(`>${label}</a>`);
+    }
+    expect(header).toMatch(/<a[^>]*aria-current="page"[^>]*>Explore<\/a>/);
+    expect(header).not.toMatch(/Singapore|Dubai/);
 
     const tabs = renderToStaticMarkup(
       <BuildingDecisionTabs
@@ -103,6 +103,19 @@ describe('public building detail', () => {
     expect(html).toContain('<th>Floor</th>');
     expect(html).toContain('Floor was not retained in this verified snapshot.');
     expect(html).not.toContain('45-55sqm');
+  });
+
+  it('uses an honest evidence fallback and keeps the identity, decision, and evidence hierarchy', () => {
+    const html = renderToStaticMarkup(<BuildingDetailPage {...detailProps()} />);
+    const identity = html.indexOf('data-building-section="identity"');
+    const decision = html.indexOf('data-building-section="decision"');
+    const evidence = html.indexOf('data-building-section="evidence"');
+
+    expect(html).toContain('data-building-media="evidence-fallback"');
+    expect(html).not.toMatch(/<img[^>]+src="(?:data:|https?:\/\/)/);
+    expect(identity).toBeGreaterThan(-1);
+    expect(identity).toBeLessThan(decision);
+    expect(decision).toBeLessThan(evidence);
   });
 
   it('renders the six-pair gate basis and the exact single-band empty state', () => {

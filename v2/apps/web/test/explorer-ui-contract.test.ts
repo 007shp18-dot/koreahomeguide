@@ -12,6 +12,7 @@ import {
 vi.mock('server-only', () => ({}));
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: vi.fn() }),
+  useSearchParams: () => new URLSearchParams(),
 }));
 
 type ExplorerPageModule = {

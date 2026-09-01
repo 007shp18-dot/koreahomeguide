@@ -1,3 +1,6 @@
+'use client';
+
+import { useState } from 'react';
 import Link from 'next/link';
 
 import type {
@@ -15,6 +18,17 @@ import { EvidencePeriodStrip } from './evidence-period-strip';
 import { PublicSourceBoundary } from './public-source-boundary';
 
 type ReadyModel = Extract<PublicAreaRankingsModel, { status: 'ready' }>;
+type RankingView = 'median' | 'change' | 'spread' | 'sample';
+
+const rankingViews = Object.freeze([
+  { id: 'median', label: { en: 'Median', ko: '중앙값' } },
+  { id: 'change', label: { en: '3-month change', ko: '3개월 변화' } },
+  { id: 'spread', label: { en: 'Spread', ko: '분포 폭' } },
+  { id: 'sample', label: { en: 'Sample', ko: '표본' } },
+] as const satisfies readonly {
+  id: RankingView;
+  label: Readonly<Record<ProductLocale, string>>;
+}[]);
 
 const money = new Intl.NumberFormat('ko-KR', {
   style: 'currency', currency: 'KRW', currencyDisplay: 'narrowSymbol', maximumFractionDigits: 0,
@@ -186,6 +200,7 @@ function ReadyRankings({
 }: Readonly<{ model: ReadyModel; locale: ProductLocale }>) {
   const marketCopy = PUBLIC_MARKET_COPY[locale];
   const copy = marketCopy.rankings;
+  const [activeView, setActiveView] = useState<RankingView>('median');
   return (
     <section className={styles.rankings} aria-labelledby="district-rankings-heading">
       <header className={styles.hero}>
@@ -206,38 +221,88 @@ function ReadyRankings({
         locale={locale}
       />
 
-      <div className={styles.grid}>
-        <StandardRanking
-          id="ranking-cheapest-heading"
-          eyebrow={copy.lowerEyebrow}
-          title={copy.lowerTitle}
-          definition={copy.lowerDefinition}
-          note={copy.lowerNote}
-          rows={model.cheapest}
-          locale={locale}
-          copy={copy}
-        />
-        <ChangeRanking model={model} locale={locale} copy={copy} />
-        <StandardRanking
-          id="ranking-spread-heading"
-          eyebrow={copy.spreadEyebrow}
-          title={copy.spreadTitle}
-          definition={copy.spreadDefinition}
-          note={copy.spreadNote}
-          rows={model.spread}
-          locale={locale}
-          copy={copy}
-        />
-        <StandardRanking
-          id="ranking-sample-heading"
-          eyebrow={copy.sampleEyebrow}
-          title={copy.sampleTitle}
-          definition={copy.sampleDefinition}
-          note={copy.sampleNote}
-          rows={model.sample}
-          locale={locale}
-          copy={copy}
-        />
+      <div className={styles.viewWorkspace}>
+        <div className={styles.viewTabs} role="tablist" aria-label="Ranking measure">
+          {rankingViews.map((view) => (
+            <button
+              type="button"
+              role="tab"
+              id={`ranking-tab-${view.id}`}
+              aria-controls={`ranking-view-${view.id}`}
+              aria-selected={activeView === view.id}
+              tabIndex={activeView === view.id ? 0 : -1}
+              onClick={() => setActiveView(view.id)}
+              key={view.id}
+            >
+              {view.label[locale]}
+            </button>
+          ))}
+        </div>
+        <div className={styles.grid}>
+          <div
+            className={styles.viewPanel}
+            role="tabpanel"
+            id="ranking-view-median"
+            aria-labelledby="ranking-tab-median"
+            hidden={activeView !== 'median'}
+          >
+            <StandardRanking
+              id="ranking-cheapest-heading"
+              eyebrow={copy.lowerEyebrow}
+              title={copy.lowerTitle}
+              definition={copy.lowerDefinition}
+              note={copy.lowerNote}
+              rows={model.cheapest}
+              locale={locale}
+              copy={copy}
+            />
+          </div>
+          <div
+            className={styles.viewPanel}
+            role="tabpanel"
+            id="ranking-view-change"
+            aria-labelledby="ranking-tab-change"
+            hidden={activeView !== 'change'}
+          >
+            <ChangeRanking model={model} locale={locale} copy={copy} />
+          </div>
+          <div
+            className={styles.viewPanel}
+            role="tabpanel"
+            id="ranking-view-spread"
+            aria-labelledby="ranking-tab-spread"
+            hidden={activeView !== 'spread'}
+          >
+            <StandardRanking
+              id="ranking-spread-heading"
+              eyebrow={copy.spreadEyebrow}
+              title={copy.spreadTitle}
+              definition={copy.spreadDefinition}
+              note={copy.spreadNote}
+              rows={model.spread}
+              locale={locale}
+              copy={copy}
+            />
+          </div>
+          <div
+            className={styles.viewPanel}
+            role="tabpanel"
+            id="ranking-view-sample"
+            aria-labelledby="ranking-tab-sample"
+            hidden={activeView !== 'sample'}
+          >
+            <StandardRanking
+              id="ranking-sample-heading"
+              eyebrow={copy.sampleEyebrow}
+              title={copy.sampleTitle}
+              definition={copy.sampleDefinition}
+              note={copy.sampleNote}
+              rows={model.sample}
+              locale={locale}
+              copy={copy}
+            />
+          </div>
+        </div>
       </div>
 
       <aside className={styles.limit} aria-label={copy.limitationAria}>

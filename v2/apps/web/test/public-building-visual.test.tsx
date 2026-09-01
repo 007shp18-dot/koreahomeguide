@@ -22,6 +22,7 @@ describe('building visual', () => {
     });
     const html = renderToStaticMarkup(<BuildingVisual model={model} />);
     expect(html).toContain('Verified building image is not available');
+    expect(html).toContain('data-building-media="evidence-fallback"');
     expect(html).not.toContain('<img');
   });
 

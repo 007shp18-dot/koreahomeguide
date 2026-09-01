@@ -13,7 +13,7 @@ import type { SingaporeEntryModel } from './singapore/route-types';
 import { indexableMetadata } from './public-metadata';
 
 const brand = 'signedprice';
-const headline = 'Real prices. Better property decisions.';
+const headline = 'See what homes actually signed for.';
 const marketIds = [
   'kr-seoul',
   'sg-singapore',
@@ -56,6 +56,8 @@ export interface SiteHeaderModel {
   readonly homeLabel: string;
   readonly navigationLabel: string;
   readonly links: readonly NavigationLinkModel[];
+  readonly marketLabel?: string;
+  readonly languageLabel?: string;
 }
 
 export interface SiteFooterModel {
@@ -65,6 +67,13 @@ export interface SiteFooterModel {
   readonly links: readonly NavigationLinkModel[];
   readonly status: string;
 }
+
+export const productNavigationLinks = Object.freeze([
+  { label: 'Check', href: '/kr/seoul/check/' },
+  { label: 'Explore', href: '/kr/seoul/explore/' },
+  { label: 'Briefs', href: '/kr/seoul/news/' },
+  { label: 'Guide', href: '/kr/seoul/guide/' },
+] as const satisfies readonly NavigationLinkModel[]);
 
 export const KOREA_PUBLIC_RELEASE_STATUS =
   'Korea public evidence. Publication limits shown.' as const;
@@ -84,10 +93,7 @@ const englishHeaderCopy = {
   brand,
   homeLabel: 'signedprice home',
   navigationLabel: 'Primary navigation',
-  links: [
-    { label: 'Global home', href: '/', ariaLabel: 'Global home', isCurrent: true },
-    { label: 'Market overview', href: '#markets', ariaLabel: 'Markets' },
-  ],
+  links: productNavigationLinks,
 } as const satisfies SiteHeaderModel;
 
 const englishTrustCopy = {
@@ -135,7 +141,7 @@ export const homepageCopy = {
     eyebrow: 'Property intelligence for Seoul, Singapore and Dubai',
     headline,
     description:
-      'We publish only official or rights-cleared market intelligence, and show the limits wherever detail is unavailable.',
+      'Search a building or neighborhood, compare the real contract range, and understand the market before you rent, buy, or invest.',
     intentHeading: 'Start with your decision',
     intentDescription:
       'Choose an intent, then enter the market whose local evidence and rules matter.',

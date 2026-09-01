@@ -135,7 +135,7 @@ describe('three market overview routes', () => {
     }
   });
 
-  it('uses two header controls and marks Market overview as current', async () => {
+  it('uses the shared four-link product navigation on market overviews', async () => {
     for (const params of marketRouteParams) {
       const markup = renderToStaticMarkup(
         await MarketOverviewPage({ params: Promise.resolve(params) }),
@@ -144,14 +144,14 @@ describe('three market overview routes', () => {
         /<nav aria-label="Primary navigation">([\s\S]*?)<\/nav>/,
       )?.[1] ?? '';
 
-      expect(navigation.match(/<a /g) ?? []).toHaveLength(2);
-      expect(navigation).toContain('>Global home</a>');
-      expect(navigation).toContain('aria-current="page">Market overview</a>');
-      expect(navigation).not.toContain('aria-current="page">Global home</a>');
+      expect(navigation.match(/<a /g) ?? []).toHaveLength(4);
+      for (const label of ['Check', 'Explore', 'Briefs', 'Guide']) {
+        expect(navigation).toContain(`>${label}</a>`);
+      }
     }
   });
 
-  it('leaves both global controls inactive on intent routes', async () => {
+  it('leaves the shared product links inactive on generic intent routes', async () => {
     const markup = renderToStaticMarkup(
       await IntentPage({
         params: Promise.resolve({ country: 'kr', city: 'seoul', intent: 'rent' }),
@@ -161,9 +161,8 @@ describe('three market overview routes', () => {
       /<nav aria-label="Primary navigation">([\s\S]*?)<\/nav>/,
     )?.[1] ?? '';
 
-    expect(navigation.match(/<a /g) ?? []).toHaveLength(2);
-    expect(navigation).toContain('>Global home</a>');
-    expect(navigation).toContain('>Market overview</a>');
+    expect(navigation.match(/<a /g) ?? []).toHaveLength(4);
+    expect(navigation).toContain('>Check</a>');
     expect(navigation).not.toContain('aria-current');
   });
 
@@ -193,6 +192,7 @@ describe('three market overview routes', () => {
       );
 
       expect(markup).toContain('class="market-hero market-hero--overview site-shell"');
+      expect(markup).toContain('data-product-intro="true"');
       expect(markup).toContain('class="market-hero__tier"');
       expect(markup).not.toContain('class="market-hero__facts"');
       expect(markup).not.toContain('<section class="market-limitations');

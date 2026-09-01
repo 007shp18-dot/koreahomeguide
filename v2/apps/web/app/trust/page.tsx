@@ -61,7 +61,7 @@ export default function TrustPage() {
     <div id="top">
       <SiteHeader copy={header} />
       <main className={styles.policyPage}>
-        <header className={styles.policyHero}>
+        <header className={styles.policyHero} data-product-intro="true">
           <p>SignedPrice · Global Trust</p>
           <h1>How SignedPrice publishes evidence</h1>
           <p>

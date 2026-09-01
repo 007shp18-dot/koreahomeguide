@@ -586,6 +586,7 @@ function marketHeader(profile: MarketProfile, isCurrent: boolean): SiteHeaderMod
     brand: routeShellCopy.header.brand,
     homeLabel: routeShellCopy.header.homeLabel,
     navigationLabel: routeShellCopy.header.navigationLabel,
+    marketLabel: profile.cityName,
     links: [
       { label: 'Global home', href: '/' },
       {

@@ -10,8 +10,8 @@
 }
 
 .hero {
-  min-height: 300px;
-  padding: clamp(2rem, 7vw, 5.5rem);
+  min-height: 230px;
+  padding: clamp(2rem, 5vw, 4rem);
   display: grid;
   align-content: end;
   gap: 1rem;
@@ -29,10 +29,10 @@
 
 .hero h1 {
   max-width: 980px;
-  font-size: clamp(2.6rem, 7vw, 6.8rem);
-  font-weight: 900;
-  letter-spacing: -0.065em;
-  line-height: 0.9;
+  font-size: clamp(2.5rem, 5.5vw, 5.4rem);
+  font-weight: 850;
+  letter-spacing: -0.055em;
+  line-height: 0.94;
 }
 
 .hero > p:not(:first-child) {
@@ -46,29 +46,59 @@
   font-weight: 750;
 }
 
-.grid {
+.viewWorkspace {
   min-width: 0;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
   border-bottom: 2px solid var(--ranking-ink);
+}
+
+.viewTabs {
+  padding: 0.65rem clamp(1rem, 3vw, 2rem);
+  display: flex;
+  gap: 0.45rem;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--ranking-ink);
+  background: color-mix(in srgb, var(--ranking-ground) 94%, var(--ranking-ink));
+}
+
+.viewTabs button {
+  min-width: max-content;
+  min-height: 44px;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--ranking-ink);
+  color: var(--ranking-ink);
+  background: var(--ranking-ground);
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.viewTabs button[aria-selected='true'] {
+  color: var(--ranking-ground);
+  background: var(--ranking-ink);
+}
+
+.viewTabs button:focus-visible {
+  outline: 3px solid var(--ranking-accent);
+  outline-offset: 2px;
+}
+
+.grid,
+.viewPanel {
+  min-width: 0;
+}
+
+.viewPanel[hidden] {
+  display: none;
 }
 
 .panel {
   min-width: 0;
-  border-right: 2px solid var(--ranking-ink);
-  border-bottom: 2px solid var(--ranking-ink);
-}
-
-.panel:nth-child(2n) {
-  border-right: 0;
-}
-
-.panel:nth-last-child(-n + 2) {
-  border-bottom: 0;
 }
 
 .panelHeader {
-  min-height: 230px;
+  min-height: 184px;
   padding: clamp(1.2rem, 3vw, 2rem);
   display: grid;
   align-content: start;
@@ -280,21 +310,6 @@
 }
 
 @media (max-width: 720px) {
-  .grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .panel,
-  .panel:nth-child(2n),
-  .panel:nth-last-child(-n + 2) {
-    border-right: 0;
-    border-bottom: 2px solid var(--ranking-ink);
-  }
-
-  .panel:last-child {
-    border-bottom: 0;
-  }
-
   .panelHeader {
     min-height: 0;
   }

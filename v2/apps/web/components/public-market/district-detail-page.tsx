@@ -99,7 +99,11 @@ function Breadcrumb({ model }: Readonly<{ model: PublicDistrictModel }>) {
 
 function BuildingEvidence({ model }: Readonly<{ model: PublicDistrictModel }>) {
   return (
-    <section className={styles.buildingEvidence} aria-labelledby="building-evidence-heading">
+    <section
+      className={styles.buildingEvidence}
+      aria-labelledby="building-evidence-heading"
+      data-section="district-buildings"
+    >
       <div className={styles.sectionHeading}>
         <p>04 / Building evidence</p>
         <h2 id="building-evidence-heading">Verified buildings in {model.identity.nameEn}</h2>
@@ -176,7 +180,7 @@ function Faq({ model }: Readonly<{
 function Finding({ model }: Readonly<{ model: PublicDistrictModel }>) {
   if (model.status === 'unavailable') {
     return (
-      <header className={styles.hero}>
+      <header className={styles.hero} data-section="district-summary">
         <p>Seoul · {model.identity.nameKo}</p>
         <h1>{model.message} for {model.identity.nameEn}.</h1>
         <p>No city figure is substituted for unavailable district evidence.</p>
@@ -185,7 +189,7 @@ function Finding({ model }: Readonly<{ model: PublicDistrictModel }>) {
   }
   const finding = model.status === 'published' ? model.display.medianLabel : 'Not published';
   return (
-    <header className={styles.hero}>
+    <header className={styles.hero} data-section="district-summary">
       <p>Seoul · <span lang="ko">{model.identity.nameKo}</span></p>
       <h1>{model.identity.nameEn}: {finding} from {model.display.sampleLabel}.</h1>
       <SampleChip label={model.display.sampleLabel} state={model.status} />
@@ -196,13 +200,21 @@ function Finding({ model }: Readonly<{ model: PublicDistrictModel }>) {
 function Evidence({ model }: Readonly<{ model: PublicDistrictModel }>) {
   if (model.status === 'unavailable') {
     return (
-      <section className={styles.unavailable} aria-label="District evidence unavailable">
+      <section
+        className={styles.unavailable}
+        aria-label="District evidence unavailable"
+        data-section="district-distribution"
+      >
         <p>Verified district evidence is required before any monetary finding can be shown.</p>
       </section>
     );
   }
   return (
-    <section className={styles.evidence} aria-labelledby="district-evidence-heading">
+    <section
+      className={styles.evidence}
+      aria-labelledby="district-evidence-heading"
+      data-section="district-distribution"
+    >
       <div className={styles.sectionHeading}>
         <p>01 / District finding</p>
         <h2 id="district-evidence-heading">
@@ -275,12 +287,16 @@ export function DistrictDetailPage({
         <Finding model={model} />
         <div className={styles.detailLayout}>
           <div className={styles.detailMain} data-detail-main="true">
-            <DistrictEvidenceSummary model={model.contractEvidence} mode="full" />
             <Evidence model={model} />
+            <div className={styles.cohortEvidence} data-section="district-cohorts">
+              <DistrictEvidenceSummary model={model.contractEvidence} mode="full" />
+            </div>
             <PropertyTypeEvidence model={model} propertyTypes={propertyTypes} />
             <BuildingEvidence model={model} />
             {model.status === 'unavailable' ? null : <Faq model={model} />}
-            <PublicSourceBoundary model={model.source} />
+            <div className={styles.sourceBoundary} data-section="district-source">
+              <PublicSourceBoundary model={model.source} />
+            </div>
           </div>
           <aside className={styles.detailRail} data-detail-rail="true" aria-label="District context">
             <DetailNewsList news={model.news} />

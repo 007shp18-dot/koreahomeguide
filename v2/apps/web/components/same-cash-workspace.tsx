@@ -100,19 +100,13 @@ export function SameCashWorkspace() {
       : `보증금 ${formatWon(-difference)} 더 적음 → 월세로 환산`;
   }
 
-  function renderCondition(
+  function renderConditionInputs(
     side: 'a' | 'b',
     label: string,
     state: ConditionState,
     setState: (next: ConditionState) => void,
   ) {
     const cheaper = result?.comparison.cheaperRestated === side;
-    const deposit = side === 'a' ? result?.aDeposit : result?.bDeposit;
-    const rent = side === 'a' ? result?.aRent : result?.bRent;
-    const restated =
-      side === 'a' ? result?.comparison.aMonthlyWon : result?.comparison.bMonthlyWon;
-    const rate = side === 'a' ? result?.comparison.aRate : result?.comparison.bRate;
-
     return (
       <article className={`same-cash-card${cheaper ? ' same-cash-card--cheaper' : ''}`}>
         <div className="same-cash-card__header">
@@ -139,6 +133,20 @@ export function SameCashWorkspace() {
           </label>
         </div>
 
+      </article>
+    );
+  }
+
+  function renderConditionEvidence(side: 'a' | 'b', label: string) {
+    const deposit = side === 'a' ? result?.aDeposit : result?.bDeposit;
+    const rent = side === 'a' ? result?.aRent : result?.bRent;
+    const restated =
+      side === 'a' ? result?.comparison.aMonthlyWon : result?.comparison.bMonthlyWon;
+    const rate = side === 'a' ? result?.comparison.aRate : result?.comparison.bRate;
+
+    return (
+      <article className="same-cash-evidence-card">
+        <h3>{label}</h3>
         <dl className="same-cash-card__breakdown">
           <div>
             <dt>{copy.writtenLabel}</dt>
@@ -155,7 +163,6 @@ export function SameCashWorkspace() {
             <dd>{restated === undefined ? '—' : formatWon(restated)}</dd>
           </div>
         </dl>
-
         {deposit !== undefined && rate !== undefined ? (
           <p className="same-cash-card__rate">
             계약 보증금 {formatWon(deposit)}에서 읽은 실측 전환율 연 {(rate * 100).toFixed(2)}%
@@ -197,35 +204,38 @@ export function SameCashWorkspace() {
         <p className="same-cash__intro">{copy.description}</p>
       </div>
 
-      <div className="same-cash__basis">
-        <label className="same-cash-field same-cash-field--wide">
-          <span>{copy.baseLabel}</span>
-          <input inputMode="numeric" value={base} onChange={(event) => setBase(event.target.value)} />
-        </label>
-        <label className="same-cash-field">
-          <span>{copy.assetTypeLabel}</span>
-          <select
-            value={assetType}
-            onChange={(event) => setAssetType(event.target.value as AssetType)}
-          >
-            {copy.assetTypes.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-          <small>{copy.assetTypeNote}</small>
-        </label>
-      </div>
+      <div data-check-section="inputs">
+        <div className="same-cash__basis">
+          <label className="same-cash-field same-cash-field--wide">
+            <span>{copy.baseLabel}</span>
+            <input inputMode="numeric" value={base} onChange={(event) => setBase(event.target.value)} />
+          </label>
+          <label className="same-cash-field">
+            <span>{copy.assetTypeLabel}</span>
+            <select
+              value={assetType}
+              onChange={(event) => setAssetType(event.target.value as AssetType)}
+            >
+              {copy.assetTypes.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            <small>{copy.assetTypeNote}</small>
+          </label>
+        </div>
 
-      <div className="same-cash__pair">
-        {renderCondition('a', copy.conditionALabel, a, setA)}
-        {renderCondition('b', copy.conditionBLabel, b, setB)}
+        <div className="same-cash__pair">
+          {renderConditionInputs('a', copy.conditionALabel, a, setA)}
+          {renderConditionInputs('b', copy.conditionBLabel, b, setB)}
+        </div>
       </div>
 
       <div
         className={`same-cash-verdict${reversed ? ' same-cash-verdict--reversed' : ''}`}
         aria-live="polite"
+        data-check-section="verdict"
       >
         <div className="same-cash-verdict__main">
           <p className="section-eyebrow">
@@ -252,6 +262,11 @@ export function SameCashWorkspace() {
             </dd>
           </div>
         </dl>
+      </div>
+
+      <div className="same-cash__evidence" data-check-section="evidence">
+        {renderConditionEvidence('a', copy.conditionALabel)}
+        {renderConditionEvidence('b', copy.conditionBLabel)}
       </div>
 
       {comparison?.clamped ? <p className="same-cash__clamp">{copy.clampNote}</p> : null}

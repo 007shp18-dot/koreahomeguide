@@ -5,6 +5,7 @@ import { describe, expect, it, vi } from 'vitest';
 vi.mock('server-only', () => ({}));
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ replace: vi.fn() }),
+  useSearchParams: () => new URLSearchParams(),
 }));
 
 import { ContractCheckWorkspace } from '../components/contract-check/contract-check-workspace';

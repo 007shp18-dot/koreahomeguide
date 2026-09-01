@@ -7,6 +7,8 @@ import { useCallback, useMemo, useReducer, useState } from 'react';
 import {
   areaExplorerReducer,
   buildingExplorerSelectionReducer,
+  filterExploreBuildings,
+  resolveExploreSearchDistrict,
   resolveSelectedExploreBuilding,
   type AreaExplorerState,
 } from '../../lib/public-market/area-explorer-state';
@@ -50,20 +52,31 @@ function ReadyAreaExplorer({
   model,
   naverMapClientId,
   locale,
+  initialQuery,
 }: Readonly<{
   model: Extract<PublicAreaExploreModel, { status: 'ready' }>;
   naverMapClientId: string | null;
   locale: ProductLocale;
+  initialQuery: string;
 }>) {
   const copy = PUBLIC_MARKET_COPY[locale].area;
   const countSeparator = locale === 'en' ? ' ' : '';
   const router = useRouter();
+  const allBuildings = model.buildingAvailability.status === 'ready'
+    ? model.buildingAvailability.buildings
+    : [];
   const initial: AreaExplorerState = Object.freeze({
-    selectedSlug: model.selectedSlug,
+    selectedSlug: resolveExploreSearchDistrict(
+      model.districts,
+      allBuildings,
+      initialQuery,
+      model.selectedSlug,
+    ),
     districtSlugs: Object.freeze(model.districts.map(({ slug }) => slug)),
   });
   const [state, dispatch] = useReducer(areaExplorerReducer, initial);
   const [selectedNeighborhood, setSelectedNeighborhood] = useState<string>('all');
+  const [buildingQuery, setBuildingQuery] = useState(initialQuery);
   const [buildingSelection, dispatchBuildingSelection] = useReducer(
     buildingExplorerSelectionReducer,
     Object.freeze({ selectedBuildingId: null }),
@@ -80,9 +93,10 @@ function ReadyAreaExplorer({
   const neighborhoods = useMemo(() => [...new Map(districtBuildings.map((building) => [
     building.neighborhoodId, building.neighborhoodName,
   ] as const))], [districtBuildings]);
-  const filteredBuildings = useMemo(() => districtBuildings.filter((building) => (
-    selectedNeighborhood === 'all' || building.neighborhoodId === selectedNeighborhood
-  )), [districtBuildings, selectedNeighborhood]);
+  const filteredBuildings = useMemo(
+    () => filterExploreBuildings(districtBuildings, buildingQuery, selectedNeighborhood),
+    [buildingQuery, districtBuildings, selectedNeighborhood],
+  );
   const visibleBuildings = useMemo(
     () => filteredBuildings.slice(0, visibleBuildingCount),
     [filteredBuildings, visibleBuildingCount],
@@ -111,6 +125,7 @@ function ReadyAreaExplorer({
   const selectDistrict = useCallback((slug: string): void => {
     dispatch({ type: 'select', slug });
     setSelectedNeighborhood('all');
+    setBuildingQuery('');
     dispatchBuildingSelection({ type: 'clear_building' });
     setVisibleBuildingCount(10);
     router.replace(
@@ -305,29 +320,58 @@ function ReadyAreaExplorer({
                     >{name}</button>
                   ))}
                 </div>
-                <ul className={styles.buildingList}>
-                  {visibleBuildings.map((building) => (
-                    <li key={building.id}>
+                <div className={styles.buildingSearch} data-building-search="retained">
+                  <label htmlFor="explore-building-query">
+                    {locale === 'ko' ? '보유 건물 검색' : 'Search retained buildings'}
+                  </label>
+                  <input
+                    id="explore-building-query"
+                    name="building-query"
+                    type="search"
+                    value={buildingQuery}
+                    onChange={(event) => {
+                      setBuildingQuery(event.currentTarget.value);
+                      setVisibleBuildingCount(10);
+                      dispatchBuildingSelection({ type: 'clear_building' });
+                    }}
+                    placeholder={locale === 'ko' ? '건물 또는 동 이름' : 'Building or neighborhood'}
+                  />
+                </div>
+                {filteredBuildings.length === 0 ? (
+                  <div className={styles.buildingEmpty} role="status">
+                    <strong>{locale === 'ko' ? '일치하는 공개 건물이 없습니다.' : 'No retained building matches this search.'}</strong>
+                    <span>{locale === 'ko' ? '검색어를 지우거나 다른 동을 선택하세요.' : 'Clear the query or choose another neighborhood.'}</span>
+                    <button type="button" onClick={() => setBuildingQuery('')}>
+                      {locale === 'ko' ? '검색 지우기' : 'Clear search'}
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <ul className={styles.buildingList}>
+                      {visibleBuildings.map((building) => (
+                        <li key={building.id}>
+                          <button
+                            type="button"
+                            aria-pressed={selectedBuilding?.id === building.id}
+                            onClick={() => dispatchBuildingSelection({
+                              type: 'select_building', source: 'rail', buildingId: building.id,
+                            })}
+                          >
+                            <span><strong>{building.name}</strong><small>{building.neighborhoodName} · {building.housingType}</small></span>
+                            <span><strong>{building.medianLabel}</strong><small>{building.sampleLabel}</small></span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                    {visibleBuildings.length < filteredBuildings.length ? (
                       <button
                         type="button"
-                        aria-pressed={selectedBuilding?.id === building.id}
-                        onClick={() => dispatchBuildingSelection({
-                          type: 'select_building', source: 'rail', buildingId: building.id,
-                        })}
-                      >
-                        <span><strong>{building.name}</strong><small>{building.neighborhoodName} · {building.housingType}</small></span>
-                        <span><strong>{building.medianLabel}</strong><small>{building.sampleLabel}</small></span>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-                {visibleBuildings.length < filteredBuildings.length ? (
-                  <button
-                    type="button"
-                    className={styles.moreBuildings}
-                    onClick={() => setVisibleBuildingCount((count) => count + 10)}
-                  >{copy.showMore}</button>
-                ) : null}
+                        className={styles.moreBuildings}
+                        onClick={() => setVisibleBuildingCount((count) => count + 10)}
+                      >{copy.showMore}</button>
+                    ) : null}
+                  </>
+                )}
                 {selectedBuilding === null ? null : (
                   <BuildingEvidencePanel building={selectedBuilding} locale={locale} />
                 )}
@@ -477,16 +521,25 @@ export function AreaExplorer({
   model,
   naverMapClientId = null,
   locale = 'en',
+  initialQuery = '',
 }: Readonly<{
   model: PublicAreaExploreModel;
   naverMapClientId?: string | null;
   locale?: ProductLocale;
+  initialQuery?: string;
 }>) {
   return (
     <>
       <PublicSectionTabs current="explore" locale={locale} />
       {model.status === 'ready'
-        ? <ReadyAreaExplorer model={model} naverMapClientId={naverMapClientId} locale={locale} />
+        ? (
+          <ReadyAreaExplorer
+            model={model}
+            naverMapClientId={naverMapClientId}
+            locale={locale}
+            initialQuery={initialQuery}
+          />
+        )
         : <UnavailableAreaExplorer model={model} locale={locale} />}
     </>
   );

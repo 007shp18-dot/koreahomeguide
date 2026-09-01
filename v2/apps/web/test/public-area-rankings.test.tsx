@@ -92,6 +92,21 @@ describe('Seoul district rankings page', () => {
     expect(html).not.toMatch(/₩[0-9]|[+-][0-9]+\.[0-9]%/);
   });
 
+  it('presents one ranking measure at a time through an accessible view selector', () => {
+    const model = buildPublicAreaRankingsModel({
+      source: createPublicAreaFixture(),
+      period: PUBLIC_AREA_FIXTURE_PERIOD,
+    });
+
+    const html = renderToStaticMarkup(<DistrictRankings model={model} />);
+
+    expect(html).toContain('role="tablist"');
+    expect(html.match(/role="tab"/g)).toHaveLength(4);
+    expect(html.match(/aria-selected="true"/g)).toHaveLength(1);
+    expect(html.match(/role="tabpanel"/g)).toHaveLength(4);
+    expect(html.match(/ hidden=""/g)).toHaveLength(3);
+  });
+
   it('fails closed without rendering district money', async () => {
     install({ invalid: true });
 
