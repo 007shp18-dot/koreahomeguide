@@ -63,17 +63,14 @@ function readCheckedInObservedBuildingInventory(): unknown {
 }
 
 function readCheckedInArtifact(
-  filename: string,
   current: unknown,
   assign: (value: unknown) => void,
+  candidates: readonly (() => Buffer)[],
 ): unknown {
   if (current !== undefined) return current;
-  for (const path of [
-    resolve(process.cwd(), `data/${filename}`),
-    resolve(process.cwd(), `apps/web/data/${filename}`),
-  ]) {
+  for (const load of candidates) {
     try {
-      const value = parseCompressedInventory(readFileSync(path));
+      const value = parseCompressedInventory(load());
       assign(value);
       return value;
     } catch {
@@ -89,16 +86,28 @@ export function resolveInstalledSnapshotObject(objectUrl: string): unknown {
   }
   if (objectUrl === 'installed://kr-rent') {
     return readCheckedInArtifact(
-      'korea-rent-evidence.json.gz',
       checkedInKoreaRentEvidence,
       (value) => { checkedInKoreaRentEvidence = value; },
+      [
+        () => readFileSync(resolve(process.cwd(), 'data/korea-rent-evidence.json.gz')),
+        () => readFileSync(resolve(
+          process.cwd(),
+          'apps/web/data/korea-rent-evidence.json.gz',
+        )),
+      ],
     );
   }
   if (objectUrl === 'installed://kr-sale') {
     return readCheckedInArtifact(
-      'korea-sale-evidence.json.gz',
       checkedInKoreaSaleEvidence,
       (value) => { checkedInKoreaSaleEvidence = value; },
+      [
+        () => readFileSync(resolve(process.cwd(), 'data/korea-sale-evidence.json.gz')),
+        () => readFileSync(resolve(
+          process.cwd(),
+          'apps/web/data/korea-sale-evidence.json.gz',
+        )),
+      ],
     );
   }
   return undefined;
