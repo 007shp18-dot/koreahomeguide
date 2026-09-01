@@ -1,15 +1,35 @@
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
+import { dirname, join, relative } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
 const css = readFileSync(new URL('../app/globals.css', import.meta.url), 'utf8');
+const webRoot = dirname(fileURLToPath(new URL('../package.json', import.meta.url)));
+const componentsRoot = join(webRoot, 'components');
 
-function readHexToken(name: string): string {
-  const declaration = css.match(new RegExp(`${name}:\\s*(#[0-9a-fA-F]{6})`));
+function cssFilesUnder(directory: string): readonly string[] {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    if (entry.name.startsWith('.') || entry.name === 'node_modules') return [];
+    const path = join(directory, entry.name);
+    if (entry.isDirectory()) return cssFilesUnder(path);
+    return entry.name.endsWith('.css') ? [path] : [];
+  });
+}
+
+function readHexToken(name: string, seen = new Set<string>()): string {
+  if (seen.has(name)) throw new Error(`Circular color token ${name}`);
+  seen.add(name);
+
+  const declaration = css.match(
+    new RegExp(`${name}:\\s*(#[0-9a-fA-F]{6}|var\\((--[a-z-]+)\\))`),
+  );
   if (!declaration?.[1]) {
-    throw new Error(`Missing six-digit color token ${name}`);
+    throw new Error(`Missing color token ${name}`);
   }
 
-  return declaration[1];
+  return declaration[2] === undefined
+    ? declaration[1]
+    : readHexToken(declaration[2], seen);
 }
 
 function relativeLuminance(hex: string): number {
@@ -53,12 +73,30 @@ const focusAdjacentBackgrounds = [
   '--surface-strong',
 ] as const;
 
-const modernistPalette = {
-  '--ink': '#201e1d',
-  '--canvas': '#f3f2f2',
-  '--surface': '#eae9e9',
-  '--accent': '#1d4ed8',
-  '--divider': '#8c8a89',
+const signedPricePalette = {
+  '--canvas': '#f4f2ec',
+  '--surface': '#eae5da',
+  '--surface-strong': '#fffdf8',
+  '--ink': '#15201f',
+  '--petrol': '#1c4048',
+  '--muted': '#5f625b',
+  '--divider': '#98978d',
+  '--line': '#dbd5c6',
+  '--brand-orange': '#e05024',
+  '--accent': '#b73512',
+  '--accent-soft': '#ffe0d4',
+  '--focus-ring': '#b73512',
+} as const;
+
+const componentHexLiteralAllowList = {
+  'contract-check/contract-check.module.css': ['#b42318', '#b42318'],
+  'public-market/area-explorer.module.css': [
+    '#e3e9ff',
+    '#bdcbff',
+    '#829fff',
+    '#426ee8',
+    '#173b9d',
+  ],
 } as const;
 
 function declarationsFor(source: string, selector: string): Record<string, string> {
@@ -83,11 +121,43 @@ function declarationsFor(source: string, selector: string): Record<string, strin
   );
 }
 
-describe('signedprice Modernist foundation', () => {
-  it('uses the approved ink, ground, surface, cobalt and divider palette', () => {
-    for (const [token, value] of Object.entries(modernistPalette)) {
+describe('signedprice brand foundation', () => {
+  it('uses the approved warm-paper, deep-green and accessible accent palette', () => {
+    for (const [token, value] of Object.entries(signedPricePalette)) {
       expect(readHexToken(token)).toBe(value);
     }
+  });
+
+  it('does not retain the superseded gray and cobalt site palette in first-party CSS', () => {
+    const legacyPalette = /#(?:f3f2f2|201e1d|1f1e1d|5d5958|8c8a89|1d4ed8|dbe4ff|fff(?:fff)?)\b/i;
+    const remaining = cssFilesUnder(webRoot).flatMap((file) => {
+      const matches = readFileSync(file, 'utf8').match(legacyPalette);
+      return matches === null ? [] : [`${file}: ${matches[0]}`];
+    });
+
+    expect(remaining).toEqual([]);
+  });
+
+  it('allows raw component hex only for the error state and Explorer choropleth scale', () => {
+    const authoredLiterals = Object.fromEntries(
+      cssFilesUnder(componentsRoot).flatMap((file) => {
+        const literals = readFileSync(file, 'utf8').match(/#[0-9a-fA-F]{3,8}\b/g);
+        return literals === null ? [] : [[relative(componentsRoot, file), literals]];
+      }),
+    );
+
+    expect(authoredLiterals).toEqual(componentHexLiteralAllowList);
+  });
+
+  it('keeps brand orange decorative-only in the shared mark', () => {
+    const consumers = cssFilesUnder(webRoot).flatMap((file) => {
+      const source = readFileSync(file, 'utf8');
+      return [...source.matchAll(/([^{}]+)\{[^{}]*var\(--brand-orange\)[^{}]*\}/g)].map(
+        (match) => `${relative(webRoot, file)}:${match[1]?.trim()}`,
+      );
+    });
+
+    expect(consumers).toEqual(['app/globals.css:.brand-mark__orange']);
   });
 
   it('keeps geometry square and structural rules two pixels wide', () => {

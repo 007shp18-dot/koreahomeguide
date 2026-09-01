@@ -1,8 +1,8 @@
 .section {
-  --live-ground: #f3f2f2;
-  --live-ink: #201e1d;
-  --live-muted: #5d5958;
-  --live-accent: #1d4ed8;
+  --live-ground: var(--canvas);
+  --live-ink: var(--ink);
+  --live-muted: var(--muted);
+  --live-accent: var(--accent);
   width: min(100%, 1440px);
   margin-inline: auto;
   color: var(--live-ink);

@@ -27,6 +27,7 @@ function edit(
     offerId,
     field,
     value,
+    curve: apartmentCurve,
   });
 }
 
@@ -56,18 +57,40 @@ describe('contract check client state', () => {
     expect(state.offers.a).not.toBe(state.offers.b);
   });
 
-  test('keeps money fields digit-only and clears a stale result after edits', () => {
+  test('normalizes valid grouped whole-won input and recalculates after every valid edit', () => {
     const calculated = contractCheckReducer(validDraft(), {
       type: 'CALCULATE',
       curve: apartmentCurve,
     });
     expect(calculated.result).not.toBeNull();
 
-    const edited = edit(calculated, 'a', 'depositWon', '₩ 120,000,000 won');
+    const edited = edit(calculated, 'a', 'depositWon', '120,000,000');
 
     expect(edited.offers.a.depositWon).toBe('120000000');
-    expect(edited.result).toBeNull();
+    expect(edited.result).toMatchObject({
+      referenceDeposit: 30_000_000,
+      winner: 'b',
+      roundedMonthlyDifference: 100_000,
+    });
     expect(edited.errors).toEqual({});
+  });
+
+  test.each([
+    '₩1,000',
+    '₩ 1,000',
+    '1,000원',
+    '1,000 원',
+    '1,000won',
+    '1,000 won',
+    '1,000 WON',
+    '₩ 1,000 원',
+    '₩1,000won',
+  ])('normalizes strict decorated whole-won syntax %s', (draft) => {
+    const state = edit(validDraft(), 'a', 'depositWon', draft);
+
+    expect(state.offers.a.depositWon).toBe('1000');
+    expect(state.errors).toEqual({});
+    expect(state.result).not.toBeNull();
   });
 
   test('switches housing type without discarding drafts but requires recalculation', () => {
@@ -78,6 +101,7 @@ describe('contract check client state', () => {
     const switched = contractCheckReducer(calculated, {
       type: 'SET_HOUSING_TYPE',
       housingType: 'officetel',
+      curve: undefined,
     });
 
     expect(switched.housingType).toBe('officetel');
@@ -130,8 +154,14 @@ describe('contract check client state', () => {
     }
     zero = contractCheckReducer(zero, { type: 'CALCULATE', curve: apartmentCurve });
     expect(zero.errors).toMatchObject({
-      a: { offer: 'Deposit and monthly rent cannot both be zero.' },
-      b: { offer: 'Deposit and monthly rent cannot both be zero.' },
+      a: {
+        depositWon: 'Deposit must be a positive whole-won amount.',
+        monthlyRentWon: 'Monthly rent must be a positive whole-won amount.',
+      },
+      b: {
+        depositWon: 'Deposit must be a positive whole-won amount.',
+        monthlyRentWon: 'Monthly rent must be a positive whole-won amount.',
+      },
     });
 
     let excessive = validDraft();
@@ -147,11 +177,61 @@ describe('contract check client state', () => {
     });
   });
 
+  test('rejects every non-decimal whole-won syntax without throwing', () => {
+    const invalidDrafts = [
+      '',
+      '0',
+      '-1',
+      '+1',
+      '1.0',
+      '1.5',
+      '1e8',
+      '1E8',
+      '0x10',
+      '0b10',
+      '0o10',
+      ' 1000',
+      '1000 ',
+      '1 000',
+      '1,00',
+      '12,34',
+      '1,0000',
+      '1,,000',
+      ',1000',
+      '1000,',
+      '１０００',
+      '₩',
+      '원',
+      'won',
+      '₩ 원',
+      '원1000',
+      'won1000',
+      '1000₩',
+      '₩₩1000',
+      '1000원원',
+      '1000won원',
+      '₩  1000',
+      '1000  원',
+      '1₩000',
+      '1000원 won',
+      '₩ 1.0 원',
+      '₩ 1,00 원',
+    ] as const;
+
+    for (const invalid of invalidDrafts) {
+      expect(() => edit(validDraft(), 'a', 'depositWon', invalid)).not.toThrow();
+      const state = edit(validDraft(), 'a', 'depositWon', invalid);
+      expect(state.result).toBeNull();
+      expect(state.errors.a?.depositWon).toBeDefined();
+    }
+  });
+
   test('rejects a curve for a different housing type and resets cleanly', () => {
     const mismatch = contractCheckReducer(
       contractCheckReducer(validDraft(), {
         type: 'SET_HOUSING_TYPE',
         housingType: 'officetel',
+        curve: undefined,
       }),
       { type: 'CALCULATE', curve: apartmentCurve },
     );

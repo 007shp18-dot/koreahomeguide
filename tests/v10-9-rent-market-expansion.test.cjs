@@ -43,11 +43,16 @@ test('new district pages have distinct district-specific renter context', () => 
   }
 });
 
-test('static sitemap includes all 15 new English market URLs without thin Chinese copies', () => {
+test('static sitemap removes migrated English markets while retaining unmatched pages and no thin Chinese copies', () => {
   const xml = read('sitemap-static.xml');
+  const manifest = JSON.parse(read('data/seo/signedprice-migration-manifest.json'));
+  const migrated = new Set(manifest.entries.map(({ sourcePath }) => sourcePath));
   for (const district of Object.keys(districts)) {
     for (const type of types) {
-      assert.match(xml, new RegExp(`https://koreahomeguide\\.com/rent/${district}/${type}/`));
+      const sourcePath = `/rent/${district}/${type}/`;
+      const sourcePattern = new RegExp(`https://koreahomeguide\\.com${sourcePath}`);
+      if (migrated.has(sourcePath)) assert.doesNotMatch(xml, sourcePattern);
+      else assert.match(xml, sourcePattern);
       assert.doesNotMatch(xml, new RegExp(`https://koreahomeguide\\.com/zh/rent/${district}/${type}/`));
     }
   }

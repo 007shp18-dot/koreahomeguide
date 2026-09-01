@@ -4,6 +4,10 @@ import type {
   QuotePositionAxis,
 } from '@signedprice/market-core';
 
+import {
+  PUBLIC_MARKET_COPY,
+  type ProductLocale,
+} from '../../lib/locale/product-copy';
 import styles from './public-market.module.css';
 
 type PlotStyle = CSSProperties & Record<`--${string}`, string>;
@@ -64,29 +68,37 @@ export function BoxPlot({
   formatValue,
   markerPct,
   markerLabel,
+  variant = 'full',
+  locale = 'en',
 }: Readonly<{
   summary: PublicMarketSummary;
   axis: QuotePositionAxis;
   formatValue: (value: number) => string;
   markerPct?: number;
   markerLabel?: string;
+  variant?: 'full' | 'compact';
+  locale?: ProductLocale;
 }>) {
+  const copy = PUBLIC_MARKET_COPY[locale].plot;
   const descriptionId = useId();
-  const count = `${summary.n.toLocaleString('en-US')} reported ${
-    summary.n === 1 ? 'contract' : 'contracts'
-  }`;
+  const count = locale === 'ko'
+    ? `${summary.n.toLocaleString('ko-KR')}${summary.n === 1 ? copy.countOne : copy.countMany}`
+    : `${summary.n.toLocaleString('en-US')} ${summary.n === 1 ? copy.countOne : copy.countMany}`;
 
   if (!summary.published) {
     return (
       <figure
-        className={`${styles.marketEvidence} ${styles.withheldPlot}`}
+        className={`${styles.marketEvidence} ${styles.withheldPlot} ${
+          variant === 'compact' ? styles.compactPlot : ''
+        }`}
         data-evidence-state="withheld"
+        data-plot-variant={variant}
         aria-describedby={descriptionId}
       >
         <div className={styles.withheldHatch} aria-hidden="true" />
         <figcaption id={descriptionId} className={styles.withheldCopy}>
           <strong>{count}</strong>
-          <span>At least 5 are required before any market range is published.</span>
+          <span>{copy.withheld}</span>
         </figcaption>
       </figure>
     );
@@ -112,15 +124,18 @@ export function BoxPlot({
     { key: 'p75', pct: positions.p75 },
   ]);
   const middleLabels = [
-    { key: 'p25', label: '25th percentile', shortLabel: 'P25', value: summary.p25 },
-    { key: 'median', label: 'Median', shortLabel: 'Median', value: summary.med },
-    { key: 'p75', label: '75th percentile', shortLabel: 'P75', value: summary.p75 },
+    { key: 'p25', label: copy.p25, shortLabel: 'P25', value: summary.p25 },
+    { key: 'median', label: copy.median, shortLabel: copy.median, value: summary.med },
+    { key: 'p75', label: copy.p75, shortLabel: 'P75', value: summary.p75 },
   ] as const;
 
   return (
     <figure
-      className={`${styles.marketEvidence} ${styles.boxPlot}`}
+      className={`${styles.marketEvidence} ${styles.boxPlot} ${
+        variant === 'compact' ? styles.compactPlot : ''
+      }`}
       data-evidence-state="published"
+      data-plot-variant={variant}
       aria-describedby={descriptionId}
       style={plotStyle}
     >
@@ -136,7 +151,7 @@ export function BoxPlot({
           data-plot-label="min"
           style={{ '--label-pct': plotStyle['--min-pct'] } as PlotStyle}
         >
-          <small><span className={styles.endpointLong}>Minimum</span><span className={styles.endpointShort}>Min</span></small>
+          <small><span className={styles.endpointLong}>{copy.minimum}</span><span className={styles.endpointShort}>{copy.minimumShort}</span></small>
           <strong>{formatValue(summary.min)}</strong>
         </span>
         {middleLabels.map(({ key, label, shortLabel, value }) => (
@@ -161,7 +176,7 @@ export function BoxPlot({
           data-plot-label="max"
           style={{ '--label-pct': plotStyle['--max-pct'] } as PlotStyle}
         >
-          <small><span className={styles.endpointLong}>Maximum</span><span className={styles.endpointShort}>Max</span></small>
+          <small><span className={styles.endpointLong}>{copy.maximum}</span><span className={styles.endpointShort}>{copy.maximumShort}</span></small>
           <strong>{formatValue(summary.max)}</strong>
         </span>
         {showMarker ? (
@@ -177,13 +192,13 @@ export function BoxPlot({
       <figcaption id={descriptionId} className={styles.plotCaption}>
         <strong>{count}</strong>
         <span>
-          Middle half {formatValue(summary.p25)}–{formatValue(summary.p75)}.
-          {showMarker ? ` ${markerLabel} is marked on the same axis.` : ''}
+          {copy.middleHalf} {formatValue(summary.p25)}–{formatValue(summary.p75)}.
+          {showMarker ? ` ${markerLabel} ${copy.marked}` : ''}
         </span>
         <span className={styles.screenReaderDescription}>
-          Minimum {formatValue(summary.min)}. 25th percentile {formatValue(summary.p25)}.
-          Median {formatValue(summary.med)}. 75th percentile {formatValue(summary.p75)}.
-          Maximum {formatValue(summary.max)}.
+          {copy.minimum} {formatValue(summary.min)}. {copy.p25} {formatValue(summary.p25)}.
+          {copy.median} {formatValue(summary.med)}. {copy.p75} {formatValue(summary.p75)}.
+          {copy.maximum} {formatValue(summary.max)}.
         </span>
       </figcaption>
     </figure>

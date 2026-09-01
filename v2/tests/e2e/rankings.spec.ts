@@ -47,7 +47,7 @@ test('rankings server HTML exposes four complete evidence lists', async ({ page 
   await expect(page.getByRole('heading', { name: 'Median refundable jeonse deposit' }))
     .toBeVisible();
   await expect(page.getByRole('heading', {
-    name: 'Median change: latest 3 months vs prior 3 months',
+    name: 'Three-month change not assessable',
   })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Middle-half spread (P75 − P25)' }))
     .toBeVisible();
@@ -67,7 +67,7 @@ test('rankings server HTML exposes four complete evidence lists', async ({ page 
     'href',
     'https://www.signedprice.com/kr/seoul/rankings/',
   );
-  await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(0);
+  await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(3);
 
   const htmlResponse = await page.request.get('/kr/seoul/rankings/');
   expect(htmlResponse.status()).toBe(200);
@@ -83,7 +83,7 @@ test('fixture rankings reconcile exact eligibility, order, and values', async ({
 
   const sections = page.locator('[data-ranking-section]');
   await expect(sections.nth(0).locator('[data-ranking-row]')).toHaveCount(24);
-  await expect(sections.nth(1).locator('[data-ranking-row]')).toHaveCount(11);
+  await expect(sections.nth(1).locator('[data-ranking-row]')).toHaveCount(0);
   await expect(sections.nth(2).locator('[data-ranking-row]')).toHaveCount(24);
   await expect(sections.nth(3).locator('[data-ranking-row]')).toHaveCount(24);
 
@@ -93,10 +93,9 @@ test('fixture rankings reconcile exact eligibility, order, and values', async ({
   await expect(cheapest.last()).toContainText('Gwangjin-gu');
   await expect(cheapest.last()).toContainText('₩700,000,000');
 
-  const change = sections.nth(1).locator('[data-ranking-row]');
-  await expect(change.first()).toContainText('+1.2%');
-  await expect(page.getByText('No eligible district fell in the latest comparison.')).toBeVisible();
-  await expect(page.locator('[data-change-direction="positive"]')).toHaveCount(11);
+  await expect(sections.nth(1)).toContainText('Prior/latest sample counts were not retained');
+  await expect(page.getByText('No eligible district fell in the latest comparison.')).toHaveCount(0);
+  await expect(page.locator('[data-change-direction]')).toHaveCount(0);
 });
 
 test('rankings remain contained and keyboard-readable at every release width', async ({ page }) => {

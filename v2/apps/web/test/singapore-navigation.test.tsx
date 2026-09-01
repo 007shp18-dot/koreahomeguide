@@ -24,25 +24,81 @@ const ready = {
 } as const;
 
 describe('Singapore navigation promotion gate', () => {
-  it('keeps Singapore and Dubai out for every unavailable evidence cause', async () => {
+  it('keeps Singapore and Dubai visible but unlinked while evidence is unavailable', async () => {
     const presentation = buildHomepagePresentation(unavailable);
-    expect(presentation.copy.marketIds).toEqual(['kr-seoul']);
-    expect(JSON.stringify(presentation)).not.toMatch(/href":"\/(?:sg|ae)\//);
+    expect(presentation.copy.marketIds).toEqual([
+      'kr-seoul',
+      'sg-singapore',
+      'ae-dubai',
+    ]);
+    expect(
+      presentation.markets.flatMap((market) =>
+        market.slots.flatMap((slot) => slot.href ?? []),
+      ),
+    ).toEqual([]);
 
     const html = renderToStaticMarkup(await Home());
+    expect(html).toContain('>Singapore</button>');
+    expect(html).toContain('>Dubai</button>');
     expect(html).not.toMatch(/href="\/(?:sg|ae)\//);
   });
 
-  it('adds only the Singapore evidence entry after the entry model is ready', () => {
+  it('activates only Singapore Explore after its evidence gate passes', () => {
     const presentation = buildHomepagePresentation(ready);
-    expect(presentation.copy.marketIds).toEqual(['kr-seoul', 'sg-singapore']);
+    expect(presentation.copy.marketIds).toEqual([
+      'kr-seoul',
+      'sg-singapore',
+      'ae-dubai',
+    ]);
     expect(presentation.copy.header.links).toContainEqual({
       label: 'Singapore evidence', href: '/sg/', ariaLabel: 'Singapore evidence',
     });
-    expect(presentation.markets.map(({ id }) => id)).toEqual(['kr-seoul', 'sg-singapore']);
-    expect(presentation.groups.flatMap(({ destinations }) => destinations)
-      .filter(({ label }) => label === 'Singapore')
-      .every(({ href }) => href === '/sg/')).toBe(true);
+    expect(presentation.markets.map(({ id }) => id)).toEqual([
+      'kr-seoul',
+      'sg-singapore',
+      'ae-dubai',
+    ]);
+    expect(presentation.singapore).toEqual(ready);
+    expect(
+      presentation.markets.map((market) => ({
+        id: market.id,
+        slots: market.slots.map((slot) => ({ id: slot.id, href: slot.href })),
+      })),
+    ).toEqual([
+      {
+        id: 'kr-seoul',
+        slots: [
+          { id: 'check', href: undefined },
+          { id: 'explore', href: undefined },
+          { id: 'rankings', href: undefined },
+          { id: 'news', href: undefined },
+          { id: 'guide', href: undefined },
+          { id: 'community', href: undefined },
+        ],
+      },
+      {
+        id: 'sg-singapore',
+        slots: [
+          { id: 'check', href: undefined },
+          { id: 'explore', href: '/sg/singapore/explore/' },
+          { id: 'rankings', href: undefined },
+          { id: 'news', href: undefined },
+          { id: 'guide', href: undefined },
+          { id: 'community', href: undefined },
+        ],
+      },
+      {
+        id: 'ae-dubai',
+        slots: [
+          { id: 'check', href: undefined },
+          { id: 'explore', href: undefined },
+          { id: 'rankings', href: undefined },
+          { id: 'news', href: undefined },
+          { id: 'guide', href: undefined },
+          { id: 'community', href: undefined },
+        ],
+      },
+    ]);
     expect(JSON.stringify(presentation)).not.toMatch(/href":"\/ae\//);
   });
 });

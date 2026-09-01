@@ -285,8 +285,16 @@ describe('real route rendering contracts', () => {
       {
         title: 'Seoul property intelligence | signedprice',
         description:
-          'Review Seoul Phase 1 product depth, source posture, supported property intents and current data-rights limits.',
-        robots: { index: false, follow: true },
+          'Review verified Seoul housing contract evidence, comparison tools and publication limits.',
+        robots: { index: true, follow: true },
+        alternates: {
+          canonical: 'https://www.signedprice.com/kr/seoul/',
+          languages: {
+            en: 'https://www.signedprice.com/kr/seoul/',
+            ko: 'https://www.signedprice.com/ko/kr/seoul/',
+            'x-default': 'https://www.signedprice.com/kr/seoul/',
+          },
+        },
       },
       {
         title: 'Buy in Singapore | signedprice',
@@ -309,7 +317,7 @@ describe('real route rendering contracts', () => {
       },
     ]);
     expect(metadataByRoute.filter((metadata) => Reflect.has(metadata as object, 'alternates')))
-      .toHaveLength(1);
+      .toHaveLength(2);
   });
 
   it('renders all thirteen Task 4 routes from their static contracts', async () => {
@@ -331,7 +339,7 @@ describe('real route rendering contracts', () => {
 
     expect(routeMarkup).toHaveLength(13);
     for (const markup of routeMarkup) {
-      expect(markup).toContain('>signedprice</a>');
+      expect(markup).toContain('data-brand-wordmark="true"');
       expect(markup).toContain('href="/compare/"');
       expect(markup).not.toMatch(unsupportedClaimPattern);
       expect(markup).not.toMatch(/<form|<input|<button/i);

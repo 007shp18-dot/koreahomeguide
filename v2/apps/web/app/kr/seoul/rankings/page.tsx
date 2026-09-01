@@ -4,6 +4,7 @@ import { DistrictRankings } from '../../../../components/public-market/district-
 import { PublicSectionTabs } from '../../../../components/public-market/public-section-tabs';
 import { SiteFooter } from '../../../../components/site-footer';
 import { SiteHeader } from '../../../../components/site-header';
+import { PublicBreadcrumbJsonLd } from '../../../../components/public-json-ld';
 import { buildPublicAreaRankingsModel } from '../../../../lib/public-market/rankings-route-model.server';
 import {
   KOREA_PUBLIC_RELEASE_STATUS,
@@ -16,6 +17,10 @@ export const metadata: Metadata = indexableMetadata({
   path: '/kr/seoul/rankings/',
   title: 'Seoul district jeonse rankings | signedprice',
   description: 'Compare verified Seoul district refundable jeonse deposits, change, spread and sample depth.',
+  languageAlternates: {
+    en: '/kr/seoul/rankings/',
+    ko: '/ko/kr/seoul/rankings/',
+  },
 });
 
 const header: SiteHeaderModel = {
@@ -52,6 +57,11 @@ export default function RankingsPage() {
       <main>
         <DistrictRankings model={model} />
       </main>
+      <PublicBreadcrumbJsonLd items={[
+        { name: 'Home', path: '/' },
+        { name: 'Seoul', path: '/kr/seoul/' },
+        { name: 'Rankings', path: '/kr/seoul/rankings/' },
+      ]} />
       <SiteFooter copy={footer} />
     </div>
   );

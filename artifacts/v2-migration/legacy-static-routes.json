@@ -144,6 +144,14 @@
     ]
   },
   {
+    "path": "/net-proceeds/",
+    "sourceFile": "net-proceeds/index.html",
+    "kind": "page",
+    "locales": [
+      "en"
+    ]
+  },
+  {
     "path": "/privacy/",
     "sourceFile": "privacy/index.html",
     "kind": "page",
@@ -427,6 +435,14 @@
     "path": "/tools/seoul-rent-check/",
     "sourceFile": "tools/seoul-rent-check/index.html",
     "kind": "tool",
+    "locales": [
+      "en"
+    ]
+  },
+  {
+    "path": "/value-check/",
+    "sourceFile": "value-check/index.html",
+    "kind": "page",
     "locales": [
       "en"
     ]

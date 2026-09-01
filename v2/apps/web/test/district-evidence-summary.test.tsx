@@ -48,9 +48,43 @@ describe('district evidence summary', () => {
     expect(html).toContain('₩70,000,000–₩110,000,000');
     expect(html).toContain('5 reported contracts');
     expect(html).toContain('Contract type unknown · 1');
+    expect(html).toContain('data-contract-comparison="new-renewal-all"');
+    expect((html.match(/data-contract-comparison-row=/g) ?? [])).toHaveLength(3);
+    expect(html).toContain('data-contract-comparison-row="new"');
+    expect(html).toContain('data-contract-comparison-row="renewal"');
+    expect(html).toContain('data-contract-comparison-row="all"');
+    expect(html).not.toContain('Combined All is lower than New in this snapshot.');
     expect(html).toContain(PUBLIC_AREA_FIXTURE_PERIOD);
     expect(html).toContain('href="/kr/seoul/explore/jung-gu?contract=new"');
     expect(html).not.toMatch(/Community|Save/i);
+  });
+
+  it('states that combined All is lower only when the published medians prove it', () => {
+    const source = createPublicAreaV2Fixture();
+    const all = source.groups.all.districtSummaries[1];
+    if (!all?.published) throw new Error('Expected published Jung-gu All fixture.');
+    source.groups.all.districtSummaries[1] = {
+      ...all,
+      min: 60_000_000,
+      p25: 70_000_000,
+      med: 80_000_000,
+      p75: 90_000_000,
+      max: 100_000_000,
+    };
+    const route = buildPublicAreaExploreModel('jung-gu', {
+      source,
+      period: PUBLIC_AREA_FIXTURE_PERIOD,
+    });
+    if (route.status !== 'ready') throw new Error('Expected ready Explore fixture.');
+    const district = route.districts.find(({ slug }) => slug === 'jung-gu');
+    if (district === undefined) throw new Error('Expected Jung-gu fixture.');
+
+    const html = renderToStaticMarkup(<DistrictEvidenceSummary
+      model={district.contractEvidence}
+      mode="compact"
+    />);
+
+    expect(html).toContain('Combined All is lower than New in this snapshot.');
   });
 
   it('keeps an independently withheld renewal split money-free and selectable', () => {
@@ -86,7 +120,10 @@ describe('district evidence summary', () => {
     expect(html).toContain('4 reported contracts');
     expect(html).toContain('At least 5 are required');
     expect(html).toContain('Contract type unknown · 2');
-    expect(html).not.toMatch(/₩|KRW/);
+    expect(html).not.toContain('data-summary-median');
+    expect(html).toContain('data-contract-comparison-row="renewal"');
+    expect(html).toContain('Not published');
+    expect(html).toContain('₩90,000,000');
   });
 
   it('keeps v1 combined evidence visible and explains unavailable split controls', () => {
@@ -103,11 +140,14 @@ describe('district evidence summary', () => {
       mode="compact"
     />);
 
-    expect(html).toContain('All contracts');
+    expect(html).toContain('data-contract-comparison-row="all"');
+    expect(html).toContain('₩110,000,000');
     expect(html).toContain('New/renewal split not available in this snapshot');
     expect(html).toContain('data-contract-group="new"');
     expect(html).toContain('data-contract-group="renewal"');
     expect((html.match(/disabled=""/g) ?? [])).toHaveLength(2);
+    expect((html.match(/data-contract-comparison-row=/g) ?? [])).toHaveLength(3);
+    expect(html).toContain('Snapshot unavailable');
     expect(html).not.toContain('Contract type unknown ·');
   });
 

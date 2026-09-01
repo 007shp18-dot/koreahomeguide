@@ -65,14 +65,15 @@
           priceWon: price, purchaseWon: n(input.purchaseWon),
           singleHomeExempt: input.singleHomeExempt !== false
         });
-    const legal = input.legalWon != null ? n(input.legalWon) : 300000;
+    const registrationCost = input.legalWon != null ? n(input.legalWon) : 300000;
 
-    const deductions = loan + deposit + brokerage + tax + legal;
+    const deductions = loan + deposit + brokerage + tax + registrationCost;
     const net = price - deductions;
     const gain = price - n(input.purchaseWon);
 
     return {
-      price, loan, deposit, brokerage, tax, legal,
+      price, loan, deposit, brokerage, tax,
+      legal: registrationCost,
       deductions, net, gain,
       // Share of the SALE PRICE that reaches the seller. Comparing net proceeds
       // against the gain instead would be nonsense — net proceeds also return

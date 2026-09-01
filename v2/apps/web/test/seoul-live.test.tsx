@@ -33,7 +33,7 @@ describe('Seoul live entry model', () => {
     expect(html).toContain('Renewals');
     expect(html).toContain('Unknown type');
     for (const href of [
-      '/kr',
+      '/kr/seoul/check',
       '/kr/seoul/explore',
       '/kr/seoul/rankings',
       '/kr/seoul/news',

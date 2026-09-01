@@ -146,6 +146,72 @@
   text-transform: uppercase;
 }
 
+.comparison {
+  display: grid;
+  border-bottom: 2px solid var(--ink);
+  background: var(--surface);
+}
+
+.comparisonHeading {
+  padding: 0.9rem 1rem;
+  display: grid;
+  gap: 0.25rem;
+  border-bottom: 1px solid var(--ink);
+}
+
+.comparisonHeading p,
+.comparisonRow span,
+.comparisonNote {
+  color: var(--muted);
+  font-size: 0.65rem;
+  line-height: 1.45;
+}
+
+.comparisonHeading p {
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.comparisonHeading h3 {
+  font-size: 1rem;
+  letter-spacing: -0.025em;
+}
+
+.comparisonRows {
+  display: grid;
+}
+
+.comparisonRow {
+  min-height: 44px;
+  padding: 0.65rem 1rem;
+  display: grid;
+  grid-template-columns: 78px minmax(0, 1fr) minmax(112px, auto);
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--ink) 35%, transparent);
+}
+
+.comparisonRow:last-child {
+  border-bottom: 0;
+}
+
+.comparisonRow strong,
+.comparisonRow span:last-child {
+  font-size: 0.7rem;
+  font-weight: 850;
+}
+
+.comparisonRow span:last-child {
+  color: var(--ink);
+  text-align: right;
+}
+
+.comparisonNote {
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--ink);
+}
+
 .footer {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -202,5 +268,14 @@
 
   .footer a {
     width: 100%;
+  }
+
+  .comparisonRow {
+    grid-template-columns: 64px minmax(0, 1fr);
+  }
+
+  .comparisonRow span:last-child {
+    grid-column: 2;
+    text-align: left;
   }
 }

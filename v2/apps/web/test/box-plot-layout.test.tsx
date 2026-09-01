@@ -60,4 +60,20 @@ describe('collision-safe box plot labels', () => {
     expect(css).toMatch(/\.medianAnnotation[\s\S]*?var\(--public-accent\)/);
     expect(css).toMatch(/@media \(max-width:\s*720px\)[\s\S]*?\.endpointLong/);
   });
+
+  it('keeps compact distribution plots on the same accessible shared component', () => {
+    const html = renderToStaticMarkup(
+      <BoxPlot
+        summary={summary}
+        axis={{ min: 160_000_000, max: 620_000_000 }}
+        formatValue={(value) => `₩${value.toLocaleString('en-US')}`}
+        variant="compact"
+      />,
+    );
+
+    expect(html).toContain('data-plot-variant="compact"');
+    expect(html).toContain('aria-describedby=');
+    expect(html).toContain('data-plot-label="median"');
+    expect(css).toMatch(/\.compactPlot[\s\S]*?\.plotCanvas[\s\S]*?min-height:/);
+  });
 });

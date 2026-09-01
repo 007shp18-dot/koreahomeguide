@@ -7,10 +7,11 @@ export const publicRoutes = [
   { path: '/', heading: 'Real prices. Better property decisions.', indexing: 'index', canonical: '/' },
   { path: '/trust/', heading: 'How SignedPrice publishes evidence', indexing: 'index', canonical: '/trust/' },
   {
-    path: '/kr/',
+    path: '/kr/seoul/check/',
     heading: 'Which rent offer actually costs less?',
     indexing: 'index',
-    canonical: '/kr/',
+    canonical: '/kr/seoul/check/',
+    alternates: true,
   },
   { path: '/kr/check/seoul/', heading: 'Where does this refundable deposit sit?', indexing: 'index', canonical: '/kr/check/seoul/' },
   { path: '/kr/seoul/rent/', heading: 'Rent in Seoul', indexing: 'noindex' },
@@ -26,12 +27,14 @@ export const publicRoutes = [
     heading: 'Compare refundable jeonse deposits by district.',
     indexing: 'index',
     canonical: '/kr/seoul/explore/',
+    alternates: true,
   },
   {
     path: '/kr/seoul/rankings/',
     heading: 'Seoul district rankings',
     indexing: 'index',
     canonical: '/kr/seoul/rankings/',
+    alternates: true,
   },
   {
     path: '/kr/seoul/corrections/',

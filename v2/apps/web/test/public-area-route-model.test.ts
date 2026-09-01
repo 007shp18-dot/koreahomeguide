@@ -14,6 +14,10 @@ import {
   createPublicAreaFixture,
   createPublicAreaV2Fixture,
 } from './public-area-fixture';
+import {
+  createPublicBuildingFixture,
+  createPublicBuildingRecord,
+} from './public-building-fixture';
 
 const rankedFixture = () => createPublicAreaFixture({
   publishedMedians: {
@@ -31,11 +35,13 @@ const rankedFixture = () => createPublicAreaFixture({
 const dependencies = (source: unknown = rankedFixture()) => ({
   source,
   period: PUBLIC_AREA_FIXTURE_PERIOD,
+  referenceInstant: '2026-09-01T00:00:00.000Z',
 });
 
 describe('public area Explore model', () => {
   it('normalizes query input and exposes independent v2 group evidence', () => {
-    expect(normalizePublicContractGroup(undefined)).toBe('all');
+    expect(normalizePublicContractGroup(undefined)).toBe('new');
+    expect(normalizePublicContractGroup('all')).toBe('all');
     expect(normalizePublicContractGroup('new')).toBe('new');
     expect(normalizePublicContractGroup('renewal')).toBe('renewal');
     expect(normalizePublicContractGroup('private')).toBe('all');
@@ -58,6 +64,135 @@ describe('public area Explore model', () => {
         renewal: { status: 'published', medianLabel: '₩130,000,000' },
       },
     });
+  });
+
+  it('defaults v2 and v1 snapshots to New without substituting All evidence', () => {
+    const v2 = buildPublicAreaExploreModel('jung-gu', {
+      source: createPublicAreaV2Fixture(),
+      period: PUBLIC_AREA_FIXTURE_PERIOD,
+    });
+    expect(v2.status).toBe('ready');
+    if (v2.status !== 'ready') return;
+    expect(v2.districts.find(({ slug }) => slug === 'jung-gu')?.contractEvidence)
+      .toMatchObject({
+        selected: 'new',
+        groups: { new: { status: 'published', medianLabel: '₩90,000,000' } },
+      });
+
+    const v1 = buildPublicAreaExploreModel('jung-gu', {
+      source: rankedFixture(),
+      period: PUBLIC_AREA_FIXTURE_PERIOD,
+    });
+    expect(v1.status).toBe('ready');
+    if (v1.status !== 'ready') return;
+    expect(v1.districts.find(({ slug }) => slug === 'jung-gu')?.contractEvidence)
+      .toMatchObject({
+        selected: 'new',
+        splitStatus: 'snapshot_v1',
+        groups: {
+          all: { status: 'published', medianLabel: '₩100,000,000' },
+          new: { status: 'snapshot_unavailable' },
+        },
+      });
+  });
+
+  it('calculates coverage only from retained verified area and building records', () => {
+    const withheldBuilding = createPublicBuildingRecord({
+      buildingId: 'gangnam-retained-thin-building',
+      name: 'Retained Thin Building',
+      groups: {
+        all: { n: 4, published: false },
+        new: { n: 2, published: false },
+        renewal: { n: 1, published: false },
+      },
+      unknownContractCount: 1,
+      areaBands: [{ band: '45-55sqm', summary: { n: 4, published: false } }],
+    });
+    const model = buildPublicAreaExploreModel('gangnam-gu', {
+      ...dependencies(),
+      buildingSource: createPublicBuildingFixture([
+        createPublicBuildingRecord(),
+        withheldBuilding,
+      ]),
+    });
+    expect(model.status).toBe('ready');
+    if (model.status !== 'ready') return;
+
+    expect((model as typeof model & { coverage: unknown }).coverage).toEqual({
+      districts: { published: 7, retained: 25 },
+      buildings: { status: 'ready', published: 1, retained: 2 },
+      eligibleContracts: 104,
+      unpublished: {
+        districtsBelowMinimum: 18,
+        retainedBuildingsBelowMinimum: 1,
+        sourceBuildingCandidates: {
+          status: 'unavailable',
+          reason: 'Source candidate building counts are not retained in this verified artifact.',
+        },
+      },
+    });
+  });
+
+  it('marks the building denominator unavailable when no verified artifact is loaded', () => {
+    const model = buildPublicAreaExploreModel('gangnam-gu', dependencies());
+    expect(model.status).toBe('ready');
+    if (model.status !== 'ready') return;
+
+    expect((model as typeof model & { coverage: Record<string, unknown> }).coverage.buildings)
+      .toEqual({
+        status: 'unavailable',
+        reason: 'Verified building artifact is not loaded.',
+      });
+    expect(JSON.stringify((model as typeof model & { coverage: unknown }).coverage))
+      .not.toContain('"published":0,"retained":0');
+  });
+
+  it('calculates the first configured monthly UTC instant strictly after the reference', () => {
+    const schedule = { cadence: 'monthly', dayOfMonth: 1, hourUtc: 8, minuteUtc: 30 } as const;
+    const atBoundary = buildPublicAreaExploreModel('jongno-gu', {
+      ...dependencies(createPublicAreaV2Fixture()),
+      referenceInstant: '2026-09-01T08:30:00.000Z',
+      updateSchedule: schedule,
+    } as Parameters<typeof buildPublicAreaExploreModel>[1]);
+    expect(atBoundary.status).toBe('ready');
+    if (atBoundary.status !== 'ready') return;
+    expect((atBoundary.source as typeof atBoundary.source & { nextUpdate: unknown }).nextUpdate)
+      .toEqual({ cadence: 'monthly', instant: '2026-10-01T08:30:00.000Z' });
+
+    const beforeBoundary = buildPublicAreaExploreModel('jongno-gu', {
+      ...dependencies(createPublicAreaV2Fixture()),
+      referenceInstant: '2026-12-01T08:29:59.999Z',
+      updateSchedule: schedule,
+    } as Parameters<typeof buildPublicAreaExploreModel>[1]);
+    expect(beforeBoundary.status).toBe('ready');
+    if (beforeBoundary.status !== 'ready') return;
+    expect((beforeBoundary.source as typeof beforeBoundary.source & { nextUpdate: unknown }).nextUpdate)
+      .toEqual({ cadence: 'monthly', instant: '2026-12-01T08:30:00.000Z' });
+
+    const yearRollover = buildPublicAreaExploreModel('jongno-gu', {
+      ...dependencies(createPublicAreaV2Fixture()),
+      referenceInstant: '2026-12-31T23:59:59.999Z',
+      updateSchedule: schedule,
+    } as Parameters<typeof buildPublicAreaExploreModel>[1]);
+    expect(yearRollover.status).toBe('ready');
+    if (yearRollover.status !== 'ready') return;
+    expect((yearRollover.source as typeof yearRollover.source & { nextUpdate: unknown }).nextUpdate)
+      .toEqual({ cadence: 'monthly', instant: '2027-01-01T08:30:00.000Z' });
+  });
+
+  it('omits a next-update promise when schedule configuration is absent or invalid', () => {
+    const absent = buildPublicAreaExploreModel('jongno-gu', dependencies(createPublicAreaV2Fixture()));
+    expect(absent.status).toBe('ready');
+    if (absent.status !== 'ready') return;
+    expect((absent.source as typeof absent.source & { nextUpdate: unknown }).nextUpdate).toBeNull();
+
+    const invalid = buildPublicAreaExploreModel('jongno-gu', {
+      ...dependencies(createPublicAreaV2Fixture()),
+      updateSchedule: { cadence: 'monthly', dayOfMonth: 29, hourUtc: 8, minuteUtc: 30 },
+    } as Parameters<typeof buildPublicAreaExploreModel>[1]);
+    expect(invalid.status).toBe('ready');
+    if (invalid.status !== 'ready') return;
+    expect((invalid.source as typeof invalid.source & { nextUpdate: unknown }).nextUpdate).toBeNull();
   });
 
   it('assigns deterministic five-step ranks without changing catalog order', () => {
@@ -136,6 +271,7 @@ describe('public area Explore model', () => {
       includesNewAndRenewal: true,
       includesUnknownContractType: true,
       includesUnknownRecordStatus: true,
+      nextUpdate: null,
       geometryAttribution: 'KOSTAT census boundaries via southkorea/seoul-maps (Apache-2.0)',
     });
   });
@@ -185,7 +321,20 @@ describe('public district route model', () => {
       medianLabel: '₩500,000,000',
       rangeLabel: '₩480,000,000–₩520,000,000',
       middleHalfLabel: '₩490,000,000–₩510,000,000',
-      changeLabel: '3-month change unavailable',
+      changeLabel: '3-month change not assessable',
+      spread: {
+        status: 'interpretable',
+        bucket: 'narrow',
+        ratio: 0.04,
+        label: 'Narrow middle-half spread',
+        explanation: 'The middle half spans 4.0% of the median.',
+      },
+      change: {
+        status: 'not_assessable',
+        label: '3-month change not assessable',
+        sampleLabel: null,
+        reasons: ['Prior/latest sample counts were not retained in this snapshot.'],
+      },
     });
     expect(model.nearby.map(({ slug }) => slug)).toEqual([
       'jung-gu', 'dongdaemun-gu', 'seongbuk-gu', 'eunpyeong-gu', 'seodaemun-gu',
@@ -218,6 +367,8 @@ describe('public district route model', () => {
       rangeLabel: null,
       middleHalfLabel: null,
       changeLabel: null,
+      spread: null,
+      change: null,
     });
     const serialized = JSON.stringify(model);
     expect(serialized).not.toContain(String(CITY_MEDIAN_SENTINEL));

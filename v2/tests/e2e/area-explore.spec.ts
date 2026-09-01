@@ -5,6 +5,10 @@ import {
   PUBLIC_AREA_TEST_LEGEND_LABELS,
   PUBLIC_AREA_WITHHELD_SLUG,
 } from './public-area-summary-fixture';
+import {
+  PUBLIC_BUILDING_TEST_ID,
+  PUBLIC_BUILDING_TEST_NAME,
+} from './public-building-summary-fixture';
 
 const releaseTarget = resolveReleaseTestTarget();
 
@@ -98,7 +102,7 @@ test('synthetic release fixture shows exact five buckets and a money-free refusa
   test.skip(releaseTarget.usesExternalServer, 'Exact fixture values are local-release only.');
   await page.goto('/kr/seoul/explore/');
 
-  const legend = page.getByLabel('Map legend');
+  const legend = page.getByRole('group', { name: 'Map legend' });
   for (const label of PUBLIC_AREA_TEST_LEGEND_LABELS) {
     await expect(legend).toContainText(label);
   }
@@ -109,6 +113,17 @@ test('synthetic release fixture shows exact five buckets and a money-free refusa
   await expect(withheldRow).toContainText('Not published');
   await expect(withheldRow).toContainText('4 reported contracts');
   await expect(withheldRow).not.toContainText('₩');
+});
+
+test('rail selection opens the canonical building panel and full-detail CTA', async ({ page }) => {
+  test.skip(releaseTarget.usesExternalServer, 'Exact fixture values are local-release only.');
+  await page.goto('/kr/seoul/explore/?district=jongno-gu');
+
+  await page.getByRole('button', { name: new RegExp(PUBLIC_BUILDING_TEST_NAME) }).click();
+  const panel = page.locator(`[data-building-panel="${PUBLIC_BUILDING_TEST_ID}"]`);
+  await expect(panel).toBeVisible();
+  await expect(panel.getByRole('link', { name: 'Open full building evidence' }))
+    .toHaveAttribute('href', `/kr/seoul/explore/jongno-gu/${PUBLIC_BUILDING_TEST_ID}/`);
 });
 
 test('published quote stays local and any withheld detail stays money-free', async ({ page }) => {
@@ -190,7 +205,7 @@ test('wide workspace keeps map, table, and legend contained', async ({ page }, t
   test.skip(testInfo.project.name !== 'wide-chromium');
   await page.goto('/kr/seoul/explore/');
 
-  await expect(page.getByLabel('Map legend')).toBeVisible();
+  await expect(page.getByRole('group', { name: 'Map legend' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'All 25 districts' })).toBeVisible();
   await expectNoHorizontalOverflow(page);
 });

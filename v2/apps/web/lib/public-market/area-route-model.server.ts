@@ -24,6 +24,11 @@ import {
   type PublicAreaSummaryRepository,
 } from './area-summary-repository.server';
 import { createPublicBuildingRepository } from './building-summary-repository.server';
+import {
+  changeReliability,
+  evidencePeriod,
+  spreadVerdict,
+} from './evidence-interpretation';
 import type {
   ContractGroupEvidenceModel,
   DistrictBuildingAvailability,
@@ -31,12 +36,15 @@ import type {
   ExploreDistrictModel,
   PublicAreaExploreModel,
   PublicAreaLegendBucket,
+  PublicAreaCoverageModel,
   PublicAreaSourceBoundaryModel,
   PublicDistrictDisplayModel,
   PublicDistrictEvidenceSummaryModel,
   PublicDistrictFaq,
   PublicDistrictModel,
   PublicContractGroup,
+  PublicMonthlyUpdateSchedule,
+  PublicNextUpdateModel,
   PublicSourceBoundaryModel,
 } from './area-route-types';
 import {
@@ -48,6 +56,8 @@ export type PublicAreaRouteDependencies = Readonly<{
   source: unknown;
   period: string;
   buildingSource?: unknown;
+  referenceInstant?: string | Date;
+  updateSchedule?: PublicMonthlyUpdateSchedule;
 }>;
 
 const money = new Intl.NumberFormat('ko-KR', {
@@ -72,11 +82,6 @@ function sampleLabel(n: number): string {
   return `${n} reported contract${n === 1 ? '' : 's'}`;
 }
 
-function changeLabel(chg3m: number | null): string {
-  if (chg3m === null) return '3-month change unavailable';
-  return `${chg3m > 0 ? '+' : ''}${chg3m.toFixed(1)}% over the prior 3 months`;
-}
-
 function districtEvidenceSummaryFor(
   identity: SeoulRentCheckDistrict,
   summary: PublicMarketSummary,
@@ -98,14 +103,23 @@ function districtEvidenceSummaryFor(
       sampleLabel: sampleLabel(summary.n),
     });
   }
+  const spread = spreadVerdict(summary);
+  const change = changeReliability({
+    pct: summary.chg3m,
+    nPrior: null,
+    nLatest: null,
+  });
   return Object.freeze({
     ...common,
     status: 'published',
     sampleLabel: sampleLabel(summary.n),
+    medianValue: summary.med,
     medianLabel: formatMoney(summary.med),
     middleHalfLabel: `${formatMoney(summary.p25)}–${formatMoney(summary.p75)}`,
     rangeLabel: `${formatMoney(summary.min)}–${formatMoney(summary.max)}`,
-    changeLabel: changeLabel(summary.chg3m),
+    changeLabel: change.label,
+    spread,
+    change,
   });
 }
 
@@ -146,6 +160,7 @@ function snapshotUnavailableDistrictEvidenceSummaryFor(
 }
 
 export function normalizePublicContractGroup(value: unknown): PublicContractGroup {
+  if (value === undefined) return 'new';
   return value === 'new' || value === 'renewal' ? value : 'all';
 }
 
@@ -161,11 +176,13 @@ function contractEvidenceFor(
     'all',
   );
   if (availability.status === 'snapshot_v1') {
+    const selected = normalizePublicContractGroup(requestedGroup);
     return Object.freeze({
       scopeId: identity.slug,
-      selected: 'all',
+      selected,
       splitStatus: 'snapshot_v1',
       unknownContractCount: null,
+      allLowerThanNew: false,
       groups: Object.freeze({
         all,
         new: snapshotUnavailableDistrictEvidenceSummaryFor(
@@ -178,19 +195,23 @@ function contractEvidenceFor(
     });
   }
   const selected = normalizePublicContractGroup(requestedGroup);
+  const groups = Object.freeze(Object.fromEntries(CONTRACT_GROUPS.map((contractGroup) => [
+    contractGroup,
+    districtEvidenceSummaryFor(
+      identity,
+      repository.getDistrictSummary(identity.slug, contractGroup),
+      contractGroup,
+    ),
+  ])) as Record<PublicContractGroup, PublicDistrictEvidenceSummaryModel>);
   return Object.freeze({
     scopeId: identity.slug,
     selected,
     splitStatus: 'ready',
     unknownContractCount: repository.getDistrictUnknownContractCount(identity.slug),
-    groups: Object.freeze(Object.fromEntries(CONTRACT_GROUPS.map((contractGroup) => [
-      contractGroup,
-      districtEvidenceSummaryFor(
-        identity,
-        repository.getDistrictSummary(identity.slug, contractGroup),
-        contractGroup,
-      ),
-    ])) as Record<PublicContractGroup, PublicDistrictEvidenceSummaryModel>),
+    allLowerThanNew: groups.all.status === 'published'
+      && groups.new.status === 'published'
+      && groups.all.medianValue < groups.new.medianValue,
+    groups,
   });
 }
 
@@ -203,6 +224,7 @@ function unavailableContractEvidenceFor(
     selected: 'all',
     splitStatus: 'unavailable',
     unknownContractCount: null,
+    allLowerThanNew: false,
     groups: Object.freeze(Object.fromEntries(CONTRACT_GROUPS.map((contractGroup) => [
       contractGroup,
       unavailableDistrictEvidenceSummaryFor(identity, period, contractGroup),
@@ -213,16 +235,20 @@ function unavailableContractEvidenceFor(
 export function buildPublicSourceBoundary(
   period: string,
   evidence: EvidenceDescriptor | null,
+  includeGeometry?: false,
+  nextUpdate?: PublicNextUpdateModel | null,
 ): PublicSourceBoundaryModel;
 export function buildPublicSourceBoundary(
   period: string,
   evidence: EvidenceDescriptor | null,
   includeGeometry: true,
+  nextUpdate?: PublicNextUpdateModel | null,
 ): PublicAreaSourceBoundaryModel;
 export function buildPublicSourceBoundary(
   period: string,
   evidence: EvidenceDescriptor | null,
   includeGeometry = false,
+  nextUpdate: PublicNextUpdateModel | null = null,
 ): PublicSourceBoundaryModel | PublicAreaSourceBoundaryModel {
   const common = {
     evidence,
@@ -234,6 +260,7 @@ export function buildPublicSourceBoundary(
     includesNewAndRenewal: true,
     includesUnknownContractType: true,
     includesUnknownRecordStatus: true,
+    nextUpdate,
   } as const;
   return includeGeometry
     ? Object.freeze({
@@ -249,6 +276,7 @@ function environmentDependencies(): PublicAreaRouteDependencies {
   const serializedBuildings = process.env.SIGNEDPRICE_PUBLIC_BUILDING_SUMMARY_ARTIFACT;
   let source: unknown;
   let buildingSource: unknown;
+  let updateSchedule: PublicMonthlyUpdateSchedule | undefined;
   try {
     source = serialized === undefined ? undefined : JSON.parse(serialized);
   } catch {
@@ -258,6 +286,13 @@ function environmentDependencies(): PublicAreaRouteDependencies {
     buildingSource = serializedBuildings === undefined ? undefined : JSON.parse(serializedBuildings);
   } catch {
     buildingSource = undefined;
+  }
+  try {
+    updateSchedule = process.env.SIGNEDPRICE_PUBLIC_UPDATE_SCHEDULE === undefined
+      ? undefined
+      : JSON.parse(process.env.SIGNEDPRICE_PUBLIC_UPDATE_SCHEDULE) as PublicMonthlyUpdateSchedule;
+  } catch {
+    updateSchedule = undefined;
   }
   if (
     process.env.NODE_ENV !== 'test'
@@ -271,6 +306,85 @@ function environmentDependencies(): PublicAreaRouteDependencies {
     source,
     buildingSource,
     period: process.env.SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD ?? '',
+    referenceInstant: new Date().toISOString(),
+    updateSchedule,
+  });
+}
+
+function nextUpdateFor(
+  referenceInstant: string | Date | undefined,
+  schedule: PublicMonthlyUpdateSchedule | undefined,
+): PublicNextUpdateModel | null {
+  if (
+    schedule === undefined
+    || schedule.cadence !== 'monthly'
+    || !Number.isInteger(schedule.dayOfMonth)
+    || schedule.dayOfMonth < 1
+    || schedule.dayOfMonth > 28
+    || !Number.isInteger(schedule.hourUtc)
+    || schedule.hourUtc < 0
+    || schedule.hourUtc > 23
+    || !Number.isInteger(schedule.minuteUtc)
+    || schedule.minuteUtc < 0
+    || schedule.minuteUtc > 59
+  ) return null;
+  const reference = referenceInstant instanceof Date
+    ? new Date(referenceInstant.getTime())
+    : new Date(referenceInstant ?? '');
+  if (!Number.isFinite(reference.getTime())) return null;
+  let year = reference.getUTCFullYear();
+  let month = reference.getUTCMonth();
+  let candidate = new Date(Date.UTC(
+    year, month, schedule.dayOfMonth, schedule.hourUtc, schedule.minuteUtc,
+  ));
+  if (candidate.getTime() <= reference.getTime()) {
+    month += 1;
+    if (month === 12) {
+      year += 1;
+      month = 0;
+    }
+    candidate = new Date(Date.UTC(
+      year, month, schedule.dayOfMonth, schedule.hourUtc, schedule.minuteUtc,
+    ));
+  }
+  return Object.freeze({ cadence: 'monthly', instant: candidate.toISOString() });
+}
+
+function coverageFor(
+  summaries: readonly PublicMarketSummary[],
+  citySummary: PublicMarketSummary,
+  dependencies: PublicAreaRouteDependencies,
+): PublicAreaCoverageModel {
+  const publishedDistricts = summaries.filter(({ published }) => published).length;
+  let buildings: PublicAreaCoverageModel['buildings'];
+  let retainedBuildingsBelowMinimum: number | null = null;
+  try {
+    const repository = createPublicBuildingRepository({
+      source: dependencies.buildingSource,
+      expected: { marketId: 'kr-seoul', period: dependencies.period },
+    });
+    const retained = repository.listRetainedRecords();
+    const published = retained.filter(({ groups }) => groups.all.published).length;
+    retainedBuildingsBelowMinimum = retained.length - published;
+    buildings = Object.freeze({ status: 'ready', published, retained: retained.length });
+  } catch {
+    buildings = Object.freeze({
+      status: 'unavailable',
+      reason: 'Verified building artifact is not loaded.',
+    });
+  }
+  return Object.freeze({
+    districts: Object.freeze({ published: publishedDistricts, retained: summaries.length }),
+    buildings,
+    eligibleContracts: citySummary.n,
+    unpublished: Object.freeze({
+      districtsBelowMinimum: summaries.length - publishedDistricts,
+      retainedBuildingsBelowMinimum,
+      sourceBuildingCandidates: Object.freeze({
+        status: 'unavailable',
+        reason: 'Source candidate building counts are not retained in this verified artifact.',
+      }),
+    }),
   });
 }
 
@@ -375,6 +489,7 @@ export function buildPublicAreaExploreModel(
       citySummary.period,
       repository.getEvidenceDescriptor(),
       true,
+      nextUpdateFor(dependencies.referenceInstant, dependencies.updateSchedule),
     );
     const summaries = repository.listDistrictSummaries();
     const buckets = bucketAssignments(summaries);
@@ -406,7 +521,9 @@ export function buildPublicAreaExploreModel(
         bucket: summary.published ? buckets.get(identity.slug) ?? null : null,
         sampleLabel: sampleLabel(summary.n),
         medianLabel: summary.published ? formatMoney(summary.med) : null,
-        changeLabel: summary.published ? changeLabel(summary.chg3m) : null,
+        changeLabel: summary.published
+          ? changeReliability({ pct: summary.chg3m, nPrior: null, nLatest: null }).label
+          : null,
         evidenceSummary: contractEvidence.groups[contractEvidence.selected],
         contractEvidence,
       } satisfies ExploreDistrictModel);
@@ -418,6 +535,7 @@ export function buildPublicAreaExploreModel(
       citySummary,
       districts,
       legend: legendFor(districts),
+      coverage: coverageFor(summaries, citySummary, dependencies),
       buildingAvailability: exploreBuildingsFor(dependencies),
       source,
     });
@@ -478,6 +596,10 @@ function displayFor(
   identity: SeoulRentCheckDistrict,
   summary: PublicMarketSummary,
 ): PublicDistrictDisplayModel {
+  const spread = summary.published ? spreadVerdict(summary) : null;
+  const change = summary.published
+    ? changeReliability({ pct: summary.chg3m, nPrior: null, nLatest: null })
+    : null;
   return Object.freeze({
     heading: `${identity.nameEn} refundable jeonse deposit evidence`,
     sampleLabel: sampleLabel(summary.n),
@@ -488,7 +610,9 @@ function displayFor(
     middleHalfLabel: summary.published
       ? `${formatMoney(summary.p25)}–${formatMoney(summary.p75)}`
       : null,
-    changeLabel: summary.published ? changeLabel(summary.chg3m) : null,
+    changeLabel: change?.label ?? null,
+    spread,
+    change,
   });
 }
 
@@ -607,6 +731,10 @@ export function buildPublicDistrictModel(
       expected: { marketId: 'kr-seoul', period: dependencies.period },
     });
     const summary = repository.getDistrictSummary(identity.slug);
+    const period = evidencePeriod(
+      summary.period,
+      dependencies.referenceInstant ?? new Date(),
+    );
     source = buildPublicSourceBoundary(
       summary.period,
       repository.getEvidenceDescriptor(),
@@ -628,6 +756,7 @@ export function buildPublicDistrictModel(
     const common = {
       identity,
       display: displayFor(identity, summary),
+      period,
       nearby,
       faq,
       datasetJsonLd: datasetFor(identity, summary),

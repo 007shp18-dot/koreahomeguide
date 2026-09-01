@@ -59,9 +59,9 @@ describe('public market stroke states', () => {
   );
 
   it('uses only the approved square, shadowless structural tokens', () => {
-    expect(css).toContain('#f3f2f2');
-    expect(css).toContain('#201e1d');
-    expect(css).toContain('#1d4ed8');
+    expect(css).toContain('var(--canvas)');
+    expect(css).toContain('var(--ink)');
+    expect(css).toContain('var(--accent)');
     expect(css).toMatch(/border-radius:\s*0/);
     expect(css).toMatch(/box-shadow:\s*none/);
     expect(css).toMatch(/repeating-linear-gradient/);

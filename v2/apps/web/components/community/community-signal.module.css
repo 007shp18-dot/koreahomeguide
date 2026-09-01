@@ -1,8 +1,8 @@
 .signal {
-  --community-ground: #f3f2f2;
-  --community-ink: #201e1d;
-  --community-muted: #5d5958;
-  --community-accent: #1d4ed8;
+  --community-ground: var(--canvas);
+  --community-ink: var(--ink);
+  --community-muted: var(--muted);
+  --community-accent: var(--accent);
   color: var(--community-ink);
   background: var(--community-ground);
   border-top: 2px solid var(--community-ink);
@@ -113,7 +113,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  border-bottom: 1px solid #8c8a89;
+  border-bottom: 1px solid var(--divider);
 }
 
 .reasonResults > div:last-child {
@@ -206,7 +206,7 @@
   border-left: 2px solid var(--community-ink);
   border-radius: 0;
   color: inherit;
-  background: #fff;
+  background: var(--surface-strong);
   font: inherit;
 }
 

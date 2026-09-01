@@ -33,6 +33,10 @@ describe('Korea methodology guides', () => {
       expect(JSON.stringify(guide)).not.toMatch(/₩|72,291|29\.4|\b\d+(?:\.\d+)?%/);
       expect(JSON.stringify(guide)).not.toMatch(/within \d+ days|legal deadline|guaranteed|must file/i);
     }
+    expect(GUIDES.flatMap(({ links }) => links)).toContainEqual({
+      label: 'Open Contract Check',
+      href: '/kr/seoul/check/',
+    });
     for (const entry of GUIDE_GLOSSARY) expect(entry.whyItMatters.length).toBeGreaterThan(0);
   });
 
@@ -53,6 +57,7 @@ describe('Korea methodology guides', () => {
     }
     expect(html).toContain('data-public-tab="news"');
     expect(html).toContain('href="/kr/seoul/news"');
+    expect(html).toContain('href="/kr/seoul/check"');
   });
 
   it('generates exact static params and renders every shareable guide', async () => {

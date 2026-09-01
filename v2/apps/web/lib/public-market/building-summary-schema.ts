@@ -12,6 +12,7 @@ export const PUBLIC_BUILDING_SUMMARY_ARTIFACT_VERSION =
 
 export type PublicBuildingDeal = 'jeonse' | 'monthly_rent' | 'sale';
 export type PublicBuildingHousingType = 'apartment' | 'officetel' | 'villa_multifamily';
+export type PublicBuildingFloorMissingReason = 'not_retained_in_v2_snapshot';
 
 export type PublicBuildingDistribution =
   | Readonly<{ n: number; published: false }>
@@ -26,7 +27,7 @@ export type PublicBuildingDistribution =
       chg3m: number | null;
     }>;
 
-export type PublicBuildingRecentContract = Readonly<{
+type PublicBuildingRecentContractIdentity = Readonly<{
   filedMonth: string;
   areaSqm: number;
   contractType: 'new' | 'renewal' | 'unknown';
@@ -34,6 +35,14 @@ export type PublicBuildingRecentContract = Readonly<{
   deal: 'jeonse';
   monthlyRentWon: 0;
 }>;
+
+export type PublicBuildingRecentContract = PublicBuildingRecentContractIdentity & (
+  | Readonly<{ floor: number; floorMissingReason: null }>
+  | Readonly<{
+      floor: null;
+      floorMissingReason: PublicBuildingFloorMissingReason;
+    }>
+);
 
 export type PublicBuildingRecord = Readonly<{
   buildingId: string;
@@ -56,7 +65,7 @@ export type PublicBuildingRecord = Readonly<{
   unknownContractCount: number;
   overall: PublicBuildingDistribution;
   areaBands: readonly Readonly<{
-    band: string;
+    band: '45–55㎡';
     summary: PublicBuildingDistribution;
   }>[];
   recentContracts: readonly PublicBuildingRecentContract[];
@@ -231,6 +240,8 @@ function parseContract(
     depositWon: value.depositWon,
     deal: 'jeonse',
     monthlyRentWon: 0,
+    floor: null,
+    floorMissingReason: 'not_retained_in_v2_snapshot',
   });
 }
 
@@ -286,12 +297,12 @@ function parseRecord(
     if (
       !isRecord(areaBand)
       || !hasExactKeys(areaBand, AREA_BAND_KEYS)
-      || !isTrimmedText(areaBand.band)
+      || areaBand.band !== '45-55sqm'
     ) {
       invalidArtifact();
     }
     return Object.freeze({
-      band: areaBand.band,
+      band: '45–55㎡' as const,
       summary: parseDistribution(areaBand.summary, publicationMinimum),
     });
   }));
