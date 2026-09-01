@@ -1,4 +1,4 @@
-name: Runtime asset contract
+name: Runtime migration contract
 
 on:
   push:
@@ -13,11 +13,11 @@ permissions:
   contents: read
 
 concurrency:
-  group: runtime-assets-${{ github.ref }}
+  group: runtime-migration-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  runtime-assets:
+  runtime-migration:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -30,5 +30,5 @@ jobs:
           cache: npm
       - name: Install root dependencies
         run: npm ci --ignore-scripts --no-audit --no-fund
-      - name: Verify shared runtime assets
-        run: npm run test:runtime-assets
+      - name: Verify runtime migration coverage
+        run: npm run test:runtime-migration
