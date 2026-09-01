@@ -42,10 +42,9 @@ function revealFromModule(result, innerWidth) {
 test('all Rent Check runtimes reveal the result and leave status idle after success', () => {
   const runtimes = [
     'app.js',
-    'zh/app.js',
+    
     'tools/seoul-rent-check/app.js',
-    'zh/tools/seoul-rent-check/app.js'
-  ];
+    ];
 
   for (const runtime of runtimes) {
     const source = read(runtime);
@@ -60,9 +59,9 @@ test('all Rent Check runtimes reveal the result and leave status idle after succ
 test('all Rent Check pages load the reveal helper before their runtime', () => {
   const pages = [
     ['index.html', '/app.js'],
-    ['zh/index.html', '/zh/app.js'],
+    ['zh/index.html', '/app.js'],
     ['tools/seoul-rent-check/index.html', '/tools/seoul-rent-check/app.js'],
-    ['zh/tools/seoul-rent-check/index.html', '/zh/tools/seoul-rent-check/app.js']
+    ['zh/tools/seoul-rent-check/index.html', '/tools/seoul-rent-check/app.js']
   ];
 
   for (const [page, runtime] of pages) {
