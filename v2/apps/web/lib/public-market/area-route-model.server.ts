@@ -12,6 +12,7 @@ import {
   type SeoulRentCheckDistrict,
 } from '@signedprice/korea-rent/browser';
 import { KR_MOLIT_RENT_RIGHTS } from '@signedprice/korea-rent';
+import installedBuildingArtifact from '../../data/public-building-summary.json';
 
 import {
   buildCommunitySignalModel,
@@ -258,6 +259,14 @@ function environmentDependencies(): PublicAreaRouteDependencies {
   } catch {
     buildingSource = undefined;
   }
+  if (
+    process.env.NODE_ENV !== 'test'
+    && (
+      typeof buildingSource !== 'object' || buildingSource === null
+      || (buildingSource as { artifactVersion?: unknown }).artifactVersion
+        !== 'signedprice-public-building-summary-v2'
+    )
+  ) buildingSource = installedBuildingArtifact;
   return Object.freeze({
     source,
     buildingSource,
