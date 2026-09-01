@@ -8,6 +8,7 @@ import {
 import {
   PUBLIC_BUILDING_TEST_ID,
   PUBLIC_BUILDING_TEST_NAME,
+  PUBLIC_BUILDING_TEST_SELECTION_HREF,
 } from './public-building-summary-fixture';
 
 const releaseTarget = resolveReleaseTestTarget();
@@ -123,7 +124,7 @@ test('rail selection opens the canonical building panel and full-detail CTA', as
   const panel = page.locator(`[data-building-panel="${PUBLIC_BUILDING_TEST_ID}"]`);
   await expect(panel).toBeVisible();
   await expect(panel.getByRole('link', { name: 'Open full building evidence' }))
-    .toHaveAttribute('href', `/kr/seoul/explore/jongno-gu/${PUBLIC_BUILDING_TEST_ID}/`);
+    .toHaveAttribute('href', PUBLIC_BUILDING_TEST_SELECTION_HREF);
 });
 
 test('published quote stays local and any withheld detail stays money-free', async ({ page }) => {

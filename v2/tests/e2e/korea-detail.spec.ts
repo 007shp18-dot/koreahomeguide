@@ -1,7 +1,10 @@
 import { expect, test, type Page } from '@playwright/test';
 
 import { resolveReleaseTestTarget } from '../../release-test-target';
-import { PUBLIC_BUILDING_TEST_NAME } from './public-building-summary-fixture';
+import {
+  PUBLIC_BUILDING_TEST_NAME,
+  PUBLIC_BUILDING_TEST_SELECTION_HREF,
+} from './public-building-summary-fixture';
 
 const releaseTarget = resolveReleaseTestTarget();
 
@@ -53,7 +56,7 @@ test('map and table select the same reload-safe district workspace', async ({ pa
     await building.click();
     await expect(page.locator('[data-building-panel="synthetic-test-building"]')).toBeVisible();
     await expect(page.getByRole('link', { name: 'Open full building evidence' }))
-      .toHaveAttribute('href', '/kr/seoul/explore/jongno-gu/synthetic-test-building/');
+      .toHaveAttribute('href', PUBLIC_BUILDING_TEST_SELECTION_HREF);
   }
   await expectContained(page);
   noFailures();
