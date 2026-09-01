@@ -10,6 +10,7 @@ import {
   PUBLIC_SUMMARY_ARTIFACT_VERSION,
   buildKoreaPublicRouteModel,
 } from '../lib/public-market/route-model.server';
+import { createPublicAreaV2Fixture } from './public-area-fixture';
 
 const period = '2026-01/2026-07';
 const conversionSha256 = 'a'.repeat(64);
@@ -39,6 +40,13 @@ function artifact(summary: Record<string, unknown> = publishedSummary()) {
 function useArtifact(value = artifact()) {
   vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_ARTIFACT', JSON.stringify(value));
   vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', period);
+}
+
+function useAreaArtifact() {
+  vi.stubEnv(
+    'SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT',
+    JSON.stringify(createPublicAreaV2Fixture()),
+  );
 }
 
 function useConversionArtifact() {
@@ -157,6 +165,7 @@ describe('Korea public SSR routes', () => {
 
   it('renders the contract decision workspace on home, the quote on check, and a static area graph', async () => {
     useArtifact();
+    useAreaArtifact();
     useConversionArtifact();
     const home = renderToStaticMarkup(await KoreaHomePage());
     const check = renderToStaticMarkup(await KoreaCheckPage({
@@ -172,18 +181,26 @@ describe('Korea public SSR routes', () => {
     expect(home).toContain('Which rent offer');
     expect(home).toContain('MOLIT reported rental contracts');
     expect(home).toContain('href="/kr/seoul/tools/rent-check"');
+    expect(home).toContain('Seoul live');
+    expect(home).toContain('New contracts');
+    expect(home).toContain('Renewals');
+    expect(home).toContain('href="/kr/seoul/news"');
     expect((check.match(/<(?:input|select)\b/g) ?? [])).toHaveLength(2);
     expect(area).not.toMatch(/<(?:input|select)\b/);
     expect(area).toContain('data-evidence-state="published"');
   });
 
   it('fails closed on home without conversion evidence instead of returning a 404', async () => {
+    useAreaArtifact();
     const home = renderToStaticMarkup(await KoreaHomePage());
 
     expect(home).toContain('Verified conversion evidence is unavailable.');
     expect(home).toContain('data-evidence-state="unavailable"');
     expect(home).not.toMatch(/<(?:input|select|button)\b/);
     expect(home).not.toMatch(/annualRate|pairCount|72,291|29\.4%/i);
+    expect(home).toContain('Seoul live');
+    expect(home).toContain('href="/kr/seoul/explore"');
+    expect(home).toContain('href="/kr/seoul/news"');
   });
 
   it('withholds sparse evidence recursively without monetary or marker leakage', async () => {
