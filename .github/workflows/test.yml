@@ -36,4 +36,6 @@ jobs:
         continue-on-error: true
         run: node --test tests/cold-start-analytics.test.cjs tests/currency-defaults.test.cjs
       - name: Print current legacy failure identities
-        run: node -e "const {runLegacyTestSuite}=require('./scripts/v2-migration/verify-phase-0.cjs'); console.log(JSON.stringify(runLegacyTestSuite('.').evidence.failures))"
+        run: |
+          node --test tests/*.test.cjs > legacy-test-output.txt 2>&1 || true
+          grep -E '^not ok' legacy-test-output.txt
