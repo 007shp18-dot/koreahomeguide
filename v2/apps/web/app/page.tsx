@@ -9,6 +9,8 @@ import {
 import type { Metadata } from 'next';
 import { buildSingaporeEntryModel } from '../lib/singapore/route-model.server';
 import { singaporeSnapshotRepositoryFromEnvironment } from '../lib/singapore/snapshot-repository.server';
+import { buildSeoulLiveModel } from '../lib/public-market/seoul-live-model.server';
+import { SeoulLive } from '../components/public-market/seoul-live';
 
 export const metadata: Metadata = homepageCopy.metadata;
 
@@ -25,6 +27,8 @@ export default async function Home() {
           groups={presentation.groups}
           markets={presentation.markets}
         />
+
+        <SeoulLive model={buildSeoulLiveModel()} mode="global" />
 
         <section
           className="principles site-shell"
