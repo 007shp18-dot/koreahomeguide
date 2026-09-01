@@ -84,8 +84,47 @@ const districtSummaries = PUBLIC_AREA_TEST_DISTRICTS.map(({ slug }, index) => {
 
 const cityN = districtSummaries.reduce((sum, summary) => sum + summary.n, 0);
 
+const citySummary = {
+  marketId: 'kr-seoul', area: 'seoul', parent: 'kr', deal: 'jeonse',
+  band: '45-55sqm', period: PUBLIC_AREA_SUMMARY_TEST_PERIOD,
+  n: cityN, published: true,
+  min: 80_000_000,
+  p25: 250_000_000,
+  med: 410_000_000,
+  p75: 550_000_000,
+  max: 720_000_000,
+  chg3m: null,
+} as const;
+
+const cohortDistrictSummaries = districtSummaries.map((summary) => ({
+  marketId: summary.marketId,
+  area: summary.area,
+  parent: summary.parent,
+  deal: summary.deal,
+  band: summary.band,
+  period: summary.period,
+  n: 2,
+  published: false,
+} as const));
+
+function cohortCitySummary(medianOffset: number) {
+  return {
+    ...citySummary,
+    n: cohortDistrictSummaries.reduce((sum, summary) => sum + summary.n, 0),
+    min: citySummary.min + medianOffset,
+    p25: citySummary.p25 + medianOffset,
+    med: citySummary.med + medianOffset,
+    p75: citySummary.p75 + medianOffset,
+    max: citySummary.max + medianOffset,
+  } as const;
+}
+
+const unknownDistrictCounts = districtSummaries.map(
+  (summary) => summary.n - 4,
+);
+
 export const PUBLIC_AREA_SUMMARY_TEST_ARTIFACT = JSON.stringify({
-  artifactVersion: 'signedprice-public-area-summary-v1',
+  artifactVersion: 'signedprice-public-area-summary-v2',
   generatedAt: '2026-08-31T00:00:00.000Z',
   provenance: {
     marketId: 'kr-seoul',
@@ -96,18 +135,21 @@ export const PUBLIC_AREA_SUMMARY_TEST_ARTIFACT = JSON.stringify({
     rightsPolicyId: 'kr-molit-rent-v1',
     sourceComplete: true,
   },
-  citySummary: {
-    marketId: 'kr-seoul', area: 'seoul', parent: 'kr', deal: 'jeonse',
-    band: '45-55sqm', period: PUBLIC_AREA_SUMMARY_TEST_PERIOD,
-    n: cityN, published: true,
-    min: 80_000_000,
-    p25: 250_000_000,
-    med: 410_000_000,
-    p75: 550_000_000,
-    max: 720_000_000,
-    chg3m: null,
+  groups: {
+    all: { citySummary, districtSummaries },
+    new: {
+      citySummary: cohortCitySummary(-10_000_000),
+      districtSummaries: cohortDistrictSummaries,
+    },
+    renewal: {
+      citySummary: cohortCitySummary(10_000_000),
+      districtSummaries: cohortDistrictSummaries,
+    },
   },
-  districtSummaries,
+  unknownContractCounts: {
+    city: unknownDistrictCounts.reduce((sum, count) => sum + count, 0),
+    districts: unknownDistrictCounts,
+  },
 });
 
 export const PUBLIC_AREA_TEST_LEGEND_LABELS = [
