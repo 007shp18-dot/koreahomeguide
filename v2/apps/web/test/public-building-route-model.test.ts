@@ -20,7 +20,12 @@ describe('public building repository', () => {
     const withheld = createPublicBuildingRecord({
       buildingId: 'gangnam-withheld-tower',
       name: 'Withheld Tower',
-      overall: { n: 4, published: false },
+      groups: {
+        all: { n: 4, published: false },
+        new: { n: 2, published: false },
+        renewal: { n: 1, published: false },
+      },
+      unknownContractCount: 1,
       areaBands: [],
       recentContracts: [],
     });
@@ -81,7 +86,13 @@ describe('public building route model', () => {
 
   it('returns null for missing, mismatched, withheld, or invalid evidence', () => {
     const withheld = createPublicBuildingRecord({
-      overall: { n: 4, published: false }, areaBands: [], recentContracts: [],
+      groups: {
+        all: { n: 4, published: false },
+        new: { n: 2, published: false },
+        renewal: { n: 1, published: false },
+      },
+      unknownContractCount: 1,
+      areaBands: [], recentContracts: [],
     });
     expect(buildPublicBuildingModel('gangnam-gu', 'gangnam-evidence-tower', {
       source: createPublicBuildingFixture([withheld]), period: PUBLIC_BUILDING_FIXTURE_PERIOD,
