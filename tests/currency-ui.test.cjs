@@ -20,7 +20,7 @@ for (const [file, locale, expected] of [
 }
 
 test('English and Chinese runtimes fetch FX rates and re-render money with selected currency', () => {
-  for (const file of ['app.js', ]) {
+  for (const file of ['app.js']) {
     const js = fs.readFileSync(file, 'utf8');
     assert.match(js, /fetch\(['"]\/api\/fx['"]\)/);
     assert.match(js, /KHGCurrency\.formatMoneyHtml/);
