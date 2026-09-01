@@ -19,16 +19,24 @@ export function createPublicBuildingRecord(
   return {
     buildingId: 'gangnam-evidence-tower',
     districtSlug: 'gangnam-gu',
+    neighborhoodId: 'yeoksam-dong',
+    neighborhoodName: '역삼동',
     name: 'Evidence Tower',
     housingType: 'apartment',
-    supportedDeals: ['jeonse'],
+    latitude: 37.5001,
+    longitude: 127.0352,
     period: PUBLIC_BUILDING_FIXTURE_PERIOD,
     generatedAt: '2026-08-31T01:13:24.787Z',
     publicationMinimum: 5,
-    overall: {
-      n: 6, published: true, min: 300_000_000, p25: 310_000_000,
-      med: 320_000_000, p75: 330_000_000, max: 340_000_000, chg3m: 1.2,
+    groups: {
+      all: {
+        n: 6, published: true, min: 300_000_000, p25: 310_000_000,
+        med: 320_000_000, p75: 330_000_000, max: 340_000_000, chg3m: 1.2,
+      },
+      new: { n: 3, published: false },
+      renewal: { n: 2, published: false },
     },
+    unknownContractCount: 1,
     areaBands: [{
       band: '45-55sqm',
       summary: {
@@ -37,8 +45,8 @@ export function createPublicBuildingRecord(
       },
     }],
     recentContracts: [
-      { filedMonth: '2026-07', areaSqm: 50, deal: 'jeonse', depositWon: 320_000_000, monthlyRentWon: 0 },
-      { filedMonth: '2026-06', areaSqm: 49.5, deal: 'jeonse', depositWon: 315_000_000, monthlyRentWon: 0 },
+      { filedMonth: '2026-07', areaSqm: 50, contractType: 'new', depositWon: 320_000_000 },
+      { filedMonth: '2026-06', areaSqm: 49.5, contractType: 'renewal', depositWon: 315_000_000 },
     ],
     ...overrides,
   };
@@ -56,7 +64,7 @@ export function createPublicBuildingFixture(
       provider: 'MOLIT',
       dataset: 'reported rent contracts',
       endpointVersion: 'v1',
-      parserVersion: 'kr-molit-building-parser-v1',
+      parserVersion: 'kr-molit-building-parser-v2',
       rightsPolicyId: 'kr-molit-rent-v1',
       sourceComplete: true,
       displayRights: true,
