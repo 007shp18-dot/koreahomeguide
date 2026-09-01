@@ -110,7 +110,7 @@ test('evidence facts and mobile disclosure are localized from real result counts
 });
 
 test('both canonical Rent Check runtimes move secondary evidence into one disclosure', () => {
-  for (const file of ['app.js','tools/seoul-rent-check/app.js',]) {
+  for (const file of ['app.js','tools/seoul-rent-check/app.js']) {
     const source = fs.readFileSync(file, 'utf8');
     assert.match(source, /KHGRentCheckUI\.mountEvidenceDisclosure\(result,document\)/, file);
     assert.match(source, /evidenceDisclosure\.body\.appendChild\(distribution\)/, file);
@@ -121,7 +121,7 @@ test('both canonical Rent Check runtimes move secondary evidence into one disclo
 });
 
 test('both canonical Rent Check runtimes wire the market-position visual and bounded UI events', () => {
-  for (const file of ['app.js','tools/seoul-rent-check/app.js',]) {
+  for (const file of ['app.js','tools/seoul-rent-check/app.js']) {
     const source = fs.readFileSync(file, 'utf8');
     assert.match(source, /KHGRentCheckUI\.distributionModel\(data\)/, file);
     assert.match(source, /KHGRentCheckUI\.marketPositionSummary\(model\)/, file);
