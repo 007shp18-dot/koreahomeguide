@@ -8,7 +8,7 @@ import {
 } from '@signedprice/korea-rent/browser';
 
 export const PUBLIC_BUILDING_SUMMARY_ARTIFACT_VERSION =
-  'signedprice-public-building-summary-v1' as const;
+  'signedprice-public-building-summary-v2' as const;
 
 export type PublicBuildingDeal = 'jeonse' | 'monthly_rent' | 'sale';
 export type PublicBuildingHousingType = 'apartment' | 'officetel' | 'villa_multifamily';
@@ -29,20 +29,31 @@ export type PublicBuildingDistribution =
 export type PublicBuildingRecentContract = Readonly<{
   filedMonth: string;
   areaSqm: number;
-  deal: PublicBuildingDeal;
+  contractType: 'new' | 'renewal' | 'unknown';
   depositWon: number;
-  monthlyRentWon: number;
+  deal: 'jeonse';
+  monthlyRentWon: 0;
 }>;
 
 export type PublicBuildingRecord = Readonly<{
   buildingId: string;
   districtSlug: SeoulDistrictSlug;
+  neighborhoodId: string;
+  neighborhoodName: string;
   name: string;
   housingType: PublicBuildingHousingType;
-  supportedDeals: readonly PublicBuildingDeal[];
+  latitude: number | null;
+  longitude: number | null;
+  supportedDeals: readonly ['jeonse'];
   period: string;
   generatedAt: string;
   publicationMinimum: number;
+  groups: Readonly<{
+    all: PublicBuildingDistribution;
+    new: PublicBuildingDistribution;
+    renewal: PublicBuildingDistribution;
+  }>;
+  unknownContractCount: number;
   overall: PublicBuildingDistribution;
   areaBands: readonly Readonly<{
     band: string;
@@ -78,19 +89,20 @@ const PROVENANCE_KEYS = [
   'rightsPolicyId', 'sourceComplete', 'displayRights', 'exclusions',
 ] as const;
 const RECORD_KEYS = [
-  'buildingId', 'districtSlug', 'name', 'housingType', 'supportedDeals', 'period',
-  'generatedAt', 'publicationMinimum', 'overall', 'areaBands', 'recentContracts',
+  'buildingId', 'districtSlug', 'neighborhoodId', 'neighborhoodName', 'name',
+  'housingType', 'latitude', 'longitude', 'period', 'generatedAt',
+  'publicationMinimum', 'groups', 'unknownContractCount', 'areaBands', 'recentContracts',
 ] as const;
 const WITHHELD_DISTRIBUTION_KEYS = ['n', 'published'] as const;
 const PUBLISHED_DISTRIBUTION_KEYS = [
   ...WITHHELD_DISTRIBUTION_KEYS, 'min', 'p25', 'med', 'p75', 'max', 'chg3m',
 ] as const;
 const AREA_BAND_KEYS = ['band', 'summary'] as const;
+const GROUP_KEYS = ['all', 'new', 'renewal'] as const;
 const CONTRACT_KEYS = [
-  'filedMonth', 'areaSqm', 'deal', 'depositWon', 'monthlyRentWon',
+  'filedMonth', 'areaSqm', 'contractType', 'depositWon',
 ] as const;
 
-const deals = new Set<PublicBuildingDeal>(['jeonse', 'monthly_rent', 'sale']);
 const housingTypes = new Set<PublicBuildingHousingType>([
   'apartment', 'officetel', 'villa_multifamily',
 ]);
@@ -197,7 +209,6 @@ function parseDistribution(value: unknown, threshold: number): PublicBuildingDis
 function parseContract(
   value: unknown,
   period: string,
-  supportedDeals: ReadonlySet<PublicBuildingDeal>,
 ): PublicBuildingRecentContract {
   if (!isRecord(value) || !hasExactKeys(value, CONTRACT_KEYS)) invalidArtifact();
   if (
@@ -208,22 +219,30 @@ function parseContract(
     || !Number.isFinite(value.areaSqm)
     || value.areaSqm <= 0
     || !Number.isInteger(value.areaSqm * 10)
-    || typeof value.deal !== 'string'
-    || !deals.has(value.deal as PublicBuildingDeal)
-    || !supportedDeals.has(value.deal as PublicBuildingDeal)
+    || !['new', 'renewal', 'unknown'].includes(value.contractType as string)
     || !isSafeNonNegativeInteger(value.depositWon)
-    || !isSafeNonNegativeInteger(value.monthlyRentWon)
-    || (value.deal === 'jeonse' && value.monthlyRentWon !== 0)
   ) {
     invalidArtifact();
   }
   return Object.freeze({
     filedMonth: value.filedMonth,
     areaSqm: value.areaSqm,
-    deal: value.deal as PublicBuildingDeal,
+    contractType: value.contractType as 'new' | 'renewal' | 'unknown',
     depositWon: value.depositWon,
-    monthlyRentWon: value.monthlyRentWon,
+    deal: 'jeonse',
+    monthlyRentWon: 0,
   });
+}
+
+function parseCoordinates(latitude: unknown, longitude: unknown): readonly [number | null, number | null] {
+  if (latitude === null && longitude === null) return Object.freeze([null, null]);
+  if (
+    typeof latitude !== 'number' || !Number.isFinite(latitude)
+    || typeof longitude !== 'number' || !Number.isFinite(longitude)
+    || latitude < 37.4 || latitude > 37.72
+    || longitude < 126.75 || longitude > 127.25
+  ) invalidArtifact();
+  return Object.freeze([latitude, longitude]);
 }
 
 function parseRecord(
@@ -237,13 +256,12 @@ function parseRecord(
     || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value.buildingId)
     || typeof value.districtSlug !== 'string'
     || getSeoulDistrictBySlug(value.districtSlug) === null
+    || !isTrimmedText(value.neighborhoodId)
+    || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value.neighborhoodId)
+    || !isTrimmedText(value.neighborhoodName)
     || !isTrimmedText(value.name)
     || typeof value.housingType !== 'string'
     || !housingTypes.has(value.housingType as PublicBuildingHousingType)
-    || !Array.isArray(value.supportedDeals)
-    || value.supportedDeals.length === 0
-    || !value.supportedDeals.every((deal) => typeof deal === 'string' && deals.has(deal as PublicBuildingDeal))
-    || new Set(value.supportedDeals).size !== value.supportedDeals.length
     || value.period !== period
     || value.generatedAt !== artifactGeneratedAt
     || !Number.isSafeInteger(value.publicationMinimum)
@@ -252,9 +270,17 @@ function parseRecord(
     invalidArtifact();
   }
   const publicationMinimum = value.publicationMinimum as number;
-  const supportedDeals = Object.freeze([...(value.supportedDeals as PublicBuildingDeal[])]);
-  const supportedDealSet = new Set(supportedDeals);
-  const overall = parseDistribution(value.overall, publicationMinimum);
+  const [latitude, longitude] = parseCoordinates(value.latitude, value.longitude);
+  if (!isRecord(value.groups) || !hasExactKeys(value.groups, GROUP_KEYS)) invalidArtifact();
+  const groups = Object.freeze({
+    all: parseDistribution(value.groups.all, publicationMinimum),
+    new: parseDistribution(value.groups.new, publicationMinimum),
+    renewal: parseDistribution(value.groups.renewal, publicationMinimum),
+  });
+  if (
+    !isSafeNonNegativeInteger(value.unknownContractCount)
+    || groups.all.n !== groups.new.n + groups.renewal.n + value.unknownContractCount
+  ) invalidArtifact();
   if (!Array.isArray(value.areaBands)) invalidArtifact();
   const areaBands = Object.freeze(value.areaBands.map((areaBand) => {
     if (
@@ -272,26 +298,32 @@ function parseRecord(
   if (new Set(areaBands.map(({ band }) => band)).size !== areaBands.length) invalidArtifact();
   if (!Array.isArray(value.recentContracts)) invalidArtifact();
   const recentContracts = Object.freeze(value.recentContracts.map((contract) => (
-    parseContract(contract, period, supportedDealSet)
+    parseContract(contract, period)
   )));
   if (
     recentContracts.some((contract, index) => (
       index > 0 && recentContracts[index - 1]!.filedMonth < contract.filedMonth
     ))
-    || recentContracts.length > overall.n
+    || recentContracts.length > groups.all.n
   ) {
     invalidArtifact();
   }
   return Object.freeze({
     buildingId: value.buildingId,
     districtSlug: value.districtSlug as SeoulDistrictSlug,
+    neighborhoodId: value.neighborhoodId,
+    neighborhoodName: value.neighborhoodName,
     name: value.name,
     housingType: value.housingType as PublicBuildingHousingType,
-    supportedDeals,
+    latitude,
+    longitude,
+    supportedDeals: Object.freeze(['jeonse'] as const),
     period,
     generatedAt: artifactGeneratedAt,
     publicationMinimum,
-    overall,
+    groups,
+    unknownContractCount: value.unknownContractCount,
+    overall: groups.all,
     areaBands,
     recentContracts,
   });
@@ -323,7 +355,7 @@ function parseArtifact(
     || provenance.provider !== 'MOLIT'
     || provenance.dataset !== 'reported rent contracts'
     || provenance.endpointVersion !== 'v1'
-    || provenance.parserVersion !== 'kr-molit-building-parser-v1'
+    || provenance.parserVersion !== 'kr-molit-building-parser-v2'
     || provenance.rightsPolicyId !== 'kr-molit-rent-v1'
     || provenance.sourceComplete !== true
     || provenance.displayRights !== true
