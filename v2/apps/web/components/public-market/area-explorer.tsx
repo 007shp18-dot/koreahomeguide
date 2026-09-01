@@ -233,13 +233,22 @@ function ReadyAreaExplorer({
             </svg>}
           />
 
-          <div className={styles.legend} aria-label={copy.mapHeading}>
+          <div
+            className={styles.legend}
+            role="group"
+            aria-label={locale === 'ko' ? '지도 범례' : 'Map legend'}
+          >
             <p>{copy.mapLegend} · {model.source.band}</p>
             <ol>
               {model.legend.map((bucket) => (
                 <li key={bucket.bucket}>
                   <span className={bucketClasses[bucket.bucket]} aria-hidden="true" />
-                  <span>{bucket.label} · {bucket.count}{copy.districtCount}</span>
+                  <span>
+                    {bucket.label} · {bucket.count}
+                    {locale === 'en'
+                      ? ` district${bucket.count === 1 ? '' : 's'}`
+                      : copy.districtCount}
+                  </span>
                 </li>
               ))}
               <li>

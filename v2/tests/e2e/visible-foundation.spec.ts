@@ -99,7 +99,7 @@ test('navigates the first signedprice decision flow', async ({ page }) => {
 
   await page.getByRole('navigation', { name: 'Public evidence sections' })
     .getByRole('link', { name: 'Check' }).click();
-  await expect(page).toHaveURL(/\/kr\/$/);
+  await expect(page).toHaveURL(/\/kr\/seoul\/check\/$/);
   await expect(
     page.getByRole('heading', {
       level: 1,
@@ -129,7 +129,18 @@ for (const route of publicRoutes) {
     } else {
       await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
     }
-    await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(0);
+    const alternates = page.locator('link[rel="alternate"][hreflang]');
+    if ('alternates' in route && route.alternates) {
+      await expect(alternates).toHaveCount(3);
+      await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute(
+        'href', `https://www.signedprice.com${route.canonical}`,
+      );
+      await expect(page.locator('link[rel="alternate"][hreflang="ko"]')).toHaveAttribute(
+        'href', `https://www.signedprice.com/ko${route.canonical}`,
+      );
+    } else {
+      await expect(alternates).toHaveCount(0);
+    }
     await expect(page.locator('input[type="email"]')).toHaveCount(0);
     await expectNoHorizontalPageOverflow(page);
   });
@@ -168,7 +179,7 @@ test('mobile primary navigation remains tappable and reaches the market flow', a
     name: 'Primary navigation',
   });
   const visibleLinks = primaryNavigation.getByRole('link').filter({ visible: true });
-  await expect(visibleLinks).toHaveCount(3);
+  await expect(visibleLinks).toHaveCount(2);
   const primaryBoxes = await expectContainedTouchTargets(
     page,
     await visibleLinks.all(),
@@ -217,7 +228,7 @@ test('mobile primary navigation remains tappable and reaches the market flow', a
   expectTargetsNotToOverlap(actionBoxes);
 
   await actionsRegion.getByRole('link', { name: 'Check' }).tap();
-  await expect(page).toHaveURL(/\/kr\/$/);
+  await expect(page).toHaveURL(/\/kr\/seoul\/check\/$/);
   await expect(
     page.getByRole('heading', {
       level: 1,
@@ -253,7 +264,7 @@ test('keyboard traversal activates the Home to Seoul to Check flow', async ({
     .getByRole('link', { name: 'Check' });
   await tabTo(page, checkDeposit);
   await page.keyboard.press('Enter');
-  await expect(page).toHaveURL(/\/kr\/$/);
+  await expect(page).toHaveURL(/\/kr\/seoul\/check\/$/);
 });
 
 for (const path of [

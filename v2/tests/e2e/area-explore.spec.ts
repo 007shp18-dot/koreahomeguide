@@ -102,7 +102,7 @@ test('synthetic release fixture shows exact five buckets and a money-free refusa
   test.skip(releaseTarget.usesExternalServer, 'Exact fixture values are local-release only.');
   await page.goto('/kr/seoul/explore/');
 
-  const legend = page.getByLabel('Map legend');
+  const legend = page.getByRole('group', { name: 'Map legend' });
   for (const label of PUBLIC_AREA_TEST_LEGEND_LABELS) {
     await expect(legend).toContainText(label);
   }
@@ -205,7 +205,7 @@ test('wide workspace keeps map, table, and legend contained', async ({ page }, t
   test.skip(testInfo.project.name !== 'wide-chromium');
   await page.goto('/kr/seoul/explore/');
 
-  await expect(page.getByLabel('Map legend')).toBeVisible();
+  await expect(page.getByRole('group', { name: 'Map legend' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'All 25 districts' })).toBeVisible();
   await expectNoHorizontalOverflow(page);
 });

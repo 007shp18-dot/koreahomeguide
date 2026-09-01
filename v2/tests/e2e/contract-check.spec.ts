@@ -65,7 +65,17 @@ test('Contract Check server HTML is ready, contained, and claim-safe', async ({ 
     'href',
     'https://www.signedprice.com/kr/seoul/check/',
   );
-  await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(0);
+  const alternates = page.locator('link[rel="alternate"][hreflang]');
+  await expect(alternates).toHaveCount(3);
+  await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute(
+    'href', 'https://www.signedprice.com/kr/seoul/check/',
+  );
+  await expect(page.locator('link[rel="alternate"][hreflang="ko"]')).toHaveAttribute(
+    'href', 'https://www.signedprice.com/ko/kr/seoul/check/',
+  );
+  await expect(page.locator('link[rel="alternate"][hreflang="x-default"]')).toHaveAttribute(
+    'href', 'https://www.signedprice.com/kr/seoul/check/',
+  );
 
   const htmlResponse = await page.request.get('/kr/seoul/check/');
   const html = await htmlResponse.text();
