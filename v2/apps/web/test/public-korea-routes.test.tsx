@@ -1,0 +1,245 @@
+import { renderToStaticMarkup } from 'react-dom/server';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+
+vi.mock('server-only', () => ({}));
+
+import KoreaHomePage from '../app/kr/page';
+import KoreaAreaPage from '../app/kr/[area]/page';
+import KoreaCheckPage from '../app/kr/check/[area]/page';
+import {
+  PUBLIC_SUMMARY_ARTIFACT_VERSION,
+  buildKoreaPublicRouteModel,
+} from '../lib/public-market/route-model.server';
+import { createPublicAreaV2Fixture } from './public-area-fixture';
+
+const period = '2026-01/2026-07';
+const conversionSha256 = 'a'.repeat(64);
+
+function publishedSummary() {
+  return {
+    marketId: 'kr-seoul', area: 'seoul', parent: 'kr', deal: 'jeonse',
+    band: '45-55sqm', period, n: 20, published: true,
+    min: 180_000_000, p25: 280_000_000, med: 380_000_000,
+    p75: 480_000_000, max: 580_000_000, chg3m: null,
+  } as const;
+}
+
+function artifact(summary: Record<string, unknown> = publishedSummary()) {
+  return {
+    artifactVersion: PUBLIC_SUMMARY_ARTIFACT_VERSION,
+    generatedAt: '2026-08-30T00:00:00.000Z',
+    provenance: {
+      marketId: 'kr-seoul', period, provider: 'MOLIT', endpointVersion: 'v1',
+      parserVersion: 'kr-molit-rent-parser-v2', rightsPolicyId: 'kr-molit-rent-v1',
+      sourceComplete: true,
+    },
+    summaries: [summary],
+  };
+}
+
+function useArtifact(value = artifact()) {
+  vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_ARTIFACT', JSON.stringify(value));
+  vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', period);
+}
+
+function useAreaArtifact() {
+  vi.stubEnv(
+    'SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT',
+    JSON.stringify(createPublicAreaV2Fixture()),
+  );
+}
+
+function useConversionArtifact() {
+  vi.stubEnv('SIGNEDPRICE_CONVERSION_CURVE_ARTIFACT', JSON.stringify({
+    artifactVersion: 1,
+    generatedAt: '2026-08-30T00:00:00.000Z',
+    provenance: {
+      marketId: 'kr-seoul', period, provider: 'MOLIT', endpointVersion: 'v1',
+      parserVersion: 'kr-molit-rent-parser-v2', rightsPolicyId: 'kr-molit-rent-v1',
+      sourceComplete: true, sha256: conversionSha256,
+    },
+    readiness: { state: 'ready', maximumAgeDays: 45, minimumPairsPerAnchor: 120 },
+    totals: {
+      eligiblePairCount: 620,
+      excluded: { cancelled: 4, invalidMoney: 2, differentBuildingOrArea: 10 },
+    },
+    curves: [
+      {
+        housingType: 'apartment',
+        observedMinDepositWon: 30_000_000,
+        observedMaxDepositWon: 100_000_000,
+        anchors: [
+          { depositWon: 30_000_000, annualRate: 0.05, pairCount: 140 },
+          { depositWon: 100_000_000, annualRate: 0.04, pairCount: 160 },
+        ],
+      },
+      {
+        housingType: 'officetel',
+        observedMinDepositWon: 20_000_000,
+        observedMaxDepositWon: 80_000_000,
+        anchors: [
+          { depositWon: 20_000_000, annualRate: 0.06, pairCount: 150 },
+          { depositWon: 80_000_000, annualRate: 0.05, pairCount: 170 },
+        ],
+      },
+    ],
+  }));
+  vi.stubEnv('SIGNEDPRICE_CONVERSION_CURVE_PERIOD', period);
+  vi.stubEnv('SIGNEDPRICE_CONVERSION_CURVE_SHA256', conversionSha256);
+}
+
+afterEach(() => vi.unstubAllEnvs());
+
+describe('Korea public route model', () => {
+  it('accepts only the ready Seoul area and exact verified feed', () => {
+    const model = buildKoreaPublicRouteModel('seoul', {
+      source: artifact(),
+      period,
+    });
+    expect(model?.summary).toEqual(publishedSummary());
+    expect(model?.source).toEqual({
+      evidence: {
+        marketId: 'kr-seoul',
+        provider: 'MOLIT',
+        dataset: 'reported rent contracts',
+        period,
+        generatedAt: '2026-08-30T00:00:00.000Z',
+        state: 'ready',
+        publicationMinimum: 5,
+        methodologyId: 'kr-jeonse-45-55-v1',
+        rightsPolicyId: 'kr-molit-rent-v1',
+      },
+      provider: 'MOLIT',
+      period,
+      attribution: ['Ministry of Land, Infrastructure and Transport (MOLIT)'],
+      band: '45–55㎡',
+      publicationMinimum: 5,
+      includesNewAndRenewal: true,
+      includesUnknownContractType: true,
+      includesUnknownRecordStatus: true,
+    });
+    expect(buildKoreaPublicRouteModel('unknown', {
+      source: artifact(),
+      period,
+    })).toBeNull();
+  });
+
+  it('fails closed when the feed is missing', () => {
+    expect(() => buildKoreaPublicRouteModel('seoul', {
+      source: undefined,
+      period,
+    })).toThrow('Verified public market summary is unavailable.');
+  });
+});
+
+describe('Korea public SSR routes', () => {
+  it('redirects the legacy Seoul area entry to the v2 Explorer', async () => {
+    useArtifact();
+
+    await expect(KoreaAreaPage({
+      params: Promise.resolve({ area: 'seoul' }),
+    })).rejects.toMatchObject({
+      digest: expect.stringContaining('/kr/seoul/explore/'),
+    });
+  });
+
+  it('puts every published number and sample count in initial check HTML', async () => {
+    useArtifact();
+    const html = renderToStaticMarkup(await KoreaCheckPage({
+      params: Promise.resolve({ area: 'seoul' }),
+    }));
+
+    for (const value of ['₩180,000,000', '₩280,000,000', '₩380,000,000', '₩480,000,000', '₩580,000,000']) {
+      expect(html).toContain(value);
+    }
+    expect(html).toContain('20 reported contracts');
+    expect(html).toContain('2026-01/2026-07');
+    expect(html).toContain('MOLIT reported rental contracts');
+    expect(html).toContain('Seven completed months · 45–55㎡ · zero-rent jeonse');
+    expect(html).toContain('refundable deposit');
+    expect(html).toContain('href="/kr/check/seoul"');
+    expect(html).toContain('href="/kr/seoul/explore"');
+    expect(html).toContain('Canceled records are excluded');
+    expect(html).toContain('New and renewal contracts are combined');
+    expect(html).toContain('Unknown contract type');
+    expect(html).toContain('Unknown record status');
+    expect(html).toContain('n &lt; 5');
+    expect(html).toContain('Korea public evidence. Publication limits shown.');
+    expect(html).not.toMatch(/public P1 preview|Production launch is not authorized/i);
+    expect(html).not.toMatch(/monthly-rent distribution|5\.0%\/year/i);
+    expect(html).not.toMatch(/statutory|legal rate/i);
+    expect(html).not.toContain('/kr/seoul/tools/rent-check');
+  });
+
+  it('renders the contract decision workspace on home and the quote on check', async () => {
+    useArtifact();
+    useAreaArtifact();
+    useConversionArtifact();
+    const home = renderToStaticMarkup(await KoreaHomePage());
+    const check = renderToStaticMarkup(await KoreaCheckPage({
+      params: Promise.resolve({ area: 'seoul' }),
+    }));
+    expect((home.match(/<(?:input|select)\b/g) ?? [])).toHaveLength(7);
+    expect(home).toContain('Offer A');
+    expect(home).toContain('Offer B');
+    expect(home).toContain('Which rent offer');
+    expect(home).toContain('MOLIT reported rental contracts');
+    expect(home).toContain('href="/kr/seoul/tools/rent-check"');
+    expect(home).toContain('Seoul live');
+    expect(home).toContain('New contracts');
+    expect(home).toContain('Renewals');
+    expect(home).toContain('href="/kr/seoul/news"');
+    expect((check.match(/<(?:input|select)\b/g) ?? [])).toHaveLength(2);
+  });
+
+  it('fails closed on home without conversion evidence instead of returning a 404', async () => {
+    useAreaArtifact();
+    const home = renderToStaticMarkup(await KoreaHomePage());
+
+    expect(home).toContain('Verified conversion evidence is unavailable.');
+    expect(home).toContain('data-evidence-state="unavailable"');
+    expect(home).not.toMatch(/<(?:input|select|button)\b/);
+    expect(home).not.toMatch(/annualRate|pairCount|72,291|29\.4%/i);
+    expect(home).toContain('Seoul live');
+    expect(home).toContain('href="/kr/seoul/explore"');
+    expect(home).toContain('href="/kr/seoul/news"');
+  });
+
+  it('withholds sparse evidence recursively without monetary or marker leakage', async () => {
+    useArtifact(artifact({
+      marketId: 'kr-seoul', area: 'seoul', parent: 'kr', deal: 'jeonse',
+      band: '45-55sqm', period, n: 4, published: false,
+    }));
+    const html = renderToStaticMarkup(await KoreaCheckPage({
+      params: Promise.resolve({ area: 'seoul' }),
+    }));
+
+    expect(html).toContain('4 reported contracts');
+    expect(html).toContain('At least 5 are required');
+    expect(html).toContain('Market position withheld');
+    expect(html).not.toContain('₩');
+    expect(html).not.toMatch(/Minimum|percentile|Median|Maximum/);
+    expect(html).not.toContain('data-quote-marker');
+    expect(html).not.toMatch(/"(?:min|p25|med|p75|max|chg3m)"/);
+  });
+
+  it('returns the Next 404 boundary for an unknown area or missing feed', async () => {
+    useArtifact();
+    await expect(KoreaAreaPage({
+      params: Promise.resolve({ area: 'unknown' }),
+    })).rejects.toThrow(/404/);
+
+    vi.unstubAllEnvs();
+    await expect(KoreaCheckPage({
+      params: Promise.resolve({ area: 'seoul' }),
+    })).rejects.toThrow(/404/);
+  });
+
+  it('keeps market-specific names out of the shared public template', async () => {
+    const source = await import('node:fs').then(({ readFileSync }) => readFileSync(
+      new URL('../components/public-market/public-market-page.tsx', import.meta.url),
+      'utf8',
+    ));
+    expect(source).not.toMatch(/Korea|Seoul|KRW|MOLIT|jeonse|District/i);
+  });
+});

@@ -1,7 +1,10 @@
 import { readFileSync } from 'node:fs';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+
+vi.mock('server-only', () => ({}));
+
 import IntentPage from '../app/[country]/[city]/[intent]/page';
 import ComparePage from '../app/compare/page';
 import {
@@ -97,8 +100,8 @@ describe('nine intent routes use one connected decision hierarchy', () => {
       },
       {
         route: ['sg', 'singapore', 'buy'] as const,
-        usable: /HDB public market intelligence/i,
-        blocked: /Private residential detail/i,
+        usable: /URA private residential sale intelligence/i,
+        blocked: /Rental and professional detail/i,
       },
       {
         route: ['ae', 'dubai', 'invest'] as const,
@@ -204,20 +207,22 @@ describe('comparison remains a semantic Modernist table', () => {
     expect(markup.match(/aria-current="page"/g)).toHaveLength(1);
   });
 
-  it('keeps Singapore HDB evidence separate and Dubai transaction detail blocked', () => {
+  it('keeps Singapore private sales separate and Dubai transaction detail blocked', () => {
     const model = buildComparisonPageModel();
     const rentRow = model.matrix.rows[0];
     const saleRow = model.matrix.rows[1];
     const yieldRow = model.matrix.rows[4];
 
-    for (const row of [rentRow, saleRow]) {
-      const singapore = row?.cells.find((cell) => cell.marketId === 'sg-singapore');
-      expect(singapore).toMatchObject({
-        state: 'available',
-        description: expect.stringMatching(/^HDB public/),
-      });
-      expect(singapore?.description).not.toMatch(/private residential|combined|aggregate/i);
-    }
+    const singaporeRent = rentRow?.cells.find((cell) => cell.marketId === 'sg-singapore');
+    expect(singaporeRent).toMatchObject({
+      state: 'rights_blocked',
+      description: expect.stringMatching(/^No Singapore rental/),
+    });
+    const singaporeSale = saleRow?.cells.find((cell) => cell.marketId === 'sg-singapore');
+    expect(singaporeSale).toMatchObject({
+      state: 'limited',
+      description: expect.stringMatching(/^URA private residential/),
+    });
 
     const dubaiYield = yieldRow?.cells.find((cell) => cell.marketId === 'ae-dubai');
     expect(dubaiYield).toMatchObject({

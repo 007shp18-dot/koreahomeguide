@@ -16,6 +16,14 @@
     ]
   },
   {
+    "path": "/buy-or-rent/",
+    "sourceFile": "buy-or-rent/index.html",
+    "kind": "page",
+    "locales": [
+      "en"
+    ]
+  },
+  {
     "path": "/community/",
     "sourceFile": "community/index.html",
     "kind": "community",

@@ -1,0 +1,112 @@
+import { createElement } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { describe, expect, it, vi } from 'vitest';
+
+vi.mock('next/script', () => ({
+  default: ({ src }: Readonly<{ src: string }>) => createElement('script', { src }),
+}));
+
+import {
+  GOOGLE_MAPS_READY_CALLBACK,
+  GooglePlaceMap,
+  buildGoogleMapsScriptUrl,
+  geocodeGoogleAddress,
+  installGoogleMapsReadyCallback,
+  mountGooglePlaceMap,
+} from '../components/maps/google-place-map';
+
+describe('Google place map', () => {
+  it('loads the async weekly Maps JavaScript API for Singapore', () => {
+    expect(buildGoogleMapsScriptUrl('key/value + test')).toBe(
+      'https://maps.googleapis.com/maps/api/js?key=key%2Fvalue+%2B+test&loading=async&callback=__signedpriceGoogleMapsReady&v=weekly&language=en&region=SG',
+    );
+  });
+
+  it('initializes only from the API completion callback and restores prior state', () => {
+    const calls: string[] = [];
+    const previous = () => calls.push('previous');
+    const scope = { [GOOGLE_MAPS_READY_CALLBACK]: previous };
+    const cleanup = installGoogleMapsReadyCallback(scope, () => calls.push('ready'));
+
+    scope[GOOGLE_MAPS_READY_CALLBACK]();
+    expect(calls).toEqual(['ready']);
+    cleanup();
+    scope[GOOGLE_MAPS_READY_CALLBACK]();
+    expect(calls).toEqual(['ready', 'previous']);
+  });
+
+  it('renders a Singapore address search with a map fallback', () => {
+    const html = renderToStaticMarkup(createElement(GooglePlaceMap, {
+      browserKey: 'test-google-key',
+    }));
+
+    expect(html).toContain('data-map-provider="google"');
+    expect(html).toContain('data-map-state="loading"');
+    expect(html).toContain('Search a Singapore address');
+    expect(html).toContain('aria-label="Interactive Google map of Singapore"');
+    expect(html).toContain('key=test-google-key');
+  });
+
+  it('does not request Google when the key is unavailable', () => {
+    const html = renderToStaticMarkup(createElement(GooglePlaceMap, { browserKey: null }));
+
+    expect(html).toContain('data-map-provider="static"');
+    expect(html).toContain('Interactive Google map unavailable in this environment.');
+    expect(html).not.toContain('maps.googleapis.com');
+  });
+
+  it('restricts geocoding to Singapore and displays the first result on the same map', async () => {
+    const mapCalls: unknown[] = [];
+    const markerCalls: unknown[] = [];
+    const location = { lat: () => 1.2834, lng: () => 103.8607 };
+    const viewport = { south: 1.28, west: 103.85, north: 1.29, east: 103.87 };
+    class Map {
+      fitBounds(value: unknown) { mapCalls.push(value); }
+    }
+    class Marker {
+      setPosition(value: unknown) { markerCalls.push(['position', value]); }
+      setMap(value: unknown) { markerCalls.push(['map', value]); }
+    }
+    class Geocoder {
+      async geocode(request: unknown) {
+        expect(request).toEqual({
+          address: 'Marina Bay Sands',
+          componentRestrictions: { country: 'SG' },
+          region: 'SG',
+        });
+        return {
+          results: [{
+            formatted_address: '10 Bayfront Avenue, Singapore',
+            geometry: { location, viewport },
+          }],
+        };
+      }
+    }
+    const sdk = {
+      Map: class extends Map {
+        constructor(_element: HTMLElement, options: unknown) {
+          super();
+          expect(options).toEqual({
+            center: { lat: 1.3521, lng: 103.8198 },
+            zoom: 11,
+            mapTypeControl: false,
+            streetViewControl: false,
+          });
+        }
+      },
+      Marker,
+      Geocoder,
+    };
+    const runtime = mountGooglePlaceMap({ sdk, element: {} as HTMLElement });
+
+    await expect(geocodeGoogleAddress({
+      ...runtime,
+      address: 'Marina Bay Sands',
+    })).resolves.toBe('10 Bayfront Avenue, Singapore');
+    expect(mapCalls).toEqual([viewport]);
+    expect(markerCalls).toEqual([
+      ['position', location],
+      ['map', runtime.map],
+    ]);
+  });
+});

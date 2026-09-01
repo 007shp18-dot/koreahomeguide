@@ -91,24 +91,26 @@ test('navigates the first signedprice decision flow', async ({ page }) => {
   ).toBeVisible();
 
   await page.getByRole('link', { name: 'Explore Seoul' }).click();
-  await expect(page).toHaveURL(/\/kr\/seoul\/$/);
-  await expect(page.getByRole('heading', { level: 1, name: 'Seoul' })).toBeVisible();
+  await expect(page).toHaveURL(/\/kr\/seoul\/explore\/$/);
+  await expect(page.getByRole('heading', {
+    level: 1,
+    name: 'Compare refundable jeonse deposits by district.',
+  })).toBeVisible();
 
-  await page
-    .locator('.market-limitations__actions')
-    .getByRole('link', { name: 'Compare markets', exact: true })
-    .click();
-  await expect(page).toHaveURL(/\/compare\/$/);
+  await page.getByRole('navigation', { name: 'Public evidence sections' })
+    .getByRole('link', { name: 'Check' }).click();
+  await expect(page).toHaveURL(/\/kr\/$/);
   await expect(
     page.getByRole('heading', {
       level: 1,
-      name: 'Compare what each market can support.',
+      name: 'Which rent offer actually costs less?',
     }),
   ).toBeVisible();
 });
 
 for (const route of publicRoutes) {
-  test(`${route.path} is usable, contained, and blocked from indexing`, async ({ page }) => {
+  test(`${route.path} is usable, contained, and follows its indexing cohort`, async ({ page }) => {
+    test.skip('fixtureOnly' in route && route.fixtureOnly && releaseTarget.usesExternalServer);
     const response = await page.goto(route.path);
 
     expect(response?.status()).toBe(200);
@@ -117,37 +119,37 @@ for (const route of publicRoutes) {
     ).toBeVisible();
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
       'content',
-      /^noindex,\s*follow$/,
+      route.indexing === 'index' ? /^index,\s*follow$/ : /^noindex,\s*follow$/,
     );
-    await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
+    if ('canonical' in route) {
+      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+        'href',
+        `https://www.signedprice.com${route.canonical}`,
+      );
+    } else {
+      await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
+    }
     await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(0);
+    await expect(page.locator('input[type="email"]')).toHaveCount(0);
     await expectNoHorizontalPageOverflow(page);
   });
 }
 
-test('desktop shows all market cards in the 1366 by 768 first viewport', async ({
+test('desktop exposes live Seoul evidence in the 1366 by 768 first viewport', async ({
   page,
 }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium');
   await page.goto('/');
-  const viewport = page.viewportSize();
-  expect(viewport).not.toBeNull();
-  if (!viewport) throw new Error('The desktop project must define a viewport');
 
-  for (const city of ['Seoul', 'Singapore', 'Dubai']) {
-    const card = page.getByRole('article', { name: city });
-    const heading = card.getByRole('heading', { level: 3, name: city });
-    await expect(card).toBeVisible();
-    await expect(heading).toBeInViewport({ ratio: 1 });
-    const box = await card.boundingBox();
-
-    expect(box).not.toBeNull();
-    if (!box) throw new Error(`${city} market card has no bounding box`);
-    const visibleHeight = Math.max(
-      0,
-      Math.min(box.y + box.height, viewport.height) - Math.max(box.y, 0),
-    );
-    expect(visibleHeight / box.height).toBeGreaterThanOrEqual(0.3);
+  const liveSeoul = page.locator('[data-seoul-live="ready"]');
+  await expect(liveSeoul).toBeInViewport({ ratio: 1 });
+  for (const label of ['New contracts', 'Renewals']) {
+    await expect(liveSeoul.getByText(label, { exact: true })).toBeInViewport({ ratio: 1 });
+  }
+  for (const label of ['Explore', 'Rankings', 'News', 'Guide']) {
+    await expect(
+      liveSeoul.getByRole('link', { name: new RegExp(`^${label}`) }),
+    ).toBeInViewport({ ratio: 1 });
   }
 });
 
@@ -208,29 +210,29 @@ test('mobile primary navigation remains tappable and reaches the market flow', a
   const exploreSeoul = page.getByRole('link', { name: 'Explore Seoul' });
   await expectContainedTouchTargets(page, [exploreSeoul]);
   await exploreSeoul.tap();
-  await expect(page).toHaveURL(/\/kr\/seoul\/$/);
+  await expect(page).toHaveURL(/\/kr\/seoul\/explore\/$/);
   await expectNoHorizontalPageOverflow(page);
 
-  const actionsRegion = page.locator('.market-limitations__actions');
+  const actionsRegion = page.getByRole('navigation', { name: 'Public evidence sections' });
   const marketActions = actionsRegion.getByRole('link');
-  await expect(marketActions).toHaveCount(2);
+  await expect(marketActions).toHaveCount(4);
   const actionBoxes = await expectContainedTouchTargets(
     page,
     await marketActions.all(),
   );
   expectTargetsNotToOverlap(actionBoxes);
 
-  await actionsRegion.getByRole('link', { name: 'Compare markets', exact: true }).tap();
-  await expect(page).toHaveURL(/\/compare\/$/);
+  await actionsRegion.getByRole('link', { name: 'Check' }).tap();
+  await expect(page).toHaveURL(/\/kr\/$/);
   await expect(
     page.getByRole('heading', {
       level: 1,
-      name: 'Compare what each market can support.',
+      name: 'Which rent offer actually costs less?',
     }),
   ).toBeVisible();
 });
 
-test('keyboard traversal activates the Home to Seoul to Compare flow', async ({
+test('keyboard traversal activates the Home to Seoul to Check flow', async ({
   page,
 }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium');
@@ -239,17 +241,29 @@ test('keyboard traversal activates the Home to Seoul to Compare flow', async ({
   const exploreSeoul = page.getByRole('link', { name: 'Explore Seoul' });
   await tabTo(page, exploreSeoul);
   await page.keyboard.press('Enter');
-  await expect(page).toHaveURL(/\/kr\/seoul\/$/);
+  await expect(page).toHaveURL(/\/kr\/seoul\/explore\/$/);
 
-  const compareMarkets = page
-    .locator('.market-limitations__actions')
-    .getByRole('link', { name: 'Compare markets', exact: true });
-  await tabTo(page, compareMarkets);
+  const checkDeposit = page.getByRole('navigation', { name: 'Public evidence sections' })
+    .getByRole('link', { name: 'Check' });
+  await tabTo(page, checkDeposit);
   await page.keyboard.press('Enter');
-  await expect(page).toHaveURL(/\/compare\/$/);
+  await expect(page).toHaveURL(/\/kr\/$/);
 });
 
-for (const path of ['/us/new-york/', '/kr/seoul/sell/', '/not-a-real-route/']) {
+for (const path of [
+  '/sg/singapore/',
+  '/sg/singapore/rent/',
+  '/sg/singapore/buy/',
+  '/sg/singapore/invest/',
+  '/ae/dubai/',
+  '/ae/dubai/rent/',
+  '/ae/dubai/buy/',
+  '/ae/dubai/invest/',
+  '/us/new-york/',
+  '/kr/seoul/sell/',
+  '/kr/seoul/not-a-district/',
+  '/not-a-real-route/',
+]) {
   test(`${path} returns the custom 404`, async ({ page }) => {
     const response = await page.goto(path);
 
@@ -274,6 +288,20 @@ for (const path of ['/us/new-york/', '/kr/seoul/sell/', '/not-a-real-route/']) {
   });
 }
 
+test('sitemap includes only indexable canonical public routes', async ({ request }) => {
+  const response = await request.get('/sitemap.xml');
+  expect(response.status()).toBe(200);
+  const xml = await response.text();
+
+  for (const route of publicRoutes) {
+    const expected = route.indexing === 'index' && 'canonical' in route;
+    expect(xml.includes(`<loc>https://www.signedprice.com${route.path}</loc>`)).toBe(expected);
+  }
+  expect(xml).not.toContain('/sg/');
+  expect(xml).not.toContain('/kr/seoul/tools/rent-check/');
+  expect(xml).not.toContain('/synthetic-test-building/');
+});
+
 test('status API returns only public release readiness', async ({ request }) => {
   const response = await request.get('/api/status');
 
@@ -284,6 +312,6 @@ test('status API returns only public release readiness', async ({ request }) => 
     commit: releaseTarget.expectedCommit,
     environment: releaseTarget.expectedEnvironment,
     markets: ['kr-seoul', 'sg-singapore', 'ae-dubai'],
-    indexing: 'blocked',
+    indexing: 'enabled',
   });
 });

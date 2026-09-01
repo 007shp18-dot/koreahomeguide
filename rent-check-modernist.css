@@ -1,0 +1,145 @@
+body.core-ui{
+  --rcm-ink:#201e1d;
+  --rcm-ground:#f3f2f2;
+  --rcm-surface:#eae9e9;
+  --rcm-action:#1d4ed8;
+  --rcm-action-dark:#16358f;
+  --rcm-action-wash:#dbe4ff;
+  --rcm-divider:#8c8a89;
+  --rcm-muted:#605d5d;
+  --rcm-on-action:#fff;
+  background:var(--rcm-ground);
+  color:var(--rcm-ink);
+  font-variant-numeric:tabular-nums;
+}
+
+body.core-ui :is(button,input,select,textarea){font:inherit}
+body.core-ui :focus-visible{outline:2px solid var(--rcm-action);outline-offset:2px}
+
+.core-ui :is(.site-header,.compact-header){
+  width:100%;
+  max-width:none;
+  min-height:64px;
+  margin:0;
+  padding:0 24px;
+  border-bottom:2px solid var(--rcm-ink);
+  border-radius:0;
+  background:var(--rcm-ground);
+  box-shadow:none;
+  backdrop-filter:none;
+}
+.core-ui .brand-mark{border-radius:0;background:var(--rcm-action);box-shadow:none}
+.core-ui :is(.site-header,.compact-header) :is(a,select){border-radius:0}
+.core-ui :is(.site-header,.compact-header) nav a:hover{background:var(--rcm-surface);color:var(--rcm-ink)}
+.core-ui .currency-select{min-height:44px;border:2px solid var(--rcm-ink);border-radius:0;background:var(--rcm-ground)}
+
+.core-ui :is(.funnel-hero,.page-shell){max-width:1240px;padding-right:24px;padding-left:24px}
+.core-ui .funnel-hero{padding-top:52px;padding-bottom:24px;text-align:left}
+.core-ui :is(.funnel-hero,.tool-hero) h1{color:var(--rcm-ink);font-weight:850;line-height:.94;letter-spacing:-.055em}
+.core-ui :is(.funnel-hero,.tool-hero) p{color:var(--rcm-muted)}
+.core-ui .tool-hero .eyebrow,.core-ui .funnel-section-head .eyebrow{color:var(--rcm-action)}
+
+.core-ui :is(.funnel-rent-card,.rent-check-page .rent-check-card){
+  margin-top:0;
+  padding:24px;
+  border:2px solid var(--rcm-ink);
+  border-radius:0;
+  background:var(--rcm-ground);
+  box-shadow:none;
+}
+.core-ui .rent-check-form{margin-top:0}
+.core-ui .rent-check-form .field>span{color:var(--rcm-ink);font-size:11px;font-weight:850;letter-spacing:.06em;text-transform:uppercase}
+.core-ui .rent-check-form select{min-height:44px;border:0;border-bottom:2px solid var(--rcm-ink);border-radius:0;background:transparent;box-shadow:none}
+.core-ui :is(.rent-check-money,.rent-check-size){border:2px solid var(--rcm-ink);border-radius:0;background:var(--rcm-ground);box-shadow:none}
+.core-ui :is(.rent-check-money,.rent-check-size):focus-within{border-color:var(--rcm-action);box-shadow:none}
+.core-ui :is(.rent-check-money,.rent-check-size) b{color:var(--rcm-action)}
+.core-ui .rent-check-form :is(select,.district-combobox-input,.selection-native,.rent-check-money,.rent-check-size){border:2px solid var(--rcm-ink);border-radius:0;background-color:var(--rcm-ground);box-shadow:none}
+.core-ui .rent-check-form :is(.rent-check-money,.rent-check-size) input{border:0;border-radius:0;box-shadow:none}
+.core-ui .rent-check-form>.rent-check-button{border:2px solid var(--rcm-ink);border-radius:0}
+.core-ui .rent-check-form :is(select,.district-combobox-input,.selection-native):focus-visible{outline:2px solid var(--rcm-action);outline-offset:2px;box-shadow:none}
+.core-ui .rent-check-form :is(.rent-check-money,.rent-check-size):focus-within{border-color:var(--rcm-action);outline:2px solid var(--rcm-action);outline-offset:2px;box-shadow:none}
+.core-ui .rent-check-form>.rent-check-button:focus-visible{outline:2px solid var(--rcm-action);outline-offset:2px;box-shadow:none}
+.core-ui .property-type-hint,.core-ui .rent-check-status,.core-ui .fx-input-reference{color:var(--rcm-muted)}
+
+.core-ui :is(.search-button,.rent-size-presets button,.rent-size-unit-toggle){
+  min-height:44px;
+  border:2px solid var(--rcm-ink);
+  border-radius:0;
+  box-shadow:none;
+}
+.core-ui .search-button{background:var(--rcm-action);color:var(--rcm-on-action)}
+.core-ui .search-button:hover{background:var(--rcm-action-dark)}
+.core-ui :is(.rent-size-presets button,.rent-size-unit-toggle){background:var(--rcm-ground);color:var(--rcm-ink)}
+.core-ui .rent-size-presets button:hover,.core-ui .rent-size-presets button.is-selected,.core-ui .rent-size-unit-toggle:hover{border-color:var(--rcm-action);background:var(--rcm-action-wash);color:var(--rcm-ink)}
+
+.core-ui .rent-check-note{border:2px solid var(--rcm-ink);border-radius:0;background:var(--rcm-surface);color:var(--rcm-ink)}
+.core-ui .rent-check-result{border-top:2px solid var(--rcm-ink)}
+.core-ui .rent-check-result>.rent-check-summary{
+  border:2px solid var(--rcm-ink);
+  border-top:2px solid var(--rcm-action);
+  border-radius:0;
+  background:var(--rcm-ground);
+  box-shadow:none;
+}
+.core-ui .rent-check-summary>.rent-check-metrics{border-top:2px solid var(--rcm-divider);border-bottom:2px solid var(--rcm-divider)}
+.core-ui .rent-check-summary>.rent-check-metrics>div{border-radius:0}
+.core-ui .rent-check-summary>.rent-check-metrics>div+div{border-left:2px solid var(--rcm-divider)}
+.core-ui .rent-check-form>.rent-check-assist-row{border-top:2px solid var(--rcm-divider)}
+.core-ui .rent-check-form>.rent-check-assist-row :is(.rent-size-presets button,.rent-size-unit-toggle){min-height:44px;border:2px solid var(--rcm-ink);border-radius:0;box-shadow:none}
+.core-ui .rent-check-form>.rent-check-assist-row :is(.rent-size-presets button,.rent-size-unit-toggle):focus-visible{outline:2px solid var(--rcm-action);outline-offset:2px;box-shadow:none}
+.core-ui .rent-check-result>.rent-check-evidence-head{border-top:2px solid var(--rcm-ink)}
+.core-ui .rent-check-result>.table-wrap{border-top:2px solid var(--rcm-ink)}
+.core-ui .rent-check-result>.table-wrap thead{background:var(--rcm-surface)}
+.core-ui .rent-check-evidence-disclosure{border:2px solid var(--rcm-ink);border-radius:0;background:var(--rcm-ground);box-shadow:none}
+.core-ui .rent-check-evidence-disclosure-body>:is(.rent-check-evidence-head,.table-wrap){border-top:2px solid var(--rcm-divider);border-radius:0;background:var(--rcm-ground)}
+.core-ui .rent-check-evidence-disclosure-body>.table-wrap thead{background:var(--rcm-surface)}
+.core-ui :is(.rent-rating,.confidence-pill){border:2px solid var(--rcm-ink);border-radius:0}
+.core-ui .rent-check-result>.rent-check-next-step{border:2px solid var(--rcm-ink);border-radius:0;background:var(--rcm-action-wash)}
+.core-ui .rent-check-result :is(.saved-quote-module,.experience-capture,.result-share-panel){border:2px solid var(--rcm-ink);border-radius:0;background:var(--rcm-ground);box-shadow:none}
+.core-ui .saved-quote-module :is(.saved-quote-form input,.saved-quote-compare){min-height:44px;border:2px solid var(--rcm-ink);border-radius:0;background:var(--rcm-ground);color:var(--rcm-ink);box-shadow:none}
+.core-ui .experience-capture :is(.experience-open,.experience-context select,.experience-money,.experience-outcome span){min-height:44px;border:2px solid var(--rcm-ink);border-radius:0;background:var(--rcm-ground);color:var(--rcm-ink);box-shadow:none}
+.core-ui .result-share-panel :is(.result-share-action,.result-share-metrics){border:2px solid var(--rcm-ink);border-radius:0;background:var(--rcm-ground);box-shadow:none}
+.core-ui .result-share-panel .result-share-metrics>div{border-right:2px solid var(--rcm-divider)}
+.core-ui .result-share-panel .result-share-metrics>div:last-child{border-right:0}
+.core-ui .result-share-panel .result-share-action{min-height:44px;color:var(--rcm-ink)}
+.core-ui :is(.saved-quote-module,.experience-capture,.result-share-panel) :is(.saved-quote-form input,.saved-quote-save,.saved-quote-compare,.experience-open,.experience-context select,.experience-money,.search-button,.result-share-action):focus-visible,.core-ui .experience-capture .experience-outcome input:focus-visible+span{outline:2px solid var(--rcm-action);outline-offset:2px;box-shadow:none}
+.core-ui .experience-capture .search-button,.core-ui .result-share-panel .search-button.result-share-action{background:var(--rcm-action);color:var(--rcm-on-action)}
+.core-ui .experience-capture .search-button:hover,.core-ui .result-share-panel .search-button.result-share-action:hover{border-color:var(--rcm-action-dark);background:var(--rcm-action-dark)}
+.core-ui .experience-capture .experience-open:hover,.core-ui .result-share-panel .result-share-copy-button:hover{border-color:var(--rcm-action);background:var(--rcm-action-wash);color:var(--rcm-ink)}
+.core-ui .rent-check-result .saved-quote-save{min-height:44px;border:2px solid var(--rcm-ink);border-radius:0;background:var(--rcm-action);color:var(--rcm-on-action);box-shadow:none}
+.core-ui .rent-check-result .saved-quote-save:hover{background:var(--rcm-action-dark)}
+.core-ui .rent-check-result .saved-quote-save:disabled,.core-ui .rent-check-result .saved-quote-save:disabled:hover{background:var(--rcm-muted);color:var(--rcm-on-action);cursor:not-allowed}
+.core-ui .rent-check-result .experience-outcome input:checked+span{border-color:var(--rcm-action);background:var(--rcm-action-wash)}
+.core-ui .rent-check-comparables-toggle{min-height:44px;border:2px solid var(--rcm-ink);border-radius:0;background:var(--rcm-ground);color:var(--rcm-ink);box-shadow:none}
+.core-ui .rent-check-comparables-toggle:hover{border-color:var(--rcm-action);background:var(--rcm-action-wash)}
+.core-ui .district-combobox-listbox{border:2px solid var(--rcm-ink);border-radius:0;background:var(--rcm-ground);box-shadow:none}
+.core-ui .district-combobox-option{min-height:44px;border:0;border-bottom:2px solid var(--rcm-divider);border-radius:0;background:var(--rcm-ground);color:var(--rcm-ink)}
+.core-ui .district-combobox-option:is(:hover,.is-active){border-color:var(--rcm-action);background:var(--rcm-action-wash)}
+.core-ui :is(.rent-check-comparables-toggle,.district-combobox-option):focus-visible{outline:2px solid var(--rcm-action);outline-offset:2px;box-shadow:none}
+
+.core-ui .lead-capture,
+.core-ui :is(.context-module,.related-links a,.home-stage-grid a,.home-guide-row){
+  border:2px solid var(--rcm-ink);
+  border-radius:0;
+  background:var(--rcm-ground);
+  box-shadow:none;
+}
+.core-ui .context-module.soft{background:var(--rcm-surface);border-color:var(--rcm-ink)}
+.core-ui .lead-capture :is(input,textarea){border:2px solid var(--rcm-ink);border-radius:0;background:var(--rcm-ground);box-shadow:none}
+.core-ui :is(.related-links a,.home-stage-grid a,.home-guide-row):hover{background:var(--rcm-action-wash);border-color:var(--rcm-ink)}
+.core-ui .home-primary-trust{border-left:2px solid var(--rcm-action);color:var(--rcm-ink)}
+.core-ui .funnel-proof-band{border-top:2px solid var(--rcm-ink);border-bottom:2px solid var(--rcm-ink);background:var(--rcm-surface)}
+.core-ui .page-footer,.core-ui .page-shell+footer{border-top:2px solid var(--rcm-ink);background:var(--rcm-ground)}
+
+@media(max-width:760px){
+  .core-ui :is(.site-header,.compact-header){padding-right:14px;padding-left:14px}
+  .core-ui :is(.funnel-hero,.page-shell){padding-right:16px;padding-left:16px}
+  .core-ui .funnel-hero{padding-top:34px}
+  .core-ui :is(.funnel-rent-card,.rent-check-page .rent-check-card){padding:16px}
+  .core-ui .result-share-panel .result-share-metrics>div{border-right:0;border-bottom:2px solid var(--rcm-divider)}
+  .core-ui .result-share-panel .result-share-metrics>div:last-child{border-bottom:0}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .core-ui *{scroll-behavior:auto!important;transition:none!important}
+}

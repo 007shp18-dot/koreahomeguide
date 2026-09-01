@@ -13,6 +13,7 @@ import {
 } from '@signedprice/market-core';
 import type { Metadata } from 'next';
 import type { SiteFooterModel, SiteHeaderModel } from './site-copy';
+import { indexableMetadata } from './public-metadata';
 
 export interface NavigationActionModel {
   readonly label: string;
@@ -259,7 +260,7 @@ const routeShellCopy = {
       { label: 'Markets', href: '/#markets' },
       { label: 'Compare markets', href: '/compare/' },
     ],
-    status: 'Preview foundation. Public launch is not yet authorized.',
+    status: 'Global platform live. Market evidence remains rights-gated.',
   } satisfies SiteFooterModel,
 } as const;
 
@@ -314,23 +315,27 @@ const routeMetadataCopy = {
     return {
       title: `${profile.cityName} property intelligence | signedprice`,
       description: `Review ${profile.cityName} Phase 1 product depth, source posture, supported property intents and current data-rights limits.`,
+      robots: { index: false, follow: true },
     };
   },
   intent(profile: MarketProfile, intent: Intent): Metadata {
     return {
       title: `${intentLabels[intent]} in ${profile.cityName} | signedprice`,
       description: `Review the Phase 1 ${intent} comparison scope, source posture and data-rights limits for ${profile.cityName}.`,
+      robots: { index: false, follow: true },
     };
   },
-  compare: {
+  compare: indexableMetadata({
+    path: '/compare/',
     title: 'Compare Seoul, Singapore and Dubai | signedprice',
     description:
       'Compare the Phase 1 capability and rights posture for rent, buy and invest decisions across Seoul, Singapore and Dubai.',
-  },
+  }),
   notFound: {
     title: 'Route not available | signedprice',
     description:
       'This signedprice Preview route is not available. Return to the approved market and comparison routes.',
+    robots: { index: false, follow: false },
   },
 } as const;
 
@@ -354,9 +359,6 @@ const singaporeProfile = getMarketProfile('sg-singapore');
 const dubaiProfile = getMarketProfile('ae-dubai');
 
 const seoulOfficialState = seoulProfile.dataCapabilities[0]!.state;
-const singaporeHdb = singaporeProfile.dataCapabilities.find(
-  (capability) => capability.housingSector === 'hdb',
-)!;
 const singaporePrivate = singaporeProfile.dataCapabilities.find(
   (capability) => capability.housingSector === 'private_residential',
 )!;
@@ -406,20 +408,12 @@ const marketCopyById = {
   },
   'sg-singapore': {
     heroDescription:
-      'HDB public market intelligence is available with sector-specific limits. Private residential detail remains a separate rights-blocked capability.',
-    sourcePosture: 'HDB public intelligence; private detail rights-blocked',
+      'URA private residential sale intelligence is limited until verified snapshot and display-rights gates pass.',
+    sourcePosture: 'URA private residential sale intelligence; release-gated',
     capabilities: [
       {
-        label: 'HDB public intelligence',
-        description: 'Public HDB market intelligence is usable within its own housing sector.',
-        state: singaporeHdb.state,
-        stateLabel: stateLabels[singaporeHdb.state],
-        housingSector: 'hdb',
-        overviewCategory: 'evidence',
-      },
-      {
-        label: 'Private residential detail',
-        description: 'Commercial publication rights have not been approved for this dataset.',
+        label: 'URA private residential sale intelligence',
+        description: 'Publication stays closed until verified evidence and display-rights gates pass.',
         state: singaporePrivate.state,
         stateLabel: stateLabels[singaporePrivate.state],
         housingSector: 'private_residential',
@@ -436,9 +430,9 @@ const marketCopyById = {
       },
     ],
     nextAction: {
-      label: 'Review Singapore rent scope',
-      href: '/sg/singapore/rent/',
-      description: 'See how the HDB public boundary applies to a rent decision.',
+      label: 'Review the evidence policy',
+      href: '/trust/',
+      description: 'Review how SignedPrice gates source rights, publication minimums, and corrections.',
       external: false,
     },
   },
@@ -502,18 +496,18 @@ const intentSourceCopyByMarket = {
   ],
   'sg-singapore': [
     {
-      label: 'HDB public market intelligence',
-      description: 'Usable only within the HDB housing sector and its stated limitations.',
-      state: singaporeHdb.state,
-      stateLabel: stateLabels[singaporeHdb.state],
-      housingSector: 'hdb',
-    },
-    {
-      label: 'Private residential detail',
-      description: 'Private residential publication rights remain unapproved.',
+      label: 'URA private residential sale intelligence',
+      description: 'Limited to verified private-sale evidence after release gates pass.',
       state: singaporePrivate.state,
       stateLabel: stateLabels[singaporePrivate.state],
       housingSector: 'private_residential',
+    },
+    {
+      label: 'Rental and professional detail',
+      description: 'No rental evidence or professional connection workflow is active.',
+      state: 'rights_blocked',
+      stateLabel: stateLabels.rights_blocked,
+      housingSector: null,
     },
   ],
   'ae-dubai': [
@@ -553,6 +547,14 @@ export const intentRouteParams = initialMarketIds.flatMap((marketId) => {
     intent,
   }));
 });
+
+export const publicMarketRouteParams = marketRouteParams.filter(
+  ({ country, city }) => country === 'kr' && city === 'seoul',
+);
+
+export const publicIntentRouteParams = intentRouteParams.filter(
+  ({ country, city }) => country === 'kr' && city === 'seoul',
+);
 
 function isIntent(value: string): value is Intent {
   return intents.some((intent) => intent === value);
@@ -748,6 +750,19 @@ export function buildIntentPageModel(
   const usableState = denySafeOverviewState(
     usableSources.map((item) => item.state),
   );
+  const overviewActions: readonly NavigationActionModel[] =
+    profile.id === 'kr-seoul' && intentValue === 'rent'
+      ? [
+          {
+            label: 'Check a Seoul rent quote',
+            href: '/kr/seoul/tools/rent-check/',
+            description: 'Compare a quote with compatible official reported contracts.',
+            external: false,
+          },
+          marketOverviewAction(profile.id),
+          commonActions.compare,
+        ]
+      : [marketOverviewAction(profile.id), commonActions.compare];
   const decisionRows: readonly MarketOverviewRowModel[] = [
     {
       number: '01',
@@ -826,7 +841,7 @@ export function buildIntentPageModel(
       items: sourceItems,
     },
     decisionRows,
-    overviewActions: [marketOverviewAction(profile.id), commonActions.compare],
+    overviewActions,
     limitations: {
       ...routeSectionCopy.limitations,
       items: profile.limitations,
@@ -855,7 +870,7 @@ const comparisonMatrix = {
   description:
     'Statuses describe publication capability, not a numeric market result. Missing or incompatible inputs remain unavailable.',
   sectorBoundary:
-    'Singapore HDB public intelligence is not combined with private residential detail.',
+    'Singapore private residential sales are not combined with rentals or public housing.',
   tableLabel: 'Seoul, Singapore and Dubai capability comparison',
   rowHeaderLabel: 'Capability',
   columns: initialMarketIds.map((marketId) => ({
@@ -867,7 +882,7 @@ const comparisonMatrix = {
       label: 'Rent evidence',
       cells: [
         comparisonCell('kr-seoul', 'available', 'Official reported rent contracts.'),
-        comparisonCell('sg-singapore', 'available', 'HDB public rent intelligence only.'),
+        comparisonCell('sg-singapore', 'rights_blocked', 'No Singapore rental evidence is active.'),
         comparisonCell(
           'ae-dubai',
           'rights_blocked',
@@ -879,7 +894,7 @@ const comparisonMatrix = {
       label: 'Sale evidence',
       cells: [
         comparisonCell('kr-seoul', 'available', 'Official reported sale contracts.'),
-        comparisonCell('sg-singapore', 'available', 'HDB public sale intelligence only.'),
+        comparisonCell('sg-singapore', 'limited', 'URA private residential sales remain release-gated.'),
         comparisonCell(
           'ae-dubai',
           'rights_blocked',
@@ -914,7 +929,7 @@ const comparisonMatrix = {
         comparisonCell(
           'sg-singapore',
           'limited',
-          'HDB inputs remain sector-specific; private detail is excluded.',
+          'Private-sale evidence does not supply rental inputs.',
         ),
         comparisonCell(
           'ae-dubai',
@@ -934,7 +949,7 @@ const comparisonMatrix = {
         comparisonCell(
           'sg-singapore',
           'rights_blocked',
-          'Private detail and professional connections are not active.',
+          'Private-sale publication and professional connections are not active.',
         ),
         comparisonCell(
           'ae-dubai',
@@ -993,11 +1008,14 @@ export function buildComparisonPageModel(): ComparisonPageModel {
 export const notFoundPageModel = {
   metadata: routeMetadataCopy.notFound,
   header: routeShellCopy.header,
-  footer: routeShellCopy.footer,
+  footer: {
+    ...routeShellCopy.footer,
+    descriptor: 'Verified property decisions, starting with Seoul.',
+  },
   sectionLabel: 'Page not found',
   eyebrow: 'Not found',
   heading: 'This route is not available.',
   description:
-    'Browse the approved Seoul, Singapore and Dubai routes from the signedprice homepage.',
+    'Return to signedprice to review the currently available Seoul experience.',
   action: commonActions.home,
 } as const;

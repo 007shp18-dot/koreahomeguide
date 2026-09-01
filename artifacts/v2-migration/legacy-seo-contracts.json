@@ -50,6 +50,27 @@
     ]
   },
   {
+    "path": "/buy-or-rent/",
+    "canonical": "https://koreahomeguide.com/buy-or-rent/",
+    "alternates": [
+      {
+        "hreflang": "en",
+        "href": "https://koreahomeguide.com/buy-or-rent/"
+      },
+      {
+        "hreflang": "x-default",
+        "href": "https://koreahomeguide.com/buy-or-rent/"
+      }
+    ],
+    "title": "Buy or Rent in Seoul | KoreaHomeGuide",
+    "description": "The same home, the same cash, one monthly figure each. Restate a rental contract at your deposit, compare it with the monthly cost of owning, and see how much the price would have to rise for buying to break even.",
+    "robots": "index,follow",
+    "schemaTypes": [],
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
+  },
+  {
     "path": "/community/",
     "canonical": "https://koreahomeguide.com/community/",
     "alternates": [],

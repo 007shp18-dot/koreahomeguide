@@ -1,0 +1,107 @@
+.news {
+  --detail-news-ground: #f3f2f2;
+  --detail-news-ink: #201e1d;
+  --detail-news-muted: #5d5958;
+  --detail-news-accent: #1d4ed8;
+  color: var(--detail-news-ink);
+  background: var(--detail-news-ground);
+  border-bottom: 2px solid var(--detail-news-ink);
+}
+
+.heading {
+  padding: 1.25rem;
+  display: grid;
+  gap: 0.55rem;
+  border-bottom: 2px solid var(--detail-news-ink);
+}
+
+.heading > p {
+  color: var(--detail-news-accent);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.heading h2 {
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  letter-spacing: -0.05em;
+  line-height: 0.98;
+}
+
+.list {
+  list-style: none;
+}
+
+.list li + li {
+  border-top: 1px solid var(--detail-news-ink);
+}
+
+.list article {
+  padding: 1.25rem;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.list time {
+  color: var(--detail-news-muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.list h3 {
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+.list h3 a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+.list article > p,
+.empty {
+  color: var(--detail-news-muted);
+  font-size: 0.74rem;
+  line-height: 1.55;
+}
+
+.list .evidence {
+  padding-top: 0.7rem;
+  border-top: 1px solid #8c8a89;
+  color: var(--detail-news-ink);
+}
+
+.empty {
+  min-height: 132px;
+  padding: 1.25rem;
+  display: grid;
+  align-content: center;
+}
+
+.allNews {
+  min-height: 48px;
+  padding: 0.8rem 1.25rem;
+  display: grid;
+  place-items: center;
+  border-top: 2px solid var(--detail-news-ink);
+  color: var(--detail-news-ground);
+  background: var(--detail-news-accent);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-align: center;
+  text-decoration: none;
+}
+
+.list h3 a:focus-visible,
+.allNews:focus-visible {
+  position: relative;
+  z-index: 2;
+  outline: 2px solid var(--detail-news-accent);
+  outline-offset: 2px;
+}

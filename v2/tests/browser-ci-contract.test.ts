@@ -32,11 +32,15 @@ describe('signedprice V2 browser CI contract', () => {
     expect(workflow).toMatch(/cancel-in-progress: true/);
   });
 
-  it('installs locked Chromium and executes both browser projects', () => {
+  it('installs locked Chromium and executes all four browser widths', () => {
     expect(workflow).toMatch(/pnpm exec playwright install --with-deps chromium/);
     expect(workflow).toMatch(
-      /pnpm e2e --project=desktop-chromium --project=mobile-chromium/,
+      /pnpm e2e --project=desktop-chromium --project=mobile-chromium --project=tablet-chromium --project=wide-chromium/,
     );
+  });
+
+  it('rejects Singapore server credentials from client assets after build', () => {
+    expect(workflow).toMatch(/pnpm check:singapore-client-boundary/);
   });
 
   it('retains browser diagnostics only when the gate fails', () => {

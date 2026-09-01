@@ -1,13 +1,15 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
+import { DistrictDetailPage } from '../../../../components/public-market/district-detail-page';
 import { IntentDecisionRows } from '../../../../components/intent-decision-rows';
 import { MarketHero } from '../../../../components/market-hero';
 import { SiteFooter } from '../../../../components/site-footer';
 import { SiteHeader } from '../../../../components/site-header';
+import { buildDistrictMetadata } from '../../../../lib/public-market/district-metadata';
 import {
-  buildIntentPageModel,
-  intentRouteParams,
-} from '../../../../lib/route-model';
+  publicThirdSegmentRouteParams,
+  resolvePublicThirdSegment,
+} from '../../../../lib/public-market/public-third-segment.server';
 
 type IntentPageProps = {
   readonly params: Promise<{
@@ -20,23 +22,30 @@ type IntentPageProps = {
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return intentRouteParams;
+  return [...publicThirdSegmentRouteParams];
 }
 
 export async function generateMetadata({ params }: IntentPageProps): Promise<Metadata> {
   const { country, city, intent } = await params;
-  const model = buildIntentPageModel(country, city, intent);
+  const resolved = resolvePublicThirdSegment(country, city, intent);
 
-  if (!model) notFound();
+  if (resolved === null) notFound();
 
-  return model.metadata;
+  return resolved.kind === 'intent'
+    ? resolved.model.metadata
+    : buildDistrictMetadata(resolved.model);
 }
 
 export default async function IntentPage({ params }: IntentPageProps) {
   const { country, city, intent } = await params;
-  const model = buildIntentPageModel(country, city, intent);
+  const resolved = resolvePublicThirdSegment(country, city, intent);
 
-  if (!model) notFound();
+  if (resolved === null) notFound();
+
+  if (resolved.kind === 'district') {
+    return <DistrictDetailPage model={resolved.model} />;
+  }
+  const { model } = resolved;
 
   return (
     <div id="top">

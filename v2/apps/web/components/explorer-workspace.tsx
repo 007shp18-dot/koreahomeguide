@@ -12,6 +12,7 @@ import {
   getExplorerDistrict,
   getExplorerNeighborhoods,
 } from '../lib/seoul-explorer-data';
+import { resolveExplorerRentCheckContext } from '../lib/rent-check/explorer-context';
 import { BuildingDialog } from './building-dialog';
 
 function markerPosition(
@@ -45,6 +46,20 @@ type ExplorerWorkspaceProps = {
   readonly initialNeighborhoodId?: string;
   readonly initialBuildingId?: string;
 };
+
+export function createExplorerRentCheckHref(
+  query: Readonly<Record<string, unknown>>,
+): string | null {
+  const context = resolveExplorerRentCheckContext(query);
+  if (!context?.neighborhoodId || !context.buildingId) return null;
+
+  const rentCheckQuery = new URLSearchParams();
+  rentCheckQuery.set('lawdCd', context.lawdCd);
+  rentCheckQuery.set('type', context.housingType);
+  rentCheckQuery.set('dong', context.neighborhoodId);
+  rentCheckQuery.set('building', context.buildingId);
+  return `/kr/seoul/tools/rent-check/?${rentCheckQuery.toString()}`;
+}
 
 export function ExplorerWorkspace({
   initialDistrictCode,
@@ -90,6 +105,14 @@ export function ExplorerWorkspace({
   const locatedMarkerItems = markerItems.filter(
     (item) => item.lat !== null && item.lng !== null,
   );
+  const rentCheckHref = selectedNeighborhood && selectedBuilding
+    ? createExplorerRentCheckHref({
+        lawdCd: state.selection.districtCode,
+        type: state.propertyType,
+        dong: selectedNeighborhood.id,
+        building: selectedBuilding.id,
+      })
+    : null;
 
   const stableQuery = serializeExplorerQuery(state);
 
@@ -249,6 +272,7 @@ export function ExplorerWorkspace({
         <BuildingDialog
           building={selectedBuilding}
           open
+          rentCheckHref={rentCheckHref}
           onClose={() => dispatch({ type: 'CLOSE_BUILDING' })}
         />
       ) : null}

@@ -1,0 +1,262 @@
+.signal {
+  --community-ground: #f3f2f2;
+  --community-ink: #201e1d;
+  --community-muted: #5d5958;
+  --community-accent: #1d4ed8;
+  color: var(--community-ink);
+  background: var(--community-ground);
+  border-top: 2px solid var(--community-ink);
+  border-bottom: 2px solid var(--community-ink);
+}
+
+.heading {
+  padding: clamp(1.25rem, 4vw, 3rem);
+  display: grid;
+  gap: 0.65rem;
+  border-bottom: 2px solid var(--community-ink);
+}
+
+.heading > p:first-child {
+  color: var(--community-accent);
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.heading h2 {
+  font-size: clamp(1.8rem, 4vw, 3.5rem);
+  letter-spacing: -0.055em;
+}
+
+.heading > p:last-child,
+.unavailable p,
+.collecting p {
+  max-width: 720px;
+  color: var(--community-muted);
+  line-height: 1.55;
+}
+
+.unavailable,
+.collecting,
+.status {
+  min-height: 150px;
+  padding: clamp(1.25rem, 4vw, 3rem);
+  display: grid;
+  align-content: center;
+  gap: 0.7rem;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent 0 12px,
+    rgba(32, 30, 29, 0.06) 12px 13px
+  );
+}
+
+.interactive {
+  display: grid;
+}
+
+.published {
+  display: grid;
+  border-bottom: 2px solid var(--community-ink);
+}
+
+.published > h3 {
+  padding: 1.2rem;
+  border-bottom: 1px solid var(--community-ink);
+}
+
+.directionResults {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.directionResults > div {
+  min-width: 0;
+  padding: 1.2rem;
+  display: grid;
+  gap: 0.6rem;
+  border-right: 1px solid var(--community-ink);
+}
+
+.directionResults > div:last-child {
+  border-right: 0;
+}
+
+.directionResults dt,
+.reasonResults dt {
+  font-size: 0.72rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.directionResults dd {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.directionResults strong {
+  color: var(--community-accent);
+  font-size: clamp(1.8rem, 4vw, 3rem);
+}
+
+.reasonResults {
+  border-top: 1px solid var(--community-ink);
+}
+
+.reasonResults > div {
+  min-height: 48px;
+  padding-inline: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid #8c8a89;
+}
+
+.reasonResults > div:last-child {
+  border-bottom: 0;
+}
+
+.interactive form {
+  padding: clamp(1.25rem, 4vw, 3rem);
+}
+
+.interactive fieldset {
+  min-width: 0;
+  display: grid;
+  gap: 1.2rem;
+  border: 0;
+}
+
+.interactive legend {
+  margin-bottom: 1rem;
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.directionButtons,
+.formActions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.directionButton,
+.submitButton,
+.deleteButton {
+  min-height: 44px;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--community-ink);
+  border-radius: 0;
+  color: var(--community-ink);
+  background: transparent;
+  font: inherit;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.directionButton + .directionButton {
+  border-left: 0;
+}
+
+.directionButton[aria-pressed='true'] {
+  color: var(--community-ground);
+  background: var(--community-accent);
+}
+
+.directionButton:disabled,
+.submitButton:disabled,
+.deleteButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.directionButton:focus-visible,
+.submitButton:focus-visible,
+.deleteButton:focus-visible,
+.reasonField select:focus-visible {
+  position: relative;
+  z-index: 2;
+  outline: 2px solid var(--community-accent);
+  outline-offset: 2px;
+}
+
+.reasonField {
+  display: grid;
+  grid-template-columns: minmax(140px, 0.28fr) minmax(0, 1fr);
+  align-items: center;
+  border: 2px solid var(--community-ink);
+}
+
+.reasonField span {
+  padding: 0.8rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 850;
+}
+
+.reasonField select {
+  width: 100%;
+  max-width: 100%;
+  min-height: 48px;
+  padding-inline: 0.8rem;
+  border: 0;
+  border-left: 2px solid var(--community-ink);
+  border-radius: 0;
+  color: inherit;
+  background: #fff;
+  font: inherit;
+}
+
+.formActions {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.submitButton {
+  color: var(--community-ground);
+  background: var(--community-accent);
+}
+
+.deleteButton {
+  border-left: 0;
+}
+
+.requestStatus {
+  min-height: 1.5rem;
+  margin-top: 0.7rem;
+  color: var(--community-muted);
+  font-size: 0.75rem;
+}
+
+.caveat {
+  padding: 1rem clamp(1.25rem, 4vw, 3rem);
+  display: grid;
+  gap: 0.35rem;
+  border-top: 1px solid var(--community-ink);
+  color: var(--community-muted);
+  font-size: 0.72rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 720px) {
+  .directionResults,
+  .directionButtons,
+  .formActions,
+  .reasonField {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .directionResults > div {
+    border-right: 0;
+    border-bottom: 1px solid var(--community-ink);
+  }
+
+  .directionButton + .directionButton,
+  .deleteButton,
+  .reasonField select {
+    border-left: 2px solid var(--community-ink);
+    border-top: 0;
+  }
+}

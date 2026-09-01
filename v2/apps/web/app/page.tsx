@@ -3,35 +3,46 @@ import { SiteFooter } from '../components/site-footer';
 import { SiteHeader } from '../components/site-header';
 import { TrustStrip } from '../components/trust-strip';
 import {
+  buildHomepagePresentation,
   homepageCopy,
-  homepageIntentGroups,
-  homepageMarketCards,
 } from '../lib/site-copy';
+import type { Metadata } from 'next';
+import { buildSingaporeEntryModel } from '../lib/singapore/route-model.server';
+import { singaporeSnapshotRepositoryFromEnvironment } from '../lib/singapore/snapshot-repository.server';
+import { buildSeoulLiveModel } from '../lib/public-market/seoul-live-model.server';
+import { SeoulLive } from '../components/public-market/seoul-live';
 
-export default function Home() {
+export const metadata: Metadata = homepageCopy.metadata;
+
+export default async function Home() {
+  const singaporeRepository = await singaporeSnapshotRepositoryFromEnvironment();
+  const presentation = buildHomepagePresentation(buildSingaporeEntryModel(singaporeRepository));
+  const copy = presentation.copy;
   return (
     <div id="top">
-      <SiteHeader copy={homepageCopy.header} />
+      <SiteHeader copy={copy.header} />
       <main>
+        <SeoulLive model={buildSeoulLiveModel()} mode="global" />
+
         <HomeMarketBrowser
-          copy={homepageCopy}
-          groups={homepageIntentGroups}
-          markets={homepageMarketCards}
+          copy={copy}
+          groups={presentation.groups}
+          markets={presentation.markets}
         />
 
         <section
           className="principles site-shell"
           id="principles"
-          aria-label={homepageCopy.principles.sectionLabel}
+          aria-label={copy.principles.sectionLabel}
         >
           <div className="section-heading">
             <div>
-              <p className="section-eyebrow">{homepageCopy.principles.eyebrow}</p>
-              <h2>{homepageCopy.principles.heading}</h2>
+              <p className="section-eyebrow">{copy.principles.eyebrow}</p>
+              <h2>{copy.principles.heading}</h2>
             </div>
           </div>
           <div className="principles__grid">
-            {homepageCopy.principles.items.map((item) => (
+            {copy.principles.items.map((item) => (
               <article className="principle" key={item.title}>
                 <span className="principle__index" aria-hidden="true">
                   {item.index}
@@ -44,10 +55,10 @@ export default function Home() {
         </section>
 
         <div className="site-shell trust-strip-wrap">
-          <TrustStrip copy={homepageCopy.trust} />
+          <TrustStrip copy={copy.trust} />
         </div>
       </main>
-      <SiteFooter copy={homepageCopy.footer} />
+      <SiteFooter copy={copy.footer} />
     </div>
   );
 }
