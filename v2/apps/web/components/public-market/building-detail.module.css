@@ -7,7 +7,7 @@
 }
 
 .main {
-  width: min(100%, 1240px);
+  width: min(calc(100% - (2 * var(--page-gutter))), var(--workspace-frame));
   max-width: 100%;
   margin-inline: auto;
   border-inline: 2px solid var(--ink);
@@ -344,7 +344,10 @@
 }
 
 @media (max-width: 720px) {
-  .main { border-inline: 0; }
+  .main {
+    width: 100%;
+    border-inline: 0;
+  }
   .identityHero,
   .decisionLayout { grid-template-columns: minmax(0, 1fr); }
   .visualPhoto,

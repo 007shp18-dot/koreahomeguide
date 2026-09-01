@@ -10,7 +10,7 @@
 }
 
 .frame {
-  width: min(calc(100% - 48px), var(--content-frame));
+  width: min(calc(100% - (2 * var(--page-gutter))), var(--content-frame));
   margin: 24px auto 0;
   border-top: var(--rule-strong);
   border-inline: var(--rule-strong);
@@ -350,7 +350,7 @@
 
 @media (max-width: 720px) {
   .frame {
-    width: min(calc(100% - 28px), var(--content-frame));
+    width: min(calc(100% - (2 * var(--page-gutter))), var(--content-frame));
     margin-top: 14px;
   }
 

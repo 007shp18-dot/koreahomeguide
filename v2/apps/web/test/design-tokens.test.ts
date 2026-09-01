@@ -155,8 +155,10 @@ describe('signedprice brand foundation', () => {
 
   it('keeps geometry square and structural rules two pixels wide', () => {
     expect(css).toMatch(/--radius:\s*0px;/);
-    expect(css).toMatch(/--content-frame:\s*1240px;/);
-    expect(css).toMatch(/--workspace-frame:\s*1440px;/);
+    expect(css).toMatch(/--reading-frame:\s*760px;/);
+    expect(css).toMatch(/--content-frame:\s*1120px;/);
+    expect(css).toMatch(/--workspace-frame:\s*1320px;/);
+    expect(css).toMatch(/--page-gutter:\s*32px;/);
     expect(css).toMatch(/--rule-strong:\s*2px solid var\(--ink\);/);
     expect(css).toMatch(/--rule-default:\s*1px solid var\(--divider\);/);
     expect(css).toMatch(/--rule-subtle:\s*1px solid var\(--line\);/);
@@ -167,7 +169,7 @@ describe('signedprice brand foundation', () => {
       'z-index': '30',
     });
     expect(declarationsFor(css, '.site-header__inner')).toMatchObject({
-      width: 'min(calc(100% - 48px), var(--content-frame))',
+      width: 'min(calc(100% - (2 * var(--page-gutter))), var(--content-frame))',
       padding: '0',
     });
     expect(declarationsFor(css, '.site-header__market-link')).toMatchObject({
@@ -179,6 +181,21 @@ describe('signedprice brand foundation', () => {
     expect(declarationsFor(css, '.intent-tabs')).toMatchObject({
       border: '2px solid var(--ink)',
       'border-radius': 'var(--radius)',
+    });
+  });
+
+  it('provides explicit reading, standard, and workspace frames', () => {
+    expect(declarationsFor(css, '.reading-shell')).toMatchObject({
+      width: 'min(calc(100% - (2 * var(--page-gutter))), var(--reading-frame))',
+      'margin-inline': 'auto',
+    });
+    expect(declarationsFor(css, '.site-shell')).toMatchObject({
+      width: 'min(calc(100% - (2 * var(--page-gutter))), var(--content-frame))',
+      'margin-inline': 'auto',
+    });
+    expect(declarationsFor(css, '.workspace-shell')).toMatchObject({
+      width: 'min(calc(100% - (2 * var(--page-gutter))), var(--workspace-frame))',
+      'margin-inline': 'auto',
     });
   });
 
@@ -202,11 +219,11 @@ describe('signedprice brand foundation', () => {
     });
   });
 
-  it('uses one neutral product stack while keeping bundled Archivo for the wordmark', () => {
+  it('uses bundled Archivo consistently for Latin UI and the wordmark', () => {
     expect(css).not.toMatch(/fonts\.googleapis\.com/i);
     expect(css).toMatch(/@font-face\s*{[\s\S]*?font-family:\s*"Archivo"/);
     expect(css).toContain('/fonts/archivo-latin-wght-normal.woff2');
-    expect(declarationsFor(css, 'body')['font-family']).toMatch(/^"Inter", "Pretendard"/);
+    expect(declarationsFor(css, 'body')['font-family']).toMatch(/^"Archivo", "Pretendard"/);
     expect(declarationsFor(css, '.brand-wordmark')['font-family']).toBe('"Archivo", sans-serif');
   });
 

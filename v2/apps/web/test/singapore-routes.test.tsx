@@ -123,6 +123,15 @@ describe('Singapore route SSR', () => {
 });
 
 describe('Singapore route containment', () => {
+  it('uses the standard content frame instead of viewport width', () => {
+    const css = readFileSync(
+      new URL('../components/singapore/singapore.module.css', import.meta.url),
+      'utf8',
+    );
+
+    expect(css).toMatch(/\.main\s*\{[\s\S]*?width:\s*min\(calc\(100% - \(2 \* var\(--page-gutter\)\)\),\s*var\(--content-frame\)\)/);
+  });
+
   it('generates three native areas and only published project params', async () => {
     expect(segmentStaticParams()).toEqual([{ area: 'ccr' }, { area: 'rcr' }, { area: 'ocr' }]);
     expect(await projectStaticParams()).toEqual([]);

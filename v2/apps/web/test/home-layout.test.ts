@@ -5,21 +5,46 @@ import { describe, expect, it, vi } from 'vitest';
 vi.mock('server-only', () => ({}));
 import Home from '../app/(en)/page';
 
-describe('signedprice Evidence Editorial homepage', () => {
-  it('keeps the wide hero copy gutter bounded on the panel side', () => {
-    const css = readFileSync(
-      new URL('../components/home-editorial.module.css', import.meta.url),
-      'utf8',
-    );
-    const heroCopy = css.match(/\.heroCopy\s*\{([^}]+)\}/)?.[1] ?? '';
+const homeCss = readFileSync(
+  new URL('../components/home-editorial.module.css', import.meta.url),
+  'utf8',
+);
 
-    expect(heroCopy).toContain(
-      'padding-left: max(40px, calc((100vw - var(--site-width)) / 2))',
-    );
-    expect(heroCopy).toContain('padding-right: clamp(40px, 5vw, 80px)');
-    expect(heroCopy).not.toMatch(
-      /padding:\s*[^;]+max\(40px,\s*calc\(\(100vw - var\(--site-width\)\) \/ 2\)\)/,
-    );
+function declarationsFor(source: string, selector: string): Record<string, string> {
+  const escapedSelector = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const rule = source.match(new RegExp(`${escapedSelector}\\s*\\{([^}]*)\\}`));
+  if (!rule?.[1]) throw new Error(`Missing CSS rule ${selector}`);
+  return Object.fromEntries(
+    rule[1]
+      .split(';')
+      .map((declaration) => declaration.trim())
+      .filter(Boolean)
+      .map((declaration) => {
+        const splitAt = declaration.indexOf(':');
+        return [declaration.slice(0, splitAt).trim(), declaration.slice(splitAt + 1).trim()];
+      }),
+  );
+}
+
+describe('signedprice Evidence Editorial homepage', () => {
+  it('centres every primary section in the standard content frame', () => {
+    const expectedWidth = 'min(calc(100% - (2 * var(--page-gutter))), var(--content-frame))';
+
+    for (const selector of [
+      '.heroGrid', '.liveStrip', '.decisionSection', '.exploreSection',
+      '.briefSection', '.trustBoundary',
+    ]) {
+      expect(declarationsFor(homeCss, selector)).toMatchObject({
+        width: expectedWidth,
+        'margin-inline': 'auto',
+      });
+    }
+
+    expect(declarationsFor(homeCss, '.exploreSection')).toMatchObject({
+      'min-height': '540px',
+      'grid-template-columns': 'minmax(0, 1.16fr) minmax(320px, .84fr)',
+    });
+    expect(homeCss).not.toMatch(/(?:heroGrid|liveStrip|decisionSection|exploreSection|briefSection|trustBoundary)[^{]*\{[^}]*100vw/);
   });
 
   it('uses one decision headline before the evidence and deeper product sections', async () => {
