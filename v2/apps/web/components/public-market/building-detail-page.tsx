@@ -43,9 +43,10 @@ const footer: SiteFooterModel = {
   status: KOREA_PUBLIC_RELEASE_STATUS,
 };
 
-function dealLabel(deal: PublicBuildingModel['building']['supportedDeals'][number]): string {
-  if (deal === 'monthly_rent') return 'monthly rent';
-  return deal;
+function contractTypeLabel(value: 'new' | 'renewal' | 'unknown'): string {
+  if (value === 'new') return 'New';
+  if (value === 'renewal') return 'Renewal';
+  return 'Unclassified';
 }
 
 function BuildingNavigation({ model }: Readonly<{ model: PublicBuildingModel }>) {
@@ -132,15 +133,14 @@ export function BuildingDetailPage({ model }: Readonly<{ model: PublicBuildingMo
               ) : (
                 <div className={styles.tableWrap}>
                   <table>
-                    <thead><tr><th>Filed month</th><th>Area</th><th>Deal</th><th>Deposit / price</th><th>Monthly rent</th></tr></thead>
+                    <thead><tr><th>Filed month</th><th>Area</th><th>Contract</th><th>Jeonse deposit</th></tr></thead>
                     <tbody>
                       {model.building.recentContracts.map((contract, index) => (
                         <tr key={`${contract.filedMonth}-${contract.areaSqm}-${index}`}>
                           <td>{contract.filedMonth}</td>
                           <td>{contract.areaSqm}㎡</td>
-                          <td>{dealLabel(contract.deal)}</td>
+                          <td>{contractTypeLabel(contract.contractType)}</td>
                           <td>{money.format(contract.depositWon)}</td>
-                          <td>{money.format(contract.monthlyRentWon)}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -160,7 +160,7 @@ export function BuildingDetailPage({ model }: Readonly<{ model: PublicBuildingMo
                 attribution={['Ministry of Land, Infrastructure and Transport (MOLIT)']}
               />
               <dl className={styles.sourceGrid}>
-                <div><dt>Supported deals</dt><dd>{model.building.supportedDeals.map(dealLabel).join(', ')}</dd></div>
+                <div><dt>Supported deals</dt><dd>jeonse</dd></div>
                 <div><dt>Completed period</dt><dd>{model.evidence.period}</dd></div>
                 <div><dt>Publication minimum</dt><dd>{model.evidence.publicationMinimum}</dd></div>
                 <div><dt>Exclusions</dt><dd>{model.evidence.exclusions.join(' · ')}</dd></div>
