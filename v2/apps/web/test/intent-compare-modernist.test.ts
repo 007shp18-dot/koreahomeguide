@@ -7,6 +7,7 @@ vi.mock('server-only', () => ({}));
 
 import IntentPage from '../app/[country]/[city]/[intent]/page';
 import ComparePage from '../app/compare/page';
+import { SameCashWorkspace } from '../components/same-cash-workspace';
 import {
   buildComparisonPageModel,
   buildIntentPageModel,
@@ -133,15 +134,16 @@ describe('nine intent routes use one connected decision hierarchy', () => {
     }
   });
 
-  it('leaves both global header controls inactive because an intent is not the overview route', async () => {
+  it('leaves all shared product links inactive because an intent is not a product route', async () => {
     for (const params of intentRouteParams) {
       const markup = navigationMarkup(
         renderToStaticMarkup(await IntentPage({ params: Promise.resolve(params) })),
       );
 
-      expect(markup.match(/<a /g) ?? []).toHaveLength(2);
-      expect(markup).toContain('>Global home</a>');
-      expect(markup).toContain('>Market overview</a>');
+      expect(markup.match(/<a /g) ?? []).toHaveLength(4);
+      for (const label of ['Check', 'Explore', 'Briefs', 'Guide']) {
+        expect(markup).toContain(`>${label}</a>`);
+      }
       expect(markup).not.toContain('aria-current');
     }
   });
@@ -198,13 +200,12 @@ describe('comparison remains a semantic Modernist table', () => {
     ).toEqual(['01', '02', '03', '04', '05', '06']);
   });
 
-  it('marks the comparison control current without presenting it as a market overview', () => {
+  it('keeps shared product links inactive on the global comparison route', () => {
     const markup = navigationMarkup(renderToStaticMarkup(createElement(ComparePage)));
 
-    expect(markup.match(/<a /g) ?? []).toHaveLength(2);
-    expect(markup).toContain('>Global home</a>');
-    expect(markup).toContain('aria-current="page">Compare markets</a>');
-    expect(markup.match(/aria-current="page"/g)).toHaveLength(1);
+    expect(markup.match(/<a /g) ?? []).toHaveLength(4);
+    expect(markup).toContain('>Check</a>');
+    expect(markup).not.toContain('aria-current="page"');
   });
 
   it('keeps Singapore private sales separate and Dubai transaction detail blocked', () => {
@@ -250,5 +251,18 @@ describe('comparison remains a semantic Modernist table', () => {
       display: 'block',
     });
     expect(declarationsFor(css, 'body')['overflow-x']).toBe('clip');
+  });
+});
+
+describe('same-cash comparison follows the result-first sequence', () => {
+  it('renders editable assumptions before the verdict and calculation evidence', () => {
+    const markup = renderToStaticMarkup(createElement(SameCashWorkspace));
+    const inputs = markup.indexOf('data-check-section="inputs"');
+    const verdict = markup.indexOf('data-check-section="verdict"');
+    const evidence = markup.indexOf('data-check-section="evidence"');
+
+    expect(inputs).toBeGreaterThan(-1);
+    expect(inputs).toBeLessThan(verdict);
+    expect(verdict).toBeLessThan(evidence);
   });
 });

@@ -23,6 +23,39 @@ export type BuildingExplorerSelectionAction =
     }>
   | Readonly<{ type: 'clear_building' }>;
 
+export function filterExploreBuildings(
+  buildings: readonly ExploreBuildingModel[],
+  query: string,
+  neighborhoodId: string,
+): readonly ExploreBuildingModel[] {
+  const normalizedQuery = query.trim().toLocaleLowerCase('en-US');
+  return buildings.filter((building) => {
+    if (neighborhoodId !== 'all' && building.neighborhoodId !== neighborhoodId) return false;
+    if (normalizedQuery.length === 0) return true;
+    return [building.name, building.neighborhoodName]
+      .some((value) => value.toLocaleLowerCase('en-US').includes(normalizedQuery));
+  });
+}
+
+export function resolveExploreSearchDistrict(
+  districts: readonly Readonly<{
+    slug: SeoulDistrictSlug;
+    nameEn: string;
+    nameKo: string;
+  }>[],
+  buildings: readonly ExploreBuildingModel[],
+  query: string,
+  fallback: SeoulDistrictSlug,
+): SeoulDistrictSlug {
+  const normalizedQuery = query.trim().toLocaleLowerCase('en-US');
+  if (normalizedQuery.length === 0) return fallback;
+  const district = districts.find(({ slug, nameEn, nameKo }) => (
+    [slug, nameEn, nameKo].some((value) => value.toLocaleLowerCase('en-US').includes(normalizedQuery))
+  ));
+  if (district !== undefined) return district.slug;
+  return filterExploreBuildings(buildings, normalizedQuery, 'all')[0]?.districtSlug ?? fallback;
+}
+
 export function buildingExplorerSelectionReducer(
   state: BuildingExplorerSelectionState,
   action: BuildingExplorerSelectionAction,

@@ -196,7 +196,7 @@ function BuildingNavigation({ model }: Readonly<{ model: PublicBuildingModel }>)
 
 export function BuildingEvidenceDetails({ model }: Readonly<{ model: PublicBuildingModel }>) {
   return (
-    <details className={styles.evidenceDetails}>
+    <details className={styles.evidenceDetails} data-building-section="evidence">
       <summary>See records, adjustments, and methodology</summary>
       <div className={styles.evidenceDetailsBody}>
         <CohortEvidence model={model} />

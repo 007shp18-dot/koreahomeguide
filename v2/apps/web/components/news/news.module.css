@@ -16,8 +16,8 @@
 
 .hero,
 .documentHero {
-  min-height: 360px;
-  padding: clamp(2rem, 7vw, 5.5rem) clamp(1rem, 5vw, 4rem);
+  min-height: 260px;
+  padding: clamp(2rem, 5vw, 4rem) clamp(1rem, 5vw, 4rem);
   display: grid;
   align-content: end;
   gap: 1rem;
@@ -38,10 +38,10 @@
 .hero h1,
 .documentHero h1 {
   max-width: 960px;
-  font-size: clamp(3rem, 8vw, 7.5rem);
-  font-weight: 900;
-  letter-spacing: -0.07em;
-  line-height: 0.86;
+  font-size: clamp(2.75rem, 6vw, 5.8rem);
+  font-weight: 850;
+  letter-spacing: -0.06em;
+  line-height: 0.92;
 }
 
 .hero > p:last-child,
@@ -102,6 +102,13 @@
   font-weight: 900;
 }
 
+.market {
+  color: var(--news-muted);
+  font-size: 0.64rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .cardMeta time {
   color: var(--news-muted);
 }
@@ -114,9 +121,26 @@
 }
 
 .cardBody h3 {
-  font-size: clamp(1.55rem, 4vw, 3.6rem);
-  letter-spacing: -0.055em;
-  line-height: 0.98;
+  font-size: clamp(1.35rem, 2.5vw, 2.2rem);
+  letter-spacing: -0.045em;
+  line-height: 1.02;
+}
+
+[data-news-layout='lead'] .cardBody h3 {
+  max-width: 22ch;
+  font-size: clamp(2rem, 4.5vw, 4rem);
+  letter-spacing: -0.06em;
+  line-height: 0.96;
+}
+
+[data-news-layout='lead'] .cardMeta {
+  color: var(--canvas);
+  background: var(--petrol);
+}
+
+[data-news-layout='lead'] .cardMeta time,
+[data-news-layout='lead'] .market {
+  color: var(--accent-soft);
 }
 
 .cardBody h3 a {
@@ -234,7 +258,9 @@
 }
 
 .body {
-  padding: clamp(2rem, 7vw, 5rem) clamp(1rem, 12vw, 9rem);
+  width: min(100%, 860px);
+  margin-inline: auto;
+  padding: clamp(2rem, 7vw, 5rem) clamp(1rem, 5vw, 3.5rem);
   display: grid;
   gap: 1.4rem;
   border-bottom: 2px solid var(--news-ink);

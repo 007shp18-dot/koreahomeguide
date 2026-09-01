@@ -97,6 +97,20 @@ describe('public district detail page', () => {
     expect(html).not.toMatch(/save this building/i);
   });
 
+  it('orders the evidence story from finding to distribution, cohorts, buildings, and source', () => {
+    const html = renderToStaticMarkup(<DistrictDetailPage model={publishedModel()} />);
+    const sectionOrder = [
+      'data-section="district-summary"',
+      'data-section="district-distribution"',
+      'data-section="district-cohorts"',
+      'data-section="district-buildings"',
+      'data-section="district-source"',
+    ].map((marker) => html.indexOf(marker));
+
+    expect(sectionOrder.every((index) => index >= 0)).toBe(true);
+    expect(sectionOrder).toEqual([...sectionOrder].sort((left, right) => left - right));
+  });
+
   it('renders model-owned spread and unavailable-change copy without false count precision', () => {
     const model = buildPublicDistrictModel('gangnam-gu', {
       source: createPublicAreaFixture({

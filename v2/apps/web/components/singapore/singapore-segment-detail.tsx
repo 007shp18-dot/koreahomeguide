@@ -16,7 +16,7 @@ export function SingaporeSegmentDetail({ model }: Readonly<{
 }>) {
   if (model.status === 'unavailable') return (
     <SingaporePage>
-      <section className={styles.unavailable} data-singapore-segment="unavailable">
+      <section className={styles.unavailable} data-singapore-segment="unavailable" data-product-intro="true">
         <h1>{model.message}</h1>
         <p>No segment value is substituted.</p>
         <div className={styles.actions}>
@@ -28,7 +28,7 @@ export function SingaporeSegmentDetail({ model }: Readonly<{
   );
   if (model.status === 'insufficient') return (
     <SingaporePage>
-      <section className={styles.withheld} data-singapore-segment="insufficient">
+      <section className={styles.withheld} data-singapore-segment="insufficient" data-product-intro="true">
         <p className={styles.eyebrow}>Singapore · {model.identity.segment}</p>
         <h1>Distribution not published.</h1>
         <p>{model.count} reported transactions. At least {model.threshold} are required.</p>
@@ -42,7 +42,7 @@ export function SingaporeSegmentDetail({ model }: Readonly<{
       <nav className={styles.breadcrumbs} aria-label="Breadcrumb">
         <Link href="/sg/singapore/explore/">Explore</Link><span>{model.identity.segment}</span>
       </nav>
-      <header className={styles.hero} data-singapore-segment="ready">
+      <header className={styles.hero} data-singapore-segment="ready" data-product-intro="true">
         <p className={styles.eyebrow}>Singapore · {model.identity.segment}</p>
         <h1>{model.display.medianPriceLabel} median from {model.display.sampleLabel}.</h1>
         <SingaporeScope />

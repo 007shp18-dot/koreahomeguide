@@ -59,6 +59,8 @@ describe('Trust routes', () => {
   it('renders global evidence policy without unsupported accuracy claims', () => {
     const html = renderToStaticMarkup(<TrustPage />);
 
+    expect(html).toContain('data-product-intro="true"');
+
     for (const visible of [
       'How SignedPrice publishes evidence',
       'Evidence states',

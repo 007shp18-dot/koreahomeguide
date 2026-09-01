@@ -29,7 +29,7 @@ export default function ContactPage() {
     <div id="top">
       <SiteHeader copy={homepageCopy.header} />
       <main className={styles.page}>
-        <header className={styles.hero}>
+        <header className={styles.hero} data-product-intro="true">
           <p className={styles.eyebrow}>SignedPrice · Contact</p>
           <h1>Contact the right route</h1>
           <p>
