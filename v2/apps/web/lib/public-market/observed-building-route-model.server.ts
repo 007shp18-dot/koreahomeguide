@@ -52,7 +52,7 @@ export type ObservedBuildingIdentityModel = Readonly<{
   }>;
   evidence: Readonly<{
     status: 'unavailable';
-    message: 'Price evidence is unavailable for this building because its verified contract sample does not meet the publication threshold.';
+    message: 'No publishable price evidence is installed for the exact 45–55㎡ zero-rent jeonse cohort.';
   }>;
 }>;
 
@@ -110,7 +110,7 @@ export function buildObservedBuildingIdentityModel(
       }),
       evidence: Object.freeze({
         status: 'unavailable',
-        message: 'Price evidence is unavailable for this building because its verified contract sample does not meet the publication threshold.',
+        message: 'No publishable price evidence is installed for the exact 45–55㎡ zero-rent jeonse cohort.',
       }),
     });
   } catch {

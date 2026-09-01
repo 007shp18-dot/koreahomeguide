@@ -257,6 +257,22 @@ describe('public area Explore model', () => {
     });
   });
 
+  it('keeps the selected district inventory visible for a Korean district query', () => {
+    const model = buildPublicAreaExploreModel(undefined, {
+      ...dependencies(),
+      observedBuildingSource: observedBuildingFixture(),
+      buildingSource: createPublicBuildingFixture(),
+    }, undefined, '강남구');
+    expect(model.status).toBe('ready');
+    if (model.status !== 'ready' || model.buildingAvailability.status !== 'ready') return;
+
+    expect(model.selectedSlug).toBe('gangnam-gu');
+    expect(model.buildingAvailability.buildings.map(({ id }) => id)).toEqual([
+      'gangnam-evidence-tower',
+      'gangnam-large-detached',
+    ]);
+  });
+
   it('calculates the first configured monthly UTC instant strictly after the reference', () => {
     const schedule = { cadence: 'monthly', dayOfMonth: 1, hourUtc: 8, minuteUtc: 30 } as const;
     const atBoundary = buildPublicAreaExploreModel('jongno-gu', {

@@ -125,6 +125,9 @@ describe('observed building artifact boundary', () => {
     expect(parsed.stats).toEqual(unsignedArtifact().stats);
     expect(parsed.records).toHaveLength(2);
     expect(repository.listByDistrict('gangnam-gu')).toHaveLength(1);
+    expect(repository.listByDistrict('gangnam-gu')).toBe(
+      repository.listByDistrict('gangnam-gu'),
+    );
     expect(repository.getById('jongno-gu-observed-two')).toMatchObject({
       housingType: 'detached',
       coordinate: { state: 'pending' },

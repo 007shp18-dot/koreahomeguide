@@ -204,7 +204,10 @@ describe('observed building identity route model', () => {
         status: 'unavailable',
       },
     });
-    expect(model?.evidence.message).toContain('Price evidence is unavailable');
+    expect(model?.evidence.message).toBe(
+      'No publishable price evidence is installed for the exact 45–55㎡ zero-rent jeonse cohort.',
+    );
+    expect(model?.evidence.message).not.toMatch(/sample|threshold/i);
     expect(Object.isFrozen(model)).toBe(true);
   });
 

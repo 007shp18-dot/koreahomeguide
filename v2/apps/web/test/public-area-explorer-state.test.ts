@@ -72,6 +72,25 @@ describe('public area Explorer selection state', () => {
     expect(buildings[1]?.medianLabel).toBeNull();
   });
 
+  it('treats the selected district name as scope instead of a building text filter', () => {
+    const mapoBuildings = buildings.filter(({ districtSlug }) => districtSlug === 'mapo-gu');
+
+    expect(filterExploreBuildings(
+      mapoBuildings,
+      '마포구',
+      'all',
+      'all',
+      ['mapo-gu', 'Mapo-gu', '마포구'],
+    ).map(({ id }) => id)).toEqual(['river-home']);
+    expect(filterExploreBuildings(
+      mapoBuildings,
+      'Mapo',
+      'all',
+      'all',
+      ['mapo-gu', 'Mapo-gu', '마포구'],
+    ).map(({ id }) => id)).toEqual(['river-home']);
+  });
+
   it('opens the retained district that matches a homepage building or district query', () => {
     const districts = [
       { slug: 'gangnam-gu', nameEn: 'Gangnam-gu', nameKo: '강남구' },

@@ -38,11 +38,20 @@ export function createObservedBuildingRepository(input: Readonly<{
   try {
     const artifact = parseObservedBuildingArtifact(input.source, input.expected);
     const byId = new Map(artifact.records.map((record) => [record.buildingId, record]));
+    const mutableByDistrict = new Map<SeoulDistrictSlug, ObservedBuildingRecord[]>();
+    for (const record of artifact.records) {
+      const districtRecords = mutableByDistrict.get(record.districtSlug) ?? [];
+      districtRecords.push(record);
+      mutableByDistrict.set(record.districtSlug, districtRecords);
+    }
+    const byDistrict = new Map([...mutableByDistrict].map(([slug, records]) => [
+      slug,
+      Object.freeze(records),
+    ] as const));
+    const emptyDistrict = Object.freeze([] as ObservedBuildingRecord[]);
     return Object.freeze({
       listRecords: () => artifact.records,
-      listByDistrict: (slug: SeoulDistrictSlug) => Object.freeze(
-        artifact.records.filter(({ districtSlug }) => districtSlug === slug),
-      ),
+      listByDistrict: (slug: SeoulDistrictSlug) => byDistrict.get(slug) ?? emptyDistrict,
       getById(buildingId: string) {
         const record = byId.get(buildingId);
         if (record === undefined) throw new ObservedBuildingInventoryUnavailableError();

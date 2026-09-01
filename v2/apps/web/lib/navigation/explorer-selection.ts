@@ -21,8 +21,8 @@ export type ExplorerSelectionDefaults = Readonly<{
 export type ExplorerSelectionAllowLists = Readonly<{
   propertyTypes?: readonly string[];
   districts?: readonly string[];
-  neighborhoods?: readonly string[];
-  buildingIds?: readonly string[];
+  neighborhoodsByDistrict?: Readonly<Record<string, readonly string[]>>;
+  buildingIdsByNeighborhood?: Readonly<Record<string, readonly string[]>>;
   sorts?: readonly string[];
 }>;
 
@@ -65,8 +65,12 @@ function acceptedIdentifier(
   allowList: readonly string[] | undefined,
 ): string | undefined {
   if (typeof value !== 'string' || !identifierPattern.test(value)) return undefined;
-  if (allowList !== undefined && !allowList.includes(value)) return undefined;
+  if (allowList === undefined || !allowList.includes(value)) return undefined;
   return value;
+}
+
+function serializableIdentifier(value: unknown): string | undefined {
+  return typeof value === 'string' && identifierPattern.test(value) ? value : undefined;
 }
 
 function defaultTransaction(defaults: ExplorerSelectionDefaults): ExplorerTransaction {
@@ -94,10 +98,16 @@ export function normalizeExplorerSelection(
   const district = acceptedIdentifier(source.district, allowLists.districts);
   const neighborhood = district === undefined
     ? undefined
-    : acceptedIdentifier(source.neighborhood, allowLists.neighborhoods);
+    : acceptedIdentifier(
+        source.neighborhood,
+        allowLists.neighborhoodsByDistrict?.[district],
+      );
   const buildingId = neighborhood === undefined
     ? undefined
-    : acceptedIdentifier(source.buildingId, allowLists.buildingIds);
+    : acceptedIdentifier(
+        source.buildingId,
+        allowLists.buildingIdsByNeighborhood?.[neighborhood],
+      );
   const contractType = market === 'kr'
     && (transaction === 'jeonse' || transaction === 'monthly')
     && typeof source.contractType === 'string'
@@ -106,6 +116,44 @@ export function normalizeExplorerSelection(
     : undefined;
   const sort = acceptedIdentifier(source.sort, allowLists.sorts);
 
+  return Object.freeze({
+    market,
+    transaction,
+    ...(propertyType === undefined ? {} : { propertyType }),
+    ...(district === undefined ? {} : { district }),
+    ...(neighborhood === undefined ? {} : { neighborhood }),
+    ...(buildingId === undefined ? {} : { buildingId }),
+    ...(contractType === undefined ? {} : { contractType }),
+    ...(sort === undefined ? {} : { sort }),
+  });
+}
+
+function normalizeSerializableSelection(
+  input: ExplorerSelection,
+  defaults: ExplorerSelectionDefaults,
+): ExplorerSelection {
+  const market = isMarket(input.market) ? input.market : defaults.market;
+  const fallbackTransaction = market === defaults.market
+    ? defaultTransaction(defaults)
+    : marketDefaults[market];
+  const transaction = isTransactionFor(market, input.transaction)
+    ? input.transaction
+    : fallbackTransaction;
+  const propertyType = serializableIdentifier(input.propertyType);
+  const district = serializableIdentifier(input.district);
+  const neighborhood = district === undefined
+    ? undefined
+    : serializableIdentifier(input.neighborhood);
+  const buildingId = neighborhood === undefined
+    ? undefined
+    : serializableIdentifier(input.buildingId);
+  const contractType = market === 'kr'
+    && (transaction === 'jeonse' || transaction === 'monthly')
+    && typeof input.contractType === 'string'
+    && (contractTypes as readonly string[]).includes(input.contractType)
+    ? input.contractType
+    : undefined;
+  const sort = serializableIdentifier(input.sort);
   return Object.freeze({
     market,
     transaction,
@@ -148,7 +196,7 @@ export function serializeExplorerSelection(
   input: ExplorerSelection,
   defaults: ExplorerSelectionDefaults,
 ): string {
-  const selection = normalizeExplorerSelection(input, defaults);
+  const selection = normalizeSerializableSelection(input, defaults);
   const query = new URLSearchParams();
   if (selection.market !== defaults.market) query.set('market', selection.market);
   const transactionDefault = selection.market === defaults.market

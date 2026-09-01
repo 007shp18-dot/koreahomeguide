@@ -88,8 +88,12 @@ export default async function BuildingRoute({ params, searchParams }: BuildingPa
       { market: 'kr', transaction: 'jeonse' },
       {
         districts: [observed.district.slug],
-        neighborhoods: [observed.building.neighborhoodId],
-        buildingIds: [observed.building.buildingId],
+        neighborhoodsByDistrict: {
+          [observed.district.slug]: [observed.building.neighborhoodId],
+        },
+        buildingIdsByNeighborhood: {
+          [observed.building.neighborhoodId]: [observed.building.buildingId],
+        },
       },
     );
     const backHref = createSelectionHref(
@@ -107,8 +111,12 @@ export default async function BuildingRoute({ params, searchParams }: BuildingPa
     { market: 'kr', transaction: 'jeonse' },
     {
       districts: [model.district.slug],
-      neighborhoods: [model.building.neighborhoodId],
-      buildingIds: [model.building.buildingId],
+      neighborhoodsByDistrict: {
+        [model.district.slug]: [model.building.neighborhoodId],
+      },
+      buildingIdsByNeighborhood: {
+        [model.building.neighborhoodId]: [model.building.buildingId],
+      },
     },
   );
   const backHref = createSelectionHref(

@@ -33,7 +33,6 @@ import {
   observedBuildingRepositoryFromEnvironment,
   type ObservedBuildingRepository,
 } from './observed-building-repository.server';
-import { resolveExploreSearchDistrict } from './area-explorer-state';
 import {
   changeReliability,
   evidencePeriod,
@@ -43,7 +42,6 @@ import type {
   ContractGroupEvidenceModel,
   DistrictBuildingAvailability,
   ExploreBuildingAvailability,
-  ExploreBuildingModel,
   ExploreDistrictModel,
   PublicAreaExploreModel,
   PublicAreaLegendBucket,
@@ -489,9 +487,9 @@ function legendFor(
   }));
 }
 
-function exploreBuildingsFor(
+function priceBuildingRecordsFor(
   dependencies: PublicAreaRouteDependencies,
-): ExploreBuildingAvailability {
+): ReadonlyMap<string, PublicBuildingRecord> {
   let priceRecords = new Map<string, PublicBuildingRecord>();
   try {
     const repository = createPublicBuildingRepository({
@@ -503,9 +501,74 @@ function exploreBuildingsFor(
       building,
     ] as const));
   } catch {}
-  const observedRepository = observedBuildingRepositoryFor(dependencies);
+  return priceRecords;
+}
+
+const housingTypeSearchAliases = Object.freeze({
+  apartment: Object.freeze(['아파트']),
+  officetel: Object.freeze(['오피스텔']),
+  villa_multifamily: Object.freeze(['빌라', '연립', '다세대']),
+  detached: Object.freeze(['단독', '다가구']),
+} as const);
+
+function includesExploreQuery(values: readonly string[], normalizedQuery: string): boolean {
+  return values.some((value) => value.toLocaleLowerCase('en-US').includes(normalizedQuery));
+}
+
+function resolveExploreDistrictFromInventory(
+  districts: readonly ExploreDistrictModel[],
+  observedRepository: ObservedBuildingRepository | null,
+  priceRecords: ReadonlyMap<string, PublicBuildingRecord>,
+  query: string,
+  fallback: SeoulDistrictSlug,
+): SeoulDistrictSlug {
+  const normalizedQuery = query.trim().toLocaleLowerCase('en-US');
+  if (normalizedQuery.length === 0) return fallback;
+  const district = districts.find(({ slug, nameEn, nameKo }) => (
+    includesExploreQuery([slug, nameEn, nameKo], normalizedQuery)
+  ));
+  if (district !== undefined) return district.slug;
+  const observed = observedRepository?.listRecords().find((building) => {
+    const aliases = housingTypeSearchAliases[
+      building.housingType as keyof typeof housingTypeSearchAliases
+    ] ?? [];
+    return includesExploreQuery([
+      building.buildingId,
+      building.neighborhoodId,
+      building.neighborhoodName,
+      building.officialName,
+      building.housingType,
+      ...aliases,
+      ...(building.jeonseObservationCount > 0 ? ['jeonse', '전세'] : []),
+      ...(building.monthlyObservationCount > 0 ? ['monthly', 'monthly rent', '월세'] : []),
+    ], normalizedQuery);
+  });
+  if (observed !== undefined) return observed.districtSlug;
+  const priced = [...priceRecords.values()].find((building) => {
+    const aliases = housingTypeSearchAliases[
+      building.housingType.toLocaleLowerCase('en-US') as keyof typeof housingTypeSearchAliases
+    ] ?? [];
+    return includesExploreQuery([
+      building.buildingId,
+      building.neighborhoodId,
+      building.neighborhoodName,
+      building.name,
+      building.housingType,
+      ...aliases,
+      'jeonse',
+      '전세',
+    ], normalizedQuery);
+  });
+  return priced?.districtSlug ?? fallback;
+}
+
+function exploreBuildingsFor(
+  districtSlug: SeoulDistrictSlug,
+  observedRepository: ObservedBuildingRepository | null,
+  priceRecords: ReadonlyMap<string, PublicBuildingRecord>,
+): ExploreBuildingAvailability {
   if (observedRepository !== null) {
-    const buildings = Object.freeze(observedRepository.listRecords().map((observed) => {
+    const buildings = Object.freeze(observedRepository.listByDistrict(districtSlug).map((observed) => {
       const building = priceRecords.get(`${observed.districtSlug}/${observed.buildingId}`);
       const groupLabel = (group: PublicBuildingDistribution) => (
         group.published ? formatMoney(group.med) : null
@@ -549,7 +612,9 @@ function exploreBuildingsFor(
     return Object.freeze({ status: 'ready', buildings });
   }
   const fallbackBuildings = Object.freeze([...priceRecords.values()]
-    .filter(({ groups }) => groups.all.published)
+    .filter((building) => (
+      building.districtSlug === districtSlug && building.groups.all.published
+    ))
     .map((building) => {
       if (!building.groups.all.published) {
         throw new TypeError('Published fallback building required.');
@@ -582,34 +647,6 @@ function exploreBuildingsFor(
       });
     }));
   return Object.freeze({ status: 'not_loaded', fallbackBuildings });
-}
-
-function scopeExploreBuildingsToDistrict(
-  availability: ExploreBuildingAvailability,
-  districtSlug: SeoulDistrictSlug,
-): ExploreBuildingAvailability {
-  if (availability.status === 'ready') {
-    return Object.freeze({
-      status: 'ready',
-      buildings: Object.freeze(availability.buildings.filter(
-        (building) => building.districtSlug === districtSlug,
-      )),
-    });
-  }
-  return Object.freeze({
-    status: 'not_loaded',
-    fallbackBuildings: Object.freeze(availability.fallbackBuildings.filter(
-      (building) => building.districtSlug === districtSlug,
-    )),
-  });
-}
-
-function listExploreBuildings(
-  availability: ExploreBuildingAvailability,
-): readonly ExploreBuildingModel[] {
-  return availability.status === 'ready'
-    ? availability.buildings
-    : availability.fallbackBuildings;
 }
 
 export function buildPublicAreaExploreModel(
@@ -669,10 +706,12 @@ export function buildPublicAreaExploreModel(
       } satisfies ExploreDistrictModel);
     }));
     const requestedDistrict = getSeoulDistrictBySlug(selectedSlug ?? '')?.slug ?? 'jongno-gu';
-    const allBuildingAvailability = exploreBuildingsFor(dependencies);
-    const selected = resolveExploreSearchDistrict(
+    const observedRepository = observedBuildingRepositoryFor(dependencies);
+    const priceRecords = priceBuildingRecordsFor(dependencies);
+    const selected = resolveExploreDistrictFromInventory(
       districts,
-      listExploreBuildings(allBuildingAvailability),
+      observedRepository,
+      priceRecords,
       requestedBuildingQuery,
       requestedDistrict,
     );
@@ -683,10 +722,7 @@ export function buildPublicAreaExploreModel(
       districts,
       legend: legendFor(districts),
       coverage: coverageFor(summaries, citySummary, dependencies),
-      buildingAvailability: scopeExploreBuildingsToDistrict(
-        allBuildingAvailability,
-        selected,
-      ),
+      buildingAvailability: exploreBuildingsFor(selected, observedRepository, priceRecords),
       source,
     });
   } catch {

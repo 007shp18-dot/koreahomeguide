@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs';
-import { createElement } from 'react';
+import { Children, createElement, isValidElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -54,6 +54,18 @@ afterEach(() => {
 });
 
 describe('public Seoul area Explorer', () => {
+  it('remounts client-owned filters when a same-route server payload selects a new district', () => {
+    const element = AreaExplorer({ model: readyModel() });
+    if (!isValidElement<{ children: unknown }>(element)) {
+      throw new Error('Expected AreaExplorer to return an element.');
+    }
+    const child = Children.only(element.props.children);
+
+    expect(isValidElement(child)).toBe(true);
+    if (!isValidElement(child)) return;
+    expect(child.key).toBe('gangnam-gu');
+  });
+
   it('provides a real retained-building text filter in the evidence rail', () => {
     const markup = renderToStaticMarkup(createElement(AreaExplorer, {
       model: readyModel(),

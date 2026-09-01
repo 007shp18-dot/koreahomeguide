@@ -131,8 +131,17 @@ function ReadyAreaExplorer({
       buildingQuery,
       selectedNeighborhood,
       selectedHousingType,
+      [selected.slug, selected.nameEn, selected.nameKo],
     ),
-    [buildingQuery, districtBuildings, selectedHousingType, selectedNeighborhood],
+    [
+      buildingQuery,
+      districtBuildings,
+      selected.nameEn,
+      selected.nameKo,
+      selected.slug,
+      selectedHousingType,
+      selectedNeighborhood,
+    ],
   );
   const visibleBuildings = useMemo(
     () => filteredBuildings.slice(0, visibleBuildingCount),
@@ -169,7 +178,12 @@ function ReadyAreaExplorer({
     router.replace(
       localizedSeoulHref(createSelectionHref(
         '/kr/seoul/explore/',
-        { ...initialSelection, district: slug },
+        {
+          ...initialSelection,
+          district: slug,
+          neighborhood: undefined,
+          buildingId: undefined,
+        },
         { market: 'kr', transaction: 'jeonse' },
       ), locale),
       { scroll: false },
@@ -198,7 +212,12 @@ function ReadyAreaExplorer({
   const submitBuildingQuery = useCallback((): void => {
     const href = localizedSeoulHref(createSelectionHref(
       '/kr/seoul/explore/',
-      { ...initialSelection, district: state.selectedSlug },
+      {
+        ...initialSelection,
+        district: state.selectedSlug,
+        neighborhood: undefined,
+        buildingId: undefined,
+      },
       { market: 'kr', transaction: 'jeonse' },
     ), locale);
     const target = new URL(href, window.location.origin);
@@ -738,6 +757,7 @@ export function AreaExplorer({
       {model.status === 'ready'
         ? (
           <ReadyAreaExplorer
+            key={model.selectedSlug}
             model={model}
             naverMapClientId={naverMapClientId}
             locale={locale}

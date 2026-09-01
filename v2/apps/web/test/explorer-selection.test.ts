@@ -12,8 +12,14 @@ const singaporeDefaults = Object.freeze({ market: 'sg', transaction: 'sale' } as
 const allowLists = Object.freeze({
   propertyTypes: Object.freeze(['apartment', 'officetel']),
   districts: Object.freeze(['jongno-gu', 'gangnam-gu', 'ccr']),
-  neighborhoods: Object.freeze(['sajik-dong', 'yeoksam-dong']),
-  buildingIds: Object.freeze(['jongno-gu-building-1', 'gangnam-gu-building-2']),
+  neighborhoodsByDistrict: Object.freeze({
+    'jongno-gu': Object.freeze(['sajik-dong']),
+    'gangnam-gu': Object.freeze(['yeoksam-dong']),
+  }),
+  buildingIdsByNeighborhood: Object.freeze({
+    'sajik-dong': Object.freeze(['jongno-gu-building-1']),
+    'yeoksam-dong': Object.freeze(['gangnam-gu-building-2']),
+  }),
   sorts: Object.freeze(['median-asc', 'sample-desc']),
 });
 
@@ -149,5 +155,44 @@ describe('canonical Explorer selection codec', () => {
       neighborhood: 'Sajik Dong',
       buildingId: '<building>',
     }, koreaDefaults)).toEqual({ market: 'kr', transaction: 'jeonse' });
+  });
+
+  it('defaults unconfigured URL identifiers to denied', () => {
+    expect(normalizeExplorerSelection({
+      market: 'kr',
+      transaction: 'jeonse',
+      propertyType: 'apartment',
+      district: 'jongno-gu',
+      neighborhood: 'sajik-dong',
+      buildingId: 'jongno-gu-building-1',
+      sort: 'median-asc',
+    }, koreaDefaults)).toEqual({ market: 'kr', transaction: 'jeonse' });
+  });
+
+  it('rejects descendants that do not belong to their selected parent', () => {
+    expect(normalizeExplorerSelection({
+      market: 'kr',
+      transaction: 'jeonse',
+      district: 'gangnam-gu',
+      neighborhood: 'sajik-dong',
+      buildingId: 'jongno-gu-building-1',
+    }, koreaDefaults, allowLists)).toEqual({
+      market: 'kr',
+      transaction: 'jeonse',
+      district: 'gangnam-gu',
+    });
+
+    expect(normalizeExplorerSelection({
+      market: 'kr',
+      transaction: 'jeonse',
+      district: 'gangnam-gu',
+      neighborhood: 'yeoksam-dong',
+      buildingId: 'jongno-gu-building-1',
+    }, koreaDefaults, allowLists)).toEqual({
+      market: 'kr',
+      transaction: 'jeonse',
+      district: 'gangnam-gu',
+      neighborhood: 'yeoksam-dong',
+    });
   });
 });
