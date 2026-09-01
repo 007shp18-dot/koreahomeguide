@@ -1,6 +1,7 @@
 import 'server-only';
 
 import type { SeoulDistrictSlug } from '@signedprice/korea-rent/browser';
+import installedBuildingArtifact from '../../data/public-building-summary.json';
 
 import {
   parsePublicBuildingSummaryArtifact,
@@ -98,8 +99,17 @@ export function publicBuildingRepositoryFromEnvironment(): PublicBuildingReposit
   }
   let repository: PublicBuildingRepository | null = null;
   try {
+    let source = serialized === undefined ? undefined : JSON.parse(serialized);
+    if (
+      process.env.NODE_ENV !== 'test'
+      && (
+        typeof source !== 'object' || source === null
+        || (source as { artifactVersion?: unknown }).artifactVersion
+          !== 'signedprice-public-building-summary-v2'
+      )
+    ) source = installedBuildingArtifact;
     repository = createPublicBuildingRepository({
-      source: serialized === undefined ? undefined : JSON.parse(serialized),
+      source,
       expected: { marketId: 'kr-seoul', period },
     });
   } catch {
