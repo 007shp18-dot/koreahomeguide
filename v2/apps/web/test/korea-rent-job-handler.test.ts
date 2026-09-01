@@ -5,6 +5,7 @@ vi.mock('server-only', () => ({}));
 import {
   createKoreaRentSnapshotJobHandler,
   createKoreaRentSnapshotRunnerPage,
+  createKoreaRentSnapshotRunnerToken,
 } from '../lib/public-market/korea-rent-job-handler.server';
 
 const token = 'preview-rent-snapshot-token-with-enough-entropy';
@@ -74,17 +75,52 @@ function dependencies(overrides: Record<string, unknown> = {}) {
 
 describe('Korea rent snapshot internal job handler', () => {
   it('serves a secret-free Preview runner and stays absent in Production', async () => {
-    const preview = createKoreaRentSnapshotRunnerPage('preview');
-    const production = createKoreaRentSnapshotRunnerPage('production');
+    const preview = createKoreaRentSnapshotRunnerPage('preview', token, {
+      nowMs: () => 1_788_300_000_000,
+      nonce: () => '0123456789abcdef0123456789abcdef',
+    });
+    const production = createKoreaRentSnapshotRunnerPage('production', token);
     const html = await preview.text();
 
     expect(preview.status).toBe(200);
     expect(html).toContain('data-korea-rent-snapshot-runner');
     expect(html).toContain('/api/internal/korea-rent-snapshot/');
     expect(html).toContain('Run 700-coordinate rent snapshot');
+    expect(html).toContain('v1.1788321600.0123456789abcdef0123456789abcdef.');
+    expect(html).not.toContain('Preview job token');
     expect(html).not.toContain(token);
     expect(html).not.toContain('provider-key');
     expect(production.status).toBe(404);
+  });
+
+  it('accepts only an unexpired runner delegation signed by the configured secret', async () => {
+    const nowMs = 1_788_300_000_000;
+    const delegated = createKoreaRentSnapshotRunnerToken(token, {
+      nowMs: () => nowMs,
+      nonce: () => 'abcdef0123456789abcdef0123456789',
+    });
+    const delegatedRequest = new Request(
+      'https://preview.example/api/internal/korea-rent-snapshot/',
+      {
+        method: 'POST',
+        headers: {
+          authorization: `Bearer ${delegated}`,
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({ action: 'batch', referenceInstant, cursor: 0 }),
+      },
+    );
+
+    expect((await createKoreaRentSnapshotJobHandler(dependencies({
+      nowMs: () => nowMs,
+    }) as never)(delegatedRequest.clone())).status).toBe(200);
+    expect((await createKoreaRentSnapshotJobHandler(dependencies({
+      token: 'different-preview-secret-with-enough-entropy',
+      nowMs: () => nowMs,
+    }) as never)(delegatedRequest.clone())).status).toBe(401);
+    expect((await createKoreaRentSnapshotJobHandler(dependencies({
+      nowMs: () => nowMs + (6 * 60 * 60 * 1_000) + 1_000,
+    }) as never)(delegatedRequest)).status).toBe(401);
   });
 
   it('requires Preview, POST, exact bearer authentication and server configuration', async () => {

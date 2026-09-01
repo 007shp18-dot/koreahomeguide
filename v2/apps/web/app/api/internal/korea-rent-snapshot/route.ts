@@ -22,7 +22,10 @@ const cache = createVercelRuntimeCache();
 const serviceKey = process.env.SIGNEDPRICE_PUBLIC_DATA_SERVICE_KEY
   ?? process.env.DATA_GO_KR_SERVICE_KEY;
 
-export const GET = () => createKoreaRentSnapshotRunnerPage(process.env.VERCEL_ENV);
+export const GET = () => createKoreaRentSnapshotRunnerPage(
+  process.env.VERCEL_ENV,
+  process.env.SIGNEDPRICE_INTERNAL_JOB_TOKEN,
+);
 
 export const POST = createKoreaRentSnapshotJobHandler({
   environment: process.env.VERCEL_ENV,
