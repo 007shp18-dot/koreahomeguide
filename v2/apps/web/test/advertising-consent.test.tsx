@@ -6,6 +6,7 @@ vi.mock('server-only', () => ({}));
 import {
   AdvertisingConsent,
   buildAdSenseScriptSrc,
+  buildGoogleAnalyticsScriptSrc,
   shouldLoadAnalytics,
   shouldLoadAdvertising,
 } from '../components/consent/advertising-consent';
@@ -99,6 +100,9 @@ describe('advertising consent boundary', () => {
     expect(shouldLoadAdvertising('granted')).toBe(true);
     expect(buildAdSenseScriptSrc('pub-1234567890123456')).toBe(
       'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1234567890123456',
+    );
+    expect(buildGoogleAnalyticsScriptSrc('G-KWHQXKY40N')).toBe(
+      'https://www.googletagmanager.com/gtag/js?id=G-KWHQXKY40N',
     );
   });
 });

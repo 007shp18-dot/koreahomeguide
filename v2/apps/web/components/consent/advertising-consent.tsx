@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import Script from 'next/script';
-import { GoogleAnalytics } from '@next/third-parties/google';
 import { useState, useSyncExternalStore } from 'react';
 
 import styles from './advertising-consent.module.css';
@@ -27,6 +26,28 @@ export function shouldLoadAnalytics(choice: AdvertisingConsentChoice): boolean {
 export function buildAdSenseScriptSrc(publisherId: string): string {
   const client = `ca-${publisherId}`;
   return `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${client}`;
+}
+
+export function buildGoogleAnalyticsScriptSrc(measurementId: string): string {
+  return `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
+}
+
+function GoogleAnalytics({ measurementId }: Readonly<{ measurementId: string }>) {
+  return (
+    <>
+      <Script id="signedprice-ga4-init" strategy="afterInteractive">
+        {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${measurementId}');`}
+      </Script>
+      <Script
+        id="signedprice-ga4"
+        src={buildGoogleAnalyticsScriptSrc(measurementId)}
+        strategy="afterInteractive"
+      />
+    </>
+  );
 }
 
 function storedChoice(
@@ -123,7 +144,7 @@ export function AdvertisingConsent({
   return (
     <>
       {analyticsMeasurementId && shouldLoadAnalytics(analyticsChoice) ? (
-        <GoogleAnalytics gaId={analyticsMeasurementId} />
+        <GoogleAnalytics measurementId={analyticsMeasurementId} />
       ) : null}
       {publisherId && shouldLoadAdvertising(advertisingChoice) ? (
         <Script
