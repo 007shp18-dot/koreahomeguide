@@ -28,7 +28,7 @@ export function SingaporeExplorer({
 }>) {
   if (model.status === 'unavailable') return (
     <SingaporePage>
-      <section className={styles.unavailable} data-singapore-evidence="unavailable">
+      <section className={styles.unavailable} data-singapore-evidence="unavailable" data-product-intro="true">
         <p className={styles.eyebrow}>Singapore · Evidence gate</p>
         <h1>{model.message}</h1>
         <p>No market figure is substituted while verified evidence is unavailable.</p>
@@ -42,7 +42,7 @@ export function SingaporeExplorer({
   );
   return (
     <SingaporePage>
-      <header className={styles.hero} data-singapore-evidence="ready">
+      <header className={styles.hero} data-singapore-evidence="ready" data-product-intro="true">
         <p className={styles.eyebrow}>Singapore · URA evidence</p>
         <h1>Compare private-sale evidence across CCR, RCR, and OCR.</h1>
         <p>{model.transactionLabel} · {model.periodLabel}</p>

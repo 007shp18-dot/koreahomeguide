@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from 'vitest';
 vi.mock('server-only', () => ({}));
 
 import Home from '../app/page';
+import { SingaporeEntry } from '../components/singapore/singapore-entry';
 import { buildHomepagePresentation } from '../lib/site-copy';
 
 const unavailable = {
@@ -24,6 +25,13 @@ const ready = {
 } as const;
 
 describe('Singapore navigation promotion gate', () => {
+  it('uses the compact product intro even when Singapore evidence is unavailable', () => {
+    const html = renderToStaticMarkup(<SingaporeEntry model={unavailable} />);
+
+    expect(html).toContain('data-product-intro="true"');
+    expect(html.match(/<h1/g) ?? []).toHaveLength(1);
+  });
+
   it('keeps Singapore and Dubai visible but unlinked while evidence is unavailable', async () => {
     const presentation = buildHomepagePresentation(unavailable);
     expect(presentation.copy.marketIds).toEqual([

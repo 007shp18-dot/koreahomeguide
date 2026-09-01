@@ -50,6 +50,7 @@ describe('Korea methodology guides', () => {
     for (const guide of GUIDES) {
       expect(html).toContain(guide.title);
       expect(html).toContain(`href="/kr/seoul/guide/${guide.slug}"`);
+      expect(html).toContain(`data-guide-stage="${guide.stage}"`);
     }
     for (const entry of GUIDE_GLOSSARY) {
       expect(html).toContain(entry.term);
@@ -58,6 +59,7 @@ describe('Korea methodology guides', () => {
     expect(html).toContain('data-public-tab="news"');
     expect(html).toContain('href="/kr/seoul/news"');
     expect(html).toContain('href="/kr/seoul/check"');
+    expect(html).not.toMatch(/data-guide-stage="(?:Buy|Invest)"/);
   });
 
   it('generates exact static params and renders every shareable guide', async () => {

@@ -551,6 +551,11 @@ describe('Seoul Rent Check result evidence', () => {
   it('separates raw monthly evidence from the deposit-adjusted estimate and range', async () => {
     const markup = await completeMarkup(distributionInput, distributionEnvelope, 'miss');
 
+    const verdict = markup.indexOf('data-rent-result="verdict"');
+    const evidence = markup.indexOf('data-rent-result="evidence"');
+    expect(verdict).toBeGreaterThan(-1);
+    expect(verdict).toBeLessThan(evidence);
+
     expect(markup).toContain('Asking quote');
     expect(markup).toContain('Official reported contracts');
     expect(markup).toContain('Raw reported contract evidence');

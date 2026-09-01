@@ -331,6 +331,37 @@
   gap: 18px;
 }
 
+.result-verdict {
+  padding: clamp(20px, 4vw, 36px);
+  display: grid;
+  gap: 0.65rem;
+  color: var(--canvas);
+  background: var(--ink);
+}
+
+.result-verdict .trust-label {
+  color: var(--accent-soft);
+}
+
+.result-verdict > strong {
+  max-width: 26ch;
+  font-size: clamp(1.5rem, 3.2vw, 2.75rem);
+  letter-spacing: -0.04em;
+  line-height: 1.02;
+}
+
+.result-verdict > p {
+  color: var(--accent-soft);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.result-evidence {
+  min-width: 0;
+  display: grid;
+  gap: 18px;
+}
+
 .result-summary > h2,
 .error-boundary > h2 {
   max-width: 34rem;

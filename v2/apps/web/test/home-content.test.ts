@@ -15,9 +15,30 @@ import {
 } from './public-area-fixture';
 
 describe('signedprice homepage copy', () => {
+  it('renders the approved evidence editorial journey in decision order', async () => {
+    const markup = renderToStaticMarkup(await Home());
+    const ids = [
+      'home-decision',
+      'home-evidence',
+      'home-paths',
+      'home-explore',
+      'home-briefs',
+      'home-trust',
+    ];
+    const positions = ids.map((id) => markup.indexOf(`id="${id}"`));
+
+    expect(positions.every((position) => position >= 0)).toBe(true);
+    expect([...positions].sort((a, b) => a - b)).toEqual(positions);
+    expect(markup).toContain('>See what homes actually signed for.</h1>');
+    expect(markup).toContain('>Rent</button>');
+    expect(markup).toContain('>Buy</button>');
+    expect(markup).toContain('>Invest</button>');
+    expect(markup).toContain('No approved brief yet');
+  });
+
   it('uses the approved identity and avoids unsupported claims', () => {
     expect(homepageCopy.brand).toBe('signedprice');
-    expect(homepageCopy.headline).toBe('Real prices. Better property decisions.');
+    expect(homepageCopy.headline).toBe('See what homes actually signed for.');
     expect(homepageCopy.marketIds).toEqual([
       'kr-seoul',
       'sg-singapore',
@@ -106,10 +127,10 @@ describe('signedprice homepage copy', () => {
     expect(markup).toContain('data-brand-wordmark="true"');
     expect(markup).toContain('class="brand-wordmark__signed">signed</span>');
     expect(markup).toContain('class="brand-wordmark__price">price</span>');
-    expect(markup).toContain('>Real prices. Better property decisions.</h1>');
-    expect(markup).toContain('>Market truth</h3>');
-    expect(markup).toContain('>Decision tools</h3>');
-    expect(markup).toContain('>Verified connections</h3>');
+    expect(markup).toContain('>See what homes actually signed for.</h1>');
+    expect(markup).toContain('>Start with what you need to decide.</h2>');
+    expect(markup).toContain('>Move from the city to one building without losing context.</h2>');
+    expect(markup).toContain('>Three markets, one disciplined editorial rhythm.</h2>');
     expect(markup).toContain('role="tablist"');
     expect(markup).toContain('>Seoul</button>');
     expect(markup).toContain('>Singapore</button>');
@@ -124,7 +145,7 @@ describe('signedprice homepage copy', () => {
     ];
     expect(buildSeoulLiveModel().links.map(({ href }) => href)).toEqual(seoulHrefs);
     for (const href of seoulHrefs) {
-      expect(markup).toContain(`href="${href}"`);
+      expect(markup).toContain(`href="${href.replace(/\/$/, '')}"`);
     }
     expect(markup).not.toMatch(/href="\/(?:sg|ae)\//);
 
@@ -148,9 +169,9 @@ describe('signedprice homepage copy', () => {
 
     const markup = renderToStaticMarkup(await Home());
 
-    expect(markup).toContain('Seoul live');
-    expect(markup).toContain('New contracts');
-    expect(markup).toContain('Renewals');
+    expect(markup).toContain('Seoul evidence pulse');
+    expect(markup).toContain('>New</span>');
+    expect(markup).toContain('>Renewal</span>');
     for (const href of [
       '/kr/seoul/check/',
       '/kr/seoul/explore/',
@@ -158,7 +179,7 @@ describe('signedprice homepage copy', () => {
       '/kr/seoul/news/',
       '/kr/seoul/guide/',
     ]) {
-      expect(markup).toContain(`href="${href}"`);
+      expect(markup).toContain(`href="${href.replace(/\/$/, '')}"`);
     }
 
     vi.unstubAllEnvs();
@@ -191,10 +212,10 @@ describe('signedprice homepage copy', () => {
     expect(markup).toContain('id="market-tab-seoul" role="tab" aria-selected="true"');
     expect(markup).toContain('id="market-tab-singapore" role="tab" aria-selected="false"');
     expect(markup).toContain('id="market-tab-dubai" role="tab" aria-selected="false"');
-    expect(markup).not.toMatch(/>(?:Rent|Buy|Invest)<\/span>/);
-    for (const rule of ['Market truth', 'Decision tools', 'Verified connections']) {
-      expect(markup).toContain(`>${rule}</h3>`);
+    for (const intent of ['Rent', 'Buy', 'Invest']) {
+      expect(markup).toContain(`>${intent}</button>`);
     }
+    expect(markup).toContain('SignedPrice does not turn missing evidence into confident claims.');
 
     expect(homepageCopy.metadata.robots).toEqual({ index: true, follow: true });
   });

@@ -47,8 +47,8 @@
 }
 
 .hero {
-  min-height: 390px;
-  padding: clamp(2rem, 7vw, 5.5rem);
+  min-height: 280px;
+  padding: clamp(2rem, 5vw, 4rem);
   display: grid;
   align-content: end;
   gap: 1rem;
@@ -67,10 +67,10 @@
 
 .hero h1 {
   max-width: 1060px;
-  font-size: clamp(2.5rem, 6.5vw, 6.6rem);
-  font-weight: 900;
-  letter-spacing: -0.065em;
-  line-height: 0.92;
+  font-size: clamp(2.45rem, 5.4vw, 5.5rem);
+  font-weight: 850;
+  letter-spacing: -0.055em;
+  line-height: 0.94;
 }
 
 .hero > p:last-child {
@@ -93,6 +93,18 @@
 .detailRail {
   align-self: stretch;
   border-left: 2px solid var(--district-ink);
+  background: color-mix(in srgb, var(--district-ground) 96%, var(--district-ink));
+}
+
+.cohortEvidence,
+.sourceBoundary {
+  min-width: 0;
+  border-bottom: 2px solid var(--district-ink);
+}
+
+.cohortEvidence > section,
+.sourceBoundary > section {
+  border-bottom: 0;
 }
 
 .sampleChip {
@@ -388,7 +400,7 @@
   }
 
   .hero {
-    min-height: 320px;
+    min-height: 260px;
     padding: 2rem 1rem;
   }
 

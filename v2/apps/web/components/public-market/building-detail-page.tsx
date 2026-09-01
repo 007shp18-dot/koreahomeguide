@@ -61,7 +61,11 @@ export function BuildingDetailPage({
     <div id="top" className={styles.page}>
       <BuildingDetailHeader />
       <main className={styles.main} data-building-detail="ready">
-        <section className={styles.identityHero} data-identity-hero="true">
+        <section
+          className={styles.identityHero}
+          data-identity-hero="true"
+          data-building-section="identity"
+        >
           <BuildingVisual model={visual} />
           <div className={styles.identitySummary}>
             <Link
@@ -77,15 +81,21 @@ export function BuildingDetailPage({
               <div><dt>Housing type</dt><dd>{model.building.housingType}</dd></div>
               <div><dt>Rent evidence</dt><dd>{model.display.sampleLabel}</dd></div>
               <div><dt>Declared period</dt><dd>{model.evidence.period}</dd></div>
+              <div><dt>Source</dt><dd>{model.evidence.provider} {model.evidence.dataset}</dd></div>
             </dl>
+            <Link className={styles.primaryAction} href={decision.rentCheckHref}>
+              Check this contract
+            </Link>
           </div>
         </section>
 
-        <BuildingDecisionTabs base={base} selection={decision.selection} />
-        <p className={styles.selectedModeStatus} aria-live="polite">
-          Viewing {MODE_LABELS[mode]} · {COHORT_LABELS[contract]} contract cohort
-        </p>
-        <BuildingDecisionView model={model} decision={decision} base={base} />
+        <section className={styles.decisionRegion} data-building-section="decision">
+          <BuildingDecisionTabs base={base} selection={decision.selection} />
+          <p className={styles.selectedModeStatus} aria-live="polite">
+            Viewing {MODE_LABELS[mode]} · {COHORT_LABELS[contract]} contract cohort
+          </p>
+          <BuildingDecisionView model={model} decision={decision} base={base} />
+        </section>
         <BuildingEvidenceDetails model={model} />
       </main>
       <SiteFooter copy={footer} />

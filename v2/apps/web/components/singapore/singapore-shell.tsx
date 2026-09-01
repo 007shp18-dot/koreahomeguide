@@ -11,6 +11,7 @@ export const singaporeHeader: SiteHeaderModel = {
   brand: 'signedprice',
   homeLabel: 'signedprice home',
   navigationLabel: 'Singapore evidence navigation',
+  marketLabel: 'Singapore',
   links: [
     { label: 'Global home', href: '/' },
     { label: 'Singapore', href: '/sg/' },

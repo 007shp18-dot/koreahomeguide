@@ -291,6 +291,7 @@ function ResultPanel({
     <section
       aria-live="polite"
       className={styles.resultPanel}
+      data-check-section="verdict"
       data-result-focus-target="true"
     >
       <header><span>03</span><h2>{copy.result.heading}</h2></header>
@@ -327,59 +328,66 @@ function ReadyWorkspace({ model, locale, copy }: Readonly<{
           data-contract-check-form="ready"
           onSubmit={(event) => event.preventDefault()}
         >
-          <div className={styles.housingType}>
-            <label htmlFor="contract-housing-type">{copy.housingType}</label>
-            <select
-              id="contract-housing-type"
-              onChange={(event) => {
-                const housingType = event.currentTarget.value as 'apartment' | 'officetel';
-                dispatch({
-                  type: 'SET_HOUSING_TYPE',
-                  housingType,
-                  curve: model.curves.find((curve) => curve.housingType === housingType),
-                });
-              }}
-              value={state.housingType}
-            >
-              <option value="apartment">{copy.apartment}</option>
-              <option value="officetel">{copy.officetel}</option>
-            </select>
-          </div>
+          <div className={styles.inputsWorkspace} data-check-section="inputs">
+            <div className={styles.housingType}>
+              <label htmlFor="contract-housing-type">{copy.housingType}</label>
+              <select
+                id="contract-housing-type"
+                onChange={(event) => {
+                  const housingType = event.currentTarget.value as 'apartment' | 'officetel';
+                  dispatch({
+                    type: 'SET_HOUSING_TYPE',
+                    housingType,
+                    curve: model.curves.find((curve) => curve.housingType === housingType),
+                  });
+                }}
+                value={state.housingType}
+              >
+                <option value="apartment">{copy.apartment}</option>
+                <option value="officetel">{copy.officetel}</option>
+              </select>
+            </div>
 
-          <div className={styles.comparisonGrid}>
-            {(['a', 'b'] as const).map((offerId) => (
-              <OfferPanel
-                draft={state.offers[offerId]}
-                errors={state.errors[offerId]}
-                id={offerId}
-                key={offerId}
-                locale={locale}
-                copy={copy}
-                onEdit={(field, value) => dispatch({
-                  type: 'EDIT_OFFER_FIELD',
-                  offerId,
-                  field,
-                  value,
-                  curve: selectedCurve,
-                })}
-              />
-            ))}
-            {selectedCurve === undefined ? null : (
-              <ResultPanel curve={selectedCurve} state={state} locale={locale} copy={copy} />
+            <div className={styles.comparisonGrid}>
+              {(['a', 'b'] as const).map((offerId) => (
+                <OfferPanel
+                  draft={state.offers[offerId]}
+                  errors={state.errors[offerId]}
+                  id={offerId}
+                  key={offerId}
+                  locale={locale}
+                  copy={copy}
+                  onEdit={(field, value) => dispatch({
+                    type: 'EDIT_OFFER_FIELD',
+                    offerId,
+                    field,
+                    value,
+                    curve: selectedCurve,
+                  })}
+                />
+              ))}
+            </div>
+
+            {state.errors.form === undefined ? null : (
+              <p className={styles.formError} role="alert">
+                {localizeContractText(state.errors.form, locale)}
+              </p>
             )}
+            <div className={styles.actions}>
+              <button type="button" onClick={() => dispatch({ type: 'RESET' })}>{copy.reset}</button>
+            </div>
           </div>
 
-          {state.errors.form === undefined ? null : (
-            <p className={styles.formError} role="alert">
-              {localizeContractText(state.errors.form, locale)}
-            </p>
+          {selectedCurve === undefined ? null : (
+            <ResultPanel curve={selectedCurve} state={state} locale={locale} copy={copy} />
           )}
-          <div className={styles.actions}>
-            <button type="button" onClick={() => dispatch({ type: 'RESET' })}>{copy.reset}</button>
-          </div>
         </form>
 
-        <section className={styles.evidence} aria-labelledby="contract-evidence-heading">
+        <section
+          className={styles.evidence}
+          aria-labelledby="contract-evidence-heading"
+          data-check-section="evidence"
+        >
           <header><span>04</span><h2 id="contract-evidence-heading">{copy.evidence.heading}</h2></header>
           <dl>
             <div><dt>{copy.evidence.source}</dt><dd>{localizeContractText(model.disclosure.source, locale)}</dd></div>

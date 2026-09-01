@@ -41,7 +41,9 @@ describe('verified Seoul News routes', () => {
       robots: { index: true, follow: true },
       alternates: { canonical: 'https://www.signedprice.com/kr/seoul/news/' },
     });
-    expect(html).toContain('Seoul evidence briefs');
+    expect(html).toContain('>Market Briefs</h1>');
+    expect(html).toContain('>Methodology</p>');
+    expect(html).toContain('Human approval required before publication');
     expect(html).toContain('What the Seoul district snapshot covers');
     expect(html).toContain('How SignedPrice reads reported rental contracts');
     expect((html.match(/Our data:/g) ?? [])).toHaveLength(2);

@@ -73,6 +73,17 @@ describe('Contract Check workspace SSR contract', () => {
     expect(html).not.toMatch(/<button[^>]*type="submit"|Compare offers/);
   });
 
+  test('groups the editable inputs before one verdict and its evidence boundary', () => {
+    const html = renderToStaticMarkup(<ContractCheckWorkspace model={readyModel} />);
+    const inputs = html.indexOf('data-check-section="inputs"');
+    const verdict = html.indexOf('data-check-section="verdict"');
+    const evidence = html.indexOf('data-check-section="evidence"');
+
+    expect(inputs).toBeGreaterThan(-1);
+    expect(inputs).toBeLessThan(verdict);
+    expect(verdict).toBeLessThan(evidence);
+  });
+
   test('renders HTML curve labels, filed-deposit markers, and four audit rows', () => {
     const comparison = compareRentOffers({
       curve: curves[0]!,

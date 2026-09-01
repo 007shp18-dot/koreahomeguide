@@ -90,13 +90,6 @@ const signedPricePalette = {
 
 const componentHexLiteralAllowList = {
   'contract-check/contract-check.module.css': ['#b42318', '#b42318'],
-  'public-market/area-explorer.module.css': [
-    '#e3e9ff',
-    '#bdcbff',
-    '#829fff',
-    '#426ee8',
-    '#173b9d',
-  ],
 } as const;
 
 function declarationsFor(source: string, selector: string): Record<string, string> {
@@ -138,7 +131,7 @@ describe('signedprice brand foundation', () => {
     expect(remaining).toEqual([]);
   });
 
-  it('allows raw component hex only for the error state and Explorer choropleth scale', () => {
+  it('allows raw component hex only for the error state', () => {
     const authoredLiterals = Object.fromEntries(
       cssFilesUnder(componentsRoot).flatMap((file) => {
         const literals = readFileSync(file, 'utf8').match(/#[0-9a-fA-F]{3,8}\b/g);
@@ -175,6 +168,20 @@ describe('signedprice brand foundation', () => {
       border: '2px solid var(--ink)',
       'border-radius': 'var(--radius)',
     });
+  });
+
+  it('keeps authored shadows structural instead of decorative', () => {
+    const authoredShadows = cssFilesUnder(webRoot).flatMap((file) => {
+      const source = readFileSync(file, 'utf8');
+      return [...source.matchAll(/box-shadow:\s*([^;]+);/g)].map((match) => ({
+        file: relative(webRoot, file),
+        value: match[1]?.trim(),
+      }));
+    });
+
+    expect(authoredShadows.every(({ value }) => (
+      value === 'none' || value?.startsWith('inset ')
+    ))).toBe(true);
   });
 
   it('uses tabular numerals throughout the product surface', () => {

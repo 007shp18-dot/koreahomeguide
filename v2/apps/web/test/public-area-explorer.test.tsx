@@ -53,6 +53,18 @@ afterEach(() => {
 });
 
 describe('public Seoul area Explorer', () => {
+  it('provides a real retained-building text filter in the evidence rail', () => {
+    const markup = renderToStaticMarkup(createElement(AreaExplorer, {
+      model: readyModel(),
+      naverMapClientId: 'test-naver-client',
+    }));
+
+    expect(markup).toContain('data-building-search="retained"');
+    expect(markup).toContain('type="search"');
+    expect(markup).toContain('name="building-query"');
+    expect(markup).toContain('Search retained buildings');
+  });
+
   it('renders the complete map, legend, table, and allowed evidence in initial HTML', () => {
     const model = readyModel();
     const markup = renderToStaticMarkup(createElement(AreaExplorer, {
@@ -122,14 +134,21 @@ describe('public Seoul area Explorer', () => {
     expect(markup).not.toMatch(/data-district-path|data-district-row|₩/);
   });
 
-  it('wires the page to one district query and indexable canonical metadata', async () => {
+  it('wires the page to server-owned search state and indexable canonical metadata', async () => {
     vi.stubEnv('SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT', JSON.stringify(createPublicAreaV2Fixture()));
+    vi.stubEnv(
+      'SIGNEDPRICE_PUBLIC_BUILDING_SUMMARY_ARTIFACT',
+      JSON.stringify(createPublicBuildingFixture()),
+    );
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', PUBLIC_AREA_FIXTURE_PERIOD);
     vi.stubEnv('NAVER_MAP_CLIENT_ID', 'page-naver-client');
     const modulePath = '../app/kr/seoul/explore/page';
     const route = await import(/* @vite-ignore */ modulePath);
     const page = await route.default({
-      searchParams: Promise.resolve({ district: 'mapo-gu', contract: 'new' }),
+      searchParams: Promise.resolve({
+        contract: 'new',
+        q: 'Evidence Tower',
+      }),
     });
     const markup = renderToStaticMarkup(page);
 
@@ -146,14 +165,16 @@ describe('public Seoul area Explorer', () => {
         },
       },
     });
-    expect(markup).toContain('Selected · Mapo-gu');
+    expect(markup).toContain('Selected · Gangnam-gu');
     expect(markup).toContain('New contracts');
     expect(markup).toContain('Contract type unknown · 1');
     expect(markup).toContain('ncpKeyId=page-naver-client');
+    expect(markup).toContain('value="Evidence Tower"');
     expect(markup).toContain('Korea public evidence. Publication limits shown.');
     expect(markup).not.toMatch(/public P2 preview|Production launch is not authorized/i);
     expect(markup).toContain('Neighborhoods &amp; buildings');
-    expect(markup).toContain('Verified building artifact is not loaded.');
+    expect(markup).toContain('Evidence Tower');
+    expect(markup).not.toContain('Verified building artifact is not loaded.');
   });
 
   it('keeps the Modernist workspace responsive, focused, and touch-safe', () => {
@@ -162,7 +183,7 @@ describe('public Seoul area Explorer', () => {
       'utf8',
     );
 
-    expect(css).toMatch(/grid-template-columns:\s*minmax\(0,\s*1fr\)\s+460px/);
+    expect(css).toMatch(/grid-template-columns:\s*minmax\(0,\s*1\.62fr\)\s+minmax\(340px,\s*\.85fr\)/);
     expect(css).toMatch(/\.districtButton[\s\S]*min-height:\s*44px/);
     expect(css).toMatch(/\.detailLink[\s\S]*min-height:\s*44px/);
     expect(css).toMatch(/:focus-visible[\s\S]*outline:\s*2px solid var\(--area-accent\)[\s\S]*outline-offset:\s*2px/);

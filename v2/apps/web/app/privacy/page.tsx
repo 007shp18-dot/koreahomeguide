@@ -28,7 +28,7 @@ export default function PrivacyPage() {
     <div id="top">
       <SiteHeader copy={homepageCopy.header} />
       <main className={styles.page}>
-        <header className={styles.hero}>
+        <header className={styles.hero} data-product-intro="true">
           <p className={styles.eyebrow}>SignedPrice · Privacy</p>
           <h1>Privacy and data</h1>
           <p>

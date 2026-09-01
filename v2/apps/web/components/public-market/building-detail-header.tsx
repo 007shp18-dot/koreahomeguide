@@ -1,18 +1,15 @@
-import Link from 'next/link';
+import type { SiteHeaderModel } from '../../lib/site-copy';
+import { SiteHeader } from '../site-header';
 
-import { BrandWordmark } from '../brand-mark';
-import styles from './building-detail.module.css';
+const headerCopy: SiteHeaderModel = {
+  brand: 'signedprice',
+  homeLabel: 'signedprice home',
+  navigationLabel: 'Primary navigation',
+  links: [
+    { label: 'Explore', href: '/kr/seoul/explore/', isCurrent: true },
+  ],
+};
 
 export function BuildingDetailHeader() {
-  return (
-    <header className={styles.compactHeader}>
-      <Link href="/" aria-label="signedprice home"><BrandWordmark /></Link>
-      <nav aria-label="Building detail market navigation">
-        <Link href="/kr/seoul/" aria-current="location">Seoul</Link>
-        <Link href="/sg/singapore/explore/">Singapore</Link>
-        <span aria-disabled="true">Dubai</span>
-      </nav>
-      <span className={styles.currentProduct}>Explore</span>
-    </header>
-  );
+  return <SiteHeader copy={headerCopy} />;
 }

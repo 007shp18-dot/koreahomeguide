@@ -6,47 +6,6 @@
   font-variant-numeric: tabular-nums;
 }
 
-.compactHeader {
-  min-height: 44px;
-  padding-inline: clamp(0.75rem, 3vw, 2rem);
-  display: grid;
-  grid-template-columns: minmax(160px, 1.2fr) minmax(0, 2fr) minmax(88px, 0.6fr);
-  align-items: stretch;
-  border-bottom: 2px solid var(--ink);
-  background: var(--surface-strong);
-}
-
-.compactHeader > a,
-.compactHeader nav a,
-.compactHeader nav span,
-.currentProduct {
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-  color: inherit;
-  font-size: 0.72rem;
-  font-weight: 850;
-  text-decoration: none;
-}
-
-.compactHeader nav {
-  min-width: 0;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  border-inline: 1px solid var(--divider);
-}
-
-.compactHeader nav a,
-.compactHeader nav span {
-  justify-content: center;
-  border-right: 1px solid var(--divider);
-}
-
-.compactHeader nav > :last-child { border-right: 0; }
-.compactHeader nav a[aria-current] { color: var(--canvas); background: var(--petrol); }
-.compactHeader nav span[aria-disabled] { color: var(--muted); }
-.currentProduct { justify-content: flex-end; text-transform: uppercase; letter-spacing: 0.08em; }
-
 .main {
   width: min(100%, 1240px);
   max-width: 100%;
@@ -86,22 +45,36 @@
 }
 
 .visualUnavailable {
-  padding: clamp(1.25rem, 4vw, 3rem);
+  padding: clamp(1.25rem, 3vw, 2.5rem);
   display: grid;
-  align-content: end;
-  gap: 0.75rem;
-  background:
-    repeating-linear-gradient(
-      135deg,
-      var(--surface),
-      var(--surface) 16px,
-      var(--canvas) 16px,
-      var(--canvas) 32px
-    );
+  grid-template-rows: 1fr auto;
+  gap: 1.5rem;
+  color: var(--canvas);
+  background: var(--petrol);
 }
 
+.visualEvidenceMark {
+  display: grid;
+  align-content: start;
+  gap: 0.35rem;
+}
+
+.visualEvidenceMark span {
+  width: fit-content;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--canvas);
+  font-size: clamp(0.7rem, 1.3vw, 0.9rem);
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.visualEvidenceMark span:nth-child(2) { margin-left: clamp(2rem, 8vw, 7rem); }
+.visualEvidenceMark span:nth-child(3) { margin-left: clamp(1rem, 4vw, 3.5rem); }
+.visualUnavailableCopy { display: grid; gap: 0.75rem; }
+.visualUnavailableCopy small { color: var(--accent-soft); font-size: 0.66rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
 .visualUnavailable strong { max-width: 18ch; font-size: clamp(1.5rem, 3vw, 2.5rem); line-height: 1; }
-.visualUnavailable p { max-width: 48ch; color: var(--muted); font-size: 0.78rem; line-height: 1.55; }
+.visualUnavailable p { max-width: 48ch; color: var(--accent-soft); font-size: 0.78rem; line-height: 1.55; }
 .visualUnavailable a,
 .backAction {
   min-height: 44px;
@@ -152,6 +125,8 @@
   border-top: 1px solid var(--divider);
   border-left: 1px solid var(--divider);
 }
+
+.factGrid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 
 .factGrid > div,
 .decisionMetrics > div,
@@ -232,7 +207,9 @@
   font-weight: 800;
 }
 
-.main > [role="tabpanel"] {
+.decisionRegion { min-width: 0; }
+
+.decisionRegion > [role="tabpanel"] {
   min-width: 0;
   padding: clamp(1.25rem, 4vw, 3.5rem);
   border-bottom: 2px solid var(--ink);
@@ -347,7 +324,6 @@
 .navigation a { border-width: 0 1px 0 0; }
 .navigation a:last-child { border-right: 0; }
 
-.compactHeader a:focus-visible,
 .decisionTabs a:focus-visible,
 .visualUnavailable a:focus-visible,
 .backAction:focus-visible,
@@ -368,8 +344,6 @@
 }
 
 @media (max-width: 720px) {
-  .compactHeader { padding-inline: 0.75rem; grid-template-columns: minmax(0, 1fr) auto; }
-  .compactHeader nav { grid-column: 1 / -1; grid-row: 2; border-top: 1px solid var(--divider); }
   .main { border-inline: 0; }
   .identityHero,
   .decisionLayout { grid-template-columns: minmax(0, 1fr); }
@@ -385,7 +359,7 @@
   .areaBands ul,
   .relatedContext,
   .navigation { grid-template-columns: minmax(0, 1fr); }
-  .main > [role="tabpanel"] { padding: 1.25rem 1rem; }
+  .decisionRegion > [role="tabpanel"] { padding: 1.25rem 1rem; }
   .evidence,
   .areaBands,
   .contracts,
