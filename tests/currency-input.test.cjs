@@ -6,8 +6,7 @@ const vm = require('node:vm');
 const rentCheckRuntimeFiles = [
   'app.js',
   
-  'tools/seoul-rent-check/app.js',
-  ];
+  'tools/seoul-rent-check/app.js'];
 
 async function bootCurrencyRuntime(file) {
   const currency = require('../currency-utils.js');
@@ -165,7 +164,7 @@ test('cold-start home keeps the Rent Check money inputs currency-aware on both l
 });
 
 test('home runtimes convert displayed Rent Check inputs into KRW', () => {
-  for (const file of ['app.js', ]) {
+  for (const file of ['app.js']) {
     const js = fs.readFileSync(file, 'utf8');
     assert.match(js, /KHGCurrency\.convertToKrw/);
     assert.match(js, /syncCurrencyInput/);
@@ -199,7 +198,7 @@ test('invalid or negative Rent Check money never reuses a stale KRW value or cal
 });
 
 test('invalid calculator money clears stale computed results', async () => {
-  for (const file of ['tools/brokerage-fee-calculator/app.js',]) {
+  for (const file of ['tools/brokerage-fee-calculator/app.js']) {
     const runtime = await bootCalculatorRuntime(file);
     runtime.inputs.deposit.value = 'abc';
     runtime.input();
