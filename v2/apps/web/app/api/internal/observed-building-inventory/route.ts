@@ -7,7 +7,10 @@ import {
 
 import { createVercelRuntimeCache } from '@/lib/rent-check/runtime-cache.server';
 import { buildObservedBuildingArtifact } from '@/lib/public-market/observed-building-artifact-builder.server';
-import { createObservedBuildingJobHandler } from '@/lib/public-market/observed-building-job-handler.server';
+import {
+  createObservedBuildingJobHandler,
+  createObservedBuildingRunnerPage,
+} from '@/lib/public-market/observed-building-job-handler.server';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -15,6 +18,8 @@ export const maxDuration = 60;
 
 const cache = createVercelRuntimeCache();
 const serviceKey = process.env.DATA_GO_KR_SERVICE_KEY;
+
+export const GET = () => createObservedBuildingRunnerPage(process.env.VERCEL_ENV);
 
 export const POST = createObservedBuildingJobHandler({
   environment: process.env.VERCEL_ENV,

@@ -50,13 +50,16 @@ export function BuildingDetailPage({
   decision,
   visual,
   base,
+  backHref,
 }: Readonly<{
   model: PublicBuildingModel;
   decision: BuildingDecisionModel;
   visual: BuildingVisualModel;
   base: string;
+  backHref?: string;
 }>) {
   const { mode, contract } = decision.selection;
+  const exploreHref = backHref ?? `/kr/seoul/explore/?district=${model.district.slug}`;
   return (
     <div id="top" className={styles.page}>
       <BuildingDetailHeader />
@@ -70,7 +73,7 @@ export function BuildingDetailPage({
           <div className={styles.identitySummary}>
             <Link
               className={styles.backAction}
-              href={`/kr/seoul/explore/?district=${model.district.slug}`}
+              href={exploreHref}
             >
               Back to {model.district.nameEn} Explore
             </Link>

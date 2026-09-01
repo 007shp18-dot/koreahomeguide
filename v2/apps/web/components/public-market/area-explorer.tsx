@@ -12,6 +12,10 @@ import {
   resolveSelectedExploreBuilding,
   type AreaExplorerState,
 } from '../../lib/public-market/area-explorer-state';
+import {
+  createSelectionHref,
+  type ExplorerSelection,
+} from '../../lib/navigation/explorer-selection';
 import { NaverDistrictMap } from '../maps/naver-district-map';
 import type {
   ExploreDistrictModel,
@@ -47,16 +51,35 @@ function mapTitle(district: ExploreDistrictModel, locale: ProductLocale): string
   ].join(' · ');
 }
 
+function buildingSelectionHref(
+  building: ExploreBuildingModel,
+  selection: ExplorerSelection,
+  locale: ProductLocale,
+): string {
+  return localizedSeoulHref(createSelectionHref(
+    building.href,
+    {
+      ...selection,
+      district: building.districtSlug,
+      neighborhood: building.neighborhoodId,
+      buildingId: building.id,
+    },
+    { market: 'kr', transaction: 'jeonse' },
+  ), locale);
+}
+
 function ReadyAreaExplorer({
   model,
   naverMapClientId,
   locale,
   initialQuery,
+  initialSelection,
 }: Readonly<{
   model: Extract<PublicAreaExploreModel, { status: 'ready' }>;
   naverMapClientId: string | null;
   locale: ProductLocale;
   initialQuery: string;
+  initialSelection: ExplorerSelection;
 }>) {
   const copy = PUBLIC_MARKET_COPY[locale].area;
   const countSeparator = locale === 'en' ? ' ' : '';
@@ -64,7 +87,7 @@ function ReadyAreaExplorer({
   const allBuildings = useMemo(
     () => model.buildingAvailability.status === 'ready'
       ? model.buildingAvailability.buildings
-      : [],
+      : model.buildingAvailability.fallbackBuildings,
     [model.buildingAvailability],
   );
   const initial: AreaExplorerState = Object.freeze({
@@ -91,7 +114,9 @@ function ReadyAreaExplorer({
   const districtBuildings = useMemo(() => (
     model.buildingAvailability.status === 'ready'
       ? model.buildingAvailability.buildings.filter(({ districtSlug }) => districtSlug === selected.slug)
-      : []
+      : model.buildingAvailability.fallbackBuildings.filter(
+        ({ districtSlug }) => districtSlug === selected.slug,
+      )
   ), [model.buildingAvailability, selected.slug]);
   const neighborhoods = useMemo(() => [...new Map(districtBuildings.map((building) => [
     building.neighborhoodId, building.neighborhoodName,
@@ -106,8 +131,17 @@ function ReadyAreaExplorer({
       buildingQuery,
       selectedNeighborhood,
       selectedHousingType,
+      [selected.slug, selected.nameEn, selected.nameKo],
     ),
-    [buildingQuery, districtBuildings, selectedHousingType, selectedNeighborhood],
+    [
+      buildingQuery,
+      districtBuildings,
+      selected.nameEn,
+      selected.nameKo,
+      selected.slug,
+      selectedHousingType,
+      selectedNeighborhood,
+    ],
   );
   const visibleBuildings = useMemo(
     () => filteredBuildings.slice(0, visibleBuildingCount),
@@ -128,11 +162,11 @@ function ReadyAreaExplorer({
   const mapBuildings = useMemo(() => visibleBuildings.map((building) => ({
     id: building.id,
     title: building.name,
-    href: building.href,
+    href: buildingSelectionHref(building, initialSelection, locale),
     addressQuery: `서울특별시 ${selected.nameKo} ${building.neighborhoodName} ${building.name}`,
     latitude: building.latitude,
     longitude: building.longitude,
-  })), [selected.nameKo, visibleBuildings]);
+  })), [initialSelection, locale, selected.nameKo, visibleBuildings]);
 
   const selectDistrict = useCallback((slug: string): void => {
     dispatch({ type: 'select', slug });
@@ -142,10 +176,19 @@ function ReadyAreaExplorer({
     dispatchBuildingSelection({ type: 'clear_building' });
     setVisibleBuildingCount(10);
     router.replace(
-      localizedSeoulHref(`/kr/seoul/explore/?district=${slug}`, locale),
+      localizedSeoulHref(createSelectionHref(
+        '/kr/seoul/explore/',
+        {
+          ...initialSelection,
+          district: slug,
+          neighborhood: undefined,
+          buildingId: undefined,
+        },
+        { market: 'kr', transaction: 'jeonse' },
+      ), locale),
       { scroll: false },
     );
-  }, [locale, router]);
+  }, [initialSelection, locale, router]);
   const selectBuildingFromMarker = useCallback((buildingId: string) => {
     dispatchBuildingSelection({ type: 'select_building', source: 'marker', buildingId });
   }, []);
@@ -166,9 +209,30 @@ function ReadyAreaExplorer({
       setSelectedHousingType('all');
     }
   }, [allBuildings, model.districts, state.selectedSlug]);
+  const submitBuildingQuery = useCallback((): void => {
+    const href = localizedSeoulHref(createSelectionHref(
+      '/kr/seoul/explore/',
+      {
+        ...initialSelection,
+        district: state.selectedSlug,
+        neighborhood: undefined,
+        buildingId: undefined,
+      },
+      { market: 'kr', transaction: 'jeonse' },
+    ), locale);
+    const target = new URL(href, window.location.origin);
+    const normalizedQuery = buildingQuery.trim();
+    if (normalizedQuery.length === 0) target.searchParams.delete('q');
+    else target.searchParams.set('q', normalizedQuery);
+    router.replace(`${target.pathname}${target.search}`);
+  }, [buildingQuery, initialSelection, locale, router, state.selectedSlug]);
 
   return (
-    <section className={styles.explorer} aria-labelledby="area-explorer-heading">
+    <section
+      className={styles.explorer}
+      aria-labelledby="area-explorer-heading"
+      data-market-selection={`${initialSelection.market}:${initialSelection.transaction}`}
+    >
       <header className={styles.hero}>
         <div>
           <p>{copy.heroEyebrow}</p>
@@ -203,6 +267,11 @@ function ReadyAreaExplorer({
             type="search"
             value={buildingQuery}
             onChange={(event) => updateBuildingQuery(event.currentTarget.value)}
+            onKeyDown={(event) => {
+              if (event.key !== 'Enter') return;
+              event.preventDefault();
+              submitBuildingQuery();
+            }}
             placeholder={locale === 'ko' ? '예: 강남구, 역삼동, 아파트' : 'Try Gangnam-gu, Yeoksam-dong or apartment'}
           />
         </div>
@@ -227,10 +296,15 @@ function ReadyAreaExplorer({
             {housingTypes.map((housingType) => <option value={housingType} key={housingType}>{housingType}</option>)}
           </select>
         </label>
-        <div className={styles.toolbarStatus}>
-          <span>{locale === 'ko' ? '가격 게시 가능 건물' : 'Price-ready buildings'}</span>
-          <strong>{model.coverage.buildings.status === 'ready' ? model.coverage.buildings.published : '—'}</strong>
-          <small>{locale === 'ko' ? '전체 관측 건물 수가 아님' : 'Not the total observed inventory'}</small>
+        <div
+          className={styles.toolbarStatus}
+          data-building-inventory={model.coverage.buildings.status === 'ready' ? 'observed' : 'unavailable'}
+        >
+          <span>{copy.observedBuildings}</span>
+          <strong>{model.coverage.buildings.status === 'ready'
+            ? model.coverage.buildings.observed
+            : '—'}</strong>
+          <small>{copy.transactionCoveredBuildings} · {model.coverage.buildings.transactionCovered ?? '—'} · {copy.priceReadyBuildings} · {model.coverage.buildings.priceReady ?? '—'}</small>
         </div>
       </div>
 
@@ -362,7 +436,8 @@ function ReadyAreaExplorer({
               <p>{copy.buildingsEyebrow}</p>
               <h2>{locale === 'ko' ? selected.nameKo : selected.nameEn} {copy.buildingEvidence}</h2>
             </div>
-            {model.buildingAvailability.status === 'not_loaded' ? (
+            {model.buildingAvailability.status === 'not_loaded'
+              && model.buildingAvailability.fallbackBuildings.length === 0 ? (
               <div className={styles.buildingEmpty}>
                 <strong>{copy.buildingArtifactMissing}</strong>
                 <span>{copy.buildingArtifactReason}</span>
@@ -374,6 +449,13 @@ function ReadyAreaExplorer({
               </div>
             ) : (
               <>
+                {model.buildingAvailability.status === 'not_loaded' ? (
+                  <p data-building-inventory="fallback">
+                    {locale === 'ko'
+                      ? '관측 건물 인벤토리가 없어 현재 가격 게시 가능 건물만 표시합니다.'
+                      : 'Observed inventory unavailable. Showing the verified price-ready fallback.'}
+                  </p>
+                ) : null}
                 <div className={styles.neighborhoods} aria-label={copy.neighborhoodFilter}>
                   <button
                     type="button"
@@ -390,7 +472,9 @@ function ReadyAreaExplorer({
                   ))}
                 </div>
                 <p className={styles.resultSummary} aria-live="polite">
-                  {filteredBuildings.length} {locale === 'ko' ? '개 가격 게시 가능 건물' : 'price-ready buildings'}
+                  {filteredBuildings.length} {model.buildingAvailability.status === 'ready'
+                    ? copy.observedBuildings.toLocaleLowerCase(locale === 'ko' ? 'ko-KR' : 'en-US')
+                    : locale === 'ko' ? '개 가격 게시 가능 건물' : 'price-ready buildings'}
                 </p>
                 {filteredBuildings.length === 0 ? (
                   <div className={styles.buildingEmpty} role="status">
@@ -404,7 +488,7 @@ function ReadyAreaExplorer({
                   <>
                     <ul className={styles.buildingList}>
                       {visibleBuildings.map((building) => (
-                        <li key={building.id}>
+                        <li key={building.id} data-building-evidence={building.evidenceStatus}>
                           <button
                             type="button"
                             aria-pressed={selectedBuilding?.id === building.id}
@@ -412,9 +496,24 @@ function ReadyAreaExplorer({
                               type: 'select_building', source: 'rail', buildingId: building.id,
                             })}
                           >
-                            <span><strong>{building.name}</strong><small>{building.neighborhoodName} · {building.housingType}</small></span>
-                            <span><strong>{building.medianLabel}</strong><small>{building.sampleLabel}</small></span>
+                            <span>
+                              <strong>{building.name}</strong>
+                              <small>{building.neighborhoodName} · {building.housingType}</small>
+                              <small>{copy.jeonseObservations} · {building.jeonseObservationCount} · {copy.monthlyObservations} · {building.monthlyObservationCount}</small>
+                            </span>
+                            <span>
+                              <strong>{building.medianLabel ?? copy.priceEvidenceUnavailable}</strong>
+                              <small>{building.evidenceStatus === 'published'
+                                ? building.sampleLabel
+                                : `${copy.observedPeriod} · ${building.firstObservedMonth}–${building.lastObservedMonth}`}</small>
+                            </span>
                           </button>
+                          <Link
+                            className={styles.buildingRowLink}
+                            href={buildingSelectionHref(building, initialSelection, locale)}
+                          >
+                            {copy.openBuilding}
+                          </Link>
                         </li>
                       ))}
                     </ul>
@@ -428,7 +527,11 @@ function ReadyAreaExplorer({
                   </>
                 )}
                 {selectedBuilding === null ? null : (
-                  <BuildingEvidencePanel building={selectedBuilding} locale={locale} />
+                  <BuildingEvidencePanel
+                    building={selectedBuilding}
+                    href={buildingSelectionHref(selectedBuilding, initialSelection, locale)}
+                    locale={locale}
+                  />
                 )}
               </>
             )}
@@ -448,10 +551,14 @@ function ReadyAreaExplorer({
         <dl className={styles.coverageGrid}>
           <div><dt>{copy.districtsPublished}</dt><dd>{model.coverage.districts.published} {copy.of} {model.coverage.districts.retained}</dd></div>
           <div>
-            <dt>{locale === 'ko' ? '가격 게시 가능 건물' : 'Price-ready buildings'}</dt>
+            <dt>{copy.observedBuildings}</dt>
             <dd>{model.coverage.buildings.status === 'ready'
-              ? `${model.coverage.buildings.published} ${copy.of} ${model.coverage.buildings.retained}`
+              ? `${model.coverage.buildings.observed} · ${copy.transactionCoveredBuildings} ${model.coverage.buildings.transactionCovered}`
               : copy.unavailable}</dd>
+          </div>
+          <div>
+            <dt>{copy.priceReadyBuildings}</dt>
+            <dd>{model.coverage.buildings.priceReady ?? copy.unavailable}</dd>
           </div>
           <div><dt>{copy.eligibleContracts}</dt><dd>{model.coverage.eligibleContracts} {copy.eligibleSuffix}</dd></div>
         </dl>
@@ -554,11 +661,39 @@ function groupEvidence(
 
 function BuildingEvidencePanel({
   building,
+  href,
   locale,
-}: Readonly<{ building: ExploreBuildingModel; locale: ProductLocale }>) {
+}: Readonly<{ building: ExploreBuildingModel; href: string; locale: ProductLocale }>) {
   const copy = PUBLIC_MARKET_COPY[locale].area;
+  if (building.evidenceStatus !== 'published') {
+    return (
+      <article
+        className={styles.buildingPanel}
+        aria-live="polite"
+        data-building-panel={building.id}
+        data-building-evidence={building.evidenceStatus}
+      >
+        <p>{copy.selectedBuilding}</p>
+        <h3>{building.name}</h3>
+        <span>{building.neighborhoodName} · {building.housingType}</span>
+        <strong>{copy.priceEvidenceUnavailable}</strong>
+        <dl>
+          <div><dt>{copy.observedPeriod}</dt><dd>{building.firstObservedMonth}–{building.lastObservedMonth}</dd></div>
+          <div><dt>{copy.jeonseObservations}</dt><dd>{building.jeonseObservationCount}</dd></div>
+          <div><dt>{copy.monthlyObservations}</dt><dd>{building.monthlyObservationCount}</dd></div>
+          <div><dt>{copy.sample}</dt><dd>{building.observationCount}</dd></div>
+        </dl>
+        <Link href={href}>{copy.openBuilding}</Link>
+      </article>
+    );
+  }
   return (
-    <article className={styles.buildingPanel} aria-live="polite" data-building-panel={building.id}>
+    <article
+      className={styles.buildingPanel}
+      aria-live="polite"
+      data-building-panel={building.id}
+      data-building-evidence={building.evidenceStatus}
+    >
       <p>{copy.selectedBuilding}</p>
       <h3>{building.name}</h3>
       <span>{building.neighborhoodName} · {localizeSampleLabel(building.sampleLabel, locale)}</span>
@@ -568,7 +703,7 @@ function BuildingEvidencePanel({
         <div><dt>{copy.renewal}</dt><dd>{groupEvidence(building.renewalSampleLabel, building.renewalMedianLabel, locale)}</dd></div>
         <div><dt>{copy.unclassified}</dt><dd>{building.unknownContractCount}</dd></div>
       </dl>
-      <Link href={building.href}>{copy.fullBuildingEvidence}</Link>
+      <Link href={href}>{copy.fullBuildingEvidence}</Link>
     </article>
   );
 }
@@ -609,21 +744,25 @@ export function AreaExplorer({
   naverMapClientId = null,
   locale = 'en',
   initialQuery = '',
+  initialSelection = Object.freeze({ market: 'kr', transaction: 'jeonse' }),
 }: Readonly<{
   model: PublicAreaExploreModel;
   naverMapClientId?: string | null;
   locale?: ProductLocale;
   initialQuery?: string;
+  initialSelection?: ExplorerSelection;
 }>) {
   return (
     <>
       {model.status === 'ready'
         ? (
           <ReadyAreaExplorer
+            key={`${model.selectedSlug}:${initialQuery}`}
             model={model}
             naverMapClientId={naverMapClientId}
             locale={locale}
             initialQuery={initialQuery}
+            initialSelection={initialSelection}
           />
         )
         : <UnavailableAreaExplorer model={model} locale={locale} />}

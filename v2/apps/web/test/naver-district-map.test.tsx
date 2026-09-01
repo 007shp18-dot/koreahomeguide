@@ -28,8 +28,11 @@ const districts = [{
 }] as const;
 
 describe('NAVER district map', () => {
-  it('loads the official Maps v3 endpoint with an encoded ncpKeyId', () => {
+  it('loads the official Maps v3 endpoint without geocoding by default', () => {
     expect(buildNaverMapsScriptUrl('client/id + value')).toBe(
+      'https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=client%2Fid+%2B+value',
+    );
+    expect(buildNaverMapsScriptUrl('client/id + value', true)).toBe(
       'https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=client%2Fid+%2B+value&submodules=geocoder',
     );
   });
@@ -45,7 +48,24 @@ describe('NAVER district map', () => {
     expect(html).toContain('data-map-state="loading"');
     expect(html).toContain('Static Seoul district map');
     expect(html).toContain('ncpKeyId=test-client-id');
+    expect(html).not.toContain('submodules=geocoder');
     expect(html).toContain('aria-label="Interactive NAVER map of Seoul districts"');
+  });
+
+  it('loads the geocoder submodule only for explicitly permitted address lookup', () => {
+    const html = renderToStaticMarkup(createElement(NaverDistrictMap, {
+      clientId: 'test-client-id',
+      districts,
+      selectedDistrict: districts[0],
+      buildings: [{
+        id: 'pending', title: 'Pending Tower', href: '/pending/',
+        addressQuery: '서울특별시 종로구 Pending Tower', latitude: null, longitude: null,
+        allowAddressGeocoding: true,
+      }],
+      fallback: createElement('p', null, 'Static Seoul district map'),
+    }));
+
+    expect(html).toContain('submodules=geocoder');
   });
 
   it('does not request NAVER when a client ID is unavailable', () => {
@@ -58,6 +78,24 @@ describe('NAVER district map', () => {
     expect(html).toContain('data-map-provider="static"');
     expect(html).toContain('data-map-state="fallback"');
     expect(html).toContain('Static Seoul district map');
+    expect(html).not.toContain('oapi.map.naver.com');
+  });
+
+  it('does not request NAVER when every selected building coordinate is pending', () => {
+    const html = renderToStaticMarkup(createElement(NaverDistrictMap, {
+      clientId: 'test-client-id',
+      districts,
+      selectedDistrict: districts[0],
+      buildings: [{
+        id: 'pending', title: 'Pending Tower', href: '/pending/',
+        addressQuery: '서울특별시 종로구 Pending Tower', latitude: null, longitude: null,
+      }],
+      fallback: createElement('p', null, 'Static Seoul district map'),
+    }));
+
+    expect(html).toContain('data-map-provider="static"');
+    expect(html).toContain('data-map-state="coordinate-pending"');
+    expect(html).toContain('Map marker unavailable for 1 building');
     expect(html).not.toContain('oapi.map.naver.com');
   });
 
@@ -234,6 +272,7 @@ describe('NAVER district map', () => {
       buildings: [{
         id: 'tower', title: 'Evidence Tower', href: '/kr/seoul/explore/gangnam-gu/tower/',
         addressQuery: '서울특별시 강남구 역삼동 Evidence Tower', latitude: null, longitude: null,
+        allowAddressGeocoding: true,
       }],
       onSelect: () => undefined,
     });
@@ -245,6 +284,44 @@ describe('NAVER district map', () => {
       title: 'Evidence Tower',
     });
     expect(mounted.unavailableBuildingIds).toEqual([]);
+  });
+
+  it('keeps coordinate-pending buildings out of address geocoding by default', () => {
+    const unavailable: string[] = [];
+    const queries: string[] = [];
+    class LatLng { constructor(readonly latitude: number, readonly longitude: number) {} }
+    class Map {
+      constructor(element: HTMLElement, options: unknown) { void element; void options; }
+      setCenter(center: unknown) { void center; }
+      setZoom(zoom: number) { void zoom; }
+    }
+    class Marker {
+      constructor(options: unknown) { void options; }
+      setMap(map: unknown) { void map; }
+    }
+    const mounted = mountNaverDistrictMap({
+      sdk: {
+        Map, LatLng, Marker,
+        Event: { addListener: () => undefined, removeListener: () => undefined },
+        Service: {
+          Status: { OK: 'OK' },
+          geocode: (input: Readonly<{ query: string }>) => { queries.push(input.query); },
+        },
+      },
+      element: {} as HTMLElement,
+      districts,
+      selectedDistrict: { latitude: 37.5, longitude: 127.03 },
+      buildings: [{
+        id: 'pending', title: 'Pending Tower', href: '/pending/',
+        addressQuery: '서울특별시 강남구 역삼동 Pending Tower', latitude: null, longitude: null,
+      }],
+      onSelect: () => undefined,
+      onBuildingMarkerUnavailable: (id) => unavailable.push(id),
+    });
+
+    expect(queries).toEqual([]);
+    expect(mounted.unavailableBuildingIds).toEqual(['pending']);
+    expect(unavailable).toEqual(['pending']);
   });
 
   it('reports marker absence after null-coordinate geocoding fails without blocking the rail', () => {
@@ -277,6 +354,7 @@ describe('NAVER district map', () => {
       buildings: [{
         id: 'unmapped', title: 'Unmapped Tower', href: '/kr/seoul/explore/gangnam-gu/unmapped/',
         addressQuery: '서울특별시 강남구 역삼동 Unmapped Tower', latitude: null, longitude: null,
+        allowAddressGeocoding: true,
       }],
       onSelect: () => undefined,
       onBuildingMarkerUnavailable: (id) => unavailable.push(id),
@@ -346,15 +424,17 @@ describe('NAVER district map', () => {
         },
         {
           id: 'a-missing', title: 'A Missing', href: '/a-missing/', addressQuery: 'A missing now',
-          latitude: null, longitude: null,
+          latitude: null, longitude: null, allowAddressGeocoding: true,
         },
         {
           id: 'a-late-success', title: 'A Late Success', href: '/a-late-success/',
           addressQuery: 'A late success', latitude: null, longitude: null,
+          allowAddressGeocoding: true,
         },
         {
           id: 'a-late-fail', title: 'A Late Fail', href: '/a-late-fail/',
           addressQuery: 'A late fail', latitude: null, longitude: null,
+          allowAddressGeocoding: true,
         },
       ],
       onSelect: () => undefined,
@@ -371,7 +451,7 @@ describe('NAVER district map', () => {
       selectedDistrict: { latitude: 37.6, longitude: 127.1 },
       buildings: [{
         id: 'b-async', title: 'B Async', href: '/b-async/', addressQuery: 'B current',
-        latitude: null, longitude: null,
+        latitude: null, longitude: null, allowAddressGeocoding: true,
       }],
       onSelect: () => undefined,
       onSelectBuilding: (id) => selected.push(`B:${id}`),
@@ -433,6 +513,8 @@ describe('NAVER district map', () => {
     const building = {
       id: 'evidence-tower', districtSlug: 'gangnam-gu', neighborhoodId: 'yeoksam-dong',
       neighborhoodName: '역삼동', name: 'Evidence Tower', housingType: 'apartment',
+      evidenceStatus: 'published', observationCount: 6, jeonseObservationCount: 6,
+      monthlyObservationCount: 0, firstObservedMonth: '2026-01', lastObservedMonth: '2026-07',
       latitude: 37.501, longitude: 127.031, sampleLabel: '6 reported contracts',
       medianLabel: '₩320,000,000', newSampleLabel: '3 reported contracts',
       newMedianLabel: null, renewalSampleLabel: '2 reported contracts',

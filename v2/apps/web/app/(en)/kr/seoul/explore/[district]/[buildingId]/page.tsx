@@ -2,12 +2,18 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { BuildingDetailPage } from '@/components/public-market/building-detail-page';
+import { ObservedBuildingDetail } from '@/components/public-market/observed-building-detail';
 import { PropertyTypeDetailPage } from '@/components/public-market/property-type-detail-page';
+import {
+  createSelectionHref,
+  parseExplorerSelection,
+} from '@/lib/navigation/explorer-selection';
 import { buildBuildingDecisionModel } from '@/lib/public-market/building-decision-model';
 import { parseBuildingDecisionSelection } from '@/lib/public-market/building-decision-state';
 import { buildBuildingVisualModel } from '@/lib/public-market/building-visual-model';
 import { buildPublicBuildingModel } from '@/lib/public-market/building-route-model.server';
 import { publicBuildingRepositoryFromEnvironment } from '@/lib/public-market/building-summary-repository.server';
+import { buildObservedBuildingIdentityModel } from '@/lib/public-market/observed-building-route-model.server';
 import {
   buildPublicPropertyTypeModel,
   listPublicPropertyTypeRouteParams,
@@ -19,7 +25,7 @@ type BuildingPageProps = Readonly<{
   searchParams: Promise<Readonly<Record<string, string | string[] | undefined>>>;
 }>;
 
-export const dynamicParams = false;
+export const dynamicParams = true;
 
 export function generateStaticParams() {
   const buildings = publicBuildingRepositoryFromEnvironment()?.listRouteParams() ?? [];
@@ -42,7 +48,15 @@ export async function generateMetadata({ params }: BuildingPageProps): Promise<M
     });
   }
   const model = buildPublicBuildingModel(district, buildingId);
-  if (model === null) notFound();
+  if (model === null) {
+    const observed = buildObservedBuildingIdentityModel(district, buildingId);
+    if (observed === null) notFound();
+    return {
+      title: `${observed.building.officialName} observed building | signedprice`,
+      description: `${observed.observations.total} observed reported contract${observed.observations.total === 1 ? '' : 's'} for ${observed.building.officialName}; building-level price evidence is not published.`,
+      robots: { index: false, follow: true },
+    };
+  }
   return {
     title: `${model.building.name} reported contract evidence | signedprice`,
     description: `${model.display.sampleLabel} for ${model.building.name} in ${model.evidence.period}.`,
@@ -66,13 +80,54 @@ export default async function BuildingRoute({ params, searchParams }: BuildingPa
     return <PropertyTypeDetailPage model={propertyTypeModel} siblings={siblings} />;
   }
   const model = buildPublicBuildingModel(district, buildingId);
-  if (model === null) notFound();
-  const selection = parseBuildingDecisionSelection(await searchParams);
+  if (model === null) {
+    const observed = buildObservedBuildingIdentityModel(district, buildingId);
+    if (observed === null) notFound();
+    const selection = parseExplorerSelection(
+      await searchParams,
+      { market: 'kr', transaction: 'jeonse' },
+      {
+        districts: [observed.district.slug],
+        neighborhoodsByDistrict: {
+          [observed.district.slug]: [observed.building.neighborhoodId],
+        },
+        buildingIdsByNeighborhood: {
+          [observed.building.neighborhoodId]: [observed.building.buildingId],
+        },
+      },
+    );
+    const backHref = createSelectionHref(
+      '/kr/seoul/explore/',
+      { ...selection, district: observed.district.slug },
+      { market: 'kr', transaction: 'jeonse' },
+    );
+    return <ObservedBuildingDetail model={observed} backHref={backHref} />;
+  }
+  const query = await searchParams;
+  const selection = parseBuildingDecisionSelection(query);
   const decision = buildBuildingDecisionModel(model, selection);
+  const explorerSelection = parseExplorerSelection(
+    query,
+    { market: 'kr', transaction: 'jeonse' },
+    {
+      districts: [model.district.slug],
+      neighborhoodsByDistrict: {
+        [model.district.slug]: [model.building.neighborhoodId],
+      },
+      buildingIdsByNeighborhood: {
+        [model.building.neighborhoodId]: [model.building.buildingId],
+      },
+    },
+  );
+  const backHref = createSelectionHref(
+    '/kr/seoul/explore/',
+    { ...explorerSelection, district: model.district.slug },
+    { market: 'kr', transaction: 'jeonse' },
+  );
   const base = `/kr/seoul/explore/${model.district.slug}/${model.building.buildingId}/`;
   const visual = buildBuildingVisualModel({
     buildingName: model.building.name,
-    mapHref: `/kr/seoul/explore/?district=${model.district.slug}`,
+    mapHref: backHref,
     photo: null,
   });
   return (
@@ -81,6 +136,7 @@ export default async function BuildingRoute({ params, searchParams }: BuildingPa
       decision={decision}
       visual={visual}
       base={base}
+      backHref={backHref}
     />
   );
 }

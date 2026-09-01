@@ -206,7 +206,7 @@
 
 .coverageGrid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   border-bottom: var(--rule-default);
 }
 
@@ -411,7 +411,12 @@
   border-top: var(--rule-default);
 }
 
-.buildingList li { border-bottom: var(--rule-subtle); }
+.buildingList li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: stretch;
+  border-bottom: var(--rule-subtle);
+}
 
 .buildingList button {
   width: 100%;
@@ -437,6 +442,21 @@
 
 .buildingList strong { font-size: 0.7rem; }
 .buildingList small { margin-top: 0.2rem; color: var(--area-muted); font-size: 0.58rem; }
+
+.buildingRowLink {
+  min-width: 64px;
+  min-height: 44px;
+  padding: .55rem;
+  display: grid;
+  place-items: center;
+  border-left: var(--rule-subtle);
+  color: var(--area-accent);
+  font-size: .58rem;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.buildingRowLink:hover { color: var(--surface-strong); background: var(--area-accent); }
 
 .moreBuildings { width: 100%; }
 

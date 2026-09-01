@@ -49,7 +49,7 @@ export function DistrictEvidenceSummary({
   const groupSelectionHref = selectionHref ?? evidence.href;
   const detailHref = model.selected === 'all'
     ? evidence.href
-    : `${evidence.href}?contract=${model.selected}`;
+    : `${evidence.href}?contractType=${model.selected}`;
   const comparisonOrder = ['new', 'renewal', 'all'] as const;
 
   return (

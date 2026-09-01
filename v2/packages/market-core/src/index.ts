@@ -75,3 +75,10 @@ export {
   type EvidenceEmptyState,
   type EvidenceState,
 } from './trust';
+export {
+  parseInstalledSnapshotRegistry,
+  type InstalledSnapshot,
+  type InstalledSnapshotRegistry,
+  type MarketDataset,
+  type SnapshotMarketId,
+} from './snapshots';

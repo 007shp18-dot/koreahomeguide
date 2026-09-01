@@ -22,6 +22,7 @@ export type NaverBuildingMapPoint = Readonly<{
   addressQuery: string;
   latitude: number | null;
   longitude: number | null;
+  allowAddressGeocoding?: boolean;
 }>;
 
 type NaverMapInstance = Readonly<{
@@ -97,10 +98,13 @@ type MountNaverDistrictMapOptions = NaverDistrictMapUpdate & Readonly<{
   element: HTMLElement;
 }>;
 
-export function buildNaverMapsScriptUrl(clientId: string): string {
+export function buildNaverMapsScriptUrl(
+  clientId: string,
+  includeGeocoder = false,
+): string {
   const url = new URL('https://oapi.map.naver.com/openapi/v3/maps.js');
   url.searchParams.set('ncpKeyId', clientId);
-  url.searchParams.set('submodules', 'geocoder');
+  if (includeGeocoder) url.searchParams.set('submodules', 'geocoder');
   return url.toString();
 }
 
@@ -184,7 +188,7 @@ export function mountNaverDistrictMap({
             building.longitude,
             () => onSelectBuilding?.(building.id),
           );
-        } else if (sdk.Service !== undefined) {
+        } else if (building.allowAddressGeocoding === true && sdk.Service !== undefined) {
           sdk.Service.geocode({ query: building.addressQuery }, (status, response) => {
             if (!isActive()) return;
             const address = response.v2?.addresses?.[0];
@@ -257,6 +261,24 @@ export function reconcileNaverDistrictMap(
   }
 }
 
+function BuildingMarkerStatus({
+  count,
+  locale,
+}: Readonly<{ count: number; locale: ProductLocale }>) {
+  if (count === 0) return null;
+  return (
+    <p className={styles.markerStatus} role="status">
+      {locale === 'ko' ? (
+        <>네이버에서 위치를 확인하지 못해 건물 {count}개의 지도 표식을 표시하지 못했습니다. 건물 목록에서 근거를 확인하세요.</>
+      ) : (
+        <>{count === 1 ? 'Map marker' : 'Map markers'} unavailable for{' '}
+          {count} {count === 1 ? 'building' : 'buildings'}
+          {' '}because Naver could not verify the location. Use the building list to open evidence.</>
+      )}
+    </p>
+  );
+}
+
 export function NaverDistrictMap({
   clientId,
   districts,
@@ -274,6 +296,12 @@ export function NaverDistrictMap({
   const [sdk, setSdk] = useState<NaverMapsSdk | null>(null);
   const [state, setState] = useState<'loading' | 'ready' | 'error'>('loading');
   const [unavailableBuildingIds, setUnavailableBuildingIds] = useState<readonly string[]>([]);
+  const canResolveSelectedBuildings = selectedDistrict === undefined
+    || buildings === undefined
+    || buildings.some((building) => (
+      (building.latitude !== null && building.longitude !== null)
+      || building.allowAddressGeocoding === true
+    ));
   const failClosed = useCallback(() => {
     authenticationFailed.current = true;
     lifecycle.current?.dispose();
@@ -363,6 +391,13 @@ export function NaverDistrictMap({
     </div>
   );
 
+  if (!canResolveSelectedBuildings) return (
+    <div className={styles.frame} data-map-provider="static" data-map-state="coordinate-pending">
+      {fallback}
+      <BuildingMarkerStatus count={buildings?.length ?? 0} locale={locale} />
+    </div>
+  );
+
   return (
     <div className={styles.frame} data-map-provider="naver" data-map-state={state}>
       <div
@@ -375,22 +410,15 @@ export function NaverDistrictMap({
             ? 'Interactive NAVER map of Seoul buildings'
             : 'Interactive NAVER map of Seoul districts'}
       />
-      {unavailableBuildingIds.length === 0 ? null : (
-        <p className={styles.markerStatus} role="status">
-          {locale === 'ko' ? (
-            <>네이버에서 위치를 확인하지 못해 건물 {unavailableBuildingIds.length}개의 지도 표식을 표시하지 못했습니다. 건물 목록에서 근거를 확인하세요.</>
-          ) : (
-            <>{unavailableBuildingIds.length === 1 ? 'Map marker' : 'Map markers'} unavailable for{' '}
-              {unavailableBuildingIds.length} {unavailableBuildingIds.length === 1 ? 'building' : 'buildings'}
-              {' '}because Naver could not verify the location. Use the building list to open evidence.</>
-          )}
-        </p>
-      )}
+      <BuildingMarkerStatus count={unavailableBuildingIds.length} locale={locale} />
       <div className={state === 'ready' ? styles.fallbackHidden : styles.fallback}>
         {fallback}
       </div>
       <Script
-        src={buildNaverMapsScriptUrl(clientId)}
+        src={buildNaverMapsScriptUrl(
+          clientId,
+          buildings?.some(({ allowAddressGeocoding }) => allowAddressGeocoding === true) ?? false,
+        )}
         strategy="afterInteractive"
         onReady={initialize}
         onError={failClosed}

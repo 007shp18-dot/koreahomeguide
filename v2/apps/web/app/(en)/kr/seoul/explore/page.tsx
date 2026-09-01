@@ -1,9 +1,11 @@
 import type { Metadata } from 'next';
+import { SEOUL_RENT_CHECK_DISTRICTS } from '@signedprice/korea-rent/browser';
 import { AreaExplorer } from '@/components/public-market/area-explorer';
 import { SiteFooter } from '@/components/site-footer';
 import { SiteHeader } from '@/components/site-header';
 import { PublicBreadcrumbJsonLd } from '@/components/public-json-ld';
 import { buildPublicAreaExploreModel } from '@/lib/public-market/area-route-model.server';
+import { parseExplorerSelection } from '@/lib/navigation/explorer-selection';
 import {
   KOREA_PUBLIC_RELEASE_STATUS,
   type SiteFooterModel,
@@ -63,10 +65,16 @@ function singleValue(value: string | string[] | undefined): string | undefined {
 
 export default async function ExplorerPage({ searchParams }: ExplorerPageProps) {
   const query = await searchParams;
+  const selection = parseExplorerSelection(
+    query,
+    { market: 'kr', transaction: 'jeonse' },
+    { districts: SEOUL_RENT_CHECK_DISTRICTS.map(({ slug }) => slug) },
+  );
   const model = buildPublicAreaExploreModel(
-    singleValue(query.district),
+    selection.district,
     undefined,
-    singleValue(query.contract),
+    selection.contractType ?? singleValue(query.contract),
+    singleValue(query.q),
   );
   const naverMapClientId = process.env.NAVER_MAP_CLIENT_ID?.trim() || null;
 
@@ -78,6 +86,7 @@ export default async function ExplorerPage({ searchParams }: ExplorerPageProps) 
           model={model}
           naverMapClientId={naverMapClientId}
           initialQuery={singleValue(query.q)}
+          initialSelection={selection}
         />
       </main>
       <PublicBreadcrumbJsonLd items={[

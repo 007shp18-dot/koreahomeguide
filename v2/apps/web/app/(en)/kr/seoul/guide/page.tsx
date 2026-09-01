@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
 
 import { GuideIndex } from '@/components/guide/guide-index';
+import { SiteFooter } from '@/components/site-footer';
+import { SiteHeader } from '@/components/site-header';
+import { KOREA_GUIDE_FOOTER, KOREA_GUIDE_HEADER } from '@/lib/guide/guide-shell';
 import { indexableMetadata } from '@/lib/public-metadata';
 
 export const metadata: Metadata = indexableMetadata({
@@ -10,5 +13,11 @@ export const metadata: Metadata = indexableMetadata({
 });
 
 export default function GuideIndexPage() {
-  return <GuideIndex />;
+  return (
+    <div id="top">
+      <SiteHeader copy={KOREA_GUIDE_HEADER} />
+      <GuideIndex />
+      <SiteFooter copy={KOREA_GUIDE_FOOTER} />
+    </div>
+  );
 }

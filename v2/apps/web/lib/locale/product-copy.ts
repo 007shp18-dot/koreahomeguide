@@ -340,6 +340,14 @@ export type PublicMarketCopy = Readonly<{
     coverageHeading: string;
     districtsPublished: string;
     buildingsPublished: string;
+    observedBuildings: string;
+    transactionCoveredBuildings: string;
+    priceReadyBuildings: string;
+    priceEvidenceUnavailable: string;
+    observedPeriod: string;
+    jeonseObservations: string;
+    monthlyObservations: string;
+    openBuilding: string;
     eligibleContracts: string;
     unavailable: string;
     of: string;
@@ -510,6 +518,14 @@ const englishPublicMarketCopy = Object.freeze({
     coverageHeading: 'What this snapshot can actually show',
     districtsPublished: 'Districts published',
     buildingsPublished: 'Buildings published',
+    observedBuildings: 'Observed buildings',
+    transactionCoveredBuildings: 'Transaction-covered',
+    priceReadyBuildings: 'Price-ready',
+    priceEvidenceUnavailable: 'Price evidence unavailable',
+    observedPeriod: 'Observed period',
+    jeonseObservations: 'Jeonse observations',
+    monthlyObservations: 'Monthly observations',
+    openBuilding: 'Open building',
     eligibleContracts: 'Eligible contracts',
     unavailable: 'Unavailable',
     of: 'of',
@@ -680,6 +696,14 @@ const koreanPublicMarketCopy = Object.freeze({
     coverageHeading: '현재 자료가 실제로 보여주는 범위',
     districtsPublished: '게시된 구',
     buildingsPublished: '게시된 건물',
+    observedBuildings: '관측 건물',
+    transactionCoveredBuildings: '거래 연결 건물',
+    priceReadyBuildings: '가격 게시 가능',
+    priceEvidenceUnavailable: '가격 근거 없음',
+    observedPeriod: '관측 기간',
+    jeonseObservations: '전세 관측',
+    monthlyObservations: '월세 관측',
+    openBuilding: '건물 열기',
     eligibleContracts: '조건에 맞는 계약',
     unavailable: '확인되지 않음',
     of: '/',

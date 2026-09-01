@@ -1,5 +1,14 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+
+vi.mock('server-only', () => ({}));
+
+import { parseObservedBuildingArtifact } from '../apps/web/lib/public-market/observed-building-schema';
 import { createPlaywrightConfig } from '../playwright.config';
+import {
+  OBSERVED_BUILDING_INVENTORY_TEST_ARTIFACT,
+} from './e2e/observed-building-inventory-fixture';
+import { PUBLIC_BUILDING_TEST_ID } from './e2e/public-building-summary-fixture';
+import { PUBLIC_SUMMARY_TEST_PERIOD } from './e2e/public-summary-fixture';
 
 describe('Playwright release target configuration', () => {
   it('builds and serves the deterministic candidate locally', () => {
@@ -17,6 +26,7 @@ describe('Playwright release target configuration', () => {
     });
     expect(config.webServer?.env).toHaveProperty('SIGNEDPRICE_CONVERSION_CURVE_ARTIFACT');
     expect(config.webServer?.env).toHaveProperty('SIGNEDPRICE_PUBLIC_BUILDING_SUMMARY_ARTIFACT');
+    expect(config.webServer?.env).toHaveProperty('SIGNEDPRICE_OBSERVED_BUILDING_ARTIFACT');
   });
 
   it('defines all release viewports and a retained HTML failure report', () => {
@@ -48,6 +58,17 @@ describe('Playwright release target configuration', () => {
       screenshot: 'only-on-failure',
       trace: 'retain-on-failure',
     });
+  });
+
+  it('joins the browser price fixture to a verified observed-building fixture', () => {
+    const artifact = parseObservedBuildingArtifact(
+      JSON.parse(OBSERVED_BUILDING_INVENTORY_TEST_ARTIFACT),
+      { marketId: 'kr-seoul', period: PUBLIC_SUMMARY_TEST_PERIOD },
+    );
+
+    expect(artifact.records).toHaveLength(1);
+    expect(artifact.records[0]?.buildingId).toBe(PUBLIC_BUILDING_TEST_ID);
+    expect(artifact.records[0]?.coordinate.state).toBe('ready');
   });
 
   it('targets the explicit Preview without starting a local server', () => {

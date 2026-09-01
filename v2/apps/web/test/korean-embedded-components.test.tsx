@@ -69,16 +69,38 @@ describe('Korean embedded product components', () => {
     expect(html).not.toContain('>Briefs<');
   });
 
-  it('switches Korean Explore and Rankings to their matching English routes', () => {
+  it('switches Korean Explore and Rankings to their matching English routes', async () => {
     vi.stubEnv(
       'SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT',
       JSON.stringify(createPublicAreaV2Fixture()),
     );
-    const explore = renderToStaticMarkup(<KoreanExplorePage />);
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', PUBLIC_AREA_FIXTURE_PERIOD);
+    const explore = renderToStaticMarkup(await KoreanExplorePage({
+      searchParams: Promise.resolve({}),
+    }));
     const rankings = renderToStaticMarkup(<KoreanRankingsPage />);
 
     expect(explore).toMatch(/hreflang="en"[^>]*href="\/kr\/seoul\/explore"/i);
     expect(rankings).toMatch(/hreflang="en"[^>]*href="\/kr\/seoul\/rankings"/i);
+  });
+
+  it('preserves Korean Explore URL selection and search state', async () => {
+    vi.stubEnv(
+      'SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT',
+      JSON.stringify(createPublicAreaV2Fixture()),
+    );
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', PUBLIC_AREA_FIXTURE_PERIOD);
+    const html = renderToStaticMarkup(await KoreanExplorePage({
+      searchParams: Promise.resolve({
+        district: 'jongno-gu',
+        contractType: 'renewal',
+        q: '강남구',
+      }),
+    }));
+
+    expect(html).toContain('선택 · 강남구');
+    expect(html).toContain('value="강남구"');
+    expect(html).toContain('갱신 계약');
   });
 
   it('renders the interactive Contract Check workspace in Korean', () => {
@@ -120,8 +142,10 @@ describe('Korean embedded product components', () => {
       '좁은 중간 절반',
       '3개월 변화 확인 불가',
       '국토교통부 신고 임대차 계약',
-      '서울 구 네이버 지도',
+      '서울 구별 전세보증금 지도',
     ]) expect(html).toContain(visible);
+    expect(html).toContain('data-map-state="coordinate-pending"');
+    expect(html).not.toContain('oapi.map.naver.com');
     expect(html).toContain('href="/ko/kr/seoul/rankings"');
     expect(html).toContain('/ko/kr/seoul/explore?district=jung-gu');
     expect(html).not.toMatch(
