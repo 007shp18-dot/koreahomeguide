@@ -3,7 +3,7 @@ import 'server-only';
 import { createPublicAreaSummaryRepository } from './area-summary-repository.server';
 
 const links = Object.freeze([
-  Object.freeze({ label: 'Check', description: 'Compare two offers', href: '/kr/' }),
+  Object.freeze({ label: 'Check', description: 'Compare two offers', href: '/kr/seoul/check/' }),
   Object.freeze({ label: 'Explore', description: 'District and building evidence', href: '/kr/seoul/explore/' }),
   Object.freeze({ label: 'Rankings', description: 'Compare all 25 districts', href: '/kr/seoul/rankings/' }),
   Object.freeze({ label: 'News', description: 'Verified market briefs', href: '/kr/seoul/news/' }),

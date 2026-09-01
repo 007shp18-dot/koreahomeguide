@@ -9,8 +9,8 @@
     "todo": 0
   },
   "currentSummary": {
-    "tests": 898,
-    "pass": 875,
+    "tests": 905,
+    "pass": 882,
     "fail": 23,
     "cancelled": 0,
     "skipped": 0,

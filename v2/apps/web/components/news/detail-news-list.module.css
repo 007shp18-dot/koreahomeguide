@@ -1,8 +1,8 @@
 .news {
-  --detail-news-ground: #f3f2f2;
-  --detail-news-ink: #201e1d;
-  --detail-news-muted: #5d5958;
-  --detail-news-accent: #1d4ed8;
+  --detail-news-ground: var(--canvas);
+  --detail-news-ink: var(--ink);
+  --detail-news-muted: var(--muted);
+  --detail-news-accent: var(--accent);
   color: var(--detail-news-ink);
   background: var(--detail-news-ground);
   border-bottom: 2px solid var(--detail-news-ink);
@@ -73,7 +73,7 @@
 
 .list .evidence {
   padding-top: 0.7rem;
-  border-top: 1px solid #8c8a89;
+  border-top: 1px solid var(--divider);
   color: var(--detail-news-ink);
 }
 

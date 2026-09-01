@@ -1,8 +1,8 @@
 .page {
-  --news-ground: #f3f2f2;
-  --news-ink: #201e1d;
-  --news-muted: #5d5958;
-  --news-accent: #1d4ed8;
+  --news-ground: var(--canvas);
+  --news-ink: var(--ink);
+  --news-muted: var(--muted);
+  --news-accent: var(--accent);
   color: var(--news-ink);
   background: var(--news-ground);
 }
@@ -174,7 +174,7 @@
   grid-template-columns: minmax(160px, 0.28fr) minmax(0, 1fr);
   gap: 1rem;
   border-bottom: 2px solid var(--news-ink);
-  background: #dbe4ff;
+  background: var(--accent-soft);
   line-height: 1.55;
 }
 

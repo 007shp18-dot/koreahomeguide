@@ -14,7 +14,11 @@ import { indexableMetadata } from './public-metadata';
 
 const brand = 'signedprice';
 const headline = 'Real prices. Better property decisions.';
-const marketIds = ['kr-seoul'] as const satisfies readonly MarketId[];
+const marketIds = [
+  'kr-seoul',
+  'sg-singapore',
+  'ae-dubai',
+] as const satisfies readonly MarketId[];
 
 const intentLabels = {
   rent: 'Rent',
@@ -269,18 +273,151 @@ export const homepageMarketCards = marketIds.map((marketId) =>
   createMarketCardModel(getMarketProfile(marketId)),
 );
 
+export const homepageProductSlotIds = [
+  'check',
+  'explore',
+  'rankings',
+  'news',
+  'guide',
+  'community',
+] as const;
+
+export type HomepageProductSlotId = (typeof homepageProductSlotIds)[number];
+
+export type HomepageProductSlotModel = Readonly<{
+  id: HomepageProductSlotId;
+  label: 'Check' | 'Explore' | 'Rankings' | 'News' | 'Guide' | 'Community';
+  description: string;
+  state: 'available' | 'unavailable' | 'rights_blocked';
+  stateLabel: 'Available' | 'Unavailable' | 'Rights blocked';
+  href?: string;
+}>;
+
+export type HomepageMarketModel = Readonly<{
+  id: MarketId;
+  tabId: 'seoul' | 'singapore' | 'dubai';
+  cityName: 'Seoul' | 'Singapore' | 'Dubai';
+  currency: 'KRW' | 'SGD' | 'AED';
+  eyebrow: string;
+  heading: string;
+  description: string;
+  slots: readonly HomepageProductSlotModel[];
+}>;
+
+const productLabels = {
+  check: 'Check',
+  explore: 'Explore',
+  rankings: 'Rankings',
+  news: 'News',
+  guide: 'Guide',
+  community: 'Community',
+} as const satisfies Record<HomepageProductSlotId, HomepageProductSlotModel['label']>;
+
+const seoulSlotDescriptions = {
+  check: 'Compare two offers',
+  explore: 'District and building evidence',
+  rankings: 'Compare all 25 districts',
+  news: 'Verified market briefs',
+  guide: 'Methods and decision guides',
+  community: 'Community access is unavailable.',
+} as const satisfies Record<HomepageProductSlotId, string>;
+
+const singaporeUnavailableDescription = 'Verified Singapore evidence unavailable';
+const dubaiRightsDescription = 'DLD and RERA display-rights clearance is incomplete.';
+
+function productSlots(
+  marketId: MarketId,
+  singapore: SingaporeEntryModel,
+): readonly HomepageProductSlotModel[] {
+  return Object.freeze(homepageProductSlotIds.map((id) => {
+    if (marketId === 'kr-seoul') {
+      return Object.freeze({
+        id,
+        label: productLabels[id],
+        description: seoulSlotDescriptions[id],
+        state: id === 'community' ? 'unavailable' : 'available',
+        stateLabel: id === 'community' ? 'Unavailable' : 'Available',
+      } satisfies HomepageProductSlotModel);
+    }
+
+    if (marketId === 'sg-singapore') {
+      const isReadyExplore = singapore.status === 'ready' && id === 'explore';
+      return Object.freeze({
+        id,
+        label: productLabels[id],
+        description: isReadyExplore
+          ? `${singapore.transactionLabel}. ${singapore.periodLabel}.`
+          : singaporeUnavailableDescription,
+        state: isReadyExplore ? 'available' : 'unavailable',
+        stateLabel: isReadyExplore ? 'Available' : 'Unavailable',
+        ...(isReadyExplore ? { href: singapore.exploreHref } : {}),
+      } satisfies HomepageProductSlotModel);
+    }
+
+    return Object.freeze({
+      id,
+      label: productLabels[id],
+      description: dubaiRightsDescription,
+      state: 'rights_blocked',
+      stateLabel: 'Rights blocked',
+    } satisfies HomepageProductSlotModel);
+  }));
+}
+
+function homepageMarkets(singapore: SingaporeEntryModel): readonly HomepageMarketModel[] {
+  return Object.freeze(marketIds.map((marketId) => {
+    const profile = getMarketProfile(marketId);
+    if (marketId === 'kr-seoul') {
+      return Object.freeze({
+        id: marketId,
+        tabId: 'seoul',
+        cityName: 'Seoul',
+        currency: profile.nativeCurrency,
+        eyebrow: 'Seoul live',
+        heading: 'Official contract evidence, one click from the front door.',
+        description:
+          'Signed contracts, split by new and renewal status, with publication limits shown.',
+        slots: productSlots(marketId, singapore),
+      } satisfies HomepageMarketModel);
+    }
+    if (marketId === 'sg-singapore') {
+      return Object.freeze({
+        id: marketId,
+        tabId: 'singapore',
+        cityName: 'Singapore',
+        currency: profile.nativeCurrency,
+        eyebrow: 'Singapore evidence',
+        heading: singapore.status === 'ready'
+          ? 'Verified private residential sale evidence.'
+          : singapore.message,
+        description: singapore.status === 'ready'
+          ? `${singapore.projectLabel}. Completed period ${singapore.periodLabel}.`
+          : 'Explore remains unavailable until the verified snapshot and display-rights gates pass.',
+        slots: productSlots(marketId, singapore),
+      } satisfies HomepageMarketModel);
+    }
+    return Object.freeze({
+      id: marketId,
+      tabId: 'dubai',
+      cityName: 'Dubai',
+      currency: profile.nativeCurrency,
+      eyebrow: 'Dubai rights status',
+      heading: dubaiRightsDescription,
+      description:
+        'Transaction detail remains rights-blocked until a licensed-provider boundary is established.',
+      slots: productSlots(marketId, singapore),
+    } satisfies HomepageMarketModel);
+  }));
+}
+
 export function buildHomepagePresentation(singapore: SingaporeEntryModel): Readonly<{
-  copy: typeof homepageCopy & Readonly<{ marketIds: readonly MarketId[]; header: SiteHeaderModel }>;
-  groups: readonly IntentGroupModel[];
-  markets: readonly MarketCardModel[];
+  copy: typeof homepageCopy & Readonly<{ header: SiteHeaderModel }>;
+  markets: readonly HomepageMarketModel[];
+  singapore: SingaporeEntryModel;
 }> {
   const singaporeReady = singapore.status === 'ready';
-  const visibleMarketIds: readonly MarketId[] = singaporeReady
-    ? ['kr-seoul', 'sg-singapore']
-    : ['kr-seoul'];
   const copy = {
     ...homepageCopy,
-    marketIds: visibleMarketIds,
     header: {
       ...homepageCopy.header,
       links: singaporeReady
@@ -289,39 +426,10 @@ export function buildHomepagePresentation(singapore: SingaporeEntryModel): Reado
           }]
         : homepageCopy.header.links,
     },
-  } as typeof homepageCopy & Readonly<{ marketIds: readonly MarketId[]; header: SiteHeaderModel }>;
-  const groups = intents.map((intent) => ({
-    id: intent,
-    label: intentLabels[intent],
-    description: {
-      rent: 'Compare contracted rents and local rental rules.',
-      buy: 'Read signed sale prices before asking prices.',
-      invest: 'Test yield only where every input is supported.',
-    }[intent],
-    destinations: visibleMarketIds.map((marketId) => {
-      const market = getMarketProfile(marketId);
-      return {
-        label: market.cityName,
-        ariaLabel: `${intentLabels[intent]} in ${market.cityName}`,
-        href: marketId === 'sg-singapore' ? '/sg/' : getIntentHref(marketId, intent),
-      };
-    }),
-  }));
+  } as typeof homepageCopy & Readonly<{ header: SiteHeaderModel }>;
   return Object.freeze({
     copy,
-    groups: Object.freeze(groups),
-    markets: Object.freeze(visibleMarketIds.map((marketId) => {
-      const card = createMarketCardModel(getMarketProfile(marketId));
-      if (marketId !== 'sg-singapore') return card;
-      return {
-        ...card,
-        overviewHref: '/sg/',
-        overviewLabel: 'Explore Singapore evidence',
-        intentCapabilities: Object.fromEntries(intents.map((intent) => [
-          intent,
-          { ...card.intentCapabilities[intent], href: '/sg/' },
-        ])) as MarketCardModel['intentCapabilities'],
-      };
-    })),
+    markets: homepageMarkets(singapore),
+    singapore,
   });
 }

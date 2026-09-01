@@ -38,10 +38,12 @@ export type ContractCheckAction =
       offerId: 'a' | 'b';
       field: keyof ContractOfferDraft;
       value: string;
+      curve?: KoreaConversionCurveProjection;
     }>
   | Readonly<{
       type: 'SET_HOUSING_TYPE';
       housingType: KoreaConversionHousingType;
+      curve?: KoreaConversionCurveProjection;
     }>
   | Readonly<{ type: 'CALCULATE'; curve: KoreaConversionCurveProjection }>
   | Readonly<{ type: 'RESET' }>;
@@ -51,6 +53,12 @@ const MAX_MONTHLY_RENT_WON = 100_000_000;
 
 function emptyDraft(): ContractOfferDraft {
   return { label: '', depositWon: '', monthlyRentWon: '' };
+}
+
+function wholeWonDigits(value: string): string | undefined {
+  const match = /^(?:₩ ?)?([0-9]+|[0-9]{1,3}(?:,[0-9]{3})+)(?: ?(?:원|won))?$/i
+    .exec(value);
+  return match?.[1]?.replaceAll(',', '');
 }
 
 export function createContractCheckState(): ContractCheckState {
@@ -69,9 +77,24 @@ function moneyValue(
   if (value === '') {
     return { error: kind === 'deposit' ? 'Enter a deposit.' : 'Enter monthly rent.' };
   }
-  const parsed = Number(value);
+  const digits = wholeWonDigits(value);
+  if (digits === undefined) {
+    return {
+      error: kind === 'deposit'
+        ? 'Deposit must be a positive whole-won amount.'
+        : 'Monthly rent must be a positive whole-won amount.',
+    };
+  }
+  const parsed = Number(digits);
   const maximum = kind === 'deposit' ? MAX_DEPOSIT_WON : MAX_MONTHLY_RENT_WON;
-  if (!Number.isSafeInteger(parsed) || parsed > maximum) {
+  if (!Number.isSafeInteger(parsed) || parsed <= 0) {
+    return {
+      error: kind === 'deposit'
+        ? 'Deposit must be a positive whole-won amount.'
+        : 'Monthly rent must be a positive whole-won amount.',
+    };
+  }
+  if (parsed > maximum) {
     return {
       error: kind === 'deposit'
         ? 'Deposit must be ₩20,000,000,000 or less.'
@@ -95,51 +118,14 @@ function validateOffer(draft: ContractOfferDraft): Readonly<{
   } = {};
   if (deposit.error !== undefined) errors.depositWon = deposit.error;
   if (monthlyRent.error !== undefined) errors.monthlyRentWon = monthlyRent.error;
-  if (
-    deposit.value !== undefined
-    && monthlyRent.value !== undefined
-    && deposit.value === 0
-    && monthlyRent.value === 0
-  ) {
-    errors.offer = 'Deposit and monthly rent cannot both be zero.';
-  }
   return { deposit: deposit.value, monthlyRent: monthlyRent.value, errors };
 }
 
-export function contractCheckReducer(
+function calculate(
   state: ContractCheckState,
-  action: ContractCheckAction,
+  curve: KoreaConversionCurveProjection,
 ): ContractCheckState {
-  if (action.type === 'RESET') return createContractCheckState();
-
-  if (action.type === 'SET_HOUSING_TYPE') {
-    return {
-      ...state,
-      housingType: action.housingType,
-      errors: {},
-      result: null,
-    };
-  }
-
-  if (action.type === 'EDIT_OFFER_FIELD') {
-    const value = action.field === 'label'
-      ? action.value.slice(0, 80)
-      : action.value.replace(/\D/g, '');
-    return {
-      ...state,
-      offers: {
-        ...state.offers,
-        [action.offerId]: {
-          ...state.offers[action.offerId],
-          [action.field]: value,
-        },
-      },
-      errors: {},
-      result: null,
-    };
-  }
-
-  if (action.curve.housingType !== state.housingType) {
+  if (curve.housingType !== state.housingType) {
     return {
       ...state,
       errors: { form: 'Verified evidence for the selected housing type is unavailable.' },
@@ -158,7 +144,7 @@ export function contractCheckReducer(
 
   try {
     const result = compareRentOffers({
-      curve: action.curve,
+      curve,
       offers: [
         {
           id: 'a',
@@ -188,4 +174,42 @@ export function contractCheckReducer(
       result: null,
     };
   }
+}
+
+export function contractCheckReducer(
+  state: ContractCheckState,
+  action: ContractCheckAction,
+): ContractCheckState {
+  if (action.type === 'RESET') return createContractCheckState();
+
+  if (action.type === 'SET_HOUSING_TYPE') {
+    const next = {
+      ...state,
+      housingType: action.housingType,
+      errors: {},
+      result: null,
+    };
+    return action.curve === undefined ? next : calculate(next, action.curve);
+  }
+
+  if (action.type === 'EDIT_OFFER_FIELD') {
+    const value = action.field === 'label'
+      ? action.value.slice(0, 80)
+      : wholeWonDigits(action.value) ?? action.value;
+    const next = {
+      ...state,
+      offers: {
+        ...state.offers,
+        [action.offerId]: {
+          ...state.offers[action.offerId],
+          [action.field]: value,
+        },
+      },
+      errors: {},
+      result: null,
+    };
+    return action.curve === undefined ? next : calculate(next, action.curve);
+  }
+
+  return calculate(state, action.curve);
 }

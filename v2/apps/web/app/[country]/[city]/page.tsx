@@ -4,6 +4,7 @@ import { MarketHero } from '../../../components/market-hero';
 import { MarketOverviewRows } from '../../../components/market-overview-rows';
 import { SiteFooter } from '../../../components/site-footer';
 import { SiteHeader } from '../../../components/site-header';
+import { PublicBreadcrumbJsonLd } from '../../../components/public-json-ld';
 import {
   buildMarketPageModel,
   publicMarketRouteParams,
@@ -49,6 +50,10 @@ export default async function MarketOverviewPage({ params }: MarketPageProps) {
           primaryAction={model.productDepth === 'full_product'}
         />
       </main>
+      <PublicBreadcrumbJsonLd items={[
+        { name: 'Home', path: '/' },
+        { name: 'Seoul', path: '/kr/seoul/' },
+      ]} />
       <SiteFooter copy={model.footer} />
     </div>
   );

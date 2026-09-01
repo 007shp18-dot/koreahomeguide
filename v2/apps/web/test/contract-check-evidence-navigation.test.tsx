@@ -24,7 +24,7 @@ describe('Contract Check evidence navigation', () => {
     (current) => {
       const html = renderToStaticMarkup(<PublicSectionTabs current={current} />);
 
-      expect(html).toContain('href="/kr"');
+      expect(html).toContain('href="/kr/seoul/check"');
       expect(html).toContain('href="/kr/seoul/explore"');
       expect(html).toContain('data-public-tab="guide"');
       expect(html).toContain('href="/kr/seoul/guide"');
@@ -44,7 +44,7 @@ describe('Contract Check evidence navigation', () => {
 
     const html = renderToStaticMarkup(<AreaExplorer model={model} />);
 
-    expect(html).toContain('href="/kr"');
+    expect(html).toContain('href="/kr/seoul/check"');
     expect(html).toContain('href="/kr/seoul/rankings"');
     expect(html).toContain('View district rankings');
     expect(html).toContain('href="/kr/seoul/guide"');
@@ -66,7 +66,7 @@ describe('Contract Check evidence navigation', () => {
 
     const html = renderToStaticMarkup(<DistrictDetailPage model={model} />);
 
-    expect(html).toContain('href="/kr"');
+    expect(html).toContain('href="/kr/seoul/check"');
     expect(html).toContain('href="/kr/seoul/rankings"');
     expect(html).toContain('View district rankings');
     expect(html).toContain('href="/kr/seoul/guide"');

@@ -51,7 +51,7 @@ export type KoreaPublicRouteModel = Readonly<{
 }>;
 
 const KOREA_PUBLIC_PATHS = [
-  '/kr/',
+  '/kr/seoul/check/',
   '/kr/check/seoul/',
   '/kr/seoul/',
 ] as const;
@@ -61,6 +61,18 @@ export function buildKoreaPublicPageMetadata(
 ): Metadata {
   if (!KOREA_PUBLIC_PATHS.includes(path as (typeof KOREA_PUBLIC_PATHS)[number])) {
     throw new TypeError('Unknown Korea public canonical path.');
+  }
+  if (path === '/kr/seoul/check/') {
+    return indexableMetadata({
+      path,
+      title: 'Compare Seoul rental contract offers | signedprice',
+      description:
+        'Compare two filed deposit-and-rent offers on one monthly basis using verified conversion evidence when available.',
+      languageAlternates: {
+        en: '/kr/seoul/check/',
+        ko: '/ko/kr/seoul/check/',
+      },
+    });
   }
   return indexableMetadata({
     path: path as (typeof KOREA_PUBLIC_PATHS)[number],
@@ -117,9 +129,9 @@ const pageCopy = {
 } as const;
 
 const methodology = {
-  label: 'Seven completed months · 45–55㎡ · zero-rent jeonse',
+  label: 'Seven-month reported period · 45–55㎡ · zero-rent jeonse',
   disclosure:
-    'Amounts are reported refundable deposits; canceled contracts and contracts with monthly rent are excluded.',
+    'Amounts are reported refundable deposits; canceled contracts and contracts with monthly rent are excluded. The declared period may include filing-in-progress records; comparison claims require completed windows with retained counts.',
 } as const;
 
 const navigation = {
@@ -145,6 +157,7 @@ function sourceBoundary(
     includesNewAndRenewal: true,
     includesUnknownContractType: true,
     includesUnknownRecordStatus: true,
+    nextUpdate: null,
   });
 }
 

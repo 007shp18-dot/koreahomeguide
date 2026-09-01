@@ -24,6 +24,7 @@ export type PublicBuildingArtifactContext = Readonly<{
 }>;
 
 export type PublicBuildingRepository = Readonly<{
+  listRetainedRecords(): readonly PublicBuildingRecord[];
   listByDistrict(slug: SeoulDistrictSlug): readonly PublicBuildingRecord[];
   getById(districtSlug: SeoulDistrictSlug, buildingId: string): PublicBuildingRecord;
   listRouteParams(): readonly PublicBuildingRouteParam[];
@@ -63,6 +64,9 @@ export function createPublicBuildingRepository(input: Readonly<{
       exclusions: artifact.exclusions,
     });
     return Object.freeze({
+      listRetainedRecords(): readonly PublicBuildingRecord[] {
+        return artifact.records;
+      },
       listByDistrict(slug: SeoulDistrictSlug): readonly PublicBuildingRecord[] {
         return Object.freeze(published.filter(({ districtSlug }) => districtSlug === slug));
       },
@@ -92,7 +96,9 @@ let cachedEnvironment: Readonly<{
 
 export function publicBuildingRepositoryFromEnvironment(): PublicBuildingRepository | null {
   const serialized = process.env.SIGNEDPRICE_PUBLIC_BUILDING_SUMMARY_ARTIFACT;
-  const period = process.env.SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD ?? '';
+  const period = process.env.SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD ?? (
+    process.env.NODE_ENV === 'test' ? '' : installedBuildingArtifact.provenance.period
+  );
   const cached = cachedEnvironment;
   if (cached !== null && cached.serialized === serialized && cached.period === period) {
     return cached.repository;

@@ -1,17 +1,27 @@
 'use client';
 
 import type { KoreaConversionCurveProjection } from '@signedprice/korea-rent';
-import type { AppliedConversionRate } from '@signedprice/market-core';
+import type { RentContractComparison } from '@signedprice/market-core';
 import Link from 'next/link';
-import { useEffect, useReducer, useRef, type ReactNode } from 'react';
+import { useReducer } from 'react';
 
 import type { ContractCheckRouteModel } from '../../lib/contract-check/route-model.server';
+import {
+  CONTRACT_CHECK_COPY,
+  contractNavigationLabel,
+  localizedSeoulHref,
+  localizeContractText,
+  type ContractCheckCopy,
+  type ProductLocale,
+} from '../../lib/locale/product-copy';
 import {
   contractCheckReducer,
   createContractCheckState,
   type ContractOfferDraft,
   type ContractOfferErrors,
 } from '../../lib/contract-check/client-state';
+import { BrandWordmark } from '../brand-mark';
+import { ConversionCurve } from './conversion-curve';
 import styles from './contract-check.module.css';
 
 const won = new Intl.NumberFormat('ko-KR', {
@@ -20,27 +30,49 @@ const won = new Intl.NumberFormat('ko-KR', {
   maximumFractionDigits: 0,
 });
 
-function SiteNavigation({ model }: Readonly<{ model: ContractCheckRouteModel }>) {
+function SiteNavigation({
+  model,
+  locale,
+  copy,
+}: Readonly<{
+  model: ContractCheckRouteModel;
+  locale: ProductLocale;
+  copy: ContractCheckCopy;
+}>) {
   return (
-    <nav className={styles.navigation} aria-label="Primary">
+    <nav className={styles.navigation} aria-label={copy.primaryNavigation}>
       {model.navigation.map((item) => item.available && item.href !== null ? (
-        <Link href={item.href} key={item.label}>{item.label}</Link>
+        <Link href={localizedSeoulHref(item.href, locale)} key={item.label}>
+          {contractNavigationLabel(item.href, item.label, copy)}
+        </Link>
       ) : (
         <span className={styles.planned} key={item.label}>
-          {item.label}<span>Planned</span>
+          {contractNavigationLabel(item.href, item.label, copy)}<span>{copy.planned}</span>
         </span>
       ))}
     </nav>
   );
 }
 
-function WorkspaceHeader({ model }: Readonly<{ model: ContractCheckRouteModel }>) {
+function WorkspaceHeader({
+  model,
+  locale,
+  copy,
+}: Readonly<{
+  model: ContractCheckRouteModel;
+  locale: ProductLocale;
+  copy: ContractCheckCopy;
+}>) {
   return (
     <header className={styles.siteHeader}>
-      <Link className={styles.wordmark} href="/kr/" aria-label="SignedPrice home">
-        signedprice
+      <Link
+        className={styles.wordmark}
+        href={localizedSeoulHref('/kr/seoul/check/', locale)}
+        aria-label={copy.wordmarkLabel}
+      >
+        <BrandWordmark compact />
       </Link>
-      <SiteNavigation model={model} />
+      <SiteNavigation model={model} locale={locale} copy={copy} />
     </header>
   );
 }
@@ -60,29 +92,33 @@ function OfferPanel({
   draft,
   errors,
   onEdit,
+  locale,
+  copy,
 }: Readonly<{
   id: 'a' | 'b';
   draft: ContractOfferDraft;
   errors: ContractOfferErrors | undefined;
   onEdit: (field: keyof ContractOfferDraft, value: string) => void;
+  locale: ProductLocale;
+  copy: ContractCheckCopy;
 }>) {
-  const title = `Offer ${id.toUpperCase()}`;
+  const title = `${copy.offer.title} ${id.toUpperCase()}`;
   return (
     <fieldset className={styles.offerPanel}>
       <legend><span>{id === 'a' ? '01' : '02'}</span>{title}</legend>
       <label>
-        <span>Label <small>Optional</small></span>
+        <span>{copy.offer.label} <small>{copy.offer.optional}</small></span>
         <input
           autoComplete="off"
           maxLength={80}
           name={`${id}-label`}
           onChange={(event) => onEdit('label', event.currentTarget.value)}
-          placeholder={id === 'a' ? 'Near the station' : 'More space'}
+          placeholder={id === 'a' ? copy.offer.firstPlaceholder : copy.offer.secondPlaceholder}
           value={draft.label}
         />
       </label>
       <label>
-        <span>Deposit <small>KRW</small></span>
+        <span>{copy.offer.deposit} <small>KRW</small></span>
         <input
           aria-describedby={errorDescriptionIds(id, 'depositWon', errors)}
           aria-invalid={errors?.depositWon !== undefined || errors?.offer !== undefined}
@@ -94,12 +130,12 @@ function OfferPanel({
         />
         {errors?.depositWon === undefined ? null : (
           <small className={styles.error} id={`${id}-depositWon-error`}>
-            {errors.depositWon}
+            {localizeContractText(errors.depositWon, locale)}
           </small>
         )}
       </label>
       <label>
-        <span>Monthly rent <small>KRW</small></span>
+        <span>{copy.offer.monthlyRent} <small>KRW</small></span>
         <input
           aria-describedby={errorDescriptionIds(id, 'monthlyRentWon', errors)}
           aria-invalid={errors?.monthlyRentWon !== undefined || errors?.offer !== undefined}
@@ -111,83 +147,168 @@ function OfferPanel({
         />
         {errors?.monthlyRentWon === undefined ? null : (
           <small className={styles.error} id={`${id}-monthlyRentWon-error`}>
-            {errors.monthlyRentWon}
+            {localizeContractText(errors.monthlyRentWon, locale)}
           </small>
         )}
       </label>
       {errors?.offer === undefined ? null : (
-        <p className={styles.error} id={`${id}-offer-error`}>{errors.offer}</p>
+        <p className={styles.error} id={`${id}-offer-error`}>
+          {localizeContractText(errors.offer, locale)}
+        </p>
       )}
     </fieldset>
   );
 }
 
-function rangeLabel(rate: AppliedConversionRate): string {
-  if (rate.rangeState === 'held-below') return 'Held at the lowest verified anchor';
-  if (rate.rangeState === 'held-above') return 'Held at the highest verified anchor';
-  return 'Within verified anchors';
+function rangeLabel(
+  rangeState: 'observed' | 'held-below' | 'held-above',
+  copy: ContractCheckCopy,
+): string {
+  return rangeState === 'observed'
+    ? copy.range.observed
+    : copy.range.held;
+}
+
+function ResultEmpty({
+  invalid,
+  copy,
+}: Readonly<{ invalid: boolean; copy: ContractCheckCopy }>) {
+  return (
+    <div className={styles.resultEmpty} data-result-state={invalid ? 'invalid' : 'blank'}>
+      <h3 data-empty-title="true">
+        {invalid ? copy.empty.invalidTitle : copy.empty.blankTitle}
+      </h3>
+      <p data-empty-reason="true">
+        {invalid
+          ? copy.empty.invalidReason
+          : copy.empty.blankReason}
+      </p>
+      <p data-empty-action="true">
+        {invalid
+          ? copy.empty.invalidAction
+          : copy.empty.blankAction}
+      </p>
+    </div>
+  );
+}
+
+function auditValue(
+  comparison: RentContractComparison,
+  offerIndex: 0 | 1,
+  row: 'rate' | 'difference' | 'conversion' | 'normalized',
+  copy: ContractCheckCopy,
+): string {
+  const normalizedOffer = comparison.offers[offerIndex];
+  if (row === 'rate') {
+    return `${(normalizedOffer.appliedRate.annualRate * 100).toFixed(2)}% · ${rangeLabel(normalizedOffer.appliedRate.rangeState, copy)}`;
+  }
+  if (row === 'difference') {
+    return won.format(normalizedOffer.offer.deposit - comparison.referenceDeposit);
+  }
+  if (row === 'conversion') {
+    return won.format(Math.round(
+      normalizedOffer.normalizedMonthlyCost - normalizedOffer.offer.monthlyRent,
+    ));
+  }
+  return won.format(normalizedOffer.roundedNormalizedMonthlyCost);
+}
+
+export function ContractCheckResult({
+  comparison,
+  curve,
+  locale = 'en',
+}: Readonly<{
+  comparison: RentContractComparison;
+  curve: KoreaConversionCurveProjection;
+  locale?: ProductLocale;
+}>) {
+  const copy = CONTRACT_CHECK_COPY[locale];
+  const calculationRows = [
+    ['rate', copy.result.rows[0]],
+    ['difference', copy.result.rows[1]],
+    ['conversion', copy.result.rows[2]],
+    ['normalized', copy.result.rows[3]],
+  ] as const;
+
+  return (
+    <div className={styles.resultBody}>
+      <div className={styles.verdictPanel}>
+        <p className={styles.verdict}>
+          {comparison.winner === 'equal'
+            ? copy.result.equal
+            : `${copy.result.lowerPrefix} ${comparison.winner.toUpperCase()} ${copy.result.lowerSuffix}`}
+        </p>
+        <p className={styles.difference}>
+          {won.format(comparison.roundedMonthlyDifference)}<span> {copy.result.differenceSuffix}</span>
+        </p>
+        <p className={styles.reference}>
+          {copy.result.referenceDeposit} · {won.format(comparison.referenceDeposit)}
+        </p>
+        {comparison.rankingFlipped ? (
+          <p className={styles.flip}>{copy.result.flipped}</p>
+        ) : null}
+      </div>
+
+      <ConversionCurve comparison={comparison} curve={curve} locale={locale} />
+
+      <div className={styles.auditTableWrap}>
+        <table className={styles.auditTable}>
+          <caption>{copy.result.traceCaption}</caption>
+          <thead>
+            <tr><th scope="col">{copy.result.calculation}</th><th scope="col">A</th><th scope="col">B</th></tr>
+          </thead>
+          <tbody>
+            {calculationRows.map(([id, label]) => (
+              <tr data-calculation-row={id} key={id}>
+                <th scope="row">{label}</th>
+                <td>{auditValue(comparison, 0, id, copy)}</td>
+                <td>{auditValue(comparison, 1, id, copy)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p className={styles.principalBoundary}>
+        {copy.result.principalBoundary}
+      </p>
+    </div>
+  );
 }
 
 function ResultPanel({
   state,
-  resultRef,
+  curve,
+  locale,
+  copy,
 }: Readonly<{
   state: ReturnType<typeof createContractCheckState>;
-  resultRef: React.RefObject<HTMLElement | null>;
+  curve: KoreaConversionCurveProjection;
+  locale: ProductLocale;
+  copy: ContractCheckCopy;
 }>) {
+  const invalid = Object.keys(state.errors).length > 0;
   return (
     <section
       aria-live="polite"
       className={styles.resultPanel}
       data-result-focus-target="true"
-      ref={resultRef}
-      tabIndex={-1}
     >
-      <header><span>03</span><h2>Result</h2></header>
+      <header><span>03</span><h2>{copy.result.heading}</h2></header>
       {state.result === null ? (
-        <div className={styles.resultEmpty}>
-          <p>Enter both offers.</p>
-          <p>We normalize their deposit difference with the verified conversion curve.</p>
-        </div>
+        <ResultEmpty invalid={invalid} copy={copy} />
       ) : (
-        <div className={styles.resultBody}>
-          <p className={styles.verdict}>
-            {state.result.winner === 'equal'
-              ? 'The offers are effectively equal.'
-              : `Offer ${state.result.winner.toUpperCase()} has the lower normalized cost.`}
-          </p>
-          <p className={styles.difference}>
-            {won.format(state.result.roundedMonthlyDifference)}<span> / month difference</span>
-          </p>
-          <dl>
-            {state.result.offers.map((offer) => (
-              <div key={offer.offer.id}>
-                <dt>Offer {offer.offer.id.toUpperCase()}</dt>
-                <dd>{won.format(offer.roundedNormalizedMonthlyCost)}</dd>
-                <dd>{(offer.appliedRate.annualRate * 100).toFixed(2)}% / year</dd>
-                <dd>{rangeLabel(offer.appliedRate)}</dd>
-              </div>
-            ))}
-          </dl>
-          {state.result.rankingFlipped ? (
-            <p className={styles.flip}>The lower listed rent is not the lower normalized cost.</p>
-          ) : null}
-        </div>
+        <ContractCheckResult comparison={state.result} curve={curve} locale={locale} />
       )}
     </section>
   );
 }
 
-function ReadyWorkspace({ model }: Readonly<{
+function ReadyWorkspace({ model, locale, copy }: Readonly<{
   model: Extract<ContractCheckRouteModel, { status: 'ready' }>;
+  locale: ProductLocale;
+  copy: ContractCheckCopy;
 }>) {
   const [state, dispatch] = useReducer(contractCheckReducer, undefined, createContractCheckState);
-  const resultRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    if (state.result !== null) resultRef.current?.focus();
-  }, [state.result]);
-
   const selectedCurve = model.curves.find(
     (curve): curve is KoreaConversionCurveProjection => curve.housingType === state.housingType,
   );
@@ -196,33 +317,32 @@ function ReadyWorkspace({ model }: Readonly<{
     <>
       <main className={styles.main}>
         <section className={styles.hero}>
-          <p>Seoul · Contract decision</p>
-          <h1>Which rent offer<br />actually costs less?</h1>
-          <p>Compare two deposit-and-rent offers on the same monthly basis.</p>
+          <p>{copy.hero.eyebrow}</p>
+          <h1>{copy.hero.headingLead}<br />{copy.hero.headingTail}</h1>
+          <p>{copy.hero.description}</p>
         </section>
 
         <form
           className={styles.form}
           data-contract-check-form="ready"
-          onSubmit={(event) => {
-            event.preventDefault();
-            if (selectedCurve !== undefined) {
-              dispatch({ type: 'CALCULATE', curve: selectedCurve });
-            }
-          }}
+          onSubmit={(event) => event.preventDefault()}
         >
           <div className={styles.housingType}>
-            <label htmlFor="contract-housing-type">Housing type</label>
+            <label htmlFor="contract-housing-type">{copy.housingType}</label>
             <select
               id="contract-housing-type"
-              onChange={(event) => dispatch({
-                type: 'SET_HOUSING_TYPE',
-                housingType: event.currentTarget.value as 'apartment' | 'officetel',
-              })}
+              onChange={(event) => {
+                const housingType = event.currentTarget.value as 'apartment' | 'officetel';
+                dispatch({
+                  type: 'SET_HOUSING_TYPE',
+                  housingType,
+                  curve: model.curves.find((curve) => curve.housingType === housingType),
+                });
+              }}
               value={state.housingType}
             >
-              <option value="apartment">Apartment</option>
-              <option value="officetel">Officetel</option>
+              <option value="apartment">{copy.apartment}</option>
+              <option value="officetel">{copy.officetel}</option>
             </select>
           </div>
 
@@ -233,66 +353,77 @@ function ReadyWorkspace({ model }: Readonly<{
                 errors={state.errors[offerId]}
                 id={offerId}
                 key={offerId}
+                locale={locale}
+                copy={copy}
                 onEdit={(field, value) => dispatch({
                   type: 'EDIT_OFFER_FIELD',
                   offerId,
                   field,
                   value,
+                  curve: selectedCurve,
                 })}
               />
             ))}
-            <ResultPanel resultRef={resultRef} state={state} />
+            {selectedCurve === undefined ? null : (
+              <ResultPanel curve={selectedCurve} state={state} locale={locale} copy={copy} />
+            )}
           </div>
 
           {state.errors.form === undefined ? null : (
-            <p className={styles.formError} role="alert">{state.errors.form}</p>
+            <p className={styles.formError} role="alert">
+              {localizeContractText(state.errors.form, locale)}
+            </p>
           )}
           <div className={styles.actions}>
-            <button type="submit" disabled={selectedCurve === undefined}>Compare offers</button>
-            <button type="button" onClick={() => dispatch({ type: 'RESET' })}>Reset</button>
+            <button type="button" onClick={() => dispatch({ type: 'RESET' })}>{copy.reset}</button>
           </div>
         </form>
 
         <section className={styles.evidence} aria-labelledby="contract-evidence-heading">
-          <header><span>04</span><h2 id="contract-evidence-heading">Evidence boundary</h2></header>
+          <header><span>04</span><h2 id="contract-evidence-heading">{copy.evidence.heading}</h2></header>
           <dl>
-            <div><dt>Source</dt><dd>{model.disclosure.source}</dd></div>
-            <div><dt>Basis</dt><dd>{model.disclosure.basis}</dd></div>
-            <div><dt>Period</dt><dd>{model.disclosure.period}</dd></div>
-            <div><dt>Method / boundary</dt><dd>{model.disclosure.boundary}</dd></div>
+            <div><dt>{copy.evidence.source}</dt><dd>{localizeContractText(model.disclosure.source, locale)}</dd></div>
+            <div><dt>{copy.evidence.basis}</dt><dd>{localizeContractText(model.disclosure.basis, locale)}</dd></div>
+            <div><dt>{copy.evidence.period}</dt><dd>{model.disclosure.period}</dd></div>
+            <div><dt>{copy.evidence.methodBoundary}</dt><dd>{localizeContractText(model.disclosure.boundary, locale)}</dd></div>
           </dl>
         </section>
 
-        <nav className={styles.contextLinks} aria-label="More market evidence">
+        <nav className={styles.contextLinks} aria-label={copy.moreEvidence}>
           <Link href={model.secondaryCheckHref}>
-            Check one offer against its local distribution
+            {copy.localDistribution}
           </Link>
-          <Link href="/kr/seoul/explore">Explore Seoul market evidence</Link>
+          <Link href={localizedSeoulHref('/kr/seoul/explore/', locale)}>{copy.explore}</Link>
         </nav>
       </main>
       <footer className={styles.footer}>
-        <p>Decision support from reported contracts. Not legal or financial advice.</p>
+        {copy.footer.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
       </footer>
     </>
   );
 }
 
-export function ContractCheckWorkspace({ model, entry }: Readonly<{
+export function ContractCheckWorkspace({ model, locale = 'en' }: Readonly<{
   model: ContractCheckRouteModel;
-  entry?: ReactNode;
+  locale?: ProductLocale;
 }>) {
+  const copy = CONTRACT_CHECK_COPY[locale];
   return (
     <div className={styles.page}>
-      <WorkspaceHeader model={model} />
-      {entry}
+      <WorkspaceHeader model={model} locale={locale} copy={copy} />
       {model.status === 'ready' ? (
-        <ReadyWorkspace model={model} />
+        <ReadyWorkspace model={model} locale={locale} copy={copy} />
       ) : (
         <main className={styles.unavailable} data-evidence-state="unavailable">
-          <p>Seoul · Contract decision</p>
-          <h1>Comparison paused.</h1>
-          <p>{model.message}</p>
-          <p>The calculator will return when its evidence contract is ready.</p>
+          <p>{copy.unavailable.eyebrow}</p>
+          <h1 data-empty-title="true">{copy.unavailable.title}</h1>
+          <p data-empty-reason="true">{localizeContractText(model.message, locale)}</p>
+          <p data-empty-action="true">
+            {copy.unavailable.actionLead}{' '}
+            <Link href={localizedSeoulHref('/kr/seoul/explore/', locale)}>
+              {copy.unavailable.actionLink}
+            </Link>
+          </p>
         </main>
       )}
     </div>

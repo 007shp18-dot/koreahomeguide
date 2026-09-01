@@ -312,6 +312,17 @@ const routeSectionCopy = {
 
 const routeMetadataCopy = {
   market(profile: MarketProfile): Metadata {
+    if (profile.id === 'kr-seoul') {
+      return indexableMetadata({
+        path: '/kr/seoul/',
+        title: 'Seoul property intelligence | signedprice',
+        description: 'Review verified Seoul housing contract evidence, comparison tools and publication limits.',
+        languageAlternates: {
+          en: '/kr/seoul/',
+          ko: '/ko/kr/seoul/',
+        },
+      });
+    }
     return {
       title: `${profile.cityName} property intelligence | signedprice`,
       description: `Review ${profile.cityName} Phase 1 product depth, source posture, supported property intents and current data-rights limits.`,

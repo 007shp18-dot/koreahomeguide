@@ -1,8 +1,8 @@
 .page {
-  --building-ground: #f3f2f2;
-  --building-ink: #201e1d;
-  --building-muted: #5d5958;
-  --building-accent: #1d4ed8;
+  --building-ground: var(--canvas);
+  --building-ink: var(--ink);
+  --building-muted: var(--muted);
+  --building-accent: var(--accent);
   min-height: 100dvh;
   color: var(--building-ink);
   background: var(--building-ground);

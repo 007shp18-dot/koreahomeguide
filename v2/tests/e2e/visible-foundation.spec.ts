@@ -99,7 +99,7 @@ test('navigates the first signedprice decision flow', async ({ page }) => {
 
   await page.getByRole('navigation', { name: 'Public evidence sections' })
     .getByRole('link', { name: 'Check' }).click();
-  await expect(page).toHaveURL(/\/kr\/$/);
+  await expect(page).toHaveURL(/\/kr\/seoul\/check\/$/);
   await expect(
     page.getByRole('heading', {
       level: 1,
@@ -129,7 +129,18 @@ for (const route of publicRoutes) {
     } else {
       await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
     }
-    await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(0);
+    const alternates = page.locator('link[rel="alternate"][hreflang]');
+    if ('alternates' in route && route.alternates) {
+      await expect(alternates).toHaveCount(3);
+      await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute(
+        'href', `https://www.signedprice.com${route.canonical}`,
+      );
+      await expect(page.locator('link[rel="alternate"][hreflang="ko"]')).toHaveAttribute(
+        'href', `https://www.signedprice.com/ko${route.canonical}`,
+      );
+    } else {
+      await expect(alternates).toHaveCount(0);
+    }
     await expect(page.locator('input[type="email"]')).toHaveCount(0);
     await expectNoHorizontalPageOverflow(page);
   });
@@ -141,8 +152,13 @@ test('desktop exposes live Seoul evidence in the 1366 by 768 first viewport', as
   test.skip(testInfo.project.name !== 'desktop-chromium');
   await page.goto('/');
 
+  const cityTabs = page.getByRole('tablist', { name: 'Choose a city' });
+  await expect(cityTabs).toBeInViewport({ ratio: 1 });
+  for (const city of ['Seoul', 'Singapore', 'Dubai']) {
+    await expect(cityTabs.getByRole('tab', { name: city })).toBeInViewport({ ratio: 1 });
+  }
   const liveSeoul = page.locator('[data-seoul-live="ready"]');
-  await expect(liveSeoul).toBeInViewport({ ratio: 1 });
+  await expect(liveSeoul).toBeVisible();
   for (const label of ['New contracts', 'Renewals']) {
     await expect(liveSeoul.getByText(label, { exact: true })).toBeInViewport({ ratio: 1 });
   }
@@ -170,44 +186,33 @@ test('mobile primary navigation remains tappable and reaches the market flow', a
   );
   expectTargetsNotToOverlap(primaryBoxes);
 
-  const intentButtons = page.locator('.intent-tabs__trigger');
-  await expect(intentButtons).toHaveCount(3);
-  const intentBoxes = await expectContainedTouchTargets(
+  const marketTabs = page.getByRole('tablist', { name: 'Choose a city' }).getByRole('tab');
+  await expect(marketTabs).toHaveCount(3);
+  const marketTabBoxes = await expectContainedTouchTargets(
     page,
-    await intentButtons.all(),
+    await marketTabs.all(),
   );
-  expectTargetsNotToOverlap(intentBoxes);
+  expectTargetsNotToOverlap(marketTabBoxes);
 
-  await page.getByRole('button', { name: /Buy/ }).tap();
-  await expect(page.getByRole('button', { name: /Buy/ })).toHaveAttribute(
-    'aria-pressed',
+  await page.getByRole('tab', { name: 'Singapore' }).tap();
+  await expect(page.getByRole('tab', { name: 'Singapore' })).toHaveAttribute(
+    'aria-selected',
     'true',
   );
-  await expect(page.getByRole('heading', { name: 'Buy — market depth' }))
-    .toBeVisible();
-  await expect(page.getByRole('link', { name: 'Buy in Seoul' })).toHaveAttribute(
-    'href',
-    '/kr/seoul/buy/',
-  );
+  await expect(page.getByRole('tabpanel', { name: 'Singapore' })).toBeVisible();
 
-  await page.getByRole('button', { name: /Invest/ }).tap();
-  await expect(page.getByRole('heading', { name: 'Invest — market depth' }))
-    .toBeVisible();
-  await expect(page.getByRole('link', { name: 'Invest in Seoul' })).toHaveAttribute(
-    'href',
-    '/kr/seoul/invest/',
+  await page.getByRole('tab', { name: 'Dubai' }).tap();
+  await expect(page.getByRole('tabpanel', { name: 'Dubai' })).toContainText(
+    'DLD and RERA display-rights clearance is incomplete.',
   );
-
-  for (const marketAction of await page.locator('.market-card__intent-link').all()) {
-    await expectContainedTouchTargets(page, [marketAction]);
-  }
 
   await primaryNavigation.getByRole('link', { name: 'Markets' }).tap();
   await expect(page).toHaveURL(/\/#markets$/);
-  await expect(page.getByRole('heading', { name: 'Invest — market depth' }))
-    .toBeInViewport();
+  await expect(page.getByRole('tablist', { name: 'Choose a city' })).toBeInViewport();
 
-  const exploreSeoul = page.getByRole('link', { name: 'Explore Seoul' });
+  await page.getByRole('tab', { name: 'Seoul' }).tap();
+  const exploreSeoul = page.getByRole('tabpanel', { name: 'Seoul' })
+    .getByRole('link', { name: /Explore/ });
   await expectContainedTouchTargets(page, [exploreSeoul]);
   await exploreSeoul.tap();
   await expect(page).toHaveURL(/\/kr\/seoul\/explore\/$/);
@@ -223,7 +228,7 @@ test('mobile primary navigation remains tappable and reaches the market flow', a
   expectTargetsNotToOverlap(actionBoxes);
 
   await actionsRegion.getByRole('link', { name: 'Check' }).tap();
-  await expect(page).toHaveURL(/\/kr\/$/);
+  await expect(page).toHaveURL(/\/kr\/seoul\/check\/$/);
   await expect(
     page.getByRole('heading', {
       level: 1,
@@ -238,6 +243,18 @@ test('keyboard traversal activates the Home to Seoul to Check flow', async ({
   test.skip(testInfo.project.name !== 'desktop-chromium');
   await page.goto('/');
 
+  const seoulTab = page.getByRole('tab', { name: 'Seoul' });
+  await seoulTab.focus();
+  await page.keyboard.press('ArrowRight');
+  await expect(page.getByRole('tab', { name: 'Singapore' })).toBeFocused();
+  await expect(page.getByRole('tabpanel', { name: 'Singapore' })).toBeVisible();
+  await page.keyboard.press('End');
+  await expect(page.getByRole('tab', { name: 'Dubai' })).toBeFocused();
+  await expect(page.getByRole('tabpanel', { name: 'Dubai' })).toBeVisible();
+  await page.keyboard.press('Home');
+  await expect(seoulTab).toBeFocused();
+  await expect(page.getByRole('tabpanel', { name: 'Seoul' })).toBeVisible();
+
   const exploreSeoul = page.getByRole('link', { name: 'Explore Seoul' });
   await tabTo(page, exploreSeoul);
   await page.keyboard.press('Enter');
@@ -247,7 +264,7 @@ test('keyboard traversal activates the Home to Seoul to Check flow', async ({
     .getByRole('link', { name: 'Check' });
   await tabTo(page, checkDeposit);
   await page.keyboard.press('Enter');
-  await expect(page).toHaveURL(/\/kr\/$/);
+  await expect(page).toHaveURL(/\/kr\/seoul\/check\/$/);
 });
 
 for (const path of [

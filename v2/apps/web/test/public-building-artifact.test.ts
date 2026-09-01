@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
@@ -106,11 +107,63 @@ describe('public building artifact boundary', () => {
       records: [{
         buildingId: 'gangnam-evidence-tower', districtSlug: 'gangnam-gu',
         neighborhoodName: '역삼동', latitude: 37.5001, longitude: 127.0352,
+        areaBands: [{ band: '45–55㎡' }],
       }],
+    });
+    expect(artifact.records[0]?.recentContracts[0]).toMatchObject({
+      floor: null,
+      floorMissingReason: 'not_retained_in_v2_snapshot',
     });
     expect(Object.isFrozen(artifact)).toBe(true);
     expect(Object.isFrozen(artifact.records)).toBe(true);
     expect(Object.isFrozen(artifact.records[0]?.recentContracts)).toBe(true);
+  });
+
+  it('projects every v2 recent contract to the explicit legacy floor-missing state', () => {
+    const artifact = parse();
+
+    expect(artifact.records[0]?.recentContracts).toEqual([
+      {
+        filedMonth: '2026-07', areaSqm: 50, contractType: 'new',
+        depositWon: 320_000_000, deal: 'jeonse', monthlyRentWon: 0,
+        floor: null, floorMissingReason: 'not_retained_in_v2_snapshot',
+      },
+      {
+        filedMonth: '2026-06', areaSqm: 49.5, contractType: 'renewal',
+        depositWon: 315_000_000, deal: 'jeonse', monthlyRentWon: 0,
+        floor: null, floorMissingReason: 'not_retained_in_v2_snapshot',
+      },
+    ]);
+  });
+
+  it('does not silently accept floor fields under the strict v2 contract', () => {
+    const source = structuredClone(signedArtifact()) as Record<string, unknown>;
+    const record = (source.records as Record<string, unknown>[])[0]!;
+    const contract = (record.recentContracts as Record<string, unknown>[])[0]!;
+    contract.floor = 12;
+    contract.floorMissingReason = null;
+    resign(source);
+
+    expect(() => parse(source)).toThrow('Invalid public building artifact.');
+  });
+
+  it('keeps all 294 installed v2 buildings readable through the legacy projection', () => {
+    const source = JSON.parse(readFileSync(
+      new URL('../data/public-building-summary.json', import.meta.url),
+      'utf8',
+    )) as Record<string, unknown>;
+    const provenance = source.provenance as Record<string, unknown>;
+    const artifact = parsePublicBuildingSummaryArtifact(source, {
+      marketId: 'kr-seoul',
+      period: provenance.period as string,
+    });
+
+    expect(artifact.totalRecordCount).toBe(294);
+    expect(artifact.records).toHaveLength(294);
+    expect(artifact.records.every(({ recentContracts }) => recentContracts.every((contract) => (
+      contract.floor === null
+      && contract.floorMissingReason === 'not_retained_in_v2_snapshot'
+    )))).toBe(true);
   });
 
   it.each([

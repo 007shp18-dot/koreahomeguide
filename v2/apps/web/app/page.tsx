@@ -10,24 +10,22 @@ import type { Metadata } from 'next';
 import { buildSingaporeEntryModel } from '../lib/singapore/route-model.server';
 import { singaporeSnapshotRepositoryFromEnvironment } from '../lib/singapore/snapshot-repository.server';
 import { buildSeoulLiveModel } from '../lib/public-market/seoul-live-model.server';
-import { SeoulLive } from '../components/public-market/seoul-live';
 
 export const metadata: Metadata = homepageCopy.metadata;
 
 export default async function Home() {
   const singaporeRepository = await singaporeSnapshotRepositoryFromEnvironment();
   const presentation = buildHomepagePresentation(buildSingaporeEntryModel(singaporeRepository));
+  const seoul = buildSeoulLiveModel();
   const copy = presentation.copy;
   return (
     <div id="top">
       <SiteHeader copy={copy.header} />
       <main>
-        <SeoulLive model={buildSeoulLiveModel()} mode="global" />
-
         <HomeMarketBrowser
           copy={copy}
-          groups={presentation.groups}
           markets={presentation.markets}
+          seoul={seoul}
         />
 
         <section

@@ -99,6 +99,11 @@ describe('/kr/seoul/explore/ route contract', () => {
     expect(metadata.robots).toEqual({ index: true, follow: true });
     expect(Reflect.get(metadata, 'alternates')).toEqual({
       canonical: 'https://www.signedprice.com/kr/seoul/explore/',
+      languages: {
+        en: 'https://www.signedprice.com/kr/seoul/explore/',
+        ko: 'https://www.signedprice.com/ko/kr/seoul/explore/',
+        'x-default': 'https://www.signedprice.com/kr/seoul/explore/',
+      },
     });
     expect(markup).toContain('Selected · Dongjak-gu');
     expect(markup).toContain('role="img"');

@@ -117,6 +117,11 @@ describe('Korea public route model', () => {
       includesNewAndRenewal: true,
       includesUnknownContractType: true,
       includesUnknownRecordStatus: true,
+      nextUpdate: null,
+    });
+    expect(model?.methodology).toEqual({
+      label: 'Seven-month reported period · 45–55㎡ · zero-rent jeonse',
+      disclosure: 'Amounts are reported refundable deposits; canceled contracts and contracts with monthly rent are excluded. The declared period may include filing-in-progress records; comparison claims require completed windows with retained counts.',
     });
     expect(buildKoreaPublicRouteModel('unknown', {
       source: artifact(),
@@ -155,7 +160,8 @@ describe('Korea public SSR routes', () => {
     expect(html).toContain('20 reported contracts');
     expect(html).toContain('2026-01/2026-07');
     expect(html).toContain('MOLIT reported rental contracts');
-    expect(html).toContain('Seven completed months · 45–55㎡ · zero-rent jeonse');
+    expect(html).toContain('Seven-month reported period · 45–55㎡ · zero-rent jeonse');
+    expect(html).toContain('The declared period may include filing-in-progress records');
     expect(html).toContain('refundable deposit');
     expect(html).toContain('href="/kr/check/seoul"');
     expect(html).toContain('href="/kr/seoul/explore"');
@@ -171,38 +177,13 @@ describe('Korea public SSR routes', () => {
     expect(html).not.toContain('/kr/seoul/tools/rent-check');
   });
 
-  it('renders the contract decision workspace on home and the quote on check', async () => {
+  it('redirects the legacy Korea entry to canonical Contract Check', async () => {
     useArtifact();
     useAreaArtifact();
     useConversionArtifact();
-    const home = renderToStaticMarkup(await KoreaHomePage());
-    const check = renderToStaticMarkup(await KoreaCheckPage({
-      params: Promise.resolve({ area: 'seoul' }),
-    }));
-    expect((home.match(/<(?:input|select)\b/g) ?? [])).toHaveLength(7);
-    expect(home).toContain('Offer A');
-    expect(home).toContain('Offer B');
-    expect(home).toContain('Which rent offer');
-    expect(home).toContain('MOLIT reported rental contracts');
-    expect(home).toContain('href="/kr/seoul/tools/rent-check"');
-    expect(home).toContain('Seoul live');
-    expect(home).toContain('New contracts');
-    expect(home).toContain('Renewals');
-    expect(home).toContain('href="/kr/seoul/news"');
-    expect((check.match(/<(?:input|select)\b/g) ?? [])).toHaveLength(2);
-  });
-
-  it('fails closed on home without conversion evidence instead of returning a 404', async () => {
-    useAreaArtifact();
-    const home = renderToStaticMarkup(await KoreaHomePage());
-
-    expect(home).toContain('Verified conversion evidence is unavailable.');
-    expect(home).toContain('data-evidence-state="unavailable"');
-    expect(home).not.toMatch(/<(?:input|select|button)\b/);
-    expect(home).not.toMatch(/annualRate|pairCount|72,291|29\.4%/i);
-    expect(home).toContain('Seoul live');
-    expect(home).toContain('href="/kr/seoul/explore"');
-    expect(home).toContain('href="/kr/seoul/news"');
+    await expect(KoreaHomePage()).rejects.toMatchObject({
+      digest: expect.stringContaining('/kr/seoul/check/'),
+    });
   });
 
   it('withholds sparse evidence recursively without monetary or marker leakage', async () => {

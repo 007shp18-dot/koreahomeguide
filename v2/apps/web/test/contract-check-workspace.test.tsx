@@ -1,8 +1,12 @@
 import type { KoreaConversionCurveProjection } from '@signedprice/korea-rent';
+import { compareRentOffers } from '@signedprice/market-core';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, test } from 'vitest';
 
-import { ContractCheckWorkspace } from '../components/contract-check/contract-check-workspace';
+import {
+  ContractCheckResult,
+  ContractCheckWorkspace,
+} from '../components/contract-check/contract-check-workspace';
 import type { ContractCheckRouteModel } from '../lib/contract-check/route-model.server';
 
 const curves: readonly KoreaConversionCurveProjection[] = Object.freeze([
@@ -27,8 +31,8 @@ const curves: readonly KoreaConversionCurveProjection[] = Object.freeze([
 ]);
 
 const navigation = Object.freeze([
-  Object.freeze({ label: 'Check', href: '/kr/', available: true }),
-  Object.freeze({ label: 'Explore', href: '/kr/seoul/explore', available: true }),
+  Object.freeze({ label: 'Check', href: '/kr/seoul/check/', available: true }),
+  Object.freeze({ label: 'Explore', href: '/kr/seoul/explore/', available: true }),
   Object.freeze({ label: 'Guide', href: '/kr/seoul/guide/', available: true }),
 ] as const);
 
@@ -41,9 +45,16 @@ const readyModel: ContractCheckRouteModel = Object.freeze({
     period: '2026-03/2026-08',
     boundary: 'Rates are interpolated only within verified anchors.',
   }),
-  secondaryCheckHref: '/kr/seoul/tools/rent-check',
+  secondaryCheckHref: '/kr/seoul/tools/rent-check/',
   navigation,
 });
+
+function auditCells(html: string, row: string): readonly string[] {
+  const rowMarkup = html.match(
+    new RegExp(`<tr data-calculation-row="${row}">([\\s\\S]*?)<\\/tr>`),
+  )?.[1] ?? '';
+  return [...rowMarkup.matchAll(/<td>(.*?)<\/td>/g)].map((match) => match[1] ?? '');
+}
 
 describe('Contract Check workspace SSR contract', () => {
   test('renders the primary decision flow in A, B, result order', () => {
@@ -59,6 +70,41 @@ describe('Contract Check workspace SSR contract', () => {
     expect(html).toContain('data-contract-check-form="ready"');
     expect(html).toContain('data-result-focus-target="true"');
     expect(html).toContain('aria-live="polite"');
+    expect(html).not.toMatch(/<button[^>]*type="submit"|Compare offers/);
+  });
+
+  test('renders HTML curve labels, filed-deposit markers, and four audit rows', () => {
+    const comparison = compareRentOffers({
+      curve: curves[0]!,
+      offers: [
+        { id: 'a', housingType: 'apartment', deposit: 120_000_000, monthlyRent: 100_000 },
+        { id: 'b', housingType: 'apartment', deposit: 30_000_000, monthlyRent: 300_000 },
+      ],
+    });
+    const html = renderToStaticMarkup(
+      <ContractCheckResult comparison={comparison} curve={curves[0]!} />,
+    );
+    const svg = html.match(/<svg[\s\S]*?<\/svg>/)?.[0] ?? '';
+
+    expect(svg).not.toContain('<text');
+    expect(html).toContain('data-curve-label="true"');
+    expect(html).toContain('data-offer-marker="a"');
+    expect(html).toContain('data-marker-deposit="120000000"');
+    expect(html).toContain('data-offer-marker="b"');
+    expect(html).toContain('data-marker-deposit="30000000"');
+    expect(html).toContain('data-range-segment="held"');
+    expect(html).toContain('Outside measured range — held, not extended.');
+    expect((html.match(/data-calculation-row=/g) ?? [])).toHaveLength(4);
+    expect(html.indexOf('Rate at filed deposit')).toBeLessThan(html.indexOf('Difference from reference deposit'));
+    expect(html.indexOf('Difference from reference deposit')).toBeLessThan(html.indexOf('Difference × annual rate ÷ 12'));
+    expect(html.indexOf('Difference × annual rate ÷ 12')).toBeLessThan(html.indexOf('Monthly rent + row 3'));
+    expect(auditCells(html, 'rate')).toEqual([
+      '4.00% · Outside measured range — held, not extended.',
+      '5.00% · Within measured range',
+    ]);
+    expect(auditCells(html, 'difference')).toEqual(['₩90,000,000', '₩0']);
+    expect(auditCells(html, 'conversion')).toEqual(['₩300,000', '₩0']);
+    expect(auditCells(html, 'normalized')).toEqual(['₩400,000', '₩300,000']);
   });
 
   test('discloses evidence and keeps the single-offer tool secondary', () => {
@@ -92,6 +138,10 @@ describe('Contract Check workspace SSR contract', () => {
 
     expect(html).toContain('Verified conversion evidence is unavailable.');
     expect(html).toContain('data-evidence-state="unavailable"');
+    expect(html).toContain('data-empty-title="true"');
+    expect(html).toContain('data-empty-reason="true"');
+    expect(html).toContain('data-empty-action="true"');
+    expect(html).not.toContain('Comparison paused.');
     expect(html).not.toMatch(/<(?:input|select|button)\b/);
     expect(html).not.toMatch(/annualRate|pairCount|72,291|29\.4%/i);
   });

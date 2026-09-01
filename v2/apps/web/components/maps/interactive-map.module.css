@@ -6,19 +6,25 @@
 .canvas {
   width: 100%;
   min-height: clamp(360px, 56vw, 620px);
-  border: 2px solid #201e1d;
-  background: #fafafa;
+  border: 2px solid var(--ink);
+  background: var(--surface-strong);
 }
 
 .fallback {
   position: absolute;
   inset: 0;
   display: grid;
-  background: #fafafa;
+  background: var(--surface-strong);
 }
 
 .fallbackHidden {
   display: none;
+}
+
+.markerStatus {
+  margin: 0.65rem 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
 }
 
 .placeWorkspace {
@@ -45,26 +51,26 @@
 .toolbar button {
   min-height: 48px;
   padding: 0.75rem;
-  border: 2px solid #201e1d;
+  border: 2px solid var(--ink);
   border-radius: 0;
   font: inherit;
 }
 
 .toolbar button {
-  color: white;
-  background: #1d4ed8;
+  color: var(--surface-strong);
+  background: var(--accent);
   border-left: 0;
   font-weight: 850;
 }
 
 .toolbar button:disabled {
-  color: #5d5958;
-  background: #dedcdc;
+  color: var(--muted);
+  background: var(--line);
 }
 
 .toolbar p {
   min-height: 1.4em;
-  color: #5d5958;
+  color: var(--muted);
   font-size: 0.76rem;
 }
 
@@ -73,8 +79,8 @@
   padding: 1.25rem;
   display: grid;
   place-items: center;
-  border: 2px solid #201e1d;
-  background: repeating-linear-gradient(-45deg, #f3f2f2 0 9px, #dedcdc 9px 10px);
+  border: 2px solid var(--ink);
+  background: repeating-linear-gradient(-45deg, var(--canvas) 0 9px, var(--line) 9px 10px);
   text-align: center;
 }
 
@@ -85,6 +91,6 @@
 
   .toolbar button {
     border-top: 0;
-    border-left: 2px solid #201e1d;
+    border-left: 2px solid var(--ink);
   }
 }

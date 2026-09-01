@@ -52,7 +52,7 @@ export function GuideIndex() {
         </section>
 
         <nav className={styles.actions} aria-label="Guide evidence links">
-          <Link href="/kr/">Open Contract Check</Link>
+          <Link href="/kr/seoul/check/">Open Contract Check</Link>
           <Link href="/kr/seoul/explore/">Open District Explorer</Link>
           <Link href="/trust/">Read SignedPrice Trust</Link>
         </nav>
