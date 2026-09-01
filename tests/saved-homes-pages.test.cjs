@@ -176,7 +176,7 @@ test('Rent Check consumes saved-home recheck values without putting prices in th
   const savedSource = fs.readFileSync('saved-rent-quotes.js', 'utf8');
   assert.match(comparisonSource, /new URLSearchParams\(\{ lawdCd:quote\.districtCode, type:quote\.propertyType, from:sourcePath \}\)/);
   assert.doesNotMatch(comparisonSource, /new URLSearchParams\(\{[^}]+(?:depositWon|monthlyRentWon|areaSqm)/);
-  for (const file of ['app.js','tools/seoul-rent-check/app.js',]) {
+  for (const file of ['app.js','tools/seoul-rent-check/app.js']) {
     const source = fs.readFileSync(file, 'utf8');
     assert.match(source, /takeRecheckPrefill\(window\.sessionStorage/);
     assert.match(source, /savedQuoteId:acquisitionContext\.savedQuoteId\|\|null/, file);
@@ -187,7 +187,7 @@ test('Rent Check consumes saved-home recheck values without putting prices in th
 test('studio results keep their user-facing type when saved while APIs use the official fallback', () => {
   const savedSource = fs.readFileSync('saved-rent-quotes.js', 'utf8');
   assert.match(savedSource, /savedPropertyType/);
-  for (const file of ['app.js','tools/seoul-rent-check/app.js',]) {
+  for (const file of ['app.js','tools/seoul-rent-check/app.js']) {
     const source = fs.readFileSync(file, 'utf8');
     assert.match(source, /savedPropertyType:type\.value/, file);
     assert.match(source, /propertyType:mapped\.officialType/, file);
