@@ -1,0 +1,81 @@
+/* Value check — scoped to .value-check-page. Colours come from styles.css tokens. */
+.value-check-page .vc-shell{display:flex;flex-direction:column;gap:22px}
+.value-check-page .vc-hero h1{margin:8px 0 0;letter-spacing:-.03em}
+.value-check-page .vc-hero p{margin:10px 0 0;max-width:74ch;color:var(--ink-soft,#475569);line-height:1.7}
+
+.value-check-page .vc-inputs{
+  background:var(--surface,#fff);border:1px solid var(--line-strong,#cbd5e1);
+  border-radius:var(--radius-lg,16px);padding:20px 22px;
+  box-shadow:var(--shadow,0 8px 24px rgba(15,23,42,.055));
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px 18px}
+.value-check-page .vc-field{display:flex;flex-direction:column;gap:6px}
+.value-check-page .vc-field>span{font-size:11px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted,#64748b)}
+.value-check-page .vc-field input,.value-check-page .vc-field select{
+  font:inherit;font-variant-numeric:tabular-nums;padding:10px 12px;
+  border:1px solid var(--line,#e5e7eb);border-radius:var(--radius-sm,8px);
+  background:var(--surface-soft,#f8fafc);color:var(--ink,#111827);width:100%}
+.value-check-page .vc-field input:focus-visible,.value-check-page .vc-field select:focus-visible{
+  outline:2px solid var(--accent,#2563eb);outline-offset:1px}
+
+/* the number, with its error band attached */
+.value-check-page .vc-result{
+  background:var(--surface,#fff);border:1px solid var(--line-strong,#cbd5e1);
+  border-radius:var(--radius-lg,16px);overflow:hidden;
+  box-shadow:var(--shadow,0 8px 24px rgba(15,23,42,.055))}
+.value-check-page .vc-result-main{padding:26px 26px 22px;display:flex;flex-wrap:wrap;
+  gap:26px;align-items:flex-end;justify-content:space-between}
+.value-check-page .vc-label{font-size:11px;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--accent,#2563eb)}
+.value-check-page .vc-figure{font-size:clamp(36px,6vw,52px);font-weight:700;letter-spacing:-.045em;
+  line-height:1;font-variant-numeric:tabular-nums;color:var(--ink-strong,#0f172a);margin:8px 0 0}
+.value-check-page .vc-range{font-size:15px;color:var(--muted,#64748b);margin-top:9px;
+  font-variant-numeric:tabular-nums}
+.value-check-page .vc-meta{font-size:13px;color:var(--muted-light,#94a3b8);margin-top:4px;
+  font-variant-numeric:tabular-nums}
+
+/* the error rate sits beside the number, not in a footnote */
+.value-check-page .vc-acc{
+  flex:0 0 auto;border:1px solid var(--caution-line,#f2c94c);background:var(--caution-soft,#fff7e6);
+  border-radius:var(--radius-md,12px);padding:14px 16px;max-width:270px}
+.value-check-page .vc-acc b{display:block;font-size:24px;font-variant-numeric:tabular-nums;
+  color:var(--caution,#92400e);letter-spacing:-.02em}
+.value-check-page .vc-acc span{display:block;font-size:12px;line-height:1.55;
+  color:var(--caution,#92400e);margin-top:4px}
+
+.value-check-page .vc-missing{margin:0;padding:18px 26px;border-top:1px solid var(--line,#e5e7eb);
+  background:var(--surface-soft,#f8fafc);font-size:14px;line-height:1.7;color:var(--ink-soft,#475569)}
+
+/* asking price comparison */
+.value-check-page .vc-ask{padding:20px 26px 24px;border-top:1px solid var(--line,#e5e7eb)}
+.value-check-page .vc-ask .vc-field{max-width:280px}
+.value-check-page .vc-verdict{margin-top:18px;border-radius:var(--radius-md,12px);
+  padding:18px 20px;display:flex;flex-wrap:wrap;gap:18px;align-items:baseline}
+.value-check-page .vc-verdict b{font-size:30px;font-weight:700;letter-spacing:-.03em;
+  font-variant-numeric:tabular-nums;line-height:1}
+.value-check-page .vc-verdict small{display:block;font-size:12px;margin-top:4px;opacity:.85}
+.value-check-page .vc-verdict p{margin:0;flex:1 1 260px;font-size:14.5px;line-height:1.7}
+.value-check-page .vc-within-error{background:var(--surface-muted,#f1f5f9);
+  border:1px solid var(--line,#e5e7eb);color:var(--ink-soft,#475569)}
+.value-check-page .vc-within-error b{color:var(--muted,#64748b)}
+.value-check-page .vc-notable{background:var(--caution-soft,#fff7e6);
+  border:1px solid var(--caution-line,#f2c94c);color:var(--caution,#92400e)}
+.value-check-page .vc-notable b{color:var(--caution,#92400e)}
+.value-check-page .vc-large{background:var(--danger-soft,#fef2f2);
+  border:1px solid var(--danger-line,#fca5a5);color:var(--danger,#991b1b)}
+.value-check-page .vc-large b{color:var(--danger,#991b1b)}
+
+/* how to read a gap */
+.value-check-page .vc-rules{background:var(--surface,#fff);border:1px solid var(--line,#e5e7eb);
+  border-radius:var(--radius-lg,16px);padding:22px 24px}
+.value-check-page .vc-rules h2{margin:0 0 4px;font-size:16px}
+.value-check-page .vc-rules>p{margin:0 0 16px;font-size:13.5px;color:var(--muted,#64748b)}
+.value-check-page .vc-rule{display:grid;grid-template-columns:96px 1fr;gap:16px;
+  padding:11px 0;border-top:1px solid var(--line,#e5e7eb);font-size:14px}
+.value-check-page .vc-rule span:first-child{font-weight:700;font-variant-numeric:tabular-nums}
+.value-check-page .vc-rule span:last-child{color:var(--ink-soft,#475569);line-height:1.6}
+
+.value-check-page .vc-caution{background:var(--caution-soft,#fff7e6);
+  border:1px solid var(--caution-line,#f2c94c);color:var(--caution,#92400e);
+  border-radius:var(--radius-lg,16px);padding:18px 22px;font-size:13.5px;line-height:1.7}
+.value-check-page .vc-method{font-size:12.5px;line-height:1.75;color:var(--muted-light,#94a3b8)}

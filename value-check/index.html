@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Apartment Value Check | KoreaHomeGuide</title>
+  <meta name="description" content="An estimated sale price for a Seoul apartment, published with the error it can be wrong by. Compare an asking price against filed transactions and see whether the gap means anything.">
+  <link rel="canonical" href="https://koreahomeguide.com/value-check/">
+  <link rel="alternate" hreflang="en" href="https://koreahomeguide.com/value-check/">
+  <link rel="alternate" hreflang="x-default" href="https://koreahomeguide.com/value-check/">
+  <script defer src="/privacy-consent.js"></script>
+  <script defer src="/mobile-navigation.js"></script>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/value-check/value-check.css">
+</head>
+<body class="core-ui value-check-page">
+  <header class="compact-header"><a class="brand" href="/"><span class="brand-mark">K</span><span>KoreaHomeGuide</span></a><nav><a href="/explore/">Explore</a><a href="/tools/seoul-rent-check/">Rent Check</a><a href="/value-check/">Value Check</a><a href="/buy-or-rent/">Buy or Rent</a><a href="/net-proceeds/">Net Proceeds</a><a href="/guides/">Guides</a></nav><div class="header-actions"><a class="language-link" href="/zh/">中文</a></div></header>
+
+  <main class="page-shell vc-shell">
+
+    <section class="vc-hero">
+      <span class="eyebrow">SIGNEDVALUE</span>
+      <h1>이 호가, 말이 되나요?</h1>
+      <p>신고된 매매 실거래로 추정한 가격과, <strong>그 추정이 틀릴 수 있는 범위</strong>를 같이 보여줍니다. 오차를 감추면 숫자를 정답으로 오해하게 되니까요.</p>
+    </section>
+
+    <p id="vcStatus" class="market-status" aria-live="polite"></p>
+
+    <section class="vc-inputs" aria-label="단지 선택">
+      <label class="vc-field"><span>자치구</span><select id="inGu"></select></label>
+      <label class="vc-field"><span>법정동</span><select id="inDong"></select></label>
+      <label class="vc-field"><span>단지</span><select id="inBuilding"></select></label>
+      <label class="vc-field"><span>전용면적 (㎡)</span><input id="inArea" type="number" min="10" max="300" step="0.1" value="76.8"></label>
+      <label class="vc-field"><span>층</span><input id="inFloor" type="number" min="-2" max="70" step="1" value="9"></label>
+    </section>
+
+    <section class="vc-result" aria-live="polite">
+      <div class="vc-result-main">
+        <div>
+          <div class="vc-label">SignedValue 추정가</div>
+          <div class="vc-figure" id="vcFigure">—</div>
+          <div class="vc-range" id="vcRange"></div>
+          <div class="vc-meta" id="vcMeta"></div>
+        </div>
+        <div class="vc-acc">
+          <b id="vcAccuracy">—</b>
+          <span>중앙값 오차. 절반의 집에서 이보다 적게, 절반에서 이보다 크게 틀립니다.</span>
+          <span id="vcAccuracyBasis" style="margin-top:6px;opacity:.8"></span>
+        </div>
+      </div>
+
+      <p class="vc-missing" id="vcMissing" hidden>
+        이 단지·평형은 신고된 매매가 2건 미만이라 추정을 내지 않습니다.
+        동네 평균으로 대신 채우는 대신 <strong>비워 둡니다</strong>.
+      </p>
+
+      <div class="vc-ask" id="vcAskBox" hidden>
+        <label class="vc-field">
+          <span>호가를 넣어보세요</span>
+          <input id="inAsking" type="text" inputmode="numeric" placeholder="예: 34억 5000만" autocomplete="off">
+        </label>
+        <div class="vc-verdict" id="vcVerdict" hidden>
+          <div><b id="vcGap"></b><small id="vcGapLabel"></small></div>
+          <p id="vcMeaning"></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="vc-rules">
+      <h2>차이를 읽는 법</h2>
+      <p>추정에는 오차가 있으므로, 작은 차이는 정보가 아닙니다.</p>
+      <div class="vc-rule"><span id="vcNoise">5%</span><span>미만이면 우리 오차 범위 안입니다. 이 차이로는 아무것도 판단할 수 없습니다.</span></div>
+      <div class="vc-rule"><span>~<span id="vcNotable">15%</span></span><span>차이가 있습니다. 층·향·리모델링·조망처럼 신고 자료에 없는 이유가 있는지 확인해 볼 만합니다.</span></div>
+      <div class="vc-rule"><span>15% 초과</span><span>크게 벗어납니다. 이유를 반드시 확인하세요. 급매일 수도, 우리가 놓친 요소일 수도 있습니다.</span></div>
+    </section>
+
+    <div class="vc-caution">
+      <strong>추정이지 감정평가가 아닙니다.</strong> 현장 방문 없이 신고된 계약만으로 계산하며,
+      리모델링·향·조망·소음·관리 상태를 알지 못합니다. 같은 단지 같은 평형이라도 동·라인·층에 따라
+      실제 가격은 달라집니다. 대출·세금·계약 판단은 전문가와 확인하세요.
+    </div>
+
+    <p class="vc-method">
+      국토교통부 아파트 매매 실거래 신고자료 36개월치, 서울 25개 자치구 19만 1,067건으로 적합했습니다
+      (해제 거래 제외). 단지와 전용면적 구간별로 시장이 매기는 웃돈을 따로 추정하며, 신고 매매가
+      2건 미만인 구간은 추정하지 않습니다. 오차는 학습 기간 이후의 실제 거래로만 채점했습니다.
+    </p>
+
+  </main>
+
+  <footer class="page-footer"><strong>KoreaHomeGuide</strong><small>Official reported transaction data for market reference. <a href="/about/">Method and limitations</a> · <a href="/privacy/">Privacy</a>.</small></footer>
+
+  <script src="/signed-value.js"></script>
+  <script src="/value-check/app.js"></script>
+</body>
+</html>

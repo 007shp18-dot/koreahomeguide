@@ -55,6 +55,18 @@
     <priority>0.85</priority>
   </url>
   <url>
+    <loc>https://koreahomeguide.com/value-check/</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://koreahomeguide.com/net-proceeds/</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://koreahomeguide.com/community/</loc>
     <lastmod>2026-08-29</lastmod>
     <changefreq>monthly</changefreq>

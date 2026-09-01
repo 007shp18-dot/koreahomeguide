@@ -1,0 +1,53 @@
+/* Net proceeds — scoped to .net-proceeds-page. Tokens come from styles.css. */
+.net-proceeds-page .np-shell{display:flex;flex-direction:column;gap:22px}
+.net-proceeds-page .np-hero h1{margin:8px 0 0;letter-spacing:-.03em}
+.net-proceeds-page .np-hero p{margin:10px 0 0;max-width:74ch;color:var(--ink-soft,#475569);line-height:1.7}
+
+.net-proceeds-page .np-inputs{background:var(--surface,#fff);border:1px solid var(--line-strong,#cbd5e1);
+  border-radius:var(--radius-lg,16px);padding:20px 22px;box-shadow:var(--shadow,0 8px 24px rgba(15,23,42,.055));
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px 18px}
+.net-proceeds-page .np-field{display:flex;flex-direction:column;gap:6px}
+.net-proceeds-page .np-field>span{font-size:11px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted,#64748b)}
+.net-proceeds-page .np-field input[type=text],.net-proceeds-page .np-field input[type=number]{
+  font:inherit;font-variant-numeric:tabular-nums;padding:10px 12px;border:1px solid var(--line,#e5e7eb);
+  border-radius:var(--radius-sm,8px);background:var(--surface-soft,#f8fafc);color:var(--ink,#111827);width:100%}
+.net-proceeds-page .np-field input:focus-visible{outline:2px solid var(--accent,#2563eb);outline-offset:1px}
+.net-proceeds-page .np-field small{font-size:12px;color:var(--muted-light,#94a3b8)}
+.net-proceeds-page .np-check{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ink-soft,#475569)}
+
+.net-proceeds-page .np-sheet{background:var(--surface,#fff);border:1px solid var(--line-strong,#cbd5e1);
+  border-radius:var(--radius-lg,16px);overflow:hidden;box-shadow:var(--shadow,0 8px 24px rgba(15,23,42,.055))}
+.net-proceeds-page .np-row{display:flex;justify-content:space-between;gap:18px;align-items:baseline;
+  padding:13px 24px;border-bottom:1px solid var(--line,#e5e7eb);font-size:15px}
+.net-proceeds-page .np-row span:last-child{font-variant-numeric:tabular-nums;font-weight:600;
+  color:var(--ink,#111827);white-space:nowrap}
+.net-proceeds-page .np-row span:first-child{color:var(--ink-soft,#475569)}
+.net-proceeds-page .np-row small{display:block;font-size:12px;color:var(--muted-light,#94a3b8);margin-top:3px}
+.net-proceeds-page .np-plus span:last-child{color:var(--ink-strong,#0f172a)}
+.net-proceeds-page .np-uncertain{background:var(--caution-soft,#fff7e6)}
+.net-proceeds-page .np-uncertain span:first-child,
+.net-proceeds-page .np-uncertain small{color:var(--caution,#92400e)}
+.net-proceeds-page .np-uncertain span:last-child{color:var(--caution,#92400e)}
+
+.net-proceeds-page .np-total{padding:24px 24px 26px;background:var(--ink-strong,#0f172a);color:#fff;
+  display:flex;flex-wrap:wrap;gap:18px;align-items:flex-end;justify-content:space-between}
+.net-proceeds-page .np-total .eyebrow{color:#94a3b8}
+.net-proceeds-page .np-figure{font-size:clamp(34px,5.6vw,50px);font-weight:700;letter-spacing:-.045em;
+  line-height:1;font-variant-numeric:tabular-nums;margin-top:8px}
+.net-proceeds-page .np-figure.np-negative{color:#fca5a5}
+
+.net-proceeds-page .np-gain{background:var(--surface,#fff);border:1px solid var(--line,#e5e7eb);
+  border-radius:var(--radius-lg,16px);padding:22px 24px}
+.net-proceeds-page .np-gain h2{margin:0 0 6px;font-size:17px}
+.net-proceeds-page .np-gain>p{margin:0 0 16px;font-size:14.5px;line-height:1.7;color:var(--ink-soft,#475569)}
+.net-proceeds-page .np-track{height:22px;border-radius:6px;background:var(--surface-muted,#f1f5f9);
+  border:1px solid var(--line,#e5e7eb);overflow:hidden}
+.net-proceeds-page .np-track span{display:block;height:100%;background:var(--success,#166534)}
+.net-proceeds-page .np-legend{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:12px;font-size:13.5px;
+  color:var(--muted,#64748b);font-variant-numeric:tabular-nums}
+.net-proceeds-page .np-legend b{color:var(--ink,#111827)}
+
+.net-proceeds-page .np-caution{background:var(--caution-soft,#fff7e6);border:1px solid var(--caution-line,#f2c94c);
+  color:var(--caution,#92400e);border-radius:var(--radius-lg,16px);padding:18px 22px;font-size:13.5px;line-height:1.7}
+.net-proceeds-page .np-method{font-size:12.5px;line-height:1.75;color:var(--muted-light,#94a3b8)}
