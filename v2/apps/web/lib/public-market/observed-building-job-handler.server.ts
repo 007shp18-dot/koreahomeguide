@@ -59,16 +59,15 @@ export function createObservedBuildingJobHandler(
     if (request.method !== 'POST') {
       return json({ status: 'error', code: 'method_not_allowed' }, 405, { allow: 'POST' });
     }
+    if (dependencies.environment !== 'preview') {
+      return json({ status: 'error', code: 'preview_only' }, 403);
+    }
     if (dependencies.token === undefined || dependencies.token.length < 24) {
       return json({ status: 'error', code: 'configuration_missing' }, 503);
     }
     if (!exactToken(request.headers.get('authorization'), dependencies.token)) {
       return json({ status: 'error', code: 'unauthorized' }, 401);
     }
-    if (dependencies.environment !== 'preview') {
-      return json({ status: 'error', code: 'preview_only' }, 403);
-    }
-
     let body: unknown;
     try {
       body = await request.json();

@@ -59,10 +59,16 @@ describe('observed building internal job handler', () => {
 
   it('refuses production and a missing server configuration', async () => {
     const production = createObservedBuildingJobHandler(dependencies({ environment: 'production' }) as never);
+    const productionWithoutToken = createObservedBuildingJobHandler(dependencies({
+      environment: 'production', token: undefined,
+    }) as never);
     const unconfigured = createObservedBuildingJobHandler(dependencies({ token: undefined }) as never);
 
     expect((await production(request({ action: 'batch', referenceInstant, cursor: 0 }))).status)
       .toBe(403);
+    expect((await productionWithoutToken(new Request('https://production.example', {
+      method: 'POST', body: '{}',
+    }))).status).toBe(403);
     expect((await unconfigured(request({ action: 'batch', referenceInstant, cursor: 0 }))).status)
       .toBe(503);
   });
