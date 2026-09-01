@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useReducer } from 'react';
+import { useReducer, useState } from 'react';
 
 import {
   areaExplorerReducer,
@@ -11,6 +11,7 @@ import {
 import { NaverDistrictMap } from '../maps/naver-district-map';
 import type {
   ExploreDistrictModel,
+  ExploreBuildingModel,
   PublicAreaExploreModel,
 } from '../../lib/public-market/area-route-types';
 import styles from './area-explorer.module.css';
@@ -48,8 +49,30 @@ function ReadyAreaExplorer({
     districtSlugs: Object.freeze(model.districts.map(({ slug }) => slug)),
   });
   const [state, dispatch] = useReducer(areaExplorerReducer, initial);
+  const [selectedNeighborhood, setSelectedNeighborhood] = useState<string>('all');
+  const [selectedBuildingId, setSelectedBuildingId] = useState<string | null>(null);
+  const [visibleBuildingCount, setVisibleBuildingCount] = useState(10);
   const selected = model.districts.find(({ slug }) => slug === state.selectedSlug)
     ?? model.districts[0]!;
+  const districtBuildings = model.buildingAvailability.status === 'ready'
+    ? model.buildingAvailability.buildings.filter(({ districtSlug }) => districtSlug === selected.slug)
+    : [];
+  const neighborhoods = [...new Map(districtBuildings.map((building) => [
+    building.neighborhoodId, building.neighborhoodName,
+  ] as const))];
+  const filteredBuildings = districtBuildings.filter((building) => (
+    selectedNeighborhood === 'all' || building.neighborhoodId === selectedNeighborhood
+  ));
+  const visibleBuildings = filteredBuildings.slice(0, visibleBuildingCount);
+  const selectedBuilding = districtBuildings.find(({ id }) => id === selectedBuildingId) ?? null;
+
+  function selectDistrict(slug: string): void {
+    dispatch({ type: 'select', slug });
+    setSelectedNeighborhood('all');
+    setSelectedBuildingId(null);
+    setVisibleBuildingCount(10);
+    router.replace(`/kr/seoul/explore/?district=${slug}`, { scroll: false });
+  }
 
   return (
     <section className={styles.explorer} aria-labelledby="area-explorer-heading">
@@ -72,6 +95,7 @@ function ReadyAreaExplorer({
             <h2 id="area-map-heading">District median refundable jeonse deposit</h2>
           </div>
           <NaverDistrictMap
+            key={`${selected.slug}:${selectedBuildingId ?? 'none'}`}
             clientId={naverMapClientId}
             districts={model.districts.map((district) => ({
               slug: district.slug,
@@ -80,6 +104,17 @@ function ReadyAreaExplorer({
               latitude: district.latitude,
               longitude: district.longitude,
             }))}
+            selectedDistrict={selected}
+            buildings={visibleBuildings.map((building) => ({
+              id: building.id,
+              title: building.name,
+              href: building.href,
+              addressQuery: `서울특별시 ${selected.nameKo} ${building.neighborhoodName} ${building.name}`,
+              latitude: building.latitude,
+              longitude: building.longitude,
+            }))}
+            onSelectDistrict={selectDistrict}
+            onSelectBuilding={setSelectedBuildingId}
             fallback={<svg
               className={styles.map}
               viewBox="0 0 720 560"
@@ -117,8 +152,7 @@ function ReadyAreaExplorer({
                 data-map-state={district.state}
                 aria-hidden="true"
                 onPointerUp={() => {
-                  dispatch({ type: 'select', slug: district.slug });
-                  router.push(district.href);
+                  selectDistrict(district.slug);
                 }}
               >
                 <title>{mapTitle(district)}</title>
@@ -155,8 +189,67 @@ function ReadyAreaExplorer({
         </section>
 
         <section className={styles.rail} aria-labelledby="district-table-heading">
+          <div className={styles.buildingBrowser} data-building-browser={selected.slug}>
+            <div className={styles.sectionHeading}>
+              <p>02 / Neighborhoods &amp; buildings</p>
+              <h2>{selected.nameEn} building evidence</h2>
+            </div>
+            {model.buildingAvailability.status === 'not_loaded' ? (
+              <div className={styles.buildingEmpty}>
+                <strong>Verified building artifact is not loaded.</strong>
+                <span>District evidence stays available while the building snapshot is installed.</span>
+              </div>
+            ) : districtBuildings.length === 0 ? (
+              <div className={styles.buildingEmpty}>
+                <strong>No building passes the five-contract publication rule here yet.</strong>
+                <span>Nothing synthetic is substituted.</span>
+              </div>
+            ) : (
+              <>
+                <div className={styles.neighborhoods} aria-label="Neighborhood filter">
+                  <button
+                    type="button"
+                    aria-pressed={selectedNeighborhood === 'all'}
+                    onClick={() => { setSelectedNeighborhood('all'); setVisibleBuildingCount(10); }}
+                  >All · {districtBuildings.length}</button>
+                  {neighborhoods.map(([id, name]) => (
+                    <button
+                      key={id}
+                      type="button"
+                      aria-pressed={selectedNeighborhood === id}
+                      onClick={() => { setSelectedNeighborhood(id); setVisibleBuildingCount(10); }}
+                    >{name}</button>
+                  ))}
+                </div>
+                <ul className={styles.buildingList}>
+                  {visibleBuildings.map((building) => (
+                    <li key={building.id}>
+                      <button
+                        type="button"
+                        aria-pressed={selectedBuilding?.id === building.id}
+                        onClick={() => setSelectedBuildingId(building.id)}
+                      >
+                        <span><strong>{building.name}</strong><small>{building.neighborhoodName} · {building.housingType}</small></span>
+                        <span><strong>{building.medianLabel}</strong><small>{building.sampleLabel}</small></span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+                {visibleBuildings.length < filteredBuildings.length ? (
+                  <button
+                    type="button"
+                    className={styles.moreBuildings}
+                    onClick={() => setVisibleBuildingCount((count) => count + 10)}
+                  >Show 10 more buildings</button>
+                ) : null}
+                {selectedBuilding === null ? null : (
+                  <BuildingEvidencePanel building={selectedBuilding} />
+                )}
+              </>
+            )}
+          </div>
           <div className={styles.sectionHeading}>
-            <p>02 / Complete table</p>
+            <p>03 / Complete table</p>
             <h2 id="district-table-heading">All 25 districts</h2>
           </div>
           <div className={styles.tableWrap}>
@@ -187,6 +280,7 @@ function ReadyAreaExplorer({
                           aria-current={isSelected ? 'true' : undefined}
                           onPointerEnter={() => dispatch({ type: 'select', slug: district.slug })}
                           onFocus={() => dispatch({ type: 'select', slug: district.slug })}
+                          onClick={(event) => { event.preventDefault(); selectDistrict(district.slug); }}
                         >
                           <strong>{district.nameEn}</strong>
                           <span lang="ko">{district.nameKo}</span>
@@ -218,6 +312,27 @@ function ReadyAreaExplorer({
 
       <PublicSourceBoundary model={model.source} />
     </section>
+  );
+}
+
+function groupEvidence(sample: string, median: string | null): string {
+  return median === null ? `Not published · ${sample}` : `${median} · ${sample}`;
+}
+
+function BuildingEvidencePanel({ building }: Readonly<{ building: ExploreBuildingModel }>) {
+  return (
+    <article className={styles.buildingPanel} aria-live="polite" data-building-panel={building.id}>
+      <p>Selected building</p>
+      <h3>{building.name}</h3>
+      <span>{building.neighborhoodName} · {building.sampleLabel}</span>
+      <dl>
+        <div><dt>All</dt><dd>{building.medianLabel}</dd></div>
+        <div><dt>New</dt><dd>{groupEvidence(building.newSampleLabel, building.newMedianLabel)}</dd></div>
+        <div><dt>Renewal</dt><dd>{groupEvidence(building.renewalSampleLabel, building.renewalMedianLabel)}</dd></div>
+        <div><dt>Unclassified</dt><dd>{building.unknownContractCount}</dd></div>
+      </dl>
+      <Link href={building.href}>Open full building evidence</Link>
+    </article>
   );
 }
 
