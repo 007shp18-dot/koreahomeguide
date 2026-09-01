@@ -15,7 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ];
   try {
     if (buildKoreaPublicRouteModel('seoul')?.summary.published === true) {
-      paths.push('/kr/', '/kr/check/seoul/', '/kr/seoul/');
+      paths.push('/kr/', '/kr/check/seoul/');
     }
   } catch {
     // Evidence-dependent routes stay out of the sitemap when validation fails.
