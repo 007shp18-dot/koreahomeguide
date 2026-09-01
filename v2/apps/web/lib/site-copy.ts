@@ -23,12 +23,12 @@ const intentLabels = {
 } as const satisfies Record<Intent, string>;
 
 const productDepthLabels = {
-  full_product: 'Full product',
+  full_product: 'Evidence hub',
   market_intelligence: 'Market intelligence',
 } as const satisfies Record<MarketProfile['productDepth'], string>;
 
 const capabilityStateLabels = {
-  available: 'Available',
+  available: 'Live evidence',
   limited: 'Limited',
   rights_blocked: 'Rights blocked',
 } as const satisfies Record<CapabilityState, string>;
