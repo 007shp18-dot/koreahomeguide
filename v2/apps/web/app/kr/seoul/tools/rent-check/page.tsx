@@ -8,6 +8,7 @@ import {
   type RentCheckInput,
 } from '../../../../../lib/rent-check/client-state';
 import { resolveExplorerRentCheckContext } from '../../../../../lib/rent-check/explorer-context';
+import { indexableMetadata } from '../../../../../lib/public-metadata';
 import type { SiteFooterModel, SiteHeaderModel } from '../../../../../lib/site-copy';
 import styles from './rent-check.module.css';
 
@@ -15,11 +16,11 @@ type RentCheckPageProps = {
   readonly searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
-export const metadata: Metadata = {
+export const metadata: Metadata = indexableMetadata({
+  path: '/kr/seoul/tools/rent-check/',
   title: 'Seoul Rent Check | signedprice',
   description: 'Compare a Seoul rent quote with compatible official reported contracts.',
-  robots: { index: false, follow: true },
-};
+});
 
 const header: SiteHeaderModel = {
   brand: 'signedprice',

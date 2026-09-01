@@ -206,10 +206,10 @@ SignedPrice needs its own setup because it is a separate domain/product.
 - `/robots.txt` allows crawling and declares the standalone sitemap and host
 - `/sitemap.xml` contains approved SignedPrice URLs only
 - English/Korean reciprocal metadata is present on paired routes
-- `/ads.txt` is an environment-backed route
+- `/ads.txt` publishes the registered SignedPrice publisher record
 - `/privacy/` and `/contact/` publish a real operator/contact only when both verified environment values are present; otherwise both are honest `noindex` states and stay out of the sitemap
 - every shared footer exposes Privacy and Contact routes
-- the AdSense client is disabled unless the explicit enable flag, valid SignedPrice publisher ID, and verified operator profile are all present
+- the AdSense client is disabled unless the explicit enable flag and verified operator profile are both present
 - even when enabled, the advertising script URL is withheld until an affirmative browser consent choice; rejection keeps property evidence available and the choice remains reopenable
 - no KoreaHomeGuide canonical or AdSense identity is reused
 
@@ -218,20 +218,19 @@ SignedPrice needs its own setup because it is a separate domain/product.
 Set these Production environment variables with the user's real SignedPrice values:
 
 ```text
-SIGNEDPRICE_ADSENSE_PUBLISHER_ID=pub-1234567890123456
 SIGNEDPRICE_OPERATOR_NAME=<verified legal/operator name>
 SIGNEDPRICE_PRIVACY_CONTACT=<verified privacy email>
 ```
 
 Keep `SIGNEDPRICE_ADSENSE_ENABLED` absent or `false` through site review and consent-platform review. Set it to `true` only when advertising is authorized to load. The built-in choice UI is a technical pre-load boundary; it must not be described as a Google-certified CMP without separate verification.
 
-The route deliberately returns `503` when the value is missing or invalid. With a valid 16-digit `pub-...` ID it returns:
+The public publisher identifier is fixed in code so a stale deployment variable cannot replace it. `/ads.txt` returns:
 
 ```text
-google.com, pub-1234567890123456, DIRECT, f08c47fec0942fa0
+google.com, pub-8103101324753433, DIRECT, f08c47fec0942fa0
 ```
 
-Do not request AdSense review while `/ads.txt` is 503. Do not invent or reuse a publisher ID.
+Do not request AdSense review until that exact record is live and crawlable.
 
 ### External setup order
 
@@ -240,14 +239,13 @@ Do not request AdSense review while `/ads.txt` is 503. Do not invent or reuse a 
 3. Confirm `https://www.signedprice.com/sitemap.xml` is 200 and contains only canonical SignedPrice URLs.
 4. Add a Search Console **Domain property** for `signedprice.com` and verify it through DNS.
 5. Submit `https://www.signedprice.com/sitemap.xml`.
-6. Inspect/request indexing for `/`, `/kr/seoul/`, `/kr/seoul/check/`, `/kr/seoul/explore/`, one district page, and `/ko/kr/seoul/`.
+6. Inspect/request indexing for `/`, `/kr/seoul/`, `/kr/seoul/tools/rent-check/`, `/kr/seoul/explore/`, one district page, and `/ko/kr/seoul/`.
 7. Validate canonical and reciprocal hreflang in rendered HTML.
 8. Add `signedprice.com` as a **new site** in the existing AdSense account.
-9. Set `SIGNEDPRICE_ADSENSE_PUBLISHER_ID` in Vercel Production.
-10. Confirm `/ads.txt` is 200 and crawlable before requesting review.
-11. Add the AdSense verification/meta or Auto Ads code supplied for this exact account if Google requests that verification method.
-12. Set the verified operator/privacy variables, confirm `/privacy/` and `/contact/` are indexable, and complete any required certified CMP configuration before monetization.
-13. Set `SIGNEDPRICE_ADSENSE_ENABLED=true` only after the preceding approval and consent steps are complete.
+9. Confirm `/ads.txt` is 200 with the exact registered record before requesting review.
+10. Add the AdSense verification/meta or Auto Ads code supplied for this exact account if Google requests that verification method.
+11. Set the verified operator/privacy variables, confirm `/privacy/` and `/contact/` are indexable, and complete any required certified CMP configuration before monetization.
+12. Set `SIGNEDPRICE_ADSENSE_ENABLED=true` only after the preceding approval and consent steps are complete.
 
 Official references:
 
@@ -263,7 +261,6 @@ Relevant application variables currently referenced:
 - `DATA_GO_KR_SERVICE_KEY`
 - `GOOGLE_MAPS_API_KEY`
 - `NAVER_MAP_CLIENT_ID`
-- `SIGNEDPRICE_ADSENSE_PUBLISHER_ID` — newly required for ads.txt/AdSense
 - `SIGNEDPRICE_ADSENSE_ENABLED` — explicit advertising-script activation gate; defaults disabled
 - `SIGNEDPRICE_OPERATOR_NAME` — verified operator identity for Privacy/Contact
 - `SIGNEDPRICE_PRIVACY_CONTACT` — verified privacy email for Privacy/Contact

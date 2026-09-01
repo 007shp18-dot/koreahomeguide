@@ -67,7 +67,7 @@ function WorkspaceHeader({
     <header className={styles.siteHeader}>
       <Link
         className={styles.wordmark}
-        href={localizedSeoulHref('/kr/seoul/check/', locale)}
+        href="/"
         aria-label={copy.wordmarkLabel}
       >
         <BrandWordmark compact />

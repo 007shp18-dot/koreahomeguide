@@ -21,29 +21,19 @@ test('builds deterministic active redirects only for verified exact English dest
   const second = buildMigrationManifest({ root });
   assert.deepEqual(second, first);
   assert.equal(first.schemaVersion, 1);
-  assert.equal(first.entries.length, 22);
-  assert.deepEqual(first.entries.slice(0, 2), [
-    {
-      sourcePath: '/explore/',
-      targetPath: '/kr/seoul/explore/',
-      destination: 'https://www.signedprice.com/kr/seoul/explore/',
-      cohort: 1,
-      locale: 'en',
-      statusCode: 301,
-      active: true,
-      evidence: 'cohort-0-target-ready',
-    },
+  assert.equal(first.entries.length, 21);
+  assert.deepEqual(first.entries[0],
     {
       sourcePath: '/tools/seoul-rent-check/',
-      targetPath: '/kr/seoul/check/',
-      destination: 'https://www.signedprice.com/kr/seoul/check/',
+      targetPath: '/kr/seoul/tools/rent-check/',
+      destination: 'https://www.signedprice.com/kr/seoul/tools/rent-check/',
       cohort: 1,
       locale: 'en',
       statusCode: 301,
       active: true,
-      evidence: 'cohort-0-target-ready',
-    },
-  ]);
+      evidence: 'working-rent-check-target',
+    });
+  assert.ok(!first.entries.some(({ sourcePath }) => sourcePath === '/explore/'));
   assert.ok(first.entries.some(({ sourcePath }) => (
     sourcePath === '/rent/gangnam-gu/apartment/'
   )));
@@ -64,6 +54,7 @@ test('keeps unmatched tools, guides, root, and Chinese routes explicitly retaine
   const manifest = buildMigrationManifest({ root });
   const retained = new Map(manifest.retained.map((entry) => [entry.sourcePath, entry.reason]));
   assert.equal(retained.get('/guides/'), 'guide-discovery-parity-pending');
+  assert.equal(retained.get('/explore/'), 'full-explorer-parity-pending');
   assert.equal(retained.get('/compare/'), 'no-equivalent-signedprice-intent-page');
   assert.equal(retained.get('/buy-or-rent/'), 'no-equivalent-signedprice-intent-page');
   assert.equal(retained.get('/value-check/'), 'no-equivalent-signedprice-intent-page');
@@ -110,10 +101,10 @@ test('renders exact 301 rules without losing existing rewrites or unrelated redi
     rewrites: [{ source: '/api/example', destination: '/api/handler' }],
   };
   const rendered = renderVercelConfig(config, manifest);
-  assert.equal(rendered.redirects.length, 23);
+  assert.equal(rendered.redirects.length, 22);
   assert.deepEqual(rendered.redirects[0], {
-    source: '/explore/',
-    destination: 'https://www.signedprice.com/kr/seoul/explore/',
+    source: '/tools/seoul-rent-check/',
+    destination: 'https://www.signedprice.com/kr/seoul/tools/rent-check/',
     statusCode: 301,
   });
   assert.deepEqual(rendered.redirects.at(-1), config.redirects[0]);
@@ -131,7 +122,7 @@ test('removes only active English sources from the KoreaHomeGuide static sitemap
     ));
   }
   for (const retained of [
-    '/', '/zh/', '/guides/', '/compare/', '/buy-or-rent/', '/value-check/', '/net-proceeds/',
+    '/', '/zh/', '/explore/', '/guides/', '/compare/', '/buy-or-rent/', '/value-check/', '/net-proceeds/',
     '/zh/explore/', '/zh/tools/seoul-rent-check/', '/zh/rent/gangnam-gu/apartment/',
   ]) {
     assert.match(rendered, new RegExp(

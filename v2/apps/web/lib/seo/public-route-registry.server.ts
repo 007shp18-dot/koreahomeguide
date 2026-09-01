@@ -122,6 +122,10 @@ export const signedPricePublicRouteRegistry = createPublicRouteRegistry([
   },
   {
     path: '/kr/seoul/check/', locale: 'en', pageKind: 'check', cohort: 1,
+    sitemap: false, isReady: alwaysReady,
+  },
+  {
+    path: '/kr/seoul/tools/rent-check/', locale: 'en', pageKind: 'check', cohort: 1,
     sitemap: true, isReady: alwaysReady,
     legacySourcePath: '/tools/seoul-rent-check/',
   },
@@ -135,7 +139,7 @@ export const signedPricePublicRouteRegistry = createPublicRouteRegistry([
   },
   {
     path: '/kr/seoul/explore/', locale: 'en', pageKind: 'explore', cohort: 1,
-    sitemap: true, isReady: areaReady, legacySourcePath: '/explore/',
+    sitemap: true, isReady: areaReady,
   },
   {
     path: '/kr/seoul/rankings/', locale: 'en', pageKind: 'rankings', cohort: 0,
@@ -163,7 +167,7 @@ export const signedPricePublicRouteRegistry = createPublicRouteRegistry([
   },
   {
     path: '/ko/kr/seoul/check/', locale: 'ko', pageKind: 'check', cohort: 0,
-    sitemap: true, isReady: alwaysReady,
+    sitemap: false, isReady: alwaysReady,
   },
 ]);
 

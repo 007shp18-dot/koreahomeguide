@@ -77,7 +77,7 @@ export type ContractCheckCopy = Readonly<{
 const englishContractCheckCopy = Object.freeze({
   primaryNavigation: 'Primary',
   planned: 'Planned',
-  wordmarkLabel: 'SignedPrice Contract Check',
+  wordmarkLabel: 'SignedPrice home',
   navigation: {
     check: 'Check',
     explore: 'Explore',
@@ -165,7 +165,7 @@ const englishContractCheckCopy = Object.freeze({
 const koreanContractCheckCopy = Object.freeze({
   primaryNavigation: '주요 메뉴',
   planned: '준비 중',
-  wordmarkLabel: 'signedprice 계약 비교',
+  wordmarkLabel: 'signedprice 홈',
   navigation: {
     check: '계약 비교',
     explore: '구별 탐색',

@@ -21,7 +21,7 @@ describe('SignedPrice search and advertising platform files', () => {
     });
   });
 
-  it('serves an exact configured AdSense publisher record and never invents one', async () => {
+  it('serves the registered SignedPrice AdSense publisher when deployment env is absent', async () => {
     let adsRoute: { GET: () => Response } | null = null;
     try {
       adsRoute = await import('../app/ads.txt/route');
@@ -31,17 +31,25 @@ describe('SignedPrice search and advertising platform files', () => {
     expect(adsRoute).not.toBeNull();
     if (adsRoute === null) return;
 
+    const registered = adsRoute.GET();
+    expect(registered.status).toBe(200);
+    expect(registered.headers.get('content-type')).toContain('text/plain');
+    expect(await registered.text()).toBe(
+      'google.com, pub-8103101324753433, DIRECT, f08c47fec0942fa0\n',
+    );
+
     vi.stubEnv('SIGNEDPRICE_ADSENSE_PUBLISHER_ID', 'pub-1234567890123456');
-    const configured = adsRoute.GET();
-    expect(configured.status).toBe(200);
-    expect(configured.headers.get('content-type')).toContain('text/plain');
-    expect(await configured.text()).toBe(
-      'google.com, pub-1234567890123456, DIRECT, f08c47fec0942fa0\n',
+    const staleEnvironment = adsRoute.GET();
+    expect(staleEnvironment.status).toBe(200);
+    expect(await staleEnvironment.text()).toBe(
+      'google.com, pub-8103101324753433, DIRECT, f08c47fec0942fa0\n',
     );
 
     vi.stubEnv('SIGNEDPRICE_ADSENSE_PUBLISHER_ID', 'not-a-publisher');
-    const invalid = adsRoute.GET();
-    expect(invalid.status).toBe(503);
-    expect(await invalid.text()).not.toMatch(/pub-[0-9]{16}/);
+    const invalidEnvironment = adsRoute.GET();
+    expect(invalidEnvironment.status).toBe(200);
+    expect(await invalidEnvironment.text()).toBe(
+      'google.com, pub-8103101324753433, DIRECT, f08c47fec0942fa0\n',
+    );
   });
 });

@@ -2,6 +2,7 @@ import { ContractCheckWorkspace } from '../../../../../components/contract-check
 import { buildContractCheckRouteModel } from '../../../../../lib/contract-check/route-model.server';
 import { KOREAN_ROUTE_COPY } from '../../../../../lib/locale/ko';
 import { indexableMetadata } from '../../../../../lib/public-metadata';
+import { redirect } from 'next/navigation';
 import styles from '../korean-evidence.module.css';
 
 export const metadata = indexableMetadata({
@@ -12,6 +13,8 @@ export const metadata = indexableMetadata({
 });
 
 export default function KoreanContractCheckPage() {
+  const model = buildContractCheckRouteModel();
+  if (model.status === 'unavailable') redirect('/kr/seoul/tools/rent-check/');
   return (
     <div lang="ko" className={styles.page}>
       <header className={styles.intro}>
@@ -19,7 +22,7 @@ export default function KoreanContractCheckPage() {
         <h1>{KOREAN_ROUTE_COPY.check.heading}</h1>
         <p>{KOREAN_ROUTE_COPY.check.description}</p>
       </header>
-      <ContractCheckWorkspace locale="ko" model={buildContractCheckRouteModel()} />
+      <ContractCheckWorkspace locale="ko" model={model} />
     </div>
   );
 }
