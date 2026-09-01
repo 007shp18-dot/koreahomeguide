@@ -42,7 +42,7 @@ function unsignedArtifact() {
       provider: 'MOLIT',
       dataset: 'reported rent contracts',
       endpointVersion: 'v1',
-      parserVersion: 'kr-molit-building-parser-v1',
+      parserVersion: 'kr-molit-building-parser-v2',
       rightsPolicyId: 'kr-molit-rent-v1',
       sourceComplete: true,
       displayRights: true,
@@ -52,17 +52,25 @@ function unsignedArtifact() {
     records: [{
       buildingId: 'gangnam-evidence-tower',
       districtSlug: 'gangnam-gu',
+      neighborhoodId: 'yeoksam-dong',
+      neighborhoodName: '역삼동',
       name: 'Evidence Tower',
       housingType: 'apartment',
-      supportedDeals: ['jeonse'],
+      latitude: 37.5001,
+      longitude: 127.0352,
       period,
       generatedAt: '2026-08-31T01:13:24.787Z',
       publicationMinimum: 5,
-      overall: distribution(),
+      groups: {
+        all: distribution(),
+        new: { n: 3, published: false },
+        renewal: { n: 2, published: false },
+      },
+      unknownContractCount: 1,
       areaBands: [{ band: '45-55sqm', summary: distribution() }],
       recentContracts: [
-        { filedMonth: '2026-07', areaSqm: 50, deal: 'jeonse', depositWon: 320_000_000, monthlyRentWon: 0 },
-        { filedMonth: '2026-06', areaSqm: 49.5, deal: 'jeonse', depositWon: 315_000_000, monthlyRentWon: 0 },
+        { filedMonth: '2026-07', areaSqm: 50, contractType: 'new', depositWon: 320_000_000 },
+        { filedMonth: '2026-06', areaSqm: 49.5, contractType: 'renewal', depositWon: 315_000_000 },
       ],
     }],
   };
@@ -91,11 +99,14 @@ describe('public building artifact boundary', () => {
     const artifact = parse();
 
     expect(artifact).toMatchObject({
-      artifactVersion: 'signedprice-public-building-summary-v1',
+      artifactVersion: 'signedprice-public-building-summary-v2',
       marketId: 'kr-seoul',
       period,
       totalRecordCount: 1,
-      records: [{ buildingId: 'gangnam-evidence-tower', districtSlug: 'gangnam-gu' }],
+      records: [{
+        buildingId: 'gangnam-evidence-tower', districtSlug: 'gangnam-gu',
+        neighborhoodName: '역삼동', latitude: 37.5001, longitude: 127.0352,
+      }],
     });
     expect(Object.isFrozen(artifact)).toBe(true);
     expect(Object.isFrozen(artifact.records)).toBe(true);
@@ -111,7 +122,7 @@ describe('public building artifact boundary', () => {
       ((value.records as Record<string, unknown>[])[0]!).extra = true;
     }],
     ['summary', (value: Record<string, unknown>) => {
-      (((value.records as Record<string, unknown>[])[0]!).overall as Record<string, unknown>).extra = true;
+      ((((value.records as Record<string, unknown>[])[0]!).groups as Record<string, unknown>).all as Record<string, unknown>).extra = true;
     }],
     ['area band', (value: Record<string, unknown>) => {
       ((((value.records as Record<string, unknown>[])[0]!).areaBands as Record<string, unknown>[])[0]!).extra = true;
@@ -136,10 +147,16 @@ describe('public building artifact boundary', () => {
       ((value.records as Record<string, unknown>[])[0]!).districtSlug = 'not-a-district';
     }],
     ['unsafe money', (value: Record<string, unknown>) => {
-      (((value.records as Record<string, unknown>[])[0]!).overall as Record<string, unknown>).med = Number.MAX_SAFE_INTEGER + 1;
+      ((((value.records as Record<string, unknown>[])[0]!).groups as Record<string, unknown>).all as Record<string, unknown>).med = Number.MAX_SAFE_INTEGER + 1;
     }],
     ['negative money', (value: Record<string, unknown>) => {
       ((((value.records as Record<string, unknown>[])[0]!).recentContracts as Record<string, unknown>[])[0]!).depositWon = -1;
+    }],
+    ['invalid count reconciliation', (value: Record<string, unknown>) => {
+      ((value.records as Record<string, unknown>[])[0]!).unknownContractCount = 2;
+    }],
+    ['one-sided coordinates', (value: Record<string, unknown>) => {
+      ((value.records as Record<string, unknown>[])[0]!).latitude = null;
     }],
     ['reversed period', (value: Record<string, unknown>) => {
       (value.provenance as Record<string, unknown>).period = '2026-07/2026-01';
