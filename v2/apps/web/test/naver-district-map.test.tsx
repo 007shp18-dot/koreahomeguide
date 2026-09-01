@@ -433,6 +433,8 @@ describe('NAVER district map', () => {
     const building = {
       id: 'evidence-tower', districtSlug: 'gangnam-gu', neighborhoodId: 'yeoksam-dong',
       neighborhoodName: '역삼동', name: 'Evidence Tower', housingType: 'apartment',
+      evidenceStatus: 'published', observationCount: 6, jeonseObservationCount: 6,
+      monthlyObservationCount: 0, firstObservedMonth: '2026-01', lastObservedMonth: '2026-07',
       latitude: 37.501, longitude: 127.031, sampleLabel: '6 reported contracts',
       medianLabel: '₩320,000,000', newSampleLabel: '3 reported contracts',
       newMedianLabel: null, renewalSampleLabel: '2 reported contracts',

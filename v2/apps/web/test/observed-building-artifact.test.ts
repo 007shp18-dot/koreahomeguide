@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 
@@ -12,10 +12,15 @@ import {
 import {
   ObservedBuildingInventoryUnavailableError,
   createObservedBuildingRepository,
+  observedBuildingRepositoryFromEnvironment,
 } from '../lib/public-market/observed-building-repository.server';
 
 const period = '2026-01/2026-07';
 const generatedAt = '2026-09-01T00:00:00.000Z';
+
+afterEach(() => {
+  vi.unstubAllEnvs();
+});
 
 function canonicalJson(value: unknown): string {
   if (value === null || typeof value !== 'object') return JSON.stringify(value);
@@ -170,5 +175,39 @@ describe('observed building artifact boundary', () => {
       source: undefined,
       expected: { marketId: 'kr-seoul', period },
     })).toThrow(ObservedBuildingInventoryUnavailableError);
+  });
+
+  it('resolves the observed inventory through the installed snapshot registry first', () => {
+    const source = signedArtifact();
+    const registryDigest = createHash('sha256')
+      .update(canonicalJson(source))
+      .digest('hex');
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', period);
+    vi.stubEnv('SIGNEDPRICE_OBSERVED_BUILDING_ARTIFACT', undefined);
+    vi.stubEnv('SIGNEDPRICE_INSTALLED_SNAPSHOT_REGISTRY', JSON.stringify({
+      registryVersion: 'signedprice-installed-snapshots-v1',
+      snapshots: [{
+        marketId: 'kr-seoul',
+        dataset: 'kr-building-registry',
+        schemaVersion: OBSERVED_BUILDING_ARTIFACT_VERSION,
+        sourceVersion: 'molit-rent-v1',
+        parserVersion: 'kr-molit-building-parser-v2',
+        rightsPolicyId: 'kr-molit-rent-v1',
+        period,
+        generatedAt,
+        objectUrl: 'installed://kr-building-registry',
+        sha256: registryDigest,
+        recordCount: 2,
+      }],
+    }));
+
+    const repository = observedBuildingRepositoryFromEnvironment({
+      resolveObject: (objectUrl) => objectUrl === 'installed://kr-building-registry'
+        ? source
+        : undefined,
+    });
+
+    expect(repository?.listRecords()).toHaveLength(2);
+    expect(repository?.getArtifact().sha256).toBe(source.sha256);
   });
 });

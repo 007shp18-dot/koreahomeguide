@@ -60,6 +60,25 @@ describe('Korea methodology guides', () => {
     expect(html).not.toMatch(/data-guide-stage="(?:Buy|Invest)"/);
   });
 
+  it('keeps the shared market and product navigation around the Guide index', () => {
+    const html = renderToStaticMarkup(<GuideIndexPage />);
+
+    expect(html.match(/data-navigation-tier="market"/g) ?? []).toHaveLength(1);
+    expect(html.match(/data-navigation-tier="product"/g) ?? []).toHaveLength(1);
+    expect(html.match(/<footer/g) ?? []).toHaveLength(1);
+    for (const href of [
+      '/kr/seoul/check/',
+      '/kr/seoul/explore/',
+      '/kr/seoul/rankings/',
+      '/kr/seoul/news/',
+      '/kr/seoul/guide/',
+    ]) {
+      expect(html).toContain(`href="${href.slice(0, -1)}"`);
+    }
+    expect(html).toMatch(/<a[^>]*aria-current="page"[^>]*href="\/kr\/seoul\/guide"/);
+    expect(html).not.toMatch(/>Overview<|>Rent<|>Buy<|>Invest<|>Evidence</);
+  });
+
   it('generates exact static params and renders every shareable guide', async () => {
     expect(dynamicParams).toBe(false);
     expect(generateStaticParams()).toEqual(expectedGuides.map(({ slug }) => ({ slug })));
@@ -78,6 +97,10 @@ describe('Korea methodology guides', () => {
       expect(html).toContain(`dateTime="${guide.lastVerified}"`);
       expect(html).toContain(guide.evidenceBoundary);
       expect(html).toContain('href="/trust"');
+      expect(html.match(/data-navigation-tier="market"/g) ?? []).toHaveLength(1);
+      expect(html.match(/data-navigation-tier="product"/g) ?? []).toHaveLength(1);
+      expect(html.match(/<footer/g) ?? []).toHaveLength(1);
+      expect(html).toMatch(/<a[^>]*aria-current="page"[^>]*href="\/kr\/seoul\/guide"/);
     }
   });
 });

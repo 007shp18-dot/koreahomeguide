@@ -55,7 +55,7 @@ describe('district evidence summary', () => {
     expect(html).toContain('data-contract-comparison-row="all"');
     expect(html).not.toContain('Combined All is lower than New in this snapshot.');
     expect(html).toContain(PUBLIC_AREA_FIXTURE_PERIOD);
-    expect(html).toContain('href="/kr/seoul/explore/jung-gu?contract=new"');
+    expect(html).toContain('href="/kr/seoul/explore/jung-gu?contractType=new"');
     expect(html).not.toMatch(/Community|Save/i);
   });
 

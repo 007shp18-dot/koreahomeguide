@@ -27,7 +27,7 @@ export function ContractGroupSelector({
           const disabled = group !== 'all' && model.splitStatus !== 'ready';
           const href = group === 'all'
             ? selectionHref
-            : `${selectionHref}${selectionHref.includes('?') ? '&' : '?'}contract=${group}`;
+            : `${selectionHref}${selectionHref.includes('?') ? '&' : '?'}contractType=${group}`;
           return disabled ? (
             <button
               key={group}

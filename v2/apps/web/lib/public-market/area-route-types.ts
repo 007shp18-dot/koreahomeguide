@@ -87,10 +87,17 @@ export type ContractGroupEvidenceModel = Readonly<{
 export type PublicAreaCoverageModel = Readonly<{
   districts: Readonly<{ published: number; retained: number }>;
   buildings:
-    | Readonly<{ status: 'ready'; published: number; retained: number }>
     | Readonly<{
-        status: 'unavailable';
-        reason: 'Verified building artifact is not loaded.';
+        status: 'ready';
+        observed: number;
+        transactionCovered: number;
+        priceReady: number;
+      }>
+    | Readonly<{
+        status: 'inventory_unavailable';
+        transactionCovered: number | null;
+        priceReady: number | null;
+        reason: 'Verified observed building inventory is not loaded.';
       }>;
   eligibleContracts: number;
   unpublished: Readonly<{
@@ -219,8 +226,14 @@ export type ExploreBuildingModel = Readonly<{
   housingType: string;
   latitude: number | null;
   longitude: number | null;
+  evidenceStatus: 'published' | 'withheld' | 'unavailable';
+  observationCount: number;
+  jeonseObservationCount: number;
+  monthlyObservationCount: number;
+  firstObservedMonth: string;
+  lastObservedMonth: string;
   sampleLabel: string;
-  medianLabel: string;
+  medianLabel: string | null;
   newSampleLabel: string;
   newMedianLabel: string | null;
   renewalSampleLabel: string;
@@ -230,8 +243,14 @@ export type ExploreBuildingModel = Readonly<{
 }>;
 
 export type ExploreBuildingAvailability =
-  | Readonly<{ status: 'ready'; buildings: readonly ExploreBuildingModel[] }>
-  | Readonly<{ status: 'not_loaded' }>;
+  | Readonly<{
+      status: 'ready';
+      buildings: readonly ExploreBuildingModel[];
+    }>
+  | Readonly<{
+      status: 'not_loaded';
+      fallbackBuildings: readonly ExploreBuildingModel[];
+    }>;
 
 export type PublicDistrictFaq = Readonly<{
   question: string;

@@ -42,7 +42,7 @@ export default async function NestedDistrictPage({
   const model = buildPublicDistrictModel(
     district,
     undefined,
-    singleValue(query.contract),
+    singleValue(query.contractType) ?? singleValue(query.contract),
   );
   if (model === null) notFound();
   const propertyTypes = listPublicPropertyTypeRouteParams()

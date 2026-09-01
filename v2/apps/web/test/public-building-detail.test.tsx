@@ -173,7 +173,7 @@ describe('public building detail', () => {
     vi.stubEnv('SIGNEDPRICE_PUBLIC_BUILDING_SUMMARY_ARTIFACT', JSON.stringify(createPublicBuildingFixture()));
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', PUBLIC_BUILDING_FIXTURE_PERIOD);
 
-    expect(dynamicParams).toBe(false);
+    expect(dynamicParams).toBe(true);
     expect(generateStaticParams()).toEqual([
       { district: 'gangnam-gu', buildingId: 'gangnam-evidence-tower' },
     ]);
@@ -197,12 +197,22 @@ describe('public building detail', () => {
     });
     const selected = renderToStaticMarkup(await BuildingRoute({
       params,
-      searchParams: Promise.resolve({ mode: 'rent', contract: 'all' }),
+      searchParams: Promise.resolve({
+        mode: 'rent',
+        contract: 'all',
+        district: 'gangnam-gu',
+        neighborhood: 'yeoksam-dong',
+        buildingId: 'gangnam-evidence-tower',
+        contractType: 'all',
+      }),
     }));
     expect(selected).toContain('data-selected-mode="rent"');
     expect(selected).toContain('6 reported contracts');
     expect(selected).toContain('Verified building image is not available');
     expect(selected).not.toContain('data-detail-rail="true"');
+    expect(selected).toContain(
+      'href="/kr/seoul/explore?district=gangnam-gu&amp;neighborhood=yeoksam-dong&amp;buildingId=gangnam-evidence-tower&amp;contractType=all"',
+    );
 
     const fallback = renderToStaticMarkup(await BuildingRoute({
       params,

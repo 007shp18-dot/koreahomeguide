@@ -24,6 +24,7 @@ import {
   createPublicAreaV2Fixture,
 } from './public-area-fixture';
 import { createPublicBuildingFixture } from './public-building-fixture';
+import { createObservedBuildingInventoryFixture } from './observed-building-fixture';
 
 const rankedFixture = () => createPublicAreaFixture({
   publishedMedians: {
@@ -81,7 +82,7 @@ describe('public Seoul area Explorer', () => {
     expect(markup).toMatch(/<span[^>]+aria-disabled="true"[^>]+data-transaction-mode="sale"[^>]*>Sale<\/span>/);
     expect(markup).toMatch(/<span[^>]+aria-disabled="true"[^>]+data-transaction-mode="monthly-rent"[^>]*>Monthly rent<\/span>/);
     expect(markup).not.toMatch(/data-transaction-mode="(?:all|sale|monthly-rent)"[^>]+(?:href|aria-pressed="true")/);
-    expect(markup).toContain('Price-ready buildings');
+    expect(markup).toContain('Price-ready');
     expect(markup.indexOf('class="_workspace_')).toBeLessThan(markup.indexOf('data-coverage-panel="verified"'));
   });
 
@@ -133,7 +134,9 @@ describe('public Seoul area Explorer', () => {
     expect(markup).toContain('역삼동');
     expect(markup).toContain('data-coverage-panel="verified"');
     expect(markup).toContain('7 of 25');
-    expect(markup).toContain('1 of 1');
+    expect(markup).toContain(
+      'Observed inventory unavailable. Showing the verified price-ready fallback.',
+    );
     expect(markup).toContain('104 eligible contracts');
     expect(markup).toContain('18 districts below publication minimum');
     expect(markup).toContain('Source candidate building counts are not retained');
@@ -197,6 +200,70 @@ describe('public Seoul area Explorer', () => {
     expect(markup).toContain('Neighborhoods &amp; buildings');
     expect(markup).toContain('Evidence Tower');
     expect(markup).not.toContain('Verified building artifact is not loaded.');
+  });
+
+  it('normalizes the shared market selection before rendering Explore', async () => {
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT', JSON.stringify(createPublicAreaV2Fixture()));
+    vi.stubEnv(
+      'SIGNEDPRICE_PUBLIC_BUILDING_SUMMARY_ARTIFACT',
+      JSON.stringify(createPublicBuildingFixture()),
+    );
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', PUBLIC_AREA_FIXTURE_PERIOD);
+    const modulePath = '../app/(en)/kr/seoul/explore/page';
+    const route = await import(/* @vite-ignore */ modulePath);
+    const selected = await route.default({
+      searchParams: Promise.resolve({
+        transaction: 'jeonse',
+        district: 'jongno-gu',
+        contractType: 'renewal',
+      }),
+    });
+    const selectedMarkup = renderToStaticMarkup(selected);
+    const invalid = await route.default({
+      searchParams: Promise.resolve({
+        transaction: 'rent',
+        district: 'jongno-gu',
+      }),
+    });
+    const invalidMarkup = renderToStaticMarkup(invalid);
+
+    expect(selectedMarkup).toContain('data-market-selection="kr:jeonse"');
+    expect(selectedMarkup).toContain('Selected · Jongno-gu');
+    expect(selectedMarkup).toContain('Renewal contracts');
+    expect(selectedMarkup).toContain(
+      'href="/kr/seoul/explore/jongno-gu?contractType=renewal"',
+    );
+    expect(invalidMarkup).toContain('data-market-selection="kr:jeonse"');
+    expect(invalidMarkup).toContain('Selected · Jongno-gu');
+  });
+
+  it('separates observed discovery from transaction and price coverage', () => {
+    const model = buildPublicAreaExploreModel('jongno-gu', {
+      source: rankedFixture(),
+      buildingSource: createPublicBuildingFixture(),
+      observedBuildingSource: createObservedBuildingInventoryFixture(),
+      period: PUBLIC_AREA_FIXTURE_PERIOD,
+    });
+    const markup = renderToStaticMarkup(createElement(AreaExplorer, {
+      model,
+      naverMapClientId: 'test-naver-client',
+      initialSelection: {
+        market: 'kr', transaction: 'monthly', contractType: 'all', district: 'jongno-gu',
+      },
+    }));
+
+    expect(markup).toContain('data-building-inventory="observed"');
+    expect(markup).toContain('Observed buildings');
+    expect(markup).toContain('Transaction-covered');
+    expect(markup).toContain('Price-ready');
+    expect(markup).toContain('Monthly Home');
+    expect(markup).toContain('Monthly observations · 1');
+    expect(markup).toMatch(
+      /data-building-evidence="unavailable"[^>]*>[\s\S]*?Monthly Home[\s\S]*?Price evidence unavailable/,
+    );
+    expect(markup).toContain(
+      'href="/kr/seoul/explore/jongno-gu/jongno-monthly-home?transaction=monthly&amp;district=jongno-gu&amp;neighborhood=sajik-dong&amp;buildingId=jongno-monthly-home&amp;contractType=all"',
+    );
   });
 
   it('keeps the Modernist workspace responsive, focused, and touch-safe', () => {

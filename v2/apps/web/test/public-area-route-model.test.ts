@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
@@ -37,6 +38,61 @@ const dependencies = (source: unknown = rankedFixture()) => ({
   period: PUBLIC_AREA_FIXTURE_PERIOD,
   referenceInstant: '2026-09-01T00:00:00.000Z',
 });
+
+function canonicalJson(value: unknown): string {
+  if (value === null || typeof value !== 'object') return JSON.stringify(value);
+  if (Array.isArray(value)) return `[${value.map(canonicalJson).join(',')}]`;
+  const record = value as Record<string, unknown>;
+  return `{${Object.keys(record).sort().map((key) => (
+    `${JSON.stringify(key)}:${canonicalJson(record[key])}`
+  )).join(',')}}`;
+}
+
+function observedBuildingFixture(): Record<string, unknown> {
+  const records = [{
+    buildingId: 'gangnam-evidence-tower', districtSlug: 'gangnam-gu',
+    neighborhoodId: 'yeoksam-dong', neighborhoodName: '역삼동',
+    officialName: 'Evidence Tower', housingType: 'apartment', observationCount: 8,
+    jeonseObservationCount: 6, monthlyObservationCount: 2,
+    firstObservedMonth: '2026-01', lastObservedMonth: '2026-07',
+    coordinate: { state: 'ready', latitude: 37.5001, longitude: 127.0352 },
+  }, {
+    buildingId: 'jongno-monthly-home', districtSlug: 'jongno-gu',
+    neighborhoodId: 'sajik-dong', neighborhoodName: '사직동',
+    officialName: 'Monthly Home', housingType: 'officetel', observationCount: 1,
+    jeonseObservationCount: 0, monthlyObservationCount: 1,
+    firstObservedMonth: '2026-06', lastObservedMonth: '2026-06',
+    coordinate: { state: 'pending', reason: 'coordinate_not_resolved' },
+  }, {
+    buildingId: 'gangnam-large-detached', districtSlug: 'gangnam-gu',
+    neighborhoodId: 'sinsa-dong', neighborhoodName: '신사동',
+    officialName: 'Large Detached Home', housingType: 'detached', observationCount: 2,
+    jeonseObservationCount: 2, monthlyObservationCount: 0,
+    firstObservedMonth: '2026-04', lastObservedMonth: '2026-07',
+    coordinate: { state: 'ready', latitude: 37.518, longitude: 127.022 },
+  }];
+  const unsigned = {
+    artifactVersion: 'signedprice-observed-building-inventory-v1',
+    generatedAt: '2026-09-01T00:00:00.000Z',
+    provenance: {
+      marketId: 'kr-seoul', period: PUBLIC_AREA_FIXTURE_PERIOD, provider: 'MOLIT',
+      dataset: 'reported rent contracts', endpointVersion: 'v1',
+      parserVersion: 'kr-molit-building-parser-v2', rightsPolicyId: 'kr-molit-rent-v1',
+      sourceComplete: true, displayRights: true,
+      exclusions: ['Canceled records', 'Records without a stable building identity'],
+    },
+    stats: {
+      sourceRecordCount: 12, observedRecordCount: 11, observedBuildingCount: 3,
+      cancelledRecordCount: 1, missingIdentityRecordCount: 0,
+      coordinateReadyCount: 2, coordinatePendingCount: 1,
+    },
+    records,
+  };
+  return {
+    ...unsigned,
+    sha256: createHash('sha256').update(canonicalJson(unsigned)).digest('hex'),
+  };
+}
 
 describe('public area Explore model', () => {
   it('normalizes query input and exposes independent v2 group evidence', () => {
@@ -120,7 +176,12 @@ describe('public area Explore model', () => {
 
     expect((model as typeof model & { coverage: unknown }).coverage).toEqual({
       districts: { published: 7, retained: 25 },
-      buildings: { status: 'ready', published: 1, retained: 2 },
+      buildings: {
+        status: 'inventory_unavailable',
+        transactionCovered: 2,
+        priceReady: 1,
+        reason: 'Verified observed building inventory is not loaded.',
+      },
       eligibleContracts: 104,
       unpublished: {
         districtsBelowMinimum: 18,
@@ -140,11 +201,42 @@ describe('public area Explore model', () => {
 
     expect((model as typeof model & { coverage: Record<string, unknown> }).coverage.buildings)
       .toEqual({
-        status: 'unavailable',
-        reason: 'Verified building artifact is not loaded.',
+        status: 'inventory_unavailable',
+        transactionCovered: null,
+        priceReady: null,
+        reason: 'Verified observed building inventory is not loaded.',
       });
     expect(JSON.stringify((model as typeof model & { coverage: unknown }).coverage))
       .not.toContain('"published":0,"retained":0');
+  });
+
+  it('discovers observed buildings independently from the price-ready cohort', () => {
+    const model = buildPublicAreaExploreModel('gangnam-gu', {
+      ...dependencies(),
+      observedBuildingSource: observedBuildingFixture(),
+      buildingSource: createPublicBuildingFixture(),
+    });
+    expect(model.status).toBe('ready');
+    if (model.status !== 'ready' || model.buildingAvailability.status !== 'ready') return;
+
+    expect(model.buildingAvailability.buildings).toHaveLength(3);
+    expect(model.buildingAvailability.buildings).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        id: 'gangnam-evidence-tower', evidenceStatus: 'published',
+        medianLabel: '₩320,000,000', observationCount: 8,
+      }),
+      expect.objectContaining({
+        id: 'jongno-monthly-home', evidenceStatus: 'unavailable',
+        medianLabel: null, monthlyObservationCount: 1,
+      }),
+      expect.objectContaining({
+        id: 'gangnam-large-detached', housingType: 'detached',
+        evidenceStatus: 'unavailable', medianLabel: null,
+      }),
+    ]));
+    expect(model.coverage.buildings).toEqual({
+      status: 'ready', observed: 3, transactionCovered: 1, priceReady: 1,
+    });
   });
 
   it('calculates the first configured monthly UTC instant strictly after the reference', () => {
