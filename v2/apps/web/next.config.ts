@@ -5,6 +5,9 @@ const repositoryRoot = fileURLToPath(new URL("../../../", import.meta.url));
 
 const nextConfig: NextConfig = {
   trailingSlash: true,
+  experimental: {
+    globalNotFound: true,
+  },
   turbopack: {
     root: repositoryRoot,
   },

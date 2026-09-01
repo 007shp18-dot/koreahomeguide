@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 
-import Home from '../app/page';
+import Home from '../app/(en)/page';
 import { SingaporeEntry } from '../components/singapore/singapore-entry';
 import { buildHomepagePresentation } from '../lib/site-copy';
 

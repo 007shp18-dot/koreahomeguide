@@ -5,8 +5,8 @@ import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 
-import IntentPage from '../app/[country]/[city]/[intent]/page';
-import ComparePage from '../app/compare/page';
+import IntentPage from '../app/(en)/[country]/[city]/[intent]/page';
+import ComparePage from '../app/(en)/compare/page';
 import { SameCashWorkspace } from '../components/same-cash-workspace';
 import {
   buildComparisonPageModel,

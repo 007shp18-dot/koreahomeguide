@@ -52,8 +52,6 @@ export type KoreaPublicRouteModel = Readonly<{
 
 const KOREA_PUBLIC_PATHS = [
   '/kr/seoul/check/',
-  '/kr/check/seoul/',
-  '/kr/seoul/',
 ] as const;
 
 export function buildKoreaPublicPageMetadata(
@@ -62,23 +60,15 @@ export function buildKoreaPublicPageMetadata(
   if (!KOREA_PUBLIC_PATHS.includes(path as (typeof KOREA_PUBLIC_PATHS)[number])) {
     throw new TypeError('Unknown Korea public canonical path.');
   }
-  if (path === '/kr/seoul/check/') {
-    return indexableMetadata({
-      path,
-      title: 'Compare Seoul rental contract offers | signedprice',
-      description:
-        'Compare two filed deposit-and-rent offers on one monthly basis using verified conversion evidence when available.',
-      languageAlternates: {
-        en: '/kr/seoul/check/',
-        ko: '/ko/kr/seoul/check/',
-      },
-    });
-  }
   return indexableMetadata({
-    path: path as (typeof KOREA_PUBLIC_PATHS)[number],
-    title: 'Seoul jeonse deposits | signedprice',
+    path: '/kr/seoul/check/',
+    title: 'Compare Seoul rental contract offers | signedprice',
     description:
-      'Compare a refundable deposit with verified Seoul jeonse contracts reported for 45–55㎡ homes.',
+      'Compare two filed deposit-and-rent offers on one monthly basis using verified conversion evidence when available.',
+    languageAlternates: {
+      en: '/kr/seoul/check/',
+      ko: '/ko/kr/seoul/check/',
+    },
   });
 }
 

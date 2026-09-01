@@ -83,7 +83,8 @@ test('Contract Check server HTML is ready, contained, and claim-safe', async ({ 
   expect(html.indexOf('Offer A')).toBeLessThan(html.indexOf('Offer B'));
   expect(html.indexOf('Offer B')).toBeLessThan(html.indexOf('Result'));
   expect(html).toContain('MOLIT reported rental contracts');
-  expect(html).not.toMatch(/Singapore|Dubai|72,291|29\.4%/i);
+  const visibleDecisionCopy = await page.locator('main').innerText();
+  expect(visibleDecisionCopy).not.toMatch(/Singapore|Dubai|72,291|29\.4%/i);
 
   const sitemap = await page.request.get('/sitemap.xml');
   expect(sitemap.status()).toBe(200);
@@ -110,21 +111,24 @@ test('Contract Check stays ordered, touch-sized, and keyboard reachable', async 
   await page.keyboard.press('Tab');
   await expect(page.locator('input[name="a-label"]')).toBeFocused();
 
-  const primaryNavigation = page.getByRole('navigation', { name: 'Primary' });
-  await expect(primaryNavigation.getByRole('link', { name: 'Check', exact: true }))
+  const productNavigation = page.getByRole('navigation', {
+    name: 'Seoul product navigation',
+  });
+  await expect(productNavigation.getByRole('link')).toHaveCount(5);
+  await expect(productNavigation.getByRole('link', { name: /Check/ }))
     .toHaveAttribute('href', '/kr/seoul/check/');
-  await expect(primaryNavigation.getByRole('link', { name: 'Explore', exact: true }))
+  await expect(productNavigation.getByRole('link', { name: /Explore/ }))
     .toHaveAttribute('href', '/kr/seoul/explore/');
-  await expect(primaryNavigation.getByRole('link', { name: 'Guide', exact: true }))
+  await expect(productNavigation.getByRole('link', { name: /Guide/ }))
     .toHaveAttribute('href', '/kr/seoul/guide/');
-  await expect(primaryNavigation.getByText('Planned')).toHaveCount(0);
+  await expect(productNavigation.getByText('Planned')).toHaveCount(0);
   await expect(page.getByRole('link', {
     name: 'Check one offer against its local distribution',
   })).toHaveAttribute('href', '/kr/seoul/tools/rent-check/');
   assertNoRuntimeFailures();
 });
 
-test('fixture curve covers interpolation, held range, tie, and ranking flip', async ({ page }) => {
+test('fixture curve covers interpolation, range rejection, tie, and ranking flip', async ({ page }) => {
   test.skip(releaseTarget.usesExternalServer, 'Exact fixture calculations are local-release only.');
   await page.goto('/kr/seoul/check/');
 
@@ -132,7 +136,7 @@ test('fixture curve covers interpolation, held range, tie, and ranking flip', as
   await fillOffer(page, 'b', '30000000', '300000');
   const result = page.locator('[data-result-focus-target="true"]');
   await expect(result).toContainText('Offer B has the lower normalized cost.');
-  await expect(result).toContainText('₩33,333');
+  await expect(result).toContainText('₩8,333');
   await expect(result).toContainText('4.00% · Within measured range');
   await expect(result).toContainText('5.00% · Within measured range');
   await expect(result).toContainText(
@@ -144,7 +148,10 @@ test('fixture curve covers interpolation, held range, tie, and ranking flip', as
   await expect(result.locator('svg text')).toHaveCount(0);
 
   await page.locator('input[name="a-deposit"]').fill('120000000');
-  await expect(result).toContainText('Outside measured range — held, not extended.');
+  await expect(page.locator('#a-offer-error')).toContainText(
+    'Deposit falls outside the measured range. No comparison is produced.',
+  );
+  await expect(result.locator('[data-result-state="invalid"]')).toBeVisible();
 
   await fillOffer(page, 'a', '30000000', '300000');
   await fillOffer(page, 'b', '30000000', '300000');

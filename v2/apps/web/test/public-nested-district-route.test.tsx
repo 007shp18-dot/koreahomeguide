@@ -8,8 +8,8 @@ import NestedDistrictPage, {
   dynamicParams,
   generateMetadata,
   generateStaticParams,
-} from '../app/kr/seoul/explore/[district]/page';
-import ThirdSegmentPage from '../app/[country]/[city]/[intent]/page';
+} from '../app/(en)/kr/seoul/explore/[district]/page';
+import ThirdSegmentPage from '../app/(en)/[country]/[city]/[intent]/page';
 import {
   PUBLIC_AREA_FIXTURE_PERIOD,
   createPublicAreaFixture,
@@ -45,6 +45,15 @@ describe('nested Seoul district route', () => {
       robots: { index: true, follow: true },
       alternates: {
         canonical: 'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/',
+      },
+      openGraph: {
+        url: 'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/',
+        locale: 'en_US',
+        images: ['https://www.signedprice.com/og/en/'],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        images: ['https://www.signedprice.com/og/en/'],
       },
     });
     expect(html).toContain('data-district-detail="published"');

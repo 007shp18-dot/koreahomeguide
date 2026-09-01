@@ -7,7 +7,7 @@ import type {
 } from '@signedprice/korea-rent/browser';
 
 import type { RentCheckApiSuccess } from '../../lib/rent-check/client-state';
-import styles from '../../app/kr/seoul/tools/rent-check/rent-check.module.css';
+import styles from './rent-check.module.css';
 import { EvidenceStrength } from './evidence-strength';
 import { RentRange } from './rent-range';
 import { TrustLabel } from './trust-label';

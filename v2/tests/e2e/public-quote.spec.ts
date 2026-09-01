@@ -11,7 +11,7 @@ test('public quote editing is keyboard-safe and performs zero network requests',
       clientRequests.push(request.url());
     }
   });
-  const quote = page.getByLabel('Refundable deposit');
+  const quote = page.getByLabel('Deposit (KRW)');
   await quote.focus();
   await expect(quote).toBeFocused();
   await quote.fill('');
@@ -27,8 +27,7 @@ test('public quote editing is keyboard-safe and performs zero network requests',
     expect(page.url()).toBe(initialUrl);
   }
 
-  await page.waitForLoadState('networkidle');
-  await expect(page.getByText('Within the typical range')).toBeVisible();
+  await expect(page.locator('[data-rent-result]')).toHaveCount(0);
   await expect(quote).toHaveValue('350');
   expect(clientRequests).toEqual([]);
   expect(page.url()).toBe(initialUrl);
@@ -38,10 +37,13 @@ test('public quote controls retain 44px targets and natural mobile scrolling', a
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/kr/check/seoul');
 
-  for (const control of [page.getByLabel('Area'), page.getByLabel('Refundable deposit')]) {
+  for (const control of [
+    page.getByLabel('Area', { exact: true }),
+    page.getByLabel('Deposit (KRW)'),
+  ]) {
     const box = await control.boundingBox();
     expect(box?.height).toBeGreaterThanOrEqual(44);
   }
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
-  await page.getByLabel('Refundable deposit').press('Tab');
+  await page.getByLabel('Deposit (KRW)').press('Tab');
 });

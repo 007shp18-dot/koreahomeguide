@@ -4,6 +4,7 @@ vi.mock('server-only', () => ({}));
 
 import {
   createPublicRouteRegistry,
+  signedPricePublicRouteRegistry,
   type PublicRouteDefinition,
   type PublicRouteReadiness,
 } from '../lib/seo/public-route-registry.server';
@@ -27,6 +28,19 @@ function route(
 }
 
 describe('SignedPrice public route registry', () => {
+  it('keeps redirecting legacy intent URLs out of every sitemap readiness state', () => {
+    const paths = signedPricePublicRouteRegistry.listSitemapPaths({
+      summaryReady: true,
+      areaReady: true,
+      newsReady: true,
+      conversionReady: false,
+    });
+
+    expect(paths).toContain('/kr/seoul/');
+    expect(paths).not.toContain('/kr/check/seoul/');
+    expect(paths).not.toContain('/kr/seoul/check/');
+  });
+
   it('keeps evidence-dependent destinations out until their readiness predicate passes', () => {
     const registry = createPublicRouteRegistry([
       route(),

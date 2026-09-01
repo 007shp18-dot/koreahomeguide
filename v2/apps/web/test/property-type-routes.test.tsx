@@ -7,8 +7,8 @@ import sitemap from '../app/sitemap';
 import PropertyTypePage, {
   generateMetadata,
   generateStaticParams,
-} from '../app/kr/seoul/explore/[district]/[buildingId]/page';
-import DistrictPage from '../app/kr/seoul/explore/[district]/page';
+} from '../app/(en)/kr/seoul/explore/[district]/[buildingId]/page';
+import DistrictPage from '../app/(en)/kr/seoul/explore/[district]/page';
 import {
   createPublicBuildingFixture,
   createPublicBuildingRecord,
@@ -84,6 +84,15 @@ describe('district property-type SEO routes', () => {
       robots: { index: true, follow: true },
       alternates: {
         canonical: 'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/apartment/',
+      },
+      openGraph: {
+        url: 'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/apartment/',
+        locale: 'en_US',
+        images: ['https://www.signedprice.com/og/en/'],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        images: ['https://www.signedprice.com/og/en/'],
       },
     });
   });

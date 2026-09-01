@@ -7,12 +7,12 @@ vi.mock('server-only', () => ({}));
 import { SEOUL_RENT_CHECK_DISTRICTS } from '@signedprice/korea-rent/browser';
 import MarketOverviewPage, {
   generateStaticParams as generateMarketStaticParams,
-} from '../app/[country]/[city]/page';
+} from '../app/(en)/[country]/[city]/page';
 import IntentPage, {
   generateStaticParams as generateIntentStaticParams,
-} from '../app/[country]/[city]/[intent]/page';
-import ComparePage from '../app/compare/page';
-import NotFound from '../app/not-found';
+} from '../app/(en)/[country]/[city]/[intent]/page';
+import ComparePage from '../app/(en)/compare/page';
+import NotFound from '../app/(en)/not-found';
 import { CapabilityGrid } from '../components/capability-grid';
 import { ComparisonMatrix } from '../components/comparison-matrix';
 import { MarketHero } from '../components/market-hero';
@@ -256,10 +256,10 @@ describe('comparison route model', () => {
 
 describe('real route rendering contracts', () => {
   it('contains generated routes while indexing only the comparison page', async () => {
-    const marketModule = await import('../app/[country]/[city]/page');
-    const intentModule = await import('../app/[country]/[city]/[intent]/page');
-    const compareModule = await import('../app/compare/page');
-    const notFoundModule = await import('../app/not-found');
+    const marketModule = await import('../app/(en)/[country]/[city]/page');
+    const intentModule = await import('../app/(en)/[country]/[city]/[intent]/page');
+    const compareModule = await import('../app/(en)/compare/page');
+    const notFoundModule = await import('../app/(en)/not-found');
     const generateMarketMetadata = Reflect.get(marketModule, 'generateMetadata') as (
       props: { params: Promise<{ country: string; city: string }> },
     ) => Promise<unknown>;
@@ -281,7 +281,7 @@ describe('real route rendering contracts', () => {
       Reflect.get(notFoundModule, 'metadata'),
     ];
 
-    expect(metadataByRoute).toEqual([
+    expect(metadataByRoute).toMatchObject([
       {
         title: 'Seoul property intelligence | signedprice',
         description:

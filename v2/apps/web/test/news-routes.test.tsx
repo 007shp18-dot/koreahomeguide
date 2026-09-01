@@ -9,13 +9,13 @@ const navigation = vi.hoisted(() => ({
 vi.mock('server-only', () => ({}));
 vi.mock('next/navigation', () => navigation);
 
-import LegacyNewsPage from '../app/kr/news/page';
-import NewsIndexRoute, { metadata as indexMetadata } from '../app/kr/seoul/news/page';
+import LegacyNewsPage from '../app/(en)/kr/news/page';
+import NewsIndexRoute, { metadata as indexMetadata } from '../app/(en)/kr/seoul/news/page';
 import NewsDetailRoute, {
   dynamicParams,
   generateMetadata,
   generateStaticParams,
-} from '../app/kr/seoul/news/[slug]/page';
+} from '../app/(en)/kr/seoul/news/[slug]/page';
 import { buildNewsIndexModel } from '../lib/news/news-route-model.server';
 import {
   PUBLIC_AREA_FIXTURE_PERIOD,

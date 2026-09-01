@@ -3,12 +3,12 @@ import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 
-import GuideIndexPage, { metadata as indexMetadata } from '../app/kr/seoul/guide/page';
+import GuideIndexPage, { metadata as indexMetadata } from '../app/(en)/kr/seoul/guide/page';
 import GuideDocumentPage, {
   dynamicParams,
   generateMetadata,
   generateStaticParams,
-} from '../app/kr/seoul/guide/[slug]/page';
+} from '../app/(en)/kr/seoul/guide/[slug]/page';
 import { GUIDES, GUIDE_GLOSSARY } from '../lib/guide/guide-content';
 
 const expectedGuides = [

@@ -1,6 +1,6 @@
 import type { SeoulRentCheckEnvelope } from '@signedprice/korea-rent/browser';
 
-import styles from '../../app/kr/seoul/tools/rent-check/rent-check.module.css';
+import styles from './rent-check.module.css';
 import { TrustLabel } from './trust-label';
 
 type ComparableContractsProps = {

@@ -7,7 +7,7 @@ import { SEOUL_RENT_CHECK_DISTRICTS } from '@signedprice/korea-rent/browser';
 import ThirdSegmentPage, {
   generateMetadata,
   generateStaticParams,
-} from '../app/[country]/[city]/[intent]/page';
+} from '../app/(en)/[country]/[city]/[intent]/page';
 import {
   publicThirdSegmentRouteParams,
   resolvePublicThirdSegment,

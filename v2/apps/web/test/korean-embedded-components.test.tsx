@@ -1,6 +1,6 @@
 import type { KoreaConversionCurveProjection } from '@signedprice/korea-rent';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 vi.mock('next/navigation', () => ({
@@ -9,9 +9,14 @@ vi.mock('next/navigation', () => ({
 }));
 
 import { ContractCheckWorkspace } from '../components/contract-check/contract-check-workspace';
+import KoreanExplorePage from '../app/(ko)/ko/kr/seoul/explore/page';
+import KoreanRankingsPage from '../app/(ko)/ko/kr/seoul/rankings/page';
 import { AreaExplorer } from '../components/public-market/area-explorer';
 import { DistrictRankings } from '../components/public-market/district-rankings';
+import { SiteHeader } from '../components/site-header';
+import { SiteFooter } from '../components/site-footer';
 import type { ContractCheckRouteModel } from '../lib/contract-check/route-model.server';
+import { KOREAN_SITE_FOOTER, KOREAN_SITE_HEADER } from '../lib/locale/ko';
 import { buildPublicAreaExploreModel } from '../lib/public-market/area-route-model.server';
 import { buildPublicAreaRankingsModel } from '../lib/public-market/rankings-route-model.server';
 import {
@@ -48,7 +53,34 @@ const contractModel: ContractCheckRouteModel = Object.freeze({
   ]),
 });
 
+afterEach(() => vi.unstubAllEnvs());
+
 describe('Korean embedded product components', () => {
+  it('renders terminal Korean navigation and a crawlable English switch', () => {
+    const html = renderToStaticMarkup(<>
+      <SiteHeader copy={KOREAN_SITE_HEADER} />
+      <SiteFooter copy={KOREAN_SITE_FOOTER} />
+    </>);
+
+    expect(html).toContain('구별 탐색');
+    expect(html).toContain('href="/kr/seoul"');
+    expect(html).toMatch(/hreflang="en"/i);
+    expect(html).not.toContain('href="/ko/kr/seoul/check"');
+    expect(html).not.toContain('>Briefs<');
+  });
+
+  it('switches Korean Explore and Rankings to their matching English routes', () => {
+    vi.stubEnv(
+      'SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT',
+      JSON.stringify(createPublicAreaV2Fixture()),
+    );
+    const explore = renderToStaticMarkup(<KoreanExplorePage />);
+    const rankings = renderToStaticMarkup(<KoreanRankingsPage />);
+
+    expect(explore).toMatch(/hreflang="en"[^>]*href="\/kr\/seoul\/explore"/i);
+    expect(rankings).toMatch(/hreflang="en"[^>]*href="\/kr\/seoul\/rankings"/i);
+  });
+
   it('renders the interactive Contract Check workspace in Korean', () => {
     const html = renderToStaticMarkup(
       <ContractCheckWorkspace locale="ko" model={contractModel} />,
