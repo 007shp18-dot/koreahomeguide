@@ -32,10 +32,3 @@ jobs:
         run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Verify runtime migration coverage
         run: npm run test:runtime-migration
-      - name: Diagnose baseline-sensitive migrated tests
-        continue-on-error: true
-        run: node --test tests/cold-start-analytics.test.cjs tests/currency-defaults.test.cjs
-      - name: Print current legacy failure identities
-        run: |
-          node --test tests/*.test.cjs > legacy-test-output.txt 2>&1 || true
-          grep -E '^not ok' legacy-test-output.txt
