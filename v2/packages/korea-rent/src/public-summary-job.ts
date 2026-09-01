@@ -8,6 +8,11 @@ import {
   type KoreaPublicContractGroup,
 } from './public-summary';
 import {
+  buildKoreaPublicBuildingSummaries,
+  type KoreaPublicBuildingRecord,
+  type KoreaPublicBuildingSourceRecord,
+} from './public-building-summary';
+import {
   KR_MOLIT_RENT_RIGHTS,
   RightsViolationError,
   assertMolitRights,
@@ -91,6 +96,15 @@ export type KoreaPublicAreaSummaryFinalization = Readonly<{
   generatedAt: string;
   completedCoordinates: typeof TOTAL_COORDINATES;
   eligibleRecords: number;
+}>;
+
+export type KoreaPublicBuildingSummaryFinalization = Readonly<{
+  records: readonly KoreaPublicBuildingRecord[];
+  period: string;
+  generatedAt: string;
+  completedCoordinates: typeof TOTAL_COORDINATES;
+  eligibleRecords: number;
+  publishedBuildings: number;
 }>;
 
 export type KoreaPublicSummaryJobDependencies = Readonly<{
@@ -435,5 +449,35 @@ export async function finalizeKoreaPublicAreaSummaryJob(
     generatedAt: validNow(dependencies),
     completedCoordinates: TOTAL_COORDINATES,
     eligibleRecords: loaded.all.filter(isEligible).length,
+  });
+}
+
+export async function finalizeKoreaPublicBuildingSummaryJob(
+  input: Readonly<{ referenceInstant: string }>,
+  dependencies: Omit<KoreaPublicSummaryJobDependencies, 'serviceKey' | 'fetch'>,
+): Promise<KoreaPublicBuildingSummaryFinalization> {
+  assertJobRights(dependencies, ['cache', 'derive', 'display', 'commercial']);
+  const loaded = await loadPublicSummaryRecords(input.referenceInstant, dependencies.cache);
+  const { period } = completedPeriod(input.referenceInstant);
+  const generatedAt = validNow(dependencies);
+  const sourceRecords: KoreaPublicBuildingSourceRecord[] = [];
+  for (const district of SEOUL_RENT_CHECK_DISTRICTS) {
+    for (const record of loaded.byDistrict.get(district.lawdCd)!) {
+      sourceRecords.push(Object.freeze({ districtSlug: district.slug, record }));
+    }
+  }
+  const records = Object.freeze(buildKoreaPublicBuildingSummaries({
+    period,
+    generatedAt,
+    records: sourceRecords,
+    geocodes: [],
+  }).filter(({ groups }) => groups.all.published));
+  return Object.freeze({
+    records,
+    period,
+    generatedAt,
+    completedCoordinates: TOTAL_COORDINATES,
+    eligibleRecords: loaded.all.filter(isEligible).length,
+    publishedBuildings: records.length,
   });
 }
