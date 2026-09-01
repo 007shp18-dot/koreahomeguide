@@ -8,6 +8,7 @@ import {
   createSourceMonthStore,
   finalizeKoreaPublicAreaSummaryJob,
   finalizeKoreaPublicBuildingSummaryJob,
+  finalizeKoreaObservedBuildingInventoryJob,
   finalizeKoreaPublicSummaryJob,
   runKoreaPublicSummaryBatch,
   type KoreaPublicSummaryCoordinate,
@@ -241,6 +242,98 @@ describe('Korea public summary resumable batch', () => {
 });
 
 describe('Korea public summary finalization', () => {
+  it('derives all observed identities from the complete cohort without a price gate', async () => {
+    const cache = new MemoryCache();
+    const store = createSourceMonthStore({
+      namespacePrefix: 'signedprice:kr-public-summary-job:v1',
+      ttlSeconds: 86_400,
+      tags: [JOB_TAG],
+      corruptTag: JOB_TAG,
+    });
+    const plan = buildKoreaPublicSummaryPlan(REFERENCE_INSTANT);
+    for (const coordinate of plan) {
+      let records: readonly KoreaRentRecord[] = [];
+      if (coordinate.index < 5) {
+        records = [{
+          ...eligibleRecord(coordinate, coordinate.index),
+          legalDong: '청운동',
+          buildingLabel: coordinate.index === 0 ? ' 검증   아파트 ' : '검증 아파트',
+        }];
+      } else if (coordinate.index === 7) {
+        records = [{
+          ...eligibleRecord(coordinate, 7),
+          legalDong: '청운동',
+          buildingLabel: '월세 오피스텔',
+          areaSqm: 18,
+          depositWon: 10_000_000,
+          monthlyRentWon: 900_000,
+        }];
+      } else if (coordinate.index === 21) {
+        records = [{
+          ...eligibleRecord(coordinate, 21),
+          legalDong: '청운동',
+          buildingLabel: '대형 단독주택',
+          areaSqm: 180,
+        }];
+      } else if (coordinate.index === 22) {
+        records = [{
+          ...eligibleRecord(coordinate, 22, 'new', 'cancelled'),
+          legalDong: '청운동',
+          buildingLabel: '취소 단독주택',
+        }];
+      } else if (coordinate.index === 23) {
+        records = [{ ...eligibleRecord(coordinate, 23), legalDong: '청운동' }];
+      }
+      await store.write(cache, emptyMonth(coordinate, records));
+    }
+
+    const finalized = await finalizeKoreaObservedBuildingInventoryJob(
+      { referenceInstant: REFERENCE_INSTANT },
+      { cache, now: () => new Date(REFERENCE_INSTANT), rightsLookup },
+    );
+
+    expect(finalized).toMatchObject({
+      period: '2026-01/2026-07',
+      generatedAt: REFERENCE_INSTANT,
+      completedCoordinates: 700,
+      inventory: {
+        stats: {
+          sourceRecordCount: 9,
+          observedRecordCount: 7,
+          observedBuildingCount: 3,
+          cancelledRecordCount: 1,
+          missingIdentityRecordCount: 1,
+          coordinateReadyCount: 0,
+          coordinatePendingCount: 3,
+        },
+      },
+    });
+    expect(finalized.inventory.records).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        officialName: '검증 아파트',
+        housingType: 'apartment',
+        observationCount: 5,
+      }),
+      expect.objectContaining({
+        officialName: '월세 오피스텔',
+        housingType: 'officetel',
+        monthlyObservationCount: 1,
+      }),
+      expect.objectContaining({
+        officialName: '대형 단독주택',
+        housingType: 'detached',
+      }),
+    ]));
+
+    const missingManifest = [...cache.entries.keys()].find((key) =>
+      key.includes('lawd=11740') && key.endsWith(':manifest'))!;
+    cache.entries.delete(missingManifest);
+    await expect(finalizeKoreaObservedBuildingInventoryJob(
+      { referenceInstant: REFERENCE_INSTANT },
+      { cache, now: () => new Date(REFERENCE_INSTANT), rightsLookup },
+    )).rejects.toThrow('Public summary source coverage is incomplete.');
+  }, 30_000);
+
   it('derives privacy-safe building rows from the complete cached cohort', async () => {
     const cache = new MemoryCache();
     const store = createSourceMonthStore({
