@@ -71,6 +71,9 @@ describe('Contract Check workspace SSR contract', () => {
     expect(html).toContain('data-result-focus-target="true"');
     expect(html).toContain('aria-live="polite"');
     expect(html).not.toMatch(/<button[^>]*type="submit"|Compare offers/);
+    const wordmarkAnchor = html.match(/<a[^>]*class="[^"]*wordmark[^"]*"[^>]*>/)?.[0] ?? '';
+    expect(wordmarkAnchor).toContain('href="/"');
+    expect(wordmarkAnchor).toContain('aria-label="SignedPrice home"');
   });
 
   test('renders HTML curve labels, filed-deposit markers, and four audit rows', () => {

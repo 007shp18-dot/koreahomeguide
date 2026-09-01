@@ -148,7 +148,9 @@
     "description": "Explore recent signed Seoul rental transactions by district, neighborhood, housing type, and building. Compare typical rent, deposit, size, and recent contract activity using official MOLIT data.",
     "robots": "index,follow",
     "schemaTypes": [],
-    "sitemapSources": []
+    "sitemapSources": [
+      "sitemap-static.xml"
+    ]
   },
   {
     "path": "/explore/building/",

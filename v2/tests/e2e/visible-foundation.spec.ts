@@ -315,7 +315,9 @@ test('sitemap includes only indexable canonical public routes', async ({ request
     expect(xml.includes(`<loc>https://www.signedprice.com${route.path}</loc>`)).toBe(expected);
   }
   expect(xml).not.toContain('/sg/');
-  expect(xml).not.toContain('/kr/seoul/tools/rent-check/');
+  expect(xml).toContain(
+    '<loc>https://www.signedprice.com/kr/seoul/tools/rent-check/</loc>',
+  );
   expect(xml).not.toContain('/synthetic-test-building/');
 });
 

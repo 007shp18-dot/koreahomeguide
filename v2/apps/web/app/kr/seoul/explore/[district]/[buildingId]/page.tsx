@@ -3,6 +3,9 @@ import { notFound } from 'next/navigation';
 
 import { BuildingDetailPage } from '../../../../../../components/public-market/building-detail-page';
 import { PropertyTypeDetailPage } from '../../../../../../components/public-market/property-type-detail-page';
+import { buildBuildingDecisionModel } from '../../../../../../lib/public-market/building-decision-model';
+import { parseBuildingDecisionSelection } from '../../../../../../lib/public-market/building-decision-state';
+import { buildBuildingVisualModel } from '../../../../../../lib/public-market/building-visual-model';
 import { buildPublicBuildingModel } from '../../../../../../lib/public-market/building-route-model.server';
 import { publicBuildingRepositoryFromEnvironment } from '../../../../../../lib/public-market/building-summary-repository.server';
 import {
@@ -13,6 +16,7 @@ import { publicCanonical } from '../../../../../../lib/public-metadata';
 
 type BuildingPageProps = Readonly<{
   params: Promise<Readonly<{ district: string; buildingId: string }>>;
+  searchParams: Promise<Readonly<Record<string, string | string[] | undefined>>>;
 }>;
 
 export const dynamicParams = false;
@@ -51,7 +55,7 @@ export async function generateMetadata({ params }: BuildingPageProps): Promise<M
   };
 }
 
-export default async function BuildingRoute({ params }: BuildingPageProps) {
+export default async function BuildingRoute({ params, searchParams }: BuildingPageProps) {
   const { district, buildingId } = await params;
   const propertyTypeModel = buildPublicPropertyTypeModel(district, buildingId);
   if (propertyTypeModel !== null) {
@@ -68,5 +72,20 @@ export default async function BuildingRoute({ params }: BuildingPageProps) {
   }
   const model = buildPublicBuildingModel(district, buildingId);
   if (model === null) notFound();
-  return <BuildingDetailPage model={model} />;
+  const selection = parseBuildingDecisionSelection(await searchParams);
+  const decision = buildBuildingDecisionModel(model, selection);
+  const base = `/kr/seoul/explore/${model.district.slug}/${model.building.buildingId}/`;
+  const visual = buildBuildingVisualModel({
+    buildingName: model.building.name,
+    mapHref: `/kr/seoul/explore/?district=${model.district.slug}`,
+    photo: null,
+  });
+  return (
+    <BuildingDetailPage
+      model={model}
+      decision={decision}
+      visual={visual}
+      base={base}
+    />
+  );
 }

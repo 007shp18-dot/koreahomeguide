@@ -18,17 +18,26 @@ function readyOperator() {
 }
 
 describe('advertising consent boundary', () => {
-  it('requires an explicit enable flag, valid publisher, and verified operator', () => {
+  it('requires an explicit enable flag and verified operator', () => {
     expect(advertisingConfigFromEnvironment()).toEqual({ status: 'disabled' });
 
     vi.stubEnv('SIGNEDPRICE_ADSENSE_ENABLED', 'true');
-    vi.stubEnv('SIGNEDPRICE_ADSENSE_PUBLISHER_ID', 'pub-1234567890123456');
     expect(advertisingConfigFromEnvironment()).toEqual({ status: 'disabled' });
 
     readyOperator();
     expect(advertisingConfigFromEnvironment()).toEqual({
       status: 'ready',
-      publisherId: 'pub-1234567890123456',
+      publisherId: 'pub-8103101324753433',
+    });
+  });
+
+  it('does not allow stale deployment configuration to replace the registered publisher', () => {
+    vi.stubEnv('SIGNEDPRICE_ADSENSE_ENABLED', 'true');
+    vi.stubEnv('SIGNEDPRICE_ADSENSE_PUBLISHER_ID', 'pub-1234567890123456');
+    readyOperator();
+    expect(advertisingConfigFromEnvironment()).toEqual({
+      status: 'ready',
+      publisherId: 'pub-8103101324753433',
     });
   });
 

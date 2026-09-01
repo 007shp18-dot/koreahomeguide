@@ -76,6 +76,7 @@ describe('district property-type SEO routes', () => {
 
     const metadata = await generateMetadata({
       params: Promise.resolve({ district: 'gangnam-gu', buildingId: 'apartment' }),
+      searchParams: Promise.resolve({}),
     });
     expect(metadata).toMatchObject({
       title: 'Gangnam-gu apartment jeonse evidence | signedprice',
@@ -91,6 +92,7 @@ describe('district property-type SEO routes', () => {
     useEvidence();
     const html = renderToStaticMarkup(await PropertyTypePage({
       params: Promise.resolve({ district: 'gangnam-gu', buildingId: 'apartment' }),
+      searchParams: Promise.resolve({}),
     }));
 
     expect(html).toContain('Gangnam-gu apartment jeonse evidence');
@@ -149,9 +151,11 @@ describe('district property-type SEO routes', () => {
     useEvidence();
     await expect(PropertyTypePage({
       params: Promise.resolve({ district: 'gangnam-gu', buildingId: 'studio' }),
+      searchParams: Promise.resolve({}),
     })).rejects.toThrow(/404/);
     await expect(generateMetadata({
       params: Promise.resolve({ district: 'jongno-gu', buildingId: 'apartment' }),
+      searchParams: Promise.resolve({}),
     })).rejects.toThrow(/404/);
   });
 });

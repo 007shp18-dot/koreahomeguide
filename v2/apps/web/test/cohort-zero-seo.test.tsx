@@ -11,6 +11,7 @@ import MarketOverviewPage, {
 import SeoulContractCheckPage, {
   generateMetadata as checkMetadata,
 } from '../app/kr/seoul/check/page';
+import KoreanContractCheckPage from '../app/ko/kr/seoul/check/page';
 import ExplorerPage, { metadata as exploreMetadata } from '../app/kr/seoul/explore/page';
 import RankingsPage, { metadata as rankingsMetadata } from '../app/kr/seoul/rankings/page';
 import {
@@ -115,10 +116,26 @@ describe('SignedPrice cohort zero SEO', () => {
     });
   });
 
-  it('renders breadcrumb data on each English Seoul hub and crawlable home links', async () => {
+  it('redirects an unavailable comparison to the working Rent Check flow', () => {
+    vi.stubEnv('SIGNEDPRICE_CONVERSION_CURVE_ARTIFACT', '');
+    vi.stubEnv('SIGNEDPRICE_CONVERSION_CURVE_PERIOD', '');
+    vi.stubEnv('SIGNEDPRICE_CONVERSION_CURVE_SHA256', '');
+    for (const page of [SeoulContractCheckPage, KoreanContractCheckPage]) {
+      let thrown: unknown;
+      try {
+        page();
+      } catch (error) {
+        thrown = error;
+      }
+      expect(thrown).toMatchObject({
+        digest: expect.stringContaining('/kr/seoul/tools/rent-check/'),
+      });
+    }
+  });
+
+  it('renders breadcrumb data on available English Seoul hubs and crawlable home links', async () => {
     const routeMarkup = await Promise.all([
       MarketOverviewPage({ params: Promise.resolve({ country: 'kr', city: 'seoul' }) }),
-      Promise.resolve(SeoulContractCheckPage()),
       ExplorerPage({ searchParams: Promise.resolve({}) }),
       Promise.resolve(RankingsPage()),
     ]).then((pages) => pages.map((page) => renderToStaticMarkup(page)));

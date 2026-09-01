@@ -113,7 +113,7 @@ describe('Seoul Rent Check page shell', () => {
 });
 
 describe('route metadata and authored head contract', () => {
-  it('keeps explicit noindex metadata on the Server Component without canonical or hreflang', async () => {
+  it('publishes the working Rent Check as its own indexable canonical', async () => {
     const page = await loadPage();
     const source = readFileSync(
       new URL('../app/kr/seoul/tools/rent-check/page.tsx', import.meta.url),
@@ -124,13 +124,15 @@ describe('route metadata and authored head contract', () => {
     expect(page.metadata).toEqual({
       title: 'Seoul Rent Check | signedprice',
       description: 'Compare a Seoul rent quote with compatible official reported contracts.',
-      robots: { index: false, follow: true },
+      robots: { index: true, follow: true },
+      alternates: {
+        canonical: 'https://www.signedprice.com/kr/seoul/tools/rent-check/',
+      },
     });
-    expect(page.metadata).not.toHaveProperty('alternates');
-    expect(JSON.stringify(page.metadata)).not.toMatch(/canonical|languages|hreflang/i);
+    expect(page.metadata.alternates).not.toHaveProperty('languages');
   });
 
-  it('resolves the built head boundary to inherited noindex, follow and no alternates', async () => {
+  it('resolves the built head boundary to index, follow, and one canonical', async () => {
     const root = await import('../app/layout');
     const page = await loadPage();
     const resolved = { ...root.metadata, ...page.metadata } as {
@@ -144,9 +146,10 @@ describe('route metadata and authored head contract', () => {
       }),
     ));
 
-    expect(head).toContain('<meta name="robots" content="noindex, follow"/>');
-    expect(resolved).not.toHaveProperty('alternates');
-    expect(head).not.toMatch(/canonical|hreflang|rel="alternate"/i);
+    expect(head).toContain('<meta name="robots" content="index, follow"/>');
+    expect(resolved.alternates).toEqual({
+      canonical: 'https://www.signedprice.com/kr/seoul/tools/rent-check/',
+    });
   });
 });
 
