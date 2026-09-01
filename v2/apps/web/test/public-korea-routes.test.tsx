@@ -133,12 +133,21 @@ describe('Korea public route model', () => {
 });
 
 describe('Korea public SSR routes', () => {
-  it.each([
-    ['check', async () => KoreaCheckPage({ params: Promise.resolve({ area: 'seoul' }) })],
-    ['area', async () => KoreaAreaPage({ params: Promise.resolve({ area: 'seoul' }) })],
-  ])('puts every published number and sample count in initial %s HTML', async (name, render) => {
+  it('redirects the legacy Seoul area entry to the v2 Explorer', async () => {
     useArtifact();
-    const html = renderToStaticMarkup(await render());
+
+    await expect(KoreaAreaPage({
+      params: Promise.resolve({ area: 'seoul' }),
+    })).rejects.toMatchObject({
+      digest: expect.stringContaining('/kr/seoul/explore/'),
+    });
+  });
+
+  it('puts every published number and sample count in initial check HTML', async () => {
+    useArtifact();
+    const html = renderToStaticMarkup(await KoreaCheckPage({
+      params: Promise.resolve({ area: 'seoul' }),
+    }));
 
     for (const value of ['₩180,000,000', '₩280,000,000', '₩380,000,000', '₩480,000,000', '₩580,000,000']) {
       expect(html).toContain(value);
@@ -157,13 +166,12 @@ describe('Korea public SSR routes', () => {
     expect(html).toContain('n &lt; 5');
     expect(html).toContain('Korea public evidence. Publication limits shown.');
     expect(html).not.toMatch(/public P1 preview|Production launch is not authorized/i);
-    if (name === 'area') expect(html).toContain('Reported refundable-deposit distribution.');
     expect(html).not.toMatch(/monthly-rent distribution|5\.0%\/year/i);
     expect(html).not.toMatch(/statutory|legal rate/i);
     expect(html).not.toContain('/kr/seoul/tools/rent-check');
   });
 
-  it('renders the contract decision workspace on home, the quote on check, and a static area graph', async () => {
+  it('renders the contract decision workspace on home and the quote on check', async () => {
     useArtifact();
     useAreaArtifact();
     useConversionArtifact();
@@ -171,10 +179,6 @@ describe('Korea public SSR routes', () => {
     const check = renderToStaticMarkup(await KoreaCheckPage({
       params: Promise.resolve({ area: 'seoul' }),
     }));
-    const area = renderToStaticMarkup(await KoreaAreaPage({
-      params: Promise.resolve({ area: 'seoul' }),
-    }));
-
     expect((home.match(/<(?:input|select)\b/g) ?? [])).toHaveLength(7);
     expect(home).toContain('Offer A');
     expect(home).toContain('Offer B');
@@ -186,8 +190,6 @@ describe('Korea public SSR routes', () => {
     expect(home).toContain('Renewals');
     expect(home).toContain('href="/kr/seoul/news"');
     expect((check.match(/<(?:input|select)\b/g) ?? [])).toHaveLength(2);
-    expect(area).not.toMatch(/<(?:input|select)\b/);
-    expect(area).toContain('data-evidence-state="published"');
   });
 
   it('fails closed on home without conversion evidence instead of returning a 404', async () => {
