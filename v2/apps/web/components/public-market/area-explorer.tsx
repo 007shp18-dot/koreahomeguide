@@ -757,7 +757,7 @@ export function AreaExplorer({
       {model.status === 'ready'
         ? (
           <ReadyAreaExplorer
-            key={model.selectedSlug}
+            key={`${model.selectedSlug}:${initialQuery}`}
             model={model}
             naverMapClientId={naverMapClientId}
             locale={locale}

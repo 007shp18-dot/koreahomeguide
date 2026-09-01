@@ -54,16 +54,20 @@ afterEach(() => {
 });
 
 describe('public Seoul area Explorer', () => {
-  it('remounts client-owned filters when a same-route server payload selects a new district', () => {
-    const element = AreaExplorer({ model: readyModel() });
-    if (!isValidElement<{ children: unknown }>(element)) {
-      throw new Error('Expected AreaExplorer to return an element.');
-    }
-    const child = Children.only(element.props.children);
+  it('remounts client-owned filters when same-route district or query props change', () => {
+    const clientStateKey = (initialQuery: string): string | null => {
+      const element = AreaExplorer({ model: readyModel(), initialQuery });
+      if (!isValidElement<{ children: unknown }>(element)) {
+        throw new Error('Expected AreaExplorer to return an element.');
+      }
+      const child = Children.only(element.props.children);
+      if (!isValidElement(child)) throw new Error('Expected ready Explorer child.');
+      return child.key;
+    };
 
-    expect(isValidElement(child)).toBe(true);
-    if (!isValidElement(child)) return;
-    expect(child.key).toBe('gangnam-gu');
+    expect(clientStateKey('Evidence Tower')).toBe('gangnam-gu:Evidence Tower');
+    expect(clientStateKey('Apartment')).toBe('gangnam-gu:Apartment');
+    expect(clientStateKey('Evidence Tower')).not.toBe(clientStateKey('Apartment'));
   });
 
   it('provides a real retained-building text filter in the evidence rail', () => {
