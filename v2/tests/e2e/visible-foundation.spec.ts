@@ -135,29 +135,21 @@ for (const route of publicRoutes) {
   });
 }
 
-test('desktop shows the Korea market card in the 1366 by 768 first viewport', async ({
+test('desktop exposes live Seoul evidence in the 1366 by 768 first viewport', async ({
   page,
 }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium');
   await page.goto('/');
-  const viewport = page.viewportSize();
-  expect(viewport).not.toBeNull();
-  if (!viewport) throw new Error('The desktop project must define a viewport');
 
-  for (const city of ['Seoul']) {
-    const card = page.getByRole('article', { name: city });
-    const heading = card.getByRole('heading', { level: 3, name: city });
-    await expect(card).toBeVisible();
-    await expect(heading).toBeInViewport({ ratio: 1 });
-    const box = await card.boundingBox();
-
-    expect(box).not.toBeNull();
-    if (!box) throw new Error(`${city} market card has no bounding box`);
-    const visibleHeight = Math.max(
-      0,
-      Math.min(box.y + box.height, viewport.height) - Math.max(box.y, 0),
-    );
-    expect(visibleHeight / box.height).toBeGreaterThanOrEqual(0.3);
+  const liveSeoul = page.locator('[data-seoul-live="ready"]');
+  await expect(liveSeoul).toBeInViewport({ ratio: 1 });
+  for (const label of ['New contracts', 'Renewals']) {
+    await expect(liveSeoul.getByText(label, { exact: true })).toBeInViewport({ ratio: 1 });
+  }
+  for (const label of ['Explore', 'Rankings', 'News', 'Guide']) {
+    await expect(
+      liveSeoul.getByRole('link', { name: new RegExp(`^${label}`) }),
+    ).toBeInViewport({ ratio: 1 });
   }
 });
 

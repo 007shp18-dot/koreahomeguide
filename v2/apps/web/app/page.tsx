@@ -22,13 +22,13 @@ export default async function Home() {
     <div id="top">
       <SiteHeader copy={copy.header} />
       <main>
+        <SeoulLive model={buildSeoulLiveModel()} mode="global" />
+
         <HomeMarketBrowser
           copy={copy}
           groups={presentation.groups}
           markets={presentation.markets}
         />
-
-        <SeoulLive model={buildSeoulLiveModel()} mode="global" />
 
         <section
           className="principles site-shell"
