@@ -26,7 +26,7 @@ const districts = [{
 describe('NAVER district map', () => {
   it('loads the official Maps v3 endpoint with an encoded ncpKeyId', () => {
     expect(buildNaverMapsScriptUrl('client/id + value')).toBe(
-      'https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=client%2Fid+%2B+value',
+      'https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=client%2Fid+%2B+value&submodules=geocoder',
     );
   });
 
@@ -111,5 +111,39 @@ describe('NAVER district map', () => {
     });
     listeners[0]?.();
     expect(selected).toEqual(['/kr/seoul/explore/jongno-gu/']);
+  });
+
+  it('switches to verified building markers without navigating the district route', () => {
+    const maps: Array<{ options: unknown }> = [];
+    const markers: Array<{ options: unknown }> = [];
+    const listeners: Array<() => void> = [];
+    const selected: string[] = [];
+    class LatLng { constructor(readonly latitude: number, readonly longitude: number) {} }
+    class Map {
+      constructor(_element: HTMLElement, readonly options: unknown) { maps.push(this); }
+    }
+    class Marker {
+      constructor(readonly options: unknown) { markers.push(this); }
+    }
+    const sdk = {
+      Map, LatLng, Marker,
+      Event: { addListener: (_target: unknown, _event: 'click', listener: () => void) => listeners.push(listener) },
+    };
+    const mounted = mountNaverDistrictMap({
+      sdk, element: {} as HTMLElement, districts,
+      selectedDistrict: { latitude: 37.5, longitude: 127.03 },
+      buildings: [{
+        id: 'tower', title: 'Evidence Tower', href: '/kr/seoul/explore/gangnam-gu/tower/',
+        addressQuery: '서울 강남구 역삼동 Evidence Tower', latitude: 37.501, longitude: 127.031,
+      }],
+      onSelect: () => undefined,
+      onSelectBuilding: (id) => selected.push(id),
+    });
+
+    expect(maps[0]?.options).toEqual({ center: new LatLng(37.5, 127.03), zoom: 14, minZoom: 10 });
+    expect((markers[0]?.options as { title: string }).title).toBe('Evidence Tower');
+    expect(mounted.markers).toHaveLength(1);
+    listeners[0]?.();
+    expect(selected).toEqual(['tower']);
   });
 });
