@@ -166,7 +166,8 @@ describe('Korea rent snapshot internal job handler', () => {
     const response = await handler(request({ action: 'finalize', referenceInstant }));
 
     expect(response.status).toBe(200);
-    expect(await response.json()).toEqual({
+    const payload = await response.json();
+    expect(payload).toMatchObject({
       status: 'ready',
       completedCoordinates: 700,
       period: '2026-01/2026-07',
@@ -176,22 +177,29 @@ describe('Korea rent snapshot internal job handler', () => {
           dataset: 'kr-rent',
           sha256: 'a'.repeat(64),
           recordCount: 131,
-          artifact: { artifactVersion: 'signedprice-korea-rent-evidence-v1' },
+          encoding: 'gzip+base64',
+          compressedBytes: expect.any(Number),
+          payload: expect.any(String),
         },
         buildingRegistry: {
           dataset: 'kr-building-registry',
           sha256: 'b'.repeat(64),
           recordCount: 1,
-          artifact: { artifactVersion: 'signedprice-observed-building-inventory-v1' },
+          encoding: 'gzip+base64',
+          compressedBytes: expect.any(Number),
+          payload: expect.any(String),
         },
         conversion: {
           dataset: 'kr-conversion',
           sha256: 'c'.repeat(64),
           recordCount: 240,
-          artifact: { artifactVersion: 1 },
+          encoding: 'gzip+base64',
+          compressedBytes: expect.any(Number),
+          payload: expect.any(String),
         },
       },
     });
+    expect(JSON.stringify(payload)).not.toContain('artifactVersion');
     expect(deps.buildRentArtifact).toHaveBeenCalledOnce();
     expect(deps.buildInventoryArtifact).toHaveBeenCalledOnce();
     expect(deps.buildConversionArtifact).toHaveBeenCalledWith({
@@ -199,6 +207,38 @@ describe('Korea rent snapshot internal job handler', () => {
       period: '2026-01/2026-07',
       generatedAt: referenceInstant,
     });
+  });
+
+  it('publishes rent and buildings when conversion evidence misses its floor', async () => {
+    const deps = dependencies({
+      buildConversionArtifact: vi.fn(async () => {
+        throw new TypeError(
+          'Source data did not meet the publication floor for required conversion curves.',
+        );
+      }),
+    });
+    const handler = createKoreaRentSnapshotJobHandler(deps as never);
+    const response = await handler(request({ action: 'finalize', referenceInstant }));
+
+    expect(response.status).toBe(200);
+    expect(await response.json()).toMatchObject({
+      status: 'ready',
+      artifacts: {
+        rent: { dataset: 'kr-rent', sha256: 'a'.repeat(64), recordCount: 131 },
+        buildingRegistry: {
+          dataset: 'kr-building-registry',
+          sha256: 'b'.repeat(64),
+          recordCount: 1,
+        },
+        conversion: {
+          dataset: 'kr-conversion',
+          status: 'unavailable',
+          code: 'publication_floor_not_met',
+        },
+      },
+    });
+    expect(deps.buildRentArtifact).toHaveBeenCalledOnce();
+    expect(deps.buildInventoryArtifact).toHaveBeenCalledOnce();
   });
 
   it('maps incomplete coverage to conflict without leaking an internal reason', async () => {

@@ -6,6 +6,7 @@ import {
   randomBytes,
   timingSafeEqual,
 } from 'node:crypto';
+import { gzipSync } from 'node:zlib';
 
 import type {
   KoreaObservedBuildingInventory,
@@ -22,6 +23,29 @@ type BuiltArtifact = Readonly<{
 
 type BuiltRentArtifact = BuiltArtifact & Readonly<{ recordCount: number }>;
 type BuiltConversionArtifact = BuiltArtifact & Readonly<{ eligiblePairCount: number }>;
+
+function encodeArtifact(
+  dataset: 'kr-rent' | 'kr-building-registry' | 'kr-conversion',
+  built: BuiltArtifact,
+  recordCount: number,
+): Readonly<{
+  dataset: 'kr-rent' | 'kr-building-registry' | 'kr-conversion';
+  sha256: string;
+  recordCount: number;
+  encoding: 'gzip+base64';
+  compressedBytes: number;
+  payload: string;
+}> {
+  const compressed = gzipSync(Buffer.from(built.serialized, 'utf8'), { level: 9 });
+  return Object.freeze({
+    dataset,
+    sha256: built.sha256,
+    recordCount,
+    encoding: 'gzip+base64',
+    compressedBytes: compressed.byteLength,
+    payload: compressed.toString('base64'),
+  });
+}
 
 export type KoreaRentSnapshotJobHandlerDependencies = Readonly<{
   environment: string | undefined;
@@ -177,7 +201,10 @@ export function createKoreaRentSnapshotRunnerPage(
         if (result.status !== 'ready' || result.completedCoordinates !== 700 || typeof result.artifacts !== 'object' || result.artifacts === null) throw new Error('invalid_artifact');
         const blob = new Blob([JSON.stringify(result, null, 2) + '\\n'], { type: 'application/json' });
         download.href = URL.createObjectURL(blob); download.hidden = false;
-        status.textContent = 'Ready: period ' + result.period + '. Rent SHA-256 ' + result.artifacts.rent.sha256 + '. Conversion pairs ' + result.artifacts.conversion.recordCount + '.';
+        const conversionStatus = result.artifacts.conversion.status === 'unavailable'
+          ? 'Conversion evidence held below publication floor.'
+          : 'Conversion pairs ' + result.artifacts.conversion.recordCount + '.';
+        status.textContent = 'Ready: period ' + result.period + '. Rent SHA-256 ' + result.artifacts.rent.sha256 + '. ' + conversionStatus;
       } catch (error) {
         status.textContent = 'Job failed. Review Preview function logs and retry.';
       } finally { run.disabled = false; }
@@ -256,39 +283,58 @@ export function createKoreaRentSnapshotJobHandler(
         if (finalized.completedCoordinates !== 700) {
           return json({ status: 'error', code: 'source_coverage_incomplete' }, 409);
         }
-        const [rent, buildingRegistry, conversion] = await Promise.all([
+        const [rent, buildingRegistry] = await Promise.all([
           dependencies.buildRentArtifact(finalized.evidence),
           dependencies.buildInventoryArtifact(finalized.inventory),
-          dependencies.buildConversionArtifact({
+        ]);
+        let conversion:
+          | BuiltConversionArtifact
+          | Readonly<{
+            dataset: 'kr-conversion';
+            status: 'unavailable';
+            code: 'publication_floor_not_met';
+          }>;
+        try {
+          conversion = await dependencies.buildConversionArtifact({
             records: finalized.conversionRecords,
             period: finalized.period,
             generatedAt: finalized.generatedAt,
-          }),
-        ]);
+          });
+        } catch (error) {
+          if (
+            error instanceof TypeError
+            && error.message === (
+              'Source data did not meet the publication floor for required conversion curves.'
+            )
+          ) {
+            conversion = Object.freeze({
+              dataset: 'kr-conversion',
+              status: 'unavailable',
+              code: 'publication_floor_not_met',
+            });
+          } else {
+            throw error;
+          }
+        }
         return json({
           status: 'ready',
           completedCoordinates: finalized.completedCoordinates,
           period: finalized.period,
           generatedAt: finalized.generatedAt,
           artifacts: {
-            rent: {
-              dataset: 'kr-rent',
-              sha256: rent.sha256,
-              recordCount: rent.recordCount,
-              artifact: rent.artifact,
-            },
-            buildingRegistry: {
-              dataset: 'kr-building-registry',
-              sha256: buildingRegistry.sha256,
-              recordCount: finalized.inventory.records.length,
-              artifact: buildingRegistry.artifact,
-            },
-            conversion: {
-              dataset: 'kr-conversion',
-              sha256: conversion.sha256,
-              recordCount: conversion.eligiblePairCount,
-              artifact: conversion.artifact,
-            },
+            rent: encodeArtifact('kr-rent', rent, rent.recordCount),
+            buildingRegistry: encodeArtifact(
+              'kr-building-registry',
+              buildingRegistry,
+              finalized.inventory.records.length,
+            ),
+            conversion: 'status' in conversion
+              ? conversion
+              : encodeArtifact(
+                'kr-conversion',
+                conversion,
+                conversion.eligiblePairCount,
+              ),
           },
         }, 200);
       } catch (error) {
