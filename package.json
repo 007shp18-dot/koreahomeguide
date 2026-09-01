@@ -3,7 +3,7 @@
   "private": true,
   "version": "11.3.0",
   "scripts": {
-    "test": "node --test",
+    "test:runtime-assets": "node --test tests/shared-runtime-assets.test.cjs",
     "seo:build-migration": "node scripts/seo/build-signedprice-migration.cjs && node scripts/seo/render-signedprice-migration.cjs",
     "seo:validate-migration": "node scripts/seo/validate-signedprice-migration.cjs"
   },
