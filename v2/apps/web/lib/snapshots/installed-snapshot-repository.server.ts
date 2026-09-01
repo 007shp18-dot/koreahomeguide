@@ -33,6 +33,8 @@ export class InstalledSnapshotUnavailableError extends Error {
 }
 
 let checkedInObservedBuildingInventory: unknown;
+let checkedInKoreaRentEvidence: unknown;
+let checkedInKoreaSaleEvidence: unknown;
 
 function parseCompressedInventory(source: Buffer): unknown {
   return JSON.parse(gunzipSync(source).toString('utf8'));
@@ -60,9 +62,44 @@ function readCheckedInObservedBuildingInventory(): unknown {
   return checkedInObservedBuildingInventory;
 }
 
+function readCheckedInArtifact(
+  filename: string,
+  current: unknown,
+  assign: (value: unknown) => void,
+): unknown {
+  if (current !== undefined) return current;
+  for (const path of [
+    resolve(process.cwd(), `data/${filename}`),
+    resolve(process.cwd(), `apps/web/data/${filename}`),
+  ]) {
+    try {
+      const value = parseCompressedInventory(readFileSync(path));
+      assign(value);
+      return value;
+    } catch {
+      // Try the alternate project working directory before failing closed.
+    }
+  }
+  return undefined;
+}
+
 export function resolveInstalledSnapshotObject(objectUrl: string): unknown {
   if (objectUrl === 'installed://kr-building-registry') {
     return readCheckedInObservedBuildingInventory();
+  }
+  if (objectUrl === 'installed://kr-rent') {
+    return readCheckedInArtifact(
+      'korea-rent-evidence.json.gz',
+      checkedInKoreaRentEvidence,
+      (value) => { checkedInKoreaRentEvidence = value; },
+    );
+  }
+  if (objectUrl === 'installed://kr-sale') {
+    return readCheckedInArtifact(
+      'korea-sale-evidence.json.gz',
+      checkedInKoreaSaleEvidence,
+      (value) => { checkedInKoreaSaleEvidence = value; },
+    );
   }
   return undefined;
 }
@@ -107,7 +144,11 @@ function snapshotIdentity(payload: Readonly<Record<string, unknown>>): Readonly<
     schemaVersion: payload.artifactVersion ?? payload.schemaVersion,
     marketId: payload.marketId ?? provenance?.marketId,
     period: payload.period ?? provenance?.period,
-    recordCount: Array.isArray(payload.records) ? payload.records.length : null,
+    recordCount: Array.isArray(payload.records)
+      ? payload.records.length
+      : Array.isArray(payload.areaRecords) && Array.isArray(payload.buildingRecords)
+        ? payload.areaRecords.length + payload.buildingRecords.length
+        : null,
   });
 }
 

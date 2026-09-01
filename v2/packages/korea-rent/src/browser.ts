@@ -45,6 +45,13 @@ export type {
 } from './conversion-artifact';
 export type KoreaContractType = 'new' | 'renewal' | 'unknown';
 export type KoreaRecordStatus = 'active' | 'cancelled' | 'unknown';
+export type {
+  KoreaEvidenceAreaBand,
+  KoreaEvidenceContractGroup,
+  KoreaEvidenceDistribution,
+  KoreaEvidenceMetric,
+  KoreaEvidenceTransaction,
+} from './evidence-cohorts';
 export type RentCheckTier = 1 | 2 | 3;
 export type RentCheckMonths = 3 | 6 | 12;
 

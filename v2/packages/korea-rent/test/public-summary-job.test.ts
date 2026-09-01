@@ -9,6 +9,7 @@ import {
   finalizeKoreaPublicAreaSummaryJob,
   finalizeKoreaPublicBuildingSummaryJob,
   finalizeKoreaObservedBuildingInventoryJob,
+  finalizeKoreaRentSnapshotJob,
   finalizeKoreaPublicSummaryJob,
   runKoreaPublicSummaryBatch,
   type KoreaPublicSummaryCoordinate,
@@ -242,6 +243,69 @@ describe('Korea public summary resumable batch', () => {
 });
 
 describe('Korea public summary finalization', () => {
+  it('finalizes observed inventory and all-area rent evidence from one complete cache', async () => {
+    const cache = new MemoryCache();
+    const store = createSourceMonthStore({
+      namespacePrefix: 'signedprice:kr-public-summary-job:v1',
+      ttlSeconds: 86_400,
+      tags: [JOB_TAG],
+      corruptTag: JOB_TAG,
+    });
+    const plan = buildKoreaPublicSummaryPlan(REFERENCE_INSTANT);
+    for (const coordinate of plan) {
+      let records: readonly KoreaRentRecord[] = [];
+      if (coordinate.index < 5) {
+        records = [{
+          ...eligibleRecord(coordinate, coordinate.index),
+          legalDong: '청운동',
+          buildingLabel: '전면적 검증아파트',
+          areaSqm: [20, 40, 60, 85, 120][coordinate.index]!,
+        }];
+      } else if (coordinate.index >= 7 && coordinate.index < 12) {
+        records = [{
+          ...eligibleRecord(coordinate, coordinate.index),
+          legalDong: '청운동',
+          buildingLabel: '월세 검증오피스텔',
+          areaSqm: 30,
+          depositWon: (12 - coordinate.index) * 10_000_000,
+          monthlyRentWon: (coordinate.index - 2) * 100_000,
+        }];
+      }
+      await store.write(cache, emptyMonth(coordinate, records));
+    }
+
+    const finalized = await finalizeKoreaRentSnapshotJob(
+      { referenceInstant: REFERENCE_INSTANT },
+      { cache, now: () => new Date(REFERENCE_INSTANT), rightsLookup },
+    );
+
+    expect(finalized).toMatchObject({
+      period: '2026-01/2026-07',
+      generatedAt: REFERENCE_INSTANT,
+      completedCoordinates: 700,
+      evidence: {
+        stats: {
+          sourceRecordCount: 10,
+          eligibleRecordCount: 10,
+          jeonseRecordCount: 5,
+          monthlyRecordCount: 5,
+          observedBuildingCount: 2,
+        },
+      },
+      inventory: {
+        stats: {
+          observedRecordCount: 10,
+          observedBuildingCount: 2,
+        },
+      },
+    });
+    const cityAll = finalized.evidence.areaRecords.find(({ areaId }) => areaId === 'seoul:all')!;
+    const allJeonse = cityAll.cohorts.find(({ transaction, areaBand, contractGroup }) => (
+      transaction === 'jeonse' && areaBand === 'all' && contractGroup === 'all'
+    ));
+    expect(allJeonse?.primary).toMatchObject({ n: 5, published: true });
+  }, 30_000);
+
   it('derives all observed identities from the complete cohort without a price gate', async () => {
     const cache = new MemoryCache();
     const store = createSourceMonthStore({

@@ -17,6 +17,10 @@ import {
   type KoreaObservedBuildingInventory,
 } from './observed-building-inventory';
 import {
+  buildKoreaRentEvidence,
+  type KoreaRentEvidence,
+} from './rent-evidence';
+import {
   KR_MOLIT_RENT_RIGHTS,
   RightsViolationError,
   assertMolitRights,
@@ -112,6 +116,14 @@ export type KoreaPublicBuildingSummaryFinalization = Readonly<{
 }>;
 
 export type KoreaObservedBuildingInventoryFinalization = Readonly<{
+  inventory: KoreaObservedBuildingInventory;
+  period: string;
+  generatedAt: string;
+  completedCoordinates: typeof TOTAL_COORDINATES;
+}>;
+
+export type KoreaRentSnapshotFinalization = Readonly<{
+  evidence: KoreaRentEvidence;
   inventory: KoreaObservedBuildingInventory;
   period: string;
   generatedAt: string;
@@ -515,6 +527,37 @@ export async function finalizeKoreaObservedBuildingInventoryJob(
   });
 
   return Object.freeze({
+    inventory,
+    period,
+    generatedAt,
+    completedCoordinates: TOTAL_COORDINATES,
+  });
+}
+
+export async function finalizeKoreaRentSnapshotJob(
+  input: Readonly<{ referenceInstant: string }>,
+  dependencies: Omit<KoreaPublicSummaryJobDependencies, 'serviceKey' | 'fetch'>,
+): Promise<KoreaRentSnapshotFinalization> {
+  assertJobRights(dependencies, ['cache', 'derive', 'display', 'commercial']);
+  const loaded = await loadPublicSummaryRecords(input.referenceInstant, dependencies.cache);
+  const { completedMonths, period } = completedPeriod(input.referenceInstant);
+  const generatedAt = validNow(dependencies);
+  const records = toBuildingSourceRecords(loaded);
+  const evidence = buildKoreaRentEvidence({
+    period,
+    completedMonths,
+    generatedAt,
+    records,
+  });
+  const inventory = buildKoreaObservedBuildingInventory({
+    period,
+    generatedAt,
+    records,
+    geocodes: [],
+  });
+
+  return Object.freeze({
+    evidence,
     inventory,
     period,
     generatedAt,

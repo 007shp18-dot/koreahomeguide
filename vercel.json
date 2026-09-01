@@ -1,4 +1,6 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- . ':(exclude)v2/**' ':(exclude)docs/superpowers/**'",
   "redirects": [
     {
       "source": "/tools/seoul-rent-check/",
