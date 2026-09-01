@@ -45,5 +45,317 @@ type PublicDistrictEvidenceIdentity = Readonly<{
   nameEn: string;
   nameKo: string;
   href: `/kr/seoul/explore/${string}/`;
-  perinµë»h‘éì¶»§q«^uÑÕÉ¸=‰©•Ð¹™É••é”¡ì(€€€Í½Á•%è¥‘•¹Ñ¥Ñä¹Í±Õœ°(€€€Í•±•Ñ•°(€€€ÍÁ±¥ÑMÑ…ÑÕÌè€É•…‘äœ°(€€€Õ¹­¹½Ý¹½¹ÑÉ…Ñ½Õ¹Ðè…É•„¹½¹ÑÉ…ÑÉ½ÕÁÌ¹Õ¹­¹½Ý¸¹ÁÉ¥µ…Éä¹¸°(€€€…±±1½Ý•ÉQ¡…¹9•ÜèÉ½ÕÁÌ¹…±°¹ÍÑ…ÑÕÌ€ôôô€ÁÕ‰±¥Í¡•œ(€€€€€€˜˜É½ÕÁÌ¹¹•Ü¹ÍÑ…ÑÕÌ€ôôô€ÁÕ‰±¥Í¡•œ(€€€€€€˜˜É½ÕÁÌ¹…±°¹µ•‘¥…¹Y…±Õ”€ðÉ½ÕÁÌ¹¹•Ü¹µ•‘¥…¹Y…±Õ”°(€€€É½ÕÁÌ°(€ô¤ì)ô()™Õ¹Ñ¥½¸‰Õ­•ÑÍÍ¥¹µ•¹ÑÌ (€ÍÕµµ…É¥•ÌèÉ•…‘½¹±äAÕ‰±¥5…É­•ÑMÕµµ…Éåmt°(¤èI•…‘½¹±å5…ÀñÍÑÉ¥¹œ°€Àð€Äð€Èð€Ìð€Ðøì(€½¹ÍÐÁÕ‰±¥Í¡•€ôÍÕµµ…É¥•Ì¹™¥±Ñ•È ¡ÍÕµµ…Éä¤€ôøÍÕµµ…Éä¹ÁÕ‰±¥Í¡•¤¹Í½ÉÐ ¡±•™Ð°É¥¡Ð¤€ôø€ (€€€±•™Ð¹µ•€´É¥¡Ð¹µ•ñð±•™Ð¹…É•„¹±½…±•½µÁ…É”¡É¥¡Ð¹…É•„¤(€€¤¤ì(€É•ÑÕÉ¸¹•Ü5…À¡ÁÕ‰±¥Í¡•¹µ…À ¡ÍÕµµ…Éä°¥¹‘•à¤€ôøl(€€€ÍÕµµ…Éä¹…É•„°(€€€5…Ñ ¹µ¥¸ Ð°5…Ñ ¹™±½½È¡¥¹‘•à€¨€Ô€¼ÁÕ‰±¥Í¡•¹±•¹Ñ ¤¤…Ì€Àð€Äð€Èð€Ìð€Ð°(€t¤¤ì)ô()™Õ¹Ñ¥½¸±••¹‘½È¡‘¥ÍÑÉ¥ÑÌèÉ•…‘½¹±äáÁ±½É•¥ÍÑÉ¥Ñ5½‘•±mt¤èÉ•…‘½¹±äAÕ‰±¥É•…1••¹‘	Õ­•Ñmtì(€É•ÑÕÉ¸=‰©•Ð¹™É••é” ¡lÀ°€Ä°€È°€Ì°€Ñt…Ì½¹ÍÐ¤¹™±…Ñ5…À ¡‰Õ­•Ð¤€ôøì(€€€½¹ÍÐÙ…±Õ•Ì€ô‘¥ÍÑÉ¥ÑÌ¹™±…Ñ5…À ¡‘¥ÍÑÉ¥Ð¤€ôø€ (€€€€€‘¥ÍÑÉ¥Ð¹‰Õ­•Ð€ôôô‰Õ­•Ð€˜˜‘¥ÍÑÉ¥Ð¹ÍÕµµ…Éä¹ÁÕ‰±¥Í¡•€üm‘¥ÍÑÉ¥Ð¹ÍÕµµ…Éä¹µ•‘t€èmt(€€€€¤¤ì(€€€¥˜€¡Ù…±Õ•Ì¹±•¹Ñ €ôôô€À¤É•ÑÕÉ¸mtì(€€€½¹ÍÐµ¥¹¥µÕµ5•‘¥…¸€ô5…Ñ ¹µ¥¸ ¸¸¹Ù…±Õ•Ì¤ì(€€€½¹ÍÐµ…á¥µÕµ5•‘¥…¸€ô5…Ñ ¹µ…à ¸¸¹Ù…±Õ•Ì¤ì(€€€É•ÑÕÉ¸m=‰©•Ð¹™É••é”¡ì(€€€€€‰Õ­•Ð°(€€€€€½Õ¹ÐèÙ…±Õ•Ì¹±•¹Ñ °(€€€€€µ¥¹¥µÕµ5•‘¥…¸°(€€€€€µ…á¥µÕµ5•‘¥…¸°(€€€€€±…‰•°èµ¥¹¥µÕµ5•‘¥…¸€ôôôµ…á¥µÕµ5•‘¥…¸(€€€€€€€€ü™½Éµ…Ñ5½¹•ä¡µ¥¹¥µÕµ5•‘¥…¸¤(€€€€€€€€è€‘í™½Éµ…Ñ5½¹•ä¡µ¥¹¥µÕµ5•‘¥…¸¥÷ŠL‘í™½Éµ…Ñ5½¹•ä¡µ…á¥µÕµ5•‘¥…¸¥õ€°(€€€ô¥tì(€ô¤¤ì)ô()™Õ¹Ñ¥½¸…É•…	…¹‘1…‰•° (€ÁÉ½©•Ñ¥½¸èáÑÉ…Ðñ-½É•…áÁ±½É•ÉÙ¥‘•¹•AÉ½©•Ñ¥½¸°ìÍÑ…ÑÕÌè€É•…‘äœôø°(¤èÍÑÉ¥¹œì(€½¹ÍÐ…É•„€ôì(€€€…±°è€±°™¥±•…É•…Ìœ°(€€€€Õ¹‘•È´ÐÀœè€U¹‘•È€ÐÃŽ:„œ°(€€€€œÐÀ´ØÀœè€œÐÃŠLØÃŽ:„œ°(€€€€œØÀ´àÔœè€œØÃŠLà×Ž:„œ°(€€€€œàÔµÁ±ÕÌœè€œà×Ž:„…¹…‰½Ù”œ°(€õmÁÉ½©•Ñ¥½¸¹Í•±•Ñ¥½¸¹…É•…	…¹‘tì(€½¹ÍÐÑÉ…¹Í…Ñ¥½¸€ôì(€€€©•½¹Í”è€©•½¹Í”œ°µ½¹Ñ¡±äè€µ½¹Ñ¡±äÉ•¹Ðœ°Í…±”è€Í…±”œ°(€õmÁÉ½©•Ñ¥½¸¹Í•±•Ñ¥½¸¹ÑÉ…¹Í…Ñ¥½¹tì(€É•ÑÕÉ¸€‘í…É•…ôƒ
-Ü€‘íÑÉ…¹Í…Ñ¥½¹õ€ì)ô()™Õ¹Ñ¥½¸‰Õ¥±‘¥¹Í½È (€ÁÉ½©•Ñ¥½¸èáÑÉ…Ðñ-½É•…áÁ±½É•ÉÙ¥‘•¹•AÉ½©•Ñ¥½¸°ìÍÑ…ÑÕÌè€É•…‘äœôø°(¤èÉ•…‘½¹±äáÁ±½É•	Õ¥±‘¥¹5½‘•±mtì(€½¹ÍÐm™¥ÉÍÑ=‰Í•ÉÙ•‘5½¹Ñ °±…ÍÑ=‰Í•ÉÙ•‘5½¹Ñ¡t€ôÁÉ½©•Ñ¥½¸¹Á•É¥½¹ÍÁ±¥Ð œ¼œ¤ì(€É•ÑÕÉ¸=‰©•Ð¹™É••é”¡ÁÉ½©•Ñ¥½¸¹‰Õ¥±‘¥¹Ì¹µ…À ¡‰Õ¥±‘¥¹œ¤€ôøì(€€€½¹ÍÐÍ•±•Ñ•€ô‰Õ¥±‘¥¹œ¹ÁÉ¥µ…Éäì(€€€½¹ÍÐÉ½ÕÀ€ô€¡¹…µ”èAÕ‰±¥½¹ÑÉ…ÑÉ½ÕÀð€Õ¹­¹½Ý¸œ¤€ôø‰Õ¥±‘¥¹œ¹½¹ÑÉ…ÑÉ½ÕÁÌü¹m¹…µ•t¹ÁÉ¥µ…Éäì(€€€½¹ÍÐÉ½ÕÁ1…‰•°€ô€¡¹…µ”èAÕ‰±¥½¹ÑÉ…ÑÉ½ÕÀ¤èÍÑÉ¥¹œð¹Õ±°€ôøì(€€€€€½¹ÍÐ‘¥ÍÑÉ¥‰ÕÑ¥½¸€ôÉ½ÕÀ¡¹…µ”¤ì(€€€€€É•ÑÕÉ¸‘¥ÍÑÉ¥‰ÕÑ¥½¸ü¹ÁÕ‰±¥Í¡•€ôôôÑÉÕ”€ü™½Éµ…Ñ5½¹•ä¡‘¥ÍÑÉ¥‰ÕÑ¥½¸¹µ•¤€è¹Õ±°ì(€€€ôì(€€€É•ÑÕÉ¸=‰©•Ð¹™É••é”¡ì(€€€€€¥è‰Õ¥±‘¥¹œ¹‰Õ¥±‘¥¹%°(€€€€€‘¥ÍÑÉ¥ÑM±Õœè‰Õ¥±‘¥¹œ¹‘¥ÍÑÉ¥ÑM±Õœ…ÌM•½Õ±¥ÍÑÉ¥ÑM±Õœ°(€€€€€¹•¥¡‰½É¡½½‘%è‰Õ¥±‘¥¹œ¹¹•¥¡‰½É¡½½‘%°(€€€€€¹•¥¡‰½É¡½½‘9…µ”è‰Õ¥±‘¥¹œ¹¹•¥¡‰½É¡½½‘9…µ”°(€€€€€¹…µ”è‰Õ¥±‘¥¹œ¹½™™¥¥…±9…µ”°(€€€€€¡½ÕÍ¥¹QåÁ”è‰Õ¥±‘¥¹œ¹¡½ÕÍ¥¹QåÁ”°(€€€€€±…Ñ¥ÑÕ‘”è¹Õ±°°(€€€€€±½¹¥ÑÕ‘”è¹Õ±°°(€€€€€•Ù¥‘•¹•MÑ…ÑÕÌèÍ•±•Ñ•¹¸€ôôô€À(€€€€€€€€ü€Õ¹…Ù…¥±…‰±”œ…Ì½¹ÍÐ(€€€€€€€€èÍ•±•Ñ•¹ÁÕ‰±¥Í¡•€ü€ÁÕ‰±¥Í¡•œ…Ì½¹ÍÐ€è€Ý¥Ñ¡¡•±œ…Ì½¹ÍÐ°(€€€€€ÑÉ…¹Í…Ñ¥½¸è‰Õ¥±‘¥¹œ¹ÑÉ…¹Í…Ñ¥½¸°(€€€€€ÁÉ¥µ…Éå5•ÑÉ¥Œè‰Õ¥±‘¥¹œ¹ÁÉ¥µ…Éå5•ÑÉ¥Œ°(€€€€€½‰Í•ÉÙ…Ñ¥½¹½Õ¹ÐèÍ•±•Ñ•¹¸°(€€€€€©•½¹Í•=‰Í•ÉÙ…Ñ¥½¹½Õ¹Ðè‰Õ¥±‘¥¹œ¹ÑÉ…¹Í…Ñ¥½¸€ôôô€©•½¹Í”œ€üÍ•±•Ñ•¹¸€è€À°(€€€€€µ½¹Ñ¡±å=‰Í•ÉÙ…Ñ¥½¹½Õ¹Ðè‰Õ¥±‘¥¹œ¹ÑÉ…¹Í…Ñ¥½¸€ôôô€µ½¹Ñ¡±äœ€üÍ•±•Ñ•¹¸€è€À°(€€€€€™¥ÉÍÑ=‰Í•ÉÙ•‘5½¹Ñ è™¥ÉÍÑ=‰Í•ÉÙ•‘5½¹Ñ €üü€œœ°(€€€€€±…ÍÑ=‰Í•ÉÙ•‘5½¹Ñ è±…ÍÑ=‰Í•ÉÙ•‘5½¹Ñ €üü€œœ°(€€€€€Í…µÁ±•1…‰•°èÍ…µÁ±•1…‰•°¡Í•±•Ñ•¹¸¤°(€€€€€µ•‘¥…¹1…‰•°èÍ•±•Ñ•¹ÁÕ‰±¥Í¡•€ü™½Éµ…Ñ5½¹•ä¡Í•±•Ñ•¹µ•¤€è¹Õ±°°(€€€€€™¥±•‘•Á½Í¥Ñ5•‘¥…¹1…‰•°è‰Õ¥±‘¥¹œ¹™¥±•‘•Á½Í¥Ðü¹ÁÕ‰±¥Í¡•€ôôôÑÉÕ”(€€€€€€€€ü™½Éµ…Ñ5½¹•ä¡‰Õ¥±‘¥¹œ¹™¥±•‘•Á½Í¥Ð¹µ•¤(€€€€€€€€è¹Õ±°°(€€€€€¹•ÝM…µÁ±•1…‰•°èÍ…µÁ±•1…‰•°¡É½ÕÀ ¹•Üœ¤ü¹¸€üü€À¤°(€€€€€¹•Ý5•‘¥…¹1…‰•°èÉ½ÕÁ1…‰•° ¹•Üœ¤°(€€€€€É•¹•Ý…±M…µÁ±•1…‰•°èÍ…µÁ±•1…‰•°¡É½ÕÀ É•¹•Ý…°œ¤ü¹¸€üü€À¤°(€€€€€É•¹•Ý…±5•‘¥…¹1…‰•°èÉ½ÕÁ1…‰•° É•¹•Ý…°œ¤°(€€€€€Õ¹­¹½Ý¹½¹ÑÉ…Ñ½Õ¹ÐèÉ½ÕÀ …±°œ¤€ôôôÕ¹‘•™¥¹•€ü€À€èÉ½ÕÀ Õ¹­¹½Ý¸œ¤ü¹¸€üü€À°(€€€€€¡É•˜è€½­È½Í•½Õ°½•áÁ±½É”¼‘í‰Õ¥±‘¥¹œ¹‘¥ÍÑÉ¥ÑM±Õô¼‘í‰Õ¥±‘¥¹œ¹‰Õ¥±‘¥¹%‘ô½€…Ì½¹ÍÐ°(€€€ô¤ì(€ô¤¤ì)ô()•áÁ½ÉÐ™Õ¹Ñ¥½¸‰Õ¥±‘-½É•…Ù¥‘•¹•É•…áÁ±½É•5½‘•° (€Í•±•Ñ•‘M±ÕœèÍÑÉ¥¹œðÕ¹‘•™¥¹•°(€ÁÉ½©•Ñ¥½¸èáÑÉ…Ðñ-½É•…áÁ±½É•ÉÙ¥‘•¹•AÉ½©•Ñ¥½¸°ìÍÑ…ÑÕÌè€É•…‘äœôø°(¤èáÑÉ…ÐñAÕ‰±¥É•…áÁ±½É•5½‘•°°ìÍÑ…ÑÕÌè€É•…‘äœôøì(€½¹ÍÐ…É•…	å¥ÍÑÉ¥Ð€ô¹•Ü5…À¡ÁÉ½©•Ñ¥½¸¹‘¥ÍÑÉ¥ÑÌ¹µ…À ¡…É•„¤€ôøl(€€€…É•„¹‘¥ÍÑÉ¥ÑM±Õœ°…É•„°(€t…Ì½¹ÍÐ¤¤ì(€½¹ÍÐ•½µ•ÑÉå	åM±Õœ€ô¹•Ü5…À¡±¥ÍÑM•½Õ±¥ÍÑÉ¥Ñ•½µ•ÑÉä ¤¹µ…À ¡•½µ•ÑÉä¤€ôøl(€€€•½µ•ÑÉä¹Í±Õœ°•½µ•ÑÉä°(€t…Ì½¹ÍÐ¤¤ì(€½¹ÍÐÍÕµµ…É¥•Ì€ôM=U1}I9Q}!-}%MQI%QL¹µ…À ¡¥‘•¹Ñ¥Ñä¤€ôøì(€€€½¹ÍÐ…É•„€ô…É•…	å¥ÍÑÉ¥Ð¹•Ð¡¥‘•¹Ñ¥Ñä¹Í±Õœ¤ì(€€€¥˜€¡…É•„€ôôôÕ¹‘•™¥¹•¤Ñ¡É½Ü¹•ÜQåÁ•ÉÉ½È ½µÁ±•Ñ”‘¥ÍÑÉ¥Ð•Ù¥‘•¹”¥ÌÉ•ÅÕ¥É•¸œ¤ì(€€€É•ÑÕÉ¸ÍÕµµ…Éå½È¡¥‘•¹Ñ¥Ñä¹Í±Õœ°€Í•½Õ°œ°ÁÉ½©•Ñ¥½¸°…É•„¹ÁÉ¥µ…Éä¤ì(€ô¤ì(€½¹ÍÐ‰Õ­•ÑÌ€ô‰Õ­•ÑÍÍ¥¹µ•¹ÑÌ¡ÍÕµµ…É¥•Ì¤ì(€½¹ÍÐ‘¥ÍÑÉ¥ÑÌ€ô=‰©•Ð¹™É••é”¡M=U1}I9Q}!-}%MQI%QL¹µ…À ¡¥‘•¹Ñ¥Ñä°¥¹‘•à¤€ôøì(€€€½¹ÍÐÍÕµµ…Éä€ôÍÕµµ…É¥•Ím¥¹‘•át„ì(€€€½¹ÍÐ…É•„€ô…É•…	å¥ÍÑÉ¥Ð¹•Ð¡¥‘•¹Ñ¥Ñä¹Í±Õœ¤„ì(€€€½¹ÍÐ•½µ•ÑÉä€ô•½µ•ÑÉå	åM±Õœ¹•Ð¡¥‘•¹Ñ¥Ñä¹Í±Õœ¤ì(€€€¥˜€¡•½µ•ÑÉä€ôôôÕ¹‘•™¥¹•¤Ñ¡É½Ü¹•ÜQåÁ•ÉÉ½È ½µÁ±•Ñ”‘¥ÍÑÉ¥Ð•½µ•ÑÉä¥ÌÉ•ÅÕ¥É•¸œ¤ì(€€€½¹ÍÐ½¹ÑÉ…ÑÙ¥‘•¹”€ô½¹ÑÉ…ÑÙ¥‘•¹•½È¡¥‘•¹Ñ¥Ñä°…É•„°ÁÉ½©•Ñ¥½¸¤ì(€€€É•ÑÕÉ¸=‰©•Ð¹™É••é”¡ì(€€€€€€¸¸¹¥‘•¹Ñ¥Ñä°(€€€€€¡É•˜è€½­È½Í•½Õ°½•áÁ±½É”¼‘í¥‘•¹Ñ¥Ñä¹Í±Õô½€…Ì½¹ÍÐ°(€€€€€Á…Ñ è•½µ•ÑÉä¹Á…Ñ °(€€€€€±…Ñ¥ÑÕ‘”è•½µ•ÑÉä¹±…Ñ¥ÑÕ‘”°(€€€€€±½¹¥ÑÕ‘”è•½µ•ÑÉä¹±½¹¥ÑÕ‘”°(€€€€€ÍÕµµ…Éä°(€€€€€ÍÑ…Ñ”èÍÕµµ…Éä¹ÁÕ‰±¥Í¡•€ü€ÁÕ‰±¥Í¡•œ…Ì½¹ÍÐ€è€Ý¥Ñ¡¡•±œ…Ì½¹ÍÐ°(€€€€€‰Õ­•ÐèÍÕµµ…Éä¹ÁÕ‰±¥Í¡•€ü‰Õ­•ÑÌ¹•Ð¡¥‘•¹Ñ¥Ñä¹Í±Õœ¤€üü¹Õ±°€è¹Õ±°°(€€€€€Í…µÁ±•1…‰•°èÍ…µÁ±•1…‰•°¡ÍÕµµ…Éä¹¸¤°(€€€€€µ•‘¥…¹1…‰•°èÍÕµµ…Éä¹ÁÕ‰±¥Í¡•€ü™½Éµ…Ñ5½¹•ä¡ÍÕµµ…Éä¹µ•¤€è¹Õ±°°(€€€€€¡…¹•1…‰•°èÍÕµµ…Éä¹ÁÕ‰±¥Í¡•(€€€€€€€€ü¡…¹•I•±¥…‰¥±¥Ñä¡ìÁÐèÍÕµµ…Éä¹¡œÍ´°¹AÉ¥½Èè¹Õ±°°¹1…Ñ•ÍÐè¹Õ±°ô¤¹±…‰•°(€€€€€€€€è¹Õ±°°(€€€€€•Ù¥‘•¹•MÕµµ…Éäè½¹ÑÉ…ÑÙ¥‘•¹”¹É½ÕÁÍm½¹ÑÉ…ÑÙ¥‘•¹”¹Í•±•Ñ•‘t°(€€€€€½¹ÑÉ…ÑÙ¥‘•¹”°(€€€ô¤ì(€ô¤¤ì(€½¹ÍÐÍ•±•Ñ•€ô•ÑM•½Õ±¥ÍÑÉ¥Ñ	åM±Õœ¡Í•±•Ñ•‘M±Õœ€üü€œœ¤ü¹Í±Õœ€üü€©½¹¹¼µÔœì(€½¹ÍÐ‰Õ¥±‘¥¹Ì€ô‰Õ¥±‘¥¹Í½È¡ÁÉ½©•Ñ¥½¸¤ì(€½¹ÍÐÁÉ¥•I•…‘ä€ô‰Õ¥±‘¥¹Ì¹™¥±Ñ•È ¡ì•Ù¥‘•¹•MÑ…ÑÕÌô¤€ôø•Ù¥‘•¹•MÑ…ÑÕÌ€ôôô€ÁÕ‰±¥Í¡•œ¤¹±•¹Ñ ì(€½¹ÍÐÑÉ…¹Í…Ñ¥½¹½Ù•É•€ô‰Õ¥±‘¥¹Ì¹™¥±Ñ•È ¡ì½‰Í•ÉÙ…Ñ¥½¹½Õ¹Ðô¤€ôø½‰Í•ÉÙ…Ñ¥½¹½Õ¹Ð€ø€À¤¹±•¹Ñ ì(€½¹ÍÐÁÕ‰±¥Í¡•‘¥ÍÑÉ¥ÑÌ€ôÍÕµµ…É¥•Ì¹™¥±Ñ•È ¡ìÁÕ‰±¥Í¡•ô¤€ôøÁÕ‰±¥Í¡•¤¹±•¹Ñ ì(€½¹ÍÐÉ¥¡ÑÌ€ôÁÉ½©•Ñ¥½¸¹Í•±•Ñ¥½¸¹ÑÉ…¹Í…Ñ¥½¸€ôôô€Í…±”œ(€€€€ü-I}5=1%Q}M1}I%!QL(€€€€è-I}5=1%Q}I9Q}I%!QLì(€½¹ÍÐ‘…Ñ…Í•Ð€ôÁÉ½©•Ñ¥½¸¹Í•±•Ñ¥½¸¹ÑÉ…¹Í…Ñ¥½¸€ôôô€Í…±”œ(€€€€ü€É•Á½ÉÑ•Í…±”½¹ÑÉ…ÑÌœ(€€€€è€É•Á½ÉÑ•É•¹Ð½¹ÑÉ…ÑÌœì(€½¹ÍÐ•Ù¥‘•¹”€ôÉ•…Ñ•Ù¥‘•¹••ÍÉ¥ÁÑ½È¡ì(€€€µ…É­•Ñ%è€­ÈµÍ•½Õ°œ°(€€€ÁÉ½Ù¥‘•Èè€5=1%Pœ°(€€€‘…Ñ…Í•Ð°(€€€Á•É¥½èÁÉ½©•Ñ¥½¸¹Á•É¥½°(€€€•¹•É…Ñ•‘ÐèÁÉ½©•Ñ¥½¸¹•¹•É…Ñ•‘Ð°(€€€ÍÑ…Ñ”è€É•…‘äœ°(€€€ÁÕ‰±¥…Ñ¥½¹5¥¹¥µÕ´è€Ô°(€€€µ•Ñ¡½‘½±½å%è€­Èµ•á…Ðµ½¡½ÉÐµ•Ù¥‘•¹”µØÈœ°(€€€É¥¡ÑÍA½±¥å%èÉ¥¡ÑÌ¹¥°(€ô¤ì(€É•ÑÕÉ¸=‰©•Ð¹™É••é”¡ì(€€€ÍÑ…ÑÕÌè€É•…‘äœ°(€€€•Ù¥‘•¹•M•±•Ñ¥½¸èÁÉ½©•Ñ¥½¸¹Í•±•Ñ¥½¸°(€€€ÑÉ…¹Í…Ñ¥½¹Ù…¥±…‰¥±¥ÑäèÁÉ½©•Ñ¥½¸¹…Ù…¥±…‰¥±¥Ñä°(€€€Í•±•Ñ•‘M±ÕœèÍ•±•Ñ•°(€€€¥ÑåMÕµµ…ÉäèÍÕµµ…Éå½È Í•½Õ°œ°€­Èœ°ÁÉ½©•Ñ¥½¸°ÁÉ½©•Ñ¥½¸¹¥Ñä¹ÁÉ¥µ…Éä¤°(€€€‘¥ÍÑÉ¥ÑÌ°(€€€±••¹è±••¹‘½È¡‘¥ÍÑÉ¥ÑÌ¤°(€€€½Ù•É…”è=‰©•Ð¹™É••é”¡ì(€€€€€‘¥ÍÑÉ¥ÑÌè=‰©•Ð¹™É••é”¡ìÁÕ‰±¥Í¡•èÁÕ‰±¥Í¡•‘¥ÍÑÉ¥ÑÌ°É•Ñ…¥¹•è‘¥ÍÑÉ¥ÑÌ¹±•¹Ñ ô¤°(€€€€€‰Õ¥±‘¥¹Ìè=‰©•Ð¹™É••é”¡ì(€€€€€€€ÍÑ…ÑÕÌè€É•…‘äœ…Ì½¹ÍÐ°(€€€€€€€½‰Í•ÉÙ•è‰Õ¥±‘¥¹Ì¹±•¹Ñ °(€€€€€€€ÑÉ…¹Í…Ñ¥½¹½Ù•É•°(€€€€€€€ÁÉ¥•I•…‘ä°(€€€€€ô¤°(€€€€€•±¥¥‰±•½¹ÑÉ…ÑÌèÁÉ½©•Ñ¥½¸¹¥Ñä¹ÁÉ¥µ…Éä¹¸°(€€€€€Õ¹ÁÕ‰±¥Í¡•è=‰©•Ð¹™É••é”¡ì(€€€€€€€‘¥ÍÑÉ¥ÑÍ	•±½Ý5¥¹¥µÕ´è‘¥ÍÑÉ¥ÑÌ¹±•¹Ñ €´ÁÕ‰±¥Í¡•‘¥ÍÑÉ¥ÑÌ°(€€€€€€€É•Ñ…¥¹•‘	Õ¥±‘¥¹Í	•±½Ý5¥¹¥µÕ´èÑÉ…¹Í…Ñ¥½¹½Ù•É•€´ÁÉ¥•I•…‘ä°(€€€€€€€Í½ÕÉ•	Õ¥±‘¥¹…¹‘¥‘…Ñ•Ìè=‰©•Ð¹™É••é”¡ì(€€€€€€€€€ÍÑ…ÑÕÌè€Õ¹…Ù…¥±…‰±”œ…Ì½¹ÍÐ°(€€€€€€€€€É•…Í½¸è€M½ÕÉ”…¹‘¥‘…Ñ”‰Õ¥±‘¥¹œ½Õ¹ÑÌ…É”¹½ÐÉ•Ñ…¥¹•¥¸Ñ¡¥ÌÙ•É¥™¥•…ÉÑ¥™…Ð¸œ…Ì½¹ÍÐ°(€€€€€€€ô¤°(€€€€€ô¤°(€€€ô¤°(€€€‰Õ¥±‘¥¹Ù…¥±…‰¥±¥Ñäè=‰©•Ð¹™É••é”¡ìÍÑ…ÑÕÌè€É•…‘äœ…Ì½¹ÍÐ°‰Õ¥±‘¥¹Ìô¤°(€€€Í½ÕÉ”è=‰©•Ð¹™É••é”¡ì(€€€€€•Ù¥‘•¹”°(€€€€€ÁÉ½Ù¥‘•Èè€5=1%Pœ…Ì½¹ÍÐ°(€€€€€Á•É¥½èÁÉ½©•Ñ¥½¸¹Á•É¥½°(€€€€€…ÑÑÉ¥‰ÕÑ¥½¸è=‰©•Ð¹™É••é”¡l¸¸¹É¥¡ÑÌ¹…ÑÑÉ¥‰ÕÑ¥½¹t¤°(€€€€€‰…¹è…É•…	…¹‘1…‰•°¡ÁÉ½©•Ñ¥½¸¤°(€€€€€ÁÕ‰±¥…Ñ¥½¹5¥¹¥µÕ´è€Ô…Ì½¹ÍÐ°(€€€€€¥¹±Õ‘•Í9•Ý¹‘I•¹•Ý…°èÑÉÕ”…Ì½¹ÍÐ°(€€€€€¥¹±Õ‘•ÍU¹­¹½Ý¹½¹ÑÉ…ÑQåÁ”èÑÉÕ”…Ì½¹ÍÐ°(€€€€€¥¹±Õ‘•ÍU¹­¹½Ý¹I•½É‘MÑ…ÑÕÌèÑÉÕ”…Ì½¹ÍÐ°(€€€€€¹•áÑUÁ‘…Ñ”è¹Õ±°°(€€€€€•½µ•ÑÉåÑÑÉ¥‰ÕÑ¥½¸è€-=MQP•¹ÍÕÌ‰½Õ¹‘…É¥•ÌÙ¥„Í½ÕÑ¡­½É•„½Í•½Õ°µµ…ÁÌ€¡Á…¡”´È¸À¤œ…Ì½¹ÍÐ°(€€€ô¤°(€ô¤ì)ô(
+  period: string;
+  publicationMinimum: 5;
+  contractGroup: PublicContractGroup;
+  groupLabel: 'All contracts' | 'New contracts' | 'Renewal contracts';
+}>;
+
+export type PublicDistrictEvidenceSummaryModel =
+  | (PublicDistrictEvidenceIdentity & Readonly<{
+      status: 'published';
+      sampleLabel: string;
+      medianValue: number;
+      medianLabel: string;
+      middleHalfLabel: string;
+      rangeLabel: string;
+      changeLabel: string;
+      spread: SpreadVerdict;
+      change: ChangeReliability;
+    }>)
+  | (PublicDistrictEvidenceIdentity & Readonly<{
+      status: 'withheld';
+      sampleLabel: string;
+    }>)
+  | (PublicDistrictEvidenceIdentity & Readonly<{
+      status: 'unavailable';
+      message: 'Verified district summary unavailable';
+    }>)
+  | (PublicDistrictEvidenceIdentity & Readonly<{
+      status: 'snapshot_unavailable';
+      message: 'New/renewal split not available in this snapshot';
+    }>);
+
+export type ContractGroupEvidenceModel = Readonly<{
+  scopeId: SeoulDistrictSlug;
+  selected: PublicContractGroup;
+  splitStatus: 'ready' | 'snapshot_v1' | 'unavailable';
+  unknownContractCount: number | null;
+  allLowerThanNew: boolean;
+  groups: Readonly<Record<PublicContractGroup, PublicDistrictEvidenceSummaryModel>>;
+}>;
+
+export type PublicAreaCoverageModel = Readonly<{
+  districts: Readonly<{ published: number; retained: number }>;
+  buildings:
+    | Readonly<{
+        status: 'ready';
+        observed: number;
+        transactionCovered: number;
+        priceReady: number;
+      }>
+    | Readonly<{
+        status: 'inventory_unavailable';
+        transactionCovered: number | null;
+        priceReady: number | null;
+        reason: 'Verified observed building inventory is not loaded.';
+      }>;
+  eligibleContracts: number;
+  unpublished: Readonly<{
+    districtsBelowMinimum: number;
+    retainedBuildingsBelowMinimum: number | null;
+    sourceBuildingCandidates: Readonly<{
+      status: 'unavailable';
+      reason: 'Source candidate building counts are not retained in this verified artifact.';
+    }>;
+  }>;
+}>;
+
+export type PublicMonthlyUpdateSchedule = Readonly<{
+  cadence: 'monthly';
+  dayOfMonth: number;
+  hourUtc: number;
+  minuteUtc: number;
+}>;
+
+export type PublicNextUpdateModel = Readonly<{
+  cadence: 'monthly';
+  instant: string;
+}>;
+
+export type PublicAreaLegendBucket = Readonly<{
+  bucket: 0 | 1 | 2 | 3 | 4;
+  count: number;
+  minimumMedian: number;
+  maximumMedian: number;
+  label: string;
+}>;
+
+export type PublicSourceBoundaryModel = Readonly<{
+  evidence: EvidenceDescriptor | null;
+  provider: 'MOLIT';
+  period: string;
+  attribution: readonly string[];
+  band: string;
+  publicationMinimum: 5;
+  includesNewAndRenewal: true;
+  includesUnknownContractType: true;
+  includesUnknownRecordStatus: true;
+  nextUpdate: PublicNextUpdateModel | null;
+  geometryAttribution?: 'KOSTAT census boundaries via southkorea/seoul-maps (Apache-2.0)';
+}>;
+
+export type PublicAreaSourceBoundaryModel = PublicSourceBoundaryModel & Readonly<{
+  geometryAttribution: 'KOSTAT census boundaries via southkorea/seoul-maps (Apache-2.0)';
+}>;
+
+export type RankingKind = 'cheapest' | 'change' | 'spread' | 'sample';
+
+export type SignedRankingBar = Readonly<{
+  direction: 'negative' | 'zero' | 'positive';
+  startPct: number;
+  endPct: number;
+  extentPct: number;
+}>;
+
+export type PublicDistrictRankingRow = Readonly<{
+  kind: RankingKind;
+  rank: number;
+  lawdCd: SeoulLawdCd;
+  slug: SeoulDistrictSlug;
+  nameEn: string;
+  nameKo: string;
+  href: `/kr/seoul/explore/${string}/` | `/kr/seoul/explore/${string}/?${string}`;
+  metric: number;
+  valueLabel: string;
+  bar: SignedRankingBar | null;
+  distribution: PublishedMarketSummary | null;
+  plotAxis: QuotePositionAxis | null;
+}>;
+
+export type PublicAreaRankingsModel =
+  | Readonly<{
+      status: 'ready';
+      evidenceSelection: Readonly<{
+        transaction: 'jeonse' | 'monthly' | 'sale';
+        areaBand: KoreaEvidenceAreaBand | 'legacy-45-55';
+        housingType: 'all' | 'apartment' | 'officetel' | 'villa_multifamily' | 'detached';
+        contractGroup: 'all' | 'new' | 'renewal' | 'unknown' | 'not-applicable';
+      }>;
+      transactionAvailability: Readonly<{
+        jeonse: boolean;
+        monthly: boolean;
+        sale: boolean;
+      }>;
+      cheapest: readonly PublicDistrictRankingRow[];
+      change: readonly PublicDistrictRankingRow[];
+      spread: readonly PublicDistrictRankingRow[];
+      sample: readonly PublicDistrictRankingRow[];
+      withheldDistrictCount: number;
+      changeExcludedDistrictCount: number;
+      hasNegativeChange: boolean;
+      changeAxisLabel: Readonly<{ minimum: string; maximum: string }>;
+      changeInterpretation: Readonly<{
+        status: 'not_assessable';
+        title: 'Three-month change not assessable';
+        definition: 'Prior/latest sample counts were not retained in this snapshot.';
+        note: 'Stored change values are excluded from rankings until both comparison counts are retained.';
+      }>;
+      period: EvidencePeriodModel;
+      source: PublicSourceBoundaryModel;
+    }>
+  | Readonly<{
+      status: 'unavailable';
+      message: 'Verified district summary unavailable';
+      source: PublicSourceBoundaryModel;
+    }>;
+
+export type PublicAreaExploreModel =
+  | Readonly<{
+      status: 'ready';
+      evidenceSelection: Readonly<{
+        transaction: 'jeonse' | 'monthly' | 'sale';
+        areaBand: KoreaEvidenceAreaBand | 'legacy-45-55';
+        housingType: 'all' | 'apartment' | 'officetel' | 'villa_multifamily' | 'detached';
+        contractGroup: 'all' | 'new' | 'renewal' | 'unknown' | 'not-applicable';
+      }>;
+      transactionAvailability: Readonly<{
+        jeonse: boolean;
+        monthly: boolean;
+        sale: boolean;
+      }>;
+      selectedSlug: SeoulDistrictSlug;
+      citySummary: PublicMarketSummary;
+      districts: readonly ExploreDistrictModel[];
+      legend: readonly PublicAreaLegendBucket[];
+      coverage: PublicAreaCoverageModel;
+      buildingAvailability: ExploreBuildingAvailability;
+      source: PublicAreaSourceBoundaryModel;
+    }>
+  | Readonly<{
+      status: 'unavailable';
+      selectedSlug: null;
+      districts: readonly [];
+      source: PublicAreaSourceBoundaryModel;
+      message: 'Verified district summary unavailable';
+    }>;
+
+export type ExploreBuildingModel = Readonly<{
+  id: string;
+  districtSlug: SeoulDistrictSlug;
+  neighborhoodId: string;
+  neighborhoodName: string;
+  name: string;
+  housingType: string;
+  latitude: number | null;
+  longitude: number | null;
+  evidenceStatus: 'published' | 'withheld' | 'unavailable';
+  transaction?: 'jeonse' | 'monthly' | 'sale';
+  primaryMetric?: 'deposit' | 'monthly-rent' | 'sale-price';
+  observationCount: number;
+  jeonseObservationCount: number;
+  monthlyObservationCount: number;
+  firstObservedMonth: string;
+  lastObservedMonth: string;
+  sampleLabel: string;
+  medianLabel: string | null;
+  filedDepositMedianLabel?: string | null;
+  newSampleLabel: string;
+  newMedianLabel: string | null;
+  renewalSampleLabel: string;
+  renewalMedianLabel: string | null;
+  unknownContractCount: number;
+  href: `/kr/seoul/explore/${string}/${string}/`;
+}>;
+
+export type ExploreBuildingAvailability =
+  | Readonly<{
+      status: 'ready';
+      buildings: readonly ExploreBuildingModel[];
+    }>
+  | Readonly<{
+      status: 'not_loaded';
+      fallbackBuildings: readonly ExploreBuildingModel[];
+    }>;
+
+export type PublicDistrictFaq = Readonly<{
+  question: string;
+  answer: string;
+}>;
+
+export type PublicDistrictDisplayModel = Readonly<{
+  heading: string;
+  sampleLabel: string;
+  medianLabel: string | null;
+  rangeLabel: string | null;
+  middleHalfLabel: string | null;
+  changeLabel: string | null;
+  spread: SpreadVerdict | null;
+  change: ChangeReliability | null;
+}>;
+
+export type DistrictBuildingLink = Readonly<{
+  id: string;
+  name: string;
+  housingType: string;
+  sampleLabel: string;
+  href: `/kr/seoul/explore/${string}/${string}/`;
+}>;
+
+export type DistrictBuildingAvailability =
+  | Readonly<{
+      status: 'ready';
+      buildings: readonly DistrictBuildingLink[];
+    }>
+  | Readonly<{
+      status: 'not_loaded';
+      empty: EvidenceEmptyState;
+    }>;
+
+export type PublicDistrictModel =
+  | Readonly<{
+      status: 'published';
+      identity: SeoulRentCheckDistrict;
+      summary: PublishedMarketSummary;
+      display: PublicDistrictDisplayModel;
+      period: EvidencePeriodModel;
+      nearby: readonly SeoulRentCheckDistrict[];
+      faq: readonly PublicDistrictFaq[];
+      datasetJsonLd: Readonly<Record<string, unknown>>;
+      faqJsonLd: Readonly<Record<string, unknown>>;
+      source: PublicAreaSourceBoundaryModel;
+      buildingAvailability: DistrictBuildingAvailability;
+      evidenceSummary: PublicDistrictEvidenceSummaryModel;
+      contractEvidence: ContractGroupEvidenceModel;
+      communitySignal: CommunitySignalModel;
+      news: readonly NewsCardModel[];
+    }>
+  | Readonly<{
+      status: 'withheld';
+      identity: SeoulRentCheckDistrict;
+      summary: WithheldMarketSummary;
+      display: PublicDistrictDisplayModel;
+      period: EvidencePeriodModel;
+      nearby: readonly SeoulRentCheckDistrict[];
+      faq: readonly PublicDistrictFaq[];
+      datasetJsonLd: Readonly<Record<string, unknown>>;
+      faqJsonLd: Readonly<Record<string, unknown>>;
+      source: PublicAreaSourceBoundaryModel;
+      buildingAvailability: DistrictBuildingAvailability;
+      evidenceSummary: PublicDistrictEvidenceSummaryModel;
+      contractEvidence: ContractGroupEvidenceModel;
+      communitySignal: CommunitySignalModel;
+      news: readonly NewsCardModel[];
+    }>
+  | Readonly<{
+      status: 'unavailable';
+      identity: SeoulRentCheckDistrict;
+      nearby: readonly SeoulRentCheckDistrict[];
+      source: PublicAreaSourceBoundaryModel;
+      buildingAvailability: DistrictBuildingAvailability;
+      message: 'Verified district summary unavailable';
+      evidenceSummary: PublicDistrictEvidenceSummaryModel;
+      contractEvidence: ContractGroupEvidenceModel;
+      communitySignal: CommunitySignalModel;
+      news: readonly NewsCardModel[];
+    }>;
