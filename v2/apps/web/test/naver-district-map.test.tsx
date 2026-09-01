@@ -12,7 +12,9 @@ vi.mock('next/script', () => ({
 import {
   NaverDistrictMap,
   buildNaverMapsScriptUrl,
+  isNaverMapsSdkReady,
   mountNaverDistrictMap,
+  reconcileNaverDistrictMap,
 } from '../components/maps/naver-district-map';
 import type { ExploreBuildingModel } from '../lib/public-market/area-route-types';
 import * as explorerState from '../lib/public-market/area-explorer-state';
@@ -57,6 +59,45 @@ describe('NAVER district map', () => {
     expect(html).toContain('data-map-state="fallback"');
     expect(html).toContain('Static Seoul district map');
     expect(html).not.toContain('oapi.map.naver.com');
+  });
+
+  it('rejects a partially initialized SDK after domain authentication fails', () => {
+    expect(isNaverMapsSdkReady({
+      Map: class {},
+      LatLng: null,
+      Marker: class {},
+      Event: { addListener: () => undefined, removeListener: () => undefined },
+    })).toBe(false);
+  });
+
+  it('fails closed instead of throwing when the NAVER SDK breaks during mount', () => {
+    class LatLng {
+      constructor() {
+        throw new TypeError('NAVER authentication failed.');
+      }
+    }
+    class Map {
+      constructor(element: HTMLElement, options: unknown) { void element; void options; }
+      setCenter(center: unknown) { void center; }
+      setZoom(zoom: number) { void zoom; }
+    }
+    class Marker {
+      constructor(options: unknown) { void options; }
+      setMap(map: unknown) { void map; }
+    }
+    const sdk = {
+      Map,
+      LatLng,
+      Marker,
+      Event: { addListener: () => undefined, removeListener: () => undefined },
+    };
+
+    expect(reconcileNaverDistrictMap(null, {
+      sdk,
+      element: {} as HTMLElement,
+      districts,
+      onSelect: () => undefined,
+    })).toBeNull();
   });
 
   it('mounts one clickable marker per district on a Seoul map', () => {
