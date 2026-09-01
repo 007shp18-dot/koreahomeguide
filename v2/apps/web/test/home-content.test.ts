@@ -137,6 +137,14 @@ describe('signedprice homepage copy', () => {
     expect(markup).not.toMatch(/enquir|sign[ -]?in|create account/i);
   });
 
+  it('keeps the default rent decision link when the full-product display label changes', async () => {
+    const markup = renderToStaticMarkup(await Home());
+
+    expect(markup).toContain(
+      '<a class="market-card__intent-link" href="/kr/seoul/rent/">Rent in Seoul',
+    );
+  });
+
   it('puts the shipped Seoul evidence products on the root entry page', async () => {
     vi.stubEnv(
       'SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT',
