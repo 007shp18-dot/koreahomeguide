@@ -74,6 +74,7 @@ export default async function ExplorerPage({ searchParams }: ExplorerPageProps) 
     selection.district,
     undefined,
     selection.contractType ?? singleValue(query.contract),
+    singleValue(query.q),
   );
   const naverMapClientId = process.env.NAVER_MAP_CLIENT_ID?.trim() || null;
 

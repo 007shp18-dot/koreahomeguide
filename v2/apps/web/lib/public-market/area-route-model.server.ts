@@ -33,6 +33,7 @@ import {
   observedBuildingRepositoryFromEnvironment,
   type ObservedBuildingRepository,
 } from './observed-building-repository.server';
+import { resolveExploreSearchDistrict } from './area-explorer-state';
 import {
   changeReliability,
   evidencePeriod,
@@ -42,6 +43,7 @@ import type {
   ContractGroupEvidenceModel,
   DistrictBuildingAvailability,
   ExploreBuildingAvailability,
+  ExploreBuildingModel,
   ExploreDistrictModel,
   PublicAreaExploreModel,
   PublicAreaLegendBucket,
@@ -582,10 +584,39 @@ function exploreBuildingsFor(
   return Object.freeze({ status: 'not_loaded', fallbackBuildings });
 }
 
+function scopeExploreBuildingsToDistrict(
+  availability: ExploreBuildingAvailability,
+  districtSlug: SeoulDistrictSlug,
+): ExploreBuildingAvailability {
+  if (availability.status === 'ready') {
+    return Object.freeze({
+      status: 'ready',
+      buildings: Object.freeze(availability.buildings.filter(
+        (building) => building.districtSlug === districtSlug,
+      )),
+    });
+  }
+  return Object.freeze({
+    status: 'not_loaded',
+    fallbackBuildings: Object.freeze(availability.fallbackBuildings.filter(
+      (building) => building.districtSlug === districtSlug,
+    )),
+  });
+}
+
+function listExploreBuildings(
+  availability: ExploreBuildingAvailability,
+): readonly ExploreBuildingModel[] {
+  return availability.status === 'ready'
+    ? availability.buildings
+    : availability.fallbackBuildings;
+}
+
 export function buildPublicAreaExploreModel(
   selectedSlug: string | undefined,
   dependencies: PublicAreaRouteDependencies = environmentDependencies(),
   requestedContractGroup?: unknown,
+  requestedBuildingQuery = '',
 ): PublicAreaExploreModel {
   const unavailableSource = buildPublicSourceBoundary(dependencies.period, null, true);
   try {
@@ -637,7 +668,14 @@ export function buildPublicAreaExploreModel(
         contractEvidence,
       } satisfies ExploreDistrictModel);
     }));
-    const selected = getSeoulDistrictBySlug(selectedSlug ?? '')?.slug ?? 'jongno-gu';
+    const requestedDistrict = getSeoulDistrictBySlug(selectedSlug ?? '')?.slug ?? 'jongno-gu';
+    const allBuildingAvailability = exploreBuildingsFor(dependencies);
+    const selected = resolveExploreSearchDistrict(
+      districts,
+      listExploreBuildings(allBuildingAvailability),
+      requestedBuildingQuery,
+      requestedDistrict,
+    );
     return Object.freeze({
       status: 'ready',
       selectedSlug: selected,
@@ -645,7 +683,10 @@ export function buildPublicAreaExploreModel(
       districts,
       legend: legendFor(districts),
       coverage: coverageFor(summaries, citySummary, dependencies),
-      buildingAvailability: exploreBuildingsFor(dependencies),
+      buildingAvailability: scopeExploreBuildingsToDistrict(
+        allBuildingAvailability,
+        selected,
+      ),
       source,
     });
   } catch {

@@ -220,21 +220,38 @@ describe('public area Explore model', () => {
     expect(model.status).toBe('ready');
     if (model.status !== 'ready' || model.buildingAvailability.status !== 'ready') return;
 
-    expect(model.buildingAvailability.buildings).toHaveLength(3);
+    expect(model.buildingAvailability.buildings).toHaveLength(2);
     expect(model.buildingAvailability.buildings).toEqual(expect.arrayContaining([
       expect.objectContaining({
         id: 'gangnam-evidence-tower', evidenceStatus: 'published',
         medianLabel: '₩320,000,000', observationCount: 8,
       }),
       expect.objectContaining({
-        id: 'jongno-monthly-home', evidenceStatus: 'unavailable',
-        medianLabel: null, monthlyObservationCount: 1,
-      }),
-      expect.objectContaining({
         id: 'gangnam-large-detached', housingType: 'detached',
         evidenceStatus: 'unavailable', medianLabel: null,
       }),
     ]));
+    expect(model.coverage.buildings).toEqual({
+      status: 'ready', observed: 3, transactionCovered: 1, priceReady: 1,
+    });
+  });
+
+  it('resolves a global building query on the server and sends only that district inventory', () => {
+    const model = buildPublicAreaExploreModel(undefined, {
+      ...dependencies(),
+      observedBuildingSource: observedBuildingFixture(),
+      buildingSource: createPublicBuildingFixture(),
+    }, undefined, 'Monthly Home');
+    expect(model.status).toBe('ready');
+    if (model.status !== 'ready' || model.buildingAvailability.status !== 'ready') return;
+
+    expect(model.selectedSlug).toBe('jongno-gu');
+    expect(model.buildingAvailability.buildings).toEqual([
+      expect.objectContaining({
+        id: 'jongno-monthly-home', evidenceStatus: 'unavailable',
+        monthlyObservationCount: 1,
+      }),
+    ]);
     expect(model.coverage.buildings).toEqual({
       status: 'ready', observed: 3, transactionCovered: 1, priceReady: 1,
     });

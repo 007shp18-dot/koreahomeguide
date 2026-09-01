@@ -195,6 +195,18 @@ function ReadyAreaExplorer({
       setSelectedHousingType('all');
     }
   }, [allBuildings, model.districts, state.selectedSlug]);
+  const submitBuildingQuery = useCallback((): void => {
+    const href = localizedSeoulHref(createSelectionHref(
+      '/kr/seoul/explore/',
+      { ...initialSelection, district: state.selectedSlug },
+      { market: 'kr', transaction: 'jeonse' },
+    ), locale);
+    const target = new URL(href, window.location.origin);
+    const normalizedQuery = buildingQuery.trim();
+    if (normalizedQuery.length === 0) target.searchParams.delete('q');
+    else target.searchParams.set('q', normalizedQuery);
+    router.replace(`${target.pathname}${target.search}`);
+  }, [buildingQuery, initialSelection, locale, router, state.selectedSlug]);
 
   return (
     <section
@@ -236,6 +248,11 @@ function ReadyAreaExplorer({
             type="search"
             value={buildingQuery}
             onChange={(event) => updateBuildingQuery(event.currentTarget.value)}
+            onKeyDown={(event) => {
+              if (event.key !== 'Enter') return;
+              event.preventDefault();
+              submitBuildingQuery();
+            }}
             placeholder={locale === 'ko' ? '예: 강남구, 역삼동, 아파트' : 'Try Gangnam-gu, Yeoksam-dong or apartment'}
           />
         </div>
