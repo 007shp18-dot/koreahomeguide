@@ -89,8 +89,10 @@ export default function PrivacyPage() {
               <article>
                 <h2>Advertising and analytics</h2>
                 <p>
-                  Advertising or non-essential analytics must not load before the applicable consent state.
-                  Their activation requires separate configuration; this page does not imply they are active.
+                  Google Analytics is available only after you explicitly allow analytics in the privacy
+                  settings. It is used for basic page-usage measurement; contract-check inputs, addresses,
+                  deposits, rents and decision labels are not sent as analytics events. Advertising has a
+                  separate choice and does not load unless you allow it.
                 </p>
               </article>
               <article>

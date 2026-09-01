@@ -30,6 +30,17 @@
   text-underline-offset: 0.2em;
 }
 
+.choiceGroup {
+  display: grid;
+  gap: 0.55rem;
+  padding-top: 0.2rem;
+}
+
+.choiceGroup h3 {
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;
