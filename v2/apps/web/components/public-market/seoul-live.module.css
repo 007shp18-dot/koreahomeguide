@@ -156,7 +156,7 @@
   color: inherit;
 }
 
-[data-seoul-live-mode="global"] {
+.section[data-seoul-live-mode="global"] {
   margin-block: clamp(1.5rem, 4vw, 4rem);
 }
 
