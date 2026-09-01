@@ -132,7 +132,7 @@ test('published quote stays local and any withheld detail stays money-free', asy
     'below the reported median',
   );
   expect(observedRequests).toEqual([]);
-  await expect(page.getByRole('link', { name: /Return to Explore/ }))
+  await expect(page.getByRole('link', { name: 'Back to Seoul map' }))
     .toHaveAttribute('href', `/kr/seoul/explore/?district=${publishedSlug}`);
 
   await page.goto('/kr/seoul/explore/');

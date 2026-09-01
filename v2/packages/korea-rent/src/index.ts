@@ -95,6 +95,7 @@ export {
 } from './service';
 export {
   buildKoreaPublicMarketSummary,
+  type KoreaPublicContractGroup,
   type KoreaPublicSummaryInput,
   type KoreaPublicSummarySource,
 } from './public-summary';
@@ -105,6 +106,7 @@ export {
   runKoreaPublicSummaryBatch,
   type KoreaPublicSummaryBatchResult,
   type KoreaPublicSummaryCoordinate,
+  type KoreaPublicAreaSummaryGroup,
   type KoreaPublicAreaSummaryFinalization,
   type KoreaPublicSummaryFinalization,
   type KoreaPublicSummaryJobDependencies,

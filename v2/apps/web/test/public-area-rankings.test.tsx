@@ -57,8 +57,8 @@ describe('Seoul district rankings page', () => {
     expect(html).toContain('23 districts excluded');
     expect(html).toContain('aria-current="page"');
     expect(html).toContain('data-public-tab="explore"');
-    expect(html).not.toContain('href="/kr/seoul/news/"');
-    expect(html).not.toContain('href="/kr/seoul/guide/"');
+    expect(html).toContain('href="/kr/seoul/news"');
+    expect(html).toContain('href="/kr/seoul/guide"');
   });
 
   it('states when no eligible district fell without hiding positive rows', async () => {

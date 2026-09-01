@@ -6,11 +6,13 @@ import { SEOUL_RENT_CHECK_DISTRICTS } from '@signedprice/korea-rent/browser';
 import {
   buildPublicAreaExploreModel,
   buildPublicDistrictModel,
+  normalizePublicContractGroup,
 } from '../lib/public-market/area-route-model.server';
 import {
   CITY_MEDIAN_SENTINEL,
   PUBLIC_AREA_FIXTURE_PERIOD,
   createPublicAreaFixture,
+  createPublicAreaV2Fixture,
 } from './public-area-fixture';
 
 const rankedFixture = () => createPublicAreaFixture({
@@ -32,6 +34,32 @@ const dependencies = (source: unknown = rankedFixture()) => ({
 });
 
 describe('public area Explore model', () => {
+  it('normalizes query input and exposes independent v2 group evidence', () => {
+    expect(normalizePublicContractGroup(undefined)).toBe('all');
+    expect(normalizePublicContractGroup('new')).toBe('new');
+    expect(normalizePublicContractGroup('renewal')).toBe('renewal');
+    expect(normalizePublicContractGroup('private')).toBe('all');
+    expect(normalizePublicContractGroup(['new'])).toBe('all');
+
+    const model = buildPublicAreaExploreModel('jung-gu', {
+      source: createPublicAreaV2Fixture(),
+      period: PUBLIC_AREA_FIXTURE_PERIOD,
+    }, 'renewal');
+    expect(model.status).toBe('ready');
+    if (model.status !== 'ready') return;
+    const district = model.districts.find(({ slug }) => slug === 'jung-gu');
+    expect(district?.contractEvidence).toMatchObject({
+      selected: 'renewal',
+      splitStatus: 'ready',
+      unknownContractCount: 1,
+      groups: {
+        all: { status: 'published', medianLabel: '₩110,000,000' },
+        new: { status: 'published', medianLabel: '₩90,000,000' },
+        renewal: { status: 'published', medianLabel: '₩130,000,000' },
+      },
+    });
+  });
+
   it('assigns deterministic five-step ranks without changing catalog order', () => {
     const model = buildPublicAreaExploreModel('gangnam-gu', dependencies());
     expect(model.status).toBe('ready');

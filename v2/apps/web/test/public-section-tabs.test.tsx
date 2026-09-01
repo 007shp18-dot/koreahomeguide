@@ -18,24 +18,28 @@ describe('public evidence section tabs', () => {
   it.each([
     ['check', '/kr/'],
     ['explore', '/kr/seoul/explore/'],
+    ['news', '/kr/seoul/news/'],
     ['guide', '/kr/seoul/guide/'],
   ] as const)('marks only the %s destination as current', (current, currentHref) => {
     const html = renderToStaticMarkup(<PublicSectionTabs current={current} />);
 
     expect(anchorFor(html, '/kr/')).not.toBe('');
     expect(anchorFor(html, '/kr/seoul/explore/')).not.toBe('');
+    expect(anchorFor(html, '/kr/seoul/news/')).not.toBe('');
     expect(anchorFor(html, currentHref)).toContain('aria-current="page"');
     expect((html.match(/aria-current="page"/g) ?? [])).toHaveLength(1);
     expect(anchorFor(html, '/kr/seoul/guide/')).not.toBe('');
-    expect((html.match(/<a\b/g) ?? [])).toHaveLength(3);
+    expect((html.match(/<a\b/g) ?? [])).toHaveLength(4);
   });
 
-  it('makes Guide interactive and omits News until a pipeline exists', () => {
+  it('makes both News and Guide interactive', () => {
     const html = renderToStaticMarkup(<PublicSectionTabs current="explore" />);
 
     expect(html).toContain('data-public-tab="guide"');
     expect(html).toContain('href="/kr/seoul/guide"');
-    expect(html).not.toMatch(/data-public-tab="news"|>News<|aria-disabled="true"|>Future</);
+    expect(html).toContain('data-public-tab="news"');
+    expect(html).toContain('href="/kr/seoul/news"');
+    expect(html).not.toMatch(/aria-disabled="true"|>Future</);
   });
 
   it('keeps interactive tabs at least 44px with a visible focus ring', () => {

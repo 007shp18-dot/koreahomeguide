@@ -19,8 +19,8 @@ import {
 } from './public-area-fixture';
 
 describe('Contract Check evidence navigation', () => {
-  test.each(['check', 'explore', 'guide'] as const)(
-    'keeps Check, Explore, and Guide primary while News remains absent from %s',
+  test.each(['check', 'explore', 'news', 'guide'] as const)(
+    'keeps Check, Explore, News, and Guide primary from %s',
     (current) => {
       const html = renderToStaticMarkup(<PublicSectionTabs current={current} />);
 
@@ -28,8 +28,9 @@ describe('Contract Check evidence navigation', () => {
       expect(html).toContain('href="/kr/seoul/explore"');
       expect(html).toContain('data-public-tab="guide"');
       expect(html).toContain('href="/kr/seoul/guide"');
-      expect(html).not.toMatch(/data-public-tab="news"|>News</);
-      expect((html.match(/<a\b/g) ?? [])).toHaveLength(3);
+      expect(html).toContain('data-public-tab="news"');
+      expect(html).toContain('href="/kr/seoul/news"');
+      expect((html.match(/<a\b/g) ?? [])).toHaveLength(4);
       expect(html).not.toContain('data-public-tab="rankings"');
     },
   );

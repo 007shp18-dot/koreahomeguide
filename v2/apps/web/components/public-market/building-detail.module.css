@@ -52,6 +52,11 @@
 .hero h1 { max-width: 100%; font-size: clamp(2.7rem, 7vw, 6.8rem); letter-spacing: -0.065em; line-height: 0.9; overflow-wrap: anywhere; }
 .hero > p:last-child { color: var(--building-muted); font-size: 0.8rem; }
 
+.detailLayout { display: grid; grid-template-columns: minmax(0, 1fr) 380px; }
+.detailMain,
+.detailRail { min-width: 0; }
+.detailRail { align-self: stretch; border-left: 2px solid var(--building-ink); }
+
 .evidence,
 .areaBands,
 .contracts,
@@ -79,13 +84,24 @@
 
 .actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
 .actions a { min-height: 44px; padding: 0.75rem 0.9rem; display: inline-grid; place-items: center; border: 2px solid var(--building-ink); color: inherit; font-size: 0.72rem; font-weight: 850; text-decoration: none; }
+.navigation { display: grid; border-bottom: 2px solid var(--building-ink); }
+.navigation a { min-height: 48px; padding: 0.8rem 1rem; display: grid; place-items: center; border-bottom: 1px solid var(--building-ink); color: inherit; font-size: 0.72rem; font-weight: 850; text-align: center; text-decoration: none; }
+.navigation a:last-child { border-bottom: 0; }
+.navigation a:hover { color: var(--building-ground); background: var(--building-accent); }
 .breadcrumb a:focus-visible,
-.actions a:focus-visible { outline: 2px solid var(--building-accent); outline-offset: 2px; }
+.actions a:focus-visible,
+.navigation a:focus-visible { outline: 2px solid var(--building-accent); outline-offset: 2px; }
+
+@media (max-width: 960px) {
+  .detailLayout { grid-template-columns: minmax(0, 1fr); }
+  .detailRail { border-left: 0; }
+}
 
 @media (max-width: 720px) {
   .main { border-inline: 0; }
   .hero { min-height: 300px; padding: 2rem 1rem; }
   .findingGrid,
   .sourceGrid,
-  .areaBands ul { grid-template-columns: minmax(0, 1fr); }
+  .areaBands ul,
+  .detailLayout { grid-template-columns: minmax(0, 1fr); }
 }

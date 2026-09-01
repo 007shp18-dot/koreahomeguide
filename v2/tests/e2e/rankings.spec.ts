@@ -129,11 +129,11 @@ test('rankings remain contained and keyboard-readable at every release width', a
   assertNoRuntimeFailures();
 });
 
-test('Explore and district evidence link into Rankings without changing the three primary tabs', async ({ page }) => {
+test('Explore and district evidence link into Rankings without changing the four primary tabs', async ({ page }) => {
   await page.goto('/kr/seoul/explore/');
   await expect(page.getByRole('link', { name: 'View district rankings' }))
     .toHaveAttribute('href', '/kr/seoul/rankings/');
-  await expect(page.locator('[data-public-tab]')).toHaveCount(3);
+  await expect(page.locator('[data-public-tab]')).toHaveCount(4);
 
   const districtHref = await page.locator('[data-district-row] a').last().getAttribute('href');
   expect(districtHref).not.toBeNull();

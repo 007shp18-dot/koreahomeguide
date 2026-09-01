@@ -12,7 +12,11 @@ import {
 } from '@signedprice/korea-rent/browser';
 
 export const PUBLIC_AREA_SUMMARY_ARTIFACT_VERSION =
+  'signedprice-public-area-summary-v2' as const;
+export const PUBLIC_AREA_SUMMARY_ARTIFACT_V1_VERSION =
   'signedprice-public-area-summary-v1' as const;
+
+export type PublicAreaSummaryContractGroup = 'all' | 'new' | 'renewal';
 
 export type PublicAreaSummaryArtifactExpectation = Readonly<{
   marketId: 'kr-seoul';
@@ -23,13 +27,30 @@ export type PublicAreaSummaryArtifactInput = Readonly<{
   artifactVersion: unknown;
   generatedAt: unknown;
   provenance: unknown;
-  citySummary: unknown;
-  districtSummaries: unknown;
+  groups: unknown;
+  unknownContractCounts: unknown;
   readonly [key: string]: unknown;
+}>;
+
+export type VerifiedPublicAreaSummaryGroup = Readonly<{
+  citySummary: PublicMarketSummary;
+  districtSummaries: readonly PublicMarketSummary[];
 }>;
 
 export type VerifiedPublicAreaSummaryArtifact = Readonly<{
   artifactVersion: typeof PUBLIC_AREA_SUMMARY_ARTIFACT_VERSION;
+  generatedAt: string;
+  marketId: 'kr-seoul';
+  period: string;
+  groups: Readonly<Record<PublicAreaSummaryContractGroup, VerifiedPublicAreaSummaryGroup>>;
+  unknownContractCounts: Readonly<{
+    city: number;
+    districts: readonly number[];
+  }>;
+}>;
+
+export type VerifiedPublicAreaSummaryArtifactV1 = Readonly<{
+  artifactVersion: typeof PUBLIC_AREA_SUMMARY_ARTIFACT_V1_VERSION;
   generatedAt: string;
   marketId: 'kr-seoul';
   period: string;
@@ -38,6 +59,13 @@ export type VerifiedPublicAreaSummaryArtifact = Readonly<{
 }>;
 
 const ROOT_KEYS = [
+  'artifactVersion',
+  'generatedAt',
+  'provenance',
+  'groups',
+  'unknownContractCounts',
+] as const;
+const V1_ROOT_KEYS = [
   'artifactVersion',
   'generatedAt',
   'provenance',
@@ -53,6 +81,9 @@ const PROVENANCE_KEYS = [
   'rightsPolicyId',
   'sourceComplete',
 ] as const;
+const GROUP_KEYS = ['all', 'new', 'renewal'] as const;
+const SUMMARY_GROUP_KEYS = ['citySummary', 'districtSummaries'] as const;
+const UNKNOWN_COUNT_KEYS = ['city', 'districts'] as const;
 const IDENTITY_KEYS = [
   'marketId', 'area', 'parent', 'deal', 'band', 'period', 'n', 'published',
 ] as const;
@@ -161,6 +192,85 @@ function assertIdentity(
   }
 }
 
+function parseGroup(
+  value: unknown,
+  expected: PublicAreaSummaryArtifactExpectation,
+): VerifiedPublicAreaSummaryGroup {
+  if (!isRecord(value) || !hasExactKeys(value, SUMMARY_GROUP_KEYS)) invalidArtifact();
+  const citySummary = parseSummary(value.citySummary);
+  assertIdentity(citySummary, expected, 'seoul', 'kr');
+  if (
+    !Array.isArray(value.districtSummaries) ||
+    value.districtSummaries.length !== SEOUL_RENT_CHECK_DISTRICTS.length
+  ) {
+    invalidArtifact();
+  }
+  const districtSummaries = Object.freeze(value.districtSummaries.map((item, index) => {
+    const district = SEOUL_RENT_CHECK_DISTRICTS[index];
+    if (district === undefined) invalidArtifact();
+    const summary = parseSummary(item);
+    assertIdentity(summary, expected, district.slug, 'seoul');
+    return summary;
+  }));
+  if (citySummary.n !== districtSummaries.reduce((sum, summary) => sum + summary.n, 0)) {
+    invalidArtifact();
+  }
+  return Object.freeze({ citySummary, districtSummaries });
+}
+
+function parseGroups(
+  value: unknown,
+  expected: PublicAreaSummaryArtifactExpectation,
+): VerifiedPublicAreaSummaryArtifact['groups'] {
+  if (!isRecord(value) || !hasExactKeys(value, GROUP_KEYS)) invalidArtifact();
+  return Object.freeze({
+    all: parseGroup(value.all, expected),
+    new: parseGroup(value.new, expected),
+    renewal: parseGroup(value.renewal, expected),
+  });
+}
+
+function parseUnknownContractCounts(
+  value: unknown,
+): VerifiedPublicAreaSummaryArtifact['unknownContractCounts'] {
+  if (!isRecord(value) || !hasExactKeys(value, UNKNOWN_COUNT_KEYS)) invalidArtifact();
+  if (!Number.isSafeInteger(value.city) || (value.city as number) < 0) invalidArtifact();
+  if (
+    !Array.isArray(value.districts) ||
+    value.districts.length !== SEOUL_RENT_CHECK_DISTRICTS.length ||
+    value.districts.some((count) => !Number.isSafeInteger(count) || count < 0)
+  ) {
+    invalidArtifact();
+  }
+  const districts = Object.freeze([...(value.districts as number[])]);
+  if (value.city !== districts.reduce((sum, count) => sum + count, 0)) invalidArtifact();
+  return Object.freeze({ city: value.city as number, districts });
+}
+
+function assertGroupReconciliation(
+  groups: VerifiedPublicAreaSummaryArtifact['groups'],
+  unknownContractCounts: VerifiedPublicAreaSummaryArtifact['unknownContractCounts'],
+): void {
+  if (
+    groups.all.citySummary.n !==
+      groups.new.citySummary.n +
+      groups.renewal.citySummary.n +
+      unknownContractCounts.city
+  ) {
+    invalidArtifact();
+  }
+  for (let index = 0; index < SEOUL_RENT_CHECK_DISTRICTS.length; index += 1) {
+    if (
+      groups.all.districtSummaries[index]!.n !==
+        groups.new.districtSummaries[index]!.n +
+        groups.renewal.districtSummaries[index]!.n +
+        unknownContractCounts.districts[index]!
+    ) {
+      invalidArtifact();
+    }
+  }
+}
+
 function parseArtifact(
   value: unknown,
   expected: PublicAreaSummaryArtifactExpectation,
@@ -168,6 +278,31 @@ function parseArtifact(
   if (!isRecord(value) || !hasExactKeys(value, ROOT_KEYS)) invalidArtifact();
   if (
     value.artifactVersion !== PUBLIC_AREA_SUMMARY_ARTIFACT_VERSION ||
+    !isCanonicalInstant(value.generatedAt)
+  ) {
+    invalidArtifact();
+  }
+  assertProvenance(value.provenance, expected);
+  const groups = parseGroups(value.groups, expected);
+  const unknownContractCounts = parseUnknownContractCounts(value.unknownContractCounts);
+  assertGroupReconciliation(groups, unknownContractCounts);
+  return Object.freeze({
+    artifactVersion: PUBLIC_AREA_SUMMARY_ARTIFACT_VERSION,
+    generatedAt: value.generatedAt,
+    marketId: expected.marketId,
+    period: expected.period,
+    groups,
+    unknownContractCounts,
+  });
+}
+
+function parseV1Artifact(
+  value: unknown,
+  expected: PublicAreaSummaryArtifactExpectation,
+): VerifiedPublicAreaSummaryArtifactV1 {
+  if (!isRecord(value) || !hasExactKeys(value, V1_ROOT_KEYS)) invalidArtifact();
+  if (
+    value.artifactVersion !== PUBLIC_AREA_SUMMARY_ARTIFACT_V1_VERSION ||
     !isCanonicalInstant(value.generatedAt)
   ) {
     invalidArtifact();
@@ -188,14 +323,11 @@ function parseArtifact(
     assertIdentity(summary, expected, district.slug, 'seoul');
     return summary;
   }));
-  if (
-    new Set(districtSummaries.map(({ area }) => area)).size !== districtSummaries.length ||
-    citySummary.n !== districtSummaries.reduce((sum, summary) => sum + summary.n, 0)
-  ) {
+  if (citySummary.n !== districtSummaries.reduce((sum, summary) => sum + summary.n, 0)) {
     invalidArtifact();
   }
   return Object.freeze({
-    artifactVersion: PUBLIC_AREA_SUMMARY_ARTIFACT_VERSION,
+    artifactVersion: PUBLIC_AREA_SUMMARY_ARTIFACT_V1_VERSION,
     generatedAt: value.generatedAt,
     marketId: expected.marketId,
     period: expected.period,
@@ -210,6 +342,17 @@ export function parsePublicAreaSummaryArtifact(
 ): VerifiedPublicAreaSummaryArtifact {
   try {
     return parseArtifact(value, expected);
+  } catch {
+    invalidArtifact();
+  }
+}
+
+export function parsePublicAreaSummaryArtifactV1(
+  value: unknown,
+  expected: PublicAreaSummaryArtifactExpectation,
+): VerifiedPublicAreaSummaryArtifactV1 {
+  try {
+    return parseV1Artifact(value, expected);
   } catch {
     invalidArtifact();
   }

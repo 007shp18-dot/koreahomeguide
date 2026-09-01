@@ -10,8 +10,14 @@ import {
 
 const period = '2026-01/2026-07';
 
-function publishedSummary(area: string, parent: string, index = 0) {
-  const base = 100_000_000 + index * 10_000_000;
+function publishedSummary(
+  area: string,
+  parent: string,
+  index: number,
+  n: number,
+  offset = 0,
+) {
+  const base = 100_000_000 + offset + index * 10_000_000;
   return {
     marketId: 'kr-seoul',
     area,
@@ -19,7 +25,7 @@ function publishedSummary(area: string, parent: string, index = 0) {
     deal: 'jeonse',
     band: '45-55sqm',
     period,
-    n: 5,
+    n,
     published: true,
     min: base,
     p25: base + 10_000_000,
@@ -30,11 +36,18 @@ function publishedSummary(area: string, parent: string, index = 0) {
   };
 }
 
-function validArtifact() {
+function group(n: number, offset: number) {
   const districtSummaries = SEOUL_RENT_CHECK_DISTRICTS.map((district, index) =>
-    publishedSummary(district.slug, 'seoul', index));
+    publishedSummary(district.slug, 'seoul', index, n, offset));
   return {
-    artifactVersion: 'signedprice-public-area-summary-v1',
+    citySummary: publishedSummary('seoul', 'kr', 0, n * 25, offset),
+    districtSummaries,
+  };
+}
+
+function validArtifact() {
+  return {
+    artifactVersion: 'signedprice-public-area-summary-v2',
     generatedAt: '2026-08-31T01:13:24.787Z',
     provenance: {
       marketId: 'kr-seoul',
@@ -45,18 +58,22 @@ function validArtifact() {
       rightsPolicyId: 'kr-molit-rent-v1',
       sourceComplete: true,
     },
-    citySummary: {
-      ...publishedSummary('seoul', 'kr'),
-      n: 125,
+    groups: {
+      all: group(10, 0),
+      new: group(5, -20_000_000),
+      renewal: group(5, 20_000_000),
     },
-    districtSummaries,
+    unknownContractCounts: {
+      city: 0,
+      districts: Array.from({ length: 25 }, () => 0),
+    },
   };
 }
 
 describe('public area summary artifact schema', () => {
-  it('accepts one city and exactly 25 districts in canonical legal-code order', () => {
+  it('accepts three reconciled city and 25-district groups in legal-code order', () => {
     expect(PUBLIC_AREA_SUMMARY_ARTIFACT_VERSION)
-      .toBe('signedprice-public-area-summary-v1');
+      .toBe('signedprice-public-area-summary-v2');
 
     const parsed = parsePublicAreaSummaryArtifact(validArtifact(), {
       marketId: 'kr-seoul',
@@ -64,16 +81,29 @@ describe('public area summary artifact schema', () => {
     });
 
     expect(parsed.generatedAt).toBe('2026-08-31T01:13:24.787Z');
-    expect(parsed.citySummary.n).toBe(125);
-    expect(parsed.districtSummaries).toHaveLength(25);
-    expect(parsed.districtSummaries.map(({ area }) => area)).toEqual(
-      SEOUL_RENT_CHECK_DISTRICTS.map(({ slug }) => slug),
-    );
-    expect(parsed.citySummary.n).toBe(
-      parsed.districtSummaries.reduce((sum, summary) => sum + summary.n, 0),
-    );
+    expect(Object.keys(parsed.groups)).toEqual(['all', 'new', 'renewal']);
+    expect(parsed.groups.all.citySummary.n).toBe(250);
+    expect(parsed.groups.new.citySummary.n).toBe(125);
+    expect(parsed.groups.renewal.citySummary.n).toBe(125);
+    for (const value of Object.values(parsed.groups)) {
+      expect(value.districtSummaries).toHaveLength(25);
+      expect(value.districtSummaries.map(({ area }) => area)).toEqual(
+        SEOUL_RENT_CHECK_DISTRICTS.map(({ slug }) => slug),
+      );
+      expect(value.citySummary.n).toBe(
+        value.districtSummaries.reduce((sum, summary) => sum + summary.n, 0),
+      );
+      expect(Object.isFrozen(value)).toBe(true);
+      expect(Object.isFrozen(value.districtSummaries)).toBe(true);
+    }
+    expect(parsed.unknownContractCounts).toEqual({
+      city: 0,
+      districts: Array.from({ length: 25 }, () => 0),
+    });
     expect(Object.isFrozen(parsed)).toBe(true);
-    expect(Object.isFrozen(parsed.districtSummaries)).toBe(true);
+    expect(Object.isFrozen(parsed.groups)).toBe(true);
+    expect(Object.isFrozen(parsed.unknownContractCounts)).toBe(true);
+    expect(Object.isFrozen(parsed.unknownContractCounts.districts)).toBe(true);
   });
 
   it.each([
@@ -82,6 +112,12 @@ describe('public area summary artifact schema', () => {
     }],
     ['extra provenance key', (artifact: ReturnType<typeof validArtifact>) => {
       Object.assign(artifact.provenance, { endpointUrl: 'https://example.test' });
+    }],
+    ['extra group key', (artifact: ReturnType<typeof validArtifact>) => {
+      Object.assign(artifact.groups, { unknown: group(5, 0) });
+    }],
+    ['missing group', (artifact: ReturnType<typeof validArtifact>) => {
+      delete (artifact.groups as Partial<typeof artifact.groups>).renewal;
     }],
     ['wrong provider', (artifact: ReturnType<typeof validArtifact>) => {
       artifact.provenance.provider = 'OTHER';
@@ -93,31 +129,42 @@ describe('public area summary artifact schema', () => {
       artifact.provenance.period = '2025-12/2026-06';
     }],
     ['missing district', (artifact: ReturnType<typeof validArtifact>) => {
-      artifact.districtSummaries.pop();
-      artifact.citySummary.n -= 5;
+      artifact.groups.all.districtSummaries.pop();
     }],
     ['duplicate district slug', (artifact: ReturnType<typeof validArtifact>) => {
-      artifact.districtSummaries[1]!.area = artifact.districtSummaries[0]!.area;
+      artifact.groups.new.districtSummaries[1]!.area =
+        artifact.groups.new.districtSummaries[0]!.area;
     }],
     ['district order drift', (artifact: ReturnType<typeof validArtifact>) => {
-      [artifact.districtSummaries[0], artifact.districtSummaries[1]] =
-        [artifact.districtSummaries[1]!, artifact.districtSummaries[0]!];
+      [artifact.groups.renewal.districtSummaries[0],
+        artifact.groups.renewal.districtSummaries[1]] =
+        [artifact.groups.renewal.districtSummaries[1]!,
+          artifact.groups.renewal.districtSummaries[0]!];
     }],
     ['wrong district parent', (artifact: ReturnType<typeof validArtifact>) => {
-      artifact.districtSummaries[0]!.parent = 'kr';
+      artifact.groups.all.districtSummaries[0]!.parent = 'kr';
     }],
     ['wrong deal', (artifact: ReturnType<typeof validArtifact>) => {
-      artifact.districtSummaries[0]!.deal = 'rent';
+      artifact.groups.new.districtSummaries[0]!.deal = 'rent';
     }],
     ['wrong band', (artifact: ReturnType<typeof validArtifact>) => {
-      artifact.districtSummaries[0]!.band = 'all-homes';
+      artifact.groups.renewal.districtSummaries[0]!.band = 'all-homes';
     }],
-    ['city count mismatch', (artifact: ReturnType<typeof validArtifact>) => {
-      artifact.citySummary.n += 1;
+    ['group city count mismatch', (artifact: ReturnType<typeof validArtifact>) => {
+      artifact.groups.new.citySummary.n += 1;
+    }],
+    ['cross-group city mismatch', (artifact: ReturnType<typeof validArtifact>) => {
+      artifact.unknownContractCounts.city += 1;
+    }],
+    ['cross-group district mismatch', (artifact: ReturnType<typeof validArtifact>) => {
+      artifact.unknownContractCounts.districts[0]! += 1;
+    }],
+    ['invalid unknown count', (artifact: ReturnType<typeof validArtifact>) => {
+      artifact.unknownContractCounts.districts[0] = -1;
     }],
     ['impossible five-number tuple', (artifact: ReturnType<typeof validArtifact>) => {
-      artifact.districtSummaries[0]!.p25 =
-        artifact.districtSummaries[0]!.med + 1;
+      artifact.groups.all.districtSummaries[0]!.p25 =
+        artifact.groups.all.districtSummaries[0]!.med + 1;
     }],
   ])('rejects %s with one sanitized error', (_name, mutate) => {
     const artifact = structuredClone(validArtifact());
@@ -128,9 +175,9 @@ describe('public area summary artifact schema', () => {
     })).toThrow('Invalid public area summary artifact.');
   });
 
-  it('accepts exact withholding but rejects any withheld money key', () => {
+  it('accepts an independently withheld split and rejects its money keys', () => {
     const artifact = structuredClone(validArtifact());
-    artifact.districtSummaries[0] = {
+    artifact.groups.renewal.districtSummaries[0] = {
       marketId: 'kr-seoul',
       area: 'jongno-gu',
       parent: 'seoul',
@@ -139,14 +186,16 @@ describe('public area summary artifact schema', () => {
       period,
       n: 4,
       published: false,
-    } as unknown as (typeof artifact.districtSummaries)[number];
-    artifact.citySummary.n = 124;
+    } as unknown as (typeof artifact.groups.renewal.districtSummaries)[number];
+    artifact.groups.renewal.citySummary.n = 124;
+    artifact.unknownContractCounts.city = 1;
+    artifact.unknownContractCounts.districts[0] = 1;
 
     const parsed = parsePublicAreaSummaryArtifact(artifact, {
       marketId: 'kr-seoul',
       period,
     });
-    expect(parsed.districtSummaries[0]).toEqual({
+    expect(parsed.groups.renewal.districtSummaries[0]).toEqual({
       marketId: 'kr-seoul',
       area: 'jongno-gu',
       parent: 'seoul',
@@ -158,11 +207,9 @@ describe('public area summary artifact schema', () => {
     });
 
     const leaking = structuredClone(artifact);
-    const leakingDistrict = leaking.districtSummaries[0] as unknown as Record<
-      string,
-      unknown
-    >;
-    leakingDistrict.med = 999_000_000;
+    Object.assign(leaking.groups.renewal.districtSummaries[0]!, {
+      med: 999_000_000,
+    });
     expect(() => parsePublicAreaSummaryArtifact(leaking, {
       marketId: 'kr-seoul',
       period,
@@ -173,7 +220,7 @@ describe('public area summary artifact schema', () => {
     'rejects invalid published change %s',
     (chg3m) => {
       const artifact = structuredClone(validArtifact());
-      artifact.districtSummaries[0]!.chg3m = chg3m;
+      artifact.groups.new.districtSummaries[0]!.chg3m = chg3m;
       expect(() => parsePublicAreaSummaryArtifact(artifact, {
         marketId: 'kr-seoul',
         period,
@@ -183,10 +230,10 @@ describe('public area summary artifact schema', () => {
 
   it.each([null, -99.9, 0, 1.2, 400])('accepts valid published change %s', (chg3m) => {
     const artifact = structuredClone(validArtifact());
-    artifact.districtSummaries[0]!.chg3m = chg3m;
+    artifact.groups.new.districtSummaries[0]!.chg3m = chg3m;
     expect(parsePublicAreaSummaryArtifact(artifact, {
       marketId: 'kr-seoul',
       period,
-    }).districtSummaries[0]).toMatchObject({ chg3m });
+    }).groups.new.districtSummaries[0]).toMatchObject({ chg3m });
   });
 });

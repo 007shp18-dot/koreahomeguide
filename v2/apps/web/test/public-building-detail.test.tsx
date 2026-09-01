@@ -40,7 +40,14 @@ describe('public building detail', () => {
     expect(html).toContain('aria-label="Breadcrumb"');
     expect(html).toContain('href="/trust/"');
     expect(html).toContain('href="/kr/seoul/corrections/"');
-    expect(html).not.toMatch(/floor|orientation|community|news|save|supply/i);
+    expect(html).toContain('Community signal');
+    expect(html).toContain('Community responses are not open yet');
+    expect(html).not.toMatch(/orientation|supply/i);
+    expect(html).toContain('href="/kr/seoul/news');
+    expect(html).toContain('data-detail-main="true"');
+    expect(html).toContain('data-detail-rail="true"');
+    expect(html).toContain('Latest verified News');
+    expect(html).toContain('How SignedPrice reads reported rental contracts');
   });
 
   it('generates only ready params and keeps the route noindex', async () => {
@@ -71,5 +78,6 @@ describe('public building detail', () => {
     expect(css).toMatch(/min-height:\s*44px/);
     expect(css).toMatch(/@media \(max-width:\s*720px\)[\s\S]*grid-template-columns:\s*minmax\(0,\s*1fr\)/);
     expect(css).toMatch(/max-width:\s*100%/);
+    expect(css).toMatch(/\.detailLayout[\s\S]*grid-template-columns:\s*minmax\(0,\s*1fr\)\s+380px/);
   });
 });

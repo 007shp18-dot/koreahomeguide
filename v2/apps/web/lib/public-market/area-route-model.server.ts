@@ -14,18 +14,27 @@ import {
 import { KR_MOLIT_RENT_RIGHTS } from '@signedprice/korea-rent';
 
 import {
+  buildCommunitySignalModel,
+  unavailableCommunitySignalModel,
+} from '../community/community-signal-model.server';
+import { buildNewsCardModels } from '../news/news-card-model.server';
+import {
   createPublicAreaSummaryRepository,
+  type PublicAreaSummaryRepository,
 } from './area-summary-repository.server';
 import { createPublicBuildingRepository } from './building-summary-repository.server';
 import type {
+  ContractGroupEvidenceModel,
   DistrictBuildingAvailability,
   ExploreDistrictModel,
   PublicAreaExploreModel,
   PublicAreaLegendBucket,
   PublicAreaSourceBoundaryModel,
   PublicDistrictDisplayModel,
+  PublicDistrictEvidenceSummaryModel,
   PublicDistrictFaq,
   PublicDistrictModel,
+  PublicContractGroup,
   PublicSourceBoundaryModel,
 } from './area-route-types';
 import {
@@ -45,6 +54,14 @@ const money = new Intl.NumberFormat('ko-KR', {
   maximumFractionDigits: 0,
 });
 
+const PUBLICATION_MINIMUM = 5 as const;
+const CONTRACT_GROUPS = ['all', 'new', 'renewal'] as const;
+const GROUP_LABELS = Object.freeze({
+  all: 'All contracts',
+  new: 'New contracts',
+  renewal: 'Renewal contracts',
+} as const);
+
 function formatMoney(value: number): string {
   return money.format(value);
 }
@@ -56,6 +73,139 @@ function sampleLabel(n: number): string {
 function changeLabel(chg3m: number | null): string {
   if (chg3m === null) return '3-month change unavailable';
   return `${chg3m > 0 ? '+' : ''}${chg3m.toFixed(1)}% over the prior 3 months`;
+}
+
+function districtEvidenceSummaryFor(
+  identity: SeoulRentCheckDistrict,
+  summary: PublicMarketSummary,
+  contractGroup: PublicContractGroup,
+): PublicDistrictEvidenceSummaryModel {
+  const common = {
+    nameEn: identity.nameEn,
+    nameKo: identity.nameKo,
+    href: `/kr/seoul/explore/${identity.slug}/` as const,
+    period: summary.period,
+    publicationMinimum: PUBLICATION_MINIMUM,
+    contractGroup,
+    groupLabel: GROUP_LABELS[contractGroup],
+  } as const;
+  if (!summary.published) {
+    return Object.freeze({
+      ...common,
+      status: 'withheld',
+      sampleLabel: sampleLabel(summary.n),
+    });
+  }
+  return Object.freeze({
+    ...common,
+    status: 'published',
+    sampleLabel: sampleLabel(summary.n),
+    medianLabel: formatMoney(summary.med),
+    middleHalfLabel: `${formatMoney(summary.p25)}–${formatMoney(summary.p75)}`,
+    rangeLabel: `${formatMoney(summary.min)}–${formatMoney(summary.max)}`,
+    changeLabel: changeLabel(summary.chg3m),
+  });
+}
+
+function unavailableDistrictEvidenceSummaryFor(
+  identity: SeoulRentCheckDistrict,
+  period: string,
+  contractGroup: PublicContractGroup,
+): PublicDistrictEvidenceSummaryModel {
+  return Object.freeze({
+    status: 'unavailable',
+    nameEn: identity.nameEn,
+    nameKo: identity.nameKo,
+    href: `/kr/seoul/explore/${identity.slug}/`,
+    period,
+    publicationMinimum: PUBLICATION_MINIMUM,
+    contractGroup,
+    groupLabel: GROUP_LABELS[contractGroup],
+    message: 'Verified district summary unavailable',
+  });
+}
+
+function snapshotUnavailableDistrictEvidenceSummaryFor(
+  identity: SeoulRentCheckDistrict,
+  period: string,
+  contractGroup: Exclude<PublicContractGroup, 'all'>,
+): PublicDistrictEvidenceSummaryModel {
+  return Object.freeze({
+    status: 'snapshot_unavailable',
+    nameEn: identity.nameEn,
+    nameKo: identity.nameKo,
+    href: `/kr/seoul/explore/${identity.slug}/`,
+    period,
+    publicationMinimum: PUBLICATION_MINIMUM,
+    contractGroup,
+    groupLabel: GROUP_LABELS[contractGroup],
+    message: 'New/renewal split not available in this snapshot',
+  });
+}
+
+export function normalizePublicContractGroup(value: unknown): PublicContractGroup {
+  return value === 'new' || value === 'renewal' ? value : 'all';
+}
+
+function contractEvidenceFor(
+  repository: PublicAreaSummaryRepository,
+  identity: SeoulRentCheckDistrict,
+  requestedGroup: unknown,
+): ContractGroupEvidenceModel {
+  const availability = repository.getContractSplitAvailability();
+  const all = districtEvidenceSummaryFor(
+    identity,
+    repository.getDistrictSummary(identity.slug, 'all'),
+    'all',
+  );
+  if (availability.status === 'snapshot_v1') {
+    return Object.freeze({
+      scopeId: identity.slug,
+      selected: 'all',
+      splitStatus: 'snapshot_v1',
+      unknownContractCount: null,
+      groups: Object.freeze({
+        all,
+        new: snapshotUnavailableDistrictEvidenceSummaryFor(
+          identity, all.period, 'new',
+        ),
+        renewal: snapshotUnavailableDistrictEvidenceSummaryFor(
+          identity, all.period, 'renewal',
+        ),
+      }),
+    });
+  }
+  const selected = normalizePublicContractGroup(requestedGroup);
+  return Object.freeze({
+    scopeId: identity.slug,
+    selected,
+    splitStatus: 'ready',
+    unknownContractCount: repository.getDistrictUnknownContractCount(identity.slug),
+    groups: Object.freeze(Object.fromEntries(CONTRACT_GROUPS.map((contractGroup) => [
+      contractGroup,
+      districtEvidenceSummaryFor(
+        identity,
+        repository.getDistrictSummary(identity.slug, contractGroup),
+        contractGroup,
+      ),
+    ])) as Record<PublicContractGroup, PublicDistrictEvidenceSummaryModel>),
+  });
+}
+
+function unavailableContractEvidenceFor(
+  identity: SeoulRentCheckDistrict,
+  period: string,
+): ContractGroupEvidenceModel {
+  return Object.freeze({
+    scopeId: identity.slug,
+    selected: 'all',
+    splitStatus: 'unavailable',
+    unknownContractCount: null,
+    groups: Object.freeze(Object.fromEntries(CONTRACT_GROUPS.map((contractGroup) => [
+      contractGroup,
+      unavailableDistrictEvidenceSummaryFor(identity, period, contractGroup),
+    ])) as Record<PublicContractGroup, PublicDistrictEvidenceSummaryModel>),
+  });
 }
 
 export function buildPublicSourceBoundary(
@@ -78,7 +228,7 @@ export function buildPublicSourceBoundary(
     period,
     attribution: Object.freeze([...KR_MOLIT_RENT_RIGHTS.attribution]),
     band: '45–55㎡',
-    publicationMinimum: 5,
+    publicationMinimum: PUBLICATION_MINIMUM,
     includesNewAndRenewal: true,
     includesUnknownContractType: true,
     includesUnknownRecordStatus: true,
@@ -163,6 +313,7 @@ function legendFor(
 export function buildPublicAreaExploreModel(
   selectedSlug: string | undefined,
   dependencies: PublicAreaRouteDependencies = environmentDependencies(),
+  requestedContractGroup?: unknown,
 ): PublicAreaExploreModel {
   const unavailableSource = buildPublicSourceBoundary(dependencies.period, null, true);
   try {
@@ -190,6 +341,11 @@ export function buildPublicAreaExploreModel(
       if (summary === undefined || geometry === undefined) {
         throw new TypeError('Incomplete public district model.');
       }
+      const contractEvidence = contractEvidenceFor(
+        repository,
+        identity,
+        requestedContractGroup,
+      );
       return Object.freeze({
         ...identity,
         href: `/kr/seoul/explore/${identity.slug}/` as const,
@@ -202,6 +358,8 @@ export function buildPublicAreaExploreModel(
         sampleLabel: sampleLabel(summary.n),
         medianLabel: summary.published ? formatMoney(summary.med) : null,
         changeLabel: summary.published ? changeLabel(summary.chg3m) : null,
+        evidenceSummary: contractEvidence.groups[contractEvidence.selected],
+        contractEvidence,
       } satisfies ExploreDistrictModel);
     }));
     const selected = getSeoulDistrictBySlug(selectedSlug ?? '')?.slug ?? 'jongno-gu';
@@ -385,6 +543,7 @@ function faqJsonLdFor(faq: readonly PublicDistrictFaq[]): Readonly<Record<string
 export function buildPublicDistrictModel(
   slug: string,
   dependencies: PublicAreaRouteDependencies = environmentDependencies(),
+  requestedContractGroup?: unknown,
 ): PublicDistrictModel | null {
   const identity = getSeoulDistrictBySlug(slug);
   if (identity === null) return null;
@@ -405,6 +564,17 @@ export function buildPublicDistrictModel(
     );
     const faq = faqFor(identity, summary);
     const buildingAvailability = buildingAvailabilityFor(identity.slug, dependencies);
+    const contractEvidence = contractEvidenceFor(
+      repository,
+      identity,
+      requestedContractGroup,
+    );
+    const communitySignal = buildCommunitySignalModel(Object.freeze({
+      marketId: 'kr-seoul',
+      scopeType: 'district',
+      scopeId: identity.slug,
+      evidenceId: `kr-seoul:${summary.period}:area:${repository.getArtifactVersion()}:${contractEvidence.selected}`,
+    }));
     const common = {
       identity,
       display: displayFor(identity, summary),
@@ -414,6 +584,13 @@ export function buildPublicDistrictModel(
       faqJsonLd: faqJsonLdFor(faq),
       source,
       buildingAvailability,
+      evidenceSummary: contractEvidence.groups[contractEvidence.selected],
+      contractEvidence,
+      communitySignal,
+      news: buildNewsCardModels({
+        areaSource: dependencies.source,
+        period: dependencies.period,
+      }),
     } as const;
     if (summary.published) {
       return Object.freeze({ status: 'published', summary, ...common });
@@ -427,16 +604,30 @@ export function buildPublicDistrictModel(
       source,
       buildingAvailability: buildingNotLoadedAvailability,
       message: 'Verified district summary unavailable',
+      evidenceSummary: unavailableDistrictEvidenceSummaryFor(
+        identity,
+        dependencies.period,
+        'all',
+      ),
+      contractEvidence: unavailableContractEvidenceFor(identity, dependencies.period),
+      communitySignal: unavailableCommunitySignalModel(),
+      news: buildNewsCardModels({
+        areaSource: dependencies.source,
+        period: dependencies.period,
+      }),
     });
   }
 }
 
 export type {
+  ContractGroupEvidenceModel,
   ExploreDistrictModel,
   PublicAreaExploreModel,
   PublicAreaLegendBucket,
   PublicAreaSourceBoundaryModel,
   PublicDistrictDisplayModel,
+  PublicDistrictEvidenceSummaryModel,
   PublicDistrictFaq,
   PublicDistrictModel,
+  PublicContractGroup,
 } from './area-route-types';

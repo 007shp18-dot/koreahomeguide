@@ -14,6 +14,7 @@ import type {
   PublicAreaExploreModel,
 } from '../../lib/public-market/area-route-types';
 import styles from './area-explorer.module.css';
+import { DistrictEvidenceSummary } from './district-evidence-summary';
 import { PublicSectionTabs } from './public-section-tabs';
 import { PublicSourceBoundary } from './public-source-boundary';
 
@@ -143,15 +144,13 @@ function ReadyAreaExplorer({
           </div>
 
           <div className={styles.selectedDetail} aria-live="polite">
-            <p>Selected · {selected.nameEn}</p>
-            <h3>{selected.nameKo}</h3>
-            <p>
-              {selected.medianLabel ?? 'Not published'} · {selected.sampleLabel}
-              {selected.changeLabel === null ? '' : ` · ${selected.changeLabel}`}
-            </p>
-            <Link className={styles.selectedLink} href={selected.href}>
-              Open {selected.nameEn} evidence
-            </Link>
+            <p className={styles.selectedLabel}>Selected · {selected.nameEn}</p>
+            <DistrictEvidenceSummary
+              key={selected.slug}
+              model={selected.contractEvidence}
+              mode="compact"
+              selectionHref={`/kr/seoul/explore/?district=${selected.slug}`}
+            />
           </div>
         </section>
 

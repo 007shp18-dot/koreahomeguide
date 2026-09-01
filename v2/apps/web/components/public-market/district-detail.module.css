@@ -80,6 +80,21 @@
   line-height: 1.6;
 }
 
+.detailLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+}
+
+.detailMain,
+.detailRail {
+  min-width: 0;
+}
+
+.detailRail {
+  align-self: stretch;
+  border-left: 2px solid var(--district-ink);
+}
+
 .sampleChip {
   width: fit-content;
   min-height: 44px;
@@ -244,13 +259,13 @@
 
 .navigation {
   display: grid;
-  grid-template-columns: minmax(260px, 0.34fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   border-bottom: 2px solid var(--district-ink);
 }
 
 .primaryLinks {
   display: grid;
-  border-right: 2px solid var(--district-ink);
+  border-bottom: 2px solid var(--district-ink);
 }
 
 .exploreLink,
@@ -276,15 +291,16 @@
 .nearby {
   min-width: 0;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .nearby > p {
+  grid-column: 1 / -1;
   min-height: 44px;
   padding: 0.8rem;
   display: grid;
   place-items: center;
-  border-right: 1px solid var(--district-ink);
+  border-bottom: 1px solid var(--district-ink);
 }
 
 .nearby a {
@@ -327,6 +343,16 @@
   line-height: 1.6;
 }
 
+@media (max-width: 960px) {
+  .detailLayout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .detailRail {
+    border-left: 0;
+  }
+}
+
 @media (max-width: 720px) {
   .main {
     border-right: 0;
@@ -342,13 +368,9 @@
     .source dl,
     .faqGrid,
     .buildingList,
-    .navigation {
+    .navigation,
+    .detailLayout {
     grid-template-columns: minmax(0, 1fr);
-  }
-
-  .primaryLinks {
-    border-right: 0;
-    border-bottom: 2px solid var(--district-ink);
   }
 
   .nearby {

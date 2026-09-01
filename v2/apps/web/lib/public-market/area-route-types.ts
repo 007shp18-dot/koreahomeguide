@@ -10,6 +10,8 @@ import type {
   SeoulLawdCd,
   SeoulRentCheckDistrict,
 } from '@signedprice/korea-rent/browser';
+import type { CommunitySignalModel } from '../community/community-signal-model';
+import type { NewsCardModel } from '../news/news-card-model';
 
 export type ExploreDistrictModel = Readonly<{
   lawdCd: SeoulLawdCd;
@@ -26,6 +28,50 @@ export type ExploreDistrictModel = Readonly<{
   sampleLabel: string;
   medianLabel: string | null;
   changeLabel: string | null;
+  evidenceSummary: PublicDistrictEvidenceSummaryModel;
+  contractEvidence: ContractGroupEvidenceModel;
+}>;
+
+export type PublicContractGroup = 'all' | 'new' | 'renewal';
+
+type PublicDistrictEvidenceIdentity = Readonly<{
+  nameEn: string;
+  nameKo: string;
+  href: `/kr/seoul/explore/${string}/`;
+  period: string;
+  publicationMinimum: 5;
+  contractGroup: PublicContractGroup;
+  groupLabel: 'All contracts' | 'New contracts' | 'Renewal contracts';
+}>;
+
+export type PublicDistrictEvidenceSummaryModel =
+  | (PublicDistrictEvidenceIdentity & Readonly<{
+      status: 'published';
+      sampleLabel: string;
+      medianLabel: string;
+      middleHalfLabel: string;
+      rangeLabel: string;
+      changeLabel: string;
+    }>)
+  | (PublicDistrictEvidenceIdentity & Readonly<{
+      status: 'withheld';
+      sampleLabel: string;
+    }>)
+  | (PublicDistrictEvidenceIdentity & Readonly<{
+      status: 'unavailable';
+      message: 'Verified district summary unavailable';
+    }>)
+  | (PublicDistrictEvidenceIdentity & Readonly<{
+      status: 'snapshot_unavailable';
+      message: 'New/renewal split not available in this snapshot';
+    }>);
+
+export type ContractGroupEvidenceModel = Readonly<{
+  scopeId: SeoulDistrictSlug;
+  selected: PublicContractGroup;
+  splitStatus: 'ready' | 'snapshot_v1' | 'unavailable';
+  unknownContractCount: number | null;
+  groups: Readonly<Record<PublicContractGroup, PublicDistrictEvidenceSummaryModel>>;
 }>;
 
 export type PublicAreaLegendBucket = Readonly<{
@@ -155,6 +201,10 @@ export type PublicDistrictModel =
       faqJsonLd: Readonly<Record<string, unknown>>;
       source: PublicAreaSourceBoundaryModel;
       buildingAvailability: DistrictBuildingAvailability;
+      evidenceSummary: PublicDistrictEvidenceSummaryModel;
+      contractEvidence: ContractGroupEvidenceModel;
+      communitySignal: CommunitySignalModel;
+      news: readonly NewsCardModel[];
     }>
   | Readonly<{
       status: 'withheld';
@@ -167,6 +217,10 @@ export type PublicDistrictModel =
       faqJsonLd: Readonly<Record<string, unknown>>;
       source: PublicAreaSourceBoundaryModel;
       buildingAvailability: DistrictBuildingAvailability;
+      evidenceSummary: PublicDistrictEvidenceSummaryModel;
+      contractEvidence: ContractGroupEvidenceModel;
+      communitySignal: CommunitySignalModel;
+      news: readonly NewsCardModel[];
     }>
   | Readonly<{
       status: 'unavailable';
@@ -175,4 +229,8 @@ export type PublicDistrictModel =
       source: PublicAreaSourceBoundaryModel;
       buildingAvailability: DistrictBuildingAvailability;
       message: 'Verified district summary unavailable';
+      evidenceSummary: PublicDistrictEvidenceSummaryModel;
+      contractEvidence: ContractGroupEvidenceModel;
+      communitySignal: CommunitySignalModel;
+      news: readonly NewsCardModel[];
     }>;

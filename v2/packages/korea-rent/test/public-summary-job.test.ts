@@ -119,6 +119,7 @@ function fixedEligibleRecords(
   count: number,
   depositWon: number,
   identity: string,
+  contractType: KoreaRentRecord['contractType'] = 'new',
 ): readonly KoreaRentRecord[] {
   return Array.from({ length: count }, (_, index) => ({
     sourceHousingType: coordinate.sourceHousingType,
@@ -126,7 +127,7 @@ function fixedEligibleRecords(
     depositWon,
     monthlyRentWon: 0,
     contractDate: `${coordinate.dealYmd.slice(0, 4)}-${coordinate.dealYmd.slice(4)}-15`,
-    contractType: 'new' as const,
+    contractType,
     recordStatus: 'active' as const,
     sourceRecordId: `${identity}-${index}`,
   }));
@@ -318,11 +319,17 @@ describe('Korea public summary finalization', () => {
       } else if (coordinate.index === 4) {
         records = fixedEligibleRecords(coordinate, 5, 220_000_000, 'jongno-latest');
       } else if (coordinate.index === 29) {
-        records = fixedEligibleRecords(coordinate, 4, 200_000_000, 'jung-prior');
+        records = fixedEligibleRecords(
+          coordinate, 4, 200_000_000, 'jung-prior', 'renewal',
+        );
       } else if (coordinate.index === 32) {
-        records = fixedEligibleRecords(coordinate, 5, 220_000_000, 'jung-latest');
+        records = fixedEligibleRecords(
+          coordinate, 5, 220_000_000, 'jung-latest', 'renewal',
+        );
       } else if (coordinate.index === 60) {
-        records = fixedEligibleRecords(coordinate, 4, 900_000_000, 'yongsan-thin');
+        records = fixedEligibleRecords(
+          coordinate, 4, 900_000_000, 'yongsan-thin', 'unknown',
+        );
       }
       await store.write(cache, emptyMonth(coordinate, records));
     }
@@ -336,17 +343,30 @@ describe('Korea public summary finalization', () => {
       },
     );
 
-    expect(finalized.districtSummaries).toHaveLength(25);
-    expect(finalized.districtSummaries.map(({ area }) => area)).toEqual(
+    expect(finalized.groups.all.districtSummaries).toHaveLength(25);
+    expect(finalized.groups.all.districtSummaries.map(({ area }) => area)).toEqual(
       SEOUL_RENT_CHECK_DISTRICTS.map(({ slug }) => slug),
     );
-    expect(finalized.citySummary).toMatchObject({
+    expect(finalized.groups.all.citySummary).toMatchObject({
       area: 'seoul',
       parent: 'kr',
       n: 23,
       published: true,
     });
-    expect(finalized.districtSummaries[0]).toMatchObject({
+    expect(finalized.groups.new.citySummary).toMatchObject({
+      area: 'seoul',
+      n: 10,
+      published: true,
+      med: 210_000_000,
+      chg3m: 10,
+    });
+    expect(finalized.groups.renewal.citySummary).toMatchObject({
+      area: 'seoul',
+      n: 9,
+      published: true,
+      chg3m: null,
+    });
+    expect(finalized.groups.all.districtSummaries[0]).toMatchObject({
       area: 'jongno-gu',
       parent: 'seoul',
       n: 10,
@@ -354,14 +374,14 @@ describe('Korea public summary finalization', () => {
       med: 210_000_000,
       chg3m: 10,
     });
-    expect(finalized.districtSummaries[1]).toMatchObject({
+    expect(finalized.groups.all.districtSummaries[1]).toMatchObject({
       area: 'jung-gu',
       parent: 'seoul',
       n: 9,
       published: true,
       chg3m: null,
     });
-    expect(finalized.districtSummaries[2]).toEqual({
+    expect(finalized.groups.all.districtSummaries[2]).toEqual({
       marketId: 'kr-seoul',
       area: 'yongsan-gu',
       parent: 'seoul',
@@ -371,12 +391,34 @@ describe('Korea public summary finalization', () => {
       n: 4,
       published: false,
     });
-    expect(JSON.stringify(finalized.districtSummaries[2])).not.toMatch(
+    expect(JSON.stringify(finalized.groups.all.districtSummaries[2])).not.toMatch(
       /min|p25|med|p75|max|chg3m/,
     );
-    expect(finalized.citySummary.n).toBe(
-      finalized.districtSummaries.reduce((sum, summary) => sum + summary.n, 0),
+    expect(finalized.unknownContractCounts).toEqual({
+      city: 4,
+      districts: [0, 0, 4, ...Array.from({ length: 22 }, () => 0)],
+    });
+    for (const [index, all] of finalized.groups.all.districtSummaries.entries()) {
+      expect(all.n).toBe(
+        finalized.groups.new.districtSummaries[index]!.n +
+        finalized.groups.renewal.districtSummaries[index]!.n +
+        finalized.unknownContractCounts.districts[index]!,
+      );
+    }
+    expect(finalized.groups.all.citySummary.n).toBe(
+      finalized.groups.all.districtSummaries.reduce((sum, summary) => sum + summary.n, 0),
     );
+    expect(finalized.groups.all.citySummary.n).toBe(
+      finalized.groups.new.citySummary.n +
+      finalized.groups.renewal.citySummary.n +
+      finalized.unknownContractCounts.city,
+    );
+    expect(Object.isFrozen(finalized)).toBe(true);
+    expect(Object.isFrozen(finalized.groups)).toBe(true);
+    expect(Object.isFrozen(finalized.groups.all)).toBe(true);
+    expect(Object.isFrozen(finalized.groups.all.districtSummaries)).toBe(true);
+    expect(Object.isFrozen(finalized.unknownContractCounts)).toBe(true);
+    expect(Object.isFrozen(finalized.unknownContractCounts.districts)).toBe(true);
 
     const missingManifest = [...cache.entries.keys()].find((key) =>
       key.includes('lawd=11740') && key.endsWith(':manifest'))!;

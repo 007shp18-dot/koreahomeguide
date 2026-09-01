@@ -11,11 +11,15 @@ import { generateStaticParams as intentStaticParams } from '../app/[country]/[ci
 import { metadata as proofMetadata } from '../app/kr/seoul/tools/rent-check/page';
 import { metadata as rankingsMetadata } from '../app/kr/seoul/rankings/page';
 import { metadata as explorerMetadata } from '../app/kr/seoul/explore/page';
+import { metadata as newsMetadata } from '../app/kr/seoul/news/page';
 import { metadata as trustMetadata } from '../app/trust/page';
 import { metadata as compareMetadata } from '../app/compare/page';
 import { homepageCopy } from '../lib/site-copy';
 import { GUIDES } from '../lib/guide/guide-content';
-import { createPublicAreaFixture } from './public-area-fixture';
+import {
+  createPublicAreaFixture,
+  createPublicAreaV2Fixture,
+} from './public-area-fixture';
 import {
   PUBLIC_SUMMARY_ARTIFACT_VERSION,
   buildKoreaPublicPageMetadata,
@@ -103,6 +107,7 @@ describe('public migration containment', () => {
       [trustMetadata, '/trust/'],
       [explorerMetadata, '/kr/seoul/explore/'],
       [rankingsMetadata, '/kr/seoul/rankings/'],
+      [newsMetadata, '/kr/seoul/news/'],
     ] as const) {
       expect(metadata.robots).toEqual({ index: true, follow: true });
       expect(metadata.alternates).toEqual({
@@ -122,9 +127,32 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/kr/',
       'https://www.signedprice.com/kr/check/seoul/',
       'https://www.signedprice.com/kr/seoul/',
+      'https://www.signedprice.com/kr/seoul/news/',
+      'https://www.signedprice.com/kr/seoul/news/how-signedprice-reads-reported-rental-contracts/',
       'https://www.signedprice.com/kr/seoul/guide/',
       ...GUIDES.map(({ slug }) => `https://www.signedprice.com/kr/seoul/guide/${slug}/`),
     ]);
+  });
+
+  it('adds only artifact-reconciled numeric News detail routes', () => {
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', period);
+    vi.stubEnv(
+      'SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT',
+      JSON.stringify(createPublicAreaV2Fixture()),
+    );
+
+    const items = sitemap();
+    const numericBrief = items.find(({ url }) => (
+      url === 'https://www.signedprice.com/kr/seoul/news/what-the-seoul-district-snapshot-covers/'
+    ));
+    expect(numericBrief).toMatchObject({
+      lastModified: new Date('2026-08-31T01:00:00.000Z'),
+    });
+
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT', JSON.stringify({ invalid: true }));
+    expect(sitemap().map(({ url }) => url)).not.toContain(
+      'https://www.signedprice.com/kr/seoul/news/what-the-seoul-district-snapshot-covers/',
+    );
   });
 
   it('adds Explore, Rankings, and only published canonical district URLs with area evidence', () => {
@@ -155,6 +183,8 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/',
       'https://www.signedprice.com/compare/',
       'https://www.signedprice.com/trust/',
+      'https://www.signedprice.com/kr/seoul/news/',
+      'https://www.signedprice.com/kr/seoul/news/how-signedprice-reads-reported-rental-contracts/',
       'https://www.signedprice.com/kr/seoul/guide/',
       ...GUIDES.map(({ slug }) => `https://www.signedprice.com/kr/seoul/guide/${slug}/`),
     ]);
@@ -164,6 +194,8 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/',
       'https://www.signedprice.com/compare/',
       'https://www.signedprice.com/trust/',
+      'https://www.signedprice.com/kr/seoul/news/',
+      'https://www.signedprice.com/kr/seoul/news/how-signedprice-reads-reported-rental-contracts/',
       'https://www.signedprice.com/kr/seoul/guide/',
       ...GUIDES.map(({ slug }) => `https://www.signedprice.com/kr/seoul/guide/${slug}/`),
     ]);

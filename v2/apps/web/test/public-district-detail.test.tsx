@@ -80,7 +80,17 @@ describe('public district detail page', () => {
     expect(html).toContain(
       'Use district evidence or return after a verified building snapshot is installed',
     );
-    expect(html).not.toMatch(/community|save this building/i);
+    expect(model.communitySignal).toMatchObject({
+      state: 'unavailable', code: 'storage_not_configured',
+    });
+    expect(html).toContain('Community signal');
+    expect(html).toContain('Community responses are not open yet');
+    expect(html).toContain('data-detail-main="true"');
+    expect(html).toContain('data-detail-rail="true"');
+    expect(html).toContain('Latest verified News');
+    expect(html).toContain('How SignedPrice reads reported rental contracts');
+    expect(html).toContain('Back to Seoul map');
+    expect(html).not.toMatch(/save this building/i);
   });
 
   it('renders a money-free refusal with real count, hatch, FAQ, and navigation', () => {
@@ -103,6 +113,7 @@ describe('public district detail page', () => {
     expect(html).not.toContain(String(CITY_MEDIAN_SENTINEL));
     expect(html).not.toMatch(/"unitCode":"KRW"|"(?:min|p25|med|p75|max|chg3m)":/);
     expect(html).toContain('Building evidence is not loaded');
+    expect(html).toContain('Community responses are not open yet');
   });
 
   it('shows building links only when a verified same-period artifact is installed', () => {
@@ -118,6 +129,7 @@ describe('public district detail page', () => {
     expect(html).toContain('Evidence Tower');
     expect(html).toContain('href="/kr/seoul/explore/gangnam-gu/gangnam-evidence-tower"');
     expect(html).not.toContain('Building evidence is not loaded');
+    expect(html).toContain('Community responses are not open yet');
   });
 
   it('fails closed without city money or structured data when the artifact is unavailable', () => {
@@ -136,6 +148,10 @@ describe('public district detail page', () => {
     expect(html).not.toContain('₩');
     expect(html).not.toContain(String(CITY_MEDIAN_SENTINEL));
     expect(html).toContain('Building evidence is not loaded');
+    expect(model.communitySignal).toMatchObject({
+      state: 'unavailable', scope: null, code: 'evidence_unavailable',
+    });
+    expect(html).toContain('Community responses are not open yet');
   });
 
   it('escapes less-than characters in model-owned structured data', () => {
@@ -159,5 +175,6 @@ describe('public district detail page', () => {
     expect(css).toMatch(/\.exploreLink,[\s\S]*\.nearby a[\s\S]*min-height:\s*44px/);
     expect(css).toMatch(/:focus-visible[\s\S]*outline:\s*2px solid var\(--district-accent\)[\s\S]*outline-offset:\s*2px/);
     expect(css).toMatch(/@media \(max-width:\s*720px\)[\s\S]*grid-template-columns:\s*minmax\(0,\s*1fr\)/);
+    expect(css).toMatch(/\.detailLayout[\s\S]*grid-template-columns:\s*minmax\(0,\s*1fr\)\s+380px/);
   });
 });

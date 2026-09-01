@@ -1,6 +1,9 @@
 import 'server-only';
 
-import type { KoreaPublicAreaSummaryFinalization } from '@signedprice/korea-rent';
+import type {
+  KoreaPublicAreaSummaryFinalization,
+  KoreaPublicAreaSummaryGroup,
+} from '@signedprice/korea-rent';
 import {
   MOLIT_ENDPOINT_VERSION,
   MOLIT_PARSER_VERSION,
@@ -20,6 +23,14 @@ export type BuiltPublicAreaSummaryArtifact = Readonly<{
   sha256: string;
 }>;
 
+function freezeGroup(group: KoreaPublicAreaSummaryGroup) {
+  return Object.freeze({
+    citySummary: Object.freeze({ ...group.citySummary }),
+    districtSummaries: Object.freeze(group.districtSummaries.map((summary) =>
+      Object.freeze({ ...summary }))),
+  });
+}
+
 function freezeArtifact(
   finalization: KoreaPublicAreaSummaryFinalization,
 ): PublicAreaSummaryArtifactInput {
@@ -35,9 +46,15 @@ function freezeArtifact(
       rightsPolicyId: MOLIT_RIGHTS_POLICY_ID,
       sourceComplete: true,
     }),
-    citySummary: Object.freeze({ ...finalization.citySummary }),
-    districtSummaries: Object.freeze(finalization.districtSummaries.map((summary) =>
-      Object.freeze({ ...summary }))),
+    groups: Object.freeze({
+      all: freezeGroup(finalization.groups.all),
+      new: freezeGroup(finalization.groups.new),
+      renewal: freezeGroup(finalization.groups.renewal),
+    }),
+    unknownContractCounts: Object.freeze({
+      city: finalization.unknownContractCounts.city,
+      districts: Object.freeze([...finalization.unknownContractCounts.districts]),
+    }),
   });
 }
 
@@ -46,8 +63,8 @@ export async function buildPublicAreaSummaryArtifact(
 ): Promise<BuiltPublicAreaSummaryArtifact> {
   if (
     finalization.completedCoordinates !== 700 ||
-    finalization.period !== finalization.citySummary.period ||
-    finalization.eligibleRecords !== finalization.citySummary.n
+    finalization.period !== finalization.groups.all.citySummary.period ||
+    finalization.eligibleRecords !== finalization.groups.all.citySummary.n
   ) {
     throw new TypeError('Public area summary finalization is incomplete.');
   }
