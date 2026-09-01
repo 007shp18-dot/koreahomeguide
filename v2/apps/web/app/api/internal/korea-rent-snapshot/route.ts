@@ -6,6 +6,7 @@ import {
 } from '@signedprice/korea-rent';
 
 import { buildObservedBuildingArtifact } from '@/lib/public-market/observed-building-artifact-builder.server';
+import { buildKoreaConversionArtifact } from '@/lib/public-market/conversion-artifact-builder.server';
 import { buildKoreaRentEvidenceArtifact } from '@/lib/public-market/rent-evidence-artifact-builder.server';
 import {
   createKoreaRentSnapshotJobHandler,
@@ -43,4 +44,5 @@ export const POST = createKoreaRentSnapshotJobHandler({
   },
   buildRentArtifact: buildKoreaRentEvidenceArtifact,
   buildInventoryArtifact: buildObservedBuildingArtifact,
+  buildConversionArtifact: buildKoreaConversionArtifact,
 });

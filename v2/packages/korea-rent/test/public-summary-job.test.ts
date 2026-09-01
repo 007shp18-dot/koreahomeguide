@@ -283,6 +283,7 @@ describe('Korea public summary finalization', () => {
       period: '2026-01/2026-07',
       generatedAt: REFERENCE_INSTANT,
       completedCoordinates: 700,
+      conversionRecords: expect.any(Array),
       evidence: {
         stats: {
           sourceRecordCount: 10,
@@ -299,6 +300,7 @@ describe('Korea public summary finalization', () => {
         },
       },
     });
+    expect(finalized.conversionRecords).toHaveLength(10);
     const cityAll = finalized.evidence.areaRecords.find(({ areaId }) => areaId === 'seoul:all')!;
     const allJeonse = cityAll.cohorts.find(({ transaction, areaBand, contractGroup }) => (
       transaction === 'jeonse' && areaBand === 'all' && contractGroup === 'all'

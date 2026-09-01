@@ -85,6 +85,57 @@
   text-align: right;
 }
 
+.filters {
+  padding: 0.8rem clamp(1rem, 3vw, 2rem);
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
+  gap: 0.65rem;
+  align-items: end;
+  border-bottom: var(--rule-strong);
+  background: color-mix(in srgb, var(--ranking-ground) 96%, var(--ranking-ink));
+}
+
+.filters label {
+  min-width: 0;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.filters label > span {
+  color: var(--ranking-muted);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.filters select,
+.filters button {
+  min-width: 0;
+  min-height: 44px;
+  padding: 0.6rem 0.7rem;
+  border: var(--rule-default);
+  border-radius: 0;
+  color: var(--ranking-ink);
+  background: var(--ranking-ground);
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.filters button {
+  padding-inline: 1rem;
+  color: var(--ranking-ground);
+  background: var(--ranking-ink);
+  cursor: pointer;
+}
+
+.filters select:focus-visible,
+.filters button:focus-visible {
+  outline: 2px solid var(--ranking-accent);
+  outline-offset: 2px;
+}
+
 .viewWorkspace {
   min-width: 0;
   display: grid;
@@ -358,6 +409,14 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
+  .filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .filters button {
+    grid-column: 1 / -1;
+  }
+
   .panelHeader {
     min-height: 0;
   }
@@ -381,6 +440,14 @@
   .hero {
     min-height: 0;
     padding: 1.5rem 1rem;
+  }
+
+  .filters {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .filters button {
+    grid-column: auto;
   }
 
   .row {

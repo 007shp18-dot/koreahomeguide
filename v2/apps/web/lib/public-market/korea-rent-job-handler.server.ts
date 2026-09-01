@@ -16,6 +16,7 @@ type BuiltArtifact = Readonly<{
 }>;
 
 type BuiltRentArtifact = BuiltArtifact & Readonly<{ recordCount: number }>;
+type BuiltConversionArtifact = BuiltArtifact & Readonly<{ eligiblePairCount: number }>;
 
 export type KoreaRentSnapshotJobHandlerDependencies = Readonly<{
   environment: string | undefined;
@@ -30,6 +31,11 @@ export type KoreaRentSnapshotJobHandlerDependencies = Readonly<{
   }>): Promise<KoreaRentSnapshotFinalization>;
   buildRentArtifact(input: KoreaRentEvidence): Promise<BuiltRentArtifact>;
   buildInventoryArtifact(input: KoreaObservedBuildingInventory): Promise<BuiltArtifact>;
+  buildConversionArtifact(input: Readonly<{
+    records: KoreaRentSnapshotFinalization['conversionRecords'];
+    period: string;
+    generatedAt: string;
+  }>): Promise<BuiltConversionArtifact>;
 }>;
 
 function json(body: Readonly<Record<string, unknown>>, status: number, headers?: HeadersInit): Response {
@@ -78,7 +84,7 @@ export function createKoreaRentSnapshotRunnerPage(environment: string | undefine
 <body>
   <main data-korea-rent-snapshot-runner data-runner-version="1">
     <h1>Korea rent snapshot</h1>
-    <p>Preview-only runner for observed buildings plus all-area jeonse and monthly-rent evidence.</p>
+    <p>Preview-only runner for observed buildings, all-area rent evidence, and verified conversion pairs.</p>
     <label for="token">Preview job token</label>
     <input id="token" type="password" autocomplete="off" spellcheck="false">
     <button id="run" type="button">Run 700-coordinate rent snapshot</button>
@@ -113,12 +119,12 @@ export function createKoreaRentSnapshotRunnerPage(environment: string | undefine
           if (result.status !== 'progress' || !Number.isSafeInteger(result.nextCursor) || result.nextCursor <= cursor || result.nextCursor > 700 || result.totalCoordinates !== 700) throw new Error('invalid_progress');
           cursor = result.nextCursor;
         }
-        status.textContent = 'Finalizing verified rent and building artifacts…';
+        status.textContent = 'Finalizing verified rent, building, and conversion artifacts…';
         const result = await post({ action: 'finalize', referenceInstant }, token);
         if (result.status !== 'ready' || result.completedCoordinates !== 700 || typeof result.artifacts !== 'object' || result.artifacts === null) throw new Error('invalid_artifact');
         const blob = new Blob([JSON.stringify(result, null, 2) + '\\n'], { type: 'application/json' });
         download.href = URL.createObjectURL(blob); download.hidden = false; tokenInput.value = '';
-        status.textContent = 'Ready: period ' + result.period + '. Rent SHA-256 ' + result.artifacts.rent.sha256 + '.';
+        status.textContent = 'Ready: period ' + result.period + '. Rent SHA-256 ' + result.artifacts.rent.sha256 + '. Conversion pairs ' + result.artifacts.conversion.recordCount + '.';
       } catch (error) {
         status.textContent = 'Job failed. Review Preview function logs and retry.';
       } finally { run.disabled = false; }
@@ -193,9 +199,14 @@ export function createKoreaRentSnapshotJobHandler(
         if (finalized.completedCoordinates !== 700) {
           return json({ status: 'error', code: 'source_coverage_incomplete' }, 409);
         }
-        const [rent, buildingRegistry] = await Promise.all([
+        const [rent, buildingRegistry, conversion] = await Promise.all([
           dependencies.buildRentArtifact(finalized.evidence),
           dependencies.buildInventoryArtifact(finalized.inventory),
+          dependencies.buildConversionArtifact({
+            records: finalized.conversionRecords,
+            period: finalized.period,
+            generatedAt: finalized.generatedAt,
+          }),
         ]);
         return json({
           status: 'ready',
@@ -214,6 +225,12 @@ export function createKoreaRentSnapshotJobHandler(
               sha256: buildingRegistry.sha256,
               recordCount: finalized.inventory.records.length,
               artifact: buildingRegistry.artifact,
+            },
+            conversion: {
+              dataset: 'kr-conversion',
+              sha256: conversion.sha256,
+              recordCount: conversion.eligiblePairCount,
+              artifact: conversion.artifact,
             },
           },
         }, 200);

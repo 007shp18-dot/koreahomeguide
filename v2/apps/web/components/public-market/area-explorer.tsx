@@ -41,6 +41,75 @@ const bucketClasses = [
   styles.bucket4,
 ] as const;
 
+const evidenceAreaOptions = Object.freeze([
+  ['all', 'All areas', '전체 면적'],
+  ['under-40', 'Under 40㎡', '40㎡ 미만'],
+  ['40-60', '40–60㎡', '40–60㎡'],
+  ['60-85', '60–85㎡', '60–85㎡'],
+  ['85-plus', '85㎡ and above', '85㎡ 이상'],
+] as const);
+const evidenceHousingOptions = Object.freeze([
+  ['all', 'All types', '전체 유형'],
+  ['apartment', 'Apartment', '아파트'],
+  ['officetel', 'Officetel', '오피스텔'],
+  ['villa_multifamily', 'Villa / multifamily', '연립·다세대'],
+  ['detached', 'Detached / multi-unit', '단독·다가구'],
+] as const);
+
+function selectedMetricCopy(
+  transaction: 'jeonse' | 'monthly' | 'sale',
+  locale: ProductLocale,
+) {
+  if (locale === 'ko') {
+    return {
+      heroHeading: {
+        jeonse: '서울 구별 전세보증금을 비교합니다.',
+        monthly: '서울 구별 신고 월세를 비교합니다.',
+        sale: '서울 구별 신고 매매가를 비교합니다.',
+      }[transaction],
+      heroDescription: '서울 25개 구의 공식 신고 계약 근거입니다. 거래유형·신고면적·건물유형·계약구분을 선택할 수 있으며, 표본 5건 미만의 금액은 게시하지 않습니다.',
+      mapHeading: {
+        jeonse: '구 중앙값 전세보증금',
+        monthly: '구 중앙값 신고 월세',
+        sale: '구 중앙값 신고 매매가',
+      }[transaction],
+      mapTitle: {
+        jeonse: '서울 구별 전세보증금 지도',
+        monthly: '서울 구별 신고 월세 지도',
+        sale: '서울 구별 신고 매매가 지도',
+      }[transaction],
+      medianLabel: {
+        jeonse: '전세보증금 중앙값',
+        monthly: '신고 월세 중앙값',
+        sale: '신고 매매가 중앙값',
+      }[transaction],
+    } as const;
+  }
+  return {
+    heroHeading: {
+      jeonse: 'Compare refundable jeonse deposits by district.',
+      monthly: 'Compare reported monthly rents by district.',
+      sale: 'Compare reported sale prices by district.',
+    }[transaction],
+    heroDescription: 'Official reported-contract evidence across all 25 Seoul districts. Refine by transaction, filed area, building type and contract group; money stays hidden below the five-contract rule.',
+    mapHeading: {
+      jeonse: 'District median refundable jeonse deposit',
+      monthly: 'District median reported monthly rent',
+      sale: 'District median reported sale price',
+    }[transaction],
+    mapTitle: {
+      jeonse: 'Seoul district refundable jeonse deposit map',
+      monthly: 'Seoul district reported monthly-rent map',
+      sale: 'Seoul district reported sale-price map',
+    }[transaction],
+    medianLabel: {
+      jeonse: 'Median refundable jeonse deposit',
+      monthly: 'Median reported monthly rent',
+      sale: 'Median reported sale price',
+    }[transaction],
+  } as const;
+}
+
 function mapTitle(district: ExploreDistrictModel, locale: ProductLocale): string {
   const copy = PUBLIC_MARKET_COPY[locale].area;
   return [
@@ -82,6 +151,8 @@ function ReadyAreaExplorer({
   initialSelection: ExplorerSelection;
 }>) {
   const copy = PUBLIC_MARKET_COPY[locale].area;
+  const exactMetricCopy = selectedMetricCopy(model.evidenceSelection.transaction, locale);
+  const usesLegacyCopy = model.evidenceSelection.areaBand === 'legacy-45-55';
   const countSeparator = locale === 'en' ? ' ' : '';
   const router = useRouter();
   const allBuildings = useMemo(
@@ -101,7 +172,9 @@ function ReadyAreaExplorer({
   });
   const [state, dispatch] = useReducer(areaExplorerReducer, initial);
   const [selectedNeighborhood, setSelectedNeighborhood] = useState<string>('all');
-  const [selectedHousingType, setSelectedHousingType] = useState<string>('all');
+  const [selectedHousingType, setSelectedHousingType] = useState<string>(
+    model.evidenceSelection.housingType,
+  );
   const [buildingQuery, setBuildingQuery] = useState(initialQuery);
   const [buildingSelection, dispatchBuildingSelection] = useReducer(
     buildingExplorerSelectionReducer,
@@ -121,10 +194,6 @@ function ReadyAreaExplorer({
   const neighborhoods = useMemo(() => [...new Map(districtBuildings.map((building) => [
     building.neighborhoodId, building.neighborhoodName,
   ] as const))], [districtBuildings]);
-  const housingTypes = useMemo(
-    () => [...new Set(districtBuildings.map(({ housingType }) => housingType))].sort(),
-    [districtBuildings],
-  );
   const filteredBuildings = useMemo(
     () => filterExploreBuildings(
       districtBuildings,
@@ -193,6 +262,30 @@ function ReadyAreaExplorer({
     dispatchBuildingSelection({ type: 'select_building', source: 'marker', buildingId });
   }, []);
 
+  const evidenceHref = useCallback((changes: Readonly<{
+    transaction?: 'sale' | 'jeonse' | 'monthly';
+    area?: 'all' | 'under-40' | '40-60' | '60-85' | '85-plus';
+    propertyType?: string;
+  }> = Object.freeze({})): string => {
+    const transaction = changes.transaction ?? model.evidenceSelection.transaction;
+    const propertyType = changes.propertyType ?? model.evidenceSelection.housingType;
+    return localizedSeoulHref(createSelectionHref(
+      '/kr/seoul/explore/',
+      {
+        ...initialSelection,
+        market: 'kr',
+        transaction,
+        area: changes.area ?? (model.evidenceSelection.areaBand === 'legacy-45-55'
+          ? 'all'
+          : model.evidenceSelection.areaBand),
+        propertyType: propertyType === 'all' ? undefined : propertyType,
+        district: state.selectedSlug,
+        contractType: transaction === 'sale' ? undefined : initialSelection.contractType,
+      },
+      { market: 'kr', transaction: 'jeonse' },
+    ), locale);
+  }, [initialSelection, locale, model.evidenceSelection, state.selectedSlug]);
+
   const updateBuildingQuery = useCallback((query: string): void => {
     setBuildingQuery(query);
     setVisibleBuildingCount(10);
@@ -236,8 +329,10 @@ function ReadyAreaExplorer({
       <header className={styles.hero}>
         <div>
           <p>{copy.heroEyebrow}</p>
-          <h1 id="area-explorer-heading">{copy.heroHeading}</h1>
-          <p>{copy.heroDescription}</p>
+          <h1 id="area-explorer-heading">
+            {usesLegacyCopy ? copy.heroHeading : exactMetricCopy.heroHeading}
+          </h1>
+          <p>{usesLegacyCopy ? copy.heroDescription : exactMetricCopy.heroDescription}</p>
         </div>
         <Link className={styles.rankingsLink} href={localizedSeoulHref('/kr/seoul/rankings/', locale)}>
           {copy.rankingsLink}
@@ -251,10 +346,20 @@ function ReadyAreaExplorer({
           role="group"
           aria-label={locale === 'ko' ? '거래 유형' : 'Transaction type'}
         >
-          <span aria-disabled="true" data-transaction-mode="all">{copy.all}</span>
-          <span aria-disabled="true" data-transaction-mode="sale">{locale === 'ko' ? '매매' : 'Sale'}</span>
-          <button type="button" aria-pressed="true" data-transaction-mode="jeonse">{locale === 'ko' ? '전세' : 'Jeonse'}</button>
-          <span aria-disabled="true" data-transaction-mode="monthly-rent">{locale === 'ko' ? '월세' : 'Monthly rent'}</span>
+          {([
+            ['sale', 'sale', locale === 'ko' ? '매매' : 'Sale'],
+            ['jeonse', 'jeonse', locale === 'ko' ? '전세' : 'Jeonse'],
+            ['monthly', 'monthly-rent', locale === 'ko' ? '월세' : 'Monthly rent'],
+          ] as const).map(([transaction, mode, label]) => (
+            model.transactionAvailability[transaction]
+              ? <Link
+                  key={transaction}
+                  href={evidenceHref({ transaction })}
+                  aria-current={model.evidenceSelection.transaction === transaction ? 'page' : undefined}
+                  data-transaction-mode={mode}
+                >{label}</Link>
+              : <span key={transaction} aria-disabled="true" data-transaction-mode={mode}>{label}</span>
+          ))}
         </div>
         <div className={styles.buildingSearch} data-building-search="retained">
           <label htmlFor="explore-building-query">
@@ -276,6 +381,22 @@ function ReadyAreaExplorer({
           />
         </div>
         <label className={styles.toolbarSelect}>
+          <span>{locale === 'ko' ? '면적' : 'Area'}</span>
+          <select
+            name="evidence-area"
+            value={model.evidenceSelection.areaBand === 'legacy-45-55'
+              ? 'all'
+              : model.evidenceSelection.areaBand}
+            onChange={(event) => router.replace(evidenceHref({
+              area: event.currentTarget.value as 'all' | 'under-40' | '40-60' | '60-85' | '85-plus',
+            }), { scroll: false })}
+          >
+            {evidenceAreaOptions.map(([value, en, ko]) => (
+              <option value={value} key={value}>{locale === 'ko' ? ko : en}</option>
+            ))}
+          </select>
+        </label>
+        <label className={styles.toolbarSelect}>
           <span>{locale === 'ko' ? '지역' : 'District'}</span>
           <select value={selected.slug} onChange={(event) => selectDistrict(event.currentTarget.value)}>
             {model.districts.map((district) => (
@@ -290,10 +411,16 @@ function ReadyAreaExplorer({
           <select
             name="housing-type"
             value={selectedHousingType}
-            onChange={(event) => { setSelectedHousingType(event.currentTarget.value); setVisibleBuildingCount(10); }}
+            onChange={(event) => {
+              const value = event.currentTarget.value;
+              setSelectedHousingType(value);
+              setVisibleBuildingCount(10);
+              router.replace(evidenceHref({ propertyType: value }), { scroll: false });
+            }}
           >
-            <option value="all">{locale === 'ko' ? '전체 유형' : 'All types'}</option>
-            {housingTypes.map((housingType) => <option value={housingType} key={housingType}>{housingType}</option>)}
+            {evidenceHousingOptions.map(([value, en, ko]) => (
+              <option value={value} key={value}>{locale === 'ko' ? ko : en}</option>
+            ))}
           </select>
         </label>
         <div
@@ -336,7 +463,9 @@ function ReadyAreaExplorer({
         <section className={styles.mapPanel} aria-labelledby="area-map-heading">
           <div className={styles.sectionHeading}>
             <p>{copy.mapEyebrow}</p>
-            <h2 id="area-map-heading">{copy.mapHeading}</h2>
+            <h2 id="area-map-heading">
+              {usesLegacyCopy ? copy.mapHeading : exactMetricCopy.mapHeading}
+            </h2>
           </div>
           <NaverDistrictMap
             clientId={naverMapClientId}
@@ -352,7 +481,9 @@ function ReadyAreaExplorer({
               role="img"
               aria-labelledby="area-map-title area-map-description"
             >
-            <title id="area-map-title">{copy.mapTitle}</title>
+            <title id="area-map-title">
+              {usesLegacyCopy ? copy.mapTitle : exactMetricCopy.mapTitle}
+            </title>
             <desc id="area-map-description">
               {copy.mapDescription}
             </desc>
@@ -396,7 +527,7 @@ function ReadyAreaExplorer({
             role="group"
             aria-label={locale === 'ko' ? '지도 범례' : 'Map legend'}
           >
-            <p>{copy.mapLegend} · {model.source.band}</p>
+            <p>{usesLegacyCopy ? copy.mapLegend : exactMetricCopy.mapHeading} · {model.source.band}</p>
             <ol>
               {model.legend.map((bucket) => (
                 <li key={bucket.bucket}>
@@ -426,6 +557,8 @@ function ReadyAreaExplorer({
               mode="compact"
               selectionHref={localizedSeoulHref(`/kr/seoul/explore/?district=${selected.slug}`, locale)}
               locale={locale}
+              medianLabel={usesLegacyCopy ? undefined : exactMetricCopy.medianLabel}
+              showContractGroups={model.evidenceSelection.transaction !== 'sale'}
             />
           </div>
         </section>
@@ -499,10 +632,21 @@ function ReadyAreaExplorer({
                             <span>
                               <strong>{building.name}</strong>
                               <small>{building.neighborhoodName} · {building.housingType}</small>
-                              <small>{copy.jeonseObservations} · {building.jeonseObservationCount} · {copy.monthlyObservations} · {building.monthlyObservationCount}</small>
+                              <small>{model.evidenceSelection.areaBand === 'legacy-45-55'
+                                ? `${copy.jeonseObservations} · ${building.jeonseObservationCount} · ${copy.monthlyObservations} · ${building.monthlyObservationCount}`
+                                : building.transaction === 'sale'
+                                ? `${locale === 'ko' ? '매매 관측' : 'Sale observations'} · ${building.observationCount}`
+                                : building.transaction === 'monthly'
+                                  ? `${copy.monthlyObservations} · ${building.monthlyObservationCount}`
+                                  : `${copy.jeonseObservations} · ${building.jeonseObservationCount}`}</small>
                             </span>
                             <span>
                               <strong>{building.medianLabel ?? copy.priceEvidenceUnavailable}</strong>
+                              {building.transaction === 'monthly'
+                                && building.filedDepositMedianLabel !== null
+                                && building.filedDepositMedianLabel !== undefined
+                                ? <small>{locale === 'ko' ? '신고 보증금 중앙값' : 'Filed deposit median'} · {building.filedDepositMedianLabel}</small>
+                                : null}
                               <small>{building.evidenceStatus === 'published'
                                 ? building.sampleLabel
                                 : `${copy.observedPeriod} · ${building.firstObservedMonth}–${building.lastObservedMonth}`}</small>
@@ -642,7 +786,11 @@ function ReadyAreaExplorer({
           </div>
       </section>
 
-      <PublicSourceBoundary model={model.source} locale={locale} />
+      <PublicSourceBoundary
+        model={model.source}
+        locale={locale}
+        transaction={usesLegacyCopy ? undefined : model.evidenceSelection.transaction}
+      />
     </section>
   );
 }
@@ -698,10 +846,21 @@ function BuildingEvidencePanel({
       <h3>{building.name}</h3>
       <span>{building.neighborhoodName} · {localizeSampleLabel(building.sampleLabel, locale)}</span>
       <dl>
-        <div><dt>{copy.all}</dt><dd>{building.medianLabel}</dd></div>
-        <div><dt>{copy.new}</dt><dd>{groupEvidence(building.newSampleLabel, building.newMedianLabel, locale)}</dd></div>
-        <div><dt>{copy.renewal}</dt><dd>{groupEvidence(building.renewalSampleLabel, building.renewalMedianLabel, locale)}</dd></div>
-        <div><dt>{copy.unclassified}</dt><dd>{building.unknownContractCount}</dd></div>
+        <div><dt>{building.primaryMetric === 'monthly-rent'
+          ? (locale === 'ko' ? '월세 중앙값' : 'Monthly-rent median')
+          : building.primaryMetric === 'sale-price'
+            ? (locale === 'ko' ? '매매가 중앙값' : 'Sale-price median')
+            : copy.all}</dt><dd>{building.medianLabel}</dd></div>
+        {building.primaryMetric === 'monthly-rent' ? (
+          <div><dt>{locale === 'ko' ? '신고 보증금 중앙값' : 'Filed deposit median'}</dt><dd>{building.filedDepositMedianLabel ?? copy.notPublished}</dd></div>
+        ) : null}
+        {building.transaction === 'sale' ? null : (
+          <>
+            <div><dt>{copy.new}</dt><dd>{groupEvidence(building.newSampleLabel, building.newMedianLabel, locale)}</dd></div>
+            <div><dt>{copy.renewal}</dt><dd>{groupEvidence(building.renewalSampleLabel, building.renewalMedianLabel, locale)}</dd></div>
+            <div><dt>{copy.unclassified}</dt><dd>{building.unknownContractCount}</dd></div>
+          </>
+        )}
       </dl>
       <Link href={href}>{copy.fullBuildingEvidence}</Link>
     </article>

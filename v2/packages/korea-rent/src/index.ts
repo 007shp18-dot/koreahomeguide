@@ -80,6 +80,16 @@ export {
   type VerifiedKoreaConversionCurve,
 } from './conversion-artifact';
 export {
+  DEFAULT_CONVERSION_PAIR_OPTIONS,
+  buildKoreaConversionCurves,
+  type ConversionCurveBuild,
+  type ConversionCurveDiagnostics,
+  type ConversionPairExclusions,
+  type ConversionPairOptions,
+  type ConversionPairRejections,
+  type DroppedAnchor,
+} from './conversion-pairs';
+export {
   KR_MOLIT_RENT_RIGHTS,
   KR_MOLIT_SALE_RIGHTS,
   RightsViolationError,

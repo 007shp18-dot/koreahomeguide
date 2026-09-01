@@ -45,8 +45,8 @@ describe('SignedPrice cohort zero SEO', () => {
       'signedprice | Real prices. Better property decisions.',
       'Seoul property intelligence | signedprice',
       'Compare Seoul rental contract offers | signedprice',
-      'Seoul district jeonse evidence | signedprice',
-      'Seoul district jeonse rankings | signedprice',
+      'Seoul sale, jeonse and monthly-rent evidence | signedprice',
+      'Seoul sale, jeonse and monthly-rent rankings | signedprice',
     ]);
     expect(entries.map((entry) => canonical(entry))).toEqual([
       'https://www.signedprice.com/',

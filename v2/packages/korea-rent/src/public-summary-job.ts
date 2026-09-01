@@ -125,6 +125,7 @@ export type KoreaObservedBuildingInventoryFinalization = Readonly<{
 export type KoreaRentSnapshotFinalization = Readonly<{
   evidence: KoreaRentEvidence;
   inventory: KoreaObservedBuildingInventory;
+  conversionRecords: readonly KoreaRentRecord[];
   period: string;
   generatedAt: string;
   completedCoordinates: typeof TOTAL_COORDINATES;
@@ -559,6 +560,7 @@ export async function finalizeKoreaRentSnapshotJob(
   return Object.freeze({
     evidence,
     inventory,
+    conversionRecords: Object.freeze([...loaded.all]),
     period,
     generatedAt,
     completedCoordinates: TOTAL_COORDINATES,

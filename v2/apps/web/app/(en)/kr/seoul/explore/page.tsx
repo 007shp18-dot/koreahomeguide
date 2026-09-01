@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { KOREA_EVIDENCE_AREA_BANDS } from '@signedprice/korea-rent';
 import { SEOUL_RENT_CHECK_DISTRICTS } from '@signedprice/korea-rent/browser';
 import { AreaExplorer } from '@/components/public-market/area-explorer';
 import { SiteFooter } from '@/components/site-footer';
@@ -12,6 +13,7 @@ import {
   type SiteHeaderModel,
 } from '@/lib/site-copy';
 import { indexableMetadata } from '@/lib/public-metadata';
+import { KOREA_EXPLORER_HOUSING_TYPES } from '@/lib/public-market/korea-explorer-evidence.server';
 
 type ExplorerPageProps = {
   readonly searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -19,8 +21,8 @@ type ExplorerPageProps = {
 
 export const metadata: Metadata = indexableMetadata({
   path: '/kr/seoul/explore/',
-  title: 'Seoul district jeonse evidence | signedprice',
-  description: 'Compare verified 45–55㎡ refundable jeonse deposits across Seoul districts.',
+  title: 'Seoul sale, jeonse and monthly-rent evidence | signedprice',
+  description: 'Compare verified all-area sale, jeonse and monthly-rent evidence across Seoul districts.',
   languageAlternates: {
     en: '/kr/seoul/explore/',
     ko: '/ko/kr/seoul/explore/',
@@ -68,13 +70,23 @@ export default async function ExplorerPage({ searchParams }: ExplorerPageProps) 
   const selection = parseExplorerSelection(
     query,
     { market: 'kr', transaction: 'jeonse' },
-    { districts: SEOUL_RENT_CHECK_DISTRICTS.map(({ slug }) => slug) },
+    {
+      areas: KOREA_EVIDENCE_AREA_BANDS,
+      propertyTypes: KOREA_EXPLORER_HOUSING_TYPES.filter((value) => value !== 'all'),
+      districts: SEOUL_RENT_CHECK_DISTRICTS.map(({ slug }) => slug),
+    },
   );
   const model = buildPublicAreaExploreModel(
     selection.district,
     undefined,
     selection.contractType ?? singleValue(query.contract),
     singleValue(query.q),
+    {
+      transaction: selection.transaction,
+      areaBand: selection.area,
+      housingType: selection.propertyType,
+      contractGroup: selection.contractType ?? singleValue(query.contract),
+    },
   );
   const naverMapClientId = process.env.NAVER_MAP_CLIENT_ID?.trim() || null;
 

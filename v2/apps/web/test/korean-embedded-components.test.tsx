@@ -78,7 +78,7 @@ describe('Korean embedded product components', () => {
     const explore = renderToStaticMarkup(await KoreanExplorePage({
       searchParams: Promise.resolve({}),
     }));
-    const rankings = renderToStaticMarkup(<KoreanRankingsPage />);
+    const rankings = renderToStaticMarkup(await KoreanRankingsPage());
 
     expect(explore).toMatch(/hreflang="en"[^>]*href="\/kr\/seoul\/explore"/i);
     expect(rankings).toMatch(/hreflang="en"[^>]*href="\/kr\/seoul\/rankings"/i);

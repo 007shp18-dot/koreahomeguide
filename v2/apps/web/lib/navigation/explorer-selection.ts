@@ -1,10 +1,12 @@
 export type ExplorerMarket = 'kr' | 'sg' | 'ae';
 export type ExplorerTransaction = 'sale' | 'jeonse' | 'monthly' | 'rent';
 export type ExplorerContractType = 'new' | 'renewal' | 'all';
+export type ExplorerArea = 'all' | 'under-40' | '40-60' | '60-85' | '85-plus';
 
 export type ExplorerSelection = Readonly<{
   market: ExplorerMarket;
   transaction: ExplorerTransaction;
+  area?: ExplorerArea;
   propertyType?: string;
   district?: string;
   neighborhood?: string;
@@ -19,6 +21,7 @@ export type ExplorerSelectionDefaults = Readonly<{
 }>;
 
 export type ExplorerSelectionAllowLists = Readonly<{
+  areas?: readonly ExplorerArea[];
   propertyTypes?: readonly string[];
   districts?: readonly string[];
   neighborhoodsByDistrict?: Readonly<Record<string, readonly string[]>>;
@@ -94,6 +97,7 @@ export function normalizeExplorerSelection(
   const transaction = isTransactionFor(market, source.transaction)
     ? source.transaction
     : fallbackTransaction;
+  const area = acceptedIdentifier(source.area, allowLists.areas) as ExplorerArea | undefined;
   const propertyType = acceptedIdentifier(source.propertyType, allowLists.propertyTypes);
   const district = acceptedIdentifier(source.district, allowLists.districts);
   const neighborhood = district === undefined
@@ -119,6 +123,7 @@ export function normalizeExplorerSelection(
   return Object.freeze({
     market,
     transaction,
+    ...(area === undefined ? {} : { area }),
     ...(propertyType === undefined ? {} : { propertyType }),
     ...(district === undefined ? {} : { district }),
     ...(neighborhood === undefined ? {} : { neighborhood }),
@@ -139,6 +144,7 @@ function normalizeSerializableSelection(
   const transaction = isTransactionFor(market, input.transaction)
     ? input.transaction
     : fallbackTransaction;
+  const area = serializableIdentifier(input.area) as ExplorerArea | undefined;
   const propertyType = serializableIdentifier(input.propertyType);
   const district = serializableIdentifier(input.district);
   const neighborhood = district === undefined
@@ -157,6 +163,7 @@ function normalizeSerializableSelection(
   return Object.freeze({
     market,
     transaction,
+    ...(area === undefined ? {} : { area }),
     ...(propertyType === undefined ? {} : { propertyType }),
     ...(district === undefined ? {} : { district }),
     ...(neighborhood === undefined ? {} : { neighborhood }),
@@ -183,6 +190,7 @@ export function parseExplorerSelection(
   return normalizeExplorerSelection({
     market: scalarSearchParam(input, 'market'),
     transaction: scalarSearchParam(input, 'transaction'),
+    area: scalarSearchParam(input, 'area'),
     propertyType: scalarSearchParam(input, 'propertyType'),
     district: scalarSearchParam(input, 'district'),
     neighborhood: scalarSearchParam(input, 'neighborhood'),
@@ -205,6 +213,7 @@ export function serializeExplorerSelection(
   if (selection.transaction !== transactionDefault) {
     query.set('transaction', selection.transaction);
   }
+  if (selection.area !== undefined) query.set('area', selection.area);
   if (selection.propertyType !== undefined) query.set('propertyType', selection.propertyType);
   if (selection.district !== undefined) query.set('district', selection.district);
   if (selection.neighborhood !== undefined) query.set('neighborhood', selection.neighborhood);

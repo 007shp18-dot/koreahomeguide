@@ -2,7 +2,10 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { BuildingDetailPage } from '@/components/public-market/building-detail-page';
-import { ObservedBuildingDetail } from '@/components/public-market/observed-building-detail';
+import {
+  KoreaEvidenceBuildingDetail,
+  ObservedBuildingDetail,
+} from '@/components/public-market/observed-building-detail';
 import { PropertyTypeDetailPage } from '@/components/public-market/property-type-detail-page';
 import {
   createSelectionHref,
@@ -14,6 +17,14 @@ import { buildBuildingVisualModel } from '@/lib/public-market/building-visual-mo
 import { buildPublicBuildingModel } from '@/lib/public-market/building-route-model.server';
 import { publicBuildingRepositoryFromEnvironment } from '@/lib/public-market/building-summary-repository.server';
 import { buildObservedBuildingIdentityModel } from '@/lib/public-market/observed-building-route-model.server';
+import {
+  buildKoreaExplorerBuildingDetailModel,
+  KOREA_EXPLORER_HOUSING_TYPES,
+} from '@/lib/public-market/korea-explorer-evidence.server';
+import {
+  koreaEvidenceRepositoriesFromEnvironment,
+  type KoreaEvidenceRepositories,
+} from '@/lib/public-market/korea-evidence-repositories.server';
 import {
   buildPublicPropertyTypeModel,
   listPublicPropertyTypeRouteParams,
@@ -27,6 +38,50 @@ type BuildingPageProps = Readonly<{
 
 export const dynamicParams = true;
 
+const evidenceAreas = Object.freeze([
+  'all', 'under-40', '40-60', '60-85', '85-plus',
+] as const);
+
+export function resolveKoreaEvidenceBuildingRoute(
+  district: string,
+  buildingId: string,
+  query: Readonly<Record<string, string | readonly string[] | undefined>>,
+  repositories: KoreaEvidenceRepositories,
+) {
+  const selection = parseExplorerSelection(
+    query,
+    { market: 'kr', transaction: 'jeonse' },
+    {
+      areas: evidenceAreas,
+      propertyTypes: KOREA_EXPLORER_HOUSING_TYPES,
+    },
+  );
+  const model = buildKoreaExplorerBuildingDetailModel(
+    repositories,
+    district,
+    buildingId,
+    {
+      transaction: selection.transaction,
+      areaBand: selection.area ?? 'all',
+      housingType: selection.propertyType ?? 'all',
+      contractGroup: selection.contractType ?? 'all',
+    },
+  );
+  if (model === null) return null;
+  const backHref = createSelectionHref(
+    '/kr/seoul/explore/',
+    {
+      ...selection,
+      propertyType: model.building.housingType,
+      district: model.district.slug,
+      neighborhood: model.building.neighborhoodId,
+      buildingId: model.building.buildingId,
+    },
+    { market: 'kr', transaction: 'jeonse' },
+  );
+  return Object.freeze({ model, backHref });
+}
+
 export function generateStaticParams() {
   const buildings = publicBuildingRepositoryFromEnvironment()?.listRouteParams() ?? [];
   const propertyTypes = listPublicPropertyTypeRouteParams().map(({ district, propertyType }) => ({
@@ -36,7 +91,7 @@ export function generateStaticParams() {
   return [...buildings, ...propertyTypes];
 }
 
-export async function generateMetadata({ params }: BuildingPageProps): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: BuildingPageProps): Promise<Metadata> {
   const { district, buildingId } = await params;
   const propertyTypeModel = buildPublicPropertyTypeModel(district, buildingId);
   if (propertyTypeModel !== null) {
@@ -46,6 +101,19 @@ export async function generateMetadata({ params }: BuildingPageProps): Promise<M
       title: `${propertyTypeModel.district.nameEn} ${propertyTypeModel.propertyType.slug} jeonse evidence | signedprice`,
       description: `${propertyTypeModel.coverage.retainedContracts} retained recent contracts across ${buildingCount} published ${propertyTypeModel.district.nameEn} ${propertyTypeModel.propertyType.slug} building${buildingCount === 1 ? '' : 's'}, with MOLIT source and coverage limits shown.`,
     });
+  }
+  const exact = resolveKoreaEvidenceBuildingRoute(
+    district,
+    buildingId,
+    await searchParams,
+    koreaEvidenceRepositoriesFromEnvironment(),
+  );
+  if (exact !== null) {
+    return {
+      title: `${exact.model.building.officialName} ${exact.model.selection.transaction} evidence | signedprice`,
+      description: `${exact.model.evidence.sampleLabel} for ${exact.model.building.officialName} in ${exact.model.period}, selected by transaction and filed area.`,
+      robots: { index: false, follow: true },
+    };
   }
   const model = buildPublicBuildingModel(district, buildingId);
   if (model === null) {
@@ -76,15 +144,25 @@ export default async function BuildingRoute({ params, searchParams }: BuildingPa
       .flatMap((route) => {
         const sibling = buildPublicPropertyTypeModel(route.district, route.propertyType);
         return sibling === null ? [] : [sibling.propertyType];
-      });
+    });
     return <PropertyTypeDetailPage model={propertyTypeModel} siblings={siblings} />;
+  }
+  const query = await searchParams;
+  const exact = resolveKoreaEvidenceBuildingRoute(
+    district,
+    buildingId,
+    query,
+    koreaEvidenceRepositoriesFromEnvironment(),
+  );
+  if (exact !== null) {
+    return <KoreaEvidenceBuildingDetail model={exact.model} backHref={exact.backHref} />;
   }
   const model = buildPublicBuildingModel(district, buildingId);
   if (model === null) {
     const observed = buildObservedBuildingIdentityModel(district, buildingId);
     if (observed === null) notFound();
     const selection = parseExplorerSelection(
-      await searchParams,
+      query,
       { market: 'kr', transaction: 'jeonse' },
       {
         districts: [observed.district.slug],
@@ -103,7 +181,6 @@ export default async function BuildingRoute({ params, searchParams }: BuildingPa
     );
     return <ObservedBuildingDetail model={observed} backHref={backHref} />;
   }
-  const query = await searchParams;
   const selection = parseBuildingDecisionSelection(query);
   const decision = buildBuildingDecisionModel(model, selection);
   const explorerSelection = parseExplorerSelection(

@@ -49,6 +49,7 @@ function dependencies(overrides: Record<string, unknown> = {}) {
       period: '2026-01/2026-07',
       generatedAt: referenceInstant,
       completedCoordinates: 700 as const,
+      conversionRecords: [],
     })),
     buildRentArtifact: vi.fn(async () => ({
       artifact: { artifactVersion: 'signedprice-korea-rent-evidence-v1' },
@@ -60,6 +61,12 @@ function dependencies(overrides: Record<string, unknown> = {}) {
       artifact: { artifactVersion: 'signedprice-observed-building-inventory-v1' },
       serialized: '{}',
       sha256: 'b'.repeat(64),
+    })),
+    buildConversionArtifact: vi.fn(async () => ({
+      artifact: { artifactVersion: 1 },
+      serialized: '{}',
+      sha256: 'c'.repeat(64),
+      eligiblePairCount: 240,
     })),
     ...overrides,
   };
@@ -117,7 +124,7 @@ describe('Korea rent snapshot internal job handler', () => {
     expect(deps.runBatch).toHaveBeenCalledWith({ referenceInstant, cursor: 0 });
   });
 
-  it('returns both privacy-safe artifacts only after complete finalization', async () => {
+  it('returns all privacy-safe artifacts only after complete finalization', async () => {
     const deps = dependencies();
     const handler = createKoreaRentSnapshotJobHandler(deps as never);
     const response = await handler(request({ action: 'finalize', referenceInstant }));
@@ -141,10 +148,21 @@ describe('Korea rent snapshot internal job handler', () => {
           recordCount: 1,
           artifact: { artifactVersion: 'signedprice-observed-building-inventory-v1' },
         },
+        conversion: {
+          dataset: 'kr-conversion',
+          sha256: 'c'.repeat(64),
+          recordCount: 240,
+          artifact: { artifactVersion: 1 },
+        },
       },
     });
     expect(deps.buildRentArtifact).toHaveBeenCalledOnce();
     expect(deps.buildInventoryArtifact).toHaveBeenCalledOnce();
+    expect(deps.buildConversionArtifact).toHaveBeenCalledWith({
+      records: [],
+      period: '2026-01/2026-07',
+      generatedAt: referenceInstant,
+    });
   });
 
   it('maps incomplete coverage to conflict without leaking an internal reason', async () => {

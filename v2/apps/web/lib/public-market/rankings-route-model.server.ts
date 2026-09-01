@@ -19,7 +19,13 @@ import type {
   RankingKind,
   SignedRankingBar,
 } from './area-route-types';
+import { createSelectionHref } from '../navigation/explorer-selection';
 import { createPublicAreaSummaryRepository } from './area-summary-repository.server';
+import { buildKoreaEvidenceAreaExploreModel } from './korea-explorer-area-route.server';
+import type {
+  KoreaExplorerEvidenceProjection,
+  KoreaExplorerEvidenceSelection,
+} from './korea-explorer-evidence.server';
 import {
   changeReliability,
   evidencePeriod,
@@ -71,6 +77,7 @@ function rowFor(
   valueLabel: string,
   bar: SignedRankingBar | null = null,
   plotAxis: QuotePositionAxis | null = null,
+  href?: `/kr/seoul/explore/${string}/` | `/kr/seoul/explore/${string}/?${string}`,
 ): PublicDistrictRankingRow {
   const identity = identityFor(summary.area);
   return Object.freeze({
@@ -80,7 +87,7 @@ function rowFor(
     slug: identity.slug,
     nameEn: identity.nameEn,
     nameKo: identity.nameKo,
-    href: `/kr/seoul/explore/${identity.slug}/`,
+    href: href ?? `/kr/seoul/explore/${identity.slug}/`,
     metric,
     valueLabel,
     bar,
@@ -98,11 +105,21 @@ function unsignedRows(
   order: 1 | -1,
   labelFor: (value: number) => string,
   plotAxis: QuotePositionAxis | null = null,
+  hrefFor?: (summary: PublishedMarketSummary) => PublicDistrictRankingRow['href'],
 ): readonly PublicDistrictRankingRow[] {
   const sorted = [...summaries].sort(compare(metricFor, order));
   return Object.freeze(sorted.map((summary, index) => {
     const metric = metricFor(summary);
-    return rowFor(kind, summary, index + 1, metric, labelFor(metric), null, plotAxis);
+    return rowFor(
+      kind,
+      summary,
+      index + 1,
+      metric,
+      labelFor(metric),
+      null,
+      plotAxis,
+      hrefFor?.(summary),
+    );
   }));
 }
 
@@ -117,6 +134,7 @@ function distributionAxis(
 
 function changeRows(
   summaries: readonly PublishedMarketSummary[],
+  hrefFor?: (summary: PublishedMarketSummary) => PublicDistrictRankingRow['href'],
 ): Readonly<{
   rows: readonly PublicDistrictRankingRow[];
   axis: Readonly<{ minimum: string; maximum: string }>;
@@ -145,7 +163,10 @@ function changeRows(
       endPct: metric > 0 ? 50 + extentPct : 50,
       extentPct,
     } satisfies SignedRankingBar);
-    return rowFor('change', summary, index + 1, metric, reliability.label, bar);
+    return rowFor(
+      'change', summary, index + 1, metric, reliability.label, bar, null,
+      hrefFor?.(summary),
+    );
   }));
   const axis = maxAbs === 0
     ? Object.freeze({ minimum: '0.0%', maximum: '0.0%' })
@@ -175,6 +196,13 @@ export function buildPublicAreaRankingsModel(
     );
     return Object.freeze({
       status: 'ready',
+      evidenceSelection: Object.freeze({
+        transaction: 'jeonse' as const,
+        areaBand: 'legacy-45-55' as const,
+        housingType: 'all' as const,
+        contractGroup: 'all' as const,
+      }),
+      transactionAvailability: Object.freeze({ jeonse: true, monthly: false, sale: false }),
       cheapest: unsignedRows('cheapest', published, ({ med }) => med, 1, (value) => money.format(value)),
       change: change.rows,
       spread: unsignedRows(
@@ -209,4 +237,75 @@ export function buildPublicAreaRankingsModel(
       source: unavailableSource,
     });
   }
+}
+
+function exactRankingHref(
+  summary: PublishedMarketSummary,
+  selection: KoreaExplorerEvidenceSelection,
+): PublicDistrictRankingRow['href'] {
+  return createSelectionHref(
+    `/kr/seoul/explore/${summary.area}/`,
+    {
+      market: 'kr',
+      transaction: selection.transaction,
+      area: selection.areaBand,
+      propertyType: selection.housingType === 'all' ? undefined : selection.housingType,
+      district: summary.area,
+      contractType: selection.contractGroup === 'not-applicable'
+        || selection.contractGroup === 'unknown'
+        ? undefined
+        : selection.contractGroup,
+    },
+    { market: 'kr', transaction: 'jeonse' },
+  ) as PublicDistrictRankingRow['href'];
+}
+
+export function buildKoreaEvidenceAreaRankingsModel(
+  projection: Extract<KoreaExplorerEvidenceProjection, { status: 'ready' }>,
+  referenceInstant: string | Date = new Date(),
+): PublicAreaRankingsModel {
+  const explore = buildKoreaEvidenceAreaExploreModel(undefined, projection);
+  const allDistricts = explore.districts.map(({ summary }) => summary);
+  const published = allDistricts.filter(
+    (summary): summary is PublishedMarketSummary => summary.published,
+  );
+  const hrefFor = (summary: PublishedMarketSummary) => exactRankingHref(
+    summary,
+    projection.selection,
+  );
+  const change = changeRows(published, hrefFor);
+  const plotAxis = distributionAxis(published);
+  return Object.freeze({
+    status: 'ready' as const,
+    evidenceSelection: projection.selection,
+    transactionAvailability: projection.availability,
+    cheapest: unsignedRows(
+      'cheapest', published, ({ med }) => med, 1, (value) => money.format(value), null, hrefFor,
+    ),
+    change: change.rows,
+    spread: unsignedRows(
+      'spread',
+      published,
+      ({ p25, p75 }) => p75 - p25,
+      -1,
+      (value) => money.format(value),
+      plotAxis,
+      hrefFor,
+    ),
+    sample: unsignedRows(
+      'sample', published, ({ n }) => n, -1, (value) => String(value), null, hrefFor,
+    ),
+    withheldDistrictCount: allDistricts.length - published.length,
+    changeExcludedDistrictCount: allDistricts.length - change.rows.length,
+    hasNegativeChange: change.rows.some(({ metric }) => metric < 0),
+    changeAxisLabel: change.axis,
+    changeInterpretation: Object.freeze({
+      status: 'not_assessable' as const,
+      title: 'Three-month change not assessable' as const,
+      definition: 'Prior/latest sample counts were not retained in this snapshot.' as const,
+      note: 'Stored change values are excluded from rankings until both comparison counts are retained.' as const,
+    }),
+    period: evidencePeriod(projection.period, referenceInstant),
+    source: explore.source,
+  });
 }

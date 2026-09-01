@@ -1,8 +1,9 @@
 import { DistrictRankings } from '@/components/public-market/district-rankings';
 import { SiteFooter } from '@/components/site-footer';
 import { SiteHeader } from '@/components/site-header';
-import { buildKoreanSiteHeader, KOREAN_ROUTE_COPY, KOREAN_SITE_FOOTER } from '@/lib/locale/ko';
-import { buildPublicAreaRankingsModel } from '@/lib/public-market/rankings-route-model.server';
+import { resolveKoreaRankingsPageModel } from '@/app/(en)/kr/seoul/rankings/page';
+import { buildKoreanSiteHeader, KOREAN_SITE_FOOTER } from '@/lib/locale/ko';
+import { koreaEvidenceRepositoriesFromEnvironment } from '@/lib/public-market/korea-evidence-repositories.server';
 import { indexableMetadata } from '@/lib/public-metadata';
 import styles from '../korean-evidence.module.css';
 
@@ -15,17 +16,22 @@ export const metadata = indexableMetadata({
   languageAlternates: { en: '/kr/seoul/rankings/', ko: '/ko/kr/seoul/rankings/' },
 });
 
-export default function KoreanRankingsPage() {
+type KoreanRankingsPageProps = Readonly<{
+  searchParams?: Promise<Readonly<Record<string, string | string[] | undefined>>>;
+}>;
+
+export default async function KoreanRankingsPage({
+  searchParams = Promise.resolve({}),
+}: KoreanRankingsPageProps = {}) {
+  const model = resolveKoreaRankingsPageModel(
+    await searchParams,
+    koreaEvidenceRepositoriesFromEnvironment(),
+  );
   return (
     <div id="top" lang="ko" className={styles.page}>
       <SiteHeader copy={buildKoreanSiteHeader('/kr/seoul/rankings/')} />
       <main>
-        <header className={styles.intro}>
-          <p>{KOREAN_ROUTE_COPY.rankings.eyebrow}</p>
-          <h1>{KOREAN_ROUTE_COPY.rankings.heading}</h1>
-          <p>{KOREAN_ROUTE_COPY.rankings.description}</p>
-        </header>
-        <DistrictRankings locale="ko" model={buildPublicAreaRankingsModel()} />
+        <DistrictRankings locale="ko" model={model} />
       </main>
       <SiteFooter copy={KOREAN_SITE_FOOTER} />
     </div>
