@@ -170,6 +170,24 @@ describe('signedprice homepage copy', () => {
     vi.unstubAllEnvs();
   });
 
+  it('renders live Seoul evidence before the generic portal hero', async () => {
+    vi.stubEnv(
+      'SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT',
+      JSON.stringify(createPublicAreaV2Fixture()),
+    );
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', PUBLIC_AREA_FIXTURE_PERIOD);
+
+    const markup = renderToStaticMarkup(await Home());
+    const liveEvidenceIndex = markup.indexOf('data-seoul-live="ready"');
+    const portalHeroIndex = markup.indexOf('id="home-headline"');
+
+    expect(liveEvidenceIndex).toBeGreaterThanOrEqual(0);
+    expect(portalHeroIndex).toBeGreaterThanOrEqual(0);
+    expect(liveEvidenceIndex).toBeLessThan(portalHeroIndex);
+
+    vi.unstubAllEnvs();
+  });
+
   it('keeps the approved English decision model while changing only its presentation', async () => {
     const markup = renderToStaticMarkup(await Home());
 
