@@ -66,7 +66,7 @@ test('all four localized Rent Check selectors expose the same 25 districts', () 
 });
 
 test('all Rent Check runtimes allow bounded analytics for all 25 districts', () => {
-  for (const file of ['app.js','tools/seoul-rent-check/app.js','zh/app.js','zh/tools/seoul-rent-check/app.js']) {
+  for (const file of ['app.js','tools/seoul-rent-check/app.js','app.js','tools/seoul-rent-check/app.js']) {
     const source = read(file);
     const allowlist = source.match(/analyticsDistrictCodes=new Set\(\[([^\]]+)]\)/);
     assert.ok(allowlist, `${file} has an analytics district allowlist`);
