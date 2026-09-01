@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 
 import { DistrictRankings } from '../../../../components/public-market/district-rankings';
-import { PublicSectionTabs } from '../../../../components/public-market/public-section-tabs';
 import { SiteFooter } from '../../../../components/site-footer';
 import { SiteHeader } from '../../../../components/site-header';
 import { PublicBreadcrumbJsonLd } from '../../../../components/public-json-ld';
@@ -30,7 +29,7 @@ const header: SiteHeaderModel = {
   links: [
     { label: 'Global home', href: '/' },
     { label: 'Seoul market', href: '/kr/seoul/' },
-    { label: 'District Explorer', href: '/kr/seoul/explore/', isCurrent: true },
+    { label: 'District rankings', href: '/kr/seoul/rankings/', isCurrent: true },
   ],
 };
 
@@ -53,7 +52,6 @@ export default function RankingsPage() {
   return (
     <div id="top">
       <SiteHeader copy={header} />
-      <PublicSectionTabs current="explore" />
       <main>
         <DistrictRankings model={model} />
       </main>

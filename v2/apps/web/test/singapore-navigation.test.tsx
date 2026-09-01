@@ -32,7 +32,7 @@ describe('Singapore navigation promotion gate', () => {
     expect(html.match(/<h1/g) ?? []).toHaveLength(1);
   });
 
-  it('keeps Singapore and Dubai visible but unlinked while evidence is unavailable', async () => {
+  it('keeps Singapore and Dubai visible in global market navigation', async () => {
     const presentation = buildHomepagePresentation(unavailable);
     expect(presentation.copy.marketIds).toEqual([
       'kr-seoul',
@@ -46,9 +46,8 @@ describe('Singapore navigation promotion gate', () => {
     ).toEqual([]);
 
     const html = renderToStaticMarkup(await Home());
-    expect(html).toContain('>Singapore</button>');
-    expect(html).toContain('>Dubai</button>');
-    expect(html).not.toMatch(/href="\/(?:sg|ae)\//);
+    expect(html).toContain('href="/sg">Singapore</a>');
+    expect(html).toContain('href="/compare?market=dubai">Dubai</a>');
   });
 
   it('activates only Singapore Explore after its evidence gate passes', () => {

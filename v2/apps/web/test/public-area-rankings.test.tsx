@@ -61,7 +61,7 @@ describe('Seoul district rankings page', () => {
     expect(html).not.toContain('data-change-direction=');
     expect(html).toContain('23 districts excluded');
     expect(html).toContain('aria-current="page"');
-    expect(html).toContain('data-public-tab="explore"');
+    expect(html).toContain('data-product-index="03"');
     expect(html).toContain('href="/kr/seoul/news"');
     expect(html).toContain('href="/kr/seoul/guide"');
   });

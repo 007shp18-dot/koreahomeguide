@@ -1,14 +1,12 @@
 import Link from 'next/link';
 
 import type { GuideDocument as GuideDocumentModel } from '../../lib/guide/guide-content';
-import { PublicSectionTabs } from '../public-market/public-section-tabs';
 import styles from './guide.module.css';
 
 export function GuideDocument({ guide }: Readonly<{ guide: GuideDocumentModel }>) {
   const [primaryLink] = guide.links;
   return (
     <>
-      <PublicSectionTabs current="guide" />
       <main className={styles.main}>
         <nav className={styles.breadcrumb} aria-label="Breadcrumb">
           <ol>

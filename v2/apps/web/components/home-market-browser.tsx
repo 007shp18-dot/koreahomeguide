@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { type KeyboardEvent, useState } from 'react';
+import { useState } from 'react';
 
 import type { SeoulLiveModel } from '../lib/public-market/seoul-live-model.server';
 import type { HomepageMarketModel, HomepageProductSlotModel } from '../lib/site-copy';
@@ -98,41 +98,12 @@ function DecisionEntry({ intent, selectedCity }: Readonly<{
 }
 
 export function HomeMarketBrowser({ copy, markets, seoul }: HomeMarketBrowserProps) {
-  const [selectedId, setSelectedId] = useState(markets[0]?.tabId ?? 'seoul');
   const [intent, setIntent] = useState<DecisionIntent>('rent');
-
-  function selectAndFocus(tabId: HomepageMarketModel['tabId']) {
-    setSelectedId(tabId);
-    document.getElementById(`market-tab-${tabId}`)?.focus();
-  }
-
-  function handleTabKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
-    let nextIndex: number | undefined;
-    switch (event.key) {
-      case 'ArrowRight': nextIndex = (index + 1) % markets.length; break;
-      case 'ArrowLeft': nextIndex = (index - 1 + markets.length) % markets.length; break;
-      case 'Home': nextIndex = 0; break;
-      case 'End': nextIndex = markets.length - 1; break;
-      default: return;
-    }
-    event.preventDefault();
-    const nextMarket = markets[nextIndex];
-    if (nextMarket !== undefined) selectAndFocus(nextMarket.tabId);
-  }
+  const seoulMarket = markets.find(({ tabId }) => tabId === 'seoul') ?? markets[0];
 
   return (
     <>
       <section className={styles.hero} id="home-decision" aria-labelledby="home-headline">
-        <div className={styles.cityTabs} role="tablist" aria-label="Choose a city">
-          {markets.map((market, index) => {
-            const selected = market.tabId === selectedId;
-            return (
-              <button className={selected ? styles.cityTabActive : styles.cityTab} id={`market-tab-${market.tabId}`} role="tab" aria-selected={selected} aria-controls={`market-panel-${market.tabId}`} tabIndex={selected ? 0 : -1} type="button" key={market.id} onClick={() => setSelectedId(market.tabId)} onKeyDown={(event) => handleTabKeyDown(event, index)}>
-                {market.cityName}
-              </button>
-            );
-          })}
-        </div>
         <div className={styles.heroGrid}>
           <div className={styles.heroCopy}>
             <p className={styles.eyebrow}>Official contract evidence · Updated by market</p>
@@ -145,21 +116,17 @@ export function HomeMarketBrowser({ copy, markets, seoul }: HomeMarketBrowserPro
                 </button>
               ))}
             </div>
-            <DecisionEntry intent={intent} selectedCity={selectedId} />
+            <DecisionEntry intent={intent} selectedCity="seoul" />
           </div>
           <div className={styles.marketPanels}>
-            {markets.map((market) => (
-              <section className={styles.marketPanel} id={`market-panel-${market.tabId}`} role="tabpanel" aria-labelledby={`market-tab-${market.tabId}`} hidden={market.tabId !== selectedId} data-seoul-live={market.tabId === 'seoul' ? seoul.status : undefined} key={market.id}>
-                <div className={styles.marketPanelLead}>
-                  {market.tabId === 'seoul' ? <SeoulEvidence model={seoul} /> : (
-                    <div className={styles.marketGate}><p>{market.eyebrow}</p><h2>{market.heading}</h2><span>{market.description}</span></div>
-                  )}
-                </div>
-                <div className={styles.productStrip} aria-label={`${market.cityName} product slots`}>
-                  {market.slots.map((slot) => <MarketProduct cityName={market.cityName} slot={slot} href={market.tabId === 'seoul' ? seoulSlotHref(slot, seoul) : slot.href} key={slot.id} />)}
+            {seoulMarket === undefined ? null : (
+              <section className={styles.marketPanel} data-home-market="seoul" data-seoul-live={seoul.status}>
+                <div className={styles.marketPanelLead}><SeoulEvidence model={seoul} /></div>
+                <div className={styles.productStrip} aria-label="Seoul product slots">
+                  {seoulMarket.slots.map((slot) => <MarketProduct cityName="Seoul" slot={slot} href={seoulSlotHref(slot, seoul)} key={slot.id} />)}
                 </div>
               </section>
-            ))}
+            )}
           </div>
         </div>
       </section>

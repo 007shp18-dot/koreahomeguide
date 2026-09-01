@@ -135,7 +135,7 @@ describe('three market overview routes', () => {
     }
   });
 
-  it('uses the shared four-link product navigation on market overviews', async () => {
+  it('uses the shared five-link product navigation on market overviews', async () => {
     for (const params of marketRouteParams) {
       const markup = renderToStaticMarkup(
         await MarketOverviewPage({ params: Promise.resolve(params) }),
@@ -144,9 +144,9 @@ describe('three market overview routes', () => {
         /<nav aria-label="Primary navigation">([\s\S]*?)<\/nav>/,
       )?.[1] ?? '';
 
-      expect(navigation.match(/<a /g) ?? []).toHaveLength(4);
-      for (const label of ['Check', 'Explore', 'Briefs', 'Guide']) {
-        expect(navigation).toContain(`>${label}</a>`);
+      expect(navigation.match(/<a /g) ?? []).toHaveLength(5);
+      for (const label of ['Check', 'Explore', 'Rankings', 'Briefs', 'Guide']) {
+        expect(navigation).toContain(`>${label}</strong>`);
       }
     }
   });
@@ -161,8 +161,8 @@ describe('three market overview routes', () => {
       /<nav aria-label="Primary navigation">([\s\S]*?)<\/nav>/,
     )?.[1] ?? '';
 
-    expect(navigation.match(/<a /g) ?? []).toHaveLength(4);
-    expect(navigation).toContain('>Check</a>');
+    expect(navigation.match(/<a /g) ?? []).toHaveLength(5);
+    expect(navigation).toContain('>Check</strong>');
     expect(navigation).not.toContain('aria-current');
   });
 

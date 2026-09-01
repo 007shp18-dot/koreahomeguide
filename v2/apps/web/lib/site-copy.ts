@@ -49,6 +49,8 @@ export interface NavigationLinkModel {
   readonly href: string;
   readonly ariaLabel?: string;
   readonly isCurrent?: boolean;
+  readonly index?: string;
+  readonly description?: string;
 }
 
 export interface SiteHeaderModel {
@@ -69,10 +71,11 @@ export interface SiteFooterModel {
 }
 
 export const productNavigationLinks = Object.freeze([
-  { label: 'Check', href: '/kr/seoul/check/' },
-  { label: 'Explore', href: '/kr/seoul/explore/' },
-  { label: 'Briefs', href: '/kr/seoul/news/' },
-  { label: 'Guide', href: '/kr/seoul/guide/' },
+  { index: '01', label: 'Check', description: 'Compare a contract', href: '/kr/seoul/check/' },
+  { index: '02', label: 'Explore', description: 'Map signed evidence', href: '/kr/seoul/explore/' },
+  { index: '03', label: 'Rankings', description: 'Compare districts', href: '/kr/seoul/rankings/' },
+  { index: '04', label: 'Briefs', description: 'Read market signals', href: '/kr/seoul/news/' },
+  { index: '05', label: 'Guide', description: 'Understand the method', href: '/kr/seoul/guide/' },
 ] as const satisfies readonly NavigationLinkModel[]);
 
 export const KOREA_PUBLIC_RELEASE_STATUS =

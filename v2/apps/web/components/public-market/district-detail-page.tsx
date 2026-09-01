@@ -19,7 +19,6 @@ import { DistrictEvidenceSummary } from './district-evidence-summary';
 import { EvidencePeriodStrip } from './evidence-period-strip';
 import { QuoteInput } from './quote-input';
 import { SampleChip } from './sample-chip';
-import { PublicSectionTabs } from './public-section-tabs';
 import { PublicSourceBoundary } from './public-source-boundary';
 
 const config = getPublicMarketConfig('kr-seoul');
@@ -281,7 +280,6 @@ export function DistrictDetailPage({
   return (
     <div id="top" className={styles.page} data-district-detail={model.status}>
       <SiteHeader copy={headerFor(model)} />
-      <PublicSectionTabs current="explore" />
       <main className={styles.main}>
         <Breadcrumb model={model} />
         <Finding model={model} />

@@ -140,9 +140,9 @@ describe('nine intent routes use one connected decision hierarchy', () => {
         renderToStaticMarkup(await IntentPage({ params: Promise.resolve(params) })),
       );
 
-      expect(markup.match(/<a /g) ?? []).toHaveLength(4);
-      for (const label of ['Check', 'Explore', 'Briefs', 'Guide']) {
-        expect(markup).toContain(`>${label}</a>`);
+      expect(markup.match(/<a /g) ?? []).toHaveLength(5);
+      for (const label of ['Check', 'Explore', 'Rankings', 'Briefs', 'Guide']) {
+        expect(markup).toContain(`>${label}</strong>`);
       }
       expect(markup).not.toContain('aria-current');
     }
@@ -203,8 +203,8 @@ describe('comparison remains a semantic Modernist table', () => {
   it('keeps shared product links inactive on the global comparison route', () => {
     const markup = navigationMarkup(renderToStaticMarkup(createElement(ComparePage)));
 
-    expect(markup.match(/<a /g) ?? []).toHaveLength(4);
-    expect(markup).toContain('>Check</a>');
+    expect(markup.match(/<a /g) ?? []).toHaveLength(5);
+    expect(markup).toContain('>Check</strong>');
     expect(markup).not.toContain('aria-current="page"');
   });
 

@@ -12,7 +12,6 @@ import { SiteHeader } from '../site-header';
 import { BoxPlot } from './box-plot';
 import styles from './public-market.module.css';
 import { QuoteInput } from './quote-input';
-import { PublicSectionTabs } from './public-section-tabs';
 import { PublicSourceBoundary } from './public-source-boundary';
 
 export type PublicMarketPageMode = 'home' | 'check' | 'area';
@@ -62,7 +61,6 @@ export function PublicMarketPage({
   return (
     <div id="top" className={styles.publicPage}>
       <SiteHeader copy={header} />
-      <PublicSectionTabs current="check" />
       {entry}
       <main className={styles.publicMain}>
         <header className={styles.publicHero}>

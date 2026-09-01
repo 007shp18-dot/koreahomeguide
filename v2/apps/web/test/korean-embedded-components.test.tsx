@@ -77,10 +77,9 @@ describe('Korean embedded product components', () => {
     );
 
     for (const visible of [
-      '계약 비교',
-      '구별 탐색',
-      '뉴스',
-      '가이드',
+      '전세',
+      '월세',
+      '매매',
       '검증된 커버리지',
       '구 중앙값 전세보증금',
       '신규 계약',

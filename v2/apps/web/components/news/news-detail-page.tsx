@@ -6,7 +6,6 @@ import {
   type SiteFooterModel,
   type SiteHeaderModel,
 } from '../../lib/site-copy';
-import { PublicSectionTabs } from '../public-market/public-section-tabs';
 import { SiteFooter } from '../site-footer';
 import { SiteHeader } from '../site-header';
 import styles from './news.module.css';
@@ -48,7 +47,6 @@ export function NewsDetailPage({ model }: Readonly<{ model: NewsDetailModel }>) 
   return (
     <div id="top" className={styles.page}>
       <SiteHeader copy={header} />
-      <PublicSectionTabs current="news" />
       <main className={styles.main}>
         <nav className={styles.breadcrumb} aria-label="Breadcrumb">
           <ol>
