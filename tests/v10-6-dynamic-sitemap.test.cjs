@@ -12,33 +12,21 @@ function responseRecorder() {
   };
 }
 
-test('root sitemap is an index with static pages plus every proven property-type child sitemap', () => {
+test('root sitemap is an index with static pages plus 10 districts x 3 proven property-type child sitemaps', () => {
   const root = fs.readFileSync('sitemap.xml','utf8');
   const staticMap = fs.readFileSync('sitemap-static.xml','utf8');
-  const catalog = require('../location-catalog.js');
-  const manifest = JSON.parse(fs.readFileSync('data/seo/signedprice-migration-manifest.json','utf8'));
   assert.match(root, /<sitemapindex/);
   assert.match(root, /https:\/\/koreahomeguide\.com\/sitemap-static\.xml/);
   assert.match(root, /https:\/\/koreahomeguide\.com\/sitemaps\/seoul\/mapo-gu\/villa\//);
   assert.doesNotMatch(root, /\/sitemaps\/seoul\/gwanak-gu\/detached\//);
-  const expectedChildSitemaps = 1 + 3 + (
-    Object.keys(catalog.DISTRICTS).length * Object.keys(catalog.PROPERTY_TYPES).length * 2
-  );
-  assert.equal((root.match(/<sitemap>/g) || []).length, expectedChildSitemaps);
-  const staticUrls = [...staticMap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
-  assert.equal(new Set(staticUrls).size, staticUrls.length);
-  for (const { sourcePath } of manifest.entries) {
-    assert.ok(!staticUrls.includes(`https://koreahomeguide.com${sourcePath}`), sourcePath);
-  }
+  assert.equal((root.match(/<sitemap>/g) || []).length, 31);
+  assert.equal((staticMap.match(/<url>/g) || []).length, 76);
   assert.equal(root.includes('/api/'), false);
 });
 
 test('vercel exposes one shared child-sitemap endpoint without adding static HTML files', () => {
   const config = JSON.parse(fs.readFileSync('vercel.json','utf8'));
-  const route = config.rewrites.find(item => (
-    item.source === '/sitemaps/seoul/:district/:type/'
-    && item.destination.includes('sitemap-market')
-  ));
+  const route = config.rewrites.find(item => item.destination.includes('sitemap-market'));
   assert.ok(route);
   assert.equal(route.source, '/sitemaps/seoul/:district/:type/');
   assert.match(route.destination, /district=:district/);

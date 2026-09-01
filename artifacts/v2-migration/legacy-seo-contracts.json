@@ -148,9 +148,7 @@
     "description": "Explore recent signed Seoul rental transactions by district, neighborhood, housing type, and building. Compare typical rent, deposit, size, and recent contract activity using official MOLIT data.",
     "robots": "index,follow",
     "schemaTypes": [],
-    "sitemapSources": [
-      "sitemap-static.xml"
-    ]
+    "sitemapSources": []
   },
   {
     "path": "/explore/building/",
@@ -463,9 +461,7 @@
     "description": "See official MOLIT apartment rents for Dongdaemun-gu, grouped by deposit and floor area with recent contract dates for its east-Seoul market.",
     "robots": "index,follow",
     "schemaTypes": [],
-    "sitemapSources": [
-      "sitemap-static.xml"
-    ]
+    "sitemapSources": []
   },
   {
     "path": "/rent/dongdaemun-gu/officetel/",
@@ -484,9 +480,7 @@
     "description": "Compare official MOLIT officetel rents for Dongdaemun-gu, grouped by deposit and floor area with recent contract dates for its east-Seoul market.",
     "robots": "index,follow",
     "schemaTypes": [],
-    "sitemapSources": [
-      "sitemap-static.xml"
-    ]
+    "sitemapSources": []
   },
   {
     "path": "/rent/dongdaemun-gu/villa/",
@@ -530,9 +524,7 @@
     "description": "See official MOLIT apartment rents for Gangnam-gu, grouped by deposit and floor area with recent contract dates for its office and transit market.",
     "robots": "index,follow",
     "schemaTypes": [],
-    "sitemapSources": [
-      "sitemap-static.xml"
-    ]
+    "sitemapSources": []
   },
   {
     "path": "/rent/gangnam-gu/officetel/",
@@ -555,9 +547,7 @@
     "description": "Compare official MOLIT officetel rents for Gangnam-gu, grouped by deposit and floor area with recent contract dates for its office and transit market.",
     "robots": "index,follow",
     "schemaTypes": [],
-    "sitemapSources": [
-      "sitemap-static.xml"
-    ]
+    "sitemapSources": []
   },
   {
     "path": "/rent/gangnam-gu/villa/",
@@ -580,9 +570,7 @@
     "description": "Review official MOLIT villa/low-rise rents for Gangnam-gu, grouped by deposit and floor area with recent contract dates for its office and transit market.",
     "robots": "index,follow",
     "schemaTypes": [],
-    "sitemapSources": [
-      "sitemap-static.xml"
-    ]
+    "sitemapSources": []
   },
   {
     "path": "/rent/gwanak-gu/apartment/",
@@ -601,9 +589,7 @@
     "description": "See official MOLIT apartment rents for Gwanak-gu, grouped by deposit and floor area with recent contract dates for its student and commuter market.",
     "robots": "index,follow",
     "schemaTypes": [],
-    "sitemapSources": [
-      "sitemap-static.xml"
-    ]
+    "sitemapSources": []
   },
   {
     "path": "/rent/gwanak-gu/officetel/",
@@ -664,9 +650,7 @@
     "description": "See official MOLIT apartment rents for Gwangjin-gu, grouped by deposit and floor area with recent contract dates for its east-Seoul riverside market.",
     "robots": "index,follow",
     "schemaTypes": [],
-    "sitemapSources": [
-      "sitemap-static.xml"
-    ]
+    "sitemapSources": []
   },
   {
     "path": "/rent/gwangjin-gu/officetel/",
@@ -731,9 +715,7 @@
     "description": "See official MOLIT apartment rents for Mapo-gu, grouped by deposit and floor area with recent contract dates for its western Seoul market.",
     "robots": "index,follow",
     "schemaTypes": [],
-    "sitemapSources": [
-      "sitemap-static.xml"
-    ]
+    "sitemapSources": []
   },
   {
     "path": "/rent/mapo-gu/officetel/",
@@ -756,9 +738,7 @@
     "description": "Compare official MOLIT officetel rents for Mapo-gu, grouped by deposit and floor area with recent contract dates for its western Seoul market.",
     "robots": "index,follow",
     "schemaTypes": [],
-    "sitemapSources": [
-      "sitemap-static.xml"
-    ]
+    "sitemapSources": []
   },
   {
     "path": "/rent/mapo-gu/villa/",
@@ -781,9 +761,7 @@
     "description": "Review official MOLIT villa/low-rise rents for Mapo-gu, grouped by deposit and floor area with recent contract dates for its western Seoul market.",
     "robots": "index,follow",
     "schemaTypes": [],
-    "sitemapSources": [
-      "sitemap-static.xml"
-    ]
+    "sitemapSources": []
   },
   {
     "path": "/rent/seodaemun-gu/apartment/",
@@ -802,9 +780,7 @@
     "description": "See official MOLIT apartment rents for Seodaemun-gu, grouped by deposit and floor area with recent contract dates for its northwest university market.",
     "robots": "index,follow",
     "schemaTypes": [],
-    "sitemapSources": [
-      "sitemap-static.xml"
-    ]
+    "sitemapSources": []
   },
   {
     "path": "/rent/seodaemun-gu/officetel/",
@@ -844,9 +820,7 @@
     "description": "Review official MOLIT villa/low-rise rents for Seodaemun-gu, grouped by deposit and floor area with recent contract dates for its northwest university market.",
     "robots": "index,follow",
     "schemaTypes": [],
-    "sitemapSources": [
-      "sitemap-static.xml"
-    ]
+    "sitemapSources": []
   },
   {
     "path": "/rent/seongbuk-gu/apartment/",
@@ -865,9 +839,7 @@
     "description": "See official MOLIT apartment rents for Seongbuk-gu, grouped by deposit and floor area with recent contract dates for its northeast university market.",
     "robots": "index,follow",
     "schemaTypes": [],
-    "sitemapSources": [
-      "sitemap-static.xml"
-    ]
+    "sitemapSources": []
   },
   {
     "path": "/rent/seongbuk-gu/officetel/",
@@ -932,9 +904,7 @@
     "description": "See official MOLIT apartment rents for Seongdong-gu, grouped by deposit and floor area with recent contract dates for its eastern-central market.",
     "robots": "index,follow",
     "schemaTypes": [],
-    "sitemapSources": [
-      "sitemap-static.xml"
-    ]
+    "sitemapSources": []
   },
   {
     "path": "/rent/seongdong-gu/officetel/",
@@ -982,9 +952,7 @@
     "description": "Review official MOLIT villa/low-rise rents for Seongdong-gu, grouped by deposit and floor area with recent contract dates for its eastern-central market.",
     "robots": "index,follow",
     "schemaTypes": [],
-    "sitemapSources": [
-      "sitemap-static.xml"
-    ]
+    "sitemapSources": []
   },
   {
     "path": "/rent/yeongdeungpo-gu/apartment/",
@@ -1007,9 +975,7 @@
     "description": "See official MOLIT apartment rents for Yeongdeungpo-gu, grouped by deposit and floor area with recent contract dates for its Yeouido-area market.",
     "robots": "index,follow",
     "schemaTypes": [],
-    "sitemapSources": [
-      "sitemap-static.xml"
-    ]
+    "sitemapSources": []
   },
   {
     "path": "/rent/yeongdeungpo-gu/officetel/",
@@ -1032,9 +998,7 @@
     "description": "Compare official MOLIT officetel rents for Yeongdeungpo-gu, grouped by deposit and floor area with recent contract dates for its Yeouido-area market.",
     "robots": "index,follow",
     "schemaTypes": [],
-    "sitemapSources": [
-      "sitemap-static.xml"
-    ]
+    "sitemapSources": []
   },
   {
     "path": "/rent/yeongdeungpo-gu/villa/",
@@ -1082,9 +1046,7 @@
     "description": "See official MOLIT apartment rents for Yongsan-gu, grouped by deposit and floor area with recent contract dates for its central Seoul market.",
     "robots": "index,follow",
     "schemaTypes": [],
-    "sitemapSources": [
-      "sitemap-static.xml"
-    ]
+    "sitemapSources": []
   },
   {
     "path": "/rent/yongsan-gu/officetel/",
@@ -1107,9 +1069,7 @@
     "description": "Compare official MOLIT officetel rents for Yongsan-gu, grouped by deposit and floor area with recent contract dates for its central Seoul market.",
     "robots": "index,follow",
     "schemaTypes": [],
-    "sitemapSources": [
-      "sitemap-static.xml"
-    ]
+    "sitemapSources": []
   },
   {
     "path": "/rent/yongsan-gu/villa/",
@@ -1132,9 +1092,7 @@
     "description": "Review official MOLIT villa/low-rise rents for Yongsan-gu, grouped by deposit and floor area with recent contract dates for its central Seoul market.",
     "robots": "index,follow",
     "schemaTypes": [],
-    "sitemapSources": [
-      "sitemap-static.xml"
-    ]
+    "sitemapSources": []
   },
   {
     "path": "/saved-homes/",
@@ -1363,9 +1321,7 @@
     "description": "Check whether a Seoul rent quote looks high, fair, or low by comparing it with recent official Korean rental transactions.",
     "robots": "index,follow",
     "schemaTypes": [],
-    "sitemapSources": [
-      "sitemap-static.xml"
-    ]
+    "sitemapSources": []
   },
   {
     "path": "/value-check/",
