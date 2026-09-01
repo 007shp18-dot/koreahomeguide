@@ -63,6 +63,22 @@ describe('public Seoul area Explorer', () => {
     expect(markup).toContain('type="search"');
     expect(markup).toContain('name="building-query"');
     expect(markup).toContain('Search retained buildings');
+    expect(markup).toContain('Search district, neighborhood, building or type');
+    expect(markup).toContain('name="housing-type"');
+  });
+
+  it('puts transaction context and the map workspace before coverage detail', () => {
+    const markup = renderToStaticMarkup(createElement(AreaExplorer, {
+      model: readyModel(),
+      naverMapClientId: 'test-naver-client',
+    }));
+
+    expect(markup).toContain('data-transaction-tabs="true"');
+    expect(markup).toMatch(/<a[^>]+aria-current="page"[^>]*href="\/kr\/seoul\/explore">Jeonse<\/a>/);
+    expect(markup).toContain('aria-disabled="true">Monthly rent');
+    expect(markup).toContain('aria-disabled="true">Sale');
+    expect(markup).toContain('Price-ready buildings');
+    expect(markup.indexOf('class="_workspace_')).toBeLessThan(markup.indexOf('data-coverage-panel="verified"'));
   });
 
   it('renders the complete map, legend, table, and allowed evidence in initial HTML', () => {
@@ -183,7 +199,8 @@ describe('public Seoul area Explorer', () => {
       'utf8',
     );
 
-    expect(css).toMatch(/grid-template-columns:\s*minmax\(0,\s*1\.62fr\)\s+minmax\(340px,\s*\.85fr\)/);
+    expect(css).toMatch(/grid-template-columns:\s*minmax\(0,\s*65fr\)\s+minmax\(340px,\s*35fr\)/);
+    expect(css).toMatch(/\.exploreToolbar[\s\S]*position:\s*sticky/);
     expect(css).toMatch(/\.districtButton[\s\S]*min-height:\s*44px/);
     expect(css).toMatch(/\.detailLink[\s\S]*min-height:\s*44px/);
     expect(css).toMatch(/:focus-visible[\s\S]*outline:\s*2px solid var\(--area-accent\)[\s\S]*outline-offset:\s*2px/);

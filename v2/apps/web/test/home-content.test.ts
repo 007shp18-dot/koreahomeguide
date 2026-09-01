@@ -131,10 +131,10 @@ describe('signedprice homepage copy', () => {
     expect(markup).toContain('>Start with what you need to decide.</h2>');
     expect(markup).toContain('>Move from the city to one building without losing context.</h2>');
     expect(markup).toContain('>Three markets, one disciplined editorial rhythm.</h2>');
-    expect(markup).toContain('role="tablist"');
-    expect(markup).toContain('>Seoul</button>');
-    expect(markup).toContain('>Singapore</button>');
-    expect(markup).toContain('>Dubai</button>');
+    expect(markup).toContain('data-navigation-tier="market"');
+    expect(markup).toContain('>Seoul</a>');
+    expect(markup).toContain('>Singapore</a>');
+    expect(markup).toContain('>Dubai</a>');
 
     const seoulHrefs = [
       '/kr/seoul/check/',
@@ -147,17 +147,16 @@ describe('signedprice homepage copy', () => {
     for (const href of seoulHrefs) {
       expect(markup).toContain(`href="${href.replace(/\/$/, '')}"`);
     }
-    expect(markup).not.toMatch(/href="\/(?:sg|ae)\//);
+    expect(markup).toContain('href="/sg"');
 
     expect(markup).not.toMatch(/enquir|sign[ -]?in|create account/i);
   });
 
-  it('does not turn unavailable market tabs into dead public links', async () => {
+  it('routes staged markets through explicit global destinations', async () => {
     const markup = renderToStaticMarkup(await Home());
 
-    expect(markup).toContain('Verified Singapore evidence unavailable');
-    expect(markup).toContain('DLD and RERA display-rights clearance is incomplete.');
-    expect(markup).not.toMatch(/href="\/(?:sg|ae)\//);
+    expect(markup).toContain('href="/sg">Singapore</a>');
+    expect(markup).toContain('href="/compare?market=dubai">Dubai</a>');
   });
 
   it('puts the shipped Seoul evidence products on the root entry page', async () => {
@@ -193,7 +192,7 @@ describe('signedprice homepage copy', () => {
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', PUBLIC_AREA_FIXTURE_PERIOD);
 
     const markup = renderToStaticMarkup(await Home());
-    const cityTabsIndex = markup.indexOf('role="tablist"');
+    const cityTabsIndex = markup.indexOf('data-navigation-tier="market"');
     const liveEvidenceIndex = markup.indexOf('data-seoul-live="ready"');
 
     expect(cityTabsIndex).toBeGreaterThanOrEqual(0);
@@ -203,15 +202,13 @@ describe('signedprice homepage copy', () => {
     vi.unstubAllEnvs();
   });
 
-  it('keeps all city tabs visible while only Seoul is selected initially', async () => {
+  it('keeps all global markets visible while Seoul is current initially', async () => {
     const markup = renderToStaticMarkup(await Home());
 
     for (const label of ['Seoul', 'Singapore', 'Dubai']) {
-      expect(markup).toContain(`>${label}</button>`);
+      expect(markup).toContain(`>${label}</a>`);
     }
-    expect(markup).toContain('id="market-tab-seoul" role="tab" aria-selected="true"');
-    expect(markup).toContain('id="market-tab-singapore" role="tab" aria-selected="false"');
-    expect(markup).toContain('id="market-tab-dubai" role="tab" aria-selected="false"');
+    expect(markup).toMatch(/site-header__market-link" aria-current="page" href="\/kr\/seoul">Seoul/);
     for (const intent of ['Rent', 'Buy', 'Invest']) {
       expect(markup).toContain(`>${intent}</button>`);
     }

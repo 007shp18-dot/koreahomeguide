@@ -27,7 +27,6 @@ import {
 } from '../../lib/locale/product-copy';
 import styles from './area-explorer.module.css';
 import { DistrictEvidenceSummary } from './district-evidence-summary';
-import { PublicSectionTabs } from './public-section-tabs';
 import { PublicSourceBoundary } from './public-source-boundary';
 
 const bucketClasses = [
@@ -62,9 +61,12 @@ function ReadyAreaExplorer({
   const copy = PUBLIC_MARKET_COPY[locale].area;
   const countSeparator = locale === 'en' ? ' ' : '';
   const router = useRouter();
-  const allBuildings = model.buildingAvailability.status === 'ready'
-    ? model.buildingAvailability.buildings
-    : [];
+  const allBuildings = useMemo(
+    () => model.buildingAvailability.status === 'ready'
+      ? model.buildingAvailability.buildings
+      : [],
+    [model.buildingAvailability],
+  );
   const initial: AreaExplorerState = Object.freeze({
     selectedSlug: resolveExploreSearchDistrict(
       model.districts,
@@ -76,6 +78,7 @@ function ReadyAreaExplorer({
   });
   const [state, dispatch] = useReducer(areaExplorerReducer, initial);
   const [selectedNeighborhood, setSelectedNeighborhood] = useState<string>('all');
+  const [selectedHousingType, setSelectedHousingType] = useState<string>('all');
   const [buildingQuery, setBuildingQuery] = useState(initialQuery);
   const [buildingSelection, dispatchBuildingSelection] = useReducer(
     buildingExplorerSelectionReducer,
@@ -93,9 +96,18 @@ function ReadyAreaExplorer({
   const neighborhoods = useMemo(() => [...new Map(districtBuildings.map((building) => [
     building.neighborhoodId, building.neighborhoodName,
   ] as const))], [districtBuildings]);
+  const housingTypes = useMemo(
+    () => [...new Set(districtBuildings.map(({ housingType }) => housingType))].sort(),
+    [districtBuildings],
+  );
   const filteredBuildings = useMemo(
-    () => filterExploreBuildings(districtBuildings, buildingQuery, selectedNeighborhood),
-    [buildingQuery, districtBuildings, selectedNeighborhood],
+    () => filterExploreBuildings(
+      districtBuildings,
+      buildingQuery,
+      selectedNeighborhood,
+      selectedHousingType,
+    ),
+    [buildingQuery, districtBuildings, selectedHousingType, selectedNeighborhood],
   );
   const visibleBuildings = useMemo(
     () => filteredBuildings.slice(0, visibleBuildingCount),
@@ -125,6 +137,7 @@ function ReadyAreaExplorer({
   const selectDistrict = useCallback((slug: string): void => {
     dispatch({ type: 'select', slug });
     setSelectedNeighborhood('all');
+    setSelectedHousingType('all');
     setBuildingQuery('');
     dispatchBuildingSelection({ type: 'clear_building' });
     setVisibleBuildingCount(10);
@@ -137,57 +150,83 @@ function ReadyAreaExplorer({
     dispatchBuildingSelection({ type: 'select_building', source: 'marker', buildingId });
   }, []);
 
+  const updateBuildingQuery = useCallback((query: string): void => {
+    setBuildingQuery(query);
+    setVisibleBuildingCount(10);
+    dispatchBuildingSelection({ type: 'clear_building' });
+    const resolvedSlug = resolveExploreSearchDistrict(
+      model.districts,
+      allBuildings,
+      query,
+      state.selectedSlug,
+    );
+    if (resolvedSlug !== state.selectedSlug) {
+      dispatch({ type: 'select', slug: resolvedSlug });
+      setSelectedNeighborhood('all');
+      setSelectedHousingType('all');
+    }
+  }, [allBuildings, model.districts, state.selectedSlug]);
+
   return (
     <section className={styles.explorer} aria-labelledby="area-explorer-heading">
       <header className={styles.hero}>
-        <p>{copy.heroEyebrow}</p>
-        <h1 id="area-explorer-heading">{copy.heroHeading}</h1>
-        <p>{copy.heroDescription}</p>
-        <Link
-          className={styles.rankingsLink}
-          href={localizedSeoulHref('/kr/seoul/rankings/', locale)}
-        >
+        <div>
+          <p>{copy.heroEyebrow}</p>
+          <h1 id="area-explorer-heading">{copy.heroHeading}</h1>
+          <p>{copy.heroDescription}</p>
+        </div>
+        <nav className={styles.transactionTabs} data-transaction-tabs="true" aria-label="Transaction type">
+          <Link href={localizedSeoulHref('/kr/seoul/explore/', locale)} aria-current="page">{locale === 'ko' ? '전세' : 'Jeonse'}</Link>
+          <span aria-disabled="true">{locale === 'ko' ? '월세' : 'Monthly rent'}</span>
+          <span aria-disabled="true">{locale === 'ko' ? '매매' : 'Sale'}</span>
+        </nav>
+        <Link className={styles.rankingsLink} href={localizedSeoulHref('/kr/seoul/rankings/', locale)}>
           {copy.rankingsLink}
         </Link>
       </header>
 
-      <section
-        className={styles.coverage}
-        data-coverage-panel="verified"
-        aria-labelledby="coverage-heading"
-      >
-        <div className={styles.coverageHeading}>
-          <p>{copy.coverageEyebrow}</p>
-          <h2 id="coverage-heading">{copy.coverageHeading}</h2>
+      <div className={styles.exploreToolbar}>
+        <div className={styles.buildingSearch} data-building-search="retained">
+          <label htmlFor="explore-building-query">
+            {locale === 'ko' ? '구·동·건물·유형 검색' : 'Search district, neighborhood, building or type'}
+          </label>
+          <span className={styles.visuallyHidden}>Search retained buildings</span>
+          <input
+            id="explore-building-query"
+            name="building-query"
+            type="search"
+            value={buildingQuery}
+            onChange={(event) => updateBuildingQuery(event.currentTarget.value)}
+            placeholder={locale === 'ko' ? '예: 강남구, 역삼동, 아파트' : 'Try Gangnam-gu, Yeoksam-dong or apartment'}
+          />
         </div>
-        <dl className={styles.coverageGrid}>
-          <div>
-            <dt>{copy.districtsPublished}</dt>
-            <dd>{model.coverage.districts.published} {copy.of} {model.coverage.districts.retained}</dd>
-          </div>
-          <div>
-            <dt>{copy.buildingsPublished}</dt>
-            <dd>{model.coverage.buildings.status === 'ready'
-              ? `${model.coverage.buildings.published} ${copy.of} ${model.coverage.buildings.retained}`
-              : copy.unavailable}</dd>
-          </div>
-          <div>
-            <dt>{copy.eligibleContracts}</dt>
-            <dd>{model.coverage.eligibleContracts} {copy.eligibleSuffix}</dd>
-          </div>
-        </dl>
-        <div className={styles.coverageLimits}>
-          <p>{model.coverage.unpublished.districtsBelowMinimum}{countSeparator}{copy.districtsBelowMinimum}</p>
-          {model.coverage.unpublished.retainedBuildingsBelowMinimum === null ? (
-            <p>{copy.buildingArtifactMissing}</p>
-          ) : (
-            <p>{model.coverage.unpublished.retainedBuildingsBelowMinimum}{countSeparator}{copy.retainedBuildingsBelowMinimum}</p>
-          )}
-          <p>{locale === 'ko'
-            ? copy.sourceCandidatesMissing
-            : model.coverage.unpublished.sourceBuildingCandidates.reason}</p>
+        <label className={styles.toolbarSelect}>
+          <span>{locale === 'ko' ? '지역' : 'District'}</span>
+          <select value={selected.slug} onChange={(event) => selectDistrict(event.currentTarget.value)}>
+            {model.districts.map((district) => (
+              <option value={district.slug} key={district.slug}>
+                {locale === 'ko' ? district.nameKo : district.nameEn}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className={styles.toolbarSelect}>
+          <span>{locale === 'ko' ? '건물 유형' : 'Building type'}</span>
+          <select
+            name="housing-type"
+            value={selectedHousingType}
+            onChange={(event) => { setSelectedHousingType(event.currentTarget.value); setVisibleBuildingCount(10); }}
+          >
+            <option value="all">{locale === 'ko' ? '전체 유형' : 'All types'}</option>
+            {housingTypes.map((housingType) => <option value={housingType} key={housingType}>{housingType}</option>)}
+          </select>
+        </label>
+        <div className={styles.toolbarStatus}>
+          <span>{locale === 'ko' ? '가격 게시 가능 건물' : 'Price-ready buildings'}</span>
+          <strong>{model.coverage.buildings.status === 'ready' ? model.coverage.buildings.published : '—'}</strong>
+          <small>{locale === 'ko' ? '전체 관측 건물 수가 아님' : 'Not the total observed inventory'}</small>
         </div>
-      </section>
+      </div>
 
       <div className={styles.workspace}>
         <section className={styles.mapPanel} aria-labelledby="area-map-heading">
@@ -320,28 +359,14 @@ function ReadyAreaExplorer({
                     >{name}</button>
                   ))}
                 </div>
-                <div className={styles.buildingSearch} data-building-search="retained">
-                  <label htmlFor="explore-building-query">
-                    {locale === 'ko' ? '보유 건물 검색' : 'Search retained buildings'}
-                  </label>
-                  <input
-                    id="explore-building-query"
-                    name="building-query"
-                    type="search"
-                    value={buildingQuery}
-                    onChange={(event) => {
-                      setBuildingQuery(event.currentTarget.value);
-                      setVisibleBuildingCount(10);
-                      dispatchBuildingSelection({ type: 'clear_building' });
-                    }}
-                    placeholder={locale === 'ko' ? '건물 또는 동 이름' : 'Building or neighborhood'}
-                  />
-                </div>
+                <p className={styles.resultSummary} aria-live="polite">
+                  {filteredBuildings.length} {locale === 'ko' ? '개 가격 게시 가능 건물' : 'price-ready buildings'}
+                </p>
                 {filteredBuildings.length === 0 ? (
                   <div className={styles.buildingEmpty} role="status">
                     <strong>{locale === 'ko' ? '일치하는 공개 건물이 없습니다.' : 'No retained building matches this search.'}</strong>
                     <span>{locale === 'ko' ? '검색어를 지우거나 다른 동을 선택하세요.' : 'Clear the query or choose another neighborhood.'}</span>
-                    <button type="button" onClick={() => setBuildingQuery('')}>
+                    <button type="button" onClick={() => updateBuildingQuery('')}>
                       {locale === 'ko' ? '검색 지우기' : 'Clear search'}
                     </button>
                   </div>
@@ -378,6 +403,39 @@ function ReadyAreaExplorer({
               </>
             )}
           </div>
+        </section>
+      </div>
+
+      <section
+        className={styles.coverage}
+        data-coverage-panel="verified"
+        aria-labelledby="coverage-heading"
+      >
+        <div className={styles.coverageHeading}>
+          <p>{copy.coverageEyebrow}</p>
+          <h2 id="coverage-heading">{copy.coverageHeading}</h2>
+        </div>
+        <dl className={styles.coverageGrid}>
+          <div><dt>{copy.districtsPublished}</dt><dd>{model.coverage.districts.published} {copy.of} {model.coverage.districts.retained}</dd></div>
+          <div>
+            <dt>{locale === 'ko' ? '가격 게시 가능 건물' : 'Price-ready buildings'}</dt>
+            <dd>{model.coverage.buildings.status === 'ready'
+              ? `${model.coverage.buildings.published} ${copy.of} ${model.coverage.buildings.retained}`
+              : copy.unavailable}</dd>
+          </div>
+          <div><dt>{copy.eligibleContracts}</dt><dd>{model.coverage.eligibleContracts} {copy.eligibleSuffix}</dd></div>
+        </dl>
+        <div className={styles.coverageLimits}>
+          <p>{model.coverage.unpublished.districtsBelowMinimum}{countSeparator}{copy.districtsBelowMinimum}</p>
+          {model.coverage.unpublished.retainedBuildingsBelowMinimum === null
+            ? <p>{copy.buildingArtifactMissing}</p>
+            : <p>{model.coverage.unpublished.retainedBuildingsBelowMinimum}{countSeparator}{copy.retainedBuildingsBelowMinimum}</p>}
+          <p>{locale === 'ko' ? copy.sourceCandidatesMissing : model.coverage.unpublished.sourceBuildingCandidates.reason}</p>
+          <p>{locale === 'ko' ? '이 수치는 전체 관측 건물 수가 아닙니다.' : 'Published cohorts are not the total observed building inventory.'}</p>
+        </div>
+      </section>
+
+      <section className={styles.completeTable} aria-labelledby="district-table-heading">
           <div className={styles.sectionHeading}>
             <p>{copy.completeTableEyebrow}</p>
             <h2 id="district-table-heading">{copy.completeTableHeading}</h2>
@@ -445,8 +503,7 @@ function ReadyAreaExplorer({
               </tbody>
             </table>
           </div>
-        </section>
-      </div>
+      </section>
 
       <PublicSourceBoundary model={model.source} locale={locale} />
     </section>
@@ -530,7 +587,6 @@ export function AreaExplorer({
 }>) {
   return (
     <>
-      <PublicSectionTabs current="explore" locale={locale} />
       {model.status === 'ready'
         ? (
           <ReadyAreaExplorer

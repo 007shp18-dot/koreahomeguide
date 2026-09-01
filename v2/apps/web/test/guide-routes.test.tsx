@@ -56,8 +56,6 @@ describe('Korea methodology guides', () => {
       expect(html).toContain(entry.term);
       expect(html).toContain(entry.whyItMatters);
     }
-    expect(html).toContain('data-public-tab="news"');
-    expect(html).toContain('href="/kr/seoul/news"');
     expect(html).toContain('href="/kr/seoul/check"');
     expect(html).not.toMatch(/data-guide-stage="(?:Buy|Invest)"/);
   });

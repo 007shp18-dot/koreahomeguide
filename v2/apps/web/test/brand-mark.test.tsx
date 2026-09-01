@@ -64,4 +64,23 @@ describe('SignedPrice brand mark', () => {
     expect(globalHeader.match(/<path\b/g)).toHaveLength(3);
     expect(contractHeader.match(/<path\b/g)).toHaveLength(3);
   });
+
+  test('renders market context above five numbered product destinations', () => {
+    const html = renderToStaticMarkup(<SiteHeader copy={{
+      ...headerCopy,
+      links: [{ label: 'Explore', href: '/kr/seoul/explore/', isCurrent: true }],
+    }} />);
+
+    expect(html).toContain('data-navigation-tier="market"');
+    expect(html).toContain('data-navigation-tier="product"');
+    expect(html).toContain('aria-label="Market navigation"');
+    expect(html).toContain('>Seoul<');
+    expect(html).toContain('>Singapore<');
+    expect(html).toContain('>Dubai<');
+    expect(html.match(/data-product-index=/g)).toHaveLength(5);
+    expect(html).toContain('data-product-index="01"');
+    expect(html).toContain('data-product-index="05"');
+    expect(html).toContain('href="/kr/seoul/rankings"');
+    expect(html).toMatch(/<a[^>]+aria-current="page"[^>]+href="\/kr\/seoul\/explore"/);
+  });
 });

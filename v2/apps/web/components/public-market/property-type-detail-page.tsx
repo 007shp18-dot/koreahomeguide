@@ -15,7 +15,6 @@ import { PublicBreadcrumbJsonLd } from '../public-json-ld';
 import { SiteFooter } from '../site-footer';
 import { SiteHeader } from '../site-header';
 import { BoxPlot } from './box-plot';
-import { PublicSectionTabs } from './public-section-tabs';
 import styles from './property-type-detail-page.module.css';
 
 const config = getPublicMarketConfig('kr-seoul');
@@ -94,7 +93,6 @@ export function PropertyTypeDetailPage({
   return (
     <div id="top" className={styles.page} data-property-type-detail={model.propertyType.slug}>
       <SiteHeader copy={headerFor(model)} />
-      <PublicSectionTabs current="explore" />
       <main className={styles.main}>
         <nav className={styles.breadcrumb} aria-label="Breadcrumb">
           <ol>

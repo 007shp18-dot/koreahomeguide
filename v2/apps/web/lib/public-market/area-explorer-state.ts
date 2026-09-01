@@ -27,12 +27,14 @@ export function filterExploreBuildings(
   buildings: readonly ExploreBuildingModel[],
   query: string,
   neighborhoodId: string,
+  housingType = 'all',
 ): readonly ExploreBuildingModel[] {
   const normalizedQuery = query.trim().toLocaleLowerCase('en-US');
   return buildings.filter((building) => {
     if (neighborhoodId !== 'all' && building.neighborhoodId !== neighborhoodId) return false;
+    if (housingType !== 'all' && building.housingType !== housingType) return false;
     if (normalizedQuery.length === 0) return true;
-    return [building.name, building.neighborhoodName]
+    return [building.name, building.neighborhoodName, building.housingType]
       .some((value) => value.toLocaleLowerCase('en-US').includes(normalizedQuery));
   });
 }

@@ -59,11 +59,11 @@ describe('public building detail', () => {
   it('renders shared product navigation and URL-backed decision tabs', () => {
     const header = renderToStaticMarkup(<BuildingDetailHeader />);
     expect(header).toContain('aria-label="signedprice home"');
-    for (const label of ['Check', 'Explore', 'Briefs', 'Guide']) {
-      expect(header).toContain(`>${label}</a>`);
+    for (const label of ['Check', 'Explore', 'Rankings', 'Briefs', 'Guide']) {
+      expect(header).toContain(`>${label}</strong>`);
     }
-    expect(header).toMatch(/<a[^>]*aria-current="page"[^>]*>Explore<\/a>/);
-    expect(header).not.toMatch(/Singapore|Dubai/);
+    expect(header).toMatch(/<a[^>]*aria-current="page"[^>]*>[\s\S]*?<strong>Explore<\/strong>/);
+    expect(header).toMatch(/Singapore|Dubai/);
 
     const tabs = renderToStaticMarkup(
       <BuildingDecisionTabs

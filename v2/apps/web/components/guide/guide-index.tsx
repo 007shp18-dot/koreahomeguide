@@ -4,7 +4,6 @@ import {
   GUIDES,
   GUIDE_GLOSSARY,
 } from '../../lib/guide/guide-content';
-import { PublicSectionTabs } from '../public-market/public-section-tabs';
 import styles from './guide.module.css';
 
 const guideStages = Object.freeze(
@@ -17,7 +16,6 @@ const guideStages = Object.freeze(
 export function GuideIndex() {
   return (
     <>
-      <PublicSectionTabs current="guide" />
       <main className={styles.main}>
         <header className={styles.hero}>
           <p>Seoul · Decision methodology</p>

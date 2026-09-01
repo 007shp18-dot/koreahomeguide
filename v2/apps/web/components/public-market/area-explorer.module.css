@@ -15,15 +15,16 @@
 }
 
 .hero {
-  min-height: 230px;
-  padding: clamp(2rem, 5vw, 4rem);
+  min-height: 126px;
+  padding: 1.25rem clamp(1rem, 3vw, 2.5rem);
   display: grid;
-  align-content: end;
-  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 1.5rem;
   border-bottom: 2px solid var(--area-ink);
 }
 
-.hero > p:first-child,
+.hero > div > p:first-child,
 .sectionHeading > p {
   color: var(--area-accent);
   font-size: 0.68rem;
@@ -34,17 +35,103 @@
 
 .hero h1 {
   max-width: 760px;
-  font-size: clamp(2.6rem, 5vw, 5rem);
+  margin-top: .35rem;
+  font-size: clamp(1.75rem, 3vw, 3rem);
   font-weight: 900;
   letter-spacing: -0.065em;
   line-height: 0.9;
 }
 
-.hero > p:nth-of-type(2) {
+.hero > div > p:last-child {
   max-width: 720px;
+  margin-top: .5rem;
   color: var(--area-muted);
   font-size: 0.86rem;
   line-height: 1.6;
+}
+
+.transactionTabs {
+  display: flex;
+  border: 1px solid var(--area-ink);
+}
+
+.transactionTabs a,
+.transactionTabs span {
+  min-height: 44px;
+  padding-inline: .9rem;
+  display: inline-flex;
+  align-items: center;
+  border-right: 1px solid var(--area-ink);
+  color: var(--area-ink);
+  font-size: .68rem;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.transactionTabs > :last-child { border-right: 0; }
+.transactionTabs a[aria-current="page"] { color: var(--area-ground); background: var(--area-ink); }
+.transactionTabs span[aria-disabled="true"] { color: var(--area-muted); background: var(--surface); cursor: not-allowed; }
+
+.exploreToolbar {
+  position: sticky;
+  top: 100px;
+  z-index: 12;
+  min-width: 0;
+  padding: .75rem clamp(1rem, 3vw, 2.5rem);
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) minmax(150px, .28fr) minmax(150px, .28fr) auto;
+  align-items: end;
+  gap: .75rem;
+  border-bottom: 2px solid var(--area-ink);
+  background: color-mix(in srgb, var(--area-ground) 96%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+.toolbarSelect,
+.toolbarStatus {
+  min-width: 0;
+  display: grid;
+  gap: .4rem;
+}
+
+.toolbarSelect > span,
+.toolbarStatus > span,
+.resultSummary {
+  color: var(--area-muted);
+  font-size: .62rem;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.toolbarSelect select {
+  width: 100%;
+  min-height: 46px;
+  padding-inline: .7rem;
+  border: 1px solid var(--area-ink);
+  border-radius: 0;
+  color: var(--area-ink);
+  background: var(--surface-strong);
+  font: inherit;
+  font-size: .72rem;
+}
+
+.toolbarStatus {
+  min-width: 170px;
+  padding: .25rem .75rem;
+  border-left: 2px solid var(--area-ink);
+}
+
+.toolbarStatus strong { font-size: 1.3rem; line-height: 1; }
+.toolbarStatus small { color: var(--area-muted); font-size: .58rem; }
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
 }
 
 .rankingsLink {
@@ -146,7 +233,8 @@
 .workspace {
   min-width: 0;
   display: grid;
-  grid-template-columns: minmax(0, 1.62fr) minmax(340px, .85fr);
+  grid-template-columns: minmax(0, 65fr) minmax(340px, 35fr);
+  min-height: min(760px, calc(100dvh - 100px));
   border-bottom: 2px solid var(--area-ink);
 }
 
@@ -321,7 +409,7 @@
 }
 
 .rail {
-  max-height: calc(100dvh - 64px);
+  max-height: min(760px, calc(100dvh - 100px));
   overflow-y: auto;
   overscroll-behavior: contain;
   border-left: 2px solid var(--area-ink);
@@ -337,10 +425,14 @@
   letter-spacing: -0.045em;
 }
 
-.rail > .sectionHeading {
+.completeTable > .sectionHeading {
   min-height: 104px;
   padding: 1.1rem;
   align-content: center;
+  border-bottom: 2px solid var(--area-ink);
+}
+
+.completeTable {
   border-bottom: 2px solid var(--area-ink);
 }
 
@@ -619,12 +711,32 @@
 
 @media (max-width: 720px) {
   .hero {
-    min-height: 260px;
-    padding: 2rem 1rem;
+    min-height: 0;
+    padding: 1.25rem 1rem;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
   }
+
+  .hero h1 { font-size: 2rem; }
+  .transactionTabs { width: 100%; overflow-x: auto; }
+  .transactionTabs a,
+  .transactionTabs span { flex: 1 0 auto; justify-content: center; }
+  .rankingsLink { width: 100%; }
+
+  .exploreToolbar {
+    position: relative;
+    top: auto;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    padding: .75rem 1rem;
+  }
+
+  .buildingSearch,
+  .toolbarStatus { grid-column: 1 / -1; }
+  .toolbarStatus { border-top: 1px solid var(--area-ink); border-left: 0; padding: .65rem 0 0; }
 
   .workspace {
     grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
   }
 
   .coverage {

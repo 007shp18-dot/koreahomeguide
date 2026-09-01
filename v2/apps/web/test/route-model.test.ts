@@ -364,7 +364,7 @@ describe('real route rendering contracts', () => {
 
     expect(markup).toContain('>This route is not available.</h1>');
     expect(markup).toContain('>Return to signedprice home</span>');
-    expect(markup).not.toMatch(/Singapore|Dubai/i);
+    expect(markup).toContain('aria-label="Market navigation"');
     expect(markup).not.toMatch(unsupportedClaimPattern);
   });
 });
