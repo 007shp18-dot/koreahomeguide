@@ -28,8 +28,11 @@ const districts = [{
 }] as const;
 
 describe('NAVER district map', () => {
-  it('loads the official Maps v3 endpoint with an encoded ncpKeyId', () => {
+  it('loads the official Maps v3 endpoint without geocoding by default', () => {
     expect(buildNaverMapsScriptUrl('client/id + value')).toBe(
+      'https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=client%2Fid+%2B+value',
+    );
+    expect(buildNaverMapsScriptUrl('client/id + value', true)).toBe(
       'https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=client%2Fid+%2B+value&submodules=geocoder',
     );
   });
@@ -45,7 +48,24 @@ describe('NAVER district map', () => {
     expect(html).toContain('data-map-state="loading"');
     expect(html).toContain('Static Seoul district map');
     expect(html).toContain('ncpKeyId=test-client-id');
+    expect(html).not.toContain('submodules=geocoder');
     expect(html).toContain('aria-label="Interactive NAVER map of Seoul districts"');
+  });
+
+  it('loads the geocoder submodule only for explicitly permitted address lookup', () => {
+    const html = renderToStaticMarkup(createElement(NaverDistrictMap, {
+      clientId: 'test-client-id',
+      districts,
+      selectedDistrict: districts[0],
+      buildings: [{
+        id: 'pending', title: 'Pending Tower', href: '/pending/',
+        addressQuery: '서울특별시 종로구 Pending Tower', latitude: null, longitude: null,
+        allowAddressGeocoding: true,
+      }],
+      fallback: createElement('p', null, 'Static Seoul district map'),
+    }));
+
+    expect(html).toContain('submodules=geocoder');
   });
 
   it('does not request NAVER when a client ID is unavailable', () => {

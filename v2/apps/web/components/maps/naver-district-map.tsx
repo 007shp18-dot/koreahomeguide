@@ -98,10 +98,13 @@ type MountNaverDistrictMapOptions = NaverDistrictMapUpdate & Readonly<{
   element: HTMLElement;
 }>;
 
-export function buildNaverMapsScriptUrl(clientId: string): string {
+export function buildNaverMapsScriptUrl(
+  clientId: string,
+  includeGeocoder = false,
+): string {
   const url = new URL('https://oapi.map.naver.com/openapi/v3/maps.js');
   url.searchParams.set('ncpKeyId', clientId);
-  url.searchParams.set('submodules', 'geocoder');
+  if (includeGeocoder) url.searchParams.set('submodules', 'geocoder');
   return url.toString();
 }
 
@@ -391,7 +394,10 @@ export function NaverDistrictMap({
         {fallback}
       </div>
       <Script
-        src={buildNaverMapsScriptUrl(clientId)}
+        src={buildNaverMapsScriptUrl(
+          clientId,
+          buildings?.some(({ allowAddressGeocoding }) => allowAddressGeocoding === true) ?? false,
+        )}
         strategy="afterInteractive"
         onReady={initialize}
         onError={failClosed}
