@@ -1,13 +1,6 @@
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 
-import { PublicMarketPage } from '../../../components/public-market/public-market-page';
-import {
-  buildKoreaPublicPageMetadata,
-  buildKoreaPublicRouteModel,
-} from '../../../lib/public-market/route-model.server';
-import { PublicSummaryUnavailableError } from '../../../lib/public-market/summary-repository.server';
-import { SeoulLive } from '../../../components/public-market/seoul-live';
-import { buildSeoulLiveModel } from '../../../lib/public-market/seoul-live-model.server';
+import { buildKoreaPublicPageMetadata } from '../../../lib/public-market/route-model.server';
 
 type KoreaAreaPageProps = Readonly<{
   params: Promise<Readonly<{ area: string }>>;
@@ -21,32 +14,12 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: KoreaAreaPageProps) {
   const { area } = await params;
-  let model;
-  try {
-    model = buildKoreaPublicRouteModel(area);
-  } catch (error) {
-    if (error instanceof PublicSummaryUnavailableError) notFound();
-    throw error;
-  }
-  if (model === null) notFound();
+  if (area !== 'seoul') notFound();
   return buildKoreaPublicPageMetadata('/kr/seoul/');
 }
 
 export default async function KoreaAreaPage({ params }: KoreaAreaPageProps) {
   const { area } = await params;
-  let model;
-  try {
-    model = buildKoreaPublicRouteModel(area);
-  } catch (error) {
-    if (error instanceof PublicSummaryUnavailableError) notFound();
-    throw error;
-  }
-  if (model === null) notFound();
-  return (
-    <PublicMarketPage
-      mode="area"
-      {...model}
-      entry={<SeoulLive model={buildSeoulLiveModel()} mode="seoul" />}
-    />
-  );
+  if (area !== 'seoul') notFound();
+  redirect('/kr/seoul/explore/');
 }
