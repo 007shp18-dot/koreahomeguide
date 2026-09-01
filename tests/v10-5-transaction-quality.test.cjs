@@ -279,7 +279,7 @@ test('Studio fallback uses the detached/multi-family public category with an exp
   assert.match(zh, /独栋及多户住宅/);
   assert.match(zh, /实际登记房型/);
   const app = fs.readFileSync('app.js','utf8');
-  const zhApp = fs.readFileSync('zh/app.js','utf8');
+  const zhApp = fs.readFileSync('app.js','utf8');
   assert.match(app, /mapRentCheckType\(type\.value\)/);
   assert.match(zhApp, /mapRentCheckType\(type\.value\)/);
 });

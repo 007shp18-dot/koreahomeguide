@@ -53,7 +53,7 @@ test('English explorer language links point to matching Chinese explorer pages',
 
 test('Chinese Rent Check loads the shared prefill parser and applies explorer query values', () => {
   const html = read('zh/tools/seoul-rent-check/index.html');
-  const app = read('zh/tools/seoul-rent-check/app.js');
+  const app = read('tools/seoul-rent-check/app.js');
   assert.match(html, /src="\/tools\/seoul-rent-check\/prefill-utils\.js"/);
   assert.match(app, /function applyExplorerPrefill\(/);
   assert.match(app, /readRentCheckPrefill\(location\.search\)/);

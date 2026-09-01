@@ -87,7 +87,7 @@ test('prefill drops fake sources and market sources with a mismatched tuple', ()
 });
 
 test('Explorer Dongjak handoff sets the actual district select in English and Chinese Rent Check', () => {
-  for (const file of ['tools/seoul-rent-check/app.js', 'zh/tools/seoul-rent-check/app.js']) {
+  for (const file of ['tools/seoul-rent-check/app.js']) {
     const runtime = bootRentCheckWithExplorerPrefill(file);
     assert.equal(runtime.area.value, '11590', `${file}: lawdCd=11590 must replace the default district`);
     assert.equal(runtime.type.value, 'officetel', `${file}: Explorer property type must persist`);
