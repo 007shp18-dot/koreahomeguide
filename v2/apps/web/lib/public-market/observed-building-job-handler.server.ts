@@ -72,7 +72,7 @@ export function createObservedBuildingRunnerPage(environment: string | undefined
   </style>
 </head>
 <body>
-  <main data-observed-building-runner data-runner-version="2">
+  <main data-observed-building-runner data-runner-version="3">
     <h1>Observed building inventory</h1>
     <p>Preview-only runner. The bearer token stays in this browser session and is sent only to the same-origin internal endpoint.</p>
     <label for="token">Preview job token</label>
