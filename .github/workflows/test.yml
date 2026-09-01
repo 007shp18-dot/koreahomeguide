@@ -1,4 +1,4 @@
-name: Test
+name: Runtime asset contract
 
 on:
   push:
@@ -13,11 +13,11 @@ permissions:
   contents: read
 
 concurrency:
-  group: test-${{ github.ref }}
+  group: runtime-assets-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  test:
+  runtime-assets:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -28,7 +28,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - name: Install dependencies
+      - name: Install root dependencies
         run: npm ci --ignore-scripts --no-audit --no-fund
-      - name: Run tests
-        run: npm test
+      - name: Verify shared runtime assets
+        run: npm run test:runtime-assets
