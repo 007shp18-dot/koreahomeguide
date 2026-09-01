@@ -6,6 +6,10 @@ import { SEOUL_RENT_CHECK_DISTRICTS } from '@signedprice/korea-rent/browser';
 import { DistrictDetailPage } from '../../../../../components/public-market/district-detail-page';
 import { buildPublicDistrictModel } from '../../../../../lib/public-market/area-route-model.server';
 import { buildDistrictMetadata } from '../../../../../lib/public-market/district-metadata';
+import {
+  buildPublicPropertyTypeModel,
+  listPublicPropertyTypeRouteParams,
+} from '../../../../../lib/public-market/property-type-route-model.server';
 
 type NestedDistrictPageProps = Readonly<{
   params: Promise<Readonly<{ district: string }>>;
@@ -41,5 +45,11 @@ export default async function NestedDistrictPage({
     singleValue(query.contract),
   );
   if (model === null) notFound();
-  return <DistrictDetailPage model={model} />;
+  const propertyTypes = listPublicPropertyTypeRouteParams()
+    .filter(({ district: routeDistrict }) => routeDistrict === model.identity.slug)
+    .flatMap(({ district: routeDistrict, propertyType }) => {
+      const propertyModel = buildPublicPropertyTypeModel(routeDistrict, propertyType);
+      return propertyModel === null ? [] : [propertyModel.propertyType];
+    });
+  return <DistrictDetailPage model={model} propertyTypes={propertyTypes} />;
 }

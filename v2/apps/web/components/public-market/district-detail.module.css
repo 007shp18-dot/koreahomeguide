@@ -129,12 +129,40 @@
 .evidence,
 .faq,
 .buildingEvidence,
+.propertyTypeEvidence,
 .source,
 .unavailable {
   padding: clamp(1rem, 4vw, 3.5rem);
   display: grid;
   gap: 1.5rem;
   border-bottom: 2px solid var(--district-ink);
+}
+
+.propertyTypeList {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 2px solid var(--district-ink);
+  border-left: 2px solid var(--district-ink);
+  list-style: none;
+}
+
+.propertyTypeList a {
+  min-height: 64px;
+  padding: 1rem;
+  display: grid;
+  place-items: center;
+  border-right: 2px solid var(--district-ink);
+  border-bottom: 2px solid var(--district-ink);
+  color: var(--district-ink);
+  font-size: 0.8rem;
+  font-weight: 850;
+  text-align: center;
+  text-decoration: none;
+}
+
+.propertyTypeList a:hover {
+  color: var(--district-ground);
+  background: var(--district-accent);
 }
 
 .buildingList {

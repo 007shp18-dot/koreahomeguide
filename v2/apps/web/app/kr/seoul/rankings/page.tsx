@@ -4,6 +4,7 @@ import { DistrictRankings } from '../../../../components/public-market/district-
 import { PublicSectionTabs } from '../../../../components/public-market/public-section-tabs';
 import { SiteFooter } from '../../../../components/site-footer';
 import { SiteHeader } from '../../../../components/site-header';
+import { PublicBreadcrumbJsonLd } from '../../../../components/public-json-ld';
 import { buildPublicAreaRankingsModel } from '../../../../lib/public-market/rankings-route-model.server';
 import {
   KOREA_PUBLIC_RELEASE_STATUS,
@@ -56,6 +57,11 @@ export default function RankingsPage() {
       <main>
         <DistrictRankings model={model} />
       </main>
+      <PublicBreadcrumbJsonLd items={[
+        { name: 'Home', path: '/' },
+        { name: 'Seoul', path: '/kr/seoul/' },
+        { name: 'Rankings', path: '/kr/seoul/rankings/' },
+      ]} />
       <SiteFooter copy={footer} />
     </div>
   );

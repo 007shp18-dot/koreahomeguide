@@ -124,7 +124,7 @@ describe('signedprice homepage copy', () => {
     ];
     expect(buildSeoulLiveModel().links.map(({ href }) => href)).toEqual(seoulHrefs);
     for (const href of seoulHrefs) {
-      expect(markup).toContain(`href="${href.slice(0, -1)}"`);
+      expect(markup).toContain(`href="${href}"`);
     }
     expect(markup).not.toMatch(/href="\/(?:sg|ae)\//);
 
@@ -152,11 +152,11 @@ describe('signedprice homepage copy', () => {
     expect(markup).toContain('New contracts');
     expect(markup).toContain('Renewals');
     for (const href of [
-      '/kr/seoul/check',
-      '/kr/seoul/explore',
-      '/kr/seoul/rankings',
-      '/kr/seoul/news',
-      '/kr/seoul/guide',
+      '/kr/seoul/check/',
+      '/kr/seoul/explore/',
+      '/kr/seoul/rankings/',
+      '/kr/seoul/news/',
+      '/kr/seoul/guide/',
     ]) {
       expect(markup).toContain(`href="${href}"`);
     }

@@ -6,62 +6,75 @@ import { buildNewsIndexModel } from '../lib/news/news-route-model.server';
 import { publicCanonical } from '../lib/public-metadata';
 import { buildKoreaPublicRouteModel } from '../lib/public-market/route-model.server';
 import { buildPublicAreaExploreModel } from '../lib/public-market/area-route-model.server';
+import {
+  listSignedPricePropertyTypeRoutes,
+  signedPricePublicRouteRegistry,
+} from '../lib/seo/public-route-registry.server';
 import { operatorProfileFromEnvironment } from '../lib/operator/operator-profile.server';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const paths: `/${string}`[] = [
-    '/',
-    '/compare/',
-    '/trust/',
-    '/kr/seoul/check/',
-  ];
+  let summaryReady = false;
   try {
     if (buildKoreaPublicRouteModel('seoul')?.summary.published === true) {
-      paths.push('/kr/seoul/', '/kr/check/seoul/');
+      summaryReady = true;
     }
   } catch {
     // Evidence-dependent routes stay out of the sitemap when validation fails.
   }
   const area = buildPublicAreaExploreModel(undefined);
-  if (area.status === 'ready') {
-    paths.push(
-      '/kr/seoul/explore/',
-      '/kr/seoul/rankings/',
-      '/ko/kr/seoul/explore/',
-      '/ko/kr/seoul/rankings/',
-    );
-    paths.push(...area.districts.flatMap((district) => district.summary.published
-      ? [`/kr/seoul/explore/${district.slug}/` as const]
-      : []));
-  }
-  const entries: MetadataRoute.Sitemap = paths.map((path) => ({
-    url: publicCanonical(path),
-  }));
-  if (operatorProfileFromEnvironment().status === 'ready') {
-    entries.push(
-      { url: publicCanonical('/privacy/') },
-      { url: publicCanonical('/contact/') },
-    );
-  }
+  let newsRecords: ReturnType<typeof buildNewsIndexModel>['records'] = [];
+  let newsReady = false;
   try {
-    const news = buildNewsIndexModel();
-    entries.push({ url: publicCanonical('/kr/seoul/news/') });
-    entries.push(...news.records.map((record) => ({
-      url: publicCanonical(`/kr/seoul/news/${record.slug}/`),
-      lastModified: new Date(record.updatedAt ?? record.publishedAt),
-    })));
+    newsRecords = buildNewsIndexModel().records;
+    newsReady = true;
   } catch {
     // Strict News records stay out if their repository cannot be validated.
   }
-  entries.push(
-    { url: publicCanonical('/kr/seoul/guide/') },
-    ...GUIDES.map(({ slug }) => ({
-      url: publicCanonical(`/kr/seoul/guide/${slug}/`),
-    })),
-  );
-  entries.push(
-    { url: publicCanonical('/ko/kr/seoul/') },
-    { url: publicCanonical('/ko/kr/seoul/check/') },
-  );
+  const paths = signedPricePublicRouteRegistry.listSitemapPaths({
+    summaryReady,
+    areaReady: area.status === 'ready',
+    newsReady,
+  });
+  const entries: MetadataRoute.Sitemap = [];
+  const operatorReady = operatorProfileFromEnvironment().status === 'ready';
+  let operatorAdded = false;
+  for (const path of paths) {
+    if (
+      operatorReady
+      && !operatorAdded
+      && (path === '/kr/seoul/news/' || path === '/kr/seoul/guide/')
+    ) {
+      entries.push(
+        { url: publicCanonical('/privacy/') },
+        { url: publicCanonical('/contact/') },
+      );
+      operatorAdded = true;
+    }
+    entries.push({ url: publicCanonical(path as `/${string}`) });
+    if (path === '/ko/kr/seoul/rankings/' && area.status === 'ready') {
+      const publishedDistricts = new Set<string>(area.districts.flatMap((district) => (
+        district.summary.published ? [district.slug] : []
+      )));
+      entries.push(...area.districts.flatMap((district) => district.summary.published
+        ? [{ url: publicCanonical(`/kr/seoul/explore/${district.slug}/`) }]
+        : []));
+      entries.push(...listSignedPricePropertyTypeRoutes().flatMap((route) => (
+        publishedDistricts.has(route.path.split('/')[4] ?? '')
+          ? [{ url: publicCanonical(route.path as `/${string}`) }]
+          : []
+      )));
+    }
+    if (path === '/kr/seoul/news/') {
+      entries.push(...newsRecords.map((record) => ({
+        url: publicCanonical(`/kr/seoul/news/${record.slug}/`),
+        lastModified: new Date(record.updatedAt ?? record.publishedAt),
+      })));
+    }
+    if (path === '/kr/seoul/guide/') {
+      entries.push(...GUIDES.map(({ slug }) => ({
+        url: publicCanonical(`/kr/seoul/guide/${slug}/`),
+      })));
+    }
+  }
   return entries;
 }

@@ -4,6 +4,7 @@ import { preload } from "react-dom";
 import { AdvertisingConsent } from "../components/consent/advertising-consent";
 import { advertisingConfigFromEnvironment } from "../lib/advertising/advertising-config.server";
 import { homepageCopy } from "../lib/site-copy";
+import { PublicSiteJsonLd } from "../components/public-json-ld";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -23,6 +24,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en">
       <body>
         {children}
+        <PublicSiteJsonLd />
         {advertising.status === "ready" ? (
           <AdvertisingConsent publisherId={advertising.publisherId} />
         ) : null}

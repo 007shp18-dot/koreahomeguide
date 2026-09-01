@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { AreaExplorer } from '../../../../components/public-market/area-explorer';
 import { SiteFooter } from '../../../../components/site-footer';
 import { SiteHeader } from '../../../../components/site-header';
+import { PublicBreadcrumbJsonLd } from '../../../../components/public-json-ld';
 import { buildPublicAreaExploreModel } from '../../../../lib/public-market/area-route-model.server';
 import {
   KOREA_PUBLIC_RELEASE_STATUS,
@@ -68,6 +69,11 @@ export default async function ExplorerPage({ searchParams }: ExplorerPageProps) 
       <main>
         <AreaExplorer model={model} naverMapClientId={naverMapClientId} />
       </main>
+      <PublicBreadcrumbJsonLd items={[
+        { name: 'Home', path: '/' },
+        { name: 'Seoul', path: '/kr/seoul/' },
+        { name: 'Explore', path: '/kr/seoul/explore/' },
+      ]} />
       <SiteFooter copy={footer} />
     </div>
   );

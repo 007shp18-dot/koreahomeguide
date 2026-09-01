@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { type KeyboardEvent, useState } from 'react';
 
 import type { SeoulLiveModel } from '../lib/public-market/seoul-live-model.server';
@@ -48,13 +47,13 @@ function MarketProduct({
 
   if (href !== undefined) {
     return (
-      <Link
+      <a
         className="market-product market-product--available"
         href={href}
         aria-label={`${slot.label} ${cityName}`}
       >
         {contents}
-      </Link>
+      </a>
     );
   }
 

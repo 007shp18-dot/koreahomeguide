@@ -2,6 +2,7 @@ import { getPublicMarketConfig } from '@signedprice/market-core';
 import Link from 'next/link';
 
 import type { PublicDistrictModel } from '../../lib/public-market/area-route-types';
+import type { PublicPropertyTypeIdentity } from '../../lib/public-market/property-type-route-types';
 import {
   KOREA_PUBLIC_RELEASE_STATUS,
   type SiteFooterModel,
@@ -124,6 +125,33 @@ function BuildingEvidence({ model }: Readonly<{ model: PublicDistrictModel }>) {
   );
 }
 
+function PropertyTypeEvidence({
+  model,
+  propertyTypes,
+}: Readonly<{
+  model: PublicDistrictModel;
+  propertyTypes: readonly PublicPropertyTypeIdentity[];
+}>) {
+  if (propertyTypes.length === 0) return null;
+  return (
+    <section className={styles.propertyTypeEvidence} aria-labelledby="property-type-evidence-heading">
+      <div className={styles.sectionHeading}>
+        <p>Property type evidence</p>
+        <h2 id="property-type-evidence-heading">Published evidence by home type</h2>
+      </div>
+      <ul className={styles.propertyTypeList}>
+        {propertyTypes.map((propertyType) => (
+          <li key={propertyType.slug}>
+            <a href={`/kr/seoul/explore/${model.identity.slug}/${propertyType.slug}/`}>
+              {propertyType.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 function Faq({ model }: Readonly<{
   model: Extract<PublicDistrictModel, { status: 'published' | 'withheld' }>;
 }>) {
@@ -231,7 +259,13 @@ function Evidence({ model }: Readonly<{ model: PublicDistrictModel }>) {
   );
 }
 
-export function DistrictDetailPage({ model }: Readonly<{ model: PublicDistrictModel }>) {
+export function DistrictDetailPage({
+  model,
+  propertyTypes = [],
+}: Readonly<{
+  model: PublicDistrictModel;
+  propertyTypes?: readonly PublicPropertyTypeIdentity[];
+}>) {
   return (
     <div id="top" className={styles.page} data-district-detail={model.status}>
       <SiteHeader copy={headerFor(model)} />
@@ -243,6 +277,7 @@ export function DistrictDetailPage({ model }: Readonly<{ model: PublicDistrictMo
           <div className={styles.detailMain} data-detail-main="true">
             <DistrictEvidenceSummary model={model.contractEvidence} mode="full" />
             <Evidence model={model} />
+            <PropertyTypeEvidence model={model} propertyTypes={propertyTypes} />
             <BuildingEvidence model={model} />
             {model.status === 'unavailable' ? null : <Faq model={model} />}
             <PublicSourceBoundary model={model.source} />

@@ -1,0 +1,261 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-01T01:15:56.720Z",
+  "generatedFrom": {
+    "artifactVersion": "signedprice-public-building-summary-v2",
+    "artifactSha256": "634f0cc1c07fb82fb78580277d428cde988d20b57a6730e68d7eb2fae6b85574",
+    "period": "2026-01/2026-07"
+  },
+  "entries": [
+    {
+      "sourcePath": "/explore/",
+      "targetPath": "/kr/seoul/explore/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/",
+      "cohort": 1,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "cohort-0-target-ready"
+    },
+    {
+      "sourcePath": "/tools/seoul-rent-check/",
+      "targetPath": "/kr/seoul/check/",
+      "destination": "https://www.signedprice.com/kr/seoul/check/",
+      "cohort": 1,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "cohort-0-target-ready"
+    },
+    {
+      "sourcePath": "/rent/dongdaemun-gu/apartment/",
+      "targetPath": "/kr/seoul/explore/dongdaemun-gu/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/dongdaemun-gu/apartment/",
+      "cohort": 2,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "retained-building-artifact:47-contracts"
+    },
+    {
+      "sourcePath": "/rent/dongdaemun-gu/officetel/",
+      "targetPath": "/kr/seoul/explore/dongdaemun-gu/officetel/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/dongdaemun-gu/officetel/",
+      "cohort": 2,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "retained-building-artifact:19-contracts"
+    },
+    {
+      "sourcePath": "/rent/gangnam-gu/apartment/",
+      "targetPath": "/kr/seoul/explore/gangnam-gu/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/gangnam-gu/apartment/",
+      "cohort": 2,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "retained-building-artifact:176-contracts"
+    },
+    {
+      "sourcePath": "/rent/gangnam-gu/officetel/",
+      "targetPath": "/kr/seoul/explore/gangnam-gu/officetel/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/gangnam-gu/officetel/",
+      "cohort": 2,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "retained-building-artifact:8-contracts"
+    },
+    {
+      "sourcePath": "/rent/gangnam-gu/villa/",
+      "targetPath": "/kr/seoul/explore/gangnam-gu/villa/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/gangnam-gu/villa/",
+      "cohort": 2,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "retained-building-artifact:6-contracts"
+    },
+    {
+      "sourcePath": "/rent/gwanak-gu/apartment/",
+      "targetPath": "/kr/seoul/explore/gwanak-gu/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/gwanak-gu/apartment/",
+      "cohort": 2,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "retained-building-artifact:15-contracts"
+    },
+    {
+      "sourcePath": "/rent/gwangjin-gu/apartment/",
+      "targetPath": "/kr/seoul/explore/gwangjin-gu/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/gwangjin-gu/apartment/",
+      "cohort": 2,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "retained-building-artifact:17-contracts"
+    },
+    {
+      "sourcePath": "/rent/mapo-gu/apartment/",
+      "targetPath": "/kr/seoul/explore/mapo-gu/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/mapo-gu/apartment/",
+      "cohort": 2,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "retained-building-artifact:82-contracts"
+    },
+    {
+      "sourcePath": "/rent/mapo-gu/officetel/",
+      "targetPath": "/kr/seoul/explore/mapo-gu/officetel/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/mapo-gu/officetel/",
+      "cohort": 2,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "retained-building-artifact:5-contracts"
+    },
+    {
+      "sourcePath": "/rent/mapo-gu/villa/",
+      "targetPath": "/kr/seoul/explore/mapo-gu/villa/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/mapo-gu/villa/",
+      "cohort": 2,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "retained-building-artifact:26-contracts"
+    },
+    {
+      "sourcePath": "/rent/seodaemun-gu/apartment/",
+      "targetPath": "/kr/seoul/explore/seodaemun-gu/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/seodaemun-gu/apartment/",
+      "cohort": 2,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "retained-building-artifact:7-contracts"
+    },
+    {
+      "sourcePath": "/rent/seodaemun-gu/villa/",
+      "targetPath": "/kr/seoul/explore/seodaemun-gu/villa/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/seodaemun-gu/villa/",
+      "cohort": 2,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "retained-building-artifact:11-contracts"
+    },
+    {
+      "sourcePath": "/rent/seongbuk-gu/apartment/",
+      "targetPath": "/kr/seoul/explore/seongbuk-gu/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/seongbuk-gu/apartment/",
+      "cohort": 2,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "retained-building-artifact:26-contracts"
+    },
+    {
+      "sourcePath": "/rent/seongdong-gu/apartment/",
+      "targetPath": "/kr/seoul/explore/seongdong-gu/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/seongdong-gu/apartment/",
+      "cohort": 2,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "retained-building-artifact:23-contracts"
+    },
+    {
+      "sourcePath": "/rent/seongdong-gu/villa/",
+      "targetPath": "/kr/seoul/explore/seongdong-gu/villa/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/seongdong-gu/villa/",
+      "cohort": 2,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "retained-building-artifact:12-contracts"
+    },
+    {
+      "sourcePath": "/rent/yeongdeungpo-gu/apartment/",
+      "targetPath": "/kr/seoul/explore/yeongdeungpo-gu/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/yeongdeungpo-gu/apartment/",
+      "cohort": 2,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "retained-building-artifact:122-contracts"
+    },
+    {
+      "sourcePath": "/rent/yeongdeungpo-gu/officetel/",
+      "targetPath": "/kr/seoul/explore/yeongdeungpo-gu/officetel/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/yeongdeungpo-gu/officetel/",
+      "cohort": 2,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "retained-building-artifact:20-contracts"
+    },
+    {
+      "sourcePath": "/rent/yongsan-gu/apartment/",
+      "targetPath": "/kr/seoul/explore/yongsan-gu/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/yongsan-gu/apartment/",
+      "cohort": 2,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "retained-building-artifact:10-contracts"
+    },
+    {
+      "sourcePath": "/rent/yongsan-gu/officetel/",
+      "targetPath": "/kr/seoul/explore/yongsan-gu/officetel/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/yongsan-gu/officetel/",
+      "cohort": 2,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "retained-building-artifact:23-contracts"
+    },
+    {
+      "sourcePath": "/rent/yongsan-gu/villa/",
+      "targetPath": "/kr/seoul/explore/yongsan-gu/villa/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/yongsan-gu/villa/",
+      "cohort": 2,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "retained-building-artifact:5-contracts"
+    }
+  ],
+  "retained": [
+    {
+      "sourcePath": "/",
+      "reason": "cohort-5-disabled"
+    },
+    {
+      "sourcePath": "/guides/",
+      "reason": "guide-discovery-parity-pending"
+    },
+    {
+      "sourcePath": "/compare/",
+      "reason": "no-equivalent-signedprice-intent-page"
+    },
+    {
+      "sourcePath": "/buy-or-rent/",
+      "reason": "no-equivalent-signedprice-intent-page"
+    },
+    {
+      "sourcePath": "/value-check/",
+      "reason": "no-equivalent-signedprice-intent-page"
+    },
+    {
+      "sourcePath": "/net-proceeds/",
+      "reason": "no-equivalent-signedprice-intent-page"
+    },
+    {
+      "sourcePath": "/zh/",
+      "reason": "chinese-migration-not-approved"
+    }
+  ]
+}

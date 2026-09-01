@@ -2,6 +2,10 @@
   "name": "koreahomeguide",
   "private": true,
   "version": "11.3.0",
+  "scripts": {
+    "seo:build-migration": "node scripts/seo/build-signedprice-migration.cjs && node scripts/seo/render-signedprice-migration.cjs",
+    "seo:validate-migration": "node scripts/seo/validate-signedprice-migration.cjs"
+  },
   "dependencies": {
     "@vercel/functions": "3.9.5"
   },
