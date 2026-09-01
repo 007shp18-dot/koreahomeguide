@@ -22,6 +22,7 @@ export type NaverBuildingMapPoint = Readonly<{
   addressQuery: string;
   latitude: number | null;
   longitude: number | null;
+  allowAddressGeocoding?: boolean;
 }>;
 
 type NaverMapInstance = Readonly<{
@@ -184,7 +185,7 @@ export function mountNaverDistrictMap({
             building.longitude,
             () => onSelectBuilding?.(building.id),
           );
-        } else if (sdk.Service !== undefined) {
+        } else if (building.allowAddressGeocoding === true && sdk.Service !== undefined) {
           sdk.Service.geocode({ query: building.addressQuery }, (status, response) => {
             if (!isActive()) return;
             const address = response.v2?.addresses?.[0];
