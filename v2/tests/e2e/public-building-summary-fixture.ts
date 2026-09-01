@@ -13,24 +13,30 @@ function canonicalJson(value: unknown): string {
 }
 
 const unsigned = {
-  artifactVersion: 'signedprice-public-building-summary-v1',
+  artifactVersion: 'signedprice-public-building-summary-v2',
   generatedAt: '2026-08-31T00:00:00.000Z',
   provenance: {
     marketId: 'kr-seoul', period: PUBLIC_AREA_SUMMARY_TEST_PERIOD,
     provider: 'MOLIT', dataset: 'reported rent contracts', endpointVersion: 'v1',
-    parserVersion: 'kr-molit-building-parser-v1', rightsPolicyId: 'kr-molit-rent-v1',
+    parserVersion: 'kr-molit-building-parser-v2', rightsPolicyId: 'kr-molit-rent-v1',
     sourceComplete: true, displayRights: true,
     exclusions: ['Canceled records', 'Private fields'],
   },
   totalRecordCount: 1,
   records: [{
     buildingId: PUBLIC_BUILDING_TEST_ID, districtSlug: 'jongno-gu',
-    name: PUBLIC_BUILDING_TEST_NAME, housingType: 'apartment', supportedDeals: ['jeonse'],
+    neighborhoodId: 'sajik-dong', neighborhoodName: '사직동',
+    name: PUBLIC_BUILDING_TEST_NAME, housingType: 'apartment',
+    latitude: 37.575, longitude: 126.97,
     period: PUBLIC_AREA_SUMMARY_TEST_PERIOD, generatedAt: '2026-08-31T00:00:00.000Z',
     publicationMinimum: 5,
-    overall: { n: 6, published: true, min: 480_000_000, p25: 490_000_000, med: 500_000_000, p75: 510_000_000, max: 520_000_000, chg3m: null },
+    groups: {
+      all: { n: 6, published: true, min: 480_000_000, p25: 490_000_000, med: 500_000_000, p75: 510_000_000, max: 520_000_000, chg3m: null },
+      new: { n: 3, published: false }, renewal: { n: 2, published: false },
+    },
+    unknownContractCount: 1,
     areaBands: [{ band: '45-55sqm', summary: { n: 6, published: true, min: 480_000_000, p25: 490_000_000, med: 500_000_000, p75: 510_000_000, max: 520_000_000, chg3m: null } }],
-    recentContracts: [{ filedMonth: '2026-07', areaSqm: 50, deal: 'jeonse', depositWon: 500_000_000, monthlyRentWon: 0 }],
+    recentContracts: [{ filedMonth: '2026-07', areaSqm: 50, contractType: 'new', depositWon: 500_000_000 }],
   }],
 };
 
