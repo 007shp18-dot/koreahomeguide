@@ -44,7 +44,7 @@ describe('signedprice Evidence Editorial homepage', () => {
 
   it('keeps five primary product destinations in the shared header', async () => {
     const markup = renderToStaticMarkup(await Home());
-    const navigation = markup.match(/<nav aria-label="Primary navigation">([\s\S]*?)<\/nav>/)?.[1] ?? '';
+    const navigation = markup.match(/<nav aria-label="Primary navigation"[^>]*>([\s\S]*?)<\/nav>/)?.[1] ?? '';
 
     expect(navigation.match(/<a /g) ?? []).toHaveLength(5);
     expect(navigation).toContain('data-product-index="01"');

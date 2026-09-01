@@ -70,6 +70,19 @@ export type NaverMapsSdk = Readonly<{
   }>;
 }>;
 
+export function isNaverMapsSdkReady(value: unknown): value is NaverMapsSdk {
+  if (typeof value !== 'object' || value === null) return false;
+  const candidate = value as Readonly<Record<string, unknown>>;
+  const event = candidate.Event;
+  return typeof candidate.Map === 'function'
+    && typeof candidate.LatLng === 'function'
+    && typeof candidate.Marker === 'function'
+    && typeof event === 'object'
+    && event !== null
+    && typeof (event as Readonly<Record<string, unknown>>).addListener === 'function'
+    && typeof (event as Readonly<Record<string, unknown>>).removeListener === 'function';
+}
+
 type NaverDistrictMapUpdate = Readonly<{
   districts: readonly NaverDistrictMapPoint[];
   selectedDistrict?: Readonly<{ latitude: number; longitude: number }>;
@@ -230,6 +243,20 @@ export function mountNaverDistrictMap({
   });
 }
 
+export function reconcileNaverDistrictMap(
+  current: ReturnType<typeof mountNaverDistrictMap> | null,
+  options: MountNaverDistrictMapOptions,
+): ReturnType<typeof mountNaverDistrictMap> | null {
+  try {
+    if (current === null) return mountNaverDistrictMap(options);
+    current.update(options);
+    return current;
+  } catch {
+    current?.dispose();
+    return null;
+  }
+}
+
 export function NaverDistrictMap({
   clientId,
   districts,
@@ -243,19 +270,52 @@ export function NaverDistrictMap({
   const router = useRouter();
   const container = useRef<HTMLDivElement>(null);
   const lifecycle = useRef<ReturnType<typeof mountNaverDistrictMap> | null>(null);
+  const authenticationFailed = useRef(false);
   const [sdk, setSdk] = useState<NaverMapsSdk | null>(null);
   const [state, setState] = useState<'loading' | 'ready' | 'error'>('loading');
   const [unavailableBuildingIds, setUnavailableBuildingIds] = useState<readonly string[]>([]);
+  const failClosed = useCallback(() => {
+    authenticationFailed.current = true;
+    lifecycle.current?.dispose();
+    lifecycle.current = null;
+    setSdk(null);
+    setState('error');
+  }, []);
   const initialize = useCallback(() => {
     const readySdk = (globalThis as typeof globalThis & {
       naver?: Readonly<{ maps: NaverMapsSdk }>;
     }).naver?.maps;
-    if (readySdk === undefined || container.current === null) {
-      setState('error');
+    if (
+      authenticationFailed.current
+      || !isNaverMapsSdkReady(readySdk)
+      || container.current === null
+    ) {
+      failClosed();
       return;
     }
     setSdk(readySdk);
-  }, []);
+  }, [failClosed]);
+
+  useEffect(() => {
+    if (clientId === null) return undefined;
+    const scope = globalThis as typeof globalThis & {
+      navermap_authFailure?: () => void;
+    };
+    const previous = scope.navermap_authFailure;
+    const handleAuthenticationFailure = () => {
+      try {
+        previous?.();
+      } finally {
+        failClosed();
+      }
+    };
+    scope.navermap_authFailure = handleAuthenticationFailure;
+    return () => {
+      if (scope.navermap_authFailure === handleAuthenticationFailure) {
+        scope.navermap_authFailure = previous;
+      }
+    };
+  }, [clientId, failClosed]);
 
   useEffect(() => {
     if (clientId === null || sdk === null || container.current === null) return undefined;
@@ -277,19 +337,20 @@ export function NaverDistrictMap({
           : Object.freeze([...current, buildingId]));
       },
     };
-    if (lifecycle.current === null) {
-      lifecycle.current = mountNaverDistrictMap({
-        sdk,
-        element: container.current,
-        ...options,
-      });
-    } else {
-      lifecycle.current.update(options);
+    const nextLifecycle = reconcileNaverDistrictMap(lifecycle.current, {
+      sdk,
+      element: container.current,
+      ...options,
+    });
+    if (nextLifecycle === null) {
+      failClosed();
+      return undefined;
     }
+    lifecycle.current = nextLifecycle;
     setState('ready');
     const active = lifecycle.current;
     return () => active.invalidate();
-  }, [buildings, clientId, districts, onSelectBuilding, onSelectDistrict, router, sdk, selectedDistrict]);
+  }, [buildings, clientId, districts, failClosed, onSelectBuilding, onSelectDistrict, router, sdk, selectedDistrict]);
 
   useEffect(() => () => {
     lifecycle.current?.dispose();
@@ -332,12 +393,7 @@ export function NaverDistrictMap({
         src={buildNaverMapsScriptUrl(clientId)}
         strategy="afterInteractive"
         onReady={initialize}
-        onError={() => {
-          lifecycle.current?.dispose();
-          lifecycle.current = null;
-          setSdk(null);
-          setState('error');
-        }}
+        onError={failClosed}
       />
     </div>
   );

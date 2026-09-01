@@ -158,7 +158,7 @@ export function buildContractCheckRouteModel(
         basis: 'Matched contracts in the same building and filed area',
         period: apartment.period,
         boundary:
-          'Between verified anchors rates are interpolated. Outside the observed range, the nearest verified rate is held and labeled.',
+          'Between verified anchors rates are interpolated. Deposits outside the observed range are not compared.',
       }),
       secondaryCheckHref: '/kr/seoul/tools/rent-check/',
       navigation,

@@ -33,7 +33,6 @@ export type NormalizedRentContractOffer<THousingType extends string = string> = 
 
 export type RentContractComparison<THousingType extends string = string> = Readonly<{
   housingType: THousingType;
-  referenceDeposit: number;
   offers: readonly [
     NormalizedRentContractOffer<THousingType>,
     NormalizedRentContractOffer<THousingType>,
@@ -174,11 +173,18 @@ export function compareRentOffers<THousingType extends string>(input: Readonly<{
     invalid('Both offers and the curve must use the same housing type.');
   }
 
-  const referenceDeposit = Math.min(left.deposit, right.deposit);
-  const normalized = input.offers.map((offer) => {
-    const appliedRate = conversionRateAt(input.curve, offer.deposit);
+  const appliedRates: readonly [AppliedConversionRate, AppliedConversionRate] = Object.freeze([
+    conversionRateAt(input.curve, left.deposit),
+    conversionRateAt(input.curve, right.deposit),
+  ]);
+  if (appliedRates.some(({ rangeState }) => rangeState !== 'observed')) {
+    invalid('Offer deposit is outside the measured range.');
+  }
+
+  const normalized = input.offers.map((offer, index) => {
+    const appliedRate = appliedRates[index]!;
     const normalizedMonthlyCost = offer.monthlyRent
-      + ((offer.deposit - referenceDeposit) * appliedRate.annualRate / 12);
+      + (offer.deposit * appliedRate.annualRate / 12);
     return Object.freeze({
       offer: freezeOffer(offer),
       normalizedMonthlyCost,
@@ -206,7 +212,6 @@ export function compareRentOffers<THousingType extends string>(input: Readonly<{
 
   return Object.freeze({
     housingType: input.curve.housingType,
-    referenceDeposit,
     offers: Object.freeze([...normalized]) as unknown as readonly [
       NormalizedRentContractOffer<THousingType>,
       NormalizedRentContractOffer<THousingType>,

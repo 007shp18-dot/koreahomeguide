@@ -8,19 +8,19 @@ import { useReducer } from 'react';
 import type { ContractCheckRouteModel } from '../../lib/contract-check/route-model.server';
 import {
   CONTRACT_CHECK_COPY,
-  contractNavigationLabel,
   localizedSeoulHref,
   localizeContractText,
   type ContractCheckCopy,
   type ProductLocale,
 } from '../../lib/locale/product-copy';
+import type { SiteHeaderModel } from '../../lib/site-copy';
 import {
   contractCheckReducer,
   createContractCheckState,
   type ContractOfferDraft,
   type ContractOfferErrors,
 } from '../../lib/contract-check/client-state';
-import { BrandWordmark } from '../brand-mark';
+import { SiteHeader } from '../site-header';
 import { ConversionCurve } from './conversion-curve';
 import styles from './contract-check.module.css';
 
@@ -30,51 +30,19 @@ const won = new Intl.NumberFormat('ko-KR', {
   maximumFractionDigits: 0,
 });
 
-function SiteNavigation({
-  model,
-  locale,
-  copy,
-}: Readonly<{
-  model: ContractCheckRouteModel;
-  locale: ProductLocale;
-  copy: ContractCheckCopy;
-}>) {
-  return (
-    <nav className={styles.navigation} aria-label={copy.primaryNavigation}>
-      {model.navigation.map((item) => item.available && item.href !== null ? (
-        <Link href={localizedSeoulHref(item.href, locale)} key={item.label}>
-          {contractNavigationLabel(item.href, item.label, copy)}
-        </Link>
-      ) : (
-        <span className={styles.planned} key={item.label}>
-          {contractNavigationLabel(item.href, item.label, copy)}<span>{copy.planned}</span>
-        </span>
-      ))}
-    </nav>
-  );
-}
-
-function WorkspaceHeader({
-  model,
-  locale,
-  copy,
-}: Readonly<{
-  model: ContractCheckRouteModel;
-  locale: ProductLocale;
-  copy: ContractCheckCopy;
-}>) {
-  return (
-    <header className={styles.siteHeader}>
-      <Link
-        className={styles.wordmark}
-        href="/"
-        aria-label={copy.wordmarkLabel}
-      >
-        <BrandWordmark compact />
-      </Link>
-      <SiteNavigation model={model} locale={locale} copy={copy} />
-    </header>
-  );
+function contractCheckHeader(locale: ProductLocale): SiteHeaderModel {
+  return {
+    brand: 'signedprice',
+    homeLabel: locale === 'ko' ? 'signedprice 홈' : 'SignedPrice home',
+    navigationLabel: locale === 'ko' ? '서울 서비스 메뉴' : 'Seoul product navigation',
+    marketLabel: 'Seoul',
+    languageLabel: locale === 'ko' ? 'KO' : 'EN',
+    links: [{
+      label: locale === 'ko' ? '계약 비교' : 'Check',
+      href: '/kr/seoul/check/',
+      isCurrent: true,
+    }],
+  };
 }
 
 function errorDescriptionIds(
@@ -117,40 +85,42 @@ function OfferPanel({
           value={draft.label}
         />
       </label>
-      <label>
-        <span>{copy.offer.deposit} <small>KRW</small></span>
-        <input
-          aria-describedby={errorDescriptionIds(id, 'depositWon', errors)}
-          aria-invalid={errors?.depositWon !== undefined || errors?.offer !== undefined}
-          inputMode="numeric"
-          name={`${id}-deposit`}
-          onChange={(event) => onEdit('depositWon', event.currentTarget.value)}
-          placeholder="100000000"
-          value={draft.depositWon}
-        />
-        {errors?.depositWon === undefined ? null : (
-          <small className={styles.error} id={`${id}-depositWon-error`}>
-            {localizeContractText(errors.depositWon, locale)}
-          </small>
-        )}
-      </label>
-      <label>
-        <span>{copy.offer.monthlyRent} <small>KRW</small></span>
-        <input
-          aria-describedby={errorDescriptionIds(id, 'monthlyRentWon', errors)}
-          aria-invalid={errors?.monthlyRentWon !== undefined || errors?.offer !== undefined}
-          inputMode="numeric"
-          name={`${id}-monthly-rent`}
-          onChange={(event) => onEdit('monthlyRentWon', event.currentTarget.value)}
-          placeholder="1000000"
-          value={draft.monthlyRentWon}
-        />
-        {errors?.monthlyRentWon === undefined ? null : (
-          <small className={styles.error} id={`${id}-monthlyRentWon-error`}>
-            {localizeContractText(errors.monthlyRentWon, locale)}
-          </small>
-        )}
-      </label>
+      <div className={styles.moneyFields}>
+        <label>
+          <span>{copy.offer.deposit} <small>KRW</small></span>
+          <input
+            aria-describedby={errorDescriptionIds(id, 'depositWon', errors)}
+            aria-invalid={errors?.depositWon !== undefined || errors?.offer !== undefined}
+            inputMode="numeric"
+            name={`${id}-deposit`}
+            onChange={(event) => onEdit('depositWon', event.currentTarget.value)}
+            placeholder="100000000"
+            value={draft.depositWon}
+          />
+          {errors?.depositWon === undefined ? null : (
+            <small className={styles.error} id={`${id}-depositWon-error`}>
+              {localizeContractText(errors.depositWon, locale)}
+            </small>
+          )}
+        </label>
+        <label>
+          <span>{copy.offer.monthlyRent} <small>KRW · {copy.offer.zeroAllowed}</small></span>
+          <input
+            aria-describedby={errorDescriptionIds(id, 'monthlyRentWon', errors)}
+            aria-invalid={errors?.monthlyRentWon !== undefined || errors?.offer !== undefined}
+            inputMode="numeric"
+            name={`${id}-monthly-rent`}
+            onChange={(event) => onEdit('monthlyRentWon', event.currentTarget.value)}
+            placeholder="0"
+            value={draft.monthlyRentWon}
+          />
+          {errors?.monthlyRentWon === undefined ? null : (
+            <small className={styles.error} id={`${id}-monthlyRentWon-error`}>
+              {localizeContractText(errors.monthlyRentWon, locale)}
+            </small>
+          )}
+        </label>
+      </div>
       {errors?.offer === undefined ? null : (
         <p className={styles.error} id={`${id}-offer-error`}>
           {localizeContractText(errors.offer, locale)}
@@ -195,20 +165,14 @@ function ResultEmpty({
 function auditValue(
   comparison: RentContractComparison,
   offerIndex: 0 | 1,
-  row: 'rate' | 'difference' | 'conversion' | 'normalized',
+  row: 'deposit' | 'monthly' | 'rate' | 'equivalent',
   copy: ContractCheckCopy,
 ): string {
   const normalizedOffer = comparison.offers[offerIndex];
+  if (row === 'deposit') return won.format(normalizedOffer.offer.deposit);
+  if (row === 'monthly') return won.format(normalizedOffer.offer.monthlyRent);
   if (row === 'rate') {
     return `${(normalizedOffer.appliedRate.annualRate * 100).toFixed(2)}% · ${rangeLabel(normalizedOffer.appliedRate.rangeState, copy)}`;
-  }
-  if (row === 'difference') {
-    return won.format(normalizedOffer.offer.deposit - comparison.referenceDeposit);
-  }
-  if (row === 'conversion') {
-    return won.format(Math.round(
-      normalizedOffer.normalizedMonthlyCost - normalizedOffer.offer.monthlyRent,
-    ));
   }
   return won.format(normalizedOffer.roundedNormalizedMonthlyCost);
 }
@@ -224,10 +188,10 @@ export function ContractCheckResult({
 }>) {
   const copy = CONTRACT_CHECK_COPY[locale];
   const calculationRows = [
-    ['rate', copy.result.rows[0]],
-    ['difference', copy.result.rows[1]],
-    ['conversion', copy.result.rows[2]],
-    ['normalized', copy.result.rows[3]],
+    ['deposit', copy.result.rows[0]],
+    ['monthly', copy.result.rows[1]],
+    ['rate', copy.result.rows[2]],
+    ['equivalent', copy.result.rows[3]],
   ] as const;
 
   return (
@@ -241,12 +205,21 @@ export function ContractCheckResult({
         <p className={styles.difference}>
           {won.format(comparison.roundedMonthlyDifference)}<span> {copy.result.differenceSuffix}</span>
         </p>
-        <p className={styles.reference}>
-          {copy.result.referenceDeposit} · {won.format(comparison.referenceDeposit)}
-        </p>
         {comparison.rankingFlipped ? (
           <p className={styles.flip}>{copy.result.flipped}</p>
         ) : null}
+      </div>
+
+      <div className={styles.equivalentGrid}>
+        {comparison.offers.map((offer) => (
+          <div data-monthly-equivalent={offer.offer.id} key={offer.offer.id}>
+            <span>{copy.result.monthlyEquivalent} {offer.offer.id.toUpperCase()}</span>
+            <strong>
+              {won.format(offer.roundedNormalizedMonthlyCost)}
+              <small>{copy.result.perMonth}</small>
+            </strong>
+          </div>
+        ))}
       </div>
 
       <ConversionCurve comparison={comparison} curve={curve} locale={locale} />
@@ -322,6 +295,19 @@ function ReadyWorkspace({ model, locale, copy }: Readonly<{
           <h1>{copy.hero.headingLead}<br />{copy.hero.headingTail}</h1>
           <p>{copy.hero.description}</p>
         </section>
+
+        <nav
+          aria-label={copy.mode.ariaLabel}
+          className={styles.modeSelector}
+          data-check-mode-selector="true"
+        >
+          <span aria-disabled="true" data-check-mode="budget">
+            {copy.mode.budget}<small>{copy.mode.budgetDescription}</small>
+          </span>
+          <button aria-pressed="true" data-check-mode="compare" type="button">
+            {copy.mode.compare}<small>{copy.mode.compareDescription}</small>
+          </button>
+        </nav>
 
         <form
           className={styles.form}
@@ -418,7 +404,7 @@ export function ContractCheckWorkspace({ model, locale = 'en' }: Readonly<{
   const copy = CONTRACT_CHECK_COPY[locale];
   return (
     <div className={styles.page}>
-      <WorkspaceHeader model={model} locale={locale} copy={copy} />
+      <SiteHeader copy={contractCheckHeader(locale)} />
       {model.status === 'ready' ? (
         <ReadyWorkspace model={model} locale={locale} copy={copy} />
       ) : (

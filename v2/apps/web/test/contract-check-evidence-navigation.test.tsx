@@ -46,7 +46,8 @@ describe('Contract Check evidence navigation', () => {
 
     expect(html).toContain('href="/kr/seoul/rankings"');
     expect(html).toContain('View district rankings');
-    expect(html).toContain('data-transaction-tabs="true"');
+    expect(html).toContain('data-transaction-filter="verified-availability"');
+    expect(html).toContain('data-transaction-mode="jeonse"');
   });
 
   test.each([

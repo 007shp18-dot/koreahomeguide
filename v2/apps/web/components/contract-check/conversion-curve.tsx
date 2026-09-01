@@ -30,12 +30,9 @@ export function ConversionCurve({
   const copy = CONTRACT_CHECK_COPY[locale].curve;
   const first = curve.anchors[0]!;
   const last = curve.anchors.at(-1)!;
-  const deposits = comparison.offers.map(({ offer }) => offer.deposit);
-  const rawMinimum = Math.min(first.deposit, ...deposits);
-  const rawMaximum = Math.max(last.deposit, ...deposits);
-  const span = Math.max(1, rawMaximum - rawMinimum);
-  const domainMinimum = Math.max(0, rawMinimum - span * 0.06);
-  const domainMaximum = rawMaximum + span * 0.06;
+  const span = Math.max(1, last.deposit - first.deposit);
+  const domainMinimum = Math.max(0, first.deposit - span * 0.1);
+  const domainMaximum = last.deposit + span * 0.1;
   const domainSpan = domainMaximum - domainMinimum;
   const rates = curve.anchors.map(({ annualRate }) => annualRate);
   const rateMinimum = Math.min(...rates);
@@ -46,8 +43,8 @@ export function ConversionCurve({
   const points = curve.anchors
     .map((anchor) => `${x(anchor.deposit).toFixed(2)},${y(anchor.annualRate).toFixed(2)}`)
     .join(' ');
-  const heldBelow = rawMinimum < first.deposit;
-  const heldAbove = rawMaximum > last.deposit;
+  const firstX = x(first.deposit);
+  const lastX = x(last.deposit);
 
   return (
     <figure className={styles.curve} aria-label={copy.ariaLabel}>
@@ -57,28 +54,37 @@ export function ConversionCurve({
       </figcaption>
       <div className={styles.curvePlot}>
         <svg aria-hidden="true" focusable="false" viewBox="0 0 100 100">
+          <defs>
+            <pattern
+              height="4"
+              id="contract-held-hatch"
+              patternTransform="rotate(45)"
+              patternUnits="userSpaceOnUse"
+              width="4"
+            >
+              <line className={styles.curveHatchLine} x1="0" x2="0" y1="0" y2="4" />
+            </pattern>
+          </defs>
+          <rect
+            className={styles.curveHeldBand}
+            data-range-segment="held"
+            height="76"
+            width={firstX - 5}
+            x="5"
+            y="8"
+          />
+          <rect
+            className={styles.curveHeldBand}
+            data-range-segment="held"
+            height="76"
+            width={95 - lastX}
+            x={lastX}
+            y="8"
+          />
           <line className={styles.curveAxis} x1="5" x2="95" y1="84" y2="84" />
-          {heldBelow ? (
-            <line
-              className={styles.curveHeld}
-              data-range-segment="held"
-              x1={x(rawMinimum)}
-              x2={x(first.deposit)}
-              y1={y(first.annualRate)}
-              y2={y(first.annualRate)}
-            />
-          ) : null}
+          <line className={styles.curveBoundary} x1={firstX} x2={firstX} y1="8" y2="84" />
           <polyline className={styles.curveMeasured} points={points} />
-          {heldAbove ? (
-            <line
-              className={styles.curveHeld}
-              data-range-segment="held"
-              x1={x(last.deposit)}
-              x2={x(rawMaximum)}
-              y1={y(last.annualRate)}
-              y2={y(last.annualRate)}
-            />
-          ) : null}
+          <line className={styles.curveBoundary} x1={lastX} x2={lastX} y1="8" y2="84" />
           {comparison.offers.map((offer) => (
             <g key={offer.offer.id}>
               <line
@@ -120,9 +126,7 @@ export function ConversionCurve({
           </span>
         ))}
       </div>
-      {comparison.offers.some(({ appliedRate }) => appliedRate.rangeState !== 'observed') ? (
-        <p className={styles.heldNotice}>{copy.heldNotice}</p>
-      ) : null}
+      <p className={styles.heldNotice}>{copy.heldNotice}</p>
     </figure>
   );
 }

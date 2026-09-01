@@ -116,20 +116,14 @@ describe('SignedPrice cohort zero SEO', () => {
     });
   });
 
-  it('redirects an unavailable comparison to the working Rent Check flow', () => {
+  it('keeps an unavailable comparison inside the canonical Contract Check workspace', () => {
     vi.stubEnv('SIGNEDPRICE_CONVERSION_CURVE_ARTIFACT', '');
     vi.stubEnv('SIGNEDPRICE_CONVERSION_CURVE_PERIOD', '');
     vi.stubEnv('SIGNEDPRICE_CONVERSION_CURVE_SHA256', '');
     for (const page of [SeoulContractCheckPage, KoreanContractCheckPage]) {
-      let thrown: unknown;
-      try {
-        page();
-      } catch (error) {
-        thrown = error;
-      }
-      expect(thrown).toMatchObject({
-        digest: expect.stringContaining('/kr/seoul/tools/rent-check/'),
-      });
+      const html = renderToStaticMarkup(page());
+      expect(html).toContain('data-evidence-state="unavailable"');
+      expect(html).not.toContain('/kr/seoul/tools/rent-check/');
     }
   });
 
