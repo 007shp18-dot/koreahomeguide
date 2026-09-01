@@ -39,10 +39,12 @@ async function expectContainedTouchTargets(
 
     expect(box.width).toBeGreaterThanOrEqual(44);
     expect(box.height).toBeGreaterThanOrEqual(44);
-    expect(box.x).toBeGreaterThanOrEqual(0);
-    expect(box.y).toBeGreaterThanOrEqual(0);
-    expect(box.x + box.width).toBeLessThanOrEqual(viewport.width);
-    expect(box.y + box.height).toBeLessThanOrEqual(viewport.height);
+    // Browser layout may report fractional CSS pixels just beyond the integer viewport.
+    const subpixelTolerance = 0.5;
+    expect(box.x).toBeGreaterThanOrEqual(-subpixelTolerance);
+    expect(box.y).toBeGreaterThanOrEqual(-subpixelTolerance);
+    expect(box.x + box.width).toBeLessThanOrEqual(viewport.width + subpixelTolerance);
+    expect(box.y + box.height).toBeLessThanOrEqual(viewport.height + subpixelTolerance);
   }
 }
 
