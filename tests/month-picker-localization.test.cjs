@@ -19,7 +19,7 @@ test('recentCompletedMonths preserves YYYY-MM values for API consumers that stil
 });
 
 test('homepage runtime is focused on Rent Check rather than raw month-table rendering', () => {
-  const en=read('app.js'), zh=read('zh/app.js');
+  const en=read('app.js'), zh=read('app.js');
   assert.match(en, /\/api\/rent-check\?/);
   assert.match(zh, /\/api\/rent-check\?/);
   assert.doesNotMatch(en, /recentCompletedMonths/);
