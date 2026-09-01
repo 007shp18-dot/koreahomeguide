@@ -8,7 +8,7 @@ import BuildingRoute, {
   dynamicParams,
   generateMetadata,
   generateStaticParams,
-} from '../app/kr/seoul/explore/[district]/[buildingId]/page';
+} from '../app/(en)/kr/seoul/explore/[district]/[buildingId]/page';
 import { BuildingDecisionTabs } from '../components/public-market/building-decision-tabs';
 import { BuildingDetailHeader } from '../components/public-market/building-detail-header';
 import { BuildingDetailPage } from '../components/public-market/building-detail-page';

@@ -52,24 +52,48 @@ export function indexableMetadata({
   title,
   description,
   languageAlternates,
+  locale = 'en_US',
+  imagePath = '/og/en/',
 }: Readonly<{
   path: `/${string}`;
   title: string;
   description: string;
   languageAlternates?: Readonly<{ en: `/${string}`; ko: `/${string}` }>;
+  locale?: 'en_US' | 'ko_KR';
+  imagePath?: `/${string}`;
 }>): Metadata {
   const languages = languageAlternates === undefined ? undefined : {
     en: publicCanonical(languageAlternates.en),
     ko: publicCanonical(languageAlternates.ko),
     'x-default': publicCanonical(languageAlternates.en),
   };
+  const canonical = publicCanonical(path);
+  const image = publicCanonical(imagePath);
   return {
     title,
     description,
     robots: { index: true, follow: true },
     alternates: {
-      canonical: publicCanonical(path),
+      canonical,
       ...(languages === undefined ? {} : { languages }),
+    },
+    openGraph: {
+      type: 'website',
+      siteName: 'SignedPrice',
+      title,
+      description,
+      url: canonical,
+      locale,
+      ...(languageAlternates === undefined ? {} : {
+        alternateLocale: [locale === 'ko_KR' ? 'en_US' : 'ko_KR'],
+      }),
+      images: [image],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [image],
     },
   };
 }

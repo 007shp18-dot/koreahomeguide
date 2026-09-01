@@ -56,10 +56,17 @@ export interface NavigationLinkModel {
 export interface SiteHeaderModel {
   readonly brand: string;
   readonly homeLabel: string;
+  readonly homeHref?: string;
   readonly navigationLabel: string;
   readonly links: readonly NavigationLinkModel[];
+  readonly navigationVariant?: 'product' | 'supplied';
   readonly marketLabel?: string;
   readonly languageLabel?: string;
+  readonly languageSwitch?: Readonly<{
+    readonly label: string;
+    readonly href: string;
+    readonly hrefLang: 'en' | 'ko';
+  }>;
 }
 
 export interface SiteFooterModel {

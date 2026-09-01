@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 import type { PublicDistrictModel } from './area-route-types';
-import { publicCanonical } from '../public-metadata';
+import { indexableMetadata, publicCanonical } from '../public-metadata';
 
 export function buildDistrictMetadata(
   model: PublicDistrictModel,
@@ -12,11 +12,18 @@ export function buildDistrictMetadata(
     : model.status === 'withheld'
       ? `${model.display.sampleLabel} met the fixed filter; monetary evidence is not published.`
       : 'Verified district summary unavailable; no city figure is substituted.';
+  if (model.status === 'published' && options.indexPublished === true) {
+    return indexableMetadata({
+      path: `/kr/seoul/explore/${model.identity.slug}/`,
+      title: `${model.identity.nameEn} jeonse evidence | signedprice`,
+      description,
+    });
+  }
   const metadata: Metadata = {
     title: `${model.identity.nameEn} jeonse evidence | signedprice`,
     description,
     robots: {
-      index: model.status === 'published' && options.indexPublished === true,
+      index: false,
       follow: true,
     },
   };

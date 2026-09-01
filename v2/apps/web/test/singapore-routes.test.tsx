@@ -15,18 +15,18 @@ import {
 import { SingaporeExplorer } from '../components/singapore/singapore-explorer';
 import { SingaporeProjectDetail } from '../components/singapore/singapore-project-detail';
 import { SingaporeSegmentDetail } from '../components/singapore/singapore-segment-detail';
-import { metadata as entryMetadata } from '../app/sg/page';
-import { metadata as exploreMetadata } from '../app/sg/singapore/explore/page';
+import { metadata as entryMetadata } from '../app/(en)/sg/page';
+import { metadata as exploreMetadata } from '../app/(en)/sg/singapore/explore/page';
 import {
   generateStaticParams as segmentStaticParams,
   metadata as segmentMetadata,
-} from '../app/sg/singapore/explore/[area]/page';
+} from '../app/(en)/sg/singapore/explore/[area]/page';
 import {
   generateStaticParams as projectStaticParams,
   metadata as projectMetadata,
-} from '../app/sg/singapore/explore/[area]/[projectId]/page';
-import { metadata as correctionMetadata } from '../app/sg/singapore/corrections/page';
-import SingaporeExplorePage from '../app/sg/singapore/explore/page';
+} from '../app/(en)/sg/singapore/explore/[area]/[projectId]/page';
+import { metadata as correctionMetadata } from '../app/(en)/sg/singapore/corrections/page';
+import SingaporeExplorePage from '../app/(en)/sg/singapore/explore/page';
 import sitemap from '../app/sitemap';
 import {
   buildSingaporeExploreModel,

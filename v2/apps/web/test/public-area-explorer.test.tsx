@@ -164,7 +164,7 @@ describe('public Seoul area Explorer', () => {
     );
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', PUBLIC_AREA_FIXTURE_PERIOD);
     vi.stubEnv('NAVER_MAP_CLIENT_ID', 'page-naver-client');
-    const modulePath = '../app/kr/seoul/explore/page';
+    const modulePath = '../app/(en)/kr/seoul/explore/page';
     const route = await import(/* @vite-ignore */ modulePath);
     const page = await route.default({
       searchParams: Promise.resolve({
@@ -174,7 +174,7 @@ describe('public Seoul area Explorer', () => {
     });
     const markup = renderToStaticMarkup(page);
 
-    expect(route.metadata).toEqual({
+    expect(route.metadata).toMatchObject({
       title: 'Seoul district jeonse evidence | signedprice',
       description: 'Compare verified 45–55㎡ refundable jeonse deposits across Seoul districts.',
       robots: { index: true, follow: true },

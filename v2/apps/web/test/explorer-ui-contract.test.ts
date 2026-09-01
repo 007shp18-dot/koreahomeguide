@@ -32,7 +32,7 @@ type BuildingDialogModule = {
 };
 
 async function loadExplorerPage(): Promise<ExplorerPageModule> {
-  const modulePath = '../app/kr/seoul/explore/page';
+  const modulePath = '../app/(en)/kr/seoul/explore/page';
   return import(/* @vite-ignore */ modulePath) as Promise<ExplorerPageModule>;
 }
 

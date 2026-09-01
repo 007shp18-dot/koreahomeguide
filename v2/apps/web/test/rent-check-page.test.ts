@@ -18,17 +18,17 @@ type RentCheckPageModule = {
 };
 
 async function loadPage(): Promise<RentCheckPageModule> {
-  return import('../app/kr/seoul/tools/rent-check/page') as Promise<RentCheckPageModule>;
+  return import('../app/(en)/kr/seoul/tools/rent-check/page') as Promise<RentCheckPageModule>;
 }
 
 const css = readFileSync(
-  new URL('../app/kr/seoul/tools/rent-check/rent-check.module.css', import.meta.url),
+  new URL('../components/rent-check/rent-check.module.css', import.meta.url),
   'utf8',
 );
 
 describe('Seoul Rent Check page shell', () => {
   it('is linked from the Seoul rent overview with the authored quote-check action', async () => {
-    const { default: IntentPage } = await import('../app/[country]/[city]/[intent]/page');
+    const { default: IntentPage } = await import('../app/(en)/[country]/[city]/[intent]/page');
     const markup = renderToStaticMarkup(await IntentPage({
       params: Promise.resolve({ country: 'kr', city: 'seoul', intent: 'rent' }),
     }) as never);
@@ -116,12 +116,12 @@ describe('route metadata and authored head contract', () => {
   it('publishes the working Rent Check as its own indexable canonical', async () => {
     const page = await loadPage();
     const source = readFileSync(
-      new URL('../app/kr/seoul/tools/rent-check/page.tsx', import.meta.url),
+      new URL('../app/(en)/kr/seoul/tools/rent-check/page.tsx', import.meta.url),
       'utf8',
     );
 
     expect(source).not.toMatch(/^\s*['"]use client['"]/m);
-    expect(page.metadata).toEqual({
+    expect(page.metadata).toMatchObject({
       title: 'Seoul Rent Check | signedprice',
       description: 'Compare a Seoul rent quote with compatible official reported contracts.',
       robots: { index: true, follow: true },
@@ -133,7 +133,7 @@ describe('route metadata and authored head contract', () => {
   });
 
   it('resolves the built head boundary to index, follow, and one canonical', async () => {
-    const root = await import('../app/layout');
+    const root = await import('../app/(en)/layout');
     const page = await loadPage();
     const resolved = { ...root.metadata, ...page.metadata } as {
       robots?: { index?: boolean; follow?: boolean };

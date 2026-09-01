@@ -582,11 +582,16 @@ function marketOverviewAction(marketId: MarketId): NavigationActionModel {
 }
 
 function marketHeader(profile: MarketProfile, isCurrent: boolean): SiteHeaderModel {
+  const languageSwitch = profile.id === 'kr-seoul'
+    ? { label: 'KO', href: '/ko/kr/seoul/', hrefLang: 'ko' as const }
+    : undefined;
   return {
     brand: routeShellCopy.header.brand,
     homeLabel: routeShellCopy.header.homeLabel,
     navigationLabel: routeShellCopy.header.navigationLabel,
     marketLabel: profile.cityName,
+    languageLabel: 'EN',
+    languageSwitch,
     links: [
       { label: 'Global home', href: '/' },
       {

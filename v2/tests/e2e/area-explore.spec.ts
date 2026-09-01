@@ -172,8 +172,9 @@ test('mobile controls keep 44px focus targets and natural document scrolling', a
   test.skip(testInfo.project.name !== 'mobile-chromium');
   await page.goto('/kr/seoul/explore/');
 
-  const checkTab = page.locator('[data-public-tab="check"]');
-  const exploreTab = page.locator('[data-public-tab="explore"]');
+  const navigation = page.getByRole('navigation', { name: 'Seoul evidence navigation' });
+  const checkTab = navigation.getByRole('link', { name: /Check/ });
+  const exploreTab = navigation.getByRole('link', { name: /Explore/ });
   const districtLink = page.locator('[data-district-row="gangnam-gu"]')
     .getByRole('link', { name: 'Open Gangnam-gu evidence' }).first();
   const detailLink = page.getByRole('link', { name: 'Open Gangnam-gu evidence' }).last();

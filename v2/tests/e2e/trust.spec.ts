@@ -77,3 +77,52 @@ test('Trust and correction actions remain keyboard-visible and touch sized', asy
     expect(hasComputedVisibleFocus(await readComputedFocusPaint(action))).toBe(true);
   }
 });
+
+test('Seoul market hub is a terminal self-canonical page', async ({ request }) => {
+  const response = await request.get('/kr/seoul/', { maxRedirects: 0 });
+  const html = await response.text();
+
+  expect(response.status()).toBe(200);
+  expect(html).toMatch(/<h1[^>]*>Seoul<\/h1>/);
+  expect(html).toContain(
+    '<link rel="canonical" href="https://www.signedprice.com/kr/seoul/"',
+  );
+});
+
+test('legacy Seoul check permanently redirects to the working Rent Check', async ({ request }) => {
+  const response = await request.get('/kr/check/seoul/', { maxRedirects: 0 });
+
+  expect(response.status()).toBe(308);
+  expect(response.headers().location).toBe('/kr/seoul/tools/rent-check/');
+});
+
+test('English and Korean routes emit the correct root document language', async ({ request }) => {
+  for (const path of ['/ko/kr/seoul/', '/ko/kr/seoul/explore/', '/ko/kr/seoul/rankings/']) {
+    const response = await request.get(path);
+    expect(response.status()).toBe(200);
+    expect(await response.text()).toContain('<html lang="ko">');
+  }
+
+  const english = await request.get('/kr/seoul/');
+  expect(english.status()).toBe(200);
+  expect(await english.text()).toContain('<html lang="en">');
+});
+
+test('social metadata and image endpoints match each route language', async ({ request }) => {
+  for (const [path, locale, imagePath] of [
+    ['/kr/seoul/', 'en_US', '/og/en/'],
+    ['/ko/kr/seoul/', 'ko_KR', '/og/ko/'],
+  ] as const) {
+    const page = await request.get(path);
+    const html = await page.text();
+    expect(page.status()).toBe(200);
+    expect(html).toContain(`property="og:locale" content="${locale}"`);
+    expect(html).toContain(`property="og:image" content="https://www.signedprice.com${imagePath}"`);
+    expect(html).toContain('name="twitter:card" content="summary_large_image"');
+
+    const image = await request.get(imagePath);
+    expect(image.status()).toBe(200);
+    expect(image.headers()['content-type']).toContain('image/png');
+    expect(image.headers()['cache-control']).toContain('stale-while-revalidate=604800');
+  }
+});

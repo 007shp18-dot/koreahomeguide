@@ -14,7 +14,7 @@ import {
   type RentCheckState,
   type RentCheckValidationErrors,
 } from '../../lib/rent-check/client-state';
-import styles from '../../app/kr/seoul/tools/rent-check/rent-check.module.css';
+import styles from './rent-check.module.css';
 
 const HOUSING_TYPES = [
   ['apartment', 'Apartment'],

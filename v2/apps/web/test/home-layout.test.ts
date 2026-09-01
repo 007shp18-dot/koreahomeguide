@@ -3,7 +3,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
-import Home from '../app/page';
+import Home from '../app/(en)/page';
 
 describe('signedprice Evidence Editorial homepage', () => {
   it('keeps the wide hero copy gutter bounded on the panel side', () => {

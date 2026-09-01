@@ -4,13 +4,13 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 
-import TrustPage, { metadata as trustMetadata } from '../app/trust/page';
+import TrustPage, { metadata as trustMetadata } from '../app/(en)/trust/page';
 import KoreaCorrectionsPage, {
   metadata as koreaCorrectionsMetadata,
-} from '../app/kr/seoul/corrections/page';
-import ExplorerPage from '../app/kr/seoul/explore/page';
-import RankingsPage from '../app/kr/seoul/rankings/page';
-import Home from '../app/page';
+} from '../app/(en)/kr/seoul/corrections/page';
+import ExplorerPage from '../app/(en)/kr/seoul/explore/page';
+import RankingsPage from '../app/(en)/kr/seoul/rankings/page';
+import Home from '../app/(en)/page';
 import sitemap from '../app/sitemap';
 import {
   listCorrections,

@@ -5,16 +5,16 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 vi.mock('server-only', () => ({}));
 
 import { SEOUL_RENT_CHECK_DISTRICTS } from '@signedprice/korea-rent/browser';
-import Home from '../app/page';
+import Home from '../app/(en)/page';
 import sitemap from '../app/sitemap';
-import { generateStaticParams as marketStaticParams } from '../app/[country]/[city]/page';
-import { generateStaticParams as intentStaticParams } from '../app/[country]/[city]/[intent]/page';
-import { metadata as proofMetadata } from '../app/kr/seoul/tools/rent-check/page';
-import { metadata as rankingsMetadata } from '../app/kr/seoul/rankings/page';
-import { metadata as explorerMetadata } from '../app/kr/seoul/explore/page';
-import { metadata as newsMetadata } from '../app/kr/seoul/news/page';
-import { metadata as trustMetadata } from '../app/trust/page';
-import { metadata as compareMetadata } from '../app/compare/page';
+import { generateStaticParams as marketStaticParams } from '../app/(en)/[country]/[city]/page';
+import { generateStaticParams as intentStaticParams } from '../app/(en)/[country]/[city]/[intent]/page';
+import { metadata as proofMetadata } from '../app/(en)/kr/seoul/tools/rent-check/page';
+import { metadata as rankingsMetadata } from '../app/(en)/kr/seoul/rankings/page';
+import { metadata as explorerMetadata } from '../app/(en)/kr/seoul/explore/page';
+import { metadata as newsMetadata } from '../app/(en)/kr/seoul/news/page';
+import { metadata as trustMetadata } from '../app/(en)/trust/page';
+import { metadata as compareMetadata } from '../app/(en)/compare/page';
 import { homepageCopy } from '../lib/site-copy';
 import { GUIDES } from '../lib/guide/guide-content';
 import {
@@ -97,6 +97,8 @@ describe('public migration containment', () => {
         en: '/kr/seoul/explore/',
         ko: '/ko/kr/seoul/explore/',
       },
+      locale: 'ko_KR',
+      imagePath: '/og/ko/',
     } as Parameters<typeof indexableMetadata>[0]);
 
     expect(english.alternates).toEqual({
@@ -111,14 +113,24 @@ describe('public migration containment', () => {
       canonical: 'https://www.signedprice.com/ko/kr/seoul/explore/',
       languages: english.alternates?.languages,
     });
+    expect(korean.openGraph).toMatchObject({
+      type: 'website',
+      locale: 'ko_KR',
+      url: 'https://www.signedprice.com/ko/kr/seoul/explore/',
+      images: ['https://www.signedprice.com/og/ko/'],
+    });
+    expect(korean.twitter).toMatchObject({
+      card: 'summary_large_image',
+      images: ['https://www.signedprice.com/og/ko/'],
+    });
   });
 
   it('has completed Korean route modules before advertising hreflang', () => {
     for (const route of [
-      '../app/ko/kr/seoul/page.tsx',
-      '../app/ko/kr/seoul/check/page.tsx',
-      '../app/ko/kr/seoul/explore/page.tsx',
-      '../app/ko/kr/seoul/rankings/page.tsx',
+      '../app/(ko)/ko/kr/seoul/page.tsx',
+      '../app/(ko)/ko/kr/seoul/check/page.tsx',
+      '../app/(ko)/ko/kr/seoul/explore/page.tsx',
+      '../app/(ko)/ko/kr/seoul/rankings/page.tsx',
     ]) {
       expect(existsSync(new URL(route, import.meta.url))).toBe(true);
     }
@@ -143,9 +155,9 @@ describe('public migration containment', () => {
 
   it('renders Korean evidence routes that do not require conversion evidence', async () => {
     const routes = [
-      ['../app/ko/kr/seoul/page', '서울 주거 계약 근거'],
-      ['../app/ko/kr/seoul/explore/page', '서울 25개 구 전세 근거'],
-      ['../app/ko/kr/seoul/rankings/page', '서울 구별 근거 순위'],
+      ['../app/(ko)/ko/kr/seoul/page', '서울 주거 계약 근거'],
+      ['../app/(ko)/ko/kr/seoul/explore/page', '서울 25개 구 전세 근거'],
+      ['../app/(ko)/ko/kr/seoul/rankings/page', '서울 구별 근거 순위'],
     ] as const;
     for (const [modulePath, heading] of routes) {
       let route: { default: () => unknown } | null = null;
@@ -164,22 +176,16 @@ describe('public migration containment', () => {
   });
   it.each([
     '/kr/seoul/check/',
-    '/kr/check/seoul/',
-    '/kr/seoul/',
   ])('indexes published Korea page %s with one self canonical', (path) => {
     const metadata = buildKoreaPublicPageMetadata(path);
 
     expect(metadata.robots).toEqual({ index: true, follow: true });
     expect(metadata.alternates?.canonical).toBe(`https://www.signedprice.com${path}`);
-    if (path === '/kr/seoul/check/') {
-      expect(metadata.alternates?.languages).toEqual({
-        en: 'https://www.signedprice.com/kr/seoul/check/',
-        ko: 'https://www.signedprice.com/ko/kr/seoul/check/',
-        'x-default': 'https://www.signedprice.com/kr/seoul/check/',
-      });
-    } else {
-      expect(metadata.alternates?.languages).toBeUndefined();
-    }
+    expect(metadata.alternates?.languages).toEqual({
+      en: 'https://www.signedprice.com/kr/seoul/check/',
+      ko: 'https://www.signedprice.com/ko/kr/seoul/check/',
+      'x-default': 'https://www.signedprice.com/kr/seoul/check/',
+    });
   });
 
   it('refuses metadata for paths outside the approved Korea cohort', () => {
@@ -248,7 +254,6 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/trust/',
       'https://www.signedprice.com/kr/seoul/tools/rent-check/',
       'https://www.signedprice.com/kr/seoul/',
-      'https://www.signedprice.com/kr/check/seoul/',
       'https://www.signedprice.com/kr/seoul/news/',
       'https://www.signedprice.com/kr/seoul/news/how-signedprice-reads-reported-rental-contracts/',
       'https://www.signedprice.com/kr/seoul/guide/',

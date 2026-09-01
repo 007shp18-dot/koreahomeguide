@@ -83,7 +83,8 @@ test('Contract Check server HTML is ready, contained, and claim-safe', async ({ 
   expect(html.indexOf('Offer A')).toBeLessThan(html.indexOf('Offer B'));
   expect(html.indexOf('Offer B')).toBeLessThan(html.indexOf('Result'));
   expect(html).toContain('MOLIT reported rental contracts');
-  expect(html).not.toMatch(/Singapore|Dubai|72,291|29\.4%/i);
+  const visibleDecisionCopy = await page.locator('main').innerText();
+  expect(visibleDecisionCopy).not.toMatch(/Singapore|Dubai|72,291|29\.4%/i);
 
   const sitemap = await page.request.get('/sitemap.xml');
   expect(sitemap.status()).toBe(200);

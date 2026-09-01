@@ -1,4 +1,4 @@
-import styles from '../../app/kr/seoul/tools/rent-check/rent-check.module.css';
+import styles from './rent-check.module.css';
 
 type TrustLabelProps = {
   readonly children: string;

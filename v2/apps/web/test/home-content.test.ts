@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 
 vi.mock('server-only', () => ({}));
-import Home, { metadata as homeMetadata } from '../app/page';
+import Home, { metadata as homeMetadata } from '../app/(en)/page';
 import {
   homepageCopy,
   homepageIntentGroups,
@@ -50,9 +50,10 @@ describe('signedprice homepage copy', () => {
   });
 
   it('keeps the root neutral and exports the indexable homepage metadata on the page', async () => {
-    const layoutModule = await import('../app/layout');
+    const layoutModule = await import('../app/(en)/layout');
 
     expect(layoutModule.metadata).toEqual({
+      metadataBase: new URL('https://www.signedprice.com'),
       title: 'signedprice | Real prices. Better property decisions.',
       description:
         'Verified Seoul property intelligence with official-source context and publication limits shown clearly.',

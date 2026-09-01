@@ -14,7 +14,7 @@ import {
   type RentCheckInput,
 } from '../../lib/rent-check/client-state';
 import type { ExplorerRentCheckContext } from '../../lib/rent-check/explorer-context';
-import styles from '../../app/kr/seoul/tools/rent-check/rent-check.module.css';
+import styles from './rent-check.module.css';
 import { ComparableContracts } from './comparable-contracts';
 import { RentCheckForm } from './rent-check-form';
 import { RentCheckResult } from './rent-check-result';

@@ -12,10 +12,14 @@ async function expectContained(page: Page) {
 
 test('Guide index and documents remain complete, indexable, and keyboard reachable', async ({ page }) => {
   await page.goto('/kr/seoul/guide/');
-  await expect(page.locator('[data-public-tab]')).toHaveCount(4);
-  await expect(page.locator('[data-public-tab="guide"]')).toHaveAttribute('aria-current', 'page');
-  await expect(page.locator('[data-public-tab="news"]'))
-    .toHaveAttribute('href', '/kr/seoul/news/');
+  const navigation = page.getByRole('navigation', { name: 'Guide evidence links' });
+  await expect(navigation.getByRole('link')).toHaveCount(3);
+  await expect(navigation.getByRole('link', { name: 'Open Contract Check' }))
+    .toHaveAttribute('href', '/kr/seoul/check/');
+  await expect(navigation.getByRole('link', { name: 'Open District Explorer' }))
+    .toHaveAttribute('href', '/kr/seoul/explore/');
+  await expect(navigation.getByRole('link', { name: 'Read SignedPrice Trust' }))
+    .toHaveAttribute('href', '/trust/');
   for (const [slug, title] of guides) {
     await expect(page.getByRole('heading', { name: title })).toBeVisible();
     await page.goto(`/kr/seoul/guide/${slug}/`);

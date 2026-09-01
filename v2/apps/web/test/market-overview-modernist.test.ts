@@ -6,8 +6,8 @@ import { describe, expect, it, vi } from 'vitest';
 vi.mock('server-only', () => ({}));
 
 import { SEOUL_RENT_CHECK_DISTRICTS } from '@signedprice/korea-rent/browser';
-import MarketOverviewPage from '../app/[country]/[city]/page';
-import IntentPage from '../app/[country]/[city]/[intent]/page';
+import MarketOverviewPage from '../app/(en)/[country]/[city]/page';
+import IntentPage from '../app/(en)/[country]/[city]/[intent]/page';
 import { buildMarketPageModel, marketRouteParams } from '../lib/route-model';
 
 const css = readFileSync(new URL('../app/globals.css', import.meta.url), 'utf8');
@@ -283,8 +283,8 @@ describe('bundled Archivo and pre-launch route safety', () => {
   });
 
   it('keeps the shared shell SEO-neutral while generated market routes stay contained', async () => {
-    const layoutModule = await import('../app/layout');
-    const intentModule = await import('../app/[country]/[city]/[intent]/page');
+    const layoutModule = await import('../app/(en)/layout');
+    const intentModule = await import('../app/(en)/[country]/[city]/[intent]/page');
 
     expect(marketRouteParams).toEqual([
       { country: 'kr', city: 'seoul' },

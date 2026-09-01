@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 
-import RankingsPage, { metadata } from '../app/kr/seoul/rankings/page';
+import RankingsPage, { metadata } from '../app/(en)/kr/seoul/rankings/page';
 import { DistrictRankings } from '../components/public-market/district-rankings';
 import { buildPublicAreaRankingsModel } from '../lib/public-market/rankings-route-model.server';
 import {

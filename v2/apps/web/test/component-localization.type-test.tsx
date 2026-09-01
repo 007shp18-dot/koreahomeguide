@@ -1,7 +1,10 @@
 import { createElement } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { describe, expect, it } from 'vitest';
 import { SiteFooter } from '../components/site-footer';
 import { SiteHeader } from '../components/site-header';
 import { TrustStrip } from '../components/trust-strip';
+import { KOREAN_SITE_HEADER } from '../lib/locale/ko';
 import type {
   SiteFooterModel,
   SiteHeaderModel,
@@ -12,6 +15,7 @@ const localizedHeader = {
   brand: 'signedprice',
   homeLabel: 'Accueil signedprice',
   navigationLabel: 'Navigation principale',
+  navigationVariant: 'supplied',
   links: [
     { label: 'Marchés', href: '#markets' },
     { label: 'Fonctionnement', href: '#principles' },
@@ -49,3 +53,15 @@ export const localizedComponentFixtures = [
   createElement(SiteFooter, { copy: localizedFooter }),
   createElement(TrustStrip, { copy: localizedTrust }),
 ];
+
+describe('localized shared components', () => {
+  it('renders the supplied Korean navigation and a crawlable English switch', () => {
+    const html = renderToStaticMarkup(<SiteHeader copy={KOREAN_SITE_HEADER} />);
+
+    expect(html).toContain('계약 비교');
+    expect(html).toContain('구별 탐색');
+    expect(html).toContain('href="/kr/seoul"');
+    expect(html).toMatch(/hreflang="en"/i);
+    expect(html).not.toContain('>Briefs<');
+  });
+});

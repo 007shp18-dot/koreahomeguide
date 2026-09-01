@@ -5,10 +5,10 @@ vi.mock('server-only', () => ({}));
 
 import ContactPage, {
   generateMetadata as generateContactMetadata,
-} from '../app/contact/page';
+} from '../app/(en)/contact/page';
 import PrivacyPage, {
   generateMetadata as generatePrivacyMetadata,
-} from '../app/privacy/page';
+} from '../app/(en)/privacy/page';
 import sitemap from '../app/sitemap';
 import { operatorProfileFromEnvironment } from '../lib/operator/operator-profile.server';
 

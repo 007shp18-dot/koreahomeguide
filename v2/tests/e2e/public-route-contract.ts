@@ -4,7 +4,7 @@ import {
 } from './public-area-summary-fixture';
 
 export const publicRoutes = [
-  { path: '/', heading: 'Real prices. Better property decisions.', indexing: 'index', canonical: '/' },
+  { path: '/', heading: 'See what homes actually signed for.', indexing: 'index', canonical: '/' },
   { path: '/trust/', heading: 'How SignedPrice publishes evidence', indexing: 'index', canonical: '/trust/' },
   {
     path: '/kr/seoul/check/',
@@ -13,7 +13,6 @@ export const publicRoutes = [
     canonical: '/kr/seoul/check/',
     alternates: true,
   },
-  { path: '/kr/check/seoul/', heading: 'Where does this refundable deposit sit?', indexing: 'index', canonical: '/kr/check/seoul/' },
   { path: '/kr/seoul/rent/', heading: 'Rent in Seoul', indexing: 'noindex' },
   {
     path: '/kr/seoul/tools/rent-check/',
