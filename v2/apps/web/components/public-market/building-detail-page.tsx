@@ -101,6 +101,21 @@ export function BuildingDetailPage({ model }: Readonly<{ model: PublicBuildingMo
                 <div><dt>Full range</dt><dd>{model.display.rangeLabel}</dd></div>
                 <div><dt>Recent change</dt><dd>{model.display.changeLabel}</dd></div>
               </dl>
+              <dl className={styles.findingGrid} aria-label="Contract type evidence">
+                <div>
+                  <dt>New contracts</dt>
+                  <dd>{model.building.groups.new.published
+                    ? `${money.format(model.building.groups.new.med)} · ${model.building.groups.new.n} records`
+                    : `Not published · ${model.building.groups.new.n} records`}</dd>
+                </div>
+                <div>
+                  <dt>Renewal contracts</dt>
+                  <dd>{model.building.groups.renewal.published
+                    ? `${money.format(model.building.groups.renewal.med)} · ${model.building.groups.renewal.n} records`
+                    : `Not published · ${model.building.groups.renewal.n} records`}</dd>
+                </div>
+                <div><dt>Unclassified type</dt><dd>{model.building.unknownContractCount} records</dd></div>
+              </dl>
             </section>
 
             <section className={styles.areaBands} aria-labelledby="building-area-heading">
