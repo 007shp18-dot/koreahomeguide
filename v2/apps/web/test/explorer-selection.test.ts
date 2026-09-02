@@ -10,6 +10,7 @@ import {
 const koreaDefaults = Object.freeze({ market: 'kr', transaction: 'jeonse' } as const);
 const singaporeDefaults = Object.freeze({ market: 'sg', transaction: 'sale' } as const);
 const allowLists = Object.freeze({
+  areas: Object.freeze(['all', 'under-40', '40-60', '60-85', '85-plus'] as const),
   propertyTypes: Object.freeze(['apartment', 'officetel']),
   districts: Object.freeze(['jongno-gu', 'gangnam-gu', 'ccr']),
   neighborhoodsByDistrict: Object.freeze({
@@ -73,6 +74,7 @@ describe('canonical Explorer selection codec', () => {
     expect(normalizeExplorerSelection({
       market: 'kr',
       transaction: 'monthly',
+      area: '60-85',
       propertyType: 'officetel',
       district: 'gangnam-gu',
       neighborhood: 'yeoksam-dong',
@@ -84,6 +86,7 @@ describe('canonical Explorer selection codec', () => {
     }, koreaDefaults, allowLists)).toEqual({
       market: 'kr',
       transaction: 'monthly',
+      area: '60-85',
       propertyType: 'officetel',
       district: 'gangnam-gu',
       neighborhood: 'yeoksam-dong',
@@ -130,6 +133,7 @@ describe('canonical Explorer selection codec', () => {
     const selection = normalizeExplorerSelection({
       market: 'kr',
       transaction: 'monthly',
+      area: 'all',
       propertyType: 'apartment',
       district: 'jongno-gu',
       neighborhood: 'sajik-dong',
@@ -139,12 +143,29 @@ describe('canonical Explorer selection codec', () => {
     }, koreaDefaults, allowLists);
 
     expect(serializeExplorerSelection(selection, koreaDefaults)).toBe(
-      'transaction=monthly&propertyType=apartment&district=jongno-gu&neighborhood=sajik-dong&buildingId=jongno-gu-building-1&contractType=new&sort=median-asc',
+      'transaction=monthly&area=all&propertyType=apartment&district=jongno-gu&neighborhood=sajik-dong&buildingId=jongno-gu-building-1&contractType=new&sort=median-asc',
     );
     expect(serializeExplorerSelection(koreaDefaults, koreaDefaults)).toBe('');
     expect(createSelectionHref('/kr/seoul/explore/', selection, koreaDefaults)).toBe(
-      '/kr/seoul/explore/?transaction=monthly&propertyType=apartment&district=jongno-gu&neighborhood=sajik-dong&buildingId=jongno-gu-building-1&contractType=new&sort=median-asc',
+      '/kr/seoul/explore/?transaction=monthly&area=all&propertyType=apartment&district=jongno-gu&neighborhood=sajik-dong&buildingId=jongno-gu-building-1&contractType=new&sort=median-asc',
     );
+  });
+
+  it('round-trips approved all-area cohorts and rejects unknown area bands', () => {
+    for (const area of allowLists.areas) {
+      const parsed = parseExplorerSelection(
+        new URLSearchParams(`area=${area}`),
+        koreaDefaults,
+        allowLists,
+      );
+      expect(parsed.area).toBe(area);
+    }
+
+    expect(parseExplorerSelection(
+      new URLSearchParams('area=45-55'),
+      koreaDefaults,
+      allowLists,
+    )).toEqual({ market: 'kr', transaction: 'jeonse' });
   });
 
   it('rejects malformed identifiers even when an allow-list is not supplied', () => {

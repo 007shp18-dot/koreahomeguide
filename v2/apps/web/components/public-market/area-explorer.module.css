@@ -69,6 +69,7 @@
 }
 
 .transactionFilter button,
+.transactionFilter a,
 .transactionFilter span {
   min-height: 44px;
   min-width: max-content;
@@ -83,10 +84,12 @@
   font: inherit;
   font-size: .68rem;
   font-weight: 850;
+  text-decoration: none;
 }
 
 .transactionFilter > :last-child { border-right: 0; }
-.transactionFilter button[aria-pressed="true"] { color: var(--area-ground); background: var(--area-ink); }
+.transactionFilter button[aria-pressed="true"],
+.transactionFilter a[aria-current="page"] { color: var(--area-ground); background: var(--area-ink); }
 .transactionFilter span[aria-disabled="true"] { color: var(--area-muted); background: var(--surface); cursor: not-allowed; }
 
 .exploreToolbar {
@@ -96,7 +99,7 @@
   min-width: 0;
   padding: .75rem clamp(1rem, 2.5vw, 2rem);
   display: grid;
-  grid-template-columns: auto minmax(260px, 1fr) minmax(140px, .28fr) minmax(140px, .28fr) auto;
+  grid-template-columns: auto minmax(240px, 1fr) repeat(3, minmax(120px, .24fr)) auto;
   align-items: end;
   gap: .75rem;
   border-bottom: var(--rule-strong);

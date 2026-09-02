@@ -11,6 +11,7 @@ import type {
   SeoulLawdCd,
   SeoulRentCheckDistrict,
 } from '@signedprice/korea-rent/browser';
+import type { KoreaEvidenceAreaBand } from '@signedprice/korea-rent';
 import type { CommunitySignalModel } from '../community/community-signal-model';
 import type { NewsCardModel } from '../news/news-card-model';
 import type {
@@ -24,7 +25,7 @@ export type ExploreDistrictModel = Readonly<{
   slug: SeoulDistrictSlug;
   nameEn: string;
   nameKo: string;
-  href: `/kr/seoul/explore/${string}/`;
+  href: `/kr/seoul/explore/${string}/` | `/kr/seoul/explore/${string}/?${string}`;
   path: string;
   latitude: number;
   longitude: number;
@@ -135,7 +136,7 @@ export type PublicSourceBoundaryModel = Readonly<{
   provider: 'MOLIT';
   period: string;
   attribution: readonly string[];
-  band: '45–55㎡';
+  band: string;
   publicationMinimum: 5;
   includesNewAndRenewal: true;
   includesUnknownContractType: true;
@@ -164,7 +165,7 @@ export type PublicDistrictRankingRow = Readonly<{
   slug: SeoulDistrictSlug;
   nameEn: string;
   nameKo: string;
-  href: `/kr/seoul/explore/${string}/`;
+  href: `/kr/seoul/explore/${string}/` | `/kr/seoul/explore/${string}/?${string}`;
   metric: number;
   valueLabel: string;
   bar: SignedRankingBar | null;
@@ -175,6 +176,17 @@ export type PublicDistrictRankingRow = Readonly<{
 export type PublicAreaRankingsModel =
   | Readonly<{
       status: 'ready';
+      evidenceSelection: Readonly<{
+        transaction: 'jeonse' | 'monthly' | 'sale';
+        areaBand: KoreaEvidenceAreaBand | 'legacy-45-55';
+        housingType: 'all' | 'apartment' | 'officetel' | 'villa_multifamily' | 'detached';
+        contractGroup: 'all' | 'new' | 'renewal' | 'unknown' | 'not-applicable';
+      }>;
+      transactionAvailability: Readonly<{
+        jeonse: boolean;
+        monthly: boolean;
+        sale: boolean;
+      }>;
       cheapest: readonly PublicDistrictRankingRow[];
       change: readonly PublicDistrictRankingRow[];
       spread: readonly PublicDistrictRankingRow[];
@@ -201,6 +213,17 @@ export type PublicAreaRankingsModel =
 export type PublicAreaExploreModel =
   | Readonly<{
       status: 'ready';
+      evidenceSelection: Readonly<{
+        transaction: 'jeonse' | 'monthly' | 'sale';
+        areaBand: KoreaEvidenceAreaBand | 'legacy-45-55';
+        housingType: 'all' | 'apartment' | 'officetel' | 'villa_multifamily' | 'detached';
+        contractGroup: 'all' | 'new' | 'renewal' | 'unknown' | 'not-applicable';
+      }>;
+      transactionAvailability: Readonly<{
+        jeonse: boolean;
+        monthly: boolean;
+        sale: boolean;
+      }>;
       selectedSlug: SeoulDistrictSlug;
       citySummary: PublicMarketSummary;
       districts: readonly ExploreDistrictModel[];
@@ -227,6 +250,8 @@ export type ExploreBuildingModel = Readonly<{
   latitude: number | null;
   longitude: number | null;
   evidenceStatus: 'published' | 'withheld' | 'unavailable';
+  transaction?: 'jeonse' | 'monthly' | 'sale';
+  primaryMetric?: 'deposit' | 'monthly-rent' | 'sale-price';
   observationCount: number;
   jeonseObservationCount: number;
   monthlyObservationCount: number;
@@ -234,6 +259,7 @@ export type ExploreBuildingModel = Readonly<{
   lastObservedMonth: string;
   sampleLabel: string;
   medianLabel: string | null;
+  filedDepositMedianLabel?: string | null;
   newSampleLabel: string;
   newMedianLabel: string | null;
   renewalSampleLabel: string;

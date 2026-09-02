@@ -11,8 +11,34 @@ import styles from './public-market.module.css';
 export function PublicSourceBoundary({
   model,
   locale = 'en',
-}: Readonly<{ model: PublicSourceBoundaryModel; locale?: ProductLocale }>) {
+  transaction,
+}: Readonly<{
+  model: PublicSourceBoundaryModel;
+  locale?: ProductLocale;
+  transaction?: 'jeonse' | 'monthly' | 'sale';
+}>) {
   const copy = PUBLIC_MARKET_COPY[locale].source;
+  const registryValue = transaction === 'sale'
+    ? (locale === 'ko' ? '국토교통부 신고 매매 계약' : 'MOLIT reported sale contracts')
+    : copy.registryValue;
+  const fixedFilterValue = transaction === 'sale'
+    ? (locale === 'ko'
+        ? '신고 매매 계약이며 취소 건은 제외합니다.'
+        : 'Reported sale contracts. Canceled records are excluded.')
+    : transaction === 'monthly'
+      ? (locale === 'ko'
+          ? '신고 월세 계약이며 보증금은 별도로 표시합니다. 취소 건은 제외합니다.'
+          : 'Reported monthly-rent contracts; filed deposit is shown separately. Canceled records are excluded.')
+      : transaction === 'jeonse'
+        ? (locale === 'ko'
+            ? '월세 0원의 신고 전세 계약이며 취소 건은 제외합니다.'
+            : 'Reported zero-monthly-rent jeonse contracts. Canceled records are excluded.')
+        : copy.fixedFilterValue;
+  const combinedBoundary = transaction === 'sale'
+    ? (locale === 'ko'
+        ? '매매 계약에는 신규·갱신 임대차 구분을 적용하지 않습니다.'
+        : 'Rental new/renewal contract groups do not apply to reported sales.')
+    : copy.combinedBoundary;
   return (
     <section
       className={styles.publicSourceBoundary}
@@ -42,7 +68,7 @@ export function PublicSourceBoundary({
       <dl>
         <div>
           <dt>{copy.registry}</dt>
-          <dd>{copy.registryValue}</dd>
+          <dd>{registryValue}</dd>
         </div>
         <div>
           <dt>{copy.declaredPeriod}</dt>
@@ -54,7 +80,7 @@ export function PublicSourceBoundary({
         </div>
         <div>
           <dt>{copy.fixedFilter}</dt>
-          <dd>{copy.fixedFilterValue}</dd>
+          <dd>{fixedFilterValue}</dd>
         </div>
         <div>
           <dt>{copy.publicationRule}</dt>
@@ -74,7 +100,7 @@ export function PublicSourceBoundary({
         )}
       </dl>
       <p>
-        {copy.combinedBoundary}
+        {combinedBoundary}
       </p>
       <p>
         {copy.legalBoundary}

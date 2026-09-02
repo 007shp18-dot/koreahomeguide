@@ -9,6 +9,7 @@ import type {
 } from '../../lib/public-market/area-route-types';
 import {
   PUBLIC_MARKET_COPY,
+  localizedSeoulHref,
   type ProductLocale,
   type PublicMarketCopy,
 } from '../../lib/locale/product-copy';
@@ -34,14 +35,72 @@ const money = new Intl.NumberFormat('ko-KR', {
   style: 'currency', currency: 'KRW', currencyDisplay: 'narrowSymbol', maximumFractionDigits: 0,
 });
 
+const rankingAreaOptions = Object.freeze([
+  ['all', 'All areas', '전체 면적'],
+  ['under-40', 'Under 40㎡', '40㎡ 미만'],
+  ['40-60', '40–60㎡', '40–60㎡'],
+  ['60-85', '60–85㎡', '60–85㎡'],
+  ['85-plus', '85㎡ and above', '85㎡ 이상'],
+] as const);
+
+const rankingHousingOptions = Object.freeze([
+  ['all', 'All types', '전체 유형'],
+  ['apartment', 'Apartment', '아파트'],
+  ['officetel', 'Officetel', '오피스텔'],
+  ['villa_multifamily', 'Villa / multifamily', '연립·다세대'],
+  ['detached', 'Detached / multi-unit', '단독·다가구'],
+] as const);
+
+function selectedRankingCopy(
+  transaction: ReadyModel['evidenceSelection']['transaction'],
+  locale: ProductLocale,
+) {
+  if (locale === 'ko') {
+    return {
+      medianTitle: {
+        jeonse: '전세보증금 중앙값',
+        monthly: '신고 월세 중앙값',
+        sale: '신고 매매가 중앙값',
+      }[transaction],
+      description: {
+        jeonse: '국토교통부 신고 전세 계약',
+        monthly: '국토교통부 신고 월세 계약',
+        sale: '국토교통부 신고 매매 계약',
+      }[transaction],
+      lowerEyebrow: '01 / 낮은 신고 중앙값',
+      lowerDefinition: '선택한 거래유형·면적·건물유형 조건에서 신고 중앙값이 낮은 순서입니다. 주거비 부담이나 주택 품질 순위가 아닙니다.',
+      spreadDefinition: '선택한 신고 가격의 중간 절반(P75 − P25) 폭이 넓은 순서입니다. 변동성이나 위험도 순위가 아닙니다.',
+      distribution: '신고 가격 분포',
+    } as const;
+  }
+  return {
+    medianTitle: {
+      jeonse: 'Median refundable jeonse deposit',
+      monthly: 'Median reported monthly rent',
+      sale: 'Median reported sale price',
+    }[transaction],
+    description: {
+      jeonse: 'MOLIT reported jeonse contracts',
+      monthly: 'MOLIT reported monthly-rent contracts',
+      sale: 'MOLIT reported sale contracts',
+    }[transaction],
+    lowerEyebrow: '01 / Lower reported medians',
+    lowerDefinition: 'Lowest reported median first for the selected transaction, filed-area and building-type cohort. This is not an affordability or quality ranking.',
+    spreadDefinition: 'Widest middle-half (P75 − P25) spread in the selected reported-price cohort. This is dispersion, not volatility or risk.',
+    distribution: 'reported price distribution',
+  } as const;
+}
+
 function RankingRows({
   rows,
   locale,
   copy,
+  distributionLabel,
 }: Readonly<{
   rows: readonly PublicDistrictRankingRow[];
   locale: ProductLocale;
   copy: PublicMarketCopy['rankings'];
+  distributionLabel?: string;
 }>) {
   if (rows.length === 0) {
     return <p className={styles.empty}>{copy.empty}</p>;
@@ -67,7 +126,7 @@ function RankingRows({
               className={styles.rankingDistribution}
               data-ranking-distribution={row.slug}
               role="group"
-              aria-label={`${locale === 'ko' ? row.nameKo : row.nameEn} ${copy.distribution}`}
+              aria-label={`${locale === 'ko' ? row.nameKo : row.nameEn} ${distributionLabel ?? copy.distribution}`}
             >
               <BoxPlot
                 summary={row.distribution}
@@ -93,6 +152,7 @@ function StandardRanking({
   rows,
   locale,
   copy,
+  distributionLabel,
 }: Readonly<{
   id: string;
   eyebrow: string;
@@ -102,6 +162,7 @@ function StandardRanking({
   rows: readonly PublicDistrictRankingRow[];
   locale: ProductLocale;
   copy: PublicMarketCopy['rankings'];
+  distributionLabel?: string;
 }>) {
   return (
     <section className={styles.panel} aria-labelledby={id} data-ranking-section={id}>
@@ -111,7 +172,12 @@ function StandardRanking({
         <p>{definition}</p>
         <small>{note}</small>
       </header>
-      <RankingRows rows={rows} locale={locale} copy={copy} />
+      <RankingRows
+        rows={rows}
+        locale={locale}
+        copy={copy}
+        distributionLabel={distributionLabel}
+      />
     </section>
   );
 }
@@ -200,6 +266,8 @@ function ReadyRankings({
 }: Readonly<{ model: ReadyModel; locale: ProductLocale }>) {
   const marketCopy = PUBLIC_MARKET_COPY[locale];
   const copy = marketCopy.rankings;
+  const exact = model.evidenceSelection.areaBand !== 'legacy-45-55';
+  const selectedCopy = selectedRankingCopy(model.evidenceSelection.transaction, locale);
   const [activeView, setActiveView] = useState<RankingView>('median');
   return (
     <section className={styles.rankings} aria-labelledby="district-rankings-heading">
@@ -209,8 +277,11 @@ function ReadyRankings({
             <p>{copy.eyebrow}</p>
             <h1 id="district-rankings-heading">{copy.heading}</h1>
             <p>
-              {copy.descriptionLead} {model.source.period}. {copy.descriptionMiddle}{' '}
-              {model.source.publicationMinimum}{locale === 'en' ? ' ' : ''}{copy.descriptionTail}
+              {exact
+                ? `${selectedCopy.description} · ${model.source.band} · ${model.source.period}.`
+                : `${copy.descriptionLead} ${model.source.period}.`}{' '}
+              {copy.descriptionMiddle}{' '}{model.source.publicationMinimum}
+              {locale === 'en' ? ' ' : ''}{copy.descriptionTail}
             </p>
             <p className={styles.exclusion}>
               {model.withheldDistrictCount}{locale === 'en' ? ' ' : ''}{copy.exclusionTail}
@@ -222,6 +293,51 @@ function ReadyRankings({
             <div><dt>{locale === 'ko' ? '최소 표본' : 'Minimum sample'}</dt><dd>{model.source.publicationMinimum}</dd></div>
           </dl>
         </header>
+
+        {exact ? (
+          <form
+            className={styles.filters}
+            action={localizedSeoulHref('/kr/seoul/rankings/', locale)}
+            method="get"
+            data-ranking-filters="exact-cohort"
+          >
+            <label>
+              <span>{locale === 'ko' ? '거래유형' : 'Transaction'}</span>
+              <select name="transaction" defaultValue={model.evidenceSelection.transaction}>
+                <option value="sale" disabled={!model.transactionAvailability.sale}>{locale === 'ko' ? '매매' : 'Sale'}</option>
+                <option value="jeonse" disabled={!model.transactionAvailability.jeonse}>{locale === 'ko' ? '전세' : 'Jeonse'}</option>
+                <option value="monthly" disabled={!model.transactionAvailability.monthly}>{locale === 'ko' ? '월세' : 'Monthly rent'}</option>
+              </select>
+            </label>
+            <label>
+              <span>{locale === 'ko' ? '면적' : 'Area'}</span>
+              <select name="area" defaultValue={model.evidenceSelection.areaBand}>
+                {rankingAreaOptions.map(([value, en, ko]) => (
+                  <option value={value} key={value}>{locale === 'ko' ? ko : en}</option>
+                ))}
+              </select>
+            </label>
+            <label>
+              <span>{locale === 'ko' ? '건물유형' : 'Building type'}</span>
+              <select name="propertyType" defaultValue={model.evidenceSelection.housingType}>
+                {rankingHousingOptions.map(([value, en, ko]) => (
+                  <option value={value} key={value}>{locale === 'ko' ? ko : en}</option>
+                ))}
+              </select>
+            </label>
+            {model.evidenceSelection.transaction === 'sale' ? null : (
+              <label>
+                <span>{locale === 'ko' ? '계약구분' : 'Contract group'}</span>
+                <select name="contractType" defaultValue={model.evidenceSelection.contractGroup}>
+                  <option value="all">{locale === 'ko' ? '전체' : 'All'}</option>
+                  <option value="new">{locale === 'ko' ? '신규' : 'New'}</option>
+                  <option value="renewal">{locale === 'ko' ? '갱신' : 'Renewal'}</option>
+                </select>
+              </label>
+            )}
+            <button type="submit">{locale === 'ko' ? '적용' : 'Apply'}</button>
+          </form>
+        ) : null}
 
         <EvidencePeriodStrip
           model={model.period}
@@ -256,13 +372,14 @@ function ReadyRankings({
           >
             <StandardRanking
               id="ranking-cheapest-heading"
-              eyebrow={copy.lowerEyebrow}
-              title={copy.lowerTitle}
-              definition={copy.lowerDefinition}
+              eyebrow={exact ? selectedCopy.lowerEyebrow : copy.lowerEyebrow}
+              title={exact ? selectedCopy.medianTitle : copy.lowerTitle}
+              definition={exact ? selectedCopy.lowerDefinition : copy.lowerDefinition}
               note={copy.lowerNote}
               rows={model.cheapest}
               locale={locale}
               copy={copy}
+              distributionLabel={exact ? selectedCopy.distribution : undefined}
             />
           </div>
           <div
@@ -285,11 +402,12 @@ function ReadyRankings({
               id="ranking-spread-heading"
               eyebrow={copy.spreadEyebrow}
               title={copy.spreadTitle}
-              definition={copy.spreadDefinition}
+              definition={exact ? selectedCopy.spreadDefinition : copy.spreadDefinition}
               note={copy.spreadNote}
               rows={model.spread}
               locale={locale}
               copy={copy}
+              distributionLabel={exact ? selectedCopy.distribution : undefined}
             />
           </div>
           <div
@@ -316,7 +434,11 @@ function ReadyRankings({
         <aside className={styles.limit} aria-label={copy.limitationAria}>
           <p>{copy.limitation}</p>
         </aside>
-        <PublicSourceBoundary model={model.source} locale={locale} />
+        <PublicSourceBoundary
+          model={model.source}
+          locale={locale}
+          transaction={exact ? model.evidenceSelection.transaction : undefined}
+        />
       </div>
     </section>
   );
@@ -334,9 +456,8 @@ function UnavailableRankings({
     <section className={styles.rankings} aria-labelledby="rankings-unavailable-heading">
       <header className={styles.hero}>
         <p>{copy.unavailableEyebrow}</p>
-        <h1 id="rankings-unavailable-heading">
-          {locale === 'ko' ? copy.unavailableMessage : model.message}
-        </h1>
+        <h1 id="rankings-unavailable-heading">{copy.heading}</h1>
+        <p>{locale === 'ko' ? copy.unavailableMessage : model.message}</p>
         <p>{copy.unavailableReason}</p>
       </header>
       <div className={styles.unavailable}>

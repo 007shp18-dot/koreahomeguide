@@ -4,7 +4,9 @@ import { createRightsPolicy, type RightsPolicy } from '@signedprice/market-core'
 
 import {
   KR_MOLIT_RENT_RIGHTS,
+  KR_MOLIT_SALE_RIGHTS,
   RightsViolationError,
+  runWithMolitSaleRights,
   runWithMolitRights,
   type MolitRightsLookup,
   type MolitRightsOperation,
@@ -190,5 +192,47 @@ describe('KR_MOLIT_RENT_RIGHTS', () => {
       ),
     ).rejects.toBeInstanceOf(RightsViolationError);
     expect(displayRuns).toBe(0);
+  });
+});
+
+describe('KR_MOLIT_SALE_RIGHTS', () => {
+  test('uses an independently versioned, official, commercially usable sale policy', async () => {
+    const result = await runWithMolitSaleRights({
+      lookup: lookupFor(KR_MOLIT_SALE_RIGHTS),
+      policyId: 'kr-molit-sale-v1',
+      operations: ALL_RUNTIME_OPERATIONS,
+      cacheTtlSeconds: 86_400,
+      retentionSeconds: 86_400,
+    }, async () => 'sale-loaded');
+
+    expect(result).toBe('sale-loaded');
+    expect(KR_MOLIT_SALE_RIGHTS).toMatchObject({
+      id: 'kr-molit-sale-v1',
+      canFetch: true,
+      canStore: true,
+      canCache: true,
+      canCreateDerived: true,
+      canDisplay: true,
+      canUseCommercially: true,
+      cacheTtl: '24 hours',
+      retention: '24 hours',
+    });
+    expect(KR_MOLIT_SALE_RIGHTS.evidenceRef).toBe(
+      'https://www.data.go.kr/data/15126468/openapi.do',
+    );
+  });
+
+  test('never accepts the rental policy or a lookalike sale policy id', async () => {
+    const lookalike = createRightsPolicy({
+      ...KR_MOLIT_SALE_RIGHTS,
+      id: 'kr-molit-sale-v2',
+    });
+    for (const policy of [KR_MOLIT_RENT_RIGHTS, lookalike]) {
+      await expect(runWithMolitSaleRights({
+        lookup: lookupFor(policy),
+        policyId: policy.id,
+        operations: ALL_RUNTIME_OPERATIONS,
+      }, async () => 'unreachable')).rejects.toBeInstanceOf(RightsViolationError);
+    }
   });
 });

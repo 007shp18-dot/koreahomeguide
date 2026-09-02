@@ -103,7 +103,7 @@ describe('Trust routes', () => {
     const explore = renderToStaticMarkup(await ExplorerPage({
       searchParams: Promise.resolve({}),
     }));
-    const rankings = renderToStaticMarkup(<RankingsPage />);
+    const rankings = renderToStaticMarkup(await RankingsPage());
 
     expect(home).toContain('href="/trust/"');
     for (const html of [explore, rankings]) {

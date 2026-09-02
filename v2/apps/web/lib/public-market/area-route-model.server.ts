@@ -60,12 +60,22 @@ import {
   listAdjacentDistrictSlugs,
   listSeoulDistrictGeometry,
 } from './seoul-district-geometry.server';
+import {
+  buildKoreaExplorerEvidenceProjection,
+  type KoreaExplorerEvidenceSelectionInput,
+} from './korea-explorer-evidence.server';
+import { buildKoreaEvidenceAreaExploreModel } from './korea-explorer-area-route.server';
+import {
+  koreaEvidenceRepositoriesFromEnvironment,
+  type KoreaEvidenceRepositories,
+} from './korea-evidence-repositories.server';
 
 export type PublicAreaRouteDependencies = Readonly<{
   source: unknown;
   period: string;
   buildingSource?: unknown;
   observedBuildingSource?: unknown;
+  evidenceRepositories?: KoreaEvidenceRepositories;
   referenceInstant?: string | Date;
   updateSchedule?: PublicMonthlyUpdateSchedule;
 }>;
@@ -318,6 +328,7 @@ function environmentDependencies(): PublicAreaRouteDependencies {
     period: process.env.SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD ?? '',
     referenceInstant: new Date().toISOString(),
     updateSchedule,
+    evidenceRepositories: koreaEvidenceRepositoriesFromEnvironment(),
   });
 }
 
@@ -586,6 +597,8 @@ function exploreBuildingsFor(
         latitude: observed.coordinate.state === 'ready' ? observed.coordinate.latitude : null,
         longitude: observed.coordinate.state === 'ready' ? observed.coordinate.longitude : null,
         evidenceStatus,
+        transaction: 'jeonse' as const,
+        primaryMetric: 'deposit' as const,
         observationCount: observed.observationCount,
         jeonseObservationCount: observed.jeonseObservationCount,
         monthlyObservationCount: observed.monthlyObservationCount,
@@ -597,6 +610,7 @@ function exploreBuildingsFor(
         medianLabel: building?.groups.all.published === true
           ? formatMoney(building.groups.all.med)
           : null,
+        filedDepositMedianLabel: null,
         newSampleLabel: building === undefined
           ? 'Price sample unavailable'
           : sampleLabel(building.groups.new.n),
@@ -629,6 +643,8 @@ function exploreBuildingsFor(
       latitude: building.latitude,
       longitude: building.longitude,
       evidenceStatus: 'published' as const,
+      transaction: 'jeonse' as const,
+      primaryMetric: 'deposit' as const,
       observationCount: building.groups.all.n,
       jeonseObservationCount: building.groups.all.n,
       monthlyObservationCount: 0,
@@ -636,6 +652,7 @@ function exploreBuildingsFor(
       lastObservedMonth: building.period.split('/')[1]!,
       sampleLabel: sampleLabel(building.groups.all.n),
       medianLabel: formatMoney(building.groups.all.med),
+      filedDepositMedianLabel: null,
       newSampleLabel: sampleLabel(building.groups.new.n),
       newMedianLabel: building.groups.new.published ? formatMoney(building.groups.new.med) : null,
       renewalSampleLabel: sampleLabel(building.groups.renewal.n),
@@ -654,7 +671,20 @@ export function buildPublicAreaExploreModel(
   dependencies: PublicAreaRouteDependencies = environmentDependencies(),
   requestedContractGroup?: unknown,
   requestedBuildingQuery = '',
+  requestedEvidence: KoreaExplorerEvidenceSelectionInput = Object.freeze({}),
 ): PublicAreaExploreModel {
+  if (dependencies.evidenceRepositories !== undefined) {
+    const projection = buildKoreaExplorerEvidenceProjection(
+      dependencies.evidenceRepositories,
+      {
+        ...requestedEvidence,
+        contractGroup: requestedEvidence.contractGroup ?? requestedContractGroup,
+      },
+    );
+    if (projection.status === 'ready') {
+      return buildKoreaEvidenceAreaExploreModel(selectedSlug, projection);
+    }
+  }
   const unavailableSource = buildPublicSourceBoundary(dependencies.period, null, true);
   try {
     const repository = createPublicAreaSummaryRepository({
@@ -717,6 +747,17 @@ export function buildPublicAreaExploreModel(
     );
     return Object.freeze({
       status: 'ready',
+      evidenceSelection: Object.freeze({
+        transaction: 'jeonse' as const,
+        areaBand: 'legacy-45-55' as const,
+        housingType: 'all' as const,
+        contractGroup: normalizePublicContractGroup(requestedContractGroup),
+      }),
+      transactionAvailability: Object.freeze({
+        jeonse: true,
+        monthly: false,
+        sale: false,
+      }),
       selectedSlug: selected,
       citySummary,
       districts,

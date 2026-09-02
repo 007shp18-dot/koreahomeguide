@@ -38,11 +38,15 @@ export function DistrictEvidenceSummary({
   mode,
   selectionHref,
   locale = 'en',
+  medianLabel,
+  showContractGroups = true,
 }: Readonly<{
   model: ContractGroupEvidenceModel;
   mode: 'compact' | 'full';
   selectionHref?: string;
   locale?: ProductLocale;
+  medianLabel?: string;
+  showContractGroups?: boolean;
 }>) {
   const copy = PUBLIC_MARKET_COPY[locale].summary;
   const evidence = model.groups[model.selected];
@@ -70,16 +74,18 @@ export function DistrictEvidenceSummary({
         </p>
       </header>
 
-      <ContractGroupSelector
-        model={model}
-        selectionHref={groupSelectionHref}
-        locale={locale}
-      />
+      {showContractGroups ? (
+        <ContractGroupSelector
+          model={model}
+          selectionHref={groupSelectionHref}
+          locale={locale}
+        />
+      ) : null}
 
       {evidence.status === 'published' ? (
         <>
           <div className={styles.finding}>
-            <span>{copy.median}</span>
+            <span>{medianLabel ?? copy.median}</span>
             <strong data-summary-median>{evidence.medianLabel}</strong>
             <p>{localizedGroupLabel(evidence.contractGroup, locale)} · {copy.evidencePeriodSuffix}</p>
           </div>
@@ -140,48 +146,48 @@ export function DistrictEvidenceSummary({
         </p>
       )}
 
-      <section
-        className={styles.comparison}
-        data-contract-comparison="new-renewal-all"
-        aria-labelledby={`contract-comparison-${model.scopeId}`}
-      >
-        <div className={styles.comparisonHeading}>
-          <p>{copy.sameDistrictPeriod}</p>
-          <h3 id={`contract-comparison-${model.scopeId}`}>{copy.comparisonHeading}</h3>
-        </div>
-        <div className={styles.comparisonRows} role="table" aria-label={copy.comparisonAria}>
-          {comparisonOrder.map((group) => {
-            const row = model.groups[group];
-            const sample = row.status === 'published' || row.status === 'withheld'
-              ? localizeSampleLabel(row.sampleLabel, locale)
-              : row.status === 'snapshot_unavailable'
-                ? copy.sampleUnavailable
+      {showContractGroups ? (
+        <section
+          className={styles.comparison}
+          data-contract-comparison="new-renewal-all"
+          aria-labelledby={`contract-comparison-${model.scopeId}`}
+        >
+          <div className={styles.comparisonHeading}>
+            <p>{copy.sameDistrictPeriod}</p>
+            <h3 id={`contract-comparison-${model.scopeId}`}>{copy.comparisonHeading}</h3>
+          </div>
+          <div className={styles.comparisonRows} role="table" aria-label={copy.comparisonAria}>
+            {comparisonOrder.map((group) => {
+              const row = model.groups[group];
+              const sample = row.status === 'published' || row.status === 'withheld'
+                ? localizeSampleLabel(row.sampleLabel, locale)
                 : copy.sampleUnavailable;
-            const median = row.status === 'published'
-              ? row.medianLabel
-              : row.status === 'snapshot_unavailable'
-                ? copy.snapshotUnavailable
-                : copy.notPublished;
-            return (
-              <div
-                className={styles.comparisonRow}
-                data-contract-comparison-row={group}
-                role="row"
-                key={group}
-              >
-                <strong role="rowheader">{localizedGroupLabel(group, locale).replace(locale === 'en' ? ' contracts' : ' 계약', '')}</strong>
-                <span role="cell">{sample}</span>
-                <span role="cell">{median}</span>
-              </div>
-            );
-          })}
-        </div>
-        {model.allLowerThanNew ? (
-          <p className={styles.comparisonNote}>
-            {copy.allLowerThanNew}
-          </p>
-        ) : null}
-      </section>
+              const median = row.status === 'published'
+                ? row.medianLabel
+                : row.status === 'snapshot_unavailable'
+                  ? copy.snapshotUnavailable
+                  : copy.notPublished;
+              return (
+                <div
+                  className={styles.comparisonRow}
+                  data-contract-comparison-row={group}
+                  role="row"
+                  key={group}
+                >
+                  <strong role="rowheader">{localizedGroupLabel(group, locale).replace(locale === 'en' ? ' contracts' : ' 계약', '')}</strong>
+                  <span role="cell">{sample}</span>
+                  <span role="cell">{median}</span>
+                </div>
+              );
+            })}
+          </div>
+          {model.allLowerThanNew ? (
+            <p className={styles.comparisonNote}>
+              {copy.allLowerThanNew}
+            </p>
+          ) : null}
+        </section>
+      ) : null}
 
       <footer className={styles.footer}>
         <p>{copy.reportedPeriod} · {evidence.period}</p>

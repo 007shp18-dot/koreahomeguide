@@ -92,12 +92,12 @@ describe('public Seoul area Explorer', () => {
 
     expect(markup).not.toContain('data-transaction-tabs="true"');
     expect(markup).toContain('data-transaction-filter="verified-availability"');
-    expect(markup.match(/data-transaction-mode=/g)).toHaveLength(4);
-    expect(markup).toMatch(/<button[^>]+aria-pressed="true"[^>]+data-transaction-mode="jeonse"[^>]*>Jeonse<\/button>/);
-    expect(markup).toMatch(/<span[^>]+aria-disabled="true"[^>]+data-transaction-mode="all"[^>]*>All<\/span>/);
+    expect(markup.match(/data-transaction-mode=/g)).toHaveLength(3);
+    expect(markup).toMatch(/<a[^>]+aria-current="page"[^>]+data-transaction-mode="jeonse"[^>]*>Jeonse<\/a>/);
     expect(markup).toMatch(/<span[^>]+aria-disabled="true"[^>]+data-transaction-mode="sale"[^>]*>Sale<\/span>/);
     expect(markup).toMatch(/<span[^>]+aria-disabled="true"[^>]+data-transaction-mode="monthly-rent"[^>]*>Monthly rent<\/span>/);
-    expect(markup).not.toMatch(/data-transaction-mode="(?:all|sale|monthly-rent)"[^>]+(?:href|aria-pressed="true")/);
+    expect(markup).not.toMatch(/data-transaction-mode="(?:sale|monthly-rent)"[^>]+(?:href|aria-current="page")/);
+    expect(markup).toContain('name="evidence-area"');
     expect(markup).toContain('Price-ready');
     expect(markup.indexOf('class="_workspace_')).toBeLessThan(markup.indexOf('data-coverage-panel="verified"'));
   });
@@ -194,8 +194,8 @@ describe('public Seoul area Explorer', () => {
     const markup = renderToStaticMarkup(page);
 
     expect(route.metadata).toMatchObject({
-      title: 'Seoul district jeonse evidence | signedprice',
-      description: 'Compare verified 45–55㎡ refundable jeonse deposits across Seoul districts.',
+      title: 'Seoul sale, jeonse and monthly-rent evidence | signedprice',
+      description: 'Compare verified all-area sale, jeonse and monthly-rent evidence across Seoul districts.',
       robots: { index: true, follow: true },
       alternates: {
         canonical: 'https://www.signedprice.com/kr/seoul/explore/',
