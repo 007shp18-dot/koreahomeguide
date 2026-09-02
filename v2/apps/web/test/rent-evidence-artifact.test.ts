@@ -78,6 +78,47 @@ describe('Korea rent evidence artifact boundary', () => {
     );
   });
 
+  it('accepts a complete decline to zero in filed monthly-rent deposits', async () => {
+    const records = [
+      ...Array.from({ length: 5 }, (_, index) => ({
+        districtSlug: 'gangnam-gu' as const,
+        record: {
+          ...rentRecord(10_000_000, 700_000, index),
+          contractDate: `2026-04-${String(index + 1).padStart(2, '0')}`,
+        },
+      })),
+      ...Array.from({ length: 5 }, (_, index) => ({
+        districtSlug: 'gangnam-gu' as const,
+        record: {
+          ...rentRecord(0, 700_000, index + 5),
+          areaSqm: 45 + index,
+          contractDate: `2026-07-${String(index + 1).padStart(2, '0')}`,
+        },
+      })),
+    ];
+    const built = await buildKoreaRentEvidenceArtifact(buildKoreaRentEvidence({
+      period: '2026-01/2026-07',
+      completedMonths: COMPLETED_MONTHS,
+      generatedAt: '2026-08-01T00:00:00.000Z',
+      records,
+    }));
+    const monthly = (built.artifact.areaRecords as Array<{
+      areaId: string;
+      cohorts: Array<{
+        transaction: string;
+        areaBand: string;
+        contractGroup: string;
+        filedDeposit: { chg3m?: number } | null;
+      }>;
+    }>).find(({ areaId }) => areaId === 'seoul:all')!.cohorts.find((cohort) => (
+      cohort.transaction === 'monthly'
+      && cohort.areaBand === 'all'
+      && cohort.contractGroup === 'all'
+    ));
+
+    expect(monthly?.filedDeposit?.chg3m).toBe(-100);
+  });
+
   it('rejects unknown keys, cross-period installation and digest tampering', async () => {
     const built = await buildKoreaRentEvidenceArtifact(evidence());
     const unknownRoot = { ...built.artifact, unexpected: true };

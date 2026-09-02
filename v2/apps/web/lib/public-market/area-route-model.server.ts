@@ -291,7 +291,7 @@ export function buildPublicSourceBoundary(
     : Object.freeze(common);
 }
 
-function environmentDependencies(): PublicAreaRouteDependencies {
+function environmentDependencies(includeEvidenceRepositories = true): PublicAreaRouteDependencies {
   const serialized = process.env.SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT;
   const serializedBuildings = process.env.SIGNEDPRICE_PUBLIC_BUILDING_SUMMARY_ARTIFACT;
   let source: unknown;
@@ -328,7 +328,9 @@ function environmentDependencies(): PublicAreaRouteDependencies {
     period: process.env.SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD ?? '',
     referenceInstant: new Date().toISOString(),
     updateSchedule,
-    evidenceRepositories: koreaEvidenceRepositoriesFromEnvironment(),
+    evidenceRepositories: includeEvidenceRepositories
+      ? koreaEvidenceRepositoriesFromEnvironment()
+      : undefined,
   });
 }
 
@@ -943,7 +945,7 @@ function faqJsonLdFor(faq: readonly PublicDistrictFaq[]): Readonly<Record<string
 
 export function buildPublicDistrictModel(
   slug: string,
-  dependencies: PublicAreaRouteDependencies = environmentDependencies(),
+  dependencies: PublicAreaRouteDependencies = environmentDependencies(false),
   requestedContractGroup?: unknown,
 ): PublicDistrictModel | null {
   const identity = getSeoulDistrictBySlug(slug);

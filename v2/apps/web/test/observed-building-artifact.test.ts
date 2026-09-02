@@ -223,7 +223,7 @@ describe('observed building artifact boundary', () => {
       useCheckedInSnapshot: true,
     });
 
-    expect(repository?.listRecords()).toHaveLength(48_866);
+    expect(repository?.listRecords()).toHaveLength(48_999);
     expect(repository?.getArtifact().period).toBe('2026-02/2026-08');
     expect(new Set(repository?.listRecords().map(({ districtSlug }) => districtSlug)).size).toBe(25);
   });

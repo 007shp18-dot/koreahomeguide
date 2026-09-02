@@ -206,6 +206,22 @@ describe('Korea rental evidence distributions', () => {
     });
   });
 
+  it('publishes a full-market cohort without overflowing the argument stack', () => {
+    const records = Array.from({ length: 200_000 }, (_, index) => rentRecord(
+      59,
+      index === 0 ? 100_000_000 : index === 199_999 ? 900_000_000 : 500_000_000,
+      0,
+    ));
+
+    expect(distribution(records)).toMatchObject({
+      n: 200_000,
+      published: true,
+      min: 100_000_000,
+      med: 500_000_000,
+      max: 900_000_000,
+    });
+  });
+
   it('publishes monthly rent as the primary metric and filed deposit separately', () => {
     const records = [
       rentRecord(50, 50_000_000, 500_000),

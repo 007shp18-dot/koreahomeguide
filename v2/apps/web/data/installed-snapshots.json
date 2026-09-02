@@ -5,14 +5,53 @@
       "marketId": "kr-seoul",
       "dataset": "kr-building-registry",
       "schemaVersion": "signedprice-observed-building-inventory-v1",
-      "sourceVersion": "molit-rent-v1",
+      "sourceVersion": "v1",
       "parserVersion": "kr-molit-building-parser-v2",
       "rightsPolicyId": "kr-molit-rent-v1",
       "period": "2026-02/2026-08",
-      "generatedAt": "2026-09-01T15:54:22.850Z",
+      "generatedAt": "2026-09-02T00:00:00.000Z",
       "objectUrl": "installed://kr-building-registry",
-      "sha256": "2609c16eafd2f3be1de6b0f05da525d32e07f1f39555958a4a8042f20fcbcd41",
-      "recordCount": 48866
+      "sha256": "3a9f4d73dbfd54c0aaeff124db888771acbc2405eec77c6c90eaae7691e4c8a1",
+      "recordCount": 48999
+    },
+    {
+      "marketId": "kr-seoul",
+      "dataset": "kr-rent",
+      "schemaVersion": "signedprice-korea-rent-evidence-v2",
+      "sourceVersion": "v1",
+      "parserVersion": "kr-molit-rent-parser-v2",
+      "rightsPolicyId": "kr-molit-rent-v1",
+      "period": "2026-02/2026-08",
+      "generatedAt": "2026-09-02T00:00:00.000Z",
+      "objectUrl": "installed://kr-rent",
+      "sha256": "da3ead4eaf43c2cecd8a7dd3ec51ee0a03e8e9dd885a1698ff9a8b66ddb26f5f",
+      "recordCount": 49129
+    },
+    {
+      "marketId": "kr-seoul",
+      "dataset": "kr-sale",
+      "schemaVersion": "signedprice-korea-sale-evidence-v1",
+      "sourceVersion": "v1",
+      "parserVersion": "kr-molit-sale-parser-v1",
+      "rightsPolicyId": "kr-molit-sale-v1",
+      "period": "2026-02/2026-08",
+      "generatedAt": "2026-09-02T00:00:00.000Z",
+      "objectUrl": "installed://kr-sale",
+      "sha256": "c27c2c051e05e2d418782d7f96bcda921c58b54d1703c251962d59fc6d2a3dd3",
+      "recordCount": 22850
+    },
+    {
+      "marketId": "kr-seoul",
+      "dataset": "kr-conversion",
+      "schemaVersion": "1",
+      "sourceVersion": "v1",
+      "parserVersion": "kr-molit-rent-parser-v2",
+      "rightsPolicyId": "kr-molit-rent-v1",
+      "period": "2026-02/2026-08",
+      "generatedAt": "2026-09-02T00:00:00.000Z",
+      "objectUrl": "installed://kr-conversion",
+      "sha256": "ca61bbfad4e86d9b9c6372bf780c0f5e8e9e58f936ff9d5f23b80cd35d8e5d74",
+      "recordCount": 1031799
     }
   ]
 }

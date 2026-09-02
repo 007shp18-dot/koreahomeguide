@@ -10,7 +10,12 @@ describe('Next monorepo file boundary', () => {
     expect(nextConfig.turbopack?.root).toBe(repositoryRoot);
     expect(nextConfig.outputFileTracingRoot).toBe(repositoryRoot);
     expect(nextConfig.outputFileTracingIncludes).toMatchObject({
-      '/*': ['./data/observed-building-inventory.json.gz'],
+      '/*': [
+        './data/observed-building-inventory.json.gz',
+        './data/korea-rent-evidence.json.gz',
+        './data/korea-sale-evidence.json.gz',
+        './data/korea-conversion-evidence.json.gz',
+      ],
     });
   });
 });
