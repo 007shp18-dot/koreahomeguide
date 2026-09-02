@@ -18,6 +18,7 @@ export const publicRoutes = [
     heading: 'Which rent offer actually costs less?',
     indexing: 'index',
     canonical: '/kr/seoul/check/compare/',
+    alternates: true,
   },
   { path: '/kr/seoul/rent/', heading: 'Rent in Seoul', indexing: 'noindex' },
   {
