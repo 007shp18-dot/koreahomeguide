@@ -313,6 +313,9 @@ function ReadyAreaExplorer({
     model.evidenceSelection.housingType,
   );
   const [buildingQuery, setBuildingQuery] = useState(initialQuery);
+  const [districtDirectoryOpen, setDistrictDirectoryOpen] = useState(
+    initialSelection.district === undefined,
+  );
   const [buildingSelection, dispatchBuildingSelection] = useReducer(
     buildingExplorerSelectionReducer,
     Object.freeze({
@@ -414,6 +417,7 @@ function ReadyAreaExplorer({
 
   const selectDistrict = (slug: string): void => {
     dispatch({ type: 'select', slug });
+    setDistrictDirectoryOpen(false);
     setSelectedNeighborhood('all');
     setSelectedHousingType('all');
     setBuildingQuery('');
@@ -805,6 +809,11 @@ function ReadyAreaExplorer({
             <p className={styles.selectedLabel}>
               {copy.selected} · {locale === 'ko' ? selected.nameKo : selected.nameEn}
             </p>
+            <strong>{selected.medianLabel ?? copy.notPublished}</strong>
+            <small>{localizeSampleLabel(selected.sampleLabel, locale)} · {model.source.period}</small>
+          </div>
+          <details className={styles.districtEvidenceDisclosure}>
+            <summary>{locale === 'ko' ? '신규·갱신 및 분포 보기' : 'View new, renewal and distribution'}</summary>
             <DistrictEvidenceSummary
               key={selected.slug}
               model={selected.contractEvidence}
@@ -814,12 +823,18 @@ function ReadyAreaExplorer({
               medianLabel={usesLegacyCopy ? undefined : exactMetricCopy.medianLabel}
               showContractGroups={model.evidenceSelection.transaction !== 'sale'}
             />
-          </div>
-          <section className={styles.districtRail} data-district-rail="all-25" aria-label={locale === 'ko' ? '서울 25개 구' : 'All 25 Seoul districts'}>
-            <div className={styles.districtRailHeading}>
+          </details>
+          <details
+            className={styles.districtRail}
+            data-district-rail="all-25"
+            aria-label={locale === 'ko' ? '서울 25개 구' : 'All 25 Seoul districts'}
+            open={districtDirectoryOpen}
+            onToggle={(event) => setDistrictDirectoryOpen(event.currentTarget.open)}
+          >
+            <summary className={styles.districtRailHeading}>
               <span>{locale === 'ko' ? '지역' : 'Districts'}</span>
               <strong>25</strong>
-            </div>
+            </summary>
             <ol>
               {model.districts.map((district) => (
                 <li key={district.slug}>
@@ -838,7 +853,7 @@ function ReadyAreaExplorer({
                 </li>
               ))}
             </ol>
-          </section>
+          </details>
           <section className={styles.rail} aria-labelledby="district-table-heading">
           <div className={styles.buildingBrowser} data-building-browser={selected.slug} data-explorer-region="results">
             <div className={styles.sectionHeading}>

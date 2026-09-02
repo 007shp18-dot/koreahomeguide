@@ -373,7 +373,13 @@
   font-size: .66rem;
   font-weight: 850;
   text-transform: uppercase;
+  cursor: pointer;
+  list-style: none;
 }
+
+.districtRailHeading::-webkit-details-marker { display: none; }
+.districtRailHeading::after { content: '+'; font-size: 1rem; }
+.districtRail[open] .districtRailHeading::after { content: '−'; }
 
 .districtRail ol {
   list-style: none;
@@ -881,9 +887,34 @@
 }
 
 .selectedDetail {
+  min-height: 94px;
+  padding: .85rem;
   display: grid;
-  gap: 0.5rem;
+  align-content: center;
+  gap: .25rem .75rem;
+  border-bottom: var(--rule-strong);
+  background: var(--area-ground);
 }
+
+.selectedDetail > strong { font-size: clamp(1.15rem, 2vw, 1.55rem); }
+.selectedDetail > small { color: var(--area-muted); font-size: .62rem; }
+.districtEvidenceDisclosure { border-bottom: var(--rule-strong); }
+.districtEvidenceDisclosure > summary {
+  min-height: 44px;
+  padding: .65rem .85rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--area-ink);
+  background: var(--surface-strong);
+  font-size: .66rem;
+  font-weight: 850;
+  cursor: pointer;
+  list-style: none;
+}
+.districtEvidenceDisclosure > summary::-webkit-details-marker { display: none; }
+.districtEvidenceDisclosure > summary::after { content: '+'; font-size: 1rem; }
+.districtEvidenceDisclosure[open] > summary::after { content: '−'; }
 
 .selectedLabel {
   color: var(--area-accent);
