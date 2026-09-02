@@ -24,27 +24,47 @@ type BuiltArtifact = Readonly<{
 type BuiltRentArtifact = BuiltArtifact & Readonly<{ recordCount: number }>;
 type BuiltConversionArtifact = BuiltArtifact & Readonly<{ eligiblePairCount: number }>;
 
-function encodeArtifact(
-  dataset: 'kr-rent' | 'kr-building-registry' | 'kr-conversion',
-  built: BuiltArtifact,
-  recordCount: number,
-): Readonly<{
+const ARTIFACT_CHUNK_CHAR_LIMIT = 512 * 1024;
+
+type EncodedArtifact = Readonly<{
   dataset: 'kr-rent' | 'kr-building-registry' | 'kr-conversion';
   sha256: string;
   recordCount: number;
   encoding: 'gzip+base64';
   compressedBytes: number;
+  chunkCount: number;
   payload: string;
-}> {
+}>;
+
+function encodeArtifact(
+  dataset: 'kr-rent' | 'kr-building-registry' | 'kr-conversion',
+  built: BuiltArtifact,
+  recordCount: number,
+): EncodedArtifact {
   const compressed = gzipSync(Buffer.from(built.serialized, 'utf8'), { level: 9 });
+  const payload = compressed.toString('base64');
   return Object.freeze({
     dataset,
     sha256: built.sha256,
     recordCount,
     encoding: 'gzip+base64',
     compressedBytes: compressed.byteLength,
-    payload: compressed.toString('base64'),
+    chunkCount: Math.max(1, Math.ceil(payload.length / ARTIFACT_CHUNK_CHAR_LIMIT)),
+    payload,
   });
+}
+
+function artifactMetadata(encoded: EncodedArtifact): Omit<EncodedArtifact, 'payload'> {
+  const { payload: _payload, ...metadata } = encoded;
+  return Object.freeze(metadata);
+}
+
+function artifactChunk(encoded: EncodedArtifact, chunk: number): string | undefined {
+  if (chunk < 0 || chunk >= encoded.chunkCount) return undefined;
+  return encoded.payload.slice(
+    chunk * ARTIFACT_CHUNK_CHAR_LIMIT,
+    (chunk + 1) * ARTIFACT_CHUNK_CHAR_LIMIT,
+  );
 }
 
 export type KoreaRentSnapshotJobHandlerDependencies = Readonly<{
@@ -199,6 +219,20 @@ export function createKoreaRentSnapshotRunnerPage(
         status.textContent = 'Finalizing verified rent, building, and conversion artifacts…';
         const result = await post({ action: 'finalize', referenceInstant }, runnerToken);
         if (result.status !== 'ready' || result.completedCoordinates !== 700 || typeof result.artifacts !== 'object' || result.artifacts === null) throw new Error('invalid_artifact');
+        for (const artifact of Object.values(result.artifacts)) {
+          if (artifact.status === 'unavailable') continue;
+          const chunks = [];
+          for (let chunk = 0; chunk < artifact.chunkCount; chunk += 1) {
+            status.textContent = 'Downloading ' + artifact.dataset + ' chunk ' + (chunk + 1) + '/' + artifact.chunkCount + '…';
+            const part = await post({
+              action: 'artifact', referenceInstant,
+              dataset: artifact.dataset, chunk,
+            }, runnerToken);
+            if (part.status !== 'chunk' || part.dataset !== artifact.dataset || part.sha256 !== artifact.sha256 || part.chunk !== chunk || part.chunkCount !== artifact.chunkCount || typeof part.payload !== 'string' || part.payload.length > 524288) throw new Error('invalid_artifact_chunk');
+            chunks.push(part.payload);
+          }
+          artifact.payload = chunks.join('');
+        }
         const blob = new Blob([JSON.stringify(result, null, 2) + '\\n'], { type: 'application/json' });
         download.href = URL.createObjectURL(blob); download.hidden = false;
         const conversionStatus = result.artifacts.conversion.status === 'unavailable'
@@ -275,6 +309,69 @@ export function createKoreaRentSnapshotJobHandler(
       }
     }
 
+    if (body.action === 'artifact') {
+      if (
+        Object.keys(body).length !== 4
+        || !['kr-rent', 'kr-building-registry', 'kr-conversion'].includes(
+          body.dataset as string,
+        )
+        || !Number.isSafeInteger(body.chunk)
+        || (body.chunk as number) < 0
+      ) return json({ status: 'error', code: 'invalid_request' }, 400);
+      try {
+        const finalized = await dependencies.finalize({
+          referenceInstant: body.referenceInstant,
+        });
+        if (finalized.completedCoordinates !== 700) {
+          return json({ status: 'error', code: 'source_coverage_incomplete' }, 409);
+        }
+        let encoded: EncodedArtifact;
+        if (body.dataset === 'kr-rent') {
+          const rent = await dependencies.buildRentArtifact(finalized.evidence);
+          encoded = encodeArtifact('kr-rent', rent, rent.recordCount);
+        } else if (body.dataset === 'kr-building-registry') {
+          const buildingRegistry = await dependencies.buildInventoryArtifact(finalized.inventory);
+          encoded = encodeArtifact(
+            'kr-building-registry',
+            buildingRegistry,
+            finalized.inventory.records.length,
+          );
+        } else {
+          const conversion = await dependencies.buildConversionArtifact({
+            records: finalized.conversionRecords,
+            period: finalized.period,
+            generatedAt: finalized.generatedAt,
+          });
+          encoded = encodeArtifact(
+            'kr-conversion',
+            conversion,
+            conversion.eligiblePairCount,
+          );
+        }
+        const chunk = body.chunk as number;
+        const payload = artifactChunk(encoded, chunk);
+        if (payload === undefined) return json({ status: 'error', code: 'invalid_request' }, 400);
+        return json({
+          status: 'chunk',
+          ...artifactMetadata(encoded),
+          chunk,
+          payload,
+        }, 200);
+      } catch (error) {
+        if (
+          error instanceof TypeError
+          && error.message === 'Public summary source coverage is incomplete.'
+        ) return json({ status: 'error', code: 'source_coverage_incomplete' }, 409);
+        if (
+          error instanceof TypeError
+          && error.message === (
+            'Source data did not meet the publication floor for required conversion curves.'
+          )
+        ) return json({ status: 'error', code: 'publication_floor_not_met' }, 409);
+        return json({ status: 'error', code: 'job_unavailable' }, 503);
+      }
+    }
+
     if (body.action === 'finalize' && Object.keys(body).length === 2) {
       try {
         const finalized = await dependencies.finalize({
@@ -322,19 +419,17 @@ export function createKoreaRentSnapshotJobHandler(
           period: finalized.period,
           generatedAt: finalized.generatedAt,
           artifacts: {
-            rent: encodeArtifact('kr-rent', rent, rent.recordCount),
-            buildingRegistry: encodeArtifact(
-              'kr-building-registry',
-              buildingRegistry,
-              finalized.inventory.records.length,
-            ),
+            rent: artifactMetadata(encodeArtifact('kr-rent', rent, rent.recordCount)),
+            buildingRegistry: artifactMetadata(encodeArtifact(
+              'kr-building-registry', buildingRegistry, finalized.inventory.records.length,
+            )),
             conversion: 'status' in conversion
               ? conversion
-              : encodeArtifact(
+              : artifactMetadata(encodeArtifact(
                 'kr-conversion',
                 conversion,
                 conversion.eligiblePairCount,
-              ),
+              )),
           },
         }, 200);
       } catch (error) {

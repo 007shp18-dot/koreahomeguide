@@ -179,7 +179,7 @@ describe('Korea rent snapshot internal job handler', () => {
           recordCount: 131,
           encoding: 'gzip+base64',
           compressedBytes: expect.any(Number),
-          payload: expect.any(String),
+          chunkCount: expect.any(Number),
         },
         buildingRegistry: {
           dataset: 'kr-building-registry',
@@ -187,7 +187,7 @@ describe('Korea rent snapshot internal job handler', () => {
           recordCount: 1,
           encoding: 'gzip+base64',
           compressedBytes: expect.any(Number),
-          payload: expect.any(String),
+          chunkCount: expect.any(Number),
         },
         conversion: {
           dataset: 'kr-conversion',
@@ -195,11 +195,12 @@ describe('Korea rent snapshot internal job handler', () => {
           recordCount: 240,
           encoding: 'gzip+base64',
           compressedBytes: expect.any(Number),
-          payload: expect.any(String),
+          chunkCount: expect.any(Number),
         },
       },
     });
     expect(JSON.stringify(payload)).not.toContain('artifactVersion');
+    expect(JSON.stringify(payload)).not.toContain('"payload"');
     expect(deps.buildRentArtifact).toHaveBeenCalledOnce();
     expect(deps.buildInventoryArtifact).toHaveBeenCalledOnce();
     expect(deps.buildConversionArtifact).toHaveBeenCalledWith({
@@ -207,6 +208,30 @@ describe('Korea rent snapshot internal job handler', () => {
       period: '2026-01/2026-07',
       generatedAt: referenceInstant,
     });
+  });
+
+  it('returns one bounded encoded artifact chunk at a time', async () => {
+    const handler = createKoreaRentSnapshotJobHandler(dependencies() as never);
+    const response = await handler(request({
+      action: 'artifact',
+      referenceInstant,
+      dataset: 'kr-rent',
+      chunk: 0,
+    }));
+    const payload = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(payload).toMatchObject({
+      status: 'chunk',
+      dataset: 'kr-rent',
+      sha256: 'a'.repeat(64),
+      recordCount: 131,
+      encoding: 'gzip+base64',
+      chunk: 0,
+      chunkCount: 1,
+      payload: expect.any(String),
+    });
+    expect(payload.payload.length).toBeLessThanOrEqual(512 * 1024);
   });
 
   it('publishes rent and buildings when conversion evidence misses its floor', async () => {
