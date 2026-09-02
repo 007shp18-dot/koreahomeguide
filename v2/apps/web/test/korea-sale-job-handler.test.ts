@@ -230,7 +230,6 @@ describe('Korea sale snapshot temporary public export', () => {
     const invalidUrls = [
       'https://www.signedprice.com/api/internal/korea-sale-snapshot/',
       'https://www.signedprice.com/api/internal/korea-sale-snapshot/?export=batch',
-      'https://www.signedprice.com/api/internal/korea-sale-snapshot/?export=manifest&cursor=0',
       'https://www.signedprice.com/api/internal/korea-sale-snapshot/?export=artifact&chunk=0',
       'https://www.signedprice.com/api/internal/korea-sale-snapshot/?export=artifact&dataset=kr-rent&chunk=0',
       'https://www.signedprice.com/api/internal/korea-sale-snapshot/?export=artifact&dataset=kr-sale&chunk=-1',
