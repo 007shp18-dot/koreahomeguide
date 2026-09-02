@@ -184,6 +184,16 @@ function change3m(
   return Math.round(((median(latest) - before) / before) * 1_000) / 10;
 }
 
+function monetaryExtrema(values: readonly number[]): Readonly<{ min: number; max: number }> {
+  let min = Number.POSITIVE_INFINITY;
+  let max = Number.NEGATIVE_INFINITY;
+  for (const value of values) {
+    if (value < min) min = value;
+    if (value > max) max = value;
+  }
+  return Object.freeze({ min, max });
+}
+
 export function buildRentEvidenceDistribution(
   input: BuildRentEvidenceDistributionInput,
 ): KoreaEvidenceDistribution {
@@ -198,14 +208,15 @@ export function buildRentEvidenceDistribution(
   if (values.length < PUBLICATION_MINIMUM) {
     return Object.freeze({ n: values.length, published: false });
   }
+  const { min, max } = monetaryExtrema(values);
   return Object.freeze({
     n: values.length,
     published: true,
-    min: roundWon(Math.min(...values)),
+    min: roundWon(min),
     p25: roundWon(percentile(values, 0.25)),
     med: roundWon(median(values)),
     p75: roundWon(percentile(values, 0.75)),
-    max: roundWon(Math.max(...values)),
+    max: roundWon(max),
     chg3m: change3m(selected, input.completedMonths, input.transaction, input.metric),
   });
 }
