@@ -34,6 +34,7 @@ vi.mock('../components/maps/naver-district-map', () => ({
 import {
   AreaExplorer,
   createKoreaBuildingDetailHref,
+  createKoreaDistrictHref,
   createExploreBuildingSelectionHref,
   createKoreaProximitySelectorHref,
   withKoreaProximityPairs,
@@ -229,6 +230,14 @@ describe('Korea Explore proximity route model', () => {
     const selection = { market: 'kr' as const, transaction: 'jeonse' as const, station: 'station-a', stationDistance: 250 as const, school: 'school-a', schoolDistance: 500 as const };
     expect(withKoreaProximityPairs('/kr/seoul/explore/?district=jongno-gu', selection)).toBe('/kr/seoul/explore/?district=jongno-gu&station=station-a&stationDistance=250&school=school-a&schoolDistance=500');
     expect(withKoreaProximityPairs('/kr/seoul/explore/?district=gangnam-gu&neighborhood=yeoksam-dong', selection)).toContain('station=station-a&stationDistance=250&school=school-a&schoolDistance=500');
+  });
+  it('uses the canonical district path while preserving non-district state', () => {
+    expect(createKoreaDistrictHref('jongno-gu', {
+      market: 'kr', transaction: 'monthly', area: '60-85', propertyType: 'apartment',
+      district: 'gangnam-gu', neighborhood: 'yeoksam-dong', buildingId: 'tower',
+      station: 'station-a', stationDistance: 250,
+      school: 'school-a', schoolDistance: 500,
+    }, 'en')).toBe('/kr/seoul/explore/jongno-gu/?transaction=monthly&area=60-85&propertyType=apartment&station=station-a&stationDistance=250&school=school-a&schoolDistance=500');
   });
   it('filters the full installed identity set before page slicing and reconciles excluded selections', () => {
     const repositories = koreaEvidenceRepositoriesFromEnvironment({ useCheckedInSnapshot: true, retainLastVerified: false });
@@ -505,10 +514,10 @@ describe('Korea Explore proximity route model', () => {
     />);
 
     for (const district of model.districts) {
-      const query = `transaction=monthly&amp;area=60-85&amp;propertyType=apartment&amp;district=${district.slug}&amp;contractType=renewal&amp;sort=median-asc&amp;view=table&amp;station=station-a&amp;stationDistance=250&amp;school=school-a&amp;schoolDistance=500`;
-      expect(html.split(`href="/ko/kr/seoul/explore?${query}"`)).toHaveLength(3);
+      const query = 'transaction=monthly&amp;area=60-85&amp;propertyType=apartment&amp;contractType=renewal&amp;sort=median-asc&amp;view=table&amp;station=station-a&amp;stationDistance=250&amp;school=school-a&amp;schoolDistance=500';
+      expect(html.split(`href="/ko/kr/seoul/explore/${district.slug}?${query}"`)).toHaveLength(3);
       expect(html).toContain(
-        `data-map-district-anchor="${district.slug}" href="/ko/kr/seoul/explore/?${query}"`,
+        `data-map-district-anchor="${district.slug}" href="/ko/kr/seoul/explore/${district.slug}/?${query}"`,
       );
     }
   });
