@@ -358,6 +358,23 @@ describe('Korea rent snapshot temporary public export', () => {
     expect(JSON.stringify(payload)).not.toContain(token);
   });
 
+  it('ignores only Vercel access query parameters added by the deployment fetcher', async () => {
+    const postHandler = vi.fn(async (request: Request) => {
+      void request;
+      return Response.json({ status: 'ready' });
+    });
+    const handler = exportHandler({ postHandler });
+    const response = await handler(new Request(
+      'https://www.signedprice.com/api/internal/korea-rent-snapshot/'
+      + '?export=manifest'
+      + '&x-vercel-protection-bypass=opaque'
+      + '&x-vercel-set-bypass-cookie=true',
+    ));
+
+    expect(response.status).toBe(200);
+    expect(postHandler).toHaveBeenCalledOnce();
+  });
+
   it('proxies only an allowlisted artifact chunk at the fixed instant', async () => {
     const postHandler = vi.fn(async (request: Request) => {
       void request;

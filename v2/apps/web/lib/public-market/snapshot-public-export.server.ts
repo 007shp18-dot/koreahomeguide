@@ -27,8 +27,15 @@ function empty(status: number, allow?: string): Response {
   return new Response(null, { status, headers });
 }
 
+const VERCEL_ACCESS_QUERY_PARAMETERS = new Set([
+  'x-vercel-protection-bypass',
+  'x-vercel-set-bypass-cookie',
+]);
+
 function exactEntries(url: URL): ReadonlyArray<readonly [string, string]> {
-  return Array.from(url.searchParams.entries());
+  return Array.from(url.searchParams.entries()).filter(
+    ([key]) => !VERCEL_ACCESS_QUERY_PARAMETERS.has(key),
+  );
 }
 
 function isCanonicalChunk(value: string | null): value is string {
