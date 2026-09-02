@@ -39,11 +39,11 @@ test('map and table select the same reload-safe district workspace', async ({ pa
   } else {
     await page.locator('[data-district-row="jongno-gu"] a').first().click();
   }
-  await expect(page).toHaveURL(/\/kr\/seoul\/explore\/\?district=jongno-gu$/);
+  await expect(page).toHaveURL(/\/kr\/seoul\/explore\/jongno-gu\/$/);
   await expect(page.locator('[data-building-browser="jongno-gu"]')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Jongno-gu building evidence' })).toBeVisible();
   await page.reload();
-  await expect(page).toHaveURL(/\/kr\/seoul\/explore\/\?district=jongno-gu$/);
+  await expect(page).toHaveURL(/\/kr\/seoul\/explore\/jongno-gu\/$/);
   await expect(page.locator('[data-building-browser="jongno-gu"]')).toBeVisible();
   if (releaseTarget.usesExternalServer) {
     const ready = await page.locator('[data-building-browser="jongno-gu"] ul button').count();
