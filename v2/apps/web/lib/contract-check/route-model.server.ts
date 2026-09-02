@@ -94,18 +94,36 @@ function installedConversionDependencies(
   }
 }
 
-function repositoryFor(dependencies: ContractCheckRouteDependencies) {
-  const selected = installedConversionDependencies(dependencies) ?? dependencies;
+function conversionRepositoryFor(dependencies: ContractCheckRouteDependencies) {
   return createConversionRepository({
-    source: selected.source,
+    source: dependencies.source,
     expected: {
       marketId: 'kr-seoul',
-      period: selected.period,
-      sha256: selected.sha256,
+      period: dependencies.period,
+      sha256: dependencies.sha256,
       rightsLookup,
     },
-    referenceInstant: selected.referenceInstant,
+    referenceInstant: dependencies.referenceInstant,
   });
+}
+
+function validatedRepositoryFor(dependencies: ContractCheckRouteDependencies) {
+  const repository = conversionRepositoryFor(dependencies);
+  repository.getCurve('apartment');
+  repository.getCurve('officetel');
+  return repository;
+}
+
+function repositoryFor(dependencies: ContractCheckRouteDependencies) {
+  const installed = installedConversionDependencies(dependencies);
+  if (installed !== null) {
+    try {
+      return validatedRepositoryFor(installed);
+    } catch {
+      // Retry the compatibility environment source below.
+    }
+  }
+  return validatedRepositoryFor(dependencies);
 }
 
 export function diagnoseConversionEnvironment(input: Readonly<{
@@ -128,7 +146,7 @@ export function diagnoseConversionEnvironment(input: Readonly<{
     return Object.freeze({ code: 'artifact_json_invalid' });
   }
   try {
-    const repository = repositoryFor({
+    const repository = conversionRepositoryFor({
       source,
       period: input.period,
       sha256: input.sha256,

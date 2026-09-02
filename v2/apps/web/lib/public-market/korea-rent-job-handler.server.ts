@@ -24,13 +24,17 @@ type BuiltArtifact = Readonly<{
 }>;
 
 type BuiltRentArtifact = BuiltArtifact & Readonly<{ recordCount: number }>;
-type BuiltConversionArtifact = BuiltArtifact & Readonly<{ eligiblePairCount: number }>;
+type BuiltConversionArtifact = BuiltArtifact & Readonly<{
+  objectSha256: string;
+  eligiblePairCount: number;
+}>;
 
 const ARTIFACT_CHUNK_CHAR_LIMIT = 512 * 1024;
 
 type EncodedArtifact = Readonly<{
   dataset: 'kr-rent' | 'kr-building-registry' | 'kr-conversion';
   sha256: string;
+  sourceSha256?: string;
   recordCount: number;
   encoding: 'gzip+base64';
   compressedBytes: number;
@@ -40,14 +44,18 @@ type EncodedArtifact = Readonly<{
 
 function encodeArtifact(
   dataset: 'kr-rent' | 'kr-building-registry' | 'kr-conversion',
-  built: BuiltArtifact,
+  built: BuiltArtifact | BuiltConversionArtifact,
   recordCount: number,
 ): EncodedArtifact {
   const compressed = gzipSync(Buffer.from(built.serialized, 'utf8'), { level: 9 });
   const payload = compressed.toString('base64');
+  const conversion = dataset === 'kr-conversion'
+    ? built as BuiltConversionArtifact
+    : undefined;
   return Object.freeze({
     dataset,
-    sha256: built.sha256,
+    sha256: conversion?.objectSha256 ?? built.sha256,
+    ...(conversion === undefined ? {} : { sourceSha256: conversion.sha256 }),
     recordCount,
     encoding: 'gzip+base64',
     compressedBytes: compressed.byteLength,

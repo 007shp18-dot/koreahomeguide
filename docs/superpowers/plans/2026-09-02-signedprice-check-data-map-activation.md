@@ -40,7 +40,7 @@ Add a conversion fixture with `artifactVersion: 1`, `provenance.marketId`, `prov
 
 - [ ] **Step 2: Run the focused test and observe the intended failure**
 
-Run: `pnpm --filter @signedprice/web test -- installed-snapshot-repository.test.ts`
+Run from `v2/`: `pnpm exec vitest run apps/web/test/installed-snapshot-repository.test.ts`
 
 Expected: FAIL because `installed://kr-conversion` is unresolved and conversion payload identity has no record count.
 
@@ -50,7 +50,7 @@ Add a cached conversion artifact reader with the same two working-directory cand
 
 - [ ] **Step 4: Run the focused test**
 
-Run: `pnpm --filter @signedprice/web test -- installed-snapshot-repository.test.ts`
+Run from `v2/`: `pnpm exec vitest run apps/web/test/installed-snapshot-repository.test.ts`
 
 Expected: PASS.
 
@@ -77,7 +77,7 @@ Create a real `createInstalledSnapshotRepository` around the literal valid conve
 
 - [ ] **Step 2: Run the focused test and observe the intended failure**
 
-Run: `pnpm --filter @signedprice/web test -- contract-check-route-model.test.ts`
+Run from `v2/`: `pnpm exec vitest run apps/web/test/contract-check-route-model.test.ts`
 
 Expected: FAIL because the route model only consumes serialized environment evidence.
 
@@ -87,7 +87,7 @@ Keep the public route model synchronous. Load the installed repository at module
 
 - [ ] **Step 4: Run route and repository tests**
 
-Run: `pnpm --filter @signedprice/web test -- contract-check-route-model.test.ts contract-check-repository.test.ts installed-snapshot-repository.test.ts`
+Run from `v2/`: `pnpm exec vitest run apps/web/test/contract-check-route-model.test.ts apps/web/test/contract-check-repository.test.ts apps/web/test/installed-snapshot-repository.test.ts`
 
 Expected: PASS.
 
@@ -115,7 +115,7 @@ Render the real public Explore page with a configured Naver client and a coordin
 
 - [ ] **Step 2: Run the focused test and observe the intended failure**
 
-Run: `pnpm --filter @signedprice/web test -- public-area-explorer.test.tsx`
+Run from `v2/`: `pnpm exec vitest run apps/web/test/public-area-explorer.test.tsx`
 
 Expected: FAIL because `mapBuildings` omits `allowAddressGeocoding`.
 
@@ -125,7 +125,7 @@ Add `allowAddressGeocoding: naverMapClientId !== null && building.latitude === n
 
 - [ ] **Step 4: Run map tests**
 
-Run: `pnpm --filter @signedprice/web test -- public-area-explorer.test.tsx naver-district-map.test.tsx`
+Run from `v2/`: `pnpm exec vitest run apps/web/test/public-area-explorer.test.tsx apps/web/test/naver-district-map.test.tsx`
 
 Expected: PASS, including SDK success, failure, stale-callback, and no-key branches.
 
@@ -157,7 +157,7 @@ Reapply only the seven-file delta that adds `allowCollection`, Production-only f
 
 - [ ] **Step 2: Run handler security tests**
 
-Run: `pnpm --filter @signedprice/web test -- korea-rent-job-handler.test.ts korea-sale-job-handler.test.ts`
+Run from `v2/`: `pnpm exec vitest run apps/web/test/korea-rent-job-handler.test.ts apps/web/test/korea-sale-job-handler.test.ts`
 
 Expected: PASS; local/Preview collection remains absent, non-multiple-of-four and out-of-range cursors return 400, POST returns 405, and secrets never appear in responses.
 
@@ -197,7 +197,7 @@ Use `installed://kr-rent`, `installed://kr-sale`, `installed://kr-conversion`, a
 
 - [ ] **Step 2: Run repository and public-route integration tests**
 
-Run: `pnpm --filter @signedprice/web test -- installed-snapshot-repository.test.ts public-korea-routes.test.tsx contract-check-route-model.test.ts`
+Run from `v2/`: `pnpm exec vitest run apps/web/test/installed-snapshot-repository.test.ts apps/web/test/public-korea-routes.test.tsx apps/web/test/contract-check-route-model.test.ts`
 
 Expected: PASS; Explore enables monthly rent and sale from their own artifacts, and Check enables both conversion curves.
 

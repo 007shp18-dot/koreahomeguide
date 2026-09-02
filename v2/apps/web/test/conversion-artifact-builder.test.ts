@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
@@ -57,6 +58,10 @@ describe('Korea conversion artifact builder', () => {
     });
 
     expect(built.sha256).toMatch(/^[a-f0-9]{64}$/);
+    expect(built.objectSha256).toBe(
+      createHash('sha256').update(built.serialized).digest('hex'),
+    );
+    expect(built.objectSha256).not.toBe(built.sha256);
     expect(built.eligiblePairCount).toBe(8);
     const verified = parseKoreaConversionArtifact(
       built.artifact,

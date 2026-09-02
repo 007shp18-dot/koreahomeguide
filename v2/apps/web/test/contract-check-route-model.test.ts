@@ -150,6 +150,25 @@ describe('Contract Check route model', () => {
     ]);
   });
 
+  test('falls back to valid environment evidence when an installed snapshot is stale', () => {
+    const stale = validSource();
+    stale.generatedAt = '2025-01-01T00:00:00.000Z';
+    const model = buildContractCheckRouteModel({
+      source: validSource(),
+      period: '2026-03/2026-08',
+      sha256: SHA256,
+      referenceInstant: REFERENCE_INSTANT,
+      installedRepository: installedConversionRepository(stale),
+    });
+
+    expect(model.status).toBe('ready');
+    if (model.status !== 'ready') throw new Error('Expected environment fallback evidence.');
+    expect(model.curves.map(({ housingType }) => housingType)).toEqual([
+      'apartment',
+      'officetel',
+    ]);
+  });
+
   test('exposes only calculation evidence, disclosure, and the approved IA', () => {
     const model = buildContractCheckRouteModel({
       source: validSource(),

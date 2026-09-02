@@ -21,6 +21,7 @@ const MAXIMUM_AGE_DAYS = 45;
 export type BuiltKoreaConversionArtifact = Readonly<{
   artifact: Readonly<Record<string, unknown>>;
   serialized: string;
+  objectSha256: string;
   sha256: string;
   eligiblePairCount: number;
 }>;
@@ -102,6 +103,7 @@ export async function buildKoreaConversionArtifact(
   return Object.freeze({
     artifact,
     serialized: encoded.serialized,
+    objectSha256: encoded.sha256,
     sha256: sourceDigest,
     eligiblePairCount: build.eligiblePairCount,
   });

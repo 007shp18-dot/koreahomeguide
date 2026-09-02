@@ -15,6 +15,7 @@ import {
   isNaverMapsSdkReady,
   mountNaverDistrictMap,
   reconcileNaverDistrictMap,
+  resolveUnambiguousNaverGeocode,
 } from '../components/maps/naver-district-map';
 import type { ExploreBuildingModel } from '../lib/public-market/area-route-types';
 import * as explorerState from '../lib/public-market/area-explorer-state';
@@ -28,6 +29,28 @@ const districts = [{
 }] as const;
 
 describe('NAVER district map', () => {
+  it('accepts only one geocode whose returned locality matches the normalized query', () => {
+    const matching = {
+      x: '127.031',
+      y: '37.501',
+      roadAddress: '서울특별시 강남구 테헤란로 1',
+      jibunAddress: '서울특별시 강남구 역삼동 1',
+    };
+
+    expect(resolveUnambiguousNaverGeocode(
+      '서울특별시 강남구 역삼동 Evidence Tower',
+      [matching],
+    )).toBe(matching);
+    expect(resolveUnambiguousNaverGeocode(
+      '서울특별시 강남구 역삼동 Evidence Tower',
+      [matching, { ...matching, x: '127.041' }],
+    )).toBeNull();
+    expect(resolveUnambiguousNaverGeocode(
+      '서울특별시 강남구 역삼동 Evidence Tower',
+      [{ ...matching, jibunAddress: '서울특별시 강남구 삼성동 1' }],
+    )).toBeNull();
+  });
+
   it('loads the official Maps v3 endpoint without geocoding by default', () => {
     expect(buildNaverMapsScriptUrl('client/id + value')).toBe(
       'https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=client%2Fid+%2B+value',
@@ -258,10 +281,19 @@ describe('NAVER district map', () => {
         Status: { OK: 'OK' },
         geocode: (
           input: Readonly<{ query: string }>,
-          callback: (status: string, response: { v2: { addresses: { x: string; y: string }[] } }) => void,
+          callback: (status: string, response: { v2: { addresses: {
+            x: string;
+            y: string;
+            roadAddress?: string;
+            jibunAddress?: string;
+          }[] } }) => void,
         ) => {
           queries.push(input.query);
-          callback('OK', { v2: { addresses: [{ x: '127.031', y: '37.501' }] } });
+          callback('OK', { v2: { addresses: [{
+            x: '127.031', y: '37.501',
+            roadAddress: '서울특별시 강남구 테헤란로 1',
+            jibunAddress: '서울특별시 강남구 역삼동 1',
+          }] } });
         },
       },
     };
@@ -284,6 +316,54 @@ describe('NAVER district map', () => {
       title: 'Evidence Tower',
     });
     expect(mounted.unavailableBuildingIds).toEqual([]);
+  });
+
+  it('keeps an ambiguous multi-address geocode pending instead of choosing the first result', () => {
+    const unavailable: string[] = [];
+    const markers: Marker[] = [];
+    class LatLng { constructor(readonly latitude: number, readonly longitude: number) {} }
+    class Map {
+      constructor(element: HTMLElement, options: unknown) { void element; void options; }
+      setCenter(center: unknown) { void center; }
+      setZoom(zoom: number) { void zoom; }
+    }
+    class Marker {
+      constructor(options: unknown) { void options; markers.push(this); }
+      setMap(map: unknown) { void map; }
+    }
+    const sdk = {
+      Map, LatLng, Marker,
+      Event: { addListener: () => undefined, removeListener: () => undefined },
+      Service: {
+        Status: { OK: 'OK' },
+        geocode: (
+          _input: Readonly<{ query: string }>,
+          callback: (
+            status: string,
+            response: { v2: { addresses: { x: string; y: string }[] } },
+          ) => void,
+        ) => callback('OK', { v2: { addresses: [
+          { x: '127.031', y: '37.501' },
+          { x: '127.041', y: '37.511' },
+        ] } }),
+      },
+    };
+
+    const mounted = mountNaverDistrictMap({
+      sdk, element: {} as HTMLElement, districts,
+      selectedDistrict: { latitude: 37.5, longitude: 127.03 },
+      buildings: [{
+        id: 'ambiguous', title: 'Common Tower', href: '/ambiguous/',
+        addressQuery: '서울특별시 강남구 역삼동 Common Tower', latitude: null, longitude: null,
+        allowAddressGeocoding: true,
+      }],
+      onSelect: () => undefined,
+      onBuildingMarkerUnavailable: (id) => unavailable.push(id),
+    });
+
+    expect(markers).toEqual([]);
+    expect(mounted.unavailableBuildingIds).toEqual(['ambiguous']);
+    expect(unavailable).toEqual(['ambiguous']);
   });
 
   it('keeps coordinate-pending buildings out of address geocoding by default', () => {

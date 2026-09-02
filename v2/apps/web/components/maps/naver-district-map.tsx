@@ -45,6 +45,13 @@ type NaverDistrictMapProps = Readonly<{
   locale?: ProductLocale;
 }>;
 
+export type NaverGeocodeAddress = Readonly<{
+  x: string;
+  y: string;
+  roadAddress?: string;
+  jibunAddress?: string;
+}>;
+
 export type NaverMapsSdk = Readonly<{
   Map: new (
     element: HTMLElement,
@@ -65,7 +72,7 @@ export type NaverMapsSdk = Readonly<{
     geocode: (
       input: Readonly<{ query: string }>,
       callback: (status: string, response: Readonly<{
-        v2?: Readonly<{ addresses?: readonly Readonly<{ x: string; y: string }>[] }>;
+        v2?: Readonly<{ addresses?: readonly NaverGeocodeAddress[] }>;
       }>) => void,
     ) => void;
   }>;
@@ -106,6 +113,23 @@ export function buildNaverMapsScriptUrl(
   url.searchParams.set('ncpKeyId', clientId);
   if (includeGeocoder) url.searchParams.set('submodules', 'geocoder');
   return url.toString();
+}
+
+export function resolveUnambiguousNaverGeocode(
+  addressQuery: string,
+  addresses: readonly NaverGeocodeAddress[] | undefined,
+): NaverGeocodeAddress | null {
+  if (addresses?.length !== 1) return null;
+  const address = addresses[0]!;
+  const queryParts = addressQuery.trim().split(/\s+/);
+  if (queryParts[0] !== '서울특별시' || queryParts.length < 4) return address;
+  const district = queryParts[1]!;
+  const neighborhood = queryParts[2]!;
+  const resolvedLocality = `${address.roadAddress ?? ''} ${address.jibunAddress ?? ''}`;
+  if (!resolvedLocality.includes(district) || !resolvedLocality.includes(neighborhood)) {
+    return null;
+  }
+  return address;
 }
 
 export function mountNaverDistrictMap({
@@ -191,8 +215,11 @@ export function mountNaverDistrictMap({
         } else if (building.allowAddressGeocoding === true && sdk.Service !== undefined) {
           sdk.Service.geocode({ query: building.addressQuery }, (status, response) => {
             if (!isActive()) return;
-            const address = response.v2?.addresses?.[0];
-            if (status !== sdk.Service!.Status.OK || address === undefined) {
+            const address = resolveUnambiguousNaverGeocode(
+              building.addressQuery,
+              response.v2?.addresses,
+            );
+            if (status !== sdk.Service!.Status.OK || address === null) {
               markBuildingUnavailable(building.id);
               return;
             }
