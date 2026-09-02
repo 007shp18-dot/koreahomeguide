@@ -227,10 +227,10 @@ export function createKoreaDistrictHref(
   locale: ProductLocale,
 ): string {
   return withKoreaProximityPairs(localizedSeoulHref(createSelectionHref(
-    '/kr/seoul/explore/',
+    `/kr/seoul/explore/${districtSlug}/`,
     {
       ...selection,
-      district: districtSlug,
+      district: undefined,
       neighborhood: undefined,
       buildingId: undefined,
     },
