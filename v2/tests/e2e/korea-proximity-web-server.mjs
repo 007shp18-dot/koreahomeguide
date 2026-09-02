@@ -2,13 +2,10 @@
 
 import { spawn } from 'node:child_process';
 import {
-  mkdirSync,
-  mkdtempSync,
   rmSync,
   writeFileSync,
 } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join, resolve } from 'node:path';
+import { resolve } from 'node:path';
 
 const port = process.argv[2];
 if (port === undefined || !/^\d{2,5}$/.test(port)) {
@@ -25,21 +22,24 @@ delete runtimeEnvironment.SIGNEDPRICE_PLAYWRIGHT_PROXIMITY_GZIP_BASE64;
 const workspaceRoot = process.cwd();
 const appDirectory = resolve(workspaceRoot, 'apps/web');
 const nextExecutable = resolve(appDirectory, 'node_modules/next/dist/bin/next');
-let fixtureDirectory;
+const fixturePath = resolve(appDirectory, 'data/korea-proximity.json.gz');
+let fixtureCreated = false;
 let activeChild;
 let shuttingDown = false;
 let forceShutdownTimer;
 
 function cleanupFixture() {
-  if (fixtureDirectory === undefined) return;
-  rmSync(fixtureDirectory, { recursive: true, force: true });
-  fixtureDirectory = undefined;
+  if (!fixtureCreated) return;
+  rmSync(fixturePath, { force: true });
+  fixtureCreated = false;
 }
 
 function forwardSignal(signal) {
   shuttingDown = true;
-  cleanupFixture();
-  if (activeChild === undefined) return;
+  if (activeChild === undefined) {
+    cleanupFixture();
+    return;
+  }
   activeChild.kill(signal);
   forceShutdownTimer = setTimeout(() => activeChild?.kill('SIGKILL'), 4_000);
   forceShutdownTimer.unref();
@@ -78,17 +78,16 @@ function run(command, args, cwd) {
 try {
   await run('pnpm', ['--filter', '@signedprice/web', 'build'], workspaceRoot);
   if (!shuttingDown) {
-    fixtureDirectory = mkdtempSync(join(tmpdir(), 'signedprice-playwright-proximity-'));
-    mkdirSync(join(fixtureDirectory, 'data'));
     writeFileSync(
-      join(fixtureDirectory, 'data/korea-proximity.json.gz'),
+      fixturePath,
       Buffer.from(encodedFixture, 'base64'),
       { flag: 'wx' },
     );
+    fixtureCreated = true;
     await run(
       process.execPath,
       [nextExecutable, 'start', appDirectory, '--hostname', '127.0.0.1', '--port', port],
-      fixtureDirectory,
+      workspaceRoot,
     );
   }
 } finally {
