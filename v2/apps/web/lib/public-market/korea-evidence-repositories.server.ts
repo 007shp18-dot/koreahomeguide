@@ -83,6 +83,7 @@ export function koreaEvidenceRepositoriesFromEnvironment(
     registrySource?: unknown;
     resolveObject?: (objectUrl: string) => unknown;
     useCheckedInSnapshot?: boolean;
+    retainLastVerified?: boolean;
   }> = Object.freeze({}),
 ): KoreaEvidenceRepositories {
   let registrySource = dependencies.registrySource;
@@ -105,16 +106,23 @@ export function koreaEvidenceRepositoriesFromEnvironment(
     registrySource = resolveInstalledSnapshotRegistry();
   }
   const resolveObject = dependencies.resolveObject ?? resolveInstalledSnapshotObject;
-  if (cachedEnvironmentRepositories !== null
+  const retainLastVerified = dependencies.retainLastVerified !== false;
+  if (retainLastVerified
+    && cachedEnvironmentRepositories !== null
     && cachedEnvironmentRepositories.registrySource === registrySource
     && cachedEnvironmentRepositories.resolveObject === resolveObject) {
     return cachedEnvironmentRepositories.repositories;
   }
-  const repositories = environmentLoader.load({ registrySource, resolveObject });
-  cachedEnvironmentRepositories = Object.freeze({
-    registrySource,
-    resolveObject,
-    repositories,
-  });
+  const repositories = (retainLastVerified
+    ? environmentLoader
+    : createKoreaEvidenceRepositoryLoader())
+    .load({ registrySource, resolveObject });
+  if (retainLastVerified) {
+    cachedEnvironmentRepositories = Object.freeze({
+      registrySource,
+      resolveObject,
+      repositories,
+    });
+  }
   return repositories;
 }

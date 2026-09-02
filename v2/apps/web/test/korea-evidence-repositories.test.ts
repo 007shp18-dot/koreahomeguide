@@ -178,6 +178,73 @@ describe('installed Korea evidence repositories', () => {
     expect(JSON.stringify(model).length).toBeLessThan(500_000);
   }, 15_000);
 
+  it('resolves a selected building to its page instead of trusting a stale page number', () => {
+    const repositories = koreaEvidenceRepositoriesFromEnvironment({
+      useCheckedInSnapshot: true,
+    });
+    const input = Object.freeze({
+      transaction: 'jeonse' as const,
+      areaBand: 'all' as const,
+      housingType: 'all' as const,
+      contractGroup: 'all' as const,
+    });
+    const secondPage = buildKoreaExplorerEvidenceProjectionBase(repositories, input, {
+      includeBuildings: true,
+      districtSlug: 'gangnam-gu',
+      buildingPage: 2,
+    });
+    if (secondPage.status !== 'ready' || secondPage.buildingPage === null) {
+      throw new Error('Second installed Explore page must be ready.');
+    }
+    const selectedBuilding = secondPage.buildingPage.buildings[0];
+    if (selectedBuilding === undefined) throw new Error('Second page must contain a building.');
+
+    const restored = buildKoreaExplorerEvidenceProjectionBase(repositories, input, {
+      includeBuildings: true,
+      districtSlug: 'gangnam-gu',
+      buildingPage: 1,
+      selectedBuildingId: selectedBuilding.buildingId,
+    });
+
+    expect(restored.status).toBe('ready');
+    if (restored.status !== 'ready' || restored.buildingPage === null) return;
+    expect(restored.buildingPage.page).toBe(2);
+    expect(restored.buildingPage.buildings.map(({ buildingId }) => buildingId))
+      .toContain(selectedBuilding.buildingId);
+  }, 15_000);
+
+  it('keeps a URL-selected building beyond the first ten results in the rendered row and card', () => {
+    const repositories = koreaEvidenceRepositoriesFromEnvironment({
+      useCheckedInSnapshot: true,
+    });
+    const projection = buildKoreaExplorerEvidenceProjectionBase(repositories, {
+      transaction: 'jeonse', areaBand: 'all', housingType: 'all', contractGroup: 'all',
+    }, {
+      includeBuildings: true,
+      includeBuildingStats: true,
+      districtSlug: 'gangnam-gu',
+    });
+    if (projection.status !== 'ready' || projection.buildingPage === null) {
+      throw new Error('Installed Explore page must be ready.');
+    }
+    const selectedBuilding = projection.buildingPage.buildings[24];
+    if (selectedBuilding === undefined) throw new Error('Fixture must contain 25 buildings.');
+    const model = buildKoreaEvidenceAreaExploreModel('gangnam-gu', projection);
+    const html = renderToStaticMarkup(createElement(AreaExplorer, {
+      model,
+      initialSelection: {
+        market: 'kr',
+        transaction: 'jeonse',
+        district: 'gangnam-gu',
+        neighborhood: selectedBuilding.neighborhoodId,
+        buildingId: selectedBuilding.buildingId,
+      },
+    }));
+
+    expect(html).toContain(`data-building-row="${selectedBuilding.buildingId}"`);
+    expect(html).toContain(`data-selected-building-card="${selectedBuilding.buildingId}"`);
+  }, 15_000);
+
   it('activates rent and sale independently and exposes exact-cohort lookups', async () => {
     const source = await fixtures();
     const loader = createKoreaEvidenceRepositoryLoader();

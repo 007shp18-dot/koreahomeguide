@@ -119,6 +119,23 @@ describe('public Seoul area Explorer', () => {
     );
   });
 
+  it('keeps query and building page in a selected-building Explore URL', () => {
+    const model = readyModel();
+    const building = model.buildingAvailability.status === 'ready'
+      ? model.buildingAvailability.buildings[0]
+      : model.buildingAvailability.fallbackBuildings[0];
+    if (building === undefined) throw new Error('Fixture building must exist.');
+
+    expect(createExploreBuildingSelectionHref(
+      building,
+      { market: 'kr', transaction: 'jeonse', district: 'gangnam-gu' },
+      'en',
+      { query: 'Evidence Tower', buildingPage: 3 },
+    )).toBe(
+      '/kr/seoul/explore/?district=gangnam-gu&neighborhood=yeoksam-dong&buildingId=gangnam-evidence-tower&q=Evidence+Tower&buildingPage=3',
+    );
+  });
+
   it('remounts client-owned filters when same-route district or query props change', () => {
     const clientStateKey = (
       initialQuery: string,
@@ -175,6 +192,39 @@ describe('public Seoul area Explorer', () => {
     expect(markup).toContain('aria-label="Explorer view"');
     for (const view of ['Split', 'List', 'Table', 'Map']) expect(markup).toContain(`>${view}</a>`);
     expect(markup).toMatch(/<a[^>]+aria-current="page"[^>]+href="\/kr\/seoul\/explore\?district=gangnam-gu&amp;view=table"[^>]*>Table<\/a>/);
+  });
+
+  it('retains search, page, and neighborhood state across view changes', () => {
+    const base = readyModel();
+    const buildings = base.buildingAvailability.status === 'ready'
+      ? base.buildingAvailability.buildings
+      : base.buildingAvailability.fallbackBuildings;
+    const model = Object.freeze({
+      ...base,
+      buildingAvailability: Object.freeze({
+        status: 'ready' as const,
+        buildings,
+        total: 150,
+        page: 3,
+        pageSize: 50,
+      }),
+    });
+    const markup = renderToStaticMarkup(createElement(AreaExplorer, {
+      model,
+      initialQuery: 'Evidence Tower',
+      initialSelection: {
+        market: 'kr',
+        transaction: 'jeonse',
+        district: 'gangnam-gu',
+        neighborhood: 'yeoksam-dong',
+        view: 'table',
+      },
+    }));
+
+    expect(markup).toMatch(/<button[^>]+aria-pressed="true"[^>]*>역삼동<\/button>/);
+    expect(markup).toContain(
+      'href="/kr/seoul/explore?district=gangnam-gu&amp;neighborhood=yeoksam-dong&amp;view=map&amp;q=Evidence+Tower&amp;buildingPage=3"',
+    );
   });
 
   it('uses one availability-safe transaction filter before the map workspace', () => {

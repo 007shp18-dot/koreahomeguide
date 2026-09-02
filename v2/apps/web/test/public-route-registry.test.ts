@@ -33,6 +33,7 @@ describe('SignedPrice public route registry', () => {
       summaryReady: true,
       areaReady: true,
       newsReady: true,
+      singleQuoteReady: false,
       conversionReady: false,
     });
 
@@ -42,20 +43,38 @@ describe('SignedPrice public route registry', () => {
     expect(paths).not.toContain('/kr/seoul/check/compare/');
   });
 
-  it('publishes both single-quote and two-offer Check routes when conversion evidence is ready', () => {
+  it('publishes the single-quote Check independently of conversion evidence', () => {
     const paths = signedPricePublicRouteRegistry.listSitemapPaths({
       summaryReady: false,
       areaReady: false,
       newsReady: false,
-      conversionReady: true,
+      singleQuoteReady: true,
+      conversionReady: false,
     });
 
     expect(paths).toEqual(expect.arrayContaining([
       '/kr/seoul/check/',
-      '/kr/seoul/check/compare/',
       '/ko/kr/seoul/check/',
+    ]));
+    expect(paths).not.toContain('/kr/seoul/check/compare/');
+    expect(paths).not.toContain('/ko/kr/seoul/check/compare/');
+  });
+
+  it('publishes the two-offer comparison independently of single-quote evidence', () => {
+    const paths = signedPricePublicRouteRegistry.listSitemapPaths({
+      summaryReady: false,
+      areaReady: false,
+      newsReady: false,
+      singleQuoteReady: false,
+      conversionReady: true,
+    });
+
+    expect(paths).toEqual(expect.arrayContaining([
+      '/kr/seoul/check/compare/',
       '/ko/kr/seoul/check/compare/',
     ]));
+    expect(paths).not.toContain('/kr/seoul/check/');
+    expect(paths).not.toContain('/ko/kr/seoul/check/');
   });
 
   it('keeps evidence-dependent destinations out until their readiness predicate passes', () => {

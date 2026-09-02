@@ -105,6 +105,7 @@ export type KoreaExplorerProjectionOptions = Readonly<{
   districtSlug?: unknown;
   buildingQuery?: unknown;
   buildingPage?: unknown;
+  selectedBuildingId?: unknown;
 }>;
 
 export type KoreaExplorerBuildingDetailModel = Readonly<{
@@ -484,7 +485,15 @@ function projectedBuildingData(
     housingMatches(identity)
     && buildingMatchesQuery(identity, query, [district.slug, district.nameEn, district.nameKo])
   ));
-  const requestedPage = normalizedBuildingPage(options.buildingPage);
+  const selectedBuildingId = typeof options.selectedBuildingId === 'string'
+    ? options.selectedBuildingId
+    : null;
+  const selectedBuildingIndex = selectedBuildingId === null
+    ? -1
+    : matches.findIndex(({ buildingId }) => buildingId === selectedBuildingId);
+  const requestedPage = selectedBuildingIndex >= 0
+    ? Math.floor(selectedBuildingIndex / KOREA_EXPLORER_BUILDING_PAGE_SIZE) + 1
+    : normalizedBuildingPage(options.buildingPage);
   const maximumPage = Math.max(1, Math.ceil(matches.length / KOREA_EXPLORER_BUILDING_PAGE_SIZE));
   const page = Math.min(requestedPage, maximumPage);
   const start = (page - 1) * KOREA_EXPLORER_BUILDING_PAGE_SIZE;

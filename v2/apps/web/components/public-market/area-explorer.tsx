@@ -144,8 +144,9 @@ export function createExploreBuildingSelectionHref(
   building: ExploreBuildingModel,
   selection: ExplorerSelection,
   locale: ProductLocale,
+  location: Readonly<{ query?: string; buildingPage?: number }> = Object.freeze({}),
 ): string {
-  return localizedSeoulHref(createSelectionHref(
+  const href = localizedSeoulHref(createSelectionHref(
     '/kr/seoul/explore/',
     {
       ...selection,
@@ -155,6 +156,13 @@ export function createExploreBuildingSelectionHref(
     },
     { market: 'kr', transaction: 'jeonse' },
   ), locale);
+  const target = new URL(href, 'https://signedprice.invalid');
+  const query = location.query?.trim() ?? '';
+  if (query.length > 0) target.searchParams.set('q', query);
+  if (location.buildingPage !== undefined && location.buildingPage > 1) {
+    target.searchParams.set('buildingPage', String(location.buildingPage));
+  }
+  return `${target.pathname}${target.search}`;
 }
 
 function ReadyAreaExplorer({
@@ -192,7 +200,14 @@ function ReadyAreaExplorer({
     districtSlugs: Object.freeze(model.districts.map(({ slug }) => slug)),
   });
   const [state, dispatch] = useReducer(areaExplorerReducer, initial);
-  const [selectedNeighborhood, setSelectedNeighborhood] = useState<string>('all');
+  const initialNeighborhood = initialSelection.neighborhood !== undefined
+    && allBuildings.some((building) => (
+      building.districtSlug === initial.selectedSlug
+      && building.neighborhoodId === initialSelection.neighborhood
+    ))
+    ? initialSelection.neighborhood
+    : 'all';
+  const [selectedNeighborhood, setSelectedNeighborhood] = useState<string>(initialNeighborhood);
   const [selectedHousingType, setSelectedHousingType] = useState<string>(
     model.evidenceSelection.housingType,
   );
@@ -244,14 +259,19 @@ function ReadyAreaExplorer({
       selectedNeighborhood,
     ],
   );
-  const visibleBuildings = useMemo(
-    () => filteredBuildings.slice(0, visibleBuildingCount),
-    [filteredBuildings, visibleBuildingCount],
-  );
   const selectedBuilding = resolveSelectedExploreBuilding(
     districtBuildings,
     selectedBuildingId,
   );
+  const visibleBuildings = useMemo(() => {
+    const visible = filteredBuildings.slice(0, visibleBuildingCount);
+    if (
+      selectedBuilding === null
+      || !filteredBuildings.some(({ id }) => id === selectedBuilding.id)
+      || visible.some(({ id }) => id === selectedBuilding.id)
+    ) return visible;
+    return Object.freeze([...visible, selectedBuilding]);
+  }, [filteredBuildings, selectedBuilding, visibleBuildingCount]);
 
   const mapDistricts = useMemo(() => model.districts.map((district) => ({
     slug: district.slug,
@@ -305,10 +325,20 @@ function ReadyAreaExplorer({
     if (building === undefined) return;
     dispatchBuildingSelection({ type: 'select_building', source, buildingId });
     router.replace(
-      createExploreBuildingSelectionHref(building, initialSelection, locale),
+      createExploreBuildingSelectionHref(building, initialSelection, locale, {
+        query: buildingQuery,
+        buildingPage: readyBuildingAvailability?.page,
+      }),
       { scroll: false },
     );
-  }, [districtBuildings, initialSelection, locale, router]);
+  }, [
+    buildingQuery,
+    districtBuildings,
+    initialSelection,
+    locale,
+    readyBuildingAvailability?.page,
+    router,
+  ]);
   const selectBuildingFromMarker = useCallback((buildingId: string) => {
     selectBuilding(buildingId, 'marker');
   }, [selectBuilding]);
@@ -381,17 +411,64 @@ function ReadyAreaExplorer({
     else target.searchParams.set('buildingPage', String(page));
     return `${target.pathname}${target.search}`;
   }, [buildingQuery, evidenceHref]);
-  const viewHref = useCallback((view: 'split' | 'list' | 'table' | 'map'): string => (
-    localizedSeoulHref(createSelectionHref(
+  const viewHref = useCallback((view: 'split' | 'list' | 'table' | 'map'): string => {
+    const href = localizedSeoulHref(createSelectionHref(
       '/kr/seoul/explore/',
       {
         ...initialSelection,
         district: state.selectedSlug,
+        neighborhood: selectedNeighborhood === 'all' ? undefined : selectedNeighborhood,
+        buildingId: selectedNeighborhood === 'all' ? undefined : selectedBuildingId ?? undefined,
         view: view === 'split' ? undefined : view,
       },
       { market: 'kr', transaction: 'jeonse' },
-    ), locale)
-  ), [initialSelection, locale, state.selectedSlug]);
+    ), locale);
+    const target = new URL(href, 'https://signedprice.invalid');
+    const normalizedQuery = buildingQuery.trim();
+    if (normalizedQuery.length > 0) target.searchParams.set('q', normalizedQuery);
+    if (readyBuildingAvailability !== null && readyBuildingAvailability.page > 1) {
+      target.searchParams.set('buildingPage', String(readyBuildingAvailability.page));
+    }
+    return `${target.pathname}${target.search}`;
+  }, [
+    buildingQuery,
+    initialSelection,
+    locale,
+    readyBuildingAvailability,
+    selectedBuildingId,
+    selectedNeighborhood,
+    state.selectedSlug,
+  ]);
+
+  const selectNeighborhood = useCallback((neighborhoodId: string): void => {
+    setSelectedNeighborhood(neighborhoodId);
+    setVisibleBuildingCount(10);
+    dispatchBuildingSelection({ type: 'clear_building' });
+    const href = localizedSeoulHref(createSelectionHref(
+      '/kr/seoul/explore/',
+      {
+        ...initialSelection,
+        district: state.selectedSlug,
+        neighborhood: neighborhoodId === 'all' ? undefined : neighborhoodId,
+        buildingId: undefined,
+      },
+      { market: 'kr', transaction: 'jeonse' },
+    ), locale);
+    const target = new URL(href, 'https://signedprice.invalid');
+    const normalizedQuery = buildingQuery.trim();
+    if (normalizedQuery.length > 0) target.searchParams.set('q', normalizedQuery);
+    if (readyBuildingAvailability !== null && readyBuildingAvailability.page > 1) {
+      target.searchParams.set('buildingPage', String(readyBuildingAvailability.page));
+    }
+    router.replace(`${target.pathname}${target.search}`, { scroll: false });
+  }, [
+    buildingQuery,
+    initialSelection,
+    locale,
+    readyBuildingAvailability,
+    router,
+    state.selectedSlug,
+  ]);
 
   return (
     <section
@@ -707,14 +784,14 @@ function ReadyAreaExplorer({
                   <button
                     type="button"
                     aria-pressed={selectedNeighborhood === 'all'}
-                    onClick={() => { setSelectedNeighborhood('all'); setVisibleBuildingCount(10); }}
+                    onClick={() => selectNeighborhood('all')}
                   >{copy.all} · {districtBuildings.length}</button>
                   {neighborhoods.map(([id, name]) => (
                     <button
                       key={id}
                       type="button"
                       aria-pressed={selectedNeighborhood === id}
-                      onClick={() => { setSelectedNeighborhood(id); setVisibleBuildingCount(10); }}
+                      onClick={() => selectNeighborhood(id)}
                     >{name}</button>
                   ))}
                 </div>
@@ -737,7 +814,11 @@ function ReadyAreaExplorer({
                   <>
                     <ul className={styles.buildingList}>
                       {visibleBuildings.map((building) => (
-                        <li key={building.id} data-building-evidence={building.evidenceStatus}>
+                        <li
+                          key={building.id}
+                          data-building-evidence={building.evidenceStatus}
+                          data-building-row={building.id}
+                        >
                           <button
                             type="button"
                             aria-pressed={selectedBuilding?.id === building.id}
