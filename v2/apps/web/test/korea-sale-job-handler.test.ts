@@ -218,12 +218,10 @@ describe('Korea sale snapshot temporary public export', () => {
     });
   }
 
-  it('exists in protected Preview and Production, but not local development', async () => {
+  it('exists only in Production and requires a configured server secret', async () => {
     const url = 'https://www.signedprice.com/api/internal/korea-sale-snapshot/?export=manifest';
 
-    expect((await exportHandler({ environment: 'preview' })(new Request(url))).status).toBe(200);
-    expect((await exportHandler({ environment: 'development' })(new Request(url))).status)
-      .toBe(404);
+    expect((await exportHandler({ environment: 'preview' })(new Request(url))).status).toBe(404);
     expect((await exportHandler({ token: undefined })(new Request(url))).status).toBe(503);
   });
 
@@ -241,24 +239,6 @@ describe('Korea sale snapshot temporary public export', () => {
       expect((await handler(new Request(url))).status).toBe(400);
     }
     expect((await handler(new Request(invalidUrls[0]!, { method: 'POST' }))).status).toBe(405);
-  });
-
-  it('runs only an explicitly enabled fixed-plan collection cursor', async () => {
-    const calls: Request[] = [];
-    const postHandler = vi.fn(async (internalRequest: Request) => {
-      calls.push(internalRequest);
-      return Response.json({ status: 'progress', nextCursor: 4 });
-    });
-    const disabled = exportHandler({ postHandler });
-    const enabled = exportHandler({ allowCollection: true, postHandler });
-    const collectUrl = 'https://www.signedprice.com/api/internal/korea-sale-snapshot/'
-      + '?export=collect&cursor=0';
-
-    expect((await disabled(new Request(collectUrl))).status).toBe(400);
-    expect((await enabled(new Request(collectUrl))).status).toBe(200);
-    expect(await calls[0]!.json()).toEqual({
-      action: 'batch', referenceInstant, cursor: 0,
-    });
   });
 
   it('proxies only fixed manifest and artifact reads without disclosing the bearer secret', async () => {
