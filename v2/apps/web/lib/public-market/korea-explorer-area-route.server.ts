@@ -212,7 +212,7 @@ function buildingsFor(
   projection: Extract<KoreaExplorerEvidenceProjection, { status: 'ready' }>,
 ): readonly ExploreBuildingModel[] {
   const [firstObservedMonth, lastObservedMonth] = projection.period.split('/');
-  return Object.freeze(projection.buildings.map((building) => {
+  return Object.freeze((projection.buildingPage?.buildings ?? []).map((building) => {
     const selected = building.primary;
     const group = (name: PublicContractGroup | 'unknown') => building.contractGroups?.[name].primary;
     const groupLabel = (name: PublicContractGroup): string | null => {
@@ -293,10 +293,13 @@ export function buildKoreaEvidenceAreaExploreModel(
       contractEvidence,
     });
   }));
-  const selected = getSeoulDistrictBySlug(selectedSlug ?? '')?.slug ?? 'jongno-gu';
+  const selected = projection.buildingPage?.districtSlug
+    ?? getSeoulDistrictBySlug(selectedSlug ?? '')?.slug
+    ?? 'jongno-gu';
   const buildings = buildingsFor(projection);
-  const priceReady = buildings.filter(({ evidenceStatus }) => evidenceStatus === 'published').length;
-  const transactionCovered = buildings.filter(({ observationCount }) => observationCount > 0).length;
+  const priceReady = projection.buildingStats?.priceReady ?? 0;
+  const transactionCovered = projection.buildingStats?.transactionCovered ?? 0;
+  const observed = projection.buildingStats?.observed ?? 0;
   const publishedDistricts = summaries.filter(({ published }) => published).length;
   const rights = projection.selection.transaction === 'sale'
     ? KR_MOLIT_SALE_RIGHTS
@@ -325,12 +328,19 @@ export function buildKoreaEvidenceAreaExploreModel(
     legend: legendFor(districts),
     coverage: Object.freeze({
       districts: Object.freeze({ published: publishedDistricts, retained: districts.length }),
-      buildings: Object.freeze({
-        status: 'ready' as const,
-        observed: buildings.length,
-        transactionCovered,
-        priceReady,
-      }),
+      buildings: projection.buildingStats === null
+        ? Object.freeze({
+            status: 'inventory_unavailable' as const,
+            transactionCovered: null,
+            priceReady: null,
+            reason: 'Verified observed building inventory is not loaded.' as const,
+          })
+        : Object.freeze({
+            status: 'ready' as const,
+            observed,
+            transactionCovered,
+            priceReady,
+          }),
       eligibleContracts: projection.city.primary.n,
       unpublished: Object.freeze({
         districtsBelowMinimum: districts.length - publishedDistricts,
@@ -341,7 +351,13 @@ export function buildKoreaEvidenceAreaExploreModel(
         }),
       }),
     }),
-    buildingAvailability: Object.freeze({ status: 'ready' as const, buildings }),
+    buildingAvailability: Object.freeze({
+      status: 'ready' as const,
+      buildings,
+      total: projection.buildingPage?.total ?? 0,
+      page: projection.buildingPage?.page ?? 1,
+      pageSize: projection.buildingPage?.pageSize ?? 0,
+    }),
     source: Object.freeze({
       evidence,
       provider: 'MOLIT' as const,

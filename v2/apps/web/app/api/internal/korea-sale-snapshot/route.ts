@@ -1,7 +1,5 @@
 import 'server-only';
 
-import { randomBytes } from 'node:crypto';
-
 import {
   finalizeKoreaSaleSnapshotJob,
   runKoreaSaleSummaryBatch,
@@ -10,7 +8,6 @@ import {
 import { buildKoreaSaleEvidenceArtifact } from '@/lib/public-market/sale-evidence-artifact-builder.server';
 import {
   createKoreaSaleSnapshotJobHandler,
-  createKoreaSaleSnapshotPublicExportHandler,
   createKoreaSaleSnapshotRunnerPage,
   type KoreaSaleSnapshotJobHandlerDependencies,
 } from '@/lib/public-market/korea-sale-job-handler.server';
@@ -23,9 +20,6 @@ export const maxDuration = 60;
 const cache = createVercelRuntimeCache();
 const serviceKey = process.env.SIGNEDPRICE_PUBLIC_DATA_SERVICE_KEY
   ?? process.env.DATA_GO_KR_SERVICE_KEY;
-const exportReferenceInstant = '2026-09-02T00:00:00.000Z';
-const exportCapability = randomBytes(32).toString('hex');
-
 const handlerDependencies = {
   serviceKey,
   runBatch(input) {
@@ -51,25 +45,7 @@ export const POST = createKoreaSaleSnapshotJobHandler({
   token: process.env.SIGNEDPRICE_INTERNAL_JOB_TOKEN,
 });
 
-const exportPostHandler = createKoreaSaleSnapshotJobHandler({
-  ...handlerDependencies,
-  environment: 'preview',
-  token: exportCapability,
-});
-
-const publicExport = createKoreaSaleSnapshotPublicExportHandler({
-  environment: process.env.VERCEL_ENV,
-  token: exportCapability,
-  referenceInstant: exportReferenceInstant,
-  allowCollection: process.env.VERCEL_ENV === 'production',
-  postHandler: exportPostHandler,
-});
-
-export const GET = (request: Request) => (
-  new URL(request.url).searchParams.has('export')
-    ? publicExport(request)
-    : createKoreaSaleSnapshotRunnerPage(
-      process.env.VERCEL_ENV,
-      process.env.SIGNEDPRICE_INTERNAL_JOB_TOKEN,
-    )
+export const GET = () => createKoreaSaleSnapshotRunnerPage(
+  process.env.VERCEL_ENV,
+  process.env.SIGNEDPRICE_INTERNAL_JOB_TOKEN,
 );

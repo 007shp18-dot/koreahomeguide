@@ -36,9 +36,18 @@ let checkedInObservedBuildingInventory: unknown;
 let checkedInKoreaRentEvidence: unknown;
 let checkedInKoreaSaleEvidence: unknown;
 let checkedInKoreaConversionEvidence: unknown;
+const checkedInSnapshotDigests = new WeakMap<object, string>();
 
 function parseCompressedInventory(source: Buffer): unknown {
-  return JSON.parse(gunzipSync(source).toString('utf8'));
+  const serialized = gunzipSync(source).toString('utf8');
+  const parsed = JSON.parse(serialized) as unknown;
+  if (typeof parsed === 'object' && parsed !== null) {
+    checkedInSnapshotDigests.set(
+      parsed,
+      createHash('sha256').update(serialized).digest('hex'),
+    );
+  }
+  return parsed;
 }
 
 function readCheckedInObservedBuildingInventory(): unknown {
@@ -206,7 +215,8 @@ export function createInstalledSnapshotRepository(input: Readonly<{
         if (metadata === undefined) throw new InstalledSnapshotUnavailableError();
         const payload = input.resolveObject(metadata.objectUrl);
         if (!isObject(payload)) throw new InstalledSnapshotUnavailableError();
-        const digest = createHash('sha256').update(canonicalJson(payload)).digest('hex');
+        const digest = checkedInSnapshotDigests.get(payload)
+          ?? createHash('sha256').update(canonicalJson(payload)).digest('hex');
         const identity = snapshotIdentity(payload);
         if (digest !== metadata.sha256
           || identity.schemaVersion !== metadata.schemaVersion

@@ -22,6 +22,7 @@ export const KOREA_RENT_EVIDENCE_ARTIFACT_VERSION =
 export type KoreaRentEvidenceArtifactExpectation = Readonly<{
   marketId: 'kr-seoul';
   period: string;
+  outerDigestVerified?: boolean;
 }>;
 
 export type VerifiedKoreaRentEvidenceArtifact = Readonly<{
@@ -327,7 +328,8 @@ export function parseKoreaRentEvidenceArtifact(
     || value.publicationMinimum !== KOREA_RENT_EVIDENCE_PUBLICATION_MINIMUM
     || typeof value.sha256 !== 'string'
     || !/^[0-9a-f]{64}$/.test(value.sha256)
-    || digest(unsignedArtifact(value)) !== value.sha256
+    || (expected.outerDigestVerified !== true
+      && digest(unsignedArtifact(value)) !== value.sha256)
   ) invalid();
   assertProvenance(value.provenance, expected);
   const stats = parseStats(value.stats);

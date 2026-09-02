@@ -65,8 +65,12 @@ describe('public Seoul area Explorer', () => {
       return child.key;
     };
 
-    expect(clientStateKey('Evidence Tower')).toBe('gangnam-gu:Evidence Tower');
-    expect(clientStateKey('Apartment')).toBe('gangnam-gu:Apartment');
+    expect(clientStateKey('Evidence Tower')).toBe(
+      'gangnam-gu:Evidence Tower:jeonse:legacy-45-55:all:new:0',
+    );
+    expect(clientStateKey('Apartment')).toBe(
+      'gangnam-gu:Apartment:jeonse:legacy-45-55:all:new:0',
+    );
     expect(clientStateKey('Evidence Tower')).not.toBe(clientStateKey('Apartment'));
   });
 

@@ -272,6 +272,9 @@ export type ExploreBuildingAvailability =
   | Readonly<{
       status: 'ready';
       buildings: readonly ExploreBuildingModel[];
+      total: number;
+      page: number;
+      pageSize: number;
     }>
   | Readonly<{
       status: 'not_loaded';

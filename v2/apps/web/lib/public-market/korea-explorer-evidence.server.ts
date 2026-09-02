@@ -2,6 +2,7 @@ import 'server-only';
 
 import {
   KOREA_EVIDENCE_AREA_BANDS,
+  SEOUL_RENT_CHECK_DISTRICTS,
   classifyAreaBand,
   getSeoulDistrictBySlug,
   type KoreaEvidenceAreaBand,
@@ -11,6 +12,7 @@ import {
 } from '@signedprice/korea-rent';
 
 import type { KoreaEvidenceRepositories } from './korea-evidence-repositories.server';
+import type { SeoulDistrictSlug } from '@signedprice/korea-rent/browser';
 
 export const KOREA_EXPLORER_HOUSING_TYPES = Object.freeze([
   'all', 'apartment', 'officetel', 'villa_multifamily', 'detached',
@@ -73,13 +75,37 @@ export type KoreaExplorerEvidenceProjection =
       generatedAt: string;
       city: KoreaExplorerProjectedArea;
       districts: readonly KoreaExplorerProjectedArea[];
-      buildings: readonly KoreaExplorerProjectedBuilding[];
+      buildingPage: KoreaExplorerBuildingPage | null;
+      buildingStats: KoreaExplorerBuildingStats | null;
     }>
   | Readonly<{
       status: 'unavailable';
       availability: Readonly<{ jeonse: boolean; monthly: boolean; sale: boolean }>;
       selection: KoreaExplorerEvidenceSelection;
     }>;
+
+export type KoreaExplorerBuildingPage = Readonly<{
+  districtSlug: SeoulDistrictSlug;
+  query: string;
+  page: number;
+  pageSize: number;
+  total: number;
+  buildings: readonly KoreaExplorerProjectedBuilding[];
+}>;
+
+export type KoreaExplorerBuildingStats = Readonly<{
+  observed: number;
+  transactionCovered: number;
+  priceReady: number;
+}>;
+
+export type KoreaExplorerProjectionOptions = Readonly<{
+  includeBuildings?: boolean;
+  includeBuildingStats?: boolean;
+  districtSlug?: unknown;
+  buildingQuery?: unknown;
+  buildingPage?: unknown;
+}>;
 
 export type KoreaExplorerBuildingDetailModel = Readonly<{
   status: 'ready';
@@ -126,6 +152,7 @@ const CONTRACT_GROUPS = new Set<KoreaExplorerContractGroup>([
 ]);
 const ZERO_DISTRIBUTION = Object.freeze({ n: 0, published: false } as const);
 const RENT_GROUP_ORDER = Object.freeze(['all', 'new', 'renewal', 'unknown'] as const);
+export const KOREA_EXPLORER_BUILDING_PAGE_SIZE = 50 as const;
 const money = new Intl.NumberFormat('ko-KR', {
   style: 'currency', currency: 'KRW', maximumFractionDigits: 0,
 });
@@ -224,14 +251,46 @@ function saleAreaProjection(
 
 type IdentityRecord = KoreaRentEvidenceBuildingRecord | KoreaSaleEvidenceBuildingRecord;
 
-function identityRecords(repositories: KoreaEvidenceRepositories): readonly IdentityRecord[] {
-  const records = [
-    ...(repositories.rent?.listBuildingRecords() ?? []),
-    ...(repositories.sale?.listBuildingRecords() ?? []),
-  ];
-  return Object.freeze([...new Map(records.map((record) => [
+type KoreaExplorerBuildingIndex = Readonly<{
+  identities: readonly IdentityRecord[];
+  identitiesByDistrict: ReadonlyMap<SeoulDistrictSlug, readonly IdentityRecord[]>;
+  rentById: ReadonlyMap<string, KoreaRentEvidenceBuildingRecord>;
+  saleById: ReadonlyMap<string, KoreaSaleEvidenceBuildingRecord>;
+  statsBySelection: Map<string, KoreaExplorerBuildingStats>;
+}>;
+
+const buildingIndexCache = new WeakMap<KoreaEvidenceRepositories, KoreaExplorerBuildingIndex>();
+
+function buildingIndexFor(repositories: KoreaEvidenceRepositories): KoreaExplorerBuildingIndex {
+  const cached = buildingIndexCache.get(repositories);
+  if (cached !== undefined) return cached;
+  const rentRecords = repositories.rent?.listBuildingRecords() ?? [];
+  const saleRecords = repositories.sale?.listBuildingRecords() ?? [];
+  const records = [...rentRecords, ...saleRecords];
+  const identities = Object.freeze([...new Map(records.map((record) => [
     `${record.districtSlug}/${record.buildingId}`, record,
   ] as const)).values()]);
+  const byDistrict = new Map<SeoulDistrictSlug, IdentityRecord[]>();
+  for (const identity of identities) {
+    const district = byDistrict.get(identity.districtSlug) ?? [];
+    district.push(identity);
+    byDistrict.set(identity.districtSlug, district);
+  }
+  const index = Object.freeze({
+    identities,
+    identitiesByDistrict: new Map([...byDistrict].map(([slug, district]) => [
+      slug, Object.freeze(district),
+    ] as const)),
+    rentById: new Map<string, KoreaRentEvidenceBuildingRecord>(rentRecords.map((record) => [
+      `${record.districtSlug}/${record.buildingId}`, record,
+    ] as const)),
+    saleById: new Map<string, KoreaSaleEvidenceBuildingRecord>(saleRecords.map((record) => [
+      `${record.districtSlug}/${record.buildingId}`, record,
+    ] as const)),
+    statsBySelection: new Map<string, KoreaExplorerBuildingStats>(),
+  });
+  buildingIndexCache.set(repositories, index);
+  return index;
 }
 
 function areaMatches(areaSqm: number, areaBand: KoreaEvidenceAreaBand): boolean {
@@ -250,85 +309,211 @@ function selectedRentBuilding(
   )) ?? null;
 }
 
-function projectedBuildings(
+function projectedBuilding(
+  identity: IdentityRecord,
+  rent: KoreaRentEvidenceBuildingRecord | undefined,
+  sale: KoreaSaleEvidenceBuildingRecord | undefined,
+  selection: KoreaExplorerEvidenceSelection,
+): KoreaExplorerProjectedBuilding {
+  if (selection.transaction === 'sale') {
+    const cohort = sale?.cohorts.find(({ areaBand }) => areaBand === selection.areaBand);
+    const recentTransactions = sale?.recentSales.filter(({ areaSqm }) => (
+      areaMatches(areaSqm, selection.areaBand)
+    )) ?? [];
+    return Object.freeze({
+      buildingId: identity.buildingId,
+      districtSlug: identity.districtSlug,
+      neighborhoodId: identity.neighborhoodId,
+      neighborhoodName: identity.neighborhoodName,
+      officialName: identity.officialName,
+      housingType: identity.housingType,
+      transaction: selection.transaction,
+      primaryMetric: 'sale-price' as const,
+      primary: cohort?.price ?? ZERO_DISTRIBUTION,
+      filedDeposit: null,
+      contractGroups: null,
+      recentTransactions: Object.freeze(recentTransactions),
+    });
+  }
+  const cohort = selectedRentBuilding(rent, selection);
+  const contractGroups = Object.freeze(Object.fromEntries(RENT_GROUP_ORDER.map((group) => {
+    const selected = rent?.cohorts.find((candidate) => (
+      candidate.transaction === selection.transaction
+      && candidate.areaBand === selection.areaBand
+      && candidate.contractGroup === group
+    ));
+    return [group, Object.freeze({
+      primary: selected?.primary ?? ZERO_DISTRIBUTION,
+      filedDeposit: selected?.filedDeposit ?? null,
+    })];
+  }))) as Record<KoreaExplorerContractGroup, Readonly<{
+    primary: KoreaEvidenceDistribution;
+    filedDeposit: KoreaEvidenceDistribution | null;
+  }>>;
+  const recentTransactions = rent?.recentTransactions.filter((recent) => (
+    recent.transaction === selection.transaction
+    && areaMatches(recent.areaSqm, selection.areaBand)
+    && (selection.contractGroup === 'all'
+      || recent.contractType === selection.contractGroup)
+  )) ?? [];
+  return Object.freeze({
+    buildingId: identity.buildingId,
+    districtSlug: identity.districtSlug,
+    neighborhoodId: identity.neighborhoodId,
+    neighborhoodName: identity.neighborhoodName,
+    officialName: identity.officialName,
+    housingType: identity.housingType,
+    transaction: selection.transaction,
+    primaryMetric: selection.transaction === 'jeonse' ? 'deposit' as const : 'monthly-rent' as const,
+    primary: cohort?.primary ?? ZERO_DISTRIBUTION,
+    filedDeposit: cohort?.filedDeposit ?? null,
+    contractGroups,
+    recentTransactions: Object.freeze(recentTransactions),
+  });
+}
+
+function normalizedBuildingPage(value: unknown): number {
+  const parsed = typeof value === 'number' ? value
+    : typeof value === 'string' ? Number.parseInt(value, 10) : 1;
+  return Number.isSafeInteger(parsed) && parsed > 0 ? parsed : 1;
+}
+
+function buildingMatchesQuery(
+  building: IdentityRecord,
+  query: string,
+  districtAliases: readonly string[],
+): boolean {
+  if (query.length === 0 || districtAliases.some((alias) => (
+    alias.toLocaleLowerCase('en-US').includes(query)
+  ))) return true;
+  const housingAliases = {
+    apartment: ['아파트'],
+    officetel: ['오피스텔'],
+    villa_multifamily: ['빌라', '연립', '다세대'],
+    detached: ['단독', '다가구'],
+  }[building.housingType] ?? [];
+  return [
+    building.districtSlug,
+    building.neighborhoodId,
+    building.neighborhoodName,
+    building.officialName,
+    building.housingType,
+    ...housingAliases,
+  ].some((value) => value.toLocaleLowerCase('en-US').includes(query));
+}
+
+function projectedBuildingData(
   repositories: KoreaEvidenceRepositories,
   selection: KoreaExplorerEvidenceSelection,
-): readonly KoreaExplorerProjectedBuilding[] {
-  const rentById = new Map<string, KoreaRentEvidenceBuildingRecord>((repositories.rent?.listBuildingRecords() ?? []).map((record) => [
-    `${record.districtSlug}/${record.buildingId}`, record,
-  ] as const));
-  const saleById = new Map<string, KoreaSaleEvidenceBuildingRecord>((repositories.sale?.listBuildingRecords() ?? []).map((record) => [
-    `${record.districtSlug}/${record.buildingId}`, record,
-  ] as const));
-  return Object.freeze(identityRecords(repositories)
-    .filter(({ housingType }) => (
-      selection.housingType === 'all' || housingType === selection.housingType
-    ))
-    .map((identity) => {
-      const key = `${identity.districtSlug}/${identity.buildingId}`;
-      const rent = rentById.get(key);
-      const sale = saleById.get(key);
-      if (selection.transaction === 'sale') {
-        const cohort = sale?.cohorts.find(({ areaBand }) => areaBand === selection.areaBand);
-        const recentTransactions = sale?.recentSales.filter(({ areaSqm }) => (
-          areaMatches(areaSqm, selection.areaBand)
-        )) ?? [];
-        return Object.freeze({
-          buildingId: identity.buildingId,
-          districtSlug: identity.districtSlug,
-          neighborhoodId: identity.neighborhoodId,
-          neighborhoodName: identity.neighborhoodName,
-          officialName: identity.officialName,
-          housingType: identity.housingType,
-          transaction: selection.transaction,
-          primaryMetric: 'sale-price' as const,
-          primary: cohort?.price ?? ZERO_DISTRIBUTION,
-          filedDeposit: null,
-          contractGroups: null,
-          recentTransactions: Object.freeze(recentTransactions),
-        });
-      }
-      const cohort = selectedRentBuilding(rent, selection);
-      const contractGroups = Object.freeze(Object.fromEntries(RENT_GROUP_ORDER.map((group) => {
-        const selected = rent?.cohorts.find((candidate) => (
-          candidate.transaction === selection.transaction
-          && candidate.areaBand === selection.areaBand
-          && candidate.contractGroup === group
-        ));
-        return [group, Object.freeze({
-          primary: selected?.primary ?? ZERO_DISTRIBUTION,
-          filedDeposit: selected?.filedDeposit ?? null,
-        })];
-      }))) as Record<KoreaExplorerContractGroup, Readonly<{
-        primary: KoreaEvidenceDistribution;
-        filedDeposit: KoreaEvidenceDistribution | null;
-      }>>;
-      const recentTransactions = rent?.recentTransactions.filter((recent) => (
-        recent.transaction === selection.transaction
-        && areaMatches(recent.areaSqm, selection.areaBand)
-        && (selection.contractGroup === 'all'
-          || recent.contractType === selection.contractGroup)
-      )) ?? [];
-      return Object.freeze({
-        buildingId: identity.buildingId,
-        districtSlug: identity.districtSlug,
-        neighborhoodId: identity.neighborhoodId,
-        neighborhoodName: identity.neighborhoodName,
-        officialName: identity.officialName,
-        housingType: identity.housingType,
-        transaction: selection.transaction,
-        primaryMetric: selection.transaction === 'jeonse' ? 'deposit' as const : 'monthly-rent' as const,
-        primary: cohort?.primary ?? ZERO_DISTRIBUTION,
-        filedDeposit: cohort?.filedDeposit ?? null,
-        contractGroups,
-        recentTransactions: Object.freeze(recentTransactions),
-      });
-    }));
+  options: KoreaExplorerProjectionOptions,
+): Readonly<{
+  buildingPage: KoreaExplorerBuildingPage | null;
+  buildingStats: KoreaExplorerBuildingStats | null;
+}> {
+  if (options.includeBuildings !== true && options.includeBuildingStats !== true) {
+    return Object.freeze({ buildingPage: null, buildingStats: null });
+  }
+  const index = buildingIndexFor(repositories);
+  const housingMatches = ({ housingType }: IdentityRecord) => (
+    selection.housingType === 'all' || housingType === selection.housingType
+  );
+  const selectedPrimary = (identity: IdentityRecord): KoreaEvidenceDistribution => {
+    const key = `${identity.districtSlug}/${identity.buildingId}`;
+    if (selection.transaction === 'sale') {
+      return index.saleById.get(key)?.cohorts.find(({ areaBand }) => (
+        areaBand === selection.areaBand
+      ))?.price ?? ZERO_DISTRIBUTION;
+    }
+    return selectedRentBuilding(index.rentById.get(key), selection)?.primary ?? ZERO_DISTRIBUTION;
+  };
+  const statsKey = [
+    selection.transaction,
+    selection.areaBand,
+    selection.housingType,
+    selection.contractGroup,
+  ].join(':');
+  let buildingStats = options.includeBuildingStats === true
+    ? index.statsBySelection.get(statsKey) ?? null
+    : null;
+  if (options.includeBuildingStats === true && buildingStats === null) {
+    buildingStats = Object.freeze(index.identities.reduce((stats, identity) => {
+        if (!housingMatches(identity)) return stats;
+        const primary = selectedPrimary(identity);
+        stats.observed += 1;
+        if (primary.n > 0) stats.transactionCovered += 1;
+        if (primary.published) stats.priceReady += 1;
+        return stats;
+      }, { observed: 0, transactionCovered: 0, priceReady: 0 }));
+    index.statsBySelection.set(statsKey, buildingStats);
+  }
+  if (options.includeBuildings !== true) {
+    return Object.freeze({ buildingPage: null, buildingStats });
+  }
+
+  const query = typeof options.buildingQuery === 'string'
+    ? options.buildingQuery.trim().toLocaleLowerCase('en-US')
+    : '';
+  const requestedDistrict = getSeoulDistrictBySlug(
+    typeof options.districtSlug === 'string' ? options.districtSlug : '',
+  )?.slug ?? 'jongno-gu';
+  const districtFromQuery = query.length === 0 ? undefined : SEOUL_RENT_CHECK_DISTRICTS.find(
+    ({ slug, nameEn, nameKo }) => [slug, nameEn, nameKo].some((value) => (
+      value.toLocaleLowerCase('en-US').includes(query)
+    )),
+  )?.slug;
+  const requestedIdentities = index.identitiesByDistrict.get(requestedDistrict) ?? [];
+  const requestedIdentityMatches = requestedIdentities.some((identity) => {
+    if (!housingMatches(identity)) return false;
+    const district = getSeoulDistrictBySlug(requestedDistrict)!;
+    return buildingMatchesQuery(identity, query, [district.slug, district.nameEn, district.nameKo]);
+  });
+  const firstGlobalMatch = requestedIdentityMatches || query.length === 0
+    ? undefined
+    : index.identities.find((identity) => {
+        if (!housingMatches(identity)) return false;
+        const district = getSeoulDistrictBySlug(identity.districtSlug);
+        return district !== null && buildingMatchesQuery(
+          identity,
+          query,
+          [district.slug, district.nameEn, district.nameKo],
+        );
+      })?.districtSlug;
+  const districtSlug = districtFromQuery ?? firstGlobalMatch ?? requestedDistrict;
+  const district = getSeoulDistrictBySlug(districtSlug)!;
+  const matches = (index.identitiesByDistrict.get(districtSlug) ?? []).filter((identity) => (
+    housingMatches(identity)
+    && buildingMatchesQuery(identity, query, [district.slug, district.nameEn, district.nameKo])
+  ));
+  const requestedPage = normalizedBuildingPage(options.buildingPage);
+  const maximumPage = Math.max(1, Math.ceil(matches.length / KOREA_EXPLORER_BUILDING_PAGE_SIZE));
+  const page = Math.min(requestedPage, maximumPage);
+  const start = (page - 1) * KOREA_EXPLORER_BUILDING_PAGE_SIZE;
+  const buildings = matches.slice(start, start + KOREA_EXPLORER_BUILDING_PAGE_SIZE).map((identity) => {
+    const key = `${identity.districtSlug}/${identity.buildingId}`;
+    return projectedBuilding(
+      identity,
+      index.rentById.get(key),
+      index.saleById.get(key),
+      selection,
+    );
+  });
+  return Object.freeze({
+    buildingStats,
+    buildingPage: Object.freeze({
+      districtSlug,
+      query,
+      page,
+      pageSize: KOREA_EXPLORER_BUILDING_PAGE_SIZE,
+      total: matches.length,
+      buildings: Object.freeze(buildings),
+    }),
+  });
 }
 
 export function buildKoreaExplorerEvidenceProjection(
   repositories: KoreaEvidenceRepositories,
   input: KoreaExplorerEvidenceSelectionInput,
+  options: KoreaExplorerProjectionOptions = Object.freeze({}),
 ): KoreaExplorerEvidenceProjection {
   const selection = normalizeSelection(input);
   const availability = availabilityFor(repositories);
@@ -345,6 +530,7 @@ export function buildKoreaExplorerEvidenceProjection(
       : rentAreaProjection(repositories, selection);
     const city = areas.find(({ districtSlug }) => districtSlug === null);
     if (city === undefined) throw new TypeError('Selected city evidence is missing.');
+    const buildingData = projectedBuildingData(repositories, selection, options);
     return Object.freeze({
       status: 'ready',
       availability,
@@ -353,7 +539,7 @@ export function buildKoreaExplorerEvidenceProjection(
       generatedAt: artifact.generatedAt,
       city,
       districts: Object.freeze(areas.filter(({ districtSlug }) => districtSlug !== null)),
-      buildings: projectedBuildings(repositories, selection),
+      ...buildingData,
     });
   } catch {
     return Object.freeze({ status: 'unavailable', availability, selection });
@@ -367,16 +553,19 @@ export function buildKoreaExplorerBuildingDetailModel(
   input: KoreaExplorerEvidenceSelectionInput,
 ): KoreaExplorerBuildingDetailModel | null {
   const requested = normalizeSelection(input);
-  const projection = buildKoreaExplorerEvidenceProjection(repositories, {
-    ...input,
-    housingType: 'all',
-  });
-  if (projection.status !== 'ready') return null;
-  const building = projection.buildings.find((candidate) => (
-    candidate.districtSlug === districtSlug && candidate.buildingId === buildingId
-  ));
   const district = getSeoulDistrictBySlug(districtSlug);
-  if (building === undefined || district === null) return null;
+  if (district === null) return null;
+  const rent = (() => {
+    try { return repositories.rent?.getBuilding(district.slug, buildingId); } catch { return undefined; }
+  })();
+  const sale = (() => {
+    try { return repositories.sale?.getBuilding(district.slug, buildingId); } catch { return undefined; }
+  })();
+  const identity = rent ?? sale;
+  const selectedRepository = requested.transaction === 'sale' ? repositories.sale : repositories.rent;
+  if (identity === undefined || selectedRepository === null) return null;
+  const artifact = selectedRepository.getArtifact();
+  const building = projectedBuilding(identity, rent, sale, requested);
 
   const normalizedRecent = building.recentTransactions.flatMap((source) => {
     const record = source as Readonly<Record<string, unknown>>;
@@ -412,8 +601,8 @@ export function buildKoreaExplorerBuildingDetailModel(
   const filedDeposit = building.filedDeposit;
   return Object.freeze({
     status: 'ready' as const,
-    period: projection.period,
-    generatedAt: projection.generatedAt,
+    period: artifact.period,
+    generatedAt: artifact.generatedAt,
     district: Object.freeze({ slug: district.slug, nameEn: district.nameEn, nameKo: district.nameKo }),
     building: Object.freeze({
       buildingId: building.buildingId,
