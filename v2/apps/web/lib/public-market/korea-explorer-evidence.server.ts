@@ -251,14 +251,46 @@ function saleAreaProjection(
 
 type IdentityRecord = KoreaRentEvidenceBuildingRecord | KoreaSaleEvidenceBuildingRecord;
 
-function identityRecords(repositories: KoreaEvidenceRepositories): readonly IdentityRecord[] {
-  const records = [
-    ...(repositories.rent?.listBuildingRecords() ?? []),
-    ...(repositories.sale?.listBuildingRecords() ?? []),
-  ];
-  return Object.freeze([...new Map(records.map((record) => [
+type KoreaExplorerBuildingIndex = Readonly<{
+  identities: readonly IdentityRecord[];
+  identitiesByDistrict: ReadonlyMap<SeoulDistrictSlug, readonly IdentityRecord[]>;
+  rentById: ReadonlyMap<string, KoreaRentEvidenceBuildingRecord>;
+  saleById: ReadonlyMap<string, KoreaSaleEvidenceBuildingRecord>;
+  statsBySelection: Map<string, KoreaExplorerBuildingStats>;
+}>;
+
+const buildingIndexCache = new WeakMap<KoreaEvidenceRepositories, KoreaExplorerBuildingIndex>();
+
+function buildingIndexFor(repositories: KoreaEvidenceRepositories): KoreaExplorerBuildingIndex {
+  const cached = buildingIndexCache.get(repositories);
+  if (cached !== undefined) return cached;
+  const rentRecords = repositories.rent?.listBuildingRecords() ?? [];
+  const saleRecords = repositories.sale?.listBuildingRecords() ?? [];
+  const records = [...rentRecords, ...saleRecords];
+  const identities = Object.freeze([...new Map(records.map((record) => [
     `${record.districtSlug}/${record.buildingId}`, record,
   ] as const)).values()]);
+  const byDistrict = new Map<SeoulDistrictSlug, IdentityRecord[]>();
+  for (const identity of identities) {
+    const district = byDistrict.get(identity.districtSlug) ?? [];
+    district.push(identity);
+    byDistrict.set(identity.districtSlug, district);
+  }
+  const index = Object.freeze({
+    identities,
+    identitiesByDistrict: new Map([...byDistrict].map(([slug, district]) => [
+      slug, Object.freeze(district),
+    ] as const)),
+    rentById: new Map<string, KoreaRentEvidenceBuildingRecord>(rentRecords.map((record) => [
+      `${record.districtSlug}/${record.buildingId}`, record,
+    ] as const)),
+    saleById: new Map<string, KoreaSaleEvidenceBuildingRecord>(saleRecords.map((record) => [
+      `${record.districtSlug}/${record.buildingId}`, record,
+    ] as const)),
+    statsBySelection: new Map<string, KoreaExplorerBuildingStats>(),
+  });
+  buildingIndexCache.set(repositories, index);
+  return index;
 }
 
 function areaMatches(areaSqm: number, areaBand: KoreaEvidenceAreaBand): boolean {
@@ -381,33 +413,39 @@ function projectedBuildingData(
   if (options.includeBuildings !== true && options.includeBuildingStats !== true) {
     return Object.freeze({ buildingPage: null, buildingStats: null });
   }
-  const identities = identityRecords(repositories).filter(({ housingType }) => (
+  const index = buildingIndexFor(repositories);
+  const housingMatches = ({ housingType }: IdentityRecord) => (
     selection.housingType === 'all' || housingType === selection.housingType
-  ));
-  const rentById = new Map<string, KoreaRentEvidenceBuildingRecord>((repositories.rent?.listBuildingRecords() ?? []).map((record) => [
-    `${record.districtSlug}/${record.buildingId}`, record,
-  ] as const));
-  const saleById = new Map<string, KoreaSaleEvidenceBuildingRecord>((repositories.sale?.listBuildingRecords() ?? []).map((record) => [
-    `${record.districtSlug}/${record.buildingId}`, record,
-  ] as const));
+  );
   const selectedPrimary = (identity: IdentityRecord): KoreaEvidenceDistribution => {
     const key = `${identity.districtSlug}/${identity.buildingId}`;
     if (selection.transaction === 'sale') {
-      return saleById.get(key)?.cohorts.find(({ areaBand }) => (
+      return index.saleById.get(key)?.cohorts.find(({ areaBand }) => (
         areaBand === selection.areaBand
       ))?.price ?? ZERO_DISTRIBUTION;
     }
-    return selectedRentBuilding(rentById.get(key), selection)?.primary ?? ZERO_DISTRIBUTION;
+    return selectedRentBuilding(index.rentById.get(key), selection)?.primary ?? ZERO_DISTRIBUTION;
   };
-  const buildingStats = options.includeBuildingStats === true
-    ? Object.freeze(identities.reduce((stats, identity) => {
+  const statsKey = [
+    selection.transaction,
+    selection.areaBand,
+    selection.housingType,
+    selection.contractGroup,
+  ].join(':');
+  let buildingStats = options.includeBuildingStats === true
+    ? index.statsBySelection.get(statsKey) ?? null
+    : null;
+  if (options.includeBuildingStats === true && buildingStats === null) {
+    buildingStats = Object.freeze(index.identities.reduce((stats, identity) => {
+        if (!housingMatches(identity)) return stats;
         const primary = selectedPrimary(identity);
         stats.observed += 1;
         if (primary.n > 0) stats.transactionCovered += 1;
         if (primary.published) stats.priceReady += 1;
         return stats;
-      }, { observed: 0, transactionCovered: 0, priceReady: 0 }))
-    : null;
+      }, { observed: 0, transactionCovered: 0, priceReady: 0 }));
+    index.statsBySelection.set(statsKey, buildingStats);
+  }
   if (options.includeBuildings !== true) {
     return Object.freeze({ buildingPage: null, buildingStats });
   }
@@ -423,14 +461,16 @@ function projectedBuildingData(
       value.toLocaleLowerCase('en-US').includes(query)
     )),
   )?.slug;
-  const requestedIdentityMatches = identities.some((identity) => {
-    if (identity.districtSlug !== requestedDistrict) return false;
+  const requestedIdentities = index.identitiesByDistrict.get(requestedDistrict) ?? [];
+  const requestedIdentityMatches = requestedIdentities.some((identity) => {
+    if (!housingMatches(identity)) return false;
     const district = getSeoulDistrictBySlug(requestedDistrict)!;
     return buildingMatchesQuery(identity, query, [district.slug, district.nameEn, district.nameKo]);
   });
   const firstGlobalMatch = requestedIdentityMatches || query.length === 0
     ? undefined
-    : identities.find((identity) => {
+    : index.identities.find((identity) => {
+        if (!housingMatches(identity)) return false;
         const district = getSeoulDistrictBySlug(identity.districtSlug);
         return district !== null && buildingMatchesQuery(
           identity,
@@ -440,8 +480,8 @@ function projectedBuildingData(
       })?.districtSlug;
   const districtSlug = districtFromQuery ?? firstGlobalMatch ?? requestedDistrict;
   const district = getSeoulDistrictBySlug(districtSlug)!;
-  const matches = identities.filter((identity) => (
-    identity.districtSlug === districtSlug
+  const matches = (index.identitiesByDistrict.get(districtSlug) ?? []).filter((identity) => (
+    housingMatches(identity)
     && buildingMatchesQuery(identity, query, [district.slug, district.nameEn, district.nameKo])
   ));
   const requestedPage = normalizedBuildingPage(options.buildingPage);
@@ -450,7 +490,12 @@ function projectedBuildingData(
   const start = (page - 1) * KOREA_EXPLORER_BUILDING_PAGE_SIZE;
   const buildings = matches.slice(start, start + KOREA_EXPLORER_BUILDING_PAGE_SIZE).map((identity) => {
     const key = `${identity.districtSlug}/${identity.buildingId}`;
-    return projectedBuilding(identity, rentById.get(key), saleById.get(key), selection);
+    return projectedBuilding(
+      identity,
+      index.rentById.get(key),
+      index.saleById.get(key),
+      selection,
+    );
   });
   return Object.freeze({
     buildingStats,
