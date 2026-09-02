@@ -218,10 +218,12 @@ describe('Korea sale snapshot temporary public export', () => {
     });
   }
 
-  it('exists only in Production and requires a configured server secret', async () => {
+  it('exists in protected Preview and Production, but not local development', async () => {
     const url = 'https://www.signedprice.com/api/internal/korea-sale-snapshot/?export=manifest';
 
-    expect((await exportHandler({ environment: 'preview' })(new Request(url))).status).toBe(404);
+    expect((await exportHandler({ environment: 'preview' })(new Request(url))).status).toBe(200);
+    expect((await exportHandler({ environment: 'development' })(new Request(url))).status)
+      .toBe(404);
     expect((await exportHandler({ token: undefined })(new Request(url))).status).toBe(503);
   });
 
