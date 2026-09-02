@@ -87,6 +87,7 @@ export default async function ExplorerPage({ searchParams }: ExplorerPageProps) 
       housingType: selection.propertyType,
       contractGroup: selection.contractType ?? singleValue(query.contract),
     },
+    singleValue(query.buildingPage),
   );
   const naverMapClientId = process.env.NAVER_MAP_CLIENT_ID?.trim() || null;
 

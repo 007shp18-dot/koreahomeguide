@@ -25,24 +25,40 @@ import {
   type KoreaSaleRecord,
 } from '@signedprice/korea-rent';
 
-import { createKoreaEvidenceRepositoryLoader } from '../lib/public-market/korea-evidence-repositories.server';
+import {
+  createKoreaEvidenceRepositoryLoader,
+  koreaEvidenceRepositoriesFromEnvironment,
+} from '../lib/public-market/korea-evidence-repositories.server';
 import { AreaExplorer } from '../components/public-market/area-explorer';
 import { DistrictRankings } from '../components/public-market/district-rankings';
 import {
   buildKoreaExplorerBuildingDetailModel,
-  buildKoreaExplorerEvidenceProjection,
+  buildKoreaExplorerEvidenceProjection as buildKoreaExplorerEvidenceProjectionBase,
+  type KoreaExplorerEvidenceSelectionInput,
   type KoreaExplorerBuildingDetailModel,
 } from '../lib/public-market/korea-explorer-evidence.server';
 import { buildKoreaEvidenceAreaExploreModel } from '../lib/public-market/korea-explorer-area-route.server';
 import { buildKoreaRentEvidenceArtifact } from '../lib/public-market/rent-evidence-artifact-builder.server';
 import { buildKoreaSaleEvidenceArtifact } from '../lib/public-market/sale-evidence-artifact-builder.server';
 import { buildKoreaEvidenceAreaRankingsModel } from '../lib/public-market/rankings-route-model.server';
+import type { KoreaEvidenceRepositories } from '../lib/public-market/korea-evidence-repositories.server';
 
 const period = '2026-01/2026-07';
 const generatedAt = '2026-08-01T00:00:00.000Z';
 const months = [
   '2026-01', '2026-02', '2026-03', '2026-04', '2026-05', '2026-06', '2026-07',
 ] as const;
+
+function buildKoreaExplorerEvidenceProjection(
+  repositories: KoreaEvidenceRepositories,
+  input: KoreaExplorerEvidenceSelectionInput,
+) {
+  return buildKoreaExplorerEvidenceProjectionBase(repositories, input, {
+    includeBuildings: true,
+    includeBuildingStats: true,
+    districtSlug: 'gangnam-gu',
+  });
+}
 
 function rentRecord(index: number, transaction: 'jeonse' | 'monthly' = 'jeonse'): KoreaRentRecord {
   return {
@@ -132,6 +148,33 @@ function resolver(input: Awaited<ReturnType<typeof fixtures>>) {
 }
 
 describe('installed Korea evidence repositories', () => {
+  it('serializes only one bounded building page from the installed full inventory', () => {
+    const repositories = koreaEvidenceRepositoriesFromEnvironment({
+      useCheckedInSnapshot: true,
+    });
+    const projection = buildKoreaExplorerEvidenceProjectionBase(repositories, {
+      transaction: 'jeonse', areaBand: 'all', housingType: 'all', contractGroup: 'all',
+    }, {
+      includeBuildings: true,
+      includeBuildingStats: true,
+      districtSlug: 'gangnam-gu',
+    });
+    expect(projection.status).toBe('ready');
+    if (projection.status !== 'ready' || projection.buildingPage === null) {
+      throw new Error('Installed Explore building page must be ready.');
+    }
+    expect(projection.buildingPage.buildings).toHaveLength(50);
+    expect(projection.buildingPage.total).toBeGreaterThan(50);
+    expect(projection.buildingStats?.observed).toBeGreaterThan(
+      projection.buildingPage.buildings.length,
+    );
+    const model = buildKoreaEvidenceAreaExploreModel('gangnam-gu', projection);
+    expect(model.buildingAvailability).toMatchObject({
+      status: 'ready', page: 1, pageSize: 50, total: projection.buildingPage.total,
+    });
+    expect(JSON.stringify(model).length).toBeLessThan(500_000);
+  }, 15_000);
+
   it('activates rent and sale independently and exposes exact-cohort lookups', async () => {
     const source = await fixtures();
     const loader = createKoreaEvidenceRepositoryLoader();
@@ -200,7 +243,7 @@ describe('installed Korea evidence repositories', () => {
     });
     expect(monthly.city.primary).toMatchObject({ published: true, n: 5 });
     expect(monthly.city.filedDeposit).toMatchObject({ published: true, n: 5 });
-    expect(monthly.buildings[0]).toMatchObject({
+    expect(monthly.buildingPage?.buildings[0]).toMatchObject({
       transaction: 'monthly', primaryMetric: 'monthly-rent',
     });
 
@@ -212,7 +255,7 @@ describe('installed Korea evidence repositories', () => {
     expect(sale.selection.contractGroup).toBe('not-applicable');
     expect(sale.city.primary).toMatchObject({ published: true, n: 5 });
     expect(sale.city.filedDeposit).toBeNull();
-    expect(sale.buildings[0]?.transaction).toBe('sale');
+    expect(sale.buildingPage?.buildings[0]?.transaction).toBe('sale');
 
     const rentOnly = createKoreaEvidenceRepositoryLoader().load({
       registrySource: registry(source, ['rent']), resolveObject: resolver(source),

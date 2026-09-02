@@ -53,6 +53,7 @@ export default async function KoreanExplorePage({ searchParams }: KoreanExploreP
       housingType: selection.propertyType,
       contractGroup: selection.contractType ?? singleValue(query.contract),
     },
+    singleValue(query.buildingPage),
   );
   return (
     <div id="top" lang="ko" className={styles.page}>

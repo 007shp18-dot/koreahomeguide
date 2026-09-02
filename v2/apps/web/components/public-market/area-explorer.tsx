@@ -182,6 +182,9 @@ function ReadyAreaExplorer({
   );
   const { selectedBuildingId } = buildingSelection;
   const [visibleBuildingCount, setVisibleBuildingCount] = useState(10);
+  const readyBuildingAvailability = model.buildingAvailability.status === 'ready'
+    ? model.buildingAvailability
+    : null;
   const selected = model.districts.find(({ slug }) => slug === state.selectedSlug)
     ?? model.districts[0]!;
   const districtBuildings = useMemo(() => (
@@ -320,8 +323,19 @@ function ReadyAreaExplorer({
     const normalizedQuery = buildingQuery.trim();
     if (normalizedQuery.length === 0) target.searchParams.delete('q');
     else target.searchParams.set('q', normalizedQuery);
+    target.searchParams.delete('buildingPage');
     router.replace(`${target.pathname}${target.search}`);
   }, [buildingQuery, initialSelection, locale, router, state.selectedSlug]);
+  const buildingPageHref = useCallback((page: number): string => {
+    const href = evidenceHref();
+    const target = new URL(href, window.location.origin);
+    const normalizedQuery = buildingQuery.trim();
+    if (normalizedQuery.length === 0) target.searchParams.delete('q');
+    else target.searchParams.set('q', normalizedQuery);
+    if (page <= 1) target.searchParams.delete('buildingPage');
+    else target.searchParams.set('buildingPage', String(page));
+    return `${target.pathname}${target.search}`;
+  }, [buildingQuery, evidenceHref]);
 
   return (
     <section
@@ -608,7 +622,9 @@ function ReadyAreaExplorer({
                   ))}
                 </div>
                 <p className={styles.resultSummary} aria-live="polite">
-                  {filteredBuildings.length} {model.buildingAvailability.status === 'ready'
+                  {model.buildingAvailability.status === 'ready'
+                    ? model.buildingAvailability.total
+                    : filteredBuildings.length} {model.buildingAvailability.status === 'ready'
                     ? copy.observedBuildings.toLocaleLowerCase(locale === 'ko' ? 'ko-KR' : 'en-US')
                     : locale === 'ko' ? '개 가격 게시 가능 건물' : 'price-ready buildings'}
                 </p>
@@ -664,11 +680,34 @@ function ReadyAreaExplorer({
                         </li>
                       ))}
                     </ul>
-                    {visibleBuildings.length < filteredBuildings.length ? (
+                    {readyBuildingAvailability !== null
+                      && readyBuildingAvailability.page > 1 ? (
                       <button
                         type="button"
                         className={styles.moreBuildings}
-                        onClick={() => setVisibleBuildingCount((count) => count + 10)}
+                        onClick={() => router.replace(buildingPageHref(
+                          readyBuildingAvailability.page - 1,
+                        ), { scroll: false })}
+                      >{locale === 'ko' ? '이전 건물' : 'Previous buildings'}</button>
+                    ) : null}
+                    {visibleBuildings.length < filteredBuildings.length
+                      || (readyBuildingAvailability !== null
+                        && readyBuildingAvailability.page * readyBuildingAvailability.pageSize
+                          < readyBuildingAvailability.total) ? (
+                      <button
+                        type="button"
+                        className={styles.moreBuildings}
+                        onClick={() => {
+                          if (visibleBuildings.length < filteredBuildings.length) {
+                            setVisibleBuildingCount((count) => count + 10);
+                            return;
+                          }
+                          if (model.buildingAvailability.status === 'ready') {
+                            router.replace(buildingPageHref(
+                              model.buildingAvailability.page + 1,
+                            ), { scroll: false });
+                          }
+                        }}
                       >{copy.showMore}</button>
                     ) : null}
                   </>
@@ -919,7 +958,13 @@ export function AreaExplorer({
       {model.status === 'ready'
         ? (
           <ReadyAreaExplorer
-            key={`${model.selectedSlug}:${initialQuery}`}
+            key={`${model.selectedSlug}:${initialQuery}:${model.evidenceSelection.transaction}:${
+              model.evidenceSelection.areaBand
+            }:${model.evidenceSelection.housingType}:${model.evidenceSelection.contractGroup}:${
+              model.buildingAvailability.status === 'ready'
+                ? model.buildingAvailability.page
+                : 0
+            }`}
             model={model}
             naverMapClientId={naverMapClientId}
             locale={locale}
