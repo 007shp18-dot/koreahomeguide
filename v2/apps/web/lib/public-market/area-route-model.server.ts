@@ -43,6 +43,9 @@ import type {
   DistrictBuildingAvailability,
   ExploreBuildingAvailability,
   ExploreDistrictModel,
+  KoreaExploreProximityModel,
+  KoreaExploreProximityPair,
+  KoreaExploreProximitySelection,
   PublicAreaExploreModel,
   PublicAreaLegendBucket,
   PublicAreaCoverageModel,
@@ -69,6 +72,12 @@ import {
   koreaEvidenceRepositoriesFromEnvironment,
   type KoreaEvidenceRepositories,
 } from './korea-evidence-repositories.server';
+import type { KoreaProximityRepositoryState } from './korea-proximity-repository.server';
+import { koreaProximityRepositoryFromEnvironment } from './korea-proximity-repository.server';
+import {
+  koreaBuildingMatchesProximity,
+  koreaBuildingProximityModel,
+} from './korea-proximity-display.server';
 
 export type PublicAreaRouteDependencies = Readonly<{
   source: unknown;
@@ -76,6 +85,7 @@ export type PublicAreaRouteDependencies = Readonly<{
   buildingSource?: unknown;
   observedBuildingSource?: unknown;
   evidenceRepositories?: KoreaEvidenceRepositories;
+  proximityRepository?: KoreaProximityRepositoryState;
   referenceInstant?: string | Date;
   updateSchedule?: PublicMonthlyUpdateSchedule;
 }>;
@@ -88,11 +98,68 @@ const money = new Intl.NumberFormat('ko-KR', {
 
 const PUBLICATION_MINIMUM = 5 as const;
 const CONTRACT_GROUPS = ['all', 'new', 'renewal'] as const;
+const proximityDistances = new Set(['250', '500', '750', '1000']);
 const GROUP_LABELS = Object.freeze({
   all: 'All contracts',
   new: 'New contracts',
   renewal: 'Renewal contracts',
 } as const);
+
+function scalar(value: unknown): string | undefined {
+  return typeof value === 'string' ? value : undefined;
+}
+
+function proximityPairFor(
+  source: Readonly<Record<string, unknown>>,
+  kind: 'station' | 'school',
+  repository: KoreaProximityRepositoryState,
+): KoreaExploreProximityPair | null {
+  if (repository.state !== 'ready') return null;
+  const sourceId = scalar(source[kind]);
+  const rawDistance = scalar(source[`${kind}Distance`]);
+  if (sourceId === undefined || rawDistance === undefined || !proximityDistances.has(rawDistance)) return null;
+  const distance = Number(rawDistance) as 250 | 500 | 750 | 1000;
+  const catalog = kind === 'station'
+    ? repository.repository.getArtifact().stations
+    : repository.repository.getArtifact().schools;
+  return catalog.some((item) => item.sourceId === sourceId)
+    ? Object.freeze({ sourceId, distanceMeters: distance })
+    : null;
+}
+
+export function normalizeKoreaExploreProximitySelection(
+  input: unknown,
+  repository: KoreaProximityRepositoryState,
+): KoreaExploreProximitySelection {
+  const source = input !== null && typeof input === 'object' && !Array.isArray(input)
+    ? input as Readonly<Record<string, unknown>>
+    : Object.freeze({});
+  return Object.freeze({
+    station: proximityPairFor(source, 'station', repository),
+    school: proximityPairFor(source, 'school', repository),
+  });
+}
+
+function proximityModelFor(repository: KoreaProximityRepositoryState | undefined, input: unknown): KoreaExploreProximityModel {
+  const state = repository ?? Object.freeze({ state: 'missing' as const });
+  const selection = normalizeKoreaExploreProximitySelection(input, state);
+  if (state.state !== 'ready') return Object.freeze({ status: state.state, selection });
+  const artifact = state.repository.getArtifact();
+  return Object.freeze({
+    status: 'ready' as const,
+    selection,
+    stations: Object.freeze(artifact.stations.map((station) => Object.freeze({
+      sourceId: station.sourceId, name: station.name, lines: Object.freeze([...station.lines]),
+    }))),
+    schools: Object.freeze(artifact.schools.map((school) => Object.freeze({ sourceId: school.sourceId, name: school.name }))),
+    provenance: Object.freeze({
+      stationSource: artifact.provenance.stationSource,
+      schoolSource: artifact.provenance.schoolSource,
+      coordinateSource: artifact.provenance.coordinateSource,
+      methodology: artifact.provenance.methodology.distance,
+    }),
+  });
+}
 
 function formatMoney(value: number): string {
   return money.format(value);
@@ -331,6 +398,7 @@ function environmentDependencies(includeEvidenceRepositories = true): PublicArea
     evidenceRepositories: includeEvidenceRepositories
       ? koreaEvidenceRepositoriesFromEnvironment()
       : undefined,
+    proximityRepository: koreaProximityRepositoryFromEnvironment(),
   });
 }
 
@@ -579,9 +647,13 @@ function exploreBuildingsFor(
   districtSlug: SeoulDistrictSlug,
   observedRepository: ObservedBuildingRepository | null,
   priceRecords: ReadonlyMap<string, PublicBuildingRecord>,
+  proximityRepository: KoreaProximityRepositoryState | undefined,
+  proximitySelection: KoreaExploreProximitySelection,
 ): ExploreBuildingAvailability {
   if (observedRepository !== null) {
-    const buildings = Object.freeze(observedRepository.listByDistrict(districtSlug).map((observed) => {
+    const buildings = Object.freeze(observedRepository.listByDistrict(districtSlug)
+      .filter((observed) => koreaBuildingMatchesProximity(observed.buildingId, proximityRepository, proximitySelection))
+      .map((observed) => {
       const building = priceRecords.get(`${observed.districtSlug}/${observed.buildingId}`);
       const groupLabel = (group: PublicBuildingDistribution) => (
         group.published ? formatMoney(group.med) : null
@@ -622,6 +694,7 @@ function exploreBuildingsFor(
           : sampleLabel(building.groups.renewal.n),
         renewalMedianLabel: building === undefined ? null : groupLabel(building.groups.renewal),
         unknownContractCount: building?.unknownContractCount ?? 0,
+        proximity: koreaBuildingProximityModel(observed.buildingId, proximityRepository),
         href: `/kr/seoul/explore/${observed.districtSlug}/${observed.buildingId}/` as const,
       });
     }));
@@ -637,6 +710,7 @@ function exploreBuildingsFor(
     .filter((building) => (
       building.districtSlug === districtSlug && building.groups.all.published
     ))
+    .filter((building) => koreaBuildingMatchesProximity(building.buildingId, proximityRepository, proximitySelection))
     .map((building) => {
       if (!building.groups.all.published) {
         throw new TypeError('Published fallback building required.');
@@ -668,6 +742,7 @@ function exploreBuildingsFor(
         ? formatMoney(building.groups.renewal.med)
         : null,
       unknownContractCount: building.unknownContractCount,
+      proximity: koreaBuildingProximityModel(building.buildingId, proximityRepository),
       href: `/kr/seoul/explore/${building.districtSlug}/${building.buildingId}/` as const,
       });
     }));
@@ -682,7 +757,10 @@ export function buildPublicAreaExploreModel(
   requestedEvidence: KoreaExplorerEvidenceSelectionInput = Object.freeze({}),
   requestedBuildingPage: unknown = 1,
   requestedBuildingId?: unknown,
+  requestedProximity: unknown = Object.freeze({}),
 ): PublicAreaExploreModel {
+  const proximityRepository = dependencies.proximityRepository;
+  const proximity = proximityModelFor(proximityRepository, requestedProximity);
   if (dependencies.evidenceRepositories !== undefined) {
     const projection = buildKoreaExplorerEvidenceProjection(
       dependencies.evidenceRepositories,
@@ -697,10 +775,12 @@ export function buildPublicAreaExploreModel(
         buildingQuery: requestedBuildingQuery,
         buildingPage: requestedBuildingPage,
         selectedBuildingId: requestedBuildingId,
+        proximityRepository,
+        proximitySelection: proximity.selection,
       },
     );
     if (projection.status === 'ready') {
-      return buildKoreaEvidenceAreaExploreModel(selectedSlug, projection);
+      return buildKoreaEvidenceAreaExploreModel(selectedSlug, projection, proximity, proximityRepository);
     }
   }
   const unavailableSource = buildPublicSourceBoundary(dependencies.period, null, true);
@@ -781,7 +861,8 @@ export function buildPublicAreaExploreModel(
       districts,
       legend: legendFor(districts),
       coverage: coverageFor(summaries, citySummary, dependencies),
-      buildingAvailability: exploreBuildingsFor(selected, observedRepository, priceRecords),
+      buildingAvailability: exploreBuildingsFor(selected, observedRepository, priceRecords, proximityRepository, proximity.selection),
+      proximity,
       source,
     });
   } catch {

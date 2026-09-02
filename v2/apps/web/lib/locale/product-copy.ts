@@ -293,7 +293,8 @@ const KOREAN_LOCAL_ROUTES = new Set([
 export function localizedSeoulHref(href: string, locale: ProductLocale): string {
   if (locale === 'en') return href;
   const [path, query] = href.split('?', 2);
-  if (!KOREAN_LOCAL_ROUTES.has(path ?? '')) return href;
+  const isKoreanExploreDetail = path?.startsWith('/kr/seoul/explore/') === true;
+  if (!KOREAN_LOCAL_ROUTES.has(path ?? '') && !isKoreanExploreDetail) return href;
   return `/ko${path}${query === undefined ? '' : `?${query}`}`;
 }
 

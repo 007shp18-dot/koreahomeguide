@@ -13,6 +13,9 @@ import {
 
 import type { KoreaEvidenceRepositories } from './korea-evidence-repositories.server';
 import type { SeoulDistrictSlug } from '@signedprice/korea-rent/browser';
+import type { KoreaProximityRepositoryState } from './korea-proximity-repository.server';
+import type { KoreaExploreProximitySelection } from './area-route-types';
+import { koreaBuildingMatchesProximity } from './korea-proximity-display.server';
 
 export const KOREA_EXPLORER_HOUSING_TYPES = Object.freeze([
   'all', 'apartment', 'officetel', 'villa_multifamily', 'detached',
@@ -106,6 +109,8 @@ export type KoreaExplorerProjectionOptions = Readonly<{
   buildingQuery?: unknown;
   buildingPage?: unknown;
   selectedBuildingId?: unknown;
+  proximityRepository?: KoreaProximityRepositoryState;
+  proximitySelection?: KoreaExploreProximitySelection;
 }>;
 
 export type KoreaExplorerBuildingDetailModel = Readonly<{
@@ -465,6 +470,7 @@ function projectedBuildingData(
   const requestedIdentities = index.identitiesByDistrict.get(requestedDistrict) ?? [];
   const requestedIdentityMatches = requestedIdentities.some((identity) => {
     if (!housingMatches(identity)) return false;
+    if (!koreaBuildingMatchesProximity(identity.buildingId, options.proximityRepository, options.proximitySelection)) return false;
     const district = getSeoulDistrictBySlug(requestedDistrict)!;
     return buildingMatchesQuery(identity, query, [district.slug, district.nameEn, district.nameKo]);
   });
@@ -472,6 +478,7 @@ function projectedBuildingData(
     ? undefined
     : index.identities.find((identity) => {
         if (!housingMatches(identity)) return false;
+        if (!koreaBuildingMatchesProximity(identity.buildingId, options.proximityRepository, options.proximitySelection)) return false;
         const district = getSeoulDistrictBySlug(identity.districtSlug);
         return district !== null && buildingMatchesQuery(
           identity,
@@ -483,6 +490,7 @@ function projectedBuildingData(
   const district = getSeoulDistrictBySlug(districtSlug)!;
   const matches = (index.identitiesByDistrict.get(districtSlug) ?? []).filter((identity) => (
     housingMatches(identity)
+    && koreaBuildingMatchesProximity(identity.buildingId, options.proximityRepository, options.proximitySelection)
     && buildingMatchesQuery(identity, query, [district.slug, district.nameEn, district.nameKo])
   ));
   const selectedBuildingId = typeof options.selectedBuildingId === 'string'

@@ -269,7 +269,7 @@ describe('public Seoul area Explorer', () => {
       expect(markup).toContain(district.nameEn);
       expect(markup).toContain(district.nameKo);
       expect(markup).toContain(district.sampleLabel);
-      expect(markup).toContain(`href="${district.href.replace(/\/$/, '')}"`);
+      expect(markup).toContain(`href="/kr/seoul/explore/${district.slug}"`);
       if (district.medianLabel !== null) expect(markup).toContain(district.medianLabel);
     }
     expect((markup.match(/data-district-path=/g) ?? [])).toHaveLength(25);
@@ -284,7 +284,7 @@ describe('public Seoul area Explorer', () => {
     expect(markup).toContain('Selected · Gangnam-gu');
     expect(markup).toContain('data-selected-evidence="gangnam-gu"');
     expect(markup).toContain('New/renewal split not available in this snapshot');
-    expect(markup).toContain('href="/kr/seoul/explore/gangnam-gu"');
+    expect(markup).toContain('href="/kr/seoul/explore?district=gangnam-gu"');
     expect(markup).toContain('Open Gangnam-gu evidence');
     expect(markup).toContain('Open Jongno-gu');
     expect(markup).toContain('href="/kr/seoul/rankings"');

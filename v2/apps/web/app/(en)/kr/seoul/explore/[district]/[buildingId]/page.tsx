@@ -7,11 +7,13 @@ import { NaverBuildingStreetView } from '@/components/maps/naver-building-street
 import {
   KoreaEvidenceBuildingDetail,
   ObservedBuildingDetail,
+  BuildingProximityDisclosure,
 } from '@/components/public-market/observed-building-detail';
 import { PropertyTypeDetailPage } from '@/components/public-market/property-type-detail-page';
 import {
   createSelectionHref,
   parseExplorerSelection,
+  type ExplorerSelection,
 } from '@/lib/navigation/explorer-selection';
 import { buildBuildingDecisionModel } from '@/lib/public-market/building-decision-model';
 import { parseBuildingDecisionSelection } from '@/lib/public-market/building-decision-state';
@@ -31,12 +33,51 @@ import {
   buildPublicPropertyTypeModel,
   listPublicPropertyTypeRouteParams,
 } from '@/lib/public-market/property-type-route-model.server';
+import {
+  normalizeKoreaExploreProximitySelection,
+} from '@/lib/public-market/area-route-model.server';
+import type { KoreaProximityRepositoryState } from '@/lib/public-market/korea-proximity-repository.server';
+import { koreaProximityRepositoryFromEnvironment } from '@/lib/public-market/korea-proximity-repository.server';
+import { appendKoreaProximityPairs } from '@/lib/public-market/korea-proximity-url';
 import { indexableMetadata } from '@/lib/public-metadata';
+import { localizedSeoulHref, type ProductLocale } from '@/lib/locale/product-copy';
 
 type BuildingPageProps = Readonly<{
   params: Promise<Readonly<{ district: string; buildingId: string }>>;
   searchParams: Promise<Readonly<Record<string, string | string[] | undefined>>>;
 }>;
+
+type LocalizedBuildingPageProps = BuildingPageProps & Readonly<{ locale?: ProductLocale }>;
+
+type DetailQuery = Readonly<Record<string, string | readonly string[] | undefined>>;
+
+function scalarQuery(query: DetailQuery, key: 'q' | 'buildingPage'): string | undefined {
+  const value = query[key];
+  return typeof value === 'string' ? value : undefined;
+}
+
+/** Creates a locale-aware Explore return URL from validated generic and Korea-only state. */
+export function createKoreaDetailBackHref(
+  query: DetailQuery,
+  selection: ExplorerSelection,
+  proximityRepository: KoreaProximityRepositoryState,
+  locale: ProductLocale = 'en',
+): string {
+  const href = localizedSeoulHref(createSelectionHref(
+    '/kr/seoul/explore/',
+    selection,
+    { market: 'kr', transaction: 'jeonse' },
+  ), locale);
+  const target = new URL(href, 'https://signedprice.invalid');
+  const searchQuery = scalarQuery(query, 'q')?.trim();
+  if (searchQuery !== undefined && searchQuery.length > 0) target.searchParams.set('q', searchQuery);
+  const page = Number(scalarQuery(query, 'buildingPage'));
+  if (Number.isSafeInteger(page) && page > 1) target.searchParams.set('buildingPage', String(page));
+  return appendKoreaProximityPairs(
+    `${target.pathname}${target.search}`,
+    normalizeKoreaExploreProximitySelection(query, proximityRepository),
+  );
+}
 
 function naverStreetViewFor(input: Readonly<{
   name: string;
@@ -67,6 +108,8 @@ export function resolveKoreaEvidenceBuildingRoute(
   buildingId: string,
   query: Readonly<Record<string, string | readonly string[] | undefined>>,
   repositories: KoreaEvidenceRepositories,
+  proximityRepository: KoreaProximityRepositoryState = Object.freeze({ state: 'missing' }),
+  locale: ProductLocale = 'en',
 ) {
   const selection = parseExplorerSelection(
     query,
@@ -88,8 +131,8 @@ export function resolveKoreaEvidenceBuildingRoute(
     },
   );
   if (model === null) return null;
-  const backHref = createSelectionHref(
-    '/kr/seoul/explore/',
+  const backHref = createKoreaDetailBackHref(
+    query,
     {
       ...selection,
       propertyType: model.building.housingType,
@@ -97,7 +140,8 @@ export function resolveKoreaEvidenceBuildingRoute(
       neighborhood: model.building.neighborhoodId,
       buildingId: model.building.buildingId,
     },
-    { market: 'kr', transaction: 'jeonse' },
+    proximityRepository,
+    locale,
   );
   return Object.freeze({ model, backHref });
 }
@@ -152,8 +196,31 @@ export async function generateMetadata({ params, searchParams }: BuildingPagePro
   };
 }
 
-export default async function BuildingRoute({ params, searchParams }: BuildingPageProps) {
-  const { district, buildingId } = await params;
+export type KoreaBuildingRouteCompositionDependencies = Readonly<{
+  evidenceRepositories?: KoreaEvidenceRepositories;
+  proximityRepository?: KoreaProximityRepositoryState;
+  buildObservedIdentityModel?: typeof buildObservedBuildingIdentityModel;
+}>;
+
+/**
+ * Composes one Detail branch after the App Router has resolved its promises.
+ * The narrow dependencies keep the production route unchanged while allowing
+ * branch-level server composition tests to provide verified repository states.
+ */
+export function composeKoreaBuildingRoute(input: Readonly<{
+  district: string;
+  buildingId: string;
+  query: DetailQuery;
+  locale?: ProductLocale;
+  dependencies?: KoreaBuildingRouteCompositionDependencies;
+}>) {
+  const { district, buildingId, query, locale = 'en' } = input;
+  const proximityRepository = input.dependencies?.proximityRepository
+    ?? koreaProximityRepositoryFromEnvironment();
+  const evidenceRepositories = input.dependencies?.evidenceRepositories
+    ?? koreaEvidenceRepositoriesFromEnvironment();
+  const observedIdentityModel = input.dependencies?.buildObservedIdentityModel
+    ?? buildObservedBuildingIdentityModel;
   const propertyTypeModel = buildPublicPropertyTypeModel(district, buildingId);
   if (propertyTypeModel !== null) {
     const siblings = listPublicPropertyTypeRouteParams()
@@ -167,33 +234,32 @@ export default async function BuildingRoute({ params, searchParams }: BuildingPa
     });
     return <PropertyTypeDetailPage model={propertyTypeModel} siblings={siblings} />;
   }
-  const query = await searchParams;
   const exact = resolveKoreaEvidenceBuildingRoute(
     district,
     buildingId,
     query,
-    koreaEvidenceRepositoriesFromEnvironment(),
+    evidenceRepositories,
+    proximityRepository,
+    locale,
   );
   if (exact !== null) {
-    const identity = buildObservedBuildingIdentityModel(district, buildingId);
+    const identity = observedIdentityModel(district, buildingId, { proximityRepository });
     return <KoreaEvidenceBuildingDetail
       model={exact.model}
       backHref={exact.backHref}
+      locale={locale}
       visual={naverStreetViewFor({
         name: exact.model.building.officialName,
         latitude: identity?.coordinate.status === 'ready' ? identity.coordinate.latitude : null,
         longitude: identity?.coordinate.status === 'ready' ? identity.coordinate.longitude : null,
         mapHref: exact.backHref,
       })}
-      facts={<BuildingOfficialFacts
-        districtSlug={exact.model.district.slug}
-        buildingId={exact.model.building.buildingId}
-      />}
+      facts={<><BuildingOfficialFacts districtSlug={exact.model.district.slug} buildingId={exact.model.building.buildingId} /><BuildingProximityDisclosure proximity={identity?.proximity} locale={locale} /></>}
     />;
   }
   const model = buildPublicBuildingModel(district, buildingId);
   if (model === null) {
-    const observed = buildObservedBuildingIdentityModel(district, buildingId);
+    const observed = observedIdentityModel(district, buildingId, { proximityRepository });
     if (observed === null) notFound();
     const selection = parseExplorerSelection(
       query,
@@ -208,10 +274,11 @@ export default async function BuildingRoute({ params, searchParams }: BuildingPa
         },
       },
     );
-    const backHref = createSelectionHref(
-      '/kr/seoul/explore/',
+    const backHref = createKoreaDetailBackHref(
+      query,
       { ...selection, district: observed.district.slug },
-      { market: 'kr', transaction: 'jeonse' },
+      proximityRepository,
+      locale,
     );
     return <ObservedBuildingDetail
       model={observed}
@@ -226,9 +293,13 @@ export default async function BuildingRoute({ params, searchParams }: BuildingPa
         districtSlug={observed.district.slug}
         buildingId={observed.building.buildingId}
       />}
+      locale={locale}
     />;
   }
-  const selection = parseBuildingDecisionSelection(query);
+  const selection = parseBuildingDecisionSelection(
+    query as Readonly<Record<string, string | string[] | undefined>>,
+  );
+  const observed = observedIdentityModel(district, buildingId, { proximityRepository });
   const decision = buildBuildingDecisionModel(model, selection);
   const explorerSelection = parseExplorerSelection(
     query,
@@ -243,10 +314,11 @@ export default async function BuildingRoute({ params, searchParams }: BuildingPa
       },
     },
   );
-  const backHref = createSelectionHref(
-    '/kr/seoul/explore/',
+  const backHref = createKoreaDetailBackHref(
+    query,
     { ...explorerSelection, district: model.district.slug },
-    { market: 'kr', transaction: 'jeonse' },
+    proximityRepository,
+    locale,
   );
   const base = `/kr/seoul/explore/${model.district.slug}/${model.building.buildingId}/`;
   const visual = buildBuildingVisualModel({
@@ -266,12 +338,19 @@ export default async function BuildingRoute({ params, searchParams }: BuildingPa
       decision={decision}
       visual={visual}
       streetView={streetView}
-      facts={<BuildingOfficialFacts
-        districtSlug={model.district.slug}
-        buildingId={model.building.buildingId}
-      />}
+      facts={<><BuildingOfficialFacts districtSlug={model.district.slug} buildingId={model.building.buildingId} /><BuildingProximityDisclosure proximity={observed?.proximity} locale={locale} /></>}
       base={base}
       backHref={backHref}
     />
   );
+}
+
+export default async function BuildingRoute({ params, searchParams, locale = 'en' }: LocalizedBuildingPageProps) {
+  const { district, buildingId } = await params;
+  return composeKoreaBuildingRoute({
+    district,
+    buildingId,
+    query: await searchParams,
+    locale,
+  });
 }

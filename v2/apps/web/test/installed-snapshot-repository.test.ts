@@ -184,6 +184,7 @@ describe('installed snapshot repository', () => {
     expect(resolveInstalledSnapshotObject('installed://kr-conversion')).toMatchObject({
       totals: { eligiblePairCount: 1_031_799 },
     });
+    expect(resolveInstalledSnapshotObject('installed://kr-proximity')).toBeUndefined();
     expect(resolveInstalledSnapshotObject('installed://sg-private-sale')).toMatchObject({
       version: 'signedprice-singapore-private-sale-v1',
       period: { from: '2021-08', to: '2026-08' },
@@ -194,6 +195,15 @@ describe('installed snapshot repository', () => {
       totals: { resale: 239_583, rental: 209_852, properties: 13_357, sourceRows: 462_792 },
     });
     expect(resolveInstalledSnapshotObject('https://example.com/snapshot.json')).toBeUndefined();
+  });
+
+  it('does not advertise proximity before a real artifact passes the release gate', () => {
+    const registry = resolveInstalledSnapshotRegistry() as {
+      snapshots: Array<{ dataset: string }>;
+    };
+
+    expect(registry.snapshots.some(({ dataset }) => dataset === 'kr-proximity')).toBe(false);
+    expect(resolveInstalledSnapshotObject('installed://kr-proximity')).toBeUndefined();
   });
 
   it('verifies the exact checked-in registry against every installed Korea artifact', () => {

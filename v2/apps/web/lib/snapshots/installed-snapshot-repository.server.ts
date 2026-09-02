@@ -36,6 +36,7 @@ let checkedInObservedBuildingInventory: unknown;
 let checkedInKoreaRentEvidence: unknown;
 let checkedInKoreaSaleEvidence: unknown;
 let checkedInKoreaConversionEvidence: unknown;
+let checkedInKoreaProximityEvidence: unknown;
 let checkedInSingaporePrivateSale: unknown;
 let checkedInSingaporeHdb: unknown;
 const checkedInSnapshotDigests = new WeakMap<object, string>();
@@ -132,6 +133,16 @@ export function resolveInstalledSnapshotObject(objectUrl: string): unknown {
           process.cwd(),
           'apps/web/data/korea-conversion-evidence.json.gz',
         )),
+      ],
+    );
+  }
+  if (objectUrl === 'installed://kr-proximity') {
+    return readCheckedInArtifact(
+      checkedInKoreaProximityEvidence,
+      (value) => { checkedInKoreaProximityEvidence = value; },
+      [
+        () => readFileSync(resolve(process.cwd(), 'data/korea-proximity.json.gz')),
+        () => readFileSync(resolve(process.cwd(), 'apps/web/data/korea-proximity.json.gz')),
       ],
     );
   }

@@ -1,6 +1,7 @@
 import 'server-only';
 
 import type { SeoulDistrictSlug } from '@signedprice/korea-rent/browser';
+import { parseInstalledSnapshotRegistry } from '@signedprice/market-core';
 
 import {
   createInstalledSnapshotRepository,
@@ -99,14 +100,29 @@ export function observedBuildingRepositoryFromEnvironment(
   let repository: ObservedBuildingRepository | null = null;
   try {
     if (installedRegistry !== undefined) {
-      const installed = createInstalledSnapshotRepository({
-        registrySource: JSON.parse(installedRegistry),
-        resolveObject,
-      }).get('kr-seoul', 'kr-building-registry');
-      repository = createObservedBuildingRepository({
-        source: installed.payload,
-        expected: { marketId: 'kr-seoul', period: installed.metadata.period },
-      });
+      const registrySource = JSON.parse(installedRegistry) as unknown;
+      const registry = parseInstalledSnapshotRegistry(registrySource);
+      const hasObservedActivation = registry.snapshots.some((snapshot) => (
+        snapshot.marketId === 'kr-seoul'
+        && snapshot.dataset === 'kr-building-registry'
+      ));
+      if (hasObservedActivation) {
+        const installed = createInstalledSnapshotRepository({
+          registrySource,
+          resolveObject,
+        }).get('kr-seoul', 'kr-building-registry');
+        repository = createObservedBuildingRepository({
+          source: installed.payload,
+          expected: { marketId: 'kr-seoul', period: installed.metadata.period },
+        });
+      } else if (legacyArtifact !== undefined) {
+        // A scoped registry (for example an isolated proximity test fixture)
+        // does not replace an explicitly supplied observed-inventory payload.
+        repository = createObservedBuildingRepository({
+          source: JSON.parse(legacyArtifact),
+          expected: { marketId: 'kr-seoul', period },
+        });
+      }
     } else if (legacyArtifact !== undefined) {
       repository = createObservedBuildingRepository({
         source: JSON.parse(legacyArtifact),

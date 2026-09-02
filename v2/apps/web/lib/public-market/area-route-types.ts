@@ -230,6 +230,7 @@ export type PublicAreaExploreModel =
       legend: readonly PublicAreaLegendBucket[];
       coverage: PublicAreaCoverageModel;
       buildingAvailability: ExploreBuildingAvailability;
+      proximity: KoreaExploreProximityModel;
       source: PublicAreaSourceBoundaryModel;
     }>
   | Readonly<{
@@ -265,7 +266,51 @@ export type ExploreBuildingModel = Readonly<{
   renewalSampleLabel: string;
   renewalMedianLabel: string | null;
   unknownContractCount: number;
+  proximity: ExploreBuildingProximityModel | null;
   href: `/kr/seoul/explore/${string}/${string}/`;
+}>;
+
+export type KoreaExploreProximityPair = Readonly<{
+  sourceId: string;
+  distanceMeters: 250 | 500 | 750 | 1000;
+}>;
+
+export type KoreaExploreProximitySelection = Readonly<{
+  station: KoreaExploreProximityPair | null;
+  school: KoreaExploreProximityPair | null;
+}>;
+
+export type KoreaExploreProximityModel =
+  | Readonly<{
+      status: 'ready';
+      selection: KoreaExploreProximitySelection;
+      stations: readonly Readonly<{ sourceId: string; name: string; lines: readonly string[] }>[];
+      schools: readonly Readonly<{ sourceId: string; name: string }>[];
+      provenance: Readonly<{
+        stationSource: Readonly<{ landingPage: string; sourceVersion: string; asOf: string }>;
+        schoolSource: Readonly<{ landingPage: string; sourceVersion: string; asOf: string }>;
+        coordinateSource: Readonly<{ landingPage: string; sourceVersion: string; asOf: string }>;
+        methodology: 'WGS84 Haversine straight-line metres';
+      }>;
+    }>
+  | Readonly<{
+      status: 'missing' | 'invalid';
+      selection: KoreaExploreProximitySelection;
+    }>;
+
+export type ExploreBuildingProximityModel = Readonly<{
+  coordinateStatus: 'ready' | 'pending_coordinate' | 'unavailable';
+  nearestStation: Readonly<{
+    sourceId: string;
+    name: string;
+    lines: readonly string[];
+    distanceMeters: number;
+  }> | null;
+  nearestSchool: Readonly<{
+    sourceId: string;
+    name: string;
+    distanceMeters: number;
+  }> | null;
 }>;
 
 export type ExploreBuildingAvailability =

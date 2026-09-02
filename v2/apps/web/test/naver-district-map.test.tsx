@@ -643,6 +643,7 @@ describe('NAVER district map', () => {
       medianLabel: '₩320,000,000', newSampleLabel: '3 reported contracts',
       newMedianLabel: null, renewalSampleLabel: '2 reported contracts',
       renewalMedianLabel: null, unknownContractCount: 1,
+      proximity: null,
       href: '/kr/seoul/explore/gangnam-gu/evidence-tower/',
     } as const satisfies ExploreBuildingModel;
     let selection: explorerState.BuildingExplorerSelectionState = Object.freeze({

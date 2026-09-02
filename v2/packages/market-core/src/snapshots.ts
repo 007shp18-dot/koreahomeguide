@@ -5,6 +5,7 @@ export type MarketDataset =
   | 'kr-sale'
   | 'kr-rent'
   | 'kr-conversion'
+  | 'kr-proximity'
   | 'sg-private-sale'
   | 'sg-private-rent'
   | 'sg-hdb'
@@ -49,6 +50,7 @@ const marketDatasets = Object.freeze({
     'kr-sale',
     'kr-rent',
     'kr-conversion',
+    'kr-proximity',
   ]),
   'sg-singapore': Object.freeze([
     'sg-private-sale',

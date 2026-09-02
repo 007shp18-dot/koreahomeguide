@@ -13,10 +13,16 @@ import type {
   ObservedBuildingCoordinate,
   ObservedBuildingRecord,
 } from './observed-building-schema';
+import {
+  koreaProximityRepositoryFromEnvironment,
+  type KoreaProximityRepositoryState,
+} from './korea-proximity-repository.server';
+import { koreaBuildingProximityModel } from './korea-proximity-display.server';
 
 export type ObservedBuildingRouteDependencies = Readonly<{
-  source: unknown;
-  period: string;
+  source?: unknown;
+  period?: string;
+  proximityRepository?: KoreaProximityRepositoryState;
 }>;
 
 type ObservedCoordinateModel =
@@ -42,6 +48,18 @@ export type ObservedBuildingIdentityModel = Readonly<{
     lastMonth: string;
   }>;
   coordinate: ObservedCoordinateModel;
+  proximity: Readonly<{
+    status: 'ready' | 'missing' | 'invalid';
+    coordinateStatus: 'ready' | 'pending_coordinate' | 'unavailable';
+    nearestStation: Readonly<{ sourceId: string; name: string; lines: readonly string[]; distanceMeters: number }> | null;
+    nearestSchool: Readonly<{ sourceId: string; name: string; distanceMeters: number }> | null;
+    provenance?: Readonly<{
+      stationSource: Readonly<{ landingPage: string; sourceVersion: string; asOf: string }>;
+      schoolSource: Readonly<{ landingPage: string; sourceVersion: string; asOf: string }>;
+      coordinateSource: Readonly<{ landingPage: string; sourceVersion: string; asOf: string }>;
+      methodology: 'WGS84 Haversine straight-line metres';
+    }>;
+  }>;
   source: Readonly<{
     provider: 'MOLIT';
     dataset: 'reported rent contracts';
@@ -70,6 +88,18 @@ function coordinateModel(coordinate: ObservedBuildingCoordinate): ObservedCoordi
   });
 }
 
+function proximityModel(buildingId: string, repository: KoreaProximityRepositoryState) {
+  if (repository.state !== 'ready') return Object.freeze({ status: repository.state, coordinateStatus: 'unavailable' as const, nearestStation: null, nearestSchool: null });
+  const display = koreaBuildingProximityModel(buildingId, repository);
+  if (display === null) throw new TypeError('Ready proximity display is unavailable.');
+  const artifact = repository.repository.getArtifact();
+  return Object.freeze({
+    status: 'ready' as const,
+    ...display,
+    provenance: Object.freeze({ stationSource: artifact.provenance.stationSource, schoolSource: artifact.provenance.schoolSource, coordinateSource: artifact.provenance.coordinateSource, methodology: artifact.provenance.methodology.distance }),
+  });
+}
+
 export function buildObservedBuildingIdentityModel(
   districtSlug: string,
   buildingId: string,
@@ -78,7 +108,7 @@ export function buildObservedBuildingIdentityModel(
   const district = getSeoulDistrictBySlug(districtSlug);
   if (district === null) return null;
   try {
-    const repository = dependencies === undefined
+    const repository = dependencies?.source === undefined || dependencies.period === undefined
       ? observedBuildingRepositoryFromEnvironment()
       : createObservedBuildingRepository({
           source: dependencies.source,
@@ -88,6 +118,7 @@ export function buildObservedBuildingIdentityModel(
     const building = repository.getById(buildingId);
     if (building.districtSlug !== district.slug) return null;
     const artifact = repository.getArtifact();
+    const proximity = dependencies?.proximityRepository ?? koreaProximityRepositoryFromEnvironment({ observedBuildingRepository: repository });
     return Object.freeze({
       status: 'identity_only',
       district,
@@ -100,6 +131,7 @@ export function buildObservedBuildingIdentityModel(
         lastMonth: building.lastObservedMonth,
       }),
       coordinate: coordinateModel(building.coordinate),
+      proximity: proximityModel(buildingId, proximity),
       source: Object.freeze({
         provider: artifact.provider,
         dataset: artifact.dataset,

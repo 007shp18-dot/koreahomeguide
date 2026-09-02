@@ -3,7 +3,6 @@ import { expect, test, type Page } from '@playwright/test';
 import { resolveReleaseTestTarget } from '../../release-test-target';
 import {
   PUBLIC_BUILDING_TEST_NAME,
-  PUBLIC_BUILDING_TEST_SELECTION_HREF,
 } from './public-building-summary-fixture';
 
 const releaseTarget = resolveReleaseTestTarget();
@@ -29,7 +28,7 @@ async function expectTouchTarget(page: Page, selector: string) {
   expect(box?.height).toBeGreaterThanOrEqual(44);
 }
 
-test('map and table select the same reload-safe district workspace', async ({ page }, testInfo) => {
+test('map and table open the same reload-safe canonical district detail', async ({ page }, testInfo) => {
   const noFailures = observeFailures(page);
   await page.goto('/kr/seoul/explore/');
   const tableHref = await page.locator('[data-district-row="jongno-gu"] a').first().getAttribute('href');
@@ -39,25 +38,13 @@ test('map and table select the same reload-safe district workspace', async ({ pa
   } else {
     await page.locator('[data-district-row="jongno-gu"] a').first().click();
   }
-  await expect(page).toHaveURL(/\/kr\/seoul\/explore\/\?district=jongno-gu$/);
-  await expect(page.locator('[data-building-browser="jongno-gu"]')).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Jongno-gu building evidence' })).toBeVisible();
+  await expect(page).toHaveURL(/\/kr\/seoul\/explore\/jongno-gu\/$/);
+  await expect(page.locator('[data-detail-main="true"]')).toBeVisible();
+  await expect(page.locator('[data-section="district-buildings"]')).toBeVisible();
   await page.reload();
-  await expect(page).toHaveURL(/\/kr\/seoul\/explore\/\?district=jongno-gu$/);
-  await expect(page.locator('[data-building-browser="jongno-gu"]')).toBeVisible();
-  if (releaseTarget.usesExternalServer) {
-    const ready = await page.locator('[data-building-browser="jongno-gu"] ul button').count();
-    const notLoaded = await page.getByText('Building evidence is not loaded').count();
-    expect(ready + notLoaded).toBeGreaterThan(0);
-  } else {
-    await expect(page.getByText('Building evidence is not loaded')).toHaveCount(0);
-    const building = page.getByRole('button', { name: new RegExp(PUBLIC_BUILDING_TEST_NAME) });
-    await expect(building).toBeVisible();
-    await building.click();
-    await expect(page.locator('[data-building-panel="synthetic-test-building"]')).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Open full building evidence' }))
-      .toHaveAttribute('href', PUBLIC_BUILDING_TEST_SELECTION_HREF);
-  }
+  await expect(page).toHaveURL(/\/kr\/seoul\/explore\/jongno-gu\/$/);
+  await expect(page.locator('[data-detail-main="true"]')).toBeVisible();
+  await expect(page.locator('[data-section="district-buildings"]')).toBeVisible();
   await expectContained(page);
   noFailures();
 });

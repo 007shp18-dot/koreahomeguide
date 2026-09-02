@@ -1,3 +1,5 @@
+import { fileURLToPath } from 'node:url';
+
 import { defineConfig, devices } from '@playwright/test';
 import {
   resolveReleaseTestTarget,
@@ -29,6 +31,10 @@ import {
   SINGAPORE_SNAPSHOT_TEST_PERIOD,
   SINGAPORE_SNAPSHOT_TEST_SHA256,
 } from './tests/e2e/singapore-snapshot-fixture';
+import {
+  E2E_KOREA_PROXIMITY_GZIP_BASE64,
+  E2E_KOREA_PROXIMITY_REGISTRY,
+} from './tests/e2e/korea-proximity-fixture';
 
 const port = 3100;
 
@@ -37,9 +43,9 @@ export function createPlaywrightConfig(
 ) {
   const target = resolveReleaseTestTarget(environment);
   const webServer = {
-    command:
-      `pnpm --filter @signedprice/web build && ` +
-      `pnpm --filter @signedprice/web start --hostname 127.0.0.1 --port ${port}`,
+    command: `${JSON.stringify(process.execPath)} ${JSON.stringify(fileURLToPath(
+      new URL('./tests/e2e/korea-proximity-web-server.mjs', import.meta.url),
+    ))} ${port}`,
     env: {
       VERCEL_ENV: target.expectedEnvironment,
       VERCEL_GIT_COMMIT_SHA: target.expectedCommit,
@@ -62,8 +68,11 @@ export function createPlaywrightConfig(
       SIGNEDPRICE_SINGAPORE_SNAPSHOT_PERIOD: SINGAPORE_SNAPSHOT_TEST_PERIOD,
       SIGNEDPRICE_SINGAPORE_SNAPSHOT_SHA256: SINGAPORE_SNAPSHOT_TEST_SHA256,
       SIGNEDPRICE_URA_ACCESS_KEY: 'sentinel-ura-key',
+      SIGNEDPRICE_INSTALLED_SNAPSHOT_REGISTRY: E2E_KOREA_PROXIMITY_REGISTRY,
+      SIGNEDPRICE_PLAYWRIGHT_PROXIMITY_GZIP_BASE64: E2E_KOREA_PROXIMITY_GZIP_BASE64,
     },
     reuseExistingServer: false,
+    gracefulShutdown: { signal: 'SIGTERM', timeout: 5_000 },
     stderr: 'pipe',
     stdout: 'pipe',
     timeout: 180_000,

@@ -214,6 +214,59 @@ describe('observed building artifact boundary', () => {
     expect(repository?.getArtifact().sha256).toBe(source.sha256);
   });
 
+  it('uses the explicit observed fixture only when a valid scoped registry lacks its activation', () => {
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', period);
+    vi.stubEnv('SIGNEDPRICE_OBSERVED_BUILDING_ARTIFACT', JSON.stringify(signedArtifact()));
+    vi.stubEnv('SIGNEDPRICE_INSTALLED_SNAPSHOT_REGISTRY', JSON.stringify({
+      registryVersion: 'signedprice-installed-snapshots-v1',
+      snapshots: [],
+    }));
+
+    expect(observedBuildingRepositoryFromEnvironment({
+      useCheckedInSnapshot: false,
+    })?.listRecords()).toHaveLength(2);
+  });
+
+  it('fails closed instead of masking a malformed installed registry with the explicit fixture', () => {
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', period);
+    vi.stubEnv('SIGNEDPRICE_OBSERVED_BUILDING_ARTIFACT', JSON.stringify(signedArtifact()));
+    vi.stubEnv('SIGNEDPRICE_INSTALLED_SNAPSHOT_REGISTRY', JSON.stringify({
+      registryVersion: 'signedprice-installed-snapshots-v1',
+      snapshots: [{}],
+    }));
+
+    expect(observedBuildingRepositoryFromEnvironment({
+      useCheckedInSnapshot: false,
+    })).toBeNull();
+  });
+
+  it('fails closed instead of masking a corrupt observed activation with the explicit fixture', () => {
+    const source = signedArtifact();
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', period);
+    vi.stubEnv('SIGNEDPRICE_OBSERVED_BUILDING_ARTIFACT', JSON.stringify(source));
+    vi.stubEnv('SIGNEDPRICE_INSTALLED_SNAPSHOT_REGISTRY', JSON.stringify({
+      registryVersion: 'signedprice-installed-snapshots-v1',
+      snapshots: [{
+        marketId: 'kr-seoul',
+        dataset: 'kr-building-registry',
+        schemaVersion: OBSERVED_BUILDING_ARTIFACT_VERSION,
+        sourceVersion: 'molit-rent-v1',
+        parserVersion: 'kr-molit-building-parser-v2',
+        rightsPolicyId: 'kr-molit-rent-v1',
+        period,
+        generatedAt,
+        objectUrl: 'installed://kr-building-registry',
+        sha256: '0'.repeat(64),
+        recordCount: 2,
+      }],
+    }));
+
+    expect(observedBuildingRepositoryFromEnvironment({
+      resolveObject: () => source,
+      useCheckedInSnapshot: false,
+    })).toBeNull();
+  });
+
   it('loads the checked-in inventory when no explicit artifact is supplied', () => {
     vi.stubEnv('SIGNEDPRICE_INSTALLED_SNAPSHOT_REGISTRY', undefined);
     vi.stubEnv('SIGNEDPRICE_OBSERVED_BUILDING_ARTIFACT', undefined);

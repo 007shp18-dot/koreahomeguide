@@ -27,6 +27,9 @@ import type {
   PublicContractGroup,
   PublicDistrictEvidenceSummaryModel,
 } from './area-route-types';
+import type { KoreaProximityRepositoryState } from './korea-proximity-repository.server';
+import { koreaBuildingProximityModel } from './korea-proximity-display.server';
+import type { KoreaExploreProximityModel } from './area-route-types';
 import type {
   KoreaExplorerEvidenceProjection,
   KoreaExplorerProjectedArea,
@@ -210,6 +213,7 @@ function areaBandLabel(
 
 function buildingsFor(
   projection: Extract<KoreaExplorerEvidenceProjection, { status: 'ready' }>,
+  proximityRepository?: KoreaProximityRepositoryState,
 ): readonly ExploreBuildingModel[] {
   const [firstObservedMonth, lastObservedMonth] = projection.period.split('/');
   return Object.freeze((projection.buildingPage?.buildings ?? []).map((building) => {
@@ -248,6 +252,7 @@ function buildingsFor(
       renewalSampleLabel: sampleLabel(group('renewal')?.n ?? 0),
       renewalMedianLabel: groupLabel('renewal'),
       unknownContractCount: group('all') === undefined ? 0 : group('unknown')?.n ?? 0,
+      proximity: koreaBuildingProximityModel(building.buildingId, proximityRepository),
       href: `/kr/seoul/explore/${building.districtSlug}/${building.buildingId}/` as const,
     });
   }));
@@ -256,6 +261,10 @@ function buildingsFor(
 export function buildKoreaEvidenceAreaExploreModel(
   selectedSlug: string | undefined,
   projection: Extract<KoreaExplorerEvidenceProjection, { status: 'ready' }>,
+  proximity: KoreaExploreProximityModel = Object.freeze({
+    status: 'missing', selection: Object.freeze({ station: null, school: null }),
+  }),
+  proximityRepository?: KoreaProximityRepositoryState,
 ): Extract<PublicAreaExploreModel, { status: 'ready' }> {
   const areaByDistrict = new Map(projection.districts.map((area) => [
     area.districtSlug, area,
@@ -296,7 +305,7 @@ export function buildKoreaEvidenceAreaExploreModel(
   const selected = projection.buildingPage?.districtSlug
     ?? getSeoulDistrictBySlug(selectedSlug ?? '')?.slug
     ?? 'jongno-gu';
-  const buildings = buildingsFor(projection);
+  const buildings = buildingsFor(projection, proximityRepository);
   const priceReady = projection.buildingStats?.priceReady ?? 0;
   const transactionCovered = projection.buildingStats?.transactionCovered ?? 0;
   const observed = projection.buildingStats?.observed ?? 0;
@@ -358,6 +367,7 @@ export function buildKoreaEvidenceAreaExploreModel(
       page: projection.buildingPage?.page ?? 1,
       pageSize: projection.buildingPage?.pageSize ?? 0,
     }),
+    proximity,
     source: Object.freeze({
       evidence,
       provider: 'MOLIT' as const,
