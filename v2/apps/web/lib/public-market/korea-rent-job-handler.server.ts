@@ -94,7 +94,6 @@ export type KoreaRentSnapshotPublicExportDependencies = Readonly<{
   environment: string | undefined;
   token: string | undefined;
   referenceInstant: string;
-  allowCollection?: boolean;
   postHandler(request: Request): Promise<Response>;
 }>;
 
