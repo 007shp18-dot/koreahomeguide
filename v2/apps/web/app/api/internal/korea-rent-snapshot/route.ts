@@ -20,7 +20,7 @@ import { createVercelRuntimeCache } from '@/lib/rent-check/runtime-cache.server'
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
-export const maxDuration = 60;
+export const maxDuration = 300;
 
 const cache = createVercelRuntimeCache();
 const serviceKey = process.env.SIGNEDPRICE_PUBLIC_DATA_SERVICE_KEY
