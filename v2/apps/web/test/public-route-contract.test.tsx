@@ -71,6 +71,7 @@ describe('Korea-only public route availability', () => {
   });
 
   it('removes future-market destinations from public home navigation', async () => {
+    vi.stubEnv('SIGNEDPRICE_USE_CHECKED_IN_SNAPSHOTS', 'false');
     const html = renderToStaticMarkup(await Home());
     expect(html).toContain('/kr/seoul/');
     expect(html).not.toMatch(/href="\/(?:sg|ae)\//);
@@ -308,6 +309,58 @@ describe('public migration containment', () => {
     expect(urls).not.toContain('https://www.signedprice.com/kr/seoul/gangnam-gu/');
     expect(urls).toContain('https://www.signedprice.com/ko/kr/seoul/explore/');
     expect(urls).toContain('https://www.signedprice.com/ko/kr/seoul/rankings/');
+  });
+
+  it('publishes honest content dates and alternates only for real localized counterparts', () => {
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_ARTIFACT', JSON.stringify(artifact(true)));
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', period);
+    vi.stubEnv(
+      'SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT',
+      JSON.stringify(createPublicAreaV2Fixture()),
+    );
+
+    const entries = new Map(sitemap().map((entry) => [entry.url, entry] as const));
+    const localizedExplore = {
+      en: 'https://www.signedprice.com/kr/seoul/explore/',
+      ko: 'https://www.signedprice.com/ko/kr/seoul/explore/',
+      'x-default': 'https://www.signedprice.com/kr/seoul/explore/',
+    };
+
+    expect(entries.get('https://www.signedprice.com/kr/seoul/')).toMatchObject({
+      lastModified: new Date('2026-08-30T00:00:00.000Z'),
+      alternates: {
+        languages: {
+          en: 'https://www.signedprice.com/kr/seoul/',
+          ko: 'https://www.signedprice.com/ko/kr/seoul/',
+          'x-default': 'https://www.signedprice.com/kr/seoul/',
+        },
+      },
+    });
+    expect(entries.get('https://www.signedprice.com/kr/seoul/explore/')).toMatchObject({
+      lastModified: new Date('2026-08-31T01:13:24.787Z'),
+      alternates: { languages: localizedExplore },
+    });
+    expect(entries.get('https://www.signedprice.com/ko/kr/seoul/explore/')).toMatchObject({
+      lastModified: new Date('2026-08-31T01:13:24.787Z'),
+      alternates: { languages: localizedExplore },
+    });
+    expect(entries.get(
+      'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/',
+    )).toEqual({
+      url: 'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/',
+      lastModified: new Date('2026-08-31T01:13:24.787Z'),
+    });
+    expect(entries.get('https://www.signedprice.com/kr/seoul/news/')).toMatchObject({
+      lastModified: new Date('2026-08-31T01:00:00.000Z'),
+    });
+    expect(entries.get('https://www.signedprice.com/kr/seoul/guide/')).toMatchObject({
+      lastModified: new Date('2026-08-31T00:00:00.000Z'),
+    });
+    expect(entries.get(
+      'https://www.signedprice.com/kr/seoul/guide/compare-two-contracts/',
+    )).toMatchObject({
+      lastModified: new Date('2026-08-31T00:00:00.000Z'),
+    });
   });
 
   it('keeps evidence-dependent Korea pages out when evidence is withheld or missing', () => {

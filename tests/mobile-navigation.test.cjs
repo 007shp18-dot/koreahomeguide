@@ -77,7 +77,7 @@ test('mount creates one accessible mobile navigation, tracks clicks, and stays i
 function htmlFiles(directory, rootDirectory=directory){
   return fs.readdirSync(directory,{ withFileTypes:true }).flatMap(entry=>{
     const target=path.join(directory,entry.name);
-    if(entry.isDirectory()&&entry.name!=='.git'&&entry.name!=='node_modules'&&!(directory===rootDirectory&&entry.name==='v2')) return htmlFiles(target,rootDirectory);
+    if(entry.isDirectory()&&entry.name!=='.git'&&entry.name!=='.worktrees'&&entry.name!=='node_modules'&&!(directory===rootDirectory&&entry.name==='v2')) return htmlFiles(target,rootDirectory);
     return entry.isFile()&&entry.name.endsWith('.html')?[target]:[];
   });
 }

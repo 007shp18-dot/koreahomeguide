@@ -139,5 +139,6 @@ test('rent-market response and UI expose canonical neighborhood links', () => {
 
 test('robots keeps Search Console pointed at the stable root sitemap URL', () => {
   const robots = fs.readFileSync('robots.txt','utf8');
+  assert.match(robots, /Disallow: \/api\//);
   assert.match(robots, /Sitemap: https:\/\/koreahomeguide\.com\/sitemap\.xml/);
 });

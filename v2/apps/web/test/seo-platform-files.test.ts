@@ -15,7 +15,7 @@ describe('SignedPrice search and advertising platform files', () => {
     expect(robotsRoute).not.toBeNull();
     if (robotsRoute === null) return;
     expect(robotsRoute.default()).toEqual({
-      rules: { userAgent: '*', allow: '/' },
+      rules: { userAgent: '*', allow: '/', disallow: '/api/' },
       sitemap: 'https://www.signedprice.com/sitemap.xml',
       host: 'https://www.signedprice.com',
     });
