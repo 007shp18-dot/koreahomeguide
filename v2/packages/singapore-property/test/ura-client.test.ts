@@ -51,6 +51,21 @@ function expectCode(action: () => Promise<unknown>, code: UraClientError['code']
 }
 
 describe('createUraClient', () => {
+  it('uses the current versioned URA endpoints and an identified server user agent', async () => {
+    expect(URA_TOKEN_URL).toBe('https://eservice.ura.gov.sg/uraDataService/insertNewToken/v1');
+    expect(URA_DATA_URL).toBe('https://eservice.ura.gov.sg/uraDataService/invokeUraDS/v1');
+
+    const fake = successfulFetch();
+    await createUraClient({ accessKey: 'server-key', fetch: fake.fetch })
+      .fetchPrivateResidentialTransactions();
+
+    for (const call of fake.calls) {
+      expect(new Headers(call.headers).get('User-Agent')).toBe(
+        'signedprice/1.0 (+https://signedprice.com)',
+      );
+    }
+  });
+
   it('gets one token then consumes all four batches exactly once in order', async () => {
     const fake = successfulFetch();
     const client = createUraClient({ accessKey: 'server-key', fetch: fake.fetch });
