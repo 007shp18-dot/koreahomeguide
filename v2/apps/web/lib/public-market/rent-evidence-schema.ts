@@ -163,7 +163,7 @@ function parseDistribution(value: unknown): KoreaEvidenceDistribution {
     || !(value.chg3m === null || (
       typeof value.chg3m === 'number'
       && Number.isFinite(value.chg3m)
-      && value.chg3m > -100
+      && value.chg3m >= -100
       && Number.isInteger(value.chg3m * 10)
     ))
   ) invalid();
