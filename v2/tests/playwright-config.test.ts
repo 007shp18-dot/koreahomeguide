@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
@@ -23,6 +25,18 @@ function installLocalReleaseEnvironment() {
 }
 
 describe('Playwright release target configuration', () => {
+  it('keeps the config-loaded Check fixture independent of workspace TypeScript', () => {
+    const source = readFileSync(
+      new URL('./e2e/contract-check-evidence-fixture.ts', import.meta.url),
+      'utf8',
+    );
+    const imports = [...source.matchAll(/from\s+['"]([^'"]+)['"]/g)]
+      .map((match) => match[1]);
+
+    expect(imports).toEqual(['node:crypto', 'node:zlib']);
+    expect(source).not.toMatch(/@signedprice\/|(?:packages|apps)\//);
+  });
+
   it('builds and serves the deterministic candidate locally', () => {
     const config = createPlaywrightConfig({});
 
