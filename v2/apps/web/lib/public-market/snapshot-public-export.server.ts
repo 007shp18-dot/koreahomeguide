@@ -27,17 +27,6 @@ function empty(status: number, allow?: string): Response {
   return new Response(null, { status, headers });
 }
 
-const VERCEL_ACCESS_QUERY_PARAMETERS = new Set([
-  'x-vercel-protection-bypass',
-  'x-vercel-set-bypass-cookie',
-]);
-
-function exactEntries(url: URL): ReadonlyArray<readonly [string, string]> {
-  return Array.from(url.searchParams.entries()).filter(
-    ([key]) => !VERCEL_ACCESS_QUERY_PARAMETERS.has(key),
-  );
-}
-
 function isCanonicalChunk(value: string | null): value is string {
   if (value === null || !/^(?:0|[1-9]\d*)$/.test(value)) return false;
   return Number.isSafeInteger(Number(value));
@@ -57,21 +46,20 @@ export function createKoreaSnapshotPublicExportHandler(
     ) return empty(503);
 
     const url = new URL(request.url);
-    const entries = exactEntries(url);
     let body: Readonly<Record<string, unknown>> | undefined;
 
     if (
-      entries.length === 1
-      && entries[0]![0] === 'export'
-      && entries[0]![1] === 'manifest'
+      url.searchParams.getAll('export').length === 1
+      && url.searchParams.get('export') === 'manifest'
+      && url.searchParams.getAll('dataset').length === 0
+      && url.searchParams.getAll('chunk').length === 0
     ) {
       body = Object.freeze({
         action: 'finalize',
         referenceInstant: dependencies.referenceInstant,
       });
     } else if (
-      entries.length === 3
-      && url.searchParams.getAll('export').length === 1
+      url.searchParams.getAll('export').length === 1
       && url.searchParams.get('export') === 'artifact'
       && url.searchParams.getAll('dataset').length === 1
       && dependencies.datasets.includes(url.searchParams.get('dataset') ?? '')
