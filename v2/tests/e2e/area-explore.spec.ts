@@ -232,6 +232,7 @@ test('ready injected proximity fixture keeps controls touch-sized and round-trip
   await selectors.nth(3).selectOption('1000');
   await expect(page).toHaveURL(/school=e2e-school.*schoolDistance=1000/);
   await expect(page.locator('[data-building-browser="jongno-gu"]')).toContainText('E2E Station');
+  await page.locator('[data-building-row="synthetic-test-building"] button').click();
   const detail = page.getByRole('link', { name: 'Open full building evidence' }).first();
   await expect(detail).toHaveAttribute('href', /station=e2e-station.*stationDistance=750.*school=e2e-school.*schoolDistance=1000/);
   await detail.click();
