@@ -1,5 +1,7 @@
 import 'server-only';
 
+import { randomBytes } from 'node:crypto';
+
 import {
   finalizeKoreaRentSnapshotJob,
   runKoreaPublicSummaryBatch,
@@ -24,6 +26,7 @@ const cache = createVercelRuntimeCache();
 const serviceKey = process.env.SIGNEDPRICE_PUBLIC_DATA_SERVICE_KEY
   ?? process.env.DATA_GO_KR_SERVICE_KEY;
 const exportReferenceInstant = '2026-09-02T00:00:00.000Z';
+const exportCapability = randomBytes(32).toString('hex');
 
 const handlerDependencies = {
   serviceKey,
@@ -55,12 +58,12 @@ export const POST = createKoreaRentSnapshotJobHandler({
 const exportPostHandler = createKoreaRentSnapshotJobHandler({
   ...handlerDependencies,
   environment: 'preview',
-  token: process.env.SIGNEDPRICE_INTERNAL_JOB_TOKEN,
+  token: exportCapability,
 });
 
 const publicExport = createKoreaRentSnapshotPublicExportHandler({
   environment: process.env.VERCEL_ENV,
-  token: process.env.SIGNEDPRICE_INTERNAL_JOB_TOKEN,
+  token: exportCapability,
   referenceInstant: exportReferenceInstant,
   postHandler: exportPostHandler,
 });
