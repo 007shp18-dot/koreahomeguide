@@ -37,7 +37,7 @@ export function createKoreaSnapshotPublicExportHandler(
 ): (request: Request) => Promise<Response> {
   return async (request: Request): Promise<Response> => {
     if (request.method !== 'GET') return empty(405, 'GET');
-    if (dependencies.environment !== 'production') return empty(404);
+    if (!['preview', 'production'].includes(dependencies.environment ?? '')) return empty(404);
     if (
       dependencies.token === undefined
       || dependencies.token.length < 24
