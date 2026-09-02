@@ -7,6 +7,7 @@ import {
   InstalledSnapshotUnavailableError,
   createInstalledSnapshotRepository,
   resolveInstalledSnapshotObject,
+  resolveInstalledSnapshotRegistry,
 } from '../lib/snapshots/installed-snapshot-repository.server';
 
 const period = '2026-01/2026-07';
@@ -112,16 +113,36 @@ function conversionRegistry(
 }
 
 describe('installed snapshot repository', () => {
-  it('resolves only the checked-in building registry object', () => {
+  it('resolves every checked-in Korea snapshot object', () => {
     const installed = resolveInstalledSnapshotObject('installed://kr-building-registry');
 
     expect(installed).toMatchObject({
       artifactVersion: 'signedprice-observed-building-inventory-v1',
       provenance: { marketId: 'kr-seoul', period: '2026-02/2026-08' },
-      stats: { observedBuildingCount: 48_866 },
+      stats: { observedBuildingCount: 48_999 },
     });
-    expect(resolveInstalledSnapshotObject('installed://kr-sale')).toBeUndefined();
+    expect(resolveInstalledSnapshotObject('installed://kr-rent')).toMatchObject({
+      stats: { eligibleRecordCount: 340_704 },
+    });
+    expect(resolveInstalledSnapshotObject('installed://kr-sale')).toMatchObject({
+      stats: { eligibleRecordCount: 74_188 },
+    });
+    expect(resolveInstalledSnapshotObject('installed://kr-conversion')).toMatchObject({
+      totals: { eligiblePairCount: 1_031_799 },
+    });
     expect(resolveInstalledSnapshotObject('https://example.com/snapshot.json')).toBeUndefined();
+  });
+
+  it('verifies the exact checked-in registry against every installed Korea artifact', () => {
+    const repository = createInstalledSnapshotRepository({
+      registrySource: resolveInstalledSnapshotRegistry(),
+      resolveObject: resolveInstalledSnapshotObject,
+    });
+
+    expect(repository.get('kr-seoul', 'kr-building-registry').metadata.recordCount).toBe(48_999);
+    expect(repository.get('kr-seoul', 'kr-rent').metadata.recordCount).toBe(49_129);
+    expect(repository.get('kr-seoul', 'kr-sale').metadata.recordCount).toBe(22_850);
+    expect(repository.get('kr-seoul', 'kr-conversion').metadata.recordCount).toBe(1_031_799);
   });
 
   it('returns a digest, schema, identity and count verified payload', () => {

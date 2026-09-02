@@ -13,7 +13,12 @@ const nextConfig: NextConfig = {
   },
   outputFileTracingRoot: repositoryRoot,
   outputFileTracingIncludes: {
-    '/*': ['./data/observed-building-inventory.json.gz'],
+    '/*': [
+      './data/observed-building-inventory.json.gz',
+      './data/korea-rent-evidence.json.gz',
+      './data/korea-sale-evidence.json.gz',
+      './data/korea-conversion-evidence.json.gz',
+    ],
   },
 };
 

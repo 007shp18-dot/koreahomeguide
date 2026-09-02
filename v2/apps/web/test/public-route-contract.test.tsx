@@ -252,6 +252,7 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/',
       'https://www.signedprice.com/compare/',
       'https://www.signedprice.com/trust/',
+      'https://www.signedprice.com/kr/seoul/check/',
       'https://www.signedprice.com/kr/seoul/tools/rent-check/',
       'https://www.signedprice.com/kr/seoul/',
       'https://www.signedprice.com/kr/seoul/news/',
@@ -259,6 +260,7 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/kr/seoul/guide/',
       ...GUIDES.map(({ slug }) => `https://www.signedprice.com/kr/seoul/guide/${slug}/`),
       'https://www.signedprice.com/ko/kr/seoul/',
+      'https://www.signedprice.com/ko/kr/seoul/check/',
     ]);
   });
 
@@ -313,12 +315,14 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/',
       'https://www.signedprice.com/compare/',
       'https://www.signedprice.com/trust/',
+      'https://www.signedprice.com/kr/seoul/check/',
       'https://www.signedprice.com/kr/seoul/tools/rent-check/',
       'https://www.signedprice.com/kr/seoul/news/',
       'https://www.signedprice.com/kr/seoul/news/how-signedprice-reads-reported-rental-contracts/',
       'https://www.signedprice.com/kr/seoul/guide/',
       ...GUIDES.map(({ slug }) => `https://www.signedprice.com/kr/seoul/guide/${slug}/`),
       'https://www.signedprice.com/ko/kr/seoul/',
+      'https://www.signedprice.com/ko/kr/seoul/check/',
     ]);
 
     vi.unstubAllEnvs();
@@ -326,12 +330,14 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/',
       'https://www.signedprice.com/compare/',
       'https://www.signedprice.com/trust/',
+      'https://www.signedprice.com/kr/seoul/check/',
       'https://www.signedprice.com/kr/seoul/tools/rent-check/',
       'https://www.signedprice.com/kr/seoul/news/',
       'https://www.signedprice.com/kr/seoul/news/how-signedprice-reads-reported-rental-contracts/',
       'https://www.signedprice.com/kr/seoul/guide/',
       ...GUIDES.map(({ slug }) => `https://www.signedprice.com/kr/seoul/guide/${slug}/`),
       'https://www.signedprice.com/ko/kr/seoul/',
+      'https://www.signedprice.com/ko/kr/seoul/check/',
     ]);
   });
 });
