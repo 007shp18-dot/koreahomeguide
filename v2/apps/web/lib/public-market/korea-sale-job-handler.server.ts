@@ -14,6 +14,8 @@ import type {
   KoreaSaleSummaryBatchResult,
 } from '@signedprice/korea-rent';
 
+import { createKoreaSnapshotPublicExportHandler } from './snapshot-public-export.server';
+
 type BuiltSaleArtifact = Readonly<{
   artifact: Readonly<Record<string, unknown>>;
   serialized: string;
@@ -75,6 +77,13 @@ export type KoreaSaleSnapshotJobHandlerDependencies = Readonly<{
   }>): Promise<KoreaSaleSnapshotFinalization>;
   buildSaleArtifact(input: KoreaSaleEvidence): Promise<BuiltSaleArtifact>;
   nowMs?: () => number;
+}>;
+
+export type KoreaSaleSnapshotPublicExportDependencies = Readonly<{
+  environment: string | undefined;
+  token: string | undefined;
+  referenceInstant: string;
+  postHandler(request: Request): Promise<Response>;
 }>;
 
 const RUNNER_TOKEN_TTL_SECONDS = 6 * 60 * 60;
@@ -238,6 +247,15 @@ export function createKoreaSaleSnapshotRunnerPage(
       'content-security-policy': "default-src 'none'; connect-src 'self'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'none'; base-uri 'none'; form-action 'none'",
       'x-robots-tag': 'noindex, nofollow',
     },
+  });
+}
+
+export function createKoreaSaleSnapshotPublicExportHandler(
+  dependencies: KoreaSaleSnapshotPublicExportDependencies,
+): (request: Request) => Promise<Response> {
+  return createKoreaSnapshotPublicExportHandler({
+    ...dependencies,
+    datasets: Object.freeze(['kr-sale']),
   });
 }
 

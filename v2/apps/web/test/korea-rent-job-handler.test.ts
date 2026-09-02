@@ -4,6 +4,7 @@ vi.mock('server-only', () => ({}));
 
 import {
   createKoreaRentSnapshotJobHandler,
+  createKoreaRentSnapshotPublicExportHandler,
   createKoreaRentSnapshotRunnerPage,
   createKoreaRentSnapshotRunnerToken,
 } from '../lib/public-market/korea-rent-job-handler.server';
@@ -294,6 +295,88 @@ describe('Korea rent snapshot internal job handler', () => {
     expect(await response.json()).toEqual({
       status: 'error',
       code: 'source_coverage_incomplete',
+    });
+  });
+});
+
+describe('Korea rent snapshot temporary public export', () => {
+  function exportHandler(overrides: Record<string, unknown> = {}) {
+    return createKoreaRentSnapshotPublicExportHandler({
+      environment: 'production',
+      token,
+      referenceInstant,
+      postHandler: vi.fn(async () => Response.json({ status: 'ready' })),
+      ...overrides,
+    });
+  }
+
+  it('exists only in Production and requires a configured server secret', async () => {
+    const url = 'https://www.signedprice.com/api/internal/korea-rent-snapshot/?export=manifest';
+
+    expect((await exportHandler({ environment: 'preview' })(new Request(url))).status).toBe(404);
+    expect((await exportHandler({ token: undefined })(new Request(url))).status).toBe(503);
+  });
+
+  it('accepts only exact read-only manifest and artifact requests', async () => {
+    const invalidUrls = [
+      'https://www.signedprice.com/api/internal/korea-rent-snapshot/',
+      'https://www.signedprice.com/api/internal/korea-rent-snapshot/?export=batch',
+      'https://www.signedprice.com/api/internal/korea-rent-snapshot/?export=manifest&cursor=0',
+      'https://www.signedprice.com/api/internal/korea-rent-snapshot/?export=artifact&dataset=kr-rent',
+      'https://www.signedprice.com/api/internal/korea-rent-snapshot/?export=artifact&dataset=kr-sale&chunk=0',
+      'https://www.signedprice.com/api/internal/korea-rent-snapshot/?export=artifact&dataset=kr-rent&chunk=-1',
+    ];
+    const handler = exportHandler();
+
+    for (const url of invalidUrls) {
+      expect((await handler(new Request(url))).status).toBe(400);
+    }
+    expect((await handler(new Request(invalidUrls[0]!, { method: 'POST' }))).status).toBe(405);
+  });
+
+  it('proxies a fixed manifest finalization without disclosing its bearer secret', async () => {
+    const calls: Request[] = [];
+    const handler = exportHandler({
+      postHandler: vi.fn(async (internalRequest: Request) => {
+        calls.push(internalRequest);
+        return Response.json({ status: 'ready', period: '2026-02/2026-08' });
+      }),
+    });
+    const response = await handler(new Request(
+      'https://www.signedprice.com/api/internal/korea-rent-snapshot/?export=manifest',
+    ));
+    const payload = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(payload).toEqual({ status: 'ready', period: '2026-02/2026-08' });
+    expect(response.headers.get('cache-control')).toBe('no-store');
+    expect(response.headers.get('x-robots-tag')).toBe('noindex, nofollow');
+    expect(calls).toHaveLength(1);
+    expect(calls[0]!.method).toBe('POST');
+    expect(calls[0]!.headers.get('authorization')).toBe(`Bearer ${token}`);
+    expect(await calls[0]!.json()).toEqual({ action: 'finalize', referenceInstant });
+    expect(JSON.stringify(payload)).not.toContain(token);
+  });
+
+  it('proxies only an allowlisted artifact chunk at the fixed instant', async () => {
+    const postHandler = vi.fn(async (request: Request) => {
+      void request;
+      return Response.json({
+        status: 'chunk', dataset: 'kr-building-registry', chunk: 2, payload: 'safe',
+      });
+    });
+    const handler = exportHandler({ postHandler });
+    const response = await handler(new Request(
+      'https://www.signedprice.com/api/internal/korea-rent-snapshot/?export=artifact&dataset=kr-building-registry&chunk=2',
+    ));
+
+    expect(response.status).toBe(200);
+    const internalRequest = postHandler.mock.calls[0]![0] as Request;
+    expect(await internalRequest.json()).toEqual({
+      action: 'artifact',
+      referenceInstant,
+      dataset: 'kr-building-registry',
+      chunk: 2,
     });
   });
 });

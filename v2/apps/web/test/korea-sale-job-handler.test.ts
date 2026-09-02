@@ -4,6 +4,7 @@ vi.mock('server-only', () => ({}));
 
 import {
   createKoreaSaleSnapshotJobHandler,
+  createKoreaSaleSnapshotPublicExportHandler,
   createKoreaSaleSnapshotRunnerPage,
   createKoreaSaleSnapshotRunnerToken,
 } from '../lib/public-market/korea-sale-job-handler.server';
@@ -203,5 +204,69 @@ describe('Korea sale snapshot internal job handler', () => {
     expect(await response.json()).toEqual({
       status: 'error', code: 'source_coverage_incomplete',
     });
+  });
+});
+
+describe('Korea sale snapshot temporary public export', () => {
+  function exportHandler(overrides: Record<string, unknown> = {}) {
+    return createKoreaSaleSnapshotPublicExportHandler({
+      environment: 'production',
+      token,
+      referenceInstant,
+      postHandler: vi.fn(async () => Response.json({ status: 'ready' })),
+      ...overrides,
+    });
+  }
+
+  it('exists only in Production and requires a configured server secret', async () => {
+    const url = 'https://www.signedprice.com/api/internal/korea-sale-snapshot/?export=manifest';
+
+    expect((await exportHandler({ environment: 'preview' })(new Request(url))).status).toBe(404);
+    expect((await exportHandler({ token: undefined })(new Request(url))).status).toBe(503);
+  });
+
+  it('accepts only exact read-only manifest and sale artifact requests', async () => {
+    const handler = exportHandler();
+    const invalidUrls = [
+      'https://www.signedprice.com/api/internal/korea-sale-snapshot/',
+      'https://www.signedprice.com/api/internal/korea-sale-snapshot/?export=batch',
+      'https://www.signedprice.com/api/internal/korea-sale-snapshot/?export=manifest&cursor=0',
+      'https://www.signedprice.com/api/internal/korea-sale-snapshot/?export=artifact&chunk=0',
+      'https://www.signedprice.com/api/internal/korea-sale-snapshot/?export=artifact&dataset=kr-rent&chunk=0',
+      'https://www.signedprice.com/api/internal/korea-sale-snapshot/?export=artifact&dataset=kr-sale&chunk=-1',
+    ];
+
+    for (const url of invalidUrls) {
+      expect((await handler(new Request(url))).status).toBe(400);
+    }
+    expect((await handler(new Request(invalidUrls[0]!, { method: 'POST' }))).status).toBe(405);
+  });
+
+  it('proxies only fixed manifest and artifact reads without disclosing the bearer secret', async () => {
+    const calls: Request[] = [];
+    const handler = exportHandler({
+      postHandler: vi.fn(async (internalRequest: Request) => {
+        calls.push(internalRequest);
+        return Response.json({ status: 'ready', artifacts: { sale: { chunkCount: 1 } } });
+      }),
+    });
+    const manifest = await handler(new Request(
+      'https://www.signedprice.com/api/internal/korea-sale-snapshot/?export=manifest',
+    ));
+    const artifact = await handler(new Request(
+      'https://www.signedprice.com/api/internal/korea-sale-snapshot/?export=artifact&dataset=kr-sale&chunk=0',
+    ));
+
+    expect(manifest.status).toBe(200);
+    expect(artifact.status).toBe(200);
+    expect(manifest.headers.get('cache-control')).toBe('no-store');
+    expect(manifest.headers.get('x-robots-tag')).toBe('noindex, nofollow');
+    expect(calls[0]!.headers.get('authorization')).toBe(`Bearer ${token}`);
+    expect(await calls[0]!.json()).toEqual({ action: 'finalize', referenceInstant });
+    expect(await calls[1]!.json()).toEqual({
+      action: 'artifact', referenceInstant, dataset: 'kr-sale', chunk: 0,
+    });
+    expect(JSON.stringify(await manifest.json())).not.toContain(token);
+    expect(JSON.stringify(await artifact.json())).not.toContain(token);
   });
 });
