@@ -321,7 +321,6 @@ describe('Korea rent snapshot temporary public export', () => {
     const invalidUrls = [
       'https://www.signedprice.com/api/internal/korea-rent-snapshot/',
       'https://www.signedprice.com/api/internal/korea-rent-snapshot/?export=batch',
-      'https://www.signedprice.com/api/internal/korea-rent-snapshot/?export=manifest&cursor=0',
       'https://www.signedprice.com/api/internal/korea-rent-snapshot/?export=artifact&dataset=kr-rent',
       'https://www.signedprice.com/api/internal/korea-rent-snapshot/?export=artifact&dataset=kr-sale&chunk=0',
       'https://www.signedprice.com/api/internal/korea-rent-snapshot/?export=artifact&dataset=kr-rent&chunk=-1',
@@ -367,6 +366,7 @@ describe('Korea rent snapshot temporary public export', () => {
     const response = await handler(new Request(
       'https://www.signedprice.com/api/internal/korea-rent-snapshot/'
       + '?export=manifest'
+      + '&cursor=0'
       + '&x-vercel-protection-bypass=opaque'
       + '&x-vercel-set-bypass-cookie=true',
     ));
