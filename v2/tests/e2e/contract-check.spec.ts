@@ -60,25 +60,34 @@ test('primary Contract Check exposes one quote and routes to the two-offer compa
   await expect(page.locator('input[inputmode="numeric"]')).toHaveCount(2);
   await expect(page.getByRole('link', { name: 'Compare two rental offers' }).first())
     .toHaveAttribute('href', '/kr/seoul/check/compare/');
+  const primaryIndexable = releaseTarget.usesExternalServer;
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
     'content',
-    /^index,\s*follow$/,
+    primaryIndexable ? /^index,\s*follow$/ : /^noindex,\s*follow$/,
   );
-  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
-    'href',
-    'https://www.signedprice.com/kr/seoul/check/',
-  );
+  if (primaryIndexable) {
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+      'href',
+      'https://www.signedprice.com/kr/seoul/check/',
+    );
+  } else {
+    await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
+  }
   const alternates = page.locator('link[rel="alternate"][hreflang]');
-  await expect(alternates).toHaveCount(3);
-  await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute(
-    'href', 'https://www.signedprice.com/kr/seoul/check/',
-  );
-  await expect(page.locator('link[rel="alternate"][hreflang="ko"]')).toHaveAttribute(
-    'href', 'https://www.signedprice.com/ko/kr/seoul/check/',
-  );
-  await expect(page.locator('link[rel="alternate"][hreflang="x-default"]')).toHaveAttribute(
-    'href', 'https://www.signedprice.com/kr/seoul/check/',
-  );
+  if (primaryIndexable) {
+    await expect(alternates).toHaveCount(3);
+    await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute(
+      'href', 'https://www.signedprice.com/kr/seoul/check/',
+    );
+    await expect(page.locator('link[rel="alternate"][hreflang="ko"]')).toHaveAttribute(
+      'href', 'https://www.signedprice.com/ko/kr/seoul/check/',
+    );
+    await expect(page.locator('link[rel="alternate"][hreflang="x-default"]')).toHaveAttribute(
+      'href', 'https://www.signedprice.com/kr/seoul/check/',
+    );
+  } else {
+    await expect(alternates).toHaveCount(0);
+  }
 
   const htmlResponse = await page.request.get('/kr/seoul/check/');
   const html = await htmlResponse.text();
@@ -98,7 +107,11 @@ test('primary Contract Check exposes one quote and routes to the two-offer compa
   const sitemap = await page.request.get('/sitemap.xml');
   expect(sitemap.status()).toBe(200);
   const sitemapXml = await sitemap.text();
-  expect(sitemapXml).toContain('<loc>https://www.signedprice.com/kr/seoul/check/</loc>');
+  if (primaryIndexable) {
+    expect(sitemapXml).toContain('<loc>https://www.signedprice.com/kr/seoul/check/</loc>');
+  } else {
+    expect(sitemapXml).not.toContain('<loc>https://www.signedprice.com/kr/seoul/check/</loc>');
+  }
   expect(sitemapXml).toContain('<loc>https://www.signedprice.com/kr/seoul/check/compare/</loc>');
   assertNoRuntimeFailures();
 });

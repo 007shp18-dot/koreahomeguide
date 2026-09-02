@@ -12,7 +12,9 @@ import MarketOverviewPage, {
 import SeoulContractCheckPage, {
   generateMetadata as checkMetadata,
 } from '../app/(en)/kr/seoul/check/page';
-import KoreanContractCheckPage from '../app/(ko)/ko/kr/seoul/check/page';
+import KoreanContractCheckPage, {
+  generateMetadata as koreanCheckMetadata,
+} from '../app/(ko)/ko/kr/seoul/check/page';
 import { metadata as offerComparisonMetadata } from '../app/(en)/kr/seoul/check/compare/page';
 import { metadata as koreanOfferComparisonMetadata } from '../app/(ko)/ko/kr/seoul/check/compare/page';
 import ExplorerPage, { metadata as exploreMetadata } from '../app/(en)/kr/seoul/explore/page';
@@ -60,6 +62,18 @@ describe('SignedPrice cohort zero SEO', () => {
     expect(entries.every(({ description }) => (
       typeof description === 'string' && description.length >= 70
     ))).toBe(true);
+  });
+
+  it('keeps the primary Check out of indexing when installed transaction evidence is disabled', () => {
+    vi.stubEnv('SIGNEDPRICE_USE_CHECKED_IN_SNAPSHOTS', 'false');
+
+    const metadata = checkMetadata();
+    const koreanMetadata = koreanCheckMetadata();
+
+    expect(metadata.robots).toEqual({ index: false, follow: true });
+    expect(metadata.alternates).toBeUndefined();
+    expect(koreanMetadata.robots).toEqual({ index: false, follow: true });
+    expect(koreanMetadata.alternates).toBeUndefined();
   });
 
   it('publishes reciprocal locale-correct metadata for offer comparison', () => {

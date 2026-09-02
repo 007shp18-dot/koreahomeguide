@@ -119,6 +119,15 @@ for (const route of publicRoutes) {
   test(`${route.path} is usable, contained, and follows its indexing cohort`, async ({ page }) => {
     test.skip('fixtureOnly' in route && route.fixtureOnly && releaseTarget.usesExternalServer);
     const response = await page.goto(route.path);
+    const indexing = !releaseTarget.usesExternalServer && 'fixtureIndexing' in route
+      ? route.fixtureIndexing
+      : route.indexing;
+    const hasCanonical = !releaseTarget.usesExternalServer && 'fixtureCanonical' in route
+      ? route.fixtureCanonical
+      : 'canonical' in route;
+    const hasAlternates = !releaseTarget.usesExternalServer && 'fixtureAlternates' in route
+      ? route.fixtureAlternates
+      : 'alternates' in route && route.alternates;
 
     expect(response?.status()).toBe(200);
     await expect(
@@ -126,9 +135,9 @@ for (const route of publicRoutes) {
     ).toBeVisible();
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
       'content',
-      route.indexing === 'index' ? /^index,\s*follow$/ : /^noindex,\s*follow$/,
+      indexing === 'index' ? /^index,\s*follow$/ : /^noindex,\s*follow$/,
     );
-    if ('canonical' in route) {
+    if (hasCanonical && 'canonical' in route) {
       await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
         'href',
         `https://www.signedprice.com${route.canonical}`,
@@ -137,7 +146,7 @@ for (const route of publicRoutes) {
       await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
     }
     const alternates = page.locator('link[rel="alternate"][hreflang]');
-    if ('alternates' in route && route.alternates) {
+    if (hasAlternates && 'canonical' in route) {
       await expect(alternates).toHaveCount(3);
       await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute(
         'href', `https://www.signedprice.com${route.canonical}`,
@@ -279,7 +288,10 @@ test('sitemap includes only indexable canonical public routes', async ({ request
   const xml = await response.text();
 
   for (const route of publicRoutes) {
-    const expected = route.indexing === 'index' && 'canonical' in route;
+    const indexing = !releaseTarget.usesExternalServer && 'fixtureIndexing' in route
+      ? route.fixtureIndexing
+      : route.indexing;
+    const expected = indexing === 'index' && 'canonical' in route;
     expect(xml.includes(`<loc>https://www.signedprice.com${route.path}</loc>`)).toBe(expected);
   }
   expect(xml).not.toContain('/sg/');
