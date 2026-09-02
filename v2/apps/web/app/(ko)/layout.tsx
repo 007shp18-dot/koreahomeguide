@@ -6,6 +6,7 @@ import { homepageCopy } from '@/lib/site-copy';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { preload } from 'react-dom';
+import { Analytics } from '@vercel/analytics/next';
 
 import '../globals.css';
 
@@ -39,6 +40,7 @@ export default function KoreanRootLayout({ children }: { children: ReactNode }) 
               : {})}
           />
         ) : null}
+        <Analytics />
       </body>
     </html>
   );

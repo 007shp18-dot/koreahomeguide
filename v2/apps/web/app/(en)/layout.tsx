@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { preload } from "react-dom";
+import { Analytics } from '@vercel/analytics/next';
 import { AdvertisingConsent } from "@/components/consent/advertising-consent";
 import { PublicSiteJsonLd } from "@/components/public-json-ld";
 import { advertisingConfigFromEnvironment } from "@/lib/advertising/advertising-config.server";
@@ -38,6 +39,7 @@ export default function EnglishRootLayout({ children }: { children: ReactNode })
               : {})}
           />
         ) : null}
+        <Analytics />
       </body>
     </html>
   );
