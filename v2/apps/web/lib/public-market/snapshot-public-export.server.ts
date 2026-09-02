@@ -5,7 +5,6 @@ type KoreaSnapshotPublicExportDependencies = Readonly<{
   token: string | undefined;
   referenceInstant: string;
   datasets: readonly string[];
-  allowCollection?: boolean;
   postHandler(request: Request): Promise<Response>;
 }>;
 
@@ -38,7 +37,7 @@ export function createKoreaSnapshotPublicExportHandler(
 ): (request: Request) => Promise<Response> {
   return async (request: Request): Promise<Response> => {
     if (request.method !== 'GET') return empty(405, 'GET');
-    if (!['preview', 'production'].includes(dependencies.environment ?? '')) return empty(404);
+    if (dependencies.environment !== 'production') return empty(404);
     if (
       dependencies.token === undefined
       || dependencies.token.length < 24
@@ -58,22 +57,6 @@ export function createKoreaSnapshotPublicExportHandler(
       body = Object.freeze({
         action: 'finalize',
         referenceInstant: dependencies.referenceInstant,
-      });
-    } else if (
-      dependencies.allowCollection === true
-      && url.searchParams.getAll('export').length === 1
-      && url.searchParams.get('export') === 'collect'
-      && url.searchParams.getAll('dataset').length === 0
-      && url.searchParams.getAll('chunk').length === 0
-      && url.searchParams.getAll('cursor').length === 1
-      && isCanonicalChunk(url.searchParams.get('cursor'))
-      && Number(url.searchParams.get('cursor')) < 700
-      && Number(url.searchParams.get('cursor')) % 4 === 0
-    ) {
-      body = Object.freeze({
-        action: 'batch',
-        referenceInstant: dependencies.referenceInstant,
-        cursor: Number(url.searchParams.get('cursor')),
       });
     } else if (
       url.searchParams.getAll('export').length === 1
