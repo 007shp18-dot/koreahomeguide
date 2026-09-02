@@ -14,6 +14,7 @@ import {
   createInstalledSnapshotRepository,
   resolveInstalledSnapshotObject,
   resolveInstalledSnapshotRegistry,
+  checkedInSnapshotsAreEnabled,
   type VerifiedInstalledSnapshot,
 } from '../snapshots/installed-snapshot-repository.server';
 
@@ -168,19 +169,22 @@ export function singaporeSnapshotRepositoryFromEnvironment(): Promise<SingaporeS
     && environmentCache.digest === digest
     && environmentCache.period === period) return environmentCache.repository;
   const repository = (async () => {
-    try {
-      const installed = createInstalledSnapshotRepository({
-        registrySource: resolveInstalledSnapshotRegistry(),
-        resolveObject: resolveInstalledSnapshotObject,
-      }).get('sg-singapore', 'sg-private-sale');
-      return await createSingaporeSnapshotRepositoryFromInstalled(installed);
-    } catch {
-      return createSingaporeSnapshotRepository({
-        serialized,
-        expectedDigest: digest,
-        expectedPeriod: period,
-      }).catch(() => null);
+    if (checkedInSnapshotsAreEnabled()) {
+      try {
+        const installed = createInstalledSnapshotRepository({
+          registrySource: resolveInstalledSnapshotRegistry(),
+          resolveObject: resolveInstalledSnapshotObject,
+        }).get('sg-singapore', 'sg-private-sale');
+        return await createSingaporeSnapshotRepositoryFromInstalled(installed);
+      } catch {
+        // Retry the explicit compatibility source below.
+      }
     }
+    return createSingaporeSnapshotRepository({
+      serialized,
+      expectedDigest: digest,
+      expectedPeriod: period,
+    }).catch(() => null);
   })();
   environmentCache = Object.freeze({ serialized, digest, period, repository });
   return repository;

@@ -156,7 +156,7 @@ describe('public migration containment', () => {
   it('renders Korean evidence routes that do not require conversion evidence', async () => {
     const routes = [
       ['../app/(ko)/ko/kr/seoul/page', '서울 주거 계약 근거'],
-      ['../app/(ko)/ko/kr/seoul/explore/page', '서울 25개 구 전세 근거'],
+      ['../app/(ko)/ko/kr/seoul/explore/page', '검증된 구별 자료를 확인할 수 없습니다.'],
       ['../app/(ko)/ko/kr/seoul/rankings/page', '서울 구별 근거 순위'],
     ] as const;
     for (const [modulePath, heading] of routes) {
@@ -253,6 +253,7 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/compare/',
       'https://www.signedprice.com/trust/',
       'https://www.signedprice.com/kr/seoul/check/',
+      'https://www.signedprice.com/kr/seoul/check/compare/',
       'https://www.signedprice.com/kr/seoul/tools/rent-check/',
       'https://www.signedprice.com/kr/seoul/',
       'https://www.signedprice.com/kr/seoul/news/',
@@ -261,6 +262,7 @@ describe('public migration containment', () => {
       ...GUIDES.map(({ slug }) => `https://www.signedprice.com/kr/seoul/guide/${slug}/`),
       'https://www.signedprice.com/ko/kr/seoul/',
       'https://www.signedprice.com/ko/kr/seoul/check/',
+      'https://www.signedprice.com/ko/kr/seoul/check/compare/',
     ]);
   });
 
@@ -316,6 +318,7 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/compare/',
       'https://www.signedprice.com/trust/',
       'https://www.signedprice.com/kr/seoul/check/',
+      'https://www.signedprice.com/kr/seoul/check/compare/',
       'https://www.signedprice.com/kr/seoul/tools/rent-check/',
       'https://www.signedprice.com/kr/seoul/news/',
       'https://www.signedprice.com/kr/seoul/news/how-signedprice-reads-reported-rental-contracts/',
@@ -323,6 +326,7 @@ describe('public migration containment', () => {
       ...GUIDES.map(({ slug }) => `https://www.signedprice.com/kr/seoul/guide/${slug}/`),
       'https://www.signedprice.com/ko/kr/seoul/',
       'https://www.signedprice.com/ko/kr/seoul/check/',
+      'https://www.signedprice.com/ko/kr/seoul/check/compare/',
     ]);
 
     vi.unstubAllEnvs();
@@ -331,6 +335,7 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/compare/',
       'https://www.signedprice.com/trust/',
       'https://www.signedprice.com/kr/seoul/check/',
+      'https://www.signedprice.com/kr/seoul/check/compare/',
       'https://www.signedprice.com/kr/seoul/tools/rent-check/',
       'https://www.signedprice.com/kr/seoul/news/',
       'https://www.signedprice.com/kr/seoul/news/how-signedprice-reads-reported-rental-contracts/',
@@ -338,6 +343,7 @@ describe('public migration containment', () => {
       ...GUIDES.map(({ slug }) => `https://www.signedprice.com/kr/seoul/guide/${slug}/`),
       'https://www.signedprice.com/ko/kr/seoul/',
       'https://www.signedprice.com/ko/kr/seoul/check/',
+      'https://www.signedprice.com/ko/kr/seoul/check/compare/',
     ]);
   });
 });

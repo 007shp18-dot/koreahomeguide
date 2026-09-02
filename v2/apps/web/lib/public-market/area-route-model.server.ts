@@ -681,6 +681,7 @@ export function buildPublicAreaExploreModel(
   requestedBuildingQuery = '',
   requestedEvidence: KoreaExplorerEvidenceSelectionInput = Object.freeze({}),
   requestedBuildingPage: unknown = 1,
+  requestedBuildingId?: unknown,
 ): PublicAreaExploreModel {
   if (dependencies.evidenceRepositories !== undefined) {
     const projection = buildKoreaExplorerEvidenceProjection(
@@ -695,6 +696,7 @@ export function buildPublicAreaExploreModel(
         districtSlug: selectedSlug,
         buildingQuery: requestedBuildingQuery,
         buildingPage: requestedBuildingPage,
+        selectedBuildingId: requestedBuildingId,
       },
     );
     if (projection.status === 'ready') {

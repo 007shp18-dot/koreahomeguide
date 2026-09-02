@@ -76,6 +76,7 @@ export default async function ExplorerPage({ searchParams }: ExplorerPageProps) 
       districts: SEOUL_RENT_CHECK_DISTRICTS.map(({ slug }) => slug),
     },
   );
+  const requestedBuildingId = singleValue(query.buildingId);
   const model = buildPublicAreaExploreModel(
     selection.district,
     undefined,
@@ -88,7 +89,34 @@ export default async function ExplorerPage({ searchParams }: ExplorerPageProps) 
       contractGroup: selection.contractType ?? singleValue(query.contract),
     },
     singleValue(query.buildingPage),
+    requestedBuildingId,
   );
+  const availableBuildings = model.status === 'ready'
+    ? (model.buildingAvailability.status === 'ready'
+      ? model.buildingAvailability.buildings
+      : model.buildingAvailability.fallbackBuildings)
+    : Object.freeze([]);
+  const requestedBuilding = requestedBuildingId === undefined
+    ? undefined
+    : availableBuildings
+      .find((building) => (
+        building.id === requestedBuildingId
+        && building.districtSlug === model.selectedSlug
+      ));
+  const requestedNeighborhood = singleValue(query.neighborhood);
+  const restoredSelection = requestedBuilding !== undefined
+    ? Object.freeze({
+      ...selection,
+      district: requestedBuilding.districtSlug,
+      neighborhood: requestedBuilding.neighborhoodId,
+      buildingId: requestedBuilding.id,
+    })
+    : requestedNeighborhood !== undefined && availableBuildings.some((building) => (
+      building.districtSlug === model.selectedSlug
+      && building.neighborhoodId === requestedNeighborhood
+    ))
+      ? Object.freeze({ ...selection, neighborhood: requestedNeighborhood })
+      : selection;
   const naverMapClientId = process.env.NAVER_MAP_CLIENT_ID?.trim() || null;
 
   return (
@@ -99,7 +127,7 @@ export default async function ExplorerPage({ searchParams }: ExplorerPageProps) 
           model={model}
           naverMapClientId={naverMapClientId}
           initialQuery={singleValue(query.q)}
-          initialSelection={selection}
+          initialSelection={restoredSelection}
         />
       </main>
       <PublicBreadcrumbJsonLd items={[

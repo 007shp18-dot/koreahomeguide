@@ -11,6 +11,7 @@ import {
   createInstalledSnapshotRepository,
   resolveInstalledSnapshotObject,
   resolveInstalledSnapshotRegistry,
+  checkedInSnapshotsAreEnabled,
   type InstalledSnapshotRepository,
 } from '../snapshots/installed-snapshot-repository.server';
 
@@ -189,10 +190,12 @@ function environmentDependencies(): ContractCheckRouteDependencies {
     period: period ?? '',
     sha256: sha256 ?? '',
     referenceInstant,
-    installedRepository: createInstalledSnapshotRepository({
-      registrySource: resolveInstalledSnapshotRegistry(),
-      resolveObject: resolveInstalledSnapshotObject,
-    }),
+    installedRepository: checkedInSnapshotsAreEnabled()
+      ? createInstalledSnapshotRepository({
+          registrySource: resolveInstalledSnapshotRegistry(),
+          resolveObject: resolveInstalledSnapshotObject,
+        })
+      : undefined,
   });
 }
 

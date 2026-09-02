@@ -18,6 +18,7 @@ export type PublicRouteReadiness = Readonly<{
   summaryReady?: boolean;
   areaReady?: boolean;
   newsReady?: boolean;
+  singleQuoteReady?: boolean;
   conversionReady?: boolean;
 }>;
 
@@ -107,6 +108,7 @@ const alwaysReady = () => true;
 const summaryReady = (readiness: PublicRouteReadiness) => readiness.summaryReady;
 const areaReady = (readiness: PublicRouteReadiness) => readiness.areaReady;
 const newsReady = (readiness: PublicRouteReadiness) => readiness.newsReady;
+const singleQuoteReady = (readiness: PublicRouteReadiness) => readiness.singleQuoteReady;
 const conversionReady = (readiness: PublicRouteReadiness) => readiness.conversionReady;
 
 export const signedPricePublicRouteRegistry = createPublicRouteRegistry([
@@ -124,6 +126,10 @@ export const signedPricePublicRouteRegistry = createPublicRouteRegistry([
   },
   {
     path: '/kr/seoul/check/', locale: 'en', pageKind: 'check', cohort: 1,
+    sitemap: true, isReady: singleQuoteReady,
+  },
+  {
+    path: '/kr/seoul/check/compare/', locale: 'en', pageKind: 'check', cohort: 1,
     sitemap: true, isReady: conversionReady,
   },
   {
@@ -165,6 +171,10 @@ export const signedPricePublicRouteRegistry = createPublicRouteRegistry([
   },
   {
     path: '/ko/kr/seoul/check/', locale: 'ko', pageKind: 'check', cohort: 0,
+    sitemap: true, isReady: singleQuoteReady,
+  },
+  {
+    path: '/ko/kr/seoul/check/compare/', locale: 'ko', pageKind: 'check', cohort: 0,
     sitemap: true, isReady: conversionReady,
   },
 ]);

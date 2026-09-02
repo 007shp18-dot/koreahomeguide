@@ -46,55 +46,79 @@ async function fillOffer(
   await page.locator(`input[name="${id}-monthly-rent"]`).fill(monthlyRentWon);
 }
 
-test('Contract Check server HTML is ready, contained, and claim-safe', async ({ page }) => {
+test('primary Contract Check exposes one quote and routes to the two-offer comparison', async ({ page }) => {
   const assertNoRuntimeFailures = observeRuntimeFailures(page);
   const response = await page.goto('/kr/seoul/check/');
 
   expect(response?.status()).toBe(200);
   await expect(page.getByRole('heading', {
     level: 1,
-    name: 'Which rent offer actually costs less?',
+    name: 'Check one asking price.',
   })).toBeVisible();
-  await expect(page.locator('[data-contract-check-form="ready"]')).toHaveCount(1);
-  await expect(page.locator('input[inputmode="numeric"]')).toHaveCount(4);
+  await expect(page.locator('[data-primary-check="single-quote"]')).toHaveCount(1);
+  await expect(page.locator('form select')).toHaveCount(3);
+  await expect(page.locator('input[inputmode="numeric"]')).toHaveCount(2);
+  await expect(page.getByRole('link', { name: 'Compare two rental offers' }).first())
+    .toHaveAttribute('href', '/kr/seoul/check/compare/');
+  const primaryIndexable = releaseTarget.usesExternalServer;
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
     'content',
-    /^index,\s*follow$/,
+    primaryIndexable ? /^index,\s*follow$/ : /^noindex,\s*follow$/,
   );
-  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
-    'href',
-    'https://www.signedprice.com/kr/seoul/check/',
-  );
+  if (primaryIndexable) {
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+      'href',
+      'https://www.signedprice.com/kr/seoul/check/',
+    );
+  } else {
+    await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
+  }
   const alternates = page.locator('link[rel="alternate"][hreflang]');
-  await expect(alternates).toHaveCount(3);
-  await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute(
-    'href', 'https://www.signedprice.com/kr/seoul/check/',
-  );
-  await expect(page.locator('link[rel="alternate"][hreflang="ko"]')).toHaveAttribute(
-    'href', 'https://www.signedprice.com/ko/kr/seoul/check/',
-  );
-  await expect(page.locator('link[rel="alternate"][hreflang="x-default"]')).toHaveAttribute(
-    'href', 'https://www.signedprice.com/kr/seoul/check/',
-  );
+  if (primaryIndexable) {
+    await expect(alternates).toHaveCount(3);
+    await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute(
+      'href', 'https://www.signedprice.com/kr/seoul/check/',
+    );
+    await expect(page.locator('link[rel="alternate"][hreflang="ko"]')).toHaveAttribute(
+      'href', 'https://www.signedprice.com/ko/kr/seoul/check/',
+    );
+    await expect(page.locator('link[rel="alternate"][hreflang="x-default"]')).toHaveAttribute(
+      'href', 'https://www.signedprice.com/kr/seoul/check/',
+    );
+  } else {
+    await expect(alternates).toHaveCount(0);
+  }
 
   const htmlResponse = await page.request.get('/kr/seoul/check/');
   const html = await htmlResponse.text();
   expect(htmlResponse.status()).toBe(200);
-  expect(html.indexOf('Offer A')).toBeLessThan(html.indexOf('Offer B'));
-  expect(html.indexOf('Offer B')).toBeLessThan(html.indexOf('Result'));
-  expect(html).toContain('MOLIT reported rental contracts');
+  expect(html).toContain('Compare a sale, jeonse or monthly-rent quote');
+  expect(html).toContain('/kr/seoul/check/compare/');
   const visibleDecisionCopy = await page.locator('main').innerText();
   expect(visibleDecisionCopy).not.toMatch(/Singapore|Dubai|72,291|29\.4%/i);
 
+  const comparison = await page.request.get('/kr/seoul/check/compare/');
+  const comparisonHtml = await comparison.text();
+  expect(comparison.status()).toBe(200);
+  expect(comparisonHtml.indexOf('Offer A')).toBeLessThan(comparisonHtml.indexOf('Offer B'));
+  expect(comparisonHtml.indexOf('Offer B')).toBeLessThan(comparisonHtml.indexOf('Result'));
+  expect(comparisonHtml).toContain('MOLIT reported rental contracts');
+
   const sitemap = await page.request.get('/sitemap.xml');
   expect(sitemap.status()).toBe(200);
-  expect(await sitemap.text()).toContain('<loc>https://www.signedprice.com/kr/seoul/check/</loc>');
+  const sitemapXml = await sitemap.text();
+  if (primaryIndexable) {
+    expect(sitemapXml).toContain('<loc>https://www.signedprice.com/kr/seoul/check/</loc>');
+  } else {
+    expect(sitemapXml).not.toContain('<loc>https://www.signedprice.com/kr/seoul/check/</loc>');
+  }
+  expect(sitemapXml).toContain('<loc>https://www.signedprice.com/kr/seoul/check/compare/</loc>');
   assertNoRuntimeFailures();
 });
 
 test('Contract Check stays ordered, touch-sized, and keyboard reachable', async ({ page }) => {
   const assertNoRuntimeFailures = observeRuntimeFailures(page);
-  await page.goto('/kr/seoul/check/');
+  await page.goto('/kr/seoul/check/compare/');
   await expectNoHorizontalOverflow(page);
 
   const panels = page.locator('fieldset, [data-result-focus-target="true"]');
@@ -130,7 +154,7 @@ test('Contract Check stays ordered, touch-sized, and keyboard reachable', async 
 
 test('fixture curve covers interpolation, range rejection, tie, and ranking flip', async ({ page }) => {
   test.skip(releaseTarget.usesExternalServer, 'Exact fixture calculations are local-release only.');
-  await page.goto('/kr/seoul/check/');
+  await page.goto('/kr/seoul/check/compare/');
 
   await fillOffer(page, 'a', '100000000', '100000');
   await fillOffer(page, 'b', '30000000', '300000');

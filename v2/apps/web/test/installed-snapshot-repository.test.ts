@@ -8,6 +8,7 @@ import {
   createInstalledSnapshotRepository,
   resolveInstalledSnapshotObject,
   resolveInstalledSnapshotRegistry,
+  checkedInSnapshotsAreEnabled,
 } from '../lib/snapshots/installed-snapshot-repository.server';
 import {
   buildSingaporeSnapshot,
@@ -119,6 +120,15 @@ function conversionRegistry(
 }
 
 describe('installed snapshot repository', () => {
+  it('allows release fixtures to disable checked-in production snapshots explicitly', () => {
+    expect(checkedInSnapshotsAreEnabled({
+      NODE_ENV: 'production',
+      SIGNEDPRICE_USE_CHECKED_IN_SNAPSHOTS: 'false',
+    })).toBe(false);
+    expect(checkedInSnapshotsAreEnabled({ NODE_ENV: 'production' })).toBe(true);
+    expect(checkedInSnapshotsAreEnabled({ NODE_ENV: 'test' })).toBe(true);
+  });
+
   it('verifies an installed Singapore private-sale snapshot by its exact artifact identity', () => {
     const envelope = JSON.parse(readFileSync(
       new URL('../../../packages/singapore-property/test/fixtures/ura-transaction-envelope.synthetic.json', import.meta.url),

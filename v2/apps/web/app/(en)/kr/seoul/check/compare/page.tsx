@@ -6,6 +6,10 @@ export const metadata = indexableMetadata({
   path: '/kr/seoul/check/compare/',
   title: 'Compare Seoul rental offers | signedprice',
   description: 'Compare two Seoul rental offers on the same deposit-adjusted monthly-cost basis.',
+  languageAlternates: {
+    en: '/kr/seoul/check/compare/',
+    ko: '/ko/kr/seoul/check/compare/',
+  },
 });
 
 export default function SeoulOfferComparisonPage() {
