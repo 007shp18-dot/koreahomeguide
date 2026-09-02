@@ -1,4 +1,5 @@
 import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import {
   chmodSync,
   mkdirSync,
@@ -10,6 +11,7 @@ import {
 } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { gunzipSync } from 'node:zlib';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -21,6 +23,10 @@ import { observedBuildingRepositoryFromEnvironment } from '../apps/web/lib/publi
 import { buildPublicAreaRankingsModel } from '../apps/web/lib/public-market/rankings-route-model.server';
 import { createPlaywrightConfig } from '../playwright.config';
 import { PUBLIC_BUILDING_TEST_ID } from './e2e/public-building-summary-fixture';
+import {
+  E2E_KOREA_PROXIMITY_GZIP_BASE64,
+  E2E_KOREA_PROXIMITY_REGISTRY,
+} from './e2e/korea-proximity-fixture';
 
 afterEach(() => vi.unstubAllEnvs());
 
@@ -118,6 +124,19 @@ describe('Playwright release target configuration', () => {
     expect(Object.entries(config.webServer.env ?? {}).every(([key, value]) => (
       Buffer.byteLength(`${key}=${String(value)}`, 'utf8') < 100_000
     ))).toBe(true);
+  });
+
+  it('binds the file-backed proximity payload bytes to the installed registry digest', () => {
+    const serialized = gunzipSync(Buffer.from(
+      E2E_KOREA_PROXIMITY_GZIP_BASE64,
+      'base64',
+    )).toString('utf8');
+    const registry = JSON.parse(E2E_KOREA_PROXIMITY_REGISTRY) as {
+      snapshots: Array<{ sha256: string }>;
+    };
+
+    expect(createHash('sha256').update(serialized).digest('hex'))
+      .toBe(registry.snapshots[0]?.sha256);
   });
 
   it('preserves pre-existing workspace data and cleans its temporary proximity fixture', () => {
