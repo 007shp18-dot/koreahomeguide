@@ -35,6 +35,7 @@ export class InstalledSnapshotUnavailableError extends Error {
 let checkedInObservedBuildingInventory: unknown;
 let checkedInKoreaRentEvidence: unknown;
 let checkedInKoreaSaleEvidence: unknown;
+let checkedInKoreaConversionEvidence: unknown;
 
 function parseCompressedInventory(source: Buffer): unknown {
   return JSON.parse(gunzipSync(source).toString('utf8'));
@@ -110,6 +111,19 @@ export function resolveInstalledSnapshotObject(objectUrl: string): unknown {
       ],
     );
   }
+  if (objectUrl === 'installed://kr-conversion') {
+    return readCheckedInArtifact(
+      checkedInKoreaConversionEvidence,
+      (value) => { checkedInKoreaConversionEvidence = value; },
+      [
+        () => readFileSync(resolve(process.cwd(), 'data/korea-conversion-evidence.json.gz')),
+        () => readFileSync(resolve(
+          process.cwd(),
+          'apps/web/data/korea-conversion-evidence.json.gz',
+        )),
+      ],
+    );
+  }
   return undefined;
 }
 
@@ -149,14 +163,21 @@ function snapshotIdentity(payload: Readonly<Record<string, unknown>>): Readonly<
   recordCount: number | null;
 }> {
   const provenance = isObject(payload.provenance) ? payload.provenance : undefined;
+  const totals = isObject(payload.totals) ? payload.totals : undefined;
+  const artifactVersion = payload.artifactVersion;
   return Object.freeze({
-    schemaVersion: payload.artifactVersion ?? payload.schemaVersion,
+    schemaVersion: typeof artifactVersion === 'number'
+      ? String(artifactVersion)
+      : artifactVersion ?? payload.schemaVersion,
     marketId: payload.marketId ?? provenance?.marketId,
     period: payload.period ?? provenance?.period,
     recordCount: Array.isArray(payload.records)
       ? payload.records.length
       : Array.isArray(payload.areaRecords) && Array.isArray(payload.buildingRecords)
         ? payload.areaRecords.length + payload.buildingRecords.length
+        : Number.isSafeInteger(totals?.eligiblePairCount)
+          && (totals?.eligiblePairCount as number) >= 0
+          ? totals?.eligiblePairCount as number
         : null,
   });
 }

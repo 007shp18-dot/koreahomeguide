@@ -7,6 +7,12 @@ import {
 } from '@signedprice/korea-rent';
 
 import { createConversionRepository } from './conversion-repository.server';
+import {
+  createInstalledSnapshotRepository,
+  resolveInstalledSnapshotObject,
+  resolveInstalledSnapshotRegistry,
+  type InstalledSnapshotRepository,
+} from '../snapshots/installed-snapshot-repository.server';
 
 export type ContractCheckNavigationItem = Readonly<{
   label: 'Check' | 'Explore' | 'News' | 'Guide';
@@ -42,6 +48,7 @@ export type ContractCheckRouteDependencies = Readonly<{
   period: string;
   sha256: string;
   referenceInstant: string;
+  installedRepository?: InstalledSnapshotRepository;
 }>;
 
 export type ConversionEnvironmentDiagnosticCode =
@@ -63,7 +70,31 @@ const navigation = Object.freeze([
 const rightsLookup: MolitRightsLookup = (policyId) =>
   policyId === KR_MOLIT_RENT_RIGHTS.id ? KR_MOLIT_RENT_RIGHTS : undefined;
 
-function repositoryFor(dependencies: ContractCheckRouteDependencies) {
+function isObject(value: unknown): value is Readonly<Record<string, unknown>> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function installedConversionDependencies(
+  dependencies: ContractCheckRouteDependencies,
+): ContractCheckRouteDependencies | null {
+  if (dependencies.installedRepository === undefined) return null;
+  try {
+    const installed = dependencies.installedRepository.get('kr-seoul', 'kr-conversion');
+    if (!isObject(installed.payload) || !isObject(installed.payload.provenance)) return null;
+    const { period, sha256 } = installed.payload.provenance;
+    if (typeof period !== 'string' || typeof sha256 !== 'string') return null;
+    return Object.freeze({
+      source: installed.payload,
+      period,
+      sha256,
+      referenceInstant: dependencies.referenceInstant,
+    });
+  } catch {
+    return null;
+  }
+}
+
+function conversionRepositoryFor(dependencies: ContractCheckRouteDependencies) {
   return createConversionRepository({
     source: dependencies.source,
     expected: {
@@ -74,6 +105,25 @@ function repositoryFor(dependencies: ContractCheckRouteDependencies) {
     },
     referenceInstant: dependencies.referenceInstant,
   });
+}
+
+function validatedRepositoryFor(dependencies: ContractCheckRouteDependencies) {
+  const repository = conversionRepositoryFor(dependencies);
+  repository.getCurve('apartment');
+  repository.getCurve('officetel');
+  return repository;
+}
+
+function repositoryFor(dependencies: ContractCheckRouteDependencies) {
+  const installed = installedConversionDependencies(dependencies);
+  if (installed !== null) {
+    try {
+      return validatedRepositoryFor(installed);
+    } catch {
+      // Retry the compatibility environment source below.
+    }
+  }
+  return validatedRepositoryFor(dependencies);
 }
 
 export function diagnoseConversionEnvironment(input: Readonly<{
@@ -96,7 +146,7 @@ export function diagnoseConversionEnvironment(input: Readonly<{
     return Object.freeze({ code: 'artifact_json_invalid' });
   }
   try {
-    const repository = repositoryFor({
+    const repository = conversionRepositoryFor({
       source,
       period: input.period,
       sha256: input.sha256,
@@ -139,6 +189,10 @@ function environmentDependencies(): ContractCheckRouteDependencies {
     period: period ?? '',
     sha256: sha256 ?? '',
     referenceInstant,
+    installedRepository: createInstalledSnapshotRepository({
+      registrySource: resolveInstalledSnapshotRegistry(),
+      resolveObject: resolveInstalledSnapshotObject,
+    }),
   });
 }
 

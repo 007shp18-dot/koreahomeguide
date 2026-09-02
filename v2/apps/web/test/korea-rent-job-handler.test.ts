@@ -1,3 +1,5 @@
+import { createHash } from 'node:crypto';
+import { gunzipSync } from 'node:zlib';
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
@@ -68,6 +70,7 @@ function dependencies(overrides: Record<string, unknown> = {}) {
       artifact: { artifactVersion: 1 },
       serialized: '{}',
       sha256: 'c'.repeat(64),
+      objectSha256: 'd'.repeat(64),
       eligiblePairCount: 240,
     })),
     ...overrides,
@@ -192,7 +195,8 @@ describe('Korea rent snapshot internal job handler', () => {
         },
         conversion: {
           dataset: 'kr-conversion',
-          sha256: 'c'.repeat(64),
+          sha256: 'd'.repeat(64),
+          sourceSha256: 'c'.repeat(64),
           recordCount: 240,
           encoding: 'gzip+base64',
           compressedBytes: expect.any(Number),
@@ -233,6 +237,43 @@ describe('Korea rent snapshot internal job handler', () => {
       payload: expect.any(String),
     });
     expect(payload.payload.length).toBeLessThanOrEqual(512 * 1024);
+  });
+
+  it('exports conversion chunks with distinct reproducible object and source digests', async () => {
+    const serialized = '{"artifactVersion":1}';
+    const objectSha256 = createHash('sha256').update(serialized).digest('hex');
+    const sourceSha256 = 'c'.repeat(64);
+    const handler = createKoreaRentSnapshotJobHandler(dependencies({
+      buildConversionArtifact: vi.fn(async () => ({
+        artifact: { artifactVersion: 1 },
+        serialized,
+        objectSha256,
+        sha256: sourceSha256,
+        eligiblePairCount: 240,
+      })),
+    }) as never);
+    const response = await handler(request({
+      action: 'artifact',
+      referenceInstant,
+      dataset: 'kr-conversion',
+      chunk: 0,
+    }));
+    const payload = await response.json();
+    const reconstructed = gunzipSync(Buffer.from(payload.payload, 'base64')).toString('utf8');
+
+    expect(response.status).toBe(200);
+    expect(payload).toMatchObject({
+      status: 'chunk',
+      dataset: 'kr-conversion',
+      sha256: objectSha256,
+      sourceSha256,
+      recordCount: 240,
+      encoding: 'gzip+base64',
+      chunk: 0,
+      chunkCount: 1,
+    });
+    expect(reconstructed).toBe(serialized);
+    expect(createHash('sha256').update(reconstructed).digest('hex')).toBe(payload.sha256);
   });
 
   it('publishes rent and buildings when conversion evidence misses its floor', async () => {
@@ -331,6 +372,35 @@ describe('Korea rent snapshot temporary public export', () => {
       expect((await handler(new Request(url))).status).toBe(400);
     }
     expect((await handler(new Request(invalidUrls[0]!, { method: 'POST' }))).status).toBe(405);
+  });
+
+  it('runs only an explicitly enabled Production fixed-plan collection cursor', async () => {
+    const calls: Request[] = [];
+    const postHandler = vi.fn(async (internalRequest: Request) => {
+      calls.push(internalRequest);
+      return Response.json({ status: 'progress', nextCursor: 12 });
+    });
+    const disabled = exportHandler({ postHandler });
+    const enabled = exportHandler({ allowCollection: true, postHandler });
+    const preview = exportHandler({
+      allowCollection: true,
+      environment: 'preview',
+      postHandler,
+    });
+    const collectUrl = 'https://www.signedprice.com/api/internal/korea-rent-snapshot/'
+      + '?export=collect&cursor=8';
+
+    expect((await disabled(new Request(collectUrl))).status).toBe(400);
+    expect((await preview(new Request(collectUrl))).status).toBe(404);
+    expect((await enabled(new Request(collectUrl))).status).toBe(200);
+    expect(await calls[0]!.json()).toEqual({
+      action: 'batch', referenceInstant, cursor: 8,
+    });
+    for (const cursor of ['-1', '1', '700', '704']) {
+      expect((await enabled(new Request(
+        `https://www.signedprice.com/api/internal/korea-rent-snapshot/?export=collect&cursor=${cursor}`,
+      ))).status).toBe(400);
+    }
   });
 
   it('proxies a fixed manifest finalization without disclosing its bearer secret', async () => {

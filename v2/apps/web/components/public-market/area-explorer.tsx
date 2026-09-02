@@ -235,7 +235,10 @@ function ReadyAreaExplorer({
     addressQuery: `서울특별시 ${selected.nameKo} ${building.neighborhoodName} ${building.name}`,
     latitude: building.latitude,
     longitude: building.longitude,
-  })), [initialSelection, locale, selected.nameKo, visibleBuildings]);
+    allowAddressGeocoding: naverMapClientId !== null
+      && building.latitude === null
+      && building.longitude === null,
+  })), [initialSelection, locale, naverMapClientId, selected.nameKo, visibleBuildings]);
 
   const selectDistrict = useCallback((slug: string): void => {
     dispatch({ type: 'select', slug });

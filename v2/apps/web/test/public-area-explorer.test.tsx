@@ -282,6 +282,38 @@ describe('public Seoul area Explorer', () => {
     );
   });
 
+  it('loads Naver geocoding only for visible coordinate-pending buildings with a map client', () => {
+    const model = buildPublicAreaExploreModel('jongno-gu', {
+      source: rankedFixture(),
+      buildingSource: createPublicBuildingFixture(),
+      observedBuildingSource: createObservedBuildingInventoryFixture(),
+      period: PUBLIC_AREA_FIXTURE_PERIOD,
+    });
+    const initialSelection = {
+      market: 'kr' as const,
+      transaction: 'monthly' as const,
+      contractType: 'all' as const,
+      district: 'jongno-gu' as const,
+    };
+    const configured = renderToStaticMarkup(createElement(AreaExplorer, {
+      model,
+      naverMapClientId: 'test-naver-client',
+      initialSelection,
+    }));
+    const unconfigured = renderToStaticMarkup(createElement(AreaExplorer, {
+      model,
+      naverMapClientId: null,
+      initialSelection,
+    }));
+
+    expect(configured).toContain(
+      'maps.js?ncpKeyId=test-naver-client&amp;submodules=geocoder',
+    );
+    expect(configured).toContain('Monthly Home');
+    expect(unconfigured).not.toContain('maps.js?ncpKeyId=');
+    expect(unconfigured).toContain('data-map-state="fallback"');
+  });
+
   it('keeps the Modernist workspace responsive, focused, and touch-safe', () => {
     const css = readFileSync(
       new URL('../components/public-market/area-explorer.module.css', import.meta.url),
