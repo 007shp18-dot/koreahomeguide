@@ -11,6 +11,7 @@ vi.mock('next/script', () => ({
 
 import {
   NaverDistrictMap,
+  buildNaverBuildingAddressQuery,
   buildNaverMapsScriptUrl,
   isNaverMapsSdkReady,
   mountNaverDistrictMap,
@@ -29,6 +30,18 @@ const districts = [{
 }] as const;
 
 describe('NAVER district map', () => {
+  it('normalizes MOLIT parenthesized lot numbers into NAVER geocoder addresses', () => {
+    expect(buildNaverBuildingAddressQuery('강남구', '개포동', '(1163-4)')).toBe(
+      '서울특별시 강남구 개포동 1163-4',
+    );
+    expect(buildNaverBuildingAddressQuery('종로구', '평창동', '(산12-3)')).toBe(
+      '서울특별시 종로구 평창동 산12-3',
+    );
+    expect(buildNaverBuildingAddressQuery('강남구', '대치동', '검증아파트')).toBe(
+      '서울특별시 강남구 대치동 검증아파트',
+    );
+  });
+
   it('accepts only one geocode whose returned locality matches the normalized query', () => {
     const matching = {
       x: '127.031',
