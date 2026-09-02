@@ -90,6 +90,7 @@ export default async function ExplorerPage({ searchParams }: ExplorerPageProps) 
     },
     singleValue(query.buildingPage),
     requestedBuildingId,
+    query,
   );
   const availableBuildings = model.status === 'ready'
     ? (model.buildingAvailability.status === 'ready'

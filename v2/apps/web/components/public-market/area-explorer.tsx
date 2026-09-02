@@ -16,6 +16,7 @@ import {
   createSelectionHref,
   type ExplorerSelection,
 } from '../../lib/navigation/explorer-selection';
+import { appendKoreaProximityPairs } from '../../lib/public-market/korea-proximity-url';
 import {
   NaverDistrictMap,
   buildNaverBuildingAddressQuery,
@@ -123,13 +124,61 @@ function mapTitle(district: ExploreDistrictModel, locale: ProductLocale): string
   ].join(' · ');
 }
 
+type KoreaExploreLinkSelection = ExplorerSelection & Readonly<{
+  station?: string;
+  stationDistance?: 250 | 500 | 750 | 1000;
+  school?: string;
+  schoolDistance?: 250 | 500 | 750 | 1000;
+}>;
+
+export function withKoreaProximityPairs(href: string, selection: KoreaExploreLinkSelection): string {
+  return appendKoreaProximityPairs(href, {
+    station: selection.station === undefined || selection.stationDistance === undefined
+      ? null
+      : { sourceId: selection.station, distanceMeters: selection.stationDistance },
+    school: selection.school === undefined || selection.schoolDistance === undefined
+      ? null
+      : { sourceId: selection.school, distanceMeters: selection.schoolDistance },
+  });
+}
+
+export function createKoreaProximitySelectorHref(
+  href: string,
+  kind: 'station' | 'school',
+  sourceId: string,
+  distance: string,
+): string {
+  const target = new URL(href, 'https://signedprice.invalid');
+  const distanceKey = `${kind}Distance`;
+  if (sourceId.length === 0 || !['250', '500', '750', '1000'].includes(distance)) {
+    target.searchParams.delete(kind);
+    target.searchParams.delete(distanceKey);
+  } else {
+    target.searchParams.set(kind, sourceId);
+    target.searchParams.set(distanceKey, distance);
+  }
+  target.searchParams.delete('buildingPage');
+  return `${target.pathname}${target.search}`;
+}
+
 function buildingSelectionHref(
   building: ExploreBuildingModel,
-  selection: ExplorerSelection,
+  selection: KoreaExploreLinkSelection,
   locale: ProductLocale,
+  location: Readonly<{ query?: string; buildingPage?: number }> = Object.freeze({}),
 ): string {
-  return localizedSeoulHref(createSelectionHref(
-    building.href,
+  return createKoreaBuildingDetailHref(building, selection, locale, location);
+}
+
+/** Creates the canonical dynamic Detail URL without dropping Explore state. */
+export function createKoreaBuildingDetailHref(
+  building: ExploreBuildingModel,
+  selection: KoreaExploreLinkSelection,
+  locale: ProductLocale,
+  location: Readonly<{ query?: string; buildingPage?: number }> = Object.freeze({}),
+): string {
+  const href = withKoreaProximityPairs(localizedSeoulHref(createSelectionHref(
+    `/kr/seoul/explore/${building.districtSlug}/${building.id}/`,
     {
       ...selection,
       district: building.districtSlug,
@@ -137,16 +186,23 @@ function buildingSelectionHref(
       buildingId: building.id,
     },
     { market: 'kr', transaction: 'jeonse' },
-  ), locale);
+  ), locale), selection);
+  const target = new URL(href, 'https://signedprice.invalid');
+  const query = location.query?.trim() ?? '';
+  if (query.length > 0) target.searchParams.set('q', query);
+  if (location.buildingPage !== undefined && location.buildingPage > 1) {
+    target.searchParams.set('buildingPage', String(location.buildingPage));
+  }
+  return `${target.pathname}${target.search}`;
 }
 
 export function createExploreBuildingSelectionHref(
   building: ExploreBuildingModel,
-  selection: ExplorerSelection,
+  selection: KoreaExploreLinkSelection,
   locale: ProductLocale,
   location: Readonly<{ query?: string; buildingPage?: number }> = Object.freeze({}),
 ): string {
-  const href = localizedSeoulHref(createSelectionHref(
+  const href = withKoreaProximityPairs(localizedSeoulHref(createSelectionHref(
     '/kr/seoul/explore/',
     {
       ...selection,
@@ -155,7 +211,7 @@ export function createExploreBuildingSelectionHref(
       buildingId: building.id,
     },
     { market: 'kr', transaction: 'jeonse' },
-  ), locale);
+  ), locale), selection);
   const target = new URL(href, 'https://signedprice.invalid');
   const query = location.query?.trim() ?? '';
   if (query.length > 0) target.searchParams.set('q', query);
@@ -163,6 +219,23 @@ export function createExploreBuildingSelectionHref(
     target.searchParams.set('buildingPage', String(location.buildingPage));
   }
   return `${target.pathname}${target.search}`;
+}
+
+export function createKoreaDistrictHref(
+  districtSlug: string,
+  selection: KoreaExploreLinkSelection,
+  locale: ProductLocale,
+): string {
+  return withKoreaProximityPairs(localizedSeoulHref(createSelectionHref(
+    '/kr/seoul/explore/',
+    {
+      ...selection,
+      district: districtSlug,
+      neighborhood: undefined,
+      buildingId: undefined,
+    },
+    { market: 'kr', transaction: 'jeonse' },
+  ), locale), selection);
 }
 
 function ReadyAreaExplorer({
@@ -179,6 +252,16 @@ function ReadyAreaExplorer({
   initialSelection: ExplorerSelection;
 }>) {
   const copy = PUBLIC_MARKET_COPY[locale].area;
+  const proximity = model.proximity;
+  const linkSelection: KoreaExploreLinkSelection = Object.freeze({
+    ...initialSelection,
+    ...(proximity.status === 'ready' && proximity.selection.station !== null ? {
+      station: proximity.selection.station.sourceId, stationDistance: proximity.selection.station.distanceMeters,
+    } : {}),
+    ...(proximity.status === 'ready' && proximity.selection.school !== null ? {
+      school: proximity.selection.school.sourceId, schoolDistance: proximity.selection.school.distanceMeters,
+    } : {}),
+  });
   const exactMetricCopy = selectedMetricCopy(model.evidenceSelection.transaction, locale);
   const usesLegacyCopy = model.evidenceSelection.areaBand === 'legacy-45-55';
   const countSeparator = locale === 'en' ? ' ' : '';
@@ -273,17 +356,23 @@ function ReadyAreaExplorer({
     return Object.freeze([...visible, selectedBuilding]);
   }, [filteredBuildings, selectedBuilding, visibleBuildingCount]);
 
+  const districtHref = useCallback((slug: string) => (
+    createKoreaDistrictHref(slug, linkSelection, locale)
+  ), [linkSelection, locale]);
   const mapDistricts = useMemo(() => model.districts.map((district) => ({
     slug: district.slug,
     nameEn: locale === 'ko' ? district.nameKo : district.nameEn,
-    href: district.href,
+    href: districtHref(district.slug),
     latitude: district.latitude,
     longitude: district.longitude,
-  })), [locale, model.districts]);
+  })), [districtHref, locale, model.districts]);
   const mapBuildings = useMemo(() => visibleBuildings.map((building) => ({
     id: building.id,
     title: building.name,
-    href: buildingSelectionHref(building, initialSelection, locale),
+    href: buildingSelectionHref(building, linkSelection, locale, {
+      query: buildingQuery,
+      buildingPage: readyBuildingAvailability?.page,
+    }),
     addressQuery: buildNaverBuildingAddressQuery(
       selected.nameKo,
       building.neighborhoodName,
@@ -294,7 +383,7 @@ function ReadyAreaExplorer({
     allowAddressGeocoding: naverMapClientId !== null
       && building.latitude === null
       && building.longitude === null,
-  })), [initialSelection, locale, naverMapClientId, selected.nameKo, visibleBuildings]);
+  })), [buildingQuery, linkSelection, locale, naverMapClientId, readyBuildingAvailability?.page, selected.nameKo, visibleBuildings]);
 
   const selectDistrict = useCallback((slug: string): void => {
     dispatch({ type: 'select', slug });
@@ -303,20 +392,8 @@ function ReadyAreaExplorer({
     setBuildingQuery('');
     dispatchBuildingSelection({ type: 'clear_building' });
     setVisibleBuildingCount(10);
-    router.replace(
-      localizedSeoulHref(createSelectionHref(
-        '/kr/seoul/explore/',
-        {
-          ...initialSelection,
-          district: slug,
-          neighborhood: undefined,
-          buildingId: undefined,
-        },
-        { market: 'kr', transaction: 'jeonse' },
-      ), locale),
-      { scroll: false },
-    );
-  }, [initialSelection, locale, router]);
+    router.replace(districtHref(slug), { scroll: false });
+  }, [districtHref, router]);
   const selectBuilding = useCallback((
     buildingId: string,
     source: 'marker' | 'rail',
@@ -325,7 +402,7 @@ function ReadyAreaExplorer({
     if (building === undefined) return;
     dispatchBuildingSelection({ type: 'select_building', source, buildingId });
     router.replace(
-      createExploreBuildingSelectionHref(building, initialSelection, locale, {
+      createExploreBuildingSelectionHref(building, linkSelection, locale, {
         query: buildingQuery,
         buildingPage: readyBuildingAvailability?.page,
       }),
@@ -334,7 +411,7 @@ function ReadyAreaExplorer({
   }, [
     buildingQuery,
     districtBuildings,
-    initialSelection,
+    linkSelection,
     locale,
     readyBuildingAvailability?.page,
     router,
@@ -350,7 +427,7 @@ function ReadyAreaExplorer({
   }> = Object.freeze({})): string => {
     const transaction = changes.transaction ?? model.evidenceSelection.transaction;
     const propertyType = changes.propertyType ?? model.evidenceSelection.housingType;
-    return localizedSeoulHref(createSelectionHref(
+    const href = withKoreaProximityPairs(localizedSeoulHref(createSelectionHref(
       '/kr/seoul/explore/',
       {
         ...initialSelection,
@@ -364,8 +441,18 @@ function ReadyAreaExplorer({
         contractType: transaction === 'sale' ? undefined : initialSelection.contractType,
       },
       { market: 'kr', transaction: 'jeonse' },
-    ), locale);
-  }, [initialSelection, locale, model.evidenceSelection, state.selectedSlug]);
+    ), locale), linkSelection);
+    const target = new URL(href, 'https://signedprice.invalid');
+    const query = buildingQuery.trim();
+    if (query.length > 0) target.searchParams.set('q', query);
+    if (readyBuildingAvailability !== null && readyBuildingAvailability.page > 1) {
+      target.searchParams.set('buildingPage', String(readyBuildingAvailability.page));
+    }
+    return `${target.pathname}${target.search}`;
+  }, [buildingQuery, initialSelection, linkSelection, locale, model.evidenceSelection, readyBuildingAvailability, state.selectedSlug]);
+  const proximityHref = useCallback((kind: 'station' | 'school', sourceId: string, distance: string): string => {
+    return createKoreaProximitySelectorHref(evidenceHref(), kind, sourceId, distance);
+  }, [evidenceHref]);
 
   const updateBuildingQuery = useCallback((query: string): void => {
     setBuildingQuery(query);
@@ -384,7 +471,7 @@ function ReadyAreaExplorer({
     }
   }, [allBuildings, model.districts, state.selectedSlug]);
   const submitBuildingQuery = useCallback((): void => {
-    const href = localizedSeoulHref(createSelectionHref(
+    const href = withKoreaProximityPairs(localizedSeoulHref(createSelectionHref(
       '/kr/seoul/explore/',
       {
         ...initialSelection,
@@ -393,14 +480,14 @@ function ReadyAreaExplorer({
         buildingId: undefined,
       },
       { market: 'kr', transaction: 'jeonse' },
-    ), locale);
+    ), locale), linkSelection);
     const target = new URL(href, window.location.origin);
     const normalizedQuery = buildingQuery.trim();
     if (normalizedQuery.length === 0) target.searchParams.delete('q');
     else target.searchParams.set('q', normalizedQuery);
     target.searchParams.delete('buildingPage');
     router.replace(`${target.pathname}${target.search}`);
-  }, [buildingQuery, initialSelection, locale, router, state.selectedSlug]);
+  }, [buildingQuery, initialSelection, linkSelection, locale, router, state.selectedSlug]);
   const buildingPageHref = useCallback((page: number): string => {
     const href = evidenceHref();
     const target = new URL(href, window.location.origin);
@@ -412,7 +499,7 @@ function ReadyAreaExplorer({
     return `${target.pathname}${target.search}`;
   }, [buildingQuery, evidenceHref]);
   const viewHref = useCallback((view: 'split' | 'list' | 'table' | 'map'): string => {
-    const href = localizedSeoulHref(createSelectionHref(
+    const href = withKoreaProximityPairs(localizedSeoulHref(createSelectionHref(
       '/kr/seoul/explore/',
       {
         ...initialSelection,
@@ -422,7 +509,7 @@ function ReadyAreaExplorer({
         view: view === 'split' ? undefined : view,
       },
       { market: 'kr', transaction: 'jeonse' },
-    ), locale);
+    ), locale), linkSelection);
     const target = new URL(href, 'https://signedprice.invalid');
     const normalizedQuery = buildingQuery.trim();
     if (normalizedQuery.length > 0) target.searchParams.set('q', normalizedQuery);
@@ -433,6 +520,7 @@ function ReadyAreaExplorer({
   }, [
     buildingQuery,
     initialSelection,
+    linkSelection,
     locale,
     readyBuildingAvailability,
     selectedBuildingId,
@@ -444,7 +532,7 @@ function ReadyAreaExplorer({
     setSelectedNeighborhood(neighborhoodId);
     setVisibleBuildingCount(10);
     dispatchBuildingSelection({ type: 'clear_building' });
-    const href = localizedSeoulHref(createSelectionHref(
+    const href = withKoreaProximityPairs(localizedSeoulHref(createSelectionHref(
       '/kr/seoul/explore/',
       {
         ...initialSelection,
@@ -453,7 +541,7 @@ function ReadyAreaExplorer({
         buildingId: undefined,
       },
       { market: 'kr', transaction: 'jeonse' },
-    ), locale);
+    ), locale), linkSelection);
     const target = new URL(href, 'https://signedprice.invalid');
     const normalizedQuery = buildingQuery.trim();
     if (normalizedQuery.length > 0) target.searchParams.set('q', normalizedQuery);
@@ -464,6 +552,7 @@ function ReadyAreaExplorer({
   }, [
     buildingQuery,
     initialSelection,
+    linkSelection,
     locale,
     readyBuildingAvailability,
     router,
@@ -504,7 +593,9 @@ function ReadyAreaExplorer({
           </div>
           <div>
             <dt>{locale === 'ko' ? '검색 결과' : 'Matching buildings'}</dt>
-            <dd>{filteredBuildings.length.toLocaleString(locale === 'ko' ? 'ko-KR' : 'en-US')}</dd>
+            <dd>{(model.buildingAvailability.status === 'ready'
+              ? model.buildingAvailability.total
+              : filteredBuildings.length).toLocaleString(locale === 'ko' ? 'ko-KR' : 'en-US')}</dd>
           </div>
         </dl>
       </header>
@@ -603,6 +694,15 @@ function ReadyAreaExplorer({
             : '—'}</strong>
           <small>{copy.transactionCoveredBuildings} · {model.coverage.buildings.transactionCovered ?? '—'} · {copy.priceReadyBuildings} · {model.coverage.buildings.priceReady ?? '—'}</small>
         </div>
+        {proximity.status === 'ready' ? (
+          <div className={styles.proximityFilters} data-proximity-selectors="enabled">
+            <label><span>{locale === 'ko' ? '역 인접성' : 'Station proximity'}</span><select name="station-proximity" value={proximity.selection.station?.sourceId ?? ''} onChange={(event) => router.replace(proximityHref('station', event.currentTarget.value, String(proximity.selection.station?.distanceMeters ?? 500)), { scroll: false })}><option value="">{locale === 'ko' ? '선택 안 함' : 'No station filter'}</option>{proximity.stations.map((station) => <option key={station.sourceId} value={station.sourceId}>{station.name} · {station.lines.join(', ')}</option>)}</select></label>
+            <label><span>{locale === 'ko' ? '역 거리' : 'Station distance'}</span><select name="station-distance" value={proximity.selection.station?.distanceMeters ?? ''} onChange={(event) => router.replace(proximityHref('station', proximity.selection.station?.sourceId ?? '', event.currentTarget.value), { scroll: false })}><option value="">—</option>{[250, 500, 750, 1000].map((distance) => <option key={distance} value={distance}>{distance} m</option>)}</select></label>
+            <label><span>{locale === 'ko' ? '학교 인접성' : 'School proximity'}</span><select name="school-proximity" value={proximity.selection.school?.sourceId ?? ''} onChange={(event) => router.replace(proximityHref('school', event.currentTarget.value, String(proximity.selection.school?.distanceMeters ?? 500)), { scroll: false })}><option value="">{locale === 'ko' ? '선택 안 함' : 'No school filter'}</option>{proximity.schools.map((school) => <option key={school.sourceId} value={school.sourceId}>{school.name}</option>)}</select></label>
+            <label><span>{locale === 'ko' ? '학교 거리' : 'School distance'}</span><select name="school-distance" value={proximity.selection.school?.distanceMeters ?? ''} onChange={(event) => router.replace(proximityHref('school', proximity.selection.school?.sourceId ?? '', event.currentTarget.value), { scroll: false })}><option value="">—</option>{[250, 500, 750, 1000].map((distance) => <option key={distance} value={distance}>{distance} m</option>)}</select></label>
+            <small>{locale === 'ko' ? '직선거리 · 250 / 500 / 750 / 1000m' : 'Straight-line distance · 250 / 500 / 750 / 1000m'}</small>
+          </div>
+        ) : <p className={styles.proximityUnavailable} data-proximity-state={proximity.status}>{locale === 'ko' ? '인접성 데이터를 확인할 수 없습니다.' : 'Proximity data unavailable.'}</p>}
       </div>
 
       <nav className={styles.viewBar} aria-label={locale === 'ko' ? '탐색 보기' : 'Explorer view'}>
@@ -746,7 +846,7 @@ function ReadyAreaExplorer({
               key={selected.slug}
               model={selected.contractEvidence}
               mode="compact"
-              selectionHref={localizedSeoulHref(`/kr/seoul/explore/?district=${selected.slug}`, locale)}
+              selectionHref={evidenceHref()}
               locale={locale}
               medianLabel={usesLegacyCopy ? undefined : exactMetricCopy.medianLabel}
               showContractGroups={model.evidenceSelection.transaction !== 'sale'}
@@ -845,11 +945,15 @@ function ReadyAreaExplorer({
                               <small>{building.evidenceStatus === 'published'
                                 ? building.sampleLabel
                                 : `${copy.observedPeriod} · ${building.firstObservedMonth}–${building.lastObservedMonth}`}</small>
+                              <BuildingProximityFacts building={building} locale={locale} />
                             </span>
                           </button>
                           <Link
                             className={styles.buildingRowLink}
-                            href={buildingSelectionHref(building, initialSelection, locale)}
+                            href={buildingSelectionHref(building, linkSelection, locale, {
+                              query: buildingQuery,
+                              buildingPage: readyBuildingAvailability?.page,
+                            })}
                           >
                             {copy.openBuilding}
                           </Link>
@@ -899,7 +1003,10 @@ function ReadyAreaExplorer({
                   ) : (
                     <BuildingEvidencePanel
                       building={selectedBuilding}
-                      href={buildingSelectionHref(selectedBuilding, initialSelection, locale)}
+                      href={buildingSelectionHref(selectedBuilding, linkSelection, locale, {
+                        query: buildingQuery,
+                        buildingPage: readyBuildingAvailability?.page,
+                      })}
                       locale={locale}
                     />
                   )}
@@ -971,7 +1078,7 @@ function ReadyAreaExplorer({
                       <th scope="row">
                         <Link
                           className={styles.districtButton}
-                          href={district.href}
+                          href={districtHref(district.slug)}
                           aria-label={locale === 'ko'
                             ? `${district.nameKo} 근거 열기`
                             : `Open ${district.nameEn} evidence`}
@@ -997,7 +1104,7 @@ function ReadyAreaExplorer({
                       <td>
                         <Link
                           className={styles.detailLink}
-                          href={district.href}
+                          href={districtHref(district.slug)}
                           aria-label={locale === 'ko'
                             ? `${district.nameKo} 근거 열기`
                             : `Open ${district.nameEn} evidence`}
@@ -1034,6 +1141,14 @@ function groupEvidence(
     : `${median} · ${localizedSample}`;
 }
 
+function BuildingProximityFacts({ building, locale }: Readonly<{ building: ExploreBuildingModel; locale: ProductLocale }>) {
+  const proximity = building.proximity;
+  if (proximity === null) return null;
+  if (proximity.coordinateStatus === 'pending_coordinate') return <small>{locale === 'ko' ? '거리 미확정' : 'Distance not confirmed'}</small>;
+  if (proximity.coordinateStatus === 'unavailable') return <small>{locale === 'ko' ? '좌표 확인 불가' : 'Coordinate unavailable'}</small>;
+  return <><small>{locale === 'ko' ? '가까운 역 · 직선거리' : 'Nearest station · straight-line distance'} · {proximity.nearestStation === null ? '—' : `${proximity.nearestStation.name} · ${proximity.nearestStation.lines.join(', ')} · ${Math.round(proximity.nearestStation.distanceMeters)} m`}</small><small>{locale === 'ko' ? '학교 인접성 · 직선거리' : 'School proximity · straight-line distance'} · {proximity.nearestSchool === null ? '—' : `${proximity.nearestSchool.name} · ${Math.round(proximity.nearestSchool.distanceMeters)} m`}</small></>;
+}
+
 function BuildingEvidencePanel({
   building,
   href,
@@ -1059,6 +1174,7 @@ function BuildingEvidencePanel({
           <div><dt>{copy.monthlyObservations}</dt><dd>{building.monthlyObservationCount}</dd></div>
           <div><dt>{copy.sample}</dt><dd>{building.observationCount}</dd></div>
         </dl>
+        <BuildingProximityFacts building={building} locale={locale} />
         <Link href={href}>{copy.openBuilding}</Link>
       </article>
     );
@@ -1091,6 +1207,7 @@ function BuildingEvidencePanel({
           </>
         )}
       </dl>
+      <BuildingProximityFacts building={building} locale={locale} />
       <Link href={href}>{copy.fullBuildingEvidence}</Link>
     </article>
   );

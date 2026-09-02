@@ -203,6 +203,54 @@ test('mobile controls keep 44px focus targets and natural document scrolling', a
   expect(scroll.after).toBeGreaterThan(scroll.before);
 });
 
+test('an unknown ready-fixture pair keeps Explore usable at 390px', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  const response = await page.goto('/kr/seoul/explore/?district=gangnam-gu&station=missing&stationDistance=250');
+  expect(response?.status()).toBe(200);
+  await expect(page.locator('[data-proximity-selectors="enabled"]')).toBeVisible();
+  await expect(page.locator('[data-building-browser="gangnam-gu"]')).toBeVisible();
+  await expectNoHorizontalOverflow(page);
+
+  const htmlResponse = await page.request.get('/kr/seoul/explore/?district=gangnam-gu&station=missing&stationDistance=250');
+  expect(htmlResponse.status()).toBe(200);
+  const html = await htmlResponse.text();
+  expect(html).toContain('data-proximity-selectors="enabled"');
+});
+
+test('ready injected proximity fixture keeps controls touch-sized and round-trips pairs', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/kr/seoul/explore/?district=jongno-gu');
+  const selectors = page.locator('[data-proximity-selectors="enabled"] select');
+  await expect(selectors).toHaveCount(4);
+  for (const index of [0, 1, 2, 3]) await expectTouchTarget(selectors.nth(index));
+  await selectors.nth(0).selectOption('e2e-station');
+  await expect(page).toHaveURL(/station=e2e-station.*stationDistance=500/);
+  await selectors.nth(1).selectOption('750');
+  await expect(page).toHaveURL(/station=e2e-station.*stationDistance=750/);
+  await selectors.nth(2).selectOption('e2e-school');
+  await expect(page).toHaveURL(/station=e2e-station.*stationDistance=750.*school=e2e-school.*schoolDistance=500/);
+  await selectors.nth(3).selectOption('1000');
+  await expect(page).toHaveURL(/school=e2e-school.*schoolDistance=1000/);
+  await expect(page.locator('[data-building-browser="jongno-gu"]')).toContainText('E2E Station');
+  const detail = page.getByRole('link', { name: 'Open full building evidence' }).first();
+  await expect(detail).toHaveAttribute('href', /station=e2e-station.*stationDistance=750.*school=e2e-school.*schoolDistance=1000/);
+  await detail.click();
+  await expect(page.locator('[data-building-detail="ready"]')).toBeVisible();
+  const back = page.getByRole('link', { name: 'Back to Jongno Explore' });
+  await expect(back)
+    .toHaveAttribute('href', /station=e2e-station.*stationDistance=750.*school=e2e-school.*schoolDistance=1000/);
+  await back.click();
+  await expect(page).toHaveURL(/station=e2e-station.*stationDistance=750.*school=e2e-school.*schoolDistance=1000/);
+  await selectors.nth(0).selectOption('');
+  await expect(page).not.toHaveURL(/station=/);
+  await expect(page).not.toHaveURL(/stationDistance=/);
+  await expect(page).toHaveURL(/school=e2e-school.*schoolDistance=1000/);
+  await selectors.nth(2).selectOption('');
+  await expect(page).not.toHaveURL(/school=/);
+  await expect(page).not.toHaveURL(/schoolDistance=/);
+  await expectNoHorizontalOverflow(page);
+});
+
 test('wide workspace keeps map, table, and legend contained', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'wide-chromium');
   await page.goto('/kr/seoul/explore/');

@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 
 import type { ObservedBuildingIdentityModel } from '../../lib/public-market/observed-building-route-model.server';
 import type { KoreaExplorerBuildingDetailModel } from '../../lib/public-market/korea-explorer-evidence.server';
+import type { ProductLocale } from '../../lib/locale/product-copy';
 import {
   KOREA_PUBLIC_RELEASE_STATUS,
   type SiteFooterModel,
@@ -37,16 +38,77 @@ const exactEvidenceFooter: SiteFooterModel = {
 
 const countLabel = (count: number) => `${count} observed contract${count === 1 ? '' : 's'}`;
 
+const proximityCopy = Object.freeze({
+  en: Object.freeze({
+    heading: 'Proximity',
+    unavailable: 'Proximity data unavailable',
+    pending: 'Distance not confirmed',
+    coordinateUnavailable: 'Coordinate unavailable',
+    station: 'Nearest station · straight-line distance',
+    school: 'School proximity · straight-line distance',
+    unavailableFact: 'Unavailable',
+    stationSource: 'Station source',
+    schoolSource: 'School source',
+    coordinateSource: 'Coordinate source',
+    methodology: 'Methodology',
+    version: 'Version',
+    asOf: 'As of',
+    attendanceDisclaimer: 'School proximity is not an attendance-zone assignment.',
+    methodologySuffix: '',
+  }),
+  ko: Object.freeze({
+    heading: '인접성',
+    unavailable: '인접성 데이터를 확인할 수 없습니다.',
+    pending: '거리 미확정',
+    coordinateUnavailable: '좌표 확인 불가',
+    station: '가까운 역 · 직선거리',
+    school: '학교 인접성 · 직선거리',
+    unavailableFact: '확인 불가',
+    stationSource: '역 출처',
+    schoolSource: '학교 출처',
+    coordinateSource: '좌표 출처',
+    methodology: '산정 방법',
+    version: '버전',
+    asOf: '기준',
+    attendanceDisclaimer: '학교 인접성은 배정 학군이 아닙니다.',
+    methodologySuffix: ' · 직선거리',
+  }),
+} satisfies Readonly<Record<ProductLocale, Readonly<Record<string, string>>>>);
+
+export function BuildingProximityDisclosure({ proximity, locale = 'en' }: Readonly<{
+  proximity: ObservedBuildingIdentityModel['proximity'] | undefined;
+  locale?: ProductLocale;
+}>) {
+  const copy = proximityCopy[locale];
+  if (proximity === undefined || proximity.status !== 'ready') return <p data-proximity-state={proximity?.status ?? 'missing'}>{copy.unavailable}</p>;
+  return <section data-building-proximity="ready">
+    <h3>{copy.heading}</h3>
+    {proximity.coordinateStatus === 'pending_coordinate' ? <p>{copy.pending}</p> : proximity.coordinateStatus === 'unavailable' ? <p>{copy.coordinateUnavailable}</p> : <dl className={styles.findingGrid}>
+      <div><dt>{copy.station}</dt><dd>{proximity.nearestStation === null ? copy.unavailableFact : `${proximity.nearestStation.name} · ${proximity.nearestStation.lines.join(', ')} · ${Math.round(proximity.nearestStation.distanceMeters)} m`}</dd></div>
+      <div><dt>{copy.school}</dt><dd>{proximity.nearestSchool === null ? copy.unavailableFact : `${proximity.nearestSchool.name} · ${Math.round(proximity.nearestSchool.distanceMeters)} m`}</dd></div>
+    </dl>}
+    <p>{copy.attendanceDisclaimer}</p>
+    {proximity.provenance === undefined ? null : <dl className={styles.sourceGrid}>
+      <div><dt>{copy.stationSource}</dt><dd>{proximity.provenance.stationSource.landingPage} · {copy.version} {proximity.provenance.stationSource.sourceVersion} · {copy.asOf} {proximity.provenance.stationSource.asOf}</dd></div>
+      <div><dt>{copy.schoolSource}</dt><dd>{proximity.provenance.schoolSource.landingPage} · {copy.version} {proximity.provenance.schoolSource.sourceVersion} · {copy.asOf} {proximity.provenance.schoolSource.asOf}</dd></div>
+      <div><dt>{copy.coordinateSource}</dt><dd>{proximity.provenance.coordinateSource.landingPage} · {copy.version} {proximity.provenance.coordinateSource.sourceVersion} · {copy.asOf} {proximity.provenance.coordinateSource.asOf}</dd></div>
+      <div><dt>{copy.methodology}</dt><dd>{proximity.provenance.methodology}{copy.methodologySuffix}</dd></div>
+    </dl>}
+  </section>;
+}
+
 export function ObservedBuildingDetail({
   model,
   backHref,
   visual,
   facts,
+  locale = 'en',
 }: Readonly<{
   model: ObservedBuildingIdentityModel;
   backHref: string;
   visual?: ReactNode;
   facts?: ReactNode;
+  locale?: ProductLocale;
 }>) {
   const hasMonthly = model.observations.monthly > 0;
   const hasJeonse = model.observations.jeonse > 0;
@@ -109,6 +171,7 @@ export function ObservedBuildingDetail({
             <div><dt>Monthly rent</dt><dd>{model.observations.monthly}</dd></div>
             <div><dt>Map status</dt><dd>{coordinateLabel}</dd></div>
           </dl>
+          <BuildingProximityDisclosure proximity={model.proximity} locale={locale} />
           <dl className={styles.sourceGrid}>
             <div><dt>Source</dt><dd>{model.source.provider} {model.source.dataset}</dd></div>
             <div><dt>Source period</dt><dd>{model.source.period}</dd></div>
@@ -151,11 +214,13 @@ export function KoreaEvidenceBuildingDetail({
   backHref,
   visual,
   facts,
+  locale = 'en',
 }: Readonly<{
   model: KoreaExplorerBuildingDetailModel;
   backHref: string;
   visual?: ReactNode;
   facts?: ReactNode;
+  locale?: ProductLocale;
 }>) {
   const areaLabel = areaLabels[model.selection.areaBand];
   const transactionLabel = transactionLabels[model.selection.transaction];
@@ -169,7 +234,7 @@ export function KoreaEvidenceBuildingDetail({
   return (
     <div id="top" className={styles.page}>
       <BuildingDetailHeader />
-      <main className={styles.main} data-building-detail="exact-evidence">
+      <main className={styles.main} data-building-detail="exact-evidence" data-detail-locale={locale}>
         <section
           className={styles.identityHero}
           data-identity-hero="true"

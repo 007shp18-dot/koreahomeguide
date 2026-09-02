@@ -19,6 +19,7 @@ const buildings: readonly ExploreBuildingModel[] = [
     latitude: 37.5, longitude: 127.03, sampleLabel: '12 contracts', medianLabel: '₩300,000,000',
     newSampleLabel: '7 contracts', newMedianLabel: '₩310,000,000', renewalSampleLabel: '5 contracts',
     renewalMedianLabel: '₩290,000,000', unknownContractCount: 0,
+    proximity: null,
     href: '/kr/seoul/explore/gangnam-gu/evidence-tower/',
   },
   {
@@ -29,6 +30,7 @@ const buildings: readonly ExploreBuildingModel[] = [
     latitude: null, longitude: null, sampleLabel: '8 observed contracts', medianLabel: null,
     newSampleLabel: '4 contracts', newMedianLabel: null, renewalSampleLabel: '4 contracts',
     renewalMedianLabel: null, unknownContractCount: 0,
+    proximity: null,
     href: '/kr/seoul/explore/mapo-gu/river-home/',
   },
 ] as const;

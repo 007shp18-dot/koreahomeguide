@@ -21,5 +21,5 @@ export async function generateMetadata(props: BuildingPageProps): Promise<Metada
 }
 
 export default async function KoreanBuildingRoute(props: BuildingPageProps) {
-  return EnglishBuildingRoute(props);
+  return EnglishBuildingRoute({ ...props, locale: 'ko' });
 }

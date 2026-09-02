@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@signedprice/korea-rent':
+        specifier: workspace:*
+        version: link:packages/korea-rent
       '@signedprice/singapore-property':
         specifier: workspace:*
         version: link:packages/singapore-property

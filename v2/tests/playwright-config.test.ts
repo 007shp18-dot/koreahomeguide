@@ -1,4 +1,15 @@
-import { readFileSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import {
+  chmodSync,
+  mkdirSync,
+  mkdtempSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -43,6 +54,7 @@ describe('Playwright release target configuration', () => {
     expect(config.use?.baseURL).toBe('http://127.0.0.1:3100');
     expect(config.webServer).toMatchObject({
       url: 'http://127.0.0.1:3100',
+      gracefulShutdown: { signal: 'SIGTERM', timeout: 5_000 },
       env: {
         VERCEL_ENV: 'preview',
         VERCEL_GIT_COMMIT_SHA: '0123456789abcdef',
@@ -91,7 +103,10 @@ describe('Playwright release target configuration', () => {
       buildingId: PUBLIC_BUILDING_TEST_ID,
       coordinate: { state: 'ready' },
     });
-    expect(environment).not.toHaveProperty('SIGNEDPRICE_INSTALLED_SNAPSHOT_REGISTRY');
+    expect(JSON.parse(String(environment.SIGNEDPRICE_INSTALLED_SNAPSHOT_REGISTRY))).toMatchObject({
+      registryVersion: 'signedprice-installed-snapshots-v1',
+      snapshots: [{ marketId: 'kr-seoul', dataset: 'kr-proximity' }],
+    });
   });
 
   it('keeps every local web-server environment entry below the process spawn limit', () => {
@@ -103,6 +118,58 @@ describe('Playwright release target configuration', () => {
     expect(Object.entries(config.webServer.env ?? {}).every(([key, value]) => (
       Buffer.byteLength(`${key}=${String(value)}`, 'utf8') < 100_000
     ))).toBe(true);
+  });
+
+  it('preserves pre-existing workspace data and cleans its isolated proximity fixture', () => {
+    const config = createPlaywrightConfig({});
+    if (config.webServer === undefined || Array.isArray(config.webServer)) {
+      throw new Error('Expected one local release web server.');
+    }
+    const root = mkdtempSync(join(tmpdir(), 'signedprice-playwright-proximity-'));
+    const bin = join(root, 'bin');
+    const artifact = join(root, 'apps/web/data/korea-proximity.json.gz');
+    const temporaryRoot = join(root, 'tmp');
+    const nextExecutable = join(root, 'apps/web/node_modules/next/dist/bin/next');
+    mkdirSync(bin, { recursive: true });
+    mkdirSync(join(root, 'apps/web/data'), { recursive: true });
+    mkdirSync(join(root, 'apps/web/node_modules/next/dist/bin'), { recursive: true });
+    mkdirSync(temporaryRoot, { recursive: true });
+    writeFileSync(join(bin, 'pnpm'), '#!/bin/sh\nexit 0\n');
+    chmodSync(join(bin, 'pnpm'), 0o755);
+    writeFileSync(
+      nextExecutable,
+      `const { readFileSync } = require('node:fs');\n` +
+      `const { resolve } = require('node:path');\n` +
+      `const fixture = readFileSync(resolve('data/korea-proximity.json.gz'));\n` +
+      `const isolated = process.cwd().startsWith(${JSON.stringify(
+        join(temporaryRoot, 'signedprice-playwright-proximity-'),
+      )});\n` +
+      `const gzip = fixture[0] === 0x1f && fixture[1] === 0x8b;\n` +
+      `const payloadIsPrivate = process.env.SIGNEDPRICE_PLAYWRIGHT_PROXIMITY_GZIP_BASE64 === undefined;\n` +
+      `process.exit(isolated && gzip && payloadIsPrivate ? 0 : 1);\n`,
+    );
+    const environment = {
+      ...process.env,
+      ...Object.fromEntries(Object.entries(config.webServer.env ?? {})
+        .map(([key, value]) => [key, String(value)])),
+      PATH: `${bin}:${process.env.PATH ?? ''}`,
+      TMPDIR: temporaryRoot,
+    };
+
+    try {
+      const original = Buffer.from('pre-existing-user-artifact');
+      writeFileSync(artifact, original);
+      const completed = spawnSync('/bin/sh', ['-c', config.webServer.command], {
+        cwd: root,
+        env: environment,
+        encoding: 'utf8',
+      });
+      expect(completed.status).toBe(0);
+      expect(readFileSync(artifact)).toEqual(original);
+      expect(readdirSync(temporaryRoot)).toEqual([]);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
   });
 
   it('defines all release viewports and a retained HTML failure report', () => {

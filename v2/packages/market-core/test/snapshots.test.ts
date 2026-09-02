@@ -109,6 +109,7 @@ describe('installed snapshot registry', () => {
     ['kr-seoul', 'kr-sale'],
     ['kr-seoul', 'kr-rent'],
     ['kr-seoul', 'kr-conversion'],
+    ['kr-seoul', 'kr-proximity'],
     ['sg-singapore', 'sg-private-sale'],
     ['sg-singapore', 'sg-private-rent'],
     ['sg-singapore', 'sg-hdb'],

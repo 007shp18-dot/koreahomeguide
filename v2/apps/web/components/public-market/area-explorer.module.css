@@ -141,6 +141,33 @@
   background: var(--surface-strong);
 }
 
+.proximityFilters,
+.proximityUnavailable {
+  grid-column: 1 / -1;
+}
+
+.proximityFilters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.proximityFilters label,
+.proximityFilters select {
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+}
+
+.proximityFilters select {
+  min-height: 44px;
+}
+
+@media (max-width: 420px) {
+  .proximityFilters { grid-template-columns: minmax(0, 1fr); }
+}
+
 .toolbarStatus {
   grid-column: 1 / -1;
   grid-template-columns: auto auto minmax(0, 1fr);
