@@ -17,7 +17,7 @@ const headerCopy: SiteHeaderModel = {
 
 const unavailableContractModel: ContractCheckRouteModel = {
   status: 'unavailable',
-  message: 'Verified conversion evidence is unavailable.',
+  message: 'Verified transaction evidence is unavailable.',
   navigation: [],
 };
 

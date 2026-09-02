@@ -33,7 +33,10 @@ export function buildSingleQuoteCheckMetadata(locale: ProductLocale): Metadata {
     useCheckedInSnapshot: checkedInSnapshotsAreEnabled(),
     retainLastVerified: false,
   });
-  if (repositories.rent !== null || repositories.sale !== null) return metadata;
+  if (
+    process.env.VERCEL_ENV !== 'preview'
+    && (repositories.rent !== null || repositories.sale !== null)
+  ) return metadata;
   return {
     ...metadata,
     robots: { index: false, follow: true },

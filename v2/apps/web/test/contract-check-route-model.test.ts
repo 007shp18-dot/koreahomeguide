@@ -7,6 +7,7 @@ import {
   buildContractCheckRouteModel,
   diagnoseConversionEnvironment,
 } from '../lib/contract-check/route-model.server';
+import type { KoreaEvidenceRepositories } from '../lib/public-market/korea-evidence-repositories.server';
 import { createInstalledSnapshotRepository } from '../lib/snapshots/installed-snapshot-repository.server';
 
 const SHA256 = 'a'.repeat(64);
@@ -86,6 +87,77 @@ function installedConversionRepository(source = validSource()) {
   });
 }
 
+function evidenceRepositories(input: Readonly<{
+  sale?: boolean;
+  rent?: boolean;
+  salePeriod?: string;
+  rentPeriod?: string;
+  rentBuildingId?: string;
+}> = {}): KoreaEvidenceRepositories {
+  const building = {
+    buildingId: 'gangnam-gu-stable-building',
+    districtSlug: 'gangnam-gu',
+    neighborhoodId: 'yeoksam',
+    neighborhoodName: 'Yeoksam-dong',
+    officialName: 'Stable Apartments',
+    housingType: 'apartment',
+  } as const;
+  const saleBuilding = Object.freeze({
+    ...building,
+    cohorts: Object.freeze([]),
+    recentSales: Object.freeze([0, 1, 2, 3, 4, 5].map((index) => Object.freeze({
+      filedMonth: `2026-0${index + 2}`,
+      areaSqm: 84 + index / 10,
+      priceWon: 1_000_000_000 + index * 100_000_000,
+    }))),
+  });
+  const rentBuilding = Object.freeze({
+    ...building,
+    buildingId: input.rentBuildingId ?? building.buildingId,
+    cohorts: Object.freeze([]),
+    recentTransactions: Object.freeze([
+      ...[0, 1, 2, 3, 4, 5].map((index) => Object.freeze({
+        filedMonth: `2026-0${index + 2}`,
+        areaSqm: 84 + index / 10,
+        transaction: 'jeonse' as const,
+        depositWon: 100_000_000 + index * 10_000_000,
+        monthlyRentWon: 0,
+        contractType: 'new' as const,
+      })),
+      ...[0, 1, 2, 3, 4, 5].map((index) => Object.freeze({
+        filedMonth: `2026-0${index + 2}`,
+        areaSqm: 84 + index / 10,
+        transaction: 'monthly' as const,
+        depositWon: 50_000_000 + index * 5_000_000,
+        monthlyRentWon: 2_000_000 - index * 30_000,
+        contractType: 'new' as const,
+      })),
+    ]),
+  });
+  return Object.freeze({
+    sale: input.sale === false ? null : {
+      getArtifact: () => ({ period: input.salePeriod ?? '2026-02/2026-08' }),
+      listAreaRecords: () => [],
+      getAreaRecord: () => { throw new Error('unused'); },
+      listBuildingRecords: () => [saleBuilding],
+      getBuilding: (_district: string, buildingId: string) => {
+        if (buildingId !== saleBuilding.buildingId) throw new Error('missing');
+        return saleBuilding;
+      },
+    } as never,
+    rent: input.rent === false ? null : {
+      getArtifact: () => ({ period: input.rentPeriod ?? '2026-02/2026-08' }),
+      listAreaRecords: () => [],
+      getAreaRecord: () => { throw new Error('unused'); },
+      listBuildingRecords: () => [rentBuilding],
+      getBuilding: (_district: string, buildingId: string) => {
+        if (buildingId !== rentBuilding.buildingId) throw new Error('missing');
+        return rentBuilding;
+      },
+    } as never,
+  });
+}
+
 describe('conversion environment diagnostics', () => {
   test.each([
     [undefined, '2026-03/2026-08', SHA256, 'artifact_missing'],
@@ -137,11 +209,17 @@ describe('Contract Check route model', () => {
       sha256: '',
       referenceInstant: REFERENCE_INSTANT,
       installedRepository: installedConversionRepository(),
+      evidenceRepositories: evidenceRepositories({ sale: false }),
     });
 
     expect(model).toMatchObject({
       status: 'ready',
-      disclosure: { period: '2026-03/2026-08' },
+      disclosure: {
+        periods: {
+          rent: { period: '2026-02/2026-08', completedMonthCount: 7 },
+          conversion: '2026-03/2026-08',
+        },
+      },
     });
     if (model.status !== 'ready') throw new Error('Expected installed conversion evidence.');
     expect(model.curves.map(({ housingType }) => housingType)).toEqual([
@@ -159,6 +237,7 @@ describe('Contract Check route model', () => {
       sha256: SHA256,
       referenceInstant: REFERENCE_INSTANT,
       installedRepository: installedConversionRepository(stale),
+      evidenceRepositories: evidenceRepositories({ sale: false }),
     });
 
     expect(model.status).toBe('ready');
@@ -175,14 +254,24 @@ describe('Contract Check route model', () => {
       period: '2026-03/2026-08',
       sha256: SHA256,
       referenceInstant: REFERENCE_INSTANT,
+      evidenceRepositories: evidenceRepositories({ sale: false }),
     });
 
     expect(model).toMatchObject({
       status: 'ready',
       disclosure: {
         source: 'MOLIT reported rental contracts',
-        basis: 'Matched contracts in the same building and filed area',
-        period: '2026-03/2026-08',
+        basis: 'Transaction-specific contracts matched by building, neighborhood, or district and filed area',
+        periods: {
+          sale: null,
+          rent: {
+            period: '2026-02/2026-08',
+            startMonth: '2026-02',
+            endMonth: '2026-08',
+            completedMonthCount: 7,
+          },
+          conversion: '2026-03/2026-08',
+        },
       },
       secondaryCheckHref: '/kr/seoul/tools/rent-check/',
       navigation: [
@@ -210,7 +299,7 @@ describe('Contract Check route model', () => {
 
     expect(model).toEqual({
       status: 'unavailable',
-      message: 'Verified conversion evidence is unavailable.',
+      message: 'Verified transaction evidence is unavailable.',
       navigation: [
         { label: 'Check', href: '/kr/seoul/check/', available: true },
         { label: 'Explore', href: '/kr/seoul/explore/', available: true },
@@ -219,5 +308,213 @@ describe('Contract Check route model', () => {
       ],
     });
     expect(JSON.stringify(model)).not.toMatch(/72,291|29\.4|annualRate|pairCount/);
+  });
+
+  test('stays unavailable with a valid conversion curve but no transaction evidence', () => {
+    const model = buildContractCheckRouteModel({
+      source: validSource(),
+      period: '2026-03/2026-08',
+      sha256: SHA256,
+      referenceInstant: REFERENCE_INSTANT,
+      evidenceRepositories: Object.freeze({ sale: null, rent: null }),
+    });
+
+    expect(model).toMatchObject({
+      status: 'unavailable',
+      message: 'Verified transaction evidence is unavailable.',
+    });
+  });
+
+  test('stays unavailable when installed transaction repositories have no usable records', () => {
+    const emptyRepository = {
+      getArtifact: () => ({ period: '2026-02/2026-08' }),
+      listAreaRecords: () => [],
+      getAreaRecord: () => { throw new Error('missing'); },
+      listBuildingRecords: () => [],
+      getBuilding: () => { throw new Error('missing'); },
+    } as never;
+    const model = buildContractCheckRouteModel({
+      source: validSource(),
+      period: '2026-03/2026-08',
+      sha256: SHA256,
+      referenceInstant: REFERENCE_INSTANT,
+      evidenceRepositories: Object.freeze({
+        sale: emptyRepository,
+        rent: emptyRepository,
+      }),
+    });
+
+    expect(model).toMatchObject({
+      status: 'unavailable',
+      message: 'Verified transaction evidence is unavailable.',
+    });
+  });
+
+  test('does not count out-of-window records toward A/B route readiness', () => {
+    const oldSaleRepository = {
+      getArtifact: () => ({ period: '2024-01/2026-08' }),
+      listAreaRecords: () => [],
+      getAreaRecord: () => { throw new Error('missing'); },
+      listBuildingRecords: () => [{
+        buildingId: 'old-building', districtSlug: 'gangnam-gu', neighborhoodId: 'old',
+        neighborhoodName: 'Old', officialName: 'Old', housingType: 'apartment', cohorts: [],
+        recentSales: [0, 1, 2, 3, 4].map((index) => ({
+          filedMonth: `2025-0${index + 1}`, areaSqm: 84, priceWon: 1_000_000_000,
+        })),
+      }],
+      getBuilding: () => { throw new Error('missing'); },
+    } as never;
+    const model = buildContractCheckRouteModel({
+      source: validSource(),
+      period: '2026-03/2026-08',
+      sha256: SHA256,
+      referenceInstant: REFERENCE_INSTANT,
+      evidenceRepositories: Object.freeze({ sale: oldSaleRepository, rent: null }),
+    });
+
+    expect(model).toMatchObject({
+      status: 'unavailable',
+      message: 'Verified transaction evidence is unavailable.',
+    });
+  });
+
+  test('keeps sale and rent readiness independent of conversion readiness', () => {
+    const saleOnly = buildContractCheckRouteModel({
+      source: undefined,
+      period: '',
+      sha256: '',
+      referenceInstant: REFERENCE_INSTANT,
+      evidenceRepositories: evidenceRepositories({ rent: false }),
+    });
+
+    expect(saleOnly).toMatchObject({
+      status: 'ready',
+      availability: { sale: true, jeonse: false, monthly: false, conversion: false },
+      curves: [],
+    });
+  });
+
+  test('builds an all-type trade-off from transaction-specific installed evidence', () => {
+    const model = buildContractCheckRouteModel({
+      source: validSource(),
+      period: '2026-03/2026-08',
+      sha256: SHA256,
+      referenceInstant: REFERENCE_INSTANT,
+      evidenceRepositories: evidenceRepositories(),
+      query: {
+        compare: '1', district: 'gangnam-gu', building: 'gangnam-gu-stable-building',
+        housing: 'apartment', area: '84',
+        'a-transaction': 'sale', 'a-price': '1200000000',
+        'b-transaction': 'monthly', 'b-deposit': '50000000', 'b-monthly-rent': '2000000',
+      },
+    });
+
+    expect(model).toMatchObject({
+      status: 'ready',
+      submitted: true,
+      selection: {
+        offers: {
+          a: { transaction: 'sale', salePriceWon: 1_200_000_000, depositWon: null, monthlyRentWon: null },
+          b: { transaction: 'monthly', salePriceWon: null, depositWon: 50_000_000, monthlyRentWon: 2_000_000 },
+        },
+      },
+      comparison: { status: 'ready', basis: 'tradeoff', winner: null },
+    });
+  });
+
+  test('keeps transaction and conversion evidence periods separate', () => {
+    const model = buildContractCheckRouteModel({
+      source: validSource(),
+      period: '2026-03/2026-08',
+      sha256: SHA256,
+      referenceInstant: REFERENCE_INSTANT,
+      evidenceRepositories: evidenceRepositories({
+        salePeriod: '2026-01/2026-07',
+        rentPeriod: '2026-02/2026-08',
+      }),
+    });
+
+    expect(model).toMatchObject({
+      status: 'ready',
+      disclosure: {
+        periods: {
+          sale: { period: '2026-01/2026-07', completedMonthCount: 7 },
+          rent: { period: '2026-02/2026-08', completedMonthCount: 7 },
+          conversion: '2026-03/2026-08',
+        },
+      },
+    });
+  });
+
+  test('uses the artifact-specific recent window in each offer result', () => {
+    const model = buildContractCheckRouteModel({
+      source: validSource(),
+      period: '2026-03/2026-08',
+      sha256: SHA256,
+      referenceInstant: REFERENCE_INSTANT,
+      evidenceRepositories: evidenceRepositories({
+        salePeriod: '2026-01/2026-07',
+        rentPeriod: '2026-02/2026-08',
+      }),
+      query: {
+        compare: '1', district: 'gangnam-gu', housing: 'apartment', area: '84',
+        'a-transaction': 'sale', 'a-price': '1200000000',
+        'b-transaction': 'jeonse', 'b-deposit': '120000000',
+      },
+    });
+
+    expect(model).toMatchObject({
+      status: 'ready',
+      offerChecks: {
+        a: { status: 'ready', period: '2026-01/2026-07', evidenceWindow: { completedMonthCount: 7 } },
+        b: { status: 'ready', period: '2026-02/2026-08', evidenceWindow: { completedMonthCount: 7 } },
+      },
+    });
+  });
+
+  test('uses stable identity to widen across a selected-transaction building gap', () => {
+    const model = buildContractCheckRouteModel({
+      source: validSource(),
+      period: '2026-03/2026-08',
+      sha256: SHA256,
+      referenceInstant: REFERENCE_INSTANT,
+      evidenceRepositories: evidenceRepositories({ rentBuildingId: 'gangnam-gu-rent-peer' }),
+      query: {
+        compare: '1', district: 'gangnam-gu', building: 'gangnam-gu-stable-building',
+        housing: 'apartment', area: '84',
+        'a-transaction': 'jeonse', 'a-deposit': '120000000',
+        'b-transaction': 'jeonse', 'b-deposit': '130000000',
+      },
+    });
+
+    expect(model).toMatchObject({
+      status: 'ready',
+      buildingName: 'Stable Apartments',
+      offerChecks: {
+        a: { status: 'ready', filters: { scope: 'neighborhood' } },
+        b: { status: 'ready', filters: { scope: 'neighborhood' } },
+      },
+    });
+  });
+
+  test('does not coerce a missing submitted field to zero or a default', () => {
+    const model = buildContractCheckRouteModel({
+      source: validSource(),
+      period: '2026-03/2026-08',
+      sha256: SHA256,
+      referenceInstant: REFERENCE_INSTANT,
+      evidenceRepositories: evidenceRepositories(),
+      query: {
+        compare: '1', district: 'gangnam-gu', housing: 'apartment', area: '84',
+        'a-transaction': 'sale',
+        'b-transaction': 'jeonse', 'b-deposit': '100000000',
+      },
+    });
+
+    expect(model).toMatchObject({
+      status: 'ready',
+      selection: { offers: { a: { salePriceWon: null } } },
+      comparison: { status: 'unavailable', reason: 'offer-evidence-unavailable' },
+    });
   });
 });

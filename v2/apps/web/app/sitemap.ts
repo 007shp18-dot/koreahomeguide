@@ -21,7 +21,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     useCheckedInSnapshot: checkedInSnapshotsAreEnabled(),
     retainLastVerified: false,
   });
-  const singleQuoteReady = koreaEvidence.rent !== null || koreaEvidence.sale !== null;
+  const singleQuoteReady = process.env.VERCEL_ENV !== 'preview'
+    && (koreaEvidence.rent !== null || koreaEvidence.sale !== null);
   let summaryReady = false;
   try {
     if (buildKoreaPublicRouteModel('seoul')?.summary.published === true) {

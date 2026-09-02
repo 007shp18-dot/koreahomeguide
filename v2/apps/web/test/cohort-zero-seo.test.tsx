@@ -15,8 +15,8 @@ import SeoulContractCheckPage, {
 import KoreanContractCheckPage, {
   generateMetadata as koreanCheckMetadata,
 } from '../app/(ko)/ko/kr/seoul/check/page';
-import { metadata as offerComparisonMetadata } from '../app/(en)/kr/seoul/check/compare/page';
-import { metadata as koreanOfferComparisonMetadata } from '../app/(ko)/ko/kr/seoul/check/compare/page';
+import { generateMetadata as offerComparisonMetadata } from '../app/(en)/kr/seoul/check/compare/page';
+import { generateMetadata as koreanOfferComparisonMetadata } from '../app/(ko)/ko/kr/seoul/check/compare/page';
 import ExplorerPage, { metadata as exploreMetadata } from '../app/(en)/kr/seoul/explore/page';
 import RankingsPage, { metadata as rankingsMetadata } from '../app/(en)/kr/seoul/rankings/page';
 import {
@@ -76,28 +76,43 @@ describe('SignedPrice cohort zero SEO', () => {
     expect(koreanMetadata.alternates).toBeUndefined();
   });
 
-  it('publishes reciprocal locale-correct metadata for offer comparison', () => {
+  it('publishes reciprocal locale-correct metadata for offer comparison', async () => {
     const languages = {
       en: 'https://www.signedprice.com/kr/seoul/check/compare/',
       ko: 'https://www.signedprice.com/ko/kr/seoul/check/compare/',
       'x-default': 'https://www.signedprice.com/kr/seoul/check/compare/',
     };
 
-    expect(offerComparisonMetadata.alternates).toEqual({
+    const englishMetadata = await offerComparisonMetadata();
+    const koreanMetadata = await koreanOfferComparisonMetadata();
+
+    expect(englishMetadata.alternates).toEqual({
       canonical: 'https://www.signedprice.com/kr/seoul/check/compare/',
       languages,
     });
-    expect(koreanOfferComparisonMetadata.alternates).toEqual({
+    expect(koreanMetadata.alternates).toEqual({
       canonical: 'https://www.signedprice.com/ko/kr/seoul/check/compare/',
       languages,
     });
-    expect(koreanOfferComparisonMetadata.openGraph).toMatchObject({
+    expect(koreanMetadata.openGraph).toMatchObject({
       locale: 'ko_KR',
       images: ['https://www.signedprice.com/og/ko/'],
     });
-    expect(koreanOfferComparisonMetadata.twitter).toMatchObject({
+    expect(koreanMetadata.twitter).toMatchObject({
       images: ['https://www.signedprice.com/og/ko/'],
     });
+  });
+
+  it('keeps offer comparison out of indexing without transaction evidence', async () => {
+    vi.stubEnv('SIGNEDPRICE_USE_CHECKED_IN_SNAPSHOTS', 'false');
+
+    const englishMetadata = await offerComparisonMetadata();
+    const koreanMetadata = await koreanOfferComparisonMetadata();
+
+    expect(englishMetadata.robots).toEqual({ index: false, follow: true });
+    expect(englishMetadata.alternates).toBeUndefined();
+    expect(koreanMetadata.robots).toEqual({ index: false, follow: true });
+    expect(koreanMetadata.alternates).toBeUndefined();
   });
 
   it('serializes one global WebSite and Organization graph without executable markup', () => {

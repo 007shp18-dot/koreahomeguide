@@ -36,16 +36,6 @@ async function expectTouchTarget(locator: Locator) {
   expect(box?.height).toBeGreaterThanOrEqual(44);
 }
 
-async function fillOffer(
-  page: Page,
-  id: 'a' | 'b',
-  depositWon: string,
-  monthlyRentWon: string,
-) {
-  await page.locator(`input[name="${id}-deposit"]`).fill(depositWon);
-  await page.locator(`input[name="${id}-monthly-rent"]`).fill(monthlyRentWon);
-}
-
 test('primary Contract Check exposes one quote and routes to the two-offer comparison', async ({ page }) => {
   const assertNoRuntimeFailures = observeRuntimeFailures(page);
   const response = await page.goto('/kr/seoul/check/');
@@ -57,8 +47,8 @@ test('primary Contract Check exposes one quote and routes to the two-offer compa
   })).toBeVisible();
   await expect(page.locator('[data-primary-check="single-quote"]')).toHaveCount(1);
   await expect(page.locator('form select')).toHaveCount(3);
-  await expect(page.locator('input[inputmode="numeric"]')).toHaveCount(2);
-  await expect(page.getByRole('link', { name: 'Compare two rental offers' }).first())
+  await expect(page.locator('input[inputmode="numeric"]')).toHaveCount(1);
+  await expect(page.getByRole('link', { name: 'Compare two offers' }).first())
     .toHaveAttribute('href', '/kr/seoul/check/compare/');
   const primaryIndexable = releaseTarget.usesExternalServer;
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
@@ -102,7 +92,7 @@ test('primary Contract Check exposes one quote and routes to the two-offer compa
   expect(comparison.status()).toBe(200);
   expect(comparisonHtml.indexOf('Offer A')).toBeLessThan(comparisonHtml.indexOf('Offer B'));
   expect(comparisonHtml.indexOf('Offer B')).toBeLessThan(comparisonHtml.indexOf('Result'));
-  expect(comparisonHtml).toContain('MOLIT reported rental contracts');
+  expect(comparisonHtml).toContain('MOLIT reported sale contracts');
 
   const sitemap = await page.request.get('/sitemap.xml');
   expect(sitemap.status()).toBe(200);
@@ -118,22 +108,29 @@ test('primary Contract Check exposes one quote and routes to the two-offer compa
 
 test('Contract Check stays ordered, touch-sized, and keyboard reachable', async ({ page }) => {
   const assertNoRuntimeFailures = observeRuntimeFailures(page);
-  await page.goto('/kr/seoul/check/compare/');
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(
+    '/kr/seoul/check/compare/?compare=1&district=gangnam-gu&housing=apartment&area=84' +
+    '&a-transaction=sale&a-price=1200000000' +
+    '&b-transaction=monthly&b-deposit=50000000&b-monthly-rent=2000000',
+  );
   await expectNoHorizontalOverflow(page);
+  await expect(page.locator('[data-result-focus-target="true"]')).toContainText('7 completed months');
 
   const panels = page.locator('fieldset, [data-result-focus-target="true"]');
-  await expect(panels).toHaveCount(3);
-  await expect(panels.nth(0)).toContainText('Offer A');
-  await expect(panels.nth(1)).toContainText('Offer B');
-  await expect(panels.nth(2)).toContainText('Result');
+  await expect(panels).toHaveCount(4);
+  await expect(panels.nth(0)).toContainText('Conditions');
+  await expect(panels.nth(1)).toContainText('Offer A');
+  await expect(panels.nth(2)).toContainText('Offer B');
+  await expect(panels.nth(3)).toContainText('Result');
 
-  const controls = page.locator('form input, form select, form button');
+  const controls = page.locator('form input:not([type="hidden"]), form select, form button');
   for (const control of await controls.all()) await expectTouchTarget(control);
 
-  const housingType = page.locator('#contract-housing-type');
-  await housingType.focus();
+  const district = page.locator('select[name="district"]');
+  await district.focus();
   await page.keyboard.press('Tab');
-  await expect(page.locator('input[name="a-label"]')).toBeFocused();
+  await expect(page.locator('select[name="housing"]')).toBeFocused();
 
   const productNavigation = page.getByRole('navigation', {
     name: 'Seoul product navigation',
@@ -147,42 +144,37 @@ test('Contract Check stays ordered, touch-sized, and keyboard reachable', async 
     .toHaveAttribute('href', '/kr/seoul/guide/');
   await expect(productNavigation.getByText('Planned')).toHaveCount(0);
   await expect(page.getByRole('link', {
-    name: 'Check one offer against its local distribution',
-  })).toHaveAttribute('href', '/kr/seoul/tools/rent-check/');
+    name: 'Check one asking price',
+  }).first()).toHaveAttribute('href', '/kr/seoul/check/');
   assertNoRuntimeFailures();
 });
 
-test('fixture curve covers interpolation, range rejection, tie, and ranking flip', async ({ page }) => {
-  test.skip(releaseTarget.usesExternalServer, 'Exact fixture calculations are local-release only.');
+test('each offer changes type independently and sale versus rent stays a neutral trade-off', async ({ page }) => {
+  const assertNoRuntimeFailures = observeRuntimeFailures(page);
   await page.goto('/kr/seoul/check/compare/');
 
-  await fillOffer(page, 'a', '100000000', '100000');
-  await fillOffer(page, 'b', '30000000', '300000');
+  await page.locator('select[name="a-transaction"]').selectOption('sale');
+  await expect(page.locator('input[name="a-price"]')).toBeVisible();
+  await expect(page.locator('input[name="a-deposit"]')).toHaveCount(0);
+  await page.locator('select[name="b-transaction"]').selectOption('monthly');
+  await expect(page.locator('input[name="b-deposit"]')).toBeVisible();
+  await expect(page.locator('input[name="b-monthly-rent"]')).toBeVisible();
+  await expect(page.locator('input[name="b-price"]')).toHaveCount(0);
+
+  const response = await page.goto(
+    '/kr/seoul/check/compare/?compare=1&district=gangnam-gu&housing=apartment&area=84' +
+    '&a-transaction=sale&a-price=1200000000' +
+    '&b-transaction=monthly&b-deposit=50000000&b-monthly-rent=2000000',
+  );
+  expect(response?.status()).toBe(200);
   const result = page.locator('[data-result-focus-target="true"]');
-  await expect(result).toContainText('Offer B has the lower normalized cost.');
-  await expect(result).toContainText('₩8,333');
-  await expect(result).toContainText('4.00% · Within measured range');
-  await expect(result).toContainText('5.00% · Within measured range');
-  await expect(result).toContainText(
-    'The lower listed rent is not the lower normalized cost.',
-  );
-
-  await expect(page.getByRole('button', { name: 'Compare offers' })).toHaveCount(0);
-  await expect(result.locator('[data-calculation-row]')).toHaveCount(4);
-  await expect(result.locator('svg text')).toHaveCount(0);
-
-  await page.locator('input[name="a-deposit"]').fill('120000000');
-  await expect(page.locator('#a-offer-error')).toContainText(
-    'Deposit falls outside the measured range. No comparison is produced.',
-  );
-  await expect(result.locator('[data-result-state="invalid"]')).toBeVisible();
-
-  await fillOffer(page, 'a', '30000000', '300000');
-  await fillOffer(page, 'b', '30000000', '300000');
-  await expect(result).toContainText('The offers are effectively equal.');
-
-  await page.locator('input[name="a-deposit"]').fill('-1');
-  await expect(result.locator('[data-empty-title="true"]')).toBeVisible();
-  await expect(result.locator('[data-empty-reason="true"]')).toBeVisible();
-  await expect(result.locator('[data-empty-action="true"]')).toBeVisible();
+  await expect(result.locator('[data-comparison-basis="tradeoff"]')).toBeVisible();
+  await expect(result).toContainText('Trade-off — no winner declared');
+  await expect(result).toContainText('Sale price as filed');
+  await expect(result).toContainText('Deposit as filed');
+  await expect(result).toContainText('Monthly rent as filed');
+  await expect(result).toContainText('7 completed months');
+  await expect(result).not.toContainText(/Offer [AB] (?:has the lower|wins)/i);
+  await expect(result.locator('[data-responsive-ticks="5-desktop-3-mobile"]')).toHaveCount(2);
+  assertNoRuntimeFailures();
 });

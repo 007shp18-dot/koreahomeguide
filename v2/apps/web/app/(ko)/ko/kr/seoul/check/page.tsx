@@ -1,4 +1,5 @@
-import { SingleQuoteCheckWorkspace } from '@/components/single-quote-check/single-quote-check-workspace';
+import { SingleQuoteCheckWorkspace } from '@/components/contract-check/single-quote-check';
+import { contractCheckCurvesFromEnvironment } from '@/lib/contract-check/route-model.server';
 import { koreaEvidenceRepositoriesFromEnvironment } from '@/lib/public-market/korea-evidence-repositories.server';
 import { buildSingleQuoteCheckMetadata } from '@/lib/single-quote-check/metadata.server';
 import { buildSingleQuoteCheckRouteModel } from '@/lib/single-quote-check/route-model.server';
@@ -13,6 +14,7 @@ export default async function KoreanContractCheckPage({
   const model = buildSingleQuoteCheckRouteModel(
     koreaEvidenceRepositoriesFromEnvironment(),
     await searchParams,
+    contractCheckCurvesFromEnvironment(),
   );
   return <SingleQuoteCheckWorkspace locale="ko" model={model} />;
 }

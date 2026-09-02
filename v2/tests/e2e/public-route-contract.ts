@@ -18,7 +18,7 @@ export const publicRoutes = [
   },
   {
     path: '/kr/seoul/check/compare/',
-    heading: 'Which rent offer actually costs less?',
+    heading: 'Compare two offers',
     indexing: 'index',
     canonical: '/kr/seoul/check/compare/',
     alternates: true,

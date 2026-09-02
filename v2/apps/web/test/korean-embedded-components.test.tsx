@@ -39,10 +39,33 @@ const curves: readonly KoreaConversionCurveProjection[] = Object.freeze([
 const contractModel: ContractCheckRouteModel = Object.freeze({
   status: 'ready',
   curves,
+  availability: Object.freeze({ sale: true, jeonse: true, monthly: true, conversion: true }),
+  districts: Object.freeze([{ slug: 'gangnam-gu', nameEn: 'Gangnam-gu', nameKo: '강남구' }]),
+  selection: Object.freeze({
+    districtSlug: 'gangnam-gu', buildingId: null, housingType: 'apartment', areaSqm: 84,
+    offers: Object.freeze({
+      a: Object.freeze({ transaction: 'jeonse', salePriceWon: null, depositWon: null, monthlyRentWon: null }),
+      b: Object.freeze({ transaction: 'monthly', salePriceWon: null, depositWon: null, monthlyRentWon: null }),
+    }),
+  }),
+  submitted: false,
+  offerChecks: null,
+  comparison: null,
+  buildingName: null,
   disclosure: Object.freeze({
     source: 'MOLIT reported rental contracts',
     basis: 'Matched contracts in the same building and filed area',
-    period: '2026-03/2026-08',
+    periods: Object.freeze({
+      sale: Object.freeze({
+        period: '2026-02/2026-08', startMonth: '2026-02', endMonth: '2026-08',
+        completedMonthCount: 7, maximumMonthCount: 12,
+      }),
+      rent: Object.freeze({
+        period: '2026-02/2026-08', startMonth: '2026-02', endMonth: '2026-08',
+        completedMonthCount: 7, maximumMonthCount: 12,
+      }),
+      conversion: '2026-03/2026-08',
+    }),
     boundary: 'Rates are interpolated only within verified anchors.',
   }),
   secondaryCheckHref: '/kr/seoul/tools/rent-check/',
@@ -109,13 +132,14 @@ describe('Korean embedded product components', () => {
     );
 
     for (const visible of [
-      '계약 조건 A',
+      '조건 A',
       '보증금',
       '월세',
       '주택 유형',
       '결과',
-      '근거 범위',
-      '초기화',
+      '시장 근거',
+      '두 조건 비교',
+      '7개월 완료',
     ]) expect(html).toContain(visible);
     expect(html).toContain('href="/ko/kr/seoul/explore"');
     expect(html).not.toMatch(/Offer A|Monthly rent|Housing type|Evidence boundary|Reset/);

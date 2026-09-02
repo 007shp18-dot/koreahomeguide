@@ -2,11 +2,28 @@ import 'server-only';
 
 import {
   KR_MOLIT_RENT_RIGHTS,
+  SEOUL_RENT_CHECK_DISTRICTS,
   type KoreaConversionCurveProjection,
   type MolitRightsLookup,
 } from '@signedprice/korea-rent';
+import {
+  compareContractOffers,
+  completedMonthWindow,
+  evaluateSingleQuoteCheck,
+  SINGLE_QUOTE_CHECK_PUBLICATION_MINIMUM,
+  type CheckTransaction,
+  type CompletedMonthWindow,
+  type ContractOfferComparison,
+  type SingleQuoteCheckInput,
+  type SingleQuoteCheckResult,
+  type SingleQuoteComparable,
+} from '@signedprice/market-core';
 
 import { createConversionRepository } from './conversion-repository.server';
+import {
+  koreaEvidenceRepositoriesFromEnvironment,
+  type KoreaEvidenceRepositories,
+} from '../public-market/korea-evidence-repositories.server';
 import {
   createInstalledSnapshotRepository,
   resolveInstalledSnapshotObject,
@@ -23,17 +40,48 @@ export type ContractCheckNavigationItem = Readonly<{
 
 export type ContractCheckUnavailableRouteModel = Readonly<{
   status: 'unavailable';
-  message: 'Verified conversion evidence is unavailable.';
+  message: 'Verified transaction evidence is unavailable.';
   navigation: readonly ContractCheckNavigationItem[];
+}>;
+
+export type ContractCheckOfferSelection = Readonly<{
+  transaction: CheckTransaction;
+  salePriceWon: number | null;
+  depositWon: number | null;
+  monthlyRentWon: number | null;
+}>;
+
+export type ContractCheckSelection = Readonly<{
+  districtSlug: string;
+  buildingId: string | null;
+  housingType: 'apartment' | 'officetel' | 'villa_multifamily' | 'detached';
+  areaSqm: number | null;
+  offers: Readonly<Record<'a' | 'b', ContractCheckOfferSelection>>;
 }>;
 
 export type ContractCheckReadyRouteModel = Readonly<{
   status: 'ready';
   curves: readonly KoreaConversionCurveProjection[];
+  availability: Readonly<{
+    sale: boolean;
+    jeonse: boolean;
+    monthly: boolean;
+    conversion: boolean;
+  }>;
+  districts: readonly Readonly<{ slug: string; nameEn: string; nameKo: string }>[];
+  selection: ContractCheckSelection;
+  submitted: boolean;
+  offerChecks: Readonly<Record<'a' | 'b', SingleQuoteCheckResult>> | null;
+  comparison: ContractOfferComparison | null;
+  buildingName: string | null;
   disclosure: Readonly<{
-    source: 'MOLIT reported rental contracts';
-    basis: 'Matched contracts in the same building and filed area';
-    period: string;
+    source: string;
+    basis: string;
+    periods: Readonly<{
+      sale: CompletedMonthWindow | null;
+      rent: CompletedMonthWindow | null;
+      conversion: string | null;
+    }>;
     boundary: string;
   }>;
   secondaryCheckHref: '/kr/seoul/tools/rent-check/';
@@ -50,6 +98,8 @@ export type ContractCheckRouteDependencies = Readonly<{
   sha256: string;
   referenceInstant: string;
   installedRepository?: InstalledSnapshotRepository;
+  evidenceRepositories?: KoreaEvidenceRepositories;
+  query?: Record<string, string | string[] | undefined>;
 }>;
 
 export type ConversionEnvironmentDiagnosticCode =
@@ -127,6 +177,259 @@ function repositoryFor(dependencies: ContractCheckRouteDependencies) {
   return validatedRepositoryFor(dependencies);
 }
 
+function curvesFor(
+  dependencies: ContractCheckRouteDependencies,
+): readonly KoreaConversionCurveProjection[] {
+  try {
+    const repository = repositoryFor(dependencies);
+    return Object.freeze([
+      repository.getCurve('apartment'),
+      repository.getCurve('officetel'),
+    ]);
+  } catch {
+    return Object.freeze([]);
+  }
+}
+
+function one(value: string | string[] | undefined): string | undefined {
+  return Array.isArray(value) ? value[0] : value;
+}
+
+function parsedMoney(value: string | undefined): number | null {
+  if (value === undefined || !/^\d{1,14}$/.test(value)) return null;
+  const parsed = Number(value);
+  return Number.isSafeInteger(parsed) ? parsed : null;
+}
+
+function parsedArea(value: string | undefined, submitted: boolean): number | null {
+  if (value === undefined) return submitted ? null : 84;
+  if (!/^\d{1,4}(?:\.\d{1,2})?$/.test(value)) return null;
+  const parsed = Number(value);
+  return parsed > 0 && parsed <= 2_000 ? parsed : null;
+}
+
+const TRANSACTIONS = new Set<CheckTransaction>(['sale', 'jeonse', 'monthly']);
+const HOUSING_TYPES = new Set<ContractCheckSelection['housingType']>([
+  'apartment', 'officetel', 'villa_multifamily', 'detached',
+]);
+
+function offerSelection(
+  id: 'a' | 'b',
+  query: Record<string, string | string[] | undefined>,
+  fallback: CheckTransaction,
+): ContractCheckOfferSelection {
+  const requested = one(query[`${id}-transaction`]);
+  const transaction = TRANSACTIONS.has(requested as CheckTransaction)
+    ? requested as CheckTransaction
+    : fallback;
+  return Object.freeze({
+    transaction,
+    salePriceWon: transaction === 'sale' ? parsedMoney(one(query[`${id}-price`])) : null,
+    depositWon: transaction === 'sale' ? null : parsedMoney(one(query[`${id}-deposit`])),
+    monthlyRentWon: transaction === 'monthly'
+      ? parsedMoney(one(query[`${id}-monthly-rent`]))
+      : null,
+  });
+}
+
+function routeSelection(
+  query: Record<string, string | string[] | undefined>,
+  submitted: boolean,
+  fallback: CheckTransaction,
+): ContractCheckSelection {
+  const requestedDistrict = one(query.district);
+  const district = SEOUL_RENT_CHECK_DISTRICTS.find(({ slug }) => slug === requestedDistrict)
+    ?? SEOUL_RENT_CHECK_DISTRICTS[0]!;
+  const requestedHousing = one(query.housing);
+  const housingType = HOUSING_TYPES.has(requestedHousing as ContractCheckSelection['housingType'])
+    ? requestedHousing as ContractCheckSelection['housingType']
+    : 'apartment';
+  const requestedBuilding = one(query.building)?.trim();
+  const buildingId = requestedBuilding !== undefined && requestedBuilding.length <= 200
+    ? requestedBuilding || null
+    : null;
+  return Object.freeze({
+    districtSlug: district.slug,
+    buildingId,
+    housingType,
+    areaSqm: parsedArea(one(query.area), submitted),
+    offers: Object.freeze({
+      a: offerSelection('a', query, fallback),
+      b: offerSelection('b', query, fallback),
+    }),
+  });
+}
+
+function comparableRecords(
+  repositories: KoreaEvidenceRepositories,
+  transaction: CheckTransaction,
+): readonly SingleQuoteComparable[] {
+  if (transaction === 'sale') {
+    return Object.freeze((repositories.sale?.listBuildingRecords() ?? []).flatMap((building) => (
+      building.recentSales.map((record) => Object.freeze({
+        transaction: 'sale' as const,
+        districtSlug: building.districtSlug,
+        neighborhoodId: building.neighborhoodId,
+        buildingId: building.buildingId,
+        housingType: building.housingType,
+        areaSqm: record.areaSqm,
+        filedMonth: record.filedMonth,
+        salePriceWon: record.priceWon,
+        depositWon: null,
+        monthlyRentWon: null,
+      }))
+    )));
+  }
+  return Object.freeze((repositories.rent?.listBuildingRecords() ?? []).flatMap((building) => (
+    building.recentTransactions
+      .filter((record) => record.transaction === transaction)
+      .map((record) => Object.freeze({
+        transaction,
+        districtSlug: building.districtSlug,
+        neighborhoodId: building.neighborhoodId,
+        buildingId: building.buildingId,
+        housingType: building.housingType,
+        areaSqm: record.areaSqm,
+        filedMonth: record.filedMonth,
+        salePriceWon: null,
+        depositWon: record.depositWon,
+        monthlyRentWon: transaction === 'monthly' ? record.monthlyRentWon : null,
+      }))
+  )));
+}
+
+function usableEvidence(
+  repositories: KoreaEvidenceRepositories,
+  curves: readonly KoreaConversionCurveProjection[],
+): Readonly<{
+  sale: boolean;
+  jeonse: boolean;
+  monthlyHousingTypes: ReadonlySet<string>;
+}> {
+  try {
+    const saleWindow = repositories.sale === null
+      ? null
+      : completedMonthWindow(repositories.sale.getArtifact().period);
+    const rentWindow = repositories.rent === null
+      ? null
+      : completedMonthWindow(repositories.rent.getArtifact().period);
+    const saleCount = repositories.sale?.listBuildingRecords().reduce(
+      (count, building) => count + building.recentSales.filter((record) => (
+        saleWindow !== null
+        && record.filedMonth >= saleWindow.startMonth
+        && record.filedMonth <= saleWindow.endMonth
+      )).length,
+      0,
+    ) ?? 0;
+    let jeonseCount = 0;
+    const monthlyCounts = new Map<string, number>();
+    for (const building of repositories.rent?.listBuildingRecords() ?? []) {
+      for (const record of building.recentTransactions) {
+        if (
+          rentWindow === null
+          || record.filedMonth < rentWindow.startMonth
+          || record.filedMonth > rentWindow.endMonth
+        ) continue;
+        if (record.transaction === 'jeonse') jeonseCount += 1;
+        if (record.transaction === 'monthly') {
+          monthlyCounts.set(
+            building.housingType,
+            (monthlyCounts.get(building.housingType) ?? 0) + 1,
+          );
+        }
+      }
+    }
+    const curveHousingTypes: ReadonlySet<string> = new Set(
+      curves.map(({ housingType }) => housingType),
+    );
+    const monthlyHousingTypes = new Set(
+      [...monthlyCounts].flatMap(([housingType, count]) => (
+        count >= SINGLE_QUOTE_CHECK_PUBLICATION_MINIMUM && curveHousingTypes.has(housingType)
+          ? [housingType]
+          : []
+      )),
+    );
+    return Object.freeze({
+      sale: saleCount >= SINGLE_QUOTE_CHECK_PUBLICATION_MINIMUM,
+      jeonse: jeonseCount >= SINGLE_QUOTE_CHECK_PUBLICATION_MINIMUM,
+      monthlyHousingTypes,
+    });
+  } catch {
+    return Object.freeze({
+      sale: false,
+      jeonse: false,
+      monthlyHousingTypes: new Set<string>(),
+    });
+  }
+}
+
+function checkInputFor(
+  selection: ContractCheckSelection,
+  id: 'a' | 'b',
+  neighborhoodId: string | null,
+): SingleQuoteCheckInput {
+  return Object.freeze({
+    ...selection.offers[id],
+    districtSlug: selection.districtSlug,
+    buildingId: selection.buildingId,
+    neighborhoodId,
+    housingType: selection.housingType,
+    areaSqm: selection.areaSqm,
+  });
+}
+
+function unavailableEvidence(period: string): SingleQuoteCheckResult {
+  return Object.freeze({
+    status: 'unavailable',
+    reason: 'evidence-unavailable',
+    message: 'Verified transaction evidence is unavailable.',
+    period,
+  });
+}
+
+function checkOffer(
+  repositories: KoreaEvidenceRepositories,
+  curves: readonly KoreaConversionCurveProjection[],
+  selection: ContractCheckSelection,
+  id: 'a' | 'b',
+  neighborhoodId: string | null,
+): SingleQuoteCheckResult {
+  const offer = selection.offers[id];
+  const repository = offer.transaction === 'sale' ? repositories.sale : repositories.rent;
+  if (repository === null) return unavailableEvidence('Unavailable');
+  const curve = curves.find(({ housingType }) => housingType === selection.housingType);
+  return evaluateSingleQuoteCheck({
+    input: checkInputFor(selection, id, neighborhoodId),
+    records: comparableRecords(repositories, offer.transaction),
+    period: repository.getArtifact().period,
+    ...(curve === undefined ? {} : { conversionCurve: curve }),
+  });
+}
+
+function selectedBuildingIdentity(
+  repositories: KoreaEvidenceRepositories,
+  selection: ContractCheckSelection,
+): Readonly<{ officialName: string; neighborhoodId: string }> | null {
+  if (selection.buildingId === null) return null;
+  for (const repository of [repositories.sale, repositories.rent]) {
+    try {
+      const building = repository?.getBuilding(
+        selection.districtSlug as Parameters<NonNullable<typeof repository>['getBuilding']>[0],
+        selection.buildingId,
+      );
+      if (building !== undefined) {
+        return Object.freeze({
+          officialName: building.officialName,
+          neighborhoodId: building.neighborhoodId,
+        });
+      }
+    } catch {
+      // Try the independently installed repository.
+    }
+  }
+  return null;
+}
+
 export function diagnoseConversionEnvironment(input: Readonly<{
   serialized: string | undefined;
   period: string | undefined;
@@ -196,35 +499,95 @@ function environmentDependencies(): ContractCheckRouteDependencies {
           resolveObject: resolveInstalledSnapshotObject,
         })
       : undefined,
+    evidenceRepositories: koreaEvidenceRepositoriesFromEnvironment({
+      useCheckedInSnapshot: checkedInSnapshotsAreEnabled(),
+      retainLastVerified: false,
+    }),
   });
+}
+
+export function contractCheckCurvesFromEnvironment(): readonly KoreaConversionCurveProjection[] {
+  return curvesFor(environmentDependencies());
 }
 
 export function buildContractCheckRouteModel(
   dependencies: ContractCheckRouteDependencies = environmentDependencies(),
+  queryOverride?: Record<string, string | string[] | undefined>,
 ): ContractCheckRouteModel {
-  try {
-    const repository = repositoryFor(dependencies);
-    const apartment = repository.getCurve('apartment');
-    const officetel = repository.getCurve('officetel');
-    const curves = Object.freeze([apartment, officetel] as const);
+  const curves = curvesFor(dependencies);
+  const repositories = dependencies.evidenceRepositories
+    ?? Object.freeze({ rent: null, sale: null });
+  const usable = usableEvidence(repositories, curves);
+  if (usable.sale || usable.jeonse || usable.monthlyHousingTypes.size > 0) {
+    const query: Record<string, string | string[] | undefined> = queryOverride
+      ?? dependencies.query
+      ?? {};
+    const submitted = one(query.compare) === '1';
+    const defaultTransaction: CheckTransaction = usable.sale
+      ? 'sale'
+      : usable.jeonse ? 'jeonse' : 'monthly';
+    const selection = routeSelection(query, submitted, defaultTransaction);
+    const buildingIdentity = selectedBuildingIdentity(repositories, selection);
+    const offerChecks = submitted ? Object.freeze({
+      a: checkOffer(repositories, curves, selection, 'a', buildingIdentity?.neighborhoodId ?? null),
+      b: checkOffer(repositories, curves, selection, 'b', buildingIdentity?.neighborhoodId ?? null),
+    }) : null;
+    const selectedCurve = curves.find(({ housingType }) => housingType === selection.housingType);
+    const comparison = offerChecks === null ? null : compareContractOffers({
+      offers: [
+        { id: 'a', check: offerChecks.a },
+        { id: 'b', check: offerChecks.b },
+      ],
+      ...(selectedCurve === undefined ? {} : { conversionCurve: selectedCurve }),
+    });
+    const selectedTransactions = new Set([
+      selection.offers.a.transaction,
+      selection.offers.b.transaction,
+    ]);
+    const usesSale = selectedTransactions.has('sale');
+    const usesRent = selectedTransactions.has('jeonse') || selectedTransactions.has('monthly');
+    const source = usesSale && usesRent
+      ? 'MOLIT reported sale and rental contracts'
+      : usesSale ? 'MOLIT reported sale contracts' : 'MOLIT reported rental contracts';
     return Object.freeze({
       status: 'ready',
       curves,
+      availability: Object.freeze({
+        sale: usable.sale,
+        jeonse: usable.jeonse,
+        monthly: usable.monthlyHousingTypes.has(selection.housingType),
+        conversion: selectedCurve !== undefined,
+      }),
+      districts: Object.freeze(SEOUL_RENT_CHECK_DISTRICTS.map(({ slug, nameEn, nameKo }) => (
+        Object.freeze({ slug, nameEn, nameKo })
+      ))),
+      selection,
+      submitted,
+      offerChecks,
+      comparison,
+      buildingName: buildingIdentity?.officialName ?? null,
       disclosure: Object.freeze({
-        source: 'MOLIT reported rental contracts',
-        basis: 'Matched contracts in the same building and filed area',
-        period: apartment.period,
+        source,
+        basis: 'Transaction-specific contracts matched by building, neighborhood, or district and filed area',
+        periods: Object.freeze({
+          sale: repositories.sale === null
+            ? null
+            : completedMonthWindow(repositories.sale.getArtifact().period),
+          rent: repositories.rent === null
+            ? null
+            : completedMonthWindow(repositories.rent.getArtifact().period),
+          conversion: selectedCurve?.period ?? null,
+        }),
         boundary:
           'Between verified anchors rates are interpolated. Deposits outside the observed range are not compared.',
       }),
       secondaryCheckHref: '/kr/seoul/tools/rent-check/',
       navigation,
     });
-  } catch {
-    return Object.freeze({
-      status: 'unavailable',
-      message: 'Verified conversion evidence is unavailable.',
-      navigation,
-    });
   }
+  return Object.freeze({
+    status: 'unavailable',
+    message: 'Verified transaction evidence is unavailable.',
+    navigation,
+  });
 }

@@ -20,6 +20,7 @@ describe('Playwright release target configuration', () => {
       env: {
         VERCEL_ENV: 'preview',
         VERCEL_GIT_COMMIT_SHA: '0123456789abcdef',
+        SIGNEDPRICE_USE_CHECKED_IN_SNAPSHOTS: 'true',
         SIGNEDPRICE_CONVERSION_CURVE_PERIOD: '2026-03/2026-08',
         SIGNEDPRICE_CONVERSION_CURVE_SHA256: 'a'.repeat(64),
       },
