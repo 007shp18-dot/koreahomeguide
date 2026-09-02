@@ -42,7 +42,11 @@ export function createKoreaEvidenceRepositoryLoader(): KoreaEvidenceRepositoryLo
         const snapshot = installed.get('kr-seoul', 'kr-rent');
         rent = createKoreaRentEvidenceRepository({
           source: snapshot.payload,
-          expected: { marketId: 'kr-seoul', period: snapshot.metadata.period },
+          expected: {
+            marketId: 'kr-seoul',
+            period: snapshot.metadata.period,
+            outerDigestVerified: true,
+          },
         });
       } catch {
         // Retain the last verified rent artifact independently of sale activation.
@@ -51,7 +55,11 @@ export function createKoreaEvidenceRepositoryLoader(): KoreaEvidenceRepositoryLo
         const snapshot = installed.get('kr-seoul', 'kr-sale');
         sale = createKoreaSaleEvidenceRepository({
           source: snapshot.payload,
-          expected: { marketId: 'kr-seoul', period: snapshot.metadata.period },
+          expected: {
+            marketId: 'kr-seoul',
+            period: snapshot.metadata.period,
+            outerDigestVerified: true,
+          },
         });
       } catch {
         // Retain the last verified sale artifact independently of rent activation.
@@ -62,6 +70,12 @@ export function createKoreaEvidenceRepositoryLoader(): KoreaEvidenceRepositoryLo
 }
 
 const environmentLoader = createKoreaEvidenceRepositoryLoader();
+let cachedEnvironmentRepositories: Readonly<{
+  registrySource: unknown;
+  resolveObject: (objectUrl: string) => unknown;
+  repositories: KoreaEvidenceRepositories;
+}> | null = null;
+let cachedSerializedRegistry: Readonly<{ source: string; parsed: unknown }> | null = null;
 
 export function koreaEvidenceRepositoriesFromEnvironment(
   dependencies: Readonly<{
@@ -72,18 +86,33 @@ export function koreaEvidenceRepositoriesFromEnvironment(
 ): KoreaEvidenceRepositories {
   let registrySource = dependencies.registrySource;
   if (registrySource === undefined && process.env.SIGNEDPRICE_INSTALLED_SNAPSHOT_REGISTRY !== undefined) {
-    try {
-      registrySource = JSON.parse(process.env.SIGNEDPRICE_INSTALLED_SNAPSHOT_REGISTRY);
-    } catch {
-      registrySource = null;
+    const serialized = process.env.SIGNEDPRICE_INSTALLED_SNAPSHOT_REGISTRY;
+    if (cachedSerializedRegistry?.source === serialized) {
+      registrySource = cachedSerializedRegistry.parsed;
+    } else {
+      try {
+        registrySource = JSON.parse(serialized);
+      } catch {
+        registrySource = null;
+      }
+      cachedSerializedRegistry = Object.freeze({ source: serialized, parsed: registrySource });
     }
   }
   const useCheckedInSnapshot = dependencies.useCheckedInSnapshot ?? process.env.NODE_ENV !== 'test';
   if (registrySource === undefined && useCheckedInSnapshot) {
     registrySource = resolveInstalledSnapshotRegistry();
   }
-  return environmentLoader.load({
+  const resolveObject = dependencies.resolveObject ?? resolveInstalledSnapshotObject;
+  if (cachedEnvironmentRepositories !== null
+    && cachedEnvironmentRepositories.registrySource === registrySource
+    && cachedEnvironmentRepositories.resolveObject === resolveObject) {
+    return cachedEnvironmentRepositories.repositories;
+  }
+  const repositories = environmentLoader.load({ registrySource, resolveObject });
+  cachedEnvironmentRepositories = Object.freeze({
     registrySource,
-    resolveObject: dependencies.resolveObject ?? resolveInstalledSnapshotObject,
+    resolveObject,
+    repositories,
   });
+  return repositories;
 }

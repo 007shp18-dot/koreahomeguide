@@ -152,6 +152,9 @@ describe('installed Korea evidence repositories', () => {
     const repositories = koreaEvidenceRepositoriesFromEnvironment({
       useCheckedInSnapshot: true,
     });
+    expect(koreaEvidenceRepositoriesFromEnvironment({
+      useCheckedInSnapshot: true,
+    })).toBe(repositories);
     const projection = buildKoreaExplorerEvidenceProjectionBase(repositories, {
       transaction: 'jeonse', areaBand: 'all', housingType: 'all', contractGroup: 'all',
     }, {
@@ -192,6 +195,37 @@ describe('installed Korea evidence repositories', () => {
     });
     expect(rentOnly.rent).not.toBeNull();
     expect(rentOnly.sale).toBeNull();
+  });
+
+  it('reuses verified repositories, building indexes, and cohort stats across SSR requests', async () => {
+    const source = await fixtures();
+    const loaded = createKoreaEvidenceRepositoryLoader().load({
+      registrySource: registry(source), resolveObject: resolver(source),
+    });
+    if (loaded.rent === null || loaded.sale === null) throw new Error('Fixtures must load.');
+    const rentBuildingRecords = vi.fn(() => loaded.rent!.listBuildingRecords());
+    const saleBuildingRecords = vi.fn(() => loaded.sale!.listBuildingRecords());
+    const repositories: KoreaEvidenceRepositories = Object.freeze({
+      rent: Object.freeze({ ...loaded.rent, listBuildingRecords: rentBuildingRecords }),
+      sale: Object.freeze({ ...loaded.sale, listBuildingRecords: saleBuildingRecords }),
+    });
+    const options = Object.freeze({
+      includeBuildings: true,
+      includeBuildingStats: true,
+      districtSlug: 'gangnam-gu',
+    });
+    const input = Object.freeze({
+      transaction: 'jeonse', areaBand: 'all', housingType: 'all', contractGroup: 'all',
+    });
+    const first = buildKoreaExplorerEvidenceProjectionBase(repositories, input, options);
+    const second = buildKoreaExplorerEvidenceProjectionBase(repositories, input, options);
+
+    expect(rentBuildingRecords).toHaveBeenCalledTimes(1);
+    expect(saleBuildingRecords).toHaveBeenCalledTimes(1);
+    expect(first.status).toBe('ready');
+    expect(second.status).toBe('ready');
+    if (first.status !== 'ready' || second.status !== 'ready') return;
+    expect(second.buildingStats).toBe(first.buildingStats);
   });
 
   it.each([
