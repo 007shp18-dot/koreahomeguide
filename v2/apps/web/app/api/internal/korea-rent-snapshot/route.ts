@@ -65,7 +65,6 @@ const publicExport = createKoreaRentSnapshotPublicExportHandler({
   environment: process.env.VERCEL_ENV,
   token: exportCapability,
   referenceInstant: exportReferenceInstant,
-  allowCollection: process.env.VERCEL_ENV === 'production',
   postHandler: exportPostHandler,
 });
 
