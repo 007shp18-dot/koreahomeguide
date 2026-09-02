@@ -3,19 +3,19 @@ export type UraRightsOperation = 'ingest' | 'aggregate' | 'display' | 'commercia
 
 export const SG_URA_PRIVATE_SALE_RIGHTS = Object.freeze({
   id: 'sg-ura-private-sale-v1',
-  reviewedAt: '2026-08-31',
+  reviewedAt: '2026-09-02',
   operations: Object.freeze({
-    ingest: 'requires_dataset_confirmation',
-    aggregate: 'requires_dataset_confirmation',
-    display: 'requires_dataset_confirmation',
-    commercial: 'requires_dataset_confirmation',
+    ingest: 'allowed',
+    aggregate: 'allowed',
+    display: 'allowed',
+    commercial: 'allowed',
     index: 'blocked',
   } as const satisfies Readonly<Record<UraRightsOperation, UraRightsDecision>>),
   sources: Object.freeze([
     Object.freeze({
       label: 'URA API terms of service',
       url: 'https://www.ura.gov.sg/eservices-info/maps/api-terms-of-service/',
-      note: 'General API terms; dataset-specific display and commercial operations remain pending confirmation.',
+      note: 'The 17 April 2026 terms permit commercial and non-commercial API use; dataset use follows the Singapore Open Data Licence.',
     }),
     Object.freeze({
       label: 'URA Data Service overview',

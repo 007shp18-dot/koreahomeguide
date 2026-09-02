@@ -58,7 +58,9 @@ describe('Singapore route models', () => {
       { code: 'OCR', href: '/sg/singapore/explore/ocr/' },
     ]);
     expect(ccr?.status).toBe('ready');
-    expect(JSON.stringify([entry, explore, ccr])).not.toMatch(/KRW|jeonse|HDB/i);
+    const serialized = JSON.stringify([entry, explore, ccr]);
+    expect(serialized).not.toMatch(/KRW|jeonse/i);
+    expect(serialized).not.toMatch(/hdbMedian|hdbTransactions|combinedMedian/i);
   });
 
   it('derives SGD, PSF, PSM, sale type, property type, tenure, and area basis labels from records', async () => {

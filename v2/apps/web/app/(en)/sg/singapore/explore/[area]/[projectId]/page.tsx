@@ -11,7 +11,7 @@ import { singaporeSnapshotRepositoryFromEnvironment } from '@/lib/singapore/snap
 
 type Props = Readonly<{ params: Promise<Readonly<{ area: string; projectId: string }>> }>;
 
-export const dynamicParams = false;
+export const dynamicParams = true;
 export const metadata: Metadata = {
   title: 'Singapore project sale evidence | signedprice',
   description: 'Verified URA private residential sale evidence for one Singapore project.',
@@ -19,8 +19,7 @@ export const metadata: Metadata = {
 };
 
 export async function generateStaticParams() {
-  const repository = await singaporeSnapshotRepositoryFromEnvironment();
-  return repository === null ? [] : [...repository.listProjectRouteParams()];
+  return [];
 }
 
 export default async function SingaporeProjectPage({ params }: Props) {
@@ -34,5 +33,8 @@ export default async function SingaporeProjectPage({ params }: Props) {
   }} />;
   const model = buildSingaporeProjectModel(repository, area, projectId);
   if (model === null) notFound();
-  return <SingaporeProjectDetail model={model} />;
+  return <SingaporeProjectDetail
+    model={model}
+    googleMapsBrowserKey={process.env.GOOGLE_MAPS_API_KEY?.trim() || null}
+  />;
 }

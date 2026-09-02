@@ -9,15 +9,15 @@ import {
 import { SG_URA_PRIVATE_SALE_RIGHTS } from '../src/rights';
 
 describe('URA private sale rights boundary', () => {
-  it('keeps display gated pending dataset-specific confirmation', () => {
+  it('permits server ingest, aggregation and display under the current URA API terms', () => {
     expect(SG_URA_PRIVATE_SALE_RIGHTS.operations).toEqual({
-      ingest: 'requires_dataset_confirmation',
-      aggregate: 'requires_dataset_confirmation',
-      display: 'requires_dataset_confirmation',
-      commercial: 'requires_dataset_confirmation',
+      ingest: 'allowed',
+      aggregate: 'allowed',
+      display: 'allowed',
+      commercial: 'allowed',
       index: 'blocked',
     });
-    expect(SG_URA_PRIVATE_SALE_RIGHTS.reviewedAt).toBe('2026-08-31');
+    expect(SG_URA_PRIVATE_SALE_RIGHTS.reviewedAt).toBe('2026-09-02');
     expect(SG_URA_PRIVATE_SALE_RIGHTS.sources.every((source) => source.url.startsWith('https://')))
       .toBe(true);
     expect(Object.isFrozen(SG_URA_PRIVATE_SALE_RIGHTS)).toBe(true);

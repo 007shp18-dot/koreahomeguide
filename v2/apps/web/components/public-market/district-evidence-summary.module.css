@@ -40,8 +40,8 @@
 .header h2 {
   overflow-wrap: anywhere;
   font-size: clamp(1.7rem, 4vw, 3rem);
-  letter-spacing: -0.05em;
-  line-height: 0.95;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
 }
 
 .header > p:last-child {
@@ -68,8 +68,8 @@
 .finding strong {
   overflow-wrap: anywhere;
   font-size: clamp(1.8rem, 4vw, 3.35rem);
-  letter-spacing: -0.05em;
-  line-height: 1;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
 }
 
 .finding p,

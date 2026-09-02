@@ -172,6 +172,7 @@ describe('public building detail', () => {
   it('generates only ready params and keeps the route noindex', async () => {
     vi.stubEnv('SIGNEDPRICE_PUBLIC_BUILDING_SUMMARY_ARTIFACT', JSON.stringify(createPublicBuildingFixture()));
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', PUBLIC_BUILDING_FIXTURE_PERIOD);
+    vi.stubEnv('NAVER_MAP_CLIENT_ID', 'detail-naver-client');
 
     expect(dynamicParams).toBe(true);
     expect(generateStaticParams()).toEqual([
@@ -184,6 +185,8 @@ describe('public building detail', () => {
     expect(metadata).toMatchObject({ robots: { index: false, follow: true } });
     expect(metadata).not.toHaveProperty('alternates');
     expect(html).toContain('Evidence Tower');
+    expect(html).toContain('data-building-media="naver-panorama"');
+    expect(html).toContain('Nearby street view · not a listing photo · NAVER');
   });
 
   it('restores valid route state and rejects invalid decision queries', async () => {
@@ -208,7 +211,8 @@ describe('public building detail', () => {
     }));
     expect(selected).toContain('data-selected-mode="rent"');
     expect(selected).toContain('6 reported contracts');
-    expect(selected).toContain('Verified building image is not available');
+    expect(selected).toContain('Street view unavailable');
+    expect(selected).toContain('Building evidence remains available');
     expect(selected).not.toContain('data-detail-rail="true"');
     expect(selected).toContain(
       'href="/kr/seoul/explore?district=gangnam-gu&amp;neighborhood=yeoksam-dong&amp;buildingId=gangnam-evidence-tower&amp;contractType=all"',

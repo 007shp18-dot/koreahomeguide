@@ -147,10 +147,15 @@ type MountNaverDistrictMapOptions = NaverDistrictMapUpdate & Readonly<{
 export function buildNaverMapsScriptUrl(
   clientId: string,
   includeGeocoder = false,
+  includePanorama = false,
 ): string {
   const url = new URL('https://oapi.map.naver.com/openapi/v3/maps.js');
   url.searchParams.set('ncpKeyId', clientId);
-  if (includeGeocoder) url.searchParams.set('submodules', 'geocoder');
+  const submodules = [
+    includePanorama ? 'panorama' : null,
+    includeGeocoder ? 'geocoder' : null,
+  ].filter((value): value is string => value !== null);
+  if (submodules.length > 0) url.searchParams.set('submodules', submodules.join(','));
   return url.toString();
 }
 

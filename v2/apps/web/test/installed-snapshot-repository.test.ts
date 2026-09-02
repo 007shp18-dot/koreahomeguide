@@ -9,6 +9,12 @@ import {
   resolveInstalledSnapshotObject,
   resolveInstalledSnapshotRegistry,
 } from '../lib/snapshots/installed-snapshot-repository.server';
+import {
+  buildSingaporeSnapshot,
+  parseUraPrivateSaleEnvelope,
+  stringifySingaporeSnapshot,
+} from '@signedprice/singapore-property';
+import { readFileSync } from 'node:fs';
 
 const period = '2026-01/2026-07';
 
@@ -113,6 +119,44 @@ function conversionRegistry(
 }
 
 describe('installed snapshot repository', () => {
+  it('verifies an installed Singapore private-sale snapshot by its exact artifact identity', () => {
+    const envelope = JSON.parse(readFileSync(
+      new URL('../../../packages/singapore-property/test/fixtures/ura-transaction-envelope.synthetic.json', import.meta.url),
+      'utf8',
+    )) as unknown;
+    const source = buildSingaporeSnapshot({
+      records: [1, 2, 3, 4].flatMap((batch) => parseUraPrivateSaleEnvelope(envelope, batch)),
+      generatedAt: '2026-08-31T09:00:00.000Z',
+      rights: { operations: { aggregate: 'allowed', display: 'allowed' } },
+    });
+    const serialized = stringifySingaporeSnapshot(source);
+    const singaporeRegistry = {
+      registryVersion: 'signedprice-installed-snapshots-v1',
+      snapshots: [{
+        marketId: 'sg-singapore',
+        dataset: 'sg-private-sale',
+        schemaVersion: 'signedprice-singapore-private-sale-v1',
+        sourceVersion: 'ura-data-service-v1',
+        parserVersion: 'sg-ura-private-sale-parser-v1',
+        rightsPolicyId: 'sg-ura-private-sale-v1',
+        period: '2026-06/2026-08',
+        generatedAt: '2026-08-31T09:00:00.000Z',
+        objectUrl: 'installed://sg-private-sale',
+        sha256: createHash('sha256').update(serialized.trimEnd()).digest('hex'),
+        recordCount: 12,
+      }],
+    };
+    const repository = createInstalledSnapshotRepository({
+      registrySource: singaporeRegistry,
+      resolveObject: () => source,
+    });
+
+    expect(repository.get('sg-singapore', 'sg-private-sale')).toMatchObject({
+      metadata: { period: '2026-06/2026-08', recordCount: 12 },
+      payload: { digest: source.digest, totals: { transactions: 12 } },
+    });
+  });
+
   it('resolves every checked-in Korea snapshot object', () => {
     const installed = resolveInstalledSnapshotObject('installed://kr-building-registry');
 
@@ -130,6 +174,15 @@ describe('installed snapshot repository', () => {
     expect(resolveInstalledSnapshotObject('installed://kr-conversion')).toMatchObject({
       totals: { eligiblePairCount: 1_031_799 },
     });
+    expect(resolveInstalledSnapshotObject('installed://sg-private-sale')).toMatchObject({
+      version: 'signedprice-singapore-private-sale-v1',
+      period: { from: '2021-08', to: '2026-08' },
+      totals: { projects: 3_862, transactions: 133_942 },
+    });
+    expect(resolveInstalledSnapshotObject('installed://sg-hdb')).toMatchObject({
+      version: 'signedprice-singapore-hdb-published-v1',
+      totals: { resale: 239_583, rental: 209_852, properties: 13_357, sourceRows: 462_792 },
+    });
     expect(resolveInstalledSnapshotObject('https://example.com/snapshot.json')).toBeUndefined();
   });
 
@@ -143,6 +196,8 @@ describe('installed snapshot repository', () => {
     expect(repository.get('kr-seoul', 'kr-rent').metadata.recordCount).toBe(49_129);
     expect(repository.get('kr-seoul', 'kr-sale').metadata.recordCount).toBe(22_850);
     expect(repository.get('kr-seoul', 'kr-conversion').metadata.recordCount).toBe(1_031_799);
+    expect(repository.get('sg-singapore', 'sg-private-sale').metadata.recordCount).toBe(133_942);
+    expect(repository.get('sg-singapore', 'sg-hdb').metadata.recordCount).toBe(462_792);
   });
 
   it('returns a digest, schema, identity and count verified payload', () => {

@@ -85,7 +85,8 @@ describe('Singapore route SSR', () => {
     expect(html).toContain('key=test-google-key');
     expect(html).toContain('href="/sg/singapore/explore/ccr/');
     expect(html).toContain(`href="/sg/singapore/explore/ccr/${projectIdentity.id}"`);
-    expect(html).not.toMatch(/KRW|jeonse|HDB|forecast|valuation|asking-price|recommendation/i);
+    expect(html).toContain('data-hdb-evidence="unavailable"');
+    expect(html).not.toMatch(/KRW|jeonse|forecast|valuation|asking-price|recommendation/i);
     expect(html).not.toMatch(/use client/);
   });
 

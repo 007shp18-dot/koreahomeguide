@@ -50,3 +50,29 @@ export {
   type SingaporeSnapshot,
   type SingaporeSnapshotRecord,
 } from './artifact.ts';
+export {
+  HDB_PUBLISHED_SNAPSHOT_VERSION,
+  HDB_PUBLICATION_MINIMUM,
+  HDB_SNAPSHOT_VERSION,
+  HDB_SOURCE_DATASETS,
+  buildHdbBlockId,
+  buildHdbPublishedSnapshot,
+  buildHdbSnapshot,
+  parseHdbPropertyCsv,
+  parseHdbPublishedSnapshot,
+  parseHdbRentalCsv,
+  parseHdbResaleCsv,
+  parseHdbSnapshot,
+  stringifyHdbSnapshot,
+  stringifyHdbPublishedSnapshot,
+  type HdbPropertyRecord,
+  type HdbRentalRecord,
+  type HdbResaleRecord,
+  type HdbSnapshot,
+} from './hdb.ts';
+export type {
+  HdbPublishedBlock,
+  HdbPublishedDistribution,
+  HdbPublishedSnapshot,
+  HdbPublishedTown,
+} from './hdb.ts';

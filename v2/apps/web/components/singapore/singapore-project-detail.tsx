@@ -4,6 +4,7 @@ import type {
   SingaporeProjectModel,
   SingaporeUnavailableModel,
 } from '../../lib/singapore/route-types';
+import { GoogleBuildingStreetView } from '../maps/google-building-street-view';
 import {
   SingaporeEvidence,
   SingaporePage,
@@ -11,8 +12,9 @@ import {
   singaporeStyles as styles,
 } from './singapore-shell';
 
-export function SingaporeProjectDetail({ model }: Readonly<{
+export function SingaporeProjectDetail({ model, googleMapsBrowserKey = null }: Readonly<{
   model: SingaporeProjectModel | SingaporeUnavailableModel;
+  googleMapsBrowserKey?: string | null;
 }>) {
   if (model.status === 'unavailable') return (
     <SingaporePage>
@@ -46,8 +48,18 @@ export function SingaporeProjectDetail({ model }: Readonly<{
         <p>{model.identity.street} · {model.display.sampleLabel}</p>
         <SingaporeScope />
       </header>
+      <section className={styles.section} aria-labelledby="project-street-view-heading">
+        <p className={styles.sectionLabel}>01 / Nearby view</p>
+        <h2 id="project-street-view-heading">Street context, not a listing photo.</h2>
+        <GoogleBuildingStreetView
+          browserKey={googleMapsBrowserKey}
+          buildingName={model.identity.project}
+          address={`${model.identity.project}, ${model.identity.street}, Singapore`}
+          mapHref={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${model.identity.project}, ${model.identity.street}, Singapore`)}`}
+        />
+      </section>
       <section className={styles.section} aria-labelledby="project-summary-heading">
-        <p className={styles.sectionLabel}>01 / Project distribution</p>
+        <p className={styles.sectionLabel}>02 / Project distribution</p>
         <h2 id="project-summary-heading">Price and unit-price evidence.</h2>
         <dl className={styles.stats}>
           <div className={styles.stat}><dt>Median price</dt><dd>{model.display.medianPriceLabel}</dd></div>
@@ -56,7 +68,7 @@ export function SingaporeProjectDetail({ model }: Readonly<{
         </dl>
       </section>
       <section className={styles.section} aria-labelledby="transaction-heading">
-        <p className={styles.sectionLabel}>02 / Recent reported transactions</p>
+        <p className={styles.sectionLabel}>03 / Recent reported transactions</p>
         <h2 id="transaction-heading">Native source fields, with derived unit prices labelled.</h2>
         <div className={styles.tableWrap}>
           <table className={styles.table}>

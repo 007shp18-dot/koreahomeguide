@@ -62,9 +62,9 @@ export function buildKoreaPublicPageMetadata(
   }
   return indexableMetadata({
     path: '/kr/seoul/check/',
-    title: 'Compare Seoul rental contract offers | signedprice',
+    title: 'Check a Seoul sale, jeonse or rent quote | signedprice',
     description:
-      'Compare two filed deposit-and-rent offers on one monthly basis using verified conversion evidence when available.',
+      'Compare one Seoul sale, jeonse or monthly-rent asking quote with compatible official reported transaction evidence.',
     languageAlternates: {
       en: '/kr/seoul/check/',
       ko: '/ko/kr/seoul/check/',

@@ -69,8 +69,8 @@
   max-width: 1060px;
   font-size: clamp(2.45rem, 5.4vw, 5.5rem);
   font-weight: 850;
-  letter-spacing: -0.055em;
-  line-height: 0.94;
+  letter-spacing: -0.04em;
+  line-height: 1;
 }
 
 .hero > p:last-child {

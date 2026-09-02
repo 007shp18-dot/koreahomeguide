@@ -24,8 +24,8 @@
   max-width: 980px;
   font-size: clamp(2.5rem, 6vw, 6.4rem);
   font-weight: 900;
-  letter-spacing: -0.065em;
-  line-height: 0.92;
+  letter-spacing: -0.04em;
+  line-height: 1;
 }
 
 .market-header > p:last-child {

@@ -108,8 +108,8 @@
 .identitySummary h1 {
   max-width: 100%;
   font-size: clamp(2.25rem, 5vw, 4.8rem);
-  letter-spacing: -0.06em;
-  line-height: 0.92;
+  letter-spacing: -0.04em;
+  line-height: 1;
   overflow-wrap: anywhere;
 }
 

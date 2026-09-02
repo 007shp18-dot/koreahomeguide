@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import type { ReactNode } from 'react';
 
 import type { ObservedBuildingIdentityModel } from '../../lib/public-market/observed-building-route-model.server';
 import type { KoreaExplorerBuildingDetailModel } from '../../lib/public-market/korea-explorer-evidence.server';
@@ -39,9 +40,13 @@ const countLabel = (count: number) => `${count} observed contract${count === 1 ?
 export function ObservedBuildingDetail({
   model,
   backHref,
+  visual,
+  facts,
 }: Readonly<{
   model: ObservedBuildingIdentityModel;
   backHref: string;
+  visual?: ReactNode;
+  facts?: ReactNode;
 }>) {
   const hasMonthly = model.observations.monthly > 0;
   const hasJeonse = model.observations.jeonse > 0;
@@ -62,7 +67,7 @@ export function ObservedBuildingDetail({
           data-identity-hero="true"
           data-building-section="identity"
         >
-          <div className={styles.visualUnavailable} data-building-media="identity-evidence">
+          {visual ?? <div className={styles.visualUnavailable} data-building-media="identity-evidence">
             <div className={styles.visualEvidenceMark} aria-hidden="true">
               <span>Observed</span>
               <span>Identity</span>
@@ -73,7 +78,7 @@ export function ObservedBuildingDetail({
               <strong>No published building price yet</strong>
               <p>{model.source.boundary}</p>
             </div>
-          </div>
+          </div>}
           <div className={styles.identitySummary}>
             <Link className={styles.backAction} href={backHref}>
               Back to {model.district.nameEn} Explore
@@ -89,6 +94,8 @@ export function ObservedBuildingDetail({
             </dl>
           </div>
         </section>
+
+        {facts}
 
         <section className={styles.evidence} data-building-section="identity-evidence">
           <div className={styles.sectionHeading}>
@@ -142,9 +149,13 @@ const primaryMetricLabels = Object.freeze({
 export function KoreaEvidenceBuildingDetail({
   model,
   backHref,
+  visual,
+  facts,
 }: Readonly<{
   model: KoreaExplorerBuildingDetailModel;
   backHref: string;
+  visual?: ReactNode;
+  facts?: ReactNode;
 }>) {
   const areaLabel = areaLabels[model.selection.areaBand];
   const transactionLabel = transactionLabels[model.selection.transaction];
@@ -164,7 +175,7 @@ export function KoreaEvidenceBuildingDetail({
           data-identity-hero="true"
           data-building-section="identity"
         >
-          <div className={styles.visualUnavailable} data-building-media="exact-cohort-evidence">
+          {visual ?? <div className={styles.visualUnavailable} data-building-media="exact-cohort-evidence">
             <div className={styles.visualEvidenceMark} aria-hidden="true">
               <span>Official</span>
               <span>Exact cohort</span>
@@ -178,7 +189,7 @@ export function KoreaEvidenceBuildingDetail({
                 remain in the selected transaction, area, and building cohort.
               </p>
             </div>
-          </div>
+          </div>}
           <div className={styles.identitySummary}>
             <Link className={styles.backAction} href={backHref}>
               Back to {model.district.nameEn} Explore
@@ -194,6 +205,8 @@ export function KoreaEvidenceBuildingDetail({
             </dl>
           </div>
         </section>
+
+        {facts}
 
         <section className={styles.evidence} data-building-section="exact-evidence">
           <div className={styles.sectionHeading}>

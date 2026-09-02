@@ -16,6 +16,7 @@
 
 .hero,
 .exploreToolbar,
+.viewBar,
 .workspace,
 .coverage,
 .completeTable {
@@ -106,6 +107,76 @@
   background: color-mix(in srgb, var(--area-ground) 96%, transparent);
   backdrop-filter: blur(12px);
 }
+
+.viewBar {
+  min-height: 52px;
+  padding: .4rem clamp(1rem, 2.5vw, 2rem);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: var(--rule-strong);
+  background: var(--surface-strong);
+}
+
+.viewBar > span {
+  color: var(--area-muted);
+  font-size: .62rem;
+  font-weight: 850;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+.viewTabs {
+  display: flex;
+  border: var(--rule-default);
+}
+
+.viewTabs a {
+  min-width: 72px;
+  min-height: 40px;
+  padding-inline: .7rem;
+  display: inline-grid;
+  place-items: center;
+  border-right: var(--rule-default);
+  color: var(--area-ink);
+  font-size: .66rem;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.viewTabs a:last-child { border-right: 0; }
+.viewTabs a[aria-current="page"] { color: var(--area-ground); background: var(--area-ink); }
+
+.searchAreaButton {
+  min-height: 44px;
+  padding: .65rem .85rem;
+  justify-self: start;
+  border: var(--rule-strong);
+  border-radius: 0;
+  color: var(--area-ground);
+  background: var(--area-ink);
+  font: inherit;
+  font-size: .68rem;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.explorer[data-explore-view="map"] .workspace {
+  grid-template-columns: 196px minmax(0, 1fr);
+}
+.explorer[data-explore-view="map"] .rail { display: none; }
+.explorer[data-explore-view="list"] .workspace { grid-template-columns: minmax(0, 1fr); }
+.explorer[data-explore-view="list"] .districtRail,
+.explorer[data-explore-view="list"] .mapPanel { display: none; }
+.explorer[data-explore-view="list"] .rail {
+  max-height: none;
+  overflow: visible;
+  border-left: 0;
+}
+.explorer[data-explore-view="table"] .workspace { display: none; }
+.explorer[data-explore-view="list"] .completeTable,
+.explorer[data-explore-view="map"] .completeTable { display: none; }
 
 .toolbarSelect,
 .toolbarStatus {
@@ -498,7 +569,9 @@
 
 .buildingBrowser :focus-visible,
 .buildingPanel :focus-visible,
-.buildingSearch :focus-visible {
+.buildingSearch :focus-visible,
+.viewTabs :focus-visible,
+.searchAreaButton:focus-visible {
   outline: 2px solid var(--area-accent);
   outline-offset: 2px;
 }
@@ -828,6 +901,7 @@
 @media (max-width: 720px) {
   .hero,
   .exploreToolbar,
+  .viewBar,
   .workspace,
   .coverage,
   .completeTable {
@@ -850,6 +924,10 @@
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     padding: .75rem 1rem;
   }
+
+  .viewBar { align-items: stretch; flex-direction: column; }
+  .viewTabs { width: 100%; overflow-x: auto; }
+  .viewTabs a { min-width: 68px; flex: 1 0 auto; }
 
   .transactionFilter,
   .buildingSearch,

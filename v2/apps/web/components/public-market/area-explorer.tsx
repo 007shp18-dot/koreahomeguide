@@ -157,6 +157,7 @@ function ReadyAreaExplorer({
   const exactMetricCopy = selectedMetricCopy(model.evidenceSelection.transaction, locale);
   const usesLegacyCopy = model.evidenceSelection.areaBand === 'legacy-45-55';
   const countSeparator = locale === 'en' ? ' ' : '';
+  const activeView = initialSelection.view ?? 'split';
   const router = useRouter();
   const allBuildings = useMemo(
     () => model.buildingAvailability.status === 'ready'
@@ -343,12 +344,24 @@ function ReadyAreaExplorer({
     else target.searchParams.set('buildingPage', String(page));
     return `${target.pathname}${target.search}`;
   }, [buildingQuery, evidenceHref]);
+  const viewHref = useCallback((view: 'split' | 'list' | 'table' | 'map'): string => (
+    localizedSeoulHref(createSelectionHref(
+      '/kr/seoul/explore/',
+      {
+        ...initialSelection,
+        district: state.selectedSlug,
+        view: view === 'split' ? undefined : view,
+      },
+      { market: 'kr', transaction: 'jeonse' },
+    ), locale)
+  ), [initialSelection, locale, state.selectedSlug]);
 
   return (
     <section
       className={styles.explorer}
       aria-labelledby="area-explorer-heading"
       data-market-selection={`${initialSelection.market}:${initialSelection.transaction}`}
+      data-explore-view={activeView}
     >
       <header className={styles.hero}>
         <div>
@@ -459,6 +472,24 @@ function ReadyAreaExplorer({
         </div>
       </div>
 
+      <nav className={styles.viewBar} aria-label={locale === 'ko' ? '탐색 보기' : 'Explorer view'}>
+        <span>{locale === 'ko' ? '보기' : 'View'}</span>
+        <div className={styles.viewTabs}>
+          {([
+            ['split', 'Split', '분할'],
+            ['list', 'List', '목록'],
+            ['table', 'Table', '표'],
+            ['map', 'Map', '지도'],
+          ] as const).map(([value, en, ko]) => (
+            <Link
+              key={value}
+              href={viewHref(value)}
+              aria-current={activeView === value ? 'page' : undefined}
+            >{locale === 'ko' ? ko : en}</Link>
+          ))}
+        </div>
+      </nav>
+
       <div className={styles.workspace}>
         <aside className={styles.districtRail} data-district-rail="all-25" aria-label={locale === 'ko' ? '서울 25개 구' : 'All 25 Seoul districts'}>
           <div className={styles.districtRailHeading}>
@@ -491,6 +522,9 @@ function ReadyAreaExplorer({
               {usesLegacyCopy ? copy.mapHeading : exactMetricCopy.mapHeading}
             </h2>
           </div>
+          <button className={styles.searchAreaButton} type="button" onClick={submitBuildingQuery}>
+            {locale === 'ko' ? '이 지역 검색' : 'Search this area'}
+          </button>
           <NaverDistrictMap
             clientId={naverMapClientId}
             districts={mapDistricts}
