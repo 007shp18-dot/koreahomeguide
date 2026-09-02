@@ -120,7 +120,7 @@ describe('Playwright release target configuration', () => {
     ))).toBe(true);
   });
 
-  it('preserves pre-existing workspace data and cleans its isolated proximity fixture', () => {
+  it('preserves pre-existing workspace data and cleans its temporary proximity fixture', () => {
     const config = createPlaywrightConfig({});
     if (config.webServer === undefined || Array.isArray(config.webServer)) {
       throw new Error('Expected one local release web server.');
@@ -139,14 +139,11 @@ describe('Playwright release target configuration', () => {
     writeFileSync(
       nextExecutable,
       `const { readFileSync } = require('node:fs');\n` +
-      `const { resolve } = require('node:path');\n` +
-      `const fixture = readFileSync(resolve('data/korea-proximity.json.gz'));\n` +
-      `const isolated = process.cwd().startsWith(${JSON.stringify(
-        join(temporaryRoot, 'signedprice-playwright-proximity-'),
-      )});\n` +
+      `const { join } = require('node:path');\n` +
+      `const fixture = readFileSync(join(process.argv[3], 'data/korea-proximity.json.gz'));\n` +
       `const gzip = fixture[0] === 0x1f && fixture[1] === 0x8b;\n` +
       `const payloadIsPrivate = process.env.SIGNEDPRICE_PLAYWRIGHT_PROXIMITY_GZIP_BASE64 === undefined;\n` +
-      `process.exit(isolated && gzip && payloadIsPrivate ? 0 : 1);\n`,
+      `process.exit(gzip && payloadIsPrivate ? 0 : 1);\n`,
     );
     const environment = {
       ...process.env,
@@ -164,8 +161,18 @@ describe('Playwright release target configuration', () => {
         env: environment,
         encoding: 'utf8',
       });
-      expect(completed.status).toBe(0);
+      expect(completed.status).not.toBe(0);
       expect(readFileSync(artifact)).toEqual(original);
+      expect(readdirSync(temporaryRoot)).toEqual([]);
+
+      rmSync(artifact);
+      const cleanRun = spawnSync('/bin/sh', ['-c', config.webServer.command], {
+        cwd: root,
+        env: environment,
+        encoding: 'utf8',
+      });
+      expect(cleanRun.status).toBe(0);
+      expect(readdirSync(join(root, 'apps/web/data'))).toEqual([]);
       expect(readdirSync(temporaryRoot)).toEqual([]);
     } finally {
       rmSync(root, { recursive: true, force: true });
