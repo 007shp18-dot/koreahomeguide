@@ -78,6 +78,10 @@ let cachedEnvironmentRepositories: Readonly<{
 }> | null = null;
 let cachedSerializedRegistry: Readonly<{ source: string; parsed: unknown }> | null = null;
 
+function unavailableSnapshotObject(): undefined {
+  return undefined;
+}
+
 export function koreaEvidenceRepositoriesFromEnvironment(
   dependencies: Readonly<{
     registrySource?: unknown;
@@ -105,7 +109,10 @@ export function koreaEvidenceRepositoriesFromEnvironment(
   if (registrySource === undefined && useCheckedInSnapshot) {
     registrySource = resolveInstalledSnapshotRegistry();
   }
-  const resolveObject = dependencies.resolveObject ?? resolveInstalledSnapshotObject;
+  const resolveObject = dependencies.resolveObject
+    ?? (useCheckedInSnapshot
+      ? resolveInstalledSnapshotObject
+      : unavailableSnapshotObject);
   const retainLastVerified = dependencies.retainLastVerified !== false;
   if (retainLastVerified
     && cachedEnvironmentRepositories !== null

@@ -41,6 +41,7 @@ import { buildKoreaEvidenceAreaExploreModel } from '../lib/public-market/korea-e
 import { buildKoreaRentEvidenceArtifact } from '../lib/public-market/rent-evidence-artifact-builder.server';
 import { buildKoreaSaleEvidenceArtifact } from '../lib/public-market/sale-evidence-artifact-builder.server';
 import { buildKoreaEvidenceAreaRankingsModel } from '../lib/public-market/rankings-route-model.server';
+import { resolveInstalledSnapshotRegistry } from '../lib/snapshots/installed-snapshot-repository.server';
 import type { KoreaEvidenceRepositories } from '../lib/public-market/korea-evidence-repositories.server';
 
 const period = '2026-01/2026-07';
@@ -148,6 +149,16 @@ function resolver(input: Awaited<ReturnType<typeof fixtures>>) {
 }
 
 describe('installed Korea evidence repositories', () => {
+  it('does not resolve checked-in payloads when fixture isolation disables them', () => {
+    const repositories = koreaEvidenceRepositoriesFromEnvironment({
+      registrySource: resolveInstalledSnapshotRegistry(),
+      useCheckedInSnapshot: false,
+      retainLastVerified: false,
+    });
+
+    expect(repositories).toEqual({ rent: null, sale: null });
+  });
+
   it('serializes only one bounded building page from the installed full inventory', () => {
     const repositories = koreaEvidenceRepositoriesFromEnvironment({
       useCheckedInSnapshot: true,

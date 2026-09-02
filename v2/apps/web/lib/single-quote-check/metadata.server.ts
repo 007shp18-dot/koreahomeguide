@@ -4,8 +4,7 @@ import type { Metadata } from 'next';
 
 import type { ProductLocale } from '../locale/product-copy';
 import { indexableMetadata } from '../public-metadata';
-import { koreaEvidenceRepositoriesFromEnvironment } from '../public-market/korea-evidence-repositories.server';
-import { checkedInSnapshotsAreEnabled } from '../snapshots/installed-snapshot-repository.server';
+import { contractCheckEvidenceRepositoriesFromEnvironment } from '../contract-check/evidence-repositories.server';
 
 const copy = Object.freeze({
   en: Object.freeze({
@@ -29,10 +28,7 @@ export function buildSingleQuoteCheckMetadata(locale: ProductLocale): Metadata {
     ...copy[locale],
     languageAlternates: { en: '/kr/seoul/check/', ko: '/ko/kr/seoul/check/' },
   });
-  const repositories = koreaEvidenceRepositoriesFromEnvironment({
-    useCheckedInSnapshot: checkedInSnapshotsAreEnabled(),
-    retainLastVerified: false,
-  });
+  const repositories = contractCheckEvidenceRepositoriesFromEnvironment();
   if (
     process.env.VERCEL_ENV !== 'preview'
     && (repositories.rent !== null || repositories.sale !== null)

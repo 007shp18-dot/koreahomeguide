@@ -1,14 +1,26 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 
-import { parseObservedBuildingArtifact } from '../apps/web/lib/public-market/observed-building-schema';
+import { buildContractCheckRouteModel } from '../apps/web/lib/contract-check/route-model.server';
+import { buildPublicAreaExploreModel } from '../apps/web/lib/public-market/area-route-model.server';
+import { observedBuildingRepositoryFromEnvironment } from '../apps/web/lib/public-market/observed-building-repository.server';
+import { buildPublicAreaRankingsModel } from '../apps/web/lib/public-market/rankings-route-model.server';
 import { createPlaywrightConfig } from '../playwright.config';
-import {
-  OBSERVED_BUILDING_INVENTORY_TEST_ARTIFACT,
-} from './e2e/observed-building-inventory-fixture';
 import { PUBLIC_BUILDING_TEST_ID } from './e2e/public-building-summary-fixture';
-import { PUBLIC_SUMMARY_TEST_PERIOD } from './e2e/public-summary-fixture';
+
+afterEach(() => vi.unstubAllEnvs());
+
+function installLocalReleaseEnvironment() {
+  const config = createPlaywrightConfig({});
+  if (config.webServer === undefined || Array.isArray(config.webServer)) {
+    throw new Error('Expected one local release web server.');
+  }
+  for (const [key, value] of Object.entries(config.webServer.env ?? {})) {
+    vi.stubEnv(key, String(value));
+  }
+  return config.webServer.env ?? {};
+}
 
 describe('Playwright release target configuration', () => {
   it('builds and serves the deterministic candidate locally', () => {
@@ -20,7 +32,7 @@ describe('Playwright release target configuration', () => {
       env: {
         VERCEL_ENV: 'preview',
         VERCEL_GIT_COMMIT_SHA: '0123456789abcdef',
-        SIGNEDPRICE_USE_CHECKED_IN_SNAPSHOTS: 'true',
+        SIGNEDPRICE_USE_CHECKED_IN_SNAPSHOTS: 'false',
         SIGNEDPRICE_CONVERSION_CURVE_PERIOD: '2026-03/2026-08',
         SIGNEDPRICE_CONVERSION_CURVE_SHA256: 'a'.repeat(64),
       },
@@ -28,6 +40,55 @@ describe('Playwright release target configuration', () => {
     expect(config.webServer?.env).toHaveProperty('SIGNEDPRICE_CONVERSION_CURVE_ARTIFACT');
     expect(config.webServer?.env).toHaveProperty('SIGNEDPRICE_PUBLIC_BUILDING_SUMMARY_ARTIFACT');
     expect(config.webServer?.env).toHaveProperty('SIGNEDPRICE_OBSERVED_BUILDING_ARTIFACT');
+  });
+
+  it('keeps Check evidence isolated from Explore, Rankings, and observed buildings', () => {
+    const environment = installLocalReleaseEnvironment();
+    const check = buildContractCheckRouteModel(undefined, {
+      compare: '1', district: 'gangnam-gu', housing: 'apartment', area: '84',
+      'a-transaction': 'sale', 'a-price': '1200000000',
+      'b-transaction': 'monthly', 'b-deposit': '50000000',
+      'b-monthly-rent': '2000000',
+    });
+    const explore = buildPublicAreaExploreModel('jongno-gu');
+    const rankings = buildPublicAreaRankingsModel();
+    const observed = observedBuildingRepositoryFromEnvironment({
+      useCheckedInSnapshot: false,
+    });
+
+    expect(check).toMatchObject({
+      status: 'ready',
+      availability: { sale: true, jeonse: true, monthly: true, conversion: true },
+      offerChecks: { a: { status: 'ready' }, b: { status: 'ready' } },
+      comparison: { status: 'ready', basis: 'tradeoff' },
+    });
+    expect(explore).toMatchObject({
+      status: 'ready',
+      selectedSlug: 'jongno-gu',
+      citySummary: { med: 410_000_000 },
+    });
+    expect(rankings).toMatchObject({ status: 'ready', withheldDistrictCount: 1 });
+    if (rankings.status !== 'ready') throw new Error('Expected fixture Rankings.');
+    expect(rankings.cheapest.slice(0, 2).map(({ slug }) => slug)).toEqual([
+      'jung-gu', 'yongsan-gu',
+    ]);
+    expect(observed?.listRecords()).toHaveLength(1);
+    expect(observed?.getById(PUBLIC_BUILDING_TEST_ID)).toMatchObject({
+      buildingId: PUBLIC_BUILDING_TEST_ID,
+      coordinate: { state: 'ready' },
+    });
+    expect(environment).not.toHaveProperty('SIGNEDPRICE_INSTALLED_SNAPSHOT_REGISTRY');
+  });
+
+  it('keeps every local web-server environment entry below the process spawn limit', () => {
+    const config = createPlaywrightConfig({});
+    if (config.webServer === undefined || Array.isArray(config.webServer)) {
+      throw new Error('Expected one local release web server.');
+    }
+
+    expect(Object.entries(config.webServer.env ?? {}).every(([key, value]) => (
+      Buffer.byteLength(`${key}=${String(value)}`, 'utf8') < 100_000
+    ))).toBe(true);
   });
 
   it('defines all release viewports and a retained HTML failure report', () => {
@@ -59,17 +120,6 @@ describe('Playwright release target configuration', () => {
       screenshot: 'only-on-failure',
       trace: 'retain-on-failure',
     });
-  });
-
-  it('joins the browser price fixture to a verified observed-building fixture', () => {
-    const artifact = parseObservedBuildingArtifact(
-      JSON.parse(OBSERVED_BUILDING_INVENTORY_TEST_ARTIFACT),
-      { marketId: 'kr-seoul', period: PUBLIC_SUMMARY_TEST_PERIOD },
-    );
-
-    expect(artifact.records).toHaveLength(1);
-    expect(artifact.records[0]?.buildingId).toBe(PUBLIC_BUILDING_TEST_ID);
-    expect(artifact.records[0]?.coordinate.state).toBe('ready');
   });
 
   it('targets the explicit Preview without starting a local server', () => {

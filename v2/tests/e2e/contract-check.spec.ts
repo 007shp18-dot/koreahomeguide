@@ -36,6 +36,40 @@ async function expectTouchTarget(locator: Locator) {
   expect(box?.height).toBeGreaterThanOrEqual(44);
 }
 
+test('fixture-isolated release serves deterministic all-type A/B evidence', async ({ request }) => {
+  test.skip(releaseTarget.usesExternalServer, 'Synthetic Check evidence is local-release only.');
+  const comparison = await request.get(
+    '/kr/seoul/check/compare/?compare=1&district=gangnam-gu&housing=apartment&area=84' +
+    '&a-transaction=sale&a-price=1200000000' +
+    '&b-transaction=monthly&b-deposit=50000000&b-monthly-rent=2000000',
+  );
+  const englishSale = await request.get(
+    '/kr/seoul/check/?check=1&district=gangnam-gu&housing=apartment&area=84' +
+    '&transaction=sale&price=1200000000',
+  );
+  const koreanMonthly = await request.get(
+    '/ko/kr/seoul/check/?check=1&district=gangnam-gu&housing=apartment&area=84' +
+    '&transaction=monthly&deposit=50000000&monthly-rent=2000000',
+  );
+  const comparisonHtml = await comparison.text();
+  const englishSaleHtml = await englishSale.text();
+  const koreanMonthlyHtml = await koreanMonthly.text();
+
+  expect(comparison.status()).toBe(200);
+  expect(comparisonHtml).toContain('Trade-off — no winner declared');
+  expect(comparisonHtml).toContain('7 completed months');
+  expect(comparisonHtml).toContain('MOLIT reported sale and rental contracts');
+  expect(comparisonHtml).not.toContain('Verified transaction evidence is unavailable.');
+  expect(englishSale.status()).toBe(200);
+  expect(englishSaleHtml).toContain('data-single-result');
+  expect(englishSaleHtml).toContain('7 completed months · 2026-02–2026-08');
+  expect(englishSaleHtml).not.toContain('Verified transaction evidence is unavailable.');
+  expect(koreanMonthly.status()).toBe(200);
+  expect(koreanMonthlyHtml).toContain('data-single-result');
+  expect(koreanMonthlyHtml).toContain('7개월 완료 · 2026-02–2026-08');
+  expect(koreanMonthlyHtml).not.toContain('Verified transaction evidence is unavailable.');
+});
+
 test('primary Contract Check exposes one quote and routes to the two-offer comparison', async ({ page }) => {
   const assertNoRuntimeFailures = observeRuntimeFailures(page);
   const response = await page.goto('/kr/seoul/check/');

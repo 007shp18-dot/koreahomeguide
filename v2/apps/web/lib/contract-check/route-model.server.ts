@@ -21,9 +21,9 @@ import {
 
 import { createConversionRepository } from './conversion-repository.server';
 import {
-  koreaEvidenceRepositoriesFromEnvironment,
   type KoreaEvidenceRepositories,
 } from '../public-market/korea-evidence-repositories.server';
+import { contractCheckEvidenceRepositoriesFromEnvironment } from './evidence-repositories.server';
 import {
   createInstalledSnapshotRepository,
   resolveInstalledSnapshotObject,
@@ -499,10 +499,7 @@ function environmentDependencies(): ContractCheckRouteDependencies {
           resolveObject: resolveInstalledSnapshotObject,
         })
       : undefined,
-    evidenceRepositories: koreaEvidenceRepositoriesFromEnvironment({
-      useCheckedInSnapshot: checkedInSnapshotsAreEnabled(),
-      retainLastVerified: false,
-    }),
+    evidenceRepositories: contractCheckEvidenceRepositoriesFromEnvironment(),
   });
 }
 
