@@ -1,7 +1,7 @@
 # Detail V2 Mockup Audit
 
-**Date:** 2026-09-02  
-**Input:** `Korea Home Guide UI Mockups.zip`  
+**Date:** 2026-09-02
+**Input:** `Korea Home Guide UI Mockups.zip`
 **Decision:** Adopt the information architecture and visual grammar, not the prototype's sample data or runtime assumptions.
 
 ## 1. Release contract
@@ -103,4 +103,3 @@ This audit changes the completion program in four concrete ways:
 2. Mobile reflow is a release requirement despite the prototype's fixed 1440px canvas.
 3. Official Korea building facts get a dedicated provenance-bearing snapshot and deterministic join before display.
 4. News and Community remain in District and Building Detail, but only verified or truthful closed states may render.
-
