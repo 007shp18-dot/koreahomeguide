@@ -21,6 +21,47 @@ type BuiltSaleArtifact = Readonly<{
   recordCount: number;
 }>;
 
+const ARTIFACT_CHUNK_CHAR_LIMIT = 512 * 1024;
+
+type EncodedSaleArtifact = Readonly<{
+  dataset: 'kr-sale';
+  sha256: string;
+  recordCount: number;
+  encoding: 'gzip+base64';
+  compressedBytes: number;
+  chunkCount: number;
+  payload: string;
+}>;
+
+function encodeSaleArtifact(sale: BuiltSaleArtifact): EncodedSaleArtifact {
+  const compressed = gzipSync(Buffer.from(sale.serialized, 'utf8'), { level: 9 });
+  const payload = compressed.toString('base64');
+  return Object.freeze({
+    dataset: 'kr-sale',
+    sha256: sale.sha256,
+    recordCount: sale.recordCount,
+    encoding: 'gzip+base64',
+    compressedBytes: compressed.byteLength,
+    chunkCount: Math.max(1, Math.ceil(payload.length / ARTIFACT_CHUNK_CHAR_LIMIT)),
+    payload,
+  });
+}
+
+function artifactMetadata(
+  encoded: EncodedSaleArtifact,
+): Omit<EncodedSaleArtifact, 'payload'> {
+  const { payload: _payload, ...metadata } = encoded;
+  return Object.freeze(metadata);
+}
+
+function artifactChunk(encoded: EncodedSaleArtifact, chunk: number): string | undefined {
+  if (chunk < 0 || chunk >= encoded.chunkCount) return undefined;
+  return encoded.payload.slice(
+    chunk * ARTIFACT_CHUNK_CHAR_LIMIT,
+    (chunk + 1) * ARTIFACT_CHUNK_CHAR_LIMIT,
+  );
+}
+
 export type KoreaSaleSnapshotJobHandlerDependencies = Readonly<{
   environment: string | undefined;
   token: string | undefined;
@@ -167,6 +208,17 @@ export function createKoreaSaleSnapshotRunnerPage(
         status.textContent = 'Finalizing verified sale artifact…';
         const result = await post({ action: 'finalize', referenceInstant }, runnerToken);
         if (result.status !== 'ready' || result.completedCoordinates !== 700 || typeof result.artifacts !== 'object' || result.artifacts === null) throw new Error('invalid_artifact');
+        const sale = result.artifacts.sale;
+        const chunks = [];
+        for (let chunk = 0; chunk < sale.chunkCount; chunk += 1) {
+          status.textContent = 'Downloading kr-sale chunk ' + (chunk + 1) + '/' + sale.chunkCount + '…';
+          const part = await post({
+            action: 'artifact', referenceInstant, dataset: 'kr-sale', chunk,
+          }, runnerToken);
+          if (part.status !== 'chunk' || part.dataset !== 'kr-sale' || part.sha256 !== sale.sha256 || part.chunk !== chunk || part.chunkCount !== sale.chunkCount || typeof part.payload !== 'string' || part.payload.length > 524288) throw new Error('invalid_artifact_chunk');
+          chunks.push(part.payload);
+        }
+        sale.payload = chunks.join('');
         const blob = new Blob([JSON.stringify(result, null, 2) + '\n'], { type: 'application/json' });
         download.href = URL.createObjectURL(blob); download.hidden = false;
         status.textContent = 'Ready: period ' + result.period + '. Sale SHA-256 ' + result.artifacts.sale.sha256 + '.';
@@ -238,6 +290,39 @@ export function createKoreaSaleSnapshotJobHandler(
       }
     }
 
+    if (body.action === 'artifact') {
+      if (
+        Object.keys(body).length !== 4
+        || body.dataset !== 'kr-sale'
+        || !Number.isSafeInteger(body.chunk)
+        || (body.chunk as number) < 0
+      ) return json({ status: 'error', code: 'invalid_request' }, 400);
+      try {
+        const finalized = await dependencies.finalize({ referenceInstant: body.referenceInstant });
+        if (finalized.completedCoordinates !== 700) {
+          return json({ status: 'error', code: 'source_coverage_incomplete' }, 409);
+        }
+        const encoded = encodeSaleArtifact(
+          await dependencies.buildSaleArtifact(finalized.evidence),
+        );
+        const chunk = body.chunk as number;
+        const payload = artifactChunk(encoded, chunk);
+        if (payload === undefined) return json({ status: 'error', code: 'invalid_request' }, 400);
+        return json({
+          status: 'chunk',
+          ...artifactMetadata(encoded),
+          chunk,
+          payload,
+        }, 200);
+      } catch (error) {
+        if (
+          error instanceof TypeError
+          && error.message === 'Sale summary source coverage is incomplete.'
+        ) return json({ status: 'error', code: 'source_coverage_incomplete' }, 409);
+        return json({ status: 'error', code: 'job_unavailable' }, 503);
+      }
+    }
+
     if (body.action === 'finalize' && Object.keys(body).length === 2) {
       try {
         const finalized = await dependencies.finalize({ referenceInstant: body.referenceInstant });
@@ -245,21 +330,14 @@ export function createKoreaSaleSnapshotJobHandler(
           return json({ status: 'error', code: 'source_coverage_incomplete' }, 409);
         }
         const sale = await dependencies.buildSaleArtifact(finalized.evidence);
-        const compressed = gzipSync(Buffer.from(sale.serialized, 'utf8'), { level: 9 });
+        const encoded = encodeSaleArtifact(sale);
         return json({
           status: 'ready',
           completedCoordinates: finalized.completedCoordinates,
           period: finalized.period,
           generatedAt: finalized.generatedAt,
           artifacts: {
-            sale: {
-              dataset: 'kr-sale',
-              sha256: sale.sha256,
-              recordCount: sale.recordCount,
-              encoding: 'gzip+base64',
-              compressedBytes: compressed.byteLength,
-              payload: compressed.toString('base64'),
-            },
+            sale: artifactMetadata(encoded),
           },
         }, 200);
       } catch (error) {
