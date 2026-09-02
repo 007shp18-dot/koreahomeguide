@@ -35,6 +35,7 @@ const artifact = {
   ...unsignedArtifact,
   sha256: createHash('sha256').update(canonicalJson(unsignedArtifact)).digest('hex'),
 };
+const serializedArtifact = canonicalJson(artifact);
 
 const registry = {
   registryVersion: 'signedprice-installed-snapshots-v1',
@@ -42,10 +43,10 @@ const registry = {
     marketId: 'kr-seoul', dataset: 'kr-proximity', schemaVersion: 'signedprice-korea-proximity-v1',
     sourceVersion: 'e2e-v1', parserVersion: 'signedprice-korea-proximity-v1', rightsPolicyId: 'public-proximity-display-v1',
     period: '2026-01/2026-07', generatedAt: '2026-08-31T00:00:00.000Z', objectUrl: 'installed://kr-proximity',
-    sha256: createHash('sha256').update(canonicalJson(artifact)).digest('hex'), recordCount: 1,
+    sha256: createHash('sha256').update(serializedArtifact).digest('hex'), recordCount: 1,
   }],
 };
 
 export const E2E_KOREA_PROXIMITY_REGISTRY = JSON.stringify(registry);
-export const E2E_KOREA_PROXIMITY_PAYLOAD = JSON.stringify(artifact);
+export const E2E_KOREA_PROXIMITY_PAYLOAD = serializedArtifact;
 export const E2E_KOREA_PROXIMITY_GZIP_BASE64 = gzipSync(E2E_KOREA_PROXIMITY_PAYLOAD).toString('base64');
