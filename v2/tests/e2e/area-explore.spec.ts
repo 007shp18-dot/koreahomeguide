@@ -88,6 +88,21 @@ test('initial HTML and hydration expose one synchronized 25-district Explorer', 
   await expectNoHorizontalOverflow(page);
 
   if (testInfo.project.name === 'desktop-chromium') {
+    const workspace = page.locator('[data-explorer-layout="mockup-workspace"]');
+    const mapPanel = workspace.locator(':scope > [data-explorer-region="map"]');
+    const discoveryRail = workspace.locator(':scope > [data-explorer-region="results"]');
+    const [workspaceBox, mapBox, railBox] = await Promise.all([
+      workspace.boundingBox(),
+      mapPanel.boundingBox(),
+      discoveryRail.boundingBox(),
+    ]);
+    expect(workspaceBox).not.toBeNull();
+    expect(mapBox).not.toBeNull();
+    expect(railBox).not.toBeNull();
+    expect(mapBox!.width / workspaceBox!.width).toBeGreaterThan(0.62);
+    expect(mapBox!.width / workspaceBox!.width).toBeLessThan(0.68);
+    expect(Math.abs(mapBox!.height - railBox!.height)).toBeLessThanOrEqual(2);
+
     const htmlResponse = await page.request.get('/kr/seoul/explore/');
     expect(htmlResponse.status()).toBe(200);
     const html = await htmlResponse.text();
@@ -120,11 +135,31 @@ test('rail selection opens the canonical building panel and full-detail CTA', as
   test.skip(releaseTarget.usesExternalServer, 'Exact fixture values are local-release only.');
   await page.goto('/kr/seoul/explore/?district=jongno-gu');
 
-  await page.getByRole('button', { name: new RegExp(PUBLIC_BUILDING_TEST_NAME) }).click();
-  const panel = page.locator(`[data-building-panel="${PUBLIC_BUILDING_TEST_ID}"]`);
+  const trigger = page.getByRole('button', { name: new RegExp(PUBLIC_BUILDING_TEST_NAME) });
+  await trigger.click();
+  await expect(page).toHaveURL(/\/kr\/seoul\/explore\/\?.*buildingId=/);
+  const dialog = page.locator(`[data-building-dialog="${PUBLIC_BUILDING_TEST_ID}"]`);
+  await expect(dialog).toBeVisible();
+  await expect(dialog).toHaveAttribute('role', 'dialog');
+  const panel = dialog.locator(`[data-building-panel="${PUBLIC_BUILDING_TEST_ID}"]`);
   await expect(panel).toBeVisible();
-  await expect(panel.getByRole('link', { name: 'Open full building evidence' }))
+  await expect(dialog.getByRole('link', { name: 'Open full building evidence' }).first())
     .toHaveAttribute('href', PUBLIC_BUILDING_TEST_SELECTION_HREF);
+  await page.keyboard.press('Escape');
+  await expect(dialog).toHaveCount(0);
+  await expect(page).not.toHaveURL(/buildingId=/);
+  await expect(trigger).toBeFocused();
+});
+
+test('district selection stays inside the Explore workspace', async ({ page }) => {
+  await page.goto('/kr/seoul/explore/?district=jongno-gu');
+
+  await page.getByLabel('District', { exact: true }).selectOption('gangnam-gu');
+
+  await expect(page).toHaveURL(/\/kr\/seoul\/explore\/\?.*district=gangnam-gu/);
+  expect(new URL(page.url()).pathname).toBe('/kr/seoul/explore/');
+  await expect(page.getByText('Selected · Gangnam-gu')).toBeVisible();
+  await expect(page.locator('[data-explorer-layout="mockup-workspace"]')).toBeVisible();
 });
 
 test('published quote stays local and any withheld detail stays money-free', async ({ page }) => {
@@ -172,6 +207,17 @@ test('mobile controls keep 44px focus targets and natural document scrolling', a
 }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile-chromium');
   await page.goto('/kr/seoul/explore/');
+
+  const workspace = page.locator('[data-explorer-layout="mockup-workspace"]');
+  const discoveryRail = workspace.locator(':scope > [data-explorer-region="results"]');
+  await expect(discoveryRail).toBeVisible();
+  const railPlacement = await discoveryRail.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return { position: style.position, bottom: style.bottom, maxHeight: style.maxHeight };
+  });
+  expect(railPlacement.position).toBe('absolute');
+  expect(railPlacement.bottom).toBe('0px');
+  expect(Number.parseFloat(railPlacement.maxHeight)).toBeLessThanOrEqual(844 * .64 + 1);
 
   const navigation = page.getByRole('navigation', { name: 'Seoul evidence navigation' });
   const checkTab = navigation.getByRole('link', { name: /Check/ });

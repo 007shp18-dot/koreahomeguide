@@ -231,13 +231,13 @@ describe('Korea Explore proximity route model', () => {
     expect(withKoreaProximityPairs('/kr/seoul/explore/?district=jongno-gu', selection)).toBe('/kr/seoul/explore/?district=jongno-gu&station=station-a&stationDistance=250&school=school-a&schoolDistance=500');
     expect(withKoreaProximityPairs('/kr/seoul/explore/?district=gangnam-gu&neighborhood=yeoksam-dong', selection)).toContain('station=station-a&stationDistance=250&school=school-a&schoolDistance=500');
   });
-  it('uses the canonical district path while preserving non-district state', () => {
+  it('keeps district discovery on the canonical Explore workspace while preserving filter state', () => {
     expect(createKoreaDistrictHref('jongno-gu', {
       market: 'kr', transaction: 'monthly', area: '60-85', propertyType: 'apartment',
       district: 'gangnam-gu', neighborhood: 'yeoksam-dong', buildingId: 'tower',
       station: 'station-a', stationDistance: 250,
       school: 'school-a', schoolDistance: 500,
-    }, 'en')).toBe('/kr/seoul/explore/jongno-gu/?transaction=monthly&area=60-85&propertyType=apartment&station=station-a&stationDistance=250&school=school-a&schoolDistance=500');
+    }, 'en')).toBe('/kr/seoul/explore/?transaction=monthly&area=60-85&propertyType=apartment&district=jongno-gu&station=station-a&stationDistance=250&school=school-a&schoolDistance=500');
   });
   it('filters the full installed identity set before page slicing and reconciles excluded selections', () => {
     const repositories = koreaEvidenceRepositoriesFromEnvironment({ useCheckedInSnapshot: true, retainLastVerified: false });
@@ -485,7 +485,7 @@ describe('Korea Explore proximity route model', () => {
     expect(html).toContain('Same name · 2호선 · 250 m');
     expect(html).toContain('School proximity · straight-line distance');
     expect(html).toContain('School A · 500 m');
-    expect(html).toContain('href="/kr/seoul/explore?district=gangnam-gu&amp;station=station-a&amp;stationDistance=250&amp;school=school-a&amp;schoolDistance=500"');
+    expect(html).toContain('href="/kr/seoul/explore/?district=gangnam-gu&amp;station=station-a&amp;stationDistance=250&amp;school=school-a&amp;schoolDistance=500"');
   });
 
   it('renders deterministic station lines for both distinct same-name building facts', () => {
@@ -517,7 +517,7 @@ describe('Korea Explore proximity route model', () => {
       const query = 'transaction=monthly&amp;area=60-85&amp;propertyType=apartment&amp;contractType=renewal&amp;sort=median-asc&amp;view=table&amp;station=station-a&amp;stationDistance=250&amp;school=school-a&amp;schoolDistance=500';
       expect(html.split(`href="/ko/kr/seoul/explore/${district.slug}?${query}"`)).toHaveLength(3);
       expect(html).toContain(
-        `data-map-district-anchor="${district.slug}" href="/ko/kr/seoul/explore/${district.slug}/?${query}"`,
+        `data-map-district-anchor="${district.slug}" href="/ko/kr/seoul/explore/?transaction=monthly&amp;area=60-85&amp;propertyType=apartment&amp;district=${district.slug}&amp;contractType=renewal&amp;sort=median-asc&amp;view=table&amp;station=station-a&amp;stationDistance=250&amp;school=school-a&amp;schoolDistance=500"`,
       );
     }
   });
