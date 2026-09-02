@@ -62,6 +62,7 @@ describe('SignedPrice operator configuration', () => {
   });
 
   it('indexes and lists operator pages only when the profile is ready', () => {
+    vi.stubEnv('SIGNEDPRICE_USE_CHECKED_IN_SNAPSHOTS', 'false');
     expect(generatePrivacyMetadata().robots).toEqual({ index: false, follow: true });
     expect(generateContactMetadata().robots).toEqual({ index: false, follow: true });
     expect(sitemap().map(({ url }) => url)).not.toContain(
