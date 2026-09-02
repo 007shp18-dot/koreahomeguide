@@ -625,7 +625,13 @@ function exploreBuildingsFor(
         href: `/kr/seoul/explore/${observed.districtSlug}/${observed.buildingId}/` as const,
       });
     }));
-    return Object.freeze({ status: 'ready', buildings });
+    return Object.freeze({
+      status: 'ready',
+      buildings,
+      total: buildings.length,
+      page: 1,
+      pageSize: buildings.length,
+    });
   }
   const fallbackBuildings = Object.freeze([...priceRecords.values()]
     .filter((building) => (
@@ -674,6 +680,7 @@ export function buildPublicAreaExploreModel(
   requestedContractGroup?: unknown,
   requestedBuildingQuery = '',
   requestedEvidence: KoreaExplorerEvidenceSelectionInput = Object.freeze({}),
+  requestedBuildingPage: unknown = 1,
 ): PublicAreaExploreModel {
   if (dependencies.evidenceRepositories !== undefined) {
     const projection = buildKoreaExplorerEvidenceProjection(
@@ -681,6 +688,13 @@ export function buildPublicAreaExploreModel(
       {
         ...requestedEvidence,
         contractGroup: requestedEvidence.contractGroup ?? requestedContractGroup,
+      },
+      {
+        includeBuildings: true,
+        includeBuildingStats: true,
+        districtSlug: selectedSlug,
+        buildingQuery: requestedBuildingQuery,
+        buildingPage: requestedBuildingPage,
       },
     );
     if (projection.status === 'ready') {
