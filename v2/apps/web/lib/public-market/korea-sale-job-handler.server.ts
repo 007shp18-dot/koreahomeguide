@@ -83,6 +83,7 @@ export type KoreaSaleSnapshotPublicExportDependencies = Readonly<{
   environment: string | undefined;
   token: string | undefined;
   referenceInstant: string;
+  allowCollection?: boolean;
   postHandler(request: Request): Promise<Response>;
 }>;
 
