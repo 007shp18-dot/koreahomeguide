@@ -41,7 +41,7 @@ const handlerDependencies = {
   finalize(input) {
     return finalizeKoreaRentSnapshotJob(input, {
       cache,
-      now: () => new Date(),
+      now: () => new Date(input.referenceInstant),
     });
   },
   buildRentArtifact: buildKoreaRentEvidenceArtifact,
