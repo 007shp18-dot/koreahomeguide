@@ -4,6 +4,7 @@ import {
   createInstalledSnapshotRepository,
   resolveInstalledSnapshotObject,
   resolveInstalledSnapshotRegistry,
+  shouldUseCheckedInSnapshots,
 } from '../snapshots/installed-snapshot-repository.server';
 import {
   createKoreaRentEvidenceRepository,
@@ -98,7 +99,7 @@ export function koreaEvidenceRepositoriesFromEnvironment(
       cachedSerializedRegistry = Object.freeze({ source: serialized, parsed: registrySource });
     }
   }
-  const useCheckedInSnapshot = dependencies.useCheckedInSnapshot ?? process.env.NODE_ENV !== 'test';
+  const useCheckedInSnapshot = dependencies.useCheckedInSnapshot ?? shouldUseCheckedInSnapshots();
   if (registrySource === undefined && useCheckedInSnapshot) {
     registrySource = resolveInstalledSnapshotRegistry();
   }

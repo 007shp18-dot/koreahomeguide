@@ -10,6 +10,7 @@ import {
   createInstalledSnapshotRepository,
   resolveInstalledSnapshotObject,
   resolveInstalledSnapshotRegistry,
+  shouldUseCheckedInSnapshots,
   type VerifiedInstalledSnapshot,
 } from '../snapshots/installed-snapshot-repository.server';
 
@@ -104,6 +105,10 @@ let environmentCache: HdbSnapshotRepository | null | undefined;
 
 export function hdbSnapshotRepositoryFromEnvironment(): HdbSnapshotRepository | null {
   if (environmentCache !== undefined) return environmentCache;
+  if (!shouldUseCheckedInSnapshots()) {
+    environmentCache = null;
+    return environmentCache;
+  }
   try {
     const installed = createInstalledSnapshotRepository({
       registrySource: resolveInstalledSnapshotRegistry(),
