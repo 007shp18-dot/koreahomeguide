@@ -2,13 +2,12 @@ import 'server-only';
 
 import type { MetadataRoute } from 'next';
 import { GUIDES } from '../lib/guide/guide-content';
+import { contractCheckEvidenceRepositoriesFromEnvironment } from '../lib/contract-check/evidence-repositories.server';
 import { buildContractCheckRouteModel } from '../lib/contract-check/route-model.server';
 import { buildNewsIndexModel } from '../lib/news/news-route-model.server';
 import { publicCanonical } from '../lib/public-metadata';
 import { buildKoreaPublicRouteModel } from '../lib/public-market/route-model.server';
 import { buildPublicAreaExploreModel } from '../lib/public-market/area-route-model.server';
-import { koreaEvidenceRepositoriesFromEnvironment } from '../lib/public-market/korea-evidence-repositories.server';
-import { checkedInSnapshotsAreEnabled } from '../lib/snapshots/installed-snapshot-repository.server';
 import {
   listSignedPricePropertyTypeRoutes,
   signedPricePublicRouteRegistry,
@@ -17,11 +16,9 @@ import { operatorProfileFromEnvironment } from '../lib/operator/operator-profile
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const conversionReady = buildContractCheckRouteModel().status === 'ready';
-  const koreaEvidence = koreaEvidenceRepositoriesFromEnvironment({
-    useCheckedInSnapshot: checkedInSnapshotsAreEnabled(),
-    retainLastVerified: false,
-  });
-  const singleQuoteReady = koreaEvidence.rent !== null || koreaEvidence.sale !== null;
+  const koreaEvidence = contractCheckEvidenceRepositoriesFromEnvironment();
+  const singleQuoteReady = process.env.VERCEL_ENV !== 'preview'
+    && (koreaEvidence.rent !== null || koreaEvidence.sale !== null);
   let summaryReady = false;
   try {
     if (buildKoreaPublicRouteModel('seoul')?.summary.published === true) {

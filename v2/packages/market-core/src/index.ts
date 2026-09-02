@@ -55,14 +55,27 @@ export {
   type QuotePositionVerdict,
 } from './quote-position';
 export {
+  compareContractOffers,
   compareRentOffers,
   conversionRateAt,
+  evaluateSingleQuoteCheck,
+  SINGLE_QUOTE_CHECK_PUBLICATION_MINIMUM,
+  SINGLE_QUOTE_CHECK_MAX_COMPLETED_MONTHS,
+  completedMonthWindow,
   type AppliedConversionRate,
+  type CheckTransaction,
+  type CompletedMonthWindow,
+  type ContractOfferCheck,
+  type ContractOfferComparison,
   type ConversionCurve,
   type ConversionCurveAnchor,
   type NormalizedRentContractOffer,
   type RentContractComparison,
   type RentContractOffer,
+  type SingleQuoteCheckInput,
+  type SingleQuoteCheckResult,
+  type SingleQuoteCheckUnavailableReason,
+  type SingleQuoteComparable,
 } from './contract-check';
 export {
   createCorrectionLedger,

@@ -30,8 +30,17 @@ const records: readonly SingleQuoteComparable[] = Object.freeze([
   })),
 ]);
 
+const curve = Object.freeze({
+  housingType: 'apartment' as const,
+  period: '2026-02/2026-08',
+  anchors: Object.freeze([
+    Object.freeze({ deposit: 30_000_000, annualRate: 0.05, pairCount: 120 }),
+    Object.freeze({ deposit: 200_000_000, annualRate: 0.05, pairCount: 120 }),
+  ]),
+});
+
 describe('single quote Check calculation', () => {
-  test('reuses the KoreaHomeGuide deposit adjustment for monthly rent', () => {
+  test('reuses the KoreaHomeGuide deposit adjustment with the installed conversion curve', () => {
     const result = evaluateSingleQuote({
       transaction: 'monthly',
       districtSlug: 'gangnam-gu',
@@ -40,15 +49,15 @@ describe('single quote Check calculation', () => {
       areaSqm: 84,
       depositWon: 100_000_000,
       quoteWon: 2_500_000,
-    }, records, '2026-02/2026-08');
+    }, records, '2026-02/2026-08', curve);
 
     expect(result.status).toBe('ready');
     if (result.status !== 'ready') return;
-    expect(result.scope).toBe('building');
-    expect(result.comparisonBasis).toBe('deposit-adjusted-monthly-rent');
+    expect(result.filters.scope).toBe('building');
+    expect(result.comparisonBasis).toBe('verified-deposit-adjusted-monthly-rent');
     expect(result.verdict).toBe('above');
-    expect(result.sampleCount).toBe(6);
-    expect(result.comparables[1]?.adjustedValueWon).toBe(2_006_667);
+    expect(result.sample.count).toBe(6);
+    expect(result.comparableRows[1]?.adjustedValueWon).toBe(2_006_667);
   });
 
   test('supports sale quotes without applying rent conversion', () => {
@@ -66,7 +75,8 @@ describe('single quote Check calculation', () => {
     if (result.status !== 'ready') return;
     expect(result.comparisonBasis).toBe('reported-sale-price');
     expect(result.verdict).toBe('below');
-    expect(result.middleHalfWon).toEqual([1_125_000_000, 1_375_000_000]);
+    expect([result.distribution.p25Won, result.distribution.p75Won])
+      .toEqual([1_125_000_000, 1_375_000_000]);
   });
 
   test('falls back from an insufficient building to its neighborhood, then district', () => {
@@ -91,8 +101,8 @@ describe('single quote Check calculation', () => {
 
     expect(result.status).toBe('ready');
     if (result.status !== 'ready') return;
-    expect(result.scope).toBe('neighborhood');
-    expect(result.sampleCount).toBe(6);
+    expect(result.filters.scope).toBe('neighborhood');
+    expect(result.sample.count).toBe(6);
   });
 
   test('exhausts the area tiers at the building before widening geography', () => {
@@ -117,8 +127,8 @@ describe('single quote Check calculation', () => {
 
     expect(result.status).toBe('ready');
     if (result.status !== 'ready') return;
-    expect(result.scope).toBe('building');
-    expect(result.areaTolerancePct).toBe(20);
+    expect(result.filters.scope).toBe('building');
+    expect(result.filters.areaTolerancePct).toBe(20);
   });
 
   test('withholds a verdict below five compatible reported contracts', () => {
@@ -132,6 +142,8 @@ describe('single quote Check calculation', () => {
       quoteWon: 500_000_000,
     }, records, '2026-02/2026-08');
 
-    expect(result).toEqual(expect.objectContaining({ status: 'insufficient', sampleCount: 0 }));
+    expect(result).toEqual(expect.objectContaining({
+      status: 'insufficient', sample: { count: 0, minimum: 5 },
+    }));
   });
 });

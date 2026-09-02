@@ -52,6 +52,7 @@
 }
 
 .modeSelector > span,
+.modeSelector > a,
 .modeSelector > button {
   min-height: 74px;
   padding: 15px 20px;
@@ -67,6 +68,7 @@
   font-size: 0.78rem;
   font-weight: 850;
   text-align: left;
+  text-decoration: none;
 }
 
 .modeSelector > :last-child {
@@ -88,6 +90,133 @@
 .modeSelector > button[aria-pressed='true'] {
   box-shadow: inset 0 -4px 0 var(--accent);
   cursor: default;
+}
+
+.modeSelector > span[aria-current='page'] {
+  box-shadow: inset 0 -4px 0 var(--accent);
+}
+
+.conditions {
+  min-width: 0;
+  border: 0;
+  border-bottom: var(--rule-strong);
+}
+
+.singleOffer {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border: 0;
+  border-bottom: var(--rule-strong);
+}
+
+.singleOffer > legend {
+  width: 100%;
+  min-height: 50px;
+  display: grid;
+  grid-template-columns: 50px minmax(0, 1fr);
+  align-items: center;
+  border-bottom: var(--rule-strong);
+  font-size: 0.7rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.singleOffer > legend > span {
+  align-self: stretch;
+  display: grid;
+  place-items: center;
+  margin-right: 16px;
+  border-right: var(--rule-default);
+  color: var(--accent);
+}
+
+.singleOffer > .field {
+  border-right: var(--rule-subtle);
+}
+
+.singleOffer > .field:last-child {
+  border-right: 0;
+}
+
+.comparableRows {
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.comparableRows p {
+  padding: 9px 0;
+  border-bottom: var(--rule-subtle);
+  font-size: 0.68rem;
+}
+
+.conditions > legend {
+  width: 100%;
+  min-height: 50px;
+  display: grid;
+  grid-template-columns: 50px minmax(0, 1fr);
+  align-items: center;
+  border-bottom: var(--rule-strong);
+  font-size: 0.7rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.conditions > legend > span {
+  align-self: stretch;
+  display: grid;
+  place-items: center;
+  margin-right: 16px;
+  border-right: var(--rule-default);
+  color: var(--accent);
+}
+
+.conditionGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.conditionGrid > .field:nth-child(odd) {
+  border-right: var(--rule-subtle);
+}
+
+.field {
+  min-width: 0;
+  padding: 16px;
+  display: grid;
+  gap: 8px;
+  border-bottom: var(--rule-subtle);
+  font-size: 0.7rem;
+  font-weight: 750;
+}
+
+.field > span {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.field > small,
+.field span small {
+  color: var(--muted);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.field input,
+.field select {
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  padding: 0 11px;
+  border: var(--rule-default);
+  border-radius: 0;
+  color: var(--ink);
+  background: var(--surface-strong);
+  font: inherit;
+  font-size: 0.86rem;
 }
 
 .housingType {
@@ -300,6 +429,169 @@
 
 .resultBody {
   padding: 0;
+}
+
+.resultOffers {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-bottom: var(--rule-strong);
+}
+
+.positionCard {
+  min-width: 0;
+  padding: 20px;
+  border-right: var(--rule-default);
+}
+
+.positionCard:last-child {
+  border-right: 0;
+}
+
+.positionCard > header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+  font-size: 0.76rem;
+}
+
+.positionCard > p {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.45;
+}
+
+.positionCard .marketVerdict {
+  color: var(--ink);
+  font-weight: 850;
+  text-transform: capitalize;
+}
+
+.filedValues {
+  display: grid;
+  gap: 8px;
+}
+
+.filedValues > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.filedValues dt {
+  color: var(--muted);
+  font-size: 0.66rem;
+}
+
+.filedValues dd {
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.distribution {
+  margin-top: 22px;
+}
+
+.distributionTrack {
+  height: 12px;
+  border: var(--rule-default);
+  background: var(--surface);
+}
+
+.distributionTrack > span {
+  max-width: 100%;
+  height: 100%;
+  display: block;
+  background: var(--accent);
+}
+
+.distributionLabels {
+  margin-top: 8px;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.distributionLabel {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+  color: var(--muted);
+  font-size: 0.54rem;
+  overflow-wrap: anywhere;
+}
+
+.distributionLabel small {
+  color: var(--ink);
+  font-weight: 850;
+}
+
+.fallback:empty {
+  display: none;
+}
+
+.keyFigures,
+.marketEvidence,
+.disclosure {
+  padding: 22px;
+  border-bottom: var(--rule-strong);
+}
+
+.keyFigures > h3,
+.marketEvidence > h3,
+.disclosure > h3 {
+  margin-bottom: 16px;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.keyFigures > div,
+.marketEvidence > div {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.keyFigures dl,
+.marketEvidence dl {
+  min-width: 0;
+  border: var(--rule-default);
+}
+
+.keyFigures dl > div,
+.marketEvidence dl > div {
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  border-bottom: var(--rule-subtle);
+  font-size: 0.7rem;
+}
+
+.keyFigures dl > div:last-child,
+.marketEvidence dl > div:last-child {
+  border-bottom: 0;
+}
+
+.keyFigures dt,
+.marketEvidence dt {
+  color: var(--muted);
+}
+
+.keyFigures dd,
+.marketEvidence dd {
+  font-weight: 800;
+  text-align: right;
+}
+
+.disclosure p {
+  max-width: 760px;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 0.7rem;
+  line-height: 1.5;
 }
 
 .verdictPanel {
@@ -649,7 +941,10 @@
 }
 
 .modeSelector button:focus-visible,
+.modeSelector a:focus-visible,
 .offerPanel input:focus-visible,
+.field input:focus-visible,
+.field select:focus-visible,
 .housingType select:focus-visible,
 .actions button:focus-visible,
 .resultPanel:focus-visible,
@@ -667,6 +962,19 @@
 
   .comparisonGrid {
     grid-template-columns: 1fr;
+  }
+
+  .resultOffers {
+    grid-template-columns: 1fr;
+  }
+
+  .positionCard {
+    border-right: 0;
+    border-bottom: var(--rule-strong);
+  }
+
+  .positionCard:last-child {
+    border-bottom: 0;
   }
 
   .offerPanel {
@@ -704,14 +1012,19 @@
 
   .modeSelector,
   .housingType,
+  .conditionGrid,
+  .singleOffer,
   .moneyFields,
   .equivalentGrid,
+  .keyFigures > div,
+  .marketEvidence > div,
   .evidence > dl,
   .contextLinks {
     grid-template-columns: 1fr;
   }
 
   .modeSelector > span,
+  .modeSelector > a,
   .modeSelector > button,
   .moneyFields > label + label,
   .equivalentGrid > div,
@@ -732,6 +1045,19 @@
   .housingType select {
     border-top: var(--rule-strong);
     border-left: 0;
+  }
+
+  .conditionGrid > .field:nth-child(odd) {
+    border-right: 0;
+  }
+
+  .distributionLabels {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .distributionLabel:first-child,
+  .distributionLabel:last-child {
+    display: none;
   }
 
   .actions button {
