@@ -235,6 +235,7 @@ describe('verified Explorer context resolver', () => {
       building: 'noryangjin-dream-square',
     })).toEqual({
       lawdCd: '11590',
+      districtSlug: 'dongjak-gu',
       districtLabel: 'Dongjak-gu (동작구)',
       housingType: 'officetel',
       housingTypeLabel: 'Officetel',

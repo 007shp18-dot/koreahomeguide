@@ -26,7 +26,8 @@
 
 .heading h2 {
   font-size: clamp(1.8rem, 4vw, 3.5rem);
-  letter-spacing: -0.055em;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
 }
 
 .heading > p:last-child,

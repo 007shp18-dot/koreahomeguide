@@ -87,4 +87,23 @@ describe('observed building detail', () => {
       'href="/kr/seoul/explore?transaction=monthly&amp;district=jongno-gu&amp;neighborhood=sajik-dong&amp;buildingId=jongno-monthly-home&amp;contractType=all"',
     );
   });
+
+  it('uses NAVER Panorama for a verified observed-building coordinate', async () => {
+    vi.stubEnv(
+      'SIGNEDPRICE_OBSERVED_BUILDING_ARTIFACT',
+      JSON.stringify(createObservedBuildingInventoryFixture()),
+    );
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', OBSERVED_BUILDING_FIXTURE_PERIOD);
+    vi.stubEnv('NAVER_MAP_CLIENT_ID', 'detail-naver-client');
+    const html = renderToStaticMarkup(await BuildingRoute({
+      params: Promise.resolve({
+        district: 'gangnam-gu', buildingId: 'gangnam-large-detached',
+      }),
+      searchParams: Promise.resolve({}),
+    }));
+
+    expect(html).toContain('data-building-detail="identity-only"');
+    expect(html).toContain('data-building-media="naver-panorama"');
+    expect(html).toContain('Nearby street view · not a listing photo · NAVER');
+  });
 });

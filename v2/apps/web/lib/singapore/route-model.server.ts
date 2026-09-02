@@ -28,7 +28,7 @@ const currency = new Intl.NumberFormat('en-SG', {
 });
 const number = new Intl.NumberFormat('en-SG', { maximumFractionDigits: 1 });
 const LIMITATIONS = Object.freeze([
-  'Private residential sales only; public housing and rentals are outside this release.',
+  'Private residential sales only; HDB resale and rental evidence is shown in separate layers.',
   'Reported transactions may be revised; unsupported product claims are not substituted.',
   'PSF is derived from reported SGD price and square metres; PSM uses the same source area basis.',
 ]);

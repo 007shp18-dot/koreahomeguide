@@ -138,9 +138,11 @@ describe('Korea public route model', () => {
 });
 
 describe('Korea public SSR routes', () => {
-  it('renders Korean Contract Check with a matching English language switch', () => {
+  it('renders Korean Contract Check with a matching English language switch', async () => {
     useConversionArtifact();
-    const html = renderToStaticMarkup(<KoreanContractCheckPage />);
+    const html = renderToStaticMarkup(await KoreanContractCheckPage({
+      searchParams: Promise.resolve({}),
+    }));
 
     expect(html).toContain('signedprice 홈');
     expect(html).toMatch(/hreflang="en"[^>]*href="\/kr\/seoul\/check"/i);

@@ -111,6 +111,7 @@ describe('installed snapshot registry', () => {
     ['kr-seoul', 'kr-conversion'],
     ['sg-singapore', 'sg-private-sale'],
     ['sg-singapore', 'sg-private-rent'],
+    ['sg-singapore', 'sg-hdb'],
     ['sg-singapore', 'sg-market-context'],
   ])('accepts the supported %s %s activation pair', (marketId, dataset) => {
     const value = validRegistry() as { snapshots: Array<Record<string, unknown>> };

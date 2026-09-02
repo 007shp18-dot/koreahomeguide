@@ -52,6 +52,32 @@
       "objectUrl": "installed://kr-conversion",
       "sha256": "ca61bbfad4e86d9b9c6372bf780c0f5e8e9e58f936ff9d5f23b80cd35d8e5d74",
       "recordCount": 1031799
+    },
+    {
+      "marketId": "sg-singapore",
+      "dataset": "sg-private-sale",
+      "schemaVersion": "signedprice-singapore-private-sale-v1",
+      "sourceVersion": "ura-data-service-v1",
+      "parserVersion": "sg-ura-private-sale-parser-v1",
+      "rightsPolicyId": "sg-ura-private-sale-v1",
+      "period": "2021-08/2026-08",
+      "generatedAt": "2026-09-02T00:00:00.000Z",
+      "objectUrl": "installed://sg-private-sale",
+      "sha256": "4c397fa1d64b0ef8928149857f5feb727f2ef400e820c95a2954f8703f800a0e",
+      "recordCount": 133942
+    },
+    {
+      "marketId": "sg-singapore",
+      "dataset": "sg-hdb",
+      "schemaVersion": "signedprice-singapore-hdb-published-v1",
+      "sourceVersion": "data-gov-sg-2026-09-02",
+      "parserVersion": "sg-hdb-published-summary-v1",
+      "rightsPolicyId": "sg-open-data-licence-v1",
+      "period": "2017-01/2026-09",
+      "generatedAt": "2026-09-02T00:00:00.000Z",
+      "objectUrl": "installed://sg-hdb",
+      "sha256": "c253347d354c62ac3884e7bca3d3f2750eb28ae0644d32cf258afda286059b64",
+      "recordCount": 462792
     }
   ]
 }

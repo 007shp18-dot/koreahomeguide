@@ -140,15 +140,27 @@ describe('canonical Explorer selection codec', () => {
       buildingId: 'jongno-gu-building-1',
       contractType: 'new',
       sort: 'median-asc',
+      view: 'table',
     }, koreaDefaults, allowLists);
 
     expect(serializeExplorerSelection(selection, koreaDefaults)).toBe(
-      'transaction=monthly&area=all&propertyType=apartment&district=jongno-gu&neighborhood=sajik-dong&buildingId=jongno-gu-building-1&contractType=new&sort=median-asc',
+      'transaction=monthly&area=all&propertyType=apartment&district=jongno-gu&neighborhood=sajik-dong&buildingId=jongno-gu-building-1&contractType=new&sort=median-asc&view=table',
     );
     expect(serializeExplorerSelection(koreaDefaults, koreaDefaults)).toBe('');
     expect(createSelectionHref('/kr/seoul/explore/', selection, koreaDefaults)).toBe(
-      '/kr/seoul/explore/?transaction=monthly&area=all&propertyType=apartment&district=jongno-gu&neighborhood=sajik-dong&buildingId=jongno-gu-building-1&contractType=new&sort=median-asc',
+      '/kr/seoul/explore/?transaction=monthly&area=all&propertyType=apartment&district=jongno-gu&neighborhood=sajik-dong&buildingId=jongno-gu-building-1&contractType=new&sort=median-asc&view=table',
     );
+  });
+
+  it('keeps only approved Explorer V2 views', () => {
+    for (const view of ['split', 'list', 'table', 'map'] as const) {
+      expect(parseExplorerSelection(new URLSearchParams(`view=${view}`), koreaDefaults))
+        .toMatchObject({ view });
+    }
+    expect(parseExplorerSelection(new URLSearchParams('view=globe'), koreaDefaults))
+      .toEqual(koreaDefaults);
+    expect(parseExplorerSelection({ view: ['map', 'list'] }, koreaDefaults))
+      .toEqual(koreaDefaults);
   });
 
   it('round-trips approved all-area cohorts and rejects unknown area bands', () => {

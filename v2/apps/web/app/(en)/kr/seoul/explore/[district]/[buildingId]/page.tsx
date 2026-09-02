@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { BuildingDetailPage } from '@/components/public-market/building-detail-page';
+import { BuildingOfficialFacts } from '@/components/public-market/building-official-facts';
+import { NaverBuildingStreetView } from '@/components/maps/naver-building-street-view';
 import {
   KoreaEvidenceBuildingDetail,
   ObservedBuildingDetail,
@@ -35,6 +37,24 @@ type BuildingPageProps = Readonly<{
   params: Promise<Readonly<{ district: string; buildingId: string }>>;
   searchParams: Promise<Readonly<Record<string, string | string[] | undefined>>>;
 }>;
+
+function naverStreetViewFor(input: Readonly<{
+  name: string;
+  latitude: number | null;
+  longitude: number | null;
+  mapHref: string;
+}>) {
+  if (input.latitude === null || input.longitude === null) return undefined;
+  return (
+    <NaverBuildingStreetView
+      clientId={process.env.NAVER_MAP_CLIENT_ID?.trim() || null}
+      buildingName={input.name}
+      latitude={input.latitude}
+      longitude={input.longitude}
+      mapHref={input.mapHref}
+    />
+  );
+}
 
 export const dynamicParams = true;
 
@@ -155,7 +175,21 @@ export default async function BuildingRoute({ params, searchParams }: BuildingPa
     koreaEvidenceRepositoriesFromEnvironment(),
   );
   if (exact !== null) {
-    return <KoreaEvidenceBuildingDetail model={exact.model} backHref={exact.backHref} />;
+    const identity = buildObservedBuildingIdentityModel(district, buildingId);
+    return <KoreaEvidenceBuildingDetail
+      model={exact.model}
+      backHref={exact.backHref}
+      visual={naverStreetViewFor({
+        name: exact.model.building.officialName,
+        latitude: identity?.coordinate.status === 'ready' ? identity.coordinate.latitude : null,
+        longitude: identity?.coordinate.status === 'ready' ? identity.coordinate.longitude : null,
+        mapHref: exact.backHref,
+      })}
+      facts={<BuildingOfficialFacts
+        districtSlug={exact.model.district.slug}
+        buildingId={exact.model.building.buildingId}
+      />}
+    />;
   }
   const model = buildPublicBuildingModel(district, buildingId);
   if (model === null) {
@@ -179,7 +213,20 @@ export default async function BuildingRoute({ params, searchParams }: BuildingPa
       { ...selection, district: observed.district.slug },
       { market: 'kr', transaction: 'jeonse' },
     );
-    return <ObservedBuildingDetail model={observed} backHref={backHref} />;
+    return <ObservedBuildingDetail
+      model={observed}
+      backHref={backHref}
+      visual={naverStreetViewFor({
+        name: observed.building.officialName,
+        latitude: observed.coordinate.status === 'ready' ? observed.coordinate.latitude : null,
+        longitude: observed.coordinate.status === 'ready' ? observed.coordinate.longitude : null,
+        mapHref: backHref,
+      })}
+      facts={<BuildingOfficialFacts
+        districtSlug={observed.district.slug}
+        buildingId={observed.building.buildingId}
+      />}
+    />;
   }
   const selection = parseBuildingDecisionSelection(query);
   const decision = buildBuildingDecisionModel(model, selection);
@@ -207,11 +254,22 @@ export default async function BuildingRoute({ params, searchParams }: BuildingPa
     mapHref: backHref,
     photo: null,
   });
+  const streetView = naverStreetViewFor({
+    name: model.building.name,
+    latitude: model.building.latitude,
+    longitude: model.building.longitude,
+    mapHref: backHref,
+  });
   return (
     <BuildingDetailPage
       model={model}
       decision={decision}
       visual={visual}
+      streetView={streetView}
+      facts={<BuildingOfficialFacts
+        districtSlug={model.district.slug}
+        buildingId={model.building.buildingId}
+      />}
       base={base}
       backHref={backHref}
     />

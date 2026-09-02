@@ -10,6 +10,12 @@ import {
   type SingaporeSnapshot,
   type SingaporeSnapshotRecord,
 } from '@signedprice/singapore-property';
+import {
+  createInstalledSnapshotRepository,
+  resolveInstalledSnapshotObject,
+  resolveInstalledSnapshotRegistry,
+  type VerifiedInstalledSnapshot,
+} from '../snapshots/installed-snapshot-repository.server';
 
 export type SingaporeProjectRouteParam = Readonly<{
   area: 'ccr' | 'rcr' | 'ocr';
@@ -129,6 +135,23 @@ export async function createSingaporeSnapshotRepository(
   }
 }
 
+export async function createSingaporeSnapshotRepositoryFromInstalled(
+  installed: VerifiedInstalledSnapshot,
+): Promise<SingaporeSnapshotRepository> {
+  const payload = installed.payload as Partial<SingaporeSnapshot>;
+  if (installed.metadata.marketId !== 'sg-singapore'
+    || installed.metadata.dataset !== 'sg-private-sale'
+    || payload.version !== 'signedprice-singapore-private-sale-v1'
+    || typeof payload.digest !== 'string') {
+    throw new SingaporeEvidenceUnavailableError();
+  }
+  return createSingaporeSnapshotRepository({
+    serialized: JSON.stringify(installed.payload),
+    expectedDigest: payload.digest,
+    expectedPeriod: installed.metadata.period.replace('/', '..'),
+  });
+}
+
 let environmentCache: Readonly<{
   serialized: string | undefined;
   digest: string;
@@ -144,11 +167,21 @@ export function singaporeSnapshotRepositoryFromEnvironment(): Promise<SingaporeS
     && environmentCache.serialized === serialized
     && environmentCache.digest === digest
     && environmentCache.period === period) return environmentCache.repository;
-  const repository = createSingaporeSnapshotRepository({
-    serialized,
-    expectedDigest: digest,
-    expectedPeriod: period,
-  }).catch(() => null);
+  const repository = (async () => {
+    try {
+      const installed = createInstalledSnapshotRepository({
+        registrySource: resolveInstalledSnapshotRegistry(),
+        resolveObject: resolveInstalledSnapshotObject,
+      }).get('sg-singapore', 'sg-private-sale');
+      return await createSingaporeSnapshotRepositoryFromInstalled(installed);
+    } catch {
+      return createSingaporeSnapshotRepository({
+        serialized,
+        expectedDigest: digest,
+        expectedPeriod: period,
+      }).catch(() => null);
+    }
+  })();
   environmentCache = Object.freeze({ serialized, digest, period, repository });
   return repository;
 }

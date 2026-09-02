@@ -32,8 +32,8 @@
   max-width: 920px;
   font-size: clamp(2.2rem, 5.3vw, 5rem);
   font-weight: 900;
-  letter-spacing: -0.06em;
-  line-height: 0.94;
+  letter-spacing: -0.04em;
+  line-height: 1;
 }
 
 .header > p:last-child {
@@ -74,7 +74,8 @@
   overflow-wrap: anywhere;
   font-size: clamp(1.45rem, 3vw, 2.4rem);
   font-weight: 900;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
 }
 
 .primaryStat dd {

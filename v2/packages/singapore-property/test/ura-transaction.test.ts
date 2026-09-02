@@ -43,6 +43,7 @@ describe('parseUraPrivateSaleEnvelope', () => {
       contractMonth: '2026-08-01',
       saleType: 'new_sale',
       priceSgd: 2_000_000,
+      netPriceSgd: null,
       propertyType: 'condominium',
       district: '10',
       areaBasis: 'strata',
@@ -53,11 +54,30 @@ describe('parseUraPrivateSaleEnvelope', () => {
     expect(records[2]?.areaBasis).toBe('land');
   });
 
+  it('accepts current URA variants with omitted project coordinates and disclosed nett price', () => {
+    const value = copyFixture();
+    delete firstProject(value).x;
+    delete firstProject(value).y;
+    firstTransaction(value).nettPrice = '1950000';
+
+    const records = parseUraPrivateSaleEnvelope(value, 1);
+
+    expect(records[0]).toMatchObject({
+      x: null,
+      y: null,
+      priceSgd: 2_000_000,
+      netPriceSgd: 1_950_000,
+    });
+    expect(records[1]).toMatchObject({ x: null, y: null, netPriceSgd: null });
+  });
+
   it.each([
     ['extra envelope key', (value: Record<string, unknown>) => { value.Extra = true; }],
     ['missing envelope key', (value: Record<string, unknown>) => { delete value.Message; }],
     ['missing project key', (value: Record<string, unknown>) => { delete firstProject(value).street; }],
+    ['only one coordinate', (value: Record<string, unknown>) => { delete firstProject(value).x; }],
     ['extra transaction key', (value: Record<string, unknown>) => { firstTransaction(value).extra = 'x'; }],
+    ['invalid nett price', (value: Record<string, unknown>) => { firstTransaction(value).nettPrice = 'free'; }],
     ['invalid area', (value: Record<string, unknown>) => { firstTransaction(value).area = '100m2'; }],
     ['zero area', (value: Record<string, unknown>) => { firstTransaction(value).area = '0'; }],
     ['zero price', (value: Record<string, unknown>) => { firstTransaction(value).price = '0'; }],

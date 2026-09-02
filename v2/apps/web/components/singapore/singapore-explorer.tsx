@@ -1,7 +1,9 @@
 import Link from 'next/link';
 
 import type { SingaporeExploreModel } from '../../lib/singapore/route-types';
+import type { HdbExploreModel } from '../../lib/singapore/hdb-route-model.server';
 import { GooglePlaceMap } from '../maps/google-place-map';
+import { HdbMarketPanel } from './hdb-market-panel';
 import {
   SingaporeEvidence,
   SingaporePage,
@@ -21,9 +23,11 @@ function SingaporeMapSection({ browserKey }: Readonly<{ browserKey: string | nul
 
 export function SingaporeExplorer({
   model,
+  hdbModel = { status: 'unavailable' },
   googleMapsBrowserKey = null,
 }: Readonly<{
   model: SingaporeExploreModel;
+  hdbModel?: HdbExploreModel;
   googleMapsBrowserKey?: string | null;
 }>) {
   if (model.status === 'unavailable') return (
@@ -38,6 +42,7 @@ export function SingaporeExplorer({
         </div>
       </section>
       <SingaporeMapSection browserKey={googleMapsBrowserKey} />
+      <HdbMarketPanel model={hdbModel} />
     </SingaporePage>
   );
   return (
@@ -49,7 +54,7 @@ export function SingaporeExplorer({
         <SingaporeScope />
       </header>
       <SingaporeMapSection browserKey={googleMapsBrowserKey} />
-      <section className={styles.section} aria-labelledby="segment-heading">
+      <section className={styles.section} id="ura-private" aria-labelledby="segment-heading">
         <p className={styles.sectionLabel}>02 / Market segments</p>
         <h2 id="segment-heading">Native Singapore regions, kept separate.</h2>
         <div className={styles.grid}>
@@ -65,6 +70,7 @@ export function SingaporeExplorer({
           ))}
         </div>
       </section>
+      <HdbMarketPanel model={hdbModel} />
       <SingaporeEvidence model={model.evidence} />
     </SingaporePage>
   );

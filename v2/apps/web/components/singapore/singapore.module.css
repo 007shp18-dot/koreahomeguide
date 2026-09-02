@@ -34,8 +34,8 @@
   max-width: 920px;
   margin: 0;
   font-size: clamp(2.5rem, 5.7vw, 5.5rem);
-  line-height: 0.94;
-  letter-spacing: -0.055em;
+  line-height: 1;
+  letter-spacing: -0.04em;
 }
 
 .hero > p:not(.eyebrow) {
@@ -164,8 +164,8 @@
 .unavailable h1 {
   max-width: 920px;
   font-size: clamp(2.35rem, 5vw, 4.8rem);
-  letter-spacing: -0.05em;
-  line-height: 0.96;
+  letter-spacing: -0.04em;
+  line-height: 1;
 }
 
 .tableWrap {
@@ -201,6 +201,91 @@
   line-height: 1.6;
 }
 
+.sectionIntro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.6fr);
+  gap: clamp(1.5rem, 4vw, 3rem);
+  align-items: start;
+  margin-bottom: 1.5rem;
+}
+
+.sectionIntro h2 { margin-bottom: 0.75rem; }
+.sectionIntro p { max-width: 68ch; margin: 0; line-height: 1.65; }
+
+.compactStats {
+  margin: 0;
+  display: grid;
+  border-top: 1px solid var(--divider);
+}
+
+.compactStats div {
+  min-width: 0;
+  padding: 0.75rem 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  border-bottom: 1px solid var(--divider);
+}
+
+.compactStats dt,
+.compactStats dd { margin: 0; }
+.compactStats dt { font-size: 0.78rem; line-height: 1.4; }
+.compactStats dd { font-weight: 800; white-space: nowrap; }
+
+.dataTabs {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  margin: 0 0 1.5rem;
+  padding: 0 0 0.5rem;
+  scrollbar-width: thin;
+}
+
+.dataTabs a {
+  min-height: 40px;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--ink);
+  color: inherit;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.chartGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.chart {
+  height: 100%;
+  margin: 0;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  border: 1px solid var(--divider);
+  background: var(--surface);
+}
+
+.chart figcaption h3 { margin: 0 0 0.4rem; font-size: 1.15rem; letter-spacing: -0.015em; }
+.chart figcaption p { min-height: 2.8em; margin: 0 0 1.25rem; color: var(--muted); font-size: 0.78rem; line-height: 1.4; }
+.chartRows { display: grid; gap: 0.7rem; }
+.chartRow {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(84px, 0.7fr) minmax(80px, 1.3fr) minmax(108px, auto);
+  gap: 0.65rem;
+  align-items: center;
+}
+.chartName { overflow: hidden; font-size: 0.72rem; font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
+.chartTrack { height: 0.55rem; overflow: hidden; background: var(--line); }
+.chartBar { width: var(--bar-width); height: 100%; display: block; background: var(--accent); }
+.chartValue { font-size: 0.76rem; line-height: 1.2; text-align: right; white-space: nowrap; }
+.hdbTable { min-width: 760px; }
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+
 @media (max-width: 760px) {
   .main {
     width: 100%;
@@ -210,4 +295,8 @@
   .grid,
   .stats,
   .projectGrid { grid-template-columns: 1fr; }
+  .sectionIntro,
+  .chartGrid { grid-template-columns: 1fr; }
+  .chart figcaption p { min-height: 0; }
+  .chartRow { grid-template-columns: minmax(78px, 0.8fr) minmax(64px, 1fr) minmax(100px, auto); gap: 0.45rem; }
 }

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import type { ReactNode } from 'react';
 
 import type { BuildingDecisionModel } from '../../lib/public-market/building-decision-model';
 import type {
@@ -49,12 +50,16 @@ export function BuildingDetailPage({
   model,
   decision,
   visual,
+  streetView,
+  facts,
   base,
   backHref,
 }: Readonly<{
   model: PublicBuildingModel;
   decision: BuildingDecisionModel;
   visual: BuildingVisualModel;
+  streetView?: ReactNode;
+  facts?: ReactNode;
   base: string;
   backHref?: string;
 }>) {
@@ -69,7 +74,7 @@ export function BuildingDetailPage({
           data-identity-hero="true"
           data-building-section="identity"
         >
-          <BuildingVisual model={visual} />
+          {streetView ?? <BuildingVisual model={visual} />}
           <div className={styles.identitySummary}>
             <Link
               className={styles.backAction}
@@ -91,6 +96,8 @@ export function BuildingDetailPage({
             </Link>
           </div>
         </section>
+
+        {facts}
 
         <section className={styles.decisionRegion} data-building-section="decision">
           <BuildingDecisionTabs base={base} selection={decision.selection} />

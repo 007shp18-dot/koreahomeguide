@@ -50,6 +50,6 @@ describe('building decision model', () => {
       readiness: { state: 'insufficient', title: 'Investment evidence is incomplete' },
     });
     expect(decision.rentCheckHref)
-      .toBe('/kr/seoul/check/?lawdCd=11680&type=apartment');
+      .toBe('/kr/seoul/check/?transaction=jeonse&district=gangnam-gu&housing=apartment&area=50&building=gangnam-evidence-tower');
   });
 });

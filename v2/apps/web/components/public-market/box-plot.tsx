@@ -146,49 +146,24 @@ export function BoxPlot({
         {showMarker ? (
           <span className={styles.quoteMarker} data-quote-marker="true" aria-hidden="true" />
         ) : null}
-        <span
-          className={`${styles.plotAnnotation} ${styles.endpointAnnotation} ${styles.minimumAnnotation}`}
-          data-plot-label="min"
-          style={{ '--label-pct': plotStyle['--min-pct'] } as PlotStyle}
-        >
-          <small><span className={styles.endpointLong}>{copy.minimum}</span><span className={styles.endpointShort}>{copy.minimumShort}</span></small>
-          <strong>{formatValue(summary.min)}</strong>
-        </span>
-        {middleLabels.map(({ key, label, shortLabel, value }) => (
+      </div>
+      <div className={styles.plotLegend} data-plot-layout="legend">
+        <span data-plot-label="min"><small>{copy.minimum}</small><strong>{formatValue(summary.min)}</strong></span>
+        {middleLabels.map(({ key, label, value }) => (
           <span
-            className={`${styles.plotAnnotation} ${styles.middleAnnotation} ${
-              key === 'median' ? styles.medianAnnotation : ''
-            }`}
+            className={key === 'median' ? styles.medianAnnotation : ''}
             data-plot-label={key}
             data-plot-lane={lanes[key]}
             key={key}
-            style={{
-              '--label-pct': pct(positions[key]),
-              '--label-lane': String(lanes[key]),
-            } as PlotStyle}
           >
-            <small><span className={styles.quartileLong}>{label}</span><span className={styles.quartileShort}>{shortLabel}</span></small>
-            <strong>{formatValue(value)}</strong>
+            <small>{label}</small><strong>{formatValue(value)}</strong>
           </span>
         ))}
-        <span
-          className={`${styles.plotAnnotation} ${styles.endpointAnnotation} ${styles.maximumAnnotation}`}
-          data-plot-label="max"
-          style={{ '--label-pct': plotStyle['--max-pct'] } as PlotStyle}
-        >
-          <small><span className={styles.endpointLong}>{copy.maximum}</span><span className={styles.endpointShort}>{copy.maximumShort}</span></small>
-          <strong>{formatValue(summary.max)}</strong>
-        </span>
-        {showMarker ? (
-          <span
-            className={`${styles.plotAnnotation} ${styles.quoteAnnotation}`}
-            data-plot-label="quote"
-            style={{ '--label-pct': plotStyle['--marker-pct'] } as PlotStyle}
-          >
-            <small>{markerLabel}</small>
-          </span>
-        ) : null}
+        <span data-plot-label="max"><small>{copy.maximum}</small><strong>{formatValue(summary.max)}</strong></span>
       </div>
+      {showMarker ? <p className={styles.plotQuoteLegend} data-plot-label="quote">
+        <span aria-hidden="true" /> <strong>{markerLabel}</strong>
+      </p> : null}
       <figcaption id={descriptionId} className={styles.plotCaption}>
         <strong>{count}</strong>
         <span>

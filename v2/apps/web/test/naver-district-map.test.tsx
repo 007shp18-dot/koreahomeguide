@@ -99,6 +99,9 @@ describe('NAVER district map', () => {
     expect(buildNaverMapsScriptUrl('client/id + value', true)).toBe(
       'https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=client%2Fid+%2B+value&submodules=geocoder',
     );
+    expect(buildNaverMapsScriptUrl('client/id + value', true, true)).toBe(
+      'https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=client%2Fid+%2B+value&submodules=panorama%2Cgeocoder',
+    );
   });
 
   it('keeps a labelled static fallback while the interactive map loads', () => {

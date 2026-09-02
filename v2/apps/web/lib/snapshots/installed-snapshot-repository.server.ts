@@ -36,6 +36,8 @@ let checkedInObservedBuildingInventory: unknown;
 let checkedInKoreaRentEvidence: unknown;
 let checkedInKoreaSaleEvidence: unknown;
 let checkedInKoreaConversionEvidence: unknown;
+let checkedInSingaporePrivateSale: unknown;
+let checkedInSingaporeHdb: unknown;
 const checkedInSnapshotDigests = new WeakMap<object, string>();
 
 function parseCompressedInventory(source: Buffer): unknown {
@@ -133,6 +135,29 @@ export function resolveInstalledSnapshotObject(objectUrl: string): unknown {
       ],
     );
   }
+  if (objectUrl === 'installed://sg-private-sale') {
+    return readCheckedInArtifact(
+      checkedInSingaporePrivateSale,
+      (value) => { checkedInSingaporePrivateSale = value; },
+      [
+        () => readFileSync(resolve(process.cwd(), 'data/singapore-private-sale.json.gz')),
+        () => readFileSync(resolve(
+          process.cwd(),
+          'apps/web/data/singapore-private-sale.json.gz',
+        )),
+      ],
+    );
+  }
+  if (objectUrl === 'installed://sg-hdb') {
+    return readCheckedInArtifact(
+      checkedInSingaporeHdb,
+      (value) => { checkedInSingaporeHdb = value; },
+      [
+        () => readFileSync(resolve(process.cwd(), 'data/singapore-hdb.json.gz')),
+        () => readFileSync(resolve(process.cwd(), 'apps/web/data/singapore-hdb.json.gz')),
+      ],
+    );
+  }
   return undefined;
 }
 
@@ -174,16 +199,40 @@ function snapshotIdentity(payload: Readonly<Record<string, unknown>>): Readonly<
   const provenance = isObject(payload.provenance) ? payload.provenance : undefined;
   const totals = isObject(payload.totals) ? payload.totals : undefined;
   const artifactVersion = payload.artifactVersion;
+  const singaporePeriod = isObject(payload.period)
+    && typeof payload.period.from === 'string'
+    && typeof payload.period.to === 'string'
+    ? `${payload.period.from}/${payload.period.to}`
+    : undefined;
+  const singaporeMarket = payload.version === 'signedprice-singapore-private-sale-v1'
+    || payload.version === 'signedprice-singapore-hdb-v1'
+    || payload.version === 'signedprice-singapore-hdb-published-v1'
+    ? 'sg-singapore'
+    : undefined;
+  const hdbPeriods = isObject(payload.periods) ? payload.periods : undefined;
+  const hdbTotals = isObject(payload.totals) ? payload.totals : undefined;
+  const hdbPeriodValues = [hdbPeriods?.resale, hdbPeriods?.rental]
+    .filter((value): value is string => typeof value === 'string' && /^\d{4}-\d{2}\/\d{4}-\d{2}$/.test(value));
+  const hdbPeriod = hdbPeriodValues.length === 2
+    ? `${hdbPeriodValues.map((value) => value.slice(0, 7)).sort()[0]}/${hdbPeriodValues
+      .map((value) => value.slice(8)).sort().at(-1)}`
+    : undefined;
   return Object.freeze({
     schemaVersion: typeof artifactVersion === 'number'
       ? String(artifactVersion)
-      : artifactVersion ?? payload.schemaVersion,
-    marketId: payload.marketId ?? provenance?.marketId,
-    period: payload.period ?? provenance?.period,
+      : artifactVersion ?? payload.schemaVersion ?? payload.version,
+    marketId: payload.marketId ?? provenance?.marketId ?? singaporeMarket,
+    period: payload.version === 'signedprice-singapore-hdb-v1'
+      || payload.version === 'signedprice-singapore-hdb-published-v1'
+      ? hdbPeriod
+      : singaporePeriod ?? payload.period ?? provenance?.period,
     recordCount: Array.isArray(payload.records)
       ? payload.records.length
       : Array.isArray(payload.areaRecords) && Array.isArray(payload.buildingRecords)
         ? payload.areaRecords.length + payload.buildingRecords.length
+        : Number.isSafeInteger(hdbTotals?.sourceRows)
+          && (hdbTotals?.sourceRows as number) >= 0
+          ? hdbTotals?.sourceRows as number
         : Number.isSafeInteger(totals?.eligiblePairCount)
           && (totals?.eligiblePairCount as number) >= 0
           ? totals?.eligiblePairCount as number

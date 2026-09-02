@@ -1,34 +1,23 @@
-import { ContractCheckWorkspace } from '@/components/contract-check/contract-check-workspace';
-import { SiteFooter } from '@/components/site-footer';
-import { SiteHeader } from '@/components/site-header';
-import { buildContractCheckRouteModel } from '@/lib/contract-check/route-model.server';
-import { buildKoreanSiteHeader, KOREAN_ROUTE_COPY, KOREAN_SITE_FOOTER } from '@/lib/locale/ko';
+import { SingleQuoteCheckWorkspace } from '@/components/single-quote-check/single-quote-check-workspace';
+import { koreaEvidenceRepositoriesFromEnvironment } from '@/lib/public-market/korea-evidence-repositories.server';
 import { indexableMetadata } from '@/lib/public-metadata';
-import styles from '../korean-evidence.module.css';
+import { buildSingleQuoteCheckRouteModel } from '@/lib/single-quote-check/route-model.server';
 
 export const metadata = indexableMetadata({
   path: '/ko/kr/seoul/check/',
-  title: '서울 임대차 계약 조건 비교 | signedprice',
-  description: '보증금과 월세가 다른 두 서울 임대차 계약 조건을 같은 월 비용 기준으로 비교합니다.',
+  title: '서울 매매·전세·월세 제시가격 확인 | signedprice',
+  description: '서울 매매·전세·월세 제시가격 하나를 조건이 맞는 공식 신고 거래 근거와 비교합니다.',
   locale: 'ko_KR',
   imagePath: '/og/ko/',
   languageAlternates: { en: '/kr/seoul/check/', ko: '/ko/kr/seoul/check/' },
 });
 
-export default function KoreanContractCheckPage() {
-  const model = buildContractCheckRouteModel();
-  return (
-    <div id="top" lang="ko" className={styles.page}>
-      <SiteHeader copy={buildKoreanSiteHeader('/kr/seoul/check/')} />
-      <main>
-        <header className={styles.intro}>
-          <p>{KOREAN_ROUTE_COPY.check.eyebrow}</p>
-          <h1>{KOREAN_ROUTE_COPY.check.heading}</h1>
-          <p>{KOREAN_ROUTE_COPY.check.description}</p>
-        </header>
-        <ContractCheckWorkspace locale="ko" model={model} />
-      </main>
-      <SiteFooter copy={KOREAN_SITE_FOOTER} />
-    </div>
+export default async function KoreanContractCheckPage({
+  searchParams = Promise.resolve({}),
+}: Readonly<{ searchParams?: Promise<Record<string, string | string[] | undefined>> }>) {
+  const model = buildSingleQuoteCheckRouteModel(
+    koreaEvidenceRepositoriesFromEnvironment(),
+    await searchParams,
   );
+  return <SingleQuoteCheckWorkspace locale="ko" model={model} />;
 }

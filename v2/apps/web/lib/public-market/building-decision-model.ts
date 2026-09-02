@@ -40,12 +40,6 @@ function cohortGroup(model: PublicBuildingModel, cohort: BuildingContractCohort)
   return cohort === 'all' ? model.building.groups.all : model.building.groups[cohort];
 }
 
-function rentCheckType(model: PublicBuildingModel): 'apartment' | 'officetel' | 'villa' {
-  return model.building.housingType === 'villa_multifamily'
-    ? 'villa'
-    : model.building.housingType;
-}
-
 function rentReadiness(
   cohort: BuildingContractCohort,
   group: ReturnType<typeof cohortGroup>,
@@ -93,8 +87,11 @@ export function buildBuildingDecisionModel(
 ): BuildingDecisionModel {
   const group = cohortGroup(model, selection.contract);
   const query = new URLSearchParams({
-    lawdCd: model.district.lawdCd,
-    type: rentCheckType(model),
+    transaction: 'jeonse',
+    district: model.district.slug,
+    housing: model.building.housingType,
+    area: '50',
+    building: model.building.buildingId,
   });
   return Object.freeze({
     selection,

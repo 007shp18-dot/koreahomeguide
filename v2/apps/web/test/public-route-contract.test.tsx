@@ -197,8 +197,8 @@ describe('public migration containment', () => {
   it('describes canonical Contract Check without appraisal or accuracy claims', () => {
     const metadata = buildKoreaPublicPageMetadata('/kr/seoul/check/');
 
-    expect(metadata.title).toBe('Compare Seoul rental contract offers | signedprice');
-    expect(metadata.description).toContain('filed deposit-and-rent offers');
+    expect(metadata.title).toBe('Check a Seoul sale, jeonse or rent quote | signedprice');
+    expect(metadata.description).toContain('sale, jeonse or monthly-rent asking quote');
     expect(JSON.stringify(metadata)).not.toMatch(/appraisal|valuation|predict|accurate/i);
   });
 

@@ -2,6 +2,7 @@ export type ExplorerMarket = 'kr' | 'sg' | 'ae';
 export type ExplorerTransaction = 'sale' | 'jeonse' | 'monthly' | 'rent';
 export type ExplorerContractType = 'new' | 'renewal' | 'all';
 export type ExplorerArea = 'all' | 'under-40' | '40-60' | '60-85' | '85-plus';
+export type ExplorerView = 'split' | 'list' | 'table' | 'map';
 
 export type ExplorerSelection = Readonly<{
   market: ExplorerMarket;
@@ -13,6 +14,7 @@ export type ExplorerSelection = Readonly<{
   buildingId?: string;
   contractType?: ExplorerContractType;
   sort?: string;
+  view?: ExplorerView;
 }>;
 
 export type ExplorerSelectionDefaults = Readonly<{
@@ -45,6 +47,7 @@ const marketDefaults = Object.freeze({
   ae: 'sale',
 } as const satisfies Record<ExplorerMarket, ExplorerTransaction>);
 const contractTypes = Object.freeze(['new', 'renewal', 'all'] as const);
+const explorerViews = Object.freeze(['split', 'list', 'table', 'map'] as const);
 const identifierPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 function isObject(value: unknown): value is Readonly<Record<string, unknown>> {
@@ -119,6 +122,10 @@ export function normalizeExplorerSelection(
     ? source.contractType as ExplorerContractType
     : undefined;
   const sort = acceptedIdentifier(source.sort, allowLists.sorts);
+  const view = typeof source.view === 'string'
+    && (explorerViews as readonly string[]).includes(source.view)
+    ? source.view as ExplorerView
+    : undefined;
 
   return Object.freeze({
     market,
@@ -130,6 +137,7 @@ export function normalizeExplorerSelection(
     ...(buildingId === undefined ? {} : { buildingId }),
     ...(contractType === undefined ? {} : { contractType }),
     ...(sort === undefined ? {} : { sort }),
+    ...(view === undefined ? {} : { view }),
   });
 }
 
@@ -160,6 +168,10 @@ function normalizeSerializableSelection(
     ? input.contractType
     : undefined;
   const sort = serializableIdentifier(input.sort);
+  const view = typeof input.view === 'string'
+    && (explorerViews as readonly string[]).includes(input.view)
+    ? input.view
+    : undefined;
   return Object.freeze({
     market,
     transaction,
@@ -170,6 +182,7 @@ function normalizeSerializableSelection(
     ...(buildingId === undefined ? {} : { buildingId }),
     ...(contractType === undefined ? {} : { contractType }),
     ...(sort === undefined ? {} : { sort }),
+    ...(view === undefined ? {} : { view }),
   });
 }
 
@@ -197,6 +210,7 @@ export function parseExplorerSelection(
     buildingId: scalarSearchParam(input, 'buildingId'),
     contractType: scalarSearchParam(input, 'contractType'),
     sort: scalarSearchParam(input, 'sort'),
+    view: scalarSearchParam(input, 'view'),
   }, defaults, allowLists);
 }
 
@@ -220,6 +234,7 @@ export function serializeExplorerSelection(
   if (selection.buildingId !== undefined) query.set('buildingId', selection.buildingId);
   if (selection.contractType !== undefined) query.set('contractType', selection.contractType);
   if (selection.sort !== undefined) query.set('sort', selection.sort);
+  if (selection.view !== undefined && selection.view !== 'split') query.set('view', selection.view);
   return query.toString();
 }
 

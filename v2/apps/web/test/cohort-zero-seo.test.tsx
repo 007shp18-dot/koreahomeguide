@@ -44,7 +44,7 @@ describe('SignedPrice cohort zero SEO', () => {
     expect(entries.map(({ title }) => title)).toEqual([
       'signedprice | Real prices. Better property decisions.',
       'Seoul property intelligence | signedprice',
-      'Compare Seoul rental contract offers | signedprice',
+      'Check a Seoul sale, jeonse or rent quote | signedprice',
       'Seoul sale, jeonse and monthly-rent evidence | signedprice',
       'Seoul sale, jeonse and monthly-rent rankings | signedprice',
     ]);
@@ -127,15 +127,17 @@ describe('SignedPrice cohort zero SEO', () => {
     });
   });
 
-  it('uses installed conversion evidence when environment evidence is unavailable', () => {
+  it('makes the installed sale and rent Check primary while keeping offer comparison secondary', async () => {
     vi.stubEnv('SIGNEDPRICE_CONVERSION_CURVE_ARTIFACT', '');
     vi.stubEnv('SIGNEDPRICE_CONVERSION_CURVE_PERIOD', '');
     vi.stubEnv('SIGNEDPRICE_CONVERSION_CURVE_SHA256', '');
     for (const page of [SeoulContractCheckPage, KoreanContractCheckPage]) {
-      const html = renderToStaticMarkup(page());
-      expect(html).toContain('data-contract-check-form="ready"');
-      expect(html).toContain('2026-02/2026-08');
-      expect(html).toContain('/kr/seoul/tools/rent-check');
+      const html = renderToStaticMarkup(await page({ searchParams: Promise.resolve({}) }));
+      expect(html).toContain('data-primary-check="single-quote"');
+      expect(html).toContain('/check/compare');
+      expect(html).toContain('value="sale"');
+      expect(html).toContain('value="jeonse"');
+      expect(html).toContain('value="monthly"');
     }
   });
 

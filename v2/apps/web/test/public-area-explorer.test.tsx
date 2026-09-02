@@ -86,6 +86,19 @@ describe('public Seoul area Explorer', () => {
     expect(markup).toContain('Search retained buildings');
     expect(markup).toContain('Search district, neighborhood, building or type');
     expect(markup).toContain('name="housing-type"');
+    expect(markup).toContain('Search this area');
+  });
+
+  it('exposes URL-backed Split, List, Table, and Map views', () => {
+    const markup = renderToStaticMarkup(createElement(AreaExplorer, {
+      model: readyModel(),
+      initialSelection: { market: 'kr', transaction: 'jeonse', view: 'table' },
+    }));
+
+    expect(markup).toContain('data-explore-view="table"');
+    expect(markup).toContain('aria-label="Explorer view"');
+    for (const view of ['Split', 'List', 'Table', 'Map']) expect(markup).toContain(`>${view}</a>`);
+    expect(markup).toMatch(/<a[^>]+aria-current="page"[^>]+href="\/kr\/seoul\/explore\?district=gangnam-gu&amp;view=table"[^>]*>Table<\/a>/);
   });
 
   it('uses one availability-safe transaction filter before the map workspace', () => {

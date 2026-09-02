@@ -17,7 +17,7 @@
 .documentHero > p:first-child,
 .sectionHeading > p { color: var(--guide-accent); font-size: 0.68rem; font-weight: 850; letter-spacing: 0.08em; text-transform: uppercase; }
 .hero h1,
-.documentHero h1 { max-width: 1080px; font-size: clamp(2.6rem, 5.7vw, 5.6rem); letter-spacing: -0.055em; line-height: 0.94; }
+.documentHero h1 { max-width: 1080px; font-size: clamp(2.6rem, 5.7vw, 5.6rem); letter-spacing: -0.04em; line-height: 1; }
 .hero > p:last-child,
 .documentHero > p { max-width: 760px; color: var(--guide-muted); font-size: 0.8rem; line-height: 1.6; }
 
