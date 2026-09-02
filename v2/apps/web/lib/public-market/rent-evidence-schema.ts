@@ -17,7 +17,7 @@ import {
 } from '@signedprice/korea-rent';
 
 export const KOREA_RENT_EVIDENCE_ARTIFACT_VERSION =
-  'signedprice-korea-rent-evidence-v1' as const;
+  'signedprice-korea-rent-evidence-v2' as const;
 
 export type KoreaRentEvidenceArtifactExpectation = Readonly<{
   marketId: 'kr-seoul';
@@ -46,7 +46,8 @@ const PROVENANCE_KEYS = [
 ] as const;
 const STATS_KEYS = [
   'sourceRecordCount', 'eligibleRecordCount', 'jeonseRecordCount',
-  'monthlyRecordCount', 'cancelledRecordCount', 'missingIdentityRecordCount',
+  'monthlyRecordCount', 'cancelledRecordCount', 'invalidPaymentRecordCount',
+  'missingIdentityRecordCount',
   'observedBuildingCount', 'areaCohortCount', 'buildingCohortCount',
   'publishedCohortCount', 'withheldCohortCount',
 ] as const;
@@ -78,6 +79,7 @@ const BUILDING_HOUSING_TYPES = AREA_HOUSING_TYPES.slice(1);
 const DISTRICT_SLUGS = new Set(SEOUL_RENT_CHECK_DISTRICTS.map(({ slug }) => slug));
 const REQUIRED_EXCLUSIONS = [
   'Canceled records',
+  'Active records with no filed payment',
   'Records without a stable building identity',
   'Provider-only fields',
 ] as const;
@@ -350,7 +352,9 @@ export function parseKoreaRentEvidenceArtifact(
   ];
   const published = cohorts.filter(({ primary }) => primary.published).length;
   if (
-    stats.sourceRecordCount !== stats.eligibleRecordCount + stats.cancelledRecordCount
+    stats.sourceRecordCount !== stats.eligibleRecordCount
+      + stats.cancelledRecordCount
+      + stats.invalidPaymentRecordCount
     || stats.eligibleRecordCount !== stats.jeonseRecordCount + stats.monthlyRecordCount
     || stats.missingIdentityRecordCount > stats.eligibleRecordCount
     || stats.observedBuildingCount !== buildingRecords.length

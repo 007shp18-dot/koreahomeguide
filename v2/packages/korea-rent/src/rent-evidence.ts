@@ -65,6 +65,7 @@ export type KoreaRentEvidenceStats = Readonly<{
   jeonseRecordCount: number;
   monthlyRecordCount: number;
   cancelledRecordCount: number;
+  invalidPaymentRecordCount: number;
   missingIdentityRecordCount: number;
   observedBuildingCount: number;
   areaCohortCount: number;
@@ -117,6 +118,18 @@ function transactionFor(record: KoreaRentRecord): KoreaEvidenceTransaction {
   return record.monthlyRentWon > 0 ? 'monthly' : 'jeonse';
 }
 
+function hasPositiveFiledPayment(record: KoreaRentRecord): boolean {
+  if (
+    !Number.isSafeInteger(record.depositWon)
+    || record.depositWon < 0
+    || !Number.isSafeInteger(record.monthlyRentWon)
+    || record.monthlyRentWon < 0
+  ) {
+    invalid('Korea rent evidence money is invalid.');
+  }
+  return record.depositWon > 0 || record.monthlyRentWon > 0;
+}
+
 function buildCohorts(
   records: readonly KoreaRentRecord[],
   completedMonths: readonly string[],
@@ -159,8 +172,13 @@ function buildCohorts(
 }
 
 function validateInput(input: KoreaRentEvidenceInput): void {
+  const validationRecords = input.records.map(({ record }) => (
+    hasPositiveFiledPayment(record)
+      ? record
+      : { ...record, depositWon: 1 }
+  ));
   buildRentEvidenceDistribution({
-    records: input.records.map(({ record }) => record),
+    records: validationRecords,
     completedMonths: input.completedMonths,
     transaction: 'jeonse',
     areaBand: 'all',
@@ -333,21 +351,26 @@ function countCohorts(
 export function buildKoreaRentEvidence(input: KoreaRentEvidenceInput): KoreaRentEvidence {
   validateInput(input);
   const sourceRecords = input.records.map(({ record }) => record);
+  const eligibleSources = input.records.filter(({ record }) => (
+    record.recordStatus !== 'cancelled' && hasPositiveFiledPayment(record)
+  ));
+  const eligibleInput = Object.freeze({ ...input, records: Object.freeze(eligibleSources) });
+  const eligibleRecords = eligibleSources.map(({ record }) => record);
   const jeonseRecords = selectRentEvidenceRecords({
-    records: sourceRecords,
+    records: eligibleRecords,
     transaction: 'jeonse',
     areaBand: 'all',
     contractGroup: 'all',
   });
   const monthlyRecords = selectRentEvidenceRecords({
-    records: sourceRecords,
+    records: eligibleRecords,
     transaction: 'monthly',
     areaBand: 'all',
     contractGroup: 'all',
   });
-  const areaRecords = buildAreaRecords(input);
-  const grouped = buildBuildingGroups(input.records);
-  const buildingRecords = buildBuildingRecords(input, grouped.groups);
+  const areaRecords = buildAreaRecords(eligibleInput);
+  const grouped = buildBuildingGroups(eligibleSources);
+  const buildingRecords = buildBuildingRecords(eligibleInput, grouped.groups);
   const cohortCounts = countCohorts(areaRecords, buildingRecords);
   return Object.freeze({
     marketId: 'kr-seoul',
@@ -363,6 +386,9 @@ export function buildKoreaRentEvidence(input: KoreaRentEvidenceInput): KoreaRent
       monthlyRecordCount: monthlyRecords.length,
       cancelledRecordCount: sourceRecords.filter(({ recordStatus }) => (
         recordStatus === 'cancelled'
+      )).length,
+      invalidPaymentRecordCount: sourceRecords.filter((record) => (
+        record.recordStatus !== 'cancelled' && !hasPositiveFiledPayment(record)
       )).length,
       missingIdentityRecordCount: grouped.missingIdentityRecordCount,
       observedBuildingCount: buildingRecords.length,

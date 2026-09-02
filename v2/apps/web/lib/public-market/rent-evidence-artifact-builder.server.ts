@@ -22,6 +22,7 @@ export type BuiltKoreaRentEvidenceArtifact = Readonly<{
 
 const EXCLUSIONS = Object.freeze([
   'Canceled records',
+  'Active records with no filed payment',
   'Records without a stable building identity',
   'Provider-only fields',
 ]);

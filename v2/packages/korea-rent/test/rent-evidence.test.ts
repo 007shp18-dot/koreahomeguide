@@ -242,14 +242,60 @@ describe('Korea multi-cohort rental evidence', () => {
       jeonseRecordCount: 18,
       monthlyRecordCount: 9,
       cancelledRecordCount: 1,
+      invalidPaymentRecordCount: 0,
       missingIdentityRecordCount: 5,
       observedBuildingCount: 3,
     });
     expect(evidence.stats.eligibleRecordCount).toBe(
       evidence.stats.jeonseRecordCount + evidence.stats.monthlyRecordCount,
     );
+    expect(evidence.stats.sourceRecordCount).toBe(
+      evidence.stats.eligibleRecordCount
+      + evidence.stats.cancelledRecordCount
+      + evidence.stats.invalidPaymentRecordCount,
+    );
     expect(evidence.stats.publishedCohortCount + evidence.stats.withheldCohortCount)
       .toBe(evidence.stats.areaCohortCount + evidence.stats.buildingCohortCount);
+  });
+
+  it('excludes zero-value active filings without discarding valid rent evidence', () => {
+    const valid = source('gangnam-gu', record({
+      areaSqm: 50,
+      depositWon: 300_000_000,
+      monthlyRentWon: 0,
+      sourceRecordId: 'valid-jeonse',
+    }));
+    const invalidPayment = source('gangnam-gu', record({
+      areaSqm: 50,
+      depositWon: 0,
+      monthlyRentWon: 0,
+      sourceRecordId: 'zero-value-active',
+    }));
+    const cancelled = source('gangnam-gu', record({
+      areaSqm: 50,
+      depositWon: 0,
+      monthlyRentWon: 0,
+      sourceRecordId: 'zero-value-cancelled',
+      recordStatus: 'cancelled',
+    }));
+
+    const evidence = buildKoreaRentEvidence({
+      period: '2026-01/2026-07',
+      completedMonths: COMPLETED_MONTHS,
+      generatedAt: '2026-08-01T00:00:00.000Z',
+      records: [valid, invalidPayment, cancelled],
+    });
+
+    expect(evidence.stats).toMatchObject({
+      sourceRecordCount: 3,
+      eligibleRecordCount: 1,
+      jeonseRecordCount: 1,
+      monthlyRecordCount: 0,
+      cancelledRecordCount: 1,
+      invalidPaymentRecordCount: 1,
+      observedBuildingCount: 1,
+    });
+    expect(evidence.buildingRecords[0]?.recentTransactions).toHaveLength(1);
   });
 
   it('fails closed when period, generation time or record coverage is invalid', () => {

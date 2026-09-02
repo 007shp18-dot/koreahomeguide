@@ -308,6 +308,42 @@ describe('Korea public summary finalization', () => {
     expect(allJeonse?.primary).toMatchObject({ n: 5, published: true });
   }, 30_000);
 
+  it('finalizes when the official cache contains a zero-value active filing', async () => {
+    const cache = new MemoryCache();
+    const store = createSourceMonthStore({
+      namespacePrefix: 'signedprice:kr-public-summary-job:v1',
+      ttlSeconds: 86_400,
+      tags: [JOB_TAG],
+      corruptTag: JOB_TAG,
+    });
+    const plan = buildKoreaPublicSummaryPlan(REFERENCE_INSTANT);
+    for (const coordinate of plan) {
+      const records = coordinate.index === 0
+        ? [{
+            ...eligibleRecord(coordinate, 0),
+            legalDong: '청운동',
+            buildingLabel: '금액누락 신고 건물',
+            depositWon: 0,
+            monthlyRentWon: 0,
+          }]
+        : [];
+      await store.write(cache, emptyMonth(coordinate, records));
+    }
+
+    const finalized = await finalizeKoreaRentSnapshotJob(
+      { referenceInstant: REFERENCE_INSTANT },
+      { cache, now: () => new Date(REFERENCE_INSTANT), rightsLookup },
+    );
+
+    expect(finalized.evidence.stats).toMatchObject({
+      sourceRecordCount: 1,
+      eligibleRecordCount: 0,
+      invalidPaymentRecordCount: 1,
+    });
+    expect(finalized.inventory.stats.observedBuildingCount).toBe(1);
+    expect(finalized.conversionRecords).toHaveLength(1);
+  }, 30_000);
+
   it('derives all observed identities from the complete cohort without a price gate', async () => {
     const cache = new MemoryCache();
     const store = createSourceMonthStore({
