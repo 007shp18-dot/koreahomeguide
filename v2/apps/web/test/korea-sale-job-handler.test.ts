@@ -241,6 +241,30 @@ describe('Korea sale snapshot temporary public export', () => {
     expect((await handler(new Request(invalidUrls[0]!, { method: 'POST' }))).status).toBe(405);
   });
 
+  it('runs only an explicitly enabled Production fixed-plan collection cursor', async () => {
+    const calls: Request[] = [];
+    const postHandler = vi.fn(async (internalRequest: Request) => {
+      calls.push(internalRequest);
+      return Response.json({ status: 'progress', nextCursor: 4 });
+    });
+    const disabled = exportHandler({ postHandler });
+    const enabled = exportHandler({ allowCollection: true, postHandler });
+    const preview = exportHandler({
+      allowCollection: true,
+      environment: 'preview',
+      postHandler,
+    });
+    const collectUrl = 'https://www.signedprice.com/api/internal/korea-sale-snapshot/'
+      + '?export=collect&cursor=0';
+
+    expect((await disabled(new Request(collectUrl))).status).toBe(400);
+    expect((await preview(new Request(collectUrl))).status).toBe(404);
+    expect((await enabled(new Request(collectUrl))).status).toBe(200);
+    expect(await calls[0]!.json()).toEqual({
+      action: 'batch', referenceInstant, cursor: 0,
+    });
+  });
+
   it('proxies only fixed manifest and artifact reads without disclosing the bearer secret', async () => {
     const calls: Request[] = [];
     const handler = exportHandler({

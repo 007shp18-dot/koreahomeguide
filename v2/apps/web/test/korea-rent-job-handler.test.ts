@@ -333,6 +333,35 @@ describe('Korea rent snapshot temporary public export', () => {
     expect((await handler(new Request(invalidUrls[0]!, { method: 'POST' }))).status).toBe(405);
   });
 
+  it('runs only an explicitly enabled Production fixed-plan collection cursor', async () => {
+    const calls: Request[] = [];
+    const postHandler = vi.fn(async (internalRequest: Request) => {
+      calls.push(internalRequest);
+      return Response.json({ status: 'progress', nextCursor: 12 });
+    });
+    const disabled = exportHandler({ postHandler });
+    const enabled = exportHandler({ allowCollection: true, postHandler });
+    const preview = exportHandler({
+      allowCollection: true,
+      environment: 'preview',
+      postHandler,
+    });
+    const collectUrl = 'https://www.signedprice.com/api/internal/korea-rent-snapshot/'
+      + '?export=collect&cursor=8';
+
+    expect((await disabled(new Request(collectUrl))).status).toBe(400);
+    expect((await preview(new Request(collectUrl))).status).toBe(404);
+    expect((await enabled(new Request(collectUrl))).status).toBe(200);
+    expect(await calls[0]!.json()).toEqual({
+      action: 'batch', referenceInstant, cursor: 8,
+    });
+    for (const cursor of ['-1', '1', '700', '704']) {
+      expect((await enabled(new Request(
+        `https://www.signedprice.com/api/internal/korea-rent-snapshot/?export=collect&cursor=${cursor}`,
+      ))).status).toBe(400);
+    }
+  });
+
   it('proxies a fixed manifest finalization without disclosing its bearer secret', async () => {
     const calls: Request[] = [];
     const handler = exportHandler({

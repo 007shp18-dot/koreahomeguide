@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { describe, expect, test, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
@@ -6,6 +7,7 @@ import {
   buildContractCheckRouteModel,
   diagnoseConversionEnvironment,
 } from '../lib/contract-check/route-model.server';
+import { createInstalledSnapshotRepository } from '../lib/snapshots/installed-snapshot-repository.server';
 
 const SHA256 = 'a'.repeat(64);
 const REFERENCE_INSTANT = '2026-09-01T00:00:00.000Z';
@@ -49,6 +51,39 @@ function validSource(): Record<string, unknown> {
 
 function serialized(source = validSource()): string {
   return JSON.stringify(source);
+}
+
+function canonicalJson(value: unknown): string {
+  if (value === null || typeof value !== 'object') return JSON.stringify(value);
+  if (Array.isArray(value)) return `[${value.map(canonicalJson).join(',')}]`;
+  const record = value as Record<string, unknown>;
+  return `{${Object.keys(record).sort().map((key) => (
+    `${JSON.stringify(key)}:${canonicalJson(record[key])}`
+  )).join(',')}}`;
+}
+
+function installedConversionRepository(source = validSource()) {
+  return createInstalledSnapshotRepository({
+    registrySource: {
+      registryVersion: 'signedprice-installed-snapshots-v1',
+      snapshots: [{
+        marketId: 'kr-seoul',
+        dataset: 'kr-conversion',
+        schemaVersion: '1',
+        sourceVersion: 'molit-rent-v1',
+        parserVersion: 'kr-molit-rent-parser-v2',
+        rightsPolicyId: 'kr-molit-rent-v1',
+        period: '2026-03/2026-08',
+        generatedAt: '2026-08-31T00:00:00.000Z',
+        objectUrl: 'installed://kr-conversion',
+        sha256: createHash('sha256').update(canonicalJson(source)).digest('hex'),
+        recordCount: 620,
+      }],
+    },
+    resolveObject: (objectUrl) => objectUrl === 'installed://kr-conversion'
+      ? source
+      : undefined,
+  });
 }
 
 describe('conversion environment diagnostics', () => {
@@ -95,6 +130,26 @@ describe('conversion environment diagnostics', () => {
 });
 
 describe('Contract Check route model', () => {
+  test('prefers an installed verified conversion snapshot over empty environment evidence', () => {
+    const model = buildContractCheckRouteModel({
+      source: undefined,
+      period: '',
+      sha256: '',
+      referenceInstant: REFERENCE_INSTANT,
+      installedRepository: installedConversionRepository(),
+    });
+
+    expect(model).toMatchObject({
+      status: 'ready',
+      disclosure: { period: '2026-03/2026-08' },
+    });
+    if (model.status !== 'ready') throw new Error('Expected installed conversion evidence.');
+    expect(model.curves.map(({ housingType }) => housingType)).toEqual([
+      'apartment',
+      'officetel',
+    ]);
+  });
+
   test('exposes only calculation evidence, disclosure, and the approved IA', () => {
     const model = buildContractCheckRouteModel({
       source: validSource(),

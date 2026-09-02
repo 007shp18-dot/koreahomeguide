@@ -5,6 +5,7 @@ type KoreaSnapshotPublicExportDependencies = Readonly<{
   token: string | undefined;
   referenceInstant: string;
   datasets: readonly string[];
+  allowCollection?: boolean;
   postHandler(request: Request): Promise<Response>;
 }>;
 
@@ -57,6 +58,22 @@ export function createKoreaSnapshotPublicExportHandler(
       body = Object.freeze({
         action: 'finalize',
         referenceInstant: dependencies.referenceInstant,
+      });
+    } else if (
+      dependencies.allowCollection === true
+      && url.searchParams.getAll('export').length === 1
+      && url.searchParams.get('export') === 'collect'
+      && url.searchParams.getAll('dataset').length === 0
+      && url.searchParams.getAll('chunk').length === 0
+      && url.searchParams.getAll('cursor').length === 1
+      && isCanonicalChunk(url.searchParams.get('cursor'))
+      && Number(url.searchParams.get('cursor')) < 700
+      && Number(url.searchParams.get('cursor')) % 4 === 0
+    ) {
+      body = Object.freeze({
+        action: 'batch',
+        referenceInstant: dependencies.referenceInstant,
+        cursor: Number(url.searchParams.get('cursor')),
       });
     } else if (
       url.searchParams.getAll('export').length === 1

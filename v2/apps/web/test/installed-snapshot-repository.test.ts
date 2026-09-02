@@ -31,6 +31,40 @@ function payload(): Readonly<Record<string, unknown>> {
   });
 }
 
+function conversionPayload(): Readonly<Record<string, unknown>> {
+  return Object.freeze({
+    artifactVersion: 1,
+    generatedAt: '2026-09-01T00:00:00.000Z',
+    provenance: Object.freeze({
+      marketId: 'kr-seoul',
+      period,
+      provider: 'MOLIT',
+      endpointVersion: 'v1',
+      parserVersion: 'kr-molit-rent-parser-v2',
+      rightsPolicyId: 'kr-molit-rent-v1',
+      sourceComplete: true,
+      sha256: 'a'.repeat(64),
+    }),
+    readiness: Object.freeze({
+      state: 'ready',
+      maximumAgeDays: 45,
+      minimumPairsPerAnchor: 120,
+    }),
+    totals: Object.freeze({
+      eligiblePairCount: 620,
+      excluded: Object.freeze({
+        cancelled: 4,
+        invalidMoney: 2,
+        differentBuildingOrArea: 10,
+      }),
+    }),
+    curves: Object.freeze([
+      Object.freeze({ housingType: 'apartment', anchors: Object.freeze([]) }),
+      Object.freeze({ housingType: 'officetel', anchors: Object.freeze([]) }),
+    ]),
+  });
+}
+
 function registry(
   source: unknown,
   overrides: Readonly<Record<string, unknown>> = Object.freeze({}),
@@ -49,6 +83,29 @@ function registry(
       objectUrl: 'installed://kr-building-registry',
       sha256: createHash('sha256').update(canonicalJson(source)).digest('hex'),
       recordCount: 2,
+      ...overrides,
+    }],
+  };
+}
+
+function conversionRegistry(
+  source: unknown,
+  overrides: Readonly<Record<string, unknown>> = Object.freeze({}),
+): unknown {
+  return {
+    registryVersion: 'signedprice-installed-snapshots-v1',
+    snapshots: [{
+      marketId: 'kr-seoul',
+      dataset: 'kr-conversion',
+      schemaVersion: '1',
+      sourceVersion: 'molit-rent-v1',
+      parserVersion: 'kr-molit-rent-parser-v2',
+      rightsPolicyId: 'kr-molit-rent-v1',
+      period,
+      generatedAt: '2026-09-01T00:00:00.000Z',
+      objectUrl: 'installed://kr-conversion',
+      sha256: createHash('sha256').update(canonicalJson(source)).digest('hex'),
+      recordCount: 620,
       ...overrides,
     }],
   };
@@ -81,6 +138,32 @@ describe('installed snapshot repository', () => {
     expect(result.metadata.recordCount).toBe(2);
     expect(result.payload).toBe(source);
     expect(Object.isFrozen(result)).toBe(true);
+  });
+
+  it('verifies a conversion snapshot against its eligible pair count', () => {
+    const source = conversionPayload();
+    const repository = createInstalledSnapshotRepository({
+      registrySource: conversionRegistry(source),
+      resolveObject: (objectUrl) => objectUrl === 'installed://kr-conversion'
+        ? source
+        : undefined,
+    });
+
+    const result = repository.get('kr-seoul', 'kr-conversion');
+
+    expect(result.metadata.recordCount).toBe(620);
+    expect(result.payload).toBe(source);
+  });
+
+  it('rejects a conversion snapshot whose eligible pair count differs from the registry', () => {
+    const source = conversionPayload();
+    const repository = createInstalledSnapshotRepository({
+      registrySource: conversionRegistry(source, { recordCount: 619 }),
+      resolveObject: () => source,
+    });
+
+    expect(() => repository.get('kr-seoul', 'kr-conversion'))
+      .toThrow(InstalledSnapshotUnavailableError);
   });
 
   it('rejects an absent dataset without substituting another snapshot', () => {
