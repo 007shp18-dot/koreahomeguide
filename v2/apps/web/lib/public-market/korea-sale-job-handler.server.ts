@@ -1,6 +1,12 @@
 import 'server-only';
 
-import { createHash, timingSafeEqual } from 'node:crypto';
+import {
+  createHash,
+  createHmac,
+  randomBytes,
+  timingSafeEqual,
+} from 'node:crypto';
+import { gzipSync } from 'node:zlib';
 
 import type {
   KoreaSaleEvidence,
@@ -27,7 +33,10 @@ export type KoreaSaleSnapshotJobHandlerDependencies = Readonly<{
     referenceInstant: string;
   }>): Promise<KoreaSaleSnapshotFinalization>;
   buildSaleArtifact(input: KoreaSaleEvidence): Promise<BuiltSaleArtifact>;
+  nowMs?: () => number;
 }>;
+
+const RUNNER_TOKEN_TTL_SECONDS = 6 * 60 * 60;
 
 function json(body: Readonly<Record<string, unknown>>, status: number, headers?: HeadersInit): Response {
   return Response.json(body, {
@@ -36,11 +45,30 @@ function json(body: Readonly<Record<string, unknown>>, status: number, headers?:
   });
 }
 
-function exactToken(actual: string | null, expected: string): boolean {
+function exactToken(actual: string | null, expected: string, nowMs: number): boolean {
   if (actual === null || !actual.startsWith('Bearer ')) return false;
-  const supplied = createHash('sha256').update(actual.slice(7)).digest();
+  const suppliedValue = actual.slice(7);
+  const supplied = createHash('sha256').update(suppliedValue).digest();
   const configured = createHash('sha256').update(expected).digest();
-  return timingSafeEqual(supplied, configured);
+  if (timingSafeEqual(supplied, configured)) return true;
+
+  const [version, expiresRaw, nonce, signature] = suppliedValue.split('.');
+  if (
+    version !== 'v1'
+    || !/^\d{10}$/.test(expiresRaw ?? '')
+    || !/^[a-f0-9]{32}$/.test(nonce ?? '')
+    || !/^[a-f0-9]{64}$/.test(signature ?? '')
+  ) return false;
+  const expiresSeconds = Number(expiresRaw);
+  const nowSeconds = Math.floor(nowMs / 1_000);
+  if (
+    !Number.isSafeInteger(expiresSeconds)
+    || expiresSeconds < nowSeconds
+    || expiresSeconds - nowSeconds > RUNNER_TOKEN_TTL_SECONDS
+  ) return false;
+  const payload = `${version}.${expiresRaw}.${nonce}`;
+  const expectedSignature = createHmac('sha256', expected).update(payload).digest();
+  return timingSafeEqual(Buffer.from(signature!, 'hex'), expectedSignature);
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -53,10 +81,40 @@ function isCanonicalInstant(value: unknown): value is string {
   return Number.isFinite(instant.getTime()) && instant.toISOString() === value;
 }
 
-export function createKoreaSaleSnapshotRunnerPage(environment: string | undefined): Response {
+export function createKoreaSaleSnapshotRunnerToken(
+  secret: string,
+  dependencies: Readonly<{
+    nowMs?: () => number;
+    nonce?: () => string;
+  }> = Object.freeze({}),
+): string {
+  if (secret.length < 24) throw new TypeError('Preview runner secret is unavailable.');
+  const nowMs = (dependencies.nowMs ?? Date.now)();
+  const nonce = (dependencies.nonce ?? (() => randomBytes(16).toString('hex')))();
+  if (!Number.isFinite(nowMs) || !/^[a-f0-9]{32}$/.test(nonce)) {
+    throw new TypeError('Preview runner delegation is invalid.');
+  }
+  const expiresSeconds = Math.floor(nowMs / 1_000) + RUNNER_TOKEN_TTL_SECONDS;
+  const payload = `v1.${expiresSeconds}.${nonce}`;
+  const signature = createHmac('sha256', secret).update(payload).digest('hex');
+  return `${payload}.${signature}`;
+}
+
+export function createKoreaSaleSnapshotRunnerPage(
+  environment: string | undefined,
+  secret: string | undefined,
+  dependencies: Readonly<{
+    nowMs?: () => number;
+    nonce?: () => string;
+  }> = Object.freeze({}),
+): Response {
   if (environment !== 'preview') {
     return new Response(null, { status: 404, headers: { 'cache-control': 'no-store' } });
   }
+  if (secret === undefined || secret.length < 24) {
+    return new Response(null, { status: 503, headers: { 'cache-control': 'no-store' } });
+  }
+  const runnerToken = createKoreaSaleSnapshotRunnerToken(secret, dependencies);
 
   const html = `<!doctype html>
 <html lang="en">
@@ -66,8 +124,8 @@ export function createKoreaSaleSnapshotRunnerPage(environment: string | undefine
   <title>Korea sale snapshot runner</title>
   <style>
     body{font:16px/1.5 system-ui,sans-serif;max-width:720px;margin:48px auto;padding:0 20px;color:#171717}
-    main{border:1px solid #d4d4d4;padding:24px}label{display:block;font-weight:650;margin-bottom:8px}
-    input,button,a{font:inherit}input{box-sizing:border-box;width:100%;padding:12px;border:1px solid #737373}
+    main{border:1px solid #d4d4d4;padding:24px}
+    button,a{font:inherit}
     button,a{display:inline-block;margin-top:16px;padding:12px 16px;border:0;background:#171717;color:white;text-decoration:none;cursor:pointer}
     button:disabled{opacity:.5;cursor:wait}#download[hidden]{display:none}#status{min-height:24px;margin-top:16px;white-space:pre-wrap}
   </style>
@@ -76,16 +134,14 @@ export function createKoreaSaleSnapshotRunnerPage(environment: string | undefine
   <main data-korea-sale-snapshot-runner data-runner-version="1">
     <h1>Korea sale snapshot</h1>
     <p>Preview-only runner for all-area apartment, officetel, villa, and detached-house sale evidence.</p>
-    <label for="token">Preview job token</label>
-    <input id="token" type="password" autocomplete="off" spellcheck="false">
     <button id="run" type="button">Run 700-coordinate sale snapshot</button>
-    <p id="status" role="status">Ready.</p>
+    <p id="status" role="status">Ready in this protected Preview.</p>
     <a id="download" download="korea-sale-snapshot-bundle.json" hidden>Download verified bundle</a>
   </main>
   <script>
     const endpoint = '/api/internal/korea-sale-snapshot/';
+    const runnerToken = ${JSON.stringify(runnerToken)};
     const run = document.getElementById('run');
-    const tokenInput = document.getElementById('token');
     const status = document.getElementById('status');
     const download = document.getElementById('download');
     async function post(body, token) {
@@ -98,23 +154,21 @@ export function createKoreaSaleSnapshotRunnerPage(environment: string | undefine
       return response.json();
     }
     run.addEventListener('click', async () => {
-      const token = tokenInput.value;
-      if (token.length < 24) { status.textContent = 'Enter the Preview job token.'; return; }
       run.disabled = true; download.hidden = true;
       const referenceInstant = new Date().toISOString();
       try {
         let cursor = 0;
         while (cursor < 700) {
           status.textContent = 'Processing ' + cursor + '/700 sale coordinates…';
-          const result = await post({ action: 'batch', referenceInstant, cursor }, token);
+          const result = await post({ action: 'batch', referenceInstant, cursor }, runnerToken);
           if (result.status !== 'progress' || !Number.isSafeInteger(result.nextCursor) || result.nextCursor <= cursor || result.nextCursor > 700 || result.totalCoordinates !== 700) throw new Error('invalid_progress');
           cursor = result.nextCursor;
         }
         status.textContent = 'Finalizing verified sale artifact…';
-        const result = await post({ action: 'finalize', referenceInstant }, token);
+        const result = await post({ action: 'finalize', referenceInstant }, runnerToken);
         if (result.status !== 'ready' || result.completedCoordinates !== 700 || typeof result.artifacts !== 'object' || result.artifacts === null) throw new Error('invalid_artifact');
         const blob = new Blob([JSON.stringify(result, null, 2) + '\n'], { type: 'application/json' });
-        download.href = URL.createObjectURL(blob); download.hidden = false; tokenInput.value = '';
+        download.href = URL.createObjectURL(blob); download.hidden = false;
         status.textContent = 'Ready: period ' + result.period + '. Sale SHA-256 ' + result.artifacts.sale.sha256 + '.';
       } catch (error) {
         status.textContent = 'Job failed. Review Preview function logs and retry.';
@@ -148,7 +202,11 @@ export function createKoreaSaleSnapshotJobHandler(
     if (dependencies.token === undefined || dependencies.token.length < 24) {
       return json({ status: 'error', code: 'configuration_missing' }, 503);
     }
-    if (!exactToken(request.headers.get('authorization'), dependencies.token)) {
+    if (!exactToken(
+      request.headers.get('authorization'),
+      dependencies.token,
+      (dependencies.nowMs ?? Date.now)(),
+    )) {
       return json({ status: 'error', code: 'unauthorized' }, 401);
     }
     let body: unknown;
@@ -187,6 +245,7 @@ export function createKoreaSaleSnapshotJobHandler(
           return json({ status: 'error', code: 'source_coverage_incomplete' }, 409);
         }
         const sale = await dependencies.buildSaleArtifact(finalized.evidence);
+        const compressed = gzipSync(Buffer.from(sale.serialized, 'utf8'), { level: 9 });
         return json({
           status: 'ready',
           completedCoordinates: finalized.completedCoordinates,
@@ -197,7 +256,9 @@ export function createKoreaSaleSnapshotJobHandler(
               dataset: 'kr-sale',
               sha256: sale.sha256,
               recordCount: sale.recordCount,
-              artifact: sale.artifact,
+              encoding: 'gzip+base64',
+              compressedBytes: compressed.byteLength,
+              payload: compressed.toString('base64'),
             },
           },
         }, 200);

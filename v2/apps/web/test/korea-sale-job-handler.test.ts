@@ -5,6 +5,7 @@ vi.mock('server-only', () => ({}));
 import {
   createKoreaSaleSnapshotJobHandler,
   createKoreaSaleSnapshotRunnerPage,
+  createKoreaSaleSnapshotRunnerToken,
 } from '../lib/public-market/korea-sale-job-handler.server';
 
 const token = 'preview-sale-snapshot-token-with-enough-entropy';
@@ -57,16 +58,51 @@ function dependencies(overrides: Record<string, unknown> = {}) {
 
 describe('Korea sale snapshot internal job handler', () => {
   it('serves a secret-free Preview runner and stays absent in Production', async () => {
-    const preview = createKoreaSaleSnapshotRunnerPage('preview');
-    const production = createKoreaSaleSnapshotRunnerPage('production');
+    const preview = createKoreaSaleSnapshotRunnerPage('preview', token, {
+      nowMs: () => 1_788_300_000_000,
+      nonce: () => '0123456789abcdef0123456789abcdef',
+    });
+    const production = createKoreaSaleSnapshotRunnerPage('production', token);
     const html = await preview.text();
     expect(preview.status).toBe(200);
     expect(html).toContain('data-korea-sale-snapshot-runner');
     expect(html).toContain('/api/internal/korea-sale-snapshot/');
     expect(html).toContain('Run 700-coordinate sale snapshot');
+    expect(html).toContain('v1.1788321600.0123456789abcdef0123456789abcdef.');
+    expect(html).not.toContain('Preview job token');
     expect(html).not.toContain(token);
     expect(html).not.toContain('provider-key');
     expect(production.status).toBe(404);
+  });
+
+  it('accepts only an unexpired runner delegation signed by the configured secret', async () => {
+    const nowMs = 1_788_300_000_000;
+    const delegated = createKoreaSaleSnapshotRunnerToken(token, {
+      nowMs: () => nowMs,
+      nonce: () => 'abcdef0123456789abcdef0123456789',
+    });
+    const delegatedRequest = new Request(
+      'https://preview.example/api/internal/korea-sale-snapshot/',
+      {
+        method: 'POST',
+        headers: {
+          authorization: `Bearer ${delegated}`,
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({ action: 'batch', referenceInstant, cursor: 0 }),
+      },
+    );
+
+    expect((await createKoreaSaleSnapshotJobHandler(dependencies({
+      nowMs: () => nowMs,
+    }) as never)(delegatedRequest.clone())).status).toBe(200);
+    expect((await createKoreaSaleSnapshotJobHandler(dependencies({
+      token: 'different-preview-secret-with-enough-entropy',
+      nowMs: () => nowMs,
+    }) as never)(delegatedRequest.clone())).status).toBe(401);
+    expect((await createKoreaSaleSnapshotJobHandler(dependencies({
+      nowMs: () => nowMs + (6 * 60 * 60 * 1_000) + 1_000,
+    }) as never)(delegatedRequest)).status).toBe(401);
   });
 
   it('requires Preview, POST, exact bearer authentication, and server configuration', async () => {
@@ -107,7 +143,8 @@ describe('Korea sale snapshot internal job handler', () => {
     const handler = createKoreaSaleSnapshotJobHandler(deps as never);
     const response = await handler(request({ action: 'finalize', referenceInstant }));
     expect(response.status).toBe(200);
-    expect(await response.json()).toEqual({
+    const payload = await response.json();
+    expect(payload).toMatchObject({
       status: 'ready',
       completedCoordinates: 700,
       period: '2026-01/2026-07',
@@ -117,10 +154,13 @@ describe('Korea sale snapshot internal job handler', () => {
           dataset: 'kr-sale',
           sha256: 'c'.repeat(64),
           recordCount: 131,
-          artifact: { artifactVersion: 'signedprice-korea-sale-evidence-v1' },
+          encoding: 'gzip+base64',
+          compressedBytes: expect.any(Number),
+          payload: expect.any(String),
         },
       },
     });
+    expect(JSON.stringify(payload)).not.toContain('artifactVersion');
     expect(deps.buildSaleArtifact).toHaveBeenCalledOnce();
   });
 
