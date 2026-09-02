@@ -5,6 +5,9 @@ function reportKoreaRentSnapshotFailure(stage: 'artifact' | 'finalize', error: u
     stage,
     name: error instanceof Error ? error.name : 'UnknownError',
     message: error instanceof Error ? error.message : 'Unknown failure',
+    stack: error instanceof Error
+      ? error.stack?.split('\n').slice(0, 5).join('\n')
+      : undefined,
   });
 }
 
