@@ -7,8 +7,8 @@ import { hdbSnapshotRepositoryFromEnvironment } from '@/lib/singapore/hdb-snapsh
 import { singaporeSnapshotRepositoryFromEnvironment } from '@/lib/singapore/snapshot-repository.server';
 
 export const metadata: Metadata = {
-  title: 'Singapore private-sale Explore | signedprice',
-  description: 'Compare verified private residential sales across CCR, RCR, and OCR.',
+  title: 'Singapore private homes and HDB Explore | signedprice',
+  description: 'Compare verified URA private sales and separate HDB resale, rental, and property evidence.',
   robots: { index: false, follow: true },
 };
 

@@ -110,6 +110,11 @@ export function HdbMarketPanel({ model }: Readonly<{ model: HdbExploreModel }>) 
         <li>Rental data is owner-declared when the flat is rented out and is not independently verified by HDB.</li>
         <li>Property facts are reported through {model.propertyThrough}; map and nearby Street View use Google separately.</li>
       </ul>
+      <div className={styles.actions} aria-label="Official HDB source datasets">
+        <a href="https://data.gov.sg/datasets/d_8b84c4ee58e3cfc0ece0d773c8ca6abc/view" target="_blank" rel="noopener noreferrer">HDB resale source</a>
+        <a href="https://data.gov.sg/datasets/d_c9f57187485a850908655db0e8cfe651/view" target="_blank" rel="noopener noreferrer">HDB rental source</a>
+        <a href="https://data.gov.sg/datasets/d_17f5382f26140b1fdae0ba2ef6239d2f/view" target="_blank" rel="noopener noreferrer">HDB property source</a>
+      </div>
     </section>
   );
 }

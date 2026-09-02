@@ -20,6 +20,7 @@ describe('HDB market panel', () => {
     expect(html).toContain('HDB monthly rent median');
     expect(html).toContain('HDB resale and rental evidence by town');
     expect(html).toContain('not independently verified by HDB');
+    expect(html).toContain('d_8b84c4ee58e3cfc0ece0d773c8ca6abc');
     expect(html).not.toContain('combined median');
   });
 });
