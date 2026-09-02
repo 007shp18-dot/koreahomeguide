@@ -16,7 +16,10 @@ import {
   createSelectionHref,
   type ExplorerSelection,
 } from '../../lib/navigation/explorer-selection';
-import { NaverDistrictMap } from '../maps/naver-district-map';
+import {
+  NaverDistrictMap,
+  buildNaverBuildingAddressQuery,
+} from '../maps/naver-district-map';
 import type {
   ExploreDistrictModel,
   ExploreBuildingModel,
@@ -235,7 +238,11 @@ function ReadyAreaExplorer({
     id: building.id,
     title: building.name,
     href: buildingSelectionHref(building, initialSelection, locale),
-    addressQuery: `서울특별시 ${selected.nameKo} ${building.neighborhoodName} ${building.name}`,
+    addressQuery: buildNaverBuildingAddressQuery(
+      selected.nameKo,
+      building.neighborhoodName,
+      building.name,
+    ),
     latitude: building.latitude,
     longitude: building.longitude,
     allowAddressGeocoding: naverMapClientId !== null
