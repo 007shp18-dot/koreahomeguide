@@ -13,6 +13,8 @@ import SeoulContractCheckPage, {
   generateMetadata as checkMetadata,
 } from '../app/(en)/kr/seoul/check/page';
 import KoreanContractCheckPage from '../app/(ko)/ko/kr/seoul/check/page';
+import { metadata as offerComparisonMetadata } from '../app/(en)/kr/seoul/check/compare/page';
+import { metadata as koreanOfferComparisonMetadata } from '../app/(ko)/ko/kr/seoul/check/compare/page';
 import ExplorerPage, { metadata as exploreMetadata } from '../app/(en)/kr/seoul/explore/page';
 import RankingsPage, { metadata as rankingsMetadata } from '../app/(en)/kr/seoul/rankings/page';
 import {
@@ -58,6 +60,30 @@ describe('SignedPrice cohort zero SEO', () => {
     expect(entries.every(({ description }) => (
       typeof description === 'string' && description.length >= 70
     ))).toBe(true);
+  });
+
+  it('publishes reciprocal locale-correct metadata for offer comparison', () => {
+    const languages = {
+      en: 'https://www.signedprice.com/kr/seoul/check/compare/',
+      ko: 'https://www.signedprice.com/ko/kr/seoul/check/compare/',
+      'x-default': 'https://www.signedprice.com/kr/seoul/check/compare/',
+    };
+
+    expect(offerComparisonMetadata.alternates).toEqual({
+      canonical: 'https://www.signedprice.com/kr/seoul/check/compare/',
+      languages,
+    });
+    expect(koreanOfferComparisonMetadata.alternates).toEqual({
+      canonical: 'https://www.signedprice.com/ko/kr/seoul/check/compare/',
+      languages,
+    });
+    expect(koreanOfferComparisonMetadata.openGraph).toMatchObject({
+      locale: 'ko_KR',
+      images: ['https://www.signedprice.com/og/ko/'],
+    });
+    expect(koreanOfferComparisonMetadata.twitter).toMatchObject({
+      images: ['https://www.signedprice.com/og/ko/'],
+    });
   });
 
   it('serializes one global WebSite and Organization graph without executable markup', () => {
