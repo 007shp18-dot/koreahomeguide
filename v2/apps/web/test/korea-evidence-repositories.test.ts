@@ -107,7 +107,7 @@ function registry(
   const snapshots = [];
   if (datasets.includes('rent')) snapshots.push({
     marketId: 'kr-seoul', dataset: 'kr-rent',
-    schemaVersion: 'signedprice-korea-rent-evidence-v1',
+    schemaVersion: 'signedprice-korea-rent-evidence-v2',
     sourceVersion: MOLIT_ENDPOINT_VERSION, parserVersion: MOLIT_PARSER_VERSION,
     rightsPolicyId: MOLIT_RIGHTS_POLICY_ID, period, generatedAt,
     objectUrl: 'installed://kr-rent', sha256: input.rent.sha256,
