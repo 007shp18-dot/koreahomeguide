@@ -39,6 +39,23 @@ describe('SignedPrice public route registry', () => {
     expect(paths).toContain('/kr/seoul/');
     expect(paths).not.toContain('/kr/check/seoul/');
     expect(paths).not.toContain('/kr/seoul/check/');
+    expect(paths).not.toContain('/kr/seoul/check/compare/');
+  });
+
+  it('publishes both single-quote and two-offer Check routes when conversion evidence is ready', () => {
+    const paths = signedPricePublicRouteRegistry.listSitemapPaths({
+      summaryReady: false,
+      areaReady: false,
+      newsReady: false,
+      conversionReady: true,
+    });
+
+    expect(paths).toEqual(expect.arrayContaining([
+      '/kr/seoul/check/',
+      '/kr/seoul/check/compare/',
+      '/ko/kr/seoul/check/',
+      '/ko/kr/seoul/check/compare/',
+    ]));
   });
 
   it('keeps evidence-dependent destinations out until their readiness predicate passes', () => {

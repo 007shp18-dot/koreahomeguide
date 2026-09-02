@@ -110,7 +110,7 @@ test('navigates the first signedprice decision flow', async ({ page }) => {
   await expect(
     page.getByRole('heading', {
       level: 1,
-      name: 'Which rent offer actually costs less?',
+      name: 'Check one asking price.',
     }),
   ).toBeVisible();
 });
@@ -211,7 +211,7 @@ test('mobile primary navigation remains tappable and reaches the market flow', a
   await expect(
     page.getByRole('heading', {
       level: 1,
-      name: 'Which rent offer actually costs less?',
+      name: 'Check one asking price.',
     }),
   ).toBeVisible();
 });

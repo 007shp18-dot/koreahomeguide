@@ -127,6 +127,10 @@ export const signedPricePublicRouteRegistry = createPublicRouteRegistry([
     sitemap: true, isReady: conversionReady,
   },
   {
+    path: '/kr/seoul/check/compare/', locale: 'en', pageKind: 'check', cohort: 1,
+    sitemap: true, isReady: conversionReady,
+  },
+  {
     path: '/kr/seoul/tools/rent-check/', locale: 'en', pageKind: 'check', cohort: 1,
     sitemap: true, isReady: alwaysReady,
     legacySourcePath: '/tools/seoul-rent-check/',
@@ -165,6 +169,10 @@ export const signedPricePublicRouteRegistry = createPublicRouteRegistry([
   },
   {
     path: '/ko/kr/seoul/check/', locale: 'ko', pageKind: 'check', cohort: 0,
+    sitemap: true, isReady: conversionReady,
+  },
+  {
+    path: '/ko/kr/seoul/check/compare/', locale: 'ko', pageKind: 'check', cohort: 0,
     sitemap: true, isReady: conversionReady,
   },
 ]);

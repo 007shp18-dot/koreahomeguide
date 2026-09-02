@@ -8,10 +8,16 @@ export const publicRoutes = [
   { path: '/trust/', heading: 'How SignedPrice publishes evidence', indexing: 'index', canonical: '/trust/' },
   {
     path: '/kr/seoul/check/',
-    heading: 'Which rent offer actually costs less?',
+    heading: 'Check one asking price.',
     indexing: 'index',
     canonical: '/kr/seoul/check/',
     alternates: true,
+  },
+  {
+    path: '/kr/seoul/check/compare/',
+    heading: 'Which rent offer actually costs less?',
+    indexing: 'index',
+    canonical: '/kr/seoul/check/compare/',
   },
   { path: '/kr/seoul/rent/', heading: 'Rent in Seoul', indexing: 'noindex' },
   {
@@ -43,17 +49,17 @@ export const publicRoutes = [
   },
   {
     path: '/sg/',
-    heading: 'Verified Singapore evidence unavailable',
+    heading: 'Official sale evidence, separated by native market segment.',
     indexing: 'noindex',
   },
   {
     path: '/sg/singapore/explore/',
-    heading: 'Verified Singapore evidence unavailable',
+    heading: 'Compare private-sale evidence across CCR, RCR, and OCR.',
     indexing: 'noindex',
   },
   ...(['ccr', 'rcr', 'ocr'] as const).map((area) => ({
     path: `/sg/singapore/explore/${area}/`,
-    heading: 'Verified Singapore evidence unavailable',
+    heading: /median from 6 reported sale transactions\./,
     indexing: 'noindex' as const,
   })),
   {

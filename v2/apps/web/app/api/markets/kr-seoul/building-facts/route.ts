@@ -2,6 +2,7 @@ import { SEOUL_RENT_CHECK_DISTRICTS } from '@signedprice/korea-rent';
 
 import { createBuildingFactsGetHandler } from '@/lib/public-market/building-facts-route-handler.server';
 import { koreaEvidenceRepositoriesFromEnvironment } from '@/lib/public-market/korea-evidence-repositories.server';
+import { buildObservedBuildingIdentityModel } from '@/lib/public-market/observed-building-route-model.server';
 import { loadOfficialBuildingFacts } from '@/lib/public-market/official-building-facts.server';
 
 export const dynamic = 'force-dynamic';
@@ -21,7 +22,11 @@ export const GET = createBuildingFactsGetHandler({
     if (building === undefined) {
       try { building = repositories.sale?.getBuilding(district.slug, buildingId); } catch { building = undefined; }
     }
-    if (building === undefined) return null;
+    if (building === undefined) {
+      const observed = buildObservedBuildingIdentityModel(district.slug, buildingId);
+      if (observed === null) return null;
+      building = observed.building;
+    }
     return Object.freeze({
       districtLawdCd: district.lawdCd,
       neighborhoodName: building.neighborhoodName,
