@@ -156,7 +156,7 @@ describe('public migration containment', () => {
   it('renders Korean evidence routes that do not require conversion evidence', async () => {
     const routes = [
       ['../app/(ko)/ko/kr/seoul/page', '서울 주거 계약 근거'],
-      ['../app/(ko)/ko/kr/seoul/explore/page', '서울 25개 구 전세 근거'],
+      ['../app/(ko)/ko/kr/seoul/explore/page', '검증된 구별 자료를 확인할 수 없습니다.'],
       ['../app/(ko)/ko/kr/seoul/rankings/page', '서울 구별 근거 순위'],
     ] as const;
     for (const [modulePath, heading] of routes) {

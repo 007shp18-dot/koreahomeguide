@@ -4,7 +4,7 @@ import { SEOUL_RENT_CHECK_DISTRICTS } from '@signedprice/korea-rent/browser';
 import { AreaExplorer } from '@/components/public-market/area-explorer';
 import { SiteFooter } from '@/components/site-footer';
 import { SiteHeader } from '@/components/site-header';
-import { buildKoreanSiteHeader, KOREAN_ROUTE_COPY, KOREAN_SITE_FOOTER } from '@/lib/locale/ko';
+import { buildKoreanSiteHeader, KOREAN_SITE_FOOTER } from '@/lib/locale/ko';
 import { parseExplorerSelection } from '@/lib/navigation/explorer-selection';
 import { buildPublicAreaExploreModel } from '@/lib/public-market/area-route-model.server';
 import { indexableMetadata } from '@/lib/public-metadata';
@@ -55,21 +55,34 @@ export default async function KoreanExplorePage({ searchParams }: KoreanExploreP
     },
     singleValue(query.buildingPage),
   );
+  const requestedBuildingId = singleValue(query.buildingId);
+  const requestedBuilding = model.status === 'ready' && requestedBuildingId !== undefined
+    ? (model.buildingAvailability.status === 'ready'
+      ? model.buildingAvailability.buildings
+      : model.buildingAvailability.fallbackBuildings)
+      .find((building) => (
+        building.id === requestedBuildingId
+        && building.districtSlug === model.selectedSlug
+      ))
+    : undefined;
+  const restoredSelection = requestedBuilding === undefined
+    ? selection
+    : Object.freeze({
+      ...selection,
+      district: requestedBuilding.districtSlug,
+      neighborhood: requestedBuilding.neighborhoodId,
+      buildingId: requestedBuilding.id,
+    });
   return (
     <div id="top" lang="ko" className={styles.page}>
       <SiteHeader copy={buildKoreanSiteHeader('/kr/seoul/explore/')} />
       <main>
-        <header className={styles.intro}>
-          <p>{KOREAN_ROUTE_COPY.explore.eyebrow}</p>
-          <h1>{KOREAN_ROUTE_COPY.explore.heading}</h1>
-          <p>{KOREAN_ROUTE_COPY.explore.description}</p>
-        </header>
         <AreaExplorer
           locale="ko"
           model={model}
           naverMapClientId={process.env.NAVER_MAP_CLIENT_ID?.trim() || null}
           initialQuery={buildingQuery}
-          initialSelection={selection}
+          initialSelection={restoredSelection}
         />
       </main>
       <SiteFooter copy={KOREAN_SITE_FOOTER} />

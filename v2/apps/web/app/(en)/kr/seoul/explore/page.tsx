@@ -89,6 +89,24 @@ export default async function ExplorerPage({ searchParams }: ExplorerPageProps) 
     },
     singleValue(query.buildingPage),
   );
+  const requestedBuildingId = singleValue(query.buildingId);
+  const requestedBuilding = model.status === 'ready' && requestedBuildingId !== undefined
+    ? (model.buildingAvailability.status === 'ready'
+      ? model.buildingAvailability.buildings
+      : model.buildingAvailability.fallbackBuildings)
+      .find((building) => (
+        building.id === requestedBuildingId
+        && building.districtSlug === model.selectedSlug
+      ))
+    : undefined;
+  const restoredSelection = requestedBuilding === undefined
+    ? selection
+    : Object.freeze({
+      ...selection,
+      district: requestedBuilding.districtSlug,
+      neighborhood: requestedBuilding.neighborhoodId,
+      buildingId: requestedBuilding.id,
+    });
   const naverMapClientId = process.env.NAVER_MAP_CLIENT_ID?.trim() || null;
 
   return (
@@ -99,7 +117,7 @@ export default async function ExplorerPage({ searchParams }: ExplorerPageProps) 
           model={model}
           naverMapClientId={naverMapClientId}
           initialQuery={singleValue(query.q)}
-          initialSelection={selection}
+          initialSelection={restoredSelection}
         />
       </main>
       <PublicBreadcrumbJsonLd items={[
