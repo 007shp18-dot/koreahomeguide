@@ -1,5 +1,13 @@
 import 'server-only';
 
+function reportKoreaRentSnapshotFailure(stage: 'artifact' | 'finalize', error: unknown): void {
+  console.error('[korea-rent-snapshot] job failed', {
+    stage,
+    name: error instanceof Error ? error.name : 'UnknownError',
+    message: error instanceof Error ? error.message : 'Unknown failure',
+  });
+}
+
 import {
   createHash,
   createHmac,
@@ -389,6 +397,7 @@ export function createKoreaRentSnapshotJobHandler(
           payload,
         }, 200);
       } catch (error) {
+        reportKoreaRentSnapshotFailure('artifact', error);
         if (
           error instanceof TypeError
           && error.message === 'Public summary source coverage is incomplete.'
@@ -472,6 +481,7 @@ export function createKoreaRentSnapshotJobHandler(
           },
         }, 200);
       } catch (error) {
+        reportKoreaRentSnapshotFailure('finalize', error);
         if (
           error instanceof TypeError
           && error.message === 'Public summary source coverage is incomplete.'
