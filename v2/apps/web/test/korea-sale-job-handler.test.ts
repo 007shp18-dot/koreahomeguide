@@ -72,6 +72,9 @@ describe('Korea sale snapshot internal job handler', () => {
     expect(html).not.toContain('Preview job token');
     expect(html).not.toContain(token);
     expect(html).not.toContain('provider-key');
+    const script = html.match(/<script>([\s\S]*?)<\/script>/)?.[1];
+    if (script === undefined) throw new Error('Runner script is missing.');
+    expect(() => new Function(script)).not.toThrow();
     expect(production.status).toBe(404);
   });
 

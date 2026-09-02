@@ -219,7 +219,7 @@ export function createKoreaSaleSnapshotRunnerPage(
           chunks.push(part.payload);
         }
         sale.payload = chunks.join('');
-        const blob = new Blob([JSON.stringify(result, null, 2) + '\n'], { type: 'application/json' });
+        const blob = new Blob([JSON.stringify(result, null, 2) + '\\n'], { type: 'application/json' });
         download.href = URL.createObjectURL(blob); download.hidden = false;
         status.textContent = 'Ready: period ' + result.period + '. Sale SHA-256 ' + result.artifacts.sale.sha256 + '.';
       } catch (error) {
