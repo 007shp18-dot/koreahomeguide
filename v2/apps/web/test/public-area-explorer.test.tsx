@@ -269,7 +269,7 @@ describe('public Seoul area Explorer', () => {
       expect(markup).toContain(district.nameEn);
       expect(markup).toContain(district.nameKo);
       expect(markup).toContain(district.sampleLabel);
-      expect(markup).toContain(`href="/kr/seoul/explore?district=${district.slug}"`);
+      expect(markup).toContain(`href="/kr/seoul/explore/${district.slug}"`);
       if (district.medianLabel !== null) expect(markup).toContain(district.medianLabel);
     }
     expect((markup.match(/data-district-path=/g) ?? [])).toHaveLength(25);
