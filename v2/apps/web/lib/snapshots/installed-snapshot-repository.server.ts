@@ -165,11 +165,10 @@ export function resolveInstalledSnapshotRegistry(): unknown {
   return installedSnapshotRegistry;
 }
 
-export function shouldUseCheckedInSnapshots(
+export function checkedInSnapshotsAreEnabled(
   environment: Readonly<Record<string, string | undefined>> = process.env,
 ): boolean {
-  return environment.NODE_ENV !== 'test'
-    && environment.SIGNEDPRICE_USE_CHECKED_IN_SNAPSHOTS !== 'false';
+  return environment.SIGNEDPRICE_USE_CHECKED_IN_SNAPSHOTS !== 'false';
 }
 
 function isObject(value: unknown): value is Readonly<Record<string, unknown>> {

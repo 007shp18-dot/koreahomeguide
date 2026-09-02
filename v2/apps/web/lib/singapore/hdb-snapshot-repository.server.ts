@@ -10,7 +10,7 @@ import {
   createInstalledSnapshotRepository,
   resolveInstalledSnapshotObject,
   resolveInstalledSnapshotRegistry,
-  shouldUseCheckedInSnapshots,
+  checkedInSnapshotsAreEnabled,
   type VerifiedInstalledSnapshot,
 } from '../snapshots/installed-snapshot-repository.server';
 
@@ -105,7 +105,7 @@ let environmentCache: HdbSnapshotRepository | null | undefined;
 
 export function hdbSnapshotRepositoryFromEnvironment(): HdbSnapshotRepository | null {
   if (environmentCache !== undefined) return environmentCache;
-  if (!shouldUseCheckedInSnapshots()) {
+  if (!checkedInSnapshotsAreEnabled()) {
     environmentCache = null;
     return environmentCache;
   }

@@ -6,7 +6,7 @@ import {
   createInstalledSnapshotRepository,
   resolveInstalledSnapshotObject,
   resolveInstalledSnapshotRegistry,
-  shouldUseCheckedInSnapshots,
+  checkedInSnapshotsAreEnabled,
 } from '../snapshots/installed-snapshot-repository.server';
 
 import {
@@ -85,7 +85,7 @@ export function observedBuildingRepositoryFromEnvironment(
   const legacyArtifact = process.env.SIGNEDPRICE_OBSERVED_BUILDING_ARTIFACT;
   const period = process.env.SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD ?? '';
   const useCheckedInSnapshot = dependencies.useCheckedInSnapshot
-    ?? shouldUseCheckedInSnapshots();
+    ?? (process.env.NODE_ENV !== 'test' && checkedInSnapshotsAreEnabled());
   const resolveObject = dependencies.resolveObject ?? resolveInstalledSnapshotObject;
   const current = cached;
   if (current !== null

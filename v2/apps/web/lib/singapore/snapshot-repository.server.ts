@@ -14,7 +14,7 @@ import {
   createInstalledSnapshotRepository,
   resolveInstalledSnapshotObject,
   resolveInstalledSnapshotRegistry,
-  shouldUseCheckedInSnapshots,
+  checkedInSnapshotsAreEnabled,
   type VerifiedInstalledSnapshot,
 } from '../snapshots/installed-snapshot-repository.server';
 
@@ -169,7 +169,7 @@ export function singaporeSnapshotRepositoryFromEnvironment(): Promise<SingaporeS
     && environmentCache.digest === digest
     && environmentCache.period === period) return environmentCache.repository;
   const repository = (async () => {
-    if (shouldUseCheckedInSnapshots()) {
+    if (checkedInSnapshotsAreEnabled()) {
       try {
         const installed = createInstalledSnapshotRepository({
           registrySource: resolveInstalledSnapshotRegistry(),

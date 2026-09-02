@@ -8,7 +8,7 @@ import {
   createInstalledSnapshotRepository,
   resolveInstalledSnapshotObject,
   resolveInstalledSnapshotRegistry,
-  shouldUseCheckedInSnapshots,
+  checkedInSnapshotsAreEnabled,
 } from '../lib/snapshots/installed-snapshot-repository.server';
 import {
   buildSingaporeSnapshot,
@@ -121,12 +121,12 @@ function conversionRegistry(
 
 describe('installed snapshot repository', () => {
   it('allows release fixtures to disable checked-in production snapshots explicitly', () => {
-    expect(shouldUseCheckedInSnapshots({
+    expect(checkedInSnapshotsAreEnabled({
       NODE_ENV: 'production',
       SIGNEDPRICE_USE_CHECKED_IN_SNAPSHOTS: 'false',
     })).toBe(false);
-    expect(shouldUseCheckedInSnapshots({ NODE_ENV: 'production' })).toBe(true);
-    expect(shouldUseCheckedInSnapshots({ NODE_ENV: 'test' })).toBe(false);
+    expect(checkedInSnapshotsAreEnabled({ NODE_ENV: 'production' })).toBe(true);
+    expect(checkedInSnapshotsAreEnabled({ NODE_ENV: 'test' })).toBe(true);
   });
 
   it('verifies an installed Singapore private-sale snapshot by its exact artifact identity', () => {
