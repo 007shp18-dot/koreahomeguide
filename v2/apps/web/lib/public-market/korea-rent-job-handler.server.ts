@@ -202,7 +202,11 @@ export function createKoreaRentSnapshotRunnerPage(
         headers: { authorization: 'Bearer ' + token, 'content-type': 'application/json' },
         body: JSON.stringify(body),
       });
-      if (!response.ok) throw new Error('request_failed_' + response.status);
+      if (!response.ok) {
+        const failure = await response.json().catch(() => null);
+        throw new Error(failure && typeof failure.code === 'string'
+          ? failure.code : 'request_failed_' + response.status);
+      }
       return response.json();
     }
     run.addEventListener('click', async () => {
@@ -240,7 +244,7 @@ export function createKoreaRentSnapshotRunnerPage(
           : 'Conversion pairs ' + result.artifacts.conversion.recordCount + '.';
         status.textContent = 'Ready: period ' + result.period + '. Rent SHA-256 ' + result.artifacts.rent.sha256 + '. ' + conversionStatus;
       } catch (error) {
-        status.textContent = 'Job failed. Review Preview function logs and retry.';
+        status.textContent = 'Job failed: ' + (error instanceof Error ? error.message : 'unknown_error') + '.';
       } finally { run.disabled = false; }
     });
   </script>
@@ -380,10 +384,18 @@ export function createKoreaRentSnapshotJobHandler(
         if (finalized.completedCoordinates !== 700) {
           return json({ status: 'error', code: 'source_coverage_incomplete' }, 409);
         }
-        const [rent, buildingRegistry] = await Promise.all([
-          dependencies.buildRentArtifact(finalized.evidence),
-          dependencies.buildInventoryArtifact(finalized.inventory),
-        ]);
+        let rent: BuiltRentArtifact;
+        try {
+          rent = await dependencies.buildRentArtifact(finalized.evidence);
+        } catch {
+          return json({ status: 'error', code: 'rent_artifact_unavailable' }, 503);
+        }
+        let buildingRegistry: BuiltArtifact;
+        try {
+          buildingRegistry = await dependencies.buildInventoryArtifact(finalized.inventory);
+        } catch {
+          return json({ status: 'error', code: 'building_artifact_unavailable' }, 503);
+        }
         let conversion:
           | BuiltConversionArtifact
           | Readonly<{
@@ -410,7 +422,7 @@ export function createKoreaRentSnapshotJobHandler(
               code: 'publication_floor_not_met',
             });
           } else {
-            throw error;
+            return json({ status: 'error', code: 'conversion_artifact_unavailable' }, 503);
           }
         }
         return json({

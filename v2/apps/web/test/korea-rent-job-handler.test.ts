@@ -266,6 +266,22 @@ describe('Korea rent snapshot internal job handler', () => {
     expect(deps.buildInventoryArtifact).toHaveBeenCalledOnce();
   });
 
+  it.each([
+    ['buildRentArtifact', 'rent_artifact_unavailable'],
+    ['buildInventoryArtifact', 'building_artifact_unavailable'],
+    ['buildConversionArtifact', 'conversion_artifact_unavailable'],
+  ] as const)('returns a safe diagnostic when %s fails', async (method, code) => {
+    const handler = createKoreaRentSnapshotJobHandler(dependencies({
+      [method]: vi.fn(async () => {
+        throw new TypeError('invalid artifact');
+      }),
+    }) as never);
+    const response = await handler(request({ action: 'finalize', referenceInstant }));
+
+    expect(response.status).toBe(503);
+    expect(await response.json()).toEqual({ status: 'error', code });
+  });
+
   it('maps incomplete coverage to conflict without leaking an internal reason', async () => {
     const handler = createKoreaRentSnapshotJobHandler(dependencies({
       finalize: vi.fn(async () => {
