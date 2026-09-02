@@ -91,6 +91,45 @@ export function isNaverMapsSdkReady(value: unknown): value is NaverMapsSdk {
     && typeof (event as Readonly<Record<string, unknown>>).removeListener === 'function';
 }
 
+type NaverMapsSubmoduleNamespace = NaverMapsSdk & {
+  onJSContentLoaded?: () => void;
+};
+
+export function waitForNaverMapsSubmodules(
+  value: unknown,
+  requireGeocoder: boolean,
+  onReady: (sdk: NaverMapsSdk) => void,
+): () => void {
+  if (!isNaverMapsSdkReady(value)) {
+    throw new TypeError('NAVER Maps SDK is unavailable.');
+  }
+  if (!requireGeocoder || value.Service !== undefined) {
+    onReady(value);
+    return () => undefined;
+  }
+
+  const namespace = value as NaverMapsSubmoduleNamespace;
+  const previous = namespace.onJSContentLoaded;
+  let active = true;
+  const handleContentLoaded = () => {
+    if (!active) return;
+    active = false;
+    if (namespace.onJSContentLoaded === handleContentLoaded) {
+      namespace.onJSContentLoaded = previous;
+    }
+    previous?.();
+    if (namespace.Service !== undefined) onReady(namespace);
+  };
+  namespace.onJSContentLoaded = handleContentLoaded;
+
+  return () => {
+    active = false;
+    if (namespace.onJSContentLoaded === handleContentLoaded) {
+      namespace.onJSContentLoaded = previous;
+    }
+  };
+}
+
 type NaverDistrictMapUpdate = Readonly<{
   districts: readonly NaverDistrictMapPoint[];
   selectedDistrict?: Readonly<{ latitude: number; longitude: number }>;
@@ -333,6 +372,7 @@ export function NaverDistrictMap({
   const router = useRouter();
   const container = useRef<HTMLDivElement>(null);
   const lifecycle = useRef<ReturnType<typeof mountNaverDistrictMap> | null>(null);
+  const submoduleWait = useRef<(() => void) | null>(null);
   const authenticationFailed = useRef(false);
   const [sdk, setSdk] = useState<NaverMapsSdk | null>(null);
   const [state, setState] = useState<'loading' | 'ready' | 'error'>('loading');
@@ -362,8 +402,13 @@ export function NaverDistrictMap({
       failClosed();
       return;
     }
-    setSdk(readySdk);
-  }, [failClosed]);
+    submoduleWait.current?.();
+    submoduleWait.current = waitForNaverMapsSubmodules(
+      readySdk,
+      buildings?.some(({ allowAddressGeocoding }) => allowAddressGeocoding === true) ?? false,
+      setSdk,
+    );
+  }, [buildings, failClosed]);
 
   useEffect(() => {
     if (clientId === null) return undefined;
@@ -422,6 +467,8 @@ export function NaverDistrictMap({
   }, [buildings, clientId, districts, failClosed, onSelectBuilding, onSelectDistrict, router, sdk, selectedDistrict]);
 
   useEffect(() => () => {
+    submoduleWait.current?.();
+    submoduleWait.current = null;
     lifecycle.current?.dispose();
     lifecycle.current = null;
   }, []);

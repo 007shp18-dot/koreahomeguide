@@ -16,6 +16,7 @@ import {
   isNaverMapsSdkReady,
   mountNaverDistrictMap,
   reconcileNaverDistrictMap,
+  waitForNaverMapsSubmodules,
   resolveUnambiguousNaverGeocode,
 } from '../components/maps/naver-district-map';
 import type { ExploreBuildingModel } from '../lib/public-market/area-route-types';
@@ -30,6 +31,33 @@ const districts = [{
 }] as const;
 
 describe('NAVER district map', () => {
+  it('waits for the asynchronous geocoder submodule before exposing the SDK', () => {
+    const ready: unknown[] = [];
+    class LatLng { constructor(readonly latitude: number, readonly longitude: number) {} }
+    class Map {
+      constructor(element: HTMLElement, options: unknown) { void element; void options; }
+      setCenter(center: unknown) { void center; }
+      setZoom(zoom: number) { void zoom; }
+    }
+    class Marker {
+      constructor(options: unknown) { void options; }
+      setMap(map: unknown) { void map; }
+    }
+    const sdk: Record<string, unknown> = {
+      Map, LatLng, Marker,
+      Event: { addListener: () => undefined, removeListener: () => undefined },
+    };
+
+    const cancel = waitForNaverMapsSubmodules(sdk, true, (value) => ready.push(value));
+
+    expect(ready).toEqual([]);
+    sdk.Service = { Status: { OK: 'OK' }, geocode: () => undefined };
+    expect(typeof sdk.onJSContentLoaded).toBe('function');
+    (sdk.onJSContentLoaded as () => void)();
+    expect(ready).toEqual([sdk]);
+    cancel();
+  });
+
   it('normalizes MOLIT parenthesized lot numbers into NAVER geocoder addresses', () => {
     expect(buildNaverBuildingAddressQuery('강남구', '개포동', '(1163-4)')).toBe(
       '서울특별시 강남구 개포동 1163-4',
