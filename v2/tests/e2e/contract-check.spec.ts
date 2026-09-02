@@ -3,6 +3,10 @@ import { expect, test, type Locator, type Page } from '@playwright/test';
 import { resolveReleaseTestTarget } from '../../release-test-target';
 
 const releaseTarget = resolveReleaseTestTarget();
+const submittedComparisonPath =
+  '/kr/seoul/check/compare/?compare=1&district=gangnam-gu&housing=apartment&area=84' +
+  '&a-transaction=sale&a-price=1200000000' +
+  '&b-transaction=monthly&b-deposit=50000000&b-monthly-rent=2000000';
 
 function observeRuntimeFailures(page: Page) {
   const consoleErrors: string[] = [];
@@ -38,11 +42,8 @@ async function expectTouchTarget(locator: Locator) {
 
 test('fixture-isolated release serves deterministic all-type A/B evidence', async ({ request }) => {
   test.skip(releaseTarget.usesExternalServer, 'Synthetic Check evidence is local-release only.');
-  const comparison = await request.get(
-    '/kr/seoul/check/compare/?compare=1&district=gangnam-gu&housing=apartment&area=84' +
-    '&a-transaction=sale&a-price=1200000000' +
-    '&b-transaction=monthly&b-deposit=50000000&b-monthly-rent=2000000',
-  );
+  const blankComparison = await request.get('/kr/seoul/check/compare/');
+  const comparison = await request.get(submittedComparisonPath);
   const englishSale = await request.get(
     '/kr/seoul/check/?check=1&district=gangnam-gu&housing=apartment&area=84' +
     '&transaction=sale&price=1200000000',
@@ -51,10 +52,16 @@ test('fixture-isolated release serves deterministic all-type A/B evidence', asyn
     '/ko/kr/seoul/check/?check=1&district=gangnam-gu&housing=apartment&area=84' +
     '&transaction=monthly&deposit=50000000&monthly-rent=2000000',
   );
+  const blankComparisonHtml = await blankComparison.text();
   const comparisonHtml = await comparison.text();
   const englishSaleHtml = await englishSale.text();
   const koreanMonthlyHtml = await koreanMonthly.text();
 
+  expect(blankComparison.status()).toBe(200);
+  expect(blankComparisonHtml).toContain('data-contract-check-form="ready"');
+  expect(blankComparisonHtml).toContain('data-offer="a"');
+  expect(blankComparisonHtml).toContain('data-offer="b"');
+  expect(blankComparisonHtml).toContain('data-result-state="blank"');
   expect(comparison.status()).toBe(200);
   expect(comparisonHtml).toContain('Trade-off — no winner declared');
   expect(comparisonHtml).toContain('7 completed months');
@@ -121,12 +128,32 @@ test('primary Contract Check exposes one quote and routes to the two-offer compa
   const visibleDecisionCopy = await page.locator('main').innerText();
   expect(visibleDecisionCopy).not.toMatch(/Singapore|Dubai|72,291|29\.4%/i);
 
-  const comparison = await page.request.get('/kr/seoul/check/compare/');
-  const comparisonHtml = await comparison.text();
-  expect(comparison.status()).toBe(200);
-  expect(comparisonHtml.indexOf('Offer A')).toBeLessThan(comparisonHtml.indexOf('Offer B'));
-  expect(comparisonHtml.indexOf('Offer B')).toBeLessThan(comparisonHtml.indexOf('Result'));
-  expect(comparisonHtml).toContain('MOLIT reported sale contracts');
+  await page.getByRole('link', { name: 'Compare two offers' }).first().click();
+  await expect(page).toHaveURL(/\/kr\/seoul\/check\/compare\/$/);
+  await expect(page.getByRole('heading', { level: 1, name: 'Compare two offers' })).toBeVisible();
+  await expect(page.locator('[data-contract-check-form="ready"]')).toBeVisible();
+  await expect(page.locator('[data-offer="a"]')).toContainText('Offer A');
+  await expect(page.locator('[data-offer="b"]')).toContainText('Offer B');
+  await expect(page.locator('[data-result-state="blank"]')).toBeVisible();
+
+  const comparison = await page.goto(submittedComparisonPath);
+  expect(comparison?.status()).toBe(200);
+  const orderedComparison = page.locator(
+    '[data-offer="a"], [data-offer="b"], [data-result-focus-target="true"]',
+  );
+  await expect(orderedComparison).toHaveCount(3);
+  for (const panel of await orderedComparison.all()) await expect(panel).toBeVisible();
+  await expect(orderedComparison.nth(0)).toContainText('Offer A');
+  await expect(orderedComparison.nth(1)).toContainText('Offer B');
+  await expect(orderedComparison.nth(2)).toContainText('Result');
+  await expect(orderedComparison.nth(2)).toContainText(
+    '7 completed months · 2026-02–2026-08',
+  );
+  const disclosure = page.locator('[data-check-section="disclosure"]');
+  await expect(disclosure).toBeVisible();
+  await expect(disclosure).toContainText(
+    'MOLIT reported sale and rental contracts',
+  );
 
   const sitemap = await page.request.get('/sitemap.xml');
   expect(sitemap.status()).toBe(200);
@@ -143,11 +170,7 @@ test('primary Contract Check exposes one quote and routes to the two-offer compa
 test('Contract Check stays ordered, touch-sized, and keyboard reachable', async ({ page }) => {
   const assertNoRuntimeFailures = observeRuntimeFailures(page);
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto(
-    '/kr/seoul/check/compare/?compare=1&district=gangnam-gu&housing=apartment&area=84' +
-    '&a-transaction=sale&a-price=1200000000' +
-    '&b-transaction=monthly&b-deposit=50000000&b-monthly-rent=2000000',
-  );
+  await page.goto(submittedComparisonPath);
   await expectNoHorizontalOverflow(page);
   await expect(page.locator('[data-result-focus-target="true"]')).toContainText('7 completed months');
 
@@ -195,11 +218,7 @@ test('each offer changes type independently and sale versus rent stays a neutral
   await expect(page.locator('input[name="b-monthly-rent"]')).toBeVisible();
   await expect(page.locator('input[name="b-price"]')).toHaveCount(0);
 
-  const response = await page.goto(
-    '/kr/seoul/check/compare/?compare=1&district=gangnam-gu&housing=apartment&area=84' +
-    '&a-transaction=sale&a-price=1200000000' +
-    '&b-transaction=monthly&b-deposit=50000000&b-monthly-rent=2000000',
-  );
+  const response = await page.goto(submittedComparisonPath);
   expect(response?.status()).toBe(200);
   const result = page.locator('[data-result-focus-target="true"]');
   await expect(result.locator('[data-comparison-basis="tradeoff"]')).toBeVisible();
