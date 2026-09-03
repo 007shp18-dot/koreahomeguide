@@ -67,12 +67,6 @@ export function HdbMarketPanel({ model }: Readonly<{ model: HdbExploreModel }>) 
           <div><dt>Property blocks</dt><dd>{model.propertyTotalLabel}</dd></div>
         </dl>
       </div>
-      <nav className={styles.dataTabs} aria-label="Singapore housing evidence layers">
-        <a href="#ura-private">URA private sale</a>
-        <a href="#hdb-resale">HDB resale</a>
-        <a href="#hdb-rent">HDB rent</a>
-        <a href="#hdb-towns">All towns</a>
-      </nav>
       <div className={styles.chartGrid}>
         <div id="hdb-resale">
           <ComparisonChart

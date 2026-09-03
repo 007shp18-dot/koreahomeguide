@@ -1,4 +1,3 @@
-import { readFileSync } from 'node:fs';
 import { Children, createElement, isValidElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -15,6 +14,7 @@ vi.mock('next/script', () => ({
 
 import {
   AreaExplorer,
+  compareExploreBuildingsByEvidence,
   createExploreBuildingSelectionHref,
 } from '../components/public-market/area-explorer';
 import {
@@ -57,39 +57,73 @@ afterEach(() => {
 });
 
 describe('public Seoul area Explorer', () => {
-  it('renders one mockup-first map and discovery workspace', () => {
+  it('ranks published and better-supported buildings before unavailable rows', () => {
+    const rows = [
+      { id: 'unavailable', name: 'A', evidenceStatus: 'unavailable', observationCount: 20 },
+      { id: 'small', name: 'B', evidenceStatus: 'published', observationCount: 6 },
+      { id: 'large', name: 'C', evidenceStatus: 'published', observationCount: 18 },
+    ] as const;
+
+    expect([...rows].sort(compareExploreBuildingsByEvidence).map(({ id }) => id))
+      .toEqual(['large', 'small', 'unavailable']);
+  });
+
+  it('renders the supplied compact Explore structure without a separate hero', () => {
     const markup = renderToStaticMarkup(createElement(AreaExplorer, {
       model: readyModel(),
       naverMapClientId: 'test-naver-client',
     }));
 
-    expect(markup).toContain('data-explorer-version="mockup-parity"');
-    expect(markup).toContain('data-explorer-layout="mockup-workspace"');
+    expect(markup).toContain('data-explorer-version="archive"');
+    expect(markup).toContain('data-explore-view="split"');
+    expect(markup).toContain('data-explorer-layout="split"');
     expect(markup).toContain('data-explorer-region="filters"');
+    expect(markup).toContain('data-explorer-region="summary"');
     expect(markup).toContain('data-explorer-region="results"');
     expect(markup).toContain('data-explorer-region="map"');
-    expect(markup).not.toContain('aria-label="Explorer view"');
+    expect(markup).toContain('aria-label="Explorer view"');
+    expect(markup).not.toContain('Current exploration scope');
     expect(markup.indexOf('data-explorer-region="filters"'))
-      .toBeLessThan(markup.indexOf('data-explorer-region="map"'));
-    expect(markup.indexOf('data-explorer-region="map"'))
-      .toBeLessThan(markup.indexOf('data-explorer-region="results"'));
+      .toBeLessThan(markup.indexOf('data-explorer-region="summary"'));
+    expect(markup.indexOf('data-explorer-region="summary"'))
+      .toBeLessThan(markup.indexOf('data-explorer-layout="split"'));
   });
 
-  it.each(['split', 'list', 'table', 'map'] as const)(
-    'normalizes the legacy %s view to the same map workspace',
-    (view) => {
+  it.each([
+    ['split', 'split'],
+    ['list', 'list'],
+    ['table', 'table'],
+    ['map', 'map'],
+  ] as const)(
+    'renders the URL-selected %s view as its own layout',
+    (view, layout) => {
       const markup = renderToStaticMarkup(createElement(AreaExplorer, {
         model: readyModel(),
         initialSelection: { market: 'kr', transaction: 'jeonse', view },
       }));
 
-      expect(markup).toContain('data-explore-view="mockup-workspace"');
-      expect(markup).toContain('data-explorer-layout="mockup-workspace"');
-      expect(markup).not.toContain('aria-label="Explorer view"');
+      expect(markup).toContain(`data-explore-view="${view}"`);
+      expect(markup).toContain(`data-explorer-layout="${layout}"`);
+      expect(markup).toContain('aria-label="Explorer view"');
+      expect(markup).toMatch(new RegExp(`aria-current="page"[^>]*>${view === 'split' ? 'Split' : view[0]!.toUpperCase() + view.slice(1)}</a>`));
+      if (view === 'table') {
+        expect(markup).toContain('data-building-table="filtered"');
+        expect(markup).not.toContain('data-explorer-region="map"');
+        expect(markup).not.toContain('data-explorer-region="results"');
+      } else if (view === 'map') {
+        expect(markup).toContain('data-explorer-region="map"');
+        expect(markup).not.toContain('data-explorer-region="results"');
+      } else if (view === 'list') {
+        expect(markup).toContain('data-explorer-region="results"');
+        expect(markup).not.toContain('data-explorer-region="map"');
+      } else {
+        expect(markup).toContain('data-explorer-region="results"');
+        expect(markup).toContain('data-explorer-region="map"');
+      }
     },
   );
 
-  it('restores a valid URL-selected building in a modal with a canonical detail action', () => {
+  it('restores a URL-selected building in the map drawer with a canonical detail action', () => {
     const markup = renderToStaticMarkup(createElement(AreaExplorer, {
       model: readyModel(),
       naverMapClientId: 'test-naver-client',
@@ -102,9 +136,10 @@ describe('public Seoul area Explorer', () => {
       },
     }));
 
-    expect(markup).toContain('role="dialog"');
-    expect(markup).toContain('aria-modal="true"');
-    expect(markup).toContain('data-building-dialog="gangnam-evidence-tower"');
+    expect(markup).toContain('role="complementary"');
+    expect(markup).not.toContain('aria-modal="true"');
+    expect(markup).toContain('data-building-drawer="gangnam-evidence-tower"');
+    expect(markup).toContain('data-selection-presentation="map-drawer"');
     expect(markup).toContain('data-building-panel="gangnam-evidence-tower"');
     expect(markup).toContain('data-building-media="naver-panorama"');
     expect(markup).toContain('Open full building evidence');
@@ -189,15 +224,21 @@ describe('public Seoul area Explorer', () => {
     expect(markup).toContain('Search this area');
   });
 
-  it('does not expose document-style view switching inside the map experience', () => {
+  it('preserves district state in all four view links and omits split from the query', () => {
     const markup = renderToStaticMarkup(createElement(AreaExplorer, {
       model: readyModel(),
       initialSelection: { market: 'kr', transaction: 'jeonse', view: 'table' },
     }));
 
-    expect(markup).toContain('data-explore-view="mockup-workspace"');
-    expect(markup).not.toContain('aria-label="Explorer view"');
-    for (const view of ['Split', 'List', 'Table', 'Map']) expect(markup).not.toContain(`>${view}</a>`);
+    expect(markup).toContain('data-explore-view="table"');
+    expect(markup).toContain('aria-label="Explorer view"');
+    expect(markup).toContain('href="/kr/seoul/explore?district=gangnam-gu">Split</a>');
+    expect(markup).toContain('href="/kr/seoul/explore?district=gangnam-gu&amp;view=list">List</a>');
+    expect(markup).toContain('<a aria-current="page" href="/kr/seoul/explore?district=gangnam-gu&amp;view=table">Table</a>');
+    expect(markup).toContain('href="/kr/seoul/explore?district=gangnam-gu&amp;view=map">Map</a>');
+    expect(markup.indexOf('>Split</a>')).toBeLessThan(markup.indexOf('>List</a>'));
+    expect(markup.indexOf('>List</a>')).toBeLessThan(markup.indexOf('>Table</a>'));
+    expect(markup.indexOf('>Table</a>')).toBeLessThan(markup.indexOf('>Map</a>'));
   });
 
   it('retains search, page, and neighborhood state inside the single workspace', () => {
@@ -227,8 +268,8 @@ describe('public Seoul area Explorer', () => {
       },
     }));
 
-    expect(markup).toMatch(/<button[^>]+aria-pressed="true"[^>]*>역삼동<\/button>/);
     expect(markup).toContain('value="Evidence Tower"');
+    expect(markup).toContain('neighborhood=yeoksam-dong');
     expect(markup).toContain('buildingPage=3');
   });
 
@@ -247,10 +288,10 @@ describe('public Seoul area Explorer', () => {
     expect(markup).not.toMatch(/data-transaction-mode="(?:sale|monthly-rent)"[^>]+(?:href|aria-current="page")/);
     expect(markup).toContain('name="evidence-area"');
     expect(markup).toContain('Price-ready');
-    expect(markup.indexOf('class="_workspace_')).toBeLessThan(markup.indexOf('data-coverage-panel="verified"'));
+    expect(markup.indexOf('data-explorer-layout="split"')).toBeLessThan(markup.indexOf('data-coverage-panel="verified"'));
   });
 
-  it('renders the complete map, legend, table, and allowed evidence in initial HTML', () => {
+  it('renders the complete map, district directory, and allowed evidence in initial HTML', () => {
     const model = readyModel();
     const markup = renderToStaticMarkup(createElement(AreaExplorer, {
       model,
@@ -274,11 +315,10 @@ describe('public Seoul area Explorer', () => {
       expect(markup).toContain(district.nameEn);
       expect(markup).toContain(district.nameKo);
       expect(markup).toContain(district.sampleLabel);
-      expect(markup).toContain(`href="/kr/seoul/explore/${district.slug}"`);
       if (district.medianLabel !== null) expect(markup).toContain(district.medianLabel);
     }
     expect((markup.match(/data-district-path=/g) ?? [])).toHaveLength(25);
-    expect((markup.match(/data-district-row=/g) ?? [])).toHaveLength(25);
+    expect((markup.match(/data-district-option=/g) ?? [])).toHaveLength(25);
     expect(markup).toContain('data-map-bucket="0"');
     expect(markup).toContain('data-map-bucket="1"');
     expect(markup).toContain('data-map-bucket="2"');
@@ -292,8 +332,6 @@ describe('public Seoul area Explorer', () => {
     expect(markup).toContain('district=gangnam-gu');
     expect(markup).toContain('Open Gangnam-gu evidence');
     expect(markup).toContain('Open Jongno-gu');
-    expect(markup).toContain('href="/kr/seoul/rankings"');
-    expect(markup).toContain('View district rankings');
     expect(markup).toContain('Evidence Tower');
     expect(markup).toContain('역삼동');
     expect(markup).toContain('data-coverage-panel="verified"');
@@ -484,24 +522,15 @@ describe('public Seoul area Explorer', () => {
     expect(unconfigured).toContain('data-map-state="fallback"');
   });
 
-  it('keeps the Modernist workspace responsive, focused, and touch-safe', () => {
-    const css = readFileSync(
-      new URL('../components/public-market/area-explorer.module.css', import.meta.url),
-      'utf8',
-    );
+  it('uses shared structural hooks for rendered browser geometry checks', () => {
+    const markup = renderToStaticMarkup(createElement(AreaExplorer, {
+      model: readyModel(),
+      naverMapClientId: 'test-naver-client',
+    }));
 
-    expect(css).toMatch(/\.explorer\s*\{[\s\S]*?overflow-x:\s*clip/);
-    expect(css).toMatch(/\.hero,[\s\S]*?\.workspace,[\s\S]*?\{[\s\S]*?width:\s*min\(calc\(100% - 32px\),\s*1680px\)/);
-    expect(css).toMatch(/\.workspace\s*\{[\s\S]*grid-template-columns:\s*minmax\(0,\s*65fr\)\s+minmax\(340px,\s*35fr\)/);
-    expect(css).toMatch(/\.transactionFilter[\s\S]*border:\s*var\(--rule-default\)/);
-    expect(css).toMatch(/\.districtRail[\s\S]*overflow-y:\s*auto/);
-    expect(css).toMatch(/\.districtButton[\s\S]*min-height:\s*44px/);
-    expect(css).toMatch(/\.detailLink[\s\S]*min-height:\s*44px/);
-    expect(css).toMatch(/:focus-visible[\s\S]*outline:\s*2px solid var\(--area-accent\)[\s\S]*outline-offset:\s*2px/);
-    expect(css).toMatch(/@media\s*\(max-width:\s*720px\)[\s\S]*\.discoveryRail\s*\{[\s\S]*position:\s*absolute[\s\S]*bottom:\s*0[\s\S]*max-height:\s*64dvh[\s\S]*overflow-y:\s*auto/);
-    expect(css).toMatch(/@media\s*\(max-width:\s*720px\)[\s\S]*\.tableWrap[\s\S]*overflow-x:\s*auto/);
-    expect(css).toMatch(/@media\s*\(max-width:\s*720px\)[\s\S]*\.mapPath\s*\{[\s\S]*pointer-events:\s*none/);
-    expect(css).toMatch(/\.legend[\s\S]*min-height:\s*88px/);
-    expect(css).toMatch(/max-width:\s*100%/);
+    expect(markup).toContain('data-explorer-layout="split"');
+    expect(markup).toContain('data-explorer-region="results"');
+    expect(markup).toContain('data-explorer-region="map"');
+    expect(markup).toContain('aria-label="Explorer view"');
   });
 });

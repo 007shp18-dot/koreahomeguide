@@ -72,10 +72,11 @@ export function BuildingDetailPage({
         <section
           className={styles.identityHero}
           data-identity-hero="true"
+          data-detail-hero="building"
           data-building-section="identity"
         >
           {streetView ?? <BuildingVisual model={visual} />}
-          <div className={styles.identitySummary}>
+          <div className={styles.identitySummary} data-detail-hero-metric="identity">
             <Link
               className={styles.backAction}
               href={exploreHref}

@@ -111,6 +111,22 @@ describe('public district detail page', () => {
     expect(sectionOrder).toEqual([...sectionOrder].sort((left, right) => left - right));
   });
 
+  it('uses the supplied Detail identity and 380px context-shell structure', () => {
+    const html = renderToStaticMarkup(<DistrictDetailPage model={publishedModel()} />);
+    const mainStart = html.indexOf('data-detail-main="true"');
+    const summary = html.indexOf('data-section="district-summary"');
+    const evidence = html.indexOf('data-section="district-distribution"');
+    const rail = html.indexOf('data-detail-rail="true"');
+
+    expect(html).toContain('data-detail-layout="evidence-rail"');
+    expect(html).toContain('data-detail-hero="district"');
+    expect(html).toContain('data-detail-hero-metric="median"');
+    expect(html).toContain('<h1>Gangnam-gu</h1>');
+    expect(mainStart).toBeLessThan(summary);
+    expect(summary).toBeLessThan(evidence);
+    expect(evidence).toBeLessThan(rail);
+  });
+
   it('renders model-owned spread and unavailable-change copy without false count precision', () => {
     const model = buildPublicDistrictModel('gangnam-gu', {
       source: createPublicAreaFixture({

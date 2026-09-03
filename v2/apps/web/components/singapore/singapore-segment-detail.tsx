@@ -10,12 +10,13 @@ import {
   SingaporeScope,
   singaporeStyles as styles,
 } from './singapore-shell';
+import { MarketDetailShell } from '../market-ui/market-shell';
 
 export function SingaporeSegmentDetail({ model }: Readonly<{
   model: SingaporeSegmentModel | SingaporeUnavailableModel;
 }>) {
   if (model.status === 'unavailable') return (
-    <SingaporePage>
+    <SingaporePage currentHref="/sg/singapore/explore/">
       <section className={styles.unavailable} data-singapore-segment="unavailable" data-product-intro="true">
         <h1>{model.message}</h1>
         <p>No segment value is substituted.</p>
@@ -27,7 +28,7 @@ export function SingaporeSegmentDetail({ model }: Readonly<{
     </SingaporePage>
   );
   if (model.status === 'insufficient') return (
-    <SingaporePage>
+    <SingaporePage currentHref="/sg/singapore/explore/">
       <section className={styles.withheld} data-singapore-segment="insufficient" data-product-intro="true">
         <p className={styles.eyebrow}>Singapore · {model.identity.segment}</p>
         <h1>Distribution not published.</h1>
@@ -38,16 +39,12 @@ export function SingaporeSegmentDetail({ model }: Readonly<{
     </SingaporePage>
   );
   return (
-    <SingaporePage>
-      <nav className={styles.breadcrumbs} aria-label="Breadcrumb">
-        <Link href="/sg/singapore/explore/">Explore</Link><span>{model.identity.segment}</span>
-      </nav>
-      <header className={styles.hero} data-singapore-segment="ready" data-product-intro="true">
-        <p className={styles.eyebrow}>Singapore · {model.identity.segment}</p>
-        <h1>{model.display.medianPriceLabel} median from {model.display.sampleLabel}.</h1>
-        <SingaporeScope />
-      </header>
-      <section className={styles.section} aria-labelledby="segment-distribution-heading">
+    <SingaporePage currentHref="/sg/singapore/explore/" unframed>
+      <MarketDetailShell
+        breadcrumb={<nav className={styles.breadcrumbs} aria-label="Breadcrumb"><Link href="/sg/singapore/explore/">Explore</Link><span>{model.identity.segment}</span></nav>}
+        identity={<div className={styles.detailIdentity} data-singapore-segment="ready"><p className={styles.eyebrow}>Singapore · Market segment</p><h1>{model.identity.segment}</h1><SingaporeScope /></div>}
+        metric={<div className={styles.detailMetric}><small>Median price</small><strong>{model.display.medianPriceLabel}</strong><span>{model.display.sampleLabel}</span></div>}
+        evidence={<><section className={styles.section} aria-labelledby="segment-distribution-heading">
         <p className={styles.sectionLabel}>01 / Published distribution</p>
         <h2 id="segment-distribution-heading">Raw transaction evidence.</h2>
         <dl className={styles.stats}>
@@ -55,8 +52,7 @@ export function SingaporeSegmentDetail({ model }: Readonly<{
           <div className={styles.stat}><dt>Middle half</dt><dd>{model.display.middlePriceLabel}</dd></div>
           <div className={styles.stat}><dt>Median unit price</dt><dd>{model.display.medianPsfLabel}</dd></div>
         </dl>
-      </section>
-      <section className={styles.section} aria-labelledby="project-list-heading">
+      </section><section className={styles.section} aria-labelledby="project-list-heading">
         <p className={styles.sectionLabel}>02 / Projects</p>
         <h2 id="project-list-heading">Projects in {model.identity.segment}.</h2>
         <div className={styles.projectGrid}>
@@ -70,8 +66,9 @@ export function SingaporeSegmentDetail({ model }: Readonly<{
             </article>
           ))}
         </div>
-      </section>
-      <SingaporeEvidence model={model.evidence} />
+      </section></>}
+        rail={<SingaporeEvidence model={model.evidence} />}
+      />
     </SingaporePage>
   );
 }

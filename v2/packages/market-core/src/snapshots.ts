@@ -9,6 +9,9 @@ export type MarketDataset =
   | 'sg-private-sale'
   | 'sg-private-rent'
   | 'sg-hdb'
+  | 'sg-check-ura-private-sale'
+  | 'sg-check-hdb-resale'
+  | 'sg-check-hdb-rent'
   | 'sg-market-context';
 
 export type InstalledSnapshot = Readonly<{
@@ -56,6 +59,9 @@ const marketDatasets = Object.freeze({
     'sg-private-sale',
     'sg-private-rent',
     'sg-hdb',
+    'sg-check-ura-private-sale',
+    'sg-check-hdb-resale',
+    'sg-check-hdb-rent',
     'sg-market-context',
   ]),
 } as const satisfies Readonly<Record<SnapshotMarketId, readonly MarketDataset[]>>);

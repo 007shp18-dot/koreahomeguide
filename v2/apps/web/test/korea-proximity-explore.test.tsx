@@ -497,7 +497,7 @@ describe('Korea Explore proximity route model', () => {
     expect(html).toContain('Same name · 경의중앙선 · 750 m');
   });
 
-  it('localizes and serializes all district and map anchors with both proximity pairs', () => {
+  it('localizes and serializes Explore view anchors with both proximity pairs', () => {
     const model = buildPublicAreaExploreModel(
       'gangnam-gu', dependencies(), undefined, '', {}, 1, undefined,
       { station: 'station-a', stationDistance: '250', school: 'school-a', schoolDistance: '500' },
@@ -513,13 +513,21 @@ describe('Korea Explore proximity route model', () => {
       }}
     />);
 
-    for (const district of model.districts) {
-      const query = 'transaction=monthly&amp;area=60-85&amp;propertyType=apartment&amp;contractType=renewal&amp;sort=median-asc&amp;view=table&amp;station=station-a&amp;stationDistance=250&amp;school=school-a&amp;schoolDistance=500';
-      expect(html.split(`href="/ko/kr/seoul/explore/${district.slug}?${query}"`)).toHaveLength(3);
-      expect(html).toContain(
-        `data-map-district-anchor="${district.slug}" href="/ko/kr/seoul/explore/?transaction=monthly&amp;area=60-85&amp;propertyType=apartment&amp;district=${district.slug}&amp;contractType=renewal&amp;sort=median-asc&amp;view=table&amp;station=station-a&amp;stationDistance=250&amp;school=school-a&amp;schoolDistance=500"`,
-      );
-    }
+    expect(html).toContain('data-explore-view="table"');
+    expect(html).toContain('aria-label="탐색 보기"');
+    for (const parameter of [
+      'transaction=monthly',
+      'area=60-85',
+      'propertyType=apartment',
+      'district=gangnam-gu',
+      'contractType=renewal',
+      'sort=median-asc',
+      'station=station-a',
+      'stationDistance=250',
+      'school=school-a',
+      'schoolDistance=500',
+    ]) expect(html).toContain(parameter);
+    expect(html).not.toContain('data-map-district-anchor');
   });
 
   it('renders evidence and contract-group actions with the full active Explore state', () => {

@@ -7,6 +7,7 @@ import type {
 } from '../../lib/public-market/building-decision-model';
 import { buildingDecisionHref } from '../../lib/public-market/building-decision-state';
 import type { PublicBuildingModel } from '../../lib/public-market/building-route-model.server';
+import { EvidenceSectionHeading } from '../evidence-ui/section-heading';
 import { EvidenceDisclosure } from '../trust/evidence-disclosure';
 import { EvidenceEmptyStatePanel } from '../trust/evidence-empty-state';
 import { BoxPlot } from './box-plot';
@@ -145,10 +146,10 @@ function RentDecisionView({ model, decision, base }: Readonly<{
 function EvidenceDecisionView({ model }: Readonly<{ model: PublicBuildingModel }>) {
   return (
     <div className={styles.decisionView}>
-      <div className={styles.sectionHeading}>
-        <p>Evidence ledger</p>
-        <h2>What supports this building page</h2>
-      </div>
+      <EvidenceSectionHeading
+        eyebrow="Evidence ledger"
+        title="What supports this building page"
+      />
       <EvidenceDisclosure
         model={model.evidence.descriptor}
         boundary={model.presentation.sourceBoundary}

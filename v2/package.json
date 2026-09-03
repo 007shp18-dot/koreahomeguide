@@ -9,6 +9,7 @@
     "test": "vitest run",
     "build": "pnpm --filter @signedprice/web build",
     "build:korea-proximity": "node --conditions=react-server --experimental-loader ./scripts/typescript-extension-loader.mjs --experimental-transform-types scripts/build-korea-proximity.mts",
+    "build:singapore-check": "node --conditions=react-server --experimental-loader ./scripts/typescript-extension-loader.mjs --experimental-transform-types scripts/build-singapore-check-snapshots.mts",
     "test:korea-proximity": "vitest run tests/korea-proximity-runner.test.ts",
     "check:rent-client-boundary": "node scripts/scan-rent-check-client-boundary.mjs apps/web/.next",
     "check:singapore-client-boundary": "node scripts/scan-singapore-client-boundary.mjs apps/web/.next",

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
 import type { SiteFooterModel, SiteHeaderModel } from '../../lib/site-copy';
+import { resolveMarketNavigation, type ProductSurface } from '../../lib/navigation/market-route-resolver';
 import type { SingaporeEvidenceModel } from '../../lib/singapore/route-types';
 import { SiteFooter } from '../site-footer';
 import { SiteHeader } from '../site-header';
@@ -11,13 +12,9 @@ export const singaporeHeader: SiteHeaderModel = {
   brand: 'signedprice',
   homeLabel: 'signedprice home',
   navigationLabel: 'Singapore evidence navigation',
+  navigationVariant: 'supplied',
   marketLabel: 'Singapore',
-  links: [
-    { label: 'Global home', href: '/' },
-    { label: 'Singapore', href: '/sg/' },
-    { label: 'Explore', href: '/sg/singapore/explore/' },
-    { label: 'Trust', href: '/trust/' },
-  ],
+  links: resolveMarketNavigation({ market: 'singapore', locale: 'en', surface: 'home' }).links,
 };
 
 export const singaporeFooter: SiteFooterModel = {
@@ -25,20 +22,28 @@ export const singaporeFooter: SiteFooterModel = {
   descriptor: 'Verified private residential sale evidence, with publication limits shown.',
   navigationLabel: 'Singapore footer navigation',
   links: [
-    { label: 'Home', href: '/' },
-    { label: 'Singapore', href: '/sg/' },
-    { label: 'Explore', href: '/sg/singapore/explore/' },
-    { label: 'Trust', href: '/trust/' },
-    { label: 'Corrections', href: '/sg/singapore/corrections/' },
+    ...resolveMarketNavigation({ market: 'singapore', locale: 'en', surface: 'home' }).links,
   ],
   status: 'Singapore publication remains gated by verified source rights and evidence readiness.',
 };
 
-export function SingaporePage({ children }: Readonly<{ children: React.ReactNode }>) {
+export function SingaporePage({ children, currentHref, unframed = false }: Readonly<{
+  children: React.ReactNode;
+  currentHref?: string;
+  unframed?: boolean;
+}>) {
+  const surface: ProductSurface = currentHref?.includes('/check/') ? 'check'
+    : currentHref?.includes('/explore/') || currentHref?.includes('/hdb/') ? 'explore'
+      : currentHref?.includes('/corrections/') ? 'corrections'
+        : 'home';
+  const header = currentHref === undefined ? singaporeHeader : {
+    ...singaporeHeader,
+    links: resolveMarketNavigation({ market: 'singapore', locale: 'en', surface }).links,
+  };
   return (
     <div id="top" className={styles.page}>
-      <SiteHeader copy={singaporeHeader} />
-      <main className={styles.main}>{children}</main>
+      <SiteHeader copy={header} />
+      <main className={unframed ? styles.mainUnframed : styles.main}>{children}</main>
       <SiteFooter copy={singaporeFooter} />
     </div>
   );

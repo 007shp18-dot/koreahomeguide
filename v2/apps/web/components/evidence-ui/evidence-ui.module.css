@@ -1,0 +1,98 @@
+.sectionHeading {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  column-gap: var(--space-4);
+  row-gap: var(--space-1);
+}
+
+.sectionHeading p,
+.sectionHeading small {
+  color: var(--muted);
+  font-size: var(--evidence-type-label);
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.sectionHeading p,
+.sectionHeading h2 {
+  grid-column: 1;
+}
+
+.sectionHeading h2 {
+  font-size: var(--evidence-type-section);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+
+.sectionHeading small {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: end;
+  max-width: 36ch;
+  text-align: right;
+}
+
+.segmentedControl {
+  width: fit-content;
+  max-width: 100%;
+  display: flex;
+  overflow-x: auto;
+  border: var(--rule-strong);
+  scrollbar-width: thin;
+}
+
+.segmentedControl a {
+  min-width: max-content;
+  min-height: 44px;
+  padding-inline: var(--space-4);
+  display: inline-grid;
+  place-items: center;
+  border-right: var(--rule-default);
+  color: var(--ink);
+  background: var(--canvas);
+  font-size: var(--evidence-type-ui);
+  font-weight: 800;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.segmentedControl a:last-child {
+  border-right: 0;
+}
+
+.segmentedControl a[aria-current='page'] {
+  color: var(--canvas);
+  background: var(--ink);
+}
+
+.segmentedControl a:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -4px;
+}
+
+@media (max-width: 720px) {
+  .sectionHeading {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sectionHeading small {
+    grid-column: 1;
+    grid-row: auto;
+    text-align: left;
+  }
+
+  .segmentedControl {
+    width: 100%;
+  }
+
+  .segmentedControl a {
+    flex: 1 0 auto;
+  }
+}

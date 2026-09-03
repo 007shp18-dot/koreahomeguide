@@ -54,6 +54,20 @@ describe('Playwright release target configuration', () => {
     expect(source).not.toMatch(/@signedprice\/|(?:packages|apps)\//);
   });
 
+  it('keeps Singapore Check browser evidence isolated and available to the local server', () => {
+    const source = readFileSync(new URL('./e2e/singapore-check-fixture.ts', import.meta.url), 'utf8');
+    const imports = [...source.matchAll(/from\s+['"]([^'"]+)['"]/g)].map((match) => match[1]);
+    expect(imports).toEqual(['node:crypto']);
+    expect(source).not.toMatch(/@signedprice\/(?:market|singapore)|(?:packages|apps)\//);
+    const config = createPlaywrightConfig({});
+    if (config.webServer === undefined || Array.isArray(config.webServer)) throw new Error('Expected local server.');
+    expect(config.webServer.env).toMatchObject({
+      SIGNEDPRICE_SINGAPORE_CHECK_URA_PERIOD: '2026-08/2026-08',
+      SIGNEDPRICE_SINGAPORE_CHECK_HDB_RESALE_PERIOD: '2026-08/2026-08',
+      SIGNEDPRICE_SINGAPORE_CHECK_HDB_RENT_PERIOD: '2026-08/2026-08',
+    });
+  });
+
   it('builds and serves the deterministic candidate locally', () => {
     const config = createPlaywrightConfig({});
 
