@@ -132,8 +132,8 @@ describe('SignedPrice cohort zero SEO', () => {
     const english = renderToStaticMarkup(<EnglishRootLayout><main /></EnglishRootLayout>);
     const korean = renderToStaticMarkup(<KoreanRootLayout><main /></KoreanRootLayout>);
 
-    expect(english).toMatch(/^<html lang="en">/);
-    expect(korean).toMatch(/^<html lang="ko">/);
+    expect(english).toMatch(/^<html lang="en"[^>]*>/);
+    expect(korean).toMatch(/^<html lang="ko"[^>]*>/);
     expect(english.match(/data-structured-data="site"/g)).toHaveLength(1);
     expect(korean.match(/data-structured-data="site"/g)).toHaveLength(1);
   });

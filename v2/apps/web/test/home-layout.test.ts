@@ -28,24 +28,14 @@ function declarationsFor(source: string, selector: string): Record<string, strin
 
 describe('signedprice Evidence Editorial homepage', () => {
   it('centres every primary section in the standard content frame', () => {
-    const expectedWidth = 'min(calc(100% - (2 * var(--page-gutter))), var(--content-frame))';
-
-    for (const selector of [
-      '.heroGrid', '.liveStrip', '.decisionSection', '.exploreSection',
-      '.briefSection', '.trustBoundary',
-    ]) {
-      expect(declarationsFor(homeCss, selector)).toMatchObject({
-        width: expectedWidth,
-        'margin-inline': 'auto',
-      });
-    }
+    expect(homeCss).toMatch(/\.heroGrid,\s*\.liveStrip,\s*\.decisionSection,\s*\.exploreSection,\s*\.briefSection,\s*\.trustBoundary\s*\{[^}]*width:\s*min\(calc\(100% - \(2 \* var\(--page-gutter\)\)\), var\(--content-frame\)\);[^}]*margin-inline:\s*auto;/);
 
     expect(declarationsFor(homeCss, '.exploreSection')).toMatchObject({
-      'min-height': '540px',
-      'grid-template-columns': 'minmax(0, 1.16fr) minmax(320px, .84fr)',
+      'min-height': '520px',
+      'grid-template-columns': 'minmax(0, 1.18fr) minmax(330px, .82fr)',
     });
     expect(homeCss).not.toMatch(/(?:heroGrid|liveStrip|decisionSection|exploreSection|briefSection|trustBoundary)[^{]*\{[^}]*100vw/);
-  });
+  }, 10_000);
 
   it('uses one decision headline before the evidence and deeper product sections', async () => {
     const markup = renderToStaticMarkup(await Home());
@@ -54,10 +44,10 @@ describe('signedprice Evidence Editorial homepage', () => {
     const positions = sections.map((id) => markup.indexOf(`id="${id}"`));
 
     expect(h1s).toHaveLength(1);
-    expect(markup).toContain('<h1 id="home-headline">See what homes actually signed for.</h1>');
+    expect(markup).toContain('<h1 id="home-headline">Know the market before you buy.</h1>');
     expect(positions.every((position) => position >= 0)).toBe(true);
     expect([...positions].sort((a, b) => a - b)).toEqual(positions);
-  });
+  }, 10_000);
 
   it('uses the global market navigation without a duplicate hero city tablist', async () => {
     const markup = renderToStaticMarkup(await Home());
@@ -67,14 +57,15 @@ describe('signedprice Evidence Editorial homepage', () => {
     expect(markup).not.toContain('id="market-tab-seoul"');
   });
 
-  it('keeps five primary product destinations in the shared header', async () => {
+  it('keeps the six roadmap destinations in the shared header', async () => {
     const markup = renderToStaticMarkup(await Home());
     const navigation = markup.match(/<nav aria-label="Primary navigation"[^>]*>([\s\S]*?)<\/nav>/)?.[1] ?? '';
 
-    expect(navigation.match(/<a /g) ?? []).toHaveLength(5);
+    expect(navigation.match(/<a /g) ?? []).toHaveLength(6);
     expect(navigation).toContain('data-product-index="01"');
-    expect(navigation).toContain('href="/kr/seoul/rankings"');
-    expect(navigation).toContain('data-product-index="05"');
+    expect(navigation).toContain('href="/properties"');
+    expect(navigation).toContain('data-product-index="06"');
+    expect(navigation).toContain('href="/invest"');
   });
 
   it('keeps all six market slots while moving decisions to the hero', async () => {

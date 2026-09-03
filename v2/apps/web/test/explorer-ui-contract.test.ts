@@ -383,9 +383,9 @@ describe('map and mobile scroll safety', () => {
     expect(workspaceSource).toContain('state.map.revision');
   });
 
-  it('uses bundled Archivo with Korean system fallbacks', () => {
+  it('uses bundled Archivo with Noto Sans KR and Korean system fallbacks', () => {
     expect(declarationsFor(css, 'body')['font-family']).toMatch(
-      /Archivo.*Pretendard.*Noto Sans KR.*Apple SD Gothic Neo.*Malgun Gothic.*sans-serif/,
+      /Archivo.*font-noto-sans-kr.*Noto Sans KR.*Apple SD Gothic Neo.*Malgun Gothic.*sans-serif/,
     );
   });
 });

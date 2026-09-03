@@ -13,7 +13,7 @@ import type { SingaporeEntryModel } from './singapore/route-types';
 import { indexableMetadata } from './public-metadata';
 
 const brand = 'signedprice';
-const headline = 'See what homes actually signed for.';
+const headline = 'Know the market before you buy.';
 const marketIds = [
   'kr-seoul',
   'sg-singapore',
@@ -78,11 +78,12 @@ export interface SiteFooterModel {
 }
 
 export const productNavigationLinks = Object.freeze([
-  { index: '01', label: 'Check', description: 'Compare a contract', href: '/kr/seoul/check/' },
-  { index: '02', label: 'Explore', description: 'Map signed evidence', href: '/kr/seoul/explore/' },
-  { index: '03', label: 'Rankings', description: 'Compare districts', href: '/kr/seoul/rankings/' },
-  { index: '04', label: 'Briefs', description: 'Read market signals', href: '/kr/seoul/news/' },
-  { index: '05', label: 'Guide', description: 'Understand the method', href: '/kr/seoul/guide/' },
+  { index: '01', label: 'Markets', description: 'Compare market context', href: '/#markets' },
+  { index: '02', label: 'Prices', description: 'Explore signed evidence', href: '/kr/seoul/explore/' },
+  { index: '03', label: 'Properties', description: 'Service preparing', href: '/properties/' },
+  { index: '04', label: 'Insights', description: 'Read market signals', href: '/kr/seoul/news/' },
+  { index: '05', label: 'Guides', description: 'Understand the method', href: '/kr/seoul/guide/' },
+  { index: '06', label: 'Invest', description: 'Service preparing', href: '/invest/' },
 ] as const satisfies readonly NavigationLinkModel[]);
 
 export const KOREA_PUBLIC_RELEASE_STATUS =
@@ -131,14 +132,14 @@ const englishTrustCopy = {
 
 const englishFooterCopy = {
   brand,
-  descriptor: 'Verified property intelligence for Seoul.',
+  descriptor: 'Property prices and market context, made clear.',
   navigationLabel: 'Footer navigation',
   links: [
     { label: 'Markets', href: '#markets' },
     { label: 'Trust', href: '/trust/' },
     { label: 'Back to top', href: '#top' },
   ],
-  status: 'Global platform live. Market evidence remains rights-gated.',
+  status: 'Market data is live. Listings, brokerage and personalized investment services are not currently offered.',
 } as const satisfies SiteFooterModel;
 
 export const homepageCopy = {
@@ -151,7 +152,7 @@ export const homepageCopy = {
     eyebrow: 'Property intelligence for Seoul, Singapore and Dubai',
     headline,
     description:
-      'Search a building or neighborhood, compare the real contract range, and understand the market before you rent, buy, or invest.',
+      'Search real property evidence, compare markets, and make a better-informed property decision across Seoul, Singapore and Dubai.',
     intentHeading: 'Start with your decision',
     intentDescription:
       'Choose an intent, then enter the market whose local evidence and rules matter.',
@@ -338,6 +339,15 @@ const seoulSlotDescriptions = {
   community: 'Community access is unavailable.',
 } as const satisfies Record<HomepageProductSlotId, string>;
 
+const seoulSlotHrefs = {
+  check: '/kr/seoul/check/',
+  explore: '/kr/seoul/explore/',
+  rankings: '/kr/seoul/rankings/',
+  news: '/kr/seoul/news/',
+  guide: '/kr/seoul/guide/',
+  community: undefined,
+} as const satisfies Record<HomepageProductSlotId, string | undefined>;
+
 const singaporeUnavailableDescription = 'Verified Singapore evidence unavailable';
 const dubaiRightsDescription = 'DLD and RERA display-rights clearance is incomplete.';
 
@@ -353,6 +363,7 @@ function productSlots(
         description: seoulSlotDescriptions[id],
         state: id === 'community' ? 'unavailable' : 'available',
         stateLabel: id === 'community' ? 'Unavailable' : 'Available',
+        ...(seoulSlotHrefs[id] === undefined ? {} : { href: seoulSlotHrefs[id] }),
       } satisfies HomepageProductSlotModel);
     }
 

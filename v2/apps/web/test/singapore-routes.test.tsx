@@ -84,7 +84,7 @@ describe('Singapore route SSR', () => {
     expect(html).toContain('aria-label="Singapore evidence navigation"');
     expect(html).toContain('href="/sg/singapore/explore/"');
     expect(html).not.toContain('href="/kr/seoul/check/"');
-    expect(html).not.toContain('href="/kr/seoul/');
+    expect(html).toContain('href="/kr/seoul">Seoul</a>');
   });
 
   it('marks the Singapore product route instead of a Seoul route as current', () => {

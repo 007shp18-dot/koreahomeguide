@@ -10,6 +10,7 @@ import {
   vercelAnalyticsEnabledFromEnvironment,
 } from "@/lib/analytics/analytics-config.server";
 import { homepageCopy } from "@/lib/site-copy";
+import { notoSansKr } from "../fonts";
 import "../globals.css";
 
 export const metadata: Metadata = {
@@ -28,7 +29,7 @@ export default function EnglishRootLayout({ children }: { children: ReactNode })
   });
 
   return (
-    <html lang="en">
+    <html lang="en" className={notoSansKr.variable}>
       <body>
         {children}
         <PublicSiteJsonLd />

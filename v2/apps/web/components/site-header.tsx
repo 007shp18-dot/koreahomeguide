@@ -13,14 +13,19 @@ type SiteHeaderProps = {
 
 export function SiteHeader({ copy }: SiteHeaderProps) {
   const currentHref = copy.links.find(({ isCurrent }) => isCurrent)?.href;
-  const navigationLinks: readonly NavigationLinkModel[] = copy.navigationVariant === 'supplied'
+  const contextualLinks: readonly NavigationLinkModel[] = copy.navigationVariant === 'supplied'
     ? copy.links
-    : productNavigationLinks;
+    : [];
   const currentMarket = currentHref?.startsWith('/sg/') || copy.marketLabel === 'Singapore'
     ? 'singapore'
     : currentHref?.startsWith('/ae/') || copy.marketLabel === 'Dubai'
       ? 'dubai'
       : 'seoul';
+  const navigationLinks: readonly NavigationLinkModel[] = productNavigationLinks.map((link) => (
+    currentMarket === 'singapore' && link.label === 'Prices'
+      ? { ...link, href: '/sg/singapore/explore/' }
+      : link
+  ));
   const markets = [
     { id: 'seoul', label: 'Seoul', href: '/kr/seoul/' },
     { id: 'singapore', label: 'Singapore', href: '/sg/' },
@@ -28,7 +33,11 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
   ] as const;
 
   function isCurrentLink(href: string): boolean {
-    return currentHref === href;
+    if (currentHref === href) return true;
+    if (href === '/kr/seoul/explore/' && currentHref?.includes('/explore/')) return true;
+    if (href === '/kr/seoul/news/' && currentHref?.includes('/news/')) return true;
+    if (href === '/kr/seoul/guide/' && currentHref?.includes('/guide/')) return true;
+    return false;
   }
 
   const isKorean = copy.languageLabel === 'KO';
@@ -44,11 +53,32 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
 
   return (
     <header className="site-header">
-      <div className="site-header__market-tier" data-navigation-tier="market">
-        <div className="site-shell site-header__inner">
-          <Link className="wordmark" href={copy.homeHref ?? '/'} aria-label={copy.homeLabel}>
-            <BrandWordmark inverted />
-          </Link>
+      <div className="site-shell site-header__inner">
+        <Link className="wordmark" href={copy.homeHref ?? '/'} aria-label={copy.homeLabel}>
+          <BrandWordmark />
+        </Link>
+        <div className="site-header__product-tier" data-navigation-tier="product">
+          <nav aria-label={copy.navigationLabel} className="site-header__product-inner">
+            <ul className="site-header__links">
+              {navigationLinks.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    className="site-header__product-link"
+                    href={link.href}
+                    aria-label={link.ariaLabel}
+                    aria-current={isCurrentLink(link.href) ? 'page' : undefined}
+                    data-product-index={link.index}
+                  >
+                    {link.index === undefined ? null : <span>{link.index}</span>}
+                    <strong>{link.label}</strong>
+                    {link.description === 'Service preparing' ? <small>Preparing</small> : null}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
+        <div className="site-header__market-tier" data-navigation-tier="market">
           <nav className="site-header__markets" aria-label="Market navigation">
             {markets.map((market) => (
               <Link
@@ -68,27 +98,17 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
           </div>
         </div>
       </div>
-      <div className="site-header__product-tier" data-navigation-tier="product">
-        <nav aria-label={copy.navigationLabel} className="site-shell site-header__product-inner">
-          <ul className="site-header__links">
-            {navigationLinks.map((link) => (
-              <li key={link.href}>
-                <Link
-                  className="site-header__product-link"
-                  href={link.href}
-                  aria-label={link.ariaLabel}
-                  aria-current={isCurrentLink(link.href) ? 'page' : undefined}
-                  data-product-index={link.index}
-                >
-                  {link.index === undefined ? null : <span>{link.index}</span>}
-                  <strong>{link.label}</strong>
-                  {link.description === undefined ? null : <small>{link.description}</small>}
-                </Link>
-              </li>
+      {contextualLinks.length === 0 ? null : (
+        <nav className="site-header__context" aria-label={`${copy.marketLabel ?? 'Local'} navigation`}>
+          <div className="site-shell site-header__context-inner">
+            {contextualLinks.map((link) => (
+              <Link href={link.href} aria-current={link.isCurrent ? 'page' : undefined} key={link.href}>
+                {link.label}
+              </Link>
             ))}
-          </ul>
+          </div>
         </nav>
-      </div>
+      )}
     </header>
   );
 }

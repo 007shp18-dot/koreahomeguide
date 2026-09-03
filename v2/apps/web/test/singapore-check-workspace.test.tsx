@@ -28,7 +28,7 @@ describe('Singapore Check workspace', () => {
     expect(html).toContain('name="a-amount"');
     expect(html).toContain('name="a-project"');
     expect(html).toContain('P25–P75');
-    expect(html).not.toContain('/kr/seoul/');
+    expect(html).not.toContain('/kr/seoul/check');
     expect(html).not.toMatch(/jeonse|KRW|winner/i);
   });
 

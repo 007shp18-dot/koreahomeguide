@@ -66,6 +66,9 @@ function DistrictNavigation({ model }: Readonly<{ model: PublicDistrictModel }>)
   return (
     <nav className={styles.navigation} aria-label="District evidence navigation">
       <div className={styles.primaryLinks}>
+        <Link href="/kr/seoul/check/">
+          Compare a contract
+        </Link>
         <Link className={styles.exploreLink} href={exploreHref}>
           Back to Seoul map
         </Link>

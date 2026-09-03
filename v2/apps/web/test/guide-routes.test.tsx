@@ -67,16 +67,16 @@ describe('Korea methodology guides', () => {
     expect(html.match(/data-navigation-tier="product"/g) ?? []).toHaveLength(1);
     expect(html.match(/<footer/g) ?? []).toHaveLength(1);
     for (const href of [
-      '/kr/seoul/check/',
       '/kr/seoul/explore/',
-      '/kr/seoul/rankings/',
       '/kr/seoul/news/',
       '/kr/seoul/guide/',
+      '/properties/',
+      '/invest/',
     ]) {
       expect(html).toContain(`href="${href.slice(0, -1)}"`);
     }
     expect(html).toMatch(/<a[^>]*aria-current="page"[^>]*href="\/kr\/seoul\/guide"/);
-    expect(html).not.toMatch(/>Overview<|>Rent<|>Buy<|>Invest<|>Evidence</);
+    expect(html).not.toMatch(/>Overview<|>Rent<|>Buy<|>Evidence</);
   });
 
   it('generates exact static params and renders every shareable guide', async () => {

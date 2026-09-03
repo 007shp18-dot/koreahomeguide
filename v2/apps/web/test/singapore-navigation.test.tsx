@@ -43,14 +43,20 @@ describe('Singapore navigation promotion gate', () => {
       presentation.markets.flatMap((market) =>
         market.slots.flatMap((slot) => slot.href ?? []),
       ),
-    ).toEqual([]);
+    ).toEqual([
+      '/kr/seoul/check/',
+      '/kr/seoul/explore/',
+      '/kr/seoul/rankings/',
+      '/kr/seoul/news/',
+      '/kr/seoul/guide/',
+    ]);
 
     const html = renderToStaticMarkup(await Home());
     expect(html).toContain('href="/sg">Singapore</a>');
     expect(html).toContain('href="/compare?market=dubai">Dubai</a>');
   });
 
-  it('activates only Singapore Explore after its evidence gate passes', () => {
+  it('adds Singapore Explore after its evidence gate passes while Seoul stays crawlable', () => {
     const presentation = buildHomepagePresentation(ready);
     expect(presentation.copy.marketIds).toEqual([
       'kr-seoul',
@@ -75,11 +81,11 @@ describe('Singapore navigation promotion gate', () => {
       {
         id: 'kr-seoul',
         slots: [
-          { id: 'check', href: undefined },
-          { id: 'explore', href: undefined },
-          { id: 'rankings', href: undefined },
-          { id: 'news', href: undefined },
-          { id: 'guide', href: undefined },
+          { id: 'check', href: '/kr/seoul/check/' },
+          { id: 'explore', href: '/kr/seoul/explore/' },
+          { id: 'rankings', href: '/kr/seoul/rankings/' },
+          { id: 'news', href: '/kr/seoul/news/' },
+          { id: 'guide', href: '/kr/seoul/guide/' },
           { id: 'community', href: undefined },
         ],
       },
