@@ -21,7 +21,17 @@ const ready = {
   periodLabel: 'Jun 2026–Aug 2026',
   exploreHref: '/sg/singapore/explore/',
   correctionHref: '/sg/singapore/corrections/',
-  evidence: {} as never,
+  evidence: {
+    provider: 'URA',
+    dataset: 'private residential sale transactions',
+    period: '2026-06/2026-08',
+    generatedAt: '2026-09-01T00:00:00.000Z',
+    publicationMinimum: 5,
+    rightsPolicyId: 'sg-ura-private-sale-v1',
+    limitations: ['Private residential sales only.'],
+    correctionHref: '/sg/singapore/corrections/',
+    descriptor: {} as never,
+  },
 } as const;
 
 describe('Singapore navigation promotion gate', () => {
@@ -53,7 +63,7 @@ describe('Singapore navigation promotion gate', () => {
 
     const html = renderToStaticMarkup(await Home());
     expect(html).toContain('href="/sg">Singapore</a>');
-    expect(html).toContain('href="/markets#dubai">Dubai</a>');
+    expect(html).toContain('href="/ae/dubai">Dubai</a>');
   });
 
   it('adds Singapore Explore after its evidence gate passes while Seoul stays crawlable', () => {
@@ -63,7 +73,7 @@ describe('Singapore navigation promotion gate', () => {
       'sg-singapore',
       'ae-dubai',
     ]);
-    expect(presentation.copy.header.links).toContainEqual({
+    expect(presentation.copy.header.links).not.toContainEqual({
       label: 'Singapore evidence', href: '/sg/', ariaLabel: 'Singapore evidence',
     });
     expect(presentation.markets.map(({ id }) => id)).toEqual([

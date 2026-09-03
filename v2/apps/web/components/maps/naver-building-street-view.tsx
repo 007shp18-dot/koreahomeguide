@@ -4,7 +4,11 @@ import Link from 'next/link';
 import Script from 'next/script';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { buildNaverMapsScriptUrl } from './naver-district-map';
+import {
+  buildNaverMapsScriptUrl,
+  resolveUnambiguousNaverGeocode,
+  type NaverGeocodeAddress,
+} from './naver-district-map';
 import styles from './building-street-view.module.css';
 
 type NaverPanoramaInstance = Readonly<{
@@ -39,6 +43,43 @@ export type NaverBuildingMapSdk = Readonly<{
   ) => unknown;
   Marker: new (options: Readonly<{ map: unknown; position: unknown; title: string }>) => unknown;
 }>;
+
+export type NaverBuildingGeocoderSdk = Readonly<{
+  Service: Readonly<{
+    Status: Readonly<{ OK: string }>;
+    geocode: (
+      input: Readonly<{ query: string }>,
+      callback: (status: string, response: Readonly<{
+        v2?: Readonly<{ addresses?: readonly NaverGeocodeAddress[] }>;
+      }>) => void,
+    ) => void;
+  }>;
+}>;
+
+export function resolveNaverBuildingLocation({
+  sdk,
+  addressQuery,
+}: Readonly<{
+  sdk: NaverBuildingGeocoderSdk;
+  addressQuery: string;
+}>): Promise<Readonly<{ latitude: number; longitude: number }>> {
+  return new Promise((resolve, reject) => {
+    sdk.Service.geocode({ query: addressQuery }, (status, response) => {
+      if (status !== sdk.Service.Status.OK) {
+        reject(new Error('NAVER building location unavailable.'));
+        return;
+      }
+      const address = resolveUnambiguousNaverGeocode(addressQuery, response.v2?.addresses);
+      const latitude = Number(address?.y);
+      const longitude = Number(address?.x);
+      if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+        reject(new Error('NAVER building location unavailable.'));
+        return;
+      }
+      resolve(Object.freeze({ latitude, longitude }));
+    });
+  });
+}
 
 export function mountNaverBuildingMap({
   sdk,
@@ -101,22 +142,40 @@ export function NaverBuildingStreetView({
   buildingName,
   latitude,
   longitude,
+  addressQuery,
   mapHref,
 }: Readonly<{
   clientId: string | null;
   buildingName: string;
-  latitude: number;
-  longitude: number;
+  latitude?: number;
+  longitude?: number;
+  addressQuery?: string;
   mapHref: string;
 }>) {
   const container = useRef<HTMLDivElement>(null);
   const mounted = useRef<ReturnType<typeof mountNaverBuildingStreetView> | null>(null);
   const [state, setState] = useState<'loading' | 'ready' | 'map' | 'unavailable'>('loading');
-  const initialize = useCallback(() => {
+  const initialize = useCallback(async () => {
     const sdk = (globalThis as typeof globalThis & {
-      naver?: Readonly<{ maps: NaverBuildingStreetViewSdk }>;
+      naver?: Readonly<{ maps: NaverBuildingStreetViewSdk & Partial<NaverBuildingGeocoderSdk> }>;
     }).naver?.maps;
     if (sdk === undefined || container.current === null || typeof sdk.Panorama !== 'function') {
+      setState('unavailable');
+      return;
+    }
+    let location: Readonly<{ latitude: number; longitude: number }>;
+    try {
+      if (latitude !== undefined && longitude !== undefined) {
+        location = { latitude, longitude };
+      } else if (addressQuery !== undefined && sdk.Service !== undefined) {
+        location = await resolveNaverBuildingLocation({
+          sdk: sdk as NaverBuildingStreetViewSdk & NaverBuildingGeocoderSdk,
+          addressQuery,
+        });
+      } else {
+        throw new Error('NAVER building location unavailable.');
+      }
+    } catch {
       setState('unavailable');
       return;
     }
@@ -125,8 +184,8 @@ export function NaverBuildingStreetView({
       mounted.current = mountNaverBuildingStreetView({
         sdk,
         element: container.current,
-        latitude,
-        longitude,
+        latitude: location.latitude,
+        longitude: location.longitude,
         onState: (next) => {
           if (next === 'ready') {
             setState('ready');
@@ -143,8 +202,8 @@ export function NaverBuildingStreetView({
               sdk: sdk as NaverBuildingStreetViewSdk & NaverBuildingMapSdk,
               element: container.current,
               buildingName,
-              latitude,
-              longitude,
+              latitude: location.latitude,
+              longitude: location.longitude,
             });
             setState('map');
           } catch {
@@ -155,7 +214,7 @@ export function NaverBuildingStreetView({
     } catch {
       setState('unavailable');
     }
-  }, [buildingName, latitude, longitude]);
+  }, [addressQuery, buildingName, latitude, longitude]);
 
   useEffect(() => () => mounted.current?.dispose(), []);
 
@@ -167,9 +226,9 @@ export function NaverBuildingStreetView({
         ? 'Live area map · nearby street view unavailable · NAVER'
         : 'Nearby street view · not a listing photo · NAVER'}</p>
       <Script
-        src={buildNaverMapsScriptUrl(clientId, false, true)}
+        src={buildNaverMapsScriptUrl(clientId, addressQuery !== undefined, true)}
         strategy="lazyOnload"
-        onReady={initialize}
+        onReady={() => { void initialize(); }}
         onError={() => setState('unavailable')}
       />
     </section>

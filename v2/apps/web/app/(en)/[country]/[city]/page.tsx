@@ -52,7 +52,7 @@ export default async function MarketOverviewPage({ params }: MarketPageProps) {
       </main>
       <PublicBreadcrumbJsonLd items={[
         { name: 'Home', path: '/' },
-        { name: 'Seoul', path: '/kr/seoul/' },
+        { name: model.hero.heading, path: `/${country}/${city}/` },
       ]} />
       <SiteFooter copy={model.footer} />
     </div>

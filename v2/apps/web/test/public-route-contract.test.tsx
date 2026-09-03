@@ -56,8 +56,11 @@ function artifact(published: boolean) {
 afterEach(() => vi.unstubAllEnvs());
 
 describe('released local route availability', () => {
-  it('generates Seoul overview, three intents, and exactly 25 district paths', () => {
-    expect(marketStaticParams()).toEqual([{ country: 'kr', city: 'seoul' }]);
+  it('generates Seoul and Dubai overviews, three Seoul intents, and exactly 25 district paths', () => {
+    expect(marketStaticParams()).toEqual([
+      { country: 'kr', city: 'seoul' },
+      { country: 'ae', city: 'dubai' },
+    ]);
     expect(intentStaticParams()).toEqual([
       { country: 'kr', city: 'seoul', intent: 'rent' },
       { country: 'kr', city: 'seoul', intent: 'buy' },
@@ -66,18 +69,16 @@ describe('released local route availability', () => {
         country: 'kr', city: 'seoul', intent: slug,
       })),
     ]);
-    expect(JSON.stringify([marketStaticParams(), intentStaticParams()]))
-      .not.toMatch(/singapore|dubai|\bsg\b|\bae\b/);
+    expect(JSON.stringify(intentStaticParams())).not.toMatch(/singapore|dubai|\bsg\b|\bae\b/);
   });
 
-  it('keeps the global market roadmap visible without publishing a Dubai local route', async () => {
+  it('keeps the global market roadmap visible with a rights-safe Dubai overview', async () => {
     vi.stubEnv('SIGNEDPRICE_USE_CHECKED_IN_SNAPSHOTS', 'false');
     const html = renderToStaticMarkup(await Home());
     expect(html).toContain('/kr/seoul/');
     expect(html).toContain('href="/sg"');
     expect(html).toContain('href="/sg/singapore/explore"');
-    expect(html).toContain('href="/markets#dubai"');
-    expect(html).not.toMatch(/href="\/ae\//);
+    expect(html).toContain('href="/ae/dubai"');
   });
 });
 

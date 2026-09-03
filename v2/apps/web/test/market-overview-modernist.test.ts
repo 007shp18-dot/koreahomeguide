@@ -17,7 +17,7 @@ const expectedRows = [
   'Available evidence',
   'Supported decisions',
   'Known limitations',
-  'Local rules and costs',
+  'Listings and investment service',
   'Source and methodology status',
 ] as const;
 

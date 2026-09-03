@@ -11,6 +11,7 @@ import { buildSingaporeEntryModel } from '@/lib/singapore/route-model.server';
 import { singaporeSnapshotRepositoryFromEnvironment } from '@/lib/singapore/snapshot-repository.server';
 import { buildSeoulLiveModel } from '@/lib/public-market/seoul-live-model.server';
 import { buildNewsIndexModel } from '@/lib/news/news-route-model.server';
+import { buildHomeFeaturedBuildings } from '@/lib/public-market/home-featured-buildings.server';
 
 export const metadata: Metadata = homepageCopy.metadata;
 
@@ -19,6 +20,7 @@ export default async function Home() {
   const presentation = buildHomepagePresentation(buildSingaporeEntryModel(singaporeRepository));
   const seoul = buildSeoulLiveModel();
   const news = buildNewsIndexModel();
+  const featuredBuildings = buildHomeFeaturedBuildings();
   const copy = presentation.copy;
   return (
     <div id="top">
@@ -28,6 +30,8 @@ export default async function Home() {
           copy={copy}
           markets={presentation.markets}
           seoul={seoul}
+          featuredBuildings={featuredBuildings}
+          naverMapClientId={process.env.NAVER_MAP_CLIENT_ID?.trim() || null}
         />
         <HomeEditorialSections seoul={seoul} news={news} />
       </main>
