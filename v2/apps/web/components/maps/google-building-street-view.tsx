@@ -103,6 +103,7 @@ export function buildGoogleMapsEmbedUrl({
   url.searchParams.set('q', `${buildingName} ${latitude},${longitude}`);
   url.searchParams.set('z', '17');
   url.searchParams.set('output', 'embed');
+  url.searchParams.set('hl', 'en');
   return url.toString();
 }
 

@@ -168,6 +168,7 @@ describe('provider building street view', () => {
     expect(url.pathname).toBe('/maps');
     expect(url.searchParams.get('q')).toBe('The Sail @ Marina Bay 1.2753,103.8517');
     expect(url.searchParams.get('output')).toBe('embed');
+    expect(url.searchParams.get('hl')).toBe('en');
   });
 
   it('geocodes a Singapore building address before requesting nearby imagery', async () => {
