@@ -4,7 +4,9 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 import type { HomeMarketVisual } from '../lib/home-market-visuals.server';
-import { MARKET_PHOTOS, MarketRepresentativePhoto } from './market-representative-photo';
+import { GoogleBuildingStreetView } from './maps/google-building-street-view';
+import { GooglePlacePhoto } from './maps/google-place-photo';
+import { NaverBuildingStreetView } from './maps/naver-building-street-view';
 import styles from './home-editorial.module.css';
 
 export function shuffleFeaturedBuildings(
@@ -42,14 +44,35 @@ function MarketVisual({ visual, naverMapClientId, googleMapsBrowserKey }: Readon
   naverMapClientId: string | null;
   googleMapsBrowserKey: string | null;
 }>) {
-  void naverMapClientId;
-  void googleMapsBrowserKey;
-  const photo = visual.market === 'Seoul'
-    ? MARKET_PHOTOS.seoul
-    : visual.market === 'Singapore'
-      ? MARKET_PHOTOS.singapore
-      : MARKET_PHOTOS.dubai;
-  return <MarketRepresentativePhoto photo={photo} />;
+  const fallback = visual.market === 'Seoul' ? (
+    <NaverBuildingStreetView
+      clientId={naverMapClientId}
+      buildingName={visual.name}
+      latitude={visual.latitude}
+      longitude={visual.longitude}
+      addressQuery={visual.addressQuery}
+      mapHref={visual.mapHref}
+      preferMap
+    />
+  ) : (
+    <GoogleBuildingStreetView
+      browserKey={googleMapsBrowserKey}
+      buildingName={visual.name}
+      latitude={visual.latitude}
+      longitude={visual.longitude}
+      address={visual.addressQuery}
+      mapHref={visual.mapHref}
+    />
+  );
+  if (visual.addressQuery === undefined) return fallback;
+  return (
+    <GooglePlacePhoto
+      browserKey={googleMapsBrowserKey}
+      buildingName={visual.name}
+      address={visual.addressQuery}
+      fallback={fallback}
+    />
+  );
 }
 
 function shouldRotate() {
@@ -89,7 +112,7 @@ export function RotatingHeroBuilding({
     <div className={styles.rotatingHero} key={featured.id} data-featured-building={featured.id}>
       <MarketVisual visual={featured} naverMapClientId={naverMapClientId} googleMapsBrowserKey={googleMapsBrowserKey} />
       <div className={styles.heroMediaCaption} aria-live="polite">
-        <span>{featured.countryCode} · {featured.market} · place context</span>
+        <span>{featured.countryCode} · {featured.market} · verified building identity</span>
         <h2>{featured.name}</h2>
         <p>{featured.location} · {featured.observationLabel}</p>
         <ul>{featured.facts.map((fact) => <li key={fact}>{fact}</li>)}</ul>

@@ -23,6 +23,7 @@ type GooglePlacePhotoResult = Readonly<{
 }>;
 
 type GooglePlaceResult = Readonly<{
+  displayName?: string;
   photos?: readonly GooglePlacePhotoResult[];
 }>;
 
@@ -50,16 +51,42 @@ type PhotoState = Readonly<{
   attribution: GoogleAuthorAttribution | null;
 }> | 'loading' | 'unavailable';
 
+function normalizedPlaceText(value: string): string {
+  return value.normalize('NFKC').toLocaleLowerCase('en-US').replace(/[^\p{L}\p{N}]+/gu, '');
+}
+
+/**
+ * A text search can return a nearby landmark or streetscape. Only accept a
+ * photo when Google's place name still agrees with the requested identity.
+ */
+export function isTrustedGooglePlaceMatch(
+  displayName: string | undefined,
+  buildingName: string,
+): boolean {
+  if (displayName === undefined) return false;
+  const place = normalizedPlaceText(displayName);
+  const building = normalizedPlaceText(buildingName);
+  if (place.length < 3 || building.length < 3) return false;
+  if (place.includes(building) || building.includes(place)) return true;
+  const tokens = buildingName.normalize('NFKC').toLocaleLowerCase('en-US')
+    .split(/[^\p{L}\p{N}]+/gu)
+    .map(normalizedPlaceText)
+    .filter((token) => token.length >= 3);
+  return tokens.length > 0 && tokens.filter((token) => place.includes(token)).length >= Math.min(2, tokens.length);
+}
+
 export function GooglePlacePhoto({
   browserKey,
   buildingName,
   address,
   fallback,
+  linkAttribution = true,
 }: Readonly<{
   browserKey: string | null;
   buildingName: string;
   address: string;
   fallback: ReactNode;
+  linkAttribution?: boolean;
 }>) {
   const [photo, setPhoto] = useState<PhotoState>('loading');
 
@@ -74,8 +101,9 @@ export function GooglePlacePhoto({
         maxResultCount: 1,
         language: 'en',
       });
-      const result = places[0]?.photos?.[0];
-      if (result === undefined) {
+      const place = places[0];
+      const result = place?.photos?.[0];
+      if (result === undefined || !isTrustedGooglePlaceMatch(place?.displayName, buildingName)) {
         setPhoto('unavailable');
         return;
       }
@@ -102,7 +130,7 @@ export function GooglePlacePhoto({
   if (browserKey === null || photo === 'unavailable') return fallback;
 
   return (
-    <section className={styles.frame} data-building-media="google-place-photo" data-media-state={photo === 'loading' ? 'loading' : 'ready'}>
+    <div className={styles.frame} data-building-media="google-place-photo" data-media-state={photo === 'loading' ? 'loading' : 'ready'}>
       {photo === 'loading' ? (
         <div className={styles.loading} aria-live="polite"><span>Loading verified place photo</span><strong>{buildingName}</strong></div>
       ) : (
@@ -114,7 +142,7 @@ export function GooglePlacePhoto({
       {photo === 'loading' ? null : (
         <p className={styles.label}>
           Place photo · Google
-          {photo.attribution === null ? null : photo.attribution.uri === null
+          {photo.attribution === null ? null : photo.attribution.uri === null || !linkAttribution
             ? ` · ${photo.attribution.displayName}`
             : <> · <a href={photo.attribution.uri}>{photo.attribution.displayName}</a></>}
         </p>
@@ -126,6 +154,6 @@ export function GooglePlacePhoto({
         onError={() => setPhoto('unavailable')}
         data-google-photo-loader={GOOGLE_MAPS_READY_CALLBACK}
       />
-    </section>
+    </div>
   );
 }

@@ -24,6 +24,7 @@ export type GoogleMapInstance = Readonly<{
 export type GoogleMarkerInstance = Readonly<{
   setPosition: (location: GoogleLocation) => void;
   setMap: (map: GoogleMapInstance | null) => void;
+  addListener?: (event: 'click', listener: () => void) => unknown;
 }>;
 export type GoogleMarketMapPoint = Readonly<{
   id: string;
@@ -32,6 +33,7 @@ export type GoogleMarketMapPoint = Readonly<{
   latitude?: number;
   longitude?: number;
   address?: string;
+  selected?: boolean;
 }>;
 export type GoogleGeocoderInstance = Readonly<{
   geocode: (request: Readonly<{
@@ -127,19 +129,25 @@ export function mountGoogleMarketPoints(
   sdk: GoogleMapsSdk,
   map: GoogleMapInstance,
   points: readonly GoogleMarketMapPoint[],
+  onSelectPoint?: (id: string) => void,
 ): readonly GoogleMarkerInstance[] {
-  return Object.freeze(points.filter((point) => point.latitude !== undefined && point.longitude !== undefined).map((point) => new sdk.Marker({
-    map,
-    position: { lat: point.latitude!, lng: point.longitude! },
-    title: point.title,
-    label: { text: point.label, className: 'spGoogleMarketMarker' },
-  })));
+  return Object.freeze(points.filter((point) => point.latitude !== undefined && point.longitude !== undefined).map((point) => {
+    const marker = new sdk.Marker({
+      map,
+      position: { lat: point.latitude!, lng: point.longitude! },
+      title: point.title,
+      label: { text: point.label, className: point.selected ? 'spGoogleMarketMarker spGoogleMarketMarkerSelected' : 'spGoogleMarketMarker' },
+    });
+    marker.addListener?.('click', () => onSelectPoint?.(point.id));
+    return marker;
+  }));
 }
 
 export async function geocodeGoogleMarketPoints(
   sdk: GoogleMapsSdk,
   runtime: GooglePlaceMapRuntime,
   points: readonly GoogleMarketMapPoint[],
+  onSelectPoint?: (id: string) => void,
 ): Promise<readonly GoogleMarkerInstance[]> {
   const markers: GoogleMarkerInstance[] = [];
   for (const point of points.filter((candidate) => candidate.address !== undefined)) {
@@ -151,12 +159,14 @@ export async function geocodeGoogleMarketPoints(
       });
       const position = results[0]?.geometry.location;
       if (position === undefined) continue;
-      markers.push(new sdk.Marker({
+      const marker = new sdk.Marker({
         map: runtime.map,
         position: { lat: position.lat(), lng: position.lng() },
         title: point.title,
-        label: { text: point.label, className: 'spGoogleMarketMarker' },
-      }));
+        label: { text: point.label, className: point.selected ? 'spGoogleMarketMarker spGoogleMarketMarkerSelected' : 'spGoogleMarketMarker' },
+      });
+      marker.addListener?.('click', () => onSelectPoint?.(point.id));
+      markers.push(marker);
     } catch {
       // Keep the rest of the verified project markers when one address cannot be resolved.
     }
@@ -186,9 +196,11 @@ export async function geocodeGoogleAddress({
 export function GooglePlaceMap({
   browserKey,
   points = Object.freeze([]),
+  onSelectPoint,
 }: Readonly<{
   browserKey: string | null;
   points?: readonly GoogleMarketMapPoint[];
+  onSelectPoint?: (id: string) => void;
 }>) {
   const container = useRef<HTMLDivElement>(null);
   const runtime = useRef<GooglePlaceMapRuntime | null>(null);
@@ -206,8 +218,8 @@ export function GooglePlaceMap({
     try {
       runtime.current = mountGooglePlaceMap({ sdk, element: container.current });
       for (const marker of marketMarkers.current) marker.setMap(null);
-      marketMarkers.current = mountGoogleMarketPoints(sdk, runtime.current.map, points);
-      void geocodeGoogleMarketPoints(sdk, runtime.current, points).then((markers) => {
+      marketMarkers.current = mountGoogleMarketPoints(sdk, runtime.current.map, points, onSelectPoint);
+      void geocodeGoogleMarketPoints(sdk, runtime.current, points, onSelectPoint).then((markers) => {
         marketMarkers.current = Object.freeze([...marketMarkers.current, ...markers]);
         const requestedLocations = points.filter((point) => point.address !== undefined).length;
         if (requestedLocations > 0) {
@@ -220,7 +232,7 @@ export function GooglePlaceMap({
     } catch {
       setMapState('error');
     }
-  }, [points]);
+  }, [onSelectPoint, points]);
 
   useEffect(() => {
     const scope = window as Window & GoogleMapsReadyScope;

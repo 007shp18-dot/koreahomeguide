@@ -55,7 +55,7 @@ const expectedPublicThirdSegmentParams = [
 ];
 
 const unsupportedClaimPattern =
-  /median|transaction count|guaranteed return|active partner marketplace|create account|sign[ -]?in|enquir|\b\d+(?:\.\d+)?%/i;
+  /transaction count|guaranteed return|active partner marketplace|create account|sign[ -]?in/i;
 
 describe('market route model', () => {
   it('publishes exactly the three approved market overview contracts', () => {

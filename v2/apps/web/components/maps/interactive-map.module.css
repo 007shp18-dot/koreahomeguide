@@ -142,6 +142,13 @@
   white-space: nowrap !important;
 }
 
+:global(.spGoogleMarketMarkerSelected) {
+  border-color: #4a5cf5 !important;
+  color: #fff !important;
+  background: #4a5cf5 !important;
+  box-shadow: 0 9px 22px rgb(74 92 245 / 34%) !important;
+}
+
 .placeWorkspace {
   position: relative;
   min-height: 620px;

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import type {
   PublicAreaRankingsModel,
   PublicDistrictRankingRow,
+  UnavailableRankingDistrict,
 } from '../../lib/public-market/area-route-types';
 import {
   PUBLIC_MARKET_COPY,
@@ -19,13 +20,15 @@ import { EvidencePeriodStrip } from './evidence-period-strip';
 import { PublicSourceBoundary } from './public-source-boundary';
 
 type ReadyModel = Extract<PublicAreaRankingsModel, { status: 'ready' }>;
-type RankingView = 'median' | 'change' | 'spread' | 'sample';
+type RankingView = 'spread' | 'median' | 'psm' | 'sample' | 'completion' | 'change';
 
 const rankingViews = Object.freeze([
-  { id: 'median', label: { en: 'Median', ko: '중앙값' } },
-  { id: 'change', label: { en: '3-month change', ko: '3개월 변화' } },
-  { id: 'spread', label: { en: 'Spread', ko: '분포 폭' } },
-  { id: 'sample', label: { en: 'Sample', ko: '표본' } },
+  { id: 'spread', label: { en: 'Price spread', ko: '가격 분포 폭' } },
+  { id: 'median', label: { en: 'Sale median', ko: '매매 중앙값' } },
+  { id: 'psm', label: { en: 'Price / ㎡', ko: '㎡당 가격' } },
+  { id: 'sample', label: { en: 'Filing volume', ko: '신고 거래량' } },
+  { id: 'completion', label: { en: 'Completion', ko: '신고 완결률' } },
+  { id: 'change', label: { en: 'QoQ change', ko: '전분기 대비 변화' } },
 ] as const satisfies readonly {
   id: RankingView;
   label: Readonly<Record<ProductLocale, string>>;
@@ -88,13 +91,15 @@ function RankingRows({
   locale,
   copy,
   distributionLabel,
+  unavailable = Object.freeze([]),
 }: Readonly<{
   rows: readonly PublicDistrictRankingRow[];
   locale: ProductLocale;
   copy: PublicMarketCopy['rankings'];
   distributionLabel?: string;
+  unavailable?: readonly UnavailableRankingDistrict[];
 }>) {
-  if (rows.length === 0) {
+  if (rows.length === 0 && unavailable.length === 0) {
     return <p className={styles.empty}>{copy.empty}</p>;
   }
   return (
@@ -131,6 +136,16 @@ function RankingRows({
           )}
         </li>
       ))}
+      {unavailable.map((district, index) => (
+        <li className={`${styles.row} ${styles.unavailableRow}`} key={district.slug} data-ranking-row={district.slug}>
+          <span className={styles.rank}>{rows.length + index + 1}</span>
+          <Link className={styles.districtLink} href={district.href}>
+            <strong>{locale === 'ko' ? district.nameKo : district.nameEn}</strong>
+            <span lang={locale === 'ko' ? 'en' : 'ko'}>{locale === 'ko' ? district.nameEn : district.nameKo}</span>
+          </Link>
+          <strong className={styles.value}>{locale === 'ko' ? '미게시' : 'Not published'}</strong>
+        </li>
+      ))}
     </ol>
   );
 }
@@ -145,6 +160,7 @@ function StandardRanking({
   locale,
   copy,
   distributionLabel,
+  unavailable,
 }: Readonly<{
   id: string;
   eyebrow: string;
@@ -155,6 +171,7 @@ function StandardRanking({
   locale: ProductLocale;
   copy: PublicMarketCopy['rankings'];
   distributionLabel?: string;
+  unavailable?: readonly UnavailableRankingDistrict[];
 }>) {
   return (
     <section className={styles.panel} aria-labelledby={id} data-ranking-section={id}>
@@ -169,9 +186,63 @@ function StandardRanking({
         locale={locale}
         copy={copy}
         distributionLabel={distributionLabel}
+        unavailable={unavailable}
       />
     </section>
   );
+}
+
+function MetricSummary({ model, view, locale }: Readonly<{
+  model: ReadyModel;
+  view: RankingView;
+  locale: ProductLocale;
+}>) {
+  const rows = view === 'median'
+    ? model.cheapest
+    : view === 'spread'
+      ? model.spread
+      : view === 'sample'
+        ? model.sample
+        : view === 'change'
+          ? model.change
+          : Object.freeze([]);
+  const city = model.citySummary.published
+    ? view === 'median'
+      ? money.format(model.citySummary.med)
+      : view === 'spread'
+        ? money.format(model.citySummary.p75 - model.citySummary.p25)
+        : view === 'sample'
+          ? `${model.citySummary.n}`
+          : view === 'change' && model.citySummary.chg3m !== null
+            ? `${model.citySummary.chg3m > 0 ? '+' : ''}${model.citySummary.chg3m.toFixed(1)}%`
+            : null
+    : null;
+  const maximum = rows.length === 0 ? undefined : rows.reduce((best, row) => row.metric > best.metric ? row : best);
+  const minimum = rows.length === 0 ? undefined : rows.reduce((best, row) => row.metric < best.metric ? row : best);
+  const missing = locale === 'ko' ? '산출 근거 미확인' : 'Source basis unverified';
+  return (
+    <dl className={styles.metricSummary} aria-label={locale === 'ko' ? '선택 지표 요약' : 'Selected ranking summary'}>
+      <div><dt>{locale === 'ko' ? '서울 전체' : 'Seoul overall'}</dt><dd>{city ?? missing}</dd></div>
+      <div><dt>{locale === 'ko' ? '최고' : 'Maximum'}</dt><dd>{maximum === undefined ? missing : `${locale === 'ko' ? maximum.nameKo : maximum.nameEn} · ${maximum.valueLabel}`}</dd></div>
+      <div><dt>{locale === 'ko' ? '최저' : 'Minimum'}</dt><dd>{minimum === undefined ? missing : `${locale === 'ko' ? minimum.nameKo : minimum.nameEn} · ${minimum.valueLabel}`}</dd></div>
+    </dl>
+  );
+}
+
+function PreparingRanking({ kind, locale }: Readonly<{
+  kind: 'psm' | 'completion';
+  locale: ProductLocale;
+}>) {
+  const content = kind === 'psm'
+    ? {
+        en: ['Price per ㎡ is preparing', 'The current district snapshot does not retain verified floor area for every filing. No derived value is published until numerator and denominator belong to the same cohort.'],
+        ko: ['㎡당 가격은 준비 중입니다', '현재 자치구 스냅샷에 모든 신고 건의 검증된 전용면적이 남아 있지 않습니다. 같은 표본의 가격과 면적이 확인되기 전에는 값을 만들지 않습니다.'],
+      }
+    : {
+        en: ['Filing completion is preparing', 'A verified denominator for all expected transactions is not available. A completion percentage would therefore be misleading.'],
+        ko: ['신고 완결률은 준비 중입니다', '전체 거래 추정치에 해당하는 검증된 분모가 없습니다. 오해를 만드는 완결률 숫자는 표시하지 않습니다.'],
+      };
+  return <section className={styles.preparing}><span>{locale === 'ko' ? '준비 중' : 'Preparing'}</span><h2>{content[locale][0]}</h2><p>{content[locale][1]}</p></section>;
 }
 
 function ChangeRanking({
@@ -204,7 +275,7 @@ function ChangeRanking({
         )}
       </header>
       {model.change.length === 0 ? (
-        <p className={styles.empty}>{copy.empty}</p>
+        <p className={styles.empty}>{locale === 'ko' ? '비교 분기의 표본 수가 확인되지 않아 순위를 게시하지 않습니다.' : copy.empty}</p>
       ) : (
         <>
           <div className={styles.axisLabels} aria-hidden="true">
@@ -260,7 +331,7 @@ function ReadyRankings({
   const copy = marketCopy.rankings;
   const exact = model.evidenceSelection.areaBand !== 'legacy-45-55';
   const selectedCopy = selectedRankingCopy(model.evidenceSelection.transaction, locale);
-  const [activeView, setActiveView] = useState<RankingView>('median');
+  const [activeView, setActiveView] = useState<RankingView>('spread');
   return (
     <section className={styles.rankings} aria-labelledby="district-rankings-heading">
       <div className={styles.frame} data-ranking-frame="contained">
@@ -346,6 +417,7 @@ function ReadyRankings({
             </button>
           ))}
         </div>
+        <MetricSummary model={model} view={activeView} locale={locale} />
         <div className={styles.grid}>
           <div
             className={styles.viewPanel}
@@ -364,7 +436,11 @@ function ReadyRankings({
               locale={locale}
               copy={copy}
               distributionLabel={exact ? selectedCopy.distribution : undefined}
+              unavailable={model.unavailableDistricts}
             />
+          </div>
+          <div className={styles.viewPanel} role="tabpanel" id="ranking-view-psm" aria-labelledby="ranking-tab-psm" hidden={activeView !== 'psm'}>
+            <PreparingRanking kind="psm" locale={locale} />
           </div>
           <div
             className={styles.viewPanel}
@@ -392,6 +468,7 @@ function ReadyRankings({
               locale={locale}
               copy={copy}
               distributionLabel={exact ? selectedCopy.distribution : undefined}
+              unavailable={model.unavailableDistricts}
             />
           </div>
           <div
@@ -410,7 +487,11 @@ function ReadyRankings({
               rows={model.sample}
               locale={locale}
               copy={copy}
+              unavailable={model.unavailableDistricts}
             />
+          </div>
+          <div className={styles.viewPanel} role="tabpanel" id="ranking-view-completion" aria-labelledby="ranking-tab-completion" hidden={activeView !== 'completion'}>
+            <PreparingRanking kind="completion" locale={locale} />
           </div>
         </div>
         </div>

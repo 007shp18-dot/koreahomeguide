@@ -167,7 +167,7 @@ describe('Korean embedded product components', () => {
       '좁은 중간 절반',
       '3개월 변화 확인 불가',
       '국토교통부 신고 임대차 계약',
-      '서울 구별 전세보증금 지도',
+      '서울 구 네이버 지도',
     ]) expect(html).toContain(visible);
     expect(html).toContain('data-map-state="loading"');
     expect(html).not.toContain('data-map-state="coordinate-pending"');

@@ -514,7 +514,7 @@ describe('Korea Explore proximity route model', () => {
     />);
 
     expect(html).toContain('data-explore-view="table"');
-    expect(html).toContain('aria-label="탐색 보기"');
+    expect(html).not.toContain('aria-label="탐색 보기"');
     for (const parameter of [
       'transaction=monthly',
       'area=60-85',

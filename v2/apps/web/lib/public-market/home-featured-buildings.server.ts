@@ -49,7 +49,7 @@ export function buildHomeFeaturedBuildings(): readonly HomeFeaturedBuilding[] {
           - Number(left.buildingId in FEATURED_BUILDING_ADDRESSES);
         return addressPriority || right.observationCount - left.observationCount;
       })
-      .slice(0, 12);
+      .slice(0, 60);
 
     return Object.freeze(records.map((record) => {
       const district = getSeoulDistrictBySlug(record.districtSlug);

@@ -182,7 +182,7 @@ export function buildSingaporeExploreModel(
       projects: Object.freeze(repository.listProjects(segment.segment)
         .map(projectListItem)
         .sort((left, right) => right.n - left.n || left.name.localeCompare(right.name))
-        .slice(0, 8)),
+        .slice(0, 18)),
     }))),
   });
 }

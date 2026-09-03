@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 import { GUIDES } from '../lib/guide/guide-content';
-import type { NewsIndexModel } from '../lib/news/news-route-model.server';
+import type { NewsWorkspaceModel } from '../lib/news/news-workspace-model';
 import type { SeoulLiveModel } from '../lib/public-market/seoul-live-model.server';
 import {
   homepageCopy,
@@ -9,6 +9,7 @@ import {
 } from '../lib/site-copy';
 import { SiteFooter } from './site-footer';
 import { SiteHeader } from './site-header';
+import { NewsWorkbench } from './news/news-workbench';
 import styles from './global-product-hub.module.css';
 
 export type GlobalHubKind = 'markets' | 'prices' | 'news' | 'guides';
@@ -16,17 +17,10 @@ export type GlobalHubKind = 'markets' | 'prices' | 'news' | 'guides';
 type GlobalProductHubProps = Readonly<{
   kind: GlobalHubKind;
   seoul?: SeoulLiveModel;
-  news?: NewsIndexModel;
+  newsWorkspace?: NewsWorkspaceModel;
 }>;
 
 const number = new Intl.NumberFormat('en-US');
-const date = new Intl.DateTimeFormat('en', {
-  month: 'short',
-  day: 'numeric',
-  year: 'numeric',
-  timeZone: 'UTC',
-});
-
 const hubCopy = {
   markets: {
     eyebrow: 'Global market coverage',
@@ -142,61 +136,16 @@ function PricesHub({ seoul }: Readonly<{ seoul?: SeoulLiveModel }>) {
   );
 }
 
-function InsightsHub({ news }: Readonly<{ news?: NewsIndexModel }>) {
-  const records = news?.records.slice(0, 8) ?? [];
-  const selected = records[0];
-  const categoryLabel = (category: string) => category.replaceAll('-', ' ');
+function InsightsHub({ workspace }: Readonly<{ workspace?: NewsWorkspaceModel }>) {
+  const model = workspace ?? Object.freeze({ items: Object.freeze([]), naverState: 'not-configured' as const });
   return (
-    <>
-      <section className={`${styles.section} ${styles.newsSection}`} aria-labelledby="insights-title">
-        <div className={styles.newsToolbar}>
-          <div><p>Latest approved briefs</p><h2 id="insights-title">Evidence first, commentary second.</h2></div>
-          <Link href="/kr/seoul/news/">View all Seoul briefs →</Link>
-        </div>
-        <div className={styles.newsWorkbench}>
-          <aside className={styles.newsFilters} aria-label="News coverage">
-            <div><span>Market</span><strong>Coverage</strong></div>
-            <Link href="/news/" aria-current="page"><span>All markets</span><small>{records.length} approved</small></Link>
-            <Link href="/kr/seoul/news/"><span>Seoul</span><small>Live</small></Link>
-            <div><span>Singapore</span><small>Editorial review</small></div>
-            <div><span>Dubai</span><small>Rights review</small></div>
-            <hr />
-            <p>Categories</p>
-            {['Official update', 'Data brief', 'Methodology', 'Correction'].map((category) => <span key={category}>{category}</span>)}
-          </aside>
-
-          <div className={styles.newsFeed}>
-            {records.length === 0 ? <article className={styles.emptyState}><strong>No approved Seoul brief is available right now.</strong><p>Verified reporting returns after its declared evidence reconciles.</p></article> : records.map((record, index) => (
-              <article className={index === 0 ? styles.newsItemSelected : undefined} key={record.id}>
-                <div><span>Seoul</span><time dateTime={record.publishedAt}>{date.format(new Date(record.publishedAt))}</time></div>
-                <h3><Link href={`/kr/seoul/news/${record.slug}/`}>{record.title}</Link></h3>
-                <p>{record.summary}</p>
-                <footer><span>{categoryLabel(record.category)}</span><strong>{record.evidence.status === 'verified' ? 'Evidence verified' : 'Source attached'}</strong></footer>
-              </article>
-            ))}
-            <div className={styles.coverageNotice}><strong>Singapore and Dubai</strong><span>No placeholder headlines are published before source and rights review.</span></div>
-          </div>
-
-          <aside className={styles.newsEvidence} aria-label="Selected brief evidence">
-            <p>Selected brief</p>
-            {selected === undefined ? <div className={styles.emptyState}><strong>Nothing selected</strong><p>Approved source evidence will appear here.</p></div> : <>
-              <span>{categoryLabel(selected.category)} · {date.format(new Date(selected.publishedAt))}</span>
-              <h3>{selected.title}</h3>
-              <p>{selected.evidence.line}</p>
-              <dl>
-                <div><dt>Publisher</dt><dd>{selected.source.publisher}</dd></div>
-                <div><dt>Evidence</dt><dd>{selected.evidence.status}</dd></div>
-                <div><dt>Market</dt><dd>Seoul, Korea</dd></div>
-              </dl>
-              <div className={styles.newsEvidenceActions}>
-                <Link href={`/kr/seoul/news/${selected.slug}/`}>Read brief →</Link>
-                <a href={selected.source.url} target="_blank" rel="noreferrer">Open source ↗</a>
-              </div>
-            </>}
-          </aside>
-        </div>
-      </section>
-    </>
+    <section className={`${styles.section} ${styles.newsSection}`} aria-labelledby="insights-title">
+      <div className={styles.newsToolbar}>
+        <div><p>Live external news + approved briefs</p><h2 id="insights-title">Evidence first, commentary second.</h2></div>
+        <Link href="/kr/seoul/news/">View approved Seoul briefs →</Link>
+      </div>
+      <NewsWorkbench model={model} />
+    </section>
   );
 }
 
@@ -216,7 +165,7 @@ function GuidesHub() {
   );
 }
 
-export function GlobalProductHub({ kind, seoul, news }: GlobalProductHubProps) {
+export function GlobalProductHub({ kind, seoul, newsWorkspace }: GlobalProductHubProps) {
   const copy = hubCopy[kind];
   return (
     <div id="top">
@@ -225,7 +174,7 @@ export function GlobalProductHub({ kind, seoul, news }: GlobalProductHubProps) {
         <header className={`${styles.hero} ${kind === 'news' ? styles.heroCompact : ''}`}><p>{copy.eyebrow}</p><h1>{copy.title}</h1><p>{copy.description}</p></header>
         {kind === 'markets' ? <MarketsHub /> : null}
         {kind === 'prices' ? <PricesHub seoul={seoul} /> : null}
-        {kind === 'news' ? <InsightsHub news={news} /> : null}
+        {kind === 'news' ? <InsightsHub workspace={newsWorkspace} /> : null}
         {kind === 'guides' ? <GuidesHub /> : null}
       </main>
       <SiteFooter copy={homepageCopy.footer} />

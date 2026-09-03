@@ -406,6 +406,12 @@
   grid-row: 1;
 }
 
+.identityHero > [data-building-media] {
+  min-height: 390px;
+  border: 0;
+  border-radius: 0;
+}
+
 .identitySummary {
   grid-column: 1;
   grid-row: 2;
@@ -536,6 +542,38 @@
   background: var(--surface-strong);
   box-shadow: var(--shadow-sm);
 }
+
+.relatedContext article {
+  min-width: 0;
+  padding: 20px;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-strong);
+}
+
+.trendUnavailable {
+  margin-top: 16px;
+  min-height: 150px;
+  padding: 20px;
+  display: grid;
+  align-content: center;
+  gap: 8px;
+  border: 1px dashed var(--line);
+  border-radius: 10px;
+  background: linear-gradient(135deg, #fff, #f4f7fb);
+}
+
+.trendUnavailable span { color: var(--accent); font-size: 12px; font-weight: 850; }
+.trendUnavailable h3 { margin: 0; font-size: 19px; line-height: 1.35; }
+.trendUnavailable p { max-width: 760px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.55; }
+
+.relatedContext article > span { color: var(--accent); font-size: 12px; font-weight: 800; }
+.relatedContext article h2 { margin: 0; font-size: 18px; line-height: 1.25; }
+.relatedContext article p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.55; }
+.relatedContext article a { color: var(--accent); font-size: 14px; font-weight: 800; }
 
 .areaBands ul { gap: 9px; border: 0; }
 .areaBands li { min-height: 88px; border: 1px solid var(--line); border-radius: 11px; background: var(--canvas); }

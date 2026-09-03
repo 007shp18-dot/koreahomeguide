@@ -2,6 +2,7 @@ import 'server-only';
 
 import type {
   PublishedMarketSummary,
+  PublicMarketSummary,
   QuotePositionAxis,
 } from '@signedprice/market-core';
 import {
@@ -18,6 +19,7 @@ import type {
   PublicDistrictRankingRow,
   RankingKind,
   SignedRankingBar,
+  UnavailableRankingDistrict,
 } from './area-route-types';
 import { createSelectionHref } from '../navigation/explorer-selection';
 import { createPublicAreaSummaryRepository } from './area-summary-repository.server';
@@ -203,6 +205,7 @@ export function buildPublicAreaRankingsModel(
         contractGroup: 'all' as const,
       }),
       transactionAvailability: Object.freeze({ jeonse: true, monthly: false, sale: false }),
+      citySummary,
       cheapest: unsignedRows('cheapest', published, ({ med }) => med, 1, (value) => money.format(value)),
       change: change.rows,
       spread: unsignedRows(
@@ -214,6 +217,7 @@ export function buildPublicAreaRankingsModel(
         plotAxis,
       ),
       sample: unsignedRows('sample', published, ({ n }) => n, -1, (value) => String(value)),
+      unavailableDistricts: unavailableDistricts(allDistricts),
       withheldDistrictCount: allDistricts.length - published.length,
       changeExcludedDistrictCount: allDistricts.length - change.rows.length,
       hasNegativeChange: change.rows.some(({ metric }) => metric < 0),
@@ -240,7 +244,7 @@ export function buildPublicAreaRankingsModel(
 }
 
 function exactRankingHref(
-  summary: PublishedMarketSummary,
+  summary: Readonly<{ area: string }>,
   selection: KoreaExplorerEvidenceSelection,
 ): PublicDistrictRankingRow['href'] {
   return createSelectionHref(
@@ -258,6 +262,21 @@ function exactRankingHref(
     },
     { market: 'kr', transaction: 'sale' },
   ) as PublicDistrictRankingRow['href'];
+}
+
+function unavailableDistricts(
+  summaries: readonly PublicMarketSummary[],
+  hrefFor?: (summary: Readonly<{ area: string }>) => UnavailableRankingDistrict['href'],
+): readonly UnavailableRankingDistrict[] {
+  return Object.freeze(summaries.filter((summary) => !summary.published).map((summary) => {
+    const identity = identityFor(summary.area);
+    return Object.freeze({
+      slug: identity.slug,
+      nameEn: identity.nameEn,
+      nameKo: identity.nameKo,
+      href: hrefFor?.(summary) ?? `/kr/seoul/explore/${identity.slug}/`,
+    });
+  }));
 }
 
 export function buildKoreaEvidenceAreaRankingsModel(
@@ -279,6 +298,7 @@ export function buildKoreaEvidenceAreaRankingsModel(
     status: 'ready' as const,
     evidenceSelection: projection.selection,
     transactionAvailability: projection.availability,
+    citySummary: explore.citySummary,
     cheapest: unsignedRows(
       'cheapest', published, ({ med }) => med, 1, (value) => money.format(value), null, hrefFor,
     ),
@@ -294,6 +314,10 @@ export function buildKoreaEvidenceAreaRankingsModel(
     ),
     sample: unsignedRows(
       'sample', published, ({ n }) => n, -1, (value) => String(value), null, hrefFor,
+    ),
+    unavailableDistricts: unavailableDistricts(
+      allDistricts,
+      (summary) => exactRankingHref(summary, projection.selection),
     ),
     withheldDistrictCount: allDistricts.length - published.length,
     changeExcludedDistrictCount: allDistricts.length - change.rows.length,

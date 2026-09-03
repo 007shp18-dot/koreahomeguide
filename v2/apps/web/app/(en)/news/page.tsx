@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 
 import { GlobalProductHub } from '@/components/global-product-hub';
+import { buildApprovedNewsWorkspaceModel } from '@/lib/news/naver-news.server';
 import { buildNewsIndexModel } from '@/lib/news/news-route-model.server';
 import { indexableMetadata } from '@/lib/public-metadata';
 
@@ -11,5 +12,6 @@ export const metadata: Metadata = indexableMetadata({
 });
 
 export default function NewsPage() {
-  return <GlobalProductHub kind="news" news={buildNewsIndexModel()} />;
+  const news = buildNewsIndexModel();
+  return <GlobalProductHub kind="news" newsWorkspace={buildApprovedNewsWorkspaceModel(news)} />;
 }
