@@ -741,6 +741,7 @@ function ReadyAreaExplorer({
           ) : null}
           <NaverDistrictMap
             clientId={naverMapClientId}
+            googleMapsBrowserKey={googleMapsBrowserKey}
             districts={mapDistricts}
             selectedDistrict={mapDrilledToDistrict ? selected : undefined}
             buildings={mapDrilledToDistrict ? mapBuildings : undefined}
