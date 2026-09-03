@@ -549,10 +549,7 @@ export function NaverDistrictMap({
         {fallback}
       </div>
       <Script
-        src={buildNaverMapsScriptUrl(
-          clientId,
-          buildings?.some(({ allowAddressGeocoding }) => allowAddressGeocoding === true) ?? false,
-        )}
+        src={buildNaverMapsScriptUrl(clientId, true)}
         strategy="afterInteractive"
         onReady={initialize}
         onError={failClosed}
