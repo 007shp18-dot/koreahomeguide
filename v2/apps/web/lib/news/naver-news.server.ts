@@ -73,7 +73,7 @@ async function fetchMarketNews(search: (typeof searches)[number], clientId: stri
     },
     next: { revalidate: 900 },
   });
-  if (!response.ok) throw new Error(`Naver News returned ${response.status}.`);
+  if (!response.ok) throw new Error(`naver-status:${response.status}`);
   const body = await response.json() as NaverNewsResponse;
   if (!Array.isArray(body.items)) return Object.freeze([]);
   return Object.freeze((body.items as NaverNewsItem[]).flatMap((item, index) => {
@@ -134,8 +134,21 @@ export async function buildNewsWorkspaceModel(news: NewsIndexModel): Promise<New
   const unique = new Map<string, NewsWorkspaceItem>();
   for (const item of [...fallback, ...external]) if (!unique.has(item.url)) unique.set(item.url, item);
   const items = Object.freeze([...unique.values()].sort((left, right) => right.publishedAt.localeCompare(left.publishedAt)));
+  const failureCodes = results.flatMap((result) => result.status === 'rejected' && result.reason instanceof Error
+    ? [result.reason.message]
+    : []);
+  const naverDiagnostic = failureCodes.some((message) => message === 'naver-status:401')
+    ? 'credentials-rejected' as const
+    : failureCodes.some((message) => message === 'naver-status:403')
+      ? 'permission-denied' as const
+      : failureCodes.some((message) => message === 'naver-status:429')
+        ? 'rate-limited' as const
+        : failureCodes.some((message) => /^naver-status:5\d\d$/.test(message))
+          ? 'upstream-error' as const
+          : 'network-error' as const;
   return Object.freeze({
     items,
     naverState: results.some((result) => result.status === 'fulfilled') ? 'ready' : 'unavailable',
+    ...(results.some((result) => result.status === 'fulfilled') ? {} : { naverDiagnostic }),
   });
 }

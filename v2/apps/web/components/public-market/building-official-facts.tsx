@@ -28,9 +28,10 @@ function reasonCopy(reason: Extract<OfficialBuildingFacts, { status: 'unavailabl
   return 'The official building services are temporarily unavailable.';
 }
 
-export function BuildingOfficialFacts({ districtSlug, buildingId }: Readonly<{
+export function BuildingOfficialFacts({ districtSlug, buildingId, observedFacts = [] }: Readonly<{
   districtSlug: string;
   buildingId: string;
+  observedFacts?: readonly Readonly<{ label: string; value: string }>[];
 }>) {
   const [state, setState] = useState<Envelope | 'loading' | 'error'>('loading');
 
@@ -55,18 +56,19 @@ export function BuildingOfficialFacts({ districtSlug, buildingId }: Readonly<{
   if (state === 'error') {
     return (
       <section className={styles.evidence} data-building-section="official-facts" data-building-facts="unavailable">
-        <div className={styles.sectionHeading}><p>Official building facts</p><h2>Facts not attached</h2></div>
-        <p>The official building services are temporarily unavailable.</p>
-        <p>Reported transaction evidence remains available and is not changed by this status.</p>
+        <div className={styles.sectionHeading}><p>Building facts</p><h2>Verified transaction profile</h2></div>
+        {observedFacts.length === 0 ? null : <dl className={styles.findingGrid}>{observedFacts.map((fact) => <div key={fact.label}><dt>{fact.label}</dt><dd>{fact.value}</dd></div>)}</dl>}
+        <p>Household, building-count, and register fields are temporarily unavailable from the official building services. The verified facts above remain attached to reported transactions.</p>
       </section>
     );
   }
   if (state.facts.status === 'unavailable') {
     return (
       <section className={styles.evidence} data-building-section="official-facts" data-building-facts="unavailable">
-        <div className={styles.sectionHeading}><p>Official building facts</p><h2>Facts not attached</h2></div>
+        <div className={styles.sectionHeading}><p>Building facts</p><h2>Verified transaction profile</h2></div>
+        {observedFacts.length === 0 ? null : <dl className={styles.findingGrid}>{observedFacts.map((fact) => <div key={fact.label}><dt>{fact.label}</dt><dd>{fact.value}</dd></div>)}</dl>}
         <p>{reasonCopy(state.facts.reason)}</p>
-        <p>Reported transaction evidence remains available and is not changed by this status.</p>
+        <p>Only the unavailable official enrichment fields are withheld; verified transaction facts remain visible.</p>
       </section>
     );
   }

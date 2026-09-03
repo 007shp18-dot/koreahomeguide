@@ -20,4 +20,5 @@ export type NewsWorkspaceItem = Readonly<{
 export type NewsWorkspaceModel = Readonly<{
   items: readonly NewsWorkspaceItem[];
   naverState: 'ready' | 'not-configured' | 'unavailable';
+  naverDiagnostic?: 'credentials-rejected' | 'permission-denied' | 'rate-limited' | 'upstream-error' | 'network-error';
 }>;

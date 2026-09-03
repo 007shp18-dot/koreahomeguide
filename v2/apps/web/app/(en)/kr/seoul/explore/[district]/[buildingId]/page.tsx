@@ -27,6 +27,7 @@ import { buildObservedBuildingIdentityModel } from '@/lib/public-market/observed
 import {
   buildKoreaExplorerBuildingDetailModel,
   KOREA_EXPLORER_HOUSING_TYPES,
+  type KoreaExplorerBuildingDetailModel,
 } from '@/lib/public-market/korea-explorer-evidence.server';
 import {
   koreaEvidenceRepositoriesFromEnvironment,
@@ -53,6 +54,23 @@ type BuildingPageProps = Readonly<{
 type LocalizedBuildingPageProps = BuildingPageProps & Readonly<{ locale?: ProductLocale }>;
 
 type DetailQuery = Readonly<Record<string, string | readonly string[] | undefined>>;
+
+function transactionBuildingFacts(model: KoreaExplorerBuildingDetailModel) {
+  const floors = model.recentTransactions.flatMap(({ floor }) => floor === null ? [] : [floor]);
+  const years = [...new Set(model.recentTransactions.flatMap(({ buildYear }) => buildYear === null ? [] : [buildYear]))].sort();
+  const areas = model.recentTransactions.map(({ areaSqm }) => areaSqm);
+  const range = (values: readonly number[], suffix = '') => values.length === 0
+    ? 'Not reported'
+    : `${Math.min(...values).toLocaleString('en-US')}${values.length === 1 ? '' : `–${Math.max(...values).toLocaleString('en-US')}`}${suffix}`;
+  return Object.freeze([
+    Object.freeze({ label: 'Property type', value: model.building.housingType }),
+    Object.freeze({ label: 'Observed build year', value: years.length === 0 ? 'Not reported' : years.join(', ') }),
+    Object.freeze({ label: 'Observed floors', value: range(floors) }),
+    Object.freeze({ label: 'Observed filed area', value: range(areas, '㎡') }),
+    Object.freeze({ label: 'Evidence period', value: model.period }),
+    Object.freeze({ label: 'Verified rows in view', value: model.recentTransactions.length.toLocaleString('en-US') }),
+  ]);
+}
 
 function scalarQuery(query: DetailQuery, key: 'q' | 'buildingPage'): string | undefined {
   const value = query[key];
@@ -266,7 +284,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
         addressQuery: buildNaverBuildingAddressQuery(exact.model.district.nameKo, exact.model.building.neighborhoodName, exact.model.building.officialName),
         mapHref: exact.backHref,
       })}
-      facts={<><BuildingOfficialFacts districtSlug={exact.model.district.slug} buildingId={exact.model.building.buildingId} /><BuildingProximityDisclosure proximity={identity?.proximity} locale={locale} /></>}
+      facts={<><BuildingOfficialFacts districtSlug={exact.model.district.slug} buildingId={exact.model.building.buildingId} observedFacts={transactionBuildingFacts(exact.model)} /><BuildingProximityDisclosure proximity={identity?.proximity} locale={locale} /></>}
     />;
   }
   const model = buildPublicBuildingModel(district, buildingId);

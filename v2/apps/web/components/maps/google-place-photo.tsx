@@ -137,7 +137,13 @@ export function GooglePlacePhoto({
         // Google Place photo URIs are ephemeral and must not be cached or
         // transformed by Next Image according to the provider terms.
         // eslint-disable-next-line @next/next/no-img-element
-        <img className={styles.photo} src={photo.src} alt={`${buildingName} place photo`} />
+        <img
+          className={styles.photo}
+          src={photo.src}
+          alt={`${buildingName} place photo`}
+          decoding="async"
+          onError={() => setPhoto('unavailable')}
+        />
       )}
       {photo === 'loading' ? null : (
         <p className={styles.label}>

@@ -1561,20 +1561,20 @@
   text-transform: uppercase;
 }
 
-.buildingThumbnail > section,
-.buildingThumbnail > section > img,
+.buildingThumbnail > [data-building-media],
+.buildingThumbnail > [data-building-media] > img,
 .buildingThumbnail > .photoUnavailable {
   width: 100%;
   height: 100%;
   min-height: 90px;
 }
 
-.buildingThumbnail > section {
+.buildingThumbnail > [data-building-media] {
   border: 0;
   border-radius: 9px;
 }
 
-.buildingThumbnail > section > p {
+.buildingThumbnail > [data-building-media] > p {
   max-width: calc(100% - 8px);
   padding: 3px 5px;
   overflow: hidden;
@@ -1595,6 +1595,14 @@
 
 .photoUnavailable strong { font-size: 12px; line-height: 1.25; }
 .photoUnavailable small { font-size: 11px; line-height: 1.3; }
+
+.buildingList button:has(.photoUnavailable) {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.buildingThumbnail:has(.photoUnavailable) {
+  display: none;
+}
 
 .liveMapLoading {
   min-height: 100%;

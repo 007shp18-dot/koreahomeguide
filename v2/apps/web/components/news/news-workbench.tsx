@@ -43,7 +43,15 @@ export function NewsWorkbench({ model }: Readonly<{ model: NewsWorkspaceModel }>
         {markets.map(([value, label]) => <button type="button" aria-pressed={market === value} onClick={() => { setMarket(value); setSelectedId(null); }} key={value}><span>{label}</span><small>{workspace.items.filter((item) => value === 'all' || item.market === value).length}</small></button>)}
         <hr />
         <p>Source status</p>
-        <span>{workspace.naverState === 'ready' ? 'Naver News API · Live' : workspace.naverState === 'not-configured' ? 'Naver News API · Loading' : 'Naver News API · Fallback active'}</span>
+        <span>{workspace.naverState === 'ready'
+          ? 'Naver News API · Live'
+          : workspace.naverState === 'not-configured'
+            ? 'Naver News API · Loading'
+            : workspace.naverDiagnostic === 'permission-denied'
+              ? 'Naver News API · Search permission required'
+              : workspace.naverDiagnostic === 'credentials-rejected'
+                ? 'Naver News API · Credentials rejected'
+                : 'Naver News API · Fallback active'}</span>
         <span>Cache · 15 minutes</span>
       </aside>
       <div className={styles.newsFeed}>

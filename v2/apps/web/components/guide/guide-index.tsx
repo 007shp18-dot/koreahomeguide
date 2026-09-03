@@ -19,8 +19,8 @@ export function GuideIndex() {
       <main className={styles.main}>
         <header className={styles.hero}>
           <p>Seoul · Decision methodology</p>
-          <h1>Use property evidence without losing its boundary.</h1>
-          <p>Short guides for comparing contracts, reading district evidence, and understanding why SignedPrice sometimes refuses to publish a figure.</p>
+          <h1>Rent, verify, and compare with the full Korea guide library.</h1>
+          <p>KoreaHomeGuide’s practical rental guides now sit beside SignedPrice’s reported-contract evidence, with current source boundaries kept visible.</p>
         </header>
 
         <section className={styles.guides} aria-labelledby="guide-list-heading">

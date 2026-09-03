@@ -369,7 +369,7 @@ describe('public migration containment', () => {
       lastModified: new Date('2026-08-31T01:00:00.000Z'),
     });
     expect(entries.get('https://www.signedprice.com/kr/seoul/guide/')).toMatchObject({
-      lastModified: new Date('2026-08-31T00:00:00.000Z'),
+      lastModified: new Date('2026-09-03T00:00:00.000Z'),
     });
     expect(entries.get(
       'https://www.signedprice.com/kr/seoul/guide/compare-two-contracts/',
