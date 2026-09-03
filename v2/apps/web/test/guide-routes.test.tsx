@@ -12,6 +12,9 @@ import GuideDocumentPage, {
 import { GUIDES, GUIDE_GLOSSARY } from '../lib/guide/guide-content';
 
 const expectedGuides = [
+  { slug: 'read-seoul-apartment-sale-prices', stage: 'Market research', readMinutes: 7 },
+  { slug: 'korea-apartment-buying-checklist', stage: 'Before signing', readMinutes: 8 },
+  { slug: 'compare-seoul-district-property-prices', stage: 'Market research', readMinutes: 6 },
   { slug: 'rent-apartment-korea-foreigner', stage: 'Getting started', readMinutes: 8 },
   { slug: 'wolse-vs-jeonse', stage: 'Getting started', readMinutes: 5 },
   { slug: 'before-you-sign', stage: 'Before signing', readMinutes: 7 },

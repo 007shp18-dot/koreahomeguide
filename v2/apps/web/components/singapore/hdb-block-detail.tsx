@@ -30,6 +30,7 @@ export function HdbBlockDetail({
         browserKey={googleMapsBrowserKey}
         buildingName={block.address}
         address={address}
+        registryKey={`sg-hdb:${town}:${block.address}`}
         fallback={<GoogleBuildingStreetView
           browserKey={googleMapsBrowserKey}
           buildingName={block.address}

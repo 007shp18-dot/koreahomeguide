@@ -70,4 +70,11 @@
 .unavailable { min-height: 180px; place-items: center; color: #667085; }
 @media (max-width: 940px) { .detailLayout { grid-template-columns: 1fr; } .detailRail { grid-template-columns: repeat(2, 1fr); border-left: 0; border-top: 2px solid #111827; } }
 @media (max-width: 720px) { .main { width: calc(100% - 28px); } .hero { grid-template-columns: 1fr; } .heroCopy { padding: 26px 18px; } .heroMap { min-height: 220px; border-left: 0; border-top: 1px solid #111827; } .metricGrid, .findingGrid { grid-template-columns: repeat(2, 1fr); } .detailRail, .faqGrid, .comparisonGrid, .nearbyComparison { grid-template-columns: 1fr; } }
-@media (max-width: 480px) { .metricGrid, .findingGrid, .propertyTypeList, .buildingList { grid-template-columns: 1fr; } }
+@media (max-width: 480px) {
+  .metricGrid, .findingGrid, .propertyTypeList, .buildingList { grid-template-columns: 1fr; }
+  .tabs a { flex-basis: 112px; min-height: 48px; font-size: 13px; }
+  .metricGrid span, .metricGrid small, .findingGrid dt { font-size: 12px; }
+  .metricGrid strong { font-size: 22px; }
+  .compactTable { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .detailRail { display: grid; }
+}

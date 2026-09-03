@@ -13,7 +13,10 @@ export type GuideDocument = Readonly<{
     | 'rent-apartment-korea-foreigner'
     | 'seoul-brokerage-fees'
     | 'seoul-officetel-rent'
-    | 'wolse-vs-jeonse';
+    | 'wolse-vs-jeonse'
+    | 'read-seoul-apartment-sale-prices'
+    | 'korea-apartment-buying-checklist'
+    | 'compare-seoul-district-property-prices';
   title: string;
   summary: string;
   stage: 'Getting started' | 'Before signing' | 'Market research' | 'Evidence check';
@@ -33,6 +36,76 @@ function freezeGuide(guide: GuideDocument): GuideDocument {
 }
 
 export const GUIDES = Object.freeze([
+  freezeGuide({
+    slug: 'read-seoul-apartment-sale-prices',
+    title: 'How to read Seoul apartment sale prices and actual transactions',
+    summary: 'Use reported contracts, comparable floor area, transaction dates, and sample depth to judge an asking price without treating one sale as the market.',
+    stage: 'Market research',
+    readMinutes: 7,
+    lastVerified: '2026-09-03',
+    steps: [
+      { title: 'Start with reported contracts, not asking prices', body: 'A listing is what a seller hopes to receive. A reported contract records an agreed transaction. Use listings to understand current choice and reported sales to understand completed deals, and keep the two labels separate.' },
+      { title: 'Match the same building before widening the area', body: 'Compare the same apartment complex first. If its sample is too thin, widen carefully to nearby buildings with similar completion year, scale, access, and housing type instead of jumping straight to a district average.' },
+      { title: 'Keep floor area comparable', body: 'A total price is not comparable when home sizes differ. Filter a consistent exclusive-area band and inspect price per square metre only when the price and area come from the same verified contract cohort.' },
+      { title: 'Read the contract month and filing lag', body: 'Reported data can arrive after the agreement. Check the contract date, the declared evidence period, and whether the latest month is still collecting filings before calling a movement a trend.' },
+      { title: 'Use median, range, and sample together', body: 'The median shows the middle contract; the middle half shows central spread; the full range exposes extremes. A number based on five contracts deserves less confidence than one supported by a deep, consistent cohort.' },
+      { title: 'Investigate why a unit differs', body: 'Floor, view, orientation, renovation, tenancy, parking, building position, and unusual contract terms can explain a gap. Transaction data identifies the gap but does not explain every cause.' },
+    ],
+    evidenceBoundary: 'SignedPrice displays official reported-contract evidence for declared cohorts. It is not a live appraisal, an asking-price feed, or a prediction of the next transaction.',
+    links: [
+      { label: 'Explore Seoul sale evidence', href: '/kr/seoul/explore/?transaction=sale' },
+      { label: 'Compare district rankings', href: '/kr/seoul/rankings/?transaction=sale' },
+      { label: 'Understand publication limits', href: '/kr/seoul/guide/understand-publication-limits/' },
+      { label: 'Read SignedPrice Trust', href: '/trust/' },
+    ],
+  }),
+  freezeGuide({
+    slug: 'korea-apartment-buying-checklist',
+    title: 'Korea apartment buying checklist before you make an offer',
+    summary: 'A practical sequence for identity, price evidence, financing, records, contract terms, and final payment checks.',
+    stage: 'Before signing',
+    readMinutes: 8,
+    lastVerified: '2026-09-03',
+    steps: [
+      { title: 'Confirm the exact unit and registered identity', body: 'Match the apartment complex, building, unit, road and lot address, registered owner, and official building record. Resolve naming or address differences before discussing payment.' },
+      { title: 'Build a comparable transaction set', body: 'Use the same complex, a similar exclusive-area band, recent completed contracts, and enough observations. Note meaningful differences in floor, direction, view, condition, and occupancy.' },
+      { title: 'Set a complete cash requirement', body: 'Include the deposit and balance schedule, acquisition-related taxes and fees, brokerage, loan costs, moving, repairs, furnishings, and an emergency reserve. Do not base affordability on the headline price alone.' },
+      { title: 'Check financing before committing', body: 'Confirm the amount, valuation basis, interest structure, repayment burden, documentation, and timing directly with the lender. A preliminary conversation is not a final lending decision.' },
+      { title: 'Review current rights and restrictions', body: 'Obtain current records and understand ownership, mortgages, seizures, leases, redevelopment issues, land or transaction restrictions, and any occupancy obligations that may apply to the specific property.' },
+      { title: 'Write conditions and deadlines clearly', body: 'Specify payment dates, included fixtures, vacancy and handover, defects, outstanding charges, document delivery, breach consequences, and any condition that must be satisfied before completion.' },
+      { title: 'Recheck before the final balance', body: 'Review updated records, confirm the property and handover condition, verify the receiving account and signer, preserve documents and transfer evidence, and complete the required registration and reporting steps.' },
+    ],
+    evidenceBoundary: 'This is a general decision checklist, not legal, tax, lending, or investment advice. Rules and obligations depend on the buyer, property, location, financing, and transaction date.',
+    links: [
+      { label: 'Explore actual sale evidence', href: '/kr/seoul/explore/?transaction=sale' },
+      { label: 'Read sale-price evidence', href: '/kr/seoul/guide/read-seoul-apartment-sale-prices/' },
+      { label: 'Compare Seoul districts', href: '/kr/seoul/rankings/?transaction=sale' },
+      { label: 'Read SignedPrice Trust', href: '/trust/' },
+    ],
+  }),
+  freezeGuide({
+    slug: 'compare-seoul-district-property-prices',
+    title: 'How to compare Seoul district property prices correctly',
+    summary: 'Compare districts without mixing home type, floor area, period, transaction type, or weak samples.',
+    stage: 'Market research',
+    readMinutes: 6,
+    lastVerified: '2026-09-03',
+    steps: [
+      { title: 'Choose one transaction type', body: 'Sale, jeonse, and monthly rent answer different questions. Start with one and keep it fixed across every district in the comparison.' },
+      { title: 'Hold housing type and size constant', body: 'A district with more large apartments will naturally show a different total-price distribution. Compare the same housing type and area cohort before interpreting the rank.' },
+      { title: 'Use one evidence period', body: 'Districts must be compared over the same completed or clearly labelled collection period. Do not combine a current partial month in one district with an older complete period in another.' },
+      { title: 'Read rank and distribution together', body: 'A median rank is only an ordering of the selected cohort. The middle-half spread and full range show whether contracts cluster tightly or cover very different properties.' },
+      { title: 'Check the sample and withheld districts', body: 'Low-volume districts can move sharply when one contract enters the sample. Treat publication minimums and unavailable rows as information, not as zeros or missing-value invitations.' },
+      { title: 'Move from district to building', body: 'A district comparison is a discovery tool. Open the district page, inspect neighbourhood and building evidence, then verify the exact apartment before making a price decision.' },
+    ],
+    evidenceBoundary: 'District rankings compare only the selected reported-contract cohort. They do not rank quality of life, schools, legal safety, liquidity, or future returns.',
+    links: [
+      { label: 'Open Seoul rankings', href: '/kr/seoul/rankings/?transaction=sale' },
+      { label: 'Open the district map', href: '/kr/seoul/explore/?transaction=sale' },
+      { label: 'Read sale-price evidence', href: '/kr/seoul/guide/read-seoul-apartment-sale-prices/' },
+      { label: 'Read SignedPrice Trust', href: '/trust/' },
+    ],
+  }),
   freezeGuide({
     slug: 'rent-apartment-korea-foreigner',
     title: 'How to rent an apartment in Korea as a foreigner',

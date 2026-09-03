@@ -50,6 +50,7 @@ export function SingaporeProjectDetail({ model, googleMapsBrowserKey = null }: R
           browserKey={googleMapsBrowserKey}
           buildingName={model.identity.project}
           address={`${model.identity.street}, Singapore`}
+          registryKey={`sg-project:${model.identity.marketSegment}:${model.identity.project}`}
           fallback={<GoogleBuildingStreetView
             browserKey={googleMapsBrowserKey}
             buildingName={model.identity.project}

@@ -101,6 +101,7 @@ export function createKoreaDetailBackHref(
 }
 
 function naverStreetViewFor(input: Readonly<{
+  buildingId: string;
   name: string;
   latitude: number | null;
   longitude: number | null;
@@ -122,6 +123,7 @@ function naverStreetViewFor(input: Readonly<{
     browserKey={googleMapsBrowserKeyFromEnvironment()}
     buildingName={input.name}
     address={input.addressQuery}
+    registryKey={`kr-seoul:${input.buildingId}`}
     fallback={location}
   />;
 }
@@ -278,6 +280,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
       backHref={exact.backHref}
       locale={locale}
       visual={naverStreetViewFor({
+        buildingId: exact.model.building.buildingId,
         name: exact.model.building.officialName,
         latitude: identity?.coordinate.status === 'ready' ? identity.coordinate.latitude : null,
         longitude: identity?.coordinate.status === 'ready' ? identity.coordinate.longitude : null,
@@ -314,6 +317,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
       model={observed}
       backHref={backHref}
       visual={naverStreetViewFor({
+        buildingId: observed.building.buildingId,
         name: observed.building.officialName,
         latitude: observed.coordinate.status === 'ready' ? observed.coordinate.latitude : null,
         longitude: observed.coordinate.status === 'ready' ? observed.coordinate.longitude : null,
@@ -358,6 +362,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
     photo: null,
   });
   const streetView = naverStreetViewFor({
+    buildingId: model.building.buildingId,
     name: model.building.name,
     latitude: model.building.latitude,
     longitude: model.building.longitude,

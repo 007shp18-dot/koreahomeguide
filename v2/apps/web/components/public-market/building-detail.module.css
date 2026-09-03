@@ -470,6 +470,9 @@
   .main[data-building-detail='exact-evidence'] .identityHero > :first-child { grid-column: 1; grid-row: 1; min-height: 260px; border-right: 0; border-bottom: 1px solid #111827; }
   .main[data-building-detail='exact-evidence'] .identitySummary { grid-column: 1; grid-row: 2; }
   .main[data-building-detail='exact-evidence'] .relatedContext { grid-template-columns: 1fr; }
+  .mockupTabs a { min-height: 48px; font-size: 13px; }
+  .mockupRail > p, .mockupRail > span, .mockupRail dl > div, .mockupRail > a { font-size: 13px; }
+  .main[data-building-detail='exact-evidence'] .tableWrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 }
 
 .identityHero > [data-building-media] {
