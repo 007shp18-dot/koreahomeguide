@@ -43,11 +43,11 @@ describe('shared market composition', () => {
 
   it('owns archive geometry and mobile stacking in one stylesheet', () => {
     const css = readFileSync(new URL('../components/market-ui/market-shell.module.css', import.meta.url), 'utf8');
-    expect(css).toMatch(/max-width:\s*var\(--evidence-workspace-frame\)/);
+    expect(css).toMatch(/\.detail\s*\{[^}]*width:\s*min\(1180px,\s*calc\(100% - 40px\)\)/);
     expect(css).toMatch(/grid-template-columns:\s*420px minmax\(0, 1fr\)/);
-    expect(css).toMatch(/grid-template-columns:\s*minmax\(0, 1fr\) 380px/);
+    expect(css).toMatch(/grid-template-columns:\s*minmax\(0, 1fr\) 300px/);
     expect(css).toMatch(/min-height:\s*44px/);
     expect(css).toMatch(/@media \(max-width:\s*760px\)[\s\S]*grid-template-columns:\s*1fr/);
-    expect(css).not.toMatch(/box-shadow/);
+    expect(css).toMatch(/box-shadow:\s*0 10px 28px/);
   });
 });

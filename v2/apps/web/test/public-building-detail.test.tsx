@@ -89,7 +89,7 @@ describe('public building detail', () => {
     ]) {
       expect(html).toContain(value);
     }
-    expect(html).not.toContain('aria-label="Breadcrumb"');
+    expect(html).toContain('aria-label="Breadcrumb"');
     expect(html).toContain('href="/trust/"');
     expect(html).toContain('href="/kr/seoul/corrections/"');
     expect(html).toContain('Community signal');
@@ -148,7 +148,7 @@ describe('public building detail', () => {
     expect(html).toContain('Latest verified News');
     expect(html).toContain('Community signal');
     expect(html).toContain('Use this evidence within its boundary');
-    expect(html.indexOf('Open full Rent Check')).toBeLessThan(html.indexOf('<details'));
+    expect(html.indexOf('Open full Rent Check')).toBeLessThan(html.indexOf('<details', html.indexOf('data-building-section="decision"')));
   });
 
   it('renders the published distribution while withholding an unassessable comparison', () => {

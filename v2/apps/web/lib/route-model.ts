@@ -713,7 +713,7 @@ export function buildMarketPageModel(
     hero: {
       sectionLabel: `${profile.cityName} market overview`,
       eyebrow: `${profile.cityName} market`,
-      heading: profile.cityName,
+      heading: `${profile.cityName} Market Overview`,
       description: copy.heroDescription,
       facts: [],
       layout: 'overview',

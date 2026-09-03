@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { SEOUL_RENT_CHECK_DISTRICTS } from '@signedprice/korea-rent/browser';
 
 import { DistrictDetailPage } from '@/components/public-market/district-detail-page';
-import { buildPublicDistrictModel } from '@/lib/public-market/area-route-model.server';
+import { buildPublicAreaExploreModel, buildPublicDistrictModel } from '@/lib/public-market/area-route-model.server';
 import { buildDistrictMetadata } from '@/lib/public-market/district-metadata';
 import {
   buildPublicPropertyTypeModel,
@@ -51,5 +51,22 @@ export default async function NestedDistrictPage({
       const propertyModel = buildPublicPropertyTypeModel(routeDistrict, propertyType);
       return propertyModel === null ? [] : [propertyModel.propertyType];
     });
-  return <DistrictDetailPage model={model} propertyTypes={propertyTypes} />;
+  const explore = buildPublicAreaExploreModel(model.identity.slug);
+  const mapDistricts = explore.status === 'ready' ? explore.districts.map((item) => ({
+    slug: item.slug,
+    nameEn: item.nameEn,
+    href: item.href,
+    latitude: item.latitude,
+    longitude: item.longitude,
+  })) : [];
+  const selected = explore.status === 'ready'
+    ? explore.districts.find((item) => item.slug === model.identity.slug)
+    : undefined;
+  return <DistrictDetailPage
+    model={model}
+    propertyTypes={propertyTypes}
+    mapDistricts={mapDistricts}
+    mapPoint={selected === undefined ? undefined : { latitude: selected.latitude, longitude: selected.longitude }}
+    naverMapClientId={process.env.NAVER_MAP_CLIENT_ID?.trim() || null}
+  />;
 }

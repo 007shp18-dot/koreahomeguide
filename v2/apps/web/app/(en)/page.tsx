@@ -21,6 +21,7 @@ export default async function Home() {
   const seoul = buildSeoulLiveModel();
   const news = buildNewsIndexModel();
   const featuredBuildings = buildHomeFeaturedBuildings();
+  const naverMapClientId = process.env.NAVER_MAP_CLIENT_ID?.trim() || null;
   const copy = presentation.copy;
   return (
     <div id="top">
@@ -31,9 +32,14 @@ export default async function Home() {
           markets={presentation.markets}
           seoul={seoul}
           featuredBuildings={featuredBuildings}
-          naverMapClientId={process.env.NAVER_MAP_CLIENT_ID?.trim() || null}
+          naverMapClientId={naverMapClientId}
         />
-        <HomeEditorialSections seoul={seoul} news={news} />
+        <HomeEditorialSections
+          seoul={seoul}
+          news={news}
+          featuredBuildings={featuredBuildings}
+          naverMapClientId={naverMapClientId}
+        />
       </main>
       <SiteFooter copy={copy.footer} />
     </div>

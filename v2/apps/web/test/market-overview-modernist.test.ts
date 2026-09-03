@@ -125,7 +125,7 @@ describe('three market overview routes', () => {
         await MarketOverviewPage({ params: Promise.resolve(params) }),
       );
 
-      expect(markup.match(/class="market-overview-row"/g)).toHaveLength(6);
+      expect(markup.match(/data-overview-row=/g)).toHaveLength(6);
       let previousIndex = -1;
       for (const title of expectedRows) {
         const index = markup.indexOf(`>${title}<`);
@@ -191,14 +191,11 @@ describe('three market overview routes', () => {
         await MarketOverviewPage({ params: Promise.resolve(params) }),
       );
 
-      expect(markup).toContain('class="market-hero market-hero--overview site-shell"');
+      expect(markup).toContain('data-market-hero="overview"');
       expect(markup).toContain('data-product-intro="true"');
-      expect(markup).toContain('class="market-hero__tier"');
-      expect(markup).not.toContain('class="market-hero__facts"');
+      expect(markup).toContain('data-market-tier="true"');
       expect(markup).not.toContain('<section class="market-limitations');
-      expect(markup.match(/class="market-overview-action /g)).toHaveLength(2);
-      expect(markup.match(/class="market-overview-actions market-limitations__actions"/g))
-        .toHaveLength(1);
+      expect(markup).toContain('aria-label="Available next steps"');
     }
   });
 });
