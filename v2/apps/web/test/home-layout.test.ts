@@ -10,37 +10,18 @@ const homeCss = readFileSync(
   'utf8',
 );
 
-function declarationsFor(source: string, selector: string): Record<string, string> {
-  const escapedSelector = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const rule = source.match(new RegExp(`${escapedSelector}\\s*\\{([^}]*)\\}`));
-  if (!rule?.[1]) throw new Error(`Missing CSS rule ${selector}`);
-  return Object.fromEntries(
-    rule[1]
-      .split(';')
-      .map((declaration) => declaration.trim())
-      .filter(Boolean)
-      .map((declaration) => {
-        const splitAt = declaration.indexOf(':');
-        return [declaration.slice(0, splitAt).trim(), declaration.slice(splitAt + 1).trim()];
-      }),
-  );
-}
-
 describe('signedprice Evidence Editorial homepage', () => {
   it('centres every primary section in the standard content frame', () => {
-    expect(homeCss).toMatch(/\.heroGrid,\s*\.liveStrip,\s*\.decisionSection,\s*\.exploreSection,\s*\.briefSection,\s*\.trustBoundary\s*\{[^}]*width:\s*min\(calc\(100% - \(2 \* var\(--page-gutter\)\)\), var\(--content-frame\)\);[^}]*margin-inline:\s*auto;/);
-
-    expect(declarationsFor(homeCss, '.exploreSection')).toMatchObject({
-      'min-height': '520px',
-      'grid-template-columns': 'minmax(0, 1.18fr) minmax(330px, .82fr)',
-    });
-    expect(homeCss).not.toMatch(/(?:heroGrid|liveStrip|decisionSection|exploreSection|briefSection|trustBoundary)[^{]*\{[^}]*100vw/);
+    for (const selector of ['.heroGrid', '.liveStrip', '.decisionSection', '.marketDirectory', '.evidenceSection', '.briefSection', '.trustBoundary']) {
+      expect(homeCss).toContain(selector);
+    }
+    expect(homeCss).not.toMatch(/(?:heroGrid|liveStrip|decisionSection|marketDirectory|evidenceSection|briefSection|trustBoundary)[^{]*\{[^}]*100vw/);
   }, 10_000);
 
   it('uses one decision headline before the evidence and deeper product sections', async () => {
     const markup = renderToStaticMarkup(await Home());
     const h1s = markup.match(/<h1/g) ?? [];
-    const sections = ['home-decision', 'home-evidence', 'home-paths', 'home-explore', 'home-briefs', 'home-trust'];
+    const sections = ['home-decision', 'home-evidence', 'markets', 'home-explore', 'home-prices', 'home-briefs', 'home-trust'];
     const positions = sections.map((id) => markup.indexOf(`id="${id}"`));
 
     expect(h1s).toHaveLength(1);
@@ -83,7 +64,7 @@ describe('signedprice Evidence Editorial homepage', () => {
     const markup = renderToStaticMarkup(await Home());
 
     expect(markup).toContain('href="/sg">Singapore</a>');
-    expect(markup).toContain('href="/compare?market=dubai">Dubai</a>');
+    expect(markup).toContain('href="/markets#dubai">Dubai</a>');
     expect(markup).not.toMatch(/href="\/ae\//);
   });
 

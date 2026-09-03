@@ -67,15 +67,16 @@ describe('Korea methodology guides', () => {
     expect(html.match(/data-navigation-tier="product"/g) ?? []).toHaveLength(1);
     expect(html.match(/<footer/g) ?? []).toHaveLength(1);
     for (const href of [
-      '/kr/seoul/explore/',
-      '/kr/seoul/news/',
-      '/kr/seoul/guide/',
+      '/markets/',
+      '/prices/',
+      '/insights/',
+      '/guides/',
       '/properties/',
       '/invest/',
     ]) {
       expect(html).toContain(`href="${href.slice(0, -1)}"`);
     }
-    expect(html).toMatch(/<a[^>]*aria-current="page"[^>]*href="\/kr\/seoul\/guide"/);
+    expect(html).toMatch(/<a[^>]*aria-current="page"[^>]*href="\/guides"/);
     expect(html).not.toMatch(/>Overview<|>Rent<|>Buy<|>Evidence</);
   });
 
@@ -100,7 +101,7 @@ describe('Korea methodology guides', () => {
       expect(html.match(/data-navigation-tier="market"/g) ?? []).toHaveLength(1);
       expect(html.match(/data-navigation-tier="product"/g) ?? []).toHaveLength(1);
       expect(html.match(/<footer/g) ?? []).toHaveLength(1);
-      expect(html).toMatch(/<a[^>]*aria-current="page"[^>]*href="\/kr\/seoul\/guide"/);
+      expect(html).toMatch(/<a[^>]*aria-current="page"[^>]*href="\/guides"/);
     }
   });
 });

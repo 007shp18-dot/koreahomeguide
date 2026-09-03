@@ -55,7 +55,7 @@ function artifact(published: boolean) {
 
 afterEach(() => vi.unstubAllEnvs());
 
-describe('Korea-only public route availability', () => {
+describe('released local route availability', () => {
   it('generates Seoul overview, three intents, and exactly 25 district paths', () => {
     expect(marketStaticParams()).toEqual([{ country: 'kr', city: 'seoul' }]);
     expect(intentStaticParams()).toEqual([
@@ -70,12 +70,14 @@ describe('Korea-only public route availability', () => {
       .not.toMatch(/singapore|dubai|\bsg\b|\bae\b/);
   });
 
-  it('removes future-market destinations from public home navigation', async () => {
+  it('keeps the global market roadmap visible without publishing a Dubai local route', async () => {
     vi.stubEnv('SIGNEDPRICE_USE_CHECKED_IN_SNAPSHOTS', 'false');
     const html = renderToStaticMarkup(await Home());
     expect(html).toContain('/kr/seoul/');
-    expect(html).not.toMatch(/href="\/(?:sg|ae)\//);
-    expect(html).not.toMatch(/Explore (?:Singapore|Dubai)/);
+    expect(html).toContain('href="/sg"');
+    expect(html).toContain('href="/sg/singapore/explore"');
+    expect(html).toContain('href="/markets#dubai"');
+    expect(html).not.toMatch(/href="\/ae\//);
   });
 });
 
@@ -250,6 +252,10 @@ describe('public migration containment', () => {
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', period);
     const urls = sitemap().map(({ url }) => url);
     expect(urls).toEqual([
+      'https://www.signedprice.com/markets/',
+      'https://www.signedprice.com/prices/',
+      'https://www.signedprice.com/insights/',
+      'https://www.signedprice.com/guides/',
       'https://www.signedprice.com/',
       'https://www.signedprice.com/compare/',
       'https://www.signedprice.com/trust/',
@@ -367,6 +373,10 @@ describe('public migration containment', () => {
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_ARTIFACT', JSON.stringify(artifact(false)));
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', period);
     expect(sitemap().map(({ url }) => url)).toEqual([
+      'https://www.signedprice.com/markets/',
+      'https://www.signedprice.com/prices/',
+      'https://www.signedprice.com/insights/',
+      'https://www.signedprice.com/guides/',
       'https://www.signedprice.com/',
       'https://www.signedprice.com/compare/',
       'https://www.signedprice.com/trust/',
@@ -384,6 +394,10 @@ describe('public migration containment', () => {
 
     vi.unstubAllEnvs();
     expect(sitemap().map(({ url }) => url)).toEqual([
+      'https://www.signedprice.com/markets/',
+      'https://www.signedprice.com/prices/',
+      'https://www.signedprice.com/insights/',
+      'https://www.signedprice.com/guides/',
       'https://www.signedprice.com/',
       'https://www.signedprice.com/compare/',
       'https://www.signedprice.com/trust/',

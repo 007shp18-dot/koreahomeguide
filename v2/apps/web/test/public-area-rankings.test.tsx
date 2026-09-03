@@ -62,9 +62,9 @@ describe('Seoul district rankings page', () => {
     expect(html).not.toContain('data-change-direction=');
     expect(html).toContain('23 districts excluded');
     expect(html).toContain('aria-current="page"');
-    expect(html).toContain('data-product-index="03"');
-    expect(html).toContain('href="/kr/seoul/news"');
-    expect(html).toContain('href="/kr/seoul/guide"');
+    expect(html).toContain('data-product-index="02"');
+    expect(html).toContain('href="/insights"');
+    expect(html).toContain('href="/guides"');
   });
 
   it('does not reinterpret a positive stored change without retained counts', async () => {

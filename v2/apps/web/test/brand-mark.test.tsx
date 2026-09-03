@@ -86,6 +86,7 @@ describe('SignedPrice brand mark', () => {
     expect(html).toContain('data-product-index="06"');
     expect(html).toContain('href="/properties"');
     expect(html).toContain('href="/invest"');
+    expect(html).toMatch(/<a[^>]+aria-current="page"[^>]+href="\/prices"/);
     expect(html).toMatch(/<a[^>]+aria-current="page"[^>]+href="\/kr\/seoul\/explore"/);
   });
 });

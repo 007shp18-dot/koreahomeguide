@@ -53,7 +53,7 @@ describe('Singapore navigation promotion gate', () => {
 
     const html = renderToStaticMarkup(await Home());
     expect(html).toContain('href="/sg">Singapore</a>');
-    expect(html).toContain('href="/compare?market=dubai">Dubai</a>');
+    expect(html).toContain('href="/markets#dubai">Dubai</a>');
   });
 
   it('adds Singapore Explore after its evidence gate passes while Seoul stays crawlable', () => {

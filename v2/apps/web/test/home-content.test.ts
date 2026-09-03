@@ -20,8 +20,9 @@ describe('signedprice homepage copy', () => {
     const ids = [
       'home-decision',
       'home-evidence',
-      'home-paths',
+      'markets',
       'home-explore',
+      'home-prices',
       'home-briefs',
       'home-trust',
     ];
@@ -129,9 +130,10 @@ describe('signedprice homepage copy', () => {
     expect(markup).toContain('class="brand-wordmark__signed">signed</span>');
     expect(markup).toContain('class="brand-wordmark__price">price</span>');
     expect(markup).toContain('>Know the market before you buy.</h1>');
-    expect(markup).toContain('>Start with the price.</h2>');
-    expect(markup).toContain('>Move from the city to one building without losing context.</h2>');
-    expect(markup).toContain('>Three markets, one disciplined editorial rhythm.</h2>');
+    expect(markup).toContain('>Read each market in its own language.</h2>');
+    expect(markup).toContain('>City → district → building.</h2>');
+    expect(markup).toContain('>The price layer comes first.</h2>');
+    expect(markup).toContain('>Numbers first. Commentary second.</h2>');
     expect(markup).toContain('data-navigation-tier="market"');
     expect(markup).toContain('>Seoul</a>');
     expect(markup).toContain('>Singapore</a>');
@@ -158,7 +160,7 @@ describe('signedprice homepage copy', () => {
     const markup = renderToStaticMarkup(await Home());
 
     expect(markup).toContain('href="/sg">Singapore</a>');
-    expect(markup).toContain('href="/compare?market=dubai">Dubai</a>');
+    expect(markup).toContain('href="/markets#dubai">Dubai</a>');
   });
 
   it('puts the shipped Seoul evidence products on the root entry page', async () => {
