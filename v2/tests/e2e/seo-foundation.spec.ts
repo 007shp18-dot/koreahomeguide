@@ -41,7 +41,7 @@ test('SEO foundation: every sitemap URL is terminal, indexable, and self-canonic
 
   expect(locations.length).toBeGreaterThan(0);
   expect(new Set(locations).size).toBe(locations.length);
-  expect(locations.some((url) => new URL(url).pathname.startsWith('/sg/'))).toBe(false);
+  expect(locations).toContain('https://www.signedprice.com/sg/');
 
   for (const url of locations) {
     const parsed = new URL(url);
