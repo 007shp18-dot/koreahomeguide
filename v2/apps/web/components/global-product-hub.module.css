@@ -349,7 +349,7 @@
 .newsWorkbench {
   display: grid;
   grid-template-columns: minmax(168px, .25fr) minmax(360px, .78fr) minmax(260px, .48fr);
-  border-bottom: 1px solid var(--line);
+  border-bottom: 2px solid #111827;
   min-height: 560px;
 }
 
@@ -361,7 +361,7 @@
 }
 
 .newsFilters {
-  border-right: 1px solid var(--line);
+  border-right: 1px solid #111827;
 }
 
 .newsFilters > div:first-child {
@@ -387,7 +387,7 @@
   align-items: center;
   gap: 8px;
   padding: 9px 10px;
-  border-radius: 8px;
+  border-radius: 0;
   color: var(--ink);
   font-size: .78rem;
   font-weight: 720;
@@ -406,7 +406,7 @@
 .newsFilters > a[aria-current='page'],
 .newsFilters > button[aria-pressed='true'] {
   color: #fff;
-  background: var(--navy);
+  background: #111827;
 }
 
 .newsFilters > a[aria-current='page'] small,
@@ -423,7 +423,7 @@
 .newsFeed > article {
   min-height: 168px;
   padding: 21px 24px;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid #111827;
 }
 
 .newsFeed > article:last-of-type { border-bottom: 0; }
@@ -469,8 +469,8 @@
 .newsFeed p { margin: 8px 0 16px; color: var(--muted); font-size: .82rem; line-height: 1.58; }
 
 .newsItemSelected {
-  box-shadow: inset 3px 0 var(--accent);
-  background: #f7faff;
+  box-shadow: inset 5px 0 #375f89;
+  background: #eeece6;
 }
 
 .coverageNotice {
@@ -490,7 +490,7 @@
 .coverageNotice strong { color: var(--ink); }
 
 .newsEvidence {
-  border-left: 1px solid var(--line);
+  border-left: 1px solid #111827;
 }
 
 .newsEvidence > span {
@@ -521,7 +521,7 @@
 .newsEvidence dt { color: var(--muted); font-size: .68rem; text-transform: uppercase; letter-spacing: .06em; }
 .newsEvidence dd { min-width: 0; overflow-wrap: anywhere; font-size: .78rem; font-weight: 750; text-transform: capitalize; }
 .newsEvidenceActions { display: grid; gap: 8px; margin-top: 22px; }
-.newsEvidenceActions a { min-height: 40px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: #fff; font-size: .76rem; font-weight: 800; text-decoration: none; }
+.newsEvidenceActions a { min-height: 40px; display: grid; place-items: center; border: 1px solid #111827; border-radius: 0; color: var(--ink); background: #fff; font-size: .76rem; font-weight: 800; text-decoration: none; }
 .newsEvidenceActions a:first-child { color: #fff; border-color: var(--navy); background: var(--navy); }
 
 .actionBand {

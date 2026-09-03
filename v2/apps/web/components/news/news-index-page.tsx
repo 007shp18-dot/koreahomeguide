@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
 import type { NewsIndexModel } from '../../lib/news/news-route-model.server';
+import type { NewsWorkspaceModel } from '../../lib/news/news-workspace-model';
 import {
   KOREA_PUBLIC_RELEASE_STATUS,
   type SiteFooterModel,
@@ -9,6 +10,7 @@ import {
 import { SiteFooter } from '../site-footer';
 import { SiteHeader } from '../site-header';
 import styles from './news.module.css';
+import { NewsWorkbench } from './news-workbench';
 
 const header: SiteHeaderModel = {
   brand: 'signedprice',
@@ -97,6 +99,34 @@ export function NewsIndexPage({ model }: Readonly<{ model: NewsIndexModel }>) {
         <aside className={styles.boundary} aria-label="News publication boundary">
           <strong>Human approval required before publication</strong>
           <p>SignedPrice does not reproduce source articles or fill missing comparisons with estimates. A verified brief disappears if its declared artifact no longer reconciles.</p>
+        </aside>
+      </main>
+      <SiteFooter copy={footer} />
+    </div>
+  );
+}
+
+export function NewsWorkspacePage({ model }: Readonly<{ model: NewsWorkspaceModel }>) {
+  return (
+    <div id="top" className={styles.page}>
+      <SiteHeader copy={header} />
+      <main className={styles.workspaceMain} data-news-layout="workbench">
+        <header className={styles.workspaceHero}>
+          <div>
+            <p>SEOUL · LIVE NEWS DESK</p>
+            <h1>Property news,<br />checked against the data.</h1>
+          </div>
+          <p>Naver Cloud News Search supplies current external coverage. SignedPrice keeps the original publisher, marks the evidence state, and never turns an unchecked headline into a market finding.</p>
+        </header>
+        <nav className={styles.workspaceTabs} aria-label="News workspace views">
+          <span aria-current="page">News desk</span>
+          <Link href="/kr/seoul/corrections/">Corrections</Link>
+          <Link href="/trust/">Methodology</Link>
+        </nav>
+        <NewsWorkbench model={model} />
+        <aside className={styles.workspaceBoundary}>
+          <strong>Live external coverage · 15-minute cache</strong>
+          <p>External articles remain “Checking” until their claims reconcile with a compatible SignedPrice transaction cohort.</p>
         </aside>
       </main>
       <SiteFooter copy={footer} />

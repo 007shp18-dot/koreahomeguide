@@ -33,7 +33,7 @@ afterEach(() => {
 });
 
 describe('verified Seoul News routes', () => {
-  it('renders an indexable server-first index with official sources and evidence lines', () => {
+  it('renders the live three-column news workbench with approved server-first fallbacks', () => {
     installAreaArtifact();
     const html = renderToStaticMarkup(<NewsIndexRoute />);
 
@@ -41,15 +41,16 @@ describe('verified Seoul News routes', () => {
       robots: { index: true, follow: true },
       alternates: { canonical: 'https://www.signedprice.com/kr/seoul/news/' },
     });
-    expect(html).toContain('>Market Briefs</h1>');
-    expect(html).toContain('>Methodology</p>');
-    expect(html).toContain('Human approval required before publication');
+    expect(html).toContain('data-news-layout="workbench"');
+    expect(html).toContain('Property news,');
+    expect(html).toContain('News desk');
+    expect(html).toContain('Naver News API · Loading');
+    expect(html).toContain('Selected article');
     expect(html).toContain('What the Seoul district snapshot covers');
     expect(html).toContain('How SignedPrice reads reported rental contracts');
-    expect((html.match(/Our data:/g) ?? [])).toHaveLength(2);
     expect(html).toContain('25 Seoul districts are included');
-    expect(html).toContain('data-news-evidence="verified"');
-    expect(html).toContain('data-news-evidence="not-applicable"');
+    expect(html).toContain('Matched');
+    expect(html).toContain('Live external coverage · 15-minute cache');
     expect(html).toContain('data-navigation-tier="product"');
     expect(html).toContain('aria-current="page"');
     expect(html).toContain('<strong>News</strong>');
