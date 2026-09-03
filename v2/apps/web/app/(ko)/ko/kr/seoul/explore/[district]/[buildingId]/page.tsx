@@ -16,8 +16,14 @@ export function generateStaticParams() {
   return generateEnglishStaticParams();
 }
 
+/**
+ * Korean building routes stay out of the index while this locale has no
+ * canonical of its own: the English route owns the canonical for a building,
+ * and delegating metadata without saying so would publish a Korean URL that
+ * points its canonical at the English one by accident rather than by decision.
+ */
 export async function generateMetadata(props: BuildingPageProps): Promise<Metadata> {
-  return generateEnglishMetadata(props);
+  return generateEnglishMetadata({ ...props, locale: 'ko' });
 }
 
 export default async function KoreanBuildingRoute(props: BuildingPageProps) {
