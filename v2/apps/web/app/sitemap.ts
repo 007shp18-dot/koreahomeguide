@@ -114,7 +114,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const entries: MetadataRoute.Sitemap = [
     sitemapEntry('/markets/'),
     sitemapEntry('/prices/', summaryLastModified),
-    sitemapEntry('/insights/', newsLastModified),
+    sitemapEntry('/news/', newsLastModified),
+    sitemapEntry('/community/'),
     sitemapEntry('/guides/', guideLastModified),
   ];
   const modifiedByPath = new Map<string, Date | undefined>([

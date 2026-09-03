@@ -3,20 +3,44 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
-import type { HomeFeaturedBuilding } from '../lib/public-market/home-featured-buildings.server';
+import type { HomeMarketVisual } from '../lib/home-market-visuals.server';
+import { GoogleBuildingStreetView } from './maps/google-building-street-view';
 import { NaverBuildingStreetView } from './maps/naver-building-street-view';
 import styles from './home-editorial.module.css';
 
 export function shuffleFeaturedBuildings(
-  buildings: readonly HomeFeaturedBuilding[],
+  buildings: readonly HomeMarketVisual[],
   random: () => number = Math.random,
-): readonly HomeFeaturedBuilding[] {
+): readonly HomeMarketVisual[] {
   const next = [...buildings];
   for (let index = next.length - 1; index > 0; index -= 1) {
     const swapIndex = Math.floor(random() * (index + 1));
     [next[index], next[swapIndex]] = [next[swapIndex]!, next[index]!];
   }
   return next;
+}
+
+function MarketVisual({ visual, naverMapClientId, googleMapsBrowserKey }: Readonly<{
+  visual: HomeMarketVisual;
+  naverMapClientId: string | null;
+  googleMapsBrowserKey: string | null;
+}>) {
+  if (visual.provider === 'google') return <GoogleBuildingStreetView
+    browserKey={googleMapsBrowserKey}
+    buildingName={visual.name}
+    latitude={visual.latitude}
+    longitude={visual.longitude}
+    address={visual.addressQuery}
+    mapHref={visual.mapHref}
+  />;
+  return <NaverBuildingStreetView
+    clientId={naverMapClientId}
+    buildingName={visual.name}
+    latitude={visual.latitude}
+    longitude={visual.longitude}
+    addressQuery={visual.addressQuery}
+    mapHref={visual.mapHref}
+  />;
 }
 
 function shouldRotate() {
@@ -26,9 +50,11 @@ function shouldRotate() {
 export function RotatingHeroBuilding({
   buildings,
   naverMapClientId,
+  googleMapsBrowserKey,
 }: Readonly<{
-  buildings: readonly HomeFeaturedBuilding[];
+  buildings: readonly HomeMarketVisual[];
   naverMapClientId: string | null;
+  googleMapsBrowserKey: string | null;
 }>) {
   const [order, setOrder] = useState(buildings);
   const [index, setIndex] = useState(0);
@@ -52,16 +78,9 @@ export function RotatingHeroBuilding({
 
   return (
     <div className={styles.rotatingHero} key={featured.id} data-featured-building={featured.id}>
-      <NaverBuildingStreetView
-        clientId={naverMapClientId}
-        buildingName={featured.name}
-        latitude={featured.latitude}
-        longitude={featured.longitude}
-        addressQuery={featured.addressQuery}
-        mapHref={featured.href}
-      />
+      <MarketVisual visual={featured} naverMapClientId={naverMapClientId} googleMapsBrowserKey={googleMapsBrowserKey} />
       <div className={styles.heroMediaCaption} aria-live="polite">
-        <span>Featured building evidence · Seoul</span>
+        <span>{featured.countryCode} · {featured.market} · place context</span>
         <h2>{featured.name}</h2>
         <p>{featured.location} · {featured.observationLabel}</p>
         <Link href={featured.href}>View building →</Link>
@@ -80,9 +99,11 @@ export function RotatingHeroBuilding({
 export function RotatingBuildingGrid({
   buildings,
   naverMapClientId,
+  googleMapsBrowserKey,
 }: Readonly<{
-  buildings: readonly HomeFeaturedBuilding[];
+  buildings: readonly HomeMarketVisual[];
   naverMapClientId: string | null;
+  googleMapsBrowserKey: string | null;
 }>) {
   const [order, setOrder] = useState(buildings);
   const [offset, setOffset] = useState(0);
@@ -111,16 +132,9 @@ export function RotatingBuildingGrid({
       {visible.map((building) => (
         <article className={styles.buildingCard} key={building.id} data-featured-building={building.id}>
           <div className={styles.buildingMedia}>
-            <NaverBuildingStreetView
-              clientId={naverMapClientId}
-              buildingName={building.name}
-              latitude={building.latitude}
-              longitude={building.longitude}
-              addressQuery={building.addressQuery}
-              mapHref={building.href}
-            />
+            <MarketVisual visual={building} naverMapClientId={naverMapClientId} googleMapsBrowserKey={googleMapsBrowserKey} />
           </div>
-          <div><span>SEOUL</span><h3>{building.name}</h3><p>{building.location}</p><strong>{building.observationLabel}</strong><small>{building.periodLabel}</small><Link href={building.href}>View evidence →</Link></div>
+          <div><span>{building.market.toUpperCase()}</span><h3>{building.name}</h3><p>{building.location}</p><strong>{building.observationLabel}</strong><small>{building.periodLabel}</small><Link href={building.href}>Open market →</Link></div>
         </article>
       ))}
     </div>

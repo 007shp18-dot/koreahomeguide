@@ -4,12 +4,13 @@ import type { SingaporeEntryModel } from '../../lib/singapore/route-types';
 import type { MarketOverviewRowModel, NavigationActionModel } from '../../lib/route-model';
 import { MarketHero } from '../market-hero';
 import { MarketOverviewRows } from '../market-overview-rows';
+import { GoogleBuildingStreetView } from '../maps/google-building-street-view';
 import {
   SingaporePage,
   singaporeStyles as styles,
 } from './singapore-shell';
 
-export function SingaporeEntry({ model }: Readonly<{ model: SingaporeEntryModel }>) {
+export function SingaporeEntry({ model, googleMapsBrowserKey = null }: Readonly<{ model: SingaporeEntryModel; googleMapsBrowserKey?: string | null }>) {
   if (model.status === 'unavailable') return (
     <SingaporePage currentHref="/sg/"><section className={styles.unavailable} data-singapore-entry="unavailable" data-product-intro="true">
       <p className={styles.eyebrow}>Singapore · Release gate</p><h1>{model.message}</h1>
@@ -68,7 +69,13 @@ export function SingaporeEntry({ model }: Readonly<{ model: SingaporeEntryModel 
   return (
     <SingaporePage currentHref="/sg/" unframed>
       <div data-singapore-entry="ready">
-        <MarketHero model={{
+        <MarketHero media={<GoogleBuildingStreetView
+          browserKey={googleMapsBrowserKey}
+          buildingName="The Sail @ Marina Bay"
+          latitude={1.2807}
+          longitude={103.8527}
+          mapHref="https://www.google.com/maps/search/?api=1&query=The+Sail+at+Marina+Bay+Singapore"
+        />} model={{
           sectionLabel: 'Singapore market overview',
           eyebrow: 'Singapore market',
           heading: 'Singapore Market Overview',

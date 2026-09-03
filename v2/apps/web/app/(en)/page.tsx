@@ -11,7 +11,7 @@ import { buildSingaporeEntryModel } from '@/lib/singapore/route-model.server';
 import { singaporeSnapshotRepositoryFromEnvironment } from '@/lib/singapore/snapshot-repository.server';
 import { buildSeoulLiveModel } from '@/lib/public-market/seoul-live-model.server';
 import { buildNewsIndexModel } from '@/lib/news/news-route-model.server';
-import { buildHomeFeaturedBuildings } from '@/lib/public-market/home-featured-buildings.server';
+import { buildHomeMarketVisuals } from '@/lib/home-market-visuals.server';
 
 export const metadata: Metadata = homepageCopy.metadata;
 
@@ -20,8 +20,9 @@ export default async function Home() {
   const presentation = buildHomepagePresentation(buildSingaporeEntryModel(singaporeRepository));
   const seoul = buildSeoulLiveModel();
   const news = buildNewsIndexModel();
-  const featuredBuildings = buildHomeFeaturedBuildings();
+  const featuredBuildings = buildHomeMarketVisuals();
   const naverMapClientId = process.env.NAVER_MAP_CLIENT_ID?.trim() || null;
+  const googleMapsBrowserKey = process.env.GOOGLE_MAPS_API_KEY?.trim() || null;
   const copy = presentation.copy;
   return (
     <div id="top">
@@ -33,12 +34,15 @@ export default async function Home() {
           seoul={seoul}
           featuredBuildings={featuredBuildings}
           naverMapClientId={naverMapClientId}
+          googleMapsBrowserKey={googleMapsBrowserKey}
         />
         <HomeEditorialSections
           seoul={seoul}
           news={news}
           featuredBuildings={featuredBuildings}
           naverMapClientId={naverMapClientId}
+          googleMapsBrowserKey={googleMapsBrowserKey}
+          markets={presentation.markets}
         />
       </main>
       <SiteFooter copy={copy.footer} />

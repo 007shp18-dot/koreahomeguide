@@ -12,5 +12,8 @@ export const metadata: Metadata = {
 
 export default async function SingaporeEntryPage() {
   const repository = await singaporeSnapshotRepositoryFromEnvironment();
-  return <SingaporeEntry model={buildSingaporeEntryModel(repository)} />;
+  return <SingaporeEntry
+    model={buildSingaporeEntryModel(repository)}
+    googleMapsBrowserKey={process.env.GOOGLE_MAPS_API_KEY?.trim() || null}
+  />;
 }

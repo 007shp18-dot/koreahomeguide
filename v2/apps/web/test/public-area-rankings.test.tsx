@@ -63,7 +63,8 @@ describe('Seoul district rankings page', () => {
     expect(html).toContain('23 districts excluded');
     expect(html).toContain('aria-current="page"');
     expect(html).toContain('>Prices</a>');
-    expect(html).toContain('href="/insights"');
+    expect(html).toContain('href="/news"');
+    expect(html).toContain('href="/community"');
     expect(html).toContain('href="/guides"');
   });
 

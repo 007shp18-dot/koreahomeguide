@@ -11,7 +11,7 @@ import { SiteFooter } from './site-footer';
 import { SiteHeader } from './site-header';
 import styles from './global-product-hub.module.css';
 
-export type GlobalHubKind = 'markets' | 'prices' | 'insights' | 'guides';
+export type GlobalHubKind = 'markets' | 'prices' | 'news' | 'guides';
 
 type GlobalProductHubProps = Readonly<{
   kind: GlobalHubKind;
@@ -38,9 +38,9 @@ const hubCopy = {
     title: 'Start with what actually happened.',
     description: 'Move from city context to district and building evidence without mixing completed contracts with asking prices or active listings.',
   },
-  insights: {
-    eyebrow: 'Market insights',
-    title: 'Read the signal with its source attached.',
+  news: {
+    eyebrow: 'Market news',
+    title: 'News, with the evidence boundary attached.',
     description: 'SignedPrice publishes market briefs only when the evidence, period and editorial boundary can be shown together.',
   },
   guides: {
@@ -184,7 +184,7 @@ export function GlobalProductHub({ kind, seoul, news }: GlobalProductHubProps) {
         <header className={styles.hero}><p>{copy.eyebrow}</p><h1>{copy.title}</h1><p>{copy.description}</p></header>
         {kind === 'markets' ? <MarketsHub /> : null}
         {kind === 'prices' ? <PricesHub seoul={seoul} /> : null}
-        {kind === 'insights' ? <InsightsHub news={news} /> : null}
+        {kind === 'news' ? <InsightsHub news={news} /> : null}
         {kind === 'guides' ? <GuidesHub /> : null}
       </main>
       <SiteFooter copy={homepageCopy.footer} />

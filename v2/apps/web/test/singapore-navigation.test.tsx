@@ -49,17 +49,14 @@ describe('Singapore navigation promotion gate', () => {
       'sg-singapore',
       'ae-dubai',
     ]);
-    expect(
-      presentation.markets.flatMap((market) =>
-        market.slots.flatMap((slot) => slot.href ?? []),
-      ),
-    ).toEqual([
-      '/kr/seoul/check/',
-      '/kr/seoul/explore/',
-      '/kr/seoul/rankings/',
-      '/kr/seoul/news/',
-      '/kr/seoul/guide/',
-    ]);
+    const hrefs = presentation.markets.flatMap((market) =>
+      market.slots.flatMap((slot) => slot.href ?? []),
+    );
+    expect(hrefs).toContain('/kr/seoul/community/');
+    expect(hrefs).toContain('/sg/singapore/explore/');
+    expect(hrefs).toContain('/sg/singapore/community/');
+    expect(hrefs).toContain('/ae/dubai/explore/');
+    expect(hrefs).toContain('/ae/dubai/community/');
 
     const html = renderToStaticMarkup(await Home());
     expect(html).toContain('href="/sg">Singapore</a>');
@@ -96,32 +93,32 @@ describe('Singapore navigation promotion gate', () => {
           { id: 'rankings', href: '/kr/seoul/rankings/' },
           { id: 'news', href: '/kr/seoul/news/' },
           { id: 'guide', href: '/kr/seoul/guide/' },
-          { id: 'community', href: undefined },
+          { id: 'community', href: '/kr/seoul/community/' },
         ],
       },
       {
         id: 'sg-singapore',
         slots: [
-          { id: 'check', href: undefined },
+          { id: 'check', href: '/sg/singapore/check/' },
           { id: 'explore', href: '/sg/singapore/explore/' },
-          { id: 'rankings', href: undefined },
-          { id: 'news', href: undefined },
-          { id: 'guide', href: undefined },
-          { id: 'community', href: undefined },
+          { id: 'rankings', href: '/sg/singapore/rankings/' },
+          { id: 'news', href: '/sg/singapore/news/' },
+          { id: 'guide', href: '/sg/singapore/guide/' },
+          { id: 'community', href: '/sg/singapore/community/' },
         ],
       },
       {
         id: 'ae-dubai',
         slots: [
-          { id: 'check', href: undefined },
-          { id: 'explore', href: undefined },
-          { id: 'rankings', href: undefined },
-          { id: 'news', href: undefined },
-          { id: 'guide', href: undefined },
-          { id: 'community', href: undefined },
+          { id: 'check', href: '/ae/dubai/check/' },
+          { id: 'explore', href: '/ae/dubai/explore/' },
+          { id: 'rankings', href: '/ae/dubai/rankings/' },
+          { id: 'news', href: '/ae/dubai/news/' },
+          { id: 'guide', href: '/ae/dubai/guide/' },
+          { id: 'community', href: '/ae/dubai/community/' },
         ],
       },
     ]);
-    expect(JSON.stringify(presentation)).not.toMatch(/href":"\/ae\//);
+    expect(JSON.stringify(presentation)).toMatch(/href":"\/ae\/dubai\/explore\//);
   });
 });

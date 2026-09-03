@@ -14,9 +14,9 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
     hrefLang: 'ko',
   } as const;
   const currentHref = copy.links.find(({ isCurrent }) => isCurrent)?.href;
+  const globalProductHrefs = ['/markets/', '/prices/', '/news/', '/community/', '/guides/', '/properties/', '/invest/', '/insights/'];
   const isGlobalProduct = copy.marketLabel === undefined
-    && currentHref !== undefined
-    && productNavigationLinks.some(({ href }) => href === currentHref);
+    && (currentHref === undefined || globalProductHrefs.includes(currentHref));
   const marketLabel = isGlobalProduct
     ? 'Global'
     : copy.marketLabel
@@ -42,9 +42,35 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
       || currentHref?.includes('/check/')
       || currentHref?.includes('/rankings/')
     )) return true;
-    if (href === '/insights/' && currentHref?.includes('/news/')) return true;
+    if (href === '/news/' && (currentHref?.includes('/news/') || currentHref === '/insights/')) return true;
+    if (href === '/community/' && currentHref?.includes('/community/')) return true;
     if (href === '/guides/' && currentHref?.includes('/guide/')) return true;
     return false;
+  }
+
+  const marketPrefix = currentMarket === 'seoul'
+    ? (copy.languageLabel === 'KO' ? '/ko/kr/seoul' : '/kr/seoul')
+    : currentMarket === 'singapore'
+      ? '/sg/singapore'
+      : currentMarket === 'dubai'
+        ? '/ae/dubai'
+        : null;
+  const isKoreanMarket = currentMarket === 'seoul' && copy.languageLabel === 'KO';
+  const marketNavigation = marketPrefix === null ? [] : [
+    { label: isKoreanMarket ? '개요' : 'Overview', href: currentMarket === 'singapore' ? '/sg/' : `${marketPrefix}/` },
+    { label: isKoreanMarket ? '탐색' : 'Explore', href: `${marketPrefix}/explore/` },
+    { label: isKoreanMarket ? '가격 확인' : 'Check', href: `${marketPrefix}/check/` },
+    { label: isKoreanMarket ? '순위' : 'Rankings', href: `${marketPrefix}/rankings/` },
+    { label: isKoreanMarket ? '뉴스' : 'News', href: isKoreanMarket ? '/kr/news/' : `${marketPrefix}/news/` },
+    { label: isKoreanMarket ? '커뮤니티' : 'Community', href: isKoreanMarket ? '/kr/seoul/community/' : `${marketPrefix}/community/` },
+    { label: isKoreanMarket ? '가이드' : 'Guide', href: isKoreanMarket ? '/kr/seoul/guide/' : `${marketPrefix}/guide/` },
+  ];
+  function isCurrentMarketLink(href: string): boolean {
+    if (currentHref === href) return true;
+    const segment = href.split('/').filter(Boolean).at(-1);
+    return segment !== undefined && segment !== 'seoul' && segment !== 'singapore' && segment !== 'dubai'
+      ? currentHref?.includes(`/${segment}/`) === true
+      : false;
   }
 
   const isKorean = copy.languageLabel === 'KO';
@@ -60,7 +86,7 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
   );
 
   return (
-    <header className="site-header">
+    <header className="site-header" data-market-context={currentMarket ?? 'global'}>
       <div className="site-header__inner" data-navigation-tier="primary">
         <Link className="wordmark" href={copy.homeHref ?? '/'} aria-label={copy.homeLabel}>
           <BrandWordmark compact />
@@ -101,6 +127,19 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
           {isKorean ? <span aria-current="true">KO</span> : switchLink}
         </div>
       </div>
+      {marketNavigation.length > 0 ? (
+        <nav className="site-header__local" aria-label={`${marketLabel} product navigation`} data-local-navigation="true">
+          <div>
+            {marketNavigation.map((link) => (
+              <Link
+                href={link.href}
+                aria-current={isCurrentMarketLink(link.href) ? 'page' : undefined}
+                key={link.href}
+              >{link.label}</Link>
+            ))}
+          </div>
+        </nav>
+      ) : null}
     </header>
   );
 }

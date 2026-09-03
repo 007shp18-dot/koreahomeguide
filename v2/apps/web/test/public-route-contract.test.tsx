@@ -255,7 +255,8 @@ describe('public migration containment', () => {
     expect(urls).toEqual([
       'https://www.signedprice.com/markets/',
       'https://www.signedprice.com/prices/',
-      'https://www.signedprice.com/insights/',
+      'https://www.signedprice.com/news/',
+      'https://www.signedprice.com/community/',
       'https://www.signedprice.com/guides/',
       'https://www.signedprice.com/',
       'https://www.signedprice.com/compare/',
@@ -376,7 +377,8 @@ describe('public migration containment', () => {
     expect(sitemap().map(({ url }) => url)).toEqual([
       'https://www.signedprice.com/markets/',
       'https://www.signedprice.com/prices/',
-      'https://www.signedprice.com/insights/',
+      'https://www.signedprice.com/news/',
+      'https://www.signedprice.com/community/',
       'https://www.signedprice.com/guides/',
       'https://www.signedprice.com/',
       'https://www.signedprice.com/compare/',
@@ -397,7 +399,8 @@ describe('public migration containment', () => {
     expect(sitemap().map(({ url }) => url)).toEqual([
       'https://www.signedprice.com/markets/',
       'https://www.signedprice.com/prices/',
-      'https://www.signedprice.com/insights/',
+      'https://www.signedprice.com/news/',
+      'https://www.signedprice.com/community/',
       'https://www.signedprice.com/guides/',
       'https://www.signedprice.com/',
       'https://www.signedprice.com/compare/',

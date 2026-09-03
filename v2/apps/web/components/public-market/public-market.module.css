@@ -632,6 +632,33 @@
   background: var(--divider);
 }
 
+.publicSourceDetails {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.publicSourceDetails > summary {
+  min-height: 48px;
+  padding: 12px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  color: var(--muted);
+  font-size: .75rem;
+  font-weight: 750;
+  cursor: pointer;
+  list-style: none;
+}
+
+.publicSourceDetails > summary::-webkit-details-marker { display: none; }
+.publicSourceDetails > summary::after { content: '+'; font-size: 1rem; }
+.publicSourceDetails[open] > summary::after { content: '−'; }
+.publicSourceDetails > dl { border-top: 1px solid var(--line); }
+.publicSourceDetails > p { padding: 12px 15px 0; }
+.publicSourceDetails > p:last-child { padding-bottom: 15px; }
+
 .publicSourceBoundary dl > div {
   min-height: 96px;
   padding: 1rem;

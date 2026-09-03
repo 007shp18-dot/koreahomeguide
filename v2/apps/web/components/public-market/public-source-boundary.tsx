@@ -65,7 +65,9 @@ export function PublicSourceBoundary({
           locale={locale}
         />
       )}
-      <dl>
+      <details className={styles.publicSourceDetails}>
+        <summary>{locale === 'ko' ? '필터·공개 기준 보기' : 'Filters and publication rules'}</summary>
+        <dl>
         <div>
           <dt>{copy.registry}</dt>
           <dd>{registryValue}</dd>
@@ -98,13 +100,10 @@ export function PublicSourceBoundary({
             <dd>{model.geometryAttribution}</dd>
           </div>
         )}
-      </dl>
-      <p>
-        {combinedBoundary}
-      </p>
-      <p>
-        {copy.legalBoundary}
-      </p>
+        </dl>
+        <p>{combinedBoundary}</p>
+        <p>{copy.legalBoundary}</p>
+      </details>
     </section>
   );
 }

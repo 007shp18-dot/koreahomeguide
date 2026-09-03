@@ -1,9 +1,7 @@
 import Link from 'next/link';
 
 import type { PublicBuildingModel } from '../../lib/public-market/building-route-model.server';
-import { CommunitySignal } from '../community/community-signal';
 import { EvidenceSectionHeading } from '../evidence-ui/section-heading';
-import { DetailNewsList } from '../news/detail-news-list';
 import { EvidenceDisclosure } from '../trust/evidence-disclosure';
 import { EvidencePeriodStrip } from './evidence-period-strip';
 import styles from './building-detail.module.css';
@@ -171,12 +169,15 @@ function BuildingSourceEvidence({ model }: Readonly<{ model: PublicBuildingModel
         boundary={model.presentation.sourceBoundary}
         attribution={['Ministry of Land, Infrastructure and Transport (MOLIT)']}
       />
-      <dl className={styles.sourceGrid}>
-        <div><dt>Supported deals</dt><dd>jeonse</dd></div>
-        <div><dt>{model.presentation.periodLabel}</dt><dd>{model.evidence.period}</dd></div>
-        <div><dt>Publication minimum</dt><dd>{model.evidence.publicationMinimum}</dd></div>
-        <div><dt>Exclusions</dt><dd>{model.evidence.exclusions.join(' · ')}</dd></div>
-      </dl>
+      <details className={styles.sourceDetails}>
+        <summary>Filters and publication rules</summary>
+        <dl className={styles.sourceGrid}>
+          <div><dt>Supported deals</dt><dd>jeonse</dd></div>
+          <div><dt>{model.presentation.periodLabel}</dt><dd>{model.evidence.period}</dd></div>
+          <div><dt>Publication minimum</dt><dd>{model.evidence.publicationMinimum}</dd></div>
+          <div><dt>Exclusions</dt><dd>{model.evidence.exclusions.join(' · ')}</dd></div>
+        </dl>
+      </details>
       <div className={styles.actions}>
         <Link href="/trust/">Read SignedPrice Trust</Link>
         <Link href="/kr/seoul/corrections/">Review Seoul corrections</Link>
@@ -210,10 +211,6 @@ export function BuildingEvidenceDetails({ model }: Readonly<{ model: PublicBuild
         <AreaBandEvidence model={model} />
         <RecentContractEvidence model={model} />
         <BuildingSourceEvidence model={model} />
-        <div className={styles.relatedContext}>
-          <DetailNewsList news={model.news} />
-          <CommunitySignal model={model.communitySignal} />
-        </div>
         <BuildingNavigation model={model} />
       </div>
     </details>

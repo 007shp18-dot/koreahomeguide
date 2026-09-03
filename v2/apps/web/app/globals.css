@@ -69,6 +69,51 @@
   padding: 0;
 }
 
+main,
+section,
+article,
+aside,
+header,
+footer,
+nav,
+div,
+dl,
+ul,
+ol {
+  min-width: 0;
+}
+
+button,
+input,
+select,
+textarea {
+  max-width: 100%;
+  font: inherit;
+  letter-spacing: inherit;
+}
+
+table {
+  border-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+th,
+td {
+  min-width: 0;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+a,
+p,
+dd,
+li,
+h1,
+h2,
+h3 {
+  overflow-wrap: anywhere;
+}
+
 html {
   min-height: 100%;
   scroll-behavior: smooth;
@@ -842,6 +887,41 @@ ul {
   min-width: 0;
   overflow-x: auto;
   scrollbar-width: none;
+}
+
+.site-header__local {
+  border-top: 1px solid var(--line);
+  background: rgb(255 255 255 / 96%);
+}
+
+.site-header__local > div {
+  width: min(1180px, calc(100% - 40px));
+  min-height: 42px;
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.site-header__local a {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: .01em;
+  text-decoration: none;
+}
+
+.site-header__local a:hover,
+.site-header__local a[aria-current="page"] {
+  color: var(--ink);
+  border-bottom-color: var(--accent);
 }
 
 .site-header__markets {
@@ -2542,6 +2622,12 @@ h1 {
 
   .site-header__context {
     display: none;
+  }
+
+  .site-header__local > div {
+    width: 100%;
+    padding-inline: 14px;
+    gap: 22px;
   }
 
   .site-header__links {
