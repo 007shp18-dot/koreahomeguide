@@ -63,8 +63,9 @@ describe('Korea methodology guides', () => {
   it('keeps the shared market and product navigation around the Guide index', () => {
     const html = renderToStaticMarkup(<GuideIndexPage />);
 
-    expect(html.match(/data-navigation-tier="market"/g) ?? []).toHaveLength(1);
-    expect(html.match(/data-navigation-tier="product"/g) ?? []).toHaveLength(1);
+    expect(html.match(/data-navigation-tier="primary"/g) ?? []).toHaveLength(1);
+    expect(html).not.toContain('data-navigation-tier="market"');
+    expect(html).not.toContain('data-navigation-tier="product"');
     expect(html.match(/<footer/g) ?? []).toHaveLength(1);
     for (const href of [
       '/markets/',
@@ -98,8 +99,9 @@ describe('Korea methodology guides', () => {
       expect(html).toContain(`dateTime="${guide.lastVerified}"`);
       expect(html).toContain(guide.evidenceBoundary);
       expect(html).toContain('href="/trust"');
-      expect(html.match(/data-navigation-tier="market"/g) ?? []).toHaveLength(1);
-      expect(html.match(/data-navigation-tier="product"/g) ?? []).toHaveLength(1);
+      expect(html.match(/data-navigation-tier="primary"/g) ?? []).toHaveLength(1);
+      expect(html).not.toContain('data-navigation-tier="market"');
+      expect(html).not.toContain('data-navigation-tier="product"');
       expect(html.match(/<footer/g) ?? []).toHaveLength(1);
       expect(html).toMatch(/<a[^>]*aria-current="page"[^>]*href="\/guides"/);
     }

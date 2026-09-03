@@ -237,12 +237,11 @@ test('mobile controls keep 44px focus targets and natural document scrolling', a
   expect(railPlacement.maxHeight).toBe('none');
 
   const navigation = page.getByRole('navigation', { name: 'Seoul evidence navigation' });
-  const checkTab = navigation.getByRole('link', { name: /Check/ });
-  const exploreTab = navigation.getByRole('link', { name: /Explore/ });
+  const pricesTab = navigation.getByRole('link', { name: 'Prices' });
   const viewTabs = page.getByRole('navigation', { name: 'Explorer view' }).getByRole('link');
   const districtLink = page.locator('[data-district-option="gangnam-gu"]');
   const detailLink = page.locator('[data-building-row]').first().getByRole('link');
-  for (const target of [checkTab, exploreTab, districtLink, detailLink]) {
+  for (const target of [pricesTab, districtLink, detailLink]) {
     await expectTouchTarget(target);
     await expectCobaltFocus(target);
   }

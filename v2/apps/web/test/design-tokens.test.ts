@@ -162,14 +162,12 @@ describe('signedprice brand foundation', () => {
       'z-index': '30',
     });
     expect(declarationsFor(css, '.site-header__inner')).toMatchObject({
-      width: 'min(calc(100% - (2 * var(--page-gutter))), var(--content-frame))',
-      padding: '0',
-    });
-    expect(declarationsFor(css, '.site-header__market-link')).toMatchObject({
-      'min-height': '34px',
+      width: '100%',
+      height: '54px',
+      padding: '0 24px',
     });
     expect(declarationsFor(css, '.site-header__product-link')).toMatchObject({
-      'min-height': '42px',
+      'min-height': '44px',
     });
     expect(declarationsFor(css, '.intent-tabs')).toMatchObject({
       border: '1px solid var(--line)',

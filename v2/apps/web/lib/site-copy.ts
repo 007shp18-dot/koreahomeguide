@@ -60,6 +60,7 @@ export interface SiteHeaderModel {
   readonly navigationLabel: string;
   readonly links: readonly NavigationLinkModel[];
   readonly navigationVariant?: 'product' | 'supplied';
+  readonly showMarketNavigation?: boolean;
   readonly marketLabel?: string;
   readonly languageLabel?: string;
   readonly languageSwitch?: Readonly<{
@@ -105,6 +106,7 @@ const englishHeaderCopy = {
   homeLabel: 'signedprice home',
   navigationLabel: 'Primary navigation',
   links: productNavigationLinks,
+  showMarketNavigation: true,
 } as const satisfies SiteHeaderModel;
 
 const englishTrustCopy = {

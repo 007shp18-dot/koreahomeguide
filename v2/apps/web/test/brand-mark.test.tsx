@@ -65,28 +65,21 @@ describe('SignedPrice brand mark', () => {
     expect(contractHeader.match(/<path\b/g)).toHaveLength(3);
   });
 
-  test('renders six roadmap destinations before compact market context', () => {
+  test('renders one compact header with six roadmap destinations and market context', () => {
     const html = renderToStaticMarkup(<SiteHeader copy={{
       ...headerCopy,
       links: [{ label: 'Explore', href: '/kr/seoul/explore/', isCurrent: true }],
     }} />);
 
-    expect(html).toContain('data-navigation-tier="market"');
-    expect(html).toContain('data-navigation-tier="product"');
-    expect(html.indexOf('data-navigation-tier="product"')).toBeLessThan(
-      html.indexOf('data-navigation-tier="market"'),
-    );
-    expect(html).toContain('data-navigation-tier="product"');
-    expect(html).toContain('aria-label="Market navigation"');
-    expect(html).toContain('>Seoul<');
-    expect(html).toContain('>Singapore<');
-    expect(html).toContain('>Dubai<');
-    expect(html.match(/data-product-index=/g)).toHaveLength(6);
-    expect(html).toContain('data-product-index="01"');
-    expect(html).toContain('data-product-index="06"');
+    expect(html).toContain('data-navigation-tier="primary"');
+    expect(html).not.toContain('data-navigation-tier="market"');
+    expect(html).not.toContain('data-navigation-tier="product"');
+    expect(html).toContain('class="site-header__context">Seoul · reported filings</span>');
+    expect(html.match(/site-header__product-link/g)).toHaveLength(6);
+    expect(html).toContain('>Markets</a>');
+    expect(html).toContain('>Invest</a>');
     expect(html).toContain('href="/properties"');
     expect(html).toContain('href="/invest"');
     expect(html).toMatch(/<a[^>]+aria-current="page"[^>]+href="\/prices"/);
-    expect(html).toMatch(/<a[^>]+aria-current="page"[^>]+href="\/kr\/seoul\/explore"/);
   });
 });

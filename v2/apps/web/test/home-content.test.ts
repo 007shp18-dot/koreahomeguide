@@ -133,7 +133,10 @@ describe('signedprice homepage copy', () => {
     expect(markup).toContain('>Explore markets</h2>');
     expect(markup).toContain('>Recent building evidence</h2>');
     expect(markup).toContain('>Market insights</h2>');
-    expect(markup).toContain('data-navigation-tier="market"');
+    expect(markup).toContain('data-navigation-tier="primary"');
+    expect(markup).not.toContain('data-navigation-tier="product"');
+    expect(markup).not.toContain('data-navigation-tier="market"');
+    expect(markup).toContain('aria-label="Market navigation"');
     expect(markup).toContain('>Seoul</a>');
     expect(markup).toContain('>Singapore</a>');
     expect(markup).toContain('>Dubai</a>');
@@ -194,7 +197,7 @@ describe('signedprice homepage copy', () => {
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', PUBLIC_AREA_FIXTURE_PERIOD);
 
     const markup = renderToStaticMarkup(await Home());
-    const cityTabsIndex = markup.indexOf('data-navigation-tier="market"');
+    const cityTabsIndex = markup.indexOf('aria-label="Market navigation"');
     const liveEvidenceIndex = markup.indexOf('data-seoul-live="ready"');
 
     expect(cityTabsIndex).toBeGreaterThanOrEqual(0);

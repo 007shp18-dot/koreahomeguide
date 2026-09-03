@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { useRouter } from 'next/navigation';
 
 import type { ProductLocale } from '../../lib/locale/product-copy';
+export { buildNaverBuildingAddressQuery } from '../../lib/public-market/naver-building-address';
 import styles from './interactive-map.module.css';
 
 export type NaverDistrictMapPoint = Readonly<{
@@ -157,20 +158,6 @@ export function buildNaverMapsScriptUrl(
   ].filter((value): value is string => value !== null);
   if (submodules.length > 0) url.searchParams.set('submodules', submodules.join(','));
   return url.toString();
-}
-
-export function buildNaverBuildingAddressQuery(
-  districtName: string,
-  neighborhoodName: string,
-  buildingName: string,
-): string {
-  const lotNumber = /^\((산?\d+(?:-\d+)?)\)$/.exec(buildingName.trim())?.[1];
-  return [
-    '서울특별시',
-    districtName.trim(),
-    neighborhoodName.trim(),
-    lotNumber ?? buildingName.trim(),
-  ].filter((value) => value.length > 0).join(' ');
 }
 
 export function resolveUnambiguousNaverGeocode(

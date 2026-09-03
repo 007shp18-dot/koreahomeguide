@@ -60,10 +60,10 @@ describe('public building detail', () => {
     const header = renderToStaticMarkup(<BuildingDetailHeader />);
     expect(header).toContain('aria-label="signedprice home"');
     for (const label of ['Markets', 'Prices', 'Properties', 'Insights', 'Guides', 'Invest']) {
-      expect(header).toContain(`>${label}</strong>`);
+      expect(header).toContain(`>${label}</a>`);
     }
-    expect(header).toMatch(/<a[^>]*aria-current="page"[^>]*>[\s\S]*?<strong>Prices<\/strong>/);
-    expect(header).toMatch(/Singapore|Dubai/);
+    expect(header).toMatch(/<a[^>]*aria-current="page"[^>]*>Prices<\/a>/);
+    expect(header).toContain('Seoul · reported filings');
 
     const tabs = renderToStaticMarkup(
       <BuildingDecisionTabs

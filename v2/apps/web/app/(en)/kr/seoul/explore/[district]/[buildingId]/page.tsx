@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { BuildingDetailPage } from '@/components/public-market/building-detail-page';
 import { BuildingOfficialFacts } from '@/components/public-market/building-official-facts';
 import { NaverBuildingStreetView } from '@/components/maps/naver-building-street-view';
-import { buildNaverBuildingAddressQuery } from '@/components/maps/naver-district-map';
+import { buildNaverBuildingAddressQuery } from '@/lib/public-market/naver-building-address';
 import {
   KoreaEvidenceBuildingDetail,
   ObservedBuildingDetail,

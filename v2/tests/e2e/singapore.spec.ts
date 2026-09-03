@@ -96,8 +96,8 @@ test('native Singapore Check submits single and cross-market A/B evidence', asyn
   const assertClean = observeRuntimeFailures(page);
   await page.goto('/sg/singapore/check/');
   await expect(page.locator('[data-singapore-check-workspace="true"]')).toBeVisible();
-  await expect(page.locator('.site-header__product-tier a[aria-current="page"]')).toHaveText('Check');
-  expect(await page.locator('.site-header__product-tier a').evaluateAll((links) => links.map((link) => link.getAttribute('href')))).not.toContainEqual(expect.stringMatching(/kr\/seoul/));
+  await expect(page.locator('.site-header__product-nav a[aria-current="page"]')).toHaveText('Prices');
+  expect(await page.locator('.site-header__product-nav a').evaluateAll((links) => links.map((link) => link.getAttribute('href')))).not.toContainEqual(expect.stringMatching(/kr\/seoul/));
   for (const market of ['URA private sale', 'HDB resale', 'HDB rent']) {
     await expect(page.getByRole('link', { name: new RegExp(market) }).first()).toContainText('Evidence ready');
   }
@@ -125,10 +125,18 @@ test('native Singapore Check submits single and cross-market A/B evidence', asyn
 test('Seoul and Singapore Explore share the same desktop rail width', async ({ page }) => {
   await page.goto('/sg/singapore/explore/');
   const singaporeRail = await page.locator('[data-market-shell-region="discovery"]').boundingBox();
+  const singaporeHeader = await page.locator('.site-header__inner').boundingBox();
+  await expect(page.locator('[data-navigation-tier="primary"]')).toHaveCount(1);
+  await expect(page.locator('.site-header__context')).toHaveText('Singapore · reported filings');
   await page.goto('/kr/seoul/explore/');
   const seoulRail = await page.locator(
     '[data-explorer-layout="split"] > [data-explorer-region="results"]',
   ).boundingBox();
+  const seoulHeader = await page.locator('.site-header__inner').boundingBox();
+  await expect(page.locator('[data-navigation-tier="primary"]')).toHaveCount(1);
+  await expect(page.locator('.site-header__context')).toHaveText('Seoul · reported filings');
+  expect(singaporeHeader?.height).toBe(54);
+  expect(seoulHeader?.height).toBe(54);
   if (page.viewportSize()!.width > 760) {
     expect(Math.abs((singaporeRail?.width ?? 0) - 420)).toBeLessThanOrEqual(2);
     expect(Math.abs((seoulRail?.width ?? 0) - 420)).toBeLessThanOrEqual(2);

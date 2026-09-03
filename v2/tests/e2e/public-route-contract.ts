@@ -4,7 +4,7 @@ import {
 } from './public-area-summary-fixture';
 
 export const publicRoutes = [
-  { path: '/', heading: 'See what homes actually signed for.', indexing: 'index', canonical: '/' },
+  { path: '/', heading: 'Know the market before you buy.', indexing: 'index', canonical: '/' },
   { path: '/trust/', heading: 'How SignedPrice publishes evidence', indexing: 'index', canonical: '/trust/' },
   {
     path: '/kr/seoul/check/',
@@ -53,9 +53,10 @@ export const publicRoutes = [
   },
   {
     path: '/sg/',
-    heading: 'Official sale evidence, separated by native market segment.',
+    heading: 'Singapore',
     indexing: 'noindex',
   },
+  { path: '/ae/dubai/', heading: 'Dubai', indexing: 'noindex' },
   {
     path: '/sg/singapore/explore/',
     heading: 'Residential transaction evidence',

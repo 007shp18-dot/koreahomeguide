@@ -19,6 +19,7 @@ describe('browser route coverage contract', () => {
       '/kr/seoul/rankings/',
       '/kr/seoul/corrections/',
       '/sg/',
+      '/ae/dubai/',
       '/sg/singapore/explore/',
       '/sg/singapore/explore/ccr/',
       '/sg/singapore/explore/rcr/',
@@ -57,8 +58,8 @@ describe('browser route coverage contract', () => {
       '/kr/seoul/explore/jongno-gu/synthetic-test-building/',
       '/compare/',
     ]);
-    expect(paths).toHaveLength(73);
-    expect(new Set(paths).size).toBe(73);
+    expect(paths).toHaveLength(74);
+    expect(new Set(paths).size).toBe(74);
     expect(publicRoutes.find(({ path }) => path === '/kr/seoul/check/')).toMatchObject({
       heading: 'Check one asking price.',
       indexing: 'index',
