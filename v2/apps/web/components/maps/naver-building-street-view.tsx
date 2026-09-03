@@ -13,10 +13,12 @@ import styles from './building-street-view.module.css';
 
 const NAVER_MAPS_READY_EVENT = 'signedprice:naver-maps-ready';
 const NAVER_MAPS_READY_FLAG = '__signedpriceNaverMapsLoaded';
+const NAVER_MAPS_READY_CALLBACK = '__signedpriceNaverMapsReady';
 
 type NaverMapsWindow = Window & {
   readonly naver?: Readonly<{ maps: NaverBuildingStreetViewSdk & Partial<NaverBuildingGeocoderSdk> }>;
   [NAVER_MAPS_READY_FLAG]?: boolean;
+  [NAVER_MAPS_READY_CALLBACK]?: () => void;
 };
 
 function notifyNaverMapsReady() {
@@ -172,7 +174,6 @@ export function NaverBuildingStreetView({
   const initialize = useCallback(async () => {
     const sdk = (window as NaverMapsWindow).naver?.maps;
     if (sdk === undefined || container.current === null || typeof sdk.Panorama !== 'function') {
-      setState('unavailable');
       return;
     }
     let location: Readonly<{ latitude: number; longitude: number }>;
@@ -231,6 +232,7 @@ export function NaverBuildingStreetView({
   useEffect(() => {
     const scope = window as NaverMapsWindow;
     const handleReady = () => { void initialize(); };
+    scope[NAVER_MAPS_READY_CALLBACK] = notifyNaverMapsReady;
     window.addEventListener(NAVER_MAPS_READY_EVENT, handleReady);
     if (scope[NAVER_MAPS_READY_FLAG] === true || scope.naver?.maps !== undefined) {
       queueMicrotask(handleReady);
@@ -250,9 +252,16 @@ export function NaverBuildingStreetView({
         ? 'Live area map · nearby street view unavailable · NAVER'
         : 'Nearby street view · not a listing photo · NAVER'}</p>
       <Script
-        src={buildNaverMapsScriptUrl(clientId, addressQuery !== undefined, true)}
+        src={buildNaverMapsScriptUrl(
+          clientId,
+          addressQuery !== undefined,
+          true,
+          NAVER_MAPS_READY_CALLBACK,
+        )}
         strategy="lazyOnload"
-        onReady={notifyNaverMapsReady}
+        onReady={() => {
+          if ((window as NaverMapsWindow).naver?.maps !== undefined) notifyNaverMapsReady();
+        }}
         onError={() => setState('unavailable')}
       />
     </section>

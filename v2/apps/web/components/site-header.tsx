@@ -7,6 +7,11 @@ import styles from './site-header.module.css';
 type SiteHeaderProps = { copy: SiteHeaderModel };
 
 export function SiteHeader({ copy }: SiteHeaderProps) {
+  const languageSwitch = copy.languageSwitch ?? {
+    label: '한국어',
+    href: '/ko/kr/seoul/',
+    hrefLang: 'ko',
+  } as const;
   const currentHref = copy.links.find(({ isCurrent }) => isCurrent)?.href;
   const isGlobalProduct = copy.marketLabel === undefined
     && currentHref !== undefined
@@ -67,15 +72,13 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
             ))}
           </nav>
         </details>
-        {copy.languageSwitch === undefined ? null : (
-          <Link
-            className={styles.language}
-            href={copy.languageSwitch.href}
-            hrefLang={copy.languageSwitch.hrefLang}
-            lang={copy.languageSwitch.hrefLang}
-            aria-label={`Change language to ${copy.languageSwitch.label}`}
-          >{copy.languageSwitch.hrefLang.toUpperCase()}</Link>
-        )}
+        <Link
+          className={styles.language}
+          href={languageSwitch.href}
+          hrefLang={languageSwitch.hrefLang}
+          lang={languageSwitch.hrefLang}
+          aria-label={`Change language to ${languageSwitch.label}`}
+        >{languageSwitch.hrefLang.toUpperCase()}</Link>
       </div>
     </header>
   );

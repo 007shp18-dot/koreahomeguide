@@ -148,6 +148,7 @@ export function buildNaverMapsScriptUrl(
   clientId: string,
   includeGeocoder = false,
   includePanorama = false,
+  callback?: string,
 ): string {
   const url = new URL('https://oapi.map.naver.com/openapi/v3/maps.js');
   url.searchParams.set('ncpKeyId', clientId);
@@ -156,6 +157,7 @@ export function buildNaverMapsScriptUrl(
     includeGeocoder ? 'geocoder' : null,
   ].filter((value): value is string => value !== null);
   if (submodules.length > 0) url.searchParams.set('submodules', submodules.join(','));
+  if (callback !== undefined) url.searchParams.set('callback', callback);
   // NAVER treats an encoded comma as part of a single submodule name
   // (`maps-panorama%2Cgeocoder.js`) instead of loading both modules.
   // URLSearchParams encodes commas, so restore the delimiter expected by the SDK.
