@@ -28,21 +28,20 @@ async function expectTouchTarget(page: Page, selector: string) {
   expect(box?.height).toBeGreaterThanOrEqual(44);
 }
 
-test('map and table open the same reload-safe canonical district detail', async ({ page }, testInfo) => {
+test('Explore selection opens a reload-safe district detail from the explicit evidence link', async ({ page }) => {
   const noFailures = observeFailures(page);
   await page.goto('/kr/seoul/explore/');
-  const tableHref = await page.locator('[data-district-row="jongno-gu"] a').first().getAttribute('href');
-  expect(tableHref).toBe('/kr/seoul/explore/jongno-gu/');
-  if (testInfo.project.name !== 'mobile-chromium') {
-    await page.locator('[data-district-path="jongno-gu"]').dispatchEvent('pointerup');
-  } else {
-    await page.locator('[data-district-row="jongno-gu"] a').first().click();
-  }
-  await expect(page).toHaveURL(/\/kr\/seoul\/explore\/jongno-gu\/$/);
+  await page.locator('[data-district-option="jongno-gu"]').click();
+  await expect(page).toHaveURL(/district=jongno-gu/);
+  await page.getByText('View new, renewal and distribution').click();
+  const detailLink = page.getByRole('link', { name: 'Open evidence · Jongno-gu' });
+  await expect(detailLink).toHaveAttribute('href', /^\/kr\/seoul\/explore\/jongno-gu/);
+  await detailLink.click();
+  await expect(page).toHaveURL(/\/kr\/seoul\/explore\/jongno-gu\/?(?:\?.*)?$/);
   await expect(page.locator('[data-detail-main="true"]')).toBeVisible();
   await expect(page.locator('[data-section="district-buildings"]')).toBeVisible();
   await page.reload();
-  await expect(page).toHaveURL(/\/kr\/seoul\/explore\/jongno-gu\/$/);
+  await expect(page).toHaveURL(/\/kr\/seoul\/explore\/jongno-gu\/?(?:\?.*)?$/);
   await expect(page.locator('[data-detail-main="true"]')).toBeVisible();
   await expect(page.locator('[data-section="district-buildings"]')).toBeVisible();
   await expectContained(page);
@@ -70,17 +69,29 @@ test('district detail composes official evidence before verified context', async
     const rail = main.parentElement?.querySelector('[data-detail-rail="true"]');
     const parent = main.parentElement;
     if (rail === null || parent === null) throw new Error('Detail layout is incomplete.');
+    const hero = main.querySelector('[data-detail-hero="district"]');
+    const heading = hero?.querySelector('h1');
     return {
       mainBeforeRail: Boolean(main.compareDocumentPosition(rail) & Node.DOCUMENT_POSITION_FOLLOWING),
       columns: getComputedStyle(parent).gridTemplateColumns.split(' ').filter(Boolean).length,
+      railWidth: rail.getBoundingClientRect().width,
+      heroColumns: hero === null
+        ? 0
+        : getComputedStyle(hero).gridTemplateColumns.split(' ').filter(Boolean).length,
+      headingSize: heading === null ? 0 : Number.parseFloat(getComputedStyle(heading).fontSize),
     };
   });
   expect(layout.mainBeforeRail).toBe(true);
   if (testInfo.project.name === 'desktop-chromium' || testInfo.project.name === 'wide-chromium') {
     expect(layout.columns).toBe(2);
+    expect(Math.abs(layout.railWidth - 380)).toBeLessThanOrEqual(2);
+    expect(layout.heroColumns).toBe(2);
   } else {
     expect(layout.columns).toBe(1);
+    expect(layout.heroColumns).toBe(1);
   }
+  expect(layout.headingSize).toBeGreaterThanOrEqual(32);
+  expect(layout.headingSize).toBeLessThanOrEqual(38);
 
   const htmlResponse = await page.request.get('/kr/seoul/explore/jongno-gu/');
   const html = await htmlResponse.text();

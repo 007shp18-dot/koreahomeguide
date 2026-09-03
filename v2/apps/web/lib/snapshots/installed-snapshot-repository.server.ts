@@ -39,6 +39,9 @@ let checkedInKoreaConversionEvidence: unknown;
 let checkedInKoreaProximityEvidence: unknown;
 let checkedInSingaporePrivateSale: unknown;
 let checkedInSingaporeHdb: unknown;
+let checkedInSingaporeCheckUra: unknown;
+let checkedInSingaporeCheckHdbResale: unknown;
+let checkedInSingaporeCheckHdbRent: unknown;
 const checkedInSnapshotDigests = new WeakMap<object, string>();
 
 function parseCompressedInventory(source: Buffer): unknown {
@@ -169,6 +172,36 @@ export function resolveInstalledSnapshotObject(objectUrl: string): unknown {
       ],
     );
   }
+  if (objectUrl === 'installed://sg-check-ura-private-sale') {
+    return readCheckedInArtifact(
+      checkedInSingaporeCheckUra,
+      (value) => { checkedInSingaporeCheckUra = value; },
+      [
+        () => readFileSync(resolve(process.cwd(), 'data/singapore-check-ura-private-sale.json.gz')),
+        () => readFileSync(resolve(process.cwd(), 'apps/web/data/singapore-check-ura-private-sale.json.gz')),
+      ],
+    );
+  }
+  if (objectUrl === 'installed://sg-check-hdb-resale') {
+    return readCheckedInArtifact(
+      checkedInSingaporeCheckHdbResale,
+      (value) => { checkedInSingaporeCheckHdbResale = value; },
+      [
+        () => readFileSync(resolve(process.cwd(), 'data/singapore-check-hdb-resale.json.gz')),
+        () => readFileSync(resolve(process.cwd(), 'apps/web/data/singapore-check-hdb-resale.json.gz')),
+      ],
+    );
+  }
+  if (objectUrl === 'installed://sg-check-hdb-rent') {
+    return readCheckedInArtifact(
+      checkedInSingaporeCheckHdbRent,
+      (value) => { checkedInSingaporeCheckHdbRent = value; },
+      [
+        () => readFileSync(resolve(process.cwd(), 'data/singapore-check-hdb-rent.json.gz')),
+        () => readFileSync(resolve(process.cwd(), 'apps/web/data/singapore-check-hdb-rent.json.gz')),
+      ],
+    );
+  }
   return undefined;
 }
 
@@ -224,6 +257,7 @@ function snapshotIdentity(payload: Readonly<Record<string, unknown>>): Readonly<
   const singaporeMarket = payload.version === 'signedprice-singapore-private-sale-v1'
     || payload.version === 'signedprice-singapore-hdb-v1'
     || payload.version === 'signedprice-singapore-hdb-published-v1'
+    || payload.version === 'signedprice-singapore-check-market-v1'
     ? 'sg-singapore'
     : undefined;
   const hdbPeriods = isObject(payload.periods) ? payload.periods : undefined;

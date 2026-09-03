@@ -85,7 +85,7 @@ afterEach(() => {
 });
 
 describe('/kr/seoul/explore/ route contract', () => {
-  it('renders the indexable Seoul district evidence map and complete table', async () => {
+  it('renders the indexable Seoul district evidence map and complete discovery rail', async () => {
     vi.stubEnv(
       'SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT',
       JSON.stringify(createPublicAreaFixture()),
@@ -110,7 +110,8 @@ describe('/kr/seoul/explore/ route contract', () => {
     expect(markup).toContain('role="img"');
     expect(markup).toContain('viewBox="0 0 720 560"');
     expect((markup.match(/data-district-path=/g) ?? [])).toHaveLength(25);
-    expect((markup.match(/data-district-row=/g) ?? [])).toHaveLength(25);
+    expect((markup.match(/data-district-option=/g) ?? [])).toHaveLength(25);
+    expect(markup).toContain('data-explorer-layout="split"');
     expect(markup).toContain('Search this area');
     expect(markup).not.toMatch(/data-discovery-step|Interact with map/);
   });

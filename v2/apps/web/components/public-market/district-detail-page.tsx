@@ -11,6 +11,7 @@ import {
 import { SiteFooter } from '../site-footer';
 import { SiteHeader } from '../site-header';
 import { CommunitySignal } from '../community/community-signal';
+import { EvidenceSectionHeading } from '../evidence-ui/section-heading';
 import { DetailNewsList } from '../news/detail-news-list';
 import { EvidenceEmptyStatePanel } from '../trust/evidence-empty-state';
 import { BoxPlot } from './box-plot';
@@ -103,10 +104,11 @@ function BuildingEvidence({ model }: Readonly<{ model: PublicDistrictModel }>) {
       aria-labelledby="building-evidence-heading"
       data-section="district-buildings"
     >
-      <div className={styles.sectionHeading}>
-        <p>04 / Building evidence</p>
-        <h2 id="building-evidence-heading">Verified buildings in {model.identity.nameEn}</h2>
-      </div>
+      <EvidenceSectionHeading
+        eyebrow="04 / Building evidence"
+        title={`Verified buildings in ${model.identity.nameEn}`}
+        id="building-evidence-heading"
+      />
       {model.buildingAvailability.status === 'ready' ? (
         <ul className={styles.buildingList}>
           {model.buildingAvailability.buildings.map((building) => (
@@ -138,10 +140,11 @@ function PropertyTypeEvidence({
   if (propertyTypes.length === 0) return null;
   return (
     <section className={styles.propertyTypeEvidence} aria-labelledby="property-type-evidence-heading">
-      <div className={styles.sectionHeading}>
-        <p>Property type evidence</p>
-        <h2 id="property-type-evidence-heading">Published evidence by home type</h2>
-      </div>
+      <EvidenceSectionHeading
+        eyebrow="Property type evidence"
+        title="Published evidence by home type"
+        id="property-type-evidence-heading"
+      />
       <ul className={styles.propertyTypeList}>
         {propertyTypes.map((propertyType) => (
           <li key={propertyType.slug}>
@@ -160,10 +163,11 @@ function Faq({ model }: Readonly<{
 }>) {
   return (
     <section className={styles.faq} aria-labelledby="district-faq-heading">
-      <div className={styles.sectionHeading}>
-        <p>03 / Computed FAQ</p>
-        <h2 id="district-faq-heading">Questions answered from this district summary.</h2>
-      </div>
+      <EvidenceSectionHeading
+        eyebrow="03 / Computed FAQ"
+        title="Questions answered from this district summary."
+        id="district-faq-heading"
+      />
       <div className={styles.faqGrid}>
         {model.faq.map(({ question, answer }) => (
           <article key={question}>
@@ -179,19 +183,43 @@ function Faq({ model }: Readonly<{
 function Finding({ model }: Readonly<{ model: PublicDistrictModel }>) {
   if (model.status === 'unavailable') {
     return (
-      <header className={styles.hero} data-section="district-summary">
-        <p>Seoul · {model.identity.nameKo}</p>
-        <h1>{model.message} for {model.identity.nameEn}.</h1>
-        <p>No city figure is substituted for unavailable district evidence.</p>
+      <header
+        className={styles.hero}
+        data-section="district-summary"
+        data-detail-hero="district"
+      >
+        <div className={styles.heroCopy}>
+          <p>Seoul · {model.identity.nameKo}</p>
+          <h1>{model.identity.nameEn}</h1>
+          <p>{model.message}. No city figure is substituted for unavailable district evidence.</p>
+        </div>
+        <div className={styles.heroMetric} data-detail-hero-metric="status">
+          <span>Evidence status</span>
+          <strong>Unavailable</strong>
+        </div>
       </header>
     );
   }
   const finding = model.status === 'published' ? model.display.medianLabel : 'Not published';
   return (
-    <header className={styles.hero} data-section="district-summary">
-      <p>Seoul · <span lang="ko">{model.identity.nameKo}</span></p>
-      <h1>{model.identity.nameEn}: {finding} from {model.display.sampleLabel}.</h1>
-      <SampleChip label={model.display.sampleLabel} state={model.status} />
+    <header
+      className={styles.hero}
+      data-section="district-summary"
+      data-detail-hero="district"
+    >
+      <div className={styles.heroCopy}>
+        <p>Seoul · <span lang="ko">{model.identity.nameKo}</span></p>
+        <h1>{model.identity.nameEn}</h1>
+        <p>Official reported-contract evidence for the declared period.</p>
+      </div>
+      <div
+        className={styles.heroMetric}
+        data-detail-hero-metric={model.status === 'published' ? 'median' : 'status'}
+      >
+        <span>Median refundable deposit</span>
+        <strong>{finding}</strong>
+        <SampleChip label={model.display.sampleLabel} state={model.status} />
+      </div>
     </header>
   );
 }
@@ -214,12 +242,11 @@ function Evidence({ model }: Readonly<{ model: PublicDistrictModel }>) {
       aria-labelledby="district-evidence-heading"
       data-section="district-distribution"
     >
-      <div className={styles.sectionHeading}>
-        <p>01 / District finding</p>
-        <h2 id="district-evidence-heading">
-          {model.status === 'published' ? 'Published distribution' : 'Distribution not published'}
-        </h2>
-      </div>
+      <EvidenceSectionHeading
+        eyebrow="01 / District finding"
+        title={model.status === 'published' ? 'Published distribution' : 'Distribution not published'}
+        id="district-evidence-heading"
+      />
       {model.status === 'published' ? (
         <>
           <EvidencePeriodStrip model={model.period} label="District evidence period" />
@@ -247,10 +274,10 @@ function Evidence({ model }: Readonly<{ model: PublicDistrictModel }>) {
             )}
           </dl>
           <div className={styles.quoteBlock}>
-            <div className={styles.sectionHeading}>
-              <p>02 / Local quote</p>
-              <h2>Compare one refundable deposit locally.</h2>
-            </div>
+            <EvidenceSectionHeading
+              eyebrow="02 / Local quote"
+              title="Compare one refundable deposit locally."
+            />
             <QuoteInput
               config={config}
               summary={model.summary}
@@ -281,10 +308,10 @@ export function DistrictDetailPage({
     <div id="top" className={styles.page} data-district-detail={model.status}>
       <SiteHeader copy={headerFor(model)} />
       <main className={styles.main}>
-        <Breadcrumb model={model} />
-        <Finding model={model} />
-        <div className={styles.detailLayout}>
+        <div className={styles.detailLayout} data-detail-layout="evidence-rail">
           <div className={styles.detailMain} data-detail-main="true">
+            <Breadcrumb model={model} />
+            <Finding model={model} />
             <Evidence model={model} />
             <div className={styles.cohortEvidence} data-section="district-cohorts">
               <DistrictEvidenceSummary model={model.contractEvidence} mode="full" />

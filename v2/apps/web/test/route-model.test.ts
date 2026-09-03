@@ -88,7 +88,7 @@ describe('market route model', () => {
     ]);
   });
 
-  it('builds Seoul as a full product with an explicit cross-brand Explorer action', () => {
+  it('keeps the Seoul workflow inside the signedprice Explorer', () => {
     const model = buildMarketPageModel('kr', 'seoul');
 
     expect(model).toMatchObject({
@@ -97,11 +97,12 @@ describe('market route model', () => {
       nativeCurrency: 'KRW',
       readiness: 'noindex',
       nextAction: {
-        href: 'https://koreahomeguide.com/explore/',
-        external: true,
+        href: '/kr/seoul/explore/',
+        external: false,
       },
     });
-    expect(model?.nextAction.label).toMatch(/KoreaHomeGuide.*Explorer/i);
+    expect(model?.nextAction.label).toBe('Open Seoul Explore');
+    expect(JSON.stringify(model)).not.toMatch(/KoreaHomeGuide/i);
     expect(JSON.stringify(model)).not.toMatch(unsupportedClaimPattern);
   });
 

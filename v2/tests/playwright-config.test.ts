@@ -54,6 +54,20 @@ describe('Playwright release target configuration', () => {
     expect(source).not.toMatch(/@signedprice\/|(?:packages|apps)\//);
   });
 
+  it('keeps Singapore Check browser evidence isolated and available to the local server', () => {
+    const source = readFileSync(new URL('./e2e/singapore-check-fixture.ts', import.meta.url), 'utf8');
+    const imports = [...source.matchAll(/from\s+['"]([^'"]+)['"]/g)].map((match) => match[1]);
+    expect(imports).toEqual(['node:crypto']);
+    expect(source).not.toMatch(/@signedprice\/(?:market|singapore)|(?:packages|apps)\//);
+    const config = createPlaywrightConfig({});
+    if (config.webServer === undefined || Array.isArray(config.webServer)) throw new Error('Expected local server.');
+    expect(config.webServer.env).toMatchObject({
+      SIGNEDPRICE_SINGAPORE_CHECK_URA_PERIOD: '2026-08/2026-08',
+      SIGNEDPRICE_SINGAPORE_CHECK_HDB_RESALE_PERIOD: '2026-08/2026-08',
+      SIGNEDPRICE_SINGAPORE_CHECK_HDB_RENT_PERIOD: '2026-08/2026-08',
+    });
+  });
+
   it('builds and serves the deterministic candidate locally', () => {
     const config = createPlaywrightConfig({});
 
@@ -64,6 +78,7 @@ describe('Playwright release target configuration', () => {
       env: {
         VERCEL_ENV: 'preview',
         VERCEL_GIT_COMMIT_SHA: '0123456789abcdef',
+        SIGNEDPRICE_GA4_ENABLED: 'false',
         SIGNEDPRICE_USE_CHECKED_IN_SNAPSHOTS: 'false',
         SIGNEDPRICE_CONVERSION_CURVE_PERIOD: '2026-03/2026-08',
         SIGNEDPRICE_CONVERSION_CURVE_SHA256: 'a'.repeat(64),
@@ -226,6 +241,16 @@ describe('Playwright release target configuration', () => {
     expect(config.use).toMatchObject({
       screenshot: 'only-on-failure',
       trace: 'retain-on-failure',
+      storageState: {
+        cookies: [],
+        origins: [{
+          origin: 'http://127.0.0.1:3100',
+          localStorage: [
+            { name: 'signedprice_analytics_consent_v1', value: 'denied' },
+            { name: 'signedprice_advertising_consent_v1', value: 'denied' },
+          ],
+        }],
+      },
     });
   });
 

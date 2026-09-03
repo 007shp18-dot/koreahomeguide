@@ -11,20 +11,21 @@ import {
   SingaporeScope,
   singaporeStyles as styles,
 } from './singapore-shell';
+import { MarketDetailShell } from '../market-ui/market-shell';
 
 export function SingaporeProjectDetail({ model, googleMapsBrowserKey = null }: Readonly<{
   model: SingaporeProjectModel | SingaporeUnavailableModel;
   googleMapsBrowserKey?: string | null;
 }>) {
   if (model.status === 'unavailable') return (
-    <SingaporePage>
+    <SingaporePage currentHref="/sg/singapore/explore/">
       <section className={styles.unavailable} data-singapore-project="unavailable" data-product-intro="true">
         <h1>{model.message}</h1><p>No project value is substituted.</p>
       </section>
     </SingaporePage>
   );
   if (model.status === 'insufficient') return (
-    <SingaporePage>
+    <SingaporePage currentHref="/sg/singapore/explore/">
       <section className={styles.withheld} data-singapore-project="insufficient" data-product-intro="true">
         <p className={styles.eyebrow}>Singapore · {model.identity.marketSegment}</p>
         <h1>{model.identity.project}: distribution not published.</h1>
@@ -34,21 +35,17 @@ export function SingaporeProjectDetail({ model, googleMapsBrowserKey = null }: R
     </SingaporePage>
   );
   return (
-    <SingaporePage>
-      <nav className={styles.breadcrumbs} aria-label="Breadcrumb">
+    <SingaporePage currentHref="/sg/singapore/explore/" unframed>
+      <MarketDetailShell
+        breadcrumb={<nav className={styles.breadcrumbs} aria-label="Breadcrumb">
         <Link href="/sg/singapore/explore/">Explore</Link>
         <Link href={`/sg/singapore/explore/${model.identity.marketSegment.toLowerCase()}/`}>
           {model.identity.marketSegment}
         </Link>
-        <span>{model.identity.project}</span>
-      </nav>
-      <header className={styles.hero} data-singapore-project="ready" data-product-intro="true">
-        <p className={styles.eyebrow}>Singapore · {model.identity.marketSegment} · District {model.identity.district}</p>
-        <h1>{model.identity.project}: {model.display.medianPriceLabel} median.</h1>
-        <p>{model.identity.street} · {model.display.sampleLabel}</p>
-        <SingaporeScope />
-      </header>
-      <section className={styles.section} aria-labelledby="project-street-view-heading">
+        <span>{model.identity.project}</span></nav>}
+        identity={<div className={styles.detailIdentity} data-singapore-project="ready"><p className={styles.eyebrow}>Singapore · {model.identity.marketSegment} · District {model.identity.district}</p><h1>{model.identity.project}</h1><p>{model.identity.street}</p><SingaporeScope /></div>}
+        metric={<div className={styles.detailMetric}><small>Median price</small><strong>{model.display.medianPriceLabel}</strong><span>{model.display.sampleLabel}</span></div>}
+        evidence={<><section className={styles.section} aria-labelledby="project-street-view-heading">
         <p className={styles.sectionLabel}>01 / Nearby view</p>
         <h2 id="project-street-view-heading">Street context, not a listing photo.</h2>
         <GoogleBuildingStreetView
@@ -57,8 +54,7 @@ export function SingaporeProjectDetail({ model, googleMapsBrowserKey = null }: R
           address={`${model.identity.project}, ${model.identity.street}, Singapore`}
           mapHref={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${model.identity.project}, ${model.identity.street}, Singapore`)}`}
         />
-      </section>
-      <section className={styles.section} aria-labelledby="project-summary-heading">
+      </section><section className={styles.section} aria-labelledby="project-summary-heading">
         <p className={styles.sectionLabel}>02 / Project distribution</p>
         <h2 id="project-summary-heading">Price and unit-price evidence.</h2>
         <dl className={styles.stats}>
@@ -66,8 +62,7 @@ export function SingaporeProjectDetail({ model, googleMapsBrowserKey = null }: R
           <div className={styles.stat}><dt>Middle half</dt><dd>{model.display.middlePriceLabel}</dd></div>
           <div className={styles.stat}><dt>Median</dt><dd>{model.display.medianPsfLabel}</dd></div>
         </dl>
-      </section>
-      <section className={styles.section} aria-labelledby="transaction-heading">
+      </section><section className={styles.section} aria-labelledby="transaction-heading">
         <p className={styles.sectionLabel}>03 / Recent reported transactions</p>
         <h2 id="transaction-heading">Native source fields, with derived unit prices labelled.</h2>
         <div className={styles.tableWrap}>
@@ -83,8 +78,9 @@ export function SingaporeProjectDetail({ model, googleMapsBrowserKey = null }: R
             ))}</tbody>
           </table>
         </div>
-      </section>
-      <SingaporeEvidence model={model.evidence} />
+      </section></>}
+        rail={<SingaporeEvidence model={model.evidence} />}
+      />
     </SingaporePage>
   );
 }

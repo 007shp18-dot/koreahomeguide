@@ -28,11 +28,7 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
   ] as const;
 
   function isCurrentLink(href: string): boolean {
-    if (currentHref === href) return true;
-    if (href === '/' || currentHref === undefined) return false;
-    const parentHref = href.endsWith('/') ? href : `${href}/`;
-    const normalizedCurrentHref = currentHref.endsWith('/') ? currentHref : `${currentHref}/`;
-    return normalizedCurrentHref.startsWith(parentHref);
+    return currentHref === href;
   }
 
   const isKorean = copy.languageLabel === 'KO';

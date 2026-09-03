@@ -7,7 +7,7 @@
 }
 
 .main {
-  width: min(calc(100% - (2 * var(--page-gutter))), var(--workspace-frame));
+  width: min(100%, var(--evidence-workspace-frame));
   max-width: 100%;
   margin-inline: auto;
   border-inline: 2px solid var(--ink);
@@ -15,7 +15,7 @@
 
 .identityHero {
   display: grid;
-  grid-template-columns: minmax(0, 1.08fr) minmax(340px, .92fr);
+  grid-template-columns: minmax(0, 1fr) 380px;
   border-bottom: 2px solid var(--ink);
 }
 
@@ -45,7 +45,7 @@
 }
 
 .visualUnavailable {
-  padding: clamp(1.25rem, 3vw, 2.5rem);
+  padding: var(--space-6);
   display: grid;
   grid-template-rows: 1fr auto;
   gap: 1.5rem;
@@ -88,7 +88,7 @@
 
 .identitySummary {
   min-width: 0;
-  padding: clamp(1rem, 3vw, 2rem);
+  padding: var(--space-5) var(--space-6);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -96,20 +96,19 @@
 }
 
 .identityEyebrow,
-.decisionEyebrow,
-.sectionHeading > p {
+.decisionEyebrow {
   color: var(--accent);
-  font-size: 0.66rem;
+  font-size: var(--evidence-type-label);
   font-weight: 850;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
 .identitySummary h1 {
   max-width: 100%;
-  font-size: clamp(2.25rem, 5vw, 4.8rem);
-  letter-spacing: -0.04em;
-  line-height: 1;
+  font-size: var(--evidence-type-detail-title);
+  letter-spacing: -0.042em;
+  line-height: 1.04;
   overflow-wrap: anywhere;
 }
 
@@ -126,7 +125,7 @@
   border-left: 1px solid var(--divider);
 }
 
-.factGrid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.factGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
 .factGrid > div,
 .decisionMetrics > div,
@@ -198,7 +197,7 @@
 
 .selectedModeStatus {
   min-height: 44px;
-  padding: 0.7rem clamp(1rem, 4vw, 3rem);
+  padding: var(--space-3) var(--space-6);
   display: flex;
   align-items: center;
   border-bottom: 1px solid var(--divider);
@@ -211,20 +210,20 @@
 
 .decisionRegion > [role="tabpanel"] {
   min-width: 0;
-  padding: clamp(1.25rem, 4vw, 3.5rem);
+  padding: var(--space-5) var(--space-6) var(--space-6);
   border-bottom: 2px solid var(--ink);
 }
 
 .decisionLayout {
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(250px, 0.65fr);
-  gap: clamp(1.25rem, 4vw, 3rem);
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: var(--space-6);
 }
 
 .decisionLayout > div,
 .decisionView { min-width: 0; display: grid; align-content: start; gap: 1rem; }
 .decisionLayout h2,
-.decisionView h2 { max-width: 22ch; font-size: clamp(1.6rem, 3.6vw, 3.25rem); letter-spacing: -0.045em; line-height: 1; }
+.decisionView h2 { max-width: 22ch; font-size: var(--evidence-type-subhead); letter-spacing: -0.03em; line-height: 1.08; }
 .decisionLayout p,
 .decisionView > p { max-width: 65ch; color: var(--muted); font-size: 0.82rem; line-height: 1.6; }
 
@@ -260,14 +259,12 @@
 .areaBands,
 .contracts,
 .source {
-  padding: clamp(1rem, 4vw, 3.5rem);
+  padding: var(--space-5) var(--space-6) var(--space-6);
   display: grid;
-  gap: 1.5rem;
+  gap: var(--space-5);
   border-bottom: 2px solid var(--ink);
 }
 
-.sectionHeading { display: grid; gap: 0.4rem; }
-.sectionHeading h2 { font-size: clamp(1.35rem, 3vw, 2.65rem); letter-spacing: -0.045em; }
 .findingGrid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .findingGrid dd { display: grid; gap: 0.35rem; }
 .findingGrid dd span { color: var(--muted); font-size: 0.68rem; font-weight: 650; }
@@ -313,7 +310,7 @@
 }
 
 .relatedContext {
-  padding: clamp(1rem, 4vw, 3.5rem);
+  padding: var(--space-5) var(--space-6) var(--space-6);
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
@@ -367,6 +364,7 @@
   .areaBands,
   .contracts,
   .source,
-  .relatedContext { padding: 1.25rem 1rem; }
+  .relatedContext,
+  .identitySummary { padding: var(--space-5) var(--evidence-page-gutter-mobile); }
   .navigation a { border-right: 0; }
 }

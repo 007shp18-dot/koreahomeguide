@@ -112,6 +112,8 @@ describe('public building detail', () => {
     const evidence = html.indexOf('data-building-section="evidence"');
 
     expect(html).toContain('data-building-media="evidence-fallback"');
+    expect(html).toContain('data-detail-hero="building"');
+    expect(html).toContain('data-detail-hero-metric="identity"');
     expect(html).not.toMatch(/<img[^>]+src="(?:data:|https?:\/\/)/);
     expect(identity).toBeGreaterThan(-1);
     expect(identity).toBeLessThan(decision);
@@ -235,11 +237,12 @@ describe('public building detail', () => {
       new URL('../components/public-market/building-detail.module.css', import.meta.url),
       'utf8',
     );
-    expect(css).toMatch(/\.main\s*\{[\s\S]*?width:\s*min\(calc\(100% - \(2 \* var\(--page-gutter\)\)\),\s*var\(--workspace-frame\)\)/);
+    expect(css).toMatch(/\.main\s*\{[\s\S]*?width:\s*min\(100%,\s*var\(--evidence-workspace-frame\)\)/);
     expect(css).toMatch(/min-height:\s*44px/);
     expect(css).toMatch(/@media \(max-width:\s*720px\)[\s\S]*grid-template-columns:\s*minmax\(0,\s*1fr\)/);
     expect(css).toMatch(/max-width:\s*100%/);
-    expect(css).toMatch(/\.identityHero[\s\S]*grid-template-columns:\s*minmax\(0,\s*1\.08fr\)\s+minmax\(340px,\s*\.92fr\)/);
-    expect(css).not.toMatch(/380px/);
+    expect(css).toMatch(/\.identityHero[\s\S]*grid-template-columns:\s*minmax\(0,\s*1fr\)\s+380px/);
+    expect(css).toMatch(/\.identitySummary h1[\s\S]*font-size:\s*var\(--evidence-type-detail-title\)/);
+    expect(css).toMatch(/\.decisionLayout h2[\s\S]*font-size:\s*var\(--evidence-type-subhead\)/);
   });
 });

@@ -2,6 +2,7 @@ import Link from 'next/link';
 
 import type { PublicBuildingModel } from '../../lib/public-market/building-route-model.server';
 import { CommunitySignal } from '../community/community-signal';
+import { EvidenceSectionHeading } from '../evidence-ui/section-heading';
 import { DetailNewsList } from '../news/detail-news-list';
 import { EvidenceDisclosure } from '../trust/evidence-disclosure';
 import { EvidencePeriodStrip } from './evidence-period-strip';
@@ -28,10 +29,11 @@ function floorLabel(contract: PublicBuildingModel['building']['recentContracts']
 function CohortEvidence({ model }: Readonly<{ model: PublicBuildingModel }>) {
   return (
     <section className={styles.evidence} aria-labelledby="building-distribution-heading">
-      <div className={styles.sectionHeading}>
-        <p>01 / Reported distribution</p>
-        <h2 id="building-distribution-heading">{model.presentation.distributionHeading}</h2>
-      </div>
+      <EvidenceSectionHeading
+        eyebrow="01 / Reported distribution"
+        title={model.presentation.distributionHeading}
+        id="building-distribution-heading"
+      />
       <EvidencePeriodStrip model={model.period} label="Building evidence period" />
       <dl className={styles.findingGrid}>
         <div>
@@ -66,10 +68,11 @@ function CohortEvidence({ model }: Readonly<{ model: PublicBuildingModel }>) {
 function FloorEvidence({ model }: Readonly<{ model: PublicBuildingModel }>) {
   return (
     <section className={styles.areaBands} aria-labelledby="floor-coefficient-heading">
-      <div className={styles.sectionHeading}>
-        <p>02 / Floor evidence</p>
-        <h2 id="floor-coefficient-heading">Floor adjustment evidence</h2>
-      </div>
+      <EvidenceSectionHeading
+        eyebrow="02 / Floor evidence"
+        title="Floor adjustment evidence"
+        id="floor-coefficient-heading"
+      />
       <div data-floor-coefficient={model.floorCoefficient.status}>
         {model.floorCoefficient.status === 'unavailable' ? (
           <strong>{model.floorCoefficient.reason}</strong>
@@ -86,10 +89,11 @@ function FloorEvidence({ model }: Readonly<{ model: PublicBuildingModel }>) {
 function AreaBandEvidence({ model }: Readonly<{ model: PublicBuildingModel }>) {
   return (
     <section className={styles.areaBands} aria-labelledby="building-area-heading">
-      <div className={styles.sectionHeading}>
-        <p>03 / Area bands</p>
-        <h2 id="building-area-heading">Evidence by filed area band</h2>
-      </div>
+      <EvidenceSectionHeading
+        eyebrow="03 / Area bands"
+        title="Evidence by filed area band"
+        id="building-area-heading"
+      />
       {model.building.areaBands.length === 1
         && model.building.areaBands[0]?.band === '45–55㎡' ? (
           <div data-area-band-state="single-fixed-band">
@@ -117,10 +121,11 @@ function AreaBandEvidence({ model }: Readonly<{ model: PublicBuildingModel }>) {
 function RecentContractEvidence({ model }: Readonly<{ model: PublicBuildingModel }>) {
   return (
     <section className={styles.contracts} aria-labelledby="recent-contracts-heading">
-      <div className={styles.sectionHeading}>
-        <p>04 / Recent records</p>
-        <h2 id="recent-contracts-heading">Privacy-safe reported contracts</h2>
-      </div>
+      <EvidenceSectionHeading
+        eyebrow="04 / Recent records"
+        title="Privacy-safe reported contracts"
+        id="recent-contracts-heading"
+      />
       {model.building.recentContracts.length === 0 ? (
         <p>No recent public contract rows are included in this artifact.</p>
       ) : (
@@ -156,10 +161,11 @@ function RecentContractEvidence({ model }: Readonly<{ model: PublicBuildingModel
 function BuildingSourceEvidence({ model }: Readonly<{ model: PublicBuildingModel }>) {
   return (
     <section className={styles.source} aria-labelledby="building-source-heading">
-      <div className={styles.sectionHeading}>
-        <p>05 / Source and limits</p>
-        <h2 id="building-source-heading">Use this evidence within its boundary</h2>
-      </div>
+      <EvidenceSectionHeading
+        eyebrow="05 / Source and limits"
+        title="Use this evidence within its boundary"
+        id="building-source-heading"
+      />
       <EvidenceDisclosure
         model={model.evidence.descriptor}
         boundary={model.presentation.sourceBoundary}

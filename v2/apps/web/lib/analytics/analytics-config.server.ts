@@ -6,6 +6,10 @@ export type AnalyticsConfig =
   | Readonly<{ status: 'disabled' }>
   | Readonly<{ status: 'ready'; measurementId: string }>;
 
+export function vercelAnalyticsEnabledFromEnvironment(): boolean {
+  return process.env.SIGNEDPRICE_VERCEL_ANALYTICS_ENABLED?.trim().toLowerCase() !== 'false';
+}
+
 export function analyticsConfigFromEnvironment(): AnalyticsConfig {
   if (process.env.SIGNEDPRICE_GA4_ENABLED?.trim().toLowerCase() === 'false') {
     return { status: 'disabled' };

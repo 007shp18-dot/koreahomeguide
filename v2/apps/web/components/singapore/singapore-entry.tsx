@@ -10,14 +10,14 @@ import {
 
 export function SingaporeEntry({ model }: Readonly<{ model: SingaporeEntryModel }>) {
   if (model.status === 'unavailable') return (
-    <SingaporePage><section className={styles.unavailable} data-singapore-entry="unavailable" data-product-intro="true">
+    <SingaporePage currentHref="/sg/"><section className={styles.unavailable} data-singapore-entry="unavailable" data-product-intro="true">
       <p className={styles.eyebrow}>Singapore · Release gate</p><h1>{model.message}</h1>
       <p>Direct access remains claim-free until verified private-sale evidence is ready.</p>
       <div className={styles.actions}><Link href="/trust/">Review Global Trust</Link><Link href={model.correctionHref}>Review corrections</Link></div>
     </section></SingaporePage>
   );
   return (
-    <SingaporePage>
+    <SingaporePage currentHref="/sg/">
       <header className={styles.hero} data-singapore-entry="ready" data-product-intro="true">
         <p className={styles.eyebrow}>Singapore · Private residential sales</p>
         <h1>Official sale evidence, separated by native market segment.</h1>

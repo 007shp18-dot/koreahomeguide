@@ -10,7 +10,10 @@ import {
   shouldLoadAnalytics,
   shouldLoadAdvertising,
 } from '../components/consent/advertising-consent';
-import { analyticsConfigFromEnvironment } from '../lib/analytics/analytics-config.server';
+import {
+  analyticsConfigFromEnvironment,
+  vercelAnalyticsEnabledFromEnvironment,
+} from '../lib/analytics/analytics-config.server';
 import { advertisingConfigFromEnvironment } from '../lib/advertising/advertising-config.server';
 import EnglishRootLayout from '../app/(en)/layout';
 
@@ -39,6 +42,12 @@ describe('advertising consent boundary', () => {
 
     vi.stubEnv('SIGNEDPRICE_GA4_ENABLED', 'false');
     expect(analyticsConfigFromEnvironment()).toEqual({ status: 'disabled' });
+  });
+
+  it('lets deterministic and self-hosted environments disable Vercel analytics', () => {
+    expect(vercelAnalyticsEnabledFromEnvironment()).toBe(true);
+    vi.stubEnv('SIGNEDPRICE_VERCEL_ANALYTICS_ENABLED', 'false');
+    expect(vercelAnalyticsEnabledFromEnvironment()).toBe(false);
   });
 
   it('requires an explicit enable flag and verified operator', () => {

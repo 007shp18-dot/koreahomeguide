@@ -380,7 +380,7 @@ const dubaiTransactions = dubaiProfile.dataCapabilities.find(
 const marketCopyById = {
   'kr-seoul': {
     heroDescription:
-      'Official reported rent and sale evidence supports the full signedprice product posture for Seoul. Live rent exploration continues on KoreaHomeGuide during the brand transition.',
+      'Official reported rent and sale evidence supports the signedprice Seoul product, including the integrated Explore workflow.',
     sourcePosture: 'Official reported rent and sale evidence',
     capabilities: [
       {
@@ -393,11 +393,11 @@ const marketCopyById = {
       },
       {
         label: 'Live rent exploration',
-        description: 'The existing KoreaHomeGuide Rent Explorer remains the live transition tool.',
+        description: 'The signedprice Seoul Explore workflow keeps reported evidence and its limits together.',
         state: 'available',
         stateLabel: stateLabels.available,
         housingSector: null,
-        href: 'https://koreahomeguide.com/explore/',
+        href: '/kr/seoul/explore/',
         overviewCategory: 'workflow',
       },
       {
@@ -410,11 +410,11 @@ const marketCopyById = {
       },
     ],
     nextAction: {
-      label: 'Open the KoreaHomeGuide Rent Explorer',
-      href: 'https://koreahomeguide.com/explore/',
+      label: 'Open Seoul Explore',
+      href: '/kr/seoul/explore/',
       description:
-        'Continue to the existing live Seoul research tool under the KoreaHomeGuide transition brand.',
-      external: true,
+        'Review current reported-contract evidence in the signedprice Seoul workspace.',
+      external: false,
     },
   },
   'sg-singapore': {
@@ -961,7 +961,7 @@ const comparisonMatrix = {
         comparisonCell(
           'kr-seoul',
           'limited',
-          'The live Rent Explorer remains on KoreaHomeGuide during transition.',
+          'The signedprice Seoul Explore workflow is available with explicit evidence limits.',
         ),
         comparisonCell(
           'sg-singapore',

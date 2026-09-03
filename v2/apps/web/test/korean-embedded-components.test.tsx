@@ -170,8 +170,8 @@ describe('Korean embedded product components', () => {
     ]) expect(html).toContain(visible);
     expect(html).toContain('data-map-state="coordinate-pending"');
     expect(html).not.toContain('oapi.map.naver.com');
-    expect(html).toContain('href="/ko/kr/seoul/rankings"');
-    expect(html).toContain('/ko/kr/seoul/explore?district=jung-gu');
+    expect(html).not.toContain('href="/ko/kr/seoul/rankings"');
+    expect(html).toContain('data-explorer-layout="split"');
     expect(html).not.toMatch(
       /Verified coverage|District map|New contracts|Source and limits|Narrow middle-half|3-month change not assessable|Prior\/latest sample|reported rent contracts|Interactive NAVER map/,
     );
