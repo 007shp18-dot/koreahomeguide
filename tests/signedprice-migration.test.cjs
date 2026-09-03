@@ -12,6 +12,7 @@ const {
   validateRenderedMigration,
 } = require('../scripts/seo/validate-signedprice-migration.cjs');
 const {
+  renderRootSitemap,
   renderStaticSitemap,
   renderVercelConfig,
 } = require('../scripts/seo/render-signedprice-migration.cjs');
@@ -21,19 +22,25 @@ test('builds deterministic active redirects only for verified exact English dest
   const second = buildMigrationManifest({ root });
   assert.deepEqual(second, first);
   assert.equal(first.schemaVersion, 1);
-  assert.equal(first.entries.length, 21);
+  assert.equal(first.entries.length, 27);
+  assert.equal(first.patterns.length, 40);
   assert.deepEqual(first.entries[0],
     {
-      sourcePath: '/tools/seoul-rent-check/',
-      targetPath: '/kr/seoul/tools/rent-check/',
-      destination: 'https://www.signedprice.com/kr/seoul/tools/rent-check/',
-      cohort: 1,
+      sourcePath: '/',
+      targetPath: '/kr/seoul/check/',
+      destination: 'https://www.signedprice.com/kr/seoul/check/',
+      cohort: 3,
       locale: 'en',
       statusCode: 301,
       active: true,
-      evidence: 'working-rent-check-target',
+      evidence: 'seoul-rent-decision-home-equivalent',
     });
-  assert.ok(!first.entries.some(({ sourcePath }) => sourcePath === '/explore/'));
+  assert.ok(first.entries.some(({ sourcePath, targetPath }) => (
+    sourcePath === '/explore/' && targetPath === '/kr/seoul/explore/'
+  )));
+  assert.ok(first.entries.some(({ sourcePath, targetPath }) => (
+    sourcePath === '/guides/' && targetPath === '/kr/seoul/guide/'
+  )));
   assert.ok(first.entries.some(({ sourcePath }) => (
     sourcePath === '/rent/gangnam-gu/apartment/'
   )));
@@ -48,19 +55,31 @@ test('builds deterministic active redirects only for verified exact English dest
     && destination.startsWith('https://www.signedprice.com/')
     && statusCode === 301
   )));
+  assert.ok(first.patterns.some(({ sourcePattern, targetPath }) => (
+    sourcePattern === '/seoul/gangnam-gu/:dong/apartment/:building/'
+    && targetPath === '/kr/seoul/explore/gangnam-gu/apartment/'
+  )));
+  assert.ok(first.patterns.some(({ sourcePattern, targetPath }) => (
+    sourcePattern === '/seoul/yongsan-gu/:dong/villa/'
+    && targetPath === '/kr/seoul/explore/yongsan-gu/villa/'
+  )));
 });
 
-test('keeps unmatched tools, guides, root, and Chinese routes explicitly retained', () => {
+test('classifies every remaining sitemap URL as an explicit retained asset', () => {
   const manifest = buildMigrationManifest({ root });
   const retained = new Map(manifest.retained.map((entry) => [entry.sourcePath, entry.reason]));
-  assert.equal(retained.get('/guides/'), 'guide-discovery-parity-pending');
-  assert.equal(retained.get('/explore/'), 'full-explorer-parity-pending');
+  const sitemap = fs.readFileSync(path.join(root, 'sitemap-static.xml'), 'utf8');
+  const sitemapPaths = [...sitemap.matchAll(
+    /<loc>https:\/\/koreahomeguide\.com([^<]*)<\/loc>/g,
+  )].map((match) => match[1] || '/');
+  assert.deepEqual([...retained.keys()], [...sitemapPaths].sort());
   assert.equal(retained.get('/compare/'), 'no-equivalent-signedprice-intent-page');
-  assert.equal(retained.get('/buy-or-rent/'), 'no-equivalent-signedprice-intent-page');
+  assert.equal(retained.get('/buy-or-rent/'), 'no-equivalent-english-intent-page');
   assert.equal(retained.get('/value-check/'), 'no-equivalent-signedprice-intent-page');
   assert.equal(retained.get('/net-proceeds/'), 'no-equivalent-signedprice-intent-page');
-  assert.equal(retained.get('/'), 'cohort-5-disabled');
-  assert.equal(retained.get('/zh/'), 'chinese-migration-not-approved');
+  assert.equal(retained.get('/guides/before-you-sign/'), 'guide-content-equivalent-not-published');
+  assert.equal(retained.get('/rent/gwanak-gu/officetel/'), 'signedprice-publication-floor-not-met');
+  assert.equal(retained.get('/zh/'), 'no-signedprice-chinese-equivalent');
 });
 
 test('rejects duplicate sources, redirect chains, Chinese entries, and generic targets', () => {
@@ -72,8 +91,8 @@ test('rejects duplicate sources, redirect chains, Chinese entries, and generic t
   assert.throws(() => validateMigrationManifest(duplicate), /Duplicate source path/);
 
   const chain = structuredClone(manifest);
-  chain.entries[1].targetPath = chain.entries[0].sourcePath;
-  chain.entries[1].destination = `https://www.signedprice.com${chain.entries[0].sourcePath}`;
+  chain.entries[1].targetPath = chain.entries[3].sourcePath;
+  chain.entries[1].destination = `https://www.signedprice.com${chain.entries[3].sourcePath}`;
   assert.throws(() => validateMigrationManifest(chain), /Redirect chain/);
 
   const chinese = structuredClone(manifest);
@@ -101,15 +120,25 @@ test('renders exact 301 rules without losing existing rewrites or unrelated redi
     rewrites: [{ source: '/api/example', destination: '/api/handler' }],
   };
   const rendered = renderVercelConfig(config, manifest);
-  assert.equal(rendered.redirects.length, 22);
+  assert.equal(rendered.redirects.length, 68);
   assert.deepEqual(rendered.redirects[0], {
-    source: '/tools/seoul-rent-check/',
-    destination: 'https://www.signedprice.com/kr/seoul/tools/rent-check/',
+    source: '/',
+    destination: 'https://www.signedprice.com/kr/seoul/check/',
     statusCode: 301,
   });
   assert.deepEqual(rendered.redirects.at(-1), config.redirects[0]);
   assert.deepEqual(rendered.rewrites, config.rewrites);
   assert.ok(rendered.redirects.every((entry) => !('permanent' in entry)));
+});
+
+test('removes migrated dynamic URL families from the legacy sitemap index', () => {
+  const manifest = buildMigrationManifest({ root });
+  const source = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
+  const rendered = renderRootSitemap(source, manifest);
+  assert.doesNotMatch(rendered, /sitemaps\/seoul\/gangnam-gu\/apartment\//);
+  assert.doesNotMatch(rendered, /sitemaps\/seoul\/yongsan-gu\/villa\//);
+  assert.match(rendered, /sitemaps\/seoul\/gwanak-gu\/officetel\//);
+  assert.match(rendered, /sitemaps\/seoul\/opportunities\/apartment\//);
 });
 
 test('removes only active English sources from the KoreaHomeGuide static sitemap', () => {
@@ -122,7 +151,7 @@ test('removes only active English sources from the KoreaHomeGuide static sitemap
     ));
   }
   for (const retained of [
-    '/', '/zh/', '/explore/', '/guides/', '/compare/', '/buy-or-rent/', '/value-check/', '/net-proceeds/',
+    '/zh/', '/compare/', '/buy-or-rent/', '/value-check/', '/net-proceeds/',
     '/zh/explore/', '/zh/tools/seoul-rent-check/', '/zh/rent/gangnam-gu/apartment/',
   ]) {
     assert.match(rendered, new RegExp(

@@ -8,6 +8,66 @@
   },
   "entries": [
     {
+      "sourcePath": "/",
+      "targetPath": "/kr/seoul/check/",
+      "destination": "https://www.signedprice.com/kr/seoul/check/",
+      "cohort": 3,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "seoul-rent-decision-home-equivalent"
+    },
+    {
+      "sourcePath": "/about/",
+      "targetPath": "/trust/",
+      "destination": "https://www.signedprice.com/trust/",
+      "cohort": 3,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "method-and-limitations-equivalent"
+    },
+    {
+      "sourcePath": "/community/",
+      "targetPath": "/community/",
+      "destination": "https://www.signedprice.com/community/",
+      "cohort": 3,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "indexable-community-equivalent"
+    },
+    {
+      "sourcePath": "/explore/",
+      "targetPath": "/kr/seoul/explore/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/",
+      "cohort": 3,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "seoul-explorer-equivalent"
+    },
+    {
+      "sourcePath": "/guides/",
+      "targetPath": "/kr/seoul/guide/",
+      "destination": "https://www.signedprice.com/kr/seoul/guide/",
+      "cohort": 3,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "seoul-guide-hub-equivalent"
+    },
+    {
+      "sourcePath": "/privacy/",
+      "targetPath": "/privacy/",
+      "destination": "https://www.signedprice.com/privacy/",
+      "cohort": 3,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "signedprice-privacy-equivalent"
+    },
+    {
       "sourcePath": "/tools/seoul-rent-check/",
       "targetPath": "/kr/seoul/tools/rent-check/",
       "destination": "https://www.signedprice.com/kr/seoul/tools/rent-check/",
@@ -218,38 +278,628 @@
       "evidence": "retained-building-artifact:5-contracts"
     }
   ],
+  "patterns": [
+    {
+      "sourcePattern": "/seoul/dongdaemun-gu/:dong/apartment/:building/",
+      "targetPath": "/kr/seoul/explore/dongdaemun-gu/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/dongdaemun-gu/apartment/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-building-family:47-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/dongdaemun-gu/:dong/apartment/",
+      "targetPath": "/kr/seoul/explore/dongdaemun-gu/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/dongdaemun-gu/apartment/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-neighborhood-family:47-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/dongdaemun-gu/:dong/officetel/:building/",
+      "targetPath": "/kr/seoul/explore/dongdaemun-gu/officetel/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/dongdaemun-gu/officetel/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-building-family:19-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/dongdaemun-gu/:dong/officetel/",
+      "targetPath": "/kr/seoul/explore/dongdaemun-gu/officetel/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/dongdaemun-gu/officetel/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-neighborhood-family:19-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/gangnam-gu/:dong/apartment/:building/",
+      "targetPath": "/kr/seoul/explore/gangnam-gu/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/gangnam-gu/apartment/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-building-family:176-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/gangnam-gu/:dong/apartment/",
+      "targetPath": "/kr/seoul/explore/gangnam-gu/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/gangnam-gu/apartment/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-neighborhood-family:176-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/gangnam-gu/:dong/officetel/:building/",
+      "targetPath": "/kr/seoul/explore/gangnam-gu/officetel/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/gangnam-gu/officetel/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-building-family:8-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/gangnam-gu/:dong/officetel/",
+      "targetPath": "/kr/seoul/explore/gangnam-gu/officetel/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/gangnam-gu/officetel/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-neighborhood-family:8-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/gangnam-gu/:dong/villa/:building/",
+      "targetPath": "/kr/seoul/explore/gangnam-gu/villa/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/gangnam-gu/villa/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-building-family:6-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/gangnam-gu/:dong/villa/",
+      "targetPath": "/kr/seoul/explore/gangnam-gu/villa/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/gangnam-gu/villa/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-neighborhood-family:6-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/gwanak-gu/:dong/apartment/:building/",
+      "targetPath": "/kr/seoul/explore/gwanak-gu/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/gwanak-gu/apartment/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-building-family:15-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/gwanak-gu/:dong/apartment/",
+      "targetPath": "/kr/seoul/explore/gwanak-gu/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/gwanak-gu/apartment/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-neighborhood-family:15-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/gwangjin-gu/:dong/apartment/:building/",
+      "targetPath": "/kr/seoul/explore/gwangjin-gu/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/gwangjin-gu/apartment/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-building-family:17-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/gwangjin-gu/:dong/apartment/",
+      "targetPath": "/kr/seoul/explore/gwangjin-gu/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/gwangjin-gu/apartment/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-neighborhood-family:17-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/mapo-gu/:dong/apartment/:building/",
+      "targetPath": "/kr/seoul/explore/mapo-gu/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/mapo-gu/apartment/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-building-family:82-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/mapo-gu/:dong/apartment/",
+      "targetPath": "/kr/seoul/explore/mapo-gu/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/mapo-gu/apartment/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-neighborhood-family:82-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/mapo-gu/:dong/officetel/:building/",
+      "targetPath": "/kr/seoul/explore/mapo-gu/officetel/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/mapo-gu/officetel/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-building-family:5-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/mapo-gu/:dong/officetel/",
+      "targetPath": "/kr/seoul/explore/mapo-gu/officetel/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/mapo-gu/officetel/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-neighborhood-family:5-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/mapo-gu/:dong/villa/:building/",
+      "targetPath": "/kr/seoul/explore/mapo-gu/villa/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/mapo-gu/villa/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-building-family:26-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/mapo-gu/:dong/villa/",
+      "targetPath": "/kr/seoul/explore/mapo-gu/villa/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/mapo-gu/villa/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-neighborhood-family:26-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/seodaemun-gu/:dong/apartment/:building/",
+      "targetPath": "/kr/seoul/explore/seodaemun-gu/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/seodaemun-gu/apartment/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-building-family:7-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/seodaemun-gu/:dong/apartment/",
+      "targetPath": "/kr/seoul/explore/seodaemun-gu/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/seodaemun-gu/apartment/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-neighborhood-family:7-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/seodaemun-gu/:dong/villa/:building/",
+      "targetPath": "/kr/seoul/explore/seodaemun-gu/villa/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/seodaemun-gu/villa/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-building-family:11-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/seodaemun-gu/:dong/villa/",
+      "targetPath": "/kr/seoul/explore/seodaemun-gu/villa/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/seodaemun-gu/villa/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-neighborhood-family:11-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/seongbuk-gu/:dong/apartment/:building/",
+      "targetPath": "/kr/seoul/explore/seongbuk-gu/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/seongbuk-gu/apartment/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-building-family:26-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/seongbuk-gu/:dong/apartment/",
+      "targetPath": "/kr/seoul/explore/seongbuk-gu/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/seongbuk-gu/apartment/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-neighborhood-family:26-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/seongdong-gu/:dong/apartment/:building/",
+      "targetPath": "/kr/seoul/explore/seongdong-gu/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/seongdong-gu/apartment/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-building-family:23-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/seongdong-gu/:dong/apartment/",
+      "targetPath": "/kr/seoul/explore/seongdong-gu/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/seongdong-gu/apartment/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-neighborhood-family:23-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/seongdong-gu/:dong/villa/:building/",
+      "targetPath": "/kr/seoul/explore/seongdong-gu/villa/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/seongdong-gu/villa/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-building-family:12-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/seongdong-gu/:dong/villa/",
+      "targetPath": "/kr/seoul/explore/seongdong-gu/villa/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/seongdong-gu/villa/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-neighborhood-family:12-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/yeongdeungpo-gu/:dong/apartment/:building/",
+      "targetPath": "/kr/seoul/explore/yeongdeungpo-gu/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/yeongdeungpo-gu/apartment/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-building-family:122-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/yeongdeungpo-gu/:dong/apartment/",
+      "targetPath": "/kr/seoul/explore/yeongdeungpo-gu/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/yeongdeungpo-gu/apartment/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-neighborhood-family:122-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/yeongdeungpo-gu/:dong/officetel/:building/",
+      "targetPath": "/kr/seoul/explore/yeongdeungpo-gu/officetel/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/yeongdeungpo-gu/officetel/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-building-family:20-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/yeongdeungpo-gu/:dong/officetel/",
+      "targetPath": "/kr/seoul/explore/yeongdeungpo-gu/officetel/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/yeongdeungpo-gu/officetel/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-neighborhood-family:20-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/yongsan-gu/:dong/apartment/:building/",
+      "targetPath": "/kr/seoul/explore/yongsan-gu/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/yongsan-gu/apartment/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-building-family:10-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/yongsan-gu/:dong/apartment/",
+      "targetPath": "/kr/seoul/explore/yongsan-gu/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/yongsan-gu/apartment/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-neighborhood-family:10-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/yongsan-gu/:dong/officetel/:building/",
+      "targetPath": "/kr/seoul/explore/yongsan-gu/officetel/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/yongsan-gu/officetel/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-building-family:23-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/yongsan-gu/:dong/officetel/",
+      "targetPath": "/kr/seoul/explore/yongsan-gu/officetel/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/yongsan-gu/officetel/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-neighborhood-family:23-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/yongsan-gu/:dong/villa/:building/",
+      "targetPath": "/kr/seoul/explore/yongsan-gu/villa/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/yongsan-gu/villa/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-building-family:5-contracts"
+    },
+    {
+      "sourcePattern": "/seoul/yongsan-gu/:dong/villa/",
+      "targetPath": "/kr/seoul/explore/yongsan-gu/villa/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/yongsan-gu/villa/",
+      "cohort": 4,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "legacy-neighborhood-family:5-contracts"
+    }
+  ],
   "retained": [
     {
-      "sourcePath": "/",
-      "reason": "cohort-5-disabled"
-    },
-    {
-      "sourcePath": "/explore/",
-      "reason": "full-explorer-parity-pending"
-    },
-    {
-      "sourcePath": "/guides/",
-      "reason": "guide-discovery-parity-pending"
+      "sourcePath": "/buy-or-rent/",
+      "reason": "no-equivalent-english-intent-page"
     },
     {
       "sourcePath": "/compare/",
       "reason": "no-equivalent-signedprice-intent-page"
     },
     {
-      "sourcePath": "/buy-or-rent/",
-      "reason": "no-equivalent-signedprice-intent-page"
+      "sourcePath": "/guides/before-you-sign/",
+      "reason": "guide-content-equivalent-not-published"
     },
     {
-      "sourcePath": "/value-check/",
-      "reason": "no-equivalent-signedprice-intent-page"
+      "sourcePath": "/guides/korea-rent-deposit-protection-foreigners/",
+      "reason": "guide-content-equivalent-not-published"
+    },
+    {
+      "sourcePath": "/guides/korea-rental-contract-checklist/",
+      "reason": "guide-content-equivalent-not-published"
+    },
+    {
+      "sourcePath": "/guides/korea-rental-scams/",
+      "reason": "guide-content-equivalent-not-published"
+    },
+    {
+      "sourcePath": "/guides/rent-apartment-korea-foreigner/",
+      "reason": "guide-content-equivalent-not-published"
+    },
+    {
+      "sourcePath": "/guides/seoul-brokerage-fees/",
+      "reason": "guide-content-equivalent-not-published"
+    },
+    {
+      "sourcePath": "/guides/seoul-officetel-rent/",
+      "reason": "guide-content-equivalent-not-published"
+    },
+    {
+      "sourcePath": "/guides/wolse-vs-jeonse/",
+      "reason": "guide-content-equivalent-not-published"
     },
     {
       "sourcePath": "/net-proceeds/",
       "reason": "no-equivalent-signedprice-intent-page"
     },
     {
+      "sourcePath": "/rent/dongdaemun-gu/villa/",
+      "reason": "signedprice-publication-floor-not-met"
+    },
+    {
+      "sourcePath": "/rent/gwanak-gu/officetel/",
+      "reason": "signedprice-publication-floor-not-met"
+    },
+    {
+      "sourcePath": "/rent/gwanak-gu/villa/",
+      "reason": "signedprice-publication-floor-not-met"
+    },
+    {
+      "sourcePath": "/rent/gwangjin-gu/officetel/",
+      "reason": "signedprice-publication-floor-not-met"
+    },
+    {
+      "sourcePath": "/rent/gwangjin-gu/villa/",
+      "reason": "signedprice-publication-floor-not-met"
+    },
+    {
+      "sourcePath": "/rent/seodaemun-gu/officetel/",
+      "reason": "signedprice-publication-floor-not-met"
+    },
+    {
+      "sourcePath": "/rent/seongbuk-gu/officetel/",
+      "reason": "signedprice-publication-floor-not-met"
+    },
+    {
+      "sourcePath": "/rent/seongbuk-gu/villa/",
+      "reason": "signedprice-publication-floor-not-met"
+    },
+    {
+      "sourcePath": "/rent/seongdong-gu/officetel/",
+      "reason": "signedprice-publication-floor-not-met"
+    },
+    {
+      "sourcePath": "/rent/yeongdeungpo-gu/villa/",
+      "reason": "signedprice-publication-floor-not-met"
+    },
+    {
+      "sourcePath": "/tools/brokerage-fee-calculator/",
+      "reason": "calculator-equivalent-not-published"
+    },
+    {
+      "sourcePath": "/tools/salary-to-housing/",
+      "reason": "calculator-equivalent-not-published"
+    },
+    {
+      "sourcePath": "/value-check/",
+      "reason": "no-equivalent-signedprice-intent-page"
+    },
+    {
       "sourcePath": "/zh/",
-      "reason": "chinese-migration-not-approved"
+      "reason": "no-signedprice-chinese-equivalent"
+    },
+    {
+      "sourcePath": "/zh/about/",
+      "reason": "no-signedprice-chinese-equivalent"
+    },
+    {
+      "sourcePath": "/zh/compare/",
+      "reason": "no-signedprice-chinese-equivalent"
+    },
+    {
+      "sourcePath": "/zh/explore/",
+      "reason": "no-signedprice-chinese-equivalent"
+    },
+    {
+      "sourcePath": "/zh/guides/",
+      "reason": "no-signedprice-chinese-equivalent"
+    },
+    {
+      "sourcePath": "/zh/guides/before-you-sign/",
+      "reason": "no-signedprice-chinese-equivalent"
+    },
+    {
+      "sourcePath": "/zh/guides/korea-rent-deposit-protection-foreigners/",
+      "reason": "no-signedprice-chinese-equivalent"
+    },
+    {
+      "sourcePath": "/zh/guides/korea-rental-contract-checklist/",
+      "reason": "no-signedprice-chinese-equivalent"
+    },
+    {
+      "sourcePath": "/zh/guides/korea-rental-scams/",
+      "reason": "no-signedprice-chinese-equivalent"
+    },
+    {
+      "sourcePath": "/zh/guides/rent-apartment-korea-foreigner/",
+      "reason": "no-signedprice-chinese-equivalent"
+    },
+    {
+      "sourcePath": "/zh/guides/seoul-brokerage-fees/",
+      "reason": "no-signedprice-chinese-equivalent"
+    },
+    {
+      "sourcePath": "/zh/guides/seoul-officetel-rent/",
+      "reason": "no-signedprice-chinese-equivalent"
+    },
+    {
+      "sourcePath": "/zh/guides/wolse-vs-jeonse/",
+      "reason": "no-signedprice-chinese-equivalent"
+    },
+    {
+      "sourcePath": "/zh/privacy/",
+      "reason": "no-signedprice-chinese-equivalent"
+    },
+    {
+      "sourcePath": "/zh/rent/gangnam-gu/apartment/",
+      "reason": "no-signedprice-chinese-equivalent"
+    },
+    {
+      "sourcePath": "/zh/rent/gangnam-gu/officetel/",
+      "reason": "no-signedprice-chinese-equivalent"
+    },
+    {
+      "sourcePath": "/zh/rent/gangnam-gu/villa/",
+      "reason": "no-signedprice-chinese-equivalent"
+    },
+    {
+      "sourcePath": "/zh/rent/mapo-gu/apartment/",
+      "reason": "no-signedprice-chinese-equivalent"
+    },
+    {
+      "sourcePath": "/zh/rent/mapo-gu/officetel/",
+      "reason": "no-signedprice-chinese-equivalent"
+    },
+    {
+      "sourcePath": "/zh/rent/mapo-gu/villa/",
+      "reason": "no-signedprice-chinese-equivalent"
+    },
+    {
+      "sourcePath": "/zh/rent/seongdong-gu/apartment/",
+      "reason": "no-signedprice-chinese-equivalent"
+    },
+    {
+      "sourcePath": "/zh/rent/seongdong-gu/officetel/",
+      "reason": "no-signedprice-chinese-equivalent"
+    },
+    {
+      "sourcePath": "/zh/rent/seongdong-gu/villa/",
+      "reason": "no-signedprice-chinese-equivalent"
+    },
+    {
+      "sourcePath": "/zh/rent/yeongdeungpo-gu/apartment/",
+      "reason": "no-signedprice-chinese-equivalent"
+    },
+    {
+      "sourcePath": "/zh/rent/yeongdeungpo-gu/officetel/",
+      "reason": "no-signedprice-chinese-equivalent"
+    },
+    {
+      "sourcePath": "/zh/rent/yeongdeungpo-gu/villa/",
+      "reason": "no-signedprice-chinese-equivalent"
+    },
+    {
+      "sourcePath": "/zh/rent/yongsan-gu/apartment/",
+      "reason": "no-signedprice-chinese-equivalent"
+    },
+    {
+      "sourcePath": "/zh/rent/yongsan-gu/officetel/",
+      "reason": "no-signedprice-chinese-equivalent"
+    },
+    {
+      "sourcePath": "/zh/rent/yongsan-gu/villa/",
+      "reason": "no-signedprice-chinese-equivalent"
+    },
+    {
+      "sourcePath": "/zh/tools/brokerage-fee-calculator/",
+      "reason": "no-signedprice-chinese-equivalent"
+    },
+    {
+      "sourcePath": "/zh/tools/seoul-rent-check/",
+      "reason": "no-signedprice-chinese-equivalent"
     }
   ]
 }

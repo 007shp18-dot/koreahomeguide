@@ -20,9 +20,7 @@
     "description": "Check whether a Seoul rent quote looks fair using recent official signed rental transactions, then learn what to verify before you sign.",
     "robots": "index,follow",
     "schemaTypes": [],
-    "sitemapSources": [
-      "sitemap-static.xml"
-    ]
+    "sitemapSources": []
   },
   {
     "path": "/about/",
@@ -45,9 +43,7 @@
     "description": "See where KoreaHomeGuide rental data comes from, how Rent Check works, its limits, and the project's commercial independence policy.",
     "robots": "index,follow",
     "schemaTypes": [],
-    "sitemapSources": [
-      "sitemap-static.xml"
-    ]
+    "sitemapSources": []
   },
   {
     "path": "/buy-or-rent/",
@@ -78,9 +74,7 @@
     "description": "How KoreaHomeGuide will aggregate renter-reported management fees, brokerage fees and deposit outcomes without publishing individual reports.",
     "robots": "index,follow",
     "schemaTypes": [],
-    "sitemapSources": [
-      "sitemap-static.xml"
-    ]
+    "sitemapSources": []
   },
   {
     "path": "/community/add/",
@@ -148,9 +142,7 @@
     "description": "Explore recent signed Seoul rental transactions by district, neighborhood, housing type, and building. Compare typical rent, deposit, size, and recent contract activity using official MOLIT data.",
     "robots": "index,follow",
     "schemaTypes": [],
-    "sitemapSources": [
-      "sitemap-static.xml"
-    ]
+    "sitemapSources": []
   },
   {
     "path": "/explore/building/",
@@ -196,9 +188,7 @@
     "description": "Practical Korea rental guides for foreign renters: wolse vs jeonse, contract checks, deposit protection, and Seoul brokerage fees.",
     "robots": "index,follow",
     "schemaTypes": [],
-    "sitemapSources": [
-      "sitemap-static.xml"
-    ]
+    "sitemapSources": []
   },
   {
     "path": "/guides/before-you-sign/",
@@ -442,9 +432,7 @@
     "description": "How KoreaHomeGuide handles browser-saved homes, analytics choices, and information submitted with a rent-check request.",
     "robots": "index,follow",
     "schemaTypes": [],
-    "sitemapSources": [
-      "sitemap-static.xml"
-    ]
+    "sitemapSources": []
   },
   {
     "path": "/rent/dongdaemun-gu/apartment/",

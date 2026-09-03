@@ -27,10 +27,16 @@ test('About and Methodology pages expose source, method, limits and commercial i
   }
 });
 
-test('About pages are discoverable from the sitemap and touched product footers', () => {
+test('English About migrates to SignedPrice Trust while Chinese About stays discoverable', () => {
   const sitemap = fs.readFileSync('sitemap-static.xml','utf8');
-  assert.match(sitemap, /https:\/\/koreahomeguide\.com\/about\//);
+  const config = JSON.parse(fs.readFileSync('vercel.json', 'utf8'));
+  assert.doesNotMatch(sitemap, /https:\/\/koreahomeguide\.com\/about\//);
   assert.match(sitemap, /https:\/\/koreahomeguide\.com\/zh\/about\//);
+  assert.ok(config.redirects.some((redirect) => (
+    redirect.source === '/about/'
+    && redirect.destination === 'https://www.signedprice.com/trust/'
+    && redirect.statusCode === 301
+  )));
   for (const file of ['index.html','zh/index.html','tools/seoul-rent-check/index.html','zh/tools/seoul-rent-check/index.html','explore/index.html','zh/explore/index.html']) {
     const html = fs.readFileSync(file,'utf8');
     assert.match(html, /href="\/(?:zh\/)?about\/"/, file);

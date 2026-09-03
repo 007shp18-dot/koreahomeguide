@@ -23,10 +23,14 @@ test('all 15 rent SEO pages hand off to the explorer with matching district and 
   }
 });
 
-test('full explorer stays discoverable without a redirect while building detail stays unindexed', () => {
+test('migrated explorer leaves the sitemap and redirects while building detail stays unindexed', () => {
   const sitemap = fs.readFileSync('sitemap-static.xml','utf8');
   const config = JSON.parse(fs.readFileSync('vercel.json', 'utf8'));
-  assert.match(sitemap, /<loc>https:\/\/koreahomeguide\.com\/explore\/<\/loc>/);
+  assert.doesNotMatch(sitemap, /https:\/\/koreahomeguide\.com\/explore\//);
   assert.doesNotMatch(sitemap, /https:\/\/koreahomeguide\.com\/explore\/building\//);
-  assert.ok(!config.redirects.some((redirect) => redirect.source === '/explore/'));
+  assert.ok(config.redirects.some((redirect) => (
+    redirect.source === '/explore/'
+    && redirect.destination === 'https://www.signedprice.com/kr/seoul/explore/'
+    && redirect.statusCode === 301
+  )));
 });

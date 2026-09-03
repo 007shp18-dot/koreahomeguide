@@ -13,8 +13,8 @@ function renderVercelConfig(config, manifest) {
   const unrelated = existing.filter(({ destination }) => (
     typeof destination !== 'string' || !destination.startsWith(SIGNEDPRICE_ORIGIN)
   ));
-  const redirects = manifest.entries.map((entry) => ({
-    source: entry.sourcePath,
+  const redirects = [...manifest.entries, ...manifest.patterns].map((entry) => ({
+    source: entry.sourcePath ?? entry.sourcePattern,
     destination: entry.destination,
     statusCode: entry.statusCode,
   }));
@@ -35,6 +35,22 @@ function renderStaticSitemap(xml, manifest) {
   return `${rendered.trimEnd()}\n`;
 }
 
+function renderRootSitemap(xml, manifest) {
+  let rendered = xml;
+  for (const entry of manifest.entries.filter(({ sourcePath }) => sourcePath.startsWith('/rent/'))) {
+    const [, , district, propertyType] = entry.sourcePath.split('/');
+    for (const suffix of ['', 'buildings/']) {
+      const url = `${KOREAHOMEGUIDE_ORIGIN}/sitemaps/seoul/${district}/${propertyType}/${suffix}`;
+      const block = new RegExp(
+        `\\s*<sitemap>\\s*<loc>${escapeRegExp(url)}<\\/loc>\\s*<\\/sitemap>\\s*`,
+        'g',
+      );
+      rendered = rendered.replace(block, '\n');
+    }
+  }
+  return `${rendered.trimEnd()}\n`;
+}
+
 function renderMigrationArtifacts({ root }) {
   const manifest = JSON.parse(fs.readFileSync(
     path.join(root, 'data/seo/signedprice-migration-manifest.json'),
@@ -42,13 +58,17 @@ function renderMigrationArtifacts({ root }) {
   ));
   const vercelPath = path.join(root, 'vercel.json');
   const sitemapPath = path.join(root, 'sitemap-static.xml');
+  const rootSitemapPath = path.join(root, 'sitemap.xml');
   const vercel = JSON.parse(fs.readFileSync(vercelPath, 'utf8'));
   const sitemap = fs.readFileSync(sitemapPath, 'utf8');
+  const rootSitemap = fs.readFileSync(rootSitemapPath, 'utf8');
   const renderedVercel = renderVercelConfig(vercel, manifest);
   const renderedSitemap = renderStaticSitemap(sitemap, manifest);
+  const renderedRootSitemap = renderRootSitemap(rootSitemap, manifest);
   fs.writeFileSync(vercelPath, `${JSON.stringify(renderedVercel, null, 2)}\n`);
   fs.writeFileSync(sitemapPath, renderedSitemap);
-  return { redirectCount: manifest.entries.length };
+  fs.writeFileSync(rootSitemapPath, renderedRootSitemap);
+  return { redirectCount: manifest.entries.length + manifest.patterns.length };
 }
 
 if (require.main === module) {
@@ -59,6 +79,7 @@ if (require.main === module) {
 
 module.exports = {
   renderMigrationArtifacts,
+  renderRootSitemap,
   renderStaticSitemap,
   renderVercelConfig,
 };
