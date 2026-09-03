@@ -30,8 +30,8 @@ export function SingaporeEntry({ model, googleMapsBrowserKey = null }: Readonly<
       description: `${model.transactionLabel} across ${model.projectLabel}.`,
       state: 'available', stateLabel: 'available',
       items: [
-        { label: 'URA private residential sale transactions', description: model.periodLabel, state: 'available', stateLabel: 'available' },
-        { label: 'Native market segments', description: 'CCR, RCR and OCR remain separate.', state: 'available', stateLabel: 'available' },
+        { label: 'URA private residential sale transactions', description: model.periodLabel },
+        { label: 'Native market segments', description: 'CCR, RCR and OCR remain separate.' },
       ],
     },
     {
@@ -39,8 +39,8 @@ export function SingaporeEntry({ model, googleMapsBrowserKey = null }: Readonly<
       description: 'Explore and comparison tools stay inside the verified Singapore evidence boundary.',
       state: 'limited', stateLabel: 'limited',
       items: [
-        { label: 'Explore Singapore', description: 'Browse released segments and projects.', state: 'available', stateLabel: 'available', href: model.exploreHref },
-        { label: 'Check an offer', description: 'Compare against compatible released evidence.', state: 'available', stateLabel: 'available', href: '/sg/singapore/check/' },
+        { label: 'Explore Singapore', description: 'Browse released segments and projects.', href: model.exploreHref },
+        { label: 'Check an offer', description: 'Compare against compatible released evidence.', href: '/sg/singapore/check/' },
       ],
     },
     {
@@ -52,15 +52,7 @@ export function SingaporeEntry({ model, googleMapsBrowserKey = null }: Readonly<
     {
       number: '05', title: 'Listings and investment service',
       description: 'Active listings, inquiries and personalized investment recommendations are not offered yet.',
-      state: 'not_built', stateLabel: 'service preparing', items: [],
-    },
-    {
-      number: '06', title: 'Source and methodology',
-      description: `${model.evidence.provider} ${model.evidence.dataset} · ${model.evidence.period}.`,
-      state: 'available', stateLabel: 'available',
-      items: [
-        { label: model.evidence.rightsPolicyId, description: `Publication minimum ${model.evidence.publicationMinimum}.` },
-      ],
+      state: 'not_built', stateLabel: 'planned', items: [],
     },
   ];
   const actions: readonly NavigationActionModel[] = [

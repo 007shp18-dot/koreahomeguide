@@ -8,6 +8,7 @@ import { PublicBreadcrumbJsonLd } from '@/components/public-json-ld';
 import { NaverBuildingStreetView } from '@/components/maps/naver-building-street-view';
 import { GoogleBuildingStreetView } from '@/components/maps/google-building-street-view';
 import { GooglePlacePhoto } from '@/components/maps/google-place-photo';
+import { googleMapsBrowserKeyFromEnvironment } from '@/lib/maps/google-maps-browser-key.server';
 import { buildHomeFeaturedBuildings } from '@/lib/public-market/home-featured-buildings.server';
 import { buildSeoulLiveModel } from '@/lib/public-market/seoul-live-model.server';
 import {
@@ -42,7 +43,7 @@ export default async function MarketOverviewPage({ params }: MarketPageProps) {
 
   if (!model) notFound();
   const featured = model.marketId === 'kr-seoul' ? buildHomeFeaturedBuildings()[0] : undefined;
-  const googleMapsBrowserKey = process.env.GOOGLE_MAPS_API_KEY?.trim() || null;
+  const googleMapsBrowserKey = googleMapsBrowserKeyFromEnvironment();
   const media = model.marketId === 'ae-dubai' ? (
     <GooglePlacePhoto
       browserKey={googleMapsBrowserKey}

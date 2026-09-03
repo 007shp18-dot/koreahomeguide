@@ -11,6 +11,7 @@ vi.mock('next/script', () => ({
 
 import {
   NaverDistrictMap,
+  buildNaverBuildingMarkerContent,
   buildNaverDistrictMarkerContent,
   buildNaverBuildingAddressQuery,
   buildNaverMapsScriptUrl,
@@ -41,6 +42,22 @@ describe('NAVER district map', () => {
       selected: true,
     })).toBe(
       '<div class="spMapDistrictBubble spMapDistrictBubbleSelected"><span>&lt;Jongno&gt;</span><strong>₩500M &amp; up</strong><small>5 filings</small></div>',
+    );
+  });
+
+  it('builds a safe price-and-location bubble for the district building layer', () => {
+    expect(buildNaverBuildingMarkerContent({
+      id: 'tower',
+      title: '<Evidence Tower>',
+      href: '/tower/',
+      addressQuery: 'Seoul',
+      latitude: 37.5,
+      longitude: 127,
+      metricLabel: '₩1.2B & up',
+      sampleLabel: '8 filings',
+      selected: true,
+    })).toBe(
+      '<div class="spMapBuildingBubble spMapBuildingBubbleSelected"><span>&lt;Evidence Tower&gt;</span><strong>₩1.2B &amp; up</strong><small>8 filings</small></div>',
     );
   });
 
@@ -371,6 +388,9 @@ describe('NAVER district map', () => {
       map: mounted.map,
       position: new LatLng(37.501, 127.031),
       title: 'Evidence Tower',
+      icon: {
+        content: '<div class="spMapBuildingBubble"><span>Evidence Tower</span><strong>—</strong></div>',
+      },
     });
     expect(mounted.unavailableBuildingIds).toEqual([]);
   });

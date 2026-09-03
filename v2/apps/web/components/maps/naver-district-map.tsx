@@ -27,6 +27,9 @@ export type NaverBuildingMapPoint = Readonly<{
   latitude: number | null;
   longitude: number | null;
   allowAddressGeocoding?: boolean;
+  metricLabel?: string | null;
+  sampleLabel?: string;
+  selected?: boolean;
 }>;
 
 type NaverMapInstance = Readonly<{
@@ -168,6 +171,16 @@ export function buildNaverDistrictMarkerContent(district: NaverDistrictMapPoint)
   return `<div class="spMapDistrictBubble${selectedClass}"><span>${escapeMarkerText(district.nameEn)}</span><strong>${escapeMarkerText(district.metricLabel)}</strong>${sample}</div>`;
 }
 
+/** Price-and-location label rendered for buildings after a district is opened. */
+export function buildNaverBuildingMarkerContent(building: NaverBuildingMapPoint): string {
+  const selectedClass = building.selected === true ? ' spMapBuildingBubbleSelected' : '';
+  const metric = building.metricLabel ?? '—';
+  const sample = building.sampleLabel === undefined
+    ? ''
+    : `<small>${escapeMarkerText(building.sampleLabel)}</small>`;
+  return `<div class="spMapBuildingBubble${selectedClass}"><span>${escapeMarkerText(building.title)}</span><strong>${escapeMarkerText(metric)}</strong>${sample}</div>`;
+}
+
 export function buildNaverMapsScriptUrl(
   clientId: string,
   includeGeocoder = false,
@@ -239,7 +252,7 @@ export function mountNaverDistrictMap({
     if (disposed) throw new TypeError('Disposed NAVER map cannot be updated.');
     clearActiveGeneration();
     const activeGeneration = generation;
-    const showingBuildings = selectedDistrict !== undefined && buildings.length > 0;
+    const showingBuildings = selectedDistrict !== undefined;
     const center = new sdk.LatLng(
       selectedDistrict?.latitude ?? 37.5665,
       selectedDistrict?.longitude ?? 126.978,
@@ -284,6 +297,7 @@ export function mountNaverDistrictMap({
             building.latitude,
             building.longitude,
             () => onSelectBuilding?.(building.id),
+            buildNaverBuildingMarkerContent(building),
           );
         } else if (building.allowAddressGeocoding === true && sdk.Service !== undefined) {
           sdk.Service.geocode({ query: building.addressQuery }, (status, response) => {
@@ -311,6 +325,7 @@ export function mountNaverDistrictMap({
               latitude,
               longitude,
               () => onSelectBuilding?.(building.id),
+              buildNaverBuildingMarkerContent(building),
             );
           });
         } else {

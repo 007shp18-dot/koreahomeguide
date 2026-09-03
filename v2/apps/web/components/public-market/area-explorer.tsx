@@ -217,7 +217,7 @@ export function createKoreaBuildingDetailHref(
       neighborhood: building.neighborhoodId,
       buildingId: building.id,
     },
-    { market: 'kr', transaction: 'jeonse' },
+    { market: 'kr', transaction: 'sale' },
   ), locale), selection);
   const target = new URL(href, 'https://signedprice.invalid');
   const query = location.query?.trim() ?? '';
@@ -242,7 +242,7 @@ export function createExploreBuildingSelectionHref(
       neighborhood: building.neighborhoodId,
       buildingId: building.id,
     },
-    { market: 'kr', transaction: 'jeonse' },
+    { market: 'kr', transaction: 'sale' },
   ), locale), selection);
   const target = new URL(href, 'https://signedprice.invalid');
   const query = location.query?.trim() ?? '';
@@ -266,7 +266,7 @@ export function createKoreaDistrictHref(
       neighborhood: undefined,
       buildingId: undefined,
     },
-    { market: 'kr', transaction: 'jeonse' },
+    { market: 'kr', transaction: 'sale' },
   ), locale), selection);
 }
 
@@ -327,6 +327,11 @@ function ReadyAreaExplorer({
     model.evidenceSelection.housingType,
   );
   const [buildingQuery, setBuildingQuery] = useState(initialQuery);
+  const [mapDrilledToDistrict, setMapDrilledToDistrict] = useState(
+    initialSelection.district !== undefined
+      || initialSelection.buildingId !== undefined
+      || initialQuery.trim().length > 0,
+  );
   const [buildingSelection, dispatchBuildingSelection] = useReducer(
     buildingExplorerSelectionReducer,
     Object.freeze({
@@ -417,9 +422,9 @@ function ReadyAreaExplorer({
     latitude: district.latitude,
     longitude: district.longitude,
     metricLabel: compactDistrictMetric(district.medianLabel, locale),
-    selected: district.slug === selected.slug,
-  })), [copy.notPublished, districtHref, locale, model.districts, selected.slug]);
-  const mapBuildings = useMemo(() => visibleBuildings.map((building) => ({
+    selected: mapDrilledToDistrict && district.slug === selected.slug,
+  })), [districtHref, locale, mapDrilledToDistrict, model.districts, selected.slug]);
+  const mapBuildings = useMemo(() => filteredBuildings.map((building) => ({
     id: building.id,
     title: building.name,
     href: buildingSelectionHref(building, linkSelection, locale, {
@@ -433,24 +438,27 @@ function ReadyAreaExplorer({
     ),
     latitude: building.latitude,
     longitude: building.longitude,
+    metricLabel: compactDistrictMetric(building.medianLabel, locale),
+    sampleLabel: localizeSampleLabel(building.sampleLabel, locale),
+    selected: building.id === selectedBuilding?.id,
     allowAddressGeocoding: naverMapClientId !== null
       && building.latitude === null
       && building.longitude === null,
-  })), [buildingQuery, linkSelection, locale, naverMapClientId, readyBuildingAvailability?.page, selected.nameKo, visibleBuildings]);
-  const selectedMapBuildings = useMemo(() => (
-    selectedBuilding === null
-      ? undefined
-      : mapBuildings.filter(({ id }) => id === selectedBuilding.id)
-  ), [mapBuildings, selectedBuilding]);
+  })), [buildingQuery, filteredBuildings, linkSelection, locale, naverMapClientId, readyBuildingAvailability?.page, selected.nameKo, selectedBuilding?.id]);
 
   const selectDistrict = (slug: string): void => {
     dispatch({ type: 'select', slug });
+    setMapDrilledToDistrict(true);
     setSelectedNeighborhood('all');
     setSelectedHousingType('all');
     setBuildingQuery('');
     dispatchBuildingSelection({ type: 'clear_building' });
     setVisibleBuildingCount(10);
     router.replace(districtHref(slug), { scroll: false });
+  };
+  const showAllDistricts = (): void => {
+    setMapDrilledToDistrict(false);
+    dispatchBuildingSelection({ type: 'clear_building' });
   };
   const selectBuilding = (
     buildingId: string,
@@ -480,7 +488,7 @@ function ReadyAreaExplorer({
         neighborhood: selectedNeighborhood === 'all' ? undefined : selectedNeighborhood,
         buildingId: undefined,
       },
-      { market: 'kr', transaction: 'jeonse' },
+      { market: 'kr', transaction: 'sale' },
     ), locale), linkSelection);
     const target = new URL(href, 'https://signedprice.invalid');
     const normalizedQuery = buildingQuery.trim();
@@ -513,7 +521,7 @@ function ReadyAreaExplorer({
         contractType: transaction === 'sale' ? undefined : initialSelection.contractType,
         view: changes.view ?? currentView,
       },
-      { market: 'kr', transaction: 'jeonse' },
+      { market: 'kr', transaction: 'sale' },
     ), locale), linkSelection);
     const target = new URL(href, 'https://signedprice.invalid');
     const query = buildingQuery.trim();
@@ -539,6 +547,7 @@ function ReadyAreaExplorer({
     );
     if (resolvedSlug !== state.selectedSlug) {
       dispatch({ type: 'select', slug: resolvedSlug });
+      setMapDrilledToDistrict(true);
       setSelectedNeighborhood('all');
       setSelectedHousingType('all');
     }
@@ -552,7 +561,7 @@ function ReadyAreaExplorer({
         neighborhood: undefined,
         buildingId: undefined,
       },
-      { market: 'kr', transaction: 'jeonse' },
+      { market: 'kr', transaction: 'sale' },
     ), locale), linkSelection);
     const target = new URL(href, window.location.origin);
     const normalizedQuery = buildingQuery.trim();
@@ -583,7 +592,7 @@ function ReadyAreaExplorer({
         neighborhood: neighborhoodId === 'all' ? undefined : neighborhoodId,
         buildingId: undefined,
       },
-      { market: 'kr', transaction: 'jeonse' },
+      { market: 'kr', transaction: 'sale' },
     ), locale), linkSelection);
     const target = new URL(href, 'https://signedprice.invalid');
     const normalizedQuery = buildingQuery.trim();
@@ -604,7 +613,7 @@ function ReadyAreaExplorer({
     <section
       className={styles.explorer}
       aria-labelledby="area-explorer-heading"
-      data-market-selection={`${initialSelection.market}:${initialSelection.transaction}`}
+      data-market-selection={`kr:${model.evidenceSelection.transaction}`}
       data-explore-view={currentView}
       data-explorer-version="guide-v2"
     >
@@ -756,17 +765,26 @@ function ReadyAreaExplorer({
             {locale === 'ko' ? '이 지역 검색' : 'Search this area'}
           </button>
           <div className={styles.mapGuide} aria-hidden="true">
-            <span>{locale === 'ko' ? '지역 레이어' : 'District tier'}</span>
-            <strong>{locale === 'ko' ? '서울 지역 가격 지도' : 'Seoul district price map'}</strong>
-            <p>{locale === 'ko'
-              ? '지역을 선택하면 지도는 그 지역으로 이동하고 왼쪽 목록은 해당 건물만 표시합니다.'
-              : 'Pick a district to move the map and bind the building rail to that local market.'}</p>
+            <span>{mapDrilledToDistrict
+              ? (locale === 'ko' ? '건물 레이어' : 'Building tier')
+              : (locale === 'ko' ? '지역 레이어' : 'District tier')}</span>
+            <strong>{mapDrilledToDistrict
+              ? `${locale === 'ko' ? selected.nameKo : selected.nameEn} · ${locale === 'ko' ? '건물별 매매가' : 'Building prices'}`
+              : (locale === 'ko' ? '서울 구별 매매가 지도' : 'Seoul district sale-price map')}</strong>
+            <p>{mapDrilledToDistrict
+              ? (locale === 'ko' ? '가격 버블을 누르면 건물 근거를 바로 확인할 수 있습니다.' : 'Select a price bubble to open the building evidence.')
+              : (locale === 'ko' ? '구 가격 버블을 누르면 건물별 가격과 위치가 표시됩니다.' : 'Select a district bubble to reveal building prices and locations.')}</p>
           </div>
+          {mapDrilledToDistrict ? (
+            <button className={styles.mapLevelButton} type="button" onClick={showAllDistricts}>
+              {locale === 'ko' ? '서울 전체 보기' : 'All Seoul districts'}
+            </button>
+          ) : null}
           <NaverDistrictMap
             clientId={naverMapClientId}
             districts={mapDistricts}
-            selectedDistrict={selected}
-            buildings={selectedMapBuildings}
+            selectedDistrict={mapDrilledToDistrict ? selected : undefined}
+            buildings={mapDrilledToDistrict ? mapBuildings : undefined}
             onSelectDistrict={selectDistrict}
             onSelectBuilding={selectBuildingFromMarker}
             locale={locale}
@@ -1145,6 +1163,7 @@ function ReadyAreaExplorer({
         model={model.source}
         locale={locale}
         transaction={usesLegacyCopy ? undefined : model.evidenceSelection.transaction}
+        compact
       />
     </section>
   );
@@ -1257,7 +1276,7 @@ function UnavailableAreaExplorer({
           {copy.unavailableActionLink}
         </Link>
       </div>
-      <PublicSourceBoundary model={model.source} locale={locale} />
+      <PublicSourceBoundary model={model.source} locale={locale} compact />
     </section>
   );
 }
@@ -1267,7 +1286,7 @@ export function AreaExplorer({
   naverMapClientId = null,
   locale = 'en',
   initialQuery = '',
-  initialSelection = Object.freeze({ market: 'kr', transaction: 'jeonse' }),
+  initialSelection = Object.freeze({ market: 'kr', transaction: 'sale' }),
 }: Readonly<{
   model: PublicAreaExploreModel;
   naverMapClientId?: string | null;

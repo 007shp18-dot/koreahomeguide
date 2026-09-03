@@ -256,7 +256,7 @@ function exactRankingHref(
         ? undefined
         : selection.contractGroup,
     },
-    { market: 'kr', transaction: 'jeonse' },
+    { market: 'kr', transaction: 'sale' },
   ) as PublicDistrictRankingRow['href'];
 }
 

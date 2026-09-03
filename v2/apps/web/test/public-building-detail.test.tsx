@@ -217,7 +217,7 @@ describe('public building detail', () => {
     expect(selected).toContain('Building evidence remains available');
     expect(selected).not.toContain('data-detail-rail="true"');
     expect(selected).toContain(
-      'href="/kr/seoul/explore?district=gangnam-gu&amp;neighborhood=yeoksam-dong&amp;buildingId=gangnam-evidence-tower&amp;contractType=all"',
+      'href="/kr/seoul/explore?district=gangnam-gu&amp;neighborhood=yeoksam-dong&amp;buildingId=gangnam-evidence-tower"',
     );
 
     const fallback = renderToStaticMarkup(await BuildingRoute({

@@ -13,7 +13,6 @@ import {
   signedPricePublicRouteRegistry,
 } from '../lib/seo/public-route-registry.server';
 import { buildPublicPropertyTypeModel } from '../lib/public-market/property-type-route-model.server';
-import { operatorProfileFromEnvironment } from '../lib/operator/operator-profile.server';
 
 type SitemapEntry = MetadataRoute.Sitemap[number];
 
@@ -104,7 +103,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     singleQuoteReady,
     conversionReady,
   });
-  const operatorReady = operatorProfileFromEnvironment().status === 'ready';
   const newsLastModified = latestDate(newsRecords.map(
     (record) => record.updatedAt ?? record.publishedAt,
   ));
@@ -117,6 +115,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     sitemapEntry('/news/', newsLastModified),
     sitemapEntry('/community/'),
     sitemapEntry('/guides/', guideLastModified),
+    sitemapEntry('/privacy/'),
+    sitemapEntry('/contact/'),
   ];
   const modifiedByPath = new Map<string, Date | undefined>([
     ['/kr/seoul/', summaryLastModified],
@@ -130,19 +130,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ['/kr/seoul/news/', newsLastModified],
     ['/kr/seoul/guide/', guideLastModified],
   ]);
-  let operatorAdded = false;
   for (const path of paths) {
-    if (
-      operatorReady
-      && !operatorAdded
-      && (path === '/kr/seoul/news/' || path === '/kr/seoul/guide/')
-    ) {
-      entries.push(
-        { url: publicCanonical('/privacy/') },
-        { url: publicCanonical('/contact/') },
-      );
-      operatorAdded = true;
-    }
     entries.push(sitemapEntry(
       path as `/${string}`,
       modifiedByPath.get(path),
