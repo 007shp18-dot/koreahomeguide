@@ -1,11 +1,11 @@
-import { renderToStaticMarkup } from 'react-dom/server';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { renderToStaticMarkup } from 'react-dom/server';
 
 vi.mock('server-only', () => ({}));
 
-import KoreaHomePage from '../app/kr/page';
-import KoreaAreaPage from '../app/kr/[area]/page';
-import KoreaCheckPage from '../app/kr/check/[area]/page';
+import KoreaHomePage from '../app/(en)/kr/page';
+import KoreaCheckPage from '../app/(en)/kr/check/[area]/page';
+import KoreanContractCheckPage from '../app/(ko)/ko/kr/seoul/check/page';
 import {
   PUBLIC_SUMMARY_ARTIFACT_VERSION,
   buildKoreaPublicRouteModel,
@@ -138,43 +138,22 @@ describe('Korea public route model', () => {
 });
 
 describe('Korea public SSR routes', () => {
-  it('redirects the legacy Seoul area entry to the v2 Explorer', async () => {
-    useArtifact();
-
-    await expect(KoreaAreaPage({
-      params: Promise.resolve({ area: 'seoul' }),
-    })).rejects.toMatchObject({
-      digest: expect.stringContaining('/kr/seoul/explore/'),
-    });
-  });
-
-  it('puts every published number and sample count in initial check HTML', async () => {
-    useArtifact();
-    const html = renderToStaticMarkup(await KoreaCheckPage({
-      params: Promise.resolve({ area: 'seoul' }),
+  it('renders Korean Contract Check with a matching English language switch', async () => {
+    useConversionArtifact();
+    const html = renderToStaticMarkup(await KoreanContractCheckPage({
+      searchParams: Promise.resolve({}),
     }));
 
-    for (const value of ['₩180,000,000', '₩280,000,000', '₩380,000,000', '₩480,000,000', '₩580,000,000']) {
-      expect(html).toContain(value);
-    }
-    expect(html).toContain('20 reported contracts');
-    expect(html).toContain('2026-01/2026-07');
-    expect(html).toContain('MOLIT reported rental contracts');
-    expect(html).toContain('Seven-month reported period · 45–55㎡ · zero-rent jeonse');
-    expect(html).toContain('The declared period may include filing-in-progress records');
-    expect(html).toContain('refundable deposit');
-    expect(html).toContain('href="/kr/check/seoul"');
-    expect(html).toContain('href="/kr/seoul/explore"');
-    expect(html).toContain('Canceled records are excluded');
-    expect(html).toContain('New and renewal contracts are combined');
-    expect(html).toContain('Unknown contract type');
-    expect(html).toContain('Unknown record status');
-    expect(html).toContain('n &lt; 5');
-    expect(html).toContain('Korea public evidence. Publication limits shown.');
-    expect(html).not.toMatch(/public P1 preview|Production launch is not authorized/i);
-    expect(html).not.toMatch(/monthly-rent distribution|5\.0%\/year/i);
-    expect(html).not.toMatch(/statutory|legal rate/i);
-    expect(html).not.toContain('/kr/seoul/tools/rent-check');
+    expect(html).toContain('signedprice 홈');
+    expect(html).toMatch(/hreflang="en"[^>]*href="\/kr\/seoul\/check"/i);
+  });
+
+  it('permanently redirects the legacy deposit check to the working Rent Check', async () => {
+    await expect(KoreaCheckPage({
+      params: Promise.resolve({ area: 'seoul' }),
+    })).rejects.toMatchObject({
+      digest: expect.stringContaining('/kr/seoul/tools/rent-check/'),
+    });
   });
 
   it('redirects the legacy Korea entry to canonical Contract Check', async () => {
@@ -186,33 +165,9 @@ describe('Korea public SSR routes', () => {
     });
   });
 
-  it('withholds sparse evidence recursively without monetary or marker leakage', async () => {
-    useArtifact(artifact({
-      marketId: 'kr-seoul', area: 'seoul', parent: 'kr', deal: 'jeonse',
-      band: '45-55sqm', period, n: 4, published: false,
-    }));
-    const html = renderToStaticMarkup(await KoreaCheckPage({
-      params: Promise.resolve({ area: 'seoul' }),
-    }));
-
-    expect(html).toContain('4 reported contracts');
-    expect(html).toContain('At least 5 are required');
-    expect(html).toContain('Market position withheld');
-    expect(html).not.toContain('₩');
-    expect(html).not.toMatch(/Minimum|percentile|Median|Maximum/);
-    expect(html).not.toContain('data-quote-marker');
-    expect(html).not.toMatch(/"(?:min|p25|med|p75|max|chg3m)"/);
-  });
-
-  it('returns the Next 404 boundary for an unknown area or missing feed', async () => {
-    useArtifact();
-    await expect(KoreaAreaPage({
-      params: Promise.resolve({ area: 'unknown' }),
-    })).rejects.toThrow(/404/);
-
-    vi.unstubAllEnvs();
+  it('returns the Next 404 boundary for an unknown legacy check area', async () => {
     await expect(KoreaCheckPage({
-      params: Promise.resolve({ area: 'seoul' }),
+      params: Promise.resolve({ area: 'unknown' }),
     })).rejects.toThrow(/404/);
   });
 

@@ -54,11 +54,12 @@ export function createExplorerRentCheckHref(
   if (!context?.neighborhoodId || !context.buildingId) return null;
 
   const rentCheckQuery = new URLSearchParams();
-  rentCheckQuery.set('lawdCd', context.lawdCd);
-  rentCheckQuery.set('type', context.housingType);
-  rentCheckQuery.set('dong', context.neighborhoodId);
+  rentCheckQuery.set('transaction', 'jeonse');
+  rentCheckQuery.set('district', context.districtSlug);
+  rentCheckQuery.set('housing', context.housingType === 'villa' ? 'villa_multifamily' : context.housingType === 'studio' ? 'detached' : context.housingType);
+  rentCheckQuery.set('area', '50');
   rentCheckQuery.set('building', context.buildingId);
-  return `/kr/seoul/tools/rent-check/?${rentCheckQuery.toString()}`;
+  return `/kr/seoul/check/?${rentCheckQuery.toString()}`;
 }
 
 export function ExplorerWorkspace({

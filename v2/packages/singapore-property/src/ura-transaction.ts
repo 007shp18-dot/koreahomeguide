@@ -7,6 +7,7 @@ import type {
 
 const ENVELOPE_KEYS = ['Message', 'Result', 'Status'] as const;
 const PROJECT_KEYS = ['marketSegment', 'project', 'street', 'transaction', 'x', 'y'] as const;
+const PROJECT_KEYS_WITHOUT_COORDINATES = ['marketSegment', 'project', 'street', 'transaction'] as const;
 const TRANSACTION_KEYS = [
   'area',
   'contractDate',
@@ -19,6 +20,7 @@ const TRANSACTION_KEYS = [
   'typeOfArea',
   'typeOfSale',
 ] as const;
+const TRANSACTION_KEYS_WITH_NETT_PRICE = [...TRANSACTION_KEYS, 'nettPrice'] as const;
 
 const SEGMENTS: Readonly<Record<string, SingaporeMarketSegment>> = Object.freeze({
   CCR: 'CCR', RCR: 'RCR', OCR: 'OCR',
@@ -50,8 +52,8 @@ export type UraSourceOrder = Readonly<{
 export type UraPrivateSaleTransaction = Readonly<{
   project: string;
   street: string;
-  x: number;
-  y: number;
+  x: number | null;
+  y: number | null;
   marketSegment: SingaporeMarketSegment;
   areaSqm: number;
   floorRange: string;
@@ -60,6 +62,7 @@ export type UraPrivateSaleTransaction = Readonly<{
   contractMonth: string;
   saleType: SingaporeSaleType;
   priceSgd: number;
+  netPriceSgd: number | null;
   propertyType: SingaporePropertyType;
   district: string;
   areaBasis: SingaporeAreaBasis;
@@ -77,6 +80,19 @@ function exactObject(value: unknown, keys: readonly string[]): Record<string, un
   const actual = Object.keys(record).sort();
   const expected = [...keys].sort();
   if (actual.length !== expected.length || actual.some((key, index) => key !== expected[index])) invalid();
+  return record;
+}
+
+function exactObjectVariant(value: unknown, variants: readonly (readonly string[])[]): Record<string, unknown> {
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) invalid();
+  const record = value as Record<string, unknown>;
+  const actual = Object.keys(record).sort();
+  const matches = variants.some((keys) => {
+    const expected = [...keys].sort();
+    return actual.length === expected.length
+      && actual.every((key, index) => key === expected[index]);
+  });
+  if (!matches) invalid();
   return record;
 }
 
@@ -136,16 +152,23 @@ export function parseUraPrivateSaleEnvelope(
 
   const output: UraPrivateSaleTransaction[] = [];
   envelope.Result.forEach((projectValue, projectIndex) => {
-    const project = exactObject(projectValue, PROJECT_KEYS);
+    const project = exactObjectVariant(projectValue, [
+      PROJECT_KEYS,
+      PROJECT_KEYS_WITHOUT_COORDINATES,
+    ]);
     const projectName = text(project.project);
     const street = text(project.street);
-    const x = finiteDecimal(project.x);
-    const y = finiteDecimal(project.y);
+    const hasCoordinates = 'x' in project && 'y' in project;
+    const x = hasCoordinates ? finiteDecimal(project.x) : null;
+    const y = hasCoordinates ? finiteDecimal(project.y) : null;
     const marketSegment = enumValue(project.marketSegment, SEGMENTS);
     if (!Array.isArray(project.transaction) || project.transaction.length === 0) invalid();
 
     project.transaction.forEach((transactionValue, transactionIndex) => {
-      const transaction = exactObject(transactionValue, TRANSACTION_KEYS);
+      const transaction = exactObjectVariant(transactionValue, [
+        TRANSACTION_KEYS,
+        TRANSACTION_KEYS_WITH_NETT_PRICE,
+      ]);
       const month = contractMonth(transaction.contractDate);
       output.push(Object.freeze({
         project: projectName,
@@ -160,6 +183,9 @@ export function parseUraPrivateSaleEnvelope(
         contractMonth: month.iso,
         saleType: enumValue(transaction.typeOfSale, SALE_TYPES),
         priceSgd: positiveInteger(transaction.price),
+        netPriceSgd: 'nettPrice' in transaction
+          ? positiveInteger(transaction.nettPrice)
+          : null,
         propertyType: enumValue(transaction.propertyType, PROPERTY_TYPES),
         district: text(transaction.district),
         areaBasis: enumValue(transaction.typeOfArea, AREA_BASES),

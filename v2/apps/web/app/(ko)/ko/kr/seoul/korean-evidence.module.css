@@ -1,0 +1,109 @@
+.page {
+  min-width: 0;
+  color: var(--ink);
+  background: var(--canvas);
+}
+
+.intro {
+  width: min(calc(100% - 32px), 1180px);
+  min-height: 260px;
+  margin: 28px auto 0;
+  padding: clamp(2rem, 6vw, 4.5rem);
+  display: grid;
+  align-content: end;
+  gap: 0.8rem;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 82% 24%, rgb(61 125 224 / 18%), transparent 28%),
+    linear-gradient(135deg, var(--surface-strong), var(--canvas));
+  box-shadow: var(--shadow-sm);
+}
+
+.intro > p:first-child {
+  color: var(--accent);
+  font-size: 0.7rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+}
+
+.intro h1 {
+  max-width: 900px;
+  font-size: clamp(2.5rem, 7vw, 6rem);
+  letter-spacing: -0.06em;
+  line-height: 0.98;
+}
+
+.intro > p:last-child {
+  max-width: 720px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.summary {
+  width: min(calc(100% - 32px), 1180px);
+  margin: 16px auto 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.summary > div {
+  min-height: 136px;
+  padding: 1.2rem;
+  display: grid;
+  align-content: space-between;
+  gap: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--canvas);
+  box-shadow: var(--shadow-sm);
+}
+
+.summary dt {
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.summary dd {
+  font-size: clamp(1.4rem, 3vw, 2.3rem);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+}
+
+.actions {
+  width: min(calc(100% - 32px), 1180px);
+  margin: 16px auto 48px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.actions a {
+  min-height: 110px;
+  padding: 1rem;
+  display: grid;
+  align-content: space-between;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--canvas);
+  box-shadow: var(--shadow-sm);
+  color: var(--ink);
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.actions a:hover {
+  color: var(--ink);
+  border-color: var(--accent);
+  background: var(--soft-blue);
+}
+
+@media (max-width: 720px) {
+  .summary,
+  .actions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

@@ -11,6 +11,7 @@ import type {
   SeoulLawdCd,
   SeoulRentCheckDistrict,
 } from '@signedprice/korea-rent/browser';
+import type { KoreaEvidenceAreaBand } from '@signedprice/korea-rent';
 import type { CommunitySignalModel } from '../community/community-signal-model';
 import type { NewsCardModel } from '../news/news-card-model';
 import type {
@@ -24,7 +25,7 @@ export type ExploreDistrictModel = Readonly<{
   slug: SeoulDistrictSlug;
   nameEn: string;
   nameKo: string;
-  href: `/kr/seoul/explore/${string}/`;
+  href: `/kr/seoul/explore/${string}/` | `/kr/seoul/explore/${string}/?${string}`;
   path: string;
   latitude: number;
   longitude: number;
@@ -87,10 +88,17 @@ export type ContractGroupEvidenceModel = Readonly<{
 export type PublicAreaCoverageModel = Readonly<{
   districts: Readonly<{ published: number; retained: number }>;
   buildings:
-    | Readonly<{ status: 'ready'; published: number; retained: number }>
     | Readonly<{
-        status: 'unavailable';
-        reason: 'Verified building artifact is not loaded.';
+        status: 'ready';
+        observed: number;
+        transactionCovered: number;
+        priceReady: number;
+      }>
+    | Readonly<{
+        status: 'inventory_unavailable';
+        transactionCovered: number | null;
+        priceReady: number | null;
+        reason: 'Verified observed building inventory is not loaded.';
       }>;
   eligibleContracts: number;
   unpublished: Readonly<{
@@ -128,7 +136,7 @@ export type PublicSourceBoundaryModel = Readonly<{
   provider: 'MOLIT';
   period: string;
   attribution: readonly string[];
-  band: '45–55㎡';
+  band: string;
   publicationMinimum: 5;
   includesNewAndRenewal: true;
   includesUnknownContractType: true;
@@ -157,7 +165,7 @@ export type PublicDistrictRankingRow = Readonly<{
   slug: SeoulDistrictSlug;
   nameEn: string;
   nameKo: string;
-  href: `/kr/seoul/explore/${string}/`;
+  href: `/kr/seoul/explore/${string}/` | `/kr/seoul/explore/${string}/?${string}`;
   metric: number;
   valueLabel: string;
   bar: SignedRankingBar | null;
@@ -168,6 +176,17 @@ export type PublicDistrictRankingRow = Readonly<{
 export type PublicAreaRankingsModel =
   | Readonly<{
       status: 'ready';
+      evidenceSelection: Readonly<{
+        transaction: 'jeonse' | 'monthly' | 'sale';
+        areaBand: KoreaEvidenceAreaBand | 'legacy-45-55';
+        housingType: 'all' | 'apartment' | 'officetel' | 'villa_multifamily' | 'detached';
+        contractGroup: 'all' | 'new' | 'renewal' | 'unknown' | 'not-applicable';
+      }>;
+      transactionAvailability: Readonly<{
+        jeonse: boolean;
+        monthly: boolean;
+        sale: boolean;
+      }>;
       cheapest: readonly PublicDistrictRankingRow[];
       change: readonly PublicDistrictRankingRow[];
       spread: readonly PublicDistrictRankingRow[];
@@ -194,12 +213,24 @@ export type PublicAreaRankingsModel =
 export type PublicAreaExploreModel =
   | Readonly<{
       status: 'ready';
+      evidenceSelection: Readonly<{
+        transaction: 'jeonse' | 'monthly' | 'sale';
+        areaBand: KoreaEvidenceAreaBand | 'legacy-45-55';
+        housingType: 'all' | 'apartment' | 'officetel' | 'villa_multifamily' | 'detached';
+        contractGroup: 'all' | 'new' | 'renewal' | 'unknown' | 'not-applicable';
+      }>;
+      transactionAvailability: Readonly<{
+        jeonse: boolean;
+        monthly: boolean;
+        sale: boolean;
+      }>;
       selectedSlug: SeoulDistrictSlug;
       citySummary: PublicMarketSummary;
       districts: readonly ExploreDistrictModel[];
       legend: readonly PublicAreaLegendBucket[];
       coverage: PublicAreaCoverageModel;
       buildingAvailability: ExploreBuildingAvailability;
+      proximity: KoreaExploreProximityModel;
       source: PublicAreaSourceBoundaryModel;
     }>
   | Readonly<{
@@ -219,19 +250,81 @@ export type ExploreBuildingModel = Readonly<{
   housingType: string;
   latitude: number | null;
   longitude: number | null;
+  evidenceStatus: 'published' | 'withheld' | 'unavailable';
+  transaction?: 'jeonse' | 'monthly' | 'sale';
+  primaryMetric?: 'deposit' | 'monthly-rent' | 'sale-price';
+  observationCount: number;
+  jeonseObservationCount: number;
+  monthlyObservationCount: number;
+  firstObservedMonth: string;
+  lastObservedMonth: string;
   sampleLabel: string;
-  medianLabel: string;
+  medianLabel: string | null;
+  filedDepositMedianLabel?: string | null;
   newSampleLabel: string;
   newMedianLabel: string | null;
   renewalSampleLabel: string;
   renewalMedianLabel: string | null;
   unknownContractCount: number;
+  proximity: ExploreBuildingProximityModel | null;
   href: `/kr/seoul/explore/${string}/${string}/`;
 }>;
 
+export type KoreaExploreProximityPair = Readonly<{
+  sourceId: string;
+  distanceMeters: 250 | 500 | 750 | 1000;
+}>;
+
+export type KoreaExploreProximitySelection = Readonly<{
+  station: KoreaExploreProximityPair | null;
+  school: KoreaExploreProximityPair | null;
+}>;
+
+export type KoreaExploreProximityModel =
+  | Readonly<{
+      status: 'ready';
+      selection: KoreaExploreProximitySelection;
+      stations: readonly Readonly<{ sourceId: string; name: string; lines: readonly string[] }>[];
+      schools: readonly Readonly<{ sourceId: string; name: string }>[];
+      provenance: Readonly<{
+        stationSource: Readonly<{ landingPage: string; sourceVersion: string; asOf: string }>;
+        schoolSource: Readonly<{ landingPage: string; sourceVersion: string; asOf: string }>;
+        coordinateSource: Readonly<{ landingPage: string; sourceVersion: string; asOf: string }>;
+        methodology: 'WGS84 Haversine straight-line metres';
+      }>;
+    }>
+  | Readonly<{
+      status: 'missing' | 'invalid';
+      selection: KoreaExploreProximitySelection;
+    }>;
+
+export type ExploreBuildingProximityModel = Readonly<{
+  coordinateStatus: 'ready' | 'pending_coordinate' | 'unavailable';
+  nearestStation: Readonly<{
+    sourceId: string;
+    name: string;
+    lines: readonly string[];
+    distanceMeters: number;
+  }> | null;
+  nearestSchool: Readonly<{
+    sourceId: string;
+    name: string;
+    distanceMeters: number;
+  }> | null;
+}>;
+
 export type ExploreBuildingAvailability =
-  | Readonly<{ status: 'ready'; buildings: readonly ExploreBuildingModel[] }>
-  | Readonly<{ status: 'not_loaded' }>;
+  | Readonly<{
+      status: 'ready';
+      buildings: readonly ExploreBuildingModel[];
+      total: number;
+      page: number;
+      pageSize: number;
+    }>
+  | Readonly<{
+      status: 'not_loaded';
+      fallbackBuildings: readonly ExploreBuildingModel[];
+    }>;
 
 export type PublicDistrictFaq = Readonly<{
   question: string;

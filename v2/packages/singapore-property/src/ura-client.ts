@@ -1,8 +1,9 @@
 import { redactUraDiagnostic, type UraCredential } from './credential.ts';
 
-export const URA_TOKEN_URL = 'https://www.ura.gov.sg/uraDataService/insertNewToken.action';
-export const URA_DATA_URL = 'https://www.ura.gov.sg/uraDataService/invokeUraDS';
+export const URA_TOKEN_URL = 'https://eservice.ura.gov.sg/uraDataService/insertNewToken/v1';
+export const URA_DATA_URL = 'https://eservice.ura.gov.sg/uraDataService/invokeUraDS/v1';
 export const URA_PRIVATE_SALE_SERVICE = 'PMI_Resi_Transaction';
+const USER_AGENT = 'signedprice/1.0 (+https://signedprice.com)';
 
 export type UraFetch = (
   input: string | URL,
@@ -106,7 +107,10 @@ export function createUraClient(options: UraClientOptions): UraClient {
 
   return Object.freeze({
     async fetchPrivateResidentialTransactions(): Promise<readonly unknown[]> {
-      const tokenEnvelope = await requestJson(URA_TOKEN_URL, { AccessKey: options.accessKey });
+      const tokenEnvelope = await requestJson(URA_TOKEN_URL, {
+        AccessKey: options.accessKey,
+        'User-Agent': USER_AGENT,
+      });
       const token = envelopeResult(tokenEnvelope);
       if (typeof token !== 'string' || token.trim().length === 0) {
         throw new UraClientError('schema');
@@ -115,7 +119,11 @@ export function createUraClient(options: UraClientOptions): UraClient {
       const batches: unknown[] = [];
       for (let batch = 1; batch <= 4; batch += 1) {
         const url = `${URA_DATA_URL}?service=${URA_PRIVATE_SALE_SERVICE}&batch=${batch}`;
-        const envelope = await requestJson(url, { AccessKey: options.accessKey, Token: token });
+        const envelope = await requestJson(url, {
+          AccessKey: options.accessKey,
+          Token: token,
+          'User-Agent': USER_AGENT,
+        });
         const result = envelopeResult(envelope);
         if (!Array.isArray(result) || result.length === 0) {
           throw new UraClientError('incomplete_batch');

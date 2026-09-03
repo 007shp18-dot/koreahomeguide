@@ -4,13 +4,13 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 
-import TrustPage, { metadata as trustMetadata } from '../app/trust/page';
+import TrustPage, { metadata as trustMetadata } from '../app/(en)/trust/page';
 import KoreaCorrectionsPage, {
   metadata as koreaCorrectionsMetadata,
-} from '../app/kr/seoul/corrections/page';
-import ExplorerPage from '../app/kr/seoul/explore/page';
-import RankingsPage from '../app/kr/seoul/rankings/page';
-import Home from '../app/page';
+} from '../app/(en)/kr/seoul/corrections/page';
+import ExplorerPage from '../app/(en)/kr/seoul/explore/page';
+import RankingsPage from '../app/(en)/kr/seoul/rankings/page';
+import Home from '../app/(en)/page';
 import sitemap from '../app/sitemap';
 import {
   listCorrections,
@@ -59,6 +59,8 @@ describe('Trust routes', () => {
   it('renders global evidence policy without unsupported accuracy claims', () => {
     const html = renderToStaticMarkup(<TrustPage />);
 
+    expect(html).toContain('data-product-intro="true"');
+
     for (const visible of [
       'How SignedPrice publishes evidence',
       'Evidence states',
@@ -101,7 +103,7 @@ describe('Trust routes', () => {
     const explore = renderToStaticMarkup(await ExplorerPage({
       searchParams: Promise.resolve({}),
     }));
-    const rankings = renderToStaticMarkup(<RankingsPage />);
+    const rankings = renderToStaticMarkup(await RankingsPage());
 
     expect(home).toContain('href="/trust/"');
     for (const html of [explore, rankings]) {

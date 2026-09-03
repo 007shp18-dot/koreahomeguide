@@ -18,6 +18,8 @@ export type PublicRouteReadiness = Readonly<{
   summaryReady?: boolean;
   areaReady?: boolean;
   newsReady?: boolean;
+  singleQuoteReady?: boolean;
+  conversionReady?: boolean;
 }>;
 
 export type PublicRouteDefinition = Readonly<{
@@ -106,6 +108,8 @@ const alwaysReady = () => true;
 const summaryReady = (readiness: PublicRouteReadiness) => readiness.summaryReady;
 const areaReady = (readiness: PublicRouteReadiness) => readiness.areaReady;
 const newsReady = (readiness: PublicRouteReadiness) => readiness.newsReady;
+const singleQuoteReady = (readiness: PublicRouteReadiness) => readiness.singleQuoteReady;
+const conversionReady = (readiness: PublicRouteReadiness) => readiness.conversionReady;
 
 export const signedPricePublicRouteRegistry = createPublicRouteRegistry([
   {
@@ -122,6 +126,14 @@ export const signedPricePublicRouteRegistry = createPublicRouteRegistry([
   },
   {
     path: '/kr/seoul/check/', locale: 'en', pageKind: 'check', cohort: 1,
+    sitemap: true, isReady: singleQuoteReady,
+  },
+  {
+    path: '/kr/seoul/check/compare/', locale: 'en', pageKind: 'check', cohort: 1,
+    sitemap: true, isReady: conversionReady,
+  },
+  {
+    path: '/kr/seoul/tools/rent-check/', locale: 'en', pageKind: 'check', cohort: 1,
     sitemap: true, isReady: alwaysReady,
     legacySourcePath: '/tools/seoul-rent-check/',
   },
@@ -130,12 +142,8 @@ export const signedPricePublicRouteRegistry = createPublicRouteRegistry([
     sitemap: true, isReady: summaryReady,
   },
   {
-    path: '/kr/check/seoul/', locale: 'en', pageKind: 'check', cohort: 0,
-    sitemap: true, isReady: summaryReady,
-  },
-  {
     path: '/kr/seoul/explore/', locale: 'en', pageKind: 'explore', cohort: 1,
-    sitemap: true, isReady: areaReady, legacySourcePath: '/explore/',
+    sitemap: true, isReady: areaReady,
   },
   {
     path: '/kr/seoul/rankings/', locale: 'en', pageKind: 'rankings', cohort: 0,
@@ -163,7 +171,11 @@ export const signedPricePublicRouteRegistry = createPublicRouteRegistry([
   },
   {
     path: '/ko/kr/seoul/check/', locale: 'ko', pageKind: 'check', cohort: 0,
-    sitemap: true, isReady: alwaysReady,
+    sitemap: true, isReady: singleQuoteReady,
+  },
+  {
+    path: '/ko/kr/seoul/check/compare/', locale: 'ko', pageKind: 'check', cohort: 0,
+    sitemap: true, isReady: conversionReady,
   },
 ]);
 

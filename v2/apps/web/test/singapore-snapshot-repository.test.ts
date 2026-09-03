@@ -11,6 +11,7 @@ import {
 import {
   SingaporeEvidenceUnavailableError,
   createSingaporeSnapshotRepository,
+  createSingaporeSnapshotRepositoryFromInstalled,
 } from '../lib/singapore/snapshot-repository.server';
 
 const fixture = JSON.parse(readFileSync(
@@ -71,6 +72,32 @@ describe('Singapore snapshot repository', () => {
       period: '2026-06..2026-08',
       generatedAt: '2026-08-31T09:00:00.000Z',
       transactions: 12,
+    });
+  });
+
+  it('loads a digest-verified installed private-sale snapshot without snapshot env variables', async () => {
+    const source = snapshot();
+    const repository = await createSingaporeSnapshotRepositoryFromInstalled({
+      metadata: {
+        marketId: 'sg-singapore',
+        dataset: 'sg-private-sale',
+        schemaVersion: source.version,
+        sourceVersion: 'ura-data-service-v1',
+        parserVersion: 'sg-ura-private-sale-parser-v1',
+        rightsPolicyId: 'sg-ura-private-sale-v1',
+        period: '2026-06/2026-08',
+        generatedAt: source.generatedAt,
+        objectUrl: 'installed://sg-private-sale',
+        sha256: 'a'.repeat(64),
+        recordCount: source.records.length,
+      },
+      payload: source,
+    });
+
+    expect(repository.getContext()).toMatchObject({
+      period: '2026-06..2026-08',
+      transactions: source.records.length,
+      digest: source.digest,
     });
   });
 

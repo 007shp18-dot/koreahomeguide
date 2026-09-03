@@ -32,7 +32,11 @@ describe('legacy isolation', () => {
       expect(collectStaticRoutes(temporaryRoot)).toEqual(collectStaticRoutes(ROOT));
       expect(verifyPhase0(temporaryRoot)).toEqual({ ok: true, missing: [], mismatches: [] });
 
-      for (const file of ['tests/mobile-navigation.test.cjs', 'tests/privacy-pages.test.cjs']) {
+      for (const file of [
+        'tests/contact.test.cjs',
+        'tests/mobile-navigation.test.cjs',
+        'tests/privacy-pages.test.cjs',
+      ]) {
         const result = spawnSync(process.execPath, ['--test', file], {
           cwd: temporaryRoot,
           encoding: 'utf8',

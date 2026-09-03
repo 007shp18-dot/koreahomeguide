@@ -1,7 +1,9 @@
 import { expect, test, type Page } from '@playwright/test';
 
 import { resolveReleaseTestTarget } from '../../release-test-target';
-import { PUBLIC_BUILDING_TEST_NAME } from './public-building-summary-fixture';
+import {
+  PUBLIC_BUILDING_TEST_NAME,
+} from './public-building-summary-fixture';
 
 const releaseTarget = resolveReleaseTestTarget();
 
@@ -26,35 +28,22 @@ async function expectTouchTarget(page: Page, selector: string) {
   expect(box?.height).toBeGreaterThanOrEqual(44);
 }
 
-test('map and table select the same reload-safe district workspace', async ({ page }, testInfo) => {
+test('Explore selection opens a reload-safe district detail from the explicit evidence link', async ({ page }) => {
   const noFailures = observeFailures(page);
   await page.goto('/kr/seoul/explore/');
-  const tableHref = await page.locator('[data-district-row="jongno-gu"] a').first().getAttribute('href');
-  expect(tableHref).toBe('/kr/seoul/explore/jongno-gu/');
-  if (testInfo.project.name !== 'mobile-chromium') {
-    await page.locator('[data-district-path="jongno-gu"]').dispatchEvent('pointerup');
-  } else {
-    await page.locator('[data-district-row="jongno-gu"] a').first().click();
-  }
-  await expect(page).toHaveURL(/\/kr\/seoul\/explore\/\?district=jongno-gu$/);
-  await expect(page.locator('[data-building-browser="jongno-gu"]')).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Jongno-gu building evidence' })).toBeVisible();
+  await page.locator('[data-district-option="jongno-gu"]').click();
+  await expect(page).toHaveURL(/district=jongno-gu/);
+  await page.getByText('View new, renewal and distribution').click();
+  const detailLink = page.getByRole('link', { name: 'Open evidence · Jongno-gu' });
+  await expect(detailLink).toHaveAttribute('href', /^\/kr\/seoul\/explore\/jongno-gu/);
+  await detailLink.click();
+  await expect(page).toHaveURL(/\/kr\/seoul\/explore\/jongno-gu\/?(?:\?.*)?$/);
+  await expect(page.locator('[data-detail-main="true"]')).toBeVisible();
+  await expect(page.locator('[data-section="district-buildings"]')).toBeVisible();
   await page.reload();
-  await expect(page).toHaveURL(/\/kr\/seoul\/explore\/\?district=jongno-gu$/);
-  await expect(page.locator('[data-building-browser="jongno-gu"]')).toBeVisible();
-  if (releaseTarget.usesExternalServer) {
-    const ready = await page.locator('[data-building-browser="jongno-gu"] ul button').count();
-    const notLoaded = await page.getByText('Building evidence is not loaded').count();
-    expect(ready + notLoaded).toBeGreaterThan(0);
-  } else {
-    await expect(page.getByText('Building evidence is not loaded')).toHaveCount(0);
-    const building = page.getByRole('button', { name: new RegExp(PUBLIC_BUILDING_TEST_NAME) });
-    await expect(building).toBeVisible();
-    await building.click();
-    await expect(page.locator('[data-building-panel="synthetic-test-building"]')).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Open full building evidence' }))
-      .toHaveAttribute('href', '/kr/seoul/explore/jongno-gu/synthetic-test-building/');
-  }
+  await expect(page).toHaveURL(/\/kr\/seoul\/explore\/jongno-gu\/?(?:\?.*)?$/);
+  await expect(page.locator('[data-detail-main="true"]')).toBeVisible();
+  await expect(page.locator('[data-section="district-buildings"]')).toBeVisible();
   await expectContained(page);
   noFailures();
 });
@@ -80,17 +69,29 @@ test('district detail composes official evidence before verified context', async
     const rail = main.parentElement?.querySelector('[data-detail-rail="true"]');
     const parent = main.parentElement;
     if (rail === null || parent === null) throw new Error('Detail layout is incomplete.');
+    const hero = main.querySelector('[data-detail-hero="district"]');
+    const heading = hero?.querySelector('h1');
     return {
       mainBeforeRail: Boolean(main.compareDocumentPosition(rail) & Node.DOCUMENT_POSITION_FOLLOWING),
       columns: getComputedStyle(parent).gridTemplateColumns.split(' ').filter(Boolean).length,
+      railWidth: rail.getBoundingClientRect().width,
+      heroColumns: hero === null
+        ? 0
+        : getComputedStyle(hero).gridTemplateColumns.split(' ').filter(Boolean).length,
+      headingSize: heading === null ? 0 : Number.parseFloat(getComputedStyle(heading).fontSize),
     };
   });
   expect(layout.mainBeforeRail).toBe(true);
   if (testInfo.project.name === 'desktop-chromium' || testInfo.project.name === 'wide-chromium') {
     expect(layout.columns).toBe(2);
+    expect(Math.abs(layout.railWidth - 280)).toBeLessThanOrEqual(2);
+    expect(layout.heroColumns).toBe(2);
   } else {
     expect(layout.columns).toBe(1);
+    expect(layout.heroColumns).toBe(1);
   }
+  expect(layout.headingSize).toBeGreaterThanOrEqual(32);
+  expect(layout.headingSize).toBeLessThanOrEqual(64);
 
   const htmlResponse = await page.request.get('/kr/seoul/explore/jongno-gu/');
   const html = await htmlResponse.text();
@@ -108,10 +109,17 @@ test('verified synthetic building detail is server rendered only in the local re
   const response = await page.goto('/kr/seoul/explore/jongno-gu/synthetic-test-building/');
   expect(response?.status()).toBe(200);
   await expect(page.getByRole('heading', { level: 1, name: PUBLIC_BUILDING_TEST_NAME })).toBeVisible();
-  await expect(page.getByText('Privacy-safe reported contracts')).toBeVisible();
-  await expect(page.locator('[data-detail-main="true"]')).toBeVisible();
-  await expect(page.locator('[data-detail-rail="true"]')).toContainText('Latest verified News');
-  await expect(page.locator('[data-detail-rail="true"]')).toContainText('Community signal');
+  await page.locator('details > summary', {
+    hasText: 'See records, adjustments, and methodology',
+  }).click();
+  await expect(page.getByRole('heading', {
+    level: 2,
+    name: 'Privacy-safe reported contracts',
+  })).toBeVisible();
+  const evidenceDetails = page.locator('details');
+  await expect(evidenceDetails).toHaveAttribute('open', '');
+  await expect(evidenceDetails).toContainText('Latest verified News');
+  await expect(evidenceDetails).toContainText('Community signal');
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /^noindex,\s*follow$/);
   await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
   await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(0);

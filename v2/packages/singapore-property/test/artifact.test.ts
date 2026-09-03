@@ -85,6 +85,12 @@ describe('Singapore private-sale snapshot', () => {
     expect(() => buildSingaporeSnapshot({
       records: records(),
       generatedAt: '2026-08-31T09:00:00.000Z',
+      rights: {
+        operations: {
+          aggregate: 'requires_dataset_confirmation',
+          display: 'requires_dataset_confirmation',
+        },
+      },
     })).toThrow('Singapore snapshot publication rights are not confirmed.');
 
     expect(() => buildSingaporeSnapshot({

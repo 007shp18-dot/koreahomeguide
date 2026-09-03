@@ -6,7 +6,6 @@ import {
   type SiteFooterModel,
   type SiteHeaderModel,
 } from '../../lib/site-copy';
-import { PublicSectionTabs } from '../public-market/public-section-tabs';
 import { SiteFooter } from '../site-footer';
 import { SiteHeader } from '../site-header';
 import styles from './news.module.css';
@@ -48,11 +47,10 @@ export function NewsDetailPage({ model }: Readonly<{ model: NewsDetailModel }>) 
   return (
     <div id="top" className={styles.page}>
       <SiteHeader copy={header} />
-      <PublicSectionTabs current="news" />
       <main className={styles.main}>
         <nav className={styles.breadcrumb} aria-label="Breadcrumb">
           <ol>
-            <li><Link href="/kr/seoul/news/">News</Link></li>
+            <li><Link href="/kr/seoul/news/">Market Briefs</Link></li>
             <li aria-current="page">{record.title}</li>
           </ol>
         </nav>
@@ -103,7 +101,8 @@ export function NewsDetailPage({ model }: Readonly<{ model: NewsDetailModel }>) 
           </section>
 
           <nav className={styles.actions} aria-label="News evidence links">
-            <Link href="/kr/seoul/news/">All Seoul briefs</Link>
+            <Link href="/kr/seoul/news/">All Market Briefs</Link>
+            <Link href="/kr/seoul/check/">Compare a contract</Link>
             <Link href="/kr/seoul/corrections/">Review correction ledger</Link>
           </nav>
 

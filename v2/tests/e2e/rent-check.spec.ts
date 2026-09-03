@@ -238,7 +238,11 @@ async function gotoRentCheck(page: Page) {
   })).toBeVisible();
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
     'content',
-    /^noindex,\s*follow$/,
+    /^index,\s*follow$/,
+  );
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    'href',
+    'https://www.signedprice.com/kr/seoul/tools/rent-check/',
   );
 }
 

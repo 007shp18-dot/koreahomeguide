@@ -18,17 +18,17 @@ type RentCheckPageModule = {
 };
 
 async function loadPage(): Promise<RentCheckPageModule> {
-  return import('../app/kr/seoul/tools/rent-check/page') as Promise<RentCheckPageModule>;
+  return import('../app/(en)/kr/seoul/tools/rent-check/page') as Promise<RentCheckPageModule>;
 }
 
 const css = readFileSync(
-  new URL('../app/kr/seoul/tools/rent-check/rent-check.module.css', import.meta.url),
+  new URL('../components/rent-check/rent-check.module.css', import.meta.url),
   'utf8',
 );
 
 describe('Seoul Rent Check page shell', () => {
   it('is linked from the Seoul rent overview with the authored quote-check action', async () => {
-    const { default: IntentPage } = await import('../app/[country]/[city]/[intent]/page');
+    const { default: IntentPage } = await import('../app/(en)/[country]/[city]/[intent]/page');
     const markup = renderToStaticMarkup(await IntentPage({
       params: Promise.resolve({ country: 'kr', city: 'seoul', intent: 'rent' }),
     }) as never);
@@ -113,25 +113,27 @@ describe('Seoul Rent Check page shell', () => {
 });
 
 describe('route metadata and authored head contract', () => {
-  it('keeps explicit noindex metadata on the Server Component without canonical or hreflang', async () => {
+  it('publishes the working Rent Check as its own indexable canonical', async () => {
     const page = await loadPage();
     const source = readFileSync(
-      new URL('../app/kr/seoul/tools/rent-check/page.tsx', import.meta.url),
+      new URL('../app/(en)/kr/seoul/tools/rent-check/page.tsx', import.meta.url),
       'utf8',
     );
 
     expect(source).not.toMatch(/^\s*['"]use client['"]/m);
-    expect(page.metadata).toEqual({
+    expect(page.metadata).toMatchObject({
       title: 'Seoul Rent Check | signedprice',
       description: 'Compare a Seoul rent quote with compatible official reported contracts.',
-      robots: { index: false, follow: true },
+      robots: { index: true, follow: true },
+      alternates: {
+        canonical: 'https://www.signedprice.com/kr/seoul/tools/rent-check/',
+      },
     });
-    expect(page.metadata).not.toHaveProperty('alternates');
-    expect(JSON.stringify(page.metadata)).not.toMatch(/canonical|languages|hreflang/i);
+    expect(page.metadata.alternates).not.toHaveProperty('languages');
   });
 
-  it('resolves the built head boundary to inherited noindex, follow and no alternates', async () => {
-    const root = await import('../app/layout');
+  it('resolves the built head boundary to index, follow, and one canonical', async () => {
+    const root = await import('../app/(en)/layout');
     const page = await loadPage();
     const resolved = { ...root.metadata, ...page.metadata } as {
       robots?: { index?: boolean; follow?: boolean };
@@ -144,9 +146,10 @@ describe('route metadata and authored head contract', () => {
       }),
     ));
 
-    expect(head).toContain('<meta name="robots" content="noindex, follow"/>');
-    expect(resolved).not.toHaveProperty('alternates');
-    expect(head).not.toMatch(/canonical|hreflang|rel="alternate"/i);
+    expect(head).toContain('<meta name="robots" content="index, follow"/>');
+    expect(resolved.alternates).toEqual({
+      canonical: 'https://www.signedprice.com/kr/seoul/tools/rent-check/',
+    });
   });
 });
 
@@ -232,6 +235,7 @@ describe('verified Explorer context resolver', () => {
       building: 'noryangjin-dream-square',
     })).toEqual({
       lawdCd: '11590',
+      districtSlug: 'dongjak-gu',
       districtLabel: 'Dongjak-gu (동작구)',
       housingType: 'officetel',
       housingTypeLabel: 'Officetel',

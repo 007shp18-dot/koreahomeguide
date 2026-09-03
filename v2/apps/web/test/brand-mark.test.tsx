@@ -17,7 +17,7 @@ const headerCopy: SiteHeaderModel = {
 
 const unavailableContractModel: ContractCheckRouteModel = {
   status: 'unavailable',
-  message: 'Verified conversion evidence is unavailable.',
+  message: 'Verified transaction evidence is unavailable.',
   navigation: [],
 };
 
@@ -63,5 +63,23 @@ describe('SignedPrice brand mark', () => {
     expect(contractHeader).toContain('data-brand-wordmark="true"');
     expect(globalHeader.match(/<path\b/g)).toHaveLength(3);
     expect(contractHeader.match(/<path\b/g)).toHaveLength(3);
+  });
+
+  test('renders one compact header with seven roadmap destinations and market context', () => {
+    const html = renderToStaticMarkup(<SiteHeader copy={{
+      ...headerCopy,
+      links: [{ label: 'Explore', href: '/kr/seoul/explore/', isCurrent: true }],
+    }} />);
+
+    expect(html).toContain('data-navigation-tier="primary"');
+    expect(html).not.toContain('data-navigation-tier="market"');
+    expect(html).not.toContain('data-navigation-tier="product"');
+    expect(html).toContain('class="site-header__context">Seoul · reported filings</span>');
+    expect(html.match(/site-header__product-link/g)).toHaveLength(7);
+    expect(html).toContain('>Markets</a>');
+    expect(html).toContain('>Invest</a>');
+    expect(html).toContain('href="/properties"');
+    expect(html).toContain('href="/invest"');
+    expect(html).toMatch(/<a[^>]+aria-current="page"[^>]+href="\/prices"/);
   });
 });

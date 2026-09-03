@@ -6,7 +6,6 @@ import {
   type SiteFooterModel,
   type SiteHeaderModel,
 } from '../../lib/site-copy';
-import { PublicSectionTabs } from '../public-market/public-section-tabs';
 import { SiteFooter } from '../site-footer';
 import { SiteHeader } from '../site-header';
 import styles from './news.module.css';
@@ -50,12 +49,11 @@ export function NewsIndexPage({ model }: Readonly<{ model: NewsIndexModel }>) {
   return (
     <div id="top" className={styles.page}>
       <SiteHeader copy={header} />
-      <PublicSectionTabs current="news" />
       <main className={styles.main}>
         <header className={styles.hero}>
-          <p>Seoul · Source-checked reporting</p>
-          <h1>Seoul evidence briefs</h1>
-          <p>Official updates and SignedPrice data notes, each published with its source and an explicit evidence status.</p>
+          <p>Seoul · Evidence editorial</p>
+          <h1>Market Briefs</h1>
+          <p>Approved market briefs and methodology notes, each published with its source and an explicit evidence status.</p>
         </header>
 
         <section className={styles.feed} aria-labelledby="news-feed-heading">
@@ -66,9 +64,14 @@ export function NewsIndexPage({ model }: Readonly<{ model: NewsIndexModel }>) {
           <ol className={styles.cards}>
             {model.records.map((record, index) => (
               <li key={record.id}>
-                <article className={styles.card} data-news-record={record.id}>
+                <article
+                  className={styles.card}
+                  data-news-record={record.id}
+                  data-news-layout={index === 0 ? 'lead' : 'ledger'}
+                >
                   <div className={styles.cardMeta}>
                     <span>{String(index + 1).padStart(2, '0')}</span>
+                    <p className={styles.market}>Seoul</p>
                     <p>{categoryLabels[record.category]}</p>
                     <time dateTime={record.publishedAt}>{date.format(new Date(record.publishedAt))}</time>
                   </div>
@@ -92,7 +95,7 @@ export function NewsIndexPage({ model }: Readonly<{ model: NewsIndexModel }>) {
         </section>
 
         <aside className={styles.boundary} aria-label="News publication boundary">
-          <strong>Publication boundary</strong>
+          <strong>Human approval required before publication</strong>
           <p>SignedPrice does not reproduce source articles or fill missing comparisons with estimates. A verified brief disappears if its declared artifact no longer reconciles.</p>
         </aside>
       </main>

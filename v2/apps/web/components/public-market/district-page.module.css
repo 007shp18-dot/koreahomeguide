@@ -1,0 +1,95 @@
+.page { min-height: 100dvh; color: #111827; background: #f7f9fc; font-variant-numeric: tabular-nums; }
+.main { width: min(1180px, calc(100% - 40px)); margin: 26px auto 72px; }
+.detailLayout { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 16px; }
+.detailMain,
+.detailRail { min-width: 0; }
+.detailRail { display: grid; align-content: start; gap: 14px; }
+
+.breadcrumb { padding: 0 2px 12px; }
+.breadcrumb ol { margin: 0; padding: 0; display: flex; gap: 8px; list-style: none; color: #718096; font-size: .72rem; }
+.breadcrumb li + li::before { margin-right: 8px; content: '/'; }
+.breadcrumb a { color: inherit; text-decoration: none; }
+
+.hero { min-height: 235px; display: grid; grid-template-columns: minmax(0, 1fr) 42%; overflow: hidden; border: 1px solid #dfe5ec; border-radius: 13px; background: #fff; box-shadow: 0 10px 28px rgb(15 23 42 / 5%); }
+.heroCopy { padding: 36px; display: flex; flex-direction: column; justify-content: center; }
+.heroCopy > p:first-child { margin: 0; color: #2d67a5; font-size: .69rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.hero h1 { margin: 9px 0 12px; font-size: clamp(2.35rem, 4.8vw, 4rem); letter-spacing: -.055em; line-height: 1; }
+.heroCopy > p:last-child { max-width: 520px; margin: 0; color: #66758a; font-size: .82rem; line-height: 1.6; }
+.heroMap { min-width: 0; min-height: 235px; overflow: hidden; background: #e8f0f6; }
+.heroMap > div { min-height: 235px; border: 0; border-radius: 0; }
+.mapFallback { min-height: 235px; padding: 26px; display: flex; flex-direction: column; justify-content: flex-end; color: #fff; background: linear-gradient(145deg, #a8bccd, #496a84); }
+.mapFallback strong { font-size: 1.35rem; }
+.mapFallback span { margin-top: 4px; font-size: .72rem; opacity: .86; }
+
+.tabs { margin-top: 14px; display: flex; gap: 27px; overflow-x: auto; border-bottom: 1px solid #dfe5ec; }
+.tabs a { flex: 0 0 auto; padding: 13px 2px 11px; border-bottom: 2px solid transparent; color: #66758a; font-size: .72rem; font-weight: 700; text-decoration: none; }
+.tabs a:first-child { color: #152033; border-color: #286ca9; }
+
+.metricGrid { margin-top: 14px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.metricGrid article { min-height: 108px; padding: 16px; display: grid; align-content: start; border: 1px solid #e0e6ed; border-radius: 9px; background: #fff; box-shadow: 0 5px 16px rgb(15 23 42 / 4%); }
+.metricGrid span { color: #718096; font-size: .66rem; }
+.metricGrid strong { margin-top: 8px; font-size: 1rem; letter-spacing: -.02em; overflow-wrap: anywhere; }
+.metricGrid small { margin-top: 6px; color: #2a8a62; font-size: .65rem; line-height: 1.4; }
+
+.evidence,
+.faq,
+.buildingEvidence,
+.propertyTypeEvidence,
+.unavailable,
+.cohortEvidence,
+.sourceBoundary { margin-top: 14px; padding: 22px; display: grid; gap: 18px; border: 1px solid #e0e6ed; border-radius: 10px; background: #fff; box-shadow: 0 6px 20px rgb(15 23 42 / 4%); }
+.cohortEvidence > section,
+.sourceBoundary > section { border: 0; }
+.findingGrid { margin: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.findingGrid > div { min-height: 84px; padding: 13px; display: grid; align-content: space-between; border: 1px solid #e6ebf0; border-radius: 8px; }
+.findingGrid dt { color: #718096; font-size: .62rem; font-weight: 700; text-transform: uppercase; }
+.findingGrid dd { margin: 7px 0 0; display: grid; gap: 3px; font-size: .76rem; font-weight: 750; overflow-wrap: anywhere; }
+.findingGrid dd span { color: #718096; font-size: .65rem; font-weight: 500; }
+.quoteBlock { display: grid; gap: 14px; }
+
+.propertyTypeList,
+.buildingList { margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; list-style: none; }
+.propertyTypeList a,
+.buildingList a { min-height: 66px; padding: 13px; display: grid; align-content: center; gap: 4px; border: 1px solid #e3e8ee; border-radius: 8px; color: #172033; background: #fbfcfe; font-size: .74rem; font-weight: 720; text-decoration: none; }
+.buildingList span { color: #718096; font-size: .66rem; font-weight: 500; }
+.correctionLink { width: fit-content; color: #24669f; font-size: .7rem; font-weight: 700; text-decoration: none; }
+
+.faqGrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.faqGrid article { padding: 15px; border: 1px solid #e6ebf0; border-radius: 8px; }
+.faqGrid h3 { margin: 0; font-size: .79rem; }
+.faqGrid p { margin: 7px 0 0; color: #66758a; font-size: .7rem; line-height: 1.55; }
+.unavailable { min-height: 180px; place-items: center; color: #66758a; text-align: center; }
+
+.navigation { overflow: hidden; border: 1px solid #e0e6ed; border-radius: 10px; background: #fff; }
+.primaryLinks { display: grid; }
+.primaryLinks a,
+.nearby a { min-height: 44px; padding: 12px; display: grid; place-items: center; border-bottom: 1px solid #edf0f4; color: #172033; font-size: .68rem; font-weight: 700; text-align: center; text-decoration: none; }
+.nearby { display: grid; grid-template-columns: repeat(2, 1fr); }
+.nearby > p { grid-column: 1 / -1; margin: 0; padding: 13px; color: #718096; font-size: .65rem; font-weight: 700; text-transform: uppercase; }
+.nearby a { min-width: 0; border-top: 1px solid #edf0f4; border-right: 1px solid #edf0f4; }
+.nearby a strong,
+.nearby a span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nearby a span { color: #718096; font-size: .61rem; }
+.sampleChip { width: fit-content; padding: 5px 8px; display: inline-flex; gap: 6px; align-items: center; border: 1px solid #dfe5ec; border-radius: 99px; font-size: .65rem; }
+.sampleChip > span { width: 7px; height: 7px; border-radius: 50%; background: #3e8c6b; }
+
+@media (max-width: 940px) {
+  .detailLayout { grid-template-columns: 1fr; }
+  .detailRail { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 720px) {
+  .main { width: calc(100% - 28px); }
+  .hero { grid-template-columns: 1fr; }
+  .heroCopy { padding: 28px 22px; }
+  .heroMap { min-height: 210px; }
+  .metricGrid { grid-template-columns: repeat(2, 1fr); }
+  .findingGrid { grid-template-columns: repeat(2, 1fr); }
+  .detailRail,
+  .faqGrid { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+  .metricGrid,
+  .findingGrid,
+  .propertyTypeList,
+  .buildingList { grid-template-columns: 1fr; }
+}

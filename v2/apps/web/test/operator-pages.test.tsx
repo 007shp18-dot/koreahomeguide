@@ -5,10 +5,10 @@ vi.mock('server-only', () => ({}));
 
 import ContactPage, {
   generateMetadata as generateContactMetadata,
-} from '../app/contact/page';
+} from '../app/(en)/contact/page';
 import PrivacyPage, {
   generateMetadata as generatePrivacyMetadata,
-} from '../app/privacy/page';
+} from '../app/(en)/privacy/page';
 import sitemap from '../app/sitemap';
 import { operatorProfileFromEnvironment } from '../lib/operator/operator-profile.server';
 
@@ -32,7 +32,7 @@ describe('SignedPrice operator configuration', () => {
     });
   });
 
-  it('never invents an operator or contact when configuration is absent', () => {
+  it('keeps verified public email routes available when operator identity is absent', () => {
     const privacyHtml = renderToStaticMarkup(<PrivacyPage />);
     const contactHtml = renderToStaticMarkup(<ContactPage />);
 
@@ -41,9 +41,12 @@ describe('SignedPrice operator configuration', () => {
       missing: ['operator name', 'privacy contact'],
     });
     for (const html of [privacyHtml, contactHtml]) {
-      expect(html).toContain('Operator details are not configured');
-      expect(html).not.toMatch(/privacy@signedprice\.com|SignedPrice Labs Ltd\./);
+      expect(html).toContain('data-product-intro="true"');
+      expect(html).not.toContain('SignedPrice Labs Ltd.');
     }
+    expect(privacyHtml).toContain('Operator details are not configured');
+    expect(contactHtml).toContain('contact@signedprice.com');
+    expect(contactHtml).toContain('privacy@signedprice.com');
   });
 
   it('publishes configured operator details on both pages', () => {
@@ -57,10 +60,12 @@ describe('SignedPrice operator configuration', () => {
     expect(privacyHtml).toContain('privacy@signedprice.com');
     expect(privacyHtml).toContain('Privacy and data');
     expect(contactHtml).toContain('mailto:privacy@signedprice.com');
+    expect(contactHtml).toContain('mailto:contact@signedprice.com');
     expect(contactHtml).toContain('Evidence corrections');
   });
 
   it('indexes and lists operator pages only when the profile is ready', () => {
+    vi.stubEnv('SIGNEDPRICE_USE_CHECKED_IN_SNAPSHOTS', 'false');
     expect(generatePrivacyMetadata().robots).toEqual({ index: false, follow: true });
     expect(generateContactMetadata().robots).toEqual({ index: false, follow: true });
     expect(sitemap().map(({ url }) => url)).not.toContain(

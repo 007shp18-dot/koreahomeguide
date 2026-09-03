@@ -1,5 +1,10 @@
 import { median, percentile, roundWon } from '@signedprice/market-core';
 
+import {
+  buildKoreaBuildingIdentity,
+  normalizeKoreaBuildingText,
+  type KoreaBuildingHousingType,
+} from './building-identity';
 import type { KoreaRentRecord } from './input';
 import type { SeoulDistrictSlug } from './districts';
 
@@ -19,10 +24,7 @@ export type KoreaPublicBuildingDistribution =
       chg3m: number | null;
     }>;
 
-export type KoreaPublicBuildingHousingType =
-  | 'apartment'
-  | 'officetel'
-  | 'villa_multifamily';
+export type KoreaPublicBuildingHousingType = Exclude<KoreaBuildingHousingType, 'detached'>;
 
 export type KoreaPublicBuildingSourceRecord = Readonly<{
   districtSlug: SeoulDistrictSlug;
@@ -75,27 +77,6 @@ export type KoreaPublicBuildingSummaryInput = Readonly<{
   records: readonly KoreaPublicBuildingSourceRecord[];
   geocodes: readonly KoreaPublicBuildingGeocode[];
 }>;
-
-function normalizeText(value: string): string {
-  return value.normalize('NFKC').replace(/\s+/g, ' ').trim();
-}
-
-function stableHash(value: string): string {
-  let hash = 0x811c9dc5;
-  for (const character of value) {
-    hash ^= character.codePointAt(0)!;
-    hash = Math.imul(hash, 0x01000193);
-  }
-  return (hash >>> 0).toString(36);
-}
-
-function supportedHousingType(
-  value: KoreaRentRecord['sourceHousingType'],
-): KoreaPublicBuildingHousingType | null {
-  if (value === 'apartment' || value === 'officetel') return value;
-  if (value === 'villa') return 'villa_multifamily';
-  return null;
-}
 
 function eligible(record: KoreaRentRecord): boolean {
   return record.recordStatus !== 'cancelled'
@@ -151,15 +132,6 @@ function distribution(
   });
 }
 
-function identityKey(
-  districtSlug: SeoulDistrictSlug,
-  neighborhoodName: string,
-  buildingName: string,
-  housingType: KoreaPublicBuildingHousingType,
-): string {
-  return `${districtSlug}\u0000${neighborhoodName}\u0000${buildingName}\u0000${housingType}`;
-}
-
 function assertInput(input: KoreaPublicBuildingSummaryInput): void {
   if (!/^\d{4}-\d{2}\/\d{4}-\d{2}$/.test(input.period)) {
     throw new TypeError('Public building period is invalid.');
@@ -187,15 +159,17 @@ export function buildKoreaPublicBuildingSummaries(
 ): readonly KoreaPublicBuildingRecord[] {
   assertInput(input);
   const geocodes = new Map(input.geocodes.map((geocode) => {
-    const neighborhoodName = normalizeText(geocode.neighborhoodName);
-    const buildingName = normalizeText(geocode.buildingName);
+    const neighborhoodName = normalizeKoreaBuildingText(geocode.neighborhoodName);
+    const buildingName = normalizeKoreaBuildingText(geocode.buildingName);
     return [
       `${geocode.districtSlug}\u0000${neighborhoodName}\u0000${buildingName}`,
       geocode,
     ] as const;
   }));
   const groups = new Map<string, {
+    buildingId: string;
     districtSlug: SeoulDistrictSlug;
+    neighborhoodId: string;
     neighborhoodName: string;
     buildingName: string;
     housingType: KoreaPublicBuildingHousingType;
@@ -203,25 +177,24 @@ export function buildKoreaPublicBuildingSummaries(
   }>();
 
   for (const source of input.records) {
-    const housingType = supportedHousingType(source.record.sourceHousingType);
-    const rawBuildingName = source.record.buildingLabel;
-    const rawNeighborhoodName = source.record.legalDong;
-    if (housingType === null || rawBuildingName === undefined || rawNeighborhoodName === undefined) {
-      continue;
-    }
-    const buildingName = normalizeText(rawBuildingName);
-    const neighborhoodName = normalizeText(rawNeighborhoodName);
-    if (buildingName === '' || neighborhoodName === '') continue;
-    const key = identityKey(source.districtSlug, neighborhoodName, buildingName, housingType);
-    const group = groups.get(key) ?? {
+    const identity = buildKoreaBuildingIdentity({
       districtSlug: source.districtSlug,
-      neighborhoodName,
-      buildingName,
-      housingType,
+      legalDong: source.record.legalDong,
+      buildingLabel: source.record.buildingLabel,
+      sourceHousingType: source.record.sourceHousingType,
+    });
+    if (identity === null || identity.housingType === 'detached') continue;
+    const group = groups.get(identity.buildingId) ?? {
+      buildingId: identity.buildingId,
+      districtSlug: identity.districtSlug,
+      neighborhoodId: identity.neighborhoodId,
+      neighborhoodName: identity.neighborhoodName,
+      buildingName: identity.buildingName,
+      housingType: identity.housingType,
       records: [],
     };
     group.records.push(source.record);
-    groups.set(key, group);
+    groups.set(identity.buildingId, group);
   }
 
   const records = [...groups.values()].flatMap((group) => {
@@ -233,15 +206,11 @@ export function buildKoreaPublicBuildingSummaries(
     const geocode = geocodes.get(
       `${group.districtSlug}\u0000${group.neighborhoodName}\u0000${group.buildingName}`,
     );
-    const neighborhoodId = `${group.districtSlug}-dong-${stableHash(group.neighborhoodName)}`;
-    const buildingId = `${group.districtSlug}-${stableHash(
-      `${group.neighborhoodName}\u0000${group.buildingName}\u0000${group.housingType}`,
-    )}`;
     const allDistribution = distribution(all, input.period);
     return [Object.freeze({
-      buildingId,
+      buildingId: group.buildingId,
       districtSlug: group.districtSlug,
-      neighborhoodId,
+      neighborhoodId: group.neighborhoodId,
       neighborhoodName: group.neighborhoodName,
       name: group.buildingName,
       latitude: geocode?.latitude ?? null,

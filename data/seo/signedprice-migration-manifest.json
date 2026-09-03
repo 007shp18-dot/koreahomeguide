@@ -8,24 +8,14 @@
   },
   "entries": [
     {
-      "sourcePath": "/explore/",
-      "targetPath": "/kr/seoul/explore/",
-      "destination": "https://www.signedprice.com/kr/seoul/explore/",
-      "cohort": 1,
-      "locale": "en",
-      "statusCode": 301,
-      "active": true,
-      "evidence": "cohort-0-target-ready"
-    },
-    {
       "sourcePath": "/tools/seoul-rent-check/",
-      "targetPath": "/kr/seoul/check/",
-      "destination": "https://www.signedprice.com/kr/seoul/check/",
+      "targetPath": "/kr/seoul/tools/rent-check/",
+      "destination": "https://www.signedprice.com/kr/seoul/tools/rent-check/",
       "cohort": 1,
       "locale": "en",
       "statusCode": 301,
       "active": true,
-      "evidence": "cohort-0-target-ready"
+      "evidence": "working-rent-check-target"
     },
     {
       "sourcePath": "/rent/dongdaemun-gu/apartment/",
@@ -232,6 +222,10 @@
     {
       "sourcePath": "/",
       "reason": "cohort-5-disabled"
+    },
+    {
+      "sourcePath": "/explore/",
+      "reason": "full-explorer-parity-pending"
     },
     {
       "sourcePath": "/guides/",

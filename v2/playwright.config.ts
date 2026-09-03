@@ -1,3 +1,5 @@
+import { fileURLToPath } from 'node:url';
+
 import { defineConfig, devices } from '@playwright/test';
 import {
   resolveReleaseTestTarget,
@@ -8,6 +10,9 @@ import {
 } from './tests/e2e/public-area-summary-fixture';
 import { PUBLIC_BUILDING_SUMMARY_TEST_ARTIFACT } from './tests/e2e/public-building-summary-fixture';
 import {
+  OBSERVED_BUILDING_INVENTORY_TEST_ARTIFACT,
+} from './tests/e2e/observed-building-inventory-fixture';
+import {
   PUBLIC_SUMMARY_TEST_ARTIFACT,
   PUBLIC_SUMMARY_TEST_PERIOD,
 } from './tests/e2e/public-summary-fixture';
@@ -17,10 +22,28 @@ import {
   CONVERSION_TEST_SHA256,
 } from './tests/e2e/conversion-artifact-fixture';
 import {
+  CONTRACT_CHECK_INSTALLED_REGISTRY_TEST_ARTIFACT,
+  CONTRACT_CHECK_RENT_EVIDENCE_TEST_GZIP_BASE64,
+  CONTRACT_CHECK_SALE_EVIDENCE_TEST_GZIP_BASE64,
+} from './tests/e2e/contract-check-evidence-fixture';
+import {
   SINGAPORE_SNAPSHOT_TEST_ARTIFACT,
   SINGAPORE_SNAPSHOT_TEST_PERIOD,
   SINGAPORE_SNAPSHOT_TEST_SHA256,
 } from './tests/e2e/singapore-snapshot-fixture';
+import {
+  E2E_KOREA_PROXIMITY_GZIP_BASE64,
+  E2E_KOREA_PROXIMITY_REGISTRY,
+} from './tests/e2e/korea-proximity-fixture';
+import {
+  SINGAPORE_CHECK_HDB_RENT_TEST_ARTIFACT,
+  SINGAPORE_CHECK_HDB_RENT_TEST_SHA256,
+  SINGAPORE_CHECK_HDB_RESALE_TEST_ARTIFACT,
+  SINGAPORE_CHECK_HDB_RESALE_TEST_SHA256,
+  SINGAPORE_CHECK_TEST_PERIOD,
+  SINGAPORE_CHECK_URA_TEST_ARTIFACT,
+  SINGAPORE_CHECK_URA_TEST_SHA256,
+} from './tests/e2e/singapore-check-fixture';
 
 const port = 3100;
 
@@ -29,26 +52,47 @@ export function createPlaywrightConfig(
 ) {
   const target = resolveReleaseTestTarget(environment);
   const webServer = {
-    command:
-      `pnpm --filter @signedprice/web build && ` +
-      `pnpm --filter @signedprice/web start --hostname 127.0.0.1 --port ${port}`,
+    command: `${JSON.stringify(process.execPath)} ${JSON.stringify(fileURLToPath(
+      new URL('./tests/e2e/korea-proximity-web-server.mjs', import.meta.url),
+    ))} ${port}`,
     env: {
       VERCEL_ENV: target.expectedEnvironment,
       VERCEL_GIT_COMMIT_SHA: target.expectedCommit,
       VERCEL_URL: '127.0.0.1:3100',
+      SIGNEDPRICE_GA4_ENABLED: 'false',
+      SIGNEDPRICE_VERCEL_ANALYTICS_ENABLED: 'false',
+      SIGNEDPRICE_USE_CHECKED_IN_SNAPSHOTS: 'false',
+      SIGNEDPRICE_CHECK_EVIDENCE_REGISTRY: CONTRACT_CHECK_INSTALLED_REGISTRY_TEST_ARTIFACT,
+      SIGNEDPRICE_CHECK_RENT_EVIDENCE_ARTIFACT_GZIP_BASE64:
+        CONTRACT_CHECK_RENT_EVIDENCE_TEST_GZIP_BASE64,
+      SIGNEDPRICE_CHECK_SALE_EVIDENCE_ARTIFACT_GZIP_BASE64:
+        CONTRACT_CHECK_SALE_EVIDENCE_TEST_GZIP_BASE64,
       SIGNEDPRICE_PUBLIC_SUMMARY_ARTIFACT: PUBLIC_SUMMARY_TEST_ARTIFACT,
       SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD: PUBLIC_SUMMARY_TEST_PERIOD,
       SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT: PUBLIC_AREA_SUMMARY_TEST_ARTIFACT,
       SIGNEDPRICE_PUBLIC_BUILDING_SUMMARY_ARTIFACT: PUBLIC_BUILDING_SUMMARY_TEST_ARTIFACT,
+      SIGNEDPRICE_OBSERVED_BUILDING_ARTIFACT: OBSERVED_BUILDING_INVENTORY_TEST_ARTIFACT,
       SIGNEDPRICE_CONVERSION_CURVE_ARTIFACT: CONVERSION_TEST_ARTIFACT,
       SIGNEDPRICE_CONVERSION_CURVE_PERIOD: CONVERSION_TEST_PERIOD,
       SIGNEDPRICE_CONVERSION_CURVE_SHA256: CONVERSION_TEST_SHA256,
       SIGNEDPRICE_SINGAPORE_SNAPSHOT_ARTIFACT: SINGAPORE_SNAPSHOT_TEST_ARTIFACT,
       SIGNEDPRICE_SINGAPORE_SNAPSHOT_PERIOD: SINGAPORE_SNAPSHOT_TEST_PERIOD,
       SIGNEDPRICE_SINGAPORE_SNAPSHOT_SHA256: SINGAPORE_SNAPSHOT_TEST_SHA256,
+      SIGNEDPRICE_SINGAPORE_CHECK_URA_ARTIFACT: SINGAPORE_CHECK_URA_TEST_ARTIFACT,
+      SIGNEDPRICE_SINGAPORE_CHECK_URA_SHA256: SINGAPORE_CHECK_URA_TEST_SHA256,
+      SIGNEDPRICE_SINGAPORE_CHECK_URA_PERIOD: SINGAPORE_CHECK_TEST_PERIOD,
+      SIGNEDPRICE_SINGAPORE_CHECK_HDB_RESALE_ARTIFACT: SINGAPORE_CHECK_HDB_RESALE_TEST_ARTIFACT,
+      SIGNEDPRICE_SINGAPORE_CHECK_HDB_RESALE_SHA256: SINGAPORE_CHECK_HDB_RESALE_TEST_SHA256,
+      SIGNEDPRICE_SINGAPORE_CHECK_HDB_RESALE_PERIOD: SINGAPORE_CHECK_TEST_PERIOD,
+      SIGNEDPRICE_SINGAPORE_CHECK_HDB_RENT_ARTIFACT: SINGAPORE_CHECK_HDB_RENT_TEST_ARTIFACT,
+      SIGNEDPRICE_SINGAPORE_CHECK_HDB_RENT_SHA256: SINGAPORE_CHECK_HDB_RENT_TEST_SHA256,
+      SIGNEDPRICE_SINGAPORE_CHECK_HDB_RENT_PERIOD: SINGAPORE_CHECK_TEST_PERIOD,
       SIGNEDPRICE_URA_ACCESS_KEY: 'sentinel-ura-key',
+      SIGNEDPRICE_INSTALLED_SNAPSHOT_REGISTRY: E2E_KOREA_PROXIMITY_REGISTRY,
+      SIGNEDPRICE_PLAYWRIGHT_PROXIMITY_GZIP_BASE64: E2E_KOREA_PROXIMITY_GZIP_BASE64,
     },
     reuseExistingServer: false,
+    gracefulShutdown: { signal: 'SIGTERM', timeout: 5_000 },
     stderr: 'pipe',
     stdout: 'pipe',
     timeout: 180_000,
@@ -68,6 +112,16 @@ export function createPlaywrightConfig(
     use: {
       baseURL: target.baseURL,
       screenshot: 'only-on-failure',
+      storageState: {
+        cookies: [],
+        origins: [{
+          origin: target.baseURL,
+          localStorage: [
+            { name: 'signedprice_analytics_consent_v1', value: 'denied' },
+            { name: 'signedprice_advertising_consent_v1', value: 'denied' },
+          ],
+        }],
+      },
       trace: 'retain-on-failure',
     },
     ...(target.usesExternalServer ? {} : { webServer }),

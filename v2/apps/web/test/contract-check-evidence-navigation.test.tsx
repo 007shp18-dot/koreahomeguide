@@ -35,7 +35,7 @@ describe('Contract Check evidence navigation', () => {
     },
   );
 
-  test('offers Rankings only as a secondary link from the district Explorer', () => {
+  test('does not duplicate the product-level Rankings action inside the district Explorer', () => {
     const model = buildPublicAreaExploreModel('gangnam-gu', {
       source: createPublicAreaFixture(),
       period: PUBLIC_AREA_FIXTURE_PERIOD,
@@ -44,10 +44,10 @@ describe('Contract Check evidence navigation', () => {
 
     const html = renderToStaticMarkup(<AreaExplorer model={model} />);
 
-    expect(html).toContain('href="/kr/seoul/check"');
-    expect(html).toContain('href="/kr/seoul/rankings"');
-    expect(html).toContain('View district rankings');
-    expect(html).toContain('href="/kr/seoul/guide"');
+    expect(html).not.toContain('href="/kr/seoul/rankings"');
+    expect(html).not.toContain('View district rankings');
+    expect(html).toContain('data-transaction-filter="verified-availability"');
+    expect(html).toContain('data-transaction-mode="jeonse"');
   });
 
   test.each([
@@ -69,6 +69,6 @@ describe('Contract Check evidence navigation', () => {
     expect(html).toContain('href="/kr/seoul/check"');
     expect(html).toContain('href="/kr/seoul/rankings"');
     expect(html).toContain('View district rankings');
-    expect(html).toContain('href="/kr/seoul/guide"');
+    expect(html).toContain('href="/guides"');
   });
 });

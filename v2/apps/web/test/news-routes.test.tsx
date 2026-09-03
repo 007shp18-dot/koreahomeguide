@@ -9,13 +9,13 @@ const navigation = vi.hoisted(() => ({
 vi.mock('server-only', () => ({}));
 vi.mock('next/navigation', () => navigation);
 
-import LegacyNewsPage from '../app/kr/news/page';
-import NewsIndexRoute, { metadata as indexMetadata } from '../app/kr/seoul/news/page';
+import LegacyNewsPage from '../app/(en)/kr/news/page';
+import NewsIndexRoute, { metadata as indexMetadata } from '../app/(en)/kr/seoul/news/page';
 import NewsDetailRoute, {
   dynamicParams,
   generateMetadata,
   generateStaticParams,
-} from '../app/kr/seoul/news/[slug]/page';
+} from '../app/(en)/kr/seoul/news/[slug]/page';
 import { buildNewsIndexModel } from '../lib/news/news-route-model.server';
 import {
   PUBLIC_AREA_FIXTURE_PERIOD,
@@ -41,16 +41,18 @@ describe('verified Seoul News routes', () => {
       robots: { index: true, follow: true },
       alternates: { canonical: 'https://www.signedprice.com/kr/seoul/news/' },
     });
-    expect(html).toContain('Seoul evidence briefs');
+    expect(html).toContain('>Market Briefs</h1>');
+    expect(html).toContain('>Methodology</p>');
+    expect(html).toContain('Human approval required before publication');
     expect(html).toContain('What the Seoul district snapshot covers');
     expect(html).toContain('How SignedPrice reads reported rental contracts');
     expect((html.match(/Our data:/g) ?? [])).toHaveLength(2);
     expect(html).toContain('25 Seoul districts are included');
     expect(html).toContain('data-news-evidence="verified"');
     expect(html).toContain('data-news-evidence="not-applicable"');
-    expect(html).toContain('data-public-tab="news"');
+    expect(html).toContain('data-navigation-tier="primary"');
     expect(html).toContain('aria-current="page"');
-    expect(html).toContain('data-public-tab="check"');
+    expect(html).toContain('>News</a>');
     expect(html).toContain('href="/kr/seoul/check/">Contract Check</a>');
     expect(html).not.toMatch(/articleText|<iframe|dangerouslySetInnerHTML/);
   });

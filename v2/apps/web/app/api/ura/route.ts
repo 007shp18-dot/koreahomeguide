@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { readUraCredential } from '@signedprice/singapore-property';
 import {
   checkParam,
   fetchUra,
@@ -33,10 +34,12 @@ const MAX_AGE: Record<string, number> = {
 };
 
 export async function GET(request: Request) {
-  const accessKey = process.env.URA_ACCESS_KEY;
-  if (!accessKey) {
+  let accessKey: string;
+  try {
+    accessKey = readUraCredential().accessKey;
+  } catch {
     // Deliberately vague to the caller, explicit in the server log.
-    console.error('URA_ACCESS_KEY is not set');
+    console.error('SIGNEDPRICE_URA_ACCESS_KEY is not set');
     return NextResponse.json({ error: 'Singapore data is not configured.' }, { status: 503 });
   }
 

@@ -3,8 +3,8 @@ import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 
-import TrustPage from '../app/trust/page';
-import KoreaCorrectionsPage from '../app/kr/seoul/corrections/page';
+import TrustPage from '../app/(en)/trust/page';
+import KoreaCorrectionsPage from '../app/(en)/kr/seoul/corrections/page';
 
 describe('Trust publication copy contract', () => {
   it('publishes evidence limits while refusing unsupported accuracy claims', () => {

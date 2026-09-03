@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { useRouter } from 'next/navigation';
 
 import type { ProductLocale } from '../../lib/locale/product-copy';
+export { buildNaverBuildingAddressQuery } from '../../lib/public-market/naver-building-address';
 import styles from './interactive-map.module.css';
 
 export type NaverDistrictMapPoint = Readonly<{
@@ -22,6 +23,7 @@ export type NaverBuildingMapPoint = Readonly<{
   addressQuery: string;
   latitude: number | null;
   longitude: number | null;
+  allowAddressGeocoding?: boolean;
 }>;
 
 type NaverMapInstance = Readonly<{
@@ -44,6 +46,13 @@ type NaverDistrictMapProps = Readonly<{
   locale?: ProductLocale;
 }>;
 
+export type NaverGeocodeAddress = Readonly<{
+  x: string;
+  y: string;
+  roadAddress?: string;
+  jibunAddress?: string;
+}>;
+
 export type NaverMapsSdk = Readonly<{
   Map: new (
     element: HTMLElement,
@@ -64,11 +73,63 @@ export type NaverMapsSdk = Readonly<{
     geocode: (
       input: Readonly<{ query: string }>,
       callback: (status: string, response: Readonly<{
-        v2?: Readonly<{ addresses?: readonly Readonly<{ x: string; y: string }>[] }>;
+        v2?: Readonly<{ addresses?: readonly NaverGeocodeAddress[] }>;
       }>) => void,
     ) => void;
   }>;
 }>;
+
+export function isNaverMapsSdkReady(value: unknown): value is NaverMapsSdk {
+  if (typeof value !== 'object' || value === null) return false;
+  const candidate = value as Readonly<Record<string, unknown>>;
+  const event = candidate.Event;
+  return typeof candidate.Map === 'function'
+    && typeof candidate.LatLng === 'function'
+    && typeof candidate.Marker === 'function'
+    && typeof event === 'object'
+    && event !== null
+    && typeof (event as Readonly<Record<string, unknown>>).addListener === 'function'
+    && typeof (event as Readonly<Record<string, unknown>>).removeListener === 'function';
+}
+
+type NaverMapsSubmoduleNamespace = NaverMapsSdk & {
+  onJSContentLoaded?: () => void;
+};
+
+export function waitForNaverMapsSubmodules(
+  value: unknown,
+  requireGeocoder: boolean,
+  onReady: (sdk: NaverMapsSdk) => void,
+): () => void {
+  if (!isNaverMapsSdkReady(value)) {
+    throw new TypeError('NAVER Maps SDK is unavailable.');
+  }
+  if (!requireGeocoder || value.Service !== undefined) {
+    onReady(value);
+    return () => undefined;
+  }
+
+  const namespace = value as NaverMapsSubmoduleNamespace;
+  const previous = namespace.onJSContentLoaded;
+  let active = true;
+  const handleContentLoaded = () => {
+    if (!active) return;
+    active = false;
+    if (namespace.onJSContentLoaded === handleContentLoaded) {
+      namespace.onJSContentLoaded = previous;
+    }
+    previous?.();
+    if (namespace.Service !== undefined) onReady(namespace);
+  };
+  namespace.onJSContentLoaded = handleContentLoaded;
+
+  return () => {
+    active = false;
+    if (namespace.onJSContentLoaded === handleContentLoaded) {
+      namespace.onJSContentLoaded = previous;
+    }
+  };
+}
 
 type NaverDistrictMapUpdate = Readonly<{
   districts: readonly NaverDistrictMapPoint[];
@@ -84,11 +145,41 @@ type MountNaverDistrictMapOptions = NaverDistrictMapUpdate & Readonly<{
   element: HTMLElement;
 }>;
 
-export function buildNaverMapsScriptUrl(clientId: string): string {
+export function buildNaverMapsScriptUrl(
+  clientId: string,
+  includeGeocoder = false,
+  includePanorama = false,
+  callback?: string,
+): string {
   const url = new URL('https://oapi.map.naver.com/openapi/v3/maps.js');
   url.searchParams.set('ncpKeyId', clientId);
-  url.searchParams.set('submodules', 'geocoder');
-  return url.toString();
+  const submodules = [
+    includePanorama ? 'panorama' : null,
+    includeGeocoder ? 'geocoder' : null,
+  ].filter((value): value is string => value !== null);
+  if (submodules.length > 0) url.searchParams.set('submodules', submodules.join(','));
+  if (callback !== undefined) url.searchParams.set('callback', callback);
+  // NAVER treats an encoded comma as part of a single submodule name
+  // (`maps-panorama%2Cgeocoder.js`) instead of loading both modules.
+  // URLSearchParams encodes commas, so restore the delimiter expected by the SDK.
+  return url.toString().replace(/%2C/gi, ',');
+}
+
+export function resolveUnambiguousNaverGeocode(
+  addressQuery: string,
+  addresses: readonly NaverGeocodeAddress[] | undefined,
+): NaverGeocodeAddress | null {
+  if (addresses?.length !== 1) return null;
+  const address = addresses[0]!;
+  const queryParts = addressQuery.trim().split(/\s+/);
+  if (queryParts[0] !== '서울특별시' || queryParts.length < 4) return address;
+  const district = queryParts[1]!;
+  const neighborhood = queryParts[2]!;
+  const resolvedLocality = `${address.roadAddress ?? ''} ${address.jibunAddress ?? ''}`;
+  if (!resolvedLocality.includes(district) || !resolvedLocality.includes(neighborhood)) {
+    return null;
+  }
+  return address;
 }
 
 export function mountNaverDistrictMap({
@@ -171,11 +262,14 @@ export function mountNaverDistrictMap({
             building.longitude,
             () => onSelectBuilding?.(building.id),
           );
-        } else if (sdk.Service !== undefined) {
+        } else if (building.allowAddressGeocoding === true && sdk.Service !== undefined) {
           sdk.Service.geocode({ query: building.addressQuery }, (status, response) => {
             if (!isActive()) return;
-            const address = response.v2?.addresses?.[0];
-            if (status !== sdk.Service!.Status.OK || address === undefined) {
+            const address = resolveUnambiguousNaverGeocode(
+              building.addressQuery,
+              response.v2?.addresses,
+            );
+            if (status !== sdk.Service!.Status.OK || address === null) {
               markBuildingUnavailable(building.id);
               return;
             }
@@ -230,6 +324,38 @@ export function mountNaverDistrictMap({
   });
 }
 
+export function reconcileNaverDistrictMap(
+  current: ReturnType<typeof mountNaverDistrictMap> | null,
+  options: MountNaverDistrictMapOptions,
+): ReturnType<typeof mountNaverDistrictMap> | null {
+  try {
+    if (current === null) return mountNaverDistrictMap(options);
+    current.update(options);
+    return current;
+  } catch {
+    current?.dispose();
+    return null;
+  }
+}
+
+function BuildingMarkerStatus({
+  count,
+  locale,
+}: Readonly<{ count: number; locale: ProductLocale }>) {
+  if (count === 0) return null;
+  return (
+    <p className={styles.markerStatus} role="status">
+      {locale === 'ko' ? (
+        <>네이버에서 위치를 확인하지 못해 건물 {count}개의 지도 표식을 표시하지 못했습니다. 건물 목록에서 근거를 확인하세요.</>
+      ) : (
+        <>{count === 1 ? 'Map marker' : 'Map markers'} unavailable for{' '}
+          {count} {count === 1 ? 'building' : 'buildings'}
+          {' '}because Naver could not verify the location. Use the building list to open evidence.</>
+      )}
+    </p>
+  );
+}
+
 export function NaverDistrictMap({
   clientId,
   districts,
@@ -243,19 +369,64 @@ export function NaverDistrictMap({
   const router = useRouter();
   const container = useRef<HTMLDivElement>(null);
   const lifecycle = useRef<ReturnType<typeof mountNaverDistrictMap> | null>(null);
+  const submoduleWait = useRef<(() => void) | null>(null);
+  const authenticationFailed = useRef(false);
   const [sdk, setSdk] = useState<NaverMapsSdk | null>(null);
   const [state, setState] = useState<'loading' | 'ready' | 'error'>('loading');
   const [unavailableBuildingIds, setUnavailableBuildingIds] = useState<readonly string[]>([]);
+  const canResolveSelectedBuildings = selectedDistrict === undefined
+    || buildings === undefined
+    || buildings.some((building) => (
+      (building.latitude !== null && building.longitude !== null)
+      || building.allowAddressGeocoding === true
+    ));
+  const failClosed = useCallback(() => {
+    authenticationFailed.current = true;
+    lifecycle.current?.dispose();
+    lifecycle.current = null;
+    setSdk(null);
+    setState('error');
+  }, []);
   const initialize = useCallback(() => {
     const readySdk = (globalThis as typeof globalThis & {
       naver?: Readonly<{ maps: NaverMapsSdk }>;
     }).naver?.maps;
-    if (readySdk === undefined || container.current === null) {
-      setState('error');
+    if (
+      authenticationFailed.current
+      || !isNaverMapsSdkReady(readySdk)
+      || container.current === null
+    ) {
+      failClosed();
       return;
     }
-    setSdk(readySdk);
-  }, []);
+    submoduleWait.current?.();
+    submoduleWait.current = waitForNaverMapsSubmodules(
+      readySdk,
+      buildings?.some(({ allowAddressGeocoding }) => allowAddressGeocoding === true) ?? false,
+      setSdk,
+    );
+  }, [buildings, failClosed]);
+
+  useEffect(() => {
+    if (clientId === null) return undefined;
+    const scope = globalThis as typeof globalThis & {
+      navermap_authFailure?: () => void;
+    };
+    const previous = scope.navermap_authFailure;
+    const handleAuthenticationFailure = () => {
+      try {
+        previous?.();
+      } finally {
+        failClosed();
+      }
+    };
+    scope.navermap_authFailure = handleAuthenticationFailure;
+    return () => {
+      if (scope.navermap_authFailure === handleAuthenticationFailure) {
+        scope.navermap_authFailure = previous;
+      }
+    };
+  }, [clientId, failClosed]);
 
   useEffect(() => {
     if (clientId === null || sdk === null || container.current === null) return undefined;
@@ -277,21 +448,24 @@ export function NaverDistrictMap({
           : Object.freeze([...current, buildingId]));
       },
     };
-    if (lifecycle.current === null) {
-      lifecycle.current = mountNaverDistrictMap({
-        sdk,
-        element: container.current,
-        ...options,
-      });
-    } else {
-      lifecycle.current.update(options);
+    const nextLifecycle = reconcileNaverDistrictMap(lifecycle.current, {
+      sdk,
+      element: container.current,
+      ...options,
+    });
+    if (nextLifecycle === null) {
+      failClosed();
+      return undefined;
     }
+    lifecycle.current = nextLifecycle;
     setState('ready');
     const active = lifecycle.current;
     return () => active.invalidate();
-  }, [buildings, clientId, districts, onSelectBuilding, onSelectDistrict, router, sdk, selectedDistrict]);
+  }, [buildings, clientId, districts, failClosed, onSelectBuilding, onSelectDistrict, router, sdk, selectedDistrict]);
 
   useEffect(() => () => {
+    submoduleWait.current?.();
+    submoduleWait.current = null;
     lifecycle.current?.dispose();
     lifecycle.current = null;
   }, []);
@@ -299,6 +473,13 @@ export function NaverDistrictMap({
   if (clientId === null) return (
     <div className={styles.frame} data-map-provider="static" data-map-state="fallback">
       {fallback}
+    </div>
+  );
+
+  if (!canResolveSelectedBuildings) return (
+    <div className={styles.frame} data-map-provider="static" data-map-state="coordinate-pending">
+      {fallback}
+      <BuildingMarkerStatus count={buildings?.length ?? 0} locale={locale} />
     </div>
   );
 
@@ -314,30 +495,18 @@ export function NaverDistrictMap({
             ? 'Interactive NAVER map of Seoul buildings'
             : 'Interactive NAVER map of Seoul districts'}
       />
-      {unavailableBuildingIds.length === 0 ? null : (
-        <p className={styles.markerStatus} role="status">
-          {locale === 'ko' ? (
-            <>네이버에서 위치를 확인하지 못해 건물 {unavailableBuildingIds.length}개의 지도 표식을 표시하지 못했습니다. 건물 목록에서 근거를 확인하세요.</>
-          ) : (
-            <>{unavailableBuildingIds.length === 1 ? 'Map marker' : 'Map markers'} unavailable for{' '}
-              {unavailableBuildingIds.length} {unavailableBuildingIds.length === 1 ? 'building' : 'buildings'}
-              {' '}because Naver could not verify the location. Use the building list to open evidence.</>
-          )}
-        </p>
-      )}
+      <BuildingMarkerStatus count={unavailableBuildingIds.length} locale={locale} />
       <div className={state === 'ready' ? styles.fallbackHidden : styles.fallback}>
         {fallback}
       </div>
       <Script
-        src={buildNaverMapsScriptUrl(clientId)}
+        src={buildNaverMapsScriptUrl(
+          clientId,
+          buildings?.some(({ allowAddressGeocoding }) => allowAddressGeocoding === true) ?? false,
+        )}
         strategy="afterInteractive"
         onReady={initialize}
-        onError={() => {
-          lifecycle.current?.dispose();
-          lifecycle.current = null;
-          setSdk(null);
-          setState('error');
-        }}
+        onError={failClosed}
       />
     </div>
   );

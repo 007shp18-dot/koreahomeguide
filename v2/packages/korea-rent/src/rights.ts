@@ -1,6 +1,6 @@
 import { createRightsPolicy, type RightsPolicy } from '@signedprice/market-core';
 
-import { MOLIT_RIGHTS_POLICY_ID } from './versions';
+import { MOLIT_RIGHTS_POLICY_ID, MOLIT_SALE_RIGHTS_POLICY_ID } from './versions';
 
 export type MolitRightsOperation =
   | 'fetch'
@@ -46,11 +46,26 @@ export const KR_MOLIT_RENT_RIGHTS = createRightsPolicy({
   evidenceRef: 'https://www.data.go.kr/data/15126474/openapi.do',
 });
 
+export const KR_MOLIT_SALE_RIGHTS = createRightsPolicy({
+  id: MOLIT_SALE_RIGHTS_POLICY_ID,
+  canFetch: true,
+  canStore: true,
+  canCache: true,
+  canDisplay: true,
+  canCreateDerived: true,
+  canUseCommercially: true,
+  canIndex: false,
+  retention: '24 hours',
+  cacheTtl: '24 hours',
+  attribution: ['Ministry of Land, Infrastructure and Transport (MOLIT)'],
+  evidenceRef: 'https://www.data.go.kr/data/15126468/openapi.do',
+});
+
 export class RightsViolationError extends Error {
   readonly code = 'rights_blocked' as const;
 
   constructor() {
-    super('Official rental data use is not permitted by the active rights policy.');
+    super('Official transaction data use is not permitted by the active rights policy.');
     this.name = 'RightsViolationError';
   }
 }
@@ -89,11 +104,18 @@ function withinBound(requested: number | undefined, policyValue: string): boolea
 }
 
 export function assertMolitRights(request: MolitRightsRequest): RightsPolicy {
+  return assertExpectedMolitRights(request, KR_MOLIT_RENT_RIGHTS);
+}
+
+function assertExpectedMolitRights(
+  request: MolitRightsRequest,
+  expected: RightsPolicy,
+): RightsPolicy {
   const policy = request.lookup(request.policyId);
   if (
-    request.policyId !== KR_MOLIT_RENT_RIGHTS.id ||
+    request.policyId !== expected.id ||
     policy === undefined ||
-    policy.id !== KR_MOLIT_RENT_RIGHTS.id ||
+    policy.id !== expected.id ||
     !hasEvidence(policy) ||
     request.operations.some((operation) => policy[PERMISSION_BY_OPERATION[operation]] !== true) ||
     !withinBound(request.cacheTtlSeconds, policy.cacheTtl) ||
@@ -104,10 +126,22 @@ export function assertMolitRights(request: MolitRightsRequest): RightsPolicy {
   return policy;
 }
 
+export function assertMolitSaleRights(request: MolitRightsRequest): RightsPolicy {
+  return assertExpectedMolitRights(request, KR_MOLIT_SALE_RIGHTS);
+}
+
 export async function runWithMolitRights<T>(
   request: MolitRightsRequest,
   loader: (policy: RightsPolicy) => T | Promise<T>,
 ): Promise<T> {
   const policy = assertMolitRights(request);
+  return loader(policy);
+}
+
+export async function runWithMolitSaleRights<T>(
+  request: MolitRightsRequest,
+  loader: (policy: RightsPolicy) => T | Promise<T>,
+): Promise<T> {
+  const policy = assertMolitSaleRights(request);
   return loader(policy);
 }

@@ -46,11 +46,14 @@ test('rankings server HTML exposes four complete evidence lists', async ({ page 
   await expect(page.locator('[data-ranking-section]')).toHaveCount(4);
   await expect(page.getByRole('heading', { name: 'Median refundable jeonse deposit' }))
     .toBeVisible();
+  await page.getByRole('tab', { name: '3-month change' }).click();
   await expect(page.getByRole('heading', {
     name: 'Three-month change not assessable',
   })).toBeVisible();
+  await page.getByRole('tab', { name: 'Spread' }).click();
   await expect(page.getByRole('heading', { name: 'Middle-half spread (P75 − P25)' }))
     .toBeVisible();
+  await page.getByRole('tab', { name: 'Sample' }).click();
   await expect(page.getByRole('heading', { name: 'Qualifying reported contracts' }))
     .toBeVisible();
   expect(await page.locator('[data-ranking-row]').count()).toBeGreaterThan(0);
@@ -103,9 +106,9 @@ test('rankings remain contained and keyboard-readable at every release width', a
   await page.goto('/kr/seoul/rankings/');
   await expectNoHorizontalOverflow(page);
 
-  const districtLinks = page.locator('[data-ranking-row] a');
-  const count = await districtLinks.count();
-  expect(count).toBeGreaterThan(0);
+  const medianPanel = page.getByRole('tabpanel', { name: 'Median' });
+  const districtLinks = medianPanel.locator('[data-ranking-row] a');
+  await expect(districtLinks).not.toHaveCount(0);
   for (const link of await districtLinks.all()) await expectTouchTarget(link);
 
   const first = districtLinks.nth(0);
@@ -128,16 +131,14 @@ test('rankings remain contained and keyboard-readable at every release width', a
   assertNoRuntimeFailures();
 });
 
-test('Explore and district evidence link into Rankings without changing the four primary tabs', async ({ page }) => {
+test('Explore and district evidence keep Rankings reachable beside the six global product links', async ({ page }) => {
   await page.goto('/kr/seoul/explore/');
-  await expect(page.getByRole('link', { name: 'View district rankings' }))
-    .toHaveAttribute('href', '/kr/seoul/rankings/');
-  await expect(page.locator('[data-public-tab]')).toHaveCount(4);
+  const productNavigation = page.getByRole('navigation', { name: 'Seoul evidence navigation' });
+  await expect(productNavigation.getByRole('link', { name: 'Prices' }))
+    .toHaveAttribute('href', '/prices/');
+  await expect(productNavigation.getByRole('link')).toHaveCount(6);
 
-  const districtHref = await page.locator('[data-district-row] a').last().getAttribute('href');
-  expect(districtHref).not.toBeNull();
-  if (districtHref === null) throw new Error('District evidence link is required.');
-  await page.goto(districtHref);
+  await page.goto('/kr/seoul/explore/jongno-gu/');
   await expect(page.getByRole('link', { name: 'View district rankings' }))
     .toHaveAttribute('href', '/kr/seoul/rankings/');
 });

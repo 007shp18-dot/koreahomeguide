@@ -6,8 +6,8 @@ import { describe, expect, it, vi } from 'vitest';
 vi.mock('server-only', () => ({}));
 
 import { SEOUL_RENT_CHECK_DISTRICTS } from '@signedprice/korea-rent/browser';
-import MarketOverviewPage from '../app/[country]/[city]/page';
-import IntentPage from '../app/[country]/[city]/[intent]/page';
+import MarketOverviewPage from '../app/(en)/[country]/[city]/page';
+import IntentPage from '../app/(en)/[country]/[city]/[intent]/page';
 import { buildMarketPageModel, marketRouteParams } from '../lib/route-model';
 
 const css = readFileSync(new URL('../app/globals.css', import.meta.url), 'utf8');
@@ -17,7 +17,7 @@ const expectedRows = [
   'Available evidence',
   'Supported decisions',
   'Known limitations',
-  'Local rules and costs',
+  'Listings and investment service',
   'Source and methodology status',
 ] as const;
 
@@ -125,7 +125,7 @@ describe('three market overview routes', () => {
         await MarketOverviewPage({ params: Promise.resolve(params) }),
       );
 
-      expect(markup.match(/class="market-overview-row"/g)).toHaveLength(6);
+      expect(markup.match(/data-overview-row=/g)).toHaveLength(6);
       let previousIndex = -1;
       for (const title of expectedRows) {
         const index = markup.indexOf(`>${title}<`);
@@ -135,35 +135,34 @@ describe('three market overview routes', () => {
     }
   });
 
-  it('uses two header controls and marks Market overview as current', async () => {
+  it('uses the shared seven-link roadmap navigation on market overviews', async () => {
     for (const params of marketRouteParams) {
       const markup = renderToStaticMarkup(
         await MarketOverviewPage({ params: Promise.resolve(params) }),
       );
       const navigation = markup.match(
-        /<nav aria-label="Primary navigation">([\s\S]*?)<\/nav>/,
+        /<nav[^>]*aria-label="Primary navigation"[^>]*>([\s\S]*?)<\/nav>/,
       )?.[1] ?? '';
 
-      expect(navigation.match(/<a /g) ?? []).toHaveLength(2);
-      expect(navigation).toContain('>Global home</a>');
-      expect(navigation).toContain('aria-current="page">Market overview</a>');
-      expect(navigation).not.toContain('aria-current="page">Global home</a>');
+      expect(navigation.match(/<a /g) ?? []).toHaveLength(7);
+      for (const label of ['Markets', 'Prices', 'Properties', 'News', 'Community', 'Guides', 'Invest']) {
+        expect(navigation).toContain(`>${label}</a>`);
+      }
     }
   });
 
-  it('leaves both global controls inactive on intent routes', async () => {
+  it('leaves the shared product links inactive on generic intent routes', async () => {
     const markup = renderToStaticMarkup(
       await IntentPage({
         params: Promise.resolve({ country: 'kr', city: 'seoul', intent: 'rent' }),
       }),
     );
     const navigation = markup.match(
-      /<nav aria-label="Primary navigation">([\s\S]*?)<\/nav>/,
+      /<nav[^>]*aria-label="Primary navigation"[^>]*>([\s\S]*?)<\/nav>/,
     )?.[1] ?? '';
 
-    expect(navigation.match(/<a /g) ?? []).toHaveLength(2);
-    expect(navigation).toContain('>Global home</a>');
-    expect(navigation).toContain('>Market overview</a>');
+    expect(navigation.match(/<a /g) ?? []).toHaveLength(7);
+    expect(navigation).toContain('>Prices</a>');
     expect(navigation).not.toContain('aria-current');
   });
 
@@ -192,13 +191,11 @@ describe('three market overview routes', () => {
         await MarketOverviewPage({ params: Promise.resolve(params) }),
       );
 
-      expect(markup).toContain('class="market-hero market-hero--overview site-shell"');
-      expect(markup).toContain('class="market-hero__tier"');
-      expect(markup).not.toContain('class="market-hero__facts"');
+      expect(markup).toContain('data-market-hero="overview"');
+      expect(markup).toContain('data-product-intro="true"');
+      expect(markup).toContain('data-market-tier="true"');
       expect(markup).not.toContain('<section class="market-limitations');
-      expect(markup.match(/class="market-overview-action /g)).toHaveLength(2);
-      expect(markup.match(/class="market-overview-actions market-limitations__actions"/g))
-        .toHaveLength(1);
+      expect(markup).toContain('aria-label="Available next steps"');
     }
   });
 });
@@ -283,8 +280,8 @@ describe('bundled Archivo and pre-launch route safety', () => {
   });
 
   it('keeps the shared shell SEO-neutral while generated market routes stay contained', async () => {
-    const layoutModule = await import('../app/layout');
-    const intentModule = await import('../app/[country]/[city]/[intent]/page');
+    const layoutModule = await import('../app/(en)/layout');
+    const intentModule = await import('../app/(en)/[country]/[city]/[intent]/page');
 
     expect(marketRouteParams).toEqual([
       { country: 'kr', city: 'seoul' },

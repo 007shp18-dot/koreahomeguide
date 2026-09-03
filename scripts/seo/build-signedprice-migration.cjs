@@ -62,16 +62,10 @@ function buildMigrationManifest({ root }) {
   }
   const entries = [
     exactEntry({
-      sourcePath: '/explore/',
-      targetPath: '/kr/seoul/explore/',
-      cohort: 1,
-      evidence: 'cohort-0-target-ready',
-    }),
-    exactEntry({
       sourcePath: '/tools/seoul-rent-check/',
-      targetPath: '/kr/seoul/check/',
+      targetPath: '/kr/seoul/tools/rent-check/',
       cohort: 1,
-      evidence: 'cohort-0-target-ready',
+      evidence: 'working-rent-check-target',
     }),
     ...readyPropertyTypeSources(root, artifact).map(([sourcePath, evidence]) => {
       const [, , district, propertyType] = sourcePath.split('/');
@@ -94,6 +88,7 @@ function buildMigrationManifest({ root }) {
     entries,
     retained: [
       { sourcePath: '/', reason: 'cohort-5-disabled' },
+      { sourcePath: '/explore/', reason: 'full-explorer-parity-pending' },
       { sourcePath: '/guides/', reason: 'guide-discovery-parity-pending' },
       { sourcePath: '/compare/', reason: 'no-equivalent-signedprice-intent-page' },
       { sourcePath: '/buy-or-rent/', reason: 'no-equivalent-signedprice-intent-page' },

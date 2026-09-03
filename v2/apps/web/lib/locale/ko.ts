@@ -18,17 +18,33 @@ export function formatKrwKo(value: number): string {
   return parts.join(' ');
 }
 
-export const KOREAN_SITE_HEADER = Object.freeze({
+const KOREAN_SITE_HEADER_BASE = {
   brand: 'signedprice',
   homeLabel: 'signedprice 홈',
+  homeHref: '/ko/kr/seoul/',
   navigationLabel: '서울 근거 탐색',
+  navigationVariant: 'supplied',
   links: [
     { label: '서울', href: '/ko/kr/seoul/' },
-    { label: '계약 비교', href: '/ko/kr/seoul/check/' },
     { label: '구별 탐색', href: '/ko/kr/seoul/explore/' },
     { label: '근거 순위', href: '/ko/kr/seoul/rankings/' },
   ],
-} as const satisfies SiteHeaderModel);
+  marketLabel: '서울',
+  languageLabel: 'KO',
+} as const;
+
+export function buildKoreanSiteHeader(englishHref: string): SiteHeaderModel {
+  return Object.freeze({
+    ...KOREAN_SITE_HEADER_BASE,
+    languageSwitch: Object.freeze({
+      label: 'EN',
+      href: englishHref,
+      hrefLang: 'en',
+    }),
+  });
+}
+
+export const KOREAN_SITE_HEADER = buildKoreanSiteHeader('/kr/seoul/');
 
 export const KOREAN_SITE_FOOTER = Object.freeze({
   brand: 'signedprice',
@@ -36,7 +52,6 @@ export const KOREAN_SITE_FOOTER = Object.freeze({
   navigationLabel: '하단 탐색',
   links: [
     { label: '서울 홈', href: '/ko/kr/seoul/' },
-    { label: '계약 비교', href: '/ko/kr/seoul/check/' },
     { label: '구별 탐색', href: '/ko/kr/seoul/explore/' },
     { label: '영문 홈', href: '/' },
   ],

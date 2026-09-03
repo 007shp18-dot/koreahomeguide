@@ -97,6 +97,36 @@ describe('public district detail page', () => {
     expect(html).not.toMatch(/save this building/i);
   });
 
+  it('orders the evidence story from finding to distribution, cohorts, buildings, and source', () => {
+    const html = renderToStaticMarkup(<DistrictDetailPage model={publishedModel()} />);
+    const sectionOrder = [
+      'data-section="district-summary"',
+      'data-section="district-distribution"',
+      'data-section="district-cohorts"',
+      'data-section="district-buildings"',
+      'data-section="district-source"',
+    ].map((marker) => html.indexOf(marker));
+
+    expect(sectionOrder.every((index) => index >= 0)).toBe(true);
+    expect(sectionOrder).toEqual([...sectionOrder].sort((left, right) => left - right));
+  });
+
+  it('uses the supplied Detail identity and 380px context-shell structure', () => {
+    const html = renderToStaticMarkup(<DistrictDetailPage model={publishedModel()} />);
+    const mainStart = html.indexOf('data-detail-main="true"');
+    const summary = html.indexOf('data-section="district-summary"');
+    const evidence = html.indexOf('data-section="district-distribution"');
+    const rail = html.indexOf('data-detail-rail="true"');
+
+    expect(html).toContain('data-detail-layout="evidence-rail"');
+    expect(html).toContain('data-detail-hero="district"');
+    expect(html).toContain('data-detail-hero-metric="median"');
+    expect(html).toContain('<h1>Gangnam-gu District</h1>');
+    expect(mainStart).toBeLessThan(summary);
+    expect(summary).toBeLessThan(evidence);
+    expect(evidence).toBeLessThan(rail);
+  });
+
   it('renders model-owned spread and unavailable-change copy without false count precision', () => {
     const model = buildPublicDistrictModel('gangnam-gu', {
       source: createPublicAreaFixture({

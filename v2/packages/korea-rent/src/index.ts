@@ -1,4 +1,38 @@
 export {
+  KOREA_PROXIMITY_ARTIFACT_VERSION,
+  KOREA_PROXIMITY_BUCKETS_METERS,
+  KOREA_PROXIMITY_LIMIT_METERS,
+  KOREA_PROXIMITY_MINIMUM_COORDINATE_COVERAGE,
+  KOREA_STATION_MERGE_RADIUS_METERS,
+  assertKoreaProximityReleaseGate,
+  buildKoreaProximityArtifact,
+  buildKoreaProximityRecords,
+  canonicalKoreaProximityArtifactJson,
+  compareKoreaProximityMatches,
+  compareKoreaProximityText,
+  haversineDistanceMeters,
+  koreaProximityBucketMeters,
+  mergeKoreaStationSources,
+  type KoreaMergedStation,
+  type KoreaProximityArtifact,
+  type KoreaProximityBucketMeters,
+  type KoreaProximityBuildingSource,
+  type KoreaProximityCoordinate,
+  type KoreaProximityPendingRecord,
+  type KoreaProximityNearestSchool,
+  type KoreaProximityNearestStation,
+  type KoreaProximityReadyRecord,
+  type KoreaProximityRecord,
+  type KoreaProximitySchoolMatch,
+  type KoreaProximitySchoolCatalogRecord,
+  type KoreaProximitySchoolSource,
+  type KoreaProximitySourceCounts,
+  type KoreaProximitySourceProvenance,
+  type KoreaProximityStationMatch,
+  type KoreaProximityStationCatalogRecord,
+  type KoreaProximityStationSource,
+} from './proximity';
+export {
   HOUSING_TYPE_PRESETS,
   canonicalAreaFromPyeong,
   getSeoulDistrictBySlug,
@@ -23,6 +57,45 @@ export {
 } from './browser';
 export { parseSeoulRentCheckQuery, type KoreaRentRecord } from './input';
 export {
+  KOREA_EVIDENCE_AREA_BANDS,
+  buildRentEvidenceDistribution,
+  classifyAreaBand,
+  selectRentEvidenceRecords,
+  type BuildRentEvidenceDistributionInput,
+  type KoreaEvidenceAreaBand,
+  type KoreaEvidenceContractGroup,
+  type KoreaEvidenceDistribution,
+  type KoreaEvidenceMetric,
+  type KoreaEvidenceTransaction,
+  type SelectRentEvidenceRecordsInput,
+} from './evidence-cohorts';
+export {
+  buildKoreaBuildingIdentity,
+  type KoreaBuildingHousingType,
+  type KoreaBuildingIdentity,
+} from './building-identity';
+export {
+  buildKoreaObservedBuildingInventory,
+  type KoreaObservedBuildingCoordinate,
+  type KoreaObservedBuildingInventory,
+  type KoreaObservedBuildingInventoryInput,
+  type KoreaObservedBuildingInventoryStats,
+  type KoreaObservedBuildingRecord,
+} from './observed-building-inventory';
+export {
+  KOREA_RENT_EVIDENCE_PUBLICATION_MINIMUM,
+  buildKoreaRentEvidence,
+  type KoreaRentEvidence,
+  type KoreaRentEvidenceAreaRecord,
+  type KoreaRentEvidenceBuildingRecord,
+  type KoreaRentEvidenceCohort,
+  type KoreaRentEvidenceHousingType,
+  type KoreaRentEvidenceInput,
+  type KoreaRentEvidenceRecentTransaction,
+  type KoreaRentEvidenceSourceRecord,
+  type KoreaRentEvidenceStats,
+} from './rent-evidence';
+export {
   buildKoreaRentCheckResult,
   completedSeoulMonthKeys,
   restateMonthlyRentAtDeposit,
@@ -41,9 +114,22 @@ export {
   type VerifiedKoreaConversionCurve,
 } from './conversion-artifact';
 export {
+  DEFAULT_CONVERSION_PAIR_OPTIONS,
+  buildKoreaConversionCurves,
+  type ConversionCurveBuild,
+  type ConversionCurveDiagnostics,
+  type ConversionPairExclusions,
+  type ConversionPairOptions,
+  type ConversionPairRejections,
+  type DroppedAnchor,
+} from './conversion-pairs';
+export {
   KR_MOLIT_RENT_RIGHTS,
+  KR_MOLIT_SALE_RIGHTS,
   RightsViolationError,
   assertMolitRights,
+  assertMolitSaleRights,
+  runWithMolitSaleRights,
   runWithMolitRights,
   type MolitRightsLookup,
   type MolitRightsOperation,
@@ -55,8 +141,11 @@ export {
   MOLIT_PARSER_VERSION,
   MOLIT_RENT_ENDPOINTS,
   MolitSourceError,
+  fetchMolitSaleMonth,
   fetchMolitRentalMonth,
+  parseMolitSalePage,
   parseMolitRentalPage,
+  type FetchMolitSaleMonthDependencies,
   type FetchMolitRentalMonthDependencies,
   type MolitFetch,
   type MolitMalformedDiagnostic,
@@ -68,7 +157,33 @@ export {
   type MolitSourceErrorCode,
   type ProviderCallBudget,
 } from './xml';
+export {
+  MOLIT_SALE_ENDPOINTS,
+  type KoreaSaleRecord,
+  type MolitSaleMonth,
+  type MolitSaleMonthInput,
+  type MolitSalePageChunk,
+  type MolitSaleParsedPage,
+} from './sale';
+export {
+  KOREA_SALE_EVIDENCE_PUBLICATION_MINIMUM,
+  buildKoreaSaleEvidence,
+  type KoreaSaleEvidence,
+  type KoreaSaleEvidenceAreaRecord,
+  type KoreaSaleEvidenceBuildingRecord,
+  type KoreaSaleEvidenceCohort,
+  type KoreaSaleEvidenceHousingType,
+  type KoreaSaleEvidenceInput,
+  type KoreaSaleEvidenceRecentSale,
+  type KoreaSaleEvidenceSourceRecord,
+  type KoreaSaleEvidenceStats,
+} from './sale-evidence';
 export { MOLIT_RIGHTS_POLICY_ID } from './versions';
+export {
+  MOLIT_SALE_ENDPOINT_VERSION,
+  MOLIT_SALE_PARSER_VERSION,
+  MOLIT_SALE_RIGHTS_POLICY_ID,
+} from './versions';
 export {
   DERIVED_FRESH_SECONDS,
   DERIVED_STALE_SECONDS,
@@ -84,6 +199,21 @@ export {
   type SourceMonthStore,
   type SourceMonthStorePolicy,
 } from './source-month-store';
+export {
+  createSaleSourceMonthStore,
+  type SaleSourceMonthIdentity,
+  type SaleSourceMonthStore,
+  type SaleSourceMonthStorePolicy,
+} from './sale-source-month-store';
+export {
+  buildKoreaSaleSummaryPlan,
+  finalizeKoreaSaleSnapshotJob,
+  runKoreaSaleSummaryBatch,
+  type KoreaSaleSnapshotFinalization,
+  type KoreaSaleSummaryBatchResult,
+  type KoreaSaleSummaryCoordinate,
+  type KoreaSaleSummaryJobDependencies,
+} from './sale-summary-job';
 export {
   KoreaRentServiceError,
   createSeoulRentCheckService,
@@ -112,6 +242,8 @@ export {
   buildKoreaPublicSummaryPlan,
   finalizeKoreaPublicAreaSummaryJob,
   finalizeKoreaPublicBuildingSummaryJob,
+  finalizeKoreaObservedBuildingInventoryJob,
+  finalizeKoreaRentSnapshotJob,
   finalizeKoreaPublicSummaryJob,
   runKoreaPublicSummaryBatch,
   type KoreaPublicSummaryBatchResult,
@@ -119,6 +251,8 @@ export {
   type KoreaPublicAreaSummaryGroup,
   type KoreaPublicAreaSummaryFinalization,
   type KoreaPublicBuildingSummaryFinalization,
+  type KoreaObservedBuildingInventoryFinalization,
+  type KoreaRentSnapshotFinalization,
   type KoreaPublicSummaryFinalization,
   type KoreaPublicSummaryJobDependencies,
 } from './public-summary-job';

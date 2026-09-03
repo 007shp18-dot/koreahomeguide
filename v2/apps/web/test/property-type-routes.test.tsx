@@ -7,8 +7,8 @@ import sitemap from '../app/sitemap';
 import PropertyTypePage, {
   generateMetadata,
   generateStaticParams,
-} from '../app/kr/seoul/explore/[district]/[buildingId]/page';
-import DistrictPage from '../app/kr/seoul/explore/[district]/page';
+} from '../app/(en)/kr/seoul/explore/[district]/[buildingId]/page';
+import DistrictPage from '../app/(en)/kr/seoul/explore/[district]/page';
 import {
   createPublicBuildingFixture,
   createPublicBuildingRecord,
@@ -76,6 +76,7 @@ describe('district property-type SEO routes', () => {
 
     const metadata = await generateMetadata({
       params: Promise.resolve({ district: 'gangnam-gu', buildingId: 'apartment' }),
+      searchParams: Promise.resolve({}),
     });
     expect(metadata).toMatchObject({
       title: 'Gangnam-gu apartment jeonse evidence | signedprice',
@@ -84,6 +85,15 @@ describe('district property-type SEO routes', () => {
       alternates: {
         canonical: 'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/apartment/',
       },
+      openGraph: {
+        url: 'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/apartment/',
+        locale: 'en_US',
+        images: ['https://www.signedprice.com/og/en/'],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        images: ['https://www.signedprice.com/og/en/'],
+      },
     });
   });
 
@@ -91,6 +101,7 @@ describe('district property-type SEO routes', () => {
     useEvidence();
     const html = renderToStaticMarkup(await PropertyTypePage({
       params: Promise.resolve({ district: 'gangnam-gu', buildingId: 'apartment' }),
+      searchParams: Promise.resolve({}),
     }));
 
     expect(html).toContain('Gangnam-gu apartment jeonse evidence');
@@ -149,9 +160,11 @@ describe('district property-type SEO routes', () => {
     useEvidence();
     await expect(PropertyTypePage({
       params: Promise.resolve({ district: 'gangnam-gu', buildingId: 'studio' }),
+      searchParams: Promise.resolve({}),
     })).rejects.toThrow(/404/);
     await expect(generateMetadata({
       params: Promise.resolve({ district: 'jongno-gu', buildingId: 'apartment' }),
+      searchParams: Promise.resolve({}),
     })).rejects.toThrow(/404/);
   });
 });

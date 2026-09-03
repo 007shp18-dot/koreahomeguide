@@ -13,7 +13,7 @@ import type { SingaporeEntryModel } from './singapore/route-types';
 import { indexableMetadata } from './public-metadata';
 
 const brand = 'signedprice';
-const headline = 'Real prices. Better property decisions.';
+const headline = 'Know the market before you buy.';
 const marketIds = [
   'kr-seoul',
   'sg-singapore',
@@ -49,13 +49,25 @@ export interface NavigationLinkModel {
   readonly href: string;
   readonly ariaLabel?: string;
   readonly isCurrent?: boolean;
+  readonly index?: string;
+  readonly description?: string;
 }
 
 export interface SiteHeaderModel {
   readonly brand: string;
   readonly homeLabel: string;
+  readonly homeHref?: string;
   readonly navigationLabel: string;
   readonly links: readonly NavigationLinkModel[];
+  readonly navigationVariant?: 'product' | 'supplied';
+  readonly showMarketNavigation?: boolean;
+  readonly marketLabel?: string;
+  readonly languageLabel?: string;
+  readonly languageSwitch?: Readonly<{
+    readonly label: string;
+    readonly href: string;
+    readonly hrefLang: 'en' | 'ko';
+  }>;
 }
 
 export interface SiteFooterModel {
@@ -65,6 +77,16 @@ export interface SiteFooterModel {
   readonly links: readonly NavigationLinkModel[];
   readonly status: string;
 }
+
+export const productNavigationLinks = Object.freeze([
+  { index: '01', label: 'Markets', description: 'Compare market context', href: '/markets/' },
+  { index: '02', label: 'Prices', description: 'Explore signed evidence', href: '/prices/' },
+  { index: '03', label: 'Properties', description: 'Service preparing', href: '/properties/' },
+  { index: '04', label: 'News', description: 'Read verified market news', href: '/news/' },
+  { index: '05', label: 'Community', description: 'Local conversations', href: '/community/' },
+  { index: '06', label: 'Guides', description: 'Understand local decisions', href: '/guides/' },
+  { index: '07', label: 'Invest', description: 'Service preparing', href: '/invest/' },
+] as const satisfies readonly NavigationLinkModel[]);
 
 export const KOREA_PUBLIC_RELEASE_STATUS =
   'Korea public evidence. Publication limits shown.' as const;
@@ -84,10 +106,8 @@ const englishHeaderCopy = {
   brand,
   homeLabel: 'signedprice home',
   navigationLabel: 'Primary navigation',
-  links: [
-    { label: 'Global home', href: '/', ariaLabel: 'Global home', isCurrent: true },
-    { label: 'Market overview', href: '#markets', ariaLabel: 'Markets' },
-  ],
+  links: productNavigationLinks,
+  showMarketNavigation: true,
 } as const satisfies SiteHeaderModel;
 
 const englishTrustCopy = {
@@ -115,14 +135,18 @@ const englishTrustCopy = {
 
 const englishFooterCopy = {
   brand,
-  descriptor: 'Verified property intelligence for Seoul.',
+  descriptor: 'Property prices and market context, made clear.',
   navigationLabel: 'Footer navigation',
   links: [
-    { label: 'Markets', href: '#markets' },
+    { label: 'Markets', href: '/markets/' },
+    { label: 'Prices', href: '/prices/' },
+    { label: 'News', href: '/news/' },
+    { label: 'Community', href: '/community/' },
+    { label: 'Guides', href: '/guides/' },
     { label: 'Trust', href: '/trust/' },
     { label: 'Back to top', href: '#top' },
   ],
-  status: 'Global platform live. Market evidence remains rights-gated.',
+  status: 'Market data is live. Listings, brokerage and personalized investment services are not currently offered.',
 } as const satisfies SiteFooterModel;
 
 export const homepageCopy = {
@@ -135,7 +159,7 @@ export const homepageCopy = {
     eyebrow: 'Property intelligence for Seoul, Singapore and Dubai',
     headline,
     description:
-      'We publish only official or rights-cleared market intelligence, and show the limits wherever detail is unavailable.',
+      'Search real property evidence, compare markets, and make a better-informed property decision across Seoul, Singapore and Dubai.',
     intentHeading: 'Start with your decision',
     intentDescription:
       'Choose an intent, then enter the market whose local evidence and rules matter.',
@@ -319,8 +343,17 @@ const seoulSlotDescriptions = {
   rankings: 'Compare all 25 districts',
   news: 'Verified market briefs',
   guide: 'Methods and decision guides',
-  community: 'Community access is unavailable.',
+  community: 'Read-only local community foundation',
 } as const satisfies Record<HomepageProductSlotId, string>;
+
+const seoulSlotHrefs = {
+  check: '/kr/seoul/check/',
+  explore: '/kr/seoul/explore/',
+  rankings: '/kr/seoul/rankings/',
+  news: '/kr/seoul/news/',
+  guide: '/kr/seoul/guide/',
+  community: '/kr/seoul/community/',
+} as const satisfies Record<HomepageProductSlotId, string | undefined>;
 
 const singaporeUnavailableDescription = 'Verified Singapore evidence unavailable';
 const dubaiRightsDescription = 'DLD and RERA display-rights clearance is incomplete.';
@@ -337,11 +370,14 @@ function productSlots(
         description: seoulSlotDescriptions[id],
         state: id === 'community' ? 'unavailable' : 'available',
         stateLabel: id === 'community' ? 'Unavailable' : 'Available',
+        ...(seoulSlotHrefs[id] === undefined ? {} : { href: seoulSlotHrefs[id] }),
       } satisfies HomepageProductSlotModel);
     }
 
     if (marketId === 'sg-singapore') {
       const isReadyExplore = singapore.status === 'ready' && id === 'explore';
+      const singaporeHref = id === 'explore' ? '/sg/singapore/explore/'
+        : id === 'check' ? '/sg/singapore/check/' : `/sg/singapore/${id}/`;
       return Object.freeze({
         id,
         label: productLabels[id],
@@ -350,7 +386,7 @@ function productSlots(
           : singaporeUnavailableDescription,
         state: isReadyExplore ? 'available' : 'unavailable',
         stateLabel: isReadyExplore ? 'Available' : 'Unavailable',
-        ...(isReadyExplore ? { href: singapore.exploreHref } : {}),
+        href: singaporeHref,
       } satisfies HomepageProductSlotModel);
     }
 
@@ -360,6 +396,7 @@ function productSlots(
       description: dubaiRightsDescription,
       state: 'rights_blocked',
       stateLabel: 'Rights blocked',
+      href: `/ae/dubai/${id}/`,
     } satisfies HomepageProductSlotModel);
   }));
 }
@@ -415,16 +452,11 @@ export function buildHomepagePresentation(singapore: SingaporeEntryModel): Reado
   markets: readonly HomepageMarketModel[];
   singapore: SingaporeEntryModel;
 }> {
-  const singaporeReady = singapore.status === 'ready';
   const copy = {
     ...homepageCopy,
     header: {
       ...homepageCopy.header,
-      links: singaporeReady
-        ? [...homepageCopy.header.links, {
-            label: 'Singapore evidence', href: '/sg/', ariaLabel: 'Singapore evidence',
-          }]
-        : homepageCopy.header.links,
+      links: homepageCopy.header.links,
     },
   } as typeof homepageCopy & Readonly<{ header: SiteHeaderModel }>;
   return Object.freeze({

@@ -7,12 +7,12 @@ vi.mock('server-only', () => ({}));
 import { SEOUL_RENT_CHECK_DISTRICTS } from '@signedprice/korea-rent/browser';
 import MarketOverviewPage, {
   generateStaticParams as generateMarketStaticParams,
-} from '../app/[country]/[city]/page';
+} from '../app/(en)/[country]/[city]/page';
 import IntentPage, {
   generateStaticParams as generateIntentStaticParams,
-} from '../app/[country]/[city]/[intent]/page';
-import ComparePage from '../app/compare/page';
-import NotFound from '../app/not-found';
+} from '../app/(en)/[country]/[city]/[intent]/page';
+import ComparePage from '../app/(en)/compare/page';
+import NotFound from '../app/(en)/not-found';
 import { CapabilityGrid } from '../components/capability-grid';
 import { ComparisonMatrix } from '../components/comparison-matrix';
 import { MarketHero } from '../components/market-hero';
@@ -60,7 +60,10 @@ const unsupportedClaimPattern =
 describe('market route model', () => {
   it('publishes exactly the three approved market overview contracts', () => {
     expect(marketRouteParams).toEqual(expectedMarketParams);
-    expect(generateMarketStaticParams()).toEqual(expectedMarketParams.slice(0, 1));
+    expect(generateMarketStaticParams()).toEqual([
+      expectedMarketParams[0],
+      expectedMarketParams[2],
+    ]);
     expect(
       marketRouteParams.map(({ country, city }) =>
         buildMarketPageModel(country, city)?.marketId,
@@ -88,7 +91,7 @@ describe('market route model', () => {
     ]);
   });
 
-  it('builds Seoul as a full product with an explicit cross-brand Explorer action', () => {
+  it('keeps the Seoul workflow inside the signedprice Explorer', () => {
     const model = buildMarketPageModel('kr', 'seoul');
 
     expect(model).toMatchObject({
@@ -97,11 +100,12 @@ describe('market route model', () => {
       nativeCurrency: 'KRW',
       readiness: 'noindex',
       nextAction: {
-        href: 'https://koreahomeguide.com/explore/',
-        external: true,
+        href: '/kr/seoul/explore/',
+        external: false,
       },
     });
-    expect(model?.nextAction.label).toMatch(/KoreaHomeGuide.*Explorer/i);
+    expect(model?.nextAction.label).toBe('Open Seoul Explore');
+    expect(JSON.stringify(model)).not.toMatch(/KoreaHomeGuide/i);
     expect(JSON.stringify(model)).not.toMatch(unsupportedClaimPattern);
   });
 
@@ -256,10 +260,10 @@ describe('comparison route model', () => {
 
 describe('real route rendering contracts', () => {
   it('contains generated routes while indexing only the comparison page', async () => {
-    const marketModule = await import('../app/[country]/[city]/page');
-    const intentModule = await import('../app/[country]/[city]/[intent]/page');
-    const compareModule = await import('../app/compare/page');
-    const notFoundModule = await import('../app/not-found');
+    const marketModule = await import('../app/(en)/[country]/[city]/page');
+    const intentModule = await import('../app/(en)/[country]/[city]/[intent]/page');
+    const compareModule = await import('../app/(en)/compare/page');
+    const notFoundModule = await import('../app/(en)/not-found');
     const generateMarketMetadata = Reflect.get(marketModule, 'generateMetadata') as (
       props: { params: Promise<{ country: string; city: string }> },
     ) => Promise<unknown>;
@@ -281,7 +285,7 @@ describe('real route rendering contracts', () => {
       Reflect.get(notFoundModule, 'metadata'),
     ];
 
-    expect(metadataByRoute).toEqual([
+    expect(metadataByRoute).toMatchObject([
       {
         title: 'Seoul property intelligence | signedprice',
         description:
@@ -364,7 +368,8 @@ describe('real route rendering contracts', () => {
 
     expect(markup).toContain('>This route is not available.</h1>');
     expect(markup).toContain('>Return to signedprice home</span>');
-    expect(markup).not.toMatch(/Singapore|Dubai/i);
+    expect(markup).toContain('aria-label="Primary navigation"');
+    expect(markup.match(/data-navigation-tier="primary"/g)).toHaveLength(1);
     expect(markup).not.toMatch(unsupportedClaimPattern);
   });
 });

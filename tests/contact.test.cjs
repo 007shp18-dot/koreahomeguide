@@ -11,10 +11,14 @@ const PRIMARY_CONTACT_PAGES = [
   ['zh/tools/seoul-rent-check/index.html', '联系 · hello@koreahomeguide.com']
 ];
 
-function htmlFiles(dir) {
+function htmlFiles(dir, rootDir = dir) {
   return fs.readdirSync(dir, { withFileTypes: true }).flatMap(entry => {
     const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) return htmlFiles(full);
+    if (entry.isDirectory()) {
+      if (['.git', '.worktrees', 'node_modules'].includes(entry.name)) return [];
+      if (dir === rootDir && entry.name === 'v2') return [];
+      return htmlFiles(full, rootDir);
+    }
     return entry.isFile() && entry.name.endsWith('.html') ? [full] : [];
   });
 }

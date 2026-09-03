@@ -29,8 +29,13 @@ export function EvidenceDisclosure({
       : value
   ));
   return (
-    <section className={styles.disclosure} aria-label={copy.disclosureAria}>
-      <dl className={styles.disclosureGrid}>
+    <details className={styles.disclosure} aria-label={copy.disclosureAria}>
+      <summary className={styles.disclosureSummary}>
+        <span><strong>{model.provider}</strong><small>{datasetValue}</small></span>
+        <span><strong>{model.period || (locale === 'ko' ? '기간 미수집' : 'Period unavailable')}</strong><small>{locale === 'ko' ? '출처·방법 보기' : 'Source & method'}</small></span>
+      </summary>
+      <div className={styles.disclosureBody}>
+        <dl className={styles.disclosureGrid}>
         <div><dt>{source}</dt><dd>{model.provider}</dd></div>
         <div><dt>{dataset}</dt><dd>{datasetValue}</dd></div>
         <div><dt>{period}</dt><dd>{model.period}</dd></div>
@@ -45,10 +50,11 @@ export function EvidenceDisclosure({
           <dd>{model.publicationMinimum ?? (locale === 'ko' ? '설정되지 않음' : 'Not configured')}</dd>
         </div>
         <div><dt>{boundaryLabel}</dt><dd>{boundary}</dd></div>
-      </dl>
-      {localizedAttribution.length === 0 ? null : (
-        <p className={styles.attribution}>{localizedAttribution.join(', ')}</p>
-      )}
-    </section>
+        </dl>
+        {localizedAttribution.length === 0 ? null : (
+          <p className={styles.attribution}>{localizedAttribution.join(', ')}</p>
+        )}
+      </div>
+    </details>
   );
 }

@@ -1,0 +1,83 @@
+{
+  "registryVersion": "signedprice-installed-snapshots-v1",
+  "snapshots": [
+    {
+      "marketId": "kr-seoul",
+      "dataset": "kr-building-registry",
+      "schemaVersion": "signedprice-observed-building-inventory-v1",
+      "sourceVersion": "v1",
+      "parserVersion": "kr-molit-building-parser-v2",
+      "rightsPolicyId": "kr-molit-rent-v1",
+      "period": "2026-02/2026-08",
+      "generatedAt": "2026-09-02T00:00:00.000Z",
+      "objectUrl": "installed://kr-building-registry",
+      "sha256": "3a9f4d73dbfd54c0aaeff124db888771acbc2405eec77c6c90eaae7691e4c8a1",
+      "recordCount": 48999
+    },
+    {
+      "marketId": "kr-seoul",
+      "dataset": "kr-rent",
+      "schemaVersion": "signedprice-korea-rent-evidence-v2",
+      "sourceVersion": "v1",
+      "parserVersion": "kr-molit-rent-parser-v2",
+      "rightsPolicyId": "kr-molit-rent-v1",
+      "period": "2026-02/2026-08",
+      "generatedAt": "2026-09-02T00:00:00.000Z",
+      "objectUrl": "installed://kr-rent",
+      "sha256": "da3ead4eaf43c2cecd8a7dd3ec51ee0a03e8e9dd885a1698ff9a8b66ddb26f5f",
+      "recordCount": 49129
+    },
+    {
+      "marketId": "kr-seoul",
+      "dataset": "kr-sale",
+      "schemaVersion": "signedprice-korea-sale-evidence-v1",
+      "sourceVersion": "v1",
+      "parserVersion": "kr-molit-sale-parser-v1",
+      "rightsPolicyId": "kr-molit-sale-v1",
+      "period": "2026-02/2026-08",
+      "generatedAt": "2026-09-02T00:00:00.000Z",
+      "objectUrl": "installed://kr-sale",
+      "sha256": "c27c2c051e05e2d418782d7f96bcda921c58b54d1703c251962d59fc6d2a3dd3",
+      "recordCount": 22850
+    },
+    {
+      "marketId": "kr-seoul",
+      "dataset": "kr-conversion",
+      "schemaVersion": "1",
+      "sourceVersion": "v1",
+      "parserVersion": "kr-molit-rent-parser-v2",
+      "rightsPolicyId": "kr-molit-rent-v1",
+      "period": "2026-02/2026-08",
+      "generatedAt": "2026-09-02T00:00:00.000Z",
+      "objectUrl": "installed://kr-conversion",
+      "sha256": "ca61bbfad4e86d9b9c6372bf780c0f5e8e9e58f936ff9d5f23b80cd35d8e5d74",
+      "recordCount": 1031799
+    },
+    {
+      "marketId": "sg-singapore",
+      "dataset": "sg-private-sale",
+      "schemaVersion": "signedprice-singapore-private-sale-v1",
+      "sourceVersion": "ura-data-service-v1",
+      "parserVersion": "sg-ura-private-sale-parser-v1",
+      "rightsPolicyId": "sg-ura-private-sale-v1",
+      "period": "2021-08/2026-08",
+      "generatedAt": "2026-09-02T00:00:00.000Z",
+      "objectUrl": "installed://sg-private-sale",
+      "sha256": "4c397fa1d64b0ef8928149857f5feb727f2ef400e820c95a2954f8703f800a0e",
+      "recordCount": 133942
+    },
+    {
+      "marketId": "sg-singapore",
+      "dataset": "sg-hdb",
+      "schemaVersion": "signedprice-singapore-hdb-published-v1",
+      "sourceVersion": "data-gov-sg-2026-09-02",
+      "parserVersion": "sg-hdb-published-summary-v1",
+      "rightsPolicyId": "sg-open-data-licence-v1",
+      "period": "2017-01/2026-09",
+      "generatedAt": "2026-09-02T00:00:00.000Z",
+      "objectUrl": "installed://sg-hdb",
+      "sha256": "c253347d354c62ac3884e7bca3d3f2750eb28ae0644d32cf258afda286059b64",
+      "recordCount": 462792
+    }
+  ]
+}

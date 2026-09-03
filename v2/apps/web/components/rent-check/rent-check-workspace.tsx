@@ -14,7 +14,7 @@ import {
   type RentCheckInput,
 } from '../../lib/rent-check/client-state';
 import type { ExplorerRentCheckContext } from '../../lib/rent-check/explorer-context';
-import styles from '../../app/kr/seoul/tools/rent-check/rent-check.module.css';
+import styles from './rent-check.module.css';
 import { ComparableContracts } from './comparable-contracts';
 import { RentCheckForm } from './rent-check-form';
 import { RentCheckResult } from './rent-check-result';
@@ -114,14 +114,22 @@ export function RentCheckWorkspace({
       ) : null}
 
       <div className={styles['connected-frame']}>
-        <section className={styles['quote-panel']} aria-labelledby="quote-heading">
+        <section
+          className={styles['quote-panel']}
+          aria-labelledby="quote-heading"
+          data-check-section="inputs"
+        >
           <header className={styles['panel-heading']}>
             <span>01</span><h2 id="quote-heading">Quote</h2>
           </header>
           <RentCheckForm state={state} dispatch={editDispatch} onSubmit={submit} />
         </section>
 
-        <section className={styles['evidence-panel']} aria-labelledby="evidence-heading">
+        <section
+          className={styles['evidence-panel']}
+          aria-labelledby="evidence-heading"
+          data-check-section="verdict"
+        >
           <header className={styles['panel-heading']}>
             <span>02</span><h2 id="evidence-heading">Market evidence</h2>
           </header>
@@ -158,7 +166,11 @@ export function RentCheckWorkspace({
           </div>
         </section>
 
-        <section className={styles['comparables-panel']} aria-labelledby="comparables-heading">
+        <section
+          className={styles['comparables-panel']}
+          aria-labelledby="comparables-heading"
+          data-check-section="evidence"
+        >
           <header className={styles['panel-heading']}>
             <span>03</span><h2 id="comparables-heading">Comparable contracts</h2>
           </header>
@@ -171,7 +183,7 @@ export function RentCheckWorkspace({
         </section>
       </div>
 
-      <footer className={styles['method-band']}>
+      <footer className={styles['method-band']} data-check-section="method">
         {(state.status === 'success' || state.status === 'insufficient') &&
           state.envelope !== null ? (
             <SourceDisclosure envelope={state.envelope} />

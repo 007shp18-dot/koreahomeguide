@@ -1,4 +1,12 @@
 import type { KoreaRentRecord, SourceHousingType } from './input';
+import {
+  MOLIT_SALE_ENDPOINTS,
+  type KoreaSaleRecord,
+  type MolitSaleMonth,
+  type MolitSaleMonthInput,
+  type MolitSalePageChunk,
+  type MolitSaleParsedPage,
+} from './sale';
 import { MOLIT_ENDPOINT_VERSION, MOLIT_PARSER_VERSION } from './versions';
 
 export { MOLIT_ENDPOINT_VERSION, MOLIT_PARSER_VERSION } from './versions';
@@ -46,6 +54,7 @@ export type MolitMalformedDiagnostic =
   | 'area'
   | 'deposit'
   | 'monthly_rent'
+  | 'sale_price'
   | 'page_completeness'
   | 'page_total_changed'
   | 'record_id_conflict';
@@ -289,11 +298,20 @@ function unsignedInteger(
   return number;
 }
 
-function wonFromManwon(value: string, diagnostic: 'deposit' | 'monthly_rent'): number {
+function wonFromManwon(
+  value: string,
+  diagnostic: 'deposit' | 'monthly_rent' | 'sale_price',
+): number {
   const compact = value.replace(/[\s,]/g, '');
   const manwon = unsignedInteger(compact, diagnostic);
   const won = manwon * 10_000;
   if (!Number.isSafeInteger(won)) malformed(diagnostic);
+  return won;
+}
+
+function positiveWonFromManwon(value: string): number {
+  const won = wonFromManwon(value, 'sale_price');
+  if (won <= 0) malformed('sale_price');
   return won;
 }
 
@@ -353,6 +371,22 @@ function recordStatus(item: XmlNode): KoreaRentRecord['recordStatus'] {
     return 'active';
   }
   return 'unknown';
+}
+
+function optionalSignedInteger(item: XmlNode, names: readonly string[]): number | undefined {
+  const value = optionalText(item, names);
+  if (value === undefined) return undefined;
+  if (!/^-?\d+$/.test(value)) malformed('item_structure');
+  const number = Number(value);
+  if (!Number.isSafeInteger(number)) malformed('item_structure');
+  return number;
+}
+
+function optionalBuildYear(item: XmlNode): number | undefined {
+  const year = optionalSignedInteger(item, ['buildYear', 'buildYr']);
+  if (year === undefined) return undefined;
+  if (year < 1800 || year > 2200) malformed('item_structure');
+  return year;
 }
 
 function fingerprint(item: XmlNode): string {
@@ -455,6 +489,104 @@ export function parseMolitRentalPage(
     malformed('item_structure');
   }
   const rows = itemNodes.map((item) => normalizeItem(item, input.sourceHousingType, {
+    ...(input.expectedDealYmd === undefined ? {} : { dealYmd: input.expectedDealYmd }),
+    ...(input.expectedLawdCd === undefined ? {} : { lawdCd: input.expectedLawdCd }),
+  }));
+  return Object.freeze({
+    pageNo,
+    pageSize,
+    totalCount,
+    rows: Object.freeze(rows),
+    rowFingerprints: Object.freeze(itemNodes.map(fingerprint)),
+  });
+}
+
+function normalizeSaleItem(
+  item: XmlNode,
+  sourceHousingType: SourceHousingType,
+  expected: { readonly dealYmd?: string; readonly lawdCd?: string },
+): KoreaSaleRecord {
+  const buildingLabel = optionalText(item, [
+    'aptNm',
+    'offiNm',
+    'mhouseNm',
+    'houseType',
+    'buildingName',
+  ]);
+  const legalDong = optionalText(item, ['umdNm']);
+  const sourceRecordId = optionalText(item, ['dealSn', 'transactionId', 'dealNo']);
+  const normalizedContractDate = contractDate(item);
+  const suppliedLawdCd = optionalText(item, ['sggCd', 'lawdCd']);
+  if (
+    expected.dealYmd !== undefined &&
+    normalizedContractDate.slice(0, 7).replace('-', '') !== expected.dealYmd
+  ) {
+    malformed('contract_month_mismatch');
+  }
+  if (
+    suppliedLawdCd !== undefined &&
+    (!/^\d{5}$/.test(suppliedLawdCd) || suppliedLawdCd !== expected.lawdCd)
+  ) {
+    malformed('district_mismatch');
+  }
+  const floor = optionalSignedInteger(item, ['floor', 'flrNo']);
+  const buildYear = optionalBuildYear(item);
+  return {
+    sourceHousingType,
+    ...(buildingLabel === undefined ? {} : { buildingLabel }),
+    ...(legalDong === undefined ? {} : { legalDong }),
+    ...(sourceRecordId === undefined ? {} : { sourceRecordId }),
+    areaSqm: positiveArea(requiredText(
+      item,
+      ['excluUseAr', 'excluUseArea', 'totalFloorAr', 'buildingAr'],
+      'area',
+    )),
+    priceWon: positiveWonFromManwon(requiredText(item, ['dealAmount'], 'sale_price')),
+    contractDate: normalizedContractDate,
+    recordStatus: recordStatus(item),
+    ...(floor === undefined ? {} : { floor }),
+    ...(buildYear === undefined ? {} : { buildYear }),
+  };
+}
+
+export function parseMolitSalePage(
+  xml: string,
+  input: {
+    readonly sourceHousingType: SourceHousingType;
+    readonly expectedPageNo: number;
+    readonly expectedPageSize: number;
+    readonly expectedDealYmd?: string;
+    readonly expectedLawdCd?: string;
+  },
+): MolitSaleParsedPage {
+  const root = parseXml(xml);
+  if (localName(root.name) !== 'response') malformed('response_structure');
+  const header = onlyChild(root, 'header', 'response_structure');
+  const body = onlyChild(root, 'body', 'response_structure');
+  const resultCode = requiredText(header, ['resultCode'], 'response_structure');
+  requiredText(header, ['resultMsg'], 'response_structure');
+  if (resultCode !== '00' && resultCode !== '000') {
+    if (resultCode === '20' || resultCode === '30' || resultCode === '31') {
+      malformed('provider_access_denied');
+    }
+    if (resultCode === '22') malformed('provider_quota_exceeded');
+    if (resultCode === '23') malformed('provider_rate_limited');
+    malformed('provider_error');
+  }
+
+  const items = onlyChild(body, 'items', 'response_structure');
+  const pageSize = unsignedInteger(requiredText(body, ['numOfRows'], 'pagination'), 'pagination');
+  const pageNo = unsignedInteger(requiredText(body, ['pageNo'], 'pagination'), 'pagination');
+  const totalCount = unsignedInteger(requiredText(body, ['totalCount'], 'pagination'), 'pagination');
+  if (pageSize <= 0 || pageSize !== input.expectedPageSize || pageNo !== input.expectedPageNo) {
+    malformed('pagination');
+  }
+
+  const itemNodes = children(items, 'item');
+  if (itemNodes.length !== items.children.length || itemNodes.length > pageSize) {
+    malformed('item_structure');
+  }
+  const rows = itemNodes.map((item) => normalizeSaleItem(item, input.sourceHousingType, {
     ...(input.expectedDealYmd === undefined ? {} : { dealYmd: input.expectedDealYmd }),
     ...(input.expectedLawdCd === undefined ? {} : { lawdCd: input.expectedLawdCd }),
   }));
@@ -586,7 +718,12 @@ async function fetchPage(
   throw asSourceError(lastError, dependencies.deadlineSignal);
 }
 
-function validatePageCompleteness(page: MolitParsedPage, pageCount: number): void {
+function validatePageCompleteness(
+  page: Pick<MolitParsedPage, 'pageNo' | 'pageSize' | 'totalCount'> & {
+    readonly rows: readonly unknown[];
+  },
+  pageCount: number,
+): void {
   const expectedRows = page.pageNo < pageCount
     ? page.pageSize
     : page.totalCount - page.pageSize * (pageCount - 1);
@@ -627,6 +764,133 @@ export async function fetchMolitRentalMonth(
       } else {
         // Public MOLIT rows can be byte-identical after unit identity is redacted.
         // Without a stable provider ID each row still represents one counted contract.
+      }
+      records.push(record);
+    });
+    const rowFingerprintDigests = await awaitWithSignals(
+      Promise.all(page.rowFingerprints.map(fingerprintDigest)),
+      [dependencies.deadlineSignal],
+    );
+    pageChunks.push(Object.freeze({
+      pageNo: page.pageNo,
+      rows: page.rows,
+      rowFingerprintDigests: Object.freeze(rowFingerprintDigests),
+    }));
+  }
+
+  const retrievedAt = dependencies.now();
+  if (dependencies.deadlineSignal.aborted) throw new MolitSourceError('source_timeout');
+  if (!Number.isFinite(retrievedAt.getTime())) throw new MolitSourceError('source_unavailable');
+  return Object.freeze({
+    sourceHousingType: input.sourceHousingType,
+    lawdCd: input.lawdCd,
+    dealYmd: input.dealYmd,
+    pageSize,
+    totalCount: first.totalCount,
+    pages: Object.freeze(pageChunks),
+    records: Object.freeze(records),
+    retrievedAt: retrievedAt.toISOString(),
+  });
+}
+
+export type FetchMolitSaleMonthDependencies = FetchMolitRentalMonthDependencies;
+
+function assertSaleInput(input: MolitSaleMonthInput): number {
+  if (
+    input.serviceKey.length === 0 ||
+    !/^\d{5}$/.test(input.lawdCd) ||
+    !isValidDealYmd(input.dealYmd) ||
+    !(input.sourceHousingType in MOLIT_SALE_ENDPOINTS)
+  ) {
+    throw new MolitSourceError('source_unavailable');
+  }
+  const pageSize = input.pageSize ?? MOLIT_DEFAULT_PAGE_SIZE;
+  if (!Number.isSafeInteger(pageSize) || pageSize <= 0 || pageSize > 1_000) {
+    throw new MolitSourceError('source_unavailable');
+  }
+  return pageSize;
+}
+
+async function fetchSalePage(
+  input: MolitSaleMonthInput,
+  pageSize: number,
+  pageNo: number,
+  dependencies: FetchMolitSaleMonthDependencies,
+): Promise<MolitSaleParsedPage> {
+  let lastError: unknown;
+  for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt += 1) {
+    if (dependencies.deadlineSignal.aborted) throw new MolitSourceError('source_timeout');
+    try {
+      dependencies.budget.consume();
+    } catch {
+      throw new MolitSourceError('source_unavailable');
+    }
+    try {
+      const endpoint = MOLIT_SALE_ENDPOINTS[input.sourceHousingType];
+      const url = new URL(endpoint.url);
+      url.searchParams.set('serviceKey', input.serviceKey);
+      url.searchParams.set('LAWD_CD', input.lawdCd);
+      url.searchParams.set('DEAL_YMD', input.dealYmd);
+      url.searchParams.set('numOfRows', String(pageSize));
+      url.searchParams.set('pageNo', String(pageNo));
+      const signal = (dependencies.attemptSignal ?? defaultAttemptSignal)(
+        ATTEMPT_TIMEOUT_MS,
+        dependencies.deadlineSignal,
+      );
+      const response = await awaitWithSignals(
+        dependencies.fetch(url, { cache: 'no-store', signal }),
+        [signal, dependencies.deadlineSignal],
+      );
+      const body = await awaitWithSignals(
+        Promise.resolve().then(() => response.text()),
+        [signal, dependencies.deadlineSignal],
+      );
+      if (!response.ok) throw new MolitSourceError('source_unavailable');
+      return parseMolitSalePage(body, {
+        sourceHousingType: input.sourceHousingType,
+        expectedPageNo: pageNo,
+        expectedPageSize: pageSize,
+        expectedDealYmd: input.dealYmd,
+        expectedLawdCd: input.lawdCd,
+      });
+    } catch (error) {
+      lastError = error;
+    }
+  }
+  throw asSourceError(lastError, dependencies.deadlineSignal);
+}
+
+export async function fetchMolitSaleMonth(
+  input: MolitSaleMonthInput,
+  dependencies: FetchMolitSaleMonthDependencies,
+): Promise<MolitSaleMonth> {
+  const pageSize = assertSaleInput(input);
+  if (dependencies.deadlineSignal.aborted) throw new MolitSourceError('source_timeout');
+  const first = await fetchSalePage(input, pageSize, 1, dependencies);
+  const pageCount = Math.max(1, Math.ceil(first.totalCount / pageSize));
+  validatePageCompleteness(first, pageCount);
+
+  const pages: MolitSaleParsedPage[] = [first];
+  for (let pageNo = 2; pageNo <= pageCount; pageNo += 1) {
+    const page = await fetchSalePage(input, pageSize, pageNo, dependencies);
+    if (page.totalCount !== first.totalCount) malformed('page_total_changed');
+    validatePageCompleteness(page, pageCount);
+    pages.push(page);
+  }
+
+  const records: KoreaSaleRecord[] = [];
+  const pageChunks: MolitSalePageChunk[] = [];
+  const stableIds = new Map<string, string>();
+  for (const page of pages) {
+    page.rows.forEach((record, index) => {
+      const itemFingerprint = page.rowFingerprints[index]!;
+      if (record.sourceRecordId !== undefined) {
+        const priorFingerprint = stableIds.get(record.sourceRecordId);
+        if (priorFingerprint !== undefined) {
+          if (priorFingerprint !== itemFingerprint) malformed('record_id_conflict');
+          return;
+        }
+        stableIds.set(record.sourceRecordId, itemFingerprint);
       }
       records.push(record);
     });

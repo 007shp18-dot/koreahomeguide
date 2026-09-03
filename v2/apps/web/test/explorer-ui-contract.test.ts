@@ -12,6 +12,7 @@ import {
 vi.mock('server-only', () => ({}));
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: vi.fn() }),
+  useSearchParams: () => new URLSearchParams(),
 }));
 
 type ExplorerPageModule = {
@@ -31,7 +32,7 @@ type BuildingDialogModule = {
 };
 
 async function loadExplorerPage(): Promise<ExplorerPageModule> {
-  const modulePath = '../app/kr/seoul/explore/page';
+  const modulePath = '../app/(en)/kr/seoul/explore/page';
   return import(/* @vite-ignore */ modulePath) as Promise<ExplorerPageModule>;
 }
 
@@ -84,7 +85,7 @@ afterEach(() => {
 });
 
 describe('/kr/seoul/explore/ route contract', () => {
-  it('renders the indexable Seoul district evidence map and complete table', async () => {
+  it('renders the indexable Seoul district evidence map and complete discovery rail', async () => {
     vi.stubEnv(
       'SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT',
       JSON.stringify(createPublicAreaFixture()),
@@ -109,8 +110,10 @@ describe('/kr/seoul/explore/ route contract', () => {
     expect(markup).toContain('role="img"');
     expect(markup).toContain('viewBox="0 0 720 560"');
     expect((markup.match(/data-district-path=/g) ?? [])).toHaveLength(25);
-    expect((markup.match(/data-district-row=/g) ?? [])).toHaveLength(25);
-    expect(markup).not.toMatch(/data-discovery-step|Search this area|Interact with map/);
+    expect((markup.match(/data-district-option=/g) ?? [])).toHaveLength(25);
+    expect(markup).toContain('data-explorer-layout="split"');
+    expect(markup).toContain('Search this area');
+    expect(markup).not.toMatch(/data-discovery-step|Interact with map/);
   });
 
   it('is a separate route without widening the approved market and intent route registries', async () => {
@@ -237,16 +240,17 @@ describe('building dialog information flow', () => {
     });
 
     expect(rentCheckHref).toBe(
-      '/kr/seoul/tools/rent-check/?lawdCd=11590&type=officetel&dong=noryangjin-dong&building=noryangjin-dream-square',
+      '/kr/seoul/check/?transaction=jeonse&district=dongjak-gu&housing=officetel&area=50&building=noryangjin-dream-square',
     );
     const handoffQuery = new URLSearchParams(rentCheckHref?.split('?')[1] ?? '');
     expect([...handoffQuery.keys()]).toEqual([
-      'lawdCd',
-      'type',
-      'dong',
+      'transaction',
+      'district',
+      'housing',
+      'area',
       'building',
     ]);
-    for (const forbiddenParameter of ['deposit', 'rent', 'monthlyRent', 'area']) {
+    for (const forbiddenParameter of ['deposit', 'rent', 'monthlyRent', 'price']) {
       expect(handoffQuery.has(forbiddenParameter)).toBe(false);
     }
   });
@@ -379,9 +383,9 @@ describe('map and mobile scroll safety', () => {
     expect(workspaceSource).toContain('state.map.revision');
   });
 
-  it('includes Korean system fallbacks after the local Latin display face', () => {
+  it('uses bundled Archivo with Noto Sans KR and Korean system fallbacks', () => {
     expect(declarationsFor(css, 'body')['font-family']).toMatch(
-      /Archivo.*Noto Sans KR.*Apple SD Gothic Neo.*Malgun Gothic.*sans-serif/,
+      /Archivo.*font-noto-sans-kr.*Noto Sans KR.*Apple SD Gothic Neo.*Malgun Gothic.*sans-serif/,
     );
   });
 });

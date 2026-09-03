@@ -11,6 +11,7 @@ export type ContractCheckCopy = Readonly<{
     optional: string;
     deposit: string;
     monthlyRent: string;
+    zeroAllowed: string;
     firstPlaceholder: string;
     secondPlaceholder: string;
   }>;
@@ -32,7 +33,8 @@ export type ContractCheckCopy = Readonly<{
     lowerPrefix: string;
     lowerSuffix: string;
     differenceSuffix: string;
-    referenceDeposit: string;
+    monthlyEquivalent: string;
+    perMonth: string;
     flipped: string;
     traceCaption: string;
     calculation: string;
@@ -44,6 +46,13 @@ export type ContractCheckCopy = Readonly<{
     headingLead: string;
     headingTail: string;
     description: string;
+  }>;
+  mode: Readonly<{
+    ariaLabel: string;
+    budget: string;
+    budgetDescription: string;
+    compare: string;
+    compareDescription: string;
   }>;
   housingType: string;
   apartment: string;
@@ -77,7 +86,7 @@ export type ContractCheckCopy = Readonly<{
 const englishContractCheckCopy = Object.freeze({
   primaryNavigation: 'Primary',
   planned: 'Planned',
-  wordmarkLabel: 'SignedPrice Contract Check',
+  wordmarkLabel: 'SignedPrice home',
   navigation: {
     check: 'Check',
     explore: 'Explore',
@@ -90,6 +99,7 @@ const englishContractCheckCopy = Object.freeze({
     optional: 'Optional',
     deposit: 'Deposit',
     monthlyRent: 'Monthly rent',
+    zeroAllowed: '0 allowed',
     firstPlaceholder: 'Near the station',
     secondPlaceholder: 'More space',
   },
@@ -100,8 +110,8 @@ const englishContractCheckCopy = Object.freeze({
   empty: {
     invalidTitle: 'Review the highlighted terms.',
     blankTitle: 'Enter both filed offers.',
-    invalidReason: 'Each deposit and monthly rent must be a positive whole-won amount.',
-    blankReason: 'A valid deposit and monthly rent are required for Offer A and Offer B.',
+    invalidReason: 'Each deposit must be positive; monthly rent may be zero and must not be negative.',
+    blankReason: 'Enter both deposits. Monthly rent can be left empty for a jeonse offer.',
     invalidAction: 'Correct the invalid field; the comparison will update immediately.',
     blankAction: 'Start with Offer A, then enter Offer B. No submission step is needed.',
   },
@@ -111,23 +121,31 @@ const englishContractCheckCopy = Object.freeze({
     lowerPrefix: 'Offer',
     lowerSuffix: 'has the lower normalized cost.',
     differenceSuffix: '/ month difference',
-    referenceDeposit: 'Reference deposit',
+    monthlyEquivalent: 'Equivalent cost · Offer',
+    perMonth: ' / month',
     flipped: 'The lower listed rent is not the lower normalized cost.',
     traceCaption: 'Four-row calculation trace',
     calculation: 'Calculation',
     rows: [
-      'Rate at filed deposit',
-      'Difference from reference deposit',
-      'Difference × annual rate ÷ 12',
-      'Monthly rent + row 3',
+      'Deposit as filed',
+      'Monthly rent as filed',
+      'Verified annual rate',
+      'Monthly equivalent',
     ],
-    principalBoundary: 'Deposit principal is refundable and excluded from monthly cost.',
+    principalBoundary: 'The refundable principal is not charged as rent; its full opportunity cost is converted with the verified annual rate.',
   },
   hero: {
     eyebrow: 'Seoul · Contract decision',
     headingLead: 'Which rent offer',
     headingTail: 'actually costs less?',
     description: 'Compare two deposit-and-rent offers on the same monthly basis.',
+  },
+  mode: {
+    ariaLabel: 'Check mode',
+    budget: 'My budget',
+    budgetDescription: 'Requires private affordability inputs · not available yet',
+    compare: 'Compare two offers',
+    compareDescription: 'Verified curve · updates as you type',
   },
   housingType: 'Housing type',
   apartment: 'Apartment',
@@ -144,7 +162,7 @@ const englishContractCheckCopy = Object.freeze({
   localDistribution: 'Check one offer against its local distribution',
   explore: 'Explore Seoul market evidence',
   footer: [
-    'Both are filed contract terms. Neither is wrong — their deposit bases differ.',
+    'Both deposits are converted independently, so a low listed rent does not automatically mean a lower monthly equivalent.',
     'The conversion curve is measured from filed contract pairs in the same building and floor-area band with different deposits.',
     'This is not an appraisal and must not be used for lending, tax, or litigation.',
   ],
@@ -165,7 +183,7 @@ const englishContractCheckCopy = Object.freeze({
 const koreanContractCheckCopy = Object.freeze({
   primaryNavigation: '주요 메뉴',
   planned: '준비 중',
-  wordmarkLabel: 'signedprice 계약 비교',
+  wordmarkLabel: 'signedprice 홈',
   navigation: {
     check: '계약 비교',
     explore: '구별 탐색',
@@ -178,6 +196,7 @@ const koreanContractCheckCopy = Object.freeze({
     optional: '선택',
     deposit: '보증금',
     monthlyRent: '월세',
+    zeroAllowed: '0 가능',
     firstPlaceholder: '역과 가까움',
     secondPlaceholder: '면적이 더 넓음',
   },
@@ -188,8 +207,8 @@ const koreanContractCheckCopy = Object.freeze({
   empty: {
     invalidTitle: '표시된 계약 조건을 확인하세요.',
     blankTitle: '두 신고 계약 조건을 입력하세요.',
-    invalidReason: '보증금과 월세는 원 단위의 양의 정수여야 합니다.',
-    blankReason: '계약 조건 A와 B의 보증금과 월세가 모두 필요합니다.',
+    invalidReason: '보증금은 양수여야 하며 월세는 0 이상이어야 합니다.',
+    blankReason: '두 보증금을 입력하세요. 전세 조건은 월세를 비워도 됩니다.',
     invalidAction: '잘못된 항목을 고치면 비교 결과가 즉시 갱신됩니다.',
     blankAction: '계약 조건 A부터 입력한 뒤 B를 입력하세요. 제출 단계는 없습니다.',
   },
@@ -199,23 +218,31 @@ const koreanContractCheckCopy = Object.freeze({
     lowerPrefix: '계약 조건',
     lowerSuffix: '의 환산 월 비용이 더 낮습니다.',
     differenceSuffix: '/ 월 차이',
-    referenceDeposit: '기준 보증금',
+    monthlyEquivalent: '환산 비용 · 계약 조건',
+    perMonth: ' / 월',
     flipped: '표시 월세가 낮은 계약과 환산 월 비용이 낮은 계약이 다릅니다.',
     traceCaption: '4단계 산출 과정',
     calculation: '산출 과정',
     rows: [
-      '신고 보증금에서 읽은 전환율',
-      '기준 보증금과의 차액',
-      '차액 × 연 전환율 ÷ 12',
-      '월세 + 3단계',
+      '신고 보증금',
+      '신고 월세',
+      '검증된 연 전환율',
+      '월 환산 비용',
     ],
-    principalBoundary: '보증금 원금은 반환 대상이므로 월 비용에서 제외합니다.',
+    principalBoundary: '반환되는 보증금 원금 자체를 월세로 더하지 않고, 전체 보증금의 기회비용만 검증된 연 전환율로 환산합니다.',
   },
   hero: {
     eyebrow: '서울 · 계약 조건 비교',
     headingLead: '어느 계약 조건의',
     headingTail: '월 비용이 더 낮을까요?',
     description: '보증금과 월세가 다른 두 신고 계약을 같은 월 비용 기준으로 비교합니다.',
+  },
+  mode: {
+    ariaLabel: '비교 방식',
+    budget: '내 예산',
+    budgetDescription: '개인 자금 입력이 필요해 아직 제공하지 않습니다',
+    compare: '두 계약 비교',
+    compareDescription: '검증 전환율 · 입력 즉시 갱신',
   },
   housingType: '주택 유형',
   apartment: '아파트',
@@ -232,7 +259,7 @@ const koreanContractCheckCopy = Object.freeze({
   localDistribution: '한 계약 조건을 해당 지역 분포와 비교',
   explore: '서울 구별 신고 계약 근거 보기',
   footer: [
-    '양쪽 모두 실제 신고 계약 조건입니다. 어느 쪽도 틀리지 않았으며 보증금 기준이 다를 뿐입니다.',
+    '두 보증금을 각각 환산하므로 표시 월세가 낮다고 반드시 월 환산 비용도 낮은 것은 아닙니다.',
     '전환율은 같은 단지와 같은 전용면적에서 보증금만 다른 신고 계약 쌍으로 측정했습니다.',
     '이 비교는 감정평가가 아니며 담보·과세·소송 목적으로 사용할 수 없습니다.',
   ],
@@ -266,7 +293,8 @@ const KOREAN_LOCAL_ROUTES = new Set([
 export function localizedSeoulHref(href: string, locale: ProductLocale): string {
   if (locale === 'en') return href;
   const [path, query] = href.split('?', 2);
-  if (!KOREAN_LOCAL_ROUTES.has(path ?? '')) return href;
+  const isKoreanExploreDetail = path?.startsWith('/kr/seoul/explore/') === true;
+  if (!KOREAN_LOCAL_ROUTES.has(path ?? '') && !isKoreanExploreDetail) return href;
   return `/ko${path}${query === undefined ? '' : `?${query}`}`;
 }
 
@@ -287,10 +315,12 @@ const koreanContractErrors: Readonly<Record<string, string>> = Object.freeze({
   'Enter monthly rent.': '월세를 입력하세요.',
   'Deposit must be a positive whole-won amount.': '보증금은 원 단위의 양의 정수여야 합니다.',
   'Monthly rent must be a positive whole-won amount.': '월세는 원 단위의 양의 정수여야 합니다.',
+  'Monthly rent must be a non-negative whole-won amount.': '월세는 원 단위의 0 이상 정수여야 합니다.',
   'Deposit must be ₩20,000,000,000 or less.': '보증금은 200억원 이하여야 합니다.',
   'Monthly rent must be ₩100,000,000 or less.': '월세는 1억원 이하여야 합니다.',
   'Verified evidence for the selected housing type is unavailable.': '선택한 주택 유형의 검증 근거가 없습니다.',
   'These offers could not be compared with verified evidence.': '검증된 근거로 두 계약 조건을 비교할 수 없습니다.',
+  'Deposit falls outside the measured range. No comparison is produced.': '보증금이 실측 구간을 벗어나 비교 결과를 만들지 않습니다.',
 });
 
 export function localizeContractText(value: string, locale: ProductLocale): string {
@@ -311,6 +341,14 @@ export type PublicMarketCopy = Readonly<{
     coverageHeading: string;
     districtsPublished: string;
     buildingsPublished: string;
+    observedBuildings: string;
+    transactionCoveredBuildings: string;
+    priceReadyBuildings: string;
+    priceEvidenceUnavailable: string;
+    observedPeriod: string;
+    jeonseObservations: string;
+    monthlyObservations: string;
+    openBuilding: string;
     eligibleContracts: string;
     unavailable: string;
     of: string;
@@ -481,6 +519,14 @@ const englishPublicMarketCopy = Object.freeze({
     coverageHeading: 'What this snapshot can actually show',
     districtsPublished: 'Districts published',
     buildingsPublished: 'Buildings published',
+    observedBuildings: 'Observed buildings',
+    transactionCoveredBuildings: 'Transaction-covered',
+    priceReadyBuildings: 'Price-ready',
+    priceEvidenceUnavailable: 'Price evidence unavailable',
+    observedPeriod: 'Observed period',
+    jeonseObservations: 'Jeonse observations',
+    monthlyObservations: 'Monthly observations',
+    openBuilding: 'Open building',
     eligibleContracts: 'Eligible contracts',
     unavailable: 'Unavailable',
     of: 'of',
@@ -492,7 +538,7 @@ const englishPublicMarketCopy = Object.freeze({
     mapEyebrow: '01 / District map',
     mapHeading: 'District median refundable jeonse deposit',
     mapTitle: 'Seoul district refundable jeonse deposit map',
-    mapDescription: 'Five ranked median steps. Hatched districts are not published. The adjacent district table provides keyboard controls and exact values.',
+    mapDescription: 'Five ranked median steps. Hatched districts are not published. The adjacent discovery rail provides keyboard controls and exact values.',
     mapLegend: 'District median refundable jeonse deposit',
     districtCount: 'district',
     notPublished: 'Not published',
@@ -651,6 +697,14 @@ const koreanPublicMarketCopy = Object.freeze({
     coverageHeading: '현재 자료가 실제로 보여주는 범위',
     districtsPublished: '게시된 구',
     buildingsPublished: '게시된 건물',
+    observedBuildings: '관측 건물',
+    transactionCoveredBuildings: '거래 연결 건물',
+    priceReadyBuildings: '가격 게시 가능',
+    priceEvidenceUnavailable: '가격 근거 없음',
+    observedPeriod: '관측 기간',
+    jeonseObservations: '전세 관측',
+    monthlyObservations: '월세 관측',
+    openBuilding: '건물 열기',
     eligibleContracts: '조건에 맞는 계약',
     unavailable: '확인되지 않음',
     of: '/',
@@ -662,7 +716,7 @@ const koreanPublicMarketCopy = Object.freeze({
     mapEyebrow: '01 / 구 지도',
     mapHeading: '구 중앙값 전세보증금',
     mapTitle: '서울 구별 전세보증금 지도',
-    mapDescription: '중앙값을 다섯 단계로 구분합니다. 빗금은 미게시 구이며, 옆 표에서 키보드로 구를 선택하고 정확한 값을 확인할 수 있습니다.',
+    mapDescription: '중앙값을 다섯 단계로 구분합니다. 빗금은 미게시 구이며, 옆 탐색 목록에서 키보드로 구를 선택하고 정확한 값을 확인할 수 있습니다.',
     mapLegend: '구 중앙값 전세보증금',
     districtCount: '개 구',
     notPublished: '미게시',

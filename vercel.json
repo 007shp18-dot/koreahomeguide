@@ -1,13 +1,15 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "git": {
+    "deploymentEnabled": {
+      "codex/signedprice-*": false
+    }
+  },
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- . ':(exclude)v2/**' ':(exclude)docs/superpowers/**'",
   "redirects": [
     {
-      "source": "/explore/",
-      "destination": "https://www.signedprice.com/kr/seoul/explore/",
-      "statusCode": 301
-    },
-    {
       "source": "/tools/seoul-rent-check/",
-      "destination": "https://www.signedprice.com/kr/seoul/check/",
+      "destination": "https://www.signedprice.com/kr/seoul/tools/rent-check/",
       "statusCode": 301
     },
     {

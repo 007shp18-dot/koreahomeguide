@@ -380,7 +380,7 @@ const dubaiTransactions = dubaiProfile.dataCapabilities.find(
 const marketCopyById = {
   'kr-seoul': {
     heroDescription:
-      'Official reported rent and sale evidence supports the full signedprice product posture for Seoul. Live rent exploration continues on KoreaHomeGuide during the brand transition.',
+      'Official reported rent and sale evidence supports the signedprice Seoul product, including the integrated Explore workflow.',
     sourcePosture: 'Official reported rent and sale evidence',
     capabilities: [
       {
@@ -393,11 +393,11 @@ const marketCopyById = {
       },
       {
         label: 'Live rent exploration',
-        description: 'The existing KoreaHomeGuide Rent Explorer remains the live transition tool.',
+        description: 'The signedprice Seoul Explore workflow keeps reported evidence and its limits together.',
         state: 'available',
         stateLabel: stateLabels.available,
         housingSector: null,
-        href: 'https://koreahomeguide.com/explore/',
+        href: '/kr/seoul/explore/',
         overviewCategory: 'workflow',
       },
       {
@@ -410,11 +410,11 @@ const marketCopyById = {
       },
     ],
     nextAction: {
-      label: 'Open the KoreaHomeGuide Rent Explorer',
-      href: 'https://koreahomeguide.com/explore/',
+      label: 'Open Seoul Explore',
+      href: '/kr/seoul/explore/',
       description:
-        'Continue to the existing live Seoul research tool under the KoreaHomeGuide transition brand.',
-      external: true,
+        'Review current reported-contract evidence in the signedprice Seoul workspace.',
+      external: false,
     },
   },
   'sg-singapore': {
@@ -480,9 +480,9 @@ const marketCopyById = {
       },
     ],
     nextAction: {
-      label: 'Review Dubai buy scope',
-      href: '/ae/dubai/buy/',
-      description: 'See the exact context and detail boundaries for a buy decision.',
+      label: 'Review Dubai evidence boundary',
+      href: '/trust/',
+      description: 'Review the source, rights and publication gates before local services open.',
       external: false,
     },
   },
@@ -560,7 +560,8 @@ export const intentRouteParams = initialMarketIds.flatMap((marketId) => {
 });
 
 export const publicMarketRouteParams = marketRouteParams.filter(
-  ({ country, city }) => country === 'kr' && city === 'seoul',
+  ({ country, city }) =>
+    (country === 'kr' && city === 'seoul') || (country === 'ae' && city === 'dubai'),
 );
 
 export const publicIntentRouteParams = intentRouteParams.filter(
@@ -582,10 +583,16 @@ function marketOverviewAction(marketId: MarketId): NavigationActionModel {
 }
 
 function marketHeader(profile: MarketProfile, isCurrent: boolean): SiteHeaderModel {
+  const languageSwitch = profile.id === 'kr-seoul'
+    ? { label: 'KO', href: '/ko/kr/seoul/', hrefLang: 'ko' as const }
+    : undefined;
   return {
     brand: routeShellCopy.header.brand,
     homeLabel: routeShellCopy.header.homeLabel,
     navigationLabel: routeShellCopy.header.navigationLabel,
+    marketLabel: profile.cityName,
+    languageLabel: 'EN',
+    languageSwitch,
     links: [
       { label: 'Global home', href: '/' },
       {
@@ -664,7 +671,7 @@ export function buildMarketPageModel(
         description: item.description,
         state: item.state,
         stateLabel: item.stateLabel,
-        href: item.href,
+        href: profile.id === 'kr-seoul' ? item.href : undefined,
       })),
     },
     {
@@ -677,9 +684,9 @@ export function buildMarketPageModel(
     },
     {
       number: '05',
-      title: 'Local rules and costs',
+      title: 'Listings and investment service',
       description:
-        'Dated eligibility, tax and ownership-cost detail is not yet published on this Preview route.',
+        'Active listings, inquiries and personalized investment recommendations are not offered yet.',
       state: 'not_built',
       stateLabel: overviewStateLabels.not_built,
       items: [],
@@ -706,7 +713,7 @@ export function buildMarketPageModel(
     hero: {
       sectionLabel: `${profile.cityName} market overview`,
       eyebrow: `${profile.cityName} market`,
-      heading: profile.cityName,
+      heading: `${profile.cityName} Market Overview`,
       description: copy.heroDescription,
       facts: [],
       layout: 'overview',
@@ -955,7 +962,7 @@ const comparisonMatrix = {
         comparisonCell(
           'kr-seoul',
           'limited',
-          'The live Rent Explorer remains on KoreaHomeGuide during transition.',
+          'The signedprice Seoul Explore workflow is available with explicit evidence limits.',
         ),
         comparisonCell(
           'sg-singapore',

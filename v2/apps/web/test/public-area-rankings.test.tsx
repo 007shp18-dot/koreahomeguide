@@ -1,9 +1,10 @@
+import { readFileSync } from 'node:fs';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 
-import RankingsPage, { metadata } from '../app/kr/seoul/rankings/page';
+import RankingsPage, { metadata } from '../app/(en)/kr/seoul/rankings/page';
 import { DistrictRankings } from '../components/public-market/district-rankings';
 import { buildPublicAreaRankingsModel } from '../lib/public-market/rankings-route-model.server';
 import {
@@ -61,9 +62,10 @@ describe('Seoul district rankings page', () => {
     expect(html).not.toContain('data-change-direction=');
     expect(html).toContain('23 districts excluded');
     expect(html).toContain('aria-current="page"');
-    expect(html).toContain('data-public-tab="explore"');
-    expect(html).toContain('href="/kr/seoul/news"');
-    expect(html).toContain('href="/kr/seoul/guide"');
+    expect(html).toContain('>Prices</a>');
+    expect(html).toContain('href="/news"');
+    expect(html).toContain('href="/community"');
+    expect(html).toContain('href="/guides"');
   });
 
   it('does not reinterpret a positive stored change without retained counts', async () => {
@@ -90,6 +92,42 @@ describe('Seoul district rankings page', () => {
     expect(html.match(/No eligible districts for this metric\./g)).toHaveLength(4);
     expect(html).not.toContain('data-ranking-row=');
     expect(html).not.toMatch(/₩[0-9]|[+-][0-9]+\.[0-9]%/);
+  });
+
+  it('presents one ranking measure at a time through an accessible view selector', () => {
+    const model = buildPublicAreaRankingsModel({
+      source: createPublicAreaFixture(),
+      period: PUBLIC_AREA_FIXTURE_PERIOD,
+    });
+
+    const html = renderToStaticMarkup(<DistrictRankings model={model} />);
+
+    expect(html).toContain('role="tablist"');
+    expect(html.match(/role="tab"/g)).toHaveLength(4);
+    expect(html.match(/aria-selected="true"/g)).toHaveLength(1);
+    expect(html.match(/role="tabpanel"/g)).toHaveLength(4);
+    expect(html.match(/ hidden=""/g)).toHaveLength(3);
+  });
+
+  it('contains the ranking workspace and uses one consistent rule hierarchy', () => {
+    const model = buildPublicAreaRankingsModel({
+      source: createPublicAreaFixture(),
+      period: PUBLIC_AREA_FIXTURE_PERIOD,
+    });
+    const html = renderToStaticMarkup(<DistrictRankings model={model} />);
+    const css = readFileSync(
+      new URL('../components/public-market/district-rankings.module.css', import.meta.url),
+      'utf8',
+    );
+
+    expect(html).toContain('data-ranking-frame="contained"');
+    expect(html).toContain('data-ranking-method="published-context"');
+    expect(html).toContain(PUBLIC_AREA_FIXTURE_PERIOD);
+    expect(css).toMatch(/\.frame\s*\{[\s\S]*?width:\s*min\(calc\(100% - \(2 \* var\(--page-gutter\)\)\),\s*var\(--content-frame\)\)/);
+    expect(css).toMatch(/\.hero\s*\{[\s\S]*?min-height:\s*0/);
+    expect(css).toMatch(/\.hero\s*\{[\s\S]*?border-bottom:\s*var\(--rule-strong\)/);
+    expect(css).toMatch(/\.row,[\s\S]*?border-bottom:\s*var\(--rule-subtle\)/);
+    expect(css).not.toMatch(/outline:\s*3px/);
   });
 
   it('fails closed without rendering district money', async () => {

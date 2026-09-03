@@ -10,6 +10,11 @@ import {
   buildFloorCoefficientModel,
   buildPublicBuildingModel,
 } from '../lib/public-market/building-route-model.server';
+import { buildObservedBuildingIdentityModel } from '../lib/public-market/observed-building-route-model.server';
+import {
+  OBSERVED_BUILDING_FIXTURE_PERIOD,
+  createObservedBuildingInventoryFixture,
+} from './observed-building-fixture';
 import {
   PUBLIC_BUILDING_FIXTURE_PERIOD,
   createPublicBuildingFixture,
@@ -158,6 +163,68 @@ describe('public building route model', () => {
     })).toBeNull();
     expect(buildPublicBuildingModel('gangnam-gu', 'gangnam-evidence-tower', {
       source: { invalid: true }, period: PUBLIC_BUILDING_FIXTURE_PERIOD,
+    })).toBeNull();
+  });
+});
+
+describe('observed building identity route model', () => {
+  it('keeps an observed building discoverable without inventing price evidence', () => {
+    const model = buildObservedBuildingIdentityModel('jongno-gu', 'jongno-monthly-home', {
+      source: createObservedBuildingInventoryFixture(),
+      period: OBSERVED_BUILDING_FIXTURE_PERIOD,
+    });
+
+    expect(model).toMatchObject({
+      status: 'identity_only',
+      district: { slug: 'jongno-gu', nameEn: 'Jongno-gu' },
+      building: {
+        buildingId: 'jongno-monthly-home',
+        officialName: 'Monthly Home',
+        neighborhoodId: 'sajik-dong',
+        neighborhoodName: '사직동',
+        housingType: 'officetel',
+      },
+      observations: {
+        total: 1,
+        jeonse: 0,
+        monthly: 1,
+        firstMonth: '2026-06',
+        lastMonth: '2026-06',
+      },
+      coordinate: {
+        status: 'unavailable',
+        reason: 'coordinate_not_resolved',
+      },
+      source: {
+        provider: 'MOLIT',
+        dataset: 'reported rent contracts',
+        period: OBSERVED_BUILDING_FIXTURE_PERIOD,
+      },
+      evidence: {
+        status: 'unavailable',
+      },
+    });
+    expect(model?.evidence.message).toBe(
+      'No publishable price evidence is installed for the exact 45–55㎡ zero-rent jeonse cohort.',
+    );
+    expect(model?.evidence.message).not.toMatch(/sample|threshold/i);
+    expect(Object.isFrozen(model)).toBe(true);
+  });
+
+  it('rejects missing, cross-district, and invalid observed inventory', () => {
+    const dependencies = {
+      source: createObservedBuildingInventoryFixture(),
+      period: OBSERVED_BUILDING_FIXTURE_PERIOD,
+    } as const;
+
+    expect(buildObservedBuildingIdentityModel(
+      'gangnam-gu', 'jongno-monthly-home', dependencies,
+    )).toBeNull();
+    expect(buildObservedBuildingIdentityModel(
+      'jongno-gu', 'missing-building', dependencies,
+    )).toBeNull();
+    expect(buildObservedBuildingIdentityModel('jongno-gu', 'jongno-monthly-home', {
+      source: { invalid: true }, period: OBSERVED_BUILDING_FIXTURE_PERIOD,
     })).toBeNull();
   });
 });

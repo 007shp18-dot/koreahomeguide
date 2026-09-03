@@ -4,6 +4,8 @@ import { PUBLIC_AREA_SUMMARY_TEST_PERIOD } from './public-area-summary-fixture';
 
 export const PUBLIC_BUILDING_TEST_ID = 'synthetic-test-building';
 export const PUBLIC_BUILDING_TEST_NAME = 'Synthetic Test Building';
+export const PUBLIC_BUILDING_TEST_SELECTION_HREF =
+  '/kr/seoul/explore/jongno-gu/synthetic-test-building/?district=jongno-gu&neighborhood=sajik-dong&buildingId=synthetic-test-building';
 
 function canonicalJson(value: unknown): string {
   if (value === null || typeof value !== 'object') return JSON.stringify(value);

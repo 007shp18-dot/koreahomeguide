@@ -4,13 +4,18 @@ import {
   GUIDES,
   GUIDE_GLOSSARY,
 } from '../../lib/guide/guide-content';
-import { PublicSectionTabs } from '../public-market/public-section-tabs';
 import styles from './guide.module.css';
+
+const guideStages = Object.freeze(
+  [...new Set(GUIDES.map(({ stage }) => stage))].map((stage) => Object.freeze({
+    stage,
+    guides: Object.freeze(GUIDES.filter((guide) => guide.stage === stage)),
+  })),
+);
 
 export function GuideIndex() {
   return (
     <>
-      <PublicSectionTabs current="guide" />
       <main className={styles.main}>
         <header className={styles.hero}>
           <p>Seoul · Decision methodology</p>
@@ -23,16 +28,23 @@ export function GuideIndex() {
             <p>01 / Guides</p>
             <h2 id="guide-list-heading">Choose the decision stage.</h2>
           </div>
-          <ol>
-            {GUIDES.map((guide) => (
-              <li key={guide.slug}>
-                <p>{guide.stage} · {guide.readMinutes} min</p>
-                <h3>{guide.title}</h3>
-                <p>{guide.summary}</p>
-                <Link href={`/kr/seoul/guide/${guide.slug}/`}>Read guide</Link>
-              </li>
+          <div className={styles.stageGroups}>
+            {guideStages.map(({ stage, guides }) => (
+              <section className={styles.guideStage} data-guide-stage={stage} key={stage}>
+                <h3>{stage}</h3>
+                <ol>
+                  {guides.map((guide) => (
+                    <li key={guide.slug}>
+                      <p>{guide.readMinutes} min read</p>
+                      <h4>{guide.title}</h4>
+                      <p>{guide.summary}</p>
+                      <Link href={`/kr/seoul/guide/${guide.slug}/`}>Read guide</Link>
+                    </li>
+                  ))}
+                </ol>
+              </section>
             ))}
-          </ol>
+          </div>
         </section>
 
         <section className={styles.glossary} aria-labelledby="guide-glossary-heading">

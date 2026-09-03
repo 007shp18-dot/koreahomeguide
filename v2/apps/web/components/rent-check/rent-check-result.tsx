@@ -7,7 +7,7 @@ import type {
 } from '@signedprice/korea-rent/browser';
 
 import type { RentCheckApiSuccess } from '../../lib/rent-check/client-state';
-import styles from '../../app/kr/seoul/tools/rent-check/rent-check.module.css';
+import styles from './rent-check.module.css';
 import { EvidenceStrength } from './evidence-strength';
 import { RentRange } from './rent-range';
 import { TrustLabel } from './trust-label';
@@ -98,6 +98,22 @@ function medianVerdictCopy(result: SeoulRentCheckResult): string {
 function differenceCopy(value: number): string {
   if (value === 0 || Object.is(value, -0)) return 'equal to median';
   return `${Math.abs(value).toLocaleString('en-US')}% ${value < 0 ? 'below' : 'above'}`;
+}
+
+function ResultVerdict({ result }: Readonly<{ result: SeoulRentCheckResult }>) {
+  const label = result.comparableCount >= 5
+    ? verdictCopy(result)
+    : medianVerdictCopy(result);
+
+  return (
+    <div className={styles['result-verdict']} data-rent-result="verdict">
+      <TrustLabel>Quote verdict</TrustLabel>
+      <strong>{label}</strong>
+      {result.differencePct === null ? null : (
+        <p>{differenceCopy(result.differencePct)}</p>
+      )}
+    </div>
+  );
 }
 
 function ProvenanceGrid({ result, includeEstimate }: {
@@ -212,35 +228,38 @@ export function RentCheckResult(props: RentCheckResultProps) {
         <p className={styles['stale-label']}>Stale verified result</p>
       ) : null}
       {props.heading ?? <h2 tabIndex={-1}>Official evidence is ready.</h2>}
-      <EvidenceStrength result={result} />
+      <ResultVerdict result={result} />
+      <div className={styles['result-evidence']} data-rent-result="evidence">
+        <EvidenceStrength result={result} />
 
-      <ProvenanceGrid result={result} includeEstimate />
+        <ProvenanceGrid result={result} includeEstimate />
 
-      <dl className={styles['result-metrics']}>
-        {result.medianValueWon !== null ? (
-          <div>
-            <dt>{result.comparisonBasis === 'deposit-adjusted-monthly-rent'
-              ? 'Median signedprice deposit-adjusted estimate'
-              : 'Median reported jeonse deposit'}</dt>
-            <dd>{won(result.medianValueWon)}</dd>
-          </div>
-        ) : null}
-        {hasDistribution && result.differencePct !== null ? (
-          <div>
-            <dt>{result.comparisonBasis === 'deposit-adjusted-monthly-rent'
-              ? 'Difference from signedprice deposit-adjusted median'
-              : 'Difference from reported jeonse median'}</dt>
-            <dd>{differenceCopy(result.differencePct)}</dd>
-          </div>
-        ) : null}
-        {hasDistribution && result.confidence !== null ? (
-          <div>
-            <dt>Confidence</dt>
-            <dd>{result.confidence}</dd>
-          </div>
-        ) : null}
-      </dl>
-      {hasDistribution ? <RentRange result={result} /> : null}
+        <dl className={styles['result-metrics']}>
+          {result.medianValueWon !== null ? (
+            <div>
+              <dt>{result.comparisonBasis === 'deposit-adjusted-monthly-rent'
+                ? 'Median signedprice deposit-adjusted estimate'
+                : 'Median reported jeonse deposit'}</dt>
+              <dd>{won(result.medianValueWon)}</dd>
+            </div>
+          ) : null}
+          {hasDistribution && result.differencePct !== null ? (
+            <div>
+              <dt>{result.comparisonBasis === 'deposit-adjusted-monthly-rent'
+                ? 'Difference from signedprice deposit-adjusted median'
+                : 'Difference from reported jeonse median'}</dt>
+              <dd>{differenceCopy(result.differencePct)}</dd>
+            </div>
+          ) : null}
+          {hasDistribution && result.confidence !== null ? (
+            <div>
+              <dt>Confidence</dt>
+              <dd>{result.confidence}</dd>
+            </div>
+          ) : null}
+        </dl>
+        {hasDistribution ? <RentRange result={result} /> : null}
+      </div>
     </section>
   );
 }

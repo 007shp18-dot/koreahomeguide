@@ -4,26 +4,29 @@ import type {
   SingaporeProjectModel,
   SingaporeUnavailableModel,
 } from '../../lib/singapore/route-types';
+import { GoogleBuildingStreetView } from '../maps/google-building-street-view';
 import {
   SingaporeEvidence,
   SingaporePage,
   SingaporeScope,
   singaporeStyles as styles,
 } from './singapore-shell';
+import { MarketDetailShell } from '../market-ui/market-shell';
 
-export function SingaporeProjectDetail({ model }: Readonly<{
+export function SingaporeProjectDetail({ model, googleMapsBrowserKey = null }: Readonly<{
   model: SingaporeProjectModel | SingaporeUnavailableModel;
+  googleMapsBrowserKey?: string | null;
 }>) {
   if (model.status === 'unavailable') return (
-    <SingaporePage>
-      <section className={styles.unavailable} data-singapore-project="unavailable">
+    <SingaporePage currentHref="/sg/singapore/explore/">
+      <section className={styles.unavailable} data-singapore-project="unavailable" data-product-intro="true">
         <h1>{model.message}</h1><p>No project value is substituted.</p>
       </section>
     </SingaporePage>
   );
   if (model.status === 'insufficient') return (
-    <SingaporePage>
-      <section className={styles.withheld} data-singapore-project="insufficient">
+    <SingaporePage currentHref="/sg/singapore/explore/">
+      <section className={styles.withheld} data-singapore-project="insufficient" data-product-intro="true">
         <p className={styles.eyebrow}>Singapore · {model.identity.marketSegment}</p>
         <h1>{model.identity.project}: distribution not published.</h1>
         <p>{model.count} reported transactions. At least {model.threshold} are required.</p>
@@ -32,21 +35,23 @@ export function SingaporeProjectDetail({ model }: Readonly<{
     </SingaporePage>
   );
   return (
-    <SingaporePage>
-      <nav className={styles.breadcrumbs} aria-label="Breadcrumb">
+    <SingaporePage currentHref="/sg/singapore/explore/" unframed>
+      <MarketDetailShell
+        breadcrumb={<nav className={styles.breadcrumbs} aria-label="Breadcrumb">
         <Link href="/sg/singapore/explore/">Explore</Link>
         <Link href={`/sg/singapore/explore/${model.identity.marketSegment.toLowerCase()}/`}>
           {model.identity.marketSegment}
         </Link>
-        <span>{model.identity.project}</span>
-      </nav>
-      <header className={styles.hero} data-singapore-project="ready">
-        <p className={styles.eyebrow}>Singapore · {model.identity.marketSegment} · District {model.identity.district}</p>
-        <h1>{model.identity.project}: {model.display.medianPriceLabel} median.</h1>
-        <p>{model.identity.street} · {model.display.sampleLabel}</p>
-        <SingaporeScope />
-      </header>
-      <section className={styles.section} aria-labelledby="project-summary-heading">
+        <span>{model.identity.project}</span></nav>}
+        identity={<div className={styles.detailIdentity} data-singapore-project="ready"><p className={styles.eyebrow}>Singapore · {model.identity.marketSegment} · District {model.identity.district}</p><h1>{model.identity.project}</h1><p>{model.identity.street}</p><SingaporeScope /></div>}
+        metric={<div className={styles.detailMetric}><small>Median price</small><strong>{model.display.medianPriceLabel}</strong><span>{model.display.sampleLabel}</span></div>}
+        media={<GoogleBuildingStreetView
+          browserKey={googleMapsBrowserKey}
+          buildingName={model.identity.project}
+          address={`${model.identity.project}, ${model.identity.street}, Singapore`}
+          mapHref={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${model.identity.project}, ${model.identity.street}, Singapore`)}`}
+        />}
+        evidence={<><section className={styles.section} aria-labelledby="project-summary-heading">
         <p className={styles.sectionLabel}>01 / Project distribution</p>
         <h2 id="project-summary-heading">Price and unit-price evidence.</h2>
         <dl className={styles.stats}>
@@ -54,8 +59,7 @@ export function SingaporeProjectDetail({ model }: Readonly<{
           <div className={styles.stat}><dt>Middle half</dt><dd>{model.display.middlePriceLabel}</dd></div>
           <div className={styles.stat}><dt>Median</dt><dd>{model.display.medianPsfLabel}</dd></div>
         </dl>
-      </section>
-      <section className={styles.section} aria-labelledby="transaction-heading">
+      </section><section className={styles.section} aria-labelledby="transaction-heading">
         <p className={styles.sectionLabel}>02 / Recent reported transactions</p>
         <h2 id="transaction-heading">Native source fields, with derived unit prices labelled.</h2>
         <div className={styles.tableWrap}>
@@ -71,8 +75,9 @@ export function SingaporeProjectDetail({ model }: Readonly<{
             ))}</tbody>
           </table>
         </div>
-      </section>
-      <SingaporeEvidence model={model.evidence} />
+      </section></>}
+        rail={<SingaporeEvidence model={model.evidence} />}
+      />
     </SingaporePage>
   );
 }

@@ -11,16 +11,17 @@ import {
 import { SiteFooter } from '../site-footer';
 import { SiteHeader } from '../site-header';
 import { CommunitySignal } from '../community/community-signal';
+import { EvidenceSectionHeading } from '../evidence-ui/section-heading';
 import { DetailNewsList } from '../news/detail-news-list';
 import { EvidenceEmptyStatePanel } from '../trust/evidence-empty-state';
 import { BoxPlot } from './box-plot';
-import styles from './district-detail.module.css';
+import styles from './district-page.module.css';
 import { DistrictEvidenceSummary } from './district-evidence-summary';
 import { EvidencePeriodStrip } from './evidence-period-strip';
 import { QuoteInput } from './quote-input';
 import { SampleChip } from './sample-chip';
-import { PublicSectionTabs } from './public-section-tabs';
 import { PublicSourceBoundary } from './public-source-boundary';
+import { NaverDistrictMap, type NaverDistrictMapPoint } from '../maps/naver-district-map';
 
 const config = getPublicMarketConfig('kr-seoul');
 const money = new Intl.NumberFormat(config.formatLocale, {
@@ -66,6 +67,9 @@ function DistrictNavigation({ model }: Readonly<{ model: PublicDistrictModel }>)
   return (
     <nav className={styles.navigation} aria-label="District evidence navigation">
       <div className={styles.primaryLinks}>
+        <Link href="/kr/seoul/check/">
+          Compare a contract
+        </Link>
         <Link className={styles.exploreLink} href={exploreHref}>
           Back to Seoul map
         </Link>
@@ -99,11 +103,16 @@ function Breadcrumb({ model }: Readonly<{ model: PublicDistrictModel }>) {
 
 function BuildingEvidence({ model }: Readonly<{ model: PublicDistrictModel }>) {
   return (
-    <section className={styles.buildingEvidence} aria-labelledby="building-evidence-heading">
-      <div className={styles.sectionHeading}>
-        <p>04 / Building evidence</p>
-        <h2 id="building-evidence-heading">Verified buildings in {model.identity.nameEn}</h2>
-      </div>
+    <section
+      className={styles.buildingEvidence}
+      aria-labelledby="building-evidence-heading"
+      data-section="district-buildings"
+    >
+      <EvidenceSectionHeading
+        eyebrow="04 / Building evidence"
+        title={`Verified buildings in ${model.identity.nameEn}`}
+        id="building-evidence-heading"
+      />
       {model.buildingAvailability.status === 'ready' ? (
         <ul className={styles.buildingList}>
           {model.buildingAvailability.buildings.map((building) => (
@@ -135,10 +144,11 @@ function PropertyTypeEvidence({
   if (propertyTypes.length === 0) return null;
   return (
     <section className={styles.propertyTypeEvidence} aria-labelledby="property-type-evidence-heading">
-      <div className={styles.sectionHeading}>
-        <p>Property type evidence</p>
-        <h2 id="property-type-evidence-heading">Published evidence by home type</h2>
-      </div>
+      <EvidenceSectionHeading
+        eyebrow="Property type evidence"
+        title="Published evidence by home type"
+        id="property-type-evidence-heading"
+      />
       <ul className={styles.propertyTypeList}>
         {propertyTypes.map((propertyType) => (
           <li key={propertyType.slug}>
@@ -157,10 +167,11 @@ function Faq({ model }: Readonly<{
 }>) {
   return (
     <section className={styles.faq} aria-labelledby="district-faq-heading">
-      <div className={styles.sectionHeading}>
-        <p>03 / Computed FAQ</p>
-        <h2 id="district-faq-heading">Questions answered from this district summary.</h2>
-      </div>
+      <EvidenceSectionHeading
+        eyebrow="03 / Computed FAQ"
+        title="Questions answered from this district summary."
+        id="district-faq-heading"
+      />
       <div className={styles.faqGrid}>
         {model.faq.map(({ question, answer }) => (
           <article key={question}>
@@ -173,42 +184,97 @@ function Faq({ model }: Readonly<{
   );
 }
 
-function Finding({ model }: Readonly<{ model: PublicDistrictModel }>) {
+function Finding({
+  model,
+  mapPoint,
+  mapDistricts,
+  naverMapClientId,
+}: Readonly<{
+  model: PublicDistrictModel;
+  mapPoint?: Readonly<{ latitude: number; longitude: number }>;
+  mapDistricts: readonly NaverDistrictMapPoint[];
+  naverMapClientId: string | null;
+}>) {
+  const map = mapPoint === undefined || naverMapClientId === null ? (
+    <div className={styles.mapFallback}><strong>{model.identity.nameEn}</strong><span>District map unavailable</span></div>
+  ) : (
+    <NaverDistrictMap
+      clientId={naverMapClientId}
+      districts={mapDistricts}
+      selectedDistrict={mapPoint}
+      fallback={<div className={styles.mapFallback}><strong>{model.identity.nameEn}</strong><span>Loading verified district map</span></div>}
+    />
+  );
   if (model.status === 'unavailable') {
     return (
-      <header className={styles.hero}>
-        <p>Seoul · {model.identity.nameKo}</p>
-        <h1>{model.message} for {model.identity.nameEn}.</h1>
-        <p>No city figure is substituted for unavailable district evidence.</p>
+      <header
+        className={styles.hero}
+        data-section="district-summary"
+        data-detail-hero="district"
+      >
+        <div className={styles.heroCopy}>
+          <p>Seoul · {model.identity.nameKo}</p>
+          <h1>{model.identity.nameEn} District</h1>
+          <p>{model.message}. No city figure is substituted for unavailable district evidence.</p>
+        </div>
+        <div className={styles.heroMap}>{map}</div>
       </header>
     );
   }
-  const finding = model.status === 'published' ? model.display.medianLabel : 'Not published';
   return (
-    <header className={styles.hero}>
-      <p>Seoul · <span lang="ko">{model.identity.nameKo}</span></p>
-      <h1>{model.identity.nameEn}: {finding} from {model.display.sampleLabel}.</h1>
-      <SampleChip label={model.display.sampleLabel} state={model.status} />
+    <header
+      className={styles.hero}
+      data-section="district-summary"
+      data-detail-hero="district"
+    >
+        <div className={styles.heroCopy}>
+          <p>Seoul · <span lang="ko">{model.identity.nameKo}</span></p>
+          <h1>{model.identity.nameEn} District</h1>
+          <p>Official reported-contract evidence for the declared period.</p>
+        </div>
+      <div className={styles.heroMap}>{map}</div>
     </header>
   );
+}
+
+function DistrictMetrics({ model }: Readonly<{ model: PublicDistrictModel }>) {
+  const metrics = model.status === 'unavailable' ? [
+    ['Evidence status', 'Unavailable', 'No city value substituted'],
+    ['Sample', 'Unavailable', 'Verified district evidence required'],
+    ['Period', 'Unavailable', 'No current release'],
+    ['Publication', 'Withheld', 'Fail-closed display'],
+  ] : [
+    ['Median deposit', model.status === 'published' ? model.display.medianLabel : 'Not published', model.display.sampleLabel],
+    ['Middle half', model.status === 'published' ? model.display.middleHalfLabel : 'Not published', 'Comparable district distribution'],
+    ['Full range', model.status === 'published' ? model.display.rangeLabel : 'Not published', 'Official reported contracts'],
+    ['Evidence period', model.source.period, model.period.caveat ?? 'Declared reporting period'],
+  ];
+  return <section className={styles.metricGrid} aria-label="District summary metrics">{metrics.map(([label, value, detail], index) => <article key={label} data-detail-hero-metric={index === 0 ? model.status === 'published' ? 'median' : 'status' : undefined}><span>{label}</span><strong>{value}</strong>{index === 0 && model.status !== 'unavailable' ? <SampleChip label={model.display.sampleLabel} state={model.status} /> : <small>{detail}</small>}</article>)}</section>;
 }
 
 function Evidence({ model }: Readonly<{ model: PublicDistrictModel }>) {
   if (model.status === 'unavailable') {
     return (
-      <section className={styles.unavailable} aria-label="District evidence unavailable">
+      <section
+        className={styles.unavailable}
+        aria-label="District evidence unavailable"
+        data-section="district-distribution"
+      >
         <p>Verified district evidence is required before any monetary finding can be shown.</p>
       </section>
     );
   }
   return (
-    <section className={styles.evidence} aria-labelledby="district-evidence-heading">
-      <div className={styles.sectionHeading}>
-        <p>01 / District finding</p>
-        <h2 id="district-evidence-heading">
-          {model.status === 'published' ? 'Published distribution' : 'Distribution not published'}
-        </h2>
-      </div>
+    <section
+      className={styles.evidence}
+      aria-labelledby="district-evidence-heading"
+      data-section="district-distribution"
+    >
+      <EvidenceSectionHeading
+        eyebrow="01 / District finding"
+        title={model.status === 'published' ? 'Published distribution' : 'Distribution not published'}
+        id="district-evidence-heading"
+      />
       {model.status === 'published' ? (
         <>
           <EvidencePeriodStrip model={model.period} label="District evidence period" />
@@ -236,10 +302,10 @@ function Evidence({ model }: Readonly<{ model: PublicDistrictModel }>) {
             )}
           </dl>
           <div className={styles.quoteBlock}>
-            <div className={styles.sectionHeading}>
-              <p>02 / Local quote</p>
-              <h2>Compare one refundable deposit locally.</h2>
-            </div>
+            <EvidenceSectionHeading
+              eyebrow="02 / Local quote"
+              title="Compare one refundable deposit locally."
+            />
             <QuoteInput
               config={config}
               summary={model.summary}
@@ -262,25 +328,38 @@ function Evidence({ model }: Readonly<{ model: PublicDistrictModel }>) {
 export function DistrictDetailPage({
   model,
   propertyTypes = [],
+  mapDistricts = [],
+  mapPoint,
+  naverMapClientId = null,
 }: Readonly<{
   model: PublicDistrictModel;
   propertyTypes?: readonly PublicPropertyTypeIdentity[];
+  mapDistricts?: readonly NaverDistrictMapPoint[];
+  mapPoint?: Readonly<{ latitude: number; longitude: number }>;
+  naverMapClientId?: string | null;
 }>) {
   return (
     <div id="top" className={styles.page} data-district-detail={model.status}>
       <SiteHeader copy={headerFor(model)} />
-      <PublicSectionTabs current="explore" />
       <main className={styles.main}>
-        <Breadcrumb model={model} />
-        <Finding model={model} />
-        <div className={styles.detailLayout}>
+        <div className={styles.detailLayout} data-detail-layout="evidence-rail">
           <div className={styles.detailMain} data-detail-main="true">
-            <DistrictEvidenceSummary model={model.contractEvidence} mode="full" />
+            <Breadcrumb model={model} />
+            <Finding model={model} mapDistricts={mapDistricts} mapPoint={mapPoint} naverMapClientId={naverMapClientId} />
+            <nav className={styles.tabs} aria-label="District page sections"><a href="#overview">Overview</a><a href="#distribution">Distribution</a><a href="#buildings">Buildings</a><a href="#home-types">Home types</a><a href="#source">Source</a></nav>
+            <div id="overview"><DistrictMetrics model={model} /></div>
+            <div id="distribution">
             <Evidence model={model} />
-            <PropertyTypeEvidence model={model} propertyTypes={propertyTypes} />
-            <BuildingEvidence model={model} />
+            </div>
+            <div className={styles.cohortEvidence} data-section="district-cohorts">
+              <DistrictEvidenceSummary model={model.contractEvidence} mode="full" />
+            </div>
+            <div id="home-types"><PropertyTypeEvidence model={model} propertyTypes={propertyTypes} /></div>
+            <div id="buildings"><BuildingEvidence model={model} /></div>
             {model.status === 'unavailable' ? null : <Faq model={model} />}
-            <PublicSourceBoundary model={model.source} />
+            <div className={styles.sourceBoundary} data-section="district-source" id="source">
+              <PublicSourceBoundary model={model.source} />
+            </div>
           </div>
           <aside className={styles.detailRail} data-detail-rail="true" aria-label="District context">
             <DetailNewsList news={model.news} />

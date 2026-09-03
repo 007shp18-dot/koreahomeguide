@@ -4,21 +4,31 @@ import {
 } from './public-area-summary-fixture';
 
 export const publicRoutes = [
-  { path: '/', heading: 'Real prices. Better property decisions.', indexing: 'index', canonical: '/' },
+  { path: '/', heading: 'Know the market before you buy.', indexing: 'index', canonical: '/' },
   { path: '/trust/', heading: 'How SignedPrice publishes evidence', indexing: 'index', canonical: '/trust/' },
   {
     path: '/kr/seoul/check/',
-    heading: 'Which rent offer actually costs less?',
+    heading: 'Check one asking price.',
     indexing: 'index',
+    fixtureIndexing: 'noindex',
+    fixtureCanonical: false,
+    fixtureAlternates: false,
     canonical: '/kr/seoul/check/',
     alternates: true,
   },
-  { path: '/kr/check/seoul/', heading: 'Where does this refundable deposit sit?', indexing: 'index', canonical: '/kr/check/seoul/' },
+  {
+    path: '/kr/seoul/check/compare/',
+    heading: 'Compare two offers',
+    indexing: 'index',
+    canonical: '/kr/seoul/check/compare/',
+    alternates: true,
+  },
   { path: '/kr/seoul/rent/', heading: 'Rent in Seoul', indexing: 'noindex' },
   {
     path: '/kr/seoul/tools/rent-check/',
     heading: 'Check the quote against reported contracts.',
-    indexing: 'noindex',
+    indexing: 'index',
+    canonical: '/kr/seoul/tools/rent-check/',
   },
   { path: '/kr/seoul/buy/', heading: 'Buy in Seoul', indexing: 'noindex' },
   { path: '/kr/seoul/invest/', heading: 'Invest in Seoul', indexing: 'noindex' },
@@ -43,17 +53,18 @@ export const publicRoutes = [
   },
   {
     path: '/sg/',
-    heading: 'Verified Singapore evidence unavailable',
+    heading: 'Singapore',
     indexing: 'noindex',
   },
+  { path: '/ae/dubai/', heading: 'Dubai', indexing: 'noindex' },
   {
     path: '/sg/singapore/explore/',
-    heading: 'Verified Singapore evidence unavailable',
+    heading: 'Residential transaction evidence',
     indexing: 'noindex',
   },
   ...(['ccr', 'rcr', 'ocr'] as const).map((area) => ({
     path: `/sg/singapore/explore/${area}/`,
-    heading: 'Verified Singapore evidence unavailable',
+    heading: area.toUpperCase(),
     indexing: 'noindex' as const,
   })),
   {
@@ -67,7 +78,7 @@ export const publicRoutes = [
   { path: '/kr/seoul/guide/understand-publication-limits/', heading: 'Understand publication limits and refusals', indexing: 'index', canonical: '/kr/seoul/guide/understand-publication-limits/' },
   ...PUBLIC_AREA_TEST_DISTRICTS.map((district) => ({
     path: `/kr/seoul/${district.slug}/`,
-    heading: new RegExp(`${district.nameEn}:`),
+    heading: district.nameEn,
     indexing: 'noindex' as const,
     ...(district.slug === PUBLIC_AREA_WITHHELD_SLUG
       ? {}
@@ -75,7 +86,7 @@ export const publicRoutes = [
   })),
   ...PUBLIC_AREA_TEST_DISTRICTS.map((district) => ({
     path: `/kr/seoul/explore/${district.slug}/`,
-    heading: new RegExp(`${district.nameEn}:`),
+    heading: district.nameEn,
     indexing: district.slug === PUBLIC_AREA_WITHHELD_SLUG
       ? 'noindex' as const
       : 'index' as const,

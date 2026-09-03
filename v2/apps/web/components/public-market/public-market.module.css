@@ -9,6 +9,49 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* Charts use the same calm card language as the overview and detail pages. */
+.periodEvidence,
+.boxPlot,
+.withheldPlot {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-strong);
+}
+
+.periodStrip { gap: 1px; background: var(--line); }
+.periodStrip li {
+  min-height: 52px;
+  border: 0;
+  background: var(--surface-strong);
+  font-size: .75rem;
+}
+.periodFiling { background: repeating-linear-gradient(-45deg, #fff 0 7px, var(--soft-blue) 7px 9px) !important; }
+.periodLegend { border-color: var(--line); }
+.periodLegend span,
+.periodCaveat { font-size: .75rem; }
+.periodLegend i { border-color: var(--line-strong); border-radius: 3px; }
+
+.strokeSwatch { border-radius: 4px; }
+.filled { border-color: var(--accent); background: var(--accent); }
+.outlined,
+.hatched { border-color: var(--accent); }
+.hairline { background: var(--accent); }
+.strokeLabel { font-size: .8125rem; }
+
+.plotCanvas { min-height: 150px; border-color: var(--line); background: linear-gradient(to bottom, transparent 24%, var(--line) 25%, transparent 26%, transparent 49%, var(--line) 50%, transparent 51%, transparent 74%, var(--line) 75%, transparent 76%); }
+.whisker,
+.whisker::before,
+.whisker::after,
+.medianLine { background: #638dca; }
+.interquartile { border-color: #638dca; background: #e8f1ff; }
+.quoteMarker,
+.quoteMarker::before { background: var(--accent); }
+.plotLegend { border-color: var(--line); background: var(--line); }
+.plotLegend small { font-size: .68rem; }
+.plotLegend strong,
+.plotQuoteLegend { font-size: .75rem; }
+
 .periodEvidence {
   display: grid;
   gap: 0;
@@ -138,7 +181,7 @@
 
 .plotCanvas {
   position: relative;
-  min-height: 180px;
+  min-height: 132px;
   border-bottom: 2px solid var(--public-ink);
   overflow: hidden;
 }
@@ -213,68 +256,46 @@
   transform: rotate(45deg);
 }
 
-.plotAnnotation {
-  position: absolute;
-  left: var(--label-pct);
-  z-index: 2;
+.plotLegend {
+  min-width: 0;
   display: grid;
-  gap: 0.15rem;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1px;
+  border-bottom: 1px solid var(--divider);
+  background: var(--divider);
 }
 
-.plotAnnotation small {
-  color: var(--muted);
-  font-size: 0.56rem;
-  font-weight: 850;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+.plotLegend > span {
+  min-width: 0;
+  padding: 0.7rem 0.55rem;
+  display: grid;
+  gap: 0.2rem;
+  background: var(--public-ground);
 }
 
-.plotAnnotation strong {
-  font-size: 0.72rem;
-  font-weight: 900;
+.plotLegend > span:last-child { text-align: right; }
+.plotLegend > span:nth-child(2),
+.plotLegend > span:nth-child(3),
+.plotLegend > span:nth-child(4) { text-align: center; }
+.plotLegend small { color: var(--muted); font-size: 0.58rem; font-weight: 850; letter-spacing: 0.04em; text-transform: uppercase; }
+.plotLegend strong { min-width: 0; overflow-wrap: anywhere; font-size: 0.7rem; line-height: 1.25; }
+
+.plotQuoteLegend {
+  margin: 0;
+  padding: 0.6rem 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--divider);
+  color: var(--public-accent);
+  font-size: 0.7rem;
 }
 
-.middleAnnotation {
-  top: calc(8px + var(--label-lane) * 22px);
-  max-width: 150px;
-  transform: translateX(-50%);
-  text-align: center;
-}
+.plotQuoteLegend > span { width: 0.65rem; height: 0.65rem; flex: 0 0 auto; background: var(--public-accent); transform: rotate(45deg); }
 
 .medianAnnotation,
 .medianAnnotation small {
   color: var(--public-accent);
-}
-
-.endpointAnnotation {
-  bottom: 8px;
-}
-
-.minimumAnnotation {
-  transform: none;
-  text-align: left;
-}
-
-.maximumAnnotation {
-  transform: translateX(-100%);
-  text-align: right;
-}
-
-.quoteAnnotation {
-  top: 82px;
-  color: var(--public-accent);
-  transform: translateX(-50%);
-}
-
-.quoteAnnotation small {
-  color: inherit;
-}
-
-.endpointShort,
-.quartileShort {
-  display: none;
 }
 
 .screenReaderDescription {
@@ -305,7 +326,7 @@
 }
 
 .compactPlot .plotCanvas {
-  min-height: 148px;
+  min-height: 112px;
 }
 
 .compactPlot .plotCaption {
@@ -313,9 +334,8 @@
   font-size: 0.66rem;
 }
 
-.compactPlot .plotAnnotation strong {
-  font-size: 0.64rem;
-}
+.compactPlot .plotLegend > span { padding: 0.5rem 0.35rem; }
+.compactPlot .plotLegend strong { font-size: 0.62rem; }
 
 .withheldHatch {
   min-height: 112px;
@@ -482,8 +502,8 @@
   max-width: 900px;
   font-size: clamp(2.7rem, 8vw, 7.5rem);
   font-weight: 900;
-  letter-spacing: -0.065em;
-  line-height: 0.88;
+  letter-spacing: -0.04em;
+  line-height: 0.98;
 }
 
 .publicHero > p:last-child {
@@ -496,7 +516,9 @@
 .publicEvidence,
 .publicDisclosure,
 .publicSourceBoundary {
-  padding: clamp(1rem, 4vw, 3.5rem);
+  width: min(calc(100% - (2 * var(--page-gutter))), var(--content-frame));
+  margin-inline: auto;
+  padding: clamp(1.5rem, 4vw, 3rem);
   display: grid;
   gap: 1.5rem;
   border-bottom: 2px solid var(--public-ink);
@@ -605,9 +627,37 @@
 .publicSourceBoundary dl {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  border-top: 2px solid var(--public-ink);
-  border-left: 2px solid var(--public-ink);
+  gap: 1px;
+  border: 2px solid var(--public-ink);
+  background: var(--divider);
 }
+
+.publicSourceDetails {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.publicSourceDetails > summary {
+  min-height: 48px;
+  padding: 12px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  color: var(--muted);
+  font-size: .75rem;
+  font-weight: 750;
+  cursor: pointer;
+  list-style: none;
+}
+
+.publicSourceDetails > summary::-webkit-details-marker { display: none; }
+.publicSourceDetails > summary::after { content: '+'; font-size: 1rem; }
+.publicSourceDetails[open] > summary::after { content: '−'; }
+.publicSourceDetails > dl { border-top: 1px solid var(--line); }
+.publicSourceDetails > p { padding: 12px 15px 0; }
+.publicSourceDetails > p:last-child { padding-bottom: 15px; }
 
 .publicSourceBoundary dl > div {
   min-height: 96px;
@@ -615,8 +665,15 @@
   display: grid;
   align-content: space-between;
   gap: 0.75rem;
-  border-right: 2px solid var(--public-ink);
-  border-bottom: 2px solid var(--public-ink);
+  background: var(--public-ground);
+}
+
+.publicSourceBoundary dl > div:last-child:nth-child(3n + 1) {
+  grid-column: span 3;
+}
+
+.publicSourceBoundary dl > div:last-child:nth-child(3n + 2) {
+  grid-column: span 2;
 }
 
 .publicSourceBoundary dt {
@@ -732,6 +789,20 @@
   outline-offset: 2px;
 }
 
+@media (max-width: 980px) {
+  .publicSourceBoundary dl {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .publicSourceBoundary dl > div:last-child:nth-child(odd) {
+    grid-column: span 2;
+  }
+
+  .publicSourceBoundary dl > div:last-child:nth-child(even) {
+    grid-column: span 1;
+  }
+}
+
 @media (max-width: 720px) {
   .publicSectionTabs {
     border-right: 0;
@@ -766,6 +837,10 @@
     grid-template-columns: 1fr;
   }
 
+  .publicSourceBoundary dl > div:last-child:nth-child(n) {
+    grid-column: span 1;
+  }
+
   .publicLinks a {
     min-height: 44px;
     border-right: 0;
@@ -790,34 +865,16 @@
   }
 
   .plotCanvas {
-    min-height: 196px;
+    min-height: 112px;
   }
 
   .compactPlot .plotCanvas {
-    min-height: 174px;
+    min-height: 96px;
   }
 
-  .plotAnnotation strong {
-    font-size: 0.66rem;
-  }
-
-  .endpointLong,
-  .quartileLong {
-    display: none;
-  }
-
-  .endpointShort,
-  .quartileShort {
-    display: inline;
-  }
-
-  .middleAnnotation {
-    top: calc(10px + var(--label-lane) * 24px);
-  }
-
-  .quoteAnnotation {
-    top: 90px;
-  }
+  .plotLegend { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .plotLegend > span:nth-child(n) { text-align: left; }
+  .plotLegend > span:last-child { grid-column: 1 / -1; }
 
   .verdictLine,
   .verdictWithheld {

@@ -22,6 +22,7 @@ const HOUSING_TYPES = new Set<RentCheckHousingType>(
 
 export type ExplorerRentCheckContext = {
   readonly lawdCd: string;
+  readonly districtSlug: string;
   readonly districtLabel: string;
   readonly housingType: RentCheckHousingType;
   readonly housingTypeLabel: string;
@@ -49,6 +50,7 @@ export function resolveExplorerRentCheckContext(
 
   const context: ExplorerRentCheckContext = {
     lawdCd: district.lawdCd,
+    districtSlug: district.slug,
     districtLabel: `${district.nameEn} (${district.nameKo})`,
     housingType: housingType as RentCheckHousingType,
     housingTypeLabel: HOUSING_TYPE_LABELS[housingType as RentCheckHousingType],

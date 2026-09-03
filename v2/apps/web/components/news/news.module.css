@@ -16,8 +16,8 @@
 
 .hero,
 .documentHero {
-  min-height: 360px;
-  padding: clamp(2rem, 7vw, 5.5rem) clamp(1rem, 5vw, 4rem);
+  min-height: 260px;
+  padding: clamp(2rem, 5vw, 4rem) clamp(1rem, 5vw, 4rem);
   display: grid;
   align-content: end;
   gap: 1rem;
@@ -38,10 +38,10 @@
 .hero h1,
 .documentHero h1 {
   max-width: 960px;
-  font-size: clamp(3rem, 8vw, 7.5rem);
-  font-weight: 900;
-  letter-spacing: -0.07em;
-  line-height: 0.86;
+  font-size: clamp(2.75rem, 6vw, 5.8rem);
+  font-weight: 850;
+  letter-spacing: -0.04em;
+  line-height: 0.98;
 }
 
 .hero > p:last-child,
@@ -102,6 +102,13 @@
   font-weight: 900;
 }
 
+.market {
+  color: var(--news-muted);
+  font-size: 0.64rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .cardMeta time {
   color: var(--news-muted);
 }
@@ -114,9 +121,26 @@
 }
 
 .cardBody h3 {
-  font-size: clamp(1.55rem, 4vw, 3.6rem);
-  letter-spacing: -0.055em;
-  line-height: 0.98;
+  font-size: clamp(1.35rem, 2.5vw, 2.2rem);
+  letter-spacing: -0.045em;
+  line-height: 1.02;
+}
+
+[data-news-layout='lead'] .cardBody h3 {
+  max-width: 22ch;
+  font-size: clamp(2rem, 4.5vw, 4rem);
+  letter-spacing: -0.04em;
+  line-height: 1.04;
+}
+
+[data-news-layout='lead'] .cardMeta {
+  color: var(--canvas);
+  background: var(--petrol);
+}
+
+[data-news-layout='lead'] .cardMeta time,
+[data-news-layout='lead'] .market {
+  color: var(--accent-soft);
 }
 
 .cardBody h3 a {
@@ -234,7 +258,9 @@
 }
 
 .body {
-  padding: clamp(2rem, 7vw, 5rem) clamp(1rem, 12vw, 9rem);
+  width: min(100%, 860px);
+  margin-inline: auto;
+  padding: clamp(2rem, 7vw, 5rem) clamp(1rem, 5vw, 3.5rem);
   display: grid;
   gap: 1.4rem;
   border-bottom: 2px solid var(--news-ink);
@@ -344,4 +370,73 @@
     border-top: 1px solid var(--news-ink);
     border-left-width: 0;
   }
+}
+
+/* Unified editorial dashboard surface */
+.main {
+  width: min(calc(100% - (2 * var(--page-gutter))), var(--content-frame));
+  margin: 28px auto 40px;
+  border: 0;
+}
+
+.hero,
+.documentHero {
+  min-height: 230px;
+  padding: clamp(1.8rem, 4vw, 3rem);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: linear-gradient(130deg, #fff 50%, #eef5ff);
+  box-shadow: var(--shadow-sm);
+}
+.hero h1,
+.documentHero h1 { font-size: clamp(2.35rem, 5vw, 4.6rem); font-weight: 740; line-height: 1.02; }
+.hero > p:last-child,
+.documentHero > p:nth-of-type(2) { font-size: .9375rem; }
+
+.feed,
+.boundary,
+.evidencePanel,
+.body,
+.citation,
+.actions {
+  margin-top: 16px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-sm);
+}
+.sectionHeading { padding: 22px 26px; border-color: var(--line); }
+.sectionHeading h2 { font-size: clamp(1.5rem, 2.8vw, 2.35rem); }
+.cards { padding: 0 14px 14px; display: grid; gap: 10px; }
+.cards > li { overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: var(--canvas); }
+.card { grid-template-columns: 150px minmax(0, 1fr); }
+.cardMeta { border-color: var(--line); }
+.cardMeta > span { color: var(--accent); font-size: 1.55rem; }
+[data-news-layout='lead'] .cardMeta { color: var(--ink); background: var(--soft-blue); }
+[data-news-layout='lead'] .cardMeta time,
+[data-news-layout='lead'] .market { color: var(--muted); }
+.cardBody { padding: 22px; }
+.cardBody h3,
+[data-news-layout='lead'] .cardBody h3 { font-size: clamp(1.3rem, 2.2vw, 2rem); line-height: 1.12; }
+.evidence,
+.source { border-color: var(--line); font-size: .8125rem; }
+.boundary,
+.evidencePanel { padding: 24px; border-color: var(--line); background: var(--soft-blue); }
+.breadcrumb { padding: 0 4px 12px; border: 0; }
+.body { width: 100%; padding: clamp(2rem, 5vw, 4rem); border-color: var(--line); }
+.body p,
+.body li { font-size: clamp(1rem, 1.5vw, 1.1rem); }
+.citation { padding: 26px; border-color: var(--line); }
+.citation a,
+.actions a { border-color: var(--line); border-radius: 9px; font-size: .8125rem; }
+.actions { padding: 12px; gap: 10px; }
+.actions a { border-width: 1px; }
+
+@media (max-width: 720px) {
+  .main { width: calc(100% - 28px); margin-top: 18px; }
+  .hero,
+  .documentHero { min-height: 260px; padding: 24px 20px; }
+  .cardMeta { border-right: 0; border-bottom: 1px solid var(--line); }
 }

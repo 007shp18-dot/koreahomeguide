@@ -1,33 +1,63 @@
 .banner {
   position: fixed;
-  right: clamp(0.75rem, 3vw, 2rem);
-  bottom: clamp(0.75rem, 3vw, 2rem);
+  right: 50%;
+  bottom: 18px;
   z-index: 1000;
-  width: min(calc(100% - 1.5rem), 520px);
-  padding: 1.25rem;
+  width: min(calc(100% - 28px), 980px);
+  padding: 16px 18px;
   display: grid;
-  gap: 0.85rem;
-  border: 2px solid var(--ink);
-  border-left: 0.65rem solid var(--accent);
-  background: var(--canvas);
+  grid-template-columns: minmax(220px, .85fr) minmax(300px, 1.15fr);
+  align-items: center;
+  gap: 14px 28px;
+  transform: translateX(50%);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
+  border-radius: 14px;
+  background: rgb(255 255 255 / 96%);
   color: var(--ink);
+  box-shadow: 0 18px 50px rgb(15 30 56 / 18%);
+  backdrop-filter: blur(18px);
 }
 
 .banner h2 {
-  font-size: 1.2rem;
+  grid-column: 1;
+  font-size: 1rem;
   font-weight: 900;
 }
 
 .banner p {
   color: var(--muted);
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   line-height: 1.55;
+}
+
+.banner > p {
+  grid-column: 1;
+  margin-top: -8px;
 }
 
 .banner a {
   color: var(--ink);
   font-weight: 850;
   text-underline-offset: 0.2em;
+}
+
+.choiceGroup {
+  grid-column: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0;
+}
+
+.choiceGroup h3 {
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.choiceGroup p {
+  grid-column: 1;
 }
 
 .actions {
@@ -40,19 +70,25 @@
 .preferences {
   min-height: 44px;
   padding: 0.7rem 0.9rem;
-  border: 2px solid var(--ink);
-  border-radius: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: 9px;
   background: var(--ink);
   color: var(--canvas);
   font: inherit;
-  font-size: 0.76rem;
+  font-size: 0.78rem;
   font-weight: 850;
   cursor: pointer;
 }
 
 .actions button:last-child {
-  background: var(--canvas);
+  background: var(--surface-strong);
   color: var(--ink);
+}
+
+.choiceGroup .actions {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  flex-wrap: nowrap;
 }
 
 .preferences {
@@ -60,8 +96,10 @@
   right: 0.75rem;
   bottom: 0.75rem;
   z-index: 999;
-  background: var(--canvas);
+  border-color: var(--line);
+  background: var(--surface-strong);
   color: var(--ink);
+  box-shadow: var(--shadow-sm);
 }
 
 .actions button:focus-visible,
@@ -69,4 +107,26 @@
 .banner a:focus-visible {
   outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
+}
+
+@media (max-width: 720px) {
+  .banner {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .banner > p,
+  .choiceGroup {
+    grid-column: 1;
+    margin: 0;
+  }
+
+  .choiceGroup {
+    grid-template-columns: 1fr;
+  }
+
+  .choiceGroup .actions {
+    grid-column: 1;
+    grid-row: auto;
+  }
 }

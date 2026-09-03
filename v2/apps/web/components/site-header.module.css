@@ -1,0 +1,49 @@
+.header {
+  position: sticky;
+  z-index: 100;
+  top: 0;
+  border-bottom: 1px solid #e5eaf1;
+  background: rgb(255 255 255 / 94%);
+  backdrop-filter: blur(16px);
+}
+
+.inner {
+  width: min(calc(100% - 40px), 1180px);
+  min-height: 64px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 14px 22px;
+}
+
+.brand { display: inline-flex; align-items: center; color: #111827; text-decoration: none; }
+.nav { display: flex; align-items: center; justify-content: center; gap: clamp(18px, 2.6vw, 34px); }
+.nav a { min-height: 44px; display: inline-flex; align-items: center; color: #354052; font-size: .8125rem; font-weight: 650; text-decoration: none; white-space: nowrap; }
+.nav strong { font-weight: 650; }
+.nav a[aria-current='page'], .nav a:hover { color: #2563d8; }
+.nav small { display: none; }
+.market { position: relative; }
+.market summary { min-height: 38px; padding: 0 11px; display: inline-flex; align-items: center; gap: 8px; border: 0; border-radius: 8px; color: #354052; background: transparent; font-size: .8125rem; font-weight: 700; cursor: pointer; list-style: none; }
+.market summary::-webkit-details-marker { display: none; }
+.market summary::before { content: '◎'; color: #6b7890; font-size: .9rem; }
+.market summary::after { content: '⌄'; color: #6b7890; }
+.market[open] summary { background: #f3f6fa; }
+.marketMenu { position: absolute; top: calc(100% + 8px); right: 0; min-width: 190px; padding: 7px; display: grid; gap: 2px; border: 1px solid #dfe5ed; border-radius: 12px; background: white; box-shadow: 0 18px 46px rgb(22 36 58 / 15%); }
+.marketMenu a { min-height: 40px; padding: 0 11px; display: flex; align-items: center; justify-content: space-between; border-radius: 8px; color: #354052; font-size: .8125rem; font-weight: 650; text-decoration: none; }
+.marketMenu a:hover, .marketMenu a[aria-current='page'] { color: #2563d8; background: #eef5ff; }
+.language { min-width: 34px; min-height: 34px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #dfe5ed; border-radius: 999px; color: #536176; font-size: .67rem; font-weight: 800; text-decoration: none; }
+.language:hover { color: #2563d8; border-color: #b8cae2; background: #f5f8fc; }
+
+@media (max-width: 860px) {
+  .inner { grid-template-columns: auto 1fr auto; gap: 10px 14px; padding: 8px 0; }
+  .nav { grid-column: 1 / -1; grid-row: 2; justify-content: flex-start; overflow-x: auto; }
+  .market { grid-column: 2; grid-row: 1; justify-self: end; }
+  .language { grid-column: 3; grid-row: 1; }
+}
+
+@media (max-width: 520px) {
+  .inner { width: calc(100% - 28px); }
+  .nav { gap: 20px; }
+  .nav a { font-size: .78rem; }
+}

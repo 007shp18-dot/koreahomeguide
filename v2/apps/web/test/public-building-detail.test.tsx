@@ -8,8 +8,16 @@ import BuildingRoute, {
   dynamicParams,
   generateMetadata,
   generateStaticParams,
-} from '../app/kr/seoul/explore/[district]/[buildingId]/page';
+} from '../app/(en)/kr/seoul/explore/[district]/[buildingId]/page';
+import { BuildingDecisionTabs } from '../components/public-market/building-decision-tabs';
+import { BuildingDetailHeader } from '../components/public-market/building-detail-header';
 import { BuildingDetailPage } from '../components/public-market/building-detail-page';
+import { buildBuildingDecisionModel } from '../lib/public-market/building-decision-model';
+import type {
+  BuildingContractCohort,
+  BuildingDecisionMode,
+} from '../lib/public-market/building-decision-state';
+import { buildBuildingVisualModel } from '../lib/public-market/building-visual-model';
 import { buildPublicBuildingModel } from '../lib/public-market/building-route-model.server';
 import {
   PUBLIC_BUILDING_FIXTURE_PERIOD,
@@ -29,9 +37,49 @@ function model() {
   return result;
 }
 
+function detailProps(
+  mode: BuildingDecisionMode = 'rent',
+  contract: BuildingContractCohort = 'all',
+) {
+  const building = model();
+  const base = '/kr/seoul/explore/gangnam-gu/gangnam-evidence-tower/';
+  return {
+    model: building,
+    decision: buildBuildingDecisionModel(building, { mode, contract }),
+    visual: buildBuildingVisualModel({
+      buildingName: building.building.name,
+      mapHref: '/kr/seoul/explore/?district=gangnam-gu',
+      photo: null,
+    }),
+    base,
+  } as const;
+}
+
 describe('public building detail', () => {
+  it('renders shared product navigation and URL-backed decision tabs', () => {
+    const header = renderToStaticMarkup(<BuildingDetailHeader />);
+    expect(header).toContain('aria-label="signedprice home"');
+    for (const label of ['Markets', 'Prices', 'Properties', 'News', 'Community', 'Guides', 'Invest']) {
+      expect(header).toContain(`>${label}</a>`);
+    }
+    expect(header).toMatch(/<a[^>]*aria-current="page"[^>]*>Prices<\/a>/);
+    expect(header).toContain('Seoul · reported filings');
+
+    const tabs = renderToStaticMarkup(
+      <BuildingDecisionTabs
+        base="/kr/seoul/explore/gangnam-gu/gangnam-evidence-tower/"
+        selection={{ mode: 'rent', contract: 'renewal' }}
+      />,
+    );
+    expect(tabs).toContain('role="tablist"');
+    expect(tabs).toContain('aria-selected="true"');
+    expect(tabs).toContain('?mode=buy&amp;contract=renewal');
+    expect(tabs).toContain('?mode=rent&amp;contract=all');
+    expect(tabs).toContain('?mode=rent');
+  });
+
   it('renders only verified building fields, evidence limits, and privacy-safe contracts', () => {
-    const html = renderToStaticMarkup(<BuildingDetailPage model={model()} />);
+    const html = renderToStaticMarkup(<BuildingDetailPage {...detailProps()} />);
 
     for (const value of [
       'Evidence Tower', 'Gangnam-gu', 'apartment', '6 reported contracts',
@@ -48,8 +96,8 @@ describe('public building detail', () => {
     expect(html).toContain('Community responses are not open yet');
     expect(html).not.toMatch(/orientation|supply/i);
     expect(html).toContain('href="/kr/seoul/news');
-    expect(html).toContain('data-detail-main="true"');
-    expect(html).toContain('data-detail-rail="true"');
+    expect(html).not.toContain('data-detail-main="true"');
+    expect(html).not.toContain('data-detail-rail="true"');
     expect(html).toContain('Latest verified News');
     expect(html).toContain('How SignedPrice reads reported rental contracts');
     expect(html).toContain('<th>Floor</th>');
@@ -57,8 +105,23 @@ describe('public building detail', () => {
     expect(html).not.toContain('45-55sqm');
   });
 
+  it('uses an honest evidence fallback and keeps the identity, decision, and evidence hierarchy', () => {
+    const html = renderToStaticMarkup(<BuildingDetailPage {...detailProps()} />);
+    const identity = html.indexOf('data-building-section="identity"');
+    const decision = html.indexOf('data-building-section="decision"');
+    const evidence = html.indexOf('data-building-section="evidence"');
+
+    expect(html).toContain('data-building-media="evidence-fallback"');
+    expect(html).toContain('data-detail-hero="building"');
+    expect(html).toContain('data-detail-hero-metric="identity"');
+    expect(html).not.toMatch(/<img[^>]+src="(?:data:|https?:\/\/)/);
+    expect(identity).toBeGreaterThan(-1);
+    expect(identity).toBeLessThan(decision);
+    expect(decision).toBeLessThan(evidence);
+  });
+
   it('renders the six-pair gate basis and the exact single-band empty state', () => {
-    const html = renderToStaticMarkup(<BuildingDetailPage model={model()} />);
+    const html = renderToStaticMarkup(<BuildingDetailPage {...detailProps()} />);
 
     expect(html).toContain('data-floor-coefficient="unavailable"');
     expect(html).toContain('Contract evidence insufficient');
@@ -72,8 +135,24 @@ describe('public building detail', () => {
     expect(html).toContain('Additional bands will open after the collection scope expands.');
   });
 
+  it('keeps secondary evidence behind native disclosure without losing claims', () => {
+    const html = renderToStaticMarkup(<BuildingDetailPage {...detailProps()} />);
+
+    expect(html).toContain('<details');
+    expect(html).toContain(
+      '<summary>See records, adjustments, and methodology</summary>',
+    );
+    expect(html).toContain('Floor adjustment evidence');
+    expect(html).toContain('Evidence by filed area band');
+    expect(html).toContain('Privacy-safe reported contracts');
+    expect(html).toContain('Latest verified News');
+    expect(html).toContain('Community signal');
+    expect(html).toContain('Use this evidence within its boundary');
+    expect(html.indexOf('Open full Rent Check')).toBeLessThan(html.indexOf('<details', html.indexOf('data-building-section="decision"')));
+  });
+
   it('renders the published distribution while withholding an unassessable comparison', () => {
-    const html = renderToStaticMarkup(<BuildingDetailPage model={model()} />);
+    const html = renderToStaticMarkup(<BuildingDetailPage {...detailProps()} />);
 
     expect(html).toContain('Declared-period contract evidence');
     expect(html).toContain('data-building-distribution="true"');
@@ -95,17 +174,58 @@ describe('public building detail', () => {
   it('generates only ready params and keeps the route noindex', async () => {
     vi.stubEnv('SIGNEDPRICE_PUBLIC_BUILDING_SUMMARY_ARTIFACT', JSON.stringify(createPublicBuildingFixture()));
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', PUBLIC_BUILDING_FIXTURE_PERIOD);
+    vi.stubEnv('NAVER_MAP_CLIENT_ID', 'detail-naver-client');
 
-    expect(dynamicParams).toBe(false);
+    expect(dynamicParams).toBe(true);
     expect(generateStaticParams()).toEqual([
       { district: 'gangnam-gu', buildingId: 'gangnam-evidence-tower' },
     ]);
     const params = Promise.resolve({ district: 'gangnam-gu', buildingId: 'gangnam-evidence-tower' });
-    const metadata = await generateMetadata({ params });
-    const html = renderToStaticMarkup(await BuildingRoute({ params }));
+    const searchParams = Promise.resolve({});
+    const metadata = await generateMetadata({ params, searchParams });
+    const html = renderToStaticMarkup(await BuildingRoute({ params, searchParams }));
     expect(metadata).toMatchObject({ robots: { index: false, follow: true } });
     expect(metadata).not.toHaveProperty('alternates');
     expect(html).toContain('Evidence Tower');
+    expect(html).toContain('data-building-media="naver-panorama"');
+    expect(html).toContain('Nearby street view · not a listing photo · NAVER');
+  });
+
+  it('restores valid route state and rejects invalid decision queries', async () => {
+    vi.stubEnv(
+      'SIGNEDPRICE_PUBLIC_BUILDING_SUMMARY_ARTIFACT',
+      JSON.stringify(createPublicBuildingFixture()),
+    );
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', PUBLIC_BUILDING_FIXTURE_PERIOD);
+    const params = Promise.resolve({
+      district: 'gangnam-gu', buildingId: 'gangnam-evidence-tower',
+    });
+    const selected = renderToStaticMarkup(await BuildingRoute({
+      params,
+      searchParams: Promise.resolve({
+        mode: 'rent',
+        contract: 'all',
+        district: 'gangnam-gu',
+        neighborhood: 'yeoksam-dong',
+        buildingId: 'gangnam-evidence-tower',
+        contractType: 'all',
+      }),
+    }));
+    expect(selected).toContain('data-selected-mode="rent"');
+    expect(selected).toContain('6 reported contracts');
+    expect(selected).toContain('Street view unavailable');
+    expect(selected).toContain('Building evidence remains available');
+    expect(selected).not.toContain('data-detail-rail="true"');
+    expect(selected).toContain(
+      'href="/kr/seoul/explore?district=gangnam-gu&amp;neighborhood=yeoksam-dong&amp;buildingId=gangnam-evidence-tower&amp;contractType=all"',
+    );
+
+    const fallback = renderToStaticMarkup(await BuildingRoute({
+      params,
+      searchParams: Promise.resolve({ mode: 'forecast', contract: 'mixed' }),
+    }));
+    expect(fallback).toContain('data-selected-mode="overview"');
+    expect(fallback).toContain('Viewing Overview · New contract cohort');
   });
 
   it('generates no route when the artifact is absent', () => {
@@ -117,9 +237,12 @@ describe('public building detail', () => {
       new URL('../components/public-market/building-detail.module.css', import.meta.url),
       'utf8',
     );
+    expect(css).toMatch(/\.main\s*\{[\s\S]*?width:\s*min\(100%,\s*var\(--evidence-workspace-frame\)\)/);
     expect(css).toMatch(/min-height:\s*44px/);
     expect(css).toMatch(/@media \(max-width:\s*720px\)[\s\S]*grid-template-columns:\s*minmax\(0,\s*1fr\)/);
     expect(css).toMatch(/max-width:\s*100%/);
-    expect(css).toMatch(/\.detailLayout[\s\S]*grid-template-columns:\s*minmax\(0,\s*1fr\)\s+380px/);
+    expect(css).toMatch(/\.identityHero[\s\S]*grid-template-columns:\s*minmax\(0,\s*1fr\)\s+380px/);
+    expect(css).toMatch(/\.identitySummary h1[\s\S]*font-size:\s*var\(--evidence-type-detail-title\)/);
+    expect(css).toMatch(/\.decisionLayout h2[\s\S]*font-size:\s*var\(--evidence-type-subhead\)/);
   });
 });

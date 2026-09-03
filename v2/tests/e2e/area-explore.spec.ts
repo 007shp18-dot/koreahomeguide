@@ -8,6 +8,7 @@ import {
 import {
   PUBLIC_BUILDING_TEST_ID,
   PUBLIC_BUILDING_TEST_NAME,
+  PUBLIC_BUILDING_TEST_SELECTION_HREF,
 } from './public-building-summary-fixture';
 
 const releaseTarget = resolveReleaseTestTarget();
@@ -67,31 +68,45 @@ test('initial HTML and hydration expose one synchronized 25-district Explorer', 
   await expect(page.getByRole('heading', {
     level: 1,
     name: 'Compare refundable jeonse deposits by district.',
-  })).toBeVisible();
+  })).toBeAttached();
   await expect(page.locator('[data-district-path]')).toHaveCount(25);
-  await expect(page.locator('[data-district-row]')).toHaveCount(25);
-  const jongnoRow = page.locator('[data-district-row="jongno-gu"]');
+  await expect(page.locator('[data-district-option]')).toHaveCount(25);
+  const jongnoRow = page.locator('[data-district-option="jongno-gu"]');
   await expect(jongnoRow).toBeVisible();
   await expect(jongnoRow).toContainText('Jongno-gu');
   await expect(jongnoRow).toContainText('종로구');
-  await expect(jongnoRow.getByRole('link', { name: 'Open Jongno-gu evidence' }).first())
-    .toHaveAttribute('href', '/kr/seoul/explore/jongno-gu/');
+  await expect(page.getByText('Selected · Jongno-gu')).toBeVisible();
 
-  const gangnamRow = page.locator('[data-district-row="gangnam-gu"]');
-  const gangnamPrimary = gangnamRow.getByRole('link', { name: 'Open Gangnam-gu evidence' }).first();
-  await gangnamPrimary.focus();
+  const gangnamPrimary = page.locator('[data-district-option="gangnam-gu"]');
+  await gangnamPrimary.click();
+  await expect(page).toHaveURL(/district=gangnam-gu/);
   await expect(page.getByText('Selected · Gangnam-gu')).toBeVisible();
-  await expect(gangnamPrimary).toHaveAttribute('aria-current', 'true');
+  await expect(gangnamPrimary).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('[data-district-path="gangnam-gu"]'))
     .toHaveClass(/selectedPath/);
   await expectNoHorizontalOverflow(page);
 
   if (testInfo.project.name === 'desktop-chromium') {
+    const workspace = page.locator('[data-explorer-layout="split"]');
+    const mapPanel = workspace.locator(':scope > [data-explorer-region="map"]');
+    const discoveryRail = workspace.locator(':scope > [data-explorer-region="results"]');
+    const [workspaceBox, mapBox, railBox] = await Promise.all([
+      workspace.boundingBox(),
+      mapPanel.boundingBox(),
+      discoveryRail.boundingBox(),
+    ]);
+    expect(workspaceBox).not.toBeNull();
+    expect(mapBox).not.toBeNull();
+    expect(railBox).not.toBeNull();
+    expect(Math.abs(railBox!.width - 420)).toBeLessThanOrEqual(2);
+    expect(mapBox!.x).toBeGreaterThanOrEqual(railBox!.x + railBox!.width - 2);
+    expect(Math.abs(mapBox!.height - railBox!.height)).toBeLessThanOrEqual(2);
+
     const htmlResponse = await page.request.get('/kr/seoul/explore/');
     expect(htmlResponse.status()).toBe(200);
     const html = await htmlResponse.text();
     expect((html.match(/data-district-path=/g) ?? [])).toHaveLength(25);
-    expect((html.match(/data-district-row=/g) ?? [])).toHaveLength(25);
+    expect((html.match(/data-district-option=/g) ?? [])).toHaveLength(25);
   }
   assertNoRuntimeFailures();
 });
@@ -109,21 +124,60 @@ test('synthetic release fixture shows exact five buckets and a money-free refusa
   await expect(legend).toContainText('Not published · fewer than 5 contracts');
   await expect(page.locator(`[data-district-path="${PUBLIC_AREA_WITHHELD_SLUG}"]`))
     .toHaveAttribute('data-map-state', 'withheld');
-  const withheldRow = page.locator(`[data-district-row="${PUBLIC_AREA_WITHHELD_SLUG}"]`);
+  const withheldRow = page.locator(`[data-district-option="${PUBLIC_AREA_WITHHELD_SLUG}"]`);
   await expect(withheldRow).toContainText('Not published');
   await expect(withheldRow).toContainText('4 reported contracts');
   await expect(withheldRow).not.toContainText('₩');
 });
 
-test('rail selection opens the canonical building panel and full-detail CTA', async ({ page }) => {
+test('rail selection opens the map-owned drawer and full-detail CTA', async ({ page }, testInfo) => {
   test.skip(releaseTarget.usesExternalServer, 'Exact fixture values are local-release only.');
   await page.goto('/kr/seoul/explore/?district=jongno-gu');
 
-  await page.getByRole('button', { name: new RegExp(PUBLIC_BUILDING_TEST_NAME) }).click();
-  const panel = page.locator(`[data-building-panel="${PUBLIC_BUILDING_TEST_ID}"]`);
+  const trigger = page.locator(`[data-building-row="${PUBLIC_BUILDING_TEST_ID}"] > button`);
+  await trigger.click();
+  await expect(page).toHaveURL(/\/kr\/seoul\/explore\/\?.*buildingId=/);
+  const drawer = page.locator(`[data-building-drawer="${PUBLIC_BUILDING_TEST_ID}"]`);
+  await expect(drawer).toBeVisible();
+  await expect(drawer).toHaveAttribute('role', 'complementary');
+  await expect(drawer).toHaveAttribute('data-selection-presentation', 'map-drawer');
+  const panel = drawer.locator(`[data-building-panel="${PUBLIC_BUILDING_TEST_ID}"]`);
   await expect(panel).toBeVisible();
-  await expect(panel.getByRole('link', { name: 'Open full building evidence' }))
-    .toHaveAttribute('href', `/kr/seoul/explore/jongno-gu/${PUBLIC_BUILDING_TEST_ID}/`);
+  await expect(drawer.getByRole('link', { name: 'Open full building evidence' }).first())
+    .toHaveAttribute('href', PUBLIC_BUILDING_TEST_SELECTION_HREF);
+  const drawerBox = await drawer.boundingBox();
+  expect(drawerBox).not.toBeNull();
+  if (testInfo.project.name === 'desktop-chromium') {
+    const mapBox = await page.locator('[data-explorer-region="map"]').boundingBox();
+    expect(mapBox).not.toBeNull();
+    expect(Math.abs(drawerBox!.width - 420)).toBeLessThanOrEqual(2);
+    expect(drawerBox!.x + drawerBox!.width).toBeLessThanOrEqual(mapBox!.x + mapBox!.width + 2);
+  } else if (testInfo.project.name === 'mobile-chromium') {
+    const placement = await drawer.evaluate((element) => {
+      const style = getComputedStyle(element);
+      return { position: style.position, bottom: style.bottom };
+    });
+    expect(placement).toEqual({ position: 'fixed', bottom: '0px' });
+    expect(Math.abs(drawerBox!.width - 390)).toBeLessThanOrEqual(1);
+  }
+  await page.keyboard.press('Escape');
+  await expect(drawer).toHaveCount(0);
+  await expect(page).not.toHaveURL(/buildingId=/);
+  await expect(trigger).toBeFocused();
+});
+
+test('district selection stays inside the Explore workspace', async ({ page }) => {
+  await page.goto('/kr/seoul/explore/?district=jongno-gu');
+
+  const districtDirectory = page.locator('[data-district-rail="all-25"]');
+  await districtDirectory.locator('summary').click();
+  await expect(districtDirectory).toHaveAttribute('open', '');
+  await districtDirectory.locator('[data-district-option="gangnam-gu"]').click();
+
+  await expect(page).toHaveURL(/\/kr\/seoul\/explore\/\?.*district=gangnam-gu/);
+  expect(new URL(page.url()).pathname).toBe('/kr/seoul/explore/');
+  await expect(page.getByText('Selected · Gangnam-gu')).toBeVisible();
+  await expect(page.locator('[data-explorer-layout="split"]')).toBeVisible();
 });
 
 test('published quote stays local and any withheld detail stays money-free', async ({ page }) => {
@@ -172,15 +226,27 @@ test('mobile controls keep 44px focus targets and natural document scrolling', a
   test.skip(testInfo.project.name !== 'mobile-chromium');
   await page.goto('/kr/seoul/explore/');
 
-  const checkTab = page.locator('[data-public-tab="check"]');
-  const exploreTab = page.locator('[data-public-tab="explore"]');
-  const districtLink = page.locator('[data-district-row="gangnam-gu"]')
-    .getByRole('link', { name: 'Open Gangnam-gu evidence' }).first();
-  const detailLink = page.getByRole('link', { name: 'Open Gangnam-gu evidence' }).last();
-  for (const target of [checkTab, exploreTab, districtLink, detailLink]) {
+  const workspace = page.locator('[data-explorer-layout="split"]');
+  const discoveryRail = workspace.locator(':scope > [data-explorer-region="results"]');
+  await expect(discoveryRail).toBeVisible();
+  const railPlacement = await discoveryRail.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return { position: style.position, maxHeight: style.maxHeight };
+  });
+  expect(railPlacement.position).toBe('static');
+  expect(railPlacement.maxHeight).toBe('none');
+
+  const navigation = page.getByRole('navigation', { name: 'Seoul evidence navigation' });
+  const pricesTab = navigation.getByRole('link', { name: 'Prices' });
+  const viewTabs = page.getByRole('navigation', { name: 'Explorer view' }).getByRole('link');
+  const districtLink = page.locator('[data-district-option="gangnam-gu"]');
+  const detailLink = page.locator('[data-building-row]').first().getByRole('link');
+  for (const target of [pricesTab, districtLink, detailLink]) {
     await expectTouchTarget(target);
     await expectCobaltFocus(target);
   }
+  await expect(viewTabs).toHaveCount(4);
+  for (let index = 0; index < 4; index += 1) await expectTouchTarget(viewTabs.nth(index));
   await expectNoHorizontalOverflow(page);
   const scroll = await page.evaluate(() => {
     const previousScrollBehavior = document.documentElement.style.scrollBehavior;
@@ -201,12 +267,87 @@ test('mobile controls keep 44px focus targets and natural document scrolling', a
   expect(scroll.after).toBeGreaterThan(scroll.before);
 });
 
+test('an unknown ready-fixture pair keeps Explore usable at 390px', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  const response = await page.goto('/kr/seoul/explore/?district=gangnam-gu&station=missing&stationDistance=250');
+  expect(response?.status()).toBe(200);
+  await expect(page.locator('[data-proximity-selectors="enabled"]')).toBeVisible();
+  await expect(page.locator('[data-building-browser="gangnam-gu"]')).toBeVisible();
+  await expectNoHorizontalOverflow(page);
+
+  const htmlResponse = await page.request.get('/kr/seoul/explore/?district=gangnam-gu&station=missing&stationDistance=250');
+  expect(htmlResponse.status()).toBe(200);
+  const html = await htmlResponse.text();
+  expect(html).toContain('data-proximity-selectors="enabled"');
+});
+
+test('ready injected proximity fixture keeps controls touch-sized and round-trips pairs', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/kr/seoul/explore/?district=jongno-gu');
+  const selectors = page.locator('[data-proximity-selectors="enabled"] select');
+  await expect(selectors).toHaveCount(4);
+  for (const index of [0, 1, 2, 3]) await expectTouchTarget(selectors.nth(index));
+  await selectors.nth(0).selectOption('e2e-station');
+  await expect(page).toHaveURL(/station=e2e-station.*stationDistance=500/);
+  await selectors.nth(1).selectOption('750');
+  await expect(page).toHaveURL(/station=e2e-station.*stationDistance=750/);
+  await selectors.nth(2).selectOption('e2e-school');
+  await expect(page).toHaveURL(/station=e2e-station.*stationDistance=750.*school=e2e-school.*schoolDistance=500/);
+  await selectors.nth(3).selectOption('1000');
+  await expect(page).toHaveURL(/school=e2e-school.*schoolDistance=1000/);
+  await expect(page.locator('[data-building-browser="jongno-gu"]')).toContainText('E2E Station');
+  await page.locator('[data-building-row="synthetic-test-building"] button').click();
+  const detail = page.getByRole('link', { name: 'Open full building evidence' }).first();
+  await expect(detail).toHaveAttribute('href', /station=e2e-station.*stationDistance=750.*school=e2e-school.*schoolDistance=1000/);
+  await detail.click();
+  await expect(page.locator('[data-building-detail="ready"]')).toBeVisible();
+  const back = page.getByRole('link', { name: 'Back to Jongno-gu Explore' });
+  await expect(back)
+    .toHaveAttribute('href', /station=e2e-station.*stationDistance=750.*school=e2e-school.*schoolDistance=1000/);
+  await back.click();
+  await expect(page).toHaveURL(/station=e2e-station.*stationDistance=750.*school=e2e-school.*schoolDistance=1000/);
+  await selectors.nth(0).selectOption('');
+  await expect(page).not.toHaveURL(/station=/);
+  await expect(page).not.toHaveURL(/stationDistance=/);
+  await expect(page).toHaveURL(/school=e2e-school.*schoolDistance=1000/);
+  await selectors.nth(2).selectOption('');
+  await expect(page).not.toHaveURL(/school=/);
+  await expect(page).not.toHaveURL(/schoolDistance=/);
+  await expectNoHorizontalOverflow(page);
+});
+
 test('wide workspace keeps map, table, and legend contained', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'wide-chromium');
   await page.goto('/kr/seoul/explore/');
 
   await expect(page.getByRole('group', { name: 'Map legend' })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'All 25 districts' })).toBeVisible();
+  await expect(page.locator('[data-district-rail="all-25"]')).toBeVisible();
+  await expectNoHorizontalOverflow(page);
+});
+
+test('each view link renders only its supplied Explore surface', async ({ page }) => {
+  await page.goto('/kr/seoul/explore/');
+
+  const views = page.getByRole('navigation', { name: 'Explorer view' });
+  await views.getByRole('link', { name: 'List' }).click();
+  await expect(page.locator('[data-explorer-layout="list"]')).toBeVisible();
+  await expect(page.locator('[data-explorer-region="results"]').first()).toBeVisible();
+  await expect(page.locator('[data-explorer-region="map"]')).toHaveCount(0);
+
+  await views.getByRole('link', { name: 'Table' }).click();
+  await expect(page.locator('[data-building-table="filtered"]')).toBeVisible();
+  await expect(page.locator('[data-explorer-region="results"]')).toHaveCount(0);
+  await expect(page.locator('[data-explorer-region="map"]')).toHaveCount(0);
+
+  await views.getByRole('link', { name: 'Map' }).click();
+  await expect(page.locator('[data-explorer-layout="map"]')).toBeVisible();
+  await expect(page.locator('[data-explorer-region="map"]')).toBeVisible();
+  await expect(page.locator('[data-explorer-region="results"]')).toHaveCount(0);
+
+  await views.getByRole('link', { name: 'Split' }).click();
+  await expect(page.locator('[data-explorer-layout="split"]')).toBeVisible();
+  await expect(page.locator('[data-explorer-region="results"]').first()).toBeVisible();
+  await expect(page.locator('[data-explorer-region="map"]')).toBeVisible();
   await expectNoHorizontalOverflow(page);
 });
 
