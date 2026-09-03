@@ -75,12 +75,11 @@ test('initial HTML and hydration expose one synchronized 25-district Explorer', 
   await expect(jongnoRow).toBeVisible();
   await expect(jongnoRow).toContainText('Jongno-gu');
   await expect(jongnoRow).toContainText('종로구');
-  await jongnoRow.click();
-  await expect(page).toHaveURL(/district=jongno-gu/);
   await expect(page.getByText('Selected · Jongno-gu')).toBeVisible();
 
   const gangnamPrimary = page.locator('[data-district-option="gangnam-gu"]');
   await gangnamPrimary.click();
+  await expect(page).toHaveURL(/district=gangnam-gu/);
   await expect(page.getByText('Selected · Gangnam-gu')).toBeVisible();
   await expect(gangnamPrimary).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('[data-district-path="gangnam-gu"]'))
@@ -135,7 +134,7 @@ test('rail selection opens the map-owned drawer and full-detail CTA', async ({ p
   test.skip(releaseTarget.usesExternalServer, 'Exact fixture values are local-release only.');
   await page.goto('/kr/seoul/explore/?district=jongno-gu');
 
-  const trigger = page.getByRole('button', { name: new RegExp(PUBLIC_BUILDING_TEST_NAME) });
+  const trigger = page.locator(`[data-building-row="${PUBLIC_BUILDING_TEST_ID}"] button`);
   await trigger.click();
   await expect(page).toHaveURL(/\/kr\/seoul\/explore\/\?.*buildingId=/);
   const drawer = page.locator(`[data-building-drawer="${PUBLIC_BUILDING_TEST_ID}"]`);

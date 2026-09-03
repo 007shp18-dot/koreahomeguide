@@ -78,6 +78,7 @@ describe('Playwright release target configuration', () => {
       env: {
         VERCEL_ENV: 'preview',
         VERCEL_GIT_COMMIT_SHA: '0123456789abcdef',
+        SIGNEDPRICE_GA4_ENABLED: 'false',
         SIGNEDPRICE_USE_CHECKED_IN_SNAPSHOTS: 'false',
         SIGNEDPRICE_CONVERSION_CURVE_PERIOD: '2026-03/2026-08',
         SIGNEDPRICE_CONVERSION_CURVE_SHA256: 'a'.repeat(64),
@@ -240,6 +241,16 @@ describe('Playwright release target configuration', () => {
     expect(config.use).toMatchObject({
       screenshot: 'only-on-failure',
       trace: 'retain-on-failure',
+      storageState: {
+        cookies: [],
+        origins: [{
+          origin: 'http://127.0.0.1:3100',
+          localStorage: [
+            { name: 'signedprice_analytics_consent_v1', value: 'denied' },
+            { name: 'signedprice_advertising_consent_v1', value: 'denied' },
+          ],
+        }],
+      },
     });
   });
 

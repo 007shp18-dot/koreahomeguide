@@ -5,7 +5,10 @@ import { Analytics } from '@vercel/analytics/next';
 import { AdvertisingConsent } from "@/components/consent/advertising-consent";
 import { PublicSiteJsonLd } from "@/components/public-json-ld";
 import { advertisingConfigFromEnvironment } from "@/lib/advertising/advertising-config.server";
-import { analyticsConfigFromEnvironment } from "@/lib/analytics/analytics-config.server";
+import {
+  analyticsConfigFromEnvironment,
+  vercelAnalyticsEnabledFromEnvironment,
+} from "@/lib/analytics/analytics-config.server";
 import { homepageCopy } from "@/lib/site-copy";
 import "../globals.css";
 
@@ -39,7 +42,7 @@ export default function EnglishRootLayout({ children }: { children: ReactNode })
               : {})}
           />
         ) : null}
-        <Analytics />
+        {vercelAnalyticsEnabledFromEnvironment() ? <Analytics /> : null}
       </body>
     </html>
   );

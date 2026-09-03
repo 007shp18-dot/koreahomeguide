@@ -59,6 +59,8 @@ export function createPlaywrightConfig(
       VERCEL_ENV: target.expectedEnvironment,
       VERCEL_GIT_COMMIT_SHA: target.expectedCommit,
       VERCEL_URL: '127.0.0.1:3100',
+      SIGNEDPRICE_GA4_ENABLED: 'false',
+      SIGNEDPRICE_VERCEL_ANALYTICS_ENABLED: 'false',
       SIGNEDPRICE_USE_CHECKED_IN_SNAPSHOTS: 'false',
       SIGNEDPRICE_CHECK_EVIDENCE_REGISTRY: CONTRACT_CHECK_INSTALLED_REGISTRY_TEST_ARTIFACT,
       SIGNEDPRICE_CHECK_RENT_EVIDENCE_ARTIFACT_GZIP_BASE64:
@@ -110,6 +112,16 @@ export function createPlaywrightConfig(
     use: {
       baseURL: target.baseURL,
       screenshot: 'only-on-failure',
+      storageState: {
+        cookies: [],
+        origins: [{
+          origin: target.baseURL,
+          localStorage: [
+            { name: 'signedprice_analytics_consent_v1', value: 'denied' },
+            { name: 'signedprice_advertising_consent_v1', value: 'denied' },
+          ],
+        }],
+      },
       trace: 'retain-on-failure',
     },
     ...(target.usesExternalServer ? {} : { webServer }),

@@ -1,7 +1,10 @@
 import { AdvertisingConsent } from '@/components/consent/advertising-consent';
 import { PublicSiteJsonLd } from '@/components/public-json-ld';
 import { advertisingConfigFromEnvironment } from '@/lib/advertising/advertising-config.server';
-import { analyticsConfigFromEnvironment } from '@/lib/analytics/analytics-config.server';
+import {
+  analyticsConfigFromEnvironment,
+  vercelAnalyticsEnabledFromEnvironment,
+} from '@/lib/analytics/analytics-config.server';
 import { homepageCopy } from '@/lib/site-copy';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
@@ -40,7 +43,7 @@ export default function KoreanRootLayout({ children }: { children: ReactNode }) 
               : {})}
           />
         ) : null}
-        <Analytics />
+        {vercelAnalyticsEnabledFromEnvironment() ? <Analytics /> : null}
       </body>
     </html>
   );

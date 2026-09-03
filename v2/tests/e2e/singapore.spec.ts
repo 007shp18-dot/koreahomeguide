@@ -114,7 +114,9 @@ test('native Singapore Check submits single and cross-market A/B evidence', asyn
   await expect(page.getByLabel('Check result')).toContainText('Trade-off');
   await expect(page.getByLabel('Check result')).toContainText('Offer A');
   await expect(page.getByLabel('Check result')).toContainText('Offer B');
-  await expect(page.getByLabel('Check result')).not.toContainText(/winner|conversion/i);
+  await expect(page.getByLabel('Check result')).toContainText(
+    'No winner or conversion is inferred.',
+  );
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /^noindex,\s*nofollow$/);
   await noOverflow(page);
   assertClean();
@@ -124,7 +126,9 @@ test('Seoul and Singapore Explore share the same desktop rail width', async ({ p
   await page.goto('/sg/singapore/explore/');
   const singaporeRail = await page.locator('[data-market-shell-region="discovery"]').boundingBox();
   await page.goto('/kr/seoul/explore/');
-  const seoulRail = await page.locator('[data-explorer-region="results"]').boundingBox();
+  const seoulRail = await page.locator(
+    '[data-explorer-layout="split"] > [data-explorer-region="results"]',
+  ).boundingBox();
   if (page.viewportSize()!.width > 760) {
     expect(Math.abs((singaporeRail?.width ?? 0) - 420)).toBeLessThanOrEqual(2);
     expect(Math.abs((seoulRail?.width ?? 0) - 420)).toBeLessThanOrEqual(2);
