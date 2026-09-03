@@ -52,7 +52,7 @@ describe('verified Seoul News routes', () => {
     expect(html).toContain('data-news-evidence="not-applicable"');
     expect(html).toContain('data-navigation-tier="primary"');
     expect(html).toContain('aria-current="page"');
-    expect(html).toContain('>Insights</a>');
+    expect(html).toContain('>News</a>');
     expect(html).toContain('href="/kr/seoul/check/">Contract Check</a>');
     expect(html).not.toMatch(/articleText|<iframe|dangerouslySetInnerHTML/);
   });

@@ -5,13 +5,13 @@
 }
 
 .hero {
-  padding: 56px 0 34px;
+  padding: 42px 0 28px;
 }
 
 .heroGrid {
   display: grid;
-  grid-template-columns: minmax(0, 0.92fr) minmax(420px, 1.08fr);
-  gap: 56px;
+  grid-template-columns: minmax(0, 0.86fr) minmax(440px, 1.14fr);
+  gap: 48px;
   align-items: center;
 }
 
@@ -19,25 +19,37 @@
   min-width: 0;
 }
 
+.heroEyebrow,
+.sectionEyebrow {
+  display: block;
+  color: #2f6fb1;
+  font-size: .75rem;
+  font-weight: 800;
+  letter-spacing: .095em;
+  text-transform: uppercase;
+}
+
+.sectionEyebrow { margin-bottom: 7px; }
+
 .heroCopy h1 {
-  max-width: 12ch;
-  margin: 0;
-  font-size: clamp(2.7rem, 5.1vw, 4.65rem);
+  max-width: 13ch;
+  margin: 10px 0 0;
+  font-size: clamp(2.65rem, 4.25vw, 3.65rem);
   font-weight: 760;
-  letter-spacing: -0.055em;
-  line-height: 0.98;
+  letter-spacing: -0.05em;
+  line-height: 1.02;
 }
 
 .deck {
   max-width: 520px;
-  margin: 24px 0 0;
+  margin: 18px 0 0;
   color: #536176;
   font-size: 1rem;
-  line-height: 1.75;
+  line-height: 1.65;
 }
 
 .searchForm {
-  margin-top: 30px;
+  margin-top: 24px;
 }
 
 .searchForm label {
@@ -77,28 +89,18 @@
   cursor: pointer;
 }
 
-.marketShortcuts {
-  margin-top: 18px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 28px;
-}
-
-.marketShortcuts a {
-  color: #1456a0;
-  font-size: 0.84rem;
-  font-weight: 700;
-  text-decoration: none;
-}
-
-.marketShortcuts span {
-  margin-left: 4px;
+.searchHint {
+  max-width: 470px;
+  margin: 12px 0 0;
+  color: #718096;
+  font-size: .78rem;
+  line-height: 1.5;
 }
 
 .heroMedia {
   position: relative;
   min-width: 0;
-  min-height: 420px;
+  min-height: 360px;
   overflow: hidden;
   border: 1px solid #dfe5ec;
   border-radius: 14px;
@@ -109,7 +111,7 @@
 .heroMedia > section,
 .heroMedia > figure,
 .heroMedia > div:first-child:not(.heroMediaCaption) {
-  min-height: 420px;
+  min-height: 360px;
   border: 0;
   border-radius: 0;
 }
@@ -176,7 +178,7 @@
 .heroMediaCaption span,
 .heroMediaCaption p {
   color: #66758a;
-  font-size: 0.72rem;
+  font-size: 0.75rem;
 }
 
 .heroMediaCaption h2 {
@@ -190,7 +192,7 @@
   right: 17px;
   bottom: 17px;
   color: #1456a0;
-  font-size: 0.76rem;
+  font-size: 0.78rem;
   font-weight: 750;
   text-decoration: none;
 }
@@ -226,15 +228,15 @@
 }
 
 .homeBody {
-  padding: 6px 0 72px;
+  padding: 4px 0 82px;
 }
 
 .section {
-  padding: 28px 0 18px;
+  padding: 36px 0 22px;
 }
 
 .section h2,
-.bottomGrid h2 {
+.roadmapGrid h2 {
   margin: 0;
   font-size: clamp(1.35rem, 2.2vw, 1.8rem);
   letter-spacing: -0.035em;
@@ -242,7 +244,7 @@
 }
 
 .sectionHeader {
-  margin-bottom: 16px;
+  margin-bottom: 18px;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -250,9 +252,10 @@
 }
 
 .sectionHeader p {
-  margin: 6px 0 0;
+  max-width: 620px;
+  margin: 8px 0 0;
   color: #66758a;
-  font-size: 0.82rem;
+  font-size: 0.9rem;
   line-height: 1.55;
 }
 
@@ -269,7 +272,8 @@
 .buildingGrid,
 .insightGrid,
 .propertyGrid,
-.bottomGrid {
+.roadmapGrid,
+.newsCommunityGrid {
   display: grid;
   gap: 16px;
 }
@@ -277,7 +281,8 @@
 .snapshotGrid,
 .marketGrid,
 .insightGrid,
-.propertyGrid {
+.propertyGrid,
+.roadmapGrid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
@@ -285,32 +290,47 @@
   margin-top: 16px;
 }
 
-.quickLinks {
+.primaryActions {
   margin-top: 12px;
-  padding: 10px 14px;
+  min-height: 54px;
+  padding: 8px 10px;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 22px;
+  align-items: center;
+  gap: 8px;
   border: 1px solid #e0e6ed;
-  border-radius: 9px;
+  border-radius: 11px;
   background: #fff;
 }
 
-.quickLinks a {
-  min-height: 32px;
+.primaryActions > strong {
+  padding: 0 10px;
+  color: #66758a;
+  font-size: .75rem;
+}
+
+.primaryActions a {
+  min-height: 38px;
+  padding: 0 12px;
   display: inline-flex;
   align-items: center;
-  color: #536176;
-  font-size: .71rem;
+  border-radius: 8px;
+  color: #354052;
+  font-size: .78rem;
   font-weight: 700;
   text-decoration: none;
 }
+
+.primaryActions a:hover { background: #f1f5f9; }
+.primaryActions .primaryAction { color: #fff; background: #10233d; }
+.primaryActions .primaryAction:hover { background: #1b3658; }
 
 .snapshotGrid > a,
 .buildingCard,
 .insightGrid > article,
 .propertyGrid > article,
-.bottomGrid > article {
+.roadmapGrid > article,
+.newsCommunityGrid > article {
   min-width: 0;
   border: 1px solid var(--line);
   border-radius: 11px;
@@ -360,51 +380,69 @@
 }
 
 .marketGrid > a {
-  position: relative;
-  min-height: 190px;
+  min-height: 205px;
   padding: 22px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  overflow: hidden;
-  border-radius: 11px;
-  color: #fff;
+  border: 1px solid var(--line);
+  border-top-width: 3px;
+  border-radius: 12px;
+  color: #111827;
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-sm);
   text-decoration: none;
-  isolation: isolate;
 }
 
-.marketGrid > a::before {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  content: '';
-  background: linear-gradient(180deg, transparent 15%, rgb(5 18 35 / 82%) 100%);
-}
+.marketSeoul { border-top-color: #2563d8 !important; }
+.marketSingapore { border-top-color: #d75d67 !important; }
+.marketDubai { border-top-color: #c5914e !important; }
 
-.marketSeoul { background: linear-gradient(135deg, #a9bfd0, #425f78); }
-.marketSingapore { background: linear-gradient(135deg, #8aa2b8, #2f526a); }
-.marketDubai { background: linear-gradient(135deg, #d3b38c, #625246); }
+.marketGrid header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
 
 .marketGrid span {
-  font-size: 0.72rem;
-  font-weight: 650;
+  font-size: 0.78rem;
+  font-weight: 760;
+}
+
+.marketGrid small {
+  color: #718096;
+  font-size: .75rem;
+  font-weight: 800;
+  letter-spacing: .07em;
 }
 
 .marketGrid h3 {
-  margin: 3px 0;
-  font-size: 1.35rem;
+  margin: 18px 0 2px;
+  color: #536176;
+  font-size: .82rem;
+  font-weight: 650;
   letter-spacing: -0.025em;
 }
 
-.marketGrid p,
 .marketGrid strong {
-  margin: 0;
-  font-size: 0.73rem;
-  line-height: 1.45;
+  font-size: 1.55rem;
+  letter-spacing: -.035em;
 }
 
-.marketGrid strong {
-  margin-top: 12px;
+.marketGrid p {
+  margin: 8px 0 0;
+  color: #66758a;
+  font-size: .78rem;
+  line-height: 1.5;
+}
+
+.marketGrid em {
+  margin-top: auto;
+  padding-top: 14px;
+  color: #1456a0;
+  font-size: .78rem;
+  font-style: normal;
+  font-weight: 750;
 }
 
 .buildingGrid {
@@ -450,7 +488,7 @@
 .propertyGrid span,
 .bottomGrid span {
   color: #2f6fb1;
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   font-weight: 800;
   letter-spacing: 0.07em;
   text-transform: uppercase;
@@ -467,10 +505,11 @@
 .buildingCard p,
 .insightGrid p,
 .propertyGrid p,
-.bottomGrid p {
+.roadmapGrid p,
+.newsCommunityGrid p {
   margin: 4px 0;
   color: #66758a;
-  font-size: 0.76rem;
+  font-size: 0.82rem;
   line-height: 1.55;
 }
 
@@ -482,21 +521,22 @@
 .buildingCard small {
   margin-top: 3px;
   color: #7a8798;
-  font-size: 0.69rem;
+  font-size: 0.75rem;
 }
 
 .buildingCard a,
 .bottomGrid a {
   margin-top: 12px;
   color: #1456a0;
-  font-size: 0.74rem;
+  font-size: 0.78rem;
   font-weight: 750;
   text-decoration: none;
 }
 
 .insightGrid > article,
 .propertyGrid > article,
-.bottomGrid > article {
+.roadmapGrid > article,
+.newsCommunityGrid > article {
   padding: 20px;
 }
 
@@ -528,37 +568,71 @@
   font-size: 0.7rem;
 }
 
-.bottomGrid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  padding-top: 28px;
+.newsCommunityGrid {
+  grid-template-columns: minmax(0, 1.35fr) minmax(300px, .65fr);
 }
 
-.bottomGrid > article {
-  min-height: 188px;
+.newsCommunityGrid > article {
+  min-height: 225px;
   padding: 26px;
-  background: linear-gradient(135deg, #fff, #f1f6fb);
 }
 
-.bottomGrid h2 {
-  margin-top: 9px;
+.newsCommunityGrid h3,
+.roadmapGrid h3 {
+  margin: 10px 0 6px;
+  font-size: 1.2rem;
+  letter-spacing: -.025em;
+}
+
+.newsFeature h3 { max-width: 30ch; font-size: 1.5rem; }
+.newsFeature h3 a { color: inherit; text-decoration: none; }
+.newsFeature footer { margin-top: 26px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.newsFeature footer small { color: #7a8798; font-size: .72rem; }
+.newsFeature footer a,
+.roadmapGrid a { color: #1456a0; font-size: .76rem; font-weight: 750; text-decoration: none; }
+
+.communityPanel {
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(145deg, #f7faff, #edf3fa) !important;
+}
+.communityPanel strong { margin-top: auto; color: #536176; font-size: .78rem; }
+
+.roadmapGrid > article {
+  min-height: 180px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+}
+
+.roadmapGrid > article:first-child { background: linear-gradient(145deg, #fff, #f5f9ff); }
+.roadmapGrid a { margin-top: auto; padding-top: 16px; }
+.roadmapGrid span,
+.newsCommunityGrid span {
+  color: #2f6fb1;
+  font-size: .75rem;
+  font-weight: 800;
+  letter-spacing: .075em;
 }
 
 @media (max-width: 900px) {
-  .heroGrid { grid-template-columns: 1fr; gap: 32px; }
+  .heroGrid { grid-template-columns: 1fr; gap: 30px; }
   .heroCopy h1 { max-width: 14ch; }
   .heroMedia { min-height: 360px; }
   .snapshotGrid,
   .marketGrid,
   .insightGrid,
-  .propertyGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .propertyGrid,
+  .roadmapGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .buildingGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .newsCommunityGrid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 620px) {
   .homeBody,
   .hero { width: min(100% - 28px, 1180px); }
-  .hero { padding-top: 38px; }
-  .heroCopy h1 { font-size: 2.65rem; }
+  .hero { padding-top: 30px; }
+  .heroCopy h1 { font-size: 2.45rem; }
   .heroMedia { min-height: 315px; }
   .heroMedia > section,
   .heroMedia > figure,
@@ -570,6 +644,9 @@
   .buildingGrid,
   .insightGrid,
   .propertyGrid,
-  .bottomGrid { grid-template-columns: 1fr; }
-  .marketShortcuts { gap: 18px; }
+  .roadmapGrid,
+  .newsCommunityGrid { grid-template-columns: 1fr; }
+  .primaryActions { align-items: stretch; }
+  .primaryActions > strong { width: 100%; padding-top: 4px; }
+  .primaryActions a { flex: 1 1 44%; justify-content: center; text-align: center; }
 }

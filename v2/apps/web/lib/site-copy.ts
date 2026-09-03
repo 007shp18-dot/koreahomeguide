@@ -81,10 +81,9 @@ export interface SiteFooterModel {
 export const productNavigationLinks = Object.freeze([
   { index: '01', label: 'Markets', description: 'Compare market context', href: '/markets/' },
   { index: '02', label: 'Prices', description: 'Explore signed evidence', href: '/prices/' },
-  { index: '03', label: 'Properties', description: 'Service preparing', href: '/properties/' },
-  { index: '04', label: 'Insights', description: 'Read market signals', href: '/insights/' },
+  { index: '03', label: 'News', description: 'Read verified market briefs', href: '/insights/' },
+  { index: '04', label: 'Community', description: 'Service preparing', href: '/community/' },
   { index: '05', label: 'Guides', description: 'Understand the method', href: '/guides/' },
-  { index: '06', label: 'Invest', description: 'Service preparing', href: '/invest/' },
 ] as const satisfies readonly NavigationLinkModel[]);
 
 export const KOREA_PUBLIC_RELEASE_STATUS =
@@ -139,6 +138,8 @@ const englishFooterCopy = {
   links: [
     { label: 'Markets', href: '/markets/' },
     { label: 'Prices', href: '/prices/' },
+    { label: 'News', href: '/insights/' },
+    { label: 'Community', href: '/community/' },
     { label: 'Guides', href: '/guides/' },
     { label: 'Trust', href: '/trust/' },
     { label: 'Back to top', href: '#top' },

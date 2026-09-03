@@ -65,7 +65,7 @@ describe('SignedPrice brand mark', () => {
     expect(contractHeader.match(/<path\b/g)).toHaveLength(3);
   });
 
-  test('renders one compact header with six roadmap destinations and market context', () => {
+  test('renders one compact header with focused product destinations and market context', () => {
     const html = renderToStaticMarkup(<SiteHeader copy={{
       ...headerCopy,
       links: [{ label: 'Explore', href: '/kr/seoul/explore/', isCurrent: true }],
@@ -75,11 +75,12 @@ describe('SignedPrice brand mark', () => {
     expect(html).not.toContain('data-navigation-tier="market"');
     expect(html).not.toContain('data-navigation-tier="product"');
     expect(html).toContain('class="site-header__context">Seoul · reported filings</span>');
-    expect(html.match(/site-header__product-link/g)).toHaveLength(6);
+    expect(html.match(/site-header__product-link/g)).toHaveLength(5);
     expect(html).toContain('>Markets</a>');
-    expect(html).toContain('>Invest</a>');
-    expect(html).toContain('href="/properties"');
-    expect(html).toContain('href="/invest"');
+    expect(html).toContain('>News</a>');
+    expect(html).toContain('>Community</a>');
+    expect(html).toContain('href="/insights"');
+    expect(html).toContain('href="/community"');
     expect(html).toMatch(/<a[^>]+aria-current="page"[^>]+href="\/prices"/);
   });
 });
