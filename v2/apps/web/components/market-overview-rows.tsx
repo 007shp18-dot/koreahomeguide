@@ -27,10 +27,17 @@ export function MarketOverviewRows({
     detail: row.number === '04' ? `${row.items.length} declared limits` : row.description,
   }));
   const evidenceItems = rows[1]?.items.slice(0, 3) ?? [];
+  const tabs = [
+    { href: '#overview', label: 'Overview', number: null },
+    { href: '#evidence', label: 'Evidence', number: '02' },
+    { href: '#decisions', label: 'Decisions', number: '03' },
+    { href: '#limitations', label: 'Limitations', number: '04' },
+    { href: '#source', label: 'Source', number: '06' },
+  ].filter((tab) => tab.number === null || rows.some((row) => row.number === tab.number));
   return (
     <section className={styles.overview} aria-label="Market overview details" data-market-overview="true">
       <nav className={styles.tabs} aria-label="Market overview sections">
-        <a href="#overview">Overview</a><a href="#evidence">Evidence</a><a href="#decisions">Decisions</a><a href="#limitations">Limitations</a><a href="#source">Source</a>
+        {tabs.map((tab) => <a href={tab.href} key={tab.href}>{tab.label}</a>)}
       </nav>
       <div className={styles.summary} id="overview" aria-label="Market summary">
         {summaries.slice(0, 4).map((item) => (

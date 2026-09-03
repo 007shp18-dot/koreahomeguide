@@ -4,7 +4,6 @@ import { notFound } from 'next/navigation';
 import { BuildingDetailPage } from '@/components/public-market/building-detail-page';
 import { BuildingOfficialFacts } from '@/components/public-market/building-official-facts';
 import { NaverBuildingStreetView } from '@/components/maps/naver-building-street-view';
-import { GooglePlacePhoto } from '@/components/maps/google-place-photo';
 import { buildNaverBuildingAddressQuery } from '@/lib/public-market/naver-building-address';
 import {
   KoreaEvidenceBuildingDetail,
@@ -68,7 +67,7 @@ export function createKoreaDetailBackHref(
   const href = localizedSeoulHref(createSelectionHref(
     '/kr/seoul/explore/',
     selection,
-    { market: 'kr', transaction: 'jeonse' },
+    { market: 'kr', transaction: 'sale' },
   ), locale);
   const target = new URL(href, 'https://signedprice.invalid');
   const searchQuery = scalarQuery(query, 'q')?.trim();
@@ -88,7 +87,7 @@ function naverStreetViewFor(input: Readonly<{
   addressQuery: string;
   mapHref: string;
 }>) {
-  const nearbyView = (
+  return (
     <NaverBuildingStreetView
       clientId={process.env.NAVER_MAP_CLIENT_ID?.trim() || null}
       buildingName={input.name}
@@ -96,15 +95,6 @@ function naverStreetViewFor(input: Readonly<{
       longitude={input.longitude ?? undefined}
       addressQuery={input.addressQuery}
       mapHref={input.mapHref}
-    />
-  );
-
-  return (
-    <GooglePlacePhoto
-      browserKey={process.env.GOOGLE_MAPS_API_KEY?.trim() || null}
-      buildingName={input.name}
-      address={input.addressQuery}
-      fallback={nearbyView}
     />
   );
 }
@@ -125,7 +115,7 @@ export function resolveKoreaEvidenceBuildingRoute(
 ) {
   const selection = parseExplorerSelection(
     query,
-    { market: 'kr', transaction: 'jeonse' },
+    { market: 'kr', transaction: 'sale' },
     {
       areas: evidenceAreas,
       propertyTypes: KOREA_EXPLORER_HOUSING_TYPES,
@@ -276,7 +266,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
     if (observed === null) notFound();
     const selection = parseExplorerSelection(
       query,
-      { market: 'kr', transaction: 'jeonse' },
+      { market: 'kr', transaction: 'sale' },
       {
         districts: [observed.district.slug],
         neighborhoodsByDistrict: {
@@ -317,7 +307,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
   const decision = buildBuildingDecisionModel(model, selection);
   const explorerSelection = parseExplorerSelection(
     query,
-    { market: 'kr', transaction: 'jeonse' },
+    { market: 'kr', transaction: 'sale' },
     {
       districts: [model.district.slug],
       neighborhoodsByDistrict: {

@@ -157,7 +157,7 @@ describe('public Seoul area Explorer', () => {
       { market: 'kr', transaction: 'jeonse', district: 'gangnam-gu' },
       'en',
     )).toBe(
-      '/kr/seoul/explore/?district=gangnam-gu&neighborhood=yeoksam-dong&buildingId=gangnam-evidence-tower',
+      '/kr/seoul/explore/?transaction=jeonse&district=gangnam-gu&neighborhood=yeoksam-dong&buildingId=gangnam-evidence-tower',
     );
   });
 
@@ -174,7 +174,7 @@ describe('public Seoul area Explorer', () => {
       'en',
       { query: 'Evidence Tower', buildingPage: 3 },
     )).toBe(
-      '/kr/seoul/explore/?district=gangnam-gu&neighborhood=yeoksam-dong&buildingId=gangnam-evidence-tower&q=Evidence+Tower&buildingPage=3',
+      '/kr/seoul/explore/?transaction=jeonse&district=gangnam-gu&neighborhood=yeoksam-dong&buildingId=gangnam-evidence-tower&q=Evidence+Tower&buildingPage=3',
     );
   });
 
@@ -232,10 +232,10 @@ describe('public Seoul area Explorer', () => {
 
     expect(markup).toContain('data-explore-view="table"');
     expect(markup).toContain('aria-label="Explorer view"');
-    expect(markup).toContain('href="/kr/seoul/explore?district=gangnam-gu">Split</a>');
-    expect(markup).toContain('href="/kr/seoul/explore?district=gangnam-gu&amp;view=list">List</a>');
-    expect(markup).toContain('<a aria-current="page" href="/kr/seoul/explore?district=gangnam-gu&amp;view=table">Table</a>');
-    expect(markup).toContain('href="/kr/seoul/explore?district=gangnam-gu&amp;view=map">Map</a>');
+    expect(markup).toContain('href="/kr/seoul/explore?transaction=jeonse&amp;district=gangnam-gu">Split</a>');
+    expect(markup).toContain('href="/kr/seoul/explore?transaction=jeonse&amp;district=gangnam-gu&amp;view=list">List</a>');
+    expect(markup).toContain('<a aria-current="page" href="/kr/seoul/explore?transaction=jeonse&amp;district=gangnam-gu&amp;view=table">Table</a>');
+    expect(markup).toContain('href="/kr/seoul/explore?transaction=jeonse&amp;district=gangnam-gu&amp;view=map">Map</a>');
     expect(markup.indexOf('>Split</a>')).toBeLessThan(markup.indexOf('>List</a>'));
     expect(markup.indexOf('>List</a>')).toBeLessThan(markup.indexOf('>Table</a>'));
     expect(markup.indexOf('>Table</a>')).toBeLessThan(markup.indexOf('>Map</a>'));
@@ -490,7 +490,7 @@ describe('public Seoul area Explorer', () => {
     );
   });
 
-  it('defers building geocoding until a building is selected from the citywide district map', () => {
+  it('opens the district building layer with price-and-location markers', () => {
     const model = buildPublicAreaExploreModel('jongno-gu', {
       source: rankedFixture(),
       buildingSource: createPublicBuildingFixture(),
@@ -520,8 +520,10 @@ describe('public Seoul area Explorer', () => {
     }));
 
     expect(configured).toContain('maps.js?ncpKeyId=test-naver-client');
-    expect(configured).not.toContain('submodules=geocoder');
-    expect(configured).toContain('Interactive NAVER map of Seoul districts');
+    expect(configured).toContain('submodules=geocoder');
+    expect(configured).toContain('Interactive NAVER map of Seoul buildings');
+    expect(configured).toContain('All Seoul districts');
+    expect(configured).toContain('Select a price bubble');
     expect(selectedBuilding).toContain(
       'maps.js?ncpKeyId=test-naver-client&amp;submodules=geocoder',
     );

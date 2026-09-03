@@ -3538,6 +3538,10 @@ h1 {
 @media (max-width: 640px) {
   :root { --page-gutter: 14px; }
   .site-header__inner { gap: 8px; }
+  .site-header__product-nav { margin-left: auto; overflow: visible; }
+  .site-header__links { width: auto; }
+  .site-header__links li { display: none; }
+  .site-header__links li:has(.site-header__product-link[aria-current="page"]) { display: block; }
   .site-header__product-link { min-width: auto; padding-inline: 10px; }
   .market-hero,
   .market-hero--overview.site-shell { padding: 24px 20px; border-radius: 16px; }

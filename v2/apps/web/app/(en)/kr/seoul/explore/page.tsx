@@ -69,7 +69,7 @@ export default async function ExplorerPage({ searchParams }: ExplorerPageProps) 
   const query = await searchParams;
   const selection = parseExplorerSelection(
     query,
-    { market: 'kr', transaction: 'jeonse' },
+    { market: 'kr', transaction: 'sale' },
     {
       areas: KOREA_EVIDENCE_AREA_BANDS,
       propertyTypes: KOREA_EXPLORER_HOUSING_TYPES.filter((value) => value !== 'all'),

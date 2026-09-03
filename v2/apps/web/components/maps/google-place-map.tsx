@@ -6,6 +6,7 @@ import {
   useEffect,
   useRef,
   useState,
+  type CSSProperties,
   type FormEvent,
 } from 'react';
 
@@ -22,7 +23,14 @@ export type GoogleMapInstance = Readonly<{
 }>;
 export type GoogleMarkerInstance = Readonly<{
   setPosition: (location: GoogleLocation) => void;
-  setMap: (map: GoogleMapInstance) => void;
+  setMap: (map: GoogleMapInstance | null) => void;
+}>;
+export type GoogleMarketMapPoint = Readonly<{
+  id: string;
+  title: string;
+  label: string;
+  latitude: number;
+  longitude: number;
 }>;
 export type GoogleGeocoderInstance = Readonly<{
   geocode: (request: Readonly<{
@@ -41,7 +49,12 @@ export type GoogleMapsSdk = Readonly<{
       streetViewControl: boolean;
     }>,
   ) => GoogleMapInstance;
-  Marker: new () => GoogleMarkerInstance;
+  Marker: new (options?: Readonly<{
+    map: GoogleMapInstance;
+    position: Readonly<{ lat: number; lng: number }>;
+    title: string;
+    label: Readonly<{ text: string; className: string }>;
+  }>) => GoogleMarkerInstance;
   Geocoder: new () => GoogleGeocoderInstance;
 }>;
 
@@ -109,6 +122,19 @@ export function mountGooglePlaceMap({
   });
 }
 
+export function mountGoogleMarketPoints(
+  sdk: GoogleMapsSdk,
+  map: GoogleMapInstance,
+  points: readonly GoogleMarketMapPoint[],
+): readonly GoogleMarkerInstance[] {
+  return Object.freeze(points.map((point) => new sdk.Marker({
+    map,
+    position: { lat: point.latitude, lng: point.longitude },
+    title: point.title,
+    label: { text: point.label, className: 'spGoogleMarketMarker' },
+  })));
+}
+
 export async function geocodeGoogleAddress({
   map,
   marker,
@@ -128,9 +154,16 @@ export async function geocodeGoogleAddress({
   return result.formatted_address;
 }
 
-export function GooglePlaceMap({ browserKey }: Readonly<{ browserKey: string | null }>) {
+export function GooglePlaceMap({
+  browserKey,
+  points = Object.freeze([]),
+}: Readonly<{
+  browserKey: string | null;
+  points?: readonly GoogleMarketMapPoint[];
+}>) {
   const container = useRef<HTMLDivElement>(null);
   const runtime = useRef<GooglePlaceMapRuntime | null>(null);
+  const marketMarkers = useRef<readonly GoogleMarkerInstance[]>([]);
   const [mapState, setMapState] = useState<'loading' | 'ready' | 'error'>('loading');
   const [query, setQuery] = useState('');
   const [message, setMessage] = useState('Search results will appear on this Google map.');
@@ -143,17 +176,23 @@ export function GooglePlaceMap({ browserKey }: Readonly<{ browserKey: string | n
     if (sdk === undefined || container.current === null) return;
     try {
       runtime.current = mountGooglePlaceMap({ sdk, element: container.current });
+      for (const marker of marketMarkers.current) marker.setMap(null);
+      marketMarkers.current = mountGoogleMarketPoints(sdk, runtime.current.map, points);
       setMapState('ready');
     } catch {
       setMapState('error');
     }
-  }, []);
+  }, [points]);
 
   useEffect(() => {
     const scope = window as Window & GoogleMapsReadyScope;
     window.addEventListener(GOOGLE_MAPS_READY_EVENT, initialize);
     if (scope[GOOGLE_MAPS_READY_FLAG] === true) queueMicrotask(initialize);
-    return () => window.removeEventListener(GOOGLE_MAPS_READY_EVENT, initialize);
+    return () => {
+      window.removeEventListener(GOOGLE_MAPS_READY_EVENT, initialize);
+      for (const marker of marketMarkers.current) marker.setMap(null);
+      marketMarkers.current = [];
+    };
   }, [initialize]);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -173,9 +212,29 @@ export function GooglePlaceMap({ browserKey }: Readonly<{ browserKey: string | n
     }
   }
 
-  if (browserKey === null) return (
+  if (browserKey === null) return points.length === 0 ? (
     <div className={styles.unavailable} data-map-provider="static" data-map-state="fallback">
       Interactive Google map unavailable in this environment.
+    </div>
+  ) : (
+    <div
+      className={styles.staticMarketMap}
+      data-map-provider="static"
+      data-map-state="market-fallback"
+      role="img"
+      aria-label="Static Singapore market map with segment prices"
+    >
+      {points.map((point) => {
+        const left = 12 + ((point.longitude - 103.70) / 0.25) * 76;
+        const top = 14 + ((1.43 - point.latitude) / 0.20) * 70;
+        return <span
+          key={point.id}
+          className={styles.staticMarketMarker}
+          style={{ '--marker-left': `${Math.max(8, Math.min(88, left))}%`, '--marker-top': `${Math.max(10, Math.min(84, top))}%` } as CSSProperties}
+          title={point.title}
+        >{point.label}</span>;
+      })}
+      <small>Singapore · sale evidence</small>
     </div>
   );
 

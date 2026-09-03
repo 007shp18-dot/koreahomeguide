@@ -67,7 +67,7 @@ export function resolveKoreaRankingsPageModel(
 ) {
   const selection = parseExplorerSelection(
     query,
-    { market: 'kr', transaction: 'jeonse' },
+    { market: 'kr', transaction: 'sale' },
     { areas: evidenceAreas, propertyTypes: KOREA_EXPLORER_HOUSING_TYPES },
   );
   const projection = buildKoreaExplorerEvidenceProjection(repositories, {

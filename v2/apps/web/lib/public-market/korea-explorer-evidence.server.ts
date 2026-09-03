@@ -172,7 +172,7 @@ function normalizeSelection(
 ): KoreaExplorerEvidenceSelection {
   const transaction = TRANSACTIONS.has(input.transaction as KoreaExplorerTransaction)
     ? input.transaction as KoreaExplorerTransaction
-    : 'jeonse';
+    : 'sale';
   const areaBand = KOREA_EVIDENCE_AREA_BANDS.includes(
     input.areaBand as KoreaEvidenceAreaBand,
   ) ? input.areaBand as KoreaEvidenceAreaBand : 'all';

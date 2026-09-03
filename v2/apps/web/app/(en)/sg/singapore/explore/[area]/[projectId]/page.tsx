@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { SingaporeProjectDetail } from '@/components/singapore/singapore-project-detail';
+import { googleMapsBrowserKeyFromEnvironment } from '@/lib/maps/google-maps-browser-key.server';
 import { buildSingaporeProjectModel } from '@/lib/singapore/route-model.server';
 import {
   SINGAPORE_CORRECTION_HREF,
@@ -35,6 +36,6 @@ export default async function SingaporeProjectPage({ params }: Props) {
   if (model === null) notFound();
   return <SingaporeProjectDetail
     model={model}
-    googleMapsBrowserKey={process.env.GOOGLE_MAPS_API_KEY?.trim() || null}
+    googleMapsBrowserKey={googleMapsBrowserKeyFromEnvironment()}
   />;
 }

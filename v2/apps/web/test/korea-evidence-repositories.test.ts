@@ -495,7 +495,7 @@ describe('installed Korea evidence repositories', () => {
       cheapest: [{
         slug: 'gangnam-gu',
         valueLabel: '₩600,000,000',
-        href: '/kr/seoul/explore/gangnam-gu/?transaction=sale&area=all&propertyType=apartment&district=gangnam-gu',
+        href: '/kr/seoul/explore/gangnam-gu/?area=all&propertyType=apartment&district=gangnam-gu',
       }],
       sample: [{ slug: 'gangnam-gu', valueLabel: '5' }],
       withheldDistrictCount: 24,

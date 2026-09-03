@@ -42,6 +42,16 @@ describe('Singapore navigation promotion gate', () => {
     expect(html.match(/<h1/g) ?? []).toHaveLength(1);
   });
 
+  it('keeps the Singapore overview concise without repeated item badges or a source row', () => {
+    const html = renderToStaticMarkup(<SingaporeEntry model={ready} />);
+
+    expect(html).toContain('data-overview-row="05"');
+    expect(html).toContain('>05</span>');
+    expect(html).not.toContain('Source and methodology');
+    expect(html).not.toContain('href="#source"');
+    expect(html.match(/data-state="available"/g) ?? []).toHaveLength(1);
+  });
+
   it('keeps Singapore and Dubai visible in global market navigation', async () => {
     const presentation = buildHomepagePresentation(unavailable);
     expect(presentation.copy.marketIds).toEqual([

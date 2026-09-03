@@ -136,12 +136,12 @@ describe('Singapore route SSR', () => {
     expect(html).not.toMatch(/use client/);
   });
 
-  it('passes the server-only Google key into the Singapore Explore map', async () => {
+  it('passes the configured Google browser key into the Singapore Explore map', async () => {
     const source = snapshot();
     vi.stubEnv('SIGNEDPRICE_SINGAPORE_SNAPSHOT_ARTIFACT', stringifySingaporeSnapshot(source));
     vi.stubEnv('SIGNEDPRICE_SINGAPORE_SNAPSHOT_SHA256', source.digest);
     vi.stubEnv('SIGNEDPRICE_SINGAPORE_SNAPSHOT_PERIOD', '2026-06..2026-08');
-    vi.stubEnv('GOOGLE_MAPS_API_KEY', 'page-google-key');
+    vi.stubEnv('GOOGLE_MAPS_BROWSER_KEY', 'page-google-key');
 
     const html = renderToStaticMarkup(await SingaporeExplorePage());
 

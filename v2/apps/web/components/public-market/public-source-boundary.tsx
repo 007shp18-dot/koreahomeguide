@@ -12,10 +12,12 @@ export function PublicSourceBoundary({
   model,
   locale = 'en',
   transaction,
+  compact = false,
 }: Readonly<{
   model: PublicSourceBoundaryModel;
   locale?: ProductLocale;
   transaction?: 'jeonse' | 'monthly' | 'sale';
+  compact?: boolean;
 }>) {
   const copy = PUBLIC_MARKET_COPY[locale].source;
   const registryValue = transaction === 'sale'
@@ -39,11 +41,7 @@ export function PublicSourceBoundary({
         ? '매매 계약에는 신규·갱신 임대차 구분을 적용하지 않습니다.'
         : 'Rental new/renewal contract groups do not apply to reported sales.')
     : copy.combinedBoundary;
-  return (
-    <section
-      className={styles.publicSourceBoundary}
-      aria-labelledby="public-source-boundary-heading"
-    >
+  const content = <>
       <div className={styles.publicSourceHeading}>
         <p>{copy.eyebrow}</p>
         <h2 id="public-source-boundary-heading">{copy.heading}</h2>
@@ -104,6 +102,18 @@ export function PublicSourceBoundary({
         <p>{combinedBoundary}</p>
         <p>{copy.legalBoundary}</p>
       </details>
+    </>;
+  return (
+    <section
+      className={`${styles.publicSourceBoundary} ${compact ? styles.publicSourceBoundaryCompact : ''}`}
+      aria-labelledby="public-source-boundary-heading"
+    >
+      {compact ? (
+        <details className={styles.publicSourceCompactDisclosure}>
+          <summary>{locale === 'ko' ? '출처 및 공개 기준' : 'Sources & limits'}</summary>
+          <div>{content}</div>
+        </details>
+      ) : content}
     </section>
   );
 }
