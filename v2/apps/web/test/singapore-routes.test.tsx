@@ -87,10 +87,12 @@ describe('Singapore route SSR', () => {
     expect(html).toContain('href="/kr/seoul">Seoul</a>');
   });
 
-  it('marks the Singapore product route instead of a Seoul route as current', () => {
+  it('marks Singapore in the region-only menu and Prices in product navigation', () => {
     const html = renderToStaticMarkup(<SingaporePage currentHref="/sg/singapore/explore/"><p>Explore</p></SingaporePage>);
-    expect(html).toMatch(/aria-current="page" href="\/sg\/singapore\/explore"/);
-    expect(html).not.toMatch(/site-header__product-link" aria-current="page" href="\/sg"/);
+    expect(html).toMatch(/aria-current="page"[^>]+href="\/prices"/);
+    expect(html).toMatch(/aria-current="page" href="\/sg"/);
+    const marketMenu = html.match(/<nav[^>]+aria-label="Market navigation"[^>]*>([\s\S]*?)<\/nav>/)?.[1] ?? '';
+    expect(marketMenu).not.toContain('Explore');
     expect(html).not.toMatch(/href="\/kr\/seoul\/[^"]*" aria-current="page"/);
   });
 

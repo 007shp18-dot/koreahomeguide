@@ -156,7 +156,10 @@ export function buildNaverMapsScriptUrl(
     includeGeocoder ? 'geocoder' : null,
   ].filter((value): value is string => value !== null);
   if (submodules.length > 0) url.searchParams.set('submodules', submodules.join(','));
-  return url.toString();
+  // NAVER treats an encoded comma as part of a single submodule name
+  // (`maps-panorama%2Cgeocoder.js`) instead of loading both modules.
+  // URLSearchParams encodes commas, so restore the delimiter expected by the SDK.
+  return url.toString().replace(/%2C/gi, ',');
 }
 
 export function buildNaverBuildingAddressQuery(

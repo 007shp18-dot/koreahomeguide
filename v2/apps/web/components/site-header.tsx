@@ -24,12 +24,6 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
     { id: 'dubai', label: 'Dubai', href: '/ae/dubai/' },
   ] as const;
   const selectedMarket = markets.find(({ id }) => id === currentMarket) ?? markets[0];
-  const normalizedHref = (href: string) => href === '/' ? href : href.replace(/\/$/, '');
-  const contextLinks = copy.links.filter(({ href }) => (
-    href !== '/'
-    && !markets.some((market) => normalizedHref(market.href) === normalizedHref(href))
-    && !productNavigationLinks.some((product) => normalizedHref(product.href) === normalizedHref(href))
-  ));
 
   function isCurrentLink(href: string): boolean {
     if (currentHref === href) return true;
@@ -71,20 +65,17 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
                 {market.label}
               </Link>
             ))}
-            {contextLinks.map((link) => (
-              <Link
-                href={link.href}
-                aria-current={link.isCurrent ? 'page' : undefined}
-                key={`context-${link.href}`}
-              >{link.label}</Link>
-            ))}
-            {copy.languageSwitch === undefined ? null : (
-              <Link href={copy.languageSwitch.href} hrefLang={copy.languageSwitch.hrefLang} lang={copy.languageSwitch.hrefLang}>
-                {copy.languageSwitch.label}
-              </Link>
-            )}
           </nav>
         </details>
+        {copy.languageSwitch === undefined ? null : (
+          <Link
+            className={styles.language}
+            href={copy.languageSwitch.href}
+            hrefLang={copy.languageSwitch.hrefLang}
+            lang={copy.languageSwitch.hrefLang}
+            aria-label={`Change language to ${copy.languageSwitch.label}`}
+          >{copy.languageSwitch.hrefLang.toUpperCase()}</Link>
+        )}
       </div>
     </header>
   );

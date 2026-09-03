@@ -3,7 +3,7 @@ import Link from 'next/link';
 import type { NewsIndexModel } from '../lib/news/news-route-model.server';
 import type { HomeFeaturedBuilding } from '../lib/public-market/home-featured-buildings.server';
 import type { SeoulLiveModel } from '../lib/public-market/seoul-live-model.server';
-import { NaverBuildingStreetView } from './maps/naver-building-street-view';
+import { RotatingBuildingGrid } from './home-building-showcase';
 import styles from './home-editorial.module.css';
 
 type Props = Readonly<{
@@ -47,23 +47,7 @@ export function HomeEditorialSections({ seoul, news, featuredBuildings, naverMap
 
       <section className={styles.section} id="home-prices" aria-labelledby="home-prices-heading">
         <div className={styles.sectionHeader}><div><h2 id="home-prices-heading">Recent building evidence</h2><p>Real building identities from reported Seoul contracts. Nearby street imagery is not a listing photo.</p></div><Link href="/prices/">View all price evidence →</Link></div>
-        <div className={styles.buildingGrid}>
-          {featuredBuildings.map((building) => (
-            <article className={styles.buildingCard} key={building.id}>
-              <div className={styles.buildingMedia}>
-                <NaverBuildingStreetView
-                  clientId={naverMapClientId}
-                  buildingName={building.name}
-                  latitude={building.latitude}
-                  longitude={building.longitude}
-                  addressQuery={building.addressQuery}
-                  mapHref={building.href}
-                />
-              </div>
-              <div><span>SEOUL</span><h3>{building.name}</h3><p>{building.location}</p><strong>{building.observationLabel}</strong><small>{building.periodLabel}</small><Link href={building.href}>View evidence →</Link></div>
-            </article>
-          ))}
-        </div>
+        <RotatingBuildingGrid buildings={featuredBuildings} naverMapClientId={naverMapClientId} />
       </section>
 
       <section className={styles.section} id="home-briefs" aria-labelledby="home-insights-heading">

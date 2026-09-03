@@ -136,10 +136,12 @@ describe('provider building street view', () => {
       buildingName="Evidence Tower"
       latitude={37.501}
       longitude={127.031}
+      addressQuery="서울특별시 강남구 역삼동 Evidence Tower"
       mapHref="/kr/seoul/explore/?district=gangnam-gu"
     />);
     expect(naver).toContain('Nearby street view · not a listing photo');
-    expect(naver).toContain('submodules=panorama');
+    expect(naver).toContain('submodules=panorama,geocoder');
+    expect(naver).not.toContain('panorama%2Cgeocoder');
     expect(naver).toContain('data-building-media="naver-panorama"');
 
     const google = renderToStaticMarkup(<GoogleBuildingStreetView

@@ -58,6 +58,7 @@ describe('signedprice Evidence Editorial homepage', () => {
     }
     expect(markup).toContain('role="search"');
     expect(markup).not.toContain('aria-label="Choose a property decision"');
+    expect(markup).toContain('data-building-rotation="automatic"');
   });
 
   it('moves staged markets to explicit global destinations', async () => {

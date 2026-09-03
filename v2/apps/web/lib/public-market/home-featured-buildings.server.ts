@@ -23,7 +23,7 @@ export function buildHomeFeaturedBuildings(): readonly HomeFeaturedBuilding[] {
     const records = repository.listRecords()
       .filter((record) => record.housingType === 'apartment' && !/^\(/.test(record.officialName))
       .sort((left, right) => right.observationCount - left.observationCount)
-      .slice(0, 3);
+      .slice(0, 12);
 
     return Object.freeze(records.map((record) => {
       const district = getSeoulDistrictBySlug(record.districtSlug);

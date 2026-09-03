@@ -11,6 +11,20 @@ import {
 } from './naver-district-map';
 import styles from './building-street-view.module.css';
 
+const NAVER_MAPS_READY_EVENT = 'signedprice:naver-maps-ready';
+const NAVER_MAPS_READY_FLAG = '__signedpriceNaverMapsLoaded';
+
+type NaverMapsWindow = Window & {
+  readonly naver?: Readonly<{ maps: NaverBuildingStreetViewSdk & Partial<NaverBuildingGeocoderSdk> }>;
+  [NAVER_MAPS_READY_FLAG]?: boolean;
+};
+
+function notifyNaverMapsReady() {
+  const scope = window as NaverMapsWindow;
+  scope[NAVER_MAPS_READY_FLAG] = true;
+  window.dispatchEvent(new Event(NAVER_MAPS_READY_EVENT));
+}
+
 type NaverPanoramaInstance = Readonly<{
   getLocation: () => Readonly<{ panoId?: string }> | null;
   destroy?: () => void;
@@ -156,9 +170,7 @@ export function NaverBuildingStreetView({
   const mounted = useRef<ReturnType<typeof mountNaverBuildingStreetView> | null>(null);
   const [state, setState] = useState<'loading' | 'ready' | 'map' | 'unavailable'>('loading');
   const initialize = useCallback(async () => {
-    const sdk = (globalThis as typeof globalThis & {
-      naver?: Readonly<{ maps: NaverBuildingStreetViewSdk & Partial<NaverBuildingGeocoderSdk> }>;
-    }).naver?.maps;
+    const sdk = (window as NaverMapsWindow).naver?.maps;
     if (sdk === undefined || container.current === null || typeof sdk.Panorama !== 'function') {
       setState('unavailable');
       return;
@@ -216,19 +228,31 @@ export function NaverBuildingStreetView({
     }
   }, [addressQuery, buildingName, latitude, longitude]);
 
-  useEffect(() => () => mounted.current?.dispose(), []);
+  useEffect(() => {
+    const scope = window as NaverMapsWindow;
+    const handleReady = () => { void initialize(); };
+    window.addEventListener(NAVER_MAPS_READY_EVENT, handleReady);
+    if (scope[NAVER_MAPS_READY_FLAG] === true || scope.naver?.maps !== undefined) {
+      queueMicrotask(handleReady);
+    }
+    return () => {
+      window.removeEventListener(NAVER_MAPS_READY_EVENT, handleReady);
+      mounted.current?.dispose();
+    };
+  }, [initialize]);
 
   if (clientId === null || state === 'unavailable') return <StreetViewUnavailable mapHref={mapHref} />;
   return (
     <section className={styles.frame} data-building-media="naver-panorama" data-media-state={state}>
       <div ref={container} className={styles.canvas} role="region" aria-label={`Nearby NAVER street view for ${buildingName}`} />
+      {state === 'loading' ? <div className={styles.loading} aria-live="polite"><span>Loading nearby view</span><strong>{buildingName}</strong></div> : null}
       <p className={styles.label}>{state === 'map'
         ? 'Live area map · nearby street view unavailable · NAVER'
         : 'Nearby street view · not a listing photo · NAVER'}</p>
       <Script
         src={buildNaverMapsScriptUrl(clientId, addressQuery !== undefined, true)}
         strategy="lazyOnload"
-        onReady={() => { void initialize(); }}
+        onReady={notifyNaverMapsReady}
         onError={() => setState('unavailable')}
       />
     </section>
