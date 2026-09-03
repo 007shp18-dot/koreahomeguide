@@ -72,8 +72,8 @@ export function SingaporeEntry({ model, googleMapsBrowserKey = null }: Readonly<
         <MarketHero media={<GoogleBuildingStreetView
           browserKey={googleMapsBrowserKey}
           buildingName="The Sail @ Marina Bay"
-          latitude={1.2807}
-          longitude={103.8527}
+          latitude={1.2753}
+          longitude={103.8517}
           mapHref="https://www.google.com/maps/search/?api=1&query=The+Sail+at+Marina+Bay+Singapore"
         />} model={{
           sectionLabel: 'Singapore market overview',

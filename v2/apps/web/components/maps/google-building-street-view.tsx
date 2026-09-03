@@ -38,6 +38,7 @@ export type GoogleBuildingMapSdk = Readonly<{
       streetViewControl: boolean;
     }>,
   ) => unknown;
+  importLibrary?: (library: 'maps') => Promise<unknown>;
 }>;
 
 export type GoogleBuildingGeocoderSdk = Readonly<{
@@ -172,13 +173,17 @@ export function GoogleBuildingStreetView({
       setState('ready');
       return;
     }
-    if (typeof sdk.Map !== 'function') {
-      setState('unavailable');
-      return;
-    }
     try {
+      let mapSdk = sdk as GoogleBuildingStreetViewSdk & Partial<GoogleBuildingMapSdk>;
+      if (typeof mapSdk.Map !== 'function' && typeof mapSdk.importLibrary === 'function') {
+        await mapSdk.importLibrary('maps');
+        mapSdk = (globalThis as typeof globalThis & {
+          google?: Readonly<{ maps: GoogleBuildingStreetViewSdk & GoogleBuildingMapSdk }>;
+        }).google?.maps ?? mapSdk;
+      }
+      if (typeof mapSdk.Map !== 'function') throw new Error('Google map library unavailable.');
       mountGoogleBuildingMap({
-        sdk: sdk as GoogleBuildingStreetViewSdk & GoogleBuildingMapSdk,
+        sdk: mapSdk as GoogleBuildingStreetViewSdk & GoogleBuildingMapSdk,
         element: container.current,
         latitude: location.latitude,
         longitude: location.longitude,
