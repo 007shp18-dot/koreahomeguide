@@ -66,7 +66,8 @@ describe('browser route coverage contract', () => {
       canonical: '/kr/seoul/check/',
     });
     expect(publicRoutes.find(({ path }) => path === '/sg/')).toMatchObject({
-      indexing: 'noindex',
+      indexing: 'index',
+      canonical: '/sg/',
     });
     expect(publicRoutes.find(({ path }) => path === '/kr/seoul/gangnam-gu/'))
       .toMatchObject({
