@@ -70,6 +70,11 @@ function MarketVisual({ visual, naverMapClientId, googleMapsBrowserKey }: Readon
       browserKey={googleMapsBrowserKey}
       buildingName={visual.name}
       address={visual.addressQuery}
+      registryKey={visual.market === 'Seoul'
+        ? `kr-seoul:${visual.id}`
+        : visual.market === 'Singapore'
+          ? `sg-project:${visual.id}`
+          : `market:${visual.market}:${visual.id}`}
       fallback={fallback}
     />
   );

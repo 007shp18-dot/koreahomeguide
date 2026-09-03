@@ -875,6 +875,7 @@ function ReadyAreaExplorer({
                                 browserKey={googleMapsBrowserKey}
                                 buildingName={building.name}
                                 address={buildNaverBuildingAddressQuery(selected.nameKo, building.neighborhoodName, building.name)}
+                                registryKey={`kr-seoul:${building.id}`}
                                 linkAttribution={false}
                                 fallback={<span className={styles.photoUnavailable}><strong>{locale === 'ko' ? '건물 사진 미확인' : 'Building photo unverified'}</strong><small>{locale === 'ko' ? '정확한 위치는 지도에서 확인' : 'Use the map for the verified location'}</small></span>}
                               />
@@ -964,6 +965,7 @@ function ReadyAreaExplorer({
               browserKey={googleMapsBrowserKey}
               buildingName={selectedBuilding.name}
               address={buildNaverBuildingAddressQuery(selected.nameKo, selectedBuilding.neighborhoodName, selectedBuilding.name)}
+              registryKey={`kr-seoul:${selectedBuilding.id}`}
               fallback={selectedBuilding.latitude !== null && selectedBuilding.longitude !== null ? (
                 <NaverBuildingStreetView
                   clientId={naverMapClientId}

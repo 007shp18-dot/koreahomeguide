@@ -23,6 +23,7 @@ type GooglePlacePhotoResult = Readonly<{
 }>;
 
 type GooglePlaceResult = Readonly<{
+  id?: string;
   displayName?: string;
   formattedAddress?: string;
   photos?: readonly GooglePlacePhotoResult[];
@@ -86,12 +87,14 @@ export function GooglePlacePhoto({
   address,
   fallback,
   linkAttribution = true,
+  registryKey,
 }: Readonly<{
   browserKey: string | null;
   buildingName: string;
   address: string;
   fallback: ReactNode;
   linkAttribution?: boolean;
+  registryKey?: string;
 }>) {
   const [photo, setPhoto] = useState<PhotoState>('loading');
 
@@ -99,6 +102,40 @@ export function GooglePlacePhoto({
     const sdk = (window as GoogleReadyScope).google?.maps;
     if (sdk === undefined || typeof sdk.importLibrary !== 'function') return;
     try {
+      if (registryKey !== undefined) {
+        const approvalResponse = await fetch(`/api/building-photo/?key=${encodeURIComponent(registryKey)}`);
+        if (!approvalResponse.ok) {
+          setPhoto('unavailable');
+          return;
+        }
+        const approval = await approvalResponse.json() as Readonly<{ state?: unknown; placeId?: unknown; buildingName?: unknown; address?: unknown }>;
+        if (approval.state !== 'approved' || typeof approval.placeId !== 'string'
+          || typeof approval.buildingName !== 'string' || typeof approval.address !== 'string'
+          || normalizedPlaceText(approval.buildingName) !== normalizedPlaceText(buildingName)
+          || normalizedPlaceText(approval.address) !== normalizedPlaceText(address)) {
+          setPhoto('unavailable');
+          return;
+        }
+        const { Place } = await sdk.importLibrary('places');
+        const { places } = await Place.searchByText({
+          textQuery: `${buildingName}, ${address}`,
+          fields: ['id', 'displayName', 'formattedAddress', 'photos'],
+          maxResultCount: 1,
+          language: 'en',
+        });
+        const approvedPlace = places[0];
+        const approvedPhoto = approvedPlace?.photos?.[0];
+        if (approvedPlace?.id !== approval.placeId || approvedPhoto === undefined
+          || !isTrustedGooglePlaceMatch(approvedPlace.displayName, buildingName, approvedPlace.formattedAddress, address)) {
+          setPhoto('unavailable');
+          return;
+        }
+        setPhoto(Object.freeze({
+          src: approvedPhoto.getURI({ maxHeight: 900, maxWidth: 1400 }),
+          attribution: approvedPhoto.authorAttributions[0] ?? null,
+        }));
+        return;
+      }
       const { Place } = await sdk.importLibrary('places');
       const { places } = await Place.searchByText({
         textQuery: `${buildingName}, ${address}`,
@@ -119,7 +156,7 @@ export function GooglePlacePhoto({
     } catch {
       setPhoto('unavailable');
     }
-  }, [address, buildingName]);
+  }, [address, buildingName, registryKey]);
 
   useEffect(() => {
     if (browserKey === null) return;

@@ -493,7 +493,7 @@
   }
 
   .row {
-    grid-template-columns: 44px minmax(0, 1fr) minmax(96px, auto);
+    grid-template-columns: 40px minmax(0, 1fr) minmax(88px, auto);
   }
 
 
@@ -505,6 +505,12 @@
   .value {
     padding: 0.55rem;
   }
+
+  .viewTabs button { min-height: 48px; font-size: .82rem; }
+  .districtLink { font-size: .92rem; }
+  .districtLink span { font-size: .75rem; }
+  .value { font-size: .76rem; overflow-wrap: anywhere; }
+  .metricSummary dd { white-space: normal; overflow-wrap: anywhere; }
 
   .axisLabels {
     padding-left: 44px;
