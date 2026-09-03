@@ -9,6 +9,44 @@
   border: var(--rule-strong);
 }
 
+/* Unified decision-tool surface */
+.main {
+  width: min(calc(100% - (2 * var(--page-gutter))), 1080px);
+  margin: 28px auto 40px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-sm);
+}
+.hero { border-color: var(--line); background: linear-gradient(130deg, #fff 50%, #eef5ff); }
+.hero h1,
+.unavailable h1 { font-size: clamp(2.35rem, 5vw, 4.2rem); font-weight: 740; line-height: 1.02; }
+.modeSelector,
+.conditions,
+.singleOffer,
+.comparisonGrid,
+.housingType { border-color: var(--line); }
+.modeSelector > span,
+.modeSelector > a,
+.modeSelector > button,
+.singleOffer > legend,
+.conditions > legend,
+.singleOffer > .field,
+.conditionGrid > .field:nth-child(odd),
+.housingType select,
+.offerPanel { border-color: var(--line); }
+.modeSelector > button[aria-pressed='true'],
+.modeSelector > span[aria-current='page'] { color: var(--accent); background: var(--soft-blue); box-shadow: inset 0 -3px var(--accent); }
+.field { font-size: .75rem; }
+.field input,
+.field select { border: 1px solid var(--line); border-radius: 9px; background: var(--canvas); }
+.housingType select { background: var(--canvas); }
+
+@media (max-width: 720px) {
+  .main { width: calc(100% - 28px); margin-top: 18px; }
+}
+
 .hero {
   min-height: 184px;
   padding: clamp(28px, 4vw, 46px);

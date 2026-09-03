@@ -368,3 +368,183 @@
   .identitySummary { padding: var(--space-5) var(--evidence-page-gutter-mobile); }
   .navigation a { border-right: 0; }
 }
+
+/* Unified property-dashboard building template */
+.main {
+  width: min(calc(100% - (2 * var(--page-gutter))), var(--content-frame));
+  margin: 28px auto 0;
+  border: 0;
+}
+
+.identityHero {
+  grid-template-columns: minmax(0, 1.2fr) minmax(320px, .8fr);
+  gap: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-sm);
+}
+
+.visualPhoto,
+.visualUnavailable {
+  min-height: 320px;
+  border: 0;
+  border-right: 1px solid var(--line);
+  background: linear-gradient(145deg, #eaf2fd, #d9e7f9);
+}
+
+.visualPhoto figcaption {
+  padding: .65rem .85rem;
+  background: linear-gradient(transparent, rgb(10 25 47 / 74%));
+  font-size: .75rem;
+}
+
+.visualUnavailable { color: var(--ink); }
+.visualUnavailable small,
+.visualUnavailable p { color: var(--muted); }
+.visualEvidenceMark span { border-color: var(--line-strong); border-radius: 999px; }
+
+.identitySummary {
+  padding: 30px;
+  justify-content: center;
+  background: linear-gradient(145deg, #fff 20%, #f5f9ff 100%);
+}
+
+.identityEyebrow,
+.decisionEyebrow { font-size: .75rem; letter-spacing: .08em; }
+.identitySummary h1 { font-size: clamp(2.15rem, 4vw, 3.35rem); font-weight: 740; line-height: 1.02; }
+.identitySummary > p:last-of-type { font-size: .8125rem; line-height: 1.55; }
+
+.factGrid,
+.decisionMetrics,
+.evidenceLedger,
+.findingGrid,
+.sourceGrid {
+  gap: 9px;
+  border: 0;
+}
+
+.factGrid > div,
+.decisionMetrics > div,
+.evidenceLedger > div,
+.findingGrid > div,
+.sourceGrid > div {
+  min-height: 88px;
+  padding: 15px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--canvas);
+}
+
+.factGrid dt,
+.decisionMetrics dt,
+.evidenceLedger dt,
+.findingGrid dt,
+.sourceGrid dt { font-size: .7rem; letter-spacing: .04em; }
+
+.factGrid dd,
+.decisionMetrics dd,
+.evidenceLedger dd,
+.findingGrid dd,
+.sourceGrid dd { font-size: .8125rem; }
+
+.decisionTabs {
+  margin-top: 16px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 14px 14px 0 0;
+  background: var(--surface-strong);
+}
+
+.decisionTabs > div:first-child { display: flex; overflow-x: auto; }
+.decisionTabs > div:last-child:not(:first-child) { border-color: var(--line); }
+.decisionTabs a {
+  min-width: 120px;
+  min-height: 48px;
+  border-color: var(--line);
+  color: var(--muted);
+  font-size: .75rem;
+}
+.decisionTabs a[aria-selected="true"],
+.decisionTabs a[aria-pressed="true"] { color: var(--accent); background: var(--soft-blue); box-shadow: inset 0 -2px var(--accent); }
+.selectedModeStatus { padding-inline: 20px; border-color: var(--line); font-size: .75rem; }
+
+.decisionRegion {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-top: 0;
+  border-radius: 0 0 16px 16px;
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-sm);
+}
+
+.decisionRegion > [role="tabpanel"] { padding: 28px; border: 0; }
+.decisionLayout { grid-template-columns: minmax(0, 1fr) 360px; gap: 22px; }
+.decisionLayout h2,
+.decisionView h2 { font-size: clamp(1.5rem, 2.4vw, 2.1rem); }
+.decisionLayout p,
+.decisionView > p { font-size: .875rem; line-height: 1.65; }
+.primaryAction { min-height: 44px; border-radius: 9px; font-size: .8125rem; }
+
+.evidenceDetails {
+  margin-top: 16px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-sm);
+}
+.evidenceDetails > summary { border: 0; background: var(--surface-strong); font-size: .8125rem; }
+.evidenceDetailsBody { border-color: var(--line); }
+
+.evidence,
+.areaBands,
+.contracts,
+.source,
+.relatedContext {
+  margin-top: 16px;
+  padding: 26px;
+  gap: 22px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-sm);
+}
+
+.areaBands ul { gap: 9px; border: 0; }
+.areaBands li { min-height: 88px; border: 1px solid var(--line); border-radius: 11px; background: var(--canvas); }
+.areaBands li span,
+.areaBands section p { font-size: .8125rem; line-height: 1.55; }
+.tableWrap { border-color: var(--line); border-radius: 10px; }
+.tableWrap table { font-size: .8125rem; }
+.tableWrap th,
+.tableWrap td { border-color: var(--line); }
+.tableWrap th { color: var(--muted); background: var(--canvas); }
+
+.actions a,
+.navigation a { border-color: var(--line); border-radius: 9px; font-size: .8125rem; }
+.actions a:hover,
+.navigation a:hover { color: var(--accent); background: var(--soft-blue); }
+.navigation { gap: 9px; margin: 16px 0 40px; }
+.navigation a { border-width: 1px; background: var(--surface-strong); }
+
+@media (max-width: 960px) {
+  .identityHero,
+  .decisionLayout { grid-template-columns: 1fr; }
+  .visualPhoto,
+  .visualUnavailable { border-right: 0; border-bottom: 1px solid var(--line); }
+}
+
+@media (max-width: 720px) {
+  .main { width: calc(100% - 28px); margin-top: 18px; }
+  .identitySummary { padding: 24px 20px; }
+  .decisionTabs > div:first-child { display: flex; }
+  .decisionTabs > div:first-child > :last-child { grid-column: auto; }
+  .decisionRegion > [role="tabpanel"],
+  .evidence,
+  .areaBands,
+  .contracts,
+  .source,
+  .relatedContext { padding: 20px; }
+}

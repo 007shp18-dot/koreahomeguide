@@ -78,3 +78,69 @@
   .readingColumn { border-right: 0; border-bottom: 2px solid var(--guide-ink); }
   .nextStep { position: static; }
 }
+
+/* Unified guide library and reading template */
+.main {
+  width: min(calc(100% - (2 * var(--page-gutter))), var(--content-frame));
+  margin: 28px auto 40px;
+  border: 0;
+}
+.hero,
+.documentHero {
+  min-height: 230px;
+  padding: clamp(1.8rem, 4vw, 3rem);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: linear-gradient(130deg, #fff 50%, #eef5ff);
+  box-shadow: var(--shadow-sm);
+}
+.hero h1,
+.documentHero h1 { font-size: clamp(2.35rem, 5vw, 4.6rem); font-weight: 740; line-height: 1.02; }
+.hero > p:last-child,
+.documentHero > p { font-size: .875rem; }
+.guides,
+.glossary,
+.readingLayout,
+.boundary,
+.actions {
+  margin-top: 16px;
+  padding: 26px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-sm);
+}
+.stageGroups,
+.glossary dl { gap: 10px; border: 0; }
+.guideStage,
+.glossary dl > div { overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: var(--canvas); }
+.guideStage > h3 { border-color: var(--line); background: var(--soft-blue); }
+.guides li { min-height: 230px; border: 0; }
+.guides h4 { font-size: 1.125rem; }
+.guides li > p,
+.glossary dd,
+.steps p,
+.boundary p { font-size: .8125rem; line-height: 1.6; }
+.guides a,
+.actions a { border: 1px solid var(--line); border-radius: 9px; font-size: .8125rem; }
+.guides a:hover,
+.actions a:hover { color: var(--accent); background: var(--soft-blue); }
+.breadcrumb { padding: 0 4px 12px; border: 0; }
+.readingLayout { padding: 0; overflow: hidden; }
+.readingColumn { border-color: var(--line); }
+.steps li { border-color: var(--line); }
+.nextStep { padding: 24px; }
+.nextStep a { border-radius: 9px; font-size: .8125rem; }
+.boundary { margin-inline: 0; }
+
+@media (max-width: 720px) {
+  .main { width: calc(100% - 28px); margin-top: 18px; }
+  .hero,
+  .documentHero { min-height: 260px; padding: 24px 20px; }
+  .guides,
+  .glossary,
+  .boundary,
+  .actions { padding: 20px; }
+  .readingColumn { border-color: var(--line); }
+}
