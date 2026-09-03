@@ -7,6 +7,25 @@
   background: var(--news-ground);
 }
 
+.workspaceMain { width: min(1360px, calc(100% - 40px)); margin: 26px auto 72px; border-top: 2px solid #111827; border-inline: 1px solid #111827; background: #f5f3ee; }
+.workspaceHero { min-height: 230px; padding: 32px; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(300px, .65fr); align-items: end; gap: 48px; border-bottom: 2px solid #111827; }
+.workspaceHero > div > p { margin: 0 0 10px; color: #375f89; font-size: 11px; font-weight: 850; letter-spacing: .1em; }
+.workspaceHero h1 { margin: 0; max-width: 760px; font-size: clamp(2.5rem, 5vw, 5.3rem); letter-spacing: -.06em; line-height: .94; }
+.workspaceHero > p { margin: 0; color: #596474; font-size: 13px; line-height: 1.65; }
+.workspaceTabs { min-height: 52px; display: flex; align-items: stretch; border-bottom: 1px solid #111827; }
+.workspaceTabs a, .workspaceTabs span { min-width: 130px; padding: 15px 18px; display: grid; place-items: center; border-right: 1px solid #111827; color: inherit; font-size: 12px; font-weight: 800; text-decoration: none; }
+.workspaceTabs span { color: #fff; background: #111827; }
+.workspaceBoundary { padding: 18px 22px; display: grid; grid-template-columns: minmax(220px, .4fr) 1fr; gap: 28px; border-bottom: 2px solid #111827; color: #596474; font-size: 12px; line-height: 1.55; }
+.workspaceBoundary strong { color: #111827; }
+.workspaceBoundary p { margin: 0; }
+@media (max-width: 720px) {
+  .workspaceMain { width: calc(100% - 28px); margin-top: 16px; }
+  .workspaceHero { min-height: 0; padding: 24px 18px; grid-template-columns: 1fr; gap: 20px; }
+  .workspaceHero h1 { font-size: clamp(2.2rem, 12vw, 3.6rem); }
+  .workspaceTabs { overflow-x: auto; }
+  .workspaceBoundary { grid-template-columns: 1fr; gap: 8px; }
+}
+
 .main {
   width: min(100%, 1240px);
   margin-inline: auto;

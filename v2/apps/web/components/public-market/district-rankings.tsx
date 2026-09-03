@@ -34,6 +34,18 @@ const rankingViews = Object.freeze([
   label: Readonly<Record<ProductLocale, string>>;
 }[]);
 
+function activeRankingCopy(view: RankingView, locale: ProductLocale) {
+  const copy = {
+    spread: { en: ['Middle-half spread', 'The distance between P25 and P75 in the selected reported-price cohort.'], ko: ['가격 분포 폭', '선택한 신고가격 표본에서 P25와 P75 사이의 폭입니다.'] },
+    median: { en: ['Median contract price', 'The middle reported contract price for each Seoul district.'], ko: ['매매 중앙값', '서울 각 자치구의 신고 매매가격 중앙값입니다.'] },
+    psm: { en: ['Price per square metre', 'A like-for-like district measure published only when verified floor area is attached.'], ko: ['㎡당 가격', '검증된 전용면적이 연결된 동일 표본만 비교합니다.'] },
+    sample: { en: ['Reported filing volume', 'Qualifying reported contracts retained in the selected cohort.'], ko: ['신고 거래량', '선택 조건에 남은 적격 신고 계약 건수입니다.'] },
+    completion: { en: ['Filing completion', 'Reported filings divided by a verified expected-transaction denominator.'], ko: ['신고 완결률', '검증된 전체 거래 추정치를 분모로 한 신고 비율입니다.'] },
+    change: { en: ['Quarter-over-quarter change', 'Change between compatible reported-price cohorts; incompatible districts stay unpublished.'], ko: ['전분기 대비 변화', '서로 호환되는 신고가격 표본 사이의 변화입니다.'] },
+  } as const;
+  return copy[view][locale];
+}
+
 const money = new Intl.NumberFormat('ko-KR', {
   style: 'currency', currency: 'KRW', currencyDisplay: 'narrowSymbol', maximumFractionDigits: 0,
 });
@@ -332,22 +344,17 @@ function ReadyRankings({
   const exact = model.evidenceSelection.areaBand !== 'legacy-45-55';
   const selectedCopy = selectedRankingCopy(model.evidenceSelection.transaction, locale);
   const [activeView, setActiveView] = useState<RankingView>('spread');
+  const [activeTitle, activeDefinition] = activeRankingCopy(activeView, locale);
   return (
     <section className={styles.rankings} aria-labelledby="district-rankings-heading">
       <div className={styles.frame} data-ranking-frame="contained">
         <header className={styles.hero}>
           <div className={styles.heroCopy}>
-            <p>{copy.eyebrow}</p>
-            <h1 id="district-rankings-heading">{copy.heading}</h1>
-            <p>
-              {exact
-                ? `${selectedCopy.description} · ${model.source.period}.`
-                : `${copy.descriptionLead} ${model.source.period}.`}{' '}
-              {copy.descriptionMiddle}{' '}{model.source.publicationMinimum}
-              {locale === 'en' ? ' ' : ''}{copy.descriptionTail}
-            </p>
+            <p>{locale === 'ko' ? '서울 구별 근거 순위' : 'Seoul district rankings'}</p>
+            <h1 id="district-rankings-heading">{activeTitle}</h1>
+            <p>{activeDefinition}</p>
             <p className={styles.exclusion}>
-              {model.withheldDistrictCount}{locale === 'en' ? ' ' : ''}{copy.exclusionTail}
+              {selectedCopy.description} · {model.source.period} · {model.withheldDistrictCount}{locale === 'en' ? ' ' : ''}{copy.exclusionTail}
             </p>
           </div>
           <dl className={styles.heroMeta} data-ranking-method="published-context">

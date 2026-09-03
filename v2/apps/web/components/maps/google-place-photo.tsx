@@ -24,6 +24,7 @@ type GooglePlacePhotoResult = Readonly<{
 
 type GooglePlaceResult = Readonly<{
   displayName?: string;
+  formattedAddress?: string;
   photos?: readonly GooglePlacePhotoResult[];
 }>;
 
@@ -62,17 +63,21 @@ function normalizedPlaceText(value: string): string {
 export function isTrustedGooglePlaceMatch(
   displayName: string | undefined,
   buildingName: string,
+  formattedAddress?: string,
+  requestedAddress?: string,
 ): boolean {
   if (displayName === undefined) return false;
   const place = normalizedPlaceText(displayName);
   const building = normalizedPlaceText(buildingName);
   if (place.length < 3 || building.length < 3) return false;
-  if (place.includes(building) || building.includes(place)) return true;
-  const tokens = buildingName.normalize('NFKC').toLocaleLowerCase('en-US')
-    .split(/[^\p{L}\p{N}]+/gu)
+  if (!(place.includes(building) || building.includes(place))) return false;
+  if (formattedAddress === undefined || requestedAddress === undefined) return true;
+  const requestedTokens = requestedAddress.normalize('NFKC').split(/[^\p{L}\p{N}]+/gu)
     .map(normalizedPlaceText)
-    .filter((token) => token.length >= 3);
-  return tokens.length > 0 && tokens.filter((token) => place.includes(token)).length >= Math.min(2, tokens.length);
+    .filter((token) => token.length >= 2 && /[가-힣]/u.test(token));
+  if (requestedTokens.length === 0) return true;
+  const returned = normalizedPlaceText(formattedAddress);
+  return requestedTokens.some((token) => returned.includes(token));
 }
 
 export function GooglePlacePhoto({
@@ -97,13 +102,13 @@ export function GooglePlacePhoto({
       const { Place } = await sdk.importLibrary('places');
       const { places } = await Place.searchByText({
         textQuery: `${buildingName}, ${address}`,
-        fields: ['id', 'displayName', 'photos'],
+        fields: ['id', 'displayName', 'formattedAddress', 'photos'],
         maxResultCount: 1,
         language: 'en',
       });
       const place = places[0];
       const result = place?.photos?.[0];
-      if (result === undefined || !isTrustedGooglePlaceMatch(place?.displayName, buildingName)) {
+      if (result === undefined || !isTrustedGooglePlaceMatch(place?.displayName, buildingName, place?.formattedAddress, address)) {
         setPhoto('unavailable');
         return;
       }
