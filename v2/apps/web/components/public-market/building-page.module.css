@@ -37,6 +37,8 @@
 .preparing span { color: #2d67a5; font-size: .64rem; font-weight: 800; text-transform: uppercase; }
 .preparing p { color: #66758a; font-size: .69rem; line-height: 1.55; }
 .facts { margin-top: 14px; overflow: hidden; border: 1px solid #e0e6ed; border-radius: 10px; background: #fff; }
+.contextGrid { margin-top: 14px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; align-items: start; }
+.contextGrid > section { min-width: 0; overflow: hidden; border: 1px solid #e0e6ed; border-radius: 10px; background: #fff; box-shadow: 0 6px 20px rgb(15 23 42 / 4%); }
 .decisionRegion { margin-top: 14px; overflow: hidden; border: 1px solid #e0e6ed; border-radius: 10px; background: #fff; box-shadow: 0 6px 20px rgb(15 23 42 / 4%); }
 .selectedModeStatus { margin: 0; padding: 10px 18px; border-bottom: 1px solid #edf0f4; color: #718096; font-size: .66rem; }
 .details { margin-top: 14px; }
@@ -45,6 +47,7 @@
   .identityMedia { order: -1; min-height: 240px; }
   .summaryGrid { grid-template-columns: repeat(2, 1fr); }
   .summaryGrid article:last-child { grid-column: 1 / -1; }
+  .contextGrid { grid-template-columns: 1fr; }
 }
 @media (max-width: 560px) {
   .main { width: calc(100% - 28px); }

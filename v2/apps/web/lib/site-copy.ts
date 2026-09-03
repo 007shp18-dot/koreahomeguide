@@ -82,9 +82,10 @@ export const productNavigationLinks = Object.freeze([
   { index: '01', label: 'Markets', description: 'Compare market context', href: '/markets/' },
   { index: '02', label: 'Prices', description: 'Explore signed evidence', href: '/prices/' },
   { index: '03', label: 'Properties', description: 'Service preparing', href: '/properties/' },
-  { index: '04', label: 'Insights', description: 'Read market signals', href: '/insights/' },
-  { index: '05', label: 'Guides', description: 'Understand the method', href: '/guides/' },
-  { index: '06', label: 'Invest', description: 'Service preparing', href: '/invest/' },
+  { index: '04', label: 'News', description: 'Read verified market news', href: '/news/' },
+  { index: '05', label: 'Community', description: 'Local conversations', href: '/community/' },
+  { index: '06', label: 'Guides', description: 'Understand local decisions', href: '/guides/' },
+  { index: '07', label: 'Invest', description: 'Service preparing', href: '/invest/' },
 ] as const satisfies readonly NavigationLinkModel[]);
 
 export const KOREA_PUBLIC_RELEASE_STATUS =
@@ -139,6 +140,8 @@ const englishFooterCopy = {
   links: [
     { label: 'Markets', href: '/markets/' },
     { label: 'Prices', href: '/prices/' },
+    { label: 'News', href: '/news/' },
+    { label: 'Community', href: '/community/' },
     { label: 'Guides', href: '/guides/' },
     { label: 'Trust', href: '/trust/' },
     { label: 'Back to top', href: '#top' },
@@ -340,7 +343,7 @@ const seoulSlotDescriptions = {
   rankings: 'Compare all 25 districts',
   news: 'Verified market briefs',
   guide: 'Methods and decision guides',
-  community: 'Community access is unavailable.',
+  community: 'Read-only local community foundation',
 } as const satisfies Record<HomepageProductSlotId, string>;
 
 const seoulSlotHrefs = {
@@ -349,7 +352,7 @@ const seoulSlotHrefs = {
   rankings: '/kr/seoul/rankings/',
   news: '/kr/seoul/news/',
   guide: '/kr/seoul/guide/',
-  community: undefined,
+  community: '/kr/seoul/community/',
 } as const satisfies Record<HomepageProductSlotId, string | undefined>;
 
 const singaporeUnavailableDescription = 'Verified Singapore evidence unavailable';
@@ -373,6 +376,8 @@ function productSlots(
 
     if (marketId === 'sg-singapore') {
       const isReadyExplore = singapore.status === 'ready' && id === 'explore';
+      const singaporeHref = id === 'explore' ? '/sg/singapore/explore/'
+        : id === 'check' ? '/sg/singapore/check/' : `/sg/singapore/${id}/`;
       return Object.freeze({
         id,
         label: productLabels[id],
@@ -381,7 +386,7 @@ function productSlots(
           : singaporeUnavailableDescription,
         state: isReadyExplore ? 'available' : 'unavailable',
         stateLabel: isReadyExplore ? 'Available' : 'Unavailable',
-        ...(isReadyExplore ? { href: singapore.exploreHref } : {}),
+        href: singaporeHref,
       } satisfies HomepageProductSlotModel);
     }
 
@@ -391,6 +396,7 @@ function productSlots(
       description: dubaiRightsDescription,
       state: 'rights_blocked',
       stateLabel: 'Rights blocked',
+      href: `/ae/dubai/${id}/`,
     } satisfies HomepageProductSlotModel);
   }));
 }

@@ -38,6 +38,13 @@ const exactEvidenceFooter: SiteFooterModel = {
 
 const countLabel = (count: number) => `${count} observed contract${count === 1 ? '' : 's'}`;
 
+function BuildingLocalContext({ buildingId, district }: Readonly<{ buildingId: string; district: string }>) {
+  return <section className={styles.localContext} aria-label="Building news and community">
+    <article><span>NEWS</span><h2>Local market context</h2><p>Verified briefs related to this district appear with their source and evidence state.</p><Link href={`/kr/seoul/news/?district=${district}`}>View local news →</Link></article>
+    <article><span>COMMUNITY · READ-ONLY</span><h2>Building community</h2><p>This exact building identity is ready to anchor discussions once moderation controls open.</p><Link href={`/kr/seoul/community/?district=${district}&building=${buildingId}`}>Open community scope →</Link></article>
+  </section>;
+}
+
 const proximityCopy = Object.freeze({
   en: Object.freeze({
     heading: 'Proximity',
@@ -159,6 +166,8 @@ export function ObservedBuildingDetail({
 
         {facts}
 
+        <BuildingLocalContext buildingId={model.building.buildingId} district={model.district.slug} />
+
         <section className={styles.evidence} data-building-section="identity-evidence">
           <div className={styles.sectionHeading}>
             <p>Evidence boundary</p>
@@ -172,12 +181,15 @@ export function ObservedBuildingDetail({
             <div><dt>Map status</dt><dd>{coordinateLabel}</dd></div>
           </dl>
           <BuildingProximityDisclosure proximity={model.proximity} locale={locale} />
-          <dl className={styles.sourceGrid}>
-            <div><dt>Source</dt><dd>{model.source.provider} {model.source.dataset}</dd></div>
-            <div><dt>Source period</dt><dd>{model.source.period}</dd></div>
-            <div><dt>Observed first</dt><dd>{model.observations.firstMonth}</dd></div>
-            <div><dt>Observed latest</dt><dd>{model.observations.lastMonth}</dd></div>
-          </dl>
+          <details className={styles.sourceDetails}>
+            <summary>Source and observation details</summary>
+            <dl className={styles.sourceGrid}>
+              <div><dt>Source</dt><dd>{model.source.provider} {model.source.dataset}</dd></div>
+              <div><dt>Source period</dt><dd>{model.source.period}</dd></div>
+              <div><dt>Observed first</dt><dd>{model.observations.firstMonth}</dd></div>
+              <div><dt>Observed latest</dt><dd>{model.observations.lastMonth}</dd></div>
+            </dl>
+          </details>
           <div className={styles.actions}>
             <Link href={backHref}>Return to Explore</Link>
             <Link href="/trust/">Read the evidence policy</Link>
@@ -273,6 +285,8 @@ export function KoreaEvidenceBuildingDetail({
 
         {facts}
 
+        <BuildingLocalContext buildingId={model.building.buildingId} district={model.district.slug} />
+
         <section className={styles.evidence} data-building-section="exact-evidence">
           <div className={styles.sectionHeading}>
             <p>{transactionLabel} · {areaLabel}</p>
@@ -327,12 +341,15 @@ export function KoreaEvidenceBuildingDetail({
             </div>
           )}
 
-          <dl className={styles.sourceGrid}>
-            <div><dt>Source</dt><dd>MOLIT reported contracts</dd></div>
-            <div><dt>Source period</dt><dd>{model.period}</dd></div>
-            <div><dt>Generated</dt><dd>{model.generatedAt.slice(0, 10)}</dd></div>
-            <div><dt>Publication minimum</dt><dd>5 eligible contracts</dd></div>
-          </dl>
+          <details className={styles.sourceDetails}>
+            <summary>Source and publication details</summary>
+            <dl className={styles.sourceGrid}>
+              <div><dt>Source</dt><dd>MOLIT reported contracts</dd></div>
+              <div><dt>Source period</dt><dd>{model.period}</dd></div>
+              <div><dt>Generated</dt><dd>{model.generatedAt.slice(0, 10)}</dd></div>
+              <div><dt>Publication minimum</dt><dd>5 eligible contracts</dd></div>
+            </dl>
+          </details>
           <div className={styles.actions}>
             <Link href={backHref}>Return to Explore</Link>
             <Link href="/trust/">Read the evidence policy</Link>

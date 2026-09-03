@@ -42,11 +42,11 @@ describe('signedprice Evidence Editorial homepage', () => {
     expect(markup).not.toContain('id="market-tab-seoul"');
   });
 
-  it('keeps the six roadmap destinations in the shared header', async () => {
+  it('keeps the seven roadmap destinations in the shared header', async () => {
     const markup = renderToStaticMarkup(await Home());
     const navigation = markup.match(/<nav[^>]*aria-label="Primary navigation"[^>]*>([\s\S]*?)<\/nav>/)?.[1] ?? '';
 
-    expect(navigation.match(/<a /g) ?? []).toHaveLength(6);
+    expect(navigation.match(/<a /g) ?? []).toHaveLength(7);
     expect(navigation).toContain('>Markets</a>');
     expect(navigation).toContain('href="/properties"');
     expect(navigation).toContain('>Invest</a>');
@@ -55,10 +55,10 @@ describe('signedprice Evidence Editorial homepage', () => {
 
   it('keeps Seoul tools crawlable while using search as the primary hero action', async () => {
     const markup = renderToStaticMarkup(await Home());
-    const seoulPanel = markup.slice(markup.indexOf('data-home-market="seoul"'));
+    const seoulPanel = markup.slice(markup.indexOf('data-market-panel="seoul"'));
 
-    for (const label of ['Check a contract', 'Explore Seoul', 'District rankings', 'Market news', 'Buying guide']) {
-      expect(seoulPanel).toContain(`>${label}</a>`);
+    for (const label of ['Check', 'Explore', 'Rankings', 'News', 'Guide', 'Community']) {
+      expect(seoulPanel).toContain(`>${label}<small>`);
     }
     expect(markup).toContain('role="search"');
     expect(markup).not.toContain('aria-label="Choose a property decision"');

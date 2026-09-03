@@ -70,7 +70,8 @@ describe('Korea methodology guides', () => {
     for (const href of [
       '/markets/',
       '/prices/',
-      '/insights/',
+      '/news/',
+      '/community/',
       '/guides/',
       '/properties/',
       '/invest/',
@@ -78,7 +79,9 @@ describe('Korea methodology guides', () => {
       expect(html).toContain(`href="${href.slice(0, -1)}"`);
     }
     expect(html).toMatch(/<a[^>]*aria-current="page"[^>]*href="\/guides"/);
-    expect(html).not.toMatch(/>Overview<|>Rent<|>Buy<|>Evidence</);
+    expect(html).toContain('data-local-navigation="true"');
+    expect(html).toContain('>Overview</a>');
+    expect(html).not.toMatch(/>Rent<|>Buy<|>Evidence</);
   });
 
   it('generates exact static params and renders every shareable guide', async () => {

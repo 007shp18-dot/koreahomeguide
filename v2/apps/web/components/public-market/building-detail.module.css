@@ -241,6 +241,12 @@
 }
 
 .evidenceDetails { min-width: 0; border-bottom: 2px solid var(--ink); }
+.localContext { margin: 14px 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.localContext article { min-height: 150px; padding: 20px; display: grid; align-content: start; border: 1px solid var(--line); border-radius: 11px; background: var(--surface-strong); box-shadow: var(--shadow-sm); }
+.localContext span { color: var(--accent); font-size: .65rem; font-weight: 850; letter-spacing: .08em; }
+.localContext h2 { margin-top: 10px; font-size: 1rem; letter-spacing: -.02em; }
+.localContext p { margin-top: 6px; color: var(--muted); font-size: .74rem; line-height: 1.55; }
+.localContext a { margin-top: 14px; color: var(--accent); font-size: .72rem; font-weight: 800; text-decoration: none; }
 .evidenceDetails > summary {
   min-height: 52px;
   padding: 0.8rem 1rem;
@@ -269,6 +275,12 @@
 .findingGrid dd { display: grid; gap: 0.35rem; }
 .findingGrid dd span { color: var(--muted); font-size: 0.68rem; font-weight: 650; }
 .sourceGrid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.sourceDetails { overflow: hidden; border: 1px solid var(--line); border-radius: 10px; }
+.sourceDetails > summary { min-height: 48px; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between; gap: 16px; color: var(--muted); font-size: .72rem; font-weight: 800; cursor: pointer; list-style: none; }
+.sourceDetails > summary::-webkit-details-marker { display: none; }
+.sourceDetails > summary::after { content: '+'; font-size: 1rem; }
+.sourceDetails[open] > summary::after { content: '−'; }
+.sourceDetails > .sourceGrid { border-top: 1px solid var(--line); }
 
 .areaBands ul {
   display: grid;
@@ -351,6 +363,7 @@
   .visualUnavailable { min-height: 230px; border-right: 0; border-bottom: 1px solid var(--divider); }
   .decisionTabs > div:first-child { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .decisionTabs > div:first-child > :last-child { grid-column: 1 / -1; }
+  .localContext { margin-inline: var(--evidence-page-gutter-mobile); grid-template-columns: 1fr; }
   .factGrid,
   .decisionMetrics,
   .evidenceLedger,

@@ -18,6 +18,8 @@ import { BuildingDecisionView } from './building-decision-views';
 import { BuildingDetailHeader } from './building-detail-header';
 import { BuildingEvidenceDetails } from './building-evidence-details';
 import { BuildingVisual } from './building-visual';
+import { DetailNewsList } from '../news/detail-news-list';
+import { CommunitySignal } from '../community/community-signal';
 import pageStyles from './building-page.module.css';
 
 const footer: SiteFooterModel = {
@@ -99,6 +101,11 @@ export function BuildingDetailPage({
           <article className={pageStyles.priceSummary}><h2>Price summary</h2><span>Median refundable deposit</span><strong>{model.display.medianLabel}</strong><small>{model.display.sampleLabel}</small></article>
           <article><h2>Recent reported evidence</h2><ul className={pageStyles.transactionList}>{model.building.recentContracts.slice(0, 3).map((contract, index) => <li key={`${contract.filedMonth}-${index}`}><span>{contract.filedMonth}</span><span>{contract.areaSqm}㎡ · Floor {contract.floor ?? '—'}</span><strong>{new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW', maximumFractionDigits: 0 }).format(contract.depositWon)}</strong></li>)}</ul></article>
           <article className={pageStyles.preparing}><span>Properties · Service preparing</span><h2>Not a live listing</h2><p>Listings, inquiries and agent connections are intentionally unavailable while operating and legal checks are completed.</p></article>
+        </section>
+
+        <section className={pageStyles.contextGrid} aria-label="Building news and community">
+          <DetailNewsList news={model.news} />
+          <CommunitySignal model={model.communitySignal} />
         </section>
 
         <div className={pageStyles.facts}>{facts}</div>
