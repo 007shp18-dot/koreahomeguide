@@ -9,9 +9,28 @@ function validateMigrationManifest(manifest) {
     !manifest
     || manifest.schemaVersion !== 1
     || !Array.isArray(manifest.entries)
+    || !Array.isArray(manifest.patterns)
     || !Array.isArray(manifest.retained)
   ) {
     throw new TypeError('Invalid migration manifest schema.');
+  }
+  const sourcePatterns = new Set();
+  for (const pattern of manifest.patterns) {
+    if (
+      !/^\/seoul\/[a-z0-9-]+\/:dong\/[a-z0-9-]+\/(?:\:building\/)?$/.test(pattern.sourcePattern)
+      || !canonicalPath.test(pattern.targetPath)
+      || pattern.destination !== `${SIGNEDPRICE_ORIGIN}${pattern.targetPath}`
+      || pattern.locale !== 'en'
+      || pattern.statusCode !== 301
+      || pattern.active !== true
+      || pattern.cohort !== 4
+      || typeof pattern.evidence !== 'string'
+      || pattern.evidence.length === 0
+      || sourcePatterns.has(pattern.sourcePattern)
+    ) {
+      throw new TypeError(`Invalid active migration pattern: ${pattern.sourcePattern}`);
+    }
+    sourcePatterns.add(pattern.sourcePattern);
   }
   const sources = new Set();
   const targets = new Set();
@@ -41,7 +60,7 @@ function validateMigrationManifest(manifest) {
       entry.locale !== 'en'
       || entry.statusCode !== 301
       || entry.active !== true
-      || ![1, 2].includes(entry.cohort)
+      || ![1, 2, 3].includes(entry.cohort)
       || typeof entry.evidence !== 'string'
       || entry.evidence.length === 0
     ) {
@@ -51,7 +70,7 @@ function validateMigrationManifest(manifest) {
     targets.add(entry.targetPath);
   }
   for (const entry of manifest.entries) {
-    if (sources.has(entry.targetPath)) {
+    if (entry.targetPath !== entry.sourcePath && sources.has(entry.targetPath)) {
       throw new TypeError(`Redirect chain: ${entry.sourcePath} -> ${entry.targetPath}`);
     }
   }
@@ -69,7 +88,7 @@ function validateMigrationManifest(manifest) {
     retained.add(entry.sourcePath);
   }
   for (const protectedPath of [
-    '/', '/guides/', '/compare/', '/buy-or-rent/', '/value-check/', '/net-proceeds/', '/zh/',
+    '/compare/', '/buy-or-rent/', '/value-check/', '/net-proceeds/', '/zh/',
   ]) {
     if (!retained.has(protectedPath)) {
       throw new TypeError(`Missing protected retained route: ${protectedPath}`);
@@ -82,7 +101,10 @@ function validateRenderedMigration({ root, manifest }) {
   validateMigrationManifest(manifest);
   const config = JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8'));
   const redirects = Array.isArray(config.redirects) ? config.redirects : [];
-  for (const entry of manifest.entries) {
+  for (const entry of [...manifest.entries, ...manifest.patterns.map((pattern) => ({
+    ...pattern,
+    sourcePath: pattern.sourcePattern,
+  }))]) {
     const matches = redirects.filter(({ source }) => source === entry.sourcePath);
     if (matches.length !== 1) {
       throw new TypeError(`Rendered redirect count mismatch: ${entry.sourcePath}`);
@@ -129,6 +151,21 @@ function validateRenderedMigration({ root, manifest }) {
       throw new TypeError(`Retained source missing from sitemap: ${retained.sourcePath}`);
     }
   }
+  const retainedSources = new Set(manifest.retained.map(({ sourcePath }) => sourcePath));
+  for (const match of sitemap.matchAll(/<loc>https:\/\/koreahomeguide\.com([^<]*)<\/loc>/g)) {
+    const sourcePath = match[1] || '/';
+    if (!retainedSources.has(sourcePath)) {
+      throw new TypeError(`Unclassified sitemap source: ${sourcePath}`);
+    }
+  }
+  const rootSitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
+  for (const entry of manifest.entries.filter(({ sourcePath }) => sourcePath.startsWith('/rent/'))) {
+    const [, , district, propertyType] = entry.sourcePath.split('/');
+    const family = `https://koreahomeguide.com/sitemaps/seoul/${district}/${propertyType}/`;
+    if (rootSitemap.includes(family)) {
+      throw new TypeError(`Migrated dynamic sitemap remains published: ${family}`);
+    }
+  }
   return true;
 }
 
@@ -138,7 +175,7 @@ if (require.main === module) {
   const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
   validateMigrationManifest(manifest);
   validateRenderedMigration({ root, manifest });
-  process.stdout.write(`Validated ${manifest.entries.length} rendered SignedPrice migrations\n`);
+  process.stdout.write(`Validated ${manifest.entries.length + manifest.patterns.length} rendered SignedPrice migrations\n`);
 }
 
 module.exports = { validateMigrationManifest, validateRenderedMigration };

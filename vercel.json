@@ -1,12 +1,35 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "git": {
-    "deploymentEnabled": {
-      "codex/signedprice-*": false
-    }
-  },
-  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- . ':(exclude)v2/**' ':(exclude)docs/superpowers/**'",
   "redirects": [
+    {
+      "source": "/",
+      "destination": "https://www.signedprice.com/kr/seoul/check/",
+      "statusCode": 301
+    },
+    {
+      "source": "/about/",
+      "destination": "https://www.signedprice.com/trust/",
+      "statusCode": 301
+    },
+    {
+      "source": "/community/",
+      "destination": "https://www.signedprice.com/community/",
+      "statusCode": 301
+    },
+    {
+      "source": "/explore/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/",
+      "statusCode": 301
+    },
+    {
+      "source": "/guides/",
+      "destination": "https://www.signedprice.com/kr/seoul/guide/",
+      "statusCode": 301
+    },
+    {
+      "source": "/privacy/",
+      "destination": "https://www.signedprice.com/privacy/",
+      "statusCode": 301
+    },
     {
       "source": "/tools/seoul-rent-check/",
       "destination": "https://www.signedprice.com/kr/seoul/tools/rent-check/",
@@ -111,8 +134,215 @@
       "source": "/rent/yongsan-gu/villa/",
       "destination": "https://www.signedprice.com/kr/seoul/explore/yongsan-gu/villa/",
       "statusCode": 301
+    },
+    {
+      "source": "/seoul/dongdaemun-gu/:dong/apartment/:building/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/dongdaemun-gu/apartment/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/dongdaemun-gu/:dong/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/dongdaemun-gu/apartment/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/dongdaemun-gu/:dong/officetel/:building/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/dongdaemun-gu/officetel/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/dongdaemun-gu/:dong/officetel/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/dongdaemun-gu/officetel/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/gangnam-gu/:dong/apartment/:building/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/gangnam-gu/apartment/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/gangnam-gu/:dong/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/gangnam-gu/apartment/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/gangnam-gu/:dong/officetel/:building/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/gangnam-gu/officetel/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/gangnam-gu/:dong/officetel/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/gangnam-gu/officetel/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/gangnam-gu/:dong/villa/:building/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/gangnam-gu/villa/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/gangnam-gu/:dong/villa/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/gangnam-gu/villa/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/gwanak-gu/:dong/apartment/:building/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/gwanak-gu/apartment/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/gwanak-gu/:dong/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/gwanak-gu/apartment/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/gwangjin-gu/:dong/apartment/:building/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/gwangjin-gu/apartment/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/gwangjin-gu/:dong/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/gwangjin-gu/apartment/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/mapo-gu/:dong/apartment/:building/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/mapo-gu/apartment/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/mapo-gu/:dong/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/mapo-gu/apartment/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/mapo-gu/:dong/officetel/:building/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/mapo-gu/officetel/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/mapo-gu/:dong/officetel/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/mapo-gu/officetel/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/mapo-gu/:dong/villa/:building/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/mapo-gu/villa/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/mapo-gu/:dong/villa/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/mapo-gu/villa/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/seodaemun-gu/:dong/apartment/:building/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/seodaemun-gu/apartment/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/seodaemun-gu/:dong/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/seodaemun-gu/apartment/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/seodaemun-gu/:dong/villa/:building/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/seodaemun-gu/villa/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/seodaemun-gu/:dong/villa/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/seodaemun-gu/villa/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/seongbuk-gu/:dong/apartment/:building/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/seongbuk-gu/apartment/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/seongbuk-gu/:dong/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/seongbuk-gu/apartment/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/seongdong-gu/:dong/apartment/:building/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/seongdong-gu/apartment/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/seongdong-gu/:dong/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/seongdong-gu/apartment/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/seongdong-gu/:dong/villa/:building/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/seongdong-gu/villa/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/seongdong-gu/:dong/villa/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/seongdong-gu/villa/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/yeongdeungpo-gu/:dong/apartment/:building/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/yeongdeungpo-gu/apartment/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/yeongdeungpo-gu/:dong/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/yeongdeungpo-gu/apartment/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/yeongdeungpo-gu/:dong/officetel/:building/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/yeongdeungpo-gu/officetel/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/yeongdeungpo-gu/:dong/officetel/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/yeongdeungpo-gu/officetel/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/yongsan-gu/:dong/apartment/:building/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/yongsan-gu/apartment/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/yongsan-gu/:dong/apartment/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/yongsan-gu/apartment/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/yongsan-gu/:dong/officetel/:building/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/yongsan-gu/officetel/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/yongsan-gu/:dong/officetel/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/yongsan-gu/officetel/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/yongsan-gu/:dong/villa/:building/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/yongsan-gu/villa/",
+      "statusCode": 301
+    },
+    {
+      "source": "/seoul/yongsan-gu/:dong/villa/",
+      "destination": "https://www.signedprice.com/kr/seoul/explore/yongsan-gu/villa/",
+      "statusCode": 301
     }
   ],
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "git": {
+    "deploymentEnabled": {
+      "codex/signedprice-*": false
+    }
+  },
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- . ':(exclude)v2/**' ':(exclude)docs/superpowers/**'",
   "rewrites": [
     {
       "source": "/api/maps-config",

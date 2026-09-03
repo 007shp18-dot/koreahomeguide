@@ -1,6 +1,6 @@
 # KoreaHomeGuide → SignedPrice migration map
 
-**Status:** inventory and release gates approved; no redirect cohort is active
+**Status:** verified cohorts are active; unmatched routes remain on KoreaHomeGuide
 
 **Inventory checked:** 2026-08-31
 
@@ -14,19 +14,19 @@ Until those gates pass, KoreaHomeGuide remains canonical and available. Do not r
 
 | Cohort | KoreaHomeGuide source | Planned SignedPrice target | Current state | Redirect gate |
 | --- | --- | --- | --- | --- |
-| Brand home | `/` | `/kr/` | Hold | Preserve quote check, comparable records, next actions, and language behavior before moving. |
-| Rent Check | `/tools/seoul-rent-check/` | `/kr/check/seoul/` | Hold | SignedPrice must support the same quote inputs, official comparable records, confidence disclosure, and result boundary. |
-| Explorer | `/explore/` and query variants | `/kr/seoul/explore/` | Hold | Preserve district, neighborhood, housing-type, budget, metric, map, table, and reload/back state. Query parameters need an explicit translation table. |
+| Brand home | `/` | `/kr/seoul/check/` | Active | The indexable Contract Check is the verified primary Seoul rent-decision destination. |
+| Rent Check | `/tools/seoul-rent-check/` | `/kr/seoul/tools/rent-check/` | Active | The compatibility tool preserves the quote-check intent and hands off to current evidence. |
+| Explorer | `/explore/` | `/kr/seoul/explore/` | Active | The indexable Seoul Explorer is the direct canonical destination. Query-only states still require separate handling. |
 | Market compare | `/compare/` | New Seoul district-comparison route, not current `/compare/` | Hold | Current SignedPrice `/compare/` compares global market capability and is not an equivalent destination. |
 | Buy or rent | `/buy-or-rent/` | `/kr/seoul/buy/` or a dedicated decision route | Hold | Calculation assumptions, editable inputs, sensitivity results, and disclosures must be ported and independently verified. |
 | Salary tool | `/tools/salary-to-housing/` | New Korean affordability route | Hold | Do not map to Contract Check; the user intent and inputs differ. |
-| Method | `/about/` | `/trust/` plus Seoul method detail | Hold | Port KoreaHomeGuide source method, commercial separation policy, limitations, correction channel, and update date. |
-| Guides index | `/guides/` | `/kr/seoul/guide/` | Hold | All eight guide intents and internal links must exist on SignedPrice first. |
-| Legal | `/privacy/`, `/terms/` | Equivalent SignedPrice legal routes | Hold | Policies must cover migrated email/help/saved/analytics data before redirects. |
-| Dynamic evidence | `/seoul/{district}/{dong}/{type}/...` | Stable SignedPrice district, neighborhood, and building routes | Hold | Complete ID mapping, same-or-better evidence depth, zero orphan pages, and sample URL QA are required. |
+| Method | `/about/` | `/trust/` | Active | SignedPrice Trust is indexable and carries the current source, publication-boundary, and correction policy. |
+| Guides index | `/guides/` | `/kr/seoul/guide/` | Active | The hub moves; the eight article URLs remain live until same-intent documents are published. |
+| Legal | `/privacy/` | `/privacy/` | Active | The SignedPrice privacy page is indexable and self-canonical. `/terms/` remains on the old domain. |
+| Dynamic evidence | supported `/seoul/{district}/{dong}/{type}/...` families | SignedPrice district/property-type evidence | Active by publication floor | Only the 20 verified district/property-type families redirect; unsupported families remain live. |
 | Saved state | saved-home and browser-state entry points | Future SignedPrice saved workspace | Hold | Define data portability and consent behavior; never redirect a saved deep link to a generic home page. |
 
-There is intentionally no “redirect now” cohort in this release. SignedPrice's verified Seoul Explore, district, Rankings, News, Guide, and Trust surfaces can be indexed on their own domain now without changing KoreaHomeGuide canonicals.
+The committed manifest is the source of truth for active and retained routes. Do not disconnect the old domain while retained routes remain or while permanent redirects are transferring signals.
 
 ## Guide inventory
 
