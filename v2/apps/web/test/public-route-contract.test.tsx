@@ -258,6 +258,8 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/news/',
       'https://www.signedprice.com/community/',
       'https://www.signedprice.com/guides/',
+      'https://www.signedprice.com/privacy/',
+      'https://www.signedprice.com/contact/',
       'https://www.signedprice.com/',
       'https://www.signedprice.com/compare/',
       'https://www.signedprice.com/trust/',
@@ -380,6 +382,8 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/news/',
       'https://www.signedprice.com/community/',
       'https://www.signedprice.com/guides/',
+      'https://www.signedprice.com/privacy/',
+      'https://www.signedprice.com/contact/',
       'https://www.signedprice.com/',
       'https://www.signedprice.com/compare/',
       'https://www.signedprice.com/trust/',
@@ -402,6 +406,8 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/news/',
       'https://www.signedprice.com/community/',
       'https://www.signedprice.com/guides/',
+      'https://www.signedprice.com/privacy/',
+      'https://www.signedprice.com/contact/',
       'https://www.signedprice.com/',
       'https://www.signedprice.com/compare/',
       'https://www.signedprice.com/trust/',
@@ -418,3 +424,4 @@ describe('public migration containment', () => {
     ]);
   });
 });
+
