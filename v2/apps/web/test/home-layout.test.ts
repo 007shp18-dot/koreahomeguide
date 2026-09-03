@@ -34,6 +34,8 @@ describe('signedprice Evidence Editorial homepage', () => {
     const markup = renderToStaticMarkup(await Home());
 
     expect(markup).toContain('data-navigation-tier="market"');
+    expect(markup).toContain('aria-label="Change language to 한국어"');
+    expect(markup).toMatch(/hreflang="ko"[^>]+href="\/ko\/kr\/seoul"/i);
     expect(markup).not.toContain('aria-label="Choose a city"');
     expect(markup).not.toContain('id="market-tab-seoul"');
   });
