@@ -117,6 +117,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     sitemapEntry('/guides/', guideLastModified),
     sitemapEntry('/privacy/'),
     sitemapEntry('/contact/'),
+    sitemapEntry('/sg/'),
+    sitemapEntry('/sg/singapore/explore/'),
+    sitemapEntry('/sg/singapore/explore/ccr/'),
+    sitemapEntry('/sg/singapore/explore/rcr/'),
+    sitemapEntry('/sg/singapore/explore/ocr/'),
   ];
   const modifiedByPath = new Map<string, Date | undefined>([
     ['/kr/seoul/', summaryLastModified],
