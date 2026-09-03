@@ -197,6 +197,26 @@
   letter-spacing: -0.025em;
 }
 
+.heroMediaCaption ul,
+.buildingCard ul {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.heroMediaCaption li,
+.buildingCard li {
+  padding: 3px 7px;
+  border: 1px solid #dce5ef;
+  border-radius: 999px;
+  color: #536176;
+  background: #f8fafc;
+  font-size: .62rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
 .heroMediaCaption a {
   position: absolute;
   right: 17px;

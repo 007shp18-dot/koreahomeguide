@@ -135,7 +135,7 @@ describe('three market overview routes', () => {
     }
   });
 
-  it('uses the shared seven-link roadmap navigation on market overviews', async () => {
+  it('uses the shared seven-link local product navigation on market overviews', async () => {
     for (const params of marketRouteParams) {
       const markup = renderToStaticMarkup(
         await MarketOverviewPage({ params: Promise.resolve(params) }),
@@ -145,13 +145,13 @@ describe('three market overview routes', () => {
       )?.[1] ?? '';
 
       expect(navigation.match(/<a /g) ?? []).toHaveLength(7);
-      for (const label of ['Markets', 'Prices', 'Properties', 'News', 'Community', 'Guides', 'Invest']) {
-        expect(navigation).toContain(`>${label}</a>`);
+      for (const label of ['Overview', 'Check', 'Explore', 'Rankings', 'News', 'Community', 'Guide']) {
+        expect(navigation).toContain(`<strong>${label}</strong>`);
       }
     }
   });
 
-  it('leaves the shared product links inactive on generic intent routes', async () => {
+  it('keeps generic intent routes inside the shared local product hierarchy', async () => {
     const markup = renderToStaticMarkup(
       await IntentPage({
         params: Promise.resolve({ country: 'kr', city: 'seoul', intent: 'rent' }),
@@ -162,8 +162,7 @@ describe('three market overview routes', () => {
     )?.[1] ?? '';
 
     expect(navigation.match(/<a /g) ?? []).toHaveLength(7);
-    expect(navigation).toContain('>Prices</a>');
-    expect(navigation).not.toContain('aria-current');
+    expect(navigation).toContain('<strong>Explore</strong>');
   });
 
   it('keeps evidence separate from operating capabilities and aggregates mixed rights deny-safe', () => {

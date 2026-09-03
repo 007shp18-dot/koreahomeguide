@@ -63,24 +63,22 @@ describe('Korea methodology guides', () => {
   it('keeps the shared market and product navigation around the Guide index', () => {
     const html = renderToStaticMarkup(<GuideIndexPage />);
 
-    expect(html.match(/data-navigation-tier="primary"/g) ?? []).toHaveLength(1);
-    expect(html).not.toContain('data-navigation-tier="market"');
-    expect(html).not.toContain('data-navigation-tier="product"');
+    expect(html.match(/data-navigation-tier="product"/g) ?? []).toHaveLength(1);
+    expect(html).toContain('class="site-header__market-tier"');
     expect(html.match(/<footer/g) ?? []).toHaveLength(1);
     for (const href of [
-      '/markets/',
-      '/prices/',
-      '/news/',
-      '/community/',
-      '/guides/',
-      '/properties/',
-      '/invest/',
+      '/kr/seoul/',
+      '/kr/seoul/check/',
+      '/kr/seoul/explore/',
+      '/kr/seoul/rankings/',
+      '/kr/seoul/news/',
+      '/kr/seoul/community/',
+      '/kr/seoul/guide/',
     ]) {
       expect(html).toContain(`href="${href.slice(0, -1)}"`);
     }
-    expect(html).toMatch(/<a[^>]*aria-current="page"[^>]*href="\/guides"/);
-    expect(html).toContain('data-local-navigation="true"');
-    expect(html).toContain('>Overview</a>');
+    expect(html).toMatch(/<a[^>]*aria-current="page"[^>]*href="\/kr\/seoul\/guide"/);
+    expect(html).toContain('<strong>Overview</strong>');
     expect(html).not.toMatch(/>Rent<|>Buy<|>Evidence</);
   });
 
@@ -102,11 +100,10 @@ describe('Korea methodology guides', () => {
       expect(html).toContain(`dateTime="${guide.lastVerified}"`);
       expect(html).toContain(guide.evidenceBoundary);
       expect(html).toContain('href="/trust"');
-      expect(html.match(/data-navigation-tier="primary"/g) ?? []).toHaveLength(1);
-      expect(html).not.toContain('data-navigation-tier="market"');
-      expect(html).not.toContain('data-navigation-tier="product"');
+      expect(html.match(/data-navigation-tier="product"/g) ?? []).toHaveLength(1);
+      expect(html).toContain('class="site-header__market-tier"');
       expect(html.match(/<footer/g) ?? []).toHaveLength(1);
-      expect(html).toMatch(/<a[^>]*aria-current="page"[^>]*href="\/guides"/);
+      expect(html).toMatch(/<a[^>]*aria-current="page"[^>]*href="\/kr\/seoul\/guide"/);
     }
   });
 });

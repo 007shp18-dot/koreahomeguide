@@ -5,6 +5,7 @@ import type { MarketOverviewRowModel, NavigationActionModel } from '../../lib/ro
 import { MarketHero } from '../market-hero';
 import { MarketOverviewRows } from '../market-overview-rows';
 import { GoogleBuildingStreetView } from '../maps/google-building-street-view';
+import { GooglePlacePhoto } from '../maps/google-place-photo';
 import {
   SingaporePage,
   singaporeStyles as styles,
@@ -69,12 +70,17 @@ export function SingaporeEntry({ model, googleMapsBrowserKey = null }: Readonly<
   return (
     <SingaporePage currentHref="/sg/" unframed>
       <div data-singapore-entry="ready">
-        <MarketHero media={<GoogleBuildingStreetView
+        <MarketHero media={<GooglePlacePhoto
           browserKey={googleMapsBrowserKey}
           buildingName="The Sail @ Marina Bay"
-          latitude={1.2753}
-          longitude={103.8517}
-          mapHref="https://www.google.com/maps/search/?api=1&query=The+Sail+at+Marina+Bay+Singapore"
+          address="Marina Boulevard, Singapore"
+          fallback={<GoogleBuildingStreetView
+            browserKey={googleMapsBrowserKey}
+            buildingName="The Sail @ Marina Bay"
+            latitude={1.2753}
+            longitude={103.8517}
+            mapHref="https://www.google.com/maps/search/?api=1&query=The+Sail+at+Marina+Bay+Singapore"
+          />}
         />} model={{
           sectionLabel: 'Singapore market overview',
           eyebrow: 'Singapore market',

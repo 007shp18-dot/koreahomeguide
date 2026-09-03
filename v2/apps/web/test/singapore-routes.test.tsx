@@ -78,20 +78,19 @@ describe('Singapore route SSR', () => {
     expect(html).toContain('aria-label="Offer B market"');
   });
 
-  it('uses Singapore context with global product navigation and never falls through to Seoul Check', () => {
+  it('uses Singapore context with local product navigation and never falls through to Seoul Check', () => {
     const html = renderToStaticMarkup(<SingaporePage><p>Singapore content</p></SingaporePage>);
 
     expect(html).toContain('aria-label="Singapore evidence navigation"');
     expect(html).toContain('href="/sg/singapore/explore/"');
     expect(html).not.toContain('href="/kr/seoul/check/"');
-    expect(html).toContain('href="/prices">Prices</a>');
+    expect(html).toContain('href="/sg/singapore/check"><span>01</span><strong>Check</strong>');
     expect(html).toContain('Singapore · reported filings');
   });
 
-  it('maps the Singapore evidence route to the global Prices destination', () => {
+  it('maps the Singapore evidence route to the local Explore destination', () => {
     const html = renderToStaticMarkup(<SingaporePage currentHref="/sg/singapore/explore/"><p>Explore</p></SingaporePage>);
-    expect(html).toMatch(/aria-current="page" href="\/prices"/);
-    expect(html).not.toMatch(/site-header__product-link" aria-current="page" href="\/sg/);
+    expect(html).toMatch(/aria-current="page" href="\/sg\/singapore\/explore"/);
     expect(html).not.toMatch(/href="\/kr\/seoul\/[^"]*" aria-current="page"/);
   });
 

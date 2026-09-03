@@ -5,6 +5,7 @@ import type {
   SingaporeUnavailableModel,
 } from '../../lib/singapore/route-types';
 import { GoogleBuildingStreetView } from '../maps/google-building-street-view';
+import { GooglePlacePhoto } from '../maps/google-place-photo';
 import {
   SingaporeEvidence,
   SingaporePage,
@@ -45,11 +46,16 @@ export function SingaporeProjectDetail({ model, googleMapsBrowserKey = null }: R
         <span>{model.identity.project}</span></nav>}
         identity={<div className={styles.detailIdentity} data-singapore-project="ready"><p className={styles.eyebrow}>Singapore · {model.identity.marketSegment} · District {model.identity.district}</p><h1>{model.identity.project}</h1><p>{model.identity.street}</p><SingaporeScope /></div>}
         metric={<div className={styles.detailMetric}><small>Median price</small><strong>{model.display.medianPriceLabel}</strong><span>{model.display.sampleLabel}</span></div>}
-        media={<GoogleBuildingStreetView
+        media={<GooglePlacePhoto
           browserKey={googleMapsBrowserKey}
           buildingName={model.identity.project}
-          address={`${model.identity.project}, ${model.identity.street}, Singapore`}
-          mapHref={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${model.identity.project}, ${model.identity.street}, Singapore`)}`}
+          address={`${model.identity.street}, Singapore`}
+          fallback={<GoogleBuildingStreetView
+            browserKey={googleMapsBrowserKey}
+            buildingName={model.identity.project}
+            address={`${model.identity.project}, ${model.identity.street}, Singapore`}
+            mapHref={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${model.identity.project}, ${model.identity.street}, Singapore`)}`}
+          />}
         />}
         evidence={<><section className={styles.section} aria-labelledby="project-summary-heading">
         <p className={styles.sectionLabel}>01 / Project distribution</p>

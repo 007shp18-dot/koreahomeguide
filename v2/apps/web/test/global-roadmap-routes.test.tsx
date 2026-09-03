@@ -17,12 +17,12 @@ describe('global roadmap routes', () => {
 
     expect(newsMetadata.alternates).toEqual({ canonical: 'https://www.signedprice.com/news/' });
     expect(communityMetadata.alternates).toEqual({ canonical: 'https://www.signedprice.com/community/' });
-    expect(news).toContain('Property market news');
+    expect(news).toContain('News, with the evidence boundary attached.');
     expect(news).toContain('data-market-context="global"');
-    expect(community).toContain('Community, grounded in a place.');
-    expect(community).toContain('District and neighbourhood');
-    expect(community).toContain('Building and project');
-    expect(community).toContain('Read-only foundation');
+    expect(community).toContain('One community, organized by place.');
+    expect(community).toContain('District');
+    expect(community).toContain('Building');
+    expect(community).toContain('Read-only launch state');
   });
 
   it.each([
@@ -36,9 +36,9 @@ describe('global roadmap routes', () => {
 
       expect(html).toContain(`data-market-context="${city}"`);
       expect(html).toContain(`aria-label="${label} product navigation"`);
-      expect(html).toContain('data-local-navigation="true"');
-      expect(html).toContain('Availability');
-      expect(html).toContain('Not publicly available yet');
+      expect(html).toContain('data-navigation-tier="product"');
+      expect(html).toContain('<strong>Explore</strong>');
+      expect(html).toContain('No unsupported values substituted');
     }
   });
 });

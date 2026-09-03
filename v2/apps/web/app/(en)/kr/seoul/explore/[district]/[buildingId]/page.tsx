@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { BuildingDetailPage } from '@/components/public-market/building-detail-page';
 import { BuildingOfficialFacts } from '@/components/public-market/building-official-facts';
 import { NaverBuildingStreetView } from '@/components/maps/naver-building-street-view';
+import { GooglePlacePhoto } from '@/components/maps/google-place-photo';
 import { buildNaverBuildingAddressQuery } from '@/lib/public-market/naver-building-address';
 import {
   KoreaEvidenceBuildingDetail,
@@ -87,7 +88,7 @@ function naverStreetViewFor(input: Readonly<{
   addressQuery: string;
   mapHref: string;
 }>) {
-  return (
+  const nearbyView = (
     <NaverBuildingStreetView
       clientId={process.env.NAVER_MAP_CLIENT_ID?.trim() || null}
       buildingName={input.name}
@@ -95,6 +96,15 @@ function naverStreetViewFor(input: Readonly<{
       longitude={input.longitude ?? undefined}
       addressQuery={input.addressQuery}
       mapHref={input.mapHref}
+    />
+  );
+
+  return (
+    <GooglePlacePhoto
+      browserKey={process.env.GOOGLE_MAPS_API_KEY?.trim() || null}
+      buildingName={input.name}
+      address={input.addressQuery}
+      fallback={nearbyView}
     />
   );
 }

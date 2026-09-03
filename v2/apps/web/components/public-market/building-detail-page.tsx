@@ -103,6 +103,16 @@ export function BuildingDetailPage({
           <article className={pageStyles.preparing}><span>Properties · Service preparing</span><h2>Not a live listing</h2><p>Listings, inquiries and agent connections are intentionally unavailable while operating and legal checks are completed.</p></article>
         </section>
 
+        <section className={pageStyles.profileFacts} aria-labelledby="building-profile-heading">
+          <div><span>Building profile</span><h2 id="building-profile-heading">Verified facts already attached</h2></div>
+          <dl>
+            <div><dt>Building</dt><dd>{model.building.name}</dd></div>
+            <div><dt>Area</dt><dd>{model.building.neighborhoodName} · {model.district.nameEn}</dd></div>
+            <div><dt>Housing type</dt><dd>{model.building.housingType}</dd></div>
+            <div><dt>Evidence period</dt><dd>{model.evidence.period}</dd></div>
+          </dl>
+        </section>
+
         <section className={pageStyles.contextGrid} aria-label="Building news and community">
           <DetailNewsList news={model.news} />
           <CommunitySignal model={model.communitySignal} />

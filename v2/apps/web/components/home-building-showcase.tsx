@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 
 import type { HomeMarketVisual } from '../lib/home-market-visuals.server';
 import { GoogleBuildingStreetView } from './maps/google-building-street-view';
+import { GooglePlacePhoto } from './maps/google-place-photo';
 import { NaverBuildingStreetView } from './maps/naver-building-street-view';
 import styles from './home-editorial.module.css';
 
@@ -25,21 +26,35 @@ function MarketVisual({ visual, naverMapClientId, googleMapsBrowserKey }: Readon
   naverMapClientId: string | null;
   googleMapsBrowserKey: string | null;
 }>) {
-  if (visual.provider === 'google') return <GoogleBuildingStreetView
-    browserKey={googleMapsBrowserKey}
-    buildingName={visual.name}
-    latitude={visual.latitude}
-    longitude={visual.longitude}
-    address={visual.addressQuery}
-    mapHref={visual.mapHref}
-  />;
-  return <NaverBuildingStreetView
+  if (visual.provider === 'google') {
+    const streetView = <GoogleBuildingStreetView
+      browserKey={googleMapsBrowserKey}
+      buildingName={visual.name}
+      latitude={visual.latitude}
+      longitude={visual.longitude}
+      address={visual.addressQuery}
+      mapHref={visual.mapHref}
+    />;
+    return <GooglePlacePhoto
+      browserKey={googleMapsBrowserKey}
+      buildingName={visual.name}
+      address={visual.addressQuery ?? visual.location}
+      fallback={streetView}
+    />;
+  }
+  const nearbyView = <NaverBuildingStreetView
     clientId={naverMapClientId}
     buildingName={visual.name}
     latitude={visual.latitude}
     longitude={visual.longitude}
     addressQuery={visual.addressQuery}
     mapHref={visual.mapHref}
+  />;
+  return <GooglePlacePhoto
+    browserKey={googleMapsBrowserKey}
+    buildingName={visual.name}
+    address={visual.addressQuery ?? `${visual.name}, ${visual.location}, Seoul, South Korea`}
+    fallback={nearbyView}
   />;
 }
 
@@ -83,6 +98,7 @@ export function RotatingHeroBuilding({
         <span>{featured.countryCode} · {featured.market} · place context</span>
         <h2>{featured.name}</h2>
         <p>{featured.location} · {featured.observationLabel}</p>
+        <ul>{featured.facts.map((fact) => <li key={fact}>{fact}</li>)}</ul>
         <Link href={featured.href}>View building →</Link>
       </div>
       {order.length > 1 ? (
@@ -134,7 +150,7 @@ export function RotatingBuildingGrid({
           <div className={styles.buildingMedia}>
             <MarketVisual visual={building} naverMapClientId={naverMapClientId} googleMapsBrowserKey={googleMapsBrowserKey} />
           </div>
-          <div><span>{building.market.toUpperCase()}</span><h3>{building.name}</h3><p>{building.location}</p><strong>{building.observationLabel}</strong><small>{building.periodLabel}</small><Link href={building.href}>Open market →</Link></div>
+          <div><span>{building.market.toUpperCase()}</span><h3>{building.name}</h3><p>{building.location}</p><strong>{building.observationLabel}</strong><small>{building.periodLabel}</small><ul>{building.facts.map((fact) => <li key={fact}>{fact}</li>)}</ul><Link href={building.href}>View details →</Link></div>
         </article>
       ))}
     </div>

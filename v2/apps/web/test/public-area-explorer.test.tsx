@@ -74,7 +74,7 @@ describe('public Seoul area Explorer', () => {
       naverMapClientId: 'test-naver-client',
     }));
 
-    expect(markup).toContain('data-explorer-version="archive"');
+    expect(markup).toContain('data-explorer-version="guide-v2"');
     expect(markup).toContain('data-explore-view="split"');
     expect(markup).toContain('data-explorer-layout="split"');
     expect(markup).toContain('data-explorer-region="filters"');

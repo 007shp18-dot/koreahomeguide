@@ -36,6 +36,13 @@ function headerFor(model: PublicDistrictModel): SiteHeaderModel {
     brand: 'signedprice',
     homeLabel: 'signedprice home',
     navigationLabel: `${model.identity.nameEn} evidence navigation`,
+    marketLabel: 'Seoul',
+    languageLabel: 'EN',
+    languageSwitch: {
+      label: '한국어',
+      href: `/ko/kr/seoul/explore/${model.identity.slug}/`,
+      hrefLang: 'ko',
+    },
     links: [
       { label: 'Global home', href: '/' },
       { label: 'Seoul market', href: '/kr/seoul/' },
