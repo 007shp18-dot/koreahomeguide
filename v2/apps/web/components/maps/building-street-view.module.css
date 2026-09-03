@@ -8,10 +8,14 @@
 }
 
 .canvas {
-  position: absolute;
-  inset: 0;
+  /* The NAVER panorama SDK writes a 200px inline height after mounting.
+     Keep the live view fitted to the media frame instead of leaving a gap. */
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
   min-width: 200px;
-  min-height: 200px;
+  min-height: 200px !important;
 }
 
 .loading {
