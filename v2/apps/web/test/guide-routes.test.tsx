@@ -72,8 +72,7 @@ describe('Korea methodology guides', () => {
       '/prices/',
       '/insights/',
       '/guides/',
-      '/properties/',
-      '/invest/',
+      '/community/',
     ]) {
       expect(html).toContain(`href="${href.slice(0, -1)}"`);
     }

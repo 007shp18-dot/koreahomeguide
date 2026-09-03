@@ -1,8 +1,5 @@
-import Link from 'next/link';
-
 import type { HomeFeaturedBuilding } from '../lib/public-market/home-featured-buildings.server';
 import type { SeoulLiveModel } from '../lib/public-market/seoul-live-model.server';
-import type { HomepageMarketModel } from '../lib/site-copy';
 import { RotatingHeroBuilding } from './home-building-showcase';
 import styles from './home-editorial.module.css';
 
@@ -11,7 +8,6 @@ type HomeMarketBrowserProps = Readonly<{
     hero: { headline: string; description: string };
     markets: { sectionLabel: string };
   };
-  markets: readonly HomepageMarketModel[];
   seoul: SeoulLiveModel;
   featuredBuildings: readonly HomeFeaturedBuilding[];
   naverMapClientId: string | null;
@@ -27,6 +23,7 @@ export function HomeMarketBrowser({
     <section className={styles.hero} id="home-decision" aria-labelledby="home-headline">
       <div className={styles.heroGrid}>
         <div className={styles.heroCopy}>
+          <span className={styles.heroEyebrow}>Global property intelligence</span>
           <h1 id="home-headline">{copy.hero.headline}</h1>
           <p className={styles.deck}>{copy.hero.description}</p>
           <form className={styles.searchForm} action="/kr/seoul/explore/" method="get" role="search">
@@ -36,11 +33,7 @@ export function HomeMarketBrowser({
               <button type="submit" aria-label="Search signed prices">⌕</button>
             </div>
           </form>
-          <nav className={styles.marketShortcuts} aria-label="Quick market links">
-            <Link href="/kr/seoul/">Korea <span>→</span></Link>
-            <Link href="/sg/">Singapore <span>→</span></Link>
-            <Link href="/ae/dubai/">Dubai <span>→</span></Link>
-          </nav>
+          <p className={styles.searchHint}>Search Seoul buildings now. Singapore and Dubai follow their local evidence boundaries.</p>
         </div>
 
         <div className={styles.heroMedia} data-home-market="seoul" data-seoul-live={seoul.status}>

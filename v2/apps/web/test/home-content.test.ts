@@ -20,7 +20,6 @@ describe('signedprice homepage copy', () => {
     const ids = [
       'home-decision',
       'markets',
-      'home-explore',
       'home-prices',
       'home-briefs',
       'home-trust',
@@ -31,8 +30,9 @@ describe('signedprice homepage copy', () => {
     expect([...positions].sort((a, b) => a - b)).toEqual(positions);
     expect(markup).toContain('>Know the market before you buy.</h1>');
     expect(markup).toContain('role="search"');
-    expect(markup).toContain('Properties to explore');
-    expect(markup).toContain('Invest · Service preparing');
+    expect(markup).toContain('PROPERTIES · PREPARING');
+    expect(markup).toContain('INVEST · PREPARING');
+    expect(markup).toContain('COMMUNITY · PREPARING');
     expect(markup).toMatch(/No approved brief yet|How SignedPrice reads reported rental contracts/);
   }, 10_000);
 
@@ -129,10 +129,9 @@ describe('signedprice homepage copy', () => {
     expect(markup).toContain('class="brand-wordmark__signed">signed</span>');
     expect(markup).toContain('class="brand-wordmark__price">price</span>');
     expect(markup).toContain('>Know the market before you buy.</h1>');
-    expect(markup).toContain('>Markets at a glance</h2>');
-    expect(markup).toContain('>Explore markets</h2>');
+    expect(markup).toContain('>Explore property markets</h2>');
     expect(markup).toContain('>Recent building evidence</h2>');
-    expect(markup).toContain('>Market insights</h2>');
+    expect(markup).toContain('>News and community</h2>');
     expect(markup).toContain('data-navigation-tier="primary"');
     expect(markup).not.toContain('data-navigation-tier="product"');
     expect(markup).not.toContain('data-navigation-tier="market"');
@@ -149,10 +148,10 @@ describe('signedprice homepage copy', () => {
       '/kr/seoul/guide/',
     ];
     expect(buildSeoulLiveModel().links.map(({ href }) => href)).toEqual(seoulHrefs);
-    for (const href of seoulHrefs.filter((href) => href !== '/kr/seoul/rankings/')) {
+    for (const href of seoulHrefs.filter((href) => !['/kr/seoul/rankings/', '/kr/seoul/guide/'].includes(href))) {
       expect(markup).toContain(`href="${href.replace(/\/$/, '')}"`);
     }
-    expect(markup).toContain('>District rankings</a>');
+    expect(markup).toContain('>Compare districts</a>');
     expect(markup).toContain('href="/sg"');
 
     expect(markup).not.toMatch(/enquir|sign[ -]?in|create account/i);
@@ -174,17 +173,16 @@ describe('signedprice homepage copy', () => {
 
     const markup = renderToStaticMarkup(await Home());
 
-    expect(markup).toContain('Eligible contracts');
+    expect(markup).toContain('eligible contracts');
     expect(markup).toContain('Explore Seoul');
     for (const href of [
       '/kr/seoul/check/',
       '/kr/seoul/explore/',
       '/kr/seoul/news/',
-      '/kr/seoul/guide/',
     ]) {
       expect(markup).toContain(`href="${href.replace(/\/$/, '')}"`);
     }
-    expect(markup).toContain('>District rankings</a>');
+    expect(markup).toContain('>Compare districts</a>');
 
     vi.unstubAllEnvs();
   });
@@ -214,8 +212,8 @@ describe('signedprice homepage copy', () => {
       expect(markup).toContain(`>${label}</a>`);
     }
     expect(markup).toMatch(/aria-current="page" href="\/kr\/seoul">Seoul/);
-    expect(markup).toContain('Invest · Service preparing');
-    expect(markup).toContain('Not a live listing');
+    expect(markup).toContain('INVEST · PREPARING');
+    expect(markup).toContain('Listings and agent connections are not active yet.');
 
     expect(homepageCopy.metadata.robots).toEqual({ index: true, follow: true });
   });

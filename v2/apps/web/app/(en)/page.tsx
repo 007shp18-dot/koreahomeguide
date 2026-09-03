@@ -29,7 +29,6 @@ export default async function Home() {
       <main>
         <HomeMarketBrowser
           copy={copy}
-          markets={presentation.markets}
           seoul={seoul}
           featuredBuildings={featuredBuildings}
           naverMapClientId={naverMapClientId}
