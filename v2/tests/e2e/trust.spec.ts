@@ -83,7 +83,7 @@ test('Seoul market hub is a terminal self-canonical page', async ({ request }) =
   const html = await response.text();
 
   expect(response.status()).toBe(200);
-  expect(html).toMatch(/<h1[^>]*>Seoul<\/h1>/);
+  expect(html).toMatch(/<h1[^>]*>Seoul Market Overview<\/h1>/);
   expect(html).toContain(
     '<link rel="canonical" href="https://www.signedprice.com/kr/seoul/"',
   );
@@ -100,12 +100,12 @@ test('English and Korean routes emit the correct root document language', async 
   for (const path of ['/ko/kr/seoul/', '/ko/kr/seoul/explore/', '/ko/kr/seoul/rankings/']) {
     const response = await request.get(path);
     expect(response.status()).toBe(200);
-    expect(await response.text()).toContain('<html lang="ko">');
+    expect(await response.text()).toMatch(/<html lang="ko"(?:\s|>)/);
   }
 
   const english = await request.get('/kr/seoul/');
   expect(english.status()).toBe(200);
-  expect(await english.text()).toContain('<html lang="en">');
+  expect(await english.text()).toMatch(/<html lang="en"(?:\s|>)/);
 });
 
 test('social metadata and image endpoints match each route language', async ({ request }) => {

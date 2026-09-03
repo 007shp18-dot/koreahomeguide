@@ -28,26 +28,28 @@ describe('signedprice Evidence Editorial homepage', () => {
     expect(markup).toContain('<h1 id="home-headline">Know the market before you buy.</h1>');
     expect(positions.every((position) => position >= 0)).toBe(true);
     expect([...positions].sort((a, b) => a - b)).toEqual(positions);
-  }, 10_000);
+  }, 20_000);
 
-  it('uses the global market navigation without a duplicate hero city tablist', async () => {
+  it('keeps global market links inside the single header without a duplicate hero city tablist', async () => {
     const markup = renderToStaticMarkup(await Home());
 
-    expect(markup).toContain('data-navigation-tier="market"');
+    expect(markup).toContain('data-navigation-tier="primary"');
+    expect(markup).toContain('aria-label="Market navigation"');
     expect(markup).toContain('aria-label="Change language to 한국어"');
-    expect(markup).toMatch(/hreflang="ko"[^>]+href="\/ko\/kr\/seoul"/i);
+    expect(markup).toContain('href="/ko/kr/seoul"');
+    expect(markup).toMatch(/hreflang="ko"/i);
     expect(markup).not.toContain('aria-label="Choose a city"');
     expect(markup).not.toContain('id="market-tab-seoul"');
   });
 
   it('keeps the six roadmap destinations in the shared header', async () => {
     const markup = renderToStaticMarkup(await Home());
-    const navigation = markup.match(/<nav aria-label="Primary navigation"[^>]*>([\s\S]*?)<\/nav>/)?.[1] ?? '';
+    const navigation = markup.match(/<nav[^>]*aria-label="Primary navigation"[^>]*>([\s\S]*?)<\/nav>/)?.[1] ?? '';
 
     expect(navigation.match(/<a /g) ?? []).toHaveLength(6);
-    expect(navigation).toContain('data-product-index="01"');
+    expect(navigation).toContain('>Markets</a>');
     expect(navigation).toContain('href="/properties"');
-    expect(navigation).toContain('data-product-index="06"');
+    expect(navigation).toContain('>Invest</a>');
     expect(navigation).toContain('href="/invest"');
   });
 

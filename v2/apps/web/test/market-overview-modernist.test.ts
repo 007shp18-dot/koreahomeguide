@@ -141,12 +141,12 @@ describe('three market overview routes', () => {
         await MarketOverviewPage({ params: Promise.resolve(params) }),
       );
       const navigation = markup.match(
-        /<nav aria-label="Primary navigation"[^>]*>([\s\S]*?)<\/nav>/,
+        /<nav[^>]*aria-label="Primary navigation"[^>]*>([\s\S]*?)<\/nav>/,
       )?.[1] ?? '';
 
       expect(navigation.match(/<a /g) ?? []).toHaveLength(6);
       for (const label of ['Markets', 'Prices', 'Properties', 'Insights', 'Guides', 'Invest']) {
-        expect(navigation).toContain(`>${label}</strong>`);
+        expect(navigation).toContain(`>${label}</a>`);
       }
     }
   });
@@ -158,11 +158,11 @@ describe('three market overview routes', () => {
       }),
     );
     const navigation = markup.match(
-      /<nav aria-label="Primary navigation"[^>]*>([\s\S]*?)<\/nav>/,
+      /<nav[^>]*aria-label="Primary navigation"[^>]*>([\s\S]*?)<\/nav>/,
     )?.[1] ?? '';
 
     expect(navigation.match(/<a /g) ?? []).toHaveLength(6);
-    expect(navigation).toContain('>Prices</strong>');
+    expect(navigation).toContain('>Prices</a>');
     expect(navigation).not.toContain('aria-current');
   });
 

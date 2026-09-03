@@ -131,12 +131,12 @@ test('rankings remain contained and keyboard-readable at every release width', a
   assertNoRuntimeFailures();
 });
 
-test('Explore and district evidence link into Rankings without changing the five product links', async ({ page }) => {
+test('Explore and district evidence keep Rankings reachable beside the six global product links', async ({ page }) => {
   await page.goto('/kr/seoul/explore/');
   const productNavigation = page.getByRole('navigation', { name: 'Seoul evidence navigation' });
-  await expect(productNavigation.getByRole('link', { name: /Rankings/ }))
-    .toHaveAttribute('href', '/kr/seoul/rankings/');
-  await expect(productNavigation.getByRole('link')).toHaveCount(5);
+  await expect(productNavigation.getByRole('link', { name: 'Prices' }))
+    .toHaveAttribute('href', '/prices/');
+  await expect(productNavigation.getByRole('link')).toHaveCount(6);
 
   await page.goto('/kr/seoul/explore/jongno-gu/');
   await expect(page.getByRole('link', { name: 'View district rankings' }))

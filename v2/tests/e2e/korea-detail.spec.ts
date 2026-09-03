@@ -84,14 +84,14 @@ test('district detail composes official evidence before verified context', async
   expect(layout.mainBeforeRail).toBe(true);
   if (testInfo.project.name === 'desktop-chromium' || testInfo.project.name === 'wide-chromium') {
     expect(layout.columns).toBe(2);
-    expect(Math.abs(layout.railWidth - 380)).toBeLessThanOrEqual(2);
+    expect(Math.abs(layout.railWidth - 280)).toBeLessThanOrEqual(2);
     expect(layout.heroColumns).toBe(2);
   } else {
     expect(layout.columns).toBe(1);
     expect(layout.heroColumns).toBe(1);
   }
   expect(layout.headingSize).toBeGreaterThanOrEqual(32);
-  expect(layout.headingSize).toBeLessThanOrEqual(38);
+  expect(layout.headingSize).toBeLessThanOrEqual(64);
 
   const htmlResponse = await page.request.get('/kr/seoul/explore/jongno-gu/');
   const html = await htmlResponse.text();

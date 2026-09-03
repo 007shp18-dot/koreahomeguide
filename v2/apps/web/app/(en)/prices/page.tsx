@@ -2,11 +2,13 @@ import type { Metadata } from 'next';
 
 import { GlobalProductHub } from '@/components/global-product-hub';
 import { buildSeoulLiveModel } from '@/lib/public-market/seoul-live-model.server';
+import { indexableMetadata } from '@/lib/public-metadata';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = indexableMetadata({
+  path: '/prices/',
   title: 'Signed property prices | signedprice',
   description: 'Search released property contract evidence and compare local prices with their source context.',
-};
+});
 
 export default function PricesPage() {
   return <GlobalProductHub kind="prices" seoul={buildSeoulLiveModel()} />;

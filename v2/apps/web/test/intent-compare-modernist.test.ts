@@ -53,7 +53,7 @@ function declarationsFor(source: string, selector: string): Record<string, strin
 
 function navigationMarkup(markup: string): string {
   return (
-    markup.match(/<nav aria-label="Primary navigation"[^>]*>([\s\S]*?)<\/nav>/)?.[1] ?? ''
+    markup.match(/<nav[^>]*aria-label="Primary navigation"[^>]*>([\s\S]*?)<\/nav>/)?.[1] ?? ''
   );
 }
 
@@ -142,7 +142,7 @@ describe('nine intent routes use one connected decision hierarchy', () => {
 
       expect(markup.match(/<a /g) ?? []).toHaveLength(6);
       for (const label of ['Markets', 'Prices', 'Properties', 'Insights', 'Guides', 'Invest']) {
-        expect(markup).toContain(`>${label}</strong>`);
+        expect(markup).toContain(`>${label}</a>`);
       }
       expect(markup).not.toContain('aria-current');
     }
@@ -218,7 +218,7 @@ describe('comparison remains a semantic Modernist table', () => {
     const markup = navigationMarkup(renderToStaticMarkup(createElement(ComparePage)));
 
     expect(markup.match(/<a /g) ?? []).toHaveLength(6);
-    expect(markup).toContain('>Prices</strong>');
+    expect(markup).toContain('>Prices</a>');
     expect(markup).not.toContain('aria-current="page"');
   });
 

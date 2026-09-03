@@ -50,9 +50,9 @@ describe('verified Seoul News routes', () => {
     expect(html).toContain('25 Seoul districts are included');
     expect(html).toContain('data-news-evidence="verified"');
     expect(html).toContain('data-news-evidence="not-applicable"');
-    expect(html).toContain('data-navigation-tier="product"');
+    expect(html).toContain('data-navigation-tier="primary"');
     expect(html).toContain('aria-current="page"');
-    expect(html).toContain('data-product-index="04"');
+    expect(html).toContain('>Insights</a>');
     expect(html).toContain('href="/kr/seoul/check/">Contract Check</a>');
     expect(html).not.toMatch(/articleText|<iframe|dangerouslySetInnerHTML/);
   });
