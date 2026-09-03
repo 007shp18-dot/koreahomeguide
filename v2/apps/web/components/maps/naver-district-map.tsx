@@ -14,6 +14,9 @@ export type NaverDistrictMapPoint = Readonly<{
   href: string;
   latitude: number;
   longitude: number;
+  metricLabel?: string;
+  sampleLabel?: string;
+  selected?: boolean;
 }>;
 
 export type NaverBuildingMapPoint = Readonly<{
@@ -63,6 +66,7 @@ export type NaverMapsSdk = Readonly<{
     map: unknown;
     position: unknown;
     title: string;
+    icon?: Readonly<{ content: string }>;
   }>) => NaverMarkerInstance;
   Event: Readonly<{
     addListener(target: unknown, event: 'click', listener: () => void): unknown;
@@ -144,6 +148,25 @@ type MountNaverDistrictMapOptions = NaverDistrictMapUpdate & Readonly<{
   sdk: NaverMapsSdk;
   element: HTMLElement;
 }>;
+
+function escapeMarkerText(value: string): string {
+  return value
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
+/** HTML label rendered by NAVER Maps for the citywide district layer. */
+export function buildNaverDistrictMarkerContent(district: NaverDistrictMapPoint): string | undefined {
+  if (district.metricLabel === undefined) return undefined;
+  const selectedClass = district.selected === true ? ' spMapDistrictBubbleSelected' : '';
+  const sample = district.sampleLabel === undefined
+    ? ''
+    : `<small>${escapeMarkerText(district.sampleLabel)}</small>`;
+  return `<div class="spMapDistrictBubble${selectedClass}"><span>${escapeMarkerText(district.nameEn)}</span><strong>${escapeMarkerText(district.metricLabel)}</strong>${sample}</div>`;
+}
 
 export function buildNaverMapsScriptUrl(
   clientId: string,
@@ -234,13 +257,13 @@ export function mountNaverDistrictMap({
       latitude: number,
       longitude: number,
       select: () => void,
+      iconContent?: string,
     ) => {
       if (!isActive() || map === null) return;
-      const marker = new sdk.Marker({
-        map,
-        position: new sdk.LatLng(latitude, longitude),
-        title,
-      });
+      const position = new sdk.LatLng(latitude, longitude);
+      const marker = new sdk.Marker(iconContent === undefined
+        ? { map, position, title }
+        : { map, position, title, icon: { content: iconContent } });
       markers.push(marker);
       const listener = sdk.Event.addListener(marker, 'click', () => {
         if (isActive()) select();
@@ -301,6 +324,7 @@ export function mountNaverDistrictMap({
           district.latitude,
           district.longitude,
           () => onSelect(district.href),
+          buildNaverDistrictMarkerContent(district),
         );
       }
     }
