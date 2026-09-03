@@ -37,6 +37,7 @@ export function AreaBuildingDialog({
     const previousFocus = document.activeElement instanceof HTMLElement
       ? document.activeElement
       : null;
+    const buildingId = building.id;
     closeButtonRef.current?.focus();
 
     const onKeyDown = (event: KeyboardEvent) => {
@@ -49,9 +50,19 @@ export function AreaBuildingDialog({
     window.addEventListener('keydown', onKeyDown);
     return () => {
       window.removeEventListener('keydown', onKeyDown);
-      previousFocus?.focus();
+      window.requestAnimationFrame(() => {
+        if (document.querySelector('[data-building-drawer]') !== null) return;
+        if (previousFocus !== null && previousFocus !== document.body && previousFocus.isConnected) {
+          previousFocus.focus();
+          return;
+        }
+        const escapedBuildingId = CSS.escape(buildingId);
+        document.querySelector<HTMLButtonElement>(
+          `[data-building-row="${escapedBuildingId}"] > button`,
+        )?.focus();
+      });
     };
-  }, []);
+  }, [building.id]);
 
   const closeLabel = locale === 'ko' ? '건물 상세 닫기' : 'Close building details';
 
