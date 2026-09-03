@@ -16,7 +16,7 @@
 
 .mainUnframed { width: 100%; }
 
-.exploreMap { min-width: 0; background: var(--surface); }
+.exploreMap { position: relative; min-width: 0; background: var(--surface); }
 .panelHeading { min-height: 88px; padding: var(--space-4); display: flex; align-items: end; justify-content: space-between; gap: var(--space-4); border-bottom: 1px solid var(--divider); }
 .panelHeading h2 { margin: 0; font-size: var(--evidence-type-section); line-height: 1.15; letter-spacing: -0.02em; }
 .segmentPanel .panelHeading {
@@ -58,8 +58,8 @@
   cursor: pointer;
 }
 .segmentTabs button[aria-selected='true'] { color: #fff; border-color: #174f8f; background: #174f8f; }
-.segmentTabs strong { font-size: 12px; }
-.segmentTabs span { overflow: hidden; font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
+.segmentTabs strong { font-size: 14px; }
+.segmentTabs span { overflow: hidden; font-size: 12px; line-height: 1.3; text-overflow: ellipsis; white-space: nowrap; }
 .segmentRow {
   min-width: 0;
   padding: 13px;
@@ -102,22 +102,45 @@
   justify-content: space-between;
   gap: 8px;
 }
-.projectList > header span { font-size: 11px; font-weight: 800; }
-.projectList > header small { color: var(--muted); font-size: 8px; }
-.projectList > a {
+.projectList > header span { font-size: 13px; font-weight: 800; }
+.projectList > header small { color: var(--muted); font-size: 11px; }
+.projectList > div {
   min-width: 0;
-  padding: 10px 2px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 36px;
+  align-items: stretch;
+  border-top: 1px solid var(--divider);
+}
+.projectList > div[data-selected='true'] { background: #edf2ff; }
+.projectList > div > button {
+  min-width: 0;
+  padding: 11px 8px 11px 2px;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 12px;
-  border-top: 1px solid var(--divider);
+  border: 0;
   color: inherit;
-  text-decoration: none;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
 }
-.projectList > a > span { min-width: 0; display: grid; gap: 3px; }
-.projectList > a > span:last-child { text-align: right; }
-.projectList strong { overflow: hidden; font-size: 10px; line-height: 1.25; text-overflow: ellipsis; white-space: nowrap; }
-.projectList small { color: var(--muted); font-size: 8px; line-height: 1.3; }
+.projectList > div > button > span { min-width: 0; display: grid; gap: 3px; }
+.projectList > div > button > span:last-child { text-align: right; }
+.projectList > div > a { display: grid; place-items: center; color: var(--accent); font-size: 18px; text-decoration: none; }
+.projectList strong { overflow: hidden; display: -webkit-box; font-size: 12px; line-height: 1.3; text-overflow: ellipsis; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.projectList > div > button > span:last-child strong { display: block; white-space: nowrap; }
+.projectList small { color: var(--muted); font-size: 11px; line-height: 1.35; }
+.segmentPrompt { margin: 10px; padding: 20px 16px; border: 1px dashed var(--divider); border-radius: 10px; background: var(--surface-strong); }
+.segmentPrompt strong { font-size: 14px; }
+.segmentPrompt p { margin: 7px 0 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+.mapSelection { position: absolute; z-index: 4; right: 18px; bottom: 18px; width: min(330px, calc(100% - 36px)); padding: 16px; display: grid; gap: 5px; border: 1px solid var(--divider); border-radius: 12px; background: rgb(255 255 255 / 96%); box-shadow: 0 12px 30px rgb(15 23 42 / 18%); }
+.mapSelection span, .mapSelection small { color: var(--muted); font-size: 11px; }
+.mapSelection h3, .mapSelection p { margin: 0; }
+.mapSelection h3 { overflow: hidden; display: -webkit-box; font-size: 17px; line-height: 1.3; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.mapSelection p { color: var(--muted); font-size: 12px; line-height: 1.4; }
+.mapSelection strong { font-size: 17px; white-space: nowrap; }
+.mapSelection a { margin-top: 5px; color: var(--accent); font-size: 12px; font-weight: 800; text-decoration: none; }
 .emptyState { min-height: 360px; padding: var(--space-5); display: grid; align-content: center; gap: var(--space-3); }
 .emptyState h2, .emptyState p { margin: 0; }
 

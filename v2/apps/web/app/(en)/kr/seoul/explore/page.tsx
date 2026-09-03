@@ -14,6 +14,7 @@ import {
 } from '@/lib/site-copy';
 import { indexableMetadata } from '@/lib/public-metadata';
 import { KOREA_EXPLORER_HOUSING_TYPES } from '@/lib/public-market/korea-explorer-evidence.server';
+import { googleMapsBrowserKeyFromEnvironment } from '@/lib/maps/google-maps-browser-key.server';
 
 type ExplorerPageProps = {
   readonly searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -119,6 +120,7 @@ export default async function ExplorerPage({ searchParams }: ExplorerPageProps) 
       ? Object.freeze({ ...selection, neighborhood: requestedNeighborhood })
       : selection;
   const naverMapClientId = process.env.NAVER_MAP_CLIENT_ID?.trim() || null;
+  const googleMapsBrowserKey = googleMapsBrowserKeyFromEnvironment();
 
   return (
     <div id="top" className="explorer-page">
@@ -127,6 +129,7 @@ export default async function ExplorerPage({ searchParams }: ExplorerPageProps) 
         <AreaExplorer
           model={model}
           naverMapClientId={naverMapClientId}
+          googleMapsBrowserKey={googleMapsBrowserKey}
           initialQuery={singleValue(query.q)}
           initialSelection={restoredSelection}
         />

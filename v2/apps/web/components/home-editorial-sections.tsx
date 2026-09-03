@@ -52,7 +52,7 @@ export function HomeEditorialSections({ seoul, news, featuredBuildings, naverMap
       </section>
 
       <section className={styles.section} id="home-prices" aria-labelledby="home-prices-heading">
-        <div className={styles.sectionHeader}><div><h2 id="home-prices-heading">Buildings across markets</h2><p>Real place identities across Seoul, Singapore and Dubai. Nearby street imagery is context—not a listing photo or active inventory.</p></div><Link href="/prices/">View available price evidence →</Link></div>
+        <div className={styles.sectionHeader}><div><h2 id="home-prices-heading">Buildings across markets</h2><p>Matched place photos are shown only when the building identity agrees. Otherwise the exact location or an unavailable state is shown.</p></div><Link href="/prices/">View available price evidence →</Link></div>
         <RotatingBuildingGrid buildings={featuredBuildings} naverMapClientId={naverMapClientId} googleMapsBrowserKey={googleMapsBrowserKey} />
       </section>
 

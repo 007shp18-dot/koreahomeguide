@@ -21,19 +21,13 @@ export type HomeMarketVisual = Readonly<{
   mapHref: string;
 }>;
 
-const dubaiVisuals: readonly HomeMarketVisual[] = Object.freeze([
-  { id: 'ae-burj-khalifa', name: 'Burj Khalifa', market: 'Dubai', countryCode: 'AE', location: 'Downtown Dubai', provider: 'google', latitude: 25.1972, longitude: 55.2744, addressQuery: 'Burj Khalifa, Downtown Dubai, UAE', observationLabel: 'Verified place identity', periodLabel: 'Price evidence awaiting release clearance', facts: ['Downtown Dubai', 'Place context'], href: '/ae/dubai/explore/', mapHref: 'https://www.google.com/maps/search/?api=1&query=Burj+Khalifa+Dubai' },
-  { id: 'ae-marina-gate', name: 'Marina Gate', market: 'Dubai', countryCode: 'AE', location: 'Dubai Marina', provider: 'google', latitude: 25.0877, longitude: 55.1469, addressQuery: 'Marina Gate, Dubai Marina, UAE', observationLabel: 'Verified place identity', periodLabel: 'Price evidence awaiting release clearance', facts: ['Dubai Marina', 'Place context'], href: '/ae/dubai/explore/', mapHref: 'https://www.google.com/maps/search/?api=1&query=Marina+Gate+Dubai' },
-  { id: 'ae-address-sky-view', name: 'Address Sky View', market: 'Dubai', countryCode: 'AE', location: 'Downtown Dubai', provider: 'google', latitude: 25.2012, longitude: 55.2691, addressQuery: 'Address Sky View, Downtown Dubai, UAE', observationLabel: 'Verified place identity', periodLabel: 'Price evidence awaiting release clearance', facts: ['Downtown Dubai', 'Place context'], href: '/ae/dubai/explore/', mapHref: 'https://www.google.com/maps/search/?api=1&query=Address+Sky+View+Dubai' },
-]);
-
 function singaporeVisuals(): readonly HomeMarketVisual[] {
   const repository = hdbSnapshotRepositoryFromEnvironment();
   if (repository === null) return Object.freeze([]);
   const blocks = repository.listTowns().flatMap((town) => repository.listBlocks(town.town))
     .filter((block) => block.property !== null && block.resaleMedianSgd !== null && block.resaleCount >= 5)
     .sort((left, right) => right.resaleCount - left.resaleCount || left.blockId.localeCompare(right.blockId))
-    .slice(0, 6);
+    .slice(0, 24);
   return Object.freeze(blocks.map((block) => {
     const address = `${block.block} ${block.street}`;
     const townSlug = hdbTownSlug(block.town);
@@ -69,5 +63,7 @@ export function buildHomeMarketVisuals(): readonly HomeMarketVisual[] {
       building.periodLabel,
     ]),
   }));
-  return Object.freeze([...seoul.slice(0, 4), ...singaporeVisuals(), ...dubaiVisuals]);
+  // Dubai stays out of building rotation until a released building-detail
+  // record exists. Its market overview still communicates the rights status.
+  return Object.freeze([...seoul, ...singaporeVisuals()]);
 }

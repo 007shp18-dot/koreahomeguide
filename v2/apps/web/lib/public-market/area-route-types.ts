@@ -173,6 +173,13 @@ export type PublicDistrictRankingRow = Readonly<{
   plotAxis: QuotePositionAxis | null;
 }>;
 
+export type UnavailableRankingDistrict = Readonly<{
+  slug: SeoulDistrictSlug;
+  nameEn: string;
+  nameKo: string;
+  href: `/kr/seoul/explore/${string}/` | `/kr/seoul/explore/${string}/?${string}`;
+}>;
+
 export type PublicAreaRankingsModel =
   | Readonly<{
       status: 'ready';
@@ -187,10 +194,12 @@ export type PublicAreaRankingsModel =
         monthly: boolean;
         sale: boolean;
       }>;
+      citySummary: PublicMarketSummary;
       cheapest: readonly PublicDistrictRankingRow[];
       change: readonly PublicDistrictRankingRow[];
       spread: readonly PublicDistrictRankingRow[];
       sample: readonly PublicDistrictRankingRow[];
+      unavailableDistricts: readonly UnavailableRankingDistrict[];
       withheldDistrictCount: number;
       changeExcludedDistrictCount: number;
       hasNegativeChange: boolean;

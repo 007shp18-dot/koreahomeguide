@@ -107,9 +107,9 @@ describe('/kr/seoul/explore/ route contract', () => {
       },
     });
     expect(markup).toContain('Selected · Dongjak-gu');
-    expect(markup).toContain('role="img"');
-    expect(markup).toContain('viewBox="0 0 720 560"');
-    expect((markup.match(/data-district-path=/g) ?? [])).toHaveLength(25);
+    expect(markup).toContain('role="status"');
+    expect(markup).toContain('Loading the NAVER map.');
+    expect(markup).not.toContain('data-district-path=');
     expect((markup.match(/data-district-option=/g) ?? [])).toHaveLength(25);
     expect(markup).toContain('data-explorer-layout="split"');
     expect(markup).toContain('Search this area');

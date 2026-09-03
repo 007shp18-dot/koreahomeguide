@@ -21,7 +21,7 @@
 .layers a { min-height: 44px; padding-inline: var(--space-4); display: inline-flex; align-items: center; flex: 0 0 auto; border-right: var(--rule-default); color: inherit; font-size: var(--evidence-type-ui); font-weight: 750; text-decoration: none; }
 .layers a[aria-current='page'] { color: var(--surface-strong); background: var(--ink); }
 
-.exploreGrid { min-height: 620px; display: grid; grid-template-columns: minmax(340px, 400px) minmax(0, 1fr); }
+.exploreGrid { min-height: 620px; display: grid; grid-template-columns: minmax(320px, 34%) minmax(0, 66%); }
 .discovery { min-width: 0; border-right: var(--rule-strong); }
 .spatial { min-width: 0; background: var(--surface); }
 
