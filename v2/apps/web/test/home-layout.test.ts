@@ -64,8 +64,7 @@ describe('signedprice Evidence Editorial homepage', () => {
     const markup = renderToStaticMarkup(await Home());
 
     expect(markup).toContain('href="/sg">Singapore</a>');
-    expect(markup).toContain('href="/markets#dubai">Dubai</a>');
-    expect(markup).not.toMatch(/href="\/ae\//);
+    expect(markup).toContain('href="/ae/dubai">Dubai</a>');
   });
 
   it('closes with a compact trust boundary instead of filler principles', async () => {

@@ -480,9 +480,9 @@ const marketCopyById = {
       },
     ],
     nextAction: {
-      label: 'Review Dubai buy scope',
-      href: '/ae/dubai/buy/',
-      description: 'See the exact context and detail boundaries for a buy decision.',
+      label: 'Review Dubai evidence boundary',
+      href: '/trust/',
+      description: 'Review the source, rights and publication gates before local services open.',
       external: false,
     },
   },
@@ -560,7 +560,8 @@ export const intentRouteParams = initialMarketIds.flatMap((marketId) => {
 });
 
 export const publicMarketRouteParams = marketRouteParams.filter(
-  ({ country, city }) => country === 'kr' && city === 'seoul',
+  ({ country, city }) =>
+    (country === 'kr' && city === 'seoul') || (country === 'ae' && city === 'dubai'),
 );
 
 export const publicIntentRouteParams = intentRouteParams.filter(
@@ -670,7 +671,7 @@ export function buildMarketPageModel(
         description: item.description,
         state: item.state,
         stateLabel: item.stateLabel,
-        href: item.href,
+        href: profile.id === 'kr-seoul' ? item.href : undefined,
       })),
     },
     {
@@ -683,9 +684,9 @@ export function buildMarketPageModel(
     },
     {
       number: '05',
-      title: 'Local rules and costs',
+      title: 'Listings and investment service',
       description:
-        'Dated eligibility, tax and ownership-cost detail is not yet published on this Preview route.',
+        'Active listings, inquiries and personalized investment recommendations are not offered yet.',
       state: 'not_built',
       stateLabel: overviewStateLabels.not_built,
       items: [],

@@ -16,6 +16,7 @@ import {
   NaverBuildingStreetView,
   mountNaverBuildingMap,
   mountNaverBuildingStreetView,
+  resolveNaverBuildingLocation,
 } from '../components/maps/naver-building-street-view';
 
 describe('provider building street view', () => {
@@ -166,5 +167,27 @@ describe('provider building street view', () => {
       componentRestrictions: { country: 'SG' },
       region: 'SG',
     });
+  });
+
+  it('geocodes one unambiguous Seoul building identity before requesting nearby imagery', async () => {
+    const geocode = vi.fn((
+      _input: Readonly<{ query: string }>,
+      callback: (status: string, response: Readonly<{
+        v2: Readonly<{ addresses: readonly Readonly<{
+          x: string; y: string; roadAddress: string; jibunAddress: string;
+        }>[] }>;
+      }>) => void,
+    ) => callback('OK', { v2: { addresses: [{
+      x: '127.1598', y: '37.4976',
+      roadAddress: '서울특별시 송파구 송파대로 345',
+      jibunAddress: '서울특별시 송파구 가락동 913',
+    }] } }));
+    const addressQuery = '서울특별시 송파구 가락동 헬리오시티';
+
+    await expect(resolveNaverBuildingLocation({
+      sdk: { Service: { Status: { OK: 'OK' }, geocode } },
+      addressQuery,
+    })).resolves.toEqual({ latitude: 37.4976, longitude: 127.1598 });
+    expect(geocode).toHaveBeenCalledWith({ query: addressQuery }, expect.any(Function));
   });
 });

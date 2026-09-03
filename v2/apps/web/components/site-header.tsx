@@ -33,7 +33,7 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
   const markets = [
     { id: 'seoul', label: 'Seoul', href: '/kr/seoul/' },
     { id: 'singapore', label: 'Singapore', href: '/sg/' },
-    { id: 'dubai', label: 'Dubai', href: '/markets/#dubai' },
+    { id: 'dubai', label: 'Dubai', href: '/ae/dubai/' },
   ] as const;
 
   function isCurrentLink(href: string): boolean {

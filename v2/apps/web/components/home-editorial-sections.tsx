@@ -23,7 +23,7 @@ export function HomeEditorialSections({ seoul, news }: HomeEditorialSectionsProp
         <div className={styles.snapshotGrid}>
           <Link href="/kr/seoul/"><span>KR · Live evidence</span><h3>Seoul</h3><strong>{seoul.status === 'ready' ? number.format(seoul.totalCount) : 'Evidence status'}</strong><p>{seoul.status === 'ready' ? `Eligible contracts · ${seoul.period}` : 'Open the market for the current data state.'}</p><small>View market →</small></Link>
           <Link href="/sg/"><span>SG · Released layers</span><h3>Singapore</h3><strong>URA · HDB</strong><p>Private residential and HDB evidence opens by verified dataset.</p><small>View market →</small></Link>
-          <Link href="/markets/#dubai"><span>AE · Rights review</span><h3>Dubai</h3><strong>AED</strong><p>Transaction display and professional workflows remain closed.</p><small>Review scope →</small></Link>
+          <Link href="/ae/dubai/"><span>AE · Rights review</span><h3>Dubai</h3><strong>AED</strong><p>Transaction display and professional workflows remain closed.</p><small>Review scope →</small></Link>
         </div>
       </section>
 
@@ -35,7 +35,7 @@ export function HomeEditorialSections({ seoul, news }: HomeEditorialSectionsProp
         <div className={styles.marketDirectoryGrid}>
           <Link href="/kr/seoul/explore/" className={styles.marketKorea}><span>Korea</span><h3>Seoul</h3><p>Transaction evidence, apartment and rental context across 25 districts.</p><strong>Explore Korea →</strong></Link>
           <Link href="/sg/singapore/explore/" className={styles.marketSingapore}><span>Singapore</span><h3>Singapore</h3><p>Districts, projects and released URA-linked transaction evidence.</p><strong>Explore Singapore →</strong></Link>
-          <Link href="/markets/#dubai" className={styles.marketDubai}><span>Dubai</span><h3>Dubai</h3><p>Communities and projects will open after transaction rights review.</p><strong>Review Dubai status →</strong></Link>
+          <Link href="/ae/dubai/" className={styles.marketDubai}><span>Dubai</span><h3>Dubai</h3><p>Communities and projects will open after transaction rights review.</p><strong>Review Dubai status →</strong></Link>
         </div>
       </section>
 

@@ -160,7 +160,7 @@ describe('signedprice homepage copy', () => {
     const markup = renderToStaticMarkup(await Home());
 
     expect(markup).toContain('href="/sg">Singapore</a>');
-    expect(markup).toContain('href="/markets#dubai">Dubai</a>');
+    expect(markup).toContain('href="/ae/dubai">Dubai</a>');
   });
 
   it('puts the shipped Seoul evidence products on the root entry page', async () => {

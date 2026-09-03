@@ -444,16 +444,11 @@ export function buildHomepagePresentation(singapore: SingaporeEntryModel): Reado
   markets: readonly HomepageMarketModel[];
   singapore: SingaporeEntryModel;
 }> {
-  const singaporeReady = singapore.status === 'ready';
   const copy = {
     ...homepageCopy,
     header: {
       ...homepageCopy.header,
-      links: singaporeReady
-        ? [...homepageCopy.header.links, {
-            label: 'Singapore evidence', href: '/sg/', ariaLabel: 'Singapore evidence',
-          }]
-        : homepageCopy.header.links,
+      links: homepageCopy.header.links,
     },
   } as typeof homepageCopy & Readonly<{ header: SiteHeaderModel }>;
   return Object.freeze({
