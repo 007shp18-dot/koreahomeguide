@@ -12,13 +12,21 @@ import GuideDocumentPage, {
 import { GUIDES, GUIDE_GLOSSARY } from '../lib/guide/guide-content';
 
 const expectedGuides = [
+  { slug: 'rent-apartment-korea-foreigner', stage: 'Getting started', readMinutes: 8 },
+  { slug: 'wolse-vs-jeonse', stage: 'Getting started', readMinutes: 5 },
+  { slug: 'before-you-sign', stage: 'Before signing', readMinutes: 7 },
+  { slug: 'korea-rental-contract-checklist', stage: 'Before signing', readMinutes: 6 },
+  { slug: 'korea-rent-deposit-protection-foreigners', stage: 'Before signing', readMinutes: 7 },
+  { slug: 'korea-rental-scams', stage: 'Before signing', readMinutes: 7 },
+  { slug: 'seoul-officetel-rent', stage: 'Market research', readMinutes: 6 },
+  { slug: 'seoul-brokerage-fees', stage: 'Before signing', readMinutes: 5 },
   { slug: 'compare-two-contracts', stage: 'Before signing', readMinutes: 4 },
   { slug: 'read-district-evidence', stage: 'Market research', readMinutes: 3 },
   { slug: 'understand-publication-limits', stage: 'Evidence check', readMinutes: 3 },
 ] as const;
 
 describe('Korea methodology guides', () => {
-  it('publishes exactly three immutable methodology documents and the glossary', () => {
+  it('publishes the immutable practical and methodology guides with the glossary', () => {
     expect(GUIDES.map(({ slug, stage, readMinutes }) => ({ slug, stage, readMinutes })))
       .toEqual(expectedGuides);
     expect(Object.isFrozen(GUIDES)).toBe(true);
