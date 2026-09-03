@@ -12,7 +12,7 @@ export type PublicRoutePageKind =
   | 'rankings'
   | 'news'
   | 'guide';
-export type PublicRouteCohort = 0 | 1 | 2;
+export type PublicRouteCohort = 0 | 1 | 2 | 3;
 
 export type PublicRouteReadiness = Readonly<{
   summaryReady?: boolean;
@@ -121,12 +121,20 @@ export const signedPricePublicRouteRegistry = createPublicRouteRegistry([
     sitemap: true, isReady: alwaysReady,
   },
   {
-    path: '/trust/', locale: 'en', pageKind: 'utility', cohort: 0,
-    sitemap: true, isReady: alwaysReady,
+    path: '/trust/', locale: 'en', pageKind: 'utility', cohort: 3,
+    sitemap: true, isReady: alwaysReady, legacySourcePath: '/about/',
   },
   {
-    path: '/kr/seoul/check/', locale: 'en', pageKind: 'check', cohort: 1,
-    sitemap: true, isReady: singleQuoteReady,
+    path: '/community/', locale: 'en', pageKind: 'utility', cohort: 3,
+    sitemap: false, isReady: alwaysReady, legacySourcePath: '/community/',
+  },
+  {
+    path: '/privacy/', locale: 'en', pageKind: 'utility', cohort: 3,
+    sitemap: false, isReady: alwaysReady, legacySourcePath: '/privacy/',
+  },
+  {
+    path: '/kr/seoul/check/', locale: 'en', pageKind: 'check', cohort: 3,
+    sitemap: true, isReady: singleQuoteReady, legacySourcePath: '/',
   },
   {
     path: '/kr/seoul/check/compare/', locale: 'en', pageKind: 'check', cohort: 1,
@@ -142,8 +150,8 @@ export const signedPricePublicRouteRegistry = createPublicRouteRegistry([
     sitemap: true, isReady: summaryReady,
   },
   {
-    path: '/kr/seoul/explore/', locale: 'en', pageKind: 'explore', cohort: 1,
-    sitemap: true, isReady: areaReady,
+    path: '/kr/seoul/explore/', locale: 'en', pageKind: 'explore', cohort: 3,
+    sitemap: true, isReady: areaReady, legacySourcePath: '/explore/',
   },
   {
     path: '/kr/seoul/rankings/', locale: 'en', pageKind: 'rankings', cohort: 0,
@@ -162,7 +170,7 @@ export const signedPricePublicRouteRegistry = createPublicRouteRegistry([
     sitemap: true, isReady: newsReady,
   },
   {
-    path: '/kr/seoul/guide/', locale: 'en', pageKind: 'guide', cohort: 1,
+    path: '/kr/seoul/guide/', locale: 'en', pageKind: 'guide', cohort: 3,
     sitemap: true, isReady: alwaysReady, legacySourcePath: '/guides/',
   },
   {
