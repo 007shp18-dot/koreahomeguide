@@ -37,11 +37,11 @@ test('Explore selection opens a reload-safe district detail from the explicit ev
   const detailLink = page.getByRole('link', { name: 'Open evidence · Jongno-gu' });
   await expect(detailLink).toHaveAttribute('href', /^\/kr\/seoul\/explore\/jongno-gu/);
   await detailLink.click();
-  await expect(page).toHaveURL(/\/kr\/seoul\/explore\/jongno-gu(?:\/?|\?.*)$/);
+  await expect(page).toHaveURL(/\/kr\/seoul\/explore\/jongno-gu\/?(?:\?.*)?$/);
   await expect(page.locator('[data-detail-main="true"]')).toBeVisible();
   await expect(page.locator('[data-section="district-buildings"]')).toBeVisible();
   await page.reload();
-  await expect(page).toHaveURL(/\/kr\/seoul\/explore\/jongno-gu(?:\/?|\?.*)$/);
+  await expect(page).toHaveURL(/\/kr\/seoul\/explore\/jongno-gu\/?(?:\?.*)?$/);
   await expect(page.locator('[data-detail-main="true"]')).toBeVisible();
   await expect(page.locator('[data-section="district-buildings"]')).toBeVisible();
   await expectContained(page);

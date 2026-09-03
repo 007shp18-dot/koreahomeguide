@@ -134,7 +134,7 @@ test('rail selection opens the map-owned drawer and full-detail CTA', async ({ p
   test.skip(releaseTarget.usesExternalServer, 'Exact fixture values are local-release only.');
   await page.goto('/kr/seoul/explore/?district=jongno-gu');
 
-  const trigger = page.locator(`[data-building-row="${PUBLIC_BUILDING_TEST_ID}"] button`);
+  const trigger = page.locator(`[data-building-row="${PUBLIC_BUILDING_TEST_ID}"] > button`);
   await trigger.click();
   await expect(page).toHaveURL(/\/kr\/seoul\/explore\/\?.*buildingId=/);
   const drawer = page.locator(`[data-building-drawer="${PUBLIC_BUILDING_TEST_ID}"]`);
@@ -169,7 +169,7 @@ test('rail selection opens the map-owned drawer and full-detail CTA', async ({ p
 test('district selection stays inside the Explore workspace', async ({ page }) => {
   await page.goto('/kr/seoul/explore/?district=jongno-gu');
 
-  await page.getByLabel('District', { exact: true }).selectOption('gangnam-gu');
+  await page.locator('[data-district-option="gangnam-gu"]').click();
 
   await expect(page).toHaveURL(/\/kr\/seoul\/explore\/\?.*district=gangnam-gu/);
   expect(new URL(page.url()).pathname).toBe('/kr/seoul/explore/');

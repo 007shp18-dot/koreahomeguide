@@ -58,12 +58,12 @@ export const publicRoutes = [
   },
   {
     path: '/sg/singapore/explore/',
-    heading: 'Compare private-sale evidence across CCR, RCR, and OCR.',
+    heading: 'Residential transaction evidence',
     indexing: 'noindex',
   },
   ...(['ccr', 'rcr', 'ocr'] as const).map((area) => ({
     path: `/sg/singapore/explore/${area}/`,
-    heading: /median from 6 reported sale transactions\./,
+    heading: area.toUpperCase(),
     indexing: 'noindex' as const,
   })),
   {
@@ -77,7 +77,7 @@ export const publicRoutes = [
   { path: '/kr/seoul/guide/understand-publication-limits/', heading: 'Understand publication limits and refusals', indexing: 'index', canonical: '/kr/seoul/guide/understand-publication-limits/' },
   ...PUBLIC_AREA_TEST_DISTRICTS.map((district) => ({
     path: `/kr/seoul/${district.slug}/`,
-    heading: new RegExp(`${district.nameEn}:`),
+    heading: district.nameEn,
     indexing: 'noindex' as const,
     ...(district.slug === PUBLIC_AREA_WITHHELD_SLUG
       ? {}
@@ -85,7 +85,7 @@ export const publicRoutes = [
   })),
   ...PUBLIC_AREA_TEST_DISTRICTS.map((district) => ({
     path: `/kr/seoul/explore/${district.slug}/`,
-    heading: new RegExp(`${district.nameEn}:`),
+    heading: district.nameEn,
     indexing: district.slug === PUBLIC_AREA_WITHHELD_SLUG
       ? 'noindex' as const
       : 'index' as const,

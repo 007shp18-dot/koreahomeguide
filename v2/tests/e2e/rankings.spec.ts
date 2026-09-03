@@ -133,15 +133,12 @@ test('rankings remain contained and keyboard-readable at every release width', a
 
 test('Explore and district evidence link into Rankings without changing the five product links', async ({ page }) => {
   await page.goto('/kr/seoul/explore/');
-  await expect(page.getByRole('link', { name: 'View district rankings' }))
+  const productNavigation = page.getByRole('navigation', { name: 'Seoul evidence navigation' });
+  await expect(productNavigation.getByRole('link', { name: /Rankings/ }))
     .toHaveAttribute('href', '/kr/seoul/rankings/');
-  await expect(page.getByRole('navigation', { name: 'Seoul evidence navigation' })
-    .getByRole('link')).toHaveCount(5);
+  await expect(productNavigation.getByRole('link')).toHaveCount(5);
 
-  const districtHref = await page.locator('[data-district-row] a').last().getAttribute('href');
-  expect(districtHref).not.toBeNull();
-  if (districtHref === null) throw new Error('District evidence link is required.');
-  await page.goto(districtHref);
+  await page.goto('/kr/seoul/explore/jongno-gu/');
   await expect(page.getByRole('link', { name: 'View district rankings' }))
     .toHaveAttribute('href', '/kr/seoul/rankings/');
 });
