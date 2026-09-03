@@ -41,7 +41,7 @@ describe('nested Seoul district route', () => {
     const html = renderToStaticMarkup(page);
 
     expect(metadata).toMatchObject({
-      title: 'Gangnam-gu jeonse evidence | signedprice',
+      title: 'Gangnam-gu sale evidence | signedprice',
       robots: { index: true, follow: true },
       alternates: {
         canonical: 'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/',
