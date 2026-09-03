@@ -13,6 +13,12 @@ type NaverNewsItem = Readonly<{
 
 type NaverNewsResponse = Readonly<{ items?: unknown }>;
 
+export const NAVER_NEWS_API_URL = 'https://naverapihub.apigw.ntruss.com/search/v1/news' as const;
+export const NAVER_NEWS_API_HEADER_NAMES = Object.freeze({
+  clientId: 'X-NCP-APIGW-API-KEY-ID',
+  clientSecret: 'X-NCP-APIGW-API-KEY',
+} as const);
+
 const searches = Object.freeze([
   { market: 'seoul', marketLabel: 'Seoul', query: '서울 아파트 부동산 매매' },
   { market: 'singapore', marketLabel: 'Singapore', query: '싱가포르 부동산 주택' },
@@ -61,15 +67,16 @@ function categoryFor(text: string): string {
 }
 
 async function fetchMarketNews(search: (typeof searches)[number], clientId: string, clientSecret: string): Promise<readonly NewsWorkspaceItem[]> {
-  const url = new URL('https://openapi.naver.com/v1/search/news.json');
+  const url = new URL(NAVER_NEWS_API_URL);
   url.searchParams.set('query', search.query);
   url.searchParams.set('display', '12');
   url.searchParams.set('start', '1');
   url.searchParams.set('sort', 'date');
+  url.searchParams.set('format', 'json');
   const response = await fetch(url, {
     headers: {
-      'X-Naver-Client-Id': clientId,
-      'X-Naver-Client-Secret': clientSecret,
+      [NAVER_NEWS_API_HEADER_NAMES.clientId]: clientId,
+      [NAVER_NEWS_API_HEADER_NAMES.clientSecret]: clientSecret,
     },
     next: { revalidate: 900 },
   });
