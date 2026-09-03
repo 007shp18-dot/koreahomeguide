@@ -1,4 +1,4 @@
-From 9ad680ea01b5b513174d44b6c01868eaa4623d12 Mon Sep 17 00:00:00 2001
+From 72d278d429f2a33cd260bfc571f329c28e454e0a Mon Sep 17 00:00:00 2001
 From: Claude <noreply@anthropic.com>
 Date: Tue, 1 Sep 2026 06:40:08 +0000
 Subject: [PATCH] feat(v2): build the Korea conversion-curve artifact from
@@ -39,13 +39,13 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01U2amRGaTDxWN7HMcpdeHBb
 ---
  v2/package.json                               |   1 +
- .../korea-rent/src/conversion-pairs.ts        | Bin 0 -> 14666 bytes
+ .../korea-rent/src/conversion-pairs.ts        | 442 ++++++++++++++++++
  v2/packages/korea-rent/src/index.ts           |  10 +
- .../korea-rent/test/conversion-pairs.test.ts  | 214 ++++++++++
+ .../korea-rent/test/conversion-pairs.test.ts  | 215 +++++++++
  v2/pnpm-lock.yaml                             |   3 +
- .../build-korea-conversion-artifact.mts       | 400 ++++++++++++++++++
- v2/tests/korea-conversion-runner.test.ts      | 205 +++++++++
- 7 files changed, 833 insertions(+)
+ .../build-korea-conversion-artifact.mts       | 404 ++++++++++++++++
+ v2/tests/korea-conversion-runner.test.ts      | 207 ++++++++
+ 7 files changed, 1282 insertions(+)
  create mode 100644 v2/packages/korea-rent/src/conversion-pairs.ts
  create mode 100644 v2/packages/korea-rent/test/conversion-pairs.test.ts
  create mode 100644 v2/scripts/build-korea-conversion-artifact.mts
@@ -65,122 +65,457 @@ index 67995fd..bdf803a 100644
    }
 diff --git a/v2/packages/korea-rent/src/conversion-pairs.ts b/v2/packages/korea-rent/src/conversion-pairs.ts
 new file mode 100644
-index 0000000000000000000000000000000000000000..fc00217d259f52397838a982b99fc3ce12fa2d97
-GIT binary patch
-literal 14666
-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
-
-literal 0
-HcmV?d00001
-
+index 0000000..378341b
+--- /dev/null
++++ b/v2/packages/korea-rent/src/conversion-pairs.ts
+@@ -0,0 +1,442 @@
++import { normalizeKoreaBuildingText } from './building-identity';
++import type { KoreaRentRecord } from './input';
++import type {
++  KoreaConversionHousingType,
++  VerifiedKoreaConversionAnchor,
++  VerifiedKoreaConversionCurve,
++} from './conversion-artifact';
++
++/**
++ * A filed record plus the district it was queried under. MOLIT answers per
++ * `LAWD_CD`, so the caller always knows this even though `KoreaRentRecord`
++ * does not carry it - and without it two different buildings can collide
++ * (신사동 exists in both 강남구 and 관악구).
++ */
++export type KoreaConversionInputRecord = KoreaRentRecord & Readonly<{
++  districtCode?: string;
++}>;
++
++/**
++ * Deriving the measured conversion curve from filed contracts.
++ *
++ * Everything else this site publishes is a distribution of deposits. This is
++ * the one number that is not observable in any single contract: what a
++ * landlord charged, per won of deposit not paid, to accept monthly rent
++ * instead. It only appears BETWEEN two contracts.
++ *
++ * The pair is the unit of evidence:
++ *
++ *   same building x same filed area x two different deposits
++ *   =>  rate = (rentLow - rentHigh) * 12 / (depositHigh - depositLow)
++ *
++ * That is the statutory 전월세전환율 written generally. With the higher-deposit
++ * side at zero rent it reduces to the familiar
++ * `monthlyRent * 12 / (jeonseDeposit - wolseDeposit)`.
++ *
++ * THE RATE IS KEYED AT THE LOWER DEPOSIT. That is the deposit actually written
++ * on the contract carrying the rent, and the published rule is that a rate is
++ * read at the deposit on the contract, never at a deposit nobody signed.
++ * Keying at the midpoint or the higher side would attribute a rate to a
++ * transaction that did not happen.
++ *
++ * Two properties of the result matter and both fall out of the data rather
++ * than being assumed here: the rate differs by housing type, and it falls as
++ * the deposit rises. Neither is imposed - if the contracts do not show it, the
++ * bands will not show it either.
++ *
++ * What this module refuses to do is as important as what it computes. A band
++ * holding fewer pairs than the configured minimum is DROPPED, not published
++ * with a wide error bar; a curve left with fewer than two surviving anchors is
++ * omitted entirely rather than extrapolated. An anchor that cannot be measured
++ * is absent, never estimated.
++ */
++
++export type ConversionPairExclusions = Readonly<{
++  /** Filed then cancelled. Never evidence of a price. */
++  cancelled: number;
++  /** Money or area unusable: non-finite, negative, or a zero-deposit record. */
++  invalidMoney: number;
++  /** Survived cleaning but found no partner in the same building and area. */
++  differentBuildingOrArea: number;
++}>;
++
++export type ConversionPairRejections = Readonly<{
++  /** Rent did not fall as deposit rose. Not a conversion; a different unit. */
++  rentDidNotFall: number;
++  /** Deposits too close together - the denominator is noise. */
++  depositGapTooSmall: number;
++  /** Signed too far apart to be the same market. */
++  outsideDateWindow: number;
++  /** Implied rate outside the plausible band. */
++  implausibleRate: number;
++}>;
++
++export type DroppedAnchor = Readonly<{
++  housingType: KoreaConversionHousingType;
++  bandFloorWon: number;
++  bandCeilingWon: number | null;
++  pairCount: number;
++  reason: 'below_minimum_pairs' | 'deposit_not_increasing';
++}>;
++
++export type ConversionCurveDiagnostics = Readonly<{
++  recordsIn: number;
++  recordsUsable: number;
++  groupsConsidered: number;
++  pairsFormed: number;
++  rejections: ConversionPairRejections;
++  droppedAnchors: readonly DroppedAnchor[];
++  omittedHousingTypes: readonly KoreaConversionHousingType[];
++}>;
++
++export type ConversionCurveBuild = Readonly<{
++  curves: readonly VerifiedKoreaConversionCurve[];
++  eligiblePairCount: number;
++  excluded: ConversionPairExclusions;
++  diagnostics: ConversionCurveDiagnostics;
++}>;
++
++export type ConversionPairOptions = Readonly<{
++  /** A band with fewer pairs than this is dropped. Mirrors the artifact field. */
++  minimumPairsPerAnchor: number;
++  /** Contracts further apart than this are different markets, not a pair. */
++  maximumDaysBetween: number;
++  /** Below this gap the implied rate is dominated by rounding. */
++  minimumDepositGapWon: number;
++  /** Inclusive plausible annual rate band, as fractions. */
++  minimumAnnualRate: number;
++  maximumAnnualRate: number;
++  /** Ascending band floors in won, per housing type. Last band is open-ended. */
++  bandFloorsWon: Readonly<Record<KoreaConversionHousingType, readonly number[]>>;
++  /** Guard against a pathological group blowing up the O(n^2) pairing. */
++  maximumGroupSize: number;
++}>;
++
++/**
++ * Band floors are deliberately coarse at the top: filed contracts thin out as
++ * the deposit rises, and a band nobody can fill is a band that gets dropped.
++ */
++export const DEFAULT_CONVERSION_PAIR_OPTIONS: ConversionPairOptions = Object.freeze({
++  minimumPairsPerAnchor: 120,
++  maximumDaysBetween: 90,
++  minimumDepositGapWon: 10_000_000,
++  minimumAnnualRate: 0.005,
++  maximumAnnualRate: 0.15,
++  maximumGroupSize: 400,
++  bandFloorsWon: Object.freeze({
++    apartment: Object.freeze([
++      0, 40_000_000, 75_000_000, 125_000_000, 175_000_000, 250_000_000, 350_000_000, 450_000_000,
++    ]),
++    officetel: Object.freeze([
++      0, 40_000_000, 62_500_000, 87_500_000, 125_000_000, 175_000_000,
++    ]),
++  }),
++});
++
++const HOUSING_TYPES: readonly KoreaConversionHousingType[] = Object.freeze([
++  'apartment',
++  'officetel',
++]);
++
++const DAY_MS = 86_400_000;
++
++type UsableRecord = Readonly<{
++  groupKey: string;
++  housingType: KoreaConversionHousingType;
++  depositWon: number;
++  monthlyRentWon: number;
++  signedAtMs: number;
++}>;
++
++type Pair = Readonly<{
++  housingType: KoreaConversionHousingType;
++  /** The deposit the rate is read at: the lower of the two. */
++  keyedDepositWon: number;
++  annualRate: number;
++}>;
++
++function isConversionHousingType(value: string): value is KoreaConversionHousingType {
++  return value === 'apartment' || value === 'officetel';
++}
++
++function finitePositive(value: unknown): value is number {
++  return typeof value === 'number' && Number.isFinite(value) && value > 0;
++}
++
++function finiteNonNegative(value: unknown): value is number {
++  return typeof value === 'number' && Number.isFinite(value) && value >= 0;
++}
++
++/**
++ * Contract dates arrive as ISO-ish strings. A record whose date will not parse
++ * cannot be windowed, so it is unusable rather than silently dated to now.
++ */
++function signedAt(record: KoreaRentRecord): number | null {
++  const parsed = new Date(record.contractDate).getTime();
++  return Number.isFinite(parsed) ? parsed : null;
++}
++
++/**
++ * Identity has to be strict in both directions.
++ *
++ * Too loose and pairs are manufactured across buildings that merely share a
++ * name - dong names repeat across districts (신사동 exists in both 강남구 and
++ * 관악구), so the district code is part of the key rather than an optimisation.
++ * Too tight and real pairs are lost to cosmetics, so names go through the same
++ * `normalizeKoreaBuildingText` the building artifact uses (NFKC, collapsed
++ * whitespace) instead of a bare trim - otherwise a full-width character or a
++ * doubled space silently splits one complex in two and every pair inside it
++ * disappears.
++ *
++ * Area is matched at 0.01 sqm, the precision the filing itself carries. The
++ * separator is an escaped NUL because it cannot occur in any of the parts.
++ */
++function groupKeyOf(
++  record: KoreaConversionInputRecord,
++  housingType: KoreaConversionHousingType,
++): string | null {
++  if (record.buildingLabel === undefined || record.legalDong === undefined) return null;
++  const building = normalizeKoreaBuildingText(record.buildingLabel);
++  const dong = normalizeKoreaBuildingText(record.legalDong);
++  const district = record.districtCode?.trim();
++  if (building === '' || dong === '' || district === undefined || district === '') return null;
++  if (!finitePositive(record.areaSqm)) return null;
++  const area = record.areaSqm.toFixed(2);
++  return [housingType, district, dong, building, area].join('\u0000');
++}
++
++function median(sorted: readonly number[]): number {
++  const middle = sorted.length >> 1;
++  return sorted.length % 2 === 1
++    ? sorted[middle]!
++    : (sorted[middle - 1]! + sorted[middle]!) / 2;
++}
++
++/**
++ * The band a keyed deposit belongs to: the index of the highest floor it
++ * reaches. Floors ascend and the final band is open-ended.
++ */
++function bandIndexOf(depositWon: number, floors: readonly number[]): number {
++  let index = 0;
++  for (let i = 0; i < floors.length; i += 1) {
++    if (depositWon >= floors[i]!) index = i;
++    else break;
++  }
++  return index;
++}
++
++export function buildKoreaConversionCurves(
++  records: readonly KoreaConversionInputRecord[],
++  options: ConversionPairOptions = DEFAULT_CONVERSION_PAIR_OPTIONS,
++): ConversionCurveBuild {
++  let cancelled = 0;
++  let invalidMoney = 0;
++
++  // ---- clean ------------------------------------------------------------
++  const byGroup = new Map<string, UsableRecord[]>();
++  for (const record of records) {
++    if (record.recordStatus === 'cancelled') {
++      cancelled += 1;
++      continue;
++    }
++    const housingType = record.sourceHousingType;
++    // Villa and detached filings exist but the published curve is typed, and a
++    // type with no curve is better than a type carrying another type's rate.
++    if (!isConversionHousingType(housingType)) continue;
++
++    if (!finitePositive(record.depositWon) || !finiteNonNegative(record.monthlyRentWon)) {
++      invalidMoney += 1;
++      continue;
++    }
++    const key = groupKeyOf(record, housingType);
++    if (key === null) {
++      invalidMoney += 1;
++      continue;
++    }
++    const ms = signedAt(record);
++    if (ms === null) {
++      invalidMoney += 1;
++      continue;
++    }
++
++    const bucket = byGroup.get(key);
++    const usable: UsableRecord = {
++      groupKey: key,
++      housingType,
++      depositWon: record.depositWon,
++      monthlyRentWon: record.monthlyRentWon,
++      signedAtMs: ms,
++    };
++    if (bucket === undefined) byGroup.set(key, [usable]);
++    else bucket.push(usable);
++  }
++
++  const recordsUsable = [...byGroup.values()].reduce((n, group) => n + group.length, 0);
++
++  // ---- pair -------------------------------------------------------------
++  const pairs: Pair[] = [];
++  let rentDidNotFall = 0;
++  let depositGapTooSmall = 0;
++  let outsideDateWindow = 0;
++  let implausibleRate = 0;
++  let unpairedRecords = 0;
++
++  const windowMs = options.maximumDaysBetween * DAY_MS;
++
++  for (const group of byGroup.values()) {
++    // A group of one can never produce a pair. Counting its members here is
++    // what makes "no comparable filing in the same building and area" visible
++    // in the published totals instead of vanishing.
++    if (group.length < 2) {
++      unpairedRecords += group.length;
++      continue;
++    }
++    if (group.length > options.maximumGroupSize) {
++      // Deterministic truncation beats a quadratic blow-up on a bad key.
++      group.length = options.maximumGroupSize;
++    }
++
++    let groupProducedPair = false;
++    for (let i = 0; i < group.length; i += 1) {
++      for (let j = i + 1; j < group.length; j += 1) {
++        const a = group[i]!;
++        const b = group[j]!;
++        const [low, high] = a.depositWon <= b.depositWon ? [a, b] : [b, a];
++
++        const gap = high.depositWon - low.depositWon;
++        if (gap < options.minimumDepositGapWon) {
++          depositGapTooSmall += 1;
++          continue;
++        }
++        if (Math.abs(a.signedAtMs - b.signedAtMs) > windowMs) {
++          outsideDateWindow += 1;
++          continue;
++        }
++        // More deposit must buy less rent. If it did not, the two filings
++        // differ in something this pairing cannot see, and the quotient would
++        // not be a conversion rate.
++        if (low.monthlyRentWon <= high.monthlyRentWon) {
++          rentDidNotFall += 1;
++          continue;
++        }
++
++        const annualRate = ((low.monthlyRentWon - high.monthlyRentWon) * 12) / gap;
++        if (annualRate < options.minimumAnnualRate || annualRate > options.maximumAnnualRate) {
++          implausibleRate += 1;
++          continue;
++        }
++
++        groupProducedPair = true;
++        pairs.push({
++          housingType: low.housingType,
++          keyedDepositWon: low.depositWon,
++          annualRate,
++        });
++      }
++    }
++    if (!groupProducedPair) unpairedRecords += group.length;
++  }
++
++  // ---- band -------------------------------------------------------------
++  const curves: VerifiedKoreaConversionCurve[] = [];
++  const droppedAnchors: DroppedAnchor[] = [];
++  const omittedHousingTypes: KoreaConversionHousingType[] = [];
++  let eligiblePairCount = 0;
++
++  for (const housingType of HOUSING_TYPES) {
++    const floors = options.bandFloorsWon[housingType];
++    const buckets = floors.map(() => ({ deposits: [] as number[], rates: [] as number[] }));
++
++    for (const pair of pairs) {
++      if (pair.housingType !== housingType) continue;
++      const bucket = buckets[bandIndexOf(pair.keyedDepositWon, floors)]!;
++      bucket.deposits.push(pair.keyedDepositWon);
++      bucket.rates.push(pair.annualRate);
++    }
++
++    const anchors: VerifiedKoreaConversionAnchor[] = [];
++    for (let index = 0; index < buckets.length; index += 1) {
++      const bucket = buckets[index]!;
++      const pairCount = bucket.rates.length;
++      const bandFloorWon = floors[index]!;
++      const bandCeilingWon = index + 1 < floors.length ? floors[index + 1]! : null;
++
++      if (pairCount < options.minimumPairsPerAnchor) {
++        if (pairCount > 0) {
++          droppedAnchors.push({
++            housingType,
++            bandFloorWon,
++            bandCeilingWon,
++            pairCount,
++            reason: 'below_minimum_pairs',
++          });
++        }
++        continue;
++      }
++
++      // The anchor sits at the median deposit actually keyed in this band, not
++      // at the band edge - an edge is our construct, the median is observed.
++      bucket.deposits.sort((x, y) => x - y);
++      bucket.rates.sort((x, y) => x - y);
++      const depositWon = Math.round(median(bucket.deposits));
++      // Median, not mean: one unusual filing must not move an anchor.
++      const annualRate = Number(median(bucket.rates).toFixed(4));
++
++      const previous = anchors.at(-1);
++      if (previous !== undefined && depositWon <= previous.depositWon) {
++        // Two bands whose medians collide cannot both be anchors; the schema
++        // requires strictly increasing deposits, and merging them silently
++        // would hide that the banding is too fine for this data.
++        droppedAnchors.push({
++          housingType,
++          bandFloorWon,
++          bandCeilingWon,
++          pairCount,
++          reason: 'deposit_not_increasing',
++        });
++        continue;
++      }
++
++      anchors.push({ depositWon, annualRate, pairCount });
++    }
++
++    // One anchor is a point, not a curve: nothing can be interpolated and the
++    // published rule outside the observed range is to hold, which needs a range.
++    if (anchors.length < 2) {
++      omittedHousingTypes.push(housingType);
++      continue;
++    }
++
++    eligiblePairCount += anchors.reduce((sum, anchor) => sum + anchor.pairCount, 0);
++    curves.push({
++      housingType,
++      observedMinDepositWon: anchors[0]!.depositWon,
++      observedMaxDepositWon: anchors.at(-1)!.depositWon,
++      anchors: Object.freeze(anchors),
++    });
++  }
++
++  return Object.freeze({
++    curves: Object.freeze(curves),
++    eligiblePairCount,
++    excluded: Object.freeze({
++      cancelled,
++      invalidMoney,
++      differentBuildingOrArea: unpairedRecords,
++    }),
++    diagnostics: Object.freeze({
++      recordsIn: records.length,
++      recordsUsable,
++      groupsConsidered: byGroup.size,
++      pairsFormed: pairs.length,
++      rejections: Object.freeze({
++        rentDidNotFall,
++        depositGapTooSmall,
++        outsideDateWindow,
++        implausibleRate,
++      }),
++      droppedAnchors: Object.freeze(droppedAnchors),
++      omittedHousingTypes: Object.freeze(omittedHousingTypes),
++    }),
++  });
++}
 diff --git a/v2/packages/korea-rent/src/index.ts b/v2/packages/korea-rent/src/index.ts
-index 230bfff..d618370 100644
+index b383ff5..286d1b8 100644
 --- a/v2/packages/korea-rent/src/index.ts
 +++ b/v2/packages/korea-rent/src/index.ts
-@@ -40,6 +40,16 @@ export {
+@@ -53,6 +53,16 @@ export {
    type VerifiedKoreaConversionArtifact,
    type VerifiedKoreaConversionCurve,
  } from './conversion-artifact';
@@ -199,10 +534,10 @@ index 230bfff..d618370 100644
    RightsViolationError,
 diff --git a/v2/packages/korea-rent/test/conversion-pairs.test.ts b/v2/packages/korea-rent/test/conversion-pairs.test.ts
 new file mode 100644
-index 0000000..dee9694
+index 0000000..43735cc
 --- /dev/null
 +++ b/v2/packages/korea-rent/test/conversion-pairs.test.ts
-@@ -0,0 +1,214 @@
+@@ -0,0 +1,215 @@
 +import { describe, expect, it } from 'vitest';
 +
 +import {
@@ -210,7 +545,7 @@ index 0000000..dee9694
 +  buildKoreaConversionCurves,
 +  type ConversionPairOptions,
 +} from '../src/conversion-pairs';
-+import type { KoreaRentRecord } from '../src/input';
++import type { KoreaConversionInputRecord } from '../src/conversion-pairs';
 +
 +/**
 + * Every case here plants a rate the arithmetic must recover exactly. A pair
@@ -226,17 +561,18 @@ index 0000000..dee9694
 +  minimumPairsPerAnchor: 2,
 +};
 +
-+function record(input: Partial<KoreaRentRecord> & Pick<KoreaRentRecord, 'depositWon' | 'monthlyRentWon'>): KoreaRentRecord {
++function record(input: Partial<KoreaConversionInputRecord> & Pick<KoreaConversionInputRecord, 'depositWon' | 'monthlyRentWon'>): KoreaConversionInputRecord {
 +  return {
 +    contractType: 'new',
 +    contractDate: '2026-03-10',
++    districtCode: '11440',
 +    areaSqm: 84.97,
 +    buildingLabel: '성산시영',
 +    legalDong: '성산동',
 +    sourceHousingType: 'apartment',
 +    recordStatus: 'active',
 +    ...input,
-+  } as KoreaRentRecord;
++  } as KoreaConversionInputRecord;
 +}
 +
 +/** `count` pairs keyed at `depositWon`, each implying exactly `annualRate`. */
@@ -246,10 +582,10 @@ index 0000000..dee9694
 +  annualRate: number;
 +  building?: string;
 +  housingType?: 'apartment' | 'officetel';
-+}>): KoreaRentRecord[] {
++}>): KoreaConversionInputRecord[] {
 +  const gap = 240_000_000;
 +  const monthlyRentWon = (input.annualRate * gap) / 12;
-+  const out: KoreaRentRecord[] = [];
++  const out: KoreaConversionInputRecord[] = [];
 +  for (let i = 0; i < input.count; i += 1) {
 +    // A distinct building per pair keeps every group at exactly two records,
 +    // so `count` pairs means `count` pairs and not a combinatorial explosion.
@@ -433,10 +769,10 @@ index ce45ad8..32a553b 100644
          version: link:packages/singapore-property
 diff --git a/v2/scripts/build-korea-conversion-artifact.mts b/v2/scripts/build-korea-conversion-artifact.mts
 new file mode 100644
-index 0000000..f46f833
+index 0000000..c195ac7
 --- /dev/null
 +++ b/v2/scripts/build-korea-conversion-artifact.mts
-@@ -0,0 +1,400 @@
+@@ -0,0 +1,404 @@
 +import { createHash } from 'node:crypto';
 +import { mkdir, readFile, writeFile } from 'node:fs/promises';
 +import { dirname, resolve } from 'node:path';
@@ -450,7 +786,7 @@ index 0000000..f46f833
 +  parseKoreaConversionArtifact,
 +  type ConversionCurveBuild,
 +  type ConversionPairOptions,
-+  type KoreaRentRecord,
++  type KoreaConversionInputRecord,
 +  type MolitRightsLookup,
 +} from '@signedprice/korea-rent';
 +
@@ -476,7 +812,7 @@ index 0000000..f46f833
 + *     --output v2/apps/web/data/korea-conversion-curve.json \
 + *     --period 2026-01/2026-07
 + *
-+ * The input is either a `KoreaRentRecord[]` (or `{ records: [...] }`), or raw
++ * The input is either a `KoreaConversionInputRecord[]` (or `{ records: [...] }`), or raw
 + * MOLIT 전월세 rows, which are normalised below. Contracts WITH monthly rent are
 + * required: a conversion rate only exists between a deposit-heavy filing and a
 + * rent-bearing one, so a zero-rent-only extract cannot produce this artifact.
@@ -542,11 +878,11 @@ index 0000000..f46f833
 +}
 +
 +/**
-+ * Raw MOLIT 전월세 row -> `KoreaRentRecord`. The building-name field differs per
++ * Raw MOLIT 전월세 row -> `KoreaConversionInputRecord`. The building-name field differs per
 + * endpoint (`aptNm`, `offiNm`, `mhouseNm`), so the housing type is inferred from
 + * whichever is present unless the caller already tagged the row.
 + */
-+function normaliseMolitRow(row: Record<string, unknown>): KoreaRentRecord | null {
++function normaliseMolitRow(row: Record<string, unknown>): KoreaConversionInputRecord | null {
 +  const apartmentName = text(row.aptNm);
 +  const officetelName = text(row.offiNm);
 +  const buildingLabel = apartmentName || officetelName || text(row.mhouseNm);
@@ -585,7 +921,11 @@ index 0000000..f46f833
 +    legalDong: text(row.umdNm),
 +    sourceHousingType,
 +    recordStatus: cancelled ? 'cancelled' : 'unknown',
-+  } as KoreaRentRecord;
++    // MOLIT is queried one LAWD_CD at a time, so the district is always known
++    // at the wire. Dropping it here is what would let 신사동 in 강남구 pair with
++    // 신사동 in 관악구.
++    districtCode: text(row.sggCd),
++  } as KoreaConversionInputRecord;
 +}
 +
 +/**
@@ -596,7 +936,7 @@ index 0000000..f46f833
 + * collector could not read, and a curve built over one is a curve with a gap
 + * it cannot see - exactly the failure that once produced a half-empty panel.
 + */
-+export function extractRecords(source: unknown): readonly KoreaRentRecord[] {
++export function extractRecords(source: unknown): readonly KoreaConversionInputRecord[] {
 +  let rows: unknown[];
 +
 +  if (Array.isArray(source)) {
@@ -622,7 +962,7 @@ index 0000000..f46f833
 +    throw new ConversionBuildError('input_unrecognised', 'Input is neither an array nor an object.');
 +  }
 +
-+  const out: KoreaRentRecord[] = [];
++  const out: KoreaConversionInputRecord[] = [];
 +  let unusableRows = 0;
 +  for (const row of rows) {
 +    if (row === null || typeof row !== 'object') {
@@ -637,7 +977,7 @@ index 0000000..f46f833
 +      continue;
 +    }
 +    if (typeof value.depositWon === 'number' && typeof value.monthlyRentWon === 'number') {
-+      out.push(value as unknown as KoreaRentRecord);
++      out.push(value as unknown as KoreaConversionInputRecord);
 +      continue;
 +    }
 +    unusableRows += 1;
@@ -655,7 +995,7 @@ index 0000000..f46f833
 +// -------------------------------------------------------------------- build
 +
 +export function buildConversionArtifact(input: Readonly<{
-+  records: readonly KoreaRentRecord[];
++  records: readonly KoreaConversionInputRecord[];
 +  period: string;
 +  sha256: string;
 +  generatedAt: string;
@@ -839,10 +1179,10 @@ index 0000000..f46f833
 +}
 diff --git a/v2/tests/korea-conversion-runner.test.ts b/v2/tests/korea-conversion-runner.test.ts
 new file mode 100644
-index 0000000..b4679cf
+index 0000000..a8786fe
 --- /dev/null
 +++ b/v2/tests/korea-conversion-runner.test.ts
-@@ -0,0 +1,205 @@
+@@ -0,0 +1,207 @@
 +import { mkdtemp, readFile, writeFile } from 'node:fs/promises';
 +import { tmpdir } from 'node:os';
 +import { join } from 'node:path';
@@ -888,6 +1228,7 @@ index 0000000..b4679cf
 +    const nameField = input.officetel === true ? { offiNm: name } : { aptNm: name };
 +    rows.push({
 +      ...nameField,
++      sggCd: '11440',
 +      umdNm: '성산동',
 +      excluUseAr: '84.97',
 +      dealYear: '2026',
@@ -899,6 +1240,7 @@ index 0000000..b4679cf
 +    });
 +    rows.push({
 +      ...nameField,
++      sggCd: '11440',
 +      umdNm: '성산동',
 +      excluUseAr: '84.97',
 +      dealYear: '2026',

@@ -1,0 +1,379 @@
+diff --git a/v2/apps/web/app/(en)/kr/seoul/explore/[district]/[buildingId]/page.tsx b/v2/apps/web/app/(en)/kr/seoul/explore/[district]/[buildingId]/page.tsx
+index 62dbd9f..83935a8 100644
+--- a/v2/apps/web/app/(en)/kr/seoul/explore/[district]/[buildingId]/page.tsx
++++ b/v2/apps/web/app/(en)/kr/seoul/explore/[district]/[buildingId]/page.tsx
+@@ -40,6 +40,11 @@ import {
+ import type { KoreaProximityRepositoryState } from '@/lib/public-market/korea-proximity-repository.server';
+ import { koreaProximityRepositoryFromEnvironment } from '@/lib/public-market/korea-proximity-repository.server';
+ import { appendKoreaProximityPairs } from '@/lib/public-market/korea-proximity-url';
++import {
++  isKoreaBuildingIndexable,
++  koreaBuildingEvidenceDepth,
++  listIndexableKoreaBuildingRouteParams,
++} from '@/lib/public-market/korea-building-index-policy';
+ import { indexableMetadata } from '@/lib/public-metadata';
+ import { localizedSeoulHref, type ProductLocale } from '@/lib/locale/product-copy';
+ 
+@@ -148,8 +153,27 @@ export function resolveKoreaEvidenceBuildingRoute(
+   return Object.freeze({ model, backHref });
+ }
+ 
++/**
++ * Prerendered building routes.
++ *
++ * The legacy `public-building-summary` artifact is a jeonse-only 45-55sqm
++ * slice, so on its own it prerenders a few hundred of the buildings the site
++ * can actually publish. The indexable set is derived from the current rent
++ * evidence instead; the legacy params stay in the union so no route that is
++ * prerendered today stops being prerendered.
++ */
+ export function generateStaticParams() {
+-  const buildings = publicBuildingRepositoryFromEnvironment()?.listRouteParams() ?? [];
++  const legacy = publicBuildingRepositoryFromEnvironment()?.listRouteParams() ?? [];
++  const indexable = listIndexableKoreaBuildingRouteParams(
++    koreaEvidenceRepositoriesFromEnvironment().rent?.listBuildingRecords() ?? [],
++  );
++  const seen = new Set<string>();
++  const buildings = [...indexable, ...legacy].filter(({ district, buildingId }) => {
++    const key = `${district}/${buildingId}`;
++    if (seen.has(key)) return false;
++    seen.add(key);
++    return true;
++  });
+   const propertyTypes = listPublicPropertyTypeRouteParams().map(({ district, propertyType }) => ({
+     district,
+     buildingId: propertyType,
+@@ -157,7 +181,44 @@ export function generateStaticParams() {
+   return [...buildings, ...propertyTypes];
+ }
+ 
+-export async function generateMetadata({ params, searchParams }: BuildingPageProps): Promise<Metadata> {
++/**
++ * Metadata for one building that carries enough published evidence to be worth
++ * a search result.
++ *
++ * Built from the default selection rather than the request's query, because
++ * every filtered variant of this page canonicalises to the bare path: a title
++ * that moved with the query would describe a URL that is not the one indexed.
++ * Returns null when the building is below the publication gate, or when the
++ * request is for the Korean route, whose metadata is delegated here and would
++ * otherwise inherit this route's English canonical.
++ */
++function indexableKoreaBuildingMetadata(
++  district: string,
++  buildingId: string,
++  repositories: KoreaEvidenceRepositories,
++  locale: ProductLocale,
++): Metadata | null {
++  if (locale !== 'en') return null;
++  const records = repositories.rent?.listBuildingRecords() ?? [];
++  const record = records.find((candidate) => (
++    candidate.districtSlug === district && candidate.buildingId === buildingId
++  ));
++  if (record === undefined || !isKoreaBuildingIndexable(record)) return null;
++  const canonical = resolveKoreaEvidenceBuildingRoute(district, buildingId, {}, repositories);
++  if (canonical === null) return null;
++  const contracts = koreaBuildingEvidenceDepth(record);
++  return indexableMetadata({
++    path: `/kr/seoul/explore/${canonical.model.district.slug}/${canonical.model.building.buildingId}/`,
++    title: `${record.officialName} reported rent evidence | signedprice`,
++    description: `${contracts} reported contracts for ${record.officialName} in ${canonical.model.district.nameEn}, ${canonical.model.period}, shown by transaction, filed area and contract type with MOLIT source and coverage limits.`,
++  });
++}
++
++export async function generateMetadata({
++  params,
++  searchParams,
++  locale = 'en',
++}: LocalizedBuildingPageProps): Promise<Metadata> {
+   const { district, buildingId } = await params;
+   const propertyTypeModel = buildPublicPropertyTypeModel(district, buildingId);
+   if (propertyTypeModel !== null) {
+@@ -168,11 +229,14 @@ export async function generateMetadata({ params, searchParams }: BuildingPagePro
+       description: `${propertyTypeModel.coverage.retainedContracts} retained recent contracts across ${buildingCount} published ${propertyTypeModel.district.nameEn} ${propertyTypeModel.propertyType.slug} building${buildingCount === 1 ? '' : 's'}, with MOLIT source and coverage limits shown.`,
+     });
+   }
++  const repositories = koreaEvidenceRepositoriesFromEnvironment();
++  const indexable = indexableKoreaBuildingMetadata(district, buildingId, repositories, locale);
++  if (indexable !== null) return indexable;
+   const exact = resolveKoreaEvidenceBuildingRoute(
+     district,
+     buildingId,
+     await searchParams,
+-    koreaEvidenceRepositoriesFromEnvironment(),
++    repositories,
+   );
+   if (exact !== null) {
+     return {
+diff --git a/v2/apps/web/app/(ko)/ko/kr/seoul/explore/[district]/[buildingId]/page.tsx b/v2/apps/web/app/(ko)/ko/kr/seoul/explore/[district]/[buildingId]/page.tsx
+index b11d066..8dc7a08 100644
+--- a/v2/apps/web/app/(ko)/ko/kr/seoul/explore/[district]/[buildingId]/page.tsx
++++ b/v2/apps/web/app/(ko)/ko/kr/seoul/explore/[district]/[buildingId]/page.tsx
+@@ -16,8 +16,14 @@ export function generateStaticParams() {
+   return generateEnglishStaticParams();
+ }
+ 
++/**
++ * Korean building routes stay out of the index while this locale has no
++ * canonical of its own: the English route owns the canonical for a building,
++ * and delegating metadata without saying so would publish a Korean URL that
++ * points its canonical at the English one by accident rather than by decision.
++ */
+ export async function generateMetadata(props: BuildingPageProps): Promise<Metadata> {
+-  return generateEnglishMetadata(props);
++  return generateEnglishMetadata({ ...props, locale: 'ko' });
+ }
+ 
+ export default async function KoreanBuildingRoute(props: BuildingPageProps) {
+diff --git a/v2/apps/web/app/sitemap.ts b/v2/apps/web/app/sitemap.ts
+index 93531d6..456f52b 100644
+--- a/v2/apps/web/app/sitemap.ts
++++ b/v2/apps/web/app/sitemap.ts
+@@ -13,6 +13,8 @@ import {
+   signedPricePublicRouteRegistry,
+ } from '../lib/seo/public-route-registry.server';
+ import { buildPublicPropertyTypeModel } from '../lib/public-market/property-type-route-model.server';
++import { koreaEvidenceRepositoriesFromEnvironment } from '../lib/public-market/korea-evidence-repositories.server';
++import { listIndexableKoreaBuildingRouteParams } from '../lib/public-market/korea-building-index-policy';
+ import { operatorProfileFromEnvironment } from '../lib/operator/operator-profile.server';
+ 
+ type SitemapEntry = MetadataRoute.Sitemap[number];
+@@ -176,5 +178,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
+       )];
+     }));
+   }
++  // Building pages carry the same gate the route's own metadata applies, so a
++  // URL is never offered here that answers `noindex` when it is crawled.
++  const rentEvidence = koreaEvidenceRepositoriesFromEnvironment().rent;
++  if (rentEvidence !== null) {
++    const buildingLastModified = validDate(rentEvidence.getArtifact().generatedAt);
++    entries.push(...listIndexableKoreaBuildingRouteParams(rentEvidence.listBuildingRecords())
++      .map(({ district, buildingId }) => sitemapEntry(
++        `/kr/seoul/explore/${district}/${buildingId}/`,
++        buildingLastModified,
++      )));
++  }
+   return entries;
+ }
+diff --git a/v2/apps/web/lib/public-market/korea-building-index-policy.ts b/v2/apps/web/lib/public-market/korea-building-index-policy.ts
+new file mode 100644
+index 0000000..155b064
+--- /dev/null
++++ b/v2/apps/web/lib/public-market/korea-building-index-policy.ts
+@@ -0,0 +1,76 @@
++import type { KoreaRentEvidenceBuildingRecord } from '@signedprice/korea-rent';
++import type { SeoulDistrictSlug } from '@signedprice/korea-rent/browser';
++
++/**
++ * Which Seoul building pages are offered to search engines.
++ *
++ * Every observed building already renders; this decides which ones carry
++ * `index` and appear in the sitemap. The gate is evidence depth, because a
++ * building page is only worth a search result when it can say something no
++ * other page can - and that is exactly what a deep published cohort is.
++ *
++ * The minimum is a publication wave control, not a correctness threshold.
++ * Measured against the installed artifact (2026-02/2026-08):
++ *
++ *     n >=  50    804 buildings   median 16 published cohorts per page
++ *     n >=  30  1,407
++ *     n >=  20  2,097 buildings   median 12 published cohorts per page
++ *     n >=  10  4,018 buildings   median  7 published cohorts per page
++ *     n >=   5  7,687
++ *
++ * Lowering it opens the next wave. Do that one step at a time and only after
++ * the previous wave holds its indexed share, so a drop can be attributed.
++ */
++export const KOREA_BUILDING_INDEX_MINIMUM = 50;
++
++export type KoreaBuildingRouteParam = Readonly<{
++  district: SeoulDistrictSlug;
++  buildingId: string;
++}>;
++
++/**
++ * Contracts behind the building's widest published cohort.
++ *
++ * Cohorts are split by transaction, so a building can be deep in monthly rent
++ * and shallow in jeonse. The widest published one is taken rather than a sum:
++ * summing would double-count the same contracts across overlapping cohorts and
++ * overstate how much the page can actually show.
++ */
++export function koreaBuildingEvidenceDepth(
++  record: KoreaRentEvidenceBuildingRecord,
++): number {
++  let depth = 0;
++  for (const cohort of record.cohorts) {
++    if (cohort.areaBand !== 'all' || cohort.contractGroup !== 'all') continue;
++    if (!cohort.primary.published) continue;
++    if (cohort.primary.n > depth) depth = cohort.primary.n;
++  }
++  return depth;
++}
++
++export function isKoreaBuildingIndexable(
++  record: KoreaRentEvidenceBuildingRecord,
++  minimum: number = KOREA_BUILDING_INDEX_MINIMUM,
++): boolean {
++  return koreaBuildingEvidenceDepth(record) >= minimum;
++}
++
++/**
++ * Route parameters for every building that passes the gate, in a stable order
++ * so the sitemap and the prerender list do not churn between builds.
++ */
++export function listIndexableKoreaBuildingRouteParams(
++  records: readonly KoreaRentEvidenceBuildingRecord[],
++  minimum: number = KOREA_BUILDING_INDEX_MINIMUM,
++): readonly KoreaBuildingRouteParam[] {
++  return Object.freeze(records
++    .filter((record) => isKoreaBuildingIndexable(record, minimum))
++    .map((record) => Object.freeze({
++      district: record.districtSlug,
++      buildingId: record.buildingId,
++    }))
++    .sort((left, right) => (
++      left.district.localeCompare(right.district)
++      || left.buildingId.localeCompare(right.buildingId)
++    )));
++}
+diff --git a/v2/apps/web/test/korea-building-index-policy.test.ts b/v2/apps/web/test/korea-building-index-policy.test.ts
+new file mode 100644
+index 0000000..442a6c5
+--- /dev/null
++++ b/v2/apps/web/test/korea-building-index-policy.test.ts
+@@ -0,0 +1,134 @@
++import type {
++  KoreaRentEvidenceBuildingRecord,
++  KoreaRentEvidenceCohort,
++} from '@signedprice/korea-rent';
++import { describe, expect, it } from 'vitest';
++
++import {
++  KOREA_BUILDING_INDEX_MINIMUM,
++  isKoreaBuildingIndexable,
++  koreaBuildingEvidenceDepth,
++  listIndexableKoreaBuildingRouteParams,
++} from '@/lib/public-market/korea-building-index-policy';
++
++function cohort(input: Readonly<{
++  transaction?: 'jeonse' | 'monthly';
++  areaBand?: 'all' | 'under-40' | '40-60';
++  contractGroup?: 'all' | 'new' | 'renewal';
++  n: number;
++  published: boolean;
++}>): KoreaRentEvidenceCohort {
++  const primary = input.published
++    ? {
++        n: input.n,
++        published: true as const,
++        min: 1, p25: 2, med: 3, p75: 4, max: 5, chg3m: null,
++      }
++    : { n: input.n, published: false as const };
++  return {
++    transaction: input.transaction ?? 'jeonse',
++    areaBand: input.areaBand ?? 'all',
++    contractGroup: input.contractGroup ?? 'all',
++    primaryMetric: 'deposit',
++    primary,
++    filedDeposit: null,
++  } as KoreaRentEvidenceCohort;
++}
++
++function building(
++  buildingId: string,
++  districtSlug: string,
++  cohorts: readonly KoreaRentEvidenceCohort[],
++): KoreaRentEvidenceBuildingRecord {
++  return {
++    buildingId,
++    districtSlug,
++    neighborhoodId: 'n-1',
++    neighborhoodName: '가락동',
++    officialName: '헬리오시티',
++    housingType: 'apartment',
++    cohorts,
++    recentTransactions: [],
++  } as unknown as KoreaRentEvidenceBuildingRecord;
++}
++
++describe('koreaBuildingEvidenceDepth', () => {
++  it('takes the widest published all/all cohort across transactions', () => {
++    const record = building('b1', 'songpa-gu', [
++      cohort({ transaction: 'jeonse', n: 12, published: true }),
++      cohort({ transaction: 'monthly', n: 80, published: true }),
++    ]);
++    expect(koreaBuildingEvidenceDepth(record)).toBe(80);
++  });
++
++  it('does not sum overlapping cohorts', () => {
++    // 40 jeonse contracts also appear in narrower bands and contract groups.
++    // Summing would report a depth the page cannot actually show.
++    const record = building('b2', 'songpa-gu', [
++      cohort({ n: 40, published: true }),
++      cohort({ areaBand: '40-60', n: 25, published: true }),
++      cohort({ contractGroup: 'new', n: 22, published: true }),
++    ]);
++    expect(koreaBuildingEvidenceDepth(record)).toBe(40);
++  });
++
++  it('ignores withheld cohorts even when their sample is large', () => {
++    const record = building('b3', 'songpa-gu', [
++      cohort({ n: 400, published: false }),
++    ]);
++    expect(koreaBuildingEvidenceDepth(record)).toBe(0);
++  });
++
++  it('ignores narrower cohorts, which describe a slice and not the building', () => {
++    const record = building('b4', 'songpa-gu', [
++      cohort({ areaBand: '40-60', n: 90, published: true }),
++      cohort({ contractGroup: 'renewal', n: 90, published: true }),
++    ]);
++    expect(koreaBuildingEvidenceDepth(record)).toBe(0);
++  });
++});
++
++describe('isKoreaBuildingIndexable', () => {
++  it('admits a building at the minimum and refuses the one below it', () => {
++    const at = building('at', 'songpa-gu', [
++      cohort({ n: KOREA_BUILDING_INDEX_MINIMUM, published: true }),
++    ]);
++    const below = building('below', 'songpa-gu', [
++      cohort({ n: KOREA_BUILDING_INDEX_MINIMUM - 1, published: true }),
++    ]);
++    expect(isKoreaBuildingIndexable(at)).toBe(true);
++    expect(isKoreaBuildingIndexable(below)).toBe(false);
++  });
++
++  it('accepts a wave minimum so the next wave is one argument', () => {
++    const record = building('b', 'songpa-gu', [cohort({ n: 20, published: true })]);
++    expect(isKoreaBuildingIndexable(record, 20)).toBe(true);
++    expect(isKoreaBuildingIndexable(record, 21)).toBe(false);
++  });
++});
++
++describe('listIndexableKoreaBuildingRouteParams', () => {
++  const records = [
++    building('z-deep', 'songpa-gu', [cohort({ n: 90, published: true })]),
++    building('a-deep', 'gangnam-gu', [cohort({ n: 51, published: true })]),
++    building('shallow', 'gangnam-gu', [cohort({ n: 6, published: true })]),
++    building('withheld', 'gangnam-gu', [cohort({ n: 900, published: false })]),
++  ];
++
++  it('returns only the buildings the route will answer as indexable', () => {
++    expect(listIndexableKoreaBuildingRouteParams(records)).toEqual([
++      { district: 'gangnam-gu', buildingId: 'a-deep' },
++      { district: 'songpa-gu', buildingId: 'z-deep' },
++    ]);
++  });
++
++  it('is stable, so the sitemap does not churn between builds', () => {
++    const once = listIndexableKoreaBuildingRouteParams(records);
++    const again = listIndexableKoreaBuildingRouteParams([...records].reverse());
++    expect(again).toEqual(once);
++  });
++
++  it('returns nothing when evidence is unavailable rather than guessing', () => {
++    expect(listIndexableKoreaBuildingRouteParams([])).toEqual([]);
++  });
++});
