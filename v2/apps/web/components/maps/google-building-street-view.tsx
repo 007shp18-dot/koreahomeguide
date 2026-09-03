@@ -94,6 +94,18 @@ export function mountGoogleBuildingMap({
   });
 }
 
+export function buildGoogleMapsEmbedUrl({
+  buildingName,
+  latitude,
+  longitude,
+}: Readonly<{ buildingName: string; latitude: number; longitude: number }>): string {
+  const url = new URL('https://www.google.com/maps');
+  url.searchParams.set('q', `${buildingName} ${latitude},${longitude}`);
+  url.searchParams.set('z', '17');
+  url.searchParams.set('output', 'embed');
+  return url.toString();
+}
+
 export async function mountGoogleBuildingStreetView({
   sdk,
   element,
@@ -194,6 +206,18 @@ export function GoogleBuildingStreetView({
     }
   }, [address, latitude, longitude]);
 
+  if (browserKey !== null && state === 'unavailable' && latitude !== undefined && longitude !== undefined) return (
+    <section className={styles.frame} data-building-media="google-area-map" data-media-state="map-fallback">
+      <iframe
+        className={styles.embed}
+        src={buildGoogleMapsEmbedUrl({ buildingName, latitude, longitude })}
+        title={`Google location map for ${buildingName}`}
+        loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
+      />
+      <p className={styles.label}>Live building location · street view unavailable · Google</p>
+    </section>
+  );
   if (browserKey === null || state === 'unavailable') return (
     <section className={styles.unavailable} data-building-media="street-view-unavailable">
       <strong>Street view unavailable</strong>

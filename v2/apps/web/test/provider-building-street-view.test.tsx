@@ -7,6 +7,7 @@ vi.mock('next/script', () => ({
 }));
 
 import {
+  buildGoogleMapsEmbedUrl,
   GoogleBuildingStreetView,
   mountGoogleBuildingMap,
   mountGoogleBuildingStreetView,
@@ -154,6 +155,19 @@ describe('provider building street view', () => {
     expect(google).toContain('Street view unavailable');
     expect(google).toContain('View this building area on the map');
     expect(google).not.toContain('maps.googleapis.com');
+  });
+
+  it('builds a keyless Google place-map fallback for verified coordinates', () => {
+    const url = new URL(buildGoogleMapsEmbedUrl({
+      buildingName: 'The Sail @ Marina Bay',
+      latitude: 1.2753,
+      longitude: 103.8517,
+    }));
+
+    expect(url.origin).toBe('https://www.google.com');
+    expect(url.pathname).toBe('/maps');
+    expect(url.searchParams.get('q')).toBe('The Sail @ Marina Bay 1.2753,103.8517');
+    expect(url.searchParams.get('output')).toBe('embed');
   });
 
   it('geocodes a Singapore building address before requesting nearby imagery', async () => {
