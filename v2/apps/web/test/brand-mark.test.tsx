@@ -87,6 +87,12 @@ describe('SignedPrice brand mark', () => {
     expect(html).toContain('href="/properties"');
     expect(html).toContain('href="/invest"');
     expect(html).toMatch(/<a[^>]+aria-current="page"[^>]+href="\/prices"/);
-    expect(html).toMatch(/<a[^>]+aria-current="page"[^>]+href="\/kr\/seoul\/explore"/);
+    const marketMenu = html.match(/<nav[^>]+aria-label="Market navigation"[^>]*>([\s\S]*?)<\/nav>/)?.[1] ?? '';
+    expect(marketMenu).toContain('>Seoul<');
+    expect(marketMenu).toContain('>Singapore<');
+    expect(marketMenu).toContain('>Dubai<');
+    expect(marketMenu).not.toContain('Explore');
+    expect(marketMenu).not.toContain('Corrections');
+    expect(marketMenu).not.toContain('Trust');
   });
 });

@@ -55,11 +55,13 @@ export const localizedComponentFixtures = [
 ];
 
 describe('localized shared components', () => {
-  it('renders the supplied Korean navigation and a crawlable English switch', () => {
+  it('renders region-only navigation and a crawlable English switch', () => {
     const html = renderToStaticMarkup(<SiteHeader copy={KOREAN_SITE_HEADER} />);
 
-    expect(html).toContain('계약 비교');
-    expect(html).toContain('구별 탐색');
+    expect(html).toContain('aria-label="Market navigation"');
+    expect(html).toContain('>Seoul<');
+    expect(html).toContain('>Singapore<');
+    expect(html).toContain('>Dubai<');
     expect(html).toContain('href="/kr/seoul"');
     expect(html).toMatch(/hreflang="en"/i);
     expect(html).not.toContain('>Briefs<');

@@ -5,6 +5,7 @@ import { SiteFooter } from '@/components/site-footer';
 import { SiteHeader } from '@/components/site-header';
 import styles from '@/components/operator/operator-page.module.css';
 import { operatorProfileFromEnvironment } from '@/lib/operator/operator-profile.server';
+import { SIGNEDPRICE_CONTACT_EMAIL, SIGNEDPRICE_PRIVACY_EMAIL } from '@/lib/operator/public-contacts';
 import { indexableMetadata } from '@/lib/public-metadata';
 import { homepageCopy } from '@/lib/site-copy';
 
@@ -40,19 +41,30 @@ export default function ContactPage() {
 
         {profile.status === 'unavailable' ? (
           <section className={styles.notice} aria-labelledby="contact-unavailable">
-            <h2 id="contact-unavailable">Operator details are not configured</h2>
+            <h2 id="contact-unavailable">Contact SignedPrice</h2>
             <p>
-              This route remains non-indexable until a verified operator and contact address are installed.
-              SignedPrice does not publish an invented email, address or telephone number.
+              The public operator identity is still being configured. The verified email routes below
+              are available now.
             </p>
+            <div className={styles.actions}>
+              <a href={`mailto:${SIGNEDPRICE_CONTACT_EMAIL}`}>{SIGNEDPRICE_CONTACT_EMAIL}</a>
+              <a href={`mailto:${SIGNEDPRICE_PRIVACY_EMAIL}`}>{SIGNEDPRICE_PRIVACY_EMAIL}</a>
+            </div>
           </section>
         ) : (
           <section className={styles.grid} aria-label="SignedPrice contact routes">
             <article>
-              <h2>Operator</h2>
-              <p>{profile.operatorName}</p>
+              <h2>General enquiries</h2>
+              <p>Questions about SignedPrice, partnerships and the public product.</p>
               <div className={styles.actions}>
-                <a href={`mailto:${profile.privacyContact}`}>Email {profile.privacyContact}</a>
+                <a href={`mailto:${SIGNEDPRICE_CONTACT_EMAIL}`}>{SIGNEDPRICE_CONTACT_EMAIL}</a>
+              </div>
+            </article>
+            <article>
+              <h2>Privacy</h2>
+              <p>Questions about personal information, access, correction or deletion.</p>
+              <div className={styles.actions}>
+                <a href={`mailto:${profile.privacyContact}`}>{profile.privacyContact}</a>
               </div>
             </article>
             <article>

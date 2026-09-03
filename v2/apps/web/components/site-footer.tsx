@@ -1,4 +1,7 @@
 import type { SiteFooterModel } from '../lib/site-copy';
+import { SIGNEDPRICE_CONTACT_EMAIL, SIGNEDPRICE_PRIVACY_EMAIL } from '../lib/operator/public-contacts';
+import { BrandWordmark } from './brand-mark';
+import styles from './site-footer.module.css';
 
 type SiteFooterProps = {
   copy: SiteFooterModel;
@@ -14,14 +17,14 @@ export function SiteFooter({ copy }: SiteFooterProps) {
     ...legalLinks.filter(({ href }) => copy.links.every((link) => link.href !== href)),
   ];
   return (
-    <footer className="site-footer">
-      <div className="site-shell site-footer__inner">
-        <div>
-          <p className="site-footer__wordmark">{copy.brand}</p>
-          <p className="site-footer__descriptor">{copy.descriptor}</p>
+    <footer className={styles.footer}>
+      <div className={styles.inner}>
+        <div className={styles.intro}>
+          <BrandWordmark />
+          <p className={styles.descriptor}>{copy.descriptor}</p>
         </div>
         <nav aria-label={copy.navigationLabel}>
-          <ul className="site-footer__links">
+          <ul className={styles.links}>
             {links.map((link) => (
               <li key={link.href}>
                 <a href={link.href}>{link.label}</a>
@@ -29,7 +32,11 @@ export function SiteFooter({ copy }: SiteFooterProps) {
             ))}
           </ul>
         </nav>
-        <p className="site-footer__status">{copy.status}</p>
+        <p className={styles.status}>{copy.status}</p>
+        <div className={styles.contacts} aria-label="SignedPrice email contacts">
+          <a href={`mailto:${SIGNEDPRICE_CONTACT_EMAIL}`}>{SIGNEDPRICE_CONTACT_EMAIL}</a>
+          <a href={`mailto:${SIGNEDPRICE_PRIVACY_EMAIL}`}>{SIGNEDPRICE_PRIVACY_EMAIL}</a>
+        </div>
       </div>
     </footer>
   );

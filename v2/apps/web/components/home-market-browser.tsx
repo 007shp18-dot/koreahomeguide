@@ -3,7 +3,7 @@ import Link from 'next/link';
 import type { HomeFeaturedBuilding } from '../lib/public-market/home-featured-buildings.server';
 import type { SeoulLiveModel } from '../lib/public-market/seoul-live-model.server';
 import type { HomepageMarketModel } from '../lib/site-copy';
-import { NaverBuildingStreetView } from './maps/naver-building-street-view';
+import { RotatingHeroBuilding } from './home-building-showcase';
 import styles from './home-editorial.module.css';
 
 type HomeMarketBrowserProps = Readonly<{
@@ -23,7 +23,6 @@ export function HomeMarketBrowser({
   featuredBuildings,
   naverMapClientId,
 }: HomeMarketBrowserProps) {
-  const featured = featuredBuildings[0];
   return (
     <section className={styles.hero} id="home-decision" aria-labelledby="home-headline">
       <div className={styles.heroGrid}>
@@ -45,28 +44,13 @@ export function HomeMarketBrowser({
         </div>
 
         <div className={styles.heroMedia} data-home-market="seoul" data-seoul-live={seoul.status}>
-          {featured === undefined ? (
+          {featuredBuildings.length === 0 ? (
             <div className={styles.mediaFallback}>
               <span>SEOUL</span><span>SINGAPORE</span><span>DUBAI</span>
               <strong>Verified market coverage</strong>
             </div>
           ) : (
-            <>
-              <NaverBuildingStreetView
-                clientId={naverMapClientId}
-                buildingName={featured.name}
-                latitude={featured.latitude}
-                longitude={featured.longitude}
-                addressQuery={featured.addressQuery}
-                mapHref={featured.href}
-              />
-              <div className={styles.heroMediaCaption}>
-                <span>Featured building evidence · Seoul</span>
-                <h2>{featured.name}</h2>
-                <p>{featured.location} · {featured.observationLabel}</p>
-                <Link href={featured.href}>View building →</Link>
-              </div>
-            </>
+            <RotatingHeroBuilding buildings={featuredBuildings} naverMapClientId={naverMapClientId} />
           )}
         </div>
       </div>

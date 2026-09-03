@@ -79,13 +79,16 @@ const contractModel: ContractCheckRouteModel = Object.freeze({
 afterEach(() => vi.unstubAllEnvs());
 
 describe('Korean embedded product components', () => {
-  it('renders terminal Korean navigation and a crawlable English switch', () => {
+  it('renders region-only market navigation and a crawlable English switch', () => {
     const html = renderToStaticMarkup(<>
       <SiteHeader copy={KOREAN_SITE_HEADER} />
       <SiteFooter copy={KOREAN_SITE_FOOTER} />
     </>);
 
-    expect(html).toContain('구별 탐색');
+    expect(html).toContain('aria-label="Market navigation"');
+    expect(html).toContain('>Seoul<');
+    expect(html).toContain('>Singapore<');
+    expect(html).toContain('>Dubai<');
     expect(html).toContain('href="/kr/seoul"');
     expect(html).toMatch(/hreflang="en"/i);
     expect(html).not.toContain('href="/ko/kr/seoul/check"');
