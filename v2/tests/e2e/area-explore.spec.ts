@@ -169,7 +169,10 @@ test('rail selection opens the map-owned drawer and full-detail CTA', async ({ p
 test('district selection stays inside the Explore workspace', async ({ page }) => {
   await page.goto('/kr/seoul/explore/?district=jongno-gu');
 
-  await page.locator('[data-district-option="gangnam-gu"]').click();
+  const districtDirectory = page.locator('[data-district-rail="all-25"]');
+  await districtDirectory.locator('summary').click();
+  await expect(districtDirectory).toHaveAttribute('open', '');
+  await districtDirectory.locator('[data-district-option="gangnam-gu"]').click();
 
   await expect(page).toHaveURL(/\/kr\/seoul\/explore\/\?.*district=gangnam-gu/);
   expect(new URL(page.url()).pathname).toBe('/kr/seoul/explore/');

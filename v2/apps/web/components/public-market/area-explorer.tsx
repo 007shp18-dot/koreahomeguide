@@ -457,7 +457,7 @@ function ReadyAreaExplorer({
     if (readyBuildingAvailability !== null && readyBuildingAvailability.page > 1) {
       target.searchParams.set('buildingPage', String(readyBuildingAvailability.page));
     }
-    router.replace(`${target.pathname}${target.search}`, { scroll: false });
+    window.history.replaceState(window.history.state, '', `${target.pathname}${target.search}`);
   };
 
   const evidenceHref = useCallback((changes: Readonly<{
