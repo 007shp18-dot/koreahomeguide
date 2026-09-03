@@ -10,6 +10,7 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { preload } from 'react-dom';
 import { Analytics } from '@vercel/analytics/next';
+import { notoSansKr } from '../fonts';
 
 import '../globals.css';
 
@@ -29,7 +30,7 @@ export default function KoreanRootLayout({ children }: { children: ReactNode }) 
   });
 
   return (
-    <html lang="ko">
+    <html lang="ko" className={notoSansKr.variable}>
       <body>
         {children}
         <PublicSiteJsonLd />

@@ -102,6 +102,7 @@ export function NewsDetailPage({ model }: Readonly<{ model: NewsDetailModel }>) 
 
           <nav className={styles.actions} aria-label="News evidence links">
             <Link href="/kr/seoul/news/">All Market Briefs</Link>
+            <Link href="/kr/seoul/check/">Compare a contract</Link>
             <Link href="/kr/seoul/corrections/">Review correction ledger</Link>
           </nav>
 

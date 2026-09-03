@@ -74,22 +74,18 @@ const focusAdjacentBackgrounds = [
 ] as const;
 
 const signedPricePalette = {
-  '--canvas': '#f4f2ec',
-  '--surface': '#eae5da',
-  '--surface-strong': '#fffdf8',
-  '--ink': '#15201f',
-  '--petrol': '#1c4048',
-  '--muted': '#5f625b',
-  '--divider': '#98978d',
-  '--line': '#dbd5c6',
-  '--brand-orange': '#e05024',
-  '--accent': '#b73512',
-  '--accent-soft': '#ffe0d4',
-  '--focus-ring': '#b73512',
-} as const;
-
-const componentHexLiteralAllowList = {
-  'contract-check/contract-check.module.css': ['#b42318', '#b42318'],
+  '--canvas': '#f5f8fc',
+  '--surface': '#edf3f9',
+  '--surface-strong': '#ffffff',
+  '--ink': '#111827',
+  '--petrol': '#16243a',
+  '--muted': '#5f6d84',
+  '--divider': '#cbd5e1',
+  '--line': '#e2e8f0',
+  '--brand-orange': '#2563d8',
+  '--accent': '#2563d8',
+  '--accent-soft': '#eaf2ff',
+  '--focus-ring': '#2563d8',
 } as const;
 
 function declarationsFor(source: string, selector: string): Record<string, string> {
@@ -115,14 +111,14 @@ function declarationsFor(source: string, selector: string): Record<string, strin
 }
 
 describe('signedprice brand foundation', () => {
-  it('uses the approved warm-paper, deep-green and accessible accent palette', () => {
+  it('uses the approved white, navy and accessible blue data-product palette', () => {
     for (const [token, value] of Object.entries(signedPricePalette)) {
       expect(readHexToken(token)).toBe(value);
     }
   });
 
-  it('does not retain the superseded gray and cobalt site palette in first-party CSS', () => {
-    const legacyPalette = /#(?:f3f2f2|201e1d|1f1e1d|5d5958|8c8a89|1d4ed8|dbe4ff|fff(?:fff)?)\b/i;
+  it('does not retain the superseded warm-paper palette in first-party CSS', () => {
+    const legacyPalette = /#(?:f4f2ec|eae5da|fffdf8|15201f|1c4048|5f625b|98978d|dbd5c6|e05024|b73512|ffe0d4)\b/i;
     const remaining = cssFilesUnder(webRoot).flatMap((file) => {
       const matches = readFileSync(file, 'utf8').match(legacyPalette);
       return matches === null ? [] : [`${file}: ${matches[0]}`];
@@ -131,15 +127,12 @@ describe('signedprice brand foundation', () => {
     expect(remaining).toEqual([]);
   });
 
-  it('allows raw component hex only for the error state', () => {
-    const authoredLiterals = Object.fromEntries(
-      cssFilesUnder(componentsRoot).flatMap((file) => {
-        const literals = readFileSync(file, 'utf8').match(/#[0-9a-fA-F]{3,8}\b/g);
-        return literals === null ? [] : [[relative(componentsRoot, file), literals]];
-      }),
-    );
+  it('keeps the homepage foundation on shared colour and shadow tokens', () => {
+    const home = readFileSync(join(componentsRoot, 'home-editorial.module.css'), 'utf8');
 
-    expect(authoredLiterals).toEqual(componentHexLiteralAllowList);
+    expect(home).toContain('border: 1px solid var(--line)');
+    expect(home).toContain('background: var(--surface-strong)');
+    expect(home).toContain('box-shadow: var(--shadow-sm)');
   });
 
   it('keeps brand orange decorative-only in the shared mark', () => {
@@ -153,17 +146,17 @@ describe('signedprice brand foundation', () => {
     expect(consumers).toEqual(['app/globals.css:.brand-mark__orange']);
   });
 
-  it('keeps geometry square and structural rules two pixels wide', () => {
-    expect(css).toMatch(/--radius:\s*0px;/);
+  it('uses soft geometry and quiet structural rules', () => {
+    expect(css).toMatch(/--radius:\s*12px;/);
     expect(css).toMatch(/--reading-frame:\s*760px;/);
     expect(css).toMatch(/--content-frame:\s*1120px;/);
     expect(css).toMatch(/--workspace-frame:\s*1320px;/);
     expect(css).toMatch(/--page-gutter:\s*32px;/);
-    expect(css).toMatch(/--rule-strong:\s*2px solid var\(--ink\);/);
-    expect(css).toMatch(/--rule-default:\s*1px solid var\(--divider\);/);
+    expect(css).toMatch(/--rule-strong:\s*1px solid var\(--line\);/);
+    expect(css).toMatch(/--rule-default:\s*1px solid var\(--line\);/);
     expect(css).toMatch(/--rule-subtle:\s*1px solid var\(--line\);/);
     expect(declarationsFor(css, '.site-header')).toMatchObject({
-      'border-bottom': 'var(--rule-strong)',
+      'border-bottom': '1px solid var(--line)',
       position: 'sticky',
       top: '0',
       'z-index': '30',
@@ -173,14 +166,14 @@ describe('signedprice brand foundation', () => {
       padding: '0',
     });
     expect(declarationsFor(css, '.site-header__market-link')).toMatchObject({
-      'min-height': '44px',
+      'min-height': '30px',
     });
     expect(declarationsFor(css, '.site-header__product-link')).toMatchObject({
-      'min-height': '56px',
+      'min-height': '38px',
     });
     expect(declarationsFor(css, '.intent-tabs')).toMatchObject({
-      border: '2px solid var(--ink)',
-      'border-radius': 'var(--radius)',
+      border: '1px solid var(--line)',
+      'border-radius': '12px',
     });
   });
 
@@ -199,18 +192,10 @@ describe('signedprice brand foundation', () => {
     });
   });
 
-  it('keeps authored shadows structural instead of decorative', () => {
-    const authoredShadows = cssFilesUnder(webRoot).flatMap((file) => {
-      const source = readFileSync(file, 'utf8');
-      return [...source.matchAll(/box-shadow:\s*([^;]+);/g)].map((match) => ({
-        file: relative(webRoot, file),
-        value: match[1]?.trim(),
-      }));
-    });
-
-    expect(authoredShadows.every(({ value }) => (
-      value === 'none' || value?.startsWith('inset ')
-    ))).toBe(true);
+  it('uses restrained elevation tokens for interactive and data surfaces', () => {
+    expect(css).toMatch(/--shadow-sm:\s*0 2px 8px/);
+    expect(css).toMatch(/--shadow-md:\s*0 14px 38px/);
+    expect(css).toContain('box-shadow: var(--shadow-sm)');
   });
 
   it('uses tabular numerals throughout the product surface', () => {
@@ -223,14 +208,14 @@ describe('signedprice brand foundation', () => {
     expect(css).not.toMatch(/fonts\.googleapis\.com/i);
     expect(css).toMatch(/@font-face\s*{[\s\S]*?font-family:\s*"Archivo"/);
     expect(css).toContain('/fonts/archivo-latin-wght-normal.woff2');
-    expect(declarationsFor(css, 'body')['font-family']).toMatch(/^"Archivo", "Pretendard"/);
+    expect(declarationsFor(css, 'body')['font-family']).toMatch(/^"Archivo", var\(--font-noto-sans-kr\), "Noto Sans KR"/);
     expect(declarationsFor(css, '.brand-wordmark')['font-family']).toBe('"Archivo", sans-serif');
   });
 
   it('caps product display tracking and keeps body copy readable', () => {
     expect(declarationsFor(css, 'body')).toMatchObject({
-      'letter-spacing': 'normal',
-      'line-height': '1.6',
+      'letter-spacing': '-0.012em',
+      'line-height': '1.65',
     });
     expect(css).toMatch(/--tracking-display:\s*-0\.03em;/);
   });

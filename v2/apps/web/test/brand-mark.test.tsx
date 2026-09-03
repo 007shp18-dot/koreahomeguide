@@ -65,7 +65,7 @@ describe('SignedPrice brand mark', () => {
     expect(contractHeader.match(/<path\b/g)).toHaveLength(3);
   });
 
-  test('renders market context above five numbered product destinations', () => {
+  test('renders six roadmap destinations before compact market context', () => {
     const html = renderToStaticMarkup(<SiteHeader copy={{
       ...headerCopy,
       links: [{ label: 'Explore', href: '/kr/seoul/explore/', isCurrent: true }],
@@ -73,18 +73,19 @@ describe('SignedPrice brand mark', () => {
 
     expect(html).toContain('data-navigation-tier="market"');
     expect(html).toContain('data-navigation-tier="product"');
-    expect(html.indexOf('data-navigation-tier="market"')).toBeLessThan(
-      html.indexOf('data-navigation-tier="product"'),
+    expect(html.indexOf('data-navigation-tier="product"')).toBeLessThan(
+      html.indexOf('data-navigation-tier="market"'),
     );
-    expect(html).toContain('class="site-shell site-header__product-inner"');
+    expect(html).toContain('class="site-header__product-inner"');
     expect(html).toContain('aria-label="Market navigation"');
     expect(html).toContain('>Seoul<');
     expect(html).toContain('>Singapore<');
     expect(html).toContain('>Dubai<');
-    expect(html.match(/data-product-index=/g)).toHaveLength(5);
+    expect(html.match(/data-product-index=/g)).toHaveLength(6);
     expect(html).toContain('data-product-index="01"');
-    expect(html).toContain('data-product-index="05"');
-    expect(html).toContain('href="/kr/seoul/rankings"');
+    expect(html).toContain('data-product-index="06"');
+    expect(html).toContain('href="/properties"');
+    expect(html).toContain('href="/invest"');
     expect(html).toMatch(/<a[^>]+aria-current="page"[^>]+href="\/kr\/seoul\/explore"/);
   });
 });

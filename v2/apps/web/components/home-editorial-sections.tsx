@@ -16,13 +16,13 @@ export function HomeEditorialSections({ seoul, news }: HomeEditorialSectionsProp
     <>
       <section className={styles.decisionSection} id="home-paths" aria-labelledby="home-paths-heading">
         <header className={styles.sectionHeading}>
-          <div><p>One data foundation, three decisions</p><h2 id="home-paths-heading">Start with what you need to decide.</h2></div>
-          <p>SignedPrice stays useful from the first rental check to a long-term property decision.</p>
+          <div><p>Price → Market → Property → Invest</p><h2 id="home-paths-heading">Start with the price.</h2></div>
+          <p>Price evidence earns trust first. Listings and investment services open only after legal, data and operating checks are complete.</p>
         </header>
         <div className={styles.decisionGrid}>
-          <article className={styles.decisionActive}><span>01 · Available now</span><h3>Rent</h3><p>Compare deposit and rent against signed contracts, renewals, and nearby evidence.</p><Link href="/kr/seoul/check/">Run a rent check →</Link></article>
-          <article><span>02 · Data connection</span><h3>Buy</h3><p>Evaluate a sale price with transaction history, neighborhood context, and evidence quality.</p><Link href="/kr/seoul/buy/">Preview the decision model →</Link></article>
-          <article><span>03 · Next layer</span><h3>Invest</h3><p>Bring yield, price momentum, supply, and market briefs into one decision view.</p><Link href="/kr/seoul/invest/">View the investment roadmap →</Link></article>
+          <article className={styles.decisionActive}><span>01 · Available now</span><h3>Prices</h3><p>Explore completed contracts, comparable ranges, corrections and local market context.</p><Link href="/kr/seoul/explore/">Explore signed prices →</Link></article>
+          <article><span>02 · Service preparing</span><h3>Properties</h3><p>Active listings and contact flows stay closed while advertising and brokerage requirements are reviewed.</p><Link href="/properties/">See the readiness scope →</Link></article>
+          <article><span>03 · Service preparing</span><h3>Invest</h3><p>Personalized recommendations stay closed while costs, rights and partner operations are verified.</p><Link href="/invest/">See the investment scope →</Link></article>
         </div>
       </section>
 

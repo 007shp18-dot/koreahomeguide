@@ -39,6 +39,6 @@ describe('HDB detail composition', () => {
     const detail = renderToStaticMarkup(<HdbBlockDetail block={block} town="BEDOK" townHref="/sg/singapore/hdb/bedok/" googleMapsBrowserKey={null} />);
     expect(town).toContain('data-market-detail-shell="true"');
     expect(detail).toContain('data-market-detail-shell="true"');
-    expect(`${town}${detail}`).not.toMatch(/\/kr\/seoul\//);
+    expect(`${town}${detail}`).not.toContain('/kr/seoul/check');
   });
 });
