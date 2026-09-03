@@ -1366,10 +1366,11 @@
 }
 
 .resultCount { font-size: 11.5px; }
-.resultBar span { max-width: 76ch; font-size: 9.5px; }
+.resultBar span { display: none; }
 
 .workspace {
   grid-template-columns: minmax(340px, 380px) minmax(0, 1fr);
+  grid-template-rows: 52px minmax(0, 1fr);
   height: max(650px, calc(100dvh - 166px));
   max-height: 920px;
   min-height: 650px;
@@ -1377,7 +1378,14 @@
   background: #eef1f5;
 }
 
+.workspace[data-explorer-layout='list'] .discoveryRail,
+.workspace[data-explorer-layout='map'] .mapPanel {
+  grid-column: 1;
+}
+
 .discoveryRail {
+  grid-column: 1;
+  grid-row: 2;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -1386,6 +1394,8 @@
 }
 
 .districtChips {
+  grid-column: 1 / -1;
+  grid-row: 1;
   min-height: 52px;
   padding: 10px 10px 9px;
   display: flex;
@@ -1441,20 +1451,24 @@
 .buildingBrowser > .sectionHeading {
   min-height: 34px;
   padding: 0 2px;
-  display: flex;
+  display: block;
   align-items: baseline;
   justify-content: space-between;
   gap: 8px;
 }
 
 .buildingBrowser > .sectionHeading p {
-  font-size: 9px;
-  letter-spacing: .07em;
+  display: none;
 }
 
 .buildingBrowser > .sectionHeading h2 {
+  max-width: 100%;
+  overflow: hidden;
   font-size: 12px;
   letter-spacing: -.015em;
+  line-height: 34px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .neighborhoods { padding-bottom: 2px; gap: 5px; }
@@ -1474,9 +1488,7 @@
 }
 
 .resultSummary {
-  padding-inline: 2px;
-  font-size: 9px;
-  letter-spacing: .06em;
+  display: none;
 }
 
 .buildingList {
@@ -1607,6 +1619,8 @@
 }
 
 .mapPanel {
+  grid-column: 2;
+  grid-row: 2;
   min-width: 0;
   background: #edf1f3;
 }
@@ -1736,10 +1750,11 @@
     min-height: 0;
     overflow: visible;
   }
-  .discoveryRail { order: 1; max-height: none; overflow: visible; border-right: 0; }
+  .districtChips { order: 1; }
+  .discoveryRail { order: 2; max-height: none; overflow: visible; border-right: 0; }
   .rail { overflow: visible; }
   .buildingBrowser { height: auto; max-height: 620px; }
-  .mapPanel { order: 2; height: 52dvh; min-height: 420px; }
+  .mapPanel { order: 3; height: 52dvh; min-height: 420px; }
   .mapGuide,
   .mapEvidenceDisclosure { display: none; }
   .legend {

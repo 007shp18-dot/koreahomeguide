@@ -141,6 +141,21 @@ function mapTitle(district: ExploreDistrictModel, locale: ProductLocale): string
   ].join(' · ');
 }
 
+function compactDistrictMetric(label: string | null, locale: ProductLocale): string {
+  if (label === null) return '—';
+  const match = /^₩([\d,]+)$/.exec(label);
+  if (match === null) return label;
+  const value = Number(match[1]!.replaceAll(',', ''));
+  if (!Number.isFinite(value)) return label;
+  if (locale === 'ko') {
+    const eok = value / 100_000_000;
+    return `₩${eok >= 10 ? eok.toFixed(1) : eok.toFixed(2)}억`;
+  }
+  if (value >= 1_000_000_000) return `₩${(value / 1_000_000_000).toFixed(2)}B`;
+  if (value >= 1_000_000) return `₩${(value / 1_000_000).toFixed(1)}M`;
+  return label;
+}
+
 type KoreaExploreLinkSelection = ExplorerSelection & Readonly<{
   station?: string;
   stationDistance?: 250 | 500 | 750 | 1000;
@@ -401,7 +416,7 @@ function ReadyAreaExplorer({
     href: districtHref(district.slug),
     latitude: district.latitude,
     longitude: district.longitude,
-    metricLabel: district.medianLabel ?? copy.notPublished,
+    metricLabel: compactDistrictMetric(district.medianLabel, locale),
     selected: district.slug === selected.slug,
   })), [copy.notPublished, districtHref, locale, model.districts, selected.slug]);
   const mapBuildings = useMemo(() => visibleBuildings.map((building) => ({
@@ -713,6 +728,22 @@ function ReadyAreaExplorer({
 
       {currentView === 'table' ? null : (
       <div className={styles.workspace} data-explorer-layout={currentView}>
+        <nav
+          className={styles.districtChips}
+          data-district-rail="all-25"
+          aria-label={locale === 'ko' ? '서울 25개 구' : 'All 25 Seoul districts'}
+        >
+          {model.districts.map((district) => (
+            <button
+              key={district.slug}
+              type="button"
+              aria-pressed={district.slug === selected.slug}
+              data-district-option={district.slug}
+              onClick={() => selectDistrict(district.slug)}
+              title={`${locale === 'ko' ? district.nameEn : district.nameKo} · ${district.medianLabel ?? copy.notPublished}`}
+            >{locale === 'ko' ? district.nameKo : district.nameEn}</button>
+          ))}
+        </nav>
         {currentView === 'list' ? null : (
         <section className={styles.mapPanel} data-explorer-region="map" aria-labelledby="area-map-heading">
           <div className={styles.sectionHeading}>
@@ -831,22 +862,6 @@ function ReadyAreaExplorer({
 
         {currentView === 'map' ? null : (
         <aside className={styles.discoveryRail} data-explorer-region="results" aria-label={locale === 'ko' ? '지역과 건물 탐색' : 'District and building discovery'}>
-          <nav
-            className={styles.districtChips}
-            data-district-rail="all-25"
-            aria-label={locale === 'ko' ? '서울 25개 구' : 'All 25 Seoul districts'}
-          >
-            {model.districts.map((district) => (
-              <button
-                key={district.slug}
-                type="button"
-                aria-pressed={district.slug === selected.slug}
-                data-district-option={district.slug}
-                onClick={() => selectDistrict(district.slug)}
-                title={`${locale === 'ko' ? district.nameEn : district.nameKo} · ${district.medianLabel ?? copy.notPublished}`}
-              >{locale === 'ko' ? district.nameKo : district.nameEn}</button>
-            ))}
-          </nav>
           <section className={styles.rail} aria-labelledby="district-table-heading">
           <div className={styles.buildingBrowser} data-building-browser={selected.slug} data-explorer-region="results">
             <div className={styles.sectionHeading}>
