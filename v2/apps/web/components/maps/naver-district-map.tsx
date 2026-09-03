@@ -448,6 +448,15 @@ export function NaverDistrictMap({
   }, [buildings, failClosed]);
 
   useEffect(() => {
+    if (clientId === null || sdk !== null || authenticationFailed.current) return;
+    const readySdk = (globalThis as typeof globalThis & {
+      naver?: Readonly<{ maps: NaverMapsSdk }>;
+    }).naver?.maps;
+    if (!isNaverMapsSdkReady(readySdk) || container.current === null) return;
+    initialize();
+  }, [clientId, initialize, sdk]);
+
+  useEffect(() => {
     if (clientId === null) return undefined;
     const scope = globalThis as typeof globalThis & {
       navermap_authFailure?: () => void;
