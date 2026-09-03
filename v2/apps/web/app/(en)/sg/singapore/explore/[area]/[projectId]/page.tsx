@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 
 import { SingaporeProjectDetail } from '@/components/singapore/singapore-project-detail';
 import { googleMapsBrowserKeyFromEnvironment } from '@/lib/maps/google-maps-browser-key.server';
+import { indexableMetadata } from '@/lib/public-metadata';
 import { buildSingaporeProjectModel } from '@/lib/singapore/route-model.server';
 import {
   SINGAPORE_CORRECTION_HREF,
@@ -13,11 +14,25 @@ import { singaporeSnapshotRepositoryFromEnvironment } from '@/lib/singapore/snap
 type Props = Readonly<{ params: Promise<Readonly<{ area: string; projectId: string }>> }>;
 
 export const dynamicParams = true;
-export const metadata: Metadata = {
-  title: 'Singapore project sale evidence | signedprice',
-  description: 'Verified URA private residential sale evidence for one Singapore project.',
-  robots: { index: false, follow: true },
-};
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { area, projectId } = await params;
+  const code = area.toLowerCase();
+  if (!['ccr', 'rcr', 'ocr'].includes(code)) return {
+    title: 'Singapore project sale evidence | signedprice',
+    robots: { index: false, follow: true },
+  };
+  const repository = await singaporeSnapshotRepositoryFromEnvironment();
+  const model = repository === null ? null : buildSingaporeProjectModel(repository, code, projectId);
+  if (model === null || model.status !== 'ready') return {
+    title: 'Singapore project sale evidence | signedprice',
+    robots: { index: false, follow: true },
+  };
+  return indexableMetadata({
+    path: `/sg/singapore/explore/${code}/${projectId}/`,
+    title: `${model.identity.project} sale prices, Singapore | signedprice`,
+    description: `Verified URA sale transactions for ${model.identity.project}, ${model.identity.street}: median price, PSF, range, sample, and publication limits.`,
+  });
+}
 
 export async function generateStaticParams() {
   return [];
