@@ -490,7 +490,7 @@ describe('public Seoul area Explorer', () => {
     );
   });
 
-  it('loads Naver geocoding only for visible coordinate-pending buildings with a map client', () => {
+  it('defers building geocoding until a building is selected from the citywide district map', () => {
     const model = buildPublicAreaExploreModel('jongno-gu', {
       source: rankedFixture(),
       buildingSource: createPublicBuildingFixture(),
@@ -508,13 +508,21 @@ describe('public Seoul area Explorer', () => {
       naverMapClientId: 'test-naver-client',
       initialSelection,
     }));
+    const selectedBuilding = renderToStaticMarkup(createElement(AreaExplorer, {
+      model,
+      naverMapClientId: 'test-naver-client',
+      initialSelection: { ...initialSelection, buildingId: 'jongno-monthly-home' },
+    }));
     const unconfigured = renderToStaticMarkup(createElement(AreaExplorer, {
       model,
       naverMapClientId: null,
       initialSelection,
     }));
 
-    expect(configured).toContain(
+    expect(configured).toContain('maps.js?ncpKeyId=test-naver-client');
+    expect(configured).not.toContain('submodules=geocoder');
+    expect(configured).toContain('Interactive NAVER map of Seoul districts');
+    expect(selectedBuilding).toContain(
       'maps.js?ncpKeyId=test-naver-client&amp;submodules=geocoder',
     );
     expect(configured).toContain('Monthly Home');

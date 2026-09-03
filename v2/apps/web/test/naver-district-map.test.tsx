@@ -11,6 +11,7 @@ vi.mock('next/script', () => ({
 
 import {
   NaverDistrictMap,
+  buildNaverDistrictMarkerContent,
   buildNaverBuildingAddressQuery,
   buildNaverMapsScriptUrl,
   isNaverMapsSdkReady,
@@ -31,6 +32,18 @@ const districts = [{
 }] as const;
 
 describe('NAVER district map', () => {
+  it('builds a safe compact price bubble for the citywide district layer', () => {
+    expect(buildNaverDistrictMarkerContent({
+      ...districts[0],
+      nameEn: '<Jongno>',
+      metricLabel: '₩500M & up',
+      sampleLabel: '5 filings',
+      selected: true,
+    })).toBe(
+      '<div class="spMapDistrictBubble spMapDistrictBubbleSelected"><span>&lt;Jongno&gt;</span><strong>₩500M &amp; up</strong><small>5 filings</small></div>',
+    );
+  });
+
   it('waits for the asynchronous geocoder submodule before exposing the SDK', () => {
     const ready: unknown[] = [];
     class LatLng { constructor(readonly latitude: number, readonly longitude: number) {} }

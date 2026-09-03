@@ -27,6 +27,59 @@
   font-size: 0.78rem;
 }
 
+:global(.spMapDistrictBubble) {
+  width: 94px;
+  padding: 7px 9px;
+  display: grid;
+  gap: 1px;
+  transform: translate(-50%, -50%);
+  border: 1px solid #dfe3eb;
+  border-radius: 9px;
+  color: #687286;
+  background: rgb(255 255 255 / 96%);
+  box-shadow: 0 5px 15px rgb(24 35 55 / 12%);
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+}
+
+:global(.spMapDistrictBubble span) {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  font-size: 8px;
+  font-weight: 850;
+  letter-spacing: .055em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+}
+
+:global(.spMapDistrictBubble strong) {
+  color: #182033;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: -.025em;
+}
+
+:global(.spMapDistrictBubble small) {
+  color: #939cad;
+  font-size: 7px;
+  line-height: 1.2;
+}
+
+:global(.spMapDistrictBubbleSelected) {
+  border-color: #4a5cf5;
+  color: #fff;
+  background: #4a5cf5;
+  box-shadow: 0 8px 20px rgb(74 92 245 / 30%);
+}
+
+:global(.spMapDistrictBubbleSelected strong),
+:global(.spMapDistrictBubbleSelected small) {
+  color: #fff;
+}
+
 .placeWorkspace {
   display: grid;
   gap: 1rem;

@@ -169,8 +169,8 @@ describe('Korean embedded product components', () => {
       '국토교통부 신고 임대차 계약',
       '서울 구별 전세보증금 지도',
     ]) expect(html).toContain(visible);
-    expect(html).toContain('data-map-state="coordinate-pending"');
-    expect(html).not.toContain('oapi.map.naver.com');
+    expect(html).toContain('data-map-state="loading"');
+    expect(html).not.toContain('data-map-state="coordinate-pending"');
     expect(html).not.toContain('href="/ko/kr/seoul/rankings"');
     expect(html).toContain('data-explorer-layout="split"');
     expect(html).not.toMatch(
