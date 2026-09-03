@@ -119,6 +119,47 @@
   bottom: auto;
 }
 
+.rotatingHero {
+  position: relative;
+  min-height: inherit;
+  animation: building-enter .38s ease both;
+}
+
+.rotatingHero > section {
+  min-height: inherit;
+  border: 0;
+}
+
+.heroMediaControls {
+  position: absolute;
+  z-index: 4;
+  top: 46px;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px;
+  border: 1px solid rgb(255 255 255 / 60%);
+  border-radius: 999px;
+  color: #26384c;
+  background: rgb(255 255 255 / 88%);
+  box-shadow: 0 7px 20px rgb(15 23 42 / 12%);
+  backdrop-filter: blur(10px);
+}
+
+.heroMediaControls button {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 50%;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+}
+
+.heroMediaControls button:hover { background: #edf3f9; }
+.heroMediaControls span { min-width: 36px; text-align: center; font-size: .66rem; font-weight: 800; }
+
 .heroMediaCaption {
   position: absolute;
   right: 16px;
@@ -372,6 +413,17 @@
 
 .buildingCard {
   overflow: hidden;
+  animation: building-enter .38s ease both;
+}
+
+@keyframes building-enter {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rotatingHero,
+  .buildingCard { animation: none; }
 }
 
 .buildingMedia {

@@ -1,6 +1,6 @@
-import { productNavigationLinks, type SiteHeaderModel } from '../lib/site-copy';
 import Link from 'next/link';
 
+import { productNavigationLinks, type SiteHeaderModel } from '../lib/site-copy';
 import { BrandWordmark } from './brand-mark';
 
 type SiteHeaderProps = {
@@ -8,6 +8,11 @@ type SiteHeaderProps = {
 };
 
 export function SiteHeader({ copy }: SiteHeaderProps) {
+  const languageSwitch = copy.languageSwitch ?? {
+    label: '한국어',
+    href: '/ko/kr/seoul/',
+    hrefLang: 'ko',
+  } as const;
   const currentHref = copy.links.find(({ isCurrent }) => isCurrent)?.href;
   const isGlobalProduct = copy.marketLabel === undefined
     && currentHref !== undefined
@@ -30,7 +35,6 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
     { id: 'singapore', label: 'Singapore', href: '/sg/' },
     { id: 'dubai', label: 'Dubai', href: '/ae/dubai/' },
   ] as const;
-
   function isCurrentLink(href: string): boolean {
     if (currentHref === href) return true;
     if (href === '/prices/' && (
@@ -44,13 +48,14 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
   }
 
   const isKorean = copy.languageLabel === 'KO';
-  const switchLink = copy.languageSwitch === undefined ? null : (
+  const switchLink = (
     <Link
-      href={copy.languageSwitch.href}
-      hrefLang={copy.languageSwitch.hrefLang}
-      aria-label={`Switch to ${copy.languageSwitch.hrefLang === 'ko' ? 'Korean' : 'English'}`}
+      href={languageSwitch.href}
+      hrefLang={languageSwitch.hrefLang}
+      lang={languageSwitch.hrefLang}
+      aria-label={`Change language to ${languageSwitch.label}`}
     >
-      {copy.languageSwitch.label}
+      {languageSwitch.hrefLang.toUpperCase()}
     </Link>
   );
 
@@ -93,7 +98,7 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
         <div className="site-header__language" aria-label="Language navigation">
           {isKorean ? switchLink : <span aria-current="true">EN</span>}
           <span aria-hidden="true">/</span>
-          {isKorean ? <span aria-current="true">KO</span> : switchLink ?? <span>KO</span>}
+          {isKorean ? <span aria-current="true">KO</span> : switchLink}
         </div>
       </div>
     </header>

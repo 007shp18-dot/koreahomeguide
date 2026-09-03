@@ -79,13 +79,15 @@ const contractModel: ContractCheckRouteModel = Object.freeze({
 afterEach(() => vi.unstubAllEnvs());
 
 describe('Korean embedded product components', () => {
-  it('renders terminal Korean navigation and a crawlable English switch', () => {
+  it('keeps the Korean surface in the single header and exposes a crawlable English switch', () => {
     const html = renderToStaticMarkup(<>
       <SiteHeader copy={KOREAN_SITE_HEADER} />
       <SiteFooter copy={KOREAN_SITE_FOOTER} />
     </>);
 
-    expect(html).toContain('구별 탐색');
+    expect(html).toContain('data-navigation-tier="primary"');
+    expect(html).not.toContain('data-navigation-tier="market"');
+    expect(html).not.toContain('data-navigation-tier="product"');
     expect(html).toContain('href="/kr/seoul"');
     expect(html).toMatch(/hreflang="en"/i);
     expect(html).not.toContain('href="/ko/kr/seoul/check"');

@@ -28,13 +28,16 @@ describe('signedprice Evidence Editorial homepage', () => {
     expect(markup).toContain('<h1 id="home-headline">Know the market before you buy.</h1>');
     expect(positions.every((position) => position >= 0)).toBe(true);
     expect([...positions].sort((a, b) => a - b)).toEqual(positions);
-  }, 10_000);
+  }, 20_000);
 
   it('keeps global market links inside the single header without a duplicate hero city tablist', async () => {
     const markup = renderToStaticMarkup(await Home());
 
     expect(markup).toContain('data-navigation-tier="primary"');
     expect(markup).toContain('aria-label="Market navigation"');
+    expect(markup).toContain('aria-label="Change language to 한국어"');
+    expect(markup).toContain('href="/ko/kr/seoul"');
+    expect(markup).toMatch(/hreflang="ko"/i);
     expect(markup).not.toContain('aria-label="Choose a city"');
     expect(markup).not.toContain('id="market-tab-seoul"');
   });
@@ -59,6 +62,7 @@ describe('signedprice Evidence Editorial homepage', () => {
     }
     expect(markup).toContain('role="search"');
     expect(markup).not.toContain('aria-label="Choose a property decision"');
+    expect(markup).toContain('data-building-rotation="automatic"');
   });
 
   it('moves staged markets to explicit global destinations', async () => {

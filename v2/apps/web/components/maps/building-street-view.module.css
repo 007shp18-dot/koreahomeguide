@@ -8,10 +8,53 @@
 }
 
 .canvas {
+  /* The NAVER panorama SDK writes a 200px inline height after mounting.
+     Keep the live view fitted to the media frame instead of leaving a gap. */
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 200px;
+  min-height: 200px !important;
+}
+
+.loading {
   position: absolute;
   inset: 0;
-  min-width: 200px;
-  min-height: 200px;
+  z-index: 1;
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: .35rem;
+  color: #17324f;
+  background:
+    linear-gradient(150deg, transparent 0 42%, rgb(255 255 255 / 72%) 42% 44%, transparent 44%),
+    repeating-linear-gradient(90deg, rgb(255 255 255 / 0%) 0 28px, rgb(255 255 255 / 35%) 28px 30px),
+    linear-gradient(135deg, #dce8f2, #afc5d8 54%, #eaf1f6);
+  transition: opacity .25s ease;
+}
+
+.loading::before {
+  position: absolute;
+  inset: 0;
+  content: '';
+  background: linear-gradient(110deg, transparent 20%, rgb(255 255 255 / 34%) 42%, transparent 64%);
+  animation: media-loading 1.8s ease-in-out infinite;
+}
+
+.loading span,
+.loading strong { position: relative; }
+.loading span { font-size: .67rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.loading strong { max-width: 18ch; font-size: clamp(1.25rem, 2.5vw, 2rem); line-height: 1.08; }
+
+@keyframes media-loading {
+  from { transform: translateX(-55%); }
+  to { transform: translateX(55%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading::before { animation: none; }
 }
 
 .label {

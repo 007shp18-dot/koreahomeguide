@@ -2,7 +2,10 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 
-import { buildHomeFeaturedBuildings } from '../lib/public-market/home-featured-buildings.server';
+import {
+  buildHomeFeaturedBuildings,
+  homeFeaturedAddressFor,
+} from '../lib/public-market/home-featured-buildings.server';
 import {
   createObservedBuildingInventoryFixture,
   OBSERVED_BUILDING_FIXTURE_PERIOD,
@@ -31,6 +34,18 @@ describe('home featured buildings', () => {
         href: '/kr/seoul/explore/gangnam-gu/gangnam-evidence-tower/',
       },
     ]);
+  });
+
+  it('uses verified road addresses for the rotating production media pool', () => {
+    expect(homeFeaturedAddressFor('songpa-gu-1j88w6f', 'fallback')).toBe(
+      '서울특별시 송파구 송파대로 345',
+    );
+    expect(homeFeaturedAddressFor('songpa-gu-1lqiba6', 'fallback')).toBe(
+      '서울특별시 송파구 올림픽로 99',
+    );
+    expect(homeFeaturedAddressFor('future-building', 'verified fallback')).toBe(
+      'verified fallback',
+    );
   });
 
   it('fails closed instead of inventing a photo or building when evidence is unavailable', () => {
