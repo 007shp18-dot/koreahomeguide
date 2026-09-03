@@ -95,6 +95,7 @@ function naverStreetViewFor(input: Readonly<{
       longitude={input.longitude ?? undefined}
       addressQuery={input.addressQuery}
       mapHref={input.mapHref}
+      preferMap
     />
   );
 }

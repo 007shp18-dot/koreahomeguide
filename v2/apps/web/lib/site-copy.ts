@@ -368,24 +368,24 @@ function productSlots(
         id,
         label: productLabels[id],
         description: seoulSlotDescriptions[id],
-        state: id === 'community' ? 'unavailable' : 'available',
-        stateLabel: id === 'community' ? 'Unavailable' : 'Available',
+        state: 'available',
+        stateLabel: 'Available',
         ...(seoulSlotHrefs[id] === undefined ? {} : { href: seoulSlotHrefs[id] }),
       } satisfies HomepageProductSlotModel);
     }
 
     if (marketId === 'sg-singapore') {
-      const isReadyExplore = singapore.status === 'ready' && id === 'explore';
+      const isReadyProduct = singapore.status === 'ready' && (id === 'explore' || id === 'check');
       const singaporeHref = id === 'explore' ? '/sg/singapore/explore/'
         : id === 'check' ? '/sg/singapore/check/' : `/sg/singapore/${id}/`;
       return Object.freeze({
         id,
         label: productLabels[id],
-        description: isReadyExplore
+        description: isReadyProduct
           ? `${singapore.transactionLabel}. ${singapore.periodLabel}.`
           : singaporeUnavailableDescription,
-        state: isReadyExplore ? 'available' : 'unavailable',
-        stateLabel: isReadyExplore ? 'Available' : 'Unavailable',
+        state: isReadyProduct ? 'available' : 'unavailable',
+        stateLabel: isReadyProduct ? 'Available' : 'Unavailable',
         href: singaporeHref,
       } satisfies HomepageProductSlotModel);
     }

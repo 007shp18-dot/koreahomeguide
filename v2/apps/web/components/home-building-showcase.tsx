@@ -4,19 +4,35 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 import type { HomeMarketVisual } from '../lib/home-market-visuals.server';
-import { GoogleBuildingStreetView } from './maps/google-building-street-view';
-import { GooglePlacePhoto } from './maps/google-place-photo';
-import { NaverBuildingStreetView } from './maps/naver-building-street-view';
+import { MARKET_PHOTOS, MarketRepresentativePhoto } from './market-representative-photo';
 import styles from './home-editorial.module.css';
 
 export function shuffleFeaturedBuildings(
   buildings: readonly HomeMarketVisual[],
   random: () => number = Math.random,
 ): readonly HomeMarketVisual[] {
-  const next = [...buildings];
-  for (let index = next.length - 1; index > 0; index -= 1) {
-    const swapIndex = Math.floor(random() * (index + 1));
-    [next[index], next[swapIndex]] = [next[swapIndex]!, next[index]!];
+  const shuffle = (items: readonly HomeMarketVisual[]) => {
+    const next = [...items];
+    for (let index = next.length - 1; index > 0; index -= 1) {
+      const swapIndex = Math.floor(random() * (index + 1));
+      [next[index], next[swapIndex]] = [next[swapIndex]!, next[index]!];
+    }
+    return next;
+  };
+  const marketRepresentatives = buildings.filter((building, index) => (
+    buildings.findIndex((candidate) => candidate.market === building.market) === index
+  ));
+  const markets = shuffle(marketRepresentatives).map((building) => building.market);
+  const groups = new Map(markets.map((market) => [market, shuffle(buildings.filter((building) => building.market === market))]));
+  const next: HomeMarketVisual[] = [];
+  let remaining = buildings.length;
+  while (remaining > 0) {
+    for (const market of markets) {
+      const item = groups.get(market)?.shift();
+      if (item === undefined) continue;
+      next.push(item);
+      remaining -= 1;
+    }
   }
   return next;
 }
@@ -26,36 +42,14 @@ function MarketVisual({ visual, naverMapClientId, googleMapsBrowserKey }: Readon
   naverMapClientId: string | null;
   googleMapsBrowserKey: string | null;
 }>) {
-  if (visual.provider === 'google') {
-    const streetView = <GoogleBuildingStreetView
-      browserKey={googleMapsBrowserKey}
-      buildingName={visual.name}
-      latitude={visual.latitude}
-      longitude={visual.longitude}
-      address={visual.addressQuery}
-      mapHref={visual.mapHref}
-    />;
-    return <GooglePlacePhoto
-      browserKey={googleMapsBrowserKey}
-      buildingName={visual.name}
-      address={visual.addressQuery ?? visual.location}
-      fallback={streetView}
-    />;
-  }
-  const nearbyView = <NaverBuildingStreetView
-    clientId={naverMapClientId}
-    buildingName={visual.name}
-    latitude={visual.latitude}
-    longitude={visual.longitude}
-    addressQuery={visual.addressQuery}
-    mapHref={visual.mapHref}
-  />;
-  return <GooglePlacePhoto
-    browserKey={googleMapsBrowserKey}
-    buildingName={visual.name}
-    address={visual.addressQuery ?? `${visual.name}, ${visual.location}, Seoul, South Korea`}
-    fallback={nearbyView}
-  />;
+  void naverMapClientId;
+  void googleMapsBrowserKey;
+  const photo = visual.market === 'Seoul'
+    ? MARKET_PHOTOS.seoul
+    : visual.market === 'Singapore'
+      ? MARKET_PHOTOS.singapore
+      : MARKET_PHOTOS.dubai;
+  return <MarketRepresentativePhoto photo={photo} />;
 }
 
 function shouldRotate() {

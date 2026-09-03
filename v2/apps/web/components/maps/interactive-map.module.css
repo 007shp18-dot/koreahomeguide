@@ -143,13 +143,25 @@
 }
 
 .placeWorkspace {
+  position: relative;
+  min-height: 620px;
   display: grid;
-  gap: 1rem;
 }
 
 .toolbar {
+  position: absolute;
+  z-index: 3;
+  top: 14px;
+  left: 14px;
+  width: min(420px, calc(100% - 28px));
+  padding: 10px;
   display: grid;
-  gap: 0.55rem;
+  gap: 5px;
+  border: 1px solid rgb(222 228 236 / 90%);
+  border-radius: 10px;
+  background: rgb(255 255 255 / 94%);
+  box-shadow: 0 8px 24px rgb(15 23 42 / 13%);
+  backdrop-filter: blur(10px);
 }
 
 .toolbar > label {
@@ -184,7 +196,8 @@
 }
 
 .toolbar p {
-  min-height: 1.4em;
+  min-height: 0;
+  margin: 0;
   color: var(--muted);
   font-size: 0.76rem;
 }
@@ -198,6 +211,8 @@
   background: repeating-linear-gradient(-45deg, var(--canvas) 0 9px, var(--line) 9px 10px);
   text-align: center;
 }
+
+.placeWorkspace .canvas { min-height: 620px; }
 
 .staticMarketMap {
   position: relative;

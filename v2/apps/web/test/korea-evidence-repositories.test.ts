@@ -521,7 +521,7 @@ describe('installed Korea evidence repositories', () => {
 
     expect(html).toContain('data-ranking-filters="exact-cohort"');
     expect(html).toContain('name="transaction"');
-    expect(html).toContain('name="area"');
+    expect(html).not.toContain('name="area"');
     expect(html).toContain('name="propertyType"');
     expect(html).toContain('Median reported sale price');
     expect(html).toContain('MOLIT reported sale contracts');

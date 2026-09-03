@@ -4,14 +4,14 @@ import type { SingaporeEntryModel } from '../../lib/singapore/route-types';
 import type { MarketOverviewRowModel, NavigationActionModel } from '../../lib/route-model';
 import { MarketHero } from '../market-hero';
 import { MarketOverviewRows } from '../market-overview-rows';
-import { GoogleBuildingStreetView } from '../maps/google-building-street-view';
-import { GooglePlacePhoto } from '../maps/google-place-photo';
+import { MARKET_PHOTOS, MarketRepresentativePhoto } from '../market-representative-photo';
 import {
   SingaporePage,
   singaporeStyles as styles,
 } from './singapore-shell';
 
 export function SingaporeEntry({ model, googleMapsBrowserKey = null }: Readonly<{ model: SingaporeEntryModel; googleMapsBrowserKey?: string | null }>) {
+  void googleMapsBrowserKey;
   if (model.status === 'unavailable') return (
     <SingaporePage currentHref="/sg/"><section className={styles.unavailable} data-singapore-entry="unavailable" data-product-intro="true">
       <p className={styles.eyebrow}>Singapore · Release gate</p><h1>{model.message}</h1>
@@ -59,21 +59,12 @@ export function SingaporeEntry({ model, googleMapsBrowserKey = null }: Readonly<
     { label: 'Open Singapore Explore', href: model.exploreHref, description: 'Browse released segments and projects.', external: false },
     { label: 'Review Global Trust', href: '/trust/', description: 'Read source, rights and publication rules.', external: false },
   ];
+  const transactionCount = Number(model.transactionLabel.match(/[\d,]+/)?.[0]?.replaceAll(',', '') ?? 0);
+  const projectCount = Number(model.projectLabel.match(/[\d,]+/)?.[0]?.replaceAll(',', '') ?? 0);
   return (
     <SingaporePage currentHref="/sg/" unframed>
       <div data-singapore-entry="ready">
-        <MarketHero media={<GooglePlacePhoto
-          browserKey={googleMapsBrowserKey}
-          buildingName="The Sail @ Marina Bay"
-          address="Marina Boulevard, Singapore"
-          fallback={<GoogleBuildingStreetView
-            browserKey={googleMapsBrowserKey}
-            buildingName="The Sail @ Marina Bay"
-            latitude={1.2753}
-            longitude={103.8517}
-            mapHref="https://www.google.com/maps/search/?api=1&query=The+Sail+at+Marina+Bay+Singapore"
-          />}
-        />} model={{
+        <MarketHero media={<MarketRepresentativePhoto photo={MARKET_PHOTOS.singapore} eager />} model={{
           sectionLabel: 'Singapore market overview',
           eyebrow: 'Singapore market',
           heading: 'Singapore Market Overview',
@@ -88,8 +79,8 @@ export function SingaporeEntry({ model, googleMapsBrowserKey = null }: Readonly<
           actionsLabel="Singapore next steps"
           primaryAction
           summaryItems={[
-            { label: 'Transactions', value: model.transactionLabel, detail: model.periodLabel },
-            { label: 'Projects', value: model.projectLabel, detail: 'Released URA evidence' },
+            { label: 'Transactions', value: transactionCount.toLocaleString('en-SG'), detail: `Private residential sales · ${model.periodLabel}` },
+            { label: 'Projects', value: projectCount.toLocaleString('en-SG'), detail: 'Released URA evidence' },
             { label: 'Currency', value: model.currency, detail: 'Native market currency' },
             { label: 'Publication', value: 'Verified', detail: 'Minimum-sample rules enforced' },
           ]}

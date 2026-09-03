@@ -74,10 +74,12 @@ export function PublicSourceBoundary({
           <dt>{copy.declaredPeriod}</dt>
           <dd>{model.period || copy.unavailablePeriod}</dd>
         </div>
-        <div>
-          <dt>{copy.filedArea}</dt>
-          <dd>{model.band}</dd>
-        </div>
+        {transaction === 'sale' ? null : (
+          <div>
+            <dt>{copy.filedArea}</dt>
+            <dd>{model.band}</dd>
+          </div>
+        )}
         <div>
           <dt>{copy.fixedFilter}</dt>
           <dd>{fixedFilterValue}</dd>

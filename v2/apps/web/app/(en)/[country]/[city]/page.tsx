@@ -5,11 +5,7 @@ import { MarketOverviewRows } from '@/components/market-overview-rows';
 import { SiteFooter } from '@/components/site-footer';
 import { SiteHeader } from '@/components/site-header';
 import { PublicBreadcrumbJsonLd } from '@/components/public-json-ld';
-import { NaverBuildingStreetView } from '@/components/maps/naver-building-street-view';
-import { GoogleBuildingStreetView } from '@/components/maps/google-building-street-view';
-import { GooglePlacePhoto } from '@/components/maps/google-place-photo';
-import { googleMapsBrowserKeyFromEnvironment } from '@/lib/maps/google-maps-browser-key.server';
-import { buildHomeFeaturedBuildings } from '@/lib/public-market/home-featured-buildings.server';
+import { MARKET_PHOTOS, MarketRepresentativePhoto } from '@/components/market-representative-photo';
 import { buildSeoulLiveModel } from '@/lib/public-market/seoul-live-model.server';
 import {
   buildMarketPageModel,
@@ -42,31 +38,11 @@ export default async function MarketOverviewPage({ params }: MarketPageProps) {
   const model = buildMarketPageModel(country, city);
 
   if (!model) notFound();
-  const featured = model.marketId === 'kr-seoul' ? buildHomeFeaturedBuildings()[0] : undefined;
-  const googleMapsBrowserKey = googleMapsBrowserKeyFromEnvironment();
-  const media = model.marketId === 'ae-dubai' ? (
-    <GooglePlacePhoto
-      browserKey={googleMapsBrowserKey}
-      buildingName="Burj Khalifa"
-      address="Downtown Dubai, UAE"
-      fallback={<GoogleBuildingStreetView
-        browserKey={googleMapsBrowserKey}
-        buildingName="Burj Khalifa"
-        latitude={25.1972}
-        longitude={55.2744}
-        mapHref="https://www.google.com/maps/search/?api=1&query=Burj+Khalifa+Dubai"
-      />}
-    />
-  ) : featured === undefined ? undefined : (
-    <NaverBuildingStreetView
-      clientId={process.env.NAVER_MAP_CLIENT_ID?.trim() || null}
-      buildingName={featured.name}
-      latitude={featured.latitude}
-      longitude={featured.longitude}
-      addressQuery={featured.addressQuery}
-      mapHref={featured.href}
-    />
-  );
+  const media = model.marketId === 'kr-seoul'
+    ? <MarketRepresentativePhoto photo={MARKET_PHOTOS.seoul} eager />
+    : model.marketId === 'ae-dubai'
+      ? <MarketRepresentativePhoto photo={MARKET_PHOTOS.dubai} eager />
+      : undefined;
   const seoul = model.marketId === 'kr-seoul' ? buildSeoulLiveModel() : null;
   const summaryItems = seoul?.status === 'ready' ? [
     { label: 'Eligible contracts', value: new Intl.NumberFormat('en-US').format(seoul.totalCount), detail: seoul.period },

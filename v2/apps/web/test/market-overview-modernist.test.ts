@@ -119,19 +119,15 @@ describe('three market overview routes', () => {
     }
   });
 
-  it('renders six connected rows in model order on all market pages', async () => {
+  it('keeps the four decision rows visible and folds source detail into one disclosure', async () => {
     for (const params of marketRouteParams) {
       const markup = renderToStaticMarkup(
         await MarketOverviewPage({ params: Promise.resolve(params) }),
       );
 
-      expect(markup.match(/data-overview-row=/g)).toHaveLength(6);
-      let previousIndex = -1;
-      for (const title of expectedRows) {
-        const index = markup.indexOf(`>${title}<`);
-        expect(index).toBeGreaterThan(previousIndex);
-        previousIndex = index;
-      }
+      expect(markup.match(/data-overview-row=/g)).toHaveLength(4);
+      expect(markup).toContain('<summary>Sources and limits</summary>');
+      for (const title of expectedRows) expect(markup).toContain(`>${title}<`);
     }
   });
 

@@ -118,6 +118,14 @@ describe('NAVER district map', () => {
     )).toBeNull();
     expect(resolveUnambiguousNaverGeocode(
       '서울특별시 강남구 역삼동 Evidence Tower',
+      [matching, {
+        ...matching,
+        x: '127.041',
+        jibunAddress: '서울특별시 강남구 삼성동 1',
+      }],
+    )).toBe(matching);
+    expect(resolveUnambiguousNaverGeocode(
+      '서울특별시 강남구 역삼동 Evidence Tower',
       [{ ...matching, jibunAddress: '서울특별시 강남구 삼성동 1' }],
     )).toBeNull();
   });

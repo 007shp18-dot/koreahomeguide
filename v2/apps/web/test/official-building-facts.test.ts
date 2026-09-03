@@ -28,7 +28,7 @@ describe('official Korea building facts join', () => {
       }] } } } }));
 
     const result = await loadOfficialBuildingFacts({
-      serviceKey: 'server-secret', fetch,
+      serviceKey: 'server%2Bsecret%2Fvalue', fetch,
       districtLawdCd: '11680', neighborhoodName: '역삼동',
       officialName: '래미안 역삼', housingType: 'apartment',
     });
@@ -46,7 +46,7 @@ describe('official Korea building facts join', () => {
     expect(urls[2]?.searchParams.get('bjdongCd')).toBe('10100');
     expect(urls[2]?.searchParams.get('bun')).toBe('0123');
     expect(urls[2]?.searchParams.get('ji')).toBe('0004');
-    expect(urls.every((url) => url.searchParams.get('serviceKey') === 'server-secret')).toBe(true);
+    expect(urls.every((url) => url.searchParams.get('serviceKey') === 'server+secret/value')).toBe(true);
     expect(JSON.stringify(result)).not.toContain('server-secret');
   });
 

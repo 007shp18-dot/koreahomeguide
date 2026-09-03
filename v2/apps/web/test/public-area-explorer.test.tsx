@@ -286,7 +286,8 @@ describe('public Seoul area Explorer', () => {
     expect(markup).toMatch(/<span[^>]+aria-disabled="true"[^>]+data-transaction-mode="sale"[^>]*>Sale<\/span>/);
     expect(markup).toMatch(/<span[^>]+aria-disabled="true"[^>]+data-transaction-mode="monthly-rent"[^>]*>Monthly rent<\/span>/);
     expect(markup).not.toMatch(/data-transaction-mode="(?:sale|monthly-rent)"[^>]+(?:href|aria-current="page")/);
-    expect(markup).toContain('name="evidence-area"');
+    expect(markup).not.toContain('name="evidence-area"');
+    expect(markup).toContain('name="housing-type"');
     expect(markup).toContain('Price-ready');
     expect(markup.indexOf('data-explorer-layout="split"')).toBeLessThan(markup.indexOf('data-coverage-panel="verified"'));
   });

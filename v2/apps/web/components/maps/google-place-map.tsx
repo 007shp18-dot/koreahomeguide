@@ -29,8 +29,9 @@ export type GoogleMarketMapPoint = Readonly<{
   id: string;
   title: string;
   label: string;
-  latitude: number;
-  longitude: number;
+  latitude?: number;
+  longitude?: number;
+  address?: string;
 }>;
 export type GoogleGeocoderInstance = Readonly<{
   geocode: (request: Readonly<{
@@ -127,12 +128,40 @@ export function mountGoogleMarketPoints(
   map: GoogleMapInstance,
   points: readonly GoogleMarketMapPoint[],
 ): readonly GoogleMarkerInstance[] {
-  return Object.freeze(points.map((point) => new sdk.Marker({
+  return Object.freeze(points.filter((point) => point.latitude !== undefined && point.longitude !== undefined).map((point) => new sdk.Marker({
     map,
-    position: { lat: point.latitude, lng: point.longitude },
+    position: { lat: point.latitude!, lng: point.longitude! },
     title: point.title,
     label: { text: point.label, className: 'spGoogleMarketMarker' },
   })));
+}
+
+export async function geocodeGoogleMarketPoints(
+  sdk: GoogleMapsSdk,
+  runtime: GooglePlaceMapRuntime,
+  points: readonly GoogleMarketMapPoint[],
+): Promise<readonly GoogleMarkerInstance[]> {
+  const markers: GoogleMarkerInstance[] = [];
+  for (const point of points.filter((candidate) => candidate.address !== undefined)) {
+    try {
+      const { results } = await runtime.geocoder.geocode({
+        address: point.address!,
+        componentRestrictions: { country: 'SG' },
+        region: 'SG',
+      });
+      const position = results[0]?.geometry.location;
+      if (position === undefined) continue;
+      markers.push(new sdk.Marker({
+        map: runtime.map,
+        position: { lat: position.lat(), lng: position.lng() },
+        title: point.title,
+        label: { text: point.label, className: 'spGoogleMarketMarker' },
+      }));
+    } catch {
+      // Keep the rest of the verified project markers when one address cannot be resolved.
+    }
+  }
+  return Object.freeze(markers);
 }
 
 export async function geocodeGoogleAddress({
@@ -178,6 +207,15 @@ export function GooglePlaceMap({
       runtime.current = mountGooglePlaceMap({ sdk, element: container.current });
       for (const marker of marketMarkers.current) marker.setMap(null);
       marketMarkers.current = mountGoogleMarketPoints(sdk, runtime.current.map, points);
+      void geocodeGoogleMarketPoints(sdk, runtime.current, points).then((markers) => {
+        marketMarkers.current = Object.freeze([...marketMarkers.current, ...markers]);
+        const requestedLocations = points.filter((point) => point.address !== undefined).length;
+        if (requestedLocations > 0) {
+          setMessage(markers.length === requestedLocations
+            ? `${markers.length} verified project locations shown.`
+            : `${markers.length} of ${requestedLocations} project locations could be verified on Google Maps.`);
+        }
+      });
       setMapState('ready');
     } catch {
       setMapState('error');
@@ -225,8 +263,10 @@ export function GooglePlaceMap({
       aria-label="Static Singapore market map with segment prices"
     >
       {points.map((point) => {
-        const left = 12 + ((point.longitude - 103.70) / 0.25) * 76;
-        const top = 14 + ((1.43 - point.latitude) / 0.20) * 70;
+        const longitude = point.longitude ?? 103.8198;
+        const latitude = point.latitude ?? 1.3521;
+        const left = 12 + ((longitude - 103.70) / 0.25) * 76;
+        const top = 14 + ((1.43 - latitude) / 0.20) * 70;
         return <span
           key={point.id}
           className={styles.staticMarketMarker}
