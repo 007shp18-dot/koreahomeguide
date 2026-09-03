@@ -6,7 +6,10 @@ import { buildObservedBuildingIdentityModel } from '@/lib/public-market/observed
 import { loadOfficialBuildingFacts } from '@/lib/public-market/official-building-facts.server';
 
 export const dynamic = 'force-dynamic';
-export const maxDuration = 15;
+// The official identity join is sequential (complex list → complex profile →
+// register profile). Keep enough execution time for the verified chain instead
+// of letting the client receive an opaque platform timeout.
+export const maxDuration = 30;
 
 const repositories = koreaEvidenceRepositoriesFromEnvironment();
 

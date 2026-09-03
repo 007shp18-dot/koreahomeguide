@@ -30,10 +30,11 @@ describe('signedprice Evidence Editorial homepage', () => {
     expect([...positions].sort((a, b) => a - b)).toEqual(positions);
   }, 20_000);
 
-  it('keeps global market links inside the single header without a duplicate hero city tablist', async () => {
+  it('keeps global market links inside the compact market tier without a duplicate hero city tablist', async () => {
     const markup = renderToStaticMarkup(await Home());
 
-    expect(markup).toContain('data-navigation-tier="primary"');
+    expect(markup).toContain('class="site-header__market-tier"');
+    expect(markup).toContain('data-navigation-tier="product"');
     expect(markup).toContain('aria-label="Market navigation"');
     expect(markup).toContain('aria-label="Change language to 한국어"');
     expect(markup).toContain('href="/ko/kr/seoul"');
@@ -47,9 +48,9 @@ describe('signedprice Evidence Editorial homepage', () => {
     const navigation = markup.match(/<nav[^>]*aria-label="Primary navigation"[^>]*>([\s\S]*?)<\/nav>/)?.[1] ?? '';
 
     expect(navigation.match(/<a /g) ?? []).toHaveLength(7);
-    expect(navigation).toContain('>Markets</a>');
+    expect(navigation).toContain('<strong>Markets</strong>');
     expect(navigation).toContain('href="/properties"');
-    expect(navigation).toContain('>Invest</a>');
+    expect(navigation).toContain('<strong>Invest</strong>');
     expect(navigation).toContain('href="/invest"');
   });
 

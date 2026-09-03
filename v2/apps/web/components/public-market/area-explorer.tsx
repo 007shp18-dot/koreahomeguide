@@ -575,7 +575,7 @@ function ReadyAreaExplorer({
       aria-labelledby="area-explorer-heading"
       data-market-selection={`${initialSelection.market}:${initialSelection.transaction}`}
       data-explore-view={currentView}
-      data-explorer-version="archive"
+      data-explorer-version="guide-v2"
     >
       <div className={styles.exploreToolbar} data-explorer-region="filters">
         <div

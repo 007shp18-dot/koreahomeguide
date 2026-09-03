@@ -79,19 +79,18 @@ const contractModel: ContractCheckRouteModel = Object.freeze({
 afterEach(() => vi.unstubAllEnvs());
 
 describe('Korean embedded product components', () => {
-  it('keeps the Korean surface in the single header and exposes a crawlable English switch', () => {
+  it('keeps the Korean surface in the compact two-tier header and exposes a crawlable English switch', () => {
     const html = renderToStaticMarkup(<>
       <SiteHeader copy={KOREAN_SITE_HEADER} />
       <SiteFooter copy={KOREAN_SITE_FOOTER} />
     </>);
 
-    expect(html).toContain('data-navigation-tier="primary"');
-    expect(html).not.toContain('data-navigation-tier="market"');
-    expect(html).not.toContain('data-navigation-tier="product"');
+    expect(html).toContain('class="site-header__market-tier"');
+    expect(html).toContain('data-navigation-tier="product"');
     expect(html).toContain('href="/kr/seoul"');
     expect(html).toMatch(/hreflang="en"/i);
     expect(html).toContain('href="/ko/kr/seoul/check"');
-    expect(html).toContain('>뉴스</a>');
+    expect(html).toContain('<strong>뉴스</strong>');
   });
 
   it('switches Korean Explore and Rankings to their matching English routes', async () => {

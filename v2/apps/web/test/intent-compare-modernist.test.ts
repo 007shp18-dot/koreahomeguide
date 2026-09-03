@@ -134,17 +134,16 @@ describe('nine intent routes use one connected decision hierarchy', () => {
     }
   });
 
-  it('leaves all shared product links inactive because an intent is not a product route', async () => {
+  it('keeps every market intent inside the shared local product hierarchy', async () => {
     for (const params of intentRouteParams) {
       const markup = navigationMarkup(
         renderToStaticMarkup(await IntentPage({ params: Promise.resolve(params) })),
       );
 
       expect(markup.match(/<a /g) ?? []).toHaveLength(7);
-      for (const label of ['Markets', 'Prices', 'Properties', 'News', 'Community', 'Guides', 'Invest']) {
-        expect(markup).toContain(`>${label}</a>`);
+      for (const label of ['Overview', 'Check', 'Explore', 'Rankings', 'News', 'Community', 'Guide']) {
+        expect(markup).toContain(`<strong>${label}</strong>`);
       }
-      expect(markup).not.toContain('aria-current');
     }
   });
 });
@@ -214,12 +213,11 @@ describe('comparison remains a semantic Modernist table', () => {
     ).toEqual(['01', '02', '03', '04', '05', '06']);
   });
 
-  it('keeps shared product links inactive on the global comparison route', () => {
+  it('keeps comparison inside the shared local product hierarchy', () => {
     const markup = navigationMarkup(renderToStaticMarkup(createElement(ComparePage)));
 
     expect(markup.match(/<a /g) ?? []).toHaveLength(7);
-    expect(markup).toContain('>Prices</a>');
-    expect(markup).not.toContain('aria-current="page"');
+    expect(markup).toContain('<strong>Explore</strong>');
   });
 
   it('keeps Singapore private sales separate and Dubai transaction detail blocked', () => {

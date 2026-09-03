@@ -45,6 +45,13 @@ function BuildingLocalContext({ buildingId, district }: Readonly<{ buildingId: s
   </section>;
 }
 
+function KnownBuildingFacts({ facts }: Readonly<{ facts: readonly Readonly<{ label: string; value: string }>[] }>) {
+  return <section className={styles.knownFacts} aria-labelledby="known-building-facts-heading" data-building-facts="known">
+    <div className={styles.sectionHeading}><p>Building profile</p><h2 id="known-building-facts-heading">Verified facts already attached</h2></div>
+    <dl className={styles.findingGrid}>{facts.map((fact) => <div key={fact.label}><dt>{fact.label}</dt><dd>{fact.value}</dd></div>)}</dl>
+  </section>;
+}
+
 const proximityCopy = Object.freeze({
   en: Object.freeze({
     heading: 'Proximity',
@@ -164,6 +171,14 @@ export function ObservedBuildingDetail({
           </div>
         </section>
 
+        <KnownBuildingFacts facts={[
+          { label: 'Official identity', value: model.building.officialName },
+          { label: 'Area', value: `${model.building.neighborhoodName} · ${model.district.nameEn}` },
+          { label: 'Housing type', value: model.building.housingType },
+          { label: 'Observed evidence', value: countLabel(model.observations.total) },
+          { label: 'Evidence period', value: `${model.observations.firstMonth}–${model.observations.lastMonth}` },
+          { label: 'Map identity', value: coordinateLabel },
+        ]} />
         {facts}
 
         <BuildingLocalContext buildingId={model.building.buildingId} district={model.district.slug} />
@@ -283,6 +298,14 @@ export function KoreaEvidenceBuildingDetail({
           </div>
         </section>
 
+        <KnownBuildingFacts facts={[
+          { label: 'Official identity', value: model.building.officialName },
+          { label: 'Area', value: `${model.building.neighborhoodName} · ${model.district.nameEn}` },
+          { label: 'Housing type', value: model.building.housingType },
+          { label: 'Transaction', value: transactionLabel },
+          { label: 'Area cohort', value: areaLabel },
+          { label: 'Evidence period', value: model.period },
+        ]} />
         {facts}
 
         <BuildingLocalContext buildingId={model.building.buildingId} district={model.district.slug} />

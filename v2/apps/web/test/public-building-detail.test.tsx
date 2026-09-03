@@ -56,13 +56,13 @@ function detailProps(
 }
 
 describe('public building detail', () => {
-  it('renders shared product navigation and URL-backed decision tabs', () => {
+  it('renders shared local product navigation and URL-backed decision tabs', () => {
     const header = renderToStaticMarkup(<BuildingDetailHeader />);
     expect(header).toContain('aria-label="signedprice home"');
-    for (const label of ['Markets', 'Prices', 'Properties', 'News', 'Community', 'Guides', 'Invest']) {
-      expect(header).toContain(`>${label}</a>`);
+    for (const label of ['Overview', 'Check', 'Explore', 'Rankings', 'News', 'Community', 'Guide']) {
+      expect(header).toContain(`<strong>${label}</strong>`);
     }
-    expect(header).toMatch(/<a[^>]*aria-current="page"[^>]*>Prices<\/a>/);
+    expect(header).toMatch(/<a[^>]*aria-current="page"[^>]*href="\/kr\/seoul\/explore"/);
     expect(header).toContain('Seoul · reported filings');
 
     const tabs = renderToStaticMarkup(
