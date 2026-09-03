@@ -364,3 +364,78 @@
   .chart figcaption p { min-height: 0; }
   .chartRow { grid-template-columns: minmax(78px, 0.8fr) minmax(64px, 1fr) minmax(100px, auto); gap: 0.45rem; }
 }
+
+/* Unified market dashboard surfaces */
+.main {
+  width: min(calc(100% - (2 * var(--page-gutter))), var(--content-frame));
+  margin: 28px auto 40px;
+  border: 0;
+}
+.hero,
+.withheld,
+.unavailable {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: linear-gradient(130deg, #fff 50%, #eef5ff);
+  box-shadow: var(--shadow-sm);
+}
+.hero { min-height: 230px; padding: clamp(1.8rem, 4vw, 3rem); }
+.hero h1,
+.withheld h1,
+.unavailable h1 { font-size: clamp(2.35rem, 5vw, 4.6rem); font-weight: 740; line-height: 1.02; }
+.hero > p:not(.eyebrow) { font-size: .875rem; line-height: 1.65; }
+.actions a,
+.breadcrumbs a,
+.scope span { border-color: var(--line); border-radius: 9px; font-size: .8125rem; }
+.section {
+  margin-top: 16px;
+  padding: 26px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-sm);
+}
+.section h2 { font-size: clamp(1.55rem, 3vw, 2.5rem); }
+.grid,
+.stats,
+.projectGrid { gap: 10px; border: 0; }
+.card,
+.stat,
+.projectCard { border: 1px solid var(--line); border-radius: 12px; background: var(--canvas); }
+.card p,
+.projectCard p { font-size: .8125rem; line-height: 1.55; }
+.tableWrap { border: 1px solid var(--line); border-radius: 11px; }
+.table th,
+.table td { border-color: var(--line); font-size: .8125rem; }
+.table th { background: var(--canvas); }
+.dataTabs a { border-color: var(--line); border-radius: 999px; }
+.chart { border-color: var(--line); border-radius: 12px; background: var(--canvas); }
+.chartTrack { overflow: hidden; border-radius: 999px; }
+.chartBar { border-radius: 999px; }
+
+.checkWorkspace {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-sm);
+}
+.checkHeader,
+.checkMode,
+.checkMarkets a,
+.checkForm { border-color: var(--line); }
+.checkMarkets { gap: 9px; border: 0; }
+.checkMarkets a { border: 1px solid var(--line); border-radius: 10px; }
+.checkMarkets a[aria-current='page'] { color: var(--accent); background: var(--soft-blue); }
+.offerFields legend { border-color: var(--line); }
+.offerFields input,
+.offerFields select { border-color: var(--line); border-radius: 9px; }
+.checkSubmit { border-radius: 9px; background: var(--accent); }
+.checkResult { background: var(--canvas); }
+
+@media (max-width: 760px) {
+  .main { width: calc(100% - 28px); margin-top: 18px; }
+  .hero { padding: 24px 20px; }
+  .section { padding: 20px; }
+}

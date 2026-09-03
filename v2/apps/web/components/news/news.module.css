@@ -371,3 +371,72 @@
     border-left-width: 0;
   }
 }
+
+/* Unified editorial dashboard surface */
+.main {
+  width: min(calc(100% - (2 * var(--page-gutter))), var(--content-frame));
+  margin: 28px auto 40px;
+  border: 0;
+}
+
+.hero,
+.documentHero {
+  min-height: 230px;
+  padding: clamp(1.8rem, 4vw, 3rem);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: linear-gradient(130deg, #fff 50%, #eef5ff);
+  box-shadow: var(--shadow-sm);
+}
+.hero h1,
+.documentHero h1 { font-size: clamp(2.35rem, 5vw, 4.6rem); font-weight: 740; line-height: 1.02; }
+.hero > p:last-child,
+.documentHero > p:nth-of-type(2) { font-size: .9375rem; }
+
+.feed,
+.boundary,
+.evidencePanel,
+.body,
+.citation,
+.actions {
+  margin-top: 16px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-sm);
+}
+.sectionHeading { padding: 22px 26px; border-color: var(--line); }
+.sectionHeading h2 { font-size: clamp(1.5rem, 2.8vw, 2.35rem); }
+.cards { padding: 0 14px 14px; display: grid; gap: 10px; }
+.cards > li { overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: var(--canvas); }
+.card { grid-template-columns: 150px minmax(0, 1fr); }
+.cardMeta { border-color: var(--line); }
+.cardMeta > span { color: var(--accent); font-size: 1.55rem; }
+[data-news-layout='lead'] .cardMeta { color: var(--ink); background: var(--soft-blue); }
+[data-news-layout='lead'] .cardMeta time,
+[data-news-layout='lead'] .market { color: var(--muted); }
+.cardBody { padding: 22px; }
+.cardBody h3,
+[data-news-layout='lead'] .cardBody h3 { font-size: clamp(1.3rem, 2.2vw, 2rem); line-height: 1.12; }
+.evidence,
+.source { border-color: var(--line); font-size: .8125rem; }
+.boundary,
+.evidencePanel { padding: 24px; border-color: var(--line); background: var(--soft-blue); }
+.breadcrumb { padding: 0 4px 12px; border: 0; }
+.body { width: 100%; padding: clamp(2rem, 5vw, 4rem); border-color: var(--line); }
+.body p,
+.body li { font-size: clamp(1rem, 1.5vw, 1.1rem); }
+.citation { padding: 26px; border-color: var(--line); }
+.citation a,
+.actions a { border-color: var(--line); border-radius: 9px; font-size: .8125rem; }
+.actions { padding: 12px; gap: 10px; }
+.actions a { border-width: 1px; }
+
+@media (max-width: 720px) {
+  .main { width: calc(100% - 28px); margin-top: 18px; }
+  .hero,
+  .documentHero { min-height: 260px; padding: 24px 20px; }
+  .cardMeta { border-right: 0; border-bottom: 1px solid var(--line); }
+}

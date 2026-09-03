@@ -16,6 +16,49 @@
   border-inline: var(--rule-strong);
 }
 
+/* Unified rankings dashboard */
+.frame {
+  margin: 28px auto 40px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-sm);
+}
+.hero { padding: 30px; border-color: var(--line); background: linear-gradient(130deg, #fff 50%, #eef5ff); }
+.hero h1 { font-size: clamp(2.35rem, 4.5vw, 4.1rem); font-weight: 740; line-height: 1.02; }
+.heroMeta { gap: 8px; border: 0; }
+.heroMeta > div { border: 1px solid var(--line); border-radius: 9px; background: var(--surface-strong); }
+.heroMeta dt { font-size: .68rem; }
+.heroMeta dd { font-size: .75rem; }
+.filters { padding: 16px 22px; border-color: var(--line); background: var(--surface-strong); }
+.filters label > span { font-size: .68rem; }
+.filters select,
+.filters button { border: 1px solid var(--line); border-radius: 9px; font-size: .75rem; }
+.filters button { border-color: var(--accent); background: var(--accent); }
+.viewWorkspace { border: 0; }
+.viewTabs { border-color: var(--line); background: var(--canvas); }
+.viewTabs button { border: 1px solid var(--line); border-radius: 999px; font-size: .75rem; }
+.viewTabs button[aria-selected='true'] { color: var(--accent); background: var(--soft-blue); }
+.panelHeader { border-color: var(--line); }
+.panelHeader > p:not(:first-child),
+.panelHeader small,
+.noFall { font-size: .8125rem; }
+.row,
+.changeRow,
+.axisLabels,
+.rankingDistribution { border-color: var(--line); }
+.rank,
+.value { border-color: var(--line); font-size: .8125rem; }
+.districtLink { font-size: .875rem; }
+.districtLink span { font-size: .75rem; }
+.districtLink:hover { color: var(--accent); background: var(--soft-blue); }
+
+@media (max-width: 720px) {
+  .frame { width: calc(100% - 28px); margin-top: 18px; }
+  .hero { padding: 24px 20px; }
+}
+
 .hero {
   min-height: 0;
   padding: clamp(1.25rem, 3vw, 2rem);

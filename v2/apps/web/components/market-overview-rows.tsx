@@ -17,8 +17,35 @@ export function MarketOverviewRows({
   actionsLabel,
   primaryAction,
 }: MarketOverviewRowsProps) {
+  const summaryRows = rows.slice(0, 4);
+  const evidenceItems = rows[1]?.items.slice(0, 3) ?? [];
   return (
     <section className="market-overview site-shell" aria-label="Market overview details">
+      <div className="market-overview-summary" aria-label="Market summary">
+        {summaryRows.map((row) => (
+          <article key={`summary-${row.number}`}>
+            <span>{row.title}</span>
+            <strong>{row.stateLabel}</strong>
+            <small>{row.number === '04' ? `${row.items.length} declared limits` : row.description}</small>
+          </article>
+        ))}
+      </div>
+      <div className="market-overview-dashboard">
+        <section aria-labelledby="coverage-profile-heading">
+          <header><p>Coverage profile</p><h2 id="coverage-profile-heading">Evidence and decision readiness</h2></header>
+          <div className="market-overview-bars">
+            {rows.slice(0, 3).map((row) => (
+              <div data-overview-state={row.state} key={`bar-${row.number}`}>
+                <span>{row.title}</span><i aria-hidden="true"><b /></i><strong>{row.stateLabel}</strong>
+              </div>
+            ))}
+          </div>
+        </section>
+        <aside aria-labelledby="market-support-heading">
+          <header><p>Market notes</p><h2 id="market-support-heading">What is usable now</h2></header>
+          {evidenceItems.length === 0 ? <p>Open the detailed rows for the current publication boundary.</p> : <ul>{evidenceItems.map((item) => <li key={item.label}><span aria-hidden="true" /><p><strong>{item.label}</strong><small>{item.description}</small></p></li>)}</ul>}
+        </aside>
+      </div>
       <div className="market-overview-rows">
         {rows.map((row) => (
           <article className="market-overview-row" key={row.number}>
