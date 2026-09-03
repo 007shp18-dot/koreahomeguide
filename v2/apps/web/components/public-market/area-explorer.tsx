@@ -450,6 +450,7 @@ function ReadyAreaExplorer({
   ): void => {
     const building = districtBuildings.find(({ id }) => id === buildingId);
     if (building === undefined) return;
+    setMapDrilledToDistrict(true);
     dispatchBuildingSelection({ type: 'select_building', source, buildingId });
     router.replace(
       createExploreBuildingSelectionHref(building, linkSelection, locale, {
