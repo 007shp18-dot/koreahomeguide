@@ -104,7 +104,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     singleQuoteReady,
     conversionReady,
   });
-  const entries: MetadataRoute.Sitemap = [];
   const operatorReady = operatorProfileFromEnvironment().status === 'ready';
   const newsLastModified = latestDate(newsRecords.map(
     (record) => record.updatedAt ?? record.publishedAt,
@@ -112,6 +111,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const guideLastModified = latestDate(GUIDES.map(
     ({ lastVerified }) => `${lastVerified}T00:00:00.000Z`,
   ));
+  const entries: MetadataRoute.Sitemap = [
+    sitemapEntry('/markets/'),
+    sitemapEntry('/prices/', summaryLastModified),
+    sitemapEntry('/insights/', newsLastModified),
+    sitemapEntry('/guides/', guideLastModified),
+  ];
   const modifiedByPath = new Map<string, Date | undefined>([
     ['/kr/seoul/', summaryLastModified],
     ['/ko/kr/seoul/', summaryLastModified],

@@ -166,10 +166,10 @@ describe('signedprice brand foundation', () => {
       padding: '0',
     });
     expect(declarationsFor(css, '.site-header__market-link')).toMatchObject({
-      'min-height': '30px',
+      'min-height': '34px',
     });
     expect(declarationsFor(css, '.site-header__product-link')).toMatchObject({
-      'min-height': '38px',
+      'min-height': '42px',
     });
     expect(declarationsFor(css, '.intent-tabs')).toMatchObject({
       border: '1px solid var(--line)',

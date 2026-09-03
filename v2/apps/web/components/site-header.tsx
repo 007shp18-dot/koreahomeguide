@@ -13,30 +13,34 @@ type SiteHeaderProps = {
 
 export function SiteHeader({ copy }: SiteHeaderProps) {
   const currentHref = copy.links.find(({ isCurrent }) => isCurrent)?.href;
-  const contextualLinks: readonly NavigationLinkModel[] = copy.navigationVariant === 'supplied'
+  const hasLocalLinks = copy.links.some((link) => (
+    !productNavigationLinks.some((productLink) => productLink.href === link.href)
+  ));
+  const contextualLinks: readonly NavigationLinkModel[] = copy.navigationVariant === 'supplied' || hasLocalLinks
     ? copy.links
     : [];
-  const currentMarket = currentHref?.startsWith('/sg/') || copy.marketLabel === 'Singapore'
+  const isGlobalProduct = copy.marketLabel === undefined
+    && currentHref !== undefined
+    && productNavigationLinks.some(({ href }) => href === currentHref);
+  const currentMarket = isGlobalProduct
+    ? null
+    : currentHref?.startsWith('/sg/') || copy.marketLabel === 'Singapore'
     ? 'singapore'
     : currentHref?.startsWith('/ae/') || copy.marketLabel === 'Dubai'
       ? 'dubai'
       : 'seoul';
-  const navigationLinks: readonly NavigationLinkModel[] = productNavigationLinks.map((link) => (
-    currentMarket === 'singapore' && link.label === 'Prices'
-      ? { ...link, href: '/sg/singapore/explore/' }
-      : link
-  ));
+  const navigationLinks: readonly NavigationLinkModel[] = productNavigationLinks;
   const markets = [
     { id: 'seoul', label: 'Seoul', href: '/kr/seoul/' },
     { id: 'singapore', label: 'Singapore', href: '/sg/' },
-    { id: 'dubai', label: 'Dubai', href: '/compare/?market=dubai' },
+    { id: 'dubai', label: 'Dubai', href: '/markets/#dubai' },
   ] as const;
 
   function isCurrentLink(href: string): boolean {
     if (currentHref === href) return true;
-    if (href === '/kr/seoul/explore/' && currentHref?.includes('/explore/')) return true;
-    if (href === '/kr/seoul/news/' && currentHref?.includes('/news/')) return true;
-    if (href === '/kr/seoul/guide/' && currentHref?.includes('/guide/')) return true;
+    if (href === '/prices/' && (currentHref?.includes('/explore/') || currentHref?.includes('/check/') || currentHref?.includes('/rankings/'))) return true;
+    if (href === '/insights/' && currentHref?.includes('/news/')) return true;
+    if (href === '/guides/' && currentHref?.includes('/guide/')) return true;
     return false;
   }
 

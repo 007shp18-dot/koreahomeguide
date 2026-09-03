@@ -56,7 +56,7 @@ function MarketPulse({ market, index, seoul }: Readonly<{
   seoul: SeoulLiveModel;
 }>) {
   const available = market.slots.filter((slot) => slot.state === 'available').length;
-  const href = market.tabId === 'seoul' ? '/kr/seoul/' : market.tabId === 'singapore' ? '/sg/' : '/compare/?market=dubai';
+  const href = market.tabId === 'seoul' ? '/kr/seoul/' : market.tabId === 'singapore' ? '/sg/' : '/markets/#dubai';
   const headline = market.tabId === 'seoul' && seoul.status === 'ready'
     ? number.format(seoul.totalCount)
     : market.tabId === 'seoul'
@@ -104,11 +104,11 @@ export function HomeMarketBrowser({ copy, markets, seoul }: HomeMarketBrowserPro
             <nav className={styles.marketShortcuts} aria-label="Quick market links">
               <Link href="/kr/seoul/">Korea →</Link>
               <Link href="/sg/">Singapore →</Link>
-              <Link href="/compare/?market=dubai">Dubai →</Link>
+              <Link href="/markets/#dubai">Dubai →</Link>
             </nav>
           </div>
 
-          <div className={styles.marketPanels} id="markets">
+          <div className={styles.marketPanels} id="home-market-preview">
             <section className={styles.marketPanel} data-home-market="seoul" data-seoul-live={seoul.status}>
               <div className={styles.globalVisual} aria-label="Seoul, Singapore and Dubai market coverage">
                 <span className={styles.orbitOne} aria-hidden="true" />

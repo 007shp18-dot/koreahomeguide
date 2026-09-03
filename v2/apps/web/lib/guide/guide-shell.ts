@@ -13,7 +13,7 @@ export const KOREA_GUIDE_HEADER = Object.freeze({
   languageLabel: 'EN',
   links: Object.freeze(productNavigationLinks.map((link) => Object.freeze({
     ...link,
-    isCurrent: link.href === '/kr/seoul/guide/',
+    isCurrent: link.href === '/guides/',
   }))),
 } satisfies SiteHeaderModel);
 

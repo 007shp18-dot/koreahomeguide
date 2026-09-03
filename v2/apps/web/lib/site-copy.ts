@@ -78,11 +78,11 @@ export interface SiteFooterModel {
 }
 
 export const productNavigationLinks = Object.freeze([
-  { index: '01', label: 'Markets', description: 'Compare market context', href: '/#markets' },
-  { index: '02', label: 'Prices', description: 'Explore signed evidence', href: '/kr/seoul/explore/' },
+  { index: '01', label: 'Markets', description: 'Compare market context', href: '/markets/' },
+  { index: '02', label: 'Prices', description: 'Explore signed evidence', href: '/prices/' },
   { index: '03', label: 'Properties', description: 'Service preparing', href: '/properties/' },
-  { index: '04', label: 'Insights', description: 'Read market signals', href: '/kr/seoul/news/' },
-  { index: '05', label: 'Guides', description: 'Understand the method', href: '/kr/seoul/guide/' },
+  { index: '04', label: 'Insights', description: 'Read market signals', href: '/insights/' },
+  { index: '05', label: 'Guides', description: 'Understand the method', href: '/guides/' },
   { index: '06', label: 'Invest', description: 'Service preparing', href: '/invest/' },
 ] as const satisfies readonly NavigationLinkModel[]);
 
@@ -135,7 +135,9 @@ const englishFooterCopy = {
   descriptor: 'Property prices and market context, made clear.',
   navigationLabel: 'Footer navigation',
   links: [
-    { label: 'Markets', href: '#markets' },
+    { label: 'Markets', href: '/markets/' },
+    { label: 'Prices', href: '/prices/' },
+    { label: 'Guides', href: '/guides/' },
     { label: 'Trust', href: '/trust/' },
     { label: 'Back to top', href: '#top' },
   ],
