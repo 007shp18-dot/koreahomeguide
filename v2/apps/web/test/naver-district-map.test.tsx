@@ -130,7 +130,7 @@ describe('NAVER district map', () => {
     )).toBeNull();
   });
 
-  it('loads the official Maps v3 endpoint without geocoding by default', () => {
+  it('builds stable official Maps v3 endpoints for the requested submodules', () => {
     expect(buildNaverMapsScriptUrl('client/id + value')).toBe(
       'https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=client%2Fid+%2B+value',
     );
@@ -153,11 +153,11 @@ describe('NAVER district map', () => {
     expect(html).toContain('data-map-state="loading"');
     expect(html).toContain('Static Seoul district map');
     expect(html).toContain('ncpKeyId=test-client-id');
-    expect(html).not.toContain('submodules=geocoder');
+    expect(html).toContain('submodules=geocoder');
     expect(html).toContain('aria-label="Interactive NAVER map of Seoul districts"');
   });
 
-  it('loads the geocoder submodule only for explicitly permitted address lookup', () => {
+  it('keeps the geocoder submodule available for a district-to-building transition', () => {
     const html = renderToStaticMarkup(createElement(NaverDistrictMap, {
       clientId: 'test-client-id',
       districts,
