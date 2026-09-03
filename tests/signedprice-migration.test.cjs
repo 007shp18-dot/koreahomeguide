@@ -131,17 +131,7 @@ test('renders exact 301 rules without losing existing rewrites or unrelated redi
   assert.ok(rendered.redirects.every((entry) => !('permanent' in entry)));
 });
 
-test('removes migrated dynamic URL families from the legacy sitemap index', () => {
-  const manifest = buildMigrationManifest({ root });
-  const source = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
-  const rendered = renderRootSitemap(source, manifest);
-  assert.doesNotMatch(rendered, /sitemaps\/seoul\/gangnam-gu\/apartment\//);
-  assert.doesNotMatch(rendered, /sitemaps\/seoul\/yongsan-gu\/villa\//);
-  assert.match(rendered, /sitemaps\/seoul\/gwanak-gu\/officetel\//);
-  assert.match(rendered, /sitemaps\/seoul\/opportunities\/apartment\//);
-});
-
-test('removes only active English sources from the KoreaHomeGuide static sitemap', () => {
+test('removes only active English sources and dynamic families from legacy sitemaps', () => {
   const manifest = buildMigrationManifest({ root });
   const source = fs.readFileSync(path.join(root, 'sitemap-static.xml'), 'utf8');
   const rendered = renderStaticSitemap(source, manifest);
@@ -158,6 +148,12 @@ test('removes only active English sources from the KoreaHomeGuide static sitemap
       `<loc>https://koreahomeguide\\.com${retained.replaceAll('/', '\\/')}<\\/loc>`,
     ));
   }
+  const rootSource = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
+  const renderedRoot = renderRootSitemap(rootSource, manifest);
+  assert.doesNotMatch(renderedRoot, /sitemaps\/seoul\/gangnam-gu\/apartment\//);
+  assert.doesNotMatch(renderedRoot, /sitemaps\/seoul\/yongsan-gu\/villa\//);
+  assert.match(renderedRoot, /sitemaps\/seoul\/gwanak-gu\/officetel\//);
+  assert.match(renderedRoot, /sitemaps\/seoul\/opportunities\/apartment\//);
 });
 
 test('committed Vercel and sitemap artifacts pass the deployed migration gate', () => {
