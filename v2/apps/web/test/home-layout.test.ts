@@ -12,16 +12,16 @@ const homeCss = readFileSync(
 
 describe('signedprice Evidence Editorial homepage', () => {
   it('centres every primary section in the standard content frame', () => {
-    for (const selector of ['.heroGrid', '.liveStrip', '.decisionSection', '.marketDirectory', '.evidenceSection', '.briefSection', '.trustBoundary']) {
+    for (const selector of ['.heroGrid', '.snapshotGrid', '.marketGrid', '.buildingGrid', '.insightGrid', '.propertyGrid', '.bottomGrid']) {
       expect(homeCss).toContain(selector);
     }
-    expect(homeCss).not.toMatch(/(?:heroGrid|liveStrip|decisionSection|marketDirectory|evidenceSection|briefSection|trustBoundary)[^{]*\{[^}]*100vw/);
+    expect(homeCss).not.toMatch(/(?:heroGrid|snapshotGrid|marketGrid|buildingGrid|insightGrid|propertyGrid|bottomGrid)[^{]*\{[^}]*100vw/);
   }, 10_000);
 
   it('uses one decision headline before the evidence and deeper product sections', async () => {
     const markup = renderToStaticMarkup(await Home());
     const h1s = markup.match(/<h1/g) ?? [];
-    const sections = ['home-decision', 'home-evidence', 'markets', 'home-explore', 'home-prices', 'home-briefs', 'home-trust'];
+    const sections = ['home-decision', 'markets', 'home-explore', 'home-prices', 'home-briefs', 'home-trust'];
     const positions = sections.map((id) => markup.indexOf(`id="${id}"`));
 
     expect(h1s).toHaveLength(1);
@@ -49,15 +49,15 @@ describe('signedprice Evidence Editorial homepage', () => {
     expect(navigation).toContain('href="/invest"');
   });
 
-  it('keeps all six market slots while moving decisions to the hero', async () => {
+  it('keeps Seoul tools crawlable while using search as the primary hero action', async () => {
     const markup = renderToStaticMarkup(await Home());
     const seoulPanel = markup.slice(markup.indexOf('data-home-market="seoul"'));
 
-    for (const label of ['Check', 'Explore', 'Rankings', 'News', 'Guide', 'Community']) {
-      expect(seoulPanel).toContain(`>${label}</strong>`);
+    for (const label of ['Check a contract', 'Explore Seoul', 'District rankings', 'Market news', 'Buying guide']) {
+      expect(seoulPanel).toContain(`>${label}</a>`);
     }
-    expect(markup).toContain('aria-label="Choose a property decision"');
-    expect(markup).toContain('aria-pressed="true">Rent</button>');
+    expect(markup).toContain('role="search"');
+    expect(markup).not.toContain('aria-label="Choose a property decision"');
   });
 
   it('moves staged markets to explicit global destinations', async () => {
@@ -67,13 +67,13 @@ describe('signedprice Evidence Editorial homepage', () => {
     expect(markup).toContain('href="/ae/dubai">Dubai</a>');
   });
 
-  it('closes with a compact trust boundary instead of filler principles', async () => {
+  it('closes with guides and a clearly gated investment roadmap', async () => {
     const markup = renderToStaticMarkup(await Home());
 
     expect(markup).toContain('id="home-trust"');
-    expect(markup).toContain('SignedPrice does not turn missing evidence into confident claims.');
-    expect(markup).toContain('>Rights disclosed</span>');
-    expect(markup).toContain('>Human-approved briefs</span>');
+    expect(markup).toContain('Buying property in another country?');
+    expect(markup).toContain('Invest · Service preparing');
+    expect(markup).toContain('Personalized recommendations remain unavailable');
     expect(markup).not.toContain('class="principles site-shell"');
   });
 });

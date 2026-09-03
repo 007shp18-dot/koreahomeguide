@@ -15,12 +15,13 @@ import { EvidenceSectionHeading } from '../evidence-ui/section-heading';
 import { DetailNewsList } from '../news/detail-news-list';
 import { EvidenceEmptyStatePanel } from '../trust/evidence-empty-state';
 import { BoxPlot } from './box-plot';
-import styles from './district-detail.module.css';
+import styles from './district-page.module.css';
 import { DistrictEvidenceSummary } from './district-evidence-summary';
 import { EvidencePeriodStrip } from './evidence-period-strip';
 import { QuoteInput } from './quote-input';
 import { SampleChip } from './sample-chip';
 import { PublicSourceBoundary } from './public-source-boundary';
+import { NaverDistrictMap, type NaverDistrictMapPoint } from '../maps/naver-district-map';
 
 const config = getPublicMarketConfig('kr-seoul');
 const money = new Intl.NumberFormat(config.formatLocale, {
@@ -183,7 +184,27 @@ function Faq({ model }: Readonly<{
   );
 }
 
-function Finding({ model }: Readonly<{ model: PublicDistrictModel }>) {
+function Finding({
+  model,
+  mapPoint,
+  mapDistricts,
+  naverMapClientId,
+}: Readonly<{
+  model: PublicDistrictModel;
+  mapPoint?: Readonly<{ latitude: number; longitude: number }>;
+  mapDistricts: readonly NaverDistrictMapPoint[];
+  naverMapClientId: string | null;
+}>) {
+  const map = mapPoint === undefined || naverMapClientId === null ? (
+    <div className={styles.mapFallback}><strong>{model.identity.nameEn}</strong><span>District map unavailable</span></div>
+  ) : (
+    <NaverDistrictMap
+      clientId={naverMapClientId}
+      districts={mapDistricts}
+      selectedDistrict={mapPoint}
+      fallback={<div className={styles.mapFallback}><strong>{model.identity.nameEn}</strong><span>Loading verified district map</span></div>}
+    />
+  );
   if (model.status === 'unavailable') {
     return (
       <header
@@ -193,38 +214,42 @@ function Finding({ model }: Readonly<{ model: PublicDistrictModel }>) {
       >
         <div className={styles.heroCopy}>
           <p>Seoul · {model.identity.nameKo}</p>
-          <h1>{model.identity.nameEn}</h1>
+          <h1>{model.identity.nameEn} District</h1>
           <p>{model.message}. No city figure is substituted for unavailable district evidence.</p>
         </div>
-        <div className={styles.heroMetric} data-detail-hero-metric="status">
-          <span>Evidence status</span>
-          <strong>Unavailable</strong>
-        </div>
+        <div className={styles.heroMap}>{map}</div>
       </header>
     );
   }
-  const finding = model.status === 'published' ? model.display.medianLabel : 'Not published';
   return (
     <header
       className={styles.hero}
       data-section="district-summary"
       data-detail-hero="district"
     >
-      <div className={styles.heroCopy}>
-        <p>Seoul · <span lang="ko">{model.identity.nameKo}</span></p>
-        <h1>{model.identity.nameEn}</h1>
-        <p>Official reported-contract evidence for the declared period.</p>
-      </div>
-      <div
-        className={styles.heroMetric}
-        data-detail-hero-metric={model.status === 'published' ? 'median' : 'status'}
-      >
-        <span>Median refundable deposit</span>
-        <strong>{finding}</strong>
-        <SampleChip label={model.display.sampleLabel} state={model.status} />
-      </div>
+        <div className={styles.heroCopy}>
+          <p>Seoul · <span lang="ko">{model.identity.nameKo}</span></p>
+          <h1>{model.identity.nameEn} District</h1>
+          <p>Official reported-contract evidence for the declared period.</p>
+        </div>
+      <div className={styles.heroMap}>{map}</div>
     </header>
   );
+}
+
+function DistrictMetrics({ model }: Readonly<{ model: PublicDistrictModel }>) {
+  const metrics = model.status === 'unavailable' ? [
+    ['Evidence status', 'Unavailable', 'No city value substituted'],
+    ['Sample', 'Unavailable', 'Verified district evidence required'],
+    ['Period', 'Unavailable', 'No current release'],
+    ['Publication', 'Withheld', 'Fail-closed display'],
+  ] : [
+    ['Median deposit', model.status === 'published' ? model.display.medianLabel : 'Not published', model.display.sampleLabel],
+    ['Middle half', model.status === 'published' ? model.display.middleHalfLabel : 'Not published', 'Comparable district distribution'],
+    ['Full range', model.status === 'published' ? model.display.rangeLabel : 'Not published', 'Official reported contracts'],
+    ['Evidence period', model.source.period, model.period.caveat ?? 'Declared reporting period'],
+  ];
+  return <section className={styles.metricGrid} aria-label="District summary metrics">{metrics.map(([label, value, detail], index) => <article key={label} data-detail-hero-metric={index === 0 ? model.status === 'published' ? 'median' : 'status' : undefined}><span>{label}</span><strong>{value}</strong>{index === 0 && model.status !== 'unavailable' ? <SampleChip label={model.display.sampleLabel} state={model.status} /> : <small>{detail}</small>}</article>)}</section>;
 }
 
 function Evidence({ model }: Readonly<{ model: PublicDistrictModel }>) {
@@ -303,9 +328,15 @@ function Evidence({ model }: Readonly<{ model: PublicDistrictModel }>) {
 export function DistrictDetailPage({
   model,
   propertyTypes = [],
+  mapDistricts = [],
+  mapPoint,
+  naverMapClientId = null,
 }: Readonly<{
   model: PublicDistrictModel;
   propertyTypes?: readonly PublicPropertyTypeIdentity[];
+  mapDistricts?: readonly NaverDistrictMapPoint[];
+  mapPoint?: Readonly<{ latitude: number; longitude: number }>;
+  naverMapClientId?: string | null;
 }>) {
   return (
     <div id="top" className={styles.page} data-district-detail={model.status}>
@@ -314,15 +345,19 @@ export function DistrictDetailPage({
         <div className={styles.detailLayout} data-detail-layout="evidence-rail">
           <div className={styles.detailMain} data-detail-main="true">
             <Breadcrumb model={model} />
-            <Finding model={model} />
+            <Finding model={model} mapDistricts={mapDistricts} mapPoint={mapPoint} naverMapClientId={naverMapClientId} />
+            <nav className={styles.tabs} aria-label="District page sections"><a href="#overview">Overview</a><a href="#distribution">Distribution</a><a href="#buildings">Buildings</a><a href="#home-types">Home types</a><a href="#source">Source</a></nav>
+            <div id="overview"><DistrictMetrics model={model} /></div>
+            <div id="distribution">
             <Evidence model={model} />
+            </div>
             <div className={styles.cohortEvidence} data-section="district-cohorts">
               <DistrictEvidenceSummary model={model.contractEvidence} mode="full" />
             </div>
-            <PropertyTypeEvidence model={model} propertyTypes={propertyTypes} />
-            <BuildingEvidence model={model} />
+            <div id="home-types"><PropertyTypeEvidence model={model} propertyTypes={propertyTypes} /></div>
+            <div id="buildings"><BuildingEvidence model={model} /></div>
             {model.status === 'unavailable' ? null : <Faq model={model} />}
-            <div className={styles.sourceBoundary} data-section="district-source">
+            <div className={styles.sourceBoundary} data-section="district-source" id="source">
               <PublicSourceBoundary model={model.source} />
             </div>
           </div>

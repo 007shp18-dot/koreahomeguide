@@ -71,13 +71,24 @@ export function SingaporeEntry({ model }: Readonly<{ model: SingaporeEntryModel 
         <MarketHero model={{
           sectionLabel: 'Singapore market overview',
           eyebrow: 'Singapore market',
-          heading: 'Singapore',
+          heading: 'Singapore Market Overview',
           description: `Official private residential sale evidence, separated by native market segment. ${model.transactionLabel} · ${model.periodLabel}.`,
           facts: [],
           layout: 'overview',
           tier: { state: 'limited', label: 'Market intelligence' },
         }} />
-        <MarketOverviewRows rows={rows} actions={actions} actionsLabel="Singapore next steps" primaryAction />
+        <MarketOverviewRows
+          rows={rows}
+          actions={actions}
+          actionsLabel="Singapore next steps"
+          primaryAction
+          summaryItems={[
+            { label: 'Transactions', value: model.transactionLabel, detail: model.periodLabel },
+            { label: 'Projects', value: model.projectLabel, detail: 'Released URA evidence' },
+            { label: 'Currency', value: model.currency, detail: 'Native market currency' },
+            { label: 'Publication', value: 'Verified', detail: 'Minimum-sample rules enforced' },
+          ]}
+        />
       </div>
     </SingaporePage>
   );

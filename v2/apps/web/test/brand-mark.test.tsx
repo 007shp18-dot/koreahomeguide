@@ -76,7 +76,7 @@ describe('SignedPrice brand mark', () => {
     expect(html.indexOf('data-navigation-tier="product"')).toBeLessThan(
       html.indexOf('data-navigation-tier="market"'),
     );
-    expect(html).toContain('class="site-header__product-inner"');
+    expect(html).toContain('data-navigation-tier="product"');
     expect(html).toContain('aria-label="Market navigation"');
     expect(html).toContain('>Seoul<');
     expect(html).toContain('>Singapore<');

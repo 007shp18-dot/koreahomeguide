@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { BuildingDetailPage } from '@/components/public-market/building-detail-page';
 import { BuildingOfficialFacts } from '@/components/public-market/building-official-facts';
 import { NaverBuildingStreetView } from '@/components/maps/naver-building-street-view';
+import { buildNaverBuildingAddressQuery } from '@/components/maps/naver-district-map';
 import {
   KoreaEvidenceBuildingDetail,
   ObservedBuildingDetail,
@@ -83,15 +84,16 @@ function naverStreetViewFor(input: Readonly<{
   name: string;
   latitude: number | null;
   longitude: number | null;
+  addressQuery: string;
   mapHref: string;
 }>) {
-  if (input.latitude === null || input.longitude === null) return undefined;
   return (
     <NaverBuildingStreetView
       clientId={process.env.NAVER_MAP_CLIENT_ID?.trim() || null}
       buildingName={input.name}
-      latitude={input.latitude}
-      longitude={input.longitude}
+      latitude={input.latitude ?? undefined}
+      longitude={input.longitude ?? undefined}
+      addressQuery={input.addressQuery}
       mapHref={input.mapHref}
     />
   );
@@ -252,6 +254,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
         name: exact.model.building.officialName,
         latitude: identity?.coordinate.status === 'ready' ? identity.coordinate.latitude : null,
         longitude: identity?.coordinate.status === 'ready' ? identity.coordinate.longitude : null,
+        addressQuery: buildNaverBuildingAddressQuery(exact.model.district.nameKo, exact.model.building.neighborhoodName, exact.model.building.officialName),
         mapHref: exact.backHref,
       })}
       facts={<><BuildingOfficialFacts districtSlug={exact.model.district.slug} buildingId={exact.model.building.buildingId} /><BuildingProximityDisclosure proximity={identity?.proximity} locale={locale} /></>}
@@ -287,6 +290,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
         name: observed.building.officialName,
         latitude: observed.coordinate.status === 'ready' ? observed.coordinate.latitude : null,
         longitude: observed.coordinate.status === 'ready' ? observed.coordinate.longitude : null,
+        addressQuery: buildNaverBuildingAddressQuery(observed.district.nameKo, observed.building.neighborhoodName, observed.building.officialName),
         mapHref: backHref,
       })}
       facts={<BuildingOfficialFacts
@@ -330,6 +334,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
     name: model.building.name,
     latitude: model.building.latitude,
     longitude: model.building.longitude,
+    addressQuery: buildNaverBuildingAddressQuery(model.district.nameKo, model.building.neighborhoodName, model.building.name),
     mapHref: backHref,
   });
   return (

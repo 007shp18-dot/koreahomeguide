@@ -18,7 +18,7 @@ import { BuildingDecisionView } from './building-decision-views';
 import { BuildingDetailHeader } from './building-detail-header';
 import { BuildingEvidenceDetails } from './building-evidence-details';
 import { BuildingVisual } from './building-visual';
-import styles from './building-detail.module.css';
+import pageStyles from './building-page.module.css';
 
 const footer: SiteFooterModel = {
   brand: 'signedprice',
@@ -66,48 +66,51 @@ export function BuildingDetailPage({
   const { mode, contract } = decision.selection;
   const exploreHref = backHref ?? `/kr/seoul/explore/?district=${model.district.slug}`;
   return (
-    <div id="top" className={styles.page}>
+    <div id="top" className={pageStyles.page}>
       <BuildingDetailHeader />
-      <main className={styles.main} data-building-detail="ready">
+      <main className={pageStyles.main} data-building-detail="ready">
+        <nav className={pageStyles.breadcrumb} aria-label="Breadcrumb"><Link href="/kr/seoul/">Seoul</Link><Link href={exploreHref}>{model.district.nameEn}</Link><span aria-current="page">{model.building.name}</span></nav>
         <section
-          className={styles.identityHero}
+          className={pageStyles.identityHero}
           data-identity-hero="true"
           data-detail-hero="building"
           data-building-section="identity"
         >
-          {streetView ?? <BuildingVisual model={visual} />}
-          <div className={styles.identitySummary} data-detail-hero-metric="identity">
+          <div className={pageStyles.identitySummary} data-detail-hero-metric="identity">
             <Link
-              className={styles.backAction}
+              className={pageStyles.backAction}
               href={exploreHref}
             >
               Back to {model.district.nameEn} Explore
             </Link>
-            <p className={styles.identityEyebrow}>Verified building identity</p>
+            <p className={pageStyles.identityEyebrow}>Verified building identity</p>
             <h1>{model.building.name}</h1>
-            <p>{model.building.neighborhoodName} · {model.district.nameEn}</p>
-            <dl className={styles.factGrid}>
-              <div><dt>Housing type</dt><dd>{model.building.housingType}</dd></div>
-              <div><dt>Rent evidence</dt><dd>{model.display.sampleLabel}</dd></div>
-              <div><dt>Declared period</dt><dd>{model.evidence.period}</dd></div>
-              <div><dt>Source</dt><dd>{model.evidence.provider} {model.evidence.dataset}</dd></div>
-            </dl>
-            <Link className={styles.primaryAction} href={decision.rentCheckHref}>
+            <p className={pageStyles.location}>{model.building.neighborhoodName} · {model.district.nameEn}, Seoul</p>
+            <div className={pageStyles.identityFacts}><span>{model.building.housingType}</span><span>{model.display.sampleLabel}</span><span>{model.evidence.period}</span></div>
+            <Link className={pageStyles.primaryAction} href={decision.rentCheckHref}>
               Check this contract
             </Link>
           </div>
+          <div className={pageStyles.identityMedia}>{streetView ?? <BuildingVisual model={visual} />}</div>
         </section>
 
-        {facts}
+        <nav className={pageStyles.tabs} aria-label="Building page sections"><a href="#building-overview">Overview</a><a href="#building-evidence">Transactions</a><a href="#rent-evidence">Rent evidence</a><span>Listings · Preparing</span><a href="#building-source">Source</a></nav>
+        <section className={pageStyles.summaryGrid} id="building-overview" aria-label="Building summary">
+          <article className={pageStyles.priceSummary}><h2>Price summary</h2><span>Median refundable deposit</span><strong>{model.display.medianLabel}</strong><small>{model.display.sampleLabel}</small></article>
+          <article><h2>Recent reported evidence</h2><ul className={pageStyles.transactionList}>{model.building.recentContracts.slice(0, 3).map((contract, index) => <li key={`${contract.filedMonth}-${index}`}><span>{contract.filedMonth}</span><span>{contract.areaSqm}㎡ · Floor {contract.floor ?? '—'}</span><strong>{new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW', maximumFractionDigits: 0 }).format(contract.depositWon)}</strong></li>)}</ul></article>
+          <article className={pageStyles.preparing}><span>Properties · Service preparing</span><h2>Not a live listing</h2><p>Listings, inquiries and agent connections are intentionally unavailable while operating and legal checks are completed.</p></article>
+        </section>
 
-        <section className={styles.decisionRegion} data-building-section="decision">
+        <div className={pageStyles.facts}>{facts}</div>
+
+        <section className={pageStyles.decisionRegion} data-building-section="decision" id="rent-evidence">
           <BuildingDecisionTabs base={base} selection={decision.selection} />
-          <p className={styles.selectedModeStatus} aria-live="polite">
+          <p className={pageStyles.selectedModeStatus} aria-live="polite">
             Viewing {MODE_LABELS[mode]} · {COHORT_LABELS[contract]} contract cohort
           </p>
           <BuildingDecisionView model={model} decision={decision} base={base} />
         </section>
-        <BuildingEvidenceDetails model={model} />
+        <div className={pageStyles.details} id="building-evidence"><BuildingEvidenceDetails model={model} /></div>
       </main>
       <SiteFooter copy={footer} />
     </div>

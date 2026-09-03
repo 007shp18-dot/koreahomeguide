@@ -45,17 +45,14 @@ export function SingaporeProjectDetail({ model, googleMapsBrowserKey = null }: R
         <span>{model.identity.project}</span></nav>}
         identity={<div className={styles.detailIdentity} data-singapore-project="ready"><p className={styles.eyebrow}>Singapore · {model.identity.marketSegment} · District {model.identity.district}</p><h1>{model.identity.project}</h1><p>{model.identity.street}</p><SingaporeScope /></div>}
         metric={<div className={styles.detailMetric}><small>Median price</small><strong>{model.display.medianPriceLabel}</strong><span>{model.display.sampleLabel}</span></div>}
-        evidence={<><section className={styles.section} aria-labelledby="project-street-view-heading">
-        <p className={styles.sectionLabel}>01 / Nearby view</p>
-        <h2 id="project-street-view-heading">Street context, not a listing photo.</h2>
-        <GoogleBuildingStreetView
+        media={<GoogleBuildingStreetView
           browserKey={googleMapsBrowserKey}
           buildingName={model.identity.project}
           address={`${model.identity.project}, ${model.identity.street}, Singapore`}
           mapHref={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${model.identity.project}, ${model.identity.street}, Singapore`)}`}
-        />
-      </section><section className={styles.section} aria-labelledby="project-summary-heading">
-        <p className={styles.sectionLabel}>02 / Project distribution</p>
+        />}
+        evidence={<><section className={styles.section} aria-labelledby="project-summary-heading">
+        <p className={styles.sectionLabel}>01 / Project distribution</p>
         <h2 id="project-summary-heading">Price and unit-price evidence.</h2>
         <dl className={styles.stats}>
           <div className={styles.stat}><dt>Median price</dt><dd>{model.display.medianPriceLabel}</dd></div>
@@ -63,7 +60,7 @@ export function SingaporeProjectDetail({ model, googleMapsBrowserKey = null }: R
           <div className={styles.stat}><dt>Median</dt><dd>{model.display.medianPsfLabel}</dd></div>
         </dl>
       </section><section className={styles.section} aria-labelledby="transaction-heading">
-        <p className={styles.sectionLabel}>03 / Recent reported transactions</p>
+        <p className={styles.sectionLabel}>02 / Recent reported transactions</p>
         <h2 id="transaction-heading">Native source fields, with derived unit prices labelled.</h2>
         <div className={styles.tableWrap}>
           <table className={styles.table}>
