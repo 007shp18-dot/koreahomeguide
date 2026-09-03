@@ -217,7 +217,7 @@ export function ObservedBuildingDetail({
 }
 
 const areaLabels = Object.freeze({
-  all: 'All filed areas',
+  all: 'All home sizes',
   'under-40': 'Under 40㎡',
   '40-60': '40–60㎡',
   '60-85': '60–85㎡',

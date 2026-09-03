@@ -35,14 +35,6 @@ const money = new Intl.NumberFormat('ko-KR', {
   style: 'currency', currency: 'KRW', currencyDisplay: 'narrowSymbol', maximumFractionDigits: 0,
 });
 
-const rankingAreaOptions = Object.freeze([
-  ['all', 'All areas', '전체 면적'],
-  ['under-40', 'Under 40㎡', '40㎡ 미만'],
-  ['40-60', '40–60㎡', '40–60㎡'],
-  ['60-85', '60–85㎡', '60–85㎡'],
-  ['85-plus', '85㎡ and above', '85㎡ 이상'],
-] as const);
-
 const rankingHousingOptions = Object.freeze([
   ['all', 'All types', '전체 유형'],
   ['apartment', 'Apartment', '아파트'],
@@ -68,7 +60,7 @@ function selectedRankingCopy(
         sale: '국토교통부 신고 매매 계약',
       }[transaction],
       lowerEyebrow: '01 / 낮은 신고 중앙값',
-      lowerDefinition: '선택한 거래유형·면적·건물유형 조건에서 신고 중앙값이 낮은 순서입니다. 주거비 부담이나 주택 품질 순위가 아닙니다.',
+      lowerDefinition: '선택한 거래유형·건물유형 조건에서 신고 중앙값이 낮은 순서입니다. 주거비 부담이나 주택 품질 순위가 아닙니다.',
       spreadDefinition: '선택한 신고 가격의 중간 절반(P75 − P25) 폭이 넓은 순서입니다. 변동성이나 위험도 순위가 아닙니다.',
       distribution: '신고 가격 분포',
     } as const;
@@ -85,7 +77,7 @@ function selectedRankingCopy(
       sale: 'MOLIT reported sale contracts',
     }[transaction],
     lowerEyebrow: '01 / Lower reported medians',
-    lowerDefinition: 'Lowest reported median first for the selected transaction, filed-area and building-type cohort. This is not an affordability or quality ranking.',
+    lowerDefinition: 'Lowest reported median first for the selected transaction and building-type cohort. This is not an affordability or quality ranking.',
     spreadDefinition: 'Widest middle-half (P75 − P25) spread in the selected reported-price cohort. This is dispersion, not volatility or risk.',
     distribution: 'reported price distribution',
   } as const;
@@ -278,7 +270,7 @@ function ReadyRankings({
             <h1 id="district-rankings-heading">{copy.heading}</h1>
             <p>
               {exact
-                ? `${selectedCopy.description} · ${model.source.band} · ${model.source.period}.`
+                ? `${selectedCopy.description} · ${model.source.period}.`
                 : `${copy.descriptionLead} ${model.source.period}.`}{' '}
               {copy.descriptionMiddle}{' '}{model.source.publicationMinimum}
               {locale === 'en' ? ' ' : ''}{copy.descriptionTail}
@@ -307,14 +299,6 @@ function ReadyRankings({
                 <option value="sale" disabled={!model.transactionAvailability.sale}>{locale === 'ko' ? '매매' : 'Sale'}</option>
                 <option value="jeonse" disabled={!model.transactionAvailability.jeonse}>{locale === 'ko' ? '전세' : 'Jeonse'}</option>
                 <option value="monthly" disabled={!model.transactionAvailability.monthly}>{locale === 'ko' ? '월세' : 'Monthly rent'}</option>
-              </select>
-            </label>
-            <label>
-              <span>{locale === 'ko' ? '면적' : 'Area'}</span>
-              <select name="area" defaultValue={model.evidenceSelection.areaBand}>
-                {rankingAreaOptions.map(([value, en, ko]) => (
-                  <option value={value} key={value}>{locale === 'ko' ? ko : en}</option>
-                ))}
               </select>
             </label>
             <label>
@@ -438,6 +422,7 @@ function ReadyRankings({
           model={model.source}
           locale={locale}
           transaction={exact ? model.evidenceSelection.transaction : undefined}
+          compact
         />
       </div>
     </section>
@@ -464,7 +449,7 @@ function UnavailableRankings({
         <p>{copy.unavailableReason}</p>
         <Link href="/kr/seoul/explore/">{copy.unavailableAction}</Link>
       </div>
-      <PublicSourceBoundary model={model.source} locale={locale} />
+      <PublicSourceBoundary model={model.source} locale={locale} compact />
     </section>
   );
 }

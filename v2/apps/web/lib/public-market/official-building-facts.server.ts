@@ -101,7 +101,15 @@ async function getJson(
   params: Readonly<Record<string, string>>,
 ): Promise<Record<string, unknown> | null> {
   const url = new URL(base);
-  url.searchParams.set('serviceKey', serviceKey);
+  let normalizedServiceKey = serviceKey.trim();
+  if (/%[0-9a-f]{2}/i.test(normalizedServiceKey)) {
+    try {
+      normalizedServiceKey = decodeURIComponent(normalizedServiceKey);
+    } catch {
+      // Keep the original value when it is not valid percent-encoded text.
+    }
+  }
+  url.searchParams.set('serviceKey', normalizedServiceKey);
   url.searchParams.set('_type', 'json');
   for (const [name, value] of Object.entries(params)) url.searchParams.set(name, value);
   try {

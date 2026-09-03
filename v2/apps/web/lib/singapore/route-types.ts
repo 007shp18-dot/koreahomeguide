@@ -49,6 +49,7 @@ export type SingaporeSegmentListItem = Readonly<{
   state: 'published' | 'insufficient';
   medianPriceLabel: string | null;
   medianPsfLabel: string | null;
+  projects?: readonly SingaporeProjectListItem[];
 }>;
 
 export type SingaporeExploreModel = SingaporeUnavailableModel | Readonly<{

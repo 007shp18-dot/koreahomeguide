@@ -89,24 +89,27 @@
 .label a { color: inherit; }
 
 .unavailable {
-  min-height: 330px;
-  padding: clamp(1.25rem, 3vw, 2.5rem);
+  min-height: 260px;
+  padding: clamp(1.25rem, 3vw, 2rem);
   display: grid;
   align-content: end;
   gap: .75rem;
   border-right: 1px solid var(--divider);
-  color: var(--canvas);
-  background: var(--petrol);
+  color: var(--ink);
+  background:
+    linear-gradient(145deg, transparent 0 56%, rgb(78 108 135 / 10%) 56.2% 56.8%, transparent 57%),
+    linear-gradient(28deg, transparent 0 43%, rgb(78 108 135 / 9%) 43.2% 43.8%, transparent 44%),
+    linear-gradient(135deg, #edf3f6, #f8fafb);
 }
 
-.unavailable strong { font-size: clamp(1.5rem, 3vw, 2.5rem); line-height: 1; }
-.unavailable p { max-width: 48ch; margin: 0; color: var(--accent-soft); font-size: .78rem; }
+.unavailable strong { font-size: clamp(1.2rem, 2vw, 1.7rem); line-height: 1.1; }
+.unavailable p { max-width: 48ch; margin: 0; color: var(--muted); font-size: .78rem; line-height: 1.55; }
 .unavailable a {
   min-height: 44px;
   width: fit-content;
   display: inline-flex;
   align-items: center;
-  color: inherit;
+  color: var(--accent);
   font-size: .72rem;
   font-weight: 850;
 }

@@ -205,17 +205,18 @@ export function resolveUnambiguousNaverGeocode(
   addressQuery: string,
   addresses: readonly NaverGeocodeAddress[] | undefined,
 ): NaverGeocodeAddress | null {
-  if (addresses?.length !== 1) return null;
-  const address = addresses[0]!;
+  if (addresses === undefined || addresses.length === 0) return null;
   const queryParts = addressQuery.trim().split(/\s+/);
-  if (queryParts[0] !== '서울특별시' || queryParts.length < 4) return address;
+  if (queryParts[0] !== '서울특별시' || queryParts.length < 4) {
+    return addresses.length === 1 ? addresses[0]! : null;
+  }
   const district = queryParts[1]!;
   const neighborhood = queryParts[2]!;
-  const resolvedLocality = `${address.roadAddress ?? ''} ${address.jibunAddress ?? ''}`;
-  if (!resolvedLocality.includes(district) || !resolvedLocality.includes(neighborhood)) {
-    return null;
-  }
-  return address;
+  const localityMatches = addresses.filter((address) => {
+    const resolvedLocality = `${address.roadAddress ?? ''} ${address.jibunAddress ?? ''}`;
+    return resolvedLocality.includes(district) && resolvedLocality.includes(neighborhood);
+  });
+  return localityMatches.length === 1 ? localityMatches[0]! : null;
 }
 
 export function mountNaverDistrictMap({

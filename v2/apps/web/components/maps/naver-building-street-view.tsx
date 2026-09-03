@@ -160,6 +160,7 @@ export function NaverBuildingStreetView({
   longitude,
   addressQuery,
   mapHref,
+  preferMap = false,
 }: Readonly<{
   clientId: string | null;
   buildingName: string;
@@ -167,6 +168,7 @@ export function NaverBuildingStreetView({
   longitude?: number;
   addressQuery?: string;
   mapHref: string;
+  preferMap?: boolean;
 }>) {
   const container = useRef<HTMLDivElement>(null);
   const mounted = useRef<ReturnType<typeof mountNaverBuildingStreetView> | null>(null);
@@ -191,6 +193,23 @@ export function NaverBuildingStreetView({
     } catch {
       setState('unavailable');
       return;
+    }
+    if (preferMap && typeof sdk.Map === 'function' && typeof sdk.Marker === 'function') {
+      try {
+        mounted.current?.dispose();
+        mountNaverBuildingMap({
+          sdk: sdk as NaverBuildingStreetViewSdk & NaverBuildingMapSdk,
+          element: container.current,
+          buildingName,
+          latitude: location.latitude,
+          longitude: location.longitude,
+        });
+        setState('map');
+        return;
+      } catch {
+        setState('unavailable');
+        return;
+      }
     }
     try {
       mounted.current?.dispose();
@@ -227,7 +246,7 @@ export function NaverBuildingStreetView({
     } catch {
       setState('unavailable');
     }
-  }, [addressQuery, buildingName, latitude, longitude]);
+  }, [addressQuery, buildingName, latitude, longitude, preferMap]);
 
   useEffect(() => {
     const scope = window as NaverMapsWindow;
