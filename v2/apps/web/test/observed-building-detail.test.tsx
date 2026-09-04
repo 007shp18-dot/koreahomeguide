@@ -124,7 +124,8 @@ describe('observed building detail', () => {
 
     expect(html).toContain('data-building-detail="identity-only"');
     expect(html).toContain('data-building-media="naver-panorama"');
-    expect(html).toContain('Nearby street view · not a listing photo · NAVER');
+    expect(html).toContain('aria-label="Nearby NAVER street view for Large Detached Home"');
+    expect(html).not.toContain('not a listing photo');
   });
 
   it('renders English ready provenance and methodology without Korean copy', () => {

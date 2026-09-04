@@ -42,7 +42,7 @@ export function SingaporeSegmentDetail({ model }: Readonly<{
     <SingaporePage currentHref="/sg/singapore/explore/" unframed>
       <MarketDetailShell
         breadcrumb={<nav className={styles.breadcrumbs} aria-label="Breadcrumb"><Link href="/sg/singapore/explore/">Explore</Link><span>{model.identity.segment}</span></nav>}
-        identity={<div className={styles.detailIdentity} data-singapore-segment="ready"><p className={styles.eyebrow}>Singapore · Market segment</p><h1>{model.identity.segment}</h1><SingaporeScope /></div>}
+        identity={<div className={styles.detailIdentity} data-singapore-segment="ready"><p className={styles.eyebrow}>Singapore · Market segment</p><h1>{model.identity.segment}</h1><SingaporeScope activeSegment={model.identity.segment} /></div>}
         metric={<div className={styles.detailMetric}><small>Median price</small><strong>{model.display.medianPriceLabel}</strong><span>{model.display.sampleLabel}</span></div>}
         evidence={<><section className={styles.section} aria-labelledby="segment-distribution-heading">
         <p className={styles.sectionLabel}>01 / Published distribution</p>

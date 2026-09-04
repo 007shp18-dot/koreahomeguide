@@ -188,7 +188,8 @@ describe('public building detail', () => {
     expect(metadata).not.toHaveProperty('alternates');
     expect(html).toContain('Evidence Tower');
     expect(html).toContain('data-building-media="naver-panorama"');
-    expect(html).toContain('Nearby street view · not a listing photo · NAVER');
+    expect(html).toContain('aria-label="Nearby NAVER street view for Evidence Tower"');
+    expect(html).not.toContain('not a listing photo');
   });
 
   it('restores valid route state and rejects invalid decision queries', async () => {

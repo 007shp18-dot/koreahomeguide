@@ -51,7 +51,6 @@ type GoogleReadyScope = Window & {
 type PhotoState = Readonly<{
   src: string;
   attribution: GoogleAuthorAttribution | null;
-  sourceLabel: string;
 }> | 'loading' | 'unavailable';
 
 function normalizedPlaceText(value: string): string {
@@ -130,7 +129,6 @@ export function GooglePlacePhoto({
           && typeof approval.assetUrl === 'string') {
           setPhoto(Object.freeze({
             src: approval.assetUrl,
-            sourceLabel: 'Verified building photo',
             attribution: typeof approval.attributionName === 'string'
               ? Object.freeze({
                 displayName: approval.attributionName,
@@ -161,7 +159,6 @@ export function GooglePlacePhoto({
         setPhoto(Object.freeze({
           src: approvedPhoto.getURI({ maxHeight: 900, maxWidth: 1400 }),
           attribution: approvedPhoto.authorAttributions[0] ?? null,
-          sourceLabel: 'Place photo · Google',
         }));
         return;
       }
@@ -181,7 +178,6 @@ export function GooglePlacePhoto({
       setPhoto(Object.freeze({
         src: result.getURI({ maxHeight: 900, maxWidth: 1400 }),
         attribution: result.authorAttributions[0] ?? null,
-        sourceLabel: 'Place photo · Google',
       }));
     } catch {
       setPhoto('unavailable');
@@ -221,12 +217,11 @@ export function GooglePlacePhoto({
           onError={() => setPhoto('unavailable')}
         />
       )}
-      {photo === 'loading' ? null : (
-        <p className={styles.label}>
-          {photo.sourceLabel}
-          {photo.attribution === null ? null : photo.attribution.uri === null || !linkAttribution
-            ? ` · ${photo.attribution.displayName}`
-            : <> · <a href={photo.attribution.uri}>{photo.attribution.displayName}</a></>}
+      {photo === 'loading' || photo.attribution === null ? null : (
+        <p className={styles.attribution} aria-label="Photo credit">
+          {photo.attribution.uri === null || !linkAttribution
+            ? photo.attribution.displayName
+            : <a href={photo.attribution.uri}>{photo.attribution.displayName}</a>}
         </p>
       )}
       <Script

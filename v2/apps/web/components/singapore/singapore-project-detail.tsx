@@ -44,7 +44,7 @@ export function SingaporeProjectDetail({ model, googleMapsBrowserKey = null }: R
           {model.identity.marketSegment}
         </Link>
         <span>{model.identity.project}</span></nav>}
-        identity={<div className={styles.detailIdentity} data-singapore-project="ready"><p className={styles.eyebrow}>Singapore · {model.identity.marketSegment} · District {model.identity.district}</p><h1>{model.identity.project}</h1><p>{model.identity.street}</p><SingaporeScope /></div>}
+        identity={<div className={styles.detailIdentity} data-singapore-project="ready"><p className={styles.eyebrow}>Singapore · {model.identity.marketSegment} · District {model.identity.district}</p><h1>{model.identity.project}</h1><p>{model.identity.street}</p><SingaporeScope activeSegment={model.identity.marketSegment} /></div>}
         metric={<div className={styles.detailMetric}><small>Median price</small><strong>{model.display.medianPriceLabel}</strong><span>{model.display.sampleLabel}</span></div>}
         media={<GooglePlacePhoto
           browserKey={googleMapsBrowserKey}

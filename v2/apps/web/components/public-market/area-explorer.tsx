@@ -791,30 +791,29 @@ function ReadyAreaExplorer({
             </div>}
           />
 
-          <div
-            className={styles.legend}
-            role="group"
-            aria-label={locale === 'ko' ? '지도 범례' : 'Map legend'}
-          >
-            <p>{usesLegacyCopy ? copy.mapLegend : exactMetricCopy.mapHeading}</p>
-            <ol>
-              {model.legend.map((bucket) => (
-                <li key={bucket.bucket}>
-                  <span className={bucketClasses[bucket.bucket]} aria-hidden="true" />
-                  <span>
-                    {bucket.label} · {bucket.count}
-                    {locale === 'en'
-                      ? ` district${bucket.count === 1 ? '' : 's'}`
-                      : copy.districtCount}
-                  </span>
+          <details className={styles.legend}>
+            <summary>{locale === 'ko' ? '지도 범례' : 'Map legend'}</summary>
+            <div role="group" aria-label={locale === 'ko' ? '지도 범례' : 'Map legend'}>
+              <p>{usesLegacyCopy ? copy.mapLegend : exactMetricCopy.mapHeading}</p>
+              <ol>
+                {model.legend.map((bucket) => (
+                  <li key={bucket.bucket}>
+                    <span className={bucketClasses[bucket.bucket]} aria-hidden="true" />
+                    <span>
+                      {bucket.label} · {bucket.count}
+                      {locale === 'en'
+                        ? ` district${bucket.count === 1 ? '' : 's'}`
+                        : copy.districtCount}
+                    </span>
+                  </li>
+                ))}
+                <li>
+                  <span className={styles.legendHatch} aria-hidden="true" />
+                  <span>{copy.notPublished} · {copy.fewerThan} {model.source.publicationMinimum} {copy.contracts}</span>
                 </li>
-              ))}
-              <li>
-                <span className={styles.legendHatch} aria-hidden="true" />
-                <span>{copy.notPublished} · {copy.fewerThan} {model.source.publicationMinimum} {copy.contracts}</span>
-              </li>
-            </ol>
-          </div>
+              </ol>
+            </div>
+          </details>
           <details className={styles.mapEvidenceDisclosure}>
             <summary>
               <span>{copy.selected} · {locale === 'ko' ? selected.nameKo : selected.nameEn}</span>
