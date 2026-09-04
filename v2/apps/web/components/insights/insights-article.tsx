@@ -46,7 +46,22 @@ export function InsightsArticle({ article }: Readonly<{ article: EditorialArticl
           <div className={styles.byline}><strong>SignedPrice Data Desk</strong><time dateTime={article.publishedAt}>{date.format(new Date(article.publishedAt))}</time></div>
         </header>
         <div className={styles.documentLayout}>
-          <EditorialMarkdown source={article.bodyMarkdown} />
+          <div>
+            <EditorialMarkdown source={article.bodyMarkdown} />
+            {article.sources.length > 0 ? (
+              <section className={styles.sources} aria-labelledby="article-sources">
+                <h2 id="article-sources">Sources and verification date</h2>
+                <ul>
+                  {article.sources.map((source) => (
+                    <li key={source.href}>
+                      <a href={source.href} rel="noreferrer">{source.publisher} · {source.label}</a>
+                      <span>Checked {source.checkedAt}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ) : null}
+          </div>
           <aside className={styles.documentRail}>
             <p>How to read this report</p>
             <strong>Evidence before conclusion.</strong>

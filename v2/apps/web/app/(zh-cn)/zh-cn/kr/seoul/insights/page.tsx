@@ -1,10 +1,9 @@
 import type { Metadata } from 'next';
 
-import { EditorialGrowthPublicShell } from '@/components/editorial-growth/editorial-growth-public-shell';
-import { buildEditorialGrowthReviewModel } from '@/lib/design-review/editorial-growth-review-model.server';
+import { EditorialGrowthPublicFrame } from '@/components/editorial-growth/editorial-growth-public-shell';
+import { ChineseInsightsIndex } from '@/components/insights/chinese-insights';
+import { CHINESE_KOREA_ARTICLES } from '@/lib/insights/chinese-korea-articles';
 import { indexableMetadata } from '@/lib/public-metadata';
-
-export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = indexableMetadata({
   path: '/zh-cn/kr/seoul/insights/',
@@ -18,11 +17,9 @@ export const metadata: Metadata = indexableMetadata({
 });
 
 export default async function ChineseInsights() {
-  const model = await buildEditorialGrowthReviewModel({
-    locale: 'zh-CN',
-    state: 'ready',
-    ad: 'empty',
-  });
-
-  return <EditorialGrowthPublicShell surface="content" model={model} />;
+  return (
+    <EditorialGrowthPublicFrame locale="zh-CN" surface="content" shell>
+      <ChineseInsightsIndex articles={CHINESE_KOREA_ARTICLES} />
+    </EditorialGrowthPublicFrame>
+  );
 }

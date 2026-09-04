@@ -18,6 +18,7 @@ import { metadata as compareMetadata } from '../app/(en)/compare/page';
 import { homepageCopy } from '../lib/site-copy';
 import { GUIDES } from '../lib/guide/guide-content';
 import { STARTER_EDITORIAL_ARTICLES } from '../lib/insights/editorial-content';
+import { CHINESE_KOREA_ARTICLES } from '../lib/insights/chinese-korea-articles';
 import {
   createPublicAreaFixture,
   createPublicAreaV2Fixture,
@@ -275,6 +276,7 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/sg/singapore/explore/rcr/',
       'https://www.signedprice.com/sg/singapore/explore/ocr/',
       ...STARTER_EDITORIAL_ARTICLES.map(({ slug }) => `https://www.signedprice.com/insights/${slug}/`),
+      ...CHINESE_KOREA_ARTICLES.map(({ slug }) => `https://www.signedprice.com/zh-cn/kr/seoul/insights/${slug}/`),
       'https://www.signedprice.com/',
       'https://www.signedprice.com/compare/',
       'https://www.signedprice.com/trust/',
@@ -408,6 +410,7 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/sg/singapore/explore/rcr/',
       'https://www.signedprice.com/sg/singapore/explore/ocr/',
       ...STARTER_EDITORIAL_ARTICLES.map(({ slug }) => `https://www.signedprice.com/insights/${slug}/`),
+      ...CHINESE_KOREA_ARTICLES.map(({ slug }) => `https://www.signedprice.com/zh-cn/kr/seoul/insights/${slug}/`),
       'https://www.signedprice.com/',
       'https://www.signedprice.com/compare/',
       'https://www.signedprice.com/trust/',
@@ -441,6 +444,7 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/sg/singapore/explore/rcr/',
       'https://www.signedprice.com/sg/singapore/explore/ocr/',
       ...STARTER_EDITORIAL_ARTICLES.map(({ slug }) => `https://www.signedprice.com/insights/${slug}/`),
+      ...CHINESE_KOREA_ARTICLES.map(({ slug }) => `https://www.signedprice.com/zh-cn/kr/seoul/insights/${slug}/`),
       'https://www.signedprice.com/',
       'https://www.signedprice.com/compare/',
       'https://www.signedprice.com/trust/',

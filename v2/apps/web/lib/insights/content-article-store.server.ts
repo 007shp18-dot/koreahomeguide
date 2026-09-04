@@ -38,6 +38,7 @@ function articleFromRow(row: Record<string, unknown>): EditorialArticle | null {
     publishedAt,
     updatedAt,
     readMinutes: estimateReadMinutes(row.body_markdown),
+    sources: Object.freeze([]),
   });
 }
 
@@ -66,6 +67,8 @@ export async function listPublishedContentArticles(): Promise<readonly Editorial
 }
 
 export const getPublishedContentArticle = cache(async (slug: string): Promise<EditorialArticle | null> => {
+  const starter = getStarterEditorialArticle(slug);
+  if (starter !== null) return starter;
   const sql = contentDatabase();
   if (sql !== null) {
     try {
@@ -84,7 +87,7 @@ export const getPublishedContentArticle = cache(async (slug: string): Promise<Ed
       console.error('SignedPrice editorial article read failed.', error);
     }
   }
-  return getStarterEditorialArticle(slug);
+  return null;
 });
 
 export type SaveEditorialArticleInput = Readonly<{
