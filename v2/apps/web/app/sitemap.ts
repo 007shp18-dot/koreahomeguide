@@ -3,6 +3,7 @@ import 'server-only';
 import type { MetadataRoute } from 'next';
 import { GUIDES } from '../lib/guide/guide-content';
 import { STARTER_EDITORIAL_ARTICLES } from '../lib/insights/editorial-content';
+import { CHINESE_KOREA_ARTICLES } from '../lib/insights/chinese-korea-articles';
 import { contractCheckEvidenceRepositoriesFromEnvironment } from '../lib/contract-check/evidence-repositories.server';
 import { buildContractCheckRouteModel } from '../lib/contract-check/route-model.server';
 import { buildNewsIndexModel } from '../lib/news/news-route-model.server';
@@ -33,6 +34,10 @@ const localizedPairs: readonly LocalizedPair[] = Object.freeze([
   }),
   Object.freeze({ en: '/kr/seoul/explore/', ko: '/ko/kr/seoul/explore/' }),
   Object.freeze({ en: '/kr/seoul/rankings/', ko: '/ko/kr/seoul/rankings/' }),
+  ...CHINESE_KOREA_ARTICLES.map((article) => Object.freeze({
+    en: `/insights/${article.relatedEnglishSlug}/` as `/${string}`,
+    'zh-Hans': `/zh-cn/kr/seoul/insights/${article.slug}/` as `/${string}`,
+  })),
 ] as const);
 
 function languageAlternates(path: string): SitemapEntry['alternates'] | undefined {
@@ -143,6 +148,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: publicCanonical(`/insights/${article.slug}/`),
     lastModified: new Date(article.updatedAt),
   })));
+  entries.push(...CHINESE_KOREA_ARTICLES.map((article) => sitemapEntry(
+    `/zh-cn/kr/seoul/insights/${article.slug}/`,
+    new Date(article.updatedAt),
+  )));
   const modifiedByPath = new Map<string, Date | undefined>([
     ['/kr/seoul/', summaryLastModified],
     ['/ko/kr/seoul/', summaryLastModified],

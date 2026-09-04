@@ -41,6 +41,22 @@ export {
   type PublicMarketConfig,
 } from './public-market-config';
 export {
+  createPropertyIdentity,
+  propertyEntityKinds,
+  type ExternalPropertyIdentifier,
+  type PropertyEntityKind,
+  type PropertyIdentity,
+  type PropertyIdentityInput,
+  type PropertyIdentityStatus,
+} from './property-identity';
+export {
+  getMarketCapability,
+  listMarketCapabilities,
+  marketCapabilityFeatures,
+  type MarketCapability,
+  type MarketCapabilityFeature,
+} from './market-capabilities';
+export {
   createPublicMarketSummary,
   type PublishedMarketSummary,
   type PublicMarketSummary,

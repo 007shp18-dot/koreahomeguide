@@ -90,6 +90,19 @@ describe('Singapore route models', () => {
       correctionHref: '/sg/singapore/corrections/',
     });
     expect(model.evidence.limitations.join(' ')).toContain('Private residential sales only');
+    const checkUrl = new URL(model.checkHref, 'https://www.signedprice.com');
+    expect(checkUrl.pathname).toBe('/sg/singapore/check/');
+    expect(Object.fromEntries(checkUrl.searchParams)).toEqual({
+      mode: 'single',
+      'a-market': 'ura-private-sale',
+      'a-segment': project.marketSegment,
+      'a-project': project.id,
+      'a-district': project.district,
+      'a-property-type': project.propertyTypes[0],
+    });
+    for (const unsupportedValue of ['amount', 'area-min', 'area-max']) {
+      expect(checkUrl.searchParams.has(`a-${unsupportedValue}`)).toBe(false);
+    }
   });
 
   it('withholds metrics below five and returns null for unknown identities', async () => {

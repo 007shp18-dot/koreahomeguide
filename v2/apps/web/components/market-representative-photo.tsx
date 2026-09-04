@@ -24,9 +24,10 @@ export const MARKET_PHOTOS = Object.freeze({
   }),
 } satisfies Readonly<Record<'seoul' | 'singapore' | 'dubai', MarketPhoto>>);
 
-export function MarketRepresentativePhoto({ photo, eager = false }: Readonly<{
+export function MarketRepresentativePhoto({ photo, eager = false, cityLabel }: Readonly<{
   photo: MarketPhoto;
   eager?: boolean;
+  cityLabel?: string;
 }>) {
   return <figure className={styles.frame} data-building-media="curated-market-photo">
     {/* These are stable editorial market images, not a claim about a specific listing. */}
@@ -38,5 +39,9 @@ export function MarketRepresentativePhoto({ photo, eager = false }: Readonly<{
       fetchPriority={eager ? 'high' : 'auto'}
       style={{ objectPosition: photo.position ?? 'center' }}
     />
+    <figcaption>
+      {cityLabel === undefined ? null : `${cityLabel} · `}
+      Editorial city photograph · not this exact property
+    </figcaption>
   </figure>;
 }

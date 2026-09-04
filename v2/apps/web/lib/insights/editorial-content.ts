@@ -1,5 +1,15 @@
+import { ENGLISH_KOREA_ARTICLES } from './english-korea-articles';
+import { OFFICIAL_PROPERTY_SOURCES as S } from './official-property-sources';
+
 export type EditorialMarketKey = 'seoul' | 'singapore' | 'dubai' | null;
 export type EditorialStatus = 'draft' | 'review' | 'published' | 'archived';
+
+export type EditorialSource = Readonly<{
+  publisher: string;
+  label: string;
+  href: string;
+  checkedAt: string;
+}>;
 
 export type EditorialArticle = Readonly<{
   slug: string;
@@ -11,6 +21,7 @@ export type EditorialArticle = Readonly<{
   publishedAt: string;
   updatedAt: string;
   readMinutes: number;
+  sources: readonly EditorialSource[];
 }>;
 
 export const editorialMarketLabels: Readonly<Record<Exclude<EditorialMarketKey, null>, string>> = Object.freeze({
@@ -28,7 +39,7 @@ export function estimateReadMinutes(body: string): number {
   return Math.max(2, Math.ceil(words / 210));
 }
 
-export const STARTER_EDITORIAL_ARTICLES: readonly EditorialArticle[] = Object.freeze([
+const FOUNDATIONAL_EDITORIAL_ARTICLES: readonly EditorialArticle[] = Object.freeze([
   Object.freeze({
     slug: 'median-is-a-boundary-not-a-home-valuation',
     marketKey: null,
@@ -38,6 +49,7 @@ export const STARTER_EDITORIAL_ARTICLES: readonly EditorialArticle[] = Object.fr
     publishedAt: '2026-09-04T00:00:00.000Z',
     updatedAt: '2026-09-04T00:00:00.000Z',
     readMinutes: 5,
+    sources: Object.freeze([S.realTransactions, S.uraPropertyData]),
     bodyMarkdown: `## Start with the cohort
 
 A median only describes the middle observation inside a defined group. Before reading the number, identify the market, transaction type, property type, period, size range and publication threshold used to create that group. If any of those boundaries change, the median can change even when no individual home has become more or less valuable.
@@ -67,6 +79,7 @@ An asking price can be compared with reported evidence, but it should not be pre
     publishedAt: '2026-09-03T00:00:00.000Z',
     updatedAt: '2026-09-04T00:00:00.000Z',
     readMinutes: 6,
+    sources: Object.freeze([S.realTransactions, S.realTransactionDownload]),
     bodyMarkdown: `## The building name is not the sample
 
 Large Seoul complexes may contain many buildings and unit types, but a useful comparison still narrows the evidence by transaction type, completed period and size. The name can be famous while the compatible sample remains small.
@@ -100,6 +113,7 @@ Before using the evidence in an offer discussion, write down which contracts wer
     publishedAt: '2026-09-02T00:00:00.000Z',
     updatedAt: '2026-09-04T00:00:00.000Z',
     readMinutes: 6,
+    sources: Object.freeze([S.uraPropertyData, S.hdbResaleData]),
     bodyMarkdown: `## Choose the housing system first
 
 Private residential projects and HDB blocks are not interchangeable inventory. They have different eligibility, tenure, transaction context and buyer pools. A global search can help a reader find both, but the evidence should separate them before prices are compared.
@@ -124,6 +138,11 @@ A project with many compatible filings can support a tighter distribution view. 
 
 SignedPrice can organize released transaction evidence and explain its limits. It does not convert external news, asking prices or unverified marketing material into completed transaction facts. The reader should always be able to tell which layer produced each statement.`,
   }),
+]);
+
+export const STARTER_EDITORIAL_ARTICLES: readonly EditorialArticle[] = Object.freeze([
+  ...FOUNDATIONAL_EDITORIAL_ARTICLES,
+  ...ENGLISH_KOREA_ARTICLES,
 ]);
 
 export function getStarterEditorialArticle(slug: string): EditorialArticle | null {

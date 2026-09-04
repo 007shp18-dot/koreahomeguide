@@ -131,7 +131,7 @@ describe('three market overview routes', () => {
     }
   });
 
-  it('uses the shared seven-link local product navigation on market overviews', async () => {
+  it('uses only the available local product navigation on market overviews', async () => {
     for (const params of marketRouteParams) {
       const markup = renderToStaticMarkup(
         await MarketOverviewPage({ params: Promise.resolve(params) }),
@@ -140,10 +140,16 @@ describe('three market overview routes', () => {
         /<nav[^>]*aria-label="Primary navigation"[^>]*>([\s\S]*?)<\/nav>/,
       )?.[1] ?? '';
 
-      expect(navigation.match(/<a /g) ?? []).toHaveLength(7);
-      for (const label of ['Overview', 'Check', 'Explore', 'Rankings', 'News', 'Community', 'Guide']) {
+      const labels = params.country === 'kr'
+        ? ['Overview', 'Check', 'Explore', 'Rankings', 'News', 'Community', 'Guide']
+        : params.country === 'sg'
+          ? ['Overview', 'Check', 'Explore', 'Rankings', 'Corrections', 'Trust']
+          : ['Overview', 'Compare markets'];
+      expect(navigation.match(/<a /g) ?? []).toHaveLength(labels.length);
+      for (const label of labels) {
         expect(navigation).toContain(`<strong>${label}</strong>`);
       }
+      if (params.country === 'ae') expect(navigation).not.toMatch(/Dubai\/(?:check|explore|rankings)/i);
     }
   });
 

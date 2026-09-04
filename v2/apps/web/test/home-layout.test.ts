@@ -25,18 +25,18 @@ describe('signedprice public editorial homepage', () => {
     expect(homeCss).not.toMatch(/(?:heroGrid|snapshotGrid|marketGrid|buildingGrid|insightGrid|propertyGrid|bottomGrid)[^{]*\{[^}]*100vw/);
   }, 10_000);
 
-  it('uses one decision headline before evidence, reporting, guides, and method', async () => {
+  it('uses one global headline before market selection, reporting, guides, and method', async () => {
     const markup = renderToStaticMarkup(await Home());
     const positions = [
-      'data-primary-action="check"',
-      'id="home-evidence-title"',
+      'id="three-market-home-title"',
+      'aria-label="Choose a property market"',
       'data-home-section="insight"',
       'id="home-guides-title"',
       'id="home-method-title"',
     ].map((needle) => markup.indexOf(needle));
 
     expect(markup.match(/<h1/g)).toHaveLength(1);
-    expect(markup).toContain('Understand the real cost of renting in Korea.');
+    expect(markup).toContain('See the market before you make the move.');
     expect(positions.every((position) => position >= 0)).toBe(true);
     expect([...positions].sort((a, b) => a - b)).toEqual(positions);
   }, 20_000);
@@ -46,7 +46,7 @@ describe('signedprice public editorial homepage', () => {
     const navigation = markup.match(/<nav[^>]*aria-label="Primary navigation"[^>]*>([\s\S]*?)<\/nav>/)?.[1] ?? '';
 
     expect(navigation.match(/<a /g) ?? []).toHaveLength(4);
-    for (const destination of ['/insights', '/kr/seoul/check', '/kr/seoul/explore']) {
+    for (const destination of ['/markets', '/prices', '/insights', '/guides']) {
       expect(navigation).toContain(`href="${destination}"`);
     }
     expect(markup).toContain('aria-label="Language navigation"');
@@ -58,7 +58,7 @@ describe('signedprice public editorial homepage', () => {
   it('keeps real Seoul tools and the Journal crawlable from the first screen', async () => {
     const markup = renderToStaticMarkup(await Home());
 
-    expect(markup).toContain('data-primary-action="check"');
+    expect(markup).toContain('data-active-market="kr-seoul"');
     expect(markup).toContain('href="/kr/seoul/check"');
     expect(markup).toContain('href="/kr/seoul/explore"');
     expect(markup).toContain('href="/insights"');
@@ -88,11 +88,13 @@ describe('signedprice public editorial homepage', () => {
     expect(markup).toContain('1 / 2');
   });
 
-  it('keeps Singapore and Dubai available without competing with the Korea hero', async () => {
+  it('keeps Singapore and Dubai in the same first-screen market selector', async () => {
     const markup = renderToStaticMarkup(await Home());
 
     expect(markup).toContain('href="/sg">Singapore</a>');
     expect(markup).toContain('href="/ae/dubai">Dubai</a>');
+    expect(markup).toContain('data-market-id="sg-singapore"');
+    expect(markup).toContain('data-market-id="ae-dubai"');
   });
 
   it('closes with guides, methodology, privacy, and contact', async () => {

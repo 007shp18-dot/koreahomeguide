@@ -138,6 +138,21 @@ function transactionDisplay(record: SingaporeSnapshotRecord): SingaporeTransacti
   });
 }
 
+function projectCheckHref(
+  identity: Extract<SingaporeProjectSummary, { published: true }>,
+): `/sg/singapore/check/?${string}` {
+  const query = new URLSearchParams({
+    mode: 'single',
+    'a-market': 'ura-private-sale',
+    'a-segment': identity.marketSegment,
+    'a-project': identity.id,
+    'a-district': identity.district,
+  });
+  const [propertyType] = identity.propertyTypes;
+  if (propertyType !== undefined) query.set('a-property-type', propertyType);
+  return `/sg/singapore/check/?${query.toString()}`;
+}
+
 export function buildSingaporeEntryModel(
   repository: SingaporeSnapshotRepository | null,
 ): SingaporeEntryModel {
@@ -231,6 +246,7 @@ export function buildSingaporeProjectModel(
   return Object.freeze({
     status: 'ready',
     identity,
+    checkHref: projectCheckHref(identity),
     display: display(identity),
     transactions: Object.freeze(repository.listProjectRecords(segment, projectId).map(transactionDisplay)),
     correctionHref: SINGAPORE_CORRECTION_HREF,

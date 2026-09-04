@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import type { EditorialGrowthReviewModel } from '@/lib/design-review/editorial-growth-review-model';
+import { ThreeMarketHero } from '@/components/home/three-market-hero';
+import { createThreeMarketHomeModel } from '@/lib/home/three-market-home-model';
 import styles from './editorial-growth-review.module.css';
 
 const COPY = Object.freeze({
@@ -10,6 +12,22 @@ const COPY = Object.freeze({
     primary: 'Check a price',
     secondary: 'Explore Seoul',
     evidence: 'Current evidence',
+    markets: 'Choose a market',
+    marketsTitle: 'Property intelligence across three cities',
+    compareMarkets: 'Compare markets',
+    marketItems: [
+      { index: '01', name: 'Seoul', href: '/kr/seoul/', scope: 'Sale, jeonse and monthly-rent evidence', state: 'Full decision tools', actions: [
+        { label: 'Check', href: '/kr/seoul/check/' }, { label: 'Explore', href: '/kr/seoul/explore/' },
+        { label: 'Rankings', href: '/kr/seoul/rankings/' }, { label: 'Guides', href: '/kr/seoul/guide/' },
+      ] },
+      { index: '02', name: 'Singapore', href: '/sg/', scope: 'Private homes and HDB evidence', state: 'Transaction data live', actions: [
+        { label: 'Check', href: '/sg/singapore/check/' }, { label: 'Explore', href: '/sg/singapore/explore/' },
+        { label: 'Rankings', href: '/sg/singapore/rankings/' },
+      ] },
+      { index: '03', name: 'Dubai', href: '/ae/dubai/', scope: 'Market structure and decision context', state: 'Data-rights work in progress', actions: [
+        { label: 'Overview', href: '/ae/dubai/' },
+      ] },
+    ],
     insight: 'Latest from the data desk',
     guides: 'Start with the essentials',
     guidesTitle: 'Guides for renting and buying',
@@ -25,6 +43,22 @@ const COPY = Object.freeze({
     primary: '查询价格',
     secondary: '探索首尔',
     evidence: '当前数据',
+    markets: '选择市场',
+    marketsTitle: '覆盖三个城市的房地产信息',
+    compareMarkets: '比较市场',
+    marketItems: [
+      { index: '01', name: '首尔 Seoul', href: '/kr/seoul/', scope: '买卖、全租和月租成交数据', state: '完整决策工具', actions: [
+        { label: '查价', href: '/kr/seoul/check/' }, { label: '探索', href: '/kr/seoul/explore/' },
+        { label: '排名', href: '/kr/seoul/rankings/' }, { label: '指南', href: '/kr/seoul/guide/' },
+      ] },
+      { index: '02', name: '新加坡 Singapore', href: '/sg/', scope: '私人住宅与 HDB 数据', state: '成交数据已上线', actions: [
+        { label: '查价', href: '/sg/singapore/check/' }, { label: '探索', href: '/sg/singapore/explore/' },
+        { label: '排名', href: '/sg/singapore/rankings/' },
+      ] },
+      { index: '03', name: '迪拜 Dubai', href: '/ae/dubai/', scope: '市场结构与决策背景', state: '数据展示权仍在确认', actions: [
+        { label: '概览', href: '/ae/dubai/' },
+      ] },
+    ],
     insight: '数据编辑部最新文章',
     guides: '从基础指南开始',
     guidesTitle: '韩国租房与购房指南',
@@ -46,44 +80,14 @@ export function EditorialGrowthHome({ model, hrefs }: Readonly<{
     check: `/design-review/editorial-growth/check/?${query}`,
     explore: `/design-review/editorial-growth/explore/?${query}`,
   };
+  const threeMarketHome = createThreeMarketHomeModel({
+    locale: model.locale,
+    seoulMetric: model.headlineMetric,
+  });
 
   return (
     <main className={styles.homePage}>
-      <section className={styles.homeHero}>
-        <p className={styles.eyebrow}>{copy.eyebrow}</p>
-        <h1 className={styles.display}>{copy.title}</h1>
-        <p className={`${styles.lead} ${styles.homeLead}`}>{copy.lead}</p>
-        <div className={styles.heroActions}>
-          <Link
-            className={styles.primaryAction}
-            data-primary-action="check"
-            href={links.check}
-          >
-            {copy.primary}
-          </Link>
-          <Link className={styles.textAction} href={links.explore}>
-            {copy.secondary}<span aria-hidden="true"> ↗</span>
-          </Link>
-        </div>
-      </section>
-
-      <section className={styles.evidenceStrip} aria-labelledby="home-evidence-title">
-        <div>
-          <p className={styles.eyebrow}>{model.seoulStatus}</p>
-          <h2 className={styles.subheading} id="home-evidence-title">{copy.evidence}</h2>
-        </div>
-        {model.headlineMetric ? (
-          <dl className={styles.headlineMetric}>
-            <div>
-              <dt>{model.headlineMetric.label}</dt>
-              <dd>{model.headlineMetric.value}</dd>
-            </div>
-            <p>{model.headlineMetric.context}</p>
-          </dl>
-        ) : (
-          <p className={styles.evidenceUnavailable}>{copy.unavailable}</p>
-        )}
-      </section>
+      <ThreeMarketHero model={threeMarketHome} />
 
       <section className={styles.homeInsight} data-home-section="insight" aria-labelledby="home-insight-title">
         <div className={styles.sectionIntro}>

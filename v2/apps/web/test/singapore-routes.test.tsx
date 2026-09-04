@@ -131,6 +131,9 @@ describe('Singapore route SSR', () => {
     expect(html).toContain('href="/sg/singapore/explore/ccr/');
     expect(html).toContain('Open CCR evidence');
     expect(html).toContain(`href="/sg/singapore/explore/ccr/${projectIdentity.id}"`);
+    expect(project).toContain('Check this project price');
+    expect(project).toContain(`a-project=${projectIdentity.id}`);
+    expect(project).not.toMatch(/a-amount=|a-area-min=|a-area-max=/);
     expect(html).toContain('data-hdb-evidence="unavailable"');
     expect(html).not.toMatch(/KRW|jeonse|forecast|valuation|asking-price|recommendation/i);
     expect(html).not.toMatch(/use client/);

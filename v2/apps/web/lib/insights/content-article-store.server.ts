@@ -2,7 +2,7 @@ import 'server-only';
 
 import { cache } from 'react';
 
-import { contentDatabase } from '../db/postgres.server';
+import { contentDatabase, publicContentDatabase } from '../db/postgres.server';
 import {
   editorialMarketLabels,
   estimateReadMinutes,
@@ -38,11 +38,12 @@ function articleFromRow(row: Record<string, unknown>): EditorialArticle | null {
     publishedAt,
     updatedAt,
     readMinutes: estimateReadMinutes(row.body_markdown),
+    sources: Object.freeze([]),
   });
 }
 
 export async function listPublishedContentArticles(): Promise<readonly EditorialArticle[]> {
-  const sql = contentDatabase();
+  const sql = publicContentDatabase();
   let stored: EditorialArticle[] = [];
   if (sql !== null) {
     try {
@@ -66,7 +67,9 @@ export async function listPublishedContentArticles(): Promise<readonly Editorial
 }
 
 export const getPublishedContentArticle = cache(async (slug: string): Promise<EditorialArticle | null> => {
-  const sql = contentDatabase();
+  const starter = getStarterEditorialArticle(slug);
+  if (starter !== null) return starter;
+  const sql = publicContentDatabase();
   if (sql !== null) {
     try {
       const [row] = await sql`
@@ -84,7 +87,7 @@ export const getPublishedContentArticle = cache(async (slug: string): Promise<Ed
       console.error('SignedPrice editorial article read failed.', error);
     }
   }
-  return getStarterEditorialArticle(slug);
+  return null;
 });
 
 export type SaveEditorialArticleInput = Readonly<{

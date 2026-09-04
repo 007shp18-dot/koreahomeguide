@@ -163,6 +163,7 @@ export function SingleQuoteCheckWorkspace({ model, locale = 'en' }: Readonly<{
         <nav className={styles.contextLinks} aria-label={c.evidence}>
           <Link href={localizedCheckHref(locale, '/compare/')}>{c.compare}</Link>
           <Link href={`${locale === 'ko' ? '/ko' : ''}/kr/seoul/explore/`}>{c.explore}</Link>
+          <Link href="/kr/seoul/guide/">{c.guide}</Link>
         </nav>
       </main>
       <footer className={styles.footer}><p>{c.reference}</p></footer>

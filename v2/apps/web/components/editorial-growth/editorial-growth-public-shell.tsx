@@ -18,19 +18,33 @@ type PublicEditorialSurface = 'home' | 'content';
 const COPY: Readonly<Record<ReviewLocale, Readonly<{
   navigation: string;
   language: string;
-  labels: Readonly<Record<'home' | 'content' | 'check' | 'explore', string>>;
+  primaryItems: readonly Readonly<{
+    label: string;
+    href: string;
+    currentOn?: PublicEditorialSurface;
+  }>[];
   footer: string;
 }>>> = Object.freeze({
   en: Object.freeze({
     navigation: 'Primary navigation',
     language: 'Language navigation',
-    labels: Object.freeze({ home: 'Home', content: 'Journal', check: 'Check', explore: 'Explore' }),
+    primaryItems: Object.freeze([
+      Object.freeze({ label: 'Markets', href: '/markets/' }),
+      Object.freeze({ label: 'Prices', href: '/prices/' }),
+      Object.freeze({ label: 'Journal', href: '/insights/', currentOn: 'content' as const }),
+      Object.freeze({ label: 'Guides', href: '/guides/' }),
+    ]),
     footer: 'Reported property evidence and practical guidance for decisions across borders.',
   }),
   'zh-CN': Object.freeze({
     navigation: '主要导航',
     language: '语言导航',
-    labels: Object.freeze({ home: '首页', content: '专栏', check: '查价', explore: '探索' }),
+    primaryItems: Object.freeze([
+      Object.freeze({ label: '首页', href: '/zh-cn/kr/seoul/', currentOn: 'home' as const }),
+      Object.freeze({ label: '市场', href: '/markets/' }),
+      Object.freeze({ label: '专栏', href: '/zh-cn/kr/seoul/insights/', currentOn: 'content' as const }),
+      Object.freeze({ label: '指南', href: '/guides/' }),
+    ]),
     footer: '为跨境决策提供已申报房地产数据和实用指南。',
   }),
 });
@@ -80,13 +94,13 @@ export function EditorialGrowthPublicFrame({
           signed<span>price</span>
         </Link>
         <nav className={styles.primaryNav} aria-label={copy.navigation}>
-          {(Object.keys(copy.labels) as readonly (keyof typeof copy.labels)[]).map((item) => (
+          {copy.primaryItems.map((item) => (
             <Link
-              aria-current={surface === item ? 'page' : undefined}
-              href={hrefs[item]}
-              key={item}
+              aria-current={surface === item.currentOn ? 'page' : undefined}
+              href={item.href}
+              key={item.href}
             >
-              {copy.labels[item]}
+              {item.label}
             </Link>
           ))}
         </nav>

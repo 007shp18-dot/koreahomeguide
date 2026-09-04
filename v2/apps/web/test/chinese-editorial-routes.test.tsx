@@ -21,7 +21,8 @@ describe('Simplified Chinese editorial release', () => {
       expect(markup).not.toContain('Design review');
       expect(markup).not.toContain('/design-review/');
     }
-    expect(home).toContain('在韩国租房前，先看真实成交依据。');
+    expect(home).toContain('做决定之前，先看懂市场。');
+    expect(home).toContain('在韩国租房前，先看真实成交依据');
     expect(home).toContain('href="/zh-cn/kr/seoul/insights"');
     expect(insights).toContain('面向跨境租客与买家的原创报道和实用指南。');
     expect(insights).toContain('data-public-editorial-shell="content"');

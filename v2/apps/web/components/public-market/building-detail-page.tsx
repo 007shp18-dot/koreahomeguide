@@ -52,7 +52,7 @@ export function BuildingDetailPage({
   model,
   decision,
   visual,
-  streetView,
+  propertyMedia,
   facts,
   base,
   backHref,
@@ -60,7 +60,7 @@ export function BuildingDetailPage({
   model: PublicBuildingModel;
   decision: BuildingDecisionModel;
   visual: BuildingVisualModel;
-  streetView?: ReactNode;
+  propertyMedia?: ReactNode;
   facts?: ReactNode;
   base: string;
   backHref?: string;
@@ -93,7 +93,7 @@ export function BuildingDetailPage({
               Check this contract
             </Link>
           </div>
-          <div className={pageStyles.identityMedia}>{streetView ?? <BuildingVisual model={visual} />}</div>
+          <div className={pageStyles.identityMedia}>{propertyMedia ?? <BuildingVisual model={visual} />}</div>
         </section>
 
         <nav className={pageStyles.tabs} aria-label="Building page sections"><a href="#building-overview">Overview</a><a href="#building-evidence">Transactions</a><a href="#rent-evidence">Rent evidence</a><span>Listings · Preparing</span><a href="#building-source">Source</a></nav>

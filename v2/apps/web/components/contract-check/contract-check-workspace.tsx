@@ -41,6 +41,7 @@ export const CHECK_COPY = Object.freeze({
     window: 'Evidence window', salePeriod: 'Sale evidence window', rentPeriod: 'Rental evidence window', conversionPeriod: 'Conversion period',
     reference: 'Market reference only. No loan rate, tax, holding period, appreciation or future value is assumed.',
     explore: 'Find a stable building ID in Explore',
+    guide: 'Read the contract guides',
   }),
   ko: Object.freeze({
     nav: '가격 확인', mode: '확인 방식', single: '매물 하나의 가격 확인', compare: '두 조건 비교',
@@ -59,6 +60,7 @@ export const CHECK_COPY = Object.freeze({
     window: '근거 기간', salePeriod: '매매 근거 기간', rentPeriod: '임대차 근거 기간', conversionPeriod: '전환율 기간',
     reference: '시장 참고자료입니다. 대출금리·세금·보유기간·상승률·미래가치를 가정하지 않습니다.',
     explore: 'Explore에서 안정적인 건물 ID 찾기',
+    guide: '계약 가이드 읽기',
   }),
 } as const);
 
