@@ -7,8 +7,8 @@ SignedPrice keeps public transaction artifacts in the existing checked-in data p
 1. Create a managed PostgreSQL database in the Vercel Marketplace (Neon is supported by the installed serverless driver).
 2. Add `DATABASE_URL` to Production, Preview, and Development. Keep it server-only.
 3. Add independent random values for `CRON_SECRET` and `CONTENT_ADMIN_SECRET`.
-4. From `apps/web`, run `pnpm db:migrate` once with the production `DATABASE_URL` available.
-5. Redeploy. The daily Vercel cron calls `/api/internal/news-ingest`; normal News requests also merge the latest cached Naver response with stored history.
+4. Redeploy. The build applies unapplied versioned migrations automatically when `DATABASE_URL` exists. `pnpm db:migrate` remains available for an explicit manual run.
+5. The daily Vercel cron calls `/api/internal/news-ingest`; normal News requests also merge the latest cached Naver response with stored history.
 
 If the database is absent or temporarily unavailable, the public pages keep using the existing live/fallback sources. Database errors are logged server-side and secrets are never returned.
 
@@ -44,4 +44,3 @@ For an owned or separately licensed image, use `owned-object` or `licensed-url`,
 - `news_articles` deduplicates by canonical URL and keeps first/last seen timestamps.
 - `ingestion_runs` records scheduled news outcomes.
 - `content_articles` is the publication layer for future SignedPrice guides.
-

@@ -5,6 +5,10 @@ import { dirname, join } from 'node:path';
 import { neon } from '@neondatabase/serverless';
 
 const connectionString = process.env.DATABASE_URL?.trim();
+if (!connectionString && process.argv.includes('--if-configured')) {
+  process.stdout.write('DATABASE_URL is not configured; persistent-content migration skipped.\n');
+  process.exit(0);
+}
 if (!connectionString) throw new Error('DATABASE_URL is required.');
 
 const directory = join(dirname(fileURLToPath(import.meta.url)), '..', 'db', 'migrations');
@@ -28,9 +32,8 @@ for (const file of files) {
     .filter(Boolean);
   await sql.transaction((transaction) => [
     ...statements.map((statement) => transaction.query(statement)),
-    transaction`INSERT INTO signedprice_schema_migrations (name) VALUES (${file})`,
+    transaction`INSERT INTO signedprice_schema_migrations (name) VALUES (${file}) ON CONFLICT (name) DO NOTHING`,
   ]);
 }
 
 process.stdout.write(`Applied ${files.length} SignedPrice database migration file(s).\n`);
-
