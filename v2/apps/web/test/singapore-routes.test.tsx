@@ -20,12 +20,12 @@ import { SingaporePage } from '../components/singapore/singapore-shell';
 import { metadata as entryMetadata } from '../app/(en)/sg/page';
 import { metadata as exploreMetadata } from '../app/(en)/sg/singapore/explore/page';
 import {
+  generateMetadata as generateSegmentMetadata,
   generateStaticParams as segmentStaticParams,
-  metadata as segmentMetadata,
 } from '../app/(en)/sg/singapore/explore/[area]/page';
 import {
+  generateMetadata as generateProjectMetadata,
   generateStaticParams as projectStaticParams,
-  metadata as projectMetadata,
 } from '../app/(en)/sg/singapore/explore/[area]/[projectId]/page';
 import { metadata as correctionMetadata } from '../app/(en)/sg/singapore/corrections/page';
 import { metadata as checkMetadata } from '../app/(en)/sg/singapore/check/page';
@@ -78,20 +78,19 @@ describe('Singapore route SSR', () => {
     expect(html).toContain('aria-label="Offer B market"');
   });
 
-  it('uses Singapore context with global product navigation and never falls through to Seoul Check', () => {
+  it('uses Singapore context with local product navigation and never falls through to Seoul Check', () => {
     const html = renderToStaticMarkup(<SingaporePage><p>Singapore content</p></SingaporePage>);
 
     expect(html).toContain('aria-label="Singapore evidence navigation"');
     expect(html).toContain('href="/sg/singapore/explore/"');
     expect(html).not.toContain('href="/kr/seoul/check/"');
-    expect(html).toContain('href="/prices">Prices</a>');
+    expect(html).toContain('href="/sg/singapore/check"><span>01</span><strong>Check</strong>');
     expect(html).toContain('Singapore · reported filings');
   });
 
-  it('maps the Singapore evidence route to the global Prices destination', () => {
+  it('maps the Singapore evidence route to the local Explore destination', () => {
     const html = renderToStaticMarkup(<SingaporePage currentHref="/sg/singapore/explore/"><p>Explore</p></SingaporePage>);
-    expect(html).toMatch(/aria-current="page" href="\/prices"/);
-    expect(html).not.toMatch(/site-header__product-link" aria-current="page" href="\/sg/);
+    expect(html).toMatch(/aria-current="page" href="\/sg\/singapore\/explore"/);
     expect(html).not.toMatch(/href="\/kr\/seoul\/[^"]*" aria-current="page"/);
   });
 
@@ -137,12 +136,12 @@ describe('Singapore route SSR', () => {
     expect(html).not.toMatch(/use client/);
   });
 
-  it('passes the server-only Google key into the Singapore Explore map', async () => {
+  it('passes the configured Google browser key into the Singapore Explore map', async () => {
     const source = snapshot();
     vi.stubEnv('SIGNEDPRICE_SINGAPORE_SNAPSHOT_ARTIFACT', stringifySingaporeSnapshot(source));
     vi.stubEnv('SIGNEDPRICE_SINGAPORE_SNAPSHOT_SHA256', source.digest);
     vi.stubEnv('SIGNEDPRICE_SINGAPORE_SNAPSHOT_PERIOD', '2026-06..2026-08');
-    vi.stubEnv('GOOGLE_MAPS_API_KEY', 'page-google-key');
+    vi.stubEnv('GOOGLE_MAPS_BROWSER_KEY', 'page-google-key');
 
     const html = renderToStaticMarkup(await SingaporeExplorePage());
 
@@ -186,19 +185,66 @@ describe('Singapore route containment', () => {
     expect(await projectStaticParams()).toEqual([]);
   });
 
-  it.each([
-    entryMetadata,
-    exploreMetadata,
-    segmentMetadata,
-    projectMetadata,
-    correctionMetadata,
-  ])('keeps every Singapore route noindex without alternates', (metadata) => {
-    expect(metadata.robots).toEqual({ index: false, follow: true });
-    expect(metadata).not.toHaveProperty('alternates');
+  it('indexes the released Singapore entry and Explore pages with self-canonicals', () => {
+    expect(entryMetadata.robots).toEqual({ index: true, follow: true });
+    expect(entryMetadata.alternates).toEqual({
+      canonical: 'https://www.signedprice.com/sg/',
+    });
+    expect(exploreMetadata.robots).toEqual({ index: true, follow: true });
+    expect(exploreMetadata.alternates).toEqual({
+      canonical: 'https://www.signedprice.com/sg/singapore/explore/',
+    });
   });
 
-  it('keeps Singapore out of the sitemap', () => {
-    expect(sitemap().map(({ url }) => url).join('\n')).not.toMatch(/\/sg\//);
+  it('indexes ready segment and project evidence while keeping unavailable routes noindex', async () => {
+    const source = buildSingaporeSnapshot({
+      records: [1, 2, 3, 4].flatMap((batch) => parseUraPrivateSaleEnvelope(fixture, batch)),
+      generatedAt: '2026-08-31T09:00:01.000Z',
+      rights,
+    });
+    vi.stubEnv('SIGNEDPRICE_USE_CHECKED_IN_SNAPSHOTS', 'false');
+    vi.stubEnv('SIGNEDPRICE_SINGAPORE_SNAPSHOT_ARTIFACT', stringifySingaporeSnapshot(source));
+    vi.stubEnv('SIGNEDPRICE_SINGAPORE_SNAPSHOT_SHA256', source.digest);
+    vi.stubEnv('SIGNEDPRICE_SINGAPORE_SNAPSHOT_PERIOD', '2026-06..2026-08');
+
+    const store = await repository();
+    const project = store.listProjects('CCR')[0]!;
+    const segmentMetadata = await generateSegmentMetadata({
+      params: Promise.resolve({ area: 'ccr' }),
+    });
+    const projectMetadata = await generateProjectMetadata({
+      params: Promise.resolve({ area: 'ccr', projectId: project.id }),
+    });
+    const missingMetadata = await generateProjectMetadata({
+      params: Promise.resolve({ area: 'ccr', projectId: 'missing-project' }),
+    });
+
+    expect(segmentMetadata.robots).toEqual({ index: true, follow: true });
+    expect(segmentMetadata.alternates).toEqual({
+      canonical: 'https://www.signedprice.com/sg/singapore/explore/ccr/',
+    });
+    expect(projectMetadata.robots).toEqual({ index: true, follow: true });
+    expect(projectMetadata.alternates).toEqual({
+      canonical: `https://www.signedprice.com/sg/singapore/explore/ccr/${project.id}/`,
+    });
+    expect(missingMetadata.robots).toEqual({ index: false, follow: true });
+
+    vi.unstubAllEnvs();
+  });
+
+  it('publishes released Singapore discovery pages in the sitemap', () => {
+    expect(sitemap().map(({ url }) => url)).toEqual(expect.arrayContaining([
+      'https://www.signedprice.com/sg/',
+      'https://www.signedprice.com/sg/singapore/explore/',
+      'https://www.signedprice.com/sg/singapore/explore/ccr/',
+      'https://www.signedprice.com/sg/singapore/explore/rcr/',
+      'https://www.signedprice.com/sg/singapore/explore/ocr/',
+    ]));
+  });
+
+  it('keeps Singapore corrections noindex', () => {
+    expect(correctionMetadata.robots).toEqual({ index: false, follow: true });
+    expect(correctionMetadata).not.toHaveProperty('alternates');
   });
 
   it('keeps native Singapore Check noindex and self-canonical until evidence release', () => {

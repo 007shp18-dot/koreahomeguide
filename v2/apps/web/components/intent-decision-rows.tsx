@@ -37,7 +37,7 @@ export function IntentDecisionRows({
                         <strong>{item.label}</strong>
                         {item.description ? <small>{item.description}</small> : null}
                       </div>
-                      {item.state && item.stateLabel ? (
+                      {item.state && item.stateLabel && item.state !== row.state ? (
                         <StatusLabel state={item.state} label={item.stateLabel} />
                       ) : null}
                     </li>

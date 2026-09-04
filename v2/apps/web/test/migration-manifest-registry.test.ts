@@ -22,7 +22,10 @@ describe('KoreaHomeGuide migration manifest registry parity', () => {
       installedBuildingArtifact.provenance.period,
     );
     const registered = [
-      ...signedPricePublicRouteRegistry.listMigrationCandidates({ areaReady: true }),
+      ...signedPricePublicRouteRegistry.listMigrationCandidates({
+        areaReady: true,
+        singleQuoteReady: true,
+      }),
       ...listSignedPricePropertyTypeRoutes().flatMap((route) => (
         route.legacySourcePath === undefined
           ? []
@@ -43,8 +46,8 @@ describe('KoreaHomeGuide migration manifest registry parity', () => {
         locale: entry.locale,
       });
     }
-    expect(migrationManifest.entries).not.toContainEqual(expect.objectContaining({
-      sourcePath: '/guides/',
+    expect(migrationManifest.entries).toContainEqual(expect.objectContaining({
+      sourcePath: '/guides/', targetPath: '/kr/seoul/guide/', cohort: 3,
     }));
   });
 });

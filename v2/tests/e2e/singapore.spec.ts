@@ -46,8 +46,11 @@ test('Singapore routes fail closed while display rights are pending', async ({ p
     await expect(page.locator('body')).not.toContainText(/SGD [\d,]+|PSF|PSM/);
     await expect(page.getByRole('link', { name: 'Singapore evidence' })).toHaveCount(0);
   }
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /^noindex,\s*follow$/);
-  await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /^index,\s*follow$/);
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    'href',
+    'https://www.signedprice.com/sg/',
+  );
   await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(0);
   await noOverflow(page);
   assertClean();
@@ -83,12 +86,19 @@ test('ready Singapore evidence flows entry to project when promotion gates open'
   assertClean();
 });
 
-test('Singapore remains absent from the sitemap and browser never calls URA', async ({ page }) => {
+test('released Singapore discovery pages appear in the sitemap and browser never calls URA', async ({ page }) => {
   const assertClean = observeRuntimeFailures(page);
   await page.goto('/sg/singapore/explore/');
   const sitemap = await page.request.get('/sitemap.xml');
   expect(sitemap.status()).toBe(200);
-  expect(await sitemap.text()).not.toContain('/sg/');
+  const xml = await sitemap.text();
+  for (const path of [
+    '/sg/',
+    '/sg/singapore/explore/',
+    '/sg/singapore/explore/ccr/',
+    '/sg/singapore/explore/rcr/',
+    '/sg/singapore/explore/ocr/',
+  ]) expect(xml).toContain(`<loc>https://www.signedprice.com${path}</loc>`);
   assertClean();
 });
 

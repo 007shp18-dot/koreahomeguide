@@ -1,36 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://koreahomeguide.com/about/</loc>
-    <lastmod>2026-08-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
+<url>
     <loc>https://koreahomeguide.com/zh/about/</loc>
     <lastmod>2026-08-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.72</priority>
   </url>
-  <url>
-    <loc>https://koreahomeguide.com/</loc>
-    <lastmod>2026-08-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
+<url>
     <loc>https://koreahomeguide.com/zh/</loc>
     <lastmod>2026-08-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
-  <url>
-    <loc>https://koreahomeguide.com/explore/</loc>
-    <lastmod>2026-08-24</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
+<url>
     <loc>https://koreahomeguide.com/zh/explore/</loc>
     <lastmod>2026-08-24</lastmod>
     <changefreq>daily</changefreq>
@@ -54,7 +36,7 @@
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
-  <url>
+<url>
     <loc>https://koreahomeguide.com/value-check/</loc>
     <lastmod>2026-08-31</lastmod>
     <changefreq>weekly</changefreq>
@@ -65,12 +47,6 @@
     <lastmod>2026-08-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://koreahomeguide.com/community/</loc>
-    <lastmod>2026-08-29</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.55</priority>
   </url>
 <url>
     <loc>https://koreahomeguide.com/tools/brokerage-fee-calculator/</loc>
@@ -246,13 +222,7 @@
     <changefreq>weekly</changefreq>
     <priority>0.82</priority>
   </url>
-  <url>
-    <loc>https://koreahomeguide.com/guides/</loc>
-    <lastmod>2026-08-26</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
+<url>
     <loc>https://koreahomeguide.com/zh/guides/</loc>
     <lastmod>2026-08-26</lastmod>
     <changefreq>weekly</changefreq>
@@ -306,13 +276,7 @@
     <changefreq>monthly</changefreq>
     <priority>0.82</priority>
   </url>
-  <url>
-    <loc>https://koreahomeguide.com/privacy/</loc>
-    <lastmod>2026-08-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.4</priority>
-  </url>
-  <url>
+<url>
     <loc>https://koreahomeguide.com/zh/privacy/</loc>
     <lastmod>2026-08-25</lastmod>
     <changefreq>monthly</changefreq>

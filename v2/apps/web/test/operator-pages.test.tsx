@@ -32,7 +32,7 @@ describe('SignedPrice operator configuration', () => {
     });
   });
 
-  it('keeps verified public email routes available when operator identity is absent', () => {
+  it('keeps useful public privacy and contact routes available when operator identity is absent', () => {
     const privacyHtml = renderToStaticMarkup(<PrivacyPage />);
     const contactHtml = renderToStaticMarkup(<ContactPage />);
 
@@ -44,7 +44,9 @@ describe('SignedPrice operator configuration', () => {
       expect(html).toContain('data-product-intro="true"');
       expect(html).not.toContain('SignedPrice Labs Ltd.');
     }
-    expect(privacyHtml).toContain('Operator details are not configured');
+    expect(privacyHtml).toContain('We do not sell personal information');
+    expect(privacyHtml).toContain('privacy@signedprice.com');
+    expect(privacyHtml).toContain('Access, correction and deletion');
     expect(contactHtml).toContain('contact@signedprice.com');
     expect(contactHtml).toContain('privacy@signedprice.com');
   });
@@ -58,23 +60,14 @@ describe('SignedPrice operator configuration', () => {
 
     expect(privacyHtml).toContain('SignedPrice Labs Ltd.');
     expect(privacyHtml).toContain('privacy@signedprice.com');
-    expect(privacyHtml).toContain('Privacy and data');
+    expect(privacyHtml).toContain('Privacy, in plain language.');
     expect(contactHtml).toContain('mailto:privacy@signedprice.com');
     expect(contactHtml).toContain('mailto:contact@signedprice.com');
-    expect(contactHtml).toContain('Evidence corrections');
+    expect(contactHtml).toContain('Correct a data issue');
   });
 
-  it('indexes and lists operator pages only when the profile is ready', () => {
+  it('indexes and lists the useful privacy and contact pages without an operator gate', () => {
     vi.stubEnv('SIGNEDPRICE_USE_CHECKED_IN_SNAPSHOTS', 'false');
-    expect(generatePrivacyMetadata().robots).toEqual({ index: false, follow: true });
-    expect(generateContactMetadata().robots).toEqual({ index: false, follow: true });
-    expect(sitemap().map(({ url }) => url)).not.toContain(
-      'https://www.signedprice.com/privacy/',
-    );
-
-    vi.stubEnv('SIGNEDPRICE_OPERATOR_NAME', 'SignedPrice Labs Ltd.');
-    vi.stubEnv('SIGNEDPRICE_PRIVACY_CONTACT', 'privacy@signedprice.com');
-
     expect(generatePrivacyMetadata()).toMatchObject({
       robots: { index: true, follow: true },
       alternates: { canonical: 'https://www.signedprice.com/privacy/' },

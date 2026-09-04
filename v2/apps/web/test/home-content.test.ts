@@ -131,9 +131,10 @@ describe('signedprice homepage copy', () => {
     expect(markup).toContain('>Know the market before you buy.</h1>');
     expect(markup).toContain('>Explore markets</h2>');
     expect(markup).toContain('>Buildings across markets</h2>');
-    expect(markup).toContain('>Market news</h2>');
-    expect(markup).toContain('data-navigation-tier="primary"');
-    expect(markup).not.toContain('data-navigation-tier="product"');
+    expect(markup).toContain('>News &amp; original reporting</h2>');
+    expect(markup).toContain('href="/insights"');
+    expect(markup).toContain('class="site-header__market-tier"');
+    expect(markup).toContain('data-navigation-tier="product"');
     expect(markup).not.toContain('data-local-navigation="true"');
     expect(markup).toContain('aria-label="Market navigation"');
     expect(markup).toContain('>Seoul</a>');

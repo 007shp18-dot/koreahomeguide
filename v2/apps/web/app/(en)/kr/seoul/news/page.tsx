@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 
-import { NewsIndexPage } from '@/components/news/news-index-page';
+import { NewsWorkspacePage } from '@/components/news/news-index-page';
+import { buildApprovedNewsWorkspaceModel } from '@/lib/news/naver-news.server';
 import { buildNewsIndexModel } from '@/lib/news/news-route-model.server';
 import { indexableMetadata } from '@/lib/public-metadata';
 
@@ -11,5 +12,5 @@ export const metadata: Metadata = indexableMetadata({
 });
 
 export default function NewsIndexRoute() {
-  return <NewsIndexPage model={buildNewsIndexModel()} />;
+  return <NewsWorkspacePage model={buildApprovedNewsWorkspaceModel(buildNewsIndexModel())} />;
 }

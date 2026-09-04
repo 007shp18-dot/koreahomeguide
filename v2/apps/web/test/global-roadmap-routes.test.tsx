@@ -1,5 +1,5 @@
 import { renderToStaticMarkup } from 'react-dom/server';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 vi.mock('next/navigation', () => ({
@@ -10,19 +10,36 @@ import CommunityPage, { metadata as communityMetadata } from '../app/(en)/commun
 import NewsPage, { metadata as newsMetadata } from '../app/(en)/news/page';
 import MarketFeatureRoute from '../app/(en)/[country]/[city]/[intent]/page';
 
+afterEach(() => vi.unstubAllGlobals());
+
 describe('global roadmap routes', () => {
-  it('publishes global News and Community destinations in the shared product shell', () => {
-    const news = renderToStaticMarkup(<NewsPage />);
+  it('server-renders global market news before client refresh', async () => {
+    vi.stubGlobal('fetch', vi.fn(async (input: string | URL | Request) => {
+      const url = new URL(input instanceof Request ? input.url : input.toString());
+      const market = url.searchParams.get('q')?.includes('Singapore') ? 'Singapore' : url.searchParams.get('q')?.includes('Dubai') ? 'Dubai' : 'Seoul';
+      const rss = `<?xml version="1.0"?><rss><channel><item>
+        <title>${market} property market update - Example News</title>
+        <link>https://news.google.com/rss/articles/${market.toLowerCase()}</link>
+        <pubDate>Fri, 04 Sep 2026 01:00:00 GMT</pubDate>
+        <description>${market} housing evidence update</description>
+        <source>Example News</source>
+      </item></channel></rss>`;
+      return new Response(rss, { status: 200 });
+    }));
+
+    const news = renderToStaticMarkup(await NewsPage());
     const community = renderToStaticMarkup(<CommunityPage />);
 
     expect(newsMetadata.alternates).toEqual({ canonical: 'https://www.signedprice.com/news/' });
     expect(communityMetadata.alternates).toEqual({ canonical: 'https://www.signedprice.com/community/' });
-    expect(news).toContain('Property market news');
+    expect(news).toContain('News, with the evidence boundary attached.');
     expect(news).toContain('data-market-context="global"');
-    expect(community).toContain('Community, grounded in a place.');
-    expect(community).toContain('District and neighbourhood');
-    expect(community).toContain('Building and project');
-    expect(community).toContain('Read-only foundation');
+    expect(news).toContain('Singapore housing evidence update');
+    expect(news).toMatch(/Singapore<\/span><small>[1-9]/);
+    expect(community).toContain('One community, organized by place.');
+    expect(community).toContain('District');
+    expect(community).toContain('Building');
+    expect(community).toContain('Read-only launch state');
   });
 
   it.each([
@@ -36,9 +53,9 @@ describe('global roadmap routes', () => {
 
       expect(html).toContain(`data-market-context="${city}"`);
       expect(html).toContain(`aria-label="${label} product navigation"`);
-      expect(html).toContain('data-local-navigation="true"');
-      expect(html).toContain('Availability');
-      expect(html).toContain('Not publicly available yet');
+      expect(html).toContain('data-navigation-tier="product"');
+      expect(html).toContain('<strong>Explore</strong>');
+      expect(html).toContain('No unsupported values substituted');
     }
   });
 });

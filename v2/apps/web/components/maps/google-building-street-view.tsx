@@ -207,7 +207,7 @@ export function GoogleBuildingStreetView({
     }
   }, [address, latitude, longitude]);
 
-  if (browserKey !== null && state === 'unavailable' && latitude !== undefined && longitude !== undefined) return (
+  if ((browserKey === null || state === 'unavailable') && latitude !== undefined && longitude !== undefined) return (
     <section className={styles.frame} data-building-media="google-area-map" data-media-state="map-fallback">
       <iframe
         className={styles.embed}
@@ -216,22 +216,18 @@ export function GoogleBuildingStreetView({
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
       />
-      <p className={styles.label}>Live building location · street view unavailable · Google</p>
     </section>
   );
   if (browserKey === null || state === 'unavailable') return (
-    <section className={styles.unavailable} data-building-media="street-view-unavailable">
-      <strong>Street view unavailable</strong>
-      <p>Google could not verify nearby outdoor imagery. Building evidence remains available.</p>
-      <Link href={mapHref}>View this building area on the map</Link>
+    <section className={styles.locationFallback} data-building-media="location-map-fallback">
+      <span aria-hidden="true">⌖</span>
+      <div><strong>Building location</strong><p>Open the exact building area in Google Maps.</p></div>
+      <Link href={mapHref}>Open location map</Link>
     </section>
   );
   return (
     <section className={styles.frame} data-building-media="google-street-view" data-media-state={state}>
       <div ref={container} className={styles.canvas} role="region" aria-label={`Nearby Google Street View for ${buildingName}`} />
-      <p className={styles.label}>{state === 'map'
-        ? 'Live area map · nearby street view unavailable · Google'
-        : 'Nearby street view · not a listing photo · Google'}</p>
       <Script
         src={buildGoogleMapsScriptUrl(browserKey)}
         strategy="lazyOnload"

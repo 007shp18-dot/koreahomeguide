@@ -54,18 +54,21 @@ export const publicRoutes = [
   {
     path: '/sg/',
     heading: 'Singapore',
-    indexing: 'noindex',
+    indexing: 'index',
+    canonical: '/sg/',
   },
   { path: '/ae/dubai/', heading: 'Dubai', indexing: 'noindex' },
   {
     path: '/sg/singapore/explore/',
     heading: 'Residential transaction evidence',
-    indexing: 'noindex',
+    indexing: 'index',
+    canonical: '/sg/singapore/explore/',
   },
   ...(['ccr', 'rcr', 'ocr'] as const).map((area) => ({
     path: `/sg/singapore/explore/${area}/`,
     heading: area.toUpperCase(),
-    indexing: 'noindex' as const,
+    indexing: 'index' as const,
+    canonical: `/sg/singapore/explore/${area}/`,
   })),
   {
     path: '/sg/singapore/corrections/',

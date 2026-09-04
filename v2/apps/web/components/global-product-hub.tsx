@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 import { GUIDES } from '../lib/guide/guide-content';
-import type { NewsIndexModel } from '../lib/news/news-route-model.server';
+import type { NewsWorkspaceModel } from '../lib/news/news-workspace-model';
 import type { SeoulLiveModel } from '../lib/public-market/seoul-live-model.server';
 import {
   homepageCopy,
@@ -9,6 +9,7 @@ import {
 } from '../lib/site-copy';
 import { SiteFooter } from './site-footer';
 import { SiteHeader } from './site-header';
+import { NewsWorkbench } from './news/news-workbench';
 import styles from './global-product-hub.module.css';
 
 export type GlobalHubKind = 'markets' | 'prices' | 'news' | 'guides';
@@ -16,17 +17,10 @@ export type GlobalHubKind = 'markets' | 'prices' | 'news' | 'guides';
 type GlobalProductHubProps = Readonly<{
   kind: GlobalHubKind;
   seoul?: SeoulLiveModel;
-  news?: NewsIndexModel;
+  newsWorkspace?: NewsWorkspaceModel;
 }>;
 
 const number = new Intl.NumberFormat('en-US');
-const date = new Intl.DateTimeFormat('en', {
-  month: 'short',
-  day: 'numeric',
-  year: 'numeric',
-  timeZone: 'UTC',
-});
-
 const hubCopy = {
   markets: {
     eyebrow: 'Global market coverage',
@@ -142,20 +136,19 @@ function PricesHub({ seoul }: Readonly<{ seoul?: SeoulLiveModel }>) {
   );
 }
 
-function InsightsHub({ news }: Readonly<{ news?: NewsIndexModel }>) {
-  const records = news?.records.slice(0, 4) ?? [];
+function InsightsHub({ workspace }: Readonly<{ workspace?: NewsWorkspaceModel }>) {
+  const model = workspace ?? Object.freeze({ items: Object.freeze([]), naverState: 'not-configured' as const });
   return (
-    <>
-      <section className={styles.section} aria-labelledby="insights-title">
-        <div className={styles.sectionHeading}><p>Latest approved briefs</p><h2 id="insights-title">Evidence first, commentary second.</h2></div>
-        <div className={styles.insightGrid}>
-          {records.length === 0 ? <article className={styles.emptyState}><strong>No approved Seoul brief is available right now.</strong><p>Verified reporting returns after its declared evidence reconciles.</p></article> : records.map((record) => <article key={record.id}><span>Seoul · {date.format(new Date(record.publishedAt))}</span><h3><Link href={`/kr/seoul/news/${record.slug}/`}>{record.title}</Link></h3><p>{record.summary}</p><strong>{record.category}</strong></article>)}
-          <article className={styles.preparingCard}><Status>Approval required</Status><h3>Singapore briefs</h3><p>URA-linked analysis opens only after evidence and editorial review.</p></article>
-          <article className={styles.preparingCard}><Status>Rights review</Status><h3>Dubai briefs</h3><p>No transaction claim is published before the display-rights boundary is established.</p></article>
-        </div>
-      </section>
-      <section className={styles.actionBand}><div><p>Seoul market insights</p><h2>See every approved brief with its official source.</h2></div><Link href="/kr/seoul/news/">Open Seoul insights →</Link></section>
-    </>
+    <section className={`${styles.section} ${styles.newsSection}`} aria-labelledby="insights-title">
+      <div className={styles.newsToolbar}>
+        <div><p>Live external news + approved briefs</p><h2 id="insights-title">Evidence first, commentary second.</h2></div>
+        <nav className={styles.newsToolbarLinks} aria-label="News and original reporting">
+          <Link href="/insights/">Read original reports →</Link>
+          <Link href="/kr/seoul/news/">Approved Seoul briefs →</Link>
+        </nav>
+      </div>
+      <NewsWorkbench model={model} />
+    </section>
   );
 }
 
@@ -175,16 +168,16 @@ function GuidesHub() {
   );
 }
 
-export function GlobalProductHub({ kind, seoul, news }: GlobalProductHubProps) {
+export function GlobalProductHub({ kind, seoul, newsWorkspace }: GlobalProductHubProps) {
   const copy = hubCopy[kind];
   return (
     <div id="top">
       <SiteHeader copy={headerFor(kind)} />
       <main className={styles.main}>
-        <header className={styles.hero}><p>{copy.eyebrow}</p><h1>{copy.title}</h1><p>{copy.description}</p></header>
+        <header className={`${styles.hero} ${kind === 'news' ? styles.heroCompact : ''}`}><p>{copy.eyebrow}</p><h1>{copy.title}</h1><p>{copy.description}</p></header>
         {kind === 'markets' ? <MarketsHub /> : null}
         {kind === 'prices' ? <PricesHub seoul={seoul} /> : null}
-        {kind === 'news' ? <InsightsHub news={news} /> : null}
+        {kind === 'news' ? <InsightsHub workspace={newsWorkspace} /> : null}
         {kind === 'guides' ? <GuidesHub /> : null}
       </main>
       <SiteFooter copy={homepageCopy.footer} />

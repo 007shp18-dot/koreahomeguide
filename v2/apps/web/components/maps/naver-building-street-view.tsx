@@ -143,12 +143,12 @@ export function mountNaverBuildingStreetView({
   });
 }
 
-function StreetViewUnavailable({ mapHref }: Readonly<{ mapHref: string }>) {
+function LocationMapFallback({ mapHref }: Readonly<{ mapHref: string }>) {
   return (
-    <section className={styles.unavailable} data-building-media="street-view-unavailable">
-      <strong>Street view unavailable</strong>
-      <p>NAVER could not verify a nearby street panorama. Building evidence remains available.</p>
-      <Link href={mapHref}>View this building area on the map</Link>
+    <section className={styles.locationFallback} data-building-media="location-map-fallback">
+      <span aria-hidden="true">⌖</span>
+      <div><strong>Building location</strong><p>Open the exact building area in NAVER Map.</p></div>
+      <Link href={mapHref}>Open location map</Link>
     </section>
   );
 }
@@ -160,6 +160,7 @@ export function NaverBuildingStreetView({
   longitude,
   addressQuery,
   mapHref,
+  preferMap = false,
 }: Readonly<{
   clientId: string | null;
   buildingName: string;
@@ -167,6 +168,7 @@ export function NaverBuildingStreetView({
   longitude?: number;
   addressQuery?: string;
   mapHref: string;
+  preferMap?: boolean;
 }>) {
   const container = useRef<HTMLDivElement>(null);
   const mounted = useRef<ReturnType<typeof mountNaverBuildingStreetView> | null>(null);
@@ -191,6 +193,23 @@ export function NaverBuildingStreetView({
     } catch {
       setState('unavailable');
       return;
+    }
+    if (preferMap && typeof sdk.Map === 'function' && typeof sdk.Marker === 'function') {
+      try {
+        mounted.current?.dispose();
+        mountNaverBuildingMap({
+          sdk: sdk as NaverBuildingStreetViewSdk & NaverBuildingMapSdk,
+          element: container.current,
+          buildingName,
+          latitude: location.latitude,
+          longitude: location.longitude,
+        });
+        setState('map');
+        return;
+      } catch {
+        setState('unavailable');
+        return;
+      }
     }
     try {
       mounted.current?.dispose();
@@ -227,7 +246,7 @@ export function NaverBuildingStreetView({
     } catch {
       setState('unavailable');
     }
-  }, [addressQuery, buildingName, latitude, longitude]);
+  }, [addressQuery, buildingName, latitude, longitude, preferMap]);
 
   useEffect(() => {
     const scope = window as NaverMapsWindow;
@@ -243,14 +262,11 @@ export function NaverBuildingStreetView({
     };
   }, [initialize]);
 
-  if (clientId === null || state === 'unavailable') return <StreetViewUnavailable mapHref={mapHref} />;
+  if (clientId === null || state === 'unavailable') return <LocationMapFallback mapHref={mapHref} />;
   return (
     <section className={styles.frame} data-building-media="naver-panorama" data-media-state={state}>
       <div ref={container} className={styles.canvas} role="region" aria-label={`Nearby NAVER street view for ${buildingName}`} />
       {state === 'loading' ? <div className={styles.loading} aria-live="polite"><span>Loading nearby view</span><strong>{buildingName}</strong></div> : null}
-      <p className={styles.label}>{state === 'map'
-        ? 'Live area map · nearby street view unavailable · NAVER'
-        : 'Nearby street view · not a listing photo · NAVER'}</p>
       <Script
         src={buildNaverMapsScriptUrl(
           clientId,

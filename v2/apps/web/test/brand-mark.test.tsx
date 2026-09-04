@@ -71,15 +71,14 @@ describe('SignedPrice brand mark', () => {
       links: [{ label: 'Explore', href: '/kr/seoul/explore/', isCurrent: true }],
     }} />);
 
-    expect(html).toContain('data-navigation-tier="primary"');
-    expect(html).not.toContain('data-navigation-tier="market"');
-    expect(html).not.toContain('data-navigation-tier="product"');
+    expect(html).toContain('class="site-header__market-tier"');
+    expect(html).toContain('data-navigation-tier="product"');
     expect(html).toContain('class="site-header__context">Seoul · reported filings</span>');
     expect(html.match(/site-header__product-link/g)).toHaveLength(7);
-    expect(html).toContain('>Markets</a>');
-    expect(html).toContain('>Invest</a>');
-    expect(html).toContain('href="/properties"');
-    expect(html).toContain('href="/invest"');
-    expect(html).toMatch(/<a[^>]+aria-current="page"[^>]+href="\/prices"/);
+    expect(html).toContain('<strong>Overview</strong>');
+    expect(html).toContain('<strong>Guide</strong>');
+    expect(html).toContain('href="/kr/seoul/check"');
+    expect(html).toContain('href="/kr/seoul/explore"');
+    expect(html).toMatch(/<a[^>]+aria-current="page"[^>]+href="\/kr\/seoul\/explore"/);
   });
 });

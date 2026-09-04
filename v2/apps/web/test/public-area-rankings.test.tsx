@@ -62,10 +62,10 @@ describe('Seoul district rankings page', () => {
     expect(html).not.toContain('data-change-direction=');
     expect(html).toContain('23 districts excluded');
     expect(html).toContain('aria-current="page"');
-    expect(html).toContain('>Prices</a>');
-    expect(html).toContain('href="/news"');
-    expect(html).toContain('href="/community"');
-    expect(html).toContain('href="/guides"');
+    expect(html).toContain('<strong>Rankings</strong>');
+    expect(html).toContain('href="/kr/seoul/news"');
+    expect(html).toContain('href="/kr/seoul/community"');
+    expect(html).toContain('href="/kr/seoul/guide"');
   });
 
   it('does not reinterpret a positive stored change without retained counts', async () => {
@@ -89,9 +89,9 @@ describe('Seoul district rankings page', () => {
 
     const html = renderToStaticMarkup(<DistrictRankings model={model} />);
 
-    expect(html.match(/No eligible districts for this metric\./g)).toHaveLength(4);
-    expect(html).not.toContain('data-ranking-row=');
-    expect(html).not.toMatch(/₩[0-9]|[+-][0-9]+\.[0-9]%/);
+    expect(html.match(/data-ranking-row=/g)).toHaveLength(75);
+    expect(html.match(/Not published/g)?.length).toBeGreaterThanOrEqual(75);
+    expect(html).not.toContain('data-ranking-distribution=');
   });
 
   it('presents one ranking measure at a time through an accessible view selector', () => {
@@ -103,10 +103,10 @@ describe('Seoul district rankings page', () => {
     const html = renderToStaticMarkup(<DistrictRankings model={model} />);
 
     expect(html).toContain('role="tablist"');
-    expect(html.match(/role="tab"/g)).toHaveLength(4);
+    expect(html.match(/role="tab"/g)).toHaveLength(6);
     expect(html.match(/aria-selected="true"/g)).toHaveLength(1);
-    expect(html.match(/role="tabpanel"/g)).toHaveLength(4);
-    expect(html.match(/ hidden=""/g)).toHaveLength(3);
+    expect(html.match(/role="tabpanel"/g)).toHaveLength(6);
+    expect(html.match(/ hidden=""/g)).toHaveLength(5);
   });
 
   it('contains the ranking workspace and uses one consistent rule hierarchy', () => {

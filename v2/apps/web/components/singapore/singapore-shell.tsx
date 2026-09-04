@@ -34,6 +34,7 @@ export function SingaporePage({ children, currentHref, unframed = false }: Reado
 }>) {
   const surface: ProductSurface = currentHref?.includes('/check/') ? 'check'
     : currentHref?.includes('/explore/') || currentHref?.includes('/hdb/') ? 'explore'
+      : currentHref?.includes('/rankings/') ? 'rankings'
       : currentHref?.includes('/corrections/') ? 'corrections'
         : 'home';
   const header = currentHref === undefined ? singaporeHeader : {
@@ -49,32 +50,40 @@ export function SingaporePage({ children, currentHref, unframed = false }: Reado
   );
 }
 
-export function SingaporeScope() {
+export function SingaporeScope({ activeSegment }: Readonly<{ activeSegment?: 'CCR' | 'RCR' | 'OCR' }>) {
   return (
     <div className={styles.scope} aria-label="Singapore sale scope">
-      <span>CCR</span><span>RCR</span><span>OCR</span>
-      <span>New sale</span><span>Subsale</span><span>Resale</span>
+      {activeSegment === undefined
+        ? <><span>CCR</span><span>RCR</span><span>OCR</span><span>New sale</span><span>Subsale</span><span>Resale</span></>
+        : <span>{activeSegment}</span>}
+      {activeSegment === undefined ? null : <span>Private residential sales</span>}
     </div>
   );
 }
 
-export function SingaporeEvidence({ model }: Readonly<{ model: SingaporeEvidenceModel }>) {
+export function SingaporeEvidence({
+  model,
+  compact = false,
+}: Readonly<{ model: SingaporeEvidenceModel; compact?: boolean }>) {
+  const content = <>
+    <p className={styles.sectionLabel}>Source boundary</p>
+    <h2 id="singapore-source-heading">What this evidence can support.</h2>
+    <EvidenceDisclosure
+      model={model.descriptor}
+      boundary="Private residential sale transactions; native area basis retained; publication minimum enforced."
+      attribution={['Urban Redevelopment Authority (URA), Singapore']}
+    />
+    <ul className={styles.limitations}>
+      {model.limitations.map((limitation) => <li key={limitation}>{limitation}</li>)}
+    </ul>
+    <div className={styles.actions}>
+      <Link href="/trust/">Review Global Trust</Link>
+      <Link href={model.correctionHref}>Review Singapore corrections</Link>
+    </div>
+  </>;
   return (
-    <section className={styles.section} aria-labelledby="singapore-source-heading">
-      <p className={styles.sectionLabel}>Source boundary</p>
-      <h2 id="singapore-source-heading">What this evidence can support.</h2>
-      <EvidenceDisclosure
-        model={model.descriptor}
-        boundary="Private residential sale transactions; native area basis retained; publication minimum enforced."
-        attribution={['Urban Redevelopment Authority (URA), Singapore']}
-      />
-      <ul className={styles.limitations}>
-        {model.limitations.map((limitation) => <li key={limitation}>{limitation}</li>)}
-      </ul>
-      <div className={styles.actions}>
-        <Link href="/trust/">Review Global Trust</Link>
-        <Link href={model.correctionHref}>Review Singapore corrections</Link>
-      </div>
+    <section className={`${styles.section} ${compact ? styles.compactEvidence : ''}`} aria-labelledby="singapore-source-heading">
+      {compact ? <details><summary>Sources &amp; limits</summary><div>{content}</div></details> : content}
     </section>
   );
 }

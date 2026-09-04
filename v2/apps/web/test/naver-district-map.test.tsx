@@ -11,6 +11,8 @@ vi.mock('next/script', () => ({
 
 import {
   NaverDistrictMap,
+  buildNaverBuildingMarkerContent,
+  buildNaverDistrictMarkerContent,
   buildNaverBuildingAddressQuery,
   buildNaverMapsScriptUrl,
   isNaverMapsSdkReady,
@@ -31,6 +33,34 @@ const districts = [{
 }] as const;
 
 describe('NAVER district map', () => {
+  it('builds a safe compact price bubble for the citywide district layer', () => {
+    expect(buildNaverDistrictMarkerContent({
+      ...districts[0],
+      nameEn: '<Jongno>',
+      metricLabel: '₩500M & up',
+      sampleLabel: '5 filings',
+      selected: true,
+    })).toBe(
+      '<div class="spMapDistrictBubble spMapDistrictBubbleSelected"><span>&lt;Jongno&gt;</span><strong>₩500M &amp; up</strong><small>5 filings</small></div>',
+    );
+  });
+
+  it('builds a safe price-and-location bubble for the district building layer', () => {
+    expect(buildNaverBuildingMarkerContent({
+      id: 'tower',
+      title: '<Evidence Tower>',
+      href: '/tower/',
+      addressQuery: 'Seoul',
+      latitude: 37.5,
+      longitude: 127,
+      metricLabel: '₩1.2B & up',
+      sampleLabel: '8 filings',
+      selected: true,
+    })).toBe(
+      '<div class="spMapBuildingBubble spMapBuildingBubbleSelected"><span>&lt;Evidence Tower&gt;</span><strong>₩1.2B &amp; up</strong><small>8 filings</small></div>',
+    );
+  });
+
   it('waits for the asynchronous geocoder submodule before exposing the SDK', () => {
     const ready: unknown[] = [];
     class LatLng { constructor(readonly latitude: number, readonly longitude: number) {} }
@@ -88,11 +118,19 @@ describe('NAVER district map', () => {
     )).toBeNull();
     expect(resolveUnambiguousNaverGeocode(
       '서울특별시 강남구 역삼동 Evidence Tower',
+      [matching, {
+        ...matching,
+        x: '127.041',
+        jibunAddress: '서울특별시 강남구 삼성동 1',
+      }],
+    )).toBe(matching);
+    expect(resolveUnambiguousNaverGeocode(
+      '서울특별시 강남구 역삼동 Evidence Tower',
       [{ ...matching, jibunAddress: '서울특별시 강남구 삼성동 1' }],
     )).toBeNull();
   });
 
-  it('loads the official Maps v3 endpoint without geocoding by default', () => {
+  it('builds stable official Maps v3 endpoints for the requested submodules', () => {
     expect(buildNaverMapsScriptUrl('client/id + value')).toBe(
       'https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=client%2Fid+%2B+value',
     );
@@ -115,11 +153,11 @@ describe('NAVER district map', () => {
     expect(html).toContain('data-map-state="loading"');
     expect(html).toContain('Static Seoul district map');
     expect(html).toContain('ncpKeyId=test-client-id');
-    expect(html).not.toContain('submodules=geocoder');
+    expect(html).toContain('submodules=geocoder');
     expect(html).toContain('aria-label="Interactive NAVER map of Seoul districts"');
   });
 
-  it('loads the geocoder submodule only for explicitly permitted address lookup', () => {
+  it('keeps the geocoder submodule available for a district-to-building transition', () => {
     const html = renderToStaticMarkup(createElement(NaverDistrictMap, {
       clientId: 'test-client-id',
       districts,
@@ -148,7 +186,7 @@ describe('NAVER district map', () => {
     expect(html).not.toContain('oapi.map.naver.com');
   });
 
-  it('does not request NAVER when every selected building coordinate is pending', () => {
+  it('keeps NAVER visible when every selected building coordinate is pending', () => {
     const html = renderToStaticMarkup(createElement(NaverDistrictMap, {
       clientId: 'test-client-id',
       districts,
@@ -160,10 +198,9 @@ describe('NAVER district map', () => {
       fallback: createElement('p', null, 'Static Seoul district map'),
     }));
 
-    expect(html).toContain('data-map-provider="static"');
-    expect(html).toContain('data-map-state="coordinate-pending"');
-    expect(html).toContain('Map marker unavailable for 1 building');
-    expect(html).not.toContain('oapi.map.naver.com');
+    expect(html).toContain('data-map-provider="naver"');
+    expect(html).toContain('data-map-state="loading"');
+    expect(html).toContain('oapi.map.naver.com');
   });
 
   it('rejects a partially initialized SDK after domain authentication fails', () => {
@@ -358,6 +395,9 @@ describe('NAVER district map', () => {
       map: mounted.map,
       position: new LatLng(37.501, 127.031),
       title: 'Evidence Tower',
+      icon: {
+        content: '<div class="spMapBuildingBubble"><span>Evidence Tower</span><strong>—</strong></div>',
+      },
     });
     expect(mounted.unavailableBuildingIds).toEqual([]);
   });

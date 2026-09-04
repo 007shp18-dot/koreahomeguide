@@ -42,7 +42,7 @@ const marketTransactions = Object.freeze({
   ae: Object.freeze(['sale'] as const),
 });
 const marketDefaults = Object.freeze({
-  kr: 'jeonse',
+  kr: 'sale',
   sg: 'sale',
   ae: 'sale',
 } as const satisfies Record<ExplorerMarket, ExplorerTransaction>);

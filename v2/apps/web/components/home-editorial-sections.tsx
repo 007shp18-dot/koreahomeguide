@@ -34,6 +34,7 @@ export function HomeEditorialSections({ seoul, news, featuredBuildings, naverMap
           <Link href="/prices/">Explore prices</Link>
           <Link href="/compare/">Compare markets</Link>
           <Link href="/news/">Read news</Link>
+          <Link href="/insights/">Original reports</Link>
           <Link href="/community/">Community</Link>
           <Link href="/guides/">Guides</Link>
         </nav>
@@ -52,12 +53,12 @@ export function HomeEditorialSections({ seoul, news, featuredBuildings, naverMap
       </section>
 
       <section className={styles.section} id="home-prices" aria-labelledby="home-prices-heading">
-        <div className={styles.sectionHeader}><div><h2 id="home-prices-heading">Buildings across markets</h2><p>Real place identities across Seoul, Singapore and Dubai. Nearby street imagery is context—not a listing photo or active inventory.</p></div><Link href="/prices/">View available price evidence →</Link></div>
+        <div className={styles.sectionHeader}><div><h2 id="home-prices-heading">Buildings across markets</h2><p>Exact building photos appear only after editorial approval. Otherwise a clearly labeled representative city image is shown.</p></div><Link href="/prices/">View available price evidence →</Link></div>
         <RotatingBuildingGrid buildings={featuredBuildings} naverMapClientId={naverMapClientId} googleMapsBrowserKey={googleMapsBrowserKey} />
       </section>
 
       <section className={styles.section} id="home-briefs" aria-labelledby="home-insights-heading">
-        <div className={styles.sectionHeader}><h2 id="home-insights-heading">Market news</h2><Link href="/news/">View all news →</Link></div>
+        <div className={styles.sectionHeader}><h2 id="home-insights-heading">News & original reporting</h2><Link href="/insights/">Read SignedPrice reports →</Link></div>
         <div className={styles.insightGrid}>
           <article><span>KOREA</span>{lead === undefined ? <><h3>No approved brief yet</h3><p>Verified reporting appears only after the underlying evidence reconciles.</p></> : <><h3><Link href={`/kr/seoul/news/${lead.slug}/`}>{lead.title}</Link></h3><p>{lead.summary}</p><small>{date.format(new Date(lead.publishedAt))}</small></>}</article>
           <article><span>SINGAPORE</span><h3>Evidence before commentary.</h3><p>URA and HDB evidence remains separated by housing sector and publication boundary.</p><small>Source-led analysis</small></article>
@@ -71,6 +72,15 @@ export function HomeEditorialSections({ seoul, news, featuredBuildings, naverMap
           <article><span>MARKET</span><h3>Seoul · Singapore · Dubai</h3><p>Begin with the local market whose rules and terminology matter.</p></article>
           <article><span>LOCAL</span><h3>Districts and neighbourhoods</h3><p>Keep area questions next to the map and local price evidence.</p></article>
           <article><span>BUILDING</span><h3>Exact building identity</h3><p>Building discussions attach to the same verified identity used by transaction evidence.</p></article>
+        </div>
+      </section>
+
+      <section className={styles.section} id="home-guides" aria-labelledby="home-guides-heading">
+        <div className={styles.sectionHeader}><div><h2 id="home-guides-heading">Buying in Seoul</h2><p>Practical explanations that lead from market research to the exact district and building evidence.</p></div><Link href="/kr/seoul/guide/">View all Korea guides →</Link></div>
+        <div className={styles.insightGrid}>
+          <article><span>ACTUAL TRANSACTIONS</span><h3><Link href="/kr/seoul/guide/read-seoul-apartment-sale-prices/">How to read Seoul apartment sale prices</Link></h3><p>Compare reported contracts without mistaking one unusual sale for the market.</p><small>7 min guide</small></article>
+          <article><span>BEFORE AN OFFER</span><h3><Link href="/kr/seoul/guide/korea-apartment-buying-checklist/">Korea apartment buying checklist</Link></h3><p>Review identity, price evidence, financing, records, terms, and final payment.</p><small>8 min guide</small></article>
+          <article><span>DISTRICT RESEARCH</span><h3><Link href="/kr/seoul/guide/compare-seoul-district-property-prices/">Compare Seoul district prices correctly</Link></h3><p>Hold transaction type, housing type, size, period, and sample rules constant.</p><small>6 min guide</small></article>
         </div>
       </section>
 

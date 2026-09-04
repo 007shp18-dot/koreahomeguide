@@ -131,7 +131,7 @@ describe('provider building street view', () => {
     });
   });
 
-  it('renders honest nearby-view labels and never requests a provider without a key', () => {
+  it('keeps provider context accessible without adding a custom photo caption', () => {
     const naver = renderToStaticMarkup(<NaverBuildingStreetView
       clientId="naver-client"
       buildingName="Evidence Tower"
@@ -140,7 +140,8 @@ describe('provider building street view', () => {
       addressQuery="서울특별시 강남구 역삼동 Evidence Tower"
       mapHref="/kr/seoul/explore/?district=gangnam-gu"
     />);
-    expect(naver).toContain('Nearby street view · not a listing photo');
+    expect(naver).toContain('aria-label="Nearby NAVER street view for Evidence Tower"');
+    expect(naver).not.toContain('not a listing photo');
     expect(naver).toContain('submodules=panorama,geocoder');
     expect(naver).not.toContain('panorama%2Cgeocoder');
     expect(naver).toContain('data-building-media="naver-panorama"');
@@ -152,8 +153,9 @@ describe('provider building street view', () => {
       longitude={103.8607}
       mapHref="/sg/singapore/explore/"
     />);
-    expect(google).toContain('Street view unavailable');
-    expect(google).toContain('View this building area on the map');
+    expect(google).toContain('data-building-media="google-area-map"');
+    expect(google).not.toContain('Street view unavailable');
+    expect(google).toContain('Google location map for Evidence Residence');
     expect(google).not.toContain('maps.googleapis.com');
   });
 

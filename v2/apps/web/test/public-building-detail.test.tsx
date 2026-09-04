@@ -56,13 +56,13 @@ function detailProps(
 }
 
 describe('public building detail', () => {
-  it('renders shared product navigation and URL-backed decision tabs', () => {
+  it('renders shared local product navigation and URL-backed decision tabs', () => {
     const header = renderToStaticMarkup(<BuildingDetailHeader />);
     expect(header).toContain('aria-label="signedprice home"');
-    for (const label of ['Markets', 'Prices', 'Properties', 'News', 'Community', 'Guides', 'Invest']) {
-      expect(header).toContain(`>${label}</a>`);
+    for (const label of ['Overview', 'Check', 'Explore', 'Rankings', 'News', 'Community', 'Guide']) {
+      expect(header).toContain(`<strong>${label}</strong>`);
     }
-    expect(header).toMatch(/<a[^>]*aria-current="page"[^>]*>Prices<\/a>/);
+    expect(header).toMatch(/<a[^>]*aria-current="page"[^>]*href="\/kr\/seoul\/explore"/);
     expect(header).toContain('Seoul · reported filings');
 
     const tabs = renderToStaticMarkup(
@@ -187,8 +187,9 @@ describe('public building detail', () => {
     expect(metadata).toMatchObject({ robots: { index: false, follow: true } });
     expect(metadata).not.toHaveProperty('alternates');
     expect(html).toContain('Evidence Tower');
-    expect(html).toContain('data-building-media="naver-panorama"');
-    expect(html).toContain('Nearby street view · not a listing photo · NAVER');
+    expect(html).toContain('data-building-media="google-place-photo"');
+    expect(html).toContain('Loading verified place photo');
+    expect(html).not.toContain('not a listing photo');
   });
 
   it('restores valid route state and rejects invalid decision queries', async () => {
@@ -213,11 +214,12 @@ describe('public building detail', () => {
     }));
     expect(selected).toContain('data-selected-mode="rent"');
     expect(selected).toContain('6 reported contracts');
-    expect(selected).toContain('Street view unavailable');
-    expect(selected).toContain('Building evidence remains available');
+    expect(selected).toContain('data-building-media="google-place-photo"');
+    expect(selected).toContain('Loading verified place photo');
+    expect(selected).not.toContain('Street view unavailable');
     expect(selected).not.toContain('data-detail-rail="true"');
     expect(selected).toContain(
-      'href="/kr/seoul/explore?district=gangnam-gu&amp;neighborhood=yeoksam-dong&amp;buildingId=gangnam-evidence-tower&amp;contractType=all"',
+      'href="/kr/seoul/explore?district=gangnam-gu&amp;neighborhood=yeoksam-dong&amp;buildingId=gangnam-evidence-tower"',
     );
 
     const fallback = renderToStaticMarkup(await BuildingRoute({

@@ -4,11 +4,12 @@ import { notFound } from 'next/navigation';
 import { BuildingDetailPage } from '@/components/public-market/building-detail-page';
 import { BuildingOfficialFacts } from '@/components/public-market/building-official-facts';
 import { NaverBuildingStreetView } from '@/components/maps/naver-building-street-view';
+import { GooglePlacePhoto } from '@/components/maps/google-place-photo';
+import { googleMapsBrowserKeyFromEnvironment } from '@/lib/maps/google-maps-browser-key.server';
 import { buildNaverBuildingAddressQuery } from '@/lib/public-market/naver-building-address';
 import {
   KoreaEvidenceBuildingDetail,
   ObservedBuildingDetail,
-  BuildingProximityDisclosure,
 } from '@/components/public-market/observed-building-detail';
 import { PropertyTypeDetailPage } from '@/components/public-market/property-type-detail-page';
 import {
@@ -25,6 +26,7 @@ import { buildObservedBuildingIdentityModel } from '@/lib/public-market/observed
 import {
   buildKoreaExplorerBuildingDetailModel,
   KOREA_EXPLORER_HOUSING_TYPES,
+  type KoreaExplorerBuildingDetailModel,
 } from '@/lib/public-market/korea-explorer-evidence.server';
 import {
   koreaEvidenceRepositoriesFromEnvironment,
@@ -57,6 +59,24 @@ type LocalizedBuildingPageProps = BuildingPageProps & Readonly<{ locale?: Produc
 
 type DetailQuery = Readonly<Record<string, string | readonly string[] | undefined>>;
 
+function transactionBuildingFacts(model: KoreaExplorerBuildingDetailModel, coordinate?: Readonly<{ latitude: number; longitude: number }>) {
+  const floors = model.recentTransactions.flatMap(({ floor }) => floor === null ? [] : [floor]);
+  const years = [...new Set(model.recentTransactions.flatMap(({ buildYear }) => buildYear === null ? [] : [buildYear]))].sort();
+  const areas = model.recentTransactions.map(({ areaSqm }) => areaSqm);
+  const range = (values: readonly number[], suffix = '') => values.length === 0
+    ? 'Not reported'
+    : `${Math.min(...values).toLocaleString('en-US')}${values.length === 1 ? '' : `–${Math.max(...values).toLocaleString('en-US')}`}${suffix}`;
+  return Object.freeze([
+    Object.freeze({ label: 'Property type', value: model.building.housingType }),
+    Object.freeze({ label: 'Observed build year', value: years.length === 0 ? 'Not reported' : years.join(', ') }),
+    Object.freeze({ label: 'Observed floors', value: range(floors) }),
+    Object.freeze({ label: 'Observed filed area', value: range(areas, '㎡') }),
+    Object.freeze({ label: 'Evidence period', value: model.period }),
+    Object.freeze({ label: 'Verified rows in view', value: model.recentTransactions.length.toLocaleString('en-US') }),
+    Object.freeze({ label: 'Map identity', value: coordinate === undefined ? 'Coordinate verification pending' : `${coordinate.latitude.toFixed(5)}, ${coordinate.longitude.toFixed(5)}` }),
+  ]);
+}
+
 function scalarQuery(query: DetailQuery, key: 'q' | 'buildingPage'): string | undefined {
   const value = query[key];
   return typeof value === 'string' ? value : undefined;
@@ -72,7 +92,7 @@ export function createKoreaDetailBackHref(
   const href = localizedSeoulHref(createSelectionHref(
     '/kr/seoul/explore/',
     selection,
-    { market: 'kr', transaction: 'jeonse' },
+    { market: 'kr', transaction: 'sale' },
   ), locale);
   const target = new URL(href, 'https://signedprice.invalid');
   const searchQuery = scalarQuery(query, 'q')?.trim();
@@ -86,13 +106,14 @@ export function createKoreaDetailBackHref(
 }
 
 function naverStreetViewFor(input: Readonly<{
+  buildingId: string;
   name: string;
   latitude: number | null;
   longitude: number | null;
   addressQuery: string;
   mapHref: string;
 }>) {
-  return (
+  const location = (
     <NaverBuildingStreetView
       clientId={process.env.NAVER_MAP_CLIENT_ID?.trim() || null}
       buildingName={input.name}
@@ -100,10 +121,17 @@ function naverStreetViewFor(input: Readonly<{
       longitude={input.longitude ?? undefined}
       addressQuery={input.addressQuery}
       mapHref={input.mapHref}
+      preferMap
     />
   );
+  return <GooglePlacePhoto
+    browserKey={googleMapsBrowserKeyFromEnvironment()}
+    buildingName={input.name}
+    address={input.addressQuery}
+    registryKey={`kr-seoul:${input.buildingId}`}
+    fallback={location}
+  />;
 }
-
 export const dynamicParams = true;
 
 const evidenceAreas = Object.freeze([
@@ -120,7 +148,7 @@ export function resolveKoreaEvidenceBuildingRoute(
 ) {
   const selection = parseExplorerSelection(
     query,
-    { market: 'kr', transaction: 'jeonse' },
+    { market: 'kr', transaction: 'sale' },
     {
       areas: evidenceAreas,
       propertyTypes: KOREA_EXPLORER_HOUSING_TYPES,
@@ -310,18 +338,20 @@ export function composeKoreaBuildingRoute(input: Readonly<{
   );
   if (exact !== null) {
     const identity = observedIdentityModel(district, buildingId, { proximityRepository });
+    const coordinate = identity?.coordinate.status === 'ready' ? identity.coordinate : undefined;
     return <KoreaEvidenceBuildingDetail
       model={exact.model}
       backHref={exact.backHref}
       locale={locale}
       visual={naverStreetViewFor({
+        buildingId: exact.model.building.buildingId,
         name: exact.model.building.officialName,
         latitude: identity?.coordinate.status === 'ready' ? identity.coordinate.latitude : null,
         longitude: identity?.coordinate.status === 'ready' ? identity.coordinate.longitude : null,
         addressQuery: buildNaverBuildingAddressQuery(exact.model.district.nameKo, exact.model.building.neighborhoodName, exact.model.building.officialName),
         mapHref: exact.backHref,
       })}
-      facts={<><BuildingOfficialFacts districtSlug={exact.model.district.slug} buildingId={exact.model.building.buildingId} /><BuildingProximityDisclosure proximity={identity?.proximity} locale={locale} /></>}
+      facts={<BuildingOfficialFacts districtSlug={exact.model.district.slug} buildingId={exact.model.building.buildingId} observedFacts={transactionBuildingFacts(exact.model, coordinate)} proximity={identity?.proximity} locale={locale} />}
     />;
   }
   const model = buildPublicBuildingModel(district, buildingId);
@@ -330,7 +360,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
     if (observed === null) notFound();
     const selection = parseExplorerSelection(
       query,
-      { market: 'kr', transaction: 'jeonse' },
+      { market: 'kr', transaction: 'sale' },
       {
         districts: [observed.district.slug],
         neighborhoodsByDistrict: {
@@ -351,6 +381,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
       model={observed}
       backHref={backHref}
       visual={naverStreetViewFor({
+        buildingId: observed.building.buildingId,
         name: observed.building.officialName,
         latitude: observed.coordinate.status === 'ready' ? observed.coordinate.latitude : null,
         longitude: observed.coordinate.status === 'ready' ? observed.coordinate.longitude : null,
@@ -360,6 +391,15 @@ export function composeKoreaBuildingRoute(input: Readonly<{
       facts={<BuildingOfficialFacts
         districtSlug={observed.district.slug}
         buildingId={observed.building.buildingId}
+        observedFacts={[
+          { label: 'Official identity', value: observed.building.officialName },
+          { label: 'Area', value: `${observed.building.neighborhoodName} · ${observed.district.nameEn}` },
+          { label: 'Housing type', value: observed.building.housingType },
+          { label: 'Evidence period', value: `${observed.observations.firstMonth}–${observed.observations.lastMonth}` },
+          { label: 'Map identity', value: observed.coordinate.status === 'ready' ? `${observed.coordinate.latitude.toFixed(5)}, ${observed.coordinate.longitude.toFixed(5)}` : 'Coordinate verification pending' },
+        ]}
+        proximity={observed.proximity}
+        locale={locale}
       />}
       locale={locale}
     />;
@@ -371,7 +411,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
   const decision = buildBuildingDecisionModel(model, selection);
   const explorerSelection = parseExplorerSelection(
     query,
-    { market: 'kr', transaction: 'jeonse' },
+    { market: 'kr', transaction: 'sale' },
     {
       districts: [model.district.slug],
       neighborhoodsByDistrict: {
@@ -395,19 +435,35 @@ export function composeKoreaBuildingRoute(input: Readonly<{
     photo: null,
   });
   const streetView = naverStreetViewFor({
+    buildingId: model.building.buildingId,
     name: model.building.name,
     latitude: model.building.latitude,
     longitude: model.building.longitude,
     addressQuery: buildNaverBuildingAddressQuery(model.district.nameKo, model.building.neighborhoodName, model.building.name),
     mapHref: backHref,
   });
+  const recentAreas = model.building.recentContracts.map(({ areaSqm }) => areaSqm);
+  const observedFacts = [
+    { label: 'Property type', value: model.building.housingType },
+    ...(recentAreas.length === 0 ? [] : [{
+      label: 'Observed filed area',
+      value: `${Math.min(...recentAreas).toLocaleString('en-US')}–${Math.max(...recentAreas).toLocaleString('en-US')}㎡`,
+    }]),
+    { label: 'Evidence period', value: model.evidence.period },
+    {
+      label: 'Map identity',
+      value: model.building.latitude === null || model.building.longitude === null
+        ? 'Coordinate verification pending'
+        : `${model.building.latitude.toFixed(5)}, ${model.building.longitude.toFixed(5)}`,
+    },
+  ];
   return (
     <BuildingDetailPage
       model={model}
       decision={decision}
       visual={visual}
       streetView={streetView}
-      facts={<><BuildingOfficialFacts districtSlug={model.district.slug} buildingId={model.building.buildingId} /><BuildingProximityDisclosure proximity={observed?.proximity} locale={locale} /></>}
+      facts={<BuildingOfficialFacts districtSlug={model.district.slug} buildingId={model.building.buildingId} observedFacts={observedFacts} proximity={observed?.proximity} locale={locale} />}
       base={base}
       backHref={backHref}
     />

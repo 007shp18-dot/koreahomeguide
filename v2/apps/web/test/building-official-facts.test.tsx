@@ -9,7 +9,7 @@ describe('building official facts panel', () => {
       <BuildingOfficialFacts districtSlug="gangnam-gu" buildingId="gangnam-alpha" />,
     );
     expect(html).toContain('data-building-section="official-facts"');
-    expect(html).toContain('Loading official building facts');
+    expect(html).toContain('Loading additional official building facts');
     expect(html).not.toMatch(/households|parking spaces|approval date/i);
   });
 });

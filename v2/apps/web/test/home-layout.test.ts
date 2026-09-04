@@ -1,12 +1,18 @@
 import { readFileSync } from 'node:fs';
+import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 import Home from '../app/(en)/page';
+import { RotatingHeroBuilding } from '../components/home-building-showcase';
 
 const homeCss = readFileSync(
   new URL('../components/home-editorial.module.css', import.meta.url),
+  'utf8',
+);
+const homeBuildingShowcase = readFileSync(
+  new URL('../components/home-building-showcase.tsx', import.meta.url),
   'utf8',
 );
 
@@ -30,10 +36,11 @@ describe('signedprice Evidence Editorial homepage', () => {
     expect([...positions].sort((a, b) => a - b)).toEqual(positions);
   }, 20_000);
 
-  it('keeps global market links inside the single header without a duplicate hero city tablist', async () => {
+  it('keeps global market links inside the compact market tier without a duplicate hero city tablist', async () => {
     const markup = renderToStaticMarkup(await Home());
 
-    expect(markup).toContain('data-navigation-tier="primary"');
+    expect(markup).toContain('class="site-header__market-tier"');
+    expect(markup).toContain('data-navigation-tier="product"');
     expect(markup).toContain('aria-label="Market navigation"');
     expect(markup).toContain('aria-label="Change language to 한국어"');
     expect(markup).toContain('href="/ko/kr/seoul"');
@@ -47,9 +54,9 @@ describe('signedprice Evidence Editorial homepage', () => {
     const navigation = markup.match(/<nav[^>]*aria-label="Primary navigation"[^>]*>([\s\S]*?)<\/nav>/)?.[1] ?? '';
 
     expect(navigation.match(/<a /g) ?? []).toHaveLength(7);
-    expect(navigation).toContain('>Markets</a>');
+    expect(navigation).toContain('<strong>Markets</strong>');
     expect(navigation).toContain('href="/properties"');
-    expect(navigation).toContain('>Invest</a>');
+    expect(navigation).toContain('<strong>Invest</strong>');
     expect(navigation).toContain('href="/invest"');
   });
 
@@ -62,7 +69,32 @@ describe('signedprice Evidence Editorial homepage', () => {
     }
     expect(markup).toContain('role="search"');
     expect(markup).not.toContain('aria-label="Choose a property decision"');
-    expect(markup).toContain('data-building-rotation="automatic"');
+    expect(markup).toContain('data-building-rotation="manual"');
+    expect(markup).toContain('Otherwise a clearly labeled representative city image is shown.');
+    expect(markup).not.toContain('Otherwise the verified map location is used.');
+  });
+
+  it('keeps homepage building media stable and never falls back to street views or maps', () => {
+    expect(homeBuildingShowcase).toContain('MarketRepresentativePhoto');
+    expect(homeBuildingShowcase).not.toContain('NaverBuildingStreetView');
+    expect(homeBuildingShowcase).not.toContain('GoogleBuildingStreetView');
+    expect(homeBuildingShowcase).not.toContain('setInterval');
+  });
+
+  it('labels a curated fallback as representative while keeping manual building controls', () => {
+    const markup = renderToStaticMarkup(createElement(RotatingHeroBuilding, {
+      buildings: [
+        { id: 'one', name: 'One Residence', market: 'Seoul', countryCode: 'KR', location: 'Seoul', provider: 'naver', observationLabel: '8 contracts', periodLabel: '2026', facts: [], href: '/one', mapHref: '/one' },
+        { id: 'two', name: 'Two Residence', market: 'Singapore', countryCode: 'SG', location: 'Singapore', provider: 'google', observationLabel: '9 contracts', periodLabel: '2026', facts: [], href: '/two', mapHref: '/two' },
+      ],
+      naverMapClientId: null,
+      googleMapsBrowserKey: null,
+    }));
+
+    expect(markup).toContain('Representative Seoul image');
+    expect(markup).toContain('aria-label="Previous building"');
+    expect(markup).toContain('aria-label="Next building"');
+    expect(markup).toContain('1 / 2');
   });
 
   it('moves staged markets to explicit global destinations', async () => {

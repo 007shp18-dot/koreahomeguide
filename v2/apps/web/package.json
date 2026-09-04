@@ -4,12 +4,15 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/apply-content-database.mjs --if-configured",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "db:migrate": "node scripts/apply-content-database.mjs"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
     "@signedprice/korea-rent": "workspace:*",
     "@signedprice/market-core": "workspace:*",
     "@signedprice/singapore-property": "workspace:*",

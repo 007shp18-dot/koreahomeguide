@@ -70,6 +70,11 @@ function normalizedName(value: string): string {
   return value.normalize('NFKC').toLocaleLowerCase('ko-KR').replace(/[\s·._()-]+/g, '');
 }
 
+function canonicalApartmentName(value: string): string {
+  return normalizedName(value.replace(/\([^)]*\)/g, ''))
+    .replace(/(?:아파트|주상복합)$/g, '');
+}
+
 function responseBody(source: unknown): Record<string, unknown> | null {
   const response = record(source)?.response;
   const responseRecord = record(response);
@@ -96,7 +101,15 @@ async function getJson(
   params: Readonly<Record<string, string>>,
 ): Promise<Record<string, unknown> | null> {
   const url = new URL(base);
-  url.searchParams.set('serviceKey', serviceKey);
+  let normalizedServiceKey = serviceKey.trim();
+  if (/%[0-9a-f]{2}/i.test(normalizedServiceKey)) {
+    try {
+      normalizedServiceKey = decodeURIComponent(normalizedServiceKey);
+    } catch {
+      // Keep the original value when it is not valid percent-encoded text.
+    }
+  }
+  url.searchParams.set('serviceKey', normalizedServiceKey);
   url.searchParams.set('_type', 'json');
   for (const [name, value] of Object.entries(params)) url.searchParams.set(name, value);
   try {
@@ -145,10 +158,14 @@ export async function loadOfficialBuildingFacts(input: LoaderInput): Promise<Off
   });
   if (listBody === null) return Object.freeze({ status: 'unavailable', reason: 'provider_unavailable' });
   const wantedName = normalizedName(input.officialName);
+  const wantedCanonicalName = canonicalApartmentName(input.officialName);
   const matches = itemArray(listBody).filter((item) => {
     const kaptName = text(item.kaptName);
     const bjdCode = text(item.bjdCode);
-    return kaptName !== null && normalizedName(kaptName) === wantedName
+    return kaptName !== null && (
+      normalizedName(kaptName) === wantedName
+      || (wantedCanonicalName.length >= 4 && canonicalApartmentName(kaptName) === wantedCanonicalName)
+    )
       && bjdCode !== null && bjdCode.startsWith(input.districtLawdCd);
   });
   if (matches.length === 0) return Object.freeze({ status: 'unavailable', reason: 'apartment_not_found' });
@@ -169,7 +186,10 @@ export async function loadOfficialBuildingFacts(input: LoaderInput): Promise<Off
   const legalAddress = text(basic.kaptAddr);
   const aptName = text(basic.kaptName);
   if (basicCode !== kaptCode || bjdCode !== listedBjdCode || legalAddress === null
-    || aptName === null || normalizedName(aptName) !== wantedName
+    || aptName === null || !(
+      normalizedName(aptName) === wantedName
+      || canonicalApartmentName(aptName) === wantedCanonicalName
+    )
     || !legalAddress.includes(input.neighborhoodName)) {
     return Object.freeze({ status: 'unavailable', reason: 'identity_mismatch' });
   }

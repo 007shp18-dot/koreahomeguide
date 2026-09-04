@@ -9,6 +9,8 @@ type Identity = Readonly<{
   housingType: string;
 }>;
 
+type StoredIdentity = Identity & Readonly<{ districtSlug: string; buildingId: string }>;
+
 type Dependencies = Readonly<{
   serviceKey?: string;
   resolveIdentity(districtSlug: string, buildingId: string): Identity | null;
@@ -16,6 +18,11 @@ type Dependencies = Readonly<{
     serviceKey?: string;
     fetch: typeof globalThis.fetch;
   }>): Promise<OfficialBuildingFacts>;
+  loadStored?(input: StoredIdentity): Promise<OfficialBuildingFacts | null>;
+  storeReady?(
+    input: StoredIdentity,
+    facts: Extract<OfficialBuildingFacts, { status: 'ready' }>,
+  ): Promise<void>;
   fetch?: typeof globalThis.fetch;
 }>;
 
@@ -44,11 +51,29 @@ export function createBuildingFactsGetHandler(dependencies: Dependencies) {
     }
     const identity = dependencies.resolveIdentity(district, building);
     if (identity === null) return Response.json({ error: 'not_found' }, { status: 404 });
+    const storedIdentity = Object.freeze({ ...identity, districtSlug: district, buildingId: building });
+    if (dependencies.loadStored !== undefined) {
+      try {
+        const stored = await dependencies.loadStored(storedIdentity);
+        if (stored !== null) {
+          return Response.json(envelope(stored), {
+            status: 200,
+            headers: { 'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=604800' },
+          });
+        }
+      } catch (error) {
+        console.error('SignedPrice building-facts database read failed.', error);
+      }
+    }
     const facts = await dependencies.load({
       ...identity,
       serviceKey: dependencies.serviceKey,
       fetch: dependencies.fetch ?? globalThis.fetch,
     });
+    if (facts.status === 'ready' && dependencies.storeReady !== undefined) {
+      try { await dependencies.storeReady(storedIdentity, facts); }
+      catch (error) { console.error('SignedPrice building-facts database write failed.', error); }
+    }
     return Response.json(envelope(facts), {
       status: 200,
       headers: {

@@ -2,6 +2,7 @@ import 'server-only';
 
 import type { MetadataRoute } from 'next';
 import { GUIDES } from '../lib/guide/guide-content';
+import { STARTER_EDITORIAL_ARTICLES } from '../lib/insights/editorial-content';
 import { contractCheckEvidenceRepositoriesFromEnvironment } from '../lib/contract-check/evidence-repositories.server';
 import { buildContractCheckRouteModel } from '../lib/contract-check/route-model.server';
 import { buildNewsIndexModel } from '../lib/news/news-route-model.server';
@@ -15,7 +16,6 @@ import {
 import { buildPublicPropertyTypeModel } from '../lib/public-market/property-type-route-model.server';
 import { koreaEvidenceRepositoriesFromEnvironment } from '../lib/public-market/korea-evidence-repositories.server';
 import { listIndexableKoreaBuildingRouteParams } from '../lib/public-market/korea-building-index-policy';
-import { operatorProfileFromEnvironment } from '../lib/operator/operator-profile.server';
 
 type SitemapEntry = MetadataRoute.Sitemap[number];
 
@@ -106,7 +106,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     singleQuoteReady,
     conversionReady,
   });
-  const operatorReady = operatorProfileFromEnvironment().status === 'ready';
   const newsLastModified = latestDate(newsRecords.map(
     (record) => record.updatedAt ?? record.publishedAt,
   ));
@@ -117,9 +116,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
     sitemapEntry('/markets/'),
     sitemapEntry('/prices/', summaryLastModified),
     sitemapEntry('/news/', newsLastModified),
+    sitemapEntry('/insights/'),
     sitemapEntry('/community/'),
     sitemapEntry('/guides/', guideLastModified),
+    sitemapEntry('/privacy/'),
+    sitemapEntry('/contact/'),
+    sitemapEntry('/sg/'),
+    sitemapEntry('/sg/singapore/explore/'),
+    sitemapEntry('/sg/singapore/explore/ccr/'),
+    sitemapEntry('/sg/singapore/explore/rcr/'),
+    sitemapEntry('/sg/singapore/explore/ocr/'),
   ];
+  entries.push(...STARTER_EDITORIAL_ARTICLES.map((article) => ({
+    url: publicCanonical(`/insights/${article.slug}/`),
+    lastModified: new Date(article.updatedAt),
+  })));
   const modifiedByPath = new Map<string, Date | undefined>([
     ['/kr/seoul/', summaryLastModified],
     ['/ko/kr/seoul/', summaryLastModified],
@@ -132,19 +143,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ['/kr/seoul/news/', newsLastModified],
     ['/kr/seoul/guide/', guideLastModified],
   ]);
-  let operatorAdded = false;
   for (const path of paths) {
-    if (
-      operatorReady
-      && !operatorAdded
-      && (path === '/kr/seoul/news/' || path === '/kr/seoul/guide/')
-    ) {
-      entries.push(
-        { url: publicCanonical('/privacy/') },
-        { url: publicCanonical('/contact/') },
-      );
-      operatorAdded = true;
-    }
     entries.push(sitemapEntry(
       path as `/${string}`,
       modifiedByPath.get(path),

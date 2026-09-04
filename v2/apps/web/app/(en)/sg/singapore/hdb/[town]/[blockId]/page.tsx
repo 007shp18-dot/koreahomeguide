@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { HdbBlockDetail } from '@/components/singapore/hdb-block-detail';
+import { googleMapsBrowserKeyFromEnvironment } from '@/lib/maps/google-maps-browser-key.server';
 import { buildHdbTownModel } from '@/lib/singapore/hdb-route-model.server';
 import { hdbSnapshotRepositoryFromEnvironment } from '@/lib/singapore/hdb-snapshot-repository.server';
 
@@ -26,6 +27,6 @@ export default async function HdbBlockPage({ params }: Readonly<{
     block={block}
     town={model.town}
     townHref={`/sg/singapore/hdb/${model.townSlug}/`}
-    googleMapsBrowserKey={process.env.GOOGLE_MAPS_API_KEY?.trim() || null}
+    googleMapsBrowserKey={googleMapsBrowserKeyFromEnvironment()}
   />;
 }

@@ -261,3 +261,45 @@
     border-top: 0;
   }
 }
+
+/* Shared detail-card treatment */
+.signal {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-sm);
+}
+.heading { padding: 22px; border-color: var(--line); }
+.heading h2 { font-size: clamp(1.35rem, 2.5vw, 2.25rem); }
+.unavailable,
+.collecting,
+.status {
+  min-height: 140px;
+  padding: 22px;
+  background: linear-gradient(135deg, #fff, var(--soft-blue));
+}
+.published,
+.published > h3,
+.directionResults > div,
+.reasonResults,
+.caveat { border-color: var(--line); }
+.directionButton,
+.submitButton,
+.deleteButton,
+.reasonField {
+  border: 1px solid var(--line);
+  border-radius: 9px;
+}
+.directionButtons,
+.formActions { gap: 8px; }
+.directionButton + .directionButton,
+.deleteButton { border-left: 1px solid var(--line); }
+.reasonField { overflow: hidden; }
+.reasonField select { border-left: 1px solid var(--line); }
+
+@media (max-width: 720px) {
+  .directionButton + .directionButton,
+  .deleteButton,
+  .reasonField select { border-left: 1px solid var(--line); border-top: 1px solid var(--line); }
+}

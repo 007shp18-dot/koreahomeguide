@@ -27,10 +27,17 @@ export function MarketOverviewRows({
     detail: row.number === '04' ? `${row.items.length} declared limits` : row.description,
   }));
   const evidenceItems = rows[1]?.items.slice(0, 3) ?? [];
+  const detailRows = rows.filter((row) => row.number !== '04' && row.number !== '06');
+  const disclosureRows = rows.filter((row) => row.number === '04' || row.number === '06');
+  const tabs = [
+    { href: '#overview', label: 'Overview', number: null },
+    { href: '#evidence', label: 'Evidence', number: '02' },
+    { href: '#decisions', label: 'Decisions', number: '03' },
+  ].filter((tab) => tab.number === null || rows.some((row) => row.number === tab.number));
   return (
     <section className={styles.overview} aria-label="Market overview details" data-market-overview="true">
       <nav className={styles.tabs} aria-label="Market overview sections">
-        <a href="#overview">Overview</a><a href="#evidence">Evidence</a><a href="#decisions">Decisions</a><a href="#limitations">Limitations</a><a href="#source">Source</a>
+        {tabs.map((tab) => <a href={tab.href} key={tab.href}>{tab.label}</a>)}
       </nav>
       <div className={styles.summary} id="overview" aria-label="Market summary">
         {summaries.slice(0, 4).map((item) => (
@@ -58,7 +65,7 @@ export function MarketOverviewRows({
         </aside>
       </div>
       <div className={styles.rows}>
-        {rows.map((row) => (
+        {detailRows.map((row) => (
           <article className={styles.row} data-overview-row={row.number} id={row.number === '02' ? 'evidence' : row.number === '03' ? 'decisions' : row.number === '04' ? 'limitations' : row.number === '06' ? 'source' : undefined} key={row.number}>
             <header className={styles.rowLabel}>
               <span>{row.number}</span>
@@ -88,6 +95,14 @@ export function MarketOverviewRows({
           </article>
         ))}
       </div>
+      {disclosureRows.length > 0 ? <details className={styles.disclosure}>
+        <summary>Sources and limits</summary>
+        <div>{disclosureRows.map((row) => <section key={row.number}>
+          <h2>{row.title}</h2>
+          <p>{row.description}</p>
+          {row.items.length > 0 ? <ul>{row.items.map((item) => <li key={item.label}><strong>{item.label}</strong>{item.description ? <small>{item.description}</small> : null}</li>)}</ul> : null}
+        </section>)}</div>
+      </details> : null}
       <div>
         <nav
           className={styles.actions}

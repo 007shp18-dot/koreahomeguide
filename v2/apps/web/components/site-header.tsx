@@ -57,17 +57,20 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
         : null;
   const isKoreanMarket = currentMarket === 'seoul' && copy.languageLabel === 'KO';
   const marketNavigation = marketPrefix === null ? [] : [
-    { label: isKoreanMarket ? '개요' : 'Overview', href: currentMarket === 'singapore' ? '/sg/' : `${marketPrefix}/` },
-    { label: isKoreanMarket ? '탐색' : 'Explore', href: `${marketPrefix}/explore/` },
-    { label: isKoreanMarket ? '가격 확인' : 'Check', href: `${marketPrefix}/check/` },
-    { label: isKoreanMarket ? '순위' : 'Rankings', href: `${marketPrefix}/rankings/` },
-    { label: isKoreanMarket ? '뉴스' : 'News', href: isKoreanMarket ? '/kr/news/' : `${marketPrefix}/news/` },
-    { label: isKoreanMarket ? '커뮤니티' : 'Community', href: isKoreanMarket ? '/kr/seoul/community/' : `${marketPrefix}/community/` },
-    { label: isKoreanMarket ? '가이드' : 'Guide', href: isKoreanMarket ? '/kr/seoul/guide/' : `${marketPrefix}/guide/` },
+    { index: '00', label: isKoreanMarket ? '개요' : 'Overview', description: isKoreanMarket ? '시장 요약' : 'Market view', href: currentMarket === 'singapore' ? '/sg/' : `${marketPrefix}/` },
+    { index: '01', label: isKoreanMarket ? '가격 확인' : 'Check', description: isKoreanMarket ? '계약 비교' : 'Compare price', href: `${marketPrefix}/check/` },
+    { index: '02', label: isKoreanMarket ? '탐색' : 'Explore', description: isKoreanMarket ? '지역과 건물' : 'Area & building', href: `${marketPrefix}/explore/` },
+    { index: '03', label: isKoreanMarket ? '순위' : 'Rankings', description: isKoreanMarket ? '지역 비교' : 'Compare areas', href: `${marketPrefix}/rankings/` },
+    { index: '04', label: isKoreanMarket ? '뉴스' : 'News', description: isKoreanMarket ? '시장 브리핑' : 'Market briefs', href: isKoreanMarket ? '/kr/news/' : `${marketPrefix}/news/` },
+    { index: '05', label: isKoreanMarket ? '커뮤니티' : 'Community', description: isKoreanMarket ? '지역 대화' : 'Local voices', href: isKoreanMarket ? '/kr/seoul/community/' : `${marketPrefix}/community/` },
+    { index: '06', label: isKoreanMarket ? '가이드' : 'Guide', description: isKoreanMarket ? '현지 절차' : 'Local process', href: isKoreanMarket ? '/kr/seoul/guide/' : `${marketPrefix}/guide/` },
   ];
   function isCurrentMarketLink(href: string): boolean {
-    if (currentHref === href) return true;
+    const normalize = (value: string | undefined) => value?.replace(/\/+$/, '') || '/';
+    if (normalize(currentHref) === normalize(href)) return true;
+    if (href === '/sg/' || href === `${marketPrefix}/`) return false;
     const segment = href.split('/').filter(Boolean).at(-1);
+    if (segment === 'guide' && normalize(currentHref) === '/guides') return true;
     return segment !== undefined && segment !== 'seoul' && segment !== 'singapore' && segment !== 'dubai'
       ? currentHref?.includes(`/${segment}/`) === true
       : false;
@@ -87,11 +90,9 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
 
   return (
     <header className="site-header" data-market-context={currentMarket ?? 'global'}>
-      <div className="site-header__inner" data-navigation-tier="primary">
-        <Link className="wordmark" href={copy.homeHref ?? '/'} aria-label={copy.homeLabel}>
-          <BrandWordmark compact />
-        </Link>
-        {copy.showMarketNavigation ? (
+      <div className="site-header__market-tier">
+        <div>
+          <span className="site-header__market-title">Markets</span>
           <nav className="site-header__markets" aria-label="Market navigation">
             {markets.map((market) => (
               <Link
@@ -104,42 +105,39 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
               </Link>
             ))}
           </nav>
-        ) : null}
+          <span className="site-header__context">{marketLabel} · reported filings</span>
+          <div className="site-header__language" aria-label="Language navigation">
+            {isKorean ? switchLink : <span aria-current="true">EN</span>}
+            <span aria-hidden="true">/</span>
+            {isKorean ? <span aria-current="true">KO</span> : switchLink}
+          </div>
+        </div>
+      </div>
+      <div className="site-header__inner" data-navigation-tier="product">
+        <Link className="wordmark" href={copy.homeHref ?? '/'} aria-label={copy.homeLabel}>
+          <BrandWordmark compact />
+        </Link>
         <nav className="site-header__product-nav" aria-label={copy.navigationLabel}>
           <ul className="site-header__links">
-            {productNavigationLinks.map((link) => (
+            {(marketNavigation.length > 0 ? marketNavigation : productNavigationLinks).map((link) => (
               <li key={link.href}>
                 <Link
                   className="site-header__product-link"
                   href={link.href}
-                  aria-current={isCurrentLink(link.href) ? 'page' : undefined}
+                  aria-current={(marketNavigation.length > 0 ? isCurrentMarketLink(link.href) : isCurrentLink(link.href)) ? 'page' : undefined}
                 >
-                  {link.label}
+                  <span>{link.index}</span>
+                  <strong>{link.label}</strong>
+                  <small>{link.description}</small>
                 </Link>
               </li>
             ))}
           </ul>
         </nav>
-        <span className="site-header__context">{marketLabel} · reported filings</span>
-        <div className="site-header__language" aria-label="Language navigation">
-          {isKorean ? switchLink : <span aria-current="true">EN</span>}
-          <span aria-hidden="true">/</span>
-          {isKorean ? <span aria-current="true">KO</span> : switchLink}
-        </div>
+        <Link className="site-header__cta" href={marketPrefix === null ? '/prices/' : `${marketPrefix}/check/`}>
+          {isKoreanMarket ? '가격 확인' : 'Run a check'}
+        </Link>
       </div>
-      {marketNavigation.length > 0 ? (
-        <nav className="site-header__local" aria-label={`${marketLabel} product navigation`} data-local-navigation="true">
-          <div>
-            {marketNavigation.map((link) => (
-              <Link
-                href={link.href}
-                aria-current={isCurrentMarketLink(link.href) ? 'page' : undefined}
-                key={link.href}
-              >{link.label}</Link>
-            ))}
-          </div>
-        </nav>
-      ) : null}
     </header>
   );
 }

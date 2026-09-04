@@ -12,6 +12,7 @@ import { singaporeSnapshotRepositoryFromEnvironment } from '@/lib/singapore/snap
 import { buildSeoulLiveModel } from '@/lib/public-market/seoul-live-model.server';
 import { buildNewsIndexModel } from '@/lib/news/news-route-model.server';
 import { buildHomeMarketVisuals } from '@/lib/home-market-visuals.server';
+import { googleMapsBrowserKeyFromEnvironment } from '@/lib/maps/google-maps-browser-key.server';
 
 export const metadata: Metadata = homepageCopy.metadata;
 
@@ -22,7 +23,7 @@ export default async function Home() {
   const news = buildNewsIndexModel();
   const featuredBuildings = buildHomeMarketVisuals();
   const naverMapClientId = process.env.NAVER_MAP_CLIENT_ID?.trim() || null;
-  const googleMapsBrowserKey = process.env.GOOGLE_MAPS_API_KEY?.trim() || null;
+  const googleMapsBrowserKey = googleMapsBrowserKeyFromEnvironment();
   const copy = presentation.copy;
   return (
     <div id="top">

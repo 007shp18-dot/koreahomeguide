@@ -4,13 +4,14 @@ import type { SingaporeEntryModel } from '../../lib/singapore/route-types';
 import type { MarketOverviewRowModel, NavigationActionModel } from '../../lib/route-model';
 import { MarketHero } from '../market-hero';
 import { MarketOverviewRows } from '../market-overview-rows';
-import { GoogleBuildingStreetView } from '../maps/google-building-street-view';
+import { MARKET_PHOTOS, MarketRepresentativePhoto } from '../market-representative-photo';
 import {
   SingaporePage,
   singaporeStyles as styles,
 } from './singapore-shell';
 
 export function SingaporeEntry({ model, googleMapsBrowserKey = null }: Readonly<{ model: SingaporeEntryModel; googleMapsBrowserKey?: string | null }>) {
+  void googleMapsBrowserKey;
   if (model.status === 'unavailable') return (
     <SingaporePage currentHref="/sg/"><section className={styles.unavailable} data-singapore-entry="unavailable" data-product-intro="true">
       <p className={styles.eyebrow}>Singapore · Release gate</p><h1>{model.message}</h1>
@@ -29,8 +30,8 @@ export function SingaporeEntry({ model, googleMapsBrowserKey = null }: Readonly<
       description: `${model.transactionLabel} across ${model.projectLabel}.`,
       state: 'available', stateLabel: 'available',
       items: [
-        { label: 'URA private residential sale transactions', description: model.periodLabel, state: 'available', stateLabel: 'available' },
-        { label: 'Native market segments', description: 'CCR, RCR and OCR remain separate.', state: 'available', stateLabel: 'available' },
+        { label: 'URA private residential sale transactions', description: model.periodLabel },
+        { label: 'Native market segments', description: 'CCR, RCR and OCR remain separate.' },
       ],
     },
     {
@@ -38,8 +39,8 @@ export function SingaporeEntry({ model, googleMapsBrowserKey = null }: Readonly<
       description: 'Explore and comparison tools stay inside the verified Singapore evidence boundary.',
       state: 'limited', stateLabel: 'limited',
       items: [
-        { label: 'Explore Singapore', description: 'Browse released segments and projects.', state: 'available', stateLabel: 'available', href: model.exploreHref },
-        { label: 'Check an offer', description: 'Compare against compatible released evidence.', state: 'available', stateLabel: 'available', href: '/sg/singapore/check/' },
+        { label: 'Explore Singapore', description: 'Browse released segments and projects.', href: model.exploreHref },
+        { label: 'Check an offer', description: 'Compare against compatible released evidence.', href: '/sg/singapore/check/' },
       ],
     },
     {
@@ -51,31 +52,19 @@ export function SingaporeEntry({ model, googleMapsBrowserKey = null }: Readonly<
     {
       number: '05', title: 'Listings and investment service',
       description: 'Active listings, inquiries and personalized investment recommendations are not offered yet.',
-      state: 'not_built', stateLabel: 'service preparing', items: [],
-    },
-    {
-      number: '06', title: 'Source and methodology',
-      description: `${model.evidence.provider} ${model.evidence.dataset} · ${model.evidence.period}.`,
-      state: 'available', stateLabel: 'available',
-      items: [
-        { label: model.evidence.rightsPolicyId, description: `Publication minimum ${model.evidence.publicationMinimum}.` },
-      ],
+      state: 'not_built', stateLabel: 'planned', items: [],
     },
   ];
   const actions: readonly NavigationActionModel[] = [
     { label: 'Open Singapore Explore', href: model.exploreHref, description: 'Browse released segments and projects.', external: false },
     { label: 'Review Global Trust', href: '/trust/', description: 'Read source, rights and publication rules.', external: false },
   ];
+  const transactionCount = Number(model.transactionLabel.match(/[\d,]+/)?.[0]?.replaceAll(',', '') ?? 0);
+  const projectCount = Number(model.projectLabel.match(/[\d,]+/)?.[0]?.replaceAll(',', '') ?? 0);
   return (
     <SingaporePage currentHref="/sg/" unframed>
       <div data-singapore-entry="ready">
-        <MarketHero media={<GoogleBuildingStreetView
-          browserKey={googleMapsBrowserKey}
-          buildingName="The Sail @ Marina Bay"
-          latitude={1.2753}
-          longitude={103.8517}
-          mapHref="https://www.google.com/maps/search/?api=1&query=The+Sail+at+Marina+Bay+Singapore"
-        />} model={{
+        <MarketHero media={<MarketRepresentativePhoto photo={MARKET_PHOTOS.singapore} eager />} model={{
           sectionLabel: 'Singapore market overview',
           eyebrow: 'Singapore market',
           heading: 'Singapore Market Overview',
@@ -90,8 +79,8 @@ export function SingaporeEntry({ model, googleMapsBrowserKey = null }: Readonly<
           actionsLabel="Singapore next steps"
           primaryAction
           summaryItems={[
-            { label: 'Transactions', value: model.transactionLabel, detail: model.periodLabel },
-            { label: 'Projects', value: model.projectLabel, detail: 'Released URA evidence' },
+            { label: 'Transactions', value: transactionCount.toLocaleString('en-SG'), detail: `Private residential sales · ${model.periodLabel}` },
+            { label: 'Projects', value: projectCount.toLocaleString('en-SG'), detail: 'Released URA evidence' },
             { label: 'Currency', value: model.currency, detail: 'Native market currency' },
             { label: 'Publication', value: 'Verified', detail: 'Minimum-sample rules enforced' },
           ]}

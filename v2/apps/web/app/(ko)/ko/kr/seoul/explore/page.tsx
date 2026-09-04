@@ -10,6 +10,7 @@ import { buildPublicAreaExploreModel } from '@/lib/public-market/area-route-mode
 import { indexableMetadata } from '@/lib/public-metadata';
 import styles from '../korean-evidence.module.css';
 import { KOREA_EXPLORER_HOUSING_TYPES } from '@/lib/public-market/korea-explorer-evidence.server';
+import { googleMapsBrowserKeyFromEnvironment } from '@/lib/maps/google-maps-browser-key.server';
 
 export const metadata = indexableMetadata({
   path: '/ko/kr/seoul/explore/',
@@ -34,7 +35,7 @@ export default async function KoreanExplorePage({ searchParams }: KoreanExploreP
   const query = await searchParams;
   const selection = parseExplorerSelection(
     query,
-    { market: 'kr', transaction: 'jeonse' },
+    { market: 'kr', transaction: 'sale' },
     {
       areas: KOREA_EVIDENCE_AREA_BANDS,
       propertyTypes: KOREA_EXPLORER_HOUSING_TYPES.filter((value) => value !== 'all'),
@@ -92,6 +93,7 @@ export default async function KoreanExplorePage({ searchParams }: KoreanExploreP
           locale="ko"
           model={model}
           naverMapClientId={process.env.NAVER_MAP_CLIENT_ID?.trim() || null}
+          googleMapsBrowserKey={googleMapsBrowserKeyFromEnvironment()}
           initialQuery={buildingQuery}
           initialSelection={restoredSelection}
         />
