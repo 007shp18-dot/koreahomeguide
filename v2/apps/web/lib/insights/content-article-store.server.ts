@@ -2,7 +2,7 @@ import 'server-only';
 
 import { cache } from 'react';
 
-import { contentDatabase } from '../db/postgres.server';
+import { contentDatabase, publicContentDatabase } from '../db/postgres.server';
 import {
   editorialMarketLabels,
   estimateReadMinutes,
@@ -43,7 +43,7 @@ function articleFromRow(row: Record<string, unknown>): EditorialArticle | null {
 }
 
 export async function listPublishedContentArticles(): Promise<readonly EditorialArticle[]> {
-  const sql = contentDatabase();
+  const sql = publicContentDatabase();
   let stored: EditorialArticle[] = [];
   if (sql !== null) {
     try {
@@ -69,7 +69,7 @@ export async function listPublishedContentArticles(): Promise<readonly Editorial
 export const getPublishedContentArticle = cache(async (slug: string): Promise<EditorialArticle | null> => {
   const starter = getStarterEditorialArticle(slug);
   if (starter !== null) return starter;
-  const sql = contentDatabase();
+  const sql = publicContentDatabase();
   if (sql !== null) {
     try {
       const [row] = await sql`
