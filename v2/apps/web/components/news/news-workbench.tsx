@@ -17,13 +17,17 @@ const evidenceLabels = Object.freeze({
   insufficient: 'Insufficient sample',
 });
 
+const PAGE_SIZE = 30;
+
 export function NewsWorkbench({ model }: Readonly<{ model: NewsWorkspaceModel }>) {
   const [workspace, setWorkspace] = useState(model);
   const [market, setMarket] = useState<NewsWorkspaceMarket>('all');
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const filtered = useMemo(
     () => workspace.items.filter((item) => market === 'all' || item.market === market),
     [market, workspace.items],
   );
+  const visible = filtered.slice(0, visibleCount);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const selected = filtered.find((item) => item.id === selectedId) ?? filtered[0];
   useEffect(() => {
@@ -40,7 +44,7 @@ export function NewsWorkbench({ model }: Readonly<{ model: NewsWorkspaceModel }>
     <div className={styles.newsWorkbench}>
       <aside className={styles.newsFilters} aria-label="News filters">
         <div><span>Market</span><strong>Coverage</strong></div>
-        {markets.map(([value, label]) => <button type="button" aria-pressed={market === value} onClick={() => { setMarket(value); setSelectedId(null); }} key={value}><span>{label}</span><small>{workspace.items.filter((item) => value === 'all' || item.market === value).length}</small></button>)}
+        {markets.map(([value, label]) => <button type="button" aria-pressed={market === value} onClick={() => { setMarket(value); setSelectedId(null); setVisibleCount(PAGE_SIZE); }} key={value}><span>{label}</span><small>{workspace.items.filter((item) => value === 'all' || item.market === value).length}</small></button>)}
         <hr />
         <p>Source status</p>
         <span>{workspace.naverState === 'ready'
@@ -55,7 +59,7 @@ export function NewsWorkbench({ model }: Readonly<{ model: NewsWorkspaceModel }>
         <span>Cache · 15 minutes</span>
       </aside>
       <div className={styles.newsFeed}>
-        {filtered.length === 0 ? <article className={styles.emptyState}><strong>No items in this market.</strong><p>No placeholder headline is substituted.</p></article> : filtered.map((item) => (
+        {filtered.length === 0 ? <article className={styles.emptyState}><strong>No items in this market.</strong><p>No placeholder headline is substituted.</p></article> : visible.map((item) => (
           <article className={selected?.id === item.id ? styles.newsItemSelected : undefined} key={item.id}>
             <button className={styles.newsSelect} type="button" onClick={() => setSelectedId(item.id)}>
               <div><span>{item.marketLabel}</span><time dateTime={item.publishedAt}>{date.format(new Date(item.publishedAt))}</time></div>
@@ -65,6 +69,7 @@ export function NewsWorkbench({ model }: Readonly<{ model: NewsWorkspaceModel }>
             </button>
           </article>
         ))}
+        {visible.length < filtered.length ? <button className={styles.newsLoadMore} type="button" onClick={() => setVisibleCount((count) => count + PAGE_SIZE)}>Load 30 more <span>{visible.length} of {filtered.length}</span></button> : null}
       </div>
       <aside className={styles.newsEvidence} aria-label="Selected news evidence">
         <p>Selected article</p>

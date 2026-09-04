@@ -459,3 +459,73 @@
   .documentHero { min-height: 260px; padding: 24px 20px; }
   .cardMeta { border-right: 0; border-bottom: 1px solid var(--line); }
 }
+
+/* News workspace uses the same product shell as the home and market pages. */
+.workspaceMain {
+  width: min(calc(100% - (2 * var(--page-gutter))), var(--content-frame));
+  margin: 24px auto 72px;
+  border: 0;
+  background: transparent;
+}
+.workspaceHero {
+  min-height: 250px;
+  margin-bottom: 16px;
+  padding: clamp(28px, 4vw, 46px);
+  grid-template-columns: minmax(0, 1.2fr) minmax(280px, .65fr);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: linear-gradient(135deg, #fff 42%, var(--soft-blue));
+  box-shadow: var(--shadow-md);
+}
+.workspaceHero > div > p { color: var(--accent); font-size: .75rem; }
+.workspaceHero h1 {
+  font-size: clamp(2.45rem, 5vw, 4.8rem);
+  font-weight: 740;
+  line-height: 1.02;
+}
+.workspaceHero > p { color: var(--muted); font-size: .9375rem; }
+.workspaceTabs {
+  min-height: 52px;
+  margin-bottom: 12px;
+  padding: 6px;
+  gap: 4px;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-sm);
+}
+.workspaceTabs a,
+.workspaceTabs span {
+  min-width: 130px;
+  min-height: 40px;
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 9px;
+  color: var(--muted);
+  font-size: .8125rem;
+}
+.workspaceTabs span {
+  color: var(--accent);
+  background: var(--soft-blue);
+  box-shadow: inset 0 -2px var(--accent);
+}
+.workspaceBoundary {
+  margin-top: 12px;
+  padding: 20px 22px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  color: var(--muted);
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-sm);
+  font-size: .8125rem;
+}
+.workspaceBoundary strong { color: var(--ink); }
+
+@media (max-width: 720px) {
+  .workspaceMain { width: calc(100% - 28px); margin-top: 16px; }
+  .workspaceHero { grid-template-columns: 1fr; padding: 26px 20px; gap: 20px; }
+  .workspaceHero h1 { font-size: clamp(2.2rem, 11vw, 3.5rem); }
+  .workspaceBoundary { grid-template-columns: 1fr; gap: 8px; }
+}

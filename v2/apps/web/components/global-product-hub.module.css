@@ -590,3 +590,77 @@
   .newsFeed > article { padding-inline: 18px; }
   .coverageNotice { grid-template-columns: 1fr; padding-inline: 18px; }
 }
+
+/* SignedPrice news workbench */
+.newsWorkbench {
+  min-height: 600px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-sm);
+}
+.newsFilters,
+.newsEvidence { background: var(--surface-strong); }
+.newsFilters { border-right: 1px solid var(--line); }
+.newsFilters > a,
+.newsFilters > button,
+.newsFilters > div:not(:first-child) { border-radius: 9px; }
+.newsFilters > a[aria-current='page'],
+.newsFilters > button[aria-pressed='true'] {
+  color: var(--accent);
+  background: var(--soft-blue);
+  box-shadow: inset 3px 0 var(--accent);
+}
+.newsFilters > a[aria-current='page'] small,
+.newsFilters > button[aria-pressed='true'] small { color: var(--accent); }
+.newsFeed > article { border-color: var(--line); }
+.newsFeed > article:hover { background: var(--canvas); }
+.newsItemSelected {
+  box-shadow: inset 4px 0 var(--accent);
+  background: var(--soft-blue);
+}
+.newsEvidence { border-left: 1px solid var(--line); }
+.newsEvidenceActions a {
+  border-color: var(--line);
+  border-radius: 9px;
+}
+.newsEvidenceActions a:first-child { border-color: var(--accent); background: var(--accent); }
+.newsLoadMore {
+  width: calc(100% - 32px);
+  min-height: 48px;
+  margin: 16px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--accent);
+  background: var(--soft-blue);
+  font: inherit;
+  font-size: .8125rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.newsLoadMore span { color: var(--muted); font-size: .75rem; font-weight: 650; }
+
+@media (max-width: 900px) {
+  .newsWorkbench { grid-template-columns: 170px minmax(0, 1fr); }
+  .newsEvidence { grid-column: 1 / -1; border-top: 1px solid var(--line); border-left: 0; }
+}
+
+@media (max-width: 680px) {
+  .newsWorkbench { grid-template-columns: 1fr; }
+  .newsFilters {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .newsFilters > button { min-height: 46px; font-size: .8125rem; }
+  .newsFeed > article { min-height: 0; padding: 20px 18px; }
+  .newsFeed h3 { font-size: 1.125rem; }
+  .newsEvidence { padding: 22px 18px; }
+}
