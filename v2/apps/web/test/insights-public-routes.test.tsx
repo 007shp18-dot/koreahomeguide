@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 
-import InsightsPage from '../app/(en)/insights/page';
+import InsightsPage, { revalidate as insightsRevalidate } from '../app/(en)/insights/page';
 import InsightsArticlePage from '../app/(en)/insights/[slug]/page';
 import { InsightsArticle } from '../components/insights/insights-article';
 import { STARTER_EDITORIAL_ARTICLES } from '../lib/insights/editorial-content';
@@ -31,6 +31,7 @@ describe('public Journal routes', () => {
     expect(markup).not.toContain('site-header__market-tier');
     expect(markup).not.toContain('Design review');
     expect(markup).not.toContain('/design-review/');
+    expect(insightsRevalidate).toBe(900);
   });
 
   it('keeps the canonical article, reading measure, and empty ad boundary', async () => {

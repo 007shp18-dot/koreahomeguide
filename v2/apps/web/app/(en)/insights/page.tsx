@@ -5,7 +5,7 @@ import { InsightsIndex } from '@/components/insights/insights-index';
 import { listPublishedContentArticles } from '@/lib/insights/content-article-store.server';
 import { indexableMetadata } from '@/lib/public-metadata';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 900;
 
 export const metadata: Metadata = indexableMetadata({
   path: '/insights/',

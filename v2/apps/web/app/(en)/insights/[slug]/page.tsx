@@ -5,11 +5,16 @@ import { EditorialGrowthPublicFrame } from '@/components/editorial-growth/editor
 import { InsightsArticle } from '@/components/insights/insights-article';
 import { getPublishedContentArticle } from '@/lib/insights/content-article-store.server';
 import { getChineseArticleForEnglish } from '@/lib/insights/chinese-korea-articles';
+import { STARTER_EDITORIAL_ARTICLES } from '@/lib/insights/editorial-content';
 import { indexableMetadata, publicCanonical, safeJsonLd } from '@/lib/public-metadata';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 900;
 
 type EditorialArticlePageProps = Readonly<{ params: Promise<Readonly<{ slug: string }>> }>;
+
+export function generateStaticParams() {
+  return STARTER_EDITORIAL_ARTICLES.map(({ slug }) => ({ slug }));
+}
 
 export async function generateMetadata({ params }: EditorialArticlePageProps): Promise<Metadata> {
   const { slug } = await params;

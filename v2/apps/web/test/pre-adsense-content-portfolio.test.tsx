@@ -7,6 +7,7 @@ import ChineseInsightsPage from '../app/(zh-cn)/zh-cn/kr/seoul/insights/page';
 import ChineseArticlePage, {
   generateMetadata as generateChineseArticleMetadata,
 } from '../app/(zh-cn)/zh-cn/kr/seoul/insights/[slug]/page';
+import { generateStaticParams as generateEnglishArticleParams } from '../app/(en)/insights/[slug]/page';
 import sitemap from '../app/sitemap';
 import { GUIDES } from '../lib/guide/guide-content';
 import { CHINESE_KOREA_ARTICLES } from '../lib/insights/chinese-korea-articles';
@@ -34,6 +35,9 @@ describe('pre-AdSense original content portfolio', () => {
     expect(total).toBe(34);
     expect(new Set(STARTER_EDITORIAL_ARTICLES.map(({ slug }) => slug)).size)
       .toBe(STARTER_EDITORIAL_ARTICLES.length);
+    expect(generateEnglishArticleParams()).toEqual(
+      STARTER_EDITORIAL_ARTICLES.map(({ slug }) => ({ slug })),
+    );
 
     for (const article of STARTER_EDITORIAL_ARTICLES) {
       expect(sectionCount(article.bodyMarkdown)).toBeGreaterThanOrEqual(4);
