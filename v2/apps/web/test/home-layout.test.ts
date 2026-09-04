@@ -1,12 +1,18 @@
 import { readFileSync } from 'node:fs';
+import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 import Home from '../app/(en)/page';
+import { RotatingHeroBuilding } from '../components/home-building-showcase';
 
 const homeCss = readFileSync(
   new URL('../components/home-editorial.module.css', import.meta.url),
+  'utf8',
+);
+const homeBuildingShowcase = readFileSync(
+  new URL('../components/home-building-showcase.tsx', import.meta.url),
   'utf8',
 );
 
@@ -63,7 +69,30 @@ describe('signedprice Evidence Editorial homepage', () => {
     }
     expect(markup).toContain('role="search"');
     expect(markup).not.toContain('aria-label="Choose a property decision"');
-    expect(markup).toContain('data-building-rotation="automatic"');
+    expect(markup).toContain('data-building-rotation="manual"');
+  });
+
+  it('keeps homepage building media stable and never falls back to street views or maps', () => {
+    expect(homeBuildingShowcase).toContain('MarketRepresentativePhoto');
+    expect(homeBuildingShowcase).not.toContain('NaverBuildingStreetView');
+    expect(homeBuildingShowcase).not.toContain('GoogleBuildingStreetView');
+    expect(homeBuildingShowcase).not.toContain('setInterval');
+  });
+
+  it('labels a curated fallback as representative while keeping manual building controls', () => {
+    const markup = renderToStaticMarkup(createElement(RotatingHeroBuilding, {
+      buildings: [
+        { id: 'one', name: 'One Residence', market: 'Seoul', countryCode: 'KR', location: 'Seoul', provider: 'naver', observationLabel: '8 contracts', periodLabel: '2026', facts: [], href: '/one', mapHref: '/one' },
+        { id: 'two', name: 'Two Residence', market: 'Singapore', countryCode: 'SG', location: 'Singapore', provider: 'google', observationLabel: '9 contracts', periodLabel: '2026', facts: [], href: '/two', mapHref: '/two' },
+      ],
+      naverMapClientId: null,
+      googleMapsBrowserKey: null,
+    }));
+
+    expect(markup).toContain('Representative Seoul image');
+    expect(markup).toContain('aria-label="Previous building"');
+    expect(markup).toContain('aria-label="Next building"');
+    expect(markup).toContain('1 / 2');
   });
 
   it('moves staged markets to explicit global destinations', async () => {
