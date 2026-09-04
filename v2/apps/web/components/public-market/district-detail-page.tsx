@@ -235,7 +235,7 @@ function Finding({
       >
         <div className={styles.heroCopy}>
           <p>Seoul · {model.identity.nameKo}</p>
-          <h1>{model.identity.nameEn} District</h1>
+          <h1><span>{model.identity.nameEn}</span>{' '}<span>District</span></h1>
           <p>{model.message}. No city figure is substituted for unavailable district evidence.</p>
         </div>
         <div className={styles.heroMap}>{map}</div>
@@ -250,7 +250,7 @@ function Finding({
     >
         <div className={styles.heroCopy}>
           <p>Seoul · <span lang="ko">{model.identity.nameKo}</span></p>
-          <h1>{model.identity.nameEn} District</h1>
+      <h1><span>{model.identity.nameEn}</span>{' '}<span>District</span></h1>
           <p>Official reported-contract evidence for the declared period.</p>
         </div>
       <div className={styles.heroMap}>{map}</div>

@@ -121,7 +121,7 @@ describe('public district detail page', () => {
     expect(html).toContain('data-detail-layout="evidence-rail"');
     expect(html).toContain('data-detail-hero="district"');
     expect(html).toContain('data-detail-hero-metric="median"');
-    expect(html).toContain('<h1>Gangnam-gu District</h1>');
+    expect(html).toContain('<h1><span>Gangnam-gu</span> <span>District</span></h1>');
     expect(mainStart).toBeLessThan(summary);
     expect(summary).toBeLessThan(evidence);
     expect(evidence).toBeLessThan(rail);
