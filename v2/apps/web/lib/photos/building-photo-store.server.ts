@@ -175,6 +175,139 @@ function normalizedIdentity(value: string): string {
   return value.normalize('NFKC').toLocaleLowerCase('en-US').replace(/[^\p{L}\p{N}]+/gu, '');
 }
 
+type CommonsMetadataValue = Readonly<{ value?: unknown }>;
+type CommonsImageInfo = Readonly<{
+  url?: unknown;
+  thumburl?: unknown;
+  descriptionurl?: unknown;
+  mime?: unknown;
+  extmetadata?: Readonly<Record<string, CommonsMetadataValue>>;
+}>;
+type CommonsSearchPage = Readonly<{
+  title?: unknown;
+  imageinfo?: readonly CommonsImageInfo[];
+}>;
+
+export type WikimediaPhotoCandidate = Readonly<{
+  assetUrl: string;
+  sourcePageUrl: string;
+  attributionName: string;
+  licenseName: string;
+  licenseUrl: string;
+}>;
+
+function plainMetadata(value: unknown): string {
+  if (typeof value !== 'string') return '';
+  return value.replace(/<[^>]*>/g, ' ').replace(/&nbsp;|&#160;/gi, ' ')
+    .replace(/&amp;/gi, '&').replace(/\s+/g, ' ').trim();
+}
+
+/**
+ * Commons search results remain review candidates. Exact identity and license
+ * metadata are required before a URL is allowed into the photo review queue.
+ */
+export function selectWikimediaPhotoCandidate(
+  buildingName: string,
+  pages: readonly CommonsSearchPage[],
+): WikimediaPhotoCandidate | null {
+  const building = normalizedIdentity(buildingName);
+  if (building.length < 5) return null;
+  for (const page of pages) {
+    const title = typeof page.title === 'string' ? page.title.replace(/^File:/i, '') : '';
+    if (!normalizedIdentity(title).includes(building)) continue;
+    const info = page.imageinfo?.[0];
+    if (info === undefined || typeof info.mime !== 'string' || !info.mime.startsWith('image/')) continue;
+    const assetUrl = safeHttpUrl(info.thumburl) ?? safeHttpUrl(info.url);
+    const sourcePageUrl = safeHttpUrl(info.descriptionurl);
+    const metadata = info.extmetadata;
+    const licenseName = plainMetadata(metadata?.LicenseShortName?.value);
+    const licenseUrl = safeHttpUrl(metadata?.LicenseUrl?.value);
+    const attributionName = plainMetadata(
+      metadata?.Artist?.value ?? metadata?.Credit?.value ?? metadata?.Attribution?.value,
+    );
+    if (assetUrl === null || sourcePageUrl === null || licenseUrl === null
+      || licenseName === '' || attributionName === '') continue;
+    return Object.freeze({ assetUrl, sourcePageUrl, attributionName, licenseName, licenseUrl });
+  }
+  return null;
+}
+
+export async function discoverWikimediaCommonsPhotoCandidates(limit = 12): Promise<Readonly<{
+  checked: number;
+  candidates: number;
+  state: 'ready' | 'not-configured';
+}>> {
+  const sql = contentDatabase();
+  if (sql === null) return Object.freeze({ checked: 0, candidates: 0, state: 'not-configured' });
+  const rows = await sql`
+    SELECT building.key, building.market_key, building.external_id, building.official_name,
+      coalesce(building.road_address, building.legal_address) AS address
+    FROM buildings building
+    WHERE building.identity_status = 'verified'
+      AND coalesce(building.road_address, building.legal_address) IS NOT NULL
+      AND NOT EXISTS (
+        SELECT 1 FROM building_photos photo
+        WHERE photo.building_key = building.key AND photo.status = 'approved'
+      )
+    ORDER BY building.updated_at DESC
+    LIMIT ${Math.min(Math.max(limit, 1), 30)}
+  `;
+  const buildings = rows.flatMap((row): CandidateBuilding[] => (
+    typeof row.key === 'string' && ['seoul', 'singapore', 'dubai'].includes(String(row.market_key))
+      && typeof row.external_id === 'string' && typeof row.official_name === 'string'
+      && typeof row.address === 'string'
+      ? [{ key: row.key, marketKey: row.market_key as CandidateBuilding['marketKey'], externalId: row.external_id, name: row.official_name, address: row.address }]
+      : []
+  ));
+  let candidates = 0;
+  for (const building of buildings) {
+    try {
+      const endpoint = new URL('https://commons.wikimedia.org/w/api.php');
+      endpoint.search = new URLSearchParams({
+        action: 'query', format: 'json', formatversion: '2', generator: 'search',
+        gsrsearch: `"${building.name}" filetype:bitmap`, gsrnamespace: '6', gsrlimit: '3',
+        prop: 'imageinfo', iiprop: 'url|mime|extmetadata', iiurlwidth: '1600',
+      }).toString();
+      const response = await fetch(endpoint, {
+        headers: { 'User-Agent': 'SignedPrice building-photo-candidate/1.0 (contact@signedprice.com)' },
+        signal: AbortSignal.timeout(8_000),
+      });
+      if (!response.ok) continue;
+      const body = await response.json() as Readonly<{
+        query?: Readonly<{ pages?: readonly CommonsSearchPage[] }>;
+      }>;
+      const candidate = selectWikimediaPhotoCandidate(building.name, body.query?.pages ?? []);
+      if (candidate === null) continue;
+      const registryPrefix = building.marketKey === 'seoul' ? 'kr-seoul' : building.marketKey === 'singapore' ? 'sg-project' : 'ae-dubai';
+      await sql`
+        INSERT INTO building_photos (
+          building_key, registry_key, provider, asset_url, attribution_name, attribution_url,
+          status, subject_kind, rights_status, source_page_url, checked_at
+        ) VALUES (
+          ${building.key}, ${`${registryPrefix}:${building.externalId}`}, 'licensed-url', ${candidate.assetUrl},
+          ${`${candidate.attributionName} · ${candidate.licenseName}`}, ${candidate.licenseUrl},
+          'review_required', 'building-exterior', 'licensed', ${candidate.sourcePageUrl}, now()
+        )
+        ON CONFLICT (registry_key) DO UPDATE SET
+          provider = CASE WHEN building_photos.status = 'approved' THEN building_photos.provider ELSE excluded.provider END,
+          provider_place_id = CASE WHEN building_photos.status = 'approved' THEN building_photos.provider_place_id ELSE NULL END,
+          asset_url = CASE WHEN building_photos.status = 'approved' THEN building_photos.asset_url ELSE excluded.asset_url END,
+          attribution_name = CASE WHEN building_photos.status = 'approved' THEN building_photos.attribution_name ELSE excluded.attribution_name END,
+          attribution_url = CASE WHEN building_photos.status = 'approved' THEN building_photos.attribution_url ELSE excluded.attribution_url END,
+          status = CASE WHEN building_photos.status = 'approved' THEN 'approved' ELSE 'review_required' END,
+          subject_kind = 'building-exterior',
+          rights_status = CASE WHEN building_photos.status = 'approved' THEN building_photos.rights_status ELSE 'licensed' END,
+          source_page_url = CASE WHEN building_photos.status = 'approved' THEN building_photos.source_page_url ELSE excluded.source_page_url END,
+          checked_at = now(), updated_at = now()
+      `;
+      candidates += 1;
+    } catch {
+      // Provider failures never create a guessed or partially licensed photo.
+    }
+  }
+  return Object.freeze({ checked: buildings.length, candidates, state: 'ready' });
+}
+
 export async function discoverGooglePlacePhotoCandidates(limit = 12): Promise<Readonly<{
   checked: number;
   candidates: number;
@@ -232,7 +365,7 @@ export async function discoverGooglePlacePhotoCandidates(limit = 12): Promise<Re
         || !(normalizedIdentity(placeName).includes(normalizedIdentity(building.name))
           || normalizedIdentity(building.name).includes(normalizedIdentity(placeName)))
         || !placeAddress.includes(building.address.split(' ').find((part) => /[구區]$/.test(part)) ?? building.address.split(' ')[1] ?? '')) continue;
-      const registryPrefix = building.marketKey === 'seoul' ? 'kr-seoul' : building.marketKey === 'singapore' ? 'sg' : 'ae-dubai';
+      const registryPrefix = building.marketKey === 'seoul' ? 'kr-seoul' : building.marketKey === 'singapore' ? 'sg-project' : 'ae-dubai';
       await sql`
         INSERT INTO building_photos (
           building_key, registry_key, provider, provider_place_id, status,
@@ -262,7 +395,10 @@ export async function listBuildingPhotoCandidates(limit = 100): Promise<readonly
       building.market_key AS "marketKey", building.external_id AS "externalId",
       building.official_name AS "buildingName",
       coalesce(building.road_address, building.legal_address) AS address,
-      photo.provider_place_id AS "placeId", photo.status, photo.checked_at AS "checkedAt"
+      photo.provider, photo.provider_place_id AS "placeId", photo.asset_url AS "assetUrl",
+      photo.attribution_name AS "attributionName", photo.attribution_url AS "attributionUrl",
+      photo.source_page_url AS "sourcePageUrl", photo.rights_status AS "rightsStatus",
+      photo.status, photo.checked_at AS "checkedAt"
     FROM building_photos photo
     JOIN buildings building ON building.key = photo.building_key
     WHERE photo.status IN ('candidate', 'review_required')
