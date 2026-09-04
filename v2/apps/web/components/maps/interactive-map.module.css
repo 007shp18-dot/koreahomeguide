@@ -281,3 +281,24 @@
     border-left: 2px solid var(--ink);
   }
 }
+
+/* Maps sit inside the same light product surfaces as cards and tables. */
+.canvas {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+.toolbar input,
+.toolbar button {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.toolbar button { border-left: 1px solid var(--line); }
+.unavailable {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: linear-gradient(135deg, #fff, var(--soft-blue));
+}
+
+@media (max-width: 560px) {
+  .toolbar button { border: 1px solid var(--line); }
+}
