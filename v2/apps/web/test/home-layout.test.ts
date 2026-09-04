@@ -70,6 +70,8 @@ describe('signedprice Evidence Editorial homepage', () => {
     expect(markup).toContain('role="search"');
     expect(markup).not.toContain('aria-label="Choose a property decision"');
     expect(markup).toContain('data-building-rotation="manual"');
+    expect(markup).toContain('Otherwise a clearly labeled representative city image is shown.');
+    expect(markup).not.toContain('Otherwise the verified map location is used.');
   });
 
   it('keeps homepage building media stable and never falls back to street views or maps', () => {

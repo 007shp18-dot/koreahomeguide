@@ -53,7 +53,7 @@ export function HomeEditorialSections({ seoul, news, featuredBuildings, naverMap
       </section>
 
       <section className={styles.section} id="home-prices" aria-labelledby="home-prices-heading">
-        <div className={styles.sectionHeader}><div><h2 id="home-prices-heading">Buildings across markets</h2><p>Only editor-approved photos attached to the exact building identity are shown. Otherwise the verified map location is used.</p></div><Link href="/prices/">View available price evidence →</Link></div>
+        <div className={styles.sectionHeader}><div><h2 id="home-prices-heading">Buildings across markets</h2><p>Exact building photos appear only after editorial approval. Otherwise a clearly labeled representative city image is shown.</p></div><Link href="/prices/">View available price evidence →</Link></div>
         <RotatingBuildingGrid buildings={featuredBuildings} naverMapClientId={naverMapClientId} googleMapsBrowserKey={googleMapsBrowserKey} />
       </section>
 
