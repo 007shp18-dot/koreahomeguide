@@ -286,6 +286,18 @@
   border-top: var(--rule-default);
 }
 
+.rangeCard { display: grid; gap: 9px; }
+.rangeTrack { position: relative; height: 8px; border-radius: 999px; background: #dfe5ed; }
+.rangeTrack::before { content: ''; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(90deg, #c8d2ff, var(--accent)); opacity: .9; }
+.rangeTrack > span { position: absolute; top: 50%; z-index: 1; width: 12px; height: 12px; transform: translate(-50%, -50%); border: 2px solid #fff; border-radius: 50%; background: var(--ink); box-shadow: 0 0 0 1px rgb(20 27 40 / 18%); }
+.rangeCard dl { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.rangeCard dl > div { min-width: 0; }
+.rangeCard dl > div:nth-child(2) { text-align: center; }
+.rangeCard dl > div:last-child { text-align: right; }
+.rangeCard dt { color: var(--muted); font-size: 10px; }
+.rangeCard dd { margin: 2px 0 0; overflow: hidden; font-size: 12px; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
+.rangeDescription { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
 .changeRow {
   grid-template-columns: 48px minmax(120px, 0.8fr) minmax(120px, 1fr) minmax(74px, auto);
 }
@@ -648,4 +660,5 @@
   .row { grid-template-columns: 40px minmax(0, 1fr) minmax(96px, auto); }
   .value { overflow-wrap: normal; font-size: .8125rem; }
   .metricSummary dd { white-space: normal; overflow-wrap: normal; }
+  .rangeCard dd { font-size: 10px; }
 }

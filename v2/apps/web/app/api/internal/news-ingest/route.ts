@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 
 import { contentDatabaseConfigured } from '@/lib/db/postgres.server';
 import { fetchNaverNewsItems } from '@/lib/news/naver-news.server';
+import { fetchGoogleNewsRssItems } from '@/lib/news/google-news-rss.server';
 import {
   finishNewsIngestionRun,
   startNewsIngestionRun,
@@ -22,17 +23,20 @@ export async function GET(request: Request) {
   let runId: string | null = null;
   try {
     runId = await startNewsIngestionRun();
-    const result = await fetchNaverNewsItems();
-    const storedCount = result.state === 'ready' ? await storeNewsItems(result.items) : 0;
-    const status = result.state !== 'ready' ? 'failed' : result.failedSearches > 0 ? 'partial' : 'succeeded';
+    const [result, global] = await Promise.all([fetchNaverNewsItems(), fetchGoogleNewsRssItems()]);
+    const items = [...result.items, ...global.items];
+    const storedCount = items.length > 0 ? await storeNewsItems(items) : 0;
+    const status = result.state !== 'ready' && global.state !== 'ready'
+      ? 'failed'
+      : result.failedSearches > 0 || global.failedFeeds > 0 ? 'partial' : 'succeeded';
     await finishNewsIngestionRun({
       id: runId,
       status,
-      fetchedCount: result.items.length,
+      fetchedCount: items.length,
       storedCount,
       ...(result.diagnostic === undefined ? {} : { diagnostic: result.diagnostic }),
     });
-    return NextResponse.json({ status, fetchedCount: result.items.length, storedCount });
+    return NextResponse.json({ status, fetchedCount: items.length, storedCount });
   } catch (error) {
     const diagnostic = error instanceof Error ? error.message.slice(0, 400) : 'unknown_error';
     try {
@@ -44,4 +48,3 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'ingestion_failed' }, { status: 502 });
   }
 }
-

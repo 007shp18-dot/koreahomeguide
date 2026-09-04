@@ -58,7 +58,7 @@ export function BuildingOfficialFacts({ districtSlug, buildingId, observedFacts 
       <section className={styles.evidence} data-building-section="official-facts" data-building-facts="unavailable">
         <div className={styles.sectionHeading}><p>Building facts</p><h2>Verified transaction profile</h2></div>
         {observedFacts.length === 0 ? null : <dl className={styles.findingGrid}>{observedFacts.map((fact) => <div key={fact.label}><dt>{fact.label}</dt><dd>{fact.value}</dd></div>)}</dl>}
-        <p>Household, building-count, and register fields are temporarily unavailable from the official building services. The verified facts above remain attached to reported transactions.</p>
+        <p>공식 건축물대장 연결을 다시 확인 중입니다. 위의 신고 거래 기반 정보는 그대로 유지됩니다.</p>
       </section>
     );
   }
@@ -68,7 +68,7 @@ export function BuildingOfficialFacts({ districtSlug, buildingId, observedFacts 
         <div className={styles.sectionHeading}><p>Building facts</p><h2>Verified transaction profile</h2></div>
         {observedFacts.length === 0 ? null : <dl className={styles.findingGrid}>{observedFacts.map((fact) => <div key={fact.label}><dt>{fact.label}</dt><dd>{fact.value}</dd></div>)}</dl>}
         <p>{reasonCopy(state.facts.reason)}</p>
-        <p>Only the unavailable official enrichment fields are withheld; verified transaction facts remain visible.</p>
+        <p>공식 정보가 아직 연결되지 않은 항목만 비워 두며, 확인된 거래·학교·역 정보는 계속 표시합니다.</p>
       </section>
     );
   }
@@ -76,6 +76,7 @@ export function BuildingOfficialFacts({ districtSlug, buildingId, observedFacts 
   return (
     <section className={styles.evidence} data-building-section="official-facts" data-building-facts="ready">
       <div className={styles.sectionHeading}><p>Official building facts</p><h2>Complex and building-register profile</h2></div>
+      {observedFacts.length === 0 ? null : <dl className={styles.findingGrid}>{observedFacts.map((fact) => <div key={fact.label}><dt>{fact.label}</dt><dd>{fact.value}</dd></div>)}</dl>}
       <dl className={styles.findingGrid}>
         <div><dt>Households</dt><dd>{count(apartment.households)}</dd></div>
         <div><dt>Buildings</dt><dd>{count(apartment.buildings)}</dd></div>

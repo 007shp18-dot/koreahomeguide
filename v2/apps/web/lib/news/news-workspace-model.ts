@@ -14,7 +14,7 @@ export type NewsWorkspaceItem = Readonly<{
   category: string;
   evidence: NewsWorkspaceEvidence;
   evidenceLine: string;
-  sourceKind: 'naver-search' | 'signedprice-brief';
+  sourceKind: 'naver-search' | 'google-news-rss' | 'signedprice-brief';
 }>;
 
 export type NewsWorkspaceModel = Readonly<{

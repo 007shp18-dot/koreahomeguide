@@ -3,6 +3,7 @@ import 'server-only';
 import type { NewsIndexModel } from './news-route-model.server';
 import type { NewsWorkspaceItem, NewsWorkspaceModel } from './news-workspace-model';
 import { loadPersistedNewsItems, storeNewsItems } from './news-persistence.server';
+import { fetchGoogleNewsRssItems } from './google-news-rss.server';
 
 type NaverNewsItem = Readonly<{
   title?: unknown;
@@ -175,12 +176,14 @@ export function buildApprovedNewsWorkspaceModel(news: NewsIndexModel): NewsWorks
 
 export async function buildNewsWorkspaceModel(news: NewsIndexModel): Promise<NewsWorkspaceModel> {
   const fallback = approvedItems(news);
-  const [persisted, live] = await Promise.all([loadPersistedNewsItems(), fetchNaverNewsItems()]);
-  if (live.state === 'ready') {
-    try { await storeNewsItems(live.items); } catch (error) { console.error('SignedPrice news database write failed.', error); }
+  const [persisted, live, global] = await Promise.all([
+    loadPersistedNewsItems(), fetchNaverNewsItems(), fetchGoogleNewsRssItems(),
+  ]);
+  if (live.state === 'ready' || global.state === 'ready') {
+    try { await storeNewsItems([...live.items, ...global.items]); } catch (error) { console.error('SignedPrice news database write failed.', error); }
   }
   const unique = new Map<string, NewsWorkspaceItem>();
-  for (const item of [...fallback, ...(persisted ?? []), ...live.items]) if (!unique.has(item.url)) unique.set(item.url, item);
+  for (const item of [...fallback, ...(persisted ?? []), ...live.items, ...global.items]) if (!unique.has(item.url)) unique.set(item.url, item);
   const items = Object.freeze([...unique.values()].sort((left, right) => right.publishedAt.localeCompare(left.publishedAt)));
   return Object.freeze({
     items,

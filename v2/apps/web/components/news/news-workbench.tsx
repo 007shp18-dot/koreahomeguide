@@ -56,6 +56,9 @@ export function NewsWorkbench({ model }: Readonly<{ model: NewsWorkspaceModel }>
               : workspace.naverDiagnostic === 'credentials-rejected'
                 ? 'Naver News API · Credentials rejected'
                 : 'Naver News API · Fallback active'}</span>
+        <span>{workspace.items.some((item) => item.sourceKind === 'google-news-rss')
+          ? 'Google News RSS · Global supplement'
+          : 'Google News RSS · Awaiting refresh'}</span>
         <span>Cache · 15 minutes</span>
       </aside>
       <div className={styles.newsFeed}>
@@ -65,7 +68,7 @@ export function NewsWorkbench({ model }: Readonly<{ model: NewsWorkspaceModel }>
               <div><span>{item.marketLabel}</span><time dateTime={item.publishedAt}>{date.format(new Date(item.publishedAt))}</time></div>
               <h3>{item.title}</h3>
               <p>{item.summary}</p>
-              <footer><span>{item.category}</span><strong>{item.sourceKind === 'naver-search' ? 'External article' : 'SignedPrice brief'}</strong></footer>
+              <footer><span>{item.category}</span><strong>{item.sourceKind === 'signedprice-brief' ? 'SignedPrice brief' : 'External article'}</strong></footer>
             </button>
           </article>
         ))}
@@ -81,7 +84,7 @@ export function NewsWorkbench({ model }: Readonly<{ model: NewsWorkspaceModel }>
             <div><dt>Publisher</dt><dd>{selected.publisher}</dd></div>
             <div><dt>Evidence</dt><dd>{evidenceLabels[selected.evidence]}</dd></div>
             <div><dt>Market</dt><dd>{selected.marketLabel}</dd></div>
-            <div><dt>Source</dt><dd>{selected.sourceKind === 'naver-search' ? 'Naver News Search API' : 'Approved SignedPrice brief'}</dd></div>
+            <div><dt>Source</dt><dd>{selected.sourceKind === 'naver-search' ? 'Naver News Search API' : selected.sourceKind === 'google-news-rss' ? 'Google News RSS' : 'Approved SignedPrice brief'}</dd></div>
           </dl>
           <div className={styles.newsEvidenceActions}>
             {selected.internalHref === null ? null : <Link href={selected.internalHref}>Read brief →</Link>}
