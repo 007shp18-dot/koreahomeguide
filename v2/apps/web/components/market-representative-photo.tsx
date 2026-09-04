@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 import styles from './market-representative-photo.module.css';
 
 export type MarketPhoto = Readonly<{
@@ -31,12 +33,12 @@ export function MarketRepresentativePhoto({ photo, eager = false, cityLabel }: R
 }>) {
   return <figure className={styles.frame} data-building-media="curated-market-photo">
     {/* These are stable editorial market images, not a claim about a specific listing. */}
-    {/* eslint-disable-next-line @next/next/no-img-element */}
-    <img
+    <Image
       alt={photo.alt}
       src={photo.src}
-      loading={eager ? 'eager' : 'lazy'}
-      fetchPriority={eager ? 'high' : 'auto'}
+      fill
+      priority={eager}
+      sizes="(max-width: 850px) 100vw, 55vw"
       style={{ objectPosition: photo.position ?? 'center' }}
     />
     <figcaption>
