@@ -2,6 +2,7 @@ import 'server-only';
 
 import type { NewsIndexModel } from './news-route-model.server';
 import type { NewsWorkspaceItem, NewsWorkspaceModel } from './news-workspace-model';
+import { loadPersistedNewsItems, storeNewsItems } from './news-persistence.server';
 
 type NaverNewsItem = Readonly<{
   title?: unknown;
@@ -112,6 +113,44 @@ async function fetchMarketNews(search: (typeof searches)[number], clientId: stri
   }));
 }
 
+export type NaverNewsFetchResult = Readonly<{
+  items: readonly NewsWorkspaceItem[];
+  state: 'ready' | 'not-configured' | 'unavailable';
+  diagnostic?: NonNullable<NewsWorkspaceModel['naverDiagnostic']>;
+  failedSearches: number;
+}>;
+
+export async function fetchNaverNewsItems(): Promise<NaverNewsFetchResult> {
+  const clientId = process.env.NAVER_NEWS_CLIENT_ID?.trim();
+  const clientSecret = process.env.NAVER_NEWS_CLIENT_SECRET?.trim();
+  if (!clientId || !clientSecret) {
+    return Object.freeze({ items: Object.freeze([]), state: 'not-configured', failedSearches: searches.length });
+  }
+  const results = await Promise.allSettled(searches.map((search) => fetchMarketNews(search, clientId, clientSecret)));
+  const external = results.flatMap((result) => result.status === 'fulfilled' ? result.value : []);
+  const unique = new Map<string, NewsWorkspaceItem>();
+  for (const item of external) if (!unique.has(item.url)) unique.set(item.url, item);
+  const failureCodes = results.flatMap((result) => result.status === 'rejected' && result.reason instanceof Error
+    ? [result.reason.message]
+    : []);
+  const diagnostic = failureCodes.some((message) => message === 'naver-status:401')
+    ? 'credentials-rejected' as const
+    : failureCodes.some((message) => message === 'naver-status:403')
+      ? 'permission-denied' as const
+      : failureCodes.some((message) => message === 'naver-status:429')
+        ? 'rate-limited' as const
+        : failureCodes.some((message) => /^naver-status:5\d\d$/.test(message))
+          ? 'upstream-error' as const
+          : 'network-error' as const;
+  const ready = results.some((result) => result.status === 'fulfilled');
+  return Object.freeze({
+    items: Object.freeze([...unique.values()]),
+    state: ready ? 'ready' : 'unavailable',
+    ...(ready ? {} : { diagnostic }),
+    failedSearches: results.filter((result) => result.status === 'rejected').length,
+  });
+}
+
 function approvedItems(news: NewsIndexModel): readonly NewsWorkspaceItem[] {
   return Object.freeze(news.records.map((record) => Object.freeze({
     id: `approved-${record.id}`,
@@ -135,30 +174,17 @@ export function buildApprovedNewsWorkspaceModel(news: NewsIndexModel): NewsWorks
 }
 
 export async function buildNewsWorkspaceModel(news: NewsIndexModel): Promise<NewsWorkspaceModel> {
-  const clientId = process.env.NAVER_NEWS_CLIENT_ID?.trim();
-  const clientSecret = process.env.NAVER_NEWS_CLIENT_SECRET?.trim();
   const fallback = approvedItems(news);
-  if (!clientId || !clientSecret) return Object.freeze({ items: fallback, naverState: 'not-configured' });
-  const results = await Promise.allSettled(searches.map((search) => fetchMarketNews(search, clientId, clientSecret)));
-  const external = results.flatMap((result) => result.status === 'fulfilled' ? result.value : []);
+  const [persisted, live] = await Promise.all([loadPersistedNewsItems(), fetchNaverNewsItems()]);
+  if (live.state === 'ready') {
+    try { await storeNewsItems(live.items); } catch (error) { console.error('SignedPrice news database write failed.', error); }
+  }
   const unique = new Map<string, NewsWorkspaceItem>();
-  for (const item of [...fallback, ...external]) if (!unique.has(item.url)) unique.set(item.url, item);
+  for (const item of [...fallback, ...(persisted ?? []), ...live.items]) if (!unique.has(item.url)) unique.set(item.url, item);
   const items = Object.freeze([...unique.values()].sort((left, right) => right.publishedAt.localeCompare(left.publishedAt)));
-  const failureCodes = results.flatMap((result) => result.status === 'rejected' && result.reason instanceof Error
-    ? [result.reason.message]
-    : []);
-  const naverDiagnostic = failureCodes.some((message) => message === 'naver-status:401')
-    ? 'credentials-rejected' as const
-    : failureCodes.some((message) => message === 'naver-status:403')
-      ? 'permission-denied' as const
-      : failureCodes.some((message) => message === 'naver-status:429')
-        ? 'rate-limited' as const
-        : failureCodes.some((message) => /^naver-status:5\d\d$/.test(message))
-          ? 'upstream-error' as const
-          : 'network-error' as const;
   return Object.freeze({
     items,
-    naverState: results.some((result) => result.status === 'fulfilled') ? 'ready' : 'unavailable',
-    ...(results.some((result) => result.status === 'fulfilled') ? {} : { naverDiagnostic }),
+    naverState: live.state === 'ready' || (persisted?.length ?? 0) > 0 ? 'ready' : live.state,
+    ...(live.state === 'unavailable' && (persisted?.length ?? 0) === 0 ? { naverDiagnostic: live.diagnostic } : {}),
   });
 }

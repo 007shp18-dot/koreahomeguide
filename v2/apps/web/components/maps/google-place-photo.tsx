@@ -51,6 +51,7 @@ type GoogleReadyScope = Window & {
 type PhotoState = Readonly<{
   src: string;
   attribution: GoogleAuthorAttribution | null;
+  sourceLabel: string;
 }> | 'loading' | 'unavailable';
 
 function normalizedPlaceText(value: string): string {
@@ -108,11 +109,38 @@ export function GooglePlacePhoto({
           setPhoto('unavailable');
           return;
         }
-        const approval = await approvalResponse.json() as Readonly<{ state?: unknown; placeId?: unknown; buildingName?: unknown; address?: unknown }>;
-        if (approval.state !== 'approved' || typeof approval.placeId !== 'string'
+        const approval = await approvalResponse.json() as Readonly<{
+          state?: unknown;
+          provider?: unknown;
+          placeId?: unknown;
+          assetUrl?: unknown;
+          attributionName?: unknown;
+          attributionUrl?: unknown;
+          buildingName?: unknown;
+          address?: unknown;
+        }>;
+        if (approval.state !== 'approved'
           || typeof approval.buildingName !== 'string' || typeof approval.address !== 'string'
           || normalizedPlaceText(approval.buildingName) !== normalizedPlaceText(buildingName)
           || normalizedPlaceText(approval.address) !== normalizedPlaceText(address)) {
+          setPhoto('unavailable');
+          return;
+        }
+        if ((approval.provider === 'licensed-url' || approval.provider === 'owned-object')
+          && typeof approval.assetUrl === 'string') {
+          setPhoto(Object.freeze({
+            src: approval.assetUrl,
+            sourceLabel: 'Verified building photo',
+            attribution: typeof approval.attributionName === 'string'
+              ? Object.freeze({
+                displayName: approval.attributionName,
+                uri: typeof approval.attributionUrl === 'string' ? approval.attributionUrl : null,
+              })
+              : null,
+          }));
+          return;
+        }
+        if (typeof approval.placeId !== 'string') {
           setPhoto('unavailable');
           return;
         }
@@ -133,6 +161,7 @@ export function GooglePlacePhoto({
         setPhoto(Object.freeze({
           src: approvedPhoto.getURI({ maxHeight: 900, maxWidth: 1400 }),
           attribution: approvedPhoto.authorAttributions[0] ?? null,
+          sourceLabel: 'Place photo · Google',
         }));
         return;
       }
@@ -152,6 +181,7 @@ export function GooglePlacePhoto({
       setPhoto(Object.freeze({
         src: result.getURI({ maxHeight: 900, maxWidth: 1400 }),
         attribution: result.authorAttributions[0] ?? null,
+        sourceLabel: 'Place photo · Google',
       }));
     } catch {
       setPhoto('unavailable');
@@ -189,7 +219,7 @@ export function GooglePlacePhoto({
       )}
       {photo === 'loading' ? null : (
         <p className={styles.label}>
-          Place photo · Google
+          {photo.sourceLabel}
           {photo.attribution === null ? null : photo.attribution.uri === null || !linkAttribution
             ? ` · ${photo.attribution.displayName}`
             : <> · <a href={photo.attribution.uri}>{photo.attribution.displayName}</a></>}
