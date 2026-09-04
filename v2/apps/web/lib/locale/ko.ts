@@ -1,4 +1,5 @@
 import type { SiteFooterModel, SiteHeaderModel } from '../site-copy';
+import { resolveMarketNavigation, type ProductSurface } from '../navigation/market-route-resolver';
 
 const integer = new Intl.NumberFormat('ko-KR', { maximumFractionDigits: 0 });
 
@@ -24,18 +25,18 @@ const KOREAN_SITE_HEADER_BASE = {
   homeHref: '/ko/kr/seoul/',
   navigationLabel: '서울 근거 탐색',
   navigationVariant: 'supplied',
-  links: [
-    { label: '서울', href: '/ko/kr/seoul/' },
-    { label: '구별 탐색', href: '/ko/kr/seoul/explore/' },
-    { label: '근거 순위', href: '/ko/kr/seoul/rankings/' },
-  ],
   marketLabel: '서울',
   languageLabel: 'KO',
 } as const;
 
 export function buildKoreanSiteHeader(englishHref: string): SiteHeaderModel {
+  const surface: ProductSurface = englishHref.includes('/check/') ? 'check'
+    : englishHref.includes('/explore/') ? 'explore'
+      : englishHref.includes('/rankings/') ? 'rankings'
+        : 'home';
   return Object.freeze({
     ...KOREAN_SITE_HEADER_BASE,
+    links: resolveMarketNavigation({ market: 'seoul', locale: 'ko', surface }).links,
     languageSwitch: Object.freeze({
       label: 'EN',
       href: englishHref,

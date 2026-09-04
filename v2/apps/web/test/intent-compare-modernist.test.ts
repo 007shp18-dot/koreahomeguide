@@ -134,14 +134,19 @@ describe('nine intent routes use one connected decision hierarchy', () => {
     }
   });
 
-  it('keeps every market intent inside the shared local product hierarchy', async () => {
+  it('keeps every market intent inside its available local product hierarchy', async () => {
     for (const params of intentRouteParams) {
       const markup = navigationMarkup(
         renderToStaticMarkup(await IntentPage({ params: Promise.resolve(params) })),
       );
 
-      expect(markup.match(/<a /g) ?? []).toHaveLength(7);
-      for (const label of ['Overview', 'Check', 'Explore', 'Rankings', 'News', 'Community', 'Guide']) {
+      const labels = params.country === 'kr'
+        ? ['Overview', 'Check', 'Explore', 'Rankings', 'News', 'Community', 'Guide']
+        : params.country === 'sg'
+          ? ['Overview', 'Check', 'Explore', 'Rankings', 'Corrections', 'Trust']
+          : ['Overview', 'Compare markets'];
+      expect(markup.match(/<a /g) ?? []).toHaveLength(labels.length);
+      for (const label of labels) {
         expect(markup).toContain(`<strong>${label}</strong>`);
       }
     }

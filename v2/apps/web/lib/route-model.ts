@@ -13,6 +13,7 @@ import {
 } from '@signedprice/market-core';
 import type { Metadata } from 'next';
 import type { SiteFooterModel, SiteHeaderModel } from './site-copy';
+import { resolveMarketNavigation, type ProductMarket } from './navigation/market-route-resolver';
 import { indexableMetadata } from './public-metadata';
 
 export interface NavigationActionModel {
@@ -586,6 +587,16 @@ function marketHeader(profile: MarketProfile, isCurrent: boolean): SiteHeaderMod
   const languageSwitch = profile.id === 'kr-seoul'
     ? { label: 'KO', href: '/ko/kr/seoul/', hrefLang: 'ko' as const }
     : undefined;
+  const productMarket: ProductMarket = profile.id === 'kr-seoul'
+    ? 'seoul'
+    : profile.id === 'sg-singapore'
+      ? 'singapore'
+      : 'dubai';
+  const resolvedLinks = resolveMarketNavigation({
+    market: productMarket,
+    locale: 'en',
+    surface: 'home',
+  }).links;
   return {
     brand: routeShellCopy.header.brand,
     homeLabel: routeShellCopy.header.homeLabel,
@@ -593,14 +604,13 @@ function marketHeader(profile: MarketProfile, isCurrent: boolean): SiteHeaderMod
     marketLabel: profile.cityName,
     languageLabel: 'EN',
     languageSwitch,
-    links: [
-      { label: 'Global home', href: '/' },
-      {
-        label: 'Market overview',
-        href: getMarketHref(profile.id),
-        isCurrent,
-      },
-    ],
+    navigationVariant: 'supplied',
+    links: isCurrent
+      ? resolvedLinks
+      : resolvedLinks.map(({ isCurrent: current, ...link }) => {
+          void current;
+          return link;
+        }),
   };
 }
 

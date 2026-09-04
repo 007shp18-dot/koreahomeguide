@@ -115,6 +115,7 @@ export type SingaporeTransactionDisplay = Readonly<{
 export type SingaporeProjectModel = SingaporeInsufficientModel<SingaporeProjectSummary> | Readonly<{
   status: 'ready';
   identity: SingaporeProjectSummary & Readonly<{ published: true }>;
+  checkHref: `/sg/singapore/check/?${string}`;
   display: Readonly<{
     sampleLabel: string;
     medianPriceLabel: string;

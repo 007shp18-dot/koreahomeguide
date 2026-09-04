@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import { productNavigationLinks, type SiteHeaderModel } from '../lib/site-copy';
+import { productNavigationLinks, type NavigationLinkModel, type SiteHeaderModel } from '../lib/site-copy';
 import { BrandWordmark } from './brand-mark';
 
 type SiteHeaderProps = {
@@ -8,11 +8,6 @@ type SiteHeaderProps = {
 };
 
 export function SiteHeader({ copy }: SiteHeaderProps) {
-  const languageSwitch = copy.languageSwitch ?? {
-    label: '한국어',
-    href: '/ko/kr/seoul/',
-    hrefLang: 'ko',
-  } as const;
   const currentHref = copy.links.find(({ isCurrent }) => isCurrent)?.href;
   const globalProductHrefs = ['/markets/', '/prices/', '/news/', '/community/', '/guides/', '/properties/', '/invest/', '/insights/'];
   const isGlobalProduct = copy.marketLabel === undefined
@@ -77,7 +72,12 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
   }
 
   const isKorean = copy.languageLabel === 'KO';
-  const switchLink = (
+  const languageSwitch = copy.languageSwitch ?? (
+    currentMarket === null || currentMarket === 'seoul'
+      ? { label: '한국어', href: '/ko/kr/seoul/', hrefLang: 'ko' as const }
+      : undefined
+  );
+  const switchLink = languageSwitch === undefined ? null : (
     <Link
       href={languageSwitch.href}
       hrefLang={languageSwitch.hrefLang}
@@ -87,6 +87,16 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
       {languageSwitch.hrefLang.toUpperCase()}
     </Link>
   );
+  const navigationLinks: readonly NavigationLinkModel[] = copy.navigationVariant === 'supplied'
+    ? copy.links
+    : marketNavigation.length > 0
+      ? marketNavigation
+      : productNavigationLinks;
+  const primaryAction = currentMarket === 'dubai'
+    ? { href: '/compare/?market=dubai', label: 'Compare markets' }
+    : marketPrefix === null
+      ? { href: '/prices/', label: 'Explore prices' }
+      : { href: `${marketPrefix}/check/`, label: isKoreanMarket ? '가격 확인' : 'Run a check' };
 
   return (
     <header className="site-header" data-market-context={currentMarket ?? 'global'}>
@@ -108,8 +118,8 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
           <span className="site-header__context">{marketLabel} · reported filings</span>
           <div className="site-header__language" aria-label="Language navigation">
             {isKorean ? switchLink : <span aria-current="true">EN</span>}
-            <span aria-hidden="true">/</span>
-            {isKorean ? <span aria-current="true">KO</span> : switchLink}
+            {languageSwitch === undefined ? null : <span aria-hidden="true">/</span>}
+            {languageSwitch === undefined ? null : isKorean ? <span aria-current="true">KO</span> : switchLink}
           </div>
         </div>
       </div>
@@ -119,23 +129,27 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
         </Link>
         <nav className="site-header__product-nav" aria-label={copy.navigationLabel}>
           <ul className="site-header__links">
-            {(marketNavigation.length > 0 ? marketNavigation : productNavigationLinks).map((link) => (
+            {navigationLinks.map((link, index) => (
               <li key={link.href}>
                 <Link
                   className="site-header__product-link"
                   href={link.href}
-                  aria-current={(marketNavigation.length > 0 ? isCurrentMarketLink(link.href) : isCurrentLink(link.href)) ? 'page' : undefined}
+                  aria-current={(copy.navigationVariant === 'supplied'
+                    ? link.isCurrent === true
+                    : marketNavigation.length > 0
+                      ? isCurrentMarketLink(link.href)
+                      : isCurrentLink(link.href)) ? 'page' : undefined}
                 >
-                  <span>{link.index}</span>
+                  <span>{link.index ?? String(index).padStart(2, '0')}</span>
                   <strong>{link.label}</strong>
-                  <small>{link.description}</small>
+                  {link.description === undefined ? null : <small>{link.description}</small>}
                 </Link>
               </li>
             ))}
           </ul>
         </nav>
-        <Link className="site-header__cta" href={marketPrefix === null ? '/prices/' : `${marketPrefix}/check/`}>
-          {isKoreanMarket ? '가격 확인' : 'Run a check'}
+        <Link className="site-header__cta" href={primaryAction.href}>
+          {primaryAction.label}
         </Link>
       </div>
     </header>

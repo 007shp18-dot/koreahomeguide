@@ -44,6 +44,9 @@ describe('primary single quote Check workspace', () => {
     expect(html).not.toContain('name="monthly-rent"');
     expect(html).toContain('href="/kr/seoul/check/compare"');
     expect(html).toContain('Compare two offers');
+    expect(html).toContain('href="/kr/seoul/explore"');
+    expect(html).toContain('href="/kr/seoul/guide"');
+    expect(html).toContain('Read the contract guides');
   });
 
   test('renders the shared evidence order with exact scope, sample, percentile, and fallback disclosure', () => {

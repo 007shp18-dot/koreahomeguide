@@ -8,7 +8,29 @@ const date = new Intl.DateTimeFormat('en', {
   year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC',
 });
 
+const marketActions = {
+  seoul: [
+    { label: 'Explore Seoul evidence', href: '/kr/seoul/explore/' },
+    { label: 'Check a Seoul price', href: '/kr/seoul/check/' },
+    { label: 'Use the Korea guides', href: '/kr/seoul/guide/' },
+  ],
+  singapore: [
+    { label: 'Explore Singapore evidence', href: '/sg/singapore/explore/' },
+    { label: 'Check a Singapore price', href: '/sg/singapore/check/' },
+    { label: 'Compare Singapore areas', href: '/sg/singapore/rankings/' },
+  ],
+  dubai: [
+    { label: 'Review Dubai coverage', href: '/ae/dubai/' },
+    { label: 'Compare market boundaries', href: '/compare/?market=dubai' },
+  ],
+  global: [
+    { label: 'Choose a market', href: '/markets/' },
+    { label: 'Explore available prices', href: '/prices/' },
+  ],
+} as const;
+
 export function InsightsArticle({ article }: Readonly<{ article: EditorialArticle }>) {
+  const relatedActions = article.marketKey === null ? marketActions.global : marketActions[article.marketKey];
   return (
     <main className={styles.main}>
       <nav className={styles.breadcrumb} aria-label="Breadcrumb">
@@ -34,7 +56,8 @@ export function InsightsArticle({ article }: Readonly<{ article: EditorialArticl
         </div>
       </article>
       <nav className={styles.articleActions} aria-label="Related SignedPrice products">
-        <Link href="/prices/">Explore prices</Link><Link href="/news/">Read external news</Link><Link href="/insights/">All reports</Link>
+        {relatedActions.map((action) => <Link href={action.href} key={action.href}>{action.label}</Link>)}
+        <Link href="/insights/">All reports</Link>
       </nav>
     </main>
   );

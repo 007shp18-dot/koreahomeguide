@@ -6,6 +6,7 @@ vi.mock('server-only', () => ({}));
 
 import InsightsPage from '../app/(en)/insights/page';
 import InsightsArticlePage from '../app/(en)/insights/[slug]/page';
+import { InsightsArticle } from '../components/insights/insights-article';
 import { STARTER_EDITORIAL_ARTICLES } from '../lib/insights/editorial-content';
 
 const insightsCss = readFileSync(
@@ -46,5 +47,23 @@ describe('public Journal routes', () => {
     expect(markup).toContain('data-ad-slot="article-1"');
     expect(markup.indexOf('data-ad-slot="article-1"'))
       .toBeGreaterThan(markup.indexOf('data-article-paragraph="1"'));
+  });
+
+  it('hands each report to the relevant live market product', () => {
+    const seoul = STARTER_EDITORIAL_ARTICLES.find(({ marketKey }) => marketKey === 'seoul')!;
+    const singapore = STARTER_EDITORIAL_ARTICLES.find(({ marketKey }) => marketKey === 'singapore')!;
+    const dubai = { ...seoul, marketKey: 'dubai' as const, slug: 'dubai-boundary' };
+
+    const seoulMarkup = renderToStaticMarkup(<InsightsArticle article={seoul} />);
+    const singaporeMarkup = renderToStaticMarkup(<InsightsArticle article={singapore} />);
+    const dubaiMarkup = renderToStaticMarkup(<InsightsArticle article={dubai} />);
+
+    expect(seoulMarkup).toContain('href="/kr/seoul/explore"');
+    expect(seoulMarkup).toContain('href="/kr/seoul/check"');
+    expect(singaporeMarkup).toContain('href="/sg/singapore/explore"');
+    expect(singaporeMarkup).toContain('href="/sg/singapore/check"');
+    expect(dubaiMarkup).toContain('href="/ae/dubai"');
+    expect(dubaiMarkup).toContain('href="/compare?market=dubai"');
+    expect(dubaiMarkup).not.toContain('/ae/dubai/check');
   });
 });
