@@ -1,0 +1,120 @@
+import Link from 'next/link';
+import type { EditorialGrowthReviewModel } from '@/lib/design-review/editorial-growth-review-model';
+import styles from './editorial-growth-review.module.css';
+
+const COPY = Object.freeze({
+  en: {
+    eyebrow: 'Korea rental intelligence',
+    title: 'Understand the real cost of renting in Korea.',
+    lead: 'Reported contracts, clear comparison boundaries, and practical guides for decisions made from abroad.',
+    primary: 'Check a price',
+    secondary: 'Explore Seoul',
+    evidence: 'Current evidence',
+    insight: 'Latest from the data desk',
+    guides: 'Start with the essentials',
+    guidesTitle: 'Guides for renting and buying',
+    method: 'How this evidence works',
+    methodBody: 'SignedPrice separates reported contract evidence from editorial explanation. Period, sample, and publication limits stay visible wherever a figure appears.',
+    unavailable: 'Official Seoul evidence is temporarily unavailable.',
+    read: 'Read report',
+  },
+  'zh-CN': {
+    eyebrow: '韩国租房数据指南',
+    title: '在韩国租房前，先看真实成交依据。',
+    lead: '把已申报合同、可比范围和实用指南放在同一条决策路径上，帮助海外用户判断。',
+    primary: '查询价格',
+    secondary: '探索首尔',
+    evidence: '当前数据',
+    insight: '数据编辑部最新文章',
+    guides: '从基础指南开始',
+    guidesTitle: '韩国租房与购房指南',
+    method: '这些数据如何使用',
+    methodBody: 'SignedPrice 将已申报合同数据与编辑说明分开。每个数字旁边都会显示期间、样本和发布限制。',
+    unavailable: '首尔官方数据暂时无法使用。',
+    read: '阅读报告',
+  },
+});
+
+export function EditorialGrowthHome({ model }: Readonly<{ model: EditorialGrowthReviewModel }>) {
+  const copy = COPY[model.locale];
+  const query = `locale=${model.locale}&state=${model.state}&ad=${model.ad}`;
+
+  return (
+    <main className={styles.homePage}>
+      <section className={styles.homeHero}>
+        <p className={styles.eyebrow}>{copy.eyebrow}</p>
+        <h1 className={styles.display}>{copy.title}</h1>
+        <p className={`${styles.lead} ${styles.homeLead}`}>{copy.lead}</p>
+        <div className={styles.heroActions}>
+          <Link
+            className={styles.primaryAction}
+            data-primary-action="check"
+            href={`/design-review/editorial-growth/check/?${query}`}
+          >
+            {copy.primary}
+          </Link>
+          <Link className={styles.textAction} href={`/design-review/editorial-growth/explore/?${query}`}>
+            {copy.secondary}<span aria-hidden="true"> ↗</span>
+          </Link>
+        </div>
+      </section>
+
+      <section className={styles.evidenceStrip} aria-labelledby="home-evidence-title">
+        <div>
+          <p className={styles.eyebrow}>{model.seoulStatus}</p>
+          <h2 className={styles.subheading} id="home-evidence-title">{copy.evidence}</h2>
+        </div>
+        {model.headlineMetric ? (
+          <dl className={styles.headlineMetric}>
+            <div>
+              <dt>{model.headlineMetric.label}</dt>
+              <dd>{model.headlineMetric.value}</dd>
+            </div>
+            <p>{model.headlineMetric.context}</p>
+          </dl>
+        ) : (
+          <p className={styles.evidenceUnavailable}>{copy.unavailable}</p>
+        )}
+      </section>
+
+      <section className={styles.homeInsight} data-home-section="insight" aria-labelledby="home-insight-title">
+        <div className={styles.sectionIntro}>
+          <p className={styles.eyebrow}>{copy.insight}</p>
+          <h2 className={styles.sectionTitle} id="home-insight-title">{model.article.title}</h2>
+        </div>
+        <div className={styles.insightBody}>
+          <p className={styles.lead}>{model.article.summary}</p>
+          <p className={styles.articleMeta}>{model.article.market} · Updated {model.article.updated}</p>
+          <Link className={styles.textAction} href={`/design-review/editorial-growth/content/?${query}`}>
+            {copy.read}<span aria-hidden="true"> →</span>
+          </Link>
+        </div>
+      </section>
+
+      <section className={styles.guideSection} aria-labelledby="home-guides-title">
+        <div className={styles.sectionIntro}>
+          <p className={styles.eyebrow}>{copy.guides}</p>
+          <h2 className={styles.sectionTitle} id="home-guides-title">{copy.guidesTitle}</h2>
+        </div>
+        <ol className={styles.guideList}>
+          {model.guides.slice(0, 5).map((guide) => (
+            <li key={guide.href}>
+              <Link href={guide.href}>
+                <span className={styles.guideStage}>{guide.stage}</span>
+                <strong>{guide.title}</strong>
+                <span>{guide.summary}</span>
+                <small>Updated {guide.updated}</small>
+              </Link>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section className={styles.methodNote} aria-labelledby="home-method-title">
+        <p className={styles.eyebrow}>Method &amp; provenance</p>
+        <h2 className={styles.subheading} id="home-method-title">{copy.method}</h2>
+        <p>{copy.methodBody}</p>
+      </section>
+    </main>
+  );
+}
