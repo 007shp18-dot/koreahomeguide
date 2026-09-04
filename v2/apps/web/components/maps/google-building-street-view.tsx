@@ -207,7 +207,7 @@ export function GoogleBuildingStreetView({
     }
   }, [address, latitude, longitude]);
 
-  if (browserKey !== null && state === 'unavailable' && latitude !== undefined && longitude !== undefined) return (
+  if ((browserKey === null || state === 'unavailable') && latitude !== undefined && longitude !== undefined) return (
     <section className={styles.frame} data-building-media="google-area-map" data-media-state="map-fallback">
       <iframe
         className={styles.embed}
@@ -219,10 +219,10 @@ export function GoogleBuildingStreetView({
     </section>
   );
   if (browserKey === null || state === 'unavailable') return (
-    <section className={styles.unavailable} data-building-media="street-view-unavailable">
-      <strong>Street view unavailable</strong>
-      <p>Google could not verify nearby outdoor imagery. Building evidence remains available.</p>
-      <Link href={mapHref}>View this building area on the map</Link>
+    <section className={styles.locationFallback} data-building-media="location-map-fallback">
+      <span aria-hidden="true">⌖</span>
+      <div><strong>Building location</strong><p>Open the exact building area in Google Maps.</p></div>
+      <Link href={mapHref}>Open location map</Link>
     </section>
   );
   return (

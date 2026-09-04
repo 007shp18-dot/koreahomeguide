@@ -97,18 +97,23 @@ export function GooglePlacePhoto({
   registryKey?: string;
 }>) {
   const [photo, setPhoto] = useState<PhotoState>('loading');
+  const [approvedPlaceId, setApprovedPlaceId] = useState<string | null | undefined>(
+    registryKey === undefined ? null : undefined,
+  );
 
-  const initialize = useCallback(async () => {
-    const sdk = (window as GoogleReadyScope).google?.maps;
-    if (sdk === undefined || typeof sdk.importLibrary !== 'function') return;
-    try {
-      if (registryKey !== undefined) {
-        const approvalResponse = await fetch(`/api/building-photo/?key=${encodeURIComponent(registryKey)}`);
-        if (!approvalResponse.ok) {
-          setPhoto('unavailable');
-          return;
-        }
-        const approval = await approvalResponse.json() as Readonly<{
+  useEffect(() => {
+    if (registryKey === undefined) return;
+    let active = true;
+    queueMicrotask(() => {
+      if (!active) return;
+      setPhoto('loading');
+      setApprovedPlaceId(undefined);
+    });
+    void (async () => {
+      try {
+        const response = await fetch(`/api/building-photo/?key=${encodeURIComponent(registryKey)}`);
+        if (!response.ok) throw new Error('Photo approval unavailable.');
+        const approval = await response.json() as Readonly<{
           state?: unknown;
           provider?: unknown;
           placeId?: unknown;
@@ -122,11 +127,11 @@ export function GooglePlacePhoto({
           || typeof approval.buildingName !== 'string' || typeof approval.address !== 'string'
           || normalizedPlaceText(approval.buildingName) !== normalizedPlaceText(buildingName)
           || normalizedPlaceText(approval.address) !== normalizedPlaceText(address)) {
-          setPhoto('unavailable');
-          return;
+          throw new Error('Photo identity is not approved.');
         }
         if ((approval.provider === 'licensed-url' || approval.provider === 'owned-object')
           && typeof approval.assetUrl === 'string') {
+          if (!active) return;
           setPhoto(Object.freeze({
             src: approval.assetUrl,
             attribution: typeof approval.attributionName === 'string'
@@ -138,30 +143,22 @@ export function GooglePlacePhoto({
           }));
           return;
         }
-        if (typeof approval.placeId !== 'string') {
-          setPhoto('unavailable');
-          return;
+        if (approval.provider !== 'google-place' || typeof approval.placeId !== 'string') {
+          throw new Error('Approved photo provider is incomplete.');
         }
-        const { Place } = await sdk.importLibrary('places');
-        const { places } = await Place.searchByText({
-          textQuery: `${buildingName}, ${address}`,
-          fields: ['id', 'displayName', 'formattedAddress', 'photos'],
-          maxResultCount: 1,
-          language: 'en',
-        });
-        const approvedPlace = places[0];
-        const approvedPhoto = approvedPlace?.photos?.[0];
-        if (approvedPlace?.id !== approval.placeId || approvedPhoto === undefined
-          || !isTrustedGooglePlaceMatch(approvedPlace.displayName, buildingName, approvedPlace.formattedAddress, address)) {
-          setPhoto('unavailable');
-          return;
-        }
-        setPhoto(Object.freeze({
-          src: approvedPhoto.getURI({ maxHeight: 900, maxWidth: 1400 }),
-          attribution: approvedPhoto.authorAttributions[0] ?? null,
-        }));
-        return;
+        if (browserKey === null) throw new Error('Google Places browser key unavailable.');
+        if (active) setApprovedPlaceId(approval.placeId);
+      } catch {
+        if (active) setPhoto('unavailable');
       }
+    })();
+    return () => { active = false; };
+  }, [address, browserKey, buildingName, registryKey]);
+
+  const initialize = useCallback(async () => {
+    const sdk = (window as GoogleReadyScope).google?.maps;
+    if (sdk === undefined || typeof sdk.importLibrary !== 'function' || approvedPlaceId === undefined) return;
+    try {
       const { Place } = await sdk.importLibrary('places');
       const { places } = await Place.searchByText({
         textQuery: `${buildingName}, ${address}`,
@@ -171,7 +168,9 @@ export function GooglePlacePhoto({
       });
       const place = places[0];
       const result = place?.photos?.[0];
-      if (result === undefined || !isTrustedGooglePlaceMatch(place?.displayName, buildingName, place?.formattedAddress, address)) {
+      if (result === undefined
+        || (approvedPlaceId !== null && place?.id !== approvedPlaceId)
+        || !isTrustedGooglePlaceMatch(place?.displayName, buildingName, place?.formattedAddress, address)) {
         setPhoto('unavailable');
         return;
       }
@@ -182,10 +181,10 @@ export function GooglePlacePhoto({
     } catch {
       setPhoto('unavailable');
     }
-  }, [address, buildingName, registryKey]);
+  }, [address, approvedPlaceId, buildingName]);
 
   useEffect(() => {
-    if (browserKey === null) return;
+    if (browserKey === null || approvedPlaceId === undefined) return;
     const scope = window as GoogleReadyScope;
     const handleReady = () => { void initialize(); };
     const timeout = window.setTimeout(() => setPhoto((current) => current === 'loading' ? 'unavailable' : current), 5_000);
@@ -197,9 +196,9 @@ export function GooglePlacePhoto({
       window.clearTimeout(timeout);
       window.removeEventListener(GOOGLE_MAPS_READY_EVENT, handleReady);
     };
-  }, [browserKey, initialize]);
+  }, [approvedPlaceId, browserKey, initialize]);
 
-  if (browserKey === null || photo === 'unavailable') return fallback;
+  if (photo === 'unavailable' || (browserKey === null && registryKey === undefined)) return fallback;
 
   return (
     <div className={styles.frame} data-building-media="google-place-photo" data-media-state={photo === 'loading' ? 'loading' : 'ready'}>
@@ -224,13 +223,15 @@ export function GooglePlacePhoto({
             : <a href={photo.attribution.uri}>{photo.attribution.displayName}</a>}
         </p>
       )}
-      <Script
-        src={buildGoogleMapsScriptUrl(browserKey)}
-        strategy="lazyOnload"
-        onReady={() => { void initialize(); }}
-        onError={() => setPhoto('unavailable')}
-        data-google-photo-loader={GOOGLE_MAPS_READY_CALLBACK}
-      />
+      {browserKey === null || approvedPlaceId === undefined ? null : (
+        <Script
+          src={buildGoogleMapsScriptUrl(browserKey)}
+          strategy="lazyOnload"
+          onReady={() => { void initialize(); }}
+          onError={() => setPhoto('unavailable')}
+          data-google-photo-loader={GOOGLE_MAPS_READY_CALLBACK}
+        />
+      )}
     </div>
   );
 }
