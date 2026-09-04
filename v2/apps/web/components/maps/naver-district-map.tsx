@@ -52,6 +52,7 @@ type NaverDistrictMapProps = Readonly<{
   buildings?: readonly NaverBuildingMapPoint[];
   onSelectDistrict?: (slug: string) => void;
   onSelectBuilding?: (id: string) => void;
+  onResolveBuildingLocation?: (id: string, latitude: number, longitude: number) => void;
   fallback: ReactNode;
   locale?: ProductLocale;
 }>;
@@ -165,6 +166,7 @@ type NaverDistrictMapUpdate = Readonly<{
   buildings?: readonly NaverBuildingMapPoint[];
   onSelect: (href: string) => void;
   onSelectBuilding?: (id: string) => void;
+  onResolveBuildingLocation?: (id: string, latitude: number, longitude: number) => void;
   onBuildingMarkerUnavailable?: (id: string) => void;
 }>;
 
@@ -269,6 +271,7 @@ export function mountNaverDistrictMap({
     buildings = [],
     onSelect,
     onSelectBuilding,
+    onResolveBuildingLocation,
     onBuildingMarkerUnavailable,
   }: NaverDistrictMapUpdate) => {
     if (disposed) throw new TypeError('Disposed NAVER map cannot be updated.');
@@ -349,6 +352,7 @@ export function mountNaverDistrictMap({
               () => onSelectBuilding?.(building.id),
               buildNaverBuildingMarkerContent(building),
             );
+            onResolveBuildingLocation?.(building.id, latitude, longitude);
           });
         } else {
           markBuildingUnavailable(building.id);
@@ -425,6 +429,7 @@ export function NaverDistrictMap({
   buildings,
   onSelectDistrict,
   onSelectBuilding,
+  onResolveBuildingLocation,
   fallback,
   locale = 'en',
 }: NaverDistrictMapProps) {
@@ -522,10 +527,11 @@ export function NaverDistrictMap({
             ...current,
             [selectedUnresolvedBuilding.id]: Object.freeze({ latitude, longitude }),
           }));
+      onResolveBuildingLocation?.(selectedUnresolvedBuilding.id, latitude, longitude);
     } catch {
       // Fail closed: an unresolved or mismatched place never becomes a map marker.
     }
-  }, [googleMapsBrowserKey, selectedUnresolvedBuilding]);
+  }, [googleMapsBrowserKey, onResolveBuildingLocation, selectedUnresolvedBuilding]);
 
   useEffect(() => {
     if (googleMapsBrowserKey === null || selectedUnresolvedBuilding === undefined) return undefined;
@@ -605,6 +611,7 @@ export function NaverDistrictMap({
         } else router.push(href);
       },
       onSelectBuilding,
+      onResolveBuildingLocation,
       onBuildingMarkerUnavailable: (buildingId) => {
         setUnavailableBuildingIds((current) => current.includes(buildingId)
           ? current
@@ -624,7 +631,7 @@ export function NaverDistrictMap({
     setState('ready');
     const active = lifecycle.current;
     return () => active.invalidate();
-  }, [clientId, districts, failClosed, onSelectBuilding, onSelectDistrict, resolvedBuildings, router, sdk, selectedDistrict]);
+  }, [clientId, districts, failClosed, onResolveBuildingLocation, onSelectBuilding, onSelectDistrict, resolvedBuildings, router, sdk, selectedDistrict]);
 
   useEffect(() => () => {
     submoduleWait.current?.();
