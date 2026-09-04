@@ -341,6 +341,10 @@ function ReadyAreaExplorer({
   const { selectedBuildingId } = buildingSelection;
   const [visibleBuildingCount, setVisibleBuildingCount] = useState(10);
   const [sortMode, setSortMode] = useState<'latest' | 'evidence' | 'name'>('latest');
+  const [resolvedMapCoordinates, setResolvedMapCoordinates] = useState<Readonly<Record<string, Readonly<{
+    latitude: number;
+    longitude: number;
+  }>>>>(Object.freeze({}));
   const readyBuildingAvailability = model.buildingAvailability.status === 'ready'
     ? model.buildingAvailability
     : null;
@@ -774,6 +778,12 @@ function ReadyAreaExplorer({
             buildings={mapDrilledToDistrict ? mapBuildings : undefined}
             onSelectDistrict={selectDistrict}
             onSelectBuilding={selectBuildingFromMarker}
+            onResolveBuildingLocation={(id, latitude, longitude) => {
+              setResolvedMapCoordinates((current) => current[id] !== undefined ? current : Object.freeze({
+                ...current,
+                [id]: Object.freeze({ latitude, longitude }),
+              }));
+            }}
             locale={locale}
             fallback={<div className={styles.liveMapLoading} role="status">
               <strong>{locale === 'ko' ? '네이버 지도를 불러오는 중입니다.' : 'Loading the NAVER map.'}</strong>
@@ -1026,12 +1036,13 @@ function ReadyAreaExplorer({
               buildingName={selectedBuilding.name}
               address={buildNaverBuildingAddressQuery(selected.nameKo, selectedBuilding.neighborhoodName, selectedBuilding.name)}
               registryKey={`kr-seoul:${selectedBuilding.id}`}
-              fallback={selectedBuilding.latitude !== null && selectedBuilding.longitude !== null ? (
+              fallback={selectedBuilding.latitude !== null && selectedBuilding.longitude !== null
+                || resolvedMapCoordinates[selectedBuilding.id] !== undefined ? (
                 <NaverBuildingStreetView
                   clientId={naverMapClientId}
                   buildingName={selectedBuilding.name}
-                  latitude={selectedBuilding.latitude}
-                  longitude={selectedBuilding.longitude}
+                  latitude={selectedBuilding.latitude ?? resolvedMapCoordinates[selectedBuilding.id]!.latitude}
+                  longitude={selectedBuilding.longitude ?? resolvedMapCoordinates[selectedBuilding.id]!.longitude}
                   mapHref={selectedBuildingDetailHref}
                 />
               ) : (
