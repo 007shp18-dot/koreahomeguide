@@ -54,7 +54,7 @@
   min-height: 54px;
   overflow: hidden;
   border: 1px solid #d8e0e9;
-  border-radius: 10px;
+  border-radius: 12px;
   background: #fff;
   box-shadow: 0 12px 30px rgb(15 23 42 / 7%);
 }
@@ -113,7 +113,7 @@
   min-height: 390px;
   overflow: hidden;
   border: 1px solid #dfe5ec;
-  border-radius: 14px;
+  border-radius: 12px;
   background: #edf3f8;
   box-shadow: 0 24px 60px rgb(15 23 42 / 10%);
 }
@@ -160,7 +160,7 @@
   border-radius: 999px;
   color: #334155;
   background: rgb(255 255 255 / 88%);
-  font-size: 0.7rem;
+  font-size: var(--text-meta);
   font-weight: 750;
   backdrop-filter: blur(8px);
 }
@@ -193,7 +193,7 @@
 }
 
 .heroMediaControls button:hover { background: #edf3f9; }
-.heroMediaControls span { min-width: 36px; text-align: center; font-size: .66rem; font-weight: 800; }
+.heroMediaControls span { min-width: 36px; text-align: center; font-size: var(--text-meta); font-weight: 800; }
 
 .heroMediaCaption {
   position: absolute;
@@ -202,7 +202,7 @@
   left: 16px;
   padding: 15px 17px;
   border: 1px solid rgb(255 255 255 / 55%);
-  border-radius: 10px;
+  border-radius: 12px;
   background: rgb(255 255 255 / 91%);
   box-shadow: 0 10px 30px rgb(15 23 42 / 14%);
   backdrop-filter: blur(12px);
@@ -211,7 +211,7 @@
 .heroMediaCaption span,
 .heroMediaCaption p {
   color: #66758a;
-  font-size: 0.72rem;
+  font-size: var(--text-meta);
 }
 
 .heroMediaCaption h2 {
@@ -235,7 +235,7 @@
   border-radius: 999px;
   color: #536176;
   background: #f8fafc;
-  font-size: .62rem;
+  font-size: var(--text-meta);
   font-weight: 700;
   line-height: 1.25;
 }
@@ -264,10 +264,10 @@
 .mediaFallback span {
   padding: 7px 9px;
   border: 1px solid #ccd9e6;
-  border-radius: 7px;
+  border-radius: 8px;
   background: #fff;
   color: #315273;
-  font-size: 0.68rem;
+  font-size: var(--text-meta);
   font-weight: 750;
 }
 
@@ -349,7 +349,7 @@
   flex-wrap: wrap;
   gap: 8px 22px;
   border: 1px solid #e0e6ed;
-  border-radius: 9px;
+  border-radius: 8px;
   background: #fff;
 }
 
@@ -358,7 +358,7 @@
   display: inline-flex;
   align-items: center;
   color: #536176;
-  font-size: .71rem;
+  font-size: var(--text-meta);
   font-weight: 700;
   text-decoration: none;
 }
@@ -373,7 +373,7 @@
 .marketTools > section {
   overflow: hidden;
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: 12px;
   background: var(--surface-strong);
 }
 
@@ -387,14 +387,14 @@
   border-bottom: 1px solid var(--line);
 }
 
-.marketTools header span { color: var(--muted); font-size: .65rem; font-weight: 800; letter-spacing: .07em; }
+.marketTools header span { color: var(--muted); font-size: var(--text-meta); font-weight: 800; letter-spacing: .07em; }
 .marketTools h3 { font-size: .9rem; letter-spacing: -.02em; }
 .marketTools nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .marketTools nav > a,
-.marketTools nav > span { min-height: 48px; padding: 9px 12px; display: flex; align-items: center; justify-content: space-between; gap: 7px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); color: var(--ink); font-size: .72rem; font-weight: 750; text-decoration: none; }
+.marketTools nav > span { min-height: 48px; padding: 9px 12px; display: flex; align-items: center; justify-content: space-between; gap: 7px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); color: var(--ink); font-size: var(--text-meta); font-weight: 750; text-decoration: none; }
 .marketTools nav > :nth-child(2n) { border-right: 0; }
 .marketTools nav > :nth-last-child(-n + 2) { border-bottom: 0; }
-.marketTools nav small { color: var(--muted); font-size: .56rem; font-weight: 700; text-align: right; }
+.marketTools nav small { color: var(--muted); font-size: var(--text-meta); font-weight: 700; text-align: right; }
 .marketTools [data-state='rights_blocked'],
 .marketTools [data-state='unavailable'] { color: #59677a; background: #f8fafc; }
 
@@ -406,7 +406,7 @@
 .bottomGrid > article {
   min-width: 0;
   border: 1px solid var(--line);
-  border-radius: 11px;
+  border-radius: 12px;
   background: var(--surface-strong);
   box-shadow: var(--shadow-sm);
 }
@@ -428,7 +428,7 @@
 .snapshotGrid small {
   margin-top: 16px;
   color: #718096;
-  font-size: 0.7rem;
+  font-size: var(--text-meta);
 }
 
 .snapshotGrid strong {
@@ -440,14 +440,14 @@
 .snapshotGrid p {
   margin: 8px 0 0;
   color: #68778b;
-  font-size: 0.74rem;
+  font-size: var(--text-meta);
   line-height: 1.45;
 }
 
 .snapshotGrid em {
   margin-top: 15px;
   color: #1456a0;
-  font-size: 0.73rem;
+  font-size: var(--text-meta);
   font-style: normal;
   font-weight: 700;
 }
@@ -460,7 +460,7 @@
   flex-direction: column;
   justify-content: flex-end;
   overflow: hidden;
-  border-radius: 11px;
+  border-radius: 12px;
   color: #fff;
   text-decoration: none;
   isolation: isolate;
@@ -479,7 +479,7 @@
 .marketDubai { background: linear-gradient(135deg, #d3b38c, #625246); }
 
 .marketGrid span {
-  font-size: 0.72rem;
+  font-size: var(--text-meta);
   font-weight: 650;
 }
 
@@ -492,7 +492,7 @@
 .marketGrid p,
 .marketGrid strong {
   margin: 0;
-  font-size: 0.73rem;
+  font-size: var(--text-meta);
   line-height: 1.45;
 }
 
@@ -544,7 +544,7 @@
 .propertyGrid span,
 .bottomGrid span {
   color: #2f6fb1;
-  font-size: 0.65rem;
+  font-size: var(--text-meta);
   font-weight: 800;
   letter-spacing: 0.07em;
   text-transform: uppercase;
@@ -581,14 +581,14 @@
 .buildingCard small {
   margin-top: 3px;
   color: #7a8798;
-  font-size: 0.69rem;
+  font-size: var(--text-meta);
 }
 
 .buildingCard a,
 .bottomGrid a {
   margin-top: 12px;
   color: #1456a0;
-  font-size: 0.74rem;
+  font-size: var(--text-meta);
   font-weight: 750;
   text-decoration: none;
 }
@@ -617,7 +617,7 @@
   display: block;
   margin-top: 16px;
   color: #8692a3;
-  font-size: 0.68rem;
+  font-size: var(--text-meta);
 }
 
 .propertyGrid > article {
@@ -629,7 +629,7 @@
   display: inline-flex;
   margin-top: 10px;
   color: #7a8798;
-  font-size: 0.7rem;
+  font-size: var(--text-meta);
 }
 
 .bottomGrid {

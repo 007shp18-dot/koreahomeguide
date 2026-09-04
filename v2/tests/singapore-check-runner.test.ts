@@ -72,6 +72,18 @@ describe('Singapore Check snapshot builder', () => {
       'utf8',
     ));
     expect(manifest.artifacts).toHaveLength(3);
+    expect(manifest.publicIndex).toMatchObject({
+      schemaVersion: 'signedprice-singapore-public-index-v1',
+      period: '2026-06/2026-08',
+      recordCount: 12,
+    });
+    const publicIndex = JSON.parse(gunzipSync(readFileSync(
+      join(output, 'singapore-public-index.json.gz'),
+    )).toString('utf8'));
+    expect(publicIndex).toMatchObject({
+      version: 'signedprice-singapore-public-index-v1',
+      digest: expect.stringMatching(/^[a-f0-9]{64}$/),
+    });
     for (const market of ['ura-private-sale', 'hdb-resale', 'hdb-rent'] as const) {
       const serialized = gunzipSync(readFileSync(
         join(output, `singapore-check-${market}.json.gz`),

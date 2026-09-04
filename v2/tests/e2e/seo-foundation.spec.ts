@@ -42,6 +42,12 @@ test('SEO foundation: every sitemap URL is terminal, indexable, and self-canonic
   expect(locations.length).toBeGreaterThan(0);
   expect(new Set(locations).size).toBe(locations.length);
   expect(locations).toContain('https://www.signedprice.com/sg/');
+  expect(locations).toContain('https://www.signedprice.com/news/policy/');
+  expect(locations).toContain('https://www.signedprice.com/news/policy/singapore-absd-policy-status/');
+  expect(locations).toContain('https://www.signedprice.com/news/seoul-district-price-distribution/');
+  expect(locations).toContain('https://www.signedprice.com/zh-cn/news/');
+  expect(locations).toContain('https://www.signedprice.com/zh-cn/guides/');
+  expect(locations.some((url) => url.startsWith('https://www.signedprice.com/insights/'))).toBe(false);
 
   for (const url of locations) {
     const parsed = new URL(url);
@@ -53,8 +59,9 @@ test('SEO foundation: every sitemap URL is terminal, indexable, and self-canonic
     expect(canonicalFrom(html), url).toBe(url);
     expect(html, url).toMatch(/<meta\s+name="robots"\s+content="index, follow"/i);
     const korean = parsed.pathname.startsWith('/ko/');
+    const chinese = parsed.pathname.startsWith('/zh-cn/');
     expect(metaContent(html, 'property', 'og:url'), url).toBe(url);
-    expect(metaContent(html, 'property', 'og:locale'), url).toBe(korean ? 'ko_KR' : 'en_US');
+    expect(metaContent(html, 'property', 'og:locale'), url).toBe(korean ? 'ko_KR' : chinese ? 'zh_CN' : 'en_US');
     expect(metaContent(html, 'property', 'og:image'), url).toBe(
       `https://www.signedprice.com/og/${korean ? 'ko' : 'en'}/`,
     );
@@ -74,8 +81,12 @@ test('SEO foundation: every English and Korean alternate links back', async ({ r
     const sourceHtml = await sourceResponse.text();
     const sourceCanonical = canonicalFrom(sourceHtml);
     const sourceAlternates = alternatesFrom(sourceHtml);
-    const sourceLanguage = new URL(sourceUrl).pathname.startsWith('/ko/') ? 'ko' : 'en';
-    const counterpartLanguage = sourceLanguage === 'ko' ? 'en' : 'ko';
+    const pathname = new URL(sourceUrl).pathname;
+    const sourceLanguage = pathname.startsWith('/ko/') ? 'ko' : pathname.startsWith('/zh-cn/') ? 'zh-Hans' : 'en';
+    const counterpartLanguage = sourceLanguage === 'en'
+      ? sourceAlternates.has('ko') ? 'ko' : sourceAlternates.has('zh-Hans') ? 'zh-Hans' : null
+      : 'en';
+    if (counterpartLanguage === null) continue;
     const counterpartUrl = sourceAlternates.get(counterpartLanguage);
     if (counterpartUrl === undefined) continue;
 

@@ -11,13 +11,13 @@ type PublicEditorialRouteTable = Readonly<Record<
 export const PUBLIC_EDITORIAL_SURFACES: PublicEditorialRouteTable = Object.freeze({
   en: Object.freeze({
     home: '/',
-    content: '/insights/',
+    content: '/news/',
     check: '/kr/seoul/check/',
     explore: '/kr/seoul/explore/',
   }),
   'zh-CN': Object.freeze({
     home: '/zh-cn/kr/seoul/',
-    content: '/zh-cn/kr/seoul/insights/',
+    content: '/zh-cn/news/',
     check: '/zh-cn/kr/seoul/check/',
     explore: '/zh-cn/kr/seoul/explore/',
   }),

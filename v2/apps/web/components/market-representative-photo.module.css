@@ -1,11 +1,30 @@
 .frame {
   position: relative;
+  aspect-ratio: 16 / 9;
   min-width: 0;
   min-height: inherit;
   overflow: hidden;
   margin: 0;
   background: #dfe8ef;
 }
+
+.fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 8px;
+  padding: 24px;
+  color: #17324d;
+  text-align: center;
+  background:
+    radial-gradient(circle at 72% 28%, rgb(255 255 255 / 72%), transparent 20%),
+    linear-gradient(145deg, #edf3f7, #c7d7e5);
+}
+
+.fallback strong { font-size: 1.1rem; }
+.fallback span { color: #526071; font-size: var(--text-meta); }
 
 .frame img {
   position: absolute;
@@ -27,6 +46,6 @@
   padding: 9px 12px;
   color: #111827;
   background: #fff;
-  font-size: 11px;
+  font-size: var(--text-meta);
   line-height: 1.45;
 }

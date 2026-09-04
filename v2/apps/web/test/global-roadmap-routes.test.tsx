@@ -7,35 +7,35 @@ vi.mock('next/navigation', () => ({
 }));
 
 import CommunityPage, { metadata as communityMetadata } from '../app/(en)/community/page';
-import NewsPage, { metadata as newsMetadata } from '../app/(en)/news/page';
+import NewsPage, { generateMetadata as generateNewsMetadata } from '../app/(en)/news/page';
 import MarketFeatureRoute from '../app/(en)/[country]/[city]/[intent]/page';
 
 afterEach(() => vi.unstubAllGlobals());
 
 describe('global roadmap routes', () => {
-  it('server-renders global market news before client refresh', async () => {
-    vi.stubGlobal('fetch', vi.fn(async (input: string | URL | Request) => {
-      const url = new URL(input instanceof Request ? input.url : input.toString());
-      const market = url.searchParams.get('q')?.includes('Singapore') ? 'Singapore' : url.searchParams.get('q')?.includes('Dubai') ? 'Dubai' : 'Seoul';
-      const rss = `<?xml version="1.0"?><rss><channel><item>
-        <title>${market} property market update - Example News</title>
-        <link>https://news.google.com/rss/articles/${market.toLowerCase()}</link>
-        <pubDate>Fri, 04 Sep 2026 01:00:00 GMT</pubDate>
-        <description>${market} housing evidence update</description>
-        <source>Example News</source>
-      </item></channel></rss>`;
-      return new Response(rss, { status: 200 });
-    }));
+  it('server-renders reviewed global market news without fetching external discovery', async () => {
+    const externalFetch = vi.fn();
+    vi.stubGlobal('fetch', externalFetch);
 
     const news = renderToStaticMarkup(await NewsPage());
+    const newsMetadata = await generateNewsMetadata();
     const community = renderToStaticMarkup(<CommunityPage />);
 
-    expect(newsMetadata.alternates).toEqual({ canonical: 'https://www.signedprice.com/news/' });
+    expect(newsMetadata.alternates).toEqual({
+      canonical: 'https://www.signedprice.com/news/',
+      languages: {
+        en: 'https://www.signedprice.com/news/',
+        'zh-Hans': 'https://www.signedprice.com/zh-cn/news/',
+        'x-default': 'https://www.signedprice.com/news/',
+      },
+    });
     expect(communityMetadata.alternates).toEqual({ canonical: 'https://www.signedprice.com/community/' });
-    expect(news).toContain('News, with the evidence boundary attached.');
-    expect(news).toContain('data-market-context="global"');
-    expect(news).toContain('Singapore housing evidence update');
-    expect(news).toMatch(/Singapore<\/span><small>[1-9]/);
+    expect(news).toContain('Property change, checked against evidence.');
+    expect(news).toContain('data-public-editorial-frame="content"');
+    expect(news).toContain('CCR, RCR and OCR: compare distributions, not labels alone');
+    expect(news).toContain('aria-label="News markets"');
+    expect(news).not.toContain('Live external news');
+    expect(externalFetch).not.toHaveBeenCalled();
     expect(community).toContain('One community, organized by place.');
     expect(community).toContain('District');
     expect(community).toContain('Building');
@@ -45,16 +45,17 @@ describe('global roadmap routes', () => {
   it.each([
     ['sg', 'singapore', 'Singapore'],
     ['ae', 'dubai', 'Dubai'],
-  ])('keeps the same six local tools for %s while showing honest availability', async (country, city, label) => {
+  ])('keeps capability-safe market navigation for %s', async (country, city, label) => {
     for (const intent of ['explore', 'check', 'rankings', 'news', 'community', 'guide']) {
       const html = renderToStaticMarkup(await MarketFeatureRoute({
         params: Promise.resolve({ country, city, intent }),
       }));
 
-      expect(html).toContain(`data-market-context="${city}"`);
-      expect(html).toContain(`aria-label="${label} product navigation"`);
-      expect(html).toContain('data-navigation-tier="product"');
-      expect(html).toContain('<strong>Explore</strong>');
+      expect(html).toContain(`data-market-context="${country === 'sg' ? 'sg-singapore' : 'ae-dubai'}"`);
+      expect(html).toContain(`aria-label="${label} market navigation"`);
+      expect(html).toContain('data-navigation-tier="global"');
+      expect(html).toContain('data-navigation-tier="market-local"');
+      expect(html).toContain('>Explore');
       expect(html).toContain('No unsupported values substituted');
     }
   });

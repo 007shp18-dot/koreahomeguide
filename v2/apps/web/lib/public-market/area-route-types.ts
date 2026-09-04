@@ -259,6 +259,15 @@ export type ExploreBuildingModel = Readonly<{
   housingType: string;
   latitude: number | null;
   longitude: number | null;
+  media?: Readonly<{
+    displayUrl: string;
+    width: number | null;
+    height: number | null;
+    focalX: number | null;
+    focalY: number | null;
+    attributionName: string | null;
+    attributionUrl: string | null;
+  }>;
   evidenceStatus: 'published' | 'withheld' | 'unavailable';
   transaction?: 'jeonse' | 'monthly' | 'sale';
   primaryMetric?: 'deposit' | 'monthly-rent' | 'sale-price';

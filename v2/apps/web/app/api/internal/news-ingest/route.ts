@@ -36,7 +36,12 @@ export async function GET(request: Request) {
       storedCount,
       ...(result.diagnostic === undefined ? {} : { diagnostic: result.diagnostic }),
     });
-    return NextResponse.json({ status, fetchedCount: items.length, storedCount });
+    return NextResponse.json({
+      status,
+      publicationState: 'internal-discovery-only',
+      fetchedCount: items.length,
+      storedCount,
+    });
   } catch (error) {
     const diagnostic = error instanceof Error ? error.message.slice(0, 400) : 'unknown_error';
     try {

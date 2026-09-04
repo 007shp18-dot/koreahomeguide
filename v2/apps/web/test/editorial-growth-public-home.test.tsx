@@ -23,7 +23,7 @@ describe('public editorial homepage', () => {
     expect(markup).toContain('See the market before you make the move.');
     expect(markup).toContain('href="/kr/seoul/check"');
     expect(markup).toContain('href="/kr/seoul/explore"');
-    expect(markup).toContain('href="/insights"');
+    expect(markup).toContain('href="/news"');
     expect(markup).not.toContain('/design-review/');
   });
 
@@ -53,7 +53,7 @@ describe('public editorial homepage', () => {
   it('keeps global destinations and capability-safe market entry points crawlable', async () => {
     const markup = renderToStaticMarkup(await Home());
 
-    for (const href of ['/markets', '/prices', '/insights', '/guides']) {
+    for (const href of ['/markets', '/prices', '/news', '/guides']) {
       expect(markup).toContain(`href="${href}"`);
     }
     for (const href of [

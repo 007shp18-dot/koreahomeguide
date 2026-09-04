@@ -11,6 +11,7 @@ import {
   singaporeStyles as styles,
 } from './singapore-shell';
 import { MarketDetailShell } from '../market-ui/market-shell';
+import { EvidencePendingLink } from './evidence-pending-link';
 
 export function SingaporeSegmentDetail({ model }: Readonly<{
   model: SingaporeSegmentModel | SingaporeUnavailableModel;
@@ -62,7 +63,9 @@ export function SingaporeSegmentDetail({ model }: Readonly<{
               <p>{project.n} reported transactions</p>
               <p>{project.medianPriceLabel ?? 'Distribution not published'}</p>
               <p>{project.medianPsfLabel ?? 'PSF not published'}</p>
-              <Link href={project.href}>Open project evidence</Link>
+              {project.state === 'published'
+                ? <EvidencePendingLink href={project.href}>Open project evidence</EvidencePendingLink>
+                : <span className={styles.evidenceUnavailableLink} data-evidence-link="unavailable" aria-disabled="true">At least 5 transactions are required</span>}
             </article>
           ))}
         </div>

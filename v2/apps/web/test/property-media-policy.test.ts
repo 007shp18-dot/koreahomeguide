@@ -16,7 +16,9 @@ const hdbBlockDetail = readFileSync(
 
 describe('property media policy', () => {
   it('never promotes street imagery into the primary property-photo position', () => {
-    for (const source of [seoulDetailRoute, singaporeProjectDetail, hdbBlockDetail]) {
+    expect(seoulDetailRoute).not.toContain('BuildingStreetView');
+    expect(seoulDetailRoute).toContain('ProjectedEntityMedia');
+    for (const source of [singaporeProjectDetail, hdbBlockDetail]) {
       expect(source).not.toContain('BuildingStreetView');
       expect(source).toContain('MarketRepresentativePhoto');
     }

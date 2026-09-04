@@ -2,7 +2,18 @@ import 'server-only';
 
 import { cache } from 'react';
 
-import { contentDatabase, publicContentDatabase } from '../db/postgres.server';
+import { contentDatabase } from '../db/postgres.server';
+import {
+  getPublishedContent,
+  listPublishedContent,
+} from '../content/content-repository.server';
+import type { PublishedContentArticle } from '../content/content-types';
+import type {
+  ContentLocale,
+  ContentSource,
+  ContentType,
+  EvidenceState,
+} from '../content/content-types';
 import {
   editorialMarketLabels,
   estimateReadMinutes,
@@ -13,81 +24,37 @@ import {
   type EditorialStatus,
 } from './editorial-content';
 
-function isoDate(value: unknown): string | null {
-  if (value instanceof Date) return value.toISOString();
-  if (typeof value !== 'string') return null;
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? null : date.toISOString();
-}
-
-function articleFromRow(row: Record<string, unknown>): EditorialArticle | null {
-  const marketKey = row.market_key;
-  const publishedAt = isoDate(row.published_at);
-  const updatedAt = isoDate(row.updated_at);
-  if (typeof row.slug !== 'string' || typeof row.title !== 'string'
-    || typeof row.summary !== 'string' || typeof row.body_markdown !== 'string'
-    || publishedAt === null || updatedAt === null
-    || !(marketKey === null || ['seoul', 'singapore', 'dubai'].includes(String(marketKey)))) return null;
+function articleFromPublished(row: PublishedContentArticle): EditorialArticle {
   return Object.freeze({
     slug: row.slug,
-    marketKey: marketKey as EditorialMarketKey,
+    marketKey: row.marketId === 'kr-seoul' ? 'seoul' : row.marketId === 'sg-singapore' ? 'singapore' : null,
     title: row.title,
-    summary: row.summary,
-    bodyMarkdown: row.body_markdown,
+    summary: row.deck,
+    bodyMarkdown: row.bodyMarkdown,
     status: 'published',
-    publishedAt,
-    updatedAt,
-    readMinutes: estimateReadMinutes(row.body_markdown),
-    sources: Object.freeze([]),
+    publishedAt: row.publishedAt,
+    updatedAt: row.updatedAt,
+    readMinutes: estimateReadMinutes(row.bodyMarkdown),
+    sources: Object.freeze(row.sources.map((source) => Object.freeze({
+      publisher: source.publisher,
+      label: source.title,
+      href: source.href,
+      checkedAt: source.checkedAt,
+    }))),
   });
 }
 
 export async function listPublishedContentArticles(): Promise<readonly EditorialArticle[]> {
-  const sql = publicContentDatabase();
-  let stored: EditorialArticle[] = [];
-  if (sql !== null) {
-    try {
-      const rows = await sql`
-        SELECT slug, market_key, title, summary, body_markdown, published_at, updated_at
-        FROM content_articles
-        WHERE status = 'published' AND published_at IS NOT NULL AND published_at <= now()
-        ORDER BY published_at DESC
-      `;
-      stored = rows.flatMap((row) => {
-        const article = articleFromRow(row);
-        return article === null ? [] : [article];
-      });
-    } catch (error) {
-      console.error('SignedPrice editorial article read failed.', error);
-    }
-  }
+  const stored = (await listPublishedContent({ locale: 'en', limit: 200 }))
+    .map(articleFromPublished);
   const storedSlugs = new Set(stored.map(({ slug }) => slug));
   return Object.freeze([...stored, ...STARTER_EDITORIAL_ARTICLES.filter(({ slug }) => !storedSlugs.has(slug))]
     .sort((left, right) => right.publishedAt.localeCompare(left.publishedAt)));
 }
 
 export const getPublishedContentArticle = cache(async (slug: string): Promise<EditorialArticle | null> => {
-  const starter = getStarterEditorialArticle(slug);
-  if (starter !== null) return starter;
-  const sql = publicContentDatabase();
-  if (sql !== null) {
-    try {
-      const [row] = await sql`
-        SELECT slug, market_key, title, summary, body_markdown, published_at, updated_at
-        FROM content_articles
-        WHERE slug = ${slug} AND status = 'published'
-          AND published_at IS NOT NULL AND published_at <= now()
-        LIMIT 1
-      `;
-      if (row !== undefined) {
-        const article = articleFromRow(row);
-        if (article !== null) return article;
-      }
-    } catch (error) {
-      console.error('SignedPrice editorial article read failed.', error);
-    }
-  }
-  return null;
+  const stored = await getPublishedContent('en', slug);
+  return stored === null ? getStarterEditorialArticle(slug) : articleFromPublished(stored);
 });
 
 export type SaveEditorialArticleInput = Readonly<{
@@ -97,11 +64,21 @@ export type SaveEditorialArticleInput = Readonly<{
   summary: string;
   bodyMarkdown: string;
   status: EditorialStatus;
+  locale: ContentLocale;
+  contentType: ContentType;
+  evidenceState: EvidenceState;
+  reviewedBy: string | null;
+  sources: readonly ContentSource[];
 }>;
 
 export async function saveEditorialArticle(input: SaveEditorialArticleInput): Promise<void> {
   const sql = contentDatabase();
   if (sql === null) throw new Error('database_not_configured');
+  if (input.status === 'published' && (
+    input.reviewedBy === null
+    || (input.evidenceState !== 'not-applicable'
+      && !input.sources.some(({ kind }) => kind === 'primary'))
+  )) throw new Error('publication_requirements_not_met');
   if (input.marketKey !== null) {
     const countryCode = input.marketKey === 'seoul' ? 'KR' : input.marketKey === 'singapore' ? 'SG' : 'AE';
     await sql`
@@ -113,13 +90,17 @@ export async function saveEditorialArticle(input: SaveEditorialArticleInput): Pr
   await sql`
     INSERT INTO content_articles (
       slug, market_key, title, summary, body_markdown, status, published_at,
-      reviewed_at, reviewed_by
+      reviewed_at, reviewed_by, locale, content_type, market_id, editorial_status,
+      evidence_state, author_name
     ) VALUES (
       ${input.slug}, ${input.marketKey}, ${input.title}, ${input.summary},
       ${input.bodyMarkdown}, ${input.status},
       ${input.status === 'published' ? new Date().toISOString() : null},
       ${input.status === 'published' ? new Date().toISOString() : null},
-      ${input.status === 'published' ? 'content-editor' : null}
+      ${input.status === 'published' ? input.reviewedBy : null},
+      ${input.locale}, ${input.contentType},
+      ${input.marketKey === 'seoul' ? 'kr-seoul' : input.marketKey === 'singapore' ? 'sg-singapore' : null},
+      ${input.status}, ${input.evidenceState}, 'SignedPrice Data Desk'
     )
     ON CONFLICT (slug) DO UPDATE SET
       market_key = excluded.market_key,
@@ -127,12 +108,41 @@ export async function saveEditorialArticle(input: SaveEditorialArticleInput): Pr
       summary = excluded.summary,
       body_markdown = excluded.body_markdown,
       status = excluded.status,
+      locale = excluded.locale,
+      content_type = excluded.content_type,
+      market_id = excluded.market_id,
+      editorial_status = excluded.editorial_status,
+      evidence_state = excluded.evidence_state,
+      author_name = excluded.author_name,
       published_at = CASE
         WHEN excluded.status = 'published' THEN coalesce(content_articles.published_at, now())
         ELSE content_articles.published_at
       END,
       reviewed_at = CASE WHEN excluded.status = 'published' THEN now() ELSE content_articles.reviewed_at END,
-      reviewed_by = CASE WHEN excluded.status = 'published' THEN 'content-editor' ELSE content_articles.reviewed_by END,
+      reviewed_by = CASE WHEN excluded.status = 'published' THEN excluded.reviewed_by ELSE content_articles.reviewed_by END,
       updated_at = now()
   `;
+  for (const [position, source] of input.sources.entries()) {
+    await sql`
+      INSERT INTO content_sources (
+        id, source_kind, publisher, title, canonical_url, published_at, checked_at
+      ) VALUES (
+        ${source.id}, ${source.kind}, ${source.publisher}, ${source.title}, ${source.href},
+        ${source.publishedAt ?? null}, ${source.checkedAt}
+      )
+      ON CONFLICT (id) DO UPDATE SET
+        source_kind = excluded.source_kind,
+        publisher = excluded.publisher,
+        title = excluded.title,
+        canonical_url = excluded.canonical_url,
+        published_at = excluded.published_at,
+        checked_at = excluded.checked_at,
+        updated_at = now()
+    `;
+    await sql`
+      INSERT INTO content_source_links (content_slug, source_id, claim_scope, position)
+      VALUES (${input.slug}, ${source.id}, ${source.kind === 'primary' ? 'primary' : 'article'}, ${position})
+      ON CONFLICT (content_slug, source_id, claim_scope) DO NOTHING
+    `;
+  }
 }

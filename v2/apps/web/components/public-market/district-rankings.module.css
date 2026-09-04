@@ -31,7 +31,7 @@
 .heroCopy > p:first-child,
 .panelHeader > p:first-child {
   color: var(--ranking-accent);
-  font-size: 0.68rem;
+  font-size: var(--text-meta);
   font-weight: 850;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -75,14 +75,14 @@
 
 .heroMeta dt {
   color: var(--ranking-muted);
-  font-size: .62rem;
+  font-size: var(--text-meta);
   font-weight: 800;
   letter-spacing: .04em;
   text-transform: uppercase;
 }
 
 .heroMeta dd {
-  font-size: .72rem;
+  font-size: var(--text-meta);
   font-weight: 850;
   text-align: right;
 }
@@ -105,7 +105,7 @@
 
 .filters label > span {
   color: var(--ranking-muted);
-  font-size: 0.62rem;
+  font-size: var(--text-meta);
   font-weight: 800;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -121,7 +121,7 @@
   color: var(--ranking-ink);
   background: var(--ranking-ground);
   font: inherit;
-  font-size: 0.72rem;
+  font-size: var(--text-meta);
   font-weight: 800;
 }
 
@@ -161,7 +161,7 @@
   color: var(--ranking-ink);
   background: var(--ranking-ground);
   font: inherit;
-  font-size: 0.72rem;
+  font-size: var(--text-meta);
   font-weight: 850;
   cursor: pointer;
 }
@@ -195,7 +195,7 @@
 }
 .metricSummary > div:last-child { border-right: 0; }
 
-.metricSummary dt { color: var(--ranking-muted); font-size: 11px; font-weight: 800; }
+.metricSummary dt { color: var(--ranking-muted); font-size: var(--text-meta); font-weight: 800; }
 .metricSummary dd { margin: 0; overflow: hidden; font-size: 13px; font-weight: 850; line-height: 1.35; text-overflow: ellipsis; white-space: nowrap; }
 
 .preparing {
@@ -207,7 +207,7 @@
   background: #f5f3ee;
 }
 
-.preparing span { color: var(--ranking-accent); font-size: 11px; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
+.preparing span { color: var(--ranking-accent); font-size: var(--text-meta); font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
 .preparing h2 { margin: 0; font-size: clamp(1.6rem, 3vw, 2.5rem); }
 .preparing p { max-width: 720px; margin: 0; color: var(--ranking-muted); font-size: 14px; line-height: 1.65; }
 .unavailableRow { color: var(--ranking-muted); background: color-mix(in srgb, var(--ranking-ground) 96%, var(--ranking-ink)); }
@@ -244,7 +244,7 @@
 .panelHeader small,
 .noFall {
   color: var(--ranking-muted);
-  font-size: 0.74rem;
+  font-size: var(--text-meta);
   line-height: 1.5;
 }
 
@@ -294,7 +294,7 @@
 .rangeCard dl > div { min-width: 0; }
 .rangeCard dl > div:nth-child(2) { text-align: center; }
 .rangeCard dl > div:last-child { text-align: right; }
-.rangeCard dt { color: var(--muted); font-size: 10px; }
+.rangeCard dt { color: var(--muted); font-size: var(--text-meta); }
 .rangeCard dd { margin: 2px 0 0; overflow: hidden; font-size: 12px; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
 .rangeDescription { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
@@ -313,7 +313,7 @@
 .rank {
   border-right: var(--rule-default);
   color: var(--ranking-accent);
-  font-size: 0.72rem;
+  font-size: var(--text-meta);
   font-weight: 900;
 }
 
@@ -336,7 +336,7 @@
 
 .districtLink span {
   color: var(--ranking-muted);
-  font-size: 0.68rem;
+  font-size: var(--text-meta);
 }
 
 .districtLink:hover {
@@ -361,7 +361,7 @@
   grid-template-columns: repeat(3, 1fr);
   align-items: center;
   border-bottom: var(--rule-default);
-  font-size: 0.62rem;
+  font-size: var(--text-meta);
   font-weight: 800;
 }
 
@@ -444,7 +444,7 @@
   place-items: center;
   border: var(--rule-strong);
   color: var(--ranking-ink);
-  font-size: 0.72rem;
+  font-size: var(--text-meta);
   font-weight: 850;
   text-decoration: none;
 }
@@ -545,7 +545,7 @@
   align-items: end;
   overflow: hidden;
   border: 1px solid var(--line);
-  border-radius: 18px;
+  border-radius: 12px;
   background: linear-gradient(135deg, #fff 42%, var(--soft-blue));
   box-shadow: var(--shadow-md);
 }
@@ -562,26 +562,26 @@
   padding: 4px 16px;
   overflow: hidden;
   border: 1px solid var(--line);
-  border-radius: 13px;
+  border-radius: 12px;
   background: rgb(255 255 255 / 78%);
 }
 .heroMeta > div { border-color: var(--line); }
-.heroMeta dt { color: var(--muted); font-size: .7rem; }
+.heroMeta dt { color: var(--muted); font-size: var(--text-meta); }
 .heroMeta dd { font-size: .8125rem; }
 .filters {
   margin-bottom: 12px;
   padding: 18px;
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: 12px;
   background: var(--surface-strong);
   box-shadow: var(--shadow-sm);
 }
-.filters label > span { color: var(--muted); font-size: .7rem; }
+.filters label > span { color: var(--muted); font-size: var(--text-meta); }
 .filters select,
 .filters button {
   min-height: 46px;
   border: 1px solid var(--line);
-  border-radius: 9px;
+  border-radius: 8px;
   background: var(--canvas);
   font-size: .8125rem;
 }
@@ -589,7 +589,7 @@
 .viewWorkspace {
   overflow: hidden;
   border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: 12px;
   background: var(--surface-strong);
   box-shadow: var(--shadow-sm);
 }
@@ -602,7 +602,7 @@
 .viewTabs button {
   min-height: 42px;
   border: 0;
-  border-radius: 9px;
+  border-radius: 8px;
   color: var(--muted);
   background: transparent;
   font-size: .8125rem;
@@ -621,7 +621,7 @@
 .metricSummary > div {
   padding: 14px;
   border: 1px solid var(--line);
-  border-radius: 11px;
+  border-radius: 12px;
   background: var(--surface-strong);
 }
 .metricSummary dt { color: var(--muted); font-size: .75rem; }
@@ -644,7 +644,7 @@
 .limit,
 .unavailable { border-color: var(--line); }
 .unavailableRow { color: var(--muted); background: var(--canvas); }
-.unavailable a { border-color: var(--line); border-radius: 9px; }
+.unavailable a { border-color: var(--line); border-radius: 8px; }
 
 @media (max-width: 720px) {
   .frame { width: calc(100% - 28px); margin-top: 16px; }
@@ -660,5 +660,5 @@
   .row { grid-template-columns: 40px minmax(0, 1fr) minmax(96px, auto); }
   .value { overflow-wrap: normal; font-size: .8125rem; }
   .metricSummary dd { white-space: normal; overflow-wrap: normal; }
-  .rangeCard dd { font-size: 10px; }
+  .rangeCard dd { font-size: var(--text-meta); }
 }

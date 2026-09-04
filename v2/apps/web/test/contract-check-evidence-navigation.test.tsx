@@ -69,6 +69,6 @@ describe('Contract Check evidence navigation', () => {
     expect(html).toContain('href="/kr/seoul/check"');
     expect(html).toContain('href="/kr/seoul/rankings"');
     expect(html).toContain('View district rankings');
-    expect(html).toContain('href="/kr/seoul/guide"');
+    expect(html).toContain('href="/guides"');
   });
 });

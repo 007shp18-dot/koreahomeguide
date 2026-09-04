@@ -47,7 +47,7 @@ describe('KoreaHomeGuide migration manifest registry parity', () => {
       });
     }
     expect(migrationManifest.entries).toContainEqual(expect.objectContaining({
-      sourcePath: '/guides/', targetPath: '/kr/seoul/guide/', cohort: 3,
+      sourcePath: '/guides/', targetPath: '/guides/', cohort: 3,
     }));
   });
 });

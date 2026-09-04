@@ -1,5 +1,8 @@
 import { readFileSync } from 'node:fs';
+import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
+
+import { DataStateNotice, type DataState } from '../components/market-ui/data-state';
 
 const userFacingStyles = [
   '../components/public-market/public-market.module.css',
@@ -26,5 +29,19 @@ describe('visual system readability contract', () => {
   it('keeps chart labels outside plot geometry and mobile layouts responsive', () => {
     expect(boxPlotSource).toContain('data-plot-layout="legend"');
     expect(userFacingStyles).toMatch(/\.plotLegend\s*\{[\s\S]*?grid-template-columns/);
+  });
+
+  it('renders one cause and one available action for every public data state', () => {
+    const states: readonly DataState[] = [
+      'loading', 'empty', 'insufficient', 'stale', 'rights-blocked', 'error',
+    ];
+
+    for (const state of states) {
+      const html = renderToStaticMarkup(DataStateNotice({ state }));
+      expect(html).toContain(`data-state="${state}"`);
+      expect(html.match(/data-state-cause=/g)).toHaveLength(1);
+      expect(html.match(/data-state-action=/g)).toHaveLength(1);
+      expect(html).not.toMatch(/exception|stack|provider/i);
+    }
   });
 });

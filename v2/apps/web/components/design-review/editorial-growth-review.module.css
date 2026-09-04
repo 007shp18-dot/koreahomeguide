@@ -305,6 +305,8 @@
 }
 
 .marketSection,
+.contextualActions,
+.whatChanged,
 .homeInsight,
 .guideSection {
   display: grid;
@@ -312,6 +314,63 @@
   gap: var(--review-space-8);
   padding-block: var(--review-space-9);
   border-bottom: 1px solid var(--review-ink);
+}
+
+.contextualActionList,
+.changeList {
+  list-style: none;
+}
+
+.contextualActionList {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--review-space-4);
+}
+
+.contextualActionList li,
+.changeList li {
+  min-width: 0;
+  padding: var(--review-space-5);
+  border-top: 1px solid var(--review-line);
+}
+
+.contextualActionList li {
+  display: grid;
+  align-content: start;
+  gap: var(--review-space-3);
+  border-bottom: 1px solid var(--review-line);
+}
+
+.contextualActionList li > span,
+.changeList time {
+  color: var(--review-muted);
+  font-size: var(--review-meta);
+}
+
+.contextualActionList strong,
+.changeList strong {
+  font-size: var(--review-h3);
+  line-height: var(--review-heading-leading);
+}
+
+.contextualActionList a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--review-ink);
+  font-size: var(--review-control);
+  font-weight: 650;
+}
+
+.changeList li {
+  display: grid;
+  grid-template-columns: 128px minmax(180px, 0.8fr) minmax(220px, 1.2fr);
+  align-items: start;
+  gap: var(--review-space-5);
+}
+
+.changeList li:last-child {
+  border-bottom: 1px solid var(--review-line);
 }
 
 .marketIndex {
@@ -979,6 +1038,8 @@
 
   .evidenceStrip,
   .marketSection,
+  .contextualActions,
+  .whatChanged,
   .homeInsight,
   .guideSection,
   .methodNote,
@@ -989,6 +1050,8 @@
   }
 
   .homeInsight,
+  .contextualActions,
+  .whatChanged,
   .guideSection,
   .reportIndex,
   .articleFeature {
@@ -997,6 +1060,15 @@
 
   .guideList a {
     min-height: 0;
+    grid-template-columns: 1fr;
+    gap: var(--review-space-2);
+  }
+
+  .contextualActionList {
+    grid-template-columns: 1fr;
+  }
+
+  .changeList li {
     grid-template-columns: 1fr;
     gap: var(--review-space-2);
   }

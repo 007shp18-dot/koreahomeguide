@@ -24,7 +24,7 @@
   align-items: center;
   gap: 0.6rem;
   list-style: none;
-  font-size: 0.7rem;
+  font-size: var(--text-meta);
   font-weight: 800;
 }
 
@@ -53,7 +53,7 @@
 .hero > p:first-child,
 .sectionHeading > p {
   color: var(--accent);
-  font-size: 0.68rem;
+  font-size: var(--text-meta);
   font-weight: 850;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -117,7 +117,7 @@
 }
 
 .stats dt {
-  font-size: 0.62rem;
+  font-size: var(--text-meta);
   font-weight: 850;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -138,7 +138,7 @@
 
 .buildings span {
   color: var(--muted);
-  font-size: 0.7rem;
+  font-size: var(--text-meta);
   line-height: 1.4;
 }
 

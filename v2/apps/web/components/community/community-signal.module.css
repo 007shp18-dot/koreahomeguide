@@ -18,7 +18,7 @@
 
 .heading > p:first-child {
   color: var(--community-accent);
-  font-size: 0.7rem;
+  font-size: var(--text-meta);
   font-weight: 900;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -86,7 +86,7 @@
 
 .directionResults dt,
 .reasonResults dt {
-  font-size: 0.72rem;
+  font-size: var(--text-meta);
   font-weight: 850;
   text-transform: uppercase;
 }
@@ -237,7 +237,7 @@
   gap: 0.35rem;
   border-top: 1px solid var(--community-ink);
   color: var(--community-muted);
-  font-size: 0.72rem;
+  font-size: var(--text-meta);
   line-height: 1.45;
 }
 
@@ -266,7 +266,7 @@
 .signal {
   overflow: hidden;
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: 12px;
   background: var(--surface-strong);
   box-shadow: var(--shadow-sm);
 }
@@ -289,7 +289,7 @@
 .deleteButton,
 .reasonField {
   border: 1px solid var(--line);
-  border-radius: 9px;
+  border-radius: 8px;
 }
 .directionButtons,
 .formActions { gap: 8px; }

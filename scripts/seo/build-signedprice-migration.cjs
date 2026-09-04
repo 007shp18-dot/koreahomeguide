@@ -124,9 +124,9 @@ function buildMigrationManifest({ root }) {
     }),
     exactEntry({
       sourcePath: '/guides/',
-      targetPath: '/kr/seoul/guide/',
+      targetPath: '/guides/',
       cohort: 3,
-      evidence: 'seoul-guide-hub-equivalent',
+      evidence: 'global-guide-hub-canonical',
     }),
     exactEntry({
       sourcePath: '/privacy/',

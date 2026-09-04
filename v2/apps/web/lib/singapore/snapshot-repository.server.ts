@@ -3,7 +3,10 @@ import 'server-only';
 import {
   SG_URA_PRIVATE_SALE_RIGHTS,
   assertSingaporePublicationRights,
+  buildSingaporePublicIndex,
   parseSingaporeSnapshot,
+  singaporeProjectPeriodKey,
+  type PublicEvidenceReleaseRef,
   type SingaporeProjectSummary,
   type SingaporePublicationRights,
   type SingaporeSegmentSummary,
@@ -41,6 +44,7 @@ export type SingaporeSnapshotRepository = Readonly<{
   listProjects(segment: string): readonly SingaporeProjectSummary[];
   getProject(segment: string, projectId: string): SingaporeProjectSummary | null;
   listProjectRecords(segment: string, projectId: string): readonly SingaporeSnapshotRecord[];
+  getEvidenceRelease(scope: string): PublicEvidenceReleaseRef | null;
   listProjectRouteParams(): readonly SingaporeProjectRouteParam[];
 }>;
 
@@ -95,39 +99,48 @@ export async function createSingaporeSnapshotRepository(
       excluded: snapshot.totals.excluded,
       digest: snapshot.digest,
     });
-    const routeParams = Object.freeze(snapshot.projects
-      .filter(({ published }) => published)
-      .map(({ marketSegment, id }) => Object.freeze({
+    const index = buildSingaporePublicIndex(snapshot);
+    const projectsBySegment = Object.freeze(Object.fromEntries(
+      (['CCR', 'RCR', 'OCR'] as const).map((segment) => [
+        segment,
+        Object.freeze(Object.values(index.projectSummaryById)
+          .filter(({ marketSegment }) => marketSegment === segment)),
+      ]),
+    ) as Readonly<Record<'CCR' | 'RCR' | 'OCR', readonly SingaporeProjectSummary[]>>);
+    const routeParams = Object.freeze(Object.values(index.projectSummaryById)
+      .flatMap(({ published, marketSegment, id }) => published ? [Object.freeze({
         area: marketSegment.toLowerCase() as SingaporeProjectRouteParam['area'],
         projectId: id,
-      })));
+      })] : []));
     return Object.freeze({
       getMarket: () => snapshot.version,
       getContext: () => context,
       listSegments: () => snapshot.segments,
       getSegment(segment: string) {
         const code = normalizedSegment(segment);
-        return code === null ? null : snapshot.segments.find((item) => item.segment === code) ?? null;
+        return code === null ? null : index.regionSummaryByCode[code];
       },
       listProjects(segment: string) {
         const code = normalizedSegment(segment);
         if (code === null) return Object.freeze([]);
-        return Object.freeze(snapshot.projects.filter(({ marketSegment }) => marketSegment === code));
+        return projectsBySegment[code];
       },
       getProject(segment: string, projectId: string) {
         const code = normalizedSegment(segment);
         if (code === null) return null;
-        return snapshot.projects.find(({ marketSegment, id }) => (
-          marketSegment === code && id === projectId
-        )) ?? null;
+        const project = index.projectSummaryById[projectId];
+        return project?.marketSegment === code ? project : null;
       },
       listProjectRecords(segment: string, projectId: string) {
         const code = normalizedSegment(segment);
         if (code === null) return Object.freeze([]);
-        return Object.freeze(snapshot.records.filter(({ marketSegment, projectId: id }) => (
-          marketSegment === code && id === projectId
-        )));
+        const project = index.projectSummaryById[projectId];
+        if (project?.marketSegment !== code) return Object.freeze([]);
+        return index.projectTransactionsByIdPeriod[
+          singaporeProjectPeriodKey(projectId, snapshot.period)
+        ] ?? Object.freeze([]);
       },
+      getEvidenceRelease: (scope: string) => index.evidenceReleaseByScope[scope] ?? null,
       listProjectRouteParams: () => routeParams,
     });
   } catch (error) {

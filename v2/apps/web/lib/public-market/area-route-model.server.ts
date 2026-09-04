@@ -78,6 +78,10 @@ import {
   koreaBuildingMatchesProximity,
   koreaBuildingProximityModel,
 } from './korea-proximity-display.server';
+import {
+  publicEntityProjectionReaderFromEnvironment,
+  type PublicEntityProjection,
+} from '../public-data/entity-location-projection.server';
 
 export type PublicAreaRouteDependencies = Readonly<{
   source: unknown;
@@ -89,6 +93,70 @@ export type PublicAreaRouteDependencies = Readonly<{
   referenceInstant?: string | Date;
   updateSchedule?: PublicMonthlyUpdateSchedule;
 }>;
+
+export type PublicAreaEntityProjectionReader = Readonly<{
+  listBuildings(entityIds: readonly string[]): Promise<ReadonlyMap<string, PublicEntityProjection> | null>;
+}>;
+
+function projectExploreBuilding(
+  building: import('./area-route-types').ExploreBuildingModel,
+  projection: PublicEntityProjection | undefined,
+): import('./area-route-types').ExploreBuildingModel {
+  if (projection === undefined || projection.state === 'unavailable') return building;
+  const directMedia = projection.media.find((media) => media.displayUrl !== null);
+  return Object.freeze({
+    ...building,
+    latitude: projection.location?.latitude ?? null,
+    longitude: projection.location?.longitude ?? null,
+    media: directMedia?.displayUrl === null || directMedia === undefined
+      ? undefined
+      : Object.freeze({
+          displayUrl: directMedia.displayUrl,
+          width: directMedia.width,
+          height: directMedia.height,
+          focalX: directMedia.focalX,
+          focalY: directMedia.focalY,
+          attributionName: directMedia.attributionName,
+          attributionUrl: directMedia.attributionUrl,
+        }),
+  });
+}
+
+/**
+ * Replaces artifact coordinates with the rights-checked public DB projection.
+ * A missing database/read keeps the installed signed artifact as the last-good fallback.
+ */
+export async function hydratePublicAreaExploreModelWithProjections(
+  model: PublicAreaExploreModel,
+  reader: PublicAreaEntityProjectionReader | null = publicEntityProjectionReaderFromEnvironment(),
+): Promise<PublicAreaExploreModel> {
+  if (model.status !== 'ready' || reader === null) return model;
+  const buildings = model.buildingAvailability.status === 'ready'
+    ? model.buildingAvailability.buildings
+    : model.buildingAvailability.fallbackBuildings;
+  const projections = await reader.listBuildings(buildings.map(({ id }) => id));
+  if (projections === null) return model;
+  if (model.buildingAvailability.status === 'ready') {
+    return Object.freeze({
+      ...model,
+      buildingAvailability: Object.freeze({
+        ...model.buildingAvailability,
+        buildings: Object.freeze(model.buildingAvailability.buildings.map((building) => (
+          projectExploreBuilding(building, projections.get(building.id))
+        ))),
+      }),
+    });
+  }
+  return Object.freeze({
+    ...model,
+    buildingAvailability: Object.freeze({
+      ...model.buildingAvailability,
+      fallbackBuildings: Object.freeze(model.buildingAvailability.fallbackBuildings.map((building) => (
+        projectExploreBuilding(building, projections.get(building.id))
+      ))),
+    }),
+  });
+}
 
 const money = new Intl.NumberFormat('ko-KR', {
   style: 'currency',

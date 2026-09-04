@@ -34,6 +34,20 @@ async function touchTarget(locator: Locator) {
   expect(box?.height).toBeGreaterThanOrEqual(44);
 }
 
+async function expectImmediatePending(locator: Locator) {
+  const href = await locator.getAttribute('href');
+  expect(href).not.toBeNull();
+  await locator.evaluate((element) => {
+    element.addEventListener('click', (event) => event.preventDefault(), { once: true });
+  });
+  const started = await locator.evaluate(() => performance.now());
+  await locator.click();
+  await expect(locator).toHaveAttribute('aria-busy', 'true', { timeout: 100 });
+  const elapsed = await locator.evaluate((_, start) => performance.now() - start, started);
+  expect(elapsed).toBeLessThanOrEqual(100);
+  return href!;
+}
+
 test('Singapore routes fail closed while display rights are pending', async ({ page }) => {
   const assertClean = observeRuntimeFailures(page);
   const response = await page.goto('/sg/');
@@ -65,13 +79,20 @@ test('ready Singapore evidence flows entry to project when promotion gates open'
   await page.getByRole('link', { name: 'Open Singapore Explore' }).click();
   await expect(page.locator('[data-singapore-evidence="ready"]')).toBeVisible();
   for (const code of ['CCR', 'RCR', 'OCR']) await expect(page.getByText(code, { exact: true }).first()).toBeVisible();
-  await touchTarget(page.getByRole('link', { name: 'Open CCR evidence' }));
-  await page.getByRole('link', { name: 'Open CCR evidence' }).click();
+  const segmentLink = page.getByRole('link', { name: 'Open CCR evidence' });
+  await touchTarget(segmentLink);
+  const segmentHref = await expectImmediatePending(segmentLink);
+  const coldStarted = Date.now();
+  await page.goto(segmentHref);
   await expect(page.locator('[data-singapore-segment="ready"]')).toBeVisible();
+  expect(Date.now() - coldStarted).toBeLessThanOrEqual(2_000);
   const projectLink = page.getByRole('link', { name: 'Open project evidence' }).first();
   await touchTarget(projectLink);
-  await projectLink.click();
+  const projectHref = await expectImmediatePending(projectLink);
+  const warmStarted = Date.now();
+  await page.goto(projectHref);
   await expect(page.locator('[data-singapore-project="ready"]')).toBeVisible();
+  expect(Date.now() - warmStarted).toBeLessThanOrEqual(1_000);
   for (const label of ['SGD', 'PSF', 'PSM', 'New sale', 'Subsale', 'Resale', 'URA']) {
     await expect(page.locator('body')).toContainText(label);
   }

@@ -17,7 +17,7 @@
 
 .heading > p {
   color: var(--detail-news-accent);
-  font-size: 0.68rem;
+  font-size: var(--text-meta);
   font-weight: 900;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -45,7 +45,7 @@
 
 .list time {
   color: var(--detail-news-muted);
-  font-size: 0.68rem;
+  font-size: var(--text-meta);
   font-weight: 800;
   text-transform: uppercase;
 }
@@ -67,7 +67,7 @@
 .list article > p,
 .empty {
   color: var(--detail-news-muted);
-  font-size: 0.74rem;
+  font-size: var(--text-meta);
   line-height: 1.55;
 }
 
@@ -92,7 +92,7 @@
   border-top: 2px solid var(--detail-news-ink);
   color: var(--detail-news-ground);
   background: var(--detail-news-accent);
-  font-size: 0.72rem;
+  font-size: var(--text-meta);
   font-weight: 900;
   text-align: center;
   text-decoration: none;
@@ -110,7 +110,7 @@
 .news {
   overflow: hidden;
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: 12px;
   background: var(--surface-strong);
   box-shadow: var(--shadow-sm);
 }

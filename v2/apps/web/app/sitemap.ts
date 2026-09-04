@@ -1,9 +1,8 @@
 import 'server-only';
 
 import type { MetadataRoute } from 'next';
-import { GUIDES } from '../lib/guide/guide-content';
-import { STARTER_EDITORIAL_ARTICLES } from '../lib/insights/editorial-content';
-import { CHINESE_KOREA_ARTICLES } from '../lib/insights/chinese-korea-articles';
+import { EDITORIAL_PORTFOLIO } from '../content/portfolio-manifest';
+import { PUBLIC_POLICY_RECORDS } from '../lib/policy/policy-repository.server';
 import { contractCheckEvidenceRepositoriesFromEnvironment } from '../lib/contract-check/evidence-repositories.server';
 import { buildContractCheckRouteModel } from '../lib/contract-check/route-model.server';
 import { buildNewsIndexModel } from '../lib/news/news-route-model.server';
@@ -23,9 +22,22 @@ type LocalizedPair = Readonly<{
   'zh-Hans'?: `/${string}`;
 }>;
 
+const editorialLocalizedPairs: readonly LocalizedPair[] = Object.freeze(EDITORIAL_PORTFOLIO.flatMap((record) => {
+  if (record.translationGroupId === null) return [];
+  const group = EDITORIAL_PORTFOLIO.filter(({ translationGroupId }) => translationGroupId === record.translationGroupId);
+  if (group[0]?.id !== record.id) return [];
+  const en = group.find(({ locale }) => locale === 'en');
+  const zh = group.find(({ locale }) => locale === 'zh-CN');
+  return en === undefined || zh === undefined ? [] : [Object.freeze({
+    en: en.canonicalHref as `/${string}`,
+    'zh-Hans': zh.canonicalHref as `/${string}`,
+  })];
+}));
+
 const localizedPairs: readonly LocalizedPair[] = Object.freeze([
   Object.freeze({ en: '/', 'zh-Hans': '/zh-cn/kr/seoul/' }),
-  Object.freeze({ en: '/insights/', 'zh-Hans': '/zh-cn/kr/seoul/insights/' }),
+  Object.freeze({ en: '/news/', 'zh-Hans': '/zh-cn/news/' }),
+  Object.freeze({ en: '/guides/', 'zh-Hans': '/zh-cn/guides/' }),
   Object.freeze({ en: '/kr/seoul/', ko: '/ko/kr/seoul/' }),
   Object.freeze({ en: '/kr/seoul/check/', ko: '/ko/kr/seoul/check/' }),
   Object.freeze({
@@ -34,10 +46,7 @@ const localizedPairs: readonly LocalizedPair[] = Object.freeze([
   }),
   Object.freeze({ en: '/kr/seoul/explore/', ko: '/ko/kr/seoul/explore/' }),
   Object.freeze({ en: '/kr/seoul/rankings/', ko: '/ko/kr/seoul/rankings/' }),
-  ...CHINESE_KOREA_ARTICLES.map((article) => Object.freeze({
-    en: `/insights/${article.relatedEnglishSlug}/` as `/${string}`,
-    'zh-Hans': `/zh-cn/kr/seoul/insights/${article.slug}/` as `/${string}`,
-  })),
+  ...editorialLocalizedPairs,
 ] as const);
 
 function languageAlternates(path: string): SitemapEntry['alternates'] | undefined {
@@ -124,15 +133,26 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const newsLastModified = latestDate(newsRecords.map(
     (record) => record.updatedAt ?? record.publishedAt,
   ));
-  const guideLastModified = latestDate(GUIDES.map(
-    ({ lastVerified }) => `${lastVerified}T00:00:00.000Z`,
-  ));
+  const guideLastModified = latestDate(EDITORIAL_PORTFOLIO
+    .filter(({ type }) => type === 'guide')
+    .map(({ updatedAt }) => updatedAt));
   const entries: MetadataRoute.Sitemap = [
     sitemapEntry('/markets/'),
     sitemapEntry('/prices/', summaryLastModified),
-    sitemapEntry('/news/', newsLastModified),
-    sitemapEntry('/insights/'),
-    sitemapEntry('/zh-cn/kr/seoul/insights/'),
+    sitemapEntry('/news/', latestDate([
+      newsLastModified?.toISOString(),
+      ...EDITORIAL_PORTFOLIO.filter(({ type }) => type !== 'guide').map(({ updatedAt }) => updatedAt),
+      ...PUBLIC_POLICY_RECORDS.map(({ lastCheckedOn }) => `${lastCheckedOn}T00:00:00.000Z`),
+    ])),
+    sitemapEntry('/news/policy/', latestDate(PUBLIC_POLICY_RECORDS.map(
+      ({ lastCheckedOn }) => `${lastCheckedOn}T00:00:00.000Z`,
+    ))),
+    sitemapEntry('/zh-cn/news/', latestDate(EDITORIAL_PORTFOLIO
+      .filter(({ locale, type }) => locale === 'zh-CN' && type !== 'guide')
+      .map(({ updatedAt }) => updatedAt))),
+    sitemapEntry('/zh-cn/guides/', latestDate(EDITORIAL_PORTFOLIO
+      .filter(({ locale, type }) => locale === 'zh-CN' && type === 'guide')
+      .map(({ updatedAt }) => updatedAt))),
     sitemapEntry('/zh-cn/kr/seoul/'),
     sitemapEntry('/community/'),
     sitemapEntry('/guides/', guideLastModified),
@@ -144,12 +164,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     sitemapEntry('/sg/singapore/explore/rcr/'),
     sitemapEntry('/sg/singapore/explore/ocr/'),
   ];
-  entries.push(...STARTER_EDITORIAL_ARTICLES.map((article) => ({
-    url: publicCanonical(`/insights/${article.slug}/`),
-    lastModified: new Date(article.updatedAt),
-  })));
-  entries.push(...CHINESE_KOREA_ARTICLES.map((article) => sitemapEntry(
-    `/zh-cn/kr/seoul/insights/${article.slug}/`,
+  entries.push(...EDITORIAL_PORTFOLIO.map((article) => sitemapEntry(
+    article.canonicalHref as `/${string}`,
     new Date(article.updatedAt),
   )));
   const modifiedByPath = new Map<string, Date | undefined>([
@@ -173,12 +189,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       entries.push(...newsRecords.map((record) => ({
         url: publicCanonical(`/kr/seoul/news/${record.slug}/`),
         lastModified: new Date(record.updatedAt ?? record.publishedAt),
-      })));
-    }
-    if (path === '/kr/seoul/guide/') {
-      entries.push(...GUIDES.map(({ slug, lastVerified }) => ({
-        url: publicCanonical(`/kr/seoul/guide/${slug}/`),
-        lastModified: new Date(`${lastVerified}T00:00:00.000Z`),
       })));
     }
   }

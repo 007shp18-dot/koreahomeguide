@@ -31,7 +31,7 @@ const COPY: Readonly<Record<ReviewLocale, Readonly<{
     primaryItems: Object.freeze([
       Object.freeze({ label: 'Markets', href: '/markets/' }),
       Object.freeze({ label: 'Prices', href: '/prices/' }),
-      Object.freeze({ label: 'Journal', href: '/insights/', currentOn: 'content' as const }),
+      Object.freeze({ label: 'News', href: '/news/', currentOn: 'content' as const }),
       Object.freeze({ label: 'Guides', href: '/guides/' }),
     ]),
     footer: 'Reported property evidence and practical guidance for decisions across borders.',
@@ -42,8 +42,8 @@ const COPY: Readonly<Record<ReviewLocale, Readonly<{
     primaryItems: Object.freeze([
       Object.freeze({ label: '首页', href: '/zh-cn/kr/seoul/', currentOn: 'home' as const }),
       Object.freeze({ label: '市场', href: '/markets/' }),
-      Object.freeze({ label: '专栏', href: '/zh-cn/kr/seoul/insights/', currentOn: 'content' as const }),
-      Object.freeze({ label: '指南', href: '/guides/' }),
+      Object.freeze({ label: '新闻', href: '/zh-cn/news/', currentOn: 'content' as const }),
+      Object.freeze({ label: '指南', href: '/zh-cn/guides/' }),
     ]),
     footer: '为跨境决策提供已申报房地产数据和实用指南。',
   }),

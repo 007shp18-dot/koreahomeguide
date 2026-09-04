@@ -27,6 +27,8 @@ import {
   generateMetadata as generateProjectMetadata,
   generateStaticParams as projectStaticParams,
 } from '../app/(en)/sg/singapore/explore/[area]/[projectId]/page';
+import SingaporeSegmentLoading from '../app/(en)/sg/singapore/explore/[area]/loading';
+import SingaporeProjectLoading from '../app/(en)/sg/singapore/explore/[area]/[projectId]/loading';
 import { metadata as correctionMetadata } from '../app/(en)/sg/singapore/corrections/page';
 import { metadata as checkMetadata } from '../app/(en)/sg/singapore/check/page';
 import SingaporeExplorePage from '../app/(en)/sg/singapore/explore/page';
@@ -81,16 +83,17 @@ describe('Singapore route SSR', () => {
   it('uses Singapore context with local product navigation and never falls through to Seoul Check', () => {
     const html = renderToStaticMarkup(<SingaporePage><p>Singapore content</p></SingaporePage>);
 
-    expect(html).toContain('aria-label="Singapore evidence navigation"');
+    expect(html).toContain('aria-label="Singapore market navigation"');
+    expect(html).toContain('aria-label="Primary navigation"');
     expect(html).toContain('href="/sg/singapore/explore/"');
     expect(html).not.toContain('href="/kr/seoul/check/"');
-    expect(html).toContain('href="/sg/singapore/check"><span>01</span><strong>Check</strong>');
-    expect(html).toContain('Singapore · reported filings');
+    expect(html).toMatch(/href="\/sg\/singapore\/check">Check<span>Limited<\/span>/);
+    expect(html).toContain('data-capability-state="limited"');
   });
 
   it('maps the Singapore evidence route to the local Explore destination', () => {
     const html = renderToStaticMarkup(<SingaporePage currentHref="/sg/singapore/explore/"><p>Explore</p></SingaporePage>);
-    expect(html).toMatch(/aria-current="page" href="\/sg\/singapore\/explore"/);
+    expect(html).toMatch(/aria-current="page"[^>]*href="\/sg\/singapore\/explore"/);
     expect(html).not.toMatch(/href="\/kr\/seoul\/[^"]*" aria-current="page"/);
   });
 
@@ -169,6 +172,19 @@ describe('Singapore route SSR', () => {
     expect(insufficientHtml).not.toMatch(/SGD [\d,]+/);
     expect(unavailableHtml).toContain('Verified Singapore evidence unavailable');
     expect(unavailableHtml).not.toMatch(/SGD [\d,]+|PSF|PSM/);
+  });
+
+  it('renders fixed route loading boundaries and disables unsupported evidence links', async () => {
+    const store = await repository();
+    const explore = renderToStaticMarkup(<SingaporeExplorer model={buildSingaporeExploreModel(store)} />);
+    const loading = `${renderToStaticMarkup(<SingaporeSegmentLoading />)}${renderToStaticMarkup(<SingaporeProjectLoading />)}`;
+
+    expect(loading.match(/data-singapore-route-loading=/g)).toHaveLength(2);
+    expect(loading).toContain('aria-busy="true"');
+    expect(loading).toContain('Loading verified Singapore evidence');
+    expect(explore).toContain('data-evidence-link="unavailable"');
+    expect(explore).toContain('At least 5 transactions are required');
+    expect(explore).toContain('data-navigation-state="idle"');
   });
 });
 

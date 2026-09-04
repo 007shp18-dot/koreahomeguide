@@ -4,6 +4,7 @@ import { preload } from 'react-dom';
 import { Analytics } from '@vercel/analytics/next';
 
 import { AdvertisingConsent } from '@/components/consent/advertising-consent';
+import { EditorialAnalytics } from '@/components/editorial-analytics';
 import { PublicSiteJsonLd } from '@/components/public-json-ld';
 import { advertisingConfigFromEnvironment } from '@/lib/advertising/advertising-config.server';
 import {
@@ -23,6 +24,7 @@ export const metadata: Metadata = {
 export default function ChineseRootLayout({ children }: Readonly<{ children: ReactNode }>) {
   const analytics = analyticsConfigFromEnvironment();
   const advertising = advertisingConfigFromEnvironment();
+  const vercelAnalyticsEnabled = vercelAnalyticsEnabledFromEnvironment();
   preload('/fonts/archivo-latin-wght-normal.woff2', {
     as: 'font',
     type: 'font/woff2',
@@ -44,7 +46,7 @@ export default function ChineseRootLayout({ children }: Readonly<{ children: Rea
               : {})}
           />
         ) : null}
-        {vercelAnalyticsEnabledFromEnvironment() ? <Analytics /> : null}
+        {vercelAnalyticsEnabled ? <><EditorialAnalytics /><Analytics /></> : null}
       </body>
     </html>
   );

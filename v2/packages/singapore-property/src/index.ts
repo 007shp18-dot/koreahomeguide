@@ -51,6 +51,13 @@ export {
   type SingaporeSnapshotRecord,
 } from './artifact.ts';
 export {
+  SINGAPORE_PUBLIC_INDEX_VERSION,
+  buildSingaporePublicIndex,
+  singaporeProjectPeriodKey,
+  type PublicEvidenceReleaseRef,
+  type SingaporePublicIndex,
+} from './public-index.ts';
+export {
   HDB_PUBLISHED_SNAPSHOT_VERSION,
   HDB_PUBLICATION_MINIMUM,
   HDB_SNAPSHOT_VERSION,

@@ -15,6 +15,7 @@ import type {
   ContractCheckRouteModel,
 } from '../../lib/contract-check/route-model.server';
 import type { ProductLocale } from '../../lib/locale/product-copy';
+import type { EntityCheckContext } from '../../lib/navigation/explorer-selection';
 import type { SiteHeaderModel } from '../../lib/site-copy';
 import { SiteHeader } from '../site-header';
 import styles from './contract-check.module.css';
@@ -362,9 +363,10 @@ function ResultPanel({ model, locale }: Readonly<{
   );
 }
 
-function ReadyWorkspace({ model, locale }: Readonly<{
+function ReadyWorkspace({ model, locale, entityContext }: Readonly<{
   model: ContractCheckReadyRouteModel;
   locale: ProductLocale;
+  entityContext: EntityCheckContext | null;
 }>) {
   const c = CHECK_COPY[locale];
   const [offers, setOffers] = useState(() => ({
@@ -385,6 +387,11 @@ function ReadyWorkspace({ model, locale }: Readonly<{
         </nav>
         <form action={localizedCheckHref(locale, '/compare/')} className={styles.form} data-contract-check-form="ready" method="get">
           <input name="compare" type="hidden" value="1" />
+          {entityContext === null ? null : <>
+            <input name="market" type="hidden" value={entityContext.market} />
+            <input name="entity" type="hidden" value={entityContext.entity} />
+            <input name="returnTo" type="hidden" value={entityContext.returnTo} />
+          </>}
           <fieldset className={styles.conditions} data-check-section="conditions">
             <legend><span>01</span>{c.conditions}</legend>
             <div className={styles.conditionGrid}>
@@ -407,6 +414,7 @@ function ReadyWorkspace({ model, locale }: Readonly<{
         </form>
         <ResultPanel model={model} locale={locale} />
         <nav className={styles.contextLinks} aria-label={c.evidence}>
+          {entityContext === null ? null : <Link href={entityContext.returnTo}>Return to selected building</Link>}
           <Link href={localizedCheckHref(locale, '/')}>{c.single}</Link>
           <Link href={`${locale === 'ko' ? '/ko' : ''}/kr/seoul/explore/`}>{c.explore}</Link>
         </nav>
@@ -416,15 +424,16 @@ function ReadyWorkspace({ model, locale }: Readonly<{
   );
 }
 
-export function ContractCheckWorkspace({ model, locale = 'en' }: Readonly<{
+export function ContractCheckWorkspace({ model, locale = 'en', entityContext = null }: Readonly<{
   model: ContractCheckRouteModel;
   locale?: ProductLocale;
+  entityContext?: EntityCheckContext | null;
 }>) {
   const c = CHECK_COPY[locale];
   return (
     <div className={styles.page} lang={locale}>
       <SiteHeader copy={checkHeader(locale)} />
-      {model.status === 'ready' ? <ReadyWorkspace model={model} locale={locale} /> : (
+      {model.status === 'ready' ? <ReadyWorkspace model={model} locale={locale} entityContext={entityContext} /> : (
         <main className={styles.unavailable} data-evidence-state="unavailable">
           <p>Seoul · Official transaction evidence</p><h1>{c.unavailable}</h1>
           <p>{model.message}</p><Link href={`${locale === 'ko' ? '/ko' : ''}/kr/seoul/explore/`}>{c.explore}</Link>

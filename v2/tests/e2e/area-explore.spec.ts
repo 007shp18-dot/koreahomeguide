@@ -166,6 +166,27 @@ test('rail selection opens the map-owned drawer and full-detail CTA', async ({ p
   await expect(trigger).toBeFocused();
 });
 
+test('restores a verified building selection after opening Detail and returning', async ({ page }) => {
+  test.skip(releaseTarget.usesExternalServer, 'Exact fixture values are local-release only.');
+  await page.goto(`/kr/seoul/explore/?district=jongno-gu&neighborhood=sajik-dong&buildingId=${PUBLIC_BUILDING_TEST_ID}`);
+
+  const row = page.locator(`[data-building-row="${PUBLIC_BUILDING_TEST_ID}"]`).first();
+  await expect(row.locator(':scope > button')).toHaveAttribute('aria-pressed', 'true');
+  const drawer = page.locator(`[data-building-drawer="${PUBLIC_BUILDING_TEST_ID}"]`);
+  await expect(drawer).toBeVisible();
+
+  await drawer.getByRole('link', { name: 'Open full building evidence' }).first().click();
+  await expect(page.locator('[data-building-detail="ready"]')).toBeVisible();
+  const back = page.getByRole('link', { name: 'Back to Jongno-gu Explore' }).first();
+  await expect(back).toHaveAttribute('href', new RegExp(`buildingId=${PUBLIC_BUILDING_TEST_ID}`));
+  await back.click();
+
+  await expect(page).toHaveURL(new RegExp(`district=jongno-gu.*buildingId=${PUBLIC_BUILDING_TEST_ID}`));
+  await expect(page.locator(`[data-building-drawer="${PUBLIC_BUILDING_TEST_ID}"]`)).toBeVisible();
+  await expect(page.locator(`[data-building-row="${PUBLIC_BUILDING_TEST_ID}"]`).first().locator(':scope > button'))
+    .toHaveAttribute('aria-pressed', 'true');
+});
+
 test('district selection stays inside the Explore workspace', async ({ page }) => {
   await page.goto('/kr/seoul/explore/?district=jongno-gu');
 
@@ -358,4 +379,22 @@ test('unsupported intent pages never relabel district artifact money', async ({ 
     await expect(page.locator('body')).not.toContainText('₩500,000,000');
     await expect(page.locator('body')).not.toContainText('₩700,000,000');
   }
+});
+
+test('journey: Explore selection survives Detail, Check, and the return link', async ({ page }) => {
+  test.skip(releaseTarget.usesExternalServer, 'Synthetic journey evidence is local-release only.');
+  await page.goto('/kr/seoul/explore/?transaction=monthly&propertyType=apartment&district=jongno-gu');
+
+  const row = page.locator('[data-building-row="synthetic-test-building"]');
+  await row.getByRole('button').click();
+  await expect(page).toHaveURL(/transaction=monthly.*propertyType=apartment.*district=jongno-gu.*buildingId=synthetic-test-building/);
+  await row.getByRole('link', { name: 'Open full building evidence' }).click();
+  await expect(page.locator('[data-building-detail="ready"], [data-building-detail="exact-evidence"]')).toBeVisible();
+
+  await page.getByRole('link', { name: /Check (?:this contract|a contract)/ }).click();
+  await expect(page).toHaveURL(/market=kr-seoul.*entity=synthetic-test-building.*returnTo=/);
+  const returnLink = page.getByRole('link', { name: /Return to / }).first();
+  await expect(returnLink).toHaveAttribute('href', /transaction=monthly.*propertyType=apartment.*district=jongno-gu.*buildingId=synthetic-test-building/);
+  await returnLink.click();
+  await expect(page.locator('[data-building-detail="ready"], [data-building-detail="exact-evidence"]')).toBeVisible();
 });

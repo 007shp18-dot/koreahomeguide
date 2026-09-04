@@ -13,7 +13,7 @@
   gap: 1.25rem;
   overflow: hidden;
   border: 1px solid #183655;
-  border-radius: 22px;
+  border-radius: 12px;
   color: white;
   background:
     radial-gradient(circle at 86% 12%, rgb(67 149 231 / 32%), transparent 32%),
@@ -55,7 +55,7 @@
   align-items: center;
   gap: 1.5rem 3rem;
   border: 1px solid #dce5ee;
-  border-radius: 16px;
+  border-radius: 12px;
   background: white;
   box-shadow: 0 10px 30px rgb(15 30 56 / 6%);
 }
@@ -93,7 +93,7 @@
   align-content: start;
   gap: 1rem;
   border: 1px solid #dce5ee;
-  border-radius: 16px;
+  border-radius: 12px;
   background: white;
   box-shadow: 0 8px 24px rgb(15 30 56 / 4%);
 }
@@ -113,7 +113,7 @@
 
 .grid dt {
   color: var(--accent);
-  font-size: 0.7rem;
+  font-size: var(--text-meta);
   font-weight: 850;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -158,7 +158,7 @@
   display: inline-flex;
   align-items: center;
   border: 1px solid #cdd9e6;
-  border-radius: 10px;
+  border-radius: 12px;
   background: #f7faff;
   text-decoration: none;
 }

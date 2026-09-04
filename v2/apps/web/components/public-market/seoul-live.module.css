@@ -22,7 +22,7 @@
 
 .header > p:first-child {
   color: var(--live-accent);
-  font-size: 0.7rem;
+  font-size: var(--text-meta);
   font-weight: 900;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -64,7 +64,7 @@
 
 .stats dt {
   color: var(--live-muted);
-  font-size: 0.64rem;
+  font-size: var(--text-meta);
   font-weight: 850;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -130,7 +130,7 @@
 
 .links span {
   color: var(--live-muted);
-  font-size: 0.68rem;
+  font-size: var(--text-meta);
   line-height: 1.35;
 }
 

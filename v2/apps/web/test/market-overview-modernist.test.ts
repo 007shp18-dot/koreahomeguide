@@ -131,25 +131,28 @@ describe('three market overview routes', () => {
     }
   });
 
-  it('uses only the available local product navigation on market overviews', async () => {
+  it('uses one global navigation and capability-safe local navigation on market overviews', async () => {
     for (const params of marketRouteParams) {
       const markup = renderToStaticMarkup(
         await MarketOverviewPage({ params: Promise.resolve(params) }),
       );
-      const navigation = markup.match(
+      const globalNavigation = markup.match(
         /<nav[^>]*aria-label="Primary navigation"[^>]*>([\s\S]*?)<\/nav>/,
       )?.[1] ?? '';
-
-      const labels = params.country === 'kr'
-        ? ['Overview', 'Check', 'Explore', 'Rankings', 'News', 'Community', 'Guide']
-        : params.country === 'sg'
-          ? ['Overview', 'Check', 'Explore', 'Rankings', 'Corrections', 'Trust']
-          : ['Overview', 'Compare markets'];
-      expect(navigation.match(/<a /g) ?? []).toHaveLength(labels.length);
-      for (const label of labels) {
-        expect(navigation).toContain(`<strong>${label}</strong>`);
+      expect(globalNavigation.match(/<a /g) ?? []).toHaveLength(4);
+      for (const label of ['Markets', 'Prices', 'News', 'Guides']) {
+        expect(globalNavigation).toContain(`>${label}</a>`);
       }
-      if (params.country === 'ae') expect(navigation).not.toMatch(/Dubai\/(?:check|explore|rankings)/i);
+
+      const localNavigation = markup.match(
+        /<nav[^>]*data-navigation-tier="market-local"[^>]*>([\s\S]*?)<\/nav>/,
+      )?.[1] ?? '';
+      const labels = params.country === 'kr' || params.country === 'sg'
+        ? ['Overview', 'Explore', 'Check', 'Rankings', 'Corrections']
+        : ['Overview', 'Explore'];
+      expect(localNavigation.match(/<a /g) ?? []).toHaveLength(labels.length);
+      for (const label of labels) expect(localNavigation).toContain(`>${label}`);
+      if (params.country === 'ae') expect(localNavigation).not.toMatch(/\/ae\/dubai\/(?:check|rankings)/i);
     }
   });
 
@@ -163,8 +166,8 @@ describe('three market overview routes', () => {
       /<nav[^>]*aria-label="Primary navigation"[^>]*>([\s\S]*?)<\/nav>/,
     )?.[1] ?? '';
 
-    expect(navigation.match(/<a /g) ?? []).toHaveLength(7);
-    expect(navigation).toContain('<strong>Explore</strong>');
+    expect(navigation.match(/<a /g) ?? []).toHaveLength(4);
+    expect(navigation).toContain('>Prices</a>');
   });
 
   it('keeps evidence separate from operating capabilities and aggregates mixed rights deny-safe', () => {

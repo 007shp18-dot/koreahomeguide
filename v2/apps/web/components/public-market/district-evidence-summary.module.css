@@ -31,7 +31,7 @@
 .header > p:first-child {
   grid-column: 1 / -1;
   color: var(--accent);
-  font-size: 0.65rem;
+  font-size: var(--text-meta);
   font-weight: 850;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -59,7 +59,7 @@
 .finding span,
 .metrics dt,
 .footer p {
-  font-size: 0.62rem;
+  font-size: var(--text-meta);
   font-weight: 850;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -77,7 +77,7 @@
 .unavailable p,
 .footer p {
   color: var(--muted);
-  font-size: 0.72rem;
+  font-size: var(--text-meta);
   line-height: 1.5;
 }
 
@@ -140,7 +140,7 @@
   padding: 0.75rem 1rem;
   border-bottom: 2px solid var(--ink);
   color: var(--muted);
-  font-size: 0.68rem;
+  font-size: var(--text-meta);
   font-weight: 800;
   letter-spacing: 0.03em;
   text-transform: uppercase;
@@ -163,7 +163,7 @@
 .comparisonRow span,
 .comparisonNote {
   color: var(--muted);
-  font-size: 0.65rem;
+  font-size: var(--text-meta);
   line-height: 1.45;
 }
 
@@ -198,7 +198,7 @@
 
 .comparisonRow strong,
 .comparisonRow span:last-child {
-  font-size: 0.7rem;
+  font-size: var(--text-meta);
   font-weight: 850;
 }
 
@@ -226,7 +226,7 @@
   place-items: center;
   border: 2px solid var(--ink);
   color: var(--ink);
-  font-size: 0.7rem;
+  font-size: var(--text-meta);
   font-weight: 850;
   text-decoration: none;
 }

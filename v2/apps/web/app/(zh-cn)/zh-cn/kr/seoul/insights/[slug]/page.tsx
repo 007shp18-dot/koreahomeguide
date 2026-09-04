@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: ChineseArticlePageProps): Pro
     title: `${article.title} | signedprice`,
     description: article.summary,
     languageAlternates: {
-      en: `/insights/${article.relatedEnglishSlug}/`,
+      en: `/news/${article.relatedEnglishSlug}/`,
       'zh-Hans': `/zh-cn/kr/seoul/insights/${article.slug}/`,
     },
     locale: 'zh_CN',

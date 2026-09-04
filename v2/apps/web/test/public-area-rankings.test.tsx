@@ -62,10 +62,9 @@ describe('Seoul district rankings page', () => {
     expect(html).not.toContain('data-change-direction=');
     expect(html).toContain('23 districts excluded');
     expect(html).toContain('aria-current="page"');
-    expect(html).toContain('<strong>Rankings</strong>');
-    expect(html).toContain('href="/kr/seoul/news"');
-    expect(html).toContain('href="/kr/seoul/community"');
-    expect(html).toContain('href="/kr/seoul/guide"');
+    expect(html).toMatch(/aria-current="page"[^>]*href="\/kr\/seoul\/rankings"/);
+    expect(html).toContain('href="/news"');
+    expect(html).toContain('href="/guides"');
   });
 
   it('does not reinterpret a positive stored change without retained counts', async () => {

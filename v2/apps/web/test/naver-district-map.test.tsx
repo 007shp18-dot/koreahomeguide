@@ -153,7 +153,7 @@ describe('NAVER district map', () => {
     expect(html).toContain('data-map-state="loading"');
     expect(html).toContain('Static Seoul district map');
     expect(html).toContain('ncpKeyId=test-client-id');
-    expect(html).toContain('submodules=geocoder');
+    expect(html).not.toContain('submodules=geocoder');
     expect(html).toContain('aria-label="Interactive NAVER map of Seoul districts"');
   });
 

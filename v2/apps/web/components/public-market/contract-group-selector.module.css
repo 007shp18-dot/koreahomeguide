@@ -18,7 +18,7 @@
   color: var(--ink);
   background: var(--canvas);
   font: inherit;
-  font-size: 0.7rem;
+  font-size: var(--text-meta);
   font-weight: 850;
   cursor: pointer;
   text-align: center;
@@ -53,6 +53,6 @@
   padding: 0.7rem 1rem;
   border-top: 2px solid var(--ink);
   color: var(--muted);
-  font-size: 0.7rem;
+  font-size: var(--text-meta);
   line-height: 1.45;
 }

@@ -29,7 +29,7 @@
   align-items: center;
   gap: 0.6rem;
   list-style: none;
-  font-size: 0.7rem;
+  font-size: var(--text-meta);
   font-weight: 800;
 }
 
@@ -141,7 +141,7 @@
   align-items: center;
   gap: 0.55rem;
   border: 2px solid var(--district-ink);
-  font-size: 0.72rem;
+  font-size: var(--text-meta);
   font-weight: 850;
 }
 
@@ -224,7 +224,7 @@
 
 .buildingList span {
   color: var(--district-muted);
-  font-size: 0.7rem;
+  font-size: var(--text-meta);
 }
 
 .correctionLink {
@@ -235,7 +235,7 @@
   place-items: center;
   border: 2px solid var(--district-ink);
   color: var(--district-ink);
-  font-size: 0.72rem;
+  font-size: var(--text-meta);
   font-weight: 850;
   text-decoration: none;
 }
@@ -261,7 +261,7 @@
 
 .findingGrid dt,
 .source dt {
-  font-size: 0.62rem;
+  font-size: var(--text-meta);
   font-weight: 850;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -276,7 +276,7 @@
 .source dd,
 .source > p {
   color: var(--district-muted);
-  font-size: 0.74rem;
+  font-size: var(--text-meta);
   line-height: 1.5;
 }
 
@@ -334,7 +334,7 @@
   border: 0;
   color: var(--district-ink);
   background: transparent;
-  font-size: 0.72rem;
+  font-size: var(--text-meta);
   font-weight: 850;
   text-align: center;
   text-decoration: none;
@@ -365,7 +365,7 @@
 
 .nearby a span {
   color: var(--district-muted);
-  font-size: 0.62rem;
+  font-size: var(--text-meta);
 }
 
 .exploreLink:hover,
@@ -486,7 +486,7 @@
   grid-template-columns: minmax(0, 1fr) 310px;
   overflow: hidden;
   border: 1px solid var(--line);
-  border-radius: 18px;
+  border-radius: 12px;
   background: linear-gradient(125deg, #ffffff 0 60%, #eef5ff 100%);
   box-shadow: var(--shadow-sm);
 }
@@ -502,7 +502,7 @@
   margin: 20px;
   padding: 24px;
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: 12px;
   background: rgb(255 255 255 / 88%);
   box-shadow: var(--shadow-sm);
 }
@@ -533,7 +533,7 @@
   gap: 22px;
   overflow: hidden;
   border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: 12px;
   background: var(--surface-strong);
   box-shadow: var(--shadow-sm);
 }
@@ -582,7 +582,7 @@
 
 .correctionLink {
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: 12px;
   color: var(--accent);
   font-size: .8125rem;
   text-decoration: none;
@@ -593,7 +593,7 @@
   gap: 0;
   overflow: hidden;
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: 12px;
   background: var(--surface-strong);
   box-shadow: var(--shadow-sm);
 }

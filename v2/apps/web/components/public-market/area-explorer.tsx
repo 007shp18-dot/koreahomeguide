@@ -22,8 +22,6 @@ import {
   NaverDistrictMap,
   buildNaverBuildingAddressQuery,
 } from '../maps/naver-district-map';
-import { NaverBuildingStreetView } from '../maps/naver-building-street-view';
-import { GooglePlacePhoto } from '../maps/google-place-photo';
 import type {
   ExploreBuildingModel,
   PublicAreaExploreModel,
@@ -64,10 +62,12 @@ export function compareExploreBuildingsByEvidence(
 const genericBuildingNames = /^(다가구|단독|단독주택|다세대|연립|연립주택|주택|빌라|오피스텔|아파트)$/;
 
 export function isIndividualMapBuilding(
-  building: Pick<ExploreBuildingModel, 'name' | 'medianLabel' | 'evidenceStatus'>,
+  building: Pick<ExploreBuildingModel, 'name' | 'medianLabel' | 'evidenceStatus' | 'latitude' | 'longitude'>,
 ): boolean {
   return building.evidenceStatus === 'published'
     && building.medianLabel !== null
+    && building.latitude !== null
+    && building.longitude !== null
     && !genericBuildingNames.test(building.name.trim());
 }
 
@@ -146,6 +146,62 @@ function compactDistrictMetric(label: string | null, locale: ProductLocale): str
   if (value >= 1_000_000_000) return `₩${(value / 1_000_000_000).toFixed(2)}B`;
   if (value >= 1_000_000) return `₩${(value / 1_000_000).toFixed(1)}M`;
   return label;
+}
+
+function ProjectedBuildingMedia({
+  building,
+  locale,
+  variant,
+}: Readonly<{
+  building: ExploreBuildingModel;
+  locale: ProductLocale;
+  variant: 'thumbnail' | 'drawer';
+}>) {
+  if (building.media === undefined) {
+    return variant === 'thumbnail' ? (
+      <span className={styles.photoUnavailable} data-building-media="location-only">
+        <strong>{building.latitude === null
+          ? (locale === 'ko' ? '위치 검증 대기' : 'Location awaiting verification')
+          : (locale === 'ko' ? '검증된 건물 위치' : 'Verified building location')}</strong>
+        <small>{locale === 'ko' ? '승인된 사진만 추후 표시' : 'Only approved media is shown'}</small>
+      </span>
+    ) : (
+      <section className={styles.buildingMediaUnavailable} data-building-media="location-only">
+        <strong>{building.latitude === null
+          ? (locale === 'ko' ? '건물 위치 검증 대기' : 'Building location awaiting verification')
+          : (locale === 'ko' ? '검증된 건물 위치' : 'Verified building location')}</strong>
+        <p>{locale === 'ko'
+          ? '공개 projection에 승인된 좌표와 사진만 표시하며, 브라우저에서 임의로 검색하지 않습니다.'
+          : 'Only approved coordinates and media from the public projection are shown; the browser does not search for substitutes.'}</p>
+      </section>
+    );
+  }
+  const focalX = building.media.focalX ?? 0.5;
+  const focalY = building.media.focalY ?? 0.5;
+  return (
+    <figure
+      className={styles.projectedBuildingMedia}
+      data-building-media="public-projection"
+      data-media-variant={variant}
+    >
+      {/* Projection URLs have already passed rights and editorial review on the server. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={building.media.displayUrl}
+        alt={`${building.name} ${locale === 'ko' ? '건물 외관' : 'building exterior'}`}
+        width={building.media.width ?? undefined}
+        height={building.media.height ?? undefined}
+        style={{ objectPosition: `${focalX * 100}% ${focalY * 100}%` }}
+      />
+      {building.media.attributionName === null ? null : (
+        <figcaption>
+          {building.media.attributionUrl === null
+            ? building.media.attributionName
+            : <a href={building.media.attributionUrl} rel="noreferrer">{building.media.attributionName}</a>}
+        </figcaption>
+      )}
+    </figure>
+  );
 }
 
 type KoreaExploreLinkSelection = ExplorerSelection & Readonly<{
@@ -265,14 +321,12 @@ export function createKoreaDistrictHref(
 function ReadyAreaExplorer({
   model,
   naverMapClientId,
-  googleMapsBrowserKey,
   locale,
   initialQuery,
   initialSelection,
 }: Readonly<{
   model: Extract<PublicAreaExploreModel, { status: 'ready' }>;
   naverMapClientId: string | null;
-  googleMapsBrowserKey: string | null;
   locale: ProductLocale;
   initialQuery: string;
   initialSelection: ExplorerSelection;
@@ -341,10 +395,6 @@ function ReadyAreaExplorer({
   const { selectedBuildingId } = buildingSelection;
   const [visibleBuildingCount, setVisibleBuildingCount] = useState(10);
   const [sortMode, setSortMode] = useState<'latest' | 'evidence' | 'name'>('latest');
-  const [resolvedMapCoordinates, setResolvedMapCoordinates] = useState<Readonly<Record<string, Readonly<{
-    latitude: number;
-    longitude: number;
-  }>>>>(Object.freeze({}));
   const readyBuildingAvailability = model.buildingAvailability.status === 'ready'
     ? model.buildingAvailability
     : null;
@@ -432,15 +482,8 @@ function ReadyAreaExplorer({
     metricLabel: compactDistrictMetric(district.medianLabel, locale),
     selected: mapDrilledToDistrict && district.slug === selected.slug,
   })), [districtHref, locale, mapDrilledToDistrict, model.districts, selected.slug]);
-  const mapBuildingSource = useMemo(() => {
-    if (selectedBuilding === null || individualBuildings.some(({ id }) => id === selectedBuilding.id)) {
-      return individualBuildings;
-    }
-    return Object.freeze([...individualBuildings, selectedBuilding]);
-  }, [individualBuildings, selectedBuilding]);
-  const mapBuildings = useMemo(() => mapBuildingSource.map((building) => ({
+  const mapBuildings = useMemo(() => individualBuildings.map((building) => ({
     id: building.id,
-    storedLocationKey: `seoul:${building.id}`,
     title: building.name,
     href: buildingSelectionHref(building, linkSelection, locale, {
       query: buildingQuery,
@@ -456,10 +499,7 @@ function ReadyAreaExplorer({
     metricLabel: compactDistrictMetric(building.medianLabel, locale),
     sampleLabel: localizeSampleLabel(building.sampleLabel, locale),
     selected: building.id === selectedBuilding?.id,
-    allowAddressGeocoding: naverMapClientId !== null
-      && building.latitude === null
-      && building.longitude === null,
-  })), [buildingQuery, linkSelection, locale, mapBuildingSource, naverMapClientId, readyBuildingAvailability?.page, selected.nameKo, selectedBuilding?.id]);
+  })), [buildingQuery, individualBuildings, linkSelection, locale, readyBuildingAvailability?.page, selected.nameKo, selectedBuilding?.id]);
 
   const selectDistrict = (slug: string): void => {
     dispatch({ type: 'select', slug });
@@ -474,6 +514,18 @@ function ReadyAreaExplorer({
   const showAllDistricts = (): void => {
     setMapDrilledToDistrict(false);
     dispatchBuildingSelection({ type: 'clear_building' });
+    setSelectedNeighborhood('all');
+    const href = withKoreaProximityPairs(localizedSeoulHref(createSelectionHref(
+      '/kr/seoul/explore/',
+      {
+        ...initialSelection,
+        district: undefined,
+        neighborhood: undefined,
+        buildingId: undefined,
+      },
+      { market: 'kr', transaction: 'sale' },
+    ), locale), linkSelection);
+    router.replace(href, { scroll: false });
   };
   const selectBuilding = (
     buildingId: string,
@@ -627,6 +679,7 @@ function ReadyAreaExplorer({
       className={styles.explorer}
       aria-labelledby="area-explorer-heading"
       data-market-selection={`kr:${model.evidenceSelection.transaction}`}
+      data-journey-level={mapDrilledToDistrict ? 'district' : 'city'}
       data-explore-view={currentView}
       data-explorer-version="guide-v2"
     >
@@ -772,18 +825,11 @@ function ReadyAreaExplorer({
           ) : null}
           <NaverDistrictMap
             clientId={naverMapClientId}
-            googleMapsBrowserKey={googleMapsBrowserKey}
             districts={mapDistricts}
             selectedDistrict={mapDrilledToDistrict ? selected : undefined}
             buildings={mapDrilledToDistrict ? mapBuildings : undefined}
             onSelectDistrict={selectDistrict}
             onSelectBuilding={selectBuildingFromMarker}
-            onResolveBuildingLocation={(id, latitude, longitude) => {
-              setResolvedMapCoordinates((current) => current[id] !== undefined ? current : Object.freeze({
-                ...current,
-                [id]: Object.freeze({ latitude, longitude }),
-              }));
-            }}
             locale={locale}
             fallback={<div className={styles.liveMapLoading} role="status">
               <strong>{locale === 'ko' ? '네이버 지도를 불러오는 중입니다.' : 'Loading the NAVER map.'}</strong>
@@ -907,14 +953,7 @@ function ReadyAreaExplorer({
                             onClick={() => selectBuilding(building.id, 'rail')}
                           >
                             <span className={styles.buildingThumbnail}>
-                              <GooglePlacePhoto
-                                browserKey={googleMapsBrowserKey}
-                                buildingName={building.name}
-                                address={buildNaverBuildingAddressQuery(selected.nameKo, building.neighborhoodName, building.name)}
-                                registryKey={`kr-seoul:${building.id}`}
-                                linkAttribution={false}
-                                fallback={<span className={styles.photoUnavailable}><strong>{locale === 'ko' ? '건물 사진 미확인' : 'Building photo unverified'}</strong><small>{locale === 'ko' ? '정확한 위치는 지도에서 확인' : 'Use the map for the verified location'}</small></span>}
-                              />
+                              <ProjectedBuildingMedia building={building} locale={locale} variant="thumbnail" />
                             </span>
                             <span className={styles.buildingCardCopy}>
                               <strong>{building.name}</strong>
@@ -1030,29 +1069,7 @@ function ReadyAreaExplorer({
             locale={locale}
             onClose={closeBuilding}
           >
-            <GooglePlacePhoto
-              browserKey={googleMapsBrowserKey}
-              buildingName={selectedBuilding.name}
-              address={buildNaverBuildingAddressQuery(selected.nameKo, selectedBuilding.neighborhoodName, selectedBuilding.name)}
-              registryKey={`kr-seoul:${selectedBuilding.id}`}
-              fallback={selectedBuilding.latitude !== null && selectedBuilding.longitude !== null
-                || resolvedMapCoordinates[selectedBuilding.id] !== undefined ? (
-                <NaverBuildingStreetView
-                  clientId={naverMapClientId}
-                  buildingName={selectedBuilding.name}
-                  latitude={selectedBuilding.latitude ?? resolvedMapCoordinates[selectedBuilding.id]!.latitude}
-                  longitude={selectedBuilding.longitude ?? resolvedMapCoordinates[selectedBuilding.id]!.longitude}
-                  mapHref={selectedBuildingDetailHref}
-                />
-              ) : (
-                <section className={styles.buildingMediaUnavailable} data-building-media="location-unavailable">
-                  <strong>{locale === 'ko' ? '건물 사진과 위치를 확인할 수 없습니다.' : 'Building photo and location unavailable'}</strong>
-                  <p>{locale === 'ko'
-                    ? '검증된 주소·좌표가 없어 다른 건물 사진이나 임의 위치를 대신 표시하지 않습니다.'
-                    : 'No verified address or coordinate is available, so no substitute photo or guessed location is shown.'}</p>
-                </section>
-              )}
-            />
+            <ProjectedBuildingMedia building={selectedBuilding} locale={locale} variant="drawer" />
             <BuildingEvidencePanel
               building={selectedBuilding}
               locale={locale}
@@ -1283,7 +1300,6 @@ function UnavailableAreaExplorer({
 export function AreaExplorer({
   model,
   naverMapClientId = null,
-  googleMapsBrowserKey = null,
   locale = 'en',
   initialQuery = '',
   initialSelection = Object.freeze({ market: 'kr', transaction: 'sale' }),
@@ -1309,7 +1325,6 @@ export function AreaExplorer({
             }:${initialSelection.view ?? 'split'}:${initialSelection.buildingId ?? 'none'}`}
             model={model}
             naverMapClientId={naverMapClientId}
-            googleMapsBrowserKey={googleMapsBrowserKey}
             locale={locale}
             initialQuery={initialQuery}
             initialSelection={initialSelection}

@@ -314,6 +314,7 @@ function assertProvenance(
 
 function unsignedArtifact(value: Record<string, unknown>): Readonly<Record<string, unknown>> {
   const { sha256: _sha256, ...unsigned } = value;
+  void _sha256;
   return unsigned;
 }
 

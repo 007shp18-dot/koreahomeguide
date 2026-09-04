@@ -62,7 +62,7 @@ describe('market route isolation', () => {
     expect(markup).not.toContain('/sg/singapore/guide/');
   });
 
-  it('uses market-safe primary actions', () => {
+  it('omits rights-blocked Dubai tools from market-local navigation', () => {
     const markup = renderToStaticMarkup(createElement(SiteHeader, {
       copy: {
         brand: 'signedprice',
@@ -75,8 +75,9 @@ describe('market route isolation', () => {
       },
     }));
 
-    expect(markup).toContain('href="/compare?market=dubai"');
-    expect(markup).toContain('Compare markets');
+    expect(markup).toContain('href="/ae/dubai"');
+    expect(markup).toContain('>Overview</a>');
+    expect(markup).toContain('>Explore');
     expect(markup).not.toContain('/ae/dubai/check/');
   });
 });

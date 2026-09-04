@@ -6,6 +6,7 @@ import { describe, expect, it } from 'vitest';
 const css = readFileSync(new URL('../app/globals.css', import.meta.url), 'utf8');
 const webRoot = dirname(fileURLToPath(new URL('../package.json', import.meta.url)));
 const componentsRoot = join(webRoot, 'components');
+const appRoot = join(webRoot, 'app');
 
 function cssFilesUnder(directory: string): readonly string[] {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -163,11 +164,11 @@ describe('signedprice brand foundation', () => {
     });
     expect(declarationsFor(css, '.site-header__inner')).toMatchObject({
       width: '100%',
-      height: '50px',
+      'min-height': '64px',
       padding: '0 22px',
     });
     expect(declarationsFor(css, '.site-header__product-link')).toMatchObject({
-      height: '50px',
+      'min-height': 'var(--control-min)',
     });
     expect(declarationsFor(css, '.intent-tabs')).toMatchObject({
       border: '1px solid var(--line)',
@@ -216,6 +217,41 @@ describe('signedprice brand foundation', () => {
       'line-height': '1.65',
     });
     expect(css).toMatch(/--tracking-display:\s*-0\.03em;/);
+  });
+
+  it('defines readable semantic type and control tokens', () => {
+    expect(css).toMatch(/--text-meta:\s*0\.75rem;/);
+    expect(css).toMatch(/--text-control:\s*0\.875rem;/);
+    expect(css).toMatch(/--text-ui:\s*1rem;/);
+    expect(css).toMatch(/--control-min:\s*44px;/);
+  });
+
+  it('keeps public authored font sizes at twelve CSS pixels or larger', () => {
+    const violations = [...cssFilesUnder(appRoot), ...cssFilesUnder(componentsRoot)]
+      .flatMap((file) => [...readFileSync(file, 'utf8').matchAll(/font-size:\s*([0-9]*\.?[0-9]+)(px|rem)\b/g)]
+        .flatMap((match) => {
+          const numeric = Number(match[1]);
+          const pixels = match[2] === 'rem' ? numeric * 16 : numeric;
+          return pixels < 12
+            ? [`${relative(webRoot, file)}: ${match[0]}`]
+            : [];
+        }));
+
+    expect(violations).toEqual([]);
+  });
+
+  it('limits authored surface radii to the approved geometry', () => {
+    const violations = [...cssFilesUnder(appRoot), ...cssFilesUnder(componentsRoot)]
+      .flatMap((file) => [...readFileSync(file, 'utf8').matchAll(/border-radius:\s*([0-9]+)px\b/g)]
+        .flatMap((match) => ['0', '8', '12', '999'].includes(match[1] ?? '')
+          ? []
+          : [`${relative(webRoot, file)}: ${match[0]}`]));
+
+    expect(violations).toEqual([]);
+  });
+
+  it('sets a shared 44px minimum block size for interactive controls', () => {
+    expect(css).toMatch(/button,\s*input:not\(\[type="hidden"\]\),\s*select,\s*textarea,\s*\[role="button"\]\s*{[\s\S]*?min-block-size:\s*var\(--control-min\);/);
   });
 });
 

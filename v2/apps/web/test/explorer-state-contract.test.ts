@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
+import {
+  createEntityCheckHref,
+  createExplorerJourneyState,
+  parseEntityCheckContext,
+  parseExplorerSelection,
+} from '../lib/navigation/explorer-selection';
+
 /* eslint-disable @typescript-eslint/no-explicit-any -- contract test exercises a deliberately implementation-neutral state API */
 
 type ExplorerStateModule = {
@@ -39,6 +46,57 @@ const dongjakSeed = {
 };
 
 describe('Explorer explicit discovery state machine', () => {
+  it('keeps the decision journey URL-backed from district selection through Check and return', () => {
+    const selection = parseExplorerSelection(
+      new URLSearchParams(
+        'transaction=monthly&propertyType=officetel&district=gangnam-gu&neighborhood=yeoksam-dong&buildingId=gangnam-evidence-tower',
+      ),
+      { market: 'kr', transaction: 'sale' },
+      {
+        propertyTypes: ['officetel'],
+        districts: ['gangnam-gu'],
+        neighborhoodsByDistrict: { 'gangnam-gu': ['yeoksam-dong'] },
+        buildingIdsByNeighborhood: { 'yeoksam-dong': ['gangnam-evidence-tower'] },
+      },
+    );
+    const journey = createExplorerJourneyState(selection);
+    const returnTo = '/kr/seoul/explore/gangnam-gu/gangnam-evidence-tower/?transaction=monthly&propertyType=officetel&district=gangnam-gu&neighborhood=yeoksam-dong&buildingId=gangnam-evidence-tower';
+    const checkHref = createEntityCheckHref('/kr/seoul/check/', {
+      market: 'kr-seoul',
+      entity: 'gangnam-evidence-tower',
+      returnTo,
+      selection,
+    });
+
+    expect(journey).toEqual({
+      level: 'district',
+      district: 'gangnam-gu',
+      contract: 'monthly-rent',
+      propertyType: 'officetel',
+      selectedEntity: 'gangnam-evidence-tower',
+    });
+    expect(checkHref).toContain('market=kr-seoul');
+    expect(checkHref).toContain('entity=gangnam-evidence-tower');
+    expect(checkHref).toContain('transaction=monthly');
+    expect(checkHref).toContain('housing=officetel');
+    expect(checkHref).toContain('building=gangnam-evidence-tower');
+    expect(parseEntityCheckContext(new URL(checkHref, 'https://signedprice.invalid').searchParams, {
+      market: 'kr-seoul',
+      entityIds: ['gangnam-evidence-tower'],
+    })).toEqual({ market: 'kr-seoul', entity: 'gangnam-evidence-tower', returnTo });
+  });
+
+  it('fails closed when Check entity context is unsupported or returnTo is external', () => {
+    expect(parseEntityCheckContext(new URLSearchParams({
+      market: 'kr-seoul',
+      entity: 'unknown-building',
+      returnTo: 'https://attacker.invalid/',
+    }), {
+      market: 'kr-seoul',
+      entityIds: ['gangnam-evidence-tower'],
+    })).toBeNull();
+  });
+
   it('requires district, then neighborhood, then building selection and only clears descendants', async () => {
     const { createExplorerState, explorerReducer } = await loadExplorerState();
     const initial = createExplorerState();

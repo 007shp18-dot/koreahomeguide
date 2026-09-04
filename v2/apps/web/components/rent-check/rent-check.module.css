@@ -14,7 +14,7 @@
 .market-header > p:first-child {
   margin-bottom: 18px;
   color: var(--accent);
-  font-size: 0.72rem;
+  font-size: var(--text-meta);
   font-weight: 850;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -91,7 +91,7 @@
   place-items: center;
   border-right: 2px solid var(--ink);
   color: var(--accent);
-  font-size: 0.72rem;
+  font-size: var(--text-meta);
   font-weight: 900;
 }
 
@@ -128,7 +128,7 @@
   min-height: 24px;
   display: block;
   margin-bottom: 7px;
-  font-size: 0.73rem;
+  font-size: var(--text-meta);
   font-weight: 850;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -172,7 +172,7 @@
   border-right: 1px solid var(--ink);
   border-radius: 0;
   cursor: pointer;
-  font-size: 0.67rem;
+  font-size: var(--text-meta);
   font-weight: 800;
   line-height: 1.15;
   text-align: center;
@@ -219,7 +219,7 @@
   color: var(--ink);
   background: var(--canvas);
   font: inherit;
-  font-size: 0.7rem;
+  font-size: var(--text-meta);
   font-weight: 800;
   cursor: pointer;
 }
@@ -237,14 +237,14 @@
 .field-help {
   margin-top: 7px;
   color: var(--muted);
-  font-size: 0.68rem;
+  font-size: var(--text-meta);
   line-height: 1.35;
 }
 
 .field-error {
   margin-top: 7px;
   color: var(--ink);
-  font-size: 0.7rem;
+  font-size: var(--text-meta);
   font-weight: 800;
   line-height: 1.35;
 }
@@ -372,7 +372,7 @@
 .trust-label,
 .stale-label {
   color: var(--ink);
-  font-size: 0.68rem;
+  font-size: var(--text-meta);
   font-weight: 900;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -427,7 +427,7 @@
 
 .provenance-grid p:last-child {
   margin-top: 6px;
-  font-size: 0.68rem;
+  font-size: var(--text-meta);
   line-height: 1.35;
 }
 
@@ -451,7 +451,7 @@
 
 .result-metrics dt {
   color: var(--muted);
-  font-size: 0.65rem;
+  font-size: var(--text-meta);
   font-weight: 800;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -545,7 +545,7 @@
 
 .comparables-intro > p:last-child,
 .insufficient-rows {
-  font-size: 0.72rem;
+  font-size: var(--text-meta);
 }
 
 .comparables-scroll {
@@ -559,7 +559,7 @@
   min-width: 880px;
   border-collapse: collapse;
   color: var(--ink);
-  font-size: 0.74rem;
+  font-size: var(--text-meta);
   text-align: left;
 }
 
@@ -584,7 +584,7 @@
 .comparables-scroll thead th {
   border-bottom: 2px solid var(--ink);
   background: var(--surface);
-  font-size: 0.65rem;
+  font-size: var(--text-meta);
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
@@ -601,7 +601,7 @@
   gap: 18px;
   border-bottom: 2px solid var(--ink);
   color: var(--muted);
-  font-size: 0.68rem;
+  font-size: var(--text-meta);
   line-height: 1.45;
 }
 
@@ -633,7 +633,7 @@
 .limitations h3 {
   margin-bottom: 4px;
   color: var(--ink);
-  font-size: 0.66rem;
+  font-size: var(--text-meta);
   font-weight: 900;
   letter-spacing: 0.06em;
   text-transform: uppercase;

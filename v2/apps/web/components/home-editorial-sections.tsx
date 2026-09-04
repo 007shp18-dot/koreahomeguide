@@ -34,7 +34,7 @@ export function HomeEditorialSections({ seoul, news, featuredBuildings, naverMap
           <Link href="/prices/">Explore prices</Link>
           <Link href="/compare/">Compare markets</Link>
           <Link href="/news/">Read news</Link>
-          <Link href="/insights/">Original reports</Link>
+          <Link href="/news/?type=data-stories">Original reports</Link>
           <Link href="/community/">Community</Link>
           <Link href="/guides/">Guides</Link>
         </nav>
@@ -58,7 +58,7 @@ export function HomeEditorialSections({ seoul, news, featuredBuildings, naverMap
       </section>
 
       <section className={styles.section} id="home-briefs" aria-labelledby="home-insights-heading">
-        <div className={styles.sectionHeader}><h2 id="home-insights-heading">News & original reporting</h2><Link href="/insights/">Read SignedPrice reports →</Link></div>
+        <div className={styles.sectionHeader}><h2 id="home-insights-heading">News & original reporting</h2><Link href="/news/?type=data-stories">Read SignedPrice reports →</Link></div>
         <div className={styles.insightGrid}>
           <article><span>KOREA</span>{lead === undefined ? <><h3>No approved brief yet</h3><p>Verified reporting appears only after the underlying evidence reconciles.</p></> : <><h3><Link href={`/kr/seoul/news/${lead.slug}/`}>{lead.title}</Link></h3><p>{lead.summary}</p><small>{date.format(new Date(lead.publishedAt))}</small></>}</article>
           <article><span>SINGAPORE</span><h3>Evidence before commentary.</h3><p>URA and HDB evidence remains separated by housing sector and publication boundary.</p><small>Source-led analysis</small></article>

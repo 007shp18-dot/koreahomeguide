@@ -369,7 +369,7 @@ describe('real route rendering contracts', () => {
     expect(markup).toContain('>This route is not available.</h1>');
     expect(markup).toContain('>Return to signedprice home</span>');
     expect(markup).toContain('aria-label="Primary navigation"');
-    expect(markup.match(/data-navigation-tier="product"/g)).toHaveLength(1);
+    expect(markup.match(/data-navigation-tier="global"/g)).toHaveLength(1);
     expect(markup).not.toMatch(unsupportedClaimPattern);
   });
 });

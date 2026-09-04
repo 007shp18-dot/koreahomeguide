@@ -49,13 +49,13 @@
     },
     {
       "sourcePath": "/guides/",
-      "targetPath": "/kr/seoul/guide/",
-      "destination": "https://www.signedprice.com/kr/seoul/guide/",
+      "targetPath": "/guides/",
+      "destination": "https://www.signedprice.com/guides/",
       "cohort": 3,
       "locale": "en",
       "statusCode": 301,
       "active": true,
-      "evidence": "seoul-guide-hub-equivalent"
+      "evidence": "global-guide-hub-canonical"
     },
     {
       "sourcePath": "/privacy/",

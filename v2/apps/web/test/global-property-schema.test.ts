@@ -16,8 +16,12 @@ describe('global property database migration', () => {
       '0001_persistent_content.sql',
       '0002_google_news_source.sql',
       '0003_global_property_core.sql',
+      '0004_public_evidence_projection.sql',
+      '0005_newsroom_content_system.sql',
+      '0006_infographic_render_records.sql',
     ]);
-    expect(bundles.at(-1)?.statements.length).toBeGreaterThan(10);
+    expect(bundles.find(({ name }) => name === '0003_global_property_core.sql')?.statements.length)
+      .toBeGreaterThan(10);
   });
 
   it('creates every common-core relation without destructive legacy-table changes', async () => {
@@ -58,6 +62,28 @@ describe('global property database migration', () => {
       'metric_observations',
       'market_capabilities',
       'media_assets',
+    ]);
+  });
+
+  it('adds reproducible owned infographic render records without destructive changes', async () => {
+    const bundles = await loadMigrationBundles(migrationDirectory);
+    const infographics = bundles.find(({ name }) => name === '0006_infographic_render_records.sql');
+    expect(infographics).toBeDefined();
+
+    const result = assertAdditiveMigration(infographics!, {
+      requiredTables: [
+        'infographic_specs',
+        'infographic_renders',
+        'infographic_render_evidence',
+        'content_infographic_links',
+      ],
+      protectedTables: ['content_articles', 'evidence_releases'],
+    });
+    expect(result.createdTables).toEqual([
+      'infographic_specs',
+      'infographic_renders',
+      'infographic_render_evidence',
+      'content_infographic_links',
     ]);
   });
 });

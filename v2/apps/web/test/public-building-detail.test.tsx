@@ -59,11 +59,14 @@ describe('public building detail', () => {
   it('renders shared local product navigation and URL-backed decision tabs', () => {
     const header = renderToStaticMarkup(<BuildingDetailHeader />);
     expect(header).toContain('aria-label="signedprice home"');
-    for (const label of ['Overview', 'Check', 'Explore', 'Rankings', 'News', 'Community', 'Guide']) {
-      expect(header).toContain(`<strong>${label}</strong>`);
+    for (const label of ['Markets', 'Prices', 'News', 'Guides']) {
+      expect(header).toContain(`>${label}</a>`);
+    }
+    for (const label of ['Overview', 'Explore', 'Check', 'Rankings', 'Corrections']) {
+      expect(header).toContain(`>${label}`);
     }
     expect(header).toMatch(/<a[^>]*aria-current="page"[^>]*href="\/kr\/seoul\/explore"/);
-    expect(header).toContain('Seoul · reported filings');
+    expect(header).toContain('aria-label="Seoul market navigation"');
 
     const tabs = renderToStaticMarkup(
       <BuildingDecisionTabs
@@ -118,6 +121,30 @@ describe('public building detail', () => {
     expect(identity).toBeGreaterThan(-1);
     expect(identity).toBeLessThan(decision);
     expect(decision).toBeLessThan(evidence);
+  });
+
+  it('orders the decision record and carries entity context into Check', () => {
+    const html = renderToStaticMarkup(<BuildingDetailPage
+      {...detailProps()}
+      backHref="/kr/seoul/explore/?transaction=monthly&propertyType=apartment&district=gangnam-gu&neighborhood=yeoksam-dong&buildingId=gangnam-evidence-tower"
+    />);
+    const ordered = [
+      'data-detail-order="media"',
+      'data-detail-order="identity"',
+      'data-detail-order="current-evidence"',
+      'data-detail-order="history"',
+      'data-detail-order="comparable-range"',
+      'data-detail-order="facts"',
+      'data-detail-order="proximity"',
+      'data-detail-order="sources"',
+      'data-detail-order="related-actions"',
+    ].map((needle) => html.indexOf(needle));
+
+    expect(ordered.every((position) => position >= 0)).toBe(true);
+    expect([...ordered].sort((left, right) => left - right)).toEqual(ordered);
+    expect(html).toContain('market=kr-seoul');
+    expect(html).toContain('entity=gangnam-evidence-tower');
+    expect(html).toContain('returnTo=');
   });
 
   it('renders the six-pair gate basis and the exact single-band empty state', () => {
@@ -187,8 +214,8 @@ describe('public building detail', () => {
     expect(metadata).toMatchObject({ robots: { index: false, follow: true } });
     expect(metadata).not.toHaveProperty('alternates');
     expect(html).toContain('Evidence Tower');
-    expect(html).toContain('data-building-media="google-place-photo"');
-    expect(html).toContain('Loading verified place photo');
+    expect(html).toContain('data-building-media="location-only"');
+    expect(html).toContain('No exact-property photo is approved for public display.');
     expect(html).not.toContain('not a listing photo');
   });
 
@@ -214,8 +241,8 @@ describe('public building detail', () => {
     }));
     expect(selected).toContain('data-selected-mode="rent"');
     expect(selected).toContain('6 reported contracts');
-    expect(selected).toContain('data-building-media="google-place-photo"');
-    expect(selected).toContain('Loading verified place photo');
+    expect(selected).toContain('data-building-media="location-only"');
+    expect(selected).toContain('No exact-property photo is approved for public display.');
     expect(selected).not.toContain('Street view unavailable');
     expect(selected).not.toContain('data-detail-rail="true"');
     expect(selected).toContain(

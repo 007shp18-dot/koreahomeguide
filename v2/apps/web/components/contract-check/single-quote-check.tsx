@@ -6,6 +6,7 @@ import { useState } from 'react';
 
 import type { ProductLocale } from '../../lib/locale/product-copy';
 import type { SingleQuoteCheckRouteModel } from '../../lib/single-quote-check/route-model.server';
+import type { EntityCheckContext } from '../../lib/navigation/explorer-selection';
 import { SiteHeader } from '../site-header';
 import {
   CHECK_COPY,
@@ -39,9 +40,10 @@ function resultReason(
   return result.message;
 }
 
-function SingleResult({ model, locale }: Readonly<{
+function SingleResult({ model, locale, entityContext }: Readonly<{
   model: SingleQuoteCheckRouteModel;
   locale: ProductLocale;
+  entityContext: EntityCheckContext | null;
 }>) {
   const c = CHECK_COPY[locale];
   const result = model.result;
@@ -79,6 +81,7 @@ function SingleResult({ model, locale }: Readonly<{
               {result.comparableRows.map((row, index) => (
                 <p key={`${row.buildingId}-${row.filedMonth}-${index}`}>
                   {row.filedMonth} · {row.areaSqm}㎡ · {won.format(row.adjustedValueWon)}
+                  {entityContext === null ? null : <Link href={`/kr/seoul/explore/${row.districtSlug}/${row.buildingId}/?transaction=${model.selection.transaction}&propertyType=${model.selection.housingType}&district=${row.districtSlug}&buildingId=${row.buildingId}`}>Open building evidence</Link>}
                 </p>
               ))}
             </div>
@@ -97,9 +100,10 @@ function SingleResult({ model, locale }: Readonly<{
   );
 }
 
-export function SingleQuoteCheckWorkspace({ model, locale = 'en' }: Readonly<{
+export function SingleQuoteCheckWorkspace({ model, locale = 'en', entityContext = null }: Readonly<{
   model: SingleQuoteCheckRouteModel;
   locale?: ProductLocale;
+  entityContext?: EntityCheckContext | null;
 }>) {
   const c = CHECK_COPY[locale];
   const [draft, setDraft] = useState<QuoteDraft>(() => ({
@@ -128,6 +132,11 @@ export function SingleQuoteCheckWorkspace({ model, locale = 'en' }: Readonly<{
         </nav>
         <form action={localizedCheckHref(locale, '/')} className={styles.form} method="get">
           <input name="check" type="hidden" value="1" />
+          {entityContext === null ? null : <>
+            <input name="market" type="hidden" value={entityContext.market} />
+            <input name="entity" type="hidden" value={entityContext.entity} />
+            <input name="returnTo" type="hidden" value={entityContext.returnTo} />
+          </>}
           <fieldset className={styles.conditions} data-check-section="conditions">
             <legend><span>01</span>{c.conditions}</legend>
             <div className={styles.conditionGrid}>
@@ -159,8 +168,11 @@ export function SingleQuoteCheckWorkspace({ model, locale = 'en' }: Readonly<{
           </fieldset>
           <div className={styles.actions}><button type="submit">Check this quote</button></div>
         </form>
-        <SingleResult model={model} locale={locale} />
+        <SingleResult model={model} locale={locale} entityContext={entityContext} />
         <nav className={styles.contextLinks} aria-label={c.evidence}>
+          {entityContext === null ? null : <Link href={entityContext.returnTo}>
+            Return to {model.buildingName ?? 'selected building'}
+          </Link>}
           <Link href={localizedCheckHref(locale, '/compare/')}>{c.compare}</Link>
           <Link href={`${locale === 'ko' ? '/ko' : ''}/kr/seoul/explore/`}>{c.explore}</Link>
           <Link href="/kr/seoul/guide/">{c.guide}</Link>

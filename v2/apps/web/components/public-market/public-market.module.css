@@ -30,9 +30,9 @@
 .periodLegend { border-color: var(--line); }
 .periodLegend span,
 .periodCaveat { font-size: .75rem; }
-.periodLegend i { border-color: var(--line-strong); border-radius: 3px; }
+.periodLegend i { border-color: var(--line-strong); border-radius: 8px; }
 
-.strokeSwatch { border-radius: 4px; }
+.strokeSwatch { border-radius: 8px; }
 .filled { border-color: var(--accent); background: var(--accent); }
 .outlined,
 .hatched { border-color: var(--accent); }
@@ -48,7 +48,7 @@
 .quoteMarker,
 .quoteMarker::before { background: var(--accent); }
 .plotLegend { border-color: var(--line); background: var(--line); }
-.plotLegend small { font-size: .68rem; }
+.plotLegend small { font-size: var(--text-meta); }
 .plotLegend strong,
 .plotQuoteLegend { font-size: .75rem; }
 
@@ -73,7 +73,7 @@
   place-items: center;
   border-right: 1px solid var(--public-ink, var(--ink));
   border-bottom: 1px solid var(--public-ink, var(--ink));
-  font-size: 0.68rem;
+  font-size: var(--text-meta);
   font-weight: 850;
 }
 
@@ -101,7 +101,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  font-size: 0.68rem;
+  font-size: var(--text-meta);
   font-weight: 800;
 }
 
@@ -123,7 +123,7 @@
 .periodCaveat {
   padding: 0.75rem;
   color: var(--muted);
-  font-size: 0.7rem;
+  font-size: var(--text-meta);
   line-height: 1.5;
 }
 
@@ -277,8 +277,8 @@
 .plotLegend > span:nth-child(2),
 .plotLegend > span:nth-child(3),
 .plotLegend > span:nth-child(4) { text-align: center; }
-.plotLegend small { color: var(--muted); font-size: 0.58rem; font-weight: 850; letter-spacing: 0.04em; text-transform: uppercase; }
-.plotLegend strong { min-width: 0; overflow-wrap: anywhere; font-size: 0.7rem; line-height: 1.25; }
+.plotLegend small { color: var(--muted); font-size: var(--text-meta); font-weight: 850; letter-spacing: 0.04em; text-transform: uppercase; }
+.plotLegend strong { min-width: 0; overflow-wrap: anywhere; font-size: var(--text-meta); line-height: 1.25; }
 
 .plotQuoteLegend {
   margin: 0;
@@ -288,7 +288,7 @@
   gap: 0.5rem;
   border-bottom: 1px solid var(--divider);
   color: var(--public-accent);
-  font-size: 0.7rem;
+  font-size: var(--text-meta);
 }
 
 .plotQuoteLegend > span { width: 0.65rem; height: 0.65rem; flex: 0 0 auto; background: var(--public-accent); transform: rotate(45deg); }
@@ -315,7 +315,7 @@
   padding: 0.85rem;
   display: grid;
   gap: 0.2rem;
-  font-size: 0.72rem;
+  font-size: var(--text-meta);
   line-height: 1.4;
 }
 
@@ -331,11 +331,11 @@
 
 .compactPlot .plotCaption {
   padding: 0.6rem;
-  font-size: 0.66rem;
+  font-size: var(--text-meta);
 }
 
 .compactPlot .plotLegend > span { padding: 0.5rem 0.35rem; }
-.compactPlot .plotLegend strong { font-size: 0.62rem; }
+.compactPlot .plotLegend strong { font-size: var(--text-meta); }
 
 .withheldHatch {
   min-height: 112px;
@@ -372,7 +372,7 @@
 
 .verdictLine p span,
 .verdictWithheld p {
-  font-size: 0.72rem;
+  font-size: var(--text-meta);
 }
 
 .quoteIsland {
@@ -405,7 +405,7 @@
   align-content: center;
   gap: 0.1rem;
   border-right: 1px solid var(--public-ink);
-  font-size: 0.68rem;
+  font-size: var(--text-meta);
   font-weight: 850;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -413,7 +413,7 @@
 
 .quoteField small {
   color: var(--muted);
-  font-size: 0.58rem;
+  font-size: var(--text-meta);
   font-weight: 700;
   letter-spacing: 0;
   text-transform: none;
@@ -492,7 +492,7 @@
 .publicHero > p:first-child,
 .publicSectionHeading p {
   color: var(--public-accent);
-  font-size: 0.7rem;
+  font-size: var(--text-meta);
   font-weight: 850;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -573,7 +573,7 @@
   align-items: center;
   justify-content: space-between;
   color: var(--muted);
-  font-size: .72rem;
+  font-size: var(--text-meta);
   font-weight: 750;
   cursor: pointer;
   list-style: none;
@@ -588,7 +588,7 @@
   display: grid;
   gap: 12px;
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: 12px;
   background: var(--surface-strong);
 }
 
@@ -622,7 +622,7 @@
   place-items: center;
   color: var(--public-ink);
   background: transparent;
-  font-size: 0.72rem;
+  font-size: var(--text-meta);
   font-weight: 850;
   text-align: center;
   text-decoration: none;
@@ -660,7 +660,7 @@
 }
 
 .publicSectionTabFuture small {
-  font-size: 0.56rem;
+  font-size: var(--text-meta);
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -672,7 +672,7 @@
 
 .publicSourceHeading > p {
   color: var(--public-accent);
-  font-size: 0.7rem;
+  font-size: var(--text-meta);
   font-weight: 850;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -693,7 +693,7 @@
 
 .publicSourceDetails {
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: 12px;
   overflow: hidden;
 }
 
@@ -736,7 +736,7 @@
 }
 
 .publicSourceBoundary dt {
-  font-size: 0.65rem;
+  font-size: var(--text-meta);
   font-weight: 850;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -760,7 +760,7 @@
   gap: 0.3rem;
   border-bottom: 2px solid var(--public-ink);
   color: var(--muted);
-  font-size: 0.72rem;
+  font-size: var(--text-meta);
   line-height: 1.5;
 }
 
@@ -797,7 +797,7 @@
 }
 
 .publicDisclosure dt {
-  font-size: 0.65rem;
+  font-size: var(--text-meta);
   font-weight: 850;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -827,7 +827,7 @@
   place-items: center;
   border-right: 2px solid var(--public-ink);
   color: var(--public-ink);
-  font-size: 0.72rem;
+  font-size: var(--text-meta);
   font-weight: 850;
   text-align: center;
   text-decoration: none;
@@ -987,6 +987,6 @@
 }
 .publicSourceBoundary dl > div {
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: 12px;
   background: var(--canvas);
 }

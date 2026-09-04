@@ -5,8 +5,10 @@ import { gzipSync } from 'node:zlib';
 
 import {
   SINGAPORE_CHECK_ARTIFACT_VERSION,
+  SINGAPORE_PUBLIC_INDEX_VERSION,
   buildHdbRentCheckArtifact,
   buildHdbResaleCheckArtifact,
+  buildSingaporePublicIndex,
   buildUraPrivateSaleCheckArtifact,
   parseHdbSnapshot,
   parseSingaporeSnapshot,
@@ -35,6 +37,7 @@ const artifacts = Object.freeze([
   buildHdbResaleCheckArtifact(hdb),
   buildHdbRentCheckArtifact(hdb),
 ]);
+const publicIndex = buildSingaporePublicIndex(ura);
 const dataset = Object.freeze({
   'ura-private-sale': 'sg-check-ura-private-sale',
   'hdb-resale': 'sg-check-hdb-resale',
@@ -59,7 +62,25 @@ const manifest = artifacts.map((artifact: SingaporeCheckArtifact) => {
     artifactDigest: artifact.digest,
   });
 });
+const publicIndexSerialized = `${JSON.stringify(publicIndex)}\n`;
+writeFileSync(
+  resolve(outputDirectory, 'singapore-public-index.json.gz'),
+  gzipSync(publicIndexSerialized, { level: 9, mtime: 0 }),
+);
 writeFileSync(
   resolve(outputDirectory, 'singapore-check-manifest.json'),
-  `${JSON.stringify({ artifacts: manifest }, null, 2)}\n`,
+  `${JSON.stringify({
+    artifacts: manifest,
+    publicIndex: {
+      marketId: 'sg-singapore',
+      dataset: 'sg-private-sale-public-index',
+      schemaVersion: SINGAPORE_PUBLIC_INDEX_VERSION,
+      period: `${ura.period.from}/${ura.period.to}`,
+      generatedAt: ura.generatedAt,
+      objectUrl: 'installed://sg-private-sale-public-index',
+      sha256: createHash('sha256').update(publicIndexSerialized).digest('hex'),
+      recordCount: ura.records.length,
+      artifactDigest: publicIndex.digest,
+    },
+  }, null, 2)}\n`,
 );
