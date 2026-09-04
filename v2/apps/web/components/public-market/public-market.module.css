@@ -947,3 +947,46 @@
     text-align: left;
   }
 }
+
+/* Shared chart, period and source cards */
+.periodEvidence,
+.boxPlot,
+.withheldPlot {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  color: var(--ink);
+  background: var(--surface-strong);
+}
+.periodStrip { gap: 1px; background: var(--line); }
+.periodStrip li {
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface-strong);
+  font-size: .75rem;
+}
+.periodLegend,
+.plotCanvas { border-color: var(--line); }
+.periodLegend span,
+.periodCaveat { font-size: .75rem; }
+.plotLegend { border-color: var(--line); background: var(--line); }
+.whisker,
+.whisker::before,
+.whisker::after,
+.medianLine { background: #638dca; }
+.interquartile { border-color: #638dca; background: var(--soft-blue); }
+.publicSourceBoundary {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-strong);
+}
+.publicSourceBoundary dl {
+  gap: 9px;
+  border: 0;
+  background: transparent;
+}
+.publicSourceBoundary dl > div {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--canvas);
+}
