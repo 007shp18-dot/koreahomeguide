@@ -48,6 +48,64 @@ describe('building facts API handler', () => {
     expect(load).not.toHaveBeenCalled();
   });
 
+  test('reuses attached database facts before calling the upstream providers', async () => {
+    const storedFacts = {
+      status: 'ready' as const,
+      match: { kaptCode: 'A1', bjdCode: '1168010100' },
+      apartment: { name: '래미안 역삼', legalAddress: '서울 강남구 역삼동 1' },
+      register: null,
+    };
+    const load = vi.fn();
+    const loadStored = vi.fn().mockResolvedValue(storedFacts);
+    const handler = createBuildingFactsGetHandler({
+      serviceKey: 'server-secret',
+      load,
+      loadStored,
+      resolveIdentity: () => ({
+        districtLawdCd: '11680', neighborhoodName: '역삼동',
+        officialName: '래미안 역삼', housingType: 'apartment',
+      }),
+    });
+
+    const response = await handler(new Request(
+      'https://www.signedprice.com/api/markets/kr-seoul/building-facts?district=gangnam-gu&building=alpha',
+    ));
+    expect(response.status).toBe(200);
+    expect(loadStored).toHaveBeenCalledWith(expect.objectContaining({
+      districtSlug: 'gangnam-gu', buildingId: 'alpha', officialName: '래미안 역삼',
+    }));
+    expect(load).not.toHaveBeenCalled();
+    expect(await response.json()).toMatchObject({ facts: storedFacts });
+  });
+
+  test('attaches a verified upstream response to the database store', async () => {
+    const readyFacts = {
+      status: 'ready' as const,
+      match: { kaptCode: 'A1', bjdCode: '1168010100' },
+      apartment: { name: '래미안 역삼', legalAddress: '서울 강남구 역삼동 1' },
+      register: null,
+    };
+    const storeReady = vi.fn().mockResolvedValue(undefined);
+    const handler = createBuildingFactsGetHandler({
+      serviceKey: 'server-secret',
+      load: vi.fn().mockResolvedValue(readyFacts),
+      storeReady,
+      resolveIdentity: () => ({
+        districtLawdCd: '11680', neighborhoodName: '역삼동',
+        officialName: '래미안 역삼', housingType: 'apartment',
+      }),
+    });
+
+    const response = await handler(new Request(
+      'https://www.signedprice.com/api/markets/kr-seoul/building-facts?district=gangnam-gu&building=alpha',
+    ));
+    expect(response.status).toBe(200);
+    expect(storeReady).toHaveBeenCalledWith(
+      expect.objectContaining({ districtSlug: 'gangnam-gu', buildingId: 'alpha' }),
+      readyFacts,
+    );
+  });
+
   test('accepts an observed public building even when price repositories are fixture-isolated', async () => {
     vi.stubEnv('SIGNEDPRICE_USE_CHECKED_IN_SNAPSHOTS', 'false');
     vi.stubEnv('SIGNEDPRICE_OBSERVED_BUILDING_ARTIFACT', OBSERVED_BUILDING_INVENTORY_TEST_ARTIFACT);
