@@ -14,12 +14,50 @@ type Envelope = Readonly<{
   facts: OfficialBuildingFacts;
 }>;
 
-function area(value: number | null): string {
-  return value === null ? 'Not provided' : `${value.toLocaleString('en-US', { maximumFractionDigits: 1 })}㎡`;
+function area(value: number): string {
+  return `${value.toLocaleString('en-US', { maximumFractionDigits: 1 })}㎡`;
 }
 
-function count(value: number | null): string {
-  return value === null ? 'Not provided' : value.toLocaleString('en-US');
+function count(value: number): string {
+  return value.toLocaleString('en-US');
+}
+
+function ReadyOfficialFacts({ envelope }: Readonly<{ envelope: Envelope }>) {
+  if (envelope.facts.status !== 'ready') return null;
+  const { apartment, register } = envelope.facts;
+  const profile = [
+    apartment.households === null ? null : ['Households', count(apartment.households)],
+    apartment.buildings === null ? null : ['Buildings', count(apartment.buildings)],
+    apartment.approvalDate === null && register?.approvalDate == null ? null : ['Approval date', apartment.approvalDate ?? register?.approvalDate ?? ''],
+    apartment.heating === null ? null : ['Heating', apartment.heating],
+    apartment.corridorType === null ? null : ['Corridor type', apartment.corridorType],
+    apartment.saleType === null ? null : ['Sale type', apartment.saleType],
+  ].filter((row): row is string[] => row !== null);
+  const totalArea = register?.totalAreaSqm ?? apartment.totalAreaSqm;
+  const registerProfile = [
+    register?.mainUse == null ? null : ['Main use', register.mainUse],
+    register?.structure == null ? null : ['Structure', register.structure],
+    totalArea === null ? null : ['Total floor area', area(totalArea)],
+    register?.buildingAreaSqm == null ? null : ['Building area', area(register.buildingAreaSqm)],
+    register?.floorsAbove == null && register?.floorsBelow == null ? null : ['Floors', [
+      register?.floorsAbove == null ? null : `${count(register.floorsAbove)} above`,
+      register?.floorsBelow == null ? null : `${count(register.floorsBelow)} below`,
+    ].filter(Boolean).join(' · ')],
+    register?.parkingSpaces == null ? null : ['Parking spaces', count(register.parkingSpaces)],
+  ].filter((row): row is string[] => row !== null);
+  const sources = [
+    ['Legal address', apartment.legalAddress],
+    apartment.roadAddress === null ? null : ['Road address', apartment.roadAddress],
+    ['Apartment source', envelope.source.apartment],
+    register === null ? null : ['Register source', envelope.source.register],
+  ].filter((row): row is string[] => row !== null);
+  const grid = (rows: string[][], className: string | undefined) => rows.length === 0 ? null : <dl className={className}>{rows.map((row) => <div key={row[0]!}><dt>{row[0]!}</dt><dd>{row[1]!}</dd></div>)}</dl>;
+  return <>
+    <div className={styles.sectionHeading}><p>Official sources</p><h3>Complex and building-register profile</h3></div>
+    {grid(profile, styles.findingGrid)}
+    {grid(registerProfile, styles.sourceGrid)}
+    {grid(sources, styles.sourceGrid)}
+  </>;
 }
 
 function reasonCopy(reason: Extract<OfficialBuildingFacts, { status: 'unavailable' }>['reason']) {
@@ -67,31 +105,7 @@ export function BuildingOfficialFacts({ districtSlug, buildingId, observedFacts 
         <p>{reasonCopy(state.facts.reason)}</p>
         <p>공식 정보가 아직 연결되지 않은 항목만 비워 두며, 위의 확인된 정보는 계속 표시합니다.</p>
       </> : null}
-      {state !== 'loading' && state !== 'error' && state.facts.status === 'ready' ? <>
-        <div className={styles.sectionHeading}><p>Official sources</p><h3>Complex and building-register profile</h3></div>
-        <dl className={styles.findingGrid}>
-          <div><dt>Households</dt><dd>{count(state.facts.apartment.households)}</dd></div>
-          <div><dt>Buildings</dt><dd>{count(state.facts.apartment.buildings)}</dd></div>
-          <div><dt>Approval date</dt><dd>{state.facts.apartment.approvalDate ?? state.facts.register?.approvalDate ?? 'Not provided'}</dd></div>
-          <div><dt>Heating</dt><dd>{state.facts.apartment.heating ?? 'Not provided'}</dd></div>
-          <div><dt>Corridor type</dt><dd>{state.facts.apartment.corridorType ?? 'Not provided'}</dd></div>
-          <div><dt>Sale type</dt><dd>{state.facts.apartment.saleType ?? 'Not provided'}</dd></div>
-        </dl>
-        <dl className={styles.sourceGrid}>
-          <div><dt>Main use</dt><dd>{state.facts.register?.mainUse ?? 'Not provided'}</dd></div>
-          <div><dt>Structure</dt><dd>{state.facts.register?.structure ?? 'Not provided'}</dd></div>
-          <div><dt>Total floor area</dt><dd>{area(state.facts.register?.totalAreaSqm ?? state.facts.apartment.totalAreaSqm)}</dd></div>
-          <div><dt>Building area</dt><dd>{area(state.facts.register?.buildingAreaSqm ?? null)}</dd></div>
-          <div><dt>Floors</dt><dd>{state.facts.register === null ? 'Not provided' : `${count(state.facts.register.floorsAbove)} above · ${count(state.facts.register.floorsBelow)} below`}</dd></div>
-          <div><dt>Parking spaces</dt><dd>{count(state.facts.register?.parkingSpaces ?? null)}</dd></div>
-        </dl>
-        <dl className={styles.sourceGrid}>
-          <div><dt>Legal address</dt><dd>{state.facts.apartment.legalAddress}</dd></div>
-          <div><dt>Road address</dt><dd>{state.facts.apartment.roadAddress ?? 'Not provided'}</dd></div>
-          <div><dt>Apartment source</dt><dd>{state.source.apartment}</dd></div>
-          <div><dt>Register source</dt><dd>{state.facts.register === null ? 'No unique register row attached' : state.source.register}</dd></div>
-        </dl>
-      </> : null}
+      {state !== 'loading' && state !== 'error' ? <ReadyOfficialFacts envelope={state} /> : null}
     </section>
   );
 }
