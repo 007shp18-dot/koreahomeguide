@@ -27,6 +27,31 @@ describe('public editorial homepage', () => {
     expect(markup).not.toContain('/design-review/');
   });
 
+  it('keeps Seoul, Singapore, and Dubai visible in the homepage decision flow', async () => {
+    const markup = renderToStaticMarkup(await Home());
+    const evidence = markup.indexOf('Current evidence');
+    const markets = markup.indexOf('data-home-section="markets"');
+    const insight = markup.indexOf('data-home-section="insight"');
+
+    expect(markets).toBeGreaterThan(evidence);
+    expect(insight).toBeGreaterThan(markets);
+    expect(markup).toContain('href="/kr/seoul"');
+    expect(markup).toContain('href="/sg"');
+    expect(markup).toContain('href="/ae/dubai"');
+    expect(markup).toContain('>Seoul<');
+    expect(markup).toContain('>Singapore<');
+    expect(markup).toContain('>Dubai<');
+  });
+
+  it('opens with an honest market photograph instead of a decorative mock', async () => {
+    const markup = renderToStaticMarkup(await Home());
+
+    expect(markup).toContain('data-home-hero-media="market-photo"');
+    expect(markup).toContain('data-building-media="curated-market-photo"');
+    expect(markup).toContain('src="/assets/markets/seoul-residential.jpg"');
+    expect(markup).toContain('Seoul apartment skyline with Namsan in the distance');
+  });
+
   it('keeps the root canonical and indexable', () => {
     expect(metadata).toMatchObject({
       robots: { index: true, follow: true },
