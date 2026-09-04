@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { EditorialGrowthReviewModel } from '@/lib/design-review/editorial-growth-review-model';
-import { MARKET_PHOTOS, MarketRepresentativePhoto } from '@/components/market-representative-photo';
+import { ThreeMarketHero } from '@/components/home/three-market-hero';
+import { createThreeMarketHomeModel } from '@/lib/home/three-market-home-model';
 import styles from './editorial-growth-review.module.css';
 
 const COPY = Object.freeze({
@@ -34,6 +35,8 @@ const COPY = Object.freeze({
     methodBody: 'SignedPrice separates reported contract evidence from editorial explanation. Period, sample, and publication limits stay visible wherever a figure appears.',
     unavailable: 'Official Seoul evidence is temporarily unavailable.',
     read: 'Read report',
+    updated: 'Updated',
+    methodEyebrow: 'Method & provenance',
   },
   'zh-CN': {
     eyebrow: '韩国租房数据指南',
@@ -65,6 +68,8 @@ const COPY = Object.freeze({
     methodBody: 'SignedPrice 将已申报合同数据与编辑说明分开。每个数字旁边都会显示期间、样本和发布限制。',
     unavailable: '首尔官方数据暂时无法使用。',
     read: '阅读报告',
+    updated: '更新于',
+    methodEyebrow: '方法与来源',
   },
 });
 
@@ -79,75 +84,14 @@ export function EditorialGrowthHome({ model, hrefs }: Readonly<{
     check: `/design-review/editorial-growth/check/?${query}`,
     explore: `/design-review/editorial-growth/explore/?${query}`,
   };
+  const threeMarketHome = createThreeMarketHomeModel({
+    locale: model.locale,
+    seoulMetric: model.headlineMetric,
+  });
 
   return (
     <main className={styles.homePage}>
-      <section className={styles.homeHero}>
-        <div className={styles.homeHeroCopy}>
-          <p className={styles.eyebrow}>{copy.eyebrow}</p>
-          <h1 className={styles.display}>{copy.title}</h1>
-          <p className={`${styles.lead} ${styles.homeLead}`}>{copy.lead}</p>
-          <div className={styles.heroActions}>
-            <Link
-              className={styles.primaryAction}
-              data-primary-action="check"
-              href={links.check}
-            >
-              {copy.primary}
-            </Link>
-            <Link className={styles.textAction} href={links.explore}>
-              {copy.secondary}<span aria-hidden="true"> ↗</span>
-            </Link>
-          </div>
-        </div>
-        <div className={styles.homeHeroMedia} data-home-hero-media="market-photo">
-          <MarketRepresentativePhoto photo={MARKET_PHOTOS.seoul} eager />
-          <p>Seoul · Residential market</p>
-        </div>
-      </section>
-
-      <section className={styles.evidenceStrip} aria-labelledby="home-evidence-title">
-        <div>
-          <p className={styles.eyebrow}>{model.seoulStatus}</p>
-          <h2 className={styles.subheading} id="home-evidence-title">{copy.evidence}</h2>
-        </div>
-        {model.headlineMetric ? (
-          <dl className={styles.headlineMetric}>
-            <div>
-              <dt>{model.headlineMetric.label}</dt>
-              <dd>{model.headlineMetric.value}</dd>
-            </div>
-            <p>{model.headlineMetric.context}</p>
-          </dl>
-        ) : (
-          <p className={styles.evidenceUnavailable}>{copy.unavailable}</p>
-        )}
-      </section>
-
-      <section className={styles.marketSection} data-home-section="markets" aria-labelledby="home-markets-title">
-        <div className={styles.sectionIntro}>
-          <p className={styles.eyebrow}>{copy.markets}</p>
-          <h2 className={styles.sectionTitle} id="home-markets-title">{copy.marketsTitle}</h2>
-          <Link className={styles.textAction} href="/compare/">
-            {copy.compareMarkets}<span aria-hidden="true"> →</span>
-          </Link>
-        </div>
-        <ol className={styles.marketIndex}>
-          {copy.marketItems.map((market) => (
-            <li key={market.href}>
-              <span className={styles.marketNumber}>{market.index}</span>
-              <div className={styles.marketIdentity}>
-                <Link href={market.href}>{market.name}<span aria-hidden="true"> ↗</span></Link>
-                <small>{market.state}</small>
-              </div>
-              <p>{market.scope}</p>
-              <nav aria-label={`${market.name.replace(/^.*?\s(?=[A-Z])/u, '')} tools`}>
-                {market.actions.map((action) => <Link href={action.href} key={action.href}>{action.label}</Link>)}
-              </nav>
-            </li>
-          ))}
-        </ol>
-      </section>
+      <ThreeMarketHero model={threeMarketHome} />
 
       <section className={styles.homeInsight} data-home-section="insight" aria-labelledby="home-insight-title">
         <div className={styles.sectionIntro}>
@@ -156,7 +100,7 @@ export function EditorialGrowthHome({ model, hrefs }: Readonly<{
         </div>
         <div className={styles.insightBody}>
           <p className={styles.lead}>{model.article.summary}</p>
-          <p className={styles.articleMeta}>{model.article.market} · Updated {model.article.updated}</p>
+          <p className={styles.articleMeta}>{model.article.market} · {copy.updated} {model.article.updated}</p>
           <Link className={styles.textAction} href={links.content}>
             {copy.read}<span aria-hidden="true"> →</span>
           </Link>
@@ -175,7 +119,7 @@ export function EditorialGrowthHome({ model, hrefs }: Readonly<{
                 <span className={styles.guideStage}>{guide.stage}</span>
                 <strong>{guide.title}</strong>
                 <span>{guide.summary}</span>
-                <small>Updated {guide.updated}</small>
+                <small>{copy.updated} {guide.updated}</small>
               </Link>
             </li>
           ))}
@@ -183,7 +127,7 @@ export function EditorialGrowthHome({ model, hrefs }: Readonly<{
       </section>
 
       <section className={styles.methodNote} aria-labelledby="home-method-title">
-        <p className={styles.eyebrow}>Method &amp; provenance</p>
+        <p className={styles.eyebrow}>{copy.methodEyebrow}</p>
         <h2 className={styles.subheading} id="home-method-title">{copy.method}</h2>
         <p>{copy.methodBody}</p>
       </section>

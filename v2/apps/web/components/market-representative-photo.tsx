@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 import styles from './market-representative-photo.module.css';
 
 export type MarketPhoto = Readonly<{
@@ -24,19 +26,24 @@ export const MARKET_PHOTOS = Object.freeze({
   }),
 } satisfies Readonly<Record<'seoul' | 'singapore' | 'dubai', MarketPhoto>>);
 
-export function MarketRepresentativePhoto({ photo, eager = false }: Readonly<{
+export function MarketRepresentativePhoto({ photo, eager = false, cityLabel }: Readonly<{
   photo: MarketPhoto;
   eager?: boolean;
+  cityLabel?: string;
 }>) {
   return <figure className={styles.frame} data-building-media="curated-market-photo">
     {/* These are stable editorial market images, not a claim about a specific listing. */}
-    {/* eslint-disable-next-line @next/next/no-img-element */}
-    <img
+    <Image
       alt={photo.alt}
       src={photo.src}
-      loading={eager ? 'eager' : 'lazy'}
-      fetchPriority={eager ? 'high' : 'auto'}
+      fill
+      priority={eager}
+      sizes="(max-width: 850px) 100vw, 55vw"
       style={{ objectPosition: photo.position ?? 'center' }}
     />
+    <figcaption>
+      {cityLabel === undefined ? null : `${cityLabel} · `}
+      Editorial city photograph · not this exact property
+    </figcaption>
   </figure>;
 }

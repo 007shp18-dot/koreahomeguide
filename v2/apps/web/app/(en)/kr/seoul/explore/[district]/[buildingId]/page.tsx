@@ -3,8 +3,8 @@ import { notFound } from 'next/navigation';
 
 import { BuildingDetailPage } from '@/components/public-market/building-detail-page';
 import { BuildingOfficialFacts } from '@/components/public-market/building-official-facts';
-import { NaverBuildingStreetView } from '@/components/maps/naver-building-street-view';
 import { GooglePlacePhoto } from '@/components/maps/google-place-photo';
+import { MARKET_PHOTOS, MarketRepresentativePhoto } from '@/components/market-representative-photo';
 import { googleMapsBrowserKeyFromEnvironment } from '@/lib/maps/google-maps-browser-key.server';
 import { buildNaverBuildingAddressQuery } from '@/lib/public-market/naver-building-address';
 import {
@@ -100,31 +100,17 @@ export function createKoreaDetailBackHref(
   );
 }
 
-function naverStreetViewFor(input: Readonly<{
+function approvedBuildingPhotoFor(input: Readonly<{
   buildingId: string;
   name: string;
-  latitude: number | null;
-  longitude: number | null;
   addressQuery: string;
-  mapHref: string;
 }>) {
-  const location = (
-    <NaverBuildingStreetView
-      clientId={process.env.NAVER_MAP_CLIENT_ID?.trim() || null}
-      buildingName={input.name}
-      latitude={input.latitude ?? undefined}
-      longitude={input.longitude ?? undefined}
-      addressQuery={input.addressQuery}
-      mapHref={input.mapHref}
-      preferMap
-    />
-  );
   return <GooglePlacePhoto
     browserKey={googleMapsBrowserKeyFromEnvironment()}
     buildingName={input.name}
     address={input.addressQuery}
     registryKey={`kr-seoul:${input.buildingId}`}
-    fallback={location}
+    fallback={<MarketRepresentativePhoto photo={MARKET_PHOTOS.seoul} cityLabel="Seoul" />}
   />;
 }
 
@@ -280,13 +266,10 @@ export function composeKoreaBuildingRoute(input: Readonly<{
       model={exact.model}
       backHref={exact.backHref}
       locale={locale}
-      visual={naverStreetViewFor({
+      visual={approvedBuildingPhotoFor({
         buildingId: exact.model.building.buildingId,
         name: exact.model.building.officialName,
-        latitude: identity?.coordinate.status === 'ready' ? identity.coordinate.latitude : null,
-        longitude: identity?.coordinate.status === 'ready' ? identity.coordinate.longitude : null,
         addressQuery: buildNaverBuildingAddressQuery(exact.model.district.nameKo, exact.model.building.neighborhoodName, exact.model.building.officialName),
-        mapHref: exact.backHref,
       })}
       facts={<BuildingOfficialFacts districtSlug={exact.model.district.slug} buildingId={exact.model.building.buildingId} observedFacts={transactionBuildingFacts(exact.model, coordinate)} proximity={identity?.proximity} locale={locale} />}
     />;
@@ -317,13 +300,10 @@ export function composeKoreaBuildingRoute(input: Readonly<{
     return <ObservedBuildingDetail
       model={observed}
       backHref={backHref}
-      visual={naverStreetViewFor({
+      visual={approvedBuildingPhotoFor({
         buildingId: observed.building.buildingId,
         name: observed.building.officialName,
-        latitude: observed.coordinate.status === 'ready' ? observed.coordinate.latitude : null,
-        longitude: observed.coordinate.status === 'ready' ? observed.coordinate.longitude : null,
         addressQuery: buildNaverBuildingAddressQuery(observed.district.nameKo, observed.building.neighborhoodName, observed.building.officialName),
-        mapHref: backHref,
       })}
       facts={<BuildingOfficialFacts
         districtSlug={observed.district.slug}
@@ -371,13 +351,10 @@ export function composeKoreaBuildingRoute(input: Readonly<{
     mapHref: backHref,
     photo: null,
   });
-  const streetView = naverStreetViewFor({
+  const propertyMedia = approvedBuildingPhotoFor({
     buildingId: model.building.buildingId,
     name: model.building.name,
-    latitude: model.building.latitude,
-    longitude: model.building.longitude,
     addressQuery: buildNaverBuildingAddressQuery(model.district.nameKo, model.building.neighborhoodName, model.building.name),
-    mapHref: backHref,
   });
   const recentAreas = model.building.recentContracts.map(({ areaSqm }) => areaSqm);
   const observedFacts = [
@@ -399,7 +376,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
       model={model}
       decision={decision}
       visual={visual}
-      streetView={streetView}
+      propertyMedia={propertyMedia}
       facts={<BuildingOfficialFacts districtSlug={model.district.slug} buildingId={model.building.buildingId} observedFacts={observedFacts} proximity={observed?.proximity} locale={locale} />}
       base={base}
       backHref={backHref}

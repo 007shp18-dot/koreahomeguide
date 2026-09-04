@@ -19,8 +19,8 @@ describe('signedprice homepage copy', () => {
   it('renders the approved editorial journey in decision order', async () => {
     const markup = renderToStaticMarkup(await Home());
     const needles = [
-      'Korea rental intelligence',
-      'Current evidence',
+      'See the market before you make the move.',
+      'Seoul transaction evidence',
       'Latest from the data desk',
       'Guides for renting and buying',
       'How this evidence works',
@@ -29,8 +29,8 @@ describe('signedprice homepage copy', () => {
 
     expect(positions.every((position) => position >= 0)).toBe(true);
     expect([...positions].sort((a, b) => a - b)).toEqual(positions);
-    expect(markup).toContain('Understand the real cost of renting in Korea.');
-    expect(markup).toContain('data-primary-action="check"');
+    expect(markup).toContain('Property evidence for decisions across Seoul, Singapore and Dubai');
+    expect(markup).toContain('data-primary-action="explore"');
   }, 10_000);
 
   it('keeps the shared market registry and avoids unsupported claims', () => {
@@ -122,14 +122,17 @@ describe('signedprice homepage copy', () => {
     vi.unstubAllEnvs();
   });
 
-  it('keeps Korea primary while retaining future market access', async () => {
+  it('presents all three cities before city-specific editorial content', async () => {
     const markup = renderToStaticMarkup(await Home());
-    const koreaPromise = markup.indexOf('Understand the real cost of renting in Korea.');
-    const marketNavigation = markup.indexOf('aria-label="Market navigation"');
+    const globalPromise = markup.indexOf('See the market before you make the move.');
+    const marketTabs = markup.indexOf('aria-label="Choose a property market"');
+    const editorial = markup.indexOf('Latest from the data desk');
 
-    expect(koreaPromise).toBeGreaterThanOrEqual(0);
-    expect(marketNavigation).toBeGreaterThan(koreaPromise);
-    expect(markup).toContain('href="/sg">Singapore</a>');
-    expect(markup).toContain('href="/ae/dubai">Dubai</a>');
+    expect(globalPromise).toBeGreaterThanOrEqual(0);
+    expect(marketTabs).toBeGreaterThan(globalPromise);
+    expect(editorial).toBeGreaterThan(marketTabs);
+    expect(markup).toContain('data-market-id="kr-seoul"');
+    expect(markup).toContain('data-market-id="sg-singapore"');
+    expect(markup).toContain('data-market-id="ae-dubai"');
   });
 });

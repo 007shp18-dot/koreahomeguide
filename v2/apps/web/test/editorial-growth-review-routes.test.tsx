@@ -152,15 +152,18 @@ describe('editorial growth design-review route', () => {
     expect(siteCopySource).not.toContain('/design-review/');
   });
 
-  it('gives Homepage one promise and one primary action before evidence', async () => {
+  it('gives Homepage one global promise and one primary action before editorial content', async () => {
     const markup = await renderReview('home', { locale: 'en' });
 
     expect(markup.match(/<h1/g)).toHaveLength(1);
-    expect(markup).toContain('Understand the real cost of renting in Korea.');
-    expect(markup).toContain('data-primary-action="check"');
-    expect(markup.indexOf('data-primary-action="check"'))
+    expect(markup).toContain('See the market before you make the move.');
+    expect(markup).toContain('data-primary-action="explore"');
+    expect(markup.indexOf('data-primary-action="explore"'))
       .toBeLessThan(markup.indexOf('data-home-section="insight"'));
-    expect(markup).not.toMatch(/Properties|Invest|Community|🇰🇷|🇸🇬|🇦🇪/);
+    expect(markup).toContain('data-market-id="kr-seoul"');
+    expect(markup).toContain('data-market-id="sg-singapore"');
+    expect(markup).toContain('data-market-id="ae-dubai"');
+    expect(markup).not.toMatch(/🇰🇷|🇸🇬|🇦🇪/);
   });
 
   it('keeps Content readable and advertising outside evidence', async () => {

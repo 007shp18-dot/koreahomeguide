@@ -4,8 +4,8 @@ import type {
   SingaporeProjectModel,
   SingaporeUnavailableModel,
 } from '../../lib/singapore/route-types';
-import { GoogleBuildingStreetView } from '../maps/google-building-street-view';
 import { GooglePlacePhoto } from '../maps/google-place-photo';
+import { MARKET_PHOTOS, MarketRepresentativePhoto } from '../market-representative-photo';
 import {
   SingaporeEvidence,
   SingaporePage,
@@ -51,12 +51,7 @@ export function SingaporeProjectDetail({ model, googleMapsBrowserKey = null }: R
           buildingName={model.identity.project}
           address={`${model.identity.street}, Singapore`}
           registryKey={`sg-project:${model.identity.marketSegment}:${model.identity.project}`}
-          fallback={<GoogleBuildingStreetView
-            browserKey={googleMapsBrowserKey}
-            buildingName={model.identity.project}
-            address={`${model.identity.project}, ${model.identity.street}, Singapore`}
-            mapHref={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${model.identity.project}, ${model.identity.street}, Singapore`)}`}
-          />}
+          fallback={<MarketRepresentativePhoto photo={MARKET_PHOTOS.singapore} cityLabel="Singapore" />}
         />}
         evidence={<><section className={styles.section} aria-labelledby="project-summary-heading">
         <p className={styles.sectionLabel}>01 / Project distribution</p>

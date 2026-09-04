@@ -1,8 +1,8 @@
-import { readFile, readdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
 import { neon } from '@neondatabase/serverless';
+import { loadMigrationBundles } from './migration-files.mjs';
 
 const connectionString = process.env.DATABASE_URL?.trim();
 if (!connectionString && process.argv.includes('--if-configured')) {
@@ -12,7 +12,7 @@ if (!connectionString && process.argv.includes('--if-configured')) {
 if (!connectionString) throw new Error('DATABASE_URL is required.');
 
 const directory = join(dirname(fileURLToPath(import.meta.url)), '..', 'db', 'migrations');
-const files = (await readdir(directory)).filter((name) => /^\d+.*\.sql$/.test(name)).sort();
+const migrations = await loadMigrationBundles(directory);
 const sql = neon(connectionString);
 
 await sql`
@@ -22,18 +22,13 @@ await sql`
   )
 `;
 
-for (const file of files) {
-  const [existing] = await sql`SELECT name FROM signedprice_schema_migrations WHERE name = ${file}`;
+for (const migration of migrations) {
+  const [existing] = await sql`SELECT name FROM signedprice_schema_migrations WHERE name = ${migration.name}`;
   if (existing !== undefined) continue;
-  const source = await readFile(join(directory, file), 'utf8');
-  const statements = source
-    .split(/^\s*-- statement-breakpoint\s*$/mu)
-    .map((statement) => statement.trim())
-    .filter(Boolean);
   await sql.transaction((transaction) => [
-    ...statements.map((statement) => transaction.query(statement)),
-    transaction`INSERT INTO signedprice_schema_migrations (name) VALUES (${file}) ON CONFLICT (name) DO NOTHING`,
+    ...migration.statements.map((statement) => transaction.query(statement)),
+    transaction`INSERT INTO signedprice_schema_migrations (name) VALUES (${migration.name}) ON CONFLICT (name) DO NOTHING`,
   ]);
 }
 
-process.stdout.write(`Applied ${files.length} SignedPrice database migration file(s).\n`);
+process.stdout.write(`Applied ${migrations.length} SignedPrice database migration file(s).\n`);
