@@ -56,4 +56,9 @@ describe('editorial growth typography contract', () => {
     expect(css).toMatch(/\.homeHero\s*\{[^}]*min-height:\s*520px/);
     expect(css).toMatch(/\.checkMetrics\s*\{[^}]*grid-template-columns:\s*1fr/);
   });
+
+  it('keeps the market tool rail inside the editorial column at desktop widths', () => {
+    expect(css).toMatch(/\.marketIndex li\s*\{[^}]*grid-template-columns:\s*40px minmax\(120px, 0\.7fr\) minmax\(150px, 1\.1fr\) minmax\(0, 0\.9fr\)/);
+    expect(css).toMatch(/\.marketIndex nav\s*\{[^}]*gap:\s*var\(--review-space-2\) var\(--review-space-3\)/);
+  });
 });

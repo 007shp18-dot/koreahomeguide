@@ -321,9 +321,9 @@
 .marketIndex li {
   min-height: 128px;
   display: grid;
-  grid-template-columns: 48px minmax(170px, 0.7fr) minmax(220px, 1.15fr) minmax(220px, auto);
+  grid-template-columns: 40px minmax(120px, 0.7fr) minmax(150px, 1.1fr) minmax(0, 0.9fr);
   align-items: center;
-  gap: var(--review-space-4);
+  gap: var(--review-space-3);
   border-top: 1px solid var(--review-line);
 }
 
@@ -359,7 +359,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
-  gap: var(--review-space-2) var(--review-space-4);
+  gap: var(--review-space-2) var(--review-space-3);
 }
 
 .marketIndex nav a {
