@@ -79,6 +79,13 @@ describe('Korea proximity Detail route composition', () => {
     }));
     expect(html).toContain('data-building-detail="exact-evidence"');
     expect(html).toContain('Route station · 1호선 · 250 m');
+    const factsSection = html.slice(
+      html.indexOf('data-building-section="official-facts"'),
+      html.indexOf('</section>', html.indexOf('data-building-section="official-facts"')),
+    );
+    expect(factsSection).toContain('Observed build year');
+    expect(factsSection).toContain('Route station · 1호선 · 250 m');
+    expect(factsSection).toContain('Route school · 500 m');
     expect(html).toContain('station=SEOUL%3ASTN%2F001');
     expect(html).toContain('q=route+check');
   });
