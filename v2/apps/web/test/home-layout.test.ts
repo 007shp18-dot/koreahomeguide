@@ -9,6 +9,10 @@ const homeCss = readFileSync(
   new URL('../components/home-editorial.module.css', import.meta.url),
   'utf8',
 );
+const homeBuildingShowcase = readFileSync(
+  new URL('../components/home-building-showcase.tsx', import.meta.url),
+  'utf8',
+);
 
 describe('signedprice Evidence Editorial homepage', () => {
   it('centres every primary section in the standard content frame', () => {
@@ -63,7 +67,14 @@ describe('signedprice Evidence Editorial homepage', () => {
     }
     expect(markup).toContain('role="search"');
     expect(markup).not.toContain('aria-label="Choose a property decision"');
-    expect(markup).toContain('data-building-rotation="automatic"');
+    expect(markup).toContain('data-building-rotation="manual"');
+  });
+
+  it('keeps homepage building media stable and never falls back to street views or maps', () => {
+    expect(homeBuildingShowcase).toContain('MarketRepresentativePhoto');
+    expect(homeBuildingShowcase).not.toContain('NaverBuildingStreetView');
+    expect(homeBuildingShowcase).not.toContain('GoogleBuildingStreetView');
+    expect(homeBuildingShowcase).not.toContain('setInterval');
   });
 
   it('moves staged markets to explicit global destinations', async () => {
