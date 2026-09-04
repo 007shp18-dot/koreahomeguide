@@ -54,7 +54,7 @@ type LocalizedBuildingPageProps = BuildingPageProps & Readonly<{ locale?: Produc
 
 type DetailQuery = Readonly<Record<string, string | readonly string[] | undefined>>;
 
-function transactionBuildingFacts(model: KoreaExplorerBuildingDetailModel) {
+function transactionBuildingFacts(model: KoreaExplorerBuildingDetailModel, coordinate?: Readonly<{ latitude: number; longitude: number }>) {
   const floors = model.recentTransactions.flatMap(({ floor }) => floor === null ? [] : [floor]);
   const years = [...new Set(model.recentTransactions.flatMap(({ buildYear }) => buildYear === null ? [] : [buildYear]))].sort();
   const areas = model.recentTransactions.map(({ areaSqm }) => areaSqm);
@@ -68,6 +68,7 @@ function transactionBuildingFacts(model: KoreaExplorerBuildingDetailModel) {
     Object.freeze({ label: 'Observed filed area', value: range(areas, '㎡') }),
     Object.freeze({ label: 'Evidence period', value: model.period }),
     Object.freeze({ label: 'Verified rows in view', value: model.recentTransactions.length.toLocaleString('en-US') }),
+    Object.freeze({ label: 'Map identity', value: coordinate === undefined ? 'Coordinate verification pending' : `${coordinate.latitude.toFixed(5)}, ${coordinate.longitude.toFixed(5)}` }),
   ]);
 }
 
@@ -274,6 +275,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
   );
   if (exact !== null) {
     const identity = observedIdentityModel(district, buildingId, { proximityRepository });
+    const coordinate = identity?.coordinate.status === 'ready' ? identity.coordinate : undefined;
     return <KoreaEvidenceBuildingDetail
       model={exact.model}
       backHref={exact.backHref}
@@ -286,7 +288,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
         addressQuery: buildNaverBuildingAddressQuery(exact.model.district.nameKo, exact.model.building.neighborhoodName, exact.model.building.officialName),
         mapHref: exact.backHref,
       })}
-      facts={<BuildingOfficialFacts districtSlug={exact.model.district.slug} buildingId={exact.model.building.buildingId} observedFacts={transactionBuildingFacts(exact.model)} proximity={identity?.proximity} locale={locale} />}
+      facts={<BuildingOfficialFacts districtSlug={exact.model.district.slug} buildingId={exact.model.building.buildingId} observedFacts={transactionBuildingFacts(exact.model, coordinate)} proximity={identity?.proximity} locale={locale} />}
     />;
   }
   const model = buildPublicBuildingModel(district, buildingId);
