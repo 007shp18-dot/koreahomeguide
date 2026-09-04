@@ -46,7 +46,7 @@ describe('signedprice public editorial homepage', () => {
     const navigation = markup.match(/<nav[^>]*aria-label="Primary navigation"[^>]*>([\s\S]*?)<\/nav>/)?.[1] ?? '';
 
     expect(navigation.match(/<a /g) ?? []).toHaveLength(4);
-    for (const destination of ['/insights', '/kr/seoul/check', '/kr/seoul/explore']) {
+    for (const destination of ['/markets', '/prices', '/insights', '/guides']) {
       expect(navigation).toContain(`href="${destination}"`);
     }
     expect(markup).toContain('aria-label="Language navigation"');

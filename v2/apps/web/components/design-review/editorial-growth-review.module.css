@@ -319,6 +319,11 @@
 }
 
 .marketIndex li {
+  min-height: 128px;
+  display: grid;
+  grid-template-columns: 48px minmax(170px, 0.7fr) minmax(220px, 1.15fr) minmax(220px, auto);
+  align-items: center;
+  gap: var(--review-space-4);
   border-top: 1px solid var(--review-line);
 }
 
@@ -326,36 +331,50 @@
   border-bottom: 1px solid var(--review-line);
 }
 
-.marketIndex a {
-  min-height: 112px;
-  display: grid;
-  grid-template-columns: 48px minmax(150px, 0.7fr) minmax(220px, 1.3fr) minmax(140px, auto) 24px;
-  align-items: center;
-  gap: var(--review-space-4);
+.marketIdentity a {
   color: var(--review-ink);
-  text-decoration: none;
-}
-
-.marketIndex strong {
   font-size: var(--review-h3);
   font-weight: 560;
   letter-spacing: var(--review-heading-tracking);
+  text-decoration: none;
 }
 
-.marketIndex a > span:not(.marketNumber, .marketArrow),
-.marketIndex small,
+.marketIdentity {
+  display: grid;
+  gap: var(--review-space-1);
+}
+
+.marketIndex p,
+.marketIdentity small,
 .marketNumber {
   color: var(--review-muted);
 }
 
-.marketIndex small,
+.marketIdentity small,
 .marketNumber {
   font-size: var(--review-meta);
 }
 
-.marketArrow {
-  justify-self: end;
-  font-size: var(--review-ui);
+.marketIndex nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--review-space-2) var(--review-space-4);
+}
+
+.marketIndex nav a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--review-ink);
+  font-size: var(--review-control);
+  text-decoration: underline;
+  text-decoration-color: var(--review-line);
+  text-underline-offset: 5px;
+}
+
+.marketSection .sectionIntro .textAction {
+  margin-top: var(--review-space-6);
 }
 
 .sectionIntro h2 {
@@ -915,12 +934,14 @@
     grid-column: 2;
   }
 
-  .marketIndex a {
-    grid-template-columns: 36px minmax(140px, 0.7fr) minmax(200px, 1.3fr) 24px;
+  .marketIndex li {
+    grid-template-columns: 36px minmax(140px, 0.7fr) minmax(200px, 1.3fr);
   }
 
-  .marketIndex small {
-    grid-column: 3;
+  .marketIndex nav {
+    grid-column: 2 / -1;
+    justify-content: flex-start;
+    padding-bottom: var(--review-space-3);
   }
 }
 
@@ -980,21 +1001,21 @@
     gap: var(--review-space-2);
   }
 
-  .marketIndex a {
+  .marketIndex li {
     min-height: 0;
-    grid-template-columns: 32px minmax(0, 1fr) 20px;
+    grid-template-columns: 32px minmax(0, 1fr);
     gap: var(--review-space-2) var(--review-space-3);
     padding-block: var(--review-space-5);
   }
 
-  .marketIndex a > span:not(.marketNumber, .marketArrow),
-  .marketIndex small {
+  .marketIndex p,
+  .marketIndex nav {
     grid-column: 2;
   }
 
-  .marketArrow {
-    grid-column: 3;
-    grid-row: 1;
+  .marketIndex nav {
+    justify-content: flex-start;
+    padding-bottom: 0;
   }
 
   .guideList small {

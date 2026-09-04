@@ -13,10 +13,19 @@ const COPY = Object.freeze({
     evidence: 'Current evidence',
     markets: 'Choose a market',
     marketsTitle: 'Property intelligence across three cities',
+    compareMarkets: 'Compare markets',
     marketItems: [
-      { index: '01', name: 'Seoul', href: '/kr/seoul/', scope: 'Sale, jeonse and monthly-rent evidence', state: 'Full decision tools' },
-      { index: '02', name: 'Singapore', href: '/sg/', scope: 'Private homes and HDB evidence', state: 'Transaction data live' },
-      { index: '03', name: 'Dubai', href: '/ae/dubai/', scope: 'Market structure and decision context', state: 'Data-rights work in progress' },
+      { index: '01', name: 'Seoul', href: '/kr/seoul/', scope: 'Sale, jeonse and monthly-rent evidence', state: 'Full decision tools', actions: [
+        { label: 'Check', href: '/kr/seoul/check/' }, { label: 'Explore', href: '/kr/seoul/explore/' },
+        { label: 'Rankings', href: '/kr/seoul/rankings/' }, { label: 'Guides', href: '/kr/seoul/guide/' },
+      ] },
+      { index: '02', name: 'Singapore', href: '/sg/', scope: 'Private homes and HDB evidence', state: 'Transaction data live', actions: [
+        { label: 'Check', href: '/sg/singapore/check/' }, { label: 'Explore', href: '/sg/singapore/explore/' },
+        { label: 'Rankings', href: '/sg/singapore/rankings/' },
+      ] },
+      { index: '03', name: 'Dubai', href: '/ae/dubai/', scope: 'Market structure and decision context', state: 'Data-rights work in progress', actions: [
+        { label: 'Overview', href: '/ae/dubai/' },
+      ] },
     ],
     insight: 'Latest from the data desk',
     guides: 'Start with the essentials',
@@ -35,10 +44,19 @@ const COPY = Object.freeze({
     evidence: '当前数据',
     markets: '选择市场',
     marketsTitle: '覆盖三个城市的房地产信息',
+    compareMarkets: '比较市场',
     marketItems: [
-      { index: '01', name: '首尔 Seoul', href: '/kr/seoul/', scope: '买卖、全租和月租成交数据', state: '完整决策工具' },
-      { index: '02', name: '新加坡 Singapore', href: '/sg/', scope: '私人住宅与 HDB 数据', state: '成交数据已上线' },
-      { index: '03', name: '迪拜 Dubai', href: '/ae/dubai/', scope: '市场结构与决策背景', state: '数据展示权仍在确认' },
+      { index: '01', name: '首尔 Seoul', href: '/kr/seoul/', scope: '买卖、全租和月租成交数据', state: '完整决策工具', actions: [
+        { label: '查价', href: '/kr/seoul/check/' }, { label: '探索', href: '/kr/seoul/explore/' },
+        { label: '排名', href: '/kr/seoul/rankings/' }, { label: '指南', href: '/kr/seoul/guide/' },
+      ] },
+      { index: '02', name: '新加坡 Singapore', href: '/sg/', scope: '私人住宅与 HDB 数据', state: '成交数据已上线', actions: [
+        { label: '查价', href: '/sg/singapore/check/' }, { label: '探索', href: '/sg/singapore/explore/' },
+        { label: '排名', href: '/sg/singapore/rankings/' },
+      ] },
+      { index: '03', name: '迪拜 Dubai', href: '/ae/dubai/', scope: '市场结构与决策背景', state: '数据展示权仍在确认', actions: [
+        { label: '概览', href: '/ae/dubai/' },
+      ] },
     ],
     insight: '数据编辑部最新文章',
     guides: '从基础指南开始',
@@ -110,17 +128,22 @@ export function EditorialGrowthHome({ model, hrefs }: Readonly<{
         <div className={styles.sectionIntro}>
           <p className={styles.eyebrow}>{copy.markets}</p>
           <h2 className={styles.sectionTitle} id="home-markets-title">{copy.marketsTitle}</h2>
+          <Link className={styles.textAction} href="/compare/">
+            {copy.compareMarkets}<span aria-hidden="true"> →</span>
+          </Link>
         </div>
         <ol className={styles.marketIndex}>
           {copy.marketItems.map((market) => (
             <li key={market.href}>
-              <Link href={market.href}>
-                <span className={styles.marketNumber}>{market.index}</span>
-                <strong>{market.name}</strong>
-                <span>{market.scope}</span>
+              <span className={styles.marketNumber}>{market.index}</span>
+              <div className={styles.marketIdentity}>
+                <Link href={market.href}>{market.name}<span aria-hidden="true"> ↗</span></Link>
                 <small>{market.state}</small>
-                <span className={styles.marketArrow} aria-hidden="true">↗</span>
-              </Link>
+              </div>
+              <p>{market.scope}</p>
+              <nav aria-label={`${market.name.replace(/^.*?\s(?=[A-Z])/u, '')} tools`}>
+                {market.actions.map((action) => <Link href={action.href} key={action.href}>{action.label}</Link>)}
+              </nav>
             </li>
           ))}
         </ol>

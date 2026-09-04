@@ -52,6 +52,32 @@ describe('public editorial homepage', () => {
     expect(markup).toContain('Seoul apartment skyline with Namsan in the distance');
   });
 
+  it('connects each market to the functions that are actually available', async () => {
+    const markup = renderToStaticMarkup(await Home());
+
+    for (const href of ['/markets', '/prices', '/insights', '/guides', '/compare']) {
+      expect(markup).toContain(`href="${href}"`);
+    }
+    for (const href of [
+      '/kr/seoul/check',
+      '/kr/seoul/explore',
+      '/kr/seoul/rankings',
+      '/kr/seoul/guide',
+    ]) {
+      expect(markup).toContain(`href="${href}"`);
+    }
+    for (const href of [
+      '/sg/singapore/check',
+      '/sg/singapore/explore',
+      '/sg/singapore/rankings',
+    ]) {
+      expect(markup).toContain(`href="${href}"`);
+    }
+    expect(markup).toContain('aria-label="Seoul tools"');
+    expect(markup).toContain('aria-label="Singapore tools"');
+    expect(markup).toContain('aria-label="Dubai tools"');
+  });
+
   it('keeps the root canonical and indexable', () => {
     expect(metadata).toMatchObject({
       robots: { index: true, follow: true },
