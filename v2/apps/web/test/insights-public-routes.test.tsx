@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -7,9 +8,19 @@ import InsightsPage from '../app/(en)/insights/page';
 import InsightsArticlePage from '../app/(en)/insights/[slug]/page';
 import { STARTER_EDITORIAL_ARTICLES } from '../lib/insights/editorial-content';
 
+const insightsCss = readFileSync(
+  new URL('../components/insights/insights.module.css', import.meta.url),
+  'utf8',
+);
+
 afterEach(() => vi.unstubAllEnvs());
 
 describe('public Journal routes', () => {
+  it('keeps the lead summary in the dedicated desktop column', () => {
+    expect(insightsCss).toContain('.leadCard > :not(.cardIndex, p)');
+    expect(insightsCss).not.toContain('.leadCard > :not(.cardIndex) {');
+  });
+
   it('uses the approved public editorial frame without review or legacy navigation', async () => {
     vi.stubEnv('DATABASE_URL', '');
     const markup = renderToStaticMarkup(await InsightsPage());

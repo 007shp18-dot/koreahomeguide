@@ -113,7 +113,7 @@
 
 .articleMeta span:first-child { color: var(--review-accent, var(--accent)); }
 
-.leadCard > :not(.cardIndex) { grid-column: 2; }
+.leadCard > :not(.cardIndex, p) { grid-column: 2; }
 .leadCard > p {
   grid-column: 3;
   grid-row: 2 / 4;
