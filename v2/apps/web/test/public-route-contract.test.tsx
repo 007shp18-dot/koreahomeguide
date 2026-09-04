@@ -225,7 +225,12 @@ describe('public migration containment', () => {
     ] as const) {
       expect(metadata.robots).toEqual({ index: true, follow: true });
       expect(metadata.alternates?.canonical).toBe(`https://www.signedprice.com${path}`);
-      if (path === '/kr/seoul/explore/' || path === '/kr/seoul/rankings/') {
+      if (path === '/') {
+        expect(metadata.alternates?.languages).toMatchObject({
+          en: 'https://www.signedprice.com/',
+          'zh-Hans': 'https://www.signedprice.com/zh-cn/kr/seoul/',
+        });
+      } else if (path === '/kr/seoul/explore/' || path === '/kr/seoul/rankings/') {
         expect(metadata.alternates?.languages).toMatchObject({
           en: `https://www.signedprice.com${path}`,
           ko: `https://www.signedprice.com/ko${path}`,
@@ -258,6 +263,8 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/prices/',
       'https://www.signedprice.com/news/',
       'https://www.signedprice.com/insights/',
+      'https://www.signedprice.com/zh-cn/kr/seoul/insights/',
+      'https://www.signedprice.com/zh-cn/kr/seoul/',
       'https://www.signedprice.com/community/',
       'https://www.signedprice.com/guides/',
       'https://www.signedprice.com/privacy/',
@@ -389,6 +396,8 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/prices/',
       'https://www.signedprice.com/news/',
       'https://www.signedprice.com/insights/',
+      'https://www.signedprice.com/zh-cn/kr/seoul/insights/',
+      'https://www.signedprice.com/zh-cn/kr/seoul/',
       'https://www.signedprice.com/community/',
       'https://www.signedprice.com/guides/',
       'https://www.signedprice.com/privacy/',
@@ -420,6 +429,8 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/prices/',
       'https://www.signedprice.com/news/',
       'https://www.signedprice.com/insights/',
+      'https://www.signedprice.com/zh-cn/kr/seoul/insights/',
+      'https://www.signedprice.com/zh-cn/kr/seoul/',
       'https://www.signedprice.com/community/',
       'https://www.signedprice.com/guides/',
       'https://www.signedprice.com/privacy/',

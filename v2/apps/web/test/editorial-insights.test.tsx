@@ -23,7 +23,14 @@ describe('SignedPrice editorial insights', () => {
     const html = renderToStaticMarkup(await InsightsPage());
 
     expect(metadata.robots).toEqual({ index: true, follow: true });
-    expect(metadata.alternates).toEqual({ canonical: 'https://www.signedprice.com/insights/' });
+    expect(metadata.alternates).toEqual({
+      canonical: 'https://www.signedprice.com/insights/',
+      languages: {
+        en: 'https://www.signedprice.com/insights/',
+        'zh-Hans': 'https://www.signedprice.com/zh-cn/kr/seoul/insights/',
+        'x-default': 'https://www.signedprice.com/insights/',
+      },
+    });
     expect(html).toContain('Property evidence, explained.');
     expect(html).toContain('External headlines stay in News');
     for (const article of STARTER_EDITORIAL_ARTICLES) {

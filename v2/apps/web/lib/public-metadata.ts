@@ -25,7 +25,7 @@ export function publicSiteJsonLd(): Readonly<Record<string, unknown>> {
         '@id': `${SIGNEDPRICE_ORIGIN}/#website`,
         name: 'SignedPrice',
         url: publicCanonical('/'),
-        inLanguage: Object.freeze(['en', 'ko']),
+        inLanguage: Object.freeze(['en', 'ko', 'zh-Hans']),
         publisher: Object.freeze({ '@id': `${SIGNEDPRICE_ORIGIN}/#organization` }),
       }),
     ]),
@@ -58,13 +58,22 @@ export function indexableMetadata({
   path: `/${string}`;
   title: string;
   description: string;
-  languageAlternates?: Readonly<{ en: `/${string}`; ko: `/${string}` }>;
-  locale?: 'en_US' | 'ko_KR';
+  languageAlternates?: Readonly<{
+    en: `/${string}`;
+    ko?: `/${string}`;
+    'zh-Hans'?: `/${string}`;
+  }>;
+  locale?: 'en_US' | 'ko_KR' | 'zh_CN';
   imagePath?: `/${string}`;
 }>): Metadata {
   const languages = languageAlternates === undefined ? undefined : {
     en: publicCanonical(languageAlternates.en),
-    ko: publicCanonical(languageAlternates.ko),
+    ...(languageAlternates.ko === undefined ? {} : {
+      ko: publicCanonical(languageAlternates.ko),
+    }),
+    ...(languageAlternates['zh-Hans'] === undefined ? {} : {
+      'zh-Hans': publicCanonical(languageAlternates['zh-Hans']),
+    }),
     'x-default': publicCanonical(languageAlternates.en),
   };
   const canonical = publicCanonical(path);
@@ -85,7 +94,11 @@ export function indexableMetadata({
       url: canonical,
       locale,
       ...(languageAlternates === undefined ? {} : {
-        alternateLocale: [locale === 'ko_KR' ? 'en_US' : 'ko_KR'],
+        alternateLocale: [
+          ...(locale === 'en_US' ? [] : ['en_US']),
+          ...(languageAlternates.ko === undefined || locale === 'ko_KR' ? [] : ['ko_KR']),
+          ...(languageAlternates['zh-Hans'] === undefined || locale === 'zh_CN' ? [] : ['zh_CN']),
+        ],
       }),
       images: [image],
     },

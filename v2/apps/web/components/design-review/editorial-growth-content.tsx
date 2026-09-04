@@ -38,11 +38,15 @@ const FILTERS = Object.freeze({
   'zh-CN': Object.freeze(['租房', '购房', '社区', '市场数据']),
 });
 
-export function EditorialGrowthContent({ model }: Readonly<{ model: EditorialGrowthReviewModel }>) {
+export function EditorialGrowthContent({ model, hrefs }: Readonly<{
+  model: EditorialGrowthReviewModel;
+  hrefs?: Readonly<{ check: string }>;
+}>) {
   const copy = COPY[model.locale];
   const firstSection = model.article.sections[0];
   const remainingSections = model.article.sections.slice(1);
   const query = `locale=${model.locale}&state=${model.state}&ad=${model.ad}`;
+  const checkHref = hrefs?.check ?? `/design-review/editorial-growth/check/?${query}`;
 
   return (
     <main className={styles.contentPage}>
@@ -123,7 +127,7 @@ export function EditorialGrowthContent({ model }: Readonly<{ model: EditorialGro
             </section>
           ))}
 
-          <Link className={styles.primaryAction} href={`/design-review/editorial-growth/check/?${query}`}>
+          <Link className={styles.primaryAction} href={checkHref}>
             {copy.action}
           </Link>
         </div>

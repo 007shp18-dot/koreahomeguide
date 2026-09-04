@@ -4,6 +4,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
+
 import Home from '../app/(en)/page';
 import { RotatingHeroBuilding } from '../components/home-building-showcase';
 
@@ -16,62 +17,52 @@ const homeBuildingShowcase = readFileSync(
   'utf8',
 );
 
-describe('signedprice Evidence Editorial homepage', () => {
-  it('centres every primary section in the standard content frame', () => {
+describe('signedprice public editorial homepage', () => {
+  it('keeps the retired market composition bounded for routes that still use it', () => {
     for (const selector of ['.heroGrid', '.snapshotGrid', '.marketGrid', '.buildingGrid', '.insightGrid', '.propertyGrid', '.bottomGrid']) {
       expect(homeCss).toContain(selector);
     }
     expect(homeCss).not.toMatch(/(?:heroGrid|snapshotGrid|marketGrid|buildingGrid|insightGrid|propertyGrid|bottomGrid)[^{]*\{[^}]*100vw/);
   }, 10_000);
 
-  it('uses one decision headline before the evidence and deeper product sections', async () => {
+  it('uses one decision headline before evidence, reporting, guides, and method', async () => {
     const markup = renderToStaticMarkup(await Home());
-    const h1s = markup.match(/<h1/g) ?? [];
-    const sections = ['home-decision', 'markets', 'home-explore', 'home-prices', 'home-briefs', 'home-trust'];
-    const positions = sections.map((id) => markup.indexOf(`id="${id}"`));
+    const positions = [
+      'data-primary-action="check"',
+      'id="home-evidence-title"',
+      'data-home-section="insight"',
+      'id="home-guides-title"',
+      'id="home-method-title"',
+    ].map((needle) => markup.indexOf(needle));
 
-    expect(h1s).toHaveLength(1);
-    expect(markup).toContain('<h1 id="home-headline">Know the market before you buy.</h1>');
+    expect(markup.match(/<h1/g)).toHaveLength(1);
+    expect(markup).toContain('Understand the real cost of renting in Korea.');
     expect(positions.every((position) => position >= 0)).toBe(true);
     expect([...positions].sort((a, b) => a - b)).toEqual(positions);
   }, 20_000);
 
-  it('keeps global market links inside the compact market tier without a duplicate hero city tablist', async () => {
-    const markup = renderToStaticMarkup(await Home());
-
-    expect(markup).toContain('class="site-header__market-tier"');
-    expect(markup).toContain('data-navigation-tier="product"');
-    expect(markup).toContain('aria-label="Market navigation"');
-    expect(markup).toContain('aria-label="Change language to 한국어"');
-    expect(markup).toContain('href="/ko/kr/seoul"');
-    expect(markup).toMatch(/hreflang="ko"/i);
-    expect(markup).not.toContain('aria-label="Choose a city"');
-    expect(markup).not.toContain('id="market-tab-seoul"');
-  });
-
-  it('keeps the seven roadmap destinations in the shared header', async () => {
+  it('keeps navigation compact and separates surfaces, markets, and languages', async () => {
     const markup = renderToStaticMarkup(await Home());
     const navigation = markup.match(/<nav[^>]*aria-label="Primary navigation"[^>]*>([\s\S]*?)<\/nav>/)?.[1] ?? '';
 
-    expect(navigation.match(/<a /g) ?? []).toHaveLength(7);
-    expect(navigation).toContain('<strong>Markets</strong>');
-    expect(navigation).toContain('href="/properties"');
-    expect(navigation).toContain('<strong>Invest</strong>');
-    expect(navigation).toContain('href="/invest"');
+    expect(navigation.match(/<a /g) ?? []).toHaveLength(4);
+    for (const destination of ['/insights', '/kr/seoul/check', '/kr/seoul/explore']) {
+      expect(navigation).toContain(`href="${destination}"`);
+    }
+    expect(markup).toContain('aria-label="Language navigation"');
+    expect(markup).toContain('aria-label="Market navigation"');
+    expect(markup).toContain('href="/zh-cn/kr/seoul"');
+    expect(markup).not.toContain('data-navigation-tier="product"');
   });
 
-  it('keeps Seoul tools crawlable while using search as the primary hero action', async () => {
+  it('keeps real Seoul tools and the Journal crawlable from the first screen', async () => {
     const markup = renderToStaticMarkup(await Home());
-    const seoulPanel = markup.slice(markup.indexOf('data-market-panel="seoul"'));
 
-    for (const label of ['Check', 'Explore', 'Rankings', 'News', 'Guide', 'Community']) {
-      expect(seoulPanel).toContain(`>${label}<small>`);
-    }
-    expect(markup).toContain('role="search"');
-    expect(markup).not.toContain('aria-label="Choose a property decision"');
-    expect(markup).toContain('data-building-rotation="manual"');
-    expect(markup).toContain('Otherwise a clearly labeled representative city image is shown.');
-    expect(markup).not.toContain('Otherwise the verified map location is used.');
+    expect(markup).toContain('data-primary-action="check"');
+    expect(markup).toContain('href="/kr/seoul/check"');
+    expect(markup).toContain('href="/kr/seoul/explore"');
+    expect(markup).toContain('href="/insights"');
+    expect(markup).not.toContain('/design-review/');
   });
 
   it('keeps homepage building media stable and never falls back to street views or maps', () => {
@@ -97,20 +88,20 @@ describe('signedprice Evidence Editorial homepage', () => {
     expect(markup).toContain('1 / 2');
   });
 
-  it('moves staged markets to explicit global destinations', async () => {
+  it('keeps Singapore and Dubai available without competing with the Korea hero', async () => {
     const markup = renderToStaticMarkup(await Home());
 
     expect(markup).toContain('href="/sg">Singapore</a>');
     expect(markup).toContain('href="/ae/dubai">Dubai</a>');
   });
 
-  it('closes with guides and a clearly gated investment roadmap', async () => {
+  it('closes with guides, methodology, privacy, and contact', async () => {
     const markup = renderToStaticMarkup(await Home());
 
-    expect(markup).toContain('id="home-trust"');
-    expect(markup).toContain('Buying property in another country?');
-    expect(markup).toContain('Invest · Service preparing');
-    expect(markup).toContain('Personalized recommendations remain unavailable');
-    expect(markup).not.toContain('class="principles site-shell"');
+    expect(markup).toContain('Guides for renting and buying');
+    expect(markup).toContain('How this evidence works');
+    expect(markup).toContain('href="/trust/">Method</a>');
+    expect(markup).toContain('href="/privacy/">Privacy</a>');
+    expect(markup).toContain('href="/contact/">Contact</a>');
   });
 });

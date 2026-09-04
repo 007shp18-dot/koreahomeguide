@@ -42,6 +42,10 @@ const englishMetadata = indexableMetadata({
   title: 'signedprice | Real prices. Better property decisions.',
   description:
     'Verified Seoul property intelligence with official-source context and publication limits shown clearly.',
+  languageAlternates: {
+    en: '/',
+    'zh-Hans': '/zh-cn/kr/seoul/',
+  },
 }) satisfies Metadata;
 
 export interface NavigationLinkModel {

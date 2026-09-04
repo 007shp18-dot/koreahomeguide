@@ -1,11 +1,9 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
+import { EditorialGrowthPublicFrame } from '@/components/editorial-growth/editorial-growth-public-shell';
 import { InsightsArticle } from '@/components/insights/insights-article';
-import { SiteFooter } from '@/components/site-footer';
-import { SiteHeader } from '@/components/site-header';
 import { getPublishedContentArticle } from '@/lib/insights/content-article-store.server';
-import { INSIGHTS_FOOTER, INSIGHTS_HEADER } from '@/lib/insights/insights-shell';
 import { indexableMetadata, publicCanonical, safeJsonLd } from '@/lib/public-metadata';
 
 export const dynamic = 'force-dynamic';
@@ -39,11 +37,9 @@ export default async function EditorialArticlePage({ params }: EditorialArticleP
     publisher: { '@type': 'Organization', name: 'SignedPrice' },
   };
   return (
-    <div id="top">
-      <SiteHeader copy={INSIGHTS_HEADER} />
+    <EditorialGrowthPublicFrame locale="en" surface="content">
       <InsightsArticle article={article} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }} />
-      <SiteFooter copy={INSIGHTS_FOOTER} />
-    </div>
+    </EditorialGrowthPublicFrame>
   );
 }

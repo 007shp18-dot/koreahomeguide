@@ -35,9 +35,17 @@ const COPY = Object.freeze({
   },
 });
 
-export function EditorialGrowthHome({ model }: Readonly<{ model: EditorialGrowthReviewModel }>) {
+export function EditorialGrowthHome({ model, hrefs }: Readonly<{
+  model: EditorialGrowthReviewModel;
+  hrefs?: Readonly<{ content: string; check: string; explore: string }>;
+}>) {
   const copy = COPY[model.locale];
   const query = `locale=${model.locale}&state=${model.state}&ad=${model.ad}`;
+  const links = hrefs ?? {
+    content: `/design-review/editorial-growth/content/?${query}`,
+    check: `/design-review/editorial-growth/check/?${query}`,
+    explore: `/design-review/editorial-growth/explore/?${query}`,
+  };
 
   return (
     <main className={styles.homePage}>
@@ -49,11 +57,11 @@ export function EditorialGrowthHome({ model }: Readonly<{ model: EditorialGrowth
           <Link
             className={styles.primaryAction}
             data-primary-action="check"
-            href={`/design-review/editorial-growth/check/?${query}`}
+            href={links.check}
           >
             {copy.primary}
           </Link>
-          <Link className={styles.textAction} href={`/design-review/editorial-growth/explore/?${query}`}>
+          <Link className={styles.textAction} href={links.explore}>
             {copy.secondary}<span aria-hidden="true"> ↗</span>
           </Link>
         </div>
@@ -85,7 +93,7 @@ export function EditorialGrowthHome({ model }: Readonly<{ model: EditorialGrowth
         <div className={styles.insightBody}>
           <p className={styles.lead}>{model.article.summary}</p>
           <p className={styles.articleMeta}>{model.article.market} · Updated {model.article.updated}</p>
-          <Link className={styles.textAction} href={`/design-review/editorial-growth/content/?${query}`}>
+          <Link className={styles.textAction} href={links.content}>
             {copy.read}<span aria-hidden="true"> →</span>
           </Link>
         </div>

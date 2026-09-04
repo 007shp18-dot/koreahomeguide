@@ -175,7 +175,7 @@ describe('SignedPrice cohort zero SEO', () => {
           '@id': 'https://www.signedprice.com/#website',
           name: 'SignedPrice',
           url: 'https://www.signedprice.com/',
-          inLanguage: ['en', 'ko'],
+          inLanguage: ['en', 'ko', 'zh-Hans'],
           publisher: { '@id': 'https://www.signedprice.com/#organization' },
         },
       ],

@@ -16,8 +16,15 @@ import {
 import { buildPublicPropertyTypeModel } from '../lib/public-market/property-type-route-model.server';
 
 type SitemapEntry = MetadataRoute.Sitemap[number];
+type LocalizedPair = Readonly<{
+  en: `/${string}`;
+  ko?: `/${string}`;
+  'zh-Hans'?: `/${string}`;
+}>;
 
-const localizedPairs = Object.freeze([
+const localizedPairs: readonly LocalizedPair[] = Object.freeze([
+  Object.freeze({ en: '/', 'zh-Hans': '/zh-cn/kr/seoul/' }),
+  Object.freeze({ en: '/insights/', 'zh-Hans': '/zh-cn/kr/seoul/insights/' }),
   Object.freeze({ en: '/kr/seoul/', ko: '/ko/kr/seoul/' }),
   Object.freeze({ en: '/kr/seoul/check/', ko: '/ko/kr/seoul/check/' }),
   Object.freeze({
@@ -29,12 +36,17 @@ const localizedPairs = Object.freeze([
 ] as const);
 
 function languageAlternates(path: string): SitemapEntry['alternates'] | undefined {
-  const pair = localizedPairs.find(({ en, ko }) => path === en || path === ko);
+  const pair = localizedPairs.find((candidate) => (
+    path === candidate.en || path === candidate.ko || path === candidate['zh-Hans']
+  ));
   if (pair === undefined) return undefined;
   return {
     languages: {
       en: publicCanonical(pair.en),
-      ko: publicCanonical(pair.ko),
+      ...(pair.ko === undefined ? {} : { ko: publicCanonical(pair.ko) }),
+      ...(pair['zh-Hans'] === undefined ? {} : {
+        'zh-Hans': publicCanonical(pair['zh-Hans']),
+      }),
       'x-default': publicCanonical(pair.en),
     },
   };
@@ -115,6 +127,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     sitemapEntry('/prices/', summaryLastModified),
     sitemapEntry('/news/', newsLastModified),
     sitemapEntry('/insights/'),
+    sitemapEntry('/zh-cn/kr/seoul/insights/'),
+    sitemapEntry('/zh-cn/kr/seoul/'),
     sitemapEntry('/community/'),
     sitemapEntry('/guides/', guideLastModified),
     sitemapEntry('/privacy/'),
