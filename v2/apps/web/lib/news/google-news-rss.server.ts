@@ -9,18 +9,24 @@ const rssEntities: Readonly<Record<string, string>> = Object.freeze({
 });
 
 function plainRssText(value: string): string {
-  return value
-    .replace(/<[^>]*>/g, '')
-    .replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (entity, code: string) => {
+  const decode = (source: string) => source.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (entity, code: string) => {
       if (code.startsWith('#x')) return String.fromCodePoint(Number.parseInt(code.slice(2), 16));
       if (code.startsWith('#')) return String.fromCodePoint(Number.parseInt(code.slice(1), 10));
       return rssEntities[code.toLowerCase()] ?? entity;
-    })
+    });
+  return decode(decode(value))
+    .replace(/<[^>]*>/g, '')
     .replace(/\s+/g, ' ')
     .trim();
 }
 
-const feeds = Object.freeze([
+type GoogleNewsFeed = Readonly<{
+  market: 'seoul' | 'singapore' | 'dubai';
+  marketLabel: string;
+  query: string;
+}>;
+
+const feeds: readonly GoogleNewsFeed[] = Object.freeze([
   { market: 'seoul', marketLabel: 'Seoul', query: 'Seoul real estate OR South Korea housing' },
   { market: 'singapore', marketLabel: 'Singapore', query: 'Singapore property OR HDB OR condominium' },
   { market: 'dubai', marketLabel: 'Dubai', query: 'Dubai property OR real estate OR off-plan' },
@@ -50,7 +56,7 @@ function categoryFor(text: string): string {
 
 export function parseGoogleNewsRss(
   xml: string,
-  feed: (typeof feeds)[number],
+  feed: GoogleNewsFeed,
 ): readonly NewsWorkspaceItem[] {
   return Object.freeze([...xml.matchAll(/<item>([\s\S]*?)<\/item>/gi)].flatMap((match) => {
     const block = match[1] ?? '';
