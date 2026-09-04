@@ -338,13 +338,16 @@
   letter-spacing: -.035em;
 }
 
-.newsToolbar > a {
+.newsToolbar > a,
+.newsToolbarLinks a {
   flex: 0 0 auto;
   color: var(--accent);
   font-size: .8rem;
   font-weight: 800;
   text-decoration: none;
 }
+
+.newsToolbarLinks { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .55rem 1rem; }
 
 .newsWorkbench {
   display: grid;

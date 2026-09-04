@@ -108,20 +108,33 @@
 
 .attribution a { color: inherit; }
 
-.unavailable {
+.locationFallback {
   min-height: 220px;
   padding: clamp(1.25rem, 3vw, 2rem);
   display: grid;
-  align-content: end;
-  gap: .75rem;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-content: center;
+  gap: .8rem 1rem;
   border-right: 1px solid var(--divider);
   color: var(--ink);
   background: linear-gradient(135deg, #edf3f6, #f8fafb);
 }
 
-.unavailable strong { font-size: clamp(1.2rem, 2vw, 1.7rem); line-height: 1.1; }
-.unavailable p { max-width: 48ch; margin: 0; color: var(--muted); font-size: .78rem; line-height: 1.55; }
-.unavailable a {
+.locationFallback > span {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--divider);
+  border-radius: 50%;
+  color: var(--accent);
+  background: var(--surface-strong);
+  font-size: 1.25rem;
+}
+.locationFallback strong { font-size: 1rem; line-height: 1.2; }
+.locationFallback p { max-width: 48ch; margin: .3rem 0 0; color: var(--muted); font-size: .78rem; line-height: 1.55; }
+.locationFallback a {
+  grid-column: 2;
   min-height: 44px;
   width: fit-content;
   display: inline-flex;
@@ -133,7 +146,7 @@
 
 @media (max-width: 760px) {
   .frame,
-  .unavailable {
+  .locationFallback {
     min-height: 230px;
     border-right: 0;
     border-bottom: 1px solid var(--divider);

@@ -108,7 +108,7 @@ describe('observed building detail', () => {
     expect(html).not.toContain('Proximity data unavailable');
   });
 
-  it('uses NAVER Panorama for a verified observed-building coordinate', async () => {
+  it('checks the approved-photo registry before the verified location fallback', async () => {
     vi.stubEnv(
       'SIGNEDPRICE_OBSERVED_BUILDING_ARTIFACT',
       JSON.stringify(createObservedBuildingInventoryFixture()),
@@ -123,8 +123,8 @@ describe('observed building detail', () => {
     }));
 
     expect(html).toContain('data-building-detail="identity-only"');
-    expect(html).toContain('data-building-media="naver-panorama"');
-    expect(html).toContain('aria-label="Nearby NAVER street view for Large Detached Home"');
+    expect(html).toContain('data-building-media="google-place-photo"');
+    expect(html).toContain('Loading verified place photo');
     expect(html).not.toContain('not a listing photo');
   });
 

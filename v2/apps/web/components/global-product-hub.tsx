@@ -142,7 +142,10 @@ function InsightsHub({ workspace }: Readonly<{ workspace?: NewsWorkspaceModel }>
     <section className={`${styles.section} ${styles.newsSection}`} aria-labelledby="insights-title">
       <div className={styles.newsToolbar}>
         <div><p>Live external news + approved briefs</p><h2 id="insights-title">Evidence first, commentary second.</h2></div>
-        <Link href="/kr/seoul/news/">View approved Seoul briefs →</Link>
+        <nav className={styles.newsToolbarLinks} aria-label="News and original reporting">
+          <Link href="/insights/">Read original reports →</Link>
+          <Link href="/kr/seoul/news/">Approved Seoul briefs →</Link>
+        </nav>
       </div>
       <NewsWorkbench model={model} />
     </section>

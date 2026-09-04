@@ -187,8 +187,8 @@ describe('public building detail', () => {
     expect(metadata).toMatchObject({ robots: { index: false, follow: true } });
     expect(metadata).not.toHaveProperty('alternates');
     expect(html).toContain('Evidence Tower');
-    expect(html).toContain('data-building-media="naver-panorama"');
-    expect(html).toContain('aria-label="Nearby NAVER street view for Evidence Tower"');
+    expect(html).toContain('data-building-media="google-place-photo"');
+    expect(html).toContain('Loading verified place photo');
     expect(html).not.toContain('not a listing photo');
   });
 
@@ -214,8 +214,9 @@ describe('public building detail', () => {
     }));
     expect(selected).toContain('data-selected-mode="rent"');
     expect(selected).toContain('6 reported contracts');
-    expect(selected).toContain('Street view unavailable');
-    expect(selected).toContain('Building evidence remains available');
+    expect(selected).toContain('data-building-media="google-place-photo"');
+    expect(selected).toContain('Loading verified place photo');
+    expect(selected).not.toContain('Street view unavailable');
     expect(selected).not.toContain('data-detail-rail="true"');
     expect(selected).toContain(
       'href="/kr/seoul/explore?district=gangnam-gu&amp;neighborhood=yeoksam-dong&amp;buildingId=gangnam-evidence-tower"',

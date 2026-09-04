@@ -17,6 +17,7 @@ import { metadata as trustMetadata } from '../app/(en)/trust/page';
 import { metadata as compareMetadata } from '../app/(en)/compare/page';
 import { homepageCopy } from '../lib/site-copy';
 import { GUIDES } from '../lib/guide/guide-content';
+import { STARTER_EDITORIAL_ARTICLES } from '../lib/insights/editorial-content';
 import {
   createPublicAreaFixture,
   createPublicAreaV2Fixture,
@@ -256,6 +257,7 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/markets/',
       'https://www.signedprice.com/prices/',
       'https://www.signedprice.com/news/',
+      'https://www.signedprice.com/insights/',
       'https://www.signedprice.com/community/',
       'https://www.signedprice.com/guides/',
       'https://www.signedprice.com/privacy/',
@@ -265,6 +267,7 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/sg/singapore/explore/ccr/',
       'https://www.signedprice.com/sg/singapore/explore/rcr/',
       'https://www.signedprice.com/sg/singapore/explore/ocr/',
+      ...STARTER_EDITORIAL_ARTICLES.map(({ slug }) => `https://www.signedprice.com/insights/${slug}/`),
       'https://www.signedprice.com/',
       'https://www.signedprice.com/compare/',
       'https://www.signedprice.com/trust/',
@@ -385,6 +388,7 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/markets/',
       'https://www.signedprice.com/prices/',
       'https://www.signedprice.com/news/',
+      'https://www.signedprice.com/insights/',
       'https://www.signedprice.com/community/',
       'https://www.signedprice.com/guides/',
       'https://www.signedprice.com/privacy/',
@@ -394,6 +398,7 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/sg/singapore/explore/ccr/',
       'https://www.signedprice.com/sg/singapore/explore/rcr/',
       'https://www.signedprice.com/sg/singapore/explore/ocr/',
+      ...STARTER_EDITORIAL_ARTICLES.map(({ slug }) => `https://www.signedprice.com/insights/${slug}/`),
       'https://www.signedprice.com/',
       'https://www.signedprice.com/compare/',
       'https://www.signedprice.com/trust/',
@@ -414,6 +419,7 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/markets/',
       'https://www.signedprice.com/prices/',
       'https://www.signedprice.com/news/',
+      'https://www.signedprice.com/insights/',
       'https://www.signedprice.com/community/',
       'https://www.signedprice.com/guides/',
       'https://www.signedprice.com/privacy/',
@@ -423,6 +429,7 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/sg/singapore/explore/ccr/',
       'https://www.signedprice.com/sg/singapore/explore/rcr/',
       'https://www.signedprice.com/sg/singapore/explore/ocr/',
+      ...STARTER_EDITORIAL_ARTICLES.map(({ slug }) => `https://www.signedprice.com/insights/${slug}/`),
       'https://www.signedprice.com/',
       'https://www.signedprice.com/compare/',
       'https://www.signedprice.com/trust/',

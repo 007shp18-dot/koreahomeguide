@@ -2,6 +2,7 @@ import 'server-only';
 
 import type { MetadataRoute } from 'next';
 import { GUIDES } from '../lib/guide/guide-content';
+import { STARTER_EDITORIAL_ARTICLES } from '../lib/insights/editorial-content';
 import { contractCheckEvidenceRepositoriesFromEnvironment } from '../lib/contract-check/evidence-repositories.server';
 import { buildContractCheckRouteModel } from '../lib/contract-check/route-model.server';
 import { buildNewsIndexModel } from '../lib/news/news-route-model.server';
@@ -113,6 +114,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     sitemapEntry('/markets/'),
     sitemapEntry('/prices/', summaryLastModified),
     sitemapEntry('/news/', newsLastModified),
+    sitemapEntry('/insights/'),
     sitemapEntry('/community/'),
     sitemapEntry('/guides/', guideLastModified),
     sitemapEntry('/privacy/'),
@@ -123,6 +125,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     sitemapEntry('/sg/singapore/explore/rcr/'),
     sitemapEntry('/sg/singapore/explore/ocr/'),
   ];
+  entries.push(...STARTER_EDITORIAL_ARTICLES.map((article) => ({
+    url: publicCanonical(`/insights/${article.slug}/`),
+    lastModified: new Date(article.updatedAt),
+  })));
   const modifiedByPath = new Map<string, Date | undefined>([
     ['/kr/seoul/', summaryLastModified],
     ['/ko/kr/seoul/', summaryLastModified],

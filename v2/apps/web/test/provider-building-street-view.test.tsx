@@ -153,8 +153,9 @@ describe('provider building street view', () => {
       longitude={103.8607}
       mapHref="/sg/singapore/explore/"
     />);
-    expect(google).toContain('Street view unavailable');
-    expect(google).toContain('View this building area on the map');
+    expect(google).toContain('data-building-media="google-area-map"');
+    expect(google).not.toContain('Street view unavailable');
+    expect(google).toContain('Google location map for Evidence Residence');
     expect(google).not.toContain('maps.googleapis.com');
   });
 

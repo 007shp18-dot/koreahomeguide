@@ -141,6 +141,7 @@ const englishFooterCopy = {
     { label: 'Markets', href: '/markets/' },
     { label: 'Prices', href: '/prices/' },
     { label: 'News', href: '/news/' },
+    { label: 'Insights', href: '/insights/' },
     { label: 'Community', href: '/community/' },
     { label: 'Guides', href: '/guides/' },
     { label: 'Trust', href: '/trust/' },

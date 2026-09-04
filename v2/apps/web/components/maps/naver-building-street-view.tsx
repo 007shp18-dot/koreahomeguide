@@ -143,12 +143,12 @@ export function mountNaverBuildingStreetView({
   });
 }
 
-function StreetViewUnavailable({ mapHref }: Readonly<{ mapHref: string }>) {
+function LocationMapFallback({ mapHref }: Readonly<{ mapHref: string }>) {
   return (
-    <section className={styles.unavailable} data-building-media="street-view-unavailable">
-      <strong>Street view unavailable</strong>
-      <p>NAVER could not verify a nearby street panorama. Building evidence remains available.</p>
-      <Link href={mapHref}>View this building area on the map</Link>
+    <section className={styles.locationFallback} data-building-media="location-map-fallback">
+      <span aria-hidden="true">⌖</span>
+      <div><strong>Building location</strong><p>Open the exact building area in NAVER Map.</p></div>
+      <Link href={mapHref}>Open location map</Link>
     </section>
   );
 }
@@ -262,7 +262,7 @@ export function NaverBuildingStreetView({
     };
   }, [initialize]);
 
-  if (clientId === null || state === 'unavailable') return <StreetViewUnavailable mapHref={mapHref} />;
+  if (clientId === null || state === 'unavailable') return <LocationMapFallback mapHref={mapHref} />;
   return (
     <section className={styles.frame} data-building-media="naver-panorama" data-media-state={state}>
       <div ref={container} className={styles.canvas} role="region" aria-label={`Nearby NAVER street view for ${buildingName}`} />
