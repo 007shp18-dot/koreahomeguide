@@ -156,6 +156,21 @@ describe('district property-type SEO routes', () => {
     ]));
   });
 
+  it('server-renders the installed indexable building directory on a district parent', async () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', undefined);
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_BUILDING_SUMMARY_ARTIFACT', undefined);
+
+    const html = renderToStaticMarkup(await DistrictPage({
+      params: Promise.resolve({ district: 'songpa-gu' }),
+      searchParams: Promise.resolve({}),
+    }));
+
+    expect(html).toContain('Buildings published for Songpa-gu');
+    expect(html).toMatch(/href="\/kr\/seoul\/explore\/songpa-gu\/[^"/]+"/);
+    expect(html).toMatch(/\d+ contracts/);
+  }, 15_000);
+
   it('returns the 404 boundary for unsupported or unpublished combinations', async () => {
     useEvidence();
     await expect(PropertyTypePage({

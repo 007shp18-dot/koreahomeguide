@@ -12,10 +12,11 @@ import type { SeoulDistrictSlug } from '@signedprice/korea-rent/browser';
  * The minimum is a publication wave control, not a correctness threshold.
  * Measured against the installed artifact (2026-02/2026-08):
  *
- *     n >=  50    804 buildings   median 16 published cohorts per page
+ *     n >=  80    463 buildings
+ *     n >=  50    804 buildings   <- start here
  *     n >=  30  1,407
- *     n >=  20  2,097 buildings   median 12 published cohorts per page
- *     n >=  10  4,018 buildings   median  7 published cohorts per page
+ *     n >=  20  2,097
+ *     n >=  10  4,018
  *     n >=   5  7,687
  *
  * Lowering it opens the next wave. Do that one step at a time and only after
@@ -26,6 +27,15 @@ export const KOREA_BUILDING_INDEX_MINIMUM = 50;
 export type KoreaBuildingRouteParam = Readonly<{
   district: SeoulDistrictSlug;
   buildingId: string;
+}>;
+
+export type KoreaBuildingDirectoryEntry = Readonly<{
+  buildingId: string;
+  districtSlug: SeoulDistrictSlug;
+  name: string;
+  neighborhoodName: string;
+  contracts: number;
+  href: string;
 }>;
 
 /**
@@ -71,6 +81,34 @@ export function listIndexableKoreaBuildingRouteParams(
     }))
     .sort((left, right) => (
       left.district.localeCompare(right.district)
+      || left.buildingId.localeCompare(right.buildingId)
+    )));
+}
+
+/**
+ * Search-published buildings for one district, ready for server-rendered links.
+ */
+export function listKoreaBuildingDirectory(
+  records: readonly KoreaRentEvidenceBuildingRecord[],
+  districtSlug: SeoulDistrictSlug,
+  minimum: number = KOREA_BUILDING_INDEX_MINIMUM,
+): readonly KoreaBuildingDirectoryEntry[] {
+  return Object.freeze(records
+    .filter((record) => (
+      record.districtSlug === districtSlug
+      && isKoreaBuildingIndexable(record, minimum)
+    ))
+    .map((record) => Object.freeze({
+      buildingId: record.buildingId,
+      districtSlug: record.districtSlug,
+      name: record.officialName,
+      neighborhoodName: record.neighborhoodName,
+      contracts: koreaBuildingEvidenceDepth(record),
+      href: `/kr/seoul/explore/${districtSlug}/${record.buildingId}/`,
+    }))
+    .sort((left, right) => (
+      right.contracts - left.contracts
+      || left.name.localeCompare(right.name, 'ko-KR')
       || left.buildingId.localeCompare(right.buildingId)
     )));
 }

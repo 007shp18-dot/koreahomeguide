@@ -6,6 +6,8 @@ import { SEOUL_RENT_CHECK_DISTRICTS } from '@signedprice/korea-rent/browser';
 import { DistrictDetailPage } from '@/components/public-market/district-detail-page';
 import { buildPublicAreaExploreModel, buildPublicDistrictModel } from '@/lib/public-market/area-route-model.server';
 import { buildDistrictMetadata } from '@/lib/public-market/district-metadata';
+import { koreaEvidenceRepositoriesFromEnvironment } from '@/lib/public-market/korea-evidence-repositories.server';
+import { listKoreaBuildingDirectory } from '@/lib/public-market/korea-building-index-policy';
 import {
   buildPublicPropertyTypeModel,
   listPublicPropertyTypeRouteParams,
@@ -45,6 +47,10 @@ export default async function NestedDistrictPage({
     singleValue(query.contractType) ?? singleValue(query.contract),
   );
   if (model === null) notFound();
+  const directory = listKoreaBuildingDirectory(
+    koreaEvidenceRepositoriesFromEnvironment().rent?.listBuildingRecords() ?? [],
+    model.identity.slug,
+  );
   const propertyTypes = listPublicPropertyTypeRouteParams()
     .filter(({ district: routeDistrict }) => routeDistrict === model.identity.slug)
     .flatMap(({ district: routeDistrict, propertyType }) => {
@@ -65,6 +71,7 @@ export default async function NestedDistrictPage({
   return <DistrictDetailPage
     model={model}
     propertyTypes={propertyTypes}
+    directory={directory}
     mapDistricts={mapDistricts}
     mapPoint={selected === undefined ? undefined : { latitude: selected.latitude, longitude: selected.longitude }}
     naverMapClientId={process.env.NAVER_MAP_CLIENT_ID?.trim() || null}

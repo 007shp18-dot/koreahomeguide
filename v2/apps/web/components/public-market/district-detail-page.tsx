@@ -3,6 +3,7 @@ import Link from 'next/link';
 
 import type { PublicDistrictModel } from '../../lib/public-market/area-route-types';
 import type { PublicPropertyTypeIdentity } from '../../lib/public-market/property-type-route-types';
+import type { KoreaBuildingDirectoryEntry } from '../../lib/public-market/korea-building-index-policy';
 import {
   KOREA_PUBLIC_RELEASE_STATUS,
   type SiteFooterModel,
@@ -15,6 +16,7 @@ import { EvidenceSectionHeading } from '../evidence-ui/section-heading';
 import { DetailNewsList } from '../news/detail-news-list';
 import { EvidenceEmptyStatePanel } from '../trust/evidence-empty-state';
 import { BoxPlot } from './box-plot';
+import { BuildingDirectory } from './building-directory';
 import styles from './district-page.module.css';
 import { DistrictEvidenceSummary } from './district-evidence-summary';
 import { EvidencePeriodStrip } from './evidence-period-strip';
@@ -328,12 +330,14 @@ function Evidence({ model }: Readonly<{ model: PublicDistrictModel }>) {
 export function DistrictDetailPage({
   model,
   propertyTypes = [],
+  directory = [],
   mapDistricts = [],
   mapPoint,
   naverMapClientId = null,
 }: Readonly<{
   model: PublicDistrictModel;
   propertyTypes?: readonly PublicPropertyTypeIdentity[];
+  directory?: readonly KoreaBuildingDirectoryEntry[];
   mapDistricts?: readonly NaverDistrictMapPoint[];
   mapPoint?: Readonly<{ latitude: number; longitude: number }>;
   naverMapClientId?: string | null;
@@ -356,6 +360,7 @@ export function DistrictDetailPage({
             </div>
             <div id="home-types"><PropertyTypeEvidence model={model} propertyTypes={propertyTypes} /></div>
             <div id="buildings"><BuildingEvidence model={model} /></div>
+            <BuildingDirectory districtName={model.identity.nameEn} entries={directory} />
             {model.status === 'unavailable' ? null : <Faq model={model} />}
             <div className={styles.sourceBoundary} data-section="district-source" id="source">
               <PublicSourceBoundary model={model.source} />
