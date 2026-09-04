@@ -16,6 +16,15 @@ The original implementation was rechecked before remote publication. Three new r
 
 These checks validate committed source artifacts, not live database rows. The browser matrix, live Neon projection population/index checks, and fallback drill below remain release gates. The previous production deployment has database configuration but logged a Neon read timeout; the absence of `DATABASE_URL` described below applies only to this local workspace. No production success or database population is inferred from a successful schema migration or local fallback build.
 
+### Remote preview and request-deadline repair
+
+- Review PR: https://github.com/007shp18-dot/koreahomeguide/pull/135 (draft; do not merge until gates pass).
+- Initial preview commit: `a0a5d7e34cdebd03eabdc6286a877c391810d2d9`; exact tree match with local chart-correction commit `e3358a243bc5ec3a9f3a81b7d1ddf4aba3714f0b`.
+- Initial SignedPrice preview deployment `dpl_9av19NsCVm1r48pna1Q1ArmFhjsd` completed successfully. Its build explicitly reported missing `DATABASE_URL` and skipped migration. This preview cannot validate live Neon migrations or populated projections.
+- Direct cloud-browser access reached the Vercel sign-in page, so no deployed visual pass is claimed. GitHub CI's initial verification job passed; the browser job was still running when checked.
+- A separate reproducible defect was found in `postgres.server.ts`: an `AbortSignal.timeout(8_000)` was allocated once when the cached client was created, so later requests reused an expired signal. Public clients also reused one 750 ms signal across requests. Both factories now allocate a deadline when Neon assembles each HTTP request. Tagged queries, parameterized queries, and transactions retain their existing deadlines.
+- Two regression cases exercise the real Neon client with only HTTP replaced and reproduce failure after an earlier signal expires. Both fail before the fix and pass after it. Fresh verification after the repair: 219 files / 2,029 tests, typecheck, lint and the 890-page build pass. This proves the client defect is repaired, not that all causes of production Neon timeouts are resolved.
+
 The sitewide maintenance, decision-journey renewal, Newsroom, Policy Tracker, infographic system, 29-item reviewed portfolio, SEO, migration, performance, and privacy-safe analytics work is complete at implementation commit `a1010d74e3ec103d26938527dfd2b1150ff21ce8`.
 
 Production rollout remains gated on two environment checks that this workspace cannot satisfy:

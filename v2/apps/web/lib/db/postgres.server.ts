@@ -17,7 +17,9 @@ export function contentDatabase(): NeonQueryFunction<false, false> | null {
     return client;
   }
   client = neon(connectionString, {
-    fetchOptions: { signal: AbortSignal.timeout(8_000) },
+    // Neon spreads these options when each HTTP request starts. A signal created
+    // here once would permanently poison the cached client after eight seconds.
+    fetchOptions: { get signal() { return AbortSignal.timeout(8_000); } },
   });
   return client;
 }
@@ -26,6 +28,6 @@ export function publicContentDatabase(): NeonQueryFunction<false, false> | null 
   const connectionString = process.env.DATABASE_URL?.trim();
   if (!connectionString) return null;
   return neon(connectionString, {
-    fetchOptions: { signal: AbortSignal.timeout(PUBLIC_CONTENT_READ_TIMEOUT_MS) },
+    fetchOptions: { get signal() { return AbortSignal.timeout(PUBLIC_CONTENT_READ_TIMEOUT_MS); } },
   });
 }
