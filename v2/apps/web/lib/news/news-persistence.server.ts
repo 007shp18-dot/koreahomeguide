@@ -17,7 +17,8 @@ function workspaceItem(row: NewsRow): NewsWorkspaceItem | null {
   if (publishedAt === null || typeof row.id !== 'string' || typeof row.market_key !== 'string'
     || typeof row.title !== 'string' || typeof row.summary !== 'string'
     || typeof row.canonical_url !== 'string' || typeof row.publisher !== 'string'
-    || typeof row.category !== 'string' || typeof row.evidence_line !== 'string') return null;
+    || typeof row.category !== 'string' || typeof row.evidence_line !== 'string'
+    || typeof row.source_kind !== 'string') return null;
   if (!['seoul', 'singapore', 'dubai'].includes(row.market_key)) return null;
   if (!['matched', 'no-change', 'checking', 'insufficient'].includes(String(row.evidence_status))) return null;
   return Object.freeze({
@@ -33,7 +34,7 @@ function workspaceItem(row: NewsRow): NewsWorkspaceItem | null {
     category: row.category,
     evidence: row.evidence_status as NewsWorkspaceItem['evidence'],
     evidenceLine: row.evidence_line,
-    sourceKind: 'naver-search',
+    sourceKind: row.source_kind === 'google-news-rss' ? 'google-news-rss' : 'naver-search',
   });
 }
 
@@ -51,6 +52,7 @@ export async function loadPersistedNewsItems(limit = 600): Promise<readonly News
         publisher,
         published_at,
         category,
+        source_kind,
         evidence_status,
         evidence_line
       FROM news_articles
@@ -72,7 +74,7 @@ export async function storeNewsItems(items: readonly NewsWorkspaceItem[]): Promi
   const sql = contentDatabase();
   if (sql === null || items.length === 0) return 0;
   const payload = items
-    .filter((item) => item.sourceKind === 'naver-search')
+    .filter((item) => item.sourceKind === 'naver-search' || item.sourceKind === 'google-news-rss')
     .map((item) => ({
       market_key: item.market,
       market_name: item.marketLabel,
@@ -83,6 +85,7 @@ export async function storeNewsItems(items: readonly NewsWorkspaceItem[]): Promi
       publisher: item.publisher,
       published_at: item.publishedAt,
       category: item.category,
+      source_kind: item.sourceKind,
       evidence_status: item.evidence,
       evidence_line: item.evidenceLine,
     }));
@@ -99,6 +102,7 @@ export async function storeNewsItems(items: readonly NewsWorkspaceItem[]): Promi
         publisher text,
         published_at timestamptz,
         category text,
+        source_kind text,
         evidence_status text,
         evidence_line text
       )
@@ -118,7 +122,7 @@ export async function storeNewsItems(items: readonly NewsWorkspaceItem[]): Promi
       )
       SELECT
         item.market_key, item.canonical_url, item.title_hash, item.title, item.summary,
-        item.publisher, item.published_at, item.category, 'naver-search',
+        item.publisher, item.published_at, item.category, item.source_kind,
         item.evidence_status, item.evidence_line
       FROM payload item
       LEFT JOIN market_upserts ON market_upserts.key = item.market_key
@@ -129,6 +133,7 @@ export async function storeNewsItems(items: readonly NewsWorkspaceItem[]): Promi
         publisher = excluded.publisher,
         published_at = excluded.published_at,
         category = excluded.category,
+        source_kind = excluded.source_kind,
         last_seen_at = now(),
         is_active = true,
         updated_at = now()
@@ -169,4 +174,3 @@ export async function finishNewsIngestionRun(input: Readonly<{
     WHERE id = ${input.id}::bigint
   `;
 }
-

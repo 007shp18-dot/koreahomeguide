@@ -23,6 +23,7 @@ export type NaverDistrictMapPoint = Readonly<{
 
 export type NaverBuildingMapPoint = Readonly<{
   id: string;
+  storedLocationKey?: string;
   title: string;
   href: string;
   addressQuery: string;
@@ -439,25 +440,57 @@ export function NaverDistrictMap({
     latitude: number;
     longitude: number;
   }>>>>(Object.freeze({}));
+  const [storedLocations, setStoredLocations] = useState<Readonly<Record<string, Readonly<{
+    address: string;
+    latitude: number | null;
+    longitude: number | null;
+  }>>>>(Object.freeze({}));
   const selectedUnresolvedBuilding = buildings?.find((building) => (
     building.selected === true
     && building.latitude === null
     && building.longitude === null
   ));
   const resolvedBuildings = useMemo(() => buildings?.map((building) => {
+    const stored = storedLocations[building.id];
     const coordinate = googleCoordinates[building.id];
-    return coordinate === undefined ? building : Object.freeze({
+    if (coordinate !== undefined) return Object.freeze({
       ...building,
       latitude: coordinate.latitude,
       longitude: coordinate.longitude,
     });
-  }), [buildings, googleCoordinates]);
-  const canResolveSelectedBuildings = selectedDistrict === undefined
-    || resolvedBuildings === undefined
-    || resolvedBuildings.some((building) => (
-      (building.latitude !== null && building.longitude !== null)
-      || building.allowAddressGeocoding === true
-    ));
+    if (stored === undefined) return building;
+    return Object.freeze({
+      ...building,
+      addressQuery: stored.address,
+      latitude: stored.latitude,
+      longitude: stored.longitude,
+      allowAddressGeocoding: stored.latitude === null || stored.longitude === null,
+    });
+  }), [buildings, googleCoordinates, storedLocations]);
+
+  useEffect(() => {
+    const selected = buildings?.find((building) => building.selected === true);
+    if (selected?.storedLocationKey === undefined || storedLocations[selected.id] !== undefined) return undefined;
+    const controller = new AbortController();
+    void fetch(`/api/building-location/?key=${encodeURIComponent(selected.storedLocationKey)}`, { signal: controller.signal })
+      .then((response) => response.ok ? response.json() : Promise.reject(new Error('location unavailable')))
+      .then((value: unknown) => {
+        if (typeof value !== 'object' || value === null) return;
+        const item = value as Record<string, unknown>;
+        if (typeof item.address !== 'string') return;
+        const address = item.address;
+        setStoredLocations((current) => Object.freeze({
+          ...current,
+          [selected.id]: Object.freeze({
+            address,
+            latitude: typeof item.latitude === 'number' ? item.latitude : null,
+            longitude: typeof item.longitude === 'number' ? item.longitude : null,
+          }),
+        }));
+      })
+      .catch(() => undefined);
+    return () => controller.abort();
+  }, [buildings, storedLocations]);
 
   const resolveSelectedGoogleCoordinate = useCallback(async () => {
     if (googleMapsBrowserKey === null || selectedUnresolvedBuilding === undefined) return;
@@ -606,13 +639,6 @@ export function NaverDistrictMap({
     </div>
   );
 
-  if (!canResolveSelectedBuildings) return (
-    <div className={styles.frame} data-map-provider="static" data-map-state="coordinate-pending">
-      {fallback}
-      <BuildingMarkerStatus count={buildings?.length ?? 0} locale={locale} />
-    </div>
-  );
-
   return (
     <div className={styles.frame} data-map-provider="naver" data-map-state={state}>
       <div
@@ -620,8 +646,8 @@ export function NaverDistrictMap({
         className={styles.canvas}
         role="region"
         aria-label={locale === 'ko'
-          ? buildings?.length ? '서울 건물 네이버 지도' : '서울 구 네이버 지도'
-          : buildings?.length
+          ? selectedDistrict !== undefined ? '서울 건물 네이버 지도' : '서울 구 네이버 지도'
+          : selectedDistrict !== undefined
             ? 'Interactive NAVER map of Seoul buildings'
             : 'Interactive NAVER map of Seoul districts'}
       />

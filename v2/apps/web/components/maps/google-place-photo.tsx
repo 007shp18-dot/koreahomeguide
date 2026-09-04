@@ -192,11 +192,15 @@ export function GooglePlacePhoto({
     if (browserKey === null) return;
     const scope = window as GoogleReadyScope;
     const handleReady = () => { void initialize(); };
+    const timeout = window.setTimeout(() => setPhoto((current) => current === 'loading' ? 'unavailable' : current), 5_000);
     window.addEventListener(GOOGLE_MAPS_READY_EVENT, handleReady);
     if (scope[GOOGLE_MAPS_READY_FLAG] === true || scope.google?.maps !== undefined) {
       queueMicrotask(handleReady);
     }
-    return () => window.removeEventListener(GOOGLE_MAPS_READY_EVENT, handleReady);
+    return () => {
+      window.clearTimeout(timeout);
+      window.removeEventListener(GOOGLE_MAPS_READY_EVENT, handleReady);
+    };
   }, [browserKey, initialize]);
 
   if (browserKey === null || photo === 'unavailable') return fallback;

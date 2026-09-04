@@ -135,11 +135,14 @@ export async function approveBuildingPhoto(input: PhotoApprovalInput): Promise<v
     )
     INSERT INTO building_photos (
       building_key, registry_key, provider, provider_place_id, asset_url,
-      attribution_name, attribution_url, status, approved_at, approved_by
+      attribution_name, attribution_url, status, approved_at, approved_by,
+      subject_kind, rights_status, source_page_url, visual_reviewed_at
     )
     SELECT
       building_upsert.key, ${input.registryKey}, ${input.provider}, ${input.placeId}, ${input.assetUrl},
-      ${input.attributionName}, ${input.attributionUrl}, 'approved', now(), 'content-admin-api'
+      ${input.attributionName}, ${input.attributionUrl}, 'approved', now(), 'content-admin-api',
+      'building-exterior', ${input.provider === 'owned-object' ? 'owned' : input.provider === 'licensed-url' ? 'licensed' : 'provider-display-only'},
+      ${input.attributionUrl}, now()
     FROM building_upsert
     ON CONFLICT (registry_key) DO UPDATE SET
       building_key = excluded.building_key,
@@ -151,8 +154,120 @@ export async function approveBuildingPhoto(input: PhotoApprovalInput): Promise<v
       status = 'approved',
       approved_at = now(),
       approved_by = 'content-admin-api',
+      subject_kind = 'building-exterior',
+      rights_status = excluded.rights_status,
+      source_page_url = excluded.source_page_url,
+      visual_reviewed_at = now(),
       checked_at = now(),
       updated_at = now()
   `;
 }
 
+type CandidateBuilding = Readonly<{
+  key: string;
+  marketKey: 'seoul' | 'singapore' | 'dubai';
+  externalId: string;
+  name: string;
+  address: string;
+}>;
+
+function normalizedIdentity(value: string): string {
+  return value.normalize('NFKC').toLocaleLowerCase('en-US').replace(/[^\p{L}\p{N}]+/gu, '');
+}
+
+export async function discoverGooglePlacePhotoCandidates(limit = 12): Promise<Readonly<{
+  checked: number;
+  candidates: number;
+  state: 'ready' | 'not-configured';
+}>> {
+  const sql = contentDatabase();
+  const apiKey = process.env.GOOGLE_MAPS_API_KEY?.trim();
+  if (sql === null || !apiKey) return Object.freeze({ checked: 0, candidates: 0, state: 'not-configured' });
+  const rows = await sql`
+    SELECT building.key, building.market_key, building.external_id, building.official_name,
+      coalesce(building.road_address, building.legal_address) AS address
+    FROM buildings building
+    WHERE building.identity_status = 'verified'
+      AND coalesce(building.road_address, building.legal_address) IS NOT NULL
+      AND NOT EXISTS (
+        SELECT 1 FROM building_photos photo
+        WHERE photo.building_key = building.key
+          AND photo.status IN ('approved', 'review_required', 'candidate')
+      )
+    ORDER BY building.updated_at DESC
+    LIMIT ${Math.min(Math.max(limit, 1), 30)}
+  `;
+  const buildings = rows.flatMap((row): CandidateBuilding[] => (
+    typeof row.key === 'string' && ['seoul', 'singapore', 'dubai'].includes(String(row.market_key))
+      && typeof row.external_id === 'string' && typeof row.official_name === 'string'
+      && typeof row.address === 'string'
+      ? [{ key: row.key, marketKey: row.market_key as CandidateBuilding['marketKey'], externalId: row.external_id, name: row.official_name, address: row.address }]
+      : []
+  ));
+  let candidates = 0;
+  for (const building of buildings) {
+    try {
+      const response = await fetch('https://places.googleapis.com/v1/places:searchText', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Goog-Api-Key': apiKey,
+          'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.photos',
+        },
+        body: JSON.stringify({ textQuery: `${building.name}, ${building.address}`, maxResultCount: 1, languageCode: building.marketKey === 'seoul' ? 'ko' : 'en' }),
+        signal: AbortSignal.timeout(8_000),
+      });
+      if (!response.ok) continue;
+      const body = await response.json() as Readonly<{ places?: readonly Readonly<{
+        id?: unknown;
+        displayName?: Readonly<{ text?: unknown }>;
+        formattedAddress?: unknown;
+        photos?: readonly unknown[];
+      }>[] }>;
+      const place = body.places?.[0];
+      const placeId = typeof place?.id === 'string' ? place.id : null;
+      const placeName = typeof place?.displayName?.text === 'string' ? place.displayName.text : '';
+      const placeAddress = typeof place?.formattedAddress === 'string' ? place.formattedAddress : '';
+      if (placeId === null || (place?.photos?.length ?? 0) === 0
+        || !(normalizedIdentity(placeName).includes(normalizedIdentity(building.name))
+          || normalizedIdentity(building.name).includes(normalizedIdentity(placeName)))
+        || !placeAddress.includes(building.address.split(' ').find((part) => /[구區]$/.test(part)) ?? building.address.split(' ')[1] ?? '')) continue;
+      const registryPrefix = building.marketKey === 'seoul' ? 'kr-seoul' : building.marketKey === 'singapore' ? 'sg' : 'ae-dubai';
+      await sql`
+        INSERT INTO building_photos (
+          building_key, registry_key, provider, provider_place_id, status,
+          subject_kind, rights_status, checked_at
+        ) VALUES (
+          ${building.key}, ${`${registryPrefix}:${building.externalId}`}, 'google-place', ${placeId},
+          'review_required', 'building-exterior', 'provider-display-only', now()
+        )
+        ON CONFLICT (registry_key) DO UPDATE SET
+          provider_place_id = excluded.provider_place_id,
+          status = CASE WHEN building_photos.status = 'approved' THEN 'approved' ELSE 'review_required' END,
+          checked_at = now(), updated_at = now()
+      `;
+      candidates += 1;
+    } catch {
+      // A failed provider lookup must not create a guessed identity or photo.
+    }
+  }
+  return Object.freeze({ checked: buildings.length, candidates, state: 'ready' });
+}
+
+export async function listBuildingPhotoCandidates(limit = 100): Promise<readonly Readonly<Record<string, unknown>>[]> {
+  const sql = contentDatabase();
+  if (sql === null) throw new Error('database_not_configured');
+  const rows = await sql`
+    SELECT photo.registry_key AS "registryKey", building.key AS "buildingKey",
+      building.market_key AS "marketKey", building.external_id AS "externalId",
+      building.official_name AS "buildingName",
+      coalesce(building.road_address, building.legal_address) AS address,
+      photo.provider_place_id AS "placeId", photo.status, photo.checked_at AS "checkedAt"
+    FROM building_photos photo
+    JOIN buildings building ON building.key = photo.building_key
+    WHERE photo.status IN ('candidate', 'review_required')
+    ORDER BY photo.checked_at DESC
+    LIMIT ${Math.min(Math.max(limit, 1), 300)}
+  `;
+  return Object.freeze(rows.map((row) => Object.freeze({ ...row })));
+}

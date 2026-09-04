@@ -116,7 +116,7 @@ export function NewsWorkspacePage({ model }: Readonly<{ model: NewsWorkspaceMode
             <p>SEOUL · LIVE NEWS DESK</p>
             <h1>Property news,<br />checked against the data.</h1>
           </div>
-          <p>Naver Cloud News Search supplies current external coverage. SignedPrice keeps the original publisher, marks the evidence state, and never turns an unchecked headline into a market finding.</p>
+          <p>Naver Cloud News Search covers Korea while Google News RSS broadens Singapore, Dubai and international coverage. SignedPrice keeps the original publisher, marks the evidence state, and never turns an unchecked headline into a market finding.</p>
         </header>
         <nav className={styles.workspaceTabs} aria-label="News workspace views">
           <span aria-current="page">News desk</span>

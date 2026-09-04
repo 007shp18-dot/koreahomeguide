@@ -2,10 +2,26 @@ import { NextResponse } from 'next/server';
 
 import {
   approveBuildingPhoto,
+  listBuildingPhotoCandidates,
   type PhotoApprovalInput,
 } from '@/lib/photos/building-photo-store.server';
 
 export const dynamic = 'force-dynamic';
+
+function authorized(request: Request): boolean {
+  const secret = process.env.CONTENT_ADMIN_SECRET?.trim();
+  return Boolean(secret && request.headers.get('authorization') === `Bearer ${secret}`);
+}
+
+export async function GET(request: Request) {
+  if (!authorized(request)) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  try {
+    return NextResponse.json({ items: await listBuildingPhotoCandidates() });
+  } catch (error) {
+    console.error('SignedPrice photo candidates read failed.', error);
+    return NextResponse.json({ error: 'storage_unavailable' }, { status: 503 });
+  }
+}
 
 function text(value: unknown, maximum: number): string | null {
   return typeof value === 'string' && value.trim() !== '' && value.length <= maximum ? value.trim() : null;
@@ -56,8 +72,7 @@ function approvalInput(value: unknown): PhotoApprovalInput | null {
 }
 
 export async function POST(request: Request) {
-  const secret = process.env.CONTENT_ADMIN_SECRET?.trim();
-  if (!secret || request.headers.get('authorization') !== `Bearer ${secret}`) {
+  if (!authorized(request)) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }
   let body: unknown;
@@ -72,4 +87,3 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'storage_unavailable' }, { status: 503 });
   }
 }
-

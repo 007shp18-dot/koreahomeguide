@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import Link from 'next/link';
+import type { PublicMarketSummary } from '@signedprice/market-core';
 
 import type {
   PublicAreaRankingsModel,
@@ -15,7 +16,6 @@ import {
   type PublicMarketCopy,
 } from '../../lib/locale/product-copy';
 import styles from './district-rankings.module.css';
-import { BoxPlot } from './box-plot';
 import { EvidencePeriodStrip } from './evidence-period-strip';
 import { PublicSourceBoundary } from './public-source-boundary';
 
@@ -49,6 +49,37 @@ function activeRankingCopy(view: RankingView, locale: ProductLocale) {
 const money = new Intl.NumberFormat('ko-KR', {
   style: 'currency', currency: 'KRW', currencyDisplay: 'narrowSymbol', maximumFractionDigits: 0,
 });
+
+function DistributionRange({ summary, locale }: Readonly<{
+  summary: Extract<PublicMarketSummary, { published: true }>;
+  locale: ProductLocale;
+}>) {
+  const descriptionId = useId();
+  const width = summary.p75 - summary.p25;
+  const medianPct = width > 0
+    ? Math.min(100, Math.max(0, ((summary.med - summary.p25) / width) * 100))
+    : 50;
+  const labels = locale === 'ko'
+    ? ['하위 25%', '중앙값', '상위 25%']
+    : ['P25', 'Median', 'P75'];
+  return (
+    <div className={styles.rangeCard} data-plot-variant="compact" aria-describedby={descriptionId}>
+      <div className={styles.rangeTrack} aria-hidden="true">
+        <span style={{ left: `${medianPct}%` }} />
+      </div>
+      <dl>
+        {[summary.p25, summary.med, summary.p75].map((value, index) => (
+          <div key={labels[index]}><dt>{labels[index]}</dt><dd>{money.format(value)}</dd></div>
+        ))}
+      </dl>
+      <span id={descriptionId} className={styles.rangeDescription}>
+        {locale === 'ko'
+          ? `신고 가격의 중간 50% 범위. 최솟값 ${money.format(summary.min)}, 최댓값 ${money.format(summary.max)}.`
+          : `Middle 50% of reported prices. Minimum ${money.format(summary.min)}, maximum ${money.format(summary.max)}.`}
+      </span>
+    </div>
+  );
+}
 
 const rankingHousingOptions = Object.freeze([
   ['all', 'All types', '전체 유형'],
@@ -137,13 +168,7 @@ function RankingRows({
               role="group"
               aria-label={`${locale === 'ko' ? row.nameKo : row.nameEn} ${distributionLabel ?? copy.distribution}`}
             >
-              <BoxPlot
-                summary={row.distribution}
-                axis={row.plotAxis}
-                formatValue={(value) => money.format(value)}
-                variant="compact"
-                locale={locale}
-              />
+              <DistributionRange summary={row.distribution} locale={locale} />
             </div>
           )}
         </li>

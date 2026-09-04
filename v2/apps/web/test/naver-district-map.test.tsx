@@ -186,7 +186,7 @@ describe('NAVER district map', () => {
     expect(html).not.toContain('oapi.map.naver.com');
   });
 
-  it('does not request NAVER when every selected building coordinate is pending', () => {
+  it('keeps NAVER visible when every selected building coordinate is pending', () => {
     const html = renderToStaticMarkup(createElement(NaverDistrictMap, {
       clientId: 'test-client-id',
       districts,
@@ -198,10 +198,9 @@ describe('NAVER district map', () => {
       fallback: createElement('p', null, 'Static Seoul district map'),
     }));
 
-    expect(html).toContain('data-map-provider="static"');
-    expect(html).toContain('data-map-state="coordinate-pending"');
-    expect(html).toContain('Map marker unavailable for 1 building');
-    expect(html).not.toContain('oapi.map.naver.com');
+    expect(html).toContain('data-map-provider="naver"');
+    expect(html).toContain('data-map-state="loading"');
+    expect(html).toContain('oapi.map.naver.com');
   });
 
   it('rejects a partially initialized SDK after domain authentication fails', () => {
