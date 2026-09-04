@@ -20,9 +20,12 @@ export const NAVER_NEWS_API_HEADER_NAMES = Object.freeze({
 } as const);
 
 const searches = Object.freeze([
-  { market: 'seoul', marketLabel: 'Seoul', query: '서울 아파트 부동산 매매' },
-  { market: 'singapore', marketLabel: 'Singapore', query: '싱가포르 부동산 주택' },
-  { market: 'dubai', marketLabel: 'Dubai', query: '두바이 부동산 주택' },
+  { key: 'seoul-market', market: 'seoul', marketLabel: 'Seoul', query: '서울 아파트 부동산 매매' },
+  { key: 'seoul-policy', market: 'seoul', marketLabel: 'Seoul', query: '서울 전세 월세 재건축 주택 정책' },
+  { key: 'singapore-market', market: 'singapore', marketLabel: 'Singapore', query: '싱가포르 부동산 주택' },
+  { key: 'singapore-public-private', market: 'singapore', marketLabel: 'Singapore', query: '싱가포르 HDB 콘도 URA' },
+  { key: 'dubai-market', market: 'dubai', marketLabel: 'Dubai', query: '두바이 부동산 주택' },
+  { key: 'dubai-rental-offplan', market: 'dubai', marketLabel: 'Dubai', query: '두바이 부동산 임대 오프플랜' },
 ] as const);
 
 const entityMap: Readonly<Record<string, string>> = Object.freeze({
@@ -69,7 +72,7 @@ function categoryFor(text: string): string {
 async function fetchMarketNews(search: (typeof searches)[number], clientId: string, clientSecret: string): Promise<readonly NewsWorkspaceItem[]> {
   const url = new URL(NAVER_NEWS_API_URL);
   url.searchParams.set('query', search.query);
-  url.searchParams.set('display', '12');
+  url.searchParams.set('display', '50');
   url.searchParams.set('start', '1');
   url.searchParams.set('sort', 'date');
   url.searchParams.set('format', 'json');
@@ -92,7 +95,7 @@ async function fetchMarketNews(search: (typeof searches)[number], clientId: stri
     const summary = plainNewsText(item.description);
     if (title === '' || summary === '') return [];
     return [Object.freeze({
-      id: `naver-${search.market}-${published.getTime()}-${index}`,
+      id: `naver-${search.key}-${published.getTime()}-${index}`,
       market: search.market,
       marketLabel: search.marketLabel,
       title,

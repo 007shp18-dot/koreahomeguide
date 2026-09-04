@@ -67,3 +67,15 @@
   .transactionList li { grid-template-columns: 72px 1fr; }
   .transactionList strong { grid-column: 2; }
 }
+
+/* Keep every building-detail branch in the same SignedPrice hero system. */
+@media (min-width: 851px) {
+  .identityHero { grid-template-columns: minmax(320px, .78fr) minmax(0, 1.22fr); }
+  .identitySummary { grid-column: 1; grid-row: 1; background: linear-gradient(145deg, #fff 28%, var(--soft-blue)); }
+  .identityMedia { grid-column: 2; grid-row: 1; border-left: 1px solid var(--line); }
+}
+
+@media (max-width: 850px) {
+  .identityMedia { grid-column: 1; grid-row: 1; }
+  .identitySummary { grid-column: 1; grid-row: 2; }
+}

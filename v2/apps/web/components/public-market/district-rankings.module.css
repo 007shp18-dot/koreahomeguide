@@ -516,3 +516,136 @@
     padding-left: 44px;
   }
 }
+
+/* SignedPrice product-system pass */
+.frame {
+  width: min(calc(100% - (2 * var(--page-gutter))), var(--content-frame));
+  margin: 24px auto 64px;
+  overflow: visible;
+  border: 0;
+  background: transparent;
+}
+.hero {
+  min-height: 250px;
+  margin-bottom: 16px;
+  padding: clamp(28px, 4vw, 46px);
+  grid-template-columns: minmax(0, 1.25fr) minmax(260px, .65fr);
+  align-items: end;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: linear-gradient(135deg, #fff 42%, var(--soft-blue));
+  box-shadow: var(--shadow-md);
+}
+.hero h1 {
+  max-width: 16ch;
+  font-size: clamp(2.5rem, 5.5vw, 5rem);
+  font-weight: 740;
+  line-height: 1.02;
+}
+.heroCopy > p:first-child,
+.panelHeader > p:first-child { color: var(--accent); font-size: .75rem; }
+.heroCopy > p:not(:first-child) { color: var(--muted); font-size: .9375rem; }
+.heroMeta {
+  padding: 4px 16px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: rgb(255 255 255 / 78%);
+}
+.heroMeta > div { border-color: var(--line); }
+.heroMeta dt { color: var(--muted); font-size: .7rem; }
+.heroMeta dd { font-size: .8125rem; }
+.filters {
+  margin-bottom: 12px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-sm);
+}
+.filters label > span { color: var(--muted); font-size: .7rem; }
+.filters select,
+.filters button {
+  min-height: 46px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--canvas);
+  font-size: .8125rem;
+}
+.filters button { color: white; border-color: var(--accent); background: var(--accent); }
+.viewWorkspace {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-sm);
+}
+.viewTabs {
+  padding: 8px;
+  gap: 5px;
+  border-color: var(--line);
+  background: var(--surface-strong);
+}
+.viewTabs button {
+  min-height: 42px;
+  border: 0;
+  border-radius: 9px;
+  color: var(--muted);
+  background: transparent;
+  font-size: .8125rem;
+}
+.viewTabs button[aria-selected='true'] {
+  color: var(--accent);
+  background: var(--soft-blue);
+  box-shadow: inset 0 -2px var(--accent);
+}
+.metricSummary {
+  padding: 14px 18px;
+  gap: 10px;
+  border-color: var(--line);
+  background: var(--canvas);
+}
+.metricSummary > div {
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--surface-strong);
+}
+.metricSummary dt { color: var(--muted); font-size: .75rem; }
+.metricSummary dd { font-size: .875rem; }
+.preparing { background: linear-gradient(135deg, #fff, var(--soft-blue)); }
+.panelHeader { border-color: var(--line); }
+.panelHeader h2 { font-size: clamp(1.45rem, 2.5vw, 2.25rem); }
+.panelHeader > p:not(:first-child),
+.panelHeader small,
+.noFall { color: var(--muted); font-size: .8125rem; }
+.row,
+.changeRow { min-height: 70px; border-color: var(--line); }
+.rank { color: var(--accent); border-color: var(--line); font-size: .8125rem; }
+.value { border-color: var(--line); font-size: .875rem; }
+.districtLink { border-radius: 8px; }
+.districtLink span { color: var(--muted); font-size: .75rem; }
+.districtLink:hover { color: var(--accent); background: var(--soft-blue); }
+.rankingDistribution,
+.axisLabels,
+.limit,
+.unavailable { border-color: var(--line); }
+.unavailableRow { color: var(--muted); background: var(--canvas); }
+.unavailable a { border-color: var(--line); border-radius: 9px; }
+
+@media (max-width: 720px) {
+  .frame { width: calc(100% - 28px); margin-top: 16px; }
+  .hero { grid-template-columns: 1fr; gap: 22px; }
+  .filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .metricSummary { grid-template-columns: 1fr; }
+  .metricSummary > div { border: 1px solid var(--line); }
+}
+
+@media (max-width: 420px) {
+  .hero { padding: 24px 20px; }
+  .filters { grid-template-columns: 1fr; }
+  .row { grid-template-columns: 40px minmax(0, 1fr) minmax(96px, auto); }
+  .value { overflow-wrap: normal; font-size: .8125rem; }
+  .metricSummary dd { white-space: normal; overflow-wrap: normal; }
+}
