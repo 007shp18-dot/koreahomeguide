@@ -71,6 +71,65 @@ const NON_NUMERIC_CHECK_STATES = Object.freeze({
   }),
 });
 
+const ZH_GUIDE_OVERRIDES: Partial<Record<
+  GuideDocument['slug'],
+  Readonly<{ title: string; summary: string; stage: string }>
+>> = Object.freeze({
+  'read-seoul-apartment-sale-prices': Object.freeze({
+    title: '如何阅读首尔公寓实际成交价格',
+    summary: '使用已申报成交、相近面积、成交日期和样本量判断报价，避免把单笔交易当成整个市场。',
+    stage: '市场研究',
+  }),
+  'korea-apartment-buying-checklist': Object.freeze({
+    title: '韩国公寓买房出价前检查清单',
+    summary: '从房产身份、价格依据、融资、登记记录、合同条款到尾款支付的实用流程。',
+    stage: '签约前',
+  }),
+  'compare-seoul-district-property-prices': Object.freeze({
+    title: '如何正确比较首尔各区房价',
+    summary: '在不混合住宅类型、面积、期间、交易类型或薄弱样本的前提下比较各区。',
+    stage: '市场研究',
+  }),
+  'rent-apartment-korea-foreigner': Object.freeze({
+    title: '外国人如何在韩国租公寓',
+    summary: '从预算、住宅类型到核验、签约和入住保障的实用路径。',
+    stage: '入门',
+  }),
+  'wolse-vs-jeonse': Object.freeze({
+    title: '月租与全租：韩国租赁合同如何运作',
+    summary: '理解保证金与月租之间的取舍，并用同一标准比较两份报价。',
+    stage: '入门',
+  }),
+});
+
+const SEOUL_DISTRICT_ZH: Readonly<Record<string, string>> = Object.freeze({
+  'jongno-gu': '钟路区',
+  'jung-gu': '中区',
+  'yongsan-gu': '龙山区',
+  'seongdong-gu': '城东区',
+  'gwangjin-gu': '广津区',
+  'dongdaemun-gu': '东大门区',
+  'jungnang-gu': '中浪区',
+  'seongbuk-gu': '城北区',
+  'gangbuk-gu': '江北区',
+  'dobong-gu': '道峰区',
+  'nowon-gu': '芦原区',
+  'eunpyeong-gu': '恩平区',
+  'seodaemun-gu': '西大门区',
+  'mapo-gu': '麻浦区',
+  'yangcheon-gu': '阳川区',
+  'gangseo-gu': '江西区',
+  'guro-gu': '九老区',
+  'geumcheon-gu': '衿川区',
+  'yeongdeungpo-gu': '永登浦区',
+  'dongjak-gu': '铜雀区',
+  'gwanak-gu': '冠岳区',
+  'seocho-gu': '瑞草区',
+  'gangnam-gu': '江南区',
+  'songpa-gu': '松坡区',
+  'gangdong-gu': '江东区',
+});
+
 function articleToReviewArticle(
   article: EditorialArticle,
   locale: ReviewLocale,
@@ -102,14 +161,35 @@ function articleToReviewArticle(
   });
 }
 
-function guideToReviewSummary(guide: GuideDocument): ReviewGuideSummary {
+function guideToReviewSummary(guide: GuideDocument, locale: ReviewLocale): ReviewGuideSummary {
+  const override = locale === 'zh-CN' ? ZH_GUIDE_OVERRIDES[guide.slug] : undefined;
   return Object.freeze({
-    title: guide.title,
-    summary: guide.summary,
-    stage: guide.stage,
+    title: override?.title ?? guide.title,
+    summary: override?.summary ?? guide.summary,
+    stage: override?.stage ?? guide.stage,
     updated: guide.lastVerified,
     href: `/kr/seoul/guide/${guide.slug}/`,
   });
+}
+
+export function reviewDistrictName(
+  district: Readonly<{ slug: string; nameEn: string; nameKo: string }>,
+  locale: ReviewLocale,
+): string {
+  return locale === 'zh-CN'
+    ? SEOUL_DISTRICT_ZH[district.slug] ?? district.nameKo
+    : district.nameEn;
+}
+
+export function localizeReviewFallbackDisclosure(
+  scope: 'building' | 'neighborhood' | 'district',
+  original: string | null,
+  locale: ReviewLocale,
+): string {
+  if (locale === 'en') return original ?? '';
+  if (scope === 'neighborhood') return '同一建筑的样本不足，当前显示同一社区数据。';
+  if (scope === 'district') return '同一建筑和同一社区的样本不足，当前显示同一区数据。';
+  return '';
 }
 
 function nonNumericCheckState(
@@ -181,7 +261,10 @@ function readyCheckToReviewCheck(
         context: `${result.difference.pct}%`,
       }),
     ]),
-    disclosure: [result.fallbackDisclosure, evidenceWindow].filter(Boolean).join(' · '),
+    disclosure: [
+      localizeReviewFallbackDisclosure(result.filters.scope, result.fallbackDisclosure, locale),
+      evidenceWindow,
+    ].filter(Boolean).join(' · '),
   });
 }
 
@@ -242,7 +325,7 @@ function buildReviewExploreFromCanonicalRoute(locale: ReviewLocale): Readonly<{
     : canonical.buildingAvailability.fallbackBuildings;
   const districtNames = new Map(canonical.districts.map((district) => [
     district.slug,
-    locale === 'zh-CN' ? district.nameKo : district.nameEn,
+    reviewDistrictName(district, locale),
   ]));
 
   return Object.freeze({
@@ -259,7 +342,7 @@ function buildReviewExploreFromCanonicalRoute(locale: ReviewLocale): Readonly<{
     }))),
     districts: Object.freeze(canonical.districts.map((district) => Object.freeze({
       id: district.slug,
-      name: locale === 'zh-CN' ? district.nameKo : district.nameEn,
+      name: reviewDistrictName(district, locale),
       path: district.path,
       selected: district.slug === canonical.selectedSlug,
       evidenceState: district.state,
@@ -311,7 +394,7 @@ export async function buildEditorialGrowthReviewModel(
       : null,
     article,
     articles,
-    guides: Object.freeze(dependencies.guides().slice(0, 5).map(guideToReviewSummary)),
+    guides: Object.freeze(dependencies.guides().slice(0, 5).map((guide) => guideToReviewSummary(guide, query.locale))),
     check: query.state === 'ready'
       ? dependencies.check(query.locale)
       : nonNumericCheckState(query.state, query.locale),

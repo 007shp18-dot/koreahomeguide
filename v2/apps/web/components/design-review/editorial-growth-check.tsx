@@ -24,6 +24,8 @@ const COPY = Object.freeze({
     officetel: 'Officetel',
     amount: 'Enter amount',
     explanation: 'A comparison describes compatible reported contracts. It does not certify a home or predict a final price.',
+    gangnam: 'Gangnam-gu',
+    mapo: 'Mapo-gu',
   },
   'zh-CN': {
     eyebrow: '首尔成交依据查询',
@@ -46,6 +48,8 @@ const COPY = Object.freeze({
     officetel: '办公住宅',
     amount: '输入金额',
     explanation: '该比较只描述条件相近的已申报合同，不是住宅认证，也不预测最终成交价。',
+    gangnam: '江南区',
+    mapo: '麻浦区',
   },
 });
 
@@ -73,8 +77,8 @@ export function EditorialGrowthCheck({ model }: Readonly<{ model: EditorialGrowt
           <label>
             <span>{copy.district}</span>
             <select defaultValue="gangnam">
-              <option value="gangnam">Gangnam-gu</option>
-              <option value="mapo">Mapo-gu</option>
+              <option value="gangnam">{copy.gangnam}</option>
+              <option value="mapo">{copy.mapo}</option>
             </select>
           </label>
           <label>
