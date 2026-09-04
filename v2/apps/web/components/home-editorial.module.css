@@ -142,6 +142,29 @@
   border: 0;
 }
 
+.representativeMedia {
+  position: relative;
+  min-height: inherit;
+}
+
+.representativeMedia > figure {
+  min-height: inherit;
+}
+
+.representativeMedia > span {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 2;
+  padding: 5px 9px;
+  border-radius: 999px;
+  color: #334155;
+  background: rgb(255 255 255 / 88%);
+  font-size: 0.7rem;
+  font-weight: 750;
+  backdrop-filter: blur(8px);
+}
+
 .heroMediaControls {
   position: absolute;
   z-index: 4;
