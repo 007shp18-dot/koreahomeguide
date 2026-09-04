@@ -130,6 +130,7 @@
   font-weight: 740;
   line-height: 1.02;
 }
+.hero h1 span { display: inline-block; white-space: nowrap; }
 .heroCopy > p:last-child { color: var(--muted); font-size: .875rem; }
 .heroMap { border: 0; border-left: 1px solid var(--line); background: var(--surface); }
 .heroMap > div { border-radius: 0; }
