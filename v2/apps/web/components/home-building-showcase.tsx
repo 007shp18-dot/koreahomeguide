@@ -15,7 +15,10 @@ function MarketVisual({ visual, googleMapsBrowserKey }: Readonly<{
   visual: HomeMarketVisual;
   googleMapsBrowserKey: string | null;
 }>) {
-  const fallback = <MarketRepresentativePhoto photo={MARKET_PHOTOS[visual.market === 'Seoul' ? 'seoul' : visual.market === 'Singapore' ? 'singapore' : 'dubai']} />;
+  const fallback = <div className={styles.representativeMedia} data-home-media="representative">
+    <MarketRepresentativePhoto photo={MARKET_PHOTOS[visual.market === 'Seoul' ? 'seoul' : visual.market === 'Singapore' ? 'singapore' : 'dubai']} />
+    <span>Representative {visual.market} image</span>
+  </div>;
   if (visual.addressQuery === undefined) return fallback;
   return (
     <GooglePlacePhoto
