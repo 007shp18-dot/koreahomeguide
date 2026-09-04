@@ -11,6 +11,7 @@ describe('three-market home model', () => {
 
     expect(model.headline).toBe('See the market before you make the move.');
     expect(model.markets.map(({ id }) => id)).toEqual(['kr-seoul', 'sg-singapore', 'ae-dubai']);
+    expect(model.markets.every(({ summary }) => summary.length <= 60)).toBe(true);
     expect(model.markets.map(({ photo }) => photo.src)).toEqual([
       '/assets/markets/seoul-residential.jpg',
       '/assets/markets/singapore-residential.jpg',
