@@ -77,10 +77,41 @@ describe('Korea proximity Detail route composition', () => {
         }),
       },
     }));
+    if (identity.coordinate.status !== 'ready') throw new Error('Expected ready fixture coordinate.');
     expect(html).toContain('data-building-detail="exact-evidence"');
     expect(html).toContain('Route station · 1호선 · 250 m');
+    const factsSection = html.slice(
+      html.indexOf('data-building-section="official-facts"'),
+      html.indexOf('</section>', html.indexOf('data-building-section="official-facts"')),
+    );
+    expect(factsSection).toContain('Observed build year');
+    expect(factsSection).toContain(`${identity.coordinate.latitude.toFixed(5)}, ${identity.coordinate.longitude.toFixed(5)}`);
+    expect(factsSection).toContain('Route station · 1호선 · 250 m');
+    expect(factsSection).toContain('Route school · 500 m');
     expect(html).toContain('station=SEOUL%3ASTN%2F001');
     expect(html).toContain('q=route+check');
+  });
+
+  it('renders identity-only proximity once when the unified facts panel is present', () => {
+    vi.stubEnv('SIGNEDPRICE_OBSERVED_BUILDING_ARTIFACT', JSON.stringify(createObservedBuildingInventoryFixture()));
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', OBSERVED_BUILDING_FIXTURE_PERIOD);
+    const identity = buildObservedBuildingIdentityModel('jongno-gu', 'jongno-monthly-home', {
+      source: createObservedBuildingInventoryFixture(),
+      period: OBSERVED_BUILDING_FIXTURE_PERIOD,
+      proximityRepository: readyProximity,
+    });
+    if (identity === null) throw new Error('Expected observed identity fixture.');
+    const html = renderToStaticMarkup(composeKoreaBuildingRoute({
+      district: 'jongno-gu', buildingId: 'jongno-monthly-home', query: {
+        ...query, district: 'jongno-gu', neighborhood: 'sajik-dong', buildingId: 'jongno-monthly-home',
+      },
+      dependencies: {
+        proximityRepository: readyProximity,
+        buildObservedIdentityModel: () => identity,
+      },
+    }));
+    expect(html.match(/Route station · 1호선 · 250 m/g)).toHaveLength(1);
+    expect(html.match(/Route school · 500 m/g)).toHaveLength(1);
   });
 
   it('composes the legacy-public route with the missing disclosure rather than hiding the Detail page', () => {
