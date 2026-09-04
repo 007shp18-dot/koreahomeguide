@@ -219,21 +219,27 @@ describe('Playwright release target configuration', () => {
     expect(config.projects?.map((project) => project.name)).toEqual([
       'desktop-chromium',
       'mobile-chromium',
+      'review-tablet-chromium',
       'tablet-chromium',
       'wide-chromium',
     ]);
     expect(config.projects?.[2]).toMatchObject({
-      testMatch: /(?:rankings|contract-check|trust|korea-detail|korea-guide)\.spec\.ts/,
-      use: { viewport: { width: 720, height: 900 } },
+      testMatch: /editorial-growth-review\.spec\.ts/,
+      use: { viewport: { width: 1024, height: 900 } },
     });
     expect(config.projects?.[3]).toMatchObject({
-      testMatch: /(?:area-explore|contract-check|trust|korea-detail|korea-guide)\.spec\.ts/,
+      testMatch: /(?:rankings|contract-check|trust|korea-detail|korea-guide|singapore)\.spec\.ts/,
+      use: { viewport: { width: 720, height: 900 } },
+    });
+    expect(config.projects?.[4]).toMatchObject({
+      testMatch: /(?:area-explore|contract-check|trust|korea-detail|korea-guide|singapore|editorial-growth-review)\.spec\.ts/,
       use: { viewport: { width: 1440, height: 900 } },
     });
-    expect((config.projects?.[2]?.testMatch as RegExp).test('trust.spec.ts')).toBe(true);
+    expect((config.projects?.[2]?.testMatch as RegExp).test('editorial-growth-review.spec.ts')).toBe(true);
     expect((config.projects?.[3]?.testMatch as RegExp).test('trust.spec.ts')).toBe(true);
-    expect((config.projects?.[2]?.testMatch as RegExp).test('korea-detail.spec.ts')).toBe(true);
-    expect((config.projects?.[3]?.testMatch as RegExp).test('korea-guide.spec.ts')).toBe(true);
+    expect((config.projects?.[4]?.testMatch as RegExp).test('trust.spec.ts')).toBe(true);
+    expect((config.projects?.[3]?.testMatch as RegExp).test('korea-detail.spec.ts')).toBe(true);
+    expect((config.projects?.[4]?.testMatch as RegExp).test('korea-guide.spec.ts')).toBe(true);
     expect(config.reporter).toEqual([
       ['line'],
       ['html', { open: 'never' }],

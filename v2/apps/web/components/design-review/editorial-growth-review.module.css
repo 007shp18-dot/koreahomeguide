@@ -42,6 +42,8 @@
 }
 
 .reviewRoot[data-review-locale='zh-CN'] {
+  --review-display-tracking: 0;
+  --review-heading-tracking: 0;
   letter-spacing: 0;
   line-height: 1.70;
 }
@@ -180,7 +182,7 @@
 }
 
 .homeHero {
-  min-height: 590px;
+  min-height: 520px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -591,18 +593,21 @@
 
 .checkMetrics {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   margin-top: var(--review-space-7);
   border-block: 1px solid var(--review-line);
 }
 
 .checkMetrics > div {
-  padding: var(--review-space-5) var(--review-space-4);
-  border-right: 1px solid var(--review-line);
+  display: grid;
+  grid-template-columns: minmax(100px, 0.5fr) minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: var(--review-space-4);
+  padding: var(--review-space-4) 0;
+  border-bottom: 1px solid var(--review-line);
 }
 
-.checkMetrics > div:first-child { padding-left: 0; }
-.checkMetrics > div:last-child { border-right: 0; }
+.checkMetrics > div:last-child { border-bottom: 0; }
 
 .checkMetrics dt,
 .checkMetrics p {
@@ -611,12 +616,14 @@
 }
 
 .checkMetrics dd {
-  margin-block: var(--review-space-2);
   font-size: var(--review-h3);
   font-weight: 620;
   letter-spacing: var(--review-heading-tracking);
   line-height: var(--review-heading-leading);
+  white-space: nowrap;
 }
+
+.checkMetrics p { text-align: right; }
 
 .checkEvidence,
 .checkDisclosure { margin-top: var(--review-space-7); }
@@ -851,7 +858,7 @@
   }
 
   .homeHero {
-    min-height: 500px;
+    min-height: 440px;
     padding-block: var(--review-space-8);
   }
 
@@ -905,20 +912,19 @@
     padding: var(--review-space-5);
   }
 
-  .checkMetrics {
-    grid-template-columns: 1fr;
-  }
-
   .checkMetrics > div,
   .checkMetrics > div:first-child {
+    grid-template-columns: 1fr;
+    gap: var(--review-space-1);
     padding: var(--review-space-4) 0;
-    border-right: 0;
     border-bottom: 1px solid var(--review-line);
   }
 
   .checkMetrics > div:last-child {
     border-bottom: 0;
   }
+
+  .checkMetrics p { text-align: left; }
 
   .explorePage {
     min-height: 0;

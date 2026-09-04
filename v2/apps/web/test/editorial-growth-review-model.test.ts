@@ -8,6 +8,7 @@ import {
 } from '../lib/design-review/editorial-growth-review-model';
 import {
   buildEditorialGrowthReviewModel,
+  isReviewableExploreBuilding,
   type EditorialGrowthReviewDependencies,
 } from '../lib/design-review/editorial-growth-review-model.server';
 import { GUIDES } from '../lib/guide/guide-content';
@@ -122,5 +123,32 @@ describe('editorial growth review data boundary', () => {
     expect(model.check.metrics).toEqual([]);
     expect(model.exploreRows).toEqual([]);
     expect(JSON.stringify(model)).not.toMatch(/₩0|0 contracts/);
+  });
+
+  it('keeps zero-sample, withheld, and parcel-only buildings out of the review list', () => {
+    expect(isReviewableExploreBuilding({
+      name: 'Raemian One Bailey',
+      observationCount: 8,
+      evidenceStatus: 'published',
+      medianLabel: '₩3,100,000,000',
+    })).toBe(true);
+    expect(isReviewableExploreBuilding({
+      name: '(11-2)',
+      observationCount: 8,
+      evidenceStatus: 'published',
+      medianLabel: '₩3,100,000,000',
+    })).toBe(false);
+    expect(isReviewableExploreBuilding({
+      name: 'Example Residence',
+      observationCount: 0,
+      evidenceStatus: 'published',
+      medianLabel: '₩3,100,000,000',
+    })).toBe(false);
+    expect(isReviewableExploreBuilding({
+      name: 'Example Residence',
+      observationCount: 8,
+      evidenceStatus: 'withheld',
+      medianLabel: null,
+    })).toBe(false);
   });
 });

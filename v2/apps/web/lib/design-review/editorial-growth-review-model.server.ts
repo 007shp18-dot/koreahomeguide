@@ -11,6 +11,7 @@ import {
   type EditorialArticle,
 } from '../insights/editorial-content';
 import { buildPublicAreaExploreModel } from '../public-market/area-route-model.server';
+import type { ExploreBuildingModel } from '../public-market/area-route-types';
 import { buildSeoulLiveModel } from '../public-market/seoul-live-model.server';
 import { buildSingleQuoteCheckRouteModel } from '../single-quote-check/route-model.server';
 import type {
@@ -209,6 +210,24 @@ function buildReviewCheckFromCanonicalRoute(locale: ReviewLocale): ReviewCheck {
     : nonNumericCheckState('insufficient', locale);
 }
 
+type ReviewableExploreBuilding = Pick<
+  ExploreBuildingModel,
+  'name' | 'observationCount' | 'evidenceStatus' | 'medianLabel'
+>;
+
+export function isReviewableExploreBuilding<T extends ReviewableExploreBuilding>(
+  building: T,
+): building is T & Readonly<{ medianLabel: string }> {
+  const name = building.name.trim();
+  const parcelOnlyName = /^\(?\d+(?:-\d+)?\)?$/u.test(name);
+
+  return name.length > 0
+    && !parcelOnlyName
+    && building.observationCount > 0
+    && building.evidenceStatus === 'published'
+    && building.medianLabel !== null;
+}
+
 function buildReviewExploreFromCanonicalRoute(locale: ReviewLocale): Readonly<{
   rows: readonly ReviewExploreRow[];
   districts: readonly ReviewMapDistrict[];
@@ -227,12 +246,11 @@ function buildReviewExploreFromCanonicalRoute(locale: ReviewLocale): Readonly<{
   ]));
 
   return Object.freeze({
-    rows: Object.freeze(buildings.slice(0, 6).map((building, index) => Object.freeze({
+    rows: Object.freeze(buildings.filter(isReviewableExploreBuilding).slice(0, 6).map((building, index) => Object.freeze({
       id: building.id,
       name: building.name,
       district: districtNames.get(building.districtSlug) ?? building.districtSlug,
-      primaryValue: building.medianLabel
-        ?? (locale === 'zh-CN' ? '依据未公开' : 'Evidence withheld'),
+      primaryValue: building.medianLabel,
       sample: locale === 'zh-CN'
         ? `${building.observationCount} 笔成交`
         : building.sampleLabel,

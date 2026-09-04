@@ -128,6 +128,7 @@ export function createPlaywrightConfig(
     projects: [
       {
         name: 'desktop-chromium',
+        testIgnore: /editorial-growth-review\.spec\.ts/,
         use: {
           ...devices['Desktop Chrome'],
           viewport: { width: 1366, height: 768 },
@@ -141,6 +142,14 @@ export function createPlaywrightConfig(
         },
       },
       {
+        name: 'review-tablet-chromium',
+        testMatch: /editorial-growth-review\.spec\.ts/,
+        use: {
+          ...devices['Desktop Chrome'],
+          viewport: { width: 1024, height: 900 },
+        },
+      },
+      {
         name: 'tablet-chromium',
         testMatch: /(?:rankings|contract-check|trust|korea-detail|korea-guide|singapore)\.spec\.ts/,
         use: {
@@ -150,7 +159,7 @@ export function createPlaywrightConfig(
       },
       {
         name: 'wide-chromium',
-        testMatch: /(?:area-explore|contract-check|trust|korea-detail|korea-guide|singapore)\.spec\.ts/,
+        testMatch: /(?:area-explore|contract-check|trust|korea-detail|korea-guide|singapore|editorial-growth-review)\.spec\.ts/,
         use: {
           ...devices['Desktop Chrome'],
           viewport: { width: 1440, height: 900 },

@@ -47,5 +47,13 @@ describe('editorial growth typography contract', () => {
   it('uses zero default tracking and generous body leading for Chinese', () => {
     expect(css).toMatch(/\[data-review-locale='zh-CN'\][^{]*\{[^}]*letter-spacing:\s*0/);
     expect(css).toMatch(/\[data-review-locale='zh-CN'\][\s\S]*?line-height:\s*1\.(?:6[5-9]|[7-9][0-9])/);
+    expect(css).toMatch(
+      /\[data-review-locale='zh-CN'\][^{]*\{[^}]*--review-display-tracking:\s*0[^}]*--review-heading-tracking:\s*0/,
+    );
+  });
+
+  it('uses a dense editorial result list and a bounded desktop hero', () => {
+    expect(css).toMatch(/\.homeHero\s*\{[^}]*min-height:\s*520px/);
+    expect(css).toMatch(/\.checkMetrics\s*\{[^}]*grid-template-columns:\s*1fr/);
   });
 });
