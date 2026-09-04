@@ -648,6 +648,9 @@ describe('installed Korea evidence repositories', () => {
     expect(html).toContain('₩30,000,000');
     expect(html).toContain('5 reported contracts');
     expect(html).toContain('href="/kr/seoul/explore?transaction=monthly&amp;area=60-85&amp;district=gangnam-gu"');
+    expect(html).toContain(
+      `href="/kr/seoul/check?transaction=monthly&amp;district=gangnam-gu&amp;housing=apartment&amp;building=${buildingId}"`,
+    );
     expect(html).not.toContain('45–55㎡');
   });
 

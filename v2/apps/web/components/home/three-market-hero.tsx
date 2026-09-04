@@ -14,7 +14,27 @@ import styles from './three-market-hero.module.css';
 
 const INITIAL_STATE: ThreeMarketHeroState = Object.freeze({ activeIndex: 0, autoRotate: true });
 
+const HERO_COPY = Object.freeze({
+  en: Object.freeze({
+    eyebrow: 'Property evidence · three cities',
+    caption: 'Editorial city photograph · not an exact-property claim',
+    tabLabel: 'Choose a property market',
+    states: Object.freeze({
+      available: 'Available', limited: 'Limited', insufficient: 'Insufficient', rights_blocked: 'Rights blocked',
+    }),
+  }),
+  'zh-CN': Object.freeze({
+    eyebrow: '房地产依据 · 三座城市',
+    caption: '城市编辑图片 · 不代表具体房产',
+    tabLabel: '选择房地产市场',
+    states: Object.freeze({
+      available: '可用', limited: '数据有限', insufficient: '依据不足', rights_blocked: '展示权受限',
+    }),
+  }),
+});
+
 export function ThreeMarketHero({ model }: Readonly<{ model: ThreeMarketHomeModel }>) {
+  const copy = HERO_COPY[model.locale];
   const [state, setState] = useState(INITIAL_STATE);
   const active = model.markets[state.activeIndex] ?? model.markets[0]!;
   const stopRotation = () => setState((current) => (
@@ -38,7 +58,7 @@ export function ThreeMarketHero({ model }: Readonly<{ model: ThreeMarketHomeMode
       onTouchStart={stopRotation}
     >
       <header className={styles.intro}>
-        <p className={styles.eyebrow}>Property evidence · three cities</p>
+        <p className={styles.eyebrow}>{copy.eyebrow}</p>
         <h1 id="three-market-home-title">{model.headline}</h1>
         <p>{model.lead}</p>
       </header>
@@ -55,7 +75,7 @@ export function ThreeMarketHero({ model }: Readonly<{ model: ThreeMarketHomeMode
             style={{ objectFit: 'cover', objectPosition: active.photo.position ?? 'center' }}
           />
           <figcaption>
-            {active.city} · Editorial city photograph · not an exact-property claim
+            {active.city} · {copy.caption}
           </figcaption>
         </figure>
 
@@ -74,7 +94,7 @@ export function ThreeMarketHero({ model }: Readonly<{ model: ThreeMarketHomeMode
           </div>
 
           <div className={styles.evidence} data-evidence-state={active.evidenceState}>
-            <span>{active.evidenceState.replace('_', ' ')}</span>
+            <span>{copy.states[active.evidenceState]}</span>
             <p>{active.evidenceTitle}</p>
             {active.evidenceValue === null ? null : <strong>{active.evidenceValue}</strong>}
             <small>{active.evidenceNote}</small>
@@ -97,7 +117,7 @@ export function ThreeMarketHero({ model }: Readonly<{ model: ThreeMarketHomeMode
         </article>
       </div>
 
-      <div className={styles.marketTabs} role="tablist" aria-label="Choose a property market">
+      <div className={styles.marketTabs} role="tablist" aria-label={copy.tabLabel}>
         {model.markets.map((market, index) => (
           <button
             key={market.id}
@@ -111,7 +131,7 @@ export function ThreeMarketHero({ model }: Readonly<{ model: ThreeMarketHomeMode
           >
             <span>{market.position}</span>
             <strong>{market.city}</strong>
-            <small>{market.evidenceState.replace('_', ' ')}</small>
+            <small>{copy.states[market.evidenceState]}</small>
           </button>
         ))}
       </div>

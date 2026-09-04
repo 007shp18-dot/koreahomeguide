@@ -236,6 +236,18 @@ const primaryMetricLabels = Object.freeze({
   'sale-price': 'Sale price median',
 } as const);
 
+export function buildKoreaEvidenceCheckHref(
+  model: KoreaExplorerBuildingDetailModel,
+  locale: ProductLocale = 'en',
+): string {
+  const query = new URLSearchParams();
+  query.set('transaction', model.selection.transaction);
+  query.set('district', model.district.slug);
+  query.set('housing', model.building.housingType);
+  query.set('building', model.building.buildingId);
+  return localizedSeoulHref(`/kr/seoul/check/?${query.toString()}`, locale);
+}
+
 export function KoreaEvidenceBuildingDetail({
   model,
   backHref,
@@ -315,7 +327,7 @@ export function KoreaEvidenceBuildingDetail({
             <div><dt>{locale === 'ko' ? '기간' : 'Period'}</dt><dd>{model.period}</dd></div>
             <div><dt>{locale === 'ko' ? '건물 유형' : 'Type'}</dt><dd>{model.building.housingType}</dd></div>
           </dl>
-          <Link href="/kr/seoul/check/">{locale === 'ko' ? '계약 가격 확인' : 'Check a contract'}</Link>
+          <Link href={buildKoreaEvidenceCheckHref(model, locale)}>{locale === 'ko' ? '계약 가격 확인' : 'Check a contract'}</Link>
           <Link href={`/kr/seoul/news/?building=${encodeURIComponent(model.building.officialName)}`}>{locale === 'ko' ? '관련 뉴스 보기' : 'Building news'}</Link>
         </aside>
 

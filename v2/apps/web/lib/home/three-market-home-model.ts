@@ -19,6 +19,7 @@ export type ThreeMarketHomePanel = Readonly<{
 }>;
 
 export type ThreeMarketHomeModel = Readonly<{
+  locale: 'en' | 'zh-CN';
   headline: string;
   lead: string;
   markets: readonly ThreeMarketHomePanel[];
@@ -46,6 +47,7 @@ export function createThreeMarketHomeModel(input: Input): ThreeMarketHomeModel {
   const zh = input.locale === 'zh-CN';
 
   return freezeModel({
+    locale: input.locale,
     headline: zh ? '做决定之前，先看懂市场。' : 'See the market before you make the move.',
     lead: zh
       ? '在首尔、新加坡和迪拜，用清楚标注来源与范围的房地产依据做决定。'

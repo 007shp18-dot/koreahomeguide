@@ -57,4 +57,16 @@ describe('three-market editorial hero', () => {
       autoRotate: false,
     });
   });
+
+  it('keeps hero labels and evidence states in Simplified Chinese', () => {
+    const markup = renderToStaticMarkup(createElement(ThreeMarketHero, {
+      model: createThreeMarketHomeModel({ locale: 'zh-CN', seoulMetric: null }),
+    }));
+
+    expect(markup).toContain('房地产依据 · 三座城市');
+    expect(markup).toContain('城市编辑图片 · 不代表具体房产');
+    expect(markup).toContain('数据有限');
+    expect(markup).toContain('展示权受限');
+    expect(markup).not.toContain('Rights Blocked');
+  });
 });

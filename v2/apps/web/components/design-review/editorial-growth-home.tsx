@@ -35,6 +35,8 @@ const COPY = Object.freeze({
     methodBody: 'SignedPrice separates reported contract evidence from editorial explanation. Period, sample, and publication limits stay visible wherever a figure appears.',
     unavailable: 'Official Seoul evidence is temporarily unavailable.',
     read: 'Read report',
+    updated: 'Updated',
+    methodEyebrow: 'Method & provenance',
   },
   'zh-CN': {
     eyebrow: '韩国租房数据指南',
@@ -66,6 +68,8 @@ const COPY = Object.freeze({
     methodBody: 'SignedPrice 将已申报合同数据与编辑说明分开。每个数字旁边都会显示期间、样本和发布限制。',
     unavailable: '首尔官方数据暂时无法使用。',
     read: '阅读报告',
+    updated: '更新于',
+    methodEyebrow: '方法与来源',
   },
 });
 
@@ -96,7 +100,7 @@ export function EditorialGrowthHome({ model, hrefs }: Readonly<{
         </div>
         <div className={styles.insightBody}>
           <p className={styles.lead}>{model.article.summary}</p>
-          <p className={styles.articleMeta}>{model.article.market} · Updated {model.article.updated}</p>
+          <p className={styles.articleMeta}>{model.article.market} · {copy.updated} {model.article.updated}</p>
           <Link className={styles.textAction} href={links.content}>
             {copy.read}<span aria-hidden="true"> →</span>
           </Link>
@@ -115,7 +119,7 @@ export function EditorialGrowthHome({ model, hrefs }: Readonly<{
                 <span className={styles.guideStage}>{guide.stage}</span>
                 <strong>{guide.title}</strong>
                 <span>{guide.summary}</span>
-                <small>Updated {guide.updated}</small>
+                <small>{copy.updated} {guide.updated}</small>
               </Link>
             </li>
           ))}
@@ -123,7 +127,7 @@ export function EditorialGrowthHome({ model, hrefs }: Readonly<{
       </section>
 
       <section className={styles.methodNote} aria-labelledby="home-method-title">
-        <p className={styles.eyebrow}>Method &amp; provenance</p>
+        <p className={styles.eyebrow}>{copy.methodEyebrow}</p>
         <h2 className={styles.subheading} id="home-method-title">{copy.method}</h2>
         <p>{copy.methodBody}</p>
       </section>
