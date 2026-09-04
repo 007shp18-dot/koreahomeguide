@@ -28,7 +28,7 @@
 .breadcrumb { min-height: 34px; padding: 0 2px 12px; display: flex; align-items: center; color: #718096; font-size: .71rem; }
 .identity { min-height: 260px; display: grid; grid-template-columns: minmax(0, .9fr) minmax(390px, 1.1fr); overflow: hidden; border: 1px solid #dfe5ec; border-radius: 13px; background: #fff; box-shadow: 0 10px 28px rgb(15 23 42 / 5%); }
 .identity > div:first-child { padding: 34px; display: flex; align-items: center; }
-.identity h1 { margin: 7px 0; font-size: clamp(2.3rem, 4.5vw, 3.9rem); line-height: 1; letter-spacing: -.052em; }
+.identity h1 { max-width: 18ch; margin: 7px 0; font-size: clamp(2.1rem, 4vw, 3.55rem); line-height: 1.04; letter-spacing: -.048em; overflow-wrap: break-word; word-break: keep-all; text-wrap: pretty; }
 .heroMedia { min-width: 0; min-height: 260px; overflow: hidden; background: linear-gradient(145deg, #dce7f0, #718da4); }
 .heroMedia > section,
 .heroMedia > figure,

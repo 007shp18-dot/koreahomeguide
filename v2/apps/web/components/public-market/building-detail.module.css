@@ -954,3 +954,29 @@
   .mockupRail dl > div,
   .mockupRail > a { font-size: .8125rem; }
 }
+
+/* Final responsive guard: later mockup rules must not re-expand long names. */
+.main[data-building-detail='exact-evidence'] .identityHero {
+  min-height: 340px;
+  grid-template-columns: minmax(360px, .92fr) minmax(0, 1.08fr);
+}
+
+.main[data-building-detail='exact-evidence'] .identityHero > :first-child { min-height: 340px; }
+
+.main[data-building-detail='exact-evidence'] .identitySummary h1 {
+  max-width: 18ch;
+  font-size: clamp(2rem, 3.35vw, 3.4rem);
+  line-height: 1.06;
+  overflow-wrap: break-word;
+  word-break: keep-all;
+  text-wrap: pretty;
+}
+
+@media (max-width: 720px) {
+  .main[data-building-detail='exact-evidence'] .identityHero { grid-template-columns: 1fr; }
+  .main[data-building-detail='exact-evidence'] .identityHero > :first-child { min-height: 220px; }
+  .main[data-building-detail='exact-evidence'] .identitySummary h1 {
+    max-width: none;
+    font-size: clamp(1.9rem, 9vw, 2.8rem);
+  }
+}

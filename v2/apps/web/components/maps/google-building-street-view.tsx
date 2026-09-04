@@ -216,7 +216,6 @@ export function GoogleBuildingStreetView({
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
       />
-      <p className={styles.label}>Live building location · street view unavailable · Google</p>
     </section>
   );
   if (browserKey === null || state === 'unavailable') return (
@@ -229,9 +228,6 @@ export function GoogleBuildingStreetView({
   return (
     <section className={styles.frame} data-building-media="google-street-view" data-media-state={state}>
       <div ref={container} className={styles.canvas} role="region" aria-label={`Nearby Google Street View for ${buildingName}`} />
-      <p className={styles.label}>{state === 'map'
-        ? 'Live area map · nearby street view unavailable · Google'
-        : 'Nearby street view · not a listing photo · Google'}</p>
       <Script
         src={buildGoogleMapsScriptUrl(browserKey)}
         strategy="lazyOnload"

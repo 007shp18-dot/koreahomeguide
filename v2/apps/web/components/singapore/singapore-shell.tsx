@@ -34,6 +34,7 @@ export function SingaporePage({ children, currentHref, unframed = false }: Reado
 }>) {
   const surface: ProductSurface = currentHref?.includes('/check/') ? 'check'
     : currentHref?.includes('/explore/') || currentHref?.includes('/hdb/') ? 'explore'
+      : currentHref?.includes('/rankings/') ? 'rankings'
       : currentHref?.includes('/corrections/') ? 'corrections'
         : 'home';
   const header = currentHref === undefined ? singaporeHeader : {
@@ -49,11 +50,13 @@ export function SingaporePage({ children, currentHref, unframed = false }: Reado
   );
 }
 
-export function SingaporeScope() {
+export function SingaporeScope({ activeSegment }: Readonly<{ activeSegment?: 'CCR' | 'RCR' | 'OCR' }>) {
   return (
     <div className={styles.scope} aria-label="Singapore sale scope">
-      <span>CCR</span><span>RCR</span><span>OCR</span>
-      <span>New sale</span><span>Subsale</span><span>Resale</span>
+      {activeSegment === undefined
+        ? <><span>CCR</span><span>RCR</span><span>OCR</span><span>New sale</span><span>Subsale</span><span>Resale</span></>
+        : <span>{activeSegment}</span>}
+      {activeSegment === undefined ? null : <span>Private residential sales</span>}
     </div>
   );
 }

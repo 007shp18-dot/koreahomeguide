@@ -31,6 +31,7 @@ export function resolveMarketNavigation(input: Readonly<{
         { surface: 'home', label: 'Singapore', href: '/sg/' },
         { surface: 'explore', label: 'Explore', href: '/sg/singapore/explore/' },
         { surface: 'check', label: 'Check', href: '/sg/singapore/check/' },
+        { surface: 'rankings', label: 'Rankings', href: '/sg/singapore/rankings/' },
         { surface: 'corrections', label: 'Corrections', href: '/sg/singapore/corrections/' },
         { surface: 'guide', label: 'Trust', href: '/trust/' },
       ], input.surface),
