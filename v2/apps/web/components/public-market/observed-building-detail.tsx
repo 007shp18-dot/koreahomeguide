@@ -195,7 +195,7 @@ export function ObservedBuildingDetail({
             <div><dt>Monthly rent</dt><dd>{model.observations.monthly}</dd></div>
             <div><dt>Map status</dt><dd>{coordinateLabel}</dd></div>
           </dl>
-          <BuildingProximityDisclosure proximity={model.proximity} locale={locale} />
+          {facts === undefined ? <BuildingProximityDisclosure proximity={model.proximity} locale={locale} /> : null}
           <details className={styles.sourceDetails}>
             <summary>Source and observation details</summary>
             <dl className={styles.sourceGrid}>
