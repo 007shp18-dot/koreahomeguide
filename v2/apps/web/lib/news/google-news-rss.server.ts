@@ -9,12 +9,12 @@ const rssEntities: Readonly<Record<string, string>> = Object.freeze({
 });
 
 function plainRssText(value: string): string {
-  return value
-    .replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (entity, code: string) => {
+  const decode = (source: string) => source.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (entity, code: string) => {
       if (code.startsWith('#x')) return String.fromCodePoint(Number.parseInt(code.slice(2), 16));
       if (code.startsWith('#')) return String.fromCodePoint(Number.parseInt(code.slice(1), 10));
       return rssEntities[code.toLowerCase()] ?? entity;
-    })
+    });
+  return decode(decode(value))
     .replace(/<[^>]*>/g, '')
     .replace(/\s+/g, ' ')
     .trim();
