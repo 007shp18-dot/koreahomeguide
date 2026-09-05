@@ -39,3 +39,15 @@ No screenshot baseline was approved, test skipped, error threshold increased, or
 3. Reconcile rankings cohorts, guide redirects and unsupported-market route behavior.
 4. Inspect the missing visual baselines and keyboard/Chinese rendering; retain their gates until complete.
 5. Run the full matrix and scoped Preview database migration/projection/fallback checks before merging.
+
+## Second repair batch: navigation and decision journey
+
+- Restore the existing `AreaExplorerViewSwitcher` in the results header. List, table, map and split layouts were still URL-addressable, but no visible control selected them. The unit suite explicitly expected the selector's removal while the browser journey expected it to exist. The restored control makes those supported layouts reachable and satisfies the approved mobile List/Map direction; it uses the existing 44px segmented control and URL builder. Five updated render assertions failed before reconnection and passed afterward. Remaining assertions that encoded removal were reconciled with this decision.
+- The Explore → Detail browser test now opens the actual selected-building drawer's detail link. It decodes `returnTo` as a URL, checks every saved Explore query parameter, returns through Detail to Explore, and reloads to verify the drawer and selection survive.
+- Building disclosure checks target `details[data-building-section="evidence"]`; news/community checks target their separate named region. Additional disclosure panels must not make this test ambiguous.
+- Chinese tracking accepts Chromium's equivalent zero-spacing serialization (`normal` or `0px`) while rejecting negative spacing. The toolbar keyboard test handles whitespace between the wordmark's text nodes and now also checks the actual cobalt outline color.
+- Single-price Check's empty-state copy now asks for one property's conditions and asking price in English and Korean. The two-offer comparison keeps its separate copy.
+
+Validation: the three Explore suites pass 60 tests, the two single-price suites pass nine tests, and the earlier three selection/detail suites pass 40 tests (these groups overlap and must not be summed). The application build passes with 890 static pages; live migration was skipped because no local database URL is configured. Browser tests were listed successfully, which confirms test loading but is not an execution pass. React review found no new effects, data fetching, or dependencies in these component changes.
+
+The previous CI diagnostic artifact was retrieved as a file reference, but materializing the returned URL failed with HTTP 403. No images were inspected or adopted as baselines from that attempt. Visual baseline approval remains pending.

@@ -51,7 +51,9 @@ function SingleResult({ model, locale, entityContext }: Readonly<{
     <section aria-live="polite" className={styles.resultPanel} data-check-section="verdict" data-result-focus-target="true">
       <header><span>03</span><h2>{c.result}</h2></header>
       {!model.submitted || result === null ? (
-        <div className={styles.resultEmpty} data-result-state="blank"><p>{c.blank}</p></div>
+        <div className={styles.resultEmpty} data-result-state="blank"><p>{locale === 'ko'
+          ? '매물 하나의 조건과 제시가격을 입력해 조건이 맞는 신고 거래와 비교하세요.'
+          : 'Enter one property’s conditions and asking price to compare with compatible reported contracts.'}</p></div>
       ) : result.status !== 'ready' ? (
         <div className={styles.resultEmpty} data-result-state={result.status}>
           <h3>{result.status === 'insufficient' ? 'Not enough compatible contracts' : c.unavailable}</h3>

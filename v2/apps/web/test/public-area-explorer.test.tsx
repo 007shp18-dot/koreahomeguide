@@ -108,7 +108,7 @@ describe('public Seoul area Explorer', () => {
     expect(markup).toContain('data-explorer-region="summary"');
     expect(markup).toContain('data-explorer-region="results"');
     expect(markup).toContain('data-explorer-region="map"');
-    expect(markup).not.toContain('aria-label="Explorer view"');
+    expect(markup).toContain('aria-label="Explorer view"');
     expect(markup).not.toContain('Current exploration scope');
     expect(markup.indexOf('data-explorer-region="filters"'))
       .toBeLessThan(markup.indexOf('data-explorer-region="summary"'));
@@ -131,7 +131,7 @@ describe('public Seoul area Explorer', () => {
 
       expect(markup).toContain(`data-explore-view="${view}"`);
       expect(markup).toContain(`data-explorer-layout="${layout}"`);
-      expect(markup).not.toContain('aria-label="Explorer view"');
+      expect(markup).toContain('aria-label="Explorer view"');
       if (view === 'table') {
         expect(markup).toContain('data-building-table="filtered"');
         expect(markup).not.toContain('data-explorer-region="map"');
@@ -252,15 +252,17 @@ describe('public Seoul area Explorer', () => {
     expect(markup).toContain('Search this area');
   });
 
-  it('does not render the retired Split, List, Table and Map selector', () => {
+  it('keeps the view selector available when entering directly into table mode', () => {
     const markup = renderToStaticMarkup(createElement(AreaExplorer, {
       model: readyModel(),
       initialSelection: { market: 'kr', transaction: 'jeonse', view: 'table' },
     }));
 
     expect(markup).toContain('data-explore-view="table"');
-    expect(markup).not.toContain('aria-label="Explorer view"');
-    expect(markup).not.toMatch(/>Split<\/a>|>List<\/a>|>Table<\/a>|>Map<\/a>/);
+    expect(markup).toContain('aria-label="Explorer view"');
+    for (const label of ['Split', 'List', 'Table', 'Map']) {
+      expect(markup).toContain(`>${label}</a>`);
+    }
   });
 
   it('retains search, page, and neighborhood state inside the single workspace', () => {
@@ -581,6 +583,6 @@ describe('public Seoul area Explorer', () => {
     expect(markup).toContain('data-explorer-layout="split"');
     expect(markup).toContain('data-explorer-region="results"');
     expect(markup).toContain('data-explorer-region="map"');
-    expect(markup).not.toContain('aria-label="Explorer view"');
+    expect(markup).toContain('aria-label="Explorer view"');
   });
 });

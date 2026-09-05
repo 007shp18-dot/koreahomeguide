@@ -34,6 +34,7 @@ import {
 } from '../../lib/locale/product-copy';
 import styles from './area-explorer.module.css';
 import { AreaBuildingDialog } from './area-building-dialog';
+import { AreaExplorerViewSwitcher } from './area-explorer-view-switcher';
 import { DistrictEvidenceSummary } from './district-evidence-summary';
 import { PublicSourceBoundary } from './public-source-boundary';
 
@@ -776,6 +777,13 @@ function ReadyAreaExplorer({
         </h1>
         <strong className={styles.resultCount}>{matchingBuildingCount.toLocaleString(locale === 'ko' ? 'ko-KR' : 'en-US')} {buildingCountLabel} · {model.source.period}</strong>
         <span>{usesLegacyCopy ? copy.heroDescription : exactMetricCopy.heroDescription}</span>
+        <div className={styles.toolbarViews}>
+          <AreaExplorerViewSwitcher
+            current={currentView}
+            hrefFor={(view) => evidenceHref({ view })}
+            locale={locale}
+          />
+        </div>
       </header>
 
       {currentView === 'table' ? null : (

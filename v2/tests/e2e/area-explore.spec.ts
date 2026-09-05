@@ -388,13 +388,30 @@ test('journey: Explore selection survives Detail, Check, and the return link', a
   const row = page.locator('[data-building-row="synthetic-test-building"]');
   await row.getByRole('button').click();
   await expect(page).toHaveURL(/transaction=monthly.*propertyType=apartment.*district=jongno-gu.*buildingId=synthetic-test-building/);
-  await row.getByRole('link', { name: 'Open full building evidence' }).click();
+  const selectedExploreUrl = new URL(page.url());
+  const drawer = page.locator('[data-building-drawer="synthetic-test-building"]');
+  await expect(drawer).toBeVisible();
+  await drawer.getByRole('link', { name: 'Open full building evidence' }).click();
   await expect(page.locator('[data-building-detail="ready"], [data-building-detail="exact-evidence"]')).toBeVisible();
+  const detailUrl = new URL(page.url());
 
   await page.getByRole('link', { name: /Check (?:this contract|a contract)/ }).click();
   await expect(page).toHaveURL(/market=kr-seoul.*entity=synthetic-test-building.*returnTo=/);
+  const checkUrl = new URL(page.url());
+  const returnTo = new URL(checkUrl.searchParams.get('returnTo')!, checkUrl.origin);
+  expect(returnTo.pathname).toBe(detailUrl.pathname);
+  for (const [key, value] of selectedExploreUrl.searchParams) {
+    expect(returnTo.searchParams.get(key), `Check preserves ${key}`).toBe(value);
+  }
   const returnLink = page.getByRole('link', { name: /Return to / }).first();
-  await expect(returnLink).toHaveAttribute('href', /transaction=monthly.*propertyType=apartment.*district=jongno-gu.*buildingId=synthetic-test-building/);
+  await expect(returnLink).toHaveAttribute('href', `${returnTo.pathname}${returnTo.search}`);
   await returnLink.click();
   await expect(page.locator('[data-building-detail="ready"], [data-building-detail="exact-evidence"]')).toBeVisible();
+  await page.getByRole('link', { name: /Back to .* Explore/ }).click();
+  await expect(page).toHaveURL(selectedExploreUrl.href);
+  await expect(drawer).toBeVisible();
+  await page.reload();
+  await expect(page).toHaveURL(selectedExploreUrl.href);
+  await expect(drawer).toBeVisible();
+  await expectNoHorizontalOverflow(page);
 });
