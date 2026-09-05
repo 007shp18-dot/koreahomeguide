@@ -2,6 +2,7 @@ import { neon } from '@neondatabase/serverless';
 import { NextResponse } from 'next/server';
 
 import { propertySeedPage } from '@/scripts/property-seed-source.mjs';
+import { SEED_PASSWORD } from './seed-password.generated';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
@@ -181,13 +182,12 @@ export async function GET(request: Request) {
   if (process.env.VERCEL_ENV !== 'preview') {
     return new NextResponse(null, { status: 404, headers: { 'Cache-Control': 'no-store' } });
   }
+  if (!SEED_PASSWORD) return NextResponse.json({ error: 'seed_runner_disabled' }, { status: 503 });
   const url = new URL(request.url);
-  const password = url.searchParams.get('password');
-  if (!password) return NextResponse.json({ error: 'password_required' }, { status: 401 });
   const kind = url.searchParams.get('kind') ?? 'seoul';
   const offset = integer(url.searchParams.get('offset'), 0, 100_000);
   const batches = Math.max(1, integer(url.searchParams.get('batches'), 5, 10));
-  const connection = `postgresql://${TEST_ROLE}:${encodeURIComponent(password)}@${TEST_HOST}/neondb?sslmode=require`;
+  const connection = `postgresql://${TEST_ROLE}:${encodeURIComponent(SEED_PASSWORD)}@${TEST_HOST}/neondb?sslmode=require`;
   const sql = neon(connection);
   try {
     let seeded = 0;
