@@ -32,7 +32,8 @@ describe('SignedPrice editorial insights', () => {
       },
     });
     expect(html).toContain('Property evidence, explained.');
-    expect(html).toContain('External headlines stay in News');
+    expect(html).toContain('SignedPrice reports, market analysis and practical guides.');
+    expect(html).not.toContain('SignedPrice Data Desk');
     for (const article of STARTER_EDITORIAL_ARTICLES) {
       expect(html).toContain(article.title);
       expect(html).toContain(`href="/insights/${article.slug}"`);

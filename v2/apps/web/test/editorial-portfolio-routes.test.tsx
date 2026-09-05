@@ -28,7 +28,7 @@ describe('editorial portfolio public routes', () => {
     const html = renderToStaticMarkup(await GuidePage({ params }));
     const metadata = await guideMetadata({ params });
     expect(html).toContain(guide.title);
-    expect(html).toContain(guide.reviewedBy);
+    expect(html).not.toContain(guide.reviewedBy);
     expect(html).toContain(guide.sources[0]!.href);
     expect(metadata.alternates).toMatchObject({ canonical: `https://www.signedprice.com${guide.canonicalHref}` });
   });
@@ -45,6 +45,6 @@ describe('editorial portfolio public routes', () => {
     }
     const guide = guides[0]!;
     expect(renderToStaticMarkup(await ChineseGuidePage({ params: Promise.resolve({ slug: guide.slug }) })))
-      .toContain(guide.reviewedBy);
+      .not.toContain(guide.reviewedBy);
   });
 });

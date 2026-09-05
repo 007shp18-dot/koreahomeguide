@@ -83,6 +83,21 @@ afterEach(() => {
   vi.unstubAllEnvs();
 });
 
+it('opens the unlocated building list when there are no individual map buildings', () => {
+  const model = buildPublicAreaExploreModel('jongno-gu', {
+    source: rankedFixture(),
+    buildingSource: createPublicBuildingFixture(),
+    observedBuildingSource: createObservedBuildingInventoryFixture(),
+    period: PUBLIC_AREA_FIXTURE_PERIOD,
+  });
+  const html = renderToStaticMarkup(createElement(AreaExplorer, {
+    model,
+    initialSelection: { market: 'kr', transaction: 'monthly', contractType: 'all', district: 'jongno-gu' },
+  }));
+  expect(html).toContain('Monthly Home');
+  expect(html).toMatch(/<details[^>]*open=""[^>]*><summary><strong>[^<]*homes awaiting/);
+});
+
 describe('public Seoul area Explorer', () => {
   it('ranks published and better-supported buildings before unavailable rows', () => {
     const rows = [

@@ -50,6 +50,8 @@ describe('public district detail page', () => {
 
     expect(html).toContain('data-district-detail="published"');
     expect(html).toContain('aria-label="Breadcrumb"');
+    expect(html).toMatch(/href="\/ko\/kr\/seoul\/explore\/?\?district=gangnam-gu"/);
+    expect(html).not.toContain('href="/ko/kr/seoul/explore/gangnam-gu/"');
     expect(html).toContain('Explore');
     expect(html).toContain(model.identity.nameEn);
     expect(html).toContain(model.identity.nameKo);

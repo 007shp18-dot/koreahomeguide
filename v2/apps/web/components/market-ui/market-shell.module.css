@@ -21,7 +21,7 @@
 .layers a { min-height: 44px; padding-inline: var(--space-4); display: inline-flex; align-items: center; flex: 0 0 auto; border-right: var(--rule-default); color: inherit; font-size: var(--evidence-type-ui); font-weight: 750; text-decoration: none; }
 .layers a[aria-current='page'] { color: var(--surface-strong); background: var(--ink); }
 
-.exploreGrid { min-height: 620px; display: grid; grid-template-columns: minmax(320px, 42%) minmax(0, 58%); }
+.exploreGrid { min-height: 620px; display: grid; grid-template-columns: 420px minmax(0, 1fr); }
 .discovery { min-width: 0; border-right: var(--rule-strong); }
 .spatial { min-width: 0; background: var(--surface); }
 
@@ -38,8 +38,9 @@
 .detailTabs span { flex: 0 0 auto; padding: 13px 2px 11px; border-bottom: 2px solid transparent; color: #66758a; font-size: var(--text-meta); font-weight: 700; text-decoration: none; }
 .detailTabs a:first-child { color: #152033; border-color: #286ca9; }
 .detailTabs span { color: #9aa5b4; }
-.detailSummary { margin-top: 14px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-.detailSummary article { min-width: 0; min-height: 125px; padding: 17px; display: grid; align-content: start; border: 1px solid #e0e6ed; border-radius: 8px; background: #fff; box-shadow: none; }
+.detailSummary { margin-top: 14px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; }
+.detailSummary > div { min-width: 0; padding: 16px 0; display: grid; align-content: start; }
+.detailSummary > p { align-self: center; color: var(--muted); font-size: var(--text-meta); line-height: 1.5; }
 .detailSummary small { color: #718096; font-size: var(--text-meta); }
 .detailSummary strong { margin-top: 9px; font-size: .91rem; }
 .detailSummary span { margin-top: 6px; color: #66758a; font-size: var(--text-meta); line-height: 1.45; }
@@ -67,7 +68,7 @@
 .identity[data-has-media='true'] > .heroMedia { grid-column: 1; grid-row: 1; aspect-ratio: 16 / 9; min-height: 0; }
 .identity[data-has-media='true'] > .heroMedia > * { height: 100%; min-height: 0; }
 .heroMedia > div:not([data-building-media]) { padding: 24px; }
-.detailSummary article > div { min-width: 0; }
+.detailSummary > div > div { min-width: 0; }
 .detailSummary strong { overflow-wrap: anywhere; }
 .detailTabs a { min-height: 44px; }
 .detailRail { container-type: inline-size; }

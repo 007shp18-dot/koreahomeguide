@@ -33,7 +33,7 @@ test('Explore selection opens a reload-safe district detail from the explicit ev
   await page.goto('/kr/seoul/explore/');
   await page.locator('[data-district-option="jongno-gu"]').click();
   await expect(page).toHaveURL(/district=jongno-gu/);
-  await page.getByText('View new, renewal and distribution').click();
+  await page.locator('summary').filter({ hasText: 'Selected · Jongno-gu' }).click();
   const detailLink = page.getByRole('link', { name: 'Open evidence · Jongno-gu' });
   await expect(detailLink).toHaveAttribute('href', /^\/kr\/seoul\/explore\/jongno-gu/);
   await detailLink.click();
@@ -84,7 +84,7 @@ test('district detail composes official evidence before verified context', async
   expect(layout.mainBeforeRail).toBe(true);
   if (testInfo.project.name === 'desktop-chromium' || testInfo.project.name === 'wide-chromium') {
     expect(layout.columns).toBe(2);
-    expect(Math.abs(layout.railWidth - 280)).toBeLessThanOrEqual(2);
+    expect(Math.abs(layout.railWidth - 300)).toBeLessThanOrEqual(2);
     expect(layout.heroColumns).toBe(2);
   } else {
     expect(layout.columns).toBe(1);

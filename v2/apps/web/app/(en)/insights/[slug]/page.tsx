@@ -46,7 +46,6 @@ export default async function EditorialArticlePage({ params }: EditorialArticleP
     datePublished: article.publishedAt,
     dateModified: article.updatedAt,
     mainEntityOfPage: publicCanonical(`/insights/${article.slug}/`),
-    author: { '@type': 'Organization', name: 'SignedPrice Data Desk' },
     publisher: { '@type': 'Organization', name: 'SignedPrice' },
   };
   return (

@@ -40,7 +40,7 @@ export function InsightsIndex({ articles, activeMarket = 'all' }: Readonly<{
           <p>SignedPrice · Original reporting</p>
           <h1>Property evidence, explained.</h1>
         </div>
-        <p>Planned reports, market analysis and field guides written by the SignedPrice data desk. External headlines stay in News; our own reporting lives here.</p>
+        <p>SignedPrice reports, market analysis and practical guides.</p>
       </header>
 
       <nav className={styles.deskNav} aria-label="Editorial desk sections">

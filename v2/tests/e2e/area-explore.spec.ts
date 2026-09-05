@@ -92,12 +92,12 @@ test('initial HTML and hydration expose one synchronized 25-district Explorer', 
     level: 1,
     name: 'Compare refundable jeonse deposits by district.',
   })).toBeAttached();
-  await expect(page.locator('[data-district-path]')).toHaveCount(25);
+  await expect(page.locator('[data-explorer-region="map"]')).toBeVisible();
   await expect(page.locator('[data-district-option]')).toHaveCount(25);
   const jongnoRow = page.locator('[data-district-option="jongno-gu"]');
   await expect(jongnoRow).toBeVisible();
   await expect(jongnoRow).toContainText('Jongno-gu');
-  await expect(jongnoRow).toContainText('종로구');
+  await expect(jongnoRow).toHaveAttribute('title', /종로구/);
   await expect(page.getByText('Selected · Jongno-gu')).toBeVisible();
 
   const gangnamPrimary = page.locator('[data-district-option="gangnam-gu"]');
@@ -105,8 +105,7 @@ test('initial HTML and hydration expose one synchronized 25-district Explorer', 
   await expect(page).toHaveURL(/district=gangnam-gu/);
   await expect(page.getByText('Selected · Gangnam-gu')).toBeVisible();
   await expect(gangnamPrimary).toHaveAttribute('aria-pressed', 'true');
-  await expect(page.locator('[data-district-path="gangnam-gu"]'))
-    .toHaveClass(/selectedPath/);
+  await expect(page.locator('[data-building-browser="gangnam-gu"]')).toBeVisible();
   await expectNoHorizontalOverflow(page);
 
   if (testInfo.project.name === 'desktop-chromium') {
@@ -128,7 +127,6 @@ test('initial HTML and hydration expose one synchronized 25-district Explorer', 
     const htmlResponse = await page.request.get('/kr/seoul/explore/');
     expect(htmlResponse.status()).toBe(200);
     const html = await htmlResponse.text();
-    expect((html.match(/data-district-path=/g) ?? [])).toHaveLength(25);
     expect((html.match(/data-district-option=/g) ?? [])).toHaveLength(25);
   }
   assertNoRuntimeFailures();
@@ -140,17 +138,18 @@ test('synthetic release fixture shows exact five buckets and a money-free refusa
   test.skip(releaseTarget.usesExternalServer, 'Exact fixture values are local-release only.');
   await page.goto('/kr/seoul/explore/');
 
+  await page.locator('summary').filter({ hasText: /^Map legend$/ }).click();
   const legend = page.getByRole('group', { name: 'Map legend' });
   for (const label of PUBLIC_AREA_TEST_LEGEND_LABELS) {
     await expect(legend).toContainText(label);
   }
   await expect(legend).toContainText('Not published · fewer than 5 contracts');
-  await expect(page.locator(`[data-district-path="${PUBLIC_AREA_WITHHELD_SLUG}"]`))
-    .toHaveAttribute('data-map-state', 'withheld');
   const withheldRow = page.locator(`[data-district-option="${PUBLIC_AREA_WITHHELD_SLUG}"]`);
-  await expect(withheldRow).toContainText('Not published');
-  await expect(withheldRow).toContainText('4 reported contracts');
-  await expect(withheldRow).not.toContainText('₩');
+  await expect(withheldRow).toHaveAttribute('title', /Not published/);
+  await withheldRow.click();
+  const selectedSummary = page.locator('summary').filter({ hasText: 'Selected ·' });
+  await expect(selectedSummary).toContainText('4 reported contracts');
+  await expect(selectedSummary).not.toContainText('₩');
 });
 
 test('rail selection opens the map-owned drawer and full-detail CTA', async ({ page }, testInfo) => {
@@ -214,8 +213,7 @@ test('district selection stays inside the Explore workspace', async ({ page }) =
   await page.goto('/kr/seoul/explore/?district=jongno-gu');
 
   const districtDirectory = page.locator('[data-district-rail="all-25"]');
-  await districtDirectory.locator('summary').click();
-  await expect(districtDirectory).toHaveAttribute('open', '');
+  await expect(districtDirectory).toBeVisible();
   await districtDirectory.locator('[data-district-option="gangnam-gu"]').click();
 
   await expect(page).toHaveURL(/\/kr\/seoul\/explore\/\?.*district=gangnam-gu/);
@@ -224,39 +222,38 @@ test('district selection stays inside the Explore workspace', async ({ page }) =
   await expect(page.locator('[data-explorer-layout="split"]')).toBeVisible();
 });
 
-test('published quote stays local and any withheld detail stays money-free', async ({ page }) => {
+test('published sale detail links to Contract Check and withheld district statistics stay money-free', async ({ page }) => {
   const assertNoRuntimeFailures = observeRuntimeFailures(page);
   await page.goto('/kr/seoul/explore/');
-  await page.waitForLoadState('networkidle');
+  await expect(page.locator('[data-district-option]').first()).toBeVisible();
 
-  const publishedSlug = await page.locator('[data-district-path][data-map-state="published"]')
+  const publishedSlug = await page.locator('[data-district-option][title*="₩"]')
     .first()
-    .getAttribute('data-district-path');
+    .getAttribute('data-district-option');
   expect(publishedSlug).not.toBeNull();
   if (publishedSlug === null) throw new Error('A published district is required.');
 
   await page.goto(`/kr/seoul/explore/${publishedSlug}/`);
   await expect(page.locator('[data-district-detail="published"]')).toBeVisible();
-  await page.waitForLoadState('networkidle');
-  const observedRequests: string[] = [];
-  page.on('request', (request) => observedRequests.push(request.url()));
-  await page.locator('input[name="quote"]').fill('1');
-  await expect(page.locator('[data-median-comparison="true"]')).toContainText(
-    'below the reported median',
-  );
-  expect(observedRequests).toEqual([]);
+  // Sale distributions must not expose the legacy refundable-deposit calculator.
+  // Local quote editing is covered by public-quote.spec.ts on the current Check route.
+  await expect(page.locator('input[name="quote"]')).toHaveCount(0);
+  await expect(page.getByRole('link', { name: 'Compare a contract', exact: true }))
+    .toHaveAttribute('href', '/kr/seoul/check/');
   await expect(page.getByRole('link', { name: 'Back to Seoul map' }))
     .toHaveAttribute('href', `/kr/seoul/explore/?district=${publishedSlug}`);
 
   await page.goto('/kr/seoul/explore/');
-  const withheldSlug = await page.locator('[data-district-path][data-map-state="withheld"]')
-    .first()
-    .getAttribute('data-district-path');
+  const withheldOptions = page.locator('[data-district-option][title*="Not published"]');
+  const withheldSlug = await withheldOptions.count() > 0
+    ? await withheldOptions.first().getAttribute('data-district-option') : null;
   if (withheldSlug !== null) {
     await page.goto(`/kr/seoul/explore/${withheldSlug}/`);
     await expect(page.locator('[data-district-detail="withheld"]')).toBeVisible();
     await expect(page.locator('input[name="quote"]')).toHaveCount(0);
-    await expect(page.locator('body')).not.toContainText('₩');
+    // Other named districts may show their own published comparisons.
+    await expect(page.locator('#overview')).not.toContainText('₩');
+    await expect(page.locator('#distribution')).not.toContainText('₩');
     const structuredData = await page.locator('script[type="application/ld+json"]')
       .allTextContents();
     expect(structuredData.join('\n')).not.toMatch(/"(?:min|p25|med|p75|max|chg3m)"|₩/);
@@ -280,7 +277,7 @@ test('mobile controls keep 44px focus targets and natural document scrolling', a
   expect(railPlacement.position).toBe('static');
   expect(railPlacement.maxHeight).toBe('none');
 
-  const navigation = page.getByRole('navigation', { name: 'Seoul evidence navigation' });
+  const navigation = page.getByRole('navigation', { name: 'Primary navigation' });
   const pricesTab = navigation.getByRole('link', { name: 'Prices' });
   const viewTabs = page.getByRole('navigation', { name: 'Explorer view' }).getByRole('link');
   const districtLink = page.locator('[data-district-option="gangnam-gu"]');
@@ -364,6 +361,7 @@ test('wide workspace keeps map, table, and legend contained', async ({ page }, t
   test.skip(testInfo.project.name !== 'wide-chromium');
   await page.goto('/kr/seoul/explore/');
 
+  await page.locator('summary').filter({ hasText: /^Map legend$/ }).click();
   await expect(page.getByRole('group', { name: 'Map legend' })).toBeVisible();
   await expect(page.locator('[data-district-rail="all-25"]')).toBeVisible();
   await expectNoHorizontalOverflow(page);

@@ -66,8 +66,8 @@ describe('pre-AdSense reviewed launch portfolio', () => {
     const params = Promise.resolve({ slug: article.slug });
     const detail = renderToStaticMarkup(await ChineseArticlePage({ params }));
     const metadata = await generateChineseArticleMetadata({ params });
-    expect(detail).toContain('Sources and review boundary');
-    expect(detail).toContain(article.reviewedBy);
+    expect(detail).toContain('Sources');
+    expect(detail).not.toContain(article.reviewedBy);
     expect(detail).toContain(article.relatedHref?.replace(/\/$/u, ''));
     expect(metadata.alternates?.canonical).toBe(`https://www.signedprice.com${article.canonicalHref}`);
   });

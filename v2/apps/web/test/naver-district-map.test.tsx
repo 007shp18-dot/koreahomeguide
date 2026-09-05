@@ -173,6 +173,17 @@ describe('NAVER district map', () => {
     expect(html).toContain('submodules=geocoder');
   });
 
+  it('does not promise loading when the map cannot start', () => {
+    const html = renderToStaticMarkup(createElement(NaverDistrictMap, {
+      clientId: null,
+      districts,
+      fallback: createElement('p', null, 'Loading the NAVER map.'),
+    }));
+    expect(html).toContain('Map unavailable');
+    expect(html).toContain('Continue browsing the list');
+    expect(html).not.toContain('Loading the NAVER map.');
+  });
+
   it('does not request NAVER when a client ID is unavailable', () => {
     const html = renderToStaticMarkup(createElement(NaverDistrictMap, {
       clientId: null,
@@ -182,7 +193,7 @@ describe('NAVER district map', () => {
 
     expect(html).toContain('data-map-provider="static"');
     expect(html).toContain('data-map-state="fallback"');
-    expect(html).toContain('Static Seoul district map');
+    expect(html).toContain('Map unavailable');
     expect(html).not.toContain('oapi.map.naver.com');
   });
 
@@ -210,6 +221,33 @@ describe('NAVER district map', () => {
       Marker: class {},
       Event: { addListener: () => undefined, removeListener: () => undefined },
     })).toBe(false);
+  });
+
+  it('releases references without calling a revoked SDK after authentication failure', () => {
+    let revoked = false;
+    const removeListener = vi.fn(() => {
+      if (revoked) throw new TypeError("Cannot read properties of null (reading 'isArray')");
+    });
+    const setMap = vi.fn(() => {
+      if (revoked) throw new TypeError('NAVER SDK revoked');
+    });
+    class Map { setCenter() {} setZoom() {} }
+    class LatLng {}
+    class Marker { setMap = setMap; }
+    const lifecycle = mountNaverDistrictMap({
+      sdk: { Map, LatLng, Marker, Event: { addListener: () => ({}), removeListener } },
+      element: {} as HTMLElement,
+      districts,
+      onSelect: () => undefined,
+    });
+    revoked = true;
+    expect(() => lifecycle.dispose({ sdkAvailable: false })).not.toThrow();
+    expect(() => lifecycle.invalidate()).not.toThrow();
+    expect(() => lifecycle.dispose()).not.toThrow();
+    expect(removeListener).not.toHaveBeenCalled();
+    expect(setMap).not.toHaveBeenCalled();
+    expect(lifecycle.markers).toEqual([]);
+    expect(lifecycle.map).toBeNull();
   });
 
   it('fails closed instead of throwing when the NAVER SDK breaks during mount', () => {

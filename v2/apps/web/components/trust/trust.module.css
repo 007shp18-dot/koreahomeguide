@@ -100,7 +100,6 @@
 
 .nextAction {
   padding-left: 0.75rem;
-  border-left: 2px solid var(--accent);
 }
 
 .actionLink {
@@ -143,7 +142,6 @@
 
 .ledger header strong {
   padding-left: 0.6rem;
-  border-left: 2px solid var(--accent);
 }
 
 @media (max-width: 980px) {

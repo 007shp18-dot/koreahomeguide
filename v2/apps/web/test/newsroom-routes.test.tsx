@@ -70,10 +70,13 @@ describe('public Newsroom routes', () => {
     const html = renderToStaticMarkup(<NewsroomArticle article={article} />);
 
     for (const value of [
-      'Data Story', 'Seoul', article.title, article.deck, article.authorName,
-      article.reviewedBy!, 'Published', 'Updated', 'Lead evidence',
+      'Data Story', 'Seoul', article.title, article.deck, 'Publisher', 'SignedPrice', 'Published', 'Updated', 'Sources',
     ]) expect(html).toContain(value);
-    expect(html.match(/data-article-takeaway=/g)?.length ?? 0).toBeLessThanOrEqual(3);
+    expect(html).not.toContain('Reviewer');
+    expect(html).not.toContain(article.reviewedBy!);
+    expect(html).not.toContain(article.authorName);
+    expect(html).not.toContain('data-article-takeaway=');
+    expect(html).toContain('href="#article-sources-title"');
     expect(html).toContain('href="https://rt.molit.go.kr/"');
   });
 

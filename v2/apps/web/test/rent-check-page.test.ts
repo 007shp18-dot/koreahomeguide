@@ -154,8 +154,8 @@ describe('route metadata and authored head contract', () => {
 });
 
 describe('Modernist responsive form contract', () => {
-  it('authors square 52px controls with a visible two-pixel focus', () => {
-    expect(css).toMatch(/\.primary-control\s*\{[\s\S]*?min-height:\s*52px;/);
+  it('authors square 48px controls with a visible two-pixel focus', () => {
+    expect(css).toMatch(/\.primary-control\s*\{[\s\S]*?min-height:\s*48px;/);
     expect(css).toMatch(/\.primary-control\s*\{[\s\S]*?border-radius:\s*0;/);
     expect(css).toMatch(/:focus-visible\s*\{[\s\S]*?outline:\s*2px solid var\(--focus-ring\);/);
     expect(css).not.toMatch(/box-shadow:\s*(?!none)/);
@@ -176,7 +176,7 @@ describe('Modernist responsive form contract', () => {
   it('keeps every housing and unit target at least 44px wide without 720px overflow', () => {
     expect(css).toMatch(/\.unit-toggle button[\s\S]*?min-inline-size:\s*44px;/);
     expect(css).toMatch(/\.housing-choice\s*\{[\s\S]*?min-inline-size:\s*44px;/);
-    expect(css).toMatch(/\.housing-choice\s*\{[\s\S]*?height:\s*48px;/);
+    expect(css).toMatch(/\.housing-choice\s*\{[\s\S]*?height:\s*44px;/);
     expect(css).toMatch(
       /\.housing-choices\s*\{[\s\S]*?grid-template-columns:\s*repeat\(5,\s*minmax\(44px,\s*1fr\)\);/,
     );

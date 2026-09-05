@@ -9,7 +9,7 @@
 .policyTracker {
   width: min(1180px, calc(100% - 40px));
   margin: 0 auto;
-  padding: 72px 0 120px;
+  padding: 40px 0 88px;
   color: var(--review-ink);
 }
 
@@ -26,11 +26,9 @@
 .relatedAction > p,
 .policyGroup > header > p {
   margin: 0;
-  color: var(--review-accent);
-  font-size: 13px;
-  font-weight: 760;
-  letter-spacing: .08em;
-  text-transform: uppercase;
+  color: var(--review-muted);
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .indexHero h1 {
@@ -45,9 +43,9 @@
 
 .articleHero h1 {
   margin: 0;
-  max-width: 16ch;
+  max-width: 28ch;
   font-family: inherit;
-  font-size: clamp(2rem, 4vw, 3.375rem);
+  font-size: clamp(2rem, 3.5vw, 3rem);
   font-weight: 600;
   letter-spacing: -.02em;
   line-height: 1.2;
@@ -316,11 +314,9 @@
 
 .articleHero > p {
   margin: 0;
-  color: var(--review-accent);
-  font-size: 13px;
-  font-weight: 750;
-  letter-spacing: .08em;
-  text-transform: uppercase;
+  color: var(--review-muted);
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .byline,
@@ -328,8 +324,6 @@
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   margin: 16px 0 0;
-  border-top: 1px solid var(--review-line);
-  border-bottom: 1px solid var(--review-line);
 }
 
 .byline div,
@@ -360,8 +354,7 @@
   grid-template-columns: 1fr auto;
   align-items: end;
   gap: 8px 24px;
-  border: 1px solid var(--review-line);
-  padding: 24px;
+  padding: 16px 0;
 }
 
 .leadEvidence > p {
@@ -377,18 +370,15 @@
 .takeaways {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1px;
-  margin: 24px 0 72px;
-  background: var(--review-line);
-  border: 1px solid var(--review-line);
+  gap: 28px;
+  margin: 24px 0 48px;
 }
 
 .takeaways p {
   display: grid;
   gap: 10px;
   margin: 0;
-  background: var(--review-paper);
-  padding: 22px;
+  padding: 0;
 }
 
 .takeaways strong {
@@ -429,7 +419,7 @@
 
 .sources {
   margin-top: 72px;
-  border-top: 3px solid var(--review-ink);
+  border-top: 1px solid var(--review-line);
   padding-top: 28px;
 }
 
@@ -462,8 +452,8 @@
   align-items: center;
   gap: 24px;
   margin-top: 64px;
-  border: 1px solid var(--review-ink);
-  padding: 24px;
+  border-top: 1px solid var(--review-line);
+  padding: 24px 0;
 }
 
 .policyJump {
@@ -472,7 +462,7 @@
 
 .policyGroup {
   scroll-margin-top: 24px;
-  border-top: 4px solid var(--review-ink);
+  border-top: 1px solid var(--review-line);
   padding: 28px 0 72px;
 }
 

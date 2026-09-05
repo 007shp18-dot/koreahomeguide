@@ -41,19 +41,20 @@ test('rankings server HTML exposes four complete evidence lists', async ({ page 
   const response = await page.goto('/kr/seoul/rankings/');
 
   expect(response?.status()).toBe(200);
-  await expect(page.getByRole('heading', { level: 1, name: 'Seoul district rankings' }))
+  await expect(page.getByRole('heading', { level: 1, name: 'Middle-half spread' }))
     .toBeVisible();
   await expect(page.locator('[data-ranking-section]')).toHaveCount(4);
+  await page.getByRole('tab', { name: 'Sale median', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Median refundable jeonse deposit' }))
     .toBeVisible();
-  await page.getByRole('tab', { name: '3-month change' }).click();
+  await page.getByRole('tab', { name: 'QoQ change' }).click();
   await expect(page.getByRole('heading', {
     name: 'Three-month change not assessable',
   })).toBeVisible();
-  await page.getByRole('tab', { name: 'Spread' }).click();
-  await expect(page.getByRole('heading', { name: 'Middle-half spread (P75 − P25)' }))
+  await page.getByRole('tab', { name: 'Price spread' }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Middle-half spread', exact: true }))
     .toBeVisible();
-  await page.getByRole('tab', { name: 'Sample' }).click();
+  await page.getByRole('tab', { name: 'Filing volume' }).click();
   await expect(page.getByRole('heading', { name: 'Qualifying reported contracts' }))
     .toBeVisible();
   expect(await page.locator('[data-ranking-row]').count()).toBeGreaterThan(0);
@@ -85,12 +86,12 @@ test('fixture rankings reconcile exact eligibility, order, and values', async ({
   await page.goto('/kr/seoul/rankings/');
 
   const sections = page.locator('[data-ranking-section]');
-  await expect(sections.nth(0).locator('[data-ranking-row]')).toHaveCount(24);
+  await expect(sections.nth(0).locator('[data-ranking-row]').filter({ hasText: '₩' })).toHaveCount(24);
   await expect(sections.nth(1).locator('[data-ranking-row]')).toHaveCount(0);
-  await expect(sections.nth(2).locator('[data-ranking-row]')).toHaveCount(24);
-  await expect(sections.nth(3).locator('[data-ranking-row]')).toHaveCount(24);
+  await expect(sections.nth(2).locator('[data-ranking-row]').filter({ hasText: '₩' })).toHaveCount(24);
+  await expect(sections.nth(3).locator('[data-ranking-row]').filter({ hasNotText: 'Not published' })).toHaveCount(24);
 
-  const cheapest = sections.nth(0).locator('[data-ranking-row]');
+  const cheapest = sections.nth(0).locator('[data-ranking-row]').filter({ hasText: '₩' });
   await expect(cheapest.first()).toContainText('Jung-gu');
   await expect(cheapest.first()).toContainText('₩100,000,000');
   await expect(cheapest.last()).toContainText('Gwangjin-gu');
@@ -106,7 +107,8 @@ test('rankings remain contained and keyboard-readable at every release width', a
   await page.goto('/kr/seoul/rankings/');
   await expectNoHorizontalOverflow(page);
 
-  const medianPanel = page.getByRole('tabpanel', { name: 'Median' });
+  await page.getByRole('tab', { name: 'Sale median', exact: true }).click();
+  const medianPanel = page.getByRole('tabpanel', { name: 'Sale median' });
   const districtLinks = medianPanel.locator('[data-ranking-row] a');
   await expect(districtLinks).not.toHaveCount(0);
   for (const link of await districtLinks.all()) await expectTouchTarget(link);
@@ -133,10 +135,10 @@ test('rankings remain contained and keyboard-readable at every release width', a
 
 test('Explore and district evidence keep Rankings reachable beside the six global product links', async ({ page }) => {
   await page.goto('/kr/seoul/explore/');
-  const productNavigation = page.getByRole('navigation', { name: 'Seoul evidence navigation' });
+  const productNavigation = page.getByRole('navigation', { name: 'Primary navigation' });
   await expect(productNavigation.getByRole('link', { name: 'Prices' }))
     .toHaveAttribute('href', '/prices/');
-  await expect(productNavigation.getByRole('link')).toHaveCount(6);
+  await expect(productNavigation.getByRole('link')).toHaveCount(4);
 
   await page.goto('/kr/seoul/explore/jongno-gu/');
   await expect(page.getByRole('link', { name: 'View district rankings' }))

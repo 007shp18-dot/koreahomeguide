@@ -254,12 +254,12 @@ export function mountNaverDistrictMap({
   let generation = 0;
   let disposed = false;
 
-  const clearActiveGeneration = () => {
+  const clearActiveGeneration = (sdkAvailable = true) => {
     generation += 1;
-    for (const listener of listeners) {
-      sdk.Event.removeListener(listener);
+    if (sdkAvailable) {
+      for (const listener of listeners) sdk.Event.removeListener(listener);
+      for (const marker of markers) marker.setMap(null);
     }
-    for (const marker of markers) marker.setMap(null);
     listeners = [];
     markers = [];
     unavailableBuildingIds = [];
@@ -371,9 +371,9 @@ export function mountNaverDistrictMap({
     }
   };
 
-  const dispose = () => {
+  const dispose = ({ sdkAvailable = true }: Readonly<{ sdkAvailable?: boolean }> = {}) => {
     if (disposed) return;
-    clearActiveGeneration();
+    clearActiveGeneration(sdkAvailable);
     disposed = true;
     map = null;
   };
@@ -545,7 +545,12 @@ export function NaverDistrictMap({
   }, [googleMapsBrowserKey, resolveSelectedGoogleCoordinate, selectedUnresolvedBuilding]);
   const failClosed = useCallback(() => {
     authenticationFailed.current = true;
-    lifecycle.current?.dispose();
+    // NAVER nulls its internal namespace before invoking navermap_authFailure.
+    // Its old methods remain callable references, but can no longer clean up.
+    const sdkAvailable = isNaverMapsSdkReady((globalThis as typeof globalThis & {
+      naver?: { maps?: unknown };
+    }).naver?.maps);
+    lifecycle.current?.dispose({ sdkAvailable });
     lifecycle.current = null;
     setSdk(null);
     setState('error');
@@ -643,9 +648,18 @@ export function NaverDistrictMap({
     lifecycle.current = null;
   }, []);
 
+  const unavailableMessage = (
+    <div className={styles.unavailable} role="status">
+      <strong>{locale === 'ko' ? '지도를 표시할 수 없습니다' : 'Map unavailable'}</strong>
+      <p>{locale === 'ko'
+        ? '목록에서 지역과 건물을 계속 탐색할 수 있습니다.'
+        : 'Continue browsing the list to select a district or building.'}</p>
+    </div>
+  );
+
   if (clientId === null) return (
     <div className={styles.frame} data-map-provider="static" data-map-state="fallback">
-      {fallback}
+      {unavailableMessage}
     </div>
   );
 
@@ -663,7 +677,7 @@ export function NaverDistrictMap({
       />
       <BuildingMarkerStatus count={unavailableBuildingIds.length} locale={locale} />
       <div className={state === 'ready' ? styles.fallbackHidden : styles.fallback}>
-        {fallback}
+        {state === 'error' ? unavailableMessage : fallback}
       </div>
       <Script
         src={buildNaverMapsScriptUrl(clientId, requiresAddressGeocoding)}
