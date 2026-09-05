@@ -3,7 +3,7 @@ import 'server-only';
 import { neon, type NeonQueryFunction } from '@neondatabase/serverless';
 
 let client: NeonQueryFunction<false, false> | null | undefined;
-export const PUBLIC_CONTENT_READ_TIMEOUT_MS = 750;
+export const PUBLIC_CONTENT_READ_TIMEOUT_MS = 3_000;
 
 export function contentDatabaseConfigured(): boolean {
   return Boolean(process.env.DATABASE_URL?.trim());
@@ -31,3 +31,4 @@ export function publicContentDatabase(): NeonQueryFunction<false, false> | null 
     fetchOptions: { get signal() { return AbortSignal.timeout(PUBLIC_CONTENT_READ_TIMEOUT_MS); } },
   });
 }
+
