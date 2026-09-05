@@ -144,16 +144,10 @@ export function ObservedBuildingDetail({
           data-identity-hero="true"
           data-building-section="identity"
         >
-          {visual ?? <div className={styles.visualUnavailable} data-building-media="identity-evidence">
-            <div className={styles.visualEvidenceMark} aria-hidden="true">
-              <span>Observed</span>
-              <span>Identity</span>
-              <span>Verified</span>
-            </div>
+          {visual ?? <div className={styles.visualUnavailable} data-building-media="identity-evidence" data-photo-state="unavailable">
             <div className={styles.visualUnavailableCopy}>
-              <small>Publication boundary</small>
-              <strong>No published building price yet</strong>
-              <p>{model.source.boundary}</p>
+              <strong>Building photo unavailable</strong>
+              <p>No rights-cleared exterior photo is connected to this building yet.</p>
             </div>
           </div>}
           <div className={styles.identitySummary}>
@@ -298,19 +292,10 @@ export function KoreaEvidenceBuildingDetail({
           data-identity-hero="true"
           data-building-section="identity"
         >
-          <div data-detail-order="media">{visual ?? <div className={styles.visualUnavailable} data-building-media="exact-cohort-evidence">
-            <div className={styles.visualEvidenceMark} aria-hidden="true">
-              <span>Official</span>
-              <span>Exact cohort</span>
-              <span>Verified</span>
-            </div>
+          <div data-detail-order="media">{visual ?? <div className={styles.visualUnavailable} data-building-media="exact-cohort-evidence" data-photo-state="unavailable">
             <div className={styles.visualUnavailableCopy}>
-              <small>Publication boundary</small>
-              <strong>{publicationHeading}</strong>
-              <p>
-                Values publish only when at least five eligible MOLIT-reported contracts
-                remain in the selected transaction, area, and building cohort.
-              </p>
+              <strong>Building photo unavailable</strong>
+              <p>No rights-cleared exterior photo is connected to this building yet.</p>
             </div>
           </div>}</div>
           <div className={styles.identitySummary} data-detail-order="identity">

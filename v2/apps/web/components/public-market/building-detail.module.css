@@ -46,35 +46,15 @@
 
 .visualUnavailable {
   padding: var(--space-6);
-  display: grid;
-  grid-template-rows: 1fr auto;
-  gap: 1.5rem;
-  color: var(--canvas);
-  background: var(--petrol);
+  display: flex;
+  align-items: flex-end;
+  color: var(--ink);
+  background: var(--surface);
 }
 
-.visualEvidenceMark {
-  display: grid;
-  align-content: start;
-  gap: 0.35rem;
-}
-
-.visualEvidenceMark span {
-  width: fit-content;
-  padding: 0.35rem 0.5rem;
-  border: 1px solid var(--canvas);
-  font-size: clamp(0.7rem, 1.3vw, 0.9rem);
-  font-weight: 850;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.visualEvidenceMark span:nth-child(2) { margin-left: clamp(2rem, 8vw, 7rem); }
-.visualEvidenceMark span:nth-child(3) { margin-left: clamp(1rem, 4vw, 3.5rem); }
 .visualUnavailableCopy { display: grid; gap: 0.75rem; }
-.visualUnavailableCopy small { color: var(--accent-soft); font-size: var(--text-meta); font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
-.visualUnavailable strong { max-width: 18ch; font-size: clamp(1.5rem, 3vw, 2.5rem); line-height: 1; }
-.visualUnavailable p { max-width: 48ch; color: var(--accent-soft); font-size: 0.78rem; line-height: 1.55; }
+.visualUnavailable strong { max-width: 24ch; font-size: var(--card-title-size); line-height: 1.25; }
+.visualUnavailable p { max-width: 48ch; color: var(--muted); font-size: var(--body-size); line-height: var(--body-leading); }
 .visualUnavailable a,
 .backAction {
   min-height: 44px;
@@ -491,7 +471,7 @@
   min-height: 390px;
   border: 0;
   border-right: 1px solid var(--line);
-  background: linear-gradient(145deg, #eaf2fd, #d9e7f9);
+  background: var(--surface);
 }
 
 .visualPhoto figcaption {
@@ -501,9 +481,7 @@
 }
 
 .visualUnavailable { color: var(--ink); }
-.visualUnavailable small,
 .visualUnavailable p { color: var(--muted); }
-.visualEvidenceMark span { border-color: var(--line-strong); border-radius: 999px; }
 
 .identitySummary {
   padding: 26px 30px;

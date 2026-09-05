@@ -12,7 +12,7 @@ test('Newsroom filters reviewed SignedPrice records and opens the policy lifecyc
   await page.goto('/news/');
 
   await expect(page).toHaveTitle(/Property policy, market news and data stories/);
-  await expect(page.getByRole('heading', { level: 1, name: 'Property change, checked against evidence.' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: 'News' })).toBeVisible();
   await expect(page.getByRole('navigation', { name: 'News types' }).getByRole('link')).toHaveCount(4);
   await expect(page.getByRole('navigation', { name: 'News markets' }).getByRole('link')).toHaveCount(3);
   await expect(page.locator('[data-newsroom-lead]')).toHaveCount(1);
@@ -53,4 +53,44 @@ test('Newsroom mobile filters remain touch-sized and contained', async ({ page }
     expect(box?.height).toBeGreaterThanOrEqual(44);
   }
   await expectNoHorizontalOverflow(page);
+});
+
+test('News uses the shared readable type and restrained frame', async ({ page }, testInfo) => {
+  await page.goto('/news/');
+
+  const values = await page.locator('[data-newsroom-layout="research"]').evaluate((main) => {
+    const root = getComputedStyle(document.documentElement);
+    const heading = main.querySelector('h1');
+    const summary = main.querySelector('header > span');
+    const typeFilter = main.querySelector('nav[aria-label="News types"] a');
+    const marketFilter = main.querySelector('nav[aria-label="News markets"] a');
+    if (heading === null || summary === null || typeFilter === null || marketFilter === null) {
+      throw new Error('News hierarchy is incomplete');
+    }
+    return {
+      bodySize: root.getPropertyValue('--body-size').trim(),
+      uiSize: root.getPropertyValue('--ui-size').trim(),
+      readingFrame: root.getPropertyValue('--research-reading-frame').trim(),
+      headingSize: Number.parseFloat(getComputedStyle(heading).fontSize),
+      summarySize: Number.parseFloat(getComputedStyle(summary).fontSize),
+      typeFilterSize: Number.parseFloat(getComputedStyle(typeFilter).fontSize),
+      marketFilterSize: Number.parseFloat(getComputedStyle(marketFilter).fontSize),
+      typeFilterHeight: typeFilter.getBoundingClientRect().height,
+      marketFilterHeight: marketFilter.getBoundingClientRect().height,
+    };
+  });
+
+  expect(values.bodySize).toBe('1rem');
+  expect(values.uiSize).toBe('0.875rem');
+  expect(values.readingFrame).toBe('720px');
+  if (testInfo.project.name === 'desktop-chromium' || testInfo.project.name === 'wide-chromium') {
+    expect(values.headingSize).toBe(48);
+  } else {
+    expect(values.headingSize).toBeGreaterThanOrEqual(36);
+  }
+  expect(values.summarySize).toBeGreaterThanOrEqual(16);
+  expect(values.typeFilterSize).toBeGreaterThanOrEqual(14);
+  expect(values.marketFilterSize).toBeGreaterThanOrEqual(14);
+  expect(values.typeFilterHeight).toBeGreaterThanOrEqual(44);
+  expect(values.marketFilterHeight).toBeGreaterThanOrEqual(44);
 });

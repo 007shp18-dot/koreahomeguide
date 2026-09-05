@@ -103,12 +103,44 @@ test('district detail composes official evidence before verified context', async
   noFailures();
 });
 
-test('verified synthetic building detail is server rendered only in the local release fixture', async ({ page }) => {
+test('verified synthetic building detail is server rendered only in the local release fixture', async ({ page }, testInfo) => {
   test.skip(releaseTarget.usesExternalServer, 'Synthetic building exists only in the local release fixture.');
   const noFailures = observeFailures(page);
   const response = await page.goto('/kr/seoul/explore/jongno-gu/synthetic-test-building/');
   expect(response?.status()).toBe(200);
   await expect(page.getByRole('heading', { level: 1, name: PUBLIC_BUILDING_TEST_NAME })).toBeVisible();
+  await expect(page.getByRole('link', { name: /Back to .* Explore/ })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Check this contract' })).toBeVisible();
+  const heroLayout = await page.locator('[data-detail-hero="building"]').evaluate((hero) => {
+    const media = hero.querySelector('[data-detail-order="media"]');
+    const summary = hero.querySelector('[data-detail-order="identity"]');
+    if (media === null || summary === null) throw new Error('Building hero is incomplete.');
+    const heroStyle = getComputedStyle(hero);
+    const mediaStyle = getComputedStyle(media);
+    const summaryStyle = getComputedStyle(summary);
+    return {
+      borderTopWidth: heroStyle.borderTopWidth,
+      columns: heroStyle.gridTemplateColumns.split(' ').map(Number.parseFloat),
+      mediaRatio: media.getBoundingClientRect().width / media.getBoundingClientRect().height,
+      heroShadow: heroStyle.boxShadow,
+      summaryShadow: summaryStyle.boxShadow,
+      mediaBeforeSummary: Boolean(media.compareDocumentPosition(summary) & Node.DOCUMENT_POSITION_FOLLOWING),
+      mediaBackground: mediaStyle.backgroundImage,
+    };
+  });
+  expect(heroLayout.borderTopWidth).toBe('1px');
+  if (testInfo.project.name === 'desktop-chromium' || testInfo.project.name === 'wide-chromium') {
+    expect(heroLayout.columns).toHaveLength(2);
+    expect(heroLayout.columns[0]).toBeGreaterThan(heroLayout.columns[1]);
+  } else {
+    expect(heroLayout.columns).toHaveLength(1);
+  }
+  expect(heroLayout.mediaRatio).toBeGreaterThan(1.7);
+  expect(heroLayout.mediaRatio).toBeLessThan(1.86);
+  expect(heroLayout.heroShadow).toBe('none');
+  expect(heroLayout.summaryShadow).toBe('none');
+  expect(heroLayout.mediaBeforeSummary).toBe(true);
+  expect(heroLayout.mediaBackground).toBe('none');
   await page.locator('details > summary', {
     hasText: 'See records, adjustments, and methodology',
   }).click();
