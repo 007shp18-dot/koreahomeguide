@@ -88,7 +88,7 @@ export function BuildingDetailPage({
   return (
     <div id="top" className={pageStyles.page}>
       <BuildingDetailHeader />
-      <main className={pageStyles.main} data-building-detail="ready">
+      <main className={pageStyles.main} data-building-detail="ready" data-detail-layout="research">
         <nav className={pageStyles.breadcrumb} aria-label="Breadcrumb"><Link href="/kr/seoul/">Seoul</Link><Link href={exploreHref}>{model.district.nameEn}</Link><span aria-current="page">{model.building.name}</span></nav>
         <section
           className={pageStyles.identityHero}
@@ -104,10 +104,13 @@ export function BuildingDetailPage({
             >
               Back to {model.district.nameEn} Explore
             </Link>
-            <p className={pageStyles.identityEyebrow}>Verified building identity</p>
             <h1>{model.building.name}</h1>
             <p className={pageStyles.location}>{model.building.neighborhoodName} · {model.district.nameEn}, Seoul</p>
-            <div className={pageStyles.identityFacts}><span>{model.building.housingType}</span><span>{model.display.sampleLabel}</span><span>{model.evidence.period}</span></div>
+            <dl className={pageStyles.identityFacts}>
+              <div><dt>Property type</dt><dd>{model.building.housingType}</dd></div>
+              <div><dt>Evidence</dt><dd>{model.display.sampleLabel}</dd></div>
+              <div><dt>Period</dt><dd>{model.evidence.period}</dd></div>
+            </dl>
             <Link className={pageStyles.primaryAction} href={checkHref}>
               Check this contract
             </Link>
@@ -118,7 +121,7 @@ export function BuildingDetailPage({
         <section className={pageStyles.summaryGrid} id="building-overview" aria-label="Building summary">
           <article className={pageStyles.priceSummary} data-detail-order="current-evidence"><h2>Price summary</h2><span>Median refundable deposit</span><strong>{model.display.medianLabel}</strong><small>{model.display.sampleLabel}</small></article>
           <article data-detail-order="history"><h2>Recent reported evidence</h2><ul className={pageStyles.transactionList}>{model.building.recentContracts.slice(0, 3).map((contract, index) => <li key={`${contract.filedMonth}-${index}`}><span>{contract.filedMonth}</span><span>{contract.areaSqm}㎡ · Floor {contract.floor ?? '—'}</span><strong>{new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW', maximumFractionDigits: 0 }).format(contract.depositWon)}</strong></li>)}</ul></article>
-          <article className={pageStyles.preparing}><span>Properties · Service preparing</span><h2>Not a live listing</h2><p>Listings, inquiries and agent connections are intentionally unavailable while operating and legal checks are completed.</p></article>
+          <article className={pageStyles.preparing}><span>Listing service</span><h2>Not a live listing</h2><p>Listings, inquiries and agent connections are intentionally unavailable while operating and legal checks are completed.</p></article>
         </section>
 
         <section className={pageStyles.decisionRegion} data-building-section="decision" data-detail-order="comparable-range" id="rent-evidence">

@@ -14,6 +14,12 @@ import {
 } from './singapore-shell';
 import { MarketDetailShell } from '../market-ui/market-shell';
 
+function PriceRange({ value }: Readonly<{ value: string }>) {
+  const separator = value.indexOf('–');
+  if (separator < 0) return value;
+  return <>{value.slice(0, separator + 1)}<wbr />{value.slice(separator + 1)}</>;
+}
+
 export function SingaporeProjectDetail({ model, googleMapsBrowserKey = null }: Readonly<{
   model: SingaporeProjectModel | SingaporeUnavailableModel;
   googleMapsBrowserKey?: string | null;
@@ -58,7 +64,7 @@ export function SingaporeProjectDetail({ model, googleMapsBrowserKey = null }: R
         <h2 id="project-summary-heading">Price and unit-price evidence.</h2>
         <dl className={styles.stats}>
           <div className={styles.stat}><dt>Median price</dt><dd>{model.display.medianPriceLabel}</dd></div>
-          <div className={styles.stat}><dt>Middle half</dt><dd>{model.display.middlePriceLabel}</dd></div>
+          <div className={styles.stat}><dt>Middle half</dt><dd><PriceRange value={model.display.middlePriceLabel} /></dd></div>
           <div className={styles.stat}><dt>Median</dt><dd>{model.display.medianPsfLabel}</dd></div>
         </dl>
       </section><section className={styles.section} aria-labelledby="transaction-heading">

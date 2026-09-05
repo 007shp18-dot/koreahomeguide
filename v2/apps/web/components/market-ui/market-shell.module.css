@@ -26,10 +26,10 @@
 .spatial { min-width: 0; background: var(--surface); }
 
 .breadcrumb { min-height: 34px; padding: 0 2px 12px; display: flex; align-items: center; color: #718096; font-size: var(--text-meta); }
-.identity { min-height: 260px; display: grid; grid-template-columns: minmax(0, .9fr) minmax(390px, 1.1fr); overflow: hidden; border: 1px solid #dfe5ec; border-radius: 12px; background: #fff; box-shadow: 0 10px 28px rgb(15 23 42 / 5%); }
+.identity { min-height: 260px; display: grid; grid-template-columns: minmax(0, .9fr) minmax(390px, 1.1fr); overflow: hidden; border: 1px solid #dfe5ec; border-radius: 12px; background: #fff; box-shadow: none; }
 .identity > div:first-child { padding: 34px; display: flex; align-items: center; }
 .identity h1 { max-width: 18ch; margin: 7px 0; font-size: clamp(2.1rem, 4vw, 3.55rem); line-height: 1.04; letter-spacing: -.048em; overflow-wrap: break-word; word-break: keep-all; text-wrap: pretty; }
-.heroMedia { min-width: 0; min-height: 260px; overflow: hidden; background: linear-gradient(145deg, #dce7f0, #718da4); }
+.heroMedia { min-width: 0; min-height: 260px; overflow: hidden; background: var(--surface); }
 .heroMedia > section,
 .heroMedia > figure,
 .heroMedia > div { min-height: 260px; border: 0; border-radius: 0; }
@@ -38,14 +38,14 @@
 .detailTabs span { flex: 0 0 auto; padding: 13px 2px 11px; border-bottom: 2px solid transparent; color: #66758a; font-size: var(--text-meta); font-weight: 700; text-decoration: none; }
 .detailTabs a:first-child { color: #152033; border-color: #286ca9; }
 .detailTabs span { color: #9aa5b4; }
-.detailSummary { margin-top: 14px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-.detailSummary article { min-height: 125px; padding: 17px; display: grid; align-content: start; border: 1px solid #e0e6ed; border-radius: 8px; background: #fff; box-shadow: 0 5px 16px rgb(15 23 42 / 4%); }
+.detailSummary { margin-top: 14px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.detailSummary article { min-width: 0; min-height: 125px; padding: 17px; display: grid; align-content: start; border: 1px solid #e0e6ed; border-radius: 8px; background: #fff; box-shadow: none; }
 .detailSummary small { color: #718096; font-size: var(--text-meta); }
 .detailSummary strong { margin-top: 9px; font-size: .91rem; }
 .detailSummary span { margin-top: 6px; color: #66758a; font-size: var(--text-meta); line-height: 1.45; }
 .detailGrid { margin-top: 14px; display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 14px; }
 .detailMain,
-.detailRail { min-width: 0; overflow: hidden; border: 1px solid #e0e6ed; border-radius: 12px; background: #fff; box-shadow: 0 6px 20px rgb(15 23 42 / 4%); }
+.detailRail { min-width: 0; overflow: hidden; border: 1px solid #e0e6ed; border-radius: 12px; background: #fff; box-shadow: none; }
 
 @media (max-width: 760px) {
   .explore,
@@ -59,4 +59,21 @@
   .detailMain { border-right: 1px solid #e0e6ed; }
   .identity > div:first-child { padding: 26px 22px; }
   .detailSummary { grid-template-columns: 1fr; }
+}
+
+.identity > div { min-width: 0; }
+.identity[data-has-media='true'] { grid-template-columns: minmax(0, 7fr) minmax(300px, 5fr); }
+.identity[data-has-media='true'] > div:first-child { grid-column: 2; grid-row: 1; }
+.identity[data-has-media='true'] > .heroMedia { grid-column: 1; grid-row: 1; aspect-ratio: 16 / 9; min-height: 0; }
+.identity[data-has-media='true'] > .heroMedia > * { height: 100%; min-height: 0; }
+.heroMedia > div:not([data-building-media]) { padding: 24px; }
+.detailSummary article > div { min-width: 0; }
+.detailSummary strong { overflow-wrap: anywhere; }
+.detailTabs a { min-height: 44px; }
+.detailRail { container-type: inline-size; }
+@media (max-width: 960px) { .detailGrid { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 850px) {
+  .identity[data-has-media='true'] { grid-template-columns: minmax(0, 1fr); }
+  .identity[data-has-media='true'] > div:first-child { grid-column: 1; grid-row: 2; }
+  .identity[data-has-media='true'] > .heroMedia { grid-column: 1; grid-row: 1; }
 }

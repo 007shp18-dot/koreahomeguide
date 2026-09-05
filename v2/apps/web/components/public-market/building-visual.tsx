@@ -11,14 +11,9 @@ export function BuildingVisual({ model }: Readonly<{ model: BuildingVisualModel 
         className={styles.visualUnavailable}
         aria-label={model.title}
         data-building-media="evidence-fallback"
+        data-photo-state="unavailable"
       >
-        <div className={styles.visualEvidenceMark} aria-hidden="true">
-          <span>Reported</span>
-          <span>Verified</span>
-          <span>Boundary shown</span>
-        </div>
         <div className={styles.visualUnavailableCopy}>
-          <small>Evidence view · no licensed photo</small>
           <strong>{model.title}</strong>
           <p>{model.reason}</p>
           <Link href={model.nextAction.href}>{model.nextAction.label}</Link>

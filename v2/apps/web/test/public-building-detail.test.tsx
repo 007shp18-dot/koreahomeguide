@@ -1,4 +1,3 @@
-import { readFileSync } from 'node:fs';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -142,8 +141,16 @@ describe('public building detail', () => {
     const evidence = html.indexOf('data-building-section="evidence"');
 
     expect(html).toContain('data-building-media="evidence-fallback"');
+    expect(html).toContain('data-detail-layout="research"');
     expect(html).toContain('data-detail-hero="building"');
     expect(html).toContain('data-detail-hero-metric="identity"');
+    expect(html).toContain('<dl class="');
+    expect(html).toContain('<dt>Property type</dt>');
+    expect(html).toContain('<dt>Evidence</dt>');
+    expect(html).toContain('<dt>Period</dt>');
+    expect(html).not.toContain('Verified building identity');
+    expect(html).not.toContain('Properties · Service preparing');
+    expect(html).toContain('Listing service');
     expect(html).not.toMatch(/<img[^>]+src="(?:data:|https?:\/\/)/);
     expect(identity).toBeGreaterThan(-1);
     expect(identity).toBeLessThan(decision);
@@ -288,17 +295,11 @@ describe('public building detail', () => {
     expect(generateStaticParams()).toEqual([]);
   });
 
-  it('keeps building actions touch-sized and the layout single-column on mobile', () => {
-    const css = readFileSync(
-      new URL('../components/public-market/building-detail.module.css', import.meta.url),
-      'utf8',
-    );
-    expect(css).toMatch(/\.main\s*\{[\s\S]*?width:\s*min\(100%,\s*var\(--evidence-workspace-frame\)\)/);
-    expect(css).toMatch(/min-height:\s*44px/);
-    expect(css).toMatch(/@media \(max-width:\s*720px\)[\s\S]*grid-template-columns:\s*minmax\(0,\s*1fr\)/);
-    expect(css).toMatch(/max-width:\s*100%/);
-    expect(css).toMatch(/\.identityHero[\s\S]*grid-template-columns:\s*minmax\(0,\s*1fr\)\s+380px/);
-    expect(css).toMatch(/\.identitySummary h1[\s\S]*font-size:\s*var\(--evidence-type-detail-title\)/);
-    expect(css).toMatch(/\.decisionLayout h2[\s\S]*font-size:\s*var\(--evidence-type-subhead\)/);
+  it('keeps navigation and primary actions available in the research layout', () => {
+    const html = renderToStaticMarkup(<BuildingDetailPage {...detailProps()} />);
+    expect(html).toContain('data-detail-layout="research"');
+    expect(html).toContain('>Back to Gangnam-gu Explore</a>');
+    expect(html).toContain('>Check this contract</a>');
+    expect(html).toContain('aria-label="Building page sections"');
   });
 });

@@ -23,6 +23,10 @@ describe('building visual', () => {
     const html = renderToStaticMarkup(<BuildingVisual model={model} />);
     expect(html).toContain('Verified building image is not available');
     expect(html).toContain('data-building-media="evidence-fallback"');
+    expect(html).toContain('data-photo-state="unavailable"');
+    expect(html).not.toContain('Reported');
+    expect(html).not.toContain('Verified</span>');
+    expect(html).not.toContain('Boundary shown');
     expect(html).not.toContain('<img');
   });
 

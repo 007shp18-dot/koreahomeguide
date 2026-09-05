@@ -49,6 +49,11 @@ describe('observed building detail', () => {
       expect(html).toContain(value);
     }
     expect(html).toContain('data-building-detail="identity-only"');
+    expect(html).toContain('data-photo-state="unavailable"');
+    expect(html).not.toContain('Publication boundary');
+    expect(html).not.toContain('Observed</span>');
+    expect(html).not.toContain('Identity</span>');
+    expect(html).not.toContain('Verified</span>');
     expect(html).toContain('href="/kr/seoul/explore?district=jongno-gu&amp;contractType=monthly"');
     expect(html).toContain('href="/trust/"');
     expect(html).toContain('href="/kr/seoul/corrections/"');

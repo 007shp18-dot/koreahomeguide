@@ -30,7 +30,8 @@ describe('global roadmap routes', () => {
       },
     });
     expect(communityMetadata.alternates).toEqual({ canonical: 'https://www.signedprice.com/community/' });
-    expect(news).toContain('Property change, checked against evidence.');
+    expect(news).toContain('<h1>News</h1>');
+    expect(news).toContain('Policy changes, market releases and data stories for Seoul and Singapore.');
     expect(news).toContain('data-public-editorial-frame="content"');
     expect(news).toContain('CCR, RCR and OCR: compare distributions, not labels alone');
     expect(news).toContain('aria-label="News markets"');

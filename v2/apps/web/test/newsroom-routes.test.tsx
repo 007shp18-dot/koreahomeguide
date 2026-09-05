@@ -55,6 +55,12 @@ describe('public Newsroom routes', () => {
 
     for (const label of ['Latest', 'Policy', 'Market', 'Data Stories']) expect(html).toContain(`>${label}</a>`);
     for (const label of ['All', 'Seoul', 'Singapore']) expect(html).toContain(`>${label}</a>`);
+    expect(html).toContain('data-newsroom-layout="research"');
+    expect(html).toContain('data-newsroom-filter-bar="true"');
+    expect(html).toContain('<h1>News</h1>');
+    expect(html).not.toContain('SignedPrice Newsroom');
+    expect(html).not.toContain('Property change, checked against evidence.');
+    expect(html).not.toContain('→');
     expect(html.match(/data-newsroom-lead=/g)).toHaveLength(1);
     expect(html).toContain('data-newsroom-latest-list="rows"');
     expect(html).not.toMatch(/provider|credential|ingestion|500 headlines|Naver News API/i);
