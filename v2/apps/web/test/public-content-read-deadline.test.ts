@@ -16,7 +16,7 @@ const contentRepositorySource = readFileSync(
 
 describe('public editorial database boundary', () => {
   it('uses a short optional read deadline without weakening administration writes', () => {
-    expect(databaseSource).toContain('PUBLIC_CONTENT_READ_TIMEOUT_MS = 750');
+    expect(databaseSource).toContain('PUBLIC_CONTENT_READ_TIMEOUT_MS = 3_000');
     expect(databaseSource).toContain('export function publicContentDatabase()');
     expect(databaseSource).toContain('AbortSignal.timeout(PUBLIC_CONTENT_READ_TIMEOUT_MS)');
     expect(databaseSource).toContain('AbortSignal.timeout(8_000)');
@@ -25,3 +25,4 @@ describe('public editorial database boundary', () => {
     expect(articleStoreSource.match(/contentDatabase\(\)/gu)).toHaveLength(1);
   });
 });
+
