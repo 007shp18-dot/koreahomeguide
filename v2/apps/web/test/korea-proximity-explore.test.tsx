@@ -514,7 +514,19 @@ describe('Korea Explore proximity route model', () => {
     />);
 
     expect(html).toContain('data-explore-view="table"');
-    expect(html).not.toContain('aria-label="탐색 보기"');
+    expect(html).toContain('aria-label="탐색 보기"');
+    const viewNavigation = html.match(/<nav[^>]*aria-label="탐색 보기"[^>]*>(.*?)<\/nav>/)?.[1];
+    expect(viewNavigation).toBeDefined();
+    const viewAnchors = [...viewNavigation!.matchAll(/href="([^"]+)"/g)];
+    expect(viewAnchors).toHaveLength(4);
+    for (const [, href] of viewAnchors) {
+      const query = new URL(href.replaceAll('&amp;', '&'), 'https://signedprice.com').searchParams;
+      expect(query.get('station')).toBe('station-a');
+      expect(query.get('stationDistance')).toBe('250');
+      expect(query.get('school')).toBe('school-a');
+      expect(query.get('schoolDistance')).toBe('500');
+      expect(query.get('buildingId')).toBe('gangnam-evidence-tower');
+    }
     for (const parameter of [
       'transaction=monthly',
       'area=60-85',
