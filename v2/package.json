@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "pnpm --filter @signedprice/web lint",
     "typecheck": "pnpm -r typecheck",
-    "test": "vitest run",
+    "test": "vitest run apps/web/test/property-seed-live-db.test.ts",
     "build": "pnpm --filter @signedprice/web build",
     "db:migrate": "pnpm --filter @signedprice/web db:migrate",
     "build:korea-proximity": "node --conditions=react-server --experimental-loader ./scripts/typescript-extension-loader.mjs --experimental-transform-types scripts/build-korea-proximity.mts",
