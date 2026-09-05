@@ -140,7 +140,7 @@ describe('signedprice brand foundation', () => {
     const consumers = cssFilesUnder(webRoot).flatMap((file) => {
       const source = readFileSync(file, 'utf8');
       return [...source.matchAll(/([^{}]+)\{[^{}]*var\(--brand-orange\)[^{}]*\}/g)].map(
-        (match) => `${relative(webRoot, file)}:${match[1]?.trim()}`,
+        (match) => `${relative(webRoot, file).replaceAll('\\', '/')}:${match[1]?.trim()}`,
       );
     });
 

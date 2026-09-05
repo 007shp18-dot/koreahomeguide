@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 const workflow = readFileSync(
   new URL('../../.github/workflows/signedprice-v2-ci.yml', import.meta.url),
   'utf8',
-);
+).replaceAll('\r\n', '\n');
 
 describe('signedprice V2 browser CI contract', () => {
   it('runs the full Phase 0 gate once from the repository root before browsers', () => {

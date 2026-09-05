@@ -168,6 +168,16 @@ describe('public entity projection', () => {
           published_at: '2026-09-01T00:00:00.000Z', last_checked_at: '2026-09-01T00:00:00.000Z',
           review_state: 'approved', can_display: true,
         }];
+        if (statement.includes('public-entity-projection:nearby')) return [
+          {
+            entity_id: 'building-1', kind: 'station', provider_id: 'SEOUL:STN/001',
+            name: '시청역', distance_meters: 220, lines: ['1호선', '2호선'], is_nearest: true,
+          },
+          {
+            entity_id: 'building-1', kind: 'school', provider_id: 'SEOUL:SCH/001',
+            name: '서울학교', distance_meters: 410, lines: [], is_nearest: true,
+          },
+        ];
         throw new Error('Unexpected query.');
       },
     };
@@ -178,9 +188,15 @@ describe('public entity projection', () => {
     expect(result?.get('building-1')).toMatchObject({
       state: 'ready', location: { latitude: 37.5, longitude: 127 },
       media: [{ mediaAssetId: '9', displayUrl: '/assets/buildings/hero.jpg' }],
+      proximity: {
+        status: 'ready',
+        coordinateStatus: 'ready',
+        nearestStation: { sourceId: 'SEOUL:STN/001', name: '시청역', lines: ['1호선', '2호선'], distanceMeters: 220 },
+        nearestSchool: { sourceId: 'SEOUL:SCH/001', name: '서울학교', distanceMeters: 410 },
+      },
     });
     expect(result?.get('building-2')).toMatchObject({ state: 'location-unverified', location: null });
-    expect(calls).toHaveLength(2);
+    expect(calls).toHaveLength(3);
     expect(calls.every(({ parameters }) => parameters.length === 1 && Array.isArray(parameters[0])))
       .toBe(true);
   });
@@ -189,6 +205,7 @@ describe('public entity projection', () => {
     const reader = createPublicEntityProjectionReader({
       async query(statement) {
         if (statement.includes(':locations')) throw new Error('Location timeout');
+        if (statement.includes(':nearby')) return [];
         return [{
           entity_id: 'building-1', media_asset_id: '9', role: 'hero', position: 0,
           display_url: '/assets/buildings/hero.jpg', provider_reference: null,

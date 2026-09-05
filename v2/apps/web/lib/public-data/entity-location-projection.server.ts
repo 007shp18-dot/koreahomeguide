@@ -17,7 +17,24 @@ export type PublicEntityProjection = Readonly<{
   location: PublicEntityLocation | null;
   media: readonly PublicEntityMedia[];
   evidenceReleaseId: string | null;
+  proximity?: PublicEntityProximity | null;
   state: 'ready' | 'location-unverified' | 'rights-blocked' | 'unavailable';
+}>;
+
+export type PublicEntityProximity = Readonly<{
+  status: 'ready';
+  coordinateStatus: 'ready';
+  nearestStation: Readonly<{
+    sourceId: string;
+    name: string;
+    lines: readonly string[];
+    distanceMeters: number;
+  }> | null;
+  nearestSchool: Readonly<{
+    sourceId: string;
+    name: string;
+    distanceMeters: number;
+  }> | null;
 }>;
 
 type SqlRow = Readonly<Record<string, unknown>>;
@@ -54,6 +71,21 @@ const MEDIA_SQL = `
   ORDER BY public.entity_id, public.position, public.media_asset_id
 `;
 
+const NEARBY_SQL = `
+  /* public-entity-projection:nearby */
+  SELECT 'kr-seoul:estate:' || building.external_id AS entity_id,
+    place.kind, place.provider_id, place.name, place.distance_meters,
+    place.lines, place.is_nearest
+  FROM nearby_places AS place
+  INNER JOIN buildings AS building ON building.key = place.building_key
+  WHERE building.market_key = 'seoul'
+    AND 'kr-seoul:estate:' || building.external_id = ANY($1::text[])
+    AND place.kind IN ('station', 'school')
+    AND place.distance_meters IS NOT NULL
+  ORDER BY entity_id, place.kind, place.is_nearest DESC,
+    place.distance_meters, place.provider_id
+`;
+
 function includes<T extends string>(values: readonly T[], value: unknown): value is T {
   return typeof value === 'string' && values.includes(value as T);
 }
@@ -87,6 +119,44 @@ function isoDate(value: unknown): string | null {
 
 function stringOrNull(value: unknown): string | null | undefined {
   return value === null ? null : typeof value === 'string' ? value : undefined;
+}
+
+function nonNegativeInteger(value: unknown): number | null {
+  const parsed = finiteNumber(value);
+  return parsed !== null && Number.isSafeInteger(parsed) && parsed >= 0 ? parsed : null;
+}
+
+function proximityFromRows(rows: readonly SqlRow[]): PublicEntityProximity | null {
+  let nearestStation: PublicEntityProximity['nearestStation'] = null;
+  let nearestSchool: PublicEntityProximity['nearestSchool'] = null;
+  for (const row of rows) {
+    const distanceMeters = nonNegativeInteger(row.distance_meters);
+    if (typeof row.provider_id !== 'string' || typeof row.name !== 'string' || distanceMeters === null) continue;
+    if (row.kind === 'station' && nearestStation === null) {
+      const rawLines = Array.isArray(row.lines) ? row.lines : [];
+      const lines = rawLines.filter((line): line is string => typeof line === 'string' && line.trim() !== '');
+      if (lines.length === 0) continue;
+      nearestStation = Object.freeze({
+        sourceId: row.provider_id,
+        name: row.name,
+        lines: Object.freeze(lines),
+        distanceMeters,
+      });
+    }
+    if (row.kind === 'school' && nearestSchool === null) {
+      nearestSchool = Object.freeze({
+        sourceId: row.provider_id,
+        name: row.name,
+        distanceMeters,
+      });
+    }
+  }
+  return nearestStation === null && nearestSchool === null ? null : Object.freeze({
+    status: 'ready',
+    coordinateStatus: 'ready',
+    nearestStation,
+    nearestSchool,
+  });
 }
 
 function locationFromRow(row: SqlRow): PublicEntityLocation | null {
@@ -163,6 +233,7 @@ export function buildPublicEntityProjection(input: Readonly<{
   location: PublicEntityLocation | null;
   media: readonly PublicEntityMedia[];
   evidenceReleaseId: string | null;
+  proximity?: PublicEntityProximity | null;
   locationFailure?: 'location-unverified' | 'rights-blocked' | 'unavailable';
 }>): PublicEntityProjection {
   const location = input.location !== null
@@ -185,6 +256,7 @@ export function buildPublicEntityProjection(input: Readonly<{
     location,
     media: Object.freeze([...input.media]),
     evidenceReleaseId: input.evidenceReleaseId,
+    proximity: input.proximity ?? null,
     state,
   });
 }
@@ -199,13 +271,15 @@ export function createPublicEntityProjectionReader(
       const ids = Object.freeze([...new Set(entityIds.filter((id) => id.trim() !== ''))].slice(0, 2_500));
       if (ids.length === 0) return new Map();
       try {
-        const [locations, media] = await Promise.allSettled([
+        const [locations, media, nearby] = await Promise.allSettled([
           port.query(LOCATIONS_SQL, [ids]),
           port.query(MEDIA_SQL, [ids]),
+          port.query(NEARBY_SQL, [ids]),
         ]);
-        if (locations.status === 'rejected' && media.status === 'rejected') return null;
+        if (locations.status === 'rejected' && media.status === 'rejected' && nearby.status === 'rejected') return null;
         const locationRows = locations.status === 'fulfilled' ? locations.value : [];
         const mediaRows = media.status === 'fulfilled' ? media.value : [];
+        const nearbyRows = nearby.status === 'fulfilled' ? nearby.value : [];
         const locationByEntity = new Map<string, SqlRow>();
         for (const row of locationRows) {
           if (typeof row.entity_id === 'string' && !locationByEntity.has(row.entity_id)) {
@@ -220,6 +294,13 @@ export function createPublicEntityProjectionReader(
           values.push(candidate);
           mediaByEntity.set(candidate.entityId, values);
         }
+        const nearbyByEntity = new Map<string, SqlRow[]>();
+        for (const row of nearbyRows) {
+          if (typeof row.entity_id !== 'string') continue;
+          const values = nearbyByEntity.get(row.entity_id) ?? [];
+          values.push(row);
+          nearbyByEntity.set(row.entity_id, values);
+        }
         return new Map(ids.map((entityId) => {
           const row = locationByEntity.get(entityId);
           const location = row === undefined ? null : locationFromRow(row);
@@ -232,6 +313,7 @@ export function createPublicEntityProjectionReader(
             location,
             media: selectPublicEntityMedia(mediaByEntity.get(entityId) ?? []),
             evidenceReleaseId: null,
+            proximity: proximityFromRows(nearbyByEntity.get(entityId) ?? []),
             locationFailure,
           })] as const;
         }));

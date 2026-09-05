@@ -25,7 +25,7 @@ function run(command: string, cwd: string) {
   return spawnSync(command, {
     cwd,
     encoding: 'utf8',
-    shell: true,
+    shell: process.platform === 'win32' ? 'powershell.exe' : true,
   });
 }
 

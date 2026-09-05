@@ -280,7 +280,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
       backHref={exact.backHref}
       locale={locale}
       visual={projectedBuildingMediaFor(exact.model.building.officialName, entityProjection)}
-      facts={<BuildingOfficialFacts districtSlug={exact.model.district.slug} buildingId={exact.model.building.buildingId} observedFacts={transactionBuildingFacts(exact.model, coordinate)} proximity={identity?.proximity} locale={locale} />}
+      facts={<BuildingOfficialFacts districtSlug={exact.model.district.slug} buildingId={exact.model.building.buildingId} observedFacts={transactionBuildingFacts(exact.model, coordinate)} proximity={entityProjection?.proximity ?? identity?.proximity} locale={locale} />}
     />;
   }
   const model = buildPublicBuildingModel(district, buildingId);
@@ -322,7 +322,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
           { label: 'Evidence period', value: `${observed.observations.firstMonth}–${observed.observations.lastMonth}` },
           { label: 'Map identity', value: observed.coordinate.status === 'ready' ? `${observed.coordinate.latitude.toFixed(5)}, ${observed.coordinate.longitude.toFixed(5)}` : 'Coordinate verification pending' },
         ]}
-        proximity={observed.proximity}
+        proximity={entityProjection?.proximity ?? observed.proximity}
         locale={locale}
       />}
       locale={locale}
@@ -387,7 +387,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
       decision={decision}
       visual={visual}
       propertyMedia={propertyMedia}
-      facts={<BuildingOfficialFacts districtSlug={model.district.slug} buildingId={model.building.buildingId} observedFacts={observedFacts} proximity={observed?.proximity} locale={locale} />}
+      facts={<BuildingOfficialFacts districtSlug={model.district.slug} buildingId={model.building.buildingId} observedFacts={observedFacts} proximity={entityProjection?.proximity ?? observed?.proximity} locale={locale} />}
       base={base}
       backHref={backHref}
     />

@@ -19,9 +19,22 @@ describe('global property database migration', () => {
       '0004_public_evidence_projection.sql',
       '0005_newsroom_content_system.sql',
       '0006_infographic_render_records.sql',
+      '0007_building_enrichment_operations.sql',
     ]);
     expect(bundles.find(({ name }) => name === '0003_global_property_core.sql')?.statements.length)
       .toBeGreaterThan(10);
+  });
+
+  it('adds durable enrichment retries without replacing property or Dubai data', async () => {
+    const bundles = await loadMigrationBundles(migrationDirectory);
+    const enrichment = bundles.find(({ name }) => name === '0007_building_enrichment_operations.sql');
+    expect(enrichment).toBeDefined();
+
+    const result = assertAdditiveMigration(enrichment!, {
+      requiredTables: ['building_enrichment_attempts'],
+      protectedTables: ['property_entities', 'buildings', 'building_photos', 'building_facts'],
+    });
+    expect(result.createdTables).toEqual(['building_enrichment_attempts']);
   });
 
   it('creates every common-core relation without destructive legacy-table changes', async () => {

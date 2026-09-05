@@ -140,12 +140,20 @@ describe('Korea proximity Detail route composition', () => {
           })]),
           evidenceReleaseId: null,
           state: 'unavailable' as const,
+          proximity: Object.freeze({
+            status: 'ready' as const,
+            coordinateStatus: 'ready' as const,
+            nearestStation: Object.freeze({ sourceId: 'DB:STN/001', name: 'DB station', lines: Object.freeze(['2호선']), distanceMeters: 180 }),
+            nearestSchool: Object.freeze({ sourceId: 'DB:SCH/001', name: 'DB school', distanceMeters: 360 }),
+          }),
         }),
       },
     }));
 
     expect(html).toContain('data-building-media="public-projection"');
     expect(html).toContain('src="/assets/buildings/evidence-tower.jpg"');
+    expect(html).toContain('DB station · 2호선 · 180 m');
+    expect(html).toContain('DB school · 360 m');
     expect(html).not.toContain('/api/building-photo');
   });
 

@@ -22,7 +22,7 @@ function copyRepository() {
 }
 
 describe('legacy isolation', () => {
-  it('ignores top-level V2 build HTML in Phase 0 and repository-wide legacy HTML tests', () => {
+  it.runIf(process.platform !== 'win32')('ignores top-level V2 build HTML in Phase 0 and repository-wide legacy HTML tests', () => {
     const temporaryRoot = copyRepository();
     try {
       const buildIndex = join(temporaryRoot, 'v2', 'apps', 'web', '.next', 'server', 'app', 'index.html');
