@@ -114,15 +114,15 @@ export function NewsroomIndex({ articles, policies, filters }: Readonly<{
         {marketTabs.map(([id, label]) => <Link key={id} href={filterHref(filters.type, id)} aria-current={filters.market === id ? 'page' : undefined}>{label}</Link>)}
       </nav>
     </div>
-    {lead === null ? <section className={styles.empty} data-newsroom-state="empty"><h2>No reviewed article matches this view.</h2><Link href="/news/">Return to Latest</Link></section> : <>
+    {lead === null ? <section className={styles.empty} data-newsroom-state="empty"><h2>No articles match these filters.</h2><Link href="/news/">Return to Latest</Link></section> : <>
       <article className={styles.leadStory} data-newsroom-lead={lead.type}>
         <div><span>{lead.type} · {lead.market}</span><time dateTime={lead.date}>{lead.date.slice(0, 10)}</time></div>
         <h2><Link href={lead.href}>{lead.title}</Link></h2>
         <p>{lead.deck}</p>
-        <Link href={lead.href}>Read the reviewed record</Link>
+        <Link href={lead.href}>Read article</Link>
       </article>
       <section className={styles.latest} aria-labelledby="latest-reviewed-title">
-        <div className={styles.sectionHeading}><p>Latest reviewed records</p><h2 id="latest-reviewed-title">News in evidence order</h2></div>
+        <div className={styles.sectionHeading}><p>Latest articles</p><h2 id="latest-reviewed-title">More news</h2></div>
         <ol data-newsroom-latest-list="rows">
           {latest.map((item) => <li key={`${item.type}:${item.id}`}>
             <div><span>{item.type} · {item.market}</span><time dateTime={item.date}>{item.date.slice(0, 10)}</time></div>

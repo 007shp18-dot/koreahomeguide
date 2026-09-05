@@ -222,7 +222,7 @@ test('district selection stays inside the Explore workspace', async ({ page }) =
   await expect(page.locator('[data-explorer-layout="split"]')).toBeVisible();
 });
 
-test('published quote stays local and any withheld detail stays money-free', async ({ page }) => {
+test('published sale detail links to Contract Check and withheld detail stays money-free', async ({ page }) => {
   const assertNoRuntimeFailures = observeRuntimeFailures(page);
   await page.goto('/kr/seoul/explore/');
   await expect(page.locator('[data-district-option]').first()).toBeVisible();
@@ -235,16 +235,11 @@ test('published quote stays local and any withheld detail stays money-free', asy
 
   await page.goto(`/kr/seoul/explore/${publishedSlug}/`);
   await expect(page.locator('[data-district-detail="published"]')).toBeVisible();
-  await expect(page.locator('input[name="quote"]')).toBeEnabled();
-  const observedRequests: string[] = [];
-  page.on('request', (request) => {
-    if (request.url().includes('/api/') || request.method() !== 'GET') observedRequests.push(request.url());
-  });
-  await page.locator('input[name="quote"]').fill('1');
-  await expect(page.locator('[data-median-comparison="true"]')).toContainText(
-    'below the reported median',
-  );
-  expect(observedRequests).toEqual([]);
+  // Sale distributions must not expose the legacy refundable-deposit calculator.
+  // Local quote editing is covered by public-quote.spec.ts on the current Check route.
+  await expect(page.locator('input[name="quote"]')).toHaveCount(0);
+  await expect(page.getByRole('link', { name: 'Compare a contract', exact: true }))
+    .toHaveAttribute('href', '/kr/seoul/check/');
   await expect(page.getByRole('link', { name: 'Back to Seoul map' }))
     .toHaveAttribute('href', `/kr/seoul/explore/?district=${publishedSlug}`);
 

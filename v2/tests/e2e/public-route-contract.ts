@@ -6,7 +6,7 @@ import {
 // Independently reviewed EN/zh-Hans pairs. Keep explicit destinations so a
 // self-link, wrong translation, or missing reciprocal alternate fails the gate.
 const editorialTranslationPairs = [
-  ['/', '/zh-cn/'],
+  ['/', '/zh-cn/kr/seoul/'],
   ['/news/', '/zh-cn/news/'],
   ['/guides/', '/zh-cn/guides/'],
   ['/news/policy/singapore-absd-policy-status/', '/zh-cn/news/policy/sg-absd-policy-zh/'],

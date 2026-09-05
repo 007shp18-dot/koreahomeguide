@@ -22,7 +22,7 @@ describe('signedprice homepage copy', () => {
       'See the market before you make the move.',
       'Choose the next useful step',
       'What changed',
-      'Latest from the data desk',
+      'Latest analysis',
       'Guides for renting and buying',
     ];
     const positions = needles.map((needle) => markup.indexOf(needle));
@@ -126,7 +126,7 @@ describe('signedprice homepage copy', () => {
     const markup = renderToStaticMarkup(await Home());
     const globalPromise = markup.indexOf('See the market before you make the move.');
     const marketTabs = markup.indexOf('aria-label="Choose a property market"');
-    const editorial = markup.indexOf('Latest from the data desk');
+    const editorial = markup.indexOf('Latest analysis');
 
     expect(globalPromise).toBeGreaterThanOrEqual(0);
     expect(marketTabs).toBeGreaterThan(globalPromise);

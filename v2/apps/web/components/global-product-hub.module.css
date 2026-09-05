@@ -460,7 +460,7 @@
 .newsFeed p { margin: 8px 0 16px; color: var(--muted); font-size: .82rem; line-height: 1.58; }
 
 .newsItemSelected {
-  box-shadow: inset 5px 0 #375f89;
+  box-shadow: none;
   background: #eeece6;
 }
 
@@ -601,14 +601,14 @@
 .newsFilters > button[aria-pressed='true'] {
   color: var(--accent);
   background: var(--soft-blue);
-  box-shadow: inset 3px 0 var(--accent);
+  box-shadow: none;
 }
 .newsFilters > a[aria-current='page'] small,
 .newsFilters > button[aria-pressed='true'] small { color: var(--accent); }
 .newsFeed > article { border-color: var(--line); }
 .newsFeed > article:hover { background: var(--canvas); }
 .newsItemSelected {
-  box-shadow: inset 4px 0 var(--accent);
+  box-shadow: none;
   background: var(--soft-blue);
 }
 .newsEvidence { border-left: 1px solid var(--line); }

@@ -53,9 +53,9 @@ export function PolicyTracker({ policies, referenceDate }: Readonly<{
     {groupCopy.map((group) => {
       const records: readonly PolicyRecord[] = groups[group.key as keyof PolicyGroups];
       return <section className={styles.policyGroup} id={group.key} key={group.key}>
-        <header><p>{group.eyebrow}</p><h2>{group.title}</h2><span>{records.length} reviewed record{records.length === 1 ? '' : 's'}</span></header>
+        <header><p>{group.eyebrow}</p><h2>{group.title}</h2><span>{records.length} policy update{records.length === 1 ? '' : 's'}</span></header>
         {records.length === 0
-          ? <p className={styles.policyEmpty}>No reviewed policy is in this group.</p>
+          ? <p className={styles.policyEmpty}>No policy updates in this group.</p>
           : records.map((policy) => <PolicyRow key={policy.id} policy={policy} />)}
       </section>;
     })}

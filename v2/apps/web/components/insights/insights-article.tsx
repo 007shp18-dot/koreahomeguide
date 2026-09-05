@@ -43,7 +43,7 @@ export function InsightsArticle({ article }: Readonly<{ article: EditorialArticl
           </div>
           <h1>{article.title}</h1>
           <p>{article.summary}</p>
-          <div className={styles.byline}><strong>SignedPrice Data Desk</strong><time dateTime={article.publishedAt}>{date.format(new Date(article.publishedAt))}</time></div>
+          <div className={styles.byline}><strong>Published by SignedPrice</strong><time dateTime={article.publishedAt}>{date.format(new Date(article.publishedAt))}</time></div>
         </header>
         <div className={styles.documentLayout}>
           <div>

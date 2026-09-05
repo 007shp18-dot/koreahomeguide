@@ -47,7 +47,6 @@ export default async function ChineseArticlePage({ params }: ChineseArticlePageP
     datePublished: article.publishedAt,
     dateModified: article.updatedAt,
     mainEntityOfPage: publicCanonical(path),
-    author: { '@type': 'Organization', name: 'SignedPrice 数据编辑部' },
     publisher: { '@type': 'Organization', name: 'SignedPrice' },
   };
   return (

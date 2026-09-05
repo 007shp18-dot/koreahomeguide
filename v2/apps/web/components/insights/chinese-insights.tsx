@@ -80,7 +80,7 @@ export function ChineseInsightsArticle({ article }: Readonly<{
           <div className={styles.articleMeta}><span>首尔</span><span>原创指南</span><span>约 {article.readMinutes} 分钟</span></div>
           <h1>{article.title}</h1>
           <p>{article.summary}</p>
-          <div className={styles.byline}><strong>SignedPrice 数据编辑部</strong><time dateTime={article.publishedAt}>{date.format(new Date(article.publishedAt))}</time></div>
+          <div className={styles.byline}><strong>SignedPrice 发布</strong><time dateTime={article.publishedAt}>{date.format(new Date(article.publishedAt))}</time></div>
         </header>
         <div className={styles.documentLayout}>
           <div>

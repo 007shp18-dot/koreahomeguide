@@ -782,3 +782,5 @@
     transition: none;
   }
 }
+
+.rent-check-page .primary-control { min-block-size: 48px; }
