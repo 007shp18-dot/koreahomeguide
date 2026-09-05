@@ -42,7 +42,7 @@ type LoaderInput = Readonly<{
 }>;
 
 const APT_LIST_URL = 'https://apis.data.go.kr/1613000/AptListService3/getSigunguAptList';
-const APT_BASIC_URL = 'https://apis.data.go.kr/1613000/AptBasisInfoServiceV3/getAphusBassInfo';
+const APT_BASIC_URL = 'https://apis.data.go.kr/1613000/AptBasisInfoServiceV4/getAphusBassInfo';
 const BUILDING_REGISTER_URL = 'https://apis.data.go.kr/1613000/BldRgstHubService/getBrRecapTitleInfo';
 
 function record(value: unknown): Record<string, unknown> | null {

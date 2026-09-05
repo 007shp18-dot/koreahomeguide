@@ -55,6 +55,18 @@ function detailProps(
 }
 
 describe('public building detail', () => {
+  it('reads database-backed projections on every request', async () => {
+    const englishRoute = await import('../app/(en)/kr/seoul/explore/[district]/[buildingId]/page') as {
+      dynamic?: string;
+    };
+    const koreanRoute = await import('../app/(ko)/ko/kr/seoul/explore/[district]/[buildingId]/page') as {
+      dynamic?: string;
+    };
+
+    expect(englishRoute.dynamic).toBe('force-dynamic');
+    expect(koreanRoute.dynamic).toBe('force-dynamic');
+  });
+
   it('preserves Explore filters in the Check return URL through the route', async () => {
     vi.stubEnv('SIGNEDPRICE_PUBLIC_BUILDING_SUMMARY_ARTIFACT', JSON.stringify(createPublicBuildingFixture()));
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', PUBLIC_BUILDING_FIXTURE_PERIOD);
