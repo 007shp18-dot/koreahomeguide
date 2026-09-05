@@ -41,6 +41,7 @@ describe('official Korea building facts join', () => {
     expect(fetch).toHaveBeenCalledTimes(3);
     const urls = fetch.mock.calls.map(([url]) => new URL(String(url)));
     expect(urls[0]?.pathname).toContain('/AptListService3/getSigunguAptList');
+    expect(urls[1]?.pathname).toBe('/1613000/AptBasisInfoServiceV4/getAphusBassInfoV4');
     expect(urls[1]?.searchParams.get('kaptCode')).toBe('A10000001');
     expect(urls[2]?.searchParams.get('sigunguCd')).toBe('11680');
     expect(urls[2]?.searchParams.get('bjdongCd')).toBe('10100');

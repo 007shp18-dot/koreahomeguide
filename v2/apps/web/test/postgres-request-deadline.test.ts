@@ -12,7 +12,7 @@ afterEach(() => {
 describe('Neon request-scoped deadlines', () => {
   it.each([
     ['contentDatabase', 8_000],
-    ['publicContentDatabase', 750],
+    ['publicContentDatabase', 3_000],
   ] as const)('%s can execute a later query after an earlier deadline expires', async (factory, deadline) => {
     vi.stubEnv('DATABASE_URL', 'postgresql://test:test@unit-test.invalid/test');
     const deadlines: AbortController[] = [];
