@@ -520,6 +520,7 @@ describe('Korea Explore proximity route model', () => {
     const viewAnchors = [...viewNavigation!.matchAll(/href="([^"]+)"/g)];
     expect(viewAnchors).toHaveLength(4);
     for (const [, href] of viewAnchors) {
+      if (!href) throw new Error('Expected an Explore view destination.');
       const query = new URL(href.replaceAll('&amp;', '&'), 'https://signedprice.com').searchParams;
       expect(query.get('station')).toBe('station-a');
       expect(query.get('stationDistance')).toBe('250');
