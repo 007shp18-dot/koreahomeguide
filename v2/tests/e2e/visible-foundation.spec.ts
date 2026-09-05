@@ -206,10 +206,22 @@ test('mobile primary navigation remains tappable and reaches the market flow', a
   const primaryLinks = await visibleLinks.all();
   await expectContainedTouchTargets(page, primaryLinks);
   await expectTargetsNotToOverlap(primaryLinks);
+  const languageNavigation = page.getByRole('navigation', { name: 'Language navigation' });
+  await expect(languageNavigation.getByRole('link')).toHaveCount(2);
+  const languageLinks = await languageNavigation.getByRole('link').all();
+  await expectContainedTouchTargets(page, languageLinks);
+  await expectTargetsNotToOverlap(languageLinks);
 
   const marketNavigation = page.locator('nav[aria-label="Market navigation"]');
   await expect(marketNavigation).toBeVisible();
-  await expect(marketNavigation.locator('a')).toHaveCount(3);
+  for (const [city, href] of [
+    ['Seoul', '/kr/seoul/'],
+    ['Singapore', '/sg/'],
+    ['Dubai', '/ae/dubai/'],
+  ] as const) {
+    await expect(marketNavigation.getByRole('link', { name: city, exact: true }))
+      .toHaveAttribute('href', href);
+  }
 
   const prices = primaryNavigation.getByRole('link', { name: 'Prices' });
   await expectContainedTouchTargets(page, [prices]);

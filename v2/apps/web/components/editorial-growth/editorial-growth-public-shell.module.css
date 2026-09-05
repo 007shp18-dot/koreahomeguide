@@ -33,6 +33,13 @@
   letter-spacing: var(--review-heading-tracking);
 }
 
+.primaryNav a,
+.languageNav a {
+  min-width: 44px;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
 .wordmark span,
 .footer strong span { color: var(--review-accent); }
 

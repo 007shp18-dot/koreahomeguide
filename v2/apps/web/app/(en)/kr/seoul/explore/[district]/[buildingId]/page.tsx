@@ -287,6 +287,8 @@ export function composeKoreaBuildingRoute(input: Readonly<{
       query,
       { market: 'kr', transaction: 'sale' },
       {
+        areas: evidenceAreas,
+        propertyTypes: KOREA_EXPLORER_HOUSING_TYPES,
         districts: [observed.district.slug],
         neighborhoodsByDistrict: {
           [observed.district.slug]: [observed.building.neighborhoodId],
@@ -331,6 +333,8 @@ export function composeKoreaBuildingRoute(input: Readonly<{
     query,
     { market: 'kr', transaction: 'sale' },
     {
+      areas: evidenceAreas,
+      propertyTypes: KOREA_EXPLORER_HOUSING_TYPES,
       districts: [model.district.slug],
       neighborhoodsByDistrict: {
         [model.district.slug]: [model.building.neighborhoodId],

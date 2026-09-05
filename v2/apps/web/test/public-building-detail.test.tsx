@@ -56,6 +56,33 @@ function detailProps(
 }
 
 describe('public building detail', () => {
+  it('preserves Explore filters in the Check return URL through the route', async () => {
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_BUILDING_SUMMARY_ARTIFACT', JSON.stringify(createPublicBuildingFixture()));
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', PUBLIC_BUILDING_FIXTURE_PERIOD);
+    const query = {
+      transaction: 'monthly', propertyType: 'apartment', area: '40-60',
+      district: 'gangnam-gu', neighborhood: 'yeoksam-dong',
+      buildingId: 'gangnam-evidence-tower', view: 'list', q: 'Evidence',
+    };
+    const html = renderToStaticMarkup(await BuildingRoute({
+      params: Promise.resolve({ district: query.district, buildingId: query.buildingId }),
+      searchParams: Promise.resolve(query),
+    }));
+    const href = html.match(/href="([^"]*returnTo=[^"]*)"/)?.[1]?.replaceAll('&amp;', '&');
+    expect(href).toBeDefined();
+    const check = new URL(href!, 'https://signedprice.invalid');
+    const back = new URL(check.searchParams.get('returnTo')!, check.origin);
+    for (const [key, value] of Object.entries(query)) expect(back.searchParams.get(key), key).toBe(value);
+    const CheckRoute = (await import('../app/(en)/kr/seoul/check/page')).default;
+    const checkQuery = Object.fromEntries(check.searchParams);
+    const checkHtml = renderToStaticMarkup(await CheckRoute({ searchParams: Promise.resolve(checkQuery) }));
+    expect(checkHtml).toContain('Return to selected building');
+    const unknownHtml = renderToStaticMarkup(await CheckRoute({
+      searchParams: Promise.resolve({ ...checkQuery, building: 'unknown-building', entity: 'unknown-building' }),
+    }));
+    expect(unknownHtml).not.toContain('Return to selected building');
+  });
+
   it('renders shared local product navigation and URL-backed decision tabs', () => {
     const header = renderToStaticMarkup(<BuildingDetailHeader />);
     expect(header).toContain('aria-label="signedprice home"');
