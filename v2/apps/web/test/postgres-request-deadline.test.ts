@@ -40,4 +40,3 @@ describe('Neon request-scoped deadlines', () => {
     expect(timeout.mock.calls.map(([milliseconds]) => milliseconds)).toEqual([deadline, deadline, deadline]);
   });
 });
-
