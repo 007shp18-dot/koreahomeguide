@@ -15,7 +15,7 @@
     "check:rent-client-boundary": "node scripts/scan-rent-check-client-boundary.mjs apps/web/.next",
     "check:singapore-client-boundary": "node scripts/scan-singapore-client-boundary.mjs apps/web/.next",
     "check:korea-proximity-client-boundary": "node scripts/scan-korea-proximity-client-boundary.mjs apps/web/.next",
-    "e2e": "playwright test"
+    "e2e": "playwright test tests/e2e/property-seed-export.spec.ts"
   },
   "devDependencies": {
     "@playwright/test": "1.62.1",
