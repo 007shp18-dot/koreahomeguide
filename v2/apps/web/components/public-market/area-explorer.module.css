@@ -1344,7 +1344,7 @@
 .transactionFilter button,
 .transactionFilter a,
 .transactionFilter span {
-  min-height: 32px;
+  min-height: 44px;
   padding-inline: 12px;
   border: 0;
   border-radius: 8px;
@@ -1376,14 +1376,14 @@
 .buildingSearch input,
 .toolbarSelect select,
 .sortControl select {
-  min-height: 36px;
-  height: 36px;
+  min-height: 44px;
+  height: 44px;
   padding-inline: 12px;
   border: 1px solid #dfe3eb;
   border-radius: 8px;
   color: #171b24;
   background: #fff;
-  font-size: var(--text-meta);
+  font-size: var(--text-control);
   font-weight: 650;
 }
 
@@ -1429,7 +1429,7 @@
 .resultBar span { display: none; }
 
 .workspace {
-  grid-template-columns: minmax(340px, 380px) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 420px) minmax(0, 1fr);
   grid-template-rows: 52px minmax(0, 1fr);
   height: max(650px, calc(100dvh - 166px));
   max-height: 920px;
@@ -1909,10 +1909,10 @@
     overflow: visible;
   }
   .districtChips { order: 1; }
-  .discoveryRail { order: 3; max-height: none; overflow: visible; border-right: 0; }
+  .discoveryRail { order: 2; max-height: none; overflow: visible; border-right: 0; }
   .rail { overflow: visible; }
   .buildingBrowser { height: auto; max-height: none; }
-  .mapPanel { order: 2; height: 52dvh; min-height: 420px; }
+  .mapPanel { order: 3; height: 52dvh; min-height: 420px; }
   .mapGuide { display: none; }
   .mapEvidenceDisclosure { display: block; top: 10px; right: 10px; width: min(210px, calc(100% - 76px)); }
   .mapLevelButton { top: 56px; right: 10px; }

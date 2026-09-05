@@ -5,9 +5,9 @@ const exploreCss = readFileSync(new URL('../components/public-market/area-explor
 const newsCss = readFileSync(new URL('../components/global-product-hub.module.css', import.meta.url), 'utf8');
 
 describe('mobile content visibility', () => {
-  it('keeps the verified map before the untruncated building list', () => {
-    expect(exploreCss).toMatch(/\.discoveryRail \{ order: 3;/);
-    expect(exploreCss).toMatch(/\.mapPanel \{ order: 2;/);
+  it('restores the untruncated building list before the map on mobile', () => {
+    expect(exploreCss).toMatch(/\.discoveryRail \{ order: 2;/);
+    expect(exploreCss).toMatch(/\.mapPanel \{ order: 3;/);
     expect(exploreCss).toMatch(/\.buildingBrowser \{ height: auto; max-height: none;/);
     expect(exploreCss).toMatch(/\.buildingList \.buildingCardCopy > small:nth-of-type\(n \+ 4\) \{ display: block;/);
     expect(exploreCss).toMatch(/\.resultSummary \{ display: block;/);
