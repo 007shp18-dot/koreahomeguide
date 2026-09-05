@@ -3,6 +3,7 @@ import { loadPropertySeedRows } from './property-seed-source.mjs';
 const DATA_API = 'https://ep-rapid-grass-b34p9oiz.apirest.c-4.ap-southeast-1.aws.neon.tech/neondb/rest/v1';
 const EXPECTED_BRANCH = 'codex/signedprice-db-seed-export';
 const CHUNK_SIZE = 1000;
+// The Data API validates Vercel OIDC and executes only the restricted seed RPC.
 
 if (process.env.VERCEL !== '1' || process.env.VERCEL_ENV !== 'preview' || process.env.VERCEL_GIT_COMMIT_REF !== EXPECTED_BRANCH) {
   process.stdout.write('SignedPrice test-branch Data API seed skipped outside the isolated preview branch.\n');
