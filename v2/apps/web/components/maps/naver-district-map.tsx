@@ -254,12 +254,12 @@ export function mountNaverDistrictMap({
   let generation = 0;
   let disposed = false;
 
-  const clearActiveGeneration = () => {
+  const clearActiveGeneration = (sdkAvailable = true) => {
     generation += 1;
-    for (const listener of listeners) {
-      sdk.Event.removeListener(listener);
+    if (sdkAvailable) {
+      for (const listener of listeners) sdk.Event.removeListener(listener);
+      for (const marker of markers) marker.setMap(null);
     }
-    for (const marker of markers) marker.setMap(null);
     listeners = [];
     markers = [];
     unavailableBuildingIds = [];
@@ -371,9 +371,9 @@ export function mountNaverDistrictMap({
     }
   };
 
-  const dispose = () => {
+  const dispose = ({ sdkAvailable = true }: Readonly<{ sdkAvailable?: boolean }> = {}) => {
     if (disposed) return;
-    clearActiveGeneration();
+    clearActiveGeneration(sdkAvailable);
     disposed = true;
     map = null;
   };
@@ -545,7 +545,12 @@ export function NaverDistrictMap({
   }, [googleMapsBrowserKey, resolveSelectedGoogleCoordinate, selectedUnresolvedBuilding]);
   const failClosed = useCallback(() => {
     authenticationFailed.current = true;
-    lifecycle.current?.dispose();
+    // NAVER nulls its internal namespace before invoking navermap_authFailure.
+    // Its old methods remain callable references, but can no longer clean up.
+    const sdkAvailable = isNaverMapsSdkReady((globalThis as typeof globalThis & {
+      naver?: { maps?: unknown };
+    }).naver?.maps);
+    lifecycle.current?.dispose({ sdkAvailable });
     lifecycle.current = null;
     setSdk(null);
     setState('error');

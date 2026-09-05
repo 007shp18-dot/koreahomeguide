@@ -223,6 +223,33 @@ describe('NAVER district map', () => {
     })).toBe(false);
   });
 
+  it('releases references without calling a revoked SDK after authentication failure', () => {
+    let revoked = false;
+    const removeListener = vi.fn(() => {
+      if (revoked) throw new TypeError("Cannot read properties of null (reading 'isArray')");
+    });
+    const setMap = vi.fn(() => {
+      if (revoked) throw new TypeError('NAVER SDK revoked');
+    });
+    class Map { setCenter() {} setZoom() {} }
+    class LatLng {}
+    class Marker { setMap = setMap; }
+    const lifecycle = mountNaverDistrictMap({
+      sdk: { Map, LatLng, Marker, Event: { addListener: () => ({}), removeListener } },
+      element: {} as HTMLElement,
+      districts,
+      onSelect: () => undefined,
+    });
+    revoked = true;
+    expect(() => lifecycle.dispose({ sdkAvailable: false })).not.toThrow();
+    expect(() => lifecycle.invalidate()).not.toThrow();
+    expect(() => lifecycle.dispose()).not.toThrow();
+    expect(removeListener).not.toHaveBeenCalled();
+    expect(setMap).not.toHaveBeenCalled();
+    expect(lifecycle.markers).toEqual([]);
+    expect(lifecycle.map).toBeNull();
+  });
+
   it('fails closed instead of throwing when the NAVER SDK breaks during mount', () => {
     class LatLng {
       constructor() {
