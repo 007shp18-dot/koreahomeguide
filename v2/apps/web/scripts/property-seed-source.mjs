@@ -7,6 +7,34 @@ const SEOUL_VERSION = 'signedprice-observed-building-inventory-v1';
 const SG_PRIVATE_VERSION = 'signedprice-singapore-private-sale-v1';
 const SG_HDB_VERSION = 'signedprice-singapore-hdb-published-v1';
 
+const SEOUL_DISTRICT_NAMES = Object.freeze({
+  'jongno-gu': '종로구',
+  'jung-gu': '중구',
+  'yongsan-gu': '용산구',
+  'seongdong-gu': '성동구',
+  'gwangjin-gu': '광진구',
+  'dongdaemun-gu': '동대문구',
+  'jungnang-gu': '중랑구',
+  'seongbuk-gu': '성북구',
+  'gangbuk-gu': '강북구',
+  'dobong-gu': '도봉구',
+  'nowon-gu': '노원구',
+  'eunpyeong-gu': '은평구',
+  'seodaemun-gu': '서대문구',
+  'mapo-gu': '마포구',
+  'yangcheon-gu': '양천구',
+  'gangseo-gu': '강서구',
+  'guro-gu': '구로구',
+  'geumcheon-gu': '금천구',
+  'yeongdeungpo-gu': '영등포구',
+  'dongjak-gu': '동작구',
+  'gwanak-gu': '관악구',
+  'seocho-gu': '서초구',
+  'gangnam-gu': '강남구',
+  'songpa-gu': '송파구',
+  'gangdong-gu': '강동구',
+});
+
 function readDataFile(name) {
   const candidates = [
     resolve(process.cwd(), 'data', name),
@@ -55,6 +83,15 @@ function freezeRows(rows) {
   return Object.freeze(rows.map((row) => Object.freeze(row)));
 }
 
+function seoulSearchAddress(districtSlug, neighborhoodName, buildingName) {
+  const districtName = SEOUL_DISTRICT_NAMES[districtSlug];
+  if (districtName === undefined) {
+    throw new Error(`SignedPrice Seoul seed district is unsupported: ${districtSlug}`);
+  }
+  const lotNumber = /^\((산?\d+(?:-\d+)?)\)$/.exec(buildingName)?.[1];
+  return `서울특별시 ${districtName} ${neighborhoodName} ${lotNumber ?? buildingName}`;
+}
+
 export function loadSeoulBuildingSeed() {
   const source = object(readGzipJson('observed-building-inventory.json.gz'));
   if (source?.artifactVersion !== SEOUL_VERSION || !Array.isArray(source.records)) {
@@ -80,7 +117,7 @@ export function loadSeoulBuildingSeed() {
       externalId,
       name,
       normalizedName: normalizedName(name),
-      address: null,
+      address: seoulSearchAddress(districtSlug, neighborhoodName, name),
       latitude: ready ? coordinate.latitude : null,
       longitude: ready ? coordinate.longitude : null,
       globalEntityId: `kr-seoul:estate:${externalId}`,
