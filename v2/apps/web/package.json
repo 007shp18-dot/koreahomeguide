@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node scripts/db-env-presence.mjs && node scripts/apply-content-database.mjs --if-configured",
+    "prebuild": "DATABASE_URL='postgresql://signedprice_seed_runner@ep-rapid-grass-b34p9oiz.c-4.ap-southeast-1.aws.neon.tech/neondb?sslmode=require' node scripts/seed-property-core.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
