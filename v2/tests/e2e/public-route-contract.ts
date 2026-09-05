@@ -20,7 +20,7 @@ export const editorialAlternates: Readonly<Record<string, Readonly<Record<string
   }));
 
 export const publicRoutes = [
-  { path: '/', heading: 'Know the market before you buy.', indexing: 'index', canonical: '/' },
+  { path: '/', heading: 'See the market before you make the move.', indexing: 'index', canonical: '/' },
   { path: '/trust/', heading: 'How SignedPrice publishes evidence', indexing: 'index', canonical: '/trust/' },
   {
     path: '/kr/seoul/check/',
@@ -57,7 +57,7 @@ export const publicRoutes = [
   },
   {
     path: '/kr/seoul/rankings/',
-    heading: 'Seoul district rankings',
+    heading: 'Middle-half spread (P75 − P25)',
     indexing: 'index',
     canonical: '/kr/seoul/rankings/',
     alternates: true,
@@ -91,7 +91,13 @@ export const publicRoutes = [
     heading: 'Singapore evidence corrections',
     indexing: 'noindex',
   },
-  { path: '/news/', heading: 'Property change, checked against evidence.', indexing: 'index', canonical: '/news/' },
+  { path: '/sg/singapore/rent/', heading: 'Rent in Singapore', indexing: 'noindex' },
+  { path: '/sg/singapore/buy/', heading: 'Buy in Singapore', indexing: 'noindex' },
+  { path: '/sg/singapore/invest/', heading: 'Invest in Singapore', indexing: 'noindex' },
+  { path: '/ae/dubai/rent/', heading: 'Rent in Dubai', indexing: 'noindex' },
+  { path: '/ae/dubai/buy/', heading: 'Buy in Dubai', indexing: 'noindex' },
+  { path: '/ae/dubai/invest/', heading: 'Invest in Dubai', indexing: 'noindex' },
+  { path: '/news/', heading: 'News', indexing: 'index', canonical: '/news/' },
   { path: '/news/policy/singapore-absd-policy-status/', heading: 'Singapore ABSD: current buyer-profile check', indexing: 'index', canonical: '/news/policy/singapore-absd-policy-status/' },
   { path: '/news/seoul-district-price-distribution/', heading: 'Similar medians, different markets: read Seoul distributions', indexing: 'index', canonical: '/news/seoul-district-price-distribution/' },
   { path: '/guides/', heading: 'Understand the process before making a decision.', indexing: 'index', canonical: '/guides/' },

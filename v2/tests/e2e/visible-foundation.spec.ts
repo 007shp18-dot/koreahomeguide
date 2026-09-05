@@ -92,7 +92,7 @@ test('navigates the first signedprice decision flow', async ({ page }) => {
   await expect(
     page.getByRole('heading', {
       level: 1,
-      name: 'Know the market before you buy.',
+      name: 'See the market before you make the move.',
     }),
   ).toBeVisible();
 
@@ -106,7 +106,7 @@ test('navigates the first signedprice decision flow', async ({ page }) => {
     name: 'Compare refundable jeonse deposits by district.',
   })).toBeVisible();
 
-  await page.getByRole('navigation', { name: 'Seoul evidence navigation' })
+  await page.getByRole('navigation', { name: 'Primary navigation' })
     .getByRole('link', { name: 'Prices' }).click();
   await expect(page).toHaveURL(/\/prices\/$/);
   await page.getByRole('link', { name: /Compare offers/ }).click();
@@ -180,16 +180,12 @@ test('desktop exposes live Seoul evidence in the 1366 by 768 first viewport', as
   test.skip(testInfo.project.name !== 'desktop-chromium');
   await page.goto('/');
 
-  const marketNavigation = page.getByRole('navigation', { name: 'Market navigation' });
-  await expect(marketNavigation).toBeInViewport({ ratio: 1 });
-  for (const city of ['Seoul', 'Singapore', 'Dubai']) {
-    await expect(marketNavigation.getByRole('link', { name: city }))
-      .toBeInViewport({ ratio: 1 });
-  }
-  const liveSeoul = page.locator('[data-seoul-live="ready"]');
-  await expect(liveSeoul).toBeVisible();
-  await expect(liveSeoul.getByText('Featured building evidence · Seoul', { exact: true }))
-    .toBeVisible();
+  const hero = page.locator('[data-home-region="hero"]');
+  await expect(hero.getByRole('heading', { level: 1 })).toBeInViewport();
+  const evidence = hero.locator('[data-evidence-state="available"]');
+  await expect(evidence).toBeVisible();
+  await expect(evidence.locator('strong')).toBeVisible();
+  await expect(hero.getByRole('link', { name: 'Explore Seoul', exact: true })).toBeVisible();
 });
 
 test('mobile primary navigation remains tappable and reaches the market flow', async ({
@@ -283,12 +279,6 @@ test('keyboard traversal activates the Home to Seoul to Check flow', async ({
 
 for (const path of [
   '/sg/singapore/',
-  '/sg/singapore/rent/',
-  '/sg/singapore/buy/',
-  '/sg/singapore/invest/',
-  '/ae/dubai/rent/',
-  '/ae/dubai/buy/',
-  '/ae/dubai/invest/',
   '/us/new-york/',
   '/kr/seoul/sell/',
   '/kr/seoul/not-a-district/',
@@ -351,8 +341,8 @@ for (const path of [
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /^index,\s*follow$/);
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', `https://www.signedprice.com${path}`);
     if (!path.endsWith('/news/') && !path.endsWith('/guides/')) {
-      await expect(page.getByText(/Reviewed by|Reviewer|审核|SignedPrice (Research|Chinese)/i).first()).toBeVisible();
-      await expect(page.getByRole('heading', { name: /Sources and review boundary|Source and verification/ }).first()).toBeVisible();
+      await expect(page.getByText(/Reviewed by|Reviewer|SignedPrice (Research|Chinese)/i)).toHaveCount(0);
+      await expect(page.getByRole('heading', { name: /^Sources$|Source and verification/ }).first()).toBeVisible();
     }
     await expectNoHorizontalPageOverflow(page);
   });

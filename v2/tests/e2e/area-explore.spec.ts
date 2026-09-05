@@ -92,12 +92,12 @@ test('initial HTML and hydration expose one synchronized 25-district Explorer', 
     level: 1,
     name: 'Compare refundable jeonse deposits by district.',
   })).toBeAttached();
-  await expect(page.locator('[data-district-path]')).toHaveCount(25);
+  await expect(page.locator('[data-explorer-region="map"]')).toBeVisible();
   await expect(page.locator('[data-district-option]')).toHaveCount(25);
   const jongnoRow = page.locator('[data-district-option="jongno-gu"]');
   await expect(jongnoRow).toBeVisible();
   await expect(jongnoRow).toContainText('Jongno-gu');
-  await expect(jongnoRow).toContainText('종로구');
+  await expect(jongnoRow).toHaveAttribute('title', /종로구/);
   await expect(page.getByText('Selected · Jongno-gu')).toBeVisible();
 
   const gangnamPrimary = page.locator('[data-district-option="gangnam-gu"]');
@@ -105,8 +105,7 @@ test('initial HTML and hydration expose one synchronized 25-district Explorer', 
   await expect(page).toHaveURL(/district=gangnam-gu/);
   await expect(page.getByText('Selected · Gangnam-gu')).toBeVisible();
   await expect(gangnamPrimary).toHaveAttribute('aria-pressed', 'true');
-  await expect(page.locator('[data-district-path="gangnam-gu"]'))
-    .toHaveClass(/selectedPath/);
+  await expect(page.locator('[data-building-browser="gangnam-gu"]')).toBeVisible();
   await expectNoHorizontalOverflow(page);
 
   if (testInfo.project.name === 'desktop-chromium') {
@@ -128,7 +127,6 @@ test('initial HTML and hydration expose one synchronized 25-district Explorer', 
     const htmlResponse = await page.request.get('/kr/seoul/explore/');
     expect(htmlResponse.status()).toBe(200);
     const html = await htmlResponse.text();
-    expect((html.match(/data-district-path=/g) ?? [])).toHaveLength(25);
     expect((html.match(/data-district-option=/g) ?? [])).toHaveLength(25);
   }
   assertNoRuntimeFailures();
@@ -140,17 +138,18 @@ test('synthetic release fixture shows exact five buckets and a money-free refusa
   test.skip(releaseTarget.usesExternalServer, 'Exact fixture values are local-release only.');
   await page.goto('/kr/seoul/explore/');
 
+  await page.locator('summary').filter({ hasText: /^Map legend$/ }).click();
   const legend = page.getByRole('group', { name: 'Map legend' });
   for (const label of PUBLIC_AREA_TEST_LEGEND_LABELS) {
     await expect(legend).toContainText(label);
   }
   await expect(legend).toContainText('Not published · fewer than 5 contracts');
-  await expect(page.locator(`[data-district-path="${PUBLIC_AREA_WITHHELD_SLUG}"]`))
-    .toHaveAttribute('data-map-state', 'withheld');
   const withheldRow = page.locator(`[data-district-option="${PUBLIC_AREA_WITHHELD_SLUG}"]`);
-  await expect(withheldRow).toContainText('Not published');
-  await expect(withheldRow).toContainText('4 reported contracts');
-  await expect(withheldRow).not.toContainText('₩');
+  await expect(withheldRow).toHaveAttribute('title', /Not published/);
+  await withheldRow.click();
+  const selectedSummary = page.locator('summary').filter({ hasText: 'Selected ·' });
+  await expect(selectedSummary).toContainText('4 reported contracts');
+  await expect(selectedSummary).not.toContainText('₩');
 });
 
 test('rail selection opens the map-owned drawer and full-detail CTA', async ({ page }, testInfo) => {
@@ -214,8 +213,7 @@ test('district selection stays inside the Explore workspace', async ({ page }) =
   await page.goto('/kr/seoul/explore/?district=jongno-gu');
 
   const districtDirectory = page.locator('[data-district-rail="all-25"]');
-  await districtDirectory.locator('summary').click();
-  await expect(districtDirectory).toHaveAttribute('open', '');
+  await expect(districtDirectory).toBeVisible();
   await districtDirectory.locator('[data-district-option="gangnam-gu"]').click();
 
   await expect(page).toHaveURL(/\/kr\/seoul\/explore\/\?.*district=gangnam-gu/);
@@ -229,9 +227,9 @@ test('published quote stays local and any withheld detail stays money-free', asy
   await page.goto('/kr/seoul/explore/');
   await page.waitForLoadState('networkidle');
 
-  const publishedSlug = await page.locator('[data-district-path][data-map-state="published"]')
+  const publishedSlug = await page.locator('[data-district-option][title*="₩"]')
     .first()
-    .getAttribute('data-district-path');
+    .getAttribute('data-district-option');
   expect(publishedSlug).not.toBeNull();
   if (publishedSlug === null) throw new Error('A published district is required.');
 
@@ -249,9 +247,9 @@ test('published quote stays local and any withheld detail stays money-free', asy
     .toHaveAttribute('href', `/kr/seoul/explore/?district=${publishedSlug}`);
 
   await page.goto('/kr/seoul/explore/');
-  const withheldSlug = await page.locator('[data-district-path][data-map-state="withheld"]')
+  const withheldSlug = await page.locator('[data-district-option][title*="Not published"]')
     .first()
-    .getAttribute('data-district-path');
+    .getAttribute('data-district-option');
   if (withheldSlug !== null) {
     await page.goto(`/kr/seoul/explore/${withheldSlug}/`);
     await expect(page.locator('[data-district-detail="withheld"]')).toBeVisible();
