@@ -31,3 +31,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'storage_unavailable' }, { status: 503 });
   }
 }
+
+// Vercel Cron invokes configured paths with GET. Keep POST for explicit
+// operator refreshes while routing both methods through the same checks.
+export const GET = POST;
