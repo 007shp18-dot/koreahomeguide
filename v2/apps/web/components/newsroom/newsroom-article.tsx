@@ -45,16 +45,10 @@ export function NewsroomArticle({ article }: Readonly<{
       <dl className={styles.byline}>
         <div><dt>Publisher</dt><dd>SignedPrice</dd></div>
         <div><dt>Published</dt><dd><time dateTime={article.publishedAt}>{article.publishedAt.slice(0, 10)}</time></dd></div>
+        <div><dt>Sources</dt><dd><a href="#article-sources-title">{article.sources.length} source{article.sources.length === 1 ? '' : 's'}</a></dd></div>
         <div><dt>Updated</dt><dd><time dateTime={article.updatedAt}>{article.updatedAt.slice(0, 10)}</time></dd></div>
       </dl>
     </header>
-    <section className={styles.leadEvidence} aria-labelledby="lead-evidence-title">
-      <p>Lead evidence</p><h2 id="lead-evidence-title">{article.sources.length} source{article.sources.length === 1 ? '' : 's'}</h2>
-      <span>Evidence state · {article.evidenceState}</span>
-    </section>
-    <aside className={styles.takeaways} aria-label="Key takeaways">
-      {contentSections.slice(0, 3).map((section) => <p key={section.heading} data-article-takeaway="true"><strong>{section.heading}</strong><span>{section.body.split('\n')[0]}</span></p>)}
-    </aside>
     {article.infographic == null ? null : <Infographic spec={article.infographic} />}
     <article className={styles.articleBody}>
       {contentSections.map((section) => <section key={section.heading}><h2>{section.heading}</h2>{section.body.split(/\n\n+/u).map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</section>)}

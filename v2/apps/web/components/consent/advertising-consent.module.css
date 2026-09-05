@@ -11,7 +11,6 @@
   gap: 14px 28px;
   transform: translateX(50%);
   border: 1px solid var(--line);
-  border-left: 4px solid var(--accent);
   border-radius: 12px;
   background: rgb(255 255 255 / 96%);
   color: var(--ink);
