@@ -169,7 +169,22 @@ type CandidateBuilding = Readonly<{
   externalId: string;
   name: string;
   address: string;
+  localAttributes: Readonly<Record<string, unknown>>;
 }>;
+
+export function candidatePhotoRegistryKey(building: Omit<CandidateBuilding, 'address'>): string | null {
+  if (building.marketKey === 'seoul') return `kr-seoul:${building.externalId}`;
+  if (building.marketKey === 'dubai') return `ae-dubai:${building.externalId}`;
+  if (building.key.startsWith('singapore:project:')) {
+    const segment = building.localAttributes.marketSegment;
+    return typeof segment === 'string' && segment !== '' ? `sg-project:${segment}:${building.name}` : null;
+  }
+  if (building.key.startsWith('singapore:block:')) {
+    const town = building.localAttributes.town;
+    return typeof town === 'string' && town !== '' ? `sg-hdb:${town}:${building.name}` : null;
+  }
+  return null;
+}
 
 function normalizedIdentity(value: string): string {
   return value.normalize('NFKC').toLocaleLowerCase('en-US').replace(/[^\p{L}\p{N}]+/gu, '');
@@ -232,7 +247,7 @@ export function selectWikimediaPhotoCandidate(
   return null;
 }
 
-export async function discoverWikimediaCommonsPhotoCandidates(limit = 12): Promise<Readonly<{
+export async function discoverWikimediaCommonsPhotoCandidates(limit = 12, marketKey?: 'seoul' | 'singapore'): Promise<Readonly<{
   checked: number;
   candidates: number;
   state: 'ready' | 'not-configured';
@@ -241,9 +256,15 @@ export async function discoverWikimediaCommonsPhotoCandidates(limit = 12): Promi
   if (sql === null) return Object.freeze({ checked: 0, candidates: 0, state: 'not-configured' });
   const rows = await sql`
     SELECT building.key, building.market_key, building.external_id, building.official_name,
-      coalesce(building.road_address, building.legal_address) AS address
+      coalesce(building.road_address, building.legal_address) AS address,
+      entity.local_attributes
     FROM buildings building
+    LEFT JOIN property_entities entity ON entity.id = CASE
+      WHEN building.market_key = 'seoul' THEN 'kr-seoul:estate:' || building.external_id
+      WHEN building.market_key = 'singapore' THEN 'sg-' || building.key
+    END
     WHERE building.identity_status = 'verified'
+      AND (${marketKey ?? null}::text IS NULL OR building.market_key = ${marketKey ?? null})
       AND coalesce(building.road_address, building.legal_address) IS NOT NULL
       AND NOT EXISTS (
         SELECT 1 FROM building_photos photo
@@ -256,11 +277,13 @@ export async function discoverWikimediaCommonsPhotoCandidates(limit = 12): Promi
     typeof row.key === 'string' && ['seoul', 'singapore', 'dubai'].includes(String(row.market_key))
       && typeof row.external_id === 'string' && typeof row.official_name === 'string'
       && typeof row.address === 'string'
-      ? [{ key: row.key, marketKey: row.market_key as CandidateBuilding['marketKey'], externalId: row.external_id, name: row.official_name, address: row.address }]
+      ? [{ key: row.key, marketKey: row.market_key as CandidateBuilding['marketKey'], externalId: row.external_id, name: row.official_name, address: row.address, localAttributes: (row.local_attributes ?? {}) as CandidateBuilding['localAttributes'] }]
       : []
   ));
   let candidates = 0;
   for (const building of buildings) {
+    const registryKey = candidatePhotoRegistryKey(building);
+    if (registryKey === null) continue;
     try {
       const endpoint = new URL('https://commons.wikimedia.org/w/api.php');
       endpoint.search = new URLSearchParams({
@@ -278,13 +301,12 @@ export async function discoverWikimediaCommonsPhotoCandidates(limit = 12): Promi
       }>;
       const candidate = selectWikimediaPhotoCandidate(building.name, body.query?.pages ?? []);
       if (candidate === null) continue;
-      const registryPrefix = building.marketKey === 'seoul' ? 'kr-seoul' : building.marketKey === 'singapore' ? 'sg-project' : 'ae-dubai';
       await sql`
         INSERT INTO building_photos (
           building_key, registry_key, provider, asset_url, attribution_name, attribution_url,
           status, subject_kind, rights_status, source_page_url, checked_at
         ) VALUES (
-          ${building.key}, ${`${registryPrefix}:${building.externalId}`}, 'licensed-url', ${candidate.assetUrl},
+          ${building.key}, ${registryKey}, 'licensed-url', ${candidate.assetUrl},
           ${`${candidate.attributionName} · ${candidate.licenseName}`}, ${candidate.licenseUrl},
           'review_required', 'building-exterior', 'licensed', ${candidate.sourcePageUrl}, now()
         )
@@ -308,7 +330,7 @@ export async function discoverWikimediaCommonsPhotoCandidates(limit = 12): Promi
   return Object.freeze({ checked: buildings.length, candidates, state: 'ready' });
 }
 
-export async function discoverGooglePlacePhotoCandidates(limit = 12): Promise<Readonly<{
+export async function discoverGooglePlacePhotoCandidates(limit = 12, marketKey?: 'seoul' | 'singapore'): Promise<Readonly<{
   checked: number;
   candidates: number;
   state: 'ready' | 'not-configured';
@@ -318,9 +340,15 @@ export async function discoverGooglePlacePhotoCandidates(limit = 12): Promise<Re
   if (sql === null || !apiKey) return Object.freeze({ checked: 0, candidates: 0, state: 'not-configured' });
   const rows = await sql`
     SELECT building.key, building.market_key, building.external_id, building.official_name,
-      coalesce(building.road_address, building.legal_address) AS address
+      coalesce(building.road_address, building.legal_address) AS address,
+      entity.local_attributes
     FROM buildings building
+    LEFT JOIN property_entities entity ON entity.id = CASE
+      WHEN building.market_key = 'seoul' THEN 'kr-seoul:estate:' || building.external_id
+      WHEN building.market_key = 'singapore' THEN 'sg-' || building.key
+    END
     WHERE building.identity_status = 'verified'
+      AND (${marketKey ?? null}::text IS NULL OR building.market_key = ${marketKey ?? null})
       AND coalesce(building.road_address, building.legal_address) IS NOT NULL
       AND NOT EXISTS (
         SELECT 1 FROM building_photos photo
@@ -334,11 +362,13 @@ export async function discoverGooglePlacePhotoCandidates(limit = 12): Promise<Re
     typeof row.key === 'string' && ['seoul', 'singapore', 'dubai'].includes(String(row.market_key))
       && typeof row.external_id === 'string' && typeof row.official_name === 'string'
       && typeof row.address === 'string'
-      ? [{ key: row.key, marketKey: row.market_key as CandidateBuilding['marketKey'], externalId: row.external_id, name: row.official_name, address: row.address }]
+      ? [{ key: row.key, marketKey: row.market_key as CandidateBuilding['marketKey'], externalId: row.external_id, name: row.official_name, address: row.address, localAttributes: (row.local_attributes ?? {}) as CandidateBuilding['localAttributes'] }]
       : []
   ));
   let candidates = 0;
   for (const building of buildings) {
+    const registryKey = candidatePhotoRegistryKey(building);
+    if (registryKey === null) continue;
     try {
       const response = await fetch('https://places.googleapis.com/v1/places:searchText', {
         method: 'POST',
@@ -365,13 +395,12 @@ export async function discoverGooglePlacePhotoCandidates(limit = 12): Promise<Re
         || !(normalizedIdentity(placeName).includes(normalizedIdentity(building.name))
           || normalizedIdentity(building.name).includes(normalizedIdentity(placeName)))
         || !placeAddress.includes(building.address.split(' ').find((part) => /[구區]$/.test(part)) ?? building.address.split(' ')[1] ?? '')) continue;
-      const registryPrefix = building.marketKey === 'seoul' ? 'kr-seoul' : building.marketKey === 'singapore' ? 'sg-project' : 'ae-dubai';
       await sql`
         INSERT INTO building_photos (
           building_key, registry_key, provider, provider_place_id, status,
           subject_kind, rights_status, checked_at
         ) VALUES (
-          ${building.key}, ${`${registryPrefix}:${building.externalId}`}, 'google-place', ${placeId},
+          ${building.key}, ${registryKey}, 'google-place', ${placeId},
           'review_required', 'building-exterior', 'provider-display-only', now()
         )
         ON CONFLICT (registry_key) DO UPDATE SET

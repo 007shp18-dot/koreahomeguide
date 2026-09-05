@@ -9,7 +9,9 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "db:migrate": "node scripts/apply-content-database.mjs"
+    "db:migrate": "node scripts/apply-content-database.mjs",
+    "db:seed:properties": "node scripts/seed-property-core.mjs",
+    "db:verify:properties": "node scripts/seed-property-core.mjs --verify-only"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",

@@ -15,8 +15,15 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }
   if (!contentDatabaseConfigured()) return NextResponse.json({ error: 'database_not_configured' }, { status: 503 });
-  const commons = await discoverWikimediaCommonsPhotoCandidates();
-  const google = await discoverGooglePlacePhotoCandidates();
+  const parameters = new URL(request.url).searchParams;
+  const market = parameters.get('market');
+  const limit = Number(parameters.get('limit') ?? 12);
+  if ((market !== null && market !== 'seoul' && market !== 'singapore')
+    || !Number.isInteger(limit) || limit < 1 || limit > 12) {
+    return NextResponse.json({ error: 'invalid_scope' }, { status: 400 });
+  }
+  const commons = await discoverWikimediaCommonsPhotoCandidates(limit, market ?? undefined);
+  const google = await discoverGooglePlacePhotoCandidates(limit, market ?? undefined);
   return NextResponse.json({
     state: commons.state === 'ready' || google.state === 'ready' ? 'ready' : 'not-configured',
     checked: commons.checked + google.checked,
