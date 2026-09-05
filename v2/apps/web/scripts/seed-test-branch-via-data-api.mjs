@@ -9,6 +9,9 @@ if (process.env.VERCEL !== '1' || process.env.VERCEL_ENV !== 'preview' || proces
   process.exit(0);
 }
 
+const oidcToken = process.env.VERCEL_OIDC_TOKEN?.trim();
+if (!oidcToken) throw new Error('VERCEL_OIDC_TOKEN is unavailable for the isolated SignedPrice seed preview.');
+
 function chunks(values, size = CHUNK_SIZE) {
   const result = [];
   for (let index = 0; index < values.length; index += size) result.push(values.slice(index, index + size));
@@ -48,7 +51,10 @@ function compactRow(row) {
 async function seedBatch(batch, attempt = 1) {
   const response = await fetch(`${DATA_API}/rpc/signedprice_seed_json`, {
     method: 'POST',
-    headers: { 'content-type': 'application/json' },
+    headers: {
+      authorization: `Bearer ${oidcToken}`,
+      'content-type': 'application/json',
+    },
     body: JSON.stringify({ payload: batch.map(compactRow) }),
     signal: AbortSignal.timeout(30_000),
   });
@@ -84,7 +90,7 @@ if (seed.summary.seoul !== 48_999 || seed.summary.singaporePrivate !== 3_862
   throw new Error(`Unexpected SignedPrice seed summary: ${JSON.stringify(seed.summary)}`);
 }
 const batches = chunks(seed.all);
-process.stdout.write(`SignedPrice isolated test seed: ${seed.summary.total} rows in ${batches.length} batches.\n`);
+process.stdout.write(`SignedPrice isolated test seed: ${seed.summary.total} rows in ${batches.length} batches; OIDC=present.\n`);
 const firstChanged = await runPass('seed pass 1', batches);
 const secondChanged = await runPass('seed pass 2', batches);
 if (secondChanged !== 0) {
