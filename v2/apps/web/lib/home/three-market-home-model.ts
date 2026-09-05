@@ -50,8 +50,8 @@ export function createThreeMarketHomeModel(input: Input): ThreeMarketHomeModel {
     locale: input.locale,
     headline: zh ? '做决定之前，先看懂市场。' : 'See the market before you make the move.',
     lead: zh
-      ? '在首尔、新加坡和迪拜，用清楚标注来源与范围的房地产依据做决定。'
-      : 'Property evidence for decisions across Seoul, Singapore and Dubai, with source and coverage kept visible.',
+      ? '通过成交记录、楼盘详情和市场指南，了解首尔与新加坡的住宅市场。迪拜目前仅提供市场概览。'
+      : 'Research residential property in Seoul and Singapore through reported transactions, building details and local market guides. Dubai offers market context only.',
     markets: [
       {
         id: 'kr-seoul',

@@ -39,11 +39,13 @@ describe('Newsroom and Guide SEO release contract', () => {
   it('matches visible review dates and sources in Article JSON-LD', () => {
     const article = EDITORIAL_PORTFOLIO.find(({ type }) => type === 'data-story')!;
     const html = renderToStaticMarkup(<PublicEditorialJsonLd article={article} />);
+    expect(html).not.toContain('reviewedBy');
+    expect(html).not.toContain(article.authorName);
     const payload = JSON.parse(html.match(/<script[^>]*>(.*)<\/script>/u)?.[1] ?? '{}');
     expect(payload).toMatchObject({
       '@type': 'Article', headline: article.title, datePublished: article.publishedAt,
       dateModified: article.updatedAt, mainEntityOfPage: `https://www.signedprice.com${article.canonicalHref}`,
-      reviewedBy: { name: article.reviewedBy }, citation: article.sources.map(({ href }) => href),
+      publisher: { name: 'SignedPrice' }, citation: article.sources.map(({ href }) => href),
     });
   });
 

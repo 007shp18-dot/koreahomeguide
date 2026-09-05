@@ -173,7 +173,8 @@ describe('editorial growth design-review route', () => {
     expect(markup).toContain('Advertisement');
     expect(markup.indexOf('data-ad-slot="article-1"'))
       .toBeGreaterThan(markup.indexOf('data-article-paragraph="1"'));
-    expect(markup).toContain('SignedPrice Data Desk');
+    expect(markup).toContain('SignedPrice');
+    expect(markup).not.toContain('SignedPrice Data Desk');
     expect(markup).toMatch(/Updated/);
   });
 

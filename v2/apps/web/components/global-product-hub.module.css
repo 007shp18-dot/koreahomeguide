@@ -11,12 +11,10 @@
 .hero > p:first-child,
 .sectionHeading > p,
 .actionBand > div > p {
-  color: var(--accent);
-  font-size: .8125rem;
-  font-weight: 800;
-  letter-spacing: .09em;
+  color: var(--muted);
+  font-size: .875rem;
+  font-weight: 600;
   line-height: 1.4;
-  text-transform: uppercase;
 }
 
 .hero h1 {
@@ -88,27 +86,17 @@
 }
 
 .marketCard {
-  min-height: 410px;
+  min-height: 340px;
   display: grid;
   grid-template-rows: auto 1fr auto auto;
   gap: 24px;
   overflow: hidden;
-  padding: 26px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: var(--surface-strong);
-  box-shadow: var(--shadow-sm);
+  padding: 20px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
-
-.marketCard::before {
-  content: '';
-  height: 7px;
-  margin: -26px -26px 0;
-  background: var(--accent);
-}
-
-.marketSingapore::before { background: #d94b52; }
-.marketDubai::before { background: #14816f; }
 
 .marketCard header {
   display: flex;
@@ -237,7 +225,7 @@
   border: 1px solid var(--line);
   border-radius: 12px;
   background: white;
-  box-shadow: var(--shadow-sm);
+  box-shadow: none;
 }
 
 .searchPanel input,
@@ -601,7 +589,7 @@
   border: 1px solid var(--line);
   border-radius: 12px;
   background: var(--surface-strong);
-  box-shadow: var(--shadow-sm);
+  box-shadow: none;
 }
 .newsFilters,
 .newsEvidence { background: var(--surface-strong); }

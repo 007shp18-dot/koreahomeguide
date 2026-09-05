@@ -73,8 +73,6 @@ export function buildEditorialArticleJsonLd(article: EditorialPortfolioRecord): 
     datePublished: article.publishedAt,
     dateModified: article.updatedAt,
     mainEntityOfPage: publicCanonical(article.canonicalHref as `/${string}`),
-    author: Object.freeze({ '@type': 'Organization', name: article.authorName }),
-    reviewedBy: Object.freeze({ '@type': 'Organization', name: article.reviewedBy }),
     publisher: Object.freeze({ '@type': 'Organization', name: 'SignedPrice' }),
     citation: Object.freeze(article.sources.map(({ href }) => href)),
     isAccessibleForFree: true,

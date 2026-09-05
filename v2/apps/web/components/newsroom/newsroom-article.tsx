@@ -43,14 +43,13 @@ export function NewsroomArticle({ article }: Readonly<{
       <h1>{article.title}</h1>
       <div className={styles.deck}>{article.deck}</div>
       <dl className={styles.byline}>
-        <div><dt>Author</dt><dd>{article.authorName}</dd></div>
-        <div><dt>Reviewer</dt><dd>{article.reviewedBy}</dd></div>
+        <div><dt>Publisher</dt><dd>SignedPrice</dd></div>
         <div><dt>Published</dt><dd><time dateTime={article.publishedAt}>{article.publishedAt.slice(0, 10)}</time></dd></div>
         <div><dt>Updated</dt><dd><time dateTime={article.updatedAt}>{article.updatedAt.slice(0, 10)}</time></dd></div>
       </dl>
     </header>
     <section className={styles.leadEvidence} aria-labelledby="lead-evidence-title">
-      <p>Lead evidence</p><h2 id="lead-evidence-title">{article.sources.length} reviewed source{article.sources.length === 1 ? '' : 's'}</h2>
+      <p>Lead evidence</p><h2 id="lead-evidence-title">{article.sources.length} source{article.sources.length === 1 ? '' : 's'}</h2>
       <span>Evidence state · {article.evidenceState}</span>
     </section>
     <aside className={styles.takeaways} aria-label="Key takeaways">
@@ -61,9 +60,9 @@ export function NewsroomArticle({ article }: Readonly<{
       {contentSections.map((section) => <section key={section.heading}><h2>{section.heading}</h2>{section.body.split(/\n\n+/u).map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</section>)}
     </article>
     <section className={styles.sources} aria-labelledby="article-sources-title" data-editorial-event="article_complete">
-      <h2 id="article-sources-title">Sources and review boundary</h2>
+      <h2 id="article-sources-title">Sources</h2>
       <ol>{article.sources.map((source) => <li key={source.id}><span>{source.kind}</span><a href={source.href} rel="noreferrer" data-editorial-event="policy_source_open">{source.publisher} · {source.title}</a><small>Checked {source.checkedAt.slice(0, 10)}</small></li>)}</ol>
     </section>
-    {article.relatedHref === null ? null : <aside className={styles.relatedAction}><p>Continue with the evidence</p><Link href={article.relatedHref} data-editorial-event={relatedEvent}>Open the related tool <span aria-hidden="true">→</span></Link></aside>}
+    {article.relatedHref === null ? null : <aside className={styles.relatedAction}><p>Related reading and tools</p><Link href={article.relatedHref} data-editorial-event={relatedEvent}>Open related tool</Link></aside>}
   </main>;
 }

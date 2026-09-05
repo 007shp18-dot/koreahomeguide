@@ -29,7 +29,7 @@ describe('signedprice homepage copy', () => {
 
     expect(positions.every((position) => position >= 0)).toBe(true);
     expect([...positions].sort((a, b) => a - b)).toEqual(positions);
-    expect(markup).toContain('Property evidence for decisions across Seoul, Singapore and Dubai');
+    expect(markup).toContain('Research residential property in Seoul and Singapore');
     expect(markup).toContain('data-primary-action="explore"');
   }, 10_000);
 

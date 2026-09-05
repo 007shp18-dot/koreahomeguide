@@ -50,3 +50,17 @@ Use market/date/source hierarchy, building identity and comparative charts as re
 5. Verify Seoul/Singapore navigation and detail return state across desktop/mobile; preview, PR, production checks.
 
 Database/photo work remains read-only until its operating branch and existing source connections are verified. Do not create a replacement database.
+
+## Confirmed navigation defect and recovery
+
+A preview Explore → building transition reproduced a page-level error. Direct detail navigation worked. NAVER's served SDK sets its internal namespace and `window.naver.maps` to null before calling `navermap_authFailure`; our failure handler then called stale `Event.removeListener` references, throwing `Cannot read properties of null (reading 'isArray')`.
+
+Cleanup now checks SDK availability and releases our references without invoking a revoked SDK. The regression reproduces that exact exception before the fix and passes afterwards. Preview `0fd4182` tolerates the auth failure, retains the list, opens 경희궁자이(4단지), and returns to Explore without the error page. Preview-domain authorization remains an external map configuration issue; list navigation is usable without the map.
+
+## Publisher and visual corrections
+
+The user confirmed there is no actual author/reviewer team behind the generated labels. Public article bylines now identify SignedPrice as publisher, and Article JSON-LD no longer claims an author or reviewer. Policy sources no longer invent a fallback Research Editor. Legacy internal review fields remain historical inputs to the existing publication workflow; they must not be treated as proof of human review or exposed again without a separate provenance audit.
+
+Removed market-card colour strips, article framing and summary-cell boxes, source accent lines, and the generic Evidence posture / Service preparing panels from the shared market detail. Home and market descriptions prioritize Seoul and Singapore and identify Dubai as market context only. Existing data charts, functional selection states, source links and focus outlines remain.
+
+Desktop preview check: Singapore 1 MOULMEIN RISE project detail has no page overflow or overflowing evidence numbers. This does not substitute for mobile browser verification. Full current unit suite: 224 files / 2,052 passing tests. Browser release-gate failures must still be reconciled; do not describe all browser tests as passing.

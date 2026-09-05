@@ -633,7 +633,7 @@
   margin-block: var(--review-space-7);
   padding: var(--review-space-5);
   background: var(--review-paper);
-  border-left: 3px solid var(--review-accent);
+  border-top: 1px solid var(--review-line);
 }
 
 .sourceNote strong {

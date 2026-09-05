@@ -31,7 +31,7 @@ export function PolicyRecordArticle({ policy, article }: Readonly<{
     <section className={styles.leadEvidence} aria-labelledby="official-source-title">
       <p>Official source</p>
       <h2 id="official-source-title">{policy.source.publisher}</h2>
-      <a href={policy.source.href} rel="noreferrer" data-editorial-event="policy_source_open">Open official record <span aria-hidden="true">↗</span></a>
+      <a href={policy.source.href} rel="noreferrer" data-editorial-event="policy_source_open">Open official record</a>
     </section>
     <div className={styles.policyDetailGrid}>
       <section aria-labelledby="policy-lifecycle-title">
@@ -47,7 +47,7 @@ export function PolicyRecordArticle({ policy, article }: Readonly<{
     <PolicyBeforeAfter comparison={policy.beforeAfter} />
     <section className={styles.sources} aria-labelledby="policy-source-boundary-title" data-editorial-event="article_complete">
       <h2 id="policy-source-boundary-title">Source and verification</h2>
-      <ol><li><span>Primary</span><a href={policy.source.href} rel="noreferrer">{policy.source.title}</a><small>Checked {policy.source.checkedAt} · Reviewed by {article.reviewedBy ?? 'SignedPrice Research Editor'}</small></li></ol>
+      <ol><li><span>Primary</span><a href={policy.source.href} rel="noreferrer">{policy.source.title}</a><small>Checked {policy.source.checkedAt}</small></li></ol>
     </section>
   </main>;
 }
