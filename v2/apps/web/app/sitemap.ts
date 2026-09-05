@@ -14,6 +14,8 @@ import {
   signedPricePublicRouteRegistry,
 } from '../lib/seo/public-route-registry.server';
 import { buildPublicPropertyTypeModel } from '../lib/public-market/property-type-route-model.server';
+import { koreaEvidenceRepositoriesFromEnvironment } from '../lib/public-market/korea-evidence-repositories.server';
+import { listIndexableKoreaBuildingRouteParams } from '../lib/public-market/korea-building-index-policy';
 
 type SitemapEntry = MetadataRoute.Sitemap[number];
 type LocalizedPair = Readonly<{
@@ -208,6 +210,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
         validDate(model?.evidence.generatedAt),
       )];
     }));
+  }
+  // Building pages carry the same gate the route's own metadata applies, so a
+  // URL is never offered here that answers `noindex` when it is crawled.
+  const rentEvidence = koreaEvidenceRepositoriesFromEnvironment().rent;
+  if (rentEvidence !== null) {
+    const buildingLastModified = validDate(rentEvidence.getArtifact().generatedAt);
+    entries.push(...listIndexableKoreaBuildingRouteParams(rentEvidence.listBuildingRecords())
+      .map(({ district, buildingId }) => sitemapEntry(
+        `/kr/seoul/explore/${district}/${buildingId}/`,
+        buildingLastModified,
+      )));
   }
   return entries;
 }

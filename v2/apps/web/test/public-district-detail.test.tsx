@@ -111,6 +111,30 @@ describe('public district detail page', () => {
     expect(sectionOrder).toEqual([...sectionOrder].sort((left, right) => left - right));
   });
 
+  it('places the crawlable building directory directly after the existing building block', () => {
+    const html = renderToStaticMarkup(<DistrictDetailPage
+      model={publishedModel()}
+      directory={[{
+        buildingId: 'gangnam-indexable',
+        districtSlug: 'gangnam-gu',
+        name: '검색 공개 아파트',
+        neighborhoodName: '역삼동',
+        contracts: 73,
+        href: '/kr/seoul/explore/gangnam-gu/gangnam-indexable/',
+      }]}
+    />);
+    const existingBuildings = html.indexOf('id="buildings"');
+    const directory = html.indexOf('aria-labelledby="building-directory-heading"');
+    const source = html.indexOf('data-section="district-source"');
+
+    expect(existingBuildings).toBeGreaterThanOrEqual(0);
+    expect(directory).toBeGreaterThan(existingBuildings);
+    expect(directory).toBeLessThan(source);
+    expect(html).toContain('Buildings published for Gangnam-gu');
+    expect(html).toContain('href="/kr/seoul/explore/gangnam-gu/gangnam-indexable"');
+    expect(html).toContain('73 contracts');
+  });
+
   it('uses the supplied Detail identity and 380px context-shell structure', () => {
     const html = renderToStaticMarkup(<DistrictDetailPage model={publishedModel()} />);
     const mainStart = html.indexOf('data-detail-main="true"');

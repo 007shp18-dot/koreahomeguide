@@ -7,6 +7,8 @@ import { KOREA_EVIDENCE_AREA_BANDS } from '@signedprice/korea-rent';
 import { DistrictDetailPage } from '@/components/public-market/district-detail-page';
 import { buildPublicAreaExploreModel, buildPublicDistrictModel } from '@/lib/public-market/area-route-model.server';
 import { buildDistrictMetadata } from '@/lib/public-market/district-metadata';
+import { koreaEvidenceRepositoriesFromEnvironment } from '@/lib/public-market/korea-evidence-repositories.server';
+import { listKoreaBuildingDirectory } from '@/lib/public-market/korea-building-index-policy';
 import { parseExplorerSelection } from '@/lib/navigation/explorer-selection';
 import { KOREA_EXPLORER_HOUSING_TYPES } from '@/lib/public-market/korea-explorer-evidence.server';
 import {
@@ -57,6 +59,10 @@ export default async function NestedDistrictPage({
     singleValue(query.contractType) ?? singleValue(query.contract),
   );
   if (model === null) notFound();
+  const directory = listKoreaBuildingDirectory(
+    koreaEvidenceRepositoriesFromEnvironment().rent?.listBuildingRecords() ?? [],
+    model.identity.slug,
+  );
   const propertyTypes = listPublicPropertyTypeRouteParams()
     .filter(({ district: routeDistrict }) => routeDistrict === model.identity.slug)
     .flatMap(({ district: routeDistrict, propertyType }) => {
@@ -97,6 +103,7 @@ export default async function NestedDistrictPage({
   return <DistrictDetailPage
     model={model}
     propertyTypes={propertyTypes}
+    directory={directory}
     mapDistricts={mapDistricts}
     mapPoint={selected === undefined ? undefined : { latitude: selected.latitude, longitude: selected.longitude }}
     currentDistrict={selected}

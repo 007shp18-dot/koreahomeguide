@@ -40,6 +40,11 @@ import {
 import type { KoreaProximityRepositoryState } from '@/lib/public-market/korea-proximity-repository.server';
 import { koreaProximityRepositoryFromEnvironment } from '@/lib/public-market/korea-proximity-repository.server';
 import { appendKoreaProximityPairs } from '@/lib/public-market/korea-proximity-url';
+import {
+  isKoreaBuildingIndexable,
+  koreaBuildingEvidenceDepth,
+  listIndexableKoreaBuildingRouteParams,
+} from '@/lib/public-market/korea-building-index-policy';
 import { indexableMetadata } from '@/lib/public-metadata';
 import { localizedSeoulHref, type ProductLocale } from '@/lib/locale/product-copy';
 import {
@@ -123,7 +128,6 @@ function projectedBuildingMediaFor(
     }}
   />;
 }
-
 export const dynamicParams = true;
 
 const evidenceAreas = Object.freeze([
@@ -173,8 +177,27 @@ export function resolveKoreaEvidenceBuildingRoute(
   return Object.freeze({ model, backHref });
 }
 
+/**
+ * Prerendered building routes.
+ *
+ * The legacy `public-building-summary` artifact is a jeonse-only 45-55sqm
+ * slice, so on its own it prerenders a few hundred of the buildings the site
+ * can actually publish. The indexable set is derived from the current rent
+ * evidence instead; the legacy params stay in the union so no route that is
+ * prerendered today stops being prerendered.
+ */
 export function generateStaticParams() {
-  const buildings = publicBuildingRepositoryFromEnvironment()?.listRouteParams() ?? [];
+  const legacy = publicBuildingRepositoryFromEnvironment()?.listRouteParams() ?? [];
+  const indexable = listIndexableKoreaBuildingRouteParams(
+    koreaEvidenceRepositoriesFromEnvironment().rent?.listBuildingRecords() ?? [],
+  );
+  const seen = new Set<string>();
+  const buildings = [...indexable, ...legacy].filter(({ district, buildingId }) => {
+    const key = `${district}/${buildingId}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
   const propertyTypes = listPublicPropertyTypeRouteParams().map(({ district, propertyType }) => ({
     district,
     buildingId: propertyType,
@@ -182,7 +205,44 @@ export function generateStaticParams() {
   return [...buildings, ...propertyTypes];
 }
 
-export async function generateMetadata({ params, searchParams }: BuildingPageProps): Promise<Metadata> {
+/**
+ * Metadata for one building that carries enough published evidence to be worth
+ * a search result.
+ *
+ * Built from the default selection rather than the request's query, because
+ * every filtered variant of this page canonicalises to the bare path: a title
+ * that moved with the query would describe a URL that is not the one indexed.
+ * Returns null when the building is below the publication gate, or when the
+ * request is for the Korean route, whose metadata is delegated here and would
+ * otherwise inherit this route's English canonical.
+ */
+function indexableKoreaBuildingMetadata(
+  district: string,
+  buildingId: string,
+  repositories: KoreaEvidenceRepositories,
+  locale: ProductLocale,
+): Metadata | null {
+  if (locale !== 'en') return null;
+  const records = repositories.rent?.listBuildingRecords() ?? [];
+  const record = records.find((candidate) => (
+    candidate.districtSlug === district && candidate.buildingId === buildingId
+  ));
+  if (record === undefined || !isKoreaBuildingIndexable(record)) return null;
+  const canonical = resolveKoreaEvidenceBuildingRoute(district, buildingId, {}, repositories);
+  if (canonical === null) return null;
+  const contracts = koreaBuildingEvidenceDepth(record);
+  return indexableMetadata({
+    path: `/kr/seoul/explore/${canonical.model.district.slug}/${canonical.model.building.buildingId}/`,
+    title: `${record.officialName} reported rent evidence | signedprice`,
+    description: `${contracts} reported contracts for ${record.officialName} in ${canonical.model.district.nameEn}, ${canonical.model.period}, shown by transaction, filed area and contract type with MOLIT source and coverage limits.`,
+  });
+}
+
+export async function generateMetadata({
+  params,
+  searchParams,
+  locale = 'en',
+}: LocalizedBuildingPageProps): Promise<Metadata> {
   const { district, buildingId } = await params;
   const propertyTypeModel = buildPublicPropertyTypeModel(district, buildingId);
   if (propertyTypeModel !== null) {
@@ -193,11 +253,14 @@ export async function generateMetadata({ params, searchParams }: BuildingPagePro
       description: `${propertyTypeModel.coverage.retainedContracts} retained recent contracts across ${buildingCount} published ${propertyTypeModel.district.nameEn} ${propertyTypeModel.propertyType.slug} building${buildingCount === 1 ? '' : 's'}, with MOLIT source and coverage limits shown.`,
     });
   }
+  const repositories = koreaEvidenceRepositoriesFromEnvironment();
+  const indexable = indexableKoreaBuildingMetadata(district, buildingId, repositories, locale);
+  if (indexable !== null) return indexable;
   const exact = resolveKoreaEvidenceBuildingRoute(
     district,
     buildingId,
     await searchParams,
-    koreaEvidenceRepositoriesFromEnvironment(),
+    repositories,
   );
   if (exact !== null) {
     return {
