@@ -242,4 +242,3 @@ export async function loadOfficialBuildingFacts(input: LoaderInput): Promise<Off
     register: registerFacts,
   });
 }
-
