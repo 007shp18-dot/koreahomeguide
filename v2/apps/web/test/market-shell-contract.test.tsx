@@ -47,7 +47,7 @@ describe('shared market composition', () => {
     const overviewCss = readFileSync(new URL('../components/market-dashboard.module.css', import.meta.url), 'utf8');
     const photoCss = readFileSync(new URL('../components/market-representative-photo.module.css', import.meta.url), 'utf8');
     expect(css).toMatch(/\.detail\s*\{[^}]*width:\s*min\(1180px,\s*calc\(100% - 40px\)\)/);
-    expect(css).toMatch(/grid-template-columns:\s*minmax\(320px, 42%\) minmax\(0, 58%\)/);
+    expect(css).toMatch(/grid-template-columns:\s*420px minmax\(0, 1fr\)/);
     expect(css).toMatch(/grid-template-columns:\s*minmax\(0, 1fr\) 300px/);
     expect(overviewCss).toMatch(/\.hero[\s\S]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
     expect(photoCss).toMatch(/aspect-ratio:\s*16\s*\/\s*9/);

@@ -40,7 +40,7 @@ function headerFor(model: PublicDistrictModel): SiteHeaderModel {
     languageLabel: 'EN',
     languageSwitch: {
       label: '한국어',
-      href: `/ko/kr/seoul/explore/${model.identity.slug}/`,
+      href: `/ko/kr/seoul/explore/?district=${model.identity.slug}`,
       hrefLang: 'ko',
     },
     links: [

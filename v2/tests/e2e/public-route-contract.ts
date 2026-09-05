@@ -6,6 +6,7 @@ import {
 // Independently reviewed EN/zh-Hans pairs. Keep explicit destinations so a
 // self-link, wrong translation, or missing reciprocal alternate fails the gate.
 const editorialTranslationPairs = [
+  ['/', '/zh-cn/'],
   ['/news/', '/zh-cn/news/'],
   ['/guides/', '/zh-cn/guides/'],
   ['/news/policy/singapore-absd-policy-status/', '/zh-cn/news/policy/sg-absd-policy-zh/'],
@@ -57,7 +58,7 @@ export const publicRoutes = [
   },
   {
     path: '/kr/seoul/rankings/',
-    heading: 'Middle-half spread (P75 − P25)',
+    heading: 'Middle-half spread',
     indexing: 'index',
     canonical: '/kr/seoul/rankings/',
     alternates: true,
@@ -100,7 +101,7 @@ export const publicRoutes = [
   { path: '/news/', heading: 'News', indexing: 'index', canonical: '/news/' },
   { path: '/news/policy/singapore-absd-policy-status/', heading: 'Singapore ABSD: current buyer-profile check', indexing: 'index', canonical: '/news/policy/singapore-absd-policy-status/' },
   { path: '/news/seoul-district-price-distribution/', heading: 'Similar medians, different markets: read Seoul distributions', indexing: 'index', canonical: '/news/seoul-district-price-distribution/' },
-  { path: '/guides/', heading: 'Understand the process before making a decision.', indexing: 'index', canonical: '/guides/' },
+  { path: '/guides/', heading: 'Buying abroad starts with local knowledge.', indexing: 'index', canonical: '/guides/' },
   { path: '/guides/rent-an-apartment-in-korea/', heading: 'Rent an apartment in Korea: search-to-move-in sequence', indexing: 'index', canonical: '/guides/rent-an-apartment-in-korea/' },
   { path: '/zh-cn/news/', heading: '政策变化与市场数据，都回到原始依据。', indexing: 'index', canonical: '/zh-cn/news/' },
   { path: '/zh-cn/guides/', heading: '先理解本地流程，再作跨境决定。', indexing: 'index', canonical: '/zh-cn/guides/' },

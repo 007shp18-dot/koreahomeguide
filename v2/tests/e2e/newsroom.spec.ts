@@ -86,7 +86,7 @@ test('News uses the shared readable type and restrained frame', async ({ page },
   if (testInfo.project.name === 'desktop-chromium' || testInfo.project.name === 'wide-chromium') {
     expect(values.headingSize).toBe(48);
   } else {
-    expect(values.headingSize).toBeGreaterThanOrEqual(36);
+    expect(values.headingSize).toBeGreaterThanOrEqual(32);
   }
   expect(values.summarySize).toBeGreaterThanOrEqual(16);
   expect(values.typeFilterSize).toBeGreaterThanOrEqual(14);

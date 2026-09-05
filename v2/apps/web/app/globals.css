@@ -3578,6 +3578,7 @@ h1 {
 @media (max-width: 640px) {
   :root { --page-gutter: 14px; }
   .site-header__inner { gap: 6px 10px; }
+  .site-header__inner > .wordmark { min-height: 44px; }
   .market-hero,
   .market-hero--overview.site-shell { padding: 24px 20px; border-radius: 12px; }
   .market-hero--overview h1 { font-size: 36px; }

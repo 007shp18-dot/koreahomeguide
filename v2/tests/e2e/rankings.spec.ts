@@ -41,7 +41,7 @@ test('rankings server HTML exposes four complete evidence lists', async ({ page 
   const response = await page.goto('/kr/seoul/rankings/');
 
   expect(response?.status()).toBe(200);
-  await expect(page.getByRole('heading', { level: 1, name: 'Middle-half spread (P75 − P25)' }))
+  await expect(page.getByRole('heading', { level: 1, name: 'Middle-half spread' }))
     .toBeVisible();
   await expect(page.locator('[data-ranking-section]')).toHaveCount(4);
   await page.getByRole('tab', { name: 'Sale median', exact: true }).click();
@@ -52,7 +52,7 @@ test('rankings server HTML exposes four complete evidence lists', async ({ page 
     name: 'Three-month change not assessable',
   })).toBeVisible();
   await page.getByRole('tab', { name: 'Price spread' }).click();
-  await expect(page.getByRole('heading', { name: 'Middle-half spread (P75 − P25)' }))
+  await expect(page.getByRole('heading', { level: 1, name: 'Middle-half spread', exact: true }))
     .toBeVisible();
   await page.getByRole('tab', { name: 'Filing volume' }).click();
   await expect(page.getByRole('heading', { name: 'Qualifying reported contracts' }))

@@ -141,7 +141,7 @@ function InsightsHub({ workspace }: Readonly<{ workspace?: NewsWorkspaceModel }>
   return (
     <section className={`${styles.section} ${styles.newsSection}`} aria-labelledby="insights-title">
       <div className={styles.newsToolbar}>
-        <div><p>Reviewed SignedPrice reporting</p><h2 id="insights-title">Evidence first, commentary second.</h2></div>
+        <div><p>SignedPrice reporting</p><h2 id="insights-title">Evidence first, commentary second.</h2></div>
         <nav className={styles.newsToolbarLinks} aria-label="News and original reporting">
           <Link href="/news/?type=data-stories">Read original reports →</Link>
           <Link href="/kr/seoul/news/">Approved Seoul briefs →</Link>
@@ -158,7 +158,7 @@ function GuidesHub() {
     <>
       <section className={styles.section} aria-labelledby="guides-title">
         <div className={styles.sectionHeading}><p>Korea guides</p><h2 id="guides-title">Use the data without losing the local context.</h2></div>
-        <div className={styles.guideGrid}>{guides.map((guide) => <article key={guide.slug}><span>{guide.marketId === 'kr-seoul' ? 'Seoul' : 'Singapore'} · Reviewed {guide.reviewedAt?.slice(0, 10)}</span><h3>{guide.title}</h3><p>{guide.deck}</p><Link href={guide.canonicalHref}>Read guide →</Link></article>)}</div>
+        <div className={styles.guideGrid}>{guides.map((guide) => <article key={guide.slug}><span>{guide.marketId === 'kr-seoul' ? 'Seoul' : 'Singapore'} · Published {guide.publishedAt?.slice(0, 10)}</span><h3>{guide.title}</h3><p>{guide.deck}</p><Link href={guide.canonicalHref}>Read guide</Link></article>)}</div>
       </section>
       <section className={styles.marketGuideRow} aria-label="Guide coverage by market">
         <article><Status tone="live">Available</Status><h3>Buying and renting in Korea</h3><p>Contract evidence, district comparisons and decision methods.</p><Link href="/guides/rent-an-apartment-in-korea/">Start with renting →</Link></article>

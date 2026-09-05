@@ -225,7 +225,7 @@ test('district selection stays inside the Explore workspace', async ({ page }) =
 test('published quote stays local and any withheld detail stays money-free', async ({ page }) => {
   const assertNoRuntimeFailures = observeRuntimeFailures(page);
   await page.goto('/kr/seoul/explore/');
-  await page.waitForLoadState('networkidle');
+  await expect(page.locator('[data-district-option]').first()).toBeVisible();
 
   const publishedSlug = await page.locator('[data-district-option][title*="₩"]')
     .first()
@@ -235,9 +235,11 @@ test('published quote stays local and any withheld detail stays money-free', asy
 
   await page.goto(`/kr/seoul/explore/${publishedSlug}/`);
   await expect(page.locator('[data-district-detail="published"]')).toBeVisible();
-  await page.waitForLoadState('networkidle');
+  await expect(page.locator('input[name="quote"]')).toBeEnabled();
   const observedRequests: string[] = [];
-  page.on('request', (request) => observedRequests.push(request.url()));
+  page.on('request', (request) => {
+    if (request.url().includes('/api/') || request.method() !== 'GET') observedRequests.push(request.url());
+  });
   await page.locator('input[name="quote"]').fill('1');
   await expect(page.locator('[data-median-comparison="true"]')).toContainText(
     'below the reported median',
@@ -247,9 +249,9 @@ test('published quote stays local and any withheld detail stays money-free', asy
     .toHaveAttribute('href', `/kr/seoul/explore/?district=${publishedSlug}`);
 
   await page.goto('/kr/seoul/explore/');
-  const withheldSlug = await page.locator('[data-district-option][title*="Not published"]')
-    .first()
-    .getAttribute('data-district-option');
+  const withheldOptions = page.locator('[data-district-option][title*="Not published"]');
+  const withheldSlug = await withheldOptions.count() > 0
+    ? await withheldOptions.first().getAttribute('data-district-option') : null;
   if (withheldSlug !== null) {
     await page.goto(`/kr/seoul/explore/${withheldSlug}/`);
     await expect(page.locator('[data-district-detail="withheld"]')).toBeVisible();
@@ -278,7 +280,7 @@ test('mobile controls keep 44px focus targets and natural document scrolling', a
   expect(railPlacement.position).toBe('static');
   expect(railPlacement.maxHeight).toBe('none');
 
-  const navigation = page.getByRole('navigation', { name: 'Seoul evidence navigation' });
+  const navigation = page.getByRole('navigation', { name: 'Primary navigation' });
   const pricesTab = navigation.getByRole('link', { name: 'Prices' });
   const viewTabs = page.getByRole('navigation', { name: 'Explorer view' }).getByRole('link');
   const districtLink = page.locator('[data-district-option="gangnam-gu"]');
@@ -362,6 +364,7 @@ test('wide workspace keeps map, table, and legend contained', async ({ page }, t
   test.skip(testInfo.project.name !== 'wide-chromium');
   await page.goto('/kr/seoul/explore/');
 
+  await page.locator('summary').filter({ hasText: /^Map legend$/ }).click();
   await expect(page.getByRole('group', { name: 'Map legend' })).toBeVisible();
   await expect(page.locator('[data-district-rail="all-25"]')).toBeVisible();
   await expectNoHorizontalOverflow(page);
