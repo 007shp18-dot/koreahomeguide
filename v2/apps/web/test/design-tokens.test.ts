@@ -213,17 +213,26 @@ describe('signedprice brand foundation', () => {
 
   it('caps product display tracking and keeps body copy readable', () => {
     expect(declarationsFor(css, 'body')).toMatchObject({
-      'letter-spacing': '-0.012em',
+      'letter-spacing': 'normal',
       'line-height': '1.65',
     });
     expect(css).toMatch(/--tracking-display:\s*-0\.03em;/);
   });
 
   it('defines readable semantic type and control tokens', () => {
+    expect(css).toMatch(/--evidence-type-body:\s*1rem;/);
+    expect(css).toMatch(/--evidence-type-ui:\s*0\.875rem;/);
     expect(css).toMatch(/--text-meta:\s*0\.75rem;/);
     expect(css).toMatch(/--text-control:\s*0\.875rem;/);
     expect(css).toMatch(/--text-ui:\s*1rem;/);
     expect(css).toMatch(/--control-min:\s*44px;/);
+  });
+
+  it('keeps newsroom type in the product family and removes decorative blue bars', () => {
+    const news = readFileSync(join(componentsRoot, 'newsroom/newsroom.module.css'), 'utf8');
+    expect(news).not.toContain("font-family: Georgia");
+    expect(news).not.toMatch(/border-left:\s*[45]px solid var\(--review-accent\)/);
+    expect(news).toContain('line-height: 1.2;');
   });
 
   it('keeps public authored font sizes at twelve CSS pixels or larger', () => {

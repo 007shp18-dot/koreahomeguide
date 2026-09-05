@@ -91,7 +91,7 @@ export function createThreeMarketHomeModel(input: Input): ThreeMarketHomeModel {
         evidenceTitle: zh ? '市场与项目研究' : 'Market and project research',
         evidenceValue: null,
         evidenceNote: zh ? '详细交易数据展示权确认前，不提供价格查询。' : 'Transaction detail remains unavailable until display rights are cleared.',
-        primaryAction: { label: zh ? '查看迪拜市场' : 'Review Dubai market', href: '/ae/dubai/' },
+        primaryAction: { label: zh ? '探索迪拜' : 'Explore Dubai', href: '/ae/dubai/' },
         secondaryAction: null,
       },
     ],
