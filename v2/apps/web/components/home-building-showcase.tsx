@@ -25,11 +25,11 @@ function MarketVisual({ visual, googleMapsBrowserKey }: Readonly<{
       browserKey={googleMapsBrowserKey}
       buildingName={visual.name}
       address={visual.addressQuery}
-      registryKey={visual.market === 'Seoul'
+      registryKey={visual.photoRegistryKey ?? (visual.market === 'Seoul'
         ? `kr-seoul:${visual.id}`
         : visual.market === 'Singapore'
           ? `sg-project:${visual.id}`
-          : `market:${visual.market}:${visual.id}`}
+          : `market:${visual.market}:${visual.id}`)}
       fallback={fallback}
     />
   );

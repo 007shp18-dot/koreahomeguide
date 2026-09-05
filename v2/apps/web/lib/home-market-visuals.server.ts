@@ -14,6 +14,7 @@ export type HomeMarketVisual = Readonly<{
   latitude?: number;
   longitude?: number;
   addressQuery?: string;
+  photoRegistryKey?: string;
   observationLabel: string;
   periodLabel: string;
   facts: readonly string[];
@@ -39,6 +40,7 @@ function singaporeVisuals(): readonly HomeMarketVisual[] {
       location: `${block.town} · HDB`,
       provider: 'google' as const,
       addressQuery: `${address}, Singapore`,
+      photoRegistryKey: `sg-hdb:${block.town}:${address}`,
       observationLabel: `SGD ${block.resaleMedianSgd!.toLocaleString('en-SG')} resale median`,
       periodLabel: `${block.resaleCount.toLocaleString('en-SG')} reported resale records`,
       facts: Object.freeze([

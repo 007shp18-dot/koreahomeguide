@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node scripts/apply-content-database.mjs --if-configured && node scripts/seed-property-core.mjs --if-configured",
+    "prebuild": "node scripts/apply-content-database.mjs --if-configured",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
