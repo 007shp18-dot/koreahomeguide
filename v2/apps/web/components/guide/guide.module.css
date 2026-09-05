@@ -15,7 +15,7 @@
 .documentHero { min-height: 260px; padding: clamp(2rem, 5vw, 4rem); display: grid; align-content: end; gap: 1rem; border-bottom: 2px solid var(--guide-ink); }
 .hero > p:first-child,
 .documentHero > p:first-child,
-.sectionHeading > p { color: var(--guide-accent); font-size: 0.68rem; font-weight: 850; letter-spacing: 0.08em; text-transform: uppercase; }
+.sectionHeading > p { color: var(--guide-accent); font-size: var(--text-meta); font-weight: 850; letter-spacing: 0.08em; text-transform: uppercase; }
 .hero h1,
 .documentHero h1 { max-width: 1080px; font-size: clamp(2.6rem, 5.7vw, 5.6rem); letter-spacing: -0.04em; line-height: 1; }
 .hero > p:last-child,
@@ -27,25 +27,25 @@
 .sectionHeading h2 { font-size: clamp(1.4rem, 3vw, 2.65rem); letter-spacing: -0.045em; }
 .stageGroups { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 2px solid var(--guide-ink); border-left: 2px solid var(--guide-ink); }
 .guideStage { min-width: 0; border-right: 2px solid var(--guide-ink); border-bottom: 2px solid var(--guide-ink); }
-.guideStage > h3 { min-height: 48px; padding: 0.75rem 1rem; display: flex; align-items: center; border-bottom: 1px solid var(--guide-ink); color: var(--guide-accent); font-size: 0.7rem; letter-spacing: 0.07em; text-transform: uppercase; }
+.guideStage > h3 { min-height: 48px; padding: 0.75rem 1rem; display: flex; align-items: center; border-bottom: 1px solid var(--guide-ink); color: var(--guide-accent); font-size: var(--text-meta); letter-spacing: 0.07em; text-transform: uppercase; }
 .guides ol { display: grid; list-style: none; }
 .guides li { min-height: 260px; padding: 1rem; display: grid; align-content: start; gap: 0.8rem; border-right: 2px solid var(--guide-ink); border-bottom: 2px solid var(--guide-ink); }
 .guideStage .guides li,
 .guideStage li { border-right: 0; border-bottom: 0; }
 .guides h4 { font-size: 1.05rem; line-height: 1.25; }
-.guides li > p { color: var(--guide-muted); font-size: 0.72rem; line-height: 1.5; }
+.guides li > p { color: var(--guide-muted); font-size: var(--text-meta); line-height: 1.5; }
 .guides li > p:first-child { color: var(--guide-accent); font-weight: 850; text-transform: uppercase; }
 .guides a,
-.actions a { min-height: 44px; padding: 0.75rem 0.9rem; display: inline-grid; place-items: center; border: 2px solid var(--guide-ink); color: inherit; font-size: 0.72rem; font-weight: 850; text-decoration: none; }
+.actions a { min-height: 44px; padding: 0.75rem 0.9rem; display: inline-grid; place-items: center; border: 2px solid var(--guide-ink); color: inherit; font-size: var(--text-meta); font-weight: 850; text-decoration: none; }
 .guides a { margin-top: auto; }
 
 .glossary dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 2px solid var(--guide-ink); border-left: 2px solid var(--guide-ink); }
 .glossary dl > div { min-height: 160px; padding: 1rem; display: grid; align-content: start; gap: 0.7rem; border-right: 2px solid var(--guide-ink); border-bottom: 2px solid var(--guide-ink); }
 .glossary dt { font-size: 0.9rem; font-weight: 850; }
-.glossary dd { color: var(--guide-muted); font-size: 0.72rem; line-height: 1.5; }
+.glossary dd { color: var(--guide-muted); font-size: var(--text-meta); line-height: 1.5; }
 
 .breadcrumb { min-height: 44px; padding-inline: clamp(1rem, 4vw, 3.5rem); display: flex; align-items: center; border-bottom: 2px solid var(--guide-ink); }
-.breadcrumb ol { display: flex; flex-wrap: wrap; gap: 0.55rem; align-items: center; list-style: none; font-size: 0.7rem; font-weight: 800; }
+.breadcrumb ol { display: flex; flex-wrap: wrap; gap: 0.55rem; align-items: center; list-style: none; font-size: var(--text-meta); font-weight: 800; }
 .breadcrumb li + li::before { margin-right: 0.55rem; content: '/'; color: var(--guide-muted); }
 .breadcrumb a { min-height: 44px; display: inline-flex; align-items: center; color: inherit; }
 .steps { list-style: none; }
@@ -58,9 +58,9 @@
 .readingLayout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, 280px); border-bottom: 2px solid var(--guide-ink); }
 .readingColumn { min-width: 0; border-right: 2px solid var(--guide-ink); }
 .nextStep { position: sticky; top: 1rem; align-self: start; padding: 1.25rem; display: grid; gap: 0.8rem; }
-.nextStep > p { color: var(--guide-accent); font-size: 0.68rem; font-weight: 850; letter-spacing: 0.08em; text-transform: uppercase; }
+.nextStep > p { color: var(--guide-accent); font-size: var(--text-meta); font-weight: 850; letter-spacing: 0.08em; text-transform: uppercase; }
 .nextStep > strong { font-size: 1.1rem; line-height: 1.25; }
-.nextStep a { min-height: 44px; padding: 0.75rem 0.9rem; display: inline-grid; place-items: center; color: var(--guide-ground); background: var(--guide-accent); font-size: 0.72rem; font-weight: 850; text-align: center; text-decoration: none; }
+.nextStep a { min-height: 44px; padding: 0.75rem 0.9rem; display: inline-grid; place-items: center; color: var(--guide-ground); background: var(--guide-accent); font-size: var(--text-meta); font-weight: 850; text-align: center; text-decoration: none; }
 .actions { padding: clamp(1rem, 4vw, 3.5rem); display: flex; flex-wrap: wrap; gap: 0.75rem; border-bottom: 2px solid var(--guide-ink); }
 .guides a:focus-visible,
 .actions a:focus-visible,
@@ -91,7 +91,7 @@
   padding: clamp(1.8rem, 4vw, 3rem);
   overflow: hidden;
   border: 1px solid var(--line);
-  border-radius: 18px;
+  border-radius: 12px;
   background: linear-gradient(130deg, #fff 50%, #eef5ff);
   box-shadow: var(--shadow-sm);
 }
@@ -107,7 +107,7 @@
   margin-top: 16px;
   padding: 26px;
   border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: 12px;
   background: var(--surface-strong);
   box-shadow: var(--shadow-sm);
 }
@@ -123,7 +123,7 @@
 .steps p,
 .boundary p { font-size: .8125rem; line-height: 1.6; }
 .guides a,
-.actions a { border: 1px solid var(--line); border-radius: 9px; font-size: .8125rem; }
+.actions a { border: 1px solid var(--line); border-radius: 8px; font-size: .8125rem; }
 .guides a:hover,
 .actions a:hover { color: var(--accent); background: var(--soft-blue); }
 .breadcrumb { padding: 0 4px 12px; border: 0; }
@@ -131,7 +131,7 @@
 .readingColumn { border-color: var(--line); }
 .steps li { border-color: var(--line); }
 .nextStep { padding: 24px; }
-.nextStep a { border-radius: 9px; font-size: .8125rem; }
+.nextStep a { border-radius: 8px; font-size: .8125rem; }
 .boundary { margin-inline: 0; }
 
 @media (max-width: 720px) {

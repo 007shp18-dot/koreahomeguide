@@ -68,7 +68,7 @@
   justify-content: flex-end;
   gap: 8px 20px;
   color: #536176;
-  font-size: .74rem;
+  font-size: var(--text-meta);
   font-weight: 700;
 }
 

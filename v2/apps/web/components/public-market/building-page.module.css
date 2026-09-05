@@ -1,54 +1,54 @@
 .page { min-height: 100dvh; color: #111827; background: #f7f9fc; font-variant-numeric: tabular-nums; }
 .main { width: min(1180px, calc(100% - 40px)); margin: 26px auto 72px; }
-.breadcrumb { margin-bottom: 12px; display: flex; gap: 8px; color: #718096; font-size: .71rem; }
+.breadcrumb { margin-bottom: 12px; display: flex; gap: 8px; color: #718096; font-size: var(--text-meta); }
 .breadcrumb a { color: inherit; text-decoration: none; }
 .breadcrumb span::before { margin-right: 8px; content: '/'; }
-.identityHero { min-height: 280px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; overflow: hidden; border: 1px solid #dfe5ec; border-radius: 13px; background: #fff; box-shadow: 0 10px 28px rgb(15 23 42 / 5%); }
+.identityHero { min-height: 280px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; overflow: hidden; border: 1px solid #dfe5ec; border-radius: 12px; background: #fff; box-shadow: 0 10px 28px rgb(15 23 42 / 5%); }
 .identitySummary { padding: 34px; display: flex; flex-direction: column; justify-content: center; }
 .identityMedia { grid-row: 1; min-width: 0; min-height: 390px; overflow: hidden; background: #e8f0f6; }
 .identitySummary { grid-row: 2; }
 .identityMedia > section,
 .identityMedia > figure,
 .identityMedia > div { min-height: 390px; border: 0; border-radius: 0; }
-.backAction { width: fit-content; color: #607086; font-size: .7rem; font-weight: 650; text-decoration: none; }
-.identityEyebrow { margin: 22px 0 0; color: #2d67a5; font-size: .67rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.backAction { width: fit-content; color: #607086; font-size: var(--text-meta); font-weight: 650; text-decoration: none; }
+.identityEyebrow { margin: 22px 0 0; color: #2d67a5; font-size: var(--text-meta); font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 .identitySummary h1 { max-width: 28ch; margin: 8px 0; font-size: clamp(1.9rem, 3.4vw, 2.9rem); letter-spacing: -.045em; line-height: 1.08; overflow-wrap: anywhere; text-wrap: balance; }
 .location { margin: 0; color: #66758a; font-size: .8rem; }
 .identityFacts { margin: 18px 0 0; display: flex; flex-wrap: wrap; gap: 8px; }
-.identityFacts span { padding: 6px 9px; border: 1px solid #dfe5ec; border-radius: 99px; color: #4f6076; background: #fafbfd; font-size: .65rem; }
-.primaryAction { width: fit-content; margin-top: 20px; padding: 10px 14px; border-radius: 7px; color: #fff; background: #145895; font-size: .71rem; font-weight: 750; text-decoration: none; }
+.identityFacts span { padding: 6px 9px; border: 1px solid #dfe5ec; border-radius: 999px; color: #4f6076; background: #fafbfd; font-size: var(--text-meta); }
+.primaryAction { width: fit-content; margin-top: 20px; padding: 10px 14px; border-radius: 8px; color: #fff; background: #145895; font-size: var(--text-meta); font-weight: 750; text-decoration: none; }
 .tabs { margin-top: 14px; display: flex; gap: 27px; overflow-x: auto; border-bottom: 1px solid #dfe5ec; }
 .tabs a,
-.tabs span { flex: 0 0 auto; padding: 13px 2px 11px; border-bottom: 2px solid transparent; color: #66758a; font-size: .71rem; font-weight: 700; text-decoration: none; }
+.tabs span { flex: 0 0 auto; padding: 13px 2px 11px; border-bottom: 2px solid transparent; color: #66758a; font-size: var(--text-meta); font-weight: 700; text-decoration: none; }
 .tabs a:first-child { color: #152033; border-color: #286ca9; }
 .tabs span { color: #9aa5b4; }
 .summaryGrid { margin-top: 14px; display: grid; grid-template-columns: .75fr 1.3fr .75fr; gap: 13px; }
-.summaryGrid article { min-height: 165px; padding: 20px; border: 1px solid #e0e6ed; border-radius: 10px; background: #fff; box-shadow: 0 6px 20px rgb(15 23 42 / 4%); }
+.summaryGrid article { min-height: 165px; padding: 20px; border: 1px solid #e0e6ed; border-radius: 12px; background: #fff; box-shadow: 0 6px 20px rgb(15 23 42 / 4%); }
 .summaryGrid h2 { margin: 0 0 18px; font-size: .82rem; }
 .priceSummary { display: grid; align-content: start; }
-.priceSummary span { color: #718096; font-size: .64rem; }
+.priceSummary span { color: #718096; font-size: var(--text-meta); }
 .priceSummary strong { margin-top: 6px; font-size: 1.4rem; letter-spacing: -.035em; }
-.priceSummary small { margin-top: 7px; color: #2a8a62; font-size: .66rem; }
+.priceSummary small { margin-top: 7px; color: #2a8a62; font-size: var(--text-meta); }
 .transactionList { margin: 0; padding: 0; list-style: none; }
-.transactionList li { padding: 8px 0; display: grid; grid-template-columns: 90px 1fr auto; gap: 10px; border-top: 1px solid #edf0f4; font-size: .67rem; }
+.transactionList li { padding: 8px 0; display: grid; grid-template-columns: 90px 1fr auto; gap: 10px; border-top: 1px solid #edf0f4; font-size: var(--text-meta); }
 .transactionList li:first-child { border-top: 0; }
 .transactionList span { color: #718096; }
-.transactionList strong { font-size: .7rem; }
+.transactionList strong { font-size: var(--text-meta); }
 .preparing { background: linear-gradient(145deg, #fff, #f4f7fa) !important; }
-.preparing span { color: #2d67a5; font-size: .64rem; font-weight: 800; text-transform: uppercase; }
-.preparing p { color: #66758a; font-size: .69rem; line-height: 1.55; }
-.facts { margin-top: 14px; overflow: hidden; border: 1px solid #e0e6ed; border-radius: 10px; background: #fff; }
-.profileFacts { margin-top: 14px; padding: 20px; display: grid; grid-template-columns: minmax(180px,.55fr) minmax(0,1.45fr); gap: 20px; border: 1px solid #e0e6ed; border-radius: 10px; background: #fff; box-shadow: 0 6px 20px rgb(15 23 42 / 4%); }
-.profileFacts > div > span { color: #2d67a5; font-size: .64rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.preparing span { color: #2d67a5; font-size: var(--text-meta); font-weight: 800; text-transform: uppercase; }
+.preparing p { color: #66758a; font-size: var(--text-meta); line-height: 1.55; }
+.facts { margin-top: 14px; overflow: hidden; border: 1px solid #e0e6ed; border-radius: 12px; background: #fff; }
+.profileFacts { margin-top: 14px; padding: 20px; display: grid; grid-template-columns: minmax(180px,.55fr) minmax(0,1.45fr); gap: 20px; border: 1px solid #e0e6ed; border-radius: 12px; background: #fff; box-shadow: 0 6px 20px rgb(15 23 42 / 4%); }
+.profileFacts > div > span { color: #2d67a5; font-size: var(--text-meta); font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 .profileFacts h2 { margin-top: 6px; font-size: 1rem; line-height: 1.3; }
 .profileFacts dl { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); border-top: 1px solid #e5eaf0; border-left: 1px solid #e5eaf0; }
 .profileFacts dl > div { min-height: 65px; padding: 10px 12px; display: grid; align-content: space-between; gap: 5px; border-right: 1px solid #e5eaf0; border-bottom: 1px solid #e5eaf0; }
-.profileFacts dt { color: #718096; font-size: .61rem; font-weight: 750; }
-.profileFacts dd { font-size: .72rem; font-weight: 750; line-height: 1.4; }
+.profileFacts dt { color: #718096; font-size: var(--text-meta); font-weight: 750; }
+.profileFacts dd { font-size: var(--text-meta); font-weight: 750; line-height: 1.4; }
 .contextGrid { margin-top: 14px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; align-items: start; }
-.contextGrid > section { min-width: 0; overflow: hidden; border: 1px solid #e0e6ed; border-radius: 10px; background: #fff; box-shadow: 0 6px 20px rgb(15 23 42 / 4%); }
-.decisionRegion { margin-top: 14px; overflow: hidden; border: 1px solid #e0e6ed; border-radius: 10px; background: #fff; box-shadow: 0 6px 20px rgb(15 23 42 / 4%); }
-.selectedModeStatus { margin: 0; padding: 10px 18px; border-bottom: 1px solid #edf0f4; color: #718096; font-size: .66rem; }
+.contextGrid > section { min-width: 0; overflow: hidden; border: 1px solid #e0e6ed; border-radius: 12px; background: #fff; box-shadow: 0 6px 20px rgb(15 23 42 / 4%); }
+.decisionRegion { margin-top: 14px; overflow: hidden; border: 1px solid #e0e6ed; border-radius: 12px; background: #fff; box-shadow: 0 6px 20px rgb(15 23 42 / 4%); }
+.selectedModeStatus { margin: 0; padding: 10px 18px; border-bottom: 1px solid #edf0f4; color: #718096; font-size: var(--text-meta); }
 .details { margin-top: 14px; }
 @media (max-width: 850px) {
   .identityHero { grid-template-columns: 1fr; }

@@ -57,6 +57,8 @@ export interface NavigationLinkModel {
   readonly description?: string;
 }
 
+export type GlobalNavigationItem = 'Markets' | 'Prices' | 'News' | 'Guides';
+
 export interface SiteHeaderModel {
   readonly brand: string;
   readonly homeLabel: string;
@@ -85,12 +87,9 @@ export interface SiteFooterModel {
 export const productNavigationLinks = Object.freeze([
   { index: '01', label: 'Markets', description: 'Compare market context', href: '/markets/' },
   { index: '02', label: 'Prices', description: 'Explore signed evidence', href: '/prices/' },
-  { index: '03', label: 'Properties', description: 'Service preparing', href: '/properties/' },
-  { index: '04', label: 'News', description: 'Read verified market news', href: '/news/' },
-  { index: '05', label: 'Community', description: 'Local conversations', href: '/community/' },
-  { index: '06', label: 'Guides', description: 'Understand local decisions', href: '/guides/' },
-  { index: '07', label: 'Invest', description: 'Service preparing', href: '/invest/' },
-] as const satisfies readonly NavigationLinkModel[]);
+  { index: '03', label: 'News', description: 'Read verified market news', href: '/news/' },
+  { index: '04', label: 'Guides', description: 'Understand local decisions', href: '/guides/' },
+] as const satisfies readonly (NavigationLinkModel & { readonly label: GlobalNavigationItem })[]);
 
 export const KOREA_PUBLIC_RELEASE_STATUS =
   'Korea public evidence. Publication limits shown.' as const;
@@ -145,7 +144,6 @@ const englishFooterCopy = {
     { label: 'Markets', href: '/markets/' },
     { label: 'Prices', href: '/prices/' },
     { label: 'News', href: '/news/' },
-    { label: 'Insights', href: '/insights/' },
     { label: 'Community', href: '/community/' },
     { label: 'Guides', href: '/guides/' },
     { label: 'Trust', href: '/trust/' },

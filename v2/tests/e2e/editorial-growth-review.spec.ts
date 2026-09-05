@@ -67,10 +67,12 @@ test('article measure and typography match the approved contract', async ({ page
 
 test('Chinese does not inherit Latin negative tracking', async ({ page }) => {
   await page.goto('/design-review/editorial-growth/content/?locale=zh-CN&state=ready&ad=empty');
-  await expect(page.locator('[data-review-locale="zh-CN"]')).toHaveCSS('letter-spacing', '0px');
+  // Chromium may serialize a zero letter-spacing as "normal".
+  const zeroTracking = /^(?:normal|0px)$/;
+  await expect(page.locator('[data-review-locale="zh-CN"]')).toHaveCSS('letter-spacing', zeroTracking);
   const headings = page.locator('[data-review-locale="zh-CN"] h1, [data-review-locale="zh-CN"] h2, [data-review-locale="zh-CN"] h3');
   for (let index = 0; index < await headings.count(); index += 1) {
-    await expect(headings.nth(index)).toHaveCSS('letter-spacing', '0px');
+    await expect(headings.nth(index)).toHaveCSS('letter-spacing', zeroTracking);
   }
 });
 
@@ -102,12 +104,14 @@ test('wide homepage keeps the opening proposition above the fold', async ({ page
 
 test('toolbar focus is visible and cobalt', async ({ page }) => {
   await page.goto('/design-review/editorial-growth/home/?locale=en&state=ready&ad=empty');
-  const wordmark = page.getByRole('link', { name: 'signedprice' });
+  const wordmark = page.locator('[data-review-surface="home"] > header')
+    .getByRole('link', { name: /^signed\s*price$/i });
 
   await page.keyboard.press('Tab');
   await expect(wordmark).toBeFocused();
   await expect(wordmark).toHaveCSS('outline-width', '2px');
   await expect(wordmark).toHaveCSS('outline-style', 'solid');
+  await expect(wordmark).toHaveCSS('outline-color', 'rgb(29, 78, 216)');
 });
 
 test('empty advertising leaves no reserved article gap', async ({ page }) => {

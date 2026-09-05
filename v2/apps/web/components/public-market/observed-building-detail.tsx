@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import type { ObservedBuildingIdentityModel } from '../../lib/public-market/observed-building-route-model.server';
 import type { KoreaExplorerBuildingDetailModel } from '../../lib/public-market/korea-explorer-evidence.server';
 import { localizedSeoulHref, type ProductLocale } from '../../lib/locale/product-copy';
+import { createEntityCheckHref } from '../../lib/navigation/explorer-selection';
 import {
   KOREA_PUBLIC_RELEASE_STATUS,
   type SiteFooterModel,
@@ -240,12 +241,30 @@ export function buildKoreaEvidenceCheckHref(
   model: KoreaExplorerBuildingDetailModel,
   locale: ProductLocale = 'en',
 ): string {
-  const query = new URLSearchParams();
-  query.set('transaction', model.selection.transaction);
-  query.set('district', model.district.slug);
-  query.set('housing', model.building.housingType);
-  query.set('building', model.building.buildingId);
-  return localizedSeoulHref(`/kr/seoul/check/?${query.toString()}`, locale);
+  const detailQuery = new URLSearchParams();
+  detailQuery.set('transaction', model.selection.transaction);
+  detailQuery.set('area', model.selection.areaBand);
+  detailQuery.set('propertyType', model.building.housingType);
+  detailQuery.set('district', model.district.slug);
+  detailQuery.set('neighborhood', model.building.neighborhoodId);
+  detailQuery.set('buildingId', model.building.buildingId);
+  const detailHref = localizedSeoulHref(
+    `/kr/seoul/explore/${model.district.slug}/${model.building.buildingId}/?${detailQuery.toString()}`,
+    locale,
+  );
+  return createEntityCheckHref(localizedSeoulHref('/kr/seoul/check/', locale), {
+    market: 'kr-seoul',
+    entity: model.building.buildingId,
+    returnTo: detailHref,
+    selection: {
+      market: 'kr',
+      transaction: model.selection.transaction,
+      propertyType: model.building.housingType,
+      district: model.district.slug,
+      neighborhood: model.building.neighborhoodId,
+      buildingId: model.building.buildingId,
+    },
+  });
 }
 
 export function KoreaEvidenceBuildingDetail({
@@ -279,7 +298,7 @@ export function KoreaEvidenceBuildingDetail({
           data-identity-hero="true"
           data-building-section="identity"
         >
-          {visual ?? <div className={styles.visualUnavailable} data-building-media="exact-cohort-evidence">
+          <div data-detail-order="media">{visual ?? <div className={styles.visualUnavailable} data-building-media="exact-cohort-evidence">
             <div className={styles.visualEvidenceMark} aria-hidden="true">
               <span>Official</span>
               <span>Exact cohort</span>
@@ -293,8 +312,8 @@ export function KoreaEvidenceBuildingDetail({
                 remain in the selected transaction, area, and building cohort.
               </p>
             </div>
-          </div>}
-          <div className={styles.identitySummary}>
+          </div>}</div>
+          <div className={styles.identitySummary} data-detail-order="identity">
             <Link className={styles.backAction} href={backHref}>
               Back to {model.district.nameEn} Explore
             </Link>
@@ -318,7 +337,7 @@ export function KoreaEvidenceBuildingDetail({
           <a href="#building-source">{locale === 'ko' ? '출처' : 'Sources'}</a>
         </nav>
 
-        <aside className={styles.mockupRail} aria-label={locale === 'ko' ? '건물 가격 요약' : 'Building price summary'}>
+        <aside className={styles.mockupRail} data-detail-order="current-evidence" aria-label={locale === 'ko' ? '건물 가격 요약' : 'Building price summary'}>
           <p>{locale === 'ko' ? '현재 신고 중앙값' : 'CURRENT REPORTED MEDIAN'}</p>
           <strong>{model.evidence.medianLabel ?? (locale === 'ko' ? '게시 기준 미달' : 'Not published')}</strong>
           <span>{transactionLabel} · {areaLabel}</span>
@@ -362,7 +381,7 @@ export function KoreaEvidenceBuildingDetail({
             <p>{locale === 'ko' ? '현재 릴리스는 선택 기간의 분포와 실제 신고 행만 보유합니다. 월별 가격선을 임의로 만들지 않습니다.' : 'This release retains the selected-period distribution and actual filing rows. It does not fabricate a monthly line from incomplete cohorts.'}</p>
           </section>
 
-          <div id="building-transactions" className={styles.sectionHeading}><p>{locale === 'ko' ? '실제 신고 거래' : 'Reported filings'}</p><h2>{locale === 'ko' ? '선택 조건에 남은 신고 행' : 'Filings retained in this exact cohort'}</h2></div>
+          <div id="building-transactions" className={styles.sectionHeading} data-detail-order="history"><p>{locale === 'ko' ? '실제 신고 거래' : 'Reported filings'}</p><h2>{locale === 'ko' ? '선택 조건에 남은 신고 행' : 'Filings retained in this exact cohort'}</h2></div>
           {model.recentTransactions.length === 0 ? (
             <p>No privacy-safe recent rows remain in this selected cohort.</p>
           ) : (
@@ -393,23 +412,9 @@ export function KoreaEvidenceBuildingDetail({
               </table>
             </div>
           )}
-
-          <details id="building-source" className={styles.sourceDetails}>
-            <summary>Source and publication details</summary>
-            <dl className={styles.sourceGrid}>
-              <div><dt>Source</dt><dd>MOLIT reported contracts</dd></div>
-              <div><dt>Source period</dt><dd>{model.period}</dd></div>
-              <div><dt>Generated</dt><dd>{model.generatedAt.slice(0, 10)}</dd></div>
-              <div><dt>Publication minimum</dt><dd>5 eligible contracts</dd></div>
-            </dl>
-          </details>
-          <div className={styles.actions}>
-            <Link href={backHref}>Return to Explore</Link>
-            <Link href="/trust/">Read the evidence policy</Link>
-          </div>
         </section>
 
-        <section id="building-area-prices" className={styles.areaBands} aria-labelledby="building-area-prices-heading">
+        <section id="building-area-prices" className={styles.areaBands} data-detail-order="comparable-range" aria-labelledby="building-area-prices-heading">
           <div className={styles.sectionHeading}>
             <p>{locale === 'ko' ? '면적별 가격' : 'Price by home size'}</p>
             <h2 id="building-area-prices-heading">{locale === 'ko' ? '같은 건물의 면적 구간을 전환합니다.' : 'Switch between verified size cohorts for this building.'}</h2>
@@ -421,12 +426,7 @@ export function KoreaEvidenceBuildingDetail({
           </li>)}</ul>
         </section>
 
-        <section className={styles.relatedContext} aria-label={locale === 'ko' ? '계약과 주변 비교' : 'Contract and nearby comparison'}>
-          <article><span>{locale === 'ko' ? '신규·갱신 비교' : 'New and renewal comparison'}</span><h2>{locale === 'ko' ? '계약 구분을 섞지 않습니다.' : 'Contract groups stay separate.'}</h2><p>{model.selection.transaction === 'sale' ? (locale === 'ko' ? '매매 신고에는 신규·갱신 구분을 적용하지 않습니다.' : 'New and renewal cohorts do not apply to reported sales.') : (locale === 'ko' ? `현재 선택: ${model.selection.contractGroup}` : `Current cohort: ${model.selection.contractGroup}`)}</p></article>
-          <article><span>{locale === 'ko' ? '인근 단지 비교' : 'Nearby buildings'}</span><h2>{locale === 'ko' ? '같은 구의 실제 단지를 비교합니다.' : 'Compare verified buildings in the same district.'}</h2><p>{locale === 'ko' ? '좌표와 동일 기간 가격 근거가 있는 단지만 Explore에서 표시합니다.' : 'Explore shows only buildings with a verified identity and compatible period evidence.'}</p><Link href={localizedSeoulHref(`/kr/seoul/explore/?district=${model.district.slug}`, locale)}>{locale === 'ko' ? '인근 단지 열기' : 'Open nearby buildings'}</Link></article>
-        </section>
-
-        <div id="building-facts" className={styles.factsAnchor}><KnownBuildingFacts facts={[
+        <div id="building-facts" className={styles.factsAnchor} data-detail-order="facts"><KnownBuildingFacts facts={[
           { label: locale === 'ko' ? '공식 건물명' : 'Official identity', value: model.building.officialName },
           { label: locale === 'ko' ? '지역' : 'Area', value: `${model.building.neighborhoodName} · ${model.district.nameEn}` },
           { label: locale === 'ko' ? '주택 유형' : 'Housing type', value: model.building.housingType },
@@ -434,14 +434,34 @@ export function KoreaEvidenceBuildingDetail({
           { label: locale === 'ko' ? '면적 구간' : 'Area cohort', value: areaLabel },
           { label: locale === 'ko' ? '근거 기간' : 'Evidence period', value: model.period },
         ]} /></div>
-        {facts}
+        <div data-detail-order="proximity">{facts}</div>
 
         <section className={styles.relatedContext} aria-label={locale === 'ko' ? '입주와 개발 정보' : 'Supply and development context'}>
           <article><span>{locale === 'ko' ? '입주 예정 물량' : 'Scheduled completions'}</span><h2>{locale === 'ko' ? '미확인' : 'Not verified'}</h2><p>{locale === 'ko' ? '이 건물과 직접 연결된 검증 자료가 없으므로 수치를 표시하지 않습니다.' : 'No verified building-linked supply record is attached, so no estimate is shown.'}</p></article>
           <article><span>{locale === 'ko' ? '인근 개발 정보' : 'Nearby development'}</span><h2>{locale === 'ko' ? '미확인' : 'Not verified'}</h2><p>{locale === 'ko' ? '주소와 사업 고유번호가 연결된 뒤에만 공개합니다.' : 'This opens only after an address and official project identity are matched.'}</p></article>
         </section>
 
-        <BuildingLocalContext buildingId={model.building.buildingId} district={model.district.slug} />
+        <details id="building-source" className={styles.sourceDetails} data-detail-order="sources">
+          <summary>Source and publication details</summary>
+          <dl className={styles.sourceGrid}>
+            <div><dt>Source</dt><dd>MOLIT reported contracts</dd></div>
+            <div><dt>Source period</dt><dd>{model.period}</dd></div>
+            <div><dt>Generated</dt><dd>{model.generatedAt.slice(0, 10)}</dd></div>
+            <div><dt>Publication minimum</dt><dd>5 eligible contracts</dd></div>
+          </dl>
+        </details>
+
+        <div data-detail-order="related-actions">
+          <section className={styles.relatedContext} aria-label={locale === 'ko' ? '계약과 주변 비교' : 'Contract and nearby comparison'}>
+            <article><span>{locale === 'ko' ? '신규·갱신 비교' : 'New and renewal comparison'}</span><h2>{locale === 'ko' ? '계약 구분을 섞지 않습니다.' : 'Contract groups stay separate.'}</h2><p>{model.selection.transaction === 'sale' ? (locale === 'ko' ? '매매 신고에는 신규·갱신 구분을 적용하지 않습니다.' : 'New and renewal cohorts do not apply to reported sales.') : (locale === 'ko' ? `현재 선택: ${model.selection.contractGroup}` : `Current cohort: ${model.selection.contractGroup}`)}</p></article>
+            <article><span>{locale === 'ko' ? '인근 단지 비교' : 'Nearby buildings'}</span><h2>{locale === 'ko' ? '같은 구의 실제 단지를 비교합니다.' : 'Compare verified buildings in the same district.'}</h2><p>{locale === 'ko' ? '좌표와 동일 기간 가격 근거가 있는 단지만 Explore에서 표시합니다.' : 'Explore shows only buildings with a verified identity and compatible period evidence.'}</p><Link href={localizedSeoulHref(`/kr/seoul/explore/?district=${model.district.slug}`, locale)}>{locale === 'ko' ? '인근 단지 열기' : 'Open nearby buildings'}</Link></article>
+          </section>
+          <BuildingLocalContext buildingId={model.building.buildingId} district={model.district.slug} />
+          <div className={styles.actions}>
+            <Link href={backHref}>Return to Explore</Link>
+            <Link href="/trust/">Read the evidence policy</Link>
+          </div>
+        </div>
       </main>
       <SiteFooter copy={exactEvidenceFooter} />
     </div>

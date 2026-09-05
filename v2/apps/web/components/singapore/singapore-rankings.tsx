@@ -59,7 +59,7 @@ export function SingaporeRankings({ rows, periodLabel }: Readonly<{
       <dl><div><dt>Published projects</dt><dd>{rows.length}</dd></div><div><dt>Default metric</dt><dd>Sale median</dd></div></dl>
     </header>
     <nav className={styles.tabs} aria-label="Singapore ranking metric">
-      {METRICS.map((item) => <button key={item.id} type="button" aria-selected={metric === item.id} onClick={() => setMetric(item.id)}>{item.label}</button>)}
+      {METRICS.map((item) => <button key={item.id} type="button" aria-pressed={metric === item.id} onClick={() => setMetric(item.id)}>{item.label}</button>)}
     </nav>
     <div className={styles.summary}><span>Ranking by</span><strong>{metricName}</strong><p>Only projects meeting the publication minimum are included. This is not a quality or investment score.</p></div>
     {ranked.length === 0 ? <p className={styles.empty}>No published project distribution is available.</p> : <ol className={styles.rows}>

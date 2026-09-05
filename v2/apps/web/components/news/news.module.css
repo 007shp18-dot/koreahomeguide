@@ -9,7 +9,7 @@
 
 .workspaceMain { width: min(1360px, calc(100% - 40px)); margin: 26px auto 72px; border-top: 2px solid #111827; border-inline: 1px solid #111827; background: #f5f3ee; }
 .workspaceHero { min-height: 230px; padding: 32px; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(300px, .65fr); align-items: end; gap: 48px; border-bottom: 2px solid #111827; }
-.workspaceHero > div > p { margin: 0 0 10px; color: #375f89; font-size: 11px; font-weight: 850; letter-spacing: .1em; }
+.workspaceHero > div > p { margin: 0 0 10px; color: #375f89; font-size: var(--text-meta); font-weight: 850; letter-spacing: .1em; }
 .workspaceHero h1 { margin: 0; max-width: 760px; font-size: clamp(2.5rem, 5vw, 5.3rem); letter-spacing: -.06em; line-height: .94; }
 .workspaceHero > p { margin: 0; color: #596474; font-size: 13px; line-height: 1.65; }
 .workspaceTabs { min-height: 52px; display: flex; align-items: stretch; border-bottom: 1px solid #111827; }
@@ -48,7 +48,7 @@
 .sectionHeading > p,
 .citation > p:first-child {
   color: var(--news-accent);
-  font-size: 0.7rem;
+  font-size: var(--text-meta);
   font-weight: 900;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -111,7 +111,7 @@
   align-content: start;
   gap: 0.55rem;
   border-right: 1px solid var(--news-ink);
-  font-size: 0.72rem;
+  font-size: var(--text-meta);
   font-weight: 800;
 }
 
@@ -123,7 +123,7 @@
 
 .market {
   color: var(--news-muted);
-  font-size: 0.64rem;
+  font-size: var(--text-meta);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -404,7 +404,7 @@
   padding: clamp(1.8rem, 4vw, 3rem);
   overflow: hidden;
   border: 1px solid var(--line);
-  border-radius: 18px;
+  border-radius: 12px;
   background: linear-gradient(130deg, #fff 50%, #eef5ff);
   box-shadow: var(--shadow-sm);
 }
@@ -422,7 +422,7 @@
   margin-top: 16px;
   overflow: hidden;
   border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: 12px;
   background: var(--surface-strong);
   box-shadow: var(--shadow-sm);
 }
@@ -449,7 +449,7 @@
 .body li { font-size: clamp(1rem, 1.5vw, 1.1rem); }
 .citation { padding: 26px; border-color: var(--line); }
 .citation a,
-.actions a { border-color: var(--line); border-radius: 9px; font-size: .8125rem; }
+.actions a { border-color: var(--line); border-radius: 8px; font-size: .8125rem; }
 .actions { padding: 12px; gap: 10px; }
 .actions a { border-width: 1px; }
 
@@ -474,7 +474,7 @@
   grid-template-columns: minmax(0, 1.2fr) minmax(280px, .65fr);
   overflow: hidden;
   border: 1px solid var(--line);
-  border-radius: 18px;
+  border-radius: 12px;
   background: linear-gradient(135deg, #fff 42%, var(--soft-blue));
   box-shadow: var(--shadow-md);
 }
@@ -492,7 +492,7 @@
   gap: 4px;
   overflow-x: auto;
   border: 1px solid var(--line);
-  border-radius: 13px;
+  border-radius: 12px;
   background: var(--surface-strong);
   box-shadow: var(--shadow-sm);
 }
@@ -502,7 +502,7 @@
   min-height: 40px;
   padding: 9px 12px;
   border: 0;
-  border-radius: 9px;
+  border-radius: 8px;
   color: var(--muted);
   font-size: .8125rem;
 }
@@ -515,7 +515,7 @@
   margin-top: 12px;
   padding: 20px 22px;
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: 12px;
   color: var(--muted);
   background: var(--surface-strong);
   box-shadow: var(--shadow-sm);

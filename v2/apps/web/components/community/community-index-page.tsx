@@ -7,10 +7,7 @@ import styles from './community-index.module.css';
 
 const header: SiteHeaderModel = {
   ...homepageCopy.header,
-  links: homepageCopy.header.links.map((link) => ({
-    ...link,
-    isCurrent: link.href === '/community/',
-  })),
+  links: homepageCopy.header.links,
 };
 
 const markets = [

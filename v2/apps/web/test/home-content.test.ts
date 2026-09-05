@@ -20,10 +20,10 @@ describe('signedprice homepage copy', () => {
     const markup = renderToStaticMarkup(await Home());
     const needles = [
       'See the market before you make the move.',
-      'Seoul transaction evidence',
+      'Choose the next useful step',
+      'What changed',
       'Latest from the data desk',
       'Guides for renting and buying',
-      'How this evidence works',
     ];
     const positions = needles.map((needle) => markup.indexOf(needle));
 
@@ -99,7 +99,7 @@ describe('signedprice homepage copy', () => {
   it('keeps the four public products and three markets navigable', async () => {
     const markup = renderToStaticMarkup(await Home());
 
-    for (const href of ['/', '/insights', '/kr/seoul/check', '/kr/seoul/explore', '/kr/seoul', '/sg', '/ae/dubai']) {
+    for (const href of ['/', '/news', '/kr/seoul/check', '/kr/seoul/explore', '/kr/seoul', '/sg', '/ae/dubai']) {
       expect(markup).toContain(`href="${href}"`);
     }
     expect(markup).toContain('aria-label="Primary navigation"');

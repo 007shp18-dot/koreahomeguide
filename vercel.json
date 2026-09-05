@@ -22,7 +22,7 @@
     },
     {
       "source": "/guides/",
-      "destination": "https://www.signedprice.com/kr/seoul/guide/",
+      "destination": "https://www.signedprice.com/guides/",
       "statusCode": 301
     },
     {

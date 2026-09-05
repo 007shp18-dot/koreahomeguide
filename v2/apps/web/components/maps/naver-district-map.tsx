@@ -433,6 +433,9 @@ export function NaverDistrictMap({
   fallback,
   locale = 'en',
 }: NaverDistrictMapProps) {
+  const requiresAddressGeocoding = buildings?.some(
+    ({ allowAddressGeocoding }) => allowAddressGeocoding === true,
+  ) ?? false;
   const router = useRouter();
   const container = useRef<HTMLDivElement>(null);
   const lifecycle = useRef<ReturnType<typeof mountNaverDistrictMap> | null>(null);
@@ -562,10 +565,10 @@ export function NaverDistrictMap({
     submoduleWait.current?.();
     submoduleWait.current = waitForNaverMapsSubmodules(
       readySdk,
-      buildings?.some(({ allowAddressGeocoding }) => allowAddressGeocoding === true) ?? false,
+      requiresAddressGeocoding,
       setSdk,
     );
-  }, [buildings, failClosed]);
+  }, [failClosed, requiresAddressGeocoding]);
 
   useEffect(() => {
     if (clientId === null || sdk !== null || authenticationFailed.current) return;
@@ -663,7 +666,7 @@ export function NaverDistrictMap({
         {fallback}
       </div>
       <Script
-        src={buildNaverMapsScriptUrl(clientId, true)}
+        src={buildNaverMapsScriptUrl(clientId, requiresAddressGeocoding)}
         strategy="afterInteractive"
         onReady={initialize}
         onError={failClosed}

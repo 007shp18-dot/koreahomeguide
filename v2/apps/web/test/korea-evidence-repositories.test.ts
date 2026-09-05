@@ -648,9 +648,18 @@ describe('installed Korea evidence repositories', () => {
     expect(html).toContain('₩30,000,000');
     expect(html).toContain('5 reported contracts');
     expect(html).toContain('href="/kr/seoul/explore?transaction=monthly&amp;area=60-85&amp;district=gangnam-gu"');
-    expect(html).toContain(
-      `href="/kr/seoul/check?transaction=monthly&amp;district=gangnam-gu&amp;housing=apartment&amp;building=${buildingId}"`,
-    );
+    expect(html).toContain('href="/kr/seoul/check?market=kr-seoul');
+    expect(html).toContain(`entity=${buildingId}`);
+    expect(html).toContain(`building=${buildingId}`);
+    const detailOrder = [
+      'data-detail-order="media"', 'data-detail-order="identity"',
+      'data-detail-order="current-evidence"', 'data-detail-order="history"',
+      'data-detail-order="comparable-range"', 'data-detail-order="facts"',
+      'data-detail-order="proximity"', 'data-detail-order="sources"',
+      'data-detail-order="related-actions"',
+    ].map((needle) => html.indexOf(needle));
+    expect(detailOrder.every((position) => position >= 0)).toBe(true);
+    expect([...detailOrder].sort((left, right) => left - right)).toEqual(detailOrder);
     expect(html).not.toContain('45–55㎡');
   });
 

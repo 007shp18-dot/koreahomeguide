@@ -10,7 +10,7 @@ export const metadata: Metadata = indexableMetadata({
   title: '韩国房地产中文报告与实用指南 | signedprice',
   description: '阅读面向跨境租客与买家的韩国房地产原创中文报告、成交数据说明和实用指南。',
   languageAlternates: {
-    en: '/insights/',
+    en: '/news/',
     'zh-Hans': '/zh-cn/kr/seoul/insights/',
   },
   locale: 'zh_CN',

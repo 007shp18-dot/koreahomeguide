@@ -9,6 +9,10 @@
     {
       "path": "/api/internal/building-enrichment",
       "schedule": "47 0 * * *"
+    },
+    {
+      "path": "/api/internal/public-entity-projection",
+      "schedule": "57 0 * * *"
     }
   ]
 }

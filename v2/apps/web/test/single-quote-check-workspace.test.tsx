@@ -97,4 +97,21 @@ describe('primary single quote Check workspace', () => {
     expect(html).toContain('five are required');
     expect(html).not.toContain('Typical range');
   });
+
+  test('preserves valid entity context in the form and returns to the originating decision', () => {
+    const returnTo = '/kr/seoul/explore/gangnam-gu/gangnam-evidence-tower/?transaction=sale&district=gangnam-gu&buildingId=gangnam-evidence-tower';
+    const html = renderToStaticMarkup(<SingleQuoteCheckWorkspace
+      model={{
+        ...baseModel,
+        buildingName: 'Evidence Tower',
+        selection: { ...baseModel.selection, buildingId: 'gangnam-evidence-tower' },
+      }}
+      entityContext={{ market: 'kr-seoul', entity: 'gangnam-evidence-tower', returnTo }}
+    />);
+
+    expect(html).toContain('name="market" value="kr-seoul"');
+    expect(html).toContain('name="entity" value="gangnam-evidence-tower"');
+    expect(html).toContain('name="returnTo"');
+    expect(html).toContain('Return to Evidence Tower');
+  });
 });

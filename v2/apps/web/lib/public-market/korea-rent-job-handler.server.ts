@@ -66,6 +66,7 @@ function encodeArtifact(
 
 function artifactMetadata(encoded: EncodedArtifact): Omit<EncodedArtifact, 'payload'> {
   const { payload: _payload, ...metadata } = encoded;
+  void _payload;
   return Object.freeze(metadata);
 }
 

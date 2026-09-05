@@ -39,7 +39,7 @@ test('builds deterministic active redirects only for verified exact English dest
     sourcePath === '/explore/' && targetPath === '/kr/seoul/explore/'
   )));
   assert.ok(first.entries.some(({ sourcePath, targetPath }) => (
-    sourcePath === '/guides/' && targetPath === '/kr/seoul/guide/'
+    sourcePath === '/guides/' && targetPath === '/guides/'
   )));
   assert.ok(first.entries.some(({ sourcePath }) => (
     sourcePath === '/rent/gangnam-gu/apartment/'

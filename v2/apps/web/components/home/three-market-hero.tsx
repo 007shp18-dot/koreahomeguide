@@ -53,6 +53,7 @@ export function ThreeMarketHero({ model }: Readonly<{ model: ThreeMarketHomeMode
     <section
       className={styles.hero}
       aria-labelledby="three-market-home-title"
+      data-home-region="hero"
       onMouseEnter={stopRotation}
       onFocusCapture={stopRotation}
       onTouchStart={stopRotation}
@@ -72,7 +73,10 @@ export function ThreeMarketHero({ model }: Readonly<{ model: ThreeMarketHomeMode
             fill
             priority
             sizes="(max-width: 760px) 100vw, (max-width: 1200px) 62vw, 720px"
-            style={{ objectFit: 'cover', objectPosition: active.photo.position ?? 'center' }}
+            style={{
+              objectFit: 'cover',
+              objectPosition: `${active.photo.focalPoint.x}% ${active.photo.focalPoint.y}%`,
+            }}
           />
           <figcaption>
             {active.city} · {copy.caption}

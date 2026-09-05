@@ -30,7 +30,7 @@
 .disclosureSummary > span { min-width: 0; display: grid; gap: 3px; }
 .disclosureSummary > span:nth-child(2) { text-align: right; }
 .disclosureSummary strong { overflow-wrap: anywhere; font-size: .78rem; }
-.disclosureSummary small { color: var(--muted); font-size: .68rem; }
+.disclosureSummary small { color: var(--muted); font-size: var(--text-meta); }
 .disclosureBody { border-top: 1px solid var(--divider); }
 
 .disclosureGrid > div {
@@ -50,7 +50,7 @@
 
 .disclosureGrid dt {
   color: var(--muted);
-  font-size: 0.66rem;
+  font-size: var(--text-meta);
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -203,7 +203,7 @@
 
 .policyHero > p:first-child {
   color: var(--accent);
-  font-size: 0.7rem;
+  font-size: var(--text-meta);
   font-weight: 850;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -241,7 +241,7 @@
 
 .policyGrid span {
   color: var(--accent);
-  font-size: 0.72rem;
+  font-size: var(--text-meta);
   font-weight: 900;
 }
 

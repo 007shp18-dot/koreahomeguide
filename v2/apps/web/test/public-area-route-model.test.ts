@@ -7,6 +7,7 @@ import { SEOUL_RENT_CHECK_DISTRICTS } from '@signedprice/korea-rent/browser';
 import {
   buildPublicAreaExploreModel,
   buildPublicDistrictModel,
+  hydratePublicAreaExploreModelWithProjections,
   normalizePublicContractGroup,
 } from '../lib/public-market/area-route-model.server';
 import {
@@ -233,6 +234,46 @@ describe('public area Explore model', () => {
     ]));
     expect(model.coverage.buildings).toEqual({
       status: 'ready', observed: 3, transactionCovered: 1, priceReady: 1,
+    });
+  });
+
+  it('hydrates building pins and approved media from one public projection read', async () => {
+    const base = buildPublicAreaExploreModel('gangnam-gu', {
+      ...dependencies(),
+      buildingSource: createPublicBuildingFixture(),
+    });
+    const listBuildings = vi.fn(async () => new Map([[
+      'gangnam-evidence-tower',
+      Object.freeze({
+        entityId: 'gangnam-evidence-tower',
+        location: Object.freeze({
+          entityId: 'gangnam-evidence-tower', marketId: 'kr-seoul',
+          latitude: 37.501, longitude: 127.031, precision: 'rooftop' as const,
+          provider: 'official-address', providerReference: 'record-1',
+          rightsPolicyId: 'kr-open-data', verificationStatus: 'verified' as const,
+          verifiedAt: '2026-09-01T00:00:00.000Z', updatedAt: '2026-09-01T00:00:00.000Z',
+        }),
+        media: Object.freeze([Object.freeze({
+          entityId: 'gangnam-evidence-tower', mediaAssetId: '9', role: 'hero' as const,
+          position: 0, displayUrl: '/assets/buildings/hero.jpg', providerReference: null,
+          width: 1600, height: 900, focalX: 0.4, focalY: 0.6,
+          attributionName: 'Owner', attributionUrl: null, exactSubject: true,
+          publishedAt: '2026-09-01T00:00:00.000Z', lastCheckedAt: '2026-09-01T00:00:00.000Z',
+        })]),
+        evidenceReleaseId: null,
+        state: 'ready' as const,
+      }),
+    ]]));
+
+    const model = await hydratePublicAreaExploreModelWithProjections(base, { listBuildings });
+
+    expect(listBuildings).toHaveBeenCalledWith(['gangnam-evidence-tower']);
+    expect(model.status).toBe('ready');
+    if (model.status !== 'ready' || model.buildingAvailability.status !== 'not_loaded') return;
+    expect(model.buildingAvailability.fallbackBuildings[0]).toMatchObject({
+      latitude: 37.501,
+      longitude: 127.031,
+      media: { displayUrl: '/assets/buildings/hero.jpg', attributionName: 'Owner' },
     });
   });
 

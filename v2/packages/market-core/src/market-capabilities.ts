@@ -7,6 +7,8 @@ export const marketCapabilityFeatures = [
   'property_detail',
   'transaction_detail',
   'research',
+  'rankings',
+  'corrections',
 ] as const;
 
 export type MarketCapabilityFeature = (typeof marketCapabilityFeatures)[number];
@@ -38,6 +40,8 @@ const registry = deepFreeze<MarketCapabilityDefinition[]>([
   { marketId: 'kr-seoul', feature: 'property_detail', housingSector: null, state: 'available', publicHref: '/kr/seoul/explore/', label: 'Seoul property evidence', limitations: [] },
   { marketId: 'kr-seoul', feature: 'transaction_detail', housingSector: null, state: 'available', publicHref: '/kr/seoul/explore/', label: 'Reported sale, jeonse and monthly-rent evidence', limitations: [] },
   { marketId: 'kr-seoul', feature: 'research', housingSector: null, state: 'available', publicHref: '/insights/', label: 'Seoul research', limitations: [] },
+  { marketId: 'kr-seoul', feature: 'rankings', housingSector: null, state: 'available', publicHref: '/kr/seoul/rankings/', label: 'Seoul evidence rankings', limitations: [] },
+  { marketId: 'kr-seoul', feature: 'corrections', housingSector: null, state: 'available', publicHref: '/kr/seoul/corrections/', label: 'Seoul correction ledger', limitations: [] },
 
   { marketId: 'sg-singapore', feature: 'market_overview', housingSector: null, state: 'available', publicHref: '/sg/', label: 'Singapore market overview', limitations: [] },
   { marketId: 'sg-singapore', feature: 'explore', housingSector: null, state: 'limited', publicHref: '/sg/singapore/explore/', label: 'Explore Singapore', limitations: ['Coverage differs between private residential projects and HDB blocks.'] },
@@ -47,6 +51,8 @@ const registry = deepFreeze<MarketCapabilityDefinition[]>([
   { marketId: 'sg-singapore', feature: 'transaction_detail', housingSector: 'private_residential', state: 'limited', publicHref: '/sg/singapore/explore/', label: 'URA private residential evidence', limitations: ['Only released URA evidence is shown.'] },
   { marketId: 'sg-singapore', feature: 'transaction_detail', housingSector: 'hdb', state: 'limited', publicHref: '/sg/singapore/explore/?sector=hdb', label: 'HDB resale evidence', limitations: ['Public and private housing are not combined.'] },
   { marketId: 'sg-singapore', feature: 'research', housingSector: null, state: 'available', publicHref: '/insights/', label: 'Singapore research', limitations: [] },
+  { marketId: 'sg-singapore', feature: 'rankings', housingSector: null, state: 'limited', publicHref: '/sg/singapore/rankings/', label: 'Singapore evidence rankings', limitations: ['Rankings use released, sector-specific evidence only.'] },
+  { marketId: 'sg-singapore', feature: 'corrections', housingSector: null, state: 'available', publicHref: '/sg/singapore/corrections/', label: 'Singapore correction ledger', limitations: [] },
 
   { marketId: 'ae-dubai', feature: 'market_overview', housingSector: null, state: 'available', publicHref: '/ae/dubai/', label: 'Dubai market overview', limitations: [] },
   { marketId: 'ae-dubai', feature: 'explore', housingSector: null, state: 'limited', publicHref: '/ae/dubai/', label: 'Explore Dubai market context', limitations: ['Project-level evidence is not yet a public transaction tool.'] },
@@ -54,6 +60,8 @@ const registry = deepFreeze<MarketCapabilityDefinition[]>([
   { marketId: 'ae-dubai', feature: 'property_detail', housingSector: null, state: 'rights_blocked', publicHref: null, label: 'Dubai property evidence', limitations: ['Property-level evidence requires rights clearance.'] },
   { marketId: 'ae-dubai', feature: 'transaction_detail', housingSector: null, state: 'rights_blocked', publicHref: null, label: 'Dubai transaction detail', limitations: ['Transaction detail requires a licensed display boundary.'] },
   { marketId: 'ae-dubai', feature: 'research', housingSector: null, state: 'available', publicHref: '/insights/', label: 'Dubai research', limitations: [] },
+  { marketId: 'ae-dubai', feature: 'rankings', housingSector: null, state: 'rights_blocked', publicHref: null, label: 'Dubai evidence rankings', limitations: ['Comparable transaction evidence is not approved for public display.'] },
+  { marketId: 'ae-dubai', feature: 'corrections', housingSector: null, state: 'rights_blocked', publicHref: null, label: 'Dubai correction ledger', limitations: ['No public evidence release is currently active.'] },
 ]);
 
 export function listMarketCapabilities(marketId: MarketId): readonly MarketCapability[] {

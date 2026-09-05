@@ -4,6 +4,7 @@ import { contractCheckEvidenceRepositoriesFromEnvironment } from '@/lib/contract
 import { contractCheckCurvesFromEnvironment } from '@/lib/contract-check/route-model.server';
 import { buildSingleQuoteCheckRouteModel } from '@/lib/single-quote-check/route-model.server';
 import { buildSingleQuoteCheckMetadata } from '@/lib/single-quote-check/metadata.server';
+import { parseEntityCheckContext } from '@/lib/navigation/explorer-selection';
 
 export function generateMetadata() {
   return buildSingleQuoteCheckMetadata('en');
@@ -12,14 +13,21 @@ export function generateMetadata() {
 export default async function SeoulContractCheckPage({
   searchParams = Promise.resolve({}),
 }: Readonly<{ searchParams?: Promise<Record<string, string | string[] | undefined>> }>) {
+  const query = await searchParams;
   const model = buildSingleQuoteCheckRouteModel(
     contractCheckEvidenceRepositoriesFromEnvironment(),
-    await searchParams,
+    query,
     contractCheckCurvesFromEnvironment(),
   );
+  const entityContext = model.buildingName === null || model.selection.buildingId === null
+    ? null
+    : parseEntityCheckContext(query, {
+        market: 'kr-seoul',
+        entityIds: [model.selection.buildingId],
+      });
   return (
     <>
-      <SingleQuoteCheckWorkspace model={model} />
+      <SingleQuoteCheckWorkspace model={model} entityContext={entityContext} />
       <PublicBreadcrumbJsonLd items={[
         { name: 'Home', path: '/' },
         { name: 'Seoul', path: '/kr/seoul/' },

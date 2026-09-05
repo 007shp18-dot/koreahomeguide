@@ -2,6 +2,7 @@ import Link from 'next/link';
 import type { EditorialGrowthReviewModel } from '@/lib/design-review/editorial-growth-review-model';
 import { ThreeMarketHero } from '@/components/home/three-market-hero';
 import { createThreeMarketHomeModel } from '@/lib/home/three-market-home-model';
+import { listPortfolioRecords } from '@/content/portfolio-manifest';
 import styles from './editorial-growth-review.module.css';
 
 const COPY = Object.freeze({
@@ -15,6 +16,11 @@ const COPY = Object.freeze({
     markets: 'Choose a market',
     marketsTitle: 'Property intelligence across three cities',
     compareMarkets: 'Compare markets',
+    actions: 'Choose the next useful step',
+    actionStates: ['Transaction tools', 'Released evidence', 'Research only'],
+    changed: 'What changed',
+    changedTitle: 'Two updates worth checking before a decision',
+    dataStory: 'Data Story',
     marketItems: [
       { index: '01', name: 'Seoul', href: '/kr/seoul/', scope: 'Sale, jeonse and monthly-rent evidence', state: 'Full decision tools', actions: [
         { label: 'Check', href: '/kr/seoul/check/' }, { label: 'Explore', href: '/kr/seoul/explore/' },
@@ -48,6 +54,11 @@ const COPY = Object.freeze({
     markets: '选择市场',
     marketsTitle: '覆盖三个城市的房地产信息',
     compareMarkets: '比较市场',
+    actions: '选择下一步',
+    actionStates: ['成交工具', '已发布数据', '仅供研究'],
+    changed: '最新变化',
+    changedTitle: '决策前值得查看的两项更新',
+    dataStory: '数据故事',
     marketItems: [
       { index: '01', name: '首尔 Seoul', href: '/kr/seoul/', scope: '买卖、全租和月租成交数据', state: '完整决策工具', actions: [
         { label: '查价', href: '/kr/seoul/check/' }, { label: '探索', href: '/kr/seoul/explore/' },
@@ -88,49 +99,83 @@ export function EditorialGrowthHome({ model, hrefs }: Readonly<{
     locale: model.locale,
     seoulMetric: model.headlineMetric,
   });
+  const portfolio = listPortfolioRecords(model.locale);
+  const changedItems = portfolio.filter(({ type }) => type === 'policy-update').slice(0, 2);
+  const dataStory = portfolio.find(({ type }) => type === 'data-story') ?? null;
+  const guides = portfolio.filter(({ type }) => type === 'guide').slice(0, 5);
 
   return (
     <main className={styles.homePage}>
       <ThreeMarketHero model={threeMarketHome} />
 
-      <section className={styles.homeInsight} data-home-section="insight" aria-labelledby="home-insight-title">
+      <section className={styles.contextualActions} data-home-region="actions" aria-labelledby="home-actions-title">
         <div className={styles.sectionIntro}>
-          <p className={styles.eyebrow}>{copy.insight}</p>
-          <h2 className={styles.sectionTitle} id="home-insight-title">{model.article.title}</h2>
+          <p className={styles.eyebrow}>Markets</p>
+          <h2 className={styles.sectionTitle} id="home-actions-title">{copy.actions}</h2>
         </div>
-        <div className={styles.insightBody}>
-          <p className={styles.lead}>{model.article.summary}</p>
-          <p className={styles.articleMeta}>{model.article.market} · {copy.updated} {model.article.updated}</p>
-          <Link className={styles.textAction} href={links.content}>
+        <ol className={styles.contextualActionList}>
+          {threeMarketHome.markets.map((market, index) => (
+            <li key={market.id} data-contextual-action={market.id}>
+              <span>{market.position} · {copy.actionStates[index]}</span>
+              <strong>{market.city}</strong>
+              <p>{market.summary}</p>
+              <Link href={market.primaryAction.href}>{market.primaryAction.label}<span aria-hidden="true"> →</span></Link>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section className={styles.whatChanged} data-home-region="changed" aria-labelledby="home-changed-title">
+        <div className={styles.sectionIntro}>
+          <p className={styles.eyebrow}>{copy.changed}</p>
+          <h2 className={styles.sectionTitle} id="home-changed-title">{copy.changedTitle}</h2>
+        </div>
+        <ol className={styles.changeList}>
+          {changedItems.map((article, index) => (
+            <li key={`${article.title}-${index}`} data-what-changed-item="true">
+              <time dateTime={article.updatedAt}>{article.updatedAt.slice(0, 10)}</time>
+              <strong>{article.title}</strong>
+              <p>{article.deck}</p>
+              <Link href={article.canonicalHref}>{copy.read}<span aria-hidden="true"> →</span></Link>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section className={styles.homeInsight} data-home-region="data-story" data-home-section="insight" aria-labelledby="home-insight-title">
+        <div className={styles.sectionIntro}>
+          <p className={styles.eyebrow}>{copy.dataStory} · {copy.insight}</p>
+          <h2 className={styles.sectionTitle} id="home-insight-title">{dataStory?.title ?? model.article.title}</h2>
+        </div>
+        <div className={styles.insightBody} data-lead-data-story="true">
+          <p className={styles.lead}>{dataStory?.deck ?? model.article.summary}</p>
+          <p className={styles.articleMeta}>{dataStory?.marketId === 'sg-singapore' ? 'Singapore' : 'Seoul'} · {copy.updated} {dataStory?.updatedAt.slice(0, 10) ?? model.article.updated}</p>
+          <p className={styles.articleMeta}>{copy.methodBody}</p>
+          <Link className={styles.textAction} href={dataStory?.canonicalHref ?? links.content}>
             {copy.read}<span aria-hidden="true"> →</span>
           </Link>
         </div>
       </section>
 
-      <section className={styles.guideSection} aria-labelledby="home-guides-title">
+      <section className={styles.guideSection} data-home-region="guides" aria-labelledby="home-guides-title">
         <div className={styles.sectionIntro}>
           <p className={styles.eyebrow}>{copy.guides}</p>
           <h2 className={styles.sectionTitle} id="home-guides-title">{copy.guidesTitle}</h2>
         </div>
         <ol className={styles.guideList}>
-          {model.guides.slice(0, 5).map((guide) => (
-            <li key={guide.href}>
-              <Link href={guide.href}>
-                <span className={styles.guideStage}>{guide.stage}</span>
+          {guides.map((guide) => (
+            <li key={guide.id} data-home-guide="true">
+              <Link href={guide.canonicalHref}>
+                <span className={styles.guideStage}>{guide.marketId === 'kr-seoul' ? 'Seoul' : 'Singapore'}</span>
                 <strong>{guide.title}</strong>
-                <span>{guide.summary}</span>
-                <small>{copy.updated} {guide.updated}</small>
+                <span>{guide.deck}</span>
+                <small>{copy.updated} {guide.updatedAt.slice(0, 10)}</small>
               </Link>
             </li>
           ))}
         </ol>
       </section>
 
-      <section className={styles.methodNote} aria-labelledby="home-method-title">
-        <p className={styles.eyebrow}>{copy.methodEyebrow}</p>
-        <h2 className={styles.subheading} id="home-method-title">{copy.method}</h2>
-        <p>{copy.methodBody}</p>
-      </section>
     </main>
   );
 }

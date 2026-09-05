@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import { GUIDES } from '../lib/guide/guide-content';
+import { listPortfolioRecords } from '../content/portfolio-manifest';
 import type { NewsWorkspaceModel } from '../lib/news/news-workspace-model';
 import type { SeoulLiveModel } from '../lib/public-market/seoul-live-model.server';
 import {
@@ -141,9 +141,9 @@ function InsightsHub({ workspace }: Readonly<{ workspace?: NewsWorkspaceModel }>
   return (
     <section className={`${styles.section} ${styles.newsSection}`} aria-labelledby="insights-title">
       <div className={styles.newsToolbar}>
-        <div><p>Live external news + approved briefs</p><h2 id="insights-title">Evidence first, commentary second.</h2></div>
+        <div><p>Reviewed SignedPrice reporting</p><h2 id="insights-title">Evidence first, commentary second.</h2></div>
         <nav className={styles.newsToolbarLinks} aria-label="News and original reporting">
-          <Link href="/insights/">Read original reports →</Link>
+          <Link href="/news/?type=data-stories">Read original reports →</Link>
           <Link href="/kr/seoul/news/">Approved Seoul briefs →</Link>
         </nav>
       </div>
@@ -153,15 +153,16 @@ function InsightsHub({ workspace }: Readonly<{ workspace?: NewsWorkspaceModel }>
 }
 
 function GuidesHub() {
+  const guides = listPortfolioRecords('en').filter(({ type }) => type === 'guide');
   return (
     <>
       <section className={styles.section} aria-labelledby="guides-title">
         <div className={styles.sectionHeading}><p>Korea guides</p><h2 id="guides-title">Use the data without losing the local context.</h2></div>
-        <div className={styles.guideGrid}>{GUIDES.slice(0, 6).map((guide) => <article key={guide.slug}><span>{guide.stage} · {guide.readMinutes} min</span><h3>{guide.title}</h3><p>{guide.summary}</p><Link href={`/kr/seoul/guide/${guide.slug}/`}>Read guide →</Link></article>)}</div>
+        <div className={styles.guideGrid}>{guides.map((guide) => <article key={guide.slug}><span>{guide.marketId === 'kr-seoul' ? 'Seoul' : 'Singapore'} · Reviewed {guide.reviewedAt?.slice(0, 10)}</span><h3>{guide.title}</h3><p>{guide.deck}</p><Link href={guide.canonicalHref}>Read guide →</Link></article>)}</div>
       </section>
       <section className={styles.marketGuideRow} aria-label="Guide coverage by market">
-        <article><Status tone="live">Available</Status><h3>Buying and renting in Korea</h3><p>Contract evidence, district comparisons and decision methods.</p><Link href="/kr/seoul/guide/">Browse Korea guides →</Link></article>
-        <article><Status>Preparing</Status><h3>Buying in Singapore</h3><p>Local rules and cost guidance will open after dated sources are approved.</p></article>
+        <article><Status tone="live">Available</Status><h3>Buying and renting in Korea</h3><p>Contract evidence, district comparisons and decision methods.</p><Link href="/guides/rent-an-apartment-in-korea/">Start with renting →</Link></article>
+        <article><Status tone="live">Pilot published</Status><h3>Reading Singapore evidence</h3><p>A source-led pilot keeps regional and project transaction layers separate.</p><Link href="/guides/read-singapore-private-transactions/">Read the Singapore guide →</Link></article>
         <article><Status>Preparing</Status><h3>Buying in Dubai</h3><p>Ownership and process guidance will open after legal and source review.</p></article>
       </section>
     </>

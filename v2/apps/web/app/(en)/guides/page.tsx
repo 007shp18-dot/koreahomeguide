@@ -7,6 +7,7 @@ export const metadata: Metadata = indexableMetadata({
   path: '/guides/',
   title: 'Cross-border property guides | signedprice',
   description: 'Understand local property terms, comparison methods and evidence limits before making a decision.',
+  languageAlternates: { en: '/guides/', 'zh-Hans': '/zh-cn/guides/' },
 });
 
 export default function GuidesPage() {

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import type { EditorialPortfolioRecord } from '../content/portfolio-types';
 
 export const SIGNEDPRICE_ORIGIN = 'https://www.signedprice.com' as const;
 
@@ -44,6 +45,39 @@ export function buildBreadcrumbJsonLd(
       name,
       item: publicCanonical(path),
     }))),
+  });
+}
+
+export function editorialLanguageAlternates(
+  article: EditorialPortfolioRecord,
+  records: readonly EditorialPortfolioRecord[],
+): Readonly<{ en: `/${string}`; 'zh-Hans': `/${string}` }> | undefined {
+  if (article.translationGroupId === null) return undefined;
+  const group = records.filter(({ translationGroupId }) => translationGroupId === article.translationGroupId);
+  const english = group.find(({ locale }) => locale === 'en');
+  const chinese = group.find(({ locale }) => locale === 'zh-CN');
+  if (english === undefined || chinese === undefined) return undefined;
+  return Object.freeze({
+    en: english.canonicalHref as `/${string}`,
+    'zh-Hans': chinese.canonicalHref as `/${string}`,
+  });
+}
+
+export function buildEditorialArticleJsonLd(article: EditorialPortfolioRecord): Readonly<Record<string, unknown>> {
+  return Object.freeze({
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    inLanguage: article.locale,
+    headline: article.title,
+    description: article.deck,
+    datePublished: article.publishedAt,
+    dateModified: article.updatedAt,
+    mainEntityOfPage: publicCanonical(article.canonicalHref as `/${string}`),
+    author: Object.freeze({ '@type': 'Organization', name: article.authorName }),
+    reviewedBy: Object.freeze({ '@type': 'Organization', name: article.reviewedBy }),
+    publisher: Object.freeze({ '@type': 'Organization', name: 'SignedPrice' }),
+    citation: Object.freeze(article.sources.map(({ href }) => href)),
+    isAccessibleForFree: true,
   });
 }
 

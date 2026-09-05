@@ -16,6 +16,7 @@ import {
   AreaExplorer,
   compareExploreBuildingsByEvidence,
   createExploreBuildingSelectionHref,
+  isIndividualMapBuilding,
 } from '../components/public-market/area-explorer';
 import {
   buildPublicAreaExploreModel,
@@ -52,6 +53,32 @@ function readyModel() {
   return model;
 }
 
+function readyModelWithApprovedMedia() {
+  const model = readyModel();
+  const availability = model.buildingAvailability;
+  const buildings = availability.status === 'ready'
+    ? availability.buildings
+    : availability.fallbackBuildings;
+  const projected = buildings.map((building, index) => index === 0 ? {
+    ...building,
+    media: {
+      displayUrl: '/assets/buildings/evidence-tower.jpg',
+      width: 1600,
+      height: 900,
+      focalX: 0.4,
+      focalY: 0.6,
+      attributionName: 'SignedPrice editorial',
+      attributionUrl: null,
+    },
+  } : building);
+  return {
+    ...model,
+    buildingAvailability: availability.status === 'ready'
+      ? { ...availability, buildings: projected }
+      : { ...availability, fallbackBuildings: projected },
+  } as typeof model;
+}
+
 afterEach(() => {
   vi.unstubAllEnvs();
 });
@@ -81,7 +108,7 @@ describe('public Seoul area Explorer', () => {
     expect(markup).toContain('data-explorer-region="summary"');
     expect(markup).toContain('data-explorer-region="results"');
     expect(markup).toContain('data-explorer-region="map"');
-    expect(markup).not.toContain('aria-label="Explorer view"');
+    expect(markup).toContain('aria-label="Explorer view"');
     expect(markup).not.toContain('Current exploration scope');
     expect(markup.indexOf('data-explorer-region="filters"'))
       .toBeLessThan(markup.indexOf('data-explorer-region="summary"'));
@@ -104,7 +131,7 @@ describe('public Seoul area Explorer', () => {
 
       expect(markup).toContain(`data-explore-view="${view}"`);
       expect(markup).toContain(`data-explorer-layout="${layout}"`);
-      expect(markup).not.toContain('aria-label="Explorer view"');
+      expect(markup).toContain('aria-label="Explorer view"');
       if (view === 'table') {
         expect(markup).toContain('data-building-table="filtered"');
         expect(markup).not.toContain('data-explorer-region="map"');
@@ -140,8 +167,9 @@ describe('public Seoul area Explorer', () => {
     expect(markup).toContain('data-building-drawer="gangnam-evidence-tower"');
     expect(markup).toContain('data-selection-presentation="map-drawer"');
     expect(markup).toContain('data-building-panel="gangnam-evidence-tower"');
-    expect(markup).toContain('data-building-media="google-place-photo"');
-    expect(markup).toContain('Loading verified place photo');
+    expect(markup).toContain('data-building-media="location-only"');
+    expect(markup).toContain('Only approved coordinates and media from the public projection are shown');
+    expect(markup).not.toContain('data-building-media="google-place-photo"');
     expect(markup).toContain('Open full building evidence');
   });
 
@@ -224,15 +252,17 @@ describe('public Seoul area Explorer', () => {
     expect(markup).toContain('Search this area');
   });
 
-  it('does not render the retired Split, List, Table and Map selector', () => {
+  it('keeps the view selector available when entering directly into table mode', () => {
     const markup = renderToStaticMarkup(createElement(AreaExplorer, {
       model: readyModel(),
       initialSelection: { market: 'kr', transaction: 'jeonse', view: 'table' },
     }));
 
     expect(markup).toContain('data-explore-view="table"');
-    expect(markup).not.toContain('aria-label="Explorer view"');
-    expect(markup).not.toMatch(/>Split<\/a>|>List<\/a>|>Table<\/a>|>Map<\/a>/);
+    expect(markup).toContain('aria-label="Explorer view"');
+    for (const label of ['Split', 'List', 'Table', 'Map']) {
+      expect(markup).toContain(`>${label}</a>`);
+    }
   });
 
   it('retains search, page, and neighborhood state inside the single workspace', () => {
@@ -508,16 +538,40 @@ describe('public Seoul area Explorer', () => {
     }));
 
     expect(configured).toContain('maps.js?ncpKeyId=test-naver-client');
-    expect(configured).toContain('submodules=geocoder');
+    expect(configured).not.toContain('submodules=geocoder');
     expect(configured).toContain('Interactive NAVER map of Seoul buildings');
     expect(configured).toContain('All Seoul districts');
     expect(configured).toContain('Select a price bubble');
-    expect(selectedBuilding).toContain(
-      'maps.js?ncpKeyId=test-naver-client&amp;submodules=geocoder',
-    );
+    expect(selectedBuilding).not.toContain('Loading verified place photo');
+    expect(selectedBuilding).toContain('data-building-media="location-only"');
     expect(configured).toContain('Monthly Home');
     expect(unconfigured).not.toContain('maps.js?ncpKeyId=');
     expect(unconfigured).toContain('data-map-state="fallback"');
+  });
+
+  it('renders only the approved media URL supplied by the server projection', () => {
+    const markup = renderToStaticMarkup(createElement(AreaExplorer, {
+      model: readyModelWithApprovedMedia(),
+      initialSelection: {
+        market: 'kr', transaction: 'jeonse', district: 'gangnam-gu',
+        neighborhood: 'yeoksam-dong', buildingId: 'gangnam-evidence-tower',
+      },
+    }));
+
+    expect(markup).toContain('data-building-media="public-projection"');
+    expect(markup).toContain('src="/assets/buildings/evidence-tower.jpg"');
+    expect(markup).toContain('SignedPrice editorial');
+    expect(markup).not.toContain('/api/building-photo');
+  });
+
+  it('keeps buildings without a stored coordinate out of the pin layer', () => {
+    const base = {
+      name: 'Verified price building',
+      medianLabel: '₩500,000,000',
+      evidenceStatus: 'published' as const,
+    };
+    expect(isIndividualMapBuilding({ ...base, latitude: 37.5, longitude: 127 })).toBe(true);
+    expect(isIndividualMapBuilding({ ...base, latitude: null, longitude: null })).toBe(false);
   });
 
   it('uses shared structural hooks for rendered browser geometry checks', () => {
@@ -529,6 +583,6 @@ describe('public Seoul area Explorer', () => {
     expect(markup).toContain('data-explorer-layout="split"');
     expect(markup).toContain('data-explorer-region="results"');
     expect(markup).toContain('data-explorer-region="map"');
-    expect(markup).not.toContain('aria-label="Explorer view"');
+    expect(markup).toContain('aria-label="Explorer view"');
   });
 });

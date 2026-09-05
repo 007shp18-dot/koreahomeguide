@@ -7,6 +7,7 @@ import {
   MarketExploreShell,
   MarketLayerControl,
 } from '../components/market-ui/market-shell';
+import { MarketRepresentativePhoto } from '../components/market-representative-photo';
 
 describe('shared market composition', () => {
   it('keeps Explore information order and one active market layer', () => {
@@ -43,11 +44,26 @@ describe('shared market composition', () => {
 
   it('owns archive geometry and mobile stacking in one stylesheet', () => {
     const css = readFileSync(new URL('../components/market-ui/market-shell.module.css', import.meta.url), 'utf8');
+    const overviewCss = readFileSync(new URL('../components/market-dashboard.module.css', import.meta.url), 'utf8');
+    const photoCss = readFileSync(new URL('../components/market-representative-photo.module.css', import.meta.url), 'utf8');
     expect(css).toMatch(/\.detail\s*\{[^}]*width:\s*min\(1180px,\s*calc\(100% - 40px\)\)/);
-    expect(css).toMatch(/grid-template-columns:\s*minmax\(320px, 34%\) minmax\(0, 66%\)/);
+    expect(css).toMatch(/grid-template-columns:\s*minmax\(320px, 42%\) minmax\(0, 58%\)/);
     expect(css).toMatch(/grid-template-columns:\s*minmax\(0, 1fr\) 300px/);
+    expect(overviewCss).toMatch(/\.hero[\s\S]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
+    expect(photoCss).toMatch(/aspect-ratio:\s*16\s*\/\s*9/);
     expect(css).toMatch(/min-height:\s*44px/);
     expect(css).toMatch(/@media \(max-width:\s*760px\)[\s\S]*grid-template-columns:\s*1fr/);
     expect(css).toMatch(/box-shadow:\s*0 10px 28px/);
+  });
+
+  it('keeps the representative-photo fallback in the same 16:9 frame', () => {
+    const html = renderToStaticMarkup(<MarketRepresentativePhoto
+      cityLabel="Seoul"
+      photo={null}
+    />);
+
+    expect(html).toContain('data-building-media="market-context-fallback"');
+    expect(html).toContain('Seoul market context');
+    expect(html).toContain('No approved market photograph is available.');
   });
 });

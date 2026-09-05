@@ -65,18 +65,19 @@ describe('SignedPrice brand mark', () => {
     expect(contractHeader.match(/<path\b/g)).toHaveLength(3);
   });
 
-  test('renders one compact header with seven roadmap destinations and market context', () => {
+  test('renders one global header and the capability-derived Seoul navigation', () => {
     const html = renderToStaticMarkup(<SiteHeader copy={{
       ...headerCopy,
       links: [{ label: 'Explore', href: '/kr/seoul/explore/', isCurrent: true }],
     }} />);
 
-    expect(html).toContain('class="site-header__market-tier"');
-    expect(html).toContain('data-navigation-tier="product"');
-    expect(html).toContain('class="site-header__context">Seoul · reported filings</span>');
-    expect(html.match(/site-header__product-link/g)).toHaveLength(7);
-    expect(html).toContain('<strong>Overview</strong>');
-    expect(html).toContain('<strong>Guide</strong>');
+    expect(html).toContain('data-navigation-tier="global"');
+    expect(html).toContain('data-navigation-tier="market-local"');
+    expect(html).toContain('aria-label="Seoul market navigation"');
+    expect(html.match(/site-header__product-link/g)).toHaveLength(4);
+    expect(html.match(/market-local-nav__link/g)).toHaveLength(5);
+    expect(html).toContain('>Overview</a>');
+    expect(html).toContain('>Guides</a>');
     expect(html).toContain('href="/kr/seoul/check"');
     expect(html).toContain('href="/kr/seoul/explore"');
     expect(html).toMatch(/<a[^>]+aria-current="page"[^>]+href="\/kr\/seoul\/explore"/);

@@ -15,7 +15,7 @@
   margin: 28px auto 40px;
   overflow: hidden;
   border: 1px solid var(--line);
-  border-radius: 18px;
+  border-radius: 12px;
   background: var(--surface-strong);
   box-shadow: var(--shadow-sm);
 }
@@ -40,7 +40,7 @@
 .modeSelector > span[aria-current='page'] { color: var(--accent); background: var(--soft-blue); box-shadow: inset 0 -3px var(--accent); }
 .field { font-size: .75rem; }
 .field input,
-.field select { border: 1px solid var(--line); border-radius: 9px; background: var(--canvas); }
+.field select { border: 1px solid var(--line); border-radius: 8px; background: var(--canvas); }
 .housingType select { background: var(--canvas); }
 
 @media (max-width: 720px) {
@@ -59,7 +59,7 @@
 .unavailable > p:first-child {
   margin-bottom: 14px;
   color: var(--accent);
-  font-size: 0.68rem;
+  font-size: var(--text-meta);
   font-weight: 850;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -115,7 +115,7 @@
 
 .modeSelector small {
   color: var(--muted);
-  font-size: 0.66rem;
+  font-size: var(--text-meta);
   font-weight: 600;
   line-height: 1.35;
 }
@@ -155,7 +155,7 @@
   grid-template-columns: 50px minmax(0, 1fr);
   align-items: center;
   border-bottom: var(--rule-strong);
-  font-size: 0.7rem;
+  font-size: var(--text-meta);
   font-weight: 850;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -186,7 +186,7 @@
 .comparableRows p {
   padding: 9px 0;
   border-bottom: var(--rule-subtle);
-  font-size: 0.68rem;
+  font-size: var(--text-meta);
 }
 
 .conditions > legend {
@@ -196,7 +196,7 @@
   grid-template-columns: 50px minmax(0, 1fr);
   align-items: center;
   border-bottom: var(--rule-strong);
-  font-size: 0.7rem;
+  font-size: var(--text-meta);
   font-weight: 850;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -226,7 +226,7 @@
   display: grid;
   gap: 8px;
   border-bottom: var(--rule-subtle);
-  font-size: 0.7rem;
+  font-size: var(--text-meta);
   font-weight: 750;
 }
 
@@ -269,7 +269,7 @@
   padding: 18px 20px;
   display: flex;
   align-items: center;
-  font-size: 0.7rem;
+  font-size: var(--text-meta);
   font-weight: 850;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -329,7 +329,7 @@
   grid-template-columns: 50px minmax(0, 1fr);
   align-items: center;
   border-bottom: var(--rule-strong);
-  font-size: 0.7rem;
+  font-size: var(--text-meta);
   font-weight: 850;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -356,7 +356,7 @@
   padding: 16px;
   display: grid;
   gap: 8px;
-  font-size: 0.7rem;
+  font-size: var(--text-meta);
   font-weight: 750;
 }
 
@@ -403,7 +403,7 @@
 .error,
 .formError {
   color: #b42318 !important;
-  font-size: 0.68rem;
+  font-size: var(--text-meta);
   line-height: 1.4;
 }
 
@@ -434,7 +434,7 @@
   color: var(--ink);
   background: var(--canvas);
   font: inherit;
-  font-size: 0.74rem;
+  font-size: var(--text-meta);
   font-weight: 850;
   cursor: pointer;
 }
@@ -496,7 +496,7 @@
 .positionCard > p {
   margin-top: 10px;
   color: var(--muted);
-  font-size: 0.72rem;
+  font-size: var(--text-meta);
   line-height: 1.45;
 }
 
@@ -519,7 +519,7 @@
 
 .filedValues dt {
   color: var(--muted);
-  font-size: 0.66rem;
+  font-size: var(--text-meta);
 }
 
 .filedValues dd {
@@ -556,7 +556,7 @@
   display: grid;
   gap: 3px;
   color: var(--muted);
-  font-size: 0.54rem;
+  font-size: var(--text-meta);
   overflow-wrap: anywhere;
 }
 
@@ -580,7 +580,7 @@
 .marketEvidence > h3,
 .disclosure > h3 {
   margin-bottom: 16px;
-  font-size: 0.72rem;
+  font-size: var(--text-meta);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -605,7 +605,7 @@
   justify-content: space-between;
   gap: 14px;
   border-bottom: var(--rule-subtle);
-  font-size: 0.7rem;
+  font-size: var(--text-meta);
 }
 
 .keyFigures dl > div:last-child,
@@ -628,7 +628,7 @@
   max-width: 760px;
   margin-top: 8px;
   color: var(--muted);
-  font-size: 0.7rem;
+  font-size: var(--text-meta);
   line-height: 1.5;
 }
 
@@ -656,7 +656,7 @@
   display: block;
   margin-top: 5px;
   color: var(--accent-soft);
-  font-size: 0.66rem;
+  font-size: var(--text-meta);
   letter-spacing: 0;
 }
 
@@ -665,7 +665,7 @@
   padding-top: 13px;
   border-top: 1px solid var(--accent-soft);
   color: var(--accent-soft);
-  font-size: 0.7rem;
+  font-size: var(--text-meta);
   font-weight: 750;
   line-height: 1.4;
 }
@@ -690,7 +690,7 @@
 
 .equivalentGrid span {
   color: var(--muted);
-  font-size: 0.66rem;
+  font-size: var(--text-meta);
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -704,7 +704,7 @@
 
 .equivalentGrid small {
   color: var(--muted);
-  font-size: 0.68rem;
+  font-size: var(--text-meta);
   letter-spacing: 0;
 }
 
@@ -717,7 +717,7 @@
   display: flex;
   justify-content: space-between;
   gap: 20px;
-  font-size: 0.7rem;
+  font-size: var(--text-meta);
 }
 
 .curve figcaption strong {
@@ -791,7 +791,7 @@
   border: var(--rule-subtle);
   color: var(--ink);
   background: var(--surface-strong);
-  font-size: 0.6rem;
+  font-size: var(--text-meta);
   white-space: nowrap;
 }
 
@@ -818,7 +818,7 @@
 
 .heldNotice {
   margin-top: 12px;
-  font-size: 0.68rem;
+  font-size: var(--text-meta);
   font-weight: 700;
 }
 
@@ -832,7 +832,7 @@
   min-width: 680px;
   border-collapse: collapse;
   table-layout: fixed;
-  font-size: 0.72rem;
+  font-size: var(--text-meta);
 }
 
 .auditTable caption {
@@ -865,7 +865,7 @@
 
 .auditTable thead th {
   color: var(--accent);
-  font-size: 0.64rem;
+  font-size: var(--text-meta);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -878,7 +878,7 @@
 .principalBoundary {
   padding: 16px 18px;
   color: var(--muted);
-  font-size: 0.7rem;
+  font-size: var(--text-meta);
   font-weight: 700;
   line-height: 1.45;
 }
@@ -901,14 +901,14 @@
 .evidence dt {
   margin-bottom: 18px;
   color: var(--accent);
-  font-size: 0.62rem;
+  font-size: var(--text-meta);
   font-weight: 850;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .evidence dd {
-  font-size: 0.72rem;
+  font-size: var(--text-meta);
   line-height: 1.5;
 }
 
@@ -925,7 +925,7 @@
   align-items: center;
   border-right: var(--rule-default);
   color: var(--ink);
-  font-size: 0.72rem;
+  font-size: var(--text-meta);
   font-weight: 800;
   text-decoration: none;
 }
@@ -945,7 +945,7 @@
   margin: 0 auto;
   padding: 24px 0 36px;
   color: var(--muted);
-  font-size: 0.68rem;
+  font-size: var(--text-meta);
   line-height: 1.5;
 }
 

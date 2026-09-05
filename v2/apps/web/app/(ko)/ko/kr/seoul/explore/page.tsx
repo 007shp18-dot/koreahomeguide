@@ -6,11 +6,13 @@ import { SiteFooter } from '@/components/site-footer';
 import { SiteHeader } from '@/components/site-header';
 import { buildKoreanSiteHeader, KOREAN_SITE_FOOTER } from '@/lib/locale/ko';
 import { parseExplorerSelection } from '@/lib/navigation/explorer-selection';
-import { buildPublicAreaExploreModel } from '@/lib/public-market/area-route-model.server';
+import {
+  buildPublicAreaExploreModel,
+  hydratePublicAreaExploreModelWithProjections,
+} from '@/lib/public-market/area-route-model.server';
 import { indexableMetadata } from '@/lib/public-metadata';
 import styles from '../korean-evidence.module.css';
 import { KOREA_EXPLORER_HOUSING_TYPES } from '@/lib/public-market/korea-explorer-evidence.server';
-import { googleMapsBrowserKeyFromEnvironment } from '@/lib/maps/google-maps-browser-key.server';
 
 export const metadata = indexableMetadata({
   path: '/ko/kr/seoul/explore/',
@@ -44,7 +46,7 @@ export default async function KoreanExplorePage({ searchParams }: KoreanExploreP
   );
   const buildingQuery = singleValue(query.q);
   const requestedBuildingId = singleValue(query.buildingId);
-  const model = buildPublicAreaExploreModel(
+  const model = await hydratePublicAreaExploreModelWithProjections(buildPublicAreaExploreModel(
     selection.district,
     undefined,
     selection.contractType ?? singleValue(query.contract),
@@ -58,7 +60,7 @@ export default async function KoreanExplorePage({ searchParams }: KoreanExploreP
     singleValue(query.buildingPage),
     requestedBuildingId,
     query,
-  );
+  ));
   const availableBuildings = model.status === 'ready'
     ? (model.buildingAvailability.status === 'ready'
       ? model.buildingAvailability.buildings
@@ -93,7 +95,6 @@ export default async function KoreanExplorePage({ searchParams }: KoreanExploreP
           locale="ko"
           model={model}
           naverMapClientId={process.env.NAVER_MAP_CLIENT_ID?.trim() || null}
-          googleMapsBrowserKey={googleMapsBrowserKeyFromEnvironment()}
           initialQuery={buildingQuery}
           initialSelection={restoredSelection}
         />

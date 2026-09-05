@@ -90,6 +90,36 @@ describe('Korea proximity Detail route composition', () => {
     expect(factsSection).toContain('Route school · 500 m');
     expect(html).toContain('station=SEOUL%3ASTN%2F001');
     expect(html).toContain('q=route+check');
+    expect(html).toContain('data-building-media="location-only"');
+    expect(html).not.toContain('data-building-media="google-place-photo"');
+  });
+
+  it('renders a rights-checked direct photo supplied by the entity projection', () => {
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_BUILDING_SUMMARY_ARTIFACT', JSON.stringify(createPublicBuildingFixture()));
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', PUBLIC_BUILDING_FIXTURE_PERIOD);
+    const html = renderToStaticMarkup(composeKoreaBuildingRoute({
+      district: 'gangnam-gu', buildingId: 'gangnam-evidence-tower', query,
+      dependencies: {
+        proximityRepository: Object.freeze({ state: 'missing' }),
+        entityProjection: Object.freeze({
+          entityId: 'gangnam-evidence-tower',
+          location: null,
+          media: Object.freeze([Object.freeze({
+            entityId: 'gangnam-evidence-tower', mediaAssetId: '9', role: 'hero' as const,
+            position: 0, displayUrl: '/assets/buildings/evidence-tower.jpg', providerReference: null,
+            width: 1600, height: 900, focalX: 0.4, focalY: 0.6,
+            attributionName: 'SignedPrice editorial', attributionUrl: null, exactSubject: true,
+            publishedAt: '2026-09-01T00:00:00.000Z', lastCheckedAt: '2026-09-01T00:00:00.000Z',
+          })]),
+          evidenceReleaseId: null,
+          state: 'unavailable' as const,
+        }),
+      },
+    }));
+
+    expect(html).toContain('data-building-media="public-projection"');
+    expect(html).toContain('src="/assets/buildings/evidence-tower.jpg"');
+    expect(html).not.toContain('/api/building-photo');
   });
 
   it('renders identity-only proximity once when the unified facts panel is present', () => {

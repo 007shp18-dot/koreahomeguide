@@ -116,10 +116,12 @@ test('verified synthetic building detail is server rendered only in the local re
     level: 2,
     name: 'Privacy-safe reported contracts',
   })).toBeVisible();
-  const evidenceDetails = page.locator('details');
+  const evidenceDetails = page.locator('details[data-building-section="evidence"]');
   await expect(evidenceDetails).toHaveAttribute('open', '');
-  await expect(evidenceDetails).toContainText('Latest verified News');
-  await expect(evidenceDetails).toContainText('Community signal');
+  await expect(evidenceDetails).toContainText('Privacy-safe reported contracts');
+  const relatedContext = page.getByRole('region', { name: 'Building news and community' });
+  await expect(relatedContext).toContainText('Latest verified News');
+  await expect(relatedContext).toContainText('Community signal');
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /^noindex,\s*follow$/);
   await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
   await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(0);

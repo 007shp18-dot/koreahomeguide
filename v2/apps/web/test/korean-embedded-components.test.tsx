@@ -85,12 +85,12 @@ describe('Korean embedded product components', () => {
       <SiteFooter copy={KOREAN_SITE_FOOTER} />
     </>);
 
-    expect(html).toContain('class="site-header__market-tier"');
-    expect(html).toContain('data-navigation-tier="product"');
+    expect(html).toContain('data-navigation-tier="global"');
+    expect(html).toContain('data-navigation-tier="market-local"');
     expect(html).toContain('href="/kr/seoul"');
     expect(html).toMatch(/hreflang="en"/i);
     expect(html).toContain('href="/ko/kr/seoul/check"');
-    expect(html).toContain('<strong>뉴스</strong>');
+    expect(html).toContain('>News</a>');
   });
 
   it('switches Korean Explore and Rankings to their matching English routes', async () => {

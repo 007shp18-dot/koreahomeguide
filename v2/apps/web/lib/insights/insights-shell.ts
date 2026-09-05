@@ -12,7 +12,7 @@ export const INSIGHTS_FOOTER: SiteFooterModel = Object.freeze({
   ...homepageCopy.footer,
   descriptor: 'Original property reporting built from visible evidence boundaries.',
   links: Object.freeze([
-    { label: 'Insights', href: '/insights/' },
+    { label: 'Newsroom', href: '/news/' },
     ...homepageCopy.footer.links,
   ]),
 });

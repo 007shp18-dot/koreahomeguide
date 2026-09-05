@@ -63,6 +63,7 @@ export function SingaporeExplorer({
 }>) {
   const [selectedSegment, setSelectedSegment] = useState<'CCR' | 'RCR' | 'OCR' | null>(null);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+  const [pendingHref, setPendingHref] = useState<string | null>(null);
   const segments = model.status === 'ready' ? model.segments : Object.freeze([]);
   const selected = useMemo(
     () => segments.find((segment) => segment.code === selectedSegment),
@@ -148,7 +149,16 @@ export function SingaporeExplorer({
                   <div><p className={styles.rowState}>{segment.state === 'published' ? 'Published evidence' : 'Below publication minimum'}</p><h3>{segment.code}</h3></div>
                   <div><strong>{segment.medianPriceLabel ?? 'Not published'}</strong><span>{segment.medianPsfLabel ?? 'PSF not published'}</span></div>
                   <div><span>{segment.n} transactions</span><span>{segment.projectCount} projects</span></div>
-                  <Link href={segment.href}>Open {segment.code} evidence</Link>
+                  {segment.state === 'published' ? <Link
+                    href={segment.href}
+                    aria-busy={pendingHref === segment.href}
+                    data-navigation-state={pendingHref === segment.href ? 'pending' : 'idle'}
+                    onClick={() => setPendingHref(segment.href)}
+                  >Open {segment.code} evidence</Link> : <span
+                    className={styles.evidenceUnavailableLink}
+                    data-evidence-link="unavailable"
+                    aria-disabled="true"
+                  >At least 5 transactions are required</span>}
                 </article>
               ))}
             </div>
@@ -156,7 +166,18 @@ export function SingaporeExplorer({
               <header><span>Projects in {selected.code}</span><small>Reported private sales</small></header>
               {(selected.projects ?? []).map((project) => <div data-selected={selectedProjectId === project.id} key={project.id}>
                 <button type="button" onClick={() => setSelectedProjectId(project.id)}><span><strong>{project.name}</strong><small>{project.street} · District {project.district}</small></span><span><strong>{project.medianPriceLabel ?? 'Not published'}</strong><small>{project.n} sales</small></span></button>
-                <Link href={project.href} aria-label={`Open ${project.name} evidence`}>→</Link>
+                {project.state === 'published' ? <Link
+                  href={project.href}
+                  aria-label={`Open ${project.name} evidence`}
+                  aria-busy={pendingHref === project.href}
+                  data-navigation-state={pendingHref === project.href ? 'pending' : 'idle'}
+                  onClick={() => setPendingHref(project.href)}
+                >→</Link> : <span
+                  className={styles.evidenceUnavailableLink}
+                  data-evidence-link="unavailable"
+                  aria-disabled="true"
+                  title="At least 5 transactions are required"
+                >—</span>}
               </div>)}
             </div>}
           </section>}
@@ -165,7 +186,12 @@ export function SingaporeExplorer({
             points={mapPoints}
             heading={selected === undefined ? 'CCR, RCR and OCR sale prices' : `${selected.code} project prices on the map`}
             onSelectPoint={onMapSelect}
-            selection={selectedProject === undefined ? undefined : <aside className={styles.mapSelection} aria-live="polite"><span>Selected project</span><h3>{selectedProject.name}</h3><p>{selectedProject.street} · District {selectedProject.district}</p><strong>{selectedProject.medianPriceLabel ?? 'Not published'}</strong><small>{selectedProject.n} reported sales</small><Link href={selectedProject.href}>Open project evidence →</Link></aside>}
+            selection={selectedProject === undefined ? undefined : <aside className={styles.mapSelection} aria-live="polite"><span>Selected project</span><h3>{selectedProject.name}</h3><p>{selectedProject.street} · District {selectedProject.district}</p><strong>{selectedProject.medianPriceLabel ?? 'Not published'}</strong><small>{selectedProject.n} reported sales</small>{selectedProject.state === 'published' ? <Link
+              href={selectedProject.href}
+              aria-busy={pendingHref === selectedProject.href}
+              data-navigation-state={pendingHref === selectedProject.href ? 'pending' : 'idle'}
+              onClick={() => setPendingHref(selectedProject.href)}
+            >Open project evidence →</Link> : <span className={styles.evidenceUnavailableLink} data-evidence-link="unavailable" aria-disabled="true">At least 5 transactions are required</span>}</aside>}
           />}
         />
       </div>

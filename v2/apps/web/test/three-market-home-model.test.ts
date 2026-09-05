@@ -37,8 +37,8 @@ describe('three-market home model', () => {
     });
     expect(dubai).toMatchObject({
       evidenceState: 'rights_blocked',
-      primaryAction: { label: 'Explore Dubai', href: '/ae/dubai/' },
-      secondaryAction: { label: 'Read Dubai research', href: '/insights/' },
+      primaryAction: { label: 'Review Dubai market', href: '/ae/dubai/' },
+      secondaryAction: null,
     });
     expect(JSON.stringify(dubai)).not.toContain('/check/');
   });

@@ -171,7 +171,11 @@ export const signedPricePublicRouteRegistry = createPublicRouteRegistry([
   },
   {
     path: '/kr/seoul/guide/', locale: 'en', pageKind: 'guide', cohort: 3,
-    sitemap: true, isReady: alwaysReady, legacySourcePath: '/guides/',
+    sitemap: false, isReady: alwaysReady,
+  },
+  {
+    path: '/guides/', locale: 'en', pageKind: 'guide', cohort: 3,
+    sitemap: false, isReady: alwaysReady, legacySourcePath: '/guides/',
   },
   {
     path: '/ko/kr/seoul/', locale: 'ko', pageKind: 'market', cohort: 0,

@@ -1,6 +1,6 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
 import { resolveReleaseTestTarget } from '../../release-test-target';
-import { publicRoutes } from './public-route-contract';
+import { editorialAlternates, publicRoutes } from './public-route-contract';
 
 const releaseTarget = resolveReleaseTestTarget();
 
@@ -150,7 +150,15 @@ for (const route of publicRoutes) {
       await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
     }
     const alternates = page.locator('link[rel="alternate"][hreflang]');
-    if (hasAlternates && 'canonical' in route) {
+    const editorialLanguages = editorialAlternates[route.path];
+    if (editorialLanguages !== undefined) {
+      await expect(alternates).toHaveCount(Object.keys(editorialLanguages).length);
+      for (const [language, path] of Object.entries(editorialLanguages)) {
+        await expect(page.locator(`link[rel="alternate"][hreflang="${language}"]`)).toHaveAttribute(
+          'href', `https://www.signedprice.com${path}`,
+        );
+      }
+    } else if (hasAlternates && 'canonical' in route) {
       await expect(alternates).toHaveCount(3);
       await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute(
         'href', `https://www.signedprice.com${route.canonical}`,
@@ -194,13 +202,13 @@ test('mobile primary navigation remains tappable and reaches the market flow', a
     name: 'Primary navigation',
   });
   const visibleLinks = primaryNavigation.getByRole('link').filter({ visible: true });
-  await expect(visibleLinks).toHaveCount(6);
+  await expect(visibleLinks).toHaveCount(4);
   const primaryLinks = await visibleLinks.all();
   await expectContainedTouchTargets(page, primaryLinks);
   await expectTargetsNotToOverlap(primaryLinks);
 
   const marketNavigation = page.locator('nav[aria-label="Market navigation"]');
-  await expect(marketNavigation).toBeHidden();
+  await expect(marketNavigation).toBeVisible();
   await expect(marketNavigation.locator('a')).toHaveCount(3);
 
   const prices = primaryNavigation.getByRole('link', { name: 'Prices' });
@@ -211,10 +219,12 @@ test('mobile primary navigation remains tappable and reaches the market flow', a
   await expect(page).toHaveURL(/\/kr\/seoul\/explore\/$/);
   await expectNoHorizontalPageOverflow(page);
 
-  const evidenceNavigation = page.getByRole('navigation', { name: 'Seoul evidence navigation' });
-  await expect(evidenceNavigation.getByRole('link')).toHaveCount(6);
-  const pricesFromExplore = evidenceNavigation.getByRole('link', { name: 'Prices' });
-  await expectContainedTouchTargets(page, [pricesFromExplore]);
+  const localNavigation = page.getByRole('navigation', { name: 'Seoul market navigation' });
+  await expect(localNavigation.getByRole('link')).toHaveCount(5);
+  await expectContainedTouchTargets(page, await localNavigation.getByRole('link').all());
+
+  const pricesFromExplore = page.getByRole('navigation', { name: 'Primary navigation' })
+    .getByRole('link', { name: 'Prices' });
   await pricesFromExplore.tap();
   await expect(page).toHaveURL(/\/prices\/$/);
 
@@ -247,7 +257,7 @@ test('keyboard traversal activates the Home to Seoul to Check flow', async ({
   await page.keyboard.press('Enter');
   await expect(page).toHaveURL(/\/kr\/seoul\/explore\/$/);
 
-  const pricesFromExplore = page.getByRole('navigation', { name: 'Seoul evidence navigation' })
+  const pricesFromExplore = page.getByRole('navigation', { name: 'Primary navigation' })
     .getByRole('link', { name: 'Prices' });
   await tabTo(page, pricesFromExplore);
   await page.keyboard.press('Enter');
@@ -314,6 +324,27 @@ test('sitemap includes only indexable canonical public routes', async ({ request
   );
   expect(xml).not.toContain('/synthetic-test-building/');
 });
+
+for (const path of [
+  '/news/',
+  '/news/policy/singapore-absd-policy-status/',
+  '/news/seoul-district-price-distribution/',
+  '/guides/rent-an-apartment-in-korea/',
+  '/zh-cn/news/',
+  '/zh-cn/guides/rent-in-korea-zh/',
+]) {
+  test(`${path} keeps reviewed editorial metadata and sources visible`, async ({ page }) => {
+    const response = await page.goto(path);
+    expect(response?.status()).toBe(200);
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /^index,\s*follow$/);
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', `https://www.signedprice.com${path}`);
+    if (!path.endsWith('/news/') && !path.endsWith('/guides/')) {
+      await expect(page.getByText(/Reviewed by|Reviewer|审核|SignedPrice (Research|Chinese)/i).first()).toBeVisible();
+      await expect(page.getByRole('heading', { name: /Sources and review boundary|Source and verification/ }).first()).toBeVisible();
+    }
+    await expectNoHorizontalPageOverflow(page);
+  });
+}
 
 test('status API returns only public release readiness', async ({ request }) => {
   const response = await request.get('/api/status');

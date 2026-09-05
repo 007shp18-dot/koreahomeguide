@@ -17,6 +17,24 @@ export type ExplorerSelection = Readonly<{
   view?: ExplorerView;
 }>;
 
+export type ExplorerJourneyState = Readonly<{
+  level: 'city' | 'district';
+  district: string | null;
+  contract: 'sale' | 'jeonse' | 'monthly-rent';
+  propertyType: string | null;
+  selectedEntity: string | null;
+}>;
+
+export type EntityCheckContext = Readonly<{
+  market: 'kr-seoul' | 'sg-singapore';
+  entity: string;
+  returnTo: string;
+}>;
+
+export type EntityCheckContextInput = EntityCheckContext & Readonly<{
+  selection: ExplorerSelection;
+}>;
+
 export type ExplorerSelectionDefaults = Readonly<{
   market: ExplorerMarket;
   transaction: ExplorerTransaction;
@@ -49,6 +67,7 @@ const marketDefaults = Object.freeze({
 const contractTypes = Object.freeze(['new', 'renewal', 'all'] as const);
 const explorerViews = Object.freeze(['split', 'list', 'table', 'map'] as const);
 const identifierPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const entityMarkets = Object.freeze(['kr-seoul', 'sg-singapore'] as const);
 
 function isObject(value: unknown): value is Readonly<Record<string, unknown>> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -245,4 +264,71 @@ export function createSelectionHref(
 ): string {
   const query = serializeExplorerSelection(selection, defaults);
   return query.length === 0 ? path : `${path}?${query}`;
+}
+
+export function createExplorerJourneyState(
+  selection: ExplorerSelection,
+): ExplorerJourneyState {
+  return Object.freeze({
+    level: selection.district === undefined ? 'city' : 'district',
+    district: selection.district ?? null,
+    contract: selection.transaction === 'monthly' ? 'monthly-rent' : selection.transaction === 'rent'
+      ? 'monthly-rent'
+      : selection.transaction,
+    propertyType: selection.propertyType ?? null,
+    selectedEntity: selection.buildingId ?? null,
+  });
+}
+
+function safeInternalReturnTo(value: unknown, market: EntityCheckContext['market']): string | null {
+  if (typeof value !== 'string' || !value.startsWith('/') || value.startsWith('//')) return null;
+  if (/[\u0000-\u001f\u007f]/u.test(value)) return null;
+  const allowedPrefix = market === 'kr-seoul' ? '/kr/seoul/' : '/sg/singapore/';
+  try {
+    const target = new URL(value, 'https://signedprice.invalid');
+    if (target.origin !== 'https://signedprice.invalid' || !target.pathname.startsWith(allowedPrefix)) {
+      return null;
+    }
+    return `${target.pathname}${target.search}${target.hash}`;
+  } catch {
+    return null;
+  }
+}
+
+export function createEntityCheckHref(
+  path: string,
+  input: EntityCheckContextInput,
+): string {
+  const returnTo = safeInternalReturnTo(input.returnTo, input.market);
+  if (!identifierPattern.test(input.entity) || returnTo === null) return path;
+  const query = new URLSearchParams();
+  query.set('market', input.market);
+  query.set('entity', input.entity);
+  query.set('returnTo', returnTo);
+  query.set('transaction', input.selection.transaction === 'rent' ? 'monthly' : input.selection.transaction);
+  if (input.selection.district !== undefined) query.set('district', input.selection.district);
+  if (input.selection.propertyType !== undefined) query.set('housing', input.selection.propertyType);
+  query.set('building', input.entity);
+  return `${path}${path.includes('?') ? '&' : '?'}${query.toString()}`;
+}
+
+export function parseEntityCheckContext(
+  input: ExplorerSearchParams,
+  allow: Readonly<{
+    market: EntityCheckContext['market'];
+    entityIds: readonly string[];
+  }>,
+): EntityCheckContext | null {
+  const market = scalarSearchParam(input, 'market');
+  const entity = scalarSearchParam(input, 'entity');
+  const returnTo = scalarSearchParam(input, 'returnTo');
+  if (
+    market !== allow.market
+    || !entityMarkets.includes(market)
+    || entity === undefined
+    || !identifierPattern.test(entity)
+    || !allow.entityIds.includes(entity)
+  ) return null;
+  const safeReturnTo = safeInternalReturnTo(returnTo, market);
+  return safeReturnTo === null ? null : Object.freeze({ market, entity, returnTo: safeReturnTo });
 }

@@ -25,28 +25,42 @@ describe('signedprice public editorial homepage', () => {
     expect(homeCss).not.toMatch(/(?:heroGrid|snapshotGrid|marketGrid|buildingGrid|insightGrid|propertyGrid|bottomGrid)[^{]*\{[^}]*100vw/);
   }, 10_000);
 
-  it('uses one global headline before market selection, reporting, guides, and method', async () => {
+  it('uses one global headline across exactly five editorial regions', async () => {
     const markup = renderToStaticMarkup(await Home());
     const positions = [
       'id="three-market-home-title"',
-      'aria-label="Choose a property market"',
-      'data-home-section="insight"',
+      'data-home-region="actions"',
+      'data-home-region="changed"',
+      'data-home-region="data-story"',
       'id="home-guides-title"',
-      'id="home-method-title"',
     ].map((needle) => markup.indexOf(needle));
 
     expect(markup.match(/<h1/g)).toHaveLength(1);
+    expect(markup.match(/data-home-region=/g)).toHaveLength(5);
     expect(markup).toContain('See the market before you make the move.');
     expect(positions.every((position) => position >= 0)).toBe(true);
     expect([...positions].sort((a, b) => a - b)).toEqual(positions);
   }, 20_000);
+
+  it('publishes three contextual market actions, two dated changes, one lead Data Story, and three to five guides', async () => {
+    const markup = renderToStaticMarkup(await Home());
+
+    expect(markup.match(/data-contextual-action=/g)).toHaveLength(3);
+    expect(markup.match(/data-what-changed-item=/g)).toHaveLength(2);
+    expect(markup.match(/data-lead-data-story=/g)).toHaveLength(1);
+    expect(markup.match(/data-home-guide=/g)?.length ?? 0).toBeGreaterThanOrEqual(3);
+    expect(markup.match(/data-home-guide=/g)?.length ?? 0).toBeLessThanOrEqual(5);
+    expect(markup).toContain('Data Story');
+    expect(markup).toContain('Research only');
+    expect(markup).not.toMatch(/data-contextual-action="ae-dubai"[\s\S]*?AED\s*[\d,.]+/i);
+  });
 
   it('keeps navigation compact and separates surfaces, markets, and languages', async () => {
     const markup = renderToStaticMarkup(await Home());
     const navigation = markup.match(/<nav[^>]*aria-label="Primary navigation"[^>]*>([\s\S]*?)<\/nav>/)?.[1] ?? '';
 
     expect(navigation.match(/<a /g) ?? []).toHaveLength(4);
-    for (const destination of ['/markets', '/prices', '/insights', '/guides']) {
+    for (const destination of ['/markets', '/prices', '/news', '/guides']) {
       expect(navigation).toContain(`href="${destination}"`);
     }
     expect(markup).toContain('aria-label="Language navigation"');
@@ -55,13 +69,13 @@ describe('signedprice public editorial homepage', () => {
     expect(markup).not.toContain('data-navigation-tier="product"');
   });
 
-  it('keeps real Seoul tools and the Journal crawlable from the first screen', async () => {
+  it('keeps real Seoul tools and News crawlable from the first screen', async () => {
     const markup = renderToStaticMarkup(await Home());
 
     expect(markup).toContain('data-active-market="kr-seoul"');
     expect(markup).toContain('href="/kr/seoul/check"');
     expect(markup).toContain('href="/kr/seoul/explore"');
-    expect(markup).toContain('href="/insights"');
+    expect(markup).toContain('href="/news"');
     expect(markup).not.toContain('/design-review/');
   });
 
@@ -101,7 +115,6 @@ describe('signedprice public editorial homepage', () => {
     const markup = renderToStaticMarkup(await Home());
 
     expect(markup).toContain('Guides for renting and buying');
-    expect(markup).toContain('How this evidence works');
     expect(markup).toContain('href="/trust/">Method</a>');
     expect(markup).toContain('href="/privacy/">Privacy</a>');
     expect(markup).toContain('href="/contact/">Contact</a>');

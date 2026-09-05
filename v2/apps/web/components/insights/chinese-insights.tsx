@@ -107,7 +107,7 @@ export function ChineseInsightsArticle({ article }: Readonly<{
       <nav className={styles.articleActions} aria-label="下一步">
         <Link href="/kr/seoul/explore/">查看首尔成交数据</Link>
         <Link href="/kr/seoul/check/">查询价格</Link>
-        <Link href={`/insights/${article.relatedEnglishSlug}/`}>Read related English report</Link>
+        <Link href={`/news/${article.relatedEnglishSlug}/`}>Read related English report</Link>
         <Link href="/zh-cn/kr/seoul/insights/">全部中文文章</Link>
       </nav>
     </main>

@@ -1,0 +1,269 @@
+.frame {
+  margin: 48px 0;
+  border: 1px solid var(--review-line, var(--line));
+  background: var(--review-paper, var(--surface-strong));
+  color: var(--review-ink, var(--ink));
+}
+
+.header,
+.visual,
+.footer {
+  padding: clamp(20px, 4vw, 40px);
+}
+
+.header {
+  display: grid;
+  gap: 10px;
+  border-bottom: 1px solid var(--review-line, var(--line));
+}
+
+.header > span,
+.beforeAfter span,
+.footer dt {
+  color: var(--review-accent, var(--accent));
+  font-size: 12px;
+  font-weight: 760;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.header h2 {
+  margin: 0;
+  font-size: clamp(28px, 4vw, 44px);
+  letter-spacing: -.03em;
+  line-height: 1.08;
+}
+
+.header p,
+.conversion {
+  max-width: 70ch;
+  margin: 0;
+  color: var(--review-muted, var(--muted));
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.visual {
+  overflow: hidden;
+  background: var(--review-canvas, var(--surface));
+}
+
+.beforeAfter {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid var(--review-line, var(--line));
+  background: var(--review-line, var(--line));
+}
+
+.beforeAfter article {
+  display: grid;
+  gap: 10px;
+  background: var(--review-paper, var(--surface-strong));
+  padding: 24px;
+}
+
+.beforeAfter strong {
+  font-size: 18px;
+}
+
+.beforeAfter p {
+  margin: 0;
+  color: var(--review-accent, var(--accent));
+  font-size: clamp(24px, 4vw, 38px);
+  font-weight: 750;
+}
+
+.beforeAfter small {
+  color: var(--review-muted, var(--muted));
+  font-size: 12px;
+}
+
+.timeline {
+  margin: 0;
+  border-left: 2px solid var(--review-line, var(--line));
+  padding: 0 0 0 30px;
+  list-style: none;
+}
+
+.timeline li {
+  position: relative;
+  display: grid;
+  gap: 6px;
+  padding: 0 0 32px;
+}
+
+.timeline li::before {
+  position: absolute;
+  top: 4px;
+  left: -37px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--review-accent, var(--accent));
+  content: '';
+}
+
+.timeline span,
+.timeline p {
+  color: var(--review-muted, var(--muted));
+  font-size: 14px;
+}
+
+.timeline strong {
+  font-size: 20px;
+}
+
+.timeline p {
+  margin: 0;
+}
+
+.chartScroll {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.chart {
+  display: block;
+  width: 100%;
+  min-width: 620px;
+  color: var(--review-muted, var(--muted));
+}
+
+.chart rect,
+.chart circle {
+  fill: var(--review-accent, var(--accent));
+}
+
+.chart line {
+  stroke: var(--review-line, var(--line));
+}
+
+.chart polyline {
+  fill: none;
+  stroke: var(--review-accent, var(--accent));
+  stroke-width: 4;
+}
+
+.chart text {
+  fill: currentcolor;
+  font-size: 13px;
+}
+
+.series2 polyline { stroke-dasharray: 8 5; }
+.series2 circle { fill: var(--review-ink, var(--ink)); }
+.series3 polyline { stroke-width: 2; }
+.series4 polyline { stroke-dasharray: 2 5; }
+.series5 polyline { stroke-width: 6; }
+
+.costStructure {
+  display: grid;
+  gap: 24px;
+}
+
+.costStructure section {
+  display: grid;
+  gap: 14px;
+}
+
+.costStructure h3 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.costStructure section > div {
+  display: grid;
+  gap: 8px;
+}
+
+.costStructure p {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  margin: 0;
+  font-size: 14px;
+}
+
+.costStructure i {
+  display: block;
+  width: var(--infographic-share);
+  min-width: 2px;
+  height: 14px;
+  background: var(--review-accent, var(--accent));
+}
+
+.footer {
+  display: grid;
+  gap: 22px;
+  border-top: 1px solid var(--review-line, var(--line));
+}
+
+.footer dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 28px;
+  margin: 0;
+}
+
+.footer dl > div {
+  display: grid;
+  gap: 4px;
+}
+
+.footer dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+}
+
+.dataTable summary,
+.related {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  color: var(--review-accent, var(--accent));
+  font-size: 14px;
+  font-weight: 720;
+  cursor: pointer;
+}
+
+.dataTable > div {
+  overflow-x: auto;
+  padding-top: 12px;
+}
+
+.dataTable table {
+  width: 100%;
+  min-width: 620px;
+  border-collapse: collapse;
+  font-size: 13px;
+  text-align: left;
+}
+
+.dataTable caption {
+  padding: 0 0 10px;
+  color: var(--review-muted, var(--muted));
+  text-align: left;
+}
+
+.dataTable th,
+.dataTable td {
+  border-top: 1px solid var(--review-line, var(--line));
+  padding: 10px;
+}
+
+.related {
+  width: fit-content;
+  gap: 10px;
+}
+
+@media (max-width: 560px) {
+  .beforeAfter,
+  .footer dl {
+    grid-template-columns: 1fr;
+  }
+
+  .chartOptional {
+    display: none;
+  }
+}
