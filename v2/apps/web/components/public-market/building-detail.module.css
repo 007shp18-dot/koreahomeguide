@@ -734,14 +734,14 @@
   grid-row: 1;
   padding: clamp(28px, 4vw, 48px);
   justify-content: center;
-  background: linear-gradient(145deg, #fff 30%, var(--soft-blue));
+  background: var(--surface-strong);
 }
 
 .main[data-building-detail='exact-evidence'] .identitySummary h1 {
   max-width: 13ch;
   font-size: clamp(2.25rem, 4.5vw, 4.4rem);
   font-weight: 740;
-  letter-spacing: -.052em;
+  letter-spacing: -.02em;
   line-height: 1.02;
   text-wrap: balance;
 }
@@ -966,7 +966,7 @@
 .main[data-building-detail='exact-evidence'] .identitySummary h1 {
   max-width: 18ch;
   font-size: clamp(2rem, 3.35vw, 3.4rem);
-  line-height: 1.06;
+  line-height: 1.25;
   overflow-wrap: break-word;
   word-break: keep-all;
   text-wrap: pretty;
