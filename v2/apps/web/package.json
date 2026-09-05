@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node -e \"require('node:dns').lookup('ep-rapid-grass-b34p9oiz.c-4.ap-southeast-1.aws.neon.tech',(e,a)=>console.log('SIGNEDPRICE_TEST_NEON_IP',e?e.message:a))\" && node scripts/apply-content-database.mjs --if-configured",
+    "prebuild": "node scripts/generate-seed-runner-password.mjs && node scripts/apply-content-database.mjs --if-configured",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
