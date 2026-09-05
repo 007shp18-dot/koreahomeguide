@@ -4,13 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node scripts/apply-content-database.mjs --if-configured",
+    "prebuild": "node scripts/apply-content-database.mjs --if-configured && node scripts/seed-property-database.mjs --if-configured",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "db:migrate": "node scripts/apply-content-database.mjs",
-    "db:seed:properties": "node scripts/seed-property-core.mjs",
+    "db:seed:properties": "node scripts/seed-property-database.mjs",
     "db:verify:properties": "node scripts/seed-property-core.mjs --verify-only"
   },
   "dependencies": {
