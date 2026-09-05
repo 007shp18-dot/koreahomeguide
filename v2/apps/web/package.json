@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node scripts/generate-seed-runner-password.mjs && node scripts/apply-content-database.mjs --if-configured",
+    "prebuild": "node scripts/seed-test-branch-via-data-api.mjs && node scripts/apply-content-database.mjs --if-configured",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
