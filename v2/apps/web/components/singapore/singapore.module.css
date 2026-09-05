@@ -78,7 +78,7 @@
 .segmentRow p, .segmentRow span { margin: 0; color: var(--muted); font-size: var(--text-meta); line-height: 1.35; }
 .segmentRow strong { overflow-wrap: anywhere; font-size: 15px; line-height: 1.15; }
 .segmentRow a {
-  min-height: 32px;
+  min-height: 44px;
   grid-column: 2;
   display: inline-flex;
   align-items: center;

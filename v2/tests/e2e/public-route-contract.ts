@@ -3,6 +3,22 @@ import {
   PUBLIC_AREA_WITHHELD_SLUG,
 } from './public-area-summary-fixture';
 
+// Independently reviewed EN/zh-Hans pairs. Keep explicit destinations so a
+// self-link, wrong translation, or missing reciprocal alternate fails the gate.
+const editorialTranslationPairs = [
+  ['/news/', '/zh-cn/news/'],
+  ['/guides/', '/zh-cn/guides/'],
+  ['/news/policy/singapore-absd-policy-status/', '/zh-cn/news/policy/sg-absd-policy-zh/'],
+  ['/news/seoul-district-price-distribution/', '/zh-cn/news/seoul-district-price-distribution-zh/'],
+  ['/guides/rent-an-apartment-in-korea/', '/zh-cn/guides/rent-in-korea-zh/'],
+] as const;
+
+export const editorialAlternates: Readonly<Record<string, Readonly<Record<string, string>>>> =
+  Object.fromEntries(editorialTranslationPairs.flatMap(([en, chinese]) => {
+    const languages = { en, 'zh-Hans': chinese, 'x-default': en };
+    return [[en, languages], [chinese, languages]];
+  }));
+
 export const publicRoutes = [
   { path: '/', heading: 'Know the market before you buy.', indexing: 'index', canonical: '/' },
   { path: '/trust/', heading: 'How SignedPrice publishes evidence', indexing: 'index', canonical: '/trust/' },

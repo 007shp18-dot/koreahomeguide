@@ -353,7 +353,8 @@
   line-height: var(--review-heading-leading);
 }
 
-.contextualActionList a {
+.contextualActionList a,
+.changeList a {
   min-height: 44px;
   display: inline-flex;
   align-items: center;

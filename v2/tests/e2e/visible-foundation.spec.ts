@@ -1,6 +1,6 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
 import { resolveReleaseTestTarget } from '../../release-test-target';
-import { publicRoutes } from './public-route-contract';
+import { editorialAlternates, publicRoutes } from './public-route-contract';
 
 const releaseTarget = resolveReleaseTestTarget();
 
@@ -150,7 +150,15 @@ for (const route of publicRoutes) {
       await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
     }
     const alternates = page.locator('link[rel="alternate"][hreflang]');
-    if (hasAlternates && 'canonical' in route) {
+    const editorialLanguages = editorialAlternates[route.path];
+    if (editorialLanguages !== undefined) {
+      await expect(alternates).toHaveCount(Object.keys(editorialLanguages).length);
+      for (const [language, path] of Object.entries(editorialLanguages)) {
+        await expect(page.locator(`link[rel="alternate"][hreflang="${language}"]`)).toHaveAttribute(
+          'href', `https://www.signedprice.com${path}`,
+        );
+      }
+    } else if (hasAlternates && 'canonical' in route) {
       await expect(alternates).toHaveCount(3);
       await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute(
         'href', `https://www.signedprice.com${route.canonical}`,

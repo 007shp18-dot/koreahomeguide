@@ -528,7 +528,7 @@ test('completes a Tab-only keyboard flow with computed visible focus', async ({ 
   await expectNoHorizontalPageOverflow(page);
 });
 
-test('keeps desktop controls aligned at 52px', async ({ page }, testInfo) => {
+test('keeps desktop controls aligned at the approved 48px', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium');
   await gotoRentCheck(page);
 
@@ -542,9 +542,9 @@ test('keeps desktop controls aligned at 52px', async ({ page }, testInfo) => {
   const submit = await box(page.getByRole('button', { name: 'Check this quote' }));
 
   for (const control of [area, size, deposit, monthly, submit]) {
-    expect(control.height).toBe(52);
+    expect(control.height).toBe(48);
   }
-  expect(housing.height).toBe(52);
+  expect(housing.height).toBe(48);
   expect(Math.abs(area.y - housing.y)).toBeLessThanOrEqual(0.5);
   expect(Math.abs(area.y - size.y)).toBeLessThanOrEqual(0.5);
   expect(Math.abs(deposit.y - monthly.y)).toBeLessThanOrEqual(0.5);
