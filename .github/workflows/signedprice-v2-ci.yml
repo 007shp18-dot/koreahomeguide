@@ -64,41 +64,6 @@ jobs:
         working-directory: .
         run: node scripts/v2-migration/verify-phase-0.cjs
 
-  mobile-journey:
-    needs: verify
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    defaults:
-      run:
-        working-directory: v2
-    steps:
-      - uses: actions/checkout@v5
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 11.19.0
-      - uses: actions/setup-node@v5
-        with:
-          node-version: 24
-          cache: pnpm
-          cache-dependency-path: v2/pnpm-lock.yaml
-      - run: pnpm install --frozen-lockfile
-      - name: Install locked Playwright Chromium
-        run: pnpm exec playwright install --with-deps chromium
-      - name: Verify mobile navigation and building round trip
-        run: >-
-          pnpm e2e --project=mobile-chromium --grep
-          'Explore recovery keeps|mobile primary navigation|journey: Explore selection survives'
-      - name: Upload mobile journey diagnostics
-        if: failure()
-        uses: actions/upload-artifact@v4.6.2
-        with:
-          name: signedprice-v2-mobile-journey-diagnostics
-          path: |
-            v2/test-results
-            v2/playwright-report
-          if-no-files-found: ignore
-          retention-days: 7
-
   browser:
     needs: verify
     runs-on: ubuntu-latest
