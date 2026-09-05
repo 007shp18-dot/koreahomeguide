@@ -124,6 +124,7 @@ function projectedBuildingMediaFor(
   />;
 }
 
+export const dynamic = 'force-dynamic';
 export const dynamicParams = true;
 
 const evidenceAreas = Object.freeze([
