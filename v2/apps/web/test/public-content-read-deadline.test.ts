@@ -25,4 +25,3 @@ describe('public editorial database boundary', () => {
     expect(articleStoreSource.match(/contentDatabase\(\)/gu)).toHaveLength(1);
   });
 });
-
