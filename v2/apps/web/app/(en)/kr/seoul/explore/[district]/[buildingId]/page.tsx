@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { BuildingDetailPage } from '@/components/public-market/building-detail-page';
 import { BuildingOfficialFacts } from '@/components/public-market/building-official-facts';
 import { ProjectedEntityMedia } from '@/components/public-market/projected-entity-media';
+import { googleMapsBrowserKeyFromEnvironment } from '@/lib/maps/google-maps-browser-key.server';
 import {
   KoreaEvidenceBuildingDetail,
   ObservedBuildingDetail,
@@ -105,11 +106,14 @@ function projectedBuildingMediaFor(
   name: string,
   projection: PublicEntityProjection | null | undefined,
 ) {
-  const selected = projection?.media.find(({ displayUrl }) => displayUrl !== null);
+  const selected = projection?.media.find(({ displayUrl, providerReference, exactSubject }) =>
+    exactSubject && (displayUrl !== null || providerReference !== null));
   return <ProjectedEntityMedia
     buildingName={name}
-    media={selected?.displayUrl === null || selected === undefined ? null : {
+    browserKey={googleMapsBrowserKeyFromEnvironment()}
+    media={selected === undefined ? null : {
       displayUrl: selected.displayUrl,
+      providerReference: selected.providerReference,
       width: selected.width,
       height: selected.height,
       focalX: selected.focalX,

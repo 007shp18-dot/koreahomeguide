@@ -29,14 +29,17 @@ type GooglePlaceResult = Readonly<{
   photos?: readonly GooglePlacePhotoResult[];
 }>;
 
-type GooglePlaceClass = Readonly<{
+type GooglePlaceClass = {
+  new(options: { id: string }): GooglePlaceResult & {
+    fetchFields: (request: { fields: readonly string[] }) => Promise<unknown>;
+  };
   searchByText: (request: Readonly<{
     textQuery: string;
     fields: readonly string[];
     maxResultCount: number;
     language: string;
   }>) => Promise<Readonly<{ places: readonly GooglePlaceResult[] }>>;
-}>;
+};
 
 type GooglePlacesLibrary = Readonly<{ Place: GooglePlaceClass }>;
 type GooglePlacesSdk = Readonly<{
@@ -81,24 +84,60 @@ export function isTrustedGooglePlaceMatch(
   return requestedTokens.some((token) => returned.includes(token));
 }
 
-export function GooglePlacePhoto({
-  browserKey,
-  buildingName,
-  address,
-  fallback,
-  linkAttribution = true,
-  registryKey,
-}: Readonly<{
+export async function findGooglePlacePhoto(
+  Place: GooglePlaceClass,
+  approvedPlaceId: string | null,
+  buildingName: string,
+  address: string,
+): Promise<GooglePlacePhotoResult | null> {
+  if (approvedPlaceId !== null) {
+    const place = new Place({ id: approvedPlaceId });
+    await place.fetchFields({ fields: ['photos'] });
+    return place.photos?.[0] ?? null;
+  }
+  const { places } = await Place.searchByText({
+    textQuery: `${buildingName}, ${address}`,
+    fields: ['id', 'displayName', 'formattedAddress', 'photos'],
+    maxResultCount: 1,
+    language: 'en',
+  });
+  const place = places[0];
+  return isTrustedGooglePlaceMatch(place?.displayName, buildingName, place?.formattedAddress, address)
+    ? place?.photos?.[0] ?? null : null;
+}
+
+type GooglePlacePhotoProps = Readonly<{
   browserKey: string | null;
   buildingName: string;
   address: string;
   fallback: ReactNode;
   linkAttribution?: boolean;
   registryKey?: string;
-}>) {
+  /** Only a server-published, exact-property approval may supply this ID. */
+  verifiedPlaceId?: string;
+}>;
+
+export function GooglePlacePhoto(props: GooglePlacePhotoProps) {
+  // Reset approval and in-flight state when navigating between properties.
+  // Requests belonging to an unmounted identity cannot update the new photo.
+  return <GooglePlacePhotoForIdentity
+    key={JSON.stringify([props.registryKey, props.verifiedPlaceId, props.buildingName, props.address, props.browserKey])}
+    {...props}
+  />;
+}
+
+function GooglePlacePhotoForIdentity({
+  browserKey,
+  buildingName,
+  address,
+  fallback,
+  linkAttribution = true,
+  registryKey,
+  verifiedPlaceId,
+}: GooglePlacePhotoProps) {
   const [photo, setPhoto] = useState<PhotoState>('loading');
   const [approvedPlaceId, setApprovedPlaceId] = useState<string | null | undefined>(
-    registryKey === undefined ? null : undefined,
+    verifiedPlaceId ?? (registryKey === undefined ? null : undefined),
   );
 
   useEffect(() => {
@@ -160,17 +199,8 @@ export function GooglePlacePhoto({
     if (sdk === undefined || typeof sdk.importLibrary !== 'function' || approvedPlaceId === undefined) return;
     try {
       const { Place } = await sdk.importLibrary('places');
-      const { places } = await Place.searchByText({
-        textQuery: `${buildingName}, ${address}`,
-        fields: ['id', 'displayName', 'formattedAddress', 'photos'],
-        maxResultCount: 1,
-        language: 'en',
-      });
-      const place = places[0];
-      const result = place?.photos?.[0];
-      if (result === undefined
-        || (approvedPlaceId !== null && place?.id !== approvedPlaceId)
-        || !isTrustedGooglePlaceMatch(place?.displayName, buildingName, place?.formattedAddress, address)) {
+      const result = await findGooglePlacePhoto(Place, approvedPlaceId, buildingName, address);
+      if (result === null) {
         setPhoto('unavailable');
         return;
       }

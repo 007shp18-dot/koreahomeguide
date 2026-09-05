@@ -181,4 +181,23 @@ describe('public entity projection', () => {
     expect(calls.every(({ parameters }) => parameters.length === 1 && Array.isArray(parameters[0])))
       .toBe(true);
   });
+
+  it('keeps approved photos available when the coordinate query fails', async () => {
+    const reader = createPublicEntityProjectionReader({
+      async query(statement) {
+        if (statement.includes(':locations')) throw new Error('Location timeout');
+        return [{
+          entity_id: 'building-1', media_asset_id: '9', role: 'hero', position: 0,
+          display_url: '/assets/buildings/hero.jpg', provider_reference: null,
+          width: 1600, height: 900, focal_x: 0.5, focal_y: 0.5,
+          attribution_name: 'Owner', attribution_url: null, exact_subject: true,
+          published_at: '2026-09-01', last_checked_at: '2026-09-01',
+          review_state: 'approved', can_display: true,
+        }];
+      },
+    });
+    expect((await reader.listBuildings(['building-1']))?.get('building-1')).toMatchObject({
+      location: null, media: [{ mediaAssetId: '9' }],
+    });
+  });
 });

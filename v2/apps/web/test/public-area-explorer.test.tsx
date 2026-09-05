@@ -168,7 +168,7 @@ describe('public Seoul area Explorer', () => {
     expect(markup).toContain('data-selection-presentation="map-drawer"');
     expect(markup).toContain('data-building-panel="gangnam-evidence-tower"');
     expect(markup).toContain('data-building-media="location-only"');
-    expect(markup).toContain('Only approved coordinates and media from the public projection are shown');
+    expect(markup).toContain('Building photo unavailable');
     expect(markup).not.toContain('data-building-media="google-place-photo"');
     expect(markup).toContain('Open full building evidence');
   });

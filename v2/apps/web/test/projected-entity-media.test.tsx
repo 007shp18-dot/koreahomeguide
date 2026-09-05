@@ -27,6 +27,18 @@ describe('projected entity media', () => {
     />);
 
     expect(html).toContain('data-building-media="location-only"');
-    expect(html).toContain('No exact-property photo is approved');
+    expect(html).toContain('Building photo unavailable');
+    expect(html).not.toContain('data-state="rights-blocked"');
+  });
+
+  it('loads an approved provider reference without requiring coordinates or a direct URL', () => {
+    const html = renderToStaticMarkup(<ProjectedEntityMedia
+      buildingName="Evidence Tower"
+      browserKey="test-key"
+      media={{ displayUrl: null, providerReference: 'approved-place-id', width: null, height: null,
+        focalX: null, focalY: null, attributionName: null, attributionUrl: null }}
+    />);
+    expect(html).toContain('Loading verified place photo');
+    expect(html).not.toContain('Building photo unavailable');
   });
 });

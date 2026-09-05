@@ -124,7 +124,7 @@ describe('observed building detail', () => {
 
     expect(html).toContain('data-building-detail="identity-only"');
     expect(html).toContain('data-building-media="location-only"');
-    expect(html).toContain('No exact-property photo is approved for public display.');
+    expect(html).toContain('Building photo unavailable');
     expect(html).not.toContain('not a listing photo');
   });
 
