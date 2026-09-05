@@ -2,7 +2,16 @@
 
 ## Verdict
 
-**Code candidate: ready. Production rollout: conditional GO.**
+**Production rollout: NO-GO as of 2026-09-05. Browser regressions and live database verification remain unresolved.**
+
+### 2026-09-05 browser CI result — supersedes earlier readiness statements
+
+- Run [33928954548](https://github.com/007shp18-dot/koreahomeguide/actions/runs/33928954548), candidate `6543996a826b4c7aaaf01b762064240065debc2a`: `verify` passed; `browser` failed. Browser summary: 285 passed, 113 failed, 21 skipped. Repeated viewport failures are not 113 independently diagnosed product defects.
+- Initial triage found obsolete navigation/copy/layout expectations, missing screenshot reference files, and an actual Singapore evidence-link target of 32 px against the approved 44 px minimum. Classification is incomplete; do not dismiss the suite as stale or approve screenshot baselines without inspection.
+- CI successfully installed Chromium and exercised its own application server. Earlier references to an unavailable browser describe the local environment, not the current CI result. Deployed preview inspection is still blocked by sign-in, and Preview has no configured database connection.
+- Repair demonstrated defects, reconcile tests with the approved journeys, inspect baseline images, and rerun the browser matrix before release. Live projection population, indexes, timeout recovery, and a scoped non-production fallback drill remain required.
+- Public-site inspection on September 4–5 found inconsistent global/local navigation, external-news language and relevance problems, and a user-facing internal building-ID field in Check. These observations concern production, not proof of the candidate's behavior.
+- The sitewide implementation is a review candidate, not a completed production release. See `docs/operations/2026-09-05-signedprice-business-product-growth-review.md` for the revised sequence.
 
 ### Pre-upload revalidation
 
