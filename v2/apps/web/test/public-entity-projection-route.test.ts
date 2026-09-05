@@ -2,12 +2,15 @@ import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
-const calls = vi.hoisted(() => ({ publishSeoul: vi.fn() }));
+const calls = vi.hoisted(() => ({ publishSeoul: vi.fn(), publishProximity: vi.fn() }));
 vi.mock('../lib/db/postgres.server', () => ({
   contentDatabase: () => ({ query: vi.fn() }),
 }));
 vi.mock('../lib/public-data/entity-projection-publisher.server', () => ({
   createPublicEntityProjectionPublisher: () => ({ publishSeoul: calls.publishSeoul }),
+}));
+vi.mock('../lib/public-market/korea-proximity-database.server', () => ({
+  publishInstalledKoreaProximityToDatabase: calls.publishProximity,
 }));
 
 import * as projectionRoute from '../app/api/internal/public-entity-projection/route';
@@ -46,6 +49,7 @@ describe('public entity projection route authorization', () => {
       rightsBlocked: 0,
       mediaPublished: 1,
     });
+    calls.publishProximity.mockResolvedValue({ state: 'missing' });
     const handler = (projectionRoute as unknown as Readonly<Record<string, unknown>>).GET;
     expect(typeof handler).toBe('function');
     const response = await (handler as typeof projectionRoute.POST)(new Request(
@@ -60,6 +64,7 @@ describe('public entity projection route authorization', () => {
       rejected: 0,
       rightsBlocked: 0,
       mediaPublished: 1,
+      proximity: { state: 'missing' },
     });
   });
 

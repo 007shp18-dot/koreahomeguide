@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 
 import { contentDatabase } from '@/lib/db/postgres.server';
 import { createPublicEntityProjectionPublisher } from '@/lib/public-data/entity-projection-publisher.server';
+import { publishInstalledKoreaProximityToDatabase } from '@/lib/public-market/korea-proximity-database.server';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
@@ -25,7 +26,9 @@ export async function POST(request: Request) {
     const publisher = createPublicEntityProjectionPublisher({
       query: (statement, parameters = []) => sql.query(statement, [...parameters]),
     });
-    return NextResponse.json({ state: 'ready', ...(await publisher.publishSeoul()) });
+    const projection = await publisher.publishSeoul();
+    const proximity = await publishInstalledKoreaProximityToDatabase();
+    return NextResponse.json({ state: 'ready', ...projection, proximity });
   } catch {
     console.error('SignedPrice public entity projection refresh failed.');
     return NextResponse.json({ error: 'storage_unavailable' }, { status: 503 });

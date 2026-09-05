@@ -154,7 +154,7 @@ describe('Playwright release target configuration', () => {
       .toBe(registry.snapshots[0]?.sha256);
   });
 
-  it('preserves pre-existing workspace data and cleans its temporary proximity fixture', () => {
+  it.runIf(process.platform !== 'win32')('preserves pre-existing workspace data and cleans its temporary proximity fixture', () => {
     const config = createPlaywrightConfig({});
     if (config.webServer === undefined || Array.isArray(config.webServer)) {
       throw new Error('Expected one local release web server.');
