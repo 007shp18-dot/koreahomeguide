@@ -13,20 +13,23 @@ type SeedIdentityRow = Readonly<{
   legacyMarketKey: string;
   globalEntityId: string;
   globalMarketId: string;
+  address: string | null;
 }>;
 
 describe('SignedPrice property database seed source', () => {
-  it('preserves every Seoul building ID instead of generating a replacement ID', () => {
+  it('preserves every Seoul building ID and emits a deterministic photo-search address', () => {
     const rows = loadSeoulBuildingSeed() as readonly SeedIdentityRow[];
     expect(rows).toHaveLength(48_999);
     expect(rows).toContainEqual(expect.objectContaining({
       externalId: 'dobong-gu-jljtx9',
       legacyKey: 'seoul:dobong-gu-jljtx9',
       globalEntityId: 'kr-seoul:estate:dobong-gu-jljtx9',
+      address: '서울특별시 도봉구 도봉동 554-31',
     }));
     for (const row of rows) {
       expect(row.legacyKey).toBe(`seoul:${row.externalId}`);
       expect(row.globalEntityId).toBe(`kr-seoul:estate:${row.externalId}`);
+      expect(row.address).toMatch(/^서울특별시 \S+구 \S+ /u);
     }
   });
 
