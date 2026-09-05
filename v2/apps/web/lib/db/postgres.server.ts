@@ -31,4 +31,3 @@ export function publicContentDatabase(): NeonQueryFunction<false, false> | null 
     fetchOptions: { get signal() { return AbortSignal.timeout(PUBLIC_CONTENT_READ_TIMEOUT_MS); } },
   });
 }
-
