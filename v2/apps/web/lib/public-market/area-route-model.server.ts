@@ -102,12 +102,12 @@ function projectExploreBuilding(
   building: import('./area-route-types').ExploreBuildingModel,
   projection: PublicEntityProjection | undefined,
 ): import('./area-route-types').ExploreBuildingModel {
-  if (projection === undefined || projection.state === 'unavailable') return building;
-  const directMedia = projection.media.find((media) => media.displayUrl !== null);
+  if (projection === undefined) return building;
+  const directMedia = projection.media.find((media) => media.exactSubject && media.displayUrl !== null);
   return Object.freeze({
     ...building,
-    latitude: projection.location?.latitude ?? null,
-    longitude: projection.location?.longitude ?? null,
+    latitude: projection.state === 'unavailable' ? building.latitude : projection.location?.latitude ?? null,
+    longitude: projection.state === 'unavailable' ? building.longitude : projection.location?.longitude ?? null,
     media: directMedia?.displayUrl === null || directMedia === undefined
       ? undefined
       : Object.freeze({

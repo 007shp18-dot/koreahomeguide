@@ -242,7 +242,7 @@ describe('public building detail', () => {
     expect(metadata).not.toHaveProperty('alternates');
     expect(html).toContain('Evidence Tower');
     expect(html).toContain('data-building-media="location-only"');
-    expect(html).toContain('No exact-property photo is approved for public display.');
+    expect(html).toContain('Building photo unavailable');
     expect(html).not.toContain('not a listing photo');
   });
 
@@ -269,7 +269,7 @@ describe('public building detail', () => {
     expect(selected).toContain('data-selected-mode="rent"');
     expect(selected).toContain('6 reported contracts');
     expect(selected).toContain('data-building-media="location-only"');
-    expect(selected).toContain('No exact-property photo is approved for public display.');
+    expect(selected).toContain('Building photo unavailable');
     expect(selected).not.toContain('Street view unavailable');
     expect(selected).not.toContain('data-detail-rail="true"');
     expect(selected).toContain(

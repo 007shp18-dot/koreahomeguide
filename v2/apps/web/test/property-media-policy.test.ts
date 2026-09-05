@@ -20,7 +20,8 @@ describe('property media policy', () => {
     expect(seoulDetailRoute).toContain('ProjectedEntityMedia');
     for (const source of [singaporeProjectDetail, hdbBlockDetail]) {
       expect(source).not.toContain('BuildingStreetView');
-      expect(source).toContain('MarketRepresentativePhoto');
+      expect(source).not.toContain('MarketRepresentativePhoto');
+      expect(source).toContain('ProjectedEntityMedia');
     }
   });
 

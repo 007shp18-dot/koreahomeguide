@@ -237,7 +237,7 @@ describe('public area Explore model', () => {
     });
   });
 
-  it('hydrates building pins and approved media from one public projection read', async () => {
+  it.each(['ready', 'unavailable'] as const)('hydrates approved media independently of location state: %s', async (state) => {
     const base = buildPublicAreaExploreModel('gangnam-gu', {
       ...dependencies(),
       buildingSource: createPublicBuildingFixture(),
@@ -246,7 +246,7 @@ describe('public area Explore model', () => {
       'gangnam-evidence-tower',
       Object.freeze({
         entityId: 'gangnam-evidence-tower',
-        location: Object.freeze({
+        location: state === 'unavailable' ? null : Object.freeze({
           entityId: 'gangnam-evidence-tower', marketId: 'kr-seoul',
           latitude: 37.501, longitude: 127.031, precision: 'rooftop' as const,
           provider: 'official-address', providerReference: 'record-1',
@@ -261,7 +261,7 @@ describe('public area Explore model', () => {
           publishedAt: '2026-09-01T00:00:00.000Z', lastCheckedAt: '2026-09-01T00:00:00.000Z',
         })]),
         evidenceReleaseId: null,
-        state: 'ready' as const,
+        state,
       }),
     ]]));
 
@@ -271,8 +271,8 @@ describe('public area Explore model', () => {
     expect(model.status).toBe('ready');
     if (model.status !== 'ready' || model.buildingAvailability.status !== 'not_loaded') return;
     expect(model.buildingAvailability.fallbackBuildings[0]).toMatchObject({
-      latitude: 37.501,
-      longitude: 127.031,
+      latitude: state === 'unavailable' ? 37.5001 : 37.501,
+      longitude: state === 'unavailable' ? 127.0352 : 127.031,
       media: { displayUrl: '/assets/buildings/hero.jpg', attributionName: 'Owner' },
     });
   });

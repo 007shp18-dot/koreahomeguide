@@ -199,10 +199,13 @@ export function createPublicEntityProjectionReader(
       const ids = Object.freeze([...new Set(entityIds.filter((id) => id.trim() !== ''))].slice(0, 2_500));
       if (ids.length === 0) return new Map();
       try {
-        const [locationRows, mediaRows] = await Promise.all([
+        const [locations, media] = await Promise.allSettled([
           port.query(LOCATIONS_SQL, [ids]),
           port.query(MEDIA_SQL, [ids]),
         ]);
+        if (locations.status === 'rejected' && media.status === 'rejected') return null;
+        const locationRows = locations.status === 'fulfilled' ? locations.value : [];
+        const mediaRows = media.status === 'fulfilled' ? media.value : [];
         const locationByEntity = new Map<string, SqlRow>();
         for (const row of locationRows) {
           if (typeof row.entity_id === 'string' && !locationByEntity.has(row.entity_id)) {

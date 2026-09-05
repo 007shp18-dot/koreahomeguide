@@ -1,8 +1,10 @@
 import { DataStateNotice } from '../market-ui/data-state';
+import { GooglePlacePhoto } from '../maps/google-place-photo';
 import styles from './projected-entity-media.module.css';
 
 export type ProjectedEntityMediaModel = Readonly<{
-  displayUrl: string;
+  displayUrl: string | null;
+  providerReference?: string | null;
   width: number | null;
   height: number | null;
   focalX: number | null;
@@ -14,20 +16,33 @@ export type ProjectedEntityMediaModel = Readonly<{
 export function ProjectedEntityMedia({
   buildingName,
   media,
+  browserKey = null,
+  evidenceHref = '#building-evidence',
 }: Readonly<{
   buildingName: string;
   media: ProjectedEntityMediaModel | null;
+  browserKey?: string | null;
+  evidenceHref?: string;
 }>) {
-  if (media === null) {
+  if (media === null || (media.displayUrl === null && !media.providerReference)) {
     return <section className={styles.unavailable} data-building-media="location-only">
       <DataStateNotice
-        state="rights-blocked"
-        cause="No exact-property photo is approved for public display."
+        state="empty"
+        heading="Building photo unavailable"
+        cause="An identifiable photo of this property is not available in this view. City photos are not substituted."
         actionLabel="Continue with property evidence"
-        actionHref="#building-evidence"
+        actionHref={evidenceHref}
       />
     </section>;
   }
+  if (media.displayUrl === null) return <GooglePlacePhoto
+    key={media.providerReference}
+    browserKey={browserKey}
+    buildingName={buildingName}
+    address=""
+    verifiedPlaceId={media.providerReference!}
+    fallback={<ProjectedEntityMedia buildingName={buildingName} media={null} evidenceHref={evidenceHref} />}
+  />;
   const focalX = media.focalX ?? 0.5;
   const focalY = media.focalY ?? 0.5;
   return <figure className={styles.frame} data-building-media="public-projection">

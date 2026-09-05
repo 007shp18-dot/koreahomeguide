@@ -161,19 +161,15 @@ function ProjectedBuildingMedia({
   if (building.media === undefined) {
     return variant === 'thumbnail' ? (
       <span className={styles.photoUnavailable} data-building-media="location-only">
-        <strong>{building.latitude === null
-          ? (locale === 'ko' ? '위치 검증 대기' : 'Location awaiting verification')
-          : (locale === 'ko' ? '검증된 건물 위치' : 'Verified building location')}</strong>
-        <small>{locale === 'ko' ? '승인된 사진만 추후 표시' : 'Only approved media is shown'}</small>
+        <strong>{locale === 'ko' ? '건물 사진 미제공' : 'Building photo unavailable'}</strong>
+        <small>{locale === 'ko' ? '건물 정보 보기' : 'View property details'}</small>
       </span>
     ) : (
       <section className={styles.buildingMediaUnavailable} data-building-media="location-only">
-        <strong>{building.latitude === null
-          ? (locale === 'ko' ? '건물 위치 검증 대기' : 'Building location awaiting verification')
-          : (locale === 'ko' ? '검증된 건물 위치' : 'Verified building location')}</strong>
+        <strong>{locale === 'ko' ? '건물 사진 미제공' : 'Building photo unavailable'}</strong>
         <p>{locale === 'ko'
-          ? '공개 projection에 승인된 좌표와 사진만 표시하며, 브라우저에서 임의로 검색하지 않습니다.'
-          : 'Only approved coordinates and media from the public projection are shown; the browser does not search for substitutes.'}</p>
+          ? '현재 이 건물을 식별할 수 있는 사진을 제공하지 못하고 있습니다.'
+          : 'An identifiable photo of this property is not available in this view.'}</p>
       </section>
     );
   }
