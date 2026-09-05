@@ -92,6 +92,15 @@ test('ready Singapore evidence flows entry to project when promotion gates open'
   const warmStarted = Date.now();
   await page.goto(projectHref);
   await expect(page.locator('[data-singapore-project="ready"]')).toBeVisible();
+  const numericLayout = await page.locator('[data-market-detail-shell]').evaluate((shell) => ({
+    overflowing: Array.from(shell.querySelectorAll('#detail-evidence dd, #detail-overview strong'))
+      .filter((element) => element.scrollWidth > element.clientWidth + 1)
+      .map((element) => element.textContent),
+    priceWhiteSpace: getComputedStyle(shell.querySelector('tbody td:nth-child(2)')!).whiteSpace,
+  }));
+  expect(numericLayout.overflowing).toEqual([]);
+  expect(numericLayout.priceWhiteSpace).toBe('nowrap');
+
   expect(Date.now() - warmStarted).toBeLessThanOrEqual(1_000);
   for (const label of ['SGD', 'PSF', 'PSM', 'New sale', 'Subsale', 'Resale', 'URA']) {
     await expect(page.locator('body')).toContainText(label);

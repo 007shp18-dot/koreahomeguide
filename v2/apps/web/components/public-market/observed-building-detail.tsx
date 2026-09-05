@@ -154,7 +154,6 @@ export function ObservedBuildingDetail({
             <Link className={styles.backAction} href={backHref}>
               Back to {model.district.nameEn} Explore
             </Link>
-            <p className={styles.identityEyebrow}>Verified observed building identity</p>
             <h1>{model.building.officialName}</h1>
             <p>{model.building.neighborhoodName} · {model.district.nameEn}</p>
             <dl className={styles.factGrid}>
@@ -302,7 +301,6 @@ export function KoreaEvidenceBuildingDetail({
             <Link className={styles.backAction} href={backHref}>
               Back to {model.district.nameEn} Explore
             </Link>
-            <p className={styles.identityEyebrow}>Verified building contract evidence</p>
             <h1>{model.building.officialName}</h1>
             <p>{model.building.neighborhoodName} · {model.district.nameEn}</p>
             <dl className={styles.factGrid}>

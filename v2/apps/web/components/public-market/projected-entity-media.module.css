@@ -37,30 +37,13 @@
 }
 
 .unavailable {
-  padding: clamp(1.25rem, 3vw, 2.5rem);
+  padding: clamp(20px, 3vw, 40px);
   display: grid;
-  align-content: end;
-  gap: .65rem;
-  color: #fff;
-  background: linear-gradient(145deg, #123f44, #092d31);
+  align-content: center;
+  gap: 12px;
+  color: var(--ink);
+  background: var(--surface);
 }
-
-.unavailable small {
-  color: #d9ede7;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-}
-
-.unavailable strong {
-  font-size: clamp(1.4rem, 3vw, 2.25rem);
-  line-height: 1.08;
-}
-
-.unavailable p {
-  max-width: 54ch;
-  color: #d9ede7;
-  font-size: 14px;
-  line-height: 1.55;
-}
+.unavailable strong { font-size: var(--card-title-size); line-height: 1.25; }
+.unavailable p { max-width: 48ch; color: var(--muted); font-size: var(--body-size); line-height: var(--body-leading); }
+.unavailable a { width: fit-content; min-height: 44px; display: inline-flex; align-items: center; color: var(--accent); font-size: var(--ui-size); overflow-wrap: anywhere; }

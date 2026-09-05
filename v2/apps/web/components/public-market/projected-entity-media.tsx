@@ -1,4 +1,4 @@
-import { DataStateNotice } from '../market-ui/data-state';
+import Link from 'next/link';
 import { GooglePlacePhoto } from '../maps/google-place-photo';
 import styles from './projected-entity-media.module.css';
 
@@ -25,14 +25,10 @@ export function ProjectedEntityMedia({
   evidenceHref?: string;
 }>) {
   if (media === null || (media.displayUrl === null && !media.providerReference)) {
-    return <section className={styles.unavailable} data-building-media="location-only">
-      <DataStateNotice
-        state="empty"
-        heading="Building photo unavailable"
-        cause="An identifiable photo of this property is not available in this view. City photos are not substituted."
-        actionLabel="Continue with property evidence"
-        actionHref={evidenceHref}
-      />
+    return <section className={styles.unavailable} data-building-media="location-only" data-photo-state="unavailable" aria-label="Building photo unavailable">
+      <strong>Building photo unavailable</strong>
+      <p>No rights-cleared exterior photo is connected to this building yet.</p>
+      <Link href={evidenceHref}>Continue with property evidence</Link>
     </section>;
   }
   if (media.displayUrl === null) return <GooglePlacePhoto

@@ -53,7 +53,7 @@ describe('shared market composition', () => {
     expect(photoCss).toMatch(/aspect-ratio:\s*16\s*\/\s*9/);
     expect(css).toMatch(/min-height:\s*44px/);
     expect(css).toMatch(/@media \(max-width:\s*760px\)[\s\S]*grid-template-columns:\s*1fr/);
-    expect(css).toMatch(/box-shadow:\s*0 10px 28px/);
+    expect(css).toMatch(/\.identity[^}]*box-shadow:\s*none/);
   });
 
   it('keeps the representative-photo fallback in the same 16:9 frame', () => {
