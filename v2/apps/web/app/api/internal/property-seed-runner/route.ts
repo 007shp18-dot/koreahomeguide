@@ -10,13 +10,35 @@ const TEST_HOST = 'ep-rapid-grass-b34p9oiz.c-4.ap-southeast-1.aws.neon.tech';
 const TEST_ROLE = 'signedprice_seed_runner';
 const CHUNK_SIZE = 1000;
 
+type SeedItem = {
+  legacyKey: string;
+  legacyMarketKey: string;
+  externalId: string;
+  name: string;
+  normalizedName: string;
+  address: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  globalEntityId: string;
+  globalMarketId: string;
+  globalKind: string;
+  geographyId: string;
+  geographyKind: string;
+  geographyName: string;
+  geographyProviderCode: string;
+  localSchemaVersion: string;
+  localAttributes: Record<string, unknown>;
+  externalSourceId: string;
+  externalType: string;
+};
+
 function integer(value: string | null, fallback: number, maximum: number): number {
   if (value === null || !/^\d+$/.test(value)) return fallback;
   const parsed = Number(value);
   return Number.isSafeInteger(parsed) && parsed >= 0 ? Math.min(parsed, maximum) : fallback;
 }
 
-function compactRow(row: ReturnType<typeof propertySeedPage>['items'][number]) {
+function compactRow(row: SeedItem) {
   const housingSector = row.localAttributes.housingSector === 'hdb'
     ? 'hdb'
     : row.localAttributes.housingSector === 'private_residential'
@@ -46,10 +68,10 @@ function compactRow(row: ReturnType<typeof propertySeedPage>['items'][number]) {
   };
 }
 
-async function seedPage(sql: ReturnType<typeof neon>, kind: string, offset: number) {
+async function seedPage(sql: any, kind: string, offset: number) {
   const page = propertySeedPage(kind, offset, CHUNK_SIZE);
   if (page.items.length === 0) return { count: 0, total: page.total };
-  const rows = page.items.map(compactRow);
+  const rows = (page.items as readonly SeedItem[]).map(compactRow);
   const geographies = [...new Map(rows.map((row) => [row.geography_id, {
     id: row.geography_id,
     market_id: row.global_market_id,
@@ -59,7 +81,7 @@ async function seedPage(sql: ReturnType<typeof neon>, kind: string, offset: numb
   }])).values()];
   const payload = JSON.stringify(rows);
   const geographyPayload = JSON.stringify(geographies);
-  await sql.transaction((tx) => [
+  await sql.transaction((tx: any) => [
     tx.query(`
       INSERT INTO markets (key, name, country_code)
       VALUES ('seoul', 'Seoul', 'KR'), ('singapore', 'Singapore', 'SG'),
