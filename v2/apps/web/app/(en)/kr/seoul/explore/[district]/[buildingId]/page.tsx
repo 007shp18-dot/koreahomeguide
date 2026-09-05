@@ -184,6 +184,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params, searchParams }: BuildingPageProps): Promise<Metadata> {
   const { district, buildingId } = await params;
+  const propertyEntityId = `kr-seoul:estate:${buildingId}`;
   const propertyTypeModel = buildPublicPropertyTypeModel(district, buildingId);
   if (propertyTypeModel !== null) {
     const buildingCount = propertyTypeModel.coverage.contributingBuildings;
@@ -396,7 +397,6 @@ export function composeKoreaBuildingRoute(input: Readonly<{
 
 export default async function BuildingRoute({ params, searchParams, locale = 'en' }: LocalizedBuildingPageProps) {
   const { district, buildingId } = await params;
-  const propertyEntityId = `kr-seoul:estate:${buildingId}`;
   const projectionReader = publicEntityProjectionReaderFromEnvironment();
   const projections = projectionReader === null
     ? null
