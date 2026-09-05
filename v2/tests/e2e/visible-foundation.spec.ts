@@ -206,8 +206,9 @@ test('mobile primary navigation remains tappable and reaches the market flow', a
   const primaryLinks = await visibleLinks.all();
   await expectContainedTouchTargets(page, primaryLinks);
   await expectTargetsNotToOverlap(primaryLinks);
-  const languageLinks = await page.getByRole('navigation', { name: 'Language navigation' })
-    .getByRole('link').all();
+  const languageNavigation = page.getByRole('navigation', { name: 'Language navigation' });
+  await expect(languageNavigation.getByRole('link')).toHaveCount(2);
+  const languageLinks = await languageNavigation.getByRole('link').all();
   await expectContainedTouchTargets(page, languageLinks);
   await expectTargetsNotToOverlap(languageLinks);
 

@@ -5,6 +5,7 @@ import { contractCheckCurvesFromEnvironment } from '@/lib/contract-check/route-m
 import { buildSingleQuoteCheckRouteModel } from '@/lib/single-quote-check/route-model.server';
 import { buildSingleQuoteCheckMetadata } from '@/lib/single-quote-check/metadata.server';
 import { parseEntityCheckContext } from '@/lib/navigation/explorer-selection';
+import { buildPublicBuildingModel } from '@/lib/public-market/building-route-model.server';
 
 export function generateMetadata() {
   return buildSingleQuoteCheckMetadata('en');
@@ -19,11 +20,17 @@ export default async function SeoulContractCheckPage({
     query,
     contractCheckCurvesFromEnvironment(),
   );
-  const entityContext = model.buildingName === null || model.selection.buildingId === null
+  const buildingId = model.selection.buildingId;
+  // Navigation identity can remain published even when Check has no matching cohort.
+  const knownBuilding = buildingId !== null && (
+    model.buildingName !== null
+    || buildPublicBuildingModel(model.selection.districtSlug, buildingId) !== null
+  );
+  const entityContext = !knownBuilding || buildingId === null
     ? null
     : parseEntityCheckContext(query, {
         market: 'kr-seoul',
-        entityIds: [model.selection.buildingId],
+        entityIds: [buildingId],
       });
   return (
     <>
