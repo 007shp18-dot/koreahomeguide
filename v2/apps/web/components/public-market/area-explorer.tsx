@@ -995,7 +995,7 @@ function ReadyAreaExplorer({
                       ))}
                     </ul>
                     {groupedBuildings.length === 0 ? null : (
-                      <details className={styles.groupedBuildings}>
+                      <details className={styles.groupedBuildings} open={individualBuildings.length === 0}>
                         <summary>
                           <strong>{locale === 'ko' ? `위치·가격 확인 전 주택 ${groupedBuildings.length}개` : `${groupedBuildings.length} homes awaiting location or price verification`}</strong>
                           <span>{locale === 'ko' ? '개별 가격 버블에서 제외 · 목록 열기' : 'Excluded from individual price bubbles · Open list'}</span>

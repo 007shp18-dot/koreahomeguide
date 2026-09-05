@@ -643,9 +643,18 @@ export function NaverDistrictMap({
     lifecycle.current = null;
   }, []);
 
+  const unavailableMessage = (
+    <div className={styles.unavailable} role="status">
+      <strong>{locale === 'ko' ? '지도를 표시할 수 없습니다' : 'Map unavailable'}</strong>
+      <p>{locale === 'ko'
+        ? '목록에서 지역과 건물을 계속 탐색할 수 있습니다.'
+        : 'Continue browsing the list to select a district or building.'}</p>
+    </div>
+  );
+
   if (clientId === null) return (
     <div className={styles.frame} data-map-provider="static" data-map-state="fallback">
-      {fallback}
+      {unavailableMessage}
     </div>
   );
 
@@ -663,7 +672,7 @@ export function NaverDistrictMap({
       />
       <BuildingMarkerStatus count={unavailableBuildingIds.length} locale={locale} />
       <div className={state === 'ready' ? styles.fallbackHidden : styles.fallback}>
-        {fallback}
+        {state === 'error' ? unavailableMessage : fallback}
       </div>
       <Script
         src={buildNaverMapsScriptUrl(clientId, requiresAddressGeocoding)}

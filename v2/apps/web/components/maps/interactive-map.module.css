@@ -302,3 +302,15 @@
 @media (max-width: 560px) {
   .toolbar button { border: 1px solid var(--line); }
 }
+
+.unavailable {
+  min-height: 240px;
+  display: grid;
+  align-content: center;
+  gap: 8px;
+  padding: 24px;
+  background: var(--surface-strong);
+  color: var(--muted);
+}
+.unavailable strong { color: var(--ink); }
+.unavailable p { margin: 0; }

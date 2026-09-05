@@ -173,6 +173,17 @@ describe('NAVER district map', () => {
     expect(html).toContain('submodules=geocoder');
   });
 
+  it('does not promise loading when the map cannot start', () => {
+    const html = renderToStaticMarkup(createElement(NaverDistrictMap, {
+      clientId: null,
+      districts,
+      fallback: createElement('p', null, 'Loading the NAVER map.'),
+    }));
+    expect(html).toContain('Map unavailable');
+    expect(html).toContain('Continue browsing the list');
+    expect(html).not.toContain('Loading the NAVER map.');
+  });
+
   it('does not request NAVER when a client ID is unavailable', () => {
     const html = renderToStaticMarkup(createElement(NaverDistrictMap, {
       clientId: null,
@@ -182,7 +193,7 @@ describe('NAVER district map', () => {
 
     expect(html).toContain('data-map-provider="static"');
     expect(html).toContain('data-map-state="fallback"');
-    expect(html).toContain('Static Seoul district map');
+    expect(html).toContain('Map unavailable');
     expect(html).not.toContain('oapi.map.naver.com');
   });
 

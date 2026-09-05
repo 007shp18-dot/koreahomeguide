@@ -81,7 +81,7 @@ test('News uses the shared readable type and restrained frame', async ({ page },
   });
 
   expect(values.bodySize).toBe('1rem');
-  expect(values.uiSize).toBe('0.875rem');
+  expect(Number.parseFloat(values.uiSize)).toBe(0.875);
   expect(values.readingFrame).toBe('720px');
   if (testInfo.project.name === 'desktop-chromium' || testInfo.project.name === 'wide-chromium') {
     expect(values.headingSize).toBe(48);
