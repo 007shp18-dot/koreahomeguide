@@ -75,4 +75,3 @@ describe('official Korea building facts join', () => {
     expect(fetch).not.toHaveBeenCalled();
   });
 });
-
