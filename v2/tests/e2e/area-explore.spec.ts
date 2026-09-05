@@ -13,6 +13,29 @@ import {
 
 const releaseTarget = resolveReleaseTestTarget();
 
+test('Explore recovery keeps discovery primary and search touch-safe', async ({ page }) => {
+  await page.goto('/kr/seoul/explore/');
+  const rail = page.getByRole('complementary', { name: 'District and building discovery', exact: true });
+  const map = page.locator('[data-explorer-region="map"]');
+  const search = page.getByRole('searchbox', { name: 'Search district, neighborhood, building or type', exact: true });
+  await expect(rail).toBeVisible();
+  await expect(map).toBeVisible();
+  const railBox = await rail.boundingBox();
+  const mapBox = await map.boundingBox();
+  expect(railBox).not.toBeNull();
+  expect(mapBox).not.toBeNull();
+  const viewport = page.viewportSize()!;
+  if (viewport.width > 1120) {
+    expect(Math.abs(railBox!.width - 420)).toBeLessThanOrEqual(2);
+    expect(railBox!.x + railBox!.width).toBeLessThanOrEqual(mapBox!.x + 2);
+  } else if (viewport.width <= 800) {
+    expect(railBox!.y + railBox!.height).toBeLessThanOrEqual(mapBox!.y + 2);
+  }
+  await expectTouchTarget(search);
+  expect(await search.evaluate((element) => parseFloat(getComputedStyle(element).fontSize))).toBeGreaterThanOrEqual(14);
+  await expectNoHorizontalOverflow(page);
+});
+
 function observeRuntimeFailures(page: Page) {
   const consoleErrors: string[] = [];
   const serverErrors: string[] = [];
