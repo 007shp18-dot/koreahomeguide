@@ -92,6 +92,69 @@ const REFRESH_MEDIA_SQL = `
     last_checked_at = excluded.last_checked_at
 `;
 
+const REFRESH_APPROVED_BUILDING_PHOTOS_SQL = `
+  /* public-entity-projection:sync-building-photos */
+  INSERT INTO media_assets (
+    market_id, subject_entity_id, kind, subject_kind, provider, provider_place_id,
+    object_reference, source_url, attribution_name, attribution_url,
+    rights_policy_id, rights_state, review_state, position, checked_at,
+    visual_reviewed_at, approved_at, approved_by, legacy_registry_key, updated_at
+  )
+  SELECT
+    entity.market_id, entity.id, 'photograph', 'exact-property', photo.provider,
+    photo.provider_place_id,
+    CASE WHEN photo.provider = 'google-place' THEN NULL ELSE photo.asset_url END,
+    photo.source_page_url,
+    photo.attribution_name,
+    photo.attribution_url,
+    CASE photo.provider
+      WHEN 'owned-object' THEN 'legacy-owned-media'
+      WHEN 'licensed-url' THEN 'legacy-licensed-media'
+      ELSE 'legacy-provider-display'
+    END,
+    photo.rights_status,
+    'approved',
+    photo.position,
+    photo.checked_at,
+    photo.visual_reviewed_at,
+    photo.approved_at,
+    photo.approved_by,
+    photo.registry_key,
+    now()
+  FROM building_photos AS photo
+  INNER JOIN buildings AS building ON building.key = photo.building_key
+  INNER JOIN property_entities AS entity ON entity.id = CASE
+    WHEN building.market_key = 'seoul' THEN 'kr-seoul:estate:' || building.external_id
+    WHEN building.market_key = 'singapore' THEN 'sg-' || building.key
+  END
+  WHERE photo.status = 'approved'
+    AND entity.market_id = 'kr-seoul'
+    AND photo.approved_at IS NOT NULL
+    AND photo.approved_by IS NOT NULL
+    AND photo.visual_reviewed_at IS NOT NULL
+  ON CONFLICT (legacy_registry_key)
+  DO UPDATE SET
+    market_id = excluded.market_id,
+    subject_entity_id = excluded.subject_entity_id,
+    kind = excluded.kind,
+    subject_kind = excluded.subject_kind,
+    provider = excluded.provider,
+    provider_place_id = excluded.provider_place_id,
+    object_reference = excluded.object_reference,
+    source_url = excluded.source_url,
+    attribution_name = excluded.attribution_name,
+    attribution_url = excluded.attribution_url,
+    rights_policy_id = excluded.rights_policy_id,
+    rights_state = excluded.rights_state,
+    review_state = excluded.review_state,
+    position = excluded.position,
+    checked_at = excluded.checked_at,
+    visual_reviewed_at = excluded.visual_reviewed_at,
+    approved_at = excluded.approved_at,
+    approved_by = excluded.approved_by,
+    updated_at = now()
+`;
+
 const COUNTS_SQL = `
   /* public-entity-projection:counts */
   SELECT
@@ -128,6 +191,7 @@ export function createPublicEntityProjectionPublisher(
   return Object.freeze({
     async publishSeoul() {
       await port.query(REFRESH_LOCATIONS_SQL);
+      await port.query(REFRESH_APPROVED_BUILDING_PHOTOS_SQL);
       await port.query(REFRESH_MEDIA_SQL);
       const [row] = await port.query(COUNTS_SQL);
       if (row === undefined) throw new TypeError('Public entity projection counts unavailable.');

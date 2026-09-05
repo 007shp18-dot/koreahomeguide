@@ -396,15 +396,16 @@ export function composeKoreaBuildingRoute(input: Readonly<{
 
 export default async function BuildingRoute({ params, searchParams, locale = 'en' }: LocalizedBuildingPageProps) {
   const { district, buildingId } = await params;
+  const propertyEntityId = `kr-seoul:estate:${buildingId}`;
   const projectionReader = publicEntityProjectionReaderFromEnvironment();
   const projections = projectionReader === null
     ? null
-    : await projectionReader.listBuildings([buildingId]);
+    : await projectionReader.listBuildings([propertyEntityId]);
   return composeKoreaBuildingRoute({
     district,
     buildingId,
     query: await searchParams,
     locale,
-    dependencies: { entityProjection: projections?.get(buildingId) ?? null },
+    dependencies: { entityProjection: projections?.get(propertyEntityId) ?? null },
   });
 }

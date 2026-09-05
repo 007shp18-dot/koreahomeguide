@@ -3,14 +3,28 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 
-import { composeKoreaBuildingRoute } from '../app/(en)/kr/seoul/explore/[district]/[buildingId]/page';
+const projectionReaderMocks = vi.hoisted(() => ({
+  listBuildings: vi.fn(),
+}));
+
+vi.mock('../lib/public-data/entity-location-projection.server', async (importOriginal) => ({
+  ...await importOriginal<typeof import('../lib/public-data/entity-location-projection.server')>(),
+  publicEntityProjectionReaderFromEnvironment: () => Object.freeze({
+    listBuildings: projectionReaderMocks.listBuildings,
+  }),
+}));
+
+import BuildingRoute, { composeKoreaBuildingRoute } from '../app/(en)/kr/seoul/explore/[district]/[buildingId]/page';
 import { koreaEvidenceRepositoriesFromEnvironment } from '../lib/public-market/korea-evidence-repositories.server';
 import type { KoreaProximityRepositoryState } from '../lib/public-market/korea-proximity-repository.server';
 import { buildObservedBuildingIdentityModel } from '../lib/public-market/observed-building-route-model.server';
 import { PUBLIC_BUILDING_FIXTURE_PERIOD, createPublicBuildingFixture } from './public-building-fixture';
 import { OBSERVED_BUILDING_FIXTURE_PERIOD, createObservedBuildingInventoryFixture } from './observed-building-fixture';
 
-afterEach(() => vi.unstubAllEnvs());
+afterEach(() => {
+  vi.unstubAllEnvs();
+  vi.clearAllMocks();
+});
 
 const readyProximity = Object.freeze({
   state: 'ready' as const,
@@ -51,6 +65,19 @@ const query = Object.freeze({
 describe('Korea proximity Detail route composition', () => {
   it('exposes a dependency-injectable route composition boundary', () => {
     expect(composeKoreaBuildingRoute).toBeTypeOf('function');
+  });
+
+  it('loads the public projection with the seeded Seoul property entity ID', async () => {
+    projectionReaderMocks.listBuildings.mockResolvedValue(new Map());
+
+    await expect(BuildingRoute({
+      params: Promise.resolve({ district: 'gangnam-gu', buildingId: 'gangnam-evidence-tower' }),
+      searchParams: Promise.resolve({}),
+    })).rejects.toThrow('NEXT_HTTP_ERROR_FALLBACK;404');
+
+    expect(projectionReaderMocks.listBuildings).toHaveBeenCalledWith([
+      'kr-seoul:estate:gangnam-evidence-tower',
+    ]);
   });
 
   it('composes the exact-evidence route with ready proximity facts and an encoded Detail return URL', () => {
