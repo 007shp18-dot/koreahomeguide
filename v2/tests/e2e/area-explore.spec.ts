@@ -222,7 +222,7 @@ test('district selection stays inside the Explore workspace', async ({ page }) =
   await expect(page.locator('[data-explorer-layout="split"]')).toBeVisible();
 });
 
-test('published sale detail links to Contract Check and withheld detail stays money-free', async ({ page }) => {
+test('published sale detail links to Contract Check and withheld district statistics stay money-free', async ({ page }) => {
   const assertNoRuntimeFailures = observeRuntimeFailures(page);
   await page.goto('/kr/seoul/explore/');
   await expect(page.locator('[data-district-option]').first()).toBeVisible();
@@ -251,7 +251,9 @@ test('published sale detail links to Contract Check and withheld detail stays mo
     await page.goto(`/kr/seoul/explore/${withheldSlug}/`);
     await expect(page.locator('[data-district-detail="withheld"]')).toBeVisible();
     await expect(page.locator('input[name="quote"]')).toHaveCount(0);
-    await expect(page.locator('body')).not.toContainText('₩');
+    // Other named districts may show their own published comparisons.
+    await expect(page.locator('#overview')).not.toContainText('₩');
+    await expect(page.locator('#distribution')).not.toContainText('₩');
     const structuredData = await page.locator('script[type="application/ld+json"]')
       .allTextContents();
     expect(structuredData.join('\n')).not.toMatch(/"(?:min|p25|med|p75|max|chg3m)"|₩/);
