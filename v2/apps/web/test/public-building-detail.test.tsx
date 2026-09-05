@@ -56,6 +56,25 @@ function detailProps(
 }
 
 describe('public building detail', () => {
+  it('preserves Explore filters in the Check return URL through the route', async () => {
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_BUILDING_SUMMARY_ARTIFACT', JSON.stringify(createPublicBuildingFixture()));
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', PUBLIC_BUILDING_FIXTURE_PERIOD);
+    const query = {
+      transaction: 'monthly', propertyType: 'apartment', area: '40-60',
+      district: 'gangnam-gu', neighborhood: 'yeoksam-dong',
+      buildingId: 'gangnam-evidence-tower', view: 'list', q: 'Evidence',
+    };
+    const html = renderToStaticMarkup(await BuildingRoute({
+      params: Promise.resolve({ district: query.district, buildingId: query.buildingId }),
+      searchParams: Promise.resolve(query),
+    }));
+    const href = html.match(/href="([^"]*returnTo=[^"]*)"/)?.[1]?.replaceAll('&amp;', '&');
+    expect(href).toBeDefined();
+    const check = new URL(href!, 'https://signedprice.invalid');
+    const back = new URL(check.searchParams.get('returnTo')!, check.origin);
+    for (const [key, value] of Object.entries(query)) expect(back.searchParams.get(key), key).toBe(value);
+  });
+
   it('renders shared local product navigation and URL-backed decision tabs', () => {
     const header = renderToStaticMarkup(<BuildingDetailHeader />);
     expect(header).toContain('aria-label="signedprice home"');
