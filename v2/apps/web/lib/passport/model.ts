@@ -1,6 +1,14 @@
 export type PassportLocale = 'en' | 'ko' | 'zh-CN';
 export type PassportMarketId = 'kr-seoul' | 'sg-singapore' | 'ae-dubai';
 export type PassportCurrency = 'KRW' | 'SGD' | 'AED';
+export type PassportBudgetCurrency = PassportCurrency | 'USD';
+export const PASSPORT_BUDGET_CURRENCIES = ['USD', 'KRW', 'SGD', 'AED'] as const;
+export function normalizePassportCurrency(value: unknown): PassportBudgetCurrency {
+  return PASSPORT_BUDGET_CURRENCIES.includes(value as PassportBudgetCurrency) ? value as PassportBudgetCurrency : 'KRW';
+}
+export function defaultPassportBudget(locale: PassportLocale) {
+  return locale === 'ko' ? { amount: 500_000_000, currency: 'KRW' as const } : { amount: 500_000, currency: 'USD' as const };
+}
 
 export const DEFAULT_PASSPORT_BUDGET_WON = 500_000_000;
 export const PASSPORT_FX = Object.freeze({
@@ -38,6 +46,8 @@ export type PassportMarketResult = PassportMarketEvidence & Readonly<{
 
 export type PassportModel = Readonly<{
   budgetWon: number;
+  budgetAmount: number;
+  budgetCurrency: PassportBudgetCurrency;
   locale: PassportLocale;
   href: string;
   fx: typeof PASSPORT_FX;
@@ -52,9 +62,21 @@ export function normalizePassportBudget(value: string | readonly string[] | unde
     : DEFAULT_PASSPORT_BUDGET_WON;
 }
 
-export function passportHref(locale: PassportLocale, budgetWon: number): string {
+export function passportHref(locale: PassportLocale, budgetWon: number, currency: PassportBudgetCurrency = 'KRW'): string {
   const prefix = locale === 'ko' ? '/ko' : locale === 'zh-CN' ? '/zh-cn' : '';
-  return `${prefix}/passport/?budget=${budgetWon}`;
+  return `${prefix}/passport/?budget=${budgetWon}${currency === 'KRW' ? '' : `&currency=${currency}`}`;
+}
+
+export function convertPassportCurrency(amount: number, from: PassportBudgetCurrency, to: PassportBudgetCurrency): number {
+  const rates = { KRW: PASSPORT_FX.eurKrw, SGD: PASSPORT_FX.eurSgd, USD: PASSPORT_FX.eurUsd, AED: PASSPORT_FX.eurUsd * PASSPORT_FX.usdAed };
+  return amount / rates[from] * rates[to];
+}
+
+export function normalizePassportAmount(value: string | undefined, currency: PassportBudgetCurrency): number {
+  const parsed = Number((value ?? '').replace(/,/gu, '').replace(/^[₩$\s]+/u, ''));
+  const won = convertPassportCurrency(parsed, currency, 'KRW');
+  return Number.isFinite(parsed) && parsed > 0 && won >= 10_000_000 && won <= 100_000_000_000
+    ? Math.round(parsed * 100) / 100 : Math.round(convertPassportCurrency(DEFAULT_PASSPORT_BUDGET_WON, 'KRW', currency));
 }
 
 function localBudget(currency: PassportCurrency, budgetWon: number): number {
@@ -66,10 +88,14 @@ function localBudget(currency: PassportCurrency, budgetWon: number): number {
 
 export function buildPassportModel(input: Readonly<{
   budgetWon: number;
+  budgetAmount?: number;
+  budgetCurrency?: PassportBudgetCurrency;
   locale: PassportLocale;
   evidence: readonly PassportMarketEvidence[];
 }>): PassportModel {
-  const budgetWon = normalizePassportBudget(String(input.budgetWon));
+  const budgetCurrency = input.budgetCurrency ?? 'KRW';
+  const budgetAmount = normalizePassportAmount(String(input.budgetAmount ?? input.budgetWon), budgetCurrency);
+  const budgetWon = convertPassportCurrency(budgetAmount, budgetCurrency, 'KRW');
   const markets = input.evidence.map((market): PassportMarketResult => {
     const converted = localBudget(market.currency, budgetWon);
     return Object.freeze({
@@ -83,8 +109,10 @@ export function buildPassportModel(input: Readonly<{
   });
   return Object.freeze({
     budgetWon,
+    budgetAmount,
+    budgetCurrency,
     locale: input.locale,
-    href: passportHref(input.locale, budgetWon),
+    href: passportHref(input.locale, budgetAmount, budgetCurrency),
     fx: PASSPORT_FX,
     markets: Object.freeze(markets),
   });

@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { useMemo, useState, useSyncExternalStore } from 'react';
-import { buildPassportModel, normalizePassportBudget, passportHref, type PassportMarketEvidence, type PassportModel } from '../../lib/passport/model';
+import { buildPassportModel, normalizePassportAmount, normalizePassportCurrency, passportHref, type PassportMarketEvidence, type PassportModel } from '../../lib/passport/model';
+import { PassportBudgetFields } from './passport-budget-fields';
 import styles from './passport.module.css';
 
 const COPY = {
@@ -23,9 +24,11 @@ export function PassportWorkspace({ initialModel }: Readonly<{ initialModel: Pas
     yieldPct: market.yieldPct, scopes: market.scopes,
   })), [initialModel.markets]);
   const search = useSyncExternalStore(subscribeToLocation, locationSearch, serverSearch);
-  const [submittedBudget, setSubmittedBudget] = useState<number | null>(null);
-  const budget = submittedBudget ?? normalizePassportBudget(new URLSearchParams(search).get('budget') ?? undefined);
-  const model = useMemo(() => buildPassportModel({ budgetWon: budget, locale: initialModel.locale, evidence }), [budget, evidence, initialModel.locale]);
+  const [submitted, setSubmitted] = useState<string | null>(null);
+  const query = new URLSearchParams(submitted ?? search);
+  const currency = query.has('budget') ? normalizePassportCurrency(query.get('currency')) : initialModel.budgetCurrency;
+  const budget = query.has('budget') ? normalizePassportAmount(query.get('budget') ?? undefined, currency) : initialModel.budgetAmount;
+  const model = useMemo(() => buildPassportModel({ budgetWon: budget, budgetAmount: budget, budgetCurrency: currency, locale: initialModel.locale, evidence }), [budget, currency, evidence, initialModel.locale]);
   const [copied, setCopied] = useState(false);
   const copy = COPY[initialModel.locale];
   const action = passportHref(initialModel.locale, initialModel.budgetWon).split('?')[0]!;
@@ -35,12 +38,13 @@ export function PassportWorkspace({ initialModel }: Readonly<{ initialModel: Pas
       <p className={styles.eyebrow}>SignedPrice Passport</p>
       <h1>{copy.title}</h1>
       <form action={action} className={styles.resultForm} onSubmit={(event) => {
-        event.preventDefault(); const budgetWon = normalizePassportBudget(String(new FormData(event.currentTarget).get('budget') ?? ''));
-        const next = buildPassportModel({ budgetWon, locale: initialModel.locale, evidence });
-        globalThis.history.replaceState(null, '', next.href); setSubmittedBudget(budgetWon); setCopied(false);
+        event.preventDefault(); const data = new FormData(event.currentTarget);
+        const budgetCurrency = normalizePassportCurrency(data.get('currency'));
+        const budgetAmount = normalizePassportAmount(String(data.get('budget') ?? ''), budgetCurrency);
+        const next = buildPassportModel({ budgetWon: budgetAmount, budgetAmount, budgetCurrency, locale: initialModel.locale, evidence });
+        globalThis.history.replaceState(null, '', next.href); setSubmitted(next.href.split('?')[1]!); setCopied(false);
       }}>
-        <label htmlFor="passport-result-budget">{copy.label}</label>
-        <div className={styles.compactInput}><span>₩</span><input key={budget} id="passport-result-budget" name="budget" inputMode="numeric" defaultValue={new Intl.NumberFormat('ko-KR').format(budget)} /></div>
+        <PassportBudgetFields key={`${budget}-${currency}`} amount={budget} currency={currency} locale={initialModel.locale} id="passport-result-budget" />
         <button type="submit">{copy.action}</button>
       </form>
     </header>

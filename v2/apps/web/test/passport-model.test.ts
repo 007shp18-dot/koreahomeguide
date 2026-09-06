@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 
 import {
   buildPassportModel,
+  convertPassportCurrency,
+  normalizePassportAmount,
   normalizePassportBudget,
   PASSPORT_FX,
   passportHref,
@@ -22,6 +24,19 @@ const evidence: readonly PassportMarketEvidence[] = [
 ];
 
 describe('SignedPrice Passport model', () => {
+  it('compares the same purchasing power consistently from all four budget currencies', () => {
+    const dollars = 500_000;
+    const reference = buildPassportModel({ budgetWon: dollars, budgetCurrency: 'USD', budgetAmount: dollars, locale: 'en', evidence });
+    for (const currency of ['KRW', 'SGD', 'AED'] as const) {
+      const amount = convertPassportCurrency(dollars, 'USD', currency);
+      const converted = buildPassportModel({ budgetWon: amount, budgetAmount: amount, budgetCurrency: currency, locale: 'en', evidence });
+      expect(converted.markets.map(({ indicativeAreaSqm }) => indicativeAreaSqm)).toEqual(reference.markets.map(({ indicativeAreaSqm }) => indicativeAreaSqm));
+      expect(converted.markets[0]!.localBudget).toBeCloseTo(reference.markets[0]!.localBudget, -2);
+    }
+    expect(passportHref('en', dollars, 'USD')).toBe('/passport/?budget=500000&currency=USD');
+    expect(normalizePassportAmount('1,250,000.50', 'AED')).toBe(1_250_000.5);
+    expect(normalizePassportAmount('-500000', 'USD')).toBeGreaterThan(0);
+  });
   it('normalizes formatted budgets and rejects amounts outside the v1 boundary', () => {
     expect(normalizePassportBudget('₩ 500,000,000')).toBe(500_000_000);
     expect(normalizePassportBudget(['600000000'])).toBe(600_000_000);

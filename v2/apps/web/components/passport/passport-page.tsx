@@ -1,12 +1,13 @@
 import { SiteFooter } from '../site-footer';
 import { SiteHeader } from '../site-header';
 import { loadPassportEvidence } from '../../lib/passport/evidence.server';
-import { buildPassportModel, DEFAULT_PASSPORT_BUDGET_WON, type PassportLocale } from '../../lib/passport/model';
+import { buildPassportModel, defaultPassportBudget, type PassportLocale } from '../../lib/passport/model';
 import { PassportWorkspace } from './passport-workspace';
 
 export async function PassportPage({ locale }: Readonly<{ locale: PassportLocale }>) {
   const path = locale === 'ko' ? '/ko/passport/' : locale === 'zh-CN' ? '/zh-cn/passport/' : '/passport/';
-  const model = buildPassportModel({ budgetWon: DEFAULT_PASSPORT_BUDGET_WON, locale, evidence: await loadPassportEvidence() });
+  const budget = defaultPassportBudget(locale);
+  const model = buildPassportModel({ budgetWon: budget.amount, budgetAmount: budget.amount, budgetCurrency: budget.currency, locale, evidence: await loadPassportEvidence() });
   return <>
     <SiteHeader copy={{ brand: 'signedprice', homeLabel: 'signedprice home', homeHref: locale === 'zh-CN' ? '/zh-cn/kr/seoul/' : '/', navigationLabel: 'Passport navigation', languageLabel: locale === 'ko' ? 'KO' : locale === 'zh-CN' ? 'ZH' : 'EN', links: [{ label: 'Passport', href: path, isCurrent: true }] }} />
     <PassportWorkspace initialModel={model} />

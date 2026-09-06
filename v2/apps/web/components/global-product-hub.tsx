@@ -27,7 +27,7 @@ const hubCopy = {
   markets: {
     eyebrow: 'Global market coverage',
     title: 'Markets',
-    description: 'Explore residential property in Seoul and Singapore, with local transaction records and market guides. Dubai offers official market releases and area research.',
+    description: 'Explore Seoul, Singapore and Dubai through reported transactions, local price comparisons and buying guides.',
   },
   prices: {
     eyebrow: 'Signed price evidence',
@@ -80,9 +80,9 @@ function MarketCards() {
         <nav className={styles.marketReading} aria-label="Singapore research"><Link href="/sg/singapore/explore/">Explore</Link><Link href="/guides/read-singapore-private-transactions/">Buying guide</Link><Link href="/news/?market=singapore">News and analysis</Link></nav>
       </article>
       <article className={`${styles.marketCard} ${styles.marketDubai}`} id="dubai">
-        <header><span>AE</span><Status>Research only</Status></header>
-        <div><p>United Arab Emirates</p><h2>Dubai</h2><p>Explore selected areas, official market releases and purchase costs. Building-level transaction search is not yet available.</p></div>
-        <dl><div><dt>Currency</dt><dd>AED</dd></div><div><dt>Coverage</dt><dd>Area research</dd></div></dl>
+        <header><span>AE</span><Status tone="limited">Area evidence</Status></header>
+        <div><p>United Arab Emirates</p><h2>Dubai</h2><p>Compare Ready and Off-Plan prices, annual rents and estimated gross yields using released area evidence.</p></div>
+        <dl><div><dt>Currency</dt><dd>AED</dd></div><div><dt>Coverage</dt><dd>Ready · Off-Plan · Rent</dd></div></dl>
         <nav className={styles.marketReading} aria-label="Dubai research"><Link href="/ae/dubai/explore/">Explore</Link><Link href="/ae/dubai/guide/">Buying guide</Link><Link href="/news/?market=dubai">News</Link></nav>
       </article>
     </div>
@@ -91,8 +91,8 @@ function MarketCards() {
 
 function MarketsHub() {
   const rows = [
-    ['Signed price evidence', 'Live', 'Available datasets', 'Research only'],
-    ['District or area exploration', 'Live', 'Available by dataset', 'Selected area guides'],
+    ['Signed price evidence', 'Live', 'Available datasets', 'Area aggregates'],
+    ['District or area exploration', 'Live', 'Available by dataset', 'Released area comparisons'],
     ['Active property listings', 'Not offered', 'Not offered', 'Not offered'],
     ['Personalized investment advice', 'Not offered', 'Not offered', 'Not offered'],
   ] as const;
@@ -121,7 +121,7 @@ function MarketsHub() {
             <h3>Are the transactions comparable?</h3>
             <div><h4>Seoul</h4><p>Compare sale contracts within the same building and similar exclusive floor area. Keep lease deposits, monthly rents and purchase prices in separate comparisons.</p><Link href="/kr/seoul/explore/">Explore Seoul transactions</Link></div>
             <div><h4>Singapore</h4><p>Match the project, tenure, size and sale period. Compare private housing and HDB records separately, then inspect the individual project.</p><Link href="/sg/singapore/explore/">Explore Singapore transactions</Link></div>
-            <div><h4>Dubai</h4><p>Separate ready properties from off-plan contracts and registration dates from completion dates. SignedPrice currently provides area context and aggregate releases.</p><Link href="/ae/dubai/guide/">Dubai buying research</Link></div>
+            <div><h4>Dubai</h4><p>Separate ready properties from off-plan contracts and registration dates from completion dates. SignedPrice compares released area sale and rental aggregates, with sample sizes and periods.</p><Link href="/ae/dubai/guide/">Dubai buying research</Link></div>
           </li>
         </ol>
         <p className={styles.researchSources}>Official starting points: <a href="https://www.investkorea.org/ik-en/cntnts/i-417/web.do">Invest KOREA acquisition procedures</a> and <a href="https://www.iras.gov.sg/taxes/stamp-duty/for-property/buying-or-acquiring-property/additional-buyer's-stamp-duty-(absd)">IRAS stamp duties</a>. The linked guides include the detailed sources and worked examples.</p>
@@ -144,7 +144,7 @@ function PricesHub() {
       <div className={styles.productGrid}>
         <Link href="/kr/seoul/explore/"><span>Seoul · KRW</span><h3>Reported housing contracts</h3><p>Explore sale, jeonse and monthly rent by district, neighborhood and building. Compare the same property type and area.</p><strong>Explore →</strong></Link>
         <Link href="/sg/singapore/explore/"><span>Singapore · SGD</span><h3>Private homes and HDB</h3><p>Search private projects and inspect transaction history, size bands and tenure. HDB records stay in their own dataset.</p><strong>Explore →</strong></Link>
-        <Link href="/ae/dubai/explore/"><span>Dubai · AED</span><h3>Market and area research</h3><p>Review official market releases, compare area context and prepare purchase costs. Individual transaction search is not available.</p><strong>Explore research →</strong></Link>
+        <Link href="/ae/dubai/explore/"><span>Dubai · AED</span><h3>Market and area research</h3><p>Compare Ready and Off-Plan sale prices, annual rents and gross yields by area, with sample sizes and reporting dates.</p><strong>Explore research →</strong></Link>
       </div>
     </section>
   </>;

@@ -6,7 +6,7 @@ import { SiteFooter } from '@/components/site-footer';
 import { SiteHeader } from '@/components/site-header';
 import { PublicBreadcrumbJsonLd } from '@/components/public-json-ld';
 import { MARKET_PHOTOS, MarketRepresentativePhoto } from '@/components/market-representative-photo';
-import { buildSeoulLiveModel } from '@/lib/public-market/seoul-live-model.server';
+import { koreaEvidenceRepositoriesFromEnvironment } from '@/lib/public-market/korea-evidence-repositories.server';
 import {
   buildMarketPageModel,
   publicMarketRouteParams,
@@ -43,13 +43,16 @@ export default async function MarketOverviewPage({ params }: MarketPageProps) {
     : model.marketId === 'ae-dubai'
       ? <MarketRepresentativePhoto photo={MARKET_PHOTOS.dubai} eager />
       : undefined;
-  const seoul = model.marketId === 'kr-seoul' ? buildSeoulLiveModel() : null;
-  const summaryItems = seoul?.status === 'ready' ? [
-    { label: 'Eligible contracts', value: new Intl.NumberFormat('en-US').format(seoul.totalCount), detail: seoul.period },
-    { label: 'New contracts', value: new Intl.NumberFormat('en-US').format(seoul.newCount), detail: 'Official reported evidence' },
-    { label: 'Renewal contracts', value: new Intl.NumberFormat('en-US').format(seoul.renewalCount), detail: 'Kept separate from new contracts' },
-    { label: 'Unclassified', value: new Intl.NumberFormat('en-US').format(seoul.unknownCount), detail: 'Shown, never silently reassigned' },
-  ] : undefined;
+  const seoul = model.marketId === 'kr-seoul' ? koreaEvidenceRepositoriesFromEnvironment() : null;
+  const sale = seoul?.sale?.getArtifact();
+  const rent = seoul?.rent?.getArtifact();
+  const count = (value: number | undefined) => value === undefined ? 'Unavailable' : new Intl.NumberFormat('en-US').format(value);
+  const summaryItems = seoul === null ? undefined : [
+    { label: 'Reported sale contracts', value: count(sale?.stats.eligibleRecordCount), detail: sale?.period ?? 'No released sale dataset' },
+    { label: 'Reported rental contracts', value: count(rent?.stats.eligibleRecordCount), detail: rent?.period ?? 'No released rental dataset' },
+    { label: 'Sale coverage', value: 'All size bands', detail: 'Same released dataset as Explore; filter by housing type and area.' },
+    { label: 'Rental coverage', value: 'Jeonse · Monthly', detail: 'Rent and sale samples have separate periods and are not added together.' },
+  ];
 
   return (
     <div id="top">
