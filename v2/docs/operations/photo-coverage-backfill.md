@@ -124,7 +124,10 @@ At the same checkpoint, production contained 37 approved photo rows, 795
 official building-fact rows, 2,575 K-apt nearby-place rows, and 3,403 verified
 URA locations. The evidence tables contained 374,261 source records, 361,760
 linked observations, and 40,044 HDB metrics; the second seed inserted zero new
-rows. The final production database size was 461 MB. Vercel had the production
+rows. Identity and content digests matched on both branches, including the HDB
+metric content digest
+`751f21e307cc533f8d601de166b9d920a5889019b000f63b548698af27573bef`.
+The final production database size was 507,060,224 bytes. Vercel had the production
 pooled `DATABASE_URL`, Google server and browser keys, `CRON_SECRET`, and
 `CONTENT_ADMIN_SECRET` configured as production values. The public page keeps
 using the existing compressed-data fallback where one exists.

@@ -12,6 +12,11 @@ function stableDigest(values) {
   return createHash('sha256').update([...values].sort().join('\n')).digest('hex');
 }
 
+function metricContentKey(row) {
+  return `${row.metric_definition_id}:${row.subject_entity_id}:${row.period_start}:${row.period_end}`
+    + `:${row.value_numeric ?? ''}:${row.value_text ?? ''}:${row.sample_size ?? ''}`;
+}
+
 function batches(rows, batchSize) {
   const output = [];
   for (let offset = 0; offset < rows.length; offset += batchSize) {
@@ -50,7 +55,7 @@ export function createPropertyEvidenceSeedRunner(port, loadSeed = loadPropertyEv
           insertedMetrics += await port.upsertMetrics(batch);
         }
       }
-      const verification = await port.verify(seed.summary);
+      const verification = await port.verify(seed.summary, seed);
       const afterDubai = port.captureDubai === undefined ? null : await port.captureDubai();
       if (beforeDubai !== null && JSON.stringify(beforeDubai) !== JSON.stringify(afterDubai)) {
         throw new Error('Dubai evidence state changed during a scoped seed.');
@@ -249,7 +254,11 @@ function databasePort(connectionString) {
           )
           SELECT dataset_id, business_key, content_hash, observed_at::timestamptz, raw_metadata
           FROM input
-          ON CONFLICT (dataset_id, business_key, content_hash) DO NOTHING
+          ON CONFLICT (dataset_id, business_key, content_hash) DO UPDATE SET
+            observed_at = excluded.observed_at,
+            raw_metadata = excluded.raw_metadata
+          WHERE (source_records.observed_at, source_records.raw_metadata)
+            IS DISTINCT FROM (excluded.observed_at, excluded.raw_metadata)
         `, [payload]),
         transaction.query(`
           WITH input AS (${inputShape}), inserted_observations AS (
@@ -306,39 +315,48 @@ function databasePort(connectionString) {
             value_numeric numeric, value_text text, sample_size integer
           )
           ON CONFLICT (metric_definition_id, evidence_release_id, subject_entity_id,
-            period_start, period_end) WHERE subject_entity_id IS NOT NULL DO NOTHING
+            period_start, period_end) WHERE subject_entity_id IS NOT NULL DO UPDATE SET
+            market_id = excluded.market_id,
+            value_numeric = excluded.value_numeric,
+            value_text = excluded.value_text,
+            sample_size = excluded.sample_size
+          WHERE (metric_observations.market_id, metric_observations.value_numeric,
+            metric_observations.value_text, metric_observations.sample_size)
+            IS DISTINCT FROM (excluded.market_id, excluded.value_numeric,
+              excluded.value_text, excluded.sample_size)
           RETURNING id
         )
         SELECT count(*)::text AS inserted FROM inserted
       `, [payload]);
       return parseCount(result?.inserted ?? '0', 'inserted metric');
     },
-    async verify(expected) {
-      const [counts, sourceRows, metricRows, entityRows, legacyRows, orphanRows] = await Promise.all([
+    async verify(expected, seed) {
+      const hdbRelease = seed.metadata.evidenceReleases.find(({ datasetId }) => datasetId === 'sg-hdb');
+      if (hdbRelease === undefined) throw new TypeError('SignedPrice HDB evidence release missing.');
+      const expectedSourceKeys = new Set(Object.values(seed.observations).flat().map((row) =>
+        `${row.datasetId}\u0000${row.businessKey}\u0000${row.contentHash}`));
+      const [allSourceRows, metricRows, entityRows, legacyRows, orphanRows] = await Promise.all([
         sql.query(`
-          SELECT source.dataset_id, count(*)::text AS source_count,
+          SELECT source.dataset_id, source.business_key, source.content_hash,
             count(observation.id)::text AS observation_count
           FROM source_records AS source
           LEFT JOIN observations AS observation ON observation.source_record_id = source.id
           WHERE source.dataset_id = ANY($1::text[])
-          GROUP BY source.dataset_id ORDER BY source.dataset_id
-        `, [OBSERVATION_DATASETS]),
-        sql.query(`
-          SELECT source.dataset_id, source.business_key, source.content_hash
-          FROM source_records AS source
-          WHERE source.dataset_id = ANY($1::text[])
+          GROUP BY source.id, source.dataset_id, source.business_key, source.content_hash
           ORDER BY source.dataset_id, source.business_key, source.content_hash
         `, [OBSERVATION_DATASETS]),
         sql.query(`
           SELECT definition.id AS metric_definition_id, observation.subject_entity_id,
-            observation.period_start::text, observation.period_end::text
+            observation.period_start::text, observation.period_end::text,
+            observation.value_numeric::text, observation.value_text,
+            observation.sample_size::text
           FROM metric_observations AS observation
           INNER JOIN metric_definitions AS definition
             ON definition.id = observation.metric_definition_id
-          WHERE definition.id LIKE 'sg-hdb-%'
+          WHERE observation.evidence_release_id = $1
           ORDER BY definition.id, observation.subject_entity_id,
             observation.period_start, observation.period_end
-        `),
+        `, [hdbRelease.id]),
         sql.query(`
           SELECT id FROM property_entities
           WHERE market_id IN ('kr-seoul', 'sg-singapore') ORDER BY id
@@ -356,18 +374,21 @@ function databasePort(connectionString) {
             AND (entity.id IS NULL OR entity.market_id NOT IN ('kr-seoul', 'sg-singapore'))
         `, [OBSERVATION_DATASETS]),
       ]);
-      const sourceByDataset = Object.fromEntries(counts.map((row) => [
-        row.dataset_id,
-        parseCount(row.source_count, `${row.dataset_id} source record`),
+      const sourceRows = allSourceRows.filter((row) => expectedSourceKeys.has(
+        `${row.dataset_id}\u0000${row.business_key}\u0000${row.content_hash}`));
+      const sourceByDataset = Object.fromEntries(OBSERVATION_DATASETS.map((datasetId) => [
+        datasetId, sourceRows.filter((row) => row.dataset_id === datasetId).length,
       ]));
-      const observationByDataset = Object.fromEntries(counts.map((row) => [
-        row.dataset_id,
-        parseCount(row.observation_count, `${row.dataset_id} observation`),
+      const observationByDataset = Object.fromEntries(OBSERVATION_DATASETS.map((datasetId) => [
+        datasetId,
+        sourceRows.filter((row) => row.dataset_id === datasetId)
+          .reduce((sum, row) => sum + parseCount(row.observation_count, `${datasetId} observation`), 0),
       ]));
       const observationIdentityDigest = stableDigest(sourceRows.map((row) => `${row.dataset_id}:${row.business_key}`));
       const observationContentDigest = stableDigest(sourceRows.map((row) => `${row.dataset_id}:${row.business_key}:${row.content_hash}`));
       const metricIdentityDigest = stableDigest(metricRows.map((row) =>
         `${row.metric_definition_id}:${row.subject_entity_id}:${row.period_start}:${row.period_end}`));
+      const metricContentDigest = stableDigest(metricRows.map(metricContentKey));
       const verification = Object.freeze({
         koreaRentSourceRecords: sourceByDataset['kr-rent'] ?? 0,
         koreaRentObservations: observationByDataset['kr-rent'] ?? 0,
@@ -383,6 +404,7 @@ function databasePort(connectionString) {
         observationIdentityDigest,
         observationContentDigest,
         metricIdentityDigest,
+        metricContentDigest,
         entityIdDigest: stableDigest(entityRows.map((row) => row.id)),
         legacyIdDigest: stableDigest(legacyRows.map((row) => `${row.market_key}:${row.external_id}`)),
         orphanObservations: parseCount(orphanRows[0]?.count ?? '0', 'orphan observation'),
@@ -390,7 +412,8 @@ function databasePort(connectionString) {
       for (const key of ['koreaRentSourceRecords', 'koreaRentObservations', 'koreaSaleSourceRecords',
         'koreaSaleObservations', 'singaporePrivateSourceRecords', 'singaporePrivateObservations',
         'sourceRecordTotal', 'observationTotal', 'unlinkedSourceRecords', 'hdbMetricRows',
-        'observationIdentityDigest', 'observationContentDigest', 'metricIdentityDigest']) {
+        'observationIdentityDigest', 'observationContentDigest', 'metricIdentityDigest',
+        'metricContentDigest']) {
         if (verification[key] !== expected[key]) throw new Error(`Property evidence verification mismatch: ${key}`);
       }
       if (verification.entityIdDigest !== EXPECTED_ENTITY_ID_DIGEST

@@ -24,6 +24,7 @@ describe('SignedPrice property evidence database seed source', () => {
     expect(seed.summary.observationIdentityDigest).toMatch(/^[a-f0-9]{64}$/u);
     expect(seed.summary.observationContentDigest).toMatch(/^[a-f0-9]{64}$/u);
     expect(seed.summary.metricIdentityDigest).toMatch(/^[a-f0-9]{64}$/u);
+    expect(seed.summary.metricContentDigest).toMatch(/^[a-f0-9]{64}$/u);
   }, 30_000);
 
   it('emits deterministic metadata for four installed evidence releases', () => {
@@ -35,17 +36,45 @@ describe('SignedPrice property evidence database seed source', () => {
       'kr-rent', 'kr-sale', 'sg-hdb', 'sg-private-sale',
     ]);
     expect(first.metadata.evidenceReleases).toHaveLength(4);
+    expect(Object.fromEntries(first.metadata.evidenceReleases.map((release: {
+      datasetId: string; recordCount: number;
+    }) => [release.datasetId, release.recordCount]))).toEqual({
+      'kr-rent': 340_704,
+      'kr-sale': 76_570,
+      'sg-hdb': 462_792,
+      'sg-private-sale': 133_942,
+    });
     expect(second.summary).toEqual(first.summary);
   }, 30_000);
 
-  it('stores raw payloads only when a transaction has no verified target entity', () => {
+  it('retains compact source-only attributes for linked observations and full evidence for unlinked rows', () => {
     const seed = loadPropertyEvidenceSeed();
     const [rent] = seed.observations['kr-rent'];
+    const linkedSale = seed.observations['kr-sale'].find((row: { projectable: boolean }) => row.projectable);
     const [privateSale] = seed.observations['sg-private-sale'];
     const missingSale = seed.observations['kr-sale'].find((row: { projectable: boolean }) => !row.projectable);
 
-    expect(rent).toMatchObject({ projectable: true, rawMetadata: {} });
-    expect(privateSale).toMatchObject({ projectable: true, rawMetadata: {} });
+    expect(rent).toMatchObject({
+      projectable: true,
+      rawMetadata: { transactionKind: expect.any(String) },
+    });
+    expect(linkedSale).toMatchObject({
+      projectable: true,
+      rawMetadata: { buildYear: expect.any(Number) },
+    });
+    expect(privateSale).toMatchObject({
+      projectable: true,
+      rawMetadata: {
+        contractDate: expect.any(String),
+        netPriceSgd: null,
+        propertyType: expect.any(String),
+        psf: expect.any(Number),
+        units: expect.any(Number),
+      },
+    });
+    expect(rent.rawMetadata).not.toHaveProperty('source');
+    expect(linkedSale?.rawMetadata).not.toHaveProperty('source');
+    expect(privateSale.rawMetadata).not.toHaveProperty('source');
     expect(missingSale).toMatchObject({
       projectable: false,
       rawMetadata: { source: { buildingId: expect.any(String), transaction: expect.any(Object) } },

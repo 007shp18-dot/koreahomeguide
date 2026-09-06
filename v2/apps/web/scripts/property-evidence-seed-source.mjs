@@ -54,6 +54,10 @@ function stableDigest(values) {
   return sha256([...values].sort().join('\n'));
 }
 
+function metricContentKey(row) {
+  return `${row.identityKey}:${row.valueNumeric ?? ''}:${row.valueText ?? ''}:${row.sampleSize ?? ''}`;
+}
+
 function object(value, label) {
   if (typeof value !== 'object' || value === null || Array.isArray(value)) {
     throw new TypeError(`SignedPrice evidence seed source invalid: ${label}`);
@@ -150,6 +154,9 @@ function koreaRentRows(payload) {
         areaBasis: 'reported-exclusive-area', floorValue: null, floorRange: null,
         tenureKind: null, localSchemaVersion: 'kr-rent-recent@1',
       }),
+      Object.freeze({
+        rawMetadata: Object.freeze({ transactionKind: transaction.transaction }),
+      }),
     )),
   ));
 }
@@ -177,7 +184,9 @@ function koreaSaleRows(payload, propertyEntityIds) {
         }),
         Object.freeze({
           projectable,
-          rawMetadata: projectable ? Object.freeze({}) : Object.freeze({ source }),
+          rawMetadata: projectable
+            ? Object.freeze({ buildYear: transaction.buildYear ?? null })
+            : Object.freeze({ source }),
         }),
       );
     }),
@@ -199,6 +208,15 @@ function singaporePrivateRows(payload) {
       propertyAreaSqm: transaction.areaSqm, transactedAreaSqm: transaction.areaSqm,
       areaBasis: transaction.areaBasis, floorValue: null, floorRange: transaction.floorRange,
       tenureKind: transaction.tenure, localSchemaVersion: 'sg-private-sale@1',
+    }),
+    Object.freeze({
+      rawMetadata: Object.freeze({
+        contractDate: transaction.contractDate,
+        netPriceSgd: transaction.netPriceSgd ?? null,
+        propertyType: transaction.propertyType,
+        psf: transaction.psf ?? null,
+        units: transaction.units,
+      }),
     }),
   )));
 }
@@ -246,13 +264,21 @@ function metadataRows(artifacts) {
     });
   }));
   const evidenceReleases = Object.freeze(Object.keys(artifacts).sort().map((datasetId) => {
-    const { metadata } = artifacts[datasetId];
+    const { metadata, payload } = artifacts[datasetId];
     const period = monthRange(metadata.period);
+    const sourceRecordCount = datasetId === 'sg-hdb'
+      ? payload.totals?.sourceRows
+      : datasetId === 'sg-private-sale'
+        ? payload.totals?.transactions
+        : payload.stats?.sourceRecordCount;
+    if (!Number.isSafeInteger(sourceRecordCount) || sourceRecordCount < 0) {
+      throw new TypeError(`SignedPrice source record count invalid: ${datasetId}`);
+    }
     return Object.freeze({
       id: `${datasetId}:${metadata.period.replace('/', ':')}`,
       datasetId, marketId: metadata.marketId, periodStart: period.start, periodEnd: period.end,
       releasedAt: metadata.generatedAt, generatedAt: metadata.generatedAt,
-      sampleSize: metadata.recordCount, recordCount: metadata.recordCount,
+      sampleSize: sourceRecordCount, recordCount: sourceRecordCount,
       rightsState: 'approved', publicationState: 'released', publicationMinimum: null,
       rightsPolicyId: metadata.rightsPolicyId, displayState: 'published', indexState: 'indexed',
       objectUrl: metadata.objectUrl, sha256: metadata.sha256,
@@ -291,6 +317,7 @@ export function loadPropertyEvidenceSeed() {
     observationIdentityDigest: stableDigest(allObservations.map((row) => `${row.datasetId}:${row.businessKey}`)),
     observationContentDigest: stableDigest(allObservations.map((row) => `${row.datasetId}:${row.businessKey}:${row.contentHash}`)),
     metricIdentityDigest: stableDigest(metrics.map((row) => row.identityKey)),
+    metricContentDigest: stableDigest(metrics.map(metricContentKey)),
   });
   cachedSeed = Object.freeze({ metadata: metadataRows(artifacts), observations, metrics, summary });
   return cachedSeed;

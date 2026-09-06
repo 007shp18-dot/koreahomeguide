@@ -31,6 +31,7 @@ type SummaryFixture = Readonly<{
   observationIdentityDigest: string;
   observationContentDigest: string;
   metricIdentityDigest: string;
+  metricContentDigest: string;
 }>;
 
 function fixtureSeed() {
@@ -65,6 +66,7 @@ function fixtureSeed() {
       observationIdentityDigest: 'd'.repeat(64),
       observationContentDigest: 'e'.repeat(64),
       metricIdentityDigest: 'f'.repeat(64),
+      metricContentDigest: '1'.repeat(64),
     },
   };
 }
@@ -117,6 +119,41 @@ describe('property evidence database seed runner', () => {
     expect(method).not.toContain('inserted_sources AS');
     expect(method).toContain('INNER JOIN property_entities AS entity');
     expect(method).toContain('WHERE input.projectable');
+    expect(method).toContain('DO UPDATE SET');
+    expect(method).toContain('raw_metadata = excluded.raw_metadata');
+  });
+
+  it('updates corrected metric values and verifies their content', () => {
+    const source = readFileSync(
+      new URL('../scripts/seed-property-evidence.mjs', import.meta.url),
+      'utf8',
+    );
+    const method = source.slice(
+      source.indexOf('async upsertMetrics(rows)'),
+      source.indexOf('async verify(expected'),
+    );
+
+    expect(method).toContain('DO UPDATE SET');
+    expect(method).toContain('value_numeric = excluded.value_numeric');
+    expect(method).toContain('sample_size = excluded.sample_size');
+    expect(source).toContain('metricContentDigest');
+  });
+
+  it('passes the current seed to verification so historical releases can coexist', async () => {
+    const memory = memoryPort();
+    const expectedSeed = fixtureSeed();
+    let verifiedSeed: ReturnType<typeof fixtureSeed> | undefined;
+    const port = {
+      ...memory.port,
+      async verify(expected: SummaryFixture, seed: ReturnType<typeof fixtureSeed>) {
+        verifiedSeed = seed;
+        return { ...expected, orphanObservations: 0 };
+      },
+    };
+
+    await createPropertyEvidenceSeedRunner(port, () => expectedSeed).run({ verifyOnly: true });
+
+    expect(verifiedSeed).toBe(expectedSeed);
   });
 
   it('writes bounded batches and inserts nothing on identical replay', async () => {
