@@ -106,7 +106,7 @@ describe('scoped property enrichment',()=>{
   };
   expect(config.crons).toEqual(expect.arrayContaining([
    {path:'/api/internal/building-enrichment/?source=wikimedia&limit=60',schedule:'7 * * * *'},
-   {path:'/api/internal/building-enrichment/?source=naver&limit=100',schedule:'27 * * * *'},
+   {path:'/api/internal/building-enrichment/?source=naver&limit=100',schedule:'*/15 * * * *'},
    {path:'/api/internal/building-enrichment/?source=google&limit=30',schedule:'47 * * * *'},
    {path:'/api/internal/building-enrichment/?source=official&limit=250',schedule:'17 * * * *'},
   ]));
