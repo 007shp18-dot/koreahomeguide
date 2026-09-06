@@ -65,7 +65,7 @@ export const publicRoutes = [
   },
   {
     path: '/kr/seoul/corrections/',
-    heading: 'Seoul evidence corrections',
+    heading: 'Corrections',
     indexing: 'noindex',
   },
   {
@@ -89,7 +89,7 @@ export const publicRoutes = [
   })),
   {
     path: '/sg/singapore/corrections/',
-    heading: 'Singapore evidence corrections',
+    heading: 'Corrections',
     indexing: 'noindex',
   },
   { path: '/sg/singapore/rent/', heading: 'Rent in Singapore', indexing: 'noindex' },

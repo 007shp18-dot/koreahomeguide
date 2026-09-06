@@ -4,6 +4,13 @@ import {ToolsHub} from '../components/tools/tools-hub';
 import {buildPropertyScenarioMetadata} from '../lib/tools/property-scenario-metadata';
 import {SiteHeader} from '../components/site-header';
 import {globalNavigation,languageDestinations} from '../lib/navigation/site-navigation';
+import {metadata as koreanToolsMetadata} from '../app/(ko)/ko/tools/page';
+it('uses Korean social images for the Korean directory and calculator',()=>{
+ for(const metadata of [koreanToolsMetadata,buildPropertyScenarioMetadata('ko',false)]) {
+  expect(metadata.openGraph?.images).toEqual(['https://www.signedprice.com/og/ko/']);
+  expect(metadata.twitter?.images).toEqual(['https://www.signedprice.com/og/ko/']);
+ }
+});
 it.each(['en','ko','zh-CN'] as const)('publishes a translated tools directory with five live actions: %s',locale=>{
  const html=renderToStaticMarkup(<ToolsHub locale={locale}/>);
  expect(html.match(/<h1\b/g)).toHaveLength(1);expect(html).not.toContain('Preparing');

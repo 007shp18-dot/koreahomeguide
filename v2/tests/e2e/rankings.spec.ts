@@ -133,12 +133,12 @@ test('rankings remain contained and keyboard-readable at every release width', a
   assertNoRuntimeFailures();
 });
 
-test('Explore and district evidence keep Rankings reachable beside the six global product links', async ({ page }) => {
+test('Explore and district evidence keep Rankings reachable beside the five global product links', async ({ page }) => {
   await page.goto('/kr/seoul/explore/');
   const productNavigation = page.getByRole('navigation', { name: 'Primary navigation' });
   await expect(productNavigation.getByRole('link', { name: 'Prices' }))
     .toHaveAttribute('href', '/prices/');
-  await expect(productNavigation.getByRole('link')).toHaveCount(4);
+  await expect(productNavigation.getByRole('link')).toHaveText(['Markets', 'Prices', 'Tools', 'News', 'Guides']);
 
   await page.goto('/kr/seoul/explore/jongno-gu/');
   await expect(page.getByRole('link', { name: 'View district rankings' }))

@@ -116,11 +116,11 @@ export function EditorialGrowthHome({ model, hrefs }: Readonly<{
         <div className={styles.sectionIntro}>
           <p className={styles.eyebrow}>Markets</p>
           <h2 className={styles.sectionTitle} id="home-actions-title">{copy.actions}</h2>
+          <nav aria-label={model.locale === 'en' ? 'Start your research' : '开始研究'} className={styles.homeToolActions}>
+            <Link href="/prices/">{model.locale === 'en' ? 'Search prices' : '查询价格'}</Link>
+            <Link href={model.locale === 'en' ? '/tools/' : '/zh-cn/tools/'}>{model.locale === 'en' ? 'Open tools' : '打开工具'}</Link>
+          </nav>
         </div>
-        <nav aria-label={model.locale === 'en' ? 'Start your research' : '开始研究'} className={styles.homeToolActions}>
-          <Link href="/prices/">{model.locale === 'en' ? 'Search prices' : '查询价格'}</Link>
-          <Link href={model.locale === 'en' ? '/tools/' : '/zh-cn/tools/'}>{model.locale === 'en' ? 'Open tools' : '打开工具'}</Link>
-        </nav>
         <ol className={styles.contextualActionList}>
           {threeMarketHome.markets.map((market, index) => (
             <li key={market.id} data-contextual-action={market.id}>

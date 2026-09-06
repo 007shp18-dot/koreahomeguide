@@ -17,6 +17,8 @@ test('home city changes keep the panel, metric and Explore action in the same po
  }
  for(const key of ['height','metric','action'] as const) expect(Math.max(...states.map(s=>s[key]))-Math.min(...states.map(s=>s[key]))).toBeLessThanOrEqual(2);
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+ const cards=page.locator('[data-home-region="actions"]');
+ expect(await cards.evaluate(node=>node.querySelector('ol')!.getBoundingClientRect().width/node.getBoundingClientRect().width)).toBeGreaterThan(.5);
 });
 
 test('neutral calculator changes currency without carrying the previous purchase amount',async({page})=>{
