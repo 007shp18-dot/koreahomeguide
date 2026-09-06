@@ -89,7 +89,7 @@ describe('shared trust components', () => {
     );
 
     expect(html).toContain('No published corrections');
-    expect(html).toContain('The ledger is empty');
+    expect(html).toContain('Updates to published data and explanations');
     expect(html).not.toMatch(/Fixed|Upheld/);
   });
 

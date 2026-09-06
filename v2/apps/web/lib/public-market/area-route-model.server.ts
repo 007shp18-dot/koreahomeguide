@@ -136,9 +136,10 @@ export async function hydratePublicAreaExploreModelWithProjections(
   const buildings = model.buildingAvailability.status === 'ready'
     ? model.buildingAvailability.buildings
     : model.buildingAvailability.fallbackBuildings;
-  const projections = await reader?.listBuildings(buildings.map(({ id }) => id));
+  const projectionsPending = reader?.listBuildings(buildings.map(({ id }) => id));
   const addresses = new Map<string, string>();
   const sql = contentDatabase();
+  const addressesPending = (async () => {
   if (sql !== null && buildings.length > 0) {
     try {
       const rows = await sql`
@@ -153,6 +154,8 @@ export async function hydratePublicAreaExploreModelWithProjections(
       }
     } catch { /* Keep evidence available when the address store is unavailable. */ }
   }
+  })();
+  const [projections] = await Promise.all([projectionsPending, addressesPending]);
   const hydrate = (building: import('./area-route-types').ExploreBuildingModel) => {
     const projected = projectExploreBuilding(building, projections?.get(building.id));
     const verifiedAddress = addresses.get(building.id);

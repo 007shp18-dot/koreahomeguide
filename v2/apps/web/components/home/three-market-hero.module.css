@@ -253,3 +253,16 @@
 }
 
 .evidence > a { display: inline-flex; align-items: center; min-height: 44px; color: var(--accent); font-size: var(--text-meta); text-underline-offset: 3px; }
+
+/* Reserve the same content slots for every city, including unpublished metrics. */
+.marketPanel { display: grid; grid-template-rows: minmax(136px, auto) 1fr auto; gap: 24px; }
+.marketHeading h2 { font-size: clamp(26px, 2.2vw, 32px); line-height: 1.2; }
+.evidence { margin-top: 0; padding-top: 20px; display: grid; grid-template-rows: 28px 44px 40px minmax(58px, auto) 44px; align-content: end; }
+.evidence > span, .evidence p, .evidence strong, .evidence small { margin: 0; }
+.evidenceValue { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 0; }
+.primaryAction, .secondaryAction { white-space: nowrap; padding-inline: 8px; }
+@media (max-width: 720px) {
+  .marketPanel { grid-template-rows: minmax(108px, auto) 1fr auto; gap: 20px; }
+  .marketHeading h2 { font-size: 28px; }
+}

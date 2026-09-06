@@ -4,37 +4,37 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import type { NewsWorkspaceModel } from '../../lib/news/news-workspace-model';
 import styles from './external-headlines.module.css';
+import { headlineResource } from '../../lib/news/headline-resource';
 
 const date = new Intl.DateTimeFormat('en', { month: 'short', day: 'numeric', timeZone: 'UTC' });
 
-export function ExternalHeadlines({ market, preview = false }: Readonly<{
+export function ExternalHeadlines({ market, preview = false, initialModel = null }: Readonly<{
   market: 'all' | 'seoul' | 'singapore' | 'dubai';
   preview?: boolean;
+  initialModel?: NewsWorkspaceModel | null;
 }>) {
-  const [model, setModel] = useState<NewsWorkspaceModel | null>(null);
-  const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
+  const [model, setModel] = useState<NewsWorkspaceModel | null>(initialModel);
+  const [status, setStatus] = useState<'loading' | 'ready' | 'error'>(initialModel === null ? 'loading' : 'ready');
   const [page, setPage] = useState(1);
   const [refresh, setRefresh] = useState(0);
   useEffect(() => {
-    const controller = new AbortController();
+    let active = true;
     let pending = false;
     const update = async () => {
       if (pending) return;
       pending = true;
       try {
-        const response = await fetch('/api/news/', { signal: controller.signal });
-        if (!response.ok) throw new Error('Headlines unavailable');
-        const next = await response.json() as NewsWorkspaceModel;
-        if (!Array.isArray(next.items)) throw new Error('Invalid headlines');
+        const next = await headlineResource.load(refresh > 0);
+        if (!active) return;
         setModel(next);
         setStatus('ready');
       } catch {
-        if (!controller.signal.aborted) setStatus('error');
+        if (active) setStatus('error');
       } finally { pending = false; }
     };
     void update();
     const timer = setInterval(() => { if (!document.hidden) void update(); }, 15 * 60 * 1000);
-    return () => { controller.abort(); clearInterval(timer); };
+    return () => { active = false; clearInterval(timer); };
   }, [refresh]);
   const items = (model?.items ?? []).filter((item) => item.sourceKind !== 'signedprice-brief'
     && (market === 'all' || item.market === market));

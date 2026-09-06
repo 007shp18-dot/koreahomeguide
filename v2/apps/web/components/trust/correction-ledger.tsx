@@ -13,7 +13,7 @@ export function CorrectionLedger({
     return (
       <section className={styles.emptyLedger} aria-label="Correction history">
         <h2>No published corrections</h2>
-        <p>The ledger is empty. SignedPrice does not invent example corrections.</p>
+        <p>Updates to published data and explanations will appear here with their dates and scope.</p>
       </section>
     );
   }

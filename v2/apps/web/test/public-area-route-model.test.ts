@@ -239,6 +239,18 @@ describe('public area Explore model', () => {
     });
   });
 
+  it('starts the address query while coordinate/media lookup is still pending', async () => {
+    const base = buildPublicAreaExploreModel('gangnam-gu', {
+      ...dependencies(), buildingSource: createPublicBuildingFixture(),
+    });
+    let finish!: (value: Map<string, never>) => void;
+    const pending = new Promise<Map<string, never>>((resolve) => { finish = resolve; });
+    const sql = vi.fn(async () => []);
+    vi.mocked(contentDatabase).mockReturnValueOnce(sql as unknown as ReturnType<typeof contentDatabase>);
+    const result = hydratePublicAreaExploreModelWithProjections(base, { listBuildings: () => pending });
+    try { expect(sql).toHaveBeenCalledOnce(); } finally { finish(new Map<string, never>()); await result; }
+  });
+
   it('loads verified addresses even when no public coordinate projection is installed', async () => {
     const base = buildPublicAreaExploreModel('gangnam-gu', {
       ...dependencies(), buildingSource: createPublicBuildingFixture(),

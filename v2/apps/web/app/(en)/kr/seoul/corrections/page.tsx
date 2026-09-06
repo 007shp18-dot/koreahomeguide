@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { ResearchPageHeading } from '@/components/market-ui/research-page-heading';
 
 import { SiteFooter } from '@/components/site-footer';
 import { SiteHeader } from '@/components/site-header';
@@ -20,7 +21,7 @@ const header: SiteHeaderModel = {
   navigationLabel: 'Seoul correction navigation',
   links: [
     { label: 'Global Trust', href: '/trust/' },
-    { label: 'Seoul Explore', href: '/kr/seoul/explore/' },
+    { label: 'Explore', href: '/kr/seoul/explore/' },
     { label: 'Corrections', href: '/kr/seoul/corrections/', isCurrent: true },
   ],
 };
@@ -42,20 +43,13 @@ export default function KoreaCorrectionsPage() {
   return (
     <div id="top">
       <SiteHeader copy={header} />
-      <main className={styles.policyPage}>
-        <header className={styles.policyHero}>
-          <p>Seoul · Evidence accountability</p>
-          <h1>Seoul evidence corrections</h1>
-          <p>
-            Fixed and upheld reports appear here. SignedPrice does not pre-fill this ledger
-            with examples.
-          </p>
-        </header>
+      <main className={styles.correctionsPage}>
+        <ResearchPageHeading title="Corrections" description="Seoul · Changes to published data and explanations." actions={<Link href="mailto:contact@signedprice.com?subject=Seoul%20data%20correction">Report an issue</Link>} />
         <div className={styles.ledgerWrap}>
           <CorrectionLedger corrections={corrections} />
           <nav className={styles.relatedLinks} aria-label="Related Seoul evidence">
-            <Link href="/kr/seoul/explore/">Open Seoul Explore</Link>
-            <Link href="/kr/seoul/rankings/">Open Seoul Rankings</Link>
+            <Link href="/kr/seoul/explore/">Explore</Link>
+            <Link href="/kr/seoul/rankings/">Rankings</Link>
           </nav>
         </div>
       </main>

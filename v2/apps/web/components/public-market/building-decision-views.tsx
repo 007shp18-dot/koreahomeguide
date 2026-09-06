@@ -1,3 +1,4 @@
+import {localizedSeoulHref, type ProductLocale} from '../../lib/locale/product-copy';
 import type { EvidenceEmptyState } from '@signedprice/market-core';
 import Link from 'next/link';
 
@@ -24,6 +25,7 @@ function OverviewDecisionView({ model, decision, base }: Readonly<{
   model: PublicBuildingModel;
   decision: BuildingDecisionModel;
   base: string;
+  locale?: ProductLocale;
 }>) {
   return (
     <div className={styles.decisionLayout}>
@@ -62,6 +64,7 @@ function GatedDecisionView({
   mode: 'Buy' | 'Invest';
   readiness: BuildingDecisionReadiness;
   base: string;
+  locale?: ProductLocale;
 }>) {
   if (readiness.state === 'published') {
     return (
@@ -90,10 +93,11 @@ function GatedDecisionView({
   );
 }
 
-function RentDecisionView({ model, decision, base }: Readonly<{
+function RentDecisionView({ model, decision, base, locale = 'en' }: Readonly<{
   model: PublicBuildingModel;
   decision: BuildingDecisionModel;
   base: string;
+  locale?: ProductLocale;
 }>) {
   const { readiness, summary } = decision.rent;
   if (summary === null || readiness.state !== 'published') {
@@ -136,7 +140,7 @@ function RentDecisionView({ model, decision, base }: Readonly<{
           formatValue={(value) => money.format(value)}
         />
       </div>
-      <Link className={styles.primaryAction} href={decision.rentCheckHref}>
+      <Link className={styles.primaryAction} href={localizedSeoulHref(decision.rentCheckHref,locale)}>
         Open full Rent Check
       </Link>
     </div>
@@ -166,16 +170,17 @@ function EvidenceDecisionView({ model }: Readonly<{ model: PublicBuildingModel }
   );
 }
 
-export function BuildingDecisionView({ model, decision, base }: Readonly<{
+export function BuildingDecisionView({ model, decision, base, locale = 'en' }: Readonly<{
   model: PublicBuildingModel;
   decision: BuildingDecisionModel;
   base: string;
+  locale?: ProductLocale;
 }>) {
   const mode = decision.selection.mode;
   const content = (() => {
     switch (mode) {
       case 'rent':
-        return <RentDecisionView model={model} decision={decision} base={base} />;
+        return <RentDecisionView model={model} decision={decision} base={base} locale={locale} />;
       case 'buy':
         return <GatedDecisionView mode="Buy" readiness={decision.buy.readiness} base={base} />;
       case 'invest':

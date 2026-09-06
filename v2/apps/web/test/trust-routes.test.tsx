@@ -78,7 +78,7 @@ describe('Trust routes', () => {
   it('renders an honest empty Korea correction route', () => {
     const html = renderToStaticMarkup(<KoreaCorrectionsPage />);
 
-    expect(html).toContain('Seoul evidence corrections');
+    expect(html).toContain('Corrections');
     expect(html).toContain('No published corrections');
     expect(html).toContain('href="/kr/seoul/explore"');
     expect(html).toContain('href="/kr/seoul/rankings"');

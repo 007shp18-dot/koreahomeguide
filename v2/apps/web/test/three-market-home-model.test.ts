@@ -27,17 +27,17 @@ describe('three-market home model', () => {
 
     expect(seoul).toMatchObject({
       evidenceState: 'insufficient',
-      primaryAction: { label: 'Explore Seoul', href: '/kr/seoul/explore/' },
+      primaryAction: { label: 'Explore', href: '/kr/seoul/explore/' },
       secondaryAction: { label: 'Check a price', href: '/kr/seoul/check/' },
     });
     expect(singapore).toMatchObject({
       evidenceState: 'limited',
-      primaryAction: { label: 'Explore Singapore', href: '/sg/singapore/explore/' },
+      primaryAction: { label: 'Explore', href: '/sg/singapore/explore/' },
       secondaryAction: { label: 'Check a price', href: '/sg/singapore/check/' },
     });
     expect(dubai).toMatchObject({
       evidenceState: 'limited',
-      primaryAction: { label: 'Explore Dubai', href: '/ae/dubai/explore/' },
+      primaryAction: { label: 'Explore', href: '/ae/dubai/explore/' },
       secondaryAction: { label: 'Buying guide', href: '/ae/dubai/guide/' },
     });
     expect(JSON.stringify(dubai)).not.toContain('/check/');
@@ -47,9 +47,9 @@ describe('three-market home model', () => {
     const model = createThreeMarketHomeModel({ locale: 'zh-CN', seoulMetric: null });
 
     expect(model.headline).toBe('做决定之前，先看懂市场。');
-    expect(model.markets[0]?.primaryAction).toEqual({ label: '探索首尔', href: '/kr/seoul/explore/' });
+    expect(model.markets[0]?.primaryAction).toEqual({ label: '探索', href: '/kr/seoul/explore/' });
     expect(model.markets[1]?.evidenceTitle).toContain('私人住宅');
     expect(model.markets[2]?.evidenceNote).toContain('数据展示权');
-    expect(model.markets[2]?.primaryAction).toEqual({ label: '探索迪拜', href: '/ae/dubai/explore/' });
+    expect(model.markets[2]?.primaryAction).toEqual({ label: '探索', href: '/ae/dubai/explore/' });
   });
 });

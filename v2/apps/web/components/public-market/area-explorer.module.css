@@ -2014,3 +2014,5 @@
 }
 
 .exploreToolbar, .resultBar, .workspace, .coverage, .completeTable { width: min(calc(100% - 2 * var(--page-gutter)), var(--workspace-frame)); margin-inline: auto; }
+
+.buildingPrice, .districtRowMetric strong, .toolbarStatus strong { white-space: nowrap; overflow-wrap: normal; word-break: normal; font-variant-numeric: tabular-nums; }

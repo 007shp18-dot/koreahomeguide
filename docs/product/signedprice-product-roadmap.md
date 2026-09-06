@@ -9,7 +9,7 @@ Build a property research service that can grow into cross-border investment sup
 ## Release now: shared foundation, Seoul/Singapore and Dubai research
 
 - Preserve the existing SignedPrice typography, white/navy surfaces, restrained blue actions, and common control sizes.
-- One primary navigation order: Markets, Prices, News, Guides. Market navigation stays separate. One footer with product, market and company columns.
+- One primary navigation order: Markets, Prices, Tools, News, Guides. Tools is the approved next release; keep five slots across languages. Market navigation stays separate. One footer with product, market and company columns.
 - Explore uses a short page title and separate market/period context. Keep the same workspace frame across Seoul, Singapore and Dubai.
 - EN/KO/中文 controls retain their positions. Link only actual translations or an explicitly available language destination; unavailable translations remain labelled. Preserve Seoul search/selection in available translated routes; use published translation groups for articles.
 - Prices covers Seoul and Singapore transaction search, with Dubai clearly labelled area research. No fixed Seoul jeonse sample on the global page.
@@ -25,6 +25,12 @@ Implementation and validation evidence: `docs/operations/2026-09-06-shared-navig
 Reference: Dubai Real Estate Data `/projects`, `/market`, `/areas`, `/compare` and `/methodology` (inspected 2026-09-06). Adopt its short headings, adjacent period/source context, aligned search and filters, result counts, compact comparison tables and chart-to-exact-data drill-down. Keep SignedPrice photography, typography and restrained blue links; do not copy its ticker, navigation sprawl, prose or datasets.
 
 This release applies the shared heading to Markets, Prices, News, Guides and Dubai; flattens repeated hub cards; adds city-filtered Guides and monthly chart period controls; links home evidence to sources. Existing Explore list/map selection remains the central discovery flow. Later property comparison must use matching sale types, areas and periods, with currencies kept explicit.
+
+## Next release: organic entry and decision tools
+
+Approved: Tools hub, neutral standalone scenario routes, minimal Home/Prices entry links, verified building-to-tool context, localized return paths, completed Check link copying and privacy-safe completion measurement. Preserve the common design and all three market capabilities. Current implementation/verification record: docs/operations/2026-09-06-stable-home-fast-tools.md.
+
+Measure discovery and tool completion before expanding article volume or adding accounts. Use observed demand to prioritize useful building/district content and cross-border buying questions. In parallel, deepen Seoul/Singapore evidence and acquire Dubai transaction data. Dubai precedes Japan. Saves/accounts follow a usable acquisition-to-decision flow.
 
 ## Next: deepen evidence and help readers keep a shortlist
 

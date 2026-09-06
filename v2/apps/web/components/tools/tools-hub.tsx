@@ -1,0 +1,17 @@
+import {ResearchPageHeading} from '../market-ui/research-page-heading';
+import {ToolsShell} from './tools-shell';
+import {TrackedToolLink,ToolEventOnMount} from './tool-analytics';
+import type {SiteLocale} from '../../lib/navigation/site-navigation';
+import type {ToolId,ToolMarket} from '../../lib/analytics/tool-events';
+import styles from './tools.module.css';
+export function ToolsHub({locale='en'}:Readonly<{locale?:SiteLocale}>) {
+ const ko=locale==='ko', zh=locale==='zh-CN'; const prefix=ko?'/ko':'';
+ const items: readonly {group:'living'|'investment';title:string;description:string;market:ToolMarket;tool:ToolId;href:string}[]=[
+ {group:'living',title:ko?'제안받은 서울 가격 확인':zh?'核对首尔报价':'Check one Seoul asking price',description:ko?'같은 주택 유형과 면적의 신고 거래와 비교합니다.':zh?'与相同住宅类型及面积的已申报成交比较。':'Compare compatible reported contracts by housing type and area.',market:'kr-seoul',tool:'single-quote',href:`${prefix}/kr/seoul/check/`},
+ {group:'living',title:ko?'두 임대 조건 비교':zh?'比较两组租赁条件':'Compare two Seoul rent offers',description:ko?'보증금과 월세를 같은 기준으로 비교합니다.':zh?'在同一计算基础上比较押金和月租。':'Compare deposits and monthly rents on one disclosed basis.',market:'kr-seoul',tool:'offer-compare',href:`${prefix}/kr/seoul/check/compare/`},
+ {group:'living',title:ko?'서울 임대료 확인':zh?'核对首尔租金':'Check a Seoul rent quote',description:ko?'입력한 임대 조건을 공개 임대 자료와 확인합니다.':zh?'使用公开租赁资料核对输入的条件。':'Position your rent terms against available rental evidence.',market:'kr-seoul',tool:'rent-check',href:`${prefix}/kr/seoul/tools/rent-check/`},
+ {group:'investment',title:ko?'매입 비용과 운영 수익률 계산':zh?'计算购置成本与运营收益率':'Calculate purchase costs and operating yield',description:ko?'KRW·SGD·AED로 비용·임대료·공실 가정을 직접 입력합니다.':zh?'自行输入 KRW、SGD 或 AED 成本、租金及空置假设。':'Enter your own costs, rent and vacancy in KRW, SGD or AED.',market:'global',tool:'property-scenario',href:`${prefix}/tools/property-scenario/`},
+ {group:'investment',title:ko?'싱가포르 제안 가격 확인':zh?'核对新加坡报价':'Check a Singapore project offer',description:ko?'민간 주택·HDB 매매·임대 근거를 구분해 확인합니다.':zh?'分别使用私人住宅、HDB 转售或租赁资料。':'Use the matching private-home, HDB resale or rental evidence.',market:'sg-singapore',tool:'singapore-check',href:'/sg/singapore/check/'},
+ ];
+ return <ToolsShell locale={locale} href={`${zh?'/zh-cn':prefix}/tools/`}><ResearchPageHeading title={ko?'도구':zh?'工具':'Tools'} description={ko?'가격을 확인하고, 조건을 비교하고, 직접 입력한 가정으로 계산하세요.':zh?'核对价格、比较条件，并用自己的假设进行计算。':'Check a price, compare terms and calculate your own scenario.'}/><ToolEventOnMount event="tools_hub_open" market="global" surface="tools-hub" tool="tools-hub"/>{(['living','investment'] as const).map(group=><section className={styles.group} key={group}><h2>{group==='living'?(ko?'임대·거주':zh?'租赁与居住':'Living decisions'):(ko?'매입·투자 검토':zh?'购置与投资研究':'Investment decisions')}</h2><ul className={styles.list}>{items.filter(item=>item.group===group).map(item=><li key={item.tool}><div><small>{item.market==='global'?'KRW · SGD · AED':item.market==='kr-seoul'?'Seoul':'Singapore'}{zh || (ko && item.market==='sg-singapore')?' · English':''}</small><h3>{item.title}</h3><p>{item.description}</p></div><TrackedToolLink href={item.href} market={item.market} tool={item.tool} surface="tools-hub">{ko?'열기':zh?'打开':'Open tool'}</TrackedToolLink></li>)}</ul></section>)}</ToolsShell>;
+}

@@ -1222,3 +1222,8 @@
   .guideList a > span:not(.guideStage) { grid-column: 2; }
   .guideList small { grid-column: 2; white-space: nowrap; }
 }
+
+.contextualActionList li { grid-template-rows: auto auto minmax(3.2em, auto) 44px auto; }
+
+.homeToolActions { display: flex; flex-wrap: wrap; gap: 16px 28px; margin: 12px 0 24px; }
+.homeToolActions a { display: inline-flex; min-height: 44px; align-items: center; color: var(--review-accent); font-size: var(--review-control); text-underline-offset: 4px; }

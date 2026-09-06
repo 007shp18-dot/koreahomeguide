@@ -4,7 +4,7 @@ test('uses one navigation order and stable language slots across markets', async
   for (const path of ['/prices/', '/news/', '/guides/', '/kr/seoul/explore/', '/sg/singapore/explore/', '/ae/dubai/explore/']) {
     await page.goto(path);
     const header = page.locator('header.site-header');
-    await expect(header.locator('.site-header__product-link')).toHaveText(['Markets', 'Prices', 'News', 'Guides']);
+    await expect(header.locator('.site-header__product-link')).toHaveText(['Markets', 'Prices', 'Tools', 'News', 'Guides']);
     await expect(header.locator('.site-header__language')).toHaveText(['EN', 'KO', '中文']);
     await expect(page.locator('footer').getByRole('link', { name: 'Singapore', exact: true })).toHaveCount(1);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(true);

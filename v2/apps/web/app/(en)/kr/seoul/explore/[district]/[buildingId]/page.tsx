@@ -596,6 +596,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
   ];
   const facts = <BuildingOfficialFacts districtSlug={model.district.slug} buildingId={model.building.buildingId} observedFacts={observedFacts} proximity={entityProjection?.proximity ?? observed?.proximity} locale={locale} />;
   const fallback = <BuildingDetailPage
+    locale={locale}
       model={model}
       decision={decision}
       visual={visual}

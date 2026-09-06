@@ -126,6 +126,7 @@ function readyModel(
 describe('all-type Contract Check workspace', () => {
   test('renders conditions, Offer A, Offer B, result, evidence, and disclosure in fixed order', () => {
     const html = renderToStaticMarkup(<ContractCheckWorkspace model={readyModel()} />);
+    expect(html).not.toContain('Copy result link');
     const order = [
       'data-check-section="conditions"', 'Offer A', 'Offer B',
       'data-check-section="verdict"', 'data-check-section="evidence"',
@@ -155,6 +156,7 @@ describe('all-type Contract Check workspace', () => {
 
   test('renders sale versus rent as a neutral trade-off with filed cash flows and no winner copy', () => {
     const html = renderToStaticMarkup(<ContractCheckWorkspace model={readyModel('sale', 'monthly', true)} />);
+    expect(html).toContain('Copy result link');
 
     expect(html).toContain('data-comparison-basis="tradeoff"');
     expect(html).toContain('Trade-off — no winner declared');
@@ -177,6 +179,7 @@ describe('all-type Contract Check workspace', () => {
 
   test('labels sale, rental, and conversion periods separately', () => {
     const html = renderToStaticMarkup(<ContractCheckWorkspace model={readyModel('sale', 'monthly', true)} />);
+    expect(html).toContain('Copy result link');
 
     expect(html).toContain('Sale evidence window · 7 completed months · 2026-01–2026-07');
     expect(html).toContain('Rental evidence window · 7 completed months · 2026-02–2026-08');

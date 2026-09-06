@@ -187,7 +187,7 @@ test('desktop exposes live Seoul evidence in the 1366 by 768 first viewport', as
   const evidence = hero.locator('[data-evidence-state="available"]');
   await expect(evidence).toBeVisible();
   await expect(evidence.locator('strong')).toBeVisible();
-  await expect(hero.getByRole('link', { name: 'Explore Seoul', exact: true })).toBeVisible();
+  await expect(hero.getByRole('link', { name: 'Explore', exact: true })).toBeVisible();
 });
 
 test('mobile primary navigation remains tappable and reaches the market flow', async ({
@@ -200,7 +200,7 @@ test('mobile primary navigation remains tappable and reaches the market flow', a
     name: 'Primary navigation',
   });
   const visibleLinks = primaryNavigation.getByRole('link').filter({ visible: true });
-  await expect(visibleLinks).toHaveCount(4);
+  await expect(visibleLinks).toHaveCount(5);
   const primaryLinks = await visibleLinks.all();
   await expectContainedTouchTargets(page, primaryLinks);
   await expectTargetsNotToOverlap(primaryLinks);

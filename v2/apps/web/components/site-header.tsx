@@ -30,9 +30,9 @@ function isCurrentGlobalLink(href: string, currentHref: string | undefined): boo
   currentHref = currentHref.replace(/^\/(?:ko|zh-cn)(?=\/)/, '');
   if (href === '/news/') return currentHref.includes('/news/') || currentHref.includes('/insights/');
   if (href === '/guides/') return currentHref.includes('/guide') || currentHref === '/guides/';
+  if (href === '/tools/' || href === '/ko/tools/') return currentHref.includes('/tools/') || currentHref.includes('/check/');
   if (href === '/prices/') {
     return currentHref.includes('/explore/')
-      || currentHref.includes('/check/')
       || currentHref.includes('/rankings/')
       || currentHref === '/prices/';
   }
