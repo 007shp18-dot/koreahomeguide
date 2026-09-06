@@ -22,7 +22,7 @@ type ExplorerPageProps = {
   readonly searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
-export const metadata: Metadata = indexableMetadata({
+const baseMetadata: Metadata = indexableMetadata({
   path: '/kr/seoul/explore/',
   title: 'Seoul sale, jeonse and monthly-rent evidence | signedprice',
   description: 'Compare verified all-area sale, jeonse and monthly-rent evidence across Seoul districts.',
@@ -31,6 +31,15 @@ export const metadata: Metadata = indexableMetadata({
     ko: '/ko/kr/seoul/explore/',
   },
 });
+
+export async function generateMetadata({ searchParams }: ExplorerPageProps): Promise<Metadata> {
+  const query = await searchParams;
+  const hasFilters = Object.values(query).some((value) => value !== undefined);
+
+  return hasFilters
+    ? { ...baseMetadata, robots: { index: false, follow: true } }
+    : baseMetadata;
+}
 
 const header: SiteHeaderModel = {
   brand: 'signedprice',

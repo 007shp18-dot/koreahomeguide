@@ -1,10 +1,28 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import nextConfig from '../next.config';
 
 vi.mock('server-only', () => ({}));
 
 afterEach(() => vi.unstubAllEnvs());
 
 describe('SignedPrice search and advertising platform files', () => {
+  it('permanently retires unsupported Chinese Explore and Check route aliases', async () => {
+    const redirects = await nextConfig.redirects?.();
+
+    expect(redirects).toEqual(expect.arrayContaining([
+      {
+        source: '/zh-cn/kr/seoul/explore/',
+        destination: '/kr/seoul/explore/',
+        permanent: true,
+      },
+      {
+        source: '/zh-cn/kr/seoul/check/',
+        destination: '/kr/seoul/check/',
+        permanent: true,
+      },
+    ]));
+  });
+
   it('publishes a crawlable robots policy with the standalone sitemap', async () => {
     let robotsRoute: { default: () => unknown } | null = null;
     try {

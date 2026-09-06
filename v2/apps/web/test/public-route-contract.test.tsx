@@ -11,7 +11,7 @@ import { generateStaticParams as marketStaticParams } from '../app/(en)/[country
 import { generateStaticParams as intentStaticParams } from '../app/(en)/[country]/[city]/[intent]/page';
 import { metadata as proofMetadata } from '../app/(en)/kr/seoul/tools/rent-check/page';
 import { metadata as rankingsMetadata } from '../app/(en)/kr/seoul/rankings/page';
-import { metadata as explorerMetadata } from '../app/(en)/kr/seoul/explore/page';
+import { generateMetadata as generateExplorerMetadata } from '../app/(en)/kr/seoul/explore/page';
 import { metadata as newsMetadata } from '../app/(en)/kr/seoul/news/page';
 import { metadata as trustMetadata } from '../app/(en)/trust/page';
 import { metadata as compareMetadata } from '../app/(en)/compare/page';
@@ -214,7 +214,8 @@ describe('public migration containment', () => {
     });
   });
 
-  it('indexes the global and verified Korea discovery surfaces with self canonicals', () => {
+  it('indexes the global and verified Korea discovery surfaces with self canonicals', async () => {
+    const explorerMetadata = await generateExplorerMetadata({ searchParams: Promise.resolve({}) });
     for (const [metadata, path] of [
       [homepageCopy.metadata, '/'],
       [compareMetadata, '/compare/'],
