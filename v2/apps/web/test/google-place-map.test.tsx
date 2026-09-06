@@ -145,13 +145,15 @@ describe('Google place map', () => {
 
   it('turns verified Singapore project addresses into price markers', async () => {
     const options: unknown[] = [];
+    const mapCalls: unknown[] = [];
     const location = { lat: () => 1.3039, lng: () => 103.8322 };
+    const viewport = { north: 1.31, south: 1.29, east: 103.84, west: 103.82 };
     class Marker {
       constructor(input?: unknown) { options.push(input); }
       setPosition() {}
       setMap() {}
     }
-    const map = { fitBounds() {} };
+    const map = { fitBounds(value: unknown) { mapCalls.push(value); } };
     const runtime = {
       map,
       marker: new Marker(),
@@ -164,7 +166,7 @@ describe('Google place map', () => {
           });
           return { results: [{
             formatted_address: 'Holland Village Way, Singapore',
-            geometry: { location, viewport: {} },
+            geometry: { location, viewport },
           }] };
         },
       },
@@ -174,6 +176,10 @@ describe('Google place map', () => {
       Map: class { fitBounds() {} },
       Marker,
       Geocoder: class { async geocode() { return { results: [] }; } },
+      LatLngBounds: class {
+        readonly locations: unknown[] = [];
+        extend(value: unknown) { this.locations.push(value); }
+      },
     };
 
     const markers = await geocodeGoogleMarketPoints(sdk, runtime, [{
@@ -190,6 +196,7 @@ describe('Google place map', () => {
       title: 'SKYE AT HOLLAND',
       label: { text: 'SGD 2,094,000', className: 'spGoogleMarketMarker' },
     }]);
+    expect(mapCalls).toEqual([viewport]);
   });
 });
 

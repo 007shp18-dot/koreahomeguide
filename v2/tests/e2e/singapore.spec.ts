@@ -208,6 +208,26 @@ test('Singapore Explore shows only the selected regional summary', async ({ page
   await expect(page.getByRole('link', { name: 'Open CCR evidence', exact: true })).toBeHidden();
 });
 
+test('Singapore Explore keeps filters and project selection in its shareable URL', async ({ page }) => {
+  await page.goto('/sg/singapore/explore/');
+  await page.getByRole('tab', { name: /^CCR/ }).click();
+  await expect(page).toHaveURL(/region=ccr/);
+  await page.getByRole('combobox', { name: 'District' }).selectOption('10');
+  await expect(page).toHaveURL(/district=10/);
+  await page.getByRole('combobox', { name: 'Sort' }).selectOption('name');
+  await expect(page).toHaveURL(/sort=name/);
+  await page.locator('[data-selected] > button').first().click();
+  await expect(page).toHaveURL(/project=[^&]+/);
+  const selectedHref = page.url();
+
+  await page.reload();
+  await expect(page).toHaveURL(selectedHref);
+  await expect(page.getByRole('tab', { name: /^CCR/ })).toHaveAttribute('aria-selected', 'true');
+  await expect(page.getByRole('combobox', { name: 'District' })).toHaveValue('10');
+  await expect(page.getByRole('combobox', { name: 'Sort' })).toHaveValue('name');
+  await expect(page.locator('[data-selected="true"]')).toHaveCount(1);
+});
+
 
 test('Prices sends a Singapore project search to Singapore Explore', async ({ page }) => {
   await page.goto('/sg/singapore/explore/');
