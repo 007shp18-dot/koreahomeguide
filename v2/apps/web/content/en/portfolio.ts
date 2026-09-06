@@ -1,5 +1,7 @@
 import { enrichEnglishRecord } from './research-expansions';
 import { DUBAI_RENTAL_YIELD } from './dubai-rental-yield';
+import { KOREA_LARGE_ESTATE_SPILLOVER } from './korea-large-estate-spillover';
+import { SINGAPORE_LENTOR_SPILLOVER } from './singapore-lentor-spillover';
 import { infographic, portfolioRecord, RELEASES, SOURCES } from '../portfolio-builders';
 
 const seoulDistrictChart = infographic({
@@ -49,6 +51,8 @@ const singaporeRegionChart = infographic({
 });
 
 export const ENGLISH_PORTFOLIO = Object.freeze([
+  KOREA_LARGE_ESTATE_SPILLOVER,
+  SINGAPORE_LENTOR_SPILLOVER,
   DUBAI_RENTAL_YIELD,
   portfolioRecord({
     slug: 'korea-rental-deposit-protection-status', locale: 'en', type: 'policy-update', marketId: 'kr-seoul',
