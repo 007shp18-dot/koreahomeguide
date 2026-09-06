@@ -212,8 +212,11 @@ test('Singapore Explore keeps filters and project selection in its shareable URL
   await page.goto('/sg/singapore/explore/');
   await page.getByRole('tab', { name: /^CCR/ }).click();
   await expect(page).toHaveURL(/region=ccr/);
-  await page.getByRole('combobox', { name: 'District' }).selectOption('10');
-  await expect(page).toHaveURL(/district=10/);
+  const districtSelect = page.getByRole('combobox', { name: 'District' });
+  const district = await districtSelect.locator('option').nth(1).getAttribute('value');
+  expect(district).not.toBeNull();
+  await districtSelect.selectOption(district!);
+  await expect(page).toHaveURL(new RegExp(`district=${district}`));
   await page.getByRole('combobox', { name: 'Sort' }).selectOption('name');
   await expect(page).toHaveURL(/sort=name/);
   await page.locator('[data-selected] > button').first().click();
@@ -223,7 +226,7 @@ test('Singapore Explore keeps filters and project selection in its shareable URL
   await page.reload();
   await expect(page).toHaveURL(selectedHref);
   await expect(page.getByRole('tab', { name: /^CCR/ })).toHaveAttribute('aria-selected', 'true');
-  await expect(page.getByRole('combobox', { name: 'District' })).toHaveValue('10');
+  await expect(page.getByRole('combobox', { name: 'District' })).toHaveValue(district!);
   await expect(page.getByRole('combobox', { name: 'Sort' })).toHaveValue('name');
   await expect(page.locator('[data-selected="true"]')).toHaveCount(1);
 });
