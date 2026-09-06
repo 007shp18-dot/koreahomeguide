@@ -456,7 +456,7 @@ describe('public Seoul area Explorer', () => {
     expect(markup).toContain('Contract type unknown · 1');
     expect(markup).toContain('ncpKeyId=page-naver-client');
     expect(markup).toContain('value="Evidence Tower"');
-    expect(markup).toContain('Korea public evidence. Publication limits shown.');
+    expect(markup).toContain('Source, reporting period and coverage are shown with each dataset.');
     expect(markup).not.toMatch(/public P2 preview|Production launch is not authorized/i);
     expect(markup).toContain('Neighborhoods &amp; buildings');
     expect(markup).toContain('Evidence Tower');

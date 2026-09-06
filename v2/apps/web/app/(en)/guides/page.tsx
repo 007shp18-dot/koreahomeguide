@@ -10,6 +10,8 @@ export const metadata: Metadata = indexableMetadata({
   languageAlternates: { en: '/guides/', 'zh-Hans': '/zh-cn/guides/' },
 });
 
-export default function GuidesPage() {
-  return <GlobalProductHub kind="guides" />;
+export default async function GuidesPage({ searchParams }: { searchParams: Promise<{ market?: string }> }) {
+  const { market } = await searchParams;
+  const guideMarket = market === 'seoul' || market === 'singapore' || market === 'dubai' ? market : 'all';
+  return <GlobalProductHub kind="guides" guideMarket={guideMarket} />;
 }

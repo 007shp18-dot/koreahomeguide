@@ -43,15 +43,15 @@ function freezeModel(input: ThreeMarketHomeModel): ThreeMarketHomeModel {
 export function createThreeMarketHomeModel(input: Input): ThreeMarketHomeModel {
   const singaporeExplore = getMarketCapability('sg-singapore', 'explore', null);
   const singaporeCheck = getMarketCapability('sg-singapore', 'check', null);
-  const dubaiTransactions = getMarketCapability('ae-dubai', 'transaction_detail', null);
+  const dubaiResearch = getMarketCapability('ae-dubai', 'explore', null);
   const zh = input.locale === 'zh-CN';
 
   return freezeModel({
     locale: input.locale,
     headline: zh ? '做决定之前，先看懂市场。' : 'See the market before you make the move.',
     lead: zh
-      ? '通过成交记录、楼盘详情和市场指南，了解首尔与新加坡的住宅市场。迪拜目前仅提供市场概览。'
-      : 'Research residential property in Seoul and Singapore through reported transactions, building details and local market guides. Dubai offers market context only.',
+      ? '通过成交记录、楼盘详情和市场指南，了解首尔与新加坡的住宅市场。迪拜提供区域研究与官方市场资料。'
+      : 'Research residential property in Seoul and Singapore through reported transactions, building details and local market guides. Dubai offers area research and official market releases.',
     markets: [
       {
         id: 'kr-seoul',
@@ -87,12 +87,12 @@ export function createThreeMarketHomeModel(input: Input): ThreeMarketHomeModel {
         position: '03',
         photo: MARKET_PHOTOS.dubai,
         summary: zh ? '先了解市场和项目背景，再判断投资机会。' : 'Review market and project context before investing.',
-        evidenceState: dubaiTransactions?.state ?? 'rights_blocked',
+        evidenceState: dubaiResearch?.state ?? 'limited',
         evidenceTitle: zh ? '市场与项目研究' : 'Market and project research',
         evidenceValue: null,
         evidenceNote: zh ? '详细交易数据展示权确认前，不提供价格查询。' : 'Transaction detail remains unavailable until display rights are cleared.',
-        primaryAction: { label: zh ? '探索迪拜' : 'Explore Dubai', href: '/ae/dubai/' },
-        secondaryAction: null,
+        primaryAction: { label: zh ? '探索迪拜' : 'Explore Dubai', href: '/ae/dubai/explore/' },
+        secondaryAction: { label: zh ? '购房指南（英文）' : 'Buying guide', href: '/ae/dubai/guide/' },
       },
     ],
   });

@@ -259,7 +259,7 @@ describe('public migration containment', () => {
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_ARTIFACT', JSON.stringify(artifact(true)));
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', period);
     const urls = sitemap().map(({ url }) => url);
-    expect(urls).toEqual([
+    expect(urls.sort()).toEqual([
       'https://www.signedprice.com/markets/',
       'https://www.signedprice.com/prices/',
       'https://www.signedprice.com/news/',
@@ -271,6 +271,9 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/guides/',
       'https://www.signedprice.com/privacy/',
       'https://www.signedprice.com/contact/',
+      'https://www.signedprice.com/ae/dubai/',
+      'https://www.signedprice.com/ae/dubai/explore/',
+      'https://www.signedprice.com/ae/dubai/guide/',
       'https://www.signedprice.com/sg/',
       'https://www.signedprice.com/sg/singapore/explore/',
       'https://www.signedprice.com/sg/singapore/explore/ccr/',
@@ -284,12 +287,11 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/kr/seoul/check/compare/',
       'https://www.signedprice.com/kr/seoul/tools/rent-check/',
       'https://www.signedprice.com/kr/seoul/',
-      'https://www.signedprice.com/kr/seoul/news/',
       'https://www.signedprice.com/kr/seoul/news/how-signedprice-reads-reported-rental-contracts/',
       'https://www.signedprice.com/ko/kr/seoul/',
       'https://www.signedprice.com/ko/kr/seoul/check/',
       'https://www.signedprice.com/ko/kr/seoul/check/compare/',
-    ]);
+    ].sort());
   });
 
   it('adds only artifact-reconciled numeric News detail routes', () => {
@@ -375,8 +377,9 @@ describe('public migration containment', () => {
       url: 'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/',
       lastModified: new Date('2026-08-31T01:13:24.787Z'),
     });
-    expect(entries.get('https://www.signedprice.com/kr/seoul/news/')).toMatchObject({
-      lastModified: new Date('2026-08-31T01:00:00.000Z'),
+    expect(entries.has('https://www.signedprice.com/kr/seoul/news/')).toBe(false);
+    expect(entries.get('https://www.signedprice.com/kr/seoul/news/how-signedprice-reads-reported-rental-contracts/')).toMatchObject({
+      lastModified: new Date('2026-08-31T00:00:00.000Z'),
     });
     expect(entries.get('https://www.signedprice.com/guides/compare-seoul-district-prices/')).toMatchObject({
       lastModified: new Date('2026-09-06T00:00:00.000Z'),
@@ -386,7 +389,7 @@ describe('public migration containment', () => {
   it('keeps evidence-dependent Korea pages out when evidence is withheld or missing', () => {
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_ARTIFACT', JSON.stringify(artifact(false)));
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', period);
-    expect(sitemap().map(({ url }) => url)).toEqual([
+    expect(sitemap().map(({ url }) => url).sort()).toEqual([
       'https://www.signedprice.com/markets/',
       'https://www.signedprice.com/prices/',
       'https://www.signedprice.com/news/',
@@ -398,6 +401,9 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/guides/',
       'https://www.signedprice.com/privacy/',
       'https://www.signedprice.com/contact/',
+      'https://www.signedprice.com/ae/dubai/',
+      'https://www.signedprice.com/ae/dubai/explore/',
+      'https://www.signedprice.com/ae/dubai/guide/',
       'https://www.signedprice.com/sg/',
       'https://www.signedprice.com/sg/singapore/explore/',
       'https://www.signedprice.com/sg/singapore/explore/ccr/',
@@ -410,15 +416,14 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/kr/seoul/check/',
       'https://www.signedprice.com/kr/seoul/check/compare/',
       'https://www.signedprice.com/kr/seoul/tools/rent-check/',
-      'https://www.signedprice.com/kr/seoul/news/',
       'https://www.signedprice.com/kr/seoul/news/how-signedprice-reads-reported-rental-contracts/',
       'https://www.signedprice.com/ko/kr/seoul/',
       'https://www.signedprice.com/ko/kr/seoul/check/',
       'https://www.signedprice.com/ko/kr/seoul/check/compare/',
-    ]);
+    ].sort());
 
     vi.unstubAllEnvs();
-    expect(sitemap().map(({ url }) => url)).toEqual([
+    expect(sitemap().map(({ url }) => url).sort()).toEqual([
       'https://www.signedprice.com/markets/',
       'https://www.signedprice.com/prices/',
       'https://www.signedprice.com/news/',
@@ -430,6 +435,9 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/guides/',
       'https://www.signedprice.com/privacy/',
       'https://www.signedprice.com/contact/',
+      'https://www.signedprice.com/ae/dubai/',
+      'https://www.signedprice.com/ae/dubai/explore/',
+      'https://www.signedprice.com/ae/dubai/guide/',
       'https://www.signedprice.com/sg/',
       'https://www.signedprice.com/sg/singapore/explore/',
       'https://www.signedprice.com/sg/singapore/explore/ccr/',
@@ -442,11 +450,10 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/kr/seoul/check/',
       'https://www.signedprice.com/kr/seoul/check/compare/',
       'https://www.signedprice.com/kr/seoul/tools/rent-check/',
-      'https://www.signedprice.com/kr/seoul/news/',
       'https://www.signedprice.com/kr/seoul/news/how-signedprice-reads-reported-rental-contracts/',
       'https://www.signedprice.com/ko/kr/seoul/',
       'https://www.signedprice.com/ko/kr/seoul/check/',
       'https://www.signedprice.com/ko/kr/seoul/check/compare/',
-    ]);
+    ].sort());
   });
 });

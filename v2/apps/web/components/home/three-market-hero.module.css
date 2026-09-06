@@ -251,3 +251,5 @@
   .marketHeading h2 { font-size: 29px; }
   .evidence strong { font-size: 24px; }
 }
+
+.evidence > a { display: inline-flex; align-items: center; min-height: 44px; color: var(--accent); font-size: var(--text-meta); text-underline-offset: 3px; }

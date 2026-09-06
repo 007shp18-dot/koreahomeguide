@@ -43,7 +43,7 @@ const countLabel = (count: number) => `${count} observed contract${count === 1 ?
 
 function BuildingLocalContext({ buildingId, district }: Readonly<{ buildingId: string; district: string }>) {
   return <section className={styles.localContext} aria-label="Building news and community">
-    <article><span>NEWS</span><h2>Local market context</h2><p>Verified briefs related to this district appear with their source and evidence state.</p><Link href={`/kr/seoul/news/?district=${district}`}>View local news →</Link></article>
+    <article><span>NEWS</span><h2>Local market context</h2><p>Read current Seoul property headlines and analysis, with publication dates and original sources.</p><Link href="/news/?market=seoul">View Seoul news →</Link></article>
     <article><span>COMMUNITY · READ-ONLY</span><h2>Building community</h2><p>This exact building identity is ready to anchor discussions once moderation controls open.</p><Link href={`/kr/seoul/community/?district=${district}&building=${buildingId}`}>Open community scope →</Link></article>
   </section>;
 }

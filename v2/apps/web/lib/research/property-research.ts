@@ -59,3 +59,13 @@ export function calculatePropertyScenario(input: PropertyScenario) {
   const netIncome = annualRent - input.annualCosts;
   return { totalCost, annualRent, netIncome, grossYield: annualRent / input.price * 100, netYield: netIncome / totalCost * 100 };
 }
+
+export type ResearchPeriod = '12' | '36' | 'all';
+/** Trailing calendar months ending at the data release, never at today's date. */
+export function selectResearchPeriod(months: readonly ResearchMonth[], period: ResearchPeriod): readonly ResearchMonth[] {
+  const sorted = [...months].sort((a, b) => a.month.localeCompare(b.month));
+  if (period === 'all' || sorted.length === 0) return sorted;
+  const ordinal = (month: string) => Number(month.slice(0, 4)) * 12 + Number(month.slice(5, 7)) - 1;
+  const first = ordinal(sorted.at(-1)!.month) - Number(period) + 1;
+  return sorted.filter((row) => ordinal(row.month) >= first);
+}

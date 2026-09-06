@@ -124,6 +124,7 @@ export function EditorialGrowthHome({ model, hrefs }: Readonly<{
               <strong>{market.city}</strong>
               <p>{market.summary}</p>
               <Link href={market.primaryAction.href}>{market.primaryAction.label}</Link>
+              {market.id === 'kr-seoul' ? <Link href="/kr/seoul/rankings/">District rankings</Link> : null}
             </li>
           ))}
         </ol>

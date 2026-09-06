@@ -14,7 +14,7 @@ test('Newsroom filters reviewed SignedPrice records and opens the policy lifecyc
   await expect(page).toHaveTitle(/Property policy, market news and data stories/);
   await expect(page.getByRole('heading', { level: 1, name: 'News' })).toBeVisible();
   await expect(page.getByRole('navigation', { name: 'News types' }).getByRole('link')).toHaveCount(5);
-  await expect(page.getByRole('navigation', { name: 'News markets' }).getByRole('link')).toHaveCount(3);
+  await expect(page.getByRole('navigation', { name: 'News markets' }).getByRole('link')).toHaveText(['All', 'Seoul', 'Singapore', 'Dubai']);
   await expect(page.locator('[data-newsroom-lead]')).toHaveCount(1);
   await expect(page.locator('body')).not.toContainText(/provider|credential|ingestion|Naver News API/i);
 
@@ -63,7 +63,7 @@ test('News uses the shared readable type and restrained frame', async ({ page },
   const values = await page.locator('[data-newsroom-layout="research"]').evaluate((main) => {
     const root = getComputedStyle(document.documentElement);
     const heading = main.querySelector('h1');
-    const summary = main.querySelector('header > span');
+    const summary = main.querySelector('[data-research-page-heading] > p');
     const typeFilter = main.querySelector('nav[aria-label="News types"] a');
     const marketFilter = main.querySelector('nav[aria-label="News markets"] a');
     if (heading === null || summary === null || typeFilter === null || marketFilter === null) {

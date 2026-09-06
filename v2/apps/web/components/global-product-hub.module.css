@@ -669,7 +669,7 @@
 .section { padding: 32px 0 48px; }
 
 .researchSteps { list-style: none; margin: 0; padding: 0; }
-.researchSteps > li { display: grid; grid-template-columns: minmax(0, .7fr) repeat(2, minmax(0, 1fr)); gap: 32px; padding: 28px 0; border-bottom: 1px solid var(--line); }
+.researchSteps > li { display: grid; grid-template-columns: minmax(0, .7fr) repeat(3, minmax(0, 1fr)); gap: 32px; padding: 28px 0; border-bottom: 1px solid var(--line); }
 .researchSteps h3 { font-size: 1.25rem; font-weight: 600; line-height: 1.4; }
 .researchSteps h4 { margin-bottom: 8px; font-size: .875rem; font-weight: 600; }
 .researchSteps p { color: var(--muted); font-size: 1rem; line-height: 1.7; }
@@ -683,3 +683,22 @@
 @media (max-width: 680px) {
   .researchSteps > li { grid-template-columns: minmax(0, 1fr); gap: 20px; }
 }
+
+/* Directory pages use the same quiet rows, controls and type scale as research. */
+.section { padding: 32px 0; }
+.sectionHeading { grid-template-columns: minmax(160px, .32fr) minmax(0, 1fr); gap: 24px; }
+.sectionHeading h2 { max-width: 32ch; font-size: clamp(1.5rem, 2.5vw, 2rem); font-weight: 650; line-height: 1.25; }
+.productGrid, .guideGrid, .marketGuideRow { gap: 24px; }
+.productGrid > a, .guideGrid article, .marketGuideRow article { padding: 20px 0; border: 0; border-top: 1px solid var(--line); border-radius: 0; background: transparent; }
+.productGrid > a:hover { box-shadow: none; border-color: var(--ink); }
+.tableWrap { border: 0; border-radius: 0; background: transparent; }
+.tableWrap th, .tableWrap td { padding: 14px 12px; }
+.tableWrap thead th { text-transform: none; letter-spacing: 0; }
+@media (max-width: 640px) { .sectionHeading { grid-template-columns: 1fr; gap: 8px; } }
+
+.directoryFilters { display: flex; flex-wrap: wrap; gap: 4px 16px; }
+.directoryFilters a { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 4px; color: var(--muted); text-decoration: none; border-bottom: 2px solid transparent; }
+.directoryFilters a[aria-current='page'] { color: var(--ink); border-bottom-color: var(--accent); }
+.resultCount { margin: 0 0 16px; color: var(--muted); font-size: var(--text-meta); }
+
+.productGrid p { font-weight: 400; }

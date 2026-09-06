@@ -167,7 +167,7 @@ export const signedPricePublicRouteRegistry = createPublicRouteRegistry([
   },
   {
     path: '/kr/seoul/news/', locale: 'en', pageKind: 'news', cohort: 0,
-    sitemap: true, isReady: newsReady,
+    sitemap: false, isReady: newsReady,
   },
   {
     path: '/kr/seoul/guide/', locale: 'en', pageKind: 'guide', cohort: 3,

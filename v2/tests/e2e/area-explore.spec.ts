@@ -89,7 +89,7 @@ test('initial HTML and hydration expose one synchronized 25-district Explorer', 
   expect(response?.status()).toBe(200);
   await expect(page.getByRole('heading', {
     level: 1,
-    name: 'Compare refundable jeonse deposits by district.',
+    name: 'Explore',
   })).toBeAttached();
   await expect(page.locator('[data-explorer-region="map"]')).toBeVisible();
   await expect(page.locator('[data-district-option]')).toHaveCount(25);

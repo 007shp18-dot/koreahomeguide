@@ -82,7 +82,7 @@ export function SingaporeEvidence({
     </div>
   </>;
   return (
-    <section className={`${styles.section} ${compact ? styles.compactEvidence : ''}`} aria-labelledby="singapore-source-heading">
+    <section id="singapore-source" className={`${styles.section} ${compact ? styles.compactEvidence : ''}`} aria-labelledby="singapore-source-heading">
       {compact ? <details><summary>Sources &amp; limits</summary><div>{content}</div></details> : content}
     </section>
   );

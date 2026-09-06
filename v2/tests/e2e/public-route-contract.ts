@@ -51,7 +51,7 @@ export const publicRoutes = [
   { path: '/kr/seoul/invest/', heading: 'Invest in Seoul', indexing: 'noindex' },
   {
     path: '/kr/seoul/explore/',
-    heading: 'Compare refundable jeonse deposits by district.',
+    heading: 'Explore',
     indexing: 'index',
     canonical: '/kr/seoul/explore/',
     alternates: true,
@@ -74,7 +74,7 @@ export const publicRoutes = [
     indexing: 'index',
     canonical: '/sg/',
   },
-  { path: '/ae/dubai/', heading: 'Dubai', indexing: 'noindex' },
+  { path: '/ae/dubai/', heading: 'Dubai', indexing: 'index', canonical: '/ae/dubai/' },
   {
     path: '/sg/singapore/explore/',
     heading: 'Explore',

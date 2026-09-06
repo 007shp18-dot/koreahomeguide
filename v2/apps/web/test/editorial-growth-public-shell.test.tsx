@@ -54,10 +54,10 @@ describe('public editorial shell', () => {
     expect(markup).toContain('lang="zh-CN"');
     expect(markup).toContain('data-review-locale="zh-CN"');
     expect(markup).toContain('href="/kr/seoul/check"');
-    expect(markup).toContain('href="/kr/seoul/explore"');
+    expect(markup).toContain('href="/prices"');
     expect(markup).not.toContain('/zh-cn/kr/seoul/check');
     expect(markup).not.toContain('/zh-cn/kr/seoul/explore');
-    expect(markup).toContain('>首页<');
+    expect(markup).toContain('>价格<');
     expect(markup).not.toContain('/design-review/');
   });
 });

@@ -225,3 +225,17 @@ it('does not create markers after a project search is superseded', async () => {
   expect(markers).toHaveLength(0);
   expect(mounts).toBe(0);
 });
+
+it('locates Dubai with UAE restrictions, caches successful lookups and rejects overseas matches', async () => {
+  const geocode = vi.fn(async () => ({ results: [{ formatted_address: 'Dubai Marina, Dubai', geometry: { location: { lat: () => 25.08, lng: () => 55.14 }, viewport: { name: 'marina' } } }] }));
+  const fitBounds = vi.fn();
+  const sdk = { Map: class { fitBounds() {} }, Marker: class { setMap() {} setPosition() {} }, Geocoder: class { geocode = geocode; } };
+  const runtime = { map: { fitBounds }, marker: { setMap() {}, setPosition() {} }, geocoder: { geocode } };
+  const points = [{ id: 'marina', title: 'Dubai Marina', label: 'Marina', address: 'Dubai Marina, UAE', selected: true }];
+  expect(await geocodeGoogleMarketPoints(sdk, runtime, points, undefined, () => true, 'dubai')).toHaveLength(1);
+  expect(geocode).toHaveBeenCalledWith({ address: 'Dubai Marina, UAE', componentRestrictions: { country: 'AE' }, region: 'AE' });
+  await geocodeGoogleMarketPoints(sdk, runtime, points, undefined, () => true, 'dubai');
+  expect(geocode).toHaveBeenCalledTimes(1);
+  expect(fitBounds).toHaveBeenCalledWith({ name: 'marina' });
+  expect(await geocodeGoogleMarketPoints(sdk, runtime, points)).toHaveLength(0);
+});

@@ -82,3 +82,9 @@
 .exploreHeader { padding: 24px 0; }
 .exploreHeader p { display: none; }
 .exploreHeader h1 { font-size: var(--page-title-size); font-weight: 650; letter-spacing: var(--tracking-display); }
+
+.explore { width: min(calc(100% - 2 * var(--page-gutter)), var(--workspace-frame)); margin-top: 0; }
+.explore > :global(.explore-page-heading) { width: 100%; }
+
+.detailMain, .detailRail { border: 0; border-radius: 0; }
+.detailMain > div > section, .detailRail > section { border: 0; border-radius: 0; box-shadow: none; }
