@@ -350,7 +350,7 @@ describe('public Seoul area Explorer', () => {
     expect(district).toContain('data-map-tier="neighborhoods"');
     expect(district).toContain('역삼동');
     expect(district).toContain('678');
-    expect(district).not.toContain('data-building-row=');
+    expect(district).toContain('data-building-row=');
   });
 
   it('renders the complete map, district directory, and allowed evidence in initial HTML', () => {

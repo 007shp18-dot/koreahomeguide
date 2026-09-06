@@ -80,9 +80,28 @@ describe('Singapore route SSR', () => {
     const html = renderToStaticMarkup(<SingaporeExplorer initialPage={initialPage}
       model={{ ...model, segments: [{ ...segment, projects }] }} />);
     expect(html).toContain('775 matching projects across all result pages');
-    expect(html).toContain('775 without a map reference');
+    expect(html).toContain('775 projects remain selectable while their area reference is unavailable');
     expect(html).toContain(`Page ${initialPage} of 33`);
     expect(html).not.toContain('24 projects on this page');
+  });
+  it('uses region, district, then complete project map levels while retaining the project list', async () => {
+    const model = buildSingaporeExploreModel(await repository());
+    if (model.status !== 'ready') throw new Error('Missing fixture');
+    const segment = model.segments.find(item => (item.projects?.length ?? 0) > 0)!;
+    const district = segment.projects![0]!.district;
+    const regionHtml = renderToStaticMarkup(<SingaporeExplorer model={model} />);
+    const districtHtml = renderToStaticMarkup(<SingaporeExplorer model={model} initialSegment={segment.code} />);
+    const projectHtml = renderToStaticMarkup(<SingaporeExplorer model={model} initialSegment={segment.code} initialDistrict={district} />);
+    const directDistrictHtml = renderToStaticMarkup(<SingaporeExplorer model={model} initialDistrict={district} />);
+    const searchHtml = renderToStaticMarkup(<SingaporeExplorer model={model} initialQuery={segment.projects![0]!.name} />);
+    expect(regionHtml).toContain('data-singapore-map-level="regions"');
+    expect(districtHtml).toContain('data-singapore-map-level="districts"');
+    expect(projectHtml).toContain('data-singapore-map-level="projects"');
+    expect(directDistrictHtml).toContain('data-singapore-map-level="projects"');
+    expect(searchHtml).toContain('data-singapore-map-level="projects"');
+    for (const html of [regionHtml, districtHtml, projectHtml]) expect(html).toContain('class="');
+    expect(districtHtml).toContain('matching projects');
+    expect(projectHtml).toContain('matching projects across all result pages');
   });
   it('keeps A and B market choices independent while switching tabs', async () => {
     const html = renderToStaticMarkup(<SingaporeCheckWorkspace model={buildSingaporeCheckRouteModel(

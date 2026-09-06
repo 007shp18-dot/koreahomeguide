@@ -263,6 +263,38 @@ describe('public area Explore model', () => {
     expect(model.buildingAvailability.fallbackBuildings[0]?.verifiedAddress).toBe('서울특별시 강남구 역삼동 123');
   });
 
+  it('hydrates every building when a neighborhood exceeds the projection read limit', async () => {
+    const base = buildPublicAreaExploreModel('gangnam-gu', {
+      ...dependencies(), buildingSource: createPublicBuildingFixture(),
+    });
+    if (base.status !== 'ready' || base.buildingAvailability.status !== 'not_loaded') {
+      throw new Error('fixture unavailable');
+    }
+    const seed = base.buildingAvailability.fallbackBuildings[0];
+    if (seed === undefined) throw new Error('building fixture unavailable');
+    const fallbackBuildings = Object.freeze(Array.from({ length: 2_501 }, (_, index) => Object.freeze({
+      ...seed,
+      id: `building-${index + 1}`,
+    })));
+    const model = Object.freeze({
+      ...base,
+      buildingAvailability: Object.freeze({
+        ...base.buildingAvailability,
+        fallbackBuildings,
+      }),
+    });
+    const listBuildings = vi.fn(async (ids: readonly string[]) => {
+      void ids;
+      return new Map();
+    });
+
+    await hydratePublicAreaExploreModelWithProjections(model, { listBuildings });
+
+    expect(listBuildings).toHaveBeenCalledTimes(2);
+    expect(listBuildings.mock.calls.map(([ids]) => ids.length)).toEqual([2_500, 1]);
+    expect(listBuildings.mock.calls.flatMap(([ids]) => ids)).toHaveLength(2_501);
+  });
+
   it.each(['ready', 'unavailable'] as const)('hydrates approved media independently of location state: %s', async (state) => {
     const base = buildPublicAreaExploreModel('gangnam-gu', {
       ...dependencies(),

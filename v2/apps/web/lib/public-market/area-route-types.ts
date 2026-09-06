@@ -289,6 +289,24 @@ export type ExploreBuildingModel = Readonly<{
   href: `/kr/seoul/explore/${string}/${string}/`;
 }>;
 
+export type ExploreMapBuildingModel = Readonly<{
+  id: string;
+  districtSlug: SeoulDistrictSlug;
+  neighborhoodId: string;
+  neighborhoodName: string;
+  name: string;
+  housingType: string;
+  latitude: number | null;
+  longitude: number | null;
+  verifiedAddress?: string;
+  observationCount: number;
+  jeonseObservationCount: number;
+  monthlyObservationCount: number;
+  medianLabel: string | null;
+  sampleLabel: string;
+  href: `/kr/seoul/explore/${string}/${string}/`;
+}>;
+
 export type KoreaExploreProximityPair = Readonly<{
   sourceId: string;
   distanceMeters: 250 | 500 | 750 | 1000;
@@ -336,6 +354,7 @@ export type ExploreBuildingAvailability =
   | Readonly<{
       status: 'ready';
       buildings: readonly ExploreBuildingModel[];
+      mapBuildings?: readonly ExploreMapBuildingModel[];
       mapGroups?: readonly Readonly<{ neighborhoodId: string; name: string; housingType: string; count: number }>[];
       neighborhoods?: readonly Readonly<{ id: string; name: string; count: number }>[];
       total: number;

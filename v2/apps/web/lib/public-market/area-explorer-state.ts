@@ -30,13 +30,17 @@ const housingTypeSearchAliases = Object.freeze({
   detached: Object.freeze(['단독', '다가구']),
 } as const);
 
-export function filterExploreBuildings(
-  buildings: readonly ExploreBuildingModel[],
+type ExploreBuildingSearchItem = Pick<ExploreBuildingModel,
+  'districtSlug' | 'neighborhoodId' | 'neighborhoodName' | 'name' | 'housingType'
+  | 'jeonseObservationCount' | 'monthlyObservationCount'>;
+
+export function filterExploreBuildings<T extends ExploreBuildingSearchItem>(
+  buildings: readonly T[],
   query: string,
   neighborhoodId: string,
   housingType = 'all',
   districtAliases: readonly string[] = Object.freeze([]),
-): readonly ExploreBuildingModel[] {
+): readonly T[] {
   const normalizedQuery = query.trim().toLocaleLowerCase('en-US');
   const queryScopesSelectedDistrict = normalizedQuery.length > 0
     && districtAliases.some((alias) => (

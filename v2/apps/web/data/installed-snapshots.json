@@ -78,6 +78,19 @@
       "objectUrl": "installed://sg-hdb",
       "sha256": "c253347d354c62ac3884e7bca3d3f2750eb28ae0644d32cf258afda286059b64",
       "recordCount": 462792
+    },
+    {
+      "marketId": "ae-dubai",
+      "dataset": "ae-area-evidence",
+      "schemaVersion": "signedprice-dubai-area-evidence-v1",
+      "sourceVersion": "dld-open-data-2026-09-06",
+      "parserVersion": "ae-dubai-area-evidence-builder-v1",
+      "rightsPolicyId": "ae-dubai-dld-open-data-noncommercial-v1",
+      "period": "2026-06/2026-09",
+      "generatedAt": "2026-09-06T23:00:00.000Z",
+      "objectUrl": "installed://ae-area-evidence",
+      "sha256": "c948b9373db1ab3ea9b2f88f00b738f443e33c6c261cd0c315e854113819279a",
+      "recordCount": 46
     }
   ]
 }

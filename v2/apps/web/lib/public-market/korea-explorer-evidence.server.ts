@@ -94,6 +94,7 @@ export type KoreaExplorerBuildingPage = Readonly<{
   pageSize: number;
   total: number;
   buildings: readonly KoreaExplorerProjectedBuilding[];
+  mapBuildings?: readonly KoreaExplorerProjectedMapBuilding[];
   /** Matches outside the detailed page, retained as counted area groups. */
   mapGroups?: readonly Readonly<{ neighborhoodId: string; name: string; housingType: string; count: number }>[];
   neighborhoods?: readonly Readonly<{ id: string; name: string; count: number }>[];
@@ -155,6 +156,16 @@ export type KoreaExplorerBuildingDetailModel = Readonly<{
     floor: number | null;
     buildYear: number | null;
   }>[];
+}>;
+
+export type KoreaExplorerProjectedMapBuilding = Readonly<{
+  buildingId: string;
+  districtSlug: string;
+  neighborhoodId: string;
+  neighborhoodName: string;
+  officialName: string;
+  housingType: Exclude<KoreaExplorerHousingType, 'all'>;
+  primary: KoreaEvidenceDistribution;
 }>;
 
 export type KoreaBuildingEvidenceEnvelope = Readonly<{
@@ -516,8 +527,9 @@ function projectedBuildingData(
   const requestedNeighborhoodId = typeof options.neighborhoodId === 'string'
     ? options.neighborhoodId.trim()
     : '';
-  const matches = requestedNeighborhoodId !== ''
-    && districtMatches.some(({ neighborhoodId }) => neighborhoodId === requestedNeighborhoodId)
+  const neighborhoodScoped = requestedNeighborhoodId !== ''
+    && districtMatches.some(({ neighborhoodId }) => neighborhoodId === requestedNeighborhoodId);
+  const matches = neighborhoodScoped
     ? districtMatches.filter(({ neighborhoodId }) => neighborhoodId === requestedNeighborhoodId)
     : districtMatches;
   // Rank the full matching inventory before pagination so the first page is useful.
@@ -535,22 +547,25 @@ function projectedBuildingData(
   const selectedBuildingIndex = selectedBuildingId === null
     ? -1
     : matches.findIndex(({ buildingId }) => buildingId === selectedBuildingId);
+  const pageSize = KOREA_EXPLORER_BUILDING_PAGE_SIZE;
   const requestedPage = selectedBuildingIndex >= 0
-    ? Math.floor(selectedBuildingIndex / KOREA_EXPLORER_BUILDING_PAGE_SIZE) + 1
+    ? Math.floor(selectedBuildingIndex / pageSize) + 1
     : normalizedBuildingPage(options.buildingPage);
-  const maximumPage = Math.max(1, Math.ceil(matches.length / KOREA_EXPLORER_BUILDING_PAGE_SIZE));
+  const maximumPage = Math.max(1, Math.ceil(matches.length / pageSize));
   const page = Math.min(requestedPage, maximumPage);
-  const start = (page - 1) * KOREA_EXPLORER_BUILDING_PAGE_SIZE;
+  const start = (page - 1) * pageSize;
   const unloadedGroups = new Map<string, { neighborhoodId: string; name: string; housingType: string; count: number }>();
-  for (const [matchIndex, identity] of matches.entries()) {
-    if (matchIndex >= start && matchIndex < start + KOREA_EXPLORER_BUILDING_PAGE_SIZE) continue;
-    const key = `${identity.neighborhoodId}:${identity.housingType}`;
-    const group = unloadedGroups.get(key) ?? { neighborhoodId: identity.neighborhoodId,
-      name: identity.neighborhoodName, housingType: identity.housingType, count: 0 };
-    group.count += 1;
-    unloadedGroups.set(key, group);
+  if (!neighborhoodScoped) {
+    for (const [matchIndex, identity] of matches.entries()) {
+      if (matchIndex >= start && matchIndex < start + pageSize) continue;
+      const key = `${identity.neighborhoodId}:${identity.housingType}`;
+      const group = unloadedGroups.get(key) ?? { neighborhoodId: identity.neighborhoodId,
+        name: identity.neighborhoodName, housingType: identity.housingType, count: 0 };
+      group.count += 1;
+      unloadedGroups.set(key, group);
+    }
   }
-  const buildings = matches.slice(start, start + KOREA_EXPLORER_BUILDING_PAGE_SIZE).map((identity) => {
+  const buildings = matches.slice(start, start + pageSize).map((identity) => {
     const key = `${identity.districtSlug}/${identity.buildingId}`;
     return projectedBuilding(
       identity,
@@ -559,15 +574,27 @@ function projectedBuildingData(
       selection,
     );
   });
+  const mapBuildings = neighborhoodScoped
+    ? Object.freeze(matches.map((identity) => Object.freeze({
+        buildingId: identity.buildingId,
+        districtSlug: identity.districtSlug,
+        neighborhoodId: identity.neighborhoodId,
+        neighborhoodName: identity.neighborhoodName,
+        officialName: identity.officialName,
+        housingType: identity.housingType,
+        primary: selectedPrimary(identity),
+      })))
+    : undefined;
   return Object.freeze({
     buildingStats,
     buildingPage: Object.freeze({
       districtSlug,
       query,
       page,
-      pageSize: KOREA_EXPLORER_BUILDING_PAGE_SIZE,
+      pageSize,
       total: matches.length,
       buildings: Object.freeze(buildings),
+      mapBuildings,
       mapGroups: Object.freeze([...unloadedGroups.values()].map(group => Object.freeze(group))),
       neighborhoods,
     }),

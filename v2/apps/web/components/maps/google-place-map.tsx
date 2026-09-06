@@ -36,6 +36,7 @@ export type GoogleMarketMapPoint = Readonly<{
   address?: string;
   selected?: boolean;
   kind?: 'area' | 'cluster';
+  level?: 'region' | 'district';
   count?: number;
   memberIds?: readonly string[];
   bounds?: Readonly<{ south: number; north: number; west: number; east: number }>;
@@ -183,7 +184,7 @@ export function mountGoogleMarketPoints(
       map,
       position: { lat: point.latitude!, lng: point.longitude! },
       title: point.title,
-      label: { text: point.label, className: point.kind === 'area' ? 'spGoogleMarketMarker spGoogleAreaGroup'
+      label: { text: point.label, className: point.kind === 'area' ? `spGoogleMarketMarker spGoogleAreaGroup${point.level === 'region' ? ' spGoogleRegionGroup' : point.level === 'district' ? ' spGoogleDistrictGroup' : ''}`
         : point.kind === 'cluster' ? 'spGoogleMarketMarker spGoogleCluster'
           : point.selected ? 'spGoogleMarketMarker spGoogleMarketMarkerSelected' : 'spGoogleMarketMarker' },
     });

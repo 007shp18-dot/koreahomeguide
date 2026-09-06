@@ -21,6 +21,7 @@ import {
 import type {
   ContractGroupEvidenceModel,
   ExploreBuildingModel,
+  ExploreMapBuildingModel,
   ExploreDistrictModel,
   PublicAreaExploreModel,
   PublicAreaLegendBucket,
@@ -258,6 +259,29 @@ function buildingsFor(
   }));
 }
 
+function mapBuildingsFor(
+  projection: Extract<KoreaExplorerEvidenceProjection, { status: 'ready' }>,
+): readonly ExploreMapBuildingModel[] | undefined {
+  const source = projection.buildingPage?.mapBuildings;
+  if (source === undefined) return undefined;
+  return Object.freeze(source.map((building) => Object.freeze({
+    id: building.buildingId,
+    districtSlug: building.districtSlug as SeoulDistrictSlug,
+    neighborhoodId: building.neighborhoodId,
+    neighborhoodName: building.neighborhoodName,
+    name: building.officialName,
+    housingType: building.housingType,
+    latitude: null,
+    longitude: null,
+    observationCount: building.primary.n,
+    jeonseObservationCount: projection.selection.transaction === 'jeonse' ? building.primary.n : 0,
+    monthlyObservationCount: projection.selection.transaction === 'monthly' ? building.primary.n : 0,
+    medianLabel: building.primary.published ? formatMoney(building.primary.med) : null,
+    sampleLabel: sampleLabel(building.primary.n),
+    href: `/kr/seoul/explore/${building.districtSlug}/${building.buildingId}/` as const,
+  })));
+}
+
 export function buildKoreaEvidenceAreaExploreModel(
   selectedSlug: string | undefined,
   projection: Extract<KoreaExplorerEvidenceProjection, { status: 'ready' }>,
@@ -306,6 +330,7 @@ export function buildKoreaEvidenceAreaExploreModel(
     ?? getSeoulDistrictBySlug(selectedSlug ?? '')?.slug
     ?? 'jongno-gu';
   const buildings = buildingsFor(projection, proximityRepository);
+  const mapBuildings = mapBuildingsFor(projection);
   const priceReady = projection.buildingStats?.priceReady ?? 0;
   const transactionCovered = projection.buildingStats?.transactionCovered ?? 0;
   const observed = projection.buildingStats?.observed ?? 0;
@@ -363,6 +388,7 @@ export function buildKoreaEvidenceAreaExploreModel(
     buildingAvailability: Object.freeze({
       status: 'ready' as const,
       buildings,
+      mapBuildings,
       mapGroups: projection.buildingPage?.mapGroups,
       neighborhoods: projection.buildingPage?.neighborhoods,
       total: projection.buildingPage?.total ?? 0,

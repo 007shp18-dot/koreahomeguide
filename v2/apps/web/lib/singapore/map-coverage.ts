@@ -2,8 +2,51 @@ import type { GoogleMarketMapPoint } from '../../components/maps/google-place-ma
 
 type Project = Readonly<{
   id: string; name: string; street: string; district: string;
+  segment?: string;
   location?: Readonly<{ latitude: number; longitude: number }> | null;
 }>;
+
+export function buildSingaporeAreaMapCoverage(
+  projects: readonly Project[],
+  anchorProjects: readonly Project[],
+  level: 'region' | 'district',
+) {
+  const keyOf = (project: Project) => level === 'region' ? project.segment ?? '' : project.district;
+  const anchors = new Map<string, { lat: number; lng: number; n: number }>();
+  for (const project of anchorProjects) {
+    const key = keyOf(project);
+    if (key === '' || !located(project)) continue;
+    const anchor = anchors.get(key) ?? { lat: 0, lng: 0, n: 0 };
+    anchor.lat += project.location!.latitude; anchor.lng += project.location!.longitude; anchor.n += 1;
+    anchors.set(key, anchor);
+  }
+  const counts = new Map<string, number>();
+  for (const project of projects) {
+    const key = keyOf(project);
+    if (key !== '') counts.set(key, (counts.get(key) ?? 0) + 1);
+  }
+  const unplacedGroups: { id: string; label: string; count: number }[] = [];
+  const points: GoogleMarketMapPoint[] = [];
+  for (const [key, count] of [...counts].sort(([left], [right]) => left.localeCompare(right))) {
+    const label = level === 'region' ? key : `District ${key}`;
+    const anchor = anchors.get(key);
+    if (anchor === undefined) { unplacedGroups.push({ id: `${level}-${key}`, label, count }); continue; }
+    points.push({
+      id: `${level}-${key}`,
+      title: `${label} · ${count} projects`,
+      label: `${level === 'region' ? key : `D${key}`} · ${count}`,
+      kind: 'area',
+      level,
+      count,
+      latitude: anchor.lat / anchor.n,
+      longitude: anchor.lng / anchor.n,
+    });
+  }
+  return { points: Object.freeze(points), total: projects.length,
+    represented: points.reduce((sum, point) => sum + (point.count ?? 0), 0),
+    unplaced: unplacedGroups.reduce((sum, group) => sum + group.count, 0),
+    unplacedGroups: Object.freeze(unplacedGroups) };
+}
 
 function located(project: Project): boolean {
   const point = project.location;
