@@ -24,12 +24,12 @@ function providerOptions(
     provider,
     limit,
     dailyRequestCap: provider === 'google'
-      ? Math.max(1, Math.floor(finiteEnvironmentNumber('PHOTO_GOOGLE_DAILY_REQUEST_CAP', 150)))
+      ? Math.max(1, Math.floor(finiteEnvironmentNumber('PHOTO_GOOGLE_DAILY_REQUEST_CAP', 5)))
       : provider === 'naver-search'
         ? Math.max(1, Math.floor(finiteEnvironmentNumber('PHOTO_NAVER_DAILY_REQUEST_CAP', 25_000)))
         : 100_000,
     dailySpendCapUsd: provider === 'google'
-      ? finiteEnvironmentNumber('PHOTO_GOOGLE_DAILY_SPEND_CAP_USD', 5)
+      ? finiteEnvironmentNumber('PHOTO_GOOGLE_DAILY_SPEND_CAP_USD', 0.16)
       : 0,
     dryRun: false,
   });
@@ -78,7 +78,13 @@ export async function GET(request: Request) {
     }
     return results;
   };
-  const photoRuns = Promise.all(markets.map(runPhotoProvidersForMarket)).then((runs) => runs.flat());
+  const photoRuns = selectedSource === 'google'
+    ? (async () => {
+      const runs = [];
+      for (const marketKey of markets) runs.push(...await runPhotoProvidersForMarket(marketKey));
+      return runs;
+    })()
+    : Promise.all(markets.map(runPhotoProvidersForMarket)).then((runs) => runs.flat());
   const officialRun = market === 'singapore' || !['all', 'official'].includes(selectedSource)
     ? Promise.resolve(null)
     : enrichOfficialBuildingFacts(scopedLimit);

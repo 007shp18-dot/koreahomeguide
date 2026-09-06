@@ -60,7 +60,7 @@ describe('scoped property enrichment',()=>{
   const response=await GET(new Request('https://example.com/api/internal/building-enrichment?market=singapore&source=google&limit=20',{headers:{authorization:'Bearer test-secret'}}));
   expect(response.status).toBe(200);
   expect(calls.backfill).toHaveBeenCalledWith(expect.objectContaining({
-   limit:20,market:'sg-singapore',provider:'google',dailyRequestCap:150,dailySpendCapUsd:5,
+   limit:20,market:'sg-singapore',provider:'google',dailyRequestCap:5,dailySpendCapUsd:0.16,
   }));
   expect(calls.backfill).toHaveBeenCalledTimes(1);
   expect(calls.official).not.toHaveBeenCalled();
@@ -100,5 +100,21 @@ describe('scoped property enrichment',()=>{
    {path:'/api/internal/building-enrichment?source=google&limit=30',schedule:'47 * * * *'},
    {path:'/api/internal/building-enrichment?source=official&limit=12',schedule:'17 * * * *'},
   ]));
+ });
+ it('shares the Google budget sequentially across both markets',async()=>{
+  vi.stubEnv('CRON_SECRET','test-secret');
+  const events:string[]=[];
+  calls.backfill.mockImplementation(async ({market}:{market:string})=>{
+   events.push(`start:${market}`);
+   await Promise.resolve();
+   events.push(`finish:${market}`);
+   return {state:'ready',checked:1,candidates:0};
+  });
+  const response=await GET(new Request('https://example.com/api/internal/building-enrichment?source=google&limit=5',{headers:{authorization:'Bearer test-secret'}}));
+  expect(response.status).toBe(200);
+  expect(events).toEqual([
+   'start:kr-seoul','finish:kr-seoul',
+   'start:sg-singapore','finish:sg-singapore',
+  ]);
  });
 });

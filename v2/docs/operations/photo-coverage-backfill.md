@@ -22,11 +22,12 @@ values into command history.
 
 The scheduled guardrails are `PHOTO_GOOGLE_DAILY_REQUEST_CAP`,
 `PHOTO_GOOGLE_DAILY_SPEND_CAP_USD`, and `PHOTO_NAVER_DAILY_REQUEST_CAP`.
-Google discovery defaults to an estimated five-dollar daily spend cap. With the
-default 0.032 USD request estimate, the 150-request cap limits estimated daily
-collection cost to 4.80 USD. Browser Google requests default to disabled so
-ordinary page views do not add a second Google cost path. Keep every enabled cap
-finite and change it only after an explicit budget decision.
+Google discovery defaults to five requests and an estimated 0.16 USD spend cap
+per day. With the default 0.032 USD request estimate, a 31-day month is limited
+to about 4.96 USD. Seoul and Singapore run sequentially against the same daily
+usage row so they share that limit. Browser Google requests default to disabled
+so ordinary page views do not add a second Google cost path. Keep every enabled
+cap finite and change it only after an explicit budget decision.
 
 Production runs one bounded slice per provider each hour: Wikimedia at minute
 7, official Seoul apartment facts at minute 17, NAVER at minute 27, and Google
