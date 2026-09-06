@@ -174,6 +174,23 @@ describe('Singapore route SSR', () => {
     expect(unavailableHtml).not.toMatch(/SGD [\d,]+|PSF|PSM/);
   });
 
+  it('keeps an approved-photo surface available when a project has too few transactions', async () => {
+    const store = await repository();
+    const identity = (['CCR', 'RCR', 'OCR'] as const)
+      .flatMap((segment) => store.listProjects(segment))
+      .find((project) => !project.published);
+    if (identity === undefined) throw new Error('missing insufficient project');
+    const model = buildSingaporeProjectModel(store, identity.marketSegment.toLowerCase(), identity.id);
+    if (model === null || model.status !== 'insufficient') throw new Error('missing insufficient project model');
+
+    const html = renderToStaticMarkup(<SingaporeProjectDetail model={model} />);
+
+    expect(html).toContain('data-singapore-project="insufficient"');
+    expect(html).toContain('data-building-media="google-place-photo"');
+    expect(html).toContain(`${model.count} reported transactions`);
+    expect(html).not.toMatch(/SGD [\d,]+/);
+  });
+
   it('renders fixed route loading boundaries and disables unsupported evidence links', async () => {
     const store = await repository();
     const explore = renderToStaticMarkup(<SingaporeExplorer model={buildSingaporeExploreModel(store)} />);

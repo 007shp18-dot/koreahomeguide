@@ -36,11 +36,22 @@ export function SingaporeProjectDetail({ model, googleMapsBrowserKey = null }: R
   );
   if (model.status === 'insufficient') return (
     <SingaporePage currentHref="/sg/singapore/explore/">
-      <section className={styles.withheld} data-singapore-project="insufficient" data-product-intro="true">
-        <p className={styles.eyebrow}>Singapore · {model.identity.marketSegment}</p>
-        <h1>{model.identity.project}: distribution not published.</h1>
-        <p>{model.count} reported transactions. At least {model.threshold} are required.</p>
-      </section>
+      <div className={styles.insufficientProject}>
+        <section className={styles.withheld} data-singapore-project="insufficient" data-product-intro="true">
+          <p className={styles.eyebrow}>Singapore · {model.identity.marketSegment}</p>
+          <h1>{model.identity.project}: distribution not published.</h1>
+          <p>{model.count} reported transactions. At least {model.threshold} are required.</p>
+        </section>
+        <div className={styles.insufficientMedia} aria-label={`${model.identity.project} building media`}>
+          <GooglePlacePhoto
+            browserKey={googleMapsBrowserKey}
+            buildingName={model.identity.project}
+            address={`${model.identity.street}, Singapore`}
+            registryKey={`sg-project:${model.identity.marketSegment}:${model.identity.project}`}
+            fallback={<ProjectedEntityMedia buildingName={model.identity.project} media={null} evidenceHref="#singapore-source-heading" />}
+          />
+        </div>
+      </div>
       <SingaporeEvidence model={model.evidence} />
     </SingaporePage>
   );
