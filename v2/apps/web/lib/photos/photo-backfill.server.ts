@@ -179,7 +179,7 @@ export async function runOrderedProviderBatch<T, R>(
   if (!Number.isSafeInteger(concurrency) || concurrency < 1 || concurrency > 10) {
     throw new RangeError('Provider concurrency must be between 1 and 10.');
   }
-  const deadlineMs = options.deadlineMs ?? 45_000;
+  const deadlineMs = options.deadlineMs ?? 240_000;
   const now = options.now ?? Date.now;
   const startedAt = now();
   const results: R[] = [];
@@ -446,7 +446,7 @@ async function runNaverAttemptBatch(
       reason: result.reason,
       stop: result.state === 'provider-error' && ['http-401', 'http-403'].includes(result.reason ?? ''),
     });
-  }, { concurrency: 5, deadlineMs: 45_000, shouldStop: (outcome) => outcome.stop });
+  }, { concurrency: 5, shouldStop: (outcome) => outcome.stop });
   const entityIds = outcomes.map((outcome) => outcome.entityId);
   const candidates = outcomes.reduce((sum, outcome) => sum + outcome.candidates, 0);
   const terminal = outcomes.find((outcome) => outcome.stop);

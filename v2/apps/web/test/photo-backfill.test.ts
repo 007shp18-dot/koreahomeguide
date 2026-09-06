@@ -114,6 +114,20 @@ describe('bounded photo backfill', () => {
     expect(results).toEqual([0, 1]);
   });
 
+  it('keeps a scheduled NAVER-sized batch running beyond the former 45-second window', async () => {
+    let now = 0;
+    const results = await runOrderedProviderBatch(
+      Array.from({ length: 50 }, (_, index) => index),
+      async (value) => {
+        now += 1_000;
+        return value;
+      },
+      { concurrency: 5, now: () => now },
+    );
+
+    expect(results).toHaveLength(50);
+  });
+
   it('continues after terminal entity attempts without duplicating work', async () => {
     const remaining = ['a', 'b', 'c'];
     const deps = dependencies({
