@@ -208,7 +208,7 @@ test('mobile primary navigation remains tappable and reaches the market flow', a
   await expectContainedTouchTargets(page, languageLinks);
   await expectTargetsNotToOverlap(languageLinks);
 
-  const marketNavigation = page.locator('nav[aria-label="Market navigation"]');
+  const marketNavigation = page.locator('.site-header nav[aria-label="Market navigation"]');
   await expect(marketNavigation).toBeVisible();
   for (const [city, href] of [
     ['Seoul', '/kr/seoul/'],

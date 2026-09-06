@@ -27,3 +27,11 @@ Existing release IDs and observation periods on the four original charts remain 
 ## Verification scope
 
 Shared navigation and current tab, external-feed recovery/filtering, signed chart geometry, article source and date contracts, production build, browser desktop/mobile layout and existing critical journeys. Production API freshness must be verified independently of fixture-based browser tests.
+
+## Browser review follow-up
+
+Reviewed desktop previews and mobile/wide CI captures. Fixed Singapore region rows overriding the HTML hidden attribute, the tablet header's first-row height, and the homepage guide date column. Reviewed updated English and Chinese home captures before replacing their baselines. Streamed News checks now wait for the visible content, navigation assertions target the shared header, and pending-state timing measures click-to-ARIA changes inside the browser rather than Playwright transport latency.
+
+The existing `/insights/` routes permanently redirect to News. Research expansion therefore lives in the active Market and Data Stories sections, preserving one editorial destination rather than reviving the archived interface. Seven English guides and five analyses are expanded; three new figures supplement the four existing figures.
+
+Latest implementation tree passed 2,068 unit tests, lint, typecheck, production build and data-boundary gates. Browser rerun verifies the reviewed baselines and corrected synchronization contracts before merge.

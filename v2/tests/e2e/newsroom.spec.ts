@@ -45,6 +45,7 @@ test('archived English Insights article redirects once to the reviewed News inde
 test('Newsroom mobile filters remain touch-sized and contained', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile-chromium');
   await page.goto('/news/');
+  await expect(page.locator('[data-newsroom-layout="research"]')).toBeVisible();
 
   const filters = page.locator('nav[aria-label="News types"] a, nav[aria-label="News markets"] a');
   for (const filter of await filters.all()) {
