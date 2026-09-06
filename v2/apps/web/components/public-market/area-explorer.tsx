@@ -926,7 +926,7 @@ function ReadyAreaExplorer({
                               <strong>{building.name}</strong>
                               <span className={styles.buildingPrice}>{building.medianLabel ?? copy.priceEvidenceUnavailable}</span>
                               <small>{building.neighborhoodName} · {building.housingType}</small>
-                              {!isIndividualMapBuilding(building) ? <small>{locale === 'ko' ? '지도 위치 확인 전 · 상세 확인 가능' : 'Map location unavailable · Details available'}</small> : null}
+                              {!isIndividualMapBuilding(building) && building.verifiedAddress === undefined ? <small>{locale === 'ko' ? '지도 위치 확인 전 · 상세 확인 가능' : 'Map location unavailable · Details available'}</small> : null}
                               <small>{model.evidenceSelection.areaBand === 'legacy-45-55'
                                 ? `${copy.jeonseObservations} · ${building.jeonseObservationCount} · ${copy.monthlyObservations} · ${building.monthlyObservationCount}`
                                 : building.transaction === 'sale'

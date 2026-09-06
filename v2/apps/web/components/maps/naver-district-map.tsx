@@ -478,9 +478,9 @@ export function NaverDistrictMap({
   fallback,
   locale = 'en',
 }: NaverDistrictMapProps) {
-  const requiresAddressGeocoding = buildings?.some(
-    ({ allowAddressGeocoding }) => allowAddressGeocoding === true,
-  ) ?? false;
+  // Keep one SDK URL across city/district transitions. Reloading NAVER to add
+  // a submodule replaces its namespace and can strand an existing map.
+  const requiresAddressGeocoding = true;
   const router = useRouter();
   const container = useRef<HTMLDivElement>(null);
   const lifecycle = useRef<ReturnType<typeof mountNaverDistrictMap> | null>(null);

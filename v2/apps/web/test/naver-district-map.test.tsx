@@ -175,11 +175,14 @@ describe('NAVER district map', () => {
     expect(html).toContain('data-map-state="loading"');
     expect(html).toContain('Static Seoul district map');
     expect(html).toContain('ncpKeyId=test-client-id');
-    expect(html).not.toContain('submodules=geocoder');
+    expect(html).toContain('submodules=geocoder');
     expect(html).toContain('aria-label="Interactive NAVER map of Seoul districts"');
   });
 
-  it('keeps the geocoder submodule available for a district-to-building transition', () => {
+  it('uses the same SDK URL before and after a district-to-building transition', () => {
+    const city = renderToStaticMarkup(createElement(NaverDistrictMap, {
+      clientId: 'test-client-id', districts, fallback: createElement('p', null, 'Loading'),
+    }));
     const html = renderToStaticMarkup(createElement(NaverDistrictMap, {
       clientId: 'test-client-id',
       districts,
@@ -193,6 +196,7 @@ describe('NAVER district map', () => {
     }));
 
     expect(html).toContain('submodules=geocoder');
+    expect(html.match(/src="([^"]+)"/)?.[1]).toBe(city.match(/src="([^"]+)"/)?.[1]);
   });
 
   it('does not promise loading when the map cannot start', () => {
