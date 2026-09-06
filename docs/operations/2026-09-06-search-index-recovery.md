@@ -39,6 +39,9 @@ fault.
 - Add direct Korean building links to neighborhood directories, clarify English
   building titles and the Korean Seoul Explore title, and describe Dubai Explore
   using its actual price/rent/yield comparison capabilities.
+- Publish the omitted 2,412 eligible Singapore project URLs in a dedicated
+  `/sg/singapore/sitemap.xml`, advertised alongside the main sitemap in robots.
+  Previously the main sitemap listed only the Explore and three region routes.
 - Add a user-visible expandable Singapore project directory with server-rendered
   region and published-project links, independent of client-side pagination.
 
@@ -54,3 +57,21 @@ its neighborhood links, Singapore directory, robots and sitemap. Search Console
 must recrawl before its exclusions reflect the change. Monitor actual indexed
 canonical pages, impressions and non-brand landing pages; do not claim that
 removing noindex guarantees indexing or increased impressions.
+
+## Additional historical export
+
+The user identified a second webarchive as Koreahomeguide-era performance. It
+contains twenty complete query rows with zero clicks and one/two impressions
+each (23 summed query impressions), plus one truncated query. Queries include
+Seoul rent in Chinese, jeonse meaning, and individual Korean buildings. The
+date range and landing pages are missing. This is insufficient to establish
+a migration-caused traffic collapse or a previous period of successful growth.
+The retained guides should remain reachable; do not infer a redirect fault
+from the report name or Search Console's site-move banner alone.
+
+Live follow-up found the two corresponding legacy English rental guides still
+returning 200 with old-domain self canonicals, although their SignedPrice
+equivalents now return 200 with index/follow and self canonicals. The migration
+manifest now moves those two guides with exact 301 redirects and removes them
+from the old sitemap. Retained unmatched content is unchanged. This establishes
+an incomplete content migration, not the numerical cause of the 22 impressions.

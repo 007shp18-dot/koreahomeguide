@@ -78,6 +78,26 @@
       "evidence": "working-rent-check-target"
     },
     {
+      "sourcePath": "/guides/wolse-vs-jeonse/",
+      "targetPath": "/guides/wolse-vs-jeonse/",
+      "destination": "https://www.signedprice.com/guides/wolse-vs-jeonse/",
+      "cohort": 3,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "verified-published-rental-structure-guide-equivalent"
+    },
+    {
+      "sourcePath": "/guides/rent-apartment-korea-foreigner/",
+      "targetPath": "/guides/rent-an-apartment-in-korea/",
+      "destination": "https://www.signedprice.com/guides/rent-an-apartment-in-korea/",
+      "cohort": 3,
+      "locale": "en",
+      "statusCode": 301,
+      "active": true,
+      "evidence": "verified-published-foreign-renter-process-guide-equivalent"
+    },
+    {
       "sourcePath": "/rent/dongdaemun-gu/apartment/",
       "targetPath": "/kr/seoul/explore/dongdaemun-gu/apartment/",
       "destination": "https://www.signedprice.com/kr/seoul/explore/dongdaemun-gu/apartment/",
@@ -706,19 +726,11 @@
       "reason": "guide-content-equivalent-not-published"
     },
     {
-      "sourcePath": "/guides/rent-apartment-korea-foreigner/",
-      "reason": "guide-content-equivalent-not-published"
-    },
-    {
       "sourcePath": "/guides/seoul-brokerage-fees/",
       "reason": "guide-content-equivalent-not-published"
     },
     {
       "sourcePath": "/guides/seoul-officetel-rent/",
-      "reason": "guide-content-equivalent-not-published"
-    },
-    {
-      "sourcePath": "/guides/wolse-vs-jeonse/",
       "reason": "guide-content-equivalent-not-published"
     },
     {

@@ -36,6 +36,16 @@
       "statusCode": 301
     },
     {
+      "source": "/guides/wolse-vs-jeonse/",
+      "destination": "https://www.signedprice.com/guides/wolse-vs-jeonse/",
+      "statusCode": 301
+    },
+    {
+      "source": "/guides/rent-apartment-korea-foreigner/",
+      "destination": "https://www.signedprice.com/guides/rent-an-apartment-in-korea/",
+      "statusCode": 301
+    },
+    {
       "source": "/rent/dongdaemun-gu/apartment/",
       "destination": "https://www.signedprice.com/kr/seoul/explore/dongdaemun-gu/apartment/",
       "statusCode": 301
