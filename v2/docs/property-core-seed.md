@@ -13,6 +13,9 @@ node scripts/seed-property-core.mjs --verify-only
 node scripts/seed-property-evidence.mjs --dry-run
 node scripts/seed-property-evidence.mjs
 node scripts/seed-property-evidence.mjs --verify-only
+node scripts/seed-kapt-nearby-places.mjs --dry-run
+node scripts/seed-kapt-nearby-places.mjs
+node scripts/seed-kapt-nearby-places.mjs --verify-only
 ```
 
 Run the seed twice on a test branch before production. Updates happen only when seeded fields change. Seeding is an explicit operator action, not part of each build, so deployments do not replay source identities over subsequent review work.
