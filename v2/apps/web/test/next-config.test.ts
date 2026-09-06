@@ -15,6 +15,7 @@ describe('Next monorepo file boundary', () => {
         './data/korea-rent-evidence.json.gz',
         './data/korea-sale-evidence.json.gz',
         './data/korea-conversion-evidence.json.gz',
+        './data/kapt-building-facts.json.gz',
       ],
     });
   });

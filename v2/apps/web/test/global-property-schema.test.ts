@@ -21,6 +21,7 @@ describe('global property database migration', () => {
       '0006_infographic_render_records.sql',
       '0007_building_enrichment_operations.sql',
       '0008_building_photo_coverage.sql',
+      '0009_building_facts_optional_register_source.sql',
     ]);
     expect(bundles.find(({ name }) => name === '0003_global_property_core.sql')?.statements.length)
       .toBeGreaterThan(10);

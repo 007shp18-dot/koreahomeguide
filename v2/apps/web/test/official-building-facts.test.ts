@@ -34,7 +34,12 @@ describe('official Korea building facts join', () => {
     });
 
     expect(result).toEqual(expect.objectContaining({
-      status: 'ready', match: { kaptCode: 'A10000001', bjdCode: '1168010100' },
+      status: 'ready',
+      source: {
+        apartment: 'MOLIT K-apt apartment basic information',
+        register: 'MOLIT Building HUB building register',
+      },
+      match: { kaptCode: 'A10000001', bjdCode: '1168010100' },
       apartment: expect.objectContaining({ households: 480, buildings: 6, heating: '지역난방' }),
       register: expect.objectContaining({ mainUse: '공동주택', parkingSpaces: 612 }),
     }));

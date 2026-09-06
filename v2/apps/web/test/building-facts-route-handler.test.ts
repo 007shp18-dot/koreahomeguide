@@ -51,6 +51,11 @@ describe('building facts API handler', () => {
   test('reuses attached database facts before calling the upstream providers', async () => {
     const storedFacts = {
       status: 'ready' as const,
+      source: {
+        apartment: 'K-apt weekly apartment profile (2026-09-04)',
+        register: null,
+        nearby: 'K-apt complex detail (2026-09-04)',
+      },
       match: { kaptCode: 'A1', bjdCode: '1168010100' },
       apartment: { name: '래미안 역삼', legalAddress: '서울 강남구 역삼동 1' },
       register: null,
@@ -75,7 +80,11 @@ describe('building facts API handler', () => {
       districtSlug: 'gangnam-gu', buildingId: 'alpha', officialName: '래미안 역삼',
     }));
     expect(load).not.toHaveBeenCalled();
-    expect(await response.json()).toMatchObject({ facts: storedFacts });
+    const body = await response.json();
+    expect(body).toMatchObject({
+      source: storedFacts.source,
+      facts: storedFacts,
+    });
   });
 
   test('attaches a verified upstream response to the database store', async () => {
@@ -103,6 +112,40 @@ describe('building facts API handler', () => {
     expect(storeReady).toHaveBeenCalledWith(
       expect.objectContaining({ districtSlug: 'gangnam-gu', buildingId: 'alpha' }),
       readyFacts,
+    );
+    expect(await response.json()).toMatchObject({ source: { register: null } });
+  });
+
+  test('serves and attaches an exact installed K-apt match before calling OpenAPI', async () => {
+    const installedFacts = {
+      status: 'ready' as const,
+      source: { apartment: 'K-apt weekly', register: null, nearby: 'K-apt detail' },
+      match: { kaptCode: 'A10024564', bjdCode: '1168010300' },
+      apartment: { name: '개포래미안포레스트', legalAddress: '서울 강남구 개포동 1282' },
+      register: null,
+      nearby: { subwayLine: '3호선', subwayStation: null, subwayWalkTime: null, busWalkTime: null, educationFacility: '초등학교(구룡초)', convenientFacility: null },
+    };
+    const load = vi.fn();
+    const storeReady = vi.fn().mockResolvedValue(undefined);
+    const handler = createBuildingFactsGetHandler({
+      serviceKey: 'server-secret', load,
+      loadStored: vi.fn().mockResolvedValue(null),
+      loadInstalled: vi.fn().mockReturnValue(installedFacts),
+      storeReady,
+      resolveIdentity: () => ({
+        districtLawdCd: '11680', neighborhoodName: '개포동',
+        officialName: '개포래미안포레스트', housingType: 'apartment',
+      }),
+    });
+
+    const response = await handler(new Request(
+      'https://www.signedprice.com/api/markets/kr-seoul/building-facts?district=gangnam-gu&building=gangnam-gu-54w9ma',
+    ));
+    expect(response.status).toBe(200);
+    expect(await response.json()).toMatchObject({ facts: installedFacts, source: installedFacts.source });
+    expect(load).not.toHaveBeenCalled();
+    expect(storeReady).toHaveBeenCalledWith(
+      expect.objectContaining({ buildingId: 'gangnam-gu-54w9ma' }), installedFacts,
     );
   });
 

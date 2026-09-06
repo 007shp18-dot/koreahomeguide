@@ -98,7 +98,7 @@ describe('scoped property enrichment',()=>{
    {path:'/api/internal/building-enrichment/?source=wikimedia&limit=30',schedule:'7 * * * *'},
    {path:'/api/internal/building-enrichment/?source=naver&limit=30',schedule:'27 * * * *'},
    {path:'/api/internal/building-enrichment/?source=google&limit=30',schedule:'47 * * * *'},
-   {path:'/api/internal/building-enrichment/?source=official&limit=12',schedule:'17 * * * *'},
+   {path:'/api/internal/building-enrichment/?source=official&limit=250',schedule:'17 * * * *'},
   ]));
   expect(config.crons?.every(({path})=>new URL(path,'https://signedprice.com').pathname.endsWith('/'))).toBe(true);
  });
@@ -117,5 +117,13 @@ describe('scoped property enrichment',()=>{
    'start:kr-seoul','finish:kr-seoul',
    'start:sg-singapore','finish:sg-singapore',
   ]);
+ });
+ it('accepts a larger installed-snapshot batch only for official facts',async()=>{
+  vi.stubEnv('CRON_SECRET','test-secret');
+  calls.official.mockResolvedValue({state:'ready',checked:250,stored:250,unavailable:0});
+  const response=await GET(new Request('https://example.com/api/internal/building-enrichment?market=seoul&source=official&limit=250',{headers:{authorization:'Bearer test-secret'}}));
+  expect(response.status).toBe(200);
+  expect(calls.official).toHaveBeenCalledWith(250);
+  expect(calls.backfill).not.toHaveBeenCalled();
  });
 });
