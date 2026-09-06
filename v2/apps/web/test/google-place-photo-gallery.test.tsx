@@ -33,7 +33,7 @@ describe('approved Google place photo gallery', () => {
   it('requires a server-approved place ID', async () => {
     class Place {
       photos = [];
-      constructor(_options: { id: string }) {}
+      constructor(options: { id: string }) { void options; }
       async fetchFields() {}
       static searchByText = vi.fn();
     }

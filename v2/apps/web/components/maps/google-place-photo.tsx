@@ -104,9 +104,11 @@ export async function findGooglePlacePhotos(
 export async function findGooglePlacePhoto(
   Place: GooglePlaceClass,
   approvedPlaceId: string | null,
-  _buildingName: string,
-  _address: string,
+  buildingName: string,
+  address: string,
 ): Promise<GooglePlacePhotoResult | null> {
+  void buildingName;
+  void address;
   return (await findGooglePlacePhotos(Place, approvedPlaceId, 1))[0] ?? null;
 }
 
@@ -222,7 +224,7 @@ function GooglePlacePhotoForIdentity({
     } catch {
       setPhoto('unavailable');
     }
-  }, [address, approvedPlaceId, buildingName]);
+  }, [approvedPlaceId]);
 
   useEffect(() => {
     if (browserKey === null || approvedPlaceId === undefined) return;
