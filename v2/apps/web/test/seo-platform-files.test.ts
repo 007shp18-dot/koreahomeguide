@@ -34,7 +34,7 @@ describe('SignedPrice search and advertising platform files', () => {
     if (robotsRoute === null) return;
     expect(robotsRoute.default()).toEqual({
       rules: { userAgent: '*', allow: '/', disallow: '/api/' },
-      sitemap: 'https://www.signedprice.com/sitemap.xml',
+      sitemap: ['https://www.signedprice.com/sitemap.xml', 'https://www.signedprice.com/sg/singapore/sitemap.xml'],
       host: 'https://www.signedprice.com',
     });
   });

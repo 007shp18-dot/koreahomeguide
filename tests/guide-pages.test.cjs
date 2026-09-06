@@ -38,7 +38,19 @@ test('guide hubs expose every guide and the sitemap lists each localized URL', (
   for (const slug of slugs) {
     assert.match(enHub, new RegExp(`href="/guides/${slug}/"`), `EN hub: ${slug}`);
     assert.match(zhHub, new RegExp(`href="/zh/guides/${slug}/"`), `ZH hub: ${slug}`);
+    const migratedTargets = {
+      'wolse-vs-jeonse': '/guides/wolse-vs-jeonse/',
+      'rent-apartment-korea-foreigner': '/guides/rent-an-apartment-in-korea/',
+    };
+    if (migratedTargets[slug]) {
+      const config = JSON.parse(fs.readFileSync('vercel.json', 'utf8'));
+      assert.ok(config.redirects.some((entry) => entry.source === `/guides/${slug}/`
+        && entry.destination === `https://www.signedprice.com${migratedTargets[slug]}`
+        && entry.statusCode === 301), `EN migrated guide: ${slug}`);
+      assert.ok(!sitemap.includes(`<loc>https://koreahomeguide.com/guides/${slug}/</loc>`));
+    } else {
     assert.match(sitemap, new RegExp(`<loc>https://koreahomeguide\\.com/guides/${slug}/</loc>`), `EN sitemap: ${slug}`);
+    }
     assert.match(sitemap, new RegExp(`<loc>https://koreahomeguide\\.com/zh/guides/${slug}/</loc>`), `ZH sitemap: ${slug}`);
   }
 });

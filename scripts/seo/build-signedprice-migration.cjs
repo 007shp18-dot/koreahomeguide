@@ -140,6 +140,18 @@ function buildMigrationManifest({ root }) {
       cohort: 1,
       evidence: 'working-rent-check-target',
     }),
+    exactEntry({
+      sourcePath: '/guides/wolse-vs-jeonse/',
+      targetPath: '/guides/wolse-vs-jeonse/',
+      cohort: 3,
+      evidence: 'verified-published-rental-structure-guide-equivalent',
+    }),
+    exactEntry({
+      sourcePath: '/guides/rent-apartment-korea-foreigner/',
+      targetPath: '/guides/rent-an-apartment-in-korea/',
+      cohort: 3,
+      evidence: 'verified-published-foreign-renter-process-guide-equivalent',
+    }),
     ...readySources.map(([sourcePath, evidence]) => {
       const [, , district, propertyType] = sourcePath.split('/');
       return exactEntry({

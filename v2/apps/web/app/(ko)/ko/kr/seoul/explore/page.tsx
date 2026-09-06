@@ -17,8 +17,8 @@ import { KOREA_EXPLORER_HOUSING_TYPES } from '@/lib/public-market/korea-explorer
 
 export const metadata = indexableMetadata({
   path: '/ko/kr/seoul/explore/',
-  title: '서울 25개 구 전세 근거 | signedprice',
-  description: '서울 25개 구의 전체 면적 매매·전세·월세 신고 계약 근거와 게시 제한을 확인하세요.',
+  title: '서울 아파트·오피스텔 실거래가 · 매매·전세·월세 | signedprice',
+  description: '서울 25개 구의 아파트·오피스텔·빌라 매매 실거래가와 전세·월세를 지도에서 비교하세요. 동별 건물과 면적별 거래 이력, 데이터 기준일을 확인할 수 있습니다.',
   locale: 'ko_KR',
   imagePath: '/og/ko/',
   languageAlternates: { en: '/kr/seoul/explore/', ko: '/ko/kr/seoul/explore/' },

@@ -22,7 +22,7 @@ test('builds deterministic active redirects only for verified exact English dest
   const second = buildMigrationManifest({ root });
   assert.deepEqual(second, first);
   assert.equal(first.schemaVersion, 1);
-  assert.equal(first.entries.length, 27);
+  assert.equal(first.entries.length, 29);
   assert.equal(first.patterns.length, 40);
   assert.deepEqual(first.entries[0],
     {
@@ -63,6 +63,17 @@ test('builds deterministic active redirects only for verified exact English dest
     sourcePattern === '/seoul/yongsan-gu/:dong/villa/'
     && targetPath === '/kr/seoul/explore/yongsan-gu/villa/'
   )));
+});
+
+test('moves republished rental guides to their exact new equivalents', () => {
+  const manifest = buildMigrationManifest({ root });
+  for (const [sourcePath, targetPath] of [
+    ['/guides/wolse-vs-jeonse/', '/guides/wolse-vs-jeonse/'],
+    ['/guides/rent-apartment-korea-foreigner/', '/guides/rent-an-apartment-in-korea/'],
+  ]) {
+    assert.ok(manifest.entries.some((entry) => entry.sourcePath === sourcePath && entry.targetPath === targetPath && entry.statusCode === 301));
+    assert.ok(!manifest.retained.some((entry) => entry.sourcePath === sourcePath));
+  }
 });
 
 test('classifies every remaining sitemap URL as an explicit retained asset', () => {
@@ -120,7 +131,7 @@ test('renders exact 301 rules without losing existing rewrites or unrelated redi
     rewrites: [{ source: '/api/example', destination: '/api/handler' }],
   };
   const rendered = renderVercelConfig(config, manifest);
-  assert.equal(rendered.redirects.length, 68);
+  assert.equal(rendered.redirects.length, 70);
   assert.deepEqual(rendered.redirects[0], {
     source: '/',
     destination: 'https://www.signedprice.com/kr/seoul/check/',

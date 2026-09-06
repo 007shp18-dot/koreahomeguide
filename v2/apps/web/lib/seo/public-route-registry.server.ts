@@ -113,6 +113,9 @@ const singleQuoteReady = (readiness: PublicRouteReadiness) => readiness.singleQu
 const conversionReady = (readiness: PublicRouteReadiness) => readiness.conversionReady;
 
 export const signedPricePublicRouteRegistry = createPublicRouteRegistry([
+  // Editorial portfolio entries already provide these URLs and lastmod in the sitemap.
+  { path: '/guides/wolse-vs-jeonse/', locale: 'en', pageKind: 'guide', cohort: 3, sitemap: false, isReady: alwaysReady, legacySourcePath: '/guides/wolse-vs-jeonse/' },
+  { path: '/guides/rent-an-apartment-in-korea/', locale: 'en', pageKind: 'guide', cohort: 3, sitemap: false, isReady: alwaysReady, legacySourcePath: '/guides/rent-apartment-korea-foreigner/' },
   { path: '/tools/', locale: 'en', pageKind: 'tools', cohort: 3, sitemap: true, isReady: alwaysReady },
   { path: '/ko/tools/', locale: 'ko', pageKind: 'tools', cohort: 3, sitemap: true, isReady: alwaysReady },
   { path: '/zh-cn/tools/', locale: 'zh-CN', pageKind: 'tools', cohort: 3, sitemap: true, isReady: alwaysReady },

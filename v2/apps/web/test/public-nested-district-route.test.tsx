@@ -91,7 +91,7 @@ describe('nested Seoul district route', () => {
     }));
     expect(html).toContain('Neighborhood building directories in Songpa-gu');
     expect(html).toContain(
-      `${entries.length} neighborhoods contain buildings that meet the current evidence publication threshold.`,
+      `${entries.length} neighborhoods contain buildings with reported transaction histories.`,
     );
     for (const entry of entries) {
       expect(html).toContain(`href="${entry.href.slice(0, -1)}"`);

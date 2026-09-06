@@ -72,6 +72,20 @@ async function repository() {
 const repositoriesForCheck = () => createSingaporeCheckEvidenceRepositories({});
 
 describe('Singapore route SSR', () => {
+  it('links published projects beyond the first result page in server HTML', async () => {
+    const model = buildSingaporeExploreModel(await repository());
+    if (model.status !== 'ready') throw new Error('Missing fixture');
+    const segment = model.segments.find(item => (item.projects?.length ?? 0) > 0)!;
+    const project = segment.projects![0]!;
+    const projects = Array.from({ length: 30 }, (_, index) => ({ ...project,
+      id: `crawl-${index}`, name: `Crawl project ${index}`,
+      href: `/sg/singapore/explore/ccr/crawl-${index}/` as const, state: 'published' as const,
+    }));
+    const html = renderToStaticMarkup(<SingaporeExplorer model={{ ...model, segments: [{ ...segment, projects }] }} />);
+    expect(html).toContain('All published project prices');
+    expect(html).toContain('href="/sg/singapore/explore/ccr/crawl-29"');
+  });
+
   it.each([1, 2])('keeps the full map coverage count on list page %i', async (initialPage) => {
     const model = buildSingaporeExploreModel(await repository());
     if (model.status !== 'ready') throw new Error('Missing fixture');

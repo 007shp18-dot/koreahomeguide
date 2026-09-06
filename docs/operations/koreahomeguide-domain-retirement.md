@@ -3,7 +3,7 @@
 ## Current state
 
 - Keep `koreahomeguide.com` connected to Vercel, with working DNS and TLS. The old application may become a redirect-only service, but the domain must not be disconnected.
-- The migration manifest currently installs 67 permanent redirects: 27 exact URL redirects and 40 legacy neighbourhood/building-family redirects.
+- The migration manifest currently installs 69 permanent redirects: 29 exact URL redirects and 40 legacy neighbourhood/building-family redirects.
 - Migrated URLs are removed from the legacy static sitemap. Migrated district/property-type child sitemaps are removed from the legacy sitemap index.
 - Every URL still present in `sitemap-static.xml` is explicitly classified in `data/seo/signedprice-migration-manifest.json` as retained.
 
@@ -12,7 +12,7 @@
 The remaining retained static assets must stay live until a verified SignedPrice equivalent exists or an explicit removal decision is made:
 
 - 31 Chinese-language URLs without a SignedPrice Chinese equivalent.
-- 8 English guide articles whose content has not yet been republished on SignedPrice.
+- 6 English guide articles whose content has not yet been republished on SignedPrice.
 - 10 English district/property-type pages below the SignedPrice publication floor.
 - 2 calculators without a replacement.
 - 4 intent pages without a sufficiently equivalent destination.
@@ -48,3 +48,5 @@ The validator fails if a redirect differs from the manifest, a migrated static U
 - [Google Search Central: Site moves with URL changes](https://developers.google.com/search/docs/crawling-indexing/site-move-with-url-changes)
 - [Google Search Console: Change of Address tool](https://support.google.com/webmasters/answer/9370220?hl=en)
 - [Google Search Central: Redirects and Google Search](https://developers.google.com/search/docs/crawling-indexing/301-redirects)
+
+The wolse/jeonse and foreign-renter process guides now redirect to verified, indexable SignedPrice equivalents (2026-09-06). Other retained pages remain live pending equivalent content.
