@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 
 import EnglishBuildingRoute, {
   generateMetadata as generateEnglishMetadata,
-  generateStaticParams as generateEnglishStaticParams,
 } from '@/app/(en)/kr/seoul/explore/[district]/[buildingId]/page';
 
 type BuildingPageProps = Readonly<{
@@ -10,15 +9,16 @@ type BuildingPageProps = Readonly<{
   searchParams: Promise<Readonly<Record<string, string | string[] | undefined>>>;
 }>;
 
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-static';
+export const revalidate = 3_600;
 export const dynamicParams = true;
 
 export function generateStaticParams() {
-  return generateEnglishStaticParams();
+  return [];
 }
 
 export async function generateMetadata(props: BuildingPageProps): Promise<Metadata> {
-  return generateEnglishMetadata(props);
+  return generateEnglishMetadata({ ...props, locale: 'ko' });
 }
 
 export default async function KoreanBuildingRoute(props: BuildingPageProps) {

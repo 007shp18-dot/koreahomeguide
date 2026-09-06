@@ -214,6 +214,54 @@ function scalarSearchParam(input: ExplorerSearchParams, key: string): string | u
   return typeof value === 'string' ? value : undefined;
 }
 
+const koreaBuildingEvidenceTransactions = Object.freeze(['sale', 'jeonse', 'monthly'] as const);
+const koreaBuildingEvidenceAreas = Object.freeze([
+  'all', 'under-40', '40-60', '60-85', '85-plus',
+] as const);
+
+export function createKoreaBuildingEvidenceRequestHref(input: Readonly<{
+  district: string;
+  buildingId: string;
+  searchParams: URLSearchParams;
+}>): string | null {
+  if (!identifierPattern.test(input.district) || !identifierPattern.test(input.buildingId)) {
+    return null;
+  }
+
+  const transaction = scalarSearchParam(input.searchParams, 'transaction');
+  const area = scalarSearchParam(input.searchParams, 'area');
+  const contractType = scalarSearchParam(input.searchParams, 'contractType');
+  const explicitTransaction = koreaBuildingEvidenceTransactions.includes(
+    transaction as typeof koreaBuildingEvidenceTransactions[number],
+  ) ? transaction : undefined;
+  const hasDefaultSaleContext = !input.searchParams.has('transaction')
+    && scalarSearchParam(input.searchParams, 'district') === input.district
+    && scalarSearchParam(input.searchParams, 'buildingId') === input.buildingId;
+  const selectedTransaction = explicitTransaction
+    ?? (hasDefaultSaleContext ? 'sale' : undefined);
+  const selectedArea = koreaBuildingEvidenceAreas.includes(
+    area as typeof koreaBuildingEvidenceAreas[number],
+  ) ? area : undefined;
+  const selectedContractType = contractTypes.includes(
+    contractType as typeof contractTypes[number],
+  ) ? contractType : undefined;
+
+  if (
+    selectedTransaction === undefined
+    && selectedArea === undefined
+    && selectedContractType === undefined
+  ) return null;
+
+  const query = new URLSearchParams({
+    district: input.district,
+    building: input.buildingId,
+  });
+  if (selectedTransaction !== undefined) query.set('transaction', selectedTransaction);
+  if (selectedArea !== undefined) query.set('area', selectedArea);
+  if (selectedContractType !== undefined) query.set('contractType', selectedContractType);
+  return `/api/markets/kr-seoul/building-evidence/?${query.toString()}`;
+}
+
 export function parseExplorerSelection(
   input: ExplorerSearchParams,
   defaults: ExplorerSelectionDefaults,

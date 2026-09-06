@@ -1,0 +1,88 @@
+.directory {
+  margin-block-start: 1.5rem;
+  padding: clamp(1rem, 2.5vw, 1.5rem);
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+
+.directory h2 {
+  margin: 0;
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+  line-height: 1.2;
+}
+
+.summary {
+  margin: 0.75rem 0 0;
+  max-width: 70ch;
+  color: var(--ink);
+  line-height: 1.6;
+}
+
+.list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  gap: 0.75rem;
+  margin: 1.25rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.list li {
+  min-width: 0;
+}
+
+.link {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 44px;
+  padding: 0.75rem;
+  color: var(--ink);
+  text-decoration: none;
+  background: var(--surface-strong);
+  border: 1px solid var(--line);
+}
+
+.link:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.link:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
+.identity {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.identity strong,
+.identity span {
+  overflow-wrap: anywhere;
+}
+
+.identity span,
+.contracts {
+  color: var(--ink);
+  font-size: 0.875rem;
+  line-height: 1.35;
+}
+
+.contracts {
+  text-align: end;
+}
+
+@media (max-width: 40rem) {
+  .link {
+    grid-template-columns: 1fr;
+  }
+
+  .contracts {
+    text-align: start;
+  }
+}

@@ -153,6 +153,11 @@ export type KoreaExplorerBuildingDetailModel = Readonly<{
   }>[];
 }>;
 
+export type KoreaBuildingEvidenceEnvelope = Readonly<{
+  schemaVersion: 1;
+  model: KoreaExplorerBuildingDetailModel;
+}>;
+
 const TRANSACTIONS = new Set<KoreaExplorerTransaction>(['jeonse', 'monthly', 'sale']);
 const CONTRACT_GROUPS = new Set<KoreaExplorerContractGroup>([
   'all', 'new', 'renewal', 'unknown',
@@ -661,4 +666,105 @@ export function buildKoreaExplorerBuildingDetailModel(
     }),
     recentTransactions: Object.freeze(normalizedRecent),
   });
+}
+
+export function buildKoreaBuildingEvidenceEnvelope(
+  repositories: KoreaEvidenceRepositories,
+  districtSlug: string,
+  buildingId: string,
+  input: Readonly<{
+    transaction?: unknown;
+    area?: unknown;
+    contractType?: unknown;
+  }>,
+): KoreaBuildingEvidenceEnvelope | null {
+  const model = buildKoreaExplorerBuildingDetailModel(
+    repositories,
+    districtSlug,
+    buildingId,
+    {
+      transaction: input.transaction,
+      areaBand: input.area,
+      contractGroup: input.contractType,
+    },
+  );
+  return model === null ? null : Object.freeze({ schemaVersion: 1 as const, model });
+}
+
+const BUILDING_EVIDENCE_QUERY_KEYS = new Set([
+  'district', 'building', 'transaction', 'area', 'contractType',
+]);
+const BUILDING_EVIDENCE_IDENTIFIER = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const BUILDING_EVIDENCE_TRANSACTIONS = new Set(['sale', 'jeonse', 'monthly']);
+const BUILDING_EVIDENCE_CONTRACT_TYPES = new Set(['all', 'new', 'renewal']);
+
+function singleBuildingEvidenceQueryValue(
+  searchParams: URLSearchParams,
+  key: string,
+): string | undefined {
+  const values = searchParams.getAll(key);
+  return values.length === 1 ? values[0] : undefined;
+}
+
+function buildingEvidenceJson(
+  body: unknown,
+  status: number,
+  cacheControl: string,
+): Response {
+  return Response.json(body, {
+    status,
+    headers: { 'Cache-Control': cacheControl },
+  });
+}
+
+export function createKoreaBuildingEvidenceResponse(
+  repositories: KoreaEvidenceRepositories,
+  request: Request,
+): Response {
+  const url = new URL(request.url);
+  if (
+    url.search.length > 512
+    || [...url.searchParams.keys()].some((key) => !BUILDING_EVIDENCE_QUERY_KEYS.has(key))
+    || [...BUILDING_EVIDENCE_QUERY_KEYS].some((key) => url.searchParams.getAll(key).length > 1)
+  ) {
+    return buildingEvidenceJson({ error: 'invalid_request' }, 400, 'no-store');
+  }
+
+  const district = singleBuildingEvidenceQueryValue(url.searchParams, 'district');
+  const buildingId = singleBuildingEvidenceQueryValue(url.searchParams, 'building');
+  const transaction = singleBuildingEvidenceQueryValue(url.searchParams, 'transaction');
+  const area = singleBuildingEvidenceQueryValue(url.searchParams, 'area');
+  const contractType = singleBuildingEvidenceQueryValue(url.searchParams, 'contractType');
+  if (
+    district === undefined
+    || buildingId === undefined
+    || district.length > 80
+    || buildingId.length > 120
+    || !BUILDING_EVIDENCE_IDENTIFIER.test(district)
+    || !BUILDING_EVIDENCE_IDENTIFIER.test(buildingId)
+    || (transaction !== undefined && !BUILDING_EVIDENCE_TRANSACTIONS.has(transaction))
+    || (area !== undefined && !KOREA_EVIDENCE_AREA_BANDS.includes(area as KoreaEvidenceAreaBand))
+    || (contractType !== undefined && !BUILDING_EVIDENCE_CONTRACT_TYPES.has(contractType))
+  ) {
+    return buildingEvidenceJson({ error: 'invalid_request' }, 400, 'no-store');
+  }
+
+  const envelope = buildKoreaBuildingEvidenceEnvelope(
+    repositories,
+    district,
+    buildingId,
+    { transaction, area, contractType },
+  );
+  if (envelope === null) {
+    return buildingEvidenceJson(
+      { error: 'not_found' },
+      404,
+      'public, s-maxage=300, stale-while-revalidate=3600',
+    );
+  }
+  return buildingEvidenceJson(
+    envelope,
+    200,
+    'public, s-maxage=3600, stale-while-revalidate=86400',
+  );
 }

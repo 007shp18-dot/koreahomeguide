@@ -12,6 +12,7 @@ import BuildingRoute, {
 import { BuildingDecisionTabs } from '../components/public-market/building-decision-tabs';
 import { BuildingDetailHeader } from '../components/public-market/building-detail-header';
 import { BuildingDetailPage } from '../components/public-market/building-detail-page';
+import { buildKoreaBuildingDecisionClientState } from '../components/public-market/korea-building-decision-client';
 import { buildBuildingDecisionModel } from '../lib/public-market/building-decision-model';
 import type {
   BuildingContractCohort,
@@ -56,16 +57,18 @@ function detailProps(
 }
 
 describe('public building detail', () => {
-  it('reads database-backed projections on every request', async () => {
+  it('captures database-backed projections in hourly ISR snapshots', async () => {
     const englishRoute = await import('../app/(en)/kr/seoul/explore/[district]/[buildingId]/page') as {
       dynamic?: string;
+      revalidate?: number;
     };
     const koreanRoute = await import('../app/(ko)/ko/kr/seoul/explore/[district]/[buildingId]/page') as {
       dynamic?: string;
+      revalidate?: number;
     };
 
-    expect(englishRoute.dynamic).toBe('force-dynamic');
-    expect(koreanRoute.dynamic).toBe('force-dynamic');
+    expect(englishRoute).toMatchObject({ dynamic: 'force-static', revalidate: 3_600 });
+    expect(koreanRoute).toMatchObject({ dynamic: 'force-static', revalidate: 3_600 });
   });
 
   it('renders an approved database photo when the public projection omits media', () => {
@@ -125,11 +128,19 @@ describe('public building detail', () => {
       transaction: 'monthly', propertyType: 'apartment', area: '40-60',
       district: 'gangnam-gu', neighborhood: 'yeoksam-dong',
       buildingId: 'gangnam-evidence-tower', view: 'list', q: 'Evidence',
+      station: 'SEOUL:STN/001', stationDistance: '500',
+      school: 'SEOUL:SCH/001', schoolDistance: '750',
     };
-    const html = renderToStaticMarkup(await BuildingRoute({
-      params: Promise.resolve({ district: query.district, buildingId: query.buildingId }),
-      searchParams: Promise.resolve(query),
-    }));
+    const state = buildKoreaBuildingDecisionClientState(
+      model(),
+      new URLSearchParams(query),
+      '/kr/seoul/explore/?district=gangnam-gu',
+    );
+    const html = renderToStaticMarkup(<BuildingDetailPage
+      {...detailProps()}
+      decision={state.decision}
+      backHref={state.backHref}
+    />);
     const href = html.match(/href="([^"]*returnTo=[^"]*)"/)?.[1]?.replaceAll('&amp;', '&');
     expect(href).toBeDefined();
     const check = new URL(href!, 'https://signedprice.invalid');
@@ -322,12 +333,9 @@ describe('public building detail', () => {
       JSON.stringify(createPublicBuildingFixture()),
     );
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', PUBLIC_BUILDING_FIXTURE_PERIOD);
-    const params = Promise.resolve({
-      district: 'gangnam-gu', buildingId: 'gangnam-evidence-tower',
-    });
-    const selected = renderToStaticMarkup(await BuildingRoute({
-      params,
-      searchParams: Promise.resolve({
+    const selectedState = buildKoreaBuildingDecisionClientState(
+      model(),
+      new URLSearchParams({
         mode: 'rent',
         contract: 'all',
         district: 'gangnam-gu',
@@ -335,21 +343,32 @@ describe('public building detail', () => {
         buildingId: 'gangnam-evidence-tower',
         contractType: 'all',
       }),
-    }));
+      '/kr/seoul/explore/?district=gangnam-gu',
+    );
+    const selected = renderToStaticMarkup(<BuildingDetailPage
+      {...detailProps()}
+      decision={selectedState.decision}
+      backHref={selectedState.backHref}
+    />);
     expect(selected).toContain('data-selected-mode="rent"');
     expect(selected).toContain('6 reported contracts');
-    expect(selected).toContain('data-building-media="location-only"');
-    expect(selected).toContain('Building photo unavailable');
+    expect(selected).toContain('Verified building image is not available');
     expect(selected).not.toContain('Street view unavailable');
     expect(selected).not.toContain('data-detail-rail="true"');
-    expect(selected).toContain(
-      'href="/kr/seoul/explore?district=gangnam-gu&amp;neighborhood=yeoksam-dong&amp;buildingId=gangnam-evidence-tower"',
-    );
+    expect(selectedState.backHref).toContain('district=gangnam-gu');
+    expect(selectedState.backHref).toContain('neighborhood=yeoksam-dong');
+    expect(selectedState.backHref).toContain('buildingId=gangnam-evidence-tower');
 
-    const fallback = renderToStaticMarkup(await BuildingRoute({
-      params,
-      searchParams: Promise.resolve({ mode: 'forecast', contract: 'mixed' }),
-    }));
+    const fallbackState = buildKoreaBuildingDecisionClientState(
+      model(),
+      new URLSearchParams({ mode: 'forecast', contract: 'mixed' }),
+      '/kr/seoul/explore/?district=gangnam-gu',
+    );
+    const fallback = renderToStaticMarkup(<BuildingDetailPage
+      {...detailProps()}
+      decision={fallbackState.decision}
+      backHref={fallbackState.backHref}
+    />);
     expect(fallback).toContain('data-selected-mode="overview"');
     expect(fallback).toContain('Viewing Overview · New contract cohort');
   });

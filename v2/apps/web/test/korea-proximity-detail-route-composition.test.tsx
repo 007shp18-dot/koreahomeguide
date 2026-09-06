@@ -67,7 +67,7 @@ describe('Korea proximity Detail route composition', () => {
     expect(composeKoreaBuildingRoute).toBeTypeOf('function');
   });
 
-  it('loads the public projection with the seeded Seoul property entity ID', async () => {
+  it('rejects an unknown route before loading the public projection', async () => {
     projectionReaderMocks.listBuildings.mockResolvedValue(new Map());
 
     await expect(BuildingRoute({
@@ -75,9 +75,7 @@ describe('Korea proximity Detail route composition', () => {
       searchParams: Promise.resolve({}),
     })).rejects.toThrow('NEXT_HTTP_ERROR_FALLBACK;404');
 
-    expect(projectionReaderMocks.listBuildings).toHaveBeenCalledWith([
-      'kr-seoul:estate:gangnam-evidence-tower',
-    ]);
+    expect(projectionReaderMocks.listBuildings).not.toHaveBeenCalled();
   });
 
   it('composes the exact-evidence route with ready proximity facts and an encoded Detail return URL', () => {
