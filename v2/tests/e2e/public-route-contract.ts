@@ -21,7 +21,7 @@ export const editorialAlternates: Readonly<Record<string, Readonly<Record<string
   }));
 
 export const publicRoutes = [
-  { path: '/', heading: 'See the market before you make the move.', indexing: 'index', canonical: '/' },
+  { path: '/', heading: 'Where can your budget become a home?', indexing: 'index', canonical: '/' },
   { path: '/trust/', heading: 'How SignedPrice publishes evidence', indexing: 'index', canonical: '/trust/' },
   {
     path: '/kr/seoul/check/',
