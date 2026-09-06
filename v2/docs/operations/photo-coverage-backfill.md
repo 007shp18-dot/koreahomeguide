@@ -80,7 +80,7 @@ provider explicitly. Do not put the token in the URL.
 
 ```powershell
 $cronHeaders = @{ Authorization = "Bearer $env:CRON_SECRET" }
-Invoke-RestMethod -Headers $cronHeaders -Uri 'https://www.signedprice.com/api/internal/building-enrichment?market=seoul&source=google&limit=1'
+Invoke-RestMethod -Headers $cronHeaders -Uri 'https://www.signedprice.com/api/internal/building-enrichment/?market=seoul&source=google&limit=1'
 ```
 
 ## Database rollout evidence

@@ -73,7 +73,7 @@ describe('public entity projection route authorization', () => {
       crons?: readonly Readonly<{ path: string; schedule: string }>[];
     };
     expect(config.crons).toContainEqual({
-      path: '/api/internal/public-entity-projection',
+      path: '/api/internal/public-entity-projection/',
       schedule: '57 0 * * *',
     });
   });
