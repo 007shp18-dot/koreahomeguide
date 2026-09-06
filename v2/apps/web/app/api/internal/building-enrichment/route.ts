@@ -24,7 +24,7 @@ function providerOptions(
     provider,
     limit,
     dailyRequestCap: provider === 'google'
-      ? Math.max(1, Math.floor(finiteEnvironmentNumber('PHOTO_GOOGLE_DAILY_REQUEST_CAP', 100)))
+      ? Math.max(1, Math.floor(finiteEnvironmentNumber('PHOTO_GOOGLE_DAILY_REQUEST_CAP', 150)))
       : provider === 'naver-search'
         ? Math.max(1, Math.floor(finiteEnvironmentNumber('PHOTO_NAVER_DAILY_REQUEST_CAP', 25_000)))
         : 100_000,
