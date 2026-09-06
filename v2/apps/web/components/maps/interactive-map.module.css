@@ -132,13 +132,13 @@
 }
 
 :global(.spGoogleMarketMarker) {
-  padding: 8px 11px !important;
+  padding: 6px 8px !important;
   border: 1px solid #202939 !important;
   border-radius: 8px !important;
   color: #174985 !important;
   background: rgb(255 255 255 / 97%) !important;
   box-shadow: 0 7px 18px rgb(17 24 39 / 18%) !important;
-  font: 800 11px/1.1 var(--font-archivo), Arial, sans-serif !important;
+  font: 800 10px/1.1 var(--font-archivo), Arial, sans-serif !important;
   white-space: nowrap !important;
 }
 
@@ -272,6 +272,9 @@
 }
 
 @media (max-width: 560px) {
+  .placeWorkspace,
+  .placeWorkspace .canvas { min-height: 480px; }
+
   .toolbar > div {
     grid-template-columns: 1fr;
   }

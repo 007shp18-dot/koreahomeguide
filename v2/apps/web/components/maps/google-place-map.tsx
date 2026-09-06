@@ -58,6 +58,9 @@ export type GoogleMapsSdk = Readonly<{
     label: Readonly<{ text: string; className: string }>;
   }>) => GoogleMarkerInstance;
   Geocoder: new () => GoogleGeocoderInstance;
+  LatLngBounds?: new () => Readonly<{
+    extend: (location: GoogleLocation | Readonly<{ lat: number; lng: number }>) => void;
+  }>;
 }>;
 
 export type GooglePlaceMapRuntime = Readonly<{
@@ -150,6 +153,8 @@ export async function geocodeGoogleMarketPoints(
   isActive: () => boolean = () => true,
 ): Promise<readonly GoogleMarkerInstance[]> {
   const markers: GoogleMarkerInstance[] = [];
+  const locations: GoogleLocation[] = [];
+  const viewports: unknown[] = [];
   for (const point of points.filter((candidate) => candidate.address !== undefined)) {
     if (!isActive()) break;
     try {
@@ -170,9 +175,18 @@ export async function geocodeGoogleMarketPoints(
       });
       marker.addListener?.('click', () => onSelectPoint?.(point.id));
       markers.push(marker);
+      locations.push(position);
+      viewports.push(results[0]!.geometry.viewport);
     } catch {
       // Keep the rest of the verified project markers when one address cannot be resolved.
     }
+  }
+  if (locations.length === 1 && isActive()) {
+    runtime.map.fitBounds(viewports[0]);
+  } else if (locations.length > 1 && sdk.LatLngBounds !== undefined && isActive()) {
+    const bounds = new sdk.LatLngBounds();
+    for (const location of locations) bounds.extend(location);
+    runtime.map.fitBounds(bounds);
   }
   return Object.freeze(markers);
 }
@@ -213,7 +227,9 @@ export function GooglePlaceMap({
   const marketMarkers = useRef<readonly GoogleMarkerInstance[]>([]);
   const [mapState, setMapState] = useState<'loading' | 'ready' | 'error'>('loading');
   const [query, setQuery] = useState('');
-  const [message, setMessage] = useState('Search results will appear on this Google map.');
+  const [message, setMessage] = useState(() => points.some((point) => point.address !== undefined)
+    ? `Locating ${points.length} projects on Google Maps…`
+    : 'Market locations will appear on this Google map.');
   const [searching, setSearching] = useState(false);
 
   const initialize = useCallback(() => {
@@ -226,13 +242,16 @@ export function GooglePlaceMap({
       runtime.current ??= mountGooglePlaceMap({ sdk, element: container.current });
       for (const marker of marketMarkers.current) marker.setMap(null);
       marketMarkers.current = mountGoogleMarketPoints(sdk, runtime.current.map, points, onSelectPoint);
+      const requestedLocations = points.filter((point) => point.address !== undefined).length;
+      setMessage(requestedLocations > 0
+        ? `Locating ${requestedLocations} projects on Google Maps…`
+        : `${marketMarkers.current.length} market locations shown.`);
       void geocodeGoogleMarketPoints(sdk, runtime.current, points, onSelectPoint, () => generation.current === currentGeneration).then((markers) => {
         if (generation.current !== currentGeneration) {
           for (const marker of markers) marker.setMap(null);
           return;
         }
         marketMarkers.current = Object.freeze([...marketMarkers.current, ...markers]);
-        const requestedLocations = points.filter((point) => point.address !== undefined).length;
         if (requestedLocations > 0) {
           setMessage(markers.length === requestedLocations
             ? `${markers.length} project locations matched on Google Maps.`

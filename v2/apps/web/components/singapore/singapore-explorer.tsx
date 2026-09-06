@@ -1,34 +1,74 @@
 'use client';
 
 import Link from 'next/link';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { SingaporeExploreModel } from '../../lib/singapore/route-types';
 import type { HdbExploreModel } from '../../lib/singapore/hdb-route-model.server';
 import { GooglePlaceMap, type GoogleMarketMapPoint } from '../maps/google-place-map';
 import { HdbMarketPanel } from './hdb-market-panel';
 import { MarketExploreShell, MarketLayerControl } from '../market-ui/market-shell';
-import { SingaporeEvidence, SingaporePage, SingaporeScope, singaporeStyles as styles } from './singapore-shell';
+import { SingaporeEvidence, SingaporePage, singaporeStyles as styles } from './singapore-shell';
 import searchStyles from '../price-market-search.module.css';
 
-const segmentCenters = {
-  CCR: { latitude: 1.2897, longitude: 103.8501 },
-  RCR: { latitude: 1.3270, longitude: 103.8460 },
-  OCR: { latitude: 1.3691, longitude: 103.8061 },
-} as const;
 const PAGE_SIZE = 24;
 
-export function SingaporeExplorer({ model, hdbModel = { status: 'unavailable' }, googleMapsBrowserKey = null, initialQuery = '' }: Readonly<{
+type SingaporeExplorerState = Readonly<{
+  query: string;
+  selectedSegment: 'CCR' | 'RCR' | 'OCR' | null;
+  district: string;
+  sort: string;
+  page: number;
+  selectedProjectId: string | null;
+}>;
+
+export function buildSingaporeExploreHref(state: SingaporeExplorerState): string {
+  const params = new URLSearchParams();
+  const query = state.query.trim();
+  if (query !== '') params.set('q', query);
+  if (state.selectedSegment !== null) params.set('region', state.selectedSegment.toLocaleLowerCase('en'));
+  if (state.district !== 'all') params.set('district', state.district);
+  if (state.sort !== 'transactions') params.set('sort', state.sort);
+  if (state.page > 1) params.set('page', String(state.page));
+  if (state.selectedProjectId !== null) params.set('project', state.selectedProjectId);
+  const queryString = params.toString();
+  return `/sg/singapore/explore/${queryString === '' ? '' : `?${queryString}`}`;
+}
+
+export function formatSingaporeMapPrice(label: string | null, fallback: string): string {
+  if (label === null) return fallback;
+  const value = Number(label.replace(/[^\d]/g, ''));
+  if (!Number.isFinite(value)) return fallback;
+  if (value >= 1_000_000) return `S$${(value / 1_000_000).toFixed(2).replace(/0+$/, '').replace(/\.$/, '')}M`;
+  return `S$${Math.round(value / 1_000)}K`;
+}
+
+export function SingaporeExplorer({
+  model,
+  hdbModel = { status: 'unavailable' },
+  googleMapsBrowserKey = null,
+  initialQuery = '',
+  initialSegment = null,
+  initialDistrict = 'all',
+  initialSort = 'transactions',
+  initialPage = 1,
+  initialProjectId = null,
+}: Readonly<{
   model: SingaporeExploreModel;
   hdbModel?: HdbExploreModel;
   googleMapsBrowserKey?: string | null;
   initialQuery?: string;
+  initialSegment?: 'CCR' | 'RCR' | 'OCR' | null;
+  initialDistrict?: string;
+  initialSort?: 'transactions' | 'name';
+  initialPage?: number;
+  initialProjectId?: string | null;
 }>) {
-  const [selectedSegment, setSelectedSegment] = useState<'CCR' | 'RCR' | 'OCR' | null>(null);
-  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+  const [selectedSegment, setSelectedSegment] = useState<'CCR' | 'RCR' | 'OCR' | null>(initialSegment);
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(initialProjectId);
   const [query, setQuery] = useState(initialQuery);
-  const [district, setDistrict] = useState('all');
-  const [page, setPage] = useState(1);
-  const [sort, setSort] = useState('transactions');
+  const [district, setDistrict] = useState(initialDistrict);
+  const [page, setPage] = useState(initialPage);
+  const [sort, setSort] = useState<string>(initialSort);
   const [pendingHref, setPendingHref] = useState<string | null>(null);
   const segments = model.status === 'ready' ? model.segments : [];
   const selected = segments.find((segment) => segment.code === selectedSegment);
@@ -40,38 +80,54 @@ export function SingaporeExplorer({ model, hdbModel = { status: 'unavailable' },
       && `${project.name} ${project.street} ${project.district} district ${Number(project.district)} ${project.segment}`.toLocaleLowerCase('en').includes(term))
       .sort((a, b) => sort === 'name' ? a.name.localeCompare(b.name) : b.n - a.n || a.name.localeCompare(b.name));
   }, [allProjects, district, query, selectedSegment, sort]);
-  const visible = projects.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const pageCount = Math.max(1, Math.ceil(projects.length / PAGE_SIZE));
+  const activePage = Math.min(Math.max(1, page), pageCount);
+  const visible = useMemo(() => projects.slice((activePage - 1) * PAGE_SIZE, activePage * PAGE_SIZE), [activePage, projects]);
   const selectedProject = projects.find((project) => project.id === selectedProjectId);
+  const districtCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const project of allProjects.filter((candidate) => selectedSegment === null || candidate.segment === selectedSegment)) {
+      counts.set(project.district, (counts.get(project.district) ?? 0) + 1);
+    }
+    return [...counts.entries()].sort(([left], [right]) => left.localeCompare(right));
+  }, [allProjects, selectedSegment]);
+  const hasFilters = query.trim() !== '' || selectedSegment !== null || district !== 'all' || sort !== 'transactions';
+
+  useEffect(() => {
+    const href = buildSingaporeExploreHref({
+      query,
+      selectedSegment,
+      district,
+      sort,
+      page: activePage,
+      selectedProjectId: selectedProject?.id ?? null,
+    });
+    if (`${window.location.pathname}${window.location.search}` !== href) window.history.replaceState(null, '', href);
+  }, [activePage, district, query, selectedProject, selectedSegment, sort]);
   const selectSegment = useCallback((segment: 'CCR' | 'RCR' | 'OCR' | null) => {
     setSelectedSegment(segment); setSelectedProjectId(null); setDistrict('all'); setPage(1);
   }, []);
   const onMapSelect = useCallback((id: string) => {
-    if (id.startsWith('segment-')) {
-      const value = id.slice(8);
-      if (value === 'CCR' || value === 'RCR' || value === 'OCR') selectSegment(value);
-    } else if (id.startsWith('project-')) setSelectedProjectId(id.slice(8));
-  }, [selectSegment]);
-  const mapPoints = useMemo<readonly GoogleMarketMapPoint[]>(() => {
-    if (selectedSegment === null && selectedProjectId === null && query.trim() === '' && district === 'all') return (model.status === 'ready' ? model.segments : []).map((segment) => ({
-      id: `segment-${segment.code}`, title: `${segment.code} regional summary`, label: `${segment.code} · ${segment.medianPriceLabel ?? 'Not published'}`, ...segmentCenters[segment.code],
-    }));
-    return projects.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE).map((project) => ({
-      id: `project-${project.id}`, title: `${project.name} · ${project.street}`, label: project.medianPriceLabel ?? `${project.n} sales`,
-      address: `${project.name}, ${project.street}, Singapore`, selected: selectedProjectId === project.id,
-    }));
-  }, [district, model, page, projects, query, selectedProjectId, selectedSegment]);
+    if (id.startsWith('project-')) setSelectedProjectId(id.slice(8));
+  }, []);
+  const mapPoints = useMemo<readonly GoogleMarketMapPoint[]>(() => visible.map((project) => ({
+      id: `project-${project.id}`,
+      title: `${project.name} · ${project.street}`,
+      label: formatSingaporeMapPrice(project.medianPriceLabel, `${project.n} sales`),
+      address: `${project.name}, ${project.street}, Singapore`,
+    })), [visible]);
   const layers = <>
     <MarketLayerControl label="Singapore market layers" items={[
       { id: 'ura', label: 'URA private sales', href: '#ura-private', current: true },
       { id: 'resale', label: 'HDB resale', href: '#hdb-resale' },
       { id: 'rent', label: 'HDB rent', href: '#hdb-rent' },
     ]} />
-    <div className={searchStyles.search}>
+    <div className={`${searchStyles.search} ${styles.exploreFilters}`}>
       <form role="search" onSubmit={(event) => { event.preventDefault(); setPage(1); }}>
         <label className={searchStyles.query}>Search Singapore projects<input name="q" type="search" value={query} placeholder="Project, street or district number" onChange={(event) => { setQuery(event.currentTarget.value); setPage(1); setSelectedProjectId(null); }} /></label>
-        <label>District<select value={district} onChange={(event) => { setDistrict(event.currentTarget.value); setPage(1); setSelectedProjectId(null); }}><option value="all">All districts</option>{[...new Set(allProjects.filter((project) => selectedSegment === null || project.segment === selectedSegment).map((project) => project.district))].sort().map((value) => <option key={value} value={value}>District {value}</option>)}</select></label>
+        <label>District<select value={district} onChange={(event) => { setDistrict(event.currentTarget.value); setPage(1); setSelectedProjectId(null); }}><option value="all">All districts</option>{districtCounts.map(([value, count]) => <option key={value} value={value}>District {value} · {count.toLocaleString('en')} projects</option>)}</select></label>
         <label>Sort<select value={sort} onChange={(event) => { setSort(event.currentTarget.value); setPage(1); }}><option value="transactions">Most transactions</option><option value="name">Project name</option></select></label>
-        <button type="submit">Search</button>
+        {hasFilters ? <button type="button" className={styles.clearFilters} onClick={() => { setQuery(''); setSelectedSegment(null); setDistrict('all'); setSort('transactions'); setPage(1); setSelectedProjectId(null); }}>Clear filters</button> : null}
       </form>
     </div>
   </>;
@@ -80,23 +136,24 @@ export function SingaporeExplorer({ model, hdbModel = { status: 'unavailable' },
     <div data-singapore-explore-workspace="true" data-singapore-evidence="ready" data-navigation-state={pendingHref === null ? 'idle' : 'pending'}>
       <MarketExploreShell eyebrow="Singapore" title="Explore" period={<>{model.transactionLabel}<br />{model.periodLabel}</>} layers={layers}
         discovery={<section className={styles.segmentPanel} id="ura-private" aria-labelledby="segment-heading">
-          <h2 id="segment-heading">Private residential projects</h2><SingaporeScope />
+          <h2 id="segment-heading">Private residential projects</h2>
+          <p className={styles.marketScopeLine}>URA private sales · New sale, Subsale and Resale</p>
           <div className={styles.segmentTabs} role="tablist" aria-label="Singapore market regions">
-            <button type="button" role="tab" aria-selected={selectedSegment === null} onClick={() => selectSegment(null)}><strong>All regions</strong></button>
-            {segments.map((segment) => <button key={segment.code} type="button" role="tab" aria-selected={selectedSegment === segment.code} onClick={() => selectSegment(segment.code)}><strong>{segment.code}</strong><span>{segment.medianPriceLabel ?? 'Not published'}</span></button>)}
+            <button type="button" role="tab" aria-selected={selectedSegment === null} onClick={() => selectSegment(null)}><strong>All</strong><span>{allProjects.length.toLocaleString('en')}</span></button>
+            {segments.map((segment) => <button key={segment.code} type="button" role="tab" aria-selected={selectedSegment === segment.code} onClick={() => selectSegment(segment.code)}><strong>{segment.code}</strong><span>{segment.projectCount.toLocaleString('en')}</span></button>)}
           </div>
           {selected ? <div className={styles.segmentList}><article className={styles.segmentRow}><h3>{selected.code}</h3><div><strong>{selected.medianPriceLabel ?? 'Not published'}</strong><span>{selected.n} transactions · {selected.projectCount} projects</span></div>{selected.state === 'published' ? <Link href={selected.href} aria-busy={pendingHref === selected.href} data-navigation-state={pendingHref === selected.href ? 'pending' : 'idle'} onClick={() => setPendingHref(selected.href)}>Open {selected.code} evidence</Link> : <span data-evidence-link="unavailable">At least 5 transactions are required</span>}</article></div> : null}
           <div className={styles.projectList} aria-live="polite">
-            <header><span>{projects.length.toLocaleString('en')} matching projects</span><small>{projects.length === 0 ? 'No matches' : `${(page - 1) * PAGE_SIZE + 1}–${Math.min(page * PAGE_SIZE, projects.length)} shown`}</small></header>
+            <header><span>{projects.length.toLocaleString('en')} matching projects</span><small>{projects.length === 0 ? 'No matches' : `${(activePage - 1) * PAGE_SIZE + 1}–${Math.min(activePage * PAGE_SIZE, projects.length)} shown`}</small></header>
             {projects.length === 0 ? <p>No projects match these filters. Try a different name or district.</p> : null}
             {visible.map((project) => <div key={project.id} data-selected={selectedProjectId === project.id}>
-              <button type="button" aria-pressed={selectedProjectId === project.id} onClick={() => setSelectedProjectId(project.id)}><span><strong>{project.name}</strong><small>{project.street} · District {project.district}</small></span><span><strong>{project.medianPriceLabel ?? 'Not published'}</strong><small>{project.n} sales</small></span></button>
+              <button type="button" aria-pressed={selectedProjectId === project.id} onClick={() => setSelectedProjectId((current) => current === project.id ? null : project.id)}><span><strong>{project.name}</strong><small>{project.street} · District {project.district}</small></span><span><strong>{project.medianPriceLabel ?? 'Not published'}</strong><small>{project.n} sales</small></span></button>
               {project.state === 'published' ? <Link href={project.href} aria-label={`Open ${project.name} evidence`} aria-busy={pendingHref === project.href} onClick={() => setPendingHref(project.href)}>Details</Link> : <span className={styles.evidenceUnavailableLink} data-evidence-link="unavailable" title="At least 5 transactions are required">Below 5 sales</span>}
             </div>)}
           </div>
-          <nav className={searchStyles.search} aria-label="Project result pages"><button type="button" disabled={page === 1} onClick={() => { setPage(page - 1); setSelectedProjectId(null); }}>Previous</button>{' '}<span>Page {page} of {Math.max(1, Math.ceil(projects.length / PAGE_SIZE))}</span>{' '}<button type="button" disabled={page * PAGE_SIZE >= projects.length} onClick={() => { setPage(page + 1); setSelectedProjectId(null); }}>Next</button></nav>
+          <nav className={styles.projectPagination} aria-label="Project result pages"><button type="button" disabled={activePage === 1} onClick={() => { setPage(activePage - 1); setSelectedProjectId(null); }}>Previous</button><span>Page {activePage} of {pageCount}</span><button type="button" disabled={activePage >= pageCount} onClick={() => { setPage(activePage + 1); setSelectedProjectId(null); }}>Next</button></nav>
         </section>}
-        spatial={<section className={styles.exploreMap} aria-labelledby="singapore-map-heading"><h2 id="singapore-map-heading">{selected || selectedProjectId || query || district !== 'all' ? 'Projects on this results page' : 'Singapore regions'}</h2><GooglePlaceMap browserKey={googleMapsBrowserKey} points={mapPoints} onSelectPoint={onMapSelect} showAddressSearch={false} />{selectedProject ? <aside className={styles.mapSelection}><h3>{selectedProject.name}</h3><p>{selectedProject.street}</p><strong>{selectedProject.medianPriceLabel ?? 'Not published'}</strong>{selectedProject.state === 'published' ? <Link href={selectedProject.href}>Open project evidence</Link> : null}</aside> : null}</section>}
+        spatial={<section className={styles.exploreMap} aria-labelledby="singapore-map-heading"><header className={styles.mapHeading}><div><h2 id="singapore-map-heading">Project locations</h2><p>{visible.length.toLocaleString('en')} locations on this page · {projects.length.toLocaleString('en')} matches</p></div></header><GooglePlaceMap browserKey={googleMapsBrowserKey} points={mapPoints} onSelectPoint={onMapSelect} showAddressSearch={false} />{selectedProject ? <aside className={styles.mapSelection}><button type="button" aria-label="Close project preview" onClick={() => setSelectedProjectId(null)}>Close</button><h3>{selectedProject.name}</h3><p>{selectedProject.street} · District {selectedProject.district} · {selectedProject.segment}</p><strong>{selectedProject.medianPriceLabel ?? 'Not published'}</strong><span>{selectedProject.medianPsfLabel ?? `${selectedProject.n} reported sales`}</span>{selectedProject.state === 'published' ? <Link href={selectedProject.href}>Open project evidence</Link> : null}</aside> : null}</section>}
       />
     </div>
     <HdbMarketPanel model={hdbModel} /><SingaporeEvidence model={model.evidence} compact />

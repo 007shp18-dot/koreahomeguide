@@ -16,6 +16,15 @@ export const metadata: Metadata = indexableMetadata({
 
 export default async function SingaporeExplorePage({ searchParams }: { searchParams?: Promise<Record<string, string | string[] | undefined>> } = {}) {
   const query = await searchParams;
+  const region = typeof query?.region === 'string' ? query.region.toLocaleUpperCase('en') : '';
+  const district = typeof query?.district === 'string' && /^(?:0[1-9]|1\d|2[0-8])$/.test(query.district)
+    ? query.district
+    : 'all';
+  const sort = query?.sort === 'name' ? 'name' : 'transactions';
+  const requestedPage = typeof query?.page === 'string' ? Number(query.page) : 1;
+  const projectId = typeof query?.project === 'string' && /^[a-z0-9-]{1,128}$/i.test(query.project)
+    ? query.project
+    : null;
   const repository = await singaporeSnapshotRepositoryFromEnvironment();
   const hdbRepository = hdbSnapshotRepositoryFromEnvironment();
   const googleMapsBrowserKey = googleMapsBrowserKeyFromEnvironment();
@@ -23,6 +32,11 @@ export default async function SingaporeExplorePage({ searchParams }: { searchPar
     model={buildSingaporeExploreModel(repository)}
     hdbModel={buildHdbExploreModel(hdbRepository)}
     initialQuery={typeof query?.q === 'string' ? query.q : ''}
+    initialSegment={region === 'CCR' || region === 'RCR' || region === 'OCR' ? region : null}
+    initialDistrict={district}
+    initialSort={sort}
+    initialPage={Number.isSafeInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1}
+    initialProjectId={projectId}
     googleMapsBrowserKey={googleMapsBrowserKey}
   />;
 }

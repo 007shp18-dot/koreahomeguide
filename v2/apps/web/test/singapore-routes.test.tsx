@@ -271,3 +271,47 @@ describe('Singapore route containment', () => {
     expect(checkMetadata.alternates).toEqual({ canonical: 'https://www.signedprice.com/sg/singapore/check/' });
   });
 });
+
+describe('Singapore Explore state', () => {
+  it('builds a shareable URL from the active project filters', async () => {
+    const componentModule = await import('../components/singapore/singapore-explorer');
+    const buildHref = (componentModule as unknown as Readonly<Record<string, unknown>>).buildSingaporeExploreHref;
+
+    expect(buildHref).toBeTypeOf('function');
+    expect((buildHref as (state: unknown) => string)({
+      query: '  moulmein  ',
+      selectedSegment: 'CCR',
+      district: '11',
+      sort: 'name',
+      page: 3,
+      selectedProjectId: 'project-id',
+    })).toBe('/sg/singapore/explore/?q=moulmein&region=ccr&district=11&sort=name&page=3&project=project-id');
+  });
+
+  it('keeps map price labels compact enough to scan', async () => {
+    const componentModule = await import('../components/singapore/singapore-explorer');
+    const formatPrice = (componentModule as unknown as Readonly<Record<string, unknown>>).formatSingaporeMapPrice;
+
+    expect(formatPrice).toBeTypeOf('function');
+    expect((formatPrice as (label: string | null, fallback: string) => string)('SGD 2,550,000', '12 sales')).toBe('S$2.55M');
+    expect((formatPrice as (label: string | null, fallback: string) => string)('SGD 980,000', '12 sales')).toBe('S$980K');
+    expect((formatPrice as (label: string | null, fallback: string) => string)(null, '12 sales')).toBe('12 sales');
+  });
+
+  it('restores region, district, and sort filters in the initial result view', async () => {
+    const store = await repository();
+    const initialState = {
+      initialSegment: 'CCR',
+      initialDistrict: '10',
+      initialSort: 'name',
+    } as const;
+    const html = renderToStaticMarkup(<SingaporeExplorer
+      model={buildSingaporeExploreModel(store)}
+      {...initialState}
+    />);
+
+    expect(html).toMatch(/role="tab" aria-selected="true"><strong>CCR<\/strong>/);
+    expect(html).toMatch(/<option value="10" selected="">District 10/);
+    expect(html).toContain('<option value="name" selected="">Project name</option>');
+  });
+});
