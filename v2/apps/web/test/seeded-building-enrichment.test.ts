@@ -59,7 +59,9 @@ describe('scoped property enrichment',()=>{
   calls.backfill.mockResolvedValue({state:'ready',checked:20,candidates:5});
   const response=await GET(new Request('https://example.com/api/internal/building-enrichment?market=singapore&source=google&limit=20',{headers:{authorization:'Bearer test-secret'}}));
   expect(response.status).toBe(200);
-  expect(calls.backfill).toHaveBeenCalledWith(expect.objectContaining({limit:20,market:'sg-singapore',provider:'google'}));
+  expect(calls.backfill).toHaveBeenCalledWith(expect.objectContaining({
+   limit:20,market:'sg-singapore',provider:'google',dailySpendCapUsd:0,
+  }));
   expect(calls.backfill).toHaveBeenCalledTimes(1);
   expect(calls.official).not.toHaveBeenCalled();
  });

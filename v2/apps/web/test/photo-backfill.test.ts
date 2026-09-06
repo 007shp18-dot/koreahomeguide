@@ -91,4 +91,17 @@ describe('bounded photo backfill', () => {
     expect(runProvider).not.toHaveBeenCalled();
     expect(writeUsage).not.toHaveBeenCalled();
   });
+
+  it('makes no Google request when the spend cap is zero', async () => {
+    const runProvider = vi.fn();
+    const runner = createPhotoBackfillRunner(dependencies({ runProvider }));
+
+    const result = await runner({
+      market: 'kr-seoul', provider: 'google', limit: 30,
+      dailyRequestCap: 100, dailySpendCapUsd: 0, dryRun: false,
+    });
+
+    expect(result).toMatchObject({ state: 'cap-reached', requestLimit: 0, checked: 0 });
+    expect(runProvider).not.toHaveBeenCalled();
+  });
 });

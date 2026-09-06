@@ -15,19 +15,25 @@ values into command history.
 | `CRON_SECRET` | Scheduled building-enrichment route |
 | `GOOGLE_MAPS_API_KEY` | Server key, restricted to Places API (New) |
 | `GOOGLE_MAPS_BROWSER_KEY` | Browser key, restricted by SignedPrice origins and Maps JavaScript API |
+| `GOOGLE_MAPS_BROWSER_ENABLED` | Explicit browser opt-in; keep `false` for zero Google photo/map requests |
 | `NAVER_SEARCH_CLIENT_ID` | NAVER Search API application ID |
 | `NAVER_SEARCH_CLIENT_SECRET` | NAVER Search API application secret |
 | `NAVER_MAP_CLIENT_ID` | Existing NAVER Maps browser client ID |
 
 The scheduled guardrails are `PHOTO_GOOGLE_DAILY_REQUEST_CAP`,
 `PHOTO_GOOGLE_DAILY_SPEND_CAP_USD`, and `PHOTO_NAVER_DAILY_REQUEST_CAP`.
-Keep all values finite. Increase them only after a reviewed precision sample has
-no known false positives.
+Google discovery defaults to a zero-dollar daily spend cap, and browser Google
+requests default to disabled. The server key can stay installed and restricted
+without generating requests. Set a positive spend cap or enable the browser
+flag only after an explicit budget decision and a reviewed precision sample.
+Keep every enabled cap finite.
 
 Production runs one bounded slice per provider each hour: Wikimedia at minute
-7, official Seoul apartment facts at minute 17, NAVER at minute 27, and Google
-at minute 47. The two markets share each provider's daily cap. Each job is
-resumable because terminal attempts receive a future retry time and are skipped.
+7, official Seoul apartment facts at minute 17, NAVER at minute 27, and the
+zero-budget Google guard at minute 47. The Google job exits before its provider
+call while the spend cap is zero. The two markets share each provider's daily
+cap. Each enabled job is resumable because terminal attempts receive a future
+retry time and are skipped.
 
 ## Storage and approval boundaries
 
