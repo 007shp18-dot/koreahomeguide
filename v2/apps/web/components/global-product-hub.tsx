@@ -7,6 +7,7 @@ import {
   homepageCopy,
   type SiteHeaderModel,
 } from '../lib/site-copy';
+import { PriceMarketSearch } from './price-market-search';
 import { SiteFooter } from './site-footer';
 import { SiteHeader } from './site-header';
 import { NewsWorkbench } from './news/news-workbench';
@@ -134,15 +135,9 @@ function MarketsHub() {
 function PricesHub({ seoul }: Readonly<{ seoul?: SeoulLiveModel }>) {
   return (
     <>
-      <section className={styles.searchPanel} aria-label="Search available signed price evidence">
-        <form action="/kr/seoul/explore/" method="get" role="search">
-          <label htmlFor="global-price-search">Search a city, district or building</label>
-          <div><input id="global-price-search" name="q" type="search" placeholder="Try Mapo-gu or Gongdeok" /><button type="submit">Search prices</button></div>
-        </form>
-        <p>Search covers Seoul buildings and districts. Open Singapore Explore to browse residential projects there.</p>
-      </section>
+      <PriceMarketSearch />
       <section className={styles.section} aria-labelledby="price-products-title">
-        <div className={styles.sectionHeading}><p>Price products</p><h2 id="price-products-title">Choose the evidence that matches the decision.</h2></div>
+        <div className={styles.sectionHeading}><p>Price products</p><h2 id="price-products-title">Tools for Seoul rental research.</h2></div>
         <div className={styles.productGrid}>
           <Link href="/kr/seoul/explore/"><span>01 · Explore</span><h3>District and building prices</h3><p>Move from Seoul-wide context to a retained building and inspect its source boundary.</p><strong>Open Explorer →</strong></Link>
           <Link href="/kr/seoul/check/"><span>02 · Compare</span><h3>Compare two rent offers</h3><p>Put compatible contract evidence beside two real rental options.</p><strong>Compare offers →</strong></Link>

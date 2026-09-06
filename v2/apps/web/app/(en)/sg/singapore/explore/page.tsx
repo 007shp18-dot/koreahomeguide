@@ -14,13 +14,15 @@ export const metadata: Metadata = indexableMetadata({
   description: 'Compare verified URA private sales and separate HDB resale, rental, and property evidence.',
 });
 
-export default async function SingaporeExplorePage() {
+export default async function SingaporeExplorePage({ searchParams }: { searchParams?: Promise<Record<string, string | string[] | undefined>> } = {}) {
+  const query = await searchParams;
   const repository = await singaporeSnapshotRepositoryFromEnvironment();
   const hdbRepository = hdbSnapshotRepositoryFromEnvironment();
   const googleMapsBrowserKey = googleMapsBrowserKeyFromEnvironment();
   return <SingaporeExplorer
     model={buildSingaporeExploreModel(repository)}
     hdbModel={buildHdbExploreModel(hdbRepository)}
+    initialQuery={typeof query?.q === 'string' ? query.q : ''}
     googleMapsBrowserKey={googleMapsBrowserKey}
   />;
 }

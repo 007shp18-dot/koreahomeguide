@@ -1945,3 +1945,12 @@
 .districtChips button { min-height: 44px; min-block-size: 44px; }
 
 .mapEvidenceDisclosure[open] { z-index: 7; }
+
+/* Search and district selection share one wrapping toolbar. */
+.exploreToolbar { flex-wrap: wrap; overflow: visible; padding: 12px 20px; gap: 12px; }
+.buildingSearch { display: grid; grid-template-columns: minmax(0, 1fr) auto; flex: 1 1 300px; max-width: 600px; min-width: 0; gap: 6px; }
+.buildingSearch label { grid-column: 1 / -1; }
+.buildingSearch input { min-width: 0; width: 100%; min-height: 44px; }
+.submitSearch { min-height: 44px; padding: 0 16px; background: var(--navy); color: white; border: 0; border-radius: 8px; font: inherit; cursor: pointer; }
+.toolbarSelect select { min-height: 44px; }
+@media(max-width: 800px) { .buildingSearch { flex-basis: 100%; order: 0; } .toolbarSelect { min-width: 140px; } }

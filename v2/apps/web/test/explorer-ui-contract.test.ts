@@ -112,7 +112,7 @@ describe('/kr/seoul/explore/ route contract', () => {
     expect(markup).not.toContain('data-district-path=');
     expect((markup.match(/data-district-option=/g) ?? [])).toHaveLength(25);
     expect(markup).toContain('data-explorer-layout="split"');
-    expect(markup).toContain('Search this area');
+    expect(markup).toContain('>Search</button>');
     expect(markup).not.toMatch(/data-discovery-step|Interact with map/);
   });
 
