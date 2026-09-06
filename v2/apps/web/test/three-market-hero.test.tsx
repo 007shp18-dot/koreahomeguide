@@ -66,7 +66,7 @@ describe('three-market editorial hero', () => {
     expect(markup).toContain('房地产依据 · 三座城市');
     expect(markup).toContain('城市编辑图片 · 不代表具体房产');
     expect(markup).toContain('数据有限');
-    expect(markup).toContain('展示权受限');
+    expect(markup).not.toContain('展示权受限');
     expect(markup).not.toContain('Rights Blocked');
   });
 });

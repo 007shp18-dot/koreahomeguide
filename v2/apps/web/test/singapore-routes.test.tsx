@@ -85,7 +85,7 @@ describe('Singapore route SSR', () => {
 
     expect(html).toContain('aria-label="Singapore market navigation"');
     expect(html).toContain('aria-label="Primary navigation"');
-    expect(html).toContain('href="/sg/singapore/explore/"');
+    expect(html).toContain('href="/sg/singapore/explore"');
     expect(html).not.toContain('href="/kr/seoul/check/"');
     expect(html).toMatch(/href="\/sg\/singapore\/check">Check/);
     expect(html).toContain('data-capability-state="limited"');
@@ -124,7 +124,7 @@ describe('Singapore route SSR', () => {
     for (const label of [
       'SGD', 'PSF', 'PSM', 'CCR', 'RCR', 'OCR', 'New sale', 'Subsale', 'Resale',
       'URA', '2026-06..2026-08', 'Private residential sales only',
-      '/trust/', '/sg/singapore/corrections/',
+      '/trust', '/sg/singapore/corrections',
     ]) expect(html).toContain(label);
     expect(html).toContain('12 private residential sale transactions');
     expect(segment).toContain('data-market-detail-shell="true"');

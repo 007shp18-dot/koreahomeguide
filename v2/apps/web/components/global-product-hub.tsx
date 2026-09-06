@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { ResearchPageHeading } from './market-ui/research-page-heading';
 
 import { listPortfolioRecords } from '../content/portfolio-manifest';
 import type { NewsWorkspaceModel } from '../lib/news/news-workspace-model';
@@ -17,16 +18,16 @@ export type GlobalHubKind = 'markets' | 'prices' | 'news' | 'guides';
 
 type GlobalProductHubProps = Readonly<{
   kind: GlobalHubKind;
+  guideMarket?: 'all' | 'seoul' | 'singapore' | 'dubai';
   seoul?: SeoulLiveModel;
   newsWorkspace?: NewsWorkspaceModel;
 }>;
 
-const number = new Intl.NumberFormat('en-US');
 const hubCopy = {
   markets: {
     eyebrow: 'Global market coverage',
     title: 'Markets',
-    description: 'Explore residential property in Seoul and Singapore, with local transaction records and market guides. Dubai currently offers market context only.',
+    description: 'Explore residential property in Seoul and Singapore, with local transaction records and market guides. Dubai offers official market releases and area research.',
   },
   prices: {
     eyebrow: 'Signed price evidence',
@@ -80,9 +81,9 @@ function MarketCards() {
       </article>
       <article className={`${styles.marketCard} ${styles.marketDubai}`} id="dubai">
         <header><span>AE</span><Status>Research only</Status></header>
-        <div><p>United Arab Emirates</p><h2>Dubai</h2><p>Read the market overview. Building-level transaction search is not yet available.</p></div>
-        <dl><div><dt>Currency</dt><dd>AED</dd></div><div><dt>Coverage</dt><dd>Preparing</dd></div></dl>
-        <Link href="/ae/dubai/">Read Dubai overview</Link>
+        <div><p>United Arab Emirates</p><h2>Dubai</h2><p>Explore selected areas, official market releases and purchase costs. Building-level transaction search is not yet available.</p></div>
+        <dl><div><dt>Currency</dt><dd>AED</dd></div><div><dt>Coverage</dt><dd>Area research</dd></div></dl>
+        <nav className={styles.marketReading} aria-label="Dubai research"><Link href="/ae/dubai/explore/">Explore</Link><Link href="/ae/dubai/guide/">Buying guide</Link><Link href="/news/?market=dubai">News</Link></nav>
       </article>
     </div>
   );
@@ -91,14 +92,14 @@ function MarketCards() {
 function MarketsHub() {
   const rows = [
     ['Signed price evidence', 'Live', 'Available datasets', 'Research only'],
-    ['District or area exploration', 'Live', 'Available by dataset', 'Preparing'],
+    ['District or area exploration', 'Live', 'Available by dataset', 'Selected area guides'],
     ['Active property listings', 'Not offered', 'Not offered', 'Not offered'],
     ['Personalized investment advice', 'Not offered', 'Not offered', 'Not offered'],
   ] as const;
   return (
     <>
       <section className={styles.section} aria-labelledby="market-directory-title">
-        <div className={styles.sectionHeading}><p>Explore markets</p><h2 id="market-directory-title">Start with Seoul and Singapore.</h2></div>
+        <div className={styles.sectionHeading}><p>Explore markets</p><h2 id="market-directory-title">Choose a market, then a dataset.</h2></div>
         <MarketCards />
       </section>
       <section className={styles.section} aria-labelledby="market-research-title">
@@ -108,16 +109,19 @@ function MarketsHub() {
             <h3>Can you buy this property?</h3>
             <div><h4>Seoul</h4><p>Record your residency, intended use and the exact parcel. Check permission, reporting and registration requirements before paying a deposit.</p><Link href="/guides/buy-property-in-korea-as-foreigner/">Foreign-buyer checklist</Link></div>
             <div><h4>Singapore</h4><p>Identify the housing type and your buyer status first. Treat private apartments, landed homes and HDB flats as separate eligibility questions.</p><Link href="/guides/read-singapore-private-transactions/">Ownership and eligibility</Link></div>
+            <div><h4>Dubai</h4><p>Check the exact project, developer and ownership eligibility with the official registers before committing to a unit.</p><Link href="/ae/dubai/guide/">Dubai buying research</Link></div>
           </li>
           <li>
             <h3>How much cash will you need?</h3>
             <div><h4>Seoul</h4><p>Budget for taxes, brokerage, registration and legal work alongside the price. Put confirmed financing, transfers and any existing tenant deposit on a dated cash schedule.</p><Link href="/guides/buy-property-in-korea-as-foreigner/">Plan the purchase budget</Link></div>
             <div><h4>Singapore</h4><p>Calculate Buyer’s Stamp Duty and any Additional Buyer’s Stamp Duty for your profile. The guide’s S$2 million example shows why duties can materially change the budget.</p><Link href="/guides/read-singapore-private-transactions/">See the acquisition-cost chart</Link></div>
+            <div><h4>Dubai</h4><p>Request an itemised acquisition quote and current service charges. Enter confirmed figures into the AED scenario; include vacancy and recurring costs.</p><Link href="/ae/dubai/guide/">Dubai buying research</Link></div>
           </li>
           <li>
             <h3>Are the transactions comparable?</h3>
             <div><h4>Seoul</h4><p>Compare sale contracts within the same building and similar exclusive floor area. Keep lease deposits, monthly rents and purchase prices in separate comparisons.</p><Link href="/kr/seoul/explore/">Explore Seoul transactions</Link></div>
             <div><h4>Singapore</h4><p>Match the project, tenure, size and sale period. Compare private housing and HDB records separately, then inspect the individual project.</p><Link href="/sg/singapore/explore/">Explore Singapore transactions</Link></div>
+            <div><h4>Dubai</h4><p>Separate ready properties from off-plan contracts and registration dates from completion dates. SignedPrice currently provides area context and aggregate releases.</p><Link href="/ae/dubai/guide/">Dubai buying research</Link></div>
           </li>
         </ol>
         <p className={styles.researchSources}>Official starting points: <a href="https://www.investkorea.org/ik-en/cntnts/i-417/web.do">Invest KOREA acquisition procedures</a> and <a href="https://www.iras.gov.sg/taxes/stamp-duty/for-property/buying-or-acquiring-property/additional-buyer's-stamp-duty-(absd)">IRAS stamp duties</a>. The linked guides include the detailed sources and worked examples.</p>
@@ -132,24 +136,18 @@ function MarketsHub() {
   );
 }
 
-function PricesHub({ seoul }: Readonly<{ seoul?: SeoulLiveModel }>) {
-  return (
-    <>
-      <PriceMarketSearch />
-      <section className={styles.section} aria-labelledby="price-products-title">
-        <div className={styles.sectionHeading}><p>Price products</p><h2 id="price-products-title">Tools for Seoul rental research.</h2></div>
-        <div className={styles.productGrid}>
-          <Link href="/kr/seoul/explore/"><span>01 · Explore</span><h3>District and building prices</h3><p>Move from Seoul-wide context to a retained building and inspect its source boundary.</p><strong>Open Explorer →</strong></Link>
-          <Link href="/kr/seoul/check/"><span>02 · Compare</span><h3>Compare two rent offers</h3><p>Put compatible contract evidence beside two real rental options.</p><strong>Compare offers →</strong></Link>
-          <Link href="/kr/seoul/rankings/"><span>03 · Rank</span><h3>Compare all 25 districts</h3><p>Read district-level distributions without turning them into unsupported recommendations.</p><strong>View rankings →</strong></Link>
-        </div>
-      </section>
-      <section className={`${styles.section} ${styles.evidencePanel}`} aria-labelledby="price-evidence-title">
-        <div className={styles.sectionHeading}><p>Current evidence</p><h2 id="price-evidence-title">Seoul jeonse sample · 45–55 m².</h2></div>
-        {seoul?.status === 'ready' ? <dl className={styles.metrics}><div><dt>Eligible contracts</dt><dd>{number.format(seoul.totalCount)}</dd></div><div><dt>New</dt><dd>{number.format(seoul.newCount)}</dd></div><div><dt>Renewal</dt><dd>{number.format(seoul.renewalCount)}</dd></div><div><dt>Completed period</dt><dd>{seoul.period}</dd></div></dl> : <div className={styles.emptyState}><strong>Evidence status is temporarily unavailable.</strong><p>The product remains accessible without inventing replacement figures.</p></div>}
-      </section>
-    </>
-  );
+function PricesHub() {
+  return <>
+    <PriceMarketSearch />
+    <section className={styles.section} aria-labelledby="price-products-title">
+      <div className={styles.sectionHeading}><p>Choose a market</p><h2 id="price-products-title">Local records. Comparable decisions.</h2></div>
+      <div className={styles.productGrid}>
+        <Link href="/kr/seoul/explore/"><span>Seoul · KRW</span><h3>Reported housing contracts</h3><p>Explore sale, jeonse and monthly rent by district, neighborhood and building. Compare the same property type and area.</p><strong>Explore →</strong></Link>
+        <Link href="/sg/singapore/explore/"><span>Singapore · SGD</span><h3>Private homes and HDB</h3><p>Search private projects and inspect transaction history, size bands and tenure. HDB records stay in their own dataset.</p><strong>Explore →</strong></Link>
+        <Link href="/ae/dubai/explore/"><span>Dubai · AED</span><h3>Market and area research</h3><p>Review official market releases, compare area context and prepare purchase costs. Individual transaction search is not available.</p><strong>Explore research →</strong></Link>
+      </div>
+    </section>
+  </>;
 }
 
 function InsightsHub({ workspace }: Readonly<{ workspace?: NewsWorkspaceModel }>) {
@@ -160,7 +158,7 @@ function InsightsHub({ workspace }: Readonly<{ workspace?: NewsWorkspaceModel }>
         <div><p>SignedPrice reporting</p><h2 id="insights-title">Evidence first, commentary second.</h2></div>
         <nav className={styles.newsToolbarLinks} aria-label="News and original reporting">
           <Link href="/news/?type=data-stories">Read original reports →</Link>
-          <Link href="/kr/seoul/news/">Approved Seoul briefs →</Link>
+          <Link href="/news/?market=seoul">Approved Seoul briefs →</Link>
         </nav>
       </div>
       <NewsWorkbench model={model} />
@@ -168,37 +166,39 @@ function InsightsHub({ workspace }: Readonly<{ workspace?: NewsWorkspaceModel }>
   );
 }
 
-function GuidesHub() {
-  const guides = listPortfolioRecords('en').filter(({ type }) => type === 'guide').sort((a, b) => {
+function GuidesHub({ market = 'all' }: Readonly<{ market?: GlobalProductHubProps['guideMarket'] }>) {
+  const guides = listPortfolioRecords('en').filter(({ type, marketId }) => type === 'guide' && (market === 'all' || (market === 'seoul' && marketId === 'kr-seoul') || (market === 'singapore' && marketId === 'sg-singapore'))).sort((a, b) => {
     const first = ['buy-property-in-korea-as-foreigner', 'read-singapore-private-transactions'];
     return (first.includes(a.slug) ? first.indexOf(a.slug) : 2) - (first.includes(b.slug) ? first.indexOf(b.slug) : 2);
   });
   return (
     <>
+      <nav className={styles.directoryFilters} aria-label="Guide markets">{([['all', 'All'], ['seoul', 'Seoul'], ['singapore', 'Singapore'], ['dubai', 'Dubai']] as const).map(([id, label]) => <Link key={id} href={id === 'all' ? '/guides/' : `/guides/?market=${id}`} aria-current={market === id ? 'page' : undefined}>{label}</Link>)}</nav>
       <section className={styles.section} aria-labelledby="guides-title">
-        <div className={styles.sectionHeading}><p>Buying and renting</p><h2 id="guides-title">Practical guides for Seoul and Singapore.</h2></div>
-        <div className={styles.guideGrid}>{guides.map((guide) => <article key={guide.slug}><span>{guide.marketId === 'kr-seoul' ? 'Seoul' : 'Singapore'} · Updated {guide.updatedAt.slice(0, 10)}</span><h3>{guide.title}</h3><p>{guide.deck}</p><Link href={guide.canonicalHref}>Read guide</Link></article>)}</div>
+        <div className={styles.sectionHeading}><p>Buying and renting</p><h2 id="guides-title">Practical guides for each market.</h2></div>
+        <p className={styles.resultCount}>{guides.length + (market === 'all' || market === 'dubai' ? 1 : 0)} guides · Sources and reporting dates inside each guide</p>
+        <div className={styles.guideGrid}>{market === 'all' || market === 'dubai' ? <article><span>Dubai · Updated 2026-09-06</span><h3>Research a Dubai property purchase</h3><p>Check project identity, completion status and service charges, then build an AED purchase-cost scenario.</p><Link href="/ae/dubai/guide/">Read guide</Link></article> : null}{guides.map((guide) => <article key={guide.slug}><span>{guide.marketId === 'kr-seoul' ? 'Seoul' : 'Singapore'} · Updated {guide.updatedAt.slice(0, 10)}</span><h3>{guide.title}</h3><p>{guide.deck}</p><Link href={guide.canonicalHref}>Read guide</Link></article>)}</div>
       </section>
       <section className={styles.marketGuideRow} aria-label="Guide coverage by market">
         <article><Status tone="live">Available</Status><h3>Buying and renting in Korea</h3><p>Contract evidence, district comparisons and decision methods.</p><Link href="/guides/rent-an-apartment-in-korea/">Start with renting</Link></article>
         <article><Status tone="live">Available</Status><h3>Reading Singapore evidence</h3><p>Project comparisons, ownership checks and the costs that change a purchase budget.</p><Link href="/guides/read-singapore-private-transactions/">Read the Singapore guide</Link></article>
-        <article><Status>Preparing</Status><h3>Buying in Dubai</h3><p>Ownership and process guidance will open after legal and source review.</p></article>
+        <article><Status tone="live">Available</Status><h3>Researching a Dubai purchase</h3><p>Project identity, completion status, service charges and an AED purchase-cost scenario.</p><Link href="/ae/dubai/guide/">Read the Dubai guide</Link></article>
       </section>
     </>
   );
 }
 
-export function GlobalProductHub({ kind, seoul, newsWorkspace }: GlobalProductHubProps) {
+export function GlobalProductHub({ kind, newsWorkspace, guideMarket }: GlobalProductHubProps) {
   const copy = hubCopy[kind];
   return (
     <div id="top">
       <SiteHeader copy={headerFor(kind)} />
       <main className={styles.main}>
-        <header className={`${styles.hero} ${kind === 'news' ? styles.heroCompact : ''}`}><h1>{copy.title}</h1><p>{copy.description}</p></header>
+        <ResearchPageHeading title={copy.title} description={copy.description} />
         {kind === 'markets' ? <MarketsHub /> : null}
-        {kind === 'prices' ? <PricesHub seoul={seoul} /> : null}
+        {kind === 'prices' ? <PricesHub /> : null}
         {kind === 'news' ? <InsightsHub workspace={newsWorkspace} /> : null}
-        {kind === 'guides' ? <GuidesHub /> : null}
+        {kind === 'guides' ? <GuidesHub market={guideMarket} /> : null}
       </main>
       <SiteFooter copy={homepageCopy.footer} />
     </div>

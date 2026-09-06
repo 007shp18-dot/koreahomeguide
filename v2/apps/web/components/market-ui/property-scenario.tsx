@@ -5,7 +5,7 @@ import { calculatePropertyScenario, type PropertyScenario } from '../../lib/rese
 import styles from './property-research.module.css';
 
 export function PropertyScenarioCalculator({ price, currency, locale = 'en' }: Readonly<{
-  price: number | null; currency: 'KRW' | 'SGD'; locale?: 'en' | 'ko';
+  price: number | null; currency: 'KRW' | 'SGD' | 'AED'; locale?: 'en' | 'ko';
 }>) {
   const id = useId();
   const ko = locale === 'ko';

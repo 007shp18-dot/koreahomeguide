@@ -8,7 +8,7 @@ import styles from './external-headlines.module.css';
 const date = new Intl.DateTimeFormat('en', { month: 'short', day: 'numeric', timeZone: 'UTC' });
 
 export function ExternalHeadlines({ market, preview = false }: Readonly<{
-  market: 'all' | 'seoul' | 'singapore';
+  market: 'all' | 'seoul' | 'singapore' | 'dubai';
   preview?: boolean;
 }>) {
   const [model, setModel] = useState<NewsWorkspaceModel | null>(null);

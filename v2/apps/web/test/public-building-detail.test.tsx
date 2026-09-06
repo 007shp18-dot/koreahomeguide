@@ -193,8 +193,8 @@ describe('public building detail', () => {
       expect(html).toContain(value);
     }
     expect(html).toContain('aria-label="Breadcrumb"');
-    expect(html).toContain('href="/trust/"');
-    expect(html).toContain('href="/kr/seoul/corrections/"');
+    expect(html).toContain('href="/trust"');
+    expect(html).toContain('href="/kr/seoul/corrections"');
     expect(html).toContain('Community signal');
     expect(html).toContain('Community responses are not open yet');
     expect(html).not.toMatch(/orientation|supply/i);

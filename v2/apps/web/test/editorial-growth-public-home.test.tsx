@@ -60,7 +60,7 @@ describe('public editorial homepage', () => {
       '/kr/seoul/check',
       '/kr/seoul/explore',
       '/kr/seoul/rankings',
-      '/kr/seoul/guide',
+      '/guides',
     ]) {
       expect(markup).toContain(`href="${href}"`);
     }

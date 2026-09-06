@@ -2,9 +2,17 @@ import { describe, expect, it } from 'vitest';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MonthlyTransactionResearch } from '../components/market-ui/transaction-research';
-import { buildMonthlyResearch, calculatePropertyScenario, summarizeSizeCohorts } from '../lib/research/property-research';
+import { buildMonthlyResearch, calculatePropertyScenario, summarizeSizeCohorts, selectResearchPeriod } from '../lib/research/property-research';
 
 describe('property research calculations', () => {
+  it('selects trailing calendar months at the release end without changing suppressed values or counts', () => {
+    const months = [{month: '2025-01', count: 7, median: 500}, {month: '2026-01', count: 3, median: null}, {month: '2024-12', count: 9, median: 400}];
+    expect(selectResearchPeriod(months, '12')).toEqual([{month: '2026-01', count: 3, median: null}]);
+    expect(selectResearchPeriod(months, '36')).toHaveLength(3);
+    expect(selectResearchPeriod(months, 'all')[0]?.month).toBe('2024-12');
+    expect(months[0]?.month).toBe('2025-01');
+    expect(selectResearchPeriod([], '12')).toEqual([]);
+  });
   it('shows only volume when every monthly price is withheld, without a made-up currency axis', () => {
     const html = renderToStaticMarkup(createElement(MonthlyTransactionResearch, { months: [{ month: '2026-01', count: 3, median: null }] }));
     expect(html).toContain('Reported transaction activity');

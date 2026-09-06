@@ -36,9 +36,9 @@ describe('three-market home model', () => {
       secondaryAction: { label: 'Check a price', href: '/sg/singapore/check/' },
     });
     expect(dubai).toMatchObject({
-      evidenceState: 'rights_blocked',
-      primaryAction: { label: 'Explore Dubai', href: '/ae/dubai/' },
-      secondaryAction: null,
+      evidenceState: 'limited',
+      primaryAction: { label: 'Explore Dubai', href: '/ae/dubai/explore/' },
+      secondaryAction: { label: 'Buying guide', href: '/ae/dubai/guide/' },
     });
     expect(JSON.stringify(dubai)).not.toContain('/check/');
   });
@@ -50,6 +50,6 @@ describe('three-market home model', () => {
     expect(model.markets[0]?.primaryAction).toEqual({ label: '探索首尔', href: '/kr/seoul/explore/' });
     expect(model.markets[1]?.evidenceTitle).toContain('私人住宅');
     expect(model.markets[2]?.evidenceNote).toContain('数据展示权');
-    expect(model.markets[2]?.primaryAction).toEqual({ label: '探索迪拜', href: '/ae/dubai/' });
+    expect(model.markets[2]?.primaryAction).toEqual({ label: '探索迪拜', href: '/ae/dubai/explore/' });
   });
 });

@@ -37,8 +37,8 @@ export type GoogleMarketMapPoint = Readonly<{
 export type GoogleGeocoderInstance = Readonly<{
   geocode: (request: Readonly<{
     address: string;
-    componentRestrictions: Readonly<{ country: 'SG' }>;
-    region: 'SG';
+    componentRestrictions: Readonly<{ country: 'SG' | 'AE' }>;
+    region: 'SG' | 'AE';
   }>) => Promise<Readonly<{ results: readonly GoogleGeocoderResult[] }>>;
 }>;
 export type GoogleMapsSdk = Readonly<{
@@ -70,6 +70,10 @@ export type GooglePlaceMapRuntime = Readonly<{
 }>;
 
 export const GOOGLE_MAPS_READY_CALLBACK = '__signedpriceGoogleMapsReady' as const;
+export type GoogleMarket = 'singapore' | 'dubai';
+const marketConfig = { singapore: { country: 'SG', name: 'Singapore', center: { lat: 1.3521, lng: 103.8198 }, south: 1.15, north: 1.5, west: 103.55, east: 104.15 }, dubai: { country: 'AE', name: 'Dubai', center: { lat: 25.15, lng: 55.25 }, south: 24.7, north: 25.6, west: 54.8, east: 55.7 } } as const;
+const geocodeCache = new WeakMap<GoogleGeocoderInstance, Map<string, GoogleGeocoderResult>>();
+
 const GOOGLE_MAPS_READY_EVENT = 'signedprice:google-maps-ready' as const;
 const GOOGLE_MAPS_READY_FLAG = '__signedpriceGoogleMapsLoaded' as const;
 
@@ -113,9 +117,10 @@ export function buildGoogleMapsScriptUrl(browserKey: string): string {
 export function mountGooglePlaceMap({
   sdk,
   element,
-}: Readonly<{ sdk: GoogleMapsSdk; element: HTMLElement }>): GooglePlaceMapRuntime {
+  market = 'singapore',
+}: Readonly<{ sdk: GoogleMapsSdk; element: HTMLElement; market?: GoogleMarket }>): GooglePlaceMapRuntime {
   const map = new sdk.Map(element, {
-    center: { lat: 1.3521, lng: 103.8198 },
+    center: marketConfig[market].center,
     zoom: 11,
     mapTypeControl: false,
     streetViewControl: false,
@@ -159,7 +164,11 @@ export async function geocodeGoogleMarketPoints(
   points: readonly GoogleMarketMapPoint[],
   onSelectPoint?: (id: string) => void,
   isActive: () => boolean = () => true,
+  market: GoogleMarket = 'singapore',
 ): Promise<readonly GoogleMarkerInstance[]> {
+  const config = marketConfig[market];
+  const cached = geocodeCache.get(runtime.geocoder) ?? new Map<string, GoogleGeocoderResult>();
+  geocodeCache.set(runtime.geocoder, cached);
   const markers: GoogleMarkerInstance[] = [];
   const locations: GoogleLocation[] = points.filter((point) => Number.isFinite(point.latitude) && Number.isFinite(point.longitude))
     .map((point) => ({ lat: () => point.latitude!, lng: () => point.longitude! }));
@@ -167,18 +176,18 @@ export async function geocodeGoogleMarketPoints(
   let selectedViewport: unknown = null;
   const selectedCoordinate = points.find((point) => point.selected && Number.isFinite(point.latitude) && Number.isFinite(point.longitude));
   if (selectedCoordinate) selectedViewport = { south: selectedCoordinate.latitude! - .0015, north: selectedCoordinate.latitude! + .0015, west: selectedCoordinate.longitude! - .0015, east: selectedCoordinate.longitude! + .0015 };
-  for (const point of points.filter((candidate) => candidate.address !== undefined && !(Number.isFinite(candidate.latitude) && Number.isFinite(candidate.longitude)))) {
+  for (const point of [...points].sort((a, b) => Number(Boolean(b.selected)) - Number(Boolean(a.selected))).filter((candidate) => candidate.address !== undefined && !(Number.isFinite(candidate.latitude) && Number.isFinite(candidate.longitude)))) {
     if (!isActive()) break;
     try {
-      const { results } = await runtime.geocoder.geocode({
-        address: point.address!,
-        componentRestrictions: { country: 'SG' },
-        region: 'SG',
-      });
+      const cacheKey = `${config.country}:${point.address}`;
+      const existing = cached.get(cacheKey);
+      const { results } = existing ? { results: [existing] } : await runtime.geocoder.geocode({ address: point.address!, componentRestrictions: { country: config.country }, region: config.country });
       if (!isActive()) break;
       const position = results.length === 1 ? results[0]?.geometry.location : undefined;
       if (position === undefined || !Number.isFinite(position.lat()) || !Number.isFinite(position.lng())
-        || position.lat() < 1.15 || position.lat() > 1.5 || position.lng() < 103.55 || position.lng() > 104.15) continue;
+        || position.lat() < config.south || position.lat() > config.north || position.lng() < config.west || position.lng() > config.east) continue;
+      cached.set(cacheKey, results[0]!);
+      if (point.selected) runtime.map.fitBounds(results[0]!.geometry.viewport);
       const marker = new sdk.Marker({
         map: runtime.map,
         position: { lat: position.lat(), lng: position.lng() },
@@ -230,7 +239,9 @@ export function GooglePlaceMap({
   points = Object.freeze([]),
   onSelectPoint,
   showAddressSearch = true,
+  market = 'singapore',
 }: Readonly<{
+  market?: GoogleMarket;
   showAddressSearch?: boolean;
   browserKey: string | null;
   points?: readonly GoogleMarketMapPoint[];
@@ -243,7 +254,7 @@ export function GooglePlaceMap({
   const [mapState, setMapState] = useState<'loading' | 'ready' | 'error'>('loading');
   const [query, setQuery] = useState('');
   const [message, setMessage] = useState(() => points.some((point) => point.address !== undefined)
-    ? `Locating ${points.length} projects on Google Maps…`
+    ? `Locating ${points.length} places on Google Maps…`
     : 'Market locations will appear on this Google map.');
   const [searching, setSearching] = useState(false);
 
@@ -254,28 +265,28 @@ export function GooglePlaceMap({
     if (sdk === undefined || container.current === null) return;
     try {
       const currentGeneration = ++generation.current;
-      runtime.current ??= mountGooglePlaceMap({ sdk, element: container.current });
+      runtime.current ??= mountGooglePlaceMap({ sdk, element: container.current, market });
       for (const marker of marketMarkers.current) marker.setMap(null);
       marketMarkers.current = mountGoogleMarketPoints(sdk, runtime.current.map, points, onSelectPoint);
       const requestedLocations = points.filter((point) => point.address !== undefined).length;
       setMessage(requestedLocations > 0
-        ? `Locating ${requestedLocations} projects on Google Maps…`
+        ? `Locating ${requestedLocations} places on Google Maps…`
         : `${marketMarkers.current.length} market locations shown.`);
-      void geocodeGoogleMarketPoints(sdk, runtime.current, points, onSelectPoint, () => generation.current === currentGeneration).then((markers) => {
+      void geocodeGoogleMarketPoints(sdk, runtime.current, points, onSelectPoint, () => generation.current === currentGeneration, market).then((markers) => {
         if (generation.current !== currentGeneration) {
           for (const marker of markers) marker.setMap(null);
           return;
         }
         marketMarkers.current = Object.freeze([...marketMarkers.current, ...markers]);
         if (requestedLocations > 0) {
-          setMessage(`${marketMarkers.current.length} of ${points.length} project locations shown.`);
+          setMessage(`${marketMarkers.current.length} of ${points.length} ${market === 'dubai' ? 'area' : 'project'} locations shown.`);
         }
       });
       setMapState('ready');
     } catch {
       setMapState('error');
     }
-  }, [onSelectPoint, points]);
+  }, [onSelectPoint, points, market]);
 
   useEffect(() => {
     const requestGeneration = generation;
@@ -330,7 +341,7 @@ export function GooglePlaceMap({
 
   return (
     <div className={styles.placeWorkspace} data-map-provider="google" data-map-state={mapState}>
-      {showAddressSearch ? <form className={styles.toolbar} onSubmit={submit}>
+      {showAddressSearch && market === 'singapore' ? <form className={styles.toolbar} onSubmit={submit}>
         <label htmlFor="singapore-map-address">Search a Singapore address</label>
         <div>
           <input
@@ -351,7 +362,7 @@ export function GooglePlaceMap({
         ref={container}
         className={styles.canvas}
         role="region"
-        aria-label="Interactive Google map of Singapore"
+        aria-label={`Interactive Google map of ${marketConfig[market].name}`}
       />
       <Script
         src={buildGoogleMapsScriptUrl(browserKey)}

@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
   trailingSlash: true,
   async redirects() {
     return [
+      { source: '/kr/seoul/news/', destination: '/news/?market=seoul', permanent: true },
       { source: '/insights/', destination: '/news/', permanent: true },
       { source: '/insights/:slug/', destination: '/news/', permanent: true },
       { source: '/zh-cn/kr/seoul/insights/', destination: '/zh-cn/news/', permanent: true },

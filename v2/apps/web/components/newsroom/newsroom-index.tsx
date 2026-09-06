@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { ResearchPageHeading } from '../market-ui/research-page-heading';
 
 import type { PublishedContentArticle } from '../../lib/content/content-types';
 import type { PolicyRecord } from '../../lib/policy/policy-types';
@@ -6,7 +7,7 @@ import { ExternalHeadlines } from '../news/external-headlines';
 import styles from './newsroom.module.css';
 
 export type NewsroomTypeFilter = 'latest' | 'policy' | 'market' | 'data-stories' | 'headlines';
-export type NewsroomMarketFilter = 'all' | 'seoul' | 'singapore';
+export type NewsroomMarketFilter = 'all' | 'seoul' | 'singapore' | 'dubai';
 export type NewsroomFilters = Readonly<{
   type: NewsroomTypeFilter;
   market: NewsroomMarketFilter;
@@ -21,7 +22,7 @@ export function resolveNewsroomFilters(input: SearchParams): NewsroomFilters {
     ? input.type as NewsroomTypeFilter
     : 'latest';
   const market = typeof input.market === 'string'
-    && ['all', 'seoul', 'singapore'].includes(input.market)
+    && ['all', 'seoul', 'singapore', 'dubai'].includes(input.market)
     ? input.market as NewsroomMarketFilter
     : 'all';
   const query = new URLSearchParams();
@@ -37,7 +38,7 @@ export function resolveNewsroomFilters(input: SearchParams): NewsroomFilters {
 type NewsroomListItem = Readonly<{
   id: string;
   type: 'Policy' | 'Market' | 'Data Story' | 'News';
-  market: 'Seoul' | 'Singapore' | 'Global';
+  market: 'Seoul' | 'Singapore' | 'Dubai' | 'Global';
   marketKey: NewsroomMarketFilter;
   title: string;
   deck: string;
@@ -99,14 +100,10 @@ export function NewsroomIndex({ articles, policies, filters }: Readonly<{
   const typeTabs = [
     ['latest', 'Latest'], ['policy', 'Policy'], ['market', 'Market'], ['data-stories', 'Data Stories'], ['headlines', 'External headlines'],
   ] as const;
-  const marketTabs = [['all', 'All'], ['seoul', 'Seoul'], ['singapore', 'Singapore']] as const;
+  const marketTabs = [['all', 'All'], ['seoul', 'Seoul'], ['singapore', 'Singapore'], ['dubai', 'Dubai']] as const;
 
   return <main className={styles.index} data-newsroom-layout="research">
-    <header className={styles.indexHero}>
-      <h1>News</h1>
-      <span>Policy changes, market releases and data stories for Seoul and Singapore.</span>
-      <Link className={styles.heroAction} href="/news/policy/">Open the Policy Tracker</Link>
-    </header>
+    <ResearchPageHeading title="News" description="Policy changes, market releases and data stories for Seoul, Singapore and Dubai." actions={<Link href="/news/policy/">Open the Policy Tracker</Link>} />
     <div className={styles.filterBar} data-newsroom-filter-bar="true">
       <nav className={styles.typeTabs} aria-label="News types">
         {typeTabs.map(([id, label]) => <Link key={id} href={filterHref(id, filters.market)} aria-current={filters.type === id ? 'page' : undefined}>{label}</Link>)}

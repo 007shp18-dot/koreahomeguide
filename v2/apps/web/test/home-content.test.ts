@@ -91,7 +91,7 @@ describe('signedprice homepage copy', () => {
   it('links the public methodology without inventing unavailable evidence', async () => {
     const markup = renderToStaticMarkup(await Home());
 
-    expect(markup).toContain('href="/trust/">Method</a>');
+    expect(markup).toContain('href="/trust">Method</a>');
     expect(markup).toContain('publication limits');
     expect(markup).not.toMatch(/₩0|0 contracts/);
   });

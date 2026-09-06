@@ -1,20 +1,19 @@
+import { Suspense } from 'react';
+import { editorialLanguageRoutes } from '../lib/navigation/editorial-language-routes';
+import { globalNavigation, marketNavigation } from '../lib/navigation/site-navigation';
+import { LanguageLinks, SiteLanguageNavigation } from './site-language-navigation';
 import type { MarketId } from '@signedprice/market-core';
 import Link from 'next/link';
 
-import { productNavigationLinks, type SiteHeaderModel } from '../lib/site-copy';
+import { type SiteHeaderModel } from '../lib/site-copy';
 import { BrandWordmark } from './brand-mark';
 import { MarketLocalNav } from './market-ui/market-local-nav';
 
 type SiteHeaderProps = {
   copy: SiteHeaderModel;
-  primaryLinks?: readonly Readonly<{ label: string; href: string; isCurrent?: boolean }>[];
 };
 
-const markets = [
-  { id: 'kr-seoul', label: 'Seoul', href: '/kr/seoul/' },
-  { id: 'sg-singapore', label: 'Singapore', href: '/sg/' },
-  { id: 'ae-dubai', label: 'Dubai', href: '/ae/dubai/' },
-] as const satisfies readonly { id: MarketId; label: string; href: string }[];
+const markets = marketNavigation;
 
 function marketIdFor(copy: SiteHeaderModel, currentHref: string | undefined): MarketId | null {
   const context = `${copy.marketLabel ?? ''} ${currentHref ?? ''}`.toLowerCase();
@@ -28,6 +27,7 @@ function marketIdFor(copy: SiteHeaderModel, currentHref: string | undefined): Ma
 
 function isCurrentGlobalLink(href: string, currentHref: string | undefined): boolean {
   if (currentHref === undefined) return false;
+  currentHref = currentHref.replace(/^\/(?:ko|zh-cn)(?=\/)/, '');
   if (href === '/news/') return currentHref.includes('/news/') || currentHref.includes('/insights/');
   if (href === '/guides/') return currentHref.includes('/guide') || currentHref === '/guides/';
   if (href === '/prices/') {
@@ -40,18 +40,16 @@ function isCurrentGlobalLink(href: string, currentHref: string | undefined): boo
     || /^\/(?:kr\/seoul|sg|ae\/dubai)\/?$/.test(currentHref);
 }
 
-export function SiteHeader({ copy, primaryLinks = productNavigationLinks }: SiteHeaderProps) {
+export function SiteHeader({ copy }: SiteHeaderProps) {
+  const locale = copy.languageLabel === 'ZH' ? 'zh-CN' : copy.languageLabel === 'KO' ? 'ko' : 'en';
+  const primaryLinks = globalNavigation(locale);
   const currentHref = copy.links.find(({ isCurrent }) => isCurrent)?.href;
   const marketId = marketIdFor(copy, currentHref);
   const marketLabel = copy.marketLabel
     ?? markets.find(({ id }) => id === marketId)?.label
     ?? 'Global';
   const isKorean = copy.languageLabel === 'KO';
-  const languageSwitch = copy.languageSwitch ?? (
-    marketId === null || marketId === 'kr-seoul'
-      ? { label: '한국어', href: '/ko/kr/seoul/', hrefLang: 'ko' as const }
-      : undefined
-  );
+  const fallbackPath = locale === 'zh-CN' ? (currentHref?.startsWith('/zh-cn/') ? currentHref : currentHref === '/news/' || currentHref === '/guides/' ? `/zh-cn${currentHref}` : '/zh-cn/kr/seoul/') : currentHref ?? (locale === 'en' && copy.languageSwitch?.hrefLang === 'ko' ? copy.languageSwitch.href.replace(/^\/ko/, '') : copy.homeHref) ?? '/';
 
   return (
     <header className="site-header" data-market-context={marketId ?? 'global'}>
@@ -67,7 +65,7 @@ export function SiteHeader({ copy, primaryLinks = productNavigationLinks }: Site
                 <Link
                   className="site-header__product-link"
                   href={link.href}
-                  aria-current={('isCurrent' in link && link.isCurrent) || isCurrentGlobalLink(link.href, currentHref) ? 'page' : undefined}
+                  aria-current={isCurrentGlobalLink(link.href.replace('/zh-cn', ''), currentHref) ? 'page' : undefined}
                 >
                   {link.label}
                 </Link>
@@ -89,19 +87,9 @@ export function SiteHeader({ copy, primaryLinks = productNavigationLinks }: Site
           ))}
         </nav>
 
-        <nav className="site-header__languages" aria-label="Language navigation">
-          {marketId === null ? <>
-            <Link className="site-header__language" href={copy.languageLabel === 'ZH' ? (languageSwitch?.href ?? '/') : (currentHref ?? '/')} hrefLang="en" aria-current={copy.languageLabel !== 'ZH' ? 'page' : undefined}>EN</Link>
-            <Link className="site-header__language" href={currentHref?.includes('/guides') ? '/zh-cn/guides/' : currentHref?.includes('/news') ? '/zh-cn/news/' : '/zh-cn/kr/seoul/'} hrefLang="zh-CN" lang="zh-CN" aria-current={copy.languageLabel === 'ZH' ? 'page' : undefined}>中文</Link>
-          </> : null}
-          {languageSwitch === undefined || copy.languageLabel === 'ZH' ? null : <Link
-            className="site-header__language"
-            href={languageSwitch.href}
-            hrefLang={languageSwitch.hrefLang}
-            lang={languageSwitch.hrefLang}
-            aria-label={`Change language to ${languageSwitch.label}`}
-          >{languageSwitch.hrefLang === 'en' ? 'EN' : languageSwitch.hrefLang === 'zh-CN' ? '中文' : 'KO'}</Link>}
-        </nav>
+        <Suspense fallback={<LanguageLinks pathname={fallbackPath} alternate={copy.languageSwitch} />}>
+          <SiteLanguageNavigation fallbackPath={fallbackPath} translations={editorialLanguageRoutes()} alternate={copy.languageSwitch} />
+        </Suspense>
       </div>
 
       {marketId === null ? null : (

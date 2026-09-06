@@ -105,10 +105,10 @@ describe('Trust routes', () => {
     }));
     const rankings = renderToStaticMarkup(await RankingsPage());
 
-    expect(home).toContain('href="/trust/"');
+    expect(home).toContain('href="/trust"');
     for (const html of [explore, rankings]) {
-      expect(html).toContain('href="/trust/"');
-      expect(html).toContain('href="/kr/seoul/corrections/"');
+      expect(html).toContain('href="/trust"');
+      expect(html).toContain('href="/kr/seoul/corrections"');
     }
   });
 });

@@ -135,10 +135,10 @@ export function SingaporeExplorer({
   if (model.status === 'unavailable') return <SingaporePage currentHref="/sg/singapore/explore/" unframed><h1>Explore</h1><p>{model.message}</p><HdbMarketPanel model={hdbModel} /></SingaporePage>;
   return <SingaporePage currentHref="/sg/singapore/explore/" unframed>
     <div data-singapore-explore-workspace="true" data-singapore-evidence="ready" data-navigation-state={pendingHref === null ? 'idle' : 'pending'}>
-      <MarketExploreShell eyebrow="Singapore" title="Explore" period={<>{model.transactionLabel}<br />{model.periodLabel}</>} layers={layers}
+      <MarketExploreShell eyebrow="Singapore" title="Explore" period={<>{model.periodLabel}</>} layers={layers}
         discovery={<section className={styles.segmentPanel} id="ura-private" aria-labelledby="segment-heading">
           <h2 id="segment-heading">Private residential projects</h2>
-          <p className={styles.marketScopeLine}>URA private sales · New sale, Subsale and Resale</p>
+          <p className={styles.marketScopeLine}>URA private sales · New sale, Subsale and Resale<br />{model.transactionLabel}</p>
           <div className={styles.segmentTabs} role="tablist" aria-label="Singapore market regions">
             <button type="button" role="tab" aria-selected={selectedSegment === null} onClick={() => selectSegment(null)}><strong>All</strong><span>{allProjects.length.toLocaleString('en')}</span></button>
             {segments.map((segment) => <button key={segment.code} type="button" role="tab" aria-selected={selectedSegment === segment.code} onClick={() => selectSegment(segment.code)}><strong>{segment.code}</strong><span>{segment.projectCount.toLocaleString('en')}</span></button>)}
