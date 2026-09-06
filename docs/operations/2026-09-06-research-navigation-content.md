@@ -35,3 +35,7 @@ Reviewed desktop previews and mobile/wide CI captures. Fixed Singapore region ro
 The existing `/insights/` routes permanently redirect to News. Research expansion therefore lives in the active Market and Data Stories sections, preserving one editorial destination rather than reviving the archived interface. Seven English guides and five analyses are expanded; three new figures supplement the four existing figures.
 
 Latest implementation tree passed 2,068 unit tests, lint, typecheck, production build and data-boundary gates. Browser rerun verifies the reviewed baselines and corrected synchronization contracts before merge.
+
+## Production map follow-up
+
+After #147 reached production, the live Google map returned `ApiTargetBlockedMapError`. The browser-key resolver preferred `GOOGLE_MAPS_API_KEY` (also used for server-side photo requests) over the documented `GOOGLE_MAPS_BROWSER_KEY`. Use only the dedicated browser key for client maps. A missing browser key keeps the existing unavailable/list fallback; server-side photo credentials must never be substituted. This changes no Google Cloud permissions or credential values. Regression tests reproduce both wrong-key precedence and the unsafe missing-browser-key fallback before the fix.
