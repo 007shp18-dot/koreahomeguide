@@ -92,7 +92,7 @@ test('navigates the first signedprice decision flow', async ({ page }) => {
   await expect(
     page.getByRole('heading', {
       level: 1,
-      name: 'See the market before you make the move.',
+      name: 'Where can your budget become a home?',
     }),
   ).toBeVisible();
 
@@ -176,14 +176,16 @@ for (const route of publicRoutes) {
   });
 }
 
-test('desktop exposes live Seoul evidence in the 1366 by 768 first viewport', async ({
+test('desktop exposes Passport in the first viewport and retains Seoul evidence below', async ({
   page,
 }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium');
   await page.goto('/');
 
   const hero = page.locator('[data-home-region="hero"]');
-  await expect(hero.getByRole('heading', { level: 1 })).toBeInViewport();
+  const passport = page.locator('[data-home-region="passport"]');
+  await expect(passport.getByRole('heading', { level: 1 })).toBeInViewport();
+  await expect(passport.getByRole('button', { name: 'Compare Seoul · Singapore · Dubai' })).toBeInViewport();
   const evidence = hero.locator('[data-evidence-state="available"]');
   await expect(evidence).toBeVisible();
   await expect(evidence.locator('strong')).toBeVisible();

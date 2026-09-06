@@ -28,6 +28,7 @@ describe('signedprice public editorial homepage', () => {
   it('uses one global headline across exactly five editorial regions', async () => {
     const markup = renderToStaticMarkup(await Home());
     const positions = [
+      'data-home-region="passport"',
       'id="three-market-home-title"',
       'data-home-region="actions"',
       'data-home-region="changed"',
@@ -36,7 +37,7 @@ describe('signedprice public editorial homepage', () => {
     ].map((needle) => markup.indexOf(needle));
 
     expect(markup.match(/<h1/g)).toHaveLength(1);
-    expect(markup.match(/data-home-region=/g)).toHaveLength(5);
+    expect(markup.match(/data-home-region=/g)).toHaveLength(6);
     expect(markup).toContain('See the market before you make the move.');
     expect(positions.every((position) => position >= 0)).toBe(true);
     expect([...positions].sort((a, b) => a - b)).toEqual(positions);
@@ -51,7 +52,7 @@ describe('signedprice public editorial homepage', () => {
     expect(markup.match(/data-home-guide=/g)?.length ?? 0).toBeGreaterThanOrEqual(3);
     expect(markup.match(/data-home-guide=/g)?.length ?? 0).toBeLessThanOrEqual(5);
     expect(markup).toContain('Data Story');
-    expect(markup).toContain('Research only');
+    expect(markup).toContain('Released evidence');
     expect(markup).not.toMatch(/data-contextual-action="ae-dubai"[\s\S]*?AED\s*[\d,.]+/i);
   });
 

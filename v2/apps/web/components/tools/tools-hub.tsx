@@ -7,6 +7,7 @@ import styles from './tools.module.css';
 export function ToolsHub({locale='en'}:Readonly<{locale?:SiteLocale}>) {
  const ko=locale==='ko', zh=locale==='zh-CN'; const prefix=ko?'/ko':'';
  const items: readonly {group:'living'|'investment';title:string;description:string;market:ToolMarket;tool:ToolId;href:string}[]=[
+ {group:'investment',title:ko?'세 도시 예산 구매력 비교':zh?'比较三座城市的预算购买力':'Compare one budget across three cities',description:ko?'원화 예산 하나로 서울·싱가포르·두바이에서 가능한 범위를 비교합니다.':zh?'用一笔韩元预算比较首尔、新加坡和迪拜。':'See where one KRW cash budget fits released evidence in Seoul, Singapore and Dubai.',market:'global',tool:'passport',href:ko?'/ko/passport/':zh?'/zh-cn/passport/':'/passport/'},
  {group:'living',title:ko?'제안받은 서울 가격 확인':zh?'核对首尔报价':'Check one Seoul asking price',description:ko?'같은 주택 유형과 면적의 신고 거래와 비교합니다.':zh?'与相同住宅类型及面积的已申报成交比较。':'Compare compatible reported contracts by housing type and area.',market:'kr-seoul',tool:'single-quote',href:`${prefix}/kr/seoul/check/`},
  {group:'living',title:ko?'두 임대 조건 비교':zh?'比较两组租赁条件':'Compare two Seoul rent offers',description:ko?'보증금과 월세를 같은 기준으로 비교합니다.':zh?'在同一计算基础上比较押金和月租。':'Compare deposits and monthly rents on one disclosed basis.',market:'kr-seoul',tool:'offer-compare',href:`${prefix}/kr/seoul/check/compare/`},
  {group:'living',title:ko?'서울 임대료 확인':zh?'核对首尔租金':'Check a Seoul rent quote',description:ko?'입력한 임대 조건을 공개 임대 자료와 확인합니다.':zh?'使用公开租赁资料核对输入的条件。':'Position your rent terms against available rental evidence.',market:'kr-seoul',tool:'rent-check',href:`${prefix}/kr/seoul/tools/rent-check/`},

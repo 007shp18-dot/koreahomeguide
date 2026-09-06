@@ -15,7 +15,7 @@ describe('three-market editorial hero', () => {
       model: createThreeMarketHomeModel({ locale: 'en', seoulMetric: null }),
     }));
 
-    expect(markup.match(/<h1/g)).toHaveLength(1);
+    expect(markup.match(/<h2/g)).toHaveLength(2);
     expect(markup).toContain('See the market before you make the move.');
     expect(markup.match(/role="tab"/g)).toHaveLength(3);
     expect(markup).toContain('data-market-id="kr-seoul"');
