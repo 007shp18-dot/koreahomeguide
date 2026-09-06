@@ -1,5 +1,6 @@
 import styles from './passport.module.css';
-import type { PassportLocale } from '../../lib/passport/model';
+import { defaultPassportBudget, type PassportLocale } from '../../lib/passport/model';
+import { PassportBudgetFields } from './passport-budget-fields';
 
 const COPY = {
   en: { eyebrow: 'SignedPrice Passport', title: 'Where can your budget become a home?', lead: 'Enter one cash budget. Compare purchasing power across Seoul, Singapore and Dubai with released transaction evidence.', label: 'Budget in Korean won', action: 'Compare Seoul · Singapore · Dubai', note: 'First-pass screening · purchase price only' },
@@ -9,14 +10,14 @@ const COPY = {
 
 export function PassportEntry({ locale }: Readonly<{ locale: PassportLocale }>) {
   const copy = COPY[locale];
+  const budget = defaultPassportBudget(locale);
   const action = locale === 'ko' ? '/ko/passport/' : locale === 'zh-CN' ? '/zh-cn/passport/' : '/passport/';
   return <section className={styles.entry} aria-labelledby="passport-entry-title" data-home-region="passport">
     <p className={styles.eyebrow}>{copy.eyebrow}</p>
     <div className={styles.entryGrid}>
       <div><h1 id="passport-entry-title">{copy.title}</h1><p className={styles.lead}>{copy.lead}</p></div>
       <form action={action} className={styles.entryForm}>
-        <label htmlFor={`passport-budget-${locale}`}>{copy.label}</label>
-        <div className={styles.inputFrame}><span>₩</span><input id={`passport-budget-${locale}`} name="budget" inputMode="numeric" defaultValue="500,000,000" aria-describedby={`passport-note-${locale}`} /></div>
+        <PassportBudgetFields amount={budget.amount} currency={budget.currency} locale={locale} id={`passport-budget-${locale}`} />
         <button type="submit">{copy.action}</button>
         <small id={`passport-note-${locale}`}>{copy.note}</small>
       </form>
