@@ -178,6 +178,9 @@ describe('installed Korea evidence repositories', () => {
       throw new Error('Installed Explore building page must be ready.');
     }
     expect(projection.buildingPage.buildings).toHaveLength(50);
+    expect(projection.buildingPage.buildings[0]?.primary.published).toBe(true);
+    expect(projection.buildingPage.buildings[0]!.primary.n)
+      .toBeGreaterThanOrEqual(projection.buildingPage.buildings[1]!.primary.n);
     expect(projection.buildingPage.total).toBeGreaterThan(50);
     expect(projection.buildingPage.neighborhoods!.reduce((sum, item) => sum + item.count, 0))
       .toBe(projection.buildingPage.total);

@@ -539,7 +539,7 @@ describe('public Seoul area Explorer', () => {
     expect(markup).toContain('Monthly Home');
     expect(markup).toContain('Monthly observations · 1');
     expect(markup).toMatch(
-      /data-building-evidence="unavailable"[^>]*>[\s\S]*?Monthly Home[\s\S]*?Price evidence unavailable/,
+      /data-building-evidence="unavailable"[^>]*>[\s\S]*?Monthly Home[\s\S]*?—/,
     );
     expect(markup).toContain(
       'href="/kr/seoul/explore/jongno-gu/jongno-monthly-home?transaction=monthly&amp;district=jongno-gu&amp;neighborhood=sajik-dong&amp;buildingId=jongno-monthly-home&amp;contractType=all"',

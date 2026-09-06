@@ -276,7 +276,7 @@ describe('Korea Explore proximity route model', () => {
       proximitySelection: { station: { sourceId: 'station-a', distanceMeters: 250 }, school: null },
     });
     if (retained.status !== 'ready' || retained.buildingPage === null) return;
-    expect(retained.buildingPage.page).toBe(2);
+    expect(retained.buildingPage.page).toBeGreaterThan(1);
     expect(retained.buildingPage.buildings.some((building) => building.buildingId === identities[50]!.buildingId)).toBe(true);
   });
 

@@ -386,7 +386,7 @@ function ReadyAreaExplorer({
   );
   const { selectedBuildingId } = buildingSelection;
   const [visibleBuildingCount, setVisibleBuildingCount] = useState(50);
-  const [sortMode, setSortMode] = useState<'latest' | 'evidence' | 'name'>('latest');
+  const [sortMode, setSortMode] = useState<'latest' | 'evidence' | 'name'>('evidence');
   const readyBuildingAvailability = model.buildingAvailability.status === 'ready'
     ? model.buildingAvailability
     : null;
@@ -969,8 +969,8 @@ function ReadyAreaExplorer({
                             </span>
                             <span className={styles.buildingCardCopy}>
                               <strong>{building.name}</strong>
-                              <span className={styles.buildingPrice}>{building.medianLabel ?? copy.priceEvidenceUnavailable}</span>
-                              <small>{building.neighborhoodName} · {building.housingType}</small>
+                              <span className={styles.buildingPrice}>{building.medianLabel ?? '—'}</span>
+                              <small>{building.neighborhoodName} · {evidenceHousingOptions.find(([value]) => value === building.housingType)?.[locale === 'ko' ? 2 : 1] ?? building.housingType}</small>
                               {!isIndividualMapBuilding(building) && building.verifiedAddress === undefined ? <small>{locale === 'ko' ? '지도 위치 확인 전 · 상세 확인 가능' : 'Map location unavailable · Details available'}</small> : null}
                               <small>{model.evidenceSelection.areaBand === 'legacy-45-55'
                                 ? `${copy.jeonseObservations} · ${building.jeonseObservationCount} · ${copy.monthlyObservations} · ${building.monthlyObservationCount}`
@@ -1203,7 +1203,7 @@ function BuildingEvidencePanel({
       >
         <p>{copy.selectedBuilding}</p>
         <h3>{building.name}</h3>
-        <span>{building.neighborhoodName} · {building.housingType}</span>
+        <span>{building.neighborhoodName} · {evidenceHousingOptions.find(([value]) => value === building.housingType)?.[locale === 'ko' ? 2 : 1] ?? building.housingType}</span>
         <strong>{copy.priceEvidenceUnavailable}</strong>
         <dl>
           <div><dt>{copy.observedPeriod}</dt><dd>{building.firstObservedMonth}–{building.lastObservedMonth}</dd></div>

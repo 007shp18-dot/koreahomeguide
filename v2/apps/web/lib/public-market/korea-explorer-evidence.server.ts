@@ -517,6 +517,15 @@ function projectedBuildingData(
     && districtMatches.some(({ neighborhoodId }) => neighborhoodId === requestedNeighborhoodId)
     ? districtMatches.filter(({ neighborhoodId }) => neighborhoodId === requestedNeighborhoodId)
     : districtMatches;
+  // Rank the full matching inventory before pagination so the first page is useful.
+  matches.sort((left, right) => {
+    const a = selectedPrimary(left);
+    const b = selectedPrimary(right);
+    return Number(b.published) - Number(a.published)
+      || b.n - a.n
+      || left.officialName.localeCompare(right.officialName, 'ko-KR')
+      || left.buildingId.localeCompare(right.buildingId);
+  });
   const selectedBuildingId = typeof options.selectedBuildingId === 'string'
     ? options.selectedBuildingId
     : null;
