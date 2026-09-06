@@ -27,7 +27,7 @@ export type PhotoCoverageSummary = Readonly<{
 
 const SYNC_SQL = `
   /* photo-coverage:sync */
-  WITH eligible AS (
+  WITH ranked_photos AS (
     SELECT
       entity.id AS entity_id,
       entity.market_id,
@@ -38,6 +38,7 @@ const SYNC_SQL = `
         ELSE 'exact-photo'
       END AS state,
       photo.checked_at,
+      photo.checked_at + interval '365 days' AS next_retry_at,
       row_number() OVER (
         PARTITION BY entity.id
         ORDER BY photo.position, photo.id
@@ -54,11 +55,66 @@ const SYNC_SQL = `
     WHERE entity.market_id IN ('kr-seoul', 'sg-singapore')
       AND ($1::text IS NULL OR entity.market_id = $1)
       AND entity.identity_status = 'verified'
-    ORDER BY entity.id, photo.position, photo.id
-  ), selected AS (
-    SELECT *
-    FROM eligible
+  ), best_photos AS (
+    SELECT entity_id, market_id, building_photo_id, provider, state,
+      NULL::text AS reason, checked_at, next_retry_at
+    FROM ranked_photos
     WHERE preference = 1
+  ), terminal_attempts AS (
+    SELECT
+      entity.id AS entity_id,
+      entity.market_id,
+      NULL::bigint AS building_photo_id,
+      NULL::text AS provider,
+      'unavailable'::text AS state,
+      'no-approved-exact-photo'::text AS reason,
+      greatest(wikimedia.attempted_at, google.attempted_at, naver.attempted_at) AS checked_at,
+      least(wikimedia.next_retry_at, google.next_retry_at, naver.next_retry_at) AS next_retry_at
+    FROM property_entities AS entity
+    INNER JOIN buildings AS building
+      ON building.key = entity.local_attributes ->> 'legacyBuildingKey'
+    INNER JOIN building_enrichment_attempts AS wikimedia
+      ON wikimedia.building_key = building.key
+      AND wikimedia.pipeline = 'photo-wikimedia'
+      AND wikimedia.status IN ('succeeded', 'no-candidate')
+    INNER JOIN building_enrichment_attempts AS google
+      ON google.building_key = building.key
+      AND google.pipeline = 'photo-google'
+      AND google.status IN ('succeeded', 'no-candidate')
+    INNER JOIN building_enrichment_attempts AS naver
+      ON naver.building_key = building.key
+      AND naver.pipeline = 'photo-naver-search'
+      AND naver.status IN ('succeeded', 'no-candidate')
+    WHERE entity.market_id IN ('kr-seoul', 'sg-singapore')
+      AND ($1::text IS NULL OR entity.market_id = $1)
+      AND entity.identity_status = 'verified'
+      AND NOT EXISTS (
+        SELECT 1 FROM building_photos AS pending
+        WHERE pending.building_key = building.key
+          AND pending.status IN ('candidate', 'review_required')
+      )
+      AND NOT EXISTS (
+        SELECT 1 FROM best_photos AS approved
+        WHERE approved.entity_id = entity.id
+      )
+  ), proposed AS (
+    SELECT entity_id, market_id, building_photo_id, provider, state, reason, checked_at, next_retry_at
+    FROM best_photos
+    UNION ALL
+    SELECT entity_id, market_id, building_photo_id, provider, state, reason, checked_at, next_retry_at
+    FROM terminal_attempts
+  ), eligible AS (
+    SELECT proposed.*
+    FROM proposed
+    LEFT JOIN building_photo_coverage AS current ON current.entity_id = proposed.entity_id
+    WHERE current.entity_id IS NULL
+      OR (current.market_id, current.state, current.building_photo_id, current.provider,
+          current.reason, current.policy_version, current.checked_at, current.next_retry_at)
+        IS DISTINCT FROM
+         (proposed.market_id, proposed.state, proposed.building_photo_id, proposed.provider,
+          proposed.reason, 'photo-identity-v1', proposed.checked_at, proposed.next_retry_at)
+  ), selected AS (
+    SELECT * FROM eligible
     ORDER BY entity_id
     LIMIT $2
   ), upserted AS (
@@ -67,8 +123,8 @@ const SYNC_SQL = `
       policy_version, checked_at, next_retry_at, attempt_count, updated_at
     )
     SELECT
-      entity_id, market_id, state, building_photo_id, provider, NULL,
-      'photo-identity-v1', checked_at, checked_at + interval '365 days', 1, now()
+      entity_id, market_id, state, building_photo_id, provider, reason,
+      'photo-identity-v1', checked_at, next_retry_at, 1, now()
     FROM selected
     ON CONFLICT (entity_id) DO UPDATE SET
       market_id = excluded.market_id,
@@ -76,7 +132,7 @@ const SYNC_SQL = `
       building_photo_id = excluded.building_photo_id,
       parent_entity_id = NULL,
       provider = excluded.provider,
-      reason = NULL,
+      reason = excluded.reason,
       policy_version = excluded.policy_version,
       checked_at = excluded.checked_at,
       next_retry_at = excluded.next_retry_at,

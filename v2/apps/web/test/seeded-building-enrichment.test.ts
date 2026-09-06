@@ -69,4 +69,22 @@ describe('scoped property enrichment',()=>{
   expect(response.status).toBe(200);
   expect(calls.official).not.toHaveBeenCalled();
  });
+ it('runs photo providers sequentially within one market',async()=>{
+  vi.stubEnv('CRON_SECRET','test-secret');
+  const events:string[]=[];
+  calls.backfill.mockImplementation(async ({provider}:{provider:string})=>{
+   events.push(`start:${provider}`);
+   await Promise.resolve();
+   events.push(`finish:${provider}`);
+   return {state:'ready',checked:1,candidates:0};
+  });
+  calls.official.mockResolvedValue({state:'ready',checked:1,stored:1,unavailable:0});
+  const response=await GET(new Request('https://example.com/api/internal/building-enrichment?market=seoul&limit=1',{headers:{authorization:'Bearer test-secret'}}));
+  expect(response.status).toBe(200);
+  expect(events).toEqual([
+   'start:wikimedia','finish:wikimedia',
+   'start:google','finish:google',
+   'start:naver-search','finish:naver-search',
+  ]);
+ });
 });

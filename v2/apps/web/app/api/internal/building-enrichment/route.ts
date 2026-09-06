@@ -58,26 +58,27 @@ export async function GET(request: Request) {
     ? ['seoul', 'singapore']
     : [market as 'seoul' | 'singapore'];
   const scopedLimit = market === null && selectedSource === 'all' ? Math.min(limit, 6) : limit;
-  const photoRuns = Promise.all(markets.flatMap((marketKey) => [
-    ...(['all', 'wikimedia'].includes(selectedSource)
-      ? [runPhotoBackfillSlice(providerOptions(
-        marketKey === 'seoul' ? 'kr-seoul' : 'sg-singapore', 'wikimedia', scopedLimit,
-      ))
-        .then((result) => ({ market: marketKey, source: 'wikimediaCommons' as const, result }))]
-      : []),
-    ...(['all', 'google'].includes(selectedSource)
-      ? [runPhotoBackfillSlice(providerOptions(
-        marketKey === 'seoul' ? 'kr-seoul' : 'sg-singapore', 'google', scopedLimit,
-      ))
-        .then((result) => ({ market: marketKey, source: 'googlePlaces' as const, result }))]
-      : []),
-    ...(['all', 'naver'].includes(selectedSource)
-      ? [runPhotoBackfillSlice(providerOptions(
-        marketKey === 'seoul' ? 'kr-seoul' : 'sg-singapore', 'naver-search', scopedLimit,
-      ))
-        .then((result) => ({ market: marketKey, source: 'naverImageSearch' as const, result }))]
-      : []),
-  ]));
+  const runPhotoProvidersForMarket = async (marketKey: 'seoul' | 'singapore') => {
+    const photoMarket = marketKey === 'seoul' ? 'kr-seoul' : 'sg-singapore';
+    const providers = [
+      ...(['all', 'wikimedia'].includes(selectedSource)
+        ? [{ provider: 'wikimedia' as const, source: 'wikimediaCommons' as const }]
+        : []),
+      ...(['all', 'google'].includes(selectedSource)
+        ? [{ provider: 'google' as const, source: 'googlePlaces' as const }]
+        : []),
+      ...(['all', 'naver'].includes(selectedSource)
+        ? [{ provider: 'naver-search' as const, source: 'naverImageSearch' as const }]
+        : []),
+    ];
+    const results = [];
+    for (const { provider, source: providerSource } of providers) {
+      const result = await runPhotoBackfillSlice(providerOptions(photoMarket, provider, scopedLimit));
+      results.push({ market: marketKey, source: providerSource, result });
+    }
+    return results;
+  };
+  const photoRuns = Promise.all(markets.map(runPhotoProvidersForMarket)).then((runs) => runs.flat());
   const officialRun = market === 'singapore' || !['all', 'official'].includes(selectedSource)
     ? Promise.resolve(null)
     : enrichOfficialBuildingFacts(scopedLimit);
