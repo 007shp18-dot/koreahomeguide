@@ -455,6 +455,32 @@
   line-height: 1;
 }
 
+.insufficientProject {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(300px, .75fr);
+  gap: 16px;
+}
+
+.insufficientMedia {
+  min-width: 0;
+  min-height: 330px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.insufficientMedia > [data-building-media] {
+  height: 100%;
+  border: 0;
+}
+
+@media (max-width: 760px) {
+  .insufficientProject { grid-template-columns: 1fr; }
+  .insufficientMedia { min-height: 230px; }
+}
+
 .tableWrap {
   max-width: 100%;
   overflow-x: auto;
