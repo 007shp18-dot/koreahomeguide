@@ -41,7 +41,7 @@ const englishMetadata = indexableMetadata({
   path: '/',
   title: 'signedprice | Real prices. Better property decisions.',
   description:
-    'Verified Seoul property intelligence with official-source context and publication limits shown clearly.',
+    'Compare property prices, rents and buying costs in Seoul, Singapore and Dubai, with transaction dates and sources.',
   languageAlternates: {
     en: '/',
     'zh-Hans': '/zh-cn/kr/seoul/',
@@ -117,22 +117,22 @@ const englishHeaderCopy = {
 const englishTrustCopy = {
   sectionLabel: 'Evidence and publication principles',
   eyebrow: 'Trust and evidence',
-  heading: 'Every number travels with its boundary.',
+  heading: 'Know what the numbers mean.',
   description:
-    'SignedPrice publishes source, period, methodology, rights and correction context with verified evidence. Unsupported accuracy figures stay unpublished.',
+    'Check where the data comes from, which period it covers and how each figure is calculated. We explain missing data and record corrections.',
   items: [
     {
       term: 'Evidence',
-      description: 'Source, completed period, generation time and publication minimum',
+      description: 'Data source, transaction period, last update and sample size',
     },
     {
       term: 'Rights and method',
-      description: 'Market-specific methodology and operation-level rights limits',
+      description: 'How prices are calculated and which data we can display',
     },
     {
       term: 'Corrections',
       description:
-        'Fixed and upheld reports remain visible in market correction ledgers',
+        'See reported issues, our findings and any changes to the data',
     },
   ],
 } as const satisfies TrustStripModel;
@@ -163,18 +163,18 @@ export const homepageCopy = {
     eyebrow: 'Property intelligence for Seoul, Singapore and Dubai',
     headline,
     description:
-      'Search real property evidence, compare markets, and make a better-informed property decision across Seoul, Singapore and Dubai.',
+      'Explore recorded property prices in Seoul, Singapore and Dubai, compare your budget and plan the costs of buying abroad.',
     intentHeading: 'Start with your decision',
     intentDescription:
-      'Choose an intent, then enter the market whose local evidence and rules matter.',
+      'Start with the city you are considering or compare what your budget could buy.',
     intentNavigationLabel: 'Browse markets by property intent',
   },
   markets: {
     sectionLabel: 'Market coverage',
     eyebrow: 'Market coverage',
-    heading: 'Local evidence, honestly scoped.',
+    heading: 'Three cities. Local detail.',
     description:
-      'Every market keeps its native currency, source context and publication limits.',
+      'Prices appear in local currency, with the source, period and available coverage shown alongside.',
     productDepthLabel: 'Product depth',
     dataRightsLabel: 'Data rights',
     limitationsLabel: 'Current limits',
@@ -182,25 +182,25 @@ export const homepageCopy = {
   principles: {
     sectionLabel: 'Product principles',
     eyebrow: 'One property journey',
-    heading: 'Truth before transaction.',
+    heading: 'From research to a purchase plan.',
     items: [
       {
         index: '01',
-        title: 'Market truth',
+        title: 'Understand local prices',
         description:
-          'Official and licensed evidence stays separate from asking prices, estimates and sponsored material.',
+          'Compare recorded transactions with an asking price, and check whether the size, property type and dates match.',
       },
       {
         index: '02',
         title: 'Decision tools',
         description:
-          'Local costs, rules and comparable scenarios turn market evidence into a clearer next step.',
+          'Estimate purchase costs and rental income using your own assumptions.',
       },
       {
         index: '03',
-        title: 'Verified connections',
+        title: 'Prepare for the next step',
         description:
-          'Professional connections remain unavailable until licensing, consent and operating gates pass.',
+          'Use the buying guides to prepare questions for a local professional. Partner introductions are not yet available.',
       },
     ],
   },

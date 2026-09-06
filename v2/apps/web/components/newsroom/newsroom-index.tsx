@@ -121,14 +121,14 @@ export function NewsroomIndex({ articles, policies, filters, headlines }: Readon
       </nav>
     </div>
     {filters.type === 'latest' || filters.type === 'headlines' ? headlines ?? <ExternalHeadlines market={filters.market} preview={filters.type === 'latest'} /> : null}
-    {filters.type === 'headlines' ? null : lead === null ? <section className={styles.empty} data-newsroom-state="empty"><h2>No SignedPrice analysis matches these filters.</h2><Link href="/news/">Return to Latest</Link></section> : <>
+    {filters.type === 'headlines' ? null : lead === null ? <section className={styles.empty} data-newsroom-state="empty"><h2>No articles match these filters yet.</h2><Link href="/news/">Return to Latest</Link></section> : <>
       <article className={styles.leadStory} data-newsroom-lead={lead.type}>
         <div><span>{lead.type} · {lead.market}</span><time dateTime={lead.date}>{lead.date.slice(0, 10)}</time></div>
         <h2><Link href={lead.href}>{lead.title}</Link></h2>
         <p>{lead.deck}</p>
         <Link href={lead.href}>Read article</Link>
       </article>
-      <section className={styles.latest} aria-labelledby="latest-reviewed-title">
+      {latest.length > 0 ? <section className={styles.latest} aria-labelledby="latest-reviewed-title">
         <div className={styles.sectionHeading}><p>Latest articles</p><h2 id="latest-reviewed-title">{analysis ? 'More analysis' : 'More news'}</h2></div>
         <ol data-newsroom-latest-list="rows">
           {latest.map((item) => <li key={`${item.type}:${item.id}`}>
@@ -137,7 +137,7 @@ export function NewsroomIndex({ articles, policies, filters, headlines }: Readon
             <p>{item.deck}</p>
           </li>)}
         </ol>
-      </section>
+      </section> : null}
     </>}
   </main>;
 }

@@ -36,7 +36,7 @@ describe('three-market editorial hero', () => {
 
     expect(markup).toContain('seoul-residential.jpg');
     expect(markup).toContain('alt="Seoul apartment skyline with Namsan in the distance"');
-    expect(markup).toContain('Editorial city photograph · not an exact-property claim');
+    expect(markup).toContain('City view');
     expect(markup).toContain('Median deposit');
     expect(markup).toContain('₩480,000,000');
     expect(markup).toContain('href="/kr/seoul/explore"');
@@ -64,7 +64,7 @@ describe('three-market editorial hero', () => {
     }));
 
     expect(markup).toContain('房地产依据 · 三座城市');
-    expect(markup).toContain('城市编辑图片 · 不代表具体房产');
+    expect(markup).toContain('城市景观');
     expect(markup).toContain('数据有限');
     expect(markup).not.toContain('展示权受限');
     expect(markup).not.toContain('Rights Blocked');

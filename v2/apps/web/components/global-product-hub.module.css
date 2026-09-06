@@ -702,3 +702,22 @@
 .resultCount { margin: 0 0 16px; color: var(--muted); font-size: var(--text-meta); }
 
 .productGrid p { font-weight: 400; }
+
+/* Equal-height reading cards keep actions aligned without trimming their text. */
+.productGrid > a, .productGrid > article, .guideGrid article {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.productGrid > article { gap: 12px; padding: 20px 0; border-top: 1px solid var(--line); }
+.productGrid strong, .guideGrid article > a { margin-top: auto; padding-top: 16px; }
+.productGrid p, .guideGrid p, .marketCard > div > p:last-child { font-size: 1rem; }
+.marketCard dl > div { font-size: .875rem; }
+.marketCard dd { text-align: right; }
+.productGrid h3, .guideGrid h3 { overflow-wrap: anywhere; }
+.tableWrap thead th { font-size: .875rem; }
+.directoryFilters a:focus-visible, .marketReading a:focus-visible,
+.productGrid > a:focus-visible, .guideGrid a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}

@@ -15,9 +15,9 @@ const money = (value: number) => `AED\u00a0${integer.format(value)}`;
 const perSqm = (value: number) => `${money(value)}/m²`;
 const signedPercent = (value: number) => `${value > 0 ? '+' : ''}${value.toFixed(1)}%`;
 const verdicts: Readonly<Record<DubaiCheckResult['verdict'], string>> = {
-  'below-middle-range': 'Below the released middle range',
-  'within-middle-range': 'Within the released middle range',
-  'above-middle-range': 'Above the released middle range',
+  'below-middle-range': 'Below the typical range',
+  'within-middle-range': 'Within the typical range',
+  'above-middle-range': 'Above the typical range',
 };
 
 type ResolvedCheck = Readonly<{
@@ -95,7 +95,7 @@ function ResultPanel({ value, model }: Readonly<{
       <Link href={value.calculatorHref}>Open ownership-cost calculator</Link>
       <Link href={value.resultHref}>Open this result URL</Link>
     </div>
-    <p className={styles.checkDisclosure}>The position uses the released middle-half AED/m² range. It is not an appraisal, forecast, or recommendation. The gross scenario uses only your annual-rent input and excludes vacancy, service charges, financing, taxes, acquisition costs, repairs, and management.</p>
+    <p className={styles.checkDisclosure}>The typical range covers the middle 50% of recorded prices per m² for the selected area and property type. It is not an appraisal, forecast, or recommendation. The gross scenario uses only your annual-rent input and excludes vacancy, service charges, financing, taxes, acquisition costs, repairs, and management.</p>
     <p className={styles.checkDisclosure}>Evidence window {model.context.comparisonPeriod.from}–{model.context.comparisonPeriod.to} · {model.context.attribution}</p>
   </article>;
 }
@@ -122,7 +122,7 @@ export function DubaiCheckWorkspace({
   const resolved = resolveCheck(model, state);
   return <div className={styles.checkPage} data-dubai-check-workspace="ready">
     <header className={styles.checkHeader}>
-      <div><p className={styles.eyebrow}>Dubai Check</p><h1>Check an asking price against area evidence.</h1></div>
+      <div><p className={styles.eyebrow}>Dubai Check</p><h1>How does this asking price compare?</h1></div>
       <p>{model.context.comparisonPeriod.from}–{model.context.comparisonPeriod.to}<br />Minimum {model.context.publicationMinimum} records per cohort</p>
     </header>
     <div className={styles.checkGrid}>
@@ -140,7 +140,7 @@ export function DubaiCheckWorkspace({
       </section>
       <aside className={styles.checkResultPanel} aria-live="polite">
         {resolved.kind === 'ready' ? <ResultPanel value={resolved.value} model={model} /> : null}
-        {resolved.kind === 'empty' ? <div className={styles.checkEmpty}><p className={styles.eyebrow}>Result</p><h2>Enter a Dubai asking price, size, and annual-rent assumption.</h2><p>Check compares the offer with the selected area’s released sale-price distribution.</p></div> : null}
+        {resolved.kind === 'empty' ? <div className={styles.checkEmpty}><p className={styles.eyebrow}>Result</p><h2>Enter a Dubai asking price, size, and annual-rent assumption.</h2><p>See where the offer sits among recorded sale prices in your chosen area.</p></div> : null}
         {resolved.kind === 'invalid' ? <div className={styles.checkEmpty}><p className={styles.eyebrow}>Result</p><h2>Check the entered fields.</h2><p>Use one valid area, stage, positive decimal amounts, and a local return link.</p></div> : null}
         {resolved.kind === 'unknown' ? <div className={styles.checkEmpty}><p className={styles.eyebrow}>Result</p><h2>This area and cohort are not published.</h2><p>No other area’s distribution has been substituted.</p></div> : null}
       </aside>

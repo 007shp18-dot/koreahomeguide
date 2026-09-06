@@ -782,7 +782,7 @@ function ReadyAreaExplorer({
           <label htmlFor="explore-building-query">
             {locale === 'ko' ? '지역 또는 건물 검색' : 'Search area or building'}
           </label>
-          <span className={styles.visuallyHidden}>Search retained buildings</span>
+          <span className={styles.visuallyHidden}>Search buildings</span>
           <input
             id="explore-building-query"
             name="building-query"
@@ -993,7 +993,7 @@ function ReadyAreaExplorer({
                 </p>
                 {filteredBuildings.length === 0 ? (
                   <div className={styles.buildingEmpty} role="status">
-                    <strong>{locale === 'ko' ? '일치하는 공개 건물이 없습니다.' : 'No retained building matches this search.'}</strong>
+                    <strong>{locale === 'ko' ? '검색 조건에 맞는 건물이 없습니다.' : 'No buildings match this search.'}</strong>
                     <span>{locale === 'ko' ? '검색어를 지우거나 다른 동을 선택하세요.' : 'Clear the query or choose another neighborhood.'}</span>
                     <button type="button" onClick={() => updateBuildingQuery('')}>
                       {locale === 'ko' ? '검색 지우기' : 'Clear search'}

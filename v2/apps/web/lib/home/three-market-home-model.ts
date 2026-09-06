@@ -51,7 +51,7 @@ export function createThreeMarketHomeModel(input: Input): ThreeMarketHomeModel {
     headline: zh ? '做决定之前，先看懂市场。' : 'See the market before you make the move.',
     lead: zh
       ? '通过成交记录、楼盘详情和市场指南，比较首尔、新加坡与迪拜的住宅市场。'
-      : 'Compare residential property in Seoul, Singapore and Dubai through released transactions, place details and local market guides.',
+      : 'Find an area, compare recorded prices and work out the costs of buying in Seoul, Singapore or Dubai.',
     markets: [
       {
         id: 'kr-seoul',
@@ -75,7 +75,7 @@ export function createThreeMarketHomeModel(input: Input): ThreeMarketHomeModel {
         evidenceState: singaporeExplore?.state ?? 'insufficient',
         evidenceTitle: zh ? '私人住宅与 HDB 数据' : 'Private residential and HDB evidence',
         evidenceValue: null,
-        evidenceNote: zh ? '两个住宅板块的覆盖范围与更新周期分别显示。' : 'Coverage and release periods are disclosed separately for each housing sector.',
+        evidenceNote: zh ? '两个住宅板块的覆盖范围与更新周期分别显示。' : 'Private-home and HDB transactions have separate coverage and dates. Check the project or block for details.',
         primaryAction: { label: zh ? '探索' : 'Explore', href: singaporeExplore?.publicHref ?? '/sg/' },
         secondaryAction: singaporeCheck?.publicHref === null || singaporeCheck === null
           ? null
@@ -86,11 +86,11 @@ export function createThreeMarketHomeModel(input: Input): ThreeMarketHomeModel {
         city: zh ? '迪拜' : 'Dubai',
         position: '03',
         photo: MARKET_PHOTOS.dubai,
-        summary: zh ? '现房、期房价格与租金收益。' : 'Ready, off-plan, rent and yield evidence.',
+        summary: zh ? '现房、期房价格与租金收益。' : 'Ready and Off-Plan prices and rents.',
         evidenceState: dubaiResearch?.state ?? 'limited',
         evidenceTitle: zh ? '迪拜土地局区域汇总' : 'Dubai Land Department area aggregates',
         evidenceValue: null,
-        evidenceNote: zh ? '已发布区域价格、样本量与数据期间；不作为实时房源。' : 'Released area prices, sample sizes and periods; not live listings.',
+        evidenceNote: zh ? '已发布区域价格、样本量与数据期间；不作为实时房源。' : 'Area sale prices and annual rents, with sample sizes and dates. Figures describe recorded transactions, not homes currently for sale.',
         primaryAction: { label: zh ? '探索' : 'Explore', href: '/ae/dubai/explore/' },
         secondaryAction: { label: zh ? '购房指南（英文）' : 'Buying guide', href: '/ae/dubai/guide/' },
       },

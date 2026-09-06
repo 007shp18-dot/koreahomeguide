@@ -255,7 +255,7 @@ export function DubaiExplorer({
       </div>}
       discovery={<section className={styles.evidenceDirectory} aria-labelledby="dubai-area-results">
         <header className={styles.resultHeader}>
-          <div><h2 id="dubai-area-results">Area evidence</h2><p>{results.length.toLocaleString('en')} matching areas · {housing} · {stage}</p></div>
+          <div><h2 id="dubai-area-results">Area prices</h2><p>{results.length.toLocaleString('en')} matching areas · {housing} · {stage}</p></div>
           <small>{results.length === 0 ? 'No matches' : `${(activePage - 1) * DUBAI_EXPLORE_PAGE_SIZE + 1}–${Math.min(activePage * DUBAI_EXPLORE_PAGE_SIZE, results.length)} shown`}</small>
         </header>
         <div className={styles.areaResults} aria-live="polite" aria-busy={query !== deferredQuery}>
@@ -272,7 +272,7 @@ export function DubaiExplorer({
             </dl>
             {area.href === null
               ? <span className={styles.unavailableLink}>Area page unavailable for this release</span>
-              : <Link href={area.href}>Open area evidence</Link>}
+              : <Link href={area.href}>View area prices</Link>}
           </article>)}
           {results.length === 0 ? <p className={styles.emptyState}>No areas match these filters. Increase the budget or lower the ratio threshold.</p> : null}
         </div>
@@ -292,7 +292,7 @@ export function DubaiExplorer({
           <p>{housing === 'apartment' ? 'Apartment' : 'Villa'} · {stage === 'ready' ? 'Ready' : 'Off-Plan'}</p>
           <strong>{money(selected.sale.medianPriceAed)}</strong>
           <span>{moneyPerSqm(selected.sale.medianPricePerSqmAed)} · {selected.sale.n.toLocaleString('en')} registered sales</span>
-          {selected.area.href === null ? null : <Link href={selected.area.href}>Open area evidence</Link>}
+          {selected.area.href === null ? null : <Link href={selected.area.href}>View area prices</Link>}
         </aside> : null}
         <p className={styles.mapDisclosure}>Markers locate areas. They do not represent units or listings.</p>
       </section>}

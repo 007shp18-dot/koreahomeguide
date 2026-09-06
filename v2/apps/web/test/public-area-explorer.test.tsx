@@ -262,7 +262,7 @@ describe('public Seoul area Explorer', () => {
     expect(markup).toContain('data-building-search="retained"');
     expect(markup).toContain('type="search"');
     expect(markup).toContain('name="building-query"');
-    expect(markup).toContain('Search retained buildings');
+    expect(markup).toContain('Search buildings');
     expect(markup).toContain('Search area or building');
     expect(markup).toContain('name="housing-type"');
     expect(markup).toContain('>Search</button>');
