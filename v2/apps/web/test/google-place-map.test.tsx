@@ -22,6 +22,7 @@ describe('Google place map', () => {
     expect(buildGoogleMapsScriptUrl('key/value + test')).toBe(
       'https://maps.googleapis.com/maps/api/js?key=key%2Fvalue+%2B+test&loading=async&callback=__signedpriceGoogleMapsReady&v=weekly&language=en&region=SG',
     );
+    expect(buildGoogleMapsScriptUrl('test-key', 'dubai')).toContain('region=AE');
   });
 
   it('initializes only from the API completion callback and restores prior state', () => {

@@ -103,14 +103,17 @@ if (typeof window !== 'undefined') {
   });
 }
 
-export function buildGoogleMapsScriptUrl(browserKey: string): string {
+export function buildGoogleMapsScriptUrl(
+  browserKey: string,
+  market: GoogleMarket = 'singapore',
+): string {
   const url = new URL('https://maps.googleapis.com/maps/api/js');
   url.searchParams.set('key', browserKey);
   url.searchParams.set('loading', 'async');
   url.searchParams.set('callback', GOOGLE_MAPS_READY_CALLBACK);
   url.searchParams.set('v', 'weekly');
   url.searchParams.set('language', 'en');
-  url.searchParams.set('region', 'SG');
+  url.searchParams.set('region', marketConfig[market].country);
   return url.toString();
 }
 
@@ -365,7 +368,7 @@ export function GooglePlaceMap({
         aria-label={`Interactive Google map of ${marketConfig[market].name}`}
       />
       <Script
-        src={buildGoogleMapsScriptUrl(browserKey)}
+        src={buildGoogleMapsScriptUrl(browserKey, market)}
         strategy="afterInteractive"
         onError={() => setMapState('error')}
       />

@@ -1,4 +1,4 @@
-export type SnapshotMarketId = 'kr-seoul' | 'sg-singapore';
+export type SnapshotMarketId = 'kr-seoul' | 'sg-singapore' | 'ae-dubai';
 
 export type MarketDataset =
   | 'kr-building-registry'
@@ -12,7 +12,8 @@ export type MarketDataset =
   | 'sg-check-ura-private-sale'
   | 'sg-check-hdb-resale'
   | 'sg-check-hdb-rent'
-  | 'sg-market-context';
+  | 'sg-market-context'
+  | 'ae-area-evidence';
 
 export type InstalledSnapshot = Readonly<{
   marketId: SnapshotMarketId;
@@ -63,6 +64,9 @@ const marketDatasets = Object.freeze({
     'sg-check-hdb-resale',
     'sg-check-hdb-rent',
     'sg-market-context',
+  ]),
+  'ae-dubai': Object.freeze([
+    'ae-area-evidence',
   ]),
 } as const satisfies Readonly<Record<SnapshotMarketId, readonly MarketDataset[]>>);
 const periodPattern = /^(\d{4})-(0[1-9]|1[0-2])\/(\d{4})-(0[1-9]|1[0-2])$/;
@@ -120,7 +124,7 @@ function parseSnapshot(value: unknown): InstalledSnapshot {
   if (!isObject(value) || !hasExactKeys(value, snapshotKeys)) invalid();
   const marketId = value.marketId;
   const dataset = value.dataset;
-  if (marketId !== 'kr-seoul' && marketId !== 'sg-singapore') invalid();
+  if (marketId !== 'kr-seoul' && marketId !== 'sg-singapore' && marketId !== 'ae-dubai') invalid();
   if (typeof dataset !== 'string'
     || !(marketDatasets[marketId] as readonly string[]).includes(dataset)) invalid();
   if (!isNonBlankString(value.schemaVersion)
