@@ -15,20 +15,20 @@ const officialHosts = new Set([
   'dubailand.gov.ae',
   'www.investkorea.org', 'english.seoul.go.kr', 'm.easylaw.go.kr',
   'www.law.go.kr', 'rt.molit.go.kr', 'www.molit.go.kr', 'land.seoul.go.kr',
-  'www.fsc.go.kr', 'www.iras.gov.sg', 'www.hdb.gov.sg', 'www.ura.gov.sg',
+  'www.fsc.go.kr', 'www.iras.gov.sg', 'www.hdb.gov.sg', 'www.ura.gov.sg', 'eservice.ura.gov.sg',
 ]);
 
-const secondaryHosts = new Set(['kbthink.com', 'www.ajunews.com', 'v.daum.net', 'news.nate.com', 'www.guocoland.com.sg']);
+const secondaryHosts = new Set(['kbthink.com', 'www.ajunews.com', 'v.daum.net', 'news.nate.com', 'www.guocoland.com.sg', 'realty.chosun.com', 'kbland.kr', 'www.propnex.com']);
 
 function sectionCount(body: string): number {
   return body.match(/^## /gmu)?.length ?? 0;
 }
 
 describe('pre-AdSense reviewed launch portfolio', () => {
-  it('keeps the 32-record portfolio and public English parameters', () => {
+  it('keeps the 34-record portfolio and public English parameters', () => {
     const english = listPortfolioRecords('en');
-    expect(EDITORIAL_PORTFOLIO).toHaveLength(32);
-    expect(english).toHaveLength(24);
+    expect(EDITORIAL_PORTFOLIO).toHaveLength(34);
+    expect(english).toHaveLength(26);
     expect(generateEnglishArticleParams()).toEqual(english
       .filter(({ type }) => type === 'market-brief' || type === 'data-story')
       .map(({ slug }) => ({ slug })));
