@@ -120,7 +120,7 @@ Expected immutable seed digests:
 - `legacyIdDigest=d86ae08ab146e07570ccbd7b15f07a80f3ca5fd537d7199f58628348439e446a`
 - `entityIdDigest=92be10891460d8604c8b6661cd4884c3eaee9ce5791a14ec6c59a49a2d9e3729`
 
-At the same checkpoint, production contained 37 approved photo rows, 795
+At the same checkpoint, production contained 41 approved photo rows, 795
 official building-fact rows, 2,575 K-apt nearby-place rows, and 3,403 verified
 URA locations. The evidence tables contained 374,261 source records, 361,760
 linked observations, and 40,044 HDB metrics; the second seed inserted zero new
@@ -131,6 +131,12 @@ The final production database size was 507,060,224 bytes. Vercel had the product
 pooled `DATABASE_URL`, Google server and browser keys, `CRON_SECRET`, and
 `CONTENT_ADMIN_SECRET` configured as production values. The public page keeps
 using the existing compressed-data fallback where one exists.
+
+The approved-photo total includes four exact Singapore building exteriors added
+after visual and source review: Robertson Blue, Dover Parkview, Trellis Towers,
+and JK Building. An additional free Commons sweep checked 360 Seoul and 360
+Singapore entities after deployment. Ambiguous names and wrong-location matches
+remain private in `review_required`; they are never projected as public photos.
 
 ## Completion criteria
 
