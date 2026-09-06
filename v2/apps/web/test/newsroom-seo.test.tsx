@@ -16,7 +16,7 @@ describe('Newsroom and Guide SEO release contract', () => {
       expect(urls).toContain(`https://www.signedprice.com${record.canonicalHref}`);
     }
     expect(urls.filter((url) => EDITORIAL_PORTFOLIO.some(({ canonicalHref }) => url.endsWith(canonicalHref))))
-      .toHaveLength(30);
+      .toHaveLength(32);
     expect(urls.some((url) => /\/insights\/|\/kr\/seoul\/guide\//u.test(url))).toBe(false);
   });
 

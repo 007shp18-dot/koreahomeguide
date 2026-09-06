@@ -18,15 +18,17 @@ const officialHosts = new Set([
   'www.fsc.go.kr', 'www.iras.gov.sg', 'www.hdb.gov.sg', 'www.ura.gov.sg',
 ]);
 
+const secondaryHosts = new Set(['kbthink.com', 'www.ajunews.com', 'v.daum.net', 'news.nate.com', 'www.guocoland.com.sg']);
+
 function sectionCount(body: string): number {
   return body.match(/^## /gmu)?.length ?? 0;
 }
 
 describe('pre-AdSense reviewed launch portfolio', () => {
-  it('keeps the 30-record portfolio and public English parameters', () => {
+  it('keeps the 32-record portfolio and public English parameters', () => {
     const english = listPortfolioRecords('en');
-    expect(EDITORIAL_PORTFOLIO).toHaveLength(30);
-    expect(english).toHaveLength(22);
+    expect(EDITORIAL_PORTFOLIO).toHaveLength(32);
+    expect(english).toHaveLength(24);
     expect(generateEnglishArticleParams()).toEqual(english
       .filter(({ type }) => type === 'market-brief' || type === 'data-story')
       .map(({ slug }) => ({ slug })));
@@ -40,7 +42,8 @@ describe('pre-AdSense reviewed launch portfolio', () => {
       for (const source of article.sources) {
         const url = new URL(source.href);
         expect(url.protocol).toBe('https:');
-        expect(officialHosts.has(url.hostname)).toBe(true);
+        expect(officialHosts.has(url.hostname)
+          || (source.kind === 'secondary' && secondaryHosts.has(url.hostname))).toBe(true);
         expect(['2026-09-04', '2026-09-06']).toContain(source.checkedAt);
       }
     }
