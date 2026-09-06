@@ -1,5 +1,16 @@
 import {expect,test} from '@playwright/test';
 
+test('Chinese market cards align their primary actions on multi-column screens',async({page})=>{
+ await page.goto('/zh-cn/kr/seoul/');
+ await page.evaluate(()=>document.fonts.ready);
+ const positions=await page.locator('[data-contextual-action]').evaluateAll(nodes=>nodes.map(node=>{
+  const r=node.getBoundingClientRect();const a=node.querySelector('a')!.getBoundingClientRect();return {top:r.top,action:a.top-r.top};
+ }));
+ expect(positions).toHaveLength(3);
+ if(Math.max(...positions.map(p=>p.top))-Math.min(...positions.map(p=>p.top))<=2)
+  expect(Math.max(...positions.map(p=>p.action))-Math.min(...positions.map(p=>p.action))).toBeLessThanOrEqual(2);
+});
+
 test('home city changes keep the panel, metric and Explore action in the same position',async({page})=>{
  await page.goto('/');
  const hero=page.locator('[data-home-region="hero"]');

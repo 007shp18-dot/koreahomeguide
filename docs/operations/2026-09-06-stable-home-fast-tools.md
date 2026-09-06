@@ -29,3 +29,12 @@ The attached organic-entry plan predates PR165. Implement semantic additions on 
 ## Release gates and growth follow-up
 PR/preview, four-viewport browser checks, reviewed changed screenshots, production deployment and live checks are pending at this commit. Record final evidence on the PR.
 Search Console is not exposed through the available connectors in this session. Do not claim sitemap submission, inspection, traffic baseline or indexing. After access is available, record day-zero page-group impressions/clicks and tool completions, then review at 48 hours, 7 and 14 days. No growth guarantee.
+
+## Preview review and regression follow-up
+- PR166 initial integrated CI: 2,222 unit tests passed; browser run 409 passed, 21 conditional skips, 22 failures. Failures included outdated navigation/title assertions, four changed home screenshots, a Korean Tools social-image mismatch and the homepage metric position differing by about 5px.
+- Real desktop review also found a third grid child forcing the lower market cards into the narrow column. Keep the new entry links inside the section introduction rather than adding an implicit row.
+- After reserving sufficient heading space, desktop home measurements are identical for all three cities: panel 590px, metric block offset 216px, action offset 502px. Lower market cards occupy 56.6% of the section rather than 37.7%; no horizontal page overflow.
+- The added stable-home-tools browser file initially ran only in desktop/mobile projects. Extend existing tablet/wide test filters and verify all 12 cases are discovered. Do not count discovered tests as executed tests.
+- Preview functional review: Singapore MOULMEIN search returns 11 projects; 1 MOULMEIN RISE detail passes its published SGD 2,684,000 median and exact return path to the neutral calculator. Native AED scenario with 1,000,000 price, 50,000 acquisition costs, 7,000 monthly rent, 12,000 annual costs and one vacant month gives 6.19%.
+- External-headline Singapore filter displays 24 publisher-linked articles. Corrections exposes the short common heading, real empty ledger and city-specific report mailto action. No report was sent.
+- Korean directory and calculator use /og/ko/ social images, verified by a regression that failed before the correction. Existing K-apt API correction from main is retained.

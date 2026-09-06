@@ -151,7 +151,7 @@ export function createPlaywrightConfig(
       },
       {
         name: 'tablet-chromium',
-        testMatch: /(?:rankings|contract-check|trust|korea-detail|korea-guide|singapore)\.spec\.ts/,
+        testMatch: /(?:rankings|contract-check|trust|korea-detail|korea-guide|singapore|stable-home-tools)\.spec\.ts/,
         use: {
           ...devices['Desktop Chrome'],
           viewport: { width: 720, height: 900 },
@@ -159,7 +159,7 @@ export function createPlaywrightConfig(
       },
       {
         name: 'wide-chromium',
-        testMatch: /(?:area-explore|contract-check|trust|korea-detail|korea-guide|singapore|editorial-growth-review)\.spec\.ts/,
+        testMatch: /(?:area-explore|contract-check|trust|korea-detail|korea-guide|singapore|editorial-growth-review|stable-home-tools)\.spec\.ts/,
         use: {
           ...devices['Desktop Chrome'],
           viewport: { width: 1440, height: 900 },
