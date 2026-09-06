@@ -31,7 +31,7 @@ describe('photo coverage operations route', () => {
     expect(await response.json()).toMatchObject({ coverage: { total: 62_872, complete: 14 } });
   });
 
-  it('runs a validated bounded slice and rejects Dubai', async () => {
+  it('runs validated bounded slices for Seoul and Dubai', async () => {
     vi.stubEnv('CONTENT_ADMIN_SECRET', 'coverage-secret');
     calls.run.mockResolvedValue({ state: 'ready', checked: 2, candidates: 1, entityIds: ['a', 'b'] });
     const response = await POST(new Request('https://example.com/api/internal/photo-coverage', {
@@ -47,13 +47,17 @@ describe('photo coverage operations route', () => {
       dailyRequestCap: 20, dailySpendCapUsd: 2, dryRun: false,
     });
 
-    const rejected = await POST(new Request('https://example.com/api/internal/photo-coverage', {
+    const dubai = await POST(new Request('https://example.com/api/internal/photo-coverage', {
       method: 'POST', headers: { ...authorized, 'content-type': 'application/json' },
       body: JSON.stringify({
-        market: 'ae-dubai', provider: 'google', limit: 2,
+        market: 'ae-dubai', provider: 'naver-search', limit: 2,
         dailyRequestCap: 20, dailySpendCapUsd: 2, dryRun: false,
       }),
     }));
-    expect(rejected.status).toBe(400);
+    expect(dubai.status).toBe(200);
+    expect(calls.run).toHaveBeenLastCalledWith({
+      market: 'ae-dubai', provider: 'naver-search', limit: 2,
+      dailyRequestCap: 20, dailySpendCapUsd: 2, dryRun: false,
+    });
   });
 });

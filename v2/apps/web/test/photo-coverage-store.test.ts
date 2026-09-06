@@ -60,4 +60,18 @@ describe('photo coverage store', () => {
     await expect(store.sync(301, 'sg-singapore')).rejects.toThrow('Photo coverage limit must be between 1 and 300.');
     expect(query).not.toHaveBeenCalled();
   });
+
+  it('syncs approved Dubai photos into the shared coverage model', async () => {
+    const calls: Array<{ statement: string; parameters: readonly unknown[] }> = [];
+    const store = createPhotoCoverageStore({
+      async query(statement, parameters = []) {
+        calls.push({ statement, parameters });
+        return [{ updated: '1' }];
+      },
+    });
+
+    await expect(store.sync(1, 'ae-dubai')).resolves.toEqual({ checked: 1, updated: 1 });
+    expect(calls[0]?.statement).toContain("'ae-dubai'");
+    expect(calls[0]?.parameters).toEqual(['ae-dubai', 1]);
+  });
 });

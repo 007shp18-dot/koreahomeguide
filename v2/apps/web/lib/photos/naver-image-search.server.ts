@@ -15,6 +15,12 @@ export type NaverImageCandidateResult = Readonly<{
   reason?: string;
 }>;
 
+export type SelectedNaverImageCandidate = Readonly<{
+  candidate: NaverImageCandidate;
+  confidence: number;
+  evidence: readonly string[];
+}>;
+
 export const NAVER_IMAGE_API_HUB_URL = 'https://naverapihub.apigw.ntruss.com/search/v1/image' as const;
 export const NAVER_IMAGE_LEGACY_URL = 'https://openapi.naver.com/v1/search/image' as const;
 
@@ -87,6 +93,40 @@ function plainText(value: unknown): string {
     .replace(/&gt;/giu, '>')
     .replace(/\s+/gu, ' ')
     .trim();
+}
+
+function normalizedIdentity(value: string): string {
+  return value.normalize('NFKC').toLocaleLowerCase('en-US').replace(/[^\p{L}\p{N}]+/gu, '');
+}
+
+function candidateScore(candidate: NaverImageCandidate, exactName: boolean): number {
+  const pixels = (candidate.width ?? 0) * (candidate.height ?? 0);
+  const landscapeBonus = candidate.width !== null && candidate.height !== null
+    && candidate.width >= candidate.height ? 1.15 : 1;
+  return (exactName ? 1_000_000_000_000 : 0) + pixels * landscapeBonus;
+}
+
+export function selectNaverBuildingImageCandidate(input: Readonly<{
+  buildingName: string;
+  candidates: readonly NaverImageCandidate[];
+}>): SelectedNaverImageCandidate | null {
+  const normalizedName = normalizedIdentity(input.buildingName);
+  const ranked = input.candidates.map((candidate) => {
+    const exactName = normalizedName.length >= 2
+      && normalizedIdentity(candidate.title).includes(normalizedName);
+    return Object.freeze({ candidate, exactName, score: candidateScore(candidate, exactName) });
+  }).sort((left, right) => right.score - left.score);
+  const selected = ranked[0];
+  if (selected === undefined) return null;
+  return Object.freeze({
+    candidate: selected.candidate,
+    confidence: selected.exactName ? 0.65 : 0.35,
+    evidence: Object.freeze([
+      ...(selected.exactName ? ['name'] : []),
+      'address-in-search-query',
+      'rights-review-required',
+    ]),
+  });
 }
 
 function dimension(value: unknown): number | null {

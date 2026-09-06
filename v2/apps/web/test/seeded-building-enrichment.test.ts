@@ -55,7 +55,7 @@ describe('scoped property enrichment',()=>{
   expect(await response.json()).toMatchObject({source:'wikimedia',checked:120,candidates:8});
  });
  it.each([
-  ['naver',100,'naver-search'],
+  ['naver',250,'naver-search'],
   ['wikimedia',60,'wikimedia'],
  ] as const)('accepts the scaled %s discovery batch',async(source,limit,provider)=>{
   vi.stubEnv('CRON_SECRET','test-secret');
@@ -106,11 +106,31 @@ describe('scoped property enrichment',()=>{
   };
   expect(config.crons).toEqual(expect.arrayContaining([
    {path:'/api/internal/building-enrichment/?source=wikimedia&limit=60',schedule:'7 * * * *'},
-   {path:'/api/internal/building-enrichment/?source=naver&limit=100',schedule:'*/15 * * * *'},
+   {path:'/api/internal/building-enrichment/?source=naver&limit=250',schedule:'*/15 * * * *'},
    {path:'/api/internal/building-enrichment/?source=google&limit=30',schedule:'47 * * * *'},
    {path:'/api/internal/building-enrichment/?source=official&limit=250',schedule:'17 * * * *'},
   ]));
   expect(config.crons?.every(({path})=>new URL(path,'https://signedprice.com').pathname.endsWith('/'))).toBe(true);
+ });
+ it('spends one scheduled NAVER batch across Seoul, Singapore, and Dubai without exceeding 250 requests',async()=>{
+  vi.stubEnv('CRON_SECRET','test-secret');
+  calls.backfill.mockImplementation(async ({limit}:{limit:number})=>({state:'ready',checked:limit,candidates:1}));
+  const response=await GET(new Request('https://example.com/api/internal/building-enrichment?source=naver&limit=250',{headers:{authorization:'Bearer test-secret'}}));
+  expect(response.status).toBe(200);
+  expect(calls.backfill).toHaveBeenNthCalledWith(1,expect.objectContaining({market:'kr-seoul',provider:'naver-search',limit:175,dailyRequestCap:25_000}));
+  expect(calls.backfill).toHaveBeenNthCalledWith(2,expect.objectContaining({market:'sg-singapore',provider:'naver-search',limit:25,dailyRequestCap:25_000}));
+  expect(calls.backfill).toHaveBeenNthCalledWith(3,expect.objectContaining({market:'ae-dubai',provider:'naver-search',limit:50,dailyRequestCap:25_000}));
+  expect(calls.backfill).toHaveBeenCalledTimes(3);
+  expect(calls.official).not.toHaveBeenCalled();
+  expect(await response.json()).toMatchObject({source:'naver',checked:250});
+ });
+ it('accepts an explicit Dubai NAVER discovery slice',async()=>{
+  vi.stubEnv('CRON_SECRET','test-secret');
+  calls.backfill.mockResolvedValue({state:'ready',checked:3,candidates:1});
+  const response=await GET(new Request('https://example.com/api/internal/building-enrichment?market=dubai&source=naver&limit=3',{headers:{authorization:'Bearer test-secret'}}));
+  expect(response.status).toBe(200);
+  expect(calls.backfill).toHaveBeenCalledWith(expect.objectContaining({market:'ae-dubai',provider:'naver-search',limit:3}));
+  expect(calls.official).not.toHaveBeenCalled();
  });
  it('shares the Google budget sequentially across both markets',async()=>{
   vi.stubEnv('CRON_SECRET','test-secret');

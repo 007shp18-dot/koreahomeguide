@@ -8,6 +8,13 @@ export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
 
 type EnrichmentSource = 'all' | 'wikimedia' | 'google' | 'naver' | 'official';
+type EnrichmentMarket = 'seoul' | 'singapore' | 'dubai';
+
+const NAVER_MARKET_WEIGHTS: Readonly<Record<EnrichmentMarket, number>> = Object.freeze({
+  seoul: 7,
+  singapore: 1,
+  dubai: 2,
+});
 
 function finiteEnvironmentNumber(name: string, fallback: number): number {
   const value = Number(process.env[name]);
@@ -25,7 +32,7 @@ export function allocateProviderLimit(total: number, index: number, count: numbe
 }
 
 function providerOptions(
-  market: 'kr-seoul' | 'sg-singapore',
+  market: PhotoBackfillOptions['market'],
   provider: 'wikimedia' | 'google' | 'naver-search',
   limit: number,
 ): PhotoBackfillOptions {
@@ -45,6 +52,22 @@ function providerOptions(
   });
 }
 
+function naverMarketLimit(total: number, market: EnrichmentMarket): number {
+  const markets: readonly EnrichmentMarket[] = ['seoul', 'singapore', 'dubai'];
+  const weightTotal = markets.reduce((sum, key) => sum + NAVER_MARKET_WEIGHTS[key], 0);
+  const base = Object.fromEntries(markets.map((key) => [
+    key,
+    Math.floor(total * NAVER_MARKET_WEIGHTS[key] / weightTotal),
+  ])) as Record<EnrichmentMarket, number>;
+  let remainder = total - markets.reduce((sum, key) => sum + base[key], 0);
+  for (const key of ['seoul', 'dubai', 'singapore'] as const) {
+    if (remainder < 1) break;
+    base[key] += 1;
+    remainder -= 1;
+  }
+  return base[market];
+}
+
 export async function GET(request: Request) {
   const secret = process.env.CRON_SECRET?.trim();
   if (!secret || request.headers.get('authorization') !== `Bearer ${secret}`) {
@@ -58,22 +81,25 @@ export async function GET(request: Request) {
     : 'all';
   const source = parameters.get('source') ?? scheduledSource;
   const limit = Number(parameters.get('limit') ?? (source === 'wikimedia' ? 60 : 12));
-  const maxLimit = source === 'official' ? 250 : source === 'naver' ? 100 : source === 'wikimedia' ? 60 : 30;
-  if ((market !== null && market !== 'seoul' && market !== 'singapore')
+  const maxLimit = source === 'official' || source === 'naver' ? 250 : source === 'wikimedia' ? 60 : 30;
+  if ((market !== null && market !== 'seoul' && market !== 'singapore' && market !== 'dubai')
+    || (market === 'dubai' && source !== 'naver')
     || !['all', 'wikimedia', 'google', 'naver', 'official'].includes(source)
     || !Number.isInteger(limit) || limit < 1 || limit > maxLimit) {
     return NextResponse.json({ error: 'invalid_scope' }, { status: 400 });
   }
   const selectedSource = source as EnrichmentSource;
-  const markets: readonly ('seoul' | 'singapore')[] = market === null
-    ? ['seoul', 'singapore']
-    : [market as 'seoul' | 'singapore'];
+  const markets: readonly EnrichmentMarket[] = market === null
+    ? selectedSource === 'naver' ? ['seoul', 'singapore', 'dubai'] : ['seoul', 'singapore']
+    : [market as EnrichmentMarket];
   const scopedLimit = market === null && selectedSource === 'all' ? Math.min(limit, 6) : limit;
   const sharedGoogleLimit = market === null
     ? Math.min(scopedLimit, googleDailyRequestCap())
     : scopedLimit;
-  const runPhotoProvidersForMarket = async (marketKey: 'seoul' | 'singapore') => {
-    const photoMarket = marketKey === 'seoul' ? 'kr-seoul' : 'sg-singapore';
+  const runPhotoProvidersForMarket = async (marketKey: EnrichmentMarket) => {
+    const photoMarket = marketKey === 'seoul'
+      ? 'kr-seoul'
+      : marketKey === 'singapore' ? 'sg-singapore' : 'ae-dubai';
     const providers = [
       ...(['all', 'wikimedia'].includes(selectedSource)
         ? [{ provider: 'wikimedia' as const, source: 'wikimediaCommons' as const }]
@@ -89,7 +115,9 @@ export async function GET(request: Request) {
     for (const { provider, source: providerSource } of providers) {
       const providerLimit = provider === 'google' && market === null && selectedSource === 'google'
         ? allocateProviderLimit(sharedGoogleLimit, markets.indexOf(marketKey), markets.length)
-        : scopedLimit;
+        : provider === 'naver-search' && market === null && selectedSource === 'naver'
+          ? naverMarketLimit(scopedLimit, marketKey)
+          : scopedLimit;
       if (providerLimit === 0) continue;
       const result = await runPhotoBackfillSlice(providerOptions(photoMarket, provider, providerLimit));
       results.push({ market: marketKey, source: providerSource, result });
@@ -103,7 +131,7 @@ export async function GET(request: Request) {
       return runs;
     })()
     : Promise.all(markets.map(runPhotoProvidersForMarket)).then((runs) => runs.flat());
-  const officialRun = market === 'singapore' || !['all', 'official'].includes(selectedSource)
+  const officialRun = (market !== null && market !== 'seoul') || !['all', 'official'].includes(selectedSource)
     ? Promise.resolve(null)
     : enrichOfficialBuildingFacts(scopedLimit);
   const [runs, official] = await Promise.all([photoRuns, officialRun]);
