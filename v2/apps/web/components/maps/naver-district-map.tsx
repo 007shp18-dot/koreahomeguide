@@ -371,7 +371,7 @@ export function mountNaverDistrictMap({
     const isActive = () => !disposed && generation === activeGeneration;
     if (scopeChanged && selectedLocatedBuilding === undefined && focusAddressQuery && sdk.Service) {
       sdk.Service.geocode({ query: focusAddressQuery }, (status, response) => {
-        if (!isActive() || status !== sdk.Service!.Status.OK) return;
+        if (!isActive() || activeSelectedBuildingId !== null || status !== sdk.Service!.Status.OK) return;
         const address = resolveUnambiguousNaverGeocode(focusAddressQuery, response.v2?.addresses);
         const latitude = Number(address?.y);
         const longitude = Number(address?.x);

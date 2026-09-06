@@ -545,6 +545,9 @@ function ReadyAreaExplorer({
     if (building === undefined) return;
     setMapDrilledToDistrict(true);
     dispatchBuildingSelection({ type: 'select_building', source, buildingId });
+    if (source === 'rail' && window.matchMedia('(max-width: 800px)').matches) {
+      document.querySelector('[data-explorer-region="map"]')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
     router.replace(
       createExploreBuildingSelectionHref(building, linkSelection, locale, {
         query: buildingQuery,

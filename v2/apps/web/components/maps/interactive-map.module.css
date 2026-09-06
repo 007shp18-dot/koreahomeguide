@@ -22,9 +22,18 @@
 }
 
 .markerStatus {
-  margin: 0.65rem 0 0;
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
+  z-index: 5;
+  max-width: min(300px, calc(100% - 28px));
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 8px;
   color: var(--muted);
-  font-size: 0.78rem;
+  background: rgb(255 255 255 / 94%);
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 :global(.spMapDistrictBubble),
