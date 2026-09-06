@@ -30,8 +30,10 @@ export function NewsroomArticle({ article }: Readonly<{
     ? { label: 'Guides', href: '/guides/' }
     : { label: 'News', href: '/news/' };
   const market = article.marketId === 'kr-seoul' ? 'Seoul'
-    : article.marketId === 'sg-singapore' ? 'Singapore' : 'Global';
-  const reading = article.marketId === 'sg-singapore'
+    : article.marketId === 'sg-singapore' ? 'Singapore' : article.marketId === 'ae-dubai' ? 'Dubai' : 'Global';
+  const reading = article.marketId === 'ae-dubai'
+    ? [{ label: 'Property analysis', href: '/news/?type=analysis' }]
+    : article.marketId === 'sg-singapore'
     ? [{ label: 'Singapore buying and transaction guide', href: '/guides/read-singapore-private-transactions/' }, { label: 'Singapore market analysis', href: '/news/singapore-private-market-quarterly-brief/' }]
     : [{ label: 'Buying property in Korea', href: '/guides/buy-property-in-korea-as-foreigner/' }, { label: 'Comparing Seoul sale transactions', href: '/guides/read-seoul-sale-transactions/' }];
   const relatedEvent = article.relatedHref?.includes('/check') ? 'article_to_check' : 'article_to_explore';

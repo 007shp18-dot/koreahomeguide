@@ -1,4 +1,5 @@
 import { enrichEnglishRecord } from './research-expansions';
+import { DUBAI_RENTAL_YIELD } from './dubai-rental-yield';
 import { infographic, portfolioRecord, RELEASES, SOURCES } from '../portfolio-builders';
 
 const seoulDistrictChart = infographic({
@@ -48,6 +49,7 @@ const singaporeRegionChart = infographic({
 });
 
 export const ENGLISH_PORTFOLIO = Object.freeze([
+  DUBAI_RENTAL_YIELD,
   portfolioRecord({
     slug: 'korea-rental-deposit-protection-status', locale: 'en', type: 'policy-update', marketId: 'kr-seoul',
     title: 'Korea rental-deposit protection: current verification status',
