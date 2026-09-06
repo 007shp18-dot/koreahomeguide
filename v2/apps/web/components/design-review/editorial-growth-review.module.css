@@ -1200,3 +1200,25 @@
     padding: var(--review-space-8) var(--review-gutter);
   }
 }
+
+/* Public pages inherit the product palette; isolated design-review fixtures keep their own tokens. */
+.reviewRoot[data-public-editorial-frame] {
+  --review-ink: var(--ink);
+  --review-muted: var(--muted);
+  --review-line: var(--line);
+  --review-canvas: var(--canvas);
+  --review-paper: var(--surface-strong);
+  --review-accent: var(--accent);
+}
+
+@media (min-width: 681px) {
+  .guideList a {
+    grid-template-columns: 80px minmax(0, 1fr);
+    align-items: start;
+    gap: 8px 20px;
+  }
+  .guideList .guideStage { grid-column: 1; grid-row: 1; }
+  .guideList strong { grid-column: 2; grid-row: 1; }
+  .guideList a > span:not(.guideStage) { grid-column: 2; }
+  .guideList small { grid-column: 2; white-space: nowrap; }
+}

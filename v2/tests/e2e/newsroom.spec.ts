@@ -57,6 +57,7 @@ test('Newsroom mobile filters remain touch-sized and contained', async ({ page }
 
 test('News uses the shared readable type and restrained frame', async ({ page }, testInfo) => {
   await page.goto('/news/');
+  await expect(page.locator('[data-newsroom-layout="research"]')).toBeVisible();
 
   const values = await page.locator('[data-newsroom-layout="research"]').evaluate((main) => {
     const root = getComputedStyle(document.documentElement);
@@ -119,7 +120,7 @@ test('News and Guides keep the same global header and the guide highlights Guide
   const newsLabels = await nav.getByRole('navigation', { name: 'Primary navigation', exact: true }).innerText();
   await nav.getByRole('link', { name: 'Guides', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Guides', exact: true, level: 1 })).toBeVisible();
-  await expect(nav.getByRole('navigation', { name: 'Primary navigation', exact: true })).toHaveText(newsLabels);
+  await expect(nav.getByRole('navigation', { name: 'Primary navigation', exact: true })).toHaveText(newsLabels, { useInnerText: true });
   await page.getByRole('link', { name: 'Read guide', exact: true }).first().click();
   await expect(nav.getByRole('link', { name: 'Guides', exact: true })).toHaveAttribute('aria-current', 'page');
   await expect(page.getByRole('navigation', { name: 'In this article', exact: true })).toBeVisible();

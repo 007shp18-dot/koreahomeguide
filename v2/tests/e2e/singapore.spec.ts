@@ -38,12 +38,23 @@ async function expectImmediatePending(locator: Locator) {
   const href = await locator.getAttribute('href');
   expect(href).not.toBeNull();
   await locator.evaluate((element) => {
-    element.addEventListener('click', (event) => event.preventDefault(), { once: true });
+    element.addEventListener('click', (event) => {
+      event.preventDefault();
+      const started = performance.now();
+      const observer = new MutationObserver(() => {
+        if (element.getAttribute('aria-busy') !== 'true') return;
+        element.setAttribute('data-test-pending-ms', String(performance.now() - started));
+        observer.disconnect();
+      });
+      observer.observe(element, { attributes: true, attributeFilter: ['aria-busy'] });
+    }, { once: true });
   });
-  const started = await locator.evaluate(() => performance.now());
   await locator.click();
-  await expect(locator).toHaveAttribute('aria-busy', 'true', { timeout: 100 });
-  const elapsed = await locator.evaluate((_, start) => performance.now() - start, started);
+  await expect(locator).toHaveAttribute('aria-busy', 'true');
+  await expect(locator).toHaveAttribute('data-test-pending-ms', /\d/);
+  // Measure the browser's response, excluding Playwright transport and click actionability.
+  const elapsed = Number(await locator.getAttribute('data-test-pending-ms'));
+  expect(Number.isFinite(elapsed)).toBe(true);
   expect(elapsed).toBeLessThanOrEqual(100);
   return href!;
 }
