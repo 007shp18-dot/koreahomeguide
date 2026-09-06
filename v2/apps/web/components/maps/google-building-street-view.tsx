@@ -228,6 +228,7 @@ export function GoogleBuildingStreetView({
   return (
     <section className={styles.frame} data-building-media="google-street-view" data-media-state={state}>
       <div ref={container} className={styles.canvas} role="region" aria-label={`Nearby Google Street View for ${buildingName}`} />
+      <p className={styles.label}>Nearby street view</p>
       <Script
         src={buildGoogleMapsScriptUrl(browserKey)}
         strategy="lazyOnload"
