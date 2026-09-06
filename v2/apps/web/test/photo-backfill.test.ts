@@ -4,6 +4,7 @@ vi.mock('server-only', () => ({}));
 
 import {
   createPhotoBackfillRunner,
+  runOrderedProviderBatch,
   type PhotoBackfillDependencies,
 } from '../lib/photos/photo-backfill.server';
 
@@ -20,6 +21,45 @@ function dependencies(overrides: Partial<PhotoBackfillDependencies> = {}): Photo
 }
 
 describe('bounded photo backfill', () => {
+  it('runs provider work in bounded ordered groups and stops before scheduling another group', async () => {
+    let active = 0;
+    let maxActive = 0;
+    const calls: number[] = [];
+    const results = await runOrderedProviderBatch(
+      Array.from({ length: 8 }, (_, index) => index),
+      async (value) => {
+        calls.push(value);
+        active += 1;
+        maxActive = Math.max(maxActive, active);
+        await new Promise((resolve) => setTimeout(resolve, 2));
+        active -= 1;
+        return { value, stop: value === 1 };
+      },
+      { concurrency: 5, shouldStop: (result) => result.stop },
+    );
+
+    expect(maxActive).toBeLessThanOrEqual(5);
+    expect(calls).toEqual([0, 1, 2, 3, 4]);
+    expect(results.map((result) => result.value)).toEqual([0, 1, 2, 3, 4]);
+  });
+
+  it('does not schedule work after the deadline', async () => {
+    let now = 0;
+    const calls: number[] = [];
+    const results = await runOrderedProviderBatch(
+      [0, 1, 2, 3],
+      async (value) => {
+        calls.push(value);
+        now = 45_000;
+        return value;
+      },
+      { concurrency: 2, deadlineMs: 45_000, now: () => now },
+    );
+
+    expect(calls).toEqual([0, 1]);
+    expect(results).toEqual([0, 1]);
+  });
+
   it('continues after terminal entity attempts without duplicating work', async () => {
     const remaining = ['a', 'b', 'c'];
     const deps = dependencies({

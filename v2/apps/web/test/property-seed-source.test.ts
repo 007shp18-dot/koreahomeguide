@@ -14,6 +14,8 @@ type SeedIdentityRow = Readonly<{
   globalEntityId: string;
   globalMarketId: string;
   address: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
 }>;
 
 describe('SignedPrice property database seed source', () => {
@@ -48,6 +50,12 @@ describe('SignedPrice property database seed source', () => {
       expect(row.legacyKey).toBe(`singapore:block:${row.externalId}`);
       expect(row.globalEntityId).toBe(`sg-singapore:block:${row.externalId}`);
     }
+    expect(privateRows.filter(({ latitude, longitude }) =>
+      latitude !== null && longitude !== null)).toHaveLength(3_403);
+    expect(privateRows.filter(({ latitude, longitude }) =>
+      latitude === null && longitude === null)).toHaveLength(459);
+    expect(hdbRows.every(({ latitude, longitude }) =>
+      latitude === null && longitude === null)).toBe(true);
   });
 
   it('is deterministic, duplicate-free and never emits Dubai rows', () => {

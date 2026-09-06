@@ -83,6 +83,80 @@ function freezeRows(rows) {
   return Object.freeze(rows.map((row) => Object.freeze(row)));
 }
 
+function svy21ToWgs84(x, y) {
+  if (!Number.isFinite(x) || !Number.isFinite(y) || x < 0 || x > 60_000 || y < 0 || y > 60_000) return null;
+  const semiMajorAxis = 6_378_137;
+  const flattening = 1 / 298.257223563;
+  const eccentricitySquared = flattening * (2 - flattening);
+  const secondEccentricitySquared = eccentricitySquared / (1 - eccentricitySquared);
+  const radians = Math.PI / 180;
+  const originLatitude = (1 + 22 / 60) * radians;
+  const meridian = (latitude) => semiMajorAxis * (
+    (1 - eccentricitySquared / 4 - 3 * eccentricitySquared ** 2 / 64
+      - 5 * eccentricitySquared ** 3 / 256) * latitude
+    - (3 * eccentricitySquared / 8 + 3 * eccentricitySquared ** 2 / 32
+      + 45 * eccentricitySquared ** 3 / 1024) * Math.sin(2 * latitude)
+    + (15 * eccentricitySquared ** 2 / 256 + 45 * eccentricitySquared ** 3 / 1024)
+      * Math.sin(4 * latitude)
+    - 35 * eccentricitySquared ** 3 / 3072 * Math.sin(6 * latitude)
+  );
+  const target = meridian(originLatitude) + y - 38_744.572;
+  let latitudeRadians = originLatitude;
+  for (let iteration = 0; iteration < 5; iteration += 1) {
+    const radius = semiMajorAxis * (1 - eccentricitySquared)
+      / (1 - eccentricitySquared * Math.sin(latitudeRadians) ** 2) ** 1.5;
+    latitudeRadians += (target - meridian(latitudeRadians)) / radius;
+  }
+  const sine = Math.sin(latitudeRadians);
+  const cosine = Math.cos(latitudeRadians);
+  const tangent = Math.tan(latitudeRadians);
+  const primeVertical = semiMajorAxis
+    / Math.sqrt(1 - eccentricitySquared * sine ** 2);
+  const meridional = semiMajorAxis * (1 - eccentricitySquared)
+    / (1 - eccentricitySquared * sine ** 2) ** 1.5;
+  const tangentSquared = tangent ** 2;
+  const correction = secondEccentricitySquared * cosine ** 2;
+  const distance = (x - 28_001.642) / primeVertical;
+  const latitude = (latitudeRadians - primeVertical * tangent / meridional * (
+    distance ** 2 / 2
+    - (5 + 3 * tangentSquared + 10 * correction - 4 * correction ** 2
+      - 9 * secondEccentricitySquared) * distance ** 4 / 24
+    + (61 + 90 * tangentSquared + 298 * correction + 45 * tangentSquared ** 2
+      - 252 * secondEccentricitySquared - 3 * correction ** 2) * distance ** 6 / 720
+  )) / radians;
+  const longitude = 103 + 50 / 60 + (
+    distance - (1 + 2 * tangentSquared + correction) * distance ** 3 / 6
+    + (5 - 2 * correction + 28 * tangentSquared - 3 * correction ** 2
+      + 8 * secondEccentricitySquared + 24 * tangentSquared ** 2) * distance ** 5 / 120
+  ) / cosine / radians;
+  return latitude >= 1.15 && latitude <= 1.5 && longitude >= 103.55 && longitude <= 104.15
+    ? Object.freeze({ latitude, longitude })
+    : null;
+}
+
+function singaporeProjectLocations(source) {
+  const pointsByProject = new Map();
+  for (const entry of source.records) {
+    const record = object(entry);
+    if (record === null || typeof record.projectId !== 'string') continue;
+    if (typeof record.x !== 'number' || typeof record.y !== 'number'
+      || !Number.isFinite(record.x) || !Number.isFinite(record.y)
+      || record.x < 0 || record.x > 60_000 || record.y < 0 || record.y > 60_000) continue;
+    const points = pointsByProject.get(record.projectId) ?? [];
+    points.push(Object.freeze({ x: record.x, y: record.y }));
+    pointsByProject.set(record.projectId, points);
+  }
+  const locations = new Map();
+  for (const [projectId, points] of pointsByProject) {
+    const first = points[0];
+    if (first === undefined
+      || points.some((point) => Math.hypot(point.x - first.x, point.y - first.y) > 250)) continue;
+    const location = svy21ToWgs84(first.x, first.y);
+    if (location !== null) locations.set(projectId, location);
+  }
+  return locations;
+}
+
 function seoulSearchAddress(districtSlug, neighborhoodName, buildingName) {
   const districtName = SEOUL_DISTRICT_NAMES[districtSlug];
   if (districtName === undefined) {
@@ -146,6 +220,7 @@ export function loadSingaporePrivateSeed() {
   if (source?.version !== SG_PRIVATE_VERSION || !Array.isArray(source.projects)) {
     throw new Error('SignedPrice Singapore private seed source version mismatch.');
   }
+  const locations = singaporeProjectLocations(source);
   const rows = source.projects.map((entry) => {
     const record = object(entry);
     if (record === null) throw new Error('SignedPrice Singapore private seed record invalid.');
@@ -154,6 +229,7 @@ export function loadSingaporePrivateSeed() {
     const street = text(record.street, 'project.street');
     const district = text(record.district, 'project.district');
     const marketSegment = text(record.marketSegment, 'project.marketSegment');
+    const location = locations.get(externalId) ?? null;
     const geographyId = `sg-singapore:district:${district}`;
     return {
       source: 'singapore-private',
@@ -163,8 +239,8 @@ export function loadSingaporePrivateSeed() {
       name,
       normalizedName: normalizedName(name),
       address: `${street}, Singapore`,
-      latitude: null,
-      longitude: null,
+      latitude: location?.latitude ?? null,
+      longitude: location?.longitude ?? null,
       globalEntityId: `sg-singapore:project:${externalId}`,
       globalMarketId: 'sg-singapore',
       globalKind: 'project',

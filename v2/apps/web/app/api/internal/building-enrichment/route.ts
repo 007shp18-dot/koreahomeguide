@@ -47,8 +47,8 @@ export async function GET(request: Request) {
     ? 'wikimedia'
     : 'all';
   const source = parameters.get('source') ?? scheduledSource;
-  const limit = Number(parameters.get('limit') ?? (source === 'wikimedia' ? 30 : 12));
-  const maxLimit = source === 'official' ? 250 : 30;
+  const limit = Number(parameters.get('limit') ?? (source === 'wikimedia' ? 60 : 12));
+  const maxLimit = source === 'official' ? 250 : source === 'naver' ? 100 : source === 'wikimedia' ? 60 : 30;
   if ((market !== null && market !== 'seoul' && market !== 'singapore')
     || !['all', 'wikimedia', 'google', 'naver', 'official'].includes(source)
     || !Number.isInteger(limit) || limit < 1 || limit > maxLimit) {

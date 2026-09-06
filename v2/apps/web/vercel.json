@@ -7,7 +7,7 @@
       "schedule": "17 0 * * *"
     },
     {
-      "path": "/api/internal/building-enrichment/?source=wikimedia&limit=30",
+      "path": "/api/internal/building-enrichment/?source=wikimedia&limit=60",
       "schedule": "7 * * * *"
     },
     {
@@ -15,7 +15,7 @@
       "schedule": "17 * * * *"
     },
     {
-      "path": "/api/internal/building-enrichment/?source=naver&limit=30",
+      "path": "/api/internal/building-enrichment/?source=naver&limit=100",
       "schedule": "27 * * * *"
     },
     {

@@ -45,14 +45,24 @@ describe('scoped property enrichment',()=>{
  });
  it('uses the hourly schedule for a larger Wikimedia-only review batch',async()=>{
   vi.stubEnv('CRON_SECRET','test-secret');
-  calls.backfill.mockResolvedValue({state:'ready',checked:30,candidates:4});
+  calls.backfill.mockResolvedValue({state:'ready',checked:60,candidates:4});
   const response=await GET(new Request('https://example.com/api/internal/building-enrichment',{headers:{authorization:'Bearer test-secret','x-vercel-cron-schedule':'7 * * * *'}}));
   expect(response.status).toBe(200);
-  expect(calls.backfill).toHaveBeenCalledWith(expect.objectContaining({limit:30,market:'kr-seoul',provider:'wikimedia'}));
-  expect(calls.backfill).toHaveBeenCalledWith(expect.objectContaining({limit:30,market:'sg-singapore',provider:'wikimedia'}));
+  expect(calls.backfill).toHaveBeenCalledWith(expect.objectContaining({limit:60,market:'kr-seoul',provider:'wikimedia'}));
+  expect(calls.backfill).toHaveBeenCalledWith(expect.objectContaining({limit:60,market:'sg-singapore',provider:'wikimedia'}));
   expect(calls.backfill).toHaveBeenCalledTimes(2);
   expect(calls.official).not.toHaveBeenCalled();
-  expect(await response.json()).toMatchObject({source:'wikimedia',checked:60,candidates:8});
+  expect(await response.json()).toMatchObject({source:'wikimedia',checked:120,candidates:8});
+ });
+ it.each([
+  ['naver',100,'naver-search'],
+  ['wikimedia',60,'wikimedia'],
+ ] as const)('accepts the scaled %s discovery batch',async(source,limit,provider)=>{
+  vi.stubEnv('CRON_SECRET','test-secret');
+  calls.backfill.mockResolvedValue({state:'ready',checked:limit,candidates:2});
+  const response=await GET(new Request(`https://example.com/api/internal/building-enrichment?market=seoul&source=${source}&limit=${limit}`,{headers:{authorization:'Bearer test-secret'}}));
+  expect(response.status).toBe(200);
+  expect(calls.backfill).toHaveBeenCalledWith(expect.objectContaining({limit,market:'kr-seoul',provider}));
  });
  it('runs only the explicitly requested source',async()=>{
   vi.stubEnv('CRON_SECRET','test-secret');
@@ -95,8 +105,8 @@ describe('scoped property enrichment',()=>{
    crons?:readonly Readonly<{path:string;schedule:string}>[];
   };
   expect(config.crons).toEqual(expect.arrayContaining([
-   {path:'/api/internal/building-enrichment/?source=wikimedia&limit=30',schedule:'7 * * * *'},
-   {path:'/api/internal/building-enrichment/?source=naver&limit=30',schedule:'27 * * * *'},
+   {path:'/api/internal/building-enrichment/?source=wikimedia&limit=60',schedule:'7 * * * *'},
+   {path:'/api/internal/building-enrichment/?source=naver&limit=100',schedule:'27 * * * *'},
    {path:'/api/internal/building-enrichment/?source=google&limit=30',schedule:'47 * * * *'},
    {path:'/api/internal/building-enrichment/?source=official&limit=250',schedule:'17 * * * *'},
   ]));

@@ -137,6 +137,39 @@ if (!verifyOnly) {
           WHEN (markets.name, markets.country_code) IS DISTINCT FROM (excluded.name, excluded.country_code)
           THEN now() ELSE markets.updated_at END
     `),
+    transaction.query(`
+      INSERT INTO rights_policies (
+        id, can_fetch, can_store, can_cache, can_display, can_create_derived,
+        can_use_commercially, can_index, attribution, policy_url, checked_at
+      ) VALUES (
+        'sg-ura-private-sale-v1', true, true, true, true, true, true, true,
+        '["Urban Redevelopment Authority"]'::jsonb,
+        'https://www.ura.gov.sg/', '2026-09-02T00:00:00.000Z'::timestamptz
+      )
+      ON CONFLICT (id) DO UPDATE SET
+        can_fetch = excluded.can_fetch,
+        can_store = excluded.can_store,
+        can_cache = excluded.can_cache,
+        can_display = excluded.can_display,
+        can_create_derived = excluded.can_create_derived,
+        can_use_commercially = excluded.can_use_commercially,
+        can_index = excluded.can_index,
+        attribution = excluded.attribution,
+        policy_url = excluded.policy_url,
+        checked_at = excluded.checked_at,
+        updated_at = now()
+      WHERE (
+        rights_policies.can_fetch, rights_policies.can_store, rights_policies.can_cache,
+        rights_policies.can_display, rights_policies.can_create_derived,
+        rights_policies.can_use_commercially, rights_policies.can_index,
+        rights_policies.attribution, rights_policies.policy_url, rights_policies.checked_at
+      ) IS DISTINCT FROM (
+        excluded.can_fetch, excluded.can_store, excluded.can_cache,
+        excluded.can_display, excluded.can_create_derived,
+        excluded.can_use_commercially, excluded.can_index,
+        excluded.attribution, excluded.policy_url, excluded.checked_at
+      )
+    `),
   ]);
 
   const geographyRows = uniqueBy(seed.all, (row) => row.geographyId).map((row) => ({
@@ -255,9 +288,44 @@ if (!verifyOnly) {
           match_confidence = 1.0,
           match_method = 'signedprice-stable-id',
           updated_at = now()
-        WHERE external_identifiers.entity_id IS DISTINCT FROM excluded.entity_id
-           OR external_identifiers.match_confidence IS DISTINCT FROM 1.0
-           OR external_identifiers.match_method IS DISTINCT FROM 'signedprice-stable-id'
+         WHERE external_identifiers.entity_id IS DISTINCT FROM excluded.entity_id
+            OR external_identifiers.match_confidence IS DISTINCT FROM 1.0
+            OR external_identifiers.match_method IS DISTINCT FROM 'signedprice-stable-id'
+      `, [payload]),
+      transaction.query(`
+        INSERT INTO public_entity_locations (
+          entity_id, market_id, latitude, longitude, precision, provider,
+          provider_reference, rights_policy_id, verification_status, verified_at
+        )
+        SELECT entity_id, global_market_id, latitude, longitude, 'parcel', 'URA',
+          external_id, 'sg-ura-private-sale-v1', 'verified',
+          '2026-09-02T00:00:00.000Z'::timestamptz
+        FROM jsonb_to_recordset($1::jsonb) AS source(
+          entity_id text, global_market_id text, external_id text,
+          latitude double precision, longitude double precision
+        )
+        WHERE global_market_id = 'sg-singapore'
+          AND latitude IS NOT NULL AND longitude IS NOT NULL
+        ON CONFLICT (entity_id) WHERE verification_status = 'verified' DO UPDATE SET
+          market_id = excluded.market_id,
+          latitude = excluded.latitude,
+          longitude = excluded.longitude,
+          precision = excluded.precision,
+          provider = excluded.provider,
+          provider_reference = excluded.provider_reference,
+          rights_policy_id = excluded.rights_policy_id,
+          verified_at = excluded.verified_at,
+          updated_at = now()
+        WHERE (
+          public_entity_locations.market_id, public_entity_locations.latitude,
+          public_entity_locations.longitude, public_entity_locations.precision,
+          public_entity_locations.provider, public_entity_locations.provider_reference,
+          public_entity_locations.rights_policy_id, public_entity_locations.verified_at
+        ) IS DISTINCT FROM (
+          excluded.market_id, excluded.latitude, excluded.longitude, excluded.precision,
+          excluded.provider, excluded.provider_reference, excluded.rights_policy_id,
+          excluded.verified_at
+        )
       `, [payload]),
     ]);
   }

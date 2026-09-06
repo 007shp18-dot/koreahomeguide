@@ -402,9 +402,11 @@ async function countCandidatesInBatches<T>(
   values: readonly T[],
   worker: (value: T) => Promise<boolean>,
   concurrency = 5,
+  deadlineAt = Date.now() + 45_000,
 ): Promise<number> {
   let candidates = 0;
   for (let index = 0; index < values.length; index += concurrency) {
+    if (Date.now() >= deadlineAt) break;
     const results = await Promise.all(values.slice(index, index + concurrency).map(worker));
     candidates += results.filter(Boolean).length;
   }
@@ -500,7 +502,7 @@ export async function discoverWikimediaCommonsPhotoCandidates(
     ORDER BY
       CASE WHEN building.market_key = 'singapore' AND building.key LIKE 'singapore:project:%' THEN 0 ELSE 1 END,
       building.key
-    LIMIT ${Math.min(Math.max(limit, 1), 30)}
+    LIMIT ${Math.min(Math.max(limit, 1), 60)}
   `;
   const buildings = rows.flatMap((row): CandidateBuilding[] => (
     typeof row.entity_id === 'string' && typeof row.key === 'string'
@@ -521,10 +523,14 @@ export async function discoverWikimediaCommonsPhotoCandidates(
       }]
       : []
   ));
+  let checked = 0;
+  const checkedEntityIds: string[] = [];
   const candidates = await countCandidatesInBatches(buildings, async (building) => {
     if (building.marketKey === 'dubai') return false;
     const registryKey = candidatePhotoRegistryKey(building);
     if (registryKey === null) return false;
+    checked += 1;
+    checkedEntityIds.push(building.entityId);
     try {
       const endpoint = new URL('https://commons.wikimedia.org/w/api.php');
       endpoint.search = new URLSearchParams({
@@ -585,9 +591,9 @@ export async function discoverWikimediaCommonsPhotoCandidates(
     }
   });
   return Object.freeze({
-    checked: buildings.length,
+    checked,
     candidates,
-    entityIds: Object.freeze(buildings.map((building) => building.entityId)),
+    entityIds: Object.freeze(checkedEntityIds),
     state: 'ready',
   });
 }
@@ -755,6 +761,7 @@ export async function discoverGooglePlacePhotoCandidates(
     }
   };
   let candidates = 0;
+  const deadlineAt = Date.now() + 45_000;
   const first = buildings[0];
   if (first !== undefined) candidates += await discover(first) ? 1 : 0;
   if (terminalProviderError !== null) {
@@ -769,7 +776,7 @@ export async function discoverGooglePlacePhotoCandidates(
   candidates += await countCandidatesInBatches(buildings.slice(1), async (building) => {
     if (terminalProviderError !== null) return false;
     return discover(building);
-  });
+  }, 5, deadlineAt);
   return Object.freeze({
     checked,
     candidates,

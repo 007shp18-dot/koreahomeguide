@@ -35,7 +35,12 @@ Production runs one bounded slice per provider each hour: Wikimedia at minute
 7, official Seoul apartment facts at minute 17, NAVER at minute 27, and Google
 at minute 47. The two markets share each provider's daily request and spend
 caps. Each enabled job is resumable because terminal attempts receive a future
-retry time and are skipped.
+retry time and are skipped. Each market may check up to 60 Wikimedia buildings
+and 100 NAVER buildings per scheduled run. Both free-source collectors work in
+ordered groups of five and stop scheduling new groups after 45 seconds, leaving
+time for the route to save progress before Vercel's 60-second limit. Google
+remains capped at 30 candidates per run and the stricter five-request daily
+budget applies first.
 
 ## Storage and approval boundaries
 
@@ -90,11 +95,10 @@ Invoke-RestMethod -Headers $cronHeaders -Uri 'https://www.signedprice.com/api/in
 
 ## Database rollout evidence
 
-On 2026-09-06, migration `0008_building_photo_coverage.sql` was applied twice to
-Neon test branch `br-patient-sky-b3ssnche`. Both applications completed without
-duplicate schema objects. The branch contains the three coverage tables, five
-photo match-evidence columns, and one confidence constraint. A coverage sync
-updated ten rows on the first run and zero on the identical second run.
+On 2026-09-06, all ten checked-in migrations were replayed on Neon test branch
+`br-patient-sky-b3ssnche` and production branch `br-super-butterfly-b31hhh93`.
+The property, transaction-evidence, location, and K-apt nearby-place seeds then
+passed on both branches, including an identical second run.
 
 Seed invariants on that branch were:
 
@@ -105,26 +109,34 @@ Seed invariants on that branch were:
 | Singapore HDB | 10,011 |
 | Total target entities | 62,872 |
 
-Every target entity had a verified name, address, and `legacyBuildingKey` that
-resolved to a building row. No target entity or building had coordinates, and
-no target had a postal code. Therefore provider results remain in review unless
-another exact identity signal is added; the matching rule must not be relaxed
-to manufacture coverage.
+Every target entity has a verified name, address, and `legacyBuildingKey` that
+resolves to a building row. The URA evidence supplied accepted coordinates for
+3,403 Singapore private projects. K-apt supplied 2,135 school and 440 station
+rows for 573 Seoul apartment buildings. Provider results still require the
+existing exact-identity policy; these signals do not justify relaxed matching.
 
 Expected immutable seed digests:
 
 - `legacyIdDigest=d86ae08ab146e07570ccbd7b15f07a80f3ca5fd537d7199f58628348439e446a`
 - `entityIdDigest=92be10891460d8604c8b6661cd4884c3eaee9ce5791a14ec6c59a49a2d9e3729`
 
-At the same checkpoint, the production database contained 12 approved Seoul
-photo rows and 22 approved Singapore photo rows. `building_facts` and
-`nearby_places` both contained zero rows. The Vercel project did not have
-`SIGNEDPRICE_PUBLIC_DATA_SERVICE_KEY`, and the repository did not contain an
-installed `kr-proximity` artifact or its reviewed public-source descriptor.
-The scheduled official-facts worker therefore remains safely `not-configured`,
-and school/station projection remains `missing`, until those source inputs are
-installed. The public page continues to use its existing compressed-data
-fallback where one exists.
+At the same checkpoint, production contained 41 approved photo rows, 795
+official building-fact rows, 2,575 K-apt nearby-place rows, and 3,403 verified
+URA locations. The evidence tables contained 374,261 source records, 361,760
+linked observations, and 40,044 HDB metrics; the second seed inserted zero new
+rows. Identity and content digests matched on both branches, including the HDB
+metric content digest
+`751f21e307cc533f8d601de166b9d920a5889019b000f63b548698af27573bef`.
+The final production database size was 507,060,224 bytes. Vercel had the production
+pooled `DATABASE_URL`, Google server and browser keys, `CRON_SECRET`, and
+`CONTENT_ADMIN_SECRET` configured as production values. The public page keeps
+using the existing compressed-data fallback where one exists.
+
+The approved-photo total includes four exact Singapore building exteriors added
+after visual and source review: Robertson Blue, Dover Parkview, Trellis Towers,
+and JK Building. An additional free Commons sweep checked 360 Seoul and 360
+Singapore entities after deployment. Ambiguous names and wrong-location matches
+remain private in `review_required`; they are never projected as public photos.
 
 ## Completion criteria
 

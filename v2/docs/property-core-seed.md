@@ -2,12 +2,20 @@
 
 The checked-in Seoul and Singapore artifacts remain available. Property identity rows populate `buildings`, `property_entities`, `geographies`, and `external_identifiers`; existing enrichment and photo approval routes use these rows. Transaction distributions continue to use their verified artifact repositories.
 
+The evidence seed mirrors only row-level records that are actually present in the installed artifacts. It stores 177,641 published recent Seoul rent records, 62,678 published recent Seoul sale records, and all 133,942 Singapore private-sale records as source records. The verified property inventory accepts all rent and Singapore rows plus 50,177 Seoul sale rows as linked observations. Another 12,501 Seoul sale rows belong to 8,916 sale-only building IDs outside the immutable inventory; their hashes and raw fields remain as unlinked source evidence instead of creating guessed properties. Linked rows retain compact source-only attributes that are not represented by typed observation columns. The HDB artifact contains block summaries rather than its 462,792 upstream rows, so the seed stores 40,044 block median/count metrics. Evidence releases retain the upstream counts: Seoul rent 340,704, Seoul sale 76,570, Singapore private 133,942, and HDB 462,792. It never fabricates absent transactions.
+
 Run from `v2/apps/web` with a privately supplied `DATABASE_URL`:
 
 ```sh
 node scripts/seed-property-core.mjs --dry-run
 node scripts/seed-property-core.mjs
 node scripts/seed-property-core.mjs --verify-only
+node scripts/seed-property-evidence.mjs --dry-run
+node scripts/seed-property-evidence.mjs
+node scripts/seed-property-evidence.mjs --verify-only
+node scripts/seed-kapt-nearby-places.mjs --dry-run
+node scripts/seed-kapt-nearby-places.mjs
+node scripts/seed-kapt-nearby-places.mjs --verify-only
 ```
 
 Run the seed twice on a test branch before production. Updates happen only when seeded fields change. Seeding is an explicit operator action, not part of each build, so deployments do not replay source identities over subsequent review work.
@@ -28,12 +36,14 @@ Digest input is the sorted IDs joined by newlines, with no trailing newline. Leg
 
 The 2026-09-05 test on `br-patient-sky-b3ssnche` matched these counts and digests after full loading and replay. Complete row digests (including timestamps) were unchanged for all four seeded tables on replay. The partial test branch contained one incorrect MARINA ONE RESIDENCES ID, `375ca572…d84a6c`; its three rows were backed up and removed after approval, with no photo or transaction dependents. The checked-in correct ID is `9cd03c11…61f93`. Production `br-super-butterfly-b31hhh93` then passed the same seed verification. Dubai rows retained their pre-load digests on both branches.
 
+On 2026-09-06, both branches also passed the evidence replay with 374,261 source records, 361,760 linked observations, 12,501 unlinked Seoul sale records, and 40,044 HDB metric rows. A second identical run inserted zero observations and zero metrics. The observation identity digest was `6de566b1205b30f52f24724733ba9527ce95a839e489c3344b193d784f8144e7`, the observation content digest was `8ea9c7b506d644e911d7394e7bc4bd4e3d8b5070526e553c5c053502c932468e`, the HDB metric identity digest was `a38126ef2f9dd63563cbffc0477850b21e21abc24f1183291b1d8b9acdd91b29`, and the HDB metric content digest was `751f21e307cc533f8d601de166b9d920a5889019b000f63b548698af27573bef`. Verification scopes row-level evidence to the current artifact identity/content set and HDB metrics to the exact release, so later immutable releases can coexist. Final database sizes were 505,438,208 bytes on test and 507,060,224 bytes on production.
+
 ## Existing photo workflow
 
 Seoul search addresses combine city, district, neighborhood and building name or lot number. They support candidate searches; they do not claim a new geocoded position or independently verified legal address.
 
-The cron-authorized `GET /api/internal/building-enrichment` accepts optional `market=seoul` or `market=singapore` and `limit=1..12`. Use a small scoped batch for migration verification. Omitting parameters keeps the existing scheduled collection behavior. Candidates remain `review_required` until the existing `POST /api/internal/building-photo-approval` review flow approves them. List candidates through the existing authorized GET on that approval route.
+The cron-authorized `GET /api/internal/building-enrichment` accepts optional `market=seoul` or `market=singapore`. Use a small scoped batch for migration verification. The provider limits are 60 for Wikimedia, 100 for NAVER, 30 for Google, and 250 for installed official facts. Omitting parameters keeps the scheduled collection behavior. Candidates remain `review_required` until the existing `POST /api/internal/building-photo-approval` review flow approves them. List candidates through the existing authorized GET on that approval route.
 
 Candidate keys match existing screens: `kr-seoul:<id>`, `sg-project:<marketSegment>:<name>`, and `sg-hdb:<town>:<block address>`. Missing Singapore metadata is skipped rather than guessed. Existing Dubai keys and the environment registry fallback are retained.
 
-Configure production-only `DATABASE_URL` to the production pooled Neon connection through authenticated Vercel access. Never put it in source files, reports, or browser variables. The authenticated inspection on 2026-09-05 found the existing production value already matched the specified Neon main connection, including credentials and pooling.
+Configure production-only `DATABASE_URL` to the production pooled Neon connection through authenticated Vercel access. Never put it in source files, reports, or browser variables. The production secret was configured and its presence verified in the Vercel project on 2026-09-06.
