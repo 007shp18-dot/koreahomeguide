@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -17,10 +18,15 @@ type MetricFixture = Readonly<{
 }>;
 
 type SummaryFixture = Readonly<{
+  koreaRentSourceRecords: number;
   koreaRentObservations: number;
+  koreaSaleSourceRecords: number;
   koreaSaleObservations: number;
+  singaporePrivateSourceRecords: number;
   singaporePrivateObservations: number;
+  sourceRecordTotal: number;
   observationTotal: number;
+  unlinkedSourceRecords: number;
   hdbMetricRows: number;
   observationIdentityDigest: string;
   observationContentDigest: string;
@@ -46,10 +52,15 @@ function fixtureSeed() {
     },
     metrics,
     summary: {
+      koreaRentSourceRecords: 1,
       koreaRentObservations: 1,
+      koreaSaleSourceRecords: 1,
       koreaSaleObservations: 1,
+      singaporePrivateSourceRecords: 1,
       singaporePrivateObservations: 1,
+      sourceRecordTotal: 3,
       observationTotal: 3,
+      unlinkedSourceRecords: 0,
       hdbMetricRows: 2,
       observationIdentityDigest: 'd'.repeat(64),
       observationContentDigest: 'e'.repeat(64),
@@ -92,6 +103,22 @@ function memoryPort() {
 }
 
 describe('property evidence database seed runner', () => {
+  it('commits source-record inserts before observations select those records', () => {
+    const source = readFileSync(
+      new URL('../scripts/seed-property-evidence.mjs', import.meta.url),
+      'utf8',
+    );
+    const method = source.slice(
+      source.indexOf('async upsertObservations(rows)'),
+      source.indexOf('async upsertMetrics(rows)'),
+    );
+
+    expect(method).toContain('await sql.transaction');
+    expect(method).not.toContain('inserted_sources AS');
+    expect(method).toContain('INNER JOIN property_entities AS entity');
+    expect(method).toContain('WHERE input.projectable');
+  });
+
   it('writes bounded batches and inserts nothing on identical replay', async () => {
     const memory = memoryPort();
     const runner = createPropertyEvidenceSeedRunner(memory.port, fixtureSeed);

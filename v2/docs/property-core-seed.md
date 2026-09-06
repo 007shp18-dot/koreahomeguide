@@ -2,7 +2,7 @@
 
 The checked-in Seoul and Singapore artifacts remain available. Property identity rows populate `buildings`, `property_entities`, `geographies`, and `external_identifiers`; existing enrichment and photo approval routes use these rows. Transaction distributions continue to use their verified artifact repositories.
 
-The evidence seed mirrors only row-level records that are actually present in the installed artifacts. It stores 177,641 published recent Seoul rent records, 62,678 published recent Seoul sale records, and all 133,942 Singapore private-sale records as observations. The HDB artifact contains block summaries rather than its 462,792 upstream rows, so the seed stores 40,044 block median/count metrics and retains the upstream count on the evidence release. It never fabricates absent transactions.
+The evidence seed mirrors only row-level records that are actually present in the installed artifacts. It stores 177,641 published recent Seoul rent records, 62,678 published recent Seoul sale records, and all 133,942 Singapore private-sale records as source records. The verified property inventory accepts all rent and Singapore rows plus 50,177 Seoul sale rows as linked observations. Another 12,501 Seoul sale rows belong to 8,916 sale-only building IDs outside the immutable inventory; their hashes and raw fields remain as unlinked source evidence instead of creating guessed properties. The HDB artifact contains block summaries rather than its 462,792 upstream rows, so the seed stores 40,044 block median/count metrics and retains the upstream count on the evidence release. It never fabricates absent transactions.
 
 Run from `v2/apps/web` with a privately supplied `DATABASE_URL`:
 

@@ -16,7 +16,9 @@
 - Seed only `kr-seoul` and `sg-singapore`; never mutate Dubai.
 - Store only source rows present in the checked-in artifacts.
 - Preserve installed compressed snapshots and all existing public artifact readers.
-- Expected row-level observations: 374,261.
+- Expected row-level source records: 374,261.
+- Expected observations linked to the verified property inventory: 361,760.
+- Expected unlinked Seoul sale source records: 12,501.
 - Expected HDB metric rows: 40,044.
 - Repeated seeds must preserve row counts and deterministic digests.
 
@@ -181,4 +183,3 @@ Run the same migration, seed, replay, and verification on `br-super-butterfly-b3
 - [ ] **Step 4: Record aggregate verification evidence**
 
 Update `v2/docs/property-core-seed.md` with date, dataset counts, deterministic digests, test/main branch IDs, and Dubai invariants. Never record credentials or connection strings.
-

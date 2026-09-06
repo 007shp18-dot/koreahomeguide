@@ -15,7 +15,7 @@ The installed snapshot registry counts do not all describe row-level transaction
 - Seoul sale: 62,678 published recent sale rows attached to 22,720 building summaries; the artifact reports 76,570 source records but does not contain every source row.
 - Singapore HDB: 10,011 block summaries derived from 462,792 source rows. Each block contains rental and resale sample counts and medians, while the source transaction rows are absent.
 
-The database must never manufacture missing source rows. Row-level observations store only the 374,261 transaction records present in the artifacts. HDB block medians and sample counts use metric observations. Dataset and release metadata retain the full upstream record counts and installed snapshot SHA-256 digests.
+The database must never manufacture missing source rows or property identities. It stores all 374,261 transaction records present in the artifacts as source records. Of those, 361,760 have a verified target in the immutable 62,872-property inventory and become observations. The remaining 12,501 Seoul sale rows belong to 8,916 sale-only building IDs outside that inventory; they retain their content hash and raw source fields without an invented entity link. HDB block medians and sample counts use metric observations. Dataset and release metadata retain the full upstream record counts and installed snapshot SHA-256 digests.
 
 ## Evidence storage
 
@@ -40,7 +40,7 @@ The production schedule increases free-source throughput only after the same bou
 ## Acceptance
 
 - Property IDs and the expected legacy/entity digests remain unchanged.
-- The evidence seed reports exactly 374,261 row-level observations and 40,044 HDB metric rows.
+- The evidence seed reports exactly 374,261 source records, 361,760 linked observations, 12,501 unlinked Seoul sale source records, and 40,044 HDB metric rows.
 - Replaying the evidence and location seeds changes no counts or deterministic digests.
 - Singapore private coordinates publish for 3,403 unambiguous projects; the 459 projects without source coordinates remain unset.
 - K-apt schools and subway stations persist with no invented distances.

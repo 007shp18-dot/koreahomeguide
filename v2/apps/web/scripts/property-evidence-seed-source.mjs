@@ -103,16 +103,32 @@ function readVerifiedArtifact(datasetId, registry) {
   return Object.freeze({ metadata, payload });
 }
 
-function observationRow(datasetId, businessKey, entityId, source, fields) {
+function observationRow(datasetId, businessKey, entityId, source, fields, options = {}) {
   const contentHash = sha256(canonicalJson(source));
   return Object.freeze({
     datasetId,
     businessKey,
     contentHash,
     entityId,
+    projectable: options.projectable ?? true,
     ...fields,
-    localAttributes: Object.freeze({ source }),
+    rawMetadata: options.rawMetadata ?? Object.freeze({}),
   });
+}
+
+function seoulPropertyEntityIds() {
+  const payload = object(
+    JSON.parse(gunzipSync(readDataFile('observed-building-inventory.json.gz')).toString('utf8')),
+    'Seoul building inventory',
+  );
+  if (payload.artifactVersion !== 'signedprice-observed-building-inventory-v1'
+    || !Array.isArray(payload.records)) {
+    throw new TypeError('SignedPrice Seoul building inventory version mismatch.');
+  }
+  return new Set(payload.records.map((entry) => {
+    const row = object(entry, 'Seoul building inventory row');
+    return `kr-seoul:estate:${text(row.buildingId, 'Seoul building ID')}`;
+  }));
 }
 
 function koreaRentRows(payload) {
@@ -138,24 +154,33 @@ function koreaRentRows(payload) {
   ));
 }
 
-function koreaSaleRows(payload) {
+function koreaSaleRows(payload, propertyEntityIds) {
   return Object.freeze(payload.buildingRecords.flatMap((building) =>
-    building.recentSales.map((transaction, index) => observationRow(
-      'kr-sale',
-      `${building.buildingId}:${String(index).padStart(2, '0')}`,
-      `kr-seoul:estate:${building.buildingId}`,
-      Object.freeze({ buildingId: building.buildingId, transaction }),
-      Object.freeze({
-        marketId: 'kr-seoul', kind: 'sale', stage: null,
-        observedAt: `${transaction.filedMonth}-01`, registeredAt: null,
-        periodStart: `${transaction.filedMonth}-01`, periodEnd: `${transaction.filedMonth}-01`,
-        amountMinor: transaction.priceWon, annualAmountMinor: null, currencyCode: 'KRW',
-        depositMinor: null, recurringAmountMinor: null, frequency: 'once',
-        propertyAreaSqm: transaction.areaSqm, transactedAreaSqm: null,
-        areaBasis: 'reported-exclusive-area', floorValue: transaction.floor ?? null,
-        floorRange: null, tenureKind: null, localSchemaVersion: 'kr-sale-recent@1',
-      }),
-    )),
+    building.recentSales.map((transaction, index) => {
+      const entityId = `kr-seoul:estate:${building.buildingId}`;
+      const source = Object.freeze({ buildingId: building.buildingId, transaction });
+      const projectable = propertyEntityIds.has(entityId);
+      return observationRow(
+        'kr-sale',
+        `${building.buildingId}:${String(index).padStart(2, '0')}`,
+        entityId,
+        source,
+        Object.freeze({
+          marketId: 'kr-seoul', kind: 'sale', stage: null,
+          observedAt: `${transaction.filedMonth}-01`, registeredAt: null,
+          periodStart: `${transaction.filedMonth}-01`, periodEnd: `${transaction.filedMonth}-01`,
+          amountMinor: transaction.priceWon, annualAmountMinor: null, currencyCode: 'KRW',
+          depositMinor: null, recurringAmountMinor: null, frequency: 'once',
+          propertyAreaSqm: transaction.areaSqm, transactedAreaSqm: null,
+          areaBasis: 'reported-exclusive-area', floorValue: transaction.floor ?? null,
+          floorRange: null, tenureKind: null, localSchemaVersion: 'kr-sale-recent@1',
+        }),
+        Object.freeze({
+          projectable,
+          rawMetadata: projectable ? Object.freeze({}) : Object.freeze({ source }),
+        }),
+      );
+    }),
   ));
 }
 
@@ -245,17 +270,23 @@ export function loadPropertyEvidenceSeed() {
     [datasetId, readVerifiedArtifact(datasetId, registry)])));
   const observations = Object.freeze({
     'kr-rent': koreaRentRows(artifacts['kr-rent'].payload),
-    'kr-sale': koreaSaleRows(artifacts['kr-sale'].payload),
+    'kr-sale': koreaSaleRows(artifacts['kr-sale'].payload, seoulPropertyEntityIds()),
     'sg-private-sale': singaporePrivateRows(artifacts['sg-private-sale'].payload),
   });
   const hdbReleaseId = `sg-hdb:${artifacts['sg-hdb'].metadata.period.replace('/', ':')}`;
   const metrics = hdbMetricRows(artifacts['sg-hdb'].payload, hdbReleaseId);
   const allObservations = Object.freeze(Object.values(observations).flat());
+  const projectedObservations = Object.freeze(allObservations.filter((row) => row.projectable));
   const summary = Object.freeze({
-    koreaRentObservations: observations['kr-rent'].length,
-    koreaSaleObservations: observations['kr-sale'].length,
-    singaporePrivateObservations: observations['sg-private-sale'].length,
-    observationTotal: allObservations.length,
+    koreaRentSourceRecords: observations['kr-rent'].length,
+    koreaRentObservations: observations['kr-rent'].filter((row) => row.projectable).length,
+    koreaSaleSourceRecords: observations['kr-sale'].length,
+    koreaSaleObservations: observations['kr-sale'].filter((row) => row.projectable).length,
+    singaporePrivateSourceRecords: observations['sg-private-sale'].length,
+    singaporePrivateObservations: observations['sg-private-sale'].filter((row) => row.projectable).length,
+    sourceRecordTotal: allObservations.length,
+    observationTotal: projectedObservations.length,
+    unlinkedSourceRecords: allObservations.length - projectedObservations.length,
     hdbMetricRows: metrics.length,
     observationIdentityDigest: stableDigest(allObservations.map((row) => `${row.datasetId}:${row.businessKey}`)),
     observationContentDigest: stableDigest(allObservations.map((row) => `${row.datasetId}:${row.businessKey}:${row.contentHash}`)),

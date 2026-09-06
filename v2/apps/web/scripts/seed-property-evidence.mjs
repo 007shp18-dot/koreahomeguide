@@ -217,6 +217,7 @@ function databasePort(connectionString) {
       const payload = JSON.stringify(rows.map((row) => ({
         dataset_id: row.datasetId, business_key: row.businessKey,
         content_hash: row.contentHash, entity_id: row.entityId,
+        projectable: row.projectable,
         market_id: row.marketId, kind: row.kind, stage: row.stage,
         observed_at: row.observedAt, registered_at: row.registeredAt,
         period_start: row.periodStart, period_end: row.periodEnd,
@@ -225,29 +226,33 @@ function databasePort(connectionString) {
         recurring_amount_minor: row.recurringAmountMinor, frequency: row.frequency,
         property_area_sqm: row.propertyAreaSqm, transacted_area_sqm: row.transactedAreaSqm,
         area_basis: row.areaBasis, floor_value: row.floorValue, floor_range: row.floorRange,
-        tenure_kind: row.tenureKind, raw_metadata: row.localAttributes,
+        tenure_kind: row.tenureKind, raw_metadata: row.rawMetadata,
         local_schema_version: row.localSchemaVersion,
       })));
-      const [result] = await sql.query(`
-        WITH input AS (
-          SELECT * FROM jsonb_to_recordset($1::jsonb) AS row(
-            dataset_id text, business_key text, content_hash char(64), entity_id text,
-            market_id text, kind text, stage text, observed_at date, registered_at date,
-            period_start date, period_end date, amount_minor bigint,
-            annual_amount_minor bigint, currency_code char(3), deposit_minor bigint,
-            recurring_amount_minor bigint, frequency text, property_area_sqm numeric(12,3),
-            transacted_area_sqm numeric(12,3), area_basis text, floor_value integer,
-            floor_range text, tenure_kind text, raw_metadata jsonb, local_schema_version text
-          )
-        ), inserted_sources AS (
+      const inputShape = `
+        SELECT * FROM jsonb_to_recordset($1::jsonb) AS row(
+          dataset_id text, business_key text, content_hash char(64), entity_id text,
+          projectable boolean,
+          market_id text, kind text, stage text, observed_at date, registered_at date,
+          period_start date, period_end date, amount_minor bigint,
+          annual_amount_minor bigint, currency_code char(3), deposit_minor bigint,
+          recurring_amount_minor bigint, frequency text, property_area_sqm numeric(12,3),
+          transacted_area_sqm numeric(12,3), area_basis text, floor_value integer,
+          floor_range text, tenure_kind text, raw_metadata jsonb, local_schema_version text
+        )
+      `;
+      const [, observationResult] = await sql.transaction((transaction) => [
+        transaction.query(`
+          WITH input AS (${inputShape})
           INSERT INTO source_records (
             dataset_id, business_key, content_hash, observed_at, raw_metadata
           )
           SELECT dataset_id, business_key, content_hash, observed_at::timestamptz, raw_metadata
           FROM input
           ON CONFLICT (dataset_id, business_key, content_hash) DO NOTHING
-          RETURNING id
-        ), inserted_observations AS (
+        `, [payload]),
+        transaction.query(`
+          WITH input AS (${inputShape}), inserted_observations AS (
           INSERT INTO observations (
             market_id, subject_entity_id, source_record_id, kind, stage, observed_at,
             registered_at, period_start, period_end, amount_minor, annual_amount_minor,
@@ -267,11 +272,15 @@ function databasePort(connectionString) {
             ON source.dataset_id = input.dataset_id
             AND source.business_key = input.business_key
             AND source.content_hash = input.content_hash
+          INNER JOIN property_entities AS entity ON entity.id = input.entity_id
+          WHERE input.projectable
           ON CONFLICT (source_record_id, subject_entity_id, kind) DO NOTHING
           RETURNING id
-        )
-        SELECT count(*)::text AS inserted FROM inserted_observations
-      `, [payload]);
+          )
+          SELECT count(*)::text AS inserted FROM inserted_observations
+        `, [payload]),
+      ]);
+      const [result] = observationResult;
       return parseCount(result?.inserted ?? '0', 'inserted observation');
     },
     async upsertMetrics(rows) {
@@ -307,7 +316,8 @@ function databasePort(connectionString) {
     async verify(expected) {
       const [counts, sourceRows, metricRows, entityRows, legacyRows, orphanRows] = await Promise.all([
         sql.query(`
-          SELECT source.dataset_id, count(observation.id)::text AS count
+          SELECT source.dataset_id, count(*)::text AS source_count,
+            count(observation.id)::text AS observation_count
           FROM source_records AS source
           LEFT JOIN observations AS observation ON observation.source_record_id = source.id
           WHERE source.dataset_id = ANY($1::text[])
@@ -346,16 +356,29 @@ function databasePort(connectionString) {
             AND (entity.id IS NULL OR entity.market_id NOT IN ('kr-seoul', 'sg-singapore'))
         `, [OBSERVATION_DATASETS]),
       ]);
-      const byDataset = Object.fromEntries(counts.map((row) => [row.dataset_id, parseCount(row.count, `${row.dataset_id} observation`)]));
+      const sourceByDataset = Object.fromEntries(counts.map((row) => [
+        row.dataset_id,
+        parseCount(row.source_count, `${row.dataset_id} source record`),
+      ]));
+      const observationByDataset = Object.fromEntries(counts.map((row) => [
+        row.dataset_id,
+        parseCount(row.observation_count, `${row.dataset_id} observation`),
+      ]));
       const observationIdentityDigest = stableDigest(sourceRows.map((row) => `${row.dataset_id}:${row.business_key}`));
       const observationContentDigest = stableDigest(sourceRows.map((row) => `${row.dataset_id}:${row.business_key}:${row.content_hash}`));
       const metricIdentityDigest = stableDigest(metricRows.map((row) =>
         `${row.metric_definition_id}:${row.subject_entity_id}:${row.period_start}:${row.period_end}`));
       const verification = Object.freeze({
-        koreaRentObservations: byDataset['kr-rent'] ?? 0,
-        koreaSaleObservations: byDataset['kr-sale'] ?? 0,
-        singaporePrivateObservations: byDataset['sg-private-sale'] ?? 0,
-        observationTotal: Object.values(byDataset).reduce((sum, count) => sum + count, 0),
+        koreaRentSourceRecords: sourceByDataset['kr-rent'] ?? 0,
+        koreaRentObservations: observationByDataset['kr-rent'] ?? 0,
+        koreaSaleSourceRecords: sourceByDataset['kr-sale'] ?? 0,
+        koreaSaleObservations: observationByDataset['kr-sale'] ?? 0,
+        singaporePrivateSourceRecords: sourceByDataset['sg-private-sale'] ?? 0,
+        singaporePrivateObservations: observationByDataset['sg-private-sale'] ?? 0,
+        sourceRecordTotal: Object.values(sourceByDataset).reduce((sum, count) => sum + count, 0),
+        observationTotal: Object.values(observationByDataset).reduce((sum, count) => sum + count, 0),
+        unlinkedSourceRecords: Object.values(sourceByDataset).reduce((sum, count) => sum + count, 0)
+          - Object.values(observationByDataset).reduce((sum, count) => sum + count, 0),
         hdbMetricRows: metricRows.length,
         observationIdentityDigest,
         observationContentDigest,
@@ -364,7 +387,10 @@ function databasePort(connectionString) {
         legacyIdDigest: stableDigest(legacyRows.map((row) => `${row.market_key}:${row.external_id}`)),
         orphanObservations: parseCount(orphanRows[0]?.count ?? '0', 'orphan observation'),
       });
-      for (const key of ['koreaRentObservations', 'koreaSaleObservations', 'singaporePrivateObservations', 'observationTotal', 'hdbMetricRows', 'observationIdentityDigest', 'observationContentDigest', 'metricIdentityDigest']) {
+      for (const key of ['koreaRentSourceRecords', 'koreaRentObservations', 'koreaSaleSourceRecords',
+        'koreaSaleObservations', 'singaporePrivateSourceRecords', 'singaporePrivateObservations',
+        'sourceRecordTotal', 'observationTotal', 'unlinkedSourceRecords', 'hdbMetricRows',
+        'observationIdentityDigest', 'observationContentDigest', 'metricIdentityDigest']) {
         if (verification[key] !== expected[key]) throw new Error(`Property evidence verification mismatch: ${key}`);
       }
       if (verification.entityIdDigest !== EXPECTED_ENTITY_ID_DIGEST

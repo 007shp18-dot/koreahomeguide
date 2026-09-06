@@ -10,10 +10,15 @@ describe('SignedPrice property evidence database seed source', () => {
     const seed = loadPropertyEvidenceSeed();
 
     expect(seed.summary).toMatchObject({
+      koreaRentSourceRecords: 177_641,
       koreaRentObservations: 177_641,
-      koreaSaleObservations: 62_678,
+      koreaSaleSourceRecords: 62_678,
+      koreaSaleObservations: 50_177,
+      singaporePrivateSourceRecords: 133_942,
       singaporePrivateObservations: 133_942,
-      observationTotal: 374_261,
+      sourceRecordTotal: 374_261,
+      observationTotal: 361_760,
+      unlinkedSourceRecords: 12_501,
       hdbMetricRows: 40_044,
     });
     expect(seed.summary.observationIdentityDigest).toMatch(/^[a-f0-9]{64}$/u);
@@ -32,6 +37,20 @@ describe('SignedPrice property evidence database seed source', () => {
     expect(first.metadata.evidenceReleases).toHaveLength(4);
     expect(second.summary).toEqual(first.summary);
   }, 30_000);
+
+  it('stores raw payloads only when a transaction has no verified target entity', () => {
+    const seed = loadPropertyEvidenceSeed();
+    const [rent] = seed.observations['kr-rent'];
+    const [privateSale] = seed.observations['sg-private-sale'];
+    const missingSale = seed.observations['kr-sale'].find((row: { projectable: boolean }) => !row.projectable);
+
+    expect(rent).toMatchObject({ projectable: true, rawMetadata: {} });
+    expect(privateSale).toMatchObject({ projectable: true, rawMetadata: {} });
+    expect(missingSale).toMatchObject({
+      projectable: false,
+      rawMetadata: { source: { buildingId: expect.any(String), transaction: expect.any(Object) } },
+    });
+  });
 
   it('pages stable scoped rows without exposing Dubai or the absent source rows', () => {
     const rent = propertyEvidenceSeedPage('kr-rent', 0, 2);
