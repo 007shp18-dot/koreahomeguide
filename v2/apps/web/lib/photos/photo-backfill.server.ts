@@ -84,6 +84,33 @@ function validateOptions(options: PhotoBackfillOptions): void {
   }
 }
 
+export async function runOrderedProviderBatch<T, R>(
+  values: readonly T[],
+  worker: (value: T) => Promise<R>,
+  options: Readonly<{
+    concurrency?: number;
+    shouldStop?: (result: R) => boolean;
+    deadlineMs?: number;
+    now?: () => number;
+  }> = {},
+): Promise<readonly R[]> {
+  const concurrency = options.concurrency ?? 5;
+  if (!Number.isSafeInteger(concurrency) || concurrency < 1 || concurrency > 10) {
+    throw new RangeError('Provider concurrency must be between 1 and 10.');
+  }
+  const deadlineMs = options.deadlineMs ?? 45_000;
+  const now = options.now ?? Date.now;
+  const startedAt = now();
+  const results: R[] = [];
+  for (let index = 0; index < values.length; index += concurrency) {
+    if (now() - startedAt >= deadlineMs) break;
+    const group = await Promise.all(values.slice(index, index + concurrency).map(worker));
+    results.push(...group);
+    if (options.shouldStop !== undefined && group.some(options.shouldStop)) break;
+  }
+  return Object.freeze(results);
+}
+
 export function createPhotoBackfillRunner(dependencies: PhotoBackfillDependencies) {
   return async (options: PhotoBackfillOptions): Promise<PhotoBackfillResult> => {
     validateOptions(options);
@@ -250,16 +277,21 @@ async function runNaverAttemptBatch(
     ORDER BY entity.id
     LIMIT ${limit}
   `;
-  const entityIds: string[] = [];
-  let candidates = 0;
-  for (const row of rows) {
-    if (typeof row.entity_id !== 'string' || typeof row.building_key !== 'string'
-      || typeof row.official_name !== 'string' || typeof row.address !== 'string') continue;
+  const buildings = rows.flatMap((row) => (
+    typeof row.entity_id === 'string' && typeof row.building_key === 'string'
+      && typeof row.official_name === 'string' && typeof row.address === 'string'
+      ? [{
+        entityId: row.entity_id,
+        buildingKey: row.building_key,
+        officialName: row.official_name,
+        address: row.address,
+      }]
+      : []
+  ));
+  const outcomes = await runOrderedProviderBatch(buildings, async (building) => {
     const result = await searchNaverBuildingImages({
-      buildingName: row.official_name, address: row.address, display: 20,
+      buildingName: building.officialName, address: building.address, display: 20,
     });
-    entityIds.push(row.entity_id);
-    candidates += result.candidates.length;
     const status = result.state === 'ready'
       ? result.candidates.length > 0 ? 'succeeded' : 'no-candidate'
       : 'provider-error';
@@ -269,21 +301,28 @@ async function runNaverAttemptBatch(
       INSERT INTO building_enrichment_attempts (
         building_key, pipeline, status, reason, attempted_at, next_retry_at
       ) VALUES (
-        ${row.building_key}, 'photo-naver-search', ${status}, ${reason}, now(), now() + ${retry}::interval
+        ${building.buildingKey}, 'photo-naver-search', ${status}, ${reason}, now(), now() + ${retry}::interval
       )
       ON CONFLICT (building_key, pipeline) DO UPDATE SET
         status = excluded.status, reason = excluded.reason, attempted_at = now(),
         next_retry_at = excluded.next_retry_at, updated_at = now()
     `;
-    if (result.state === 'provider-error' && ['http-401', 'http-403'].includes(result.reason ?? '')) {
-      return Object.freeze({
-        state: 'provider-error', checked: entityIds.length, candidates,
-        entityIds: Object.freeze(entityIds), reason: result.reason,
-      });
-    }
-  }
+    return Object.freeze({
+      entityId: building.entityId,
+      candidates: result.candidates.length,
+      reason: result.reason,
+      stop: result.state === 'provider-error' && ['http-401', 'http-403'].includes(result.reason ?? ''),
+    });
+  }, { concurrency: 5, deadlineMs: 45_000, shouldStop: (outcome) => outcome.stop });
+  const entityIds = outcomes.map((outcome) => outcome.entityId);
+  const candidates = outcomes.reduce((sum, outcome) => sum + outcome.candidates, 0);
+  const terminal = outcomes.find((outcome) => outcome.stop);
   return Object.freeze({
-    state: 'ready', checked: entityIds.length, candidates, entityIds: Object.freeze(entityIds),
+    state: terminal === undefined ? 'ready' : 'provider-error',
+    checked: entityIds.length,
+    candidates,
+    entityIds: Object.freeze(entityIds),
+    ...(terminal?.reason === undefined ? {} : { reason: terminal.reason }),
   });
 }
 

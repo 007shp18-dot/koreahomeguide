@@ -4,7 +4,6 @@ import { pathToFileURL } from 'node:url';
 import { neon } from '@neondatabase/serverless';
 import { loadPropertyEvidenceSeed } from './property-evidence-seed-source.mjs';
 
-const DATASET_IDS = Object.freeze(['kr-rent', 'kr-sale', 'sg-hdb', 'sg-private-sale']);
 const OBSERVATION_DATASETS = Object.freeze(['kr-rent', 'kr-sale', 'sg-private-sale']);
 const EXPECTED_LEGACY_ID_DIGEST = 'd86ae08ab146e07570ccbd7b15f07a80f3ca5fd537d7199f58628348439e446a';
 const EXPECTED_ENTITY_ID_DIGEST = '92be10891460d8604c8b6661cd4884c3eaee9ce5791a14ec6c59a49a2d9e3729';

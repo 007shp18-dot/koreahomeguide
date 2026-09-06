@@ -68,13 +68,6 @@ function text(value, label) {
   return value.trim();
 }
 
-function number(value, label) {
-  if (typeof value !== 'number' || !Number.isFinite(value)) {
-    throw new TypeError(`SignedPrice evidence seed source invalid: ${label}`);
-  }
-  return value;
-}
-
 function monthRange(period) {
   const [from, to] = period.split('/');
   if (!/^\d{4}-\d{2}$/.test(from ?? '') || !/^\d{4}-\d{2}$/.test(to ?? '')) {

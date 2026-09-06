@@ -35,7 +35,12 @@ Production runs one bounded slice per provider each hour: Wikimedia at minute
 7, official Seoul apartment facts at minute 17, NAVER at minute 27, and Google
 at minute 47. The two markets share each provider's daily request and spend
 caps. Each enabled job is resumable because terminal attempts receive a future
-retry time and are skipped.
+retry time and are skipped. Each market may check up to 60 Wikimedia buildings
+and 100 NAVER buildings per scheduled run. Both free-source collectors work in
+ordered groups of five and stop scheduling new groups after 45 seconds, leaving
+time for the route to save progress before Vercel's 60-second limit. Google
+remains capped at 30 candidates per run and the stricter five-request daily
+budget applies first.
 
 ## Storage and approval boundaries
 
