@@ -62,7 +62,7 @@ const header: SiteHeaderModel = {
 
 const footer: SiteFooterModel = {
   brand: 'signedprice',
-  descriptor: 'Verified Seoul jeonse-deposit evidence, with publication limits shown.',
+  descriptor: 'Seoul sale, jeonse and monthly-rent evidence, with source periods and coverage shown.',
   navigationLabel: 'Footer navigation',
   links: [
     { label: 'Home', href: '/' },

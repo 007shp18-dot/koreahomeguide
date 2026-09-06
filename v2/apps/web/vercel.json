@@ -25,6 +25,30 @@
     {
       "path": "/api/internal/public-entity-projection/",
       "schedule": "57 0 * * *"
+    },
+    {
+      "path": "/api/internal/market-data-refresh/?job=kr-seoul-sale",
+      "schedule": "10 18 * * *"
+    },
+    {
+      "path": "/api/internal/market-data-refresh/?job=kr-seoul-rent",
+      "schedule": "25 18 * * *"
+    },
+    {
+      "path": "/api/internal/market-data-refresh/?job=sg-private-sale",
+      "schedule": "10 2 * * 2,5"
+    },
+    {
+      "path": "/api/internal/market-data-refresh/?job=sg-private-rent",
+      "schedule": "25 2 16 * *"
+    },
+    {
+      "path": "/api/internal/market-data-refresh/?job=ae-dubai-transaction",
+      "schedule": "10 1 * * *"
+    },
+    {
+      "path": "/api/internal/market-data-refresh/?job=ae-dubai-rent",
+      "schedule": "25 1 * * *"
     }
   ]
 }

@@ -6,6 +6,38 @@ Updated 2026-09-06. Current user-approved order supersedes the August preview-on
 
 Build a property research service that can grow into cross-border investment support and licensed brokerage: research → shortlist → due diligence → professional connection → purchase → ownership and resale.
 
+The operator reaffirmed that overseas investment and actual property buying/selling
+are the destination, not an optional extension of a statistics or calculator site.
+News, SEO and Guides are acquisition channels; Explore, Prices and Check establish
+decision evidence; saved scenarios and candidate comparisons prepare an eventual
+consented handoff into a real transaction. Current noncommercial operation does
+not imply that brokerage, active listings or management are already offered.
+
+Run two tracks in parallel: (1) the user journey from research to purchase and
+resale, and (2) actual local partner sourcing, project/listing verification and
+market-specific operating readiness. Do not postpone the second track until every
+dataset is complete. Never invent partners, live inventory or professional services.
+
+## Immediate quality and evidence-depth slice
+
+- Keep the shared Explore frame and brand. Account for all matching results on the
+  map, not only records with exact coordinates or the visible list page.
+- Separate real-location clusters from explicitly approximate area-only groups.
+  Use source-backed geographic membership; never save an area reference as a
+  building coordinate or use it for distance, nearby amenities or valuation.
+- Show total = located + area-only + no reliable map reference, with clickable
+  district totals for records that cannot yet be placed. Counts are buildings or
+  projects, not sale transactions or available listings.
+- Review customer-facing wording, source periods and calculation formatting.
+  Missing exact coordinates do not mean the underlying transaction evidence is
+  invalid, and must not be described as a provider authentication failure.
+- Dubai PR #167 includes a real 46-area/53-segment review aggregate. It remains
+  draft/noindex and outside the installed runtime; source/unit review and actual
+  production activation are not completed by committing the artifact.
+- Next: finish Dubai evidence activation when its release record is ready, connect
+  Check/scenario/share measurement, then compatible candidate comparison and saves.
+  Project-level Dubai evidence precedes expansion to Japan.
+
 ## Release now: shared foundation, Seoul/Singapore and Dubai research
 
 - Preserve the existing SignedPrice typography, white/navy surfaces, restrained blue actions, and common control sizes.

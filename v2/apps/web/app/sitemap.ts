@@ -7,6 +7,7 @@ import { contractCheckEvidenceRepositoriesFromEnvironment } from '../lib/contrac
 import { buildContractCheckRouteModel } from '../lib/contract-check/route-model.server';
 import { buildNewsIndexModel } from '../lib/news/news-route-model.server';
 import { publicCanonical } from '../lib/public-metadata';
+import { dubaiEvidenceRepositoryFromEnvironment } from '../lib/dubai/evidence-repository.server';
 import { buildKoreaPublicRouteModel } from '../lib/public-market/route-model.server';
 import { buildPublicAreaExploreModel } from '../lib/public-market/area-route-model.server';
 import {
@@ -147,6 +148,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const guideLastModified = latestDate(EDITORIAL_PORTFOLIO
     .filter(({ type }) => type === 'guide')
     .map(({ updatedAt }) => updatedAt));
+  const dubaiEvidence = dubaiEvidenceRepositoryFromEnvironment();
+  const dubaiLastModified = dubaiEvidence === null
+    ? undefined
+    : validDate(dubaiEvidence.getContext().generatedAt);
   const entries: MetadataRoute.Sitemap = [
     sitemapEntry('/markets/'),
     sitemapEntry('/prices/', summaryLastModified),
@@ -222,6 +227,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
         validDate(model?.evidence.generatedAt),
       )];
     }));
+  }
+  if (dubaiEvidence !== null) {
+    const dubaiAreaParams = dubaiEvidence.listAreaRouteParams();
+    entries.push(...dubaiAreaParams.map(({ area: slug }) => sitemapEntry(
+      `/ae/dubai/explore/${slug}/`,
+      dubaiLastModified,
+    )));
+    if (dubaiAreaParams.length > 0) {
+      entries.push(sitemapEntry('/ae/dubai/check/', dubaiLastModified));
+    }
   }
   const buildingEvidence = koreaEvidenceRepositoriesFromEnvironment();
   if (buildingEvidence.rent !== null || buildingEvidence.sale !== null) {

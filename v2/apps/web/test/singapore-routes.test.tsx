@@ -69,6 +69,21 @@ async function repository() {
 const repositoriesForCheck = () => createSingaporeCheckEvidenceRepositories({});
 
 describe('Singapore route SSR', () => {
+  it.each([1, 2])('keeps the full map coverage count on list page %i', async (initialPage) => {
+    const model = buildSingaporeExploreModel(await repository());
+    if (model.status !== 'ready') throw new Error('Missing fixture');
+    const segment = model.segments.find(item => (item.projects?.length ?? 0) > 0)!;
+    const project = segment.projects![0]!;
+    const projects = Array.from({ length: 775 }, (_, index) => ({ ...project,
+      id: `map-${index}`, name: `Map project ${index}`, district: '01', location: null,
+    }));
+    const html = renderToStaticMarkup(<SingaporeExplorer initialPage={initialPage}
+      model={{ ...model, segments: [{ ...segment, projects }] }} />);
+    expect(html).toContain('775 matching projects across all result pages');
+    expect(html).toContain('775 without a map reference');
+    expect(html).toContain(`Page ${initialPage} of 33`);
+    expect(html).not.toContain('24 projects on this page');
+  });
   it('keeps A and B market choices independent while switching tabs', async () => {
     const html = renderToStaticMarkup(<SingaporeCheckWorkspace model={buildSingaporeCheckRouteModel(
       await repositoriesForCheck(),
@@ -312,6 +327,8 @@ describe('Singapore Explore state', () => {
     expect(formatPrice).toBeTypeOf('function');
     expect((formatPrice as (label: string | null, fallback: string) => string)('SGD 2,550,000', '12 sales')).toBe('S$2.55M');
     expect((formatPrice as (label: string | null, fallback: string) => string)('SGD 980,000', '12 sales')).toBe('S$980K');
+    expect((formatPrice as (label: string | null, fallback: string) => string)('SGD 980,000.50', '12 sales')).toBe('S$980K');
+    expect((formatPrice as (label: string | null, fallback: string) => string)('Not published', '12 sales')).toBe('12 sales');
     expect((formatPrice as (label: string | null, fallback: string) => string)(null, '12 sales')).toBe('12 sales');
   });
 

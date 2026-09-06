@@ -42,6 +42,7 @@ let checkedInSingaporeHdb: unknown;
 let checkedInSingaporeCheckUra: unknown;
 let checkedInSingaporeCheckHdbResale: unknown;
 let checkedInSingaporeCheckHdbRent: unknown;
+let checkedInDubaiAreaEvidence: unknown;
 const checkedInSnapshotDigests = new WeakMap<object, string>();
 
 function parseCompressedInventory(source: Buffer): unknown {
@@ -202,6 +203,19 @@ export function resolveInstalledSnapshotObject(objectUrl: string): unknown {
       ],
     );
   }
+  if (objectUrl === 'installed://ae-area-evidence') {
+    return readCheckedInArtifact(
+      checkedInDubaiAreaEvidence,
+      (value) => { checkedInDubaiAreaEvidence = value; },
+      [
+        () => readFileSync(resolve(process.cwd(), 'data/dubai-area-evidence.json.gz')),
+        () => readFileSync(resolve(
+          process.cwd(),
+          'apps/web/data/dubai-area-evidence.json.gz',
+        )),
+      ],
+    );
+  }
   return undefined;
 }
 
@@ -249,10 +263,17 @@ function snapshotIdentity(payload: Readonly<Record<string, unknown>>): Readonly<
   const provenance = isObject(payload.provenance) ? payload.provenance : undefined;
   const totals = isObject(payload.totals) ? payload.totals : undefined;
   const artifactVersion = payload.artifactVersion;
+  const isDubaiAreaEvidence = payload.version === 'signedprice-dubai-area-evidence-v1'
+    && payload.marketId === 'ae-dubai';
   const singaporePeriod = isObject(payload.period)
     && typeof payload.period.from === 'string'
     && typeof payload.period.to === 'string'
     ? `${payload.period.from}/${payload.period.to}`
+    : undefined;
+  const dubaiPeriod = isDubaiAreaEvidence && isObject(payload.comparisonPeriod)
+    && typeof payload.comparisonPeriod.from === 'string'
+    && typeof payload.comparisonPeriod.to === 'string'
+    ? `${payload.comparisonPeriod.from.slice(0, 7)}/${payload.comparisonPeriod.to.slice(0, 7)}`
     : undefined;
   const singaporeMarket = payload.version === 'signedprice-singapore-private-sale-v1'
     || payload.version === 'signedprice-singapore-hdb-v1'
@@ -276,18 +297,20 @@ function snapshotIdentity(payload: Readonly<Record<string, unknown>>): Readonly<
     period: payload.version === 'signedprice-singapore-hdb-v1'
       || payload.version === 'signedprice-singapore-hdb-published-v1'
       ? hdbPeriod
-      : singaporePeriod ?? payload.period ?? provenance?.period,
+      : dubaiPeriod ?? singaporePeriod ?? payload.period ?? provenance?.period,
     recordCount: Array.isArray(payload.records)
       ? payload.records.length
       : Array.isArray(payload.areaRecords) && Array.isArray(payload.buildingRecords)
         ? payload.areaRecords.length + payload.buildingRecords.length
-        : Number.isSafeInteger(hdbTotals?.sourceRows)
+        : isDubaiAreaEvidence && Array.isArray(payload.areas)
+          ? payload.areas.length
+          : Number.isSafeInteger(hdbTotals?.sourceRows)
           && (hdbTotals?.sourceRows as number) >= 0
           ? hdbTotals?.sourceRows as number
-        : Number.isSafeInteger(totals?.eligiblePairCount)
-          && (totals?.eligiblePairCount as number) >= 0
-          ? totals?.eligiblePairCount as number
-        : null,
+            : Number.isSafeInteger(totals?.eligiblePairCount)
+              && (totals?.eligiblePairCount as number) >= 0
+              ? totals?.eligiblePairCount as number
+              : null,
   });
 }
 

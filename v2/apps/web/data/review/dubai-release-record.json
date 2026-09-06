@@ -1,0 +1,36 @@
+{
+  "ownerDeclaration": {
+    "declaredOn": "2026-09-06",
+    "declaredBy": "SignedPrice operator (user in this work session)",
+    "intendedUse": "noncommercial",
+    "authorizedAction": "Include the actual derived aggregate and supporting release records in public GitHub PR #167 of 007shp18-dot/koreahomeguide",
+    "sourcePermissionVerified": false,
+    "unitVerificationCompleted": false
+  },
+  "rights": {
+    "state": "pending",
+    "intendedUse": "noncommercial",
+    "canUseNonCommercially": false,
+    "canStore": false,
+    "canCreateDerived": false,
+    "canUseCommercially": false,
+    "canDisplay": false,
+    "canIndex": false,
+    "policyId": "ae-dubai-dld-area-aggregate-pending",
+    "sourceUrl": "https://dubailand.gov.ae/en/open-data/real-estate-data/",
+    "licenseUrl": null,
+    "attribution": "Source: Dubai Land Department",
+    "checkedAt": "2026-09-06T00:00:00.000Z",
+    "reviewedBy": null
+  },
+  "unitVerification": {
+    "state": "pending",
+    "currency": "AED",
+    "currencyFields": ["TRANS_VALUE", "ANNUAL_AMOUNT"],
+    "area": "sqm",
+    "areaField": "ACTUAL_AREA",
+    "evidenceUrl": null,
+    "checkedAt": null,
+    "reviewedBy": null
+  }
+}
