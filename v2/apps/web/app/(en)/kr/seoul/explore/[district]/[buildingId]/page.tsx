@@ -1,12 +1,16 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 
 import { BuildingDetailPage } from '@/components/public-market/building-detail-page';
 import { BuildingOfficialFacts } from '@/components/public-market/building-official-facts';
+import { KoreaBuildingEvidenceClient } from '@/components/public-market/korea-building-evidence-client';
+import { KoreaBuildingDecisionClient } from '@/components/public-market/korea-building-decision-client';
+import { KoreaObservedBuildingClient } from '@/components/public-market/korea-observed-building-client';
 import { ProjectedEntityMedia } from '@/components/public-market/projected-entity-media';
 import { googleMapsBrowserKeyFromEnvironment } from '@/lib/maps/google-maps-browser-key.server';
 import {
-  getStoredPublicPhotoApproval,
+  listStoredPublicPhotoApprovals,
   type StoredPublicPhotoApproval,
 } from '@/lib/photos/building-photo-store.server';
 import {
@@ -14,6 +18,7 @@ import {
   ObservedBuildingDetail,
 } from '@/components/public-market/observed-building-detail';
 import { PropertyTypeDetailPage } from '@/components/public-market/property-type-detail-page';
+import { getSeoulDistrictBySlug } from '@signedprice/korea-rent/browser';
 import {
   createSelectionHref,
   parseExplorerSelection,
@@ -44,6 +49,17 @@ import {
 import type { KoreaProximityRepositoryState } from '@/lib/public-market/korea-proximity-repository.server';
 import { koreaProximityRepositoryFromEnvironment } from '@/lib/public-market/korea-proximity-repository.server';
 import { appendKoreaProximityPairs } from '@/lib/public-market/korea-proximity-url';
+import {
+  isKoreaBuildingIndexable,
+  koreaBuildingCanonicalSelection,
+  koreaBuildingEvidenceDepth,
+  listPrerenderedKoreaBuildingRouteParams,
+  type KoreaBuildingEvidenceRecordPair,
+} from '@/lib/public-market/korea-building-index-policy';
+import {
+  createKoreaBuildingEnrichmentLoader,
+  type KoreaBuildingEnrichment,
+} from '@/lib/public-market/korea-building-enrichment.server';
 import { indexableMetadata } from '@/lib/public-metadata';
 import { localizedSeoulHref, type ProductLocale } from '@/lib/locale/product-copy';
 import {
@@ -135,7 +151,8 @@ function projectedBuildingMediaFor(
   />;
 }
 
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-static';
+export const revalidate = 3_600;
 export const dynamicParams = true;
 
 const evidenceAreas = Object.freeze([
@@ -185,8 +202,25 @@ export function resolveKoreaEvidenceBuildingRoute(
   return Object.freeze({ model, backHref });
 }
 
+export function listPrerenderedKoreaBuildingParams() {
+  const legacy = publicBuildingRepositoryFromEnvironment()?.listRouteParams() ?? [];
+  const evidence = koreaEvidenceRepositoriesFromEnvironment();
+  const indexable = listPrerenderedKoreaBuildingRouteParams({
+    rent: evidence.rent?.listBuildingRecords() ?? [],
+    sale: evidence.sale?.listBuildingRecords() ?? [],
+  });
+  const seen = new Set<string>();
+  const buildings = [...indexable, ...legacy].filter(({ district, buildingId }) => {
+    const key = `${district}/${buildingId}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+  return Object.freeze(buildings);
+}
+
 export function generateStaticParams() {
-  const buildings = publicBuildingRepositoryFromEnvironment()?.listRouteParams() ?? [];
+  const buildings = listPrerenderedKoreaBuildingParams();
   const propertyTypes = listPublicPropertyTypeRouteParams().map(({ district, propertyType }) => ({
     district,
     buildingId: propertyType,
@@ -194,7 +228,85 @@ export function generateStaticParams() {
   return [...buildings, ...propertyTypes];
 }
 
-export async function generateMetadata({ params, searchParams }: BuildingPageProps): Promise<Metadata> {
+function koreaBuildingEvidenceRecordsFor(
+  district: string,
+  buildingId: string,
+  repositories: KoreaEvidenceRepositories,
+): KoreaBuildingEvidenceRecordPair {
+  const districtIdentity = getSeoulDistrictBySlug(district);
+  if (districtIdentity === null) return Object.freeze({});
+  let rent;
+  let sale;
+  try {
+    rent = repositories.rent?.getBuilding(districtIdentity.slug, buildingId);
+  } catch {
+    rent = undefined;
+  }
+  try {
+    sale = repositories.sale?.getBuilding(districtIdentity.slug, buildingId);
+  } catch {
+    sale = undefined;
+  }
+  return Object.freeze({ rent, sale });
+}
+
+function canonicalKoreaBuildingQuery(
+  district: string,
+  buildingId: string,
+  repositories: KoreaEvidenceRepositories,
+): DetailQuery {
+  const records = koreaBuildingEvidenceRecordsFor(district, buildingId, repositories);
+  return records.rent === undefined && records.sale === undefined
+    ? Object.freeze({})
+    : koreaBuildingCanonicalSelection(records) ?? Object.freeze({});
+}
+
+export function koreaBuildingRouteKind(
+  district: string,
+  buildingId: string,
+  repositories: KoreaEvidenceRepositories = koreaEvidenceRepositoriesFromEnvironment(),
+): 'property-type' | 'building' | 'not-found' {
+  if (buildPublicPropertyTypeModel(district, buildingId) !== null) return 'property-type';
+  const evidence = koreaBuildingEvidenceRecordsFor(district, buildingId, repositories);
+  if (evidence.rent !== undefined || evidence.sale !== undefined) return 'building';
+  if (buildPublicBuildingModel(district, buildingId) !== null) return 'building';
+  return buildObservedBuildingIdentityModel(district, buildingId) === null
+    ? 'not-found'
+    : 'building';
+}
+
+function indexableKoreaBuildingMetadata(
+  district: string,
+  buildingId: string,
+  repositories: KoreaEvidenceRepositories,
+  locale: ProductLocale,
+): Metadata | null {
+  if (locale !== 'en') return null;
+  const records = koreaBuildingEvidenceRecordsFor(district, buildingId, repositories);
+  const identity = records.rent ?? records.sale;
+  if (identity === undefined || !isKoreaBuildingIndexable(records)) return null;
+  const selection = koreaBuildingCanonicalSelection(records);
+  if (selection === null) return null;
+  const canonical = resolveKoreaEvidenceBuildingRoute(
+    district,
+    buildingId,
+    selection,
+    repositories,
+  );
+  if (canonical === null) return null;
+  const contracts = koreaBuildingEvidenceDepth(records);
+  const evidenceLabel = selection.transaction === 'sale' ? 'sale prices' : 'rent evidence';
+  return indexableMetadata({
+    path: `/kr/seoul/explore/${canonical.model.district.slug}/${canonical.model.building.buildingId}/`,
+    title: `${identity.officialName} reported ${evidenceLabel} | signedprice`,
+    description: `${contracts} reported contracts for ${identity.officialName} in ${canonical.model.district.nameEn}, ${canonical.model.period}, shown by transaction, filed area and contract type with MOLIT source and coverage limits.`,
+  });
+}
+
+export async function generateMetadata({
+  params,
+  locale = 'en',
+}: LocalizedBuildingPageProps): Promise<Metadata> {
   const { district, buildingId } = await params;
   const propertyTypeModel = buildPublicPropertyTypeModel(district, buildingId);
   if (propertyTypeModel !== null) {
@@ -205,11 +317,19 @@ export async function generateMetadata({ params, searchParams }: BuildingPagePro
       description: `${propertyTypeModel.coverage.retainedContracts} retained recent contracts across ${buildingCount} published ${propertyTypeModel.district.nameEn} ${propertyTypeModel.propertyType.slug} building${buildingCount === 1 ? '' : 's'}, with MOLIT source and coverage limits shown.`,
     });
   }
+  const repositories = koreaEvidenceRepositoriesFromEnvironment();
+  const indexable = indexableKoreaBuildingMetadata(
+    district,
+    buildingId,
+    repositories,
+    locale,
+  );
+  if (indexable !== null) return indexable;
   const exact = resolveKoreaEvidenceBuildingRoute(
     district,
     buildingId,
-    await searchParams,
-    koreaEvidenceRepositoriesFromEnvironment(),
+    canonicalKoreaBuildingQuery(district, buildingId, repositories),
+    repositories,
   );
   if (exact !== null) {
     return {
@@ -242,6 +362,7 @@ export type KoreaBuildingRouteCompositionDependencies = Readonly<{
   entityProjection?: PublicEntityProjection | null;
   photoApproval?: StoredPublicPhotoApproval | null;
   photoApprovalReadFailed?: boolean;
+  hydrateEvidence?: boolean;
 }>;
 
 /**
@@ -293,13 +414,31 @@ export function composeKoreaBuildingRoute(input: Readonly<{
     const identity = observedIdentityModel(district, buildingId, { proximityRepository });
     const coordinate = entityProjection?.location
       ?? (identity?.coordinate.status === 'ready' ? identity.coordinate : undefined);
-    return <KoreaEvidenceBuildingDetail
+    const visual = projectedBuildingMediaFor(
+      exact.model.building.officialName,
+      entityProjection,
+      photoApproval,
+      photoRegistryKey,
+    );
+    const proximity = entityProjection?.proximity ?? identity?.proximity;
+    const fallback = <KoreaEvidenceBuildingDetail
       model={exact.model}
       backHref={exact.backHref}
       locale={locale}
-      visual={projectedBuildingMediaFor(exact.model.building.officialName, entityProjection, photoApproval, photoRegistryKey)}
-      facts={<BuildingOfficialFacts districtSlug={exact.model.district.slug} buildingId={exact.model.building.buildingId} observedFacts={transactionBuildingFacts(exact.model, coordinate)} proximity={entityProjection?.proximity ?? identity?.proximity} locale={locale} />}
+      visual={visual}
+      facts={<BuildingOfficialFacts districtSlug={exact.model.district.slug} buildingId={exact.model.building.buildingId} observedFacts={transactionBuildingFacts(exact.model, coordinate)} proximity={proximity} locale={locale} />}
     />;
+    if (input.dependencies?.hydrateEvidence !== true) return fallback;
+    return <Suspense fallback={fallback}>
+      <KoreaBuildingEvidenceClient
+        initialModel={exact.model}
+        initialBackHref={exact.backHref}
+        coordinate={coordinate}
+        proximity={proximity}
+        visual={visual}
+        locale={locale}
+      />
+    </Suspense>;
   }
   const model = buildPublicBuildingModel(district, buildingId);
   if (model === null) {
@@ -326,25 +465,42 @@ export function composeKoreaBuildingRoute(input: Readonly<{
       proximityRepository,
       locale,
     );
-    return <ObservedBuildingDetail
-      model={observed}
-      backHref={backHref}
-      visual={projectedBuildingMediaFor(observed.building.officialName, entityProjection, photoApproval, photoRegistryKey)}
-      facts={<BuildingOfficialFacts
-        districtSlug={observed.district.slug}
-        buildingId={observed.building.buildingId}
-        observedFacts={[
-          { label: 'Official identity', value: observed.building.officialName },
-          { label: 'Area', value: `${observed.building.neighborhoodName} · ${observed.district.nameEn}` },
-          { label: 'Housing type', value: observed.building.housingType },
-          { label: 'Evidence period', value: `${observed.observations.firstMonth}–${observed.observations.lastMonth}` },
-          { label: 'Map identity', value: observed.coordinate.status === 'ready' ? `${observed.coordinate.latitude.toFixed(5)}, ${observed.coordinate.longitude.toFixed(5)}` : 'Coordinate verification pending' },
-        ]}
-        proximity={entityProjection?.proximity ?? observed.proximity}
-        locale={locale}
-      />}
+    const visual = projectedBuildingMediaFor(
+      observed.building.officialName,
+      entityProjection,
+      photoApproval,
+      photoRegistryKey,
+    );
+    const facts = <BuildingOfficialFacts
+      districtSlug={observed.district.slug}
+      buildingId={observed.building.buildingId}
+      observedFacts={[
+        { label: 'Official identity', value: observed.building.officialName },
+        { label: 'Area', value: `${observed.building.neighborhoodName} · ${observed.district.nameEn}` },
+        { label: 'Housing type', value: observed.building.housingType },
+        { label: 'Evidence period', value: `${observed.observations.firstMonth}–${observed.observations.lastMonth}` },
+        { label: 'Map identity', value: observed.coordinate.status === 'ready' ? `${observed.coordinate.latitude.toFixed(5)}, ${observed.coordinate.longitude.toFixed(5)}` : 'Coordinate verification pending' },
+      ]}
+      proximity={entityProjection?.proximity ?? observed.proximity}
       locale={locale}
     />;
+    const fallback = <ObservedBuildingDetail
+      model={observed}
+      backHref={backHref}
+      visual={visual}
+      facts={facts}
+      locale={locale}
+    />;
+    if (input.dependencies?.hydrateEvidence !== true) return fallback;
+    return <Suspense fallback={fallback}>
+      <KoreaObservedBuildingClient
+        model={observed}
+        initialBackHref={backHref}
+        visual={visual}
+        facts={facts}
+        locale={locale}
+      />
+    </Suspense>;
   }
   const selection = parseBuildingDecisionSelection(
     query as Readonly<Record<string, string | string[] | undefined>>,
@@ -399,38 +555,83 @@ export function composeKoreaBuildingRoute(input: Readonly<{
         : `${publicCoordinate.latitude.toFixed(5)}, ${publicCoordinate.longitude.toFixed(5)}`,
     },
   ];
-  return (
-    <BuildingDetailPage
+  const facts = <BuildingOfficialFacts districtSlug={model.district.slug} buildingId={model.building.buildingId} observedFacts={observedFacts} proximity={entityProjection?.proximity ?? observed?.proximity} locale={locale} />;
+  const fallback = <BuildingDetailPage
       model={model}
       decision={decision}
       visual={visual}
       propertyMedia={propertyMedia}
-      facts={<BuildingOfficialFacts districtSlug={model.district.slug} buildingId={model.building.buildingId} observedFacts={observedFacts} proximity={entityProjection?.proximity ?? observed?.proximity} locale={locale} />}
+      facts={facts}
       base={base}
       backHref={backHref}
+  />;
+  if (input.dependencies?.hydrateEvidence !== true) return fallback;
+  return <Suspense fallback={fallback}>
+    <KoreaBuildingDecisionClient
+      model={model}
+      visual={visual}
+      propertyMedia={propertyMedia}
+      facts={facts}
+      base={base}
+      initialBackHref={backHref}
+      locale={locale}
     />
-  );
+  </Suspense>;
 }
 
-export default async function BuildingRoute({ params, searchParams, locale = 'en' }: LocalizedBuildingPageProps) {
-  const { district, buildingId } = await params;
-  const propertyEntityId = `kr-seoul:estate:${buildingId}`;
-  const projectionReader = publicEntityProjectionReaderFromEnvironment();
-  const [projections, photoApproval] = await Promise.all([
-    projectionReader === null
-      ? Promise.resolve(null)
-      : projectionReader.listBuildings([propertyEntityId]),
-    getStoredPublicPhotoApproval(`kr-seoul:${buildingId}`),
-  ]);
+const loadKoreaBuildingEnrichment = createKoreaBuildingEnrichmentLoader({
+  phase: () => process.env.NEXT_PHASE,
+  listPrerenderedBuildingIds: () => listPrerenderedKoreaBuildingParams()
+    .map(({ buildingId }) => buildingId),
+  projectionReader: publicEntityProjectionReaderFromEnvironment,
+  listPhotoApprovals: listStoredPublicPhotoApprovals,
+});
+
+export async function renderKoreaBuildingRoute(
+  input: Readonly<{
+    district: string;
+    buildingId: string;
+    locale?: ProductLocale;
+  }>,
+  dependencies: Readonly<{
+    evidenceRepositories?: KoreaEvidenceRepositories;
+    loadEnrichment?: (buildingId: string) => Promise<KoreaBuildingEnrichment>;
+  }> = Object.freeze({}),
+) {
+  const { district, buildingId, locale = 'en' } = input;
+  const evidenceRepositories = dependencies.evidenceRepositories
+    ?? koreaEvidenceRepositoriesFromEnvironment();
+  const routeKind = koreaBuildingRouteKind(district, buildingId, evidenceRepositories);
+  if (routeKind === 'not-found') notFound();
+  const query = canonicalKoreaBuildingQuery(district, buildingId, evidenceRepositories);
+  if (routeKind === 'property-type') {
+    return composeKoreaBuildingRoute({
+      district,
+      buildingId,
+      query,
+      locale,
+      dependencies: { evidenceRepositories, hydrateEvidence: true },
+    });
+  }
+  const { entityProjection, photoApproval, photoApprovalReadFailed } = await (
+    dependencies.loadEnrichment ?? loadKoreaBuildingEnrichment
+  )(buildingId);
   return composeKoreaBuildingRoute({
     district,
     buildingId,
-    query: await searchParams,
+    query,
     locale,
     dependencies: {
-      entityProjection: projections?.get(propertyEntityId) ?? null,
-      photoApproval: photoApproval ?? null,
-      photoApprovalReadFailed: photoApproval === undefined,
+      evidenceRepositories,
+      entityProjection,
+      photoApproval,
+      photoApprovalReadFailed,
+      hydrateEvidence: true,
     },
   });
+}
+
+export default async function BuildingRoute({ params, locale = 'en' }: LocalizedBuildingPageProps) {
+  const { district, buildingId } = await params;
+  return renderKoreaBuildingRoute({ district, buildingId, locale });
 }

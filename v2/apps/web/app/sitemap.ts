@@ -14,6 +14,8 @@ import {
   signedPricePublicRouteRegistry,
 } from '../lib/seo/public-route-registry.server';
 import { buildPublicPropertyTypeModel } from '../lib/public-market/property-type-route-model.server';
+import { koreaEvidenceRepositoriesFromEnvironment } from '../lib/public-market/korea-evidence-repositories.server';
+import { listIndexableKoreaBuildingRouteParams } from '../lib/public-market/korea-building-index-policy';
 
 type SitemapEntry = MetadataRoute.Sitemap[number];
 type LocalizedPair = Readonly<{
@@ -208,6 +210,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
         validDate(model?.evidence.generatedAt),
       )];
     }));
+  }
+  const buildingEvidence = koreaEvidenceRepositoriesFromEnvironment();
+  if (buildingEvidence.rent !== null || buildingEvidence.sale !== null) {
+    const buildingLastModified = latestDate([
+      buildingEvidence.rent?.getArtifact().generatedAt,
+      buildingEvidence.sale?.getArtifact().generatedAt,
+    ]);
+    entries.push(...listIndexableKoreaBuildingRouteParams({
+      rent: buildingEvidence.rent?.listBuildingRecords() ?? [],
+      sale: buildingEvidence.sale?.listBuildingRecords() ?? [],
+    })
+      .map(({ district, buildingId }) => sitemapEntry(
+        `/kr/seoul/explore/${district}/${buildingId}/`,
+        buildingLastModified,
+      )));
   }
   return entries;
 }

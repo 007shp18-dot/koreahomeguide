@@ -111,7 +111,12 @@ test('verified synthetic building detail is server rendered only in the local re
   await expect(page.getByRole('heading', { level: 1, name: PUBLIC_BUILDING_TEST_NAME })).toBeVisible();
   await expect(page.getByRole('link', { name: /Back to .* Explore/ })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Check this contract' })).toBeVisible();
-  const heroLayout = await page.locator('[data-detail-hero="building"]').evaluate((hero) => {
+  // During static hydration Next keeps the streamed replacement in a hidden
+  // container until it swaps the visible fallback. Measure the user-visible
+  // hero so strict locators do not race that hand-off.
+  const heroLayout = await page.locator('[data-detail-hero="building"]')
+    .filter({ visible: true })
+    .evaluate((hero) => {
     const media = hero.querySelector('[data-detail-order="media"]');
     const summary = hero.querySelector('[data-detail-order="identity"]');
     if (media === null || summary === null) throw new Error('Building hero is incomplete.');

@@ -15,6 +15,34 @@ export type StoredPublicPhotoApproval = Readonly<{
   approvedAt: string;
 }>;
 
+type StoredPublicPhotoApprovalRow = Readonly<Record<string, unknown>>;
+
+export type StoredPublicPhotoApprovalReadPort = Readonly<{
+  query(
+    statement: string,
+    parameters: readonly unknown[],
+  ): Promise<readonly StoredPublicPhotoApprovalRow[]>;
+}>;
+
+const PUBLIC_PHOTO_APPROVALS_SQL = `
+  /* building-photo-store:public-approvals */
+  SELECT DISTINCT ON (photo.registry_key)
+    photo.registry_key,
+    photo.provider,
+    photo.provider_place_id,
+    photo.asset_url,
+    photo.attribution_name,
+    photo.attribution_url,
+    building.official_name,
+    coalesce(building.road_address, building.legal_address) AS address,
+    photo.approved_at
+  FROM building_photos photo
+  JOIN buildings building ON building.key = photo.building_key
+  WHERE photo.registry_key = ANY($1::text[])
+    AND photo.status = 'approved'
+  ORDER BY photo.registry_key, photo.position, photo.id
+`;
+
 function safeHttpUrl(value: unknown): string | null {
   if (typeof value !== 'string') return null;
   try {
@@ -25,62 +53,38 @@ function safeHttpUrl(value: unknown): string | null {
   }
 }
 
-export async function getStoredPublicPhotoApproval(
-  key: string,
-): Promise<StoredPublicPhotoApproval | null | undefined> {
-  const sql = contentDatabase();
-  let databaseReadFailed = false;
-  if (sql !== null) {
-    try {
-      const [row] = await sql`
-        SELECT
-          photo.provider,
-          photo.provider_place_id,
-          photo.asset_url,
-          photo.attribution_name,
-          photo.attribution_url,
-          building.official_name,
-          coalesce(building.road_address, building.legal_address) AS address,
-          photo.approved_at
-        FROM building_photos photo
-        JOIN buildings building ON building.key = photo.building_key
-        WHERE photo.registry_key = ${key}
-          AND photo.status = 'approved'
-        ORDER BY photo.position, photo.id
-        LIMIT 1
-      `;
-      const provider = row?.provider;
-      const buildingName = row?.official_name;
-      const address = row?.address;
-      const approvedAt = row?.approved_at instanceof Date
-        ? row.approved_at.toISOString()
-        : typeof row?.approved_at === 'string' ? row.approved_at : null;
-      if (['google-place', 'licensed-url', 'owned-object'].includes(String(provider))
-        && typeof buildingName === 'string' && typeof address === 'string' && approvedAt !== null) {
-        const assetUrl = safeHttpUrl(row?.asset_url);
-        const placeId = typeof row?.provider_place_id === 'string' ? row.provider_place_id : null;
-        if ((provider === 'google-place' && placeId !== null)
-          || (provider !== 'google-place' && assetUrl !== null)) {
-          return Object.freeze({
-            provider: provider as StoredPublicPhotoApproval['provider'],
-            placeId,
-            assetUrl,
-            attributionName: typeof row?.attribution_name === 'string' ? row.attribution_name : null,
-            attributionUrl: safeHttpUrl(row?.attribution_url),
-            buildingName,
-            address,
-            approvedAt,
-          });
-        }
-      }
-    } catch (error) {
-      databaseReadFailed = true;
-      console.error('SignedPrice approved-photo database read failed.', error);
-    }
+function storedPublicPhotoApprovalFromRow(
+  row: StoredPublicPhotoApprovalRow,
+): StoredPublicPhotoApproval | null {
+  const provider = row.provider;
+  const buildingName = row.official_name;
+  const address = row.address;
+  const approvedAt = row.approved_at instanceof Date
+    ? row.approved_at.toISOString()
+    : typeof row.approved_at === 'string' ? row.approved_at : null;
+  if (!['google-place', 'licensed-url', 'owned-object'].includes(String(provider))
+    || typeof buildingName !== 'string' || typeof address !== 'string' || approvedAt === null) {
+    return null;
   }
-  const fallback = getPublicPhotoApproval(key);
-  if (fallback === null) return databaseReadFailed ? undefined : null;
+  const assetUrl = safeHttpUrl(row.asset_url);
+  const placeId = typeof row.provider_place_id === 'string' ? row.provider_place_id : null;
+  if ((provider === 'google-place' && placeId === null)
+    || (provider !== 'google-place' && assetUrl === null)) return null;
   return Object.freeze({
+    provider: provider as StoredPublicPhotoApproval['provider'],
+    placeId,
+    assetUrl,
+    attributionName: typeof row.attribution_name === 'string' ? row.attribution_name : null,
+    attributionUrl: safeHttpUrl(row.attribution_url),
+    buildingName,
+    address,
+    approvedAt,
+  });
+}
+
+function fallbackPublicPhotoApproval(key: string): StoredPublicPhotoApproval | null {
+  const fallback = getPublicPhotoApproval(key);
+  return fallback === null ? null : Object.freeze({
     provider: 'provider' in fallback ? fallback.provider : 'google-place',
     placeId: fallback.placeId,
     assetUrl: 'assetUrl' in fallback ? fallback.assetUrl : null,
@@ -90,6 +94,66 @@ export async function getStoredPublicPhotoApproval(
     address: fallback.address,
     approvedAt: fallback.approvedAt,
   });
+}
+
+export function createStoredPublicPhotoApprovalReader(
+  port: StoredPublicPhotoApprovalReadPort,
+): Readonly<{
+  list(keys: readonly string[]): Promise<ReadonlyMap<string, StoredPublicPhotoApproval>>;
+}> {
+  return Object.freeze({
+    async list(keys) {
+      const normalized = Object.freeze([
+        ...new Set(keys.filter((key) => key.trim() !== '' && key.length <= 240)),
+      ].slice(0, 2_500));
+      if (normalized.length === 0) return new Map();
+      const rows = await port.query(PUBLIC_PHOTO_APPROVALS_SQL, [normalized]);
+      const approvals = new Map<string, StoredPublicPhotoApproval>();
+      for (const row of rows) {
+        if (typeof row.registry_key !== 'string' || approvals.has(row.registry_key)) continue;
+        const approval = storedPublicPhotoApprovalFromRow(row);
+        if (approval !== null) approvals.set(row.registry_key, approval);
+      }
+      return approvals;
+    },
+  });
+}
+
+export async function listStoredPublicPhotoApprovals(
+  keys: readonly string[],
+): Promise<Readonly<{
+  approvals: ReadonlyMap<string, StoredPublicPhotoApproval>;
+  databaseReadFailed: boolean;
+}>> {
+  const normalized = Object.freeze([
+    ...new Set(keys.filter((key) => key.trim() !== '' && key.length <= 240)),
+  ].slice(0, 2_500));
+  let approvals = new Map<string, StoredPublicPhotoApproval>();
+  let databaseReadFailed = false;
+  const sql = contentDatabase();
+  if (sql !== null && normalized.length > 0) {
+    try {
+      approvals = new Map(await createStoredPublicPhotoApprovalReader({
+        query: (statement, parameters) => sql.query(statement, [...parameters]),
+      }).list(normalized));
+    } catch (error) {
+      databaseReadFailed = true;
+      console.error('SignedPrice approved-photo database read failed.', error);
+    }
+  }
+  for (const key of normalized) {
+    if (approvals.has(key)) continue;
+    const fallback = fallbackPublicPhotoApproval(key);
+    if (fallback !== null) approvals.set(key, fallback);
+  }
+  return Object.freeze({ approvals, databaseReadFailed });
+}
+
+export async function getStoredPublicPhotoApproval(
+  key: string,
+): Promise<StoredPublicPhotoApproval | null | undefined> {
+  const { approvals, databaseReadFailed } = await listStoredPublicPhotoApprovals([key]);
+  return approvals.get(key) ?? (databaseReadFailed ? undefined : null);
 }
 
 export type PhotoApprovalInput = Readonly<{

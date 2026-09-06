@@ -14,6 +14,8 @@ import {
   PUBLIC_AREA_FIXTURE_PERIOD,
   createPublicAreaFixture,
 } from './public-area-fixture';
+import { koreaEvidenceRepositoriesFromEnvironment } from '../lib/public-market/korea-evidence-repositories.server';
+import { listKoreaBuildingDirectory } from '../lib/public-market/korea-building-index-policy';
 
 afterEach(() => vi.unstubAllEnvs());
 
@@ -71,4 +73,28 @@ describe('nested Seoul district route', () => {
     expect(html).toContain('data-district-detail="published"');
     expect(html).toContain('Gangnam-gu');
   });
+
+  it('server-renders every indexable building as a crawlable district link', async () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    const evidence = koreaEvidenceRepositoriesFromEnvironment({
+      useCheckedInSnapshot: true,
+      retainLastVerified: false,
+    });
+    const entries = listKoreaBuildingDirectory({
+      rent: evidence.rent?.listBuildingRecords() ?? [],
+      sale: evidence.sale?.listBuildingRecords() ?? [],
+    }, 'songpa-gu');
+    expect(entries.length).toBeGreaterThan(0);
+
+    const html = renderToStaticMarkup(await NestedDistrictPage({
+      params: Promise.resolve({ district: 'songpa-gu' }),
+    }));
+    expect(html).toContain('Buildings published for Songpa-gu');
+    expect(html).toContain(
+      `${entries.length} buildings meet the current evidence publication threshold.`,
+    );
+    for (const entry of entries) {
+      expect(html).toContain(`href="${entry.href.slice(0, -1)}"`);
+    }
+  }, 20_000);
 });

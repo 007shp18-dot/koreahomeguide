@@ -7,6 +7,7 @@ import {
   BuildingProximityDisclosure,
   ObservedBuildingDetail,
 } from '../components/public-market/observed-building-detail';
+import { buildKoreaObservedBuildingBackHref } from '../components/public-market/korea-observed-building-client';
 import BuildingRoute, {
   dynamicParams,
   generateMetadata,
@@ -71,13 +72,19 @@ describe('observed building detail', () => {
     const params = Promise.resolve({
       district: 'jongno-gu', buildingId: 'jongno-monthly-home',
     });
-    const searchParams = Promise.resolve({
+    const query = {
       transaction: 'monthly',
       district: 'jongno-gu',
       neighborhood: 'sajik-dong',
       buildingId: 'jongno-monthly-home',
       contractType: 'all',
-    });
+      view: 'table',
+      station: 'SEOUL:STN/001',
+      stationDistance: '500',
+      school: 'SEOUL:SCH/001',
+      schoolDistance: '750',
+    };
+    const searchParams = Promise.resolve(query);
 
     expect(dynamicParams).toBe(true);
     expect(generateStaticParams()).not.toContainEqual({
@@ -93,8 +100,18 @@ describe('observed building detail', () => {
     const html = renderToStaticMarkup(await BuildingRoute({ params, searchParams }));
     expect(html).toContain('data-building-detail="identity-only"');
     expect(html).toContain('Monthly Home');
-    expect(html).toContain(
-      'href="/kr/seoul/explore?transaction=monthly&amp;district=jongno-gu&amp;neighborhood=sajik-dong&amp;buildingId=jongno-monthly-home&amp;contractType=all"',
+    const hydratedBackHref = buildKoreaObservedBuildingBackHref(
+      identityModel(),
+      new URLSearchParams(query),
+      '/kr/seoul/explore/?district=jongno-gu',
+    );
+    expect(hydratedBackHref).toBe(
+      '/kr/seoul/explore/?transaction=monthly&district=jongno-gu&neighborhood=sajik-dong&buildingId=jongno-monthly-home&contractType=all&view=table&station=SEOUL%3ASTN%2F001&stationDistance=500&school=SEOUL%3ASCH%2F001&schoolDistance=750',
+    );
+    expect(renderToStaticMarkup(
+      <ObservedBuildingDetail model={identityModel()} backHref={hydratedBackHref} />,
+    )).toContain(
+      'href="/kr/seoul/explore?transaction=monthly&amp;district=jongno-gu&amp;neighborhood=sajik-dong&amp;buildingId=jongno-monthly-home&amp;contractType=all&amp;view=table&amp;station=SEOUL%3ASTN%2F001&amp;stationDistance=500&amp;school=SEOUL%3ASCH%2F001&amp;schoolDistance=750"',
     );
   });
 
