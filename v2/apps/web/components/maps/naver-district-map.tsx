@@ -273,6 +273,7 @@ export function mountNaverDistrictMap({
   ...initial
 }: MountNaverDistrictMapOptions) {
   let map: NaverMapInstance | null = null;
+  let activeScope: string | null = null;
   let markers: NaverMarkerInstance[] = [];
   let listeners: unknown[] = [];
   let unavailableBuildingIds: string[] = [];
@@ -313,12 +314,15 @@ export function mountNaverDistrictMap({
       selectedDistrict?.longitude ?? 126.978,
     );
     const zoom = showingBuildings ? 14 : 11;
+    const scope = selectedDistrict === undefined ? 'seoul'
+      : `${selectedDistrict.latitude}:${selectedDistrict.longitude}`;
     if (map === null) {
       map = new sdk.Map(element, { center, zoom, minZoom: 10 });
-    } else {
+    } else if (activeScope !== scope) {
       map.setCenter(center);
       map.setZoom(zoom);
     }
+    activeScope = scope;
     const isActive = () => !disposed && generation === activeGeneration;
     const addMarker = (
       title: string,
