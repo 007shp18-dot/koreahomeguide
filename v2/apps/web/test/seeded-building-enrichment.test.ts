@@ -1,3 +1,4 @@
+import {readFileSync} from 'node:fs';
 import {afterEach, describe, expect, it, vi} from 'vitest';
 vi.mock('server-only', () => ({}));
 vi.mock('../lib/db/postgres.server', () => ({contentDatabaseConfigured: () => true}));
@@ -86,5 +87,16 @@ describe('scoped property enrichment',()=>{
    'start:google','finish:google',
    'start:naver-search','finish:naver-search',
   ]);
+ });
+ it('schedules each discovery provider and official facts independently',()=>{
+  const config=JSON.parse(readFileSync(new URL('../vercel.json',import.meta.url),'utf8')) as {
+   crons?:readonly Readonly<{path:string;schedule:string}>[];
+  };
+  expect(config.crons).toEqual(expect.arrayContaining([
+   {path:'/api/internal/building-enrichment?source=wikimedia&limit=30',schedule:'7 * * * *'},
+   {path:'/api/internal/building-enrichment?source=naver&limit=30',schedule:'27 * * * *'},
+   {path:'/api/internal/building-enrichment?source=google&limit=30',schedule:'47 * * * *'},
+   {path:'/api/internal/building-enrichment?source=official&limit=12',schedule:'17 * * * *'},
+  ]));
  });
 });
