@@ -8,7 +8,7 @@ import { DistrictDetailPage } from '@/components/public-market/district-detail-p
 import { buildPublicAreaExploreModel, buildPublicDistrictModel } from '@/lib/public-market/area-route-model.server';
 import { buildDistrictMetadata } from '@/lib/public-market/district-metadata';
 import { koreaEvidenceRepositoriesFromEnvironment } from '@/lib/public-market/korea-evidence-repositories.server';
-import { listKoreaBuildingDirectory } from '@/lib/public-market/korea-building-index-policy';
+import { listKoreaNeighborhoodDirectory } from '@/lib/public-market/korea-building-index-policy';
 import { parseExplorerSelection } from '@/lib/navigation/explorer-selection';
 import { KOREA_EXPLORER_HOUSING_TYPES } from '@/lib/public-market/korea-explorer-evidence.server';
 import {
@@ -60,7 +60,7 @@ export default async function NestedDistrictPage({
   );
   if (model === null) notFound();
   const evidence = koreaEvidenceRepositoriesFromEnvironment();
-  const directory = listKoreaBuildingDirectory({
+  const neighborhoods = listKoreaNeighborhoodDirectory({
     rent: evidence.rent?.listBuildingRecords() ?? [],
     sale: evidence.sale?.listBuildingRecords() ?? [],
   }, model.identity.slug);
@@ -104,7 +104,7 @@ export default async function NestedDistrictPage({
   return <DistrictDetailPage
     model={model}
     propertyTypes={propertyTypes}
-    directory={directory}
+    neighborhoods={neighborhoods}
     mapDistricts={mapDistricts}
     mapPoint={selected === undefined ? undefined : { latitude: selected.latitude, longitude: selected.longitude }}
     currentDistrict={selected}

@@ -15,7 +15,10 @@ import {
 } from '../lib/seo/public-route-registry.server';
 import { buildPublicPropertyTypeModel } from '../lib/public-market/property-type-route-model.server';
 import { koreaEvidenceRepositoriesFromEnvironment } from '../lib/public-market/korea-evidence-repositories.server';
-import { listIndexableKoreaBuildingRouteParams } from '../lib/public-market/korea-building-index-policy';
+import {
+  listIndexableKoreaBuildingRouteParams,
+  listIndexableKoreaNeighborhoodRouteParams,
+} from '../lib/public-market/korea-building-index-policy';
 
 type SitemapEntry = MetadataRoute.Sitemap[number];
 type LocalizedPair = Readonly<{
@@ -217,12 +220,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       buildingEvidence.rent?.getArtifact().generatedAt,
       buildingEvidence.sale?.getArtifact().generatedAt,
     ]);
-    entries.push(...listIndexableKoreaBuildingRouteParams({
+    const buildingRecords = {
       rent: buildingEvidence.rent?.listBuildingRecords() ?? [],
       sale: buildingEvidence.sale?.listBuildingRecords() ?? [],
-    })
+    };
+    entries.push(...listIndexableKoreaBuildingRouteParams(buildingRecords)
       .map(({ district, buildingId }) => sitemapEntry(
         `/kr/seoul/explore/${district}/${buildingId}/`,
+        buildingLastModified,
+      )));
+    entries.push(...listIndexableKoreaNeighborhoodRouteParams(buildingRecords)
+      .map(({ district, neighborhoodId }) => sitemapEntry(
+        `/kr/seoul/explore/${district}/neighborhood/${neighborhoodId}/`,
         buildingLastModified,
       )));
   }

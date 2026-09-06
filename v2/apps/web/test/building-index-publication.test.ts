@@ -13,6 +13,7 @@ import {
   listIndexableKoreaBuildingRouteParams,
   listKoreaBuildingDirectory,
 } from '../lib/public-market/korea-building-index-policy';
+import * as buildingIndexPolicy from '../lib/public-market/korea-building-index-policy';
 import { koreaEvidenceRepositoriesFromEnvironment } from '../lib/public-market/korea-evidence-repositories.server';
 
 const INDEXABLE_BUILDING = Object.freeze({
@@ -36,6 +37,86 @@ function useInstalledEvidence() {
 afterEach(() => vi.unstubAllEnvs());
 
 describe('Korea building search publication', () => {
+  it('groups every indexable building into a crawlable neighborhood directory', () => {
+    useInstalledEvidence();
+    const repositories = koreaEvidenceRepositoriesFromEnvironment();
+    const records = {
+      rent: repositories.rent?.listBuildingRecords() ?? [],
+      sale: repositories.sale?.listBuildingRecords() ?? [],
+    };
+    const policy = buildingIndexPolicy as typeof buildingIndexPolicy & {
+      listIndexableKoreaNeighborhoodRouteParams?: (input: typeof records) => readonly Readonly<{
+        district: string;
+        neighborhoodId: string;
+      }>[];
+      listKoreaNeighborhoodDirectory?: (
+        input: typeof records,
+        district: string,
+      ) => readonly Readonly<{
+        neighborhoodId: string;
+        name: string;
+        buildings: number;
+        href: string;
+      }>[];
+      getKoreaNeighborhoodBuildingDirectory?: (
+        input: typeof records,
+        district: string,
+        neighborhoodId: string,
+      ) => Readonly<{
+        districtSlug: string;
+        neighborhoodId: string;
+        name: string;
+        entries: readonly Readonly<{ buildingId: string; href: string }>[];
+      }> | null;
+    };
+
+    expect(policy.listIndexableKoreaNeighborhoodRouteParams).toBeTypeOf('function');
+    expect(policy.listKoreaNeighborhoodDirectory).toBeTypeOf('function');
+    expect(policy.getKoreaNeighborhoodBuildingDirectory).toBeTypeOf('function');
+    if (policy.listIndexableKoreaNeighborhoodRouteParams === undefined
+      || policy.listKoreaNeighborhoodDirectory === undefined
+      || policy.getKoreaNeighborhoodBuildingDirectory === undefined) return;
+
+    const routes = policy.listIndexableKoreaNeighborhoodRouteParams(records);
+    const gangnam = policy.listKoreaNeighborhoodDirectory(records, 'gangnam-gu');
+    const getNeighborhood = policy.getKoreaNeighborhoodBuildingDirectory;
+    const buildingRouteKeys = listIndexableKoreaBuildingRouteParams(records)
+      .map(({ district, buildingId }) => `${district}/${buildingId}`);
+
+    expect(routes).toHaveLength(379);
+    expect(new Set(routes.map(({ district, neighborhoodId }) => (
+      `${district}/${neighborhoodId}`
+    )))).toHaveLength(379);
+    const neighborhoodBuildingKeys = routes.flatMap(({ district, neighborhoodId }) => (
+      getNeighborhood(records, district, neighborhoodId)?.entries
+        .map(({ buildingId }) => `${district}/${buildingId}`) ?? []
+    ));
+    expect(neighborhoodBuildingKeys).toHaveLength(8_471);
+    expect(new Set(neighborhoodBuildingKeys)).toEqual(new Set(buildingRouteKeys));
+    expect(gangnam).toContainEqual({
+      neighborhoodId: 'gangnam-gu-dong-1g2fbdb',
+      name: '역삼동',
+      buildings: 133,
+      href: '/kr/seoul/explore/gangnam-gu/neighborhood/gangnam-gu-dong-1g2fbdb/',
+    });
+    const yeoksam = policy.getKoreaNeighborhoodBuildingDirectory(
+      records,
+      'gangnam-gu',
+      'gangnam-gu-dong-1g2fbdb',
+    );
+    expect(yeoksam).toMatchObject({
+      districtSlug: 'gangnam-gu',
+      neighborhoodId: 'gangnam-gu-dong-1g2fbdb',
+      name: '역삼동',
+    });
+    expect(yeoksam?.entries).toHaveLength(133);
+    expect(policy.getKoreaNeighborhoodBuildingDirectory(
+      records,
+      'songpa-gu',
+      'gangnam-gu-dong-1g2fbdb',
+    )).toBeNull();
+  }, 20_000);
+
   it('reuses the derived union and district directory for one evidence snapshot', () => {
     useInstalledEvidence();
     const repositories = koreaEvidenceRepositoriesFromEnvironment();
@@ -59,12 +140,20 @@ describe('Korea building search publication', () => {
       /^https:\/\/www\.signedprice\.com\/kr\/seoul\/explore\/[^/]+\/[^/]+\/$/.test(url)
       && !/(?:apartment|officetel|villa)\/$/.test(url)
     ));
+    const neighborhoodUrls = sitemap().map(({ url }) => url).filter((url) => (
+      /^https:\/\/www\.signedprice\.com\/kr\/seoul\/explore\/[^/]+\/neighborhood\/[^/]+\/$/.test(url)
+    ));
     const prerendered = generateStaticParams().map(({ district, buildingId }) => (
       `${district}/${buildingId}`
     ));
 
     expect(buildingUrls).toHaveLength(8_471);
     expect(new Set(buildingUrls)).toHaveLength(8_471);
+    expect(neighborhoodUrls).toHaveLength(379);
+    expect(new Set(neighborhoodUrls)).toHaveLength(379);
+    expect(neighborhoodUrls).toContain(
+      'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/neighborhood/gangnam-gu-dong-1g2fbdb/',
+    );
     expect(listPrerenderedKoreaBuildingParams()).toHaveLength(1_031);
     expect(prerendered).toHaveLength(1_086);
     expect(buildingUrls).toContain(
