@@ -15,6 +15,58 @@ export type NaverImageCandidateResult = Readonly<{
   reason?: string;
 }>;
 
+export const NAVER_IMAGE_API_HUB_URL = 'https://naverapihub.apigw.ntruss.com/search/v1/image' as const;
+export const NAVER_IMAGE_LEGACY_URL = 'https://openapi.naver.com/v1/search/image' as const;
+
+type NaverImageApiConfig = Readonly<{
+  clientId: string;
+  clientSecret: string;
+  endpoint: typeof NAVER_IMAGE_API_HUB_URL | typeof NAVER_IMAGE_LEGACY_URL;
+  headerNames: Readonly<{ clientId: string; clientSecret: string }>;
+}>;
+
+function credentialPair(clientId: string | undefined, clientSecret: string | undefined): Readonly<{
+  clientId: string;
+  clientSecret: string;
+}> | null {
+  const normalizedClientId = clientId?.trim();
+  const normalizedClientSecret = clientSecret?.trim();
+  return normalizedClientId && normalizedClientSecret
+    ? Object.freeze({ clientId: normalizedClientId, clientSecret: normalizedClientSecret })
+    : null;
+}
+
+function apiConfig(): NaverImageApiConfig | null {
+  const apiHub = credentialPair(
+    process.env.NAVER_API_HUB_CLIENT_ID,
+    process.env.NAVER_API_HUB_CLIENT_SECRET,
+  ) ?? credentialPair(
+    process.env.NAVER_NEWS_CLIENT_ID,
+    process.env.NAVER_NEWS_CLIENT_SECRET,
+  );
+  if (apiHub !== null) return Object.freeze({
+    ...apiHub,
+    endpoint: NAVER_IMAGE_API_HUB_URL,
+    headerNames: Object.freeze({
+      clientId: 'X-NCP-APIGW-API-KEY-ID',
+      clientSecret: 'X-NCP-APIGW-API-KEY',
+    }),
+  });
+
+  const legacy = credentialPair(
+    process.env.NAVER_SEARCH_CLIENT_ID,
+    process.env.NAVER_SEARCH_CLIENT_SECRET,
+  );
+  return legacy === null ? null : Object.freeze({
+    ...legacy,
+    endpoint: NAVER_IMAGE_LEGACY_URL,
+    headerNames: Object.freeze({
+      clientId: 'X-Naver-Client-Id',
+      clientSecret: 'X-Naver-Client-Secret',
+    }),
+  });
+}
+
 function httpsUrl(value: unknown): string | null {
   if (typeof value !== 'string') return null;
   try {
@@ -47,13 +99,12 @@ export async function searchNaverBuildingImages(input: Readonly<{
   address: string;
   display?: number;
 }>): Promise<NaverImageCandidateResult> {
-  const clientId = (process.env.NAVER_SEARCH_CLIENT_ID ?? process.env.NAVER_NEWS_CLIENT_ID)?.trim();
-  const clientSecret = (process.env.NAVER_SEARCH_CLIENT_SECRET ?? process.env.NAVER_NEWS_CLIENT_SECRET)?.trim();
-  if (!clientId || !clientSecret) return Object.freeze({ state: 'not-configured', candidates: Object.freeze([]) });
+  const config = apiConfig();
+  if (config === null) return Object.freeze({ state: 'not-configured', candidates: Object.freeze([]) });
 
   const requestedDisplay = Number.isInteger(input.display) ? input.display as number : 20;
   const display = Math.min(Math.max(requestedDisplay, 1), 100);
-  const endpoint = new URL('https://openapi.naver.com/v1/search/image');
+  const endpoint = new URL(config.endpoint);
   endpoint.search = new URLSearchParams({
     query: `${input.buildingName} ${input.address}`.trim(),
     display: String(display),
@@ -64,8 +115,8 @@ export async function searchNaverBuildingImages(input: Readonly<{
   try {
     const response = await fetch(endpoint.toString(), {
       headers: {
-        'X-Naver-Client-Id': clientId,
-        'X-Naver-Client-Secret': clientSecret,
+        [config.headerNames.clientId]: config.clientId,
+        [config.headerNames.clientSecret]: config.clientSecret,
       },
       cache: 'no-store',
       signal: AbortSignal.timeout(8_000),

@@ -15,8 +15,10 @@ values into command history.
 | `CRON_SECRET` | Scheduled building-enrichment route |
 | `GOOGLE_MAPS_API_KEY` | Server key, restricted to Places API (New) |
 | `GOOGLE_MAPS_BROWSER_KEY` | Browser key, restricted by SignedPrice origins and Maps JavaScript API |
-| `NAVER_SEARCH_CLIENT_ID` | NAVER Search API application ID |
-| `NAVER_SEARCH_CLIENT_SECRET` | NAVER Search API application secret |
+| `NAVER_API_HUB_CLIENT_ID` | NAVER API HUB application ID with Image Search enabled |
+| `NAVER_API_HUB_CLIENT_SECRET` | NAVER API HUB application secret |
+| `NAVER_SEARCH_CLIENT_ID` | Legacy NAVER Developers application ID, optional fallback only |
+| `NAVER_SEARCH_CLIENT_SECRET` | Legacy NAVER Developers application secret, optional fallback only |
 | `NAVER_MAP_CLIENT_ID` | Existing NAVER Maps browser client ID |
 
 The scheduled guardrails are `PHOTO_GOOGLE_DAILY_REQUEST_CAP`,
@@ -42,6 +44,9 @@ retry time and are skipped.
 - NAVER Image Search is a private live-review source. It stores only aggregate
   attempt status and result count; image URLs, thumbnails, and response payloads
   are never persisted or published.
+- New NAVER Image Search traffic uses NAVER API HUB. The legacy Developers
+  endpoint remains available only when the API HUB and existing NAVER news
+  credential pairs are both absent.
 - Wikimedia candidates may be stored only with their source and license data.
 - Only approved rows may reach public entity media. Street view and a parent
   project's photo remain explicitly labelled fallbacks and do not count as an
