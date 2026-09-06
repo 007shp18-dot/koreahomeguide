@@ -79,6 +79,7 @@ test('ready Singapore evidence flows entry to project when promotion gates open'
   await page.getByRole('link', { name: 'Open Singapore Explore' }).click();
   await expect(page.locator('[data-singapore-evidence="ready"]')).toBeVisible();
   for (const code of ['CCR', 'RCR', 'OCR']) await expect(page.getByText(code, { exact: true }).first()).toBeVisible();
+  await page.getByRole('tab', { name: /^CCR/ }).click();
   const segmentLink = page.getByRole('link', { name: 'Open CCR evidence' });
   await touchTarget(segmentLink);
   const segmentHref = await expectImmediatePending(segmentLink);
@@ -182,4 +183,16 @@ test('Seoul and Singapore Explore share the same desktop rail width', async ({ p
     expect(Math.abs((seoulRail?.width ?? 0) - 420)).toBeLessThanOrEqual(2);
   }
   await noOverflow(page);
+});
+
+test('Singapore Explore shows only the selected regional summary', async ({ page }) => {
+  await page.goto('/sg/singapore/explore/');
+  await expect(page.getByRole('heading', { name: 'Explore', exact: true, level: 1 })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Open CCR evidence', exact: true })).toBeHidden();
+  await page.getByRole('tab', { name: /^CCR/ }).click();
+  await expect(page.getByRole('link', { name: 'Open CCR evidence', exact: true })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Open RCR evidence', exact: true })).toBeHidden();
+  await page.getByRole('tab', { name: /^RCR/ }).click();
+  await expect(page.getByRole('link', { name: 'Open RCR evidence', exact: true })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Open CCR evidence', exact: true })).toBeHidden();
 });

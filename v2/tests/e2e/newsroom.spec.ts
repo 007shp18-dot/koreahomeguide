@@ -101,7 +101,7 @@ test('external headlines survive market filtering and open the original publishe
       { id: 'external-sg', market: 'singapore', marketLabel: 'Singapore', title: 'Singapore housing release', publisher: 'URA', publishedAt: '2026-09-06T00:00:00Z', sourceKind: 'google-news-rss', url: 'https://www.ura.gov.sg/news/media/pr26-57/' },
       { id: 'external-kr', market: 'seoul', marketLabel: 'Seoul', title: 'Seoul housing update', publisher: 'MOLIT', publishedAt: '2026-09-05T00:00:00Z', sourceKind: 'naver-search', url: 'https://www.molit.go.kr/' },
     ],
-  } })));
+  } }));
   await page.goto('/news/');
   await expect(page.getByRole('link', { name: 'Singapore housing release' })).toBeVisible();
   await page.getByRole('navigation', { name: 'News types' }).getByRole('link', { name: 'External headlines' }).click();
