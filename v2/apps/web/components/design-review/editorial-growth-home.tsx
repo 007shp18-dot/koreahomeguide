@@ -102,7 +102,11 @@ export function EditorialGrowthHome({ model, hrefs }: Readonly<{
   const portfolio = listPortfolioRecords(model.locale);
   const changedItems = portfolio.filter(({ type }) => type === 'policy-update').slice(0, 2);
   const dataStory = portfolio.find(({ type }) => type === 'data-story') ?? null;
-  const guides = portfolio.filter(({ type }) => type === 'guide').slice(0, 5);
+  const guideOrder = ['buy-property-in-korea-as-foreigner', 'read-singapore-private-transactions', 'read-seoul-sale-transactions', 'wolse-vs-jeonse', 'rent-an-apartment-in-korea'];
+  const guides = portfolio.filter(({ type }) => type === 'guide').sort((a, b) => {
+    const rank = (slug: string) => guideOrder.indexOf(slug) < 0 ? 99 : guideOrder.indexOf(slug);
+    return rank(a.slug) - rank(b.slug);
+  }).slice(0, 5);
 
   return (
     <main className={styles.homePage}>
@@ -119,7 +123,7 @@ export function EditorialGrowthHome({ model, hrefs }: Readonly<{
               <span>{market.position} · {copy.actionStates[index]}</span>
               <strong>{market.city}</strong>
               <p>{market.summary}</p>
-              <Link href={market.primaryAction.href}>{market.primaryAction.label}<span aria-hidden="true"> →</span></Link>
+              <Link href={market.primaryAction.href}>{market.primaryAction.label}</Link>
             </li>
           ))}
         </ol>
@@ -136,7 +140,7 @@ export function EditorialGrowthHome({ model, hrefs }: Readonly<{
               <time dateTime={article.updatedAt}>{article.updatedAt.slice(0, 10)}</time>
               <strong>{article.title}</strong>
               <p>{article.deck}</p>
-              <Link href={article.canonicalHref}>{copy.read}<span aria-hidden="true"> →</span></Link>
+              <Link href={article.canonicalHref}>{copy.read}</Link>
             </li>
           ))}
         </ol>
@@ -152,7 +156,7 @@ export function EditorialGrowthHome({ model, hrefs }: Readonly<{
           <p className={styles.articleMeta}>{dataStory?.marketId === 'sg-singapore' ? 'Singapore' : 'Seoul'} · {copy.updated} {dataStory?.updatedAt.slice(0, 10) ?? model.article.updated}</p>
           <p className={styles.articleMeta}>{copy.methodBody}</p>
           <Link className={styles.textAction} href={dataStory?.canonicalHref ?? links.content}>
-            {copy.read}<span aria-hidden="true"> →</span>
+            {copy.read}
           </Link>
         </div>
       </section>

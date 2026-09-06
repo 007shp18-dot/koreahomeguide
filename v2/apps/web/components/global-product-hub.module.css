@@ -655,3 +655,15 @@
   .newsFeed h3 { font-size: 1.125rem; }
   .newsEvidence { padding: 22px 18px; }
 }
+
+/* Shared research page heading rhythm. */
+.hero { max-width: var(--research-reading-frame); padding: 48px 0 40px; }
+.hero h1 { margin: 0; font-size: var(--page-title-size); font-weight: 650; letter-spacing: var(--tracking-display); line-height: 1.08; }
+.hero > p:last-child { margin-top: 12px; font-size: var(--body-size); line-height: var(--body-leading); }
+.guideGrid article { border: 0; border-top: 1px solid var(--line); border-radius: 0; box-shadow: none; background: transparent; padding: 24px 0; }
+
+.marketReading { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 24px; }
+.marketReading a { min-height: 44px; display: inline-flex; align-items: center; color: var(--accent); font-size: 14px; }
+.guideGrid article > span:first-child { color: var(--muted); font-weight: 500; text-transform: none; letter-spacing: 0; }
+.main { width: min(calc(100% - (2 * var(--page-gutter))), var(--research-content-frame)); }
+.section { padding: 32px 0 48px; }

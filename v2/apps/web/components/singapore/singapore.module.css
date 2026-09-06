@@ -704,3 +704,5 @@
 .table th, .table td { white-space: nowrap; overflow-wrap: normal; word-break: normal; }
 .section { box-shadow: none; }
 .section h2 { line-height: 1.3; font-size: var(--section-title-size, 28px); }
+
+.segmentRow[hidden] { display: none; }

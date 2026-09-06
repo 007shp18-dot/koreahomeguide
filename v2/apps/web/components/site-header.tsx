@@ -7,6 +7,7 @@ import { MarketLocalNav } from './market-ui/market-local-nav';
 
 type SiteHeaderProps = {
   copy: SiteHeaderModel;
+  primaryLinks?: readonly Readonly<{ label: string; href: string; isCurrent?: boolean }>[];
 };
 
 const markets = [
@@ -39,7 +40,7 @@ function isCurrentGlobalLink(href: string, currentHref: string | undefined): boo
     || /^\/(?:kr\/seoul|sg|ae\/dubai)\/?$/.test(currentHref);
 }
 
-export function SiteHeader({ copy }: SiteHeaderProps) {
+export function SiteHeader({ copy, primaryLinks = productNavigationLinks }: SiteHeaderProps) {
   const currentHref = copy.links.find(({ isCurrent }) => isCurrent)?.href;
   const marketId = marketIdFor(copy, currentHref);
   const marketLabel = copy.marketLabel
@@ -61,12 +62,12 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
 
         <nav className="site-header__product-nav" aria-label="Primary navigation">
           <ul className="site-header__links">
-            {productNavigationLinks.map((link) => (
+            {primaryLinks.map((link) => (
               <li key={link.href}>
                 <Link
                   className="site-header__product-link"
                   href={link.href}
-                  aria-current={isCurrentGlobalLink(link.href, currentHref) ? 'page' : undefined}
+                  aria-current={('isCurrent' in link && link.isCurrent) || isCurrentGlobalLink(link.href, currentHref) ? 'page' : undefined}
                 >
                   {link.label}
                 </Link>
@@ -88,17 +89,19 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
           ))}
         </nav>
 
-        {languageSwitch === undefined ? null : (
-          <Link
+        <nav className="site-header__languages" aria-label="Language navigation">
+          {marketId === null ? <>
+            <Link className="site-header__language" href={copy.languageLabel === 'ZH' ? (languageSwitch?.href ?? '/') : (currentHref ?? '/')} hrefLang="en" aria-current={copy.languageLabel !== 'ZH' ? 'page' : undefined}>EN</Link>
+            <Link className="site-header__language" href={currentHref?.includes('/guides') ? '/zh-cn/guides/' : currentHref?.includes('/news') ? '/zh-cn/news/' : '/zh-cn/kr/seoul/'} hrefLang="zh-CN" lang="zh-CN" aria-current={copy.languageLabel === 'ZH' ? 'page' : undefined}>中文</Link>
+          </> : null}
+          {languageSwitch === undefined || copy.languageLabel === 'ZH' ? null : <Link
             className="site-header__language"
             href={languageSwitch.href}
             hrefLang={languageSwitch.hrefLang}
             lang={languageSwitch.hrefLang}
             aria-label={`Change language to ${languageSwitch.label}`}
-          >
-            {isKorean ? 'EN' : 'KO'}
-          </Link>
-        )}
+          >{languageSwitch.hrefLang === 'en' ? 'EN' : languageSwitch.hrefLang === 'zh-CN' ? '中文' : 'KO'}</Link>}
+        </nav>
       </div>
 
       {marketId === null ? null : (

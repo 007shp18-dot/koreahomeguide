@@ -78,3 +78,7 @@
   .identity[data-has-media='true'] > div:first-child { grid-column: 1; grid-row: 2; }
   .identity[data-has-media='true'] > .heroMedia { grid-column: 1; grid-row: 1; }
 }
+
+.exploreHeader { padding: 24px 0; }
+.exploreHeader p { display: none; }
+.exploreHeader h1 { font-size: var(--page-title-size); font-weight: 650; letter-spacing: var(--tracking-display); }

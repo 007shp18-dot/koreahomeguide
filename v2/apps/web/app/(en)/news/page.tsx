@@ -17,7 +17,7 @@ export async function generateMetadata({ searchParams = Promise.resolve({}) }: N
   return indexableMetadata({
     path: filters.canonicalHref as `/${string}`,
     title: 'Property policy, market news and data stories | signedprice',
-    description: 'Read reviewed Seoul and Singapore property policy records, market briefs and original data stories with sources attached.',
+    description: 'Property policy, market analysis and external headlines for Seoul and Singapore, with sources and dates.',
     ...(filters.type === 'latest' && filters.market === 'all' ? {
       languageAlternates: { en: '/news/' as const, 'zh-Hans': '/zh-cn/news/' as const },
     } : {}),
