@@ -32,6 +32,7 @@ export type EditorialGrowthReviewDependencies = Readonly<{
   seoul: typeof buildSeoulLiveModel;
   check: (locale: ReviewLocale) => EditorialGrowthReviewModel['check'];
   explore: (locale: ReviewLocale) => Readonly<{
+    headlineMetric?: EditorialGrowthReviewModel['headlineMetric'];
     rows: EditorialGrowthReviewModel['exploreRows'];
     districts: EditorialGrowthReviewModel['exploreDistricts'];
   }>;
@@ -312,6 +313,7 @@ export function isReviewableExploreBuilding<T extends ReviewableExploreBuilding>
 }
 
 function buildReviewExploreFromCanonicalRoute(locale: ReviewLocale): Readonly<{
+  headlineMetric?: EditorialGrowthReviewModel['headlineMetric'];
   rows: readonly ReviewExploreRow[];
   districts: readonly ReviewMapDistrict[];
 }> {
@@ -329,6 +331,11 @@ function buildReviewExploreFromCanonicalRoute(locale: ReviewLocale): Readonly<{
   ]));
 
   return Object.freeze({
+    headlineMetric: canonical.evidenceSelection.transaction === 'sale' ? Object.freeze({
+      label: locale === 'zh-CN' ? '已申报买卖合约' : 'Reported sale contracts',
+      value: new Intl.NumberFormat(locale === 'zh-CN' ? 'zh-CN' : 'en').format(canonical.citySummary.n),
+      context: `${canonical.citySummary.period} · ${locale === 'zh-CN' ? '与 Explore 相同的已发布样本' : 'Same released sample as Explore'}`,
+    }) : undefined,
     rows: Object.freeze(buildings.filter(isReviewableExploreBuilding).slice(0, 6).map((building, index) => Object.freeze({
       id: building.id,
       name: building.name,
@@ -385,13 +392,13 @@ export async function buildEditorialGrowthReviewModel(
     seoulStatus: seoul.status === 'ready'
       ? `${copy.updated} ${seoul.period}`
       : query.locale === 'zh-CN' ? '官方首尔成交依据暂时不可用。' : seoul.message,
-    headlineMetric: seoul.status === 'ready'
+    headlineMetric: explore.headlineMetric ?? (seoul.status === 'ready'
       ? Object.freeze({
           label: copy.reportedContracts,
           value: new Intl.NumberFormat(query.locale === 'zh-CN' ? 'zh-CN' : 'en').format(seoul.totalCount),
           context: `${seoul.period} · ${query.locale === 'zh-CN' ? '符合筛选条件的合约，并非首尔全部成交' : 'Eligible contracts, not all Seoul transactions'}`,
         })
-      : null,
+      : null),
     article,
     articles,
     guides: Object.freeze(dependencies.guides().slice(0, 5).map((guide) => guideToReviewSummary(guide, query.locale))),

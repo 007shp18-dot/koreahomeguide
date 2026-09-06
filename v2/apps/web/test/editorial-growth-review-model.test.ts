@@ -169,4 +169,14 @@ describe('editorial growth review data boundary', () => {
       medianLabel: null,
     })).toBe(false);
   });
+
+it('prefers the current Explore sale sample over the legacy jeonse headline', async () => {
+  const metric = { label: 'Reported sale contracts', value: '42,000', context: '2026-02/2026-08 · Same released sample as Explore' };
+  const model = await buildEditorialGrowthReviewModel(
+    { locale: 'en', state: 'ready', ad: 'empty' },
+    { ...readyDependencies, explore: () => ({ rows: [], districts: [], headlineMetric: metric }) },
+  );
+  expect(model.headlineMetric).toEqual(metric);
+});
+
 });
