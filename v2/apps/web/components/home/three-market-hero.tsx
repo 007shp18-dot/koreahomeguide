@@ -60,7 +60,7 @@ export function ThreeMarketHero({ model }: Readonly<{ model: ThreeMarketHomeMode
     >
       <header className={styles.intro}>
         <p className={styles.eyebrow}>{copy.eyebrow}</p>
-        <h1 id="three-market-home-title">{model.headline}</h1>
+        <h2 id="three-market-home-title">{model.headline}</h2>
         <p>{model.lead}</p>
       </header>
 

@@ -50,8 +50,8 @@ export function createThreeMarketHomeModel(input: Input): ThreeMarketHomeModel {
     locale: input.locale,
     headline: zh ? '做决定之前，先看懂市场。' : 'See the market before you make the move.',
     lead: zh
-      ? '通过成交记录、楼盘详情和市场指南，了解首尔与新加坡的住宅市场。迪拜提供区域研究与官方市场资料。'
-      : 'Research residential property in Seoul and Singapore through reported transactions, building details and local market guides. Dubai offers area research and official market releases.',
+      ? '通过成交记录、楼盘详情和市场指南，比较首尔、新加坡与迪拜的住宅市场。'
+      : 'Compare residential property in Seoul, Singapore and Dubai through released transactions, place details and local market guides.',
     markets: [
       {
         id: 'kr-seoul',
@@ -86,11 +86,11 @@ export function createThreeMarketHomeModel(input: Input): ThreeMarketHomeModel {
         city: zh ? '迪拜' : 'Dubai',
         position: '03',
         photo: MARKET_PHOTOS.dubai,
-        summary: zh ? '市场趋势与区域研究。' : 'Market trends and area research.',
+        summary: zh ? '现房、期房价格与租金收益。' : 'Ready, off-plan, rent and yield evidence.',
         evidenceState: dubaiResearch?.state ?? 'limited',
-        evidenceTitle: zh ? '市场与项目研究' : 'Market and project research',
+        evidenceTitle: zh ? '迪拜土地局区域汇总' : 'Dubai Land Department area aggregates',
         evidenceValue: null,
-        evidenceNote: zh ? '详细交易数据展示权确认前，不提供价格查询。' : 'Transaction detail remains unavailable until display rights are cleared.',
+        evidenceNote: zh ? '已发布区域价格、样本量与数据期间；不作为实时房源。' : 'Released area prices, sample sizes and periods; not live listings.',
         primaryAction: { label: zh ? '探索' : 'Explore', href: '/ae/dubai/explore/' },
         secondaryAction: { label: zh ? '购房指南（英文）' : 'Buying guide', href: '/ae/dubai/guide/' },
       },

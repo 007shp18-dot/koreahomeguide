@@ -27,10 +27,10 @@ export function languageDestinations(pathname: string, search = ''): Record<Site
     destinations.en = withQuery(english);
     destinations.ko = withQuery(`/ko${english}`);
     if (english === '/kr/seoul') destinations['zh-CN'] = '/zh-cn/kr/seoul/';
-  } else if (english === '/tools' || english === '/tools/property-scenario') {
+  } else if (english === '/tools' || english === '/tools/property-scenario' || english === '/passport') {
     destinations.en = withQuery(english);
     destinations.ko = withQuery(`/ko${english}`);
-    if (english === '/tools') destinations['zh-CN'] = withQuery(`/zh-cn${english}`);
+    if (english === '/tools' || english === '/passport') destinations['zh-CN'] = withQuery(`/zh-cn${english}`);
   } else if (english === '/news' || english === '/guides') {
     destinations.en = withQuery(english);
     destinations['zh-CN'] = withQuery(`/zh-cn${english}`);

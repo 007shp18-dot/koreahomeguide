@@ -20,6 +20,7 @@ describe('public editorial homepage', () => {
     const markup = renderToStaticMarkup(await Home());
 
     expect(markup.match(/<h1/g)).toHaveLength(1);
+    expect(markup).toContain('Where can your budget become a home?');
     expect(markup).toContain('See the market before you make the move.');
     expect(markup).toContain('href="/kr/seoul/check"');
     expect(markup).toContain('href="/kr/seoul/explore"');
@@ -65,7 +66,7 @@ describe('public editorial homepage', () => {
       expect(markup).toContain(`href="${href}"`);
     }
     expect(markup).toContain('aria-label="Choose a property market"');
-    expect(markup).not.toContain('href="/ae/dubai/check"');
+    expect(markup).toContain('href="/ae/dubai/explore"');
   });
 
   it('keeps the root canonical and indexable', () => {

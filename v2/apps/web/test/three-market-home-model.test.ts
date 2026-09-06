@@ -49,7 +49,7 @@ describe('three-market home model', () => {
     expect(model.headline).toBe('做决定之前，先看懂市场。');
     expect(model.markets[0]?.primaryAction).toEqual({ label: '探索', href: '/kr/seoul/explore/' });
     expect(model.markets[1]?.evidenceTitle).toContain('私人住宅');
-    expect(model.markets[2]?.evidenceNote).toContain('数据展示权');
+    expect(model.markets[2]?.evidenceNote).toContain('已发布区域价格');
     expect(model.markets[2]?.primaryAction).toEqual({ label: '探索', href: '/ae/dubai/explore/' });
   });
 });

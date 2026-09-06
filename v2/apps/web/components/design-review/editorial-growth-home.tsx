@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { EditorialGrowthReviewModel } from '@/lib/design-review/editorial-growth-review-model';
 import { ThreeMarketHero } from '@/components/home/three-market-hero';
+import { PassportEntry } from '@/components/passport/passport-entry';
 import { createThreeMarketHomeModel } from '@/lib/home/three-market-home-model';
 import { listPortfolioRecords } from '@/content/portfolio-manifest';
 import styles from './editorial-growth-review.module.css';
@@ -17,7 +18,7 @@ const COPY = Object.freeze({
     marketsTitle: 'Property intelligence across three cities',
     compareMarkets: 'Compare markets',
     actions: 'Choose the next useful step',
-    actionStates: ['Transaction tools', 'Released evidence', 'Research only'],
+    actionStates: ['Transaction tools', 'Released evidence', 'Released evidence'],
     changed: 'What changed',
     changedTitle: 'Two updates worth checking before a decision',
     dataStory: 'Data Story',
@@ -30,8 +31,8 @@ const COPY = Object.freeze({
         { label: 'Check', href: '/sg/singapore/check/' }, { label: 'Explore', href: '/sg/singapore/explore/' },
         { label: 'Rankings', href: '/sg/singapore/rankings/' },
       ] },
-      { index: '03', name: 'Dubai', href: '/ae/dubai/', scope: 'Market structure and decision context', state: 'Data-rights work in progress', actions: [
-        { label: 'Overview', href: '/ae/dubai/' },
+      { index: '03', name: 'Dubai', href: '/ae/dubai/', scope: 'Ready and off-plan area evidence', state: 'Area evidence live', actions: [
+        { label: 'Check', href: '/ae/dubai/check/' }, { label: 'Explore', href: '/ae/dubai/explore/' },
       ] },
     ],
     insight: 'Latest analysis',
@@ -55,7 +56,7 @@ const COPY = Object.freeze({
     marketsTitle: '覆盖三个城市的房地产信息',
     compareMarkets: '比较市场',
     actions: '选择下一步',
-    actionStates: ['成交工具', '已发布数据', '仅供研究'],
+    actionStates: ['成交工具', '已发布数据', '已发布数据'],
     changed: '最新变化',
     changedTitle: '决策前值得查看的两项更新',
     dataStory: '数据故事',
@@ -68,8 +69,8 @@ const COPY = Object.freeze({
         { label: '查价', href: '/sg/singapore/check/' }, { label: '探索', href: '/sg/singapore/explore/' },
         { label: '排名', href: '/sg/singapore/rankings/' },
       ] },
-      { index: '03', name: '迪拜 Dubai', href: '/ae/dubai/', scope: '市场结构与决策背景', state: '数据展示权仍在确认', actions: [
-        { label: '概览', href: '/ae/dubai/' },
+      { index: '03', name: '迪拜 Dubai', href: '/ae/dubai/', scope: '现房与期房区域依据', state: '区域数据已上线', actions: [
+        { label: '查价', href: '/ae/dubai/check/' }, { label: '探索', href: '/ae/dubai/explore/' },
       ] },
     ],
     insight: '最新分析',
@@ -110,6 +111,7 @@ export function EditorialGrowthHome({ model, hrefs }: Readonly<{
 
   return (
     <main className={styles.homePage}>
+      <PassportEntry locale={model.locale} />
       <ThreeMarketHero model={threeMarketHome} />
 
       <section className={styles.contextualActions} data-home-region="actions" aria-labelledby="home-actions-title">
