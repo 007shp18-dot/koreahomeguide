@@ -11,7 +11,9 @@
     "typecheck": "tsc --noEmit",
     "db:migrate": "node scripts/apply-content-database.mjs",
     "db:seed:properties": "node scripts/seed-property-core.mjs",
-    "db:verify:properties": "node scripts/seed-property-core.mjs --verify-only"
+    "db:verify:properties": "node scripts/seed-property-core.mjs --verify-only",
+    "db:seed:evidence": "node scripts/seed-property-evidence.mjs",
+    "db:verify:evidence": "node scripts/seed-property-evidence.mjs --verify-only"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
