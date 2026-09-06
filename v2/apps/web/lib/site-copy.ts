@@ -72,7 +72,7 @@ export interface SiteHeaderModel {
   readonly languageSwitch?: Readonly<{
     readonly label: string;
     readonly href: string;
-    readonly hrefLang: 'en' | 'ko';
+    readonly hrefLang: 'en' | 'ko' | 'zh-CN';
   }>;
 }
 

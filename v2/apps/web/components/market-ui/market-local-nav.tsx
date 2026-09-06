@@ -77,7 +77,6 @@ export function MarketLocalNav({
             key={item.label}
           >
             {item.label}
-            {item.state === 'limited' ? <span>Limited</span> : null}
           </Link>
         ))}
       </div>

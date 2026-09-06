@@ -3752,3 +3752,17 @@ h1 {
   .explorer-map { order: 1; min-height: 560px; }
   .building-dialog { border-width: 1px 0 0; border-radius: 12px 12px 0 0; }
 }
+
+.site-header__languages { display: flex; align-items: center; gap: 2px; }
+.site-header__language { border: 0; border-radius: 0; }
+.site-header__markets { border: 0; border-radius: 0; background: transparent; }
+.site-header { box-shadow: none; }
+@media (max-width: 760px) { .site-header__languages { grid-column: 2; grid-row: 1; justify-self: end; } }
+@media (min-width: 641px) and (max-width: 960px) {
+  .site-header__inner { grid-template-columns: 1fr auto; gap: 6px 10px; padding: 8px 20px; }
+  .site-header__languages { grid-column: 2; grid-row: 1; justify-self: end; }
+  .site-header__product-nav { grid-column: 1 / -1; grid-row: 2; width: 100%; }
+  .site-header__links { display: grid; grid-template-columns: repeat(4, 1fr); width: 100%; }
+  .site-header__product-link { justify-content: center; width: 100%; }
+  .site-header__markets { grid-column: 1 / -1; grid-row: 3; justify-content: center; }
+}

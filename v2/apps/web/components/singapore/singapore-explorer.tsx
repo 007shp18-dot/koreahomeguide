@@ -101,8 +101,8 @@ export function SingaporeExplorer({
     <SingaporePage currentHref="/sg/singapore/explore/" unframed>
       <div data-singapore-explore-workspace="true" data-singapore-evidence="unavailable">
         <MarketExploreShell
-          eyebrow="Singapore Explore"
-          title="Residential transaction evidence"
+          eyebrow="Singapore"
+          title="Explore"
           period="Evidence unavailable"
           layers={marketLayers}
           discovery={<>
@@ -122,8 +122,8 @@ export function SingaporeExplorer({
     <SingaporePage currentHref="/sg/singapore/explore/" unframed>
       <div data-singapore-explore-workspace="true" data-singapore-evidence="ready">
         <MarketExploreShell
-          eyebrow="Singapore Explore"
-          title="Residential transaction evidence"
+          eyebrow="Singapore"
+          title="Explore"
           period={<>{model.transactionLabel}<br />{model.periodLabel}</>}
           layers={marketLayers}
           discovery={<section className={styles.segmentPanel} id="ura-private" aria-labelledby="segment-heading">

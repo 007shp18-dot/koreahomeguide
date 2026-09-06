@@ -2,9 +2,10 @@ import Link from 'next/link';
 
 import type { PublishedContentArticle } from '../../lib/content/content-types';
 import type { PolicyRecord } from '../../lib/policy/policy-types';
+import { ExternalHeadlines } from '../news/external-headlines';
 import styles from './newsroom.module.css';
 
-export type NewsroomTypeFilter = 'latest' | 'policy' | 'market' | 'data-stories';
+export type NewsroomTypeFilter = 'latest' | 'policy' | 'market' | 'data-stories' | 'headlines';
 export type NewsroomMarketFilter = 'all' | 'seoul' | 'singapore';
 export type NewsroomFilters = Readonly<{
   type: NewsroomTypeFilter;
@@ -16,7 +17,7 @@ type SearchParams = Readonly<Record<string, string | readonly string[] | undefin
 
 export function resolveNewsroomFilters(input: SearchParams): NewsroomFilters {
   const type = typeof input.type === 'string'
-    && ['latest', 'policy', 'market', 'data-stories'].includes(input.type)
+    && ['latest', 'policy', 'market', 'data-stories', 'headlines'].includes(input.type)
     ? input.type as NewsroomTypeFilter
     : 'latest';
   const market = typeof input.market === 'string'
@@ -96,7 +97,7 @@ export function NewsroomIndex({ articles, policies, filters }: Readonly<{
   const lead = items[0] ?? null;
   const latest = items.slice(1);
   const typeTabs = [
-    ['latest', 'Latest'], ['policy', 'Policy'], ['market', 'Market'], ['data-stories', 'Data Stories'],
+    ['latest', 'Latest'], ['policy', 'Policy'], ['market', 'Market'], ['data-stories', 'Data Stories'], ['headlines', 'External headlines'],
   ] as const;
   const marketTabs = [['all', 'All'], ['seoul', 'Seoul'], ['singapore', 'Singapore']] as const;
 
@@ -114,7 +115,8 @@ export function NewsroomIndex({ articles, policies, filters }: Readonly<{
         {marketTabs.map(([id, label]) => <Link key={id} href={filterHref(filters.type, id)} aria-current={filters.market === id ? 'page' : undefined}>{label}</Link>)}
       </nav>
     </div>
-    {lead === null ? <section className={styles.empty} data-newsroom-state="empty"><h2>No articles match these filters.</h2><Link href="/news/">Return to Latest</Link></section> : <>
+    {filters.type === 'latest' || filters.type === 'headlines' ? <ExternalHeadlines market={filters.market} preview={filters.type === 'latest'} /> : null}
+    {filters.type === 'headlines' ? null : lead === null ? <section className={styles.empty} data-newsroom-state="empty"><h2>No articles match these filters.</h2><Link href="/news/">Return to Latest</Link></section> : <>
       <article className={styles.leadStory} data-newsroom-lead={lead.type}>
         <div><span>{lead.type} · {lead.market}</span><time dateTime={lead.date}>{lead.date.slice(0, 10)}</time></div>
         <h2><Link href={lead.href}>{lead.title}</Link></h2>

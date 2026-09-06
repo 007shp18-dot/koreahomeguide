@@ -684,3 +684,13 @@
     border-bottom: 1px solid var(--review-line);
   }
 }
+
+.contents { max-width: 720px; margin: 32px 0; display: grid; gap: 4px; }
+.contents p { color: var(--review-muted); font-size: 14px; }
+.contents a { display: flex; align-items: center; min-height: 44px; font-size: 16px; color: inherit; text-decoration: underline; text-underline-offset: 4px; }
+.articleBody section { scroll-margin-top: 160px; }
+
+.relatedAction { flex-wrap: wrap; justify-content: flex-start; gap: 12px 28px; }
+.relatedAction > p { width: 100%; }
+.relatedAction a { min-height: 44px; display: inline-flex; align-items: center; }
+.filterBar > nav { min-width: 0; }

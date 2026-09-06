@@ -2,6 +2,7 @@ import Link from 'next/link';
 
 import type { PublishedContentArticle } from '../../lib/content/content-types';
 import type { InfographicSpec } from '../../lib/infographics/infographic-types';
+import { RESEARCH_FIGURES } from '../../content/en/research-figures';
 import { Infographic } from '../infographics/infographic';
 import styles from './newsroom.module.css';
 
@@ -23,12 +24,16 @@ function sections(body: string): readonly Readonly<{ heading: string; body: stri
 export function NewsroomArticle({ article }: Readonly<{
   article: PublishedContentArticle & Readonly<{ infographic?: InfographicSpec | null }>;
 }>) {
+  const figure = article.infographic ?? (article.locale === 'en' ? RESEARCH_FIGURES[article.slug] : undefined);
   const contentSections = sections(article.bodyMarkdown);
   const section = article.type === 'guide'
     ? { label: 'Guides', href: '/guides/' }
     : { label: 'News', href: '/news/' };
   const market = article.marketId === 'kr-seoul' ? 'Seoul'
     : article.marketId === 'sg-singapore' ? 'Singapore' : 'Global';
+  const reading = article.marketId === 'sg-singapore'
+    ? [{ label: 'Singapore buying and transaction guide', href: '/guides/read-singapore-private-transactions/' }, { label: 'Singapore market analysis', href: '/news/singapore-private-market-quarterly-brief/' }]
+    : [{ label: 'Buying property in Korea', href: '/guides/buy-property-in-korea-as-foreigner/' }, { label: 'Comparing Seoul sale transactions', href: '/guides/read-seoul-sale-transactions/' }];
   const relatedEvent = article.relatedHref?.includes('/check') ? 'article_to_check' : 'article_to_explore';
   return <main
     className={styles.article}
@@ -49,14 +54,15 @@ export function NewsroomArticle({ article }: Readonly<{
         <div><dt>Updated</dt><dd><time dateTime={article.updatedAt}>{article.updatedAt.slice(0, 10)}</time></dd></div>
       </dl>
     </header>
-    {article.infographic == null ? null : <Infographic spec={article.infographic} />}
+    {figure == null ? null : <Infographic spec={figure} />}
+    {contentSections.length < 5 ? null : <nav className={styles.contents} aria-label="In this article"><p>In this article</p>{contentSections.map((item, index) => <a href={`#section-${index + 1}`} key={item.heading}>{item.heading}</a>)}</nav>}
     <article className={styles.articleBody}>
-      {contentSections.map((section) => <section key={section.heading}><h2>{section.heading}</h2>{section.body.split(/\n\n+/u).map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</section>)}
+      {contentSections.map((section, index) => <section id={`section-${index + 1}`} key={section.heading}><h2>{section.heading}</h2>{section.body.split(/\n\n+/u).map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</section>)}
     </article>
     <section className={styles.sources} aria-labelledby="article-sources-title" data-editorial-event="article_complete">
       <h2 id="article-sources-title">Sources</h2>
       <ol>{article.sources.map((source) => <li key={source.id}><span>{source.kind}</span><a href={source.href} rel="noreferrer" data-editorial-event="policy_source_open">{source.publisher} · {source.title}</a><small>Checked {source.checkedAt.slice(0, 10)}</small></li>)}</ol>
     </section>
-    {article.relatedHref === null ? null : <aside className={styles.relatedAction}><p>Related reading and tools</p><Link href={article.relatedHref} data-editorial-event={relatedEvent}>Open related tool</Link></aside>}
+    {article.relatedHref === null ? null : <aside className={styles.relatedAction}><p>Related reading and tools</p><Link href={article.relatedHref} data-editorial-event={relatedEvent}>{article.relatedHref.includes('/check') ? 'Compare costs' : 'Explore transaction records'}</Link>{reading.filter(({ href }) => !href.endsWith(`/${article.slug}/`)).map((item) => <Link key={item.href} href={item.href}>{item.label}</Link>)}</aside>}
   </main>;
 }

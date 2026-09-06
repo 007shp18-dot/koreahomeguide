@@ -77,7 +77,7 @@ export const publicRoutes = [
   { path: '/ae/dubai/', heading: 'Dubai', indexing: 'noindex' },
   {
     path: '/sg/singapore/explore/',
-    heading: 'Residential transaction evidence',
+    heading: 'Explore',
     indexing: 'index',
     canonical: '/sg/singapore/explore/',
   },
@@ -101,7 +101,7 @@ export const publicRoutes = [
   { path: '/news/', heading: 'News', indexing: 'index', canonical: '/news/' },
   { path: '/news/policy/singapore-absd-policy-status/', heading: 'Singapore ABSD: current buyer-profile check', indexing: 'index', canonical: '/news/policy/singapore-absd-policy-status/' },
   { path: '/news/seoul-district-price-distribution/', heading: 'Similar medians, different markets: read Seoul distributions', indexing: 'index', canonical: '/news/seoul-district-price-distribution/' },
-  { path: '/guides/', heading: 'Buying abroad starts with local knowledge.', indexing: 'index', canonical: '/guides/' },
+  { path: '/guides/', heading: 'Guides', indexing: 'index', canonical: '/guides/' },
   { path: '/guides/rent-an-apartment-in-korea/', heading: 'Rent an apartment in Korea: search-to-move-in sequence', indexing: 'index', canonical: '/guides/rent-an-apartment-in-korea/' },
   { path: '/zh-cn/news/', heading: '政策变化与市场数据，都回到原始依据。', indexing: 'index', canonical: '/zh-cn/news/' },
   { path: '/zh-cn/guides/', heading: '先理解本地流程，再作跨境决定。', indexing: 'index', canonical: '/zh-cn/guides/' },

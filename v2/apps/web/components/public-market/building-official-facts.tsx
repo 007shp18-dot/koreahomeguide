@@ -60,7 +60,11 @@ function ReadyOfficialFacts({ envelope }: Readonly<{ envelope: Envelope }>) {
   </>;
 }
 
-function reasonCopy(reason: Extract<OfficialBuildingFacts, { status: 'unavailable' }>['reason']) {
+export function reasonCopy(reason: Extract<OfficialBuildingFacts, { status: 'unavailable' }>['reason'], locale: ProductLocale = 'en') {
+  if (locale === 'ko') {
+    const reasons = { unsupported_housing_type: '이 주택 유형은 K-apt 제공 대상이 아닙니다.', configuration_missing: '공식 건물 정보가 아직 연결되지 않았습니다.', apartment_not_found: '주소가 정확히 일치하는 K-apt 단지를 찾지 못했습니다.', ambiguous_apartment_match: '동일한 후보가 여러 개여서 단지를 확정하지 못했습니다.', identity_mismatch: '공식 자료 간 건물 식별 정보가 일치하지 않습니다.' };
+    return reasons[reason as keyof typeof reasons] ?? '공식 건물 정보를 일시적으로 불러올 수 없습니다.';
+  }
   if (reason === 'unsupported_housing_type') return 'The K-apt apartment service does not cover this housing type.';
   if (reason === 'configuration_missing') return 'The official building-data connection is not configured.';
   if (reason === 'apartment_not_found') return 'No exact K-apt complex match was found.';
@@ -96,14 +100,13 @@ export function BuildingOfficialFacts({ districtSlug, buildingId, observedFacts 
   const dataState = state === 'loading' ? 'loading' : state === 'error' || state.facts.status === 'unavailable' ? 'unavailable' : 'ready';
   return (
     <section className={styles.evidence} data-building-section="official-facts" data-building-facts={dataState}>
-      <div className={styles.sectionHeading}><p>Building facts</p><h2>Verified property profile</h2></div>
+      <div className={styles.sectionHeading}><p>{locale === 'ko' ? '건물 정보' : 'Building facts'}</p><h2>{locale === 'ko' ? '건물 기본 정보' : 'Property profile'}</h2></div>
       {observedFacts.length === 0 ? null : <dl className={styles.findingGrid}>{observedFacts.map((fact) => <div key={fact.label}><dt>{fact.label}</dt><dd>{fact.value}</dd></div>)}</dl>}
       <BuildingProximityDisclosure proximity={proximity} locale={locale} />
-      {state === 'loading' ? <p role="status">Loading additional official building facts…</p> : null}
-      {state === 'error' ? <p>공식 건축물대장 연결을 다시 확인 중입니다. 위의 확인된 거래·지도·역·학교 정보는 그대로 유지됩니다.</p> : null}
+      {state === 'loading' ? <p role="status">{locale === 'ko' ? '공식 건물 정보를 불러오는 중입니다…' : 'Loading additional official building facts…'}</p> : null}
+      {state === 'error' ? <p>{locale === 'ko' ? '추가 건물 정보를 불러올 수 없습니다. 확인된 항목은 위에 표시됩니다.' : 'Additional building facts are unavailable. Available information is shown above.'}</p> : null}
       {state !== 'loading' && state !== 'error' && state.facts.status === 'unavailable' ? <>
-        <p>{reasonCopy(state.facts.reason)}</p>
-        <p>공식 정보가 아직 연결되지 않은 항목만 비워 두며, 위의 확인된 정보는 계속 표시합니다.</p>
+        <p>{reasonCopy(state.facts.reason, locale)}</p>
       </> : null}
       {state !== 'loading' && state !== 'error' ? <ReadyOfficialFacts envelope={state} /> : null}
     </section>

@@ -13,7 +13,7 @@ test('Newsroom filters reviewed SignedPrice records and opens the policy lifecyc
 
   await expect(page).toHaveTitle(/Property policy, market news and data stories/);
   await expect(page.getByRole('heading', { level: 1, name: 'News' })).toBeVisible();
-  await expect(page.getByRole('navigation', { name: 'News types' }).getByRole('link')).toHaveCount(4);
+  await expect(page.getByRole('navigation', { name: 'News types' }).getByRole('link')).toHaveCount(5);
   await expect(page.getByRole('navigation', { name: 'News markets' }).getByRole('link')).toHaveCount(3);
   await expect(page.locator('[data-newsroom-lead]')).toHaveCount(1);
   await expect(page.locator('body')).not.toContainText(/provider|credential|ingestion|Naver News API/i);
@@ -93,4 +93,35 @@ test('News uses the shared readable type and restrained frame', async ({ page },
   expect(values.marketFilterSize).toBeGreaterThanOrEqual(14);
   expect(values.typeFilterHeight).toBeGreaterThanOrEqual(44);
   expect(values.marketFilterHeight).toBeGreaterThanOrEqual(44);
+});
+
+test('external headlines survive market filtering and open the original publisher', async ({ page }) => {
+  await page.route('**/api/news/', (route) => route.fulfill({ json: {
+    naverState: 'ready', items: [
+      { id: 'external-sg', market: 'singapore', marketLabel: 'Singapore', title: 'Singapore housing release', publisher: 'URA', publishedAt: '2026-09-06T00:00:00Z', sourceKind: 'google-news-rss', url: 'https://www.ura.gov.sg/news/media/pr26-57/' },
+      { id: 'external-kr', market: 'seoul', marketLabel: 'Seoul', title: 'Seoul housing update', publisher: 'MOLIT', publishedAt: '2026-09-05T00:00:00Z', sourceKind: 'naver-search', url: 'https://www.molit.go.kr/' },
+    ],
+  } })));
+  await page.goto('/news/');
+  await expect(page.getByRole('link', { name: 'Singapore housing release' })).toBeVisible();
+  await page.getByRole('navigation', { name: 'News types' }).getByRole('link', { name: 'External headlines' }).click();
+  await page.getByRole('navigation', { name: 'News markets' }).getByRole('link', { name: 'Singapore', exact: true }).click();
+  await expect(page).toHaveURL(/type=headlines&market=singapore/);
+  await expect(page.getByRole('link', { name: 'Singapore housing release' })).toHaveAttribute('href', 'https://www.ura.gov.sg/news/media/pr26-57/');
+  await expect(page.getByRole('link', { name: 'Seoul housing update' })).toHaveCount(0);
+  await expect(page.getByRole('link', { name: 'Singapore housing release' })).toHaveAttribute('target', '_blank');
+  await expectNoHorizontalOverflow(page);
+});
+
+test('News and Guides keep the same global header and the guide highlights Guides', async ({ page }) => {
+  await page.goto('/news/');
+  const nav = page.locator('[data-navigation-tier="global"]');
+  const newsLabels = await nav.getByRole('navigation', { name: 'Primary navigation', exact: true }).innerText();
+  await nav.getByRole('link', { name: 'Guides', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Guides', exact: true, level: 1 })).toBeVisible();
+  await expect(nav.getByRole('navigation', { name: 'Primary navigation', exact: true })).toHaveText(newsLabels);
+  await page.getByRole('link', { name: 'Read guide', exact: true }).first().click();
+  await expect(nav.getByRole('link', { name: 'Guides', exact: true })).toHaveAttribute('aria-current', 'page');
+  await expect(page.getByRole('navigation', { name: 'In this article', exact: true })).toBeVisible();
+  await expectNoHorizontalOverflow(page);
 });

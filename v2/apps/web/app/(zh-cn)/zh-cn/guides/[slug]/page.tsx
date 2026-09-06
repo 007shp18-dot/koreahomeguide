@@ -17,5 +17,5 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 export default async function ChineseGuidePage({ params }: Props) {
   const guide = getPortfolioRecord('zh-CN', (await params).slug); if (guide?.type !== 'guide') notFound();
-  return <EditorialGrowthPublicFrame locale="zh-CN" surface="content"><NewsroomArticle article={guide} /><PublicEditorialJsonLd article={guide} /></EditorialGrowthPublicFrame>;
+  return <EditorialGrowthPublicFrame locale="zh-CN" surface="content" activeSection="guides"><NewsroomArticle article={guide} /><PublicEditorialJsonLd article={guide} /></EditorialGrowthPublicFrame>;
 }

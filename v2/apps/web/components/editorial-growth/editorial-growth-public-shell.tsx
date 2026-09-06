@@ -9,6 +9,8 @@ import type {
   ReviewLocale,
 } from '../../lib/design-review/editorial-growth-review-model';
 import { PUBLIC_EDITORIAL_SURFACES } from '../../lib/editorial-growth/public-editorial-routes';
+import { SiteHeader } from '../site-header';
+import { homepageCopy } from '../../lib/site-copy';
 import styles from './editorial-growth-public-shell.module.css';
 
 /* eslint-disable @next/next/no-html-link-for-pages -- Canonical slash links remain literal for crawler contracts. */
@@ -72,7 +74,9 @@ export function EditorialGrowthPublicFrame({
   locale,
   shell = false,
   surface,
+  activeSection = 'news',
 }: Readonly<{
+  activeSection?: 'news' | 'guides';
   children: ReactNode;
   locale: ReviewLocale;
   shell?: boolean;
@@ -89,26 +93,17 @@ export function EditorialGrowthPublicFrame({
       data-review-locale={locale}
       lang={locale}
     >
-      <header className={styles.header}>
-        <Link className={styles.wordmark} href={hrefs.home} aria-label="signedprice home">
-          signed<span>price</span>
-        </Link>
-        <nav className={styles.primaryNav} aria-label={copy.navigation}>
-          {copy.primaryItems.map((item) => (
-            <Link
-              aria-current={surface === item.currentOn ? 'page' : undefined}
-              href={item.href}
-              key={item.href}
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-        <nav className={styles.languageNav} aria-label={copy.language}>
-          <Link aria-current={locale === 'en' ? 'page' : undefined} href={PUBLIC_EDITORIAL_SURFACES.en[surface]}>EN</Link>
-          <Link aria-current={locale === 'zh-CN' ? 'page' : undefined} href={PUBLIC_EDITORIAL_SURFACES['zh-CN'][surface]}>中文</Link>
-        </nav>
-      </header>
+      <SiteHeader primaryLinks={locale === 'zh-CN' ? copy.primaryItems.map((item) => ({ ...item, isCurrent: activeSection === 'guides' && surface === 'content' ? item.href.includes('/guides/') : surface === item.currentOn })) : undefined} copy={{
+        ...homepageCopy.header,
+        homeHref: hrefs.home,
+        links: surface === 'content'
+          ? [{ label: activeSection, href: `/${activeSection}/`, isCurrent: true }]
+          : homepageCopy.header.links,
+        ...(locale === 'zh-CN' ? {
+          languageLabel: 'ZH',
+          languageSwitch: { label: 'English', href: surface === 'home' ? '/' : `/${activeSection}/`, hrefLang: 'en' as const },
+        } : {}),
+      }} />
 
       {children}
 

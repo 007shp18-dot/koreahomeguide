@@ -24,12 +24,12 @@ const number = new Intl.NumberFormat('en-US');
 const hubCopy = {
   markets: {
     eyebrow: 'Global market coverage',
-    title: 'Find your starting market.',
+    title: 'Markets',
     description: 'Explore residential property in Seoul and Singapore, with local transaction records and market guides. Dubai currently offers market context only.',
   },
   prices: {
     eyebrow: 'Signed price evidence',
-    title: 'Start with what actually happened.',
+    title: 'Prices',
     description: 'Move from city context to district and building evidence without mixing completed contracts with asking prices or active listings.',
   },
   news: {
@@ -39,7 +39,7 @@ const hubCopy = {
   },
   guides: {
     eyebrow: 'Buying across borders',
-    title: 'Buying abroad starts with local knowledge.',
+    title: 'Guides',
     description: 'Understand housing types, read transaction prices and learn which questions to ask before buying in another country.',
   },
 } as const;
@@ -69,13 +69,13 @@ function MarketCards() {
         <header><span>KR</span><Status tone="live">Live evidence</Status></header>
         <div><p>Korea</p><h2>Seoul</h2><p>Official reported housing contracts, district distributions and retained building evidence.</p></div>
         <dl><div><dt>Currency</dt><dd>KRW</dd></div><div><dt>Coverage</dt><dd>Rent · Sale</dd></div></dl>
-        <Link href="/kr/seoul/">Explore Seoul</Link>
+        <nav className={styles.marketReading} aria-label="Seoul research"><Link href="/kr/seoul/explore/">Explore</Link><Link href="/guides/buy-property-in-korea-as-foreigner/">Buying guide</Link><Link href="/news/?market=seoul">News and analysis</Link></nav>
       </article>
       <article className={`${styles.marketCard} ${styles.marketSingapore}`}>
         <header><span>SG</span><Status tone="limited">Available datasets</Status></header>
         <div><p>Singapore</p><h2>Singapore</h2><p>Explore private residential projects and HDB transactions separately, with coverage shown for each dataset.</p></div>
         <dl><div><dt>Currency</dt><dd>SGD</dd></div><div><dt>Coverage</dt><dd>Private · HDB</dd></div></dl>
-        <Link href="/sg/">Explore Singapore</Link>
+        <nav className={styles.marketReading} aria-label="Singapore research"><Link href="/sg/singapore/explore/">Explore</Link><Link href="/guides/read-singapore-private-transactions/">Buying guide</Link><Link href="/news/?market=singapore">News and analysis</Link></nav>
       </article>
       <article className={`${styles.marketCard} ${styles.marketDubai}`} id="dubai">
         <header><span>AE</span><Status>Research only</Status></header>
@@ -153,16 +153,19 @@ function InsightsHub({ workspace }: Readonly<{ workspace?: NewsWorkspaceModel }>
 }
 
 function GuidesHub() {
-  const guides = listPortfolioRecords('en').filter(({ type }) => type === 'guide');
+  const guides = listPortfolioRecords('en').filter(({ type }) => type === 'guide').sort((a, b) => {
+    const first = ['buy-property-in-korea-as-foreigner', 'read-singapore-private-transactions'];
+    return (first.includes(a.slug) ? first.indexOf(a.slug) : 2) - (first.includes(b.slug) ? first.indexOf(b.slug) : 2);
+  });
   return (
     <>
       <section className={styles.section} aria-labelledby="guides-title">
-        <div className={styles.sectionHeading}><p>Korea guides</p><h2 id="guides-title">Use the data without losing the local context.</h2></div>
-        <div className={styles.guideGrid}>{guides.map((guide) => <article key={guide.slug}><span>{guide.marketId === 'kr-seoul' ? 'Seoul' : 'Singapore'} · Published {guide.publishedAt?.slice(0, 10)}</span><h3>{guide.title}</h3><p>{guide.deck}</p><Link href={guide.canonicalHref}>Read guide</Link></article>)}</div>
+        <div className={styles.sectionHeading}><p>Buying and renting</p><h2 id="guides-title">Practical guides for Seoul and Singapore.</h2></div>
+        <div className={styles.guideGrid}>{guides.map((guide) => <article key={guide.slug}><span>{guide.marketId === 'kr-seoul' ? 'Seoul' : 'Singapore'} · Updated {guide.updatedAt.slice(0, 10)}</span><h3>{guide.title}</h3><p>{guide.deck}</p><Link href={guide.canonicalHref}>Read guide</Link></article>)}</div>
       </section>
       <section className={styles.marketGuideRow} aria-label="Guide coverage by market">
-        <article><Status tone="live">Available</Status><h3>Buying and renting in Korea</h3><p>Contract evidence, district comparisons and decision methods.</p><Link href="/guides/rent-an-apartment-in-korea/">Start with renting →</Link></article>
-        <article><Status tone="live">Pilot published</Status><h3>Reading Singapore evidence</h3><p>A source-led pilot keeps regional and project transaction layers separate.</p><Link href="/guides/read-singapore-private-transactions/">Read the Singapore guide →</Link></article>
+        <article><Status tone="live">Available</Status><h3>Buying and renting in Korea</h3><p>Contract evidence, district comparisons and decision methods.</p><Link href="/guides/rent-an-apartment-in-korea/">Start with renting</Link></article>
+        <article><Status tone="live">Available</Status><h3>Reading Singapore evidence</h3><p>Project comparisons, ownership checks and the costs that change a purchase budget.</p><Link href="/guides/read-singapore-private-transactions/">Read the Singapore guide</Link></article>
         <article><Status>Preparing</Status><h3>Buying in Dubai</h3><p>Ownership and process guidance will open after legal and source review.</p></article>
       </section>
     </>
@@ -175,7 +178,7 @@ export function GlobalProductHub({ kind, seoul, newsWorkspace }: GlobalProductHu
     <div id="top">
       <SiteHeader copy={headerFor(kind)} />
       <main className={styles.main}>
-        <header className={`${styles.hero} ${kind === 'news' ? styles.heroCompact : ''}`}><p>{copy.eyebrow}</p><h1>{copy.title}</h1><p>{copy.description}</p></header>
+        <header className={`${styles.hero} ${kind === 'news' ? styles.heroCompact : ''}`}><h1>{copy.title}</h1><p>{copy.description}</p></header>
         {kind === 'markets' ? <MarketsHub /> : null}
         {kind === 'prices' ? <PricesHub seoul={seoul} /> : null}
         {kind === 'news' ? <InsightsHub workspace={newsWorkspace} /> : null}

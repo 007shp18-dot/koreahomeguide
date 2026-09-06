@@ -87,7 +87,7 @@ describe('Singapore route SSR', () => {
     expect(html).toContain('aria-label="Primary navigation"');
     expect(html).toContain('href="/sg/singapore/explore/"');
     expect(html).not.toContain('href="/kr/seoul/check/"');
-    expect(html).toMatch(/href="\/sg\/singapore\/check">Check<span>Limited<\/span>/);
+    expect(html).toMatch(/href="\/sg\/singapore\/check">Check/);
     expect(html).toContain('data-capability-state="limited"');
   });
 

@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: GuidePageProps): Promise<Meta
 export default async function GuidePage({ params }: GuidePageProps) {
   const guide = getPortfolioRecord('en', (await params).slug);
   if (guide?.type !== 'guide') notFound();
-  return <EditorialGrowthPublicFrame locale="en" surface="content">
+  return <EditorialGrowthPublicFrame locale="en" surface="content" activeSection="guides">
     <NewsroomArticle article={guide} />
     <PublicEditorialJsonLd article={guide} />
   </EditorialGrowthPublicFrame>;

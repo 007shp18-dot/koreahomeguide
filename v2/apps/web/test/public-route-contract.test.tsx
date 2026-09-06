@@ -378,7 +378,7 @@ describe('public migration containment', () => {
       lastModified: new Date('2026-08-31T01:00:00.000Z'),
     });
     expect(entries.get('https://www.signedprice.com/guides/compare-seoul-district-prices/')).toMatchObject({
-      lastModified: new Date('2026-09-04T00:00:00.000Z'),
+      lastModified: new Date('2026-09-06T00:00:00.000Z'),
     });
   });
 

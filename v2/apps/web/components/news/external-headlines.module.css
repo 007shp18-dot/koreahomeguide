@@ -1,0 +1,14 @@
+.section { margin: 32px 0 48px; color: var(--ink); }
+.section > header { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px; }
+.section h2 { margin: 0; font-size: 22px; font-weight: 600; }
+.section p { color: var(--muted); font-size: 14px; line-height: 1.6; }
+.section ol { list-style: none; padding: 0; margin: 0; }
+.section li { min-width: 0; padding: 20px 0; border-top: 1px solid var(--line); }
+.section li > div { display: flex; justify-content: space-between; gap: 16px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+.section time { white-space: nowrap; }
+.section h3 { margin: 8px 0 0; font-size: 17px; line-height: 1.5; font-weight: 600; overflow-wrap: anywhere; }
+.section h3 a { color: inherit; text-decoration: none; }
+.section h3 a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.section button, .section > header > a { min-height: 44px; display: inline-flex; align-items: center; background: transparent; border: 0; padding: 4px 0; color: var(--accent); font-size: 14px; cursor: pointer; white-space: nowrap; }
+.preview { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 32px; }
+@media (max-width: 640px) { .preview { grid-template-columns: 1fr; } .section > header { align-items: flex-start; flex-direction: column; gap: 0; } }

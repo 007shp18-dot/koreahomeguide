@@ -12,6 +12,7 @@ import sitemap from '../app/sitemap';
 import { EDITORIAL_PORTFOLIO, listPortfolioRecords } from '../content/portfolio-manifest';
 
 const officialHosts = new Set([
+  'www.investkorea.org', 'english.seoul.go.kr', 'm.easylaw.go.kr',
   'www.law.go.kr', 'rt.molit.go.kr', 'www.molit.go.kr', 'land.seoul.go.kr',
   'www.fsc.go.kr', 'www.iras.gov.sg', 'www.hdb.gov.sg', 'www.ura.gov.sg',
 ]);
@@ -39,7 +40,7 @@ describe('pre-AdSense reviewed launch portfolio', () => {
         const url = new URL(source.href);
         expect(url.protocol).toBe('https:');
         expect(officialHosts.has(url.hostname)).toBe(true);
-        expect(source.checkedAt).toBe('2026-09-04');
+        expect(['2026-09-04', '2026-09-06']).toContain(source.checkedAt);
       }
     }
   });
