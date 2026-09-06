@@ -100,6 +100,27 @@ function MarketsHub() {
         <div className={styles.sectionHeading}><p>Explore markets</p><h2 id="market-directory-title">Start with Seoul and Singapore.</h2></div>
         <MarketCards />
       </section>
+      <section className={styles.section} aria-labelledby="market-research-title">
+        <div className={styles.sectionHeading}><p>Before you shortlist</p><h2 id="market-research-title">Three questions before comparing prices.</h2></div>
+        <ol className={styles.researchSteps}>
+          <li>
+            <h3>Can you buy this property?</h3>
+            <div><h4>Seoul</h4><p>Record your residency, intended use and the exact parcel. Check permission, reporting and registration requirements before paying a deposit.</p><Link href="/guides/buy-property-in-korea-as-foreigner/">Foreign-buyer checklist</Link></div>
+            <div><h4>Singapore</h4><p>Identify the housing type and your buyer status first. Treat private apartments, landed homes and HDB flats as separate eligibility questions.</p><Link href="/guides/read-singapore-private-transactions/">Ownership and eligibility</Link></div>
+          </li>
+          <li>
+            <h3>How much cash will you need?</h3>
+            <div><h4>Seoul</h4><p>Budget for taxes, brokerage, registration and legal work alongside the price. Put confirmed financing, transfers and any existing tenant deposit on a dated cash schedule.</p><Link href="/guides/buy-property-in-korea-as-foreigner/">Plan the purchase budget</Link></div>
+            <div><h4>Singapore</h4><p>Calculate Buyer’s Stamp Duty and any Additional Buyer’s Stamp Duty for your profile. The guide’s S$2 million example shows why duties can materially change the budget.</p><Link href="/guides/read-singapore-private-transactions/">See the acquisition-cost chart</Link></div>
+          </li>
+          <li>
+            <h3>Are the transactions comparable?</h3>
+            <div><h4>Seoul</h4><p>Compare sale contracts within the same building and similar exclusive floor area. Keep lease deposits, monthly rents and purchase prices in separate comparisons.</p><Link href="/kr/seoul/explore/">Explore Seoul transactions</Link></div>
+            <div><h4>Singapore</h4><p>Match the project, tenure, size and sale period. Compare private housing and HDB records separately, then inspect the individual project.</p><Link href="/sg/singapore/explore/">Explore Singapore transactions</Link></div>
+          </li>
+        </ol>
+        <p className={styles.researchSources}>Official starting points: <a href="https://www.investkorea.org/ik-en/cntnts/i-417/web.do">Invest KOREA acquisition procedures</a> and <a href="https://www.iras.gov.sg/taxes/stamp-duty/for-property/buying-or-acquiring-property/additional-buyer's-stamp-duty-(absd)">IRAS stamp duties</a>. The linked guides include the detailed sources and worked examples.</p>
+      </section>
       <section className={`${styles.section} ${styles.comparison}`} aria-labelledby="market-coverage-title">
         <div className={styles.sectionHeading}><p>Coverage</p><h2 id="market-coverage-title">What you can explore today.</h2></div>
         <div className={styles.tableWrap}>

@@ -667,3 +667,19 @@
 .guideGrid article > span:first-child { color: var(--muted); font-weight: 500; text-transform: none; letter-spacing: 0; }
 .main { width: min(calc(100% - (2 * var(--page-gutter))), var(--research-content-frame)); }
 .section { padding: 32px 0 48px; }
+
+.researchSteps { list-style: none; margin: 0; padding: 0; }
+.researchSteps > li { display: grid; grid-template-columns: minmax(0, .7fr) repeat(2, minmax(0, 1fr)); gap: 32px; padding: 28px 0; border-bottom: 1px solid var(--line); }
+.researchSteps h3 { font-size: 1.25rem; font-weight: 600; line-height: 1.4; }
+.researchSteps h4 { margin-bottom: 8px; font-size: .875rem; font-weight: 600; }
+.researchSteps p { color: var(--muted); font-size: 1rem; line-height: 1.7; }
+.researchSteps a { display: inline-flex; align-items: center; min-height: 44px; margin-top: 8px; color: var(--accent); font-size: .875rem; }
+.researchSources { margin-top: 20px; max-width: 85ch; color: var(--muted); font-size: .875rem; line-height: 1.7; }
+.researchSources a { color: var(--accent); text-underline-offset: 3px; }
+@media (max-width: 900px) {
+  .researchSteps > li { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+  .researchSteps h3 { grid-column: 1 / -1; }
+}
+@media (max-width: 680px) {
+  .researchSteps > li { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+}

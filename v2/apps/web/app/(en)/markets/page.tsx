@@ -6,7 +6,7 @@ import { indexableMetadata } from '@/lib/public-metadata';
 export const metadata: Metadata = indexableMetadata({
   path: '/markets/',
   title: 'Global property markets | signedprice',
-  description: 'Compare property evidence coverage across Seoul, Singapore and Dubai.',
+  description: 'Research buying eligibility, acquisition costs and comparable property transactions in Seoul and Singapore, with links to local guides and market data.',
 });
 
 export default function MarketsPage() {
