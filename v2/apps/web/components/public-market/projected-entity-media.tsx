@@ -5,6 +5,7 @@ import styles from './projected-entity-media.module.css';
 export type ProjectedEntityMediaModel = Readonly<{
   displayUrl: string | null;
   providerReference?: string | null;
+  relationship?: 'exact' | 'parent';
   width: number | null;
   height: number | null;
   focalX: number | null;
@@ -51,6 +52,9 @@ export function ProjectedEntityMedia({
       height={media.height ?? undefined}
       style={{ objectPosition: `${focalX * 100}% ${focalY * 100}%` }}
     />
+    <p className={styles.relationship}>{media.relationship === 'parent'
+      ? 'Parent project photograph'
+      : 'Verified building photograph'}</p>
     {media.attributionName === null ? null : <figcaption>
       {media.attributionUrl === null
         ? media.attributionName

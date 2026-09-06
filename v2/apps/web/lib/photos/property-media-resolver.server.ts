@@ -35,7 +35,7 @@ function materialize(candidate: PropertyMediaCandidate): PropertyMediaModel {
       kind: 'provider_photo',
       placeId: candidate.placeId!,
       subjectLabel: candidate.relationship === 'exact'
-        ? 'Approved provider photograph of this property'
+        ? 'Verified place photos'
         : 'Parent project photograph · not the exact property',
     });
   }

@@ -266,6 +266,7 @@ export function NaverBuildingStreetView({
   return (
     <section className={styles.frame} data-building-media="naver-panorama" data-media-state={state}>
       <div ref={container} className={styles.canvas} role="region" aria-label={`Nearby NAVER street view for ${buildingName}`} />
+      <p className={styles.label}>Nearby street view</p>
       {state === 'loading' ? <div className={styles.loading} aria-live="polite"><span>Loading nearby view</span><strong>{buildingName}</strong></div> : null}
       <Script
         src={buildNaverMapsScriptUrl(

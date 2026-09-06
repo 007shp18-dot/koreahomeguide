@@ -107,6 +107,7 @@ test('external headlines survive market filtering and open the original publishe
   await page.goto('/news/');
   await expect(page.getByRole('link', { name: 'Singapore housing release' })).toBeVisible();
   await page.getByRole('navigation', { name: 'News types' }).getByRole('link', { name: 'External headlines' }).click();
+  await expect(page).toHaveURL(/type=headlines/);
   await page.getByRole('navigation', { name: 'News markets' }).getByRole('link', { name: 'Singapore', exact: true }).click();
   await expect(page).toHaveURL(/type=headlines&market=singapore/);
   await expect(page.getByRole('link', { name: 'Singapore housing release' })).toHaveAttribute('href', 'https://www.ura.gov.sg/news/media/pr26-57/');

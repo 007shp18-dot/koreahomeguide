@@ -145,6 +145,7 @@ describe('provider building street view', () => {
     expect(naver).toContain('submodules=panorama,geocoder');
     expect(naver).not.toContain('panorama%2Cgeocoder');
     expect(naver).toContain('data-building-media="naver-panorama"');
+    expect(naver).toContain('Nearby street view');
 
     const google = renderToStaticMarkup(<GoogleBuildingStreetView
       browserKey={null}

@@ -7,12 +7,20 @@
       "schedule": "17 0 * * *"
     },
     {
-      "path": "/api/internal/building-enrichment",
+      "path": "/api/internal/building-enrichment?source=wikimedia&limit=30",
       "schedule": "7 * * * *"
     },
     {
-      "path": "/api/internal/building-enrichment",
-      "schedule": "47 0 * * *"
+      "path": "/api/internal/building-enrichment?source=official&limit=12",
+      "schedule": "17 * * * *"
+    },
+    {
+      "path": "/api/internal/building-enrichment?source=naver&limit=30",
+      "schedule": "27 * * * *"
+    },
+    {
+      "path": "/api/internal/building-enrichment?source=google&limit=30",
+      "schedule": "47 * * * *"
     },
     {
       "path": "/api/internal/public-entity-projection",

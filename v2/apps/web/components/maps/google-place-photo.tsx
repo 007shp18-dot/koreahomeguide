@@ -17,7 +17,7 @@ type GoogleAuthorAttribution = Readonly<{
   uri: string | null;
 }>;
 
-type GooglePlacePhotoResult = Readonly<{
+export type GooglePlacePhotoResult = Readonly<{
   getURI: (options: Readonly<{ maxHeight: number; maxWidth: number }>) => string;
   authorAttributions: readonly GoogleAuthorAttribution[];
 }>;
@@ -29,7 +29,7 @@ type GooglePlaceResult = Readonly<{
   photos?: readonly GooglePlacePhotoResult[];
 }>;
 
-type GooglePlaceClass = {
+export type GooglePlaceClass = {
   new(options: { id: string }): GooglePlaceResult & {
     fetchFields: (request: { fields: readonly string[] }) => Promise<unknown>;
   };
@@ -51,9 +51,14 @@ type GoogleReadyScope = Window & {
   [GOOGLE_MAPS_READY_FLAG]?: boolean;
 };
 
-type PhotoState = Readonly<{
+type DisplayPhoto = Readonly<{
   src: string;
-  attribution: GoogleAuthorAttribution | null;
+  attributions: readonly GoogleAuthorAttribution[];
+}>;
+
+type PhotoState = Readonly<{
+  items: readonly DisplayPhoto[];
+  label: 'Verified place photos' | 'Verified building photograph';
 }> | 'loading' | 'unavailable';
 
 function normalizedPlaceText(value: string): string {
@@ -84,26 +89,27 @@ export function isTrustedGooglePlaceMatch(
   return requestedTokens.some((token) => returned.includes(token));
 }
 
+export async function findGooglePlacePhotos(
+  Place: GooglePlaceClass,
+  approvedPlaceId: string | null,
+  maximum = 5,
+): Promise<readonly GooglePlacePhotoResult[]> {
+  if (approvedPlaceId === null) return Object.freeze([]);
+  const place = new Place({ id: approvedPlaceId });
+  await place.fetchFields({ fields: ['photos'] });
+  const boundedMaximum = Math.min(Math.max(Math.floor(maximum), 1), 5);
+  return Object.freeze([...(place.photos ?? [])].slice(0, boundedMaximum));
+}
+
 export async function findGooglePlacePhoto(
   Place: GooglePlaceClass,
   approvedPlaceId: string | null,
   buildingName: string,
   address: string,
 ): Promise<GooglePlacePhotoResult | null> {
-  if (approvedPlaceId !== null) {
-    const place = new Place({ id: approvedPlaceId });
-    await place.fetchFields({ fields: ['photos'] });
-    return place.photos?.[0] ?? null;
-  }
-  const { places } = await Place.searchByText({
-    textQuery: `${buildingName}, ${address}`,
-    fields: ['id', 'displayName', 'formattedAddress', 'photos'],
-    maxResultCount: 1,
-    language: 'en',
-  });
-  const place = places[0];
-  return isTrustedGooglePlaceMatch(place?.displayName, buildingName, place?.formattedAddress, address)
-    ? place?.photos?.[0] ?? null : null;
+  void buildingName;
+  void address;
+  return (await findGooglePlacePhotos(Place, approvedPlaceId, 1))[0] ?? null;
 }
 
 type GooglePlacePhotoProps = Readonly<{
@@ -136,6 +142,7 @@ function GooglePlacePhotoForIdentity({
   verifiedPlaceId,
 }: GooglePlacePhotoProps) {
   const [photo, setPhoto] = useState<PhotoState>('loading');
+  const [activePhoto, setActivePhoto] = useState(0);
   const [approvedPlaceId, setApprovedPlaceId] = useState<string | null | undefined>(
     verifiedPlaceId ?? (registryKey === undefined ? null : undefined),
   );
@@ -172,13 +179,16 @@ function GooglePlacePhotoForIdentity({
           && typeof approval.assetUrl === 'string') {
           if (!active) return;
           setPhoto(Object.freeze({
-            src: approval.assetUrl,
-            attribution: typeof approval.attributionName === 'string'
-              ? Object.freeze({
+            label: 'Verified building photograph',
+            items: Object.freeze([Object.freeze({
+              src: approval.assetUrl,
+              attributions: typeof approval.attributionName === 'string'
+                ? Object.freeze([Object.freeze({
                 displayName: approval.attributionName,
                 uri: typeof approval.attributionUrl === 'string' ? approval.attributionUrl : null,
-              })
-              : null,
+                })])
+                : Object.freeze([]),
+            })]),
           }));
           return;
         }
@@ -199,19 +209,22 @@ function GooglePlacePhotoForIdentity({
     if (sdk === undefined || typeof sdk.importLibrary !== 'function' || approvedPlaceId === undefined) return;
     try {
       const { Place } = await sdk.importLibrary('places');
-      const result = await findGooglePlacePhoto(Place, approvedPlaceId, buildingName, address);
-      if (result === null) {
+      const results = await findGooglePlacePhotos(Place, approvedPlaceId, 5);
+      if (results.length === 0) {
         setPhoto('unavailable');
         return;
       }
       setPhoto(Object.freeze({
-        src: result.getURI({ maxHeight: 900, maxWidth: 1400 }),
-        attribution: result.authorAttributions[0] ?? null,
+        label: 'Verified place photos',
+        items: Object.freeze(results.map((result) => Object.freeze({
+          src: result.getURI({ maxHeight: 900, maxWidth: 1400 }),
+          attributions: Object.freeze([...result.authorAttributions]),
+        }))),
       }));
     } catch {
       setPhoto('unavailable');
     }
-  }, [address, approvedPlaceId, buildingName]);
+  }, [approvedPlaceId]);
 
   useEffect(() => {
     if (browserKey === null || approvedPlaceId === undefined) return;
@@ -230,29 +243,55 @@ function GooglePlacePhotoForIdentity({
 
   if (photo === 'unavailable' || (browserKey === null && registryKey === undefined)) return fallback;
 
+  const current = photo === 'loading' ? null : photo.items[activePhoto] ?? photo.items[0] ?? null;
+  const secondary = photo === 'loading' ? [] : photo.items
+    .map((item, index) => ({ item, index }))
+    .filter(({ index }) => index !== activePhoto)
+    .slice(0, 4);
+
   return (
     <div className={styles.frame} data-building-media="google-place-photo" data-media-state={photo === 'loading' ? 'loading' : 'ready'}>
+      {photo === 'loading' && verifiedPlaceId !== undefined
+        ? <p className={styles.photoLabel}>Verified place photos</p>
+        : null}
       {photo === 'loading' ? (
         <div className={styles.loading} aria-live="polite"><span>Loading verified place photo</span><strong>{buildingName}</strong></div>
-      ) : (
+      ) : current === null ? null : (
         // Google Place photo URIs are ephemeral and must not be cached or
         // transformed by Next Image according to the provider terms.
         // eslint-disable-next-line @next/next/no-img-element
         <img
           className={styles.photo}
-          src={photo.src}
-          alt={`${buildingName} place photo`}
+          src={current.src}
+          alt={`${buildingName} place photo ${activePhoto + 1}`}
           decoding="async"
           onError={() => setPhoto('unavailable')}
         />
       )}
-      {photo === 'loading' || photo.attribution === null ? null : (
-        <p className={styles.attribution} aria-label="Photo credit">
-          {photo.attribution.uri === null || !linkAttribution
-            ? photo.attribution.displayName
-            : <a href={photo.attribution.uri}>{photo.attribution.displayName}</a>}
-        </p>
-      )}
+      {photo === 'loading' ? null : <>
+        <p className={styles.photoLabel}>{photo.label}</p>
+        {secondary.length === 0 ? null : <div className={styles.photoStrip} aria-label="More verified place photos">
+          {secondary.map(({ item, index }) => <button
+            type="button"
+            key={`${item.src}:${index}`}
+            onClick={() => setActivePhoto(index)}
+            aria-label={`Show photo ${index + 1}`}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={item.src} alt="" decoding="async" />
+          </button>)}
+        </div>}
+        {current === null || current.attributions.length === 0 ? null : (
+          <p className={styles.attribution} aria-label="Photo credit">
+            {current.attributions.map((attribution, index) => <span key={`${attribution.displayName}:${index}`}>
+              {index === 0 ? null : ' · '}
+              {attribution.uri === null || !linkAttribution
+                ? attribution.displayName
+                : <a href={attribution.uri}>{attribution.displayName}</a>}
+            </span>)}
+          </p>
+        )}
+      </>}
       {browserKey === null || approvedPlaceId === undefined ? null : (
         <Script
           src={buildGoogleMapsScriptUrl(browserKey)}

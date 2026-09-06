@@ -41,6 +41,16 @@ describe('projected entity media', () => {
         focalX: null, focalY: null, attributionName: null, attributionUrl: null }}
     />);
     expect(html).toContain('Loading verified place photo');
+    expect(html).toContain('Verified place photos');
     expect(html).not.toContain('Building photo unavailable');
+  });
+
+  it('labels parent media without presenting it as the exact building', () => {
+    const html = renderToStaticMarkup(<ProjectedEntityMedia
+      buildingName="Evidence Tower"
+      media={{ displayUrl: '/assets/buildings/project.jpg', relationship: 'parent', width: 1600, height: 900,
+        focalX: null, focalY: null, attributionName: 'Project source', attributionUrl: null }}
+    />);
+    expect(html).toContain('Parent project photograph');
   });
 });

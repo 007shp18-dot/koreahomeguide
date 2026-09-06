@@ -2,6 +2,7 @@ import 'server-only';
 
 import { contentDatabase } from '../db/postgres.server';
 import { getPublicPhotoApproval } from './verified-building-photo-registry.server';
+import { scorePhotoIdentity } from './photo-identity-policy';
 
 export type StoredPublicPhotoApproval = Readonly<{
   provider: 'google-place' | 'licensed-url' | 'owned-object';
@@ -164,15 +165,21 @@ export async function approveBuildingPhoto(input: PhotoApprovalInput): Promise<v
 }
 
 type CandidateBuilding = Readonly<{
+  entityId: string;
   key: string;
   marketKey: 'seoul' | 'singapore' | 'dubai';
   externalId: string;
   name: string;
   address: string;
+  postalCode: string | null;
+  latitude: number | null;
+  longitude: number | null;
   localAttributes: Readonly<Record<string, unknown>>;
 }>;
 
-export function candidatePhotoRegistryKey(building: Omit<CandidateBuilding, 'address'>): string | null {
+export function candidatePhotoRegistryKey(
+  building: Pick<CandidateBuilding, 'key' | 'marketKey' | 'externalId' | 'name' | 'localAttributes'>,
+): string | null {
   if (building.marketKey === 'seoul') return `kr-seoul:${building.externalId}`;
   if (building.marketKey === 'dubai') return `ae-dubai:${building.externalId}`;
   if (building.key.startsWith('singapore:project:')) {
@@ -209,6 +216,56 @@ export function googlePlaceAddressMatches(
   ]);
   const locality = parts.find((part) => part.length >= 4 && !/^\d+$/u.test(part) && !ignored.has(part));
   return locality !== undefined && normalizedIdentity(normalizedPlace).includes(normalizedIdentity(locality));
+}
+
+export type PhotoCandidateDiscoveryResult = Readonly<{
+  checked: number;
+  candidates: number;
+  entityIds: readonly string[];
+  state: 'ready' | 'not-configured' | 'provider-error';
+  reason?: string;
+}>;
+
+export type GooglePhotoBuildingIdentity = Readonly<{
+  marketKey: 'seoul' | 'singapore';
+  name: string;
+  address: string;
+  postalCode: string | null;
+  latitude: number | null;
+  longitude: number | null;
+}>;
+
+export type GooglePhotoPlaceIdentity = Readonly<{
+  displayName: string;
+  formattedAddress: string;
+  location: Readonly<{ latitude: number; longitude: number }> | null;
+  hasPhoto: boolean;
+}>;
+
+export function decideGooglePhotoCandidate(
+  building: GooglePhotoBuildingIdentity,
+  place: GooglePhotoPlaceIdentity,
+) {
+  const entityLocation = building.latitude !== null && building.longitude !== null
+    ? { latitude: building.latitude, longitude: building.longitude }
+    : null;
+  return scorePhotoIdentity({
+    market: building.marketKey,
+    canonicalName: building.name,
+    aliases: [],
+    address: building.address,
+    postalCode: building.postalCode,
+    entityLocation,
+    providerName: place.displayName,
+    providerAddress: place.formattedAddress,
+    providerLocation: place.location,
+    hasPhoto: place.hasPhoto,
+  });
+}
+
+function finiteNumber(value: unknown): number | null {
+  const parsed = typeof value === 'number' ? value : typeof value === 'string' ? Number(value) : Number.NaN;
+  return Number.isFinite(parsed) ? parsed : null;
 }
 
 async function recordEnrichmentAttempt(input: Readonly<{
@@ -260,6 +317,12 @@ export type WikimediaPhotoCandidate = Readonly<{
   licenseUrl: string;
 }>;
 
+export type WikimediaBuildingIdentity = Readonly<{
+  name: string;
+  marketKey: 'seoul' | 'singapore';
+  address: string;
+}>;
+
 function plainMetadata(value: unknown): string {
   if (typeof value !== 'string') return '';
   return value.replace(/<[^>]*>/g, ' ').replace(/&nbsp;|&#160;/gi, ' ')
@@ -284,10 +347,10 @@ async function countCandidatesInBatches<T>(
  * metadata are required before a URL is allowed into the photo review queue.
  */
 export function selectWikimediaPhotoCandidate(
-  buildingName: string,
+  identity: WikimediaBuildingIdentity,
   pages: readonly CommonsSearchPage[],
 ): WikimediaPhotoCandidate | null {
-  const building = normalizedIdentity(buildingName);
+  const building = normalizedIdentity(identity.name);
   if (building.length < 5) return null;
   const candidates: { candidate: WikimediaPhotoCandidate; score: number }[] = [];
   for (const page of pages) {
@@ -305,6 +368,24 @@ export function selectWikimediaPhotoCandidate(
     );
     if (assetUrl === null || sourcePageUrl === null || licenseUrl === null
       || licenseName === '' || attributionName === '') continue;
+    const providerContext = [
+      title,
+      plainMetadata(metadata?.ImageDescription?.value),
+      plainMetadata(metadata?.ObjectName?.value),
+      plainMetadata(metadata?.Categories?.value),
+    ].filter(Boolean).join(' ');
+    if (scorePhotoIdentity({
+      market: identity.marketKey,
+      canonicalName: identity.name,
+      aliases: [],
+      address: identity.address,
+      postalCode: null,
+      entityLocation: null,
+      providerName: title,
+      providerAddress: providerContext,
+      providerLocation: null,
+      hasPhoto: true,
+    }).disposition === 'reject') continue;
     const width = typeof info.width === 'number' && Number.isFinite(info.width) ? info.width : 0;
     const height = typeof info.height === 'number' && Number.isFinite(info.height) ? info.height : 0;
     const pixels = width * height;
@@ -317,19 +398,19 @@ export function selectWikimediaPhotoCandidate(
   return candidates.sort((left, right) => right.score - left.score)[0]?.candidate ?? null;
 }
 
-export async function discoverWikimediaCommonsPhotoCandidates(limit = 12, marketKey?: 'seoul' | 'singapore'): Promise<Readonly<{
-  checked: number;
-  candidates: number;
-  state: 'ready' | 'not-configured';
-}>> {
+export async function discoverWikimediaCommonsPhotoCandidates(
+  limit = 12,
+  marketKey?: 'seoul' | 'singapore',
+): Promise<PhotoCandidateDiscoveryResult> {
   const sql = contentDatabase();
-  if (sql === null) return Object.freeze({ checked: 0, candidates: 0, state: 'not-configured' });
+  if (sql === null) return Object.freeze({ checked: 0, candidates: 0, entityIds: Object.freeze([]), state: 'not-configured' });
   const rows = await sql`
-    SELECT building.key, building.market_key, building.external_id, building.official_name,
+    SELECT entity.id AS entity_id, building.key, building.market_key, building.external_id, building.official_name,
       coalesce(building.road_address, building.legal_address) AS address,
+      entity.postal_code, building.latitude, building.longitude,
       entity.local_attributes
     FROM buildings building
-    LEFT JOIN property_entities entity ON entity.id = CASE
+    JOIN property_entities entity ON entity.id = CASE
       WHEN building.market_key = 'seoul' THEN 'kr-seoul:estate:' || building.external_id
       WHEN building.market_key = 'singapore' THEN 'sg-' || building.key
     END
@@ -353,10 +434,22 @@ export async function discoverWikimediaCommonsPhotoCandidates(limit = 12, market
     LIMIT ${Math.min(Math.max(limit, 1), 30)}
   `;
   const buildings = rows.flatMap((row): CandidateBuilding[] => (
-    typeof row.key === 'string' && ['seoul', 'singapore', 'dubai'].includes(String(row.market_key))
+    typeof row.entity_id === 'string' && typeof row.key === 'string'
+      && ['seoul', 'singapore', 'dubai'].includes(String(row.market_key))
       && typeof row.external_id === 'string' && typeof row.official_name === 'string'
       && typeof row.address === 'string'
-      ? [{ key: row.key, marketKey: row.market_key as CandidateBuilding['marketKey'], externalId: row.external_id, name: row.official_name, address: row.address, localAttributes: (row.local_attributes ?? {}) as CandidateBuilding['localAttributes'] }]
+      ? [{
+        entityId: row.entity_id,
+        key: row.key,
+        marketKey: row.market_key as CandidateBuilding['marketKey'],
+        externalId: row.external_id,
+        name: row.official_name,
+        address: row.address,
+        postalCode: typeof row.postal_code === 'string' ? row.postal_code : null,
+        latitude: finiteNumber(row.latitude),
+        longitude: finiteNumber(row.longitude),
+        localAttributes: (row.local_attributes ?? {}) as CandidateBuilding['localAttributes'],
+      }]
       : []
   ));
   const candidates = await countCandidatesInBatches(buildings, async (building) => {
@@ -381,7 +474,11 @@ export async function discoverWikimediaCommonsPhotoCandidates(limit = 12, market
       const body = await response.json() as Readonly<{
         query?: Readonly<{ pages?: readonly CommonsSearchPage[] }>;
       }>;
-      const candidate = selectWikimediaPhotoCandidate(building.name, body.query?.pages ?? []);
+      const candidate = selectWikimediaPhotoCandidate({
+        name: building.name,
+        marketKey: building.marketKey,
+        address: building.address,
+      }, body.query?.pages ?? []);
       if (candidate === null) {
         await recordEnrichmentAttempt({ buildingKey: building.key, pipeline: 'photo-wikimedia', status: 'no-candidate', reason: 'exact-licensed-image-not-found', retryAfter: 'month' });
         return false;
@@ -418,23 +515,28 @@ export async function discoverWikimediaCommonsPhotoCandidates(limit = 12, market
       return false;
     }
   });
-  return Object.freeze({ checked: buildings.length, candidates, state: 'ready' });
+  return Object.freeze({
+    checked: buildings.length,
+    candidates,
+    entityIds: Object.freeze(buildings.map((building) => building.entityId)),
+    state: 'ready',
+  });
 }
 
-export async function discoverGooglePlacePhotoCandidates(limit = 12, marketKey?: 'seoul' | 'singapore'): Promise<Readonly<{
-  checked: number;
-  candidates: number;
-  state: 'ready' | 'not-configured';
-}>> {
+export async function discoverGooglePlacePhotoCandidates(
+  limit = 12,
+  marketKey?: 'seoul' | 'singapore',
+): Promise<PhotoCandidateDiscoveryResult> {
   const sql = contentDatabase();
   const apiKey = process.env.GOOGLE_MAPS_API_KEY?.trim();
-  if (sql === null || !apiKey) return Object.freeze({ checked: 0, candidates: 0, state: 'not-configured' });
+  if (sql === null || !apiKey) return Object.freeze({ checked: 0, candidates: 0, entityIds: Object.freeze([]), state: 'not-configured' });
   const rows = await sql`
-    SELECT building.key, building.market_key, building.external_id, building.official_name,
+    SELECT entity.id AS entity_id, building.key, building.market_key, building.external_id, building.official_name,
       coalesce(building.road_address, building.legal_address) AS address,
+      entity.postal_code, building.latitude, building.longitude,
       entity.local_attributes
     FROM buildings building
-    LEFT JOIN property_entities entity ON entity.id = CASE
+    JOIN property_entities entity ON entity.id = CASE
       WHEN building.market_key = 'seoul' THEN 'kr-seoul:estate:' || building.external_id
       WHEN building.market_key = 'singapore' THEN 'sg-' || building.key
     END
@@ -458,28 +560,46 @@ export async function discoverGooglePlacePhotoCandidates(limit = 12, marketKey?:
     LIMIT ${Math.min(Math.max(limit, 1), 30)}
   `;
   const buildings = rows.flatMap((row): CandidateBuilding[] => (
-    typeof row.key === 'string' && ['seoul', 'singapore', 'dubai'].includes(String(row.market_key))
+    typeof row.entity_id === 'string' && typeof row.key === 'string'
+      && ['seoul', 'singapore', 'dubai'].includes(String(row.market_key))
       && typeof row.external_id === 'string' && typeof row.official_name === 'string'
       && typeof row.address === 'string'
-      ? [{ key: row.key, marketKey: row.market_key as CandidateBuilding['marketKey'], externalId: row.external_id, name: row.official_name, address: row.address, localAttributes: (row.local_attributes ?? {}) as CandidateBuilding['localAttributes'] }]
+      ? [{
+        entityId: row.entity_id,
+        key: row.key,
+        marketKey: row.market_key as CandidateBuilding['marketKey'],
+        externalId: row.external_id,
+        name: row.official_name,
+        address: row.address,
+        postalCode: typeof row.postal_code === 'string' ? row.postal_code : null,
+        latitude: finiteNumber(row.latitude),
+        longitude: finiteNumber(row.longitude),
+        localAttributes: (row.local_attributes ?? {}) as CandidateBuilding['localAttributes'],
+      }]
       : []
   ));
-  const candidates = await countCandidatesInBatches(buildings, async (building) => {
+  let terminalProviderError: string | null = null;
+  let checked = 0;
+  const checkedEntityIds: string[] = [];
+  const discover = async (building: CandidateBuilding) => {
     if (building.marketKey === 'dubai') return false;
     const registryKey = candidatePhotoRegistryKey(building);
     if (registryKey === null) return false;
+    checked += 1;
+    checkedEntityIds.push(building.entityId);
     try {
       const response = await fetch('https://places.googleapis.com/v1/places:searchText', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'X-Goog-Api-Key': apiKey,
-          'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.photos',
+          'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.location,places.googleMapsUri,places.photos',
         },
         body: JSON.stringify({ textQuery: `${building.name}, ${building.address}`, maxResultCount: 1, languageCode: building.marketKey === 'seoul' ? 'ko' : 'en' }),
         signal: AbortSignal.timeout(8_000),
       });
       if (!response.ok) {
+        if ([401, 403].includes(response.status)) terminalProviderError = `http-${response.status}`;
         await recordEnrichmentAttempt({ buildingKey: building.key, pipeline: 'photo-google', status: 'provider-error', reason: `http-${response.status}`, retryAfter: 'day' });
         return false;
       }
@@ -487,30 +607,71 @@ export async function discoverGooglePlacePhotoCandidates(limit = 12, marketKey?:
         id?: unknown;
         displayName?: Readonly<{ text?: unknown }>;
         formattedAddress?: unknown;
+        location?: Readonly<{ latitude?: unknown; longitude?: unknown }>;
+        googleMapsUri?: unknown;
         photos?: readonly unknown[];
       }>[] }>;
       const place = body.places?.[0];
       const placeId = typeof place?.id === 'string' ? place.id : null;
       const placeName = typeof place?.displayName?.text === 'string' ? place.displayName.text : '';
       const placeAddress = typeof place?.formattedAddress === 'string' ? place.formattedAddress : '';
-      if (placeId === null || (place?.photos?.length ?? 0) === 0
-        || !(normalizedIdentity(placeName).includes(normalizedIdentity(building.name))
-          || normalizedIdentity(building.name).includes(normalizedIdentity(placeName)))
-        || !googlePlaceAddressMatches(placeAddress, building.address, building.marketKey)) {
+      const placeLatitude = finiteNumber(place?.location?.latitude);
+      const placeLongitude = finiteNumber(place?.location?.longitude);
+      const placeLocation = placeLatitude !== null && placeLongitude !== null
+        ? { latitude: placeLatitude, longitude: placeLongitude }
+        : null;
+      const identity = decideGooglePhotoCandidate({
+        marketKey: building.marketKey,
+        name: building.name,
+        address: building.address,
+        postalCode: building.postalCode,
+        latitude: building.latitude,
+        longitude: building.longitude,
+      }, {
+        displayName: placeName,
+        formattedAddress: placeAddress,
+        location: placeLocation,
+        hasPhoto: (place?.photos?.length ?? 0) > 0,
+      });
+      if (placeId === null || identity.disposition === 'reject') {
         await recordEnrichmentAttempt({ buildingKey: building.key, pipeline: 'photo-google', status: 'no-candidate', reason: 'exact-place-with-photo-not-found', retryAfter: 'month' });
         return false;
       }
+      const status = identity.disposition === 'auto-approve' ? 'approved' : 'review_required';
+      const approvedBy = status === 'approved' ? 'provider-identity-policy-v1' : null;
+      const providerSourceUri = safeHttpUrl(place?.googleMapsUri);
       await sql`
         INSERT INTO building_photos (
           building_key, registry_key, provider, provider_place_id, status,
-          subject_kind, rights_status, checked_at
+          approved_at, approved_by, attribution_name, attribution_url,
+          subject_kind, rights_status, source_page_url, visual_reviewed_at,
+          match_policy_version, match_confidence, match_evidence,
+          provider_source_uri, provider_checked_at, checked_at
         ) VALUES (
           ${building.key}, ${registryKey}, 'google-place', ${placeId},
-          'review_required', 'building-exterior', 'provider-display-only', now()
+          ${status}, ${status === 'approved' ? new Date() : null}, ${approvedBy},
+          'Google Maps', ${providerSourceUri}, 'building-exterior', 'provider-display-only',
+          ${providerSourceUri}, ${status === 'approved' ? new Date() : null},
+          ${identity.policyVersion}, ${identity.confidence}, ${JSON.stringify(identity.evidence)}::jsonb,
+          ${providerSourceUri}, now(), now()
         )
         ON CONFLICT (registry_key) DO UPDATE SET
-          provider_place_id = excluded.provider_place_id,
-          status = CASE WHEN building_photos.status = 'approved' THEN 'approved' ELSE 'review_required' END,
+          provider = CASE WHEN building_photos.status = 'approved' THEN building_photos.provider ELSE excluded.provider END,
+          provider_place_id = CASE WHEN building_photos.status = 'approved' THEN building_photos.provider_place_id ELSE excluded.provider_place_id END,
+          attribution_name = CASE WHEN building_photos.status = 'approved' THEN building_photos.attribution_name ELSE excluded.attribution_name END,
+          attribution_url = CASE WHEN building_photos.status = 'approved' THEN building_photos.attribution_url ELSE excluded.attribution_url END,
+          status = CASE WHEN building_photos.status = 'approved' THEN 'approved' ELSE excluded.status END,
+          approved_at = CASE WHEN building_photos.status = 'approved' THEN building_photos.approved_at ELSE excluded.approved_at END,
+          approved_by = CASE WHEN building_photos.status = 'approved' THEN building_photos.approved_by ELSE excluded.approved_by END,
+          subject_kind = 'building-exterior',
+          rights_status = CASE WHEN building_photos.status = 'approved' THEN building_photos.rights_status ELSE 'provider-display-only' END,
+          source_page_url = CASE WHEN building_photos.status = 'approved' THEN building_photos.source_page_url ELSE excluded.source_page_url END,
+          visual_reviewed_at = CASE WHEN building_photos.status = 'approved' THEN building_photos.visual_reviewed_at ELSE excluded.visual_reviewed_at END,
+          match_policy_version = CASE WHEN building_photos.status = 'approved' THEN building_photos.match_policy_version ELSE excluded.match_policy_version END,
+          match_confidence = CASE WHEN building_photos.status = 'approved' THEN building_photos.match_confidence ELSE excluded.match_confidence END,
+          match_evidence = CASE WHEN building_photos.status = 'approved' THEN building_photos.match_evidence ELSE excluded.match_evidence END,
+          provider_source_uri = CASE WHEN building_photos.status = 'approved' THEN building_photos.provider_source_uri ELSE excluded.provider_source_uri END,
+          provider_checked_at = CASE WHEN building_photos.status = 'approved' THEN building_photos.provider_checked_at ELSE excluded.provider_checked_at END,
           checked_at = now(), updated_at = now()
       `;
       await recordEnrichmentAttempt({ buildingKey: building.key, pipeline: 'photo-google', status: 'succeeded', reason: null, retryAfter: 'year' });
@@ -523,8 +684,30 @@ export async function discoverGooglePlacePhotoCandidates(limit = 12, marketKey?:
       }
       return false;
     }
+  };
+  let candidates = 0;
+  const first = buildings[0];
+  if (first !== undefined) candidates += await discover(first) ? 1 : 0;
+  if (terminalProviderError !== null) {
+    return Object.freeze({
+      checked,
+      candidates,
+      entityIds: Object.freeze(checkedEntityIds),
+      state: 'provider-error',
+      reason: terminalProviderError,
+    });
+  }
+  candidates += await countCandidatesInBatches(buildings.slice(1), async (building) => {
+    if (terminalProviderError !== null) return false;
+    return discover(building);
   });
-  return Object.freeze({ checked: buildings.length, candidates, state: 'ready' });
+  return Object.freeze({
+    checked,
+    candidates,
+    entityIds: Object.freeze(checkedEntityIds),
+    state: terminalProviderError === null ? 'ready' : 'provider-error',
+    ...(terminalProviderError === null ? {} : { reason: terminalProviderError }),
+  });
 }
 
 export async function listBuildingPhotoCandidates(limit = 100): Promise<readonly Readonly<Record<string, unknown>>[]> {

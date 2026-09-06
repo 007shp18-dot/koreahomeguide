@@ -36,6 +36,19 @@
   color: inherit;
 }
 
+.relationship {
+  position: absolute;
+  left: .75rem;
+  bottom: .75rem;
+  margin: 0;
+  padding: .3rem .5rem;
+  border-radius: 8px;
+  color: #fff;
+  background: rgb(18 63 68 / 88%);
+  font-size: 12px;
+  font-weight: 800;
+}
+
 .unavailable {
   padding: clamp(20px, 3vw, 40px);
   display: grid;
