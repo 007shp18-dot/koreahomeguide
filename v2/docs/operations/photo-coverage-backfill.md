@@ -15,7 +15,6 @@ values into command history.
 | `CRON_SECRET` | Scheduled building-enrichment route |
 | `GOOGLE_MAPS_API_KEY` | Server key, restricted to Places API (New) |
 | `GOOGLE_MAPS_BROWSER_KEY` | Browser key, restricted by SignedPrice origins and Maps JavaScript API |
-| `GOOGLE_MAPS_BROWSER_ENABLED` | Explicit browser opt-in; keep `false` for zero Google photo/map requests |
 | `NAVER_SEARCH_CLIENT_ID` | NAVER Search API application ID |
 | `NAVER_SEARCH_CLIENT_SECRET` | NAVER Search API application secret |
 | `NAVER_MAP_CLIENT_ID` | Existing NAVER Maps browser client ID |
@@ -25,9 +24,10 @@ The scheduled guardrails are `PHOTO_GOOGLE_DAILY_REQUEST_CAP`,
 Google discovery defaults to five requests and an estimated 0.16 USD spend cap
 per day. With the default 0.032 USD request estimate, a 31-day month is limited
 to about 4.96 USD. Seoul and Singapore run sequentially against the same daily
-usage row so they share that limit. Browser Google requests default to disabled
-so ordinary page views do not add a second Google cost path. Keep every enabled
-cap finite and change it only after an explicit budget decision.
+usage row so they share that collection limit. The browser key is separately
+restricted to SignedPrice origins and must never be replaced with the server
+collection key. Keep every enabled cap finite and change it only after an
+explicit budget decision.
 
 Production runs one bounded slice per provider each hour: Wikimedia at minute
 7, official Seoul apartment facts at minute 17, NAVER at minute 27, and Google

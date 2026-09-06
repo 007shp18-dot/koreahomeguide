@@ -148,7 +148,6 @@ describe('Singapore route SSR', () => {
     vi.stubEnv('SIGNEDPRICE_SINGAPORE_SNAPSHOT_SHA256', source.digest);
     vi.stubEnv('SIGNEDPRICE_SINGAPORE_SNAPSHOT_PERIOD', '2026-06..2026-08');
     vi.stubEnv('GOOGLE_MAPS_BROWSER_KEY', 'page-google-key');
-    vi.stubEnv('GOOGLE_MAPS_BROWSER_ENABLED', 'true');
 
     const html = renderToStaticMarkup(await SingaporeExplorePage());
 
