@@ -117,11 +117,23 @@ describe('scoped property enrichment',()=>{
   calls.backfill.mockImplementation(async ({limit}:{limit:number})=>({state:'ready',checked:limit,candidates:1}));
   const response=await GET(new Request('https://example.com/api/internal/building-enrichment?source=naver&limit=250',{headers:{authorization:'Bearer test-secret'}}));
   expect(response.status).toBe(200);
-  expect(calls.backfill).toHaveBeenNthCalledWith(1,expect.objectContaining({market:'kr-seoul',provider:'naver-search',limit:175,dailyRequestCap:25_000}));
+  expect(calls.backfill).toHaveBeenNthCalledWith(1,expect.objectContaining({market:'ae-dubai',provider:'naver-search',limit:50,dailyRequestCap:25_000}));
   expect(calls.backfill).toHaveBeenNthCalledWith(2,expect.objectContaining({market:'sg-singapore',provider:'naver-search',limit:25,dailyRequestCap:25_000}));
-  expect(calls.backfill).toHaveBeenNthCalledWith(3,expect.objectContaining({market:'ae-dubai',provider:'naver-search',limit:50,dailyRequestCap:25_000}));
+  expect(calls.backfill).toHaveBeenNthCalledWith(3,expect.objectContaining({market:'kr-seoul',provider:'naver-search',limit:175,dailyRequestCap:25_000}));
   expect(calls.backfill).toHaveBeenCalledTimes(3);
   expect(calls.official).not.toHaveBeenCalled();
+  expect(await response.json()).toMatchObject({source:'naver',checked:250});
+ });
+ it('reassigns an unused Dubai NAVER slice to Seoul in the same scheduled run',async()=>{
+  vi.stubEnv('CRON_SECRET','test-secret');
+  calls.backfill.mockImplementation(async ({market,limit}:{market:string;limit:number})=>({
+   state:'ready',checked:market==='ae-dubai'?0:limit,candidates:0,
+  }));
+  const response=await GET(new Request('https://example.com/api/internal/building-enrichment?source=naver&limit=250',{headers:{authorization:'Bearer test-secret'}}));
+  expect(response.status).toBe(200);
+  expect(calls.backfill).toHaveBeenNthCalledWith(1,expect.objectContaining({market:'ae-dubai',limit:50}));
+  expect(calls.backfill).toHaveBeenNthCalledWith(2,expect.objectContaining({market:'sg-singapore',limit:25}));
+  expect(calls.backfill).toHaveBeenNthCalledWith(3,expect.objectContaining({market:'kr-seoul',limit:225}));
   expect(await response.json()).toMatchObject({source:'naver',checked:250});
  });
  it('accepts an explicit Dubai NAVER discovery slice',async()=>{
