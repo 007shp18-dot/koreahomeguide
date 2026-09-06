@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 vi.mock('server-only', () => ({}));
 
 import BuildingRoute, {
+  composeKoreaBuildingRoute,
   dynamicParams,
   generateMetadata,
   generateStaticParams,
@@ -65,6 +66,35 @@ describe('public building detail', () => {
 
     expect(englishRoute.dynamic).toBe('force-dynamic');
     expect(koreanRoute.dynamic).toBe('force-dynamic');
+  });
+
+  it('renders an approved database photo when the public projection omits media', () => {
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_BUILDING_SUMMARY_ARTIFACT', JSON.stringify(createPublicBuildingFixture()));
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', PUBLIC_BUILDING_FIXTURE_PERIOD);
+    vi.stubEnv('GOOGLE_MAPS_BROWSER_KEY', 'browser-test-key');
+
+    const html = renderToStaticMarkup(composeKoreaBuildingRoute({
+      district: 'gangnam-gu',
+      buildingId: 'gangnam-evidence-tower',
+      query: {},
+      dependencies: {
+        entityProjection: null,
+        photoApproval: {
+          provider: 'google-place',
+          placeId: 'approved-place-id',
+          assetUrl: null,
+          attributionName: null,
+          attributionUrl: null,
+          buildingName: 'Evidence Tower',
+          address: 'Gangnam-gu, Seoul',
+          approvedAt: REFERENCE_INSTANT,
+        },
+      },
+    }));
+
+    expect(html).toContain('data-building-media="google-place-photo"');
+    expect(html).toContain('Verified place photos');
+    expect(html).not.toContain('Building photo unavailable');
   });
 
   it('preserves Explore filters in the Check return URL through the route', async () => {

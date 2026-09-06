@@ -6,6 +6,10 @@ import { BuildingOfficialFacts } from '@/components/public-market/building-offic
 import { ProjectedEntityMedia } from '@/components/public-market/projected-entity-media';
 import { googleMapsBrowserKeyFromEnvironment } from '@/lib/maps/google-maps-browser-key.server';
 import {
+  getStoredPublicPhotoApproval,
+  type StoredPublicPhotoApproval,
+} from '@/lib/photos/building-photo-store.server';
+import {
   KoreaEvidenceBuildingDetail,
   ObservedBuildingDetail,
 } from '@/components/public-market/observed-building-detail';
@@ -105,22 +109,27 @@ export function createKoreaDetailBackHref(
 function projectedBuildingMediaFor(
   name: string,
   projection: PublicEntityProjection | null | undefined,
+  photoApproval: StoredPublicPhotoApproval | null | undefined,
 ) {
   const selected = projection?.media.find(({ displayUrl, providerReference, exactSubject }) =>
     exactSubject && (displayUrl !== null || providerReference !== null));
+  const approvedFallback = selected === undefined && photoApproval !== null && photoApproval !== undefined
+    ? {
+        displayUrl: photoApproval.assetUrl,
+        providerReference: photoApproval.placeId,
+        width: null,
+        height: null,
+        focalX: null,
+        focalY: null,
+        attributionName: photoApproval.attributionName,
+        attributionUrl: photoApproval.attributionUrl,
+      }
+    : null;
+  const media = selected ?? approvedFallback;
   return <ProjectedEntityMedia
     buildingName={name}
     browserKey={googleMapsBrowserKeyFromEnvironment()}
-    media={selected === undefined ? null : {
-      displayUrl: selected.displayUrl,
-      providerReference: selected.providerReference,
-      width: selected.width,
-      height: selected.height,
-      focalX: selected.focalX,
-      focalY: selected.focalY,
-      attributionName: selected.attributionName,
-      attributionUrl: selected.attributionUrl,
-    }}
+    media={media}
   />;
 }
 
@@ -229,6 +238,7 @@ export type KoreaBuildingRouteCompositionDependencies = Readonly<{
   proximityRepository?: KoreaProximityRepositoryState;
   buildObservedIdentityModel?: typeof buildObservedBuildingIdentityModel;
   entityProjection?: PublicEntityProjection | null;
+  photoApproval?: StoredPublicPhotoApproval | null;
 }>;
 
 /**
@@ -251,6 +261,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
   const observedIdentityModel = input.dependencies?.buildObservedIdentityModel
     ?? buildObservedBuildingIdentityModel;
   const entityProjection = input.dependencies?.entityProjection;
+  const photoApproval = input.dependencies?.photoApproval;
   const propertyTypeModel = buildPublicPropertyTypeModel(district, buildingId);
   if (propertyTypeModel !== null) {
     const siblings = listPublicPropertyTypeRouteParams()
@@ -280,7 +291,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
       model={exact.model}
       backHref={exact.backHref}
       locale={locale}
-      visual={projectedBuildingMediaFor(exact.model.building.officialName, entityProjection)}
+      visual={projectedBuildingMediaFor(exact.model.building.officialName, entityProjection, photoApproval)}
       facts={<BuildingOfficialFacts districtSlug={exact.model.district.slug} buildingId={exact.model.building.buildingId} observedFacts={transactionBuildingFacts(exact.model, coordinate)} proximity={entityProjection?.proximity ?? identity?.proximity} locale={locale} />}
     />;
   }
@@ -312,7 +323,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
     return <ObservedBuildingDetail
       model={observed}
       backHref={backHref}
-      visual={projectedBuildingMediaFor(observed.building.officialName, entityProjection)}
+      visual={projectedBuildingMediaFor(observed.building.officialName, entityProjection, photoApproval)}
       facts={<BuildingOfficialFacts
         districtSlug={observed.district.slug}
         buildingId={observed.building.buildingId}
@@ -361,7 +372,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
     mapHref: backHref,
     photo: null,
   });
-  const propertyMedia = projectedBuildingMediaFor(model.building.name, entityProjection);
+  const propertyMedia = projectedBuildingMediaFor(model.building.name, entityProjection, photoApproval);
   const publicCoordinate = entityProjection?.location ?? (
     model.building.latitude === null || model.building.longitude === null
       ? null
@@ -399,14 +410,20 @@ export default async function BuildingRoute({ params, searchParams, locale = 'en
   const { district, buildingId } = await params;
   const propertyEntityId = `kr-seoul:estate:${buildingId}`;
   const projectionReader = publicEntityProjectionReaderFromEnvironment();
-  const projections = projectionReader === null
-    ? null
-    : await projectionReader.listBuildings([propertyEntityId]);
+  const [projections, photoApproval] = await Promise.all([
+    projectionReader === null
+      ? Promise.resolve(null)
+      : projectionReader.listBuildings([propertyEntityId]),
+    getStoredPublicPhotoApproval(`kr-seoul:${buildingId}`),
+  ]);
   return composeKoreaBuildingRoute({
     district,
     buildingId,
     query: await searchParams,
     locale,
-    dependencies: { entityProjection: projections?.get(propertyEntityId) ?? null },
+    dependencies: {
+      entityProjection: projections?.get(propertyEntityId) ?? null,
+      photoApproval,
+    },
   });
 }
