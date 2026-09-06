@@ -11,7 +11,7 @@ import {
   buildDubaiExploreHref,
   filterDubaiExploreResults,
 } from '../lib/dubai/explore-model';
-import { createDubaiEvidenceRepository } from '../lib/dubai/evidence-repository.server';
+import { createDubaiEvidenceRepository, dubaiEvidenceRepositoryFromEnvironment } from '../lib/dubai/evidence-repository.server';
 import { DUBAI_ANNUAL_TRANSACTIONS, filterDubaiAreas } from '../lib/dubai/research';
 import { buildDubaiExploreModel } from '../lib/dubai/route-model.server';
 import { resolveNewsroomFilters } from '../components/newsroom/newsroom-index';
@@ -26,6 +26,13 @@ async function readyExploreModel() {
 }
 
 describe('Dubai research release', () => {
+  it('installs the 46-area public aggregate for Explore, area pages, and Check', () => {
+    const repository = dubaiEvidenceRepositoryFromEnvironment();
+    expect(repository).not.toBeNull();
+    expect(repository?.listAreas()).toHaveLength(46);
+    expect(repository?.listAreaRouteParams()).toHaveLength(46);
+    expect(buildDubaiExploreModel(repository)).toMatchObject({ status: 'ready' });
+  });
   it('keeps annual values comparable and quarter figures separately labelled', () => {
     expect(DUBAI_ANNUAL_TRANSACTIONS.map((row) => row.year)).toEqual(['2024', '2025']);
     const html = renderToStaticMarkup(<DubaiOverview />);

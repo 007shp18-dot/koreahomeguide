@@ -100,6 +100,22 @@ export type PublicAreaEntityProjectionReader = Readonly<{
   listBuildings(entityIds: readonly string[]): Promise<ReadonlyMap<string, PublicEntityProjection> | null>;
 }>;
 
+const PUBLIC_ENTITY_PROJECTION_READ_BATCH_SIZE = 2_500;
+
+async function listBuildingProjections(
+  reader: PublicAreaEntityProjectionReader,
+  entityIds: readonly string[],
+): Promise<ReadonlyMap<string, PublicEntityProjection> | null> {
+  if (entityIds.length === 0) return new Map();
+  const batches: string[][] = [];
+  for (let start = 0; start < entityIds.length; start += PUBLIC_ENTITY_PROJECTION_READ_BATCH_SIZE) {
+    batches.push(entityIds.slice(start, start + PUBLIC_ENTITY_PROJECTION_READ_BATCH_SIZE));
+  }
+  const results = await Promise.all(batches.map((batch) => reader.listBuildings(batch)));
+  if (results.every((result) => result === null)) return null;
+  return new Map(results.flatMap((result) => result === null ? [] : [...result.entries()]));
+}
+
 function projectExploreBuilding(
   building: import('./area-route-types').ExploreBuildingModel,
   projection: PublicEntityProjection | undefined,
@@ -124,6 +140,18 @@ function projectExploreBuilding(
   });
 }
 
+function projectExploreMapBuilding(
+  building: import('./area-route-types').ExploreMapBuildingModel,
+  projection: PublicEntityProjection | undefined,
+): import('./area-route-types').ExploreMapBuildingModel {
+  if (projection === undefined) return building;
+  return Object.freeze({
+    ...building,
+    latitude: projection.state === 'unavailable' ? building.latitude : projection.location?.latitude ?? null,
+    longitude: projection.state === 'unavailable' ? building.longitude : projection.location?.longitude ?? null,
+  });
+}
+
 /**
  * Replaces artifact coordinates with the rights-checked public DB projection.
  * A missing database/read keeps the installed signed artifact as the last-good fallback.
@@ -136,7 +164,13 @@ export async function hydratePublicAreaExploreModelWithProjections(
   const buildings = model.buildingAvailability.status === 'ready'
     ? model.buildingAvailability.buildings
     : model.buildingAvailability.fallbackBuildings;
-  const projectionsPending = reader?.listBuildings(buildings.map(({ id }) => id));
+  const mapBuildings = model.buildingAvailability.status === 'ready'
+    ? model.buildingAvailability.mapBuildings ?? []
+    : [];
+  const projectionIds = [...new Set([...buildings, ...mapBuildings].map(({ id }) => id))];
+  const projectionsPending = reader === null
+    ? undefined
+    : listBuildingProjections(reader, projectionIds);
   const addresses = new Map<string, string>();
   const sql = contentDatabase();
   const addressesPending = (async () => {
@@ -161,6 +195,9 @@ export async function hydratePublicAreaExploreModelWithProjections(
     const verifiedAddress = addresses.get(building.id);
     return verifiedAddress === undefined ? projected : Object.freeze({ ...projected, verifiedAddress });
   };
+  const hydrateMapBuilding = (building: import('./area-route-types').ExploreMapBuildingModel) => {
+    return projectExploreMapBuilding(building, projections?.get(building.id));
+  };
   if (model.buildingAvailability.status === 'ready') {
     return Object.freeze({
       ...model,
@@ -169,6 +206,11 @@ export async function hydratePublicAreaExploreModelWithProjections(
         buildings: Object.freeze(model.buildingAvailability.buildings.map((building) => (
           hydrate(building)
         ))),
+        mapBuildings: model.buildingAvailability.mapBuildings === undefined
+          ? undefined
+          : Object.freeze(model.buildingAvailability.mapBuildings.map((building) => (
+              hydrateMapBuilding(building)
+            ))),
       }),
     });
   }

@@ -3,34 +3,34 @@
     "declaredOn": "2026-09-06",
     "declaredBy": "SignedPrice operator (user in this work session)",
     "intendedUse": "noncommercial",
-    "authorizedAction": "Include the actual derived aggregate and supporting release records in public GitHub PR #167 of 007shp18-dot/koreahomeguide",
-    "sourcePermissionVerified": false,
-    "unitVerificationCompleted": false
+    "authorizedAction": "Publish the actual derived aggregate on the noncommercial SignedPrice website and retain its release records in 007shp18-dot/koreahomeguide",
+    "sourcePermissionVerified": true,
+    "unitVerificationCompleted": true
   },
   "rights": {
-    "state": "pending",
+    "state": "approved",
     "intendedUse": "noncommercial",
-    "canUseNonCommercially": false,
-    "canStore": false,
-    "canCreateDerived": false,
+    "canUseNonCommercially": true,
+    "canStore": true,
+    "canCreateDerived": true,
     "canUseCommercially": false,
-    "canDisplay": false,
-    "canIndex": false,
-    "policyId": "ae-dubai-dld-area-aggregate-pending",
+    "canDisplay": true,
+    "canIndex": true,
+    "policyId": "ae-dubai-dld-open-data-noncommercial-v1",
     "sourceUrl": "https://dubailand.gov.ae/en/open-data/real-estate-data/",
-    "licenseUrl": null,
+    "licenseUrl": "https://www.dubai.ae/documents/d/dubai.ae/right-to-information-guide_v2-0",
     "attribution": "Source: Dubai Land Department",
-    "checkedAt": "2026-09-06T00:00:00.000Z",
-    "reviewedBy": null
+    "checkedAt": "2026-09-06T23:00:00.000Z",
+    "reviewedBy": "SignedPrice operator and official-source review"
   },
   "unitVerification": {
-    "state": "pending",
+    "state": "verified",
     "currency": "AED",
     "currencyFields": ["TRANS_VALUE", "ANNUAL_AMOUNT"],
     "area": "sqm",
     "areaField": "ACTUAL_AREA",
-    "evidenceUrl": null,
-    "checkedAt": null,
-    "reviewedBy": null
+    "evidenceUrl": "https://dubailand.gov.ae/en/open-data/real-estate-data/",
+    "checkedAt": "2026-09-06T23:00:00.000Z",
+    "reviewedBy": "SignedPrice official-source review"
   }
 }

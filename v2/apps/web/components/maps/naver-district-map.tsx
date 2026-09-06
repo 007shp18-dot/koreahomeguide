@@ -33,7 +33,14 @@ export type NaverBuildingMapPoint = Readonly<{
   metricLabel?: string | null;
   sampleLabel?: string;
   selected?: boolean;
-  areaReference?: Readonly<{ id: string; title: string; latitude: number; longitude: number; neighborhoodId?: string }>;
+  areaReference?: Readonly<{
+    id: string;
+    title: string;
+    latitude: number;
+    longitude: number;
+    neighborhoodId?: string;
+    addressQuery?: string;
+  }>;
 }>;
 
 export type NaverNeighborhoodMapPoint = Readonly<{
@@ -488,6 +495,13 @@ export function mountNaverDistrictMap({
       renderUnlocatedNeighborhoods();
     } else if (showingBuildings) {
       const located = new Map<string, NaverBuildingMapPoint>();
+      const resolvedAreaReference = (
+        reference: NonNullable<NaverBuildingMapPoint['areaReference']>,
+      ): NonNullable<NaverBuildingMapPoint['areaReference']> => {
+        if (reference.addressQuery === undefined) return reference;
+        const cached = locationCache.get(`neighborhood:${reference.id}:${reference.addressQuery}`);
+        return cached === undefined ? reference : { ...reference, ...cached };
+      };
       const renderBuildings = () => {
         if (!isActive() || map === null) return;
         for (const listener of listeners) sdk.Event.removeListener(listener);
@@ -511,7 +525,9 @@ export function mountNaverDistrictMap({
         let unplaced = 0;
         for (const building of buildingPoints) {
           if (located.has(building.id)) continue;
-          const reference = building.areaReference;
+          const reference = building.areaReference === undefined
+            ? undefined
+            : resolvedAreaReference(building.areaReference);
           if (reference === undefined || !Number.isFinite(reference.latitude) || !Number.isFinite(reference.longitude)
             || reference.latitude < 37.4 || reference.latitude > 37.72
             || reference.longitude < 126.75 || reference.longitude > 127.25) { unplaced += 1; continue; }
@@ -520,9 +536,10 @@ export function mountNaverDistrictMap({
           groups.set(reference.id, group);
         }
         let additionalCount = 0;
-        for (const { reference, count } of areaGroups) {
+        for (const { reference: sourceReference, count } of areaGroups) {
           if (!Number.isSafeInteger(count) || count <= 0) continue;
           additionalCount += count;
+          const reference = resolvedAreaReference(sourceReference);
           if (!Number.isFinite(reference.latitude) || !Number.isFinite(reference.longitude)
             || reference.latitude < 37.4 || reference.latitude > 37.72
             || reference.longitude < 126.75 || reference.longitude > 127.25) { unplaced += count; continue; }
@@ -585,6 +602,30 @@ export function mountNaverDistrictMap({
           });
         } else {
           markBuildingUnavailable(building.id);
+        }
+      }
+      if (sdk.Service !== undefined) {
+        const references = new Map<string, NonNullable<NaverBuildingMapPoint['areaReference']>>();
+        for (const reference of [
+          ...buildingPoints.flatMap((building) => building.areaReference === undefined ? [] : [building.areaReference]),
+          ...areaGroups.map(({ reference }) => reference),
+        ]) {
+          if (reference.addressQuery !== undefined) references.set(reference.id, reference);
+        }
+        for (const reference of references.values()) {
+          const cacheKey = `neighborhood:${reference.id}:${reference.addressQuery}`;
+          if (locationCache.has(cacheKey)) continue;
+          sdk.Service.geocode({ query: reference.addressQuery! }, (status, response) => {
+            if (!isActive() || status !== sdk.Service!.Status.OK) return;
+            const address = resolveUnambiguousNaverGeocode(reference.addressQuery!, response.v2?.addresses);
+            const latitude = Number(address?.y);
+            const longitude = Number(address?.x);
+            if (!Number.isFinite(latitude) || !Number.isFinite(longitude)
+              || latitude < 37.4 || latitude > 37.72
+              || longitude < 126.75 || longitude > 127.25) return;
+            locationCache.set(cacheKey, { latitude, longitude });
+            renderBuildings();
+          });
         }
       }
       renderBuildings();

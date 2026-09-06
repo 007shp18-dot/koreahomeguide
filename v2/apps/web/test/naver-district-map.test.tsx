@@ -87,6 +87,43 @@ describe('NAVER district map', () => {
     expect(active.size).toBe(3);
   });
 
+  it('moves an unlocated building group to its verified neighborhood reference', () => {
+    const active = new Set<Marker>();
+    class TestMap { setCenter() {} setZoom() {} getZoom() { return 18; } }
+    class LatLng { constructor(readonly latitude: number, readonly longitude: number) {} }
+    class Marker {
+      constructor(readonly options: { map: unknown; position: unknown; title: string; icon?: { content: string } }) { active.add(this); }
+      setMap(value: unknown) { if (value === null) active.delete(this); }
+    }
+    const reference = {
+      id: 'hwayang-dong', title: '화양동', latitude: 37.54, longitude: 127.08,
+      neighborhoodId: 'hwayang-dong', addressQuery: '서울특별시 광진구 화양동',
+    };
+    mountNaverDistrictMap({
+      sdk: {
+        Map: TestMap, LatLng, Marker,
+        Event: { addListener: () => undefined, removeListener() {} },
+        Service: {
+          Status: { OK: 'OK' },
+          geocode: (_input, callback) => callback('OK', { v2: { addresses: [{
+            x: '127.0712', y: '37.5435', jibunAddress: '서울특별시 광진구 화양동',
+          }] } }),
+        },
+      },
+      element: {} as HTMLElement,
+      districts,
+      selectedDistrict: districts[0],
+      buildings: [{
+        id: 'unlocated', title: 'Unlocated', href: '/building/unlocated', addressQuery: '',
+        latitude: null, longitude: null, areaReference: reference,
+      }],
+      onSelect: vi.fn(),
+    });
+
+    expect([...active]).toHaveLength(1);
+    expect([...active][0]!.options.position).toEqual(new LatLng(37.5435, 127.0712));
+  });
+
   it('preserves user zoom when the same district receives updated selection props', () => {
     const setCenter = vi.fn();
     const setZoom = vi.fn();

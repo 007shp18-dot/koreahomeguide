@@ -27,9 +27,21 @@ import {
 } from '../lib/public-market/route-model.server';
 import { indexableMetadata } from '../lib/public-metadata';
 import { buildMarketPageModel } from '../lib/route-model';
+import { dubaiEvidenceRepositoryFromEnvironment } from '../lib/dubai/evidence-repository.server';
 
 const period = '2026-01/2026-07';
 const portfolioUrls = EDITORIAL_PORTFOLIO.map(({ canonicalHref }) => `https://www.signedprice.com${canonicalHref}`);
+
+function releasedDubaiEvidenceUrls(): string[] {
+  const repository = dubaiEvidenceRepositoryFromEnvironment();
+  if (repository === null) return [];
+  const areaUrls = repository.listAreaRouteParams().map(({ area }) => (
+    `https://www.signedprice.com/ae/dubai/explore/${area}/`
+  ));
+  return areaUrls.length === 0
+    ? areaUrls
+    : ['https://www.signedprice.com/ae/dubai/check/', ...areaUrls];
+}
 
 function artifact(published: boolean) {
   const identity = {
@@ -255,7 +267,7 @@ describe('public migration containment', () => {
     });
   });
 
-  it('publishes only the approved global, Korea, and guide cohort in the sitemap', () => {
+  it('publishes only the approved global, market-evidence, and guide cohort in the sitemap', () => {
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_ARTIFACT', JSON.stringify(artifact(true)));
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', period);
     const urls = sitemap().map(({ url }) => url);
@@ -279,6 +291,7 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/ae/dubai/',
       'https://www.signedprice.com/ae/dubai/explore/',
       'https://www.signedprice.com/ae/dubai/guide/',
+      ...releasedDubaiEvidenceUrls(),
       'https://www.signedprice.com/sg/',
       'https://www.signedprice.com/sg/singapore/explore/',
       'https://www.signedprice.com/sg/singapore/explore/ccr/',
@@ -414,6 +427,7 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/ae/dubai/',
       'https://www.signedprice.com/ae/dubai/explore/',
       'https://www.signedprice.com/ae/dubai/guide/',
+      ...releasedDubaiEvidenceUrls(),
       'https://www.signedprice.com/sg/',
       'https://www.signedprice.com/sg/singapore/explore/',
       'https://www.signedprice.com/sg/singapore/explore/ccr/',
@@ -453,6 +467,7 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/ae/dubai/',
       'https://www.signedprice.com/ae/dubai/explore/',
       'https://www.signedprice.com/ae/dubai/guide/',
+      ...releasedDubaiEvidenceUrls(),
       'https://www.signedprice.com/sg/',
       'https://www.signedprice.com/sg/singapore/explore/',
       'https://www.signedprice.com/sg/singapore/explore/ccr/',

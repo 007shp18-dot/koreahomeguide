@@ -5,7 +5,7 @@ import { useCallback, useDeferredValue, useEffect, useMemo, useState } from 'rea
 import type { SingaporeExploreModel } from '../../lib/singapore/route-types';
 import type { HdbExploreModel } from '../../lib/singapore/hdb-route-model.server';
 import { GooglePlaceMap } from '../maps/google-place-map';
-import { buildSingaporeMapCoverage } from '../../lib/singapore/map-coverage';
+import { buildSingaporeAreaMapCoverage, buildSingaporeMapCoverage } from '../../lib/singapore/map-coverage';
 import { HdbMarketPanel } from './hdb-market-panel';
 import { MarketExploreShell, MarketLayerControl } from '../market-ui/market-shell';
 import { SingaporeEvidence, SingaporePage, singaporeStyles as styles } from './singapore-shell';
@@ -117,18 +117,26 @@ export function SingaporeExplorer({
     setSelectedSegment(segment); setSelectedProjectId(null); setDistrict('all'); setPage(1);
   }, []);
   const onMapSelect = useCallback((id: string) => {
+    if (id.startsWith('region-')) { selectSegment(id.slice(7) as 'CCR' | 'RCR' | 'OCR'); return; }
     if (id.startsWith('project-')) setSelectedProjectId(id.slice(8));
     if (id.startsWith('district-')) { setDistrict(id.slice(9)); setPage(1); setSelectedProjectId(null); }
-  }, []);
-  const mapCoverage = useMemo(() => buildSingaporeMapCoverage(projects, allProjects, selectedProjectId), [projects, allProjects, selectedProjectId]);
+  }, [selectSegment]);
+  const mapLevel = district !== 'all' || deferredQuery.trim() !== '' || selectedProjectId !== null
+    ? 'projects'
+    : selectedSegment === null ? 'regions' : 'districts';
+  const projectMapCoverage = useMemo(() => buildSingaporeMapCoverage(projects, allProjects, selectedProjectId), [projects, allProjects, selectedProjectId]);
+  const areaMapCoverage = useMemo(() => mapLevel === 'regions'
+    ? buildSingaporeAreaMapCoverage(projects, allProjects, 'region')
+    : buildSingaporeAreaMapCoverage(projects, allProjects, 'district'), [allProjects, mapLevel, projects]);
+  const activeMapPoints = mapLevel === 'projects' ? projectMapCoverage.points : areaMapCoverage.points;
   const mapPoints = useMemo(() => {
     const byId = new Map(projects.map(project => [`project-${project.id}`, project]));
-    return mapCoverage.points.map(point => {
+    return activeMapPoints.map(point => {
       const project = byId.get(point.id);
       return project === undefined ? point : { ...point,
         label: formatSingaporeMapPrice(project.medianPriceLabel, project.name) };
     });
-  }, [mapCoverage.points, projects]);
+  }, [activeMapPoints, projects]);
   const layers = <>
     <MarketLayerControl label="Singapore market layers" items={[
       { id: 'ura', label: 'URA private sales', href: '#ura-private', current: true },
@@ -166,15 +174,21 @@ export function SingaporeExplorer({
           </div>
           <nav className={styles.projectPagination} aria-label="Project result pages"><button type="button" disabled={activePage === 1} onClick={() => { setPage(activePage - 1); setSelectedProjectId(null); }}>Previous</button><span>Page {activePage} of {pageCount}</span><button type="button" disabled={activePage >= pageCount} onClick={() => { setPage(activePage + 1); setSelectedProjectId(null); }}>Next</button></nav>
         </section>}
-        spatial={<section className={styles.exploreMap} aria-labelledby="singapore-map-heading">
-          <header className={styles.mapHeading}><div><h2 id="singapore-map-heading">Project locations</h2>
-            <p>{mapCoverage.total.toLocaleString('en')} matching projects across all result pages · {mapCoverage.located.toLocaleString('en')} with source coordinates · {mapCoverage.areaOnly.toLocaleString('en')} area-only · {mapCoverage.unplaced.toLocaleString('en')} without a map reference.</p>
-            <p>Location clusters expand as you zoom. Dashed groups use a reference from known projects in the same postal district, not the locations of the missing projects.</p>
+        spatial={<section className={styles.exploreMap} aria-labelledby="singapore-map-heading" data-singapore-map-level={mapLevel}>
+          <header className={styles.mapHeading}><div><h2 id="singapore-map-heading">{mapLevel === 'regions' ? 'Market regions' : mapLevel === 'districts' ? 'Postal districts' : 'Project locations'}</h2>
+            {mapLevel === 'projects' ? <>
+              <p>{projectMapCoverage.total.toLocaleString('en')} matching projects across all result pages · {projectMapCoverage.located.toLocaleString('en')} with source coordinates · {projectMapCoverage.areaOnly.toLocaleString('en')} area-only · {projectMapCoverage.unplaced.toLocaleString('en')} without a map reference.</p>
+              <p>Location clusters expand as you zoom. Dashed groups use a reference from known projects in the same postal district.</p>
+            </> : <p>{areaMapCoverage.total.toLocaleString('en')} matching projects across all result pages · choose a {mapLevel === 'regions' ? 'market region' : 'postal district'} to open its full project map.</p>}
           </div></header>
           <GooglePlaceMap browserKey={googleMapsBrowserKey} points={mapPoints} onSelectPoint={onMapSelect} showAddressSearch={false} />
-          {mapCoverage.unplacedGroups.length > 0 ? <div className={styles.mapUnplaced}>
+          {mapLevel === 'projects' && projectMapCoverage.unplacedGroups.length > 0 ? <div className={styles.mapUnplaced}>
             <p>These district totals remain in the results; no reliable map reference is available yet.</p>
-            {mapCoverage.unplacedGroups.map(group => <button type="button" key={group.district} onClick={() => onMapSelect(`district-${group.district}`)}>District {group.district} · {group.count.toLocaleString('en')} projects</button>)}
+            {projectMapCoverage.unplacedGroups.map(group => <button type="button" key={group.district} onClick={() => onMapSelect(`district-${group.district}`)}>District {group.district} · {group.count.toLocaleString('en')} projects</button>)}
+          </div> : null}
+          {mapLevel !== 'projects' && areaMapCoverage.unplacedGroups.length > 0 ? <div className={styles.mapUnplaced}>
+            <p>{areaMapCoverage.unplaced.toLocaleString('en')} projects remain selectable while their area reference is unavailable.</p>
+            {areaMapCoverage.unplacedGroups.map(group => <button type="button" key={group.id} onClick={() => onMapSelect(group.id)}>{group.label} · {group.count.toLocaleString('en')} projects</button>)}
           </div> : null}
           {selectedProject ? <aside className={styles.mapSelection}><button type="button" aria-label="Close project preview" onClick={() => setSelectedProjectId(null)}>Close</button><h3>{selectedProject.name}</h3><p>{selectedProject.street} · District {selectedProject.district} · {selectedProject.segment}</p><strong>{selectedProject.medianPriceLabel ?? 'Not published'}</strong><span>{selectedProject.medianPsfLabel ?? `${selectedProject.n} reported sales`}</span>{selectedProject.state === 'published' ? <Link href={selectedProject.href}>Open project evidence</Link> : null}</aside> : null}
         </section>}

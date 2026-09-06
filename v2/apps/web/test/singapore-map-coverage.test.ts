@@ -1,7 +1,18 @@
 import { describe, expect, it } from 'vitest';
-import { buildSingaporeMapCoverage } from '../lib/singapore/map-coverage';
+import { buildSingaporeAreaMapCoverage, buildSingaporeMapCoverage } from '../lib/singapore/map-coverage';
 
 describe('Singapore complete-result map coverage', () => {
+  it('moves from region groups to district groups before opening project locations', () => {
+    const projects = [
+      { id: 'a', name: 'A', street: 'One', district: '01', segment: 'CCR', location: { latitude: 1.28, longitude: 103.85 } },
+      { id: 'b', name: 'B', street: 'Two', district: '01', segment: 'CCR', location: null },
+      { id: 'c', name: 'C', street: 'Three', district: '15', segment: 'RCR', location: { latitude: 1.31, longitude: 103.9 } },
+    ];
+    const regions = buildSingaporeAreaMapCoverage(projects, projects, 'region');
+    const districts = buildSingaporeAreaMapCoverage(projects.slice(0, 2), projects, 'district');
+    expect(regions.points.map(({ id, count }) => [id, count])).toEqual([['region-CCR', 2], ['region-RCR', 1]]);
+    expect(districts.points.map(({ id, count }) => [id, count])).toEqual([['district-01', 2]]);
+  });
   it('accounts for results beyond the first page without geocoding thousands of projects', () => {
     const projects = Array.from({ length: 775 }, (_, i) => ({ id: String(i), name: `Project ${i}`,
       street: 'Example Road', district: '01', segment: 'CCR' as const,
