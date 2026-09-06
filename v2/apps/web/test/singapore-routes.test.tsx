@@ -18,7 +18,10 @@ import { SingaporeProjectDetail } from '../components/singapore/singapore-projec
 import { SingaporeSegmentDetail } from '../components/singapore/singapore-segment-detail';
 import { SingaporePage } from '../components/singapore/singapore-shell';
 import { metadata as entryMetadata } from '../app/(en)/sg/page';
-import { metadata as exploreMetadata } from '../app/(en)/sg/singapore/explore/page';
+import {
+  dynamic as exploreDynamic,
+  metadata as exploreMetadata,
+} from '../app/(en)/sg/singapore/explore/page';
 import {
   generateMetadata as generateSegmentMetadata,
   generateStaticParams as segmentStaticParams,
@@ -324,6 +327,38 @@ describe('Singapore route containment', () => {
 });
 
 describe('Singapore Explore state', () => {
+  it('prerenders the data-heavy Explore route once per deployment', () => {
+    expect(exploreDynamic).toBe('force-static');
+  });
+
+  it('normalizes a shared Explore URL before restoring it in the browser', async () => {
+    const componentModule = await import('../components/singapore/singapore-explorer');
+    const parseState = (componentModule as unknown as Readonly<Record<string, unknown>>)
+      .parseSingaporeExploreSearchParams;
+
+    expect(parseState).toBeTypeOf('function');
+    expect((parseState as (query: URLSearchParams) => unknown)(new URLSearchParams(
+      'q=marina&region=ccr&district=10&sort=name&page=3&project=project-id',
+    ))).toEqual({
+      query: 'marina',
+      selectedSegment: 'CCR',
+      district: '10',
+      sort: 'name',
+      page: 3,
+      selectedProjectId: 'project-id',
+    });
+    expect((parseState as (query: URLSearchParams) => unknown)(new URLSearchParams(
+      'region=bad&district=46&sort=price&page=-1&project=not%20valid',
+    ))).toEqual({
+      query: '',
+      selectedSegment: null,
+      district: 'all',
+      sort: 'transactions',
+      page: 1,
+      selectedProjectId: null,
+    });
+  });
+
   it('builds a shareable URL from the active project filters', async () => {
     const componentModule = await import('../components/singapore/singapore-explorer');
     const buildHref = (componentModule as unknown as Readonly<Record<string, unknown>>).buildSingaporeExploreHref;
