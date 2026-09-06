@@ -129,10 +129,10 @@ describe('Singapore route SSR', () => {
     expect(html).toContain('12 private residential sale transactions');
     expect(segment).toContain('data-market-detail-shell="true"');
     expect(project).toContain('data-market-detail-shell="true"');
-    expect(html).toContain('Search a Singapore address');
+    expect(explore).toContain('Search Singapore projects');
     expect(html).toContain('key=test-google-key');
     expect(html).toContain('href="/sg/singapore/explore/ccr/');
-    expect(html).toContain('Open CCR evidence');
+    expect(html).toContain('CCR');
     expect(html).toContain(`href="/sg/singapore/explore/ccr/${projectIdentity.id}"`);
     expect(project).toContain('Check this project price');
     expect(project).toContain(`a-project=${projectIdentity.id}`);

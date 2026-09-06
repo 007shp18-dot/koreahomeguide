@@ -11,6 +11,7 @@ vi.mock('next/script', () => ({
 
 import {
   NaverDistrictMap,
+  clusterNaverBuildings,
   buildNaverBuildingMarkerContent,
   buildNaverDistrictMarkerContent,
   buildNaverBuildingAddressQuery,
@@ -33,6 +34,27 @@ const districts = [{
 }] as const;
 
 describe('NAVER district map', () => {
+  it('clusters verified coordinates and expands them at building zoom without inventing missing locations', () => {
+    const point = { id: 'a', title: 'A', href: '/a/', addressQuery: 'Seoul', latitude: 37.5001, longitude: 127.0001 };
+    const points = [point, { ...point, id: 'b', latitude: 37.5002 },
+      { ...point, id: 'missing', latitude: null }, { ...point, id: 'invalid', longitude: NaN }];
+    const clustered = clusterNaverBuildings(points, 14);
+    expect(clustered).toHaveLength(1);
+    expect(clustered[0]!.buildings.map(({ id }) => id)).toEqual(['a', 'b']);
+    expect(clustered[0]!.latitude).toBeCloseTo(37.50015);
+    expect(clusterNaverBuildings(points, 17)).toHaveLength(2);
+    expect(clusterNaverBuildings([point, { ...points[1]!, selected: true }], 14)).toHaveLength(2);
+  });
+
+  it('rejects a geocode for a different parcel in the same neighborhood', () => {
+    expect(resolveUnambiguousNaverGeocode('서울특별시 도봉구 도봉동 554-31', [
+      { x: '127.04', y: '37.67', jibunAddress: '서울특별시 도봉구 도봉동 554-32' },
+    ])).toBeNull();
+    expect(resolveUnambiguousNaverGeocode('서울특별시 도봉구 도봉동 554-31', [
+      { x: '127.04', y: '37.67', jibunAddress: '서울특별시 도봉구 도봉동 554-31' },
+    ])).not.toBeNull();
+  });
+
   it('builds a safe compact price bubble for the citywide district layer', () => {
     expect(buildNaverDistrictMarkerContent({
       ...districts[0],

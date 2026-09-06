@@ -94,6 +94,7 @@ export type KoreaExplorerBuildingPage = Readonly<{
   pageSize: number;
   total: number;
   buildings: readonly KoreaExplorerProjectedBuilding[];
+  neighborhoods?: readonly Readonly<{ id: string; name: string; count: number }>[];
 }>;
 
 export type KoreaExplorerBuildingStats = Readonly<{
@@ -493,6 +494,16 @@ function projectedBuildingData(
     && koreaBuildingMatchesProximity(identity.buildingId, options.proximityRepository, options.proximitySelection)
     && buildingMatchesQuery(identity, query, [district.slug, district.nameEn, district.nameKo])
   ));
+  const neighborhoodCounts = new Map<string, { id: string; name: string; count: number }>();
+  for (const identity of matches) {
+    const item = neighborhoodCounts.get(identity.neighborhoodId)
+      ?? { id: identity.neighborhoodId, name: identity.neighborhoodName, count: 0 };
+    item.count += 1;
+    neighborhoodCounts.set(item.id, item);
+  }
+  const neighborhoods = Object.freeze([...neighborhoodCounts.values()]
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name, 'ko-KR'))
+    .map((item) => Object.freeze(item)));
   const selectedBuildingId = typeof options.selectedBuildingId === 'string'
     ? options.selectedBuildingId
     : null;
@@ -523,6 +534,7 @@ function projectedBuildingData(
       pageSize: KOREA_EXPLORER_BUILDING_PAGE_SIZE,
       total: matches.length,
       buildings: Object.freeze(buildings),
+      neighborhoods,
     }),
   });
 }

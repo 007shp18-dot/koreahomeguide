@@ -53,7 +53,7 @@ describe('Google place map', () => {
     const html = renderToStaticMarkup(createElement(GooglePlaceMap, { browserKey: null }));
 
     expect(html).toContain('data-map-provider="static"');
-    expect(html).toContain('Interactive Google map unavailable in this environment.');
+    expect(html).toContain('Interactive Google map unavailable.');
     expect(html).not.toContain('maps.googleapis.com');
   });
 
@@ -191,4 +191,30 @@ describe('Google place map', () => {
       label: { text: 'SGD 2,094,000', className: 'spGoogleMarketMarker' },
     }]);
   });
+});
+
+
+it('does not create markers after a project search is superseded', async () => {
+  let active = true;
+  let mounts = 0;
+  const map = { fitBounds() {} };
+  const sdk = {
+    Map: class { fitBounds() {} },
+    Marker: class {
+      constructor() { mounts++; }
+      setMap() {} setPosition() {}
+    },
+    Geocoder: class { async geocode() { return { results: [] }; } },
+  };
+  const markers = await geocodeGoogleMarketPoints(sdk, {
+    map, marker: { setMap() {}, setPosition() {} },
+    geocoder: { async geocode() {
+      active = false;
+      return { results: [{ formatted_address: 'Singapore', geometry: {
+        location: { lat: () => 1.3, lng: () => 103.8 }, viewport: {},
+      } }] };
+    } },
+  }, [{ id: 'old', title: 'Old result', label: 'Old result', address: 'Singapore' }], undefined, () => active);
+  expect(markers).toHaveLength(0);
+  expect(mounts).toBe(0);
 });

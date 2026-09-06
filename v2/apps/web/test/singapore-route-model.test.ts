@@ -134,3 +134,12 @@ describe('Singapore route models', () => {
     });
   });
 });
+
+it('keeps projects beyond the old top-18 cutoff searchable', async () => {
+  const store = await repository();
+  const first = store.listProjects('CCR')[0]!;
+  const projects = Array.from({ length: 25 }, (_, i) => ({ ...first, projectId: `project-${i}` }));
+  const model = buildSingaporeExploreModel({ ...store, listProjects: () => projects });
+  expect(model.status).toBe('ready');
+  if (model.status === 'ready') expect(model.segments[0]!.projects).toHaveLength(25);
+});

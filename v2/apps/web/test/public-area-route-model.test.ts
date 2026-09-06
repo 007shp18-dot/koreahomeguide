@@ -2,6 +2,8 @@ import { createHash } from 'node:crypto';
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
+vi.mock('../lib/db/postgres.server', () => ({ contentDatabase: vi.fn(() => null) }));
+import { contentDatabase } from '../lib/db/postgres.server';
 
 import { SEOUL_RENT_CHECK_DISTRICTS } from '@signedprice/korea-rent/browser';
 import {
@@ -235,6 +237,18 @@ describe('public area Explore model', () => {
     expect(model.coverage.buildings).toEqual({
       status: 'ready', observed: 3, transactionCovered: 1, priceReady: 1,
     });
+  });
+
+  it('loads verified addresses even when no public coordinate projection is installed', async () => {
+    const base = buildPublicAreaExploreModel('gangnam-gu', {
+      ...dependencies(), buildingSource: createPublicBuildingFixture(),
+    });
+    const sql = vi.fn(async () => [{ external_id: 'gangnam-evidence-tower', legal_address: '서울특별시 강남구 역삼동 123' }]);
+    vi.mocked(contentDatabase).mockReturnValueOnce(sql as unknown as ReturnType<typeof contentDatabase>);
+    const model = await hydratePublicAreaExploreModelWithProjections(base, null);
+    expect(sql).toHaveBeenCalledOnce();
+    if (model.status !== 'ready' || model.buildingAvailability.status !== 'not_loaded') throw new Error('fixture unavailable');
+    expect(model.buildingAvailability.fallbackBuildings[0]?.verifiedAddress).toBe('서울특별시 강남구 역삼동 123');
   });
 
   it.each(['ready', 'unavailable'] as const)('hydrates approved media independently of location state: %s', async (state) => {

@@ -196,8 +196,7 @@ export function buildSingaporeExploreModel(
       medianPsfLabel: segment.medianPsf === null ? null : `SGD ${number.format(segment.medianPsf)} PSF`,
       projects: Object.freeze(repository.listProjects(segment.segment)
         .map(projectListItem)
-        .sort((left, right) => right.n - left.n || left.name.localeCompare(right.name))
-        .slice(0, 18)),
+        .sort((left, right) => right.n - left.n || left.name.localeCompare(right.name))),
     }))),
   });
 }

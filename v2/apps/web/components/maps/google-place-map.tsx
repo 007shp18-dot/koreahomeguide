@@ -6,7 +6,6 @@ import {
   useEffect,
   useRef,
   useState,
-  type CSSProperties,
   type FormEvent,
 } from 'react';
 
@@ -131,7 +130,7 @@ export function mountGoogleMarketPoints(
   points: readonly GoogleMarketMapPoint[],
   onSelectPoint?: (id: string) => void,
 ): readonly GoogleMarkerInstance[] {
-  return Object.freeze(points.filter((point) => point.latitude !== undefined && point.longitude !== undefined).map((point) => {
+  return Object.freeze(points.filter((point) => Number.isFinite(point.latitude) && Number.isFinite(point.longitude)).map((point) => {
     const marker = new sdk.Marker({
       map,
       position: { lat: point.latitude!, lng: point.longitude! },
@@ -148,17 +147,21 @@ export async function geocodeGoogleMarketPoints(
   runtime: GooglePlaceMapRuntime,
   points: readonly GoogleMarketMapPoint[],
   onSelectPoint?: (id: string) => void,
+  isActive: () => boolean = () => true,
 ): Promise<readonly GoogleMarkerInstance[]> {
   const markers: GoogleMarkerInstance[] = [];
   for (const point of points.filter((candidate) => candidate.address !== undefined)) {
+    if (!isActive()) break;
     try {
       const { results } = await runtime.geocoder.geocode({
         address: point.address!,
         componentRestrictions: { country: 'SG' },
         region: 'SG',
       });
-      const position = results[0]?.geometry.location;
-      if (position === undefined) continue;
+      if (!isActive()) break;
+      const position = results.length === 1 ? results[0]?.geometry.location : undefined;
+      if (position === undefined || !Number.isFinite(position.lat()) || !Number.isFinite(position.lng())
+        || position.lat() < 1.15 || position.lat() > 1.5 || position.lng() < 103.55 || position.lng() > 104.15) continue;
       const marker = new sdk.Marker({
         map: runtime.map,
         position: { lat: position.lat(), lng: position.lng() },
@@ -197,13 +200,16 @@ export function GooglePlaceMap({
   browserKey,
   points = Object.freeze([]),
   onSelectPoint,
+  showAddressSearch = true,
 }: Readonly<{
+  showAddressSearch?: boolean;
   browserKey: string | null;
   points?: readonly GoogleMarketMapPoint[];
   onSelectPoint?: (id: string) => void;
 }>) {
   const container = useRef<HTMLDivElement>(null);
   const runtime = useRef<GooglePlaceMapRuntime | null>(null);
+  const generation = useRef(0);
   const marketMarkers = useRef<readonly GoogleMarkerInstance[]>([]);
   const [mapState, setMapState] = useState<'loading' | 'ready' | 'error'>('loading');
   const [query, setQuery] = useState('');
@@ -216,16 +222,21 @@ export function GooglePlaceMap({
     }).google?.maps;
     if (sdk === undefined || container.current === null) return;
     try {
-      runtime.current = mountGooglePlaceMap({ sdk, element: container.current });
+      const currentGeneration = ++generation.current;
+      runtime.current ??= mountGooglePlaceMap({ sdk, element: container.current });
       for (const marker of marketMarkers.current) marker.setMap(null);
       marketMarkers.current = mountGoogleMarketPoints(sdk, runtime.current.map, points, onSelectPoint);
-      void geocodeGoogleMarketPoints(sdk, runtime.current, points, onSelectPoint).then((markers) => {
+      void geocodeGoogleMarketPoints(sdk, runtime.current, points, onSelectPoint, () => generation.current === currentGeneration).then((markers) => {
+        if (generation.current !== currentGeneration) {
+          for (const marker of markers) marker.setMap(null);
+          return;
+        }
         marketMarkers.current = Object.freeze([...marketMarkers.current, ...markers]);
         const requestedLocations = points.filter((point) => point.address !== undefined).length;
         if (requestedLocations > 0) {
           setMessage(markers.length === requestedLocations
-            ? `${markers.length} verified project locations shown.`
-            : `${markers.length} of ${requestedLocations} project locations could be verified on Google Maps.`);
+            ? `${markers.length} project locations matched on Google Maps.`
+            : `${markers.length} of ${requestedLocations} project locations matched on Google Maps.`);
         }
       });
       setMapState('ready');
@@ -235,15 +246,32 @@ export function GooglePlaceMap({
   }, [onSelectPoint, points]);
 
   useEffect(() => {
+    const requestGeneration = generation;
     const scope = window as Window & GoogleMapsReadyScope;
     window.addEventListener(GOOGLE_MAPS_READY_EVENT, initialize);
     if (scope[GOOGLE_MAPS_READY_FLAG] === true) queueMicrotask(initialize);
     return () => {
+      ++requestGeneration.current;
       window.removeEventListener(GOOGLE_MAPS_READY_EVENT, initialize);
       for (const marker of marketMarkers.current) marker.setMap(null);
       marketMarkers.current = [];
     };
   }, [initialize]);
+
+  useEffect(() => {
+    const scope = window as Window & { gm_authFailure?: () => void };
+    const previous = scope.gm_authFailure;
+    const failed = () => {
+      ++generation.current;
+      setMapState('error');
+      for (const marker of marketMarkers.current) marker.setMap(null);
+      marketMarkers.current = [];
+    };
+    scope.gm_authFailure = failed;
+    return () => {
+      if (scope.gm_authFailure === failed) scope.gm_authFailure = previous;
+    };
+  }, []);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -262,37 +290,15 @@ export function GooglePlaceMap({
     }
   }
 
-  if (browserKey === null) return points.length === 0 ? (
+  if (browserKey === null) return (
     <div className={styles.unavailable} data-map-provider="static" data-map-state="fallback">
-      Interactive Google map unavailable in this environment.
-    </div>
-  ) : (
-    <div
-      className={styles.staticMarketMap}
-      data-map-provider="static"
-      data-map-state="market-fallback"
-      role="img"
-      aria-label="Static Singapore market map with segment prices"
-    >
-      {points.map((point) => {
-        const longitude = point.longitude ?? 103.8198;
-        const latitude = point.latitude ?? 1.3521;
-        const left = 12 + ((longitude - 103.70) / 0.25) * 76;
-        const top = 14 + ((1.43 - latitude) / 0.20) * 70;
-        return <span
-          key={point.id}
-          className={styles.staticMarketMarker}
-          style={{ '--marker-left': `${Math.max(8, Math.min(88, left))}%`, '--marker-top': `${Math.max(10, Math.min(84, top))}%` } as CSSProperties}
-          title={point.title}
-        >{point.label}</span>;
-      })}
-      <small>Singapore · sale evidence</small>
+      Interactive Google map unavailable. You can still search projects and open their details in the list.
     </div>
   );
 
   return (
     <div className={styles.placeWorkspace} data-map-provider="google" data-map-state={mapState}>
-      <form className={styles.toolbar} onSubmit={submit}>
+      {showAddressSearch ? <form className={styles.toolbar} onSubmit={submit}>
         <label htmlFor="singapore-map-address">Search a Singapore address</label>
         <div>
           <input
@@ -307,7 +313,8 @@ export function GooglePlaceMap({
           </button>
         </div>
         <p aria-live="polite">{message}</p>
-      </form>
+      </form> : <p aria-live="polite">{message}</p>}
+      {mapState === 'error' ? <p role="status">The map could not load. Search results and project details remain available in the list.</p> : null}
       <div
         ref={container}
         className={styles.canvas}

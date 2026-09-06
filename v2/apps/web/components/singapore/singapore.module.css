@@ -39,7 +39,7 @@
 .segmentTabs {
   padding: 10px 10px 0;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 6px;
 }
 .segmentTabs button {
@@ -57,7 +57,7 @@
   text-align: left;
   cursor: pointer;
 }
-.segmentTabs button[aria-selected='true'] { color: #fff; border-color: #174f8f; background: #174f8f; }
+.segmentTabs button[aria-selected='true'] { color: var(--accent); border-color: var(--accent); background: var(--surface-strong); }
 .segmentTabs strong { font-size: 14px; }
 .segmentTabs span { overflow: hidden; font-size: 12px; line-height: 1.3; text-overflow: ellipsis; white-space: nowrap; }
 .segmentRow {
@@ -120,7 +120,7 @@
 .projectList > div {
   min-width: 0;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 36px;
+  grid-template-columns: minmax(0, 1fr) 64px;
   align-items: stretch;
   border-top: 1px solid var(--divider);
 }
@@ -140,8 +140,8 @@
 }
 .projectList > div > button > span { min-width: 0; display: grid; gap: 3px; }
 .projectList > div > button > span:last-child { text-align: right; }
-.projectList > div > a { display: grid; place-items: center; color: var(--accent); font-size: 18px; text-decoration: none; }
-.projectList strong { overflow: hidden; display: -webkit-box; font-size: 12px; line-height: 1.3; text-overflow: ellipsis; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.projectList > div > a { display: grid; place-items: center; color: var(--accent); min-height: 48px; font-size: 14px; text-decoration: none; }
+.projectList strong { overflow: hidden; display: -webkit-box; font-size: 14px; line-height: 1.45; text-overflow: ellipsis; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
 .projectList > div > button > span:last-child strong { display: block; white-space: nowrap; }
 .projectList small { color: var(--muted); font-size: var(--text-meta); line-height: 1.35; }
 .segmentPrompt { margin: 10px; padding: 20px 16px; border: 1px dashed var(--divider); border-radius: 12px; background: var(--surface-strong); }
@@ -706,3 +706,8 @@
 .section h2 { line-height: 1.3; font-size: var(--section-title-size, 28px); }
 
 .segmentRow[hidden] { display: none; }
+
+@media (max-width: 600px) {
+  .projectList > div > button { grid-template-columns: minmax(0, 1fr); }
+  .projectList > div > button > span:last-child { text-align: left; }
+}

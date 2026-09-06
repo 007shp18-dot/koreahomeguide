@@ -83,7 +83,7 @@ afterEach(() => {
   vi.unstubAllEnvs();
 });
 
-it('opens the unlocated building list when there are no individual map buildings', () => {
+it('keeps unlocated buildings in the primary results list', () => {
   const model = buildPublicAreaExploreModel('jongno-gu', {
     source: rankedFixture(),
     buildingSource: createPublicBuildingFixture(),
@@ -95,7 +95,8 @@ it('opens the unlocated building list when there are no individual map buildings
     initialSelection: { market: 'kr', transaction: 'monthly', contractType: 'all', district: 'jongno-gu' },
   }));
   expect(html).toContain('Monthly Home');
-  expect(html).toMatch(/<details[^>]*open=""[^>]*><summary><strong>[^<]*homes awaiting/);
+  expect(html).not.toContain('homes awaiting location or price verification');
+  expect(html).toContain('data-building-row=');
 });
 
 describe('public Seoul area Explorer', () => {
@@ -264,7 +265,7 @@ describe('public Seoul area Explorer', () => {
     expect(markup).toContain('Search retained buildings');
     expect(markup).toContain('Search district, neighborhood, building or type');
     expect(markup).toContain('name="housing-type"');
-    expect(markup).toContain('Search this area');
+    expect(markup).toContain('>Search</button>');
   });
 
   it('keeps the view selector available when entering directly into table mode', () => {
@@ -339,13 +340,13 @@ describe('public Seoul area Explorer', () => {
     }));
 
     expect(markup).toContain('data-map-provider="naver"');
-    expect(markup).toContain('data-district-rail="all-25"');
-    expect(markup.match(/data-district-option=/g)).toHaveLength(25);
+    expect(markup).toContain('aria-label="All 25 Seoul districts"');
+    expect(markup.match(/<option value="[^"]+-gu"/g)).toHaveLength(25);
     expect(markup).toContain('ncpKeyId=test-naver-client');
     expect(markup).toContain('Loading the NAVER map.');
     expect(markup).toContain('District median refundable jeonse deposit');
-    expect(markup).toContain('aria-label="Map legend"');
-    expect(markup).toMatch(/· \d+ districts/);
+    expect(markup).not.toContain('Map legend');
+
     expect(markup).toContain(PUBLIC_AREA_FIXTURE_PERIOD);
     expect(markup).toContain('MOLIT');
     expect(markup).toContain(
@@ -353,7 +354,7 @@ describe('public Seoul area Explorer', () => {
     );
     for (const district of model.districts) {
       expect(markup).toContain(district.nameEn);
-      expect(markup).toContain(district.nameKo);
+      expect(markup).toContain(district.nameEn);
       if (district.medianLabel !== null) expect(markup).toContain(district.medianLabel);
     }
     expect(markup).not.toContain('data-district-path=');
@@ -600,4 +601,11 @@ describe('public Seoul area Explorer', () => {
     expect(markup).toContain('data-explorer-region="map"');
     expect(markup).toContain('aria-label="Explorer view"');
   });
+});
+
+it('shows located buildings on the map without publishing a suppressed price', () => {
+  const building = { name: 'Actual Tower', medianLabel: null, evidenceStatus: 'withheld' as const, latitude: 37.5, longitude: 127 };
+  expect(isIndividualMapBuilding(building)).toBe(true);
+  expect(isIndividualMapBuilding({ ...building, latitude: NaN })).toBe(false);
+  expect(isIndividualMapBuilding({ ...building, latitude: null })).toBe(false);
 });

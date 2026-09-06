@@ -38,6 +38,7 @@ export type NaverBuildingMapPoint = Readonly<{
 type NaverMapInstance = Readonly<{
   setCenter: (center: unknown) => void;
   setZoom: (zoom: number) => void;
+  getZoom?: () => number;
 }>;
 
 type NaverMarkerInstance = Readonly<{
@@ -77,7 +78,7 @@ export type NaverMapsSdk = Readonly<{
     icon?: Readonly<{ content: string }>;
   }>) => NaverMarkerInstance;
   Event: Readonly<{
-    addListener(target: unknown, event: 'click', listener: () => void): unknown;
+    addListener(target: unknown, event: 'click' | 'zoom_changed', listener: () => void): unknown;
     removeListener(listener: unknown): void;
   }>;
   Service?: Readonly<{
@@ -161,6 +162,7 @@ export function waitForNaverMapsSubmodules(
 }
 
 type NaverDistrictMapUpdate = Readonly<{
+  buildingCountLabel?: string;
   districts: readonly NaverDistrictMapPoint[];
   selectedDistrict?: Readonly<{ latitude: number; longitude: number }>;
   buildings?: readonly NaverBuildingMapPoint[];
@@ -235,11 +237,34 @@ export function resolveUnambiguousNaverGeocode(
   }
   const district = queryParts[1]!;
   const neighborhood = queryParts[2]!;
+  const lot = queryParts.slice(3).find((part) => /^\d+(?:-\d+)?$/.test(part));
   const localityMatches = addresses.filter((address) => {
     const resolvedLocality = `${address.roadAddress ?? ''} ${address.jibunAddress ?? ''}`;
-    return resolvedLocality.includes(district) && resolvedLocality.includes(neighborhood);
+    return resolvedLocality.includes(district) && resolvedLocality.includes(neighborhood)
+      && (lot === undefined || (address.jibunAddress ?? '').split(/\s+/).includes(lot));
   });
   return localityMatches.length === 1 ? localityMatches[0]! : null;
+}
+
+/** Clusters only real Seoul coordinates; a cluster is never an inferred building location. */
+export function clusterNaverBuildings(buildings: readonly NaverBuildingMapPoint[], zoom: number) {
+  const groups = new Map<string, NaverBuildingMapPoint[]>();
+  const cell = 0.004 / (2 ** Math.max(0, zoom - 14));
+  for (const building of buildings) {
+    const { latitude, longitude } = building;
+    if (latitude === null || longitude === null || !Number.isFinite(latitude) || !Number.isFinite(longitude)
+      || latitude < 37.4 || latitude > 37.72 || longitude < 126.75 || longitude > 127.25) continue;
+    const key = zoom >= 17 || building.selected
+      ? building.id : `${Math.floor(latitude / cell)}:${Math.floor(longitude / cell)}`;
+    const group = groups.get(key) ?? [];
+    group.push(building);
+    groups.set(key, group);
+  }
+  return [...groups.values()].map((group) => ({
+    buildings: group,
+    latitude: group.reduce((sum, item) => sum + item.latitude!, 0) / group.length,
+    longitude: group.reduce((sum, item) => sum + item.longitude!, 0) / group.length,
+  }));
 }
 
 export function mountNaverDistrictMap({
@@ -251,15 +276,19 @@ export function mountNaverDistrictMap({
   let markers: NaverMarkerInstance[] = [];
   let listeners: unknown[] = [];
   let unavailableBuildingIds: string[] = [];
+  const locationCache = new Map<string, { latitude: number; longitude: number }>();
+  let zoomListener: unknown;
   let generation = 0;
   let disposed = false;
 
   const clearActiveGeneration = (sdkAvailable = true) => {
     generation += 1;
     if (sdkAvailable) {
+      if (zoomListener !== undefined) sdk.Event.removeListener(zoomListener);
       for (const listener of listeners) sdk.Event.removeListener(listener);
       for (const marker of markers) marker.setMap(null);
     }
+    zoomListener = undefined;
     listeners = [];
     markers = [];
     unavailableBuildingIds = [];
@@ -268,6 +297,7 @@ export function mountNaverDistrictMap({
   const update = ({
     districts,
     selectedDistrict,
+    buildingCountLabel = 'buildings',
     buildings = [],
     onSelect,
     onSelectBuilding,
@@ -315,15 +345,33 @@ export function mountNaverDistrictMap({
     };
 
     if (showingBuildings) {
-      for (const building of buildings) {
+      const located = new Map<string, NaverBuildingMapPoint>();
+      const renderBuildings = () => {
+        if (!isActive() || map === null) return;
+        for (const listener of listeners) sdk.Event.removeListener(listener);
+        for (const marker of markers) marker.setMap(null);
+        listeners = [];
+        markers = [];
+        for (const cluster of clusterNaverBuildings([...located.values()], map.getZoom?.() ?? 18)) {
+          const first = cluster.buildings[0]!;
+          if (cluster.buildings.length === 1) {
+            addMarker(first.title, cluster.latitude, cluster.longitude,
+              () => onSelectBuilding?.(first.id), buildNaverBuildingMarkerContent(first));
+          } else {
+            const count = cluster.buildings.length;
+            addMarker(`${count} ${buildingCountLabel}`, cluster.latitude, cluster.longitude, () => {
+              map?.setCenter(new sdk.LatLng(cluster.latitude, cluster.longitude));
+              map?.setZoom(Math.min(18, (map.getZoom?.() ?? 14) + 2));
+            }, `<div class="spMapBuildingBubble"><strong>${count}</strong><span>${escapeMarkerText(buildingCountLabel)}</span></div>`);
+          }
+        }
+      };
+      if (map.getZoom !== undefined) zoomListener = sdk.Event.addListener(map, 'zoom_changed', renderBuildings);
+      for (const original of buildings) {
+        const cached = locationCache.get(`${original.id}:${original.addressQuery}`);
+        const building = cached === undefined ? original : { ...original, ...cached };
         if (building.latitude !== null && building.longitude !== null) {
-          addMarker(
-            building.title,
-            building.latitude,
-            building.longitude,
-            () => onSelectBuilding?.(building.id),
-            buildNaverBuildingMarkerContent(building),
-          );
+          located.set(building.id, building);
         } else if (building.allowAddressGeocoding === true && sdk.Service !== undefined) {
           sdk.Service.geocode({ query: building.addressQuery }, (status, response) => {
             if (!isActive()) return;
@@ -345,19 +393,16 @@ export function mountNaverDistrictMap({
               markBuildingUnavailable(building.id);
               return;
             }
-            addMarker(
-              building.title,
-              latitude,
-              longitude,
-              () => onSelectBuilding?.(building.id),
-              buildNaverBuildingMarkerContent(building),
-            );
+            locationCache.set(`${building.id}:${building.addressQuery}`, { latitude, longitude });
+            located.set(building.id, { ...building, latitude, longitude });
+            renderBuildings();
             onResolveBuildingLocation?.(building.id, latitude, longitude);
           });
         } else {
           markBuildingUnavailable(building.id);
         }
       }
+      renderBuildings();
     } else {
       for (const district of districts) {
         addMarker(
@@ -609,6 +654,7 @@ export function NaverDistrictMap({
     if (clientId === null || sdk === null || container.current === null) return undefined;
     setUnavailableBuildingIds((current) => current.length === 0 ? current : []);
     const options: NaverDistrictMapUpdate = {
+      buildingCountLabel: locale === 'ko' ? '개 건물' : 'buildings',
       districts,
       selectedDistrict,
       buildings: resolvedBuildings,
@@ -639,7 +685,7 @@ export function NaverDistrictMap({
     setState('ready');
     const active = lifecycle.current;
     return () => active.invalidate();
-  }, [clientId, districts, failClosed, onResolveBuildingLocation, onSelectBuilding, onSelectDistrict, resolvedBuildings, router, sdk, selectedDistrict]);
+  }, [clientId, districts, failClosed, locale, onResolveBuildingLocation, onSelectBuilding, onSelectDistrict, resolvedBuildings, router, sdk, selectedDistrict]);
 
   useEffect(() => () => {
     submoduleWait.current?.();

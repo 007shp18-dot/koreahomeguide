@@ -88,9 +88,9 @@ describe('editorial growth review data boundary', () => {
     expect(model.articles).toHaveLength(1);
     expect(model.guides[0]?.href).toBe('/kr/seoul/guide/read-seoul-apartment-sale-prices/');
     expect(model.headlineMetric).toEqual({
-      label: 'Reported contracts',
+      label: 'Jeonse sample · 45–55 m²',
       value: '120',
-      context: '2026-08',
+      context: '2026-08 · Eligible contracts, not all Seoul transactions',
     });
     expect(JSON.stringify(model)).not.toMatch(/undefined|null contracts|NaN/);
   });
@@ -103,8 +103,8 @@ describe('editorial growth review data boundary', () => {
 
     expect(model.article.title).toBe('在韩国租房前，先看真实成交依据');
     expect(model.article.published).toBe('设计样稿');
-    expect(model.headlineMetric?.label).toBe('已申报成交');
-    expect(model.seoulStatus).toBe('更新于 2026-08');
+    expect(model.headlineMetric?.label).toBe('全租样本 · 45–55㎡');
+    expect(model.seoulStatus).toBe('成交期间 2026-08');
     expect(model.guides[0]).toMatchObject({
       title: '如何阅读首尔公寓实际成交价格',
       stage: '市场研究',
@@ -169,4 +169,14 @@ describe('editorial growth review data boundary', () => {
       medianLabel: null,
     })).toBe(false);
   });
+
+it('prefers the current Explore sale sample over the legacy jeonse headline', async () => {
+  const metric = { label: 'Reported sale contracts', value: '42,000', context: '2026-02/2026-08 · Same released sample as Explore' };
+  const model = await buildEditorialGrowthReviewModel(
+    { locale: 'en', state: 'ready', ad: 'empty' },
+    { ...readyDependencies, explore: () => ({ rows: [], districts: [], headlineMetric: metric }) },
+  );
+  expect(model.headlineMetric).toEqual(metric);
+});
+
 });

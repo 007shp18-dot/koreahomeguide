@@ -7,6 +7,7 @@ import {
   homepageCopy,
   type SiteHeaderModel,
 } from '../lib/site-copy';
+import { PriceMarketSearch } from './price-market-search';
 import { SiteFooter } from './site-footer';
 import { SiteHeader } from './site-header';
 import { NewsWorkbench } from './news/news-workbench';
@@ -100,6 +101,27 @@ function MarketsHub() {
         <div className={styles.sectionHeading}><p>Explore markets</p><h2 id="market-directory-title">Start with Seoul and Singapore.</h2></div>
         <MarketCards />
       </section>
+      <section className={styles.section} aria-labelledby="market-research-title">
+        <div className={styles.sectionHeading}><p>Before you shortlist</p><h2 id="market-research-title">Three questions before comparing prices.</h2></div>
+        <ol className={styles.researchSteps}>
+          <li>
+            <h3>Can you buy this property?</h3>
+            <div><h4>Seoul</h4><p>Record your residency, intended use and the exact parcel. Check permission, reporting and registration requirements before paying a deposit.</p><Link href="/guides/buy-property-in-korea-as-foreigner/">Foreign-buyer checklist</Link></div>
+            <div><h4>Singapore</h4><p>Identify the housing type and your buyer status first. Treat private apartments, landed homes and HDB flats as separate eligibility questions.</p><Link href="/guides/read-singapore-private-transactions/">Ownership and eligibility</Link></div>
+          </li>
+          <li>
+            <h3>How much cash will you need?</h3>
+            <div><h4>Seoul</h4><p>Budget for taxes, brokerage, registration and legal work alongside the price. Put confirmed financing, transfers and any existing tenant deposit on a dated cash schedule.</p><Link href="/guides/buy-property-in-korea-as-foreigner/">Plan the purchase budget</Link></div>
+            <div><h4>Singapore</h4><p>Calculate Buyer’s Stamp Duty and any Additional Buyer’s Stamp Duty for your profile. The guide’s S$2 million example shows why duties can materially change the budget.</p><Link href="/guides/read-singapore-private-transactions/">See the acquisition-cost chart</Link></div>
+          </li>
+          <li>
+            <h3>Are the transactions comparable?</h3>
+            <div><h4>Seoul</h4><p>Compare sale contracts within the same building and similar exclusive floor area. Keep lease deposits, monthly rents and purchase prices in separate comparisons.</p><Link href="/kr/seoul/explore/">Explore Seoul transactions</Link></div>
+            <div><h4>Singapore</h4><p>Match the project, tenure, size and sale period. Compare private housing and HDB records separately, then inspect the individual project.</p><Link href="/sg/singapore/explore/">Explore Singapore transactions</Link></div>
+          </li>
+        </ol>
+        <p className={styles.researchSources}>Official starting points: <a href="https://www.investkorea.org/ik-en/cntnts/i-417/web.do">Invest KOREA acquisition procedures</a> and <a href="https://www.iras.gov.sg/taxes/stamp-duty/for-property/buying-or-acquiring-property/additional-buyer's-stamp-duty-(absd)">IRAS stamp duties</a>. The linked guides include the detailed sources and worked examples.</p>
+      </section>
       <section className={`${styles.section} ${styles.comparison}`} aria-labelledby="market-coverage-title">
         <div className={styles.sectionHeading}><p>Coverage</p><h2 id="market-coverage-title">What you can explore today.</h2></div>
         <div className={styles.tableWrap}>
@@ -113,15 +135,9 @@ function MarketsHub() {
 function PricesHub({ seoul }: Readonly<{ seoul?: SeoulLiveModel }>) {
   return (
     <>
-      <section className={styles.searchPanel} aria-label="Search available signed price evidence">
-        <form action="/kr/seoul/explore/" method="get" role="search">
-          <label htmlFor="global-price-search">Search a city, district or building</label>
-          <div><input id="global-price-search" name="q" type="search" placeholder="Try Mapo-gu or Gongdeok" /><button type="submit">Search prices</button></div>
-        </form>
-        <p>Search covers Seoul buildings and districts. Open Singapore Explore to browse residential projects there.</p>
-      </section>
+      <PriceMarketSearch />
       <section className={styles.section} aria-labelledby="price-products-title">
-        <div className={styles.sectionHeading}><p>Price products</p><h2 id="price-products-title">Choose the evidence that matches the decision.</h2></div>
+        <div className={styles.sectionHeading}><p>Price products</p><h2 id="price-products-title">Tools for Seoul rental research.</h2></div>
         <div className={styles.productGrid}>
           <Link href="/kr/seoul/explore/"><span>01 · Explore</span><h3>District and building prices</h3><p>Move from Seoul-wide context to a retained building and inspect its source boundary.</p><strong>Open Explorer →</strong></Link>
           <Link href="/kr/seoul/check/"><span>02 · Compare</span><h3>Compare two rent offers</h3><p>Put compatible contract evidence beside two real rental options.</p><strong>Compare offers →</strong></Link>
@@ -129,7 +145,7 @@ function PricesHub({ seoul }: Readonly<{ seoul?: SeoulLiveModel }>) {
         </div>
       </section>
       <section className={`${styles.section} ${styles.evidencePanel}`} aria-labelledby="price-evidence-title">
-        <div className={styles.sectionHeading}><p>Current evidence</p><h2 id="price-evidence-title">The latest released Seoul contract set.</h2></div>
+        <div className={styles.sectionHeading}><p>Current evidence</p><h2 id="price-evidence-title">Seoul jeonse sample · 45–55 m².</h2></div>
         {seoul?.status === 'ready' ? <dl className={styles.metrics}><div><dt>Eligible contracts</dt><dd>{number.format(seoul.totalCount)}</dd></div><div><dt>New</dt><dd>{number.format(seoul.newCount)}</dd></div><div><dt>Renewal</dt><dd>{number.format(seoul.renewalCount)}</dd></div><div><dt>Completed period</dt><dd>{seoul.period}</dd></div></dl> : <div className={styles.emptyState}><strong>Evidence status is temporarily unavailable.</strong><p>The product remains accessible without inventing replacement figures.</p></div>}
       </section>
     </>

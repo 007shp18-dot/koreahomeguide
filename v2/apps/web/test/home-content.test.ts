@@ -114,7 +114,7 @@ describe('signedprice homepage copy', () => {
 
     const markup = renderToStaticMarkup(await Home());
 
-    expect(markup).toContain('Reported contracts');
+    expect(markup).toContain('Jeonse sample · 45–55 m²');
     expect(markup).toContain(PUBLIC_AREA_FIXTURE_PERIOD);
     expect(markup).toContain('href="/kr/seoul/check"');
     expect(markup).toContain('href="/kr/seoul/explore"');
