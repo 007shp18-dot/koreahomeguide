@@ -19,13 +19,22 @@ export function ProjectedEntityMedia({
   media,
   browserKey = null,
   evidenceHref = '#building-evidence',
+  registryKey,
 }: Readonly<{
   buildingName: string;
   media: ProjectedEntityMediaModel | null;
   browserKey?: string | null;
   evidenceHref?: string;
+  registryKey?: string;
 }>) {
   if (media === null || (media.displayUrl === null && !media.providerReference)) {
+    if (registryKey !== undefined) return <GooglePlacePhoto
+      browserKey={browserKey}
+      buildingName={buildingName}
+      address=""
+      registryKey={registryKey}
+      fallback={<ProjectedEntityMedia buildingName={buildingName} media={null} evidenceHref={evidenceHref} />}
+    />;
     return <section className={styles.unavailable} data-building-media="location-only" data-photo-state="unavailable" aria-label="Building photo unavailable">
       <strong>Building photo unavailable</strong>
       <p>No rights-cleared exterior photo is connected to this building yet.</p>

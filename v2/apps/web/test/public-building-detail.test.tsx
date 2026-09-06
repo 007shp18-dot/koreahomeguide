@@ -97,6 +97,27 @@ describe('public building detail', () => {
     expect(html).not.toContain('Building photo unavailable');
   });
 
+  it('retries the exact approval registry in the browser after a transient server read failure', () => {
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_BUILDING_SUMMARY_ARTIFACT', JSON.stringify(createPublicBuildingFixture()));
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', PUBLIC_BUILDING_FIXTURE_PERIOD);
+    vi.stubEnv('GOOGLE_MAPS_BROWSER_KEY', 'browser-test-key');
+
+    const html = renderToStaticMarkup(composeKoreaBuildingRoute({
+      district: 'gangnam-gu',
+      buildingId: 'gangnam-evidence-tower',
+      query: {},
+      dependencies: {
+        entityProjection: null,
+        photoApproval: null,
+        photoApprovalReadFailed: true,
+      },
+    }));
+
+    expect(html).toContain('data-building-media="google-place-photo"');
+    expect(html).toContain('Loading verified place photo');
+    expect(html).not.toContain('Building photo unavailable');
+  });
+
   it('preserves Explore filters in the Check return URL through the route', async () => {
     vi.stubEnv('SIGNEDPRICE_PUBLIC_BUILDING_SUMMARY_ARTIFACT', JSON.stringify(createPublicBuildingFixture()));
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', PUBLIC_BUILDING_FIXTURE_PERIOD);
