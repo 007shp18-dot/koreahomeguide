@@ -15,7 +15,7 @@ export function SingaporeEntry({ model, googleMapsBrowserKey = null }: Readonly<
   if (model.status === 'unavailable') return (
     <SingaporePage currentHref="/sg/"><section className={styles.unavailable} data-singapore-entry="unavailable" data-product-intro="true">
       <p className={styles.eyebrow}>Singapore · Release gate</p><h1>{model.message}</h1>
-      <p>Direct access remains claim-free until verified private-sale evidence is ready.</p>
+      <p>Private-home transaction evidence is not available in this view yet. Use the market overview for the available sources and coverage.</p>
       <div className={styles.actions}><Link href="/trust/">Review Global Trust</Link><Link href={model.correctionHref}>Review corrections</Link></div>
     </section></SingaporePage>
   );

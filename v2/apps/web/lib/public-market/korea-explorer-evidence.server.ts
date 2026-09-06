@@ -94,6 +94,8 @@ export type KoreaExplorerBuildingPage = Readonly<{
   pageSize: number;
   total: number;
   buildings: readonly KoreaExplorerProjectedBuilding[];
+  /** Matches outside the detailed page, retained as counted area groups. */
+  mapGroups?: readonly Readonly<{ neighborhoodId: string; name: string; housingType: string; count: number }>[];
   neighborhoods?: readonly Readonly<{ id: string; name: string; count: number }>[];
 }>;
 
@@ -539,6 +541,15 @@ function projectedBuildingData(
   const maximumPage = Math.max(1, Math.ceil(matches.length / KOREA_EXPLORER_BUILDING_PAGE_SIZE));
   const page = Math.min(requestedPage, maximumPage);
   const start = (page - 1) * KOREA_EXPLORER_BUILDING_PAGE_SIZE;
+  const unloadedGroups = new Map<string, { neighborhoodId: string; name: string; housingType: string; count: number }>();
+  for (const [matchIndex, identity] of matches.entries()) {
+    if (matchIndex >= start && matchIndex < start + KOREA_EXPLORER_BUILDING_PAGE_SIZE) continue;
+    const key = `${identity.neighborhoodId}:${identity.housingType}`;
+    const group = unloadedGroups.get(key) ?? { neighborhoodId: identity.neighborhoodId,
+      name: identity.neighborhoodName, housingType: identity.housingType, count: 0 };
+    group.count += 1;
+    unloadedGroups.set(key, group);
+  }
   const buildings = matches.slice(start, start + KOREA_EXPLORER_BUILDING_PAGE_SIZE).map((identity) => {
     const key = `${identity.districtSlug}/${identity.buildingId}`;
     return projectedBuilding(
@@ -557,6 +568,7 @@ function projectedBuildingData(
       pageSize: KOREA_EXPLORER_BUILDING_PAGE_SIZE,
       total: matches.length,
       buildings: Object.freeze(buildings),
+      mapGroups: Object.freeze([...unloadedGroups.values()].map(group => Object.freeze(group))),
       neighborhoods,
     }),
   });

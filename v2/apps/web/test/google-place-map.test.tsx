@@ -15,13 +15,29 @@ import {
   installGoogleMapsReadyCallback,
   mountGoogleMarketPoints,
   mountGooglePlaceMap,
+  clusterGoogleMarketPoints,
 } from '../components/maps/google-place-map';
 
 describe('Google place map', () => {
+  it('clusters real locations with preserved membership and keeps area-only groups separate', () => {
+    const points = [
+      { id: 'a', title: 'A', label: 'A', latitude: 1.28001, longitude: 103.85001 },
+      { id: 'b', title: 'B', label: 'B', latitude: 1.28002, longitude: 103.85002 },
+      { id: 'area', title: 'District 01', label: 'Area only', latitude: 1.28001, longitude: 103.85001, kind: 'area' as const, count: 773 },
+    ];
+    const grouped = clusterGoogleMarketPoints(points, 11);
+    expect(grouped).toHaveLength(2);
+    expect(grouped.find(p => p.kind === 'cluster')?.memberIds).toEqual(['a', 'b']);
+    expect(grouped.reduce((n,p) => n + (p.count ?? 1), 0)).toBe(775);
+    expect(clusterGoogleMarketPoints(points, 18)).toHaveLength(3);
+    expect(clusterGoogleMarketPoints([points[0]!, { ...points[1]!, selected: true }], 11)).toHaveLength(2);
+  });
+
   it('loads the async weekly Maps JavaScript API for Singapore', () => {
     expect(buildGoogleMapsScriptUrl('key/value + test')).toBe(
       'https://maps.googleapis.com/maps/api/js?key=key%2Fvalue+%2B+test&loading=async&callback=__signedpriceGoogleMapsReady&v=weekly&language=en&region=SG',
     );
+    expect(buildGoogleMapsScriptUrl('test-key', 'dubai')).toContain('region=AE');
   });
 
   it('initializes only from the API completion callback and restores prior state', () => {

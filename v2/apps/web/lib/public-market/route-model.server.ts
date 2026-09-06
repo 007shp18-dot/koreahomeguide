@@ -85,7 +85,7 @@ const header = {
 
 const footer = {
   brand: 'signedprice',
-  descriptor: 'Verified Seoul jeonse-deposit evidence, with publication limits shown.',
+  descriptor: 'Seoul sale, jeonse and monthly-rent evidence, with source periods and coverage shown.',
   navigationLabel: 'Korea footer navigation',
   links: [
     { label: 'Korea home', href: '/kr/' },

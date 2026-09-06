@@ -19,12 +19,12 @@ export const singaporeHeader: SiteHeaderModel = {
 
 export const singaporeFooter: SiteFooterModel = {
   brand: 'signedprice',
-  descriptor: 'Verified private residential sale evidence, with publication limits shown.',
+  descriptor: 'Singapore private-home and HDB evidence, with source periods and coverage shown.',
   navigationLabel: 'Singapore footer navigation',
   links: [
     ...resolveMarketNavigation({ market: 'singapore', locale: 'en', surface: 'home' }).links,
   ],
-  status: 'Singapore publication remains gated by verified source rights and evidence readiness.',
+  status: 'Reported sales, registered rents and property facts use separate sources and reporting periods.',
 };
 
 export function SingaporePage({ children, currentHref, unframed = false }: Readonly<{

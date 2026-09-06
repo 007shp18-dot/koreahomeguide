@@ -336,6 +336,7 @@ export type ExploreBuildingAvailability =
   | Readonly<{
       status: 'ready';
       buildings: readonly ExploreBuildingModel[];
+      mapGroups?: readonly Readonly<{ neighborhoodId: string; name: string; housingType: string; count: number }>[];
       neighborhoods?: readonly Readonly<{ id: string; name: string; count: number }>[];
       total: number;
       page: number;

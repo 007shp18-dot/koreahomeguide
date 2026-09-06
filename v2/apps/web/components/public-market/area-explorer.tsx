@@ -21,6 +21,7 @@ import { appendKoreaProximityPairs } from '../../lib/public-market/korea-proximi
 import {
   NaverDistrictMap,
   buildNaverBuildingAddressQuery,
+  type NaverAreaMapGroup,
 } from '../maps/naver-district-map';
 import type {
   ExploreBuildingModel,
@@ -386,6 +387,8 @@ function ReadyAreaExplorer({
   );
   const { selectedBuildingId } = buildingSelection;
   const [visibleBuildingCount, setVisibleBuildingCount] = useState(50);
+  const [openAreaBuildings, setOpenAreaBuildings] = useState(false);
+  const revealAreaBuildings = useCallback(() => setOpenAreaBuildings(true), [setOpenAreaBuildings]);
   const [sortMode, setSortMode] = useState<'latest' | 'evidence' | 'name'>('evidence');
   const readyBuildingAvailability = model.buildingAvailability.status === 'ready'
     ? model.buildingAvailability
@@ -461,10 +464,9 @@ function ReadyAreaExplorer({
     metricLabel: compactDistrictMetric(district.medianLabel, locale),
     selected: mapDrilledToDistrict && district.slug === selected.slug,
   })), [districtHref, locale, mapDrilledToDistrict, model.districts, selected.slug]);
-  const mapBuildings = useMemo(() => filteredBuildings.filter((building) => (
-    isIndividualMapBuilding(building) || building.verifiedAddress !== undefined || building.id === selectedBuilding?.id
-  )).map((building) => ({
+  const mapBuildings = useMemo(() => filteredBuildings.map((building) => ({
     id: building.id,
+    neighborhoodId: building.neighborhoodId,
     title: building.name,
     href: buildingSelectionHref(building, linkSelection, locale, {
       query: buildingQuery,
@@ -475,14 +477,16 @@ function ReadyAreaExplorer({
       building.neighborhoodName,
       building.name,
     ),
-    latitude: building.latitude,
-    longitude: building.longitude,
+    latitude: isIndividualMapBuilding(building) ? building.latitude : null,
+    longitude: isIndividualMapBuilding(building) ? building.longitude : null,
+    areaReference: { id: selected.slug, title: locale === 'ko' ? selected.nameKo : selected.nameEn,
+      latitude: selected.latitude, longitude: selected.longitude },
     allowAddressGeocoding: building.verifiedAddress !== undefined
       || (building.id === selectedBuilding?.id && !genericBuildingNames.test(building.name.trim())),
     metricLabel: compactDistrictMetric(building.medianLabel, locale),
     sampleLabel: localizeSampleLabel(building.sampleLabel, locale),
     selected: building.id === selectedBuilding?.id,
-  })), [buildingQuery, filteredBuildings, linkSelection, locale, readyBuildingAvailability?.page, selected.nameKo, selectedBuilding?.id]);
+  })), [buildingQuery, filteredBuildings, linkSelection, locale, readyBuildingAvailability?.page, selected, selectedBuilding?.id]);
   const mapNeighborhoods = useMemo(() => (
     (readyBuildingAvailability?.neighborhoods ?? []).map((neighborhood) => {
       const located = districtBuildings.filter((building) => (
@@ -505,12 +509,38 @@ function ReadyAreaExplorer({
       };
     })
   ), [districtBuildings, readyBuildingAvailability?.neighborhoods, selected.nameKo, selectedNeighborhood]);
+  const referencedMapBuildings = useMemo(() => {
+    const references = new Map(mapNeighborhoods.map(point => [point.id, point]));
+    return mapBuildings.map(building => {
+      const point = references.get(building.neighborhoodId);
+      if (point?.latitude == null || point.longitude == null) return building;
+      return { ...building, areaReference: { id: point.id, title: point.title,
+        latitude: point.latitude, longitude: point.longitude, neighborhoodId: point.id } };
+    });
+  }, [mapBuildings, mapNeighborhoods]);
+  const searchPending = buildingQuery.trim().toLocaleLowerCase('en-US') !== initialQuery.trim().toLocaleLowerCase('en-US');
+  const additionalMapGroups = useMemo<readonly NaverAreaMapGroup[]>(() => {
+    if (searchPending || selected.slug !== model.selectedSlug) return [];
+    const references = new Map(mapNeighborhoods.map(point => [point.id, point]));
+    return (readyBuildingAvailability?.mapGroups ?? []).filter(group => (
+      (selectedNeighborhood === 'all' || group.neighborhoodId === selectedNeighborhood)
+      && (selectedHousingType === 'all' || group.housingType === selectedHousingType)
+    )).map(group => {
+      const point = references.get(group.neighborhoodId);
+      return { count: group.count, reference: point?.latitude != null && point.longitude != null
+        ? { id: point.id, title: point.title, latitude: point.latitude, longitude: point.longitude, neighborhoodId: point.id }
+        : { id: selected.slug, title: locale === 'ko' ? selected.nameKo : selected.nameEn,
+          latitude: selected.latitude, longitude: selected.longitude } };
+    });
+  }, [searchPending, selected, model.selectedSlug, mapNeighborhoods, readyBuildingAvailability?.mapGroups, selectedNeighborhood, selectedHousingType, locale]);
   const showBuildingLayer = selectedNeighborhood !== 'all'
+    || openAreaBuildings
     || buildingQuery.trim().length > 0
     || selectedBuilding !== null
     || mapNeighborhoods.length === 0;
 
   const selectDistrict = (slug: string): void => {
+    setOpenAreaBuildings(false);
     dispatch({ type: 'select', slug });
     setMapDrilledToDistrict(true);
     setSelectedNeighborhood('all');
@@ -521,6 +551,7 @@ function ReadyAreaExplorer({
     router.replace(districtHref(slug), { scroll: false });
   };
   const showAllDistricts = (): void => {
+    setOpenAreaBuildings(false);
     setMapDrilledToDistrict(false);
     setBuildingQuery('');
     dispatchBuildingSelection({ type: 'clear_building' });
@@ -659,6 +690,7 @@ function ReadyAreaExplorer({
     return `${target.pathname}${target.search}`;
   };
   const selectNeighborhood = (neighborhoodId: string): void => {
+    setOpenAreaBuildings(false);
     setMapDrilledToDistrict(true);
     setSelectedNeighborhood(neighborhoodId);
     setVisibleBuildingCount(50);
@@ -789,7 +821,9 @@ function ReadyAreaExplorer({
         <span>{!mapDrilledToDistrict
           ? (locale === 'ko' ? '구를 선택하면 동별 관측 건물 수를 볼 수 있습니다.' : 'Choose a district to see observed building counts by neighborhood.')
           : showBuildingLayer
-            ? (locale === 'ko' ? '주소가 확인된 건물만 지도에 표시됩니다.' : 'Only buildings with verified locations appear on the map.')
+            ? searchPending
+              ? (locale === 'ko' ? '현재 목록에서 검색 중입니다. Enter를 누르면 모든 결과 페이지를 검색합니다.' : 'Filtering loaded results. Press Enter to search all result pages.')
+              : (locale === 'ko' ? '전체 검색 결과: 개별 위치와 지역 묶음을 구분합니다. 다른 목록 페이지의 건물도 지역 묶음에 포함됩니다.' : 'All matches: individual locations and area-only groups, including buildings on other result pages.')
             : (locale === 'ko' ? '동별 수치는 신고 근거에 포함된 관측 건물 수입니다.' : 'Neighborhood counts cover observed buildings in the evidence inventory.')}</span>
         <div className={styles.toolbarViews}>
           <AreaExplorerViewSwitcher
@@ -832,7 +866,9 @@ function ReadyAreaExplorer({
             selectedDistrict={mapDrilledToDistrict ? selected : undefined}
             focusAddressQuery={showBuildingLayer ? mapNeighborhoods.find(({ id }) => id === selectedNeighborhood)?.addressQuery : undefined}
             neighborhoods={mapDrilledToDistrict && !showBuildingLayer ? mapNeighborhoods : undefined}
-            buildings={mapDrilledToDistrict && showBuildingLayer ? mapBuildings : undefined}
+            buildings={mapDrilledToDistrict && showBuildingLayer ? referencedMapBuildings : undefined}
+            areaGroups={mapDrilledToDistrict && showBuildingLayer ? additionalMapGroups : undefined}
+            onOpenAreaBuildings={revealAreaBuildings}
             onSelectDistrict={selectDistrict}
             onSelectNeighborhood={selectNeighborhood}
             onSelectBuilding={selectBuildingFromMarker}

@@ -35,6 +35,58 @@ const districts = [{
 }] as const;
 
 describe('NAVER district map', () => {
+  it('retains unlocated neighborhood totals at an approximate district reference without a geocoder', () => {
+    const icons: string[] = [];
+    const clicks: (() => void)[] = [];
+    const onOpenAreaBuildings = vi.fn();
+    class Map { setCenter() {} setZoom() {} }
+    class LatLng {}
+    class Marker { constructor(options: { icon?: { content: string } }) { icons.push(options.icon?.content ?? ''); } setMap() {} }
+    mountNaverDistrictMap({
+      sdk: { Map, LatLng, Marker, Event: { addListener: (_target, event, callback) => { if (event === 'click') clicks.push(callback); }, removeListener() {} } },
+      element: {} as HTMLElement, districts, selectedDistrict: districts[0],
+      neighborhoods: [{ id: 'a', title: 'A', addressQuery: 'Seoul A', latitude: null, longitude: null, buildingCount: 774 },
+        { id: 'b', title: 'B', addressQuery: 'Seoul B', latitude: 37.57, longitude: 126.98, buildingCount: 1 }],
+      onSelect: vi.fn(), onOpenAreaBuildings,
+    });
+    expect(icons).toHaveLength(2);
+    expect(icons.some(icon => icon.includes('spMapAreaGroup') && icon.includes('774'))).toBe(true);
+    clicks.at(-1)!();
+    expect(onOpenAreaBuildings).toHaveBeenCalledOnce();
+  });
+
+  it('represents every matching building as a real location or an explicitly approximate area group', () => {
+    const active = new Set<{ title: string; content: string }>();
+    class TestMap { setCenter() {} setZoom() {} getZoom() { return 18; } }
+    class LatLng {}
+    class Marker {
+      value: { title: string; content: string };
+      constructor(options: { title: string; icon?: { content: string } }) {
+        this.value = { title: options.title, content: options.icon?.content ?? '' }; active.add(this.value);
+      }
+      setMap(value: unknown) { if (value === null) active.delete(this.value); }
+    }
+    const ref = { id: 'jongno-gu', title: 'Jongno-gu', latitude: 37.573, longitude: 126.9794 };
+    const points = Array.from({ length: 775 }, (_, i) => ({ id: String(i), title: `Building ${i}`,
+      href: `/building/${i}`, addressQuery: '', latitude: i < 3 ? 37.571 + i * .001 : null,
+      longitude: i < 3 ? 126.98 : null, areaReference: ref }));
+    const resolved = vi.fn();
+    const coverage = vi.fn();
+    const mounted = mountNaverDistrictMap({
+      sdk: { Map: TestMap, LatLng, Marker, Event: { addListener: () => undefined, removeListener() {} } },
+      element: {} as HTMLElement, districts, selectedDistrict: ref, buildings: points.slice(0, 50),
+      areaGroups: [{ reference: ref, count: 725 }],
+      onSelect: vi.fn(), onResolveBuildingLocation: resolved, onCoverageChange: coverage,
+    });
+    expect(active.size).toBe(4);
+    expect([...active].find(({ content }) => content.includes('spMapAreaGroup'))?.content).toContain('772');
+    expect([...active].find(({ content }) => content.includes('spMapAreaGroup'))?.content).toContain('Area only');
+    expect(resolved).not.toHaveBeenCalled();
+    expect(coverage).toHaveBeenLastCalledWith({ total: 775, located: 3, grouped: 772, unplaced: 0 });
+    mounted.update({ districts, selectedDistrict: ref, buildings: points.slice(0, 3), onSelect: vi.fn() });
+    expect(active.size).toBe(3);
+  });
+
   it('preserves user zoom when the same district receives updated selection props', () => {
     const setCenter = vi.fn();
     const setZoom = vi.fn();
@@ -146,7 +198,6 @@ describe('NAVER district map', () => {
     const zooms: number[] = [];
     class LatLng { constructor(readonly latitude: number, readonly longitude: number) {} }
     class Map {
-      constructor(_element: HTMLElement, _options: unknown) {}
       setCenter(center: unknown) { centers.push(center); }
       setZoom(zoom: number) { zooms.push(zoom); }
       getZoom() { return 14; }

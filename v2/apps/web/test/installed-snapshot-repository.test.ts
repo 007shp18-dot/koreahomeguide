@@ -236,6 +236,21 @@ describe('installed snapshot repository', () => {
     expect(Object.isFrozen(result)).toBe(true);
   });
 
+  it('does not apply Dubai identity fields to another market snapshot shape', () => {
+    const source = Object.freeze({
+      ...payload(),
+      comparisonPeriod: Object.freeze({ from: '2025-01-01', to: '2025-12-31' }),
+      areas: Object.freeze([Object.freeze({ slug: 'not-a-dubai-area' })]),
+    });
+    const repository = createInstalledSnapshotRepository({
+      registrySource: registry(source),
+      resolveObject: () => source,
+    });
+
+    expect(repository.get('kr-seoul', 'kr-building-registry').metadata)
+      .toMatchObject({ period, recordCount: 2 });
+  });
+
   it('verifies a conversion snapshot against its eligible pair count', () => {
     const source = conversionPayload();
     const repository = createInstalledSnapshotRepository({

@@ -38,6 +38,7 @@ const nextConfig: NextConfig = {
       './data/korea-sale-evidence.json.gz',
       './data/korea-conversion-evidence.json.gz',
       './data/kapt-building-facts.json.gz',
+      './data/dubai-area-evidence.json.gz',
     ],
   },
 };
