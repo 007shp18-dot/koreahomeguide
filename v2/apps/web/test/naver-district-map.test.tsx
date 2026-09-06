@@ -14,6 +14,7 @@ import {
   clusterNaverBuildings,
   buildNaverBuildingMarkerContent,
   buildNaverDistrictMarkerContent,
+  buildNaverNeighborhoodMarkerContent,
   buildNaverBuildingAddressQuery,
   buildNaverMapsScriptUrl,
   isNaverMapsSdkReady,
@@ -72,7 +73,7 @@ describe('NAVER district map', () => {
     ])).not.toBeNull();
   });
 
-  it('builds a safe compact price bubble for the citywide district layer', () => {
+  it('builds a compact district label without repeating price details on the map', () => {
     expect(buildNaverDistrictMarkerContent({
       ...districts[0],
       nameEn: '<Jongno>',
@@ -80,11 +81,11 @@ describe('NAVER district map', () => {
       sampleLabel: '5 filings',
       selected: true,
     })).toBe(
-      '<div class="spMapDistrictBubble spMapDistrictBubbleSelected"><span>&lt;Jongno&gt;</span><strong>₩500M &amp; up</strong><small>5 filings</small></div>',
+      '<div class="spMapDistrictBubble spMapDistrictBubbleSelected"><span>&lt;Jongno&gt;</span></div>',
     );
   });
 
-  it('builds a safe price-and-location bubble for the district building layer', () => {
+  it('builds a compact building price label and keeps full details in the linked panel', () => {
     expect(buildNaverBuildingMarkerContent({
       id: 'tower',
       title: '<Evidence Tower>',
@@ -96,8 +97,81 @@ describe('NAVER district map', () => {
       sampleLabel: '8 filings',
       selected: true,
     })).toBe(
-      '<div class="spMapBuildingBubble spMapBuildingBubbleSelected"><span>&lt;Evidence Tower&gt;</span><strong>₩1.2B &amp; up</strong><small>8 filings</small></div>',
+      '<div class="spMapBuildingBubble spMapBuildingBubbleSelected"><strong>₩1.2B &amp; up</strong></div>',
     );
+  });
+
+  it('builds a safe neighborhood count marker between district and building tiers', () => {
+    expect(buildNaverNeighborhoodMarkerContent({
+      id: 'yeoksam-dong',
+      title: '<Yeoksam-dong>',
+      addressQuery: '서울특별시 강남구 역삼동',
+      latitude: 37.5,
+      longitude: 127.03,
+      buildingCount: 128,
+      selected: true,
+    })).toBe(
+      '<div class="spMapNeighborhoodBubble spMapNeighborhoodBubbleSelected"><span>&lt;Yeoksam-dong&gt;</span><strong>128</strong></div>',
+    );
+  });
+
+  it('renders neighborhood counts and sends a marker click to the same neighborhood selection', () => {
+    const icons: string[] = [];
+    const clicks: Array<() => void> = [];
+    const selected = vi.fn();
+    class Map { setCenter() {} setZoom() {} }
+    class LatLng {}
+    class Marker {
+      constructor(options: { icon?: { content: string } }) { icons.push(options.icon?.content ?? ''); }
+      setMap() {}
+    }
+    mountNaverDistrictMap({
+      sdk: { Map, LatLng, Marker, Event: { addListener: (_target, _event, callback) => { clicks.push(callback); }, removeListener: () => undefined } },
+      element: {} as HTMLElement,
+      districts,
+      selectedDistrict: { latitude: 37.5, longitude: 127.03 },
+      neighborhoods: [{ id: 'yeoksam', title: '역삼동', addressQuery: '서울특별시 강남구 역삼동', latitude: 37.5, longitude: 127.03, buildingCount: 678 }],
+      onSelect: vi.fn(),
+      onSelectNeighborhood: selected,
+    });
+    expect(icons).toHaveLength(1);
+    expect(icons[0]).toContain('spMapNeighborhoodBubble');
+    expect(icons[0]).toContain('678');
+    clicks[0]!();
+    expect(selected).toHaveBeenCalledWith('yeoksam');
+  });
+
+  it('moves and zooms the existing map when a building becomes selected', () => {
+    const centers: unknown[] = [];
+    const zooms: number[] = [];
+    class LatLng { constructor(readonly latitude: number, readonly longitude: number) {} }
+    class Map {
+      constructor(_element: HTMLElement, _options: unknown) {}
+      setCenter(center: unknown) { centers.push(center); }
+      setZoom(zoom: number) { zooms.push(zoom); }
+      getZoom() { return 14; }
+    }
+    class Marker { setMap() {} }
+    const sdk = {
+      Map, LatLng, Marker,
+      Event: { addListener: () => undefined, removeListener: () => undefined },
+    };
+    const building = {
+      id: 'tower', title: 'Evidence Tower', href: '/tower/', addressQuery: 'Seoul',
+      latitude: 37.501, longitude: 127.031,
+    } as const;
+    const options = {
+      districts,
+      selectedDistrict: { latitude: 37.5, longitude: 127.03 },
+      buildings: [building],
+      onSelect: vi.fn(),
+    };
+    const mounted = mountNaverDistrictMap({ sdk, element: {} as HTMLElement, ...options });
+
+    mounted.update({ ...options, buildings: [{ ...building, selected: true }] });
+
+    expect(centers).toEqual([new LatLng(37.501, 127.031)]);
+    expect(zooms).toEqual([17]);
   });
 
   it('waits for the asynchronous geocoder submodule before exposing the SDK', () => {
@@ -477,7 +551,7 @@ describe('NAVER district map', () => {
       position: new LatLng(37.501, 127.031),
       title: 'Evidence Tower',
       icon: {
-        content: '<div class="spMapBuildingBubble"><span>Evidence Tower</span><strong>—</strong></div>',
+        content: '<div class="spMapBuildingBubble"><strong>—</strong></div>',
       },
     });
     expect(mounted.unavailableBuildingIds).toEqual([]);

@@ -192,6 +192,40 @@ describe('installed Korea evidence repositories', () => {
     expect(JSON.stringify(model).length).toBeLessThan(500_000);
   }, 15_000);
 
+  it('filters a selected neighborhood on the server while retaining district-wide counts', () => {
+    const repositories = koreaEvidenceRepositoriesFromEnvironment({ useCheckedInSnapshot: true });
+    const input = {
+      transaction: 'jeonse' as const,
+      areaBand: 'all' as const,
+      housingType: 'all' as const,
+      contractGroup: 'all' as const,
+    };
+    const district = buildKoreaExplorerEvidenceProjectionBase(repositories, input, {
+      includeBuildings: true,
+      districtSlug: 'gangnam-gu',
+    });
+    if (district.status !== 'ready' || district.buildingPage === null) {
+      throw new Error('Installed Explore district page must be ready.');
+    }
+    const neighborhood = district.buildingPage.neighborhoods?.[0];
+    if (neighborhood === undefined) throw new Error('A neighborhood count is required.');
+
+    const selected = buildKoreaExplorerEvidenceProjectionBase(repositories, input, {
+      includeBuildings: true,
+      districtSlug: 'gangnam-gu',
+      neighborhoodId: neighborhood.id,
+    });
+    if (selected.status !== 'ready' || selected.buildingPage === null) {
+      throw new Error('Installed Explore neighborhood page must be ready.');
+    }
+
+    expect(selected.buildingPage.total).toBe(neighborhood.count);
+    expect(selected.buildingPage.buildings.every((building) => (
+      building.neighborhoodId === neighborhood.id
+    ))).toBe(true);
+    expect(selected.buildingPage.neighborhoods).toEqual(district.buildingPage.neighborhoods);
+  }, 15_000);
+
   it('resolves a selected building to its page instead of trusting a stale page number', () => {
     const repositories = koreaEvidenceRepositoriesFromEnvironment({
       useCheckedInSnapshot: true,

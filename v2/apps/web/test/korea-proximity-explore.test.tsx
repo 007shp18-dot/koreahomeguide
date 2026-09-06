@@ -480,7 +480,7 @@ describe('Korea Explore proximity route model', () => {
       nearestStation: { sourceId: 'station-a', distanceMeters: 250 },
       nearestSchool: { sourceId: 'school-a', distanceMeters: 500 },
     });
-    const html = renderToStaticMarkup(<AreaExplorer model={model} />);
+    const html = renderToStaticMarkup(<AreaExplorer model={model} initialSelection={{ market: 'kr', transaction: 'sale', district: model.selectedSlug ?? undefined }} />);
     expect(html).toContain('Nearest station · straight-line distance');
     expect(html).toContain('Same name · 2호선 · 250 m');
     expect(html).toContain('School proximity · straight-line distance');
@@ -491,7 +491,7 @@ describe('Korea Explore proximity route model', () => {
   it('renders deterministic station lines for both distinct same-name building facts', () => {
     const model = buildPublicAreaExploreModel('gangnam-gu', dependencies());
     if (model.status !== 'ready') throw new Error('Expected ready Explore model.');
-    const html = renderToStaticMarkup(<AreaExplorer model={model} />);
+    const html = renderToStaticMarkup(<AreaExplorer model={model} initialSelection={{ market: 'kr', transaction: 'sale', district: model.selectedSlug ?? undefined }} />);
 
     expect(html).toContain('Same name · 2호선 · 250 m');
     expect(html).toContain('Same name · 경의중앙선 · 750 m');
@@ -587,7 +587,7 @@ describe('Korea Explore proximity route model', () => {
     expect(model.buildingAvailability.buildings[0]?.proximity).toEqual({
       coordinateStatus: 'pending_coordinate', nearestStation: null, nearestSchool: null,
     });
-    expect(renderToStaticMarkup(<AreaExplorer model={model} />)).toContain('Distance not confirmed');
+    expect(renderToStaticMarkup(<AreaExplorer model={model} initialSelection={{ market: 'kr', transaction: 'sale', district: model.selectedSlug ?? undefined }} />)).toContain('Distance not confirmed');
   });
 
   it('updates and clears each proximity pair atomically while retaining unrelated selection state', () => {
@@ -632,7 +632,7 @@ describe('Korea Explore proximity route model', () => {
     expect(model.status).toBe('ready');
     if (model.status !== 'ready' || model.buildingAvailability.status !== 'ready') return;
     expect(model.buildingAvailability.total).toBe(2);
-    const html = renderToStaticMarkup(<AreaExplorer model={model} />);
+    const html = renderToStaticMarkup(<AreaExplorer model={model} initialSelection={{ market: 'kr', transaction: 'sale', district: model.selectedSlug ?? undefined }} />);
     expect(html).toContain('Proximity data unavailable');
     expect(html).not.toContain('data-proximity-selectors="enabled"');
   });
@@ -644,7 +644,7 @@ describe('Korea Explore proximity route model', () => {
     expect(model.status).toBe('ready');
     if (model.status !== 'ready' || model.buildingAvailability.status !== 'ready') return;
     expect(model.buildingAvailability.total).toBe(2);
-    const html = renderToStaticMarkup(<AreaExplorer model={model} />);
+    const html = renderToStaticMarkup(<AreaExplorer model={model} initialSelection={{ market: 'kr', transaction: 'sale', district: model.selectedSlug ?? undefined }} />);
     expect(html).toContain('data-proximity-state="invalid"');
     expect(html).toContain('Proximity data unavailable.');
     expect(html).not.toContain('data-proximity-selectors="enabled"');

@@ -848,6 +848,7 @@ export function buildPublicAreaExploreModel(
   requestedBuildingPage: unknown = 1,
   requestedBuildingId?: unknown,
   requestedProximity: unknown = Object.freeze({}),
+  requestedNeighborhood?: unknown,
 ): PublicAreaExploreModel {
   const proximityRepository = dependencies.proximityRepository;
   const proximity = proximityModelFor(proximityRepository, requestedProximity);
@@ -862,6 +863,7 @@ export function buildPublicAreaExploreModel(
         includeBuildings: true,
         includeBuildingStats: true,
         districtSlug: selectedSlug,
+        neighborhoodId: requestedNeighborhood,
         buildingQuery: requestedBuildingQuery,
         buildingPage: requestedBuildingPage,
         selectedBuildingId: requestedBuildingId,

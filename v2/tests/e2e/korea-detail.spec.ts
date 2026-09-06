@@ -148,12 +148,12 @@ test('verified synthetic building detail is server rendered only in the local re
   expect(heroLayout.mediaBackground).toBe('none');
   await page.locator('details > summary', {
     hasText: 'See records, adjustments, and methodology',
-  }).click();
+  }).filter({ visible: true }).click();
   await expect(page.getByRole('heading', {
     level: 2,
     name: 'Privacy-safe reported contracts',
   })).toBeVisible();
-  const evidenceDetails = page.locator('details[data-building-section="evidence"]');
+  const evidenceDetails = page.locator('details[data-building-section="evidence"]').filter({ visible: true });
   await expect(evidenceDetails).toHaveAttribute('open', '');
   await expect(evidenceDetails).toContainText('Privacy-safe reported contracts');
   const relatedContext = page.getByRole('region', { name: 'Building news and community' });

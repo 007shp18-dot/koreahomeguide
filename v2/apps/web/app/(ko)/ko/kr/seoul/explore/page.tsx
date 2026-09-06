@@ -1,3 +1,4 @@
+import { googleMapsBrowserKeyFromEnvironment } from '@/lib/maps/google-maps-browser-key.server';
 import { KOREA_EVIDENCE_AREA_BANDS } from '@signedprice/korea-rent';
 import { SEOUL_RENT_CHECK_DISTRICTS } from '@signedprice/korea-rent/browser';
 
@@ -60,6 +61,7 @@ export default async function KoreanExplorePage({ searchParams }: KoreanExploreP
     singleValue(query.buildingPage),
     requestedBuildingId,
     query,
+    singleValue(query.neighborhood),
   ));
   const availableBuildings = model.status === 'ready'
     ? (model.buildingAvailability.status === 'ready'
@@ -95,6 +97,7 @@ export default async function KoreanExplorePage({ searchParams }: KoreanExploreP
           locale="ko"
           model={model}
           naverMapClientId={process.env.NAVER_MAP_CLIENT_ID?.trim() || null}
+          googleMapsBrowserKey={googleMapsBrowserKeyFromEnvironment()}
           initialQuery={buildingQuery}
           initialSelection={restoredSelection}
         />

@@ -311,12 +311,14 @@ export function createKoreaDistrictHref(
 function ReadyAreaExplorer({
   model,
   naverMapClientId,
+  googleMapsBrowserKey,
   locale,
   initialQuery,
   initialSelection,
 }: Readonly<{
   model: Extract<PublicAreaExploreModel, { status: 'ready' }>;
   naverMapClientId: string | null;
+  googleMapsBrowserKey: string | null;
   locale: ProductLocale;
   initialQuery: string;
   initialSelection: ExplorerSelection;
@@ -383,7 +385,7 @@ function ReadyAreaExplorer({
     }),
   );
   const { selectedBuildingId } = buildingSelection;
-  const [visibleBuildingCount, setVisibleBuildingCount] = useState(24);
+  const [visibleBuildingCount, setVisibleBuildingCount] = useState(50);
   const [sortMode, setSortMode] = useState<'latest' | 'evidence' | 'name'>('latest');
   const readyBuildingAvailability = model.buildingAvailability.status === 'ready'
     ? model.buildingAvailability
@@ -397,9 +399,6 @@ function ReadyAreaExplorer({
         ({ districtSlug }) => districtSlug === selected.slug,
       )
   ), [model.buildingAvailability, selected.slug]);
-  const neighborhoods = useMemo(() => [...new Map(districtBuildings.map((building) => [
-    building.neighborhoodId, building.neighborhoodName,
-  ] as const))], [districtBuildings]);
   const filteredBuildings = useMemo(
     () => {
       const filtered = [...filterExploreBuildings(
@@ -463,7 +462,7 @@ function ReadyAreaExplorer({
     selected: mapDrilledToDistrict && district.slug === selected.slug,
   })), [districtHref, locale, mapDrilledToDistrict, model.districts, selected.slug]);
   const mapBuildings = useMemo(() => filteredBuildings.filter((building) => (
-    isIndividualMapBuilding(building) || building.verifiedAddress !== undefined
+    isIndividualMapBuilding(building) || building.verifiedAddress !== undefined || building.id === selectedBuilding?.id
   )).map((building) => ({
     id: building.id,
     title: building.name,
@@ -478,11 +477,38 @@ function ReadyAreaExplorer({
     ),
     latitude: building.latitude,
     longitude: building.longitude,
-    allowAddressGeocoding: building.verifiedAddress !== undefined,
+    allowAddressGeocoding: building.verifiedAddress !== undefined
+      || (building.id === selectedBuilding?.id && !genericBuildingNames.test(building.name.trim())),
     metricLabel: compactDistrictMetric(building.medianLabel, locale),
     sampleLabel: localizeSampleLabel(building.sampleLabel, locale),
     selected: building.id === selectedBuilding?.id,
   })), [buildingQuery, filteredBuildings, linkSelection, locale, readyBuildingAvailability?.page, selected.nameKo, selectedBuilding?.id]);
+  const mapNeighborhoods = useMemo(() => (
+    (readyBuildingAvailability?.neighborhoods ?? []).map((neighborhood) => {
+      const located = districtBuildings.filter((building) => (
+        building.neighborhoodId === neighborhood.id
+        && building.latitude !== null && building.longitude !== null
+        && Number.isFinite(building.latitude) && Number.isFinite(building.longitude)
+        && building.latitude >= 37.4 && building.latitude <= 37.72
+        && building.longitude >= 126.75 && building.longitude <= 127.25
+      ));
+      return {
+        id: neighborhood.id,
+        title: neighborhood.name,
+        addressQuery: `서울특별시 ${selected.nameKo} ${neighborhood.name}`,
+        latitude: located.length === 0 ? null
+          : located.reduce((sum, building) => sum + building.latitude!, 0) / located.length,
+        longitude: located.length === 0 ? null
+          : located.reduce((sum, building) => sum + building.longitude!, 0) / located.length,
+        buildingCount: neighborhood.count,
+        selected: selectedNeighborhood === neighborhood.id,
+      };
+    })
+  ), [districtBuildings, readyBuildingAvailability?.neighborhoods, selected.nameKo, selectedNeighborhood]);
+  const showBuildingLayer = selectedNeighborhood !== 'all'
+    || buildingQuery.trim().length > 0
+    || selectedBuilding !== null
+    || mapNeighborhoods.length === 0;
 
   const selectDistrict = (slug: string): void => {
     dispatch({ type: 'select', slug });
@@ -491,11 +517,12 @@ function ReadyAreaExplorer({
     setSelectedHousingType('all');
     setBuildingQuery('');
     dispatchBuildingSelection({ type: 'clear_building' });
-    setVisibleBuildingCount(24);
+    setVisibleBuildingCount(50);
     router.replace(districtHref(slug), { scroll: false });
   };
   const showAllDistricts = (): void => {
     setMapDrilledToDistrict(false);
+    setBuildingQuery('');
     dispatchBuildingSelection({ type: 'clear_building' });
     setSelectedNeighborhood('all');
     const href = withKoreaProximityPairs(localizedSeoulHref(createSelectionHref(
@@ -565,7 +592,7 @@ function ReadyAreaExplorer({
         transaction,
         area: undefined,
         propertyType: propertyType === 'all' ? undefined : propertyType,
-        district: state.selectedSlug,
+        district: mapDrilledToDistrict ? state.selectedSlug : undefined,
         contractType: transaction === 'sale' ? undefined : initialSelection.contractType,
         view: changes.view ?? currentView,
       },
@@ -578,14 +605,14 @@ function ReadyAreaExplorer({
       target.searchParams.set('buildingPage', String(readyBuildingAvailability.page));
     }
     return `${target.pathname}${target.search}`;
-  }, [buildingQuery, currentView, initialSelection, linkSelection, locale, model.evidenceSelection, readyBuildingAvailability, state.selectedSlug]);
+  }, [buildingQuery, currentView, initialSelection, linkSelection, locale, mapDrilledToDistrict, model.evidenceSelection, readyBuildingAvailability, state.selectedSlug]);
   const proximityHref = useCallback((kind: 'station' | 'school', sourceId: string, distance: string): string => {
     return createKoreaProximitySelectorHref(evidenceHref(), kind, sourceId, distance);
   }, [evidenceHref]);
 
   const updateBuildingQuery = (query: string): void => {
     setBuildingQuery(query);
-    setVisibleBuildingCount(24);
+    setVisibleBuildingCount(50);
     dispatchBuildingSelection({ type: 'clear_building' });
     const resolvedSlug = resolveExploreSearchDistrict(
       model.districts,
@@ -629,8 +656,9 @@ function ReadyAreaExplorer({
     return `${target.pathname}${target.search}`;
   };
   const selectNeighborhood = (neighborhoodId: string): void => {
+    setMapDrilledToDistrict(true);
     setSelectedNeighborhood(neighborhoodId);
-    setVisibleBuildingCount(24);
+    setVisibleBuildingCount(50);
     dispatchBuildingSelection({ type: 'clear_building' });
     const href = withKoreaProximityPairs(localizedSeoulHref(createSelectionHref(
       '/kr/seoul/explore/',
@@ -645,9 +673,7 @@ function ReadyAreaExplorer({
     const target = new URL(href, 'https://signedprice.invalid');
     const normalizedQuery = buildingQuery.trim();
     if (normalizedQuery.length > 0) target.searchParams.set('q', normalizedQuery);
-    if (readyBuildingAvailability !== null && readyBuildingAvailability.page > 1) {
-      target.searchParams.set('buildingPage', String(readyBuildingAvailability.page));
-    }
+    target.searchParams.delete('buildingPage');
     router.replace(`${target.pathname}${target.search}`, { scroll: false });
   };
   const matchingBuildingCount = model.buildingAvailability.status === 'ready'
@@ -662,7 +688,7 @@ function ReadyAreaExplorer({
       className={styles.explorer}
       aria-labelledby="area-explorer-heading"
       data-market-selection={`kr:${model.evidenceSelection.transaction}`}
-      data-journey-level={mapDrilledToDistrict ? 'district' : 'city'}
+      data-journey-level={!mapDrilledToDistrict ? 'city' : showBuildingLayer ? 'building' : 'neighborhood'}
       data-explore-view={currentView}
       data-explorer-version="guide-v2"
     >
@@ -688,10 +714,10 @@ function ReadyAreaExplorer({
               : <span key={transaction} aria-disabled="true" data-transaction-mode={mode}>{label}</span>
           ))}
         </div>
-        <label className={styles.toolbarSelect}><span>{locale === 'ko' ? '지역 선택' : 'District'}</span><select aria-label={locale === 'ko' ? '서울 25개 구' : 'All 25 Seoul districts'} value={selected.slug} onChange={(event) => selectDistrict(event.currentTarget.value)}>{model.districts.map((district) => <option key={district.slug} value={district.slug} data-district-option={district.slug} title={`${district.nameKo} · ${district.medianLabel ?? copy.notPublished}`}>{locale === 'ko' ? district.nameKo : district.nameEn}</option>)}</select></label>
+        <label className={styles.toolbarSelect}><span>{locale === 'ko' ? '지역' : 'Area'}</span><select aria-label={locale === 'ko' ? '서울 25개 구' : 'All 25 Seoul districts'} value={mapDrilledToDistrict ? selected.slug : 'all'} onChange={(event) => event.currentTarget.value === 'all' ? showAllDistricts() : selectDistrict(event.currentTarget.value)}><option value="all">{locale === 'ko' ? '서울 전체' : 'All Seoul'}</option>{model.districts.map((district) => <option key={district.slug} value={district.slug} data-district-option={district.slug} title={`${district.nameKo} · ${district.medianLabel ?? copy.notPublished}`}>{locale === 'ko' ? district.nameKo : district.nameEn}</option>)}</select></label>
         <div className={styles.buildingSearch} data-building-search="retained">
           <label htmlFor="explore-building-query">
-            {locale === 'ko' ? '구·동·건물·유형 검색' : 'Search district, neighborhood, building or type'}
+            {locale === 'ko' ? '지역 또는 건물 검색' : 'Search area or building'}
           </label>
           <span className={styles.visuallyHidden}>Search retained buildings</span>
           <input
@@ -705,62 +731,64 @@ function ReadyAreaExplorer({
               event.preventDefault();
               submitBuildingQuery();
             }}
-            placeholder={locale === 'ko' ? '예: 강남구, 역삼동, 아파트' : 'Try Gangnam-gu, Yeoksam-dong or apartment'}
+            placeholder={locale === 'ko' ? '강남구, 역삼동, 건물명' : 'Gangnam-gu, Yeoksam-dong, building'}
           />
           <button className={styles.submitSearch} type="button" onClick={submitBuildingQuery}>{locale === 'ko' ? '검색' : 'Search'}</button>
         </div>
-        <label className={styles.toolbarSelect}>
-          <span>{locale === 'ko' ? '건물 유형' : 'Building type'}</span>
-          <select
-            name="housing-type"
-            value={selectedHousingType}
-            onChange={(event) => {
-              const value = event.currentTarget.value;
-              setSelectedHousingType(value);
-              setVisibleBuildingCount(24);
-              router.replace(evidenceHref({ propertyType: value }), { scroll: false });
-            }}
-          >
-            {evidenceHousingOptions.map(([value, en, ko]) => (
-              <option value={value} key={value}>{locale === 'ko' ? ko : en}</option>
-            ))}
-          </select>
-        </label>
-        <div
-          className={styles.toolbarStatus}
-          data-building-inventory={model.coverage.buildings.status === 'ready' ? 'observed' : 'unavailable'}
-        >
-          <span>{copy.observedBuildings}</span>
-          <strong>{model.coverage.buildings.status === 'ready'
-            ? model.coverage.buildings.observed
-            : '—'}</strong>
-          <small>{copy.transactionCoveredBuildings} · {model.coverage.buildings.transactionCovered ?? '—'} · {copy.priceReadyBuildings} · {model.coverage.buildings.priceReady ?? '—'}</small>
-        </div>
-        {proximity.status === 'ready' ? (
-          <div className={styles.proximityFilters} data-proximity-selectors="enabled">
-            <label><span>{locale === 'ko' ? '역 인접성' : 'Station proximity'}</span><select name="station-proximity" value={proximity.selection.station?.sourceId ?? ''} onChange={(event) => router.replace(proximityHref('station', event.currentTarget.value, String(proximity.selection.station?.distanceMeters ?? 500)), { scroll: false })}><option value="">{locale === 'ko' ? '선택 안 함' : 'No station filter'}</option>{proximity.stations.map((station) => <option key={station.sourceId} value={station.sourceId}>{station.name} · {station.lines.join(', ')}</option>)}</select></label>
-            <label><span>{locale === 'ko' ? '역 거리' : 'Station distance'}</span><select name="station-distance" value={proximity.selection.station?.distanceMeters ?? ''} onChange={(event) => router.replace(proximityHref('station', proximity.selection.station?.sourceId ?? '', event.currentTarget.value), { scroll: false })}><option value="">—</option>{[250, 500, 750, 1000].map((distance) => <option key={distance} value={distance}>{distance} m</option>)}</select></label>
-            <label><span>{locale === 'ko' ? '학교 인접성' : 'School proximity'}</span><select name="school-proximity" value={proximity.selection.school?.sourceId ?? ''} onChange={(event) => router.replace(proximityHref('school', event.currentTarget.value, String(proximity.selection.school?.distanceMeters ?? 500)), { scroll: false })}><option value="">{locale === 'ko' ? '선택 안 함' : 'No school filter'}</option>{proximity.schools.map((school) => <option key={school.sourceId} value={school.sourceId}>{school.name}</option>)}</select></label>
-            <label><span>{locale === 'ko' ? '학교 거리' : 'School distance'}</span><select name="school-distance" value={proximity.selection.school?.distanceMeters ?? ''} onChange={(event) => router.replace(proximityHref('school', proximity.selection.school?.sourceId ?? '', event.currentTarget.value), { scroll: false })}><option value="">—</option>{[250, 500, 750, 1000].map((distance) => <option key={distance} value={distance}>{distance} m</option>)}</select></label>
-            <small>{locale === 'ko' ? '직선거리 · 250 / 500 / 750 / 1000m' : 'Straight-line distance · 250 / 500 / 750 / 1000m'}</small>
+        <details className={styles.advancedFilters} open={proximity.status === 'ready' && (proximity.selection.station !== null || proximity.selection.school !== null) ? true : undefined}>
+          <summary>{locale === 'ko' ? '필터' : 'Filters'}</summary>
+          <div className={styles.advancedFiltersPanel}>
+            <label className={styles.toolbarSelect}>
+              <span>{locale === 'ko' ? '건물 유형' : 'Building type'}</span>
+              <select
+                name="housing-type"
+                value={selectedHousingType}
+                onChange={(event) => {
+                  const value = event.currentTarget.value;
+                  setSelectedHousingType(value);
+                  setVisibleBuildingCount(50);
+                  router.replace(evidenceHref({ propertyType: value }), { scroll: false });
+                }}
+              >
+                {evidenceHousingOptions.map(([value, en, ko]) => (
+                  <option value={value} key={value}>{locale === 'ko' ? ko : en}</option>
+                ))}
+              </select>
+            </label>
+            <label className={styles.sortControl}>
+              <span>{locale === 'ko' ? '정렬' : 'Sort'}</span>
+              <select value={sortMode} onChange={(event) => setSortMode(event.currentTarget.value as typeof sortMode)}>
+                <option value="latest">{locale === 'ko' ? '최근 신고순' : 'Newest filing'}</option>
+                <option value="evidence">{locale === 'ko' ? '근거 많은 순' : 'Most evidence'}</option>
+                <option value="name">{locale === 'ko' ? '건물명순' : 'Building name'}</option>
+              </select>
+            </label>
+            {proximity.status === 'ready' ? (
+              <div className={styles.proximityFilters} data-proximity-selectors="enabled">
+                <label><span>{locale === 'ko' ? '역 인접성' : 'Station proximity'}</span><select name="station-proximity" value={proximity.selection.station?.sourceId ?? ''} onChange={(event) => router.replace(proximityHref('station', event.currentTarget.value, String(proximity.selection.station?.distanceMeters ?? 500)), { scroll: false })}><option value="">{locale === 'ko' ? '선택 안 함' : 'No station filter'}</option>{proximity.stations.map((station) => <option key={station.sourceId} value={station.sourceId}>{station.name} · {station.lines.join(', ')}</option>)}</select></label>
+                <label><span>{locale === 'ko' ? '역 거리' : 'Station distance'}</span><select name="station-distance" value={proximity.selection.station?.distanceMeters ?? ''} onChange={(event) => router.replace(proximityHref('station', proximity.selection.station?.sourceId ?? '', event.currentTarget.value), { scroll: false })}><option value="">—</option>{[250, 500, 750, 1000].map((distance) => <option key={distance} value={distance}>{distance} m</option>)}</select></label>
+                <label><span>{locale === 'ko' ? '학교 인접성' : 'School proximity'}</span><select name="school-proximity" value={proximity.selection.school?.sourceId ?? ''} onChange={(event) => router.replace(proximityHref('school', event.currentTarget.value, String(proximity.selection.school?.distanceMeters ?? 500)), { scroll: false })}><option value="">{locale === 'ko' ? '선택 안 함' : 'No school filter'}</option>{proximity.schools.map((school) => <option key={school.sourceId} value={school.sourceId}>{school.name}</option>)}</select></label>
+                <label><span>{locale === 'ko' ? '학교 거리' : 'School distance'}</span><select name="school-distance" value={proximity.selection.school?.distanceMeters ?? ''} onChange={(event) => router.replace(proximityHref('school', proximity.selection.school?.sourceId ?? '', event.currentTarget.value), { scroll: false })}><option value="">—</option>{[250, 500, 750, 1000].map((distance) => <option key={distance} value={distance}>{distance} m</option>)}</select></label>
+                <small>{locale === 'ko' ? '직선거리 기준' : 'Straight-line distance'}</small>
+              </div>
+            ) : <p className={styles.proximityUnavailable} data-proximity-state={proximity.status}>{locale === 'ko' ? '인접성 데이터를 확인할 수 없습니다.' : 'Proximity data unavailable.'}</p>}
           </div>
-        ) : <p className={styles.proximityUnavailable} data-proximity-state={proximity.status}>{locale === 'ko' ? '인접성 데이터를 확인할 수 없습니다.' : 'Proximity data unavailable.'}</p>}
-        <label className={styles.sortControl}>
-          <span>{locale === 'ko' ? '정렬' : 'Sort'}</span>
-          <select value={sortMode} onChange={(event) => setSortMode(event.currentTarget.value as typeof sortMode)}>
-            <option value="latest">{locale === 'ko' ? '최근 신고순' : 'Newest filing'}</option>
-            <option value="evidence">{locale === 'ko' ? '근거 많은 순' : 'Most evidence'}</option>
-            <option value="name">{locale === 'ko' ? '건물명순' : 'Building name'}</option>
-          </select>
-        </label>
+        </details>
+        <span className={styles.visuallyHidden} data-building-inventory={model.coverage.buildings.status === 'ready' ? 'observed' : 'unavailable'}>{model.coverage.buildings.status === 'ready' ? model.coverage.buildings.observed : '—'}</span>
       </div>
 
       <header className={styles.resultBar} data-explorer-region="summary">
         <h1 className={styles.visuallyHidden} id="area-explorer-heading">
           {usesLegacyCopy ? copy.heroHeading : exactMetricCopy.heroHeading}
         </h1>
-        <strong className={styles.resultCount}>{matchingBuildingCount.toLocaleString(locale === 'ko' ? 'ko-KR' : 'en-US')} {buildingCountLabel} · {model.source.period}</strong>
-        <span>{locale === 'ko' ? '지도는 현재 페이지의 주소 확인 건물을 표시합니다.' : 'Map locations cover address-verified buildings on this page.'}</span>
+        <strong className={styles.resultCount}>{mapDrilledToDistrict
+          ? `${matchingBuildingCount.toLocaleString(locale === 'ko' ? 'ko-KR' : 'en-US')}${locale === 'ko' ? '개 건물' : ` ${buildingCountLabel}`}`
+          : locale === 'ko' ? '서울 25개 구' : '25 Seoul districts'} · {model.source.period}</strong>
+        <span>{!mapDrilledToDistrict
+          ? (locale === 'ko' ? '구를 선택하면 동별 관측 건물 수를 볼 수 있습니다.' : 'Choose a district to see observed building counts by neighborhood.')
+          : showBuildingLayer
+            ? (locale === 'ko' ? '주소가 확인된 건물만 지도에 표시됩니다.' : 'Only buildings with verified locations appear on the map.')
+            : (locale === 'ko' ? '동별 수치는 신고 근거에 포함된 관측 건물 수입니다.' : 'Neighborhood counts cover observed buildings in the evidence inventory.')}</span>
         <div className={styles.toolbarViews}>
           <AreaExplorerViewSwitcher
             current={currentView}
@@ -781,15 +809,14 @@ function ReadyAreaExplorer({
             </h2>
           </div>
           <div className={styles.mapGuide} aria-hidden="true">
-            <span>{mapDrilledToDistrict
-              ? (locale === 'ko' ? '건물 레이어' : 'Building tier')
-              : (locale === 'ko' ? '지역 레이어' : 'District tier')}</span>
-            <strong>{mapDrilledToDistrict
-              ? `${locale === 'ko' ? selected.nameKo : selected.nameEn} · ${locale === 'ko' ? '건물별 매매가' : 'Building prices'}`
-              : (locale === 'ko' ? '서울 구별 매매가 지도' : 'Seoul district sale-price map')}</strong>
-            <p>{mapDrilledToDistrict
-              ? (locale === 'ko' ? '가격 버블을 누르면 건물 근거를 바로 확인할 수 있습니다.' : 'Select a price bubble to open the building evidence.')
-              : (locale === 'ko' ? '구 가격 버블을 누르면 건물별 가격과 위치가 표시됩니다.' : 'Select a district bubble to reveal building prices and locations.')}</p>
+            <span>{!mapDrilledToDistrict
+              ? (locale === 'ko' ? '서울 전체' : 'All Seoul')
+              : locale === 'ko' ? selected.nameKo : selected.nameEn}</span>
+            <strong>{!mapDrilledToDistrict
+              ? (locale === 'ko' ? '구 선택' : 'Choose a district')
+              : showBuildingLayer
+                ? (locale === 'ko' ? '건물 위치와 신고 가격' : 'Building locations and reported prices')
+                : (locale === 'ko' ? '동별 관측 건물 수' : 'Observed buildings by neighborhood')}</strong>
           </div>
           {mapDrilledToDistrict ? (
             <button className={styles.mapLevelButton} type="button" onClick={showAllDistricts}>
@@ -798,19 +825,23 @@ function ReadyAreaExplorer({
           ) : null}
           <NaverDistrictMap
             clientId={naverMapClientId}
+            googleMapsBrowserKey={googleMapsBrowserKey}
             districts={mapDistricts}
             selectedDistrict={mapDrilledToDistrict ? selected : undefined}
-            buildings={mapDrilledToDistrict ? mapBuildings : undefined}
+            focusAddressQuery={showBuildingLayer ? mapNeighborhoods.find(({ id }) => id === selectedNeighborhood)?.addressQuery : undefined}
+            neighborhoods={mapDrilledToDistrict && !showBuildingLayer ? mapNeighborhoods : undefined}
+            buildings={mapDrilledToDistrict && showBuildingLayer ? mapBuildings : undefined}
             onSelectDistrict={selectDistrict}
+            onSelectNeighborhood={selectNeighborhood}
             onSelectBuilding={selectBuildingFromMarker}
             locale={locale}
             fallback={<div className={styles.liveMapLoading} role="status">
               <strong>{locale === 'ko' ? '네이버 지도를 불러오는 중입니다.' : 'Loading the NAVER map.'}</strong>
-              <span>{locale === 'ko' ? '구 가격과 건물 위치가 곧 표시됩니다.' : 'District prices and verified building locations will appear here.'}</span>
+              <span>{locale === 'ko' ? '지역과 확인된 건물 위치가 곧 표시됩니다.' : 'Areas and verified building locations will appear here.'}</span>
             </div>}
           />
 
-          <details className={styles.mapEvidenceDisclosure}>
+          {mapDrilledToDistrict ? <details className={styles.mapEvidenceDisclosure}>
             <summary>
               <span>{copy.selected} · {locale === 'ko' ? selected.nameKo : selected.nameEn}</span>
               <strong>{selected.medianLabel ?? copy.notPublished}</strong>
@@ -825,13 +856,34 @@ function ReadyAreaExplorer({
               medianLabel={usesLegacyCopy ? undefined : exactMetricCopy.medianLabel}
               showContractGroups={model.evidenceSelection.transaction !== 'sale'}
             />
-          </details>
+          </details> : null}
         </section>
         )}
 
         {currentView === 'map' ? null : (
         <aside className={styles.discoveryRail} data-explorer-region="results" aria-label={locale === 'ko' ? '지역과 건물 탐색' : 'District and building discovery'}>
-          <section className={styles.rail} aria-labelledby="district-table-heading">
+          <section className={styles.rail} aria-label={locale === 'ko' ? '탐색 결과' : 'Discovery results'}>
+          {!mapDrilledToDistrict ? (
+            <div className={styles.districtBrowser} data-district-browser="seoul">
+              <div className={styles.sectionHeading}>
+                <p>{locale === 'ko' ? '서울 전체' : 'All Seoul'}</p>
+                <h2 id="district-table-heading">{locale === 'ko' ? '구를 선택하세요' : 'Choose a district'}</h2>
+                <span>{locale === 'ko'
+                  ? '지도와 목록이 함께 해당 구의 동별 분포로 이동합니다.'
+                  : 'The map and list move together to neighborhood distribution.'}</span>
+              </div>
+              <ul className={styles.districtList}>
+                {model.districts.map((district) => (
+                  <li key={district.slug}>
+                    <button type="button" onClick={() => selectDistrict(district.slug)}>
+                      <span><strong>{locale === 'ko' ? district.nameKo : district.nameEn}</strong><small>{locale === 'ko' ? district.nameEn : district.nameKo}</small></span>
+                      <span><strong>{compactDistrictMetric(district.medianLabel, locale)}</strong><small>{localizeSampleLabel(district.sampleLabel, locale)}</small></span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : (
           <div className={styles.buildingBrowser} data-building-browser={selected.slug} data-explorer-region="results">
             <div className={styles.sectionHeading}>
               <p>{copy.buildingsEyebrow}</p>
@@ -857,38 +909,28 @@ function ReadyAreaExplorer({
                       : 'Observed inventory unavailable. Showing the verified price-ready fallback.'}
                   </p>
                 ) : null}
-                {(readyBuildingAvailability?.neighborhoods?.length ?? 0) > 0 ? (
-                  <details className={styles.neighborhoodDistribution} open>
-                    <summary>{locale === 'ko' ? '동별 건물 분포' : 'Buildings by neighborhood'}</summary>
-                    <p>{locale === 'ko' ? '검색 조건에 맞는 전체 건물 수입니다. 현재 판매 중인 매물 수가 아닙니다.' : 'All matching buildings in the evidence inventory, across every page. These are not active listings.'}</p>
+                {!showBuildingLayer ? (
+                  <section className={styles.neighborhoodDistribution} aria-label={copy.neighborhoodFilter}>
+                    <h3>{locale === 'ko' ? '동별 건물 분포' : 'Buildings by neighborhood'}</h3>
+                    <p>{locale === 'ko' ? '신고 근거에 포함된 관측 건물 수입니다.' : 'Observed buildings in the reported-contract inventory.'}</p>
                     <div>
-                      {readyBuildingAvailability!.neighborhoods!.map((item) => (
-                        <button key={item.id} type="button" onClick={() => {
-                          setBuildingQuery(item.name);
-                          const target = new URL(buildingPageHref(1), 'https://signedprice.invalid');
-                          target.searchParams.set('q', item.name);
-                          target.searchParams.delete('neighborhood');
-                          router.replace(`${target.pathname}${target.search}`, { scroll: false });
-                        }}><span>{item.name}</span><strong>{item.count.toLocaleString()}</strong></button>
+                      {mapNeighborhoods.map((item) => (
+                        <button key={item.id} type="button" onClick={() => selectNeighborhood(item.id)}>
+                          <span>{item.title}</span><strong>{item.buildingCount.toLocaleString()}</strong>
+                        </button>
                       ))}
                     </div>
-                  </details>
+                  </section>
+                ) : mapNeighborhoods.length > 0 ? (
+                  <label className={styles.neighborhoodSelect}>
+                    <span>{locale === 'ko' ? '동' : 'Neighborhood'}</span>
+                    <select value={selectedNeighborhood} onChange={(event) => selectNeighborhood(event.currentTarget.value)}>
+                      <option value="all">{locale === 'ko' ? '동별 분포 보기' : 'Neighborhood overview'}</option>
+                      {mapNeighborhoods.map((item) => <option key={item.id} value={item.id}>{item.title} · {item.buildingCount.toLocaleString()}</option>)}
+                    </select>
+                  </label>
                 ) : null}
-                <div className={styles.neighborhoods} aria-label={copy.neighborhoodFilter}>
-                  <button
-                    type="button"
-                    aria-pressed={selectedNeighborhood === 'all'}
-                    onClick={() => selectNeighborhood('all')}
-                  >{copy.all} · {districtBuildings.length}</button>
-                  {neighborhoods.map(([id, name]) => (
-                    <button
-                      key={id}
-                      type="button"
-                      aria-pressed={selectedNeighborhood === id}
-                      onClick={() => selectNeighborhood(id)}
-                    >{name}</button>
-                  ))}
-                </div>
+                {showBuildingLayer ? <>
                 <p className={styles.resultSummary} aria-live="polite">
                   {model.buildingAvailability.status === 'ready'
                     ? model.buildingAvailability.total
@@ -977,7 +1019,7 @@ function ReadyAreaExplorer({
                         className={styles.moreBuildings}
                         onClick={() => {
                           if (visibleBuildings.length < filteredBuildings.length) {
-                            setVisibleBuildingCount((count) => count + 24);
+                            setVisibleBuildingCount((count) => count + 50);
                             return;
                           }
                           if (model.buildingAvailability.status === 'ready') {
@@ -990,9 +1032,11 @@ function ReadyAreaExplorer({
                     ) : null}
                   </>
                 )}
+                </> : null}
               </>
             )}
           </div>
+          )}
           </section>
         </aside>
         )}
@@ -1235,6 +1279,7 @@ function UnavailableAreaExplorer({
 export function AreaExplorer({
   model,
   naverMapClientId = null,
+  googleMapsBrowserKey = null,
   locale = 'en',
   initialQuery = '',
   initialSelection = Object.freeze({ market: 'kr', transaction: 'sale' }),
@@ -1257,9 +1302,10 @@ export function AreaExplorer({
               model.buildingAvailability.status === 'ready'
                 ? model.buildingAvailability.page
                 : 0
-            }:${initialSelection.view ?? 'split'}:${initialSelection.buildingId ?? 'none'}`}
+            }:${initialSelection.view ?? 'split'}:${initialSelection.neighborhood ?? 'all'}:${initialSelection.buildingId ?? 'none'}`}
             model={model}
             naverMapClientId={naverMapClientId}
+            googleMapsBrowserKey={googleMapsBrowserKey}
             locale={locale}
             initialQuery={initialQuery}
             initialSelection={initialSelection}

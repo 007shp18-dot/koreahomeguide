@@ -152,7 +152,7 @@ describe('Korean embedded product components', () => {
       period: PUBLIC_AREA_FIXTURE_PERIOD,
     }, 'new');
     const html = renderToStaticMarkup(
-      <AreaExplorer locale="ko" model={model} naverMapClientId="test-client" />,
+      <AreaExplorer locale="ko" model={model} naverMapClientId="test-client" initialSelection={{ market: 'kr', transaction: 'jeonse', district: 'jung-gu' }} />,
     );
 
     for (const visible of [
@@ -167,7 +167,7 @@ describe('Korean embedded product components', () => {
       '좁은 중간 절반',
       '3개월 변화 확인 불가',
       '국토교통부 신고 임대차 계약',
-      '서울 구 네이버 지도',
+      '서울 건물 네이버 지도',
     ]) expect(html).toContain(visible);
     expect(html).toContain('data-map-state="loading"');
     expect(html).not.toContain('data-map-state="coordinate-pending"');

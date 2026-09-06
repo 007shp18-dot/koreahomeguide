@@ -16,7 +16,7 @@ test('Explore recovery keeps discovery primary and search touch-safe', async ({ 
   await page.goto('/kr/seoul/explore/');
   const rail = page.getByRole('complementary', { name: 'District and building discovery', exact: true });
   const map = page.locator('[data-explorer-region="map"]');
-  const search = page.getByRole('searchbox', { name: 'Search district, neighborhood, building or type', exact: true });
+  const search = page.getByRole('searchbox', { name: 'Search area or building', exact: true });
   await expect(rail).toBeVisible();
   await expect(map).toBeVisible();
   const railBox = await rail.boundingBox();
@@ -28,7 +28,7 @@ test('Explore recovery keeps discovery primary and search touch-safe', async ({ 
     expect(Math.abs(railBox!.width - 420)).toBeLessThanOrEqual(2);
     expect(railBox!.x + railBox!.width).toBeLessThanOrEqual(mapBox!.x + 2);
   } else if (viewport.width <= 800) {
-    expect(railBox!.y + railBox!.height).toBeLessThanOrEqual(mapBox!.y + 2);
+    expect(mapBox!.y + mapBox!.height).toBeLessThanOrEqual(railBox!.y + 2);
   }
   await expectTouchTarget(search);
   expect(await search.evaluate((element) => parseFloat(getComputedStyle(element).fontSize))).toBeGreaterThanOrEqual(14);
@@ -94,10 +94,10 @@ test('initial HTML and hydration expose one synchronized 25-district Explorer', 
   await expect(page.locator('[data-explorer-region="map"]')).toBeVisible();
   await expect(page.locator('[data-district-option]')).toHaveCount(25);
   const jongnoRow = page.locator('[data-district-option="jongno-gu"]');
-  await expect(page.getByRole('combobox', { name: 'All 25 Seoul districts' })).toHaveValue('jongno-gu');
+  await expect(page.getByRole('combobox', { name: 'All 25 Seoul districts' })).toHaveValue('all');
   await expect(jongnoRow).toContainText('Jongno-gu');
   await expect(jongnoRow).toHaveAttribute('title', /종로구/);
-  await expect(page.getByText('Selected · Jongno-gu')).toBeVisible();
+  await expect(page.locator('[data-district-browser="seoul"]')).toBeVisible();
 
   await page.getByRole('combobox', { name: 'All 25 Seoul districts' }).selectOption('gangnam-gu');
   await expect(page).toHaveURL(/district=gangnam-gu/);
@@ -305,6 +305,7 @@ test('an unknown ready-fixture pair keeps Explore usable at 390px', async ({ pag
   await page.setViewportSize({ width: 390, height: 844 });
   const response = await page.goto('/kr/seoul/explore/?district=gangnam-gu&station=missing&stationDistance=250');
   expect(response?.status()).toBe(200);
+  await page.locator('details > summary').filter({ hasText: /^Filters$/ }).click();
   await expect(page.locator('[data-proximity-selectors="enabled"]')).toBeVisible();
   await expect(page.locator('[data-building-browser="gangnam-gu"]')).toBeVisible();
   await expectNoHorizontalOverflow(page);
@@ -318,6 +319,7 @@ test('an unknown ready-fixture pair keeps Explore usable at 390px', async ({ pag
 test('ready injected proximity fixture keeps controls touch-sized and round-trips pairs', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/kr/seoul/explore/?district=jongno-gu');
+  await page.locator('details > summary').filter({ hasText: /^Filters$/ }).click();
   const selectors = page.locator('[data-proximity-selectors="enabled"] select');
   await expect(selectors).toHaveCount(4);
   for (const index of [0, 1, 2, 3]) await expectTouchTarget(selectors.nth(index));
