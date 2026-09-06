@@ -18,8 +18,8 @@ export const PUBLIC_EDITORIAL_SURFACES: PublicEditorialRouteTable = Object.freez
   'zh-CN': Object.freeze({
     home: '/zh-cn/kr/seoul/',
     content: '/zh-cn/news/',
-    check: '/zh-cn/kr/seoul/check/',
-    explore: '/zh-cn/kr/seoul/explore/',
+    check: '/kr/seoul/check/',
+    explore: '/kr/seoul/explore/',
   }),
 });
 

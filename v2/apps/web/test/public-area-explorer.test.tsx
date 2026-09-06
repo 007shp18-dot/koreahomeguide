@@ -395,7 +395,7 @@ describe('public Seoul area Explorer', () => {
     expect(markup).not.toMatch(/data-district-path|data-district-row|₩/);
   });
 
-  it('wires the page to server-owned search state and indexable canonical metadata', async () => {
+  it('wires the page to server-owned search state and filtered noindex metadata', async () => {
     vi.stubEnv('SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT', JSON.stringify(createPublicAreaV2Fixture()));
     vi.stubEnv(
       'SIGNEDPRICE_PUBLIC_BUILDING_SUMMARY_ARTIFACT',
@@ -412,11 +412,14 @@ describe('public Seoul area Explorer', () => {
       }),
     });
     const markup = renderToStaticMarkup(page);
+    const metadata = await route.generateMetadata({
+      searchParams: Promise.resolve({ contract: 'new', q: 'Evidence Tower' }),
+    });
 
-    expect(route.metadata).toMatchObject({
+    expect(metadata).toMatchObject({
       title: 'Seoul sale, jeonse and monthly-rent evidence | signedprice',
       description: 'Compare verified all-area sale, jeonse and monthly-rent evidence across Seoul districts.',
-      robots: { index: true, follow: true },
+      robots: { index: false, follow: true },
       alternates: {
         canonical: 'https://www.signedprice.com/kr/seoul/explore/',
         languages: {

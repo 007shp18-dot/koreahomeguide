@@ -17,7 +17,7 @@ import KoreanContractCheckPage, {
 } from '../app/(ko)/ko/kr/seoul/check/page';
 import { generateMetadata as offerComparisonMetadata } from '../app/(en)/kr/seoul/check/compare/page';
 import { generateMetadata as koreanOfferComparisonMetadata } from '../app/(ko)/ko/kr/seoul/check/compare/page';
-import ExplorerPage, { metadata as exploreMetadata } from '../app/(en)/kr/seoul/explore/page';
+import ExplorerPage, { generateMetadata as exploreMetadata } from '../app/(en)/kr/seoul/explore/page';
 import RankingsPage, { metadata as rankingsMetadata } from '../app/(en)/kr/seoul/rankings/page';
 import {
   buildBreadcrumbJsonLd,
@@ -37,11 +37,12 @@ describe('SignedPrice cohort zero SEO', () => {
     const market = await marketMetadata({
       params: Promise.resolve({ country: 'kr', city: 'seoul' }),
     });
+    const explore = await exploreMetadata({ searchParams: Promise.resolve({}) });
     const entries = [
       homeMetadata,
       market,
       checkMetadata(),
-      exploreMetadata,
+      explore,
       rankingsMetadata,
     ];
 

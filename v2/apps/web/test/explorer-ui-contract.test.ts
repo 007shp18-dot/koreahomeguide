@@ -19,12 +19,15 @@ type ExplorerPageModule = {
   default: (props: {
     searchParams: Promise<Record<string, string | string[] | undefined>>;
   }) => Promise<unknown> | unknown;
-  metadata: {
+  generateMetadata: (props: {
+    searchParams: Promise<Record<string, string | string[] | undefined>>;
+  }) => Promise<{
     robots: {
       index: boolean;
       follow: boolean;
     };
-  };
+    alternates?: unknown;
+  }>;
 };
 
 type BuildingDialogModule = {
@@ -91,11 +94,12 @@ describe('/kr/seoul/explore/ route contract', () => {
       JSON.stringify(createPublicAreaFixture()),
     );
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', PUBLIC_AREA_FIXTURE_PERIOD);
-    const { default: ExplorerPage, metadata } = await loadExplorerPage();
+    const { default: ExplorerPage, generateMetadata } = await loadExplorerPage();
     const page = await ExplorerPage({
       searchParams: Promise.resolve({ district: 'dongjak-gu' }),
     });
     const markup = renderToStaticMarkup(page as never);
+    const metadata = await generateMetadata({ searchParams: Promise.resolve({}) });
 
     expect(metadata.robots).toEqual({ index: true, follow: true });
     expect(Reflect.get(metadata, 'alternates')).toEqual({
@@ -114,6 +118,23 @@ describe('/kr/seoul/explore/ route contract', () => {
     expect(markup).toContain('data-explorer-layout="split"');
     expect(markup).toContain('>Search</button>');
     expect(markup).not.toMatch(/data-discovery-step|Interact with map/);
+  });
+
+  it('keeps filtered workspace URLs crawlable without allowing them into the index', async () => {
+    const { generateMetadata } = await loadExplorerPage();
+    const metadata = await generateMetadata({
+      searchParams: Promise.resolve({
+        district: 'gangnam-gu',
+        neighborhood: 'gangnam-gu-dong-1g2fbdb',
+        buildingId: 'gangnam-gu-sb5kj3',
+        q: '역삼동',
+      }),
+    });
+
+    expect(metadata.robots).toEqual({ index: false, follow: true });
+    expect(Reflect.get(metadata, 'alternates')).toMatchObject({
+      canonical: 'https://www.signedprice.com/kr/seoul/explore/',
+    });
   });
 
   it('is a separate route without widening the approved market and intent route registries', async () => {
