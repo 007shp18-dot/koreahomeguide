@@ -108,6 +108,9 @@ test('verified synthetic building detail is server rendered only in the local re
   const noFailures = observeFailures(page);
   const response = await page.goto('/kr/seoul/explore/jongno-gu/synthetic-test-building/');
   expect(response?.status()).toBe(200);
+  // The static route streams an interactive replacement for its Suspense
+  // fallback. Finish that initial load before testing the native disclosure.
+  await page.waitForLoadState('networkidle');
   await expect(page.getByRole('heading', { level: 1, name: PUBLIC_BUILDING_TEST_NAME })).toBeVisible();
   await expect(page.getByRole('link', { name: /Back to .* Explore/ })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Check this contract' })).toBeVisible();
