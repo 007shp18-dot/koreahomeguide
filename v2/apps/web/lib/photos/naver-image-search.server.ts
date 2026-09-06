@@ -12,6 +12,7 @@ export type NaverImageCandidate = Readonly<{
 export type NaverImageCandidateResult = Readonly<{
   state: 'ready' | 'not-configured' | 'provider-error';
   candidates: readonly NaverImageCandidate[];
+  reason?: string;
 }>;
 
 function httpsUrl(value: unknown): string | null {
@@ -69,7 +70,9 @@ export async function searchNaverBuildingImages(input: Readonly<{
       cache: 'no-store',
       signal: AbortSignal.timeout(8_000),
     });
-    if (!response.ok) return Object.freeze({ state: 'provider-error', candidates: Object.freeze([]) });
+    if (!response.ok) return Object.freeze({
+      state: 'provider-error', candidates: Object.freeze([]), reason: `http-${response.status}`,
+    });
     const body = await response.json() as Readonly<{ items?: readonly Readonly<{
       title?: unknown;
       link?: unknown;
@@ -92,6 +95,6 @@ export async function searchNaverBuildingImages(input: Readonly<{
     });
     return Object.freeze({ state: 'ready', candidates: Object.freeze(candidates) });
   } catch {
-    return Object.freeze({ state: 'provider-error', candidates: Object.freeze([]) });
+    return Object.freeze({ state: 'provider-error', candidates: Object.freeze([]), reason: 'request-failed' });
   }
 }

@@ -165,6 +165,7 @@ export async function approveBuildingPhoto(input: PhotoApprovalInput): Promise<v
 }
 
 type CandidateBuilding = Readonly<{
+  entityId: string;
   key: string;
   marketKey: 'seoul' | 'singapore' | 'dubai';
   externalId: string;
@@ -216,6 +217,14 @@ export function googlePlaceAddressMatches(
   const locality = parts.find((part) => part.length >= 4 && !/^\d+$/u.test(part) && !ignored.has(part));
   return locality !== undefined && normalizedIdentity(normalizedPlace).includes(normalizedIdentity(locality));
 }
+
+export type PhotoCandidateDiscoveryResult = Readonly<{
+  checked: number;
+  candidates: number;
+  entityIds: readonly string[];
+  state: 'ready' | 'not-configured' | 'provider-error';
+  reason?: string;
+}>;
 
 export type GooglePhotoBuildingIdentity = Readonly<{
   marketKey: 'seoul' | 'singapore';
@@ -389,20 +398,19 @@ export function selectWikimediaPhotoCandidate(
   return candidates.sort((left, right) => right.score - left.score)[0]?.candidate ?? null;
 }
 
-export async function discoverWikimediaCommonsPhotoCandidates(limit = 12, marketKey?: 'seoul' | 'singapore'): Promise<Readonly<{
-  checked: number;
-  candidates: number;
-  state: 'ready' | 'not-configured';
-}>> {
+export async function discoverWikimediaCommonsPhotoCandidates(
+  limit = 12,
+  marketKey?: 'seoul' | 'singapore',
+): Promise<PhotoCandidateDiscoveryResult> {
   const sql = contentDatabase();
-  if (sql === null) return Object.freeze({ checked: 0, candidates: 0, state: 'not-configured' });
+  if (sql === null) return Object.freeze({ checked: 0, candidates: 0, entityIds: Object.freeze([]), state: 'not-configured' });
   const rows = await sql`
-    SELECT building.key, building.market_key, building.external_id, building.official_name,
+    SELECT entity.id AS entity_id, building.key, building.market_key, building.external_id, building.official_name,
       coalesce(building.road_address, building.legal_address) AS address,
       entity.postal_code, building.latitude, building.longitude,
       entity.local_attributes
     FROM buildings building
-    LEFT JOIN property_entities entity ON entity.id = CASE
+    JOIN property_entities entity ON entity.id = CASE
       WHEN building.market_key = 'seoul' THEN 'kr-seoul:estate:' || building.external_id
       WHEN building.market_key = 'singapore' THEN 'sg-' || building.key
     END
@@ -426,10 +434,12 @@ export async function discoverWikimediaCommonsPhotoCandidates(limit = 12, market
     LIMIT ${Math.min(Math.max(limit, 1), 30)}
   `;
   const buildings = rows.flatMap((row): CandidateBuilding[] => (
-    typeof row.key === 'string' && ['seoul', 'singapore', 'dubai'].includes(String(row.market_key))
+    typeof row.entity_id === 'string' && typeof row.key === 'string'
+      && ['seoul', 'singapore', 'dubai'].includes(String(row.market_key))
       && typeof row.external_id === 'string' && typeof row.official_name === 'string'
       && typeof row.address === 'string'
       ? [{
+        entityId: row.entity_id,
         key: row.key,
         marketKey: row.market_key as CandidateBuilding['marketKey'],
         externalId: row.external_id,
@@ -505,24 +515,28 @@ export async function discoverWikimediaCommonsPhotoCandidates(limit = 12, market
       return false;
     }
   });
-  return Object.freeze({ checked: buildings.length, candidates, state: 'ready' });
+  return Object.freeze({
+    checked: buildings.length,
+    candidates,
+    entityIds: Object.freeze(buildings.map((building) => building.entityId)),
+    state: 'ready',
+  });
 }
 
-export async function discoverGooglePlacePhotoCandidates(limit = 12, marketKey?: 'seoul' | 'singapore'): Promise<Readonly<{
-  checked: number;
-  candidates: number;
-  state: 'ready' | 'not-configured';
-}>> {
+export async function discoverGooglePlacePhotoCandidates(
+  limit = 12,
+  marketKey?: 'seoul' | 'singapore',
+): Promise<PhotoCandidateDiscoveryResult> {
   const sql = contentDatabase();
   const apiKey = process.env.GOOGLE_MAPS_API_KEY?.trim();
-  if (sql === null || !apiKey) return Object.freeze({ checked: 0, candidates: 0, state: 'not-configured' });
+  if (sql === null || !apiKey) return Object.freeze({ checked: 0, candidates: 0, entityIds: Object.freeze([]), state: 'not-configured' });
   const rows = await sql`
-    SELECT building.key, building.market_key, building.external_id, building.official_name,
+    SELECT entity.id AS entity_id, building.key, building.market_key, building.external_id, building.official_name,
       coalesce(building.road_address, building.legal_address) AS address,
       entity.postal_code, building.latitude, building.longitude,
       entity.local_attributes
     FROM buildings building
-    LEFT JOIN property_entities entity ON entity.id = CASE
+    JOIN property_entities entity ON entity.id = CASE
       WHEN building.market_key = 'seoul' THEN 'kr-seoul:estate:' || building.external_id
       WHEN building.market_key = 'singapore' THEN 'sg-' || building.key
     END
@@ -546,10 +560,12 @@ export async function discoverGooglePlacePhotoCandidates(limit = 12, marketKey?:
     LIMIT ${Math.min(Math.max(limit, 1), 30)}
   `;
   const buildings = rows.flatMap((row): CandidateBuilding[] => (
-    typeof row.key === 'string' && ['seoul', 'singapore', 'dubai'].includes(String(row.market_key))
+    typeof row.entity_id === 'string' && typeof row.key === 'string'
+      && ['seoul', 'singapore', 'dubai'].includes(String(row.market_key))
       && typeof row.external_id === 'string' && typeof row.official_name === 'string'
       && typeof row.address === 'string'
       ? [{
+        entityId: row.entity_id,
         key: row.key,
         marketKey: row.market_key as CandidateBuilding['marketKey'],
         externalId: row.external_id,
@@ -562,10 +578,15 @@ export async function discoverGooglePlacePhotoCandidates(limit = 12, marketKey?:
       }]
       : []
   ));
-  const candidates = await countCandidatesInBatches(buildings, async (building) => {
+  let terminalProviderError: string | null = null;
+  let checked = 0;
+  const checkedEntityIds: string[] = [];
+  const discover = async (building: CandidateBuilding) => {
     if (building.marketKey === 'dubai') return false;
     const registryKey = candidatePhotoRegistryKey(building);
     if (registryKey === null) return false;
+    checked += 1;
+    checkedEntityIds.push(building.entityId);
     try {
       const response = await fetch('https://places.googleapis.com/v1/places:searchText', {
         method: 'POST',
@@ -578,6 +599,7 @@ export async function discoverGooglePlacePhotoCandidates(limit = 12, marketKey?:
         signal: AbortSignal.timeout(8_000),
       });
       if (!response.ok) {
+        if ([401, 403].includes(response.status)) terminalProviderError = `http-${response.status}`;
         await recordEnrichmentAttempt({ buildingKey: building.key, pipeline: 'photo-google', status: 'provider-error', reason: `http-${response.status}`, retryAfter: 'day' });
         return false;
       }
@@ -662,8 +684,30 @@ export async function discoverGooglePlacePhotoCandidates(limit = 12, marketKey?:
       }
       return false;
     }
+  };
+  let candidates = 0;
+  const first = buildings[0];
+  if (first !== undefined) candidates += await discover(first) ? 1 : 0;
+  if (terminalProviderError !== null) {
+    return Object.freeze({
+      checked,
+      candidates,
+      entityIds: Object.freeze(checkedEntityIds),
+      state: 'provider-error',
+      reason: terminalProviderError,
+    });
+  }
+  candidates += await countCandidatesInBatches(buildings.slice(1), async (building) => {
+    if (terminalProviderError !== null) return false;
+    return discover(building);
   });
-  return Object.freeze({ checked: buildings.length, candidates, state: 'ready' });
+  return Object.freeze({
+    checked,
+    candidates,
+    entityIds: Object.freeze(checkedEntityIds),
+    state: terminalProviderError === null ? 'ready' : 'provider-error',
+    ...(terminalProviderError === null ? {} : { reason: terminalProviderError }),
+  });
 }
 
 export async function listBuildingPhotoCandidates(limit = 100): Promise<readonly Readonly<Record<string, unknown>>[]> {

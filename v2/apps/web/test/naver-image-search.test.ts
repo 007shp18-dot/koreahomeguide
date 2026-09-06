@@ -62,7 +62,7 @@ describe('NAVER building image search', () => {
 
     await expect(searchNaverBuildingImages({
       buildingName: 'RiverGate', address: '99 Robertson Quay, Singapore', display: 0,
-    })).resolves.toEqual({ state: 'provider-error', candidates: [] });
+    })).resolves.toEqual({ state: 'provider-error', candidates: [], reason: 'http-429' });
     const [, init] = providerFetch.mock.calls[0] as [string, RequestInit];
     expect(new Headers(init.headers).get('X-Naver-Client-Id')).toBe('existing-client');
   });
