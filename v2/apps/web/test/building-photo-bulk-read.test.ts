@@ -13,6 +13,7 @@ describe('stored public photo approval bulk reader', () => {
         return [{
           registry_key: 'kr-seoul:building-a',
           provider: 'google-place',
+          subject_kind: 'building-exterior',
           provider_place_id: 'place-a',
           asset_url: null,
           attribution_name: null,
@@ -35,8 +36,33 @@ describe('stored public photo approval bulk reader', () => {
     expect(approvals.get('kr-seoul:building-a')).toMatchObject({
       provider: 'google-place',
       placeId: 'place-a',
+      subjectKind: 'building-exterior',
       buildingName: 'Building A',
     });
     expect(approvals.has('kr-seoul:building-b')).toBe(false);
+  });
+
+  it('publishes an approved estate context photo with its subject kind', async () => {
+    const reader = createStoredPublicPhotoApprovalReader({
+      async query() {
+        return [{
+          registry_key: 'sg-project:ocr:Toh Estate',
+          provider: 'licensed-url',
+          provider_place_id: null,
+          asset_url: 'https://upload.wikimedia.org/toh-estate.jpg',
+          attribution_name: 'Photographer',
+          attribution_url: 'https://commons.wikimedia.org/toh-estate',
+          subject_kind: 'site-aerial',
+          official_name: 'Toh Estate',
+          address: 'Singapore',
+          approved_at: '2026-09-06T00:00:00.000Z',
+        }];
+      },
+    });
+
+    await expect(reader.list(['sg-project:ocr:Toh Estate'])).resolves.toEqual(new Map([[
+      'sg-project:ocr:Toh Estate',
+      expect.objectContaining({ subjectKind: 'site-aerial' }),
+    ]]));
   });
 });

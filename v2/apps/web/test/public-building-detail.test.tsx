@@ -84,6 +84,7 @@ describe('public building detail', () => {
         entityProjection: null,
         photoApproval: {
           provider: 'google-place',
+          subjectKind: 'building-exterior',
           placeId: 'approved-place-id',
           assetUrl: null,
           attributionName: null,

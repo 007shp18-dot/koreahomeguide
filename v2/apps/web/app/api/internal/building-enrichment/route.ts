@@ -14,6 +14,16 @@ function finiteEnvironmentNumber(name: string, fallback: number): number {
   return Number.isFinite(value) && value >= 0 ? value : fallback;
 }
 
+function googleDailyRequestCap(): number {
+  return Math.max(1, Math.floor(finiteEnvironmentNumber('PHOTO_GOOGLE_DAILY_REQUEST_CAP', 5)));
+}
+
+export function allocateProviderLimit(total: number, index: number, count: number): number {
+  if (!Number.isSafeInteger(total) || total < 0 || !Number.isSafeInteger(index)
+    || !Number.isSafeInteger(count) || count < 1 || index < 0 || index >= count) return 0;
+  return Math.floor(total / count) + (index < total % count ? 1 : 0);
+}
+
 function providerOptions(
   market: 'kr-seoul' | 'sg-singapore',
   provider: 'wikimedia' | 'google' | 'naver-search',
@@ -24,7 +34,7 @@ function providerOptions(
     provider,
     limit,
     dailyRequestCap: provider === 'google'
-      ? Math.max(1, Math.floor(finiteEnvironmentNumber('PHOTO_GOOGLE_DAILY_REQUEST_CAP', 5)))
+      ? googleDailyRequestCap()
       : provider === 'naver-search'
         ? Math.max(1, Math.floor(finiteEnvironmentNumber('PHOTO_NAVER_DAILY_REQUEST_CAP', 25_000)))
         : 100_000,
@@ -59,6 +69,9 @@ export async function GET(request: Request) {
     ? ['seoul', 'singapore']
     : [market as 'seoul' | 'singapore'];
   const scopedLimit = market === null && selectedSource === 'all' ? Math.min(limit, 6) : limit;
+  const sharedGoogleLimit = market === null
+    ? Math.min(scopedLimit, googleDailyRequestCap())
+    : scopedLimit;
   const runPhotoProvidersForMarket = async (marketKey: 'seoul' | 'singapore') => {
     const photoMarket = marketKey === 'seoul' ? 'kr-seoul' : 'sg-singapore';
     const providers = [
@@ -74,7 +87,11 @@ export async function GET(request: Request) {
     ];
     const results = [];
     for (const { provider, source: providerSource } of providers) {
-      const result = await runPhotoBackfillSlice(providerOptions(photoMarket, provider, scopedLimit));
+      const providerLimit = provider === 'google' && market === null && selectedSource === 'google'
+        ? allocateProviderLimit(sharedGoogleLimit, markets.indexOf(marketKey), markets.length)
+        : scopedLimit;
+      if (providerLimit === 0) continue;
+      const result = await runPhotoBackfillSlice(providerOptions(photoMarket, provider, providerLimit));
       results.push({ market: marketKey, source: providerSource, result });
     }
     return results;

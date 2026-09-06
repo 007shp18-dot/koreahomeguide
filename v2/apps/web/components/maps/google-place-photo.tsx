@@ -56,10 +56,22 @@ type DisplayPhoto = Readonly<{
   attributions: readonly GoogleAuthorAttribution[];
 }>;
 
+type PhotoSubjectKind = 'building-exterior' | 'building-front' | 'site-aerial' | 'map-only';
+type ApprovedPhotoProvider = 'google-place' | 'licensed-url' | 'owned-object';
+type PhotoLabel = 'Verified place photos' | 'Verified building photograph' | 'Verified project or estate photograph';
+
 type PhotoState = Readonly<{
   items: readonly DisplayPhoto[];
-  label: 'Verified place photos' | 'Verified building photograph';
+  label: PhotoLabel;
 }> | 'loading' | 'unavailable';
+
+export function photoApprovalLabel(
+  subjectKind: PhotoSubjectKind,
+  provider: ApprovedPhotoProvider,
+): PhotoLabel {
+  if (subjectKind === 'site-aerial') return 'Verified project or estate photograph';
+  return provider === 'google-place' ? 'Verified place photos' : 'Verified building photograph';
+}
 
 function normalizedPlaceText(value: string): string {
   return value.normalize('NFKC').toLocaleLowerCase('en-US').replace(/[^\p{L}\p{N}]+/gu, '');
@@ -162,6 +174,7 @@ function GooglePlacePhotoForIdentity({
         const approval = await response.json() as Readonly<{
           state?: unknown;
           provider?: unknown;
+          subjectKind?: unknown;
           placeId?: unknown;
           assetUrl?: unknown;
           attributionName?: unknown;
@@ -181,7 +194,10 @@ function GooglePlacePhotoForIdentity({
           && typeof approval.assetUrl === 'string') {
           if (!active) return;
           setPhoto(Object.freeze({
-            label: 'Verified building photograph',
+            label: photoApprovalLabel(
+              approval.subjectKind === 'site-aerial' ? 'site-aerial' : 'building-exterior',
+              approval.provider,
+            ),
             items: Object.freeze([Object.freeze({
               src: approval.assetUrl,
               attributions: typeof approval.attributionName === 'string'
@@ -217,7 +233,7 @@ function GooglePlacePhotoForIdentity({
         return;
       }
       setPhoto(Object.freeze({
-        label: 'Verified place photos',
+        label: photoApprovalLabel('building-exterior', 'google-place'),
         items: Object.freeze(results.map((result) => Object.freeze({
           src: result.getURI({ maxHeight: 900, maxWidth: 1400 }),
           attributions: Object.freeze([...result.authorAttributions]),

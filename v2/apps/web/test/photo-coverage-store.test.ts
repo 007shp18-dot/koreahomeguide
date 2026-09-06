@@ -25,6 +25,8 @@ describe('photo coverage store', () => {
     expect(calls[0]?.statement).toContain("'photo-naver-search'");
     expect(calls[0]?.statement).toContain("'unavailable'");
     expect(calls[0]?.statement).toContain('IS DISTINCT FROM');
+    expect(calls[0]?.statement).toContain("photo.subject_kind = 'site-aerial'");
+    expect(calls[0]?.statement).toContain("'photo-identity-v2'");
     expect(calls[0]?.parameters).toEqual(['kr-seoul', 2]);
   });
 

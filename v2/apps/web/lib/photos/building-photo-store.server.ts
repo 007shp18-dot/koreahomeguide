@@ -2,10 +2,13 @@ import 'server-only';
 
 import { contentDatabase } from '../db/postgres.server';
 import { getPublicPhotoApproval } from './verified-building-photo-registry.server';
-import { scorePhotoIdentity } from './photo-identity-policy';
+import { scorePhotoIdentity, type PhotoIdentityDecision } from './photo-identity-policy';
+
+export type PhotoSubjectKind = 'building-exterior' | 'building-front' | 'site-aerial' | 'map-only';
 
 export type StoredPublicPhotoApproval = Readonly<{
   provider: 'google-place' | 'licensed-url' | 'owned-object';
+  subjectKind: PhotoSubjectKind;
   placeId: string | null;
   assetUrl: string | null;
   attributionName: string | null;
@@ -29,6 +32,7 @@ const PUBLIC_PHOTO_APPROVALS_SQL = `
   SELECT DISTINCT ON (photo.registry_key)
     photo.registry_key,
     photo.provider,
+    photo.subject_kind,
     photo.provider_place_id,
     photo.asset_url,
     photo.attribution_name,
@@ -57,12 +61,14 @@ function storedPublicPhotoApprovalFromRow(
   row: StoredPublicPhotoApprovalRow,
 ): StoredPublicPhotoApproval | null {
   const provider = row.provider;
+  const subjectKind = row.subject_kind;
   const buildingName = row.official_name;
   const address = row.address;
   const approvedAt = row.approved_at instanceof Date
     ? row.approved_at.toISOString()
     : typeof row.approved_at === 'string' ? row.approved_at : null;
   if (!['google-place', 'licensed-url', 'owned-object'].includes(String(provider))
+    || !['building-exterior', 'building-front', 'site-aerial', 'map-only'].includes(String(subjectKind))
     || typeof buildingName !== 'string' || typeof address !== 'string' || approvedAt === null) {
     return null;
   }
@@ -72,6 +78,7 @@ function storedPublicPhotoApprovalFromRow(
     || (provider !== 'google-place' && assetUrl === null)) return null;
   return Object.freeze({
     provider: provider as StoredPublicPhotoApproval['provider'],
+    subjectKind: subjectKind as PhotoSubjectKind,
     placeId,
     assetUrl,
     attributionName: typeof row.attribution_name === 'string' ? row.attribution_name : null,
@@ -86,6 +93,7 @@ function fallbackPublicPhotoApproval(key: string): StoredPublicPhotoApproval | n
   const fallback = getPublicPhotoApproval(key);
   return fallback === null ? null : Object.freeze({
     provider: 'provider' in fallback ? fallback.provider : 'google-place',
+    subjectKind: 'building-exterior',
     placeId: fallback.placeId,
     assetUrl: 'assetUrl' in fallback ? fallback.assetUrl : null,
     attributionName: 'attributionName' in fallback ? fallback.attributionName : null,
@@ -164,6 +172,7 @@ export type PhotoApprovalInput = Readonly<{
   buildingName: string;
   address: string;
   provider: StoredPublicPhotoApproval['provider'];
+  subjectKind?: PhotoSubjectKind;
   placeId: string | null;
   assetUrl: string | null;
   attributionName: string | null;
@@ -211,7 +220,7 @@ export async function approveBuildingPhoto(input: PhotoApprovalInput): Promise<v
     SELECT
       building_upsert.key, ${input.registryKey}, ${input.provider}, ${input.placeId}, ${input.assetUrl},
       ${input.attributionName}, ${input.attributionUrl}, 'approved', now(), 'content-admin-api',
-      'building-exterior', ${input.provider === 'owned-object' ? 'owned' : input.provider === 'licensed-url' ? 'licensed' : 'provider-display-only'},
+      ${input.subjectKind ?? 'building-exterior'}, ${input.provider === 'owned-object' ? 'owned' : input.provider === 'licensed-url' ? 'licensed' : 'provider-display-only'},
       ${input.attributionUrl}, now()
     FROM building_upsert
     ON CONFLICT (registry_key) DO UPDATE SET
@@ -224,7 +233,7 @@ export async function approveBuildingPhoto(input: PhotoApprovalInput): Promise<v
       status = 'approved',
       approved_at = now(),
       approved_by = 'content-admin-api',
-      subject_kind = 'building-exterior',
+      subject_kind = excluded.subject_kind,
       rights_status = excluded.rights_status,
       source_page_url = excluded.source_page_url,
       visual_reviewed_at = now(),
@@ -376,6 +385,7 @@ type CommonsImageInfo = Readonly<{
 type CommonsSearchPage = Readonly<{
   title?: unknown;
   imageinfo?: readonly CommonsImageInfo[];
+  coordinates?: readonly Readonly<{ lat?: unknown; lon?: unknown }>[];
 }>;
 
 export type WikimediaPhotoCandidate = Readonly<{
@@ -384,12 +394,15 @@ export type WikimediaPhotoCandidate = Readonly<{
   attributionName: string;
   licenseName: string;
   licenseUrl: string;
-}>;
+}> & PhotoIdentityDecision;
 
 export type WikimediaBuildingIdentity = Readonly<{
   name: string;
   marketKey: 'seoul' | 'singapore';
   address: string;
+  postalCode?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
 }>;
 
 function plainMetadata(value: unknown): string {
@@ -413,16 +426,14 @@ async function countCandidatesInBatches<T>(
   return candidates;
 }
 
-/**
- * Commons search results remain review candidates. Exact identity and license
- * metadata are required before a URL is allowed into the photo review queue.
- */
+/** Licensed Commons results need country evidence; only exact independent
+ * identity evidence can publish one without entering the review queue. */
 export function selectWikimediaPhotoCandidate(
   identity: WikimediaBuildingIdentity,
   pages: readonly CommonsSearchPage[],
 ): WikimediaPhotoCandidate | null {
   const building = normalizedIdentity(identity.name);
-  if (building.length < 5) return null;
+  if (building.length < 5 || !/\p{L}/u.test(identity.name)) return null;
   const candidates: { candidate: WikimediaPhotoCandidate; score: number }[] = [];
   for (const page of pages) {
     const title = typeof page.title === 'string' ? page.title.replace(/^File:/i, '') : '';
@@ -445,24 +456,43 @@ export function selectWikimediaPhotoCandidate(
       plainMetadata(metadata?.ObjectName?.value),
       plainMetadata(metadata?.Categories?.value),
     ].filter(Boolean).join(' ');
-    if (scorePhotoIdentity({
+    const commonsLocation = page.coordinates?.[0];
+    const latitude = finiteNumber(commonsLocation?.lat);
+    const longitude = finiteNumber(commonsLocation?.lon);
+    const providerLocation = latitude !== null && longitude !== null
+      ? { latitude, longitude }
+      : null;
+    const entityLocation = identity.latitude != null && identity.longitude != null
+      ? { latitude: identity.latitude, longitude: identity.longitude }
+      : null;
+    const objectName = plainMetadata(metadata?.ObjectName?.value);
+    const identityDecision = scorePhotoIdentity({
       market: identity.marketKey,
       canonicalName: identity.name,
       aliases: [],
       address: identity.address,
-      postalCode: null,
-      entityLocation: null,
-      providerName: title,
+      postalCode: identity.postalCode ?? null,
+      entityLocation,
+      providerName: objectName || title,
       providerAddress: providerContext,
-      providerLocation: null,
+      providerLocation,
       hasPhoto: true,
-    }).disposition === 'reject') continue;
+    });
+    if (identityDecision.disposition === 'reject'
+      || (identityDecision.disposition === 'review' && !identityDecision.evidence.includes('country'))) continue;
     const width = typeof info.width === 'number' && Number.isFinite(info.width) ? info.width : 0;
     const height = typeof info.height === 'number' && Number.isFinite(info.height) ? info.height : 0;
     const pixels = width * height;
     if (pixels > 0 && pixels < 1_000_000) continue;
     candidates.push(Object.freeze({
-      candidate: Object.freeze({ assetUrl, sourcePageUrl, attributionName, licenseName, licenseUrl }),
+      candidate: Object.freeze({
+        assetUrl,
+        sourcePageUrl,
+        attributionName,
+        licenseName,
+        licenseUrl,
+        ...identityDecision,
+      }),
       score: pixels === 0 ? 1 : pixels * (width >= height ? 1.15 : 1),
     }));
   }
@@ -485,6 +515,12 @@ export async function discoverWikimediaCommonsPhotoCandidates(
       WHEN building.market_key = 'seoul' THEN 'kr-seoul:estate:' || building.external_id
       WHEN building.market_key = 'singapore' THEN 'sg-' || building.key
     END
+    LEFT JOIN (
+      SELECT subject_entity_id, count(*)::bigint AS observation_count
+      FROM observations
+      WHERE status = 'active'
+      GROUP BY subject_entity_id
+    ) popularity ON popularity.subject_entity_id = entity.id
     WHERE building.identity_status = 'verified'
       AND (${marketKey ?? null}::text IS NULL OR building.market_key = ${marketKey ?? null})
       AND coalesce(building.road_address, building.legal_address) IS NOT NULL
@@ -500,7 +536,9 @@ export async function discoverWikimediaCommonsPhotoCandidates(
           AND attempt.next_retry_at > now()
       )
     ORDER BY
+      coalesce(popularity.observation_count, 0) DESC,
       CASE WHEN building.market_key = 'singapore' AND building.key LIKE 'singapore:project:%' THEN 0 ELSE 1 END,
+      CASE WHEN building.latitude IS NOT NULL AND building.longitude IS NOT NULL THEN 0 ELSE 1 END,
       building.key
     LIMIT ${Math.min(Math.max(limit, 1), 60)}
   `;
@@ -536,7 +574,7 @@ export async function discoverWikimediaCommonsPhotoCandidates(
       endpoint.search = new URLSearchParams({
         action: 'query', format: 'json', formatversion: '2', generator: 'search',
         gsrsearch: `"${building.name}" filetype:bitmap`, gsrnamespace: '6', gsrlimit: '3',
-        prop: 'imageinfo', iiprop: 'url|mime|size|extmetadata', iiurlwidth: '1600',
+        prop: 'imageinfo|coordinates', iiprop: 'url|mime|size|extmetadata', iiurlwidth: '1600',
       }).toString();
       const response = await fetch(endpoint, {
         headers: { 'User-Agent': 'SignedPrice building-photo-candidate/1.0 (contact@signedprice.com)' },
@@ -553,32 +591,58 @@ export async function discoverWikimediaCommonsPhotoCandidates(
         name: building.name,
         marketKey: building.marketKey,
         address: building.address,
+        postalCode: building.postalCode,
+        latitude: building.latitude,
+        longitude: building.longitude,
       }, body.query?.pages ?? []);
       if (candidate === null) {
         await recordEnrichmentAttempt({ buildingKey: building.key, pipeline: 'photo-wikimedia', status: 'no-candidate', reason: 'exact-licensed-image-not-found', retryAfter: 'month' });
         return false;
       }
-      await sql`
+      const status = candidate.disposition === 'auto-approve' ? 'approved' : 'review_required';
+      const approvedBy = status === 'approved' ? 'provider-identity-policy-v2' : null;
+      const written = await sql`
         INSERT INTO building_photos (
           building_key, registry_key, provider, asset_url, attribution_name, attribution_url,
-          status, subject_kind, rights_status, source_page_url, checked_at
+          status, approved_at, approved_by, subject_kind, rights_status, source_page_url,
+          visual_reviewed_at, match_policy_version, match_confidence, match_evidence, checked_at
         ) VALUES (
           ${building.key}, ${registryKey}, 'licensed-url', ${candidate.assetUrl},
           ${`${candidate.attributionName} · ${candidate.licenseName}`}, ${candidate.licenseUrl},
-          'review_required', 'building-exterior', 'licensed', ${candidate.sourcePageUrl}, now()
+          ${status}, ${status === 'approved' ? new Date() : null}, ${approvedBy},
+          'building-exterior', 'licensed', ${candidate.sourcePageUrl},
+          ${status === 'approved' ? new Date() : null}, ${candidate.policyVersion},
+          ${candidate.confidence}, ${JSON.stringify(candidate.evidence)}::jsonb, now()
         )
         ON CONFLICT (registry_key) DO UPDATE SET
-          provider = CASE WHEN building_photos.status = 'approved' THEN building_photos.provider ELSE excluded.provider END,
-          provider_place_id = CASE WHEN building_photos.status = 'approved' THEN building_photos.provider_place_id ELSE NULL END,
-          asset_url = CASE WHEN building_photos.status = 'approved' THEN building_photos.asset_url ELSE excluded.asset_url END,
-          attribution_name = CASE WHEN building_photos.status = 'approved' THEN building_photos.attribution_name ELSE excluded.attribution_name END,
-          attribution_url = CASE WHEN building_photos.status = 'approved' THEN building_photos.attribution_url ELSE excluded.attribution_url END,
-          status = CASE WHEN building_photos.status = 'approved' THEN 'approved' ELSE 'review_required' END,
-          subject_kind = 'building-exterior',
-          rights_status = CASE WHEN building_photos.status = 'approved' THEN building_photos.rights_status ELSE 'licensed' END,
-          source_page_url = CASE WHEN building_photos.status = 'approved' THEN building_photos.source_page_url ELSE excluded.source_page_url END,
+          building_key = excluded.building_key,
+          provider = excluded.provider,
+          provider_place_id = NULL,
+          asset_url = excluded.asset_url,
+          attribution_name = excluded.attribution_name,
+          attribution_url = excluded.attribution_url,
+          status = excluded.status,
+          approved_at = excluded.approved_at,
+          approved_by = excluded.approved_by,
+          subject_kind = excluded.subject_kind,
+          rights_status = excluded.rights_status,
+          source_page_url = excluded.source_page_url,
+          visual_reviewed_at = excluded.visual_reviewed_at,
+          match_policy_version = excluded.match_policy_version,
+          match_confidence = excluded.match_confidence,
+          match_evidence = excluded.match_evidence,
           checked_at = now(), updated_at = now()
+        WHERE building_photos.status <> 'approved'
+          AND NOT (
+            building_photos.status = 'rejected'
+            AND building_photos.source_page_url IS NOT DISTINCT FROM excluded.source_page_url
+          )
+        RETURNING id
       `;
+      if (written.length === 0) {
+        await recordEnrichmentAttempt({ buildingKey: building.key, pipeline: 'photo-wikimedia', status: 'no-candidate', reason: 'previously-rejected-candidate', retryAfter: 'month' });
+        return false;
+      }
       await recordEnrichmentAttempt({ buildingKey: building.key, pipeline: 'photo-wikimedia', status: 'succeeded', reason: null, retryAfter: 'year' });
       return true;
     } catch {
@@ -615,6 +679,12 @@ export async function discoverGooglePlacePhotoCandidates(
       WHEN building.market_key = 'seoul' THEN 'kr-seoul:estate:' || building.external_id
       WHEN building.market_key = 'singapore' THEN 'sg-' || building.key
     END
+    LEFT JOIN (
+      SELECT subject_entity_id, count(*)::bigint AS observation_count
+      FROM observations
+      WHERE status = 'active'
+      GROUP BY subject_entity_id
+    ) popularity ON popularity.subject_entity_id = entity.id
     WHERE building.identity_status = 'verified'
       AND (${marketKey ?? null}::text IS NULL OR building.market_key = ${marketKey ?? null})
       AND coalesce(building.road_address, building.legal_address) IS NOT NULL
@@ -630,7 +700,9 @@ export async function discoverGooglePlacePhotoCandidates(
           AND attempt.next_retry_at > now()
       )
     ORDER BY
+      coalesce(popularity.observation_count, 0) DESC,
       CASE WHEN building.market_key = 'singapore' AND building.key LIKE 'singapore:project:%' THEN 0 ELSE 1 END,
+      CASE WHEN building.latitude IS NOT NULL AND building.longitude IS NOT NULL THEN 0 ELSE 1 END,
       building.key
     LIMIT ${Math.min(Math.max(limit, 1), 30)}
   `;
@@ -713,9 +785,9 @@ export async function discoverGooglePlacePhotoCandidates(
         return false;
       }
       const status = identity.disposition === 'auto-approve' ? 'approved' : 'review_required';
-      const approvedBy = status === 'approved' ? 'provider-identity-policy-v1' : null;
+      const approvedBy = status === 'approved' ? 'provider-identity-policy-v2' : null;
       const providerSourceUri = safeHttpUrl(place?.googleMapsUri);
-      await sql`
+      const written = await sql`
         INSERT INTO building_photos (
           building_key, registry_key, provider, provider_place_id, status,
           approved_at, approved_by, attribution_name, attribution_url,
@@ -731,24 +803,36 @@ export async function discoverGooglePlacePhotoCandidates(
           ${providerSourceUri}, now(), now()
         )
         ON CONFLICT (registry_key) DO UPDATE SET
-          provider = CASE WHEN building_photos.status = 'approved' THEN building_photos.provider ELSE excluded.provider END,
-          provider_place_id = CASE WHEN building_photos.status = 'approved' THEN building_photos.provider_place_id ELSE excluded.provider_place_id END,
-          attribution_name = CASE WHEN building_photos.status = 'approved' THEN building_photos.attribution_name ELSE excluded.attribution_name END,
-          attribution_url = CASE WHEN building_photos.status = 'approved' THEN building_photos.attribution_url ELSE excluded.attribution_url END,
-          status = CASE WHEN building_photos.status = 'approved' THEN 'approved' ELSE excluded.status END,
-          approved_at = CASE WHEN building_photos.status = 'approved' THEN building_photos.approved_at ELSE excluded.approved_at END,
-          approved_by = CASE WHEN building_photos.status = 'approved' THEN building_photos.approved_by ELSE excluded.approved_by END,
-          subject_kind = 'building-exterior',
-          rights_status = CASE WHEN building_photos.status = 'approved' THEN building_photos.rights_status ELSE 'provider-display-only' END,
-          source_page_url = CASE WHEN building_photos.status = 'approved' THEN building_photos.source_page_url ELSE excluded.source_page_url END,
-          visual_reviewed_at = CASE WHEN building_photos.status = 'approved' THEN building_photos.visual_reviewed_at ELSE excluded.visual_reviewed_at END,
-          match_policy_version = CASE WHEN building_photos.status = 'approved' THEN building_photos.match_policy_version ELSE excluded.match_policy_version END,
-          match_confidence = CASE WHEN building_photos.status = 'approved' THEN building_photos.match_confidence ELSE excluded.match_confidence END,
-          match_evidence = CASE WHEN building_photos.status = 'approved' THEN building_photos.match_evidence ELSE excluded.match_evidence END,
-          provider_source_uri = CASE WHEN building_photos.status = 'approved' THEN building_photos.provider_source_uri ELSE excluded.provider_source_uri END,
-          provider_checked_at = CASE WHEN building_photos.status = 'approved' THEN building_photos.provider_checked_at ELSE excluded.provider_checked_at END,
+          building_key = excluded.building_key,
+          provider = excluded.provider,
+          provider_place_id = excluded.provider_place_id,
+          asset_url = NULL,
+          attribution_name = excluded.attribution_name,
+          attribution_url = excluded.attribution_url,
+          status = excluded.status,
+          approved_at = excluded.approved_at,
+          approved_by = excluded.approved_by,
+          subject_kind = excluded.subject_kind,
+          rights_status = excluded.rights_status,
+          source_page_url = excluded.source_page_url,
+          visual_reviewed_at = excluded.visual_reviewed_at,
+          match_policy_version = excluded.match_policy_version,
+          match_confidence = excluded.match_confidence,
+          match_evidence = excluded.match_evidence,
+          provider_source_uri = excluded.provider_source_uri,
+          provider_checked_at = excluded.provider_checked_at,
           checked_at = now(), updated_at = now()
+        WHERE building_photos.status <> 'approved'
+          AND NOT (
+            building_photos.status = 'rejected'
+            AND building_photos.provider_place_id IS NOT DISTINCT FROM excluded.provider_place_id
+          )
+        RETURNING id
       `;
+      if (written.length === 0) {
+        await recordEnrichmentAttempt({ buildingKey: building.key, pipeline: 'photo-google', status: 'no-candidate', reason: 'previously-rejected-candidate', retryAfter: 'month' });
+        return false;
+      }
       await recordEnrichmentAttempt({ buildingKey: building.key, pipeline: 'photo-google', status: 'succeeded', reason: null, retryAfter: 'year' });
       return true;
     } catch {

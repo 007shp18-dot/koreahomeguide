@@ -264,6 +264,12 @@ async function runNaverAttemptBatch(
       building.official_name, coalesce(building.road_address, building.legal_address) AS address
     FROM property_entities entity
     JOIN buildings building ON building.key = entity.local_attributes ->> 'legacyBuildingKey'
+    LEFT JOIN (
+      SELECT subject_entity_id, count(*)::bigint AS observation_count
+      FROM observations
+      WHERE status = 'active'
+      GROUP BY subject_entity_id
+    ) popularity ON popularity.subject_entity_id = entity.id
     WHERE entity.market_id = ${market}
       AND entity.identity_status = 'verified'
       AND building.identity_status = 'verified'
@@ -274,7 +280,10 @@ async function runNaverAttemptBatch(
           AND attempt.pipeline = 'photo-naver-search'
           AND attempt.next_retry_at > now()
       )
-    ORDER BY entity.id
+    ORDER BY
+      coalesce(popularity.observation_count, 0) DESC,
+      CASE WHEN building.latitude IS NOT NULL AND building.longitude IS NOT NULL THEN 0 ELSE 1 END,
+      entity.id
     LIMIT ${limit}
   `;
   const buildings = rows.flatMap((row) => (

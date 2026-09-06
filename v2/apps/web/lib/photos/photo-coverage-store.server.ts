@@ -34,6 +34,7 @@ const SYNC_SQL = `
       photo.id AS building_photo_id,
       photo.provider,
       CASE
+        WHEN photo.subject_kind = 'site-aerial' THEN 'parent-photo'
         WHEN photo.provider = 'google-place' THEN 'provider-photo'
         ELSE 'exact-photo'
       END AS state,
@@ -112,7 +113,7 @@ const SYNC_SQL = `
           current.reason, current.policy_version, current.checked_at, current.next_retry_at)
         IS DISTINCT FROM
          (proposed.market_id, proposed.state, proposed.building_photo_id, proposed.provider,
-          proposed.reason, 'photo-identity-v1', proposed.checked_at, proposed.next_retry_at)
+          proposed.reason, 'photo-identity-v2', proposed.checked_at, proposed.next_retry_at)
   ), selected AS (
     SELECT * FROM eligible
     ORDER BY entity_id
@@ -124,7 +125,7 @@ const SYNC_SQL = `
     )
     SELECT
       entity_id, market_id, state, building_photo_id, provider, reason,
-      'photo-identity-v1', checked_at, next_retry_at, 1, now()
+      'photo-identity-v2', checked_at, next_retry_at, 1, now()
     FROM selected
     ON CONFLICT (entity_id) DO UPDATE SET
       market_id = excluded.market_id,

@@ -25,12 +25,109 @@ describe('Wikimedia building photo candidates', () => {
           LicenseUrl: { value: 'https://creativecommons.org/licenses/by-sa/4.0/' },
         },
       }],
-    }])).toEqual({
+    }])).toMatchObject({
       assetUrl: 'https://upload.wikimedia.org/example/1600px.jpg',
       sourcePageUrl: 'https://commons.wikimedia.org/wiki/File:10_Evelyn_Singapore_exterior.jpg',
       attributionName: 'Example photographer',
       licenseName: 'CC BY-SA 4.0',
       licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
+      disposition: 'review',
+      policyVersion: 'photo-identity-v2',
+    });
+  });
+
+  it('rejects numeric-only building identities before searching ambiguous filenames', () => {
+    expect(selectWikimediaPhotoCandidate({
+      name: '(568-12)', marketKey: 'seoul', address: '서울특별시 강남구 역삼동 568-12',
+    }, [{
+      title: 'File:568-12.jpg',
+      imageinfo: [{
+        mime: 'image/jpeg', width: 2000, height: 1400,
+        url: 'https://upload.wikimedia.org/example/568-12.jpg',
+        descriptionurl: 'https://commons.wikimedia.org/wiki/File:568-12.jpg',
+        extmetadata: {
+          Artist: { value: 'Example photographer' },
+          LicenseShortName: { value: 'CC BY-SA 4.0' },
+          LicenseUrl: { value: 'https://creativecommons.org/licenses/by-sa/4.0/' },
+        },
+      }],
+    }])).toBeNull();
+  });
+
+  it('rejects an exact filename without evidence for the requested country', () => {
+    expect(selectWikimediaPhotoCandidate({
+      name: 'Sunshine Plaza', marketKey: 'singapore', address: '91 Bencoolen Street, Singapore',
+    }, [{
+      title: 'File:Sunshine Plaza.jpg',
+      imageinfo: [{
+        mime: 'image/jpeg', width: 2000, height: 1400,
+        url: 'https://upload.wikimedia.org/example/sunshine-plaza.jpg',
+        descriptionurl: 'https://commons.wikimedia.org/wiki/File:Sunshine_Plaza.jpg',
+        extmetadata: {
+          Artist: { value: 'Example photographer' },
+          LicenseShortName: { value: 'CC BY-SA 4.0' },
+          LicenseUrl: { value: 'https://creativecommons.org/licenses/by-sa/4.0/' },
+        },
+      }],
+    }])).toBeNull();
+  });
+
+  it('auto-approves an exact Commons identity with country, address, and nearby coordinates', () => {
+    expect(selectWikimediaPhotoCandidate({
+      name: 'Sky Habitat',
+      marketKey: 'singapore',
+      address: '7 Bishan Street 15, Singapore',
+      postalCode: null,
+      latitude: 1.3512,
+      longitude: 103.8503,
+    }, [{
+      title: 'File:Sky Habitat Singapore.jpg',
+      coordinates: [{ lat: 1.3513, lon: 103.8504 }],
+      imageinfo: [{
+        mime: 'image/jpeg', width: 2600, height: 1600,
+        thumburl: 'https://upload.wikimedia.org/example/sky-habitat.jpg',
+        descriptionurl: 'https://commons.wikimedia.org/wiki/File:Sky_Habitat_Singapore.jpg',
+        extmetadata: {
+          Artist: { value: 'Example photographer' },
+          LicenseShortName: { value: 'CC BY-SA 4.0' },
+          LicenseUrl: { value: 'https://creativecommons.org/licenses/by-sa/4.0/' },
+          ObjectName: { value: 'Sky Habitat' },
+          ImageDescription: { value: 'Sky Habitat, 7 Bishan Street 15, Singapore' },
+        },
+      }],
+    }])).toMatchObject({
+      disposition: 'auto-approve',
+      confidence: 0.98,
+      policyVersion: 'photo-identity-v2',
+      evidence: ['name', 'country', 'distance<=250m'],
+    });
+  });
+
+  it('accepts exact geotagged Commons evidence when the description omits the country', () => {
+    expect(selectWikimediaPhotoCandidate({
+      name: 'Sky Habitat',
+      marketKey: 'singapore',
+      address: '7 Bishan Street 15, Singapore',
+      latitude: 1.3512,
+      longitude: 103.8503,
+    }, [{
+      title: 'File:Sky Habitat towers.jpg',
+      coordinates: [{ lat: 1.3513, lon: 103.8504 }],
+      imageinfo: [{
+        mime: 'image/jpeg', width: 2600, height: 1600,
+        thumburl: 'https://upload.wikimedia.org/example/sky-habitat-towers.jpg',
+        descriptionurl: 'https://commons.wikimedia.org/wiki/File:Sky_Habitat_towers.jpg',
+        extmetadata: {
+          Artist: { value: 'Example photographer' },
+          LicenseShortName: { value: 'CC BY-SA 4.0' },
+          LicenseUrl: { value: 'https://creativecommons.org/licenses/by-sa/4.0/' },
+          ObjectName: { value: 'Sky Habitat' },
+        },
+      }],
+    }])).toMatchObject({
+      disposition: 'auto-approve',
+      confidence: 0.98,
+      evidence: ['name', 'distance<=250m'],
     });
   });
 
@@ -114,7 +211,7 @@ describe('Google building address identity', () => {
     })).toMatchObject({
       disposition: 'auto-approve',
       confidence: 1,
-      policyVersion: 'photo-identity-v1',
+      policyVersion: 'photo-identity-v2',
     });
   });
 

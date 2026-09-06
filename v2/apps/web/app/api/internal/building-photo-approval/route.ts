@@ -48,12 +48,14 @@ function approvalInput(value: unknown): PhotoApprovalInput | null {
   const address = text(item.address, 500);
   const marketKey = item.marketKey;
   const provider = item.provider;
+  const subjectKind = item.subjectKind ?? 'building-exterior';
   const placeId = text(item.placeId, 500);
   const assetUrl = httpUrl(item.assetUrl);
   if (registryKey === null || buildingKey === null || externalId === null
     || buildingName === null || address === null
     || !['seoul', 'singapore', 'dubai'].includes(String(marketKey))
-    || !['google-place', 'licensed-url', 'owned-object'].includes(String(provider))) return null;
+    || !['google-place', 'licensed-url', 'owned-object'].includes(String(provider))
+    || !['building-exterior', 'building-front', 'site-aerial', 'map-only'].includes(String(subjectKind))) return null;
   if ((provider === 'google-place' && placeId === null)
     || (provider !== 'google-place' && assetUrl === null)) return null;
   return Object.freeze({
@@ -64,6 +66,7 @@ function approvalInput(value: unknown): PhotoApprovalInput | null {
     buildingName,
     address,
     provider: provider as PhotoApprovalInput['provider'],
+    subjectKind: subjectKind as NonNullable<PhotoApprovalInput['subjectKind']>,
     placeId: provider === 'google-place' ? placeId : null,
     assetUrl: provider === 'google-place' ? null : assetUrl,
     attributionName: text(item.attributionName, 240),

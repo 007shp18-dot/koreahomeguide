@@ -21,11 +21,11 @@ export type PhotoIdentityInput = Readonly<{
 export type PhotoIdentityDecision = Readonly<{
   disposition: 'auto-approve' | 'review' | 'reject';
   confidence: number;
-  policyVersion: 'photo-identity-v1';
+  policyVersion: 'photo-identity-v2';
   evidence: readonly string[];
 }>;
 
-const POLICY_VERSION = 'photo-identity-v1' as const;
+const POLICY_VERSION = 'photo-identity-v2' as const;
 
 function normalized(value: string): string {
   return value.normalize('NFKC').toLocaleLowerCase('en-US').replace(/[^\p{L}\p{N}]+/gu, '');
@@ -37,7 +37,15 @@ function words(value: string): readonly string[] {
     .filter(Boolean);
 }
 
+function exactNameMatches(input: PhotoIdentityInput): boolean {
+  const provider = normalized(input.providerName);
+  if (provider.length < 2) return false;
+  return [input.canonicalName, ...input.aliases]
+    .some((name) => normalized(name) === provider);
+}
+
 function nameMatches(input: PhotoIdentityInput): boolean {
+  if (exactNameMatches(input)) return true;
   const provider = normalized(input.providerName);
   if (provider.length < 5) return false;
   return [input.canonicalName, ...input.aliases].some((name) => {
@@ -65,7 +73,7 @@ function countryEvidence(market: PhotoMarket, providerAddress: string): Readonly
         && !/\bsingapore\b/u.test(value),
     });
   }
-  const korea = /[가-힣]|\b(?:seoul|korea|south korea)\b/u.test(value);
+  const korea = /(?:대한민국|한국|서울(?:특별시)?)|\b(?:seoul|korea|south korea)\b/u.test(value);
   return Object.freeze({
     matches: korea,
     conflicts: /\b(?:singapore|united kingdom|england|london|japan|china|united states)\b/u.test(value)
@@ -73,9 +81,57 @@ function countryEvidence(market: PhotoMarket, providerAddress: string): Readonly
   });
 }
 
+const SINGAPORE_ADDRESS_WORDS = new Set([
+  'singapore', 'street', 'st', 'road', 'rd', 'avenue', 'ave', 'drive', 'dr',
+  'lane', 'ln', 'walk', 'way', 'close', 'crescent', 'block', 'blk', 'place',
+  'pl', 'terrace', 'ter', 'boulevard', 'blvd',
+]);
+
+function addressNumbers(input: PhotoIdentityInput, value: string): readonly string[] {
+  const postal = input.postalCode === null ? null : normalized(input.postalCode);
+  return words(value)
+    .filter((token) => /^\d+[a-z]?$/u.test(token))
+    .map(normalized)
+    .filter((token) => token !== postal);
+}
+
+function addressNumberConflict(input: PhotoIdentityInput): boolean {
+  const entityNumbers = addressNumbers(input, input.address);
+  const providerNumbers = new Set(addressNumbers(input, input.providerAddress));
+  return entityNumbers.length > 0 && providerNumbers.size > 0
+    && entityNumbers.some((token) => !providerNumbers.has(token));
+}
+
+function exactAddressMatches(input: PhotoIdentityInput): boolean {
+  const provider = normalized(input.providerAddress);
+  const entityNumbers = addressNumbers(input, input.address);
+  if (!entityNumbers.every((token) => provider.includes(token))) return false;
+  if (input.market === 'singapore') {
+    const streetTokens = words(input.address)
+      .filter((token) => !SINGAPORE_ADDRESS_WORDS.has(token) && !/^\d+[a-z]?$/u.test(token))
+      .filter((token) => token.length >= 3);
+    return streetTokens.length > 0
+      && streetTokens.every((token) => provider.includes(normalized(token)));
+  }
+  const ignored = new Set(['대한민국', '한국', '서울', '서울특별시']);
+  const locationTokens = words(input.address)
+    .filter((token) => !ignored.has(token) && /[가-힣]/u.test(token) && token.length >= 2);
+  return locationTokens.length >= 2
+    && locationTokens.every((token) => provider.includes(normalized(token)));
+}
+
 function postalMatches(input: PhotoIdentityInput): boolean {
   if (input.postalCode === null || input.postalCode.trim() === '') return false;
   return normalized(input.providerAddress).includes(normalized(input.postalCode));
+}
+
+function postalConflicts(input: PhotoIdentityInput): boolean {
+  if (input.postalCode === null || input.postalCode.trim() === '') return false;
+  const expected = normalized(input.postalCode);
+  const sameLengthNumbers = words(input.providerAddress)
+    .map(normalized)
+    .filter((token) => /^\d+$/u.test(token) && token.length === expected.length);
+  return sameLengthNumbers.length > 0 && !sameLengthNumbers.includes(expected);
 }
 
 function localityTokens(value: string, market: PhotoMarket): readonly string[] {
@@ -124,15 +180,27 @@ export function scorePhotoIdentity(input: PhotoIdentityInput): PhotoIdentityDeci
   const country = countryEvidence(input.market, input.providerAddress);
   if (country.conflicts) return decision('reject', 0, ['country-conflict']);
   if (!nameMatches(input) || explicitNumberConflict(input)) return decision('reject', 0, ['name-conflict']);
+  if (postalConflicts(input)) return decision('reject', 0, ['postal-code-conflict']);
+  const locality = localityMatches(input);
+  if (locality && addressNumberConflict(input)) return decision('reject', 0, ['address-number-conflict']);
 
   const evidence = ['name'];
   if (country.matches) evidence.push('country');
   const postal = postalMatches(input);
   if (postal) evidence.push('postal-code');
-  const locality = localityMatches(input);
-  if (locality && !postal) evidence.push('locality');
 
   if (country.matches && postal) return decision('auto-approve', 1, evidence);
+  const exactName = exactNameMatches(input);
+  if (exactName && input.entityLocation !== null && input.providerLocation !== null) {
+    if (distanceMetres(input.entityLocation, input.providerLocation) <= 250) {
+      return decision('auto-approve', 0.98, [...evidence, 'distance<=250m']);
+    }
+    return decision('reject', 0, ['distance-conflict']);
+  }
+  if (country.matches && exactName && exactAddressMatches(input)) {
+    return decision('auto-approve', 0.97, [...evidence, 'address']);
+  }
+  if (locality) evidence.push('locality');
   if (country.matches && locality && input.entityLocation !== null && input.providerLocation !== null) {
     if (distanceMetres(input.entityLocation, input.providerLocation) <= 250) {
       return decision('auto-approve', 0.95, [...evidence, 'distance<=250m']);

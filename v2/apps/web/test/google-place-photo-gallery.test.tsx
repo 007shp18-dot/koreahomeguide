@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('next/script', () => ({ default: () => null }));
 
-import { findGooglePlacePhotos } from '../components/maps/google-place-photo';
+import { findGooglePlacePhotos, photoApprovalLabel } from '../components/maps/google-place-photo';
 
 describe('approved Google place photo gallery', () => {
   it('returns no more than five live photos with their author credits', async () => {
@@ -39,5 +39,11 @@ describe('approved Google place photo gallery', () => {
     }
     await expect(findGooglePlacePhotos(Place, null)).resolves.toEqual([]);
     expect(Place.searchByText).not.toHaveBeenCalled();
+  });
+
+  it('labels estate context separately from an exact building photograph', () => {
+    expect(photoApprovalLabel('site-aerial', 'licensed-url')).toBe('Verified project or estate photograph');
+    expect(photoApprovalLabel('building-exterior', 'licensed-url')).toBe('Verified building photograph');
+    expect(photoApprovalLabel('building-exterior', 'google-place')).toBe('Verified place photos');
   });
 });

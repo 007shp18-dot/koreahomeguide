@@ -123,10 +123,16 @@ describe('scoped property enrichment',()=>{
   });
   const response=await GET(new Request('https://example.com/api/internal/building-enrichment?source=google&limit=5',{headers:{authorization:'Bearer test-secret'}}));
   expect(response.status).toBe(200);
-  expect(events).toEqual([
+ expect(events).toEqual([
    'start:kr-seoul','finish:kr-seoul',
    'start:sg-singapore','finish:sg-singapore',
   ]);
+  expect(calls.backfill).toHaveBeenNthCalledWith(1,expect.objectContaining({
+   market:'kr-seoul',provider:'google',limit:3,dailyRequestCap:5,
+  }));
+  expect(calls.backfill).toHaveBeenNthCalledWith(2,expect.objectContaining({
+   market:'sg-singapore',provider:'google',limit:2,dailyRequestCap:5,
+  }));
  });
  it('accepts a larger installed-snapshot batch only for official facts',async()=>{
   vi.stubEnv('CRON_SECRET','test-secret');
