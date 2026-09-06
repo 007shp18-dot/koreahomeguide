@@ -11,6 +11,27 @@ import {
 } from './dubai-evidence-fixture';
 
 describe('Dubai area evidence contract', () => {
+  it('accepts approved noncommercial use without inventing commercial permission', () => {
+    const parsed = parseDubaiAreaEvidence({
+      ...dubaiEvidenceFixture(),
+      rights: { ...approvedDubaiRights, intendedUse: 'noncommercial',
+        canUseNonCommercially: true, canUseCommercially: false },
+    });
+    expect(parsed.rights).toMatchObject({
+      intendedUse: 'noncommercial', canUseCommercially: false,
+    });
+  });
+
+  it.each([
+    { intendedUse: 'commercial', canUseNonCommercially: true, canUseCommercially: false },
+    { intendedUse: 'noncommercial', canUseNonCommercially: false, canUseCommercially: false },
+    { intendedUse: 'unknown', canUseNonCommercially: true, canUseCommercially: true },
+  ])('does not treat a purpose declaration as a permission: %j', (scope) => {
+    expect(() => parseDubaiAreaEvidence({ ...dubaiEvidenceFixture(),
+      rights: { ...approvedDubaiRights, ...scope },
+    })).toThrow('Dubai area evidence unavailable');
+  });
+
   it('accepts a complete aggregate snapshot and freezes every public layer', () => {
     const parsed = parseDubaiAreaEvidence(dubaiEvidenceFixture());
 

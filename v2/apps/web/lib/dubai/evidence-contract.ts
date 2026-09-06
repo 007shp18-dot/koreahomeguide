@@ -14,6 +14,8 @@ export type DubaiEvidenceRights = Readonly<{
   canStore: boolean;
   canCreateDerived: boolean;
   canUseCommercially: boolean;
+  intendedUse?: 'commercial' | 'noncommercial';
+  canUseNonCommercially?: boolean;
   canDisplay: boolean;
   canIndex: boolean;
   policyId: string;
@@ -194,6 +196,10 @@ function source(value: unknown) {
 function rights(value: unknown): DubaiEvidenceRights {
   const candidate = record(value);
   if (candidate.state !== 'pending' && candidate.state !== 'approved') unavailable();
+  const intendedUse = candidate.intendedUse === undefined ? 'commercial' : candidate.intendedUse;
+  if (intendedUse !== 'commercial' && intendedUse !== 'noncommercial') unavailable();
+  if (candidate.canUseNonCommercially !== undefined
+    && typeof candidate.canUseNonCommercially !== 'boolean') unavailable();
   const licenseUrl = candidate.licenseUrl === null ? null : httpsUrl(candidate.licenseUrl);
   const reviewedBy = candidate.reviewedBy === null ? null : text(candidate.reviewedBy);
   if (candidate.state === 'approved' && (licenseUrl === null || reviewedBy === null)) unavailable();
@@ -203,6 +209,8 @@ function rights(value: unknown): DubaiEvidenceRights {
     canStore: candidate.canStore === true,
     canCreateDerived: candidate.canCreateDerived === true,
     canUseCommercially: candidate.canUseCommercially === true,
+    intendedUse,
+    canUseNonCommercially: candidate.canUseNonCommercially === true,
     canDisplay: candidate.canDisplay === true,
     canIndex: candidate.canIndex === true,
     policyId: text(candidate.policyId),
@@ -212,6 +220,12 @@ function rights(value: unknown): DubaiEvidenceRights {
     checkedAt: instant(candidate.checkedAt),
     reviewedBy,
   });
+}
+
+export function isDubaiEvidenceUsePermitted(rights: DubaiEvidenceRights): boolean {
+  return rights.intendedUse === 'noncommercial'
+    ? rights.canUseNonCommercially === true
+    : rights.canUseCommercially;
 }
 
 function unitVerification(value: unknown): DubaiUnitVerification {
@@ -416,7 +430,8 @@ export function parseDubaiAreaEvidence(value: unknown): DubaiAreaEvidenceSnapsho
       || (publicationValue.indexState !== 'noindex' && publicationValue.indexState !== 'index')) unavailable();
     if (parsedRights.state === 'pending'
       && (parsedRights.canStore || parsedRights.canCreateDerived
-        || parsedRights.canUseCommercially || parsedRights.canDisplay || parsedRights.canIndex
+        || parsedRights.canUseCommercially || parsedRights.canUseNonCommercially
+        || parsedRights.canDisplay || parsedRights.canIndex
         || publicationValue.displayState !== 'draft'
         || publicationValue.indexState !== 'noindex')) unavailable();
     if (parsedUnitVerification.state === 'pending'
@@ -425,7 +440,7 @@ export function parseDubaiAreaEvidence(value: unknown): DubaiAreaEvidenceSnapsho
     if ((publicationValue.displayState === 'published' || publicationValue.displayState === 'stale')
       && (parsedRights.state !== 'approved' || parsedUnitVerification.state !== 'verified'
         || !parsedRights.canStore || !parsedRights.canCreateDerived
-        || !parsedRights.canUseCommercially || !parsedRights.canDisplay)) unavailable();
+        || !isDubaiEvidenceUsePermitted(parsedRights) || !parsedRights.canDisplay)) unavailable();
     if (publicationValue.indexState === 'index'
       && (publicationValue.displayState !== 'published' || !parsedRights.canIndex)) unavailable();
     const publication = Object.freeze({

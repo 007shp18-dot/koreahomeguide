@@ -3,6 +3,7 @@ import 'server-only';
 import { createHash } from 'node:crypto';
 
 import {
+  isDubaiEvidenceUsePermitted,
   parseDubaiAreaEvidence,
   type DubaiAreaEvidence,
   type DubaiAreaEvidenceSnapshot,
@@ -58,7 +59,7 @@ function isDigest(value: string): boolean {
 function repositoryFromSnapshot(snapshot: DubaiAreaEvidenceSnapshot): DubaiEvidenceRepository {
   const { rights, publication } = snapshot;
   if (rights.state !== 'approved' || !rights.canStore || !rights.canCreateDerived
-    || !rights.canUseCommercially || !rights.canDisplay || rights.licenseUrl === null
+    || !isDubaiEvidenceUsePermitted(rights) || !rights.canDisplay || rights.licenseUrl === null
     || snapshot.unitVerification.state !== 'verified'
     || !['published', 'stale'].includes(publication.displayState)) {
     throw new DubaiEvidenceUnavailableError();

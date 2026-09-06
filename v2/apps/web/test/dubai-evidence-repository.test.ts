@@ -1,5 +1,8 @@
 import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
+import { gunzipSync } from 'node:zlib';
 import { describe, expect, it, vi } from 'vitest';
+import { parseDubaiAreaEvidence } from '../lib/dubai/evidence-contract';
 
 vi.mock('server-only', () => ({}));
 
@@ -18,6 +21,32 @@ function serialized(value: unknown) {
 }
 
 describe('Dubai area evidence repository', () => {
+  it('validates the real review aggregate without exposing it as a released repository', async () => {
+    const source = gunzipSync(readFileSync(new URL(
+      '../data/review/dubai-area-evidence.json.gz', import.meta.url,
+    ))).toString('utf8');
+    const snapshot = parseDubaiAreaEvidence(JSON.parse(source));
+    expect(snapshot.areas.length).toBeGreaterThan(0);
+    expect(snapshot.rights).toMatchObject({
+      intendedUse: 'noncommercial', canUseCommercially: false, state: 'pending',
+    });
+    expect(snapshot.unitVerification.state).toBe('pending');
+    await expect(createDubaiEvidenceRepository({ serialized: source,
+      expectedDigest: createHash('sha256').update(source).digest('hex'),
+    })).rejects.toThrow('Dubai area evidence unavailable');
+  });
+
+  it('opens a release approved for noncommercial use when commercial use is disallowed', async () => {
+    const fixture = dubaiEvidenceFixture();
+    const input = serialized({ ...fixture, rights: { ...fixture.rights,
+      intendedUse: 'noncommercial', canUseNonCommercially: true, canUseCommercially: false,
+    } });
+    const repository = await createDubaiEvidenceRepository({
+      serialized: input.source, expectedDigest: input.digest,
+    });
+    expect(repository.getArea('marsa-dubai')?.name).toBe('Marsa Dubai');
+  });
+
   it('opens one approved release atomically and exposes its indexable routes', async () => {
     const input = serialized(dubaiEvidenceFixture());
     const repository = await createDubaiEvidenceRepository({

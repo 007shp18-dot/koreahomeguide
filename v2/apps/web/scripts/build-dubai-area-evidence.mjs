@@ -134,6 +134,11 @@ function httpsUrl(value, label) {
 function normalizeRights(value) {
   if (typeof value !== 'object' || value === null || Array.isArray(value)) fail('invalid rights record');
   if (value.state !== 'pending' && value.state !== 'approved') fail('invalid rights state');
+  const intendedUse = value.intendedUse === undefined ? 'commercial' : value.intendedUse;
+  if (intendedUse !== 'commercial' && intendedUse !== 'noncommercial') fail('invalid intended use');
+  if (value.canUseNonCommercially !== undefined
+    && typeof value.canUseNonCommercially !== 'boolean') fail('invalid noncommercial permission');
+  const canUseNonCommercially = value.canUseNonCommercially === true;
   const permissions = [
     'canStore', 'canCreateDerived', 'canUseCommercially', 'canDisplay', 'canIndex',
   ];
@@ -150,7 +155,7 @@ function normalizeRights(value) {
       : fail('rights reviewer must be named');
   const licenseUrl = value.licenseUrl === null ? null : httpsUrl(value.licenseUrl, 'rights licence');
   if (value.state === 'pending') {
-    if (reviewedBy !== null || licenseUrl !== null
+    if (reviewedBy !== null || licenseUrl !== null || canUseNonCommercially
       || permissions.some((permission) => value[permission] !== false)) {
       fail('pending rights must not claim approval or permissions');
     }
@@ -166,6 +171,8 @@ function normalizeRights(value) {
     canStore: value.canStore,
     canCreateDerived: value.canCreateDerived,
     canUseCommercially: value.canUseCommercially,
+    intendedUse,
+    canUseNonCommercially,
     canDisplay: value.canDisplay,
     canIndex: value.canIndex,
     policyId: value.policyId,
@@ -650,7 +657,8 @@ export function buildDubaiAreaEvidenceBundle({
     publication: !registryChanged && rights.state === 'approved'
       && rights.canStore === true
       && rights.canCreateDerived === true
-      && rights.canUseCommercially === true
+      && (rights.intendedUse === 'noncommercial'
+        ? rights.canUseNonCommercially === true : rights.canUseCommercially === true)
       && rights.canDisplay === true
       && unitVerification.state === 'verified'
       ? {

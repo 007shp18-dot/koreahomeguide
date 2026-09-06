@@ -73,6 +73,31 @@ function rent(index: number, override: Readonly<Record<string, string>> = {}) {
 }
 
 describe('Dubai area evidence builder', () => {
+  it.each([
+    ['noncommercial', true, 'published'],
+    ['noncommercial', false, 'draft'],
+    ['commercial', true, 'draft'],
+  ])('gates %s use on its actual permission (%s)', (intendedUse, permitted, displayState) => {
+    const built = buildDubaiAreaEvidence({
+      transactionsCsv: csv(transactionHeaders, [
+        transaction(100, { INSTANCE_DATE: '2026-01-01 12:00:00' }),
+        ...Array.from({ length: 31 }, (_, i) => transaction(i, { AREA_EN: 'Marsa Dubai' })),
+      ]),
+      rentsCsv: csv(rentHeaders, [
+        rent(100, { REGISTRATION_DATE: '2026-01-01 12:00:00' }),
+        ...Array.from({ length: 60 }, (_, i) => rent(i)),
+      ]),
+      landsCsv: csv(landHeaders, [{ AREA_EN: 'Marsa Dubai', PROJECT_EN: '' }]),
+      generatedAt: '2026-09-06T00:00:00.000Z',
+      rights: { ...approvedDubaiRights, intendedUse,
+        canUseNonCommercially: permitted, canUseCommercially: false },
+      unitVerification: verifiedDubaiUnits,
+      slugRegistry: marsaDubaiSlugRegistry,
+    });
+    expect(built.publication.displayState).toBe(displayState);
+    expect(parseDubaiAreaEvidence(built).rights.canUseCommercially).toBe(false);
+  });
+
   it('maps a transaction alias through unambiguous Land projects and builds published metrics', () => {
     const transactionRows = Array.from({ length: 31 }, (_, index) => transaction(index));
     const rentRows = Array.from({ length: 60 }, (_, index) => rent(index));

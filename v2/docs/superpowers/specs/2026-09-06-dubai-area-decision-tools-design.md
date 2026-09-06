@@ -2,7 +2,7 @@
 
 **Date:** 2026-09-06
 
-**Status:** Approved product direction; public data release remains gated by a verified dataset licence.
+**Status:** Approved product direction. The operator authorized inclusion of real aggregates in the public PR for noncommercial use. Live display and indexing remain separate release decisions.
 
 ## Goal
 
@@ -29,18 +29,19 @@ This is the roadmap's Dubai evidence-depth slice. Accounts, saved shortlists, al
 
 ## Rights release gate
 
-The DLD page labels the exports as open data, but its general website terms limit website materials to personal, noncommercial use unless a separate written agreement applies. Dubai's official open-data guidance says dataset-specific terms are supplied in portal metadata. The exact licence for these exports must therefore be recorded before public release.
+The operator clarified on 2026-09-06 that SignedPrice's current use is noncommercial and explicitly authorized including the real aggregate in public GitHub PR #167. Record that instruction as an owner declaration, not as a DLD licence grant or completed source/unit review. Commercial permission is not a mandatory requirement for a release approved for noncommercial use.
 
 The release gate requires all of the following:
 
 - an official dataset or licence URL;
 - permission to store the source privately;
-- permission to create and publicly display derived aggregates commercially;
+- permission to create and publicly display derived aggregates for the declared intended use;
+- a separate commercial or noncommercial permission matching that intended use (legacy records without a purpose retain the commercial requirement);
 - required attribution text;
 - a checked date and named reviewer/owner confirmation;
 - official confirmation that `TRANS_VALUE` and rent amounts are AED and that `ACTUAL_AREA` is square metres.
 
-Until the gate passes, real derived values may be built and verified locally, but they must not be committed to a public repository, inserted into production, linked from public navigation, or included in the sitemap.
+The operator's subsequent authorization supersedes the earlier prohibition on committing real derived values to the public repository. Include the draft aggregate, canonical slug registry, and declaration in `apps/web/data/review/`. This directory is not the installed production snapshot path. Pending source review and pending currency-unit verification remain explicit; neither is silently converted into approval. Do not insert this draft into production, link it from public navigation, or include it in the sitemap.
 
 ## Data contract
 
@@ -162,7 +163,7 @@ All inputs must be finite, positive decimal values within defensive bounds. Chec
 ## Storage and serving
 
 - Raw CSV remains outside Git and is never shipped to the browser.
-- The public artifact is a compact aggregate gzip snapshot after the rights gate.
+- The live artifact is a compact aggregate gzip snapshot after the release gate. The separately authorized PR review artifact remains draft/noindex outside the installed snapshot registry.
 - Neon stores release metadata and aggregate metric observations only; this release does not add raw Dubai rows.
 - The checked artifact is the fast, deterministic public read path and sitemap source. Neon is the operational mirror and parity target.
 - Any database seed is idempotent and is tested on a temporary branch before production.
