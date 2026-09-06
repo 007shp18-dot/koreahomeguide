@@ -38,6 +38,25 @@ export type KoreaBuildingDirectoryEntry = Readonly<{
   href: string;
 }>;
 
+export type KoreaNeighborhoodRouteParam = Readonly<{
+  district: SeoulDistrictSlug;
+  neighborhoodId: string;
+}>;
+
+export type KoreaNeighborhoodDirectoryEntry = Readonly<{
+  neighborhoodId: string;
+  name: string;
+  buildings: number;
+  href: string;
+}>;
+
+export type KoreaNeighborhoodBuildingDirectory = Readonly<{
+  districtSlug: SeoulDistrictSlug;
+  neighborhoodId: string;
+  name: string;
+  entries: readonly KoreaBuildingDirectoryEntry[];
+}>;
+
 type PublishedCandidate = Readonly<{
   transaction: KoreaEvidenceTransaction | 'sale';
   contracts: number;
@@ -48,6 +67,9 @@ type KoreaBuildingPublicationIndex = Readonly<{
   derivedByMinimum: Map<number, Readonly<{
     routeParams: readonly KoreaBuildingRouteParam[];
     directoryByDistrict: ReadonlyMap<SeoulDistrictSlug, readonly KoreaBuildingDirectoryEntry[]>;
+    neighborhoodRouteParams: readonly KoreaNeighborhoodRouteParam[];
+    neighborhoodDirectoryByDistrict: ReadonlyMap<SeoulDistrictSlug, readonly KoreaNeighborhoodDirectoryEntry[]>;
+    buildingDirectoryByNeighborhood: ReadonlyMap<string, KoreaNeighborhoodBuildingDirectory>;
   }>>;
 }>;
 
@@ -56,6 +78,7 @@ const publicationIndexCache = new WeakMap<
   WeakMap<readonly KoreaSaleEvidenceBuildingRecord[], KoreaBuildingPublicationIndex>
 >();
 const EMPTY_BUILDING_DIRECTORY = Object.freeze([]) as readonly KoreaBuildingDirectoryEntry[];
+const EMPTY_NEIGHBORHOOD_DIRECTORY = Object.freeze([]) as readonly KoreaNeighborhoodDirectoryEntry[];
 
 function publishedCandidates(
   records: KoreaBuildingEvidenceRecordPair,
@@ -143,6 +166,12 @@ function derivedBuildingPublication(
   if (cached !== undefined) return cached;
   const routeParams: KoreaBuildingRouteParam[] = [];
   const directory = new Map<SeoulDistrictSlug, KoreaBuildingDirectoryEntry[]>();
+  const neighborhoods = new Map<string, {
+    districtSlug: SeoulDistrictSlug;
+    neighborhoodId: string;
+    name: string;
+    entries: KoreaBuildingDirectoryEntry[];
+  }>();
   for (const pair of index.pairs) {
     if (!isKoreaBuildingIndexable(pair, minimum)) continue;
     const identity = pair.rent ?? pair.sale;
@@ -152,15 +181,25 @@ function derivedBuildingPublication(
       buildingId: identity.buildingId,
     }));
     const entries = directory.get(identity.districtSlug) ?? [];
-    entries.push(Object.freeze({
+    const entry = Object.freeze({
       buildingId: identity.buildingId,
       districtSlug: identity.districtSlug,
       name: identity.officialName,
       neighborhoodName: identity.neighborhoodName,
       contracts: koreaBuildingEvidenceDepth(pair),
       href: `/kr/seoul/explore/${identity.districtSlug}/${identity.buildingId}/`,
-    }));
+    });
+    entries.push(entry);
     directory.set(identity.districtSlug, entries);
+    const neighborhoodKey = `${identity.districtSlug}/${identity.neighborhoodId}`;
+    const neighborhood = neighborhoods.get(neighborhoodKey) ?? {
+      districtSlug: identity.districtSlug,
+      neighborhoodId: identity.neighborhoodId,
+      name: identity.neighborhoodName,
+      entries: [],
+    };
+    neighborhood.entries.push(entry);
+    neighborhoods.set(neighborhoodKey, neighborhood);
   }
   routeParams.sort((left, right) => (
     left.district.localeCompare(right.district)
@@ -174,9 +213,51 @@ function derivedBuildingPublication(
     ));
     return [district, Object.freeze(entries)] as const;
   }));
+  const neighborhoodRouteParams: KoreaNeighborhoodRouteParam[] = [];
+  const neighborhoodDirectory = new Map<SeoulDistrictSlug, KoreaNeighborhoodDirectoryEntry[]>();
+  const buildingDirectoryByNeighborhood = new Map<string, KoreaNeighborhoodBuildingDirectory>();
+  for (const [key, neighborhood] of neighborhoods) {
+    neighborhood.entries.sort((left, right) => (
+      right.contracts - left.contracts
+      || left.name.localeCompare(right.name, 'ko-KR')
+      || left.buildingId.localeCompare(right.buildingId)
+    ));
+    neighborhoodRouteParams.push(Object.freeze({
+      district: neighborhood.districtSlug,
+      neighborhoodId: neighborhood.neighborhoodId,
+    }));
+    const districtNeighborhoods = neighborhoodDirectory.get(neighborhood.districtSlug) ?? [];
+    districtNeighborhoods.push(Object.freeze({
+      neighborhoodId: neighborhood.neighborhoodId,
+      name: neighborhood.name,
+      buildings: neighborhood.entries.length,
+      href: `/kr/seoul/explore/${neighborhood.districtSlug}/neighborhood/${neighborhood.neighborhoodId}/`,
+    }));
+    neighborhoodDirectory.set(neighborhood.districtSlug, districtNeighborhoods);
+    buildingDirectoryByNeighborhood.set(key, Object.freeze({
+      districtSlug: neighborhood.districtSlug,
+      neighborhoodId: neighborhood.neighborhoodId,
+      name: neighborhood.name,
+      entries: Object.freeze(neighborhood.entries),
+    }));
+  }
+  neighborhoodRouteParams.sort((left, right) => (
+    left.district.localeCompare(right.district)
+    || left.neighborhoodId.localeCompare(right.neighborhoodId)
+  ));
+  const neighborhoodDirectoryByDistrict = new Map([...neighborhoodDirectory].map(([district, entries]) => {
+    entries.sort((left, right) => (
+      left.name.localeCompare(right.name, 'ko-KR')
+      || left.neighborhoodId.localeCompare(right.neighborhoodId)
+    ));
+    return [district, Object.freeze(entries)] as const;
+  }));
   const derived = Object.freeze({
     routeParams: Object.freeze(routeParams),
     directoryByDistrict,
+    neighborhoodRouteParams: Object.freeze(neighborhoodRouteParams),
+    neighborhoodDirectoryByDistrict,
+    buildingDirectoryByNeighborhood,
   });
   index.derivedByMinimum.set(minimum, derived);
   return derived;
@@ -202,4 +283,31 @@ export function listKoreaBuildingDirectory(
 ): readonly KoreaBuildingDirectoryEntry[] {
   return derivedBuildingPublication(records, minimum).directoryByDistrict.get(districtSlug)
     ?? EMPTY_BUILDING_DIRECTORY;
+}
+
+export function listIndexableKoreaNeighborhoodRouteParams(
+  records: KoreaBuildingEvidenceRecords,
+  minimum: number = KOREA_BUILDING_INDEX_MINIMUM,
+): readonly KoreaNeighborhoodRouteParam[] {
+  return derivedBuildingPublication(records, minimum).neighborhoodRouteParams;
+}
+
+export function listKoreaNeighborhoodDirectory(
+  records: KoreaBuildingEvidenceRecords,
+  districtSlug: SeoulDistrictSlug,
+  minimum: number = KOREA_BUILDING_INDEX_MINIMUM,
+): readonly KoreaNeighborhoodDirectoryEntry[] {
+  return derivedBuildingPublication(records, minimum).neighborhoodDirectoryByDistrict.get(districtSlug)
+    ?? EMPTY_NEIGHBORHOOD_DIRECTORY;
+}
+
+export function getKoreaNeighborhoodBuildingDirectory(
+  records: KoreaBuildingEvidenceRecords,
+  districtSlug: SeoulDistrictSlug,
+  neighborhoodId: string,
+  minimum: number = KOREA_BUILDING_INDEX_MINIMUM,
+): KoreaNeighborhoodBuildingDirectory | null {
+  return derivedBuildingPublication(records, minimum).buildingDirectoryByNeighborhood.get(
+    `${districtSlug}/${neighborhoodId}`,
+  ) ?? null;
 }

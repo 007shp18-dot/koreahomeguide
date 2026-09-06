@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 import type { ExploreBuildingModel, ExploreDistrictModel, PublicDistrictModel, PublicSourceBoundaryModel } from '../../lib/public-market/area-route-types';
 import type { PublicPropertyTypeIdentity } from '../../lib/public-market/property-type-route-types';
-import type { KoreaBuildingDirectoryEntry } from '../../lib/public-market/korea-building-index-policy';
+import type { KoreaNeighborhoodDirectoryEntry } from '../../lib/public-market/korea-building-index-policy';
 import {
   KOREA_PUBLIC_RELEASE_STATUS,
   type SiteFooterModel,
@@ -16,7 +16,6 @@ import { EvidenceSectionHeading } from '../evidence-ui/section-heading';
 import { DetailNewsList } from '../news/detail-news-list';
 import { EvidenceEmptyStatePanel } from '../trust/evidence-empty-state';
 import { BoxPlot } from './box-plot';
-import { BuildingDirectory } from './building-directory';
 import styles from './district-page.module.css';
 import { DistrictEvidenceSummary } from './district-evidence-summary';
 import { EvidencePeriodStrip } from './evidence-period-strip';
@@ -24,6 +23,7 @@ import { QuoteInput } from './quote-input';
 import { SampleChip } from './sample-chip';
 import { PublicSourceBoundary } from './public-source-boundary';
 import { NaverDistrictMap, type NaverDistrictMapPoint } from '../maps/naver-district-map';
+import { NeighborhoodDirectory } from './neighborhood-directory';
 
 const config = getPublicMarketConfig('kr-seoul');
 const money = new Intl.NumberFormat(config.formatLocale, {
@@ -410,7 +410,7 @@ function ExactSaleEvidence({ district }: Readonly<{ district: ExploreDistrictMod
 export function DistrictDetailPage({
   model,
   propertyTypes = [],
-  directory = [],
+  neighborhoods = [],
   mapDistricts = [],
   mapPoint,
   naverMapClientId = null,
@@ -421,7 +421,7 @@ export function DistrictDetailPage({
 }: Readonly<{
   model: PublicDistrictModel;
   propertyTypes?: readonly PublicPropertyTypeIdentity[];
-  directory?: readonly KoreaBuildingDirectoryEntry[];
+  neighborhoods?: readonly KoreaNeighborhoodDirectoryEntry[];
   mapDistricts?: readonly NaverDistrictMapPoint[];
   mapPoint?: Readonly<{ latitude: number; longitude: number }>;
   naverMapClientId?: string | null;
@@ -448,7 +448,7 @@ export function DistrictDetailPage({
             </div> : null}
             <div id="home-types"><PropertyTypeEvidence model={model} propertyTypes={propertyTypes} /></div>
             <div id="buildings"><BuildingEvidence model={model} buildings={exploreBuildings} /></div>
-            <BuildingDirectory districtName={model.identity.nameEn} entries={directory} />
+            <NeighborhoodDirectory districtName={model.identity.nameEn} entries={neighborhoods} />
             <DistrictDecisionSections model={model} comparisonDistricts={comparisonDistricts} buildings={exploreBuildings} />
             {model.status === 'unavailable' || currentDistrict !== undefined ? null : <Faq model={model} />}
             <div className={styles.sourceBoundary} data-section="district-source" id="source">
