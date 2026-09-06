@@ -725,7 +725,7 @@
 }
 
 @keyframes buildingDrawerEnter {
-  from { opacity: 0; transform: translateX(12px); }
+  from { opacity: 0; transform: translateX(0); }
   to { opacity: 1; transform: translateX(0); }
 }
 
@@ -1954,3 +1954,12 @@
 .submitSearch { min-height: 44px; padding: 0 16px; background: var(--navy); color: white; border: 0; border-radius: 8px; font: inherit; cursor: pointer; }
 .toolbarSelect select { min-height: 44px; }
 @media(max-width: 800px) { .buildingSearch { flex-basis: 100%; order: 0; } .toolbarSelect { min-width: 140px; } }
+
+.toolbarSelect select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.neighborhoodDistribution { margin-block: 12px; }
+.neighborhoodDistribution summary { cursor: pointer; font-weight: 600; }
+.neighborhoodDistribution p { font-size: 12px; color: var(--text-muted); margin-block: 8px; }
+.neighborhoodDistribution > div { max-height: 200px; overflow-y: auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 12px; }
+.neighborhoodDistribution button { display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 48px; border: 0; border-bottom: 1px solid var(--border); background: transparent; color: inherit; text-align: left; cursor: pointer; }
+.neighborhoodDistribution button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }

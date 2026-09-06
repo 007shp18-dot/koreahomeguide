@@ -363,6 +363,7 @@ export function buildKoreaEvidenceAreaExploreModel(
     buildingAvailability: Object.freeze({
       status: 'ready' as const,
       buildings,
+      neighborhoods: projection.buildingPage?.neighborhoods,
       total: projection.buildingPage?.total ?? 0,
       page: projection.buildingPage?.page ?? 1,
       pageSize: projection.buildingPage?.pageSize ?? 0,

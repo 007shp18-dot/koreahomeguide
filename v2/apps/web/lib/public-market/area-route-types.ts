@@ -259,6 +259,7 @@ export type ExploreBuildingModel = Readonly<{
   housingType: string;
   latitude: number | null;
   longitude: number | null;
+  verifiedAddress?: string;
   media?: Readonly<{
     displayUrl: string;
     width: number | null;
@@ -335,6 +336,7 @@ export type ExploreBuildingAvailability =
   | Readonly<{
       status: 'ready';
       buildings: readonly ExploreBuildingModel[];
+      neighborhoods?: readonly Readonly<{ id: string; name: string; count: number }>[];
       total: number;
       page: number;
       pageSize: number;

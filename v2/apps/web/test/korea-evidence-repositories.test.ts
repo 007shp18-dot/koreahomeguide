@@ -179,6 +179,9 @@ describe('installed Korea evidence repositories', () => {
     }
     expect(projection.buildingPage.buildings).toHaveLength(50);
     expect(projection.buildingPage.total).toBeGreaterThan(50);
+    expect(projection.buildingPage.neighborhoods!.reduce((sum, item) => sum + item.count, 0))
+      .toBe(projection.buildingPage.total);
+    expect(projection.buildingPage.neighborhoods!.some(({ count }) => count > 50)).toBe(true);
     expect(projection.buildingStats?.observed).toBeGreaterThan(
       projection.buildingPage.buildings.length,
     );

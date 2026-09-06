@@ -1,5 +1,7 @@
 import 'server-only';
 
+import { contentDatabase } from '../db/postgres.server';
+
 import {
   type EvidenceDescriptor,
   getPublicMarketConfig,
@@ -130,19 +132,39 @@ export async function hydratePublicAreaExploreModelWithProjections(
   model: PublicAreaExploreModel,
   reader: PublicAreaEntityProjectionReader | null = publicEntityProjectionReaderFromEnvironment(),
 ): Promise<PublicAreaExploreModel> {
-  if (model.status !== 'ready' || reader === null) return model;
+  if (model.status !== 'ready') return model;
   const buildings = model.buildingAvailability.status === 'ready'
     ? model.buildingAvailability.buildings
     : model.buildingAvailability.fallbackBuildings;
-  const projections = await reader.listBuildings(buildings.map(({ id }) => id));
-  if (projections === null) return model;
+  const projections = await reader?.listBuildings(buildings.map(({ id }) => id));
+  const addresses = new Map<string, string>();
+  const sql = contentDatabase();
+  if (sql !== null && buildings.length > 0) {
+    try {
+      const rows = await sql`
+        SELECT external_id, legal_address FROM buildings
+        WHERE market_key = 'seoul' AND identity_status = 'verified'
+          AND external_id = ANY(${buildings.map(({ id }) => id)})
+      `;
+      for (const row of rows) {
+        if (typeof row.external_id === 'string' && typeof row.legal_address === 'string') {
+          addresses.set(row.external_id, row.legal_address);
+        }
+      }
+    } catch { /* Keep evidence available when the address store is unavailable. */ }
+  }
+  const hydrate = (building: import('./area-route-types').ExploreBuildingModel) => {
+    const projected = projectExploreBuilding(building, projections?.get(building.id));
+    const verifiedAddress = addresses.get(building.id);
+    return verifiedAddress === undefined ? projected : Object.freeze({ ...projected, verifiedAddress });
+  };
   if (model.buildingAvailability.status === 'ready') {
     return Object.freeze({
       ...model,
       buildingAvailability: Object.freeze({
         ...model.buildingAvailability,
         buildings: Object.freeze(model.buildingAvailability.buildings.map((building) => (
-          projectExploreBuilding(building, projections.get(building.id))
+          hydrate(building)
         ))),
       }),
     });
@@ -152,7 +174,7 @@ export async function hydratePublicAreaExploreModelWithProjections(
     buildingAvailability: Object.freeze({
       ...model.buildingAvailability,
       fallbackBuildings: Object.freeze(model.buildingAvailability.fallbackBuildings.map((building) => (
-        projectExploreBuilding(building, projections.get(building.id))
+        hydrate(building)
       ))),
     }),
   });
