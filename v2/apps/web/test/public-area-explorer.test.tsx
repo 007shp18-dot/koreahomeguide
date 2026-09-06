@@ -238,10 +238,10 @@ describe('public Seoul area Explorer', () => {
     };
 
     expect(clientStateKey('Evidence Tower')).toBe(
-      'gangnam-gu:Evidence Tower:jeonse:legacy-45-55:all:new:0:split:none',
+      'gangnam-gu:Evidence Tower:jeonse:legacy-45-55:all:new:0:split:all:none',
     );
     expect(clientStateKey('Apartment')).toBe(
-      'gangnam-gu:Apartment:jeonse:legacy-45-55:all:new:0:split:none',
+      'gangnam-gu:Apartment:jeonse:legacy-45-55:all:new:0:split:all:none',
     );
     expect(clientStateKey('Evidence Tower')).not.toBe(clientStateKey('Apartment'));
     expect(clientStateKey('', {
@@ -250,7 +250,7 @@ describe('public Seoul area Explorer', () => {
       district: 'gangnam-gu',
       neighborhood: 'yeoksam-dong',
       buildingId: 'gangnam-evidence-tower',
-    })).toContain(':split:gangnam-evidence-tower');
+    })).toContain(':split:yeoksam-dong:gangnam-evidence-tower');
   });
 
   it('provides a real retained-building text filter in the evidence rail', () => {
@@ -263,7 +263,7 @@ describe('public Seoul area Explorer', () => {
     expect(markup).toContain('type="search"');
     expect(markup).toContain('name="building-query"');
     expect(markup).toContain('Search retained buildings');
-    expect(markup).toContain('Search district, neighborhood, building or type');
+    expect(markup).toContain('Search area or building');
     expect(markup).toContain('name="housing-type"');
     expect(markup).toContain('>Search</button>');
   });
@@ -332,10 +332,32 @@ describe('public Seoul area Explorer', () => {
     expect(markup.indexOf('data-explorer-layout="split"')).toBeLessThan(markup.indexOf('data-coverage-panel="verified"'));
   });
 
+  it('starts with the city directory and shows neighborhood counts after district selection', () => {
+    const base = readyModel();
+    const buildings = base.buildingAvailability.status === 'ready'
+      ? base.buildingAvailability.buildings : base.buildingAvailability.fallbackBuildings;
+    const model = { ...base, buildingAvailability: {
+      status: 'ready' as const, buildings, total: 678, page: 1, pageSize: 50,
+      neighborhoods: [{ id: 'yeoksam-dong', name: '역삼동', count: 678 }],
+    } };
+    const city = renderToStaticMarkup(createElement(AreaExplorer, { model }));
+    expect(city).toContain('data-district-browser="seoul"');
+    expect(city).toContain('data-map-tier="districts"');
+    expect(city).not.toContain('data-building-row=');
+    const district = renderToStaticMarkup(createElement(AreaExplorer, {
+      model, initialSelection: { market: 'kr', transaction: 'jeonse', district: 'gangnam-gu' },
+    }));
+    expect(district).toContain('data-map-tier="neighborhoods"');
+    expect(district).toContain('역삼동');
+    expect(district).toContain('678');
+    expect(district).not.toContain('data-building-row=');
+  });
+
   it('renders the complete map, district directory, and allowed evidence in initial HTML', () => {
     const model = readyModel();
     const markup = renderToStaticMarkup(createElement(AreaExplorer, {
       model,
+      initialSelection: { market: 'kr', transaction: 'jeonse', district: 'gangnam-gu' },
       naverMapClientId: 'test-naver-client',
     }));
 
@@ -520,7 +542,7 @@ describe('public Seoul area Explorer', () => {
     expect(markup).toContain('Monthly Home');
     expect(markup).toContain('Monthly observations · 1');
     expect(markup).toMatch(
-      /data-building-evidence="unavailable"[^>]*>[\s\S]*?Monthly Home[\s\S]*?Price evidence unavailable/,
+      /data-building-evidence="unavailable"[^>]*>[\s\S]*?Monthly Home[\s\S]*?—/,
     );
     expect(markup).toContain(
       'href="/kr/seoul/explore/jongno-gu/jongno-monthly-home?transaction=monthly&amp;district=jongno-gu&amp;neighborhood=sajik-dong&amp;buildingId=jongno-monthly-home&amp;contractType=all"',
@@ -560,7 +582,7 @@ describe('public Seoul area Explorer', () => {
     expect(configured).toContain('submodules=geocoder');
     expect(configured).toContain('Interactive NAVER map of Seoul buildings');
     expect(configured).toContain('All Seoul districts');
-    expect(configured).toContain('Select a price bubble');
+    expect(configured).toContain('Building locations and reported prices');
     expect(selectedBuilding).not.toContain('Loading verified place photo');
     expect(selectedBuilding).toContain('data-building-media="location-only"');
     expect(configured).toContain('Monthly Home');

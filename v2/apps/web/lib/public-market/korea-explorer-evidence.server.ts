@@ -107,6 +107,7 @@ export type KoreaExplorerProjectionOptions = Readonly<{
   includeBuildings?: boolean;
   includeBuildingStats?: boolean;
   districtSlug?: unknown;
+  neighborhoodId?: unknown;
   buildingQuery?: unknown;
   buildingPage?: unknown;
   selectedBuildingId?: unknown;
@@ -494,13 +495,13 @@ function projectedBuildingData(
       })?.districtSlug;
   const districtSlug = districtFromQuery ?? firstGlobalMatch ?? requestedDistrict;
   const district = getSeoulDistrictBySlug(districtSlug)!;
-  const matches = (index.identitiesByDistrict.get(districtSlug) ?? []).filter((identity) => (
+  const districtMatches = (index.identitiesByDistrict.get(districtSlug) ?? []).filter((identity) => (
     housingMatches(identity)
     && koreaBuildingMatchesProximity(identity.buildingId, options.proximityRepository, options.proximitySelection)
     && buildingMatchesQuery(identity, query, [district.slug, district.nameEn, district.nameKo])
   ));
   const neighborhoodCounts = new Map<string, { id: string; name: string; count: number }>();
-  for (const identity of matches) {
+  for (const identity of districtMatches) {
     const item = neighborhoodCounts.get(identity.neighborhoodId)
       ?? { id: identity.neighborhoodId, name: identity.neighborhoodName, count: 0 };
     item.count += 1;
@@ -509,6 +510,22 @@ function projectedBuildingData(
   const neighborhoods = Object.freeze([...neighborhoodCounts.values()]
     .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name, 'ko-KR'))
     .map((item) => Object.freeze(item)));
+  const requestedNeighborhoodId = typeof options.neighborhoodId === 'string'
+    ? options.neighborhoodId.trim()
+    : '';
+  const matches = requestedNeighborhoodId !== ''
+    && districtMatches.some(({ neighborhoodId }) => neighborhoodId === requestedNeighborhoodId)
+    ? districtMatches.filter(({ neighborhoodId }) => neighborhoodId === requestedNeighborhoodId)
+    : districtMatches;
+  // Rank the full matching inventory before pagination so the first page is useful.
+  matches.sort((left, right) => {
+    const a = selectedPrimary(left);
+    const b = selectedPrimary(right);
+    return Number(b.published) - Number(a.published)
+      || b.n - a.n
+      || left.officialName.localeCompare(right.officialName, 'ko-KR')
+      || left.buildingId.localeCompare(right.buildingId);
+  });
   const selectedBuildingId = typeof options.selectedBuildingId === 'string'
     ? options.selectedBuildingId
     : null;

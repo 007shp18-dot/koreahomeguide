@@ -1,3 +1,4 @@
+import { googleMapsBrowserKeyFromEnvironment } from '@/lib/maps/google-maps-browser-key.server';
 import type { Metadata } from 'next';
 import { KOREA_EVIDENCE_AREA_BANDS } from '@signedprice/korea-rent';
 import { SEOUL_RENT_CHECK_DISTRICTS } from '@signedprice/korea-rent/browser';
@@ -103,6 +104,7 @@ export default async function ExplorerPage({ searchParams }: ExplorerPageProps) 
     singleValue(query.buildingPage),
     requestedBuildingId,
     query,
+    singleValue(query.neighborhood),
   ));
   const availableBuildings = model.status === 'ready'
     ? (model.buildingAvailability.status === 'ready'
@@ -139,6 +141,7 @@ export default async function ExplorerPage({ searchParams }: ExplorerPageProps) 
         <AreaExplorer
           model={model}
           naverMapClientId={naverMapClientId}
+          googleMapsBrowserKey={googleMapsBrowserKeyFromEnvironment()}
           initialQuery={singleValue(query.q)}
           initialSelection={restoredSelection}
         />
