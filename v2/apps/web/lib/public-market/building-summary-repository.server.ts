@@ -94,6 +94,20 @@ let cachedEnvironment: Readonly<{
   repository: PublicBuildingRepository | null;
 }> | null = null;
 
+let cachedInstalledRepository: PublicBuildingRepository | null = null;
+
+export function publicBuildingRepositoryFromInstalledArtifact(): PublicBuildingRepository {
+  if (cachedInstalledRepository !== null) return cachedInstalledRepository;
+  cachedInstalledRepository = createPublicBuildingRepository({
+    source: installedBuildingArtifact,
+    expected: {
+      marketId: 'kr-seoul',
+      period: installedBuildingArtifact.provenance.period,
+    },
+  });
+  return cachedInstalledRepository;
+}
+
 export function publicBuildingRepositoryFromEnvironment(): PublicBuildingRepository | null {
   const serialized = process.env.SIGNEDPRICE_PUBLIC_BUILDING_SUMMARY_ARTIFACT;
   const period = process.env.SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD ?? (

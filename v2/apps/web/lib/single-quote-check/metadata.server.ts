@@ -16,8 +16,8 @@ const copy = Object.freeze({
   }),
   ko: Object.freeze({
     path: '/ko/kr/seoul/check/' as const,
-    title: '서울 매매·전세·월세 제시가격 확인 | signedprice',
-    description: '서울 매매·전세·월세 제시가격 하나를 조건이 맞는 공식 신고 거래 근거와 비교합니다.',
+    title: '서울 매매·전세·월세 실거래가 비교 | signedprice',
+    description: '서울 매물의 매매가격·전세 보증금·월세를 조건이 맞는 공식 신고 거래와 비교해 제시가격을 확인합니다.',
     locale: 'ko_KR' as const,
     imagePath: '/og/ko/' as const,
   }),

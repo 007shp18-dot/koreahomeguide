@@ -16,13 +16,13 @@ import {
 afterEach(() => vi.unstubAllEnvs());
 
 describe('Korea building static route boundary', () => {
-  it('uses ISR for both locale routes instead of rendering every crawler request', () => {
+  it('uses ISR for both locale routes and prerenders only the evidence-rich Korean wave', () => {
     vi.stubEnv('NODE_ENV', 'production');
     expect(dynamic).toBe('force-static');
     expect(revalidate).toBe(3_600);
     expect(KoreanBuildingRoute.dynamic).toBe('force-static');
     expect(KoreanBuildingRoute.revalidate).toBe(3_600);
-    expect(KoreanBuildingRoute.generateStaticParams()).toEqual([]);
+    expect(KoreanBuildingRoute.generateStaticParams()).toHaveLength(1_031);
   });
 
   it('does not consume request-time search params while composing canonical HTML', async () => {

@@ -8,13 +8,20 @@ import {
   generateStaticParams,
   listPrerenderedKoreaBuildingParams,
 } from '../app/(en)/kr/seoul/explore/[district]/[buildingId]/page';
-import { generateMetadata as generateKoreanMetadata } from '../app/(ko)/ko/kr/seoul/explore/[district]/[buildingId]/page';
+import {
+  generateMetadata as generateKoreanMetadata,
+  generateStaticParams as generateKoreanStaticParams,
+} from '../app/(ko)/ko/kr/seoul/explore/[district]/[buildingId]/page';
 import {
   listIndexableKoreaBuildingRouteParams,
   listKoreaBuildingDirectory,
 } from '../lib/public-market/korea-building-index-policy';
 import * as buildingIndexPolicy from '../lib/public-market/korea-building-index-policy';
 import { koreaEvidenceRepositoriesFromEnvironment } from '../lib/public-market/korea-evidence-repositories.server';
+import {
+  PUBLIC_BUILDING_FIXTURE_PERIOD,
+  createPublicBuildingFixture,
+} from './public-building-fixture';
 
 const INDEXABLE_BUILDING = Object.freeze({
   district: 'songpa-gu',
@@ -136,19 +143,37 @@ describe('Korea building search publication', () => {
   it('indexes every published building while prerendering only the evidence-rich wave', () => {
     useInstalledEvidence();
 
-    const buildingUrls = sitemap().map(({ url }) => url).filter((url) => (
+    const sitemapEntries = sitemap();
+    const buildingUrls = sitemapEntries.map(({ url }) => url).filter((url) => (
       /^https:\/\/www\.signedprice\.com\/kr\/seoul\/explore\/[^/]+\/[^/]+\/$/.test(url)
       && !/(?:apartment|officetel|villa)\/$/.test(url)
     ));
-    const neighborhoodUrls = sitemap().map(({ url }) => url).filter((url) => (
+    const koreanBuildingUrls = sitemapEntries.map(({ url }) => url).filter((url) => (
+      /^https:\/\/www\.signedprice\.com\/ko\/kr\/seoul\/explore\/[^/]+\/[^/]+\/$/.test(url)
+      && !/(?:apartment|officetel|villa)\/$/.test(url)
+    ));
+    const neighborhoodUrls = sitemapEntries.map(({ url }) => url).filter((url) => (
       /^https:\/\/www\.signedprice\.com\/kr\/seoul\/explore\/[^/]+\/neighborhood\/[^/]+\/$/.test(url)
     ));
     const prerendered = generateStaticParams().map(({ district, buildingId }) => (
       `${district}/${buildingId}`
     ));
+    const koreanPrerendered = generateKoreanStaticParams().map(({ district, buildingId }) => (
+      `${district}/${buildingId}`
+    ));
 
     expect(buildingUrls).toHaveLength(8_471);
     expect(new Set(buildingUrls)).toHaveLength(8_471);
+    expect(koreanBuildingUrls).toHaveLength(8_471);
+    expect(new Set(koreanBuildingUrls)).toHaveLength(8_471);
+    expect(new Set(koreanBuildingUrls.map((url) => url.replace(
+      'https://www.signedprice.com/ko/kr/seoul/explore/',
+      '',
+    )))).toEqual(new Set(buildingUrls.map((url) => url.replace(
+      'https://www.signedprice.com/kr/seoul/explore/',
+      '',
+    ))));
+    expect(sitemapEntries.length).toBeLessThan(50_000);
     expect(neighborhoodUrls).toHaveLength(379);
     expect(new Set(neighborhoodUrls)).toHaveLength(379);
     expect(neighborhoodUrls).toContain(
@@ -156,10 +181,14 @@ describe('Korea building search publication', () => {
     );
     expect(listPrerenderedKoreaBuildingParams()).toHaveLength(1_031);
     expect(prerendered).toHaveLength(1_086);
+    expect(koreanPrerendered).toHaveLength(1_031);
     expect(buildingUrls).toContain(
       `https://www.signedprice.com/kr/seoul/explore/${INDEXABLE_BUILDING.district}/${INDEXABLE_BUILDING.buildingId}/`,
     );
     expect(prerendered).toContain(
+      `${INDEXABLE_BUILDING.district}/${INDEXABLE_BUILDING.buildingId}`,
+    );
+    expect(koreanPrerendered).toContain(
       `${INDEXABLE_BUILDING.district}/${INDEXABLE_BUILDING.buildingId}`,
     );
     expect(buildingUrls).toContain(
@@ -168,6 +197,42 @@ describe('Korea building search publication', () => {
     expect(prerendered).not.toContain(
       `${SALE_ONLY_BUILDING.district}/${SALE_ONLY_BUILDING.buildingId}`,
     );
+    expect(koreanPrerendered).not.toContain(
+      `${SALE_ONLY_BUILDING.district}/${SALE_ONLY_BUILDING.buildingId}`,
+    );
+
+    const englishHelio = sitemapEntries.find(({ url }) => url === (
+      `https://www.signedprice.com/kr/seoul/explore/${INDEXABLE_BUILDING.district}/${INDEXABLE_BUILDING.buildingId}/`
+    ));
+    const koreanHelio = sitemapEntries.find(({ url }) => url === (
+      `https://www.signedprice.com/ko/kr/seoul/explore/${INDEXABLE_BUILDING.district}/${INDEXABLE_BUILDING.buildingId}/`
+    ));
+    const helioLanguages = {
+      en: `https://www.signedprice.com/kr/seoul/explore/${INDEXABLE_BUILDING.district}/${INDEXABLE_BUILDING.buildingId}/`,
+      ko: `https://www.signedprice.com/ko/kr/seoul/explore/${INDEXABLE_BUILDING.district}/${INDEXABLE_BUILDING.buildingId}/`,
+      'x-default': `https://www.signedprice.com/kr/seoul/explore/${INDEXABLE_BUILDING.district}/${INDEXABLE_BUILDING.buildingId}/`,
+    };
+    expect(englishHelio?.alternates?.languages).toEqual(helioLanguages);
+    expect(koreanHelio?.alternates?.languages).toEqual(helioLanguages);
+  }, 20_000);
+
+  it('keeps legacy-only summaries out of the Korean build-time cohort', () => {
+    useInstalledEvidence();
+    vi.stubEnv(
+      'SIGNEDPRICE_PUBLIC_BUILDING_SUMMARY_ARTIFACT',
+      JSON.stringify(createPublicBuildingFixture()),
+    );
+    vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', PUBLIC_BUILDING_FIXTURE_PERIOD);
+
+    const englishPrerendered = generateStaticParams().map(({ district, buildingId }) => (
+      `${district}/${buildingId}`
+    ));
+    const koreanPrerendered = generateKoreanStaticParams().map(({ district, buildingId }) => (
+      `${district}/${buildingId}`
+    ));
+
+    expect(englishPrerendered).toContain('gangnam-gu/gangnam-evidence-tower');
+    expect(koreanPrerendered).not.toContain('gangnam-gu/gangnam-evidence-tower');
   }, 20_000);
 
   it('indexes a sale-only building with a sale canonical cohort', async () => {
@@ -201,6 +266,11 @@ describe('Korea building search publication', () => {
       robots: { index: true, follow: true },
       alternates: {
         canonical: `https://www.signedprice.com/kr/seoul/explore/${INDEXABLE_BUILDING.district}/${INDEXABLE_BUILDING.buildingId}/`,
+        languages: {
+          en: `https://www.signedprice.com/kr/seoul/explore/${INDEXABLE_BUILDING.district}/${INDEXABLE_BUILDING.buildingId}/`,
+          ko: `https://www.signedprice.com/ko/kr/seoul/explore/${INDEXABLE_BUILDING.district}/${INDEXABLE_BUILDING.buildingId}/`,
+          'x-default': `https://www.signedprice.com/kr/seoul/explore/${INDEXABLE_BUILDING.district}/${INDEXABLE_BUILDING.buildingId}/`,
+        },
       },
       openGraph: {
         url: `https://www.signedprice.com/kr/seoul/explore/${INDEXABLE_BUILDING.district}/${INDEXABLE_BUILDING.buildingId}/`,
@@ -210,7 +280,7 @@ describe('Korea building search publication', () => {
     expect(metadata.description).toContain('2026-02/2026-08');
   }, 20_000);
 
-  it('keeps the Korean duplicate out of search until it owns localized metadata', async () => {
+  it('publishes Korean search metadata for an evidence-rich building', async () => {
     useInstalledEvidence();
 
     const metadata = await generateKoreanMetadata({
@@ -218,7 +288,41 @@ describe('Korea building search publication', () => {
       searchParams: Promise.resolve({}),
     });
 
-    expect(metadata.robots).toEqual({ index: false, follow: true });
-    expect(metadata.alternates).toBeUndefined();
+    expect(metadata).toMatchObject({
+      title: `${INDEXABLE_BUILDING.officialName} 실거래가 | 송파구 전세·월세 | signedprice`,
+      description: `${INDEXABLE_BUILDING.officialName}의 전세·월세 신고 거래를 송파구 2026-02/2026-08 기준으로 확인하세요. 대표 공개 표본 525건과 출처·공개 기준을 함께 제공합니다.`,
+      robots: { index: true, follow: true },
+      alternates: {
+        canonical: `https://www.signedprice.com/ko/kr/seoul/explore/${INDEXABLE_BUILDING.district}/${INDEXABLE_BUILDING.buildingId}/`,
+        languages: {
+          en: `https://www.signedprice.com/kr/seoul/explore/${INDEXABLE_BUILDING.district}/${INDEXABLE_BUILDING.buildingId}/`,
+          ko: `https://www.signedprice.com/ko/kr/seoul/explore/${INDEXABLE_BUILDING.district}/${INDEXABLE_BUILDING.buildingId}/`,
+          'x-default': `https://www.signedprice.com/kr/seoul/explore/${INDEXABLE_BUILDING.district}/${INDEXABLE_BUILDING.buildingId}/`,
+        },
+      },
+      openGraph: {
+        locale: 'ko_KR',
+        url: `https://www.signedprice.com/ko/kr/seoul/explore/${INDEXABLE_BUILDING.district}/${INDEXABLE_BUILDING.buildingId}/`,
+        images: ['https://www.signedprice.com/og/ko/'],
+      },
+    });
+  }, 20_000);
+
+  it('uses Korean sale search terms for a sale-only building', async () => {
+    useInstalledEvidence();
+
+    const metadata = await generateKoreanMetadata({
+      params: Promise.resolve(SALE_ONLY_BUILDING),
+      searchParams: Promise.resolve({}),
+    });
+
+    expect(metadata).toMatchObject({
+      title: `${SALE_ONLY_BUILDING.officialName} 실거래가 | 도봉구 매매 신고가 | signedprice`,
+      description: `${SALE_ONLY_BUILDING.officialName}의 매매 신고 거래를 도봉구 2026-02/2026-08 기준으로 확인하세요. 대표 공개 표본 8건과 출처·공개 기준을 함께 제공합니다.`,
+      robots: { index: true, follow: true },
+      alternates: {
+        canonical: `https://www.signedprice.com/ko/kr/seoul/explore/${SALE_ONLY_BUILDING.district}/${SALE_ONLY_BUILDING.buildingId}/`,
+      },
+    });
   }, 20_000);
 });

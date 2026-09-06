@@ -104,6 +104,21 @@ describe('SignedPrice cohort zero SEO', () => {
     });
   });
 
+  it('uses Korean search-intent titles without claiming a full financial calculator', async () => {
+    const check = koreanCheckMetadata();
+    const comparison = await koreanOfferComparisonMetadata();
+
+    expect(check).toMatchObject({
+      title: '서울 매매·전세·월세 실거래가 비교 | signedprice',
+      description: '서울 매물의 매매가격·전세 보증금·월세를 조건이 맞는 공식 신고 거래와 비교해 제시가격을 확인합니다.',
+    });
+    expect(comparison).toMatchObject({
+      title: '전세·월세 조건 비교 | 서울 실거래 전환율 기준 | signedprice',
+      description: '서울 전세·월세 조건 두 개를 공식 신고 거래와 검증된 전환율 근거로 비교합니다. 매매 조건 비교도 지원합니다.',
+    });
+    expect(JSON.stringify([check, comparison])).not.toMatch(/손익|대출금리|세금|미래가치/);
+  });
+
   it('keeps offer comparison out of indexing without transaction evidence', async () => {
     vi.stubEnv('SIGNEDPRICE_USE_CHECKED_IN_SNAPSHOTS', 'false');
 
