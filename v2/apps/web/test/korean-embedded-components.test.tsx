@@ -90,7 +90,7 @@ describe('Korean embedded product components', () => {
     expect(html).toContain('href="/kr/seoul"');
     expect(html).toMatch(/hreflang="en"/i);
     expect(html).toContain('href="/ko/kr/seoul/check"');
-    expect(html).toContain('>News</a>');
+    expect(html).toContain('>Insights</a>');
   });
 
   it('switches Korean Explore and Rankings to their matching English routes', async () => {
