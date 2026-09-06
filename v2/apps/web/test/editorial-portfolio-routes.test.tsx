@@ -25,7 +25,7 @@ describe('editorial portfolio public routes', () => {
   it('filters guides by city and makes Dubai research discoverable', async () => {
     const html = renderToStaticMarkup(await GuidesPage({ searchParams: Promise.resolve({market: 'dubai'}) }));
     expect(html).toContain('Research a Dubai property purchase');
-    expect(html).toContain('1 guides');
+    expect(html).toContain('1 guide');
     expect(html).not.toContain('Read Singapore private residential transactions');
   });
 

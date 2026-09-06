@@ -335,7 +335,7 @@ export function GooglePlaceMap({
 
   if (browserKey === null) return (
     <div className={styles.unavailable} data-map-provider="static" data-map-state="fallback">
-      Interactive Google map unavailable. You can still search projects and open their details in the list.
+      Interactive Google map unavailable. {market === 'dubai' ? 'You can still select areas and read their guides in the list.' : 'You can still search projects and open their details in the list.'}
     </div>
   );
 

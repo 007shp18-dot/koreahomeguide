@@ -113,7 +113,7 @@ export function NewsroomIndex({ articles, policies, filters }: Readonly<{
       </nav>
     </div>
     {filters.type === 'latest' || filters.type === 'headlines' ? <ExternalHeadlines market={filters.market} preview={filters.type === 'latest'} /> : null}
-    {filters.type === 'headlines' ? null : lead === null ? <section className={styles.empty} data-newsroom-state="empty"><h2>No articles match these filters.</h2><Link href="/news/">Return to Latest</Link></section> : <>
+    {filters.type === 'headlines' ? null : lead === null ? <section className={styles.empty} data-newsroom-state="empty"><h2>No SignedPrice analysis matches these filters.</h2><Link href="/news/">Return to Latest</Link></section> : <>
       <article className={styles.leadStory} data-newsroom-lead={lead.type}>
         <div><span>{lead.type} · {lead.market}</span><time dateTime={lead.date}>{lead.date.slice(0, 10)}</time></div>
         <h2><Link href={lead.href}>{lead.title}</Link></h2>

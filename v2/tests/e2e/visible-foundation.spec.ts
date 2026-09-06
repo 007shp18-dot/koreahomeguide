@@ -99,11 +99,11 @@ test('navigates the first signedprice decision flow', async ({ page }) => {
   await page.getByRole('navigation', { name: 'Primary navigation' })
     .getByRole('link', { name: 'Prices' }).click();
   await expect(page).toHaveURL(/\/prices\/$/);
-  await page.getByRole('link', { name: /Open Explorer/ }).click();
+  await page.getByRole('navigation', { name: 'Market price destinations' }).getByRole('link', { name: 'Seoul', exact: true }).click();
   await expect(page).toHaveURL(/\/kr\/seoul\/explore\/$/);
   await expect(page.getByRole('heading', {
     level: 1,
-    name: 'Compare refundable jeonse deposits by district.',
+    name: 'Explore',
   })).toBeVisible();
 
   await page.getByRole('navigation', { name: 'Primary navigation' })
@@ -223,7 +223,7 @@ test('mobile primary navigation remains tappable and reaches the market flow', a
   await expectContainedTouchTargets(page, [prices]);
   await prices.tap();
   await expect(page).toHaveURL(/\/prices\/$/);
-  await page.getByRole('link', { name: /Open Explorer/ }).tap();
+  await page.getByRole('navigation', { name: 'Market price destinations' }).getByRole('link', { name: 'Seoul', exact: true }).tap();
   await expect(page).toHaveURL(/\/kr\/seoul\/explore\/$/);
   await expectNoHorizontalPageOverflow(page);
 
@@ -260,7 +260,7 @@ test('keyboard traversal activates the Home to Seoul to Check flow', async ({
   await page.keyboard.press('Enter');
   await expect(page).toHaveURL(/\/prices\/$/);
 
-  const exploreSeoul = page.getByRole('link', { name: /Open Explorer/ });
+  const exploreSeoul = page.getByRole('navigation', { name: 'Market price destinations' }).getByRole('link', { name: 'Seoul', exact: true });
   await tabTo(page, exploreSeoul);
   await page.keyboard.press('Enter');
   await expect(page).toHaveURL(/\/kr\/seoul\/explore\/$/);

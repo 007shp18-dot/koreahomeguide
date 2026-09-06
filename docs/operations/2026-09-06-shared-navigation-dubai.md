@@ -37,3 +37,9 @@ Migration 0010 extends external_news_items market taxonomy to ae-dubai, retainin
 ## Remaining scope
 
 Property-level Dubai transactions require a verified source adapter, actual records, entity/coordinate mapping and comparable cohorts. Japanese expansion is later. Never represent selected-area counts as available listings or the annual all-class transaction value as a residential price index.
+
+## First preview and browser findings
+
+PR165 preview at commit 77e2585: verified homepage Seoul 74,188 reported sale contracts (2026-02/2026-08), Prices → Singapore query MOULMEIN → 11 results, project detail → trailing 12 calendar-month chart/table, Dubai area selection/guide, and current Dubai external headlines. Preview has no browser map key, so map positioning awaits production verification.
+
+CI run 34021647711: verify passed; browser 394 passed, 31 failed, 21 existing conditional skips. Actual regressions: mobile language slots inherited identical grid coordinates, and the redirected Seoul News index remained in the sitemap. Fixed both; retained indexable legacy article URLs. Updated obsolete heading/nav/market-count assertions, targeted the actual combobox accessible role, and retained guide ordering Seoul/Singapore/Dubai. Four changed home baselines (EN/ZH, mobile/wide) were visually reviewed before replacement; no screenshot tolerance or functional gate was weakened. A second full browser run is required before release.

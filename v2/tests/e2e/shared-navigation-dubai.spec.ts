@@ -14,7 +14,7 @@ test('uses one navigation order and stable language slots across markets', async
 test('opens Singapore from Prices and removes the Seoul-only sample', async ({ page }) => {
   await page.goto('/prices/');
   await expect(page.getByText('Seoul jeonse sample', { exact: false })).toHaveCount(0);
-  await page.getByLabel('Market', { exact: true }).selectOption('singapore');
+  await page.getByRole('combobox', { name: 'Market', exact: true }).selectOption('singapore');
   await page.getByRole('searchbox', { name: 'Find a property' }).fill('Civic');
   await page.getByRole('button', { name: 'Explore prices' }).click();
   await expect(page).toHaveURL(/\/sg\/singapore\/explore\/?\?q=Civic/);

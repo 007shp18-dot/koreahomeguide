@@ -3782,3 +3782,5 @@ h1 {
 .explore-page-heading h1 { margin: 0; font-size: var(--page-title-size); font-weight: 650; letter-spacing: var(--tracking-display); line-height: 1.08; }
 .explore-page-heading > p { margin: 0; color: var(--muted); font-size: var(--text-meta); text-align: right; }
 @media (max-width: 600px) { .explore-page-heading { min-height: 90px; } .explore-page-heading > p { max-width: 48%; } }
+
+.site-header__languages > .site-header__language { grid-area: auto; }

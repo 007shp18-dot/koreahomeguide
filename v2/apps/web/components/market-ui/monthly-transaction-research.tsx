@@ -12,6 +12,7 @@ const money = (value: number, currency: 'SGD' | 'KRW', compact = false) => new I
 export function MonthlyTransactionResearch({ months: releasedMonths }: Readonly<{ months: readonly ResearchMonth[] }>) {
   const [period, setPeriod] = useState<ResearchPeriod>('all');
   const months = selectResearchPeriod(releasedMonths, period);
+  const totalSales = months.reduce((sum, month) => sum + month.count, 0);
   const hasPrices = months.some((month) => month.median !== null);
   const maxPrice = Math.max(...months.map((month) => month.median ?? 0), 1);
   const maxCount = Math.max(...months.map((month) => month.count), 1);
@@ -23,11 +24,11 @@ export function MonthlyTransactionResearch({ months: releasedMonths }: Readonly<
     <p>{hasPrices ? 'Monthly median sale price and reported transaction count in the selected reporting period. Changes in unit size, property type and sale mix can move the median. A price point requires at least five transactions.' : 'Monthly transaction counts in the selected reporting period. No selected month has five transactions, so monthly median prices are not published.'}</p>
     <div className={styles.chartToolbar}>
       <div role="group" aria-label="Chart reporting period">{([['12', '1Y'], ['36', '3Y'], ['all', 'All']] as const).map(([value, label]) => <button key={value} type="button" aria-pressed={period === value} onClick={() => setPeriod(value)}>{label}</button>)}</div>
-      <span aria-live="polite">{months.length ? `${months[0]!.month} – ${months.at(-1)!.month} · ${months.reduce((sum, month) => sum + month.count, 0).toLocaleString('en')} reported sales` : 'No released months'}</span>
+      <span aria-live="polite">{months.length ? `${months[0]!.month} – ${months.at(-1)!.month} · ${totalSales.toLocaleString('en')} reported ${totalSales === 1 ? 'sale' : 'sales'}` : 'No released months'}</span>
     </div>
     <svg className={styles.chart} viewBox={`0 0 720 ${baseline + 36}`} role="img" aria-label={hasPrices ? 'Monthly sale-price points and transaction-volume bars. Exact values are in the table below.' : 'Monthly reported transaction counts. Exact values are in the table below.'}>
       {hasPrices ? [0, .5, 1].map((fraction) => <g key={fraction}><line x1="90" y1={priceY(maxPrice * fraction)} x2="704" y2={priceY(maxPrice * fraction)} /><text x="0" y={priceY(maxPrice * fraction) + 4}>{money(maxPrice * fraction, 'SGD', true)}</text></g>) : null}
-      <text x="0" y={baseline - 45}>{maxCount} sales</text>
+      <text x="0" y={baseline - 45}>{maxCount} {maxCount === 1 ? 'sale' : 'sales'}</text>
       <line x1="90" x2="704" y1={baseline} y2={baseline} />
       {months.map((month, i) => <g key={month.month}>
         {month.median === null ? null : <circle cx={x(i)} cy={priceY(month.median)} r="3.5" fill="currentColor"><title>{`${month.month}: ${money(month.median, 'SGD')} · ${month.count} sales`}</title></circle>}
