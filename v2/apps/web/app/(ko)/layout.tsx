@@ -9,7 +9,7 @@ import { homepageCopy } from '@/lib/site-copy';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { preload } from 'react-dom';
-import { Analytics } from '@vercel/analytics/next';
+import { Analytics } from '@/components/privacy-safe-analytics';
 import { notoSansKr } from '../fonts';
 
 import '../globals.css';
