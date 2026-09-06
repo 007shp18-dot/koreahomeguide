@@ -11,11 +11,11 @@ it('uses Korean social images for the Korean directory and calculator',()=>{
   expect(metadata.twitter?.images).toEqual(['https://www.signedprice.com/og/ko/']);
  }
 });
-it.each(['en','ko','zh-CN'] as const)('publishes a translated tools directory with five live actions: %s',locale=>{
+it.each(['en','ko','zh-CN'] as const)('publishes a translated tools directory with all three market checks: %s',locale=>{
  const html=renderToStaticMarkup(<ToolsHub locale={locale}/>);
  expect(html.match(/<h1\b/g)).toHaveLength(1);expect(html).not.toContain('Preparing');
  expect(globalNavigation(locale)).toHaveLength(5);
- expect(html).toContain('/sg/singapore/check');expect(html).toContain('/tools/property-scenario');
+ expect(html).toContain('/ae/dubai/check');expect(html).toContain('/sg/singapore/check');expect(html).toContain('/tools/property-scenario');
 });
 it.each(['en','ko'] as const)('keeps calculator parameters out of indexable metadata: %s',locale=>{
  const base=buildPropertyScenarioMetadata(locale,false), query=buildPropertyScenarioMetadata(locale,true);

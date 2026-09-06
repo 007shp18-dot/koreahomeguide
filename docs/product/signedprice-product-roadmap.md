@@ -18,6 +18,37 @@ resale, and (2) actual local partner sourcing, project/listing verification and
 market-specific operating readiness. Do not postpone the second track until every
 dataset is complete. Never invent partners, live inventory or professional services.
 
+## Current sequence after the search-recovery release
+
+This status supersedes the older release descriptions below. PR #176 is merged:
+Dubai area comparisons and Check are live, Passport supports three-city budget
+comparison, and the search-discovery fixes have shipped. Search Console
+submission is complete according to the operator; actual indexing and traffic
+recovery are not yet established. Leave the old-domain deployment unchanged.
+
+1. Improve the existing three-city experience: readable copy, consistent cards,
+   clear source periods and sample sizes, and complete links between Markets,
+   Prices, Tools, Guides and News. Preserve the established brand.
+2. Deepen Passport: connect budget results to useful area/project candidates and
+   recorded transactions; distinguish buying-power estimates from current inventory.
+3. Help readers evaluate a purchase: buyer eligibility, acquisition costs and
+   operating scenarios, with Dubai Ready/Off-Plan area comparisons and Check.
+4. Let readers retain a shortlist and compare compatible candidates, followed by
+   account sync and alerts when those services are actually available.
+5. Connect verified local professionals and purchase support, then ownership,
+   rental management and resale. Begin real partner sourcing alongside product
+   work; never imply a partner or brokerage service exists before it does.
+6. Expand to Japan after the Dubai research journey and underlying data are stable.
+
+Articles should answer concrete buying questions with adequate comparable samples
+and link into this journey. Search eligibility thresholds are not sufficient
+sample sizes for market-level analysis.
+
+## Earlier implementation notes
+
+The sections below preserve earlier decisions; statements about unreleased Dubai
+area data describe earlier stages, not the current production status.
+
 ## Immediate quality and evidence-depth slice
 
 - Keep the shared Explore frame and brand. Account for all matching results on the

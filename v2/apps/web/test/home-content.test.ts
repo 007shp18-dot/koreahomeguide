@@ -29,7 +29,7 @@ describe('signedprice homepage copy', () => {
 
     expect(positions.every((position) => position >= 0)).toBe(true);
     expect([...positions].sort((a, b) => a - b)).toEqual(positions);
-    expect(markup).toContain('Compare residential property in Seoul, Singapore and Dubai');
+    expect(markup).toContain('Find an area, compare recorded prices and work out the costs of buying');
     expect(markup).toContain('data-primary-action="explore"');
   }, 10_000);
 
@@ -51,7 +51,7 @@ describe('signedprice homepage copy', () => {
     expect(layoutModule.metadata).toEqual({
       metadataBase: new URL('https://www.signedprice.com'),
       title: 'signedprice | Real prices. Better property decisions.',
-      description: 'Verified Seoul property intelligence with official-source context and publication limits shown clearly.',
+      description: 'Compare property prices, rents and buying costs in Seoul, Singapore and Dubai, with transaction dates and sources.',
     });
     expect(layoutModule.metadata).not.toHaveProperty('alternates');
     expect(homeMetadata).toMatchObject({

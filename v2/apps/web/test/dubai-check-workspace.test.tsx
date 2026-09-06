@@ -95,7 +95,7 @@ describe('Dubai Check workspace', () => {
 
     for (const value of [
       'AED 1,500,000', 'AED 1,280,000', '+17.2%', 'AED 21,429/m²',
-      'AED 18,900/m²', '+13.4%', '6.1%', 'Above the released middle range',
+      'AED 18,900/m²', '+13.4%', '6.1%', 'Above the typical range',
     ]) expect(html).toContain(value);
     expect(html).toContain('data-dubai-check-result="ready"');
     expect(html).toContain('not an appraisal, forecast, or recommendation');

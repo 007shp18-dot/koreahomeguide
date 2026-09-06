@@ -32,12 +32,12 @@ const hubCopy = {
   prices: {
     eyebrow: 'Signed price evidence',
     title: 'Prices',
-    description: 'Move from city context to district and building evidence without mixing completed contracts with asking prices or active listings.',
+    description: 'Find recorded sale prices and rents by city, then compare the area, building or project you are considering.',
   },
   news: {
     eyebrow: 'Market news',
-    title: 'News, with the evidence boundary attached.',
-    description: 'SignedPrice publishes market briefs only when the evidence, period and editorial boundary can be shown together.',
+    title: 'News',
+    description: 'Property news and analysis from Seoul, Singapore and Dubai, with links to the underlying sources.',
   },
   guides: {
     eyebrow: 'Buying across borders',
@@ -68,20 +68,20 @@ function MarketCards() {
   return (
     <div className={styles.marketGrid}>
       <article className={`${styles.marketCard} ${styles.marketKorea}`}>
-        <header><span>KR</span><Status tone="live">Live evidence</Status></header>
-        <div><p>Korea</p><h2>Seoul</h2><p>Official reported housing contracts, district distributions and retained building evidence.</p></div>
+        <header><span>KR</span><Status tone="live">Reported transactions</Status></header>
+        <div><p>Korea</p><h2>Seoul</h2><p>Compare recorded sale prices, jeonse deposits and monthly rents by district, neighborhood and building.</p></div>
         <dl><div><dt>Currency</dt><dd>KRW</dd></div><div><dt>Coverage</dt><dd>Rent · Sale</dd></div></dl>
         <nav className={styles.marketReading} aria-label="Seoul research"><Link href="/kr/seoul/explore/">Explore</Link><Link href="/guides/buy-property-in-korea-as-foreigner/">Buying guide</Link><Link href="/news/?market=seoul">News and analysis</Link></nav>
       </article>
       <article className={`${styles.marketCard} ${styles.marketSingapore}`}>
-        <header><span>SG</span><Status tone="limited">Available datasets</Status></header>
+        <header><span>SG</span><Status tone="limited">Housing transactions</Status></header>
         <div><p>Singapore</p><h2>Singapore</h2><p>Explore private residential projects and HDB transactions separately, with coverage shown for each dataset.</p></div>
         <dl><div><dt>Currency</dt><dd>SGD</dd></div><div><dt>Coverage</dt><dd>Private · HDB</dd></div></dl>
         <nav className={styles.marketReading} aria-label="Singapore research"><Link href="/sg/singapore/explore/">Explore</Link><Link href="/guides/read-singapore-private-transactions/">Buying guide</Link><Link href="/news/?market=singapore">News and analysis</Link></nav>
       </article>
       <article className={`${styles.marketCard} ${styles.marketDubai}`} id="dubai">
-        <header><span>AE</span><Status tone="limited">Area evidence</Status></header>
-        <div><p>United Arab Emirates</p><h2>Dubai</h2><p>Compare Ready and Off-Plan prices, annual rents and estimated gross yields using released area evidence.</p></div>
+        <header><span>AE</span><Status tone="limited">Area comparisons</Status></header>
+        <div><p>United Arab Emirates</p><h2>Dubai</h2><p>Compare Ready and Off-Plan sale prices, annual rents and estimated gross yields by area.</p></div>
         <dl><div><dt>Currency</dt><dd>AED</dd></div><div><dt>Coverage</dt><dd>Ready · Off-Plan · Rent</dd></div></dl>
         <nav className={styles.marketReading} aria-label="Dubai research"><Link href="/ae/dubai/explore/">Explore</Link><Link href="/ae/dubai/guide/">Buying guide</Link><Link href="/news/?market=dubai">News</Link></nav>
       </article>
@@ -91,7 +91,7 @@ function MarketCards() {
 
 function MarketsHub() {
   const rows = [
-    ['Signed price evidence', 'Live', 'Available datasets', 'Area aggregates'],
+    ['Signed price evidence', 'Live', 'Housing transactions', 'Area aggregates'],
     ['District or area exploration', 'Live', 'Available by dataset', 'Released area comparisons'],
     ['Active property listings', 'Not offered', 'Not offered', 'Not offered'],
     ['Personalized investment advice', 'Not offered', 'Not offered', 'Not offered'],
@@ -99,7 +99,7 @@ function MarketsHub() {
   return (
     <>
       <section className={styles.section} aria-labelledby="market-directory-title">
-        <div className={styles.sectionHeading}><p>Explore markets</p><h2 id="market-directory-title">Choose a market, then a dataset.</h2></div>
+        <div className={styles.sectionHeading}><p>Explore markets</p><h2 id="market-directory-title">Start with a city.</h2></div>
         <MarketCards />
       </section>
       <section className={styles.section} aria-labelledby="market-research-title">
@@ -139,12 +139,21 @@ function MarketsHub() {
 function PricesHub() {
   return <>
     <PriceMarketSearch />
+    <section className={styles.section} aria-labelledby="read-prices-title">
+      <div className={styles.sectionHeading}><p>Making a comparison</p><h2 id="read-prices-title">What to check beside the price</h2></div>
+      <div className={styles.productGrid}>
+        <article><h3>Match the property</h3><p>Compare the same housing type, a similar floor area and nearby transaction dates. In Dubai, keep Ready and Off-Plan separate; in Singapore, check tenure as well as the project.</p></article>
+        <article><h3>Read the sample</h3><p>A median describes the middle of the recorded transactions. It is not a valuation of a specific home. Check the number of records and the period before treating it as a useful benchmark.</p></article>
+        <article><h3>Include ownership costs</h3><p>Purchase taxes, fees, financing and running costs sit outside the sale price. Gross rental yield is annual rent divided by price, before costs and vacancy; area rent and sale samples may describe different homes.</p></article>
+      </div>
+      <p className={styles.researchSources}>Each market page shows its data sources and dates. <Link href="/trust/">Read how we handle data and corrections</Link>, or <Link href="/tools/property-scenario/">calculate a budget with your own costs</Link>.</p>
+    </section>
     <section className={styles.section} aria-labelledby="price-products-title">
-      <div className={styles.sectionHeading}><p>Choose a market</p><h2 id="price-products-title">Local records. Comparable decisions.</h2></div>
+      <div className={styles.sectionHeading}><p>Choose a market</p><h2 id="price-products-title">Find prices in your market.</h2></div>
       <div className={styles.productGrid}>
         <Link href="/kr/seoul/explore/"><span>Seoul · KRW</span><h3>Reported housing contracts</h3><p>Explore sale, jeonse and monthly rent by district, neighborhood and building. Compare the same property type and area.</p><strong>Explore →</strong></Link>
         <Link href="/sg/singapore/explore/"><span>Singapore · SGD</span><h3>Private homes and HDB</h3><p>Search private projects and inspect transaction history, size bands and tenure. HDB records stay in their own dataset.</p><strong>Explore →</strong></Link>
-        <Link href="/ae/dubai/explore/"><span>Dubai · AED</span><h3>Market and area research</h3><p>Compare Ready and Off-Plan sale prices, annual rents and gross yields by area, with sample sizes and reporting dates.</p><strong>Explore research →</strong></Link>
+        <Link href="/ae/dubai/explore/"><span>Dubai · AED</span><h3>Ready and Off-Plan prices</h3><p>Compare Ready and Off-Plan sale prices, annual rents and gross yields by area, with sample sizes and reporting dates.</p><strong>Explore →</strong></Link>
       </div>
     </section>
   </>;
@@ -155,10 +164,10 @@ function InsightsHub({ workspace }: Readonly<{ workspace?: NewsWorkspaceModel }>
   return (
     <section className={`${styles.section} ${styles.newsSection}`} aria-labelledby="insights-title">
       <div className={styles.newsToolbar}>
-        <div><p>SignedPrice reporting</p><h2 id="insights-title">Evidence first, commentary second.</h2></div>
+        <div><p>SignedPrice reporting</p><h2 id="insights-title">Latest reporting and analysis</h2></div>
         <nav className={styles.newsToolbarLinks} aria-label="News and original reporting">
           <Link href="/news/?type=data-stories">Read original reports →</Link>
-          <Link href="/news/?market=seoul">Approved Seoul briefs →</Link>
+          <Link href="/news/?market=seoul">Seoul reports →</Link>
         </nav>
       </div>
       <NewsWorkbench model={model} />
@@ -176,7 +185,7 @@ function GuidesHub({ market = 'all' }: Readonly<{ market?: GlobalProductHubProps
       <nav className={styles.directoryFilters} aria-label="Guide markets">{([['all', 'All'], ['seoul', 'Seoul'], ['singapore', 'Singapore'], ['dubai', 'Dubai']] as const).map(([id, label]) => <Link key={id} href={id === 'all' ? '/guides/' : `/guides/?market=${id}`} aria-current={market === id ? 'page' : undefined}>{label}</Link>)}</nav>
       <section className={styles.section} aria-labelledby="guides-title">
         <div className={styles.sectionHeading}><p>Buying and renting</p><h2 id="guides-title">Practical guides for each market.</h2></div>
-        <p className={styles.resultCount}>{guides.length + (market === 'all' || market === 'dubai' ? 1 : 0)} {guides.length + (market === 'all' || market === 'dubai' ? 1 : 0) === 1 ? 'guide' : 'guides'} · Sources and reporting dates inside each guide</p>
+        <p className={styles.resultCount}>{guides.length + (market === 'all' || market === 'dubai' ? 1 : 0)} {guides.length + (market === 'all' || market === 'dubai' ? 1 : 0) === 1 ? 'guide' : 'guides'} · Sources and dates are listed in each guide</p>
         <div className={styles.guideGrid}>{guides.map((guide) => <article key={guide.slug}><span>{guide.marketId === 'kr-seoul' ? 'Seoul' : 'Singapore'} · Updated {guide.updatedAt.slice(0, 10)}</span><h3>{guide.title}</h3><p>{guide.deck}</p><Link href={guide.canonicalHref}>Read guide</Link></article>)}{market === 'all' || market === 'dubai' ? <article><span>Dubai · Updated 2026-09-06</span><h3>Research a Dubai property purchase</h3><p>Check project identity, completion status and service charges, then build an AED purchase-cost scenario.</p><Link href="/ae/dubai/guide/">Read guide</Link></article> : null}</div>
       </section>
     </>
@@ -189,7 +198,7 @@ export function GlobalProductHub({ kind, newsWorkspace, guideMarket }: GlobalPro
     <div id="top">
       <SiteHeader copy={headerFor(kind)} />
       <main className={styles.main}>
-        <ResearchPageHeading title={copy.title} description={copy.description} actions={kind === 'prices' ? <><Link href="/tools/">Calculate or compare terms</Link><Link href="/tools/property-scenario/">Purchase cost calculator</Link></> : undefined} />
+        <ResearchPageHeading title={copy.title} description={copy.description} actions={<><Link href="/passport/">Compare your budget across cities</Link><Link href="/tools/">Price checks and calculators</Link></>} />
         {kind === 'markets' ? <MarketsHub /> : null}
         {kind === 'prices' ? <PricesHub /> : null}
         {kind === 'news' ? <InsightsHub workspace={newsWorkspace} /> : null}

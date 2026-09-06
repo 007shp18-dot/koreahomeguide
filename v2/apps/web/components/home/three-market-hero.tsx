@@ -16,8 +16,8 @@ const INITIAL_STATE: ThreeMarketHeroState = Object.freeze({ activeIndex: 0, auto
 
 const HERO_COPY = Object.freeze({
   en: Object.freeze({
-    eyebrow: 'Property evidence · three cities',
-    caption: 'Editorial city photograph · not an exact-property claim',
+    eyebrow: 'Property markets · three cities',
+    caption: 'City view',
     tabLabel: 'Choose a property market',
     states: Object.freeze({
       available: 'Available', limited: 'Limited', insufficient: 'Insufficient', rights_blocked: 'Rights blocked',
@@ -25,7 +25,7 @@ const HERO_COPY = Object.freeze({
   }),
   'zh-CN': Object.freeze({
     eyebrow: '房地产依据 · 三座城市',
-    caption: '城市编辑图片 · 不代表具体房产',
+    caption: '城市景观',
     tabLabel: '选择房地产市场',
     states: Object.freeze({
       available: '可用', limited: '数据有限', insufficient: '依据不足', rights_blocked: '展示权受限',
