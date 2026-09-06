@@ -311,9 +311,7 @@
     "description": "Follow the Korea apartment rental process for foreigners, from budgeting and housing types to contract checks, payment and move-in.",
     "robots": "index,follow",
     "schemaTypes": [],
-    "sitemapSources": [
-      "sitemap-static.xml"
-    ]
+    "sitemapSources": []
   },
   {
     "path": "/guides/seoul-brokerage-fees/",
@@ -386,9 +384,7 @@
     "description": "Compare wolse and jeonse in Korea: deposits, monthly rent, cash needs and contract risks, with practical checks for foreign renters.",
     "robots": "index,follow",
     "schemaTypes": [],
-    "sitemapSources": [
-      "sitemap-static.xml"
-    ]
+    "sitemapSources": []
   },
   {
     "path": "/net-proceeds/",
