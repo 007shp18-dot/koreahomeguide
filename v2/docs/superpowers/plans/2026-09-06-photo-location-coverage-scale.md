@@ -30,12 +30,12 @@
 - Create: `v2/apps/web/test/property-location-seed.test.ts`
 
 **Interfaces:**
-- Produces: WGS84 coordinates for 3,402 unambiguous URA projects and verified `public_entity_locations` rows.
+- Produces: WGS84 coordinates for 3,403 unambiguous URA projects and verified `public_entity_locations` rows.
 - Consumes: SVY21 `x`/`y` values from `singapore-private-sale.json.gz` and rights policy `sg-ura-private-sale-v1`.
 
 - [ ] **Step 1: Write failing coordinate-count and conflict tests**
 
-Assert 3,402 private seed rows have valid Singapore coordinates, 460 remain null, and the known conflicting project remains null. Assert all HDB coordinates remain null.
+Assert 3,403 private seed rows have valid Singapore coordinates and 459 remain null. Assert all HDB coordinates remain null.
 
 - [ ] **Step 2: Run the focused tests and verify the current zero-coordinate failure**
 
@@ -152,7 +152,7 @@ git commit -m "feat(signedprice): scale free photo discovery"
 
 - [ ] **Step 1: Apply location and nearby-place seeds on the test branch twice**
 
-Confirm 3,402 verified URA locations, stable nearby-place counts/digests, unchanged property ID digests, and unchanged Dubai counts/digests.
+Confirm 3,403 verified URA locations, stable nearby-place counts/digests, unchanged property ID digests, and unchanged Dubai counts/digests.
 
 - [ ] **Step 2: Run one bounded NAVER and Wikimedia slice twice**
 

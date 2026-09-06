@@ -27,7 +27,7 @@ The public site continues to read its verified compressed artifacts for aggregat
 
 ## Location and building facts
 
-Singapore private-sale records include official URA SVY21 project coordinates. A coordinate is accepted when the project records agree within 250 metres and the converted WGS84 point falls within Singapore bounds. The 3,402 unambiguous projects populate both legacy and global entity coordinates plus `public_entity_locations`; the single conflicting project and projects without coordinates remain unverified.
+Singapore private-sale records include official URA SVY21 project coordinates. A coordinate is accepted when the project records agree within 250 metres and the converted WGS84 point falls within Singapore bounds. The 3,403 unambiguous projects populate both legacy and global entity coordinates plus `public_entity_locations`; the 459 projects without coordinates remain unverified.
 
 The 795 approved K-apt profiles remain in `building_facts`. Their named schools and subway stations are additionally normalized into `nearby_places` with stable provider IDs, source attribution, and available walk-time bands. No distance or coordinate is invented when the official payload omits it.
 
@@ -42,7 +42,7 @@ The production schedule increases free-source throughput only after the same bou
 - Property IDs and the expected legacy/entity digests remain unchanged.
 - The evidence seed reports exactly 374,261 row-level observations and 40,044 HDB metric rows.
 - Replaying the evidence and location seeds changes no counts or deterministic digests.
-- Singapore private coordinates publish for 3,402 unambiguous projects and never for the conflicting project.
+- Singapore private coordinates publish for 3,403 unambiguous projects; the 459 projects without source coordinates remain unset.
 - K-apt schools and subway stations persist with no invented distances.
 - Google cost caps remain unchanged; NAVER and Wikimedia batches are bounded and retry-safe.
 - Existing compressed artifacts remain installed and readable.
