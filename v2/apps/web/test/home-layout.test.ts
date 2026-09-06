@@ -60,7 +60,7 @@ describe('signedprice public editorial homepage', () => {
     const navigation = markup.match(/<nav[^>]*aria-label="Primary navigation"[^>]*>([\s\S]*?)<\/nav>/)?.[1] ?? '';
 
     expect(navigation.match(/<a /g) ?? []).toHaveLength(5);
-    for (const destination of ['/markets', '/prices', '/news', '/guides']) {
+    for (const destination of ['/markets', '/prices', '/news?type=analysis', '/guides']) {
       expect(navigation).toContain(`href="${destination}"`);
     }
     expect(markup).toContain('aria-label="Language navigation"');
@@ -75,7 +75,7 @@ describe('signedprice public editorial homepage', () => {
     expect(markup).toContain('data-active-market="kr-seoul"');
     expect(markup).toContain('href="/kr/seoul/check"');
     expect(markup).toContain('href="/kr/seoul/explore"');
-    expect(markup).toContain('href="/news"');
+    expect(markup).toContain('href="/news?type=analysis"');
     expect(markup).not.toContain('/design-review/');
   });
 

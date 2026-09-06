@@ -57,7 +57,7 @@ export interface NavigationLinkModel {
   readonly description?: string;
 }
 
-export type GlobalNavigationItem = 'Markets' | 'Prices' | 'Tools' | 'News' | 'Guides';
+export type GlobalNavigationItem = 'Markets' | 'Prices' | 'Tools' | 'Insights' | 'Guides';
 
 export interface SiteHeaderModel {
   readonly brand: string;
@@ -88,7 +88,7 @@ export const productNavigationLinks = Object.freeze([
   { index: '01', label: 'Markets', description: 'Compare market context', href: '/markets/' },
   { index: '02', label: 'Prices', description: 'Explore signed evidence', href: '/prices/' },
   { index: '03', label: 'Tools', description: 'Calculate and compare terms', href: '/tools/' },
-  { index: '04', label: 'News', description: 'Read verified market news', href: '/news/' },
+  { index: '04', label: 'Insights', description: 'Read original property analysis', href: '/news/?type=analysis' },
   { index: '05', label: 'Guides', description: 'Understand local decisions', href: '/guides/' },
 ] as const satisfies readonly (NavigationLinkModel & { readonly label: GlobalNavigationItem })[]);
 
