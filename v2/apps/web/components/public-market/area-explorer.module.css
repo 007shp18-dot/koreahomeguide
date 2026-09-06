@@ -632,9 +632,11 @@
 
 .buildingDialogHeader h2 {
   margin-top: .25rem;
-  font-size: clamp(1.5rem, 3vw, 2.4rem);
+  font-size: 1.375rem;
   letter-spacing: var(--tracking-display);
-  line-height: 1.05;
+  line-height: 1.3;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
 .buildingDialogHeader span {
@@ -669,29 +671,30 @@
 
 .buildingDialogBody .buildingPanel {
   margin-top: 1rem;
-  border-color: var(--area-ink);
+  padding: 0;
+  border: 0;
+  background: transparent;
 }
 
 .buildingMediaUnavailable {
-  min-height: 240px;
-  padding: clamp(1.25rem, 3vw, 2.5rem);
+  padding: .75rem 0;
   display: grid;
-  align-content: end;
-  gap: .75rem;
-  color: var(--area-ground);
-  background: var(--petrol);
+  gap: .35rem;
+  color: var(--area-muted);
+  border-bottom: var(--rule-strong);
 }
 
 .buildingMediaUnavailable strong {
-  font-size: clamp(1.35rem, 3vw, 2.25rem);
-  line-height: 1.1;
+  font-size: .8125rem;
+  font-weight: 600;
+  line-height: 1.4;
 }
 
 .buildingMediaUnavailable p {
   max-width: 58ch;
-  color: var(--accent-soft);
+  color: var(--area-muted);
   font-size: .75rem;
-  line-height: 1.55;
+  line-height: 1.5;
 }
 
 .buildingDialogFooter {
