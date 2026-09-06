@@ -631,29 +631,34 @@ export function NaverDistrictMap({
     });
   }), [buildings, googleCoordinates, storedLocations]);
 
+  const locationRequest = JSON.stringify((buildings ?? [])
+    .filter((building) => building.storedLocationKey !== undefined && (building.latitude === null || building.longitude === null))
+    .toSorted((a, b) => Number(b.selected === true) - Number(a.selected === true))
+    .slice(0, 50).map((building) => ({ id: building.id, key: building.storedLocationKey! })));
+
   useEffect(() => {
-    const selected = buildings?.find((building) => building.selected === true);
-    if (selected?.storedLocationKey === undefined || storedLocations[selected.id] !== undefined) return undefined;
+    const requested = JSON.parse(locationRequest) as { id: string; key: string }[];
+    if (requested.length === 0) return;
     const controller = new AbortController();
-    void fetch(`/api/building-location/?key=${encodeURIComponent(selected.storedLocationKey)}`, { signal: controller.signal })
+    void fetch(`/api/building-location/?keys=${encodeURIComponent(requested.map(({ key }) => key).join(','))}`, { signal: controller.signal })
       .then((response) => response.ok ? response.json() : Promise.reject(new Error('location unavailable')))
       .then((value: unknown) => {
-        if (typeof value !== 'object' || value === null) return;
-        const item = value as Record<string, unknown>;
-        if (typeof item.address !== 'string') return;
-        const address = item.address;
-        setStoredLocations((current) => Object.freeze({
-          ...current,
-          [selected.id]: Object.freeze({
-            address,
+        if (controller.signal.aborted || typeof value !== 'object' || value === null || !('locations' in value) || !Array.isArray(value.locations)) return;
+        const updates: Record<string, { address: string; latitude: number | null; longitude: number | null }> = {};
+        for (const item of value.locations) {
+          if (typeof item !== 'object' || item === null || typeof item.address !== 'string') continue;
+          const match = requested.find(({ key }) => key === item.key);
+          if (!match) continue;
+          updates[match.id] = {
+            address: item.address,
             latitude: typeof item.latitude === 'number' ? item.latitude : null,
             longitude: typeof item.longitude === 'number' ? item.longitude : null,
-          }),
-        }));
-      })
-      .catch(() => undefined);
+          };
+        }
+        if (Object.keys(updates).length > 0) setStoredLocations((current) => Object.freeze({ ...current, ...updates }));
+      }).catch(() => undefined);
     return () => controller.abort();
-  }, [buildings, storedLocations]);
+  }, [locationRequest]);
 
   const resolveSelectedGoogleCoordinate = useCallback(async () => {
     if (googleMapsBrowserKey === null || selectedUnresolvedBuilding === undefined) return;

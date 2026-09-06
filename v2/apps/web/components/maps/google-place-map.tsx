@@ -133,7 +133,15 @@ export function mountGoogleMarketPoints(
   points: readonly GoogleMarketMapPoint[],
   onSelectPoint?: (id: string) => void,
 ): readonly GoogleMarkerInstance[] {
-  return Object.freeze(points.filter((point) => Number.isFinite(point.latitude) && Number.isFinite(point.longitude)).map((point) => {
+  const located = points.filter((point) => Number.isFinite(point.latitude) && Number.isFinite(point.longitude));
+  const selected = located.find((point) => point.selected);
+  if (selected) map.fitBounds({ south: selected.latitude! - .0015, north: selected.latitude! + .0015, west: selected.longitude! - .0015, east: selected.longitude! + .0015 });
+  else if (located.length > 0 && sdk.LatLngBounds) {
+    const bounds = new sdk.LatLngBounds();
+    for (const point of located) bounds.extend({ lat: point.latitude!, lng: point.longitude! });
+    map.fitBounds(bounds);
+  }
+  return Object.freeze(located.map((point) => {
     const marker = new sdk.Marker({
       map,
       position: { lat: point.latitude!, lng: point.longitude! },
@@ -153,9 +161,13 @@ export async function geocodeGoogleMarketPoints(
   isActive: () => boolean = () => true,
 ): Promise<readonly GoogleMarkerInstance[]> {
   const markers: GoogleMarkerInstance[] = [];
-  const locations: GoogleLocation[] = [];
+  const locations: GoogleLocation[] = points.filter((point) => Number.isFinite(point.latitude) && Number.isFinite(point.longitude))
+    .map((point) => ({ lat: () => point.latitude!, lng: () => point.longitude! }));
   const viewports: unknown[] = [];
-  for (const point of points.filter((candidate) => candidate.address !== undefined)) {
+  let selectedViewport: unknown = null;
+  const selectedCoordinate = points.find((point) => point.selected && Number.isFinite(point.latitude) && Number.isFinite(point.longitude));
+  if (selectedCoordinate) selectedViewport = { south: selectedCoordinate.latitude! - .0015, north: selectedCoordinate.latitude! + .0015, west: selectedCoordinate.longitude! - .0015, east: selectedCoordinate.longitude! + .0015 };
+  for (const point of points.filter((candidate) => candidate.address !== undefined && !(Number.isFinite(candidate.latitude) && Number.isFinite(candidate.longitude)))) {
     if (!isActive()) break;
     try {
       const { results } = await runtime.geocoder.geocode({
@@ -177,11 +189,14 @@ export async function geocodeGoogleMarketPoints(
       markers.push(marker);
       locations.push(position);
       viewports.push(results[0]!.geometry.viewport);
+      if (point.selected) selectedViewport = results[0]!.geometry.viewport;
     } catch {
       // Keep the rest of the verified project markers when one address cannot be resolved.
     }
   }
-  if (locations.length === 1 && isActive()) {
+  if (selectedViewport !== null && isActive()) {
+    runtime.map.fitBounds(selectedViewport);
+  } else if (locations.length === 1 && viewports.length === 1 && isActive()) {
     runtime.map.fitBounds(viewports[0]);
   } else if (locations.length > 1 && sdk.LatLngBounds !== undefined && isActive()) {
     const bounds = new sdk.LatLngBounds();
@@ -253,9 +268,7 @@ export function GooglePlaceMap({
         }
         marketMarkers.current = Object.freeze([...marketMarkers.current, ...markers]);
         if (requestedLocations > 0) {
-          setMessage(markers.length === requestedLocations
-            ? `${markers.length} project locations matched on Google Maps.`
-            : `${markers.length} of ${requestedLocations} project locations matched on Google Maps.`);
+          setMessage(`${marketMarkers.current.length} of ${points.length} project locations shown.`);
         }
       });
       setMapState('ready');

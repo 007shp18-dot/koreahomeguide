@@ -1,3 +1,4 @@
+import type { UraProjectLocation } from './project-location';
 import type {
   EvidenceDescriptor,
 } from '@signedprice/market-core';
@@ -87,6 +88,7 @@ export type SingaporeSegmentModel = SingaporeInsufficientModel<SingaporeSegmentS
 }>;
 
 export type SingaporeProjectListItem = Readonly<{
+  location?: UraProjectLocation | null;
   id: string;
   name: string;
   street: string;

@@ -1,3 +1,5 @@
+import { RecentTransactionPlot, SizeCohortResearch } from '../market-ui/transaction-research';
+import { PropertyScenarioCalculator } from '../market-ui/property-scenario';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 
@@ -358,11 +360,7 @@ export function KoreaEvidenceBuildingDetail({
             </dl>
           ) : null}
 
-          <section className={styles.trendUnavailable} aria-labelledby="building-price-trend-heading">
-            <span>{locale === 'ko' ? '가격 시계열' : 'Price trend'}</span>
-            <h3 id="building-price-trend-heading">{locale === 'ko' ? '월별 비교 표본을 확인하는 중입니다.' : 'Monthly comparison cohorts are not yet verified.'}</h3>
-            <p>{locale === 'ko' ? '현재 릴리스는 선택 기간의 분포와 실제 신고 행만 보유합니다. 월별 가격선을 임의로 만들지 않습니다.' : 'This release retains the selected-period distribution and actual filing rows. It does not fabricate a monthly line from incomplete cohorts.'}</p>
-          </section>
+          <RecentTransactionPlot rows={model.recentTransactions} locale={locale} />
 
           <div id="building-transactions" className={styles.sectionHeading} data-detail-order="history"><p>{locale === 'ko' ? '실제 신고 거래' : 'Reported filings'}</p><h2>{locale === 'ko' ? '선택 조건에 남은 신고 행' : 'Filings retained in this exact cohort'}</h2></div>
           {model.recentTransactions.length === 0 ? (
@@ -402,12 +400,15 @@ export function KoreaEvidenceBuildingDetail({
             <p>{locale === 'ko' ? '면적별 가격' : 'Price by home size'}</p>
             <h2 id="building-area-prices-heading">{locale === 'ko' ? '같은 건물의 면적 구간을 전환합니다.' : 'Switch between verified size cohorts for this building.'}</h2>
           </div>
+          {model.sizeCohorts ? <SizeCohortResearch rows={model.sizeCohorts} currency="KRW" locale={locale} /> : null}
           <ul>{Object.entries(areaLabels).map(([id, label]) => <li key={id}>
             <strong>{label}</strong>
             <span>{id === model.selection.areaBand ? `${primaryLabel} · ${model.evidence.medianLabel ?? (locale === 'ko' ? '미확인' : 'Not published')}` : (locale === 'ko' ? '선택하여 근거 확인' : 'Open this evidence cohort')}</span>
             <Link href={localizedSeoulHref(`/kr/seoul/explore/${model.district.slug}/${model.building.buildingId}/?transaction=${model.selection.transaction}&area=${id}`, locale)}>{locale === 'ko' ? '이 면적 보기' : 'View size cohort'}</Link>
           </li>)}</ul>
         </section>
+
+        {model.selection.transaction === 'sale' ? <div className={styles.areaBands}><PropertyScenarioCalculator key={`${model.building.buildingId}-${model.selection.areaBand}`} price={model.evidence.medianWon} currency="KRW" locale={locale} /></div> : null}
 
         <div id="building-facts" className={styles.factsAnchor} data-detail-order="facts"><KnownBuildingFacts facts={[
           { label: locale === 'ko' ? '공식 건물명' : 'Official identity', value: model.building.officialName },

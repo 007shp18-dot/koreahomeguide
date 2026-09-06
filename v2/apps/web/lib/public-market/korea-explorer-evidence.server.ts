@@ -139,6 +139,7 @@ export type KoreaExplorerBuildingDetailModel = Readonly<{
     filedDepositMedianWon: number | null;
     filedDepositMedianLabel: string | null;
   }>;
+  sizeCohorts?: readonly Readonly<{ group: string; size: string; count: number; median: number | null }>[];
   recentTransactions: readonly Readonly<{
     filedMonth: string;
     areaSqm: number;
@@ -681,6 +682,11 @@ export function buildKoreaExplorerBuildingDetailModel(
         ? formatMoney(filedDeposit.med)
         : null,
     }),
+    sizeCohorts: Object.freeze(KOREA_EVIDENCE_AREA_BANDS.filter((band) => band !== 'all').map((band) => {
+      const cohort = projectedBuilding(identity, rent, sale, { ...requested, areaBand: band });
+      const size = band === 'under-40' ? 'Under 40 m²' : band === '85-plus' ? '85 m² and over' : `${band.replace('-', '–')} m²`;
+      return Object.freeze({ group: `${identity.housingType} · ${requested.transaction} · ${requested.contractGroup}`, size, count: cohort.primary.n, median: cohort.primary.published ? cohort.primary.med : null });
+    })),
     recentTransactions: Object.freeze(normalizedRecent),
   });
 }
