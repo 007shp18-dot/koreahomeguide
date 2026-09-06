@@ -7,6 +7,7 @@ import {
   runOrderedProviderBatch,
   type PhotoBackfillDependencies,
 } from '../lib/photos/photo-backfill.server';
+import * as photoBackfill from '../lib/photos/photo-backfill.server';
 
 function dependencies(overrides: Partial<PhotoBackfillDependencies> = {}): PhotoBackfillDependencies {
   return {
@@ -21,6 +22,59 @@ function dependencies(overrides: Partial<PhotoBackfillDependencies> = {}): Photo
 }
 
 describe('bounded photo backfill', () => {
+  it('stores a NAVER result only as a private rights-review candidate', async () => {
+    type StoreFactory = (port: Readonly<{
+      query(statement: string, parameters: readonly unknown[]): Promise<readonly Readonly<Record<string, unknown>>[]>;
+    }>) => Readonly<{
+      save(input: Readonly<{
+        buildingKey: string;
+        registryKey: string;
+        candidate: Readonly<{
+          title: string;
+          temporaryImageUrl: string;
+          temporaryThumbnailUrl: string;
+          sourceDocumentUrl: string;
+          width: number | null;
+          height: number | null;
+        }>;
+        confidence: number;
+        evidence: readonly string[];
+      }>): Promise<boolean>;
+    }>;
+    const createStore = (photoBackfill as typeof photoBackfill & {
+      createNaverPhotoCandidateStore?: StoreFactory;
+    }).createNaverPhotoCandidateStore;
+    expect(createStore).toBeTypeOf('function');
+    if (createStore === undefined) return;
+    const calls: Array<{ statement: string; parameters: readonly unknown[] }> = [];
+    const store = createStore({
+      async query(statement, parameters) {
+        calls.push({ statement, parameters });
+        return [{ id: '7' }];
+      },
+    });
+    await expect(store.save({
+      buildingKey: 'dubai:project:burj-khalifa',
+      registryKey: 'ae-dubai:burj-khalifa',
+      candidate: {
+        title: 'Burj Khalifa exterior',
+        temporaryImageUrl: 'https://images.example.com/burj.jpg',
+        temporaryThumbnailUrl: 'https://images.example.com/burj-thumb.jpg',
+        sourceDocumentUrl: 'https://images.example.com/burj.jpg',
+        width: 2400,
+        height: 1600,
+      },
+      confidence: 0.65,
+      evidence: ['name', 'address-in-search-query', 'rights-review-required'],
+    })).resolves.toBe(true);
+    expect(calls).toHaveLength(1);
+    expect(calls[0]?.statement).toContain("'review_required'");
+    expect(calls[0]?.statement).toContain("'review-required'");
+    expect(calls[0]?.statement).toContain("building_photos.status <> 'approved'");
+    expect(calls[0]?.parameters).toContain('ae-dubai:burj-khalifa');
+    expect(calls[0]?.parameters).toContain('https://images.example.com/burj.jpg');
+  });
+
   it('runs provider work in bounded ordered groups and stops before scheduling another group', async () => {
     let active = 0;
     let maxActive = 0;

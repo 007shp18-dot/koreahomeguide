@@ -29,8 +29,9 @@ export async function GET(request: Request) {
 function validOptions(value: unknown): PhotoBackfillOptions | null {
   if (typeof value !== 'object' || value === null || Array.isArray(value)) return null;
   const input = value as Readonly<Record<string, unknown>>;
-  if (!['kr-seoul', 'sg-singapore'].includes(String(input.market))
+  if (!['kr-seoul', 'sg-singapore', 'ae-dubai'].includes(String(input.market))
     || !['google', 'wikimedia', 'naver-search', 'coverage'].includes(String(input.provider))
+    || (input.market === 'ae-dubai' && !['naver-search', 'coverage'].includes(String(input.provider)))
     || !Number.isSafeInteger(input.limit) || Number(input.limit) < 1 || Number(input.limit) > 300
     || !Number.isSafeInteger(input.dailyRequestCap) || Number(input.dailyRequestCap) < 1 || Number(input.dailyRequestCap) > 100_000
     || typeof input.dailySpendCapUsd !== 'number' || !Number.isFinite(input.dailySpendCapUsd)

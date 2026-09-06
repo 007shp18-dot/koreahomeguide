@@ -2,7 +2,9 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 
-import { searchNaverBuildingImages } from '../lib/photos/naver-image-search.server';
+import * as naverImageSearch from '../lib/photos/naver-image-search.server';
+
+const { searchNaverBuildingImages } = naverImageSearch;
 
 afterEach(() => {
   vi.unstubAllEnvs();
@@ -10,7 +12,46 @@ afterEach(() => {
 });
 
 describe('NAVER building image search', () => {
-  it('queries NAVER API HUB without caching or persisting provider payloads', async () => {
+  it('selects a clear, high-resolution building candidate while retaining rights review', () => {
+    type Selector = (input: Readonly<{
+      buildingName: string;
+      candidates: readonly naverImageSearch.NaverImageCandidate[];
+    }>) => Readonly<{
+      candidate: naverImageSearch.NaverImageCandidate;
+      confidence: number;
+      evidence: readonly string[];
+    }> | null;
+    const select = (naverImageSearch as typeof naverImageSearch & {
+      selectNaverBuildingImageCandidate?: Selector;
+    }).selectNaverBuildingImageCandidate;
+    expect(select).toBeTypeOf('function');
+    if (select === undefined) return;
+    const result = select({
+      buildingName: 'Burj Khalifa',
+      candidates: [{
+        title: 'Dubai skyline panorama',
+        temporaryImageUrl: 'https://images.example.com/skyline.jpg',
+        temporaryThumbnailUrl: 'https://images.example.com/skyline-thumb.jpg',
+        sourceDocumentUrl: 'https://images.example.com/skyline.jpg',
+        width: 3200,
+        height: 1800,
+      }, {
+        title: 'Burj Khalifa exterior',
+        temporaryImageUrl: 'https://images.example.com/burj.jpg',
+        temporaryThumbnailUrl: 'https://images.example.com/burj-thumb.jpg',
+        sourceDocumentUrl: 'https://images.example.com/burj.jpg',
+        width: 2400,
+        height: 1600,
+      }],
+    });
+    expect(result).toMatchObject({
+      candidate: { temporaryImageUrl: 'https://images.example.com/burj.jpg' },
+      confidence: 0.65,
+      evidence: ['name', 'address-in-search-query', 'rights-review-required'],
+    });
+  });
+
+  it('queries NAVER API HUB without HTTP caching and returns normalized candidate metadata', async () => {
     vi.stubEnv('NAVER_API_HUB_CLIENT_ID', 'api-hub-client');
     vi.stubEnv('NAVER_API_HUB_CLIENT_SECRET', 'api-hub-secret');
     const providerFetch = vi.fn().mockResolvedValue(new Response(JSON.stringify({

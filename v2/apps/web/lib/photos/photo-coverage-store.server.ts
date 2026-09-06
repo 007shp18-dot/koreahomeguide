@@ -53,7 +53,7 @@ const SYNC_SQL = `
       AND photo.approved_at IS NOT NULL
       AND photo.approved_by IS NOT NULL
       AND photo.visual_reviewed_at IS NOT NULL
-    WHERE entity.market_id IN ('kr-seoul', 'sg-singapore')
+    WHERE entity.market_id IN ('kr-seoul', 'sg-singapore', 'ae-dubai')
       AND ($1::text IS NULL OR entity.market_id = $1)
       AND entity.identity_status = 'verified'
   ), best_photos AS (
@@ -86,7 +86,7 @@ const SYNC_SQL = `
       ON naver.building_key = building.key
       AND naver.pipeline = 'photo-naver-search'
       AND naver.status IN ('succeeded', 'no-candidate')
-    WHERE entity.market_id IN ('kr-seoul', 'sg-singapore')
+    WHERE entity.market_id IN ('kr-seoul', 'sg-singapore', 'ae-dubai')
       AND ($1::text IS NULL OR entity.market_id = $1)
       AND entity.identity_status = 'verified'
       AND NOT EXISTS (
@@ -156,7 +156,7 @@ const SUMMARY_SQL = `
     count(coverage.entity_id)::text AS complete
   FROM property_entities AS entity
   LEFT JOIN building_photo_coverage AS coverage ON coverage.entity_id = entity.id
-  WHERE entity.market_id IN ('kr-seoul', 'sg-singapore')
+  WHERE entity.market_id IN ('kr-seoul', 'sg-singapore', 'ae-dubai')
 `;
 
 function count(value: unknown): number {
@@ -169,7 +169,7 @@ function count(value: unknown): number {
 }
 
 export function createPhotoCoverageStore(port: PhotoCoverageSqlPort): Readonly<{
-  sync(limit?: number, marketId?: 'kr-seoul' | 'sg-singapore'): Promise<Readonly<{
+  sync(limit?: number, marketId?: 'kr-seoul' | 'sg-singapore' | 'ae-dubai'): Promise<Readonly<{
     checked: number;
     updated: number;
   }>>;
@@ -211,7 +211,7 @@ function configuredStore() {
 
 export async function syncPhotoCoverage(
   limit = 300,
-  marketId?: 'kr-seoul' | 'sg-singapore',
+  marketId?: 'kr-seoul' | 'sg-singapore' | 'ae-dubai',
 ) {
   return configuredStore().sync(limit, marketId);
 }

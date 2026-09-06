@@ -2,20 +2,101 @@ import 'server-only';
 
 import { contentDatabase } from '../db/postgres.server';
 import {
+  candidatePhotoRegistryKey,
   discoverGooglePlacePhotoCandidates,
   discoverWikimediaCommonsPhotoCandidates,
 } from './building-photo-store.server';
-import { searchNaverBuildingImages } from './naver-image-search.server';
+import {
+  searchNaverBuildingImages,
+  selectNaverBuildingImageCandidate,
+  type NaverImageCandidate,
+} from './naver-image-search.server';
 import { readPhotoCoverageSummary, syncPhotoCoverage } from './photo-coverage-store.server';
 
 export type PhotoBackfillOptions = Readonly<{
-  market: 'kr-seoul' | 'sg-singapore';
+  market: 'kr-seoul' | 'sg-singapore' | 'ae-dubai';
   provider: 'google' | 'wikimedia' | 'naver-search' | 'coverage';
   limit: number;
   dailyRequestCap: number;
   dailySpendCapUsd: number;
   dryRun: boolean;
 }>;
+
+export type NaverPhotoCandidateStorePort = Readonly<{
+  query(statement: string, parameters: readonly unknown[]): Promise<readonly Readonly<Record<string, unknown>>[]>;
+}>;
+
+type NaverPhotoCandidateWrite = Readonly<{
+  buildingKey: string;
+  registryKey: string;
+  candidate: NaverImageCandidate;
+  confidence: number;
+  evidence: readonly string[];
+}>;
+
+const UPSERT_NAVER_PHOTO_CANDIDATE_SQL = `
+  /* photo-backfill:upsert-naver-review-candidate */
+  INSERT INTO building_photos (
+    building_key, registry_key, provider, asset_url, attribution_name, attribution_url,
+    status, subject_kind, rights_status, source_page_url,
+    match_policy_version, match_confidence, match_evidence,
+    provider_source_uri, provider_checked_at, checked_at
+  ) VALUES (
+    $1, $2, 'licensed-url', $3, 'NAVER Image Search', $4,
+    'review_required', 'building-exterior', 'review-required', $4,
+    'naver-image-candidate-v1', $5, $6::jsonb,
+    $7, now(), now()
+  )
+  ON CONFLICT (registry_key) DO UPDATE SET
+    building_key = excluded.building_key,
+    provider = excluded.provider,
+    provider_place_id = NULL,
+    asset_url = excluded.asset_url,
+    attribution_name = excluded.attribution_name,
+    attribution_url = excluded.attribution_url,
+    status = excluded.status,
+    approved_at = NULL,
+    approved_by = NULL,
+    subject_kind = excluded.subject_kind,
+    rights_status = excluded.rights_status,
+    source_page_url = excluded.source_page_url,
+    visual_reviewed_at = NULL,
+    match_policy_version = excluded.match_policy_version,
+    match_confidence = excluded.match_confidence,
+    match_evidence = excluded.match_evidence,
+    provider_source_uri = excluded.provider_source_uri,
+    provider_checked_at = excluded.provider_checked_at,
+    checked_at = now(),
+    updated_at = now()
+  WHERE building_photos.status <> 'approved'
+    AND building_photos.provider = 'licensed-url'
+    AND building_photos.rights_status = 'review-required'
+    AND building_photos.attribution_name = 'NAVER Image Search'
+    AND NOT (
+      building_photos.status = 'rejected'
+      AND building_photos.asset_url IS NOT DISTINCT FROM excluded.asset_url
+    )
+  RETURNING id
+`;
+
+export function createNaverPhotoCandidateStore(port: NaverPhotoCandidateStorePort): Readonly<{
+  save(input: NaverPhotoCandidateWrite): Promise<boolean>;
+}> {
+  return Object.freeze({
+    async save(input) {
+      const rows = await port.query(UPSERT_NAVER_PHOTO_CANDIDATE_SQL, [
+        input.buildingKey,
+        input.registryKey,
+        input.candidate.temporaryImageUrl,
+        input.candidate.sourceDocumentUrl,
+        input.confidence,
+        JSON.stringify(input.evidence),
+        input.candidate.temporaryThumbnailUrl,
+      ]);
+      return rows.length > 0;
+    },
+  });
+}
 
 type ProviderRunResult = Readonly<{
   state: 'ready' | 'not-configured' | 'provider-error';
@@ -69,7 +150,7 @@ function requestCostUsd(provider: PhotoBackfillOptions['provider']): number {
 }
 
 function validateOptions(options: PhotoBackfillOptions): void {
-  if (!['kr-seoul', 'sg-singapore'].includes(options.market)
+  if (!['kr-seoul', 'sg-singapore', 'ae-dubai'].includes(options.market)
     || !['google', 'wikimedia', 'naver-search', 'coverage'].includes(options.provider)) {
     throw new RangeError('Unsupported photo backfill scope.');
   }
@@ -207,6 +288,15 @@ function databaseDependencies(): PhotoBackfillDependencies {
       });
     },
     async runProvider({ market, provider, limit }) {
+      if (market === 'ae-dubai' && provider !== 'naver-search') {
+        return Object.freeze({
+          state: 'not-configured' as const,
+          checked: 0,
+          candidates: 0,
+          entityIds: Object.freeze([]),
+          reason: 'provider-market-not-enabled',
+        });
+      }
       const marketKey = market === 'kr-seoul' ? 'seoul' : 'singapore';
       if (provider === 'google') {
         const result = await discoverGooglePlacePhotoCandidates(limit, marketKey);
@@ -259,9 +349,14 @@ async function runNaverAttemptBatch(
 ): Promise<ProviderRunResult> {
   const sql = contentDatabase();
   if (sql === null) return Object.freeze({ state: 'not-configured', checked: 0, candidates: 0, entityIds: Object.freeze([]) });
+  const candidateStore = createNaverPhotoCandidateStore({
+    query: (statement, parameters) => sql.query(statement, [...parameters]),
+  });
   const rows = await sql`
-    SELECT entity.id AS entity_id, building.key AS building_key,
-      building.official_name, coalesce(building.road_address, building.legal_address) AS address
+    SELECT entity.id AS entity_id, building.key AS building_key, building.market_key,
+      building.external_id, building.official_name,
+      coalesce(building.road_address, building.legal_address) AS address,
+      entity.local_attributes
     FROM property_entities entity
     JOIN buildings building ON building.key = entity.local_attributes ->> 'legacyBuildingKey'
     LEFT JOIN (
@@ -275,10 +370,19 @@ async function runNaverAttemptBatch(
       AND building.identity_status = 'verified'
       AND coalesce(building.road_address, building.legal_address) IS NOT NULL
       AND NOT EXISTS (
+        SELECT 1 FROM building_photos photo
+        WHERE photo.building_key = building.key
+          AND photo.status IN ('approved', 'review_required', 'candidate')
+      )
+      AND NOT EXISTS (
         SELECT 1 FROM building_enrichment_attempts attempt
         WHERE attempt.building_key = building.key
           AND attempt.pipeline = 'photo-naver-search'
           AND attempt.next_retry_at > now()
+          AND NOT (
+            attempt.status = 'succeeded'
+            AND attempt.reason LIKE 'result-count:%'
+          )
       )
     ORDER BY
       coalesce(popularity.observation_count, 0) DESC,
@@ -289,11 +393,16 @@ async function runNaverAttemptBatch(
   const buildings = rows.flatMap((row) => (
     typeof row.entity_id === 'string' && typeof row.building_key === 'string'
       && typeof row.official_name === 'string' && typeof row.address === 'string'
+      && ['seoul', 'singapore', 'dubai'].includes(String(row.market_key))
+      && typeof row.external_id === 'string'
       ? [{
         entityId: row.entity_id,
         buildingKey: row.building_key,
+        marketKey: row.market_key as 'seoul' | 'singapore' | 'dubai',
+        externalId: row.external_id,
         officialName: row.official_name,
         address: row.address,
+        localAttributes: (row.local_attributes ?? {}) as Readonly<Record<string, unknown>>,
       }]
       : []
   ));
@@ -301,10 +410,25 @@ async function runNaverAttemptBatch(
     const result = await searchNaverBuildingImages({
       buildingName: building.officialName, address: building.address, display: 20,
     });
+    const registryKey = candidatePhotoRegistryKey({
+      key: building.buildingKey,
+      marketKey: building.marketKey,
+      externalId: building.externalId,
+      name: building.officialName,
+      localAttributes: building.localAttributes,
+    });
+    const selected = result.state === 'ready'
+      ? selectNaverBuildingImageCandidate({ buildingName: building.officialName, candidates: result.candidates })
+      : null;
+    const stored = selected !== null && registryKey !== null
+      ? await candidateStore.save({ buildingKey: building.buildingKey, registryKey, ...selected })
+      : false;
     const status = result.state === 'ready'
-      ? result.candidates.length > 0 ? 'succeeded' : 'no-candidate'
+      ? stored ? 'succeeded' : 'no-candidate'
       : 'provider-error';
-    const reason = result.state === 'ready' ? `result-count:${result.candidates.length}` : result.reason ?? result.state;
+    const reason = result.state === 'ready'
+      ? stored ? 'stored-review-candidate' : result.candidates.length > 0 ? 'candidate-not-written' : 'no-search-result'
+      : result.reason ?? result.state;
     const retry = status === 'succeeded' ? '365 days' : status === 'no-candidate' ? '30 days' : '1 day';
     await sql`
       INSERT INTO building_enrichment_attempts (
@@ -318,7 +442,7 @@ async function runNaverAttemptBatch(
     `;
     return Object.freeze({
       entityId: building.entityId,
-      candidates: result.candidates.length,
+      candidates: stored ? 1 : 0,
       reason: result.reason,
       stop: result.state === 'provider-error' && ['http-401', 'http-403'].includes(result.reason ?? ''),
     });
@@ -350,7 +474,7 @@ export async function readPhotoCoverageStatus() {
       SELECT count(*)::text AS count
       FROM property_entities entity
       LEFT JOIN buildings building ON building.key = entity.local_attributes ->> 'legacyBuildingKey'
-      WHERE entity.market_id IN ('kr-seoul', 'sg-singapore')
+      WHERE entity.market_id IN ('kr-seoul', 'sg-singapore', 'ae-dubai')
         AND (building.latitude IS NULL OR building.longitude IS NULL)
     `,
     sql`SELECT count(*)::text AS count FROM building_photos WHERE status IN ('candidate', 'review_required')`,
