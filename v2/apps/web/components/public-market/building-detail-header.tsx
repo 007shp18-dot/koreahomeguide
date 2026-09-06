@@ -17,6 +17,6 @@ const headerCopy: SiteHeaderModel = {
   ],
 };
 
-export function BuildingDetailHeader() {
-  return <SiteHeader copy={headerCopy} />;
+export function BuildingDetailHeader({locale='en'}:Readonly<{locale?:'en'|'ko'}>) {
+  return <SiteHeader copy={locale === 'en' ? headerCopy : {...headerCopy, languageLabel:'KO',languageSwitch:{label:'EN',href:'/kr/seoul/explore/',hrefLang:'en'},links:[{label:'탐색',href:'/ko/kr/seoul/explore/',isCurrent:true}]}} />;
 }

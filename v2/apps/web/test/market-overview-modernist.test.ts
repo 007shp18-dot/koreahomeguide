@@ -139,8 +139,8 @@ describe('three market overview routes', () => {
       const globalNavigation = markup.match(
         /<nav[^>]*aria-label="Primary navigation"[^>]*>([\s\S]*?)<\/nav>/,
       )?.[1] ?? '';
-      expect(globalNavigation.match(/<a /g) ?? []).toHaveLength(4);
-      for (const label of ['Markets', 'Prices', 'News', 'Guides']) {
+      expect(globalNavigation.match(/<a /g) ?? []).toHaveLength(5);
+      for (const label of ['Markets', 'Prices', 'Tools', 'News', 'Guides']) {
         expect(globalNavigation).toContain(`>${label}</a>`);
       }
 
@@ -166,7 +166,7 @@ describe('three market overview routes', () => {
       /<nav[^>]*aria-label="Primary navigation"[^>]*>([\s\S]*?)<\/nav>/,
     )?.[1] ?? '';
 
-    expect(navigation.match(/<a /g) ?? []).toHaveLength(4);
+    expect(navigation.match(/<a /g) ?? []).toHaveLength(5);
     expect(navigation).toContain('>Prices</a>');
   });
 

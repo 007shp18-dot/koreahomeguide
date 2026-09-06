@@ -19,10 +19,10 @@ const header: SiteHeaderModel = {
   links: [{ label: 'Explore', href: '/kr/seoul/explore/', isCurrent: true }],
 };
 
-const globalLabels = ['Markets', 'Prices', 'News', 'Guides'] as const;
+const globalLabels = ['Markets', 'Prices', 'Tools', 'News', 'Guides'] as const;
 
 describe('signedprice public navigation', () => {
-  it('renders the same four global destinations in the same order', () => {
+  it('renders the same five global destinations in the same order', () => {
     expect(productNavigationLinks.map(({ label }) => label)).toEqual(globalLabels);
 
     for (const copy of [homepageCopy.header, header]) {

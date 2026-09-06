@@ -1,4 +1,5 @@
 'use client';
+import { ResultLinkCopy } from './result-link-copy';
 
 import type { CheckTransaction, SingleQuoteCheckResult } from '@signedprice/market-core';
 import Link from 'next/link';
@@ -83,11 +84,12 @@ function SingleResult({ model, locale, entityContext }: Readonly<{
               {result.comparableRows.map((row, index) => (
                 <p key={`${row.buildingId}-${row.filedMonth}-${index}`}>
                   {row.filedMonth} · {row.areaSqm}㎡ · {won.format(row.adjustedValueWon)}
-                  {entityContext === null ? null : <Link href={`/kr/seoul/explore/${row.districtSlug}/${row.buildingId}/?transaction=${model.selection.transaction}&propertyType=${model.selection.housingType}&district=${row.districtSlug}&buildingId=${row.buildingId}`}>Open building evidence</Link>}
+                  {entityContext === null ? null : <Link href={`${locale === 'ko' ? '/ko' : ''}/kr/seoul/explore/${row.districtSlug}/${row.buildingId}/?transaction=${model.selection.transaction}&propertyType=${model.selection.housingType}&district=${row.districtSlug}&buildingId=${row.buildingId}`}>Open building evidence</Link>}
                 </p>
               ))}
             </div>
           </section>
+          <ResultLinkCopy locale={locale} tool="single-quote" />
           <section className={styles.disclosure} data-check-section="disclosure" data-result-order="disclosure">
             <h3>{c.disclosure}</h3>
             <p>{result.fallbackDisclosure ?? 'The requested evidence scope met the five-record publication gate.'}</p>

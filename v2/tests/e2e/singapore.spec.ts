@@ -165,7 +165,7 @@ test('native Singapore Check submits single and cross-market A/B evidence', asyn
   const assertClean = observeRuntimeFailures(page);
   await page.goto('/sg/singapore/check/');
   await expect(page.locator('[data-singapore-check-workspace="true"]')).toBeVisible();
-  await expect(page.locator('.site-header__product-nav a[aria-current="page"]')).toHaveText('Prices');
+  await expect(page.locator('.site-header__product-nav a[aria-current="page"]')).toHaveText('Tools');
   expect(await page.locator('.site-header__product-nav a').evaluateAll((links) => links.map((link) => link.getAttribute('href')))).not.toContainEqual(expect.stringMatching(/kr\/seoul/));
   for (const market of ['URA private sale', 'HDB resale', 'HDB rent']) {
     await expect(page.getByRole('link', { name: new RegExp(market) }).first()).toContainText('Evidence ready');

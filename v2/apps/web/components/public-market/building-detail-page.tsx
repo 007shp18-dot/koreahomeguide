@@ -1,3 +1,4 @@
+import {localizedSeoulHref, type ProductLocale} from '../../lib/locale/product-copy';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 
@@ -57,6 +58,7 @@ export function BuildingDetailPage({
   facts,
   base,
   backHref,
+  locale = 'en',
 }: Readonly<{
   model: PublicBuildingModel;
   decision: BuildingDecisionModel;
@@ -65,14 +67,16 @@ export function BuildingDetailPage({
   facts?: ReactNode;
   base: string;
   backHref?: string;
+  locale?: ProductLocale;
 }>) {
   const { mode, contract } = decision.selection;
-  const exploreHref = backHref ?? `/kr/seoul/explore/?district=${model.district.slug}`;
+  const exploreHref = backHref ?? localizedSeoulHref(`/kr/seoul/explore/?district=${model.district.slug}`,locale);
   const exploreTarget = new URL(exploreHref, 'https://signedprice.invalid');
   const detailTarget = new URL(base, 'https://signedprice.invalid');
   for (const [key, value] of exploreTarget.searchParams) detailTarget.searchParams.set(key, value);
   const transaction = exploreTarget.searchParams.get('transaction');
-  const checkHref = createEntityCheckHref('/kr/seoul/check/', {
+  const checkHref = createEntityCheckHref(localizedSeoulHref('/kr/seoul/check/',locale), {
+    locale,
     market: 'kr-seoul',
     entity: model.building.buildingId,
     returnTo: `${detailTarget.pathname}${detailTarget.search}`,
@@ -87,9 +91,9 @@ export function BuildingDetailPage({
   });
   return (
     <div id="top" className={pageStyles.page}>
-      <BuildingDetailHeader />
+      <BuildingDetailHeader locale={locale} />
       <main className={pageStyles.main} data-building-detail="ready" data-detail-layout="research">
-        <nav className={pageStyles.breadcrumb} aria-label="Breadcrumb"><Link href="/kr/seoul/">Seoul</Link><Link href={exploreHref}>{model.district.nameEn}</Link><span aria-current="page">{model.building.name}</span></nav>
+        <nav className={pageStyles.breadcrumb} aria-label="Breadcrumb"><Link href={localizedSeoulHref('/kr/seoul/',locale)}>Seoul</Link><Link href={exploreHref}>{model.district.nameEn}</Link><span aria-current="page">{model.building.name}</span></nav>
         <section
           className={pageStyles.identityHero}
           data-identity-hero="true"
@@ -129,7 +133,7 @@ export function BuildingDetailPage({
           <p className={pageStyles.selectedModeStatus} aria-live="polite">
             Viewing {MODE_LABELS[mode]} · {COHORT_LABELS[contract]} contract cohort
           </p>
-          <BuildingDecisionView model={model} decision={decision} base={base} />
+          <BuildingDecisionView model={model} decision={decision} base={base} locale={locale} />
         </section>
 
         <section className={pageStyles.profileFacts} data-detail-order="facts" aria-labelledby="building-profile-heading">

@@ -189,7 +189,7 @@ export function GlobalProductHub({ kind, newsWorkspace, guideMarket }: GlobalPro
     <div id="top">
       <SiteHeader copy={headerFor(kind)} />
       <main className={styles.main}>
-        <ResearchPageHeading title={copy.title} description={copy.description} />
+        <ResearchPageHeading title={copy.title} description={copy.description} actions={kind === 'prices' ? <><Link href="/tools/">Calculate or compare terms</Link><Link href="/tools/property-scenario/">Purchase cost calculator</Link></> : undefined} />
         {kind === 'markets' ? <MarketsHub /> : null}
         {kind === 'prices' ? <PricesHub /> : null}
         {kind === 'news' ? <InsightsHub workspace={newsWorkspace} /> : null}

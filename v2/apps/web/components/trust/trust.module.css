@@ -314,3 +314,13 @@
   .disclosureSummary::after { grid-column: 2; grid-row: 1; }
   .disclosureGrid { grid-template-columns: minmax(0, 1fr); }
 }
+
+.correctionsPage { width: min(calc(100% - 48px), var(--content-frame, 1120px)); margin: 0 auto 64px; }
+.correctionsPage .ledgerWrap { padding: 24px 0; border: 0; gap: 28px; }
+.correctionsPage .emptyLedger, .correctionsPage .ledger { border: 0; border-radius: 0; background: transparent; padding: 24px 0; }
+.correctionsPage .emptyLedger h2, .correctionsPage .ledger h2 { font-size: 20px; font-weight: 600; }
+.correctionsPage .emptyLedger p, .correctionsPage .ledger p { font-size: 16px; line-height: 1.6; }
+.correctionsPage .ledger li { border-top: 1px solid var(--divider); }
+.correctionsPage .relatedLinks { display: flex; flex-wrap: wrap; gap: 24px; border: 0; }
+.correctionsPage .relatedLinks a { border: 0; padding: 0; font-size: 14px; font-weight: 500; text-decoration: underline; text-underline-offset: 4px; }
+@media (max-width: 560px) { .correctionsPage { width: calc(100% - 32px); } }

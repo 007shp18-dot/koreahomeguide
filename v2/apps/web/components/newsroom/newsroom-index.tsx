@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { ResearchPageHeading } from '../market-ui/research-page-heading';
 
@@ -81,10 +82,11 @@ function filterHref(type: NewsroomTypeFilter, market: NewsroomMarketFilter): str
   return resolveNewsroomFilters({ type, market }).canonicalHref;
 }
 
-export function NewsroomIndex({ articles, policies, filters }: Readonly<{
+export function NewsroomIndex({ articles, policies, filters, headlines }: Readonly<{
   articles: readonly PublishedContentArticle[];
   policies: readonly PolicyRecord[];
   filters: NewsroomFilters;
+  headlines?: ReactNode;
 }>) {
   const items = [...articles.filter(({ type }) => type !== 'guide').map(articleItem), ...policies.map(policyItem)]
     .filter((item) => (
@@ -112,7 +114,7 @@ export function NewsroomIndex({ articles, policies, filters }: Readonly<{
         {marketTabs.map(([id, label]) => <Link key={id} href={filterHref(filters.type, id)} aria-current={filters.market === id ? 'page' : undefined}>{label}</Link>)}
       </nav>
     </div>
-    {filters.type === 'latest' || filters.type === 'headlines' ? <ExternalHeadlines market={filters.market} preview={filters.type === 'latest'} /> : null}
+    {filters.type === 'latest' || filters.type === 'headlines' ? headlines ?? <ExternalHeadlines market={filters.market} preview={filters.type === 'latest'} /> : null}
     {filters.type === 'headlines' ? null : lead === null ? <section className={styles.empty} data-newsroom-state="empty"><h2>No SignedPrice analysis matches these filters.</h2><Link href="/news/">Return to Latest</Link></section> : <>
       <article className={styles.leadStory} data-newsroom-lead={lead.type}>
         <div><span>{lead.type} · {lead.market}</span><time dateTime={lead.date}>{lead.date.slice(0, 10)}</time></div>

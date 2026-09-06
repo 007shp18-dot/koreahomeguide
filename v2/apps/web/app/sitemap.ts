@@ -40,6 +40,8 @@ const editorialLocalizedPairs: readonly LocalizedPair[] = Object.freeze(EDITORIA
 }));
 
 const localizedPairs: readonly LocalizedPair[] = Object.freeze([
+  Object.freeze({ en: '/tools/', ko: '/ko/tools/', 'zh-Hans': '/zh-cn/tools/' }),
+  Object.freeze({ en: '/tools/property-scenario/', ko: '/ko/tools/property-scenario/' }),
   Object.freeze({ en: '/', 'zh-Hans': '/zh-cn/kr/seoul/' }),
   Object.freeze({ en: '/news/', 'zh-Hans': '/zh-cn/news/' }),
   Object.freeze({ en: '/guides/', 'zh-Hans': '/zh-cn/guides/' }),

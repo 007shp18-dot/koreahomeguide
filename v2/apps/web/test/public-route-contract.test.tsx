@@ -260,6 +260,11 @@ describe('public migration containment', () => {
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', period);
     const urls = sitemap().map(({ url }) => url);
     expect(urls.sort()).toEqual([
+      'https://www.signedprice.com/tools/',
+      'https://www.signedprice.com/ko/tools/',
+      'https://www.signedprice.com/zh-cn/tools/',
+      'https://www.signedprice.com/tools/property-scenario/',
+      'https://www.signedprice.com/ko/tools/property-scenario/',
       'https://www.signedprice.com/markets/',
       'https://www.signedprice.com/prices/',
       'https://www.signedprice.com/news/',
@@ -390,6 +395,11 @@ describe('public migration containment', () => {
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_ARTIFACT', JSON.stringify(artifact(false)));
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', period);
     expect(sitemap().map(({ url }) => url).sort()).toEqual([
+      'https://www.signedprice.com/tools/',
+      'https://www.signedprice.com/ko/tools/',
+      'https://www.signedprice.com/zh-cn/tools/',
+      'https://www.signedprice.com/tools/property-scenario/',
+      'https://www.signedprice.com/ko/tools/property-scenario/',
       'https://www.signedprice.com/markets/',
       'https://www.signedprice.com/prices/',
       'https://www.signedprice.com/news/',
@@ -424,6 +434,11 @@ describe('public migration containment', () => {
 
     vi.unstubAllEnvs();
     expect(sitemap().map(({ url }) => url).sort()).toEqual([
+      'https://www.signedprice.com/tools/',
+      'https://www.signedprice.com/ko/tools/',
+      'https://www.signedprice.com/zh-cn/tools/',
+      'https://www.signedprice.com/tools/property-scenario/',
+      'https://www.signedprice.com/ko/tools/property-scenario/',
       'https://www.signedprice.com/markets/',
       'https://www.signedprice.com/prices/',
       'https://www.signedprice.com/news/',

@@ -11,6 +11,7 @@ export function globalNavigation(locale: SiteLocale = 'en') {
   return [
     { label: zh ? '市场' : 'Markets', href: '/markets/' },
     { label: zh ? '价格' : 'Prices', href: '/prices/' },
+    { label: zh ? '工具' : 'Tools', href: zh ? '/zh-cn/tools/' : locale === 'ko' ? '/ko/tools/' : '/tools/' },
     { label: zh ? '新闻' : 'News', href: zh ? '/zh-cn/news/' : '/news/' },
     { label: zh ? '指南' : 'Guides', href: zh ? '/zh-cn/guides/' : '/guides/' },
   ] as const;
@@ -26,6 +27,10 @@ export function languageDestinations(pathname: string, search = ''): Record<Site
     destinations.en = withQuery(english);
     destinations.ko = withQuery(`/ko${english}`);
     if (english === '/kr/seoul') destinations['zh-CN'] = '/zh-cn/kr/seoul/';
+  } else if (english === '/tools' || english === '/tools/property-scenario') {
+    destinations.en = withQuery(english);
+    destinations.ko = withQuery(`/ko${english}`);
+    if (english === '/tools') destinations['zh-CN'] = withQuery(`/zh-cn${english}`);
   } else if (english === '/news' || english === '/guides') {
     destinations.en = withQuery(english);
     destinations['zh-CN'] = withQuery(`/zh-cn${english}`);

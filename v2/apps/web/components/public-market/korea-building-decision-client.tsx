@@ -105,6 +105,7 @@ export function KoreaBuildingDecisionClient({
     locale,
   );
   return <BuildingDetailPage
+    locale={locale}
     model={model}
     decision={state.decision}
     visual={visual}

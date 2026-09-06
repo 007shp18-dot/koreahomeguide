@@ -2,10 +2,11 @@ import 'server-only';
 
 import { listPublicPropertyTypeRouteParams } from '../public-market/property-type-route-model.server';
 
-export type PublicRouteLocale = 'en' | 'ko';
+export type PublicRouteLocale = 'en' | 'ko' | 'zh-CN';
 export type PublicRoutePageKind =
   | 'home'
   | 'utility'
+  | 'tools'
   | 'market'
   | 'check'
   | 'explore'
@@ -112,6 +113,11 @@ const singleQuoteReady = (readiness: PublicRouteReadiness) => readiness.singleQu
 const conversionReady = (readiness: PublicRouteReadiness) => readiness.conversionReady;
 
 export const signedPricePublicRouteRegistry = createPublicRouteRegistry([
+  { path: '/tools/', locale: 'en', pageKind: 'tools', cohort: 3, sitemap: true, isReady: alwaysReady },
+  { path: '/ko/tools/', locale: 'ko', pageKind: 'tools', cohort: 3, sitemap: true, isReady: alwaysReady },
+  { path: '/zh-cn/tools/', locale: 'zh-CN', pageKind: 'tools', cohort: 3, sitemap: true, isReady: alwaysReady },
+  { path: '/tools/property-scenario/', locale: 'en', pageKind: 'tools', cohort: 3, sitemap: true, isReady: alwaysReady },
+  { path: '/ko/tools/property-scenario/', locale: 'ko', pageKind: 'tools', cohort: 3, sitemap: true, isReady: alwaysReady },
   {
     path: '/', locale: 'en', pageKind: 'home', cohort: 0,
     sitemap: true, isReady: alwaysReady,

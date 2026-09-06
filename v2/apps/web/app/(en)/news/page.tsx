@@ -1,3 +1,5 @@
+import { Suspense } from 'react';
+import { StoredExternalHeadlines } from '@/components/news/stored-external-headlines';
 import type { Metadata } from 'next';
 
 import { EditorialGrowthPublicFrame } from '@/components/editorial-growth/editorial-growth-public-shell';
@@ -17,7 +19,7 @@ export async function generateMetadata({ searchParams = Promise.resolve({}) }: N
   return indexableMetadata({
     path: filters.canonicalHref as `/${string}`,
     title: 'Property policy, market news and data stories | signedprice',
-    description: 'Property policy, market analysis and external headlines for Seoul and Singapore, with sources and dates.',
+    description: 'Property policy, market analysis and external headlines for Seoul, Singapore and Dubai, with sources and dates.',
     ...(filters.type === 'latest' && filters.market === 'all' ? {
       languageAlternates: { en: '/news/' as const, 'zh-Hans': '/zh-cn/news/' as const },
     } : {}),
@@ -30,6 +32,6 @@ export default async function NewsPage({ searchParams = Promise.resolve({}) }: N
     listNewsroomArticles(),
   ]);
   return <EditorialGrowthPublicFrame locale="en" surface="content">
-    <NewsroomIndex articles={articles} policies={policyRepository.list()} filters={filters} />
+    <NewsroomIndex articles={articles} policies={policyRepository.list()} filters={filters} headlines={<Suspense fallback={<p role="status">Loading headlines…</p>}><StoredExternalHeadlines market={filters.market} preview={filters.type === 'latest'} /></Suspense>} />
   </EditorialGrowthPublicFrame>;
 }

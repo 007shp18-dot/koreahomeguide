@@ -1,3 +1,4 @@
+import { resolveSeoulEntityCheckContext } from '@/lib/contract-check/entity-context.server';
 import { SingleQuoteCheckWorkspace } from '@/components/contract-check/single-quote-check';
 import { contractCheckEvidenceRepositoriesFromEnvironment } from '@/lib/contract-check/evidence-repositories.server';
 import { contractCheckCurvesFromEnvironment } from '@/lib/contract-check/route-model.server';
@@ -11,10 +12,12 @@ export function generateMetadata() {
 export default async function KoreanContractCheckPage({
   searchParams = Promise.resolve({}),
 }: Readonly<{ searchParams?: Promise<Record<string, string | string[] | undefined>> }>) {
+  const query = await searchParams;
   const model = buildSingleQuoteCheckRouteModel(
     contractCheckEvidenceRepositoriesFromEnvironment(),
-    await searchParams,
+    query,
     contractCheckCurvesFromEnvironment(),
   );
-  return <SingleQuoteCheckWorkspace locale="ko" model={model} />;
+  const entityContext = resolveSeoulEntityCheckContext(query, {locale:'ko',districtSlug:model.selection.districtSlug,buildingId:model.selection.buildingId,buildingName:model.buildingName});
+  return <SingleQuoteCheckWorkspace locale="ko" model={model} entityContext={entityContext} />;
 }

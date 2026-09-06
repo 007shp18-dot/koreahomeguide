@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { preload } from "react-dom";
-import { Analytics } from '@vercel/analytics/next';
+import { Analytics } from '@/components/privacy-safe-analytics';
 import { AdvertisingConsent } from "@/components/consent/advertising-consent";
 import { EditorialAnalytics } from '@/components/editorial-analytics';
 import { PublicSiteJsonLd } from "@/components/public-json-ld";

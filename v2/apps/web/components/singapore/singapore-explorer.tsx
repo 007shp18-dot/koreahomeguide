@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useDeferredValue, useEffect, useMemo, useState } from 'react';
 import type { SingaporeExploreModel } from '../../lib/singapore/route-types';
 import type { HdbExploreModel } from '../../lib/singapore/hdb-route-model.server';
 import { GooglePlaceMap, type GoogleMarketMapPoint } from '../maps/google-place-map';
@@ -66,6 +66,7 @@ export function SingaporeExplorer({
   const [selectedSegment, setSelectedSegment] = useState<'CCR' | 'RCR' | 'OCR' | null>(initialSegment);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(initialProjectId);
   const [query, setQuery] = useState(initialQuery);
+  const deferredQuery = useDeferredValue(query);
   const [district, setDistrict] = useState(initialDistrict);
   const [page, setPage] = useState(initialPage);
   const [sort, setSort] = useState<string>(initialSort);
@@ -73,13 +74,18 @@ export function SingaporeExplorer({
   const segments = model.status === 'ready' ? model.segments : [];
   const selected = segments.find((segment) => segment.code === selectedSegment);
   const allProjects = useMemo(() => model.status === 'ready' ? model.segments.flatMap((segment) => (segment.projects ?? []).map((project) => ({ ...project, segment: segment.code }))) : [], [model]);
+  const searchIndex = useMemo(() => allProjects.map((project) => ({
+    project, term: `${project.name} ${project.street} ${project.district} district ${Number(project.district)} ${project.segment}`.toLocaleLowerCase('en'),
+  })), [allProjects]);
+  const orderedProjects = useMemo(() => searchIndex.filter(({ project }) =>
+    (selectedSegment === null || project.segment === selectedSegment)
+    && (district === 'all' || project.district === district))
+    .sort(({project: a}, {project: b}) => sort === 'name' ? a.name.localeCompare(b.name) : b.n - a.n || a.name.localeCompare(b.name)),
+  [searchIndex, district, selectedSegment, sort]);
   const projects = useMemo(() => {
-    const term = query.trim().toLocaleLowerCase('en');
-    return allProjects.filter((project) => (selectedSegment === null || project.segment === selectedSegment)
-      && (district === 'all' || project.district === district)
-      && `${project.name} ${project.street} ${project.district} district ${Number(project.district)} ${project.segment}`.toLocaleLowerCase('en').includes(term))
-      .sort((a, b) => sort === 'name' ? a.name.localeCompare(b.name) : b.n - a.n || a.name.localeCompare(b.name));
-  }, [allProjects, district, query, selectedSegment, sort]);
+    const term = deferredQuery.trim().toLocaleLowerCase('en');
+    return orderedProjects.filter((item) => item.term.includes(term)).map(({ project }) => project);
+  }, [orderedProjects, deferredQuery]);
   const pageCount = Math.max(1, Math.ceil(projects.length / PAGE_SIZE));
   const activePage = Math.min(Math.max(1, page), pageCount);
   const visible = useMemo(() => projects.slice((activePage - 1) * PAGE_SIZE, activePage * PAGE_SIZE), [activePage, projects]);
@@ -113,7 +119,7 @@ export function SingaporeExplorer({
   const mapPoints = useMemo<readonly GoogleMarketMapPoint[]>(() => visible.map((project) => ({
       id: `project-${project.id}`,
       title: `${project.name} · ${project.street}`,
-      label: formatSingaporeMapPrice(project.medianPriceLabel, `${project.n} sales`),
+      label: formatSingaporeMapPrice(project.medianPriceLabel, `${project.n.toLocaleString('en')} ${project.n === 1 ? 'sale' : 'sales'}`),
       selected: project.id === selectedProjectId,
       ...(project.location ? { latitude: project.location.latitude, longitude: project.location.longitude } : { address: `${project.name}, ${project.street}, Singapore` }),
     })), [visible, selectedProjectId]);
@@ -144,11 +150,11 @@ export function SingaporeExplorer({
             {segments.map((segment) => <button key={segment.code} type="button" role="tab" aria-selected={selectedSegment === segment.code} onClick={() => selectSegment(segment.code)}><strong>{segment.code}</strong><span>{segment.projectCount.toLocaleString('en')}</span></button>)}
           </div>
           {selected ? <div className={styles.segmentList}><article className={styles.segmentRow}><h3>{selected.code}</h3><div><strong>{selected.medianPriceLabel ?? 'Not published'}</strong><span>{selected.n} transactions · {selected.projectCount} projects</span></div>{selected.state === 'published' ? <Link href={selected.href} aria-busy={pendingHref === selected.href} data-navigation-state={pendingHref === selected.href ? 'pending' : 'idle'} onClick={() => setPendingHref(selected.href)}>Open {selected.code} evidence</Link> : <span data-evidence-link="unavailable">At least 5 transactions are required</span>}</article></div> : null}
-          <div className={styles.projectList} aria-live="polite">
+          <div className={styles.projectList} aria-live="polite" aria-busy={query !== deferredQuery}>
             <header><span>{projects.length.toLocaleString('en')} matching projects</span><small>{projects.length === 0 ? 'No matches' : `${(activePage - 1) * PAGE_SIZE + 1}–${Math.min(activePage * PAGE_SIZE, projects.length)} shown`}</small></header>
             {projects.length === 0 ? <p>No projects match these filters. Try a different name or district.</p> : null}
             {visible.map((project) => <div key={project.id} data-selected={selectedProjectId === project.id}>
-              <button type="button" aria-pressed={selectedProjectId === project.id} onClick={() => setSelectedProjectId((current) => current === project.id ? null : project.id)}><span><strong>{project.name}</strong><small>{project.street} · District {project.district}</small></span><span><strong>{project.medianPriceLabel ?? 'Not published'}</strong><small>{project.n} sales</small></span></button>
+              <button type="button" aria-pressed={selectedProjectId === project.id} onClick={() => setSelectedProjectId((current) => current === project.id ? null : project.id)}><span><strong>{project.name}</strong><small>{project.street} · District {project.district}</small></span><span><strong>{project.medianPriceLabel ?? 'Not published'}</strong><small>{project.n.toLocaleString('en')} {project.n === 1 ? 'sale' : 'sales'}</small></span></button>
               {project.state === 'published' ? <Link href={project.href} aria-label={`Open ${project.name} evidence`} aria-busy={pendingHref === project.href} onClick={() => setPendingHref(project.href)}>Details</Link> : <span className={styles.evidenceUnavailableLink} data-evidence-link="unavailable" title="At least 5 transactions are required">Below 5 sales</span>}
             </div>)}
           </div>

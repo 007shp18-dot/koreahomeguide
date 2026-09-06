@@ -100,7 +100,7 @@ export function ThreeMarketHero({ model }: Readonly<{ model: ThreeMarketHomeMode
           <div className={styles.evidence} data-evidence-state={active.evidenceState}>
             <span>{copy.states[active.evidenceState]}</span>
             <p>{active.evidenceTitle}</p>
-            {active.evidenceValue === null ? null : <strong>{active.evidenceValue}</strong>}
+            <strong className={styles.evidenceValue} aria-hidden={active.evidenceValue === null ? true : undefined}>{active.evidenceValue ?? '\u00a0'}</strong>
             <small>{active.evidenceNote}</small>
             <Link href={active.id === 'kr-seoul' ? '/kr/seoul/method/' : active.id === 'sg-singapore' ? '/sg/singapore/explore/#singapore-source' : '/ae/dubai/#dubai-checks-heading'}>{model.locale === 'zh-CN' ? '来源与覆盖范围' : 'Source and coverage'}</Link>
           </div>

@@ -22,7 +22,7 @@ for (const route of [
   },
   {
     path: '/kr/seoul/corrections/',
-    heading: 'Seoul evidence corrections',
+    heading: 'Corrections',
     robots: /^noindex,\s*follow$/,
     canonical: null,
   },

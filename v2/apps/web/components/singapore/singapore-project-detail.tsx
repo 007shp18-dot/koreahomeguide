@@ -1,3 +1,4 @@
+import { createPropertyScenarioHref } from '../../lib/tools/property-scenario-context';
 import { buildMonthlyResearch, summarizeSizeCohorts } from '../../lib/research/property-research';
 import { MonthlyTransactionResearch, SizeCohortResearch } from '../market-ui/transaction-research';
 import { PropertyScenarioCalculator } from '../market-ui/property-scenario';
@@ -91,7 +92,8 @@ export function SingaporeProjectDetail({ model, googleMapsBrowserKey = null }: R
       </section>
       <MonthlyTransactionResearch months={months} />
       <section className={styles.section} aria-labelledby="project-size-heading"><h2 id="project-size-heading">Compare prices by home size</h2><p>Same project and reporting period. Property type, sale type, area basis and tenure stay separate. A cohort needs at least five transactions to publish its median.</p><SizeCohortResearch rows={sizes} currency="SGD" /></section>
-      <PropertyScenarioCalculator key={model.identity.id} price={model.identity.medianPriceSgd} currency="SGD" />
+      <PropertyScenarioCalculator key={model.identity.id} price={model.identity.medianPriceSgd} currency="SGD" analytics={{market:'sg-singapore',surface:'property-detail'}} />
+      <Link href={createPropertyScenarioHref({locale:'en',market:'sg-singapore',currency:'SGD',entity:model.identity.id,propertyName:model.identity.project,transaction:'sale',price:model.identity.medianPriceSgd,returnTo:`/sg/singapore/explore/${model.identity.marketSegment.toLowerCase()}/${model.identity.id}/`})}>Open calculator</Link>
       <section className={styles.section} aria-labelledby="project-profile-heading"><h2 id="project-profile-heading">Project profile</h2><dl className={styles.stats}><div className={styles.stat}><dt>Street</dt><dd>{model.identity.street}</dd></div><div className={styles.stat}><dt>Tenure in reported records</dt><dd>{model.identity.tenures.join(' · ')}</dd></div><div className={styles.stat}><dt>Property types</dt><dd>{[...new Set(model.transactions.map((row) => row.propertyTypeLabel))].join(' · ')}</dd></div></dl><Link href={`/sg/singapore/explore/?q=${encodeURIComponent(model.identity.project)}&project=${encodeURIComponent(model.identity.id)}`}>View this project on the map</Link></section>
       <section className={styles.section} aria-labelledby="transaction-heading">
         <p className={styles.sectionLabel}>02 / Recent reported transactions</p>

@@ -8,8 +8,8 @@ import { SiteFooter } from '../components/site-footer';
 import { homepageCopy } from '../lib/site-copy';
 
 describe('shared navigation destinations', () => {
-  it('keeps four global sections in the same order in English and Chinese', () => {
-    for (const locale of ['en', 'ko', 'zh-CN'] as const) expect(globalNavigation(locale).map(({href}) => href.replace('/zh-cn', ''))).toEqual(['/markets/', '/prices/', '/news/', '/guides/']);
+  it('keeps five global sections in the same order in English and Chinese', () => {
+    for (const locale of ['en', 'ko', 'zh-CN'] as const) expect(globalNavigation(locale).map(({href}) => href.replace(/^\/(?:zh-cn|ko)(?=\/)/, ''))).toEqual(['/markets/', '/prices/', '/tools/', '/news/', '/guides/']);
   });
   it('preserves Seoul selection and building detail when switching languages', () => {
     const path = '/kr/seoul/explore/gangnam-gu/example/';
@@ -44,7 +44,7 @@ describe('shared navigation destinations', () => {
     expect(html.match(/href="\/sg\/?"/g)).toHaveLength(1);
     expect(html).not.toContain('Singapore Explore');
     expect(html).not.toContain('/kr/seoul/news/');
-    const positions = ['Markets', 'Prices', 'News', 'Guides'].map((label) => html.indexOf(`>${label}</a>`));
+    const positions = ['Markets', 'Prices', 'Tools', 'News', 'Guides'].map((label) => html.indexOf(`>${label}</a>`));
     expect(positions).toEqual([...positions].sort((a,b) => a-b));
   });
 });

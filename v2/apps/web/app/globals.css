@@ -2716,7 +2716,7 @@ h1 {
   .site-header__links {
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
   }
 
   .site-header__product-link {
@@ -3766,7 +3766,7 @@ h1 {
   .site-header__inner > .wordmark { min-height: 44px; }
   .site-header__languages { grid-column: 2; grid-row: 1; justify-self: end; }
   .site-header__product-nav { grid-column: 1 / -1; grid-row: 2; width: 100%; }
-  .site-header__links { display: grid; grid-template-columns: repeat(4, 1fr); width: 100%; }
+  .site-header__links { display: grid; grid-template-columns: repeat(5, 1fr); width: 100%; }
   .site-header__product-link { justify-content: center; width: 100%; }
   .site-header__markets { grid-column: 1 / -1; grid-row: 3; justify-content: center; }
 }

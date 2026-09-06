@@ -1,3 +1,4 @@
+import { createPropertyScenarioHref } from '../../lib/tools/property-scenario-context';
 import { RecentTransactionPlot, SizeCohortResearch } from '../market-ui/transaction-research';
 import { PropertyScenarioCalculator } from '../market-ui/property-scenario';
 import Link from 'next/link';
@@ -249,6 +250,7 @@ export function buildKoreaEvidenceCheckHref(
   );
   return createEntityCheckHref(localizedSeoulHref('/kr/seoul/check/', locale), {
     market: 'kr-seoul',
+    locale,
     entity: model.building.buildingId,
     returnTo: detailHref,
     selection: {
@@ -408,7 +410,7 @@ export function KoreaEvidenceBuildingDetail({
           </li>)}</ul>
         </section>
 
-        {model.selection.transaction === 'sale' ? <div className={styles.areaBands}><PropertyScenarioCalculator key={`${model.building.buildingId}-${model.selection.areaBand}`} price={model.evidence.medianWon} currency="KRW" locale={locale} /></div> : null}
+        {model.selection.transaction === 'sale' ? <div className={styles.areaBands}><PropertyScenarioCalculator key={`${model.building.buildingId}-${model.selection.areaBand}`} price={model.evidence.medianWon} currency="KRW" locale={locale} analytics={{market:'kr-seoul',surface:'property-detail'}} /><Link href={createPropertyScenarioHref({locale,market:'kr-seoul',currency:'KRW',entity:model.building.buildingId,propertyName:model.building.officialName,transaction:'sale',price:model.evidence.state === 'published' ? model.evidence.medianWon : null,returnTo:localizedSeoulHref(`/kr/seoul/explore/${model.district.slug}/${model.building.buildingId}/`,locale)})}>{locale === 'ko' ? '전체 계산기 열기' : 'Open calculator'}</Link></div> : null}
 
         <div id="building-facts" className={styles.factsAnchor} data-detail-order="facts"><KnownBuildingFacts facts={[
           { label: locale === 'ko' ? '공식 건물명' : 'Official identity', value: model.building.officialName },

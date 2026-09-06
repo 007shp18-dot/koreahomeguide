@@ -1,4 +1,5 @@
 'use client';
+import { ResultLinkCopy } from './result-link-copy';
 
 import type {
   CheckTransaction,
@@ -316,6 +317,7 @@ function ResultPanel({ model, locale }: Readonly<{
               />
             ))}
           </div>
+          <ResultLinkCopy locale={locale} tool="offer-compare" />
           <div className={styles.verdictPanel} data-result-order="verdict">
             <p className={styles.verdict}>{comparisonVerdict(comparison, c)}</p>
             {comparison.differenceWon === null ? null : <p>{won.format(comparison.differenceWon)} / month</p>}
