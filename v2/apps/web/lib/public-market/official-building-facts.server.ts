@@ -58,7 +58,7 @@ type LoaderInput = Readonly<{
   housingType: string;
 }>;
 
-const APT_LIST_URL = 'https://apis.data.go.kr/1613000/AptListService3/getSigunguAptList';
+const APT_LIST_URL = 'https://apis.data.go.kr/1613000/AptListService4/getSigunguAptList4';
 const APT_BASIC_URL = 'https://apis.data.go.kr/1613000/AptBasisInfoServiceV4/getAphusBassInfoV4';
 const BUILDING_REGISTER_URL = 'https://apis.data.go.kr/1613000/BldRgstHubService/getBrRecapTitleInfo';
 
