@@ -10,9 +10,9 @@ afterEach(() => {
 });
 
 describe('NAVER building image search', () => {
-  it('queries the official endpoint without caching or persisting provider payloads', async () => {
-    vi.stubEnv('NAVER_SEARCH_CLIENT_ID', 'search-client');
-    vi.stubEnv('NAVER_SEARCH_CLIENT_SECRET', 'search-secret');
+  it('queries NAVER API HUB without caching or persisting provider payloads', async () => {
+    vi.stubEnv('NAVER_API_HUB_CLIENT_ID', 'api-hub-client');
+    vi.stubEnv('NAVER_API_HUB_CLIENT_SECRET', 'api-hub-secret');
     const providerFetch = vi.fn().mockResolvedValue(new Response(JSON.stringify({
       items: [{
         title: '<b>개포래미안포레스트</b> 외관',
@@ -36,11 +36,13 @@ describe('NAVER building image search', () => {
 
     expect(providerFetch).toHaveBeenCalledOnce();
     const [url, init] = providerFetch.mock.calls[0] as [string, RequestInit];
-    expect(url).toContain('https://openapi.naver.com/v1/search/image');
+    expect(url).toContain('https://naverapihub.apigw.ntruss.com/search/v1/image');
     expect(url).toContain('display=100');
     expect(new URL(url).searchParams.get('query')).toBe('개포래미안포레스트 서울특별시 강남구 개포동');
     expect(init).toMatchObject({ cache: 'no-store' });
-    expect(new Headers(init.headers).get('X-Naver-Client-Id')).toBe('search-client');
+    expect(new Headers(init.headers).get('X-NCP-APIGW-API-KEY-ID')).toBe('api-hub-client');
+    expect(new Headers(init.headers).get('X-NCP-APIGW-API-KEY')).toBe('api-hub-secret');
+    expect(new Headers(init.headers).has('X-Naver-Client-Id')).toBe(false);
     expect(result).toEqual({
       state: 'ready',
       candidates: [{
@@ -54,6 +56,23 @@ describe('NAVER building image search', () => {
     });
   });
 
+  it('keeps the legacy NAVER Search endpoint available for existing applications', async () => {
+    vi.stubEnv('NAVER_SEARCH_CLIENT_ID', 'legacy-client');
+    vi.stubEnv('NAVER_SEARCH_CLIENT_SECRET', 'legacy-secret');
+    const providerFetch = vi.fn().mockResolvedValue(new Response(JSON.stringify({ items: [] }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    }));
+    vi.stubGlobal('fetch', providerFetch);
+
+    await searchNaverBuildingImages({ buildingName: 'A', address: 'B' });
+
+    const [url, init] = providerFetch.mock.calls[0] as [string, RequestInit];
+    expect(url).toContain('https://openapi.naver.com/v1/search/image');
+    expect(new Headers(init.headers).get('X-Naver-Client-Id')).toBe('legacy-client');
+    expect(new Headers(init.headers).get('X-Naver-Client-Secret')).toBe('legacy-secret');
+  });
+
   it('falls back to existing NAVER credentials and reports provider failures safely', async () => {
     vi.stubEnv('NAVER_NEWS_CLIENT_ID', 'existing-client');
     vi.stubEnv('NAVER_NEWS_CLIENT_SECRET', 'existing-secret');
@@ -63,8 +82,9 @@ describe('NAVER building image search', () => {
     await expect(searchNaverBuildingImages({
       buildingName: 'RiverGate', address: '99 Robertson Quay, Singapore', display: 0,
     })).resolves.toEqual({ state: 'provider-error', candidates: [], reason: 'http-429' });
-    const [, init] = providerFetch.mock.calls[0] as [string, RequestInit];
-    expect(new Headers(init.headers).get('X-Naver-Client-Id')).toBe('existing-client');
+    const [url, init] = providerFetch.mock.calls[0] as [string, RequestInit];
+    expect(url).toContain('https://naverapihub.apigw.ntruss.com/search/v1/image');
+    expect(new Headers(init.headers).get('X-NCP-APIGW-API-KEY-ID')).toBe('existing-client');
   });
 
   it('does not call the provider without both credentials', async () => {
