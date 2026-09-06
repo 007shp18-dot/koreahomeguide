@@ -29,7 +29,7 @@ function providerOptions(
         ? Math.max(1, Math.floor(finiteEnvironmentNumber('PHOTO_NAVER_DAILY_REQUEST_CAP', 25_000)))
         : 100_000,
     dailySpendCapUsd: provider === 'google'
-      ? finiteEnvironmentNumber('PHOTO_GOOGLE_DAILY_SPEND_CAP_USD', 0)
+      ? finiteEnvironmentNumber('PHOTO_GOOGLE_DAILY_SPEND_CAP_USD', 5)
       : 0,
     dryRun: false,
   });

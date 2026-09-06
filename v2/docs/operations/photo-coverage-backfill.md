@@ -22,17 +22,16 @@ values into command history.
 
 The scheduled guardrails are `PHOTO_GOOGLE_DAILY_REQUEST_CAP`,
 `PHOTO_GOOGLE_DAILY_SPEND_CAP_USD`, and `PHOTO_NAVER_DAILY_REQUEST_CAP`.
-Google discovery defaults to a zero-dollar daily spend cap, and browser Google
-requests default to disabled. The server key can stay installed and restricted
-without generating requests. Set a positive spend cap or enable the browser
-flag only after an explicit budget decision and a reviewed precision sample.
-Keep every enabled cap finite.
+Google discovery defaults to an estimated five-dollar daily spend cap. With the
+default 0.032 USD request estimate this permits at most 156 provider requests a
+day, and the lower request cap still wins. Browser Google requests default to
+disabled so ordinary page views do not add a second Google cost path. Keep every
+enabled cap finite and change it only after an explicit budget decision.
 
 Production runs one bounded slice per provider each hour: Wikimedia at minute
-7, official Seoul apartment facts at minute 17, NAVER at minute 27, and the
-zero-budget Google guard at minute 47. The Google job exits before its provider
-call while the spend cap is zero. The two markets share each provider's daily
-cap. Each enabled job is resumable because terminal attempts receive a future
+7, official Seoul apartment facts at minute 17, NAVER at minute 27, and Google
+at minute 47. The two markets share each provider's daily request and spend
+caps. Each enabled job is resumable because terminal attempts receive a future
 retry time and are skipped.
 
 ## Storage and approval boundaries
