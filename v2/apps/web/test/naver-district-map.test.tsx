@@ -34,6 +34,23 @@ const districts = [{
 }] as const;
 
 describe('NAVER district map', () => {
+  it('preserves user zoom when the same district receives updated selection props', () => {
+    const setCenter = vi.fn();
+    const setZoom = vi.fn();
+    class TestMap { setCenter = setCenter; setZoom = setZoom; }
+    class LatLng { constructor(readonly lat: number, readonly lng: number) {} }
+    class Marker { setMap() {} }
+    const sdk = { Map: TestMap, LatLng, Marker, Event: { addListener: vi.fn(), removeListener: vi.fn() } };
+    const selectedDistrict = { latitude: 37.5, longitude: 127.03 };
+    const options = { districts, selectedDistrict, buildings: [], onSelect: vi.fn() };
+    const mounted = mountNaverDistrictMap({ sdk, element: {} as HTMLElement, ...options });
+    mounted.update({ ...options, selectedDistrict: { ...selectedDistrict } });
+    expect(setZoom).not.toHaveBeenCalled();
+    expect(setCenter).not.toHaveBeenCalled();
+    mounted.update({ ...options, selectedDistrict: undefined });
+    expect(setZoom).toHaveBeenCalledWith(11);
+  });
+
   it('clusters verified coordinates and expands them at building zoom without inventing missing locations', () => {
     const point = { id: 'a', title: 'A', href: '/a/', addressQuery: 'Seoul', latitude: 37.5001, longitude: 127.0001 };
     const points = [point, { ...point, id: 'b', latitude: 37.5002 },
@@ -175,11 +192,14 @@ describe('NAVER district map', () => {
     expect(html).toContain('data-map-state="loading"');
     expect(html).toContain('Static Seoul district map');
     expect(html).toContain('ncpKeyId=test-client-id');
-    expect(html).not.toContain('submodules=geocoder');
+    expect(html).toContain('submodules=geocoder');
     expect(html).toContain('aria-label="Interactive NAVER map of Seoul districts"');
   });
 
-  it('keeps the geocoder submodule available for a district-to-building transition', () => {
+  it('uses the same SDK URL before and after a district-to-building transition', () => {
+    const city = renderToStaticMarkup(createElement(NaverDistrictMap, {
+      clientId: 'test-client-id', districts, fallback: createElement('p', null, 'Loading'),
+    }));
     const html = renderToStaticMarkup(createElement(NaverDistrictMap, {
       clientId: 'test-client-id',
       districts,
@@ -193,6 +213,7 @@ describe('NAVER district map', () => {
     }));
 
     expect(html).toContain('submodules=geocoder');
+    expect(html.match(/src="([^"]+)"/)?.[1]).toBe(city.match(/src="([^"]+)"/)?.[1]);
   });
 
   it('does not promise loading when the map cannot start', () => {

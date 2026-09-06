@@ -554,7 +554,7 @@ describe('public Seoul area Explorer', () => {
     }));
 
     expect(configured).toContain('maps.js?ncpKeyId=test-naver-client');
-    expect(configured).not.toContain('submodules=geocoder');
+    expect(configured).toContain('submodules=geocoder');
     expect(configured).toContain('Interactive NAVER map of Seoul buildings');
     expect(configured).toContain('All Seoul districts');
     expect(configured).toContain('Select a price bubble');
