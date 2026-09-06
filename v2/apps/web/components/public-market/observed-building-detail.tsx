@@ -404,7 +404,7 @@ export function KoreaEvidenceBuildingDetail({
           <ul>{Object.entries(areaLabels).map(([id, label]) => <li key={id}>
             <strong>{label}</strong>
             <span>{id === model.selection.areaBand ? `${primaryLabel} · ${model.evidence.medianLabel ?? (locale === 'ko' ? '미확인' : 'Not published')}` : (locale === 'ko' ? '선택하여 근거 확인' : 'Open this evidence cohort')}</span>
-            <Link href={localizedSeoulHref(`/kr/seoul/explore/${model.district.slug}/${model.building.buildingId}/?transaction=${model.selection.transaction}&area=${id}`, locale)}>{locale === 'ko' ? '이 면적 보기' : 'View size cohort'}</Link>
+            <Link href={localizedSeoulHref(`/kr/seoul/explore/${model.district.slug}/${model.building.buildingId}/?transaction=${model.selection.transaction}&area=${id}${model.selection.contractGroup === 'not-applicable' ? '' : `&contractType=${model.selection.contractGroup}`}`, locale)}>{locale === 'ko' ? '이 면적 보기' : 'View size cohort'}</Link>
           </li>)}</ul>
         </section>
 

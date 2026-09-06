@@ -637,8 +637,8 @@ describe('installed Korea evidence repositories', () => {
         filedDepositMedianLabel: '₩30,000,000',
       },
     });
-    expect(model?.sizeCohorts).toContainEqual({ group: 'apartment · monthly · all', size: '60–85 m²', count: 5, median: 300_000 });
-    expect(model?.sizeCohorts).toContainEqual({ group: 'apartment · monthly · all', size: 'Under 40 m²', count: 0, median: null });
+    expect(model?.sizeCohorts).toContainEqual({ group: 'Apartment · Monthly rent · All contracts', size: '60–85 m²', count: 5, median: 300_000 });
+    expect(model?.sizeCohorts).toContainEqual({ group: 'Apartment · Monthly rent · All contracts', size: 'Under 40 m²', count: 0, median: null });
     const recent = (model as Readonly<{ recentTransactions: readonly unknown[] }>).recentTransactions;
     expect(recent).toHaveLength(5);
     expect(recent[0]).toMatchObject({

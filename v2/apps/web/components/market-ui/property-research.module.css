@@ -2,7 +2,7 @@
 .section h2 { margin: 0 0 10px; font-size: 23px; line-height: 1.25; letter-spacing: -.025em; }
 .section p { margin: 8px 0 18px; max-width: 75ch; color: var(--muted, #5f6b76); font-size: 13px; line-height: 1.6; }
 .chart { display: block; width: 100%; height: auto; overflow: visible; color: var(--accent, #2363b4); }
-.chart text { fill: var(--muted, #5f6b76); font: 12px sans-serif; }
+.chart text { fill: var(--muted, #5f6b76); font-family: inherit; font-size: 12px; }
 .chart line { stroke: var(--line, #dde2e6); }
 .tableWrap { overflow-x: auto; }
 .table { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }

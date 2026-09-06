@@ -1,7 +1,16 @@
 import { describe, expect, it } from 'vitest';
+import { createElement } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { MonthlyTransactionResearch } from '../components/market-ui/transaction-research';
 import { buildMonthlyResearch, calculatePropertyScenario, summarizeSizeCohorts } from '../lib/research/property-research';
 
 describe('property research calculations', () => {
+  it('shows only volume when every monthly price is withheld, without a made-up currency axis', () => {
+    const html = renderToStaticMarkup(createElement(MonthlyTransactionResearch, { months: [{ month: '2026-01', count: 3, median: null }] }));
+    expect(html).toContain('Reported transaction activity');
+    expect(html).not.toContain('SGD');
+    expect(html).toContain('3 reported sales');
+  });
   it('keeps missing months and suppresses prices below five, without dropping volume', () => {
     const rows = [100, 200, 300, 400, 500].map((price) => ({ month: '2026-01', price, area: 50, group: 'resale' }));
     const result = buildMonthlyResearch([...rows, { month: '2026-03', price: 999, area: 50, group: 'resale' }], '2026-01', '2026-03');
