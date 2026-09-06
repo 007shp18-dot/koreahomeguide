@@ -20,6 +20,7 @@ describe('global property database migration', () => {
       '0005_newsroom_content_system.sql',
       '0006_infographic_render_records.sql',
       '0007_building_enrichment_operations.sql',
+      '0008_building_photo_coverage.sql',
     ]);
     expect(bundles.find(({ name }) => name === '0003_global_property_core.sql')?.statements.length)
       .toBeGreaterThan(10);

@@ -1,0 +1,164 @@
+import 'server-only';
+
+import { contentDatabase } from '../db/postgres.server';
+
+type SqlRow = Readonly<Record<string, unknown>>;
+
+export type PhotoCoverageSqlPort = Readonly<{
+  query(statement: string, parameters?: readonly unknown[]): Promise<readonly SqlRow[]>;
+}>;
+
+export type PhotoCoverageState =
+  | 'exact-photo'
+  | 'provider-photo'
+  | 'parent-photo'
+  | 'street-view'
+  | 'unavailable';
+
+export type PhotoCoverageSummary = Readonly<{
+  total: number;
+  exactPhoto: number;
+  providerPhoto: number;
+  parentPhoto: number;
+  streetView: number;
+  unavailable: number;
+  complete: number;
+}>;
+
+const SYNC_SQL = `
+  /* photo-coverage:sync */
+  WITH eligible AS (
+    SELECT
+      entity.id AS entity_id,
+      entity.market_id,
+      photo.id AS building_photo_id,
+      photo.provider,
+      CASE
+        WHEN photo.provider = 'google-place' THEN 'provider-photo'
+        ELSE 'exact-photo'
+      END AS state,
+      photo.checked_at,
+      row_number() OVER (
+        PARTITION BY entity.id
+        ORDER BY photo.position, photo.id
+      ) AS preference
+    FROM property_entities AS entity
+    INNER JOIN buildings AS building
+      ON building.key = entity.local_attributes ->> 'legacyBuildingKey'
+    INNER JOIN building_photos AS photo
+      ON photo.building_key = building.key
+      AND photo.status = 'approved'
+      AND photo.approved_at IS NOT NULL
+      AND photo.approved_by IS NOT NULL
+      AND photo.visual_reviewed_at IS NOT NULL
+    WHERE entity.market_id IN ('kr-seoul', 'sg-singapore')
+      AND ($1::text IS NULL OR entity.market_id = $1)
+      AND entity.identity_status = 'verified'
+    ORDER BY entity.id, photo.position, photo.id
+  ), selected AS (
+    SELECT *
+    FROM eligible
+    WHERE preference = 1
+    ORDER BY entity_id
+    LIMIT $2
+  ), upserted AS (
+    INSERT INTO building_photo_coverage (
+      entity_id, market_id, state, building_photo_id, provider, reason,
+      policy_version, checked_at, next_retry_at, attempt_count, updated_at
+    )
+    SELECT
+      entity_id, market_id, state, building_photo_id, provider, NULL,
+      'photo-identity-v1', checked_at, checked_at + interval '365 days', 1, now()
+    FROM selected
+    ON CONFLICT (entity_id) DO UPDATE SET
+      market_id = excluded.market_id,
+      state = excluded.state,
+      building_photo_id = excluded.building_photo_id,
+      parent_entity_id = NULL,
+      provider = excluded.provider,
+      reason = NULL,
+      policy_version = excluded.policy_version,
+      checked_at = excluded.checked_at,
+      next_retry_at = excluded.next_retry_at,
+      attempt_count = building_photo_coverage.attempt_count + 1,
+      updated_at = now()
+    RETURNING entity_id
+  )
+  SELECT count(*)::text AS updated FROM upserted
+`;
+
+const SUMMARY_SQL = `
+  /* photo-coverage:summary */
+  SELECT
+    count(*)::text AS total,
+    count(*) FILTER (WHERE coverage.state = 'exact-photo')::text AS exact_photo,
+    count(*) FILTER (WHERE coverage.state = 'provider-photo')::text AS provider_photo,
+    count(*) FILTER (WHERE coverage.state = 'parent-photo')::text AS parent_photo,
+    count(*) FILTER (WHERE coverage.state = 'street-view')::text AS street_view,
+    count(*) FILTER (WHERE coverage.state = 'unavailable')::text AS unavailable,
+    count(coverage.entity_id)::text AS complete
+  FROM property_entities AS entity
+  LEFT JOIN building_photo_coverage AS coverage ON coverage.entity_id = entity.id
+  WHERE entity.market_id IN ('kr-seoul', 'sg-singapore')
+`;
+
+function count(value: unknown): number {
+  if (typeof value !== 'string' || !/^(?:0|[1-9]\d*)$/u.test(value)) {
+    throw new TypeError('Invalid photo coverage count.');
+  }
+  const parsed = Number(value);
+  if (!Number.isSafeInteger(parsed)) throw new TypeError('Invalid photo coverage count.');
+  return parsed;
+}
+
+export function createPhotoCoverageStore(port: PhotoCoverageSqlPort): Readonly<{
+  sync(limit?: number, marketId?: 'kr-seoul' | 'sg-singapore'): Promise<Readonly<{
+    checked: number;
+    updated: number;
+  }>>;
+  readSummary(): Promise<PhotoCoverageSummary>;
+}> {
+  return Object.freeze({
+    async sync(limit = 300, marketId) {
+      if (!Number.isSafeInteger(limit) || limit < 1 || limit > 300) {
+        throw new RangeError('Photo coverage limit must be between 1 and 300.');
+      }
+      const [row] = await port.query(SYNC_SQL, [marketId ?? null, limit]);
+      if (row === undefined) throw new TypeError('Photo coverage synchronization result unavailable.');
+      const updated = count(row.updated);
+      return Object.freeze({ checked: updated, updated });
+    },
+    async readSummary() {
+      const [row] = await port.query(SUMMARY_SQL);
+      if (row === undefined) throw new TypeError('Photo coverage summary unavailable.');
+      return Object.freeze({
+        total: count(row.total),
+        exactPhoto: count(row.exact_photo),
+        providerPhoto: count(row.provider_photo),
+        parentPhoto: count(row.parent_photo),
+        streetView: count(row.street_view),
+        unavailable: count(row.unavailable),
+        complete: count(row.complete),
+      });
+    },
+  });
+}
+
+function configuredStore() {
+  const sql = contentDatabase();
+  if (sql === null) throw new Error('database_not_configured');
+  return createPhotoCoverageStore({
+    query: (statement, parameters = []) => sql.query(statement, [...parameters]),
+  });
+}
+
+export async function syncPhotoCoverage(
+  limit = 300,
+  marketId?: 'kr-seoul' | 'sg-singapore',
+) {
+  return configuredStore().sync(limit, marketId);
+}
+
+export async function readPhotoCoverageSummary() {
+  return configuredStore().readSummary();
+}
