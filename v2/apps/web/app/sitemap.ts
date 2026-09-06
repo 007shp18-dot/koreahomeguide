@@ -54,8 +54,11 @@ const localizedPairs: readonly LocalizedPair[] = Object.freeze([
   ...editorialLocalizedPairs,
 ] as const);
 
-function languageAlternates(path: string): SitemapEntry['alternates'] | undefined {
-  const pair = localizedPairs.find((candidate) => (
+function languageAlternates(
+  path: string,
+  localizedPair?: LocalizedPair,
+): SitemapEntry['alternates'] | undefined {
+  const pair = localizedPair ?? localizedPairs.find((candidate) => (
     path === candidate.en || path === candidate.ko || path === candidate['zh-Hans']
   ));
   if (pair === undefined) return undefined;
@@ -87,8 +90,9 @@ function latestDate(values: readonly (string | undefined)[]): Date | undefined {
 function sitemapEntry(
   path: `/${string}`,
   lastModified?: Date,
+  localizedPair?: LocalizedPair,
 ): SitemapEntry {
-  const alternates = languageAlternates(path);
+  const alternates = languageAlternates(path, localizedPair);
   return {
     url: publicCanonical(path),
     ...(lastModified === undefined ? {} : { lastModified }),
@@ -225,10 +229,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
       sale: buildingEvidence.sale?.listBuildingRecords() ?? [],
     };
     entries.push(...listIndexableKoreaBuildingRouteParams(buildingRecords)
-      .map(({ district, buildingId }) => sitemapEntry(
-        `/kr/seoul/explore/${district}/${buildingId}/`,
-        buildingLastModified,
-      )));
+      .flatMap(({ district, buildingId }) => {
+        const pair = Object.freeze({
+          en: `/kr/seoul/explore/${district}/${buildingId}/`,
+          ko: `/ko/kr/seoul/explore/${district}/${buildingId}/`,
+        }) satisfies LocalizedPair;
+        return [
+          sitemapEntry(pair.en, buildingLastModified, pair),
+          sitemapEntry(pair.ko, buildingLastModified, pair),
+        ];
+      }));
     entries.push(...listIndexableKoreaNeighborhoodRouteParams(buildingRecords)
       .map(({ district, neighborhoodId }) => sitemapEntry(
         `/kr/seoul/explore/${district}/neighborhood/${neighborhoodId}/`,

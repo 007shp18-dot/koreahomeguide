@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 
 import EnglishBuildingRoute, {
   generateMetadata as generateEnglishMetadata,
+  listKoreanPrerenderedKoreaBuildingParams,
 } from '@/app/(en)/kr/seoul/explore/[district]/[buildingId]/page';
 
 type BuildingPageProps = Readonly<{
@@ -14,7 +15,7 @@ export const revalidate = 3_600;
 export const dynamicParams = true;
 
 export function generateStaticParams() {
-  return [];
+  return [...listKoreanPrerenderedKoreaBuildingParams()];
 }
 
 export async function generateMetadata(props: BuildingPageProps): Promise<Metadata> {

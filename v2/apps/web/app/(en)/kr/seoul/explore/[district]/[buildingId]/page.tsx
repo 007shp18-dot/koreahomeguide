@@ -28,7 +28,10 @@ import { buildBuildingDecisionModel } from '@/lib/public-market/building-decisio
 import { parseBuildingDecisionSelection } from '@/lib/public-market/building-decision-state';
 import { buildBuildingVisualModel } from '@/lib/public-market/building-visual-model';
 import { buildPublicBuildingModel } from '@/lib/public-market/building-route-model.server';
-import { publicBuildingRepositoryFromEnvironment } from '@/lib/public-market/building-summary-repository.server';
+import {
+  publicBuildingRepositoryFromEnvironment,
+  publicBuildingRepositoryFromInstalledArtifact,
+} from '@/lib/public-market/building-summary-repository.server';
 import { buildObservedBuildingIdentityModel } from '@/lib/public-market/observed-building-route-model.server';
 import {
   buildKoreaExplorerBuildingDetailModel,
@@ -202,13 +205,30 @@ export function resolveKoreaEvidenceBuildingRoute(
   return Object.freeze({ model, backHref });
 }
 
-export function listPrerenderedKoreaBuildingParams() {
-  const legacy = publicBuildingRepositoryFromEnvironment()?.listRouteParams() ?? [];
+export function listEvidenceRichPrerenderedKoreaBuildingParams() {
   const evidence = koreaEvidenceRepositoriesFromEnvironment();
-  const indexable = listPrerenderedKoreaBuildingRouteParams({
+  return listPrerenderedKoreaBuildingRouteParams({
     rent: evidence.rent?.listBuildingRecords() ?? [],
     sale: evidence.sale?.listBuildingRecords() ?? [],
   });
+}
+
+export function listKoreanPrerenderedKoreaBuildingParams() {
+  const evidenceRich = listEvidenceRichPrerenderedKoreaBuildingParams();
+  const verifiedPublished = publicBuildingRepositoryFromInstalledArtifact().listRouteParams();
+  const seen = new Set<string>();
+  const buildings = [...evidenceRich, ...verifiedPublished].filter(({ district, buildingId }) => {
+    const key = `${district}/${buildingId}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+  return Object.freeze(buildings);
+}
+
+export function listPrerenderedKoreaBuildingParams() {
+  const legacy = publicBuildingRepositoryFromEnvironment()?.listRouteParams() ?? [];
+  const indexable = listEvidenceRichPrerenderedKoreaBuildingParams();
   const seen = new Set<string>();
   const buildings = [...indexable, ...legacy].filter(({ district, buildingId }) => {
     const key = `${district}/${buildingId}`;
@@ -281,7 +301,6 @@ function indexableKoreaBuildingMetadata(
   repositories: KoreaEvidenceRepositories,
   locale: ProductLocale,
 ): Metadata | null {
-  if (locale !== 'en') return null;
   const records = koreaBuildingEvidenceRecordsFor(district, buildingId, repositories);
   const identity = records.rent ?? records.sale;
   if (identity === undefined || !isKoreaBuildingIndexable(records)) return null;
@@ -296,10 +315,30 @@ function indexableKoreaBuildingMetadata(
   if (canonical === null) return null;
   const contracts = koreaBuildingEvidenceDepth(records);
   const evidenceLabel = selection.transaction === 'sale' ? 'sale prices' : 'rent evidence';
+  const englishPath = `/kr/seoul/explore/${canonical.model.district.slug}/${canonical.model.building.buildingId}/` as const;
+  const koreanPath = `/ko${englishPath}` as const;
+  const languageAlternates = Object.freeze({ en: englishPath, ko: koreanPath });
+  if (locale === 'ko') {
+    const koreanEvidenceLabel = selection.transaction === 'sale'
+      ? '매매 신고 거래'
+      : '전세·월세 신고 거래';
+    const koreanTitleLabel = selection.transaction === 'sale'
+      ? '매매 신고가'
+      : '전세·월세';
+    return indexableMetadata({
+      path: koreanPath,
+      title: `${identity.officialName} 실거래가 | ${canonical.model.district.nameKo} ${koreanTitleLabel} | signedprice`,
+      description: `${identity.officialName}의 ${koreanEvidenceLabel}를 ${canonical.model.district.nameKo} ${canonical.model.period} 기준으로 확인하세요. 대표 공개 표본 ${contracts}건과 출처·공개 기준을 함께 제공합니다.`,
+      languageAlternates,
+      locale: 'ko_KR',
+      imagePath: '/og/ko/',
+    });
+  }
   return indexableMetadata({
-    path: `/kr/seoul/explore/${canonical.model.district.slug}/${canonical.model.building.buildingId}/`,
+    path: englishPath,
     title: `${identity.officialName} reported ${evidenceLabel} | signedprice`,
     description: `${contracts} reported contracts for ${identity.officialName} in ${canonical.model.district.nameEn}, ${canonical.model.period}, shown by transaction, filed area and contract type with MOLIT source and coverage limits.`,
+    languageAlternates,
   });
 }
 
