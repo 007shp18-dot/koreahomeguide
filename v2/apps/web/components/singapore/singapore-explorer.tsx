@@ -114,8 +114,9 @@ export function SingaporeExplorer({
       id: `project-${project.id}`,
       title: `${project.name} · ${project.street}`,
       label: formatSingaporeMapPrice(project.medianPriceLabel, `${project.n} sales`),
-      address: `${project.name}, ${project.street}, Singapore`,
-    })), [visible]);
+      selected: project.id === selectedProjectId,
+      ...(project.location ? { latitude: project.location.latitude, longitude: project.location.longitude } : { address: `${project.name}, ${project.street}, Singapore` }),
+    })), [visible, selectedProjectId]);
   const layers = <>
     <MarketLayerControl label="Singapore market layers" items={[
       { id: 'ura', label: 'URA private sales', href: '#ura-private', current: true },
@@ -153,7 +154,7 @@ export function SingaporeExplorer({
           </div>
           <nav className={styles.projectPagination} aria-label="Project result pages"><button type="button" disabled={activePage === 1} onClick={() => { setPage(activePage - 1); setSelectedProjectId(null); }}>Previous</button><span>Page {activePage} of {pageCount}</span><button type="button" disabled={activePage >= pageCount} onClick={() => { setPage(activePage + 1); setSelectedProjectId(null); }}>Next</button></nav>
         </section>}
-        spatial={<section className={styles.exploreMap} aria-labelledby="singapore-map-heading"><header className={styles.mapHeading}><div><h2 id="singapore-map-heading">Project locations</h2><p>{visible.length.toLocaleString('en')} locations on this page · {projects.length.toLocaleString('en')} matches</p></div></header><GooglePlaceMap browserKey={googleMapsBrowserKey} points={mapPoints} onSelectPoint={onMapSelect} showAddressSearch={false} />{selectedProject ? <aside className={styles.mapSelection}><button type="button" aria-label="Close project preview" onClick={() => setSelectedProjectId(null)}>Close</button><h3>{selectedProject.name}</h3><p>{selectedProject.street} · District {selectedProject.district} · {selectedProject.segment}</p><strong>{selectedProject.medianPriceLabel ?? 'Not published'}</strong><span>{selectedProject.medianPsfLabel ?? `${selectedProject.n} reported sales`}</span>{selectedProject.state === 'published' ? <Link href={selectedProject.href}>Open project evidence</Link> : null}</aside> : null}</section>}
+        spatial={<section className={styles.exploreMap} aria-labelledby="singapore-map-heading"><header className={styles.mapHeading}><div><h2 id="singapore-map-heading">Project locations</h2><p>{visible.length.toLocaleString('en')} projects on this page · {projects.length.toLocaleString('en')} matches</p></div></header><GooglePlaceMap browserKey={googleMapsBrowserKey} points={mapPoints} onSelectPoint={onMapSelect} showAddressSearch={false} />{selectedProject ? <aside className={styles.mapSelection}><button type="button" aria-label="Close project preview" onClick={() => setSelectedProjectId(null)}>Close</button><h3>{selectedProject.name}</h3><p>{selectedProject.street} · District {selectedProject.district} · {selectedProject.segment}</p><strong>{selectedProject.medianPriceLabel ?? 'Not published'}</strong><span>{selectedProject.medianPsfLabel ?? `${selectedProject.n} reported sales`}</span>{selectedProject.state === 'published' ? <Link href={selectedProject.href}>Open project evidence</Link> : null}</aside> : null}</section>}
       />
     </div>
     <HdbMarketPanel model={hdbModel} /><SingaporeEvidence model={model.evidence} compact />

@@ -1,0 +1,22 @@
+.section { margin-block: 32px; min-width: 0; color: var(--ink, #17212b); }
+.section h2 { margin: 0 0 10px; font-size: 23px; line-height: 1.25; letter-spacing: -.025em; }
+.section p { margin: 8px 0 18px; max-width: 75ch; color: var(--muted, #5f6b76); font-size: 13px; line-height: 1.6; }
+.chart { display: block; width: 100%; height: auto; overflow: visible; color: var(--accent, #2363b4); }
+.chart text { fill: var(--muted, #5f6b76); font-family: inherit; font-size: 12px; }
+.chart line { stroke: var(--line, #dde2e6); }
+.tableWrap { overflow-x: auto; }
+.table { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+.table th, .table td { padding: 12px 8px; border-bottom: 1px solid var(--line, #e1e5e8); text-align: left; }
+.table th { font-size: 12px; font-weight: 600; color: var(--muted, #5f6b76); }
+.table td:last-child { white-space: nowrap; }
+.bar { display: block; min-width: 3px; height: 5px; margin-top: 7px; background: var(--accent, #2363b4); opacity: .65; border-radius: 999px; }
+.form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-block: 20px; }
+.form label { display: grid; gap: 7px; font-size: 13px; color: var(--muted, #5f6b76); }
+.form input { width: 100%; min-width: 0; min-height: 46px; padding: 10px 12px; border: 1px solid var(--line, #ccd4db); border-radius: 8px; background: var(--surface, white); color: var(--ink, #17212b); font: inherit; font-variant-numeric: tabular-nums; box-sizing: border-box; }
+.results { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin: 20px 0; }
+.results div { min-width: 0; }
+.results dt { font-size: 12px; color: var(--muted, #5f6b76); margin-bottom: 7px; }
+.results dd { margin: 0; font-size: clamp(16px, 2vw, 23px); font-weight: 650; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.section details { margin-top: 16px; }
+.section summary { cursor: pointer; font-size: 13px; padding-block: 10px; }
+@media (max-width: 560px) { .form { grid-template-columns: 1fr; } .results { grid-template-columns: 1fr; gap: 14px; } .section h2 { font-size: 21px; } }

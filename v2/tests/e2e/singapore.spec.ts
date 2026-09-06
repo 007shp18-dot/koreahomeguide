@@ -108,7 +108,7 @@ test('ready Singapore evidence flows entry to project when promotion gates open'
     overflowing: Array.from(shell.querySelectorAll('#detail-evidence dd, #detail-overview strong'))
       .filter((element) => element.scrollWidth > element.clientWidth + 1)
       .map((element) => element.textContent),
-    priceWhiteSpace: getComputedStyle(shell.querySelector('tbody td:nth-child(2)')!).whiteSpace,
+    priceWhiteSpace: getComputedStyle(shell.querySelector('[aria-labelledby="transaction-heading"] tbody td:nth-child(2)')!).whiteSpace,
   }));
   expect(numericLayout.overflowing).toEqual([]);
   expect(numericLayout.priceWhiteSpace).toBe('nowrap');
@@ -118,6 +118,16 @@ test('ready Singapore evidence flows entry to project when promotion gates open'
     await expect(page.locator('body')).toContainText(label);
   }
   await expect(page.getByRole('link', { name: 'Explore' }).first()).toBeVisible();
+  await noOverflow(page);
+
+  await expect(page.locator('[data-transaction-research="monthly"] svg')).toBeVisible();
+  const scenario = page.locator('[data-property-scenario="SGD"]');
+  await scenario.getByLabel('Purchase price (SGD)', { exact: true }).fill('1000000');
+  await scenario.getByLabel('Acquisition costs, including taxes and fees (SGD)').fill('100000');
+  await scenario.getByLabel('Expected monthly rent (SGD)').fill('5000');
+  await scenario.getByLabel('Annual operating costs, including taxes (SGD)').fill('12000');
+  await scenario.getByLabel('Expected vacant months per year').fill('2');
+  await expect(scenario.locator('dl')).toContainText('3.45%');
   await noOverflow(page);
 
   const raw = await page.request.get(page.url());

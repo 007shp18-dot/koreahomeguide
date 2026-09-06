@@ -5,25 +5,33 @@ import { contentDatabase } from '@/lib/db/postgres.server';
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
-  const key = new URL(request.url).searchParams.get('key')?.trim();
-  if (!key || !/^seoul:[a-zA-Z0-9._~-]{1,220}$/.test(key)) {
+  const params = new URL(request.url).searchParams;
+  const single = params.get('key');
+  const batch = params.get('keys');
+  const keys = (batch ?? single ?? '').split(',').map((key) => key.trim());
+  if ((single !== null && batch !== null) || params.getAll('key').length > 1 || params.getAll('keys').length > 1
+    || keys.length > 50 || keys.some((key) => !/^seoul:[a-zA-Z0-9._~-]{1,220}$/.test(key))) {
     return NextResponse.json({ error: 'invalid_key' }, { status: 400 });
   }
   const sql = contentDatabase();
   if (sql === null) return NextResponse.json({ error: 'not_configured' }, { status: 503 });
   try {
-    const [row] = await sql`
-      SELECT coalesce(road_address, legal_address) AS address, latitude, longitude
+    const rows = await sql`
+      SELECT key, coalesce(nullif(road_address, ''), legal_address) AS address, latitude, longitude
       FROM buildings
-      WHERE key = ${key} AND identity_status = 'verified'
-      LIMIT 1
+      WHERE key = ANY(${keys}::text[]) AND identity_status = 'verified'
+      LIMIT 50
     `;
-    if (typeof row?.address !== 'string') return NextResponse.json({ error: 'not_found' }, { status: 404 });
-    return NextResponse.json({
-      address: row.address,
-      latitude: typeof row.latitude === 'number' ? row.latitude : null,
-      longitude: typeof row.longitude === 'number' ? row.longitude : null,
-    }, { headers: { 'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=604800' } });
+    const locations = rows.flatMap((row) => {
+      if (typeof row.key !== 'string' || !keys.includes(row.key) || typeof row.address !== 'string' || row.address.trim() === '') return [];
+      const valid = typeof row.latitude === 'number' && typeof row.longitude === 'number'
+        && row.latitude >= 37.4 && row.latitude <= 37.72 && row.longitude >= 126.75 && row.longitude <= 127.25;
+      return [{ key: row.key, address: row.address, latitude: valid ? row.latitude : null, longitude: valid ? row.longitude : null }];
+    });
+    const location = locations[0];
+    if (batch === null && location === undefined) return NextResponse.json({ error: 'not_found' }, { status: 404 });
+    const body = batch !== null ? { locations } : { address: location!.address, latitude: location!.latitude, longitude: location!.longitude };
+    return NextResponse.json(body, { headers: { 'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400' } });
   } catch (error) {
     console.error('SignedPrice building-location read failed.', error);
     return NextResponse.json({ error: 'storage_unavailable' }, { status: 503 });

@@ -1,3 +1,6 @@
+import { buildMonthlyResearch, summarizeSizeCohorts } from '../../lib/research/property-research';
+import { MonthlyTransactionResearch, SizeCohortResearch } from '../market-ui/transaction-research';
+import { PropertyScenarioCalculator } from '../market-ui/property-scenario';
 import Link from 'next/link';
 
 import type {
@@ -41,6 +44,13 @@ export function SingaporeProjectDetail({ model, googleMapsBrowserKey = null }: R
       <SingaporeEvidence model={model.evidence} />
     </SingaporePage>
   );
+  const records = model.transactions.map(({ source, propertyTypeLabel, saleTypeLabel, areaBasisLabel, tenureLabel }) => ({
+    month: source.contractMonth.slice(0, 7), price: source.priceSgd, area: source.areaSqm,
+    group: `${propertyTypeLabel} · ${saleTypeLabel} · ${areaBasisLabel} · ${tenureLabel}`,
+  }));
+  const [from, to] = model.evidence.period.split('..');
+  const months = buildMonthlyResearch(records, from ?? '', to ?? '');
+  const sizes = summarizeSizeCohorts(records);
   return (
     <SingaporePage currentHref="/sg/singapore/explore/" unframed>
       <MarketDetailShell
@@ -67,9 +77,14 @@ export function SingaporeProjectDetail({ model, googleMapsBrowserKey = null }: R
           <div className={styles.stat}><dt>Middle half</dt><dd><PriceRange value={model.display.middlePriceLabel} /></dd></div>
           <div className={styles.stat}><dt>Median</dt><dd>{model.display.medianPsfLabel}</dd></div>
         </dl>
-      </section><section className={styles.section} aria-labelledby="transaction-heading">
+      </section>
+      <MonthlyTransactionResearch months={months} />
+      <section className={styles.section} aria-labelledby="project-size-heading"><h2 id="project-size-heading">Compare prices by home size</h2><p>Same project and reporting period. Property type, sale type, area basis and tenure stay separate. A cohort needs at least five transactions to publish its median.</p><SizeCohortResearch rows={sizes} currency="SGD" /></section>
+      <PropertyScenarioCalculator key={model.identity.id} price={model.identity.medianPriceSgd} currency="SGD" />
+      <section className={styles.section} aria-labelledby="project-profile-heading"><h2 id="project-profile-heading">Project profile</h2><dl className={styles.stats}><div className={styles.stat}><dt>Street</dt><dd>{model.identity.street}</dd></div><div className={styles.stat}><dt>Tenure in reported records</dt><dd>{model.identity.tenures.join(' · ')}</dd></div><div className={styles.stat}><dt>Property types</dt><dd>{[...new Set(model.transactions.map((row) => row.propertyTypeLabel))].join(' · ')}</dd></div></dl><Link href={`/sg/singapore/explore/?q=${encodeURIComponent(model.identity.project)}&project=${encodeURIComponent(model.identity.id)}`}>View this project on the map</Link></section>
+      <section className={styles.section} aria-labelledby="transaction-heading">
         <p className={styles.sectionLabel}>02 / Recent reported transactions</p>
-        <h2 id="transaction-heading">Native source fields, with derived unit prices labelled.</h2>
+        <h2 id="transaction-heading">Reported sales, unit sizes and floors.</h2>
         <div className={styles.tableWrap}>
           <table className={styles.table}>
             <thead><tr><th>Month</th><th>Price</th><th>Area</th><th>PSF</th><th>PSM</th><th>Sale</th><th>Property</th><th>Area basis</th><th>Tenure</th><th>Floor</th></tr></thead>

@@ -1,3 +1,4 @@
+import { resolveUraProjectLocation } from './project-location';
 import 'server-only';
 
 import { createEvidenceDescriptor } from '@signedprice/market-core';
@@ -82,9 +83,10 @@ function display(summary: Extract<SingaporePublishedSummary, { published: true }
   });
 }
 
-function projectListItem(project: SingaporeProjectSummary): SingaporeProjectListItem {
+function projectListItem(project: SingaporeProjectSummary, repository: SingaporeSnapshotRepository): SingaporeProjectListItem {
   const area = project.marketSegment.toLowerCase() as Lowercase<typeof project.marketSegment>;
   return Object.freeze({
+    location: resolveUraProjectLocation(repository.listProjectRecords(project.marketSegment, project.id)),
     id: project.id,
     name: project.project,
     street: project.street,
@@ -195,7 +197,7 @@ export function buildSingaporeExploreModel(
       medianPriceLabel: segment.medianPriceSgd === null ? null : currency.format(segment.medianPriceSgd),
       medianPsfLabel: segment.medianPsf === null ? null : `SGD ${number.format(segment.medianPsf)} PSF`,
       projects: Object.freeze(repository.listProjects(segment.segment)
-        .map(projectListItem)
+        .map((project) => projectListItem(project, repository))
         .sort((left, right) => right.n - left.n || left.name.localeCompare(right.name))),
     }))),
   });
@@ -220,7 +222,7 @@ export function buildSingaporeSegmentModel(
     status: 'ready',
     identity,
     display: display(identity),
-    projects: Object.freeze(repository.listProjects(identity.segment).map(projectListItem)),
+    projects: Object.freeze(repository.listProjects(identity.segment).map((project) => projectListItem(project, repository))),
     correctionHref: SINGAPORE_CORRECTION_HREF,
     evidence: evidence(repository),
   });
