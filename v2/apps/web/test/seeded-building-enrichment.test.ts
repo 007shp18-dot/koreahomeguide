@@ -95,11 +95,12 @@ describe('scoped property enrichment',()=>{
    crons?:readonly Readonly<{path:string;schedule:string}>[];
   };
   expect(config.crons).toEqual(expect.arrayContaining([
-   {path:'/api/internal/building-enrichment?source=wikimedia&limit=30',schedule:'7 * * * *'},
-   {path:'/api/internal/building-enrichment?source=naver&limit=30',schedule:'27 * * * *'},
-   {path:'/api/internal/building-enrichment?source=google&limit=30',schedule:'47 * * * *'},
-   {path:'/api/internal/building-enrichment?source=official&limit=12',schedule:'17 * * * *'},
+   {path:'/api/internal/building-enrichment/?source=wikimedia&limit=30',schedule:'7 * * * *'},
+   {path:'/api/internal/building-enrichment/?source=naver&limit=30',schedule:'27 * * * *'},
+   {path:'/api/internal/building-enrichment/?source=google&limit=30',schedule:'47 * * * *'},
+   {path:'/api/internal/building-enrichment/?source=official&limit=12',schedule:'17 * * * *'},
   ]));
+  expect(config.crons?.every(({path})=>new URL(path,'https://signedprice.com').pathname.endsWith('/'))).toBe(true);
  });
  it('shares the Google budget sequentially across both markets',async()=>{
   vi.stubEnv('CRON_SECRET','test-secret');
