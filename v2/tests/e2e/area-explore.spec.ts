@@ -274,11 +274,15 @@ test('mobile controls keep 44px focus targets and natural document scrolling', a
   const pricesTab = navigation.getByRole('link', { name: 'Prices' });
   const viewTabs = page.getByRole('navigation', { name: 'Explorer view' }).getByRole('link');
   const districtLink = page.getByRole('combobox', { name: 'All 25 Seoul districts' });
-  const detailLink = page.locator('[data-building-row]').first().getByRole('link');
-  for (const target of [pricesTab, districtLink, detailLink]) {
+  for (const target of [pricesTab, districtLink]) {
     await expectTouchTarget(target);
     await expectCobaltFocus(target);
   }
+  await districtLink.selectOption('jongno-gu');
+  await expect(page).toHaveURL(/district=jongno-gu/);
+  const detailLink = page.locator('[data-building-row]').first().getByRole('link');
+  await expectTouchTarget(detailLink);
+  await expectCobaltFocus(detailLink);
   await expect(viewTabs).toHaveCount(4);
   for (let index = 0; index < 4; index += 1) await expectTouchTarget(viewTabs.nth(index));
   await expectNoHorizontalOverflow(page);
