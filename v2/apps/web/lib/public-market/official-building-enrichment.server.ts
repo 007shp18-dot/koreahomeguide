@@ -188,30 +188,34 @@ export async function enrichOfficialBuildingFacts(
       unavailable: 0,
     });
   }
-  const candidates = await dependencies.loadOnlineCandidates(remaining);
-  const results = await Promise.all(candidates.map(async (candidate) => {
-    const facts = await dependencies.loadOnline({
-      districtLawdCd: candidate.districtLawdCd,
-      neighborhoodName: candidate.neighborhoodName,
-      officialName: candidate.officialName,
-      housingType: candidate.housingType,
-      serviceKey: dependencies.serviceKey,
-      fetch: globalThis.fetch,
-    });
-    if (facts.status === 'ready') {
-      await dependencies.store(candidate, facts);
-      await dependencies.recordAttempt(candidate.buildingKey, 'succeeded', null, 30);
-      return 'stored' as const;
-    }
-    const retryDays = facts.reason === 'provider_unavailable' ? 1 : 30;
-    await dependencies.recordAttempt(
-      candidate.buildingKey,
-      facts.reason === 'provider_unavailable' ? 'provider-error' : 'no-candidate',
-      facts.reason,
-      retryDays,
-    );
-    return 'unavailable' as const;
-  }));
+  const candidates = await dependencies.loadOnlineCandidates(Math.min(remaining, 10));
+  const results: ('stored' | 'unavailable')[] = [];
+  for (let offset = 0; offset < candidates.length; offset += 5) {
+    const batch = candidates.slice(offset, offset + 5);
+    results.push(...await Promise.all(batch.map(async (candidate) => {
+      const facts = await dependencies.loadOnline({
+        districtLawdCd: candidate.districtLawdCd,
+        neighborhoodName: candidate.neighborhoodName,
+        officialName: candidate.officialName,
+        housingType: candidate.housingType,
+        serviceKey: dependencies.serviceKey,
+        fetch: globalThis.fetch,
+      });
+      if (facts.status === 'ready') {
+        await dependencies.store(candidate, facts);
+        await dependencies.recordAttempt(candidate.buildingKey, 'succeeded', null, 30);
+        return 'stored' as const;
+      }
+      const retryDays = facts.reason === 'provider_unavailable' ? 1 : 30;
+      await dependencies.recordAttempt(
+        candidate.buildingKey,
+        facts.reason === 'provider_unavailable' ? 'provider-error' : 'no-candidate',
+        facts.reason,
+        retryDays,
+      );
+      return 'unavailable' as const;
+    })));
+  }
   return Object.freeze({
     state: 'ready',
     checked: snapshotCandidates.length + candidates.length,

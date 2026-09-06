@@ -52,4 +52,41 @@ describe('official building facts enrichment', () => {
 
     expect(result).toEqual({ state: 'ready', checked: 0, stored: 0, unavailable: 0 });
   });
+
+  test('bounds online provider work and concurrency for a large scheduled batch', async () => {
+    const candidates = Array.from({ length: 30 }, (_, index) => ({
+      buildingKey: `seoul:building-${index}`,
+      districtSlug: 'gangnam-gu',
+      buildingId: `gangnam-gu-${index}`,
+      districtLawdCd: '11680',
+      neighborhoodName: '역삼동',
+      officialName: `테스트아파트${index}`,
+      housingType: 'apartment',
+    }));
+    let active = 0;
+    let maximumConcurrency = 0;
+    const loadOnline = vi.fn(async () => {
+      active += 1;
+      maximumConcurrency = Math.max(maximumConcurrency, active);
+      await new Promise((resolve) => setTimeout(resolve, 2));
+      active -= 1;
+      return { status: 'unavailable' as const, reason: 'apartment_not_found' as const };
+    });
+    const loadOnlineCandidates = vi.fn(async (limit: number) => candidates.slice(0, limit));
+    const recordAttempt = vi.fn().mockResolvedValue(undefined);
+
+    const result = await enrichOfficialBuildingFacts(250, {
+      loadSnapshotCandidates: vi.fn().mockResolvedValue([]),
+      snapshotAvailable: () => false,
+      loadOnlineCandidates,
+      loadOnline,
+      recordAttempt,
+      serviceKey: 'configured',
+    });
+
+    expect(loadOnlineCandidates).toHaveBeenCalledWith(10);
+    expect(loadOnline).toHaveBeenCalledTimes(10);
+    expect(maximumConcurrency).toBeLessThanOrEqual(5);
+    expect(result).toEqual({ state: 'ready', checked: 10, stored: 0, unavailable: 10 });
+  });
 });
