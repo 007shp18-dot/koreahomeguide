@@ -8,7 +8,7 @@ export async function GET(request: Request) {
   const key = new URL(request.url).searchParams.get('key')?.trim();
   if (!key || key.length > 240) return NextResponse.json({ state: 'unverified' }, { status: 200 });
   const approval = await getStoredPublicPhotoApproval(key);
-  if (approval === null) return NextResponse.json({ state: 'unverified' }, {
+  if (approval == null) return NextResponse.json({ state: 'unverified' }, {
     status: 200,
     headers: { 'Cache-Control': 'no-store' },
   });

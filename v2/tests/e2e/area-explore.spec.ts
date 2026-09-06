@@ -2,7 +2,6 @@ import { expect, test, type Locator, type Page } from '@playwright/test';
 
 import { resolveReleaseTestTarget } from '../../release-test-target';
 import {
-  PUBLIC_AREA_TEST_LEGEND_LABELS,
   PUBLIC_AREA_WITHHELD_SLUG,
 } from './public-area-summary-fixture';
 import {
@@ -95,16 +94,15 @@ test('initial HTML and hydration expose one synchronized 25-district Explorer', 
   await expect(page.locator('[data-explorer-region="map"]')).toBeVisible();
   await expect(page.locator('[data-district-option]')).toHaveCount(25);
   const jongnoRow = page.locator('[data-district-option="jongno-gu"]');
-  await expect(jongnoRow).toBeVisible();
+  await expect(page.getByRole('combobox', { name: 'All 25 Seoul districts' })).toHaveValue('jongno-gu');
   await expect(jongnoRow).toContainText('Jongno-gu');
   await expect(jongnoRow).toHaveAttribute('title', /종로구/);
   await expect(page.getByText('Selected · Jongno-gu')).toBeVisible();
 
-  const gangnamPrimary = page.locator('[data-district-option="gangnam-gu"]');
-  await gangnamPrimary.click();
+  await page.getByRole('combobox', { name: 'All 25 Seoul districts' }).selectOption('gangnam-gu');
   await expect(page).toHaveURL(/district=gangnam-gu/);
   await expect(page.getByText('Selected · Gangnam-gu')).toBeVisible();
-  await expect(gangnamPrimary).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByRole('combobox', { name: 'All 25 Seoul districts' })).toHaveValue('gangnam-gu');
   await expect(page.locator('[data-building-browser="gangnam-gu"]')).toBeVisible();
   await expectNoHorizontalOverflow(page);
 
@@ -132,21 +130,16 @@ test('initial HTML and hydration expose one synchronized 25-district Explorer', 
   assertNoRuntimeFailures();
 });
 
-test('synthetic release fixture shows exact five buckets and a money-free refusal', async ({
+test('synthetic release fixture keeps withheld district selection money-free', async ({
   page,
 }) => {
   test.skip(releaseTarget.usesExternalServer, 'Exact fixture values are local-release only.');
   await page.goto('/kr/seoul/explore/');
 
-  await page.locator('summary').filter({ hasText: /^Map legend$/ }).click();
-  const legend = page.getByRole('group', { name: 'Map legend' });
-  for (const label of PUBLIC_AREA_TEST_LEGEND_LABELS) {
-    await expect(legend).toContainText(label);
-  }
-  await expect(legend).toContainText('Not published · fewer than 5 contracts');
+  await expect(page.getByText('Map legend', { exact: true })).toHaveCount(0);
   const withheldRow = page.locator(`[data-district-option="${PUBLIC_AREA_WITHHELD_SLUG}"]`);
   await expect(withheldRow).toHaveAttribute('title', /Not published/);
-  await withheldRow.click();
+  await page.getByRole('combobox', { name: 'All 25 Seoul districts' }).selectOption(PUBLIC_AREA_WITHHELD_SLUG);
   const selectedSummary = page.locator('summary').filter({ hasText: 'Selected ·' });
   await expect(selectedSummary).toContainText('4 reported contracts');
   await expect(selectedSummary).not.toContainText('₩');
@@ -212,9 +205,9 @@ test('restores a verified building selection after opening Detail and returning'
 test('district selection stays inside the Explore workspace', async ({ page }) => {
   await page.goto('/kr/seoul/explore/?district=jongno-gu');
 
-  const districtDirectory = page.locator('[data-district-rail="all-25"]');
+  const districtDirectory = page.getByRole('combobox', { name: 'All 25 Seoul districts' });
   await expect(districtDirectory).toBeVisible();
-  await districtDirectory.locator('[data-district-option="gangnam-gu"]').click();
+  await districtDirectory.selectOption('gangnam-gu');
 
   await expect(page).toHaveURL(/\/kr\/seoul\/explore\/\?.*district=gangnam-gu/);
   expect(new URL(page.url()).pathname).toBe('/kr/seoul/explore/');
@@ -225,7 +218,7 @@ test('district selection stays inside the Explore workspace', async ({ page }) =
 test('published sale detail links to Contract Check and withheld district statistics stay money-free', async ({ page }) => {
   const assertNoRuntimeFailures = observeRuntimeFailures(page);
   await page.goto('/kr/seoul/explore/');
-  await expect(page.locator('[data-district-option]').first()).toBeVisible();
+  await expect(page.getByRole('combobox', { name: 'All 25 Seoul districts' })).toBeVisible();
 
   const publishedSlug = await page.locator('[data-district-option][title*="₩"]')
     .first()
@@ -280,7 +273,7 @@ test('mobile controls keep 44px focus targets and natural document scrolling', a
   const navigation = page.getByRole('navigation', { name: 'Primary navigation' });
   const pricesTab = navigation.getByRole('link', { name: 'Prices' });
   const viewTabs = page.getByRole('navigation', { name: 'Explorer view' }).getByRole('link');
-  const districtLink = page.locator('[data-district-option="gangnam-gu"]');
+  const districtLink = page.getByRole('combobox', { name: 'All 25 Seoul districts' });
   const detailLink = page.locator('[data-building-row]').first().getByRole('link');
   for (const target of [pricesTab, districtLink, detailLink]) {
     await expectTouchTarget(target);
@@ -357,13 +350,12 @@ test('ready injected proximity fixture keeps controls touch-sized and round-trip
   await expectNoHorizontalOverflow(page);
 });
 
-test('wide workspace keeps map, table, and legend contained', async ({ page }, testInfo) => {
+test('wide workspace keeps map and district controls contained', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'wide-chromium');
   await page.goto('/kr/seoul/explore/');
 
-  await page.locator('summary').filter({ hasText: /^Map legend$/ }).click();
-  await expect(page.getByRole('group', { name: 'Map legend' })).toBeVisible();
-  await expect(page.locator('[data-district-rail="all-25"]')).toBeVisible();
+  await expect(page.getByText('Map legend', { exact: true })).toHaveCount(0);
+  await expect(page.getByRole('combobox', { name: 'All 25 Seoul districts' })).toBeVisible();
   await expectNoHorizontalOverflow(page);
 });
 

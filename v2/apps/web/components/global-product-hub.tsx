@@ -145,7 +145,7 @@ function PricesHub({ seoul }: Readonly<{ seoul?: SeoulLiveModel }>) {
         </div>
       </section>
       <section className={`${styles.section} ${styles.evidencePanel}`} aria-labelledby="price-evidence-title">
-        <div className={styles.sectionHeading}><p>Current evidence</p><h2 id="price-evidence-title">The latest released Seoul contract set.</h2></div>
+        <div className={styles.sectionHeading}><p>Current evidence</p><h2 id="price-evidence-title">Seoul jeonse sample · 45–55 m².</h2></div>
         {seoul?.status === 'ready' ? <dl className={styles.metrics}><div><dt>Eligible contracts</dt><dd>{number.format(seoul.totalCount)}</dd></div><div><dt>New</dt><dd>{number.format(seoul.newCount)}</dd></div><div><dt>Renewal</dt><dd>{number.format(seoul.renewalCount)}</dd></div><div><dt>Completed period</dt><dd>{seoul.period}</dd></div></dl> : <div className={styles.emptyState}><strong>Evidence status is temporarily unavailable.</strong><p>The product remains accessible without inventing replacement figures.</p></div>}
       </section>
     </>

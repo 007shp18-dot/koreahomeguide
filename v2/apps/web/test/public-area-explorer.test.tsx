@@ -345,8 +345,8 @@ describe('public Seoul area Explorer', () => {
     expect(markup).toContain('ncpKeyId=test-naver-client');
     expect(markup).toContain('Loading the NAVER map.');
     expect(markup).toContain('District median refundable jeonse deposit');
-    expect(markup).toContain('aria-label="Map legend"');
-    expect(markup).toMatch(/· \d+ districts/);
+    expect(markup).not.toContain('Map legend');
+
     expect(markup).toContain(PUBLIC_AREA_FIXTURE_PERIOD);
     expect(markup).toContain('MOLIT');
     expect(markup).toContain(

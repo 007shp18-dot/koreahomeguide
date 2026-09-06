@@ -38,14 +38,6 @@ import { AreaExplorerViewSwitcher } from './area-explorer-view-switcher';
 import { DistrictEvidenceSummary } from './district-evidence-summary';
 import { PublicSourceBoundary } from './public-source-boundary';
 
-const bucketClasses = [
-  styles.bucket0,
-  styles.bucket1,
-  styles.bucket2,
-  styles.bucket3,
-  styles.bucket4,
-] as const;
-
 export function compareExploreBuildingsByEvidence(
   left: Pick<ExploreBuildingModel, 'evidenceStatus' | 'observationCount' | 'name' | 'id'>,
   right: Pick<ExploreBuildingModel, 'evidenceStatus' | 'observationCount' | 'name' | 'id'>,
@@ -697,7 +689,7 @@ function ReadyAreaExplorer({
               : <span key={transaction} aria-disabled="true" data-transaction-mode={mode}>{label}</span>
           ))}
         </div>
-        <label className={styles.toolbarSelect}><span>{locale === 'ko' ? '지역 선택' : 'District'}</span><select aria-label={locale === 'ko' ? '서울 25개 구' : 'All 25 Seoul districts'} value={selected.slug} onChange={(event) => selectDistrict(event.currentTarget.value)}>{model.districts.map((district) => <option key={district.slug} value={district.slug} data-district-option={district.slug}>{locale === 'ko' ? district.nameKo : district.nameEn}</option>)}</select></label>
+        <label className={styles.toolbarSelect}><span>{locale === 'ko' ? '지역 선택' : 'District'}</span><select aria-label={locale === 'ko' ? '서울 25개 구' : 'All 25 Seoul districts'} value={selected.slug} onChange={(event) => selectDistrict(event.currentTarget.value)}>{model.districts.map((district) => <option key={district.slug} value={district.slug} data-district-option={district.slug} title={`${district.nameKo} · ${district.medianLabel}`}>{locale === 'ko' ? district.nameKo : district.nameEn}</option>)}</select></label>
         <div className={styles.buildingSearch} data-building-search="retained">
           <label htmlFor="explore-building-query">
             {locale === 'ko' ? '구·동·건물·유형 검색' : 'Search district, neighborhood, building or type'}
@@ -819,29 +811,6 @@ function ReadyAreaExplorer({
             </div>}
           />
 
-          <details className={styles.legend}>
-            <summary>{locale === 'ko' ? '지도 범례' : 'Map legend'}</summary>
-            <div role="group" aria-label={locale === 'ko' ? '지도 범례' : 'Map legend'}>
-              <p>{usesLegacyCopy ? copy.mapLegend : exactMetricCopy.mapHeading}</p>
-              <ol>
-                {model.legend.map((bucket) => (
-                  <li key={bucket.bucket}>
-                    <span className={bucketClasses[bucket.bucket]} aria-hidden="true" />
-                    <span>
-                      {bucket.label} · {bucket.count}
-                      {locale === 'en'
-                        ? ` district${bucket.count === 1 ? '' : 's'}`
-                        : copy.districtCount}
-                    </span>
-                  </li>
-                ))}
-                <li>
-                  <span className={styles.legendHatch} aria-hidden="true" />
-                  <span>{copy.notPublished} · {copy.fewerThan} {model.source.publicationMinimum} {copy.contracts}</span>
-                </li>
-              </ol>
-            </div>
-          </details>
           <details className={styles.mapEvidenceDisclosure}>
             <summary>
               <span>{copy.selected} · {locale === 'ko' ? selected.nameKo : selected.nameEn}</span>

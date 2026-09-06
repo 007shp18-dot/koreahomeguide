@@ -31,7 +31,7 @@ async function expectTouchTarget(page: Page, selector: string) {
 test('Explore selection opens a reload-safe district detail from the explicit evidence link', async ({ page }) => {
   const noFailures = observeFailures(page);
   await page.goto('/kr/seoul/explore/');
-  await page.locator('[data-district-option="jongno-gu"]').click();
+  await page.getByRole('combobox', { name: 'All 25 Seoul districts' }).selectOption('jongno-gu');
   await expect(page).toHaveURL(/district=jongno-gu/);
   await page.locator('summary').filter({ hasText: 'Selected · Jongno-gu' }).click();
   const detailLink = page.getByRole('link', { name: 'Open evidence · Jongno-gu' });

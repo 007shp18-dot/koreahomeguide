@@ -207,3 +207,17 @@ test('Singapore Explore shows only the selected regional summary', async ({ page
   await expect(page.getByRole('link', { name: 'Open RCR evidence', exact: true })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Open CCR evidence', exact: true })).toBeHidden();
 });
+
+
+test('Prices sends a Singapore project search to Singapore Explore', async ({ page }) => {
+  await page.goto('/sg/singapore/explore/');
+  const projectName = await page.locator('[data-selected] > button strong').first().textContent();
+  expect(projectName?.trim()).toBeTruthy();
+  await page.goto('/prices/');
+  await page.getByRole('combobox', { name: 'Market', exact: true }).selectOption('singapore');
+  await page.getByRole('searchbox', { name: 'Find a property' }).fill(projectName!.trim());
+  await page.getByRole('button', { name: 'Explore prices', exact: true }).click();
+  await expect(page).toHaveURL(/\/sg\/singapore\/explore\/\?q=/);
+  await expect(page.getByRole('searchbox', { name: 'Search Singapore projects' })).toHaveValue(projectName!.trim());
+  await expect(page.locator('[data-selected] > button strong').first()).toHaveText(projectName!.trim());
+});

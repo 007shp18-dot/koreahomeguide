@@ -372,8 +372,8 @@ export async function buildEditorialGrowthReviewModel(
   const article = articles[0]!;
   const seoul = dependencies.seoul();
   const copy = query.locale === 'zh-CN'
-    ? { updated: '更新于', reportedContracts: '已申报成交' }
-    : { updated: 'Updated', reportedContracts: 'Reported contracts' };
+    ? { updated: '成交期间', reportedContracts: '全租样本 · 45–55㎡' }
+    : { updated: 'Contract period', reportedContracts: 'Jeonse sample · 45–55 m²' };
   const explore = query.state === 'ready'
     ? dependencies.explore(query.locale)
     : { rows: Object.freeze([]), districts: Object.freeze([]) };
@@ -389,7 +389,7 @@ export async function buildEditorialGrowthReviewModel(
       ? Object.freeze({
           label: copy.reportedContracts,
           value: new Intl.NumberFormat(query.locale === 'zh-CN' ? 'zh-CN' : 'en').format(seoul.totalCount),
-          context: seoul.period,
+          context: `${seoul.period} · ${query.locale === 'zh-CN' ? '符合筛选条件的合约，并非首尔全部成交' : 'Eligible contracts, not all Seoul transactions'}`,
         })
       : null,
     article,
