@@ -2012,3 +2012,5 @@
   .workspace[data-explorer-layout='split'] .mapPanel { order: 1; }
   .workspace[data-explorer-layout='split'] .discoveryRail { order: 2; }
 }
+
+.exploreToolbar, .resultBar, .workspace, .coverage, .completeTable { width: min(calc(100% - 2 * var(--page-gutter)), var(--workspace-frame)); margin-inline: auto; }

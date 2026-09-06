@@ -695,6 +695,7 @@ function ReadyAreaExplorer({
       data-explore-view={currentView}
       data-explorer-version="guide-v2"
     >
+      <header className="explore-page-heading"><h1 id="area-explorer-heading">{locale === 'ko' ? '탐색' : 'Explore'}</h1><p>{locale === 'ko' ? '서울' : 'Seoul'} · {model.source.period}</p></header>
       <div className={styles.exploreToolbar} data-explorer-region="filters">
         <div
           className={styles.transactionFilter}
@@ -781,9 +782,7 @@ function ReadyAreaExplorer({
       </div>
 
       <header className={styles.resultBar} data-explorer-region="summary">
-        <h1 className={styles.visuallyHidden} id="area-explorer-heading">
-          {usesLegacyCopy ? copy.heroHeading : exactMetricCopy.heroHeading}
-        </h1>
+
         <strong className={styles.resultCount}>{mapDrilledToDistrict
           ? `${matchingBuildingCount.toLocaleString(locale === 'ko' ? 'ko-KR' : 'en-US')}${locale === 'ko' ? '개 건물' : ` ${buildingCountLabel}`}`
           : locale === 'ko' ? '서울 25개 구' : '25 Seoul districts'} · {model.source.period}</strong>

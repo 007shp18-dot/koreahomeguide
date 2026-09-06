@@ -55,11 +55,11 @@ const registry = deepFreeze<MarketCapabilityDefinition[]>([
   { marketId: 'sg-singapore', feature: 'corrections', housingSector: null, state: 'available', publicHref: '/sg/singapore/corrections/', label: 'Singapore correction ledger', limitations: [] },
 
   { marketId: 'ae-dubai', feature: 'market_overview', housingSector: null, state: 'available', publicHref: '/ae/dubai/', label: 'Dubai market overview', limitations: [] },
-  { marketId: 'ae-dubai', feature: 'explore', housingSector: null, state: 'limited', publicHref: '/ae/dubai/', label: 'Explore Dubai market context', limitations: ['Project-level evidence is not yet a public transaction tool.'] },
+  { marketId: 'ae-dubai', feature: 'explore', housingSector: null, state: 'limited', publicHref: '/ae/dubai/explore/', label: 'Explore Dubai market context', limitations: ['Project-level evidence is not yet a public transaction tool.'] },
   { marketId: 'ae-dubai', feature: 'check', housingSector: null, state: 'rights_blocked', publicHref: null, label: 'Dubai price check', limitations: ['A licensed display boundary is required before release.'] },
   { marketId: 'ae-dubai', feature: 'property_detail', housingSector: null, state: 'rights_blocked', publicHref: null, label: 'Dubai property evidence', limitations: ['Property-level evidence requires rights clearance.'] },
   { marketId: 'ae-dubai', feature: 'transaction_detail', housingSector: null, state: 'rights_blocked', publicHref: null, label: 'Dubai transaction detail', limitations: ['Transaction detail requires a licensed display boundary.'] },
-  { marketId: 'ae-dubai', feature: 'research', housingSector: null, state: 'available', publicHref: '/insights/', label: 'Dubai research', limitations: [] },
+  { marketId: 'ae-dubai', feature: 'research', housingSector: null, state: 'available', publicHref: '/ae/dubai/guide/', label: 'Dubai research', limitations: [] },
   { marketId: 'ae-dubai', feature: 'rankings', housingSector: null, state: 'rights_blocked', publicHref: null, label: 'Dubai evidence rankings', limitations: ['Comparable transaction evidence is not approved for public display.'] },
   { marketId: 'ae-dubai', feature: 'corrections', housingSector: null, state: 'rights_blocked', publicHref: null, label: 'Dubai correction ledger', limitations: ['No public evidence release is currently active.'] },
 ]);

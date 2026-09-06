@@ -472,7 +472,7 @@ describe('installed Korea evidence repositories', () => {
       },
     }));
 
-    expect(html).toContain('Compare reported monthly rents by district.');
+    expect(html).toContain('>Explore</h1>');
     expect(html).toContain('District median reported monthly rent');
     expect(html).toContain('Reported monthly-rent contracts; filed deposit is shown separately.');
     expect(html).not.toContain('45–55㎡');
@@ -498,7 +498,7 @@ describe('installed Korea evidence repositories', () => {
       },
     }));
 
-    expect(html).toContain('Compare reported sale prices by district.');
+    expect(html).toContain('>Explore</h1>');
     expect(html).toContain('MOLIT reported sale contracts');
     expect(html).not.toContain('data-contract-group=');
     expect(html).not.toContain('New, renewal and combined');

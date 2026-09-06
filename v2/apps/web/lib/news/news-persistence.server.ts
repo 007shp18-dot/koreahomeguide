@@ -38,7 +38,7 @@ function workspaceItem(row: NewsRow): NewsWorkspaceItem | null {
   });
 }
 
-/** Internal desk read. Public routes must use the reviewed content repository. */
+/** External publisher headlines only; never presented as SignedPrice-reviewed articles. */
 export async function loadPersistedNewsItems(limit = 600): Promise<readonly NewsWorkspaceItem[] | null> {
   const sql = contentDatabase();
   if (sql === null) return null;
@@ -59,7 +59,7 @@ export async function loadPersistedNewsItems(limit = 600): Promise<readonly News
       FROM (
         SELECT
           id,
-          CASE market_id WHEN 'kr-seoul' THEN 'seoul' WHEN 'sg-singapore' THEN 'singapore' END AS market_key,
+          CASE market_id WHEN 'kr-seoul' THEN 'seoul' WHEN 'sg-singapore' THEN 'singapore' WHEN 'ae-dubai' THEN 'dubai' END AS market_key,
           canonical_url,
           title,
           summary,
@@ -91,11 +91,11 @@ export async function storeNewsItems(items: readonly NewsWorkspaceItem[]): Promi
   if (sql === null || items.length === 0) return 0;
   const payload = items
     .filter((item) => (
-      (item.market === 'seoul' || item.market === 'singapore')
+      (item.market === 'seoul' || item.market === 'singapore' || item.market === 'dubai')
       && (item.sourceKind === 'naver-search' || item.sourceKind === 'google-news-rss')
     ))
     .map((item) => ({
-      market_id: item.market === 'seoul' ? 'kr-seoul' : 'sg-singapore',
+      market_id: item.market === 'seoul' ? 'kr-seoul' : item.market === 'singapore' ? 'sg-singapore' : 'ae-dubai',
       canonical_url: item.url,
       title_hash: createHash('sha256').update(item.title.normalize('NFKC')).digest('hex'),
       title: item.title,

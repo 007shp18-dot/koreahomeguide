@@ -167,6 +167,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     sitemapEntry('/guides/', guideLastModified),
     sitemapEntry('/privacy/'),
     sitemapEntry('/contact/'),
+    sitemapEntry('/ae/dubai/', new Date('2026-09-06')),
+    sitemapEntry('/ae/dubai/explore/', new Date('2026-09-06')),
+    sitemapEntry('/ae/dubai/guide/', new Date('2026-09-06')),
     sitemapEntry('/sg/'),
     sitemapEntry('/sg/singapore/explore/'),
     sitemapEntry('/sg/singapore/explore/ccr/'),
@@ -194,12 +197,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       path as `/${string}`,
       modifiedByPath.get(path),
     ));
-    if (path === '/kr/seoul/news/') {
-      entries.push(...newsRecords.map((record) => ({
-        url: publicCanonical(`/kr/seoul/news/${record.slug}/`),
-        lastModified: new Date(record.updatedAt ?? record.publishedAt),
-      })));
-    }
+  }
+  if (newsReady) {
+    entries.push(...newsRecords.map((record) => ({
+      url: publicCanonical(`/kr/seoul/news/${record.slug}/`),
+      lastModified: new Date(record.updatedAt ?? record.publishedAt),
+    })));
   }
   if (area.status === 'ready') {
     const publishedDistricts = new Set<string>(area.districts.flatMap((district) => (

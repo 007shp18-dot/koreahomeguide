@@ -31,9 +31,9 @@ export function MarketExploreShell({ eyebrow, title, period, layers, discovery, 
   spatial: React.ReactNode;
 }>) {
   return <div className={styles.explore} data-market-explore-shell="true">
-    <header className={styles.exploreHeader}>
-      <div><p>{eyebrow}</p><h1>{title}</h1></div>
-      <div className={styles.period}>{period}</div>
+    <header className="explore-page-heading">
+      <h1>{title}</h1>
+      <p>{eyebrow} · {period}</p>
     </header>
     {layers}
     <div className={styles.exploreGrid}>

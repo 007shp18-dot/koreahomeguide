@@ -115,8 +115,8 @@ describe('signedprice public editorial homepage', () => {
     const markup = renderToStaticMarkup(await Home());
 
     expect(markup).toContain('Guides for renting and buying');
-    expect(markup).toContain('href="/trust/">Method</a>');
-    expect(markup).toContain('href="/privacy/">Privacy</a>');
-    expect(markup).toContain('href="/contact/">Contact</a>');
+    expect(markup).toContain('href="/trust">Method</a>');
+    expect(markup).toContain('href="/privacy">Privacy</a>');
+    expect(markup).toContain('href="/contact">Contact</a>');
   });
 });

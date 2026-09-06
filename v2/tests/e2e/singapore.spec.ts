@@ -121,6 +121,13 @@ test('ready Singapore evidence flows entry to project when promotion gates open'
   await noOverflow(page);
 
   await expect(page.locator('[data-transaction-research="monthly"] svg')).toBeVisible();
+  const history = page.locator('[data-transaction-research="monthly"]');
+  await history.getByRole('button', { name: '1Y', exact: true }).click();
+  await expect(history.getByRole('button', { name: '1Y', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await history.getByText('Monthly figures and sample sizes', { exact: true }).click();
+  expect(await history.locator('tbody tr').count()).toBeLessThanOrEqual(12);
+  await history.getByRole('button', { name: 'All', exact: true }).click();
+  await expect(history.getByRole('button', { name: 'All', exact: true })).toHaveAttribute('aria-pressed', 'true');
   const scenario = page.locator('[data-property-scenario="SGD"]');
   await scenario.getByLabel('Purchase price (SGD)', { exact: true }).fill('1000000');
   await scenario.getByLabel('Acquisition costs, including taxes and fees (SGD)').fill('100000');

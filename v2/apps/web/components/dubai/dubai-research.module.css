@@ -1,0 +1,37 @@
+.main { width: min(calc(100% - 2 * var(--page-gutter)), var(--content-frame)); margin-inline: auto; padding-bottom: 48px; }
+.hero { padding: 48px 0 40px; display: grid; gap: 12px; }
+.hero h1 { margin: 0; font-size: var(--page-title-size); font-weight: 650; letter-spacing: var(--tracking-display); line-height: 1.08; }
+.hero p { max-width: 68ch; color: var(--muted); font-size: var(--body-size); line-height: var(--body-leading); }
+.section { padding: 32px 0; border-top: 1px solid var(--line); }
+.section h2 { margin: 0 0 16px; font-size: clamp(1.5rem, 2.5vw, 2rem); font-weight: 650; letter-spacing: var(--tracking-display); }
+.section p { max-width: 74ch; margin: 12px 0; color: var(--muted); line-height: var(--body-leading); }
+.actions { display: flex; flex-wrap: wrap; gap: 12px 24px; }
+.actions a { min-height: var(--control-min); display: inline-flex; align-items: center; color: var(--accent); font-size: var(--text-control); font-weight: 650; }
+.metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin: 24px 0; }
+.metrics dt { color: var(--muted); font-size: var(--text-meta); }
+.metrics dd { margin: 8px 0 0; font-size: clamp(1.5rem, 3vw, 2.2rem); font-variant-numeric: tabular-nums; }
+.chart { margin: 24px 0; max-width: 760px; }
+.chart > div { display: grid; grid-template-columns: 48px minmax(0, 1fr) 100px; align-items: center; gap: 16px; margin: 18px 0; font-variant-numeric: tabular-nums; }
+.bar { display: block; height: 24px; background: var(--accent); border-radius: 0; }
+.chart figcaption { margin-top: 18px; color: var(--muted); font-size: var(--text-meta); line-height: 1.6; }
+.chart a, .section > p a, .areaDetail a, .guide a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.toolbar { display: flex; gap: 20px; align-items: end; padding: 12px 0 20px; }
+.toolbar label { display: grid; gap: 6px; width: min(100%, 440px); font-size: var(--text-meta); }
+.toolbar input { width: 100%; min-height: 44px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-strong); }
+.directory { padding: 20px; }
+.directory > p { color: var(--muted); font-size: var(--text-meta); line-height: 1.6; }
+.directory ul { list-style: none; padding: 0; margin: 12px 0; }
+.directory button { width: 100%; padding: 18px 4px; display: grid; gap: 6px; text-align: left; border: 0; border-bottom: 1px solid var(--line); background: transparent; cursor: pointer; }
+.directory button[aria-pressed='true'] { border-bottom-color: var(--accent); color: var(--accent); }
+.directory button strong { font-size: 16px; }
+.directory button span { color: var(--muted); font-size: var(--text-meta); }
+.map { min-height: 500px; }
+.map > p { padding: 12px 20px; font-size: var(--text-meta); color: var(--muted); }
+.areaDetail { margin: 24px 0; padding-top: 20px; border-top: 1px solid var(--line); }
+.areaDetail h3 { font-size: 20px; }
+.areaDetail p { margin: 12px 0; line-height: 1.6; }
+.guide { max-width: var(--reading-frame); }
+.guide ol { padding-left: 24px; }
+.guide li { padding: 12px 0; line-height: 1.7; }
+.guide h3 { margin: 8px 0; font-size: 20px; }
+@media (max-width: 650px) { .metrics { grid-template-columns: 1fr; gap: 20px; } .metrics dd { font-size: 28px; } .chart > div { grid-template-columns: 40px minmax(0, 1fr) 84px; gap: 10px; } .toolbar { align-items: start; flex-direction: column; } }
