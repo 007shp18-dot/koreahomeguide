@@ -7,7 +7,7 @@ import type { PolicyRecord } from '../../lib/policy/policy-types';
 import { ExternalHeadlines } from '../news/external-headlines';
 import styles from './newsroom.module.css';
 
-export type NewsroomTypeFilter = 'latest' | 'policy' | 'market' | 'data-stories' | 'headlines';
+export type NewsroomTypeFilter = 'latest' | 'analysis' | 'policy' | 'market' | 'data-stories' | 'headlines';
 export type NewsroomMarketFilter = 'all' | 'seoul' | 'singapore' | 'dubai';
 export type NewsroomFilters = Readonly<{
   type: NewsroomTypeFilter;
@@ -19,7 +19,7 @@ type SearchParams = Readonly<Record<string, string | readonly string[] | undefin
 
 export function resolveNewsroomFilters(input: SearchParams): NewsroomFilters {
   const type = typeof input.type === 'string'
-    && ['latest', 'policy', 'market', 'data-stories', 'headlines'].includes(input.type)
+    && ['latest', 'analysis', 'policy', 'market', 'data-stories', 'headlines'].includes(input.type)
     ? input.type as NewsroomTypeFilter
     : 'latest';
   const market = typeof input.market === 'string'
@@ -54,9 +54,9 @@ function articleItem(article: PublishedContentArticle): NewsroomListItem {
       : article.type === 'data-story' ? 'Data Story'
         : article.type === 'policy-update' ? 'Policy' : 'News',
     market: article.marketId === 'kr-seoul' ? 'Seoul'
-      : article.marketId === 'sg-singapore' ? 'Singapore' : 'Global',
+      : article.marketId === 'sg-singapore' ? 'Singapore' : article.marketId === 'ae-dubai' ? 'Dubai' : 'Global',
     marketKey: article.marketId === 'kr-seoul' ? 'seoul'
-      : article.marketId === 'sg-singapore' ? 'singapore' : 'all',
+      : article.marketId === 'sg-singapore' ? 'singapore' : article.marketId === 'ae-dubai' ? 'dubai' : 'all',
     title: article.title,
     deck: article.deck,
     date: article.updatedAt,
@@ -92,12 +92,14 @@ export function NewsroomIndex({ articles, policies, filters, headlines }: Readon
     .filter((item) => (
       (filters.market === 'all' || item.marketKey === filters.market)
       && (filters.type === 'latest'
+        || (filters.type === 'analysis' && (item.type === 'Market' || item.type === 'Data Story'))
         || (filters.type === 'policy' && item.type === 'Policy')
         || (filters.type === 'market' && item.type === 'Market')
         || (filters.type === 'data-stories' && item.type === 'Data Story'))
     ))
     .sort((left, right) => right.date.localeCompare(left.date));
   const lead = items[0] ?? null;
+  const analysis = ['analysis', 'market', 'data-stories'].includes(filters.type);
   const latest = items.slice(1);
   const typeTabs = [
     ['latest', 'Latest'], ['policy', 'Policy'], ['market', 'Market'], ['data-stories', 'Data Stories'], ['headlines', 'External headlines'],
@@ -105,10 +107,14 @@ export function NewsroomIndex({ articles, policies, filters, headlines }: Readon
   const marketTabs = [['all', 'All'], ['seoul', 'Seoul'], ['singapore', 'Singapore'], ['dubai', 'Dubai']] as const;
 
   return <main className={styles.index} data-newsroom-layout="research">
-    <ResearchPageHeading title="News" description="Policy changes, market releases and data stories for Seoul, Singapore and Dubai." actions={<Link href="/news/policy/">Open the Policy Tracker</Link>} />
+    <ResearchPageHeading title={analysis ? 'Insights' : 'News'} description={analysis ? 'SignedPrice market analysis and data stories for Seoul, Singapore and Dubai.' : 'Policy changes, market releases and data stories for Seoul, Singapore and Dubai.'} actions={<Link href="/news/policy/">Open the Policy Tracker</Link>} />
+    <nav className={styles.typeTabs} aria-label="Insights sections">
+      <Link href={filterHref('analysis', filters.market)} aria-current={analysis ? 'page' : undefined}>Analysis reports</Link>
+      <Link href={filterHref('latest', filters.market)} aria-current={!analysis ? 'page' : undefined}>News</Link>
+    </nav>
     <div className={styles.filterBar} data-newsroom-filter-bar="true">
       <nav className={styles.typeTabs} aria-label="News types">
-        {typeTabs.map(([id, label]) => <Link key={id} href={filterHref(id, filters.market)} aria-current={filters.type === id ? 'page' : undefined}>{label}</Link>)}
+        {(analysis ? [['analysis', 'All reports'], ['market', 'Market'], ['data-stories', 'Data Stories']] as const : typeTabs).map(([id, label]) => <Link key={id} href={filterHref(id, filters.market)} aria-current={filters.type === id ? 'page' : undefined}>{label}</Link>)}
       </nav>
       <nav className={styles.marketFilters} aria-label="News markets">
         {marketTabs.map(([id, label]) => <Link key={id} href={filterHref(filters.type, id)} aria-current={filters.market === id ? 'page' : undefined}>{label}</Link>)}
@@ -123,7 +129,7 @@ export function NewsroomIndex({ articles, policies, filters, headlines }: Readon
         <Link href={lead.href}>Read article</Link>
       </article>
       <section className={styles.latest} aria-labelledby="latest-reviewed-title">
-        <div className={styles.sectionHeading}><p>Latest articles</p><h2 id="latest-reviewed-title">More news</h2></div>
+        <div className={styles.sectionHeading}><p>Latest articles</p><h2 id="latest-reviewed-title">{analysis ? 'More analysis' : 'More news'}</h2></div>
         <ol data-newsroom-latest-list="rows">
           {latest.map((item) => <li key={`${item.type}:${item.id}`}>
             <div><span>{item.type} · {item.market}</span><time dateTime={item.date}>{item.date.slice(0, 10)}</time></div>

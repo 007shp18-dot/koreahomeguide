@@ -4,7 +4,7 @@ export const INSIGHTS_HEADER: SiteHeaderModel = Object.freeze({
   ...homepageCopy.header,
   links: homepageCopy.header.links.map((link) => Object.freeze({
     ...link,
-    isCurrent: link.href === '/insights/',
+    isCurrent: link.href === '/news/?type=analysis',
   })),
 });
 

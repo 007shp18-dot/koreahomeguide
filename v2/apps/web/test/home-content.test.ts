@@ -99,7 +99,7 @@ describe('signedprice homepage copy', () => {
   it('keeps the four public products and three markets navigable', async () => {
     const markup = renderToStaticMarkup(await Home());
 
-    for (const href of ['/', '/insights', '/kr/seoul/check', '/kr/seoul/explore', '/kr/seoul', '/sg', '/ae/dubai']) {
+    for (const href of ['/', '/news?type=analysis', '/kr/seoul/check', '/kr/seoul/explore', '/kr/seoul', '/sg', '/ae/dubai']) {
       expect(markup).toContain(`href="${href}"`);
     }
     expect(markup).toContain('aria-label="Primary navigation"');

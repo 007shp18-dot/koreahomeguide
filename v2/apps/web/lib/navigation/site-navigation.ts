@@ -12,7 +12,7 @@ export function globalNavigation(locale: SiteLocale = 'en') {
     { label: zh ? '市场' : 'Markets', href: '/markets/' },
     { label: zh ? '价格' : 'Prices', href: '/prices/' },
     { label: zh ? '工具' : 'Tools', href: zh ? '/zh-cn/tools/' : locale === 'ko' ? '/ko/tools/' : '/tools/' },
-    { label: zh ? '洞察' : 'Insights', href: zh ? '/zh-cn/kr/seoul/insights/' : '/insights/' },
+    { label: zh ? '洞察' : 'Insights', href: zh ? '/zh-cn/news/' : '/news/?type=analysis' },
     { label: zh ? '指南' : 'Guides', href: zh ? '/zh-cn/guides/' : '/guides/' },
   ] as const;
 }

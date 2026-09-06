@@ -28,7 +28,7 @@ function marketIdFor(copy: SiteHeaderModel, currentHref: string | undefined): Ma
 function isCurrentGlobalLink(href: string, currentHref: string | undefined): boolean {
   if (currentHref === undefined) return false;
   currentHref = currentHref.replace(/^\/(?:ko|zh-cn)(?=\/)/, '');
-  if (href.includes('/insights/')) return currentHref.includes('/news/') || currentHref.includes('/insights/');
+  if (href.startsWith('/news/')) return currentHref.includes('/news/') || currentHref.includes('/insights/');
   if (href === '/guides/') return currentHref.includes('/guide') || currentHref === '/guides/';
   if (href === '/tools/' || href === '/ko/tools/') return currentHref.includes('/tools/') || currentHref.includes('/check/');
   if (href === '/prices/') {

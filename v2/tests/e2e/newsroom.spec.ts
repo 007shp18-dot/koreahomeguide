@@ -8,6 +8,19 @@ async function expectNoHorizontalOverflow(page: Page) {
   expect(dimensions.scroll).toBeLessThanOrEqual(dimensions.client);
 }
 
+test('Insights opens analysis and preserves the news journey', async ({ page }) => {
+  await page.goto('/news/');
+  await page.getByRole('navigation', { name: 'Primary navigation' }).getByRole('link', { name: 'Insights' }).click();
+  await expect(page).toHaveURL(/\/news\/\?type=analysis$/);
+  await expect(page.getByRole('heading', { level: 1, name: 'Insights' })).toBeVisible();
+  const sections = page.getByRole('navigation', { name: 'Insights sections' });
+  await expect(sections.getByRole('link', { name: 'Analysis reports' })).toHaveAttribute('aria-current', 'page');
+  await sections.getByRole('link', { name: 'News', exact: true }).click();
+  await expect(page).toHaveURL(/\/news\/$/);
+  await expect(page.getByRole('heading', { level: 1, name: 'News', exact: true })).toBeVisible();
+  await expectNoHorizontalOverflow(page);
+});
+
 test('Newsroom filters reviewed SignedPrice records and opens the policy lifecycle', async ({ page }) => {
   await page.goto('/news/');
 

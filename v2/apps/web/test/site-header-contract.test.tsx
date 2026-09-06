@@ -38,7 +38,7 @@ describe('signedprice public navigation', () => {
   it('opens the analysis hub and keeps it selected for reports and external news', () => {
     for (const href of ['/insights/', '/insights/example/', '/news/']) {
       const html = renderToStaticMarkup(<SiteHeader copy={{ ...homepageCopy.header, links: [{ label: 'Editorial', href, isCurrent: true }] }} />);
-      expect(html).toMatch(/<a[^>]*aria-current="page"[^>]*href="\/insights\/?"[^>]*>Insights</);
+      expect(html).toMatch(/<a[^>]*aria-current="page"[^>]*href="\/news\/?\?type=analysis"[^>]*>Insights</);
     }
   });
 

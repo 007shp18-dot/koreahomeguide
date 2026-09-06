@@ -37,6 +37,17 @@ const policy: PolicyRecord = Object.freeze({
 });
 
 describe('public Newsroom routes', () => {
+  it('opens analysis separately while preserving news and market selection', () => {
+    const filters = resolveNewsroomFilters({ type: 'analysis', market: 'seoul' });
+    expect(filters.canonicalHref).toBe('/news/?type=analysis&market=seoul');
+    const html = renderToStaticMarkup(<NewsroomIndex articles={[article]} policies={[policy]} filters={filters} headlines={<p>External feed</p>} />);
+    expect(html).toContain('<h1>Insights</h1>');
+    expect(html).toContain(article.title);
+    expect(html).not.toContain(policy.title);
+    expect(html).not.toContain('External feed');
+    expect(html).toContain('href="/news?market=seoul"');
+    expect(html).toContain('Analysis reports');
+  });
   it('normalizes type and market filters into one canonical query URL', () => {
     expect(resolveNewsroomFilters({ type: 'policy', market: 'singapore' })).toEqual({
       type: 'policy', market: 'singapore', canonicalHref: '/news/?type=policy&market=singapore',

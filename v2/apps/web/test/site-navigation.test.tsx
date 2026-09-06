@@ -9,7 +9,7 @@ import { homepageCopy } from '../lib/site-copy';
 
 describe('shared navigation destinations', () => {
   it('keeps five global sections in the same order in English and Chinese', () => {
-    for (const locale of ['en', 'ko', 'zh-CN'] as const) expect(globalNavigation(locale).map(({href}) => href.replace(/^\/(?:zh-cn|ko)(?=\/)/, ''))).toEqual(['/markets/', '/prices/', '/tools/', locale === 'zh-CN' ? '/kr/seoul/insights/' : '/insights/', '/guides/']);
+    for (const locale of ['en', 'ko', 'zh-CN'] as const) expect(globalNavigation(locale).map(({href}) => href.replace(/^\/(?:zh-cn|ko)(?=\/)/, ''))).toEqual(['/markets/', '/prices/', '/tools/', locale === 'zh-CN' ? '/news/' : '/news/?type=analysis', '/guides/']);
   });
   it('preserves Seoul selection and building detail when switching languages', () => {
     const path = '/kr/seoul/explore/gangnam-gu/example/';

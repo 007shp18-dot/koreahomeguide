@@ -22,6 +22,21 @@ type SingaporeExplorerState = Readonly<{
   selectedProjectId: string | null;
 }>;
 
+export function parseSingaporeExploreSearchParams(params: URLSearchParams): SingaporeExplorerState {
+  const region = params.get('region')?.toLocaleUpperCase('en') ?? '';
+  const district = params.get('district') ?? '';
+  const requestedPage = Number(params.get('page') ?? '1');
+  const projectId = params.get('project');
+  return Object.freeze({
+    query: params.get('q') ?? '',
+    selectedSegment: region === 'CCR' || region === 'RCR' || region === 'OCR' ? region : null,
+    district: /^(?:0[1-9]|1\d|2[0-8])$/.test(district) ? district : 'all',
+    sort: params.get('sort') === 'name' ? 'name' : 'transactions',
+    page: Number.isSafeInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1,
+    selectedProjectId: projectId !== null && /^[a-z0-9-]{1,128}$/i.test(projectId) ? projectId : null,
+  });
+}
+
 export function buildSingaporeExploreHref(state: SingaporeExplorerState): string {
   const params = new URLSearchParams();
   const query = state.query.trim();
@@ -55,6 +70,7 @@ export function SingaporeExplorer({
   initialSort = 'transactions',
   initialPage = 1,
   initialProjectId = null,
+  restoreStateFromUrl = false,
 }: Readonly<{
   model: SingaporeExploreModel;
   hdbModel?: HdbExploreModel;
@@ -65,6 +81,7 @@ export function SingaporeExplorer({
   initialSort?: 'transactions' | 'name';
   initialPage?: number;
   initialProjectId?: string | null;
+  restoreStateFromUrl?: boolean;
 }>) {
   const [selectedSegment, setSelectedSegment] = useState<'CCR' | 'RCR' | 'OCR' | null>(initialSegment);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(initialProjectId);
@@ -74,6 +91,7 @@ export function SingaporeExplorer({
   const [page, setPage] = useState(initialPage);
   const [sort, setSort] = useState<string>(initialSort);
   const [pendingHref, setPendingHref] = useState<string | null>(null);
+  const [urlStateReady, setUrlStateReady] = useState(!restoreStateFromUrl);
   const segments = model.status === 'ready' ? model.segments : [];
   const selected = segments.find((segment) => segment.code === selectedSegment);
   const allProjects = useMemo(() => model.status === 'ready' ? model.segments.flatMap((segment) => (segment.projects ?? []).map((project) => ({ ...project, segment: segment.code }))) : [], [model]);
@@ -103,6 +121,22 @@ export function SingaporeExplorer({
   const hasFilters = query.trim() !== '' || selectedSegment !== null || district !== 'all' || sort !== 'transactions';
 
   useEffect(() => {
+    if (!restoreStateFromUrl) return;
+    const restored = parseSingaporeExploreSearchParams(new URLSearchParams(window.location.search));
+    const frame = window.requestAnimationFrame(() => {
+      setQuery(restored.query);
+      setSelectedSegment(restored.selectedSegment);
+      setDistrict(restored.district);
+      setSort(restored.sort);
+      setPage(restored.page);
+      setSelectedProjectId(restored.selectedProjectId);
+      setUrlStateReady(true);
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [restoreStateFromUrl]);
+
+  useEffect(() => {
+    if (!urlStateReady) return;
     const href = buildSingaporeExploreHref({
       query,
       selectedSegment,
@@ -112,7 +146,7 @@ export function SingaporeExplorer({
       selectedProjectId: selectedProject?.id ?? null,
     });
     if (`${window.location.pathname}${window.location.search}` !== href) window.history.replaceState(null, '', href);
-  }, [activePage, district, query, selectedProject, selectedSegment, sort]);
+  }, [activePage, district, query, selectedProject, selectedSegment, sort, urlStateReady]);
   const selectSegment = useCallback((segment: 'CCR' | 'RCR' | 'OCR' | null) => {
     setSelectedSegment(segment); setSelectedProjectId(null); setDistrict('all'); setPage(1);
   }, []);
