@@ -1,7 +1,10 @@
 # Photo coverage backfill operations
 
-This runbook covers the bounded photo discovery and coverage projection for the
-seeded `kr-seoul` and `sg-singapore` markets. Dubai is outside the job scope.
+This runbook covers bounded photo discovery and coverage projection for the
+seeded `kr-seoul` and `sg-singapore` markets. NAVER discovery also accepts
+`ae-dubai` and will include verified Dubai building rows when that inventory is
+installed. The current production database has no Dubai building inventory, so
+unused Dubai request capacity is reassigned to Seoul in the same run.
 
 ## Required production configuration
 
@@ -31,24 +34,28 @@ restricted to SignedPrice origins and must never be replaced with the server
 collection key. Keep every enabled cap finite and change it only after an
 explicit budget decision.
 
-Production runs one bounded slice per provider each hour: Wikimedia at minute
-7, official Seoul apartment facts at minute 17, NAVER at minute 27, and Google
-at minute 47. The two markets share each provider's daily request and spend
-caps. Each enabled job is resumable because terminal attempts receive a future
-retry time and are skipped. Each market may check up to 60 Wikimedia buildings
-and 100 NAVER buildings per scheduled run. Both free-source collectors work in
-ordered groups of five and stop scheduling new groups after 45 seconds, leaving
-time for the route to save progress before Vercel's 60-second limit. Google
-remains capped at 30 candidates per run and the stricter five-request daily
-budget applies first.
+Production runs Wikimedia at minute 7, official Seoul apartment facts at minute
+17, Google at minute 47, and NAVER every 15 minutes. Providers share their
+daily request and spend caps across markets. Each enabled job is resumable
+because buildings with an approved or pending candidate are skipped and failed
+attempts receive a future retry time. Wikimedia may check up to 60 buildings per
+run. NAVER may make 250 requests per run, with up to 50 reserved for Dubai and
+25 for Singapore; unused Dubai or Singapore capacity is reassigned to Seoul.
+That schedule permits at most 24,000 NAVER requests per day, leaving 1,000 below
+the configured 25,000-request cap. The NAVER collector works in ordered groups
+of five and stops scheduling new work after 240 seconds so the route can save
+progress before its 300-second limit. Google remains capped at 30 candidates per
+run and the stricter five-request daily budget applies first.
 
 ## Storage and approval boundaries
 
 - Google discovery stores the stable place ID, attribution, match decision, and
   evidence. It does not store photo bytes or expiring photo resource names.
-- NAVER Image Search is a private live-review source. It stores only aggregate
-  attempt status and result count; image URLs, thumbnails, and response payloads
-  are never persisted or published.
+- NAVER Image Search stores at most one selected image candidate per building in
+  the existing private review queue. Exact normalized building-name matches are
+  preferred, followed by larger landscape results. Candidates are labelled
+  `review_required` and `review-required`, retain NAVER attribution and matching
+  evidence, and are never projected or published without explicit approval.
 - New NAVER Image Search traffic uses NAVER API HUB. The legacy Developers
   endpoint remains available only when the API HUB and existing NAVER news
   credential pairs are both absent.
@@ -141,8 +148,11 @@ remain private in `review_required`; they are never projected as public photos.
 ## Completion criteria
 
 Run resumable slices until the private coverage summary reports `complete =
-62,872`. The exact, provider, parent, street-view, and unavailable totals must
-also add to `62,872`. Then repeat the final due slice and confirm zero new
-approvals, media, attempts, and coverage rows. Recheck both seed digests and
-confirm Dubai row and media counts are unchanged. Keep the compressed JSON
-fallback in place through this verification.
+62,872` for the installed Seoul and Singapore inventory. The exact, provider,
+parent, street-view, and unavailable totals must also add to `62,872`. Then
+repeat the final due slice and confirm zero duplicate approvals, media,
+candidates, attempts, or coverage rows. Recheck both seed digests. When verified
+Dubai property identities are installed, add their count to the coverage target
+and confirm the NAVER job processes them without changing Dubai market-level
+research data. Keep the compressed JSON fallback in place through this
+verification.
