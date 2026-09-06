@@ -180,8 +180,8 @@ export function ExplorerWorkspace({
                   </button>
                 ))}
               </div>
-            ) : <p className="explorer-empty">No verified parity buildings are available for this neighborhood.</p>
-          ) : <p className="explorer-empty">Choose a neighborhood to reveal its verified building set.</p>}
+            ) : <p className="explorer-empty">No building evidence is available for this neighborhood in the current data.</p>
+          ) : <p className="explorer-empty">Choose a neighborhood to see buildings with available evidence.</p>}
         </section>
       </aside>
 

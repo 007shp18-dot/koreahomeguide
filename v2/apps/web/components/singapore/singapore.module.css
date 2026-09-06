@@ -29,6 +29,9 @@
 .mapHeading p { margin: 0; }
 .mapHeading h2 { font-size: 20px; line-height: 1.2; letter-spacing: -.025em; }
 .mapHeading p { margin-top: 3px; color: var(--muted); font-size: var(--text-meta); line-height: 1.35; }
+.mapUnplaced { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; }
+.mapUnplaced p { flex-basis: 100%; margin: 0; font-size: 14px; color: var(--muted); }
+.mapUnplaced button { padding: 8px 12px; border: 1px dashed var(--line); background: var(--paper, #fff); color: var(--ink); font-size: 14px; cursor: pointer; }
 .exploreFilters { padding: 18px 0 22px; }
 .exploreFilters form { display: grid; grid-template-columns: minmax(260px, 1fr) minmax(210px, auto) minmax(168px, auto) auto; gap: 12px; }
 .clearFilters { color: var(--accent) !important; background: var(--surface-strong) !important; }

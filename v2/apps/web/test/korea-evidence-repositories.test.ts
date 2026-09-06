@@ -182,6 +182,8 @@ describe('installed Korea evidence repositories', () => {
     expect(projection.buildingPage.buildings[0]!.primary.n)
       .toBeGreaterThanOrEqual(projection.buildingPage.buildings[1]!.primary.n);
     expect(projection.buildingPage.total).toBeGreaterThan(50);
+    expect(projection.buildingPage.mapGroups!.reduce((sum, group) => sum + group.count, 0)
+      + projection.buildingPage.buildings.length).toBe(projection.buildingPage.total);
     expect(projection.buildingPage.neighborhoods!.reduce((sum, item) => sum + item.count, 0))
       .toBe(projection.buildingPage.total);
     expect(projection.buildingPage.neighborhoods!.some(({ count }) => count > 50)).toBe(true);
@@ -191,6 +193,7 @@ describe('installed Korea evidence repositories', () => {
     const model = buildKoreaEvidenceAreaExploreModel('gangnam-gu', projection);
     expect(model.buildingAvailability).toMatchObject({
       status: 'ready', page: 1, pageSize: 50, total: projection.buildingPage.total,
+      mapGroups: projection.buildingPage.mapGroups,
     });
     expect(JSON.stringify(model).length).toBeLessThan(500_000);
   }, 15_000);

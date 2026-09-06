@@ -26,13 +26,13 @@
   bottom: 14px;
   left: 14px;
   z-index: 5;
-  max-width: min(300px, calc(100% - 28px));
+  max-width: min(480px, calc(100% - 28px));
   margin: 0;
   padding: 8px 10px;
   border-radius: 8px;
   color: var(--muted);
   background: rgb(255 255 255 / 94%);
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.5;
 }
 
@@ -80,6 +80,11 @@
   font: 800 10px/1.1 var(--font-archivo), Arial, sans-serif !important;
   white-space: nowrap !important;
 }
+
+:global(.spMapAreaGroup) { border: 2px dashed #52647c; border-radius: 8px; flex-wrap: wrap; max-width: 220px; white-space: normal; }
+:global(.spMapAreaGroup small) { flex-basis: 100%; text-align: center; font-size: 12px; font-weight: 400; }
+:global(.spGoogleAreaGroup) { border: 2px dashed #52647c !important; }
+:global(.spGoogleCluster) { border-radius: 999px !important; }
 
 :global(.spGoogleMarketMarkerSelected) {
   border-color: #4a5cf5 !important;

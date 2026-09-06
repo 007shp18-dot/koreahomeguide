@@ -19,6 +19,8 @@ type GoogleGeocoderResult = Readonly<{
 
 export type GoogleMapInstance = Readonly<{
   fitBounds: (viewport: unknown) => void;
+  getZoom?: () => number | undefined;
+  addListener?: (event: 'zoom_changed', listener: () => void) => Readonly<{ remove(): void }>;
 }>;
 export type GoogleMarkerInstance = Readonly<{
   setPosition: (location: GoogleLocation) => void;
@@ -33,6 +35,10 @@ export type GoogleMarketMapPoint = Readonly<{
   longitude?: number;
   address?: string;
   selected?: boolean;
+  kind?: 'area' | 'cluster';
+  count?: number;
+  memberIds?: readonly string[];
+  bounds?: Readonly<{ south: number; north: number; west: number; east: number }>;
 }>;
 export type GoogleGeocoderInstance = Readonly<{
   geocode: (request: Readonly<{
@@ -135,28 +141,56 @@ export function mountGooglePlaceMap({
   });
 }
 
+export function clusterGoogleMarketPoints(points: readonly GoogleMarketMapPoint[], zoom: number): readonly GoogleMarketMapPoint[] {
+  const groups = new Map<string, GoogleMarketMapPoint[]>();
+  const result: GoogleMarketMapPoint[] = [];
+  const cell = .018 / (2 ** Math.max(0, zoom - 11));
+  for (const point of points) {
+    if (!Number.isFinite(point.latitude) || !Number.isFinite(point.longitude)) continue;
+    if (point.kind === 'area' || point.selected || zoom >= 17) { result.push(point); continue; }
+    const key = `${Math.floor(point.latitude! / cell)}:${Math.floor(point.longitude! / cell)}`;
+    const group = groups.get(key) ?? []; group.push(point); groups.set(key, group);
+  }
+  for (const [key, group] of groups) {
+    if (group.length === 1) { result.push(group[0]!); continue; }
+    result.push({ id: `cluster-${key}`, title: `${group.length} project locations`, label: String(group.length),
+      kind: 'cluster', count: group.length, memberIds: group.map(p => p.id),
+      latitude: group.reduce((n,p) => n + p.latitude!, 0) / group.length,
+      longitude: group.reduce((n,p) => n + p.longitude!, 0) / group.length,
+      bounds: { south: Math.min(...group.map(p => p.latitude!)) - .0002, north: Math.max(...group.map(p => p.latitude!)) + .0002,
+        west: Math.min(...group.map(p => p.longitude!)) - .0002, east: Math.max(...group.map(p => p.longitude!)) + .0002 } });
+  }
+  return result;
+}
+
 export function mountGoogleMarketPoints(
   sdk: GoogleMapsSdk,
   map: GoogleMapInstance,
   points: readonly GoogleMarketMapPoint[],
   onSelectPoint?: (id: string) => void,
+  adjustView = true,
 ): readonly GoogleMarkerInstance[] {
   const located = points.filter((point) => Number.isFinite(point.latitude) && Number.isFinite(point.longitude));
   const selected = located.find((point) => point.selected);
-  if (selected) map.fitBounds({ south: selected.latitude! - .0015, north: selected.latitude! + .0015, west: selected.longitude! - .0015, east: selected.longitude! + .0015 });
-  else if (located.length > 0 && sdk.LatLngBounds) {
+  if (adjustView && selected) map.fitBounds({ south: selected.latitude! - .0015, north: selected.latitude! + .0015, west: selected.longitude! - .0015, east: selected.longitude! + .0015 });
+  else if (adjustView && located.length > 0 && sdk.LatLngBounds) {
     const bounds = new sdk.LatLngBounds();
     for (const point of located) bounds.extend({ lat: point.latitude!, lng: point.longitude! });
     map.fitBounds(bounds);
   }
-  return Object.freeze(located.map((point) => {
+  return Object.freeze(clusterGoogleMarketPoints(located, map.getZoom?.() ?? 18).map((point) => {
     const marker = new sdk.Marker({
       map,
       position: { lat: point.latitude!, lng: point.longitude! },
       title: point.title,
-      label: { text: point.label, className: point.selected ? 'spGoogleMarketMarker spGoogleMarketMarkerSelected' : 'spGoogleMarketMarker' },
+      label: { text: point.label, className: point.kind === 'area' ? 'spGoogleMarketMarker spGoogleAreaGroup'
+        : point.kind === 'cluster' ? 'spGoogleMarketMarker spGoogleCluster'
+          : point.selected ? 'spGoogleMarketMarker spGoogleMarketMarkerSelected' : 'spGoogleMarketMarker' },
     });
-    marker.addListener?.('click', () => onSelectPoint?.(point.id));
+    marker.addListener?.('click', () => {
+      if (point.kind === 'cluster' && point.bounds !== undefined) map.fitBounds(point.bounds);
+      else onSelectPoint?.(point.id);
+    });
     return marker;
   }));
 }
@@ -254,6 +288,7 @@ export function GooglePlaceMap({
   const runtime = useRef<GooglePlaceMapRuntime | null>(null);
   const generation = useRef(0);
   const marketMarkers = useRef<readonly GoogleMarkerInstance[]>([]);
+  const zoomListener = useRef<Readonly<{ remove(): void }> | null>(null);
   const [mapState, setMapState] = useState<'loading' | 'ready' | 'error'>('loading');
   const [query, setQuery] = useState('');
   const [message, setMessage] = useState(() => points.some((point) => point.address !== undefined)
@@ -269,13 +304,22 @@ export function GooglePlaceMap({
     try {
       const currentGeneration = ++generation.current;
       runtime.current ??= mountGooglePlaceMap({ sdk, element: container.current, market });
+      zoomListener.current?.remove();
+      zoomListener.current = null;
       for (const marker of marketMarkers.current) marker.setMap(null);
       marketMarkers.current = mountGoogleMarketPoints(sdk, runtime.current.map, points, onSelectPoint);
       const requestedLocations = points.filter((point) => point.address !== undefined).length;
       setMessage(requestedLocations > 0
         ? `Locating ${requestedLocations} places on Google Maps…`
-        : `${marketMarkers.current.length} market locations shown.`);
-      void geocodeGoogleMarketPoints(sdk, runtime.current, points, onSelectPoint, () => generation.current === currentGeneration, market).then((markers) => {
+        : `${points.reduce((n, point) => n + (point.count ?? 1), 0).toLocaleString('en')} results represented on the map. Zoom in to separate location clusters; dashed labels are area-only groups.`);
+      if (points.every(point => point.address === undefined) && runtime.current.map.addListener) {
+        zoomListener.current = runtime.current.map.addListener('zoom_changed', () => {
+          if (generation.current !== currentGeneration || runtime.current === null) return;
+          for (const marker of marketMarkers.current) marker.setMap(null);
+          marketMarkers.current = mountGoogleMarketPoints(sdk, runtime.current.map, points, onSelectPoint, false);
+        });
+      }
+      if (requestedLocations > 0) void geocodeGoogleMarketPoints(sdk, runtime.current, points, onSelectPoint, () => generation.current === currentGeneration, market).then((markers) => {
         if (generation.current !== currentGeneration) {
           for (const marker of markers) marker.setMap(null);
           return;
@@ -298,6 +342,8 @@ export function GooglePlaceMap({
     if (scope[GOOGLE_MAPS_READY_FLAG] === true) queueMicrotask(initialize);
     return () => {
       ++requestGeneration.current;
+      zoomListener.current?.remove();
+      zoomListener.current = null;
       window.removeEventListener(GOOGLE_MAPS_READY_EVENT, initialize);
       for (const marker of marketMarkers.current) marker.setMap(null);
       marketMarkers.current = [];
@@ -309,6 +355,8 @@ export function GooglePlaceMap({
     const previous = scope.gm_authFailure;
     const failed = () => {
       ++generation.current;
+      zoomListener.current?.remove();
+      zoomListener.current = null;
       setMapState('error');
       for (const marker of marketMarkers.current) marker.setMap(null);
       marketMarkers.current = [];

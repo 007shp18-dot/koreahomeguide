@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { useCallback, useDeferredValue, useEffect, useMemo, useState } from 'react';
 import type { SingaporeExploreModel } from '../../lib/singapore/route-types';
 import type { HdbExploreModel } from '../../lib/singapore/hdb-route-model.server';
-import { GooglePlaceMap, type GoogleMarketMapPoint } from '../maps/google-place-map';
+import { GooglePlaceMap } from '../maps/google-place-map';
+import { buildSingaporeMapCoverage } from '../../lib/singapore/map-coverage';
 import { HdbMarketPanel } from './hdb-market-panel';
 import { MarketExploreShell, MarketLayerControl } from '../market-ui/market-shell';
 import { SingaporeEvidence, SingaporePage, singaporeStyles as styles } from './singapore-shell';
@@ -36,8 +37,10 @@ export function buildSingaporeExploreHref(state: SingaporeExplorerState): string
 
 export function formatSingaporeMapPrice(label: string | null, fallback: string): string {
   if (label === null) return fallback;
-  const value = Number(label.replace(/[^\d]/g, ''));
-  if (!Number.isFinite(value)) return fallback;
+  const numeric = label.replace(/^SGD\s*/u, '').replaceAll(',', '').trim();
+  if (!/^\d+(?:\.\d+)?$/u.test(numeric)) return fallback;
+  const value = Number(numeric);
+  if (!Number.isFinite(value) || value <= 0) return fallback;
   if (value >= 1_000_000) return `S$${(value / 1_000_000).toFixed(2).replace(/0+$/, '').replace(/\.$/, '')}M`;
   return `S$${Math.round(value / 1_000)}K`;
 }
@@ -115,14 +118,17 @@ export function SingaporeExplorer({
   }, []);
   const onMapSelect = useCallback((id: string) => {
     if (id.startsWith('project-')) setSelectedProjectId(id.slice(8));
+    if (id.startsWith('district-')) { setDistrict(id.slice(9)); setPage(1); setSelectedProjectId(null); }
   }, []);
-  const mapPoints = useMemo<readonly GoogleMarketMapPoint[]>(() => visible.map((project) => ({
-      id: `project-${project.id}`,
-      title: `${project.name} · ${project.street}`,
-      label: formatSingaporeMapPrice(project.medianPriceLabel, `${project.n.toLocaleString('en')} ${project.n === 1 ? 'sale' : 'sales'}`),
-      selected: project.id === selectedProjectId,
-      ...(project.location ? { latitude: project.location.latitude, longitude: project.location.longitude } : { address: `${project.name}, ${project.street}, Singapore` }),
-    })), [visible, selectedProjectId]);
+  const mapCoverage = useMemo(() => buildSingaporeMapCoverage(projects, allProjects, selectedProjectId), [projects, allProjects, selectedProjectId]);
+  const mapPoints = useMemo(() => {
+    const byId = new Map(projects.map(project => [`project-${project.id}`, project]));
+    return mapCoverage.points.map(point => {
+      const project = byId.get(point.id);
+      return project === undefined ? point : { ...point,
+        label: formatSingaporeMapPrice(project.medianPriceLabel, project.name) };
+    });
+  }, [mapCoverage.points, projects]);
   const layers = <>
     <MarketLayerControl label="Singapore market layers" items={[
       { id: 'ura', label: 'URA private sales', href: '#ura-private', current: true },
@@ -160,7 +166,18 @@ export function SingaporeExplorer({
           </div>
           <nav className={styles.projectPagination} aria-label="Project result pages"><button type="button" disabled={activePage === 1} onClick={() => { setPage(activePage - 1); setSelectedProjectId(null); }}>Previous</button><span>Page {activePage} of {pageCount}</span><button type="button" disabled={activePage >= pageCount} onClick={() => { setPage(activePage + 1); setSelectedProjectId(null); }}>Next</button></nav>
         </section>}
-        spatial={<section className={styles.exploreMap} aria-labelledby="singapore-map-heading"><header className={styles.mapHeading}><div><h2 id="singapore-map-heading">Project locations</h2><p>{visible.length.toLocaleString('en')} projects on this page · {projects.length.toLocaleString('en')} matches</p></div></header><GooglePlaceMap browserKey={googleMapsBrowserKey} points={mapPoints} onSelectPoint={onMapSelect} showAddressSearch={false} />{selectedProject ? <aside className={styles.mapSelection}><button type="button" aria-label="Close project preview" onClick={() => setSelectedProjectId(null)}>Close</button><h3>{selectedProject.name}</h3><p>{selectedProject.street} · District {selectedProject.district} · {selectedProject.segment}</p><strong>{selectedProject.medianPriceLabel ?? 'Not published'}</strong><span>{selectedProject.medianPsfLabel ?? `${selectedProject.n} reported sales`}</span>{selectedProject.state === 'published' ? <Link href={selectedProject.href}>Open project evidence</Link> : null}</aside> : null}</section>}
+        spatial={<section className={styles.exploreMap} aria-labelledby="singapore-map-heading">
+          <header className={styles.mapHeading}><div><h2 id="singapore-map-heading">Project locations</h2>
+            <p>{mapCoverage.total.toLocaleString('en')} matching projects across all result pages · {mapCoverage.located.toLocaleString('en')} with source coordinates · {mapCoverage.areaOnly.toLocaleString('en')} area-only · {mapCoverage.unplaced.toLocaleString('en')} without a map reference.</p>
+            <p>Location clusters expand as you zoom. Dashed groups use a reference from known projects in the same postal district, not the locations of the missing projects.</p>
+          </div></header>
+          <GooglePlaceMap browserKey={googleMapsBrowserKey} points={mapPoints} onSelectPoint={onMapSelect} showAddressSearch={false} />
+          {mapCoverage.unplacedGroups.length > 0 ? <div className={styles.mapUnplaced}>
+            <p>These district totals remain in the results; no reliable map reference is available yet.</p>
+            {mapCoverage.unplacedGroups.map(group => <button type="button" key={group.district} onClick={() => onMapSelect(`district-${group.district}`)}>District {group.district} · {group.count.toLocaleString('en')} projects</button>)}
+          </div> : null}
+          {selectedProject ? <aside className={styles.mapSelection}><button type="button" aria-label="Close project preview" onClick={() => setSelectedProjectId(null)}>Close</button><h3>{selectedProject.name}</h3><p>{selectedProject.street} · District {selectedProject.district} · {selectedProject.segment}</p><strong>{selectedProject.medianPriceLabel ?? 'Not published'}</strong><span>{selectedProject.medianPsfLabel ?? `${selectedProject.n} reported sales`}</span>{selectedProject.state === 'published' ? <Link href={selectedProject.href}>Open project evidence</Link> : null}</aside> : null}
+        </section>}
       />
     </div>
     <HdbMarketPanel model={hdbModel} /><SingaporeEvidence model={model.evidence} compact />
