@@ -2,6 +2,11 @@ import 'server-only';
 
 export type OfficialBuildingFacts = Readonly<{
   status: 'ready';
+  source?: Readonly<{
+    apartment: string;
+    register: string | null;
+    nearby?: string | null;
+  }>;
   match: Readonly<{ kaptCode: string; bjdCode: string }>;
   apartment: Readonly<{
     name: string;
@@ -14,6 +19,10 @@ export type OfficialBuildingFacts = Readonly<{
     saleType: string | null;
     approvalDate: string | null;
     totalAreaSqm: number | null;
+    structure?: string | null;
+    floorsAbove?: number | null;
+    floorsBelow?: number | null;
+    parkingSpaces?: number | null;
   }>;
   register: Readonly<{
     ledgerKey: string;
@@ -25,6 +34,14 @@ export type OfficialBuildingFacts = Readonly<{
     floorsBelow: number | null;
     approvalDate: string | null;
     parkingSpaces: number | null;
+  }> | null;
+  nearby?: Readonly<{
+    subwayLine: string | null;
+    subwayStation: string | null;
+    subwayWalkTime: string | null;
+    busWalkTime: string | null;
+    educationFacility: string | null;
+    convenientFacility: string | null;
   }> | null;
 }> | Readonly<{
   status: 'unavailable';
@@ -226,6 +243,10 @@ export async function loadOfficialBuildingFacts(input: LoaderInput): Promise<Off
   }
   return Object.freeze({
     status: 'ready',
+    source: Object.freeze({
+      apartment: 'MOLIT K-apt apartment basic information',
+      register: registerFacts === null ? null : 'MOLIT Building HUB building register',
+    }),
     match: Object.freeze({ kaptCode, bjdCode }),
     apartment: Object.freeze({
       name: aptName,

@@ -10,7 +10,7 @@ import styles from './building-detail.module.css';
 
 type Envelope = Readonly<{
   schemaVersion: 1;
-  source: Readonly<{ apartment: string; register: string }>;
+  source: Readonly<{ apartment: string; register: string | null; nearby?: string | null }>;
   facts: OfficialBuildingFacts;
 }>;
 
@@ -22,7 +22,7 @@ function count(value: number): string {
   return value.toLocaleString('en-US');
 }
 
-function ReadyOfficialFacts({ envelope }: Readonly<{ envelope: Envelope }>) {
+export function ReadyOfficialFacts({ envelope }: Readonly<{ envelope: Envelope }>) {
   if (envelope.facts.status !== 'ready') return null;
   const { apartment, register } = envelope.facts;
   const profile = [
@@ -34,28 +34,49 @@ function ReadyOfficialFacts({ envelope }: Readonly<{ envelope: Envelope }>) {
     apartment.saleType === null ? null : ['Sale type', apartment.saleType],
   ].filter((row): row is string[] => row !== null);
   const totalArea = register?.totalAreaSqm ?? apartment.totalAreaSqm;
+  const structure = register?.structure ?? apartment.structure;
+  const floorsAbove = register?.floorsAbove ?? apartment.floorsAbove;
+  const floorsBelow = register?.floorsBelow ?? apartment.floorsBelow;
+  const parkingSpaces = register?.parkingSpaces ?? apartment.parkingSpaces;
   const registerProfile = [
     register?.mainUse == null ? null : ['Main use', register.mainUse],
-    register?.structure == null ? null : ['Structure', register.structure],
+    structure == null ? null : ['Structure', structure],
     totalArea === null ? null : ['Total floor area', area(totalArea)],
     register?.buildingAreaSqm == null ? null : ['Building area', area(register.buildingAreaSqm)],
-    register?.floorsAbove == null && register?.floorsBelow == null ? null : ['Floors', [
-      register?.floorsAbove == null ? null : `${count(register.floorsAbove)} above`,
-      register?.floorsBelow == null ? null : `${count(register.floorsBelow)} below`,
+    floorsAbove == null && floorsBelow == null ? null : ['Floors', [
+      floorsAbove == null ? null : `${count(floorsAbove)} above`,
+      floorsBelow == null ? null : `${count(floorsBelow)} below`,
     ].filter(Boolean).join(' · ')],
-    register?.parkingSpaces == null ? null : ['Parking spaces', count(register.parkingSpaces)],
+    parkingSpaces == null ? null : ['Parking spaces', count(parkingSpaces)],
+  ].filter((row): row is string[] => row !== null);
+  const nearby = envelope.facts.nearby;
+  const subway = nearby === null || nearby === undefined ? null : [
+    nearby.subwayLine,
+    nearby.subwayStation,
+    nearby.subwayWalkTime,
+  ].filter((value): value is string => value !== null).join(' · ');
+  const nearbyProfile = nearby === null || nearby === undefined ? [] : [
+    subway === null || subway === '' ? null : ['Subway', subway],
+    nearby.busWalkTime === null ? null : ['Bus stop walk', nearby.busWalkTime],
+    nearby.educationFacility === null ? null : ['Schools', nearby.educationFacility],
+    nearby.convenientFacility === null ? null : ['Nearby services', nearby.convenientFacility],
   ].filter((row): row is string[] => row !== null);
   const sources = [
     ['Legal address', apartment.legalAddress],
     apartment.roadAddress === null ? null : ['Road address', apartment.roadAddress],
     ['Apartment source', envelope.source.apartment],
-    register === null ? null : ['Register source', envelope.source.register],
+    register === null || envelope.source.register === null ? null : ['Register source', envelope.source.register],
+    nearbyProfile.length === 0 || envelope.source.nearby == null ? null : ['Nearby source', envelope.source.nearby],
   ].filter((row): row is string[] => row !== null);
   const grid = (rows: string[][], className: string | undefined) => rows.length === 0 ? null : <dl className={className}>{rows.map((row) => <div key={row[0]!}><dt>{row[0]!}</dt><dd>{row[1]!}</dd></div>)}</dl>;
   return <>
-    <div className={styles.sectionHeading}><p>Official sources</p><h3>Complex and building-register profile</h3></div>
+    <div className={styles.sectionHeading}><p>Official sources</p><h3>{register === null ? 'Official complex profile' : 'Complex and building-register profile'}</h3></div>
     {grid(profile, styles.findingGrid)}
     {grid(registerProfile, styles.sourceGrid)}
+    {nearbyProfile.length === 0 ? null : <>
+      <div className={styles.sectionHeading}><p>Official nearby facilities</p><h3>Transit, schools and local services</h3></div>
+      {grid(nearbyProfile, styles.sourceGrid)}
+    </>}
     {grid(sources, styles.sourceGrid)}
   </>;
 }

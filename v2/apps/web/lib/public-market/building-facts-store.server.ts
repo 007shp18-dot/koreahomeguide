@@ -54,6 +54,9 @@ export async function storeBuildingFacts(
   const { marketKey, districtKey, buildingKey } = keys(identity);
   const normalizedName = identity.officialName.normalize('NFKC').toLocaleLowerCase('ko-KR')
     .replace(/[^\p{L}\p{N}]+/gu, '');
+  const apartmentSource = facts.source?.apartment ?? 'MOLIT K-apt apartment basic information';
+  const registerSource = facts.source?.register
+    ?? (facts.register === null ? null : 'MOLIT Building HUB building register');
   await sql`
     WITH market_upsert AS (
       INSERT INTO markets (key, name, country_code)
@@ -93,13 +96,15 @@ export async function storeBuildingFacts(
     )
     SELECT
       building_upsert.key,
-      'MOLIT K-apt apartment basic information',
-      'MOLIT Building HUB building register',
+      ${apartmentSource},
+      ${registerSource},
       ${facts.match.kaptCode},
       ${facts.match.bjdCode},
       ${JSON.stringify(facts)}::jsonb
     FROM building_upsert
     ON CONFLICT (building_key) DO UPDATE SET
+      apartment_source = excluded.apartment_source,
+      register_source = excluded.register_source,
       kapt_code = excluded.kapt_code,
       bjd_code = excluded.bjd_code,
       payload = excluded.payload,

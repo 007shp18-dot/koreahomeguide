@@ -19,6 +19,7 @@ type Dependencies = Readonly<{
     fetch: typeof globalThis.fetch;
   }>): Promise<OfficialBuildingFacts>;
   loadStored?(input: StoredIdentity): Promise<OfficialBuildingFacts | null>;
+  loadInstalled?(input: StoredIdentity): OfficialBuildingFacts | null;
   storeReady?(
     input: StoredIdentity,
     facts: Extract<OfficialBuildingFacts, { status: 'ready' }>,
@@ -29,10 +30,14 @@ type Dependencies = Readonly<{
 function envelope(facts: OfficialBuildingFacts) {
   return Object.freeze({
     schemaVersion: 1,
-    source: Object.freeze({
-      apartment: 'MOLIT K-apt apartment basic information',
-      register: 'MOLIT Building HUB building register',
-    }),
+    source: facts.status === 'ready' && facts.source !== undefined
+      ? facts.source
+      : Object.freeze({
+          apartment: 'MOLIT K-apt apartment basic information',
+          register: facts.status === 'ready' && facts.register === null
+            ? null
+            : 'MOLIT Building HUB building register',
+        }),
     facts,
   });
 }
@@ -64,6 +69,17 @@ export function createBuildingFactsGetHandler(dependencies: Dependencies) {
       } catch (error) {
         console.error('SignedPrice building-facts database read failed.', error);
       }
+    }
+    const installed = dependencies.loadInstalled?.(storedIdentity) ?? null;
+    if (installed !== null) {
+      if (installed.status === 'ready' && dependencies.storeReady !== undefined) {
+        try { await dependencies.storeReady(storedIdentity, installed); }
+        catch (error) { console.error('SignedPrice installed building-facts database write failed.', error); }
+      }
+      return Response.json(envelope(installed), {
+        status: 200,
+        headers: { 'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=604800' },
+      });
     }
     const facts = await dependencies.load({
       ...identity,

@@ -4,6 +4,7 @@ import { createBuildingFactsGetHandler } from '@/lib/public-market/building-fact
 import { loadStoredBuildingFacts, storeBuildingFacts } from '@/lib/public-market/building-facts-store.server';
 import { koreaEvidenceRepositoriesFromEnvironment } from '@/lib/public-market/korea-evidence-repositories.server';
 import { buildObservedBuildingIdentityModel } from '@/lib/public-market/observed-building-route-model.server';
+import { installedKaptBuildingFactsSnapshot } from '@/lib/public-market/kapt-building-facts-snapshot.server';
 import { loadOfficialBuildingFacts } from '@/lib/public-market/official-building-facts.server';
 
 export const dynamic = 'force-dynamic';
@@ -13,12 +14,24 @@ export const dynamic = 'force-dynamic';
 export const maxDuration = 30;
 
 const repositories = koreaEvidenceRepositoriesFromEnvironment();
+const kaptSnapshot = installedKaptBuildingFactsSnapshot();
+
+function normalizedName(value: string): string {
+  return value.normalize('NFKC').toLocaleLowerCase('ko-KR').replace(/[^\p{L}\p{N}]+/gu, '');
+}
 
 export const GET = createBuildingFactsGetHandler({
   serviceKey: process.env.SIGNEDPRICE_PUBLIC_DATA_SERVICE_KEY
     ?? process.env.DATA_GO_KR_SERVICE_KEY,
   load: loadOfficialBuildingFacts,
   loadStored: loadStoredBuildingFacts,
+  loadInstalled(identity) {
+    const record = kaptSnapshot?.records().find(({ buildingId }) => buildingId === identity.buildingId);
+    if (record === undefined || record.districtSlug !== identity.districtSlug
+      || normalizedName(record.officialName) !== normalizedName(identity.officialName)
+      || !record.facts.match.bjdCode.startsWith(identity.districtLawdCd)) return null;
+    return record.facts;
+  },
   storeReady: storeBuildingFacts,
   resolveIdentity(districtSlug, buildingId) {
     const district = SEOUL_RENT_CHECK_DISTRICTS.find(({ slug }) => slug === districtSlug);

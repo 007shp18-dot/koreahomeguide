@@ -149,6 +149,9 @@ test('verified synthetic building detail is server rendered only in the local re
   expect(heroLayout.summaryShadow).toBe('none');
   expect(heroLayout.mediaBeforeSummary).toBe(true);
   expect(heroLayout.mediaBackground).toBe('none');
+  // Wait for Next's streamed Suspense fallback to be replaced before toggling
+  // native disclosure state, otherwise the replacement can close it again.
+  await expect(page.locator('template[id^="B:"]')).toHaveCount(0);
   await page.locator('details > summary', {
     hasText: 'See records, adjustments, and methodology',
   }).filter({ visible: true }).click();
