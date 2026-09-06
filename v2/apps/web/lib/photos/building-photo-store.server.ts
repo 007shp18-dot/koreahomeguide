@@ -25,8 +25,11 @@ function safeHttpUrl(value: unknown): string | null {
   }
 }
 
-export async function getStoredPublicPhotoApproval(key: string): Promise<StoredPublicPhotoApproval | null> {
+export async function getStoredPublicPhotoApproval(
+  key: string,
+): Promise<StoredPublicPhotoApproval | null | undefined> {
   const sql = contentDatabase();
+  let databaseReadFailed = false;
   if (sql !== null) {
     try {
       const [row] = await sql`
@@ -71,11 +74,13 @@ export async function getStoredPublicPhotoApproval(key: string): Promise<StoredP
         }
       }
     } catch (error) {
+      databaseReadFailed = true;
       console.error('SignedPrice approved-photo database read failed.', error);
     }
   }
   const fallback = getPublicPhotoApproval(key);
-  return fallback === null ? null : Object.freeze({
+  if (fallback === null) return databaseReadFailed ? undefined : null;
+  return Object.freeze({
     provider: 'provider' in fallback ? fallback.provider : 'google-place',
     placeId: fallback.placeId,
     assetUrl: 'assetUrl' in fallback ? fallback.assetUrl : null,

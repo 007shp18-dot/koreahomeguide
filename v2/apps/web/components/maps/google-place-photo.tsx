@@ -169,10 +169,12 @@ function GooglePlacePhotoForIdentity({
           buildingName?: unknown;
           address?: unknown;
         }>;
+        const expectedAddress = normalizedPlaceText(address);
         if (approval.state !== 'approved'
           || typeof approval.buildingName !== 'string' || typeof approval.address !== 'string'
           || normalizedPlaceText(approval.buildingName) !== normalizedPlaceText(buildingName)
-          || normalizedPlaceText(approval.address) !== normalizedPlaceText(address)) {
+          || (expectedAddress.length > 0
+            && normalizedPlaceText(approval.address) !== expectedAddress)) {
           throw new Error('Photo identity is not approved.');
         }
         if ((approval.provider === 'licensed-url' || approval.provider === 'owned-object')

@@ -33,6 +33,19 @@ describe('projected entity media', () => {
     expect(html).not.toContain('data-state="rights-blocked"');
   });
 
+  it('checks the exact approval registry when the server projection misses', () => {
+    const html = renderToStaticMarkup(<ProjectedEntityMedia
+      buildingName="Evidence Tower"
+      browserKey="test-key"
+      registryKey="kr-seoul:evidence-tower"
+      media={null}
+    />);
+
+    expect(html).toContain('data-building-media="google-place-photo"');
+    expect(html).toContain('Loading verified place photo');
+    expect(html).not.toContain('Building photo unavailable');
+  });
+
   it('loads an approved provider reference without requiring coordinates or a direct URL', () => {
     const html = renderToStaticMarkup(<ProjectedEntityMedia
       buildingName="Evidence Tower"
