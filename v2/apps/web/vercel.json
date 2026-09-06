@@ -12,7 +12,7 @@
     },
     {
       "path": "/api/internal/building-enrichment/?source=official&limit=250",
-      "schedule": "17 * * * *"
+      "schedule": "43 * * * *"
     },
     {
       "path": "/api/internal/building-enrichment/?source=naver&limit=100",
