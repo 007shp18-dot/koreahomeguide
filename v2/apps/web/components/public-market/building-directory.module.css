@@ -86,3 +86,17 @@
     text-align: start;
   }
 }
+
+.translation {
+  display: block;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+  text-underline-offset: 0.2em;
+}
+
+.translation:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 3px;
+}

@@ -10,7 +10,7 @@ type Props = Readonly<{ searchParams: Promise<Record<string, string | string[] |
 
 export async function generateMetadata({ searchParams }: Props) {
   const query = await searchParams;
-  return { ...indexableMetadata({ path: '/ae/dubai/explore/', title: 'Explore Dubai areas | signedprice', description: 'Locate Downtown Dubai, Business Bay, Dubai Marina and Palm Jumeirah. Read area context and verify projects through official DLD services.' }), ...(Object.keys(query).length ? { robots: { index: false, follow: true } } : {}) };
+  return { ...indexableMetadata({ path: '/ae/dubai/explore/', title: 'Dubai property prices & rental yields: Ready vs Off-Plan | signedprice', description: 'Compare Dubai areas by Ready and Off-Plan sale prices, price per square metre, annual rent and estimated gross rental yield. Check sample counts and reporting periods.' }), ...(Object.keys(query).length ? { robots: { index: false, follow: true } } : {}) };
 }
 
 export default async function DubaiExplorePage({ searchParams }: Props) {

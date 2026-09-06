@@ -17,7 +17,7 @@ describe('public Seoul neighborhood route', () => {
     vi.stubEnv('NODE_ENV', 'production');
 
     expect(dynamicParams).toBe(false);
-    expect(generateStaticParams()).toHaveLength(379);
+    expect(generateStaticParams()).toHaveLength(388);
     expect(generateStaticParams()).toContainEqual({
       district: 'gangnam-gu',
       neighborhoodId: 'gangnam-gu-dong-1g2fbdb',
@@ -41,11 +41,12 @@ describe('public Seoul neighborhood route', () => {
         locale: 'en_US',
       },
     });
-    expect(metadata.description).toContain('133 published buildings');
+    expect(metadata.description).toContain('281 buildings with transaction histories');
     expect(html).toContain('<span lang="ko">역삼동</span> reported property prices');
-    expect(html).toContain('133 buildings meet the current evidence publication threshold.');
+    expect(html).toContain('281 buildings have reported transaction histories.');
     expect(html).toContain('href="/kr/seoul/explore/gangnam-gu/gangnam-gu-1lf81kj"');
     expect(html).toContain('역삼역센트럴푸르지오시티');
+    expect(html).toContain('href="/ko/kr/seoul/explore/gangnam-gu/gangnam-gu-1lf81kj"');
     expect(html).toContain('836 contracts');
     expect(html).toContain('href="/kr/seoul/explore/gangnam-gu"');
   }, 20_000);

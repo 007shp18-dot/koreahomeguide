@@ -9,6 +9,7 @@ import { buildSingaporeAreaMapCoverage, buildSingaporeMapCoverage } from '../../
 import { HdbMarketPanel } from './hdb-market-panel';
 import { MarketExploreShell, MarketLayerControl } from '../market-ui/market-shell';
 import { SingaporeEvidence, SingaporePage, singaporeStyles as styles } from './singapore-shell';
+import directoryStyles from '../public-market/building-directory.module.css';
 import searchStyles from '../price-market-search.module.css';
 
 const PAGE_SIZE = 24;
@@ -228,6 +229,18 @@ export function SingaporeExplorer({
         </section>}
       />
     </div>
+    <details className={directoryStyles.directory}>
+      <summary>All published project prices</summary>
+      <p className={directoryStyles.summary}>Browse every published project by market region, including projects beyond the current result page.</p>
+      {segments.map((segment) => <section key={segment.code}>
+        <h2>{segment.state === 'published' ? <Link href={segment.href}>{segment.code} property prices</Link> : `${segment.code} projects`}</h2>
+        <ul className={directoryStyles.list}>
+          {(segment.projects ?? []).filter((project) => project.state === 'published').map((project) => <li key={project.id}>
+            <Link className={directoryStyles.link} href={project.href}>{project.name}</Link>
+          </li>)}
+        </ul>
+      </section>)}
+    </details>
     <HdbMarketPanel model={hdbModel} /><SingaporeEvidence model={model.evidence} compact />
   </SingaporePage>;
 }

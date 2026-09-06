@@ -17,8 +17,8 @@ export function BuildingDirectory({
     <nav className={styles.directory} aria-labelledby="building-directory-heading">
       <h2 id="building-directory-heading">Buildings published for {districtName}</h2>
       <p className={styles.summary}>
-        {entries.length} buildings meet the current evidence publication threshold.{' '}
-        Counts show contracts in each building’s widest published cohort.
+        {entries.length} buildings have reported transaction histories.{' '}
+        Counts show the largest available transaction group. Price summaries require at least five contracts.
       </p>
       <ul className={styles.list}>
         {entries.map((entry) => (
@@ -31,6 +31,9 @@ export function BuildingDirectory({
               <span className={styles.contracts}>
                 {entry.contracts.toLocaleString('en-US')} contracts
               </span>
+            </Link>
+            <Link className={styles.translation} lang="ko" href={`/ko${entry.href}`}>
+              {entry.name} 한국어 실거래가
             </Link>
           </li>
         ))}

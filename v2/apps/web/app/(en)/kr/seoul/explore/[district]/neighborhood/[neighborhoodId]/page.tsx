@@ -93,7 +93,7 @@ export async function generateMetadata({ params }: NeighborhoodPageProps): Promi
   return indexableMetadata({
     path,
     title: `${resolved.neighborhood.name} property prices in ${resolved.district.nameEn} | signedprice`,
-    description: `Browse ${resolved.neighborhood.entries.length.toLocaleString('en-US')} published buildings in ${resolved.neighborhood.name}, ${resolved.district.nameEn}, using reported sale and rent evidence.`,
+    description: `Browse ${resolved.neighborhood.entries.length.toLocaleString('en-US')} buildings with transaction histories in ${resolved.neighborhood.name}, ${resolved.district.nameEn}, using reported sale and rent evidence.`,
   });
 }
 
@@ -124,12 +124,12 @@ export default async function NeighborhoodPage({ params }: NeighborhoodPageProps
           <p>{resolved.district.nameEn} · <span lang="ko">{resolved.district.nameKo}</span></p>
           <h1><span lang="ko">{resolved.neighborhood.name}</span> reported property prices</h1>
           <p>
-            Open every building with published reported-contract evidence in this neighborhood.
-            Values remain attached to their transaction type, period, and publication threshold.
+            Browse building sale and rental histories in this neighborhood.
+            Individual transactions remain visible when a price summary has too few contracts to publish.
           </p>
           <dl>
-            <div><dt>Published buildings</dt><dd>{resolved.neighborhood.entries.length.toLocaleString('en-US')}</dd></div>
-            <div><dt>Evidence floor</dt><dd>5 contracts</dd></div>
+            <div><dt>Buildings with history</dt><dd>{resolved.neighborhood.entries.length.toLocaleString('en-US')}</dd></div>
+            <div><dt>Price summary minimum</dt><dd>5 contracts</dd></div>
           </dl>
         </header>
         <BuildingDirectory

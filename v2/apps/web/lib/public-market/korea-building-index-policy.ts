@@ -5,7 +5,7 @@ import type {
 } from '@signedprice/korea-rent';
 import type { SeoulDistrictSlug } from '@signedprice/korea-rent/browser';
 
-export const KOREA_BUILDING_INDEX_MINIMUM = 5;
+export const KOREA_BUILDING_INDEX_MINIMUM = 3;
 export const KOREA_BUILDING_PRERENDER_MINIMUM = 50;
 
 export type KoreaBuildingRouteParam = Readonly<{
@@ -107,10 +107,27 @@ export function koreaBuildingEvidenceDepth(
   );
 }
 
+// Search eligibility is based on usable transaction history, independently of
+// the five-contract minimum used to publish statistical price summaries.
+function historyCandidates(records: KoreaBuildingEvidenceRecordPair): readonly PublishedCandidate[] {
+  return [
+    { transaction: 'sale', contracts: records.sale?.recentSales.length ?? 0 },
+    ...(['jeonse', 'monthly'] as const).map((transaction) => ({
+      transaction,
+      contracts: records.rent?.recentTransactions.filter((row) => row.transaction === transaction).length ?? 0,
+    })),
+  ];
+}
+
+export function koreaBuildingSearchDepth(records: KoreaBuildingEvidenceRecordPair): number {
+  return Math.max(koreaBuildingEvidenceDepth(records), ...historyCandidates(records).map(({ contracts }) => contracts));
+}
+
 export function koreaBuildingCanonicalSelection(
   records: KoreaBuildingEvidenceRecordPair,
 ): KoreaBuildingCanonicalSelection | null {
-  const candidate = [...publishedCandidates(records)].sort((left, right) => (
+  const published = publishedCandidates(records);
+  const candidate = [...(published.length > 0 ? published : historyCandidates(records).filter(({ contracts }) => contracts > 0))].sort((left, right) => (
     right.contracts - left.contracts
     || left.transaction.localeCompare(right.transaction)
   ))[0];
@@ -125,7 +142,11 @@ export function isKoreaBuildingIndexable(
   records: KoreaBuildingEvidenceRecordPair,
   minimum: number = KOREA_BUILDING_INDEX_MINIMUM,
 ): boolean {
-  return koreaBuildingEvidenceDepth(records) >= minimum;
+  const identity = records.rent ?? records.sale;
+  return identity !== undefined
+    && identity.officialName.trim().length > 0
+    && identity.neighborhoodName.trim().length > 0
+    && koreaBuildingSearchDepth(records) >= minimum;
 }
 
 function buildingPublicationIndex(
@@ -186,7 +207,7 @@ function derivedBuildingPublication(
       districtSlug: identity.districtSlug,
       name: identity.officialName,
       neighborhoodName: identity.neighborhoodName,
-      contracts: koreaBuildingEvidenceDepth(pair),
+      contracts: koreaBuildingSearchDepth(pair),
       href: `/kr/seoul/explore/${identity.districtSlug}/${identity.buildingId}/`,
     });
     entries.push(entry);

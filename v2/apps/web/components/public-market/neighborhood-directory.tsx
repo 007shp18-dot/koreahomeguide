@@ -19,7 +19,7 @@ export function NeighborhoodDirectory({
         Neighborhood building directories in {districtName}
       </h2>
       <p className={styles.summary}>
-        {entries.length} neighborhoods contain buildings that meet the current evidence publication threshold.
+        {entries.length} neighborhoods contain buildings with reported transaction histories.
       </p>
       <ul className={styles.list}>
         {entries.map((entry) => (
@@ -27,7 +27,7 @@ export function NeighborhoodDirectory({
             <Link className={styles.link} href={entry.href}>
               <span className={styles.identity}>
                 <strong lang="ko">{entry.name}</strong>
-                <span>Published building evidence</span>
+                <span>Sale and rental history</span>
               </span>
               <span className={styles.contracts}>
                 {entry.buildings.toLocaleString('en-US')} buildings
