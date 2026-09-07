@@ -289,11 +289,12 @@ export function resolveUnambiguousNaverGeocode(
   }
   const district = queryParts[1]!;
   const neighborhood = queryParts[2]!;
+  const isRoadAddress = /(?:로|길)$/.test(neighborhood);
   const lot = queryParts.slice(3).find((part) => /^\d+(?:-\d+)?$/.test(part));
   const localityMatches = addresses.filter((address) => {
     const resolvedLocality = `${address.roadAddress ?? ''} ${address.jibunAddress ?? ''}`;
     return resolvedLocality.includes(district) && resolvedLocality.includes(neighborhood)
-      && (lot === undefined || (address.jibunAddress ?? '').split(/\s+/).includes(lot));
+      && (lot === undefined || (isRoadAddress ? address.roadAddress ?? '' : address.jibunAddress ?? '').split(/\s+/).includes(lot));
   });
   return localityMatches.length === 1 ? localityMatches[0]! : null;
 }
@@ -801,10 +802,12 @@ export function NaverDistrictMap({
       .then(async (value: unknown) => {
         if (controller.signal.aborted || typeof value !== 'object' || value === null || !('locations' in value) || !Array.isArray(value.locations)) return;
         const updates: Record<string, { address: string; latitude: number | null; longitude: number | null }> = {};
+        const verifiedAddresses = new Set<string>();
         for (const item of value.locations) {
           if (typeof item !== 'object' || item === null || typeof item.address !== 'string') continue;
           const match = requested.find(({ key }) => key === item.key);
           if (!match) continue;
+          if (item.verifiedAddress === true) verifiedAddresses.add(match.id);
           updates[match.id] = {
             address: item.address,
             latitude: typeof item.latitude === 'number' ? item.latitude : null,
@@ -814,6 +817,7 @@ export function NaverDistrictMap({
         // Ask the existing Vercel public-data route for an official address only on selection.
         // That route validates building identity and caches verified facts server-side.
         for (const target of requested) {
+          if (verifiedAddresses.has(target.id)) continue;
           if (updates[target.id]?.latitude != null && updates[target.id]?.longitude != null) continue;
           if (!target.key.startsWith('seoul:') || target.district === undefined) continue;
           try {

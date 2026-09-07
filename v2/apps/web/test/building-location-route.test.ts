@@ -5,6 +5,11 @@ import { GET } from '../app/api/building-location/route';
 beforeEach(() => vi.clearAllMocks());
 
 describe('verified building locations', () => {
+  it('identifies an official stored address even before coordinates are resolved', async () => {
+    db.query.mockResolvedValue([{ key: 'seoul:a', address: '서울특별시 용산구 서빙고로 17', verified_address: true, latitude: null, longitude: null }]);
+    const response = await GET(new Request('https://www.signedprice.com/api/building-location/?keys=seoul:a'));
+    expect(await response.json()).toMatchObject({ locations: [{ key: 'seoul:a', verifiedAddress: true }] });
+  });
   it('returns a bounded batch of verified identities, preserving unresolved addresses', async () => {
     db.query.mockResolvedValue([
       { key: 'seoul:a', address: '서울특별시 강남구 역삼동 1', latitude: 37.5, longitude: 127.03 },

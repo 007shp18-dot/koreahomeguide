@@ -188,6 +188,13 @@ describe('NAVER district map', () => {
     );
   });
 
+  it('matches a verified road number against the road address, preserving parcel checks', () => {
+    const address = { x: '126.969', y: '37.525', roadAddress: '서울특별시 용산구 서빙고로 17', jibunAddress: '서울특별시 용산구 한강로3가 98' };
+    expect(resolveUnambiguousNaverGeocode('서울특별시 용산구 서빙고로 17', [address])).toBe(address);
+    expect(resolveUnambiguousNaverGeocode('서울특별시 용산구 서빙고로 19', [address])).toBeNull();
+    expect(resolveUnambiguousNaverGeocode('서울특별시 용산구 한강로3가 17', [address])).toBeNull();
+  });
+
   it('builds a price-free building marker with an accessible name', () => {
     expect(buildNaverBuildingMarkerContent({
       id: 'tower',
