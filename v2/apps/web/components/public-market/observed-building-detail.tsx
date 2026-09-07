@@ -99,7 +99,7 @@ export function BuildingProximityDisclosure({ proximity, locale = 'en' }: Readon
 }>) {
   const copy = proximityCopy[locale];
   if (proximity === undefined || proximity.status !== 'ready') return <p data-proximity-state={proximity?.status ?? 'missing'}>{copy.unavailable}</p>;
-  return <section data-building-proximity="ready">
+  return <section className={styles.proximityDetails} data-building-proximity="ready">
     <h3>{copy.heading}</h3>
     {proximity.coordinateStatus === 'pending_coordinate' ? <p>{copy.pending}</p> : proximity.coordinateStatus === 'unavailable' ? <p>{copy.coordinateUnavailable}</p> : <dl className={styles.findingGrid}>
       <div><dt>{copy.station}</dt><dd>{proximity.nearestStation === null ? copy.unavailableFact : `${proximity.nearestStation.name} · ${proximity.nearestStation.lines.join(', ')} · ${Math.round(proximity.nearestStation.distanceMeters)} m`}</dd></div>

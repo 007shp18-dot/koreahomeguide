@@ -634,6 +634,83 @@
 .mockupRail > a:first-of-type { color: white; background: var(--accent); }
 .factsAnchor { min-width: 0; }
 .factsAnchor > section { margin: 0; }
+
+/* Long facility names and source addresses need prose spacing, not metric tiles. */
+.officialFacts,
+.proximityDetails { min-width: 0; }
+
+.officialFacts .findingGrid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+}
+
+.officialFacts .sourceGrid,
+.proximityDetails .sourceGrid,
+.proximityDetails .findingGrid,
+.nearbyGrid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.officialFacts .findingGrid > div,
+.officialFacts .sourceGrid > div,
+.proximityDetails .findingGrid > div,
+.proximityDetails .sourceGrid > div,
+.nearbyGrid > div {
+  min-height: 0;
+  align-content: start;
+  align-items: start;
+  gap: .5rem;
+  padding: 1rem;
+}
+
+.officialFacts .sourceGrid > div,
+.proximityDetails .findingGrid > div,
+.proximityDetails .sourceGrid > div,
+.nearbyGrid > div {
+  grid-template-columns: minmax(0, 10rem) minmax(0, 1fr);
+  column-gap: 1.25rem;
+}
+
+.officialFacts dt,
+.proximityDetails dt,
+.nearbyGrid dt {
+  min-width: 0;
+  margin: 0;
+  font-size: .875rem;
+  font-weight: 600;
+  line-height: 1.6;
+  letter-spacing: normal;
+  text-transform: none;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.officialFacts dd,
+.proximityDetails dd,
+.nearbyGrid dd {
+  min-width: 0;
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.75;
+  letter-spacing: normal;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+}
+
+.proximityDetails { display: grid; gap: 1rem; }
+.proximityDetails > h3,
+.proximityDetails > p { margin: 0; line-height: 1.6; }
+
+@media (max-width: 640px) {
+  .officialFacts .findingGrid,
+  .officialFacts .sourceGrid > div,
+  .proximityDetails .findingGrid > div,
+  .proximityDetails .sourceGrid > div,
+  .nearbyGrid > div {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
 .main[data-building-detail='exact-evidence'] .evidence,
 .main[data-building-detail='exact-evidence'] .contracts,
 .main[data-building-detail='exact-evidence'] .areaBands,
