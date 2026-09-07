@@ -24,7 +24,7 @@
 .compactInput{min-height:50px;padding:0 14px;gap:8px}
 .resultForm button{padding:0 18px}
 .cardGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid #cbd5e1}
-.marketCard{min-width:0;display:grid;grid-template-rows:84px 94px minmax(156px,auto) minmax(250px,1fr) minmax(132px,auto) 96px 58px;padding:0 24px;border-right:1px solid #cbd5e1}
+.marketCard{min-width:0;display:grid;grid-template-rows:84px 94px minmax(156px,auto) minmax(250px,1fr) minmax(132px,auto) minmax(110px,auto) 58px;padding:0 24px;border-right:1px solid #cbd5e1}
 .marketCard:last-child{border-right:0}
 .cardTitle{padding:20px 0;border-bottom:1px solid #e2e8f0}
 .cardTitle span,.metricRow span,.matchRow>span,.evidenceRow>span{color:#64748b;font-size:12px;letter-spacing:.05em;text-transform:uppercase}
@@ -34,11 +34,22 @@
 .metricRow strong{overflow-wrap:anywhere;font-size:clamp(18px,2vw,25px)}
 .metricRow small,.evidenceRow small,.scopeRow small{color:#64748b;font-size:12px;line-height:1.45}
 .matchRow>strong{display:block;margin:8px 0;font-size:32px}
-.matchRow p{color:#64748b;font-size:13px;line-height:1.5}
-.matchRow ul{list-style:none;margin:8px 0 0;padding:0}
-.matchRow li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:5px 0;font-size:12px}
-.matchRow a{overflow:hidden;color:#1557d5;text-overflow:ellipsis;white-space:nowrap}
-.matchRow li small{color:#64748b}
+.matchRow p{color:#536176;font-size:14px;line-height:1.6}
+.candidateList{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:16px}
+.candidateList li{min-width:0;display:grid;gap:8px;padding:16px 0;border-top:1px solid #e2e8f0}
+.candidateList h3{margin:0;font-size:18px;line-height:1.5;font-weight:600;overflow-wrap:anywhere}
+.candidateList a{color:#1557d5;text-underline-offset:3px;overflow-wrap:anywhere}
+.candidateList small{color:#536176;font-size:14px;line-height:1.6;overflow-wrap:anywhere}
+.candidatePrice{display:grid;gap:4px;font-size:14px;line-height:1.5}
+.candidatePrice span{color:#536176}
+.candidatePrice strong{font-size:18px;overflow-wrap:anywhere}
+.candidateActions{display:flex;flex-wrap:wrap;gap:8px}
+.candidateActions a{display:inline-flex;align-items:center;min-height:44px;padding:8px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px;line-height:1.5}
+.candidateActions a:last-child{color:#fff;background:#1557d5;border-color:#1557d5}
+.candidatePagination{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:16px;font-size:14px}
+.candidatePagination button{min-height:44px;padding:8px 12px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#1557d5;font:inherit;cursor:pointer}
+.candidatePagination button:disabled{color:#64748b;background:#f1f5f9;cursor:default}
+.candidateList a:focus-visible,.candidatePagination button:focus-visible{outline:2px solid #1557d5;outline-offset:3px}
 .evidenceRow{display:grid;align-content:start;gap:5px}
 .evidenceRow p{margin:3px 0 0;font-size:13px;font-weight:650}
 .scopeRow{display:grid;align-content:start;gap:7px}
@@ -48,5 +59,5 @@
 .resultFooter p{flex:1 1 520px;margin:0;color:#64748b;font-size:12px;line-height:1.5}
 .resultFooter button{min-height:44px;padding:0 16px}
 .resultFooter a{color:#1557d5;font-size:13px}
-@media(max-width:860px){.entryGrid,.resultHeader{grid-template-columns:1fr;gap:28px}.resultHeader .eyebrow{margin-bottom:-12px}.cardGrid{grid-template-columns:1fr;border-bottom:0}.marketCard{grid-template-rows:76px 90px minmax(144px,auto) auto minmax(132px,auto) 90px 56px;border-right:0;border-bottom:1px solid #cbd5e1}}
+@media(max-width:860px){.entryGrid,.resultHeader{grid-template-columns:1fr;gap:28px}.resultHeader .eyebrow{margin-bottom:-12px}.cardGrid{grid-template-columns:1fr;border-bottom:0}.marketCard{grid-template-rows:76px 90px minmax(144px,auto) auto minmax(132px,auto) minmax(110px,auto) 56px;border-right:0;border-bottom:1px solid #cbd5e1}}
 @media(max-width:560px){.entry,.workspace{width:calc(100% - 32px)}.entry{padding-top:36px}.entry h1{font-size:40px}.entryForm{min-width:0}.inputFrame{padding:0 14px;font-size:20px}.resultForm{grid-template-columns:1fr}.cardGrid{margin-inline:0}.marketCard{padding:0 18px}.resultFooter{align-items:stretch}.resultFooter button{text-align:center}}

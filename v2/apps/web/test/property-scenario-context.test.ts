@@ -16,3 +16,11 @@ it('preserves known context and same-locale source return', () => {
  const parsed = parsePropertyScenarioContext(Object.fromEntries(new URL(href,'https://signedprice.test').searchParams),'ko');
  expect(parsed.propertyName).toBe('서울 건물'); expect(parsed.returnTo).toBe('/ko/kr/seoul/explore/gangnam-gu/tower-1/');
 });
+
+it('retains a valid budget-comparison return without allowing arbitrary links or extra data', () => {
+  const href = createPropertyScenarioHref({locale:'ko',market:'sg-singapore',currency:'SGD',price:400000,passportHref:'/ko/passport/?budget=500000&currency=USD'});
+  expect(parsePropertyScenarioContext(Object.fromEntries(new URL(href,'https://signedprice.test').searchParams),'ko').passportHref).toBe('/ko/passport/?budget=500000&currency=USD');
+  for(const passport of ['https://evil.test/passport/?budget=500000','//evil.test/passport/?budget=500000','/passport/?budget=-1','/passport/?budget=Infinity','/passport/?budget=500000&currency=EUR','/passport/?budget=500000&email=someone','/passport/?budget=1&budget=2','/passport/?budget=500000#private']) {
+    expect(parsePropertyScenarioContext({passport}).passportHref).toBeUndefined();
+  }
+});

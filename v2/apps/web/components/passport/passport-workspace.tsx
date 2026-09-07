@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useMemo, useState, useSyncExternalStore } from 'react';
 import { buildPassportModel, normalizePassportAmount, normalizePassportCurrency, passportHref, type PassportMarketEvidence, type PassportModel } from '../../lib/passport/model';
+import { PassportCandidates } from './passport-candidates';
 import { PassportBudgetFields } from './passport-budget-fields';
 import styles from './passport.module.css';
 import { sendToolEvent } from '../tools/tool-analytics';
@@ -65,12 +66,12 @@ export function PassportWorkspace({ initialModel }: Readonly<{ initialModel: Pas
     <section className={styles.cardGrid} aria-label={copy.title}>
       {model.markets.map((market) => {
         const money = new Intl.NumberFormat(MONEY[market.currency], { style: 'currency', currency: market.currency, currencyDisplay: 'code', maximumFractionDigits: 0 });
-        const href = market.id === 'kr-seoul' ? '/kr/seoul/explore/' : market.id === 'sg-singapore' ? '/sg/singapore/explore/' : '/ae/dubai/explore/';
+        const href = market.id === 'kr-seoul' ? `${initialModel.locale === 'ko' ? '/ko' : ''}/kr/seoul/explore/` : market.id === 'sg-singapore' ? '/sg/singapore/explore/' : '/ae/dubai/explore/';
         return <article className={styles.marketCard} data-passport-market={market.id} key={market.id}>
           <div className={styles.cardTitle}><span>{market.currency}</span><h2>{market.city}</h2></div>
           <div className={styles.metricRow} data-passport-row="local-budget"><span>{copy.local}</span><strong>{money.format(market.localBudget)}</strong></div>
           <div className={styles.metricRow} data-passport-row="area"><span>{copy.area}</span><strong>{market.indicativeAreaSqm === null ? '—' : `${market.indicativeAreaSqm} m²`}</strong><small>{market.indicativeAreaSqm === null ? detail.unavailable : <>{detail.basis[market.priceBasis ?? 'transactions']}{market.priceSample == null ? '' : ` · ${market.priceSample.toLocaleString(initialModel.locale)}`}</>}</small></div>
-          <div className={styles.matchRow}><span>{copy.matches}</span>{market.matches.length === 0 ? <p>{market.scopes.length === 0 ? detail.unavailable : copy.none}</p> : <><strong>{market.matches.length}</strong><ul>{market.matches.slice(0, 3).map((scope) => <li key={scope.href}><Link href={scope.href}>{scope.name}</Link><small>{money.format(scope.medianPrice)}</small></li>)}</ul></>}</div>
+          <PassportCandidates key={`${market.id}-${model.href}`} market={market} locale={initialModel.locale} passportHref={model.href} />
           <div className={styles.evidenceRow}><span>{copy.evidence}</span><p>{new Intl.NumberFormat().format(market.sample)} {copy.sample}</p><small>{market.period === 'Unavailable' ? detail.unavailable : market.period}</small>{market.yieldPct == null ? null : <small>{detail.yield} · {market.yieldPct.toFixed(1)}%</small>}</div>
           <div className={styles.scopeRow}><strong>{copy.cost}</strong><small>{copy.excluded}</small></div>
           <Link className={styles.marketAction} href={href}>{copy.open}</Link>
