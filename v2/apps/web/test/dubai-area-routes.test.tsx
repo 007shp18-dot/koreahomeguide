@@ -68,6 +68,11 @@ describe('Dubai area evidence routes', () => {
     expect(html).toContain('data-comparable-stage="off-plan"');
     expect(html).toContain('Apartment · Ready');
     expect(html).toContain('Apartment · Off-Plan');
+    for (const segment of model.segments) {
+      for (const [stage, areas] of [['ready', segment.comparableAreas.ready], ['off-plan', segment.comparableAreas.offPlan]] as const) {
+        for (const area of areas) expect(html.replaceAll('/?', '?')).toContain(`${area.href.replace(/\/$/u, '')}?housing=${segment.housing}&amp;stage=${stage}`);
+      }
+    }
     expect(html).not.toMatch(/nearby|individual building|available listing/iu);
   });
 

@@ -94,7 +94,7 @@ export function DubaiAreaDetail({ locale = 'en',  model }: Readonly<{ model: Dub
             <nav className={styles.comparableLinks} aria-label={t("Comparable Dubai areas")}>
               {comparableGroups.length === 0 ? <span>{t("No same-cohort comparison is published.")}</span> : comparableGroups.map((group) => <div key={`${group.housing}-${group.stage}`} data-comparable-stage={group.stage}>
                 <strong>{t(group.housing === 'apartment' ? 'Apartment' : 'Villa')}{t(" · ")}{t(group.stage === 'ready' ? 'Ready' : 'Off-Plan')}</strong>
-                {group.areas.map((area) => <Link key={area.id} href={marketHref(locale, area.href)}>{t(area.name)}</Link>)}
+                {group.areas.map((area) => <Link key={area.id} href={marketHref(locale, `${area.href}?housing=${group.housing}&stage=${group.stage}`)}>{t(area.name)}</Link>)}
               </div>)}
             </nav>
           </section>

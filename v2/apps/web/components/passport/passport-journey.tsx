@@ -18,6 +18,13 @@ export function PassportLink({ href, ...props }: ComponentProps<typeof Link>) {
   const current = usePassportLocation();
   return <Link {...props} href={typeof href === 'string' ? retainPassportContext(href, current, true) : href} />;
 }
+export function PassportFormContext() {
+  const current = usePassportLocation();
+  if (!current) return null;
+  const params = new URL(current, 'https://signedprice.invalid').searchParams;
+  const passport = params.getAll('passport').length === 1 ? passportReturn(params.get('passport')) : undefined;
+  return passport ? <input type="hidden" name="passport" value={passport} /> : null;
+}
 export function PassportBudgetContext() {
   const current = usePassportLocation();
   if (!current) return null;

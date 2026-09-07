@@ -1,4 +1,4 @@
-import { PassportLink as Link } from '../passport/passport-journey';
+import { PassportLink as Link, PassportFormContext } from '../passport/passport-journey';
 import { BuyerNextSteps } from '../buyer-next-steps';
 
 import {
@@ -135,7 +135,7 @@ export function DubaiCheckWorkspace({ locale = 'en',
     </header>
     <div className={styles.checkGrid}>
       <section className={styles.checkFormPanel}>
-        <form action={marketHref(locale, "/ae/dubai/check/")} method="get">
+        <form action={marketHref(locale, "/ae/dubai/check/")} method="get"><PassportFormContext />
           <label><span>{t("Area")}</span><select name="area" defaultValue={areaValue} required>{model.areas.map((area) => <option key={area.slug} value={area.slug}>{t(area.name)}</option>)}</select></label>
           <label><span>{t("Home type")}</span><select name="housing" defaultValue={housingValue} required><option value="apartment">{t("Apartment")}</option><option value="villa">{t("Villa")}</option></select></label>
           <label><span>{t("Completion")}</span><select name="completion" defaultValue={completionValue} required><option value="ready">{t("Ready")}</option><option value="off-plan">{t("Off-Plan")}</option></select></label>

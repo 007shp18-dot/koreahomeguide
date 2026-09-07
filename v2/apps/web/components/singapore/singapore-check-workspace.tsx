@@ -1,7 +1,7 @@
 
 import { sgText } from '../../lib/locale/singapore-copy';
 import { marketHref, type MarketLocale } from '../../lib/locale/market-localization';
-import { PassportLink as Link } from '../passport/passport-journey';
+import { PassportLink as Link, PassportFormContext } from '../passport/passport-journey';
 import { BuyerNextSteps } from '../buyer-next-steps';
 
 import type { SingaporeCheckMarket, SingaporeCheckResult } from '@signedprice/singapore-property';
@@ -90,7 +90,7 @@ export function SingaporeCheckWorkspace({ locale = 'en', model }: Readonly<{ loc
   return <SingaporePage locale={locale} currentHref={marketHref(locale, "/sg/singapore/check/")}><div className={styles.checkWorkspace} data-singapore-check-workspace="true">
     <header className={styles.checkHeader}><div><p className={styles.eyebrow}>{sgText(locale, "Singapore Check")}</p><h1>{sgText(locale, "Position an offer against its own market.")}</h1></div><p>{sgText(locale, "Recent completed months only")}<br />{sgText(locale, "Minimum 5 comparable transactions")}</p></header>
     <nav className={styles.checkMode} aria-label={sgText(locale, "Check mode")}><Link aria-current={model.mode === 'single' ? 'page' : undefined} href={marketHref(locale, "/sg/singapore/check/")}>{sgText(locale, "One offer")}</Link><Link aria-current={model.mode === 'compare' ? 'page' : undefined} href={marketHref(locale, "/sg/singapore/check/?mode=compare")}>{sgText(locale, "Compare A/B")}</Link></nav>
-    <section className={styles.checkBody}><div className={styles.checkForm}><form action={marketHref(locale, "/sg/singapore/check/")} method="get"><input type="hidden" name="submitted" value="1" /><input type="hidden" name="mode" value={model.mode} /><MarketTabs locale={locale} prefix="a" model={model} /><OfferFields locale={locale} prefix="a" draft={model.drafts.a} catalog={model.catalogs[model.drafts.a.market]} />{model.mode === 'compare' ? <><MarketTabs locale={locale} prefix="b" model={model} /><OfferFields locale={locale} prefix="b" draft={model.drafts.b} catalog={model.catalogs[model.drafts.b.market]} /></> : null}<button className={styles.checkSubmit} type="submit" disabled={!available}>{sgText(locale, model.mode === 'compare' ? 'Compare offers' : 'Check offer')}</button></form></div><aside className={styles.checkResult} aria-label={sgText(locale, "Check result")}><ResultPanel locale={locale} model={model} /></aside></section>
+    <section className={styles.checkBody}><div className={styles.checkForm}><form action={marketHref(locale, "/sg/singapore/check/")} method="get"><PassportFormContext /><input type="hidden" name="submitted" value="1" /><input type="hidden" name="mode" value={model.mode} /><MarketTabs locale={locale} prefix="a" model={model} /><OfferFields locale={locale} prefix="a" draft={model.drafts.a} catalog={model.catalogs[model.drafts.a.market]} />{model.mode === 'compare' ? <><MarketTabs locale={locale} prefix="b" model={model} /><OfferFields locale={locale} prefix="b" draft={model.drafts.b} catalog={model.catalogs[model.drafts.b.market]} /></> : null}<button className={styles.checkSubmit} type="submit" disabled={!available}>{sgText(locale, model.mode === 'compare' ? 'Compare offers' : 'Check offer')}</button></form></div><aside className={styles.checkResult} aria-label={sgText(locale, "Check result")}><ResultPanel locale={locale} model={model} /></aside></section>
     <BuyerNextSteps locale={locale} market="singapore" />
   </div></SingaporePage>;
 }
