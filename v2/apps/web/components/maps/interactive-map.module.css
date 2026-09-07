@@ -308,3 +308,5 @@
 
 :global(.spGoogleMarketMarkerSelected) { max-width: 190px; overflow: hidden; text-overflow: ellipsis; transform: translateY(-24px); box-shadow: 0 2px 6px rgb(17 24 39 / 14%) !important; }
 :global(.spGoogleCluster) { padding: 4px 7px !important; min-width: 22px; text-align: center; box-shadow: 0 1px 4px rgb(17 24 39 / 15%) !important; }
+
+.coordinateSource { display: block; margin-top: 3px; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

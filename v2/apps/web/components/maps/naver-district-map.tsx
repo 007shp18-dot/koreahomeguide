@@ -724,6 +724,9 @@ function BuildingMarkerStatus({ coverage, locale }: Readonly<{
       ) : (
         <>{coverage.total.toLocaleString('en')} matching buildings · {coverage.located.toLocaleString('en')} located · {coverage.grouped.toLocaleString('en')} area-only · {coverage.unplaced.toLocaleString('en')} unplaced. Dashed groups mark an approximate area reference, not individual building locations.</>
       )}
+      <a className={styles.coordinateSource} href="https://data.seoul.go.kr/dataList/OA-15818/S/1/datasetView.do" target="_blank" rel="noreferrer">
+        {locale === 'ko' ? '아파트 위치: 서울 열린데이터광장 · 공공누리 제1유형' : 'Apartment locations: Seoul Open Data · KOGL Type 1'}
+      </a>
     </p>
   );
 }
