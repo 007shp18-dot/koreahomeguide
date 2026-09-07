@@ -14,6 +14,8 @@ import { SingaporeEvidence, SingaporePage, singaporeStyles as styles } from './s
 import directoryStyles from '../public-market/building-directory.module.css';
 import searchStyles from '../price-market-search.module.css';
 
+import { selectedResultPage } from '../../lib/navigation/selected-result-page';
+
 const PAGE_SIZE = 24;
 
 type SingaporeExplorerState = Readonly<{
@@ -112,7 +114,7 @@ export function SingaporeExplorer({
     return orderedProjects.filter((item) => item.term.includes(term)).map(({ project }) => project);
   }, [orderedProjects, deferredQuery]);
   const pageCount = Math.max(1, Math.ceil(projects.length / PAGE_SIZE));
-  const activePage = Math.min(Math.max(1, page), pageCount);
+  const activePage = selectedResultPage(projects.map(project => project.id), selectedProjectId, page, PAGE_SIZE);
   const visible = useMemo(() => projects.slice((activePage - 1) * PAGE_SIZE, activePage * PAGE_SIZE), [activePage, projects]);
   const selectedProject = projects.find((project) => project.id === selectedProjectId);
   const districtCounts = useMemo(() => {
@@ -162,8 +164,12 @@ export function SingaporeExplorer({
   const mapLevel = district !== 'all' || deferredQuery.trim() !== '' || selectedProjectId !== null
     ? 'projects'
     : selectedSegment === null ? 'regions' : 'districts';
-  const projectMapCoverage = useMemo(() => buildSingaporeMapCoverage(projects, allProjects, selectedProjectId), [projects, allProjects, selectedProjectId]);
-  const areaMapCoverage = useMemo(() => mapLevel === 'regions'
+  const projectMapCoverage = useMemo(() => mapLevel === 'projects'
+    ? buildSingaporeMapCoverage(projects, allProjects, selectedProjectId)
+    : buildSingaporeMapCoverage([], [], null), [projects, allProjects, selectedProjectId, mapLevel]);
+  const areaMapCoverage = useMemo(() => mapLevel === 'projects'
+    ? buildSingaporeAreaMapCoverage([], [], 'district')
+    : mapLevel === 'regions'
     ? buildSingaporeAreaMapCoverage(projects, allProjects, 'region')
     : buildSingaporeAreaMapCoverage(projects, allProjects, 'district'), [allProjects, mapLevel, projects]);
   const activeMapPoints = mapLevel === 'projects' ? projectMapCoverage.points : areaMapCoverage.points;

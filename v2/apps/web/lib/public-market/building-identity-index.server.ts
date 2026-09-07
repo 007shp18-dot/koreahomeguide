@@ -16,8 +16,10 @@ export function resolveIndexedBuildingIdentity(districtSlug: string, buildingId:
     return record && districtLawdCd ? { districtLawdCd, neighborhoodName: record.neighborhoodName, officialName: record.officialName, housingType: record.housingType } : null;
   }
   if (!index) {
-    const path = ['data/building-identity-index.json.gz', 'apps/web/data/building-identity-index.json.gz'].map(name => resolve(process.cwd(), name)).find(existsSync);
-    if (!path) throw new Error('Building identity index missing; run prebuild');
+    const appPath = resolve(process.cwd(), 'data/building-identity-index.json.gz');
+    const workspacePath = resolve(process.cwd(), 'apps/web/data/building-identity-index.json.gz');
+    const path = existsSync(appPath) ? appPath : workspacePath;
+    if (!existsSync(path)) throw new Error('Building identity index missing; run prebuild');
     const artifact = JSON.parse(gunzipSync(readFileSync(path)).toString('utf8'));
     if (artifact.version !== 1 || !Array.isArray(artifact.rows)) throw new Error('Invalid building identity index');
     const next = new Map<string, Identity>();

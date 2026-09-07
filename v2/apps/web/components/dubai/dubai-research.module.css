@@ -163,3 +163,14 @@
 
 .checkResultActions { grid-template-columns: minmax(0, 1fr); }
 .checkResultActions a { white-space: nowrap; }
+
+.projectPrices { margin-top: 14px; min-width: 0; }
+.projectPrices summary { cursor: pointer; color: var(--accent); font-size: 14px; padding: 10px 0; }
+.projectPrices p { color: var(--muted); font-size: 13px; line-height: 1.5; }
+.projectPrices > div { max-height: 320px; overflow-y: auto; }
+.projectPrices button { width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center; text-align: left; padding: 12px 4px; border: 0; border-top: 1px solid var(--line); background: transparent; color: inherit; cursor: pointer; }
+.projectPrices button[aria-pressed='true'] { background: var(--surface-strong); }
+.projectPrices button span { display: grid; gap: 4px; min-width: 0; }
+.projectPrices strong { font-size: 14px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.projectPrices span strong { overflow: hidden; text-overflow: ellipsis; }
+.projectPrices small { color: var(--muted); font-size: 13px; }

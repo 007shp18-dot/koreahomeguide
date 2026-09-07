@@ -1,3 +1,4 @@
+import { dubaiProjectEvidenceForContext } from '@/lib/dubai/project-evidence.server';
 import { DubaiShell } from '@/components/dubai/dubai-shell';
 import { DubaiExplorer } from '@/components/dubai/dubai-explorer';
 import { googleMapsBrowserKeyFromEnvironment } from '@/lib/maps/google-maps-browser-key.server';
@@ -20,6 +21,7 @@ export default async function DubaiExplorePage({ searchParams }: Props) {
   return <DubaiShell href="/ae/dubai/explore/"><main><DubaiExplorer
     browserKey={googleMapsBrowserKeyFromEnvironment()}
     model={buildDubaiExploreModel(repository)}
+    projects={repository === null ? [] : dubaiProjectEvidenceForContext(repository.getContext())}
     initialQuery={initial.query}
     initialArea={initial.selectedArea ?? ''}
     initialHousing={initial.housing}
@@ -27,5 +29,6 @@ export default async function DubaiExplorePage({ searchParams }: Props) {
     initialBudgetMaximumAed={initial.budgetMaximumAed}
     initialYieldMinimumPct={initial.yieldMinimumPct}
     initialPage={initial.page}
+    initialProjectId={initial.selectedProject ?? null}
   /></main></DubaiShell>;
 }
