@@ -21,11 +21,11 @@
 .workspace{padding:52px 0 72px}
 .resultHeader{display:grid;grid-template-columns:minmax(0,1fr) minmax(340px,.7fr);gap:48px;align-items:end;margin-bottom:36px}
 .resultHeader .eyebrow{grid-column:1/-1;margin-bottom:-30px}
-.resultHeader h1{font-size:clamp(36px,4vw,56px)}
+.resultHeader h1{font-size:clamp(28px,2.5vw,34px);line-height:1.25;letter-spacing:-.01em}
 .resultForm{grid-template-columns:minmax(0,1fr) auto}
 .resultForm label{grid-column:1/-1}
 .compactInput{min-height:50px;padding:0 14px;gap:8px}
-.resultForm button{padding:0 18px}
+.resultForm button{padding:0 18px;white-space:nowrap}
 .cardGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid #cbd5e1}
 .marketCard{min-width:0;display:grid;grid-template-rows:84px 94px minmax(156px,auto) minmax(250px,1fr) minmax(132px,auto) minmax(110px,auto) 58px;padding:0 24px;border-right:1px solid #cbd5e1}
 .marketCard:last-child{border-right:0}
