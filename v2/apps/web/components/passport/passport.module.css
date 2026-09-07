@@ -14,7 +14,7 @@
 .inputFrame input,.compactInput input{min-width:0;width:100%;padding:0;border:0;outline:0;background:transparent;color:#111827;font:inherit;line-height:1.5}
 .inputFrame{gap:14px}
 .inputFrame input::placeholder{color:#94a3b8;opacity:1}
-.inputFrame select{max-width:88px;min-height:28px;padding-right:10px;border:0;border-right:1px solid #cbd5e1;background:transparent;color:#111827;font:inherit;font-size:14px;font-weight:700}
+.inputFrame select{max-width:88px;min-height:44px;padding-right:10px;border:0;border-right:1px solid #cbd5e1;background:transparent;color:#111827;font:inherit;font-size:14px;font-weight:700}
 .inputFrame:focus-within{outline:2px solid #1557d5;outline-offset:2px}
 .resultForm .inputFrame{min-height:50px;padding:0 12px;font-size:16px}
 .entryForm button,.resultForm button,.resultFooter button{min-height:50px;border:0;border-radius:8px;background:#1557d5;color:#fff;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
