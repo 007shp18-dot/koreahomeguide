@@ -9,6 +9,13 @@ const nextConfig: NextConfig = {
     return [
       { source: '/kr/seoul/news/', destination: '/news/?market=seoul', permanent: true },
       { source: '/insights/', destination: '/news/', permanent: true },
+      ...[
+        'korea-foreon-neighbour-price-gap',
+        'singapore-lentor-launch-resale-divergence',
+        'dubai-rental-yield-after-costs',
+        'seoul-84sqm-under-one-billion-2026',
+        'singapore-condos-under-1-5-million-2026',
+      ].map((slug) => ({ source: `/insights/${slug}/`, destination: `/news/${slug}/`, permanent: true })),
       { source: '/insights/:slug/', destination: '/news/', permanent: true },
       { source: '/zh-cn/kr/seoul/insights/', destination: '/zh-cn/news/', permanent: true },
       { source: '/zh-cn/kr/seoul/insights/:slug/', destination: '/zh-cn/news/', permanent: true },
