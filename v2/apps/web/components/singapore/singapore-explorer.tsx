@@ -245,6 +245,7 @@ export function SingaporeExplorer({
         </ul>
       </section>)}
     </details>
+    <p><Link href="/guides/singapore-condo-buying-budget-guide/">Condo buying guide: budgets, costs and ownership checks</Link></p>
     <HdbMarketPanel model={hdbModel} /><SingaporeEvidence model={model.evidence} compact />
   </SingaporePage>;
 }

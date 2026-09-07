@@ -1368,6 +1368,7 @@ export function AreaExplorer({
           />
         )
         : <UnavailableAreaExplorer model={model} locale={locale} />}
+    <p><Link href="/guides/seoul-apartment-buying-budget-guide/">{locale === 'ko' ? '서울 예산별 매수 가이드 (영문)' : 'Apartment buying guide: budgets, costs and ownership checks'}</Link></p>
     </>
   );
 }
