@@ -1,3 +1,4 @@
+import { MonthlyReportNavigation, MonthlyReportTrend, isMonthlyReport } from './monthly-reports';
 import Link from 'next/link';
 import { EditorialMarkdown } from '../insights/editorial-markdown';
 import { MARKET_PHOTOS, MarketRepresentativePhoto } from '../market-representative-photo';
@@ -42,13 +43,14 @@ export function NewsroomArticle({ article }: Readonly<{
     : [{ label: 'Buying property in Korea', href: '/guides/buy-property-in-korea-as-foreigner/' }, { label: 'Comparing Seoul sale transactions', href: '/guides/read-seoul-sale-transactions/' }];
   const relatedEvent = article.relatedHref?.includes('/check') ? 'article_to_check' : article.relatedHref?.includes('/explore') ? 'article_to_explore' : 'article_open';
   return <main
-    className={styles.article}
+    className={`${styles.article} ${isMonthlyReport(article.slug) ? styles.monthlyArticle : ''}`}
     data-editorial-content-id={article.id}
     data-editorial-content-type={article.type}
     data-editorial-locale={article.locale}
     data-editorial-market={article.marketId ?? undefined}
   >
     <nav className={styles.breadcrumb} aria-label="Breadcrumb"><Link href={section.href}>{section.label}</Link><span>{typeLabels[article.type]}</span></nav>
+    {isMonthlyReport(article.slug) ? <MonthlyReportNavigation slug={article.slug} /> : null}
     <header className={styles.articleHero}>
       <p>{typeLabels[article.type]} · {market}</p>
       <h1>{article.title}</h1>
@@ -60,6 +62,7 @@ export function NewsroomArticle({ article }: Readonly<{
         <div><dt>Updated</dt><dd><time dateTime={article.updatedAt}>{article.updatedAt.slice(0, 10)}</time></dd></div>
       </dl>
     </header>
+    {isMonthlyReport(article.slug) ? <MonthlyReportTrend slug={article.slug} /> : null}
     {article.type === 'guide' && article.marketId ? <div className={styles.articlePhoto}><MarketRepresentativePhoto context="city" photo={article.marketId === 'kr-seoul' ? MARKET_PHOTOS.seoul : article.marketId === 'sg-singapore' ? MARKET_PHOTOS.singapore : article.marketId === 'ae-dubai' ? MARKET_PHOTOS.dubai : null} cityLabel={market} /></div> : null}
     {figure == null ? null : <Infographic spec={figure} />}
     {contentSections.length < 5 ? null : <nav className={styles.contents} aria-label="In this article"><p>In this article</p>{contentSections.map((item, index) => item.heading ? <a href={`#section-${index + 1}`} key={item.heading}>{item.heading}</a> : null)}</nav>}

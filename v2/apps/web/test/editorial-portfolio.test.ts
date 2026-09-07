@@ -38,17 +38,17 @@ describe('launch editorial portfolio', () => {
     }
   });
 
-  it('publishes the 34-item portfolio including the large-estate analyses', () => {
-    expect(EDITORIAL_PORTFOLIO).toHaveLength(34);
+  it('publishes the 37-item portfolio including the large-estate analyses', () => {
+    expect(EDITORIAL_PORTFOLIO).toHaveLength(37);
     expect(Object.isFrozen(EDITORIAL_PORTFOLIO)).toBe(true);
-    expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'en')).toHaveLength(26);
+    expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'en')).toHaveLength(29);
     expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'zh-CN')).toHaveLength(8);
     expect(Object.fromEntries(['policy-update', 'market-brief', 'data-story', 'guide'].map((type) => [
       type,
       EDITORIAL_PORTFOLIO.filter((record) => record.type === type).length,
     ]))).toEqual({
       'policy-update': 8,
-      'market-brief': 8,
+      'market-brief': 11,
       'data-story': 8,
       guide: 10,
     });
@@ -56,8 +56,8 @@ describe('launch editorial portfolio', () => {
 
   it('keeps every published claim attached to review, evidence and an internal next step', () => {
     expect(validateEditorialPortfolio(EDITORIAL_PORTFOLIO)).toBe(EDITORIAL_PORTFOLIO);
-    expect(new Set(EDITORIAL_PORTFOLIO.map(({ id }) => id)).size).toBe(34);
-    expect(new Set(EDITORIAL_PORTFOLIO.map(({ canonicalHref }) => canonicalHref)).size).toBe(34);
+    expect(new Set(EDITORIAL_PORTFOLIO.map(({ id }) => id)).size).toBe(37);
+    expect(new Set(EDITORIAL_PORTFOLIO.map(({ canonicalHref }) => canonicalHref)).size).toBe(37);
     for (const record of EDITORIAL_PORTFOLIO) {
       expect(record.status).toBe('published');
       expect(record.readerQuestion.length).toBeGreaterThan(record.locale === 'zh-CN' ? 8 : 20);

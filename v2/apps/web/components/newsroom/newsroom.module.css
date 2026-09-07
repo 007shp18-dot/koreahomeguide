@@ -699,3 +699,29 @@
 .articlePhoto figure { width: 100%; aspect-ratio: auto; min-height: 0; height: clamp(220px, 28vw, 360px); }
 
 .indexHero h1, .articleHero h1 { letter-spacing: normal; line-height: 1.2; }
+
+.monthlyNavigation { margin: 16px 0 24px; border-bottom: 1px solid var(--review-line); }
+.monthlyNavigation p { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 12px 0 16px; color: var(--review-muted); font-size: .875rem; }
+.monthlyNavigation a { white-space: nowrap; }
+.monthlyArticle .articleHero h1 { max-width: 38ch; font-size: clamp(1.75rem, 3vw, 2.25rem); }
+.monthlyArticle .articleHero .deck { font-size: 1rem; }
+.monthlyTrend { max-width: 800px; margin: 24px 0 36px; padding: 20px 0; border-top: 1px solid var(--review-line); border-bottom: 1px solid var(--review-line); }
+.monthlyTrend figcaption { margin-bottom: 12px; font-size: 1rem; font-weight: 600; }
+.monthlyTrend svg { display: block; width: 100%; height: auto; overflow: visible; }
+.monthlyTrend svg text { fill: var(--review-muted); font-size: 14px; font-family: inherit; font-variant-numeric: tabular-nums; }
+.monthlyGrid { stroke: var(--review-line); }
+.monthlyPrimary { stroke: var(--review-accent); fill: var(--review-accent); }
+.monthlySecondary { stroke: var(--review-muted); fill: var(--review-muted); }
+.monthlyLegend { display: flex; flex-wrap: wrap; gap: 12px 24px; color: var(--review-muted); font-size: .875rem; }
+.monthlyLegend span { display: inline-flex; align-items: center; gap: 8px; }
+.monthlyLegend i { display: inline-block; width: 20px; border-top: 2px solid; }
+.monthlyPrimaryKey { border-color: var(--review-accent); }
+.monthlySecondaryKey { border-color: var(--review-muted); border-top-style: dashed !important; }
+.monthlyArticle td, .monthlyArticle th { font-variant-numeric: tabular-nums; }
+.monthlyArticle td:not(:first-child), .monthlyArticle th:not(:first-child) { white-space: nowrap; }
+@media (max-width: 520px) {
+  .monthlyNavigation .typeTabs { gap: 4px; }
+  .monthlyNavigation .typeTabs a { padding-left: 10px; padding-right: 10px; }
+  .monthlyTrend { overflow-x: auto; }
+  .monthlyTrend svg { min-width: 480px; }
+}
