@@ -3,8 +3,9 @@ import { expect, test } from '@playwright/test';
 for (const route of ['/guides/read-singapore-private-transactions/', '/news/singapore-private-market-quarterly-brief/']) {
   test(`article figures remain readable: ${route}`, async ({ page }, testInfo) => {
     await page.goto(route);
-    await expect(page.locator('main h1')).toBeVisible();
-    const figure = page.locator('[data-infographic-template="district-comparison"]');
+    const article = page.locator('main[data-editorial-content-id]:visible');
+    await expect(article.locator('h1')).toBeVisible();
+    const figure = article.locator('[data-infographic-template="district-comparison"]');
     await expect(figure).toBeVisible();
     await expect(figure.getByRole('img')).toBeVisible();
     if (route.startsWith('/guides/')) {
