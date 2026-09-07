@@ -286,8 +286,17 @@ test('keyboard traversal activates the Home to Seoul to Check flow', async ({
   await expect(page).toHaveURL(/\/kr\/seoul\/check\/$/);
 });
 
+test('the legacy Singapore overview permanently redirects to its canonical market hub', async ({ page, request }) => {
+  const redirect = await request.get('/sg/singapore/', { maxRedirects: 0 });
+  expect(redirect.status()).toBe(308);
+  expect(redirect.headers().location).toBe('/sg/');
+  const response = await page.goto('/sg/singapore/');
+  expect(response?.status()).toBe(200);
+  await expect(page).toHaveURL(/\/sg\/$/);
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://www.signedprice.com/sg/');
+});
+
 for (const path of [
-  '/sg/singapore/',
   '/us/new-york/',
   '/kr/seoul/sell/',
   '/kr/seoul/not-a-district/',

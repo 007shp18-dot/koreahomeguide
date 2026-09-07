@@ -87,7 +87,8 @@ test('primary Contract Check exposes one quote and routes to the two-offer compa
     name: 'Check one asking price.',
   })).toBeVisible();
   await expect(page.locator('[data-primary-check="single-quote"]')).toHaveCount(1);
-  await expect(page.locator('form select')).toHaveCount(3);
+  await expect(page.locator('form select')).toHaveCount(4);
+  await expect(page.locator('select[name="building"]')).toBeVisible();
   await expect(page.locator('input[inputmode="numeric"]')).toHaveCount(1);
   await expect(page.getByRole('link', { name: 'Compare two offers' }).first())
     .toHaveAttribute('href', '/kr/seoul/check/compare/');
