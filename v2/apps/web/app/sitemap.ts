@@ -55,6 +55,7 @@ const localizedPairs: readonly LocalizedPair[] = Object.freeze([
   }),
   Object.freeze({ en: '/kr/seoul/explore/', ko: '/ko/kr/seoul/explore/' }),
   Object.freeze({ en: '/kr/seoul/rankings/', ko: '/ko/kr/seoul/rankings/' }),
+  Object.freeze({ en: '/kr/seoul/shortlist/', ko: '/ko/kr/seoul/shortlist/' }),
   ...editorialLocalizedPairs,
 ] as const);
 
@@ -154,6 +155,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ? undefined
     : validDate(dubaiEvidence.getContext().generatedAt);
   const entries: MetadataRoute.Sitemap = [
+    sitemapEntry('/kr/seoul/shortlist/'),
+    sitemapEntry('/ko/kr/seoul/shortlist/'),
     sitemapEntry('/passport/'),
     sitemapEntry('/ko/passport/'),
     sitemapEntry('/zh-cn/passport/'),
