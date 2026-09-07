@@ -6,8 +6,9 @@ import styles from './property-scenario.module.css';
 import {sendToolEvent} from '../tools/tool-analytics';
 import type {ToolDimensions} from '../../lib/analytics/tool-events';
 
-export function PropertyScenarioCalculator({ price, currency, locale = 'en', analytics }: Readonly<{
+export function PropertyScenarioCalculator({ price, currency, annualRent, locale = 'en', analytics }: Readonly<{
   price: number | null; currency: 'KRW' | 'SGD' | 'AED'; locale?: 'en' | 'ko'; analytics?: Pick<ToolDimensions,'market'|'surface'>;
+  annualRent?: number | null;
 }>) {
   const id = useId();
   const started = useRef(false);
@@ -18,7 +19,7 @@ export function PropertyScenarioCalculator({ price, currency, locale = 'en', ana
   };
   const ko = locale === 'ko';
   const [inputs, setInputs] = useState<Record<keyof PropertyScenario, string>>({
-    price: price === null ? '' : String(Math.round(price)), acquisitionCosts: '', monthlyRent: '', annualCosts: '', vacancyMonths: '',
+    price: price === null ? '' : String(Math.round(price)), acquisitionCosts: '', monthlyRent: annualRent == null ? '' : String(annualRent / 12), annualCosts: '', vacancyMonths: '',
   });
   const ready = Object.values(inputs).every((value) => value.trim() !== '');
   const scenario = ready ? calculatePropertyScenario({ price: Number(inputs.price), acquisitionCosts: Number(inputs.acquisitionCosts), monthlyRent: Number(inputs.monthlyRent), annualCosts: Number(inputs.annualCosts), vacancyMonths: Number(inputs.vacancyMonths) }) : null;
@@ -35,6 +36,7 @@ export function PropertyScenarioCalculator({ price, currency, locale = 'en', ana
   ];
   return <section className={styles.section} aria-labelledby={`${id}-heading`} data-property-scenario={currency}>
     <h2 id={`${id}-heading`}>{ko ? '매입 비용과 임대 수익 계산' : 'Purchase and rental scenario'}</h2>
+    {annualRent == null ? null : <p>{ko ? `앞 화면에서 입력한 연 임대료 ${money(annualRent)}를 월 임대료로 환산했습니다. 직접 수정할 수 있습니다.` : `Your annual rent assumption of ${money(annualRent)} has been divided by 12 to fill monthly rent. You can edit it below.`}</p>}
     <p>{ko ? '매입 가격은 공개된 매매 중앙값을 시작값으로 사용합니다. 나머지는 직접 입력하세요. 세율이나 임대료를 자동 추정하지 않습니다.' : 'The published sale median is a starting price, where available. Enter your own costs, rent and vacancy assumptions; taxes and rents are not estimated automatically.'}</p>
     <div className={styles.workspace}><div className={styles.inputPanel}><h3>{ko ? '매입·임대 조건' : 'Your assumptions'}</h3><div className={styles.form}>{fields.map(([key, label]) => <label key={key} htmlFor={`${id}-${key}`}>{label}{key === 'vacancyMonths' ? '' : ` (${currency})`}<input id={`${id}-${key}`} type="number" inputMode="decimal" min="0" max={key === 'vacancyMonths' ? 12 : undefined} step="any" value={inputs[key]} placeholder={key === 'price' ? undefined : (ko ? '직접 입력 · 해당 없으면 0' : 'Enter assumption; 0 if none')} onChange={(event) => edit(key,event.target.value)} /></label>)}</div></div><div className={styles.resultPanel}><h3>{ko ? '계산 결과' : 'Your scenario'}</h3>
     {scenario ? <dl className={styles.results} aria-live="polite">

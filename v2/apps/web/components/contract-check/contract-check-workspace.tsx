@@ -1,5 +1,6 @@
 'use client';
 import { ResultLinkCopy } from './result-link-copy';
+import { BuildingSelection } from './building-selection';
 
 import type {
   CheckTransaction,
@@ -42,7 +43,7 @@ export const CHECK_COPY = Object.freeze({
     sample: 'reported contracts', median: 'Reported median', middle: 'Middle 50%', period: 'Evidence period',
     window: 'Evidence window', salePeriod: 'Sale evidence window', rentPeriod: 'Rental evidence window', conversionPeriod: 'Conversion period',
     reference: 'Market reference only. No loan rate, tax, holding period, appreciation or future value is assumed.',
-    explore: 'Find a stable building ID in Explore',
+    explore: 'Find a building in Explore',
     guide: 'Read the contract guides',
   }),
   ko: Object.freeze({
@@ -61,7 +62,7 @@ export const CHECK_COPY = Object.freeze({
     sample: '건의 신고 계약', median: '신고 중앙값', middle: '중간 50%', period: '근거 기간',
     window: '근거 기간', salePeriod: '매매 근거 기간', rentPeriod: '임대차 근거 기간', conversionPeriod: '전환율 기간',
     reference: '시장 참고자료입니다. 대출금리·세금·보유기간·상승률·미래가치를 가정하지 않습니다.',
-    explore: 'Explore에서 안정적인 건물 ID 찾기',
+    explore: 'Explore에서 단지 찾기',
     guide: '계약 가이드 읽기',
   }),
 } as const);
@@ -371,6 +372,8 @@ function ReadyWorkspace({ model, locale, entityContext }: Readonly<{
   entityContext: EntityCheckContext | null;
 }>) {
   const c = CHECK_COPY[locale];
+  const [district, setDistrict] = useState(model.selection.districtSlug);
+  const [housing, setHousing] = useState(model.selection.housingType);
   const [offers, setOffers] = useState(() => ({
     a: draft(model.selection.offers.a),
     b: draft(model.selection.offers.b),
@@ -397,15 +400,15 @@ function ReadyWorkspace({ model, locale, entityContext }: Readonly<{
           <fieldset className={styles.conditions} data-check-section="conditions">
             <legend><span>01</span>{c.conditions}</legend>
             <div className={styles.conditionGrid}>
-              <label className={styles.field}><span>{c.district}</span><select defaultValue={model.selection.districtSlug} name="district">
+              <label className={styles.field}><span>{c.district}</span><select value={district} onChange={event => setDistrict(event.target.value)} name="district">
                 {model.districts.map((district) => <option key={district.slug} value={district.slug}>{locale === 'ko' ? district.nameKo : district.nameEn}</option>)}
               </select></label>
-              <label className={styles.field}><span>{c.housing}</span><select defaultValue={model.selection.housingType} name="housing">
+              <label className={styles.field}><span>{c.housing}</span><select value={housing} onChange={event => setHousing(event.target.value as typeof housing)} name="housing">
                 <option value="apartment">Apartment</option><option value="officetel">Officetel</option>
                 <option value="villa_multifamily">Villa / multifamily</option><option value="detached">Detached</option>
               </select></label>
               <label className={styles.field}><span>{c.area} <small>㎡</small></span><input defaultValue={model.selection.areaSqm ?? ''} inputMode="decimal" name="area" /></label>
-              <label className={styles.field}><span>{c.building}</span><input aria-describedby="compare-building-hint" defaultValue={model.selection.buildingId ?? ''} name="building" /><small id="compare-building-hint">{c.buildingHint}</small></label>
+              <BuildingSelection key={`${district}-${housing}`} id={district === model.selection.districtSlug && housing === model.selection.housingType ? model.selection.buildingId : null} name={model.buildingName} locale={locale} />
             </div>
           </fieldset>
           <div className={styles.comparisonGrid}>

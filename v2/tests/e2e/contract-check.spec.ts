@@ -87,7 +87,8 @@ test('primary Contract Check exposes one quote and routes to the two-offer compa
     name: 'Check one asking price.',
   })).toBeVisible();
   await expect(page.locator('[data-primary-check="single-quote"]')).toHaveCount(1);
-  await expect(page.locator('form select')).toHaveCount(3);
+  await expect(page.locator('form select')).toHaveCount(4);
+  await expect(page.locator('select[name="building"]')).toBeVisible();
   await expect(page.locator('input[inputmode="numeric"]')).toHaveCount(1);
   await expect(page.getByRole('link', { name: 'Compare two offers' }).first())
     .toHaveAttribute('href', '/kr/seoul/check/compare/');
@@ -239,5 +240,5 @@ test('journey: unsupported entity context fails closed to the manual Check form'
   await expect(page.locator('input[name="market"]')).toHaveCount(0);
   await expect(page.locator('input[name="entity"]')).toHaveCount(0);
   await expect(page.getByRole('link', { name: /Return to / })).toHaveCount(0);
-  await expect(page.locator('input[name="building"]')).toBeVisible();
+  await expect(page.getByRole('combobox', { name: 'Building to compare' })).toHaveValue('');
 });

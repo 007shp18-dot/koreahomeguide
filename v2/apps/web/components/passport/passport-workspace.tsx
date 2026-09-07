@@ -15,9 +15,9 @@ const COPY = {
 } as const;
 
 const DETAIL = {
-  en: { unavailable: 'Comparable price data is not available yet.', copyFailed: 'The link could not be copied. Copy the address from your browser to share this result.', fx: 'Reference only; transfer rates differ.', yield: 'Median estimated gross yield for Ready areas', basis: { transactions: 'Median of available apartment transaction unit prices', projects: 'Median of published project unit-price medians', areas: 'Median of Ready apartment area unit-price medians' } },
-  ko: { unavailable: '아직 비교 가능한 가격 자료가 없습니다.', copyFailed: '링크를 복사하지 못했어요. 브라우저 주소를 복사하면 이 결과를 공유할 수 있어요.', fx: '참고용 환율이며 실제 송금 환율과 다릅니다.', yield: 'Ready 지역별 추정 총수익률의 중간값', basis: { transactions: '확보한 아파트 거래의 ㎡당 가격 중간값', projects: '공개된 프로젝트별 ㎡당 중위가격의 중간값', areas: 'Ready 아파트 지역별 ㎡당 중위가격의 중간값' } },
-  'zh-CN': { unavailable: '暂时没有可比较的价格数据。', copyFailed: '无法复制链接。请复制浏览器地址以分享此结果。', fx: '仅供参考，实际汇款汇率可能不同。', yield: 'Ready 地区估算毛收益率的中位数', basis: { transactions: '现有公寓成交单位面积价格的中位数', projects: '已发布项目单位面积价格中位数的中位数', areas: 'Ready 公寓地区单位面积价格中位数的中位数' } },
+  en: { comparison: 'Compare the local evidence: dates and aggregation differ by city. The area estimates are starting points, not equivalent homes.', unavailable: 'Comparable price data is not available yet.', copyFailed: 'The link could not be copied. Copy the address from your browser to share this result.', fx: 'Reference only; transfer rates differ.', yield: 'Median estimated gross yield for Ready areas', basis: { transactions: 'Median of available apartment transaction unit prices', projects: 'Median of published project unit-price medians', areas: 'Median of Ready apartment area unit-price medians' } },
+  ko: { comparison: '도시마다 거래 기간과 집계 단위가 다릅니다. 면적은 탐색 시작점이며 동일 조건의 주택을 비교한 결과가 아닙니다.', unavailable: '아직 비교 가능한 가격 자료가 없습니다.', copyFailed: '링크를 복사하지 못했어요. 브라우저 주소를 복사하면 이 결과를 공유할 수 있어요.', fx: '참고용 환율이며 실제 송금 환율과 다릅니다.', yield: 'Ready 지역별 추정 총수익률의 중간값', basis: { transactions: '확보한 아파트 거래의 ㎡당 가격 중간값', projects: '공개된 프로젝트별 ㎡당 중위가격의 중간값', areas: 'Ready 아파트 지역별 ㎡당 중위가격의 중간값' } },
+  'zh-CN': { comparison: '各城市的数据期间与汇总单位不同。面积估算仅供初步筛选，不代表同等条件的住房。', unavailable: '暂时没有可比较的价格数据。', copyFailed: '无法复制链接。请复制浏览器地址以分享此结果。', fx: '仅供参考，实际汇款汇率可能不同。', yield: 'Ready 地区估算毛收益率的中位数', basis: { transactions: '现有公寓成交单位面积价格的中位数', projects: '已发布项目单位面积价格中位数的中位数', areas: 'Ready 公寓地区单位面积价格中位数的中位数' } },
 } as const;
 
 const MONEY = { KRW: 'ko-KR', SGD: 'en-SG', AED: 'en-AE' } as const;
@@ -63,6 +63,7 @@ export function PassportWorkspace({ initialModel }: Readonly<{ initialModel: Pas
       </form>
     </header>
 
+    <p className={styles.comparisonNote}>{detail.comparison}</p>
     <section className={styles.cardGrid} aria-label={copy.title}>
       {model.markets.map((market) => {
         const money = new Intl.NumberFormat(MONEY[market.currency], { style: 'currency', currency: market.currency, currencyDisplay: 'code', maximumFractionDigits: 0 });
@@ -70,7 +71,7 @@ export function PassportWorkspace({ initialModel }: Readonly<{ initialModel: Pas
         return <article className={styles.marketCard} data-passport-market={market.id} key={market.id}>
           <div className={styles.cardTitle}><span>{market.currency}</span><h2>{market.city}</h2></div>
           <div className={styles.metricRow} data-passport-row="local-budget"><span>{copy.local}</span><strong>{money.format(market.localBudget)}</strong></div>
-          <div className={styles.metricRow} data-passport-row="area"><span>{copy.area}</span><strong>{market.indicativeAreaSqm === null ? '—' : `${market.indicativeAreaSqm} m²`}</strong><small>{market.indicativeAreaSqm === null ? detail.unavailable : <>{detail.basis[market.priceBasis ?? 'transactions']}{market.priceSample == null ? '' : ` · ${market.priceSample.toLocaleString(initialModel.locale)}`}</>}</small></div>
+          <div className={styles.metricRow} data-passport-row="area"><span>{copy.area}</span><strong>{market.indicativeAreaSqm === null ? '—' : `${market.indicativeAreaSqm} m²`}</strong><small>{market.indicativeAreaSqm === null ? detail.unavailable : <>{detail.basis[market.priceBasis ?? 'transactions']}{market.priceSample == null ? '' : ` · ${market.priceSample.toLocaleString(initialModel.locale)}`}</>}</small><small>{market.period === 'Unavailable' ? detail.unavailable : market.period}</small></div>
           <PassportCandidates key={`${market.id}-${model.href}`} market={market} locale={initialModel.locale} passportHref={model.href} />
           <div className={styles.evidenceRow}><span>{copy.evidence}</span><p>{new Intl.NumberFormat().format(market.sample)} {copy.sample}</p><small>{market.period === 'Unavailable' ? detail.unavailable : market.period}</small>{market.yieldPct == null ? null : <small>{detail.yield} · {market.yieldPct.toFixed(1)}%</small>}</div>
           <div className={styles.scopeRow}><strong>{copy.cost}</strong><small>{copy.excluded}</small></div>
