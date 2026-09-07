@@ -26,6 +26,8 @@ export function MonthlyTransactionResearch({ months: releasedMonths }: Readonly<
       <div role="group" aria-label="Chart reporting period">{([['12', '1Y'], ['36', '3Y'], ['all', 'All']] as const).map(([value, label]) => <button key={value} type="button" aria-pressed={period === value} onClick={() => setPeriod(value)}>{label}</button>)}</div>
       <span aria-live="polite">{months.length ? `${months[0]!.month} – ${months.at(-1)!.month} · ${totalSales.toLocaleString('en')} reported ${totalSales === 1 ? 'sale' : 'sales'}` : 'No released months'}</span>
     </div>
+    <p className={styles.chartHint}>On narrow screens, scroll the chart horizontally. Open monthly figures below for exact values.</p>
+    <div className={styles.chartWrap} role="region" aria-label="Monthly transactions chart — scroll horizontally" tabIndex={0}>
     <svg className={styles.chart} viewBox={`0 0 720 ${baseline + 36}`} role="img" aria-label={hasPrices ? 'Monthly sale-price points and transaction-volume bars. Exact values are in the table below.' : 'Monthly reported transaction counts. Exact values are in the table below.'}>
       {hasPrices ? [0, .5, 1].map((fraction) => <g key={fraction}><line x1="90" y1={priceY(maxPrice * fraction)} x2="704" y2={priceY(maxPrice * fraction)} /><text x="0" y={priceY(maxPrice * fraction) + 4}>{money(maxPrice * fraction, 'SGD', true)}</text></g>) : null}
       <text x="0" y={baseline - 45}>{maxCount} {maxCount === 1 ? 'sale' : 'sales'}</text>
@@ -36,8 +38,8 @@ export function MonthlyTransactionResearch({ months: releasedMonths }: Readonly<
         {i === 0 || i === months.length - 1 || (i === Math.floor(months.length / 2)) ? <text x={x(i)} y={baseline + 22} textAnchor={i === months.length - 1 ? 'end' : 'middle'}>{month.month}</text> : null}
       </g>)}
     </svg>
+    </div>
     <p>Source: URA released private residential transactions{hasPrices ? ' · SGD total sale prices' : ''}. <a href="#detail-source">Dataset and methodology</a>.</p>
-    <details><summary>Monthly figures and sample sizes</summary><div className={styles.tableWrap}><table className={styles.table}><thead><tr><th>Month</th><th>Reported sales</th><th>Median price</th></tr></thead><tbody>{months.map((month) => <tr key={month.month}><td>{month.month}</td><td>{month.count}</td><td>{month.median === null ? (month.count === 0 ? 'No transactions' : 'Below 5 transactions') : money(month.median, 'SGD')}</td></tr>)}</tbody></table></div></details>
+    <details><summary>Monthly figures and sample sizes</summary><div className={styles.tableWrap} role="region" aria-label="Monthly figures and sample sizes — scroll horizontally" tabIndex={0}><table className={styles.table}><thead><tr><th>Month</th><th>Reported sales</th><th>Median price</th></tr></thead><tbody>{months.map((month) => <tr key={month.month}><td>{month.month}</td><td>{month.count}</td><td>{month.median === null ? (month.count === 0 ? 'No transactions' : 'Below 5 transactions') : money(month.median, 'SGD')}</td></tr>)}</tbody></table></div></details>
   </section>;
 }
-

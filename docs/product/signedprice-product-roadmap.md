@@ -1,6 +1,34 @@
 # SignedPrice product roadmap
 
-Updated 2026-09-06. Current user-approved order supersedes the August preview-only plan.
+Updated 2026-09-07. Current user-approved order supersedes the August preview-only plan.
+
+## Continuation checkpoint — 7 September
+
+- Tools, calculator and three-city Check design is merged in #181; typography
+  follow-up is merged in #185. The latter records passing unit and browser CI.
+- Long school, station and official-building facts were reflowed in #187.
+- Seoul price articles link to building evidence/maps (#184), and Seoul/Singapore
+  budget articles have deeper practical comparisons (#186).
+- The exact user-reported broken-text symptom remains unconfirmed. Do not equate
+  a readability improvement, merged code or an old screenshot with its resolution.
+- Current continuation: preserve readable chart axes and tables on narrow screens,
+  and verify the existing Explore accounting. See
+  `docs/operations/2026-09-07-research-continuation.md` for scope and evidence.
+
+Next bounded releases, in order:
+
+1. Complete visual verification of charts, Tools, Check and long building facts;
+   keep exact locations, approximate references and missing locations distinct.
+2. Deepen source-backed evidence and make period/sample/coverage limits clear in
+   each city. Dubai remains in scope; project evidence is still a separate task.
+3. Connect Passport results through real candidate evidence to cost scenarios.
+4. Save candidates and assumptions; compare compatible types, areas and periods.
+5. Connect verified professional support and purchase workflows, then ownership
+   and resale. Actual partner sourcing can proceed alongside product work.
+
+Content and promotion support these steps: tie Seoul budget, Singapore buyer and
+Dubai Ready/Off-Plan articles to existing tools; use observed discovery and tool
+completion to judge progress. More edits alone do not establish user acquisition.
 
 ## Product direction
 
