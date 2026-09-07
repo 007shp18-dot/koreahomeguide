@@ -272,6 +272,8 @@ describe('public migration containment', () => {
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', period);
     const urls = sitemap().map(({ url }) => url);
     expect(urls.sort()).toEqual([
+      'https://www.signedprice.com/kr/seoul/shortlist/',
+      'https://www.signedprice.com/ko/kr/seoul/shortlist/',
       'https://www.signedprice.com/passport/',
       'https://www.signedprice.com/ko/passport/',
       'https://www.signedprice.com/zh-cn/passport/',
@@ -411,6 +413,8 @@ describe('public migration containment', () => {
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_ARTIFACT', JSON.stringify(artifact(false)));
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', period);
     expect(sitemap().map(({ url }) => url).sort()).toEqual([
+      'https://www.signedprice.com/kr/seoul/shortlist/',
+      'https://www.signedprice.com/ko/kr/seoul/shortlist/',
       'https://www.signedprice.com/passport/',
       'https://www.signedprice.com/ko/passport/',
       'https://www.signedprice.com/zh-cn/passport/',
@@ -454,6 +458,8 @@ describe('public migration containment', () => {
 
     vi.unstubAllEnvs();
     expect(sitemap().map(({ url }) => url).sort()).toEqual([
+      'https://www.signedprice.com/kr/seoul/shortlist/',
+      'https://www.signedprice.com/ko/kr/seoul/shortlist/',
       'https://www.signedprice.com/passport/',
       'https://www.signedprice.com/ko/passport/',
       'https://www.signedprice.com/zh-cn/passport/',

@@ -11,10 +11,10 @@ import ChineseGuidePage, { generateStaticParams as chineseGuideParams } from '..
 import { listPortfolioRecords } from '../content/portfolio-manifest';
 
 describe('editorial portfolio public routes', () => {
-  it('publishes all seven English guides on the global Guide hub', async () => {
+  it('publishes all ten English guides on the global Guide hub', async () => {
     const guides = listPortfolioRecords('en').filter(({ type }) => type === 'guide');
     const html = renderToStaticMarkup(await GuidesPage({ searchParams: Promise.resolve({}) }));
-    expect(guides).toHaveLength(7);
+    expect(guides).toHaveLength(10);
     expect(guideParams()).toEqual(guides.map(({ slug }) => ({ slug })));
     for (const guide of guides) {
       expect(html).toContain(guide.title);
@@ -25,7 +25,7 @@ describe('editorial portfolio public routes', () => {
   it('filters guides by city and makes Dubai research discoverable', async () => {
     const html = renderToStaticMarkup(await GuidesPage({ searchParams: Promise.resolve({market: 'dubai'}) }));
     expect(html).toContain('Research a Dubai property purchase');
-    expect(html).toContain('1 guide');
+    expect(html).toContain('2 guides');
     expect(html).not.toContain('Read Singapore private residential transactions');
   });
 

@@ -1,3 +1,5 @@
+import { BuyingGuide } from './buying-guide';
+import { BUYING_GUIDE_DATA } from '../../content/en/buying-guide-data';
 import { MonthlyReportNavigation, MonthlyReportTrend, isMonthlyReport } from './monthly-reports';
 import Link from 'next/link';
 import { EditorialMarkdown } from '../insights/editorial-markdown';
@@ -29,6 +31,7 @@ function sections(body: string): readonly Readonly<{ heading: string; body: stri
 export function NewsroomArticle({ article }: Readonly<{
   article: PublishedContentArticle & Readonly<{ infographic?: InfographicSpec | null }>;
 }>) {
+  const buyingGuide = article.locale === 'en' ? BUYING_GUIDE_DATA.find(guide => guide.slug === article.slug) : undefined;
   const figure = article.infographic ?? (article.locale === 'en' ? RESEARCH_FIGURES[article.slug] : undefined);
   const contentSections = sections(article.bodyMarkdown);
   const section = article.type === 'guide'
@@ -65,10 +68,10 @@ export function NewsroomArticle({ article }: Readonly<{
     {isMonthlyReport(article.slug) ? <MonthlyReportTrend slug={article.slug} /> : null}
     {article.type === 'guide' && article.marketId ? <div className={styles.articlePhoto}><MarketRepresentativePhoto context="city" photo={article.marketId === 'kr-seoul' ? MARKET_PHOTOS.seoul : article.marketId === 'sg-singapore' ? MARKET_PHOTOS.singapore : article.marketId === 'ae-dubai' ? MARKET_PHOTOS.dubai : null} cityLabel={market} /></div> : null}
     {figure == null ? null : <Infographic spec={figure} />}
-    {contentSections.length < 5 ? null : <nav className={styles.contents} aria-label="In this article"><p>In this article</p>{contentSections.map((item, index) => item.heading ? <a href={`#section-${index + 1}`} key={item.heading}>{item.heading}</a> : null)}</nav>}
-    <article className={styles.articleBody}>
+    {buyingGuide || contentSections.length < 5 ? null : <nav className={styles.contents} aria-label="In this article"><p>In this article</p>{contentSections.map((item, index) => item.heading ? <a href={`#section-${index + 1}`} key={item.heading}>{item.heading}</a> : null)}</nav>}
+    {buyingGuide ? <BuyingGuide guide={buyingGuide} /> : <article className={styles.articleBody}>
       {contentSections.map((section, index) => <section id={`section-${index + 1}`} key={section.heading}>{section.heading ? <h2>{section.heading}</h2> : null}<EditorialMarkdown source={section.body} /></section>)}
-    </article>
+    </article>}
     <section className={styles.sources} aria-labelledby="article-sources-title" data-editorial-event="article_complete">
       <h2 id="article-sources-title">Sources</h2>
       <ol>{article.sources.map((source) => <li key={source.id}><span>{source.kind}</span><a href={source.href} rel="noreferrer" data-editorial-event="policy_source_open">{source.publisher} · {source.title}</a><small>Checked {source.checkedAt.slice(0, 10)}</small></li>)}</ol>

@@ -176,7 +176,7 @@ function InsightsHub({ workspace }: Readonly<{ workspace?: NewsWorkspaceModel }>
 }
 
 function GuidesHub({ market = 'all' }: Readonly<{ market?: GlobalProductHubProps['guideMarket'] }>) {
-  const guides = listPortfolioRecords('en').filter(({ type, marketId }) => type === 'guide' && (market === 'all' || (market === 'seoul' && marketId === 'kr-seoul') || (market === 'singapore' && marketId === 'sg-singapore'))).sort((a, b) => {
+  const guides = listPortfolioRecords('en').filter(({ type, marketId }) => type === 'guide' && (market === 'all' || (market === 'seoul' && marketId === 'kr-seoul') || (market === 'singapore' && marketId === 'sg-singapore') || (market === 'dubai' && marketId === 'ae-dubai'))).sort((a, b) => {
     const first = ['buy-property-in-korea-as-foreigner', 'read-singapore-private-transactions'];
     return (first.includes(a.slug) ? first.indexOf(a.slug) : 2) - (first.includes(b.slug) ? first.indexOf(b.slug) : 2);
   });
@@ -186,7 +186,7 @@ function GuidesHub({ market = 'all' }: Readonly<{ market?: GlobalProductHubProps
       <section className={styles.section} aria-labelledby="guides-title">
         <div className={styles.sectionHeading}><p>Buying and renting</p><h2 id="guides-title">Practical guides for each market.</h2></div>
         <p className={styles.resultCount}>{guides.length + (market === 'all' || market === 'dubai' ? 1 : 0)} {guides.length + (market === 'all' || market === 'dubai' ? 1 : 0) === 1 ? 'guide' : 'guides'} · Sources and dates are listed in each guide</p>
-        <div className={styles.guideGrid}>{guides.map((guide) => <article key={guide.slug}><span>{guide.marketId === 'kr-seoul' ? 'Seoul' : 'Singapore'} · Updated {guide.updatedAt.slice(0, 10)}</span><h3>{guide.title}</h3><p>{guide.deck}</p><Link href={guide.canonicalHref}>Read guide</Link></article>)}{market === 'all' || market === 'dubai' ? <article><span>Dubai · Updated 2026-09-06</span><h3>Research a Dubai property purchase</h3><p>Check project identity, completion status and service charges, then build an AED purchase-cost scenario.</p><Link href="/ae/dubai/guide/">Read guide</Link></article> : null}</div>
+        <div className={styles.guideGrid}>{guides.map((guide) => <article key={guide.slug}><span>{guide.marketId === 'kr-seoul' ? 'Seoul' : guide.marketId === 'ae-dubai' ? 'Dubai' : 'Singapore'} · Updated {guide.updatedAt.slice(0, 10)}</span><h3>{guide.title}</h3><p>{guide.deck}</p><Link href={guide.canonicalHref}>Read guide</Link></article>)}{market === 'all' || market === 'dubai' ? <article><span>Dubai · Updated 2026-09-06</span><h3>Research a Dubai property purchase</h3><p>Check project identity, completion status and service charges, then build an AED purchase-cost scenario.</p><Link href="/ae/dubai/guide/">Read guide</Link></article> : null}</div>
       </section>
     </>
   );
