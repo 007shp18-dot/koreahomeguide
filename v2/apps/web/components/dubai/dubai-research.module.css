@@ -140,3 +140,17 @@
 @media (max-width: 1000px) { .evidenceToolbar form { grid-template-columns: repeat(2, minmax(0, 1fr)); } .areaHero, .areaSections { grid-template-columns: 1fr; } }
 @media (max-width: 1000px) { .checkGrid { grid-template-columns: 1fr; } }
 @media (max-width: 650px) { .metrics { grid-template-columns: 1fr; gap: 20px; } .metrics dd { font-size: 28px; } .chart > div { grid-template-columns: 40px minmax(0, 1fr) 84px; gap: 10px; } .toolbar { align-items: start; flex-direction: column; } .evidenceToolbar form, .areaMetrics, .stageGrid, .rentCard dl, .areaIndex nav, .checkFormPanel form, .checkResultCard dl, .checkResultActions { grid-template-columns: 1fr; } .resultHeader, .checkHeader { align-items: start; grid-template-columns: 1fr; } .checkHeader > p { text-align: left; } .areaPage, .checkPage, .checkUnavailable { padding-top: 24px; } .areaHero { padding-top: 28px; } }
+
+/* Consistent input and result surfaces across city checks. */
+.checkHeader h1 { font-size: clamp(2rem, 4.5vw, 3.5rem); font-weight: 650; line-height: 1.1; }
+.checkGrid { gap: 20px; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
+.checkFormPanel { padding: 28px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-strong); }
+.checkFormPanel form { gap: 20px 16px; }
+.checkFormPanel label { gap: 9px; font-size: 13px; line-height: 1.5; }
+.checkFormPanel input, .checkFormPanel select { min-height: 50px; font-size: 16px; }
+.checkFormPanel input:focus-visible, .checkFormPanel select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.checkResultCard, .checkEmpty { padding: 28px; border-radius: 12px; background: var(--soft-blue); }
+.checkResultCard h2 { color: var(--accent); font-weight: 650; }
+.checkResultActions a { border-radius: 8px; background: var(--surface-strong); text-decoration: none; }
+@media (max-width: 900px) { .checkGrid { grid-template-columns: 1fr; } }
+@media (max-width: 560px) { .checkFormPanel, .checkResultCard, .checkEmpty { padding: 20px; } }

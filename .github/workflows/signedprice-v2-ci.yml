@@ -86,8 +86,8 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium
       - name: Run wide, desktop and mobile workbook release gate
         run: pnpm e2e --project=desktop-chromium --project=mobile-chromium --project=tablet-chromium --project=wide-chromium
-      - name: Upload browser failure diagnostics
-        if: failure()
+      - name: Upload browser screenshots and diagnostics
+        if: always()
         uses: actions/upload-artifact@v4.6.2
         with:
           name: signedprice-v2-browser-diagnostics
