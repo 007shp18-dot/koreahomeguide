@@ -97,7 +97,7 @@ function json(body: Readonly<Record<string, unknown>>, status: number, headers?:
   });
 }
 
-function exactToken(actual: string | null, expected: string, nowMs: number): boolean {
+export function exactToken(actual: string | null, expected: string, nowMs: number): boolean {
   if (actual === null || !actual.startsWith('Bearer ')) return false;
   const suppliedValue = actual.slice(7);
   const supplied = createHash('sha256').update(suppliedValue).digest();
