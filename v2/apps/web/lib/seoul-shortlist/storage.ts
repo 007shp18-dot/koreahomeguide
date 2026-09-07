@@ -26,7 +26,7 @@ let volatileValue = '';
 let sessionOnly = false;
 export function readSavedSearch(): string {
   if (sessionOnly) return volatileValue;
-  try { return window.localStorage.getItem(SHORTLIST_STORAGE_KEY) ?? volatileValue; }
+  try { return window.localStorage.getItem(SHORTLIST_STORAGE_KEY) ?? ''; }
   catch { return volatileValue; }
 }
 export function subscribeSavedSearch(listener: () => void): () => void {

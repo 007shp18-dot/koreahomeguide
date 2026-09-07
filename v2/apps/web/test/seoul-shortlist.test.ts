@@ -52,6 +52,13 @@ describe('Seoul saved search', () => {
     expect(value.buildings).toHaveLength(1);
     expect(newlyObservedCount(value.buildings[0]!.signatures, item.signatures)).toBe(0);
   });
+  it('does not restore successfully saved data after browser storage is cleared', () => {
+    let value: string | null = null;
+    vi.stubGlobal('window', { localStorage: { getItem: () => value, setItem: (_key: string, raw: string) => { value = raw; } }, dispatchEvent: vi.fn() });
+    expect(writeSavedSearch({ version: 1, filters: { ...DEFAULT_FILTERS, budget: 700_000_000 }, buildings: [] })).toBe(true);
+    value = null;
+    expect(parseSavedSearch(readSavedSearch()).filters).toEqual(DEFAULT_FILTERS);
+  });
   it('provides a session fallback when storage writes fail', () => {
     vi.stubGlobal('window', { localStorage: { getItem: () => '', setItem: () => { throw new Error('quota'); } }, dispatchEvent: vi.fn() });
     const state = { version: 1 as const, filters: { ...DEFAULT_FILTERS, budget: 700_000_000 }, buildings: [] };
