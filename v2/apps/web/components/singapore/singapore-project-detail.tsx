@@ -9,6 +9,7 @@ import type {
   SingaporeProjectModel,
   SingaporeUnavailableModel,
 } from '../../lib/singapore/route-types';
+import type { PublicEntityProximity } from '../../lib/public-data/entity-location-projection.server';
 import { GooglePlacePhoto } from '../maps/google-place-photo';
 import { ProjectedEntityMedia } from '../public-market/projected-entity-media';
 import {
@@ -18,6 +19,7 @@ import {
   singaporeStyles as styles,
 } from './singapore-shell';
 import { MarketDetailShell } from '../market-ui/market-shell';
+import { SingaporeNearbyPlaces } from './singapore-nearby-places';
 
 function PriceRange({ value }: Readonly<{ value: string }>) {
   const separator = value.indexOf('–');
@@ -25,9 +27,10 @@ function PriceRange({ value }: Readonly<{ value: string }>) {
   return <>{value.slice(0, separator + 1)}<wbr />{value.slice(separator + 1)}</>;
 }
 
-export function SingaporeProjectDetail({ model, googleMapsBrowserKey = null }: Readonly<{
+export function SingaporeProjectDetail({ model, googleMapsBrowserKey = null, proximity = null }: Readonly<{
   model: SingaporeProjectModel | SingaporeUnavailableModel;
   googleMapsBrowserKey?: string | null;
+  proximity?: PublicEntityProximity | null;
 }>) {
   if (model.status === 'unavailable') return (
     <SingaporePage currentHref="/sg/singapore/explore/">
@@ -56,6 +59,7 @@ export function SingaporeProjectDetail({ model, googleMapsBrowserKey = null }: R
           />
         </div>
       </div>
+      <SingaporeNearbyPlaces proximity={proximity} />
       <SingaporeEvidence model={model.evidence} />
     </SingaporePage>
   );
@@ -94,6 +98,7 @@ export function SingaporeProjectDetail({ model, googleMapsBrowserKey = null }: R
           <div className={styles.stat}><dt>Median</dt><dd>{model.display.medianPsfLabel}</dd></div>
         </dl>
       </section>
+      <SingaporeNearbyPlaces proximity={proximity} />
       <MonthlyTransactionResearch months={months} />
       <section className={styles.section} aria-labelledby="project-size-heading"><h2 id="project-size-heading">Compare prices by home size</h2><p>Same project and reporting period. Property type, sale type, area basis and tenure stay separate. A cohort needs at least five transactions to publish its median.</p><SizeCohortResearch rows={sizes} currency="SGD" /></section>
       <PropertyScenarioCalculator key={model.identity.id} price={model.identity.medianPriceSgd} currency="SGD" analytics={{market:'sg-singapore',surface:'property-detail'}} />

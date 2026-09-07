@@ -199,6 +199,33 @@ describe('public entity projection', () => {
     expect(calls).toHaveLength(3);
     expect(calls.every(({ parameters }) => parameters.length === 1 && Array.isArray(parameters[0])))
       .toBe(true);
+    expect(calls.find(({ statement }) => statement.includes(':nearby'))?.statement)
+      .toContain('property_entities');
+  });
+
+  it('accepts verified Singapore locations and nearby rows through the global entity mapping', async () => {
+    const reader = createPublicEntityProjectionReader({
+      async query(statement) {
+        if (statement.includes(':locations')) return [{
+          entity_id: 'sg-singapore:project:p1', market_id: 'sg-singapore',
+          latitude: 1.3, longitude: 103.8, precision: 'parcel', provider: 'URA',
+          provider_reference: 'p1', rights_policy_id: 'sg-ura-private-sale-v1',
+          verification_status: 'verified', verified_at: '2026-09-07T00:00:00.000Z',
+          updated_at: '2026-09-07T00:00:00.000Z', can_display: true,
+        }];
+        if (statement.includes(':nearby')) return [{
+          entity_id: 'sg-singapore:project:p1', kind: 'station', provider_id: 'lta:station:a',
+          name: 'Alpha MRT', distance_meters: 180, lines: ['MRT'], is_nearest: true,
+        }];
+        return [];
+      },
+    });
+
+    expect((await reader.listBuildings(['sg-singapore:project:p1']))?.get('sg-singapore:project:p1'))
+      .toMatchObject({
+        state: 'ready', location: { marketId: 'sg-singapore' },
+        proximity: { nearestStation: { name: 'Alpha MRT', distanceMeters: 180 } },
+      });
   });
 
   it('keeps approved photos available when the coordinate query fails', async () => {

@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 
 import { SingaporeProjectDetail } from '@/components/singapore/singapore-project-detail';
 import { googleMapsBrowserKeyFromEnvironment } from '@/lib/maps/google-maps-browser-key.server';
+import { publicEntityProjectionReaderFromEnvironment } from '@/lib/public-data/entity-location-projection.server';
 import { indexableMetadata } from '@/lib/public-metadata';
 import { buildSingaporeProjectModel } from '@/lib/singapore/route-model.server';
 import {
@@ -42,7 +43,12 @@ export async function generateStaticParams() {
 export default async function SingaporeProjectPage({ params }: Props) {
   const { area, projectId } = await params;
   if (!['ccr', 'rcr', 'ocr'].includes(area)) notFound();
-  const repository = await singaporeSnapshotRepositoryFromEnvironment();
+  const projectionReader = publicEntityProjectionReaderFromEnvironment();
+  const entityId = `sg-singapore:project:${projectId}`;
+  const [repository, projections] = await Promise.all([
+    singaporeSnapshotRepositoryFromEnvironment(),
+    projectionReader?.listBuildings([entityId]) ?? Promise.resolve(null),
+  ]);
   if (repository === null) return <SingaporeProjectDetail model={{
     status: 'unavailable',
     message: SINGAPORE_UNAVAILABLE_MESSAGE,
@@ -53,5 +59,6 @@ export default async function SingaporeProjectPage({ params }: Props) {
   return <SingaporeProjectDetail
     model={model}
     googleMapsBrowserKey={googleMapsBrowserKeyFromEnvironment()}
+    proximity={projections?.get(entityId)?.proximity ?? null}
   />;
 }

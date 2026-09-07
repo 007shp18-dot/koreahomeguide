@@ -10,6 +10,8 @@ SignedPrice keeps public transaction artifacts in the existing checked-in data p
 4. Redeploy. The build applies unapplied versioned migrations automatically when `DATABASE_URL` exists. `pnpm db:migrate` remains available for an explicit manual run.
 5. The daily Vercel cron calls `/api/internal/news-ingest`; normal News requests also merge the latest cached Naver response with stored history.
 
+The production build also idempotently loads the checked Singapore nearby-place artifact after migrations. It contains one nearest LTA rail station and one nearest MOE school for each coordinate-ready Singapore private project or HDB block. Batches load into `nearby_place_seed_stage`; only a verified complete generation is published, and publication plus old-generation pruning run in one transaction. Preview and local builds do not run this production seed. Manual commands remain available as `pnpm --filter @signedprice/web db:seed:singapore-nearby` and `pnpm --filter @signedprice/web db:verify:singapore-nearby`.
+
 If the database is absent or temporarily unavailable, the public pages keep using the existing live/fallback sources. Database errors are logged server-side and secrets are never returned.
 
 ## Building photos
@@ -41,6 +43,7 @@ For an owned or separately licensed image, use `owned-object` or `licensed-url`,
 - `buildings` is the canonical identity table.
 - `building_photos` stores review status and provider/object references.
 - `building_facts` caches exact K-apt and Building Register matches for 30 days.
+- `nearby_places` stores the scoped nearest MRT/LRT and MOE school projection for Singapore, plus the existing Seoul proximity data.
 - `news_articles` deduplicates by canonical URL and keeps first/last seen timestamps.
 - `ingestion_runs` records scheduled news outcomes.
 - `content_articles` is the publication layer for future SignedPrice guides.
