@@ -170,6 +170,7 @@ export function mountGoogleMarketPoints(
   points: readonly GoogleMarketMapPoint[],
   onSelectPoint?: (id: string) => void,
   adjustView = true,
+  clusterLocations = true,
 ): readonly GoogleMarkerInstance[] {
   const located = points.filter((point) => Number.isFinite(point.latitude) && Number.isFinite(point.longitude));
   const selected = located.find((point) => point.selected);
@@ -179,7 +180,7 @@ export function mountGoogleMarketPoints(
     for (const point of located) bounds.extend({ lat: point.latitude!, lng: point.longitude! });
     map.fitBounds(bounds);
   }
-  return Object.freeze(clusterGoogleMarketPoints(located, map.getZoom?.() ?? 18).map((point) => {
+  return Object.freeze(clusterGoogleMarketPoints(located, clusterLocations ? map.getZoom?.() ?? 18 : 17).map((point) => {
     const marker = new sdk.Marker({
       map,
       position: { lat: point.latitude!, lng: point.longitude! },
@@ -277,10 +278,12 @@ export function GooglePlaceMap({
   points = Object.freeze([]),
   onSelectPoint,
   showAddressSearch = true,
+  clusterLocations = true,
   market = 'singapore',
 }: Readonly<{
   market?: GoogleMarket;
   showAddressSearch?: boolean;
+  clusterLocations?: boolean;
   browserKey: string | null;
   points?: readonly GoogleMarketMapPoint[];
   onSelectPoint?: (id: string) => void;
@@ -308,7 +311,7 @@ export function GooglePlaceMap({
       zoomListener.current?.remove();
       zoomListener.current = null;
       for (const marker of marketMarkers.current) marker.setMap(null);
-      marketMarkers.current = mountGoogleMarketPoints(sdk, runtime.current.map, points, onSelectPoint);
+      marketMarkers.current = mountGoogleMarketPoints(sdk, runtime.current.map, points, onSelectPoint, true, clusterLocations);
       const requestedLocations = points.filter((point) => point.address !== undefined).length;
       setMessage(requestedLocations > 0
         ? `Locating ${requestedLocations} places on Google Maps…`
@@ -317,7 +320,7 @@ export function GooglePlaceMap({
         zoomListener.current = runtime.current.map.addListener('zoom_changed', () => {
           if (generation.current !== currentGeneration || runtime.current === null) return;
           for (const marker of marketMarkers.current) marker.setMap(null);
-          marketMarkers.current = mountGoogleMarketPoints(sdk, runtime.current.map, points, onSelectPoint, false);
+          marketMarkers.current = mountGoogleMarketPoints(sdk, runtime.current.map, points, onSelectPoint, false, clusterLocations);
         });
       }
       if (requestedLocations > 0) void geocodeGoogleMarketPoints(sdk, runtime.current, points, onSelectPoint, () => generation.current === currentGeneration, market).then((markers) => {
@@ -334,7 +337,7 @@ export function GooglePlaceMap({
     } catch {
       setMapState('error');
     }
-  }, [onSelectPoint, points, market]);
+  }, [onSelectPoint, points, market, clusterLocations]);
 
   useEffect(() => {
     const requestGeneration = generation;

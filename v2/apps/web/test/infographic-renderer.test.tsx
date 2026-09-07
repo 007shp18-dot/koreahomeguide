@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 
+import { formatInfographicValue } from '../components/infographics/infographic-frame';
 import { CostStructureInfographic } from '../components/infographics/cost-structure';
 import { DistrictComparisonInfographic } from '../components/infographics/district-comparison';
 import { MarketTrendInfographic } from '../components/infographics/market-trend';
@@ -50,19 +51,31 @@ describe('infographic renderers', () => {
     expect(html).toContain('href="/kr/seoul/explore"');
   });
 
-  it('keeps required chart values in SVG labels and the HTML table, never tooltip-only', () => {
+  it('keeps chart values visible and in the HTML table, never tooltip-only', () => {
     for (const [template, Renderer] of renderers.slice(2, 4)) {
       const html = renderToStaticMarkup(<Renderer spec={{ ...base, template }} />);
-      expect(html).toContain('<svg');
-      expect(html).toContain('<text');
-      expect(html).toContain('aria-label="Evidence chart"');
+      expect(html).toContain('role="img"');
       expect(html).not.toContain('<title>10</title>');
-      expect(html).toContain('<td>10</td>');
+      expect(html).toContain('<td>KRW 10</td>');
     }
   });
 
   it('never shrinks infographic text below twelve pixels', () => {
     const css = readFileSync(new URL('../components/infographics/infographic.module.css', import.meta.url), 'utf8');
     expect(css).not.toMatch(/font-size:\s*(?:[0-9]|1[01])px/u);
+  });
+});
+
+
+describe('infographic units', () => {
+  it.each([
+    [4.8, 'KRW 100m', 'KRW 480,000,000'],
+    [150, 'KRW 10k/month', 'KRW 1,500,000/month'],
+    [2000, 'SGD psf', 'SGD 2,000/ft²'],
+    [1500000, 'AED', 'AED 1,500,000'],
+    [6.1, '%', '6.1%'],
+    [70, 'm²', '70 m²'],
+  ])('formats %s %s consistently', (value, unit, expected) => {
+    expect(formatInfographicValue(value as number, 'en', unit as string)).toBe(expected);
   });
 });

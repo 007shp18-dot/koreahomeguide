@@ -372,7 +372,7 @@ export function mountNaverDistrictMap({
     );
     const zoom = selectedLocatedBuilding !== undefined ? 17
       : showingNeighborhoods ? 13
-        : showingBuildings ? 14 : 11;
+        : showingBuildings ? (focusAddressQuery ? 17 : 14) : 11;
     const layer = showingNeighborhoods ? 'neighborhoods' : showingBuildings ? 'buildings' : 'districts';
     const scope = selectedDistrict === undefined ? `seoul:${layer}`
       : `${selectedDistrict.latitude}:${selectedDistrict.longitude}:${layer}:${focusAddressQuery ?? ""}`;
@@ -401,7 +401,7 @@ export function mountNaverDistrictMap({
         if (Number.isFinite(latitude) && Number.isFinite(longitude)
           && latitude >= 37.4 && latitude <= 37.72 && longitude >= 126.75 && longitude <= 127.25) {
           map?.setCenter(new sdk.LatLng(latitude, longitude));
-          map?.setZoom(15);
+          map?.setZoom(17);
         }
       });
     }
@@ -508,7 +508,7 @@ export function mountNaverDistrictMap({
         for (const marker of markers) marker.setMap(null);
         listeners = [];
         markers = [];
-        for (const cluster of clusterNaverBuildings([...located.values()], map.getZoom?.() ?? 18)) {
+        for (const cluster of clusterNaverBuildings([...located.values()], focusAddressQuery ? 17 : map.getZoom?.() ?? 18)) {
           const first = cluster.buildings[0]!;
           if (cluster.buildings.length === 1) {
             addMarker(first.title, cluster.latitude, cluster.longitude,
@@ -561,7 +561,27 @@ export function mountNaverDistrictMap({
           grouped: buildingPoints.length + additionalCount - located.size - unplaced, unplaced });
       };
       if (map.getZoom !== undefined) zoomListener = sdk.Event.addListener(map, 'zoom_changed', renderBuildings);
-      for (const original of buildingPoints) {
+      type GeocodeCallback = Parameters<NonNullable<NaverMapsSdk['Service']>['geocode']>[1];
+      const geocodeQueue: { query: string; callback: GeocodeCallback }[] = [];
+      let activeGeocodes = 0;
+      const drainGeocodes = () => {
+        if (!isActive() || sdk.Service === undefined) return;
+        while (activeGeocodes < 4 && geocodeQueue.length > 0) {
+          const job = geocodeQueue.shift()!;
+          activeGeocodes += 1;
+          sdk.Service.geocode({ query: job.query }, (status, response) => {
+            activeGeocodes -= 1;
+            if (!isActive()) return;
+            job.callback(status, response);
+            drainGeocodes();
+          });
+        }
+      };
+      const enqueueGeocode = (query: string, callback: GeocodeCallback) => {
+        geocodeQueue.push({ query, callback });
+        drainGeocodes();
+      };
+      for (const original of [...buildingPoints].sort((a, b) => Number(b.selected) - Number(a.selected))) {
         const cached = locationCache.get(`${original.id}:${original.addressQuery}`);
         const building = cached === undefined ? original : { ...original, ...cached };
         if (building.latitude !== null && building.longitude !== null
@@ -570,7 +590,7 @@ export function mountNaverDistrictMap({
           && building.longitude >= 126.75 && building.longitude <= 127.25) {
           located.set(building.id, building);
         } else if (building.allowAddressGeocoding === true && sdk.Service !== undefined) {
-          sdk.Service.geocode({ query: building.addressQuery }, (status, response) => {
+          enqueueGeocode(building.addressQuery, (status, response) => {
             if (!isActive()) return;
             const address = resolveUnambiguousNaverGeocode(
               building.addressQuery,

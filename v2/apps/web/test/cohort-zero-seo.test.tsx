@@ -232,7 +232,7 @@ describe('SignedPrice cohort zero SEO', () => {
     for (const href of [
       '/kr/seoul/check',
       '/kr/seoul/explore',
-      '/kr/seoul/rankings',
+      '/sg/singapore/check',
       '/news?type=analysis',
       '/guides',
     ]) {

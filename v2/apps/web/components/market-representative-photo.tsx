@@ -26,10 +26,11 @@ export const MARKET_PHOTOS = Object.freeze({
   }),
 } satisfies Readonly<Record<'seoul' | 'singapore' | 'dubai', MarketPhoto>>);
 
-export function MarketRepresentativePhoto({ photo, eager = false, cityLabel }: Readonly<{
+export function MarketRepresentativePhoto({ photo, eager = false, cityLabel, context = 'property' }: Readonly<{
   photo: MarketPhoto | null;
   eager?: boolean;
   cityLabel?: string;
+  context?: 'property' | 'city';
 }>) {
   if (photo === null) return <figure className={styles.frame} data-building-media="market-context-fallback">
     <div className={styles.fallback}>
@@ -51,7 +52,7 @@ export function MarketRepresentativePhoto({ photo, eager = false, cityLabel }: R
     />
     <figcaption>
       {cityLabel === undefined ? null : `${cityLabel} · `}
-      Editorial city photograph · not this exact property
+      {context === 'city' ? 'City view' : 'Editorial city photograph · not this exact property'}
     </figcaption>
   </figure>;
 }

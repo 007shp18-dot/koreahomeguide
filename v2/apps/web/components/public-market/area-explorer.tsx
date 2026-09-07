@@ -498,8 +498,8 @@ function ReadyAreaExplorer({
     longitude: isIndividualMapBuilding(building) ? building.longitude : null,
     areaReference: { id: selected.slug, title: locale === 'ko' ? selected.nameKo : selected.nameEn,
       latitude: selected.latitude, longitude: selected.longitude },
-    allowAddressGeocoding: building.id === selectedBuilding?.id
-      && !genericBuildingNames.test(building.name.trim()),
+    allowAddressGeocoding: building.verifiedAddress !== undefined
+      || (building.id === selectedBuilding?.id && !genericBuildingNames.test(building.name.trim())),
     metricLabel: compactDistrictMetric(building.medianLabel, locale),
     sampleLabel: localizeSampleLabel(building.sampleLabel, locale),
     selected: building.id === selectedBuilding?.id,

@@ -480,3 +480,11 @@
   .editorForm,
   .editorPreview { padding: 24px 0; }
 }
+
+.markdownTable { max-width: 100%; overflow-x: auto; margin: 24px 0; }
+.markdownTable table { min-width: 480px; width: 100%; border-collapse: collapse; font-size: .9375rem; }
+.markdownTable th, .markdownTable td { padding: 12px 16px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; line-height: 1.6; }
+.markdownTable th { font-weight: 650; background: var(--surface); }
+.articleBody li { margin-bottom: 8px; line-height: 1.75; }
+.articleBody a { color: var(--accent); text-underline-offset: 3px; }
+.articleBody code { font-size: .9em; overflow-wrap: anywhere; }
