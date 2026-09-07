@@ -3,7 +3,7 @@
 .eyebrow{margin:0 0 18px;color:#5f6b7a;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
 .entryGrid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(340px,.8fr);gap:48px;align-items:center}
 .entry h1,.resultHeader h1{margin:0;color:#111827;font-size:clamp(40px,5vw,68px);font-weight:600;letter-spacing:-.04em;line-height:1.04}
-.entry h1{max-width:18ch;font-size:clamp(32px,3.6vw,46px);letter-spacing:-.02em;line-height:1.15}
+.entry h1{max-width:26ch;font-size:clamp(28px,2.5vw,34px);letter-spacing:-.01em;line-height:1.25}
 .entry .lead{margin-top:16px;font-size:16px;line-height:1.6}
 .entryForm button{white-space:nowrap}
 .lead{max-width:650px;margin:24px 0 0;color:#536176;font-size:17px;line-height:1.65}
@@ -66,7 +66,7 @@
 .resultFooter button{min-height:44px;padding:0 16px}
 .resultFooter a{color:#1557d5;font-size:13px}
 @media(max-width:860px){.entryGrid,.resultHeader{grid-template-columns:1fr;gap:28px}.resultHeader .eyebrow{margin-bottom:-12px}.cardGrid{grid-template-columns:1fr;border-bottom:0}.marketCard{grid-template-rows:76px 90px minmax(144px,auto) auto minmax(132px,auto) minmax(110px,auto) 56px;border-right:0;border-bottom:1px solid #cbd5e1}}
-@media(max-width:560px){.entry,.workspace{width:calc(100% - 32px)}.entry{padding-top:36px}.entry h1{font-size:34px}.entryForm{min-width:0}.inputFrame{padding:0 14px;font-size:20px}.resultForm{grid-template-columns:1fr}.cardGrid{margin-inline:0}.marketCard{padding:0 18px}.resultFooter{align-items:stretch}.resultFooter button{text-align:center}}
+@media(max-width:560px){.entry,.workspace{width:calc(100% - 32px)}.entry{padding-top:36px}.entry h1{font-size:28px}.entryForm{min-width:0}.inputFrame{padding:0 14px;font-size:20px}.resultForm{grid-template-columns:1fr}.cardGrid{margin-inline:0}.marketCard{padding:0 18px}.resultFooter{align-items:stretch}.resultFooter button{text-align:center}}
 
 .comparisonNote{margin:0 0 20px;padding:14px 16px;border-left:3px solid #1557d5;color:#536176;font-size:14px;line-height:1.6}
 .candidateSearch{display:grid;gap:8px;margin-top:16px;color:#536176;font-size:14px;line-height:1.5}
