@@ -23,7 +23,7 @@ const KOREAN_SITE_HEADER_BASE = {
   brand: 'signedprice',
   homeLabel: 'signedprice 홈',
   homeHref: '/ko/',
-  navigationLabel: '서울 근거 탐색',
+  navigationLabel: '서울 실거래가 메뉴',
   navigationVariant: 'supplied',
   marketLabel: '서울',
   languageLabel: 'KO',
@@ -49,7 +49,7 @@ export const KOREAN_SITE_HEADER = buildKoreanSiteHeader('/kr/seoul/');
 
 export const KOREAN_SITE_FOOTER = Object.freeze({
   brand: 'signedprice',
-  descriptor: '국토교통부 신고 계약을 같은 기준으로 읽는 서울 주거 계약 근거.',
+  descriptor: '국토교통부 실거래 자료로 살펴보는 서울 집값.',
   navigationLabel: '하단 탐색',
   links: [
     { label: '서울 홈', href: '/ko/kr/seoul/' },
@@ -61,9 +61,9 @@ export const KOREAN_SITE_FOOTER = Object.freeze({
 
 export const KOREAN_ROUTE_COPY = Object.freeze({
   home: {
-    eyebrow: '서울 · 신고 계약 근거',
-    heading: '서울 주거 계약 근거',
-    description: '신고된 계약의 기간, 표본 수, 게시 기준을 숨기지 않고 함께 보여줍니다.',
+    eyebrow: '서울 · 실거래가',
+    heading: '서울 실거래가',
+    description: '거래 가격과 함께 계약 기간, 거래 건수, 집계 기준을 확인할 수 있습니다.',
   },
   check: {
     eyebrow: '서울 · 계약 조건 비교',
@@ -71,13 +71,13 @@ export const KOREAN_ROUTE_COPY = Object.freeze({
     description: '보증금과 월세가 다른 두 계약을 같은 월 비용 기준으로 비교합니다.',
   },
   explore: {
-    eyebrow: '서울 · 구별 전세 근거',
-    heading: '서울 25개 구 전세 근거',
-    description: '45–55㎡ 신고 전세 계약을 같은 기준으로 비교합니다. 표본이 부족한 금액은 게시하지 않습니다.',
+    eyebrow: '서울 · 구별 전세 실거래가',
+    heading: '서울 25개 구 전세 실거래가',
+    description: '45–55㎡ 신고 전세 계약을 같은 기준으로 비교합니다. 거래가 적어 비교하기 어려운 경우에는 가격을 표시하지 않습니다.',
   },
   rankings: {
     eyebrow: '서울 · 구별 비교',
-    heading: '서울 구별 근거 순위',
-    description: '중앙값, 분포 폭, 표본 깊이를 신고 계약 근거 안에서만 비교합니다.',
+    heading: '서울 구별 실거래가 비교',
+    description: '신고된 거래의 중간 가격(중앙값), 가격대, 거래 건수를 비교합니다.',
   },
 } as const);

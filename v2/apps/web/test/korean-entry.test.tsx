@@ -11,7 +11,7 @@ describe('Korean entry routes', () => {
   it('offers three cities and labels untranslated tools', () => {
     const html = renderToStaticMarkup(<KoreanHome />);
     for (const path of ['/ko/kr/seoul', '/ko/sg', '/ko/ae/dubai', '/ko/contact']) expect(html).toMatch(new RegExp(`href="${path}/?"`));
-    expect(html).toContain('실거래 탐색');
+    expect(html).toContain('실거래가 보기');
     expect(html).toContain('(영문)');
     expect(html).toContain('/ko/passport/');
   });
@@ -20,7 +20,7 @@ describe('Korean entry routes', () => {
     for (const city of ['seoul', 'singapore', 'dubai']) expect(html).toContain(`id="research-${city}"`);
     expect(html.match(/subject=/g)).toHaveLength(3);
     expect(html).not.toContain('<form');
-    expect(html).toContain('직접 전송하기 전에는');
+    expect(html).toContain('직접 보내주세요');
   });
   it('switches only published Korean surfaces and preserves queries', () => {
     expect(languageDestinations('/').ko).toBe('/ko/');

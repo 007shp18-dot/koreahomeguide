@@ -5,5 +5,5 @@ export const metadata = indexableMetadata({ path: '/ko/ae/dubai/', title: '두�
 export default function Page() {
   const repository = dubaiEvidenceRepositoryFromEnvironment();
   const context = repository?.getContext();
-  return <KoreanMarketOverview market="dubai" available={!!context} facts={[{ label: '가격 비교', value: '준공 주택 · 분양 단계' }, { label: '임대 비교', value: '연간 임대료 · 총임대수익률' }, { label: '표시 통화', value: 'AED' }]} period={context ? `비교 기간: ${context.comparisonPeriod.from}–${context.comparisonPeriod.to} · 자료 기준일: ${context.asOfDate} · 출처: 두바이 토지청(DLD) 공개 자료` : ''} />;
+  return <KoreanMarketOverview market="dubai" available={!!context} facts={[{ label: '가격 비교', value: '완공 주택 · 분양 중인 주택' }, { label: '임대 비교', value: '연간 임대료 · 비용 차감 전 임대수익률' }, { label: '거래 통화', value: 'AED' }]} period={context ? `비교 기간: ${context.comparisonPeriod.from}–${context.comparisonPeriod.to} · 자료 기준일: ${context.asOfDate} · 출처: 두바이 토지청(DLD) 공개 자료` : ''} />;
 }

@@ -6,5 +6,5 @@ export const metadata = indexableMetadata({ path: '/ko/sg/', title: '싱가포�
 export default async function Page() {
   const model = buildSingaporeEntryModel(await singaporeSnapshotRepositoryFromEnvironment());
   const ready = model.status !== 'unavailable';
-  return <KoreanMarketOverview market="singapore" available={ready} facts={ready ? [{ label: '공개 거래 수', value: model.transactionLabel.match(/[\d,]+/)?.[0] ?? '—' }, { label: '프로젝트 수', value: model.projectLabel.match(/[\d,]+/)?.[0] ?? '—' }, { label: '표시 통화', value: model.currency }] : []} period={ready ? `집계 기간: ${model.periodLabel}` : ''} />;
+  return <KoreanMarketOverview market="singapore" available={ready} facts={ready ? [{ label: '거래 건수', value: model.transactionLabel.match(/[\d,]+/)?.[0] ?? '—' }, { label: '단지 수', value: model.projectLabel.match(/[\d,]+/)?.[0] ?? '—' }, { label: '거래 통화', value: model.currency }] : []} period={ready ? `집계 기간: ${model.periodLabel}` : ''} />;
 }
