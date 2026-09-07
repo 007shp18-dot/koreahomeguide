@@ -230,9 +230,9 @@ describe('SignedPrice cohort zero SEO', () => {
 
     const homeHtml = renderToStaticMarkup(await Home());
     for (const href of [
-      '/kr/seoul/check',
+      '/tools',
       '/kr/seoul/explore',
-      '/sg/singapore/check',
+      '/sg/singapore/explore',
       '/news?type=analysis',
       '/guides',
     ]) {

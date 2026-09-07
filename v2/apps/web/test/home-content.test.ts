@@ -19,17 +19,16 @@ describe('signedprice homepage copy', () => {
   it('renders the approved editorial journey in decision order', async () => {
     const markup = renderToStaticMarkup(await Home());
     const needles = [
-      'See the market before you make the move.',
-      'Choose the next useful step',
-      'What changed',
+      'Where can your budget become a home?',
+      'Explore a city',
       'Latest analysis',
-      'Guides for renting and buying',
+      'Buying &amp; renting guides',
     ];
     const positions = needles.map((needle) => markup.indexOf(needle));
 
     expect(positions.every((position) => position >= 0)).toBe(true);
     expect([...positions].sort((a, b) => a - b)).toEqual(positions);
-    expect(markup).toContain('Find an area, compare recorded prices and work out the costs of buying');
+    expect(markup).toContain('Enter your budget to compare property prices and estimated floor area');
     expect(markup).toContain('data-primary-action="explore"');
   }, 10_000);
 
@@ -92,14 +91,14 @@ describe('signedprice homepage copy', () => {
     const markup = renderToStaticMarkup(await Home());
 
     expect(markup).toContain('href="/trust">Method</a>');
-    expect(markup).toContain('publication limits');
+    expect(markup).toContain('How our data works');
     expect(markup).not.toMatch(/₩0|0 contracts/);
   });
 
   it('keeps the four public products and three markets navigable', async () => {
     const markup = renderToStaticMarkup(await Home());
 
-    for (const href of ['/', '/news?type=analysis', '/kr/seoul/check', '/kr/seoul/explore', '/kr/seoul', '/sg', '/ae/dubai']) {
+    for (const href of ['/', '/news?type=analysis', '/tools', '/kr/seoul/explore', '/kr/seoul', '/sg', '/ae/dubai']) {
       expect(markup).toContain(`href="${href}"`);
     }
     expect(markup).toContain('aria-label="Primary navigation"');
@@ -108,15 +107,15 @@ describe('signedprice homepage copy', () => {
     expect(markup).not.toContain('/design-review/');
   });
 
-  it('puts current Seoul evidence on the root when the canonical fixture is available', async () => {
+  it('keeps detailed evidence in city tools and retains their routes when evidence is available', async () => {
     vi.stubEnv('SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT', JSON.stringify(createPublicAreaV2Fixture()));
     vi.stubEnv('SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD', PUBLIC_AREA_FIXTURE_PERIOD);
 
     const markup = renderToStaticMarkup(await Home());
 
-    expect(markup).toContain('Jeonse sample · 45–55 m²');
-    expect(markup).toContain(PUBLIC_AREA_FIXTURE_PERIOD);
-    expect(markup).toContain('href="/kr/seoul/check"');
+    expect(markup).not.toContain('Jeonse sample · 45–55 m²');
+    expect(markup).toContain('data-home-region="markets"');
+    expect(markup).toContain('href="/tools"');
     expect(markup).toContain('href="/kr/seoul/explore"');
 
     vi.unstubAllEnvs();
@@ -124,8 +123,8 @@ describe('signedprice homepage copy', () => {
 
   it('presents all three cities before city-specific editorial content', async () => {
     const markup = renderToStaticMarkup(await Home());
-    const globalPromise = markup.indexOf('See the market before you make the move.');
-    const marketTabs = markup.indexOf('aria-label="Choose a property market"');
+    const globalPromise = markup.indexOf('Where can your budget become a home?');
+    const marketTabs = markup.indexOf('data-home-region="markets"');
     const editorial = markup.indexOf('Latest analysis');
 
     expect(globalPromise).toBeGreaterThanOrEqual(0);
