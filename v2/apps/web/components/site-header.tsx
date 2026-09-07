@@ -43,6 +43,7 @@ function isCurrentGlobalLink(href: string, currentHref: string | undefined): boo
 export function SiteHeader({ copy }: SiteHeaderProps) {
   const locale = copy.languageLabel === 'ZH' ? 'zh-CN' : copy.languageLabel === 'KO' ? 'ko' : 'en';
   const primaryLinks = globalNavigation(locale);
+  const visibleMarkets = locale === 'ko' ? markets.map(market => ({ ...market, label: market.id === 'kr-seoul' ? '서울' : market.id === 'sg-singapore' ? '싱가포르' : '두바이', href: market.id === 'kr-seoul' ? '/ko/kr/seoul/' : market.id === 'sg-singapore' ? '/ko/sg/' : '/ko/ae/dubai/' })) : markets;
   const currentHref = copy.links.find(({ isCurrent }) => isCurrent)?.href;
   const marketId = marketIdFor(copy, currentHref);
   const marketLabel = copy.marketLabel
@@ -75,7 +76,7 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
         </nav>
 
         <nav className="site-header__markets" aria-label="Market navigation">
-          {markets.map((market) => (
+          {visibleMarkets.map((market) => (
             <Link
               className="site-header__market-link"
               href={market.href}
@@ -94,7 +95,7 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
           <summary aria-label={isKorean ? '메뉴 열기' : 'Open menu'}>☰ <span>{isKorean ? '메뉴' : 'Menu'}</span></summary>
           <div className="site-header__mobile-panel">
             <nav aria-label={isKorean ? '전체 메뉴' : 'Site menu'}>{primaryLinks.map(link => <Link key={link.href} href={link.href}>{link.label}</Link>)}</nav>
-            <nav aria-label={isKorean ? '도시 선택' : 'Choose a city'}>{markets.map(market => <Link key={market.id} href={market.id === 'kr-seoul' && isKorean ? '/ko/kr/seoul/' : market.href} aria-current={marketId === market.id ? 'page' : undefined}>{market.label}</Link>)}</nav>
+            <nav aria-label={isKorean ? '도시 선택' : 'Choose a city'}>{visibleMarkets.map(market => <Link key={market.id} href={market.href} aria-current={marketId === market.id ? 'page' : undefined}>{market.label}</Link>)}</nav>
             {marketId && <nav aria-label={`${marketLabel} pages`}>{getMarketLocalNavigation(marketId, isKorean ? 'ko' : 'en').map(item => <Link key={item.href} href={item.href}>{item.label}</Link>)}</nav>}
             <Suspense fallback={<LanguageLinks pathname={fallbackPath} alternate={copy.languageSwitch} />}><SiteLanguageNavigation fallbackPath={fallbackPath} translations={editorialLanguageRoutes()} alternate={copy.languageSwitch} /></Suspense>
           </div>

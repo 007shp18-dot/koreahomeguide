@@ -16,7 +16,7 @@ export function BuyerNextSteps({ market, locale = 'en' }: Readonly<{ market: key
     <nav aria-label={ko ? '다음 단계' : 'Next research steps'}>
       <Link href={ko ? '/ko/kr/seoul/explore/' : model.explore}>{ko ? '다른 후보 찾기' : 'Find another candidate'}</Link>
       <Link href={model.guide}>{ko ? '비교 방법 읽기 (영문)' : 'Read the comparison guide'}</Link>
-      <Link href={`/contact/#research-${market}`}>{ko ? '자료 관련 질문 보내기 (영문)' : 'Ask a research question'}</Link>
+      <Link href={`${ko ? '/ko' : ''}/contact/#research-${market}`}>{ko ? '자료 관련 질문 보내기' : 'Ask a research question'}</Link>
     </nav>
   </aside>;
 }
