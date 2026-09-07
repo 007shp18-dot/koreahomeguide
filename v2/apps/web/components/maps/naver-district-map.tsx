@@ -24,6 +24,7 @@ export type NaverDistrictMapPoint = Readonly<{
 export type NaverBuildingMapPoint = Readonly<{
   id: string;
   storedLocationKey?: string;
+  districtSlug?: string;
   /** Original lookup identity; a translated title is display-only. */
   sourceName?: string;
   title: string;
@@ -251,11 +252,10 @@ export function buildNaverNeighborhoodMarkerContent(neighborhood: NaverNeighborh
   return `<div class="spMapNeighborhoodBubble${selectedClass}"><span>${escapeMarkerText(neighborhood.title)}</span><strong>${neighborhood.buildingCount}</strong></div>`;
 }
 
-/** Compact price label rendered for buildings after a neighborhood is opened. */
+/** Price-free location marker; price evidence stays in the list and detail. */
 export function buildNaverBuildingMarkerContent(building: NaverBuildingMapPoint): string {
   const selectedClass = building.selected === true ? ' spMapBuildingBubbleSelected' : '';
-  const metric = building.metricLabel ?? '—';
-  return `<div class="spMapBuildingBubble${selectedClass}"><strong>${escapeMarkerText(metric)}</strong></div>`;
+  return `<div class="spMapBuildingBubble${selectedClass}" role="img" aria-label="${escapeMarkerText(building.title)}"><span aria-hidden="true"></span></div>`;
 }
 
 export function buildNaverMapsScriptUrl(
@@ -783,22 +783,22 @@ export function NaverDistrictMap({
       addressQuery: stored.address,
       latitude: stored.latitude,
       longitude: stored.longitude,
-      allowAddressGeocoding: stored.latitude === null || stored.longitude === null,
+      allowAddressGeocoding: building.selected === true && (stored.latitude === null || stored.longitude === null),
     });
   }), [buildings, googleCoordinates, storedLocations]);
 
   const locationRequest = JSON.stringify((buildings ?? [])
-    .filter((building) => building.storedLocationKey !== undefined && (building.latitude === null || building.longitude === null))
+    .filter((building) => building.selected === true && building.storedLocationKey !== undefined && (building.latitude === null || building.longitude === null))
     .toSorted((a, b) => Number(b.selected === true) - Number(a.selected === true))
-    .slice(0, 50).map((building) => ({ id: building.id, key: building.storedLocationKey! })));
+    .slice(0, 50).map((building) => ({ id: building.id, key: building.storedLocationKey!, district: building.districtSlug })));
 
   useEffect(() => {
-    const requested = JSON.parse(locationRequest) as { id: string; key: string }[];
+    const requested = JSON.parse(locationRequest) as { id: string; key: string; district?: string }[];
     if (requested.length === 0) return;
     const controller = new AbortController();
     void fetch(`/api/building-location/?keys=${encodeURIComponent(requested.map(({ key }) => key).join(','))}`, { signal: controller.signal })
       .then((response) => response.ok ? response.json() : Promise.reject(new Error('location unavailable')))
-      .then((value: unknown) => {
+      .then(async (value: unknown) => {
         if (controller.signal.aborted || typeof value !== 'object' || value === null || !('locations' in value) || !Array.isArray(value.locations)) return;
         const updates: Record<string, { address: string; latitude: number | null; longitude: number | null }> = {};
         for (const item of value.locations) {
@@ -811,6 +811,23 @@ export function NaverDistrictMap({
             longitude: typeof item.longitude === 'number' ? item.longitude : null,
           };
         }
+        // Ask the existing Vercel public-data route for an official address only on selection.
+        // That route validates building identity and caches verified facts server-side.
+        for (const target of requested) {
+          if (updates[target.id]?.latitude != null && updates[target.id]?.longitude != null) continue;
+          if (!target.key.startsWith('seoul:') || target.district === undefined) continue;
+          try {
+            const query = new URLSearchParams({ district: target.district, building: target.id });
+            const response = await fetch(`/api/markets/kr-seoul/building-facts/?${query}`, { signal: controller.signal });
+            if (!response.ok) continue;
+            const result = await response.json();
+            const address = result?.facts?.apartment?.legalAddress;
+            if (result?.facts?.status === 'ready' && typeof address === 'string' && address.trim()) {
+              updates[target.id] = { address, latitude: null, longitude: null };
+            }
+          } catch { /* Keep the existing area reference if the provider cannot verify this building. */ }
+        }
+        if (controller.signal.aborted) return;
         if (Object.keys(updates).length > 0) setStoredLocations((current) => Object.freeze({ ...current, ...updates }));
       }).catch(() => undefined);
     return () => controller.abort();

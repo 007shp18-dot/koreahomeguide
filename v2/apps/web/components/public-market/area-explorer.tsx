@@ -485,6 +485,8 @@ function ReadyAreaExplorer({
   })), [districtHref, locale, mapDrilledToDistrict, model.districts, selected.slug]);
   const mapBuildings = useMemo(() => filteredMapBuildings.map((building) => ({
     id: building.id,
+    storedLocationKey: `seoul:${building.id}`,
+    districtSlug: selected.slug,
     neighborhoodId: building.neighborhoodId,
     title: buildingDisplayLabel(building, locale).title,
     sourceName: buildingDisplayLabel(building, locale).isLot ? buildingDisplayLabel(building, locale).original : building.name,
@@ -501,8 +503,9 @@ function ReadyAreaExplorer({
     longitude: isIndividualMapBuilding(building) ? building.longitude : null,
     areaReference: { id: selected.slug, title: locale === 'ko' ? selected.nameKo : selected.nameEn,
       latitude: selected.latitude, longitude: selected.longitude },
-    allowAddressGeocoding: building.verifiedAddress !== undefined
-      || (building.id === selectedBuilding?.id && !genericBuildingNames.test(building.name.trim())),
+    // Resolve only the selected building, not every unresolved row in the district.
+    allowAddressGeocoding: building.id === selectedBuilding?.id
+      && (building.verifiedAddress !== undefined || !genericBuildingNames.test(building.name.trim())),
     metricLabel: compactDistrictMetric(building.medianLabel, locale),
     sampleLabel: localizeSampleLabel(building.sampleLabel, locale),
     selected: building.id === selectedBuilding?.id,
@@ -910,8 +913,19 @@ function ReadyAreaExplorer({
             </div>}
           />
 
-          {mapDrilledToDistrict ? <details className={styles.mapEvidenceDisclosure}>
-            <summary data-map-evidence={selectedBuilding === null ? 'district' : 'selected-building'}>
+          {selectedBuilding === null ? null : (
+            <div data-map-evidence="selected-building" className={styles.mapSelectedIdentity} aria-live="polite"
+              title={buildingDisplayLabel(selectedBuilding, locale).original}>
+              {buildingDisplayLabel(selectedBuilding, locale).title}
+            </div>
+          )}
+        </section>
+        )}
+
+        {currentView === 'map' ? null : (
+        <aside className={styles.discoveryRail} data-explorer-region="results" aria-label={locale === 'ko' ? '지역과 건물 탐색' : 'District and building discovery'}>
+          {mapDrilledToDistrict ? <details className={styles.railEvidenceDisclosure}>
+            <summary>
               <span>{copy.selected} · {selectedBuilding === null ? (locale === 'ko' ? selected.nameKo : selected.nameEn) : buildingDisplayLabel(selectedBuilding, locale).title}</span>
               <strong>{selectedBuilding === null ? (selected.medianLabel ?? copy.notPublished) : (selectedBuilding.medianLabel ?? copy.notPublished)}</strong>
               <small>{localizeSampleLabel(selectedBuilding?.sampleLabel ?? selected.sampleLabel, locale)}</small>
@@ -926,11 +940,6 @@ function ReadyAreaExplorer({
               showContractGroups={model.evidenceSelection.transaction !== 'sale'}
             />}
           </details> : null}
-        </section>
-        )}
-
-        {currentView === 'map' ? null : (
-        <aside className={styles.discoveryRail} data-explorer-region="results" aria-label={locale === 'ko' ? '지역과 건물 탐색' : 'District and building discovery'}>
           <section className={styles.rail} aria-label={locale === 'ko' ? '탐색 결과' : 'Discovery results'}>
           {!mapDrilledToDistrict ? (
             <div className={styles.districtBrowser} data-district-browser="seoul">

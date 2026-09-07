@@ -80,3 +80,18 @@ describe('official Korea building facts join', () => {
     expect(fetch).not.toHaveBeenCalled();
   });
 });
+
+test('matches a local district prefix only when the official address confirms the neighborhood', async () => {
+  const fetch = vi.fn<typeof globalThis.fetch>()
+    .mockResolvedValueOnce(json({ response: { header: { resultCode: '00' }, body: { items: [
+      { kaptCode: 'A10024691', kaptName: '용산센트럴파크아파트', bjdCode: '1117012800' },
+    ] } } }))
+    .mockResolvedValueOnce(json({ response: { header: { resultCode: '00' }, body: { item: {
+      kaptCode: 'A10024691', kaptName: '용산센트럴파크아파트', bjdCode: '1117012800',
+      kaptAddr: '서울특별시 용산구 한강로3가 98 용산센트럴파크', doroJuso: '서울특별시 용산구 서빙고로 17',
+    } } } }))
+    .mockResolvedValue(json({ response: { header: { resultCode: '00' }, body: { items: [] } } }));
+  const result = await loadOfficialBuildingFacts({ serviceKey: 'test', fetch,
+    districtLawdCd: '11170', neighborhoodName: '한강로3가', officialName: '센트럴파크', housingType: 'apartment' });
+  expect(result.status).toBe('ready');
+});
