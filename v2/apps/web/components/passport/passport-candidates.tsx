@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { matchesSeoulNeighborhoodQuery } from '../../lib/public-market/seoul-neighborhood-label';
 import { buildingDisplayLabel } from '../../lib/public-market/building-display-label';
 import { useState } from 'react';
 import type { PassportLocale, PassportMarketResult } from '../../lib/passport/model';
@@ -24,14 +25,14 @@ export function PassportCandidates({ market, locale, passportHref }: Readonly<{
   const query = search.trim().toLocaleLowerCase();
   const matches = market.matches.filter(scope => {
     const label = market.id === 'kr-seoul' && scope.neighborhoodName && scope.districtSlug ? buildingDisplayLabel({name:scope.name,neighborhoodName:scope.neighborhoodName,districtSlug:scope.districtSlug}, 'en') : null;
-    return [scope.name, scope.locationLabel, label?.title, label?.location].filter(Boolean).join(' ').toLocaleLowerCase().includes(query);
+    return [scope.name, scope.locationLabel, label?.title, label?.location].filter(Boolean).join(' ').toLocaleLowerCase().includes(query) || (market.id === 'kr-seoul' && !!scope.neighborhoodName && !!scope.districtSlug && matchesSeoulNeighborhoodQuery(scope.districtSlug, scope.neighborhoodName, query));
   });
   const pages = Math.max(1, Math.ceil(matches.length / PAGE_SIZE));
   const activePage = Math.min(page, pages);
   const money = new Intl.NumberFormat(locale === 'ko' ? 'ko-KR' : 'en', { style: 'currency', currency: market.currency, currencyDisplay: 'code', maximumFractionDigits: 0 });
   return <section className={styles.matchRow} aria-label={`${market.city} · ${copy.heading}`}>
     <span>{copy.heading}</span>
-    <strong>{market.matches.length.toLocaleString(locale)}</strong>
+    <strong aria-live="polite" aria-atomic="true" data-passport-match-count>{matches.length.toLocaleString(locale)}</strong>
     <p>{copy.note}</p>
     {market.matches.length > 0 ? <label className={styles.candidateSearch}><span>{locale === 'ko' ? '후보 이름·지역 검색' : locale === 'zh-CN' ? '按名称或地区筛选' : 'Filter by name or area'}</span><input type="search" value={search} onChange={event => {setSearch(event.target.value); setPage(1);}} aria-label={`${market.city} · ${locale === 'ko' ? '후보 검색' : 'Filter candidates'}`} /></label> : null}
     {query && matches.length === 0 ? <p role="status">{locale === 'ko' ? '일치하는 후보가 없습니다. 검색어를 바꿔보세요.' : locale === 'zh-CN' ? '没有匹配的候选，请尝试其他名称。' : 'No candidates match this search. Try another name or area.'}</p> : null}
