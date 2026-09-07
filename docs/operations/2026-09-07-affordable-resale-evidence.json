@@ -1166,5 +1166,112 @@
         "mapHref": "/kr/seoul/explore/?transaction=sale&area=60-85&propertyType=apartment&district=jungnang-gu&neighborhood=jungnang-gu-dong-1x6liyb&buildingId=jungnang-gu-fpwaj&view=map"
       }
     ]
+  },
+  "contentExpansion": {
+    "koreaBudgetBands": [
+      {
+        "label": "Up to KRW 700m",
+        "groups": 8,
+        "sales": 71
+      },
+      {
+        "label": "Above KRW 700m to 850m",
+        "groups": 5,
+        "sales": 41
+      },
+      {
+        "label": "Above KRW 850m to 1bn",
+        "groups": 10,
+        "sales": 56
+      }
+    ],
+    "singaporeBudgetBands": [
+      {
+        "label": "Up to S$1m",
+        "groups": 1,
+        "sales": 10
+      },
+      {
+        "label": "Above S$1m to S$1.25m",
+        "groups": 10,
+        "sales": 69
+      },
+      {
+        "label": "Above S$1.25m to S$1.5m",
+        "groups": 7,
+        "sales": 59
+      }
+    ],
+    "koreaRangeExamples": [
+      {
+        "seq": "11320-46",
+        "min": 53000,
+        "max": 57400,
+        "n": 6
+      },
+      {
+        "seq": "11320-86",
+        "min": 55500,
+        "max": 68200,
+        "n": 16
+      },
+      {
+        "seq": "11620-4347",
+        "min": 74000,
+        "max": 77900,
+        "n": 7
+      },
+      {
+        "seq": "11305-6",
+        "min": 81000,
+        "max": 92300,
+        "n": 12
+      },
+      {
+        "seq": "11380-9190",
+        "min": 92000,
+        "max": 94500,
+        "n": 5
+      },
+      {
+        "seq": "11545-1642",
+        "min": 92000,
+        "max": 99700,
+        "n": 6
+      }
+    ],
+    "singaporeLaterExamples": [
+      {
+        "name": "MELVILLE PARK",
+        "n": 5,
+        "median": 925000
+      },
+      {
+        "name": "REGENT HEIGHTS",
+        "n": 4,
+        "median": 1038000
+      },
+      {
+        "name": "SYMPHONY SUITES",
+        "n": 3,
+        "median": 1270000
+      },
+      {
+        "name": "THE BAYSHORE",
+        "n": 7,
+        "median": 1260000
+      },
+      {
+        "name": "FLO RESIDENCE",
+        "n": 3,
+        "median": 1450000
+      },
+      {
+        "name": "RIVERSAILS",
+        "n": 2,
+        "median": 1520000
+      }
+    ],
+    "source": "Same dated snapshots; no active listing or new transaction feed added."
   }
 }
