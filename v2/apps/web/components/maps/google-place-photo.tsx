@@ -125,6 +125,7 @@ export async function findGooglePlacePhoto(
 }
 
 type GooglePlacePhotoProps = Readonly<{
+  locale?: 'en' | 'ko';
   browserKey: string | null;
   buildingName: string;
   /** Presentation only; approval identity always uses buildingName. */
@@ -147,6 +148,7 @@ export function GooglePlacePhoto(props: GooglePlacePhotoProps) {
 }
 
 function GooglePlacePhotoForIdentity({
+  locale = 'en',
   browserKey,
   buildingName,
   displayBuildingName = buildingName,
@@ -273,10 +275,10 @@ function GooglePlacePhotoForIdentity({
   return (
     <div className={styles.frame} data-building-media="google-place-photo" data-media-state={photo === 'loading' ? 'loading' : 'ready'}>
       {photo === 'loading' && verifiedPlaceId !== undefined
-        ? <p className={styles.photoLabel}>Verified place photos</p>
+        ? <p className={styles.photoLabel}>{locale === 'ko' ? '확인된 장소 사진' : 'Verified place photos'}</p>
         : null}
       {photo === 'loading' ? (
-        <div className={styles.loading} aria-live="polite"><span>Loading verified place photo</span><strong>{displayBuildingName}</strong></div>
+        <div className={styles.loading} aria-live="polite"><span>{locale === 'ko' ? '확인된 장소 사진을 불러오는 중' : 'Loading verified place photo'}</span><strong>{displayBuildingName}</strong></div>
       ) : current === null ? null : (
         // Google Place photo URIs are ephemeral and must not be cached or
         // transformed by Next Image according to the provider terms.
@@ -284,26 +286,26 @@ function GooglePlacePhotoForIdentity({
         <img
           className={styles.photo}
           src={current.src}
-          alt={`${displayBuildingName} place photo ${activePhoto + 1}`}
+          alt={locale === 'ko' ? `${displayBuildingName} 장소 사진 ${activePhoto + 1}` : `${displayBuildingName} place photo ${activePhoto + 1}`}
           decoding="async"
           onError={() => setPhoto('unavailable')}
         />
       )}
       {photo === 'loading' ? null : <>
-        <p className={styles.photoLabel}>{photo.label}</p>
-        {secondary.length === 0 ? null : <div className={styles.photoStrip} aria-label="More verified place photos">
+        <p className={styles.photoLabel}>{locale === 'ko' ? { 'Verified place photos': '확인된 장소 사진', 'Verified building photograph': '확인된 건물 사진', 'Verified project or estate photograph': '확인된 단지 사진' }[photo.label] : photo.label}</p>
+        {secondary.length === 0 ? null : <div className={styles.photoStrip} aria-label={locale === 'ko' ? '확인된 장소 사진 더 보기' : 'More verified place photos'}>
           {secondary.map(({ item, index }) => <button
             type="button"
             key={`${item.src}:${index}`}
             onClick={() => setActivePhoto(index)}
-            aria-label={`Show photo ${index + 1}`}
+            aria-label={locale === 'ko' ? `${index + 1}번 사진 보기` : `Show photo ${index + 1}`}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={item.src} alt="" decoding="async" />
           </button>)}
         </div>}
         {current === null || current.attributions.length === 0 ? null : (
-          <p className={styles.attribution} aria-label="Photo credit">
+          <p className={styles.attribution} aria-label={locale === 'ko' ? '사진 출처' : 'Photo credit'}>
             {current.attributions.map((attribution, index) => <span key={`${attribution.displayName}:${index}`}>
               {index === 0 ? null : ' · '}
               {attribution.uri === null || !linkAttribution
@@ -315,7 +317,7 @@ function GooglePlacePhotoForIdentity({
       </>}
       {browserKey === null || approvedPlaceId === undefined ? null : (
         <Script
-          src={buildGoogleMapsScriptUrl(browserKey)}
+          src={buildGoogleMapsScriptUrl(browserKey, 'singapore', locale)}
           strategy="lazyOnload"
           onReady={() => { void initialize(); }}
           onError={() => setPhoto('unavailable')}

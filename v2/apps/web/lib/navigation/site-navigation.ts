@@ -10,9 +10,9 @@ export function globalNavigation(locale: SiteLocale = 'en') {
   const zh = locale === 'zh-CN';
   if (locale === 'ko') return [
     { label: '시장', href: '/ko/markets/' },
-    { label: '가격 (영문)', href: '/prices/' },
+    { label: '가격', href: '/ko/prices/' },
     { label: '도구', href: '/ko/tools/' },
-    { label: '분석 (영문)', href: '/news/?type=analysis' },
+    { label: '분석', href: '/ko/news/?type=analysis' },
     { label: '가이드', href: '/ko/guides/' },
   ];
   return [
@@ -34,14 +34,17 @@ export function languageDestinations(pathname: string, search = ''): Record<Site
     destinations.en = withQuery(english);
     destinations.ko = withQuery(`/ko${english}`);
     if (english === '/kr/seoul') destinations['zh-CN'] = '/zh-cn/kr/seoul/';
-  } else if (english === '/tools' || english === '/tools/property-scenario' || english === '/passport') {
+  } else if (english === '/prices' || english === '/markets' || english === '/tools' || english === '/tools/property-scenario' || english === '/passport') {
     destinations.en = withQuery(english);
     destinations.ko = withQuery(`/ko${english}`);
     if (english === '/tools' || english === '/passport') destinations['zh-CN'] = withQuery(`/zh-cn${english}`);
   } else if (english === '/news' || english === '/guides') {
-    if (english === '/guides') destinations.ko = withQuery('/ko/guides');
+    destinations.ko = withQuery(`/ko${english}`);
     destinations.en = withQuery(english);
     destinations['zh-CN'] = withQuery(`/zh-cn${english}`);
+  } else if (/^\/sg\/singapore\/(?:explore(?:\/[^/]+(?:\/[^/]+)?)?|hdb\/[^/]+\/[^/]+|check|rankings|shortlist|corrections)$/.test(english) || /^\/ae\/dubai\/(?:explore(?:\/[^/]+)?|check|shortlist|guide)$/.test(english)) {
+    destinations.en = withQuery(english);
+    destinations.ko = withQuery(`/ko${english}`);
   } else if (['/sg', '/sg/singapore', '/ae/dubai', '/contact'].includes(english)) {
     const canonical = english === '/sg/singapore' ? '/sg' : english;
     destinations.en = withQuery(canonical);

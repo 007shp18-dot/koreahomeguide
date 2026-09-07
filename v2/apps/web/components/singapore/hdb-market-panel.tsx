@@ -1,15 +1,18 @@
+
+import { sgText } from '../../lib/locale/singapore-copy';
+import { marketHref, type MarketLocale } from '../../lib/locale/market-localization';
 import Link from 'next/link';
 import type { CSSProperties } from 'react';
 
 import type { HdbExploreModel, HdbTownDisplay } from '../../lib/singapore/hdb-route-model.server';
 import { singaporeStyles as styles } from './singapore-shell';
 
-function ComparisonChart({
+function ComparisonChart({ locale = 'en',
   title,
   description,
   towns,
   kind,
-}: Readonly<{
+}: Readonly<{ locale?: MarketLocale;
   title: string;
   description: string;
   towns: readonly HdbTownDisplay[];
@@ -25,10 +28,10 @@ function ComparisonChart({
   return (
     <figure className={styles.chart} aria-labelledby={`hdb-${kind}-chart-title`}>
       <figcaption>
-        <h3 id={`hdb-${kind}-chart-title`}>{title}</h3>
-        <p>{description}</p>
+        <h3 id={`hdb-${kind}-chart-title`}>{sgText(locale, title)}</h3>
+        <p>{sgText(locale, description)}</p>
       </figcaption>
-      <div className={styles.chartRows} role="img" aria-label={`${title}. ${description}`}>
+      <div className={styles.chartRows} role="img" aria-label={sgText(locale, `${title}. ${description}`)}>
         {towns.map((town) => (
           <div className={styles.chartRow} key={town.town}>
             <span className={styles.chartName}>{town.town}</span>
@@ -38,7 +41,7 @@ function ComparisonChart({
                 style={{ '--bar-width': `${Math.max(2, (value(town) / maximum) * 100)}%` } as CSSProperties}
               />
             </span>
-            <strong className={styles.chartValue}>{label(town)}</strong>
+            <strong className={styles.chartValue}>{sgText(locale, label(town))}</strong>
           </div>
         ))}
       </div>
@@ -46,40 +49,40 @@ function ComparisonChart({
   );
 }
 
-export function HdbMarketPanel({ model }: Readonly<{ model: HdbExploreModel }>) {
+export function HdbMarketPanel({ locale = 'en', model }: Readonly<{ locale?: MarketLocale; model: HdbExploreModel }>) {
   if (model.status === 'unavailable') return (
     <section className={styles.section} aria-labelledby="hdb-heading" data-hdb-evidence="unavailable">
-      <p className={styles.sectionLabel}>03 / HDB evidence</p>
-      <h2 id="hdb-heading">Verified HDB evidence is unavailable.</h2>
+      <p className={styles.sectionLabel}>{sgText(locale, "03 / HDB evidence")}</p>
+      <h2 id="hdb-heading">{sgText(locale, "Verified HDB evidence is unavailable.")}</h2>
     </section>
   );
   return (
     <section className={styles.section} aria-labelledby="hdb-heading" data-hdb-evidence="ready">
-      <p className={styles.sectionLabel}>03 / HDB public housing</p>
+      <p className={styles.sectionLabel}>{sgText(locale, "03 / HDB public housing")}</p>
       <div className={styles.sectionIntro}>
         <div>
-          <h2 id="hdb-heading">Resale, rent, and block facts—kept separate.</h2>
-          <p>Official data.gov.sg records. Each median uses only its own transaction type and is withheld below {model.publicationMinimum} observations.</p>
+          <h2 id="hdb-heading">{sgText(locale, "Resale, rent, and block facts—kept separate.")}</h2>
+          <p>{sgText(locale, "Official data.gov.sg records. Each median uses only its own transaction type and is withheld below ")}{sgText(locale, model.publicationMinimum)}{sgText(locale, " observations.")}</p>
         </div>
         <dl className={styles.compactStats}>
-          <div><dt>Resale records</dt><dd>{model.resaleTotalLabel}</dd></div>
-          <div><dt>Rental records</dt><dd>{model.rentalTotalLabel}</dd></div>
-          <div><dt>Property blocks</dt><dd>{model.propertyTotalLabel}</dd></div>
+          <div><dt>{sgText(locale, "Resale records")}</dt><dd>{sgText(locale, model.resaleTotalLabel)}</dd></div>
+          <div><dt>{sgText(locale, "Rental records")}</dt><dd>{sgText(locale, model.rentalTotalLabel)}</dd></div>
+          <div><dt>{sgText(locale, "Property blocks")}</dt><dd>{sgText(locale, model.propertyTotalLabel)}</dd></div>
         </dl>
       </div>
       <div className={styles.chartGrid}>
         <div id="hdb-resale">
-          <ComparisonChart
-            title="HDB resale median"
-            description={`Most-observed towns · full reported period ${model.resalePeriod}`}
+          <ComparisonChart locale={locale}
+            title={sgText(locale, "HDB resale median")}
+            description={sgText(locale, `Most-observed towns · full reported period ${model.resalePeriod}`)}
             towns={model.featuredResale}
             kind="resale"
           />
         </div>
         <div id="hdb-rent">
-          <ComparisonChart
-            title="HDB monthly rent median"
-            description={`Most-observed towns · full reported period ${model.rentalPeriod}`}
+          <ComparisonChart locale={locale}
+            title={sgText(locale, "HDB monthly rent median")}
+            description={sgText(locale, `Most-observed towns · full reported period ${model.rentalPeriod}`)}
             towns={model.featuredRental}
             kind="rental"
           />
@@ -87,27 +90,27 @@ export function HdbMarketPanel({ model }: Readonly<{ model: HdbExploreModel }>) 
       </div>
       <div className={styles.tableWrap} id="hdb-towns">
         <table className={`${styles.table} ${styles.hdbTable}`}>
-          <caption className={styles.srOnly}>HDB resale and rental evidence by town</caption>
+          <caption className={styles.srOnly}>{sgText(locale, "HDB resale and rental evidence by town")}</caption>
           <thead><tr>
-            <th scope="col">Town</th><th scope="col">Resale median</th><th scope="col">Resale n</th>
-            <th scope="col">Monthly rent median</th><th scope="col">Rental n</th>
+            <th scope="col">{sgText(locale, "Town")}</th><th scope="col">{sgText(locale, "Resale median")}</th><th scope="col">{sgText(locale, "Resale n")}</th>
+            <th scope="col">{sgText(locale, "Monthly rent median")}</th><th scope="col">{sgText(locale, "Rental n")}</th>
           </tr></thead>
           <tbody>{model.towns.map((town) => <tr key={town.town}>
-            <th scope="row"><Link href={town.href}>{town.town}</Link></th>
-            <td>{town.resaleMedianLabel ?? 'Not published'}</td><td>{town.resaleCountLabel}</td>
-            <td>{town.rentalMedianLabel ?? 'Not published'}</td><td>{town.rentalCountLabel}</td>
+            <th scope="row"><Link href={marketHref(locale, town.href)}>{town.town}</Link></th>
+            <td>{sgText(locale, town.resaleMedianLabel ?? 'Not published')}</td><td>{sgText(locale, town.resaleCountLabel)}</td>
+            <td>{sgText(locale, town.rentalMedianLabel ?? 'Not published')}</td><td>{sgText(locale, town.rentalCountLabel)}</td>
           </tr>)}</tbody>
         </table>
       </div>
       <ul className={styles.limitations}>
-        <li>HDB resale prices are indicative historical transactions, not a valuation.</li>
-        <li>Rental data is owner-declared when the flat is rented out and is not independently verified by HDB.</li>
-        <li>Property facts are reported through {model.propertyThrough}; map and nearby Street View use Google separately.</li>
+        <li>{sgText(locale, "HDB resale prices are indicative historical transactions, not a valuation.")}</li>
+        <li>{sgText(locale, "Rental data is owner-declared when the flat is rented out and is not independently verified by HDB.")}</li>
+        <li>{sgText(locale, "Property facts are reported through ")}{sgText(locale, model.propertyThrough)}{sgText(locale, "; map and nearby Street View use Google separately.")}</li>
       </ul>
-      <div className={styles.actions} aria-label="Official HDB source datasets">
-        <a href="https://data.gov.sg/datasets/d_8b84c4ee58e3cfc0ece0d773c8ca6abc/view" target="_blank" rel="noopener noreferrer">HDB resale source</a>
-        <a href="https://data.gov.sg/datasets/d_c9f57187485a850908655db0e8cfe651/view" target="_blank" rel="noopener noreferrer">HDB rental source</a>
-        <a href="https://data.gov.sg/datasets/d_17f5382f26140b1fdae0ba2ef6239d2f/view" target="_blank" rel="noopener noreferrer">HDB property source</a>
+      <div className={styles.actions} aria-label={sgText(locale, "Official HDB source datasets")}>
+        <a href={marketHref(locale, "https://data.gov.sg/datasets/d_8b84c4ee58e3cfc0ece0d773c8ca6abc/view")} target="_blank" rel="noopener noreferrer">{sgText(locale, "HDB resale source")}</a>
+        <a href={marketHref(locale, "https://data.gov.sg/datasets/d_c9f57187485a850908655db0e8cfe651/view")} target="_blank" rel="noopener noreferrer">{sgText(locale, "HDB rental source")}</a>
+        <a href={marketHref(locale, "https://data.gov.sg/datasets/d_17f5382f26140b1fdae0ba2ef6239d2f/view")} target="_blank" rel="noopener noreferrer">{sgText(locale, "HDB property source")}</a>
       </div>
     </section>
   );

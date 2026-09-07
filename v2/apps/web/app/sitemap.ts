@@ -47,7 +47,8 @@ const localizedPairs: readonly LocalizedPair[] = Object.freeze([
   Object.freeze({ en: '/tools/', ko: '/ko/tools/', 'zh-Hans': '/zh-cn/tools/' }),
   Object.freeze({ en: '/tools/property-scenario/', ko: '/ko/tools/property-scenario/' }),
   Object.freeze({ en: '/', ko: '/ko/', 'zh-Hans': '/zh-cn/kr/seoul/' }),
-  Object.freeze({ en: '/news/', 'zh-Hans': '/zh-cn/news/' }),
+  Object.freeze({ en: '/prices/', ko: '/ko/prices/' }),
+  Object.freeze({ en: '/news/', ko: '/ko/news/', 'zh-Hans': '/zh-cn/news/' }),
   Object.freeze({ en: '/guides/', ko: '/ko/guides/', 'zh-Hans': '/zh-cn/guides/' }),
   Object.freeze({ en: '/kr/seoul/', ko: '/ko/kr/seoul/' }),
   Object.freeze({ en: '/kr/seoul/check/', ko: '/ko/kr/seoul/check/' }),
@@ -61,6 +62,7 @@ const localizedPairs: readonly LocalizedPair[] = Object.freeze([
   Object.freeze({ en: '/sg/', ko: '/ko/sg/' }),
   Object.freeze({ en: '/ae/dubai/', ko: '/ko/ae/dubai/' }),
   Object.freeze({ en: '/contact/', ko: '/ko/contact/' }),
+  ...['/sg/singapore/explore/', '/sg/singapore/explore/ccr/', '/sg/singapore/explore/rcr/', '/sg/singapore/explore/ocr/', '/ae/dubai/explore/', '/ae/dubai/check/', '/ae/dubai/guide/'].map(en => ({ en: en as `/${string}`, ko: `/ko${en}` as `/${string}` })),
   ...editorialLocalizedPairs,
 ] as const);
 
@@ -169,6 +171,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     sitemapEntry('/ko/ae/dubai/'),
     sitemapEntry('/ko/contact/'),
     sitemapEntry('/ko/guides/', guideLastModified),
+    sitemapEntry('/ko/prices/', summaryLastModified),
+    sitemapEntry('/ko/news/', latestDate(EDITORIAL_PORTFOLIO.filter(({ locale, type }) => locale === 'ko' && type !== 'guide').map(({ updatedAt }) => updatedAt))),
+    ...['/sg/singapore/explore/', '/sg/singapore/explore/ccr/', '/sg/singapore/explore/rcr/', '/sg/singapore/explore/ocr/', '/ae/dubai/explore/', '/ae/dubai/guide/'].map(path => sitemapEntry(`/ko${path}`)),
     sitemapEntry('/zh-cn/passport/'),
     sitemapEntry('/markets/'),
     sitemapEntry('/prices/', summaryLastModified),
@@ -247,12 +252,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }
   if (dubaiEvidence !== null) {
     const dubaiAreaParams = dubaiEvidence.listAreaRouteParams();
-    entries.push(...dubaiAreaParams.map(({ area: slug }) => sitemapEntry(
-      `/ae/dubai/explore/${slug}/`,
-      dubaiLastModified,
-    )));
+    entries.push(...dubaiAreaParams.flatMap(({ area: slug }) => {
+      const pair = { en: `/ae/dubai/explore/${slug}/`, ko: `/ko/ae/dubai/explore/${slug}/` } as const;
+      return [sitemapEntry(pair.en, dubaiLastModified, pair), sitemapEntry(pair.ko, dubaiLastModified, pair)];
+    }));
     if (dubaiAreaParams.length > 0) {
-      entries.push(sitemapEntry('/ae/dubai/check/', dubaiLastModified));
+      entries.push(sitemapEntry('/ae/dubai/check/', dubaiLastModified), sitemapEntry('/ko/ae/dubai/check/', dubaiLastModified));
     }
   }
   const buildingEvidence = koreaEvidenceRepositoriesFromEnvironment();

@@ -10,8 +10,8 @@ export const metadata = indexableMetadata({ path: '/ko/', title: '서울·싱가
 
 const cities = [
   { name: '서울', photo: MARKET_PHOTOS.seoul, href: '/ko/kr/seoul/', explore: '/ko/kr/seoul/explore/', check: '/ko/kr/seoul/check/', summary: '관심 있는 동네와 단지의 매매·전세·월세 실거래가를 확인하세요.', english: false },
-  { name: '싱가포르', photo: MARKET_PHOTOS.singapore, href: '/ko/sg/', explore: '/sg/singapore/explore/', check: '/sg/singapore/check/', summary: '민간 주택과 공공주택(HDB)의 거래 내역을 각각 살펴보세요.', english: true },
-  { name: '두바이', photo: MARKET_PHOTOS.dubai, href: '/ko/ae/dubai/', explore: '/ae/dubai/explore/', check: '/ae/dubai/check/', summary: '완공된 주택과 분양 중인 주택의 지역별 가격을 살펴보세요.', english: true },
+  { name: '싱가포르', photo: MARKET_PHOTOS.singapore, href: '/ko/sg/', explore: '/ko/sg/singapore/explore/', check: '/ko/sg/singapore/check/', summary: '민간 주택과 공공주택(HDB)의 거래 내역을 각각 살펴보세요.', english: false },
+  { name: '두바이', photo: MARKET_PHOTOS.dubai, href: '/ko/ae/dubai/', explore: '/ko/ae/dubai/explore/', check: '/ko/ae/dubai/check/', summary: '완공된 주택과 분양 중인 주택의 지역별 가격을 살펴보세요.', english: false },
 ];
 export default function KoreanHome() {
   return <KoreanSiteFrame><main className={styles.homePage}>

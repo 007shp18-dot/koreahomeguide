@@ -9,8 +9,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const repository = await singaporeSnapshotRepositoryFromEnvironment();
   if (repository === null) return [];
   const lastModified = new Date(repository.getContext().generatedAt);
-  return repository.listProjectRouteParams().map(({ area, projectId }) => ({
-    url: publicCanonical(`/sg/singapore/explore/${area}/${projectId}/`),
-    lastModified,
-  }));
+  return repository.listProjectRouteParams().flatMap(({ area, projectId }) => {
+    const en = publicCanonical(`/sg/singapore/explore/${area}/${projectId}/`);
+    const ko = publicCanonical(`/ko/sg/singapore/explore/${area}/${projectId}/`);
+    const alternates = { languages: { en, ko, 'x-default': en } };
+    return [{ url: en, lastModified, alternates }, { url: ko, lastModified, alternates }];
+  });
 }

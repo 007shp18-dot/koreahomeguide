@@ -1,14 +1,17 @@
 'use client';
+import { sgText } from '../../lib/locale/singapore-copy';
+import { marketHref, type MarketLocale } from '../../lib/locale/market-localization';
+
 
 import Link from 'next/link';
 import { useState, type ReactNode } from 'react';
 
-export function EvidencePendingLink({
+export function EvidencePendingLink({ locale = 'en',
   href,
   children,
   className,
   ariaLabel,
-}: Readonly<{
+}: Readonly<{ locale?: MarketLocale;
   href: string;
   children: ReactNode;
   className?: string;
@@ -16,11 +19,11 @@ export function EvidencePendingLink({
 }>) {
   const [pending, setPending] = useState(false);
   return <Link
-    href={href}
+    href={marketHref(locale, href)}
     className={className}
-    aria-label={ariaLabel}
+    aria-label={sgText(locale, ariaLabel)}
     aria-busy={pending}
     data-navigation-state={pending ? 'pending' : 'idle'}
     onClick={() => setPending(true)}
-  >{children}</Link>;
+  >{sgText(locale, children)}</Link>;
 }

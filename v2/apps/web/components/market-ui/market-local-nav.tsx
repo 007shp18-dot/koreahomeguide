@@ -28,11 +28,11 @@ export function getMarketLocalNavigation(
     if (capability?.publicHref === null || capability?.publicHref === undefined) return [];
     if (capability.state === 'rights_blocked') return [];
 
-    const href = locale === 'ko' && marketId === 'kr-seoul'
-      ? `/ko${capability.publicHref}`
-      : locale === 'ko' && feature === 'market_overview' ? (marketId === 'sg-singapore' ? '/ko/sg/' : '/ko/ae/dubai/') : capability.publicHref;
+    const href = locale === 'ko'
+      ? marketId === 'sg-singapore' && feature === 'market_overview' ? '/ko/sg/' : `/ko${capability.publicHref}`
+      : capability.publicHref;
     return [{
-      label: locale === 'ko' ? `${{ Overview: '개요', Explore: '실거래가 탐색', Check: '가격 확인', Rankings: '지역 비교', Corrections: '정보 수정 요청' }[label]}${marketId !== 'kr-seoul' && feature !== 'market_overview' ? ' (영문)' : ''}` : label,
+      label: locale === 'ko' ? { Overview: '개요', Explore: '실거래가 탐색', Check: '가격 확인', Rankings: '지역 비교', Corrections: '정보 수정 요청' }[label] : label,
       href,
       state: capability.state,
     } satisfies MarketLocalNavItem];
@@ -65,7 +65,7 @@ export function MarketLocalNav({
   return (
     <nav
       className="market-local-nav"
-      aria-label={`${marketLabel} market navigation`}
+      aria-label={locale === 'ko' ? `${marketLabel} 시장 메뉴` : `${marketLabel} market navigation`}
       data-navigation-tier="market-local"
     >
       <div className="market-local-nav__inner">

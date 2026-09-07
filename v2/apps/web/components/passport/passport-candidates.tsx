@@ -1,4 +1,5 @@
 'use client';
+import { marketHref } from '../../lib/locale/market-localization';
 
 import Link from 'next/link';
 import { matchesSeoulNeighborhoodQuery } from '../../lib/public-market/seoul-neighborhood-label';
@@ -40,7 +41,7 @@ export function PassportCandidates({ market, locale, passportHref }: Readonly<{
     {market.matches.length === 0 ? <p>{market.scopes.length === 0 ? copy.missing : copy.none}</p> : <>
       <ul className={styles.candidateList}>{matches.slice((activePage - 1) * PAGE_SIZE, activePage * PAGE_SIZE).map(scope => {
         const label = market.id === 'kr-seoul' && scope.neighborhoodName && scope.districtSlug ? buildingDisplayLabel({name:scope.name,neighborhoodName:scope.neighborhoodName,districtSlug:scope.districtSlug}, locale === 'ko' ? 'ko' : 'en') : null;
-        const href = passportCandidateHref(locale === 'ko' && market.id === 'kr-seoul' ? `/ko${scope.href}` : scope.href, passportHref);
+        const href = passportCandidateHref(marketHref(locale === 'ko' ? 'ko' : 'en', scope.href), passportHref);
         const scenario = createPropertyScenarioHref({locale:locale === 'ko' ? 'ko' : 'en',market:market.id,currency:market.currency,
           propertyName:label?.isLot ? label.original : scope.name,transaction:'sale',price:scope.medianPrice,returnTo:href,passportHref});
         return <li key={scope.href} data-passport-candidate={scope.kind ?? 'area'}>
@@ -49,7 +50,7 @@ export function PassportCandidates({ market, locale, passportHref }: Readonly<{
           <small className={styles.candidateLocation} title={label?.original ?? scope.locationLabel}>{label?.location ?? scope.locationLabel ?? market.city}</small>
           <div className={styles.candidatePrice}><span>{copy.median}</span><strong>{money.format(scope.medianPrice)}</strong></div>
           {scope.sample === undefined ? null : <small title={`${scope.sample.toLocaleString(locale)} ${copy.sales} · ${market.period}`}>{scope.sample.toLocaleString(locale)} {copy.sales} · {market.period}</small>}
-          <div className={styles.candidateActions}><Link href={href} prefetch={false}>{copy.details}{locale === 'ko' && market.id !== 'kr-seoul' ? ' (영문)' : ''}</Link><Link href={scenario} prefetch={false}>{copy.calculate}</Link></div>
+          <div className={styles.candidateActions}><Link href={href} prefetch={false}>{copy.details}</Link><Link href={scenario} prefetch={false}>{copy.calculate}</Link></div>
         </li>;
       })}</ul>
       {pages > 1 ? <nav className={styles.candidatePagination} aria-label={`${market.city} · ${copy.page}`}>

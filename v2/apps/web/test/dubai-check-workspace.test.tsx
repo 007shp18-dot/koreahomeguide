@@ -102,6 +102,15 @@ describe('Dubai Check workspace', () => {
     expect(html).not.toMatch(/fair value|undervalued|overvalued/iu);
   });
 
+  it('keeps Korean result values and the calculator return route intact', async () => {
+    const html = renderToStaticMarkup(<DubaiCheckWorkspace locale="ko" model={await modelFor(benchmarkFixture())} state={fullQuery()} />);
+    for (const value of ['AED 1,500,000', 'AED 1,280,000', '+17.2%', '+13.4%', '6.1%']) expect(html).toContain(value);
+    expect(html).toContain('/ko/tools/property-scenario?market=ae-dubai&amp;currency=AED');
+    expect(html).toContain('returnTo=%2Fko%2Fae%2Fdubai%2Fcheck%2F');
+    expect(html).toContain('action="/ko/ae/dubai/check/"');
+    expect(html).not.toContain('Above the typical range');
+  });
+
   it('keeps an Off-Plan user rent assumption separate from published Ready evidence', async () => {
     const html = renderToStaticMarkup(<DubaiCheckWorkspace
       model={await modelFor(benchmarkFixture())}

@@ -8,11 +8,13 @@ import KoreanContact from '../app/(ko)/ko/contact/page';
 import { languageDestinations } from '../lib/navigation/site-navigation';
 
 describe('Korean entry routes', () => {
-  it('offers three cities and labels untranslated tools', () => {
+  it('offers three cities with Korean tools', () => {
     const html = renderToStaticMarkup(<KoreanHome />);
     for (const path of ['/ko/kr/seoul', '/ko/sg', '/ko/ae/dubai', '/ko/contact']) expect(html).toMatch(new RegExp(`href="${path}/?"`));
     expect(html).toContain('실거래가 보기');
-    expect(html).toContain('(영문)');
+    expect(html).not.toContain('(영문)');
+    expect(html).toContain('/ko/sg/singapore/explore');
+    expect(html).toContain('/ko/ae/dubai/check');
     expect(html).toContain('/ko/passport/');
   });
   it('opens three email drafts without posting or requiring financial documents', () => {
@@ -28,6 +30,6 @@ describe('Korean entry routes', () => {
     expect(languageDestinations('/sg/', '?from=home').ko).toBe('/ko/sg/?from=home');
     expect(languageDestinations('/ko/ae/dubai/').en).toBe('/ae/dubai/');
     expect(languageDestinations('/contact/').ko).toBe('/ko/contact/');
-    expect(languageDestinations('/ae/dubai/check/').ko).toBeNull();
+    expect(languageDestinations('/ae/dubai/check/').ko).toBe('/ko/ae/dubai/check/');
   });
 });

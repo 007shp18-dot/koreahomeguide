@@ -118,13 +118,14 @@ if (typeof window !== 'undefined') {
 export function buildGoogleMapsScriptUrl(
   browserKey: string,
   market: GoogleMarket = 'singapore',
+  locale: 'en' | 'ko' = 'en',
 ): string {
   const url = new URL('https://maps.googleapis.com/maps/api/js');
   url.searchParams.set('key', browserKey);
   url.searchParams.set('loading', 'async');
   url.searchParams.set('callback', GOOGLE_MAPS_READY_CALLBACK);
   url.searchParams.set('v', 'weekly');
-  url.searchParams.set('language', 'en');
+  url.searchParams.set('language', locale);
   url.searchParams.set('region', marketConfig[market].country);
   return url.toString();
 }
@@ -148,7 +149,7 @@ export function mountGooglePlaceMap({
   });
 }
 
-export function clusterGoogleMarketPoints(points: readonly GoogleMarketMapPoint[], zoom: number): readonly GoogleMarketMapPoint[] {
+export function clusterGoogleMarketPoints(points: readonly GoogleMarketMapPoint[], zoom: number, locale: 'en' | 'ko' = 'en'): readonly GoogleMarketMapPoint[] {
   const groups = new Map<string, GoogleMarketMapPoint[]>();
   const result: GoogleMarketMapPoint[] = [];
   const cell = .018 / (2 ** Math.max(0, zoom - 11));
@@ -160,7 +161,7 @@ export function clusterGoogleMarketPoints(points: readonly GoogleMarketMapPoint[
   }
   for (const [key, group] of groups) {
     if (group.length === 1) { result.push(group[0]!); continue; }
-    result.push({ id: `cluster-${key}`, title: `${group.length} project locations`, label: String(group.length),
+    result.push({ id: `cluster-${key}`, title: locale === 'ko' ? `단지 위치 ${group.length}곳` : `${group.length} project locations`, label: String(group.length),
       kind: 'cluster', count: group.length, memberIds: group.map(p => p.id),
       latitude: group.reduce((n,p) => n + p.latitude!, 0) / group.length,
       longitude: group.reduce((n,p) => n + p.longitude!, 0) / group.length,
@@ -198,6 +199,7 @@ export function mountGoogleMarketPoints(
   onSelectPoint?: (id: string) => void,
   adjustView = true,
   clusterLocations = true,
+  locale: 'en' | 'ko' = 'en',
 ): readonly GoogleMarkerInstance[] {
   const located = points.filter((point) => Number.isFinite(point.latitude) && Number.isFinite(point.longitude));
   const selected = located.find((point) => point.selected);
@@ -207,7 +209,7 @@ export function mountGoogleMarketPoints(
     for (const point of located) bounds.extend({ lat: point.latitude!, lng: point.longitude! });
     map.fitBounds(bounds);
   }
-  return Object.freeze(clusterGoogleMarketPoints(located, clusterLocations ? map.getZoom?.() ?? 11 : 17).map((point) => {
+  return Object.freeze(clusterGoogleMarketPoints(located, clusterLocations ? map.getZoom?.() ?? 11 : 17, locale).map((point) => {
     const marker = new sdk.Marker({
       map,
       position: { lat: point.latitude!, lng: point.longitude! },
@@ -317,7 +319,9 @@ export function GooglePlaceMap({
   showAddressSearch = true,
   clusterLocations = true,
   market = 'singapore',
+  locale = 'en',
 }: Readonly<{
+  locale?: 'en' | 'ko';
   market?: GoogleMarket;
   showAddressSearch?: boolean;
   clusterLocations?: boolean;
@@ -333,8 +337,8 @@ export function GooglePlaceMap({
   const [mapState, setMapState] = useState<'loading' | 'ready' | 'error'>('loading');
   const [query, setQuery] = useState('');
   const [message, setMessage] = useState(() => points.some((point) => point.address !== undefined)
-    ? `Locating ${points.length} places on Google Maps…`
-    : 'Market locations will appear on this Google map.');
+    ? (locale === 'ko' ? `Google 지도에서 장소 ${points.length}곳을 찾는 중…` : `Locating ${points.length} places on Google Maps…`)
+    : (locale === 'ko' ? '이 Google 지도에 지역과 주택 위치가 표시됩니다.' : 'Market locations will appear on this Google map.'));
   const [searching, setSearching] = useState(false);
 
   const initialize = useCallback(() => {
@@ -348,16 +352,16 @@ export function GooglePlaceMap({
       zoomListener.current?.remove();
       zoomListener.current = null;
       for (const marker of marketMarkers.current) marker.setMap(null);
-      marketMarkers.current = mountGoogleMarketPoints(sdk, runtime.current.map, points, onSelectPoint, true, clusterLocations);
+      marketMarkers.current = mountGoogleMarketPoints(sdk, runtime.current.map, points, onSelectPoint, true, clusterLocations, locale);
       const requestedLocations = points.filter((point) => point.address !== undefined).length;
       setMessage(requestedLocations > 0
-        ? `Locating ${requestedLocations} places on Google Maps…`
-        : `${points.reduce((n, point) => n + (point.count ?? 1), 0).toLocaleString('en')} results represented on the map. Zoom in to separate location clusters; dashed labels are area-only groups.`);
+        ? (locale === 'ko' ? `Google 지도에서 장소 ${requestedLocations}곳을 찾는 중…` : `Locating ${requestedLocations} places on Google Maps…`)
+        : locale === 'ko' ? `${points.reduce((n, point) => n + (point.count ?? 1), 0).toLocaleString('ko')}건의 위치가 지도에 표시됩니다. 확대하면 묶인 위치를 구분할 수 있습니다. 점선 라벨은 지역 단위 묶음입니다.` : `${points.reduce((n, point) => n + (point.count ?? 1), 0).toLocaleString('en')} results represented on the map. Zoom in to separate location clusters; dashed labels are area-only groups.`);
       if (points.every(point => point.address === undefined) && runtime.current.map.addListener) {
         zoomListener.current = runtime.current.map.addListener('zoom_changed', () => {
           if (generation.current !== currentGeneration || runtime.current === null) return;
           for (const marker of marketMarkers.current) marker.setMap(null);
-          marketMarkers.current = mountGoogleMarketPoints(sdk, runtime.current.map, points, onSelectPoint, false, clusterLocations);
+          marketMarkers.current = mountGoogleMarketPoints(sdk, runtime.current.map, points, onSelectPoint, false, clusterLocations, locale);
         });
       }
       if (requestedLocations > 0) void geocodeGoogleMarketPoints(sdk, runtime.current, points, onSelectPoint, () => generation.current === currentGeneration, market).then((markers) => {
@@ -367,14 +371,14 @@ export function GooglePlaceMap({
         }
         marketMarkers.current = Object.freeze([...marketMarkers.current, ...markers]);
         if (requestedLocations > 0) {
-          setMessage(`${marketMarkers.current.length} of ${points.length} ${market === 'dubai' ? 'area' : 'project'} locations shown.`);
+          setMessage(locale === 'ko' ? `${points.length}곳 중 ${marketMarkers.current.length}곳의 ${market === 'dubai' ? '지역' : '단지'} 위치가 표시됩니다.` : `${marketMarkers.current.length} of ${points.length} ${market === 'dubai' ? 'area' : 'project'} locations shown.`);
         }
       });
       setMapState('ready');
     } catch {
       setMapState('error');
     }
-  }, [onSelectPoint, points, market, clusterLocations]);
+  }, [onSelectPoint, points, market, clusterLocations, locale]);
 
   useEffect(() => {
     const requestGeneration = generation;
@@ -412,14 +416,14 @@ export function GooglePlaceMap({
     event.preventDefault();
     const address = query.trim();
     if (address === '' || runtime.current === null) {
-      setMessage(address === '' ? 'Enter a Singapore address.' : 'Google map is not ready.');
+      setMessage(locale === 'ko' ? (address === '' ? '싱가포르 주소를 입력하세요.' : 'Google 지도를 준비하고 있습니다.') : (address === '' ? 'Enter a Singapore address.' : 'Google map is not ready.'));
       return;
     }
     setSearching(true);
     try {
       setMessage(await geocodeGoogleAddress({ ...runtime.current, address }));
     } catch {
-      setMessage('No Singapore address found. Check the address and try again.');
+      setMessage(locale === 'ko' ? '싱가포르 주소를 찾지 못했습니다. 주소를 확인하고 다시 시도하세요.' : 'No Singapore address found. Check the address and try again.');
     } finally {
       setSearching(false);
     }
@@ -427,37 +431,37 @@ export function GooglePlaceMap({
 
   if (browserKey === null) return (
     <div className={styles.unavailable} data-map-provider="static" data-map-state="fallback">
-      Interactive Google map unavailable. {market === 'dubai' ? 'You can still select areas and read their guides in the list.' : 'You can still search projects and open their details in the list.'}
+      {locale === 'ko' ? `Google 지도를 사용할 수 없습니다. ${market === 'dubai' ? '목록에서 지역을 선택하고 가이드를 읽을 수 있습니다.' : '목록에서 단지를 검색하고 상세 정보를 확인할 수 있습니다.'}` : <>Interactive Google map unavailable. {market === 'dubai' ? 'You can still select areas and read their guides in the list.' : 'You can still search projects and open their details in the list.'}</>}
     </div>
   );
 
   return (
     <div className={styles.placeWorkspace} data-map-provider="google" data-map-state={mapState}>
       {showAddressSearch && market === 'singapore' ? <form className={styles.toolbar} onSubmit={submit}>
-        <label htmlFor="singapore-map-address">Search a Singapore address</label>
+        <label htmlFor="singapore-map-address">{locale === 'ko' ? '싱가포르 주소 검색' : 'Search a Singapore address'}</label>
         <div>
           <input
             id="singapore-map-address"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             autoComplete="street-address"
-            placeholder="e.g. 10 Bayfront Avenue"
+            placeholder={locale === 'ko' ? '예: 10 Bayfront Avenue' : 'e.g. 10 Bayfront Avenue'}
           />
           <button type="submit" disabled={searching || mapState !== 'ready'}>
-            {searching ? 'Searching…' : 'Show on map'}
+            {locale === 'ko' ? (searching ? '검색 중…' : '지도에서 보기') : (searching ? 'Searching…' : 'Show on map')}
           </button>
         </div>
         <p aria-live="polite">{message}</p>
       </form> : <p aria-live="polite">{message}</p>}
-      {mapState === 'error' ? <p role="status">The map could not load. Search results and project details remain available in the list.</p> : null}
+      {mapState === 'error' ? <p role="status">{locale === 'ko' ? '지도를 불러오지 못했습니다. 목록에서 검색 결과와 상세 정보를 확인할 수 있습니다.' : 'The map could not load. Search results and project details remain available in the list.'}</p> : null}
       <div
         ref={container}
         className={styles.canvas}
         role="region"
-        aria-label={`Interactive Google map of ${marketConfig[market].name}`}
+        aria-label={locale === 'ko' ? `${market === 'dubai' ? '두바이' : '싱가포르'} Google 지도` : `Interactive Google map of ${marketConfig[market].name}`}
       />
       <Script
-        src={buildGoogleMapsScriptUrl(browserKey, market)}
+        src={buildGoogleMapsScriptUrl(browserKey, market, locale)}
         strategy="afterInteractive"
         onError={() => setMapState('error')}
       />

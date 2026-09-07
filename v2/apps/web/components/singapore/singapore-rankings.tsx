@@ -1,4 +1,7 @@
 'use client';
+import { sgText } from '../../lib/locale/singapore-copy';
+import { marketHref, type MarketLocale } from '../../lib/locale/market-localization';
+
 
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
@@ -42,7 +45,7 @@ function metricLabel(row: SingaporeRankingRow, metric: Metric): string {
   return `${number.format(row.sample)} filings`;
 }
 
-export function SingaporeRankings({ rows, periodLabel }: Readonly<{
+export function SingaporeRankings({ locale = 'en', rows, periodLabel }: Readonly<{ locale?: MarketLocale;
   rows: readonly SingaporeRankingRow[];
   periodLabel: string;
 }>) {
@@ -55,18 +58,18 @@ export function SingaporeRankings({ rows, periodLabel }: Readonly<{
 
   return <section className={styles.page} aria-labelledby="singapore-rankings-heading">
     <header className={styles.hero}>
-      <div><p>Singapore project rankings</p><h1 id="singapore-rankings-heading">Compare reported project evidence.</h1><span>URA private residential sales · {periodLabel}</span></div>
-      <dl><div><dt>Published projects</dt><dd>{rows.length}</dd></div><div><dt>Default metric</dt><dd>Sale median</dd></div></dl>
+      <div><p>{sgText(locale, "Singapore project rankings")}</p><h1 id="singapore-rankings-heading">{sgText(locale, "Compare reported project evidence.")}</h1><span>{sgText(locale, "URA private residential sales · ")}{sgText(locale, periodLabel)}</span></div>
+      <dl><div><dt>{sgText(locale, "Published projects")}</dt><dd>{sgText(locale, rows.length)}</dd></div><div><dt>{sgText(locale, "Default metric")}</dt><dd>{sgText(locale, "Sale median")}</dd></div></dl>
     </header>
-    <nav className={styles.tabs} aria-label="Singapore ranking metric">
-      {METRICS.map((item) => <button key={item.id} type="button" aria-pressed={metric === item.id} onClick={() => setMetric(item.id)}>{item.label}</button>)}
+    <nav className={styles.tabs} aria-label={sgText(locale, "Singapore ranking metric")}>
+      {METRICS.map((item) => <button key={item.id} type="button" aria-pressed={metric === item.id} onClick={() => setMetric(item.id)}>{sgText(locale, item.label)}</button>)}
     </nav>
-    <div className={styles.summary}><span>Ranking by</span><strong>{metricName}</strong><p>Only projects meeting the publication minimum are included. This is not a quality or investment score.</p></div>
-    {ranked.length === 0 ? <p className={styles.empty}>No published project distribution is available.</p> : <ol className={styles.rows}>
+    <div className={styles.summary}><span>{sgText(locale, "Ranking by")}</span><strong>{sgText(locale, metricName)}</strong><p>{sgText(locale, "Only projects meeting the publication minimum are included. This is not a quality or investment score.")}</p></div>
+    {ranked.length === 0 ? <p className={styles.empty}>{sgText(locale, "No published project distribution is available.")}</p> : <ol className={styles.rows}>
       {ranked.map((row, index) => <li key={row.id}>
-        <span className={styles.rank}>{index + 1}</span>
-        <Link href={row.href}><strong>{row.name}</strong><span>{row.segment} · District {row.district} · {row.street}</span></Link>
-        <div className={styles.value}><strong>{metricLabel(row, metric)}</strong><span aria-hidden="true"><i style={{ width: `${Math.max(4, metricValue(row, metric) / maximum * 100)}%` }} /></span></div>
+        <span className={styles.rank}>{sgText(locale, index + 1)}</span>
+        <Link href={marketHref(locale, row.href)}><strong>{row.name}</strong><span>{sgText(locale, row.segment)}{sgText(locale, " · District ")}{sgText(locale, row.district)}{sgText(locale, " · ")}{row.street}</span></Link>
+        <div className={styles.value}><strong>{sgText(locale, metricLabel(row, metric))}</strong><span aria-hidden="true"><i style={{ width: `${Math.max(4, metricValue(row, metric) / maximum * 100)}%` }} /></span></div>
       </li>)}
     </ol>}
   </section>;
