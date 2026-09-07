@@ -13,7 +13,7 @@ const model: SingaporeCheckRouteModel = { mode: 'compare', catalogs: { 'ura-priv
 describe('Singapore Korean functional surfaces', () => {
   it('localizes the comparison form while preserving submitted IDs and source values', () => {
     const html = renderToStaticMarkup(<SingaporeCheckWorkspace locale="ko" model={model} />);
-    expect(html).toContain('해당 시장에서 제안 가격의 위치를 확인하세요.');
+    expect(html).toContain('이 매물, 최근 실거래가와 얼마나 다를까요?');
     expect(html).toContain('action="/ko/sg/singapore/check/"');
     expect(html).toContain('제안 비교');
     expect(html).toContain('name="a-project"');
@@ -46,6 +46,6 @@ describe('Singapore Korean functional surfaces', () => {
     expect(sgText('en', 'Selected project')).toBe('Selected project');
     const metadata = singaporeMetadata({ title: 'Singapore Check | signedprice', alternates: { canonical: 'https://www.signedprice.com/ko/sg/singapore/check/' } });
     expect(metadata.alternates?.languages).toEqual({ en: 'https://www.signedprice.com/sg/singapore/check/', ko: 'https://www.signedprice.com/ko/sg/singapore/check/' });
-    expect(metadata.title).toBe('싱가포르 가격 검토 | signedprice');
+    expect(metadata.title).toBe('싱가포르 매물 가격 비교 | signedprice');
   });
 });

@@ -1,5 +1,9 @@
 export type MarketLocale = 'en' | 'ko';
 const korean: Readonly<Record<string,string>> = {
+  "URA private sales": "URA 민간주택 매매",
+  "HDB resale": "HDB 재판매",
+  "HDB rent": "HDB 임대",
+  "Source: Dubai Land Department": "출처: 두바이 토지청(DLD)",
   "Dubai": "두바이",
   "Dubai Check": "두바이 가격 비교",
   "Dubai · Area evidence": "두바이 · 지역별 실거래가",
