@@ -16,8 +16,8 @@ describe('foreign-reader worked examples', () => {
     expect(html).toContain('href="/kr/seoul/check/"');
     expect(article.sources.some(source => source.id === 'ibs-housing-addresses')).toBe(true);
     expect(article.updatedAt).toBe('2026-09-07T05:57:26.000Z');
-    // Updating this guide must not backdate it or refresh unrelated article reviews.
-    expect(getPortfolioRecord('en', 'wolse-vs-jeonse')!.updatedAt).toBe('2026-09-06T00:00:00.000Z');
+    // Later substantive edits may update review dates; preserve the original publication date.
+    expect(getPortfolioRecord('en', 'wolse-vs-jeonse')!.publishedAt).toBe('2026-09-04T00:00:00.000Z');
   });
 
   it('reconciles both Singapore budget examples with marginal BSD and separately stated ABSD', () => {

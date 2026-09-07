@@ -75,9 +75,10 @@ function strictArea(value: string | undefined, submitted: boolean): number | nul
 function recordsFromRepositories(
   repositories: KoreaEvidenceRepositories,
   transaction: CheckTransaction,
+  selection: SingleQuoteCheckInput,
 ): readonly SingleQuoteComparable[] {
   if (transaction === 'sale') {
-    return Object.freeze((repositories.sale?.listBuildingRecords() ?? []).flatMap((building) => (
+    return Object.freeze((repositories.sale?.listBuildingRecords() ?? []).filter(building => building.districtSlug === selection.districtSlug && building.housingType === selection.housingType).flatMap((building) => (
       building.recentSales.map((record) => Object.freeze({
         transaction: 'sale' as const,
         districtSlug: building.districtSlug,
@@ -92,7 +93,7 @@ function recordsFromRepositories(
       }))
     )));
   }
-  return Object.freeze((repositories.rent?.listBuildingRecords() ?? []).flatMap((building) => (
+  return Object.freeze((repositories.rent?.listBuildingRecords() ?? []).filter(building => building.districtSlug === selection.districtSlug && building.housingType === selection.housingType).flatMap((building) => (
     building.recentTransactions
       .filter((record) => record.transaction === transaction)
       .map((record) => Object.freeze({
@@ -161,20 +162,11 @@ export function buildSingleQuoteCheckRouteModel(
   const curve = curves.find((candidate) => candidate.housingType === housingType);
   let result: SingleQuoteCheckResult | null = null;
   const buildingName = buildingIdentity?.officialName ?? null;
-  if (submitted) {
-    result = repository === null
-      ? unavailableEvidence('Unavailable')
-      : evaluateSingleQuoteCheck({
-          input: selection,
-          records: recordsFromRepositories(repositories, transaction),
-          period: repository.getArtifact().period,
-          ...(curve === undefined ? {} : { conversionCurve: curve }),
-        });
-  }
+  if (submitted && repository === null) result = unavailableEvidence('Unavailable');
   let districtResult: SingleQuoteCheckResult | null = null;
   let buildingResult: SingleQuoteCheckResult | null = null;
   if (submitted && repository !== null) {
-    const records = recordsFromRepositories(repositories, transaction);
+    const records = recordsFromRepositories(repositories, transaction, selection);
     const common = { period: repository.getArtifact().period, ...(curve === undefined ? {} : { conversionCurve: curve }) };
     districtResult = evaluateSingleQuoteCheck({ ...common, input: { ...selection, buildingId: null, neighborhoodId: null }, records });
     if (selection.buildingId !== null) buildingResult = evaluateSingleQuoteCheck({ ...common, input: selection, records: records.filter(r => r.buildingId === selection.buildingId && r.districtSlug === selection.districtSlug) });
