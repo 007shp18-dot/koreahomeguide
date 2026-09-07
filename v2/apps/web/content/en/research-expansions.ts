@@ -14,7 +14,7 @@ export const RESEARCH_SOURCES = {
   ura: source('sg-ura-q2-2026', 'Urban Redevelopment Authority', 'Q2 2026 real estate statistics, 24 July 2026', 'https://www.ura.gov.sg/news/media/pr26-57/'),
 } as const;
 
-type Expansion = Readonly<{ body: string; sources?: readonly ContentSource[] }>;
+type Expansion = Readonly<{ body: string; sources?: readonly ContentSource[]; updatedAt?: string; revisionNote?: string }>;
 const expansions: Readonly<Record<string, Expansion>> = {
 "seoul-district-price-distribution": { body: "## What the chart actually measures\n\nThe chart compares the median of published building medians in five selected Seoul districts. It is not the median of every contract in those districts. Each eligible building contributes one median, so a building with many more contracts does not automatically receive more weight.\n\nThe underlying public summary covers January through July 2026. Later raw records installed elsewhere on the site do not change this chart\u2019s period. Keep the release label with any comparison; a newer page date is not evidence of a newer dataset.\n\n## Read the gaps at the right scale\n\nIn this selected release, Yongsan\u2019s figure is KRW 547.5 million and Gangnam\u2019s is KRW 537.5 million. The KRW 10 million difference is small relative to the many characteristics that distinguish individual homes. It does not establish that a particular Yongsan apartment should command more rent than a particular Gangnam apartment.\n\nNowon\u2019s selected figure is KRW 260 million. Before interpreting the gap, inspect the represented buildings, size bands and housing types. Differences in what was observed can contribute to differences in the summary.\n\n## A similar middle can hide a different search experience\n\nA median gives the central observation after sorting. It leaves out how tightly the remaining observations cluster around that centre. Two districts can therefore share a similar median while offering very different numbers of homes close to your budget.\n\nThe next step is to inspect the distribution and the buildings behind it. Look for the range of usable observations and the sample count. When a cohort does not meet the publication minimum, leave it out of a price comparison rather than treating it as a zero.\n\n## Use the district to choose where to look\n\nOpen two candidate districts in Explore and keep the transaction type, area band and period fixed. Write down which buildings remain affordable, then investigate their condition, commute and actual contract terms. A district chart earns its place in the decision when it leads to comparable properties, not when it becomes a district investment score." },
 "seoul-new-renewal-rent-gap": { body: "## The comparison is inside one cohort\n\nThis chart uses one published Dobong apartment cohort with an area band of 45\u201355 square metres. It separates 18 new contracts from 13 renewals over January through July 2026. Keeping the building and size band together makes the example more interpretable than comparing unrelated city-wide groups.\n\nThe published median deposit is KRW 225 million for new contracts and KRW 200 million for renewals. The difference is KRW 25 million, or 12.5% of the renewal median. That is a description of this sample, not the increase paid by every renewing tenant.\n\n## Two groups do not form a before-and-after study\n\nThese observations are not necessarily matched contracts for the same units. Differences in floors, condition, contract dates and the people negotiating can remain even within a building and area band. The comparison does not isolate the effect of renewal status alone.\n\nA stronger before-and-after question would require appropriately matched observations and a clear account of what changed. Without that evidence, use the two medians as a reason to examine contract groups separately.\n\n## Why a blended median can mislead a newcomer\n\nA person negotiating a new lease wants to understand the options available for a new contract. Mixing many renewals into that sample can move the middle without describing those options well. Conversely, a new-contract median is not automatically the relevant legal or negotiated basis for a renewal.\n\nKeep the contract-group filter visible. If changing the filter makes the sample too thin, widen the period explicitly or look for another compatible building. Do not silently add renewals just to produce a number.\n\n## Take the finding into a real comparison\n\nFor an actual offer, compare deposit, monthly rent and management fees together. Check the precise area and terms, then examine what is known about the unit. The cohort can support a pricing question; it cannot settle deposit protection, property condition or what a landlord must agree to." },
@@ -116,18 +116,60 @@ Foreign residents should confirm the residence-reporting and protection steps ap
 Enter the deposit and rent from the written offers, add the management fees and record your conversion assumption. Repeat with a higher rate and check how much accessible cash remains after moving. Keep the signed terms and the protection checks beside the cost result; both belong in the decision.`,
   },
   'rent-an-apartment-in-korea': {
-    sources: [RESEARCH_SOURCES.lease, RESEARCH_SOURCES.protection],
+    sources: [RESEARCH_SOURCES.lease, RESEARCH_SOURCES.protection,
+      { id: 'ibs-housing-addresses', publisher: 'Institute for Basic Science', title: 'Living in Korea: dual address systems', href: 'https://centers.ibs.re.kr/html/living_en/housing/addy.html', kind: 'primary', checkedAt: '2026-09-07', publishedAt: null },
+      { id: 'ibs-housing-measurements', publisher: 'Institute for Basic Science', title: 'Living in Korea: housing measurement standards', href: 'https://centers.ibs.re.kr/html/living_en/housing/measure.html', kind: 'primary', checkedAt: '2026-09-07', publishedAt: null },
+    ],
+    updatedAt: '2026-09-07T05:57:26.000Z',
+    revisionNote: 'Added Korean listing vocabulary, a labeled rent example, address and area matching, and bilingual viewing questions. IBS address and measurement guidance checked on 7 September 2026; existing legal-source review dates preserved.',
     body: `## Set a deposit ceiling before booking viewings
 
 Two homes with the same monthly rent can demand very different amounts of cash. Divide the budget into money paid upfront, money spent each month and money kept available. Allow for brokerage, moving, utilities and the period when an old deposit may not yet have been returned.
 
 Seoul’s housing guidance distinguishes wolse and jeonse. Choose which structures your finances can support before sorting listings. A deposit is refundable under the contract, but it is unavailable for other spending while it is committed to the tenancy.
 
+## Decode the price before comparing listings
+
+Keep these Korean labels beside your search. Ask the agent to write every amount in full Korean won, including the unit used by the listing.
+
+| Korean label | Meaning | What to record |
+| --- | --- | --- |
+| 보증금 | Deposit | Full amount and payment dates |
+| 월세 | Monthly rent | Recurring rent, separate from fees |
+| 전세 | Jeonse | Deposit and any other payments |
+| 관리비 | Management fee | Amount, inclusions and extra bills |
+| 전용면적 | Exclusive-use area | Square metres for the actual unit |
+| 입주가능일 | Available move-in date | Date confirmed for this home |
+
+For an illustrative advert explicitly labeled in 만원 (units of KRW 10,000), a deposit/rent pair of 1,000 / 80 means KRW 10,000,000 upfront and KRW 800,000 monthly rent. If management is another 10만원, rent plus management is KRW 900,000 per month, before utilities and the cost of deposit funds. The slash alone does not establish the units or what is included. Confirm both before entering the numbers in [Seoul Check](/kr/seoul/check/).
+
+## Match the address, even when the building has no English name
+
+The [IBS address guide](https://centers.ibs.re.kr/html/living_en/housing/addy.html) explains Korea's road-name and land-lot formats. Keep both when supplied. The district (gu), neighbourhood (dong), lot number, building and unit help distinguish homes with similar names. A lot number without its district and neighbourhood is incomplete.
+
+The word dong also appears after a building number in an apartment complex. In the illustrative notation 102동 304호, 102 identifies the building and 304 the unit; this is different from a neighbourhood name ending in -dong. Ask for the full address rather than copying those two numbers alone.
+
+In SignedPrice, a numeric or lot-based label can be the best available identity when no verified building name is present. Keep the Korean spelling and address when contacting an agent. An English display name helps navigation, but the address must still match the home you will view.
+
+## Compare the same kind of floor area
+
+The [IBS measurement guide](https://centers.ibs.re.kr/html/living_en/housing/measure.html) explains pyeong and the importance of exclusive-use area. One pyeong is approximately 3.31 sqm. A unit conversion alone cannot resolve whether an advert includes shared space.
+
+Ask specifically for 전용면적 in square metres. If a listing supplies a larger total or supply-area figure, record it separately. Use the exclusive-use figure when selecting the Seoul evidence area band, then inspect the floor plan: equal recorded area does not guarantee equal room sizes, storage or layout.
+
 ## Use the search to build a small, comparable shortlist
 
 Choose a commute you can live with, then narrow by housing type and usable area. In Explore, note whether the figure is a deposit, monthly rent or a sale price. Match the period and size band before comparing buildings, and inspect the sample count alongside the median.
 
 Treat these records as context for a viewing. They do not show whether a home is available, whether the photographs are current or whether a landlord will accept your terms. Ask for the exact address and unit before deciding that a property in an advert matches the building in the data.
+
+## Three questions to send before a viewing
+
+- Is this exact home still available, and what is the full address and unit? / 이 매물은 아직 계약 가능한가요? 정확한 주소와 동·호수를 알려주세요.
+- Please confirm the deposit, monthly rent, management fee and any separate charges. / 보증금, 월세, 관리비와 별도 비용을 각각 알려주세요.
+- What is the exclusive-use area in square metres, and when can I move in? / 전용면적은 몇 제곱미터인가요? 입주 가능한 날짜는 언제인가요?
+
+Keep the reply with the listing. If the agent proposes a different home, start a new comparison for that address rather than carrying over the original price evidence.
 
 ## Use the viewing to find costs the advert left out
 
@@ -260,7 +302,7 @@ export function enrichEnglishRecord(record: EditorialPortfolioRecord): Editorial
   const sources = new Map(record.sources.map((item) => [item.id, item]));
   for (const item of expansion.sources ?? []) sources.set(item.id, item);
   return Object.freeze({ ...record, bodyMarkdown: expansion.body, sources: Object.freeze([...sources.values()]),
-    updatedAt: '2026-09-06T00:00:00.000Z',
-    revisionNote: 'Expanded practical comparisons and source-linked examples; public-source checks recorded on 6 September 2026.',
+    updatedAt: expansion.updatedAt ?? '2026-09-06T00:00:00.000Z',
+    revisionNote: expansion.revisionNote ?? 'Expanded practical comparisons and source-linked examples; public-source checks recorded on 6 September 2026.',
   });
 }

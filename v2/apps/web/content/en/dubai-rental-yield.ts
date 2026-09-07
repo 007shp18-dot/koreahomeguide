@@ -1,7 +1,7 @@
 import type { EditorialPortfolioRecord } from '../portfolio-types';
 
 const checkedAt = '2026-09-07';
-const timestamp = `${checkedAt}T00:00:00.000Z`;
+const timestamp = '2026-09-07T05:57:26.000Z';
 
 export const DUBAI_RENTAL_YIELD: EditorialPortfolioRecord = Object.freeze({
   id: 'en:dubai-rental-yield-after-costs',
@@ -72,7 +72,30 @@ Compare two properties in the same table only after substituting their actual pu
 
 Before using a seller's yield, request the current lease and rent-payment history, the approved service-charge information and latest unit statement, an itemized management proposal, and a written purchase-cost breakdown. Check whether the rent is already being paid or merely expected from the next tenant. Identify repair, insurance, letting and utility costs that fall to the owner and ensure the budget covers them.
 
-A mortgage requires a separate cash-flow calculation using actual loan payments and fees. An off-plan purchase requires a construction and letting timeline before rental income can begin. Neither fits this completed, unlevered apartment example without further assumptions.
+A mortgage requires the separate cash-flow calculation below, with actual loan terms replacing the assumptions. An off-plan purchase also requires a construction and letting timeline before rental income can begin; the completed-apartment scenario does not supply that timeline.
+
+## A positive operating yield can still leave a cash shortfall
+
+Extend the same example with a hypothetical AED 700,000 mortgage, repaid in 300 equal monthly principal-and-interest payments over 25 years. The loan amount is a scenario input, not a statement of borrowing eligibility. Assume a nominal annual interest rate divided by 12 for monthly compounding, with no rate change during the modeled year. Neither rate below is a lender quote.
+
+Keep the one-month vacancy case and its AED 45,958.33 annual income after operating costs. The payment formula is loan principal multiplied by the monthly rate, divided by one minus (one plus the monthly rate) raised to the power of minus 300.
+
+| Assumed annual rate | Monthly loan payment | Annual cash after loan payments |
+| --- | --- | --- |
+| 5% | AED 4,092 | −AED 3,147 |
+| 7% | AED 4,947 | −AED 13,411 |
+
+Figures use unrounded payments before rounding to whole dirhams. Annual cash equals operating income less twelve loan payments, before investor-specific tax and any additional financing or insurance charges. Subtract the complete payment once; do not also deduct its interest component again.
+
+At 5%, the modeled home requires about AED 3,147 of additional cash over the year despite its positive operating yield. Part of each payment reduces the loan balance, so a negative cash flow is not the same as a total investment loss. Principal repayment also cannot pay a service-charge bill: keep liquidity and changes in equity separate.
+
+## How much rent would cover the modeled loan payments?
+
+With one vacant month, 5% management on collected rent and AED 15,000 in annual service charges and repairs, operating income equals annual contractual rent multiplied by 11/12 and by 0.95, less AED 15,000. Set that result equal to twelve mortgage payments.
+
+The required annual contractual rent is approximately AED 73,614 at the assumed 5% interest rate, or AED 85,400 at 7%. These are calculated break-even rents for the stated expenses, not evidence that tenants will pay those amounts. Additional owner costs raise the required rent. Compare the result with unit-level rental evidence before relying on the purchase to fund itself.
+
+The assumed loan would leave AED 365,000 of the original AED 1,065,000 acquisition budget to fund from the buyer's own money. Mortgage registration, lender fees, insurance, furnishing and reserves may add to that amount; they have not been priced here. Prepare a dated cash schedule from the actual rent-payment and loan-payment terms because an annual total can conceal a shortfall earlier in the year.
 
 ## Continue with the Dubai evidence
 
@@ -82,7 +105,7 @@ Keep the price-comparison result separate from the income calculation: a price s
 
 ## Evidence boundary
 
-This is an AI-assisted educational calculation checked against the two linked DLD pages on 6 September 2026. It uses no live Dubai transaction dataset and makes no claim about current achievable rents. Figures exclude financing, investor-specific taxes, exchange-rate changes, capital appreciation and exit costs. They describe modeled annual rental income, not total investment return. Confirm property-specific costs and relevant tax treatment with the responsible providers or qualified advisers before committing capital.`,
+This is an AI-assisted educational calculation. The original fee and service-charge source checks were performed on 6 September 2026; mortgage arithmetic was added and checked on 7 September 2026. It uses no live Dubai transaction dataset and makes no claim about current achievable rents. The operating-yield examples exclude financing; the separate mortgage scenarios include only the stated loan payments. Investor-specific taxes, exchange-rate changes, capital appreciation and exit costs remain excluded. These are annual income and cash-flow scenarios, not total investment returns. Confirm property-specific costs and relevant tax treatment with the responsible providers or qualified advisers before committing capital.`,
   status: 'published',
   evidenceState: 'verified',
   authorName: 'SignedPrice Data Desk',
@@ -96,7 +119,7 @@ This is an AI-assisted educational calculation checked against the two linked DL
     { id: 'dld-service-charge-index', kind: 'primary' as const, publisher: 'Dubai Land Department', title: 'Service Charge Index: approved jointly owned property charges', href: 'https://dubailand.gov.ae/en/eservices/service-charge-index-overview/', checkedAt, publishedAt: null },
   ]),
   evidenceReleaseIds: Object.freeze(['dld-public-source-check-2026-09-06', 'illustrative-dubai-yield-calculation-2026-09-06']),
-  revisionNote: 'Added vacancy-by-service-charge sensitivity table, recalculated every scenario and linked Dubai evidence tools; original publication date preserved.',
+  revisionNote: 'Added amortizing-mortgage cash-flow and break-even-rent examples, with explicit hypothetical rates and excluded financing costs; retained the operating-yield sensitivity table and original publication date.',
   canonicalHref: '/news/dubai-rental-yield-after-costs/',
   translationGroupId: null,
   infographic: null,
