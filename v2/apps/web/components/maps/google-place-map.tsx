@@ -56,13 +56,16 @@ export type GoogleMapsSdk = Readonly<{
       zoom: number;
       mapTypeControl: boolean;
       streetViewControl: boolean;
+      clickableIcons?: boolean;
     }>,
   ) => GoogleMapInstance;
   Marker: new (options?: Readonly<{
     map: GoogleMapInstance;
     position: Readonly<{ lat: number; lng: number }>;
     title: string;
-    label: Readonly<{ text: string; className: string }>;
+    label?: Readonly<{ text: string; className: string }>;
+    icon?: Readonly<{ path: number; scale: number; fillColor: string; fillOpacity: number; strokeColor: string; strokeWeight: number }>;
+    zIndex?: number;
   }>) => GoogleMarkerInstance;
   Geocoder: new () => GoogleGeocoderInstance;
   LatLngBounds?: new () => Readonly<{
@@ -134,6 +137,7 @@ export function mountGooglePlaceMap({
     zoom: 11,
     mapTypeControl: false,
     streetViewControl: false,
+    clickableIcons: false,
   });
   return Object.freeze({
     map,
@@ -164,6 +168,22 @@ export function clusterGoogleMarketPoints(points: readonly GoogleMarketMapPoint[
   return result;
 }
 
+/** Only the selected property gets a name; overview groups keep their counts. */
+export function googleMarketMarkerAppearance(point: GoogleMarketMapPoint) {
+  const group = point.kind === 'area' || point.kind === 'cluster';
+  const label = group ? point.label : point.selected ? point.title : undefined;
+  return {
+    icon: { path: 0, scale: group ? 15 : point.selected ? 8 : 5,
+      fillColor: point.selected ? '#4a5cf5' : '#243b64', fillOpacity: 1,
+      strokeColor: '#ffffff', strokeWeight: 2 },
+    zIndex: point.selected ? 1000 : group ? 10 : 1,
+    ...(label === undefined ? {} : { label: { text: label,
+      className: point.kind === 'area' ? `spGoogleMarketMarker spGoogleAreaGroup${point.level === 'region' ? ' spGoogleRegionGroup' : point.level === 'district' ? ' spGoogleDistrictGroup' : ''}`
+        : point.kind === 'cluster' ? 'spGoogleMarketMarker spGoogleCluster'
+          : 'spGoogleMarketMarker spGoogleMarketMarkerSelected' } }),
+  };
+}
+
 export function mountGoogleMarketPoints(
   sdk: GoogleMapsSdk,
   map: GoogleMapInstance,
@@ -180,14 +200,12 @@ export function mountGoogleMarketPoints(
     for (const point of located) bounds.extend({ lat: point.latitude!, lng: point.longitude! });
     map.fitBounds(bounds);
   }
-  return Object.freeze(clusterGoogleMarketPoints(located, clusterLocations ? map.getZoom?.() ?? 18 : 17).map((point) => {
+  return Object.freeze(clusterGoogleMarketPoints(located, clusterLocations ? map.getZoom?.() ?? 11 : 17).map((point) => {
     const marker = new sdk.Marker({
       map,
       position: { lat: point.latitude!, lng: point.longitude! },
       title: point.title,
-      label: { text: point.label, className: point.kind === 'area' ? `spGoogleMarketMarker spGoogleAreaGroup${point.level === 'region' ? ' spGoogleRegionGroup' : point.level === 'district' ? ' spGoogleDistrictGroup' : ''}`
-        : point.kind === 'cluster' ? 'spGoogleMarketMarker spGoogleCluster'
-          : point.selected ? 'spGoogleMarketMarker spGoogleMarketMarkerSelected' : 'spGoogleMarketMarker' },
+      ...googleMarketMarkerAppearance(point),
     });
     marker.addListener?.('click', () => {
       if (point.kind === 'cluster' && point.bounds !== undefined) map.fitBounds(point.bounds);
@@ -231,7 +249,7 @@ export async function geocodeGoogleMarketPoints(
         map: runtime.map,
         position: { lat: position.lat(), lng: position.lng() },
         title: point.title,
-        label: { text: point.label, className: point.selected ? 'spGoogleMarketMarker spGoogleMarketMarkerSelected' : 'spGoogleMarketMarker' },
+        ...googleMarketMarkerAppearance(point),
       });
       marker.addListener?.('click', () => onSelectPoint?.(point.id));
       markers.push(marker);

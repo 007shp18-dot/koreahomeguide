@@ -177,13 +177,13 @@ export async function hydratePublicAreaExploreModelWithProjections(
   if (sql !== null && projectionIds.length > 0) {
     try {
       const rows = await sql`
-        SELECT external_id, legal_address FROM buildings
+        SELECT external_id, road_address FROM buildings
         WHERE market_key = 'seoul' AND identity_status = 'verified'
           AND external_id = ANY(${projectionIds})
       `;
       for (const row of rows) {
-        if (typeof row.external_id === 'string' && typeof row.legal_address === 'string') {
-          addresses.set(row.external_id, row.legal_address);
+        if (typeof row.external_id === 'string' && typeof row.road_address === 'string' && row.road_address.trim() !== '') {
+          addresses.set(row.external_id, row.road_address.trim());
         }
       }
     } catch { /* Keep evidence available when the address store is unavailable. */ }

@@ -305,3 +305,6 @@
 :global(.spMapBuildingBubble span) { display: block; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; background: #243b64; box-shadow: 0 1px 4px rgb(23 35 55 / 30%); }
 :global(.spMapBuildingBubbleSelected) { background: transparent; border: 0; box-shadow: none; }
 :global(.spMapBuildingBubbleSelected span) { width: 20px; height: 20px; background: #1557d5; box-shadow: 0 0 0 5px rgb(21 87 213 / 18%); }
+
+:global(.spGoogleMarketMarkerSelected) { max-width: 190px; overflow: hidden; text-overflow: ellipsis; transform: translateY(-24px); box-shadow: 0 2px 6px rgb(17 24 39 / 14%) !important; }
+:global(.spGoogleCluster) { padding: 4px 7px !important; min-width: 22px; text-align: center; box-shadow: 0 1px 4px rgb(17 24 39 / 15%) !important; }
