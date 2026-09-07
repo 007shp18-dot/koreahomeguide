@@ -26,10 +26,10 @@ function sectionCount(body: string): number {
 }
 
 describe('pre-AdSense reviewed launch portfolio', () => {
-  it('keeps the 34-record portfolio and public English parameters', () => {
+  it('keeps the 37-record portfolio and public English parameters', () => {
     const english = listPortfolioRecords('en');
-    expect(EDITORIAL_PORTFOLIO).toHaveLength(34);
-    expect(english).toHaveLength(26);
+    expect(EDITORIAL_PORTFOLIO).toHaveLength(37);
+    expect(english).toHaveLength(29);
     expect(generateEnglishArticleParams()).toEqual(english
       .filter(({ type }) => type === 'market-brief' || type === 'data-story')
       .map(({ slug }) => ({ slug })));

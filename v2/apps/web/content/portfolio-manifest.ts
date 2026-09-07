@@ -1,3 +1,4 @@
+import { MONTHLY_REPORTS } from './en/monthly-reports';
 import { validateInfographicSpec } from '../lib/infographics/infographic-validator';
 import { ENGLISH_PORTFOLIO } from './en/portfolio';
 import type { EditorialPortfolioRecord } from './portfolio-types';
@@ -84,6 +85,7 @@ export function validateEditorialPortfolio(values: readonly unknown[]): readonly
 
 export const EDITORIAL_PORTFOLIO = Object.freeze(validateEditorialPortfolio(Object.freeze([
   ...ENGLISH_PORTFOLIO,
+  ...MONTHLY_REPORTS,
   ...CHINESE_PORTFOLIO,
 ])));
 
