@@ -3797,4 +3797,6 @@ h1 {
   .site-header { position: relative; }
   .site-header__mobile-panel nav { display: flex; flex-wrap: wrap; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--line); }
   .site-header__mobile-panel a { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 12px; color: var(--ink); text-decoration: none; font-size: .875rem; }
+  .site-header__mobile-panel .site-header__languages { display: flex; flex-wrap: nowrap; width: max-content; gap: 4px; }
+  .site-header__mobile-panel .site-header__language { flex: 0 0 auto; min-width: 44px; padding-inline: 4px; white-space: nowrap; line-height: 1.25; }
 }
