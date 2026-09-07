@@ -1145,3 +1145,9 @@
 .actions button { min-height: 48px; border-radius: 8px; }
 .resultCopy { padding-inline: 20px; }
 @media (max-width: 560px) { .hero h1 { font-size: 2rem; } .field, .offerPanel > label, .moneyFields > label { padding: 16px; } }
+
+/* Readable tool text at normal and enlarged browser text sizes. */
+.hero h1 { letter-spacing: normal; line-height: 1.2; }
+.field, .offerPanel > label, .moneyFields > label { font-size: .875rem; line-height: 1.5; }
+.resultEmpty p, .disclosure p { font-size: 1rem; line-height: 1.65; }
+.resultCopy small, .resultCopy p { font-size: .875rem; line-height: 1.6; }

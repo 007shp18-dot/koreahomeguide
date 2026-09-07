@@ -154,3 +154,7 @@
 .checkResultActions a { border-radius: 8px; background: var(--surface-strong); text-decoration: none; }
 @media (max-width: 900px) { .checkGrid { grid-template-columns: 1fr; } }
 @media (max-width: 560px) { .checkFormPanel, .checkResultCard, .checkEmpty { padding: 20px; } }
+
+.checkHeader h1 { letter-spacing: normal; line-height: 1.2; }
+.checkFormPanel label, .checkResultCard dt { font-size: .875rem; line-height: 1.5; }
+.checkDisclosure { font-size: .875rem; line-height: 1.65; }
