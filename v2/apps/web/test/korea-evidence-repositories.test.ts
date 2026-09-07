@@ -697,8 +697,8 @@ describe('installed Korea evidence repositories', () => {
     expect(html).toContain(`entity=${buildingId}`);
     expect(html).toContain(`building=${buildingId}`);
     const detailOrder = [
-      'data-detail-order="media"', 'data-detail-order="identity"',
-      'data-detail-order="current-evidence"', 'data-detail-order="history"',
+      'data-detail-order="identity"',
+      'data-detail-order="history"',
       'data-detail-order="comparable-range"', 'data-detail-order="facts"',
       'data-detail-order="proximity"', 'data-detail-order="sources"',
       'data-detail-order="related-actions"',

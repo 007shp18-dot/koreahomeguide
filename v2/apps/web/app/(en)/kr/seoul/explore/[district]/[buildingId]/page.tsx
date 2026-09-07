@@ -315,7 +315,6 @@ function indexableKoreaBuildingMetadata(
   if (canonical === null) return null;
   const contracts = koreaBuildingSearchDepth(records);
   const published = canonical.model.evidence.state === 'published';
-  const evidenceLabel = selection.transaction === 'sale' ? 'sale prices' : 'jeonse & monthly rent';
   const englishPath = `/kr/seoul/explore/${canonical.model.district.slug}/${canonical.model.building.buildingId}/` as const;
   const koreanPath = `/ko${englishPath}` as const;
   const languageAlternates = Object.freeze({ en: englishPath, ko: koreanPath });
@@ -323,12 +322,9 @@ function indexableKoreaBuildingMetadata(
     const koreanEvidenceLabel = selection.transaction === 'sale'
       ? '매매 신고 거래'
       : '전세·월세 신고 거래';
-    const koreanTitleLabel = selection.transaction === 'sale'
-      ? '매매 신고가'
-      : '전세·월세';
     return indexableMetadata({
       path: koreanPath,
-      title: `${identity.officialName} 실거래가 | ${canonical.model.district.nameKo} ${koreanTitleLabel} | signedprice`,
+      title: `${identity.officialName} 실거래가 · 매매 전세 월세 | ${canonical.model.district.nameKo} ${identity.neighborhoodName} | signedprice`,
       description: `${identity.officialName}의 ${koreanEvidenceLabel}를 ${canonical.model.district.nameKo} ${canonical.model.period} 기준으로 확인하세요. ${published ? `대표 공개 표본 ${contracts}건과 출처·공개 기준을 함께 제공합니다.` : `최근 신고 거래 ${contracts}건의 면적·금액·계약월을 제공합니다. 표본 부족으로 중위가격은 공개하지 않습니다.`}`,
       languageAlternates,
       locale: 'ko_KR',
@@ -337,7 +333,7 @@ function indexableKoreaBuildingMetadata(
   }
   return indexableMetadata({
     path: englishPath,
-    title: `${identity.officialName} ${evidenceLabel} in ${canonical.model.district.nameEn}, Seoul | signedprice`,
+    title: `${identity.officialName} 실거래가 · 매매 전세 월세 | ${canonical.model.district.nameEn} Seoul | signedprice`,
     description: `${contracts} reported contracts for ${identity.officialName} in ${canonical.model.district.nameEn}, ${canonical.model.period}, shown by transaction, filed area and contract type with MOLIT source and coverage limits.`,
     languageAlternates,
   });

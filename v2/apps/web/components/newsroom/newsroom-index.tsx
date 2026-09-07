@@ -59,7 +59,7 @@ function articleItem(article: PublishedContentArticle): NewsroomListItem {
       : article.marketId === 'sg-singapore' ? 'singapore' : article.marketId === 'ae-dubai' ? 'dubai' : 'all',
     title: article.title,
     deck: article.deck,
-    date: article.updatedAt,
+    date: article.publishedAt,
     href: article.type === 'policy-update'
       ? `/news/policy/${article.slug}/` : `/news/${article.slug}/`,
   });
@@ -101,6 +101,8 @@ export function NewsroomIndex({ articles, policies, filters, headlines }: Readon
   const lead = items[0] ?? null;
   const analysis = ['analysis', 'market', 'data-stories'].includes(filters.type);
   const latest = items.slice(1);
+  const category = (item:NewsroomListItem) => /monthly-2026/.test(item.href) ? 'Monthly market updates' : /under-|rental-yield/.test(item.href) ? 'Homes within budget and ownership costs' : 'Price and rental comparisons';
+  const groups = analysis ? ['Monthly market updates','Homes within budget and ownership costs','Price and rental comparisons'].map(label=>({label,items:latest.filter(item=>category(item)===label)})).filter(group=>group.items.length>0) : [{label:'More news',items:latest}];
   const typeTabs = [
     ['latest', 'Latest'], ['policy', 'Policy'], ['market', 'Market'], ['data-stories', 'Data Stories'], ['headlines', 'External headlines'],
   ] as const;
@@ -130,13 +132,13 @@ export function NewsroomIndex({ articles, policies, filters, headlines }: Readon
       </article>
       {latest.length > 0 ? <section className={styles.latest} aria-labelledby="latest-reviewed-title">
         <div className={styles.sectionHeading}><p>Latest articles</p><h2 id="latest-reviewed-title">{analysis ? 'More analysis' : 'More news'}</h2></div>
-        <ol data-newsroom-latest-list="rows">
-          {latest.map((item) => <li key={`${item.type}:${item.id}`}>
+        {groups.map(group=><section key={group.label} aria-label={group.label}>{analysis && <h3>{group.label}</h3>}<ol data-newsroom-latest-list="rows">
+          {group.items.map((item) => <li key={`${item.type}:${item.id}`}>
             <div><span>{item.type} · {item.market}</span><time dateTime={item.date}>{item.date.slice(0, 10)}</time></div>
             <h3><Link href={item.href}>{item.title}</Link></h3>
             <p>{item.deck}</p>
           </li>)}
-        </ol>
+        </ol></section>)}
       </section> : null}
     </>}
   </main>;

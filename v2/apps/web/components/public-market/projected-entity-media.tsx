@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { GooglePlacePhoto } from '../maps/google-place-photo';
 import styles from './projected-entity-media.module.css';
 
@@ -35,11 +34,7 @@ export function ProjectedEntityMedia({
       registryKey={registryKey}
       fallback={<ProjectedEntityMedia buildingName={buildingName} media={null} evidenceHref={evidenceHref} />}
     />;
-    return <section className={styles.unavailable} data-building-media="location-only" data-photo-state="unavailable" aria-label="Building photo unavailable">
-      <strong>Building photo unavailable</strong>
-      <p>No rights-cleared exterior photo is connected to this building yet.</p>
-      <Link href={evidenceHref}>Continue with property evidence</Link>
-    </section>;
+    return null;
   }
   if (media.displayUrl === null) return <GooglePlacePhoto
     key={media.providerReference}

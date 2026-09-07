@@ -273,7 +273,7 @@ describe('Korea building search publication', () => {
     });
 
     expect(metadata).toMatchObject({
-      title: `${SALE_ONLY_BUILDING.officialName} sale prices in Dobong-gu, Seoul | signedprice`,
+      title: `${SALE_ONLY_BUILDING.officialName} 실거래가 · 매매 전세 월세 | Dobong-gu Seoul | signedprice`,
       robots: { index: true, follow: true },
       alternates: {
         canonical: `https://www.signedprice.com/kr/seoul/explore/${SALE_ONLY_BUILDING.district}/${SALE_ONLY_BUILDING.buildingId}/`,
@@ -291,7 +291,7 @@ describe('Korea building search publication', () => {
     });
 
     expect(metadata).toMatchObject({
-      title: `${INDEXABLE_BUILDING.officialName} jeonse & monthly rent in Songpa-gu, Seoul | signedprice`,
+      title: `${INDEXABLE_BUILDING.officialName} 실거래가 · 매매 전세 월세 | Songpa-gu Seoul | signedprice`,
       robots: { index: true, follow: true },
       alternates: {
         canonical: `https://www.signedprice.com/kr/seoul/explore/${INDEXABLE_BUILDING.district}/${INDEXABLE_BUILDING.buildingId}/`,
@@ -318,7 +318,7 @@ describe('Korea building search publication', () => {
     });
 
     expect(metadata).toMatchObject({
-      title: `${INDEXABLE_BUILDING.officialName} 실거래가 | 송파구 전세·월세 | signedprice`,
+      title: `${INDEXABLE_BUILDING.officialName} 실거래가 · 매매 전세 월세 | 송파구 가락동 | signedprice`,
       description: `${INDEXABLE_BUILDING.officialName}의 전세·월세 신고 거래를 송파구 2026-02/2026-08 기준으로 확인하세요. 대표 공개 표본 525건과 출처·공개 기준을 함께 제공합니다.`,
       robots: { index: true, follow: true },
       alternates: {
@@ -346,7 +346,7 @@ describe('Korea building search publication', () => {
     });
 
     expect(metadata).toMatchObject({
-      title: `${SALE_ONLY_BUILDING.officialName} 실거래가 | 도봉구 매매 신고가 | signedprice`,
+      title: `${SALE_ONLY_BUILDING.officialName} 실거래가 · 매매 전세 월세 | 도봉구 도봉동 | signedprice`,
       description: `${SALE_ONLY_BUILDING.officialName}의 매매 신고 거래를 도봉구 2026-02/2026-08 기준으로 확인하세요. 대표 공개 표본 8건과 출처·공개 기준을 함께 제공합니다.`,
       robots: { index: true, follow: true },
       alternates: {

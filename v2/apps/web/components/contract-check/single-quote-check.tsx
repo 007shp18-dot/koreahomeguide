@@ -1,6 +1,6 @@
 'use client';
 import { ResultLinkCopy } from './result-link-copy';
-import { BuildingSelection } from './building-selection';
+import { CheckBuildingSearch } from './check-building-search';
 
 import type { CheckTransaction, SingleQuoteCheckResult } from '@signedprice/market-core';
 import Link from 'next/link';
@@ -63,12 +63,16 @@ function SingleResult({ model, locale, entityContext }: Readonly<{
         </div>
       ) : (
         <div className={styles.resultBody} data-single-result={result.verdict}>
-          <EvidencePositionCard check={result} locale={locale} order="single-offer" title="Single offer" />
+          <section aria-label={locale === 'ko' ? '구와 단지 기준 비교' : 'District and building comparisons'} className={styles.scopeComparison}>
+            {([{ label: locale === 'ko' ? '이 구 같은 면적대 기준' : 'Same-size contracts in this district', value: model.districtResult }, { label: locale === 'ko' ? `${model.buildingName ?? '이 단지'} 기준` : `This building: ${model.buildingName ?? ''}`, value: model.buildingResult }]).map(({label,value}) => value?.status === 'ready' ? <div key={label}><h3>{label}</h3><p>{locale === 'ko' ? `비교 계약 중 ${value.pricePercentile}%보다 높은 가격` : `Above ${value.pricePercentile}% of comparable contract values`}</p><p>{locale === 'ko' ? '중앙값' : 'Median'} {won.format(value.distribution.medianWon)} · {value.sample.count}{locale === 'ko' ? '건' : ' contracts'} · {completedMonthWindowLabel(value.evidenceWindow,locale)}</p></div> : null)}
+          </section>
+          {model.buildingResult?.status === 'insufficient' && <p>{locale === 'ko' ? `이 단지 같은 면적대는 ${model.buildingResult.sample.count}건으로 비교 기준인 5건에 못 미칩니다. 아래 결과는 구 기준입니다.` : `This building has only ${model.buildingResult.sample.count} compatible contracts; five are needed. The result below uses district contracts.`}</p>}
+          <EvidencePositionCard check={result} locale={locale} order="single-offer" title={locale === 'ko' ? '이 가격의 위치' : 'Where this price sits'} />
           <div className={styles.verdictPanel} data-result-order="verdict">
             <p className={styles.verdict}>{result.verdict === 'below'
-              ? 'Below typical range'
-              : result.verdict === 'above' ? 'Above typical range' : 'Typical range'}</p>
-            <p>{model.buildingName === null ? result.filters.scope : `${model.buildingName} · ${result.filters.scope}`}</p>
+              ? (locale === 'ko' ? '중간 50% 구간보다 낮음' : 'Below the middle half')
+              : result.verdict === 'above' ? (locale === 'ko' ? '중간 50% 구간보다 높음' : 'Above the middle half') : (locale === 'ko' ? '중간 50% 구간 안' : 'Within the middle half')}</p>
+            <p>{result.filters.scope === 'building' ? model.buildingName : locale === 'ko' ? '이 구 같은 면적대 계약 기준' : 'Same-size district contracts'}</p>
           </div>
           <section className={styles.keyFigures} data-result-order="key-figures">
             <h3>{c.keyFigures}</h3>
@@ -93,7 +97,7 @@ function SingleResult({ model, locale, entityContext }: Readonly<{
           <ResultLinkCopy locale={locale} tool="single-quote" />
           <section className={styles.disclosure} data-check-section="disclosure" data-result-order="disclosure">
             <h3>{c.disclosure}</h3>
-            <p>{result.fallbackDisclosure ?? 'The requested evidence scope met the five-record publication gate.'}</p>
+            <p>{result.fallbackDisclosure ?? 'At least five matching reported contracts are used for each comparison.'}</p>
             <p>{result.comparisonBasis === 'verified-deposit-adjusted-monthly-rent'
               ? 'Filed deposit and monthly rent remain visible; only the installed verified conversion curve normalizes the comparison.'
               : 'Official reported values are compared directly within the selected transaction market.'}</p>
@@ -113,6 +117,11 @@ export function SingleQuoteCheckWorkspace({ model, locale = 'en', entityContext 
   const c = CHECK_COPY[locale];
   const [district, setDistrict] = useState(model.selection.districtSlug);
   const [housing, setHousing] = useState(model.selection.housingType);
+  const [buildingId, setBuildingId] = useState(model.selection.buildingId);
+  const [buildingName, setBuildingName] = useState(model.buildingName);
+  const [buildingQuery, setBuildingQuery] = useState('');
+  const [area, setArea] = useState(String(model.selection.areaSqm ?? ''));
+  const clearBuilding = () => { setBuildingId(null); setBuildingName(null); };
   const [draft, setDraft] = useState<QuoteDraft>(() => ({
     transaction: model.selection.transaction,
     salePriceWon: model.selection.salePriceWon?.toString() ?? '',
@@ -139,7 +148,7 @@ export function SingleQuoteCheckWorkspace({ model, locale = 'en', entityContext 
         </nav>
         <form action={localizedCheckHref(locale, '/')} className={styles.form} method="get">
           <input name="check" type="hidden" value="1" />
-          {entityContext === null ? null : <>
+          {entityContext === null || buildingId !== model.selection.buildingId ? null : <>
             <input name="market" type="hidden" value={entityContext.market} />
             <input name="entity" type="hidden" value={entityContext.entity} />
             <input name="returnTo" type="hidden" value={entityContext.returnTo} />
@@ -147,15 +156,17 @@ export function SingleQuoteCheckWorkspace({ model, locale = 'en', entityContext 
           <fieldset className={styles.conditions} data-check-section="conditions">
             <legend><span>01</span>{c.conditions}</legend>
             <div className={styles.conditionGrid}>
-              <label className={styles.field}><span>{c.district}</span><select value={district} onChange={event => setDistrict(event.target.value)} name="district">
+              <label className={styles.field}><span>{c.district}</span><select value={district} onChange={event => { setDistrict(event.target.value); clearBuilding(); }} name="district">
                 {model.districts.map((district) => <option key={district.slug} value={district.slug}>{locale === 'ko' ? district.nameKo : district.nameEn}</option>)}
               </select></label>
-              <label className={styles.field}><span>{c.housing}</span><select value={housing} onChange={event => setHousing(event.target.value as typeof housing)} name="housing">
+              <label className={styles.field}><span>{c.housing}</span><select value={housing} onChange={event => { setHousing(event.target.value as typeof housing); clearBuilding(); }} name="housing">
                 <option value="apartment">Apartment</option><option value="officetel">Officetel</option>
                 <option value="villa_multifamily">Villa / multifamily</option><option value="detached">Detached</option>
               </select></label>
-              <label className={styles.field}><span>{c.area} <small>㎡</small></span><input defaultValue={model.selection.areaSqm ?? ''} inputMode="decimal" name="area" /></label>
-              <BuildingSelection key={`${district}-${housing}`} id={district === model.selection.districtSlug && housing === model.selection.housingType ? model.selection.buildingId : null} name={model.buildingName} locale={locale} />
+              <label className={styles.field}><span>{c.area} <small>㎡</small></span><input value={area} onChange={e => setArea(e.target.value)} inputMode="decimal" name="area" /></label>
+              <input type="hidden" name="building" value={buildingId ?? ''} />
+              <CheckBuildingSearch text={buildingQuery} onText={value => { setBuildingQuery(value); clearBuilding(); }} locale={locale} onSelect={item => { setBuildingId(item.id); setBuildingName(item.name); setDistrict(item.district); setHousing(item.housing); if (item.area !== null) setArea(String(item.area)); setBuildingQuery(''); }} />
+              {buildingName && <p>{locale === 'ko' ? '선택한 단지' : 'Selected building'}: {buildingName} <button type="button" onClick={clearBuilding}>{locale === 'ko' ? '해제' : 'Clear'}</button></p>}
             </div>
           </fieldset>
           <fieldset className={styles.singleOffer} data-offer="single">
@@ -173,7 +184,7 @@ export function SingleQuoteCheckWorkspace({ model, locale = 'en', entityContext 
             {draft.transaction === 'jeonse' || draft.transaction === 'monthly' ? <MoneyField name="deposit" label={c.deposit} value={draft.depositWon} onChange={(value) => edit('depositWon', value)} /> : null}
             {draft.transaction === 'monthly' ? <MoneyField name="monthly-rent" label={c.rent} value={draft.monthlyRentWon} onChange={(value) => edit('monthlyRentWon', value)} /> : null}
           </fieldset>
-          <div className={styles.actions}><button type="submit">Check this quote</button></div>
+          <div className={styles.actions}><button type="submit">{locale === 'ko' ? '제시가격 비교하기' : 'Check this quote'}</button></div>
         </form>
         <SingleResult model={model} locale={locale} entityContext={entityContext} />
         <nav className={styles.contextLinks} aria-label={c.evidence}>

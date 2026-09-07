@@ -9,8 +9,8 @@ describe('building official facts panel', () => {
     const html = renderToStaticMarkup(
       <BuildingOfficialFacts districtSlug="gangnam-gu" buildingId="gangnam-alpha" />,
     );
-    expect(html).toContain('data-building-section="official-facts"');
-    expect(html).toContain('Loading additional official building facts');
+    expect(html).toBe('');
+    expect(html).not.toContain('Loading additional official building facts');
     expect(html).not.toMatch(/households|parking spaces|approval date/i);
   });
 

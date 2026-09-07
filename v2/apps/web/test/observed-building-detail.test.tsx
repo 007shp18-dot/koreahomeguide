@@ -50,7 +50,7 @@ describe('observed building detail', () => {
       expect(html).toContain(value);
     }
     expect(html).toContain('data-building-detail="identity-only"');
-    expect(html).toContain('data-photo-state="unavailable"');
+    expect(html).not.toContain('data-photo-state="unavailable"');
     expect(html).not.toContain('Publication boundary');
     expect(html).not.toContain('Observed</span>');
     expect(html).not.toContain('Identity</span>');
@@ -126,7 +126,7 @@ describe('observed building detail', () => {
       searchParams: Promise.resolve({}),
     }));
 
-    expect(html).toContain('인접성 데이터를 확인할 수 없습니다.');
+    expect(html).not.toContain('인접성 데이터를 확인할 수 없습니다.');
     expect(html).not.toContain('Proximity data unavailable');
   });
 
@@ -145,8 +145,8 @@ describe('observed building detail', () => {
     }));
 
     expect(html).toContain('data-building-detail="identity-only"');
-    expect(html).toContain('data-building-media="location-only"');
-    expect(html).toContain('Building photo unavailable');
+    expect(html).not.toContain('data-building-media="location-only"');
+    expect(html).not.toContain('Building photo unavailable');
     expect(html).not.toContain('not a listing photo');
   });
 
@@ -223,7 +223,8 @@ describe('observed building detail', () => {
         }
       : { status: state, coordinateStatus: 'unavailable', nearestStation: null, nearestSchool: null } as const;
     const html = renderToStaticMarkup(<BuildingProximityDisclosure proximity={proximity} locale={locale} />);
-    expect(html).toContain(expected);
+    expect(html).not.toContain(expected);
+    expect(html).toBe('');
   });
 
   it.each([

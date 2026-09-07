@@ -93,8 +93,6 @@ function MarketsHub() {
   const rows = [
     ['Signed price evidence', 'Live', 'Housing transactions', 'Area aggregates'],
     ['District or area exploration', 'Live', 'Available by dataset', 'Released area comparisons'],
-    ['Active property listings', 'Not offered', 'Not offered', 'Not offered'],
-    ['Personalized investment advice', 'Not offered', 'Not offered', 'Not offered'],
   ] as const;
   return (
     <>
