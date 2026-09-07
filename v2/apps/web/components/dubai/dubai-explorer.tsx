@@ -261,7 +261,7 @@ export function DubaiExplorer({
         <div className={styles.areaResults} aria-live="polite" aria-busy={query !== deferredQuery}>
           {visible.map(({ area, segment, sale }) => <article key={area.id} data-selected={area.slug === selectedArea}>
             <button type="button" aria-pressed={area.slug === selectedArea} onClick={() => setSelectedArea((current) => current === area.slug ? null : area.slug)}>
-              <span><strong>{area.name}</strong><small>{housing === 'apartment' ? 'Apartment' : 'Villa'} · {stage === 'ready' ? 'Ready' : 'Off-Plan'}</small></span>
+              <span><strong title={area.name}>{area.name}</strong><small>{housing === 'apartment' ? 'Apartment' : 'Villa'} · {stage === 'ready' ? 'Ready' : 'Off-Plan'}</small></span>
             </button>
             <dl className={styles.areaMetrics}>
               <div><dt>Median sale price</dt><dd>{money(sale.medianPriceAed)}</dd></div>
@@ -288,7 +288,7 @@ export function DubaiExplorer({
         <GooglePlaceMap market="dubai" browserKey={browserKey} points={mapPoints} onSelectPoint={setSelectedArea} showAddressSearch={false} />
         {selected ? <aside className={styles.mapSelection}>
           <button type="button" onClick={() => setSelectedArea(null)} aria-label="Close area preview">Close</button>
-          <h3>{selected.area.name}</h3>
+          <h3 title={selected.area.name}>{selected.area.name}</h3>
           <p>{housing === 'apartment' ? 'Apartment' : 'Villa'} · {stage === 'ready' ? 'Ready' : 'Off-Plan'}</p>
           <strong>{money(selected.sale.medianPriceAed)}</strong>
           <span>{moneyPerSqm(selected.sale.medianPricePerSqmAed)} · {selected.sale.n.toLocaleString('en')} registered sales</span>
