@@ -266,11 +266,11 @@ export function KoreaEvidenceBuildingDetail({
   facts?: ReactNode;
   locale?: ProductLocale;
 }>) {
-  const areaLabel = areaLabels[model.selection.areaBand];
+  const areaLabel = locale === 'ko' ? {all:'전체 면적','under-40':'40㎡ 미만','40-60':'40~60㎡','60-85':'60~85㎡','85-plus':'85㎡ 이상'}[model.selection.areaBand] : areaLabels[model.selection.areaBand];
   const transactionLabel = locale === 'ko' ? {sale:'매매',jeonse:'전세',monthly:'월세'}[model.selection.transaction] : transactionLabels[model.selection.transaction];
   const primaryLabel = locale === 'ko' ? {'sale-price':'매매가격 중앙값',deposit:'보증금 중앙값','monthly-rent':'월세 중앙값'}[model.evidence.primaryMetric] : primaryMetricLabels[model.evidence.primaryMetric];
   const publicationHeading = model.evidence.state === 'published'
-    ? (locale === 'ko' ? '같은 면적대 신고 거래' : 'Reported contracts · same size')
+    ? (model.selection.areaBand === 'all' ? (locale === 'ko' ? '이 단지 신고 거래 · 전체 면적' : 'Reported contracts · all sizes') : (locale === 'ko' ? '같은 면적대 신고 거래' : 'Reported contracts · same size'))
     : model.evidence.state === 'withheld'
       ? (locale === 'ko' ? '최근 신고 거래' : 'Recent reported contracts')
       : (locale === 'ko' ? '선택한 조건의 신고 거래가 없습니다' : 'No matching contracts');
@@ -296,7 +296,7 @@ export function KoreaEvidenceBuildingDetail({
             <h1>{buildingDisplayName(model.building.officialName, locale)}{locale === 'ko' ? ' 실거래가' : ' · reported prices'}</h1>
             <p>{neighborhoodDisplayName(model.building.neighborhoodName, locale)} · {locale === 'ko' ? model.district.nameKo : model.district.nameEn}</p>
             {model.evidence.medianWon !== null && <p className={styles.heroPrice}><strong>{money(model.evidence.medianWon)}</strong> <span>{locale === 'ko' ? '중앙값' : 'median'}</span></p>}
-            <p>{model.evidence.sampleLabel} · {model.period}</p><p className={styles.sourceLine}>{sourceLine}</p>
+            <p>{locale === 'ko' ? model.evidence.sampleLabel.replace(/ reported contracts?/, '건') : model.evidence.sampleLabel} · {model.period}</p><p className={styles.sourceLine}>{sourceLine}</p>
             <dl className={styles.factGrid}>
               <div><dt>Transaction</dt><dd>{transactionLabel}</dd></div>
               <div><dt>Area cohort</dt><dd>{areaLabel}</dd></div>
@@ -322,7 +322,7 @@ export function KoreaEvidenceBuildingDetail({
           </div>
           <dl className={styles.findingGrid}>
             {model.evidence.medianWon !== null && <div><dt>{primaryLabel}</dt><dd>{money(model.evidence.medianWon)}</dd></div>}
-            <div><dt>{locale === 'ko' ? '신고 거래 수' : 'Reported contracts'}</dt><dd>{model.evidence.sampleLabel}</dd></div>
+            <div><dt>{locale === 'ko' ? '신고 거래 수' : 'Reported contracts'}</dt><dd>{locale === 'ko' ? model.evidence.sampleLabel.replace(/ reported contracts?/, '건') : model.evidence.sampleLabel}</dd></div>
             {sqmMedian !== null && <div><dt>{locale === 'ko' ? '㎡당 가격 중앙값' : 'Median price per m²'}</dt><dd>{money(sqmMedian)}</dd><small>{locale === 'ko' ? `최근 공개 거래 ${pricePerSqmValues.length}건 기준` : `${pricePerSqmValues.length} recent displayed contracts`}</small></div>}
             {model.evidence.middleHalfLabel && <div><dt>{locale === 'ko' ? '중간 50%' : 'Middle half'}</dt><dd>{model.evidence.middleHalfLabel}</dd></div>}
             
@@ -365,7 +365,7 @@ export function KoreaEvidenceBuildingDetail({
                       {model.evidence.primaryMetric === 'monthly-rent'
                         ? <td>{row.filedDepositLabel ?? '—'}</td>
                         : null}
-                      <td>{row.areaSqm > 0 ? money(row.primaryWon / row.areaSqm) : '—'}</td><td>{row.contractType ?? (row.floor === null ? 'Reported contract' : `Floor ${row.floor}`)}</td>
+                      <td>{row.areaSqm > 0 ? money(row.primaryWon / row.areaSqm) : '—'}</td><td>{row.contractType ?? (row.floor === null ? (locale === 'ko' ? '신고 계약' : 'Reported contract') : locale === 'ko' ? `${row.floor}층` : `Floor ${row.floor}`)}</td>
                     </tr>
                   ))}
                 </tbody>
