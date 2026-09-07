@@ -25,7 +25,7 @@ test('budget shortlist saves conditions and tracks newly observed records across
   await page.reload();
   await expect(page.getByLabel('매매 예산 상한 · 억 원')).toHaveValue('9');
   await expect(page.getByRole('heading', { name: /관심 단지 1\/30/ })).toBeVisible();
-  await expect(page.getByText('새로 확인된 기록', { exact: false })).toHaveCount(0);
+  await expect(page.getByText(/^새로 확인된 기록 \d+건$/)).toHaveCount(0);
   updated = true;
   await page.getByRole('button', { name: '거래 변화 확인' }).click();
   await expect(page.getByText('새로 확인된 기록 1건', { exact: true })).toBeVisible();
