@@ -75,7 +75,7 @@ export function ReadyOfficialFacts({ envelope }: Readonly<{ envelope: Envelope }
     {grid(registerProfile, styles.sourceGrid)}
     {nearbyProfile.length === 0 ? null : <>
       <div className={styles.sectionHeading}><p>Official nearby facilities</p><h3>Transit, schools and local services</h3></div>
-      {grid(nearbyProfile, styles.sourceGrid)}
+      {grid(nearbyProfile, `${styles.sourceGrid} ${styles.nearbyGrid}`)}
     </>}
     {grid(sources, styles.sourceGrid)}
   </>;
@@ -120,7 +120,7 @@ export function BuildingOfficialFacts({ districtSlug, buildingId, observedFacts 
 
   const dataState = state === 'loading' ? 'loading' : state === 'error' || state.facts.status === 'unavailable' ? 'unavailable' : 'ready';
   return (
-    <section className={styles.evidence} data-building-section="official-facts" data-building-facts={dataState}>
+    <section className={`${styles.evidence} ${styles.officialFacts}`} data-building-section="official-facts" data-building-facts={dataState}>
       <div className={styles.sectionHeading}><p>{locale === 'ko' ? '건물 정보' : 'Building facts'}</p><h2>{locale === 'ko' ? '건물 기본 정보' : 'Property profile'}</h2></div>
       {observedFacts.length === 0 ? null : <dl className={styles.findingGrid}>{observedFacts.map((fact) => <div key={fact.label}><dt>{fact.label}</dt><dd>{fact.value}</dd></div>)}</dl>}
       <BuildingProximityDisclosure proximity={proximity} locale={locale} />
