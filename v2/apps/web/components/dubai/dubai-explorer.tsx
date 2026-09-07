@@ -297,5 +297,6 @@ export function DubaiExplorer({
         <p className={styles.mapDisclosure}>Markers locate areas. They do not represent units or listings.</p>
       </section>}
     />
+    <p><Link href="/guides/dubai-ready-apartment-buying-budget-guide/">Ready apartment buying guide: budgets, costs and ownership checks</Link></p>
   </div>;
 }

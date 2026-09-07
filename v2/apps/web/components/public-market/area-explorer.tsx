@@ -1210,6 +1210,7 @@ function ReadyAreaExplorer({
         </section>
       ) : null}
 
+    <p><Link href="/guides/seoul-apartment-buying-budget-guide/">{locale === 'ko' ? '서울 예산별 매수 가이드 (영문)' : 'Apartment buying guide: budgets, costs and ownership checks'}</Link></p>
       <PublicSourceBoundary
         model={model.source}
         locale={locale}

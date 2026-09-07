@@ -13,7 +13,7 @@ import { EDITORIAL_PORTFOLIO, listPortfolioRecords } from '../content/portfolio-
 
 const officialHosts = new Set([
   'www.data.go.kr', 'data.gov.sg', 'centers.ibs.re.kr',
-  'dubailand.gov.ae',
+  'dubailand.gov.ae', 'u.ae', 'www.sla.gov.sg', 'www.easylaw.go.kr',
   'www.investkorea.org', 'english.seoul.go.kr', 'm.easylaw.go.kr',
   'www.law.go.kr', 'rt.molit.go.kr', 'www.molit.go.kr', 'land.seoul.go.kr',
   'www.fsc.go.kr', 'www.iras.gov.sg', 'www.hdb.gov.sg', 'www.ura.gov.sg',
@@ -26,10 +26,10 @@ function sectionCount(body: string): number {
 }
 
 describe('pre-AdSense reviewed launch portfolio', () => {
-  it('keeps the 37-record portfolio and public English parameters', () => {
+  it('keeps the 40-record portfolio and public English parameters', () => {
     const english = listPortfolioRecords('en');
-    expect(EDITORIAL_PORTFOLIO).toHaveLength(37);
-    expect(english).toHaveLength(29);
+    expect(EDITORIAL_PORTFOLIO).toHaveLength(40);
+    expect(english).toHaveLength(32);
     expect(generateEnglishArticleParams()).toEqual(english
       .filter(({ type }) => type === 'market-brief' || type === 'data-story')
       .map(({ slug }) => ({ slug })));
