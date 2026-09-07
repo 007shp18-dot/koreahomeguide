@@ -16,6 +16,7 @@ export async function GET(request: Request) {
   const sql = contentDatabase();
   if (sql === null) return NextResponse.json({ error: 'not_configured' }, { status: 503 });
   try {
+    // Road addresses are populated by official enrichment; inventory seed addresses are legal-only.
     const rows = await sql`
       SELECT key, coalesce(nullif(road_address, ''), legal_address) AS address, latitude, longitude,
         (nullif(trim(road_address), '') IS NOT NULL) AS verified_address
