@@ -91,7 +91,7 @@ function selectedMetricCopy(
         monthly: '서울 구별 신고 월세를 비교합니다.',
         sale: '서울 구별 신고 매매가를 비교합니다.',
       }[transaction],
-      heroDescription: '서울 25개 구의 공식 신고 계약 근거입니다. 거래유형·건물유형·계약구분을 선택할 수 있으며, 표본 5건 미만의 금액은 게시하지 않습니다.',
+      heroDescription: '서울 25개 구의 실거래가입니다. 거래·건물·계약 유형을 선택해 비교하세요. 거래가 5건 미만이면 가격을 표시하지 않습니다.',
       mapHeading: {
         jeonse: '구 중앙값 전세보증금',
         monthly: '구 중앙값 신고 월세',
@@ -828,7 +828,7 @@ function ReadyAreaExplorer({
               <span>{locale === 'ko' ? '정렬' : 'Sort'}</span>
               <select value={sortMode} onChange={(event) => setSortMode(event.currentTarget.value as typeof sortMode)}>
                 <option value="latest">{locale === 'ko' ? '최근 신고순' : 'Newest filing'}</option>
-                <option value="evidence">{locale === 'ko' ? '근거 많은 순' : 'Most evidence'}</option>
+                <option value="evidence">{locale === 'ko' ? '거래 많은 순' : 'Most evidence'}</option>
                 <option value="name">{locale === 'ko' ? '건물명순' : 'Building name'}</option>
               </select>
             </label>
@@ -852,12 +852,12 @@ function ReadyAreaExplorer({
           ? `${matchingBuildingCount.toLocaleString(locale === 'ko' ? 'ko-KR' : 'en-US')}${locale === 'ko' ? '개 건물' : ` ${buildingCountLabel}`}`
           : locale === 'ko' ? '서울 25개 구' : '25 Seoul districts'} · {model.source.period}</strong>
         <span>{!mapDrilledToDistrict
-          ? (locale === 'ko' ? '구를 선택하면 동별 관측 건물 수를 볼 수 있습니다.' : 'Choose a district to see observed building counts by neighborhood.')
+          ? (locale === 'ko' ? '구를 선택하면 동별로 자료에 포함된 건물 수를 볼 수 있습니다.' : 'Choose a district to see observed building counts by neighborhood.')
           : showBuildingLayer
             ? searchPending
               ? (locale === 'ko' ? '현재 목록에서 검색 중입니다. Enter를 누르면 모든 결과 페이지를 검색합니다.' : 'Filtering loaded results. Press Enter to search all result pages.')
               : (locale === 'ko' ? '전체 검색 결과: 개별 위치와 지역 묶음을 구분합니다. 다른 목록 페이지의 건물도 지역 묶음에 포함됩니다.' : 'All matches: individual locations and area-only groups, including buildings on other result pages.')
-            : (locale === 'ko' ? '동별 수치는 신고 근거에 포함된 관측 건물 수입니다.' : 'Neighborhood counts cover observed buildings in the evidence inventory.')}</span>
+            : (locale === 'ko' ? '신고 자료에 포함된 건물 수를 동별로 표시합니다.' : 'Neighborhood counts cover observed buildings in the evidence inventory.')}</span>
         <div className={styles.toolbarViews}>
           <AreaExplorerViewSwitcher
             current={currentView}
@@ -885,7 +885,7 @@ function ReadyAreaExplorer({
               ? (locale === 'ko' ? '구 선택' : 'Choose a district')
               : showBuildingLayer
                 ? (locale === 'ko' ? '건물 위치와 신고 가격' : 'Building locations and reported prices')
-                : (locale === 'ko' ? '동별 관측 건물 수' : 'Observed buildings by neighborhood')}</strong>
+                : (locale === 'ko' ? '동별 자료 포함 건물 수' : 'Observed buildings by neighborhood')}</strong>
           </div>
           {mapDrilledToDistrict ? (
             <button className={styles.mapLevelButton} type="button" onClick={showAllDistricts}>
@@ -982,7 +982,7 @@ function ReadyAreaExplorer({
                 {model.buildingAvailability.status === 'not_loaded' ? (
                   <p data-building-inventory="fallback">
                     {locale === 'ko'
-                      ? '관측 건물 인벤토리가 없어 현재 가격 게시 가능 건물만 표시합니다.'
+                      ? '전체 건물 목록을 불러올 수 없어 가격 자료가 있는 건물만 표시합니다.'
                       : 'Observed inventory unavailable. Showing the verified price-ready fallback.'}
                   </p>
                 ) : null}
@@ -1037,7 +1037,7 @@ function ReadyAreaExplorer({
                               <small>{model.evidenceSelection.areaBand === 'legacy-45-55'
                                 ? `${copy.jeonseObservations} · ${building.jeonseObservationCount} · ${copy.monthlyObservations} · ${building.monthlyObservationCount}`
                                 : building.transaction === 'sale'
-                                  ? `${locale === 'ko' ? '매매 관측' : 'Sale filings'} ${building.observationCount}`
+                                  ? `${locale === 'ko' ? '매매 거래' : 'Sale filings'} ${building.observationCount}`
                                   : building.transaction === 'monthly'
                                     ? `${copy.monthlyObservations} ${building.monthlyObservationCount}`
                                     : `${copy.jeonseObservations} ${building.jeonseObservationCount}`}</small>
@@ -1151,7 +1151,7 @@ function ReadyAreaExplorer({
             ? <p>{copy.buildingArtifactMissing}</p>
             : <p>{model.coverage.unpublished.retainedBuildingsBelowMinimum}{countSeparator}{copy.retainedBuildingsBelowMinimum}</p>}
           <p>{locale === 'ko' ? copy.sourceCandidatesMissing : model.coverage.unpublished.sourceBuildingCandidates.reason}</p>
-          <p>{locale === 'ko' ? '이 수치는 전체 관측 건물 수가 아닙니다.' : 'Published cohorts are not the total observed building inventory.'}</p>
+          <p>{locale === 'ko' ? '이 수치는 자료에 포함된 전체 건물 수와 다릅니다.' : 'Published cohorts are not the total observed building inventory.'}</p>
         </div>
       </details>
 
@@ -1164,12 +1164,12 @@ function ReadyAreaExplorer({
         >
           <div className={styles.sectionHeading}>
             <p>{copy.buildingsEyebrow}</p>
-            <h2 id="building-table-heading">{locale === 'ko' ? '필터된 건물 근거' : 'Filtered building evidence'}</h2>
+            <h2 id="building-table-heading">{locale === 'ko' ? '조건에 맞는 건물별 거래' : 'Filtered building evidence'}</h2>
           </div>
           <div className={styles.tableWrap}>
             <table className={styles.table}>
               <caption>{locale === 'ko'
-                ? '현재 필터와 신고기간에 해당하는 건물 근거'
+                ? '선택한 조건과 기간의 건물별 거래'
                 : 'Building evidence for the current filters and reporting period'}</caption>
               <thead>
                 <tr>
@@ -1178,7 +1178,7 @@ function ReadyAreaExplorer({
                   <th scope="col">{copy.median}</th>
                   <th scope="col">{locale === 'ko' ? '건물 유형' : 'Building type'}</th>
                   <th scope="col">{locale === 'ko' ? '신고 건수' : 'Filings'}</th>
-                  <th scope="col">{locale === 'ko' ? '관측 기간' : 'Observed period'}</th>
+                  <th scope="col">{locale === 'ko' ? '집계 기간' : 'Observed period'}</th>
                   <th scope="col">{copy.evidence}</th>
                 </tr>
               </thead>
@@ -1214,7 +1214,7 @@ function ReadyAreaExplorer({
             </table>
           </div>
           <p className={styles.tableNote}>{locale === 'ko'
-            ? '근거가 없는 값은 —로 표시합니다. 빈 값을 기준으로 순위를 만들지 않습니다.'
+            ? '자료가 없는 값은 —로 표시하며 순위에서 제외합니다.'
             : 'Unbound values display —. Empty values are never treated as a ranking signal.'}</p>
         </section>
       ) : null}

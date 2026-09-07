@@ -1,3 +1,4 @@
+import { KOREAN_BUYING_GUIDES } from './ko/buying-guides';
 import { BUYING_GUIDES } from './en/buying-guides';
 import { MONTHLY_REPORTS } from './en/monthly-reports';
 import { validateInfographicSpec } from '../lib/infographics/infographic-validator';
@@ -6,7 +7,7 @@ import type { EditorialPortfolioRecord } from './portfolio-types';
 import { CHINESE_PORTFOLIO } from './zh-CN/portfolio';
 
 const identifier = /^[a-z0-9]+(?:-[a-z0-9]+)*$/u;
-const route = /^\/(?:news|guides|zh-cn)\//u;
+const route = /^\/(?:news|guides|zh-cn|ko)\//u;
 
 function requiredText(value: unknown, label: string): string {
   if (typeof value !== 'string' || value.trim().length === 0) {
@@ -87,7 +88,8 @@ export function validateEditorialPortfolio(values: readonly unknown[]): readonly
 export const EDITORIAL_PORTFOLIO = Object.freeze(validateEditorialPortfolio(Object.freeze([
   ...ENGLISH_PORTFOLIO,
   ...MONTHLY_REPORTS,
-  ...BUYING_GUIDES,
+  ...BUYING_GUIDES.map(article => ({ ...article, translationGroupId: article.slug })),
+  ...KOREAN_BUYING_GUIDES,
   ...CHINESE_PORTFOLIO,
 ])));
 

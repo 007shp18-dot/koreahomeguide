@@ -47,22 +47,22 @@ export const CHECK_COPY = Object.freeze({
     guide: 'Read the contract guides',
   }),
   ko: Object.freeze({
-    nav: '가격 확인', mode: '확인 방식', single: '매물 하나의 가격 확인', compare: '두 조건 비교',
-    conditions: '조건 / 건물 정보', district: '자치구', housing: '주택 유형', area: '전용면적',
-    building: '관측 건물 ID', buildingHint: '선택. Explore의 안정적인 관측 건물 ID를 사용하세요.',
+    nav: '가격 확인', mode: '확인 방식', single: '매물 가격 비교', compare: '두 조건 비교',
+    conditions: '매물 정보', district: '자치구', housing: '주택 유형', area: '전용면적',
+    building: '건물 ID', buildingHint: '선택. Explore의 안정적인 건물 ID를 사용하세요.',
     offer: '조건', transaction: '거래 유형', sale: '매매', jeonse: '전세', monthly: '월세',
-    price: '신고 매매가격', deposit: '신고 보증금', rent: '신고 월세', submitCompare: '두 조건 비교',
-    result: '결과', blank: '두 조건을 입력한 뒤 조건이 맞는 신고 근거와 비교하세요.',
-    unavailable: '이 비교를 제공할 수 없습니다', tradeoff: '절충 비교 — 우위를 정하지 않습니다',
-    lower: '의 시장 대비 위치가 더 낮습니다.', equal: '공개 정밀도에서 두 조건이 같습니다.',
-    equivalent: '의 검증된 월 환산비용이 더 낮습니다.', keyFigures: '핵심 수치',
-    upfront: '초기 현금', recurring: '정기 현금흐름', marketPosition: '해당 시장 내 위치',
-    notModeled: '모델링하지 않음', notApplicable: '해당 없음',
-    percentile: '가격 백분위', evidence: '시장 근거', disclosure: '산출 / 출처 공개',
-    sample: '건의 신고 계약', median: '신고 중앙값', middle: '중간 50%', period: '근거 기간',
-    window: '근거 기간', salePeriod: '매매 근거 기간', rentPeriod: '임대차 근거 기간', conversionPeriod: '전환율 기간',
+    price: '매매가격', deposit: '보증금', rent: '월세', submitCompare: '두 조건 비교',
+    result: '결과', blank: '두 집의 조건을 입력해 비슷한 실거래가와 비교하세요.',
+    unavailable: '이 비교를 제공할 수 없습니다', tradeoff: '조건이 달라 어느 쪽이 유리한지 단정하기 어렵습니다',
+    lower: '의 가격이 비슷한 거래에서 더 낮은 편입니다.', equal: '표시되는 가격 수준에서는 두 조건이 같습니다.',
+    equivalent: '의 월 환산 비용이 더 낮습니다.', keyFigures: '핵심 수치',
+    upfront: '초기 현금', recurring: '매달 내는 금액', marketPosition: '비슷한 거래와 비교',
+    notModeled: '계산에 미반영', notApplicable: '해당 없음',
+    percentile: '가격 백분위', evidence: '비교에 사용한 거래', disclosure: '계산 방법·출처',
+    sample: '건의 신고 계약', median: '거래가격 중앙값', middle: '중간 50%', period: '집계 기간',
+    window: '집계 기간', salePeriod: '매매 집계 기간', rentPeriod: '임대차 집계 기간', conversionPeriod: '전환율 기간',
     reference: '시장 참고자료입니다. 대출금리·세금·보유기간·상승률·미래가치를 가정하지 않습니다.',
-    explore: 'Explore에서 단지 찾기',
+    explore: '실거래가에서 단지 찾기',
     guide: '계약 가이드 읽기',
   }),
 } as const);
@@ -74,7 +74,7 @@ export function completedMonthWindowLabel(
   locale: ProductLocale = 'en',
 ): string {
   const count = locale === 'ko'
-    ? `${window.completedMonthCount}개월 완료`
+    ? `${window.completedMonthCount}개월 집계`
     : `${window.completedMonthCount} completed months`;
   return `${count} · ${window.startMonth}–${window.endMonth}`;
 }

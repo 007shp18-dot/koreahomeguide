@@ -51,15 +51,17 @@ export function buildBreadcrumbJsonLd(
 export function editorialLanguageAlternates(
   article: EditorialPortfolioRecord,
   records: readonly EditorialPortfolioRecord[],
-): Readonly<{ en: `/${string}`; 'zh-Hans': `/${string}` }> | undefined {
+): Readonly<{ en: `/${string}`; ko?: `/${string}`; 'zh-Hans'?: `/${string}` }> | undefined {
   if (article.translationGroupId === null) return undefined;
   const group = records.filter(({ translationGroupId }) => translationGroupId === article.translationGroupId);
   const english = group.find(({ locale }) => locale === 'en');
   const chinese = group.find(({ locale }) => locale === 'zh-CN');
-  if (english === undefined || chinese === undefined) return undefined;
+  const korean = group.find(({ locale }) => locale === 'ko');
+  if (english === undefined || (chinese === undefined && korean === undefined)) return undefined;
   return Object.freeze({
     en: english.canonicalHref as `/${string}`,
-    'zh-Hans': chinese.canonicalHref as `/${string}`,
+    ...(chinese ? { 'zh-Hans': chinese.canonicalHref as `/${string}` } : {}),
+    ...(korean ? { ko: korean.canonicalHref as `/${string}` } : {}),
   });
 }
 

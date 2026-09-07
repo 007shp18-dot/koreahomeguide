@@ -138,9 +138,9 @@ describe('Korean embedded product components', () => {
       '월세',
       '주택 유형',
       '결과',
-      '시장 근거',
+      '비교에 사용한 거래',
       '두 조건 비교',
-      '7개월 완료',
+      '7개월 집계',
     ]) expect(html).toContain(visible);
     expect(html).toContain('href="/ko/kr/seoul/explore"');
     expect(html).not.toMatch(/Offer A|Monthly rent|Housing type|Evidence boundary|Reset/);
@@ -159,8 +159,8 @@ describe('Korean embedded product components', () => {
       '전세',
       '월세',
       '매매',
-      '검증된 커버리지',
-      '구 중앙값 전세보증금',
+      '데이터 범위',
+      '구별 전세보증금 중앙값',
       '신규 계약',
       '표본',
       '출처와 한계',
@@ -189,7 +189,7 @@ describe('Korean embedded product components', () => {
       '서울 구별 실거래가 비교',
       '신고 전세보증금 중앙값',
       '최근 비교',
-      '중간 절반 분포 폭',
+      '중간 50% 구간 분포 폭',
       '신고 계약 표본 수',
       '순위 해석의 한계',
       '2026년 1월',

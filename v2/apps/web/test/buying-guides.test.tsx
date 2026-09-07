@@ -1,3 +1,6 @@
+import { KOREAN_BUYING_GUIDE_DATA, KOREAN_BUYING_GUIDES } from '../content/ko/buying-guides';
+import { EDITORIAL_PORTFOLIO } from '../content/portfolio-manifest';
+import { editorialLanguageAlternates } from '../lib/public-metadata';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { BUYING_GUIDE_DATA } from '../content/en/buying-guide-data';
@@ -44,5 +47,27 @@ describe('budget buying guides', () => {
     const html = renderToStaticMarkup(<GlobalProductHub kind="guides" guideMarket="dubai" />);
     expect(html).toContain('dubai-ready-apartment-buying-budget-guide');
     expect(html).not.toContain('seoul-apartment-buying-budget-guide');
+  });
+});
+
+
+describe('Korean buying guide integrity', () => {
+  it('preserves every underlying transaction and budget from the English guide', () => {
+    KOREAN_BUYING_GUIDE_DATA.forEach((guide, index) => {
+      const original = BUYING_GUIDE_DATA[index]!;
+      expect(guide.bands.map(({cap, eligible, examples}) => ({cap, eligible, examples:examples.map(({records,area,price,median,n,total,band})=>({records,area,price,median,n,total,band}))}))).toEqual(original.bands.map(({cap, eligible, examples}) => ({cap, eligible, examples:examples.map(({records,area,price,median,n,total,band})=>({records,area,price,median,n,total,band}))})));
+      const html=renderToStaticMarkup(<BuyingGuide guide={guide} locale="ko"/>);
+      expect(html).toContain('실제 거래 내역 보기');
+      expect(html).toContain('위 항목 합계');
+      expect(html).toContain('계약 전 체크리스트');
+      expect(html).not.toMatch(/NaN|undefined|Buyer profile|View transaction evidence|Subtotal of displayed items/);
+    });
+  });
+  it('links each translated guide to its English canonical and source set', () => {
+    for (const guide of KOREAN_BUYING_GUIDES) {
+      const original = BUYING_GUIDES.find(article=>article.slug===guide.slug)!;
+      expect(guide.sources.map(({href})=>href)).toEqual(original.sources.map(({href})=>href));
+      expect(editorialLanguageAlternates(guide, EDITORIAL_PORTFOLIO)).toEqual({en:original.canonicalHref,ko:guide.canonicalHref});
+    }
   });
 });

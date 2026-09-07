@@ -34,9 +34,11 @@ const editorialLocalizedPairs: readonly LocalizedPair[] = Object.freeze(EDITORIA
   if (group[0]?.id !== record.id) return [];
   const en = group.find(({ locale }) => locale === 'en');
   const zh = group.find(({ locale }) => locale === 'zh-CN');
-  return en === undefined || zh === undefined ? [] : [Object.freeze({
+  const ko = group.find(({ locale }) => locale === 'ko');
+  return en === undefined || (zh === undefined && ko === undefined) ? [] : [Object.freeze({
     en: en.canonicalHref as `/${string}`,
-    'zh-Hans': zh.canonicalHref as `/${string}`,
+    ...(zh ? { 'zh-Hans': zh.canonicalHref as `/${string}` } : {}),
+    ...(ko ? { ko: ko.canonicalHref as `/${string}` } : {}),
   })];
 }));
 
@@ -44,9 +46,9 @@ const localizedPairs: readonly LocalizedPair[] = Object.freeze([
   Object.freeze({ en: '/passport/', ko: '/ko/passport/', 'zh-Hans': '/zh-cn/passport/' }),
   Object.freeze({ en: '/tools/', ko: '/ko/tools/', 'zh-Hans': '/zh-cn/tools/' }),
   Object.freeze({ en: '/tools/property-scenario/', ko: '/ko/tools/property-scenario/' }),
-  Object.freeze({ en: '/', 'zh-Hans': '/zh-cn/kr/seoul/' }),
+  Object.freeze({ en: '/', ko: '/ko/', 'zh-Hans': '/zh-cn/kr/seoul/' }),
   Object.freeze({ en: '/news/', 'zh-Hans': '/zh-cn/news/' }),
-  Object.freeze({ en: '/guides/', 'zh-Hans': '/zh-cn/guides/' }),
+  Object.freeze({ en: '/guides/', ko: '/ko/guides/', 'zh-Hans': '/zh-cn/guides/' }),
   Object.freeze({ en: '/kr/seoul/', ko: '/ko/kr/seoul/' }),
   Object.freeze({ en: '/kr/seoul/check/', ko: '/ko/kr/seoul/check/' }),
   Object.freeze({
@@ -56,6 +58,9 @@ const localizedPairs: readonly LocalizedPair[] = Object.freeze([
   Object.freeze({ en: '/kr/seoul/explore/', ko: '/ko/kr/seoul/explore/' }),
   Object.freeze({ en: '/kr/seoul/rankings/', ko: '/ko/kr/seoul/rankings/' }),
   Object.freeze({ en: '/kr/seoul/shortlist/', ko: '/ko/kr/seoul/shortlist/' }),
+  Object.freeze({ en: '/sg/', ko: '/ko/sg/' }),
+  Object.freeze({ en: '/ae/dubai/', ko: '/ko/ae/dubai/' }),
+  Object.freeze({ en: '/contact/', ko: '/ko/contact/' }),
   ...editorialLocalizedPairs,
 ] as const);
 
@@ -159,6 +164,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     sitemapEntry('/ko/kr/seoul/shortlist/'),
     sitemapEntry('/passport/'),
     sitemapEntry('/ko/passport/'),
+    sitemapEntry('/ko/'),
+    sitemapEntry('/ko/sg/'),
+    sitemapEntry('/ko/ae/dubai/'),
+    sitemapEntry('/ko/contact/'),
+    sitemapEntry('/ko/guides/', guideLastModified),
     sitemapEntry('/zh-cn/passport/'),
     sitemapEntry('/markets/'),
     sitemapEntry('/prices/', summaryLastModified),

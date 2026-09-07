@@ -59,4 +59,9 @@ const routes: EditorialLanguageRoutes = {
     "zh-CN": "/zh-cn/guides/buy-property-in-korea-zh/"
   }
 };
+for (const slug of ['seoul-apartment-buying-budget-guide', 'singapore-condo-buying-budget-guide', 'dubai-ready-apartment-buying-budget-guide']) {
+  const group = { en: `/guides/${slug}/`, ko: `/ko/guides/${slug}/` };
+  routes[group.en] = group;
+  routes[group.ko] = group;
+}
 export function editorialLanguageRoutes(): EditorialLanguageRoutes { return routes; }

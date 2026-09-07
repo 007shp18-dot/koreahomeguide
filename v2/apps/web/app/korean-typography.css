@@ -1,0 +1,31 @@
+/* Korean reading rhythm applies to every Korean route, including data tools.
+   Explicit element rules prevent English component tracking from being inherited. */
+html[lang='ko'] {
+  --tracking-display: -.02em;
+  --page-title-size: clamp(1.75rem, 3.5vw, 2.75rem);
+  --section-title-size: clamp(1.25rem, 2.5vw, 1.75rem);
+  --body-leading: 1.65;
+}
+html[lang='ko'] body main :is(h1, h2, h3, h4) {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+  letter-spacing: -.02em;
+  line-height: 1.4;
+}
+html[lang='ko'] body main h1 { font-size: var(--page-title-size); }
+html[lang='ko'] body main :is(p, li, label, summary) {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  letter-spacing: 0;
+  line-height: 1.65;
+}
+html[lang='ko'] body :is(button, select, input, textarea) { font-family: inherit; letter-spacing: 0; line-height: 1.5; }
+html[lang='ko'] body :is(a, button, summary) { word-break: keep-all; overflow-wrap: anywhere; }
+html[lang='ko'] body :is(nav, footer) { letter-spacing: 0; }
+html[lang='ko'] body main [data-research-page-heading] h1 { max-width: 100%; }
+html[lang='ko'] body main [data-research-page-heading] p { max-width: 42em; }
+@media (max-width: 640px) {
+  html[lang='ko'] body main h1 { font-size: clamp(1.625rem, 6vw, 2rem); }
+  html[lang='ko'] body main :is(button, summary) { height: auto; min-height: 44px; white-space: normal; }
+}

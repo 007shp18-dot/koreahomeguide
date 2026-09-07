@@ -382,7 +382,7 @@ export function KoreaEvidenceBuildingDetail({
           {model.sizeCohorts ? <SizeCohortResearch rows={model.sizeCohorts} currency="KRW" locale={locale} /> : null}
           <ul>{Object.entries(areaLabels).map(([id, label]) => <li key={id}>
             <strong>{label}</strong>
-            <span>{id === model.selection.areaBand ? `${primaryLabel} · ${model.evidence.medianLabel ?? (locale === 'ko' ? '미확인' : 'Not published')}` : (locale === 'ko' ? '선택하여 근거 확인' : 'Open this evidence cohort')}</span>
+            <span>{id === model.selection.areaBand ? `${primaryLabel} · ${model.evidence.medianLabel ?? (locale === 'ko' ? '미확인' : 'Not published')}` : (locale === 'ko' ? '선택해 거래 내역 보기' : 'Open this evidence cohort')}</span>
             <Link href={localizedSeoulHref(`/kr/seoul/explore/${model.district.slug}/${model.building.buildingId}/?transaction=${model.selection.transaction}&area=${id}${model.selection.contractGroup === 'not-applicable' ? '' : `&contractType=${model.selection.contractGroup}`}`, locale)}>{locale === 'ko' ? '이 면적 보기' : 'View size cohort'}</Link>
           </li>)}</ul>
         </section>
@@ -395,7 +395,7 @@ export function KoreaEvidenceBuildingDetail({
           { label: locale === 'ko' ? '주택 유형' : 'Housing type', value: locale === 'ko' ? ({apartment:'아파트',officetel:'오피스텔',villa_multifamily:'연립·다세대',detached:'단독·다가구'}[model.building.housingType]) : model.building.housingType },
           { label: locale === 'ko' ? '거래 유형' : 'Transaction', value: transactionLabel },
           { label: locale === 'ko' ? '면적 구간' : 'Area cohort', value: areaLabel },
-          { label: locale === 'ko' ? '근거 기간' : 'Evidence period', value: model.period },
+          { label: locale === 'ko' ? '집계 기간' : 'Evidence period', value: model.period },
         ]} /></div>
         <div data-detail-order="proximity">{facts}</div>
 

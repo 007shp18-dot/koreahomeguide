@@ -20,3 +20,9 @@
 @media (max-width: 650px) { .page { width: calc(100% - 32px); } .list { grid-template-columns: 1fr; } .list li { padding: 22px; } .list h3 { font-size: 21px; } }
 
 .page h1 { letter-spacing: normal; line-height: 1.2; }
+
+:global(html[lang='ko']) .list h3 { max-width: none; font-size: 1.25rem; line-height: 1.45; }
+:global(html[lang='ko']) .list p { max-width: none; line-height: 1.65; }
+:global(html[lang='ko']) .list a { white-space: normal; }
+:global(html[lang='ko']) .list li { gap: 18px; }
+:global(html[lang='ko']) .list h2 { margin: 12px 0 10px; font-size: 1.25rem; line-height: 1.45; font-weight: 650; }
