@@ -23,6 +23,7 @@ describe('Singapore nearby-place atomic publication migration', () => {
     expect(source).toContain('await port.verifyStage');
     expect(source).toContain('await sql.transaction');
     expect(source).toContain('nearby_place_seed_stage');
+    expect(source).toContain('jsonb_to_recordset(batch.lines)');
     expect(source).toContain('integrity_guard');
   });
 
