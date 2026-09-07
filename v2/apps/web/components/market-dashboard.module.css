@@ -382,3 +382,7 @@
   .actions { grid-template-columns: 1fr; }
   .disclosure > div { grid-template-columns: 1fr; }
 }
+
+:global(html[lang='ko']) .statement h1 { max-width: 100%; font-size: clamp(1.75rem, 3.2vw, 2.75rem); line-height: 1.35; letter-spacing: -.02em; word-break: keep-all; overflow-wrap: anywhere; text-wrap: balance; }
+:global(html[lang='ko']) .statement > p:last-child { max-width: 34em; line-height: 1.65; word-break: keep-all; overflow-wrap: anywhere; }
+:global(html[lang='ko']) .eyebrow { letter-spacing: .015em; }

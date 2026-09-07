@@ -73,3 +73,8 @@
 .candidateSearch{display:grid;gap:8px;margin-top:16px;color:#536176;font-size:14px;line-height:1.5}
 .candidateSearch input{width:100%;min-width:0;min-height:44px;box-sizing:border-box;padding:8px 12px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#111827;font:inherit}
 .candidateSearch input:focus-visible{outline:2px solid #1557d5;outline-offset:2px}
+
+:global(html[lang='ko']) .entry h1 { max-width: 21em; font-size: clamp(1.5rem, 2.5vw, 2rem); line-height: 1.4; letter-spacing: -.015em; word-break: keep-all; overflow-wrap: anywhere; text-wrap: balance; }
+:global(html[lang='ko']) .entry .lead { max-width: 36em; margin-top: 12px; line-height: 1.65; word-break: keep-all; overflow-wrap: anywhere; }
+:global(html[lang='ko']) .entry .eyebrow { letter-spacing: .02em; margin-bottom: 12px; }
+:global(html[lang='ko']) .entryForm button { white-space: normal; line-height: 1.5; }

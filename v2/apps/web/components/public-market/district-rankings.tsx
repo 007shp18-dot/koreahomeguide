@@ -375,7 +375,7 @@ function ReadyRankings({
       <div className={styles.frame} data-ranking-frame="contained">
         <header className={styles.hero}>
           <div className={styles.heroCopy}>
-            <p>{locale === 'ko' ? '서울 구별 근거 순위' : 'Seoul district rankings'}</p>
+            <p>{locale === 'ko' ? '서울 구별 실거래가 비교' : 'Seoul district rankings'}</p>
             <h1 id="district-rankings-heading">{activeTitle}</h1>
             <p>{activeDefinition}</p>
             <p className={styles.exclusion}>

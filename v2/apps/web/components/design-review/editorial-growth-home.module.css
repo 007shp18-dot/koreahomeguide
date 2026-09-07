@@ -39,3 +39,14 @@
   .meta { margin-bottom: 10px; }
   .resources { gap: 4px 24px; }
 }
+
+:global(html[lang='ko']) .section h2 { font-size: clamp(1.25rem, 2vw, 1.5rem); line-height: 1.4; letter-spacing: -.015em; word-break: keep-all; overflow-wrap: anywhere; }
+:global(html[lang='ko']) .section > p { max-width: 48rem; margin: 0 0 1.25rem; font-size: 1rem; line-height: 1.65; word-break: keep-all; overflow-wrap: anywhere; }
+:global(html[lang='ko']) .marketBody h3 { font-size: 1.375rem; line-height: 1.35; letter-spacing: -.015em; }
+:global(html[lang='ko']) .marketBody p { font-size: .9375rem; line-height: 1.6; word-break: keep-all; overflow-wrap: anywhere; }
+:global(html[lang='ko']) .marketAction { white-space: normal; word-break: keep-all; overflow-wrap: anywhere; line-height: 1.5; padding-block: .5rem; margin-top: 0; }
+:global(html[lang='ko']) .marketAction:first-of-type { margin-top: auto; }
+@media (max-width: 380px) {
+  :global(html[lang='ko']) .marketCard { grid-template-columns: 72px minmax(0, 1fr); }
+  :global(html[lang='ko']) .marketBody { padding: 12px; }
+}

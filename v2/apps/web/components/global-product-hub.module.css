@@ -721,3 +721,7 @@
   outline: 2px solid var(--accent);
   outline-offset: 4px;
 }
+
+:global(html[lang='ko']) .section h2 { line-height: 1.4; letter-spacing: -.015em; word-break: keep-all; overflow-wrap: anywhere; }
+:global(html[lang='ko']) .productGrid h3 { font-size: 1.125rem; line-height: 1.45; letter-spacing: -.015em; word-break: keep-all; overflow-wrap: anywhere; }
+:global(html[lang='ko']) .section p { font-size: 1rem; line-height: 1.65; word-break: keep-all; overflow-wrap: anywhere; }
