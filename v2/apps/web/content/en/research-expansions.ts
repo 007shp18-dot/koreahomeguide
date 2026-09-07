@@ -299,10 +299,17 @@ A falling regional index is not sufficient reason to call a project cheap. Ident
 export function enrichEnglishRecord(record: EditorialPortfolioRecord): EditorialPortfolioRecord {
   const expansion = expansions[record.slug];
   if (!expansion) return record;
+  const clarifiedOnSeptember7 = [
+    'seoul-sale-market-monthly-brief', 'seoul-jeonse-market-monthly-brief',
+    'seoul-monthly-rent-market-brief', 'seoul-new-renewal-rent-gap',
+    'korea-deposit-monthly-rent-cost-structure', 'wolse-vs-jeonse',
+  ].includes(record.slug);
   const sources = new Map(record.sources.map((item) => [item.id, item]));
   for (const item of expansion.sources ?? []) sources.set(item.id, item);
   return Object.freeze({ ...record, bodyMarkdown: expansion.body, sources: Object.freeze([...sources.values()]),
-    updatedAt: expansion.updatedAt ?? '2026-09-06T00:00:00.000Z',
-    revisionNote: expansion.revisionNote ?? 'Expanded practical comparisons and source-linked examples; public-source checks recorded on 6 September 2026.',
+    updatedAt: clarifiedOnSeptember7 ? '2026-09-07T21:20:00.000Z' : expansion.updatedAt ?? '2026-09-06T00:00:00.000Z',
+    revisionNote: clarifiedOnSeptember7
+      ? 'Clarified article scope and rental examples on 7 September 2026; source checks and original publication dates retained.'
+      : expansion.revisionNote ?? 'Expanded practical comparisons and source-linked examples; public-source checks recorded on 6 September 2026.',
   });
 }
