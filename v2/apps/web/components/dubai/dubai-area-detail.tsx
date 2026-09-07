@@ -86,7 +86,7 @@ export function DubaiAreaDetail({ model }: Readonly<{ model: DubaiAreaModel }>) 
             <nav className={styles.comparableLinks} aria-label="Comparable Dubai areas">
               {comparableGroups.length === 0 ? <span>No same-cohort comparison is published.</span> : comparableGroups.map((group) => <div key={`${group.housing}-${group.stage}`} data-comparable-stage={group.stage}>
                 <strong>{group.housing === 'apartment' ? 'Apartment' : 'Villa'} · {group.stage === 'ready' ? 'Ready' : 'Off-Plan'}</strong>
-                {group.areas.map((area) => <Link key={area.id} href={area.href}>{area.name}</Link>)}
+                {group.areas.map((area) => <Link key={area.id} href={`${area.href}?housing=${group.housing}&stage=${group.stage}`}>{area.name}</Link>)}
               </div>)}
             </nav>
           </section>

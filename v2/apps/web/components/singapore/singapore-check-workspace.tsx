@@ -1,4 +1,4 @@
-import { PassportLink as Link } from '../passport/passport-journey';
+import { PassportLink as Link, PassportFormContext } from '../passport/passport-journey';
 import { BuyerNextSteps } from '../buyer-next-steps';
 
 import type { SingaporeCheckMarket, SingaporeCheckResult } from '@signedprice/singapore-property';
@@ -87,7 +87,7 @@ export function SingaporeCheckWorkspace({ model }: Readonly<{ model: SingaporeCh
   return <SingaporePage currentHref="/sg/singapore/check/"><div className={styles.checkWorkspace} data-singapore-check-workspace="true">
     <header className={styles.checkHeader}><div><p className={styles.eyebrow}>Singapore Check</p><h1>Position an offer against its own market.</h1></div><p>Recent completed months only<br />Minimum 5 comparable transactions</p></header>
     <nav className={styles.checkMode} aria-label="Check mode"><Link aria-current={model.mode === 'single' ? 'page' : undefined} href="/sg/singapore/check/">One offer</Link><Link aria-current={model.mode === 'compare' ? 'page' : undefined} href="/sg/singapore/check/?mode=compare">Compare A/B</Link></nav>
-    <section className={styles.checkBody}><div className={styles.checkForm}><form action="/sg/singapore/check/" method="get"><input type="hidden" name="submitted" value="1" /><input type="hidden" name="mode" value={model.mode} /><MarketTabs prefix="a" model={model} /><OfferFields prefix="a" draft={model.drafts.a} catalog={model.catalogs[model.drafts.a.market]} />{model.mode === 'compare' ? <><MarketTabs prefix="b" model={model} /><OfferFields prefix="b" draft={model.drafts.b} catalog={model.catalogs[model.drafts.b.market]} /></> : null}<button className={styles.checkSubmit} type="submit" disabled={!available}>{model.mode === 'compare' ? 'Compare offers' : 'Check offer'}</button></form></div><aside className={styles.checkResult} aria-label="Check result"><ResultPanel model={model} /></aside></section>
+    <section className={styles.checkBody}><div className={styles.checkForm}><form action="/sg/singapore/check/" method="get"><PassportFormContext /><input type="hidden" name="submitted" value="1" /><input type="hidden" name="mode" value={model.mode} /><MarketTabs prefix="a" model={model} /><OfferFields prefix="a" draft={model.drafts.a} catalog={model.catalogs[model.drafts.a.market]} />{model.mode === 'compare' ? <><MarketTabs prefix="b" model={model} /><OfferFields prefix="b" draft={model.drafts.b} catalog={model.catalogs[model.drafts.b.market]} /></> : null}<button className={styles.checkSubmit} type="submit" disabled={!available}>{model.mode === 'compare' ? 'Compare offers' : 'Check offer'}</button></form></div><aside className={styles.checkResult} aria-label="Check result"><ResultPanel model={model} /></aside></section>
     <BuyerNextSteps market="singapore" />
   </div></SingaporePage>;
 }

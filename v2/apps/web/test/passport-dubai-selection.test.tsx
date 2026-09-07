@@ -4,6 +4,7 @@ vi.mock('react', async original => ({
   ...await original<typeof import('react')>(),
   useSyncExternalStore: (_subscribe: unknown, snapshot: () => string) => snapshot(),
 }));
+import { PassportFormContext } from '../components/passport/passport-journey';
 import { DubaiAreaSelection } from '../components/dubai/dubai-area-selection';
 import { dubaiEvidenceFixture } from './dubai-evidence-fixture';
 import { parseDubaiCheckQuery } from '../lib/dubai/check-model';
@@ -26,5 +27,22 @@ describe('Dubai selection across a Passport journey', () => {
     expect(parseDubaiCheckQuery(query)).toMatchObject({ area: 'marsa-dubai', completion: 'off-plan', housing: 'apartment', askingPriceAed: null });
     expect(query.passport).toBe(passport);
     expect(query.returnTo).toBe(path + search);
+  });
+});
+
+describe('Passport context in submitted Check forms', () => {
+  it('keeps the original budget as a hidden field without populating an asking price', () => {
+    const passport = '/ko/passport/?budget=500000&currency=USD&dubaiStage=off-plan';
+    vi.stubGlobal('window', { location: { pathname: '/ae/dubai/check/', search: `?passport=${encodeURIComponent(passport)}` } });
+    const html = renderToStaticMarkup(<form><PassportFormContext /></form>);
+    expect(html).toContain('name="passport"');
+    expect(html).toContain(passport.replaceAll('&', '&amp;'));
+    expect(html).not.toContain('name="price"');
+  });
+  it('omits malformed or duplicated budget context', () => {
+    for (const search of ['?passport=https%3A%2F%2Fevil.test', '?passport=%2Fpassport%2F%3Fbudget%3D500000&passport=%2Fpassport%2F%3Fbudget%3D600000']) {
+      vi.stubGlobal('window', { location: { pathname: '/ae/dubai/check/', search } });
+      expect(renderToStaticMarkup(<PassportFormContext />)).toBe('');
+    }
   });
 });
