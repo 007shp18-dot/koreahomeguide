@@ -1,3 +1,4 @@
+import { buildingDisplayName, neighborhoodDisplayName } from './seoul-display-names';
 import 'server-only';
 
 import {
@@ -423,6 +424,8 @@ function buildingMatchesQuery(
     building.districtSlug,
     building.neighborhoodId,
     building.neighborhoodName,
+    neighborhoodDisplayName(building.neighborhoodName, 'en'),
+    buildingDisplayName(building.officialName, 'en'),
     building.officialName,
     building.housingType,
     ...housingAliases,

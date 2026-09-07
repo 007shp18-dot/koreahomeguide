@@ -43,6 +43,13 @@ function state(): AreaExplorerState {
 }
 
 describe('public area Explorer selection state', () => {
+  it('finds Korean source identities using their displayed English aliases', () => {
+    const source = [{ ...buildings[0]!, name: '헬리오시티', neighborhoodName: '가락동', neighborhoodId: 'opaque-dong-id' }];
+    expect(filterExploreBuildings(source, 'helio', 'all')).toEqual(source);
+    expect(filterExploreBuildings(source, 'garak', 'all')).toEqual(source);
+    expect(filterExploreBuildings(source, '헬리오', 'all')).toEqual(source);
+    expect(filterExploreBuildings(source, 'helio', 'different-dong')).toEqual([]);
+  });
   it('filters retained buildings by name or neighborhood without substituting results', () => {
     expect(filterExploreBuildings(buildings, 'evidence', 'all').map(({ id }) => id)).toEqual([
       'evidence-tower',
