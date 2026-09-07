@@ -13,7 +13,7 @@ export function globalNavigation(locale: SiteLocale = 'en') {
     { label: '가격 (영문)', href: '/prices/' },
     { label: '도구', href: '/ko/tools/' },
     { label: '분석 (영문)', href: '/news/?type=analysis' },
-    { label: '가이드 (영문)', href: '/guides/' },
+    { label: '가이드', href: '/ko/guides/' },
   ];
   return [
     { label: zh ? '市场' : 'Markets', href: '/markets/' },
@@ -39,6 +39,7 @@ export function languageDestinations(pathname: string, search = ''): Record<Site
     destinations.ko = withQuery(`/ko${english}`);
     if (english === '/tools' || english === '/passport') destinations['zh-CN'] = withQuery(`/zh-cn${english}`);
   } else if (english === '/news' || english === '/guides') {
+    if (english === '/guides') destinations.ko = withQuery('/ko/guides');
     destinations.en = withQuery(english);
     destinations['zh-CN'] = withQuery(`/zh-cn${english}`);
   } else if (['/sg', '/sg/singapore', '/ae/dubai', '/contact'].includes(english)) {

@@ -95,7 +95,7 @@ export function AreaBuildingDialog({
       <div className={styles.buildingDialogBody}>{children}</div>
       <footer className={styles.buildingDialogFooter}>
         <Link href={detailHref}>
-          {locale === 'ko' ? '전체 건물 근거 열기' : 'Open full building evidence'}
+          {locale === 'ko' ? '건물 전체 거래 내역 보기' : 'Open full building evidence'}
         </Link>
         <button type="button" onClick={onClose}>{locale === 'ko' ? '지도로 돌아가기' : 'Return to map'}</button>
       </footer>

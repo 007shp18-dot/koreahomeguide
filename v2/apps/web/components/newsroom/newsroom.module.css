@@ -725,3 +725,7 @@
   .monthlyTrend { overflow-x: auto; }
   .monthlyTrend svg { min-width: 480px; }
 }
+
+:global(html[lang='ko']) .articleHero h1 { max-width: 26em; }
+:global(html[lang='ko']) .articleHero .deck { max-width: 42em; font-size: 1rem; line-height: 1.65; word-break: keep-all; }
+:global(html[lang='ko']) .articleHero { gap: 16px; }

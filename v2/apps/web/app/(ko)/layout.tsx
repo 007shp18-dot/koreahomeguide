@@ -13,6 +13,7 @@ import { Analytics } from '@/components/privacy-safe-analytics';
 import { notoSansKr } from '../fonts';
 
 import '../globals.css';
+import '../korean-typography.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.signedprice.com'),

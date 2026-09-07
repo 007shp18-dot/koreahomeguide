@@ -256,7 +256,7 @@ function MetricSummary({ model, view, locale }: Readonly<{
     : null;
   const maximum = rows.length === 0 ? undefined : rows.reduce((best, row) => row.metric > best.metric ? row : best);
   const minimum = rows.length === 0 ? undefined : rows.reduce((best, row) => row.metric < best.metric ? row : best);
-  const missing = locale === 'ko' ? '산출 근거 미확인' : 'Source basis unverified';
+  const missing = locale === 'ko' ? '집계 기준 확인 불가' : 'Source basis unverified';
   return (
     <dl className={styles.metricSummary} aria-label={locale === 'ko' ? '선택 지표 요약' : 'Selected ranking summary'}>
       <div><dt>{locale === 'ko' ? '서울 전체' : 'Seoul overall'}</dt><dd>{city ?? missing}</dd></div>

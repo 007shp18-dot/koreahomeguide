@@ -55,7 +55,7 @@ function SingleResult({ model, locale, entityContext }: Readonly<{
       <header><span>03</span><h2>{c.result}</h2></header>
       {!model.submitted || result === null ? (
         <div className={styles.resultEmpty} data-result-state="blank"><p>{locale === 'ko'
-          ? '매물 하나의 조건과 제시가격을 입력해 조건이 맞는 신고 거래와 비교하세요.'
+          ? '관심 매물의 가격과 조건을 입력해 비슷한 실거래가와 비교하세요.'
           : 'Enter one property’s conditions and asking price to compare with compatible reported contracts.'}</p></div>
       ) : result.status !== 'ready' ? (
         <div className={styles.resultEmpty} data-result-state={result.status}>
@@ -138,10 +138,10 @@ export function SingleQuoteCheckWorkspace({ model, locale = 'en', entityContext 
       <SiteHeader copy={checkHeader(locale)} />
       <main className={styles.main}>
         <section className={styles.hero}>
-          <p>Seoul · Official transaction evidence</p>
-          <h1>{locale === 'ko' ? '매물 하나의 가격을 확인하세요.' : 'Check one asking price.'}</h1>
+          <p>{locale === 'ko' ? '서울 · 실거래가 비교' : 'Seoul · Official transaction evidence'}</p>
+          <h1>{locale === 'ko' ? '이 매물, 실거래가와 얼마나 다를까?' : 'Check one asking price.'}</h1>
           <p>{locale === 'ko'
-            ? '매매·전세·월세 제시가격을 조건이 맞는 신고 거래와 비교합니다.'
+            ? '매매가격이나 보증금·월세를 입력해 비슷한 거래와 비교하세요.'
             : 'Compare a sale, jeonse or monthly-rent quote with compatible reported contracts.'}</p>
         </section>
         <nav aria-label={c.mode} className={styles.modeSelector} data-check-mode-selector="true">
@@ -162,8 +162,8 @@ export function SingleQuoteCheckWorkspace({ model, locale = 'en', entityContext 
                 {model.districts.map((district) => <option key={district.slug} value={district.slug}>{locale === 'ko' ? district.nameKo : district.nameEn}</option>)}
               </select></label>
               <label className={styles.field}><span>{c.housing}</span><select value={housing} onChange={event => { setHousing(event.target.value as typeof housing); clearBuilding(); }} name="housing">
-                <option value="apartment">Apartment</option><option value="officetel">Officetel</option>
-                <option value="villa_multifamily">Villa / multifamily</option><option value="detached">Detached</option>
+                <option value="apartment">{locale === 'ko' ? '아파트' : 'Apartment'}</option><option value="officetel">{locale === 'ko' ? '오피스텔' : 'Officetel'}</option>
+                <option value="villa_multifamily">{locale === 'ko' ? '연립·다세대' : 'Villa / multifamily'}</option><option value="detached">{locale === 'ko' ? '단독·다가구' : 'Detached'}</option>
               </select></label>
               <label className={styles.field}><span>{c.area} <small>㎡</small></span><input value={area} onChange={e => setArea(e.target.value)} inputMode="decimal" name="area" /></label>
               <input type="hidden" name="building" value={buildingId ?? ''} />
@@ -172,7 +172,7 @@ export function SingleQuoteCheckWorkspace({ model, locale = 'en', entityContext 
             </div>
           </fieldset>
           <fieldset className={styles.singleOffer} data-offer="single">
-            <legend><span>02</span>Single offer</legend>
+            <legend><span>02</span>{locale === 'ko' ? '매물 가격' : 'Single offer'}</legend>
             <TransactionSelect
               availability={model.availability}
               locale={locale}
@@ -186,7 +186,7 @@ export function SingleQuoteCheckWorkspace({ model, locale = 'en', entityContext 
             {draft.transaction === 'jeonse' || draft.transaction === 'monthly' ? <MoneyField name="deposit" label={c.deposit} value={draft.depositWon} onChange={(value) => edit('depositWon', value)} /> : null}
             {draft.transaction === 'monthly' ? <MoneyField name="monthly-rent" label={c.rent} value={draft.monthlyRentWon} onChange={(value) => edit('monthlyRentWon', value)} /> : null}
           </fieldset>
-          <div className={styles.actions}><button type="submit">{locale === 'ko' ? '제시가격 비교하기' : 'Check this quote'}</button></div>
+          <div className={styles.actions}><button type="submit">{locale === 'ko' ? '실거래가와 비교하기' : 'Check this quote'}</button></div>
         </form>
         <SingleResult model={model} locale={locale} entityContext={entityContext} />
         <nav className={styles.contextLinks} aria-label={c.evidence}>
