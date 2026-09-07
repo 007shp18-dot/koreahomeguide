@@ -12,6 +12,7 @@ import sitemap from '../app/sitemap';
 import { EDITORIAL_PORTFOLIO, listPortfolioRecords } from '../content/portfolio-manifest';
 
 const officialHosts = new Set([
+  'www.data.go.kr', 'data.gov.sg',
   'dubailand.gov.ae',
   'www.investkorea.org', 'english.seoul.go.kr', 'm.easylaw.go.kr',
   'www.law.go.kr', 'rt.molit.go.kr', 'www.molit.go.kr', 'land.seoul.go.kr',
@@ -25,10 +26,10 @@ function sectionCount(body: string): number {
 }
 
 describe('pre-AdSense reviewed launch portfolio', () => {
-  it('keeps the 32-record portfolio and public English parameters', () => {
+  it('keeps the 34-record portfolio and public English parameters', () => {
     const english = listPortfolioRecords('en');
-    expect(EDITORIAL_PORTFOLIO).toHaveLength(32);
-    expect(english).toHaveLength(24);
+    expect(EDITORIAL_PORTFOLIO).toHaveLength(34);
+    expect(english).toHaveLength(26);
     expect(generateEnglishArticleParams()).toEqual(english
       .filter(({ type }) => type === 'market-brief' || type === 'data-story')
       .map(({ slug }) => ({ slug })));
@@ -44,7 +45,7 @@ describe('pre-AdSense reviewed launch portfolio', () => {
         expect(url.protocol).toBe('https:');
         expect(officialHosts.has(url.hostname)
           || (source.kind === 'secondary' && secondaryHosts.has(url.hostname))).toBe(true);
-        expect(['2026-09-04', '2026-09-06']).toContain(source.checkedAt);
+        expect(['2026-09-04', '2026-09-06', '2026-09-07']).toContain(source.checkedAt);
       }
     }
   });

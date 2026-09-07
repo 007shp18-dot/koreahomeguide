@@ -38,10 +38,10 @@ describe('launch editorial portfolio', () => {
     }
   });
 
-  it('publishes the 32-item portfolio including the large-estate analyses', () => {
-    expect(EDITORIAL_PORTFOLIO).toHaveLength(32);
+  it('publishes the 34-item portfolio including the large-estate analyses', () => {
+    expect(EDITORIAL_PORTFOLIO).toHaveLength(34);
     expect(Object.isFrozen(EDITORIAL_PORTFOLIO)).toBe(true);
-    expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'en')).toHaveLength(24);
+    expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'en')).toHaveLength(26);
     expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'zh-CN')).toHaveLength(8);
     expect(Object.fromEntries(['policy-update', 'market-brief', 'data-story', 'guide'].map((type) => [
       type,
@@ -49,15 +49,15 @@ describe('launch editorial portfolio', () => {
     ]))).toEqual({
       'policy-update': 8,
       'market-brief': 8,
-      'data-story': 6,
+      'data-story': 8,
       guide: 10,
     });
   });
 
   it('keeps every published claim attached to review, evidence and an internal next step', () => {
     expect(validateEditorialPortfolio(EDITORIAL_PORTFOLIO)).toBe(EDITORIAL_PORTFOLIO);
-    expect(new Set(EDITORIAL_PORTFOLIO.map(({ id }) => id)).size).toBe(32);
-    expect(new Set(EDITORIAL_PORTFOLIO.map(({ canonicalHref }) => canonicalHref)).size).toBe(32);
+    expect(new Set(EDITORIAL_PORTFOLIO.map(({ id }) => id)).size).toBe(34);
+    expect(new Set(EDITORIAL_PORTFOLIO.map(({ canonicalHref }) => canonicalHref)).size).toBe(34);
     for (const record of EDITORIAL_PORTFOLIO) {
       expect(record.status).toBe('published');
       expect(record.readerQuestion.length).toBeGreaterThan(record.locale === 'zh-CN' ? 8 : 20);
@@ -72,9 +72,9 @@ describe('launch editorial portfolio', () => {
     }
   });
 
-  it('publishes six evidence-linked and accessible Data Story infographics', () => {
+  it('publishes eight evidence-linked and accessible Data Story infographics', () => {
     const stories = EDITORIAL_PORTFOLIO.filter(({ type }) => type === 'data-story');
-    expect(stories).toHaveLength(6);
+    expect(stories).toHaveLength(8);
     for (const story of stories) {
       expect(story.infographic).not.toBeNull();
       expect(story.infographic?.locale).toBe(story.locale);
