@@ -17,6 +17,7 @@ it('screens installed Singapore resales and preserves saved projects outside the
   expect(result.items.length).toBeLessThanOrEqual(24);
   for (const item of result.items) {
     expect(item.price).toBeLessThanOrEqual(f.budget);
+    expect(item.description.match(/\d{4}-\d{2}/)![0] >= result.period.split('..')[0]!).toBe(true);
     const q = new URL(item.checkHref, 'https://example.com').searchParams;
     expect(Number(q.get('a-area-min'))).toBeGreaterThanOrEqual(f.minArea);
     expect(Number(q.get('a-area-max'))).toBeLessThanOrEqual(f.maxArea);

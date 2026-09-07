@@ -13,13 +13,17 @@ function finish(items: BudgetItem[], all: BudgetItem[], saved: string[], page: n
 }
 export function singaporeBudget(repository: SingaporeSnapshotRepository, filters: BudgetFilters, saved: string[], page: number): BudgetResult {
   const context = repository.getContext();
+  const end = context.period.split('..')[1]!;
+  const sinceDate = new Date(`${end}-01T00:00:00Z`);
+  sinceDate.setUTCMonth(sinceDate.getUTCMonth() - 2);
+  const since = sinceDate.toISOString().slice(0, 7);
   const all: BudgetItem[] = [], matching: BudgetItem[] = [];
   for (const segment of ['CCR', 'RCR', 'OCR']) for (const project of repository.listProjects(segment)) {
     if (!project.published) continue;
     const records = repository.listProjectRecords(segment, project.id).filter(r => r.units === 1 && r.areaBasis === 'strata' && r.saleType === 'resale' && ['condominium', 'apartment', 'executive_condominium'].includes(r.propertyType));
     if (!records.length) continue;
     records.sort((a, b) => b.contractMonth.localeCompare(a.contractMonth) || a.priceSgd - b.priceSgd);
-    const hits = records.filter(r => r.priceSgd <= filters.budget && r.areaSqm >= filters.minArea && r.areaSqm <= filters.maxArea && r.propertyType === filters.housing);
+    const hits = records.filter(r => r.contractMonth >= since && r.contractMonth.slice(0, 7) <= end && r.priceSgd <= filters.budget && r.areaSqm >= filters.minArea && r.areaSqm <= filters.maxArea && r.propertyType === filters.housing);
     const make = (r: typeof records[number], count: number): BudgetItem => ({
       key: `${segment.toLowerCase()}/${project.id}`, name: project.project, region: segment, price: r.priceSgd,
       description: `${r.areaSqm} m² strata · ${r.contractMonth} · resale`, count,
@@ -31,7 +35,7 @@ export function singaporeBudget(repository: SingaporeSnapshotRepository, filters
     if (hits.length && (filters.region === 'all' || filters.region === segment)) matching.push(make(hits[0]!, hits.length));
   }
   matching.sort((a, b) => a.price - b.price || a.key.localeCompare(b.key));
-  return finish(matching, all, saved, page, { period: context.period, updated: context.generatedAt, source: 'URA private residential resale transactions', regions: ['CCR', 'RCR', 'OCR'].map(value => ({ value, label: value })) });
+  return finish(matching, all, saved, page, { period: `${since}..${end}`, updated: context.generatedAt, source: 'URA private residential resale transactions', regions: ['CCR', 'RCR', 'OCR'].map(value => ({ value, label: value })) });
 }
 export function dubaiBudget(repository: DubaiEvidenceRepository, filters: BudgetFilters, saved: string[], page: number): BudgetResult {
   const context = repository.getContext();
