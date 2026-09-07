@@ -20,7 +20,6 @@ import { BuildingDetailHeader } from './building-detail-header';
 import { BuildingEvidenceDetails } from './building-evidence-details';
 import { BuildingVisual } from './building-visual';
 import { DetailNewsList } from '../news/detail-news-list';
-import { CommunitySignal } from '../community/community-signal';
 import pageStyles from './building-page.module.css';
 import { createEntityCheckHref } from '../../lib/navigation/explorer-selection';
 
@@ -121,11 +120,11 @@ export function BuildingDetailPage({
           </div>
         </section>
 
-        <nav className={pageStyles.tabs} aria-label="Building page sections"><a href="#building-overview">Overview</a><a href="#building-evidence">Transactions</a><a href="#rent-evidence">Rent evidence</a><span>Listings · Preparing</span><a href="#building-source">Source</a></nav>
+        <nav className={pageStyles.tabs} aria-label="Building page sections"><a href="#building-overview">Overview</a><a href="#building-evidence">Transactions</a><a href="#rent-evidence">Rent evidence</a><a href="#building-source">Source</a></nav>
         <section className={pageStyles.summaryGrid} id="building-overview" aria-label="Building summary">
           <article className={pageStyles.priceSummary} data-detail-order="current-evidence"><h2>Price summary</h2><span>Median refundable deposit</span><strong>{model.display.medianLabel}</strong><small>{model.display.sampleLabel}</small></article>
           <article data-detail-order="history"><h2>Recent reported evidence</h2><ul className={pageStyles.transactionList}>{model.building.recentContracts.slice(0, 3).map((contract, index) => <li key={`${contract.filedMonth}-${index}`}><span>{contract.filedMonth}</span><span>{contract.areaSqm}㎡ · Floor {contract.floor ?? '—'}</span><strong>{new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW', maximumFractionDigits: 0 }).format(contract.depositWon)}</strong></li>)}</ul></article>
-          <article className={pageStyles.preparing}><span>Listing service</span><h2>Not a live listing</h2><p>Listings, inquiries and agent connections are intentionally unavailable while operating and legal checks are completed.</p></article>
+
         </section>
 
         <section className={pageStyles.decisionRegion} data-building-section="decision" data-detail-order="comparable-range" id="rent-evidence">
@@ -150,7 +149,7 @@ export function BuildingDetailPage({
         <div className={pageStyles.details} id="building-evidence" data-detail-order="sources"><BuildingEvidenceDetails model={model} /></div>
         <section className={pageStyles.contextGrid} data-detail-order="related-actions" aria-label="Building news and community">
           <DetailNewsList news={model.news} />
-          <CommunitySignal model={model.communitySignal} />
+
         </section>
       </main>
       <SiteFooter copy={footer} />

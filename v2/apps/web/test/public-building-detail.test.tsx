@@ -196,8 +196,8 @@ describe('public building detail', () => {
     expect(html).toContain('aria-label="Breadcrumb"');
     expect(html).toContain('href="/trust"');
     expect(html).toContain('href="/kr/seoul/corrections"');
-    expect(html).toContain('Community signal');
-    expect(html).toContain('Community responses are not open yet');
+    expect(html).not.toContain('Community signal');
+    expect(html).not.toContain('Community responses are not open yet');
     expect(html).not.toMatch(/orientation|supply/i);
     expect(html).toContain('href="/kr/seoul/news');
     expect(html).not.toContain('data-detail-main="true"');
@@ -215,7 +215,7 @@ describe('public building detail', () => {
     const decision = html.indexOf('data-building-section="decision"');
     const evidence = html.indexOf('data-building-section="evidence"');
 
-    expect(html).toContain('data-building-media="evidence-fallback"');
+    expect(html).not.toContain('data-building-media="evidence-fallback"');
     expect(html).toContain('data-detail-layout="research"');
     expect(html).toContain('data-detail-hero="building"');
     expect(html).toContain('data-detail-hero-metric="identity"');
@@ -225,7 +225,7 @@ describe('public building detail', () => {
     expect(html).toContain('<dt>Period</dt>');
     expect(html).not.toContain('Verified building identity');
     expect(html).not.toContain('Properties · Service preparing');
-    expect(html).toContain('Listing service');
+    expect(html).not.toContain('Listing service');
     expect(html).not.toMatch(/<img[^>]+src="(?:data:|https?:\/\/)/);
     expect(identity).toBeGreaterThan(-1);
     expect(identity).toBeLessThan(decision);
@@ -282,7 +282,7 @@ describe('public building detail', () => {
     expect(html).toContain('Evidence by filed area band');
     expect(html).toContain('Privacy-safe reported contracts');
     expect(html).toContain('Latest verified News');
-    expect(html).toContain('Community signal');
+    expect(html).not.toContain('Community signal');
     expect(html).toContain('Use this evidence within its boundary');
     expect(html.indexOf('Open full Rent Check')).toBeLessThan(html.indexOf('<details', html.indexOf('data-building-section="decision"')));
   });
@@ -323,8 +323,8 @@ describe('public building detail', () => {
     expect(metadata).toMatchObject({ robots: { index: false, follow: true } });
     expect(metadata).not.toHaveProperty('alternates');
     expect(html).toContain('Evidence Tower');
-    expect(html).toContain('data-building-media="location-only"');
-    expect(html).toContain('Building photo unavailable');
+    expect(html).not.toContain('data-building-media="location-only"');
+    expect(html).not.toContain('Building photo unavailable');
     expect(html).not.toContain('not a listing photo');
   });
 
@@ -353,7 +353,7 @@ describe('public building detail', () => {
     />);
     expect(selected).toContain('data-selected-mode="rent"');
     expect(selected).toContain('6 reported contracts');
-    expect(selected).toContain('Verified building image is not available');
+    expect(selected).not.toContain('Verified building image is not available');
     expect(selected).not.toContain('Street view unavailable');
     expect(selected).not.toContain('data-detail-rail="true"');
     expect(selectedState.backHref).toContain('district=gangnam-gu');

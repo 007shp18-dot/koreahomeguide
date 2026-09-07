@@ -26,6 +26,8 @@ export type SingleQuoteCheckRouteModel = Readonly<{
   submitted: boolean;
   result: SingleQuoteCheckResult | null;
   buildingName: string | null;
+  districtResult?: SingleQuoteCheckResult | null;
+  buildingResult?: SingleQuoteCheckResult | null;
 }>;
 
 function selectedBuildingIdentity(
@@ -169,6 +171,15 @@ export function buildSingleQuoteCheckRouteModel(
           ...(curve === undefined ? {} : { conversionCurve: curve }),
         });
   }
+  let districtResult: SingleQuoteCheckResult | null = null;
+  let buildingResult: SingleQuoteCheckResult | null = null;
+  if (submitted && repository !== null) {
+    const records = recordsFromRepositories(repositories, transaction);
+    const common = { period: repository.getArtifact().period, ...(curve === undefined ? {} : { conversionCurve: curve }) };
+    districtResult = evaluateSingleQuoteCheck({ ...common, input: { ...selection, buildingId: null, neighborhoodId: null }, records });
+    if (selection.buildingId !== null) buildingResult = evaluateSingleQuoteCheck({ ...common, input: selection, records: records.filter(r => r.buildingId === selection.buildingId && r.districtSlug === selection.districtSlug) });
+    result = buildingResult?.status === 'ready' ? buildingResult : districtResult;
+  }
   return Object.freeze({
     availability: Object.freeze({
       sale: repositories.sale !== null,
@@ -181,6 +192,6 @@ export function buildSingleQuoteCheckRouteModel(
     selection,
     submitted,
     result,
-    buildingName,
+    buildingName, districtResult, buildingResult,
   });
 }

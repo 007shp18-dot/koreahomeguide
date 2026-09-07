@@ -33,7 +33,7 @@ describe('global roadmap routes', () => {
     expect(news).toContain('<h1>News</h1>');
     expect(news).toContain('Policy changes, market releases and data stories for Seoul, Singapore and Dubai.');
     expect(news).toContain('data-public-editorial-frame="content"');
-    expect(news).toContain('CCR, RCR and OCR: compare distributions, not labels alone');
+    expect(news).toContain('Singapore condo prices: CCR vs RCR vs OCR compared');
     expect(news).toContain('aria-label="News markets"');
     expect(news).not.toContain('Live external news');
     expect(externalFetch).not.toHaveBeenCalled();

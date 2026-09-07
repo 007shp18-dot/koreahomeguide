@@ -48,7 +48,7 @@ describe('SignedPrice cohort zero SEO', () => {
 
     expect(entries.map(({ title }) => title)).toEqual([
       'signedprice | Real prices. Better property decisions.',
-      'Seoul property intelligence | signedprice',
+      'Seoul reported prices | signedprice',
       'Check a Seoul sale, jeonse or rent quote | signedprice',
       'Seoul sale, jeonse and monthly-rent evidence | signedprice',
       'Seoul sale, jeonse and monthly-rent rankings | signedprice',

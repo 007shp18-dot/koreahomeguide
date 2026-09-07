@@ -144,6 +144,8 @@ export type KoreaExplorerBuildingDetailModel = Readonly<{
     filedDepositMedianWon: number | null;
     filedDepositMedianLabel: string | null;
   }>;
+  nearbyBuildings?: readonly Readonly<{ id: string; name: string; median: number; count: number }>[];
+  rentStartingPoint?: Readonly<{ annualRent: number; deposit: number; count: number; period: string }>;
   sizeCohorts?: readonly Readonly<{ group: string; size: string; count: number; median: number | null }>[];
   recentTransactions: readonly Readonly<{
     filedMonth: string;
@@ -694,6 +696,15 @@ export function buildKoreaExplorerBuildingDetailModel(
   });
   const primary = building.primary;
   const filedDeposit = building.filedDeposit;
+  const peers = requested.transaction === 'sale' ? repositories.sale?.listBuildingRecords() ?? [] : repositories.rent?.listBuildingRecords() ?? [];
+  const nearbyBuildings = peers.filter(p => p.buildingId !== buildingId && p.districtSlug === districtSlug && p.neighborhoodId === identity.neighborhoodId && p.housingType === identity.housingType).flatMap(p => {
+    const peer = projectedBuilding(p, requested.transaction === 'sale' ? undefined : p as typeof rent, requested.transaction === 'sale' ? p as typeof sale : undefined, requested);
+    return peer.primary.published ? [{ id: p.buildingId, name: p.officialName, median: peer.primary.med, count: peer.primary.n }] : [];
+  }).sort((a,b) => a.median - b.median).slice(0, 6);
+  const monthly = rent && projectedBuilding(rent, rent, sale, { ...requested, transaction: 'monthly' });
+  const rentStartingPoint = monthly?.primary.published && monthly.filedDeposit?.published && requested.areaBand !== 'all'
+    ? { annualRent: monthly.primary.med * 12, deposit: monthly.filedDeposit.med, count: monthly.primary.n, period: repositories.rent!.getArtifact().period } : undefined;
+
   return Object.freeze({
     status: 'ready' as const,
     period: artifact.period,
@@ -725,6 +736,8 @@ export function buildKoreaExplorerBuildingDetailModel(
         ? formatMoney(filedDeposit.med)
         : null,
     }),
+    nearbyBuildings,
+    ...(rentStartingPoint ? { rentStartingPoint } : {}),
     sizeCohorts: Object.freeze(KOREA_EVIDENCE_AREA_BANDS.filter((band) => band !== 'all').map((band) => {
       const cohort = projectedBuilding(identity, rent, sale, { ...requested, areaBand: band });
       const size = band === 'under-40' ? 'Under 40 m²' : band === '85-plus' ? '85 m² and over' : `${band.replace('-', '–')} m²`;

@@ -21,6 +21,7 @@ export function buildDistrictMetadata(
       path: `/kr/seoul/explore/${model.identity.slug}/`,
       title,
       description,
+      languageAlternates: {en:`/kr/seoul/explore/${model.identity.slug}/`,ko:`/ko/kr/seoul/explore/${model.identity.slug}/`},
     });
   }
   const metadata: Metadata = {

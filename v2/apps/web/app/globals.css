@@ -3784,3 +3784,17 @@ h1 {
 @media (max-width: 600px) { .explore-page-heading { min-height: 90px; } .explore-page-heading > p { max-width: 48%; } }
 
 .site-header__languages > .site-header__language { grid-area: auto; }
+
+/* Visitor navigation: one mobile row; remaining destinations in the menu. */
+.site-header__mobile-menu { display: none; }
+@media (max-width: 720px) {
+  .site-header__inner[data-navigation-tier='global'] { display: flex; justify-content: space-between; align-items: center; min-height: 60px; padding-block: 8px; }
+  .site-header__inner > .site-header__product-nav, .site-header__inner > .site-header__markets, .site-header__inner > .site-header__languages, .site-header > .market-local-nav { display: none; }
+  .site-header__mobile-menu { display: block; }
+  .site-header__mobile-menu summary { display: flex; gap: 8px; align-items: center; min-height: 44px; padding: 8px 12px; cursor: pointer; font-size: 1rem; list-style: none; }
+  .site-header__mobile-menu summary::-webkit-details-marker { display: none; }
+  .site-header__mobile-panel { position: absolute; inset-inline: 0; top: 100%; z-index: 100; padding: 16px; background: var(--canvas); border-bottom: 1px solid var(--line); max-height: 80vh; overflow-y: auto; }
+  .site-header { position: relative; }
+  .site-header__mobile-panel nav { display: flex; flex-wrap: wrap; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .site-header__mobile-panel a { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 12px; color: var(--ink); text-decoration: none; font-size: .875rem; }
+}

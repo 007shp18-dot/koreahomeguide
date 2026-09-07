@@ -204,8 +204,8 @@ export function EvidencePositionCard({
           <div key={label}><dt>{label}</dt><dd>{won.format(value)}</dd></div>
         ))}
       </dl>
-      <p className={styles.marketVerdict}>{c.marketPosition}: {check.verdict}</p>
-      <p>{check.difference.pct === 0 ? 'At median' : `${Math.abs(check.difference.pct)}% ${check.difference.pct < 0 ? 'below' : 'above'} median`}</p>
+      <p className={styles.marketVerdict}>{c.marketPosition}: {locale === 'ko' ? {below:'중간 50%보다 낮음',typical:'중간 50% 안',above:'중간 50%보다 높음'}[check.verdict] : check.verdict}</p>
+      <p>{locale === 'ko' ? (check.difference.pct === 0 ? '중앙값과 같음' : `중앙값보다 ${Math.abs(check.difference.pct)}% ${check.difference.pct < 0 ? '낮음' : '높음'}`) : check.difference.pct === 0 ? 'At median' : `${Math.abs(check.difference.pct)}% ${check.difference.pct < 0 ? 'below' : 'above'} median`}</p>
       <p>{c.percentile}: {check.pricePercentile}</p>
       <DistributionBar check={check} />
       <p className={styles.fallback}>{check.fallbackDisclosure}</p>

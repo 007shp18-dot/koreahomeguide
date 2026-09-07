@@ -1,0 +1,11 @@
+import {describe,it,expect} from 'vitest';
+import {acquisitionCosts,residentialBsd,type CostProfile} from '../lib/tools/acquisition-costs';
+const profile:CostProfile={koreaRate:'standard',over85:false,singaporeBuyer:'foreigner',owned:0,taxBase:0,dubaiBuyerShare:4,brokerPct:2};
+describe('acquisition cost starting points',()=>{
+ it('uses progressive Singapore BSD, not a flat highest rate',()=>{expect(residentialBsd(180000)).toBe(1800);expect(residentialBsd(360000)).toBe(5400);expect(residentialBsd(1000000)).toBe(24600);expect(residentialBsd(1500000)).toBe(44600);expect(residentialBsd(3000000)).toBe(119600);expect(residentialBsd(4000000)).toBe(179600)});
+ it('uses the higher tax base and selected buyer profile',()=>{expect(acquisitionCosts(1000000,'SGD',{...profile,taxBase:1500000})?.total).toBe(944600);expect(acquisitionCosts(1000000,'SGD',{...profile,singaporeBuyer:'citizen'})?.total).toBe(24600);expect(acquisitionCosts(1000000,'SGD',{...profile,singaporeBuyer:'pr'})?.total).toBe(74600)});
+ it('uses Seoul tiered tax and brokerage caps at boundaries',()=>{expect(acquisitionCosts(600000000,'KRW',profile)?.total).toBe(9000000);expect(acquisitionCosts(750000000,'KRW',profile)?.total).toBe(19500000);expect(acquisitionCosts(900000000,'KRW',profile)?.total).toBe(34200000);expect(acquisitionCosts(40000000,'KRW',profile)?.lines.at(-1)?.amount).toBe(240000);expect(acquisitionCosts(150000000,'KRW',profile)?.lines.at(-1)?.amount).toBe(750000)});
+ it('adds size-dependent Korean surtaxes without deciding eligibility',()=>{expect(acquisitionCosts(1000000000,'KRW',{...profile,koreaRate:'8',over85:true})?.lines.slice(0,3).map(x=>x.amount)).toEqual([80000000,4000000,6000000])});
+ it('separates Dubai fee allocation and editable brokerage',()=>{expect(acquisitionCosts(1000000,'AED',profile)?.total).toBe(65720);expect(acquisitionCosts(1000000,'AED',{...profile,dubaiBuyerShare:2,brokerPct:0})?.total).toBe(24720);expect(acquisitionCosts(499999,'AED',profile)?.lines[1]?.amount).toBe(2100);expect(acquisitionCosts(500000,'AED',profile)?.lines[1]?.amount).toBe(4200)});
+ it('rejects invalid prices and assumptions',()=>{expect(acquisitionCosts(0,'KRW',profile)).toBeNull();expect(acquisitionCosts(Infinity,'AED',profile)).toBeNull();expect(acquisitionCosts(100,'SGD',{...profile,taxBase:-1})).toBeNull()});
+});

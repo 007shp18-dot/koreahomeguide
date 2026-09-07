@@ -287,9 +287,9 @@ describe('real route rendering contracts', () => {
 
     expect(metadataByRoute).toMatchObject([
       {
-        title: 'Seoul property intelligence | signedprice',
+        title: 'Seoul reported prices | signedprice',
         description:
-          'Review verified Seoul housing contract evidence, comparison tools and publication limits.',
+          'Explore Seoul apartment sale, jeonse and monthly-rent contracts by district, neighbourhood and building.',
         robots: { index: true, follow: true },
         alternates: {
           canonical: 'https://www.signedprice.com/kr/seoul/',

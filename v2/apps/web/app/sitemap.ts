@@ -223,7 +223,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       district.summary.published ? [district.slug] : []
     )));
     entries.push(...area.districts.flatMap((district) => district.summary.published
-      ? [sitemapEntry(`/kr/seoul/explore/${district.slug}/`, areaLastModified)]
+      ? [sitemapEntry(`/kr/seoul/explore/${district.slug}/`, areaLastModified, {en:`/kr/seoul/explore/${district.slug}/`,ko:`/ko/kr/seoul/explore/${district.slug}/`}), sitemapEntry(`/ko/kr/seoul/explore/${district.slug}/`, areaLastModified, {en:`/kr/seoul/explore/${district.slug}/`,ko:`/ko/kr/seoul/explore/${district.slug}/`})]
       : []));
     entries.push(...listSignedPricePropertyTypeRoutes().flatMap((route) => {
       const [, , , , district, propertyType] = route.path.split('/');

@@ -398,6 +398,7 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/',
     )).toEqual({
       url: 'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/',
+      alternates:{languages:{en:'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/',ko:'https://www.signedprice.com/ko/kr/seoul/explore/gangnam-gu/','x-default':'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/'}},
       lastModified: new Date('2026-08-31T01:13:24.787Z'),
     });
     expect(entries.has('https://www.signedprice.com/kr/seoul/news/')).toBe(false);

@@ -109,13 +109,13 @@ describe('Korea proximity Detail route composition', () => {
       html.indexOf('data-building-section="official-facts"'),
       html.indexOf('</section>', html.indexOf('data-building-section="official-facts"')),
     );
-    expect(factsSection).toContain('Observed build year');
+    expect(factsSection).not.toContain('Not reported');
     expect(factsSection).toContain(`${identity.coordinate.latitude.toFixed(5)}, ${identity.coordinate.longitude.toFixed(5)}`);
     expect(factsSection).toContain('Route station · 1호선 · 250 m');
     expect(factsSection).toContain('Route school · 500 m');
     expect(html).toContain('station=SEOUL%3ASTN%2F001');
     expect(html).toContain('q=route+check');
-    expect(html).toContain('data-building-media="location-only"');
+    expect(html).not.toContain('data-building-media="location-only"');
     expect(html).not.toContain('data-building-media="google-place-photo"');
   });
 
@@ -186,7 +186,7 @@ describe('Korea proximity Detail route composition', () => {
       dependencies: { proximityRepository: Object.freeze({ state: 'missing' }) },
     }));
     expect(html).toContain('data-building-detail="ready"');
-    expect(html).toContain('Proximity data unavailable');
+    expect(html).not.toContain('Proximity data unavailable');
     expect(html).toContain('q=route+check');
   });
 
@@ -200,7 +200,7 @@ describe('Korea proximity Detail route composition', () => {
       dependencies: { proximityRepository: Object.freeze({ state: 'invalid' }) },
     }));
     expect(html).toContain('data-building-detail="identity-only"');
-    expect(html).toContain('인접성 데이터를 확인할 수 없습니다.');
+    expect(html).not.toContain('인접성 데이터를 확인할 수 없습니다.');
     expect(html).toContain('href="/ko/kr/seoul/explore?');
   });
 });

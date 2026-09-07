@@ -64,7 +64,7 @@ describe('primary single quote Check workspace', () => {
     const html = renderToStaticMarkup(<SingleQuoteCheckWorkspace model={model} />);
 
     expect(html).toContain('Copy result link');
-    expect(html).toContain('Typical range');
+    expect(html).toContain('Within the middle half');
     expect(html).toContain('Stable Apartments');
     expect(html).toContain('6 reported contracts');
     expect(html).toContain('±15% area');
@@ -97,7 +97,7 @@ describe('primary single quote Check workspace', () => {
     expect(html).not.toContain('Copy result link');
     expect(html).toContain('Not enough compatible contracts');
     expect(html).toContain('five are required');
-    expect(html).not.toContain('Typical range');
+    expect(html).not.toContain('Within the middle half');
   });
 
   test('preserves valid entity context in the form and returns to the originating decision', () => {
