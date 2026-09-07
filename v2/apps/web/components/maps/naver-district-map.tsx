@@ -24,6 +24,8 @@ export type NaverDistrictMapPoint = Readonly<{
 export type NaverBuildingMapPoint = Readonly<{
   id: string;
   storedLocationKey?: string;
+  /** Original lookup identity; a translated title is display-only. */
+  sourceName?: string;
   title: string;
   href: string;
   addressQuery: string;
@@ -42,6 +44,11 @@ export type NaverBuildingMapPoint = Readonly<{
     addressQuery?: string;
   }>;
 }>;
+
+export function buildGoogleBuildingLookup(building: Pick<NaverBuildingMapPoint, 'title' | 'sourceName' | 'addressQuery'>) {
+  const sourceName = building.sourceName ?? building.title;
+  return { sourceName, textQuery: `${sourceName}, ${building.addressQuery}` };
+}
 
 export type NaverNeighborhoodMapPoint = Readonly<{
   id: string;
@@ -807,8 +814,9 @@ export function NaverDistrictMap({
     if (googleSdk === undefined || typeof googleSdk.importLibrary !== 'function') return;
     try {
       const { Place } = await googleSdk.importLibrary('places');
+      const lookup = buildGoogleBuildingLookup(selectedUnresolvedBuilding);
       const { places } = await Place.searchByText({
-        textQuery: `${selectedUnresolvedBuilding.title}, ${selectedUnresolvedBuilding.addressQuery}`,
+        textQuery: lookup.textQuery,
         fields: ['displayName', 'location'],
         maxResultCount: 1,
         language: 'ko',
@@ -817,7 +825,7 @@ export function NaverDistrictMap({
       const latitude = place?.location?.lat();
       const longitude = place?.location?.lng();
       if (
-        !isTrustedGooglePlaceMatch(place?.displayName, selectedUnresolvedBuilding.title)
+        !isTrustedGooglePlaceMatch(place?.displayName, lookup.sourceName)
         || latitude === undefined || longitude === undefined
         || !Number.isFinite(latitude) || !Number.isFinite(longitude)
         || latitude < 37.4 || latitude > 37.72

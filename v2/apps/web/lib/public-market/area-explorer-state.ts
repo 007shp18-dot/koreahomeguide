@@ -1,4 +1,5 @@
-import { buildingDisplayName, neighborhoodDisplayName } from './seoul-display-names';
+import { buildingDisplayName } from './seoul-display-names';
+import { matchesSeoulNeighborhoodQuery } from './seoul-neighborhood-label';
 import type { SeoulDistrictSlug } from '@signedprice/korea-rent/browser';
 import type { ExploreBuildingModel } from './area-route-types';
 
@@ -58,13 +59,13 @@ export function filterExploreBuildings<T extends ExploreBuildingSearchItem>(
     const housingAliases = housingTypeSearchAliases[
       building.housingType.toLocaleLowerCase('en-US') as keyof typeof housingTypeSearchAliases
     ] ?? [];
+    if (matchesSeoulNeighborhoodQuery(building.districtSlug, building.neighborhoodName, query)) return true;
     return [
       building.districtSlug,
       building.neighborhoodId,
       building.name,
-      building.neighborhoodName,
-      neighborhoodDisplayName(building.neighborhoodName, 'en'),
       buildingDisplayName(building.name, 'en'),
+      building.neighborhoodName,
       building.housingType,
       ...housingAliases,
       ...transactionTokens,

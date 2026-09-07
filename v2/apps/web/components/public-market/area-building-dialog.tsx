@@ -80,8 +80,8 @@ export function AreaBuildingDialog({
       <header className={styles.buildingDialogHeader}>
         <div>
           <p>{locale === 'ko' ? '선택한 건물' : 'Selected building'}</p>
-          <h2 id={titleId}>{buildingDisplayLabel(building, locale).isLot ? buildingDisplayLabel(building, locale).original : building.name}</h2>
-          <span>{building.neighborhoodName}</span>
+          <h2 id={titleId} title={buildingDisplayLabel(building, locale).original}>{buildingDisplayLabel(building, locale).title}</h2>
+          <span title={buildingDisplayLabel(building, locale).original}>{buildingDisplayLabel(building, locale).location}</span>
         </div>
         <button
           ref={closeButtonRef}
