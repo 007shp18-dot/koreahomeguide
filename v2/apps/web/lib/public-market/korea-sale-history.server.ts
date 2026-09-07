@@ -26,7 +26,11 @@ export function createHistoryHandler(deps: Dependencies) {
   url.search = new URLSearchParams({serviceKey:deps.serviceKey,LAWD_CD:lawdCd,DEAL_YMD:dealYmd,pageNo:String(pageNo),numOfRows:'1000'}).toString();
   try {
    const response = await deps.fetch(url,{cache:'no-store',signal:AbortSignal.timeout(45000)});
-   if (!response.ok) return json({code:'provider_http_error',providerStatus:response.status},502);
+   if (!response.ok) {
+    const retryAfter = response.headers.get('retry-after');
+    return json({code:'provider_http_error',providerStatus:response.status,
+     ...(retryAfter && /^\d+$/.test(retryAfter) ? {retryAfterSeconds:Number(retryAfter)} : {})},502);
+   }
    const xml = await response.text();
    if (xml.length > 3000000 || xml.includes(deps.serviceKey)) return json({code:'unsafe_provider_payload'},502);
    const page = parseMolitSalePage(xml,{sourceHousingType:'apartment',expectedPageNo:pageNo,expectedPageSize:1000,expectedDealYmd:dealYmd,expectedLawdCd:lawdCd});

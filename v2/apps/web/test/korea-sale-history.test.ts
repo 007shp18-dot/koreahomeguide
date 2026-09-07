@@ -31,3 +31,9 @@ it('rejects malformed provider payloads rather than exporting them', async () =>
  const a = setup(); a.fetch.mockResolvedValue(new Response('<error>bad provider response</error>'));
  expect((await a.handler(request())).status).toBe(502);
 });
+
+it('preserves numeric provider Retry-After without exposing the provider body', async () => {
+ const a = setup(); a.fetch.mockResolvedValue(new Response('private upstream error',{status:429,headers:{'retry-after':'300'}}));
+ const r = await a.handler(request()); expect(r.status).toBe(502);
+ expect(await r.json()).toEqual({code:'provider_http_error',providerStatus:429,retryAfterSeconds:300});
+});
