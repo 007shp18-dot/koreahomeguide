@@ -9,5 +9,5 @@ export const metadata = indexableMetadata({
   languageAlternates: { en: '/kr/seoul/shortlist/', ko: '/ko/kr/seoul/shortlist/' },
 });
 export default function Page() {
-  return <><SiteHeader copy={{ ...homepageCopy.header, languageSwitch: { label: 'KO', href: '/ko/kr/seoul/shortlist/', hrefLang: 'ko' } }} /><SeoulShortlist /><SiteFooter copy={homepageCopy.footer} /></>;
+  return <><SiteHeader copy={{ ...homepageCopy.header, marketLabel: 'Seoul', links: [{ label: 'Budget & saved', href: '/kr/seoul/shortlist/', isCurrent: true }], languageSwitch: { label: 'KO', href: '/ko/kr/seoul/shortlist/', hrefLang: 'ko' } }} /><SeoulShortlist /><SiteFooter copy={homepageCopy.footer} /></>;
 }
