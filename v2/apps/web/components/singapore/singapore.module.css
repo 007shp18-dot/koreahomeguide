@@ -800,3 +800,8 @@
 .checkSubmit { font-weight: 650; }
 @media (max-width: 900px) { .checkBody { grid-template-columns: 1fr; } .checkForm { border-right: 0; border-bottom: 1px solid var(--line); } }
 @media (max-width: 560px) { .checkHeader, .checkForm, .checkResult { padding: 20px; } .offerFields { grid-template-columns: 1fr; } }
+
+.checkHeader h1 { letter-spacing: normal; line-height: 1.2; }
+.offerFields label, .checkResult p { font-size: .875rem; line-height: 1.6; }
+.resultMedian { letter-spacing: normal; line-height: 1.25; }
+.resultCard dt, .resultCard dd { font-size: .875rem; line-height: 1.5; }
