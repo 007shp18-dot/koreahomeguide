@@ -8,10 +8,17 @@ export const marketNavigation = [
 
 export function globalNavigation(locale: SiteLocale = 'en') {
   const zh = locale === 'zh-CN';
+  if (locale === 'ko') return [
+    { label: '시장', href: '/ko/markets/' },
+    { label: '가격 (영문)', href: '/prices/' },
+    { label: '도구', href: '/ko/tools/' },
+    { label: '분석 (영문)', href: '/news/?type=analysis' },
+    { label: '가이드 (영문)', href: '/guides/' },
+  ];
   return [
     { label: zh ? '市场' : 'Markets', href: '/markets/' },
     { label: zh ? '价格' : 'Prices', href: '/prices/' },
-    { label: zh ? '工具' : 'Tools', href: zh ? '/zh-cn/tools/' : locale === 'ko' ? '/ko/tools/' : '/tools/' },
+    { label: zh ? '工具' : 'Tools', href: zh ? '/zh-cn/tools/' : '/tools/' },
     { label: zh ? '洞察' : 'Insights', href: zh ? '/zh-cn/news/' : '/news/?type=analysis' },
     { label: zh ? '指南' : 'Guides', href: zh ? '/zh-cn/guides/' : '/guides/' },
   ] as const;
@@ -20,7 +27,7 @@ export function globalNavigation(locale: SiteLocale = 'en') {
 /** Only actual translations qualify. Chinese Explore/Check are English redirects. */
 export function languageDestinations(pathname: string, search = ''): Record<SiteLocale, string | null> {
   const path = pathname.replace(/\/+$/, '') || '/';
-  const english = path.replace(/^\/ko(?=\/)/, '').replace(/^\/zh-cn(?=\/)/, '');
+  const english = path === '/ko' ? '/' : path.replace(/^\/ko(?=\/)/, '').replace(/^\/zh-cn(?=\/)/, '');
   const destinations: Record<SiteLocale, string | null> = { en: null, ko: null, 'zh-CN': null };
   const withQuery = (value: string) => `${value === '/' ? '/' : `${value}/`}${search}`;
   if (/^\/kr\/seoul(?:\/(?:explore(?:\/[^/]+(?:\/[^/]+)?)?|check(?:\/compare)?|rankings|shortlist))?$/.test(english)) {
@@ -34,9 +41,13 @@ export function languageDestinations(pathname: string, search = ''): Record<Site
   } else if (english === '/news' || english === '/guides') {
     destinations.en = withQuery(english);
     destinations['zh-CN'] = withQuery(`/zh-cn${english}`);
-  } else if (path === '/') {
+  } else if (['/sg', '/sg/singapore', '/ae/dubai', '/contact'].includes(english)) {
+    const canonical = english === '/sg/singapore' ? '/sg' : english;
+    destinations.en = withQuery(canonical);
+    destinations.ko = withQuery(`/ko${canonical}`);
+  } else if (english === '/') {
     destinations.en = '/';
-    destinations.ko = '/ko/kr/seoul/';
+    destinations.ko = '/ko/';
     destinations['zh-CN'] = '/zh-cn/kr/seoul/';
   } else {
     destinations[path.startsWith('/zh-cn/') ? 'zh-CN' : path.startsWith('/ko/') ? 'ko' : 'en'] = withQuery(path);

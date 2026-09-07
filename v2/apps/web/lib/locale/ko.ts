@@ -22,7 +22,7 @@ export function formatKrwKo(value: number): string {
 const KOREAN_SITE_HEADER_BASE = {
   brand: 'signedprice',
   homeLabel: 'signedprice 홈',
-  homeHref: '/ko/kr/seoul/',
+  homeHref: '/ko/',
   navigationLabel: '서울 근거 탐색',
   navigationVariant: 'supplied',
   marketLabel: '서울',

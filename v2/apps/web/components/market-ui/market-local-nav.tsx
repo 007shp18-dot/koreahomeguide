@@ -30,9 +30,9 @@ export function getMarketLocalNavigation(
 
     const href = locale === 'ko' && marketId === 'kr-seoul'
       ? `/ko${capability.publicHref}`
-      : capability.publicHref;
+      : locale === 'ko' && feature === 'market_overview' ? (marketId === 'sg-singapore' ? '/ko/sg/' : '/ko/ae/dubai/') : capability.publicHref;
     return [{
-      label: locale === 'ko' ? { Overview: '서울', Explore: '실거래가 탐색', Check: '가격 확인', Rankings: '지역 비교', Corrections: '정보 수정 요청' }[label] : label,
+      label: locale === 'ko' ? `${{ Overview: '개요', Explore: '실거래가 탐색', Check: '가격 확인', Rankings: '지역 비교', Corrections: '정보 수정 요청' }[label]}${marketId !== 'kr-seoul' && feature !== 'market_overview' ? ' (영문)' : ''}` : label,
       href,
       state: capability.state,
     } satisfies MarketLocalNavItem];
