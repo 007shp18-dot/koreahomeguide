@@ -88,6 +88,7 @@ export function SingaporeExplorer({
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(initialProjectId);
   const [query, setQuery] = useState(initialQuery);
   const deferredQuery = useDeferredValue(query);
+  const [showAreaReferences, setShowAreaReferences] = useState(false);
   const [district, setDistrict] = useState(initialDistrict);
   const [page, setPage] = useState(initialPage);
   const [sort, setSort] = useState<string>(initialSort);
@@ -166,12 +167,12 @@ export function SingaporeExplorer({
   const activeMapPoints = mapLevel === 'projects' ? projectMapCoverage.points : areaMapCoverage.points;
   const mapPoints = useMemo(() => {
     const byId = new Map(projects.map(project => [`project-${project.id}`, project]));
-    return activeMapPoints.map(point => {
+    return activeMapPoints.filter(point => mapLevel !== 'projects' || showAreaReferences || point.kind !== 'area').map(point => {
       const project = byId.get(point.id);
       return project === undefined ? point : { ...point,
-        label: formatSingaporeMapPrice(project.medianPriceLabel, project.name) };
+        label: project.name };
     });
-  }, [activeMapPoints, projects]);
+  }, [activeMapPoints, projects, mapLevel, showAreaReferences]);
   const layers = <>
     <MarketLayerControl label="Singapore market layers" items={[
       { id: 'ura', label: 'URA private sales', href: '#ura-private', current: true },
@@ -213,10 +214,11 @@ export function SingaporeExplorer({
           <header className={styles.mapHeading}><div><h2 id="singapore-map-heading">{mapLevel === 'regions' ? 'Market regions' : mapLevel === 'districts' ? 'Postal districts' : 'Project locations'}</h2>
             {mapLevel === 'projects' ? <>
               <p>{projectMapCoverage.total.toLocaleString('en')} matching projects across all result pages · {projectMapCoverage.located.toLocaleString('en')} with source coordinates · {projectMapCoverage.areaOnly.toLocaleString('en')} area-only · {projectMapCoverage.unplaced.toLocaleString('en')} without a map reference.</p>
-              <p>Location clusters expand as you zoom. Dashed groups use a reference from known projects in the same postal district.</p>
+              <p>Each marker is a project with source coordinates. Select a marker to see its name and transactions. Projects without exact coordinates remain in the list. Turn on area references to see their approximate district.</p>
+              <label><input type="checkbox" checked={showAreaReferences} onChange={event => setShowAreaReferences(event.currentTarget.checked)} /> Show approximate district groups</label>
             </> : <p>{areaMapCoverage.total.toLocaleString('en')} matching projects across all result pages · choose a {mapLevel === 'regions' ? 'market region' : 'postal district'} to open its full project map.</p>}
           </div></header>
-          <GooglePlaceMap browserKey={googleMapsBrowserKey} points={mapPoints} onSelectPoint={onMapSelect} showAddressSearch={false} />
+          <GooglePlaceMap browserKey={googleMapsBrowserKey} points={mapPoints} onSelectPoint={onMapSelect} showAddressSearch={false} clusterLocations={mapLevel !== 'projects'} />
           {mapLevel === 'projects' && projectMapCoverage.unplacedGroups.length > 0 ? <div className={styles.mapUnplaced}>
             <p>These district totals remain in the results; no reliable map reference is available yet.</p>
             {projectMapCoverage.unplacedGroups.map(group => <button type="button" key={group.district} onClick={() => onMapSelect(`district-${group.district}`)}>District {group.district} · {group.count.toLocaleString('en')} projects</button>)}

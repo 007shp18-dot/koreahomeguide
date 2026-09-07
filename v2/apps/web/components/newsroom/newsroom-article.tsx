@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import { EditorialMarkdown } from '../insights/editorial-markdown';
+import { MARKET_PHOTOS, MarketRepresentativePhoto } from '../market-representative-photo';
 
 import type { PublishedContentArticle } from '../../lib/content/content-types';
 import type { InfographicSpec } from '../../lib/infographics/infographic-types';
@@ -15,10 +17,12 @@ const typeLabels = Object.freeze({
 });
 
 function sections(body: string): readonly Readonly<{ heading: string; body: string }>[] {
-  return Object.freeze(body.split(/^## /mu).map((block) => block.trim()).filter(Boolean).map((block) => {
-    const [heading = '', ...bodyParts] = block.split(/\n\n+/u);
-    return Object.freeze({ heading, body: bodyParts.join('\n\n') });
-  }).filter(({ heading, body: paragraph }) => heading.length > 0 && paragraph.length > 0));
+  return body.split(/(?=^## )/mu).map(block => {
+    const text = block.trim();
+    if (!text.startsWith('## ')) return { heading: '', body: text };
+    const end = text.indexOf('\n');
+    return { heading: text.slice(3, end < 0 ? undefined : end).trim(), body: end < 0 ? '' : text.slice(end).trim() };
+  }).filter(section => section.body.length > 0);
 }
 
 export function NewsroomArticle({ article }: Readonly<{
@@ -56,10 +60,11 @@ export function NewsroomArticle({ article }: Readonly<{
         <div><dt>Updated</dt><dd><time dateTime={article.updatedAt}>{article.updatedAt.slice(0, 10)}</time></dd></div>
       </dl>
     </header>
+    {article.type === 'guide' && article.marketId ? <div className={styles.articlePhoto}><MarketRepresentativePhoto photo={article.marketId === 'kr-seoul' ? MARKET_PHOTOS.seoul : article.marketId === 'sg-singapore' ? MARKET_PHOTOS.singapore : article.marketId === 'ae-dubai' ? MARKET_PHOTOS.dubai : null} cityLabel={market} /></div> : null}
     {figure == null ? null : <Infographic spec={figure} />}
-    {contentSections.length < 5 ? null : <nav className={styles.contents} aria-label="In this article"><p>In this article</p>{contentSections.map((item, index) => <a href={`#section-${index + 1}`} key={item.heading}>{item.heading}</a>)}</nav>}
+    {contentSections.length < 5 ? null : <nav className={styles.contents} aria-label="In this article"><p>In this article</p>{contentSections.map((item, index) => item.heading ? <a href={`#section-${index + 1}`} key={item.heading}>{item.heading}</a> : null)}</nav>}
     <article className={styles.articleBody}>
-      {contentSections.map((section, index) => <section id={`section-${index + 1}`} key={section.heading}><h2>{section.heading}</h2>{section.body.split(/\n\n+/u).map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</section>)}
+      {contentSections.map((section, index) => <section id={`section-${index + 1}`} key={section.heading}>{section.heading ? <h2>{section.heading}</h2> : null}<EditorialMarkdown source={section.body} /></section>)}
     </article>
     <section className={styles.sources} aria-labelledby="article-sources-title" data-editorial-event="article_complete">
       <h2 id="article-sources-title">Sources</h2>

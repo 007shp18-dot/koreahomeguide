@@ -9,7 +9,7 @@ export function PolicyChangeInfographic({ spec }: Readonly<{ spec: InfographicSp
       {values.map((datum, index) => <article key={`${datum.label}:${datum.value}`}>
         <span>{index === 0 ? 'Before' : 'After'}</span>
         <strong>{datum.label}</strong>
-        <p>{formatInfographicValue(datum.value, spec.locale)} {spec.unit}</p>
+        <p>{formatInfographicValue(datum.value, spec.locale, spec.unit)}</p>
         {datum.note === undefined ? null : <small>{datum.note}</small>}
       </article>)}
     </div>

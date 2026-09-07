@@ -9,7 +9,7 @@ export function CostStructureInfographic({ spec }: Readonly<{ spec: InfographicS
       {spec.series.map((series) => <section key={series.id}>
         <h3>{series.label}</h3>
         {series.values.map((datum) => <div key={`${series.id}:${datum.label}`}>
-          <p><span>{datum.label}</span><strong>{formatInfographicValue(datum.value, spec.locale)} {spec.unit}</strong></p>
+          <p><span>{datum.label}</span><strong>{formatInfographicValue(datum.value, spec.locale, spec.unit)}</strong></p>
           <i aria-hidden="true" style={{ '--infographic-share': `${Math.max(0, datum.value) / maximum * 100}%` } as React.CSSProperties} />
         </div>)}
       </section>)}

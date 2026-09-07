@@ -174,12 +174,12 @@ export async function hydratePublicAreaExploreModelWithProjections(
   const addresses = new Map<string, string>();
   const sql = contentDatabase();
   const addressesPending = (async () => {
-  if (sql !== null && buildings.length > 0) {
+  if (sql !== null && projectionIds.length > 0) {
     try {
       const rows = await sql`
         SELECT external_id, legal_address FROM buildings
         WHERE market_key = 'seoul' AND identity_status = 'verified'
-          AND external_id = ANY(${buildings.map(({ id }) => id)})
+          AND external_id = ANY(${projectionIds})
       `;
       for (const row of rows) {
         if (typeof row.external_id === 'string' && typeof row.legal_address === 'string') {
@@ -196,7 +196,9 @@ export async function hydratePublicAreaExploreModelWithProjections(
     return verifiedAddress === undefined ? projected : Object.freeze({ ...projected, verifiedAddress });
   };
   const hydrateMapBuilding = (building: import('./area-route-types').ExploreMapBuildingModel) => {
-    return projectExploreMapBuilding(building, projections?.get(building.id));
+    const projected = projectExploreMapBuilding(building, projections?.get(building.id));
+    const verifiedAddress = addresses.get(building.id);
+    return verifiedAddress === undefined ? projected : Object.freeze({ ...projected, verifiedAddress });
   };
   if (model.buildingAvailability.status === 'ready') {
     return Object.freeze({

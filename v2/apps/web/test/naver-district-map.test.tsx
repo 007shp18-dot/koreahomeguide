@@ -153,6 +153,18 @@ describe('NAVER district map', () => {
     expect(clusterNaverBuildings([point, { ...points[1]!, selected: true }], 14)).toHaveLength(2);
   });
 
+  it('shows every located building after choosing a neighborhood at any current zoom', () => {
+    const visible: unknown[] = [];
+    class TestMap { setCenter() {} setZoom() {} getZoom() { return 13; } }
+    class LatLng { constructor(readonly lat: number, readonly lng: number) {} }
+    class Marker { constructor(options: unknown) { visible.push(options); } setMap() {} }
+    const sdk = { Map: TestMap, LatLng, Marker, Event: { addListener: vi.fn(), removeListener: vi.fn() } };
+    const point = { id: 'a', title: 'A', href: '/a/', addressQuery: 'Seoul', latitude: 37.5001, longitude: 127.0001 };
+    mountNaverDistrictMap({ sdk, element: {} as HTMLElement, districts, selectedDistrict: { latitude: 37.5, longitude: 127.03 },
+      focusAddressQuery: '서울특별시 강남구 역삼동', buildings: [point, { ...point, id: 'b', title: 'B', latitude: 37.5002 }], onSelect: vi.fn() });
+    expect(visible).toHaveLength(2);
+  });
+
   it('rejects a geocode for a different parcel in the same neighborhood', () => {
     expect(resolveUnambiguousNaverGeocode('서울특별시 도봉구 도봉동 554-31', [
       { x: '127.04', y: '37.67', jibunAddress: '서울특별시 도봉구 도봉동 554-32' },

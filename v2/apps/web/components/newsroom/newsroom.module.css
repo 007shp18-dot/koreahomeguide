@@ -694,3 +694,6 @@
 .relatedAction > p { width: 100%; }
 .relatedAction a { min-height: 44px; display: inline-flex; align-items: center; }
 .filterBar > nav { min-width: 0; }
+
+.articlePhoto { margin: 32px 0; }
+.articlePhoto figure { min-height: 0; height: clamp(220px, 28vw, 360px); }

@@ -159,6 +159,21 @@ describe('Google place map', () => {
     }]);
   });
 
+  it('keeps adjacent buildings separate in project mode even at district zoom', () => {
+    const sdk = {
+      Map: class { fitBounds() {} },
+      Marker: class { setPosition() {} setMap() {} },
+      Geocoder: class { async geocode() { return { results: [] }; } },
+    };
+    const map = { fitBounds() {}, getZoom() { return 11; } };
+    const points = [
+      { id: 'a', title: 'A', label: 'A', latitude: 1.28001, longitude: 103.85001 },
+      { id: 'b', title: 'B', label: 'B', latitude: 1.28002, longitude: 103.85002 },
+    ];
+    expect(mountGoogleMarketPoints(sdk, map, points, undefined, false, true)).toHaveLength(1);
+    expect(mountGoogleMarketPoints(sdk, map, points, undefined, false, false)).toHaveLength(2);
+  });
+
   it('turns verified Singapore project addresses into price markers', async () => {
     const options: unknown[] = [];
     const mapCalls: unknown[] = [];

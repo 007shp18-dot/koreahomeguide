@@ -130,7 +130,7 @@ export function EditorialGrowthHome({ model, hrefs }: Readonly<{
               <strong>{market.city}</strong>
               <p>{market.summary}</p>
               <Link href={market.primaryAction.href}>{market.primaryAction.label}</Link>
-              {market.id === 'kr-seoul' ? <Link href="/kr/seoul/rankings/">District rankings</Link> : null}
+              <Link href={market.secondaryAction?.href ?? market.primaryAction.href}>{market.id === 'ae-dubai' ? (model.locale === 'en' ? 'Buying guide' : '购房指南') : (model.locale === 'en' ? 'Check a price' : '查询价格')}</Link>
             </li>
           ))}
         </ol>
@@ -177,7 +177,7 @@ export function EditorialGrowthHome({ model, hrefs }: Readonly<{
           {guides.map((guide) => (
             <li key={guide.id} data-home-guide="true">
               <Link href={guide.canonicalHref}>
-                <span className={styles.guideStage}>{guide.marketId === 'kr-seoul' ? 'Seoul' : 'Singapore'}</span>
+                <span className={styles.guideStage}>{guide.marketId === 'kr-seoul' ? 'Seoul' : guide.marketId === 'ae-dubai' ? 'Dubai' : guide.marketId === 'sg-singapore' ? 'Singapore' : 'Global'}</span>
                 <strong>{guide.title}</strong>
                 <span>{guide.deck}</span>
                 <small>{copy.updated} {guide.updatedAt.slice(0, 10)}</small>
