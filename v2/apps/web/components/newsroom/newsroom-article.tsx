@@ -1,5 +1,6 @@
 import { BuyingGuide } from './buying-guide';
 import { BUYING_GUIDE_DATA } from '../../content/en/buying-guide-data';
+import { relatedReading } from '../../content/related-reading';
 import { MonthlyReportNavigation, MonthlyReportTrend, isMonthlyReport } from './monthly-reports';
 import Link from 'next/link';
 import { EditorialMarkdown } from '../insights/editorial-markdown';
@@ -39,11 +40,7 @@ export function NewsroomArticle({ article }: Readonly<{
     : { label: 'News', href: '/news/' };
   const market = article.marketId === 'kr-seoul' ? 'Seoul'
     : article.marketId === 'sg-singapore' ? 'Singapore' : article.marketId === 'ae-dubai' ? 'Dubai' : 'Global';
-  const reading = article.marketId === 'ae-dubai'
-    ? [{ label: 'Property analysis', href: '/news/?type=analysis' }]
-    : article.marketId === 'sg-singapore'
-    ? [{ label: 'Singapore buying and transaction guide', href: '/guides/read-singapore-private-transactions/' }, { label: 'Singapore market analysis', href: '/news/singapore-private-market-quarterly-brief/' }]
-    : [{ label: 'Buying property in Korea', href: '/guides/buy-property-in-korea-as-foreigner/' }, { label: 'Comparing Seoul sale transactions', href: '/guides/read-seoul-sale-transactions/' }];
+  const reading = relatedReading(article);
   const relatedEvent = article.relatedHref?.includes('/check') ? 'article_to_check' : article.relatedHref?.includes('/explore') ? 'article_to_explore' : 'article_open';
   return <main
     className={`${styles.article} ${isMonthlyReport(article.slug) ? styles.monthlyArticle : ''}`}
