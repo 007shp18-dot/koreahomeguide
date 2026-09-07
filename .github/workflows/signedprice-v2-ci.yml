@@ -96,3 +96,11 @@ jobs:
             v2/playwright-report
           if-no-files-found: ignore
           retention-days: 7
+      - name: Upload successful tool design screenshots
+        if: success()
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: signedprice-v2-tool-design-screenshots
+          path: v2/playwright-report/data/*.png
+          if-no-files-found: ignore
+          retention-days: 7

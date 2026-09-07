@@ -1125,3 +1125,23 @@
 .resultCopy button { min-height: 44px; padding: 8px 16px; border: 1px solid var(--divider); border-radius: 8px; background: var(--surface,#fff); color: var(--ink); font: inherit; cursor: pointer; }
 .resultCopy small, .resultCopy p { font-size: 13px; color: var(--muted); }
 .resultCopy input { width: 100%; min-height: 44px; min-width: 0; }
+
+/* Shared tool styling: lighter structure, clear inputs and distinct results. */
+.hero { border-bottom: 1px solid var(--line); background: var(--surface-strong); }
+.hero h1 { font-size: clamp(2rem, 4.5vw, 3.5rem); font-weight: 650; line-height: 1.1; }
+.modeSelector, .conditions, .singleOffer, .comparisonGrid, .housingType,
+.conditions > legend, .singleOffer > legend, .resultPanel > header,
+.offerPanel legend, .offerPanel, .field, .singleOffer > .field,
+.conditionGrid > .field:nth-child(odd), .moneyFields > label + label { border-color: var(--line); }
+.modeSelector > a, .modeSelector > button, .modeSelector > span { min-height: 64px; font-weight: 650; border-color: var(--line); }
+.modeSelector > a[aria-current='page'], .modeSelector > span[aria-current='page'], .modeSelector > button[aria-pressed='true'] { background: var(--soft-blue); color: var(--accent); box-shadow: inset 0 -2px var(--accent); }
+.field, .offerPanel > label, .moneyFields > label { padding: 20px; font-weight: 550; }
+.field input, .field select, .offerPanel input { min-height: 50px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-strong); font-size: 16px; font-variant-numeric: tabular-nums; }
+.field input:focus-visible, .field select:focus-visible, .offerPanel input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.housingType select { border-color: var(--line); font-size: 16px; }
+.conditions > legend, .singleOffer > legend, .offerPanel legend, .resultPanel > header { font-weight: 650; letter-spacing: .02em; text-transform: none; }
+.resultPanel { background: var(--soft-blue); border-bottom: 1px solid var(--line); }
+.resultEmpty { padding: 28px; }
+.actions button { min-height: 48px; border-radius: 8px; }
+.resultCopy { padding-inline: 20px; }
+@media (max-width: 560px) { .hero h1 { font-size: 2rem; } .field, .offerPanel > label, .moneyFields > label { padding: 16px; } }

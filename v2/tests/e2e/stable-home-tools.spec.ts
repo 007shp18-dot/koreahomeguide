@@ -56,3 +56,20 @@ test('all tool languages use the same five navigation slots and Corrections has 
  await expect(page.getByRole('heading',{level:1})).toHaveText('Corrections');
  await expect(page.getByRole('link',{name:'Report an issue'})).toHaveAttribute('href',/^mailto:contact@signedprice.com/);
 });
+
+// Inspect the real tool routes, including empty states at every release viewport.
+test('tool screens keep fields and results inside the viewport', async ({page}, testInfo) => {
+ for (const [name, path, target] of [
+  ['tools', '/tools/', 'main'],
+  ['calculator', '/tools/property-scenario/', '[data-property-scenario]'],
+  ['seoul-check', '/kr/seoul/check/', '[data-check-section="verdict"]'],
+  ['singapore-check', '/sg/singapore/check/', '[data-singapore-check-workspace]'],
+  ['dubai-check', '/ae/dubai/check/', '[data-dubai-check-workspace]'],
+ ] as const) {
+  await page.goto(path);
+  await expect(page.locator(target).filter({visible:true}).first()).toBeVisible();
+  await page.evaluate(() => document.fonts.ready);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), name).toBe(true);
+  await testInfo.attach(`${name}-${testInfo.project.name}`, {body: await page.screenshot({fullPage:true}), contentType:'image/png'});
+ }
+});
