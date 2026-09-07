@@ -171,7 +171,17 @@ export function loadSeoulBuildingSeed() {
   if (source?.artifactVersion !== SEOUL_VERSION || !Array.isArray(source.records)) {
     throw new Error('SignedPrice Seoul building seed source version mismatch.');
   }
-  const rows = source.records.map((entry) => {
+  const sale = object(readGzipJson('korea-sale-evidence.json.gz'));
+  if (!Array.isArray(sale?.buildingRecords)) throw new Error('SignedPrice Seoul sale identities unavailable.');
+  const identities = new Map(source.records.map(record => [record.buildingId, record]));
+  for (const record of sale.buildingRecords) {
+    const existing = identities.get(record.buildingId);
+    if (existing && ['districtSlug', 'neighborhoodName', 'housingType', 'officialName'].some(key => existing[key] !== record[key])) {
+      throw new Error(`SignedPrice Seoul identity conflict: ${record.buildingId}`);
+    }
+    if (!existing) identities.set(record.buildingId, record);
+  }
+  const rows = [...identities.values()].map((entry) => {
     const record = object(entry);
     if (record === null) throw new Error('SignedPrice Seoul building seed record invalid.');
     const externalId = text(record.buildingId, 'buildingId');
