@@ -32,14 +32,11 @@ export function getMarketLocalNavigation(
       ? `/ko${capability.publicHref}`
       : capability.publicHref;
     return [{
-      label,
+      label: locale === 'ko' ? { Overview: '서울', Explore: '실거래가 탐색', Check: '가격 확인', Rankings: '지역 비교', Corrections: '정보 수정 요청' }[label] : label,
       href,
       state: capability.state,
     } satisfies MarketLocalNavItem];
   });
-  const paths = { 'kr-seoul': '/kr/seoul/shortlist/', 'sg-singapore': '/sg/singapore/shortlist/', 'ae-dubai': '/ae/dubai/shortlist/' };
-  const href = `${locale === 'ko' && marketId === 'kr-seoul' ? '/ko' : ''}${paths[marketId]}`;
-  items.splice(Math.min(2, items.length), 0, { label: locale === 'ko' ? '예산·관심 목록' : 'Budget & saved', href, state: marketId === 'kr-seoul' ? 'available' : 'limited' });
   return Object.freeze(items);
 }
 

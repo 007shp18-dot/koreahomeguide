@@ -75,7 +75,7 @@ describe('SignedPrice brand mark', () => {
     expect(html).toContain('data-navigation-tier="market-local"');
     expect(html).toContain('aria-label="Seoul market navigation"');
     expect(html.match(/site-header__product-link/g)).toHaveLength(5);
-    expect(html.match(/market-local-nav__link/g)).toHaveLength(6);
+    expect(html.match(/market-local-nav__link/g)).toHaveLength(5);
     expect(html).toContain('>Overview</a>');
     expect(html).toContain('>Guides</a>');
     expect(html).toContain('href="/kr/seoul/check"');
