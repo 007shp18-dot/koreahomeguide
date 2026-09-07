@@ -24,7 +24,7 @@
 .compactInput{min-height:50px;padding:0 14px;gap:8px}
 .resultForm button{padding:0 18px}
 .cardGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid #cbd5e1}
-.marketCard{min-width:0;display:grid;grid-template-rows:84px 94px 118px minmax(250px,1fr) 104px 96px 58px;padding:0 24px;border-right:1px solid #cbd5e1}
+.marketCard{min-width:0;display:grid;grid-template-rows:84px 94px minmax(156px,auto) minmax(250px,1fr) minmax(132px,auto) 96px 58px;padding:0 24px;border-right:1px solid #cbd5e1}
 .marketCard:last-child{border-right:0}
 .cardTitle{padding:20px 0;border-bottom:1px solid #e2e8f0}
 .cardTitle span,.metricRow span,.matchRow>span,.evidenceRow>span{color:#64748b;font-size:12px;letter-spacing:.05em;text-transform:uppercase}
@@ -48,5 +48,5 @@
 .resultFooter p{flex:1 1 520px;margin:0;color:#64748b;font-size:12px;line-height:1.5}
 .resultFooter button{min-height:44px;padding:0 16px}
 .resultFooter a{color:#1557d5;font-size:13px}
-@media(max-width:860px){.entryGrid,.resultHeader{grid-template-columns:1fr;gap:28px}.resultHeader .eyebrow{margin-bottom:-12px}.cardGrid{grid-template-columns:1fr;border-bottom:0}.marketCard{grid-template-rows:76px 90px 110px auto 100px 90px 56px;border-right:0;border-bottom:1px solid #cbd5e1}}
+@media(max-width:860px){.entryGrid,.resultHeader{grid-template-columns:1fr;gap:28px}.resultHeader .eyebrow{margin-bottom:-12px}.cardGrid{grid-template-columns:1fr;border-bottom:0}.marketCard{grid-template-rows:76px 90px minmax(144px,auto) auto minmax(132px,auto) 90px 56px;border-right:0;border-bottom:1px solid #cbd5e1}}
 @media(max-width:560px){.entry,.workspace{width:calc(100% - 32px)}.entry{padding-top:36px}.entry h1{font-size:40px}.entryForm{min-width:0}.inputFrame{padding:0 14px;font-size:20px}.resultForm{grid-template-columns:1fr}.cardGrid{margin-inline:0}.marketCard{padding:0 18px}.resultFooter{align-items:stretch}.resultFooter button{text-align:center}}

@@ -57,3 +57,12 @@ describe('SignedPrice Passport model', () => {
     expect(passportHref('zh-CN', 500_000_000)).toBe('/zh-cn/passport/?budget=500000000');
   });
 });
+
+it('does not turn invalid unit prices into infinite areas or match invalid prices', () => {
+  for (const medianPsm of [0, -1, NaN, Infinity]) {
+    const model = buildPassportModel({ budgetWon: 500_000_000, locale: 'en', evidence: [{ ...evidence[0]!, medianPsm, scopes: [{ name: 'Invalid', href: '/kr/seoul/explore/', medianPrice: -1 }] }] });
+    expect(model.markets[0]!.indicativeAreaSqm).toBeNull();
+    expect(model.markets[0]!.matches).toEqual([]);
+    expect(model.markets[0]!.scopes).toEqual([]);
+  }
+});

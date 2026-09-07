@@ -39,3 +39,28 @@ test('Passport updates the complete result URL from one budget input', async ({ 
   await expect(page).toHaveURL(/\/ko\/passport\/?\?budget=600000000$/);
   await expect(input).toHaveValue('600,000,000');
 });
+
+test('Passport follows restored browser budgets after a comparison update', async ({ page }) => {
+  await page.goto('/passport/?budget=500000000');
+  const input = page.getByLabel('Budget', { exact: true });
+  await expect(input).toHaveValue('500,000,000');
+  await input.fill('600000000');
+  await page.getByRole('button', { name: 'Update comparison', exact: true }).click();
+  await expect(input).toHaveValue('600,000,000');
+  await page.evaluate(() => {
+    history.replaceState(history.state, '', '/passport/?budget=750000000');
+    window.dispatchEvent(new PopStateEvent('popstate', { state: history.state }));
+  });
+  await expect(input).toHaveValue('750,000,000');
+});
+
+test('Passport handles clipboard denial without claiming that the result was copied', async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async () => { throw new Error('denied'); } } });
+  });
+  await page.goto('/passport/?budget=500000&currency=USD');
+  await expect(page.getByLabel('Budget', { exact: true })).toHaveValue('500,000');
+  await page.getByRole('button', { name: 'Copy result link', exact: true }).click();
+  await expect(page.getByRole('status')).toHaveText('The link could not be copied. Copy the address from your browser to share this result.');
+  await expect(page.getByRole('button', { name: 'Link copied', exact: true })).toHaveCount(0);
+});

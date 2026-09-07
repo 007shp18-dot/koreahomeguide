@@ -33,6 +33,8 @@ export type PassportMarketEvidence = Readonly<{
   localBudget: number;
   medianPsm: number | null;
   sample: number;
+  priceBasis?: 'transactions' | 'projects' | 'areas';
+  priceSample?: number;
   period: string;
   yieldPct?: number | null;
   scopes: readonly PassportScope[];
@@ -98,11 +100,13 @@ export function buildPassportModel(input: Readonly<{
   const budgetWon = convertPassportCurrency(budgetAmount, budgetCurrency, 'KRW');
   const markets = input.evidence.map((market): PassportMarketResult => {
     const converted = localBudget(market.currency, budgetWon);
+    const scopes = Object.freeze(market.scopes.filter(({ medianPrice }) => Number.isFinite(medianPrice) && medianPrice > 0));
     return Object.freeze({
       ...market,
       localBudget: converted,
-      indicativeAreaSqm: market.medianPsm === null ? null : Math.round(converted / market.medianPsm),
-      matches: Object.freeze(market.scopes
+      scopes,
+      indicativeAreaSqm: market.medianPsm === null || !Number.isFinite(market.medianPsm) || market.medianPsm <= 0 ? null : Math.round(converted / market.medianPsm),
+      matches: Object.freeze(scopes
         .filter(({ medianPrice }) => medianPrice <= converted)
         .sort((left, right) => right.medianPrice - left.medianPrice)),
     });
