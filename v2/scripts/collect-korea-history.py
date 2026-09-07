@@ -1,15 +1,15 @@
 """Read authenticated Vercel preview export; resumable full-page source archive.
-Supply the official temporary preview share URL on stdin; it is never saved.
+Requires requests (pip install requests). Supply the official temporary preview
+share URL on stdin; it is never saved. SIGNEDPRICE_HISTORY_OUTPUT sets the output directory.
 """
 import concurrent.futures, gzip, hashlib, json, math, os, re, sys, threading, time
 from pathlib import Path
 from datetime import datetime, timezone
 from urllib.parse import urlsplit
-sys.path.insert(0, '/workspace/scratch/c6531e12b8d9/history-python-deps')
 import requests
 Session = requests.Session
 
-OUT = Path('/workspace/scratch/c6531e12b8d9/korea-history-2020-latest')
+OUT = Path(os.environ.get('SIGNEDPRICE_HISTORY_OUTPUT', 'korea-history-2020-latest')).resolve()
 OUT.mkdir(exist_ok=True)
 DISTRICTS = ['11110','11140','11170','11200','11215','11230','11260','11290','11305','11320','11350','11380','11410','11440','11470','11500','11530','11545','11560','11590','11620','11650','11680','11710','11740']
 MONTHS = [f'{y}{m:02}' for y in range(2020,2027) for m in range(1,13) if (y,m)<=(2026,9)]
