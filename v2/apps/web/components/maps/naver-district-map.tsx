@@ -50,6 +50,15 @@ export function buildGoogleBuildingLookup(building: Pick<NaverBuildingMapPoint, 
   return { sourceName, textQuery: `${sourceName}, ${building.addressQuery}` };
 }
 
+/** Names repeat across Seoul: require both district and local address context. */
+export function isGoogleBuildingAddressMatch(query: string, address: string | undefined): boolean {
+  if (!address) return false;
+  const parts = query.trim().split(/\s+/);
+  if (parts[0] !== '서울특별시' || parts.length < 4) return false;
+  const tokens = address.replace(/[(),]/g, ' ').split(/\s+/);
+  return tokens.includes('서울특별시') && tokens.includes(parts[1]!) && tokens.includes(parts[2]!);
+}
+
 export type NaverNeighborhoodMapPoint = Readonly<{
   id: string;
   title: string;
@@ -150,6 +159,7 @@ type GooglePlaceCoordinateSdk = Readonly<{
         language: string;
       }>) => Promise<Readonly<{ places: readonly Readonly<{
         displayName?: string;
+        formattedAddress?: string;
         location?: GooglePlaceCoordinate;
       }>[] }>>;
     }>;
@@ -817,7 +827,7 @@ export function NaverDistrictMap({
       const lookup = buildGoogleBuildingLookup(selectedUnresolvedBuilding);
       const { places } = await Place.searchByText({
         textQuery: lookup.textQuery,
-        fields: ['displayName', 'location'],
+        fields: ['displayName', 'formattedAddress', 'location'],
         maxResultCount: 1,
         language: 'ko',
       });
@@ -826,6 +836,7 @@ export function NaverDistrictMap({
       const longitude = place?.location?.lng();
       if (
         !isTrustedGooglePlaceMatch(place?.displayName, lookup.sourceName)
+        || !isGoogleBuildingAddressMatch(selectedUnresolvedBuilding.addressQuery, place?.formattedAddress)
         || latitude === undefined || longitude === undefined
         || !Number.isFinite(latitude) || !Number.isFinite(longitude)
         || latitude < 37.4 || latitude > 37.72

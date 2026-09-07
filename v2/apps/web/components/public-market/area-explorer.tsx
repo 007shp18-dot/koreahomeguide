@@ -609,12 +609,12 @@ function ReadyAreaExplorer({
     if (source === 'rail' && window.matchMedia('(max-width: 800px)').matches) {
       document.querySelector('[data-explorer-region="map"]')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-    router.replace(
+    // This building's evidence is already loaded; selecting it must not refetch the route.
+    window.history.replaceState(window.history.state, '',
       createExploreBuildingSelectionHref(building, linkSelection, locale, {
         query: buildingQuery,
         buildingPage: readyBuildingAvailability?.page,
       }),
-      { scroll: false },
     );
   };
   const selectBuildingFromMarker = (buildingId: string): void => {
@@ -911,12 +911,12 @@ function ReadyAreaExplorer({
           />
 
           {mapDrilledToDistrict ? <details className={styles.mapEvidenceDisclosure}>
-            <summary>
-              <span>{copy.selected} · {locale === 'ko' ? selected.nameKo : selected.nameEn}</span>
-              <strong>{selected.medianLabel ?? copy.notPublished}</strong>
-              <small>{localizeSampleLabel(selected.sampleLabel, locale)}</small>
+            <summary data-map-evidence={selectedBuilding === null ? 'district' : 'selected-building'}>
+              <span>{copy.selected} · {selectedBuilding === null ? (locale === 'ko' ? selected.nameKo : selected.nameEn) : buildingDisplayLabel(selectedBuilding, locale).title}</span>
+              <strong>{selectedBuilding === null ? (selected.medianLabel ?? copy.notPublished) : (selectedBuilding.medianLabel ?? copy.notPublished)}</strong>
+              <small>{localizeSampleLabel(selectedBuilding?.sampleLabel ?? selected.sampleLabel, locale)}</small>
             </summary>
-            <DistrictEvidenceSummary
+            {selectedBuilding !== null ? <BuildingEvidencePanel building={selectedBuilding} locale={locale} /> : <DistrictEvidenceSummary
               key={selected.slug}
               model={selected.contractEvidence}
               mode="compact"
@@ -924,7 +924,7 @@ function ReadyAreaExplorer({
               locale={locale}
               medianLabel={usesLegacyCopy ? undefined : exactMetricCopy.medianLabel}
               showContractGroups={model.evidenceSelection.transaction !== 'sale'}
-            />
+            />}
           </details> : null}
         </section>
         )}

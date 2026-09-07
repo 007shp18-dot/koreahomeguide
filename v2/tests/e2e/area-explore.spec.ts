@@ -406,8 +406,15 @@ test('journey: Explore selection survives Detail, Check, and the return link', a
   test.skip(releaseTarget.usesExternalServer, 'Synthetic journey evidence is local-release only.');
   await page.goto('/kr/seoul/explore/?transaction=monthly&propertyType=apartment&district=jongno-gu');
 
+  const selectionRequests: string[] = [];
+  page.on('request', request => {
+    const url = new URL(request.url());
+    if (request.headers()['rsc'] === '1' && url.pathname === '/kr/seoul/explore/' && url.searchParams.get('buildingId') === 'synthetic-test-building') selectionRequests.push(request.url());
+  });
   const row = page.locator('[data-building-row="synthetic-test-building"]');
   await row.getByRole('button').click();
+  await expect(page.locator('[data-map-evidence="selected-building"]')).toBeAttached();
+  expect(selectionRequests).toEqual([]);
   await expect(page).toHaveURL(/transaction=monthly.*propertyType=apartment.*district=jongno-gu.*buildingId=synthetic-test-building/);
   const selectedExploreUrl = new URL(page.url());
   const drawer = page.locator('[data-building-drawer="synthetic-test-building"]');
