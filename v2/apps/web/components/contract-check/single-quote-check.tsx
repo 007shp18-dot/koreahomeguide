@@ -1,5 +1,6 @@
 'use client';
 import { ResultLinkCopy } from './result-link-copy';
+import { BuildingSelection } from './building-selection';
 
 import type { CheckTransaction, SingleQuoteCheckResult } from '@signedprice/market-core';
 import Link from 'next/link';
@@ -110,6 +111,8 @@ export function SingleQuoteCheckWorkspace({ model, locale = 'en', entityContext 
   entityContext?: EntityCheckContext | null;
 }>) {
   const c = CHECK_COPY[locale];
+  const [district, setDistrict] = useState(model.selection.districtSlug);
+  const [housing, setHousing] = useState(model.selection.housingType);
   const [draft, setDraft] = useState<QuoteDraft>(() => ({
     transaction: model.selection.transaction,
     salePriceWon: model.selection.salePriceWon?.toString() ?? '',
@@ -144,15 +147,15 @@ export function SingleQuoteCheckWorkspace({ model, locale = 'en', entityContext 
           <fieldset className={styles.conditions} data-check-section="conditions">
             <legend><span>01</span>{c.conditions}</legend>
             <div className={styles.conditionGrid}>
-              <label className={styles.field}><span>{c.district}</span><select defaultValue={model.selection.districtSlug} name="district">
+              <label className={styles.field}><span>{c.district}</span><select value={district} onChange={event => setDistrict(event.target.value)} name="district">
                 {model.districts.map((district) => <option key={district.slug} value={district.slug}>{locale === 'ko' ? district.nameKo : district.nameEn}</option>)}
               </select></label>
-              <label className={styles.field}><span>{c.housing}</span><select defaultValue={model.selection.housingType} name="housing">
+              <label className={styles.field}><span>{c.housing}</span><select value={housing} onChange={event => setHousing(event.target.value as typeof housing)} name="housing">
                 <option value="apartment">Apartment</option><option value="officetel">Officetel</option>
                 <option value="villa_multifamily">Villa / multifamily</option><option value="detached">Detached</option>
               </select></label>
               <label className={styles.field}><span>{c.area} <small>㎡</small></span><input defaultValue={model.selection.areaSqm ?? ''} inputMode="decimal" name="area" /></label>
-              <label className={styles.field}><span>{c.building}</span><input aria-describedby="single-building-hint" defaultValue={model.selection.buildingId ?? ''} name="building" /><small id="single-building-hint">{c.buildingHint}</small></label>
+              <BuildingSelection key={`${district}-${housing}`} id={district === model.selection.districtSlug && housing === model.selection.housingType ? model.selection.buildingId : null} name={model.buildingName} locale={locale} />
             </div>
           </fieldset>
           <fieldset className={styles.singleOffer} data-offer="single">

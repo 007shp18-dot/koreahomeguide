@@ -67,6 +67,7 @@ function resolveCheck(model: Extract<DubaiCheckModel, { status: 'ready' }>, stat
         housing: query.housing,
         areaSqm: query.areaSqm,
         price: query.askingPriceAed,
+        annualRent: query.annualRentAed,
         returnTo: resultHref,
       }),
     }),

@@ -239,5 +239,5 @@ test('journey: unsupported entity context fails closed to the manual Check form'
   await expect(page.locator('input[name="market"]')).toHaveCount(0);
   await expect(page.locator('input[name="entity"]')).toHaveCount(0);
   await expect(page.getByRole('link', { name: /Return to / })).toHaveCount(0);
-  await expect(page.locator('input[name="building"]')).toBeVisible();
+  await expect(page.getByRole('combobox', { name: 'Building to compare' })).toHaveValue('');
 });

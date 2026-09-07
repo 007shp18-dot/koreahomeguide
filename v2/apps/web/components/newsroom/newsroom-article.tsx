@@ -70,6 +70,6 @@ export function NewsroomArticle({ article }: Readonly<{
       <h2 id="article-sources-title">Sources</h2>
       <ol>{article.sources.map((source) => <li key={source.id}><span>{source.kind}</span><a href={source.href} rel="noreferrer" data-editorial-event="policy_source_open">{source.publisher} · {source.title}</a><small>Checked {source.checkedAt.slice(0, 10)}</small></li>)}</ol>
     </section>
-    {article.relatedHref === null ? null : <aside className={styles.relatedAction}><p>Related reading and tools</p><Link href={article.relatedHref} data-editorial-event={relatedEvent}>{article.relatedHref.includes('/check') ? 'Compare costs' : 'Explore transaction records'}</Link>{reading.filter(({ href }) => !href.endsWith(`/${article.slug}/`)).map((item) => <Link key={item.href} href={item.href}>{item.label}</Link>)}</aside>}
+    {article.relatedHref === null ? null : <aside className={styles.relatedAction}><p>Related reading and tools</p><Link href={article.relatedHref} data-editorial-event={relatedEvent}>{article.relatedHref.includes('/check') ? 'Check a price' : article.relatedHref.includes('/explore') ? 'Explore transaction records' : article.relatedHref.includes('/tools/') ? 'Open calculator' : 'Read related analysis'}</Link>{reading.filter(({ href }) => !href.endsWith(`/${article.slug}/`)).map((item) => <Link key={item.href} href={item.href}>{item.label}</Link>)}</aside>}
   </main>;
 }

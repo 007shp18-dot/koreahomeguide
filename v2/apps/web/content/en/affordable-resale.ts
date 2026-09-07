@@ -85,7 +85,7 @@ export const AFFORDABLE_RESALE_STORIES: readonly EditorialPortfolioRecord[] = [
       ],
       "sourceLabel": "Ministry of Land, Infrastructure and Transport reported transactions; SignedPrice calculation",
       "sampleLabel": "Selected examples meeting the article screen; at least five eligible sales per group",
-      "relatedHref": "/news/seoul-84sqm-under-one-billion-2026/",
+      "relatedHref": "/kr/seoul/explore/?transaction=sale&area=60-85&propertyType=apartment",
       "conversionProvenance": null
     }
   },
@@ -218,7 +218,7 @@ export const AFFORDABLE_RESALE_STORIES: readonly EditorialPortfolioRecord[] = [
       ],
       "sourceLabel": "Urban Redevelopment Authority reported transactions; SignedPrice calculation",
       "sampleLabel": "Selected examples meeting the article screen; at least five eligible sales per group",
-      "relatedHref": "/news/singapore-condos-under-1-5-million-2026/",
+      "relatedHref": "/sg/singapore/explore/",
       "conversionProvenance": null
     }
   }

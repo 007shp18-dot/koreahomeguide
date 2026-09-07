@@ -17,6 +17,12 @@ const model: SingaporeCheckRouteModel = {
 };
 
 describe('Singapore Check workspace', () => {
+  it('offers a usable evidence link instead of an empty HDB form', () => {
+    const html = renderToStaticMarkup(<SingaporeCheckWorkspace model={{...model, drafts:{...model.drafts, a:{market:'hdb-resale'}}}} />);
+    expect(html).toContain('Explore published Singapore evidence');
+    expect(html).not.toContain('name="a-amount"');
+    expect(html).toMatch(/<button[^>]*disabled/);
+  });
   it('owns its native markets and never links into Seoul', () => {
     const html = renderToStaticMarkup(<SingaporeCheckWorkspace model={model} />);
 

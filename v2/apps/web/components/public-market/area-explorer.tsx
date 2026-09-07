@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { buildingDisplayLabel } from '../../lib/public-market/building-display-label';
+import { neighborhoodDisplayName } from '../../lib/public-market/seoul-display-names';
 import { useRouter } from 'next/navigation';
 import { useCallback, useDeferredValue, useMemo, useReducer, useState } from 'react';
 
@@ -516,7 +517,7 @@ function ReadyAreaExplorer({
       ));
       return {
         id: neighborhood.id,
-        title: neighborhood.name,
+        title: neighborhoodDisplayName(neighborhood.name, locale),
         addressQuery: `서울특별시 ${selected.nameKo} ${neighborhood.name}`,
         latitude: located.length === 0 ? null
           : located.reduce((sum, building) => sum + building.latitude!, 0) / located.length,
@@ -526,7 +527,7 @@ function ReadyAreaExplorer({
         selected: selectedNeighborhood === neighborhood.id,
       };
     })
-  ), [districtMapBuildings, readyBuildingAvailability?.neighborhoods, selected.nameKo, selectedNeighborhood]);
+  ), [districtMapBuildings, readyBuildingAvailability?.neighborhoods, selected.nameKo, selectedNeighborhood, locale]);
   const referencedMapBuildings = useMemo(() => {
     const references = new Map(mapNeighborhoods.map(point => [point.id, point]));
     return mapBuildings.map(building => {

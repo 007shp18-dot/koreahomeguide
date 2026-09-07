@@ -9,7 +9,9 @@ import {
 } from '@signedprice/singapore-property';
 import {
   createSingaporeCheckEvidenceRepositories,
+  singaporeCheckEvidenceRepositoriesFromEnvironment,
 } from '../lib/singapore/check-evidence-repository.server';
+import { buildSingaporeCheckRouteModel } from '../lib/singapore/check-route-model.server';
 
 function record(amountSgd: number): UraPrivateSaleCheckRecord {
   return {
@@ -21,6 +23,21 @@ function record(amountSgd: number): UraPrivateSaleCheckRecord {
 }
 
 describe('Singapore Check evidence repositories', () => {
+  it('checks an Explore project using the installed private-sale records', async () => {
+    const repositories = await singaporeCheckEvidenceRepositoriesFromEnvironment();
+    const artifact = repositories.get('ura-private-sale');
+    expect(artifact).not.toBeNull();
+    const project = artifact!.records.find(row => row.project === 'PARKTOWN RESIDENCE')!;
+    const model = buildSingaporeCheckRouteModel(repositories, {
+      submitted: '1', 'a-market': 'ura-private-sale', 'a-amount': '1852000',
+      'a-project': project.projectId, 'a-segment': project.marketSegment,
+      'a-district': project.district, 'a-property-type': project.propertyType,
+      'a-area-min': '80', 'a-area-max': '120',
+    });
+    expect(model.catalogs['ura-private-sale'].available).toBe(true);
+    expect(model.result.kind).toBe('single');
+    if (model.result.kind === 'single') expect(model.result.offer.status).toBe('ready');
+  });
   it('validates three markets independently through a Check-only source', async () => {
     const artifact = buildSingaporeCheckArtifact({
       market: 'ura-private-sale', sourceIdentifier: 'URA',

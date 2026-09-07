@@ -1,4 +1,5 @@
 import { getSeoulDistrictBySlug } from '@signedprice/korea-rent/browser';
+import { buildingDisplayName, neighborhoodDisplayName } from './seoul-display-names';
 
 /** Display-only labels: preserve the source identity and never infer a building name. */
 export function buildingDisplayLabel(input: Readonly<{
@@ -7,9 +8,10 @@ export function buildingDisplayLabel(input: Readonly<{
   const district = getSeoulDistrictBySlug(input.districtSlug);
   const lot = /^\((산?\d+(?:-\d+)?)\)$/.exec(input.name.trim())?.[1];
   const address = lot ? `${input.neighborhoodName} ${lot}` : input.neighborhoodName;
+  const displayAddress = `${neighborhoodDisplayName(input.neighborhoodName, locale)}${lot ? ` ${lot}` : ''}`;
   return {
-    title: lot ? (locale === 'ko' ? address : `${lot.startsWith('산') ? 'Mountain lot' : 'Lot'} ${lot.replace(/^산/, '')}`) : input.name,
-    location: [locale === 'ko' ? district?.nameKo : district?.nameEn, address].filter(Boolean).join(' · '),
+    title: lot ? (locale === 'ko' ? address : `${lot.startsWith('산') ? 'Mountain lot' : 'Lot'} ${lot.replace(/^산/, '')}`) : buildingDisplayName(input.name, locale),
+    location: [locale === 'ko' ? district?.nameKo : district?.nameEn, displayAddress].filter(Boolean).join(' · '),
     original: [district?.nameKo, address, lot ? null : input.name].filter(Boolean).join(' '),
     isLot: Boolean(lot),
   };

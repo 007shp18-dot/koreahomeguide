@@ -20,6 +20,11 @@ function pairOptions(values: readonly Readonly<{ id: string; label: string }>[],
 }
 
 function OfferFields({ prefix, draft, catalog }: Readonly<{ prefix: 'a' | 'b'; draft: SingaporeCheckDraft; catalog: SingaporeCheckCatalog }>) {
+  if (!catalog.available) return <fieldset className={styles.offerFields}>
+    <legend>Offer {prefix.toUpperCase()} · {labels[draft.market]}</legend>
+    <p>Individual transaction evidence for this price check is not available in the current release.</p>
+    <Link href={draft.market === 'ura-private-sale' ? '/sg/singapore/explore/' : '/sg/singapore/explore/'}>Explore published Singapore evidence</Link>
+  </fieldset>;
   const field = (label: string, name: string, content: React.ReactNode) => <label><span>{label}</span>{content}</label>;
   return <fieldset className={styles.offerFields} data-offer={prefix.toUpperCase()}>
     <legend>Offer {prefix.toUpperCase()}</legend><input type="hidden" name={`${prefix}-market`} value={draft.market} />
@@ -77,9 +82,10 @@ function ResultPanel({ model }: Readonly<{ model: SingaporeCheckRouteModel }>) {
 }
 
 export function SingaporeCheckWorkspace({ model }: Readonly<{ model: SingaporeCheckRouteModel }>) {
+  const available = model.catalogs[model.drafts.a.market].available && (model.mode === 'single' || model.catalogs[model.drafts.b.market].available);
   return <SingaporePage currentHref="/sg/singapore/check/"><div className={styles.checkWorkspace} data-singapore-check-workspace="true">
     <header className={styles.checkHeader}><div><p className={styles.eyebrow}>Singapore Check</p><h1>Position an offer against its own market.</h1></div><p>Recent completed months only<br />Minimum 5 comparable transactions</p></header>
     <nav className={styles.checkMode} aria-label="Check mode"><Link aria-current={model.mode === 'single' ? 'page' : undefined} href="/sg/singapore/check/">One offer</Link><Link aria-current={model.mode === 'compare' ? 'page' : undefined} href="/sg/singapore/check/?mode=compare">Compare A/B</Link></nav>
-    <section className={styles.checkBody}><div className={styles.checkForm}><form action="/sg/singapore/check/" method="get"><input type="hidden" name="submitted" value="1" /><input type="hidden" name="mode" value={model.mode} /><MarketTabs prefix="a" model={model} /><OfferFields prefix="a" draft={model.drafts.a} catalog={model.catalogs[model.drafts.a.market]} />{model.mode === 'compare' ? <><MarketTabs prefix="b" model={model} /><OfferFields prefix="b" draft={model.drafts.b} catalog={model.catalogs[model.drafts.b.market]} /></> : null}<button className={styles.checkSubmit} type="submit">{model.mode === 'compare' ? 'Compare offers' : 'Check offer'}</button></form></div><aside className={styles.checkResult} aria-label="Check result"><ResultPanel model={model} /></aside></section>
+    <section className={styles.checkBody}><div className={styles.checkForm}><form action="/sg/singapore/check/" method="get"><input type="hidden" name="submitted" value="1" /><input type="hidden" name="mode" value={model.mode} /><MarketTabs prefix="a" model={model} /><OfferFields prefix="a" draft={model.drafts.a} catalog={model.catalogs[model.drafts.a.market]} />{model.mode === 'compare' ? <><MarketTabs prefix="b" model={model} /><OfferFields prefix="b" draft={model.drafts.b} catalog={model.catalogs[model.drafts.b.market]} /></> : null}<button className={styles.checkSubmit} type="submit" disabled={!available}>{model.mode === 'compare' ? 'Compare offers' : 'Check offer'}</button></form></div><aside className={styles.checkResult} aria-label="Check result"><ResultPanel model={model} /></aside></section>
   </div></SingaporePage>;
 }
