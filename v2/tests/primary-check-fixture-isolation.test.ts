@@ -44,7 +44,7 @@ describe('primary Check fixture isolation', () => {
     expect(englishSale).toContain('7 completed months · 2026-02–2026-08');
     expect(englishSale).not.toContain('Verified transaction evidence is unavailable.');
     expect(koreanMonthly).toContain('data-single-result');
-    expect(koreanMonthly).toContain('7개월 완료 · 2026-02–2026-08');
+    expect(koreanMonthly).toContain('7개월 집계 · 2026-02–2026-08');
     expect(koreanMonthly).not.toContain('Verified transaction evidence is unavailable.');
   });
 

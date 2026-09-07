@@ -1,4 +1,7 @@
 'use client';
+import { sgText } from '../../lib/locale/singapore-copy';
+import { marketHref, type MarketLocale } from '../../lib/locale/market-localization';
+
 import { retainPassportContext } from '../../lib/passport/journey';
 
 import { singaporeProjectSearchTerm } from '../../lib/singapore/project-display-name';
@@ -66,7 +69,7 @@ export function formatSingaporeMapPrice(label: string | null, fallback: string):
   return `S$${Math.round(value / 1_000)}K`;
 }
 
-export function SingaporeExplorer({
+export function SingaporeExplorer({ locale = 'en',
   model,
   hdbModel = { status: 'unavailable' },
   googleMapsBrowserKey = null,
@@ -77,7 +80,7 @@ export function SingaporeExplorer({
   initialPage = 1,
   initialProjectId = null,
   restoreStateFromUrl = false,
-}: Readonly<{
+}: Readonly<{ locale?: MarketLocale;
   model: SingaporeExploreModel;
   hdbModel?: HdbExploreModel;
   googleMapsBrowserKey?: string | null;
@@ -144,16 +147,16 @@ export function SingaporeExplorer({
 
   useEffect(() => {
     if (!urlStateReady) return;
-    const href = retainPassportContext(buildSingaporeExploreHref({
+    const href = retainPassportContext(marketHref(locale, buildSingaporeExploreHref({
       query,
       selectedSegment,
       district,
       sort,
       page: activePage,
       selectedProjectId: selectedProject?.id ?? null,
-    }), window.location.href);
+    })), window.location.href);
     if (`${window.location.pathname}${window.location.search}` !== href) window.history.replaceState(null, '', href);
-  }, [activePage, district, query, selectedProject, selectedSegment, sort, urlStateReady]);
+  }, [activePage, district, query, selectedProject, selectedSegment, sort, urlStateReady, locale]);
   const selectSegment = useCallback((segment: 'CCR' | 'RCR' | 'OCR' | null) => {
     setSelectedSegment(segment); setSelectedProjectId(null); setDistrict('all'); setPage(1);
   }, []);
@@ -178,81 +181,81 @@ export function SingaporeExplorer({
     const byId = new Map(projects.map(project => [`project-${project.id}`, project]));
     return activeMapPoints.filter(point => mapLevel !== 'projects' || showAreaReferences || point.kind !== 'area' || point.selected === true).map(point => {
       const project = byId.get(point.id);
-      return project === undefined ? point : { ...point,
+      return project === undefined ? { ...point, title: sgText(locale, point.title), label: sgText(locale, point.label) } : { ...point,
         label: project.name };
     });
-  }, [activeMapPoints, projects, mapLevel, showAreaReferences]);
+  }, [activeMapPoints, projects, mapLevel, showAreaReferences, locale]);
   const layers = <>
-    <MarketLayerControl label="Singapore market layers" items={[
+    <MarketLayerControl locale={locale} label={sgText(locale, "Singapore market layers")} items={[
       { id: 'ura', label: 'URA private sales', href: '#ura-private', current: true },
       { id: 'resale', label: 'HDB resale', href: '#hdb-resale' },
       { id: 'rent', label: 'HDB rent', href: '#hdb-rent' },
     ]} />
     <div className={`${searchStyles.search} ${styles.exploreFilters}`}>
       <form role="search" onSubmit={(event) => { event.preventDefault(); setPage(1); }}>
-        <label className={searchStyles.query}>Search Singapore projects<input name="q" type="search" value={query} placeholder="Project, street or district number" onChange={(event) => { setQuery(event.currentTarget.value); setPage(1); setSelectedProjectId(null); }} /></label>
-        <label>District<select value={district} onChange={(event) => { setDistrict(event.currentTarget.value); setPage(1); setSelectedProjectId(null); }}><option value="all">All districts</option>{districtCounts.map(([value, count]) => <option key={value} value={value}>District {value} · {count.toLocaleString('en')} projects</option>)}</select></label>
-        <label>Sort<select value={sort} onChange={(event) => { setSort(event.currentTarget.value); setPage(1); }}><option value="transactions">Most transactions</option><option value="name">Project name</option></select></label>
-        {hasFilters ? <button type="button" className={styles.clearFilters} onClick={() => { setQuery(''); setSelectedSegment(null); setDistrict('all'); setSort('transactions'); setPage(1); setSelectedProjectId(null); }}>Clear filters</button> : null}
+        <label className={searchStyles.query}>{sgText(locale, "Search Singapore projects")}<input name="q" type="search" value={query} placeholder={sgText(locale, "Project, street or district number")} onChange={(event) => { setQuery(event.currentTarget.value); setPage(1); setSelectedProjectId(null); }} /></label>
+        <label>{sgText(locale, "District")}<select value={district} onChange={(event) => { setDistrict(event.currentTarget.value); setPage(1); setSelectedProjectId(null); }}><option value="all">{sgText(locale, "All districts")}</option>{districtCounts.map(([value, count]) => <option key={value} value={value}>{sgText(locale, "District ")}{sgText(locale, value)}{sgText(locale, " · ")}{sgText(locale, count.toLocaleString('en'))}{sgText(locale, " projects")}</option>)}</select></label>
+        <label>{sgText(locale, "Sort")}<select value={sort} onChange={(event) => { setSort(event.currentTarget.value); setPage(1); }}><option value="transactions">{sgText(locale, "Most transactions")}</option><option value="name">{sgText(locale, "Project name")}</option></select></label>
+        {hasFilters ? <button type="button" className={styles.clearFilters} onClick={() => { setQuery(''); setSelectedSegment(null); setDistrict('all'); setSort('transactions'); setPage(1); setSelectedProjectId(null); }}>{sgText(locale, "Clear filters")}</button> : null}
       </form>
     </div>
   </>;
-  if (model.status === 'unavailable') return <SingaporePage currentHref="/sg/singapore/explore/" unframed><h1>Explore</h1><p>{model.message}</p><HdbMarketPanel model={hdbModel} /></SingaporePage>;
-  return <SingaporePage currentHref="/sg/singapore/explore/" unframed>
+  if (model.status === 'unavailable') return <SingaporePage locale={locale} currentHref={marketHref(locale, "/sg/singapore/explore/")} unframed><h1>{sgText(locale, "Explore")}</h1><p>{sgText(locale, model.message)}</p><HdbMarketPanel locale={locale} model={hdbModel} /></SingaporePage>;
+  return <SingaporePage locale={locale} currentHref={marketHref(locale, "/sg/singapore/explore/")} unframed>
     <div data-singapore-explore-workspace="true" data-singapore-evidence="ready" data-navigation-state={pendingHref === null ? 'idle' : 'pending'}>
-      <MarketExploreShell eyebrow="Singapore" title="Explore" period={<>{model.periodLabel}</>} layers={layers}
+      <MarketExploreShell locale={locale} eyebrow={sgText(locale, "Singapore")} title={sgText(locale, "Explore")} period={<>{sgText(locale, model.periodLabel)}</>} layers={layers}
         discovery={<section className={styles.segmentPanel} id="ura-private" aria-labelledby="segment-heading">
-          <h2 id="segment-heading">Private residential projects</h2>
-          <p className={styles.marketScopeLine}>URA private sales · New sale, Subsale and Resale<br />{model.transactionLabel}</p>
-          <div className={styles.segmentTabs} role="tablist" aria-label="Singapore market regions">
-            <button type="button" role="tab" aria-selected={selectedSegment === null} onClick={() => selectSegment(null)}><strong>All</strong><span>{allProjects.length.toLocaleString('en')}</span></button>
-            {segments.map((segment) => <button key={segment.code} type="button" role="tab" aria-selected={selectedSegment === segment.code} onClick={() => selectSegment(segment.code)}><strong>{segment.code}</strong><span>{segment.projectCount.toLocaleString('en')}</span></button>)}
+          <h2 id="segment-heading">{sgText(locale, "Private residential projects")}</h2>
+          <p className={styles.marketScopeLine}>{sgText(locale, "URA private sales · New sale, Subsale and Resale")}<br />{sgText(locale, model.transactionLabel)}</p>
+          <div className={styles.segmentTabs} role="tablist" aria-label={sgText(locale, "Singapore market regions")}>
+            <button type="button" role="tab" aria-selected={selectedSegment === null} onClick={() => selectSegment(null)}><strong>{sgText(locale, "All")}</strong><span>{sgText(locale, allProjects.length.toLocaleString('en'))}</span></button>
+            {segments.map((segment) => <button key={segment.code} type="button" role="tab" aria-selected={selectedSegment === segment.code} onClick={() => selectSegment(segment.code)}><strong>{sgText(locale, segment.code)}</strong><span>{sgText(locale, segment.projectCount.toLocaleString('en'))}</span></button>)}
           </div>
-          {selected ? <div className={styles.segmentList}><article className={styles.segmentRow}><h3>{selected.code}</h3><div><strong>{selected.medianPriceLabel ?? 'Not published'}</strong><span>{selected.n} transactions · {selected.projectCount} projects</span></div>{selected.state === 'published' ? <Link href={selected.href} aria-busy={pendingHref === selected.href} data-navigation-state={pendingHref === selected.href ? 'pending' : 'idle'} onClick={() => setPendingHref(selected.href)}>Open {selected.code} evidence</Link> : <span data-evidence-link="unavailable">At least 5 transactions are required</span>}</article></div> : null}
+          {selected ? <div className={styles.segmentList}><article className={styles.segmentRow}><h3>{sgText(locale, selected.code)}</h3><div><strong>{sgText(locale, selected.medianPriceLabel ?? 'Not published')}</strong><span>{sgText(locale, selected.n)}{sgText(locale, " transactions · ")}{sgText(locale, selected.projectCount)}{sgText(locale, " projects")}</span></div>{selected.state === 'published' ? <Link href={marketHref(locale, selected.href)} aria-busy={pendingHref === selected.href} data-navigation-state={pendingHref === selected.href ? 'pending' : 'idle'} onClick={() => setPendingHref(selected.href)}>{sgText(locale, "Open ")}{sgText(locale, selected.code)}{sgText(locale, " evidence")}</Link> : <span data-evidence-link="unavailable">{sgText(locale, "At least 5 transactions are required")}</span>}</article></div> : null}
           <div className={styles.projectList} aria-live="polite" aria-busy={query !== deferredQuery}>
-            <header><span>{projects.length.toLocaleString('en')} matching projects</span><small>{projects.length === 0 ? 'No matches' : `${(activePage - 1) * PAGE_SIZE + 1}–${Math.min(activePage * PAGE_SIZE, projects.length)} shown`}</small></header>
-            {projects.length === 0 ? <p>No projects match these filters. Try a different name or district.</p> : null}
+            <header><span>{sgText(locale, projects.length.toLocaleString('en'))}{sgText(locale, " matching projects")}</span><small>{sgText(locale, projects.length === 0 ? 'No matches' : `${(activePage - 1) * PAGE_SIZE + 1}–${Math.min(activePage * PAGE_SIZE, projects.length)} shown`)}</small></header>
+            {projects.length === 0 ? <p>{sgText(locale, "No projects match these filters. Try a different name or district.")}</p> : null}
             {visible.map((project) => <div key={project.id} data-selected={selectedProjectId === project.id}>
-              <button type="button" aria-pressed={selectedProjectId === project.id} onClick={() => setSelectedProjectId((current) => current === project.id ? null : project.id)}><span><strong title={project.name}>{project.name}</strong><small title={`${project.street} · District ${project.district}`}>{project.street} · District {project.district}</small></span><span><strong>{project.medianPriceLabel ?? 'Not published'}</strong><small>{project.n.toLocaleString('en')} {project.n === 1 ? 'sale' : 'sales'}</small></span></button>
-              {project.state === 'published' ? <Link href={project.href} aria-label={`Open ${project.name} evidence`} aria-busy={pendingHref === project.href} onClick={() => setPendingHref(project.href)}>Details</Link> : <span className={styles.evidenceUnavailableLink} data-evidence-link="unavailable" title="At least 5 transactions are required">Below 5 sales</span>}
+              <button type="button" aria-pressed={selectedProjectId === project.id} onClick={() => setSelectedProjectId((current) => current === project.id ? null : project.id)}><span><strong title={project.name}>{project.name}</strong><small title={sgText(locale, `${project.street} · District ${project.district}`)}>{project.street}{sgText(locale, " · District ")}{sgText(locale, project.district)}</small></span><span><strong>{sgText(locale, project.medianPriceLabel ?? 'Not published')}</strong><small>{sgText(locale, project.n.toLocaleString('en'))}{sgText(locale, " ")}{sgText(locale, project.n === 1 ? 'sale' : 'sales')}</small></span></button>
+              {project.state === 'published' ? <Link href={marketHref(locale, project.href)} aria-label={sgText(locale, `Open ${project.name} evidence`)} aria-busy={pendingHref === project.href} onClick={() => setPendingHref(project.href)}>{sgText(locale, "Details")}</Link> : <span className={styles.evidenceUnavailableLink} data-evidence-link="unavailable" title={sgText(locale, "At least 5 transactions are required")}>{sgText(locale, "Below 5 sales")}</span>}
             </div>)}
           </div>
-          <nav className={styles.projectPagination} aria-label="Project result pages"><button type="button" disabled={activePage === 1} onClick={() => { setPage(activePage - 1); setSelectedProjectId(null); }}>Previous</button><span>Page {activePage} of {pageCount}</span><button type="button" disabled={activePage >= pageCount} onClick={() => { setPage(activePage + 1); setSelectedProjectId(null); }}>Next</button></nav>
+          <nav className={styles.projectPagination} aria-label={sgText(locale, "Project result pages")}><button type="button" disabled={activePage === 1} onClick={() => { setPage(activePage - 1); setSelectedProjectId(null); }}>{sgText(locale, "Previous")}</button><span>{sgText(locale, "Page ")}{sgText(locale, activePage)}{sgText(locale, " of ")}{sgText(locale, pageCount)}</span><button type="button" disabled={activePage >= pageCount} onClick={() => { setPage(activePage + 1); setSelectedProjectId(null); }}>{sgText(locale, "Next")}</button></nav>
         </section>}
         spatial={<section className={styles.exploreMap} aria-labelledby="singapore-map-heading" data-singapore-map-level={mapLevel}>
-          <header className={styles.mapHeading}><div><h2 id="singapore-map-heading">{mapLevel === 'regions' ? 'Market regions' : mapLevel === 'districts' ? 'Postal districts' : 'Project locations'}</h2>
+          <header className={styles.mapHeading}><div><h2 id="singapore-map-heading">{sgText(locale, mapLevel === 'regions' ? 'Market regions' : mapLevel === 'districts' ? 'Postal districts' : 'Project locations')}</h2>
             {mapLevel === 'projects' ? <>
-              <p>{projectMapCoverage.total.toLocaleString('en')} matching projects across all result pages · {projectMapCoverage.located.toLocaleString('en')} with source coordinates · {projectMapCoverage.areaOnly.toLocaleString('en')} area-only · {projectMapCoverage.unplaced.toLocaleString('en')} without a map reference.</p>
-              <p>Each marker is a project with source coordinates. Select a marker to see its name and transactions. Projects without exact coordinates remain in the list. Turn on area references to see their approximate district.</p>
-              <label><input type="checkbox" checked={showAreaReferences} onChange={event => setShowAreaReferences(event.currentTarget.checked)} /> Show approximate district groups</label>
-            </> : <p>{areaMapCoverage.total.toLocaleString('en')} matching projects across all result pages · choose a {mapLevel === 'regions' ? 'market region' : 'postal district'} to open its full project map.</p>}
+              <p>{sgText(locale, projectMapCoverage.total.toLocaleString('en'))}{sgText(locale, " matching projects across all result pages · ")}{sgText(locale, projectMapCoverage.located.toLocaleString('en'))}{sgText(locale, " with source coordinates · ")}{sgText(locale, projectMapCoverage.areaOnly.toLocaleString('en'))}{sgText(locale, " area-only · ")}{sgText(locale, projectMapCoverage.unplaced.toLocaleString('en'))}{sgText(locale, " without a map reference.")}</p>
+              <p>{sgText(locale, "Each marker is a project with source coordinates. Select a marker to see its name and transactions. Projects without exact coordinates remain in the list. Turn on area references to see their approximate district.")}</p>
+              <label><input type="checkbox" checked={showAreaReferences} onChange={event => setShowAreaReferences(event.currentTarget.checked)} /> {sgText(locale, " Show approximate district groups")}</label>
+            </> : <p>{sgText(locale, areaMapCoverage.total.toLocaleString('en'))}{sgText(locale, " matching projects across all result pages · choose a ")}{sgText(locale, mapLevel === 'regions' ? 'market region' : 'postal district')}{sgText(locale, " to open its full project map.")}</p>}
           </div></header>
-          <GooglePlaceMap browserKey={googleMapsBrowserKey} points={mapPoints} onSelectPoint={onMapSelect} showAddressSearch={false} clusterLocations={true} />
+          <GooglePlaceMap locale={locale} browserKey={googleMapsBrowserKey} points={mapPoints} onSelectPoint={onMapSelect} showAddressSearch={false} clusterLocations={true} />
           {mapLevel === 'projects' && projectMapCoverage.unplacedGroups.length > 0 ? <div className={styles.mapUnplaced}>
-            <p>These district totals remain in the results; no reliable map reference is available yet.</p>
-            {projectMapCoverage.unplacedGroups.map(group => <button type="button" key={group.district} onClick={() => onMapSelect(`district-${group.district}`)}>District {group.district} · {group.count.toLocaleString('en')} projects</button>)}
+            <p>{sgText(locale, "These district totals remain in the results; no reliable map reference is available yet.")}</p>
+            {projectMapCoverage.unplacedGroups.map(group => <button type="button" key={group.district} onClick={() => onMapSelect(`district-${group.district}`)}>{sgText(locale, "District ")}{sgText(locale, group.district)}{sgText(locale, " · ")}{sgText(locale, group.count.toLocaleString('en'))}{sgText(locale, " projects")}</button>)}
           </div> : null}
           {mapLevel !== 'projects' && areaMapCoverage.unplacedGroups.length > 0 ? <div className={styles.mapUnplaced}>
-            <p>{areaMapCoverage.unplaced.toLocaleString('en')} projects remain selectable while their area reference is unavailable.</p>
-            {areaMapCoverage.unplacedGroups.map(group => <button type="button" key={group.id} onClick={() => onMapSelect(group.id)}>{group.label} · {group.count.toLocaleString('en')} projects</button>)}
+            <p>{sgText(locale, areaMapCoverage.unplaced.toLocaleString('en'))}{sgText(locale, " projects remain selectable while their area reference is unavailable.")}</p>
+            {areaMapCoverage.unplacedGroups.map(group => <button type="button" key={group.id} onClick={() => onMapSelect(group.id)}>{sgText(locale, group.label)}{sgText(locale, " · ")}{sgText(locale, group.count.toLocaleString('en'))}{sgText(locale, " projects")}</button>)}
           </div> : null}
-          {selectedProject ? <aside className={styles.mapSelection}><button type="button" aria-label="Close project preview" onClick={() => setSelectedProjectId(null)}>Close</button><h3>{selectedProject.name}</h3><p>{selectedProject.street} · District {selectedProject.district} · {selectedProject.segment}</p>{!selectedProject.location ? <p>{projectMapCoverage.points.some(point => point.kind === 'area' && point.selected) ? 'Approximate district location' : 'Project location unavailable'}</p> : null}<strong>{selectedProject.medianPriceLabel ?? 'Not published'}</strong><span>{selectedProject.medianPsfLabel ?? `${selectedProject.n} reported sales`}</span>{selectedProject.state === 'published' ? <Link href={selectedProject.href}>Open project evidence</Link> : null}</aside> : null}
+          {selectedProject ? <aside className={styles.mapSelection}><button type="button" aria-label={sgText(locale, "Close project preview")} onClick={() => setSelectedProjectId(null)}>{sgText(locale, "Close")}</button><h3>{selectedProject.name}</h3><p>{selectedProject.street}{sgText(locale, " · District ")}{sgText(locale, selectedProject.district)}{sgText(locale, " · ")}{sgText(locale, selectedProject.segment)}</p>{!selectedProject.location ? <p>{sgText(locale, projectMapCoverage.points.some(point => point.kind === 'area' && point.selected) ? 'Approximate district location' : 'Project location unavailable')}</p> : null}<strong>{sgText(locale, selectedProject.medianPriceLabel ?? 'Not published')}</strong><span>{sgText(locale, selectedProject.medianPsfLabel ?? `${selectedProject.n} reported sales`)}</span>{selectedProject.state === 'published' ? <Link href={marketHref(locale, selectedProject.href)}>{sgText(locale, "Open project evidence")}</Link> : null}</aside> : null}
         </section>}
       />
     </div>
     <details className={directoryStyles.directory}>
-      <summary>All published project prices</summary>
-      <p className={directoryStyles.summary}>Browse every published project by market region, including projects beyond the current result page.</p>
+      <summary>{sgText(locale, "All published project prices")}</summary>
+      <p className={directoryStyles.summary}>{sgText(locale, "Browse every published project by market region, including projects beyond the current result page.")}</p>
       {segments.map((segment) => <section key={segment.code}>
-        <h2>{segment.state === 'published' ? <Link href={segment.href}>{segment.code} property prices</Link> : `${segment.code} projects`}</h2>
+        <h2>{segment.state === 'published' ? <Link href={marketHref(locale, segment.href)}>{sgText(locale, segment.code)}{sgText(locale, " property prices")}</Link> : `${segment.code} projects`}</h2>
         <ul className={directoryStyles.list}>
           {(segment.projects ?? []).filter((project) => project.state === 'published').map((project) => <li key={project.id}>
-            <Link className={directoryStyles.link} href={project.href}>{project.name}</Link>
+            <Link className={directoryStyles.link} href={marketHref(locale, project.href)}>{project.name}</Link>
           </li>)}
         </ul>
       </section>)}
     </details>
-    <p><Link href="/guides/singapore-condo-buying-budget-guide/">Condo buying guide: budgets, costs and ownership checks</Link></p>
-    <HdbMarketPanel model={hdbModel} /><SingaporeEvidence model={model.evidence} compact />
+    <p><Link href={marketHref(locale, "/guides/singapore-condo-buying-budget-guide/")}>{sgText(locale, "Condo buying guide: budgets, costs and ownership checks")}</Link></p>
+    <HdbMarketPanel locale={locale} model={hdbModel} /><SingaporeEvidence locale={locale} model={model.evidence} compact />
   </SingaporePage>;
 }

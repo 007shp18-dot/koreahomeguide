@@ -35,8 +35,9 @@ export function parsePropertyScenarioContext(input: PropertyScenarioSearchParams
  let returnTo: string | null = null;
  const raw = scalar(input.returnTo);
  const prefix = market === 'kr-seoul' ? `${locale === 'ko' ? '/ko' : ''}/kr/seoul/` : market === 'sg-singapore' ? '/sg/singapore/' : '/ae/dubai/';
+ const allowedPrefixes = locale === 'ko' && market !== 'kr-seoul' ? [prefix, `/ko${prefix}`] : [prefix];
  if(raw && raw.length <= 2048 && raw.startsWith('/') && !raw.startsWith('//') && !/[\\\u0000-\u001f\u007f]/.test(raw)) {
-  try { const url = new URL(raw,'https://signedprice.invalid'); if(url.origin === 'https://signedprice.invalid' && url.pathname.startsWith(prefix)) returnTo = `${url.pathname}${url.search}${url.hash}`; } catch { /* Optional context. */ }
+  try { const url = new URL(raw,'https://signedprice.invalid'); if(url.origin === 'https://signedprice.invalid' && allowedPrefixes.some(candidate => url.pathname.startsWith(candidate))) returnTo = `${url.pathname}${url.search}${url.hash}`; } catch { /* Optional context. */ }
  }
  const entity = scalar(input.entity);
  const passportHref = passportReturn(input.passport);

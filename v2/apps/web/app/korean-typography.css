@@ -23,6 +23,7 @@ html[lang='ko'] body main :is(p, li, label, summary) {
 html[lang='ko'] body :is(button, select, input, textarea) { font-family: inherit; letter-spacing: 0; line-height: 1.5; }
 html[lang='ko'] body :is(a, button, summary) { word-break: keep-all; overflow-wrap: anywhere; }
 html[lang='ko'] body :is(nav, footer) { letter-spacing: 0; }
+html[lang='ko'] body main :is(dt, dd, th, td, small) { letter-spacing: 0; line-height: 1.55; word-break: keep-all; overflow-wrap: anywhere; }
 html[lang='ko'] body main [data-research-page-heading] h1 { max-width: 100%; }
 html[lang='ko'] body main [data-research-page-heading] p { max-width: 42em; }
 @media (max-width: 640px) {

@@ -22,6 +22,8 @@ import { MarketExploreShell } from '../market-ui/market-shell';
 import styles from './dubai-research.module.css';
 import type { DubaiProjectEvidence } from '../../lib/dubai/project-evidence';
 import { selectedResultPage } from '../../lib/navigation/selected-result-page';
+import { marketText, marketHref, type MarketLocale } from '../../lib/locale/market-localization';
+
 
 const unavailableModel = Object.freeze({
   status: 'unavailable' as const,
@@ -32,7 +34,7 @@ const money = (value: number) => `AED\u00a0${integer.format(value)}`;
 const moneyPerSqm = (value: number) => `${money(value)}/m²`;
 const moneyPerYear = (value: number) => `${money(value)}/year`;
 
-function CuratedDubaiExplorer({
+function CuratedDubaiExplorer({ locale = 'en',
   browserKey,
   initialQuery,
   initialArea,
@@ -40,7 +42,9 @@ function CuratedDubaiExplorer({
   browserKey: string | null;
   initialQuery: string;
   initialArea: string;
-}>) {
+}> & { locale?: MarketLocale }) {
+  const t = <T,>(value: T): T => marketText(locale, value);
+
   const [query, setQuery] = useState(initialQuery);
   const [selected, setSelected] = useState(initialArea);
   const areas = useMemo(() => filterDubaiAreas(query), [query]);
@@ -58,15 +62,15 @@ function CuratedDubaiExplorer({
     address: `${item.name}, Dubai, United Arab Emirates`,
     selected: selected === item.id,
   })), [areas, selected]);
-  return <MarketExploreShell
-    eyebrow="Dubai"
-    title="Explore"
-    period="Area research"
+  return <MarketExploreShell locale={locale}
+    eyebrow={t("Dubai")}
+    title={t("Explore")}
+    period={t("Area research")}
     layers={<div className={styles.toolbar}>
-      <label>Find an area<input
+      <label>{t("Find an area")}<input
         type="search"
         value={query}
-        placeholder="Area name"
+        placeholder={t("Area name")}
         onChange={(event) => {
           const value = event.currentTarget.value;
           setQuery(value);
@@ -78,29 +82,29 @@ function CuratedDubaiExplorer({
           window.history.replaceState(null, '', url);
         }}
       /></label>
-      <nav className={styles.actions} aria-label="Dubai research">
-        <Link href="/ae/dubai/">Market overview</Link>
-        <Link href="/ae/dubai/guide/">Buying research guide</Link>
-        <Link href="/news/?market=dubai">News</Link>
+      <nav className={styles.actions} aria-label={t("Dubai research")}>
+        <Link href={marketHref(locale, "/ae/dubai/")}>{t("Market overview")}</Link>
+        <Link href={marketHref(locale, "/ae/dubai/guide/")}>{t("Buying research guide")}</Link>
+        <Link href={marketHref(locale, "/news/?market=dubai")}>{t("News")}</Link>
       </nav>
     </div>}
     discovery={<div className={styles.directory}>
-      <h2>Area guide</h2>
-      <p>{areas.length} of {DUBAI_AREAS.length} curated areas · Not a property inventory</p>
+      <h2>{t("Area guide")}</h2>
+      <p>{t(areas.length)}{t(" of ")}{t(DUBAI_AREAS.length)}{t(" curated areas · Not a property inventory")}</p>
       <ul>{areas.map((item) => <li key={item.id}><button
         type="button"
         onClick={() => select(item.id)}
         aria-pressed={selected === item.id}
-      ><strong>{item.name}</strong><span>{item.kind}</span></button></li>)}</ul>
-      {areas.length === 0 ? <p>No area matches. Try Downtown, Marina, Business Bay or Palm.</p> : null}
+      ><strong>{t(item.name)}</strong><span>{t(item.kind)}</span></button></li>)}</ul>
+      {areas.length === 0 ? <p>{t("No area matches. Try Downtown, Marina, Business Bay or Palm.")}</p> : null}
       {area ? <article className={styles.areaDetail} aria-live="polite">
-        <h3>{area.name}</h3><p>{area.description}</p><p>{area.question}</p>
-        <a href={area.source} target="_blank" rel="noreferrer">Official neighbourhood guide</a>
-        <p><a href={DUBAI_SOURCES.projects} target="_blank" rel="noreferrer">Check a project with DLD</a></p>
-      </article> : <p>Select an area to see its location and research questions.</p>}
+        <h3>{t(area.name)}</h3><p>{t(area.description)}</p><p>{t(area.question)}</p>
+        <a href={marketHref(locale, area.source)} target="_blank" rel="noreferrer">{t("Official neighbourhood guide")}</a>
+        <p><a href={marketHref(locale, DUBAI_SOURCES.projects)} target="_blank" rel="noreferrer">{t("Check a project with DLD")}</a></p>
+      </article> : <p>{t("Select an area to see its location and research questions.")}</p>}
     </div>}
     spatial={<div className={styles.map}>
-      <GooglePlaceMap
+      <GooglePlaceMap locale={locale}
         key="dubai"
         market="dubai"
         browserKey={browserKey}
@@ -108,12 +112,12 @@ function CuratedDubaiExplorer({
         onSelectPoint={select}
         showAddressSearch={false}
       />
-      <p>Markers locate neighbourhoods, not individual buildings or available listings. Area transaction counts and prices are not published here.</p>
+      <p>{t("Markers locate neighbourhoods, not individual buildings or available listings. Area transaction counts and prices are not published here.")}</p>
     </div>}
   />;
 }
 
-export function DubaiExplorer({
+export function DubaiExplorer({ locale = 'en',
   browserKey,
   model = unavailableModel,
   initialQuery = '',
@@ -137,7 +141,9 @@ export function DubaiExplorer({
   initialPage?: number;
   projects?: readonly DubaiProjectEvidence[];
   initialProjectId?: string | null;
-}>) {
+}> & { locale?: MarketLocale }) {
+  const t = <T,>(value: T): T => marketText(locale, value);
+
   const [query, setQuery] = useState(initialQuery);
   const deferredQuery = useDeferredValue(query);
   const [selectedArea, setSelectedArea] = useState(initialArea || null);
@@ -172,11 +178,11 @@ export function DubaiExplorer({
     label: result.area.name,
     address: `${result.area.name}, Dubai, United Arab Emirates`,
     selected: result.area.slug === selectedArea,
-  })), [housing, selectedArea, stage, visible]);
+  })), [selectedArea, visible]);
 
   useEffect(() => {
     if (model.status !== 'ready') return;
-    const href = retainPassportContext(buildDubaiExploreHref({
+    const href = retainPassportContext(marketHref(locale, buildDubaiExploreHref({
       query,
       housing,
       stage,
@@ -185,13 +191,13 @@ export function DubaiExplorer({
       page: activePage,
       selectedArea: selected?.area.slug ?? null,
       selectedProject: selectedProject?.id ?? null,
-    }), window.location.href);
+    })), window.location.href);
     if (`${window.location.pathname}${window.location.search}` !== href) {
       window.history.replaceState(null, '', href);
     }
-  }, [activePage, budgetMaximumAed, housing, model.status, query, selectedArea, selected, selectedProject, stage, yieldMinimumPct]);
+  }, [locale, activePage, budgetMaximumAed, housing, model.status, query, selectedArea, selected, selectedProject, stage, yieldMinimumPct]);
 
-  if (model.status === 'unavailable') return <CuratedDubaiExplorer
+  if (model.status === 'unavailable') return <CuratedDubaiExplorer locale={locale}
     browserKey={browserKey}
     initialQuery={initialQuery}
     initialArea={initialArea}
@@ -216,106 +222,106 @@ export function DubaiExplorer({
     || budgetMaximumAed !== null || yieldMinimumPct !== null;
 
   return <div data-dubai-evidence="ready" data-dubai-explore-workspace="true">
-    <MarketExploreShell
-      eyebrow="Dubai"
-      title="Explore"
-      period={`${model.context.comparisonPeriod.from}–${model.context.comparisonPeriod.to}`}
+    <MarketExploreShell locale={locale}
+      eyebrow={t("Dubai")}
+      title={t("Explore")}
+      period={t(`${model.context.comparisonPeriod.from}–${model.context.comparisonPeriod.to}`)}
       layers={<div className={styles.evidenceToolbar}>
         <form role="search" onSubmit={(event) => event.preventDefault()}>
-          <label className={styles.searchField}>Find an area<input
+          <label className={styles.searchField}>{t("Find an area")}<input
             name="q"
             type="search"
             value={query}
-            placeholder="Area or known community name"
+            placeholder={t("Area or known community name")}
             onChange={(event) => {
               setQuery(event.currentTarget.value);
               setSelectedArea(null);
               setPage(1);
             }}
           /></label>
-          <label>Home type<select value={housing} onChange={(event) => {
+          <label>{t("Home type")}<select value={housing} onChange={(event) => {
             setHousing(event.currentTarget.value as 'apartment' | 'villa');
             setSelectedArea(null);
             setPage(1);
-          }}><option value="apartment">Apartment</option><option value="villa">Villa</option></select></label>
-          <label>Maximum median price<select value={budgetMaximumAed ?? ''} onChange={(event) => {
+          }}><option value="apartment">{t("Apartment")}</option><option value="villa">{t("Villa")}</option></select></label>
+          <label>{t("Maximum median price")}<select value={budgetMaximumAed ?? ''} onChange={(event) => {
             setBudgetMaximumAed(event.currentTarget.value === '' ? null : Number(event.currentTarget.value));
             setSelectedArea(null);
             setPage(1);
-          }}><option value="">Any budget</option>{budgetMaximumAed !== null && ![1000000,1500000,2500000,5000000,10000000].includes(budgetMaximumAed) ? <option value={budgetMaximumAed}>{money(budgetMaximumAed)}</option> : null}<option value="1000000">AED 1M</option><option value="1500000">AED 1.5M</option><option value="2500000">AED 2.5M</option><option value="5000000">AED 5M</option><option value="10000000">AED 10M</option></select></label>
-          {stage === 'ready' ? <label>Minimum gross ratio<select value={yieldMinimumPct ?? ''} onChange={(event) => {
+          }}><option value="">{t("Any budget")}</option>{budgetMaximumAed !== null && ![1000000,1500000,2500000,5000000,10000000].includes(budgetMaximumAed) ? <option value={budgetMaximumAed}>{money(budgetMaximumAed)}</option> : null}<option value="1000000">{t("AED 1M")}</option><option value="1500000">{t("AED 1.5M")}</option><option value="2500000">{t("AED 2.5M")}</option><option value="5000000">{t("AED 5M")}</option><option value="10000000">{t("AED 10M")}</option></select></label>
+          {stage === 'ready' ? <label>{t("Minimum gross ratio")}<select value={yieldMinimumPct ?? ''} onChange={(event) => {
             setYieldMinimumPct(event.currentTarget.value === '' ? null : Number(event.currentTarget.value));
             setSelectedArea(null);
             setPage(1);
-          }}><option value="">Any ratio</option><option value="5">5%+</option><option value="6">6%+</option><option value="7">7%+</option><option value="8">8%+</option></select></label> : null}
-          {hasFilters ? <button type="button" className={styles.clearFilters} onClick={clearFilters}>Clear filters</button> : null}
+          }}><option value="">{t("Any ratio")}</option><option value="5">{t("5%+")}</option><option value="6">{t("6%+")}</option><option value="7">{t("7%+")}</option><option value="8">{t("8%+")}</option></select></label> : null}
+          {hasFilters ? <button type="button" className={styles.clearFilters} onClick={clearFilters}>{t("Clear filters")}</button> : null}
         </form>
-        <div className={styles.stageTabs} role="tablist" aria-label="Dubai sale stage">
-          <button type="button" role="tab" aria-selected={stage === 'ready'} onClick={() => switchStage('ready')}>Ready</button>
-          <button type="button" role="tab" aria-selected={stage === 'off-plan'} onClick={() => switchStage('off-plan')}>Off-Plan</button>
+        <div className={styles.stageTabs} role="tablist" aria-label={t("Dubai sale stage")}>
+          <button type="button" role="tab" aria-selected={stage === 'ready'} onClick={() => switchStage('ready')}>{t("Ready")}</button>
+          <button type="button" role="tab" aria-selected={stage === 'off-plan'} onClick={() => switchStage('off-plan')}>{t("Off-Plan")}</button>
         </div>
-        <nav className={styles.actions} aria-label="Dubai research">
-          <Link href="/ae/dubai/">Market overview</Link>
-          <Link href="/ae/dubai/guide/">Buying research guide</Link>
-          <Link href="/news/?market=dubai">News</Link>
+        <nav className={styles.actions} aria-label={t("Dubai research")}>
+          <Link href={marketHref(locale, "/ae/dubai/")}>{t("Market overview")}</Link>
+          <Link href={marketHref(locale, "/ae/dubai/guide/")}>{t("Buying research guide")}</Link>
+          <Link href={marketHref(locale, "/news/?market=dubai")}>{t("News")}</Link>
         </nav>
       </div>}
       discovery={<section className={styles.evidenceDirectory} aria-labelledby="dubai-area-results">
         <header className={styles.resultHeader}>
-          <div><h2 id="dubai-area-results">Area prices</h2><p>{results.length.toLocaleString('en')} matching areas · {housing} · {stage}</p></div>
-          <small>{results.length === 0 ? 'No matches' : `${(activePage - 1) * DUBAI_EXPLORE_PAGE_SIZE + 1}–${Math.min(activePage * DUBAI_EXPLORE_PAGE_SIZE, results.length)} shown`}</small>
+          <div><h2 id="dubai-area-results">{t("Area prices")}</h2><p>{t(results.length.toLocaleString('en'))}{t(" matching areas · ")}{t(housing)}{t(" · ")}{t(stage)}</p></div>
+          <small>{t(results.length === 0 ? 'No matches' : `${(activePage - 1) * DUBAI_EXPLORE_PAGE_SIZE + 1}–${Math.min(activePage * DUBAI_EXPLORE_PAGE_SIZE, results.length)} shown`)}</small>
         </header>
         <div className={styles.areaResults} aria-live="polite" aria-busy={query !== deferredQuery}>
           {visible.map(({ area, segment, sale }) => <article key={area.id} data-selected={area.slug === selectedArea}>
             <button type="button" aria-pressed={area.slug === selectedArea} onClick={() => selectArea(selectedArea === area.slug ? null : area.slug)}>
-              <span><strong title={area.name}>{area.name}</strong><small>{housing === 'apartment' ? 'Apartment' : 'Villa'} · {stage === 'ready' ? 'Ready' : 'Off-Plan'}</small></span>
+              <span><strong title={t(area.name)}>{t(area.name)}</strong><small>{t(housing === 'apartment' ? 'Apartment' : 'Villa')}{t(" · ")}{t(stage === 'ready' ? 'Ready' : 'Off-Plan')}</small></span>
             </button>
             <dl className={styles.areaMetrics}>
-              <div><dt>Median sale price</dt><dd>{money(sale.medianPriceAed)}</dd></div>
-              <div><dt>Median AED/m²</dt><dd>{moneyPerSqm(sale.medianPricePerSqmAed)}</dd></div>
-              <div><dt>Registered sales</dt><dd>{sale.n.toLocaleString('en')}</dd></div>
-              <div><dt>Median annual rent</dt><dd>{moneyPerYear(segment.rent.medianAnnualRentAed)}</dd></div>
-              <div><dt>Estimated gross rent-to-price ratio</dt><dd>{stage === 'ready' && segment.readyGrossYieldPct !== null ? `${segment.readyGrossYieldPct.toFixed(1)}%` : stage === 'off-plan' ? 'Not shown for Off-Plan' : 'Not published'}</dd></div>
+              <div><dt>{t("Median sale price")}</dt><dd>{t(money(sale.medianPriceAed))}</dd></div>
+              <div><dt>{t("Median AED/m²")}</dt><dd>{t(moneyPerSqm(sale.medianPricePerSqmAed))}</dd></div>
+              <div><dt>{t("Registered sales")}</dt><dd>{t(sale.n.toLocaleString('en'))}</dd></div>
+              <div><dt>{t("Median annual rent")}</dt><dd>{t(moneyPerYear(segment.rent.medianAnnualRentAed))}</dd></div>
+              <div><dt>{t("Estimated gross rent-to-price ratio")}</dt><dd>{t(stage === 'ready' && segment.readyGrossYieldPct !== null ? `${segment.readyGrossYieldPct.toFixed(1)}%` : stage === 'off-plan' ? 'Not shown for Off-Plan' : 'Not published')}</dd></div>
             </dl>
             {projectResults.some(project => project.areaSlug === area.slug) ? <details className={styles.projectPrices}>
-              <summary>Project prices · {projectResults.filter(project => project.areaSlug === area.slug).length}</summary>
-              <p>Partial project coverage. Projects with at least 30 sales · {model.context.comparisonPeriod.from}–{model.context.comparisonPeriod.to}</p>
+              <summary>{t("Project prices · ")}{t(projectResults.filter(project => project.areaSlug === area.slug).length)}</summary>
+              <p>{t("Partial project coverage. Projects with at least 30 sales · ")}{t(model.context.comparisonPeriod.from)}{t("–")}{t(model.context.comparisonPeriod.to)}</p>
               <div>{projectResults.filter(project => project.areaSlug === area.slug).map(project => <button
                 key={project.id} type="button" aria-pressed={selectedProject?.id === project.id}
                 onClick={() => { setSelectedArea(area.slug); setSelectedProjectId(project.id); }}>
-                <span><strong title={project.name}>{project.name}</strong><small>{project.n.toLocaleString('en')} sales</small></span>
-                <strong>{money(project.medianPriceAed)}</strong>
+                <span><strong title={t(project.name)}>{t(project.name)}</strong><small>{t(project.n.toLocaleString('en'))}{t(" sales")}</small></span>
+                <strong>{t(money(project.medianPriceAed))}</strong>
               </button>)}</div>
             </details> : null}
             {area.href === null
-              ? <span className={styles.unavailableLink}>Area page unavailable for this release</span>
-              : <Link href={area.href}>View area prices</Link>}
+              ? <span className={styles.unavailableLink}>{t("Area page unavailable for this release")}</span>
+              : <Link href={marketHref(locale, area.href)}>{t("View area prices")}</Link>}
           </article>)}
-          {results.length === 0 ? <p className={styles.emptyState}>No areas match these filters. Increase the budget or lower the ratio threshold.</p> : null}
+          {results.length === 0 ? <p className={styles.emptyState}>{t("No areas match these filters. Increase the budget or lower the ratio threshold.")}</p> : null}
         </div>
-        <nav className={styles.pagination} aria-label="Dubai area result pages">
-          <button type="button" disabled={activePage === 1} onClick={() => { setPage(activePage - 1); setSelectedArea(null); }}>Previous</button>
-          <span>Page {activePage} of {pageCount}</span>
-          <button type="button" disabled={activePage >= pageCount} onClick={() => { setPage(activePage + 1); setSelectedArea(null); }}>Next</button>
+        <nav className={styles.pagination} aria-label={t("Dubai area result pages")}>
+          <button type="button" disabled={activePage === 1} onClick={() => { setPage(activePage - 1); setSelectedArea(null); }}>{t("Previous")}</button>
+          <span>{t("Page ")}{t(activePage)}{t(" of ")}{t(pageCount)}</span>
+          <button type="button" disabled={activePage >= pageCount} onClick={() => { setPage(activePage + 1); setSelectedArea(null); }}>{t("Next")}</button>
         </nav>
-        <details className={styles.areaIndex}><summary>All published Dubai areas</summary><nav aria-label="All published Dubai areas">{model.areas.flatMap((area) => area.href === null ? [] : [<Link key={area.id} href={area.href}>{area.name}</Link>])}</nav></details>
+        <details className={styles.areaIndex}><summary>{t("All published Dubai areas")}</summary><nav aria-label={t("All published Dubai areas")}>{model.areas.flatMap((area) => area.href === null ? [] : [<Link key={area.id} href={marketHref(locale, area.href)}>{t(area.name)}</Link>])}</nav></details>
       </section>}
       spatial={<section className={styles.evidenceMap} aria-labelledby="dubai-area-map">
-        <header><div><h2 id="dubai-area-map">Area locations</h2><p>{visible.length.toLocaleString('en')} areas on this page · area summaries only</p></div></header>
-        <GooglePlaceMap market="dubai" browserKey={browserKey} points={mapPoints} onSelectPoint={selectArea} showAddressSearch={false} />
+        <header><div><h2 id="dubai-area-map">{t("Area locations")}</h2><p>{t(visible.length.toLocaleString('en'))}{t(" areas on this page · area summaries only")}</p></div></header>
+        <GooglePlaceMap locale={locale} market="dubai" browserKey={browserKey} points={mapPoints} onSelectPoint={selectArea} showAddressSearch={false} />
         {selected ? <aside className={styles.mapSelection}>
-          <button type="button" onClick={() => selectArea(null)} aria-label="Close area preview">Close</button>
-          <h3 title={selectedProject?.name ?? selected.area.name}>{selectedProject?.name ?? selected.area.name}</h3>
-          {selectedProject ? <p>{selected.area.name} · Area location only</p> : null}
-          <p>{housing === 'apartment' ? 'Apartment' : 'Villa'} · {stage === 'ready' ? 'Ready' : 'Off-Plan'}</p>
-          <strong>{money(selectedProject?.medianPriceAed ?? selected.sale.medianPriceAed)}</strong>
-          <span>{moneyPerSqm(selectedProject?.medianPricePerSqmAed ?? selected.sale.medianPricePerSqmAed)} · {(selectedProject?.n ?? selected.sale.n).toLocaleString('en')} registered sales</span>
-          {selectedProject ? <span>DLD project {selectedProject.projectNumber} · {model.context.comparisonPeriod.from}–{model.context.comparisonPeriod.to}</span> : null}
-          {selected.area.href === null ? null : <Link href={selected.area.href}>View area prices</Link>}
+          <button type="button" onClick={() => selectArea(null)} aria-label={t("Close area preview")}>{t("Close")}</button>
+          <h3 title={t(selectedProject?.name ?? selected.area.name)}>{t(selectedProject?.name ?? selected.area.name)}</h3>
+          {selectedProject ? <p>{t(selected.area.name)}{t(" · Area location only")}</p> : null}
+          <p>{t(housing === 'apartment' ? 'Apartment' : 'Villa')}{t(" · ")}{t(stage === 'ready' ? 'Ready' : 'Off-Plan')}</p>
+          <strong>{t(money(selectedProject?.medianPriceAed ?? selected.sale.medianPriceAed))}</strong>
+          <span>{t(moneyPerSqm(selectedProject?.medianPricePerSqmAed ?? selected.sale.medianPricePerSqmAed))}{t(" · ")}{t((selectedProject?.n ?? selected.sale.n).toLocaleString('en'))}{t(" registered sales")}</span>
+          {selectedProject ? <span>{t("DLD project ")}{t(selectedProject.projectNumber)}{t(" · ")}{t(model.context.comparisonPeriod.from)}{t("–")}{t(model.context.comparisonPeriod.to)}</span> : null}
+          {selected.area.href === null ? null : <Link href={marketHref(locale, selected.area.href)}>{t("View area prices")}</Link>}
         </aside> : null}
-        <p className={styles.mapDisclosure}>Markers locate areas. They do not represent units or listings.</p>
+        <p className={styles.mapDisclosure}>{t("Markers locate areas. They do not represent units or listings.")}</p>
       </section>}
     />
-    <p><Link href="/guides/dubai-ready-apartment-buying-budget-guide/">Ready apartment buying guide: budgets, costs and ownership checks</Link></p>
+    <p><Link href={marketHref(locale, "/guides/dubai-ready-apartment-buying-budget-guide/")}>{t("Ready apartment buying guide: budgets, costs and ownership checks")}</Link></p>
   </div>;
 }

@@ -5,103 +5,111 @@ import type { DubaiSaleDistribution } from '../../lib/dubai/evidence-contract';
 import type { DubaiAreaModel, DubaiAreaSegmentModel } from '../../lib/dubai/route-types';
 import { DubaiShell } from './dubai-shell';
 import styles from './dubai-research.module.css';
+import { marketText, marketHref, type MarketLocale } from '../../lib/locale/market-localization';
+
 
 const integer = new Intl.NumberFormat('en-AE', { maximumFractionDigits: 0 });
 const money = (value: number) => `AED\u00a0${integer.format(value)}`;
 const perSqm = (value: number) => `${money(value)}/m²`;
 
-function SaleStageCard({
+function SaleStageCard({ locale = 'en',
   label,
   distribution,
 }: Readonly<{
   label: 'Ready' | 'Off-Plan';
   distribution: DubaiSaleDistribution | null;
-}>) {
+}> & { locale?: MarketLocale }) {
+  const t = <T,>(value: T): T => marketText(locale, value);
+
   return <article className={styles.stageCard}>
-    <h3>{label}</h3>
-    {distribution === null ? <p>Not published for this area and home type.</p> : <dl>
-      <div><dt>Median sale price</dt><dd>{money(distribution.medianPriceAed)}</dd></div>
-      <div><dt>Middle half</dt><dd>{money(distribution.priceP25Aed)}–<wbr />{money(distribution.priceP75Aed)}</dd></div>
-      <div><dt>Median AED/m²</dt><dd>{perSqm(distribution.medianPricePerSqmAed)}</dd></div>
-      <div><dt>Middle-half AED/m²</dt><dd>{perSqm(distribution.pricePerSqmP25Aed)}–<wbr />{perSqm(distribution.pricePerSqmP75Aed)}</dd></div>
-      <div><dt>Sample</dt><dd>{distribution.n.toLocaleString('en')} registered sales</dd></div>
+    <h3>{t(label)}</h3>
+    {distribution === null ? <p>{t("Not published for this area and home type.")}</p> : <dl>
+      <div><dt>{t("Median sale price")}</dt><dd>{t(money(distribution.medianPriceAed))}</dd></div>
+      <div><dt>{t("Middle half")}</dt><dd>{t(money(distribution.priceP25Aed))}{t("–")}<wbr />{t(money(distribution.priceP75Aed))}</dd></div>
+      <div><dt>{t("Median AED/m²")}</dt><dd>{t(perSqm(distribution.medianPricePerSqmAed))}</dd></div>
+      <div><dt>{t("Middle-half AED/m²")}</dt><dd>{t(perSqm(distribution.pricePerSqmP25Aed))}{t("–")}<wbr />{t(perSqm(distribution.pricePerSqmP75Aed))}</dd></div>
+      <div><dt>{t("Sample")}</dt><dd>{t(distribution.n.toLocaleString('en'))}{t(" registered sales")}</dd></div>
     </dl>}
   </article>;
 }
 
-function SegmentEvidence({ segment }: Readonly<{ segment: DubaiAreaSegmentModel }>) {
+function SegmentEvidence({ locale = 'en',  segment }: Readonly<{ segment: DubaiAreaSegmentModel }> & { locale?: MarketLocale }) {
+  const t = <T,>(value: T): T => marketText(locale, value);
+
   const housingLabel = segment.housing === 'apartment' ? 'Apartment' : 'Villa';
   return <section className={styles.segmentSection}>
-    <p className={styles.eyebrow}>{housingLabel} evidence</p>
-    <h2>Ready vs Off-Plan</h2>
-    <p>Sale stages remain separate. Their samples are not combined to pass publication thresholds.</p>
+    <p className={styles.eyebrow}>{t(housingLabel)}{t(" evidence")}</p>
+    <h2>{t("Ready vs Off-Plan")}</h2>
+    <p>{t("Sale stages remain separate. Their samples are not combined to pass publication thresholds.")}</p>
     <div className={styles.stageGrid}>
-      <SaleStageCard label="Ready" distribution={segment.sales.ready} />
-      <SaleStageCard label="Off-Plan" distribution={segment.sales.offPlan} />
+      <SaleStageCard locale={locale} label={t("Ready")} distribution={segment.sales.ready} />
+      <SaleStageCard locale={locale} label={t("Off-Plan")} distribution={segment.sales.offPlan} />
     </div>
     <article className={styles.rentCard}>
-      <h3>Registered rent evidence</h3>
+      <h3>{t("Registered rent evidence")}</h3>
       <dl>
-        <div><dt>Median annual rent</dt><dd>{money(segment.rent.medianAnnualRentAed)}/year</dd></div>
-        <div><dt>New-contract sample</dt><dd>{segment.rent.newN.toLocaleString('en')} new rent contracts</dd></div>
-        <div><dt>New / renewed mix</dt><dd>{(segment.rent.newShare * 100).toFixed(1)}% / {(segment.rent.renewedShare * 100).toFixed(1)}%</dd></div>
-        <div><dt>Estimated gross rent-to-price ratio</dt><dd>{segment.readyGrossYieldPct === null ? 'Not published without Ready evidence' : `${segment.readyGrossYieldPct.toFixed(1)}%`}</dd></div>
+        <div><dt>{t("Median annual rent")}</dt><dd>{t(money(segment.rent.medianAnnualRentAed))}{t("/year")}</dd></div>
+        <div><dt>{t("New-contract sample")}</dt><dd>{t(segment.rent.newN.toLocaleString('en'))}{t(" new rent contracts")}</dd></div>
+        <div><dt>{t("New / renewed mix")}</dt><dd>{t((segment.rent.newShare * 100).toFixed(1))}{t("% / ")}{t((segment.rent.renewedShare * 100).toFixed(1))}{t("%")}</dd></div>
+        <div><dt>{t("Estimated gross rent-to-price ratio")}</dt><dd>{t(segment.readyGrossYieldPct === null ? 'Not published without Ready evidence' : `${segment.readyGrossYieldPct.toFixed(1)}%`)}</dd></div>
       </dl>
-      <p>The ratio divides the area’s median new annual rent by its median Ready sale price. It is not a forecast or net return.</p>
+      <p>{t("The ratio divides the area’s median new annual rent by its median Ready sale price. It is not a forecast or net return.")}</p>
     </article>
   </section>;
 }
 
-export function DubaiAreaDetail({ model }: Readonly<{ model: DubaiAreaModel }>) {
+export function DubaiAreaDetail({ locale = 'en',  model }: Readonly<{ model: DubaiAreaModel }> & { locale?: MarketLocale }) {
+  const t = <T,>(value: T): T => marketText(locale, value);
+
   const comparableGroups = model.segments.flatMap((segment) => ([
     { housing: segment.housing, stage: 'ready' as const, areas: segment.comparableAreas.ready },
     { housing: segment.housing, stage: 'off-plan' as const, areas: segment.comparableAreas.offPlan },
   ])).filter(({ areas }) => areas.length > 0);
-  return <DubaiShell href="/ae/dubai/explore/">
+  return <DubaiShell locale={locale} href={marketHref(locale, "/ae/dubai/explore/")}>
     <main className={styles.areaPage} data-dubai-area-evidence="ready">
-      <nav className={styles.breadcrumbs} aria-label="Breadcrumb">
-        <Link href="/ae/dubai/">Dubai</Link><span>/</span>
-        <Link href="/ae/dubai/explore/">Explore</Link><span>/</span>
-        <span>{model.identity.name}</span>
+      <nav className={styles.breadcrumbs} aria-label={t("Breadcrumb")}>
+        <Link href={marketHref(locale, "/ae/dubai/")}>{t("Dubai")}</Link><span>{t("/")}</span>
+        <Link href={marketHref(locale, "/ae/dubai/explore/")}>{t("Explore")}</Link><span>{t("/")}</span>
+        <span>{t(model.identity.name)}</span>
       </nav>
       <header className={styles.areaHero}>
         <div>
-          <p className={styles.eyebrow}>Dubai · Area evidence</p>
-          <h1>{model.identity.name}</h1>
-          <p>{model.segments.map(({ housing }) => housing === 'apartment' ? 'Apartment' : 'Villa').join(' and ')} sale and registered-rent evidence through {model.context.asOfDate}.</p>
+          <p className={styles.eyebrow}>{t("Dubai · Area evidence")}</p>
+          <h1>{t(model.identity.name)}</h1>
+          <p>{t(model.segments.map(({ housing }) => t(housing === 'apartment' ? 'Apartment' : 'Villa')).join(locale === 'ko' ? '·' : ' and '))}{t(" sale and registered-rent evidence through ")}{t(model.context.asOfDate)}{t(".")}</p>
         </div>
-        <DubaiAreaSelection slug={model.identity.slug} segments={model.segments} variant="price" />
+        <DubaiAreaSelection locale={locale} slug={model.identity.slug} segments={model.segments} variant="price" />
       </header>
       <div className={styles.areaSections}>
-        <div>{model.segments.map((segment) => <SegmentEvidence key={segment.housing} segment={segment} />)}</div>
+        <div>{model.segments.map((segment) => <SegmentEvidence locale={locale} key={segment.housing} segment={segment} />)}</div>
         <aside className={styles.areaRail}>
           <section className={styles.sourceCard}>
-            <h2>Check an asking price</h2>
-            <p>Keep this area and home type selected, then enter the offer, size, and your own expected annual rent.</p>
-            <DubaiAreaSelection slug={model.identity.slug} segments={model.segments} variant="check" />
+            <h2>{t("Check an asking price")}</h2>
+            <p>{t("Keep this area and home type selected, then enter the offer, size, and your own expected annual rent.")}</p>
+            <DubaiAreaSelection locale={locale} slug={model.identity.slug} segments={model.segments} variant="check" />
           </section>
           <section className={styles.sourceCard}>
-            <h2>Comparable areas</h2>
-            <p>Same home type, sale stage, method, and comparison window—not a geographic-nearness claim.</p>
-            <nav className={styles.comparableLinks} aria-label="Comparable Dubai areas">
-              {comparableGroups.length === 0 ? <span>No same-cohort comparison is published.</span> : comparableGroups.map((group) => <div key={`${group.housing}-${group.stage}`} data-comparable-stage={group.stage}>
-                <strong>{group.housing === 'apartment' ? 'Apartment' : 'Villa'} · {group.stage === 'ready' ? 'Ready' : 'Off-Plan'}</strong>
-                {group.areas.map((area) => <Link key={area.id} href={`${area.href}?housing=${group.housing}&stage=${group.stage}`}>{area.name}</Link>)}
+            <h2>{t("Comparable areas")}</h2>
+            <p>{t("Same home type, sale stage, method, and comparison window—not a geographic-nearness claim.")}</p>
+            <nav className={styles.comparableLinks} aria-label={t("Comparable Dubai areas")}>
+              {comparableGroups.length === 0 ? <span>{t("No same-cohort comparison is published.")}</span> : comparableGroups.map((group) => <div key={`${group.housing}-${group.stage}`} data-comparable-stage={group.stage}>
+                <strong>{t(group.housing === 'apartment' ? 'Apartment' : 'Villa')}{t(" · ")}{t(group.stage === 'ready' ? 'Ready' : 'Off-Plan')}</strong>
+                {group.areas.map((area) => <Link key={area.id} href={marketHref(locale, `${area.href}?housing=${group.housing}&stage=${group.stage}`)}>{t(area.name)}</Link>)}
               </div>)}
             </nav>
           </section>
           <section className={styles.sourceCard}>
-            <h2>Evidence scope</h2>
+            <h2>{t("Evidence scope")}</h2>
             <dl>
-              <div><dt>Comparison window</dt><dd>{model.context.comparisonPeriod.from}–{model.context.comparisonPeriod.to}</dd></div>
-              <div><dt>Transaction source period</dt><dd>{model.context.sourcePeriods.transactions.from}–{model.context.sourcePeriods.transactions.to}</dd></div>
-              <div><dt>Rent source period</dt><dd>{model.context.sourcePeriods.rents.from}–{model.context.sourcePeriods.rents.to}</dd></div>
-              <div><dt>Publication minimum</dt><dd>{model.context.publicationMinimum} records per displayed cohort</dd></div>
+              <div><dt>{t("Comparison window")}</dt><dd>{t(model.context.comparisonPeriod.from)}{t("–")}{t(model.context.comparisonPeriod.to)}</dd></div>
+              <div><dt>{t("Transaction source period")}</dt><dd>{t(model.context.sourcePeriods.transactions.from)}{t("–")}{t(model.context.sourcePeriods.transactions.to)}</dd></div>
+              <div><dt>{t("Rent source period")}</dt><dd>{t(model.context.sourcePeriods.rents.from)}{t("–")}{t(model.context.sourcePeriods.rents.to)}</dd></div>
+              <div><dt>{t("Publication minimum")}</dt><dd>{t(model.context.publicationMinimum)}{t(" records per displayed cohort")}</dd></div>
             </dl>
-            <p>{model.context.attribution}</p>
-            <p><a href={model.context.sourceUrl} target="_blank" rel="noreferrer">DLD source page</a> · <a href={model.context.licenseUrl} target="_blank" rel="noreferrer">Dataset licence</a></p>
-            <p>Gross ratios exclude service charges, vacancy, financing, taxes, acquisition costs, repairs, and management.</p>
-            <p><Link href="/trust/">Method and corrections</Link></p>
+            <p>{t(model.context.attribution)}</p>
+            <p><a href={marketHref(locale, model.context.sourceUrl)} target="_blank" rel="noreferrer">{t("DLD source page")}</a> {t(" · ")}<a href={marketHref(locale, model.context.licenseUrl)} target="_blank" rel="noreferrer">{t("Dataset licence")}</a></p>
+            <p>{t("Gross ratios exclude service charges, vacancy, financing, taxes, acquisition costs, repairs, and management.")}</p>
+            <p><Link href={marketHref(locale, "/trust/")}>{t("Method and corrections")}</Link></p>
           </section>
         </aside>
       </div>

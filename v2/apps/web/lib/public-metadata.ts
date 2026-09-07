@@ -1,3 +1,4 @@
+import { languageDestinations } from './navigation/site-navigation';
 import type { Metadata } from 'next';
 import type { EditorialPortfolioRecord } from '../content/portfolio-types';
 
@@ -100,6 +101,10 @@ export function indexableMetadata({
   locale?: 'en_US' | 'ko_KR' | 'zh_CN';
   imagePath?: `/${string}`;
 }>): Metadata {
+  if (!languageAlternates) {
+    const routes = languageDestinations(path);
+    if (routes.en && routes.ko) languageAlternates = { en: routes.en as `/${string}`, ko: routes.ko as `/${string}`, ...(routes['zh-CN'] ? { 'zh-Hans': routes['zh-CN'] as `/${string}` } : {}) };
+  }
   const languages = languageAlternates === undefined ? undefined : {
     en: publicCanonical(languageAlternates.en),
     ...(languageAlternates.ko === undefined ? {} : {

@@ -50,7 +50,9 @@ describe('signedprice public editorial homepage', () => {
     expect(markup).not.toMatch(/data-what-changed-item|data-lead-data-story|data-home-guide|three-market-home-title/);
     for (const city of ['kr-seoul', 'sg-singapore', 'ae-dubai']) {
       const card = markup.match(new RegExp('<li[^>]*data-contextual-action="' + city + '"[^>]*>([\\s\\S]*?)</li>'))?.[1] ?? '';
-      expect(card.match(/<a /g)).toHaveLength(1);
+      expect(card.match(/<a /g)).toHaveLength(2);
+      expect(card).toContain('/explore');
+      expect(card).toContain('/check');
     }
   });
 

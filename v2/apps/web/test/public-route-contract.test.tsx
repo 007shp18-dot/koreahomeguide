@@ -32,15 +32,24 @@ import { dubaiEvidenceRepositoryFromEnvironment } from '../lib/dubai/evidence-re
 const period = '2026-01/2026-07';
 const portfolioUrls = EDITORIAL_PORTFOLIO.map(({ canonicalHref }) => `https://www.signedprice.com${canonicalHref}`);
 
+// Published Korean hubs and translated market research are independent of Seoul evidence.
+const koreanPublishedHubUrls = [
+  '/ko/', '/ko/sg/', '/ko/ae/dubai/', '/ko/contact/', '/ko/guides/', '/ko/prices/', '/ko/news/',
+  '/ko/sg/singapore/explore/', '/ko/sg/singapore/explore/ccr/',
+  '/ko/sg/singapore/explore/rcr/', '/ko/sg/singapore/explore/ocr/',
+  '/ko/ae/dubai/explore/', '/ko/ae/dubai/guide/',
+].map(path => `https://www.signedprice.com${path}`);
+
 function releasedDubaiEvidenceUrls(): string[] {
   const repository = dubaiEvidenceRepositoryFromEnvironment();
   if (repository === null) return [];
-  const areaUrls = repository.listAreaRouteParams().map(({ area }) => (
-    `https://www.signedprice.com/ae/dubai/explore/${area}/`
-  ));
+  const areaUrls = repository.listAreaRouteParams().flatMap(({ area }) => [
+    `https://www.signedprice.com/ae/dubai/explore/${area}/`,
+    `https://www.signedprice.com/ko/ae/dubai/explore/${area}/`,
+  ]);
   return areaUrls.length === 0
     ? areaUrls
-    : ['https://www.signedprice.com/ae/dubai/check/', ...areaUrls];
+    : ['https://www.signedprice.com/ae/dubai/check/', 'https://www.signedprice.com/ko/ae/dubai/check/', ...areaUrls];
 }
 
 function artifact(published: boolean) {
@@ -303,6 +312,7 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/sg/singapore/explore/rcr/',
       'https://www.signedprice.com/sg/singapore/explore/ocr/',
       ...portfolioUrls,
+      ...koreanPublishedHubUrls,
       'https://www.signedprice.com/',
       'https://www.signedprice.com/compare/',
       'https://www.signedprice.com/trust/',
@@ -445,6 +455,7 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/sg/singapore/explore/rcr/',
       'https://www.signedprice.com/sg/singapore/explore/ocr/',
       ...portfolioUrls,
+      ...koreanPublishedHubUrls,
       'https://www.signedprice.com/',
       'https://www.signedprice.com/compare/',
       'https://www.signedprice.com/trust/',
@@ -490,6 +501,7 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/sg/singapore/explore/rcr/',
       'https://www.signedprice.com/sg/singapore/explore/ocr/',
       ...portfolioUrls,
+      ...koreanPublishedHubUrls,
       'https://www.signedprice.com/',
       'https://www.signedprice.com/compare/',
       'https://www.signedprice.com/trust/',

@@ -9,6 +9,9 @@ import { MARKET_PHOTOS, MarketRepresentativePhoto } from '../market-representati
 
 import type { PublishedContentArticle } from '../../lib/content/content-types';
 import type { InfographicSpec } from '../../lib/infographics/infographic-types';
+import { KOREAN_RESEARCH_FIGURES } from '../../content/ko/research-figures';
+import { getPortfolioRecord } from '../../content/portfolio-manifest';
+import { marketHref } from '../../lib/locale/market-localization';
 import { RESEARCH_FIGURES } from '../../content/en/research-figures';
 import { Infographic } from '../infographics/infographic';
 import styles from './newsroom.module.css';
@@ -35,16 +38,28 @@ export function NewsroomArticle({ article }: Readonly<{
 }>) {
   const ko = article.locale === 'ko';
   const t = (en:string, translated:string) => ko ? translated : en;
-  const typeLabel = ko ? ({'news-brief':'뉴스','policy-update':'정책','market-brief':'시장 분석','data-story':'데이터 분석',guide:'매수 가이드'} as const)[article.type] : typeLabels[article.type];
+  const typeLabel = ko ? ({'news-brief':'뉴스','policy-update':'정책','market-brief':'시장 분석','data-story':'데이터 분석',guide:'가이드'} as const)[article.type] : typeLabels[article.type];
   const buyingGuide = (ko ? KOREAN_BUYING_GUIDE_DATA : article.locale === 'en' ? BUYING_GUIDE_DATA : []).find(guide => guide.slug === article.slug);
-  const figure = article.infographic ?? (article.locale === 'en' ? RESEARCH_FIGURES[article.slug] : undefined);
+  const figure = article.infographic ?? (ko ? KOREAN_RESEARCH_FIGURES[article.slug] : article.locale === 'en' ? RESEARCH_FIGURES[article.slug] : undefined);
   const contentSections = sections(article.bodyMarkdown);
   const section = article.type === 'guide'
     ? { label: t('Guides','가이드'), href: ko ? '/ko/guides/' : '/guides/' }
-    : { label: 'News', href: '/news/' };
+    : { label: t('News', '뉴스'), href: ko ? '/ko/news/' : '/news/' };
   const market = article.marketId === 'kr-seoul' ? t('Seoul','서울')
     : article.marketId === 'sg-singapore' ? t('Singapore','싱가포르') : article.marketId === 'ae-dubai' ? t('Dubai','두바이') : t('Global','전체 도시');
-  const reading = relatedReading(article);
+  const relatedHref = article.relatedHref === null ? null : marketHref(ko ? 'ko' : 'en', article.relatedHref);
+  const relatedLabel = relatedHref?.includes('/check') ? t('Check a price', '가격 확인하기')
+    : relatedHref?.includes('/explore') ? t('Explore transaction records', '실거래가 탐색하기')
+    : relatedHref?.includes('/rankings') ? t('Compare areas', '지역 비교하기')
+    : relatedHref?.includes('/tools/') ? t('Open calculator', '계산기 열기')
+    : relatedHref?.includes('/guide') ? t('Read the guide', '가이드 읽기')
+    : t('Read related analysis', '관련 분석 읽기');
+  const reading = relatedReading(article).map(item => {
+    if (!ko) return item;
+    const slug = item.href.split('/').filter(Boolean).at(-1) ?? '';
+    const translated = getPortfolioRecord('ko', slug);
+    return { href: translated?.canonicalHref ?? marketHref('ko', item.href), label: translated?.title ?? '두바이 매수 절차 살펴보기' };
+  });
   const relatedEvent = article.relatedHref?.includes('/check') ? 'article_to_check' : article.relatedHref?.includes('/explore') ? 'article_to_explore' : 'article_open';
   return <main
     className={`${styles.article} ${isMonthlyReport(article.slug) ? styles.monthlyArticle : ''}`}
@@ -53,8 +68,8 @@ export function NewsroomArticle({ article }: Readonly<{
     data-editorial-locale={article.locale}
     data-editorial-market={article.marketId ?? undefined}
   >
-    <nav className={styles.breadcrumb} aria-label="Breadcrumb"><Link href={section.href}>{section.label}</Link><span>{typeLabel}</span></nav>
-    {isMonthlyReport(article.slug) ? <MonthlyReportNavigation slug={article.slug} /> : null}
+    <nav className={styles.breadcrumb} aria-label={t('Breadcrumb', '현재 위치')}><Link href={section.href}>{section.label}</Link><span>{typeLabel}</span></nav>
+    {isMonthlyReport(article.slug) ? <MonthlyReportNavigation slug={article.slug} locale={ko ? 'ko' : 'en'} /> : null}
     <header className={styles.articleHero}>
       <p>{typeLabel} · {market}</p>
       <h1>{article.title}</h1>
@@ -66,10 +81,10 @@ export function NewsroomArticle({ article }: Readonly<{
         <div><dt>{t("Updated","수정일")}</dt><dd><time dateTime={article.updatedAt}>{article.updatedAt.slice(0, 10)}</time></dd></div>
       </dl>
     </header>
-    {isMonthlyReport(article.slug) ? <MonthlyReportTrend slug={article.slug} /> : null}
+    {isMonthlyReport(article.slug) ? <MonthlyReportTrend slug={article.slug} locale={ko ? 'ko' : 'en'} /> : null}
     {article.type === 'guide' && article.marketId ? <div className={styles.articlePhoto}><MarketRepresentativePhoto context="city" photo={article.marketId === 'kr-seoul' ? MARKET_PHOTOS.seoul : article.marketId === 'sg-singapore' ? MARKET_PHOTOS.singapore : article.marketId === 'ae-dubai' ? MARKET_PHOTOS.dubai : null} cityLabel={market} /></div> : null}
     {figure == null ? null : <Infographic spec={figure} />}
-    {buyingGuide || contentSections.length < 5 ? null : <nav className={styles.contents} aria-label="In this article"><p>{t("In this article","이 글의 내용")}</p>{contentSections.map((item, index) => item.heading ? <a href={`#section-${index + 1}`} key={item.heading}>{item.heading}</a> : null)}</nav>}
+    {buyingGuide || contentSections.length < 5 ? null : <nav className={styles.contents} aria-label={t('In this article', '이 글의 내용')}><p>{t("In this article","이 글의 내용")}</p>{contentSections.map((item, index) => item.heading ? <a href={`#section-${index + 1}`} key={item.heading}>{item.heading}</a> : null)}</nav>}
     {buyingGuide ? <BuyingGuide guide={buyingGuide} locale={ko ? "ko" : "en"} /> : <article className={styles.articleBody}>
       {contentSections.map((section, index) => <section id={`section-${index + 1}`} key={section.heading}>{section.heading ? <h2>{section.heading}</h2> : null}<EditorialMarkdown source={section.body} /></section>)}
     </article>}
@@ -77,6 +92,6 @@ export function NewsroomArticle({ article }: Readonly<{
       <h2 id="article-sources-title">{t("Sources","출처")}</h2>
       <ol>{article.sources.map((source) => <li key={source.id}><span>{ko ? (source.kind === "primary" ? "공식 자료" : "참고 자료") : source.kind}</span><a href={source.href} rel="noreferrer" data-editorial-event="policy_source_open">{source.publisher} · {source.title}</a><small>{t("Checked", "확인일")} {source.checkedAt.slice(0, 10)}</small></li>)}</ol>
     </section>
-    {article.relatedHref === null ? null : <aside className={styles.relatedAction}><p>{t("Related reading and tools","이어서 살펴보기")}</p><Link href={article.relatedHref} data-editorial-event={relatedEvent}>{ko ? (article.relatedHref.startsWith('/ko/') ? '실거래가 보기' : '실거래가 보기 (영문)') : article.relatedHref.includes('/check') ? 'Check a price' : article.relatedHref.includes('/explore') ? 'Explore transaction records' : article.relatedHref.includes('/tools/') ? 'Open calculator' : 'Read related analysis'}</Link>{(ko ? [] : reading).filter(({ href }) => !href.endsWith(`/${article.slug}/`)).map((item) => <Link key={item.href} href={item.href}>{item.label}</Link>)}</aside>}
+    {relatedHref === null ? null : <aside className={styles.relatedAction}><p>{t("Related reading and tools","이어서 살펴보기")}</p><Link href={relatedHref} data-editorial-event={relatedEvent}>{relatedLabel}</Link>{reading.filter(({ href }) => !href.endsWith(`/${article.slug}/`)).map((item) => <Link key={item.href} href={item.href}>{item.label}</Link>)}</aside>}
   </main>;
 }

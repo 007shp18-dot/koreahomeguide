@@ -15,10 +15,10 @@ export function SavedCities({ locale = 'en' }: { locale?: 'en' | 'ko' }) {
   return <details className={styles.savedCities}><summary>{ko ? '모든 도시 관심 목록' : 'Saved across cities'} · {places.length}</summary>
     <label>{ko ? '도시 선택' : 'City'} <select value={city} onChange={e => setCity(e.target.value)}><option value="all">{ko ? '전체' : 'All cities'}</option>{Object.keys(cityPaths).map(c => <option key={c} value={c}>{c === 'seoul' ? 'Seoul' : c === 'singapore' ? 'Singapore' : 'Dubai'}</option>)}</select></label>
     <p className={styles.meta}>{ko ? '이 브라우저에 저장한 목록입니다. 해당 도시에서 거래 변화 확인과 관심 해제를 할 수 있습니다.' : 'Saved in this browser. Open a city to check evidence updates or remove saved places.'}</p>
-    <ul>{places.filter(p => city === 'all' || city === p.market).map(p => <li key={`${p.market}:${p.key}`}><Link href={`${p.market === 'seoul' && ko ? '/ko' : ''}${cityPaths[p.market]}#saved-title`}>{p.name} · {p.market === 'seoul' ? 'Seoul' : p.market === 'singapore' ? 'Singapore' : 'Dubai'}</Link></li>)}</ul>
+    <ul>{places.filter(p => city === 'all' || city === p.market).map(p => <li key={`${p.market}:${p.key}`}><Link href={`${ko ? '/ko' : ''}${cityPaths[p.market]}#saved-title`}>{p.name} · {p.market === 'seoul' ? 'Seoul' : p.market === 'singapore' ? 'Singapore' : 'Dubai'}</Link></li>)}</ul>
     {!places.some(p => city === 'all' || city === p.market) && <p>{ko ? '저장한 항목이 없습니다.' : 'No saved places in this selection.'}</p>}
   </details>;
 }
 export function ShortlistCities({ current, locale = 'en' }: { current: keyof typeof cityPaths; locale?: 'en' | 'ko' }) {
-  return <nav className={styles.actions} aria-label={locale === 'ko' ? '도시별 예산 검색' : 'Budget search by city'}>{Object.entries(cityPaths).map(([city, href]) => <Link key={city} href={`${city === 'seoul' && locale === 'ko' ? '/ko' : ''}${href}`} aria-current={current === city ? 'page' : undefined}>{city === 'seoul' ? 'Seoul' : city === 'singapore' ? 'Singapore' : 'Dubai'}</Link>)}</nav>;
+  return <nav className={styles.actions} aria-label={locale === 'ko' ? '도시별 예산 검색' : 'Budget search by city'}>{Object.entries(cityPaths).map(([city, href]) => <Link key={city} href={`${locale === 'ko' ? '/ko' : ''}${href}`} aria-current={current === city ? 'page' : undefined}>{city === 'seoul' ? 'Seoul' : city === 'singapore' ? 'Singapore' : 'Dubai'}</Link>)}</nav>;
 }

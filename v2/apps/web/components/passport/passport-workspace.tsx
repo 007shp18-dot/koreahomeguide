@@ -1,4 +1,5 @@
 'use client';
+import { marketHref } from '../../lib/locale/market-localization';
 
 import Link from 'next/link';
 import { useMemo, useState, useSyncExternalStore } from 'react';
@@ -74,7 +75,7 @@ export function PassportWorkspace({ initialModel }: Readonly<{ initialModel: Pas
     <section className={styles.cardGrid} aria-label={copy.title}>
       {model.markets.map((market) => {
         const money = new Intl.NumberFormat(MONEY[market.currency], { style: 'currency', currency: market.currency, currencyDisplay: 'code', maximumFractionDigits: 0 });
-        const href = market.id === 'kr-seoul' ? `${initialModel.locale === 'ko' ? '/ko' : ''}/kr/seoul/explore/?transaction=sale&propertyType=apartment` : market.id === 'sg-singapore' ? '/sg/singapore/explore/' : `/ae/dubai/explore/?housing=apartment&stage=${dubaiStage}&budgetMax=${Math.floor(market.localBudget)}`;
+        const href = marketHref(initialModel.locale === 'ko' ? 'ko' : 'en', market.id === 'kr-seoul' ? '/kr/seoul/explore/?transaction=sale&propertyType=apartment' : market.id === 'sg-singapore' ? '/sg/singapore/explore/' : `/ae/dubai/explore/?housing=apartment&stage=${dubaiStage}&budgetMax=${Math.floor(market.localBudget)}`);
         return <article className={styles.marketCard} data-passport-market={market.id} key={market.id}>
           <div className={styles.cardTitle}><span>{market.currency}</span><h2>{market.city}</h2></div>
           <div className={styles.metricRow} data-passport-row="local-budget"><span>{copy.local}</span><strong>{money.format(market.localBudget)}</strong></div>

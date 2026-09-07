@@ -30,3 +30,18 @@ it('retains a valid budget-comparison return without allowing arbitrary links or
     expect(parsePropertyScenarioContext({passport}).passportHref).toBeUndefined();
   }
 });
+
+
+it.each([
+  ['sg-singapore', 'SGD', '/ko/sg/singapore/explore/ocr/project/?unit=2#evidence'],
+  ['ae-dubai', 'AED', '/ko/ae/dubai/explore/dubai-marina/?stage=ready#evidence'],
+] as const)('retains a matching Korean %s evidence return while rejecting external or other-market paths', (market, currency, returnTo) => {
+  const href = createPropertyScenarioHref({ locale: 'ko', market, currency, price: 1200000, returnTo });
+  const parsed = parsePropertyScenarioContext(Object.fromEntries(new URL(href, 'https://signedprice.test').searchParams), 'ko');
+  expect(parsed.returnTo).toBe(returnTo);
+  expect(parsed.currency).toBe(currency);
+  expect(parsed.price).toBe(1200000);
+  for (const unsafe of [`https://evil.test${returnTo}`, `//evil.test${returnTo}`, '/ko/kr/seoul/explore/', `${returnTo.split('/explore/')[0]}/../../prices/`]) {
+    expect(parsePropertyScenarioContext({ market, currency, returnTo: unsafe }, 'ko').returnTo).toBeNull();
+  }
+});

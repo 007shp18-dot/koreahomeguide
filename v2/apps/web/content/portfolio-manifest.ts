@@ -1,3 +1,4 @@
+import { KOREAN_EDITORIAL_PORTFOLIO } from './ko/portfolio';
 import { KOREAN_BUYING_GUIDES } from './ko/buying-guides';
 import { BUYING_GUIDES } from './en/buying-guides';
 import { MONTHLY_REPORTS } from './en/monthly-reports';
@@ -86,10 +87,11 @@ export function validateEditorialPortfolio(values: readonly unknown[]): readonly
 }
 
 export const EDITORIAL_PORTFOLIO = Object.freeze(validateEditorialPortfolio(Object.freeze([
-  ...ENGLISH_PORTFOLIO,
-  ...MONTHLY_REPORTS,
+  ...ENGLISH_PORTFOLIO.map(article => ({ ...article, translationGroupId: article.translationGroupId ?? article.slug })),
+  ...MONTHLY_REPORTS.map(article => ({ ...article, translationGroupId: article.translationGroupId ?? article.slug })),
   ...BUYING_GUIDES.map(article => ({ ...article, translationGroupId: article.slug })),
   ...KOREAN_BUYING_GUIDES,
+  ...KOREAN_EDITORIAL_PORTFOLIO,
   ...CHINESE_PORTFOLIO,
 ])));
 

@@ -59,9 +59,119 @@ const routes: EditorialLanguageRoutes = {
     "zh-CN": "/zh-cn/guides/buy-property-in-korea-zh/"
   }
 };
-for (const slug of ['seoul-apartment-buying-budget-guide', 'singapore-condo-buying-budget-guide', 'dubai-ready-apartment-buying-budget-guide']) {
-  const group = { en: `/guides/${slug}/`, ko: `/ko/guides/${slug}/` };
-  routes[group.en] = group;
-  routes[group.ko] = group;
+// Canonical English/Korean pairs, without importing article bodies into the client.
+const koreanPairs = [
+  [
+    "/news/policy/korea-rental-deposit-protection-status/",
+    "/ko/news/korea-rental-deposit-protection-status/"
+  ],
+  [
+    "/news/policy/korea-foreign-property-reporting-status/",
+    "/ko/news/korea-foreign-property-reporting-status/"
+  ],
+  [
+    "/news/policy/seoul-land-transaction-permit-status/",
+    "/ko/news/seoul-land-transaction-permit-status/"
+  ],
+  [
+    "/news/policy/korea-housing-finance-rules-status/",
+    "/ko/news/korea-housing-finance-rules-status/"
+  ],
+  [
+    "/news/policy/singapore-absd-policy-status/",
+    "/ko/news/singapore-absd-policy-status/"
+  ],
+  [
+    "/news/policy/singapore-hdb-private-owner-waitout-status/",
+    "/ko/news/singapore-hdb-private-owner-waitout-status/"
+  ],
+  [
+    "/news/seoul-sale-market-monthly-brief/",
+    "/ko/news/seoul-sale-market-monthly-brief/"
+  ],
+  [
+    "/news/seoul-jeonse-market-monthly-brief/",
+    "/ko/news/seoul-jeonse-market-monthly-brief/"
+  ],
+  [
+    "/news/seoul-monthly-rent-market-brief/",
+    "/ko/news/seoul-monthly-rent-market-brief/"
+  ],
+  [
+    "/news/singapore-private-market-quarterly-brief/",
+    "/ko/news/singapore-private-market-quarterly-brief/"
+  ],
+  [
+    "/news/seoul-district-price-distribution/",
+    "/ko/news/seoul-district-price-distribution/"
+  ],
+  [
+    "/news/seoul-new-renewal-rent-gap/",
+    "/ko/news/seoul-new-renewal-rent-gap/"
+  ],
+  [
+    "/news/korea-deposit-monthly-rent-cost-structure/",
+    "/ko/news/korea-deposit-monthly-rent-cost-structure/"
+  ],
+  [
+    "/news/singapore-ccr-rcr-ocr-comparison/",
+    "/ko/news/singapore-ccr-rcr-ocr-comparison/"
+  ],
+  [
+    "/guides/rent-an-apartment-in-korea/",
+    "/ko/guides/rent-an-apartment-in-korea/"
+  ],
+  [
+    "/guides/wolse-vs-jeonse/",
+    "/ko/guides/wolse-vs-jeonse/"
+  ],
+  [
+    "/guides/korea-rental-contract-checklist/",
+    "/ko/guides/korea-rental-contract-checklist/"
+  ],
+  [
+    "/guides/read-seoul-sale-transactions/",
+    "/ko/guides/read-seoul-sale-transactions/"
+  ],
+  [
+    "/guides/compare-seoul-district-prices/",
+    "/ko/guides/compare-seoul-district-prices/"
+  ],
+  [
+    "/guides/buy-property-in-korea-as-foreigner/",
+    "/ko/guides/buy-property-in-korea-as-foreigner/"
+  ],
+  [
+    "/guides/read-singapore-private-transactions/",
+    "/ko/guides/read-singapore-private-transactions/"
+  ],
+  [
+    "/news/seoul-monthly-2026-09/",
+    "/ko/news/seoul-monthly-2026-09/"
+  ],
+  [
+    "/news/singapore-monthly-2026-09/",
+    "/ko/news/singapore-monthly-2026-09/"
+  ],
+  [
+    "/news/dubai-monthly-2026-09/",
+    "/ko/news/dubai-monthly-2026-09/"
+  ],
+  [
+    "/guides/seoul-apartment-buying-budget-guide/",
+    "/ko/guides/seoul-apartment-buying-budget-guide/"
+  ],
+  [
+    "/guides/singapore-condo-buying-budget-guide/",
+    "/ko/guides/singapore-condo-buying-budget-guide/"
+  ],
+  [
+    "/guides/dubai-ready-apartment-buying-budget-guide/",
+    "/ko/guides/dubai-ready-apartment-buying-budget-guide/"
+  ]
+] as const;
+for (const [en, ko] of koreanPairs) {
+  const group = { ...(routes[en] ?? {}), en, ko };
+  for (const href of Object.values(group)) routes[href] = group;
 }
 export function editorialLanguageRoutes(): EditorialLanguageRoutes { return routes; }

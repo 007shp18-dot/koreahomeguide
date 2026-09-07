@@ -18,16 +18,16 @@ describe('shared navigation destinations', () => {
     expect(languageDestinations(`/ko${path}`, query).en).toBe(`${path}${query}`);
     expect(languageDestinations(path)['zh-CN']).toBeNull();
   });
-  it('does not invent translated Singapore/Dubai routes or Chinese Explore', () => {
+  it('offers published Korean tools while keeping Chinese Explore unavailable', () => {
     for (const path of ['/sg/singapore/explore/', '/ae/dubai/explore/', '/kr/seoul/explore/']) {
       const html = renderToStaticMarkup(<LanguageLinks pathname={path} />);
       expect(html).toContain('>EN<');
-      expect(html.includes('>KO<')).toBe(path.startsWith('/kr/'));
+      expect(html).toContain('>KO<');
       expect(html).not.toContain('>中文<');
       expect(html).not.toContain('aria-disabled');
       expect(html).not.toContain('href="/zh-cn/kr/seoul/explore/"');
     }
-    expect(languageDestinations('/sg/singapore/explore/').ko).toBeNull();
+    expect(languageDestinations('/sg/singapore/explore/').ko).toBe('/ko/sg/singapore/explore/');
   });
   it('keeps the current news filter on the Chinese index', () => {
     expect(languageDestinations('/news/', '?market=singapore')['zh-CN']).toBe('/zh-cn/news/?market=singapore');
