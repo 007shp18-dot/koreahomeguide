@@ -12,6 +12,7 @@ vi.mock('next/script', () => ({
 import {
   NaverDistrictMap,
   buildGoogleBuildingLookup,
+  isGoogleBuildingAddressMatch,
   clusterNaverBuildings,
   buildNaverBuildingMarkerContent,
   buildNaverDistrictMarkerContent,
@@ -996,4 +997,12 @@ it('keeps translated display titles out of Google lookup and matching identities
   expect(english.sourceName).toBe(source.sourceName);
   expect(english.textQuery).toBe(`${source.sourceName}, ${source.addressQuery}`);
   expect(buildGoogleBuildingLookup({title:'Existing building',addressQuery:'Existing address'}).sourceName).toBe('Existing building');
+});
+
+it('rejects a same-name Google building in another district or neighborhood', () => {
+  const query = '서울특별시 강남구 역삼동 래미안';
+  expect(isGoogleBuildingAddressMatch(query, '대한민국 서울특별시 강남구 역삼동 123')).toBe(true);
+  expect(isGoogleBuildingAddressMatch(query, '서울특별시 강동구 역삼동 123')).toBe(false);
+  expect(isGoogleBuildingAddressMatch(query, '서울특별시 강남구 삼성동 123')).toBe(false);
+  expect(isGoogleBuildingAddressMatch(query, undefined)).toBe(false);
 });
