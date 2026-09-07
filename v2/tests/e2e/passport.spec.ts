@@ -13,12 +13,12 @@ test('Passport opens published candidate costs and restores the original currenc
   await expect(price).toHaveCSS('white-space', 'nowrap');
   expect(await price.evaluate(node => node.scrollWidth <= node.clientWidth + 1)).toBe(true);
   await page.getByLabel('예산', { exact: true }).fill('9000000');
-  await page.getByRole('button', { name: '비교 다시 계산' }).click();
+  await page.getByRole('button', { name: '다시 비교하기', exact: true }).click();
   const calculate = candidates.first().getByRole('link', { name: '비용 계산', exact: true });
   await calculate.click();
   await expect(page.getByLabel('매입 가격 (SGD)', { exact: true })).toHaveValue('2162500');
-  await expect(page.getByRole('link', { name: '원래 거래 근거로 돌아가기' })).toHaveAttribute('href', /\/sg\/singapore\/explore\/ocr\//);
-  await page.getByRole('link', { name: '내 Passport 예산으로 돌아가기' }).click();
+  await expect(page.getByRole('link', { name: '거래 내역으로 돌아가기', exact: true })).toHaveAttribute('href', /\/sg\/singapore\/explore\/ocr\//);
+  await page.getByRole('link', { name: '내 예산 비교로 돌아가기', exact: true }).click();
   await expect(page.getByLabel('예산', { exact: true })).toHaveValue('9,000,000');
   await expect(page.getByLabel('예산 통화', { exact: true })).toHaveValue('USD');
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
@@ -59,7 +59,7 @@ test('Passport updates the complete result URL from one budget input', async ({ 
   await page.goto('/ko/passport/');
   const input = page.getByLabel('예산', { exact: true });
   await input.fill('600000000');
-  await page.getByRole('button', { name: '비교 다시 계산' }).click();
+  await page.getByRole('button', { name: '다시 비교하기', exact: true }).click();
   await expect(page).toHaveURL(/\/ko\/passport\/?\?budget=600000000$/);
   await expect(input).toHaveValue('600,000,000');
 });
