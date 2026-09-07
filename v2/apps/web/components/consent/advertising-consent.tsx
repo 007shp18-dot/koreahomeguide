@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Script from 'next/script';
-import { useState, useSyncExternalStore } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 
 import styles from './advertising-consent.module.css';
 
@@ -20,7 +20,24 @@ export function shouldLoadAdvertising(choice: AdvertisingConsentChoice): boolean
 }
 
 export function shouldLoadAnalytics(choice: AdvertisingConsentChoice): boolean {
-  return choice === 'granted';
+  return choice !== 'denied';
+}
+
+function subscribeToHydration() {
+  return () => {};
+}
+
+function clientHydrated() {
+  return true;
+}
+
+function serverHydrated() {
+  return false;
+}
+
+export function setAnalyticsDisabled(measurementId: string, disabled: boolean): void {
+  const analyticsWindow = window as unknown as Record<string, unknown>;
+  analyticsWindow[`ga-disable-${measurementId}`] = disabled;
 }
 
 export function buildAdSenseScriptSrc(publisherId: string): string {
@@ -123,13 +140,25 @@ export function AdvertisingConsent({
     storedAdvertisingChoice,
     serverConsentChoice,
   );
+  // Read saved opt-outs before mounting any Google script after hydration.
+  const hydrated = useSyncExternalStore(
+    subscribeToHydration, clientHydrated, serverHydrated,
+  );
+  useEffect(() => {
+    if (hydrated && analyticsMeasurementId) {
+      setAnalyticsDisabled(analyticsMeasurementId, !shouldLoadAnalytics(analyticsChoice));
+    }
+  }, [hydrated, analyticsMeasurementId, analyticsChoice]);
   const [manualOpen, setManualOpen] = useState(false);
   const preferencesOpen =
     manualOpen ||
-    (analyticsMeasurementId !== undefined && analyticsChoice === 'unknown') ||
     (publisherId !== undefined && advertisingChoice === 'unknown');
 
   function chooseAnalytics(next: Exclude<AdvertisingConsentChoice, 'unknown'>) {
+    if (analyticsMeasurementId) {
+      // Stop an already-loaded tag immediately; removing Script alone cannot stop it.
+      setAnalyticsDisabled(analyticsMeasurementId, next === 'denied');
+    }
     volatileAnalyticsChoice = next;
     persistChoice(ANALYTICS_STORAGE_KEY, ANALYTICS_CONSENT_EVENT, next);
     setManualOpen(false);
@@ -143,7 +172,7 @@ export function AdvertisingConsent({
 
   return (
     <>
-      {analyticsMeasurementId && shouldLoadAnalytics(analyticsChoice) ? (
+      {hydrated && analyticsMeasurementId && shouldLoadAnalytics(analyticsChoice) ? (
         <GoogleAnalytics measurementId={analyticsMeasurementId} />
       ) : null}
       {publisherId && shouldLoadAdvertising(advertisingChoice) ? (
@@ -163,20 +192,20 @@ export function AdvertisingConsent({
         >
           <h2 id="privacy-consent-title">Choose privacy settings</h2>
           <p>
-            SignedPrice loads optional services only after you allow them. Rejecting keeps
-            those scripts off; the property evidence remains available. Read the{' '}
+            Google Analytics measures visits by default. You can turn it off here.
+            Advertising loads only after you allow it. Read the{' '}
             <Link href="/privacy/">privacy notice</Link>.
           </p>
           {analyticsMeasurementId ? (
             <section className={styles.choiceGroup} aria-labelledby="analytics-choice-title">
               <h3 id="analytics-choice-title">Analytics</h3>
-              <p>Help us understand anonymous page usage with Google Analytics.</p>
+              <p>Google Analytics uses cookies to measure page views and site usage.</p>
               <div className={styles.actions}>
                 <button type="button" onClick={() => chooseAnalytics('granted')}>
-                  Allow analytics
+                  Enable analytics
                 </button>
                 <button type="button" onClick={() => chooseAnalytics('denied')}>
-                  Reject analytics
+                  Disable analytics
                 </button>
               </div>
             </section>

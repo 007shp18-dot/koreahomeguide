@@ -32,12 +32,12 @@ export default function PrivacyPage() {
         </header>
         <section className={styles.notice} aria-labelledby="privacy-summary">
           <div>
-            <p className={styles.meta}>Effective 4 September 2026 · Current public product</p>
+            <p className={styles.meta}>Effective 7 September 2026 · Current public product</p>
             <h2 id="privacy-summary">We do not sell personal information.</h2>
           </div>
           <p>
-            You can browse without an account. Optional Google analytics and advertising scripts load only
-            after your choice. Property values entered in public tools are not sent as analytics events.
+            You can browse without an account. Google Analytics measures visits by default; you can turn it off
+            through “Privacy choices.” Advertising loads only after you allow it. Property values entered in public tools are not sent as analytics events.
           </p>
         </section>
         <section className={styles.grid} aria-label="Privacy notice sections">
@@ -72,7 +72,7 @@ export default function PrivacyPage() {
           <article>
             <p className={styles.meta}>05 · Cookies</p>
             <h2>Analytics and advertising</h2>
-            <p>Vercel may measure basic site delivery and usage. Google Analytics and Google advertising are separate optional services and load only after you allow them through “Privacy choices.” You can reject or change those choices at any time.</p>
+            <p>Vercel may measure basic site delivery and usage. Google Analytics loads by default and uses cookies to measure page views, visits and site interactions. You can disable it through “Privacy choices”; a saved rejection is respected on future visits in that browser. Google advertising is separate and loads only after you allow it. You can change either choice at any time.</p>
           </article>
           <article>
             <p className={styles.meta}>06 · Community</p>
