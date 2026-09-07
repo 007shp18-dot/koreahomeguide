@@ -39,6 +39,18 @@ function hdbRentRecord(
 const generatedAt = '2026-09-02T00:00:00.000Z';
 
 describe('Singapore Check engine', () => {
+  it('describes a town-wide HDB selection without claiming a block was selected', () => {
+    const artifact = buildSingaporeCheckArtifact({
+      market: 'hdb-rent', sourceIdentifier: 'HDB rental approvals', generatedAt,
+      records: [2000, 2500, 3000, 3500, 4000].map(value => hdbRentRecord(value)),
+    });
+    const result = evaluateSingaporeCheckOffer({ artifact, offer: {
+      market: 'hdb-rent', amountSgd: 3000,
+      filters: { town: 'ANG MO KIO', blockId: null, flatType: '3-ROOM' },
+    } });
+    expect(result).toMatchObject({ status: 'ready', sampleCount: 5,
+      scope: { label: 'Selected town and filters' }, distribution: { median: 3000 } });
+  });
   it('uses at most the latest 12 completed months across a year boundary', () => {
     expect(singaporeCompletedMonthWindow({ from: '2024-01', to: '2025-02' }))
       .toEqual({ from: '2024-03', to: '2025-02', monthCount: 12, maximumMonthCount: 12 });

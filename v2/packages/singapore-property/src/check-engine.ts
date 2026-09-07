@@ -275,7 +275,7 @@ function hdbResaleScopes(offer: HdbResaleOffer): readonly ScopeCandidate<HdbResa
   return Object.freeze([
     {
       level: 'exact',
-      label: 'Selected block and filters',
+      label: filters.blockId === null ? 'Selected town and filters' : 'Selected block and filters',
       matches: (record) => shared(record)
         && record.town === filters.town
         && (filters.blockId === null || record.blockId === filters.blockId)
@@ -302,7 +302,7 @@ function hdbRentScopes(offer: HdbRentOffer): readonly ScopeCandidate<HdbRentChec
   return Object.freeze([
     {
       level: 'exact',
-      label: 'Selected block and filters',
+      label: filters.blockId === null ? 'Selected town and filters' : 'Selected block and filters',
       matches: (record) => shared(record)
         && record.town === filters.town
         && (filters.blockId === null || record.blockId === filters.blockId),

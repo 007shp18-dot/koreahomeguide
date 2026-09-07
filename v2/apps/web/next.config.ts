@@ -49,6 +49,8 @@ const nextConfig: NextConfig = {
       './data/singapore-private-sale.json.gz',
       './data/singapore-hdb.json.gz',
       './data/singapore-check-ura-private-sale.json.gz',
+      './data/singapore-check-hdb-resale.json.gz',
+      './data/singapore-check-hdb-rent.json.gz',
     ],
   },
 };

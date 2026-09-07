@@ -88,7 +88,19 @@ const ENVIRONMENT = Object.freeze({
   },
 } as const);
 
-export function singaporeCheckEvidenceRepositoriesFromEnvironment(): Promise<
+let checkedInRepositories: Promise<SingaporeCheckEvidenceRepositories> | undefined;
+
+export function singaporeCheckEvidenceRepositoriesFromEnvironment(): Promise<SingaporeCheckEvidenceRepositories> {
+  // Checked-in artifacts are immutable for this deployment. Avoid decompressing
+  // and validating all transaction history again on every offer submission.
+  // Explicit overrides and the disable switch always bypass the warm cache.
+  const usesOnlyInstalled = checkedInSnapshotsAreEnabled()
+    && Object.values(ENVIRONMENT).every(names => process.env[names.artifact] === undefined);
+  if (!usesOnlyInstalled) return loadSingaporeCheckEvidenceRepositories();
+  return checkedInRepositories ??= loadSingaporeCheckEvidenceRepositories();
+}
+
+function loadSingaporeCheckEvidenceRepositories(): Promise<
   SingaporeCheckEvidenceRepositories
 > {
   const installedRepository = checkedInSnapshotsAreEnabled()

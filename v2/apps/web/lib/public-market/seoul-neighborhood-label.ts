@@ -1,4 +1,5 @@
 import { neighborhoodDisplayName } from './seoul-display-names';
+import { getSeoulDistrictBySlug } from '@signedprice/korea-rent/browser';
 
 /** Display/search aliases only. Never use these names for identity or geocoding.
  * Reviewed references: docs/operations/2026-09-07-explore-location-labels.md.
@@ -21,6 +22,7 @@ const ENGLISH_NAMES: Readonly<Record<string, Readonly<Record<string, string>>>> 
 };
 
 export function seoulNeighborhoodLabel(districtSlug: string, name: string, locale: 'en' | 'ko'): string {
+  if (!getSeoulDistrictBySlug(districtSlug)) return name;
   const alias = ENGLISH_NAMES[districtSlug]?.[name.trim()];
   return locale === 'en' && typeof alias === 'string' ? `${alias} · ${name}` : neighborhoodDisplayName(name, locale);
 }
