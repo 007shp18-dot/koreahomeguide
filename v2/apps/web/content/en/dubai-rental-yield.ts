@@ -1,6 +1,6 @@
 import type { EditorialPortfolioRecord } from '../portfolio-types';
 
-const checkedAt = '2026-09-06';
+const checkedAt = '2026-09-07';
 const timestamp = `${checkedAt}T00:00:00.000Z`;
 
 export const DUBAI_RENTAL_YIELD: EditorialPortfolioRecord = Object.freeze({
@@ -52,11 +52,33 @@ Keep the price, acquisition costs, service charges and repair budget fixed. Let 
 
 One additional vacant month removes about AED 5,542 after the associated management-fee saving. Compare properties using the same vacancy and expense definitions. Otherwise a higher advertised percentage may simply reflect fewer costs being counted.
 
+## What if the service-charge bill is higher?
+
+Use the same AED 1,065,000 purchase-cash denominator, AED 70,000 potential rent, 5% management charge on collected rent and AED 3,000 repair budget. Change only vacant months and the annual service-charge assumption:
+
+| Vacant months per year | AED 8,000 service charges | AED 12,000 service charges | AED 18,000 service charges |
+| --- | --- | --- | --- |
+| 0 | 5.21% | 4.84% | 4.27% |
+| 1 | 4.69% | 4.32% | 3.75% |
+| 2 | 4.17% | 3.79% | 3.23% |
+
+Every cell is modeled annual income after these operating costs divided by total purchase cash. These are sensitivity inputs, not market estimates or alternative quotes for one building.
+
+At one vacant month, raising service charges from AED 12,000 to AED 18,000 reduces the modeled yield from 4.32% to 3.75%. The extra AED 6,000 removes approximately 0.56 percentage points of annual yield on the same purchase cash, using unrounded values. A higher advertised gross yield can therefore be outweighed by a larger recurring bill.
+
+Compare two properties in the same table only after substituting their actual purchase cash, collectable rent and approved unit-level charges. Shared assumptions help expose a cost difference; they do not make unlike properties equally risky.
+
 ## Turn the example into a property decision
 
 Before using a seller's yield, request the current lease and rent-payment history, the approved service-charge information and latest unit statement, an itemized management proposal, and a written purchase-cost breakdown. Check whether the rent is already being paid or merely expected from the next tenant. Identify repair, insurance, letting and utility costs that fall to the owner and ensure the budget covers them.
 
 A mortgage requires a separate cash-flow calculation using actual loan payments and fees. An off-plan purchase requires a construction and letting timeline before rental income can begin. Neither fits this completed, unlevered apartment example without further assumptions.
+
+## Continue with the Dubai evidence
+
+Use [Dubai Explore](/ae/dubai/explore/) to examine the released area evidence, and [Dubai Check](/ae/dubai/check/) to put an asking price in context. Area figures cannot establish a particular unit's rent, service charge or condition. The [Dubai purchase guide](/ae/dubai/guide/) provides the next research steps.
+
+Keep the price-comparison result separate from the income calculation: a price supported by area evidence can still produce a weak cash flow when vacancy and owner costs are included.
 
 ## Evidence boundary
 
@@ -66,15 +88,15 @@ This is an AI-assisted educational calculation checked against the two linked DL
   authorName: 'SignedPrice Data Desk',
   reviewedAt: timestamp,
   reviewedBy: 'SignedPrice AI-assisted source and calculation check',
-  publishedAt: timestamp,
+  publishedAt: '2026-09-06T00:00:00.000Z',
   updatedAt: timestamp,
-  relatedHref: null,
+  relatedHref: '/ae/dubai/check/',
   sources: Object.freeze([
     { id: 'dld-sale-registration', kind: 'primary' as const, publisher: 'Dubai Land Department', title: 'Property Sale Registration: fees and service terms', href: 'https://dubailand.gov.ae/en/eservices/property-sale-registration/', checkedAt, publishedAt: null },
     { id: 'dld-service-charge-index', kind: 'primary' as const, publisher: 'Dubai Land Department', title: 'Service Charge Index: approved jointly owned property charges', href: 'https://dubailand.gov.ae/en/eservices/service-charge-index-overview/', checkedAt, publishedAt: null },
   ]),
   evidenceReleaseIds: Object.freeze(['dld-public-source-check-2026-09-06', 'illustrative-dubai-yield-calculation-2026-09-06']),
-  revisionNote: 'First publication: official fee sources checked; illustrative cash flows recalculated; no live market yield asserted.',
+  revisionNote: 'Added vacancy-by-service-charge sensitivity table, recalculated every scenario and linked Dubai evidence tools; original publication date preserved.',
   canonicalHref: '/news/dubai-rental-yield-after-costs/',
   translationGroupId: null,
   infographic: null,

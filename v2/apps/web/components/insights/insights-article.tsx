@@ -20,8 +20,9 @@ const marketActions = {
     { label: 'Compare Singapore areas', href: '/sg/singapore/rankings/' },
   ],
   dubai: [
-    { label: 'Review Dubai coverage', href: '/ae/dubai/' },
-    { label: 'Compare market boundaries', href: '/compare/?market=dubai' },
+    { label: 'Explore Dubai evidence', href: '/ae/dubai/explore/' },
+    { label: 'Check a Dubai price', href: '/ae/dubai/check/' },
+    { label: 'Use the Dubai purchase guide', href: '/ae/dubai/guide/' },
   ],
   global: [
     { label: 'Choose a market', href: '/markets/' },
@@ -32,7 +33,7 @@ const marketActions = {
 export function InsightsArticle({ article }: Readonly<{ article: EditorialArticle }>) {
   const relatedActions = article.marketKey === null ? marketActions.global : marketActions[article.marketKey];
   return (
-    <main className={styles.main}>
+    <main className={styles.main} data-editorial-content-id={`en:${article.slug}`} data-editorial-content-type="market-brief" data-editorial-locale="en" data-editorial-market={article.marketKey === 'seoul' ? 'kr-seoul' : article.marketKey === 'singapore' ? 'sg-singapore' : article.marketKey === 'dubai' ? 'ae-dubai' : 'global'}>
       <nav className={styles.breadcrumb} aria-label="Breadcrumb">
         <Link href="/insights/">Insights</Link><span aria-hidden="true">/</span><span>{editorialMarketLabel(article.marketKey)}</span>
       </nav>
@@ -71,7 +72,7 @@ export function InsightsArticle({ article }: Readonly<{ article: EditorialArticl
         </div>
       </article>
       <nav className={styles.articleActions} aria-label="Related SignedPrice products">
-        {relatedActions.map((action) => <Link href={action.href} key={action.href}>{action.label}</Link>)}
+        {relatedActions.map((action) => <Link href={action.href} key={action.href} data-editorial-event={action.href.includes('/check/') ? 'article_to_check' : action.href.includes('/explore/') ? 'article_to_explore' : undefined}>{action.label}</Link>)}
         <Link href="/insights/">All reports</Link>
       </nav>
     </main>

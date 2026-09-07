@@ -101,6 +101,14 @@ export function EditorialGrowthHome({ model, hrefs }: Readonly<{
     seoulMetric: model.headlineMetric,
   });
   const portfolio = listPortfolioRecords(model.locale);
+  const featuredResearch = [
+    { market: 'kr-seoul', city: 'Seoul', slug: 'seoul-84sqm-under-one-billion-2026', base: '/kr/seoul' },
+    { market: 'sg-singapore', city: 'Singapore', slug: 'singapore-condos-under-1-5-million-2026', base: '/sg/singapore' },
+    { market: 'ae-dubai', city: 'Dubai', slug: 'dubai-rental-yield-after-costs', base: '/ae/dubai' },
+  ].flatMap((item) => {
+    const article = portfolio.find(({ slug }) => slug === item.slug);
+    return article ? [{ ...item, article }] : [];
+  });
   const changedItems = portfolio.filter(({ type }) => type === 'policy-update').slice(0, 2);
   const dataStory = portfolio.find(({ type }) => type === 'data-story') ?? null;
   const guideOrder = ['buy-property-in-korea-as-foreigner', 'read-singapore-private-transactions', 'read-seoul-sale-transactions', 'wolse-vs-jeonse', 'rent-an-apartment-in-korea'];
@@ -135,6 +143,24 @@ export function EditorialGrowthHome({ model, hrefs }: Readonly<{
           ))}
         </ol>
       </section>
+
+      {featuredResearch.length === 0 ? null : <section className={styles.whatChanged} data-home-region="three-city-research" aria-labelledby="home-research-title">
+        <div className={styles.sectionIntro}>
+          <p className={styles.eyebrow}>Seoul · Singapore · Dubai</p>
+          <h2 className={styles.sectionTitle} id="home-research-title">Start with your budget, then check the property</h2>
+        </div>
+        <ol className={styles.contextualActionList}>
+          {featuredResearch.map(({ market, city, article, base }) => <li key={market}
+            data-editorial-content-id={article.id} data-editorial-content-type={article.type}
+            data-editorial-locale={article.locale} data-editorial-market={market}>
+            <span>{city} · {article.updatedAt.slice(0, 10)}</span>
+            <strong>{article.title}</strong><p>{article.deck}</p>
+            <Link href={article.canonicalHref} data-editorial-event="article_open">Read analysis</Link>
+            <Link href={`${base}/explore/`} data-editorial-event="article_to_explore">Explore {city}</Link>
+            <Link href={`${base}/check/`} data-editorial-event="article_to_check">Check a price</Link>
+          </li>)}
+        </ol>
+      </section>}
 
       <section className={styles.whatChanged} data-home-region="changed" aria-labelledby="home-changed-title">
         <div className={styles.sectionIntro}>

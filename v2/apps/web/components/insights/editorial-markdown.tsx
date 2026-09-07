@@ -38,7 +38,14 @@ function inline(source: string): ReactNode[] {
     if (part.startsWith('**') && part.endsWith('**')) return <strong key={index}>{part.slice(2, -2)}</strong>;
     if (part.startsWith('`') && part.endsWith('`')) return <code key={index}>{part.slice(1, -1)}</code>;
     const link = part.match(/^\[([^\]]+)\]\(([^\s)]+)\)$/);
-    if (link && /^(?:https?:\/\/|\/(?!\/)|#)/i.test(link[2]!)) return <a key={index} href={link[2]}>{link[1]}</a>;
+    if (link && /^(?:https?:\/\/|\/(?!\/)|#)/i.test(link[2]!)) {
+      const href = link[2]!;
+      const event = /^\/(?:kr\/seoul|sg\/singapore|ae\/dubai)\/check(?:[/?#]|$)/.test(href)
+        ? 'article_to_check'
+        : /^\/(?:kr\/seoul|sg\/singapore|ae\/dubai)\/explore(?:[/?#]|$)/.test(href)
+          ? 'article_to_explore' : undefined;
+      return <a key={index} href={href} data-editorial-event={event}>{link[1]}</a>;
+    }
     return part;
   });
 }

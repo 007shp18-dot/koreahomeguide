@@ -1,6 +1,7 @@
 import type { ContentLocale, ContentMarketId, ContentType } from '../content/content-types';
 
 export const EDITORIAL_EVENTS = Object.freeze([
+  'article_open',
   'article_complete',
   'article_to_explore',
   'article_to_check',
@@ -22,7 +23,7 @@ export type EditorialEventPayload = Readonly<{
 
 const contentIdentity = /^[a-z]{2}(?:-[A-Z]{2})?:[a-z0-9]+(?:-[a-z0-9]+)*$/u;
 const types = new Set<ContentType>(['news-brief', 'policy-update', 'market-brief', 'data-story', 'guide']);
-const markets = new Set<ContentMarketId>(['kr-seoul', 'sg-singapore']);
+const markets = new Set<ContentMarketId>(['kr-seoul', 'sg-singapore', 'ae-dubai']);
 const destinations = new Set<EditorialDestinationFamily>(['article', 'explore', 'check', 'official-source', 'infographic-data']);
 
 export function createEditorialEvent(event: EditorialEvent, input: Readonly<Record<string, unknown>> & Readonly<{

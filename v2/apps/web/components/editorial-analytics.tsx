@@ -11,6 +11,7 @@ import {
 import type { ContentMarketId, ContentType } from '../lib/content/content-types';
 
 const destinationByEvent: Readonly<Partial<Record<EditorialEvent, EditorialDestinationFamily>>> = Object.freeze({
+  article_open: 'article',
   article_complete: 'article',
   article_to_explore: 'explore',
   article_to_check: 'check',

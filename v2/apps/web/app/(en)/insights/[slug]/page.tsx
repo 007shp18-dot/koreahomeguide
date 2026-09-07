@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 
 import { EditorialGrowthPublicFrame } from '@/components/editorial-growth/editorial-growth-public-shell';
 import { InsightsArticle } from '@/components/insights/insights-article';
@@ -20,6 +20,7 @@ export async function generateMetadata({ params }: EditorialArticlePageProps): P
   const { slug } = await params;
   const article = await getPublishedContentArticle(slug);
   if (article === null) notFound();
+  if (article.canonicalHref && article.canonicalHref !== `/insights/${slug}/`) permanentRedirect(article.canonicalHref);
   const chineseArticle = getChineseArticleForEnglish(article.slug);
   return indexableMetadata({
     path: `/insights/${article.slug}/`,
@@ -38,6 +39,7 @@ export default async function EditorialArticlePage({ params }: EditorialArticleP
   const { slug } = await params;
   const article = await getPublishedContentArticle(slug);
   if (article === null) notFound();
+  if (article.canonicalHref && article.canonicalHref !== `/insights/${slug}/`) permanentRedirect(article.canonicalHref);
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Article',

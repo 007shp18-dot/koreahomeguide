@@ -11,7 +11,7 @@ const base = Object.freeze({
 
 describe('privacy-safe editorial analytics', () => {
   it.each<EditorialEvent>([
-    'article_complete', 'article_to_explore', 'article_to_check',
+    'article_open', 'article_complete', 'article_to_explore', 'article_to_check',
     'policy_source_open', 'infographic_data_open',
   ])('creates the allowlisted %s journey event', (event) => {
     expect(createEditorialEvent(event, base)).toEqual({ event, ...base });
@@ -33,5 +33,10 @@ describe('privacy-safe editorial analytics', () => {
     expect(() => createEditorialEvent('page_view' as EditorialEvent, base)).toThrow(/event/i);
     expect(() => createEditorialEvent('article_complete', { ...base, contentId: '../address' })).toThrow(/content/i);
     expect(() => createEditorialEvent('article_complete', { ...base, locale: 'ko' })).toThrow(/locale/i);
+  });
+
+  it('accepts Dubai journeys and rejects unknown markets', () => {
+    expect(createEditorialEvent('article_open', { ...base, market: 'ae-dubai' })).toMatchObject({ market: 'ae-dubai' });
+    expect(() => createEditorialEvent('article_open', { ...base, market: 'unknown' as typeof base.market })).toThrow(/market/i);
   });
 });

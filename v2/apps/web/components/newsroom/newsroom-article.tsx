@@ -40,7 +40,7 @@ export function NewsroomArticle({ article }: Readonly<{
     : article.marketId === 'sg-singapore'
     ? [{ label: 'Singapore buying and transaction guide', href: '/guides/read-singapore-private-transactions/' }, { label: 'Singapore market analysis', href: '/news/singapore-private-market-quarterly-brief/' }]
     : [{ label: 'Buying property in Korea', href: '/guides/buy-property-in-korea-as-foreigner/' }, { label: 'Comparing Seoul sale transactions', href: '/guides/read-seoul-sale-transactions/' }];
-  const relatedEvent = article.relatedHref?.includes('/check') ? 'article_to_check' : 'article_to_explore';
+  const relatedEvent = article.relatedHref?.includes('/check') ? 'article_to_check' : article.relatedHref?.includes('/explore') ? 'article_to_explore' : 'article_open';
   return <main
     className={styles.article}
     data-editorial-content-id={article.id}

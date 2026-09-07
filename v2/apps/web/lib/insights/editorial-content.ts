@@ -12,6 +12,7 @@ export type EditorialSource = Readonly<{
 }>;
 
 export type EditorialArticle = Readonly<{
+  canonicalHref?: string;
   slug: string;
   marketKey: EditorialMarketKey;
   title: string;

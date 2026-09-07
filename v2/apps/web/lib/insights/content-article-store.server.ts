@@ -3,6 +3,7 @@ import 'server-only';
 import { cache } from 'react';
 
 import { contentDatabase } from '../db/postgres.server';
+import { getPortfolioRecord, listPortfolioRecords } from '../../content/portfolio-manifest';
 import {
   getPublishedContent,
   listPublishedContent,
@@ -24,10 +25,11 @@ import {
   type EditorialStatus,
 } from './editorial-content';
 
-function articleFromPublished(row: PublishedContentArticle): EditorialArticle {
+function articleFromPublished(row: PublishedContentArticle & Readonly<{ canonicalHref?: string | null }>): EditorialArticle {
   return Object.freeze({
     slug: row.slug,
-    marketKey: row.marketId === 'kr-seoul' ? 'seoul' : row.marketId === 'sg-singapore' ? 'singapore' : null,
+    marketKey: row.marketId === 'kr-seoul' ? 'seoul' : row.marketId === 'sg-singapore' ? 'singapore' : row.marketId === 'ae-dubai' ? 'dubai' : null,
+    canonicalHref: row.canonicalHref ?? undefined,
     title: row.title,
     summary: row.deck,
     bodyMarkdown: row.bodyMarkdown,
@@ -48,11 +50,17 @@ export async function listPublishedContentArticles(): Promise<readonly Editorial
   const stored = (await listPublishedContent({ locale: 'en', limit: 200 }))
     .map(articleFromPublished);
   const storedSlugs = new Set(stored.map(({ slug }) => slug));
-  return Object.freeze([...stored, ...STARTER_EDITORIAL_ARTICLES.filter(({ slug }) => !storedSlugs.has(slug))]
+  const portfolio = listPortfolioRecords('en')
+    .filter(({ type, slug }) => (type === 'market-brief' || type === 'data-story') && !storedSlugs.has(slug))
+    .map(articleFromPublished);
+  const knownSlugs = new Set([...storedSlugs, ...portfolio.map(({ slug }) => slug)]);
+  return Object.freeze([...stored, ...portfolio, ...STARTER_EDITORIAL_ARTICLES.filter(({ slug }) => !knownSlugs.has(slug))]
     .sort((left, right) => right.publishedAt.localeCompare(left.publishedAt)));
 }
 
 export const getPublishedContentArticle = cache(async (slug: string): Promise<EditorialArticle | null> => {
+  const portfolio = getPortfolioRecord('en', slug);
+  if (portfolio && (portfolio.type === 'market-brief' || portfolio.type === 'data-story')) return articleFromPublished(portfolio);
   const stored = await getPublishedContent('en', slug);
   return stored === null ? getStarterEditorialArticle(slug) : articleFromPublished(stored);
 });
