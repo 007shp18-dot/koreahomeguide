@@ -144,3 +144,6 @@
   .actions { padding: 20px; }
   .readingColumn { border-color: var(--line); }
 }
+
+.documentHero h1, .sectionHeading h2 { letter-spacing: normal; line-height: 1.2; }
+.guides li > p, .glossary dd, .steps p, .boundary p { font-size: .875rem; }

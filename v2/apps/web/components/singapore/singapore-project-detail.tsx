@@ -1,3 +1,4 @@
+import { singaporeProjectDisplayName } from '../../lib/singapore/project-display-name';
 import { createPropertyScenarioHref } from '../../lib/tools/property-scenario-context';
 import { buildMonthlyResearch, summarizeSizeCohorts } from '../../lib/research/property-research';
 import { MonthlyTransactionResearch, SizeCohortResearch } from '../market-ui/transaction-research';
@@ -35,21 +36,22 @@ export function SingaporeProjectDetail({ model, googleMapsBrowserKey = null }: R
       </section>
     </SingaporePage>
   );
+  const displayName = singaporeProjectDisplayName(model.identity);
   if (model.status === 'insufficient') return (
     <SingaporePage currentHref="/sg/singapore/explore/">
       <div className={styles.insufficientProject}>
         <section className={styles.withheld} data-singapore-project="insufficient" data-product-intro="true">
           <p className={styles.eyebrow}>Singapore · {model.identity.marketSegment}</p>
-          <h1>{model.identity.project}: distribution not published.</h1>
+          <h1>{displayName}: distribution not published.</h1>
           <p>{model.count} reported transactions. At least {model.threshold} are required.</p>
         </section>
-        <div className={styles.insufficientMedia} aria-label={`${model.identity.project} building media`}>
+        <div className={styles.insufficientMedia} aria-label={`${displayName} building media`}>
           <GooglePlacePhoto
             browserKey={googleMapsBrowserKey}
             buildingName={model.identity.project}
             address={`${model.identity.street}, Singapore`}
             registryKey={`sg-project:${model.identity.marketSegment}:${model.identity.project}`}
-            fallback={<ProjectedEntityMedia buildingName={model.identity.project} media={null} evidenceHref="#singapore-source-heading" />}
+            fallback={<ProjectedEntityMedia buildingName={displayName} media={null} evidenceHref="#singapore-source-heading" />}
           />
         </div>
       </div>
@@ -71,15 +73,15 @@ export function SingaporeProjectDetail({ model, googleMapsBrowserKey = null }: R
         <Link href={`/sg/singapore/explore/${model.identity.marketSegment.toLowerCase()}/`}>
           {model.identity.marketSegment}
         </Link>
-        <span>{model.identity.project}</span></nav>}
-        identity={<div className={styles.detailIdentity} data-singapore-project="ready"><p className={styles.eyebrow}>Singapore · {model.identity.marketSegment} · District {model.identity.district}</p><h1>{model.identity.project}</h1><p>{model.identity.street}</p><SingaporeScope activeSegment={model.identity.marketSegment} /><div className={styles.actions}><Link href={model.checkHref}>Check this project price</Link></div></div>}
+        <span>{displayName}</span></nav>}
+        identity={<div className={styles.detailIdentity} data-singapore-project="ready"><p className={styles.eyebrow}>Singapore · {model.identity.marketSegment} · District {model.identity.district}</p><h1>{displayName}</h1><p>{model.identity.street}</p><SingaporeScope activeSegment={model.identity.marketSegment} /><div className={styles.actions}><Link href={model.checkHref}>Check this project price</Link></div></div>}
         metric={<div className={styles.detailMetric}><small>Median price</small><strong>{model.display.medianPriceLabel}</strong><span>{model.display.sampleLabel}</span></div>}
         media={<GooglePlacePhoto
           browserKey={googleMapsBrowserKey}
           buildingName={model.identity.project}
           address={`${model.identity.street}, Singapore`}
           registryKey={`sg-project:${model.identity.marketSegment}:${model.identity.project}`}
-          fallback={<ProjectedEntityMedia buildingName={model.identity.project} media={null} evidenceHref="#project-summary-heading" />}
+          fallback={<ProjectedEntityMedia buildingName={displayName} media={null} evidenceHref="#project-summary-heading" />}
         />}
         evidence={<><section className={styles.section} aria-labelledby="project-summary-heading">
         <p className={styles.sectionLabel}>01 / Project distribution</p>
@@ -93,8 +95,8 @@ export function SingaporeProjectDetail({ model, googleMapsBrowserKey = null }: R
       <MonthlyTransactionResearch months={months} />
       <section className={styles.section} aria-labelledby="project-size-heading"><h2 id="project-size-heading">Compare prices by home size</h2><p>Same project and reporting period. Property type, sale type, area basis and tenure stay separate. A cohort needs at least five transactions to publish its median.</p><SizeCohortResearch rows={sizes} currency="SGD" /></section>
       <PropertyScenarioCalculator key={model.identity.id} price={model.identity.medianPriceSgd} currency="SGD" analytics={{market:'sg-singapore',surface:'property-detail'}} />
-      <Link href={createPropertyScenarioHref({locale:'en',market:'sg-singapore',currency:'SGD',entity:model.identity.id,propertyName:model.identity.project,transaction:'sale',price:model.identity.medianPriceSgd,returnTo:`/sg/singapore/explore/${model.identity.marketSegment.toLowerCase()}/${model.identity.id}/`})}>Open calculator</Link>
-      <section className={styles.section} aria-labelledby="project-profile-heading"><h2 id="project-profile-heading">Project profile</h2><dl className={styles.stats}><div className={styles.stat}><dt>Street</dt><dd>{model.identity.street}</dd></div><div className={styles.stat}><dt>Tenure in reported records</dt><dd>{model.identity.tenures.join(' · ')}</dd></div><div className={styles.stat}><dt>Property types</dt><dd>{[...new Set(model.transactions.map((row) => row.propertyTypeLabel))].join(' · ')}</dd></div></dl><Link href={`/sg/singapore/explore/?q=${encodeURIComponent(model.identity.project)}&project=${encodeURIComponent(model.identity.id)}`}>View this project on the map</Link></section>
+      <Link href={createPropertyScenarioHref({locale:'en',market:'sg-singapore',currency:'SGD',entity:model.identity.id,propertyName:displayName,transaction:'sale',price:model.identity.medianPriceSgd,returnTo:`/sg/singapore/explore/${model.identity.marketSegment.toLowerCase()}/${model.identity.id}/`})}>Open calculator</Link>
+      <section className={styles.section} aria-labelledby="project-profile-heading"><h2 id="project-profile-heading">Project profile</h2><dl className={styles.stats}><div className={styles.stat}><dt>Street</dt><dd>{model.identity.street}</dd></div><div className={styles.stat}><dt>Tenure in reported records</dt><dd>{model.identity.tenures.join(' · ')}</dd></div><div className={styles.stat}><dt>Property types</dt><dd>{[...new Set(model.transactions.map((row) => row.propertyTypeLabel))].join(' · ')}</dd></div></dl><Link href={`/sg/singapore/explore/?q=${encodeURIComponent(displayName)}&project=${encodeURIComponent(model.identity.id)}`}>View this project on the map</Link></section>
       <section className={styles.section} aria-labelledby="transaction-heading">
         <p className={styles.sectionLabel}>02 / Recent reported transactions</p>
         <h2 id="transaction-heading">Reported sales, unit sizes and floors.</h2>

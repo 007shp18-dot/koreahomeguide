@@ -88,3 +88,5 @@
 
 .detailMain, .detailRail { border: 0; border-radius: 0; }
 .detailMain > div > section, .detailRail > section { border: 0; border-radius: 0; box-shadow: none; }
+
+.identity h1 { letter-spacing: normal; line-height: 1.2; }
