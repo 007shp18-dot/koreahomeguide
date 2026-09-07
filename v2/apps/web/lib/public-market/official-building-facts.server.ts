@@ -1,4 +1,5 @@
 import 'server-only';
+import { SEOUL_RENT_CHECK_DISTRICTS } from '@signedprice/korea-rent';
 
 export type OfficialBuildingFacts = Readonly<{
   status: 'ready';
@@ -174,14 +175,20 @@ export async function loadOfficialBuildingFacts(input: LoaderInput): Promise<Off
     pageNo: '1',
   });
   if (listBody === null) return Object.freeze({ status: 'unavailable', reason: 'provider_unavailable' });
+  const districtPrefix = SEOUL_RENT_CHECK_DISTRICTS.find(district => district.lawdCd === input.districtLawdCd)?.nameKo.replace(/구$/, '') ?? '';
+  const localCanonicalName = (name: string) => {
+    const canonical = canonicalApartmentName(name);
+    return districtPrefix.length >= 2 && canonical.startsWith(districtPrefix) && canonical.length >= districtPrefix.length + 4
+      ? canonical.slice(districtPrefix.length) : canonical;
+  };
   const wantedName = normalizedName(input.officialName);
-  const wantedCanonicalName = canonicalApartmentName(input.officialName);
+  const wantedCanonicalName = localCanonicalName(input.officialName);
   const matches = itemArray(listBody).filter((item) => {
     const kaptName = text(item.kaptName);
     const bjdCode = text(item.bjdCode);
     return kaptName !== null && (
       normalizedName(kaptName) === wantedName
-      || (wantedCanonicalName.length >= 4 && canonicalApartmentName(kaptName) === wantedCanonicalName)
+      || (wantedCanonicalName.length >= 4 && localCanonicalName(kaptName) === wantedCanonicalName)
     )
       && bjdCode !== null && bjdCode.startsWith(input.districtLawdCd);
   });
@@ -205,7 +212,7 @@ export async function loadOfficialBuildingFacts(input: LoaderInput): Promise<Off
   if (basicCode !== kaptCode || bjdCode !== listedBjdCode || legalAddress === null
     || aptName === null || !(
       normalizedName(aptName) === wantedName
-      || canonicalApartmentName(aptName) === wantedCanonicalName
+      || localCanonicalName(aptName) === wantedCanonicalName
     )
     || !legalAddress.includes(input.neighborhoodName)) {
     return Object.freeze({ status: 'unavailable', reason: 'identity_mismatch' });

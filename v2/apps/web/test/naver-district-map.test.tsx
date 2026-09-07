@@ -188,7 +188,7 @@ describe('NAVER district map', () => {
     );
   });
 
-  it('builds a compact building price label and keeps full details in the linked panel', () => {
+  it('builds a price-free building marker with an accessible name', () => {
     expect(buildNaverBuildingMarkerContent({
       id: 'tower',
       title: '<Evidence Tower>',
@@ -200,7 +200,7 @@ describe('NAVER district map', () => {
       sampleLabel: '8 filings',
       selected: true,
     })).toBe(
-      '<div class="spMapBuildingBubble spMapBuildingBubbleSelected"><strong>₩1.2B &amp; up</strong></div>',
+      '<div class="spMapBuildingBubble spMapBuildingBubbleSelected" role="img" aria-label="&lt;Evidence Tower&gt;"><span aria-hidden="true"></span></div>',
     );
   });
 
@@ -653,7 +653,7 @@ describe('NAVER district map', () => {
       position: new LatLng(37.501, 127.031),
       title: 'Evidence Tower',
       icon: {
-        content: '<div class="spMapBuildingBubble"><strong>—</strong></div>',
+        content: '<div class="spMapBuildingBubble" role="img" aria-label="Evidence Tower"><span aria-hidden="true"></span></div>',
       },
     });
     expect(mounted.unavailableBuildingIds).toEqual([]);

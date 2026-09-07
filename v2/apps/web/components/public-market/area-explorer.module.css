@@ -2031,3 +2031,10 @@
 
 .mapEvidenceDisclosure > summary span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .mapEvidenceDisclosure > summary strong { white-space: nowrap; }
+
+.mapSelectedIdentity { position: absolute; bottom: 14px; right: 14px; z-index: 5; max-width: calc(100% - 90px); padding: 10px 14px; border-radius: 8px; border: 1px solid #cbd5e1; background: white; color: #243b64; font-size: 14px; font-weight: 650; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; }
+
+.railEvidenceDisclosure { border-bottom: 1px solid #e2e8f0; padding: 12px; }
+.railEvidenceDisclosure summary { display: grid; gap: 4px; cursor: pointer; font-size: 13px; }
+.railEvidenceDisclosure summary span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.railEvidenceDisclosure summary strong { white-space: nowrap; font-variant-numeric: tabular-nums; }

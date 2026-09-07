@@ -724,3 +724,5 @@
   .main .identitySummary { grid-column: 1; grid-row: 2; padding: 24px 20px; }
   .main .identityHero > :first-child { grid-column: 1; grid-row: 1; min-height: 0; }
 }
+
+.mockupRail > strong { min-width: 0; font-size: clamp(20px, 2vw, 26px); white-space: nowrap; overflow-wrap: normal; overflow-x: auto; font-variant-numeric: tabular-nums; }

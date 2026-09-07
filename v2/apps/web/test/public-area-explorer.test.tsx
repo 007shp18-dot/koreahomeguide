@@ -635,15 +635,15 @@ it('shows located buildings on the map without publishing a suppressed price', (
   expect(isIndividualMapBuilding({ ...building, latitude: null })).toBe(false);
 });
 
-it('uses selected building evidence in the map summary instead of the district price', () => {
+it('shows selected building identity on the map without price labels', () => {
   const model = readyModel();
   const buildings = model.buildingAvailability.status === 'ready' ? model.buildingAvailability.buildings : model.buildingAvailability.fallbackBuildings;
   const building = buildings.find(row => row.id === 'gangnam-evidence-tower')!;
   const markup = renderToStaticMarkup(createElement(AreaExplorer, { model, initialSelection: {
     market: 'kr', transaction: 'jeonse', district: 'gangnam-gu', neighborhood: 'yeoksam-dong', buildingId: building.id,
   }}));
-  const summary = markup.match(/<summary data-map-evidence="selected-building"[\s\S]*?<\/summary>/)?.[0];
+  const summary = markup.match(/<div data-map-evidence="selected-building"[\s\S]*?<\/div>/)?.[0];
   expect(summary).toBeDefined();
   expect(summary).toContain(building.name);
-  expect(summary).toContain(building.medianLabel);
+  expect(summary).not.toContain(building.medianLabel);
 });

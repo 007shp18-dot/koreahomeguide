@@ -1,0 +1,276 @@
+{
+  "scope": "Installed full snapshots; DB projection inventory audited separately. Bounds/consistency checks do not establish real-world address accuracy.",
+  "seoul": {
+    "rental_inventory": 48999,
+    "sale_buildings": 22720,
+    "union_buildings": 57915,
+    "sale_only_buildings_not_in_rent_inventory": 8916,
+    "rent_inventory_missing_evidence": 0,
+    "duplicate_inventory_ids": {},
+    "duplicate_sale_ids": {},
+    "numeric_lot_names": 8542,
+    "name_collisions_same_neighborhood": 1006,
+    "sale_rent_identity_mismatches": [],
+    "published_cohort_issues": [],
+    "period": "2026-02/2026-08",
+    "central_park": [
+      {
+        "buildingId": "yongsan-gu-1nt9qy5",
+        "cohorts": [
+          {
+            "areaBand": "all",
+            "price": {
+              "n": 2,
+              "published": false
+            }
+          },
+          {
+            "areaBand": "under-40",
+            "price": {
+              "n": 2,
+              "published": false
+            }
+          }
+        ],
+        "districtSlug": "yongsan-gu",
+        "housingType": "apartment",
+        "neighborhoodId": "yongsan-gu-dong-151gax7",
+        "neighborhoodName": "한강로1가",
+        "officialName": "센트럴파크",
+        "recentSales": [
+          {
+            "areaSqm": 27.82,
+            "buildYear": 2021,
+            "filedMonth": "2026-02",
+            "floor": 2,
+            "priceWon": 740000000
+          },
+          {
+            "areaSqm": 29.84,
+            "buildYear": 2021,
+            "filedMonth": "2026-02",
+            "floor": 4,
+            "priceWon": 698000000
+          }
+        ]
+      },
+      {
+        "buildingId": "yongsan-gu-htazbv",
+        "cohorts": [
+          {
+            "areaBand": "all",
+            "price": {
+              "chg3m": 5.9,
+              "max": 5050000000,
+              "med": 3630000000,
+              "min": 3260000000,
+              "n": 33,
+              "p25": 3500000000,
+              "p75": 3985000000,
+              "published": true
+            }
+          },
+          {
+            "areaBand": "85-plus",
+            "price": {
+              "chg3m": 5.9,
+              "max": 5050000000,
+              "med": 3630000000,
+              "min": 3260000000,
+              "n": 33,
+              "p25": 3500000000,
+              "p75": 3985000000,
+              "published": true
+            }
+          }
+        ],
+        "districtSlug": "yongsan-gu",
+        "housingType": "apartment",
+        "neighborhoodId": "yongsan-gu-dong-jylw1l",
+        "neighborhoodName": "한강로3가",
+        "officialName": "센트럴파크",
+        "recentSales": [
+          {
+            "areaSqm": 102.86,
+            "buildYear": 2020,
+            "filedMonth": "2026-07",
+            "floor": 20,
+            "priceWon": 3525000000
+          },
+          {
+            "areaSqm": 114.89,
+            "buildYear": 2020,
+            "filedMonth": "2026-07",
+            "floor": 5,
+            "priceWon": 3700000000
+          },
+          {
+            "areaSqm": 102.86,
+            "buildYear": 2020,
+            "filedMonth": "2026-07",
+            "floor": 32,
+            "priceWon": 3590000000
+          },
+          {
+            "areaSqm": 92.92,
+            "buildYear": 2020,
+            "filedMonth": "2026-07",
+            "floor": 22,
+            "priceWon": 3350000000
+          },
+          {
+            "areaSqm": 114.5,
+            "buildYear": 2020,
+            "filedMonth": "2026-07",
+            "floor": 42,
+            "priceWon": 4000000000
+          },
+          {
+            "areaSqm": 114.89,
+            "buildYear": 2020,
+            "filedMonth": "2026-06",
+            "floor": 21,
+            "priceWon": 3900000000
+          },
+          {
+            "areaSqm": 102.86,
+            "buildYear": 2020,
+            "filedMonth": "2026-06",
+            "floor": 27,
+            "priceWon": 3500000000
+          },
+          {
+            "areaSqm": 114.5,
+            "buildYear": 2020,
+            "filedMonth": "2026-06",
+            "floor": 33,
+            "priceWon": 4120000000
+          },
+          {
+            "areaSqm": 114.5,
+            "buildYear": 2020,
+            "filedMonth": "2026-06",
+            "floor": 28,
+            "priceWon": 4020000000
+          },
+          {
+            "areaSqm": 102.86,
+            "buildYear": 2020,
+            "filedMonth": "2026-06",
+            "floor": 32,
+            "priceWon": 3800000000
+          },
+          {
+            "areaSqm": 114.89,
+            "buildYear": 2020,
+            "filedMonth": "2026-05",
+            "floor": 37,
+            "priceWon": 3985000000
+          },
+          {
+            "areaSqm": 114.5,
+            "buildYear": 2020,
+            "filedMonth": "2026-05",
+            "floor": 5,
+            "priceWon": 3630000000
+          },
+          {
+            "areaSqm": 114.89,
+            "buildYear": 2020,
+            "filedMonth": "2026-05",
+            "floor": 5,
+            "priceWon": 3510000000
+          },
+          {
+            "areaSqm": 102.86,
+            "buildYear": 2020,
+            "filedMonth": "2026-05",
+            "floor": 8,
+            "priceWon": 3450000000
+          },
+          {
+            "areaSqm": 102.86,
+            "buildYear": 2020,
+            "filedMonth": "2026-05",
+            "floor": 22,
+            "priceWon": 3260000000
+          },
+          {
+            "areaSqm": 102.86,
+            "buildYear": 2020,
+            "filedMonth": "2026-05",
+            "floor": 10,
+            "priceWon": 3500000000
+          },
+          {
+            "areaSqm": 114.89,
+            "buildYear": 2020,
+            "filedMonth": "2026-05",
+            "floor": 6,
+            "priceWon": 3400000000
+          },
+          {
+            "areaSqm": 102.86,
+            "buildYear": 2020,
+            "filedMonth": "2026-05",
+            "floor": 9,
+            "priceWon": 3300000000
+          },
+          {
+            "areaSqm": 114.5,
+            "buildYear": 2020,
+            "filedMonth": "2026-05",
+            "floor": 39,
+            "priceWon": 4150000000
+          },
+          {
+            "areaSqm": 135.38,
+            "buildYear": 2020,
+            "filedMonth": "2026-05",
+            "floor": 26,
+            "priceWon": 4900000000
+          }
+        ]
+      }
+    ]
+  },
+  "singapore": {
+    "projects": 3862,
+    "transactions": 133942,
+    "duplicate_project_ids": {},
+    "orphan_transaction_project_ids": 0,
+    "count_or_median_mismatches": [],
+    "coordinate_groups": {
+      "consistent": 3403,
+      "missing": 459
+    },
+    "shared_coordinate_groups": 19,
+    "period": {
+      "from": "2021-08",
+      "to": "2026-08"
+    }
+  },
+  "dubai": {
+    "areas": 46,
+    "segments": 53,
+    "duplicate_ids": {},
+    "price_or_reference_issues": [],
+    "area_only_no_building_coordinates": true,
+    "coverage": {
+      "qualifyingSaleRows": 32506,
+      "mappedSaleRows": 32011,
+      "excludedSaleRows": 119415,
+      "unmappedSaleRows": 495,
+      "qualifyingRentRows": 182025,
+      "excludedRentRows": 131671,
+      "unmappedRentRows": 37,
+      "verifiedAliases": 62,
+      "publishedAreas": 46,
+      "publishedSegments": 53
+    },
+    "period": {
+      "from": "2026-06-08",
+      "to": "2026-09-05"
+    }
+  }
+}
