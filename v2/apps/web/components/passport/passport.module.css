@@ -35,7 +35,7 @@
 .cardTitle h2{margin:4px 0 0;font-size:25px}
 .metricRow,.matchRow,.evidenceRow,.scopeRow{min-width:0;padding:17px 0;border-bottom:1px solid #e2e8f0}
 .metricRow{display:grid;align-content:start;gap:6px}
-.metricRow strong{white-space:nowrap;font-variant-numeric:tabular-nums;font-size:clamp(18px,2vw,25px);max-width:100%;overflow-x:auto}
+.metricRow strong{white-space:nowrap;font-variant-numeric:tabular-nums;font-size:clamp(18px,2vw,25px);line-height:1.25;max-width:100%;overflow-x:auto}
 .metricRow small,.evidenceRow small,.scopeRow small{color:#64748b;font-size:12px;line-height:1.45}
 .matchRow>strong{display:block;margin:8px 0;font-size:32px}
 .matchRow p{color:#536176;font-size:14px;line-height:1.6}
