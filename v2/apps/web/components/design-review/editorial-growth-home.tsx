@@ -33,6 +33,7 @@ export function EditorialGrowthHome({ model }: Readonly<{
     <PassportEntry locale={model.locale} />
     <section className={styles.section} data-home-region="markets" aria-labelledby="home-markets-title">
       <h2 id="home-markets-title">{copy.markets}</h2>
+      <p>{model.locale === 'en' ? 'Still choosing an area? Explore prices. Already have a property in mind? Check its asking price.' : '还在选择区域？浏览成交价格。已有目标房产？核对报价。'}</p>
       <ol className={styles.marketGrid}>
         {markets.map(market => <li className={styles.marketCard} key={market.id} data-market-id={market.id} data-contextual-action={market.id}>
           <div className={styles.photo}>
@@ -43,6 +44,9 @@ export function EditorialGrowthHome({ model }: Readonly<{
             <p>{market.summary}</p>
             <Link href={market.primaryAction.href} className={styles.marketAction} data-primary-action="explore" aria-label={`${market.primaryAction.label} ${market.city}`}>
               {market.primaryAction.label}<span aria-hidden="true">↗</span>
+            </Link>
+            <Link href={market.id === 'kr-seoul' ? '/kr/seoul/check/' : market.id === 'sg-singapore' ? '/sg/singapore/check/' : '/ae/dubai/check/'} className={styles.marketAction} aria-label={`${model.locale === 'en' ? 'Check an asking price in' : '核对报价'} ${market.city}`}>
+              {model.locale === 'en' ? 'Check an asking price' : '核对报价'}
             </Link>
           </div>
         </li>)}

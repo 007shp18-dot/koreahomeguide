@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { BuyerNextSteps } from '../buyer-next-steps';
 
 import {
   calculateDubaiCheck,
@@ -146,5 +147,6 @@ export function DubaiCheckWorkspace({
         {resolved.kind === 'unknown' ? <div className={styles.checkEmpty}><p className={styles.eyebrow}>Result</p><h2>This area and cohort are not published.</h2><p>No other area’s distribution has been substituted.</p></div> : null}
       </aside>
     </div>
+    <BuyerNextSteps market="dubai" />
   </div>;
 }

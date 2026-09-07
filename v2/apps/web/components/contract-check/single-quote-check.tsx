@@ -1,4 +1,5 @@
 'use client';
+import { BuyerNextSteps } from '../buyer-next-steps';
 import { ResultLinkCopy } from './result-link-copy';
 import { CheckBuildingSearch } from './check-building-search';
 
@@ -196,6 +197,7 @@ export function SingleQuoteCheckWorkspace({ model, locale = 'en', entityContext 
           <Link href={`${locale === 'ko' ? '/ko' : ''}/kr/seoul/explore/`}>{c.explore}</Link>
           <Link href="/kr/seoul/guide/">{c.guide}</Link>
         </nav>
+        <BuyerNextSteps market="seoul" locale={locale} />
       </main>
       <footer className={styles.footer}><p>{c.reference}</p></footer>
     </div>
