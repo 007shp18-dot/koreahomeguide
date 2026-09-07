@@ -72,6 +72,7 @@ export function buildSingaporeMapCoverage(projects: readonly Project[], anchorPr
     points.push({ id: `project-${project.id}`, title: `${project.name} · ${project.street}`,
       label: project.name, ...project.location!, selected: project.id === selectedId });
   }
+  const selectedMissing = projects.find(project => project.id === selectedId && !located(project));
   const locatedCount = points.length;
   const unplacedGroups: { district: string; count: number }[] = [];
   let areaOnly = 0;
@@ -79,7 +80,7 @@ export function buildSingaporeMapCoverage(projects: readonly Project[], anchorPr
     const anchor = anchors.get(district);
     if (anchor === undefined) { unplacedGroups.push({ district, count }); continue; }
     points.push({ id: `district-${district}`, title: `District ${district} · ${count} projects · approximate area, not project locations`,
-      label: `D${district} · ${count} · Area only`, kind: 'area', count,
+      label: `D${district} · ${count} · Area only`, kind: 'area', count, selected: selectedMissing?.district === district,
       latitude: anchor.lat / anchor.n, longitude: anchor.lng / anchor.n });
     areaOnly += count;
   }

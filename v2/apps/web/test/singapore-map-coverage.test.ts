@@ -28,6 +28,15 @@ describe('Singapore complete-result map coverage', () => {
     expect(coverage.points.find((p) => p.kind === 'area')?.title).toContain('District 01');
   });
 
+  it('focuses only the approximate district when the selected project has no coordinate', () => {
+    const known = { id: 'known', name: 'Known', street: 'One', district: '15', location: { latitude: 1.31, longitude: 103.9 } };
+    const missing = { ...known, id: 'missing', name: 'Missing', location: null };
+    const coverage = buildSingaporeMapCoverage([known, missing], [known], 'missing');
+    expect(coverage.points.filter(p => p.selected)).toMatchObject([{ id: 'district-15', kind: 'area' }]);
+    expect(coverage.points.some(p => p.id === 'project-missing')).toBe(false);
+    expect(coverage.located).toBe(1);
+  });
+
   it('does not borrow another district location and retains a count when no anchor is known', () => {
     const missing = { id: 'missing', name: 'Missing', street: '', district: '28', segment: 'OCR' as const, location: null };
     const known = { ...missing, id: 'known', district: '01', location: { latitude: 1.28, longitude: 103.85 } };
