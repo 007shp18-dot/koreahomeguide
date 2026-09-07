@@ -1,6 +1,7 @@
 'use client';
 
 import { track } from '@vercel/analytics/react';
+import { sendGoogleEvent } from '../lib/analytics/google-events';
 import { useEffect } from 'react';
 
 import {
@@ -38,6 +39,7 @@ function sendEditorialEvent(marker: HTMLElement) {
       ...(destinationByEvent[event] === undefined ? {} : { destinationFamily: destinationByEvent[event] }),
     });
     const { event: eventName, ...properties } = payload;
+    sendGoogleEvent(eventName, properties);
     track(eventName, properties);
   } catch {
     // Invalid or incomplete DOM metadata is never forwarded to analytics.
