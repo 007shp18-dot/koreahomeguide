@@ -9,6 +9,7 @@ export type DubaiExploreState = Readonly<{
   yieldMinimumPct: number | null;
   page: number;
   selectedArea: string | null;
+  selectedProject?: string | null;
 }>;
 
 export type DubaiExploreFilterState = Pick<
@@ -60,6 +61,7 @@ export function parseDubaiExploreState(
       && minimumRatio >= 0 && minimumRatio <= 100 ? minimumRatio : null,
     page: Number.isSafeInteger(page) && page >= 1 ? page : 1,
     selectedArea,
+    selectedProject: typeof query.project === 'string' && /^\d+-(?:apartment|villa)-(?:ready|off-plan)$/.test(query.project) ? query.project : null,
   });
 }
 
@@ -100,6 +102,7 @@ export function buildDubaiExploreHref(state: DubaiExploreState): string {
   }
   if (state.page > 1) query.set('page', String(state.page));
   if (state.selectedArea !== null) query.set('area', state.selectedArea);
+  if (state.selectedArea !== null && state.selectedProject) query.set('project', state.selectedProject);
   const serialized = query.toString();
   return `/ae/dubai/explore/${serialized === '' ? '' : `?${serialized}`}`;
 }

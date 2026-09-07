@@ -19,6 +19,8 @@ import type { DubaiExploreModel } from '../../lib/dubai/route-types';
 import { GooglePlaceMap, type GoogleMarketMapPoint } from '../maps/google-place-map';
 import { MarketExploreShell } from '../market-ui/market-shell';
 import styles from './dubai-research.module.css';
+import type { DubaiProjectEvidence } from '../../lib/dubai/project-evidence';
+import { selectedResultPage } from '../../lib/navigation/selected-result-page';
 
 const unavailableModel = Object.freeze({
   status: 'unavailable' as const,
@@ -28,11 +30,6 @@ const integer = new Intl.NumberFormat('en-AE', { maximumFractionDigits: 0 });
 const money = (value: number) => `AED\u00a0${integer.format(value)}`;
 const moneyPerSqm = (value: number) => `${money(value)}/m²`;
 const moneyPerYear = (value: number) => `${money(value)}/year`;
-
-function compactMoney(value: number): string {
-  if (value >= 1_000_000) return `AED ${(value / 1_000_000).toFixed(2).replace(/0+$/u, '').replace(/\.$/u, '')}M`;
-  return `AED ${Math.round(value / 1_000)}K`;
-}
 
 function CuratedDubaiExplorer({
   browserKey,
@@ -125,6 +122,8 @@ export function DubaiExplorer({
   initialBudgetMaximumAed = null,
   initialYieldMinimumPct = null,
   initialPage = 1,
+  projects = [],
+  initialProjectId = null,
 }: Readonly<{
   browserKey: string | null;
   model?: DubaiExploreModel;
@@ -135,6 +134,8 @@ export function DubaiExplorer({
   initialBudgetMaximumAed?: number | null;
   initialYieldMinimumPct?: number | null;
   initialPage?: number;
+  projects?: readonly DubaiProjectEvidence[];
+  initialProjectId?: string | null;
 }>) {
   const [query, setQuery] = useState(initialQuery);
   const deferredQuery = useDeferredValue(query);
@@ -144,6 +145,8 @@ export function DubaiExplorer({
   const [budgetMaximumAed, setBudgetMaximumAed] = useState(initialBudgetMaximumAed);
   const [yieldMinimumPct, setYieldMinimumPct] = useState(initialYieldMinimumPct);
   const [page, setPage] = useState(initialPage);
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(initialProjectId);
+  const selectArea = useCallback((slug: string | null) => { setSelectedArea(slug); setSelectedProjectId(null); }, []);
   const results = useMemo(() => filterDubaiExploreResults(
     model.status === 'ready' ? model.areas : [], {
       query: deferredQuery,
@@ -154,16 +157,18 @@ export function DubaiExplorer({
     },
   ), [budgetMaximumAed, deferredQuery, housing, model, stage, yieldMinimumPct]);
   const pageCount = Math.max(1, Math.ceil(results.length / DUBAI_EXPLORE_PAGE_SIZE));
-  const activePage = Math.min(Math.max(1, page), pageCount);
+  const activePage = selectedResultPage(results.map(({ area }) => area.slug), selectedArea, page, DUBAI_EXPLORE_PAGE_SIZE);
   const visible = useMemo(() => results.slice(
     (activePage - 1) * DUBAI_EXPLORE_PAGE_SIZE,
     activePage * DUBAI_EXPLORE_PAGE_SIZE,
   ), [activePage, results]);
   const selected = results.find(({ area }) => area.slug === selectedArea);
+  const projectResults = useMemo(() => projects.filter(project => project.housing === housing && project.stage === stage), [projects, housing, stage]);
+  const selectedProject = projectResults.find(project => project.id === selectedProjectId && project.areaSlug === selected?.area.slug);
   const mapPoints = useMemo<readonly GoogleMarketMapPoint[]>(() => visible.map((result) => ({
     id: result.area.slug,
-    title: `${result.area.name} · ${housing} · ${stage}`,
-    label: compactMoney(result.sale.medianPriceAed),
+    title: result.area.name,
+    label: result.area.name,
     address: `${result.area.name}, Dubai, United Arab Emirates`,
     selected: result.area.slug === selectedArea,
   })), [housing, selectedArea, stage, visible]);
@@ -177,12 +182,13 @@ export function DubaiExplorer({
       budgetMaximumAed,
       yieldMinimumPct,
       page: activePage,
-      selectedArea,
+      selectedArea: selected?.area.slug ?? null,
+      selectedProject: selectedProject?.id ?? null,
     });
     if (`${window.location.pathname}${window.location.search}` !== href) {
       window.history.replaceState(null, '', href);
     }
-  }, [activePage, budgetMaximumAed, housing, model.status, query, selectedArea, stage, yieldMinimumPct]);
+  }, [activePage, budgetMaximumAed, housing, model.status, query, selectedArea, selected, selectedProject, stage, yieldMinimumPct]);
 
   if (model.status === 'unavailable') return <CuratedDubaiExplorer
     browserKey={browserKey}
@@ -260,7 +266,7 @@ export function DubaiExplorer({
         </header>
         <div className={styles.areaResults} aria-live="polite" aria-busy={query !== deferredQuery}>
           {visible.map(({ area, segment, sale }) => <article key={area.id} data-selected={area.slug === selectedArea}>
-            <button type="button" aria-pressed={area.slug === selectedArea} onClick={() => setSelectedArea((current) => current === area.slug ? null : area.slug)}>
+            <button type="button" aria-pressed={area.slug === selectedArea} onClick={() => selectArea(selectedArea === area.slug ? null : area.slug)}>
               <span><strong title={area.name}>{area.name}</strong><small>{housing === 'apartment' ? 'Apartment' : 'Villa'} · {stage === 'ready' ? 'Ready' : 'Off-Plan'}</small></span>
             </button>
             <dl className={styles.areaMetrics}>
@@ -268,8 +274,18 @@ export function DubaiExplorer({
               <div><dt>Median AED/m²</dt><dd>{moneyPerSqm(sale.medianPricePerSqmAed)}</dd></div>
               <div><dt>Registered sales</dt><dd>{sale.n.toLocaleString('en')}</dd></div>
               <div><dt>Median annual rent</dt><dd>{moneyPerYear(segment.rent.medianAnnualRentAed)}</dd></div>
-              <div><dt>Estimated gross rent-to-price ratio</dt><dd>{stage === 'ready' && segment.readyGrossYieldPct !== null ? `${segment.readyGrossYieldPct.toFixed(1)}%` : 'Not shown for Off-Plan'}</dd></div>
+              <div><dt>Estimated gross rent-to-price ratio</dt><dd>{stage === 'ready' && segment.readyGrossYieldPct !== null ? `${segment.readyGrossYieldPct.toFixed(1)}%` : stage === 'off-plan' ? 'Not shown for Off-Plan' : 'Not published'}</dd></div>
             </dl>
+            {projectResults.some(project => project.areaSlug === area.slug) ? <details className={styles.projectPrices}>
+              <summary>Project prices · {projectResults.filter(project => project.areaSlug === area.slug).length}</summary>
+              <p>Partial project coverage. Projects with at least 30 sales · {model.context.comparisonPeriod.from}–{model.context.comparisonPeriod.to}</p>
+              <div>{projectResults.filter(project => project.areaSlug === area.slug).map(project => <button
+                key={project.id} type="button" aria-pressed={selectedProject?.id === project.id}
+                onClick={() => { setSelectedArea(area.slug); setSelectedProjectId(project.id); }}>
+                <span><strong title={project.name}>{project.name}</strong><small>{project.n.toLocaleString('en')} sales</small></span>
+                <strong>{money(project.medianPriceAed)}</strong>
+              </button>)}</div>
+            </details> : null}
             {area.href === null
               ? <span className={styles.unavailableLink}>Area page unavailable for this release</span>
               : <Link href={area.href}>View area prices</Link>}
@@ -285,13 +301,15 @@ export function DubaiExplorer({
       </section>}
       spatial={<section className={styles.evidenceMap} aria-labelledby="dubai-area-map">
         <header><div><h2 id="dubai-area-map">Area locations</h2><p>{visible.length.toLocaleString('en')} areas on this page · area summaries only</p></div></header>
-        <GooglePlaceMap market="dubai" browserKey={browserKey} points={mapPoints} onSelectPoint={setSelectedArea} showAddressSearch={false} />
+        <GooglePlaceMap market="dubai" browserKey={browserKey} points={mapPoints} onSelectPoint={selectArea} showAddressSearch={false} />
         {selected ? <aside className={styles.mapSelection}>
-          <button type="button" onClick={() => setSelectedArea(null)} aria-label="Close area preview">Close</button>
-          <h3 title={selected.area.name}>{selected.area.name}</h3>
+          <button type="button" onClick={() => selectArea(null)} aria-label="Close area preview">Close</button>
+          <h3 title={selectedProject?.name ?? selected.area.name}>{selectedProject?.name ?? selected.area.name}</h3>
+          {selectedProject ? <p>{selected.area.name} · Area location only</p> : null}
           <p>{housing === 'apartment' ? 'Apartment' : 'Villa'} · {stage === 'ready' ? 'Ready' : 'Off-Plan'}</p>
-          <strong>{money(selected.sale.medianPriceAed)}</strong>
-          <span>{moneyPerSqm(selected.sale.medianPricePerSqmAed)} · {selected.sale.n.toLocaleString('en')} registered sales</span>
+          <strong>{money(selectedProject?.medianPriceAed ?? selected.sale.medianPriceAed)}</strong>
+          <span>{moneyPerSqm(selectedProject?.medianPricePerSqmAed ?? selected.sale.medianPricePerSqmAed)} · {(selectedProject?.n ?? selected.sale.n).toLocaleString('en')} registered sales</span>
+          {selectedProject ? <span>DLD project {selectedProject.projectNumber} · {model.context.comparisonPeriod.from}–{model.context.comparisonPeriod.to}</span> : null}
           {selected.area.href === null ? null : <Link href={selected.area.href}>View area prices</Link>}
         </aside> : null}
         <p className={styles.mapDisclosure}>Markers locate areas. They do not represent units or listings.</p>
