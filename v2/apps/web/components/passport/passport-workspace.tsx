@@ -6,6 +6,7 @@ import { buildPassportModel, normalizePassportAmount, normalizePassportCurrency,
 import { PassportCandidates } from './passport-candidates';
 import { PassportBudgetFields } from './passport-budget-fields';
 import styles from './passport.module.css';
+import { passportCandidateHref } from '../../lib/passport/journey';
 import { sendToolEvent } from '../tools/tool-analytics';
 
 const COPY = {
@@ -33,13 +34,14 @@ export function PassportWorkspace({ initialModel }: Readonly<{ initialModel: Pas
   const evidence = useMemo(() => initialModel.markets.map((market): PassportMarketEvidence => ({
     id: market.id, city: market.city, currency: market.currency, localBudget: 0,
     medianPsm: market.medianPsm, sample: market.sample, period: market.period,
-    yieldPct: market.yieldPct, scopes: market.scopes, priceBasis: market.priceBasis, priceSample: market.priceSample,
+    yieldPct: market.yieldPct, scopes: market.scopes, priceBasis: market.priceBasis, priceSample: market.priceSample, offPlan: market.offPlan,
   })), [initialModel.markets]);
   const search = useSyncExternalStore(subscribeToLocation, locationSearch, serverSearch);
   const query = new URLSearchParams(search);
   const currency = query.has('budget') ? normalizePassportCurrency(query.get('currency')) : initialModel.budgetCurrency;
   const budget = query.has('budget') ? normalizePassportAmount(query.get('budget') ?? undefined, currency) : initialModel.budgetAmount;
-  const model = useMemo(() => buildPassportModel({ budgetWon: budget, budgetAmount: budget, budgetCurrency: currency, locale: initialModel.locale, evidence }), [budget, currency, evidence, initialModel.locale]);
+  const dubaiStage = query.get('dubaiStage') === 'off-plan' ? 'off-plan' : 'ready';
+  const model = useMemo(() => buildPassportModel({ budgetWon: budget, budgetAmount: budget, budgetCurrency: currency, dubaiStage, locale: initialModel.locale, evidence }), [budget, currency, dubaiStage, evidence, initialModel.locale]);
   const [copiedHref, setCopiedHref] = useState<string | null>(null);
   const [copyState, setCopyState] = useState<'idle' | 'copied' | 'failed'>('idle');
   const copy = COPY[initialModel.locale];
@@ -54,7 +56,7 @@ export function PassportWorkspace({ initialModel }: Readonly<{ initialModel: Pas
         event.preventDefault(); const data = new FormData(event.currentTarget);
         const budgetCurrency = normalizePassportCurrency(data.get('currency'));
         const budgetAmount = normalizePassportAmount(String(data.get('budget') ?? ''), budgetCurrency);
-        const next = buildPassportModel({ budgetWon: budgetAmount, budgetAmount, budgetCurrency, locale: initialModel.locale, evidence });
+        const next = buildPassportModel({ budgetWon: budgetAmount, budgetAmount, budgetCurrency, dubaiStage, locale: initialModel.locale, evidence });
         globalThis.history.replaceState(null, '', next.href); globalThis.dispatchEvent(new Event('passport:budget-updated')); setCopyState('idle');
         sendToolEvent('tool_complete', { tool: 'passport', market: 'global', surface: 'standalone-tool' });
       }}>
@@ -63,19 +65,24 @@ export function PassportWorkspace({ initialModel }: Readonly<{ initialModel: Pas
       </form>
     </header>
 
+    <label className={styles.stageSelect}>{initialModel.locale === 'ko' ? '두바이 거래 유형' : 'Dubai sale stage'}<select value={dubaiStage} onChange={event => {
+      const stage = event.target.value === 'off-plan' ? 'off-plan' : 'ready';
+      globalThis.history.replaceState(null, '', passportHref(initialModel.locale, budget, currency, stage));
+      globalThis.dispatchEvent(new Event('passport:budget-updated'));
+    }}><option value="ready">Ready{initialModel.locale === 'ko' ? ' · 완공' : ''}</option><option value="off-plan">Off-Plan{initialModel.locale === 'ko' ? ' · 분양·건설 중' : ''}</option></select></label>
     <p className={styles.comparisonNote}>{detail.comparison}</p>
     <section className={styles.cardGrid} aria-label={copy.title}>
       {model.markets.map((market) => {
         const money = new Intl.NumberFormat(MONEY[market.currency], { style: 'currency', currency: market.currency, currencyDisplay: 'code', maximumFractionDigits: 0 });
-        const href = market.id === 'kr-seoul' ? `${initialModel.locale === 'ko' ? '/ko' : ''}/kr/seoul/explore/` : market.id === 'sg-singapore' ? '/sg/singapore/explore/' : '/ae/dubai/explore/';
+        const href = market.id === 'kr-seoul' ? `${initialModel.locale === 'ko' ? '/ko' : ''}/kr/seoul/explore/?transaction=sale&propertyType=apartment` : market.id === 'sg-singapore' ? '/sg/singapore/explore/' : `/ae/dubai/explore/?housing=apartment&stage=${dubaiStage}&budgetMax=${Math.floor(market.localBudget)}`;
         return <article className={styles.marketCard} data-passport-market={market.id} key={market.id}>
           <div className={styles.cardTitle}><span>{market.currency}</span><h2>{market.city}</h2></div>
           <div className={styles.metricRow} data-passport-row="local-budget"><span>{copy.local}</span><strong>{money.format(market.localBudget)}</strong></div>
-          <div className={styles.metricRow} data-passport-row="area"><span>{copy.area}</span><strong>{market.indicativeAreaSqm === null ? '—' : `${market.indicativeAreaSqm} m²`}</strong><small>{market.indicativeAreaSqm === null ? detail.unavailable : <>{detail.basis[market.priceBasis ?? 'transactions']}{market.priceSample == null ? '' : ` · ${market.priceSample.toLocaleString(initialModel.locale)}`}</>}</small><small>{market.period === 'Unavailable' ? detail.unavailable : market.period}</small></div>
+          <div className={styles.metricRow} data-passport-row="area"><span>{copy.area}</span><strong>{market.indicativeAreaSqm === null ? '—' : `${market.indicativeAreaSqm} m²`}</strong><small>{market.indicativeAreaSqm === null ? detail.unavailable : <>{(market.id === 'ae-dubai' && dubaiStage === 'off-plan' ? (initialModel.locale === 'ko' ? '분양·건설 중 아파트의 지역별 ㎡당 가격 중간값' : 'Median of Off-Plan apartment area unit-price medians') : detail.basis[market.priceBasis ?? 'transactions'])}{market.priceSample == null ? '' : ` · ${market.priceSample.toLocaleString(initialModel.locale)}`}</>}</small><small>{market.period === 'Unavailable' ? detail.unavailable : market.period}</small></div>
           <PassportCandidates key={`${market.id}-${model.href}`} market={market} locale={initialModel.locale} passportHref={model.href} />
           <div className={styles.evidenceRow}><span>{copy.evidence}</span><p>{new Intl.NumberFormat().format(market.sample)} {copy.sample}</p><small>{market.period === 'Unavailable' ? detail.unavailable : market.period}</small>{market.yieldPct == null ? null : <small>{detail.yield} · {market.yieldPct.toFixed(1)}%</small>}</div>
           <div className={styles.scopeRow}><strong>{copy.cost}</strong><small>{copy.excluded}</small></div>
-          <Link className={styles.marketAction} href={href}>{copy.open}</Link>
+          <Link className={styles.marketAction} href={passportCandidateHref(href, model.href)}>{copy.open}</Link>
         </article>;
       })}
     </section>

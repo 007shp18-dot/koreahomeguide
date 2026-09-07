@@ -3,7 +3,7 @@ import { createPropertyScenarioHref } from '../../lib/tools/property-scenario-co
 import { buildMonthlyResearch, summarizeSizeCohorts } from '../../lib/research/property-research';
 import { MonthlyTransactionResearch, SizeCohortResearch } from '../market-ui/transaction-research';
 import { PropertyScenarioCalculator } from '../market-ui/property-scenario';
-import Link from 'next/link';
+import { PassportLink as Link } from '../passport/passport-journey';
 
 import type {
   SingaporeProjectModel,

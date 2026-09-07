@@ -1,8 +1,9 @@
 'use client';
+import { retainPassportContext } from '../../lib/passport/journey';
 
 import { singaporeProjectSearchTerm } from '../../lib/singapore/project-display-name';
 
-import Link from 'next/link';
+import { PassportLink as Link } from '../passport/passport-journey';
 import { useCallback, useDeferredValue, useEffect, useMemo, useState } from 'react';
 import type { SingaporeExploreModel } from '../../lib/singapore/route-types';
 import type { HdbExploreModel } from '../../lib/singapore/hdb-route-model.server';
@@ -143,14 +144,14 @@ export function SingaporeExplorer({
 
   useEffect(() => {
     if (!urlStateReady) return;
-    const href = buildSingaporeExploreHref({
+    const href = retainPassportContext(buildSingaporeExploreHref({
       query,
       selectedSegment,
       district,
       sort,
       page: activePage,
       selectedProjectId: selectedProject?.id ?? null,
-    });
+    }), window.location.href);
     if (`${window.location.pathname}${window.location.search}` !== href) window.history.replaceState(null, '', href);
   }, [activePage, district, query, selectedProject, selectedSegment, sort, urlStateReady]);
   const selectSegment = useCallback((segment: 'CCR' | 'RCR' | 'OCR' | null) => {

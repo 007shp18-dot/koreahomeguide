@@ -54,7 +54,7 @@ export function parseDubaiExploreState(
     query: typeof query.q === 'string' ? query.q.trim().slice(0, 100) : '',
     housing,
     stage,
-    budgetMaximumAed: budget !== null && budget >= 100_000 && budget <= 500_000_000
+    budgetMaximumAed: budget !== null && budget >= 1 && budget <= 500_000_000
       ? budget
       : null,
     yieldMinimumPct: stage === 'ready' && minimumRatio !== null

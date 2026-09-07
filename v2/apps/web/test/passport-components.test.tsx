@@ -42,7 +42,10 @@ it.each(['en','ko','zh-CN'] as const)('links each candidate to its own median-pr
     expect(context.price).toBe(400_000);
     expect(context.propertyName).toBe('Candidate');
     expect(context.passportHref).toBe(locale==='ko'?'/ko/passport/?budget=10000000000':locale==='zh-CN'?'/zh-cn/passport/?budget=10000000000':'/passport/?budget=10000000000');
-    expect(context.returnTo).toBe(model.markets[index]!.scopes[0]!.href.replace('/kr/seoul/',locale==='ko'?'/ko/kr/seoul/':'/kr/seoul/'));
+    const returned = new URL(context.returnTo!, 'https://signedprice.test');
+    expect(returned.searchParams.get('passport')).toBe(context.passportHref);
+    returned.searchParams.delete('passport');
+    expect(`${returned.pathname}${returned.search}`).toBe(model.markets[index]!.scopes[0]!.href.replace('/kr/seoul/',locale==='ko'?'/ko/kr/seoul/':'/kr/seoul/'));
   }
 });
 

@@ -1,4 +1,5 @@
-import Link from 'next/link';
+import { DubaiAreaSelection } from './dubai-area-selection';
+import { PassportLink as Link } from '../passport/passport-journey';
 
 import type { DubaiSaleDistribution } from '../../lib/dubai/evidence-contract';
 import type { DubaiAreaModel, DubaiAreaSegmentModel } from '../../lib/dubai/route-types';
@@ -52,8 +53,6 @@ function SegmentEvidence({ segment }: Readonly<{ segment: DubaiAreaSegmentModel 
 }
 
 export function DubaiAreaDetail({ model }: Readonly<{ model: DubaiAreaModel }>) {
-  const primary = model.segments[0]!;
-  const primarySale = primary.sales.ready ?? primary.sales.offPlan!;
   const comparableGroups = model.segments.flatMap((segment) => ([
     { housing: segment.housing, stage: 'ready' as const, areas: segment.comparableAreas.ready },
     { housing: segment.housing, stage: 'off-plan' as const, areas: segment.comparableAreas.offPlan },
@@ -71,11 +70,7 @@ export function DubaiAreaDetail({ model }: Readonly<{ model: DubaiAreaModel }>) 
           <h1>{model.identity.name}</h1>
           <p>{model.segments.map(({ housing }) => housing === 'apartment' ? 'Apartment' : 'Villa').join(' and ')} sale and registered-rent evidence through {model.context.asOfDate}.</p>
         </div>
-        <div className={styles.heroMetric}>
-          <small>{primary.sales.ready === null ? 'Off-Plan' : 'Ready'} median sale price</small>
-          <strong>{money(primarySale.medianPriceAed)}</strong>
-          <span>{primarySale.n.toLocaleString('en')} registered sales</span>
-        </div>
+        <DubaiAreaSelection slug={model.identity.slug} segments={model.segments} variant="price" />
       </header>
       <div className={styles.areaSections}>
         <div>{model.segments.map((segment) => <SegmentEvidence key={segment.housing} segment={segment} />)}</div>
@@ -83,7 +78,7 @@ export function DubaiAreaDetail({ model }: Readonly<{ model: DubaiAreaModel }>) 
           <section className={styles.sourceCard}>
             <h2>Check an asking price</h2>
             <p>Keep this area and home type selected, then enter the offer, size, and your own expected annual rent.</p>
-            <Link className={styles.primaryAction} href={model.checkHref}>Check this asking price</Link>
+            <DubaiAreaSelection slug={model.identity.slug} segments={model.segments} variant="check" />
           </section>
           <section className={styles.sourceCard}>
             <h2>Comparable areas</h2>

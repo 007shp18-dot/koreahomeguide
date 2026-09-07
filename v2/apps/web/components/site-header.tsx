@@ -1,3 +1,4 @@
+import { PassportBudgetContext } from './passport/passport-journey';
 import { Suspense } from 'react';
 import { editorialLanguageRoutes } from '../lib/navigation/editorial-language-routes';
 import { globalNavigation, marketNavigation } from '../lib/navigation/site-navigation';
@@ -53,7 +54,7 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
   const fallbackPath = locale === 'zh-CN' ? (currentHref?.startsWith('/zh-cn/') ? currentHref : currentHref === '/news/' || currentHref === '/guides/' ? `/zh-cn${currentHref}` : '/zh-cn/kr/seoul/') : currentHref ?? (locale === 'en' && copy.languageSwitch?.hrefLang === 'ko' ? copy.languageSwitch.href.replace(/^\/ko/, '') : copy.homeHref) ?? '/';
 
   return (
-    <header className="site-header" data-market-context={marketId ?? 'global'}>
+    <><header className="site-header" data-market-context={marketId ?? 'global'}>
       <div className="site-header__inner" data-navigation-tier="global">
         <Link className="wordmark" href={copy.homeHref ?? '/'} aria-label={copy.homeLabel}>
           <BrandWordmark compact />
@@ -110,6 +111,6 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
           locale={isKorean ? 'ko' : 'en'}
         />
       )}
-    </header>
+    </header><PassportBudgetContext /></>
   );
 }

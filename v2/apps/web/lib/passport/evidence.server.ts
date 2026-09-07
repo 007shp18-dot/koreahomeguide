@@ -50,19 +50,27 @@ async function singaporeEvidence(): Promise<PassportMarketEvidence> {
 function dubaiEvidence(): PassportMarketEvidence {
   const repository = dubaiEvidenceRepositoryFromEnvironment();
   if (repository === null) return Object.freeze({ id: 'ae-dubai', city: 'Dubai', currency: 'AED', localBudget: 0, medianPsm: null, sample: 0, period: 'Unavailable', scopes: Object.freeze([]) });
-  const entries = repository.listAreas().flatMap((area) => {
-    const segment = area.segments.find(({ housing }) => housing === 'apartment');
-    return segment?.sales.ready == null ? [] : [{ area, segment, sale: segment.sales.ready }];
-  });
+  const aggregate = (stage: 'ready' | 'offPlan') => {
+    const entries = repository.listAreas().flatMap(area => {
+      const segment = area.segments.find(({ housing }) => housing === 'apartment');
+      const sale = segment?.sales[stage];
+      return !segment || !sale ? [] : [{ area, segment, sale }];
+    });
+    return {
+      medianPsm: median(entries.map(({ sale }) => sale.medianPricePerSqmAed)),
+      sample: entries.reduce((sum, { sale }) => sum + sale.n, 0), priceSample: entries.length,
+      scopes: entries.map(({ area, sale }): PassportScope => ({ name: area.name,
+        kind: stage === 'ready' ? 'ready-area' : 'off-plan-area', sample: sale.n,
+        href: `/ae/dubai/explore/?area=${area.slug}&housing=apartment&stage=${stage === 'ready' ? 'ready' : 'off-plan'}`,
+        medianPrice: sale.medianPriceAed })),
+      yieldPct: stage === 'ready' ? median(entries.flatMap(({ segment }) => segment.readyGrossYieldPct === null ? [] : [segment.readyGrossYieldPct])) : null,
+    };
+  };
   const context = repository.getContext();
-  return Object.freeze({
-    id: 'ae-dubai', city: 'Dubai', currency: 'AED', localBudget: 0,
-    medianPsm: median(entries.map(({ sale }) => sale.medianPricePerSqmAed)),
-    sample: entries.reduce((sum, { sale }) => sum + sale.n, 0),
-    priceBasis: 'areas', priceSample: entries.length,
-    period: `${context.comparisonPeriod.from}..${context.comparisonPeriod.to}`,
-    yieldPct: median(entries.flatMap(({ segment }) => segment.readyGrossYieldPct === null ? [] : [segment.readyGrossYieldPct])),
-    scopes: Object.freeze(entries.map(({ area, sale }): PassportScope => ({ name: area.name, kind: 'ready-area', sample: sale.n, href: `/ae/dubai/explore/${area.slug}/`, medianPrice: sale.medianPriceAed }))),
+  const offPlan = aggregate('offPlan');
+  return Object.freeze({ id: 'ae-dubai', city: 'Dubai', currency: 'AED', localBudget: 0,
+    priceBasis: 'areas', period: `${context.comparisonPeriod.from}..${context.comparisonPeriod.to}`,
+    ...aggregate('ready'), offPlan: { ...offPlan, yieldPct: null },
   });
 }
 

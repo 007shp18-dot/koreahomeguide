@@ -1,5 +1,5 @@
 'use client';
-import Link from 'next/link';
+import { PassportLink as Link } from '../passport/passport-journey';
 import { useState } from 'react';
 import { PropertyScenarioCalculator } from '../market-ui/property-scenario';
 import type {PropertyScenarioContext,ToolMarket,ScenarioCurrency} from '../../lib/tools/property-scenario-context';

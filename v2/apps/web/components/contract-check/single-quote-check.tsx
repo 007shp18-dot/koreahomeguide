@@ -4,7 +4,7 @@ import { ResultLinkCopy } from './result-link-copy';
 import { CheckBuildingSearch } from './check-building-search';
 
 import type { CheckTransaction, SingleQuoteCheckResult } from '@signedprice/market-core';
-import Link from 'next/link';
+import { PassportLink as Link } from '../passport/passport-journey';
 import { useState } from 'react';
 
 import type { ProductLocale } from '../../lib/locale/product-copy';

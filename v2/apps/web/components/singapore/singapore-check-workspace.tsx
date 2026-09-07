@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { PassportLink as Link } from '../passport/passport-journey';
 import { BuyerNextSteps } from '../buyer-next-steps';
 
 import type { SingaporeCheckMarket, SingaporeCheckResult } from '@signedprice/singapore-property';

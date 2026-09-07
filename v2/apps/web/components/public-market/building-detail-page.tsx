@@ -1,5 +1,5 @@
 import {localizedSeoulHref, type ProductLocale} from '../../lib/locale/product-copy';
-import Link from 'next/link';
+import { PassportLink as Link } from '../passport/passport-journey';
 import type { ReactNode } from 'react';
 
 import type { BuildingDecisionModel } from '../../lib/public-market/building-decision-model';

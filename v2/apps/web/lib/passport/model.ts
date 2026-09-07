@@ -24,7 +24,7 @@ export type PassportScope = Readonly<{
   name: string;
   href: string;
   medianPrice: number;
-  kind?: 'building' | 'project' | 'ready-area';
+  kind?: 'building' | 'project' | 'ready-area' | 'off-plan-area';
   sample?: number;
   locationLabel?: string;
   neighborhoodName?: string;
@@ -43,6 +43,7 @@ export type PassportMarketEvidence = Readonly<{
   period: string;
   yieldPct?: number | null;
   scopes: readonly PassportScope[];
+  offPlan?: Readonly<{ medianPsm: number | null; sample: number; priceSample: number; scopes: readonly PassportScope[]; yieldPct: null }>;
 }>;
 
 export type PassportMarketResult = PassportMarketEvidence & Readonly<{
@@ -52,6 +53,7 @@ export type PassportMarketResult = PassportMarketEvidence & Readonly<{
 }>;
 
 export type PassportModel = Readonly<{
+  dubaiStage: 'ready' | 'off-plan';
   budgetWon: number;
   budgetAmount: number;
   budgetCurrency: PassportBudgetCurrency;
@@ -69,9 +71,9 @@ export function normalizePassportBudget(value: string | readonly string[] | unde
     : DEFAULT_PASSPORT_BUDGET_WON;
 }
 
-export function passportHref(locale: PassportLocale, budgetWon: number, currency: PassportBudgetCurrency = 'KRW'): string {
+export function passportHref(locale: PassportLocale, budgetWon: number, currency: PassportBudgetCurrency = 'KRW', dubaiStage: 'ready' | 'off-plan' = 'ready'): string {
   const prefix = locale === 'ko' ? '/ko' : locale === 'zh-CN' ? '/zh-cn' : '';
-  return `${prefix}/passport/?budget=${budgetWon}${currency === 'KRW' ? '' : `&currency=${currency}`}`;
+  return `${prefix}/passport/?budget=${budgetWon}${currency === 'KRW' ? '' : `&currency=${currency}`}${dubaiStage === 'off-plan' ? '&dubaiStage=off-plan' : ''}`;
 }
 
 export function convertPassportCurrency(amount: number, from: PassportBudgetCurrency, to: PassportBudgetCurrency): number {
@@ -97,13 +99,16 @@ export function buildPassportModel(input: Readonly<{
   budgetWon: number;
   budgetAmount?: number;
   budgetCurrency?: PassportBudgetCurrency;
+  dubaiStage?: 'ready' | 'off-plan';
   locale: PassportLocale;
   evidence: readonly PassportMarketEvidence[];
 }>): PassportModel {
   const budgetCurrency = input.budgetCurrency ?? 'KRW';
   const budgetAmount = normalizePassportAmount(String(input.budgetAmount ?? input.budgetWon), budgetCurrency);
   const budgetWon = convertPassportCurrency(budgetAmount, budgetCurrency, 'KRW');
-  const markets = input.evidence.map((market): PassportMarketResult => {
+  const dubaiStage = input.dubaiStage ?? 'ready';
+  const markets = input.evidence.map((base): PassportMarketResult => {
+    const market = base.id === 'ae-dubai' && dubaiStage === 'off-plan' ? { ...base, ...(base.offPlan ?? { medianPsm: null, sample: 0, priceSample: 0, scopes: [], yieldPct: null }) } : base;
     const converted = localBudget(market.currency, budgetWon);
     const scopes = Object.freeze(market.scopes.filter(({ medianPrice }) => Number.isFinite(medianPrice) && medianPrice > 0));
     return Object.freeze({
@@ -117,11 +122,12 @@ export function buildPassportModel(input: Readonly<{
     });
   });
   return Object.freeze({
+    dubaiStage,
     budgetWon,
     budgetAmount,
     budgetCurrency,
     locale: input.locale,
-    href: passportHref(input.locale, budgetAmount, budgetCurrency),
+    href: passportHref(input.locale, budgetAmount, budgetCurrency, dubaiStage),
     fx: PASSPORT_FX,
     markets: Object.freeze(markets),
   });

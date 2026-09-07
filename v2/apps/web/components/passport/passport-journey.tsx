@@ -1,0 +1,38 @@
+'use client';
+
+import Link from 'next/link';
+import { useSyncExternalStore, type ComponentProps } from 'react';
+import { convertPassportCurrency, normalizePassportCurrency } from '../../lib/passport/model';
+import { passportReturn } from '../../lib/tools/property-scenario-context';
+import { retainPassportContext } from '../../lib/passport/journey';
+import styles from './passport.module.css';
+
+const subscribe = (notify: () => void) => {
+  window.addEventListener('popstate', notify);
+  return () => window.removeEventListener('popstate', notify);
+};
+export function usePassportLocation() {
+  return useSyncExternalStore(subscribe, () => `${window.location.pathname}${window.location.search}`, () => '');
+}
+export function PassportLink({ href, ...props }: ComponentProps<typeof Link>) {
+  const current = usePassportLocation();
+  return <Link {...props} href={typeof href === 'string' ? retainPassportContext(href, current, true) : href} />;
+}
+export function PassportBudgetContext() {
+  const current = usePassportLocation();
+  if (!current) return null;
+  const url = new URL(current, 'https://signedprice.invalid');
+  const passport = url.searchParams.getAll('passport').length === 1 ? passportReturn(url.searchParams.get('passport')) : undefined;
+  if (!passport) return null;
+  const params = new URL(passport, url).searchParams;
+  const currency = normalizePassportCurrency(params.get('currency'));
+  const local = url.pathname.includes('/ae/dubai/') ? 'AED' : url.pathname.includes('/sg/singapore/') ? 'SGD' : 'KRW';
+  const budget = convertPassportCurrency(Number(params.get('budget')), currency, local);
+  const ko = passport.startsWith('/ko/');
+  const label = `${local} ${Math.floor(budget).toLocaleString(ko ? 'ko-KR' : 'en')}`;
+  const compact = `${local} ${new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: 2 }).format(budget)}`;
+  return <aside className={styles.journey} aria-label="Passport budget">
+    <span title={label}>{ko ? '참고 예산' : 'Budget'} · <strong aria-label={label}>≈ {compact}</strong></span>
+    <Link href={passport}>{ko ? '예산 비교로' : 'Back to Passport'}</Link>
+  </aside>;
+}
