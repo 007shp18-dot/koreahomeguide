@@ -27,8 +27,8 @@ export default function ContactPage() {
           <p className={styles.eyebrow}>SignedPrice · Contact</p>
           <h1>Talk to SignedPrice.</h1>
           <p>
-            Product questions, partnerships and data issues reach a real email address.
-            Choose the route that matches your message.
+            Ask about a property comparison, our data or a partnership.
+            Include the city and the question you could not answer on the site.
           </p>
         </header>
         <section className={styles.notice} aria-labelledby="contact-primary">
@@ -39,6 +39,23 @@ export default function ContactPage() {
           <div className={styles.actions}>
             <a href={`mailto:${SIGNEDPRICE_CONTACT_EMAIL}`}>{SIGNEDPRICE_CONTACT_EMAIL}</a>
           </div>
+        </section>
+        <section className={styles.grid} aria-label="Property research questions">
+          {(['seoul', 'singapore', 'dubai'] as const).map((city) => {
+            const label = city === 'seoul' ? 'Seoul' : city === 'singapore' ? 'Singapore' : 'Dubai';
+            const body = `City: ${label}\nPurpose (living / renting / investment):\nApproximate budget and currency (optional):\nProperty or area (public link, optional):\nMy question:\n\nPlease do not include identity documents, bank details or private contracts.`;
+            return <article key={city} id={`research-${city}`}>
+              <p className={styles.meta}>{label} · Research</p>
+              <h2>A question about {label}?</h2>
+              <p>Tell us your purpose, the area or property you are considering, and what you need to understand. Budget is optional.</p>
+              <div className={styles.actions}><a href={`mailto:${SIGNEDPRICE_CONTACT_EMAIL}?subject=${encodeURIComponent(`${label} property research question`)}&body=${encodeURIComponent(body)}`}>Open an email draft</a></div>
+              <p>Nothing is sent until you send the email. Please omit identity documents, bank details and private contracts.</p>
+            </article>;
+          })}
+        </section>
+        <section className={styles.notice} aria-label="Research enquiry scope">
+          <div><h2>Research questions, not a booking.</h2><p>We welcome questions about the published data and comparison methods. Sending a message does not book brokerage, a valuation or personalised investment advice. We may need additional sources to answer a property-specific question.</p></div>
+          <Link href="/privacy/">How we handle personal information</Link>
         </section>
         <section className={styles.grid} aria-label="SignedPrice contact routes">
           <article>

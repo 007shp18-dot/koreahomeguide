@@ -1,0 +1,6 @@
+.next { margin-block: 1.5rem; padding-block: 1.25rem; border-top: 1px solid #dce5ee; color: inherit; }
+.next h2 { margin: 0 0 .5rem; font-size: 1.125rem; }
+.next p { margin: 0; max-width: 75ch; font-size: 1rem; line-height: 1.6; }
+.next nav { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; margin-top: .75rem; }
+.next a { display: inline-flex; align-items: center; min-height: 44px; font-size: .875rem; text-decoration: underline; text-underline-offset: .2em; }
+.next a:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
