@@ -25,19 +25,20 @@ describe('signedprice public editorial homepage', () => {
     expect(homeCss).not.toMatch(/(?:heroGrid|snapshotGrid|marketGrid|buildingGrid|insightGrid|propertyGrid|bottomGrid)[^{]*\{[^}]*100vw/);
   }, 10_000);
 
-  it('uses one global headline across exactly five editorial regions', async () => {
+  it('uses one global headline across Passport and six editorial regions', async () => {
     const markup = renderToStaticMarkup(await Home());
     const positions = [
       'data-home-region="passport"',
       'id="three-market-home-title"',
       'data-home-region="actions"',
+      'data-home-region="three-city-research"',
       'data-home-region="changed"',
       'data-home-region="data-story"',
       'id="home-guides-title"',
     ].map((needle) => markup.indexOf(needle));
 
     expect(markup.match(/<h1/g)).toHaveLength(1);
-    expect(markup.match(/data-home-region=/g)).toHaveLength(6);
+    expect(markup.match(/data-home-region=/g)).toHaveLength(7);
     expect(markup).toContain('See the market before you make the move.');
     expect(positions.every((position) => position >= 0)).toBe(true);
     expect([...positions].sort((a, b) => a - b)).toEqual(positions);
@@ -53,7 +54,9 @@ describe('signedprice public editorial homepage', () => {
     expect(markup.match(/data-home-guide=/g)?.length ?? 0).toBeLessThanOrEqual(5);
     expect(markup).toContain('Data Story');
     expect(markup).toContain('Released evidence');
-    expect(markup).not.toMatch(/data-contextual-action="ae-dubai"[\s\S]*?AED\s*[\d,.]+/i);
+    const dubaiAction = markup.match(/<li[^>]*data-contextual-action="ae-dubai"[^>]*>([\s\S]*?)<\/li>/)?.[1];
+    expect(dubaiAction).toBeDefined();
+    expect(dubaiAction).not.toMatch(/AED\s*[\d,.]+/i);
   });
 
   it('keeps navigation compact and separates surfaces, markets, and languages', async () => {

@@ -1,5 +1,23 @@
 import { expect, test } from '@playwright/test';
 
+test('Passport opens published candidate costs and restores the original currency and budget', async ({ page }) => {
+  const passport = '/ko/passport/?budget=10000000&currency=USD';
+  await page.goto(passport);
+  const singapore = page.locator('[data-passport-market="sg-singapore"]');
+  const candidates = singapore.locator('[data-passport-candidate="project"]');
+  await expect(candidates).toHaveCount(3);
+  await page.getByLabel('예산', { exact: true }).fill('9000000');
+  await page.getByRole('button', { name: '비교 다시 계산' }).click();
+  const calculate = candidates.first().getByRole('link', { name: '비용 계산', exact: true });
+  await calculate.click();
+  await expect(page.getByLabel('매입 가격 (SGD)', { exact: true })).toHaveValue('2162500');
+  await expect(page.getByRole('link', { name: '원래 거래 근거로 돌아가기' })).toHaveAttribute('href', /\/sg\/singapore\/explore\/ocr\//);
+  await page.getByRole('link', { name: '내 Passport 예산으로 돌아가기' }).click();
+  await expect(page.getByLabel('예산', { exact: true })).toHaveValue('9,000,000');
+  await expect(page.getByLabel('예산 통화', { exact: true })).toHaveValue('USD');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+});
+
 test('Passport restores the selected currency and converts the input when currency changes', async ({ page }) => {
   await page.goto('/passport/?budget=500000&currency=USD');
   await expect(page.getByLabel('Budget currency', { exact: true })).toHaveValue('USD');

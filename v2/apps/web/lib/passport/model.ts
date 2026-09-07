@@ -24,6 +24,9 @@ export type PassportScope = Readonly<{
   name: string;
   href: string;
   medianPrice: number;
+  kind?: 'building' | 'project' | 'ready-area';
+  sample?: number;
+  locationLabel?: string;
 }>;
 
 export type PassportMarketEvidence = Readonly<{
