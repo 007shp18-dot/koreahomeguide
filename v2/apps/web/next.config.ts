@@ -39,6 +39,7 @@ const nextConfig: NextConfig = {
   },
   outputFileTracingRoot: repositoryRoot,
   outputFileTracingIncludes: {
+    '/api/markets/kr-seoul/building-facts': ['./data/building-identity-index.json.gz'],
     '/*': [
       './data/observed-building-inventory.json.gz',
       './data/korea-rent-evidence.json.gz',

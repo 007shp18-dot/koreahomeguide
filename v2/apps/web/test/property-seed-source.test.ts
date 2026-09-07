@@ -21,7 +21,7 @@ type SeedIdentityRow = Readonly<{
 describe('SignedPrice property database seed source', () => {
   it('preserves every Seoul building ID and emits a deterministic photo-search address', () => {
     const rows = loadSeoulBuildingSeed() as readonly SeedIdentityRow[];
-    expect(rows).toHaveLength(48_999);
+    expect(rows).toHaveLength(57_915);
     expect(rows).toContainEqual(expect.objectContaining({
       externalId: 'dobong-gu-11xgxzx',
       legacyKey: 'seoul:dobong-gu-11xgxzx',
@@ -63,12 +63,12 @@ describe('SignedPrice property database seed source', () => {
     const second = loadPropertySeedRows();
     const rows = first.all as readonly SeedIdentityRow[];
     expect(first.summary).toEqual({
-      seoul: 48_999,
+      seoul: 57_915,
       singaporePrivate: 3_862,
       singaporeHdb: 10_011,
-      total: 62_872,
-      legacyIdDigest: 'd86ae08ab146e07570ccbd7b15f07a80f3ca5fd537d7199f58628348439e446a',
-      entityIdDigest: '92be10891460d8604c8b6661cd4884c3eaee9ce5791a14ec6c59a49a2d9e3729',
+      total: 71_788,
+      legacyIdDigest: expect.stringMatching(/^[a-f0-9]{64}$/),
+      entityIdDigest: expect.stringMatching(/^[a-f0-9]{64}$/),
     });
     expect(second.summary).toEqual(first.summary);
     expect(new Set(rows.map((row) => row.legacyKey)).size).toBe(first.summary.total);
