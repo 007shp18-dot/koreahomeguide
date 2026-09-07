@@ -23,6 +23,18 @@ function record(amountSgd: number): UraPrivateSaleCheckRecord {
 }
 
 describe('Singapore Check evidence repositories', () => {
+  it('reuses immutable installed evidence but respects disabled and overridden sources', async () => {
+    const first = singaporeCheckEvidenceRepositoriesFromEnvironment();
+    expect(singaporeCheckEvidenceRepositoriesFromEnvironment()).toBe(first);
+    try {
+      vi.stubEnv('SIGNEDPRICE_USE_CHECKED_IN_SNAPSHOTS', 'false');
+      expect((await singaporeCheckEvidenceRepositoriesFromEnvironment()).get('hdb-resale')).toBeNull();
+      vi.stubEnv('SIGNEDPRICE_USE_CHECKED_IN_SNAPSHOTS', 'true');
+      vi.stubEnv('SIGNEDPRICE_SINGAPORE_CHECK_HDB_RESALE_ARTIFACT', '{}');
+      expect((await singaporeCheckEvidenceRepositoriesFromEnvironment()).get('hdb-resale')).toBeNull();
+    } finally { vi.unstubAllEnvs(); }
+    expect(singaporeCheckEvidenceRepositoriesFromEnvironment()).toBe(first);
+  }, 30_000);
   it('checks installed HDB resale and rental rows through the last completed month', async () => {
     const repositories = await singaporeCheckEvidenceRepositoriesFromEnvironment();
     for (const market of ['hdb-resale', 'hdb-rent'] as const) {
