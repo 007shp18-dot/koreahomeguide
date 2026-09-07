@@ -234,8 +234,7 @@ export function buildSingaporeProjectModel(
   segment: string,
   projectId: string,
 ): SingaporeProjectModel | null {
-  const sourceIdentity = repository.getProject(segment, projectId);
-  const identity = sourceIdentity === null ? null : Object.freeze({ ...sourceIdentity, project: singaporeProjectDisplayName(sourceIdentity) });
+  const identity = repository.getProject(segment, projectId);
   if (identity === null) return null;
   if (!identity.published) return Object.freeze({
     status: 'insufficient',

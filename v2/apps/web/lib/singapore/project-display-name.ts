@@ -11,3 +11,8 @@ export function singaporeProjectDisplayName(project: Readonly<{ project: string;
   if (project.project === 'VERD\uFFFD JOO CHIAT' && project.street === 'JOO CHIAT TERRACE') return 'VERDÉ JOO CHIAT';
   return project.project;
 }
+
+/** Match names with or without accents, while preserving their displayed spelling. */
+export function singaporeProjectSearchTerm(value: string): string {
+  return value.normalize('NFD').replace(/\p{M}/gu, '').toLocaleLowerCase('en');
+}

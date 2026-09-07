@@ -1,5 +1,7 @@
 'use client';
 
+import { singaporeProjectSearchTerm } from '../../lib/singapore/project-display-name';
+
 import Link from 'next/link';
 import { useCallback, useDeferredValue, useEffect, useMemo, useState } from 'react';
 import type { SingaporeExploreModel } from '../../lib/singapore/route-types';
@@ -98,7 +100,7 @@ export function SingaporeExplorer({
   const selected = segments.find((segment) => segment.code === selectedSegment);
   const allProjects = useMemo(() => model.status === 'ready' ? model.segments.flatMap((segment) => (segment.projects ?? []).map((project) => ({ ...project, segment: segment.code }))) : [], [model]);
   const searchIndex = useMemo(() => allProjects.map((project) => ({
-    project, term: `${project.name} ${project.street} ${project.district} district ${Number(project.district)} ${project.segment}`.toLocaleLowerCase('en'),
+    project, term: singaporeProjectSearchTerm(`${project.name} ${project.street} ${project.district} district ${Number(project.district)} ${project.segment}`),
   })), [allProjects]);
   const orderedProjects = useMemo(() => searchIndex.filter(({ project }) =>
     (selectedSegment === null || project.segment === selectedSegment)
@@ -106,7 +108,7 @@ export function SingaporeExplorer({
     .sort(({project: a}, {project: b}) => sort === 'name' ? a.name.localeCompare(b.name) : b.n - a.n || a.name.localeCompare(b.name)),
   [searchIndex, district, selectedSegment, sort]);
   const projects = useMemo(() => {
-    const term = deferredQuery.trim().toLocaleLowerCase('en');
+    const term = singaporeProjectSearchTerm(deferredQuery.trim());
     return orderedProjects.filter((item) => item.term.includes(term)).map(({ project }) => project);
   }, [orderedProjects, deferredQuery]);
   const pageCount = Math.max(1, Math.ceil(projects.length / PAGE_SIZE));

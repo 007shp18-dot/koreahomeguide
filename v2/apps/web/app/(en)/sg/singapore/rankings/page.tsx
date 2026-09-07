@@ -1,3 +1,4 @@
+import { singaporeProjectDisplayName } from '@/lib/singapore/project-display-name';
 import type { Metadata } from 'next';
 
 import { SingaporeRankings, type SingaporeRankingRow } from '@/components/singapore/singapore-rankings';
@@ -19,7 +20,7 @@ export default async function SingaporeRankingsPage() {
       .filter((project) => project.published && project.medianPriceSgd !== null && project.medianPsf !== null)
       .map((project) => Object.freeze({
         id: project.id,
-        name: project.project,
+        name: singaporeProjectDisplayName(project),
         segment: project.marketSegment,
         district: project.district,
         street: project.street,

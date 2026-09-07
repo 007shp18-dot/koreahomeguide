@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { singaporeProjectDisplayName } from '../lib/singapore/project-display-name';
+import { singaporeProjectDisplayName, singaporeProjectSearchTerm } from '../lib/singapore/project-display-name';
 
 describe('verified Singapore display names', () => {
   it('repairs the two damaged names only at their verified street', () => {
@@ -13,4 +13,9 @@ describe('verified Singapore display names', () => {
     expect(singaporeProjectDisplayName({ project: 'OTHER\uFFFD', street: 'EVELYN ROAD' })).toBe('OTHER\uFFFD');
     expect(singaporeProjectDisplayName({ project: 'ENCHANTÉ', street: 'EVELYN ROAD' })).toBe('ENCHANTÉ');
   });
+});
+
+it('matches accented names with an ordinary keyboard query', () => {
+  expect(singaporeProjectSearchTerm('ENCHANTÉ')).toBe('enchante');
+  expect(singaporeProjectSearchTerm('VERDÉ JOO CHIAT')).toBe('verde joo chiat');
 });
