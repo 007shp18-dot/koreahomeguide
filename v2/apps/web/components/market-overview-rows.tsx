@@ -10,6 +10,7 @@ export interface MarketOverviewRowsProps {
   readonly actions: readonly NavigationActionModel[];
   readonly actionsLabel: string;
   readonly primaryAction: boolean;
+  readonly visitorLocale?: 'en' | 'ko';
   readonly summaryItems?: readonly Readonly<{ label: string; value: string; detail: string }>[];
 }
 
@@ -19,7 +20,9 @@ export function MarketOverviewRows({
   actionsLabel,
   primaryAction,
   summaryItems,
+  visitorLocale,
 }: MarketOverviewRowsProps) {
+  const ko = visitorLocale === 'ko';
   const summaryRows = rows.slice(0, 4);
   const summaries = summaryItems ?? summaryRows.map((row) => ({
     label: row.title,
@@ -30,9 +33,9 @@ export function MarketOverviewRows({
   const detailRows = rows.filter((row) => row.number !== '04' && row.number !== '06');
   const disclosureRows = rows.filter((row) => row.number === '04' || row.number === '06');
   const tabs = [
-    { href: '#overview', label: 'Overview', number: null },
-    { href: '#evidence', label: 'Evidence', number: '02' },
-    { href: '#decisions', label: 'Decisions', number: '03' },
+    { href: '#overview', label: ko ? '개요' : 'Overview', number: null },
+    { href: '#evidence', label: ko ? '실거래 자료' : 'Evidence', number: '02' },
+    { href: '#decisions', label: ko ? '가격 확인' : 'Decisions', number: '03' },
   ].filter((tab) => tab.number === null || rows.some((row) => row.number === tab.number));
   return (
     <section className={styles.overview} aria-label="Market overview details" data-market-overview="true">
@@ -50,7 +53,7 @@ export function MarketOverviewRows({
       </div>
       <div className={styles.dashboard}>
         <section aria-labelledby="coverage-profile-heading">
-          <header><p>Coverage profile</p><h2 id="coverage-profile-heading">Evidence and decision readiness</h2></header>
+          <header><p>{ko ? '서울 실거래' : visitorLocale ? 'Reported contracts' : 'Coverage profile'}</p><h2 id="coverage-profile-heading">{ko ? '어떤 가격을 확인할 수 있나요?' : visitorLocale ? 'What can you compare?' : 'Evidence and decision readiness'}</h2></header>
           <div className={styles.bars}>
             {rows.slice(0, 3).map((row) => (
               <div data-overview-state={row.state} key={`bar-${row.number}`}>
@@ -60,7 +63,7 @@ export function MarketOverviewRows({
           </div>
         </section>
         <aside aria-labelledby="market-support-heading">
-          <header><p>Market notes</p><h2 id="market-support-heading">What is usable now</h2></header>
+          <header><p>{ko ? '이용 안내' : 'Market notes'}</p><h2 id="market-support-heading">{ko ? '다음 단계' : visitorLocale ? 'Where to go next' : 'What is usable now'}</h2></header>
           {evidenceItems.length === 0 ? <p>Open the detailed rows for the current publication boundary.</p> : <ul>{evidenceItems.map((item) => <li key={item.label}><span aria-hidden="true" /><p><strong>{item.label}</strong><small>{item.description}</small></p></li>)}</ul>}
         </aside>
       </div>
@@ -74,7 +77,7 @@ export function MarketOverviewRows({
             <div className={styles.rowContent}>
               <div className={styles.rowSummary}>
                 <p>{row.description}</p>
-                <StatusLabel state={row.state} label={row.stateLabel} />
+                {visitorLocale ? null : <StatusLabel state={row.state} label={row.stateLabel} />}
               </div>
               {row.items.length > 0 ? (
                 <ul>
@@ -96,7 +99,7 @@ export function MarketOverviewRows({
         ))}
       </div>
       {disclosureRows.length > 0 ? <details className={styles.disclosure}>
-        <summary>Sources and limits</summary>
+        <summary>{ko ? '출처와 집계 범위' : 'Sources and limits'}</summary>
         <div>{disclosureRows.map((row) => <section key={row.number}>
           <h2>{row.title}</h2>
           <p>{row.description}</p>
