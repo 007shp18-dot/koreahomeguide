@@ -21,9 +21,9 @@ function ArticleCard({ article, index, lead = false }: Readonly<{
         <time dateTime={article.publishedAt}>{date.format(new Date(article.publishedAt))}</time>
         <span>{article.readMinutes} min</span>
       </div>
-      <h2><Link href={`/insights/${article.slug}/`}>{article.title}</Link></h2>
+      <h2><Link href={article.canonicalHref ?? `/insights/${article.slug}/`}>{article.title}</Link></h2>
       <p>{article.summary}</p>
-      <Link className={styles.readLink} href={`/insights/${article.slug}/`}>Read report →</Link>
+      <Link className={styles.readLink} href={article.canonicalHref ?? `/insights/${article.slug}/`}>Read report →</Link>
     </article>
   );
 }

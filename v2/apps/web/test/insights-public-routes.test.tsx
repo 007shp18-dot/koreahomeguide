@@ -63,8 +63,9 @@ describe('public Journal routes', () => {
     expect(seoulMarkup).toContain('href="/kr/seoul/check"');
     expect(singaporeMarkup).toContain('href="/sg/singapore/explore"');
     expect(singaporeMarkup).toContain('href="/sg/singapore/check"');
-    expect(dubaiMarkup).toContain('href="/ae/dubai"');
-    expect(dubaiMarkup).toContain('href="/compare?market=dubai"');
-    expect(dubaiMarkup).not.toContain('/ae/dubai/check');
+    expect(dubaiMarkup).toContain('href="/ae/dubai/explore"');
+    expect(dubaiMarkup).toContain('href="/ae/dubai/check"');
+    expect(dubaiMarkup).toContain('data-editorial-market="ae-dubai"');
+    expect(dubaiMarkup).toContain('data-editorial-event="article_to_check"');
   });
 });
