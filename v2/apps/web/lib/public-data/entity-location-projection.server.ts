@@ -73,13 +73,13 @@ const MEDIA_SQL = `
 
 const NEARBY_SQL = `
   /* public-entity-projection:nearby */
-  SELECT 'kr-seoul:estate:' || building.external_id AS entity_id,
+  SELECT entity.id AS entity_id,
     place.kind, place.provider_id, place.name, place.distance_meters,
     place.lines, place.is_nearest
   FROM nearby_places AS place
-  INNER JOIN buildings AS building ON building.key = place.building_key
-  WHERE building.market_key = 'seoul'
-    AND 'kr-seoul:estate:' || building.external_id = ANY($1::text[])
+  INNER JOIN property_entities AS entity
+    ON entity.local_attributes ->> 'legacyBuildingKey' = place.building_key
+  WHERE entity.id = ANY($1::text[])
     AND place.kind IN ('station', 'school')
     AND place.distance_meters IS NOT NULL
   ORDER BY entity_id, place.kind, place.is_nearest DESC,
@@ -165,7 +165,8 @@ function locationFromRow(row: SqlRow): PublicEntityLocation | null {
   const verifiedAt = isoDate(row.verified_at);
   const updatedAt = isoDate(row.updated_at);
   if (
-    typeof row.entity_id !== 'string' || row.market_id !== 'kr-seoul' ||
+    typeof row.entity_id !== 'string'
+    || !includes(['kr-seoul', 'sg-singapore'] as const, row.market_id) ||
     latitude === null || latitude < -90 || latitude > 90 ||
     longitude === null || longitude < -180 || longitude > 180 ||
     !includes(PUBLIC_LOCATION_PRECISIONS, row.precision) || typeof row.provider !== 'string' ||

@@ -5,6 +5,7 @@ import { HdbBlockDetail } from '@/components/singapore/hdb-block-detail';
 import { googleMapsBrowserKeyFromEnvironment } from '@/lib/maps/google-maps-browser-key.server';
 import { buildHdbTownModel } from '@/lib/singapore/hdb-route-model.server';
 import { hdbSnapshotRepositoryFromEnvironment } from '@/lib/singapore/hdb-snapshot-repository.server';
+import { publicEntityProjectionReaderFromEnvironment } from '@/lib/public-data/entity-location-projection.server';
 
 export const dynamicParams = true;
 export const metadata: Metadata = {
@@ -23,10 +24,13 @@ export default async function HdbBlockPage({ params }: Readonly<{
   const model = buildHdbTownModel(repository, town);
   const block = model?.blocks.find((item) => item.blockId === blockId);
   if (model === null || model === undefined || block === undefined) notFound();
+  const entityId = `sg-singapore:block:${blockId}`;
+  const projections = await publicEntityProjectionReaderFromEnvironment()?.listBuildings([entityId]);
   return <HdbBlockDetail
     block={block}
     town={model.town}
     townHref={`/sg/singapore/hdb/${model.townSlug}/`}
     googleMapsBrowserKey={googleMapsBrowserKeyFromEnvironment()}
+    proximity={projections?.get(entityId)?.proximity ?? null}
   />;
 }

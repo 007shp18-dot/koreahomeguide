@@ -41,4 +41,22 @@ describe('HDB detail composition', () => {
     expect(detail).toContain('data-market-detail-shell="true"');
     expect(`${town}${detail}`).not.toContain('/kr/seoul/check');
   });
+
+  it('renders official nearest rail and school evidence on a block', () => {
+    const detail = renderToStaticMarkup(<HdbBlockDetail
+      block={block}
+      town="BEDOK"
+      townHref="/sg/singapore/hdb/bedok/"
+      googleMapsBrowserKey={null}
+      proximity={{
+        status: 'ready', coordinateStatus: 'ready',
+        nearestStation: { sourceId: 'lta:station:bedok', name: 'Bedok MRT', lines: ['MRT'], distanceMeters: 380 },
+        nearestSchool: { sourceId: 'moe:school:bedok', name: 'BEDOK GREEN PRIMARY SCHOOL', distanceMeters: 520 },
+      }}
+    />);
+    expect(detail).toContain('Nearby MRT/LRT and schools');
+    expect(detail).toContain('Bedok MRT');
+    expect(detail).toContain('BEDOK GREEN PRIMARY SCHOOL');
+    expect(detail).toContain('Straight-line distance');
+  });
 });

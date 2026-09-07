@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node scripts/apply-content-database.mjs --if-configured",
+    "prebuild": "node scripts/apply-content-database.mjs --if-configured && node scripts/seed-singapore-nearby-places.mjs --if-production",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -15,7 +15,10 @@
     "db:seed:evidence": "node scripts/seed-property-evidence.mjs",
     "db:verify:evidence": "node scripts/seed-property-evidence.mjs --verify-only",
     "db:seed:kapt-nearby": "node scripts/seed-kapt-nearby-places.mjs",
-    "db:verify:kapt-nearby": "node scripts/seed-kapt-nearby-places.mjs --verify-only"
+    "db:verify:kapt-nearby": "node scripts/seed-kapt-nearby-places.mjs --verify-only",
+    "data:build:singapore-nearby": "node scripts/build-singapore-nearby-places.mjs",
+    "db:seed:singapore-nearby": "node scripts/seed-singapore-nearby-places.mjs",
+    "db:verify:singapore-nearby": "node scripts/seed-singapore-nearby-places.mjs --verify-only"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",

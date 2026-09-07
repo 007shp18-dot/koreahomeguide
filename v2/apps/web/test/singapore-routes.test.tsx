@@ -193,6 +193,32 @@ describe('Singapore route SSR', () => {
     expect(html).not.toMatch(/use client/);
   });
 
+  it('renders official nearby rail and school facts on a project page', async () => {
+    const store = await repository();
+    const identity = store.listProjects('CCR')[0]!;
+    const model = buildSingaporeProjectModel(store, 'ccr', identity.id);
+    if (model === null) throw new Error('missing project');
+    const html = renderToStaticMarkup(<SingaporeProjectDetail model={model} proximity={{
+      status: 'ready',
+      coordinateStatus: 'ready',
+      nearestStation: {
+        sourceId: 'lta:station:lentor', name: 'Lentor MRT', lines: ['MRT'], distanceMeters: 420,
+      },
+      nearestSchool: {
+        sourceId: 'moe:school:aitong', name: 'AI TONG SCHOOL', distanceMeters: 860,
+      },
+    }} />);
+
+    expect(html).toContain('Nearby MRT/LRT and schools');
+    expect(html).toContain('Lentor MRT');
+    expect(html).toContain('420 m');
+    expect(html).toContain('AI TONG SCHOOL');
+    expect(html).toContain('860 m');
+    expect(html).toContain('Straight-line distance');
+    expect(html).toContain('Land Transport Authority');
+    expect(html).toContain('Ministry of Education');
+  });
+
   it('passes the configured Google browser key into the Singapore Explore map', async () => {
     const source = snapshot();
     vi.stubEnv('SIGNEDPRICE_SINGAPORE_SNAPSHOT_ARTIFACT', stringifySingaporeSnapshot(source));

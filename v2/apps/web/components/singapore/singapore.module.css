@@ -810,3 +810,13 @@
 .projectList small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .detailMetric strong, .resultMedian { display: block; max-width: 100%; white-space: nowrap; overflow-x: auto; overflow-wrap: normal; word-break: normal; letter-spacing: normal; }
 .projectPagination button { min-height: 44px; font-size: .875rem; }
+.nearbyMethod { margin: -0.75rem 0 1rem; color: var(--muted); font-size: .8125rem; line-height: 1.5; }
+.nearbyGrid { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.nearbyGrid > div { min-width: 0; padding: 18px; display: grid; gap: 7px; border: 1px solid var(--line); border-radius: 12px; background: var(--canvas); }
+.nearbyGrid dt { color: var(--muted); font-size: var(--text-meta); font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+.nearbyGrid dd { margin: 0; overflow-wrap: anywhere; font-size: 1.15rem; font-weight: 800; line-height: 1.3; }
+.nearbyGrid span, .nearbyGrid small { color: var(--muted); font-size: .78rem; line-height: 1.4; }
+
+@media (max-width: 760px) {
+  .nearbyGrid { grid-template-columns: 1fr; }
+}

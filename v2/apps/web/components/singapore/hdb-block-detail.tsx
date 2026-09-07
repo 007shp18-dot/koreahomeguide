@@ -1,21 +1,25 @@
 import Link from 'next/link';
 
 import type { HdbBlockDisplay } from '../../lib/singapore/hdb-route-model.server';
+import type { PublicEntityProximity } from '../../lib/public-data/entity-location-projection.server';
 import { GooglePlacePhoto } from '../maps/google-place-photo';
 import { ProjectedEntityMedia } from '../public-market/projected-entity-media';
 import { SingaporePage, singaporeStyles as styles } from './singapore-shell';
 import { MarketDetailShell } from '../market-ui/market-shell';
+import { SingaporeNearbyPlaces } from './singapore-nearby-places';
 
 export function HdbBlockDetail({
   block,
   town,
   townHref,
   googleMapsBrowserKey,
+  proximity = null,
 }: Readonly<{
   block: HdbBlockDisplay;
   town: string;
   townHref: string;
   googleMapsBrowserKey: string | null;
+  proximity?: PublicEntityProximity | null;
 }>) {
   const address = `${block.address}, Singapore`;
   return <SingaporePage currentHref="/sg/singapore/explore/" unframed>
@@ -32,7 +36,7 @@ export function HdbBlockDetail({
         registryKey={`sg-hdb:${town}:${block.address}`}
         fallback={<ProjectedEntityMedia buildingName={block.address} media={null} evidenceHref="#hdb-block-evidence-heading" />}
       />
-    </section><section className={styles.section} aria-labelledby="hdb-block-evidence-heading">
+    </section><SingaporeNearbyPlaces proximity={proximity} /><section className={styles.section} aria-labelledby="hdb-block-evidence-heading">
       <p className={styles.sectionLabel}>02 / Separate distributions</p><h2 id="hdb-block-evidence-heading">Reported HDB evidence.</h2>
       <dl className={styles.stats}>
         <div className={styles.stat}><dt>Resale median</dt><dd>{block.resaleMedianLabel ?? 'Not published'}</dd><small>{block.resaleCountLabel} records</small></div>
