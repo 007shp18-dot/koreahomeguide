@@ -127,6 +127,8 @@ export async function findGooglePlacePhoto(
 type GooglePlacePhotoProps = Readonly<{
   browserKey: string | null;
   buildingName: string;
+  /** Presentation only; approval identity always uses buildingName. */
+  displayBuildingName?: string;
   address: string;
   fallback: ReactNode;
   linkAttribution?: boolean;
@@ -147,6 +149,7 @@ export function GooglePlacePhoto(props: GooglePlacePhotoProps) {
 function GooglePlacePhotoForIdentity({
   browserKey,
   buildingName,
+  displayBuildingName = buildingName,
   address,
   fallback,
   linkAttribution = true,
@@ -273,7 +276,7 @@ function GooglePlacePhotoForIdentity({
         ? <p className={styles.photoLabel}>Verified place photos</p>
         : null}
       {photo === 'loading' ? (
-        <div className={styles.loading} aria-live="polite"><span>Loading verified place photo</span><strong>{buildingName}</strong></div>
+        <div className={styles.loading} aria-live="polite"><span>Loading verified place photo</span><strong>{displayBuildingName}</strong></div>
       ) : current === null ? null : (
         // Google Place photo URIs are ephemeral and must not be cached or
         // transformed by Next Image according to the provider terms.
@@ -281,7 +284,7 @@ function GooglePlacePhotoForIdentity({
         <img
           className={styles.photo}
           src={current.src}
-          alt={`${buildingName} place photo ${activePhoto + 1}`}
+          alt={`${displayBuildingName} place photo ${activePhoto + 1}`}
           decoding="async"
           onError={() => setPhoto('unavailable')}
         />

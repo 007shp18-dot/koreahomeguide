@@ -40,7 +40,7 @@ describe('public editorial shell', () => {
     expect(markup).toContain('aria-label="Primary navigation"');
     expect(markup).toContain('aria-label="Language navigation"');
     expect(markup).toContain('aria-label="Market navigation"');
-    expect(markup).toContain('href="/kr/seoul/check"');
+    expect(markup).toContain('href="/tools"');
     expect(markup).toContain('href="/kr/seoul/explore"');
     expect(markup).not.toContain('Design review');
     expect(markup).not.toContain('/design-review/');

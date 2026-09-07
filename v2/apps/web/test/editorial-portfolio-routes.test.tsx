@@ -44,7 +44,7 @@ describe('editorial portfolio public routes', () => {
     const records = listPortfolioRecords('zh-CN');
     const guides = records.filter(({ type }) => type === 'guide');
     const guideIndex = renderToStaticMarkup(<ChineseGuidesPage />);
-    const newsIndex = renderToStaticMarkup(<ChineseNewsPage />);
+    const newsIndex = renderToStaticMarkup(await ChineseNewsPage());
     expect(records).toHaveLength(8);
     expect(chineseGuideParams()).toEqual(guides.map(({ slug }) => ({ slug })));
     for (const record of records) {

@@ -14,18 +14,26 @@ describe('Simplified Chinese editorial release', () => {
   it('publishes a localized home and Journal without leaking review routes', async () => {
     vi.stubEnv('DATABASE_URL', '');
     const home = renderToStaticMarkup(await ChineseHome());
-    const news = renderToStaticMarkup(<ChineseNews />);
+    const news = renderToStaticMarkup(await ChineseNews());
 
     for (const markup of [home, news]) {
       expect(markup).toContain('lang="zh-CN"');
       expect(markup).not.toContain('Design review');
       expect(markup).not.toContain('/design-review/');
     }
-    expect(home).toContain('做决定之前，先看懂市场。');
-    expect(home).toContain('韩国租房押金保护：当前核验步骤');
+    expect(home).toContain('你的预算可以在哪里买到房子？');
+    expect(home).toContain('最新分析');
     expect(home).toContain('href="/zh-cn/news');
     expect(news).toContain('首尔与新加坡的政策更新、市场简报和数据故事。');
     expect(news).toContain('data-public-editorial-frame="content"');
+  });
+
+  it('opens the home analysis destination without policy updates or guides', async () => {
+    const markup = renderToStaticMarkup(await ChineseNews({ searchParams: Promise.resolve({type: 'analysis'}) }));
+    expect(markup).toContain('data story');
+    expect(markup).toContain('market brief');
+    expect(markup).not.toContain('policy update');
+    expect(markup).not.toContain('href="/zh-cn/guides/');
   });
 
   it('uses reciprocal English and zh-Hans canonicals on indexable content', () => {

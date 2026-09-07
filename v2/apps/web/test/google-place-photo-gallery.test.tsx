@@ -1,8 +1,9 @@
+import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('next/script', () => ({ default: () => null }));
 
-import { findGooglePlacePhotos, photoApprovalLabel } from '../components/maps/google-place-photo';
+import { GooglePlacePhoto, findGooglePlacePhotos, photoApprovalLabel } from '../components/maps/google-place-photo';
 
 describe('approved Google place photo gallery', () => {
   it('returns no more than five live photos with their author credits', async () => {
@@ -46,4 +47,10 @@ describe('approved Google place photo gallery', () => {
     expect(photoApprovalLabel('building-exterior', 'licensed-url')).toBe('Verified building photograph');
     expect(photoApprovalLabel('building-exterior', 'google-place')).toBe('Verified place photos');
   });
+});
+
+it('uses a corrected loading label without changing source identity props', () => {
+  const html = renderToStaticMarkup(<GooglePlacePhoto browserKey="test" buildingName={"ENCHANT\uFFFD"} displayBuildingName="ENCHANTÉ" address="EVELYN ROAD" registryKey="source-key" fallback={<p>No photo</p>} />);
+  expect(html).toContain('ENCHANTÉ');
+  expect(html).not.toContain('\uFFFD');
 });

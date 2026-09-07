@@ -176,20 +176,15 @@ for (const route of publicRoutes) {
   });
 }
 
-test('desktop exposes Passport in the first viewport and retains Seoul evidence below', async ({
-  page,
-}, testInfo) => {
+test('desktop exposes the compact Passport form and city exploration cards', async ({page}, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium');
   await page.goto('/');
-
-  const hero = page.locator('[data-home-region="hero"]');
   const passport = page.locator('[data-home-region="passport"]');
   await expect(passport.getByRole('heading', { level: 1 })).toBeInViewport();
-  await expect(passport.getByRole('button', { name: 'Compare Seoul · Singapore · Dubai' })).toBeInViewport();
-  const evidence = hero.locator('[data-evidence-state="available"]');
-  await expect(evidence).toBeVisible();
-  await expect(evidence.locator('strong')).toBeVisible();
-  await expect(hero.getByRole('link', { name: 'Explore', exact: true })).toBeVisible();
+  await expect(passport.getByRole('button', { name: 'Compare cities' })).toBeInViewport();
+  const markets = page.locator('[data-home-region="markets"]');
+  await expect(markets.getByRole('heading', {level:2})).toBeInViewport();
+  await expect(markets.getByRole('link')).toHaveCount(3);
 });
 
 test('mobile primary navigation remains tappable and reaches the market flow', async ({
@@ -378,4 +373,11 @@ test('status API returns only public release readiness', async ({ request }) => 
     markets: ['kr-seoul', 'sg-singapore', 'ae-dubai'],
     indexing: 'enabled',
   });
+});
+
+// This existing alias was made canonical in the research release.
+test('Singapore city alias redirects to the public overview', async ({request}) => {
+ const response = await request.get('/sg/singapore/', {maxRedirects:0});
+ expect(response.status()).toBe(308);
+ expect(response.headers()['location']).toBe('/sg/');
 });

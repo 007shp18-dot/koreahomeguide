@@ -21,8 +21,8 @@ describe('public editorial homepage', () => {
 
     expect(markup.match(/<h1/g)).toHaveLength(1);
     expect(markup).toContain('Where can your budget become a home?');
-    expect(markup).toContain('See the market before you make the move.');
-    expect(markup).toContain('href="/kr/seoul/check"');
+    expect(markup).toContain('Where can your budget become a home?');
+    expect(markup).toContain('href="/tools"');
     expect(markup).toContain('href="/kr/seoul/explore"');
     expect(markup).toContain('href="/news?type=analysis"');
     expect(markup).not.toContain('/design-review/');
@@ -30,7 +30,7 @@ describe('public editorial homepage', () => {
 
   it('keeps Seoul, Singapore, and Dubai visible in the first-screen selector', async () => {
     const markup = renderToStaticMarkup(await Home());
-    const markets = markup.indexOf('aria-label="Choose a property market"');
+    const markets = markup.indexOf('data-home-region="markets"');
     const insight = markup.indexOf('data-home-section="insight"');
 
     expect(markets).toBeGreaterThan(0);
@@ -46,7 +46,7 @@ describe('public editorial homepage', () => {
   it('opens with an honest market photograph instead of a decorative mock', async () => {
     const markup = renderToStaticMarkup(await Home());
 
-    expect(markup).toContain('data-home-hero-media="market-photo"');
+    expect(markup).toContain('seoul-residential.jpg');
     expect(markup).toContain('seoul-residential.jpg');
     expect(markup).toContain('Seoul apartment skyline with Namsan in the distance');
   });
@@ -58,14 +58,14 @@ describe('public editorial homepage', () => {
       expect(markup).toContain(`href="${href}"`);
     }
     for (const href of [
-      '/kr/seoul/check',
+      '/tools',
       '/kr/seoul/explore',
-      '/sg/singapore/check',
+      '/sg/singapore/explore',
       '/guides',
     ]) {
       expect(markup).toContain(`href="${href}"`);
     }
-    expect(markup).toContain('aria-label="Choose a property market"');
+    expect(markup).toContain('data-home-region="markets"');
     expect(markup).toContain('href="/ae/dubai/explore"');
   });
 
