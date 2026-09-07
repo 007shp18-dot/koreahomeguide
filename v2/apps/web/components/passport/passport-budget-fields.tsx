@@ -15,7 +15,7 @@ export function PassportBudgetFields({ amount, currency, locale, id }: Readonly<
         setValue(new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(convertPassportCurrency(normalizePassportAmount(value, selected), selected, next)));
         setSelected(next);
       }}>{PASSPORT_BUDGET_CURRENCIES.map((code) => <option key={code} value={code}>{code}</option>)}</select>
-      <input id={id} name="budget" inputMode="decimal" value={value} onChange={(event) => setValue(event.target.value)} />
+      <input id={id} name="budget" inputMode="decimal" placeholder={new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(convertPassportCurrency(amount, currency, selected))} value={value} onChange={(event) => setValue(event.target.value)} />
     </div>
   </>;
 }

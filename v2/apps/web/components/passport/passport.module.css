@@ -8,16 +8,17 @@
 .entryForm button{white-space:nowrap}
 .lead{max-width:650px;margin:24px 0 0;color:#536176;font-size:17px;line-height:1.65}
 .entryForm,.resultForm{display:grid;gap:10px}
-.entryForm label,.resultForm label{color:#536176;font-size:13px}
+.entryForm label,.resultForm label{color:#536176;font-size:14px}
 .inputFrame,.compactInput{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;border:1px solid #cbd5e1;border-radius:8px;background:#fff}
-.inputFrame{min-height:66px;padding:0 20px;font-size:24px}
-.inputFrame input,.compactInput input{min-width:0;border:0;outline:0;background:transparent;color:#111827;font:inherit}
-.inputFrame{gap:12px}
-.inputFrame select{max-width:88px;min-height:44px;border:0;border-right:1px solid #cbd5e1;background:transparent;color:#111827;font:inherit;font-size:14px;font-weight:700}
+.inputFrame{min-height:52px;padding:0 14px;font-size:20px}
+.inputFrame input,.compactInput input{min-width:0;width:100%;padding:0;border:0;outline:0;background:transparent;color:#111827;font:inherit;line-height:1.5}
+.inputFrame{gap:14px}
+.inputFrame input::placeholder{color:#94a3b8;opacity:1}
+.inputFrame select{max-width:88px;min-height:28px;padding-right:10px;border:0;border-right:1px solid #cbd5e1;background:transparent;color:#111827;font:inherit;font-size:14px;font-weight:700}
 .inputFrame:focus-within{outline:2px solid #1557d5;outline-offset:2px}
 .resultForm .inputFrame{min-height:50px;padding:0 12px;font-size:16px}
 .entryForm button,.resultForm button,.resultFooter button{min-height:50px;border:0;border-radius:8px;background:#1557d5;color:#fff;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
-.entryForm small{color:#6b7280;font-size:12px}
+.entryForm small{color:#6b7280;font-size:13px;line-height:1.5}
 .workspace{padding:52px 0 72px}
 .resultHeader{display:grid;grid-template-columns:minmax(0,1fr) minmax(340px,.7fr);gap:48px;align-items:end;margin-bottom:36px}
 .resultHeader .eyebrow{grid-column:1/-1;margin-bottom:-30px}
