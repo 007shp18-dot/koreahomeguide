@@ -11,6 +11,7 @@ vi.mock('next/script', () => ({
 
 import {
   NaverDistrictMap,
+  buildGoogleBuildingLookup,
   clusterNaverBuildings,
   buildNaverBuildingMarkerContent,
   buildNaverDistrictMarkerContent,
@@ -985,4 +986,14 @@ describe('NAVER district map', () => {
       href: '/kr/seoul/explore/gangnam-gu/evidence-tower/',
     });
   });
+});
+
+it('keeps translated display titles out of Google lookup and matching identities', () => {
+  const source = { sourceName:'Original Korean parcel identity', addressQuery:'Original Korean address' };
+  const english = buildGoogleBuildingLookup({...source, title:'Lot 554-31'});
+  const korean = buildGoogleBuildingLookup({...source, title:'Korean display title'});
+  expect(english).toEqual(korean);
+  expect(english.sourceName).toBe(source.sourceName);
+  expect(english.textQuery).toBe(`${source.sourceName}, ${source.addressQuery}`);
+  expect(buildGoogleBuildingLookup({title:'Existing building',addressQuery:'Existing address'}).sourceName).toBe('Existing building');
 });

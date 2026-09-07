@@ -1,4 +1,5 @@
 import 'server-only';
+import { matchesSeoulNeighborhoodQuery } from './seoul-neighborhood-label';
 
 import {
   KOREA_EVIDENCE_AREA_BANDS,
@@ -413,6 +414,7 @@ function buildingMatchesQuery(
   if (query.length === 0 || districtAliases.some((alias) => (
     alias.toLocaleLowerCase('en-US').includes(query)
   ))) return true;
+  if (matchesSeoulNeighborhoodQuery(building.districtSlug, building.neighborhoodName, query)) return true;
   const housingAliases = {
     apartment: ['아파트'],
     officetel: ['오피스텔'],

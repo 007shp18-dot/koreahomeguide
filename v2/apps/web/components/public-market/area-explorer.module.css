@@ -2022,3 +2022,9 @@
 .buildingList .buildingCardCopy > strong { display:block; font-size:1rem; line-height:1.5; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .buildingList .buildingCardCopy > small { font-size:.875rem; line-height:1.5; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .buildingList .buildingPrice { white-space:nowrap; font-variant-numeric:tabular-nums; letter-spacing:normal; line-height:1.5; font-size:1rem; overflow-x:auto; }
+
+/* Match the list's compact naming in the selection drawer. Full source text stays in title attributes and property details. */
+.buildingDialogHeader > div { min-width:0; flex:1; }
+.buildingDialogHeader > button { flex-shrink:0; }
+.buildingPanel h3, .buildingDialogHeader h2 { min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; letter-spacing:normal; line-height:1.5; }
+.buildingPanel > span, .buildingDialogHeader > div > span { display:block; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }

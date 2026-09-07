@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { seoulNeighborhoodLabel } from '../../lib/public-market/seoul-neighborhood-label';
 import { buildingDisplayLabel } from '../../lib/public-market/building-display-label';
 import { useRouter } from 'next/navigation';
 import { useCallback, useDeferredValue, useMemo, useReducer, useState } from 'react';
@@ -184,7 +185,7 @@ function ProjectedBuildingMedia({
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={building.media.displayUrl}
-        alt={`${building.name} ${locale === 'ko' ? '건물 외관' : 'building exterior'}`}
+        alt={`${buildingDisplayLabel(building, locale).title} ${locale === 'ko' ? '건물 외관' : 'building exterior'}`}
         width={building.media.width ?? undefined}
         height={building.media.height ?? undefined}
         style={{ objectPosition: `${focalX * 100}% ${focalY * 100}%` }}
@@ -485,7 +486,8 @@ function ReadyAreaExplorer({
   const mapBuildings = useMemo(() => filteredMapBuildings.map((building) => ({
     id: building.id,
     neighborhoodId: building.neighborhoodId,
-    title: buildingDisplayLabel(building, locale).isLot ? buildingDisplayLabel(building, locale).original : building.name,
+    title: buildingDisplayLabel(building, locale).title,
+    sourceName: buildingDisplayLabel(building, locale).isLot ? buildingDisplayLabel(building, locale).original : building.name,
     href: buildingSelectionHref(building, linkSelection, locale, {
       query: buildingQuery,
       buildingPage: readyBuildingAvailability?.page,
@@ -516,7 +518,7 @@ function ReadyAreaExplorer({
       ));
       return {
         id: neighborhood.id,
-        title: neighborhood.name,
+        title: seoulNeighborhoodLabel(selected.slug, neighborhood.name, locale),
         addressQuery: `서울특별시 ${selected.nameKo} ${neighborhood.name}`,
         latitude: located.length === 0 ? null
           : located.reduce((sum, building) => sum + building.latitude!, 0) / located.length,
@@ -526,7 +528,7 @@ function ReadyAreaExplorer({
         selected: selectedNeighborhood === neighborhood.id,
       };
     })
-  ), [districtMapBuildings, readyBuildingAvailability?.neighborhoods, selected.nameKo, selectedNeighborhood]);
+  ), [districtMapBuildings, readyBuildingAvailability?.neighborhoods, selected.nameKo, selected.slug, selectedNeighborhood, locale]);
   const referencedMapBuildings = useMemo(() => {
     const references = new Map(mapNeighborhoods.map(point => [point.id, point]));
     return mapBuildings.map(building => {
@@ -1048,7 +1050,7 @@ function ReadyAreaExplorer({
                               buildingPage: readyBuildingAvailability?.page,
                             })}
                           >
-                            <span className={styles.visuallyHidden}>{copy.openBuilding} · {building.name}</span>
+                            <span className={styles.visuallyHidden}>{copy.openBuilding} · {buildingDisplayLabel(building, locale).title}</span>
                             <span aria-hidden="true">→</span>
                           </Link>
                         </li>
@@ -1253,8 +1255,8 @@ function BuildingEvidencePanel({
         data-building-evidence={building.evidenceStatus}
       >
         <p>{copy.selectedBuilding}</p>
-        <h3>{buildingDisplayLabel(building, locale).isLot ? buildingDisplayLabel(building, locale).original : building.name}</h3>
-        <span>{building.neighborhoodName} · {evidenceHousingOptions.find(([value]) => value === building.housingType)?.[locale === 'ko' ? 2 : 1] ?? building.housingType}</span>
+        <h3 title={buildingDisplayLabel(building, locale).original}>{buildingDisplayLabel(building, locale).title}</h3>
+        <span title={buildingDisplayLabel(building, locale).original}>{buildingDisplayLabel(building, locale).location} · {evidenceHousingOptions.find(([value]) => value === building.housingType)?.[locale === 'ko' ? 2 : 1] ?? building.housingType}</span>
         <strong>{copy.priceEvidenceUnavailable}</strong>
         <dl>
           <div><dt>{copy.observedPeriod}</dt><dd>{building.firstObservedMonth}–{building.lastObservedMonth}</dd></div>
@@ -1275,8 +1277,8 @@ function BuildingEvidencePanel({
       data-building-evidence={building.evidenceStatus}
     >
       <p>{copy.selectedBuilding}</p>
-      <h3>{buildingDisplayLabel(building, locale).isLot ? buildingDisplayLabel(building, locale).original : building.name}</h3>
-      <span>{building.neighborhoodName} · {localizeSampleLabel(building.sampleLabel, locale)}</span>
+      <h3 title={buildingDisplayLabel(building, locale).original}>{buildingDisplayLabel(building, locale).title}</h3>
+      <span title={buildingDisplayLabel(building, locale).original}>{buildingDisplayLabel(building, locale).location} · {localizeSampleLabel(building.sampleLabel, locale)}</span>
       <dl>
         <div><dt>{building.primaryMetric === 'monthly-rent'
           ? (locale === 'ko' ? '월세 중앙값' : 'Monthly-rent median')
