@@ -251,7 +251,13 @@ test('Singapore Explore keeps filters and project selection in its shareable URL
 
 test('Prices sends a Singapore project search to Singapore Explore', async ({ page }) => {
   await page.goto('/sg/singapore/explore/');
-  const projectName = await page.locator('[data-selected] > button strong').first().textContent();
+  const projectTitle = page.locator('[data-selected] > button strong[title]').first();
+  const projectName = await projectTitle.textContent();
+  await expect(projectTitle).toHaveAttribute('title', projectName!);
+  await expect(projectTitle).toHaveCSS('white-space', 'nowrap');
+  const price = page.locator('[data-selected] > button > span:last-child strong').first();
+  await expect(price).toHaveCSS('white-space', 'nowrap');
+  await noOverflow(page);
   expect(projectName?.trim()).toBeTruthy();
   await page.goto('/prices/');
   await page.getByRole('combobox', { name: 'Market', exact: true }).selectOption('singapore');

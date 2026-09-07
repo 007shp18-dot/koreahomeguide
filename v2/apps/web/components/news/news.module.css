@@ -529,3 +529,5 @@
   .workspaceHero h1 { font-size: clamp(2.2rem, 11vw, 3.5rem); }
   .workspaceBoundary { grid-template-columns: 1fr; gap: 8px; }
 }
+
+.workspaceHero h1, .documentHero h1 { letter-spacing: normal; line-height: 1.15; }

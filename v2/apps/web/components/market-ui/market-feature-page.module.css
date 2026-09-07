@@ -17,13 +17,13 @@
 .cards article + article { border-left: 1px solid var(--line); }
 .cards span { color: var(--accent); font-size: var(--text-meta); font-weight: 800; }
 .cards strong { margin-top: 28px; font-size: 14px; }
-.cards p { margin-top: 7px; color: var(--muted); font-size: 12px; line-height: 1.55; }
+.cards p { margin-top: 7px; color: var(--muted); font-size: .875rem; line-height: 1.55; }
 .next { margin-top: 16px; padding: 20px; display: grid; grid-template-columns: 220px 1fr auto; gap: 24px; align-items: center; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-strong); }
 .next div { display: grid; }
 .next span { color: var(--muted); font-size: var(--text-meta); font-weight: 800; letter-spacing: .08em; }
 .next strong { margin-top: 5px; font-size: 13px; }
-.next p { color: var(--muted); font-size: 12px; line-height: 1.55; }
-.next a { color: var(--accent); font-size: 12px; font-weight: 750; text-decoration: none; white-space: nowrap; }
+.next p { color: var(--muted); font-size: .875rem; line-height: 1.55; }
+.next a { color: var(--accent); font-size: .875rem; font-weight: 750; text-decoration: none; white-space: nowrap; }
 @media (max-width: 760px) {
   .hero { grid-template-columns: 1fr; }
   .hero aside { min-height: 180px; }

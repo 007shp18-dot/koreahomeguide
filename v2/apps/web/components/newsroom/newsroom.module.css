@@ -697,3 +697,5 @@
 
 .articlePhoto { margin: 32px 0; }
 .articlePhoto figure { width: 100%; aspect-ratio: auto; min-height: 0; height: clamp(220px, 28vw, 360px); }
+
+.indexHero h1, .articleHero h1 { letter-spacing: normal; line-height: 1.2; }
