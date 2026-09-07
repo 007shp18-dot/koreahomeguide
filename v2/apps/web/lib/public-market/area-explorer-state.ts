@@ -1,3 +1,4 @@
+import { buildingDisplayName } from './seoul-display-names';
 import { matchesSeoulNeighborhoodQuery } from './seoul-neighborhood-label';
 import type { SeoulDistrictSlug } from '@signedprice/korea-rent/browser';
 import type { ExploreBuildingModel } from './area-route-types';
@@ -63,6 +64,7 @@ export function filterExploreBuildings<T extends ExploreBuildingSearchItem>(
       building.districtSlug,
       building.neighborhoodId,
       building.name,
+      buildingDisplayName(building.name, 'en'),
       building.neighborhoodName,
       building.housingType,
       ...housingAliases,

@@ -1,5 +1,11 @@
 import { expect, it } from 'vitest';
 import { parsePropertyScenarioContext, createPropertyScenarioHref } from '../lib/tools/property-scenario-context';
+it('carries the entered annual rent in Dubai and rejects invalid rent inputs', () => {
+ const href = createPropertyScenarioHref({locale:'en', market:'ae-dubai', currency:'AED', price:1530000, annualRent:83000});
+ const context = parsePropertyScenarioContext(Object.fromEntries(new URL(href,'https://signedprice.test').searchParams));
+ expect(context.annualRent).toBe(83000);
+ for(const annualRent of ['-1','Infinity','1e999']) expect(parsePropertyScenarioContext({annualRent}).annualRent).toBeNull();
+});
 it('keeps Singapore and Dubai in their native currencies on the neutral route', () => {
   expect(createPropertyScenarioHref({locale:'en', market:'sg-singapore',currency:'SGD',price:1200000})).toContain('/tools/property-scenario/?market=sg-singapore&currency=SGD');
   expect(parsePropertyScenarioContext({market:'ae-dubai',currency:'AED',price:'2000000'}).price).toBe(2000000);

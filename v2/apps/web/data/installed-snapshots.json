@@ -91,6 +91,19 @@
       "objectUrl": "installed://ae-area-evidence",
       "sha256": "c948b9373db1ab3ea9b2f88f00b738f443e33c6c261cd0c315e854113819279a",
       "recordCount": 46
+    },
+    {
+      "marketId": "sg-singapore",
+      "dataset": "sg-check-ura-private-sale",
+      "schemaVersion": "signedprice-singapore-check-market-v1",
+      "sourceVersion": "ura-data-service-v1",
+      "parserVersion": "sg-ura-private-check-v1",
+      "rightsPolicyId": "sg-ura-private-sale-v1",
+      "period": "2021-08/2026-08",
+      "generatedAt": "2026-09-02T00:00:00.000Z",
+      "objectUrl": "installed://sg-check-ura-private-sale",
+      "sha256": "53f7f23a2c05adceef2d1f3e689219032fdb5198bebff5a979d5f3a2bb44d2e8",
+      "recordCount": 133942
     }
   ]
 }

@@ -4,6 +4,7 @@ export type PropertyScenarioContext = Readonly<{
  market: ToolMarket; currency: ScenarioCurrency; entity: string | null; propertyName: string | null;
  transaction: 'sale' | null; housing: string | null; areaSqm: number | null; price: number | null; returnTo: string | null;
  passportHref?: string;
+ annualRent?: number | null;
 }>;
 export type PropertyScenarioSearchParams = Readonly<Record<string,string | readonly string[] | undefined>>;
 const currencies = {'kr-seoul':'KRW','sg-singapore':'SGD','ae-dubai':'AED'} as const;
@@ -39,14 +40,15 @@ export function parsePropertyScenarioContext(input: PropertyScenarioSearchParams
  const entity = scalar(input.entity);
  const passportHref = passportReturn(input.passport);
  return {market: market as ToolMarket,currency:currency as ScenarioCurrency,entity:entity && /^[a-z0-9-]{1,120}$/.test(entity) ? entity : null,
-  propertyName:label(input.property,120),transaction:input.transaction === 'sale' ? 'sale' : null,housing:label(input.housing,60),areaSqm:amount(input.area,10000),price:amount(input.price),returnTo,...(passportHref ? {passportHref} : {})};
+  propertyName:label(input.property,120),transaction:input.transaction === 'sale' ? 'sale' : null,housing:label(input.housing,60),areaSqm:amount(input.area,10000),price:amount(input.price),returnTo,...(input.annualRent === undefined ? {} : {annualRent:amount(input.annualRent)}),...(passportHref ? {passportHref} : {})};
 }
 export function createPropertyScenarioHref(input: Partial<PropertyScenarioContext> & {locale:'en'|'ko';market:ToolMarket;currency:ScenarioCurrency}): string {
  const raw = {market:input.market,currency:input.currency,entity:input.entity ?? undefined,property:input.propertyName ?? undefined,transaction:input.transaction ?? undefined,housing:input.housing ?? undefined,area:input.areaSqm == null ? undefined:String(input.areaSqm),price:input.price == null ? undefined:String(input.price),returnTo:input.returnTo ?? undefined,passport:input.passportHref};
- const c=parsePropertyScenarioContext(raw,input.locale);
+ const c=parsePropertyScenarioContext({...raw,...(input.annualRent == null ? {} : {annualRent:String(input.annualRent)})},input.locale);
  const params=new URLSearchParams({market:c.market,currency:c.currency});
  for(const [key,value] of [['entity',c.entity],['property',c.propertyName],['transaction',c.transaction],['housing',c.housing],['area',c.areaSqm],['price',c.price],['returnTo',c.returnTo]] as const) if(value !== null) params.set(key,String(value));
  if(c.passportHref) params.set('passport',c.passportHref);
+ if(c.annualRent != null) params.set('annualRent',String(c.annualRent));
  const base=`${input.locale === 'ko' ? '/ko' : ''}/tools/property-scenario/`;
  return params.size === 2 && c.market === 'kr-seoul' ? base : `${base}?${params}`;
 }

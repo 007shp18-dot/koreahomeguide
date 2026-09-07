@@ -18,3 +18,7 @@ Verification includes installed-data Korean/English query identity/count parity 
 Review caught an additional coupling: Google fallback lookup/trust matching previously consumed the display title. Added a separate optional sourceName on map points and retained the former Korean parcel/name identity in both lookup and trust matching. Regression tests compare English/Korean map point inputs and preserve fallback behavior for other callers.
 
 Local verification: production build and lint passed; full unit run passed 2,446 tests with one test-fixture query parameter issue, corrected and retested. Final focused map/alias suites passed 39 tests, including the added source-identity regression.
+
+Concurrent release reconciliation: main 5bfb1f4 added 24 neighborhood and seven estate display aliases plus other research/Check fixes. Retained all those changes. Combined coverage is 42 distinct neighborhood names (four overlap) and the seven existing estate aliases; original Korean text remains inline as well as in source tooltips. Applied the existing aliases to server/client search too. Google lookup continues using original names even for the newly translated named buildings.
+
+Merged-tree verification: all 293 unit suites / 2,452 tests passed. Independent review of the diff against current main found no important issues.

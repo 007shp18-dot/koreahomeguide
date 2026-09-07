@@ -1,3 +1,4 @@
+import { buildingDisplayName } from './seoul-display-names';
 import 'server-only';
 import { matchesSeoulNeighborhoodQuery } from './seoul-neighborhood-label';
 
@@ -426,6 +427,7 @@ function buildingMatchesQuery(
     building.neighborhoodId,
     building.neighborhoodName,
     building.officialName,
+    buildingDisplayName(building.officialName, 'en'),
     building.housingType,
     ...housingAliases,
   ].some((value) => value.toLocaleLowerCase('en-US').includes(query));

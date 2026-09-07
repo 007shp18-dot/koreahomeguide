@@ -1,3 +1,4 @@
+import { buildingDisplayName, neighborhoodDisplayName } from '../../lib/public-market/seoul-display-names';
 import { createPropertyScenarioHref } from '../../lib/tools/property-scenario-context';
 import { RecentTransactionPlot, SizeCohortResearch } from '../market-ui/transaction-research';
 import { PropertyScenarioCalculator } from '../market-ui/property-scenario';
@@ -157,8 +158,8 @@ export function ObservedBuildingDetail({
             <Link className={styles.backAction} href={backHref}>
               Back to {model.district.nameEn} Explore
             </Link>
-            <h1>{model.building.officialName}</h1>
-            <p>{model.building.neighborhoodName} · {model.district.nameEn}</p>
+            <h1>{buildingDisplayName(model.building.officialName, locale)}</h1>
+            <p>{neighborhoodDisplayName(model.building.neighborhoodName, locale)} · {model.district.nameEn}</p>
             <dl className={styles.factGrid}>
               <div><dt>Housing type</dt><dd>{model.building.housingType}</dd></div>
               <div><dt>Observed contracts</dt><dd>{countLabel(model.observations.total)}</dd></div>
@@ -305,8 +306,8 @@ export function KoreaEvidenceBuildingDetail({
             <Link className={styles.backAction} href={backHref}>
               Back to {model.district.nameEn} Explore
             </Link>
-            <h1>{model.building.officialName}</h1>
-            <p>{model.building.neighborhoodName} · {model.district.nameEn}</p>
+            <h1>{buildingDisplayName(model.building.officialName, locale)}</h1>
+            <p>{neighborhoodDisplayName(model.building.neighborhoodName, locale)} · {model.district.nameEn}</p>
             <dl className={styles.factGrid}>
               <div><dt>Transaction</dt><dd>{transactionLabel}</dd></div>
               <div><dt>Area cohort</dt><dd>{areaLabel}</dd></div>
@@ -374,7 +375,7 @@ export function KoreaEvidenceBuildingDetail({
                   <tr>
                     <th>Filed month</th>
                     <th>Area</th>
-                    <th>{primaryLabel}</th>
+                    <th>{locale === 'ko' ? (model.evidence.primaryMetric === 'sale-price' ? '신고 매매가격' : model.evidence.primaryMetric === 'deposit' ? '신고 보증금' : '신고 월세') : (model.evidence.primaryMetric === 'sale-price' ? 'Filed sale price' : model.evidence.primaryMetric === 'deposit' ? 'Filed deposit' : 'Filed monthly rent')}</th>
                     {model.evidence.primaryMetric === 'monthly-rent' ? <th>Filed deposit</th> : null}
                     <th>Context</th>
                   </tr>

@@ -367,8 +367,9 @@ const DEFAULT_DEPENDENCIES: EditorialGrowthReviewDependencies = Object.freeze({
 
 export async function buildEditorialGrowthReviewModel(
   query: ReviewQuery,
-  dependencies: EditorialGrowthReviewDependencies = DEFAULT_DEPENDENCIES,
+  overrides: Partial<EditorialGrowthReviewDependencies> = {},
 ): Promise<EditorialGrowthReviewModel> {
+  const dependencies = { ...DEFAULT_DEPENDENCIES, ...overrides };
   const publishedArticles = await dependencies.articles();
   if (publishedArticles.length === 0) {
     throw new TypeError('A published review article is required.');

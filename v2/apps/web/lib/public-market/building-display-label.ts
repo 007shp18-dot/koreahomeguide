@@ -1,4 +1,5 @@
 import { getSeoulDistrictBySlug } from '@signedprice/korea-rent/browser';
+import { buildingDisplayName } from './seoul-display-names';
 
 import { seoulNeighborhoodLabel } from './seoul-neighborhood-label';
 
@@ -12,7 +13,7 @@ export function buildingDisplayLabel(input: Readonly<{
   const neighborhood = seoulNeighborhoodLabel(input.districtSlug, input.neighborhoodName, locale);
   const displayAddress = lot ? `${neighborhood} ${lot}` : neighborhood;
   return {
-    title: lot ? (locale === 'ko' ? address : `${lot.startsWith('산') ? 'Mountain lot' : 'Lot'} ${lot.replace(/^산/, '')}`) : input.name,
+    title: lot ? (locale === 'ko' ? address : `${lot.startsWith('산') ? 'Mountain lot' : 'Lot'} ${lot.replace(/^산/, '')}`) : buildingDisplayName(input.name, locale),
     location: [locale === 'ko' ? district?.nameKo : district?.nameEn, displayAddress].filter(Boolean).join(' · '),
     original: [district?.nameKo, address, lot ? null : input.name].filter(Boolean).join(' '),
     isLot: Boolean(lot),

@@ -46,6 +46,9 @@ const nextConfig: NextConfig = {
       './data/korea-conversion-evidence.json.gz',
       './data/kapt-building-facts.json.gz',
       './data/dubai-area-evidence.json.gz',
+      './data/singapore-private-sale.json.gz',
+      './data/singapore-hdb.json.gz',
+      './data/singapore-check-ura-private-sale.json.gz',
     ],
   },
 };

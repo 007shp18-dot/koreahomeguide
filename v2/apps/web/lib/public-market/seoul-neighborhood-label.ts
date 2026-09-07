@@ -1,3 +1,5 @@
+import { neighborhoodDisplayName } from './seoul-display-names';
+
 /** Display/search aliases only. Never use these names for identity or geocoding.
  * Reviewed references: docs/operations/2026-09-07-explore-location-labels.md.
  * Unreviewed neighborhoods retain their source name.
@@ -20,12 +22,11 @@ const ENGLISH_NAMES: Readonly<Record<string, Readonly<Record<string, string>>>> 
 
 export function seoulNeighborhoodLabel(districtSlug: string, name: string, locale: 'en' | 'ko'): string {
   const alias = ENGLISH_NAMES[districtSlug]?.[name.trim()];
-  return locale === 'en' && typeof alias === 'string' ? alias : name;
+  return locale === 'en' && typeof alias === 'string' ? `${alias} · ${name}` : neighborhoodDisplayName(name, locale);
 }
 
 export function matchesSeoulNeighborhoodQuery(districtSlug: string, name: string, query: string): boolean {
-  const alias = ENGLISH_NAMES[districtSlug]?.[name.trim()];
-  if (typeof alias !== 'string') return false;
+  const alias = seoulNeighborhoodLabel(districtSlug, name, 'en');
   const normalize = (value: string) => value.toLowerCase().replace(/[\s-]+/g, '');
   const normalized = normalize(query);
   return normalized.length > 0 && normalize(alias).includes(normalized);
