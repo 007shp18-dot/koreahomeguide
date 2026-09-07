@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { buildingDisplayLabel } from '../../lib/public-market/building-display-label';
 import { useRouter } from 'next/navigation';
 import { useCallback, useDeferredValue, useMemo, useReducer, useState } from 'react';
 
@@ -484,7 +485,7 @@ function ReadyAreaExplorer({
   const mapBuildings = useMemo(() => filteredMapBuildings.map((building) => ({
     id: building.id,
     neighborhoodId: building.neighborhoodId,
-    title: building.name,
+    title: buildingDisplayLabel(building, locale).isLot ? buildingDisplayLabel(building, locale).original : building.name,
     href: buildingSelectionHref(building, linkSelection, locale, {
       query: buildingQuery,
       buildingPage: readyBuildingAvailability?.page,
@@ -1018,9 +1019,9 @@ function ReadyAreaExplorer({
                               <ProjectedBuildingMedia building={building} locale={locale} variant="thumbnail" />
                             </span>
                             <span className={styles.buildingCardCopy}>
-                              <strong>{building.name}</strong>
+                              <strong title={buildingDisplayLabel(building, locale).original}>{buildingDisplayLabel(building, locale).title}</strong>
                               <span className={styles.buildingPrice}>{building.medianLabel ?? '—'}</span>
-                              <small>{building.neighborhoodName} · {evidenceHousingOptions.find(([value]) => value === building.housingType)?.[locale === 'ko' ? 2 : 1] ?? building.housingType}</small>
+                              <small title={buildingDisplayLabel(building, locale).original}>{buildingDisplayLabel(building, locale).location} · {evidenceHousingOptions.find(([value]) => value === building.housingType)?.[locale === 'ko' ? 2 : 1] ?? building.housingType}</small>
                               {!isIndividualMapBuilding(building) && building.verifiedAddress === undefined ? <small>{locale === 'ko' ? '지도 위치 확인 전 · 상세 확인 가능' : 'Map location unavailable · Details available'}</small> : null}
                               <small>{model.evidenceSelection.areaBand === 'legacy-45-55'
                                 ? `${copy.jeonseObservations} · ${building.jeonseObservationCount} · ${copy.monthlyObservations} · ${building.monthlyObservationCount}`
@@ -1176,8 +1177,8 @@ function ReadyAreaExplorer({
                   return (
                     <tr key={building.id} data-building-table-row={building.id}>
                       <th scope="row">
-                        <strong>{building.name}</strong>
-                        <small>{building.neighborhoodName}</small>
+                        <strong title={buildingDisplayLabel(building, locale).original}>{buildingDisplayLabel(building, locale).title}</strong>
+                        <small title={buildingDisplayLabel(building, locale).original}>{buildingDisplayLabel(building, locale).location}</small>
                       </th>
                       <td>{district === undefined
                         ? '—'
@@ -1252,7 +1253,7 @@ function BuildingEvidencePanel({
         data-building-evidence={building.evidenceStatus}
       >
         <p>{copy.selectedBuilding}</p>
-        <h3>{building.name}</h3>
+        <h3>{buildingDisplayLabel(building, locale).isLot ? buildingDisplayLabel(building, locale).original : building.name}</h3>
         <span>{building.neighborhoodName} · {evidenceHousingOptions.find(([value]) => value === building.housingType)?.[locale === 'ko' ? 2 : 1] ?? building.housingType}</span>
         <strong>{copy.priceEvidenceUnavailable}</strong>
         <dl>
@@ -1274,7 +1275,7 @@ function BuildingEvidencePanel({
       data-building-evidence={building.evidenceStatus}
     >
       <p>{copy.selectedBuilding}</p>
-      <h3>{building.name}</h3>
+      <h3>{buildingDisplayLabel(building, locale).isLot ? buildingDisplayLabel(building, locale).original : building.name}</h3>
       <span>{building.neighborhoodName} · {localizeSampleLabel(building.sampleLabel, locale)}</span>
       <dl>
         <div><dt>{building.primaryMetric === 'monthly-rent'

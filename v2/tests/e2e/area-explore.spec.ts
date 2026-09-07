@@ -150,6 +150,8 @@ test('rail selection opens the map-owned drawer and full-detail CTA', async ({ p
   await page.goto('/kr/seoul/explore/?district=jongno-gu');
 
   const trigger = page.locator(`[data-building-row="${PUBLIC_BUILDING_TEST_ID}"] > button`);
+  await expect(trigger.locator('strong[title]').first()).toHaveCSS('white-space', 'nowrap');
+  await expect(trigger.locator('strong[title]').first()).toHaveAttribute('title', /.+/);
   await trigger.click();
   await expect(page).toHaveURL(/\/kr\/seoul\/explore\/\?.*buildingId=/);
   const drawer = page.locator(`[data-building-drawer="${PUBLIC_BUILDING_TEST_ID}"]`);

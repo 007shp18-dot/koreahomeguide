@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { buildingDisplayLabel } from '../../lib/public-market/building-display-label';
 import { useState } from 'react';
 import type { PassportLocale, PassportMarketResult } from '../../lib/passport/model';
 import { createPropertyScenarioHref } from '../../lib/tools/property-scenario-context';
@@ -28,15 +29,16 @@ export function PassportCandidates({ market, locale, passportHref }: Readonly<{
     <p>{copy.note}</p>
     {market.matches.length === 0 ? <p>{market.scopes.length === 0 ? copy.missing : copy.none}</p> : <>
       <ul className={styles.candidateList}>{market.matches.slice((activePage - 1) * PAGE_SIZE, activePage * PAGE_SIZE).map(scope => {
+        const label = market.id === 'kr-seoul' && scope.neighborhoodName && scope.districtSlug ? buildingDisplayLabel({name:scope.name,neighborhoodName:scope.neighborhoodName,districtSlug:scope.districtSlug}, locale === 'ko' ? 'ko' : 'en') : null;
         const href = locale === 'ko' && market.id === 'kr-seoul' ? `/ko${scope.href}` : scope.href;
         const scenario = createPropertyScenarioHref({locale:locale === 'ko' ? 'ko' : 'en',market:market.id,currency:market.currency,
-          propertyName:scope.name,transaction:'sale',price:scope.medianPrice,returnTo:href,passportHref});
+          propertyName:label?.isLot ? label.original : scope.name,transaction:'sale',price:scope.medianPrice,returnTo:href,passportHref});
         return <li key={scope.href} data-passport-candidate={scope.kind ?? 'area'}>
-          {scope.kind ? <small>{copy.kind[scope.kind]}</small> : null}
-          <h3><Link href={href} prefetch={false}>{scope.name}</Link></h3>
-          {scope.locationLabel ? <small>{scope.locationLabel}</small> : null}
+          {scope.kind ? <small title={copy.kind[scope.kind]}>{copy.kind[scope.kind]}</small> : null}
+          <h3><Link href={href} prefetch={false} title={label?.original ?? scope.name}>{label?.title ?? scope.name}</Link></h3>
+          <small className={styles.candidateLocation} title={label?.original ?? scope.locationLabel}>{label?.location ?? scope.locationLabel ?? market.city}</small>
           <div className={styles.candidatePrice}><span>{copy.median}</span><strong>{money.format(scope.medianPrice)}</strong></div>
-          {scope.sample === undefined ? null : <small>{scope.sample.toLocaleString(locale)} {copy.sales} · {market.period}</small>}
+          {scope.sample === undefined ? null : <small title={`${scope.sample.toLocaleString(locale)} ${copy.sales} · ${market.period}`}>{scope.sample.toLocaleString(locale)} {copy.sales} · {market.period}</small>}
           <div className={styles.candidateActions}><Link href={href} prefetch={false}>{copy.details}{locale === 'ko' && market.id !== 'kr-seoul' ? ' · English' : ''}</Link><Link href={scenario} prefetch={false}>{copy.calculate}</Link></div>
         </li>;
       })}</ul>

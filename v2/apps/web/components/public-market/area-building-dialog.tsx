@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { buildingDisplayLabel } from '../../lib/public-market/building-display-label';
 import { useEffect, useId, useRef, type ReactNode } from 'react';
 
 import type { ProductLocale } from '../../lib/locale/product-copy';
@@ -11,6 +12,7 @@ type AreaBuildingDialogProps = Readonly<{
     id: string;
     name: string;
     neighborhoodName: string;
+    districtSlug: string;
   }>;
   detailHref: string;
   locale: ProductLocale;
@@ -78,7 +80,7 @@ export function AreaBuildingDialog({
       <header className={styles.buildingDialogHeader}>
         <div>
           <p>{locale === 'ko' ? '선택한 건물' : 'Selected building'}</p>
-          <h2 id={titleId}>{building.name}</h2>
+          <h2 id={titleId}>{buildingDisplayLabel(building, locale).isLot ? buildingDisplayLabel(building, locale).original : building.name}</h2>
           <span>{building.neighborhoodName}</span>
         </div>
         <button
