@@ -269,7 +269,9 @@ export function createPublicEntityProjectionReader(
 }> {
   return Object.freeze({
     async listBuildings(entityIds) {
-      const ids = Object.freeze([...new Set(entityIds.filter((id) => id.trim() !== ''))].slice(0, 2_500));
+      const requestedIds = [...new Set(entityIds.filter((id) => id.trim() !== ''))].slice(0, 2_500);
+      const storedId = (id: string) => /^[a-z]+-gu-[a-z0-9]+$/.test(id) ? `kr-seoul:estate:${id}` : id;
+      const ids = Object.freeze([...new Set(requestedIds.map(storedId))]);
       if (ids.length === 0) return new Map();
       try {
         const [locations, media, nearby] = await Promise.allSettled([
@@ -302,13 +304,14 @@ export function createPublicEntityProjectionReader(
           values.push(row);
           nearbyByEntity.set(row.entity_id, values);
         }
-        return new Map(ids.map((entityId) => {
+        return new Map(requestedIds.map((requestedId) => {
+          const entityId = storedId(requestedId);
           const row = locationByEntity.get(entityId);
           const location = row === undefined ? null : locationFromRow(row);
           const locationFailure = row?.verification_status === 'verified' && row.can_display === false
             ? 'rights-blocked'
             : row !== undefined ? 'location-unverified' : 'unavailable';
-          return [entityId, buildPublicEntityProjection({
+          return [requestedId, buildPublicEntityProjection({
             entityId,
             entityKind: 'building',
             location,

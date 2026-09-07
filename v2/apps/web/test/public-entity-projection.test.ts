@@ -203,6 +203,21 @@ describe('public entity projection', () => {
       .toContain('property_entities');
   });
 
+  it('resolves a legacy Seoul route ID through its global estate ID', async () => {
+    const globalId = 'kr-seoul:estate:yongsan-gu-htazbv';
+    const query = vi.fn(async (statement: string, parameters: readonly unknown[]) => {
+      if (!statement.includes(':locations') || !(parameters[0] as string[]).includes(globalId)) return [];
+      return [{ entity_id: globalId, market_id: 'kr-seoul', latitude: 37.526093, longitude: 126.967663,
+        precision: 'parcel', provider: 'Seoul Metropolitan Government', provider_reference: 'A10024691',
+        rights_policy_id: 'seoul-oa-15818', verification_status: 'verified',
+        verified_at: '2026-09-07', updated_at: '2026-09-07', can_display: true }];
+    });
+    const results = await createPublicEntityProjectionReader({ query }).listBuildings(['yongsan-gu-htazbv', globalId]);
+    expect(results?.get('yongsan-gu-htazbv')).toMatchObject({ state: 'ready', location: { latitude: 37.526093 } });
+    expect(results?.get(globalId)).toEqual(results?.get('yongsan-gu-htazbv'));
+    expect(query.mock.calls.every(([, parameters]) => (parameters[0] as string[]).length === 1)).toBe(true);
+  });
+
   it('accepts verified Singapore locations and nearby rows through the global entity mapping', async () => {
     const reader = createPublicEntityProjectionReader({
       async query(statement) {
