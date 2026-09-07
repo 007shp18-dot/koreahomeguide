@@ -120,6 +120,17 @@ describe('public Newsroom routes', () => {
     });
   });
 
+  it('sends current three-city research aliases to their articles before the archive catch-all', async () => {
+    const redirects = (await nextConfig.redirects?.())!;
+    const archiveIndex = redirects.findIndex(({ source }) => source === '/insights/:slug/');
+    for (const slug of ['korea-foreon-neighbour-price-gap', 'singapore-lentor-launch-resale-divergence', 'dubai-rental-yield-after-costs', 'seoul-84sqm-under-one-billion-2026', 'singapore-condos-under-1-5-million-2026']) {
+      const index = redirects.findIndex(({ source }) => source === `/insights/${slug}/`);
+      expect(index).toBeGreaterThanOrEqual(0);
+      expect(index).toBeLessThan(archiveIndex);
+      expect(redirects[index]).toEqual({ source: `/insights/${slug}/`, destination: getPortfolioRecord('en', slug)!.canonicalHref, permanent: true });
+    }
+  });
+
   it('publishes Newsroom, policy, and migrated story canonicals without legacy English Insights URLs', () => {
     const urls = sitemap().map(({ url }) => url);
 
