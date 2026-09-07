@@ -14,13 +14,14 @@ function amount(v: unknown, max = Number.MAX_SAFE_INTEGER) {
  const s = scalar(v); if(s === null || !/^\d+(?:\.\d+)?$/.test(s)) return null;
  const n = Number(s); return Number.isFinite(n) && n > 0 && n <= max ? n : null;
 }
-function passportReturn(value: unknown): string | undefined {
+export function passportReturn(value: unknown): string | undefined {
  const raw = scalar(value);
  if (!raw || raw.length > 256 || !raw.startsWith('/') || raw.startsWith('//') || /[\\\u0000-\u001f\u007f]/.test(raw)) return undefined;
  try {
   const url = new URL(raw, 'https://signedprice.invalid');
   if (url.origin !== 'https://signedprice.invalid' || !['/passport/','/ko/passport/','/zh-cn/passport/'].includes(url.pathname) || url.hash) return undefined;
-  if ([...url.searchParams.keys()].some(key => !['budget','currency'].includes(key)) || url.searchParams.getAll('budget').length !== 1 || url.searchParams.getAll('currency').length > 1) return undefined;
+  if ([...url.searchParams.keys()].some(key => !['budget','currency','dubaiStage'].includes(key)) || url.searchParams.getAll('budget').length !== 1 || url.searchParams.getAll('currency').length > 1) return undefined;
+  if (url.searchParams.getAll('dubaiStage').length > 1 || (url.searchParams.has('dubaiStage') && !['ready','off-plan'].includes(url.searchParams.get('dubaiStage')!))) return undefined;
   const budget = url.searchParams.get('budget');
   if (amount(budget,100_000_000_000) === null || (url.searchParams.has('currency') && !['USD','KRW','SGD','AED'].includes(url.searchParams.get('currency')!))) return undefined;
   return `${url.pathname}${url.search}`;

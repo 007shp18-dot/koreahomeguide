@@ -78,3 +78,10 @@
 :global(html[lang='ko']) .entry .lead { max-width: 36em; margin-top: 12px; line-height: 1.65; word-break: keep-all; overflow-wrap: anywhere; }
 :global(html[lang='ko']) .entry .eyebrow { letter-spacing: .02em; margin-bottom: 12px; }
 :global(html[lang='ko']) .entryForm button { white-space: normal; line-height: 1.5; }
+
+.journey { width: min(calc(100% - 32px), 1120px); margin: 12px auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 14px; line-height: 1.5; color: #536176; }
+.journey span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.journey strong { font-variant-numeric: tabular-nums; }
+.journey a { flex: none; color: #1557d5; white-space: nowrap; }
+.stageSelect { display: flex; gap: 8px; align-items: center; font-size: 14px; margin: 0 0 16px; }
+.stageSelect select { min-height: 40px; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 10px; background: white; color: #111827; font: inherit; }

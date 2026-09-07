@@ -1,6 +1,7 @@
 'use client';
+import { retainPassportContext } from '../../lib/passport/journey';
 
-import Link from 'next/link';
+import { PassportLink as Link } from '../passport/passport-journey';
 import {
   useCallback,
   useDeferredValue,
@@ -175,7 +176,7 @@ export function DubaiExplorer({
 
   useEffect(() => {
     if (model.status !== 'ready') return;
-    const href = buildDubaiExploreHref({
+    const href = retainPassportContext(buildDubaiExploreHref({
       query,
       housing,
       stage,
@@ -184,7 +185,7 @@ export function DubaiExplorer({
       page: activePage,
       selectedArea: selected?.area.slug ?? null,
       selectedProject: selectedProject?.id ?? null,
-    });
+    }), window.location.href);
     if (`${window.location.pathname}${window.location.search}` !== href) {
       window.history.replaceState(null, '', href);
     }
@@ -241,7 +242,7 @@ export function DubaiExplorer({
             setBudgetMaximumAed(event.currentTarget.value === '' ? null : Number(event.currentTarget.value));
             setSelectedArea(null);
             setPage(1);
-          }}><option value="">Any budget</option><option value="1000000">AED 1M</option><option value="1500000">AED 1.5M</option><option value="2500000">AED 2.5M</option><option value="5000000">AED 5M</option><option value="10000000">AED 10M</option></select></label>
+          }}><option value="">Any budget</option>{budgetMaximumAed !== null && ![1000000,1500000,2500000,5000000,10000000].includes(budgetMaximumAed) ? <option value={budgetMaximumAed}>{money(budgetMaximumAed)}</option> : null}<option value="1000000">AED 1M</option><option value="1500000">AED 1.5M</option><option value="2500000">AED 2.5M</option><option value="5000000">AED 5M</option><option value="10000000">AED 10M</option></select></label>
           {stage === 'ready' ? <label>Minimum gross ratio<select value={yieldMinimumPct ?? ''} onChange={(event) => {
             setYieldMinimumPct(event.currentTarget.value === '' ? null : Number(event.currentTarget.value));
             setSelectedArea(null);

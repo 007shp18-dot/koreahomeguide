@@ -1,6 +1,7 @@
 'use client';
 
-import Link from 'next/link';
+import { retainPassportContext } from '../../lib/passport/journey';
+import { PassportLink as Link } from '../passport/passport-journey';
 import { seoulNeighborhoodLabel } from '../../lib/public-market/seoul-neighborhood-label';
 import { buildingDisplayLabel } from '../../lib/public-market/building-display-label';
 import { useRouter } from 'next/navigation';
@@ -345,7 +346,11 @@ function ReadyAreaExplorer({
   const exactMetricCopy = selectedMetricCopy(model.evidenceSelection.transaction, locale);
   const usesLegacyCopy = model.evidenceSelection.areaBand === 'legacy-45-55';
   const countSeparator = locale === 'en' ? ' ' : '';
-  const router = useRouter();
+  const navigation = useRouter();
+  const router = useMemo(() => ({ ...navigation,
+    replace: (href: string, options?: Parameters<typeof navigation.replace>[1]) =>
+      navigation.replace(retainPassportContext(href, window.location.href), options),
+  }), [navigation]);
   const allBuildings = useMemo(
     () => model.buildingAvailability.status === 'ready'
       ? model.buildingAvailability.buildings
@@ -614,10 +619,10 @@ function ReadyAreaExplorer({
     }
     // This building's evidence is already loaded; selecting it must not refetch the route.
     window.history.replaceState(window.history.state, '',
-      createExploreBuildingSelectionHref(building, linkSelection, locale, {
+      retainPassportContext(createExploreBuildingSelectionHref(building, linkSelection, locale, {
         query: buildingQuery,
         buildingPage: readyBuildingAvailability?.page,
-      }),
+      }), window.location.href),
     );
   };
   const selectBuildingFromMarker = (buildingId: string): void => {
@@ -641,7 +646,7 @@ function ReadyAreaExplorer({
     if (readyBuildingAvailability !== null && readyBuildingAvailability.page > 1) {
       target.searchParams.set('buildingPage', String(readyBuildingAvailability.page));
     }
-    window.history.replaceState(window.history.state, '', `${target.pathname}${target.search}`);
+    window.history.replaceState(window.history.state, '', retainPassportContext(`${target.pathname}${target.search}`, window.location.href));
   };
 
   const evidenceHref = useCallback((changes: Readonly<{

@@ -2,7 +2,7 @@ import { buildingDisplayName, neighborhoodDisplayName } from '../../lib/public-m
 import { createPropertyScenarioHref } from '../../lib/tools/property-scenario-context';
 import { RecentTransactionPlot, SizeCohortResearch } from '../market-ui/transaction-research';
 import { PropertyScenarioCalculator } from '../market-ui/property-scenario';
-import Link from 'next/link';
+import { PassportLink as Link } from '../passport/passport-journey';
 import type { ReactNode } from 'react';
 
 import type { ObservedBuildingIdentityModel } from '../../lib/public-market/observed-building-route-model.server';
