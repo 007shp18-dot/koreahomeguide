@@ -11,25 +11,29 @@ test('Chinese market cards align their primary actions on multi-column screens',
   expect(Math.max(...positions.map(p=>p.action))-Math.min(...positions.map(p=>p.action))).toBeLessThanOrEqual(2);
 });
 
-test('home city changes keep the panel, metric and Explore action in the same position',async({page})=>{
+test('home presents three stable city cards and one budget journey without overflow', async ({page}) => {
  await page.goto('/');
- const hero=page.locator('[data-home-region="hero"]');
- await hero.hover();
- await page.evaluate(()=>document.fonts.ready);
- const states=[];
- for(const city of ['Seoul','Singapore','Dubai']) {
-  await hero.getByRole('tab',{name:new RegExp(city)}).click();
-  const panel=hero.getByRole('tabpanel');
-  await expect(panel.getByRole('link',{name:'Explore',exact:true})).toBeVisible();
-  states.push(await panel.evaluate(node=>{
-   const metric=node.querySelector('[data-evidence-state]')!;const action=node.querySelector('[data-primary-action]')!;
-   return {height:node.getBoundingClientRect().height,metric:metric.getBoundingClientRect().top-node.getBoundingClientRect().top,action:action.getBoundingClientRect().top-node.getBoundingClientRect().top};
-  }));
- }
- for(const key of ['height','metric','action'] as const) expect(Math.max(...states.map(s=>s[key]))-Math.min(...states.map(s=>s[key]))).toBeLessThanOrEqual(2);
- expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
- const cards=page.locator('[data-home-region="actions"]');
- expect(await cards.evaluate(node=>node.querySelector('ol')!.getBoundingClientRect().width/node.getBoundingClientRect().width)).toBeGreaterThan(.5);
+ await page.evaluate(() => document.fonts.ready);
+ await expect(page.locator('main [data-home-region]')).toHaveCount(3);
+ await expect(page.getByRole('heading', {level:1})).toHaveCount(1);
+ const cards = page.locator('[data-contextual-action]');
+ await expect(cards).toHaveCount(3);
+ const positions = await cards.evaluateAll(nodes => nodes.map(node => {
+  const box = node.getBoundingClientRect();
+  const action = node.querySelector('a')!.getBoundingClientRect();
+  const title = node.querySelector('h3')!;
+  return {top:box.top, action:action.top, height:action.height, titleFits:title.scrollWidth <= title.clientWidth};
+ }));
+ expect(positions.every(p => p.height >= 44 && p.titleFits)).toBe(true);
+ if (Math.max(...positions.map(p => p.top)) - Math.min(...positions.map(p => p.top)) <= 2)
+  expect(Math.max(...positions.map(p => p.action)) - Math.min(...positions.map(p => p.action))).toBeLessThanOrEqual(2);
+ for (const [index, path] of ['/kr/seoul/explore', '/sg/singapore/explore', '/ae/dubai/explore'].entries())
+  await expect(cards.nth(index).getByRole('link')).toHaveAttribute('href', new RegExp('^' + path + '/?$'));
+ expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+ await page.locator('[data-home-region="passport"] input[name="budget"]').fill('750000');
+ await page.getByRole('button', {name:'Compare cities',exact:true}).click();
+ await expect(page).toHaveURL(/\/passport\/.*budget=750000/);
+ await expect(page.locator('[data-passport-market]')).toHaveCount(3);
 });
 
 test('neutral calculator changes currency without carrying the previous purchase amount',async({page})=>{

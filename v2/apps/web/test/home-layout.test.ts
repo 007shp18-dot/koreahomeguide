@@ -25,38 +25,33 @@ describe('signedprice public editorial homepage', () => {
     expect(homeCss).not.toMatch(/(?:heroGrid|snapshotGrid|marketGrid|buildingGrid|insightGrid|propertyGrid|bottomGrid)[^{]*\{[^}]*100vw/);
   }, 10_000);
 
-  it('uses one global headline across Passport and six editorial regions', async () => {
+  it('uses one headline across exactly three ordered home regions', async () => {
     const markup = renderToStaticMarkup(await Home());
     const positions = [
       'data-home-region="passport"',
-      'id="three-market-home-title"',
-      'data-home-region="actions"',
-      'data-home-region="three-city-research"',
-      'data-home-region="changed"',
-      'data-home-region="data-story"',
-      'id="home-guides-title"',
+      'data-home-region="markets"',
+      'data-home-region="analysis"',
     ].map((needle) => markup.indexOf(needle));
 
     expect(markup.match(/<h1/g)).toHaveLength(1);
-    expect(markup.match(/data-home-region=/g)).toHaveLength(7);
-    expect(markup).toContain('See the market before you make the move.');
+    expect(markup.match(/data-home-region=/g)).toHaveLength(3);
+    expect(markup).toContain('Where can your budget become a home?');
     expect(positions.every((position) => position >= 0)).toBe(true);
     expect([...positions].sort((a, b) => a - b)).toEqual(positions);
   }, 20_000);
 
-  it('publishes three contextual market actions, two dated changes, one lead Data Story, and three to five guides', async () => {
+  it('shows three city actions and three unique articles without repeating promotional sections', async () => {
     const markup = renderToStaticMarkup(await Home());
-
     expect(markup.match(/data-contextual-action=/g)).toHaveLength(3);
-    expect(markup.match(/data-what-changed-item=/g)).toHaveLength(2);
-    expect(markup.match(/data-lead-data-story=/g)).toHaveLength(1);
-    expect(markup.match(/data-home-guide=/g)?.length ?? 0).toBeGreaterThanOrEqual(3);
-    expect(markup.match(/data-home-guide=/g)?.length ?? 0).toBeLessThanOrEqual(5);
-    expect(markup).toContain('Data Story');
-    expect(markup).toContain('Released evidence');
-    const dubaiAction = markup.match(/<li[^>]*data-contextual-action="ae-dubai"[^>]*>([\s\S]*?)<\/li>/)?.[1];
-    expect(dubaiAction).toBeDefined();
-    expect(dubaiAction).not.toMatch(/AED\s*[\d,.]+/i);
+    const articles = [...markup.matchAll(/data-editorial-content-id="([^"]+)"/g)].map(match => match[1]);
+    expect(articles).toHaveLength(3);
+    expect(new Set(articles).size).toBe(3);
+    expect(markup.match(/data-editorial-event="article_open"/g)).toHaveLength(3);
+    expect(markup).not.toMatch(/data-what-changed-item|data-lead-data-story|data-home-guide|three-market-home-title/);
+    for (const city of ['kr-seoul', 'sg-singapore', 'ae-dubai']) {
+      const card = markup.match(new RegExp('<li[^>]*data-contextual-action="' + city + '"[^>]*>([\\s\\S]*?)</li>'))?.[1] ?? '';
+      expect(card.match(/<a /g)).toHaveLength(1);
+    }
   });
 
   it('keeps navigation compact and separates surfaces, markets, and languages', async () => {
@@ -76,8 +71,8 @@ describe('signedprice public editorial homepage', () => {
   it('keeps real Seoul tools and News crawlable from the first screen', async () => {
     const markup = renderToStaticMarkup(await Home());
 
-    expect(markup).toContain('data-active-market="kr-seoul"');
-    expect(markup).toContain('href="/kr/seoul/check"');
+    expect(markup).toContain('data-market-id="kr-seoul"');
+    expect(markup).toContain('href="/tools"');
     expect(markup).toContain('href="/kr/seoul/explore"');
     expect(markup).toContain('href="/news?type=analysis"');
     expect(markup).not.toContain('/design-review/');
@@ -118,7 +113,7 @@ describe('signedprice public editorial homepage', () => {
   it('closes with guides, methodology, privacy, and contact', async () => {
     const markup = renderToStaticMarkup(await Home());
 
-    expect(markup).toContain('Guides for renting and buying');
+    expect(markup).toContain('Buying &amp; renting guides');
     expect(markup).toContain('href="/trust">Method</a>');
     expect(markup).toContain('href="/privacy">Privacy</a>');
     expect(markup).toContain('href="/contact">Contact</a>');

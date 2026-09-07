@@ -36,14 +36,14 @@ describe('three-city research journeys', () => {
     });
   });
 
-  it('gives each city an article, Explore and Check link with its own attribution', async () => {
+  it('gives each city one attributed analysis link without repeating its tool actions', async () => {
     vi.stubEnv('DATABASE_URL', '');
     const markup = renderToStaticMarkup(await Home());
-    const start = markup.indexOf('data-home-region="three-city-research"');
+    const start = markup.indexOf('data-home-region="analysis"');
     expect(start).toBeGreaterThan(0);
     const section = markup.slice(start, markup.indexOf('</section>', start));
     for (const market of ['kr-seoul', 'sg-singapore', 'ae-dubai']) expect(section).toContain('data-editorial-market="' + market + '"');
-    for (const event of ['article_open', 'article_to_explore', 'article_to_check']) {
+    for (const event of ['article_open']) {
       expect(section.match(new RegExp('data-editorial-event="' + event + '"', 'g'))).toHaveLength(3);
     }
   });

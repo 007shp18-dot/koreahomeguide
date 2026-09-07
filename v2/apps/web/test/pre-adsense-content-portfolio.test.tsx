@@ -62,7 +62,7 @@ describe('pre-AdSense reviewed launch portfolio', () => {
   });
 
   it('renders crawlable Chinese News, Guides and a sourced detail', async () => {
-    const news = renderToStaticMarkup(<ChineseNewsPage />);
+    const news = renderToStaticMarkup(await ChineseNewsPage());
     const guides = renderToStaticMarkup(<ChineseGuidesPage />);
     for (const article of listPortfolioRecords('zh-CN')) {
       expect(article.type === 'guide' ? guides : news).toContain(article.title);
