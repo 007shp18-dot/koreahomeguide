@@ -12,7 +12,7 @@ describe('September monthly reports', () => {
       expect(report.bodyMarkdown).not.toMatch(/계약월|소표본|\/workspace\//);
       const nav = renderToStaticMarkup(<MonthlyReportNavigation slug={report.slug} />);
       expect(nav.match(/aria-current="page"/g)).toHaveLength(1);
-      for (const city of ['seoul', 'singapore', 'dubai']) expect(nav).toContain(monthlyReportHref(city));
+      for (const city of ['seoul', 'singapore', 'dubai']) expect(nav).toContain(`href="${monthlyReportHref(city).replace(/\/$/u, '')}"`);
       const chart = renderToStaticMarkup(<MonthlyReportTrend slug={report.slug} />);
       expect(chart).toContain('role="img"');
       expect(chart).toContain('<desc');
