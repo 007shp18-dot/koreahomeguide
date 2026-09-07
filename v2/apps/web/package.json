@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node scripts/apply-content-database.mjs --if-configured && node scripts/build-building-identity-index.mjs",
+    "prebuild": "node scripts/apply-content-database.mjs --if-configured && node scripts/build-building-identity-index.mjs && node scripts/seed-singapore-nearby-places.mjs --if-production",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",

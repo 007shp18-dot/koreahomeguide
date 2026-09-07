@@ -12,6 +12,13 @@ const rows = [
 ];
 
 describe('Singapore nearby-place database seed runner', () => {
+  it('keeps the production seed in the combined web prebuild hook', () => {
+    const packageJson = JSON.parse(readFileSync(resolve(import.meta.dirname, '../package.json'), 'utf8'));
+
+    expect(packageJson.scripts.prebuild).toContain('build-building-identity-index.mjs');
+    expect(packageJson.scripts.prebuild).toContain('seed-singapore-nearby-places.mjs --if-production');
+  });
+
   it('releases staging storage before and after publishing', () => {
     const source = readFileSync(resolve(
       import.meta.dirname,

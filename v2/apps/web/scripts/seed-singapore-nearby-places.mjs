@@ -39,8 +39,8 @@ export function createSingaporeNearbyPlaceSeedRunner(port, loadSeed = loadSingap
       }
       if (!verifyOnly) {
         await port.resetStage(seed.summary.sourceSha256);
-        for (const batch of chunks(seed.rows, batchSize)) {
-          await port.stage(batch, seed.summary.sourceSha256);
+        for (const [batchNumber, batch] of chunks(seed.rows, batchSize).entries()) {
+          await port.stage(batch, seed.summary.sourceSha256, batchNumber);
         }
         const staged = await port.verifyStage(seed.summary.sourceSha256);
         if (staged.total !== seed.summary.total || staged.digest !== seed.summary.digest) {
@@ -71,34 +71,8 @@ function databasePort(connectionString) {
     async resetStage() {
       await sql.query('TRUNCATE nearby_place_seed_stage');
     },
-    async stage(rows, sourceSha256) {
-      await sql.query(`
-        INSERT INTO nearby_place_seed_stage (
-          generation_sha256, building_key, kind, provider_id, name, distance_meters,
-          walking_minutes, latitude, longitude, lines, is_nearest, source,
-          evidence_sha256, checked_at
-        )
-        SELECT $2::char(64), building_key, kind, provider_id, name, distance_meters,
-          walking_minutes, latitude, longitude, lines, is_nearest, source,
-          evidence_sha256, checked_at
-        FROM jsonb_to_recordset($1::jsonb) AS row(
-          building_key text, kind text, provider_id text, name text,
-          distance_meters integer, walking_minutes integer, latitude double precision,
-          longitude double precision, lines jsonb, is_nearest boolean, source text,
-          evidence_sha256 char(64), checked_at timestamptz
-        )
-        ON CONFLICT (generation_sha256, building_key, kind, provider_id) DO UPDATE SET
-          name = excluded.name,
-          distance_meters = excluded.distance_meters,
-          walking_minutes = excluded.walking_minutes,
-          latitude = excluded.latitude,
-          longitude = excluded.longitude,
-          lines = excluded.lines,
-          is_nearest = excluded.is_nearest,
-          source = excluded.source,
-          evidence_sha256 = excluded.evidence_sha256,
-          checked_at = excluded.checked_at
-      `, [JSON.stringify(rows.map((row) => ({
+    async stage(rows, sourceSha256, batchNumber) {
+      const payload = rows.map((row) => ({
         building_key: row.buildingKey,
         kind: row.kind,
         provider_id: row.providerId,
@@ -112,15 +86,40 @@ function databasePort(connectionString) {
         source: row.source,
         evidence_sha256: row.evidenceSha256,
         checked_at: row.checkedAt,
-      }))) , sourceSha256]);
+      }));
+      await sql.query(`
+        INSERT INTO nearby_place_seed_stage (
+          generation_sha256, building_key, kind, provider_id, name,
+          lines, is_nearest, source, evidence_sha256, checked_at
+        )
+        VALUES (
+          $1::char(64), 'singapore:seed-batch', 'station', $2, $3,
+          $4::jsonb, false, $5, $1::char(64), $6::timestamptz
+        )
+        ON CONFLICT (generation_sha256, building_key, kind, provider_id) DO UPDATE SET
+          name = excluded.name,
+          lines = excluded.lines,
+          source = excluded.source,
+          evidence_sha256 = excluded.evidence_sha256,
+          checked_at = excluded.checked_at
+      `, [
+        sourceSha256,
+        `batch:${String(batchNumber).padStart(6, '0')}`,
+        `Singapore nearby-place seed batch ${batchNumber + 1}`,
+        JSON.stringify(payload),
+        'signedprice-singapore-nearby-seed',
+        rows[0]?.checkedAt ?? new Date(0).toISOString(),
+      ]);
     },
     async verifyStage(sourceSha256) {
-      const rows = await sql.query(`
-        SELECT building_key, kind, provider_id
+      const batches = await sql.query(`
+        SELECT lines AS payload
         FROM nearby_place_seed_stage
         WHERE generation_sha256 = $1::char(64)
-        ORDER BY building_key, kind, provider_id
+          AND building_key = 'singapore:seed-batch'
+        ORDER BY provider_id
       `, [sourceSha256]);
+      const rows = batches.flatMap(({ payload }) => Array.isArray(payload) ? payload : []);
       return Object.freeze({
         total: rows.length,
         digest: digest(rows.map((row) => `${row.building_key}:${row.kind}:${row.provider_id}`)),
@@ -129,15 +128,25 @@ function databasePort(connectionString) {
     async publish(sourceSha256, expectedTotal) {
       const [upsertResult, pruneResult] = await sql.transaction((transaction) => [
         transaction.query(`
-          WITH changed AS (
+          WITH staged AS (
+            SELECT row.*
+            FROM nearby_place_seed_stage AS batch
+            CROSS JOIN LATERAL jsonb_to_recordset(batch.lines) AS row(
+              building_key text, kind text, provider_id text, name text,
+              distance_meters integer, walking_minutes integer, latitude double precision,
+              longitude double precision, lines jsonb, is_nearest boolean, source text,
+              evidence_sha256 char(64), checked_at timestamptz
+            )
+            WHERE batch.generation_sha256 = $1::char(64)
+              AND batch.building_key = 'singapore:seed-batch'
+          ), changed AS (
             INSERT INTO nearby_places (
               building_key, kind, provider_id, name, distance_meters, walking_minutes,
               latitude, longitude, lines, is_nearest, source, evidence_sha256, checked_at
             )
             SELECT building_key, kind, provider_id, name, distance_meters, walking_minutes,
               latitude, longitude, lines, is_nearest, source, evidence_sha256, checked_at
-            FROM nearby_place_seed_stage
-            WHERE generation_sha256 = $1::char(64)
+            FROM staged
             ON CONFLICT (building_key, kind, provider_id) DO UPDATE SET
               name = excluded.name,
               distance_meters = excluded.distance_meters,
