@@ -761,7 +761,6 @@ function ReadyAreaExplorer({
       data-explorer-version="guide-v2"
     >
       <header className="explore-page-heading"><h1 id="area-explorer-heading">{locale === 'ko' ? '탐색' : 'Explore'}</h1><p>{locale === 'ko' ? '서울' : 'Seoul'} · {model.source.period}</p></header>
-      <p><Link href={locale === 'ko' ? '/ko/kr/seoul/shortlist/' : '/kr/seoul/shortlist/'} style={{ display: 'inline-flex', alignItems: 'center', minHeight: 44 }}>{locale === 'ko' ? '내 예산에 맞는 단지 찾기 · 관심 단지' : 'Find apartments within your budget · Saved apartments'}</Link></p>
       <div className={styles.exploreToolbar} data-explorer-region="filters">
         <div
           className={styles.transactionFilter}

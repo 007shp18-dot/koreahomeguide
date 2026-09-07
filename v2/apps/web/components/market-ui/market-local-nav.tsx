@@ -2,7 +2,7 @@ import { listMarketCapabilities, type MarketId } from '@signedprice/market-core'
 import Link from 'next/link';
 
 export type MarketLocalNavItem = Readonly<{
-  label: 'Overview' | 'Explore' | 'Check' | 'Rankings' | 'Corrections';
+  label: string;
   href: string;
   state: 'available' | 'limited';
 }>;
@@ -21,7 +21,7 @@ export function getMarketLocalNavigation(
 ): readonly MarketLocalNavItem[] {
   const capabilities = listMarketCapabilities(marketId);
 
-  return Object.freeze(localFeatures.flatMap(([feature, label]) => {
+  const items: MarketLocalNavItem[] = localFeatures.flatMap(([feature, label]) => {
     const capability = capabilities.find((item) =>
       item.feature === feature && item.housingSector === null,
     );
@@ -36,7 +36,11 @@ export function getMarketLocalNavigation(
       href,
       state: capability.state,
     } satisfies MarketLocalNavItem];
-  }));
+  });
+  const paths = { 'kr-seoul': '/kr/seoul/shortlist/', 'sg-singapore': '/sg/singapore/shortlist/', 'ae-dubai': '/ae/dubai/shortlist/' };
+  const href = `${locale === 'ko' && marketId === 'kr-seoul' ? '/ko' : ''}${paths[marketId]}`;
+  items.splice(Math.min(2, items.length), 0, { label: locale === 'ko' ? '예산·관심 목록' : 'Budget & saved', href, state: marketId === 'kr-seoul' ? 'available' : 'limited' });
+  return Object.freeze(items);
 }
 
 function isCurrentLocalHref(currentHref: string | undefined, href: string): boolean {

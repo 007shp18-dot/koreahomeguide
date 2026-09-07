@@ -23,7 +23,7 @@ export function languageDestinations(pathname: string, search = ''): Record<Site
   const english = path.replace(/^\/ko(?=\/)/, '').replace(/^\/zh-cn(?=\/)/, '');
   const destinations: Record<SiteLocale, string | null> = { en: null, ko: null, 'zh-CN': null };
   const withQuery = (value: string) => `${value === '/' ? '/' : `${value}/`}${search}`;
-  if (/^\/kr\/seoul(?:\/(?:explore(?:\/[^/]+\/[^/]+)?|check(?:\/compare)?|rankings))?$/.test(english)) {
+  if (/^\/kr\/seoul(?:\/(?:explore(?:\/[^/]+\/[^/]+)?|check(?:\/compare)?|rankings|shortlist))?$/.test(english)) {
     destinations.en = withQuery(english);
     destinations.ko = withQuery(`/ko${english}`);
     if (english === '/kr/seoul') destinations['zh-CN'] = '/zh-cn/kr/seoul/';

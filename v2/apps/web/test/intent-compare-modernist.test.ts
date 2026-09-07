@@ -147,8 +147,8 @@ describe('nine intent routes use one connected decision hierarchy', () => {
         /<nav[^>]*data-navigation-tier="market-local"[^>]*>([\s\S]*?)<\/nav>/,
       )?.[1] ?? '';
       const labels = params.country === 'kr' || params.country === 'sg'
-        ? ['Overview', 'Explore', 'Check', 'Rankings', 'Corrections']
-        : ['Overview', 'Explore'];
+        ? ['Overview', 'Explore', 'Budget &amp; saved', 'Check', 'Rankings', 'Corrections']
+        : ['Overview', 'Explore', 'Budget &amp; saved'];
       expect(localNavigation.match(/<a /g) ?? []).toHaveLength(labels.length);
       for (const label of labels) expect(localNavigation).toContain(`>${label}`);
     }
