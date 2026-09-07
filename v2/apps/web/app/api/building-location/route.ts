@@ -17,7 +17,8 @@ export async function GET(request: Request) {
   if (sql === null) return NextResponse.json({ error: 'not_configured' }, { status: 503 });
   try {
     const rows = await sql`
-      SELECT key, coalesce(nullif(road_address, ''), legal_address) AS address, latitude, longitude
+      SELECT key, coalesce(nullif(road_address, ''), legal_address) AS address, latitude, longitude,
+        (nullif(trim(road_address), '') IS NOT NULL) AS verified_address
       FROM buildings
       WHERE key = ANY(${keys}::text[]) AND identity_status = 'verified'
       LIMIT 50
@@ -26,7 +27,8 @@ export async function GET(request: Request) {
       if (typeof row.key !== 'string' || !keys.includes(row.key) || typeof row.address !== 'string' || row.address.trim() === '') return [];
       const valid = typeof row.latitude === 'number' && typeof row.longitude === 'number'
         && row.latitude >= 37.4 && row.latitude <= 37.72 && row.longitude >= 126.75 && row.longitude <= 127.25;
-      return [{ key: row.key, address: row.address, latitude: valid ? row.latitude : null, longitude: valid ? row.longitude : null }];
+      return [{ key: row.key, address: row.address, latitude: valid ? row.latitude : null, longitude: valid ? row.longitude : null,
+        ...(row.verified_address === true ? { verifiedAddress: true } : {}) }];
     });
     const location = locations[0];
     if (batch === null && location === undefined) return NextResponse.json({ error: 'not_found' }, { status: 404 });
