@@ -25,6 +25,7 @@ function seoulEvidence(): PassportMarketEvidence {
     if (all?.published !== true) return [];
     const district = getSeoulDistrictBySlug(building.districtSlug);
     return district === null ? [] : [{ name: building.officialName, kind: 'building', sample: all.n,
+      neighborhoodName: building.neighborhoodName, districtSlug: building.districtSlug,
       locationLabel: `${district.nameEn} · ${building.neighborhoodName}`,
       href: `/kr/seoul/explore/${building.districtSlug}/${building.buildingId}/?transaction=sale&propertyType=apartment`, medianPrice: all.med }];
   });

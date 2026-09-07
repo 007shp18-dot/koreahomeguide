@@ -27,6 +27,8 @@ export type PassportScope = Readonly<{
   kind?: 'building' | 'project' | 'ready-area';
   sample?: number;
   locationLabel?: string;
+  neighborhoodName?: string;
+  districtSlug?: string;
 }>;
 
 export type PassportMarketEvidence = Readonly<{

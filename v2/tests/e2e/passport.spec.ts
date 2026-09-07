@@ -6,6 +6,12 @@ test('Passport opens published candidate costs and restores the original currenc
   const singapore = page.locator('[data-passport-market="sg-singapore"]');
   const candidates = singapore.locator('[data-passport-candidate="project"]');
   await expect(candidates).toHaveCount(3);
+  const heading = candidates.first().getByRole('heading');
+  await expect(heading.getByRole('link')).toHaveCSS('white-space', 'nowrap');
+  await expect(heading.getByRole('link')).toHaveAttribute('title', /.+/);
+  const price = candidates.first().locator('div > strong').first();
+  await expect(price).toHaveCSS('white-space', 'nowrap');
+  expect(await price.evaluate(node => node.scrollWidth <= node.clientWidth + 1)).toBe(true);
   await page.getByLabel('예산', { exact: true }).fill('9000000');
   await page.getByRole('button', { name: '비교 다시 계산' }).click();
   const calculate = candidates.first().getByRole('link', { name: '비용 계산', exact: true });
