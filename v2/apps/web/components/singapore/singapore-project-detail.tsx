@@ -49,6 +49,7 @@ export function SingaporeProjectDetail({ model, googleMapsBrowserKey = null }: R
           <GooglePlacePhoto
             browserKey={googleMapsBrowserKey}
             buildingName={model.identity.project}
+          displayBuildingName={displayName}
             address={`${model.identity.street}, Singapore`}
             registryKey={`sg-project:${model.identity.marketSegment}:${model.identity.project}`}
             fallback={<ProjectedEntityMedia buildingName={displayName} media={null} evidenceHref="#singapore-source-heading" />}
@@ -79,6 +80,7 @@ export function SingaporeProjectDetail({ model, googleMapsBrowserKey = null }: R
         media={<GooglePlacePhoto
           browserKey={googleMapsBrowserKey}
           buildingName={model.identity.project}
+          displayBuildingName={displayName}
           address={`${model.identity.street}, Singapore`}
           registryKey={`sg-project:${model.identity.marketSegment}:${model.identity.project}`}
           fallback={<ProjectedEntityMedia buildingName={displayName} media={null} evidenceHref="#project-summary-heading" />}
