@@ -13,6 +13,8 @@ import styles from './interactive-map.module.css';
 
 type GoogleLocation = Readonly<{ lat: () => number; lng: () => number }>;
 type GoogleGeocoderResult = Readonly<{
+  partial_match?: boolean;
+  types?: readonly string[];
   formatted_address: string;
   geometry: Readonly<{ location: GoogleLocation; viewport: unknown }>;
 }>;
@@ -82,7 +84,7 @@ export type GooglePlaceMapRuntime = Readonly<{
 export const GOOGLE_MAPS_READY_CALLBACK = '__signedpriceGoogleMapsReady' as const;
 export type GoogleMarket = 'singapore' | 'dubai';
 const marketConfig = { singapore: { country: 'SG', name: 'Singapore', center: { lat: 1.3521, lng: 103.8198 }, south: 1.15, north: 1.5, west: 103.55, east: 104.15 }, dubai: { country: 'AE', name: 'Dubai', center: { lat: 25.15, lng: 55.25 }, south: 24.7, north: 25.6, west: 54.8, east: 55.7 } } as const;
-const geocodeCache = new WeakMap<GoogleGeocoderInstance, Map<string, GoogleGeocoderResult>>();
+const geocodeCache = new WeakMap<GoogleGeocoderInstance, Map<string, Promise<GoogleGeocoderResult | null>>>();
 
 const GOOGLE_MAPS_READY_EVENT = 'signedprice:google-maps-ready' as const;
 const GOOGLE_MAPS_READY_FLAG = '__signedpriceGoogleMapsLoaded' as const;
@@ -184,6 +186,11 @@ export function googleMarketMarkerAppearance(point: GoogleMarketMapPoint) {
   };
 }
 
+function selectedPointViewport(point: GoogleMarketMapPoint) {
+  const padding = point.kind === 'area' ? .035 : .0015;
+  return point.bounds ?? { south: point.latitude! - padding, north: point.latitude! + padding, west: point.longitude! - padding, east: point.longitude! + padding };
+}
+
 export function mountGoogleMarketPoints(
   sdk: GoogleMapsSdk,
   map: GoogleMapInstance,
@@ -194,7 +201,7 @@ export function mountGoogleMarketPoints(
 ): readonly GoogleMarkerInstance[] {
   const located = points.filter((point) => Number.isFinite(point.latitude) && Number.isFinite(point.longitude));
   const selected = located.find((point) => point.selected);
-  if (adjustView && selected) map.fitBounds({ south: selected.latitude! - .0015, north: selected.latitude! + .0015, west: selected.longitude! - .0015, east: selected.longitude! + .0015 });
+  if (adjustView && selected) map.fitBounds(selectedPointViewport(selected));
   else if (adjustView && located.length > 0 && sdk.LatLngBounds) {
     const bounds = new sdk.LatLngBounds();
     for (const point of located) bounds.extend({ lat: point.latitude!, lng: point.longitude! });
@@ -224,7 +231,7 @@ export async function geocodeGoogleMarketPoints(
   market: GoogleMarket = 'singapore',
 ): Promise<readonly GoogleMarkerInstance[]> {
   const config = marketConfig[market];
-  const cached = geocodeCache.get(runtime.geocoder) ?? new Map<string, GoogleGeocoderResult>();
+  const cached = geocodeCache.get(runtime.geocoder) ?? new Map<string, Promise<GoogleGeocoderResult | null>>();
   geocodeCache.set(runtime.geocoder, cached);
   const markers: GoogleMarkerInstance[] = [];
   const locations: GoogleLocation[] = points.filter((point) => Number.isFinite(point.latitude) && Number.isFinite(point.longitude))
@@ -232,19 +239,31 @@ export async function geocodeGoogleMarketPoints(
   const viewports: unknown[] = [];
   let selectedViewport: unknown = null;
   const selectedCoordinate = points.find((point) => point.selected && Number.isFinite(point.latitude) && Number.isFinite(point.longitude));
-  if (selectedCoordinate) selectedViewport = { south: selectedCoordinate.latitude! - .0015, north: selectedCoordinate.latitude! + .0015, west: selectedCoordinate.longitude! - .0015, east: selectedCoordinate.longitude! + .0015 };
+  if (selectedCoordinate) selectedViewport = selectedPointViewport(selectedCoordinate);
   for (const point of [...points].sort((a, b) => Number(Boolean(b.selected)) - Number(Boolean(a.selected))).filter((candidate) => candidate.address !== undefined && !(Number.isFinite(candidate.latitude) && Number.isFinite(candidate.longitude)))) {
     if (!isActive()) break;
     try {
       const cacheKey = `${config.country}:${point.address}`;
-      const existing = cached.get(cacheKey);
-      const { results } = existing ? { results: [existing] } : await runtime.geocoder.geocode({ address: point.address!, componentRestrictions: { country: config.country }, region: config.country });
+      let lookup = cached.get(cacheKey);
+      if (lookup === undefined) {
+        // Share in-flight requests even when the initiating selection is superseded.
+        lookup = runtime.geocoder.geocode({ address: point.address!, componentRestrictions: { country: config.country }, region: config.country })
+          .then(({ results }) => {
+            const result = results.length === 1 ? results[0] : undefined;
+            const position = result?.geometry.location;
+            const broadTypes = new Set(['locality', 'political', 'country', 'administrative_area_level_1', 'administrative_area_level_2']);
+            if (!result || result.partial_match || (result.types?.length && result.types.every(type => broadTypes.has(type)))
+              || !position || !Number.isFinite(position.lat()) || !Number.isFinite(position.lng())
+              || position.lat() < config.south || position.lat() > config.north || position.lng() < config.west || position.lng() > config.east) return null;
+            return result;
+          }).catch(error => { cached.delete(cacheKey); throw error; });
+        cached.set(cacheKey, lookup);
+      }
+      const result = await lookup;
       if (!isActive()) break;
-      const position = results.length === 1 ? results[0]?.geometry.location : undefined;
-      if (position === undefined || !Number.isFinite(position.lat()) || !Number.isFinite(position.lng())
-        || position.lat() < config.south || position.lat() > config.north || position.lng() < config.west || position.lng() > config.east) continue;
-      cached.set(cacheKey, results[0]!);
-      if (point.selected) runtime.map.fitBounds(results[0]!.geometry.viewport);
+      if (result === null) continue;
+      const position = result.geometry.location;
+      if (point.selected) runtime.map.fitBounds(result.geometry.viewport);
       const marker = new sdk.Marker({
         map: runtime.map,
         position: { lat: position.lat(), lng: position.lng() },
@@ -254,8 +273,8 @@ export async function geocodeGoogleMarketPoints(
       marker.addListener?.('click', () => onSelectPoint?.(point.id));
       markers.push(marker);
       locations.push(position);
-      viewports.push(results[0]!.geometry.viewport);
-      if (point.selected) selectedViewport = results[0]!.geometry.viewport;
+      viewports.push(result.geometry.viewport);
+      if (point.selected) selectedViewport = result.geometry.viewport;
     } catch {
       // Keep the rest of the verified project markers when one address cannot be resolved.
     }

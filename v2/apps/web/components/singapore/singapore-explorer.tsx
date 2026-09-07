@@ -169,7 +169,7 @@ export function SingaporeExplorer({
   const activeMapPoints = mapLevel === 'projects' ? projectMapCoverage.points : areaMapCoverage.points;
   const mapPoints = useMemo(() => {
     const byId = new Map(projects.map(project => [`project-${project.id}`, project]));
-    return activeMapPoints.filter(point => mapLevel !== 'projects' || showAreaReferences || point.kind !== 'area').map(point => {
+    return activeMapPoints.filter(point => mapLevel !== 'projects' || showAreaReferences || point.kind !== 'area' || point.selected === true).map(point => {
       const project = byId.get(point.id);
       return project === undefined ? point : { ...point,
         label: project.name };
@@ -229,7 +229,7 @@ export function SingaporeExplorer({
             <p>{areaMapCoverage.unplaced.toLocaleString('en')} projects remain selectable while their area reference is unavailable.</p>
             {areaMapCoverage.unplacedGroups.map(group => <button type="button" key={group.id} onClick={() => onMapSelect(group.id)}>{group.label} · {group.count.toLocaleString('en')} projects</button>)}
           </div> : null}
-          {selectedProject ? <aside className={styles.mapSelection}><button type="button" aria-label="Close project preview" onClick={() => setSelectedProjectId(null)}>Close</button><h3>{selectedProject.name}</h3><p>{selectedProject.street} · District {selectedProject.district} · {selectedProject.segment}</p><strong>{selectedProject.medianPriceLabel ?? 'Not published'}</strong><span>{selectedProject.medianPsfLabel ?? `${selectedProject.n} reported sales`}</span>{selectedProject.state === 'published' ? <Link href={selectedProject.href}>Open project evidence</Link> : null}</aside> : null}
+          {selectedProject ? <aside className={styles.mapSelection}><button type="button" aria-label="Close project preview" onClick={() => setSelectedProjectId(null)}>Close</button><h3>{selectedProject.name}</h3><p>{selectedProject.street} · District {selectedProject.district} · {selectedProject.segment}</p>{!selectedProject.location ? <p>{projectMapCoverage.points.some(point => point.kind === 'area' && point.selected) ? 'Approximate district location' : 'Project location unavailable'}</p> : null}<strong>{selectedProject.medianPriceLabel ?? 'Not published'}</strong><span>{selectedProject.medianPsfLabel ?? `${selectedProject.n} reported sales`}</span>{selectedProject.state === 'published' ? <Link href={selectedProject.href}>Open project evidence</Link> : null}</aside> : null}
         </section>}
       />
     </div>

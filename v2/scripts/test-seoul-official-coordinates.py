@@ -31,6 +31,13 @@ class OfficialCoordinatesTest(unittest.TestCase):
         for changes in [{'사용허가여부': 'N'}, {'kapt도로명주소': '경기도 성남시'}]:
             self.assertEqual(seed.normalize([self.row(**changes)])[0], [])
 
+    def test_source_district_must_agree_with_road_address(self):
+        self.assertEqual(seed.normalize([self.row(**{'주소(시군구)': '동작구'})])[0], [])
+
+    def test_duplicate_named_sites_are_excluded_across_batches(self):
+        row = dict(name='한강 아파트', district='용산구', neighborhood='한강로3가')
+        self.assertEqual(seed.unique_named_records([row, {**row, 'name': '한강아파트'}]), [])
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -290,3 +290,48 @@ it('locates Dubai with UAE restrictions, caches successful lookups and rejects o
   expect(fitBounds).toHaveBeenCalledWith({ name: 'marina' });
   expect(await geocodeGoogleMarketPoints(sdk, runtime, points)).toHaveLength(0);
 });
+
+it('shares overlapping geocoder requests and does not place a city fallback as an area', async () => {
+  let finish!: (value: { results: never[] }) => void;
+  const geocode = vi.fn(() => new Promise<{ results: never[] }>(resolve => { finish = resolve; }));
+  const sdk = { Map: class { fitBounds() {} }, Marker: class { setMap() {} setPosition() {} }, Geocoder: class { geocode = geocode; } };
+  const runtime = { map: { fitBounds() {} }, marker: { setMap() {}, setPosition() {} }, geocoder: { geocode } };
+  const points = [{ id: 'marina', title: 'Dubai Marina', label: 'Marina', address: 'Dubai Marina, UAE' }];
+  const first = geocodeGoogleMarketPoints(sdk, runtime, points, undefined, () => true, 'dubai');
+  const second = geocodeGoogleMarketPoints(sdk, runtime, points, undefined, () => true, 'dubai');
+  expect(geocode).toHaveBeenCalledTimes(1);
+  finish({ results: [] });
+  expect(await first).toHaveLength(0);
+  expect(await second).toHaveLength(0);
+  await geocodeGoogleMarketPoints(sdk, runtime, points, undefined, () => true, 'dubai');
+  expect(geocode).toHaveBeenCalledTimes(1);
+});
+
+it('rejects partial or city-only Dubai geocodes', async () => {
+  for (const extra of [{ partial_match: true }, { types: ['locality', 'political'] }]) {
+    const geocode = vi.fn(async () => ({ results: [{ formatted_address: 'Dubai, United Arab Emirates', ...extra,
+      geometry: { location: { lat: () => 25.2, lng: () => 55.3 }, viewport: {} } }] }));
+    const sdk = { Map: class { fitBounds() {} }, Marker: class { setMap() {} setPosition() {} }, Geocoder: class { geocode = geocode; } };
+    const runtime = { map: { fitBounds() {} }, marker: { setMap() {}, setPosition() {} }, geocoder: { geocode } };
+    expect(await geocodeGoogleMarketPoints(sdk, runtime, [{ id: 'a', title: 'Area', label: 'Area', address: 'Al Example, Dubai' }], undefined, () => true, 'dubai')).toHaveLength(0);
+  }
+});
+
+it('keeps selected approximate districts at area scale', () => {
+  const fitBounds = vi.fn();
+  const sdk = { Map: class { fitBounds() {} }, Marker: class { setMap() {} setPosition() {} }, Geocoder: class { async geocode() { return { results: [] }; } } };
+  mountGoogleMarketPoints(sdk, { fitBounds }, [{ id: 'district-15', title: 'District 15 · approximate area', label: 'Area only', kind: 'area', selected: true, latitude: 1.3, longitude: 103.9 }]);
+  const bounds = fitBounds.mock.calls[0]![0];
+  expect(bounds.north - bounds.south).toBeCloseTo(.07);
+  expect(bounds.east - bounds.west).toBeCloseTo(.07);
+});
+
+it('retries a transient geocoder failure instead of retaining it as a missing location', async () => {
+  const geocode = vi.fn().mockRejectedValueOnce(new Error('temporary failure')).mockResolvedValueOnce({ results: [{ formatted_address: 'Dubai Marina, Dubai', types: ['neighborhood', 'political'], geometry: { location: { lat: () => 25.08, lng: () => 55.14 }, viewport: {} } }] });
+  const sdk = { Map: class { fitBounds() {} }, Marker: class { setMap() {} setPosition() {} }, Geocoder: class { geocode = geocode; } };
+  const runtime = { map: { fitBounds() {} }, marker: { setMap() {}, setPosition() {} }, geocoder: { geocode } };
+  const points = [{ id: 'marina', title: 'Dubai Marina', label: 'Marina', address: 'Dubai Marina, UAE' }];
+  expect(await geocodeGoogleMarketPoints(sdk, runtime, points, undefined, () => true, 'dubai')).toHaveLength(0);
+  expect(await geocodeGoogleMarketPoints(sdk, runtime, points, undefined, () => true, 'dubai')).toHaveLength(1);
+  expect(geocode).toHaveBeenCalledTimes(2);
+});
