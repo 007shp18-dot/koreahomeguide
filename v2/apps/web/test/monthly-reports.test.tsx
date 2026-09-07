@@ -7,6 +7,7 @@ describe('September monthly reports', () => {
   it('gives each city a complete report and distinct crawlable navigation', () => {
     expect(MONTHLY_REPORTS).toHaveLength(3);
     for (const report of MONTHLY_REPORTS) {
+      expect(report.bodyMarkdown.startsWith('## ')).toBe(true);
       expect(report.bodyMarkdown.match(/^## /gm)?.length).toBeGreaterThanOrEqual(5);
       expect(report.bodyMarkdown).not.toMatch(/계약월|소표본|\/workspace\//);
       const nav = renderToStaticMarkup(<MonthlyReportNavigation slug={report.slug} />);
