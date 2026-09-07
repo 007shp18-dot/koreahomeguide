@@ -19,7 +19,7 @@ function seoulEvidence(): PassportMarketEvidence {
   if (repository === null) return Object.freeze({ id: 'kr-seoul', city: 'Seoul', currency: 'KRW', localBudget: 0, medianPsm: null, sample: 0, period: 'Unavailable', scopes: Object.freeze([]) });
   const artifact = repository.getArtifact();
   const buildings = repository.listBuildingRecords().filter(({ housingType }) => housingType === 'apartment');
-  const unitPrices = buildings.flatMap(({ recentSales }) => recentSales.map(({ priceWon, areaSqm }) => priceWon / areaSqm));
+  const unitPrices = buildings.flatMap(({ recentSales }) => recentSales.map(({ priceWon, areaSqm }) => priceWon / areaSqm)).filter(value => Number.isFinite(value) && value > 0);
   const scopes: PassportScope[] = repository.listAreaRecords().flatMap((area) => {
     if (area.scope !== 'district' || area.housingType !== 'apartment' || area.districtSlug === null) return [];
     const all = area.cohorts.find(({ areaBand }) => areaBand === 'all')?.price;
@@ -27,7 +27,7 @@ function seoulEvidence(): PassportMarketEvidence {
     const district = getSeoulDistrictBySlug(area.districtSlug);
     return district === null ? [] : [{ name: district.nameEn, href: `/kr/seoul/explore/${area.districtSlug}/`, medianPrice: all.med }];
   });
-  return Object.freeze({ id: 'kr-seoul', city: 'Seoul', currency: 'KRW', localBudget: 0, medianPsm: median(unitPrices), sample: artifact.stats.eligibleRecordCount, period: artifact.period, scopes: Object.freeze(scopes) });
+  return Object.freeze({ id: 'kr-seoul', city: 'Seoul', currency: 'KRW', localBudget: 0, medianPsm: median(unitPrices), sample: unitPrices.length, priceBasis: 'transactions', priceSample: unitPrices.length, period: artifact.period, scopes: Object.freeze(scopes) });
 }
 
 async function singaporeEvidence(): Promise<PassportMarketEvidence> {
@@ -39,7 +39,7 @@ async function singaporeEvidence(): Promise<PassportMarketEvidence> {
   return Object.freeze({
     id: 'sg-singapore', city: 'Singapore', currency: 'SGD', localBudget: 0,
     medianPsm: median(projects.map(({ medianPsf }) => medianPsf * 10.7639104167)),
-    sample: repository.getContext().transactions, period: repository.getContext().period,
+    sample: projects.reduce((sum, project) => sum + project.n, 0), priceBasis: 'projects', priceSample: projects.length, period: repository.getContext().period,
     scopes: Object.freeze(projects.map((project): PassportScope => ({ name: project.project, href: `/sg/singapore/explore/${project.marketSegment.toLowerCase()}/${project.id}/`, medianPrice: project.medianPriceSgd }))),
   });
 }
@@ -48,7 +48,7 @@ function dubaiEvidence(): PassportMarketEvidence {
   const repository = dubaiEvidenceRepositoryFromEnvironment();
   if (repository === null) return Object.freeze({ id: 'ae-dubai', city: 'Dubai', currency: 'AED', localBudget: 0, medianPsm: null, sample: 0, period: 'Unavailable', scopes: Object.freeze([]) });
   const entries = repository.listAreas().flatMap((area) => {
-    const segment = area.segments.find(({ housing }) => housing === 'apartment') ?? area.segments[0];
+    const segment = area.segments.find(({ housing }) => housing === 'apartment');
     return segment?.sales.ready == null ? [] : [{ area, segment, sale: segment.sales.ready }];
   });
   const context = repository.getContext();
@@ -56,6 +56,7 @@ function dubaiEvidence(): PassportMarketEvidence {
     id: 'ae-dubai', city: 'Dubai', currency: 'AED', localBudget: 0,
     medianPsm: median(entries.map(({ sale }) => sale.medianPricePerSqmAed)),
     sample: entries.reduce((sum, { sale }) => sum + sale.n, 0),
+    priceBasis: 'areas', priceSample: entries.length,
     period: `${context.comparisonPeriod.from}..${context.comparisonPeriod.to}`,
     yieldPct: median(entries.flatMap(({ segment }) => segment.readyGrossYieldPct === null ? [] : [segment.readyGrossYieldPct])),
     scopes: Object.freeze(entries.map(({ area, sale }): PassportScope => ({ name: area.name, href: `/ae/dubai/explore/${area.slug}/`, medianPrice: sale.medianPriceAed }))),

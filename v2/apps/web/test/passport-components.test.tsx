@@ -28,3 +28,13 @@ describe('Passport UI', () => {
     expect(html).toContain('Purchase price only');
   });
 });
+
+it('distinguishes missing comparison data from a budget with no matches', () => {
+  const model = buildPassportModel({ budgetWon: 500_000_000, locale: 'en', evidence: [
+    { ...evidence[0]!, medianPsm: null, sample: 0, scopes: [] },
+    { ...evidence[1]!, scopes: [{ name: 'Above budget', href: '/sg/singapore/explore/', medianPrice: 99_000_000 }] },
+  ] });
+  const html = renderToStaticMarkup(<PassportWorkspace initialModel={model} />);
+  expect(html).toContain('Comparable price data is not available yet.');
+  expect(html).toContain('None of the areas or projects covered has a median price within this budget.');
+});
