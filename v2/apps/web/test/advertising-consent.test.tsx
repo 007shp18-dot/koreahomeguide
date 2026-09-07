@@ -8,6 +8,7 @@ import {
   buildAdSenseScriptSrc,
   buildGoogleAnalyticsScriptSrc,
   shouldLoadAnalytics,
+  setAnalyticsDisabled,
   shouldLoadAdvertising,
 } from '../components/consent/advertising-consent';
 import {
@@ -17,7 +18,10 @@ import {
 import { advertisingConfigFromEnvironment } from '../lib/advertising/advertising-config.server';
 import EnglishRootLayout from '../app/(en)/layout';
 
-afterEach(() => vi.unstubAllEnvs());
+afterEach(() => {
+  vi.unstubAllEnvs();
+  vi.unstubAllGlobals();
+});
 
 function readyOperator() {
   vi.stubEnv('SIGNEDPRICE_OPERATOR_NAME', 'SignedPrice Labs Ltd.');
@@ -82,8 +86,8 @@ describe('advertising consent boundary', () => {
     );
 
     expect(html).toContain('Choose privacy settings');
-    expect(html).toContain('Allow analytics');
-    expect(html).toContain('Reject analytics');
+    expect(html).toContain('Enable analytics');
+    expect(html).toContain('Disable analytics');
     expect(html).toContain('Allow advertising');
     expect(html).toContain('Reject advertising');
     expect(html).toContain('href="/privacy"');
@@ -95,13 +99,23 @@ describe('advertising consent boundary', () => {
       <EnglishRootLayout><main>Evidence</main></EnglishRootLayout>,
     );
 
-    expect(html).toContain('Allow analytics');
+    expect(html).toContain('Privacy choices');
+    expect(html).not.toContain('Choose privacy settings');
     expect(html).not.toContain('Allow advertising');
     expect(html).not.toMatch(/googletagmanager|gtag\(/);
   });
 
-  it('allows the script only after an affirmative stored choice', () => {
-    expect(shouldLoadAnalytics('unknown')).toBe(false);
+  it('stops an already-loaded tag on opt-out and restores it on opt-in', () => {
+    const analyticsWindow: Record<string, unknown> = {};
+    vi.stubGlobal('window', analyticsWindow);
+    setAnalyticsDisabled('G-KWHQXKY40N', true);
+    expect(analyticsWindow['ga-disable-G-KWHQXKY40N']).toBe(true);
+    setAnalyticsDisabled('G-KWHQXKY40N', false);
+    expect(analyticsWindow['ga-disable-G-KWHQXKY40N']).toBe(false);
+  });
+
+  it('loads analytics by default while preserving explicit opt-outs and advertising opt-in', () => {
+    expect(shouldLoadAnalytics('unknown')).toBe(true);
     expect(shouldLoadAnalytics('denied')).toBe(false);
     expect(shouldLoadAnalytics('granted')).toBe(true);
     expect(shouldLoadAdvertising('unknown')).toBe(false);
