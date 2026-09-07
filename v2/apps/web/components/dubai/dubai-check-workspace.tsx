@@ -93,8 +93,8 @@ function ResultPanel({ value, model }: Readonly<{
       <div><dt>{value.completion === 'off-plan' ? 'Hypothetical gross scenario from your rent input' : 'Gross scenario from your rent input'}</dt><dd>{result.grossYieldPct.toFixed(1)}%</dd></div>
     </dl>
     <div className={styles.checkResultActions}>
-      <Link href={value.calculatorHref}>Open ownership-cost calculator</Link>
-      <Link href={value.resultHref}>Open this result URL</Link>
+      <Link href={value.calculatorHref}>Calculate ownership costs</Link>
+      <Link href={value.resultHref}>Open result link</Link>
     </div>
     <p className={styles.checkDisclosure}>The typical range covers the middle 50% of recorded prices per m² for the selected area and property type. It is not an appraisal, forecast, or recommendation. The gross scenario uses only your annual-rent input and excludes vacancy, service charges, financing, taxes, acquisition costs, repairs, and management.</p>
     <p className={styles.checkDisclosure}>Evidence window {model.context.comparisonPeriod.from}–{model.context.comparisonPeriod.to} · {model.context.attribution}</p>
@@ -111,7 +111,7 @@ export function DubaiCheckWorkspace({
   if (model.status === 'unavailable') return <section className={styles.checkUnavailable} data-dubai-check-workspace="unavailable">
     <p className={styles.eyebrow}>Dubai Check</p>
     <h1>{model.message}</h1>
-    <p>The current four-area research guide remains available; no price or ratio is substituted.</p>
+    <p>Explore the available Dubai area guides while price comparisons are unavailable.</p>
     <Link href="/ae/dubai/explore/">Return to Dubai Explore</Link>
   </section>;
 

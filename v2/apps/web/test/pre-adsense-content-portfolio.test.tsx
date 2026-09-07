@@ -12,7 +12,7 @@ import sitemap from '../app/sitemap';
 import { EDITORIAL_PORTFOLIO, listPortfolioRecords } from '../content/portfolio-manifest';
 
 const officialHosts = new Set([
-  'www.data.go.kr', 'data.gov.sg',
+  'www.data.go.kr', 'data.gov.sg', 'centers.ibs.re.kr',
   'dubailand.gov.ae',
   'www.investkorea.org', 'english.seoul.go.kr', 'm.easylaw.go.kr',
   'www.law.go.kr', 'rt.molit.go.kr', 'www.molit.go.kr', 'land.seoul.go.kr',

@@ -1,3 +1,4 @@
+import { singaporeProjectDisplayName } from '../singapore/project-display-name';
 import 'server-only';
 
 import { getSeoulDistrictBySlug } from '@signedprice/korea-rent/browser';
@@ -42,7 +43,7 @@ async function singaporeEvidence(): Promise<PassportMarketEvidence> {
     id: 'sg-singapore', city: 'Singapore', currency: 'SGD', localBudget: 0,
     medianPsm: median(projects.map(({ medianPsf }) => medianPsf * 10.7639104167)),
     sample: projects.reduce((sum, project) => sum + project.n, 0), priceBasis: 'projects', priceSample: projects.length, period: repository.getContext().period,
-    scopes: Object.freeze(projects.map((project): PassportScope => ({ name: project.project, kind: 'project', sample: project.n, locationLabel: project.marketSegment, href: `/sg/singapore/explore/${project.marketSegment.toLowerCase()}/${project.id}/`, medianPrice: project.medianPriceSgd }))),
+    scopes: Object.freeze(projects.map((project): PassportScope => ({ name: singaporeProjectDisplayName(project), kind: 'project', sample: project.n, locationLabel: project.marketSegment, href: `/sg/singapore/explore/${project.marketSegment.toLowerCase()}/${project.id}/`, medianPrice: project.medianPriceSgd }))),
   });
 }
 

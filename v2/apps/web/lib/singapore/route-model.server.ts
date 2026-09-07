@@ -1,3 +1,4 @@
+import { singaporeProjectDisplayName } from './project-display-name';
 import { resolveUraProjectLocation } from './project-location';
 import 'server-only';
 
@@ -88,7 +89,7 @@ function projectListItem(project: SingaporeProjectSummary, repository: Singapore
   return Object.freeze({
     location: resolveUraProjectLocation(repository.listProjectRecords(project.marketSegment, project.id)),
     id: project.id,
-    name: project.project,
+    name: singaporeProjectDisplayName(project),
     street: project.street,
     district: project.district,
     n: project.n,

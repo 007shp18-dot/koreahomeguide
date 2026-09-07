@@ -1,3 +1,4 @@
+import { singaporeProjectDisplayName } from '@/lib/singapore/project-display-name';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
@@ -29,8 +30,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
   return indexableMetadata({
     path: `/sg/singapore/explore/${code}/${projectId}/`,
-    title: `${model.identity.project} sale prices, Singapore | signedprice`,
-    description: `Verified URA sale transactions for ${model.identity.project}, ${model.identity.street}: median price, PSF, range, sample, and publication limits.`,
+    title: `${singaporeProjectDisplayName(model.identity)} sale prices, Singapore | signedprice`,
+    description: `Verified URA sale transactions for ${singaporeProjectDisplayName(model.identity)}, ${model.identity.street}: median price, PSF, range, sample, and publication limits.`,
   });
 }
 

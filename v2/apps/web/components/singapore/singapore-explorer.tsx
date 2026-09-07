@@ -1,5 +1,7 @@
 'use client';
 
+import { singaporeProjectSearchTerm } from '../../lib/singapore/project-display-name';
+
 import Link from 'next/link';
 import { useCallback, useDeferredValue, useEffect, useMemo, useState } from 'react';
 import type { SingaporeExploreModel } from '../../lib/singapore/route-types';
@@ -98,7 +100,7 @@ export function SingaporeExplorer({
   const selected = segments.find((segment) => segment.code === selectedSegment);
   const allProjects = useMemo(() => model.status === 'ready' ? model.segments.flatMap((segment) => (segment.projects ?? []).map((project) => ({ ...project, segment: segment.code }))) : [], [model]);
   const searchIndex = useMemo(() => allProjects.map((project) => ({
-    project, term: `${project.name} ${project.street} ${project.district} district ${Number(project.district)} ${project.segment}`.toLocaleLowerCase('en'),
+    project, term: singaporeProjectSearchTerm(`${project.name} ${project.street} ${project.district} district ${Number(project.district)} ${project.segment}`),
   })), [allProjects]);
   const orderedProjects = useMemo(() => searchIndex.filter(({ project }) =>
     (selectedSegment === null || project.segment === selectedSegment)
@@ -106,7 +108,7 @@ export function SingaporeExplorer({
     .sort(({project: a}, {project: b}) => sort === 'name' ? a.name.localeCompare(b.name) : b.n - a.n || a.name.localeCompare(b.name)),
   [searchIndex, district, selectedSegment, sort]);
   const projects = useMemo(() => {
-    const term = deferredQuery.trim().toLocaleLowerCase('en');
+    const term = singaporeProjectSearchTerm(deferredQuery.trim());
     return orderedProjects.filter((item) => item.term.includes(term)).map(({ project }) => project);
   }, [orderedProjects, deferredQuery]);
   const pageCount = Math.max(1, Math.ceil(projects.length / PAGE_SIZE));
@@ -204,7 +206,7 @@ export function SingaporeExplorer({
             <header><span>{projects.length.toLocaleString('en')} matching projects</span><small>{projects.length === 0 ? 'No matches' : `${(activePage - 1) * PAGE_SIZE + 1}–${Math.min(activePage * PAGE_SIZE, projects.length)} shown`}</small></header>
             {projects.length === 0 ? <p>No projects match these filters. Try a different name or district.</p> : null}
             {visible.map((project) => <div key={project.id} data-selected={selectedProjectId === project.id}>
-              <button type="button" aria-pressed={selectedProjectId === project.id} onClick={() => setSelectedProjectId((current) => current === project.id ? null : project.id)}><span><strong>{project.name}</strong><small>{project.street} · District {project.district}</small></span><span><strong>{project.medianPriceLabel ?? 'Not published'}</strong><small>{project.n.toLocaleString('en')} {project.n === 1 ? 'sale' : 'sales'}</small></span></button>
+              <button type="button" aria-pressed={selectedProjectId === project.id} onClick={() => setSelectedProjectId((current) => current === project.id ? null : project.id)}><span><strong title={project.name}>{project.name}</strong><small title={`${project.street} · District ${project.district}`}>{project.street} · District {project.district}</small></span><span><strong>{project.medianPriceLabel ?? 'Not published'}</strong><small>{project.n.toLocaleString('en')} {project.n === 1 ? 'sale' : 'sales'}</small></span></button>
               {project.state === 'published' ? <Link href={project.href} aria-label={`Open ${project.name} evidence`} aria-busy={pendingHref === project.href} onClick={() => setPendingHref(project.href)}>Details</Link> : <span className={styles.evidenceUnavailableLink} data-evidence-link="unavailable" title="At least 5 transactions are required">Below 5 sales</span>}
             </div>)}
           </div>
