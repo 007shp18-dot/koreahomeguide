@@ -29,6 +29,6 @@
 .costRows > div:last-child { font-weight: 600; }
 .callout { border-left: 2px solid var(--review-accent); padding-left: 18px; }
 .check { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; min-height: 44px; }
-.check input { width: 18px; height: 18px; flex-shrink: 0; margin-top: 5px; accent-color: var(--review-accent); }
+.check input { width: 18px; height: 18px; min-block-size: 18px; flex-shrink: 0; margin: calc((1.65em - 18px) / 2) 0 0; accent-color: var(--review-accent); }
 .method { margin: 24px 0; font-size: 14px; color: var(--review-muted); }
 @media (max-width: 720px) { .examples { grid-template-columns: 1fr; gap: 20px; } .costRows > div { flex-wrap: wrap; gap: 4px 16px; } }
