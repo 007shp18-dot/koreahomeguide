@@ -16,6 +16,7 @@ import {
   mountGoogleMarketPoints,
   mountGooglePlaceMap,
   clusterGoogleMarketPoints,
+  googleMarketMarkerAppearance,
 } from '../components/maps/google-place-map';
 
 describe('Google place map', () => {
@@ -31,6 +32,22 @@ describe('Google place map', () => {
     expect(grouped.reduce((n,p) => n + (p.count ?? 1), 0)).toBe(775);
     expect(clusterGoogleMarketPoints(points, 18)).toHaveLength(3);
     expect(clusterGoogleMarketPoints([points[0]!, { ...points[1]!, selected: true }], 11)).toHaveLength(2);
+  });
+
+  it('keeps dense project maps readable and preserves every property across zoom levels', () => {
+    const points = Array.from({ length: 1106 }, (_, i) => ({
+      id: `project-${i}`, title: `Project ${i}`, label: `Project ${i}`,
+      latitude: 1.28 + (i % 25) * 0.0001, longitude: 103.85 + Math.floor(i / 25) * 0.0001,
+      selected: i === 0,
+    }));
+    const overview = clusterGoogleMarketPoints(points, 11);
+    expect(overview.length).toBeLessThan(20);
+    expect(overview.reduce((n, p) => n + (p.count ?? 1), 0)).toBe(1106);
+    const detail = clusterGoogleMarketPoints(points, 18);
+    expect(detail).toHaveLength(1106);
+    const labeled = detail.filter(p => googleMarketMarkerAppearance(p).label !== undefined);
+    expect(labeled.map(p => p.id)).toEqual(['project-0']);
+    expect(googleMarketMarkerAppearance(labeled[0]!).label?.text).toBe('Project 0');
   });
 
   it('loads the async weekly Maps JavaScript API for Singapore', () => {
@@ -109,6 +126,7 @@ describe('Google place map', () => {
             zoom: 11,
             mapTypeControl: false,
             streetViewControl: false,
+            clickableIcons: false,
           });
         }
       },
@@ -128,7 +146,7 @@ describe('Google place map', () => {
     ]);
   });
 
-  it('places Singapore market prices directly on the map', () => {
+  it('uses an unlabeled dot for an unselected project', () => {
     const options: unknown[] = [];
     class Marker {
       constructor(input?: unknown) { options.push(input); }
@@ -155,7 +173,8 @@ describe('Google place map', () => {
       map,
       position: { lat: 1.2897, lng: 103.8501 },
       title: 'CCR · 120 transactions',
-      label: { text: 'CCR · S$2.1M', className: 'spGoogleMarketMarker' },
+      icon: expect.objectContaining({ path: 0, scale: 5 }),
+      zIndex: 1,
     }]);
   });
 
@@ -225,7 +244,8 @@ describe('Google place map', () => {
       map,
       position: { lat: 1.3039, lng: 103.8322 },
       title: 'SKYE AT HOLLAND',
-      label: { text: 'SGD 2,094,000', className: 'spGoogleMarketMarker' },
+      icon: expect.objectContaining({ path: 0, scale: 5 }),
+      zIndex: 1,
     }]);
     expect(mapCalls).toEqual([viewport]);
   });

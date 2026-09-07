@@ -220,7 +220,7 @@ export function SingaporeExplorer({
               <label><input type="checkbox" checked={showAreaReferences} onChange={event => setShowAreaReferences(event.currentTarget.checked)} /> Show approximate district groups</label>
             </> : <p>{areaMapCoverage.total.toLocaleString('en')} matching projects across all result pages · choose a {mapLevel === 'regions' ? 'market region' : 'postal district'} to open its full project map.</p>}
           </div></header>
-          <GooglePlaceMap browserKey={googleMapsBrowserKey} points={mapPoints} onSelectPoint={onMapSelect} showAddressSearch={false} clusterLocations={mapLevel !== 'projects'} />
+          <GooglePlaceMap browserKey={googleMapsBrowserKey} points={mapPoints} onSelectPoint={onMapSelect} showAddressSearch={false} clusterLocations={true} />
           {mapLevel === 'projects' && projectMapCoverage.unplacedGroups.length > 0 ? <div className={styles.mapUnplaced}>
             <p>These district totals remain in the results; no reliable map reference is available yet.</p>
             {projectMapCoverage.unplacedGroups.map(group => <button type="button" key={group.district} onClick={() => onMapSelect(`district-${group.district}`)}>District {group.district} · {group.count.toLocaleString('en')} projects</button>)}
