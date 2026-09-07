@@ -1,3 +1,4 @@
+import { singaporeProjectDisplayName } from './project-display-name';
 import { resolveUraProjectLocation } from './project-location';
 import 'server-only';
 
@@ -88,7 +89,7 @@ function projectListItem(project: SingaporeProjectSummary, repository: Singapore
   return Object.freeze({
     location: resolveUraProjectLocation(repository.listProjectRecords(project.marketSegment, project.id)),
     id: project.id,
-    name: project.project,
+    name: singaporeProjectDisplayName(project),
     street: project.street,
     district: project.district,
     n: project.n,
@@ -233,7 +234,8 @@ export function buildSingaporeProjectModel(
   segment: string,
   projectId: string,
 ): SingaporeProjectModel | null {
-  const identity = repository.getProject(segment, projectId);
+  const sourceIdentity = repository.getProject(segment, projectId);
+  const identity = sourceIdentity === null ? null : Object.freeze({ ...sourceIdentity, project: singaporeProjectDisplayName(sourceIdentity) });
   if (identity === null) return null;
   if (!identity.published) return Object.freeze({
     status: 'insufficient',

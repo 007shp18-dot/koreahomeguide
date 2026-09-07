@@ -24,7 +24,9 @@ References: [PropertyGuru Singapore listings](https://www.propertyguru.com.sg/pr
 - Targeted route/header tests: 32 passed before release.
 - Added Singapore browser assertions for full title availability, one-line project/price rendering, and page containment to the existing search journey.
 - Build, lint, independent review, CI, and production status are recorded in the release PR.
-- No replacement-character or obvious common English typo matched in the inspected component/copy scan. This is not a claim that every editorial article has been proofread.
+- Component-only scanning found no replacement characters, but live HTML text auditing of 11 main routes found two corrupted Singapore names: ENCHANT\uFFFD (EVELYN ROAD) and VERD\uFFFD JOO CHIAT (JOO CHIAT TERRACE). Both are present in the source snapshot. Exact name-and-street presentation repairs show ENCHANTÉ and VERDÉ JOO CHIAT in Explore, detail and Passport. Raw records, IDs and digests remain unchanged. This is not a claim that every editorial article has been proofread.
 - No changes to calculations, datasets, evidence thresholds, reported prices, publication dates, or naming provenance.
 - No passing local browser preview is available for this Next.js monorepo in Sites. Do not describe source inspection or CI as a manual full-site visual sign-off.
 - Inherited browser issues from #192: obsolete Singapore alias 404 expectations, two English home snapshots, and internal design-review content Markdown/snapshots. The raw Markdown problem is in the internal review renderer; canonical articles use EditorialMarkdown. They remain separate from this production detail patch and must not be blessed as new visual baselines.
+
+Name verification: https://www.edgeprop.sg/condo-apartment/enchante and https://enchante.propertybook.sg/ for Enchanté; https://www.propertyguru.com.sg/project/verde-joo-chiat-26221 and https://www.99.co/singapore/sale/property/verd-joo-chiat-condo-oEVAipT5QCFrcBGKaLYgxs for Verdé Joo Chiat.
