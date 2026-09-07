@@ -1,3 +1,4 @@
+import { AFFORDABLE_RESALE_STORIES } from './affordable-resale';
 import { enrichEnglishRecord } from './research-expansions';
 import { DUBAI_RENTAL_YIELD } from './dubai-rental-yield';
 import { KOREA_LARGE_ESTATE_SPILLOVER } from './korea-large-estate-spillover';
@@ -51,6 +52,7 @@ const singaporeRegionChart = infographic({
 });
 
 export const ENGLISH_PORTFOLIO = Object.freeze([
+  ...AFFORDABLE_RESALE_STORIES,
   KOREA_LARGE_ESTATE_SPILLOVER,
   SINGAPORE_LENTOR_SPILLOVER,
   DUBAI_RENTAL_YIELD,
