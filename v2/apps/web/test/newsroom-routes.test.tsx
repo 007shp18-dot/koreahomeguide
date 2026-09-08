@@ -45,6 +45,20 @@ const newsArticle: PublishedContentArticle = Object.freeze({
 });
 
 describe('public Newsroom routes', () => {
+  it('keeps budget comparisons in Insights and Data Stories, with a matching article breadcrumb', () => {
+    for (const locale of ['en', 'ko'] as const) {
+      const budget = getPortfolioRecord(locale, 'singapore-condo-buying-budget-guide')!;
+      for (const type of ['insights', 'data-stories']) {
+        const html = renderToStaticMarkup(<NewsroomIndex locale={locale} articles={[]} policies={[]} filters={resolveNewsroomFilters({ type, market: 'singapore' })} headlines={<p>Feed</p>} />);
+        expect(html).toContain(budget.canonicalHref.slice(0, -1));
+        expect(html).not.toContain('dubai-ready-apartment-buying-budget-guide');
+      }
+      const detail = renderToStaticMarkup(<NewsroomArticle article={budget} />);
+      const breadcrumb = detail.match(/<nav[\s\S]*?<\/nav>/)?.[0] ?? '';
+      expect(breadcrumb).toContain(locale === 'ko' ? '/ko/news' : '/news');
+      expect(breadcrumb).toContain(locale === 'ko' ? '예산 비교' : 'Budget comparison');
+    }
+  });
   it('uses one News & Insights surface and keeps analysis types inside Insights', () => {
     const filters = resolveNewsroomFilters({ type: 'market', market: 'seoul' });
     expect(filters.canonicalHref).toBe('/news/?type=market&market=seoul');

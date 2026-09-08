@@ -1,5 +1,7 @@
 import { KOREAN_BUYING_GUIDE_DATA } from '../../content/ko/buying-guides';
 import { BuyingGuide } from './buying-guide';
+import { ArticleContents } from './article-contents';
+import { BUDGET_GUIDE_SLUGS } from '../../content/guide-directory';
 import { BUYING_GUIDE_DATA } from '../../content/en/buying-guide-data';
 import { relatedReading } from '../../content/related-reading';
 import { MonthlyReportNavigation, MonthlyReportTrend, isMonthlyReport } from './monthly-reports';
@@ -37,14 +39,15 @@ export function NewsroomArticle({ article }: Readonly<{
   article: PublishedContentArticle & Readonly<{ infographic?: InfographicSpec | null }>;
 }>) {
   const ko = article.locale === 'ko';
+  const budgetComparison = BUDGET_GUIDE_SLUGS.some(slug => slug === article.slug);
   const t = (en:string, translated:string) => ko ? translated : en;
-  const typeLabel = ko ? ({'news-brief':'뉴스','policy-update':'정책','market-brief':'시장 분석','data-story':'데이터 분석',guide:'가이드'} as const)[article.type] : typeLabels[article.type];
+  const typeLabel = budgetComparison ? t('Budget comparison', '예산 비교') : ko ? ({'news-brief':'뉴스','policy-update':'정책','market-brief':'시장 분석','data-story':'데이터 분석',guide:'가이드'} as const)[article.type] : typeLabels[article.type];
   const buyingGuide = (ko ? KOREAN_BUYING_GUIDE_DATA : article.locale === 'en' ? BUYING_GUIDE_DATA : []).find(guide => guide.slug === article.slug);
   const figure = article.infographic ?? (ko ? KOREAN_RESEARCH_FIGURES[article.slug] : article.locale === 'en' ? RESEARCH_FIGURES[article.slug] : undefined);
   const contentSections = sections(article.bodyMarkdown);
-  const section = article.type === 'guide'
+  const section = article.type === 'guide' && !budgetComparison
     ? { label: t('Guides','가이드'), href: ko ? '/ko/guides/' : '/guides/' }
-    : { label: t('News', '뉴스'), href: ko ? '/ko/news/' : '/news/' };
+    : { label: t('News & Insights', '뉴스 & 인사이트'), href: ko ? '/ko/news/' : '/news/' };
   const market = article.marketId === 'kr-seoul' ? t('Seoul','서울')
     : article.marketId === 'sg-singapore' ? t('Singapore','싱가포르') : article.marketId === 'ae-dubai' ? t('Dubai','두바이') : t('Global','전체 도시');
   const relatedHref = article.relatedHref === null ? null : marketHref(ko ? 'ko' : 'en', article.relatedHref);
@@ -84,7 +87,7 @@ export function NewsroomArticle({ article }: Readonly<{
     {isMonthlyReport(article.slug) ? <MonthlyReportTrend slug={article.slug} locale={ko ? 'ko' : 'en'} /> : null}
     {article.type === 'guide' && article.marketId ? <div className={styles.articlePhoto}><MarketRepresentativePhoto context="city" photo={article.marketId === 'kr-seoul' ? MARKET_PHOTOS.seoul : article.marketId === 'sg-singapore' ? MARKET_PHOTOS.singapore : article.marketId === 'ae-dubai' ? MARKET_PHOTOS.dubai : null} cityLabel={market} /></div> : null}
     {figure == null ? null : <Infographic spec={figure} />}
-    {buyingGuide || contentSections.length < 5 ? null : <nav className={styles.contents} aria-label={t('In this article', '이 글의 내용')}><p>{t("In this article","이 글의 내용")}</p>{contentSections.map((item, index) => item.heading ? <a href={`#section-${index + 1}`} key={item.heading}>{item.heading}</a> : null)}</nav>}
+    {buyingGuide ? null : <ArticleContents locale={article.locale} items={contentSections.flatMap((item, index) => item.heading ? [{ id: `section-${index + 1}`, title: item.heading }] : [])} />}
     {buyingGuide ? <BuyingGuide guide={buyingGuide} locale={ko ? "ko" : "en"} /> : <article className={styles.articleBody}>
       {contentSections.map((section, index) => <section id={`section-${index + 1}`} key={section.heading}>{section.heading ? <h2>{section.heading}</h2> : null}<EditorialMarkdown source={section.body} /></section>)}
     </article>}

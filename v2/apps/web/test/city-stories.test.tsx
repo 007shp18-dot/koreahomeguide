@@ -8,6 +8,17 @@ import { listPortfolioRecords } from '../content/portfolio-manifest';
 import { languageDestinations } from '../lib/navigation/site-navigation';
 
 describe('published city journeys', () => {
+  it('offers a collapsible contents list with the actual chapter titles', () => {
+    const story = CITY_STORIES[0];
+    const html = renderToStaticMarkup(<CityStoryArticle story={story} locale="ko" />);
+    expect(html).toMatch(/<details[^>]*data-article-contents/);
+    const contents = html.match(/<details[^>]*data-article-contents[\s\S]*?<\/details>/)?.[0] ?? '';
+    expect(contents).toContain('목차');
+    for (const section of story.sections) {
+      expect(contents).toContain(`href="#${section.id}"`);
+      expect(contents).toContain(section.title.ko);
+    }
+  });
   it.each(CITY_STORIES)('connects every $city chapter to available content and tools', story => {
     expect(story.sections.map(section => section.id)).toEqual(STORY_STEPS.map(step => step.id));
     for (const locale of ['en', 'ko'] as const) {

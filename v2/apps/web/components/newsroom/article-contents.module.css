@@ -1,0 +1,9 @@
+.contents { margin: 0 0 36px; border-block: 1px solid var(--line, #dde1e7); color: var(--ink, #18222f); }
+.contents summary { padding: 18px 0; min-height: 52px; cursor: pointer; font-size: 1rem; font-weight: 600; }
+.contents summary span { margin-left: 16px; font-size: .875rem; color: var(--muted, #596473); font-weight: 400; }
+.contents nav { display: block; padding: 0 0 18px; }
+.contents ol { display: grid; gap: 0; list-style: decimal-leading-zero; margin: 0; padding-left: 2rem; }
+.contents li { padding-left: 8px; color: var(--muted, #596473); font-size: .875rem; }
+.contents a { display: block; padding: 11px 0; min-height: 44px; font-size: .9375rem; line-height: 1.6; color: var(--ink, #18222f); text-decoration: none; word-break: keep-all; overflow-wrap: anywhere; }
+.contents a:hover { color: var(--accent, #245cf0); text-decoration: underline; text-underline-offset: 4px; }
+.contents a:focus-visible, .contents summary:focus-visible { outline: 2px solid var(--accent, #245cf0); outline-offset: 4px; }
