@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 vi.mock('server-only', () => ({}));
 
 import { generateMetadata } from '../app/(en)/ae/dubai/check/page';
+import { generateMetadata as generateKoreanMetadata } from '../app/(ko)/ko/ae/dubai/check/page';
 import sitemap from '../app/sitemap';
 import { DubaiCheckWorkspace } from '../components/dubai/dubai-check-workspace';
 import { resolveDubaiCheckRouteState } from '../lib/dubai/check-model';
@@ -83,7 +84,7 @@ describe('Dubai Check workspace', () => {
       state={resolveDubaiCheckRouteState({})}
     />);
 
-    expect(html).toContain('Enter a Dubai asking price');
+    expect(html).toContain('Enter an asking price');
     expect(html).not.toContain('data-dubai-check-result="ready"');
   });
 
@@ -137,8 +138,22 @@ describe('Dubai Check workspace', () => {
     />);
 
     expect(malformed).toContain('Check the entered fields');
-    expect(unknown).toContain('This area and cohort are not published');
+    expect(unknown).toContain('No Ready transaction data is available for the selected area and property type');
     expect(unknown).not.toContain('data-dubai-check-result="ready"');
+  });
+
+  it.each([
+    ['en', 'No Off-Plan transaction data is available for the selected area and property type.'],
+    ['ko', '선택한 지역·주택 유형의 분양 주택 거래 자료가 없습니다.'],
+  ] as const)('scopes unavailable Off-Plan evidence to that stage in %s when Ready evidence exists', async (locale, message) => {
+    const model = await modelFor();
+    const ready = renderToStaticMarkup(<DubaiCheckWorkspace locale={locale} model={model} state={fullQuery('ready')} />);
+    const offPlan = renderToStaticMarkup(<DubaiCheckWorkspace locale={locale} model={model} state={fullQuery('off-plan')} />);
+
+    expect(ready).toContain('data-dubai-check-result="ready"');
+    expect(offPlan).toContain(`<h2>${message}</h2>`);
+    expect(offPlan).not.toContain('data-dubai-check-result="ready"');
+    expect(offPlan).not.toContain('No transactions are available for this area and property type.');
   });
 
   it('hands the exact Dubai scenario to the neutral AED calculator', async () => {
@@ -175,7 +190,16 @@ describe('Dubai Check route publication', () => {
     vi.stubEnv('SIGNEDPRICE_DUBAI_AREA_EVIDENCE_SHA256', createHash('sha256').update(source).digest('hex'));
 
     expect(await generateMetadata({ searchParams: Promise.resolve({}) }))
-      .toMatchObject({ robots: { index: true, follow: true } });
+      .toMatchObject({
+        title: 'Compare an asking price in Dubai | signedprice',
+        description: 'Compare Ready or Off-Plan asking prices with Dubai area transaction medians and AED per square metre. Estimate gross yield using your annual-rent assumption.',
+        robots: { index: true, follow: true },
+      });
+    expect(await generateKoreanMetadata()).toMatchObject({
+      title: '두바이 매물 가격 비교 | signedprice',
+      description: '완공·분양 주택을 구분해 지역 실거래가 중앙값과 ㎡당 가격을 비교하세요. 직접 입력한 예상 연 임대료로 비용 차감 전 수익률도 계산합니다.',
+      robots: { index: true, follow: true },
+    });
     expect(await generateMetadata({ searchParams: Promise.resolve({ area: 'marsa-dubai' }) }))
       .toMatchObject({ robots: { index: false, follow: true } });
     expect(sitemap().map(({ url }) => url)).toContain(

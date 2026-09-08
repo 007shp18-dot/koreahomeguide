@@ -42,9 +42,11 @@ describe('HDB route model', () => {
     };
     expect(buildHdbTownModel(repository, 'ang-mo-kio')).toMatchObject({
       town: 'ANG MO KIO',
+      resalePeriod: '2017-01/2026-09', rentalPeriod: '2021-01/2026-08',
       blocks: [{
         href: `/sg/singapore/hdb/ang-mo-kio/${'a'.repeat(64)}/`,
         resaleMedianLabel: 'SGD 430,000', rentalMedianLabel: 'SGD 2,800',
+        resalePeriod: '2017-01/2026-09', rentalPeriod: '2021-01/2026-08',
       }],
     });
     expect(buildHdbTownModel(repository, 'missing')).toBeNull();

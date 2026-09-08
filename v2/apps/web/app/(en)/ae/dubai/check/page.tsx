@@ -18,14 +18,14 @@ export async function generateMetadata({
   const query = await searchParams;
   const model = buildDubaiCheckModel(dubaiEvidenceRepositoryFromEnvironment());
   if (model.status === 'unavailable') return {
-    title: 'Dubai Check | signedprice',
-    description: 'Dubai area price evidence is not currently released.',
+    title: 'Compare an asking price in Dubai | signedprice',
+    description: 'Dubai area transaction data is currently unavailable for price comparisons.',
     robots: { index: false, follow: true },
   };
   const metadata = indexableMetadata({
     path: '/ae/dubai/check/',
-    title: 'Check a Dubai asking price by area | signedprice',
-    description: 'Compare a Ready or Off-Plan asking price with released Dubai area medians, AED per square metre, and a user-supplied gross rent scenario.',
+    title: 'Compare an asking price in Dubai | signedprice',
+    description: 'Compare Ready or Off-Plan asking prices with Dubai area transaction medians and AED per square metre. Estimate gross yield using your annual-rent assumption.',
   });
   return Object.keys(query).length === 0
     ? metadata

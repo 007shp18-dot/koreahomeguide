@@ -26,18 +26,20 @@ export const MARKET_PHOTOS = Object.freeze({
   }),
 } satisfies Readonly<Record<'seoul' | 'singapore' | 'dubai', MarketPhoto>>);
 
-export function MarketRepresentativePhoto({ photo, eager = false, cityLabel, context = 'property' }: Readonly<{
+export function MarketRepresentativePhoto({ photo, eager = false, cityLabel, context = 'property', locale = 'en' }: Readonly<{
   photo: MarketPhoto | null;
   eager?: boolean;
   cityLabel?: string;
   context?: 'property' | 'city';
+  locale?: 'en' | 'ko';
 }>) {
+  const ko = locale === 'ko';
   if (photo === null) return <figure className={styles.frame} data-building-media="market-context-fallback">
     <div className={styles.fallback}>
-      <strong>{cityLabel === undefined ? 'Property market context' : `${cityLabel} market context`}</strong>
-      <span>No approved market photograph is available.</span>
+      <strong>{ko ? (cityLabel === undefined ? '주택 시장 정보' : `${cityLabel} 주택 시장`) : (cityLabel === undefined ? 'Property market context' : `${cityLabel} market context`)}</strong>
+      <span>{ko ? '사용할 수 있는 도시 사진이 없습니다.' : 'No approved market photograph is available.'}</span>
     </div>
-    <figcaption>{cityLabel === undefined ? null : `${cityLabel} · `}Verified market context</figcaption>
+    <figcaption>{cityLabel === undefined ? null : `${cityLabel} · `}{ko ? '확인된 시장 정보' : 'Verified market context'}</figcaption>
   </figure>;
 
   return <figure className={styles.frame} data-building-media="curated-market-photo">
@@ -52,7 +54,9 @@ export function MarketRepresentativePhoto({ photo, eager = false, cityLabel, con
     />
     <figcaption>
       {cityLabel === undefined ? null : `${cityLabel} · `}
-      {context === 'city' ? 'City view' : 'Editorial city photograph · not this exact property'}
+      {context === 'city'
+        ? (ko ? '도시 전경' : 'City view')
+        : (ko ? '도시 참고 사진 · 해당 매물의 사진이 아닙니다' : 'Editorial city photograph · not this exact property')}
     </figcaption>
   </figure>;
 }

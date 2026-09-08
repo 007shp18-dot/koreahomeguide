@@ -294,7 +294,7 @@ export function DubaiExplorer({ locale = 'en',
               </button>)}</div>
             </details> : null}
             {area.href === null
-              ? <span className={styles.unavailableLink}>{t("Area page unavailable for this release")}</span>
+              ? <span className={styles.unavailableLink}>{t("Area details unavailable")}</span>
               : <Link href={marketHref(locale, area.href)}>{t("View area prices")}</Link>}
           </article>)}
           {results.length === 0 ? <p className={styles.emptyState}>{t("No areas match these filters. Increase the budget or lower the ratio threshold.")}</p> : null}

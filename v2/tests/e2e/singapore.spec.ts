@@ -1,4 +1,5 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
+import { visibleMarketNavigation, visibleProductNavigation } from './site-header-helpers';
 
 function observeRuntimeFailures(page: Page) {
   const consoleErrors: string[] = [];
@@ -76,7 +77,9 @@ test('Singapore routes fail closed while display rights are pending', async ({ p
     'href',
     'https://www.signedprice.com/sg/',
   );
-  await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(0);
+  for (const [language, href] of [['en', '/sg/'], ['ko', '/ko/sg/'], ['x-default', '/sg/']]) {
+    await expect(page.locator(`link[rel="alternate"][hreflang="${language}"]`)).toHaveAttribute('href', `https://www.signedprice.com${href}`);
+  }
   await noOverflow(page);
   assertClean();
 });
@@ -87,7 +90,7 @@ test('ready Singapore evidence flows entry to project when promotion gates open'
   test.skip(await page.locator('[data-singapore-entry="ready"]').count() === 0,
     'Ready browser flow remains blocked until dataset-specific display rights are confirmed.');
 
-  await page.getByRole('link', { name: 'Open Singapore Explore' }).click();
+  await page.getByRole('navigation', { name: 'Where to go next' }).getByRole('link', { name: /^Explore reported prices/ }).click();
   await expect(page.locator('[data-singapore-evidence="ready"]')).toBeVisible();
   for (const code of ['CCR', 'RCR', 'OCR']) await expect(page.getByText(code, { exact: true }).first()).toBeVisible();
   await page.getByRole('tab', { name: /^CCR/ }).click();
@@ -134,7 +137,7 @@ test('ready Singapore evidence flows entry to project when promotion gates open'
   await scenario.getByLabel('Expected monthly rent (SGD)').fill('5000');
   await scenario.getByLabel('Annual operating costs, including taxes (SGD)').fill('12000');
   await scenario.getByLabel('Expected vacant months per year').fill('2');
-  await expect(scenario.locator('dl')).toContainText('3.45%');
+  await expect(scenario.locator('dl[aria-live="polite"]')).toContainText('3.45%');
   await noOverflow(page);
 
   const raw = await page.request.get(page.url());
@@ -165,19 +168,19 @@ test('native Singapore Check submits single and cross-market A/B evidence', asyn
   const assertClean = observeRuntimeFailures(page);
   await page.goto('/sg/singapore/check/');
   await expect(page.locator('[data-singapore-check-workspace="true"]')).toBeVisible();
+  // Active-state markup is a desktop contract; visible destinations are checked below.
   await expect(page.locator('.site-header__product-nav a[aria-current="page"]')).toHaveText('Tools');
-  expect(await page.locator('.site-header__product-nav a').evaluateAll((links) => links.map((link) => link.getAttribute('href')))).not.toContainEqual(expect.stringMatching(/kr\/seoul/));
   for (const market of ['URA private sale', 'HDB resale', 'HDB rent']) {
-    await expect(page.getByRole('link', { name: new RegExp(market) }).first()).toContainText('Evidence ready');
+    await expect(page.getByRole('link', { name: new RegExp(market) }).first()).toContainText('Data available');
   }
-  await page.getByLabel('Price (SGD)').fill('350000');
-  await page.getByRole('button', { name: 'Check offer' }).click();
+  await page.getByLabel('Asking price (SGD)', { exact: true }).fill('350000');
+  await page.getByRole('button', { name: 'Compare an asking price', exact: true }).click();
   await expect(page.getByLabel('Check result')).toContainText('SGD 300,000');
-  await expect(page.getByLabel('Check result')).toContainText('60th percentile');
+  await expect(page.getByLabel('Check result').locator('dt').filter({ hasText: /^Price percentile$/ }).locator('+ dd')).toHaveText('60th');
   await expect(page.getByLabel('Check result')).toContainText('2026-08–2026-08');
 
   await page.getByRole('link', { name: 'Compare A/B' }).click();
-  await page.getByLabel('Price (SGD)').fill('350000');
+  await page.getByLabel('Asking price (SGD)', { exact: true }).fill('350000');
   await page.getByLabel('Monthly rent (SGD)').fill('2150');
   await page.getByRole('button', { name: 'Compare offers' }).click();
   await expect(page.getByLabel('Check result')).toContainText('Trade-off');
@@ -187,6 +190,9 @@ test('native Singapore Check submits single and cross-market A/B evidence', asyn
     'No winner or conversion is inferred.',
   );
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /^noindex,\s*nofollow$/);
+  const productNavigation = await visibleProductNavigation(page);
+  await expect(productNavigation.getByRole('link', { name: 'Tools', exact: true })).toHaveAttribute('href', '/tools/');
+  expect(await productNavigation.getByRole('link').evaluateAll((links) => links.map((link) => link.getAttribute('href')))).not.toContainEqual(expect.stringMatching(/kr\/seoul/));
   await noOverflow(page);
   assertClean();
 });
@@ -195,15 +201,15 @@ test('Seoul and Singapore Explore share the same desktop rail width', async ({ p
   await page.goto('/sg/singapore/explore/');
   const singaporeRail = await page.locator('[data-market-shell-region="discovery"]').boundingBox();
   const singaporeHeader = await page.locator('.site-header__inner').boundingBox();
-  await expect(page.getByRole('navigation', { name: 'Primary navigation', exact: true })).toHaveCount(1);
-  await expect(page.getByRole('navigation', { name: 'Singapore market navigation' })).toBeVisible();
+  await expect(await visibleProductNavigation(page)).toHaveCount(1);
+  await expect(await visibleMarketNavigation(page, 'Singapore')).toBeVisible();
   await page.goto('/kr/seoul/explore/');
   const seoulRail = await page.locator(
     '[data-explorer-layout="split"] > [data-explorer-region="results"]',
   ).boundingBox();
   const seoulHeader = await page.locator('.site-header__inner').boundingBox();
-  await expect(page.getByRole('navigation', { name: 'Primary navigation', exact: true })).toHaveCount(1);
-  await expect(page.getByRole('navigation', { name: 'Seoul market navigation' })).toBeVisible();
+  await expect(await visibleProductNavigation(page)).toHaveCount(1);
+  await expect(await visibleMarketNavigation(page, 'Seoul')).toBeVisible();
   expect(singaporeHeader?.height).toBeGreaterThanOrEqual(44);
   expect(seoulHeader?.height).toBe(singaporeHeader?.height);
   if (page.viewportSize()!.width > 1120) {

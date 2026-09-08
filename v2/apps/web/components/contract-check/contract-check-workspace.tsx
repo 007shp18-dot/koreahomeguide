@@ -28,28 +28,28 @@ const won = new Intl.NumberFormat('ko-KR', {
 
 export const CHECK_COPY = Object.freeze({
   en: Object.freeze({
-    nav: 'Check', mode: 'Check mode', single: 'Check one asking price', compare: 'Compare two offers',
-    conditions: 'Conditions / building context', district: 'District', housing: 'Property type',
-    area: 'Exclusive area', building: 'Observed building ID', buildingHint: 'Optional. Use a stable observed-building ID from Explore.',
+    nav: 'Check', mode: 'Check mode', single: 'Compare an asking price', compare: 'Compare two offers',
+    conditions: 'Property details', district: 'District', housing: 'Property type',
+    area: 'Exclusive area', building: 'Building', buildingHint: 'Optional. Select a building from Explore.',
     offer: 'Offer', transaction: 'Transaction type', sale: 'Sale', jeonse: 'Jeonse', monthly: 'Monthly rent',
-    price: 'Sale price as filed', deposit: 'Deposit as filed', rent: 'Monthly rent as filed', submitCompare: 'Compare offers',
+    price: 'Asking sale price', deposit: 'Asking deposit', rent: 'Asking monthly rent', submitCompare: 'Compare offers',
     result: 'Result', blank: 'Enter both offers, then compare them with compatible reported evidence.',
     unavailable: 'This comparison is unavailable', tradeoff: 'Trade-off — no winner declared',
     lower: 'has the lower evidence-adjusted position.', equal: 'The offers are equal at public precision.',
     equivalent: 'has the lower verified monthly equivalent.', keyFigures: 'Key figures',
-    upfront: 'Upfront cash', recurring: 'Recurring cash flow', marketPosition: 'Own-market position',
+    upfront: 'Upfront cash', recurring: 'Recurring cash flow', marketPosition: 'Compared with similar transactions',
     notModeled: 'Not modeled', notApplicable: 'Not applicable',
-    percentile: 'Price percentile', evidence: 'Market evidence', disclosure: 'Calculation / source disclosure',
-    sample: 'reported contracts', median: 'Reported median', middle: 'Middle 50%', period: 'Evidence period',
-    window: 'Evidence window', salePeriod: 'Sale evidence window', rentPeriod: 'Rental evidence window', conversionPeriod: 'Conversion period',
+    percentile: 'Price percentile', evidence: 'Market evidence', disclosure: 'Method and sources',
+    sample: 'reported contracts', median: 'Reported median', middle: 'Middle 50%', period: 'Reporting period',
+    window: 'Reporting period', salePeriod: 'Sale reporting period', rentPeriod: 'Rental reporting period', conversionPeriod: 'Conversion period',
     reference: 'Market reference only. No loan rate, tax, holding period, appreciation or future value is assumed.',
     explore: 'Find a building in Explore',
     guide: 'Read the contract guides',
   }),
   ko: Object.freeze({
-    nav: '가격 확인', mode: '확인 방식', single: '매물 가격 비교', compare: '두 조건 비교',
+    nav: '가격 비교', mode: '비교 방식', single: '매물 가격 비교', compare: '두 조건 비교',
     conditions: '매물 정보', district: '자치구', housing: '주택 유형', area: '전용면적',
-    building: '건물 ID', buildingHint: '선택. Explore의 안정적인 건물 ID를 사용하세요.',
+    building: '단지', buildingHint: '선택 사항입니다. 실거래가 탐색에서 단지를 선택하세요.',
     offer: '조건', transaction: '거래 유형', sale: '매매', jeonse: '전세', monthly: '월세',
     price: '매매가격', deposit: '보증금', rent: '월세', submitCompare: '두 조건 비교',
     result: '결과', blank: '두 집의 조건을 입력해 비슷한 실거래가와 비교하세요.',
@@ -349,7 +349,7 @@ function ResultPanel({ model, locale }: Readonly<{
               </dl>
             ) : <p key={id}>{c.offer} {id.toUpperCase()}: {check.status === 'unavailable'
               ? check.message
-              : `Only ${check.sample.count} compatible contracts; five are required.`}</p>;
+              : locale === 'ko' ? `비교 거래 ${check.sample.count}건 · 최소 5건 필요` : `Only ${check.sample.count} compatible contracts; five are required.`}</p>;
           })}</div>
         )}
       </section>
@@ -382,9 +382,9 @@ function ReadyWorkspace({ model, locale, entityContext }: Readonly<{
     <>
       <main className={styles.main}>
         <section className={styles.hero}>
-          <p>Seoul · Official transaction evidence</p>
+          <p>{locale === 'ko' ? '서울 · 실거래가 비교' : 'Seoul · Reported transactions'}</p>
           <h1>{c.compare}</h1>
-          <p>Compare sale, jeonse, or monthly-rent offers against their own compatible reported markets.</p>
+          <p>{locale === 'ko' ? '매매·전세·월세 조건을 각각 비슷한 거래와 비교하세요.' : 'Compare sale, jeonse or monthly-rent offers with similar transactions.'}</p>
         </section>
         <nav aria-label={c.mode} className={styles.modeSelector} data-check-mode-selector="true">
           <Link data-check-mode="single" href={localizedCheckHref(locale, '/')}>{c.single}</Link>
@@ -404,8 +404,8 @@ function ReadyWorkspace({ model, locale, entityContext }: Readonly<{
                 {model.districts.map((district) => <option key={district.slug} value={district.slug}>{locale === 'ko' ? district.nameKo : district.nameEn}</option>)}
               </select></label>
               <label className={styles.field}><span>{c.housing}</span><select value={housing} onChange={event => setHousing(event.target.value as typeof housing)} name="housing">
-                <option value="apartment">Apartment</option><option value="officetel">Officetel</option>
-                <option value="villa_multifamily">Villa / multifamily</option><option value="detached">Detached</option>
+                <option value="apartment">{locale === 'ko' ? '아파트' : 'Apartment'}</option><option value="officetel">{locale === 'ko' ? '오피스텔' : 'Officetel'}</option>
+                <option value="villa_multifamily">{locale === 'ko' ? '연립·다세대' : 'Villa / multifamily'}</option><option value="detached">{locale === 'ko' ? '단독·다가구' : 'Detached'}</option>
               </select></label>
               <label className={styles.field}><span>{c.area} <small>㎡</small></span><input defaultValue={model.selection.areaSqm ?? ''} inputMode="decimal" name="area" /></label>
               <BuildingSelection key={`${district}-${housing}`} id={district === model.selection.districtSlug && housing === model.selection.housingType ? model.selection.buildingId : null} name={model.buildingName} locale={locale} />
@@ -440,7 +440,7 @@ export function ContractCheckWorkspace({ model, locale = 'en', entityContext = n
       <SiteHeader copy={checkHeader(locale)} />
       {model.status === 'ready' ? <ReadyWorkspace model={model} locale={locale} entityContext={entityContext} /> : (
         <main className={styles.unavailable} data-evidence-state="unavailable">
-          <p>Seoul · Official transaction evidence</p><h1>{c.unavailable}</h1>
+          <p>{locale === 'ko' ? '서울 · 실거래가 비교' : 'Seoul · Reported transactions'}</p><h1>{c.unavailable}</h1>
           <p>{model.message}</p><Link href={`${locale === 'ko' ? '/ko' : ''}/kr/seoul/explore/`}>{c.explore}</Link>
         </main>
       )}

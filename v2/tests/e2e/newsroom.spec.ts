@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { visibleProductNavigation } from './site-header-helpers';
 
 async function expectNoHorizontalOverflow(page: Page) {
   const dimensions = await page.evaluate(() => ({
@@ -8,25 +9,28 @@ async function expectNoHorizontalOverflow(page: Page) {
   expect(dimensions.scroll).toBeLessThanOrEqual(dimensions.client);
 }
 
-test('Insights opens analysis and preserves the news journey', async ({ page }) => {
-  await page.goto('/news/');
-  await page.getByRole('navigation', { name: 'Primary navigation' }).getByRole('link', { name: 'Insights' }).click();
-  await expect(page).toHaveURL(/\/news\/\?type=analysis$/);
-  await expect(page.getByRole('heading', { level: 1, name: 'Insights' })).toBeVisible();
-  const sections = page.getByRole('navigation', { name: 'Insights sections' });
-  await expect(sections.getByRole('link', { name: 'Analysis reports' })).toHaveAttribute('aria-current', 'page');
-  await sections.getByRole('link', { name: 'News', exact: true }).click();
+test('News and Insights opens the combined newsroom and preserves category navigation', async ({ page }) => {
+  await page.goto('/news/?type=data-stories');
+  await (await visibleProductNavigation(page)).getByRole('link', { name: 'News & Insights', exact: true }).click();
   await expect(page).toHaveURL(/\/news\/$/);
-  await expect(page.getByRole('heading', { level: 1, name: 'News', exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: 'News & Insights' })).toBeVisible();
+  const types = page.getByRole('navigation', { name: 'News and insight types' });
+  await expect(types.getByRole('link', { name: 'Latest', exact: true })).toHaveAttribute('aria-current', 'page');
+  await types.getByRole('link', { name: 'Data Stories', exact: true }).click();
+  await expect(page).toHaveURL(/type=data-stories$/);
+  await expect(types.getByRole('link', { name: 'Data Stories', exact: true })).toHaveAttribute('aria-current', 'page');
+  await expect(page.locator('[data-newsroom-lead]')).toHaveAttribute('data-newsroom-lead', 'Data Story');
+  await types.getByRole('link', { name: 'Latest', exact: true }).click();
+  await expect(page).toHaveURL(/\/news\/$/);
   await expectNoHorizontalOverflow(page);
 });
 
 test('Newsroom filters reviewed SignedPrice records and opens the policy lifecycle', async ({ page }) => {
   await page.goto('/news/');
 
-  await expect(page).toHaveTitle(/Property policy, market news and data stories/);
-  await expect(page.getByRole('heading', { level: 1, name: 'News' })).toBeVisible();
-  await expect(page.getByRole('navigation', { name: 'News types' }).getByRole('link')).toHaveCount(5);
+  await expect(page).toHaveTitle(/Property news, policy and market insights/);
+  await expect(page.getByRole('heading', { level: 1, name: 'News & Insights' })).toBeVisible();
+  await expect(page.getByRole('navigation', { name: 'News and insight types' }).getByRole('link')).toHaveCount(5);
   await expect(page.getByRole('navigation', { name: 'News markets' }).getByRole('link')).toHaveText(['All', 'Seoul', 'Singapore', 'Dubai']);
   await expect(page.locator('[data-newsroom-lead]')).toHaveCount(1);
   await expect(page.locator('body')).not.toContainText(/provider|credential|ingestion|Naver News API/i);
@@ -60,7 +64,7 @@ test('Newsroom mobile filters remain touch-sized and contained', async ({ page }
   await page.goto('/news/');
   await expect(page.locator('[data-newsroom-layout="research"]')).toBeVisible();
 
-  const filters = page.locator('nav[aria-label="News types"] a, nav[aria-label="News markets"] a');
+  const filters = page.locator('nav[aria-label="News and insight types"] a, nav[aria-label="News markets"] a');
   for (const filter of await filters.all()) {
     const box = await filter.boundingBox();
     expect(box).not.toBeNull();
@@ -77,7 +81,7 @@ test('News uses the shared readable type and restrained frame', async ({ page },
     const root = getComputedStyle(document.documentElement);
     const heading = main.querySelector('h1');
     const summary = main.querySelector('[data-research-page-heading] > p');
-    const typeFilter = main.querySelector('nav[aria-label="News types"] a');
+    const typeFilter = main.querySelector('nav[aria-label="News and insight types"] a');
     const marketFilter = main.querySelector('nav[aria-label="News markets"] a');
     if (heading === null || summary === null || typeFilter === null || marketFilter === null) {
       throw new Error('News hierarchy is incomplete');
@@ -119,10 +123,10 @@ test('external headlines survive market filtering and open the original publishe
   } }));
   await page.goto('/news/');
   await expect(page.getByRole('link', { name: 'Singapore housing release' })).toBeVisible();
-  await page.getByRole('navigation', { name: 'News types' }).getByRole('link', { name: 'External headlines' }).click();
-  await expect(page).toHaveURL(/type=headlines/);
+  await page.getByRole('navigation', { name: 'News and insight types' }).getByRole('link', { name: 'News', exact: true }).click();
+  await expect(page).toHaveURL(/type=news/);
   await page.getByRole('navigation', { name: 'News markets' }).getByRole('link', { name: 'Singapore', exact: true }).click();
-  await expect(page).toHaveURL(/type=headlines&market=singapore/);
+  await expect(page).toHaveURL(/type=news&market=singapore/);
   await expect(page.getByRole('link', { name: 'Singapore housing release' })).toHaveAttribute('href', 'https://www.ura.gov.sg/news/media/pr26-57/');
   await expect(page.getByRole('link', { name: 'Seoul housing update' })).toHaveCount(0);
   await expect(page.getByRole('link', { name: 'Singapore housing release' })).toHaveAttribute('target', '_blank');
@@ -131,13 +135,18 @@ test('external headlines survive market filtering and open the original publishe
 
 test('News and Guides keep the same global header and the guide highlights Guides', async ({ page }) => {
   await page.goto('/news/');
-  const nav = page.locator('[data-navigation-tier="global"]');
-  const newsLabels = await nav.getByRole('navigation', { name: 'Primary navigation', exact: true }).innerText();
+  const nav = await visibleProductNavigation(page);
+  const newsLabels = await nav.innerText();
   await nav.getByRole('link', { name: 'Guides', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Guides', exact: true, level: 1 })).toBeVisible();
-  await expect(nav.getByRole('navigation', { name: 'Primary navigation', exact: true })).toHaveText(newsLabels, { useInnerText: true });
+  await expect(await visibleProductNavigation(page)).toHaveText(newsLabels, { useInnerText: true });
+  const mobileMenu = page.locator('.site-header__mobile-menu').filter({ visible: true });
+  if (await mobileMenu.count()) await mobileMenu.locator('summary').click();
   await page.getByRole('link', { name: 'Read guide', exact: true }).first().click();
-  await expect(nav.getByRole('link', { name: 'Guides', exact: true })).toHaveAttribute('aria-current', 'page');
+  await expect((await visibleProductNavigation(page)).getByRole('link', { name: 'Guides', exact: true }))
+    .toHaveAttribute('href', '/guides/');
+  // The desktop markup owns the active-state attribute; mobile links omit it.
+  await expect(page.locator('.site-header__product-nav a[href="/guides/"]')).toHaveAttribute('aria-current', 'page');
   await expect(page.getByRole('navigation', { name: 'In this article', exact: true })).toBeVisible();
   await expectNoHorizontalOverflow(page);
 });

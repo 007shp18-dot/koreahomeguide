@@ -103,68 +103,49 @@ test('district detail composes official evidence before verified context', async
   noFailures();
 });
 
-test('verified synthetic building detail is server rendered only in the local release fixture', async ({ page }, testInfo) => {
+test('verified synthetic building detail is server rendered only in the local release fixture', async ({ page }) => {
   test.skip(releaseTarget.usesExternalServer, 'Synthetic building exists only in the local release fixture.');
   const noFailures = observeFailures(page);
   const response = await page.goto('/kr/seoul/explore/jongno-gu/synthetic-test-building/');
   expect(response?.status()).toBe(200);
-  // The static route streams an interactive replacement for its Suspense
-  // fallback. Finish that initial load before testing the native disclosure.
-  await page.waitForLoadState('networkidle');
   await expect(page.getByRole('heading', { level: 1, name: PUBLIC_BUILDING_TEST_NAME })).toBeVisible();
   await expect(page.getByRole('link', { name: /Back to .* Explore/ })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Check this contract' })).toBeVisible();
-  // During static hydration Next keeps the streamed replacement in a hidden
-  // container until it swaps the visible fallback. Measure the user-visible
-  // hero so strict locators do not race that hand-off.
-  const heroLayout = await page.locator('[data-detail-hero="building"]')
-    .filter({ visible: true })
-    .evaluate((hero) => {
-    const media = hero.querySelector('[data-detail-order="media"]');
-    const summary = hero.querySelector('[data-detail-order="identity"]');
-    if (media === null || summary === null) throw new Error('Building hero is incomplete.');
-    const heroStyle = getComputedStyle(hero);
-    const mediaStyle = getComputedStyle(media);
-    const summaryStyle = getComputedStyle(summary);
+  await expect(page.getByRole('link', { name: 'Compare an asking price', exact: true })).toBeVisible();
+  const hero = page.locator('[data-detail-hero="building"]').filter({ visible: true });
+  // This synthetic building has no verified photo or location media. The shared
+  // detail layout must not reserve an empty media column above its evidence.
+  await expect(hero).toHaveAttribute('data-has-media', 'false');
+  await expect(hero.locator('[data-detail-order="media"]')).toHaveCount(0);
+  await expect(hero.locator('[data-detail-order="identity"]')).toBeVisible();
+  const layout = await page.locator('main[data-building-detail="ready"]').evaluate((main) => {
+    const identity = main.querySelector('[data-detail-order="identity"]')!;
+    const evidence = main.querySelector('[data-detail-order="current-evidence"]')!;
+    const history = main.querySelector('[data-detail-order="history"]')!;
+    const source = main.querySelector('[data-detail-order="sources"]')!;
     return {
-      borderTopWidth: heroStyle.borderTopWidth,
-      columns: heroStyle.gridTemplateColumns.split(' ').map(Number.parseFloat),
-      mediaRatio: media.getBoundingClientRect().width / media.getBoundingClientRect().height,
-      heroShadow: heroStyle.boxShadow,
-      summaryShadow: summaryStyle.boxShadow,
-      mediaBeforeSummary: Boolean(media.compareDocumentPosition(summary) & Node.DOCUMENT_POSITION_FOLLOWING),
-      mediaBackground: mediaStyle.backgroundImage,
+      identityBeforeEvidence: Boolean(identity.compareDocumentPosition(evidence) & Node.DOCUMENT_POSITION_FOLLOWING),
+      historyBeforeSource: Boolean(history.compareDocumentPosition(source) & Node.DOCUMENT_POSITION_FOLLOWING),
+      identityOverflow: identity.scrollWidth > identity.clientWidth + 1,
     };
   });
-  expect(heroLayout.borderTopWidth).toBe('1px');
-  if (testInfo.project.name === 'desktop-chromium' || testInfo.project.name === 'wide-chromium') {
-    expect(heroLayout.columns).toHaveLength(2);
-    expect(heroLayout.columns[0]).toBeGreaterThan(heroLayout.columns[1]);
-  } else {
-    expect(heroLayout.columns).toHaveLength(1);
-  }
-  expect(heroLayout.mediaRatio).toBeGreaterThan(1.7);
-  expect(heroLayout.mediaRatio).toBeLessThan(1.86);
-  expect(heroLayout.heroShadow).toBe('none');
-  expect(heroLayout.summaryShadow).toBe('none');
-  expect(heroLayout.mediaBeforeSummary).toBe(true);
-  expect(heroLayout.mediaBackground).toBe('none');
+  expect(layout).toEqual({ identityBeforeEvidence: true, historyBeforeSource: true, identityOverflow: false });
   // Wait for Next's streamed Suspense fallback to be replaced before toggling
   // native disclosure state, otherwise the replacement can close it again.
   await expect(page.locator('template[id^="B:"]')).toHaveCount(0);
-  await page.locator('details > summary', {
-    hasText: 'See records, adjustments, and methodology',
-  }).filter({ visible: true }).click();
-  await expect(page.getByRole('heading', {
-    level: 2,
-    name: 'Privacy-safe reported contracts',
-  })).toBeVisible();
   const evidenceDetails = page.locator('details[data-building-section="evidence"]').filter({ visible: true });
+  const contractsHeading = evidenceDetails.getByRole('heading', { level: 2, name: 'Privacy-safe reported contracts' });
+  // Evidence starts expanded in the shared detail layout. Check both native
+  // disclosure directions instead of accidentally closing it before asserting.
   await expect(evidenceDetails).toHaveAttribute('open', '');
-  await expect(evidenceDetails).toContainText('Privacy-safe reported contracts');
+  await expect(contractsHeading).toBeVisible();
+  await evidenceDetails.locator(':scope > summary').click();
+  await expect(evidenceDetails).not.toHaveAttribute('open', '');
+  await expect(contractsHeading).not.toBeVisible();
+  await evidenceDetails.locator(':scope > summary').click();
+  await expect(evidenceDetails).toHaveAttribute('open', '');
+  await expect(contractsHeading).toBeVisible();
   const relatedContext = page.getByRole('region', { name: 'Building news and community' });
   await expect(relatedContext).toContainText('Latest verified News');
-  await expect(relatedContext).toContainText('Community signal');
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /^noindex,\s*follow$/);
   await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
   await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(0);

@@ -698,6 +698,21 @@ describe('installed Korea evidence repositories', () => {
       : '';
 
     expect(html).toContain('data-building-detail="exact-evidence"');
+    const identityHtml = html.slice(html.indexOf('data-building-section="identity"'), html.indexOf('id="building-overview"'));
+    expect(identityHtml).not.toContain('₩300K');
+    const summaryHtml = html.slice(html.indexOf('id="building-overview"'), html.indexOf('id="building-transactions"'));
+    expect(summaryHtml.match(/₩300K/g)).toHaveLength(1);
+    expect(summaryHtml).toContain(model.period);
+    expect(summaryHtml).not.toContain('Median price per m²');
+    expect(summaryHtml).toContain('₩300K /month');
+    expect(html).toContain('Price / m² /month');
+    const koreanHtml = renderToStaticMarkup(createElement(detailModule.KoreaEvidenceBuildingDetail, {
+      model: { ...model, recentTransactions: model.recentTransactions.map((row, index) => ({ ...row, contractType: index % 2 ? 'renewal' : 'new' })) },
+      backHref: '/ko/kr/seoul/explore/?transaction=monthly', locale: 'ko',
+    }));
+    expect(koreanHtml).toContain('<td>신규</td>');
+    expect(koreanHtml).toContain('<td>갱신</td>');
+    expect(koreanHtml).toContain('㎡당 금액 /월');
     expect(html).toContain('검증아파트');
     expect(html).toContain('Monthly rent');
     expect(html).toContain('60–85㎡');

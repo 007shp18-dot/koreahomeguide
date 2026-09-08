@@ -12,8 +12,8 @@ export function BuyerNextSteps({ market, locale = 'en' }: Readonly<{ market: key
   const model = markets[market];
   const ko = locale === 'ko';
   return <aside className={styles.next} aria-label={ko ? '비교 후 확인할 사항' : 'After comparing a price'}>
-    <h2>{ko ? '가격을 비교했다면, 이것도 확인하세요' : 'What to check next'}</h2>
-    <p>{ko ? market === 'singapore' ? '민간주택과 HDB는 나눠 비교하세요. 같은 단지나 동에서 보유권, 면적, 거래 시기가 비슷한 계약인지 확인하세요.' : market === 'dubai' ? '지역 평균만으로 개별 주택의 가치를 판단하기는 어렵습니다. 준공 주택과 분양 주택을 구분하고, 매물별 비용과 상태를 확인하세요.' : '같은 건물에서 면적과 거래 시기가 비슷한 계약인지 확인하세요. 매매와 임대는 나눠 보고, 임대는 보증금과 월세를 함께 비교하세요.' : model.scope}</p>
+    <h2>{ko ? '구입 전 확인사항' : 'What to check next'}</h2>
+    <p>{ko ? market === 'singapore' ? '민간주택과 HDB는 나눠 비교하세요. 같은 단지나 동에서 소유권 조건, 면적, 거래 시기가 비슷한 계약인지 확인하세요.' : market === 'dubai' ? '지역 통계만으로 개별 주택의 가치를 판단하기는 어렵습니다. 준공 주택과 분양 주택을 구분하고, 매물별 비용과 상태를 확인하세요.' : '같은 건물에서 면적과 거래 시기가 비슷한 계약인지 확인하세요. 매매와 임대는 나눠 보고, 임대는 보증금과 월세를 함께 비교하세요.' : model.scope}</p>
     <nav aria-label={ko ? '다음 단계' : 'Next research steps'}>
       <Link href={marketHref(locale, model.explore)}>{ko ? '다른 지역·단지 보기' : 'Find another candidate'}</Link>
       <Link href={marketHref(locale, model.guide)}>{ko ? '가격 비교 방법' : 'Read the comparison guide'}</Link>

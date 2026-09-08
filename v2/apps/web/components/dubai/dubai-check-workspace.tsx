@@ -102,7 +102,7 @@ function ResultPanel({ locale = 'en',  value, model }: Readonly<{
       <Link href={marketHref(locale, value.resultHref)}>{t("Open result link")}</Link>
     </div>
     <p className={styles.checkDisclosure}>{t("The typical range covers the middle 50% of recorded prices per m² for the selected area and property type. It is not an appraisal, forecast, or recommendation. The gross scenario uses only your annual-rent input and excludes vacancy, service charges, financing, taxes, acquisition costs, repairs, and management.")}</p>
-    <p className={styles.checkDisclosure}>{t("Evidence window ")}{t(model.context.comparisonPeriod.from)}{t("–")}{t(model.context.comparisonPeriod.to)}{t(" · ")}{t(model.context.attribution)}</p>
+    <p className={styles.checkDisclosure}>{t("Reporting period ")}{t(model.context.comparisonPeriod.from)}{t("–")}{t(model.context.comparisonPeriod.to)}{t(" · ")}{t(model.context.attribution)}</p>
   </article>;
 }
 
@@ -130,8 +130,8 @@ export function DubaiCheckWorkspace({ locale = 'en',
   const resolved = resolveCheck(model, state, locale);
   return <div className={styles.checkPage} data-dubai-check-workspace="ready">
     <header className={styles.checkHeader}>
-      <div><p className={styles.eyebrow}>{t("Dubai Check")}</p><h1>{t("How does this asking price compare?")}</h1></div>
-      <p>{t(model.context.comparisonPeriod.from)}{t("–")}{t(model.context.comparisonPeriod.to)}<br />{t("Minimum ")}{t(model.context.publicationMinimum)}{t(" records per cohort")}</p>
+      <div><p className={styles.eyebrow}>{t("Dubai Check")}</p><h1>{t("Compare an asking price")}</h1></div>
+      <p>{t(model.context.comparisonPeriod.from)}{t("–")}{t(model.context.comparisonPeriod.to)}<br />{locale === 'ko' ? `비교 그룹별 최소 ${model.context.publicationMinimum}건` : `Minimum ${model.context.publicationMinimum} records per cohort`}</p>
     </header>
     <div className={styles.checkGrid}>
       <section className={styles.checkFormPanel}>
@@ -143,14 +143,14 @@ export function DubaiCheckWorkspace({ locale = 'en',
           <label><span>{t("Area (m²)")}</span><input name="areaSqm" type="number" min="10" max="1000" step="0.01" defaultValue={query?.areaSqm ?? ''} required /></label>
           <label><span>{t("Expected annual rent (AED, your assumption)")}</span><input name="annualRent" type="number" min="5000" max="20000000" step="1" defaultValue={query?.annualRentAed ?? ''} required /></label>
           {query?.returnTo === null || query?.returnTo === undefined ? null : <input type="hidden" name="returnTo" value={query.returnTo} />}
-          <button type="submit">{t("Check price and gross scenario")}</button>
+          <button type="submit">{t("Compare price and gross yield")}</button>
         </form>
       </section>
       <aside className={styles.checkResultPanel} aria-live="polite">
         {resolved.kind === 'ready' ? <ResultPanel locale={locale} value={resolved.value} model={model} /> : null}
-        {resolved.kind === 'empty' ? <div className={styles.checkEmpty}><p className={styles.eyebrow}>{t("Result")}</p><h2>{t("Enter a Dubai asking price, size, and annual-rent assumption.")}</h2><p>{t("See where the offer sits among recorded sale prices in your chosen area.")}</p></div> : null}
+        {resolved.kind === 'empty' ? <div className={styles.checkEmpty}><p className={styles.eyebrow}>{t("Result")}</p><h2>{t("Enter an asking price, size and expected annual rent.")}</h2><p>{t("Compare with area transactions. The rent input is your own assumption.")}</p></div> : null}
         {resolved.kind === 'invalid' ? <div className={styles.checkEmpty}><p className={styles.eyebrow}>{t("Result")}</p><h2>{t("Check the entered fields.")}</h2><p>{t("Use one valid area, stage, positive decimal amounts, and a local return link.")}</p></div> : null}
-        {resolved.kind === 'unknown' ? <div className={styles.checkEmpty}><p className={styles.eyebrow}>{t("Result")}</p><h2>{t("This area and cohort are not published.")}</h2><p>{t("No other area’s distribution has been substituted.")}</p></div> : null}
+        {resolved.kind === 'unknown' ? <div className={styles.checkEmpty}><p className={styles.eyebrow}>{t("Result")}</p><h2>{t(completionValue === 'ready' ? 'No Ready transaction data is available for the selected area and property type.' : 'No Off-Plan transaction data is available for the selected area and property type.')}</h2><p>{t("No other area’s distribution has been substituted.")}</p></div> : null}
       </aside>
     </div>
     <BuyerNextSteps locale={locale} market="dubai" />

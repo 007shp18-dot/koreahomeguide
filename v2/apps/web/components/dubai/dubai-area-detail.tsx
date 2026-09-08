@@ -4,6 +4,7 @@ import { PassportLink as Link } from '../passport/passport-journey';
 import type { DubaiSaleDistribution } from '../../lib/dubai/evidence-contract';
 import type { DubaiAreaModel, DubaiAreaSegmentModel } from '../../lib/dubai/route-types';
 import { DubaiShell } from './dubai-shell';
+import { MarketDetailShell } from '../market-ui/market-shell';
 import styles from './dubai-research.module.css';
 import { marketText, marketHref, type MarketLocale } from '../../lib/locale/market-localization';
 
@@ -33,7 +34,7 @@ function SaleStageCard({ locale = 'en',
   </article>;
 }
 
-function SegmentEvidence({ locale = 'en',  segment }: Readonly<{ segment: DubaiAreaSegmentModel }> & { locale?: MarketLocale }) {
+function SegmentSales({ locale = 'en', segment }: Readonly<{ segment: DubaiAreaSegmentModel }> & { locale?: MarketLocale }) {
   const t = <T,>(value: T): T => marketText(locale, value);
 
   const housingLabel = segment.housing === 'apartment' ? 'Apartment' : 'Villa';
@@ -45,6 +46,13 @@ function SegmentEvidence({ locale = 'en',  segment }: Readonly<{ segment: DubaiA
       <SaleStageCard locale={locale} label={t("Ready")} distribution={segment.sales.ready} />
       <SaleStageCard locale={locale} label={t("Off-Plan")} distribution={segment.sales.offPlan} />
     </div>
+  </section>;
+}
+
+function SegmentRent({ locale = 'en', segment }: Readonly<{ segment: DubaiAreaSegmentModel }> & { locale?: MarketLocale }) {
+  const t = <T,>(value: T): T => marketText(locale, value);
+  return <section className={styles.segmentSection}>
+    <p className={styles.eyebrow}>{t(segment.housing === 'apartment' ? 'Apartment' : 'Villa')}</p>
     <article className={styles.rentCard}>
       <h3>{t("Registered rent evidence")}</h3>
       <dl>
@@ -66,28 +74,31 @@ export function DubaiAreaDetail({ locale = 'en',  model }: Readonly<{ model: Dub
     { housing: segment.housing, stage: 'off-plan' as const, areas: segment.comparableAreas.offPlan },
   ])).filter(({ areas }) => areas.length > 0);
   return <DubaiShell locale={locale} href={marketHref(locale, "/ae/dubai/explore/")}>
-    <main className={styles.areaPage} data-dubai-area-evidence="ready">
-      <nav className={styles.breadcrumbs} aria-label={t("Breadcrumb")}>
+    <main data-dubai-area-evidence="ready">
+      <MarketDetailShell locale={locale}
+      breadcrumb={<nav className={styles.breadcrumbs} aria-label={t("Breadcrumb")}>
         <Link href={marketHref(locale, "/ae/dubai/")}>{t("Dubai")}</Link><span>{t("/")}</span>
         <Link href={marketHref(locale, "/ae/dubai/explore/")}>{t("Explore")}</Link><span>{t("/")}</span>
         <span>{t(model.identity.name)}</span>
-      </nav>
-      <header className={styles.areaHero}>
+      </nav>}
+      identity={
         <div>
           <p className={styles.eyebrow}>{t("Dubai · Area evidence")}</p>
           <h1>{t(model.identity.name)}</h1>
-          <p>{t(model.segments.map(({ housing }) => t(housing === 'apartment' ? 'Apartment' : 'Villa')).join(locale === 'ko' ? '·' : ' and '))}{t(" sale and registered-rent evidence through ")}{t(model.context.asOfDate)}{t(".")}</p>
+          <p>{t(model.segments.map(({ housing }) => t(housing === 'apartment' ? 'Apartment' : 'Villa')).join(locale === 'ko' ? ' · ' : ' and '))} · {locale === 'ko' ? '자료 기준일' : 'As of'} {model.context.asOfDate}</p>
+          <DubaiAreaSelection locale={locale} slug={model.identity.slug} segments={model.segments} variant="check" />
         </div>
-        <DubaiAreaSelection locale={locale} slug={model.identity.slug} segments={model.segments} variant="price" />
-      </header>
-      <div className={styles.areaSections}>
-        <div>{model.segments.map((segment) => <SegmentEvidence locale={locale} key={segment.housing} segment={segment} />)}</div>
-        <aside className={styles.areaRail}>
-          <section className={styles.sourceCard}>
-            <h2>{t("Check an asking price")}</h2>
-            <p>{t("Keep this area and home type selected, then enter the offer, size, and your own expected annual rent.")}</p>
-            <DubaiAreaSelection locale={locale} slug={model.identity.slug} segments={model.segments} variant="check" />
-          </section>
+      }
+      metric={<>
+        <p>{t("Comparison window")}: {model.context.comparisonPeriod.from}–{model.context.comparisonPeriod.to}</p>
+        <p>{locale === 'ko' ? '지역별 통계이며 개별 주택의 가격이 아닙니다.' : 'Area-level statistics, not a price for a specific home.'}</p>
+        {model.segments.map((segment) => <SegmentSales locale={locale} key={segment.housing} segment={segment} />)}
+      </>}
+      evidence={<>
+        <p>{t("Rent source period")}: {model.context.sourcePeriods.rents.from}–{model.context.sourcePeriods.rents.to}</p>
+        {model.segments.map((segment) => <SegmentRent locale={locale} key={segment.housing} segment={segment} />)}
+      </>}
+      rail={<div className={styles.areaRail}>
           <section className={styles.sourceCard}>
             <h2>{t("Comparable areas")}</h2>
             <p>{t("Same home type, sale stage, method, and comparison window—not a geographic-nearness claim.")}</p>
@@ -111,8 +122,8 @@ export function DubaiAreaDetail({ locale = 'en',  model }: Readonly<{ model: Dub
             <p>{t("Gross ratios exclude service charges, vacancy, financing, taxes, acquisition costs, repairs, and management.")}</p>
             <p><Link href={marketHref(locale, "/trust/")}>{t("Method and corrections")}</Link></p>
           </section>
-        </aside>
-      </div>
+        </div>}
+      />
     </main>
   </DubaiShell>;
 }

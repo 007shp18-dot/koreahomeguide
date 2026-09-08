@@ -3,21 +3,21 @@ import {
   PUBLIC_AREA_WITHHELD_SLUG,
 } from './public-area-summary-fixture';
 
-// Independently reviewed EN/zh-Hans pairs. Keep explicit destinations so a
+// Independently reviewed EN/KO/zh-Hans groups. Keep explicit destinations so a
 // self-link, wrong translation, or missing reciprocal alternate fails the gate.
 const editorialTranslationPairs = [
-  ['/', '/zh-cn/kr/seoul/'],
-  ['/news/', '/zh-cn/news/'],
-  ['/guides/', '/zh-cn/guides/'],
-  ['/news/policy/singapore-absd-policy-status/', '/zh-cn/news/policy/sg-absd-policy-zh/'],
-  ['/news/seoul-district-price-distribution/', '/zh-cn/news/seoul-district-price-distribution-zh/'],
-  ['/guides/rent-an-apartment-in-korea/', '/zh-cn/guides/rent-in-korea-zh/'],
+  ['/', '/ko/', '/zh-cn/kr/seoul/'],
+  ['/news/', '/ko/news/', '/zh-cn/news/'],
+  ['/guides/', '/ko/guides/', '/zh-cn/guides/'],
+  ['/news/policy/singapore-absd-policy-status/', '/ko/news/singapore-absd-policy-status/', '/zh-cn/news/policy/sg-absd-policy-zh/'],
+  ['/news/seoul-district-price-distribution/', '/ko/news/seoul-district-price-distribution/', '/zh-cn/news/seoul-district-price-distribution-zh/'],
+  ['/guides/rent-an-apartment-in-korea/', '/ko/guides/rent-an-apartment-in-korea/', '/zh-cn/guides/rent-in-korea-zh/'],
 ] as const;
 
 export const editorialAlternates: Readonly<Record<string, Readonly<Record<string, string>>>> =
-  Object.fromEntries(editorialTranslationPairs.flatMap(([en, chinese]) => {
-    const languages = { en, 'zh-Hans': chinese, 'x-default': en };
-    return [[en, languages], [chinese, languages]];
+  Object.fromEntries(editorialTranslationPairs.flatMap(([en, korean, chinese]) => {
+    const languages = { en, ko: korean, 'zh-Hans': chinese, 'x-default': en };
+    return [[en, languages], [korean, languages], [chinese, languages]];
   }));
 
 export const publicRoutes = [
@@ -25,7 +25,7 @@ export const publicRoutes = [
   { path: '/trust/', heading: 'How SignedPrice publishes evidence', indexing: 'index', canonical: '/trust/' },
   {
     path: '/kr/seoul/check/',
-    heading: 'Check one asking price.',
+    heading: 'Compare an asking price',
     indexing: 'index',
     fixtureIndexing: 'noindex',
     fixtureCanonical: false,
@@ -73,19 +73,22 @@ export const publicRoutes = [
     heading: 'Singapore',
     indexing: 'index',
     canonical: '/sg/',
+    alternates: true,
   },
-  { path: '/ae/dubai/', heading: 'Dubai Market Overview', indexing: 'index', canonical: '/ae/dubai/' },
+  { path: '/ae/dubai/', heading: 'Dubai', indexing: 'index', canonical: '/ae/dubai/', alternates: true },
   {
     path: '/sg/singapore/explore/',
     heading: 'Explore',
     indexing: 'index',
     canonical: '/sg/singapore/explore/',
+    alternates: true,
   },
   ...(['ccr', 'rcr', 'ocr'] as const).map((area) => ({
     path: `/sg/singapore/explore/${area}/`,
     heading: area.toUpperCase(),
     indexing: 'index' as const,
     canonical: `/sg/singapore/explore/${area}/`,
+    alternates: true,
   })),
   {
     path: '/sg/singapore/corrections/',
@@ -98,9 +101,9 @@ export const publicRoutes = [
   { path: '/ae/dubai/rent/', heading: 'Rent in Dubai', indexing: 'noindex' },
   { path: '/ae/dubai/buy/', heading: 'Buy in Dubai', indexing: 'noindex' },
   { path: '/ae/dubai/invest/', heading: 'Invest in Dubai', indexing: 'noindex' },
-  { path: '/news/', heading: 'News', indexing: 'index', canonical: '/news/' },
+  { path: '/news/', heading: 'News & Insights', indexing: 'index', canonical: '/news/' },
   { path: '/news/policy/singapore-absd-policy-status/', heading: 'Singapore ABSD: current buyer-profile check', indexing: 'index', canonical: '/news/policy/singapore-absd-policy-status/' },
-  { path: '/news/seoul-district-price-distribution/', heading: 'Similar medians, different markets: read Seoul distributions', indexing: 'index', canonical: '/news/seoul-district-price-distribution/' },
+  { path: '/news/seoul-district-price-distribution/', heading: 'Seoul rental deposits by district: what a median price hides', indexing: 'index', canonical: '/news/seoul-district-price-distribution/' },
   { path: '/guides/', heading: 'Guides', indexing: 'index', canonical: '/guides/' },
   { path: '/guides/rent-an-apartment-in-korea/', heading: 'Rent an apartment in Korea: search-to-move-in sequence', indexing: 'index', canonical: '/guides/rent-an-apartment-in-korea/' },
   { path: '/zh-cn/news/', heading: '政策变化与市场数据，都回到原始依据。', indexing: 'index', canonical: '/zh-cn/news/' },
@@ -122,7 +125,7 @@ export const publicRoutes = [
       : 'index' as const,
     ...(district.slug === PUBLIC_AREA_WITHHELD_SLUG
       ? {}
-      : { canonical: `/kr/seoul/explore/${district.slug}/` }),
+      : { canonical: `/kr/seoul/explore/${district.slug}/`, alternates: true }),
   })),
   {
     path: '/kr/seoul/explore/jongno-gu/synthetic-test-building/',

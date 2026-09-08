@@ -98,6 +98,12 @@ describe('primary single quote Check workspace', () => {
     expect(html).toContain('Not enough compatible contracts');
     expect(html).toContain('five are required');
     expect(html).not.toContain('Within the middle half');
+    const korean = renderToStaticMarkup(<SingleQuoteCheckWorkspace model={model} locale="ko" />);
+    expect(korean).toContain('비교할 거래가 부족합니다');
+    expect(korean).toContain('2건');
+    expect(korean).toContain('최소 5건');
+    expect(korean).toContain('2026-02–2026-08');
+    expect(korean).not.toContain('Only 2 compatible');
   });
 
   test('preserves valid entity context in the form and returns to the originating decision', () => {

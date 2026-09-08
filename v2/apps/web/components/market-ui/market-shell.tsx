@@ -61,9 +61,9 @@ export function MarketDetailShell({ locale = 'en',  breadcrumb, identity, metric
 
   return <article className={styles.detail} data-market-detail-shell="true">
     <div className={styles.breadcrumb}>{t(breadcrumb)}</div>
-    <header className={styles.identity} data-has-media={media ? "true" : "false"}><div>{t(identity)}</div><div className={styles.heroMedia}>{t(media ?? metric)}</div></header>
+    <header className={styles.identity} data-has-media={media ? "true" : "false"}><div>{t(identity)}</div>{media ? <div className={styles.heroMedia}>{t(media)}</div> : null}</header>
     <nav className={styles.detailTabs} aria-label={t("Detail sections")}><a href={marketHref(locale, "#detail-overview")}>{t("Overview")}</a><a href={marketHref(locale, "#detail-evidence")}>{t("Transactions")}</a><a href={marketHref(locale, "#detail-source")}>{t("Source")}</a></nav>
-    <section className={styles.detailSummary} id="detail-overview"><div>{t(metric)}</div><p>{t("Reported transaction history. See the source and reporting period below.")}</p></section>
+    <section className={styles.detailSummary} id="detail-overview"><div>{t(metric)}</div></section>
     <div className={styles.detailGrid}>
       <div className={styles.detailMain}>
         <div id="detail-evidence">{t(evidence)}</div>

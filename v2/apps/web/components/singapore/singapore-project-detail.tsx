@@ -82,8 +82,8 @@ export function SingaporeProjectDetail({ locale = 'en', model, googleMapsBrowser
           {sgText(locale, model.identity.marketSegment)}
         </Link>
         <span>{displayName}</span></nav>}
-        identity={<div className={styles.detailIdentity} data-singapore-project="ready"><p className={styles.eyebrow}>{sgText(locale, "Singapore · ")}{sgText(locale, model.identity.marketSegment)}{sgText(locale, " · District ")}{sgText(locale, model.identity.district)}</p><h1>{displayName}</h1><p>{model.identity.street}</p><SingaporeScope locale={locale} activeSegment={model.identity.marketSegment} /><div className={styles.actions}><Link href={marketHref(locale, model.checkHref)}>{sgText(locale, "Check this project price")}</Link></div></div>}
-        metric={<div className={styles.detailMetric}><small>{sgText(locale, "Median price")}</small><strong>{sgText(locale, model.display.medianPriceLabel)}</strong><span>{sgText(locale, model.display.sampleLabel)}</span></div>}
+        identity={<div className={styles.detailIdentity} data-singapore-project="ready"><p className={styles.eyebrow}>{sgText(locale, "Singapore · ")}{sgText(locale, model.identity.marketSegment)}{sgText(locale, " · District ")}{sgText(locale, model.identity.district)}</p><h1>{displayName}</h1><p>{model.identity.street}</p><SingaporeScope locale={locale} activeSegment={model.identity.marketSegment} /><div className={styles.actions}><Link href={marketHref(locale, model.checkHref)}>{sgText(locale, "Compare an asking price")}</Link></div></div>}
+        metric={<div className={styles.detailMetric}><small>{sgText(locale, "Median price")}</small><strong>{sgText(locale, model.display.medianPriceLabel)}</strong><span>{sgText(locale, model.display.sampleLabel)} · {model.evidence.period}</span></div>}
         media={<GooglePlacePhoto locale={locale}
           browserKey={googleMapsBrowserKey}
           buildingName={model.identity.project}
@@ -96,17 +96,11 @@ export function SingaporeProjectDetail({ locale = 'en', model, googleMapsBrowser
         <p className={styles.sectionLabel}>{sgText(locale, "01 / Project distribution")}</p>
         <h2 id="project-summary-heading">{sgText(locale, "Price and unit-price evidence.")}</h2>
         <dl className={styles.stats}>
-          <div className={styles.stat}><dt>{sgText(locale, "Median price")}</dt><dd>{sgText(locale, model.display.medianPriceLabel)}</dd></div>
           <div className={styles.stat}><dt>{sgText(locale, "Middle half")}</dt><dd><PriceRange locale={locale} value={model.display.middlePriceLabel} /></dd></div>
           <div className={styles.stat}><dt>{sgText(locale, "Median")}</dt><dd>{sgText(locale, model.display.medianPsfLabel)}</dd></div>
         </dl>
       </section>
-      <SingaporeNearbyPlaces locale={locale} proximity={proximity} />
       <MonthlyTransactionResearch locale={locale} months={months} />
-      <section className={styles.section} aria-labelledby="project-size-heading"><h2 id="project-size-heading">{sgText(locale, "Compare prices by home size")}</h2><p>{sgText(locale, "Same project and reporting period. Property type, sale type, area basis and tenure stay separate. A cohort needs at least five transactions to publish its median.")}</p><SizeCohortResearch locale={locale} rows={sizes} currency="SGD" /></section>
-      <PropertyScenarioCalculator locale={locale} key={model.identity.id} price={model.identity.medianPriceSgd} currency="SGD" analytics={{market:'sg-singapore',surface:'property-detail'}} />
-      <Link href={marketHref(locale, createPropertyScenarioHref({locale,market:'sg-singapore',currency:'SGD',entity:model.identity.id,propertyName:displayName,transaction:'sale',price:model.identity.medianPriceSgd,returnTo:marketHref(locale, `/sg/singapore/explore/${model.identity.marketSegment.toLowerCase()}/${model.identity.id}/`)}))}>{sgText(locale, "Open calculator")}</Link>
-      <section className={styles.section} aria-labelledby="project-profile-heading"><h2 id="project-profile-heading">{sgText(locale, "Project profile")}</h2><dl className={styles.stats}><div className={styles.stat}><dt>{sgText(locale, "Street")}</dt><dd>{model.identity.street}</dd></div><div className={styles.stat}><dt>{sgText(locale, "Tenure in reported records")}</dt><dd>{sgText(locale, model.identity.tenures.join(' · '))}</dd></div><div className={styles.stat}><dt>{sgText(locale, "Property types")}</dt><dd>{sgText(locale, [...new Set(model.transactions.map((row) => row.propertyTypeLabel))].join(' · '))}</dd></div></dl><Link href={marketHref(locale, `/sg/singapore/explore/?q=${encodeURIComponent(displayName)}&project=${encodeURIComponent(model.identity.id)}`)}>{sgText(locale, "View this project on the map")}</Link></section>
       <section className={styles.section} aria-labelledby="transaction-heading">
         <p className={styles.sectionLabel}>{sgText(locale, "02 / Recent reported transactions")}</p>
         <h2 id="transaction-heading">{sgText(locale, "Reported sales, unit sizes and floors.")}</h2>
@@ -123,7 +117,13 @@ export function SingaporeProjectDetail({ locale = 'en', model, googleMapsBrowser
             ))}</tbody>
           </table>
         </div>
-      </section></>}
+      </section>
+      <SingaporeNearbyPlaces locale={locale} proximity={proximity} />
+      <section className={styles.section} aria-labelledby="project-size-heading"><h2 id="project-size-heading">{sgText(locale, "Compare prices by home size")}</h2><p>{sgText(locale, "Same project and reporting period. Property type, sale type, area basis and tenure stay separate. A cohort needs at least five transactions to publish its median.")}</p><SizeCohortResearch locale={locale} rows={sizes} currency="SGD" /></section>
+      <PropertyScenarioCalculator locale={locale} key={model.identity.id} price={model.identity.medianPriceSgd} currency="SGD" analytics={{market:'sg-singapore',surface:'property-detail'}} />
+      <Link href={marketHref(locale, createPropertyScenarioHref({locale,market:'sg-singapore',currency:'SGD',entity:model.identity.id,propertyName:displayName,transaction:'sale',price:model.identity.medianPriceSgd,returnTo:marketHref(locale, `/sg/singapore/explore/${model.identity.marketSegment.toLowerCase()}/${model.identity.id}/`)}))}>{sgText(locale, "Open calculator")}</Link>
+      <section className={styles.section} aria-labelledby="project-profile-heading"><h2 id="project-profile-heading">{sgText(locale, "Project profile")}</h2><dl className={styles.stats}><div className={styles.stat}><dt>{sgText(locale, "Street")}</dt><dd>{model.identity.street}</dd></div><div className={styles.stat}><dt>{sgText(locale, "Tenure in reported records")}</dt><dd>{sgText(locale, model.identity.tenures.join(' · '))}</dd></div><div className={styles.stat}><dt>{sgText(locale, "Property types")}</dt><dd>{sgText(locale, [...new Set(model.transactions.map((row) => row.propertyTypeLabel))].join(' · '))}</dd></div></dl><Link href={marketHref(locale, `/sg/singapore/explore/?q=${encodeURIComponent(displayName)}&project=${encodeURIComponent(model.identity.id)}`)}>{sgText(locale, "View this project on the map")}</Link></section>
+</>}
         rail={<SingaporeEvidence locale={locale} model={model.evidence} />}
       />
     </SingaporePage>

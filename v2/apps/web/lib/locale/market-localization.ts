@@ -1,5 +1,13 @@
 export type MarketLocale = 'en' | 'ko';
 const korean: Readonly<Record<string,string>> = {
+  "Area details unavailable": "지역 상세 자료 없음",
+  "Compare an asking price": "매물 가격 비교",
+  "Reporting period": "집계 기간",
+  "Compare price and gross yield": "가격·비용 차감 전 수익률 비교",
+  "Enter an asking price, size and expected annual rent.": "매물 가격, 면적과 예상 연 임대료를 입력하세요.",
+  "Compare with area transactions. The rent input is your own assumption.": "지역 실거래가와 비교합니다. 예상 임대료는 직접 정한 가정입니다.",
+  "No Ready transaction data is available for the selected area and property type.": "선택한 지역·주택 유형의 완공 주택 거래 자료가 없습니다.",
+  "No Off-Plan transaction data is available for the selected area and property type.": "선택한 지역·주택 유형의 분양 주택 거래 자료가 없습니다.",
   "URA private sales": "URA 민간주택 매매",
   "HDB resale": "HDB 재판매",
   "HDB rent": "HDB 임대",

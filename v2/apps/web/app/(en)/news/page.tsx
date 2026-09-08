@@ -21,7 +21,7 @@ export async function generateMetadata({ searchParams = Promise.resolve({}) }: N
     title: 'Property news, policy and market insights | signedprice',
     description: 'Property policy, market analysis and external headlines for Seoul, Singapore and Dubai, with sources and dates.',
     ...(filters.type === 'latest' && filters.market === 'all' ? {
-      languageAlternates: { en: '/news/' as const, 'zh-Hans': '/zh-cn/news/' as const },
+      languageAlternates: { en: '/news/' as const, ko: '/ko/news/' as const, 'zh-Hans': '/zh-cn/news/' as const },
     } : {}),
   });
 }
