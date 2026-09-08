@@ -74,7 +74,7 @@ jobs:
           tests/e2e/area-explore.spec.ts
           tests/e2e/singapore.spec.ts
           --project=mobile-chromium
-          --grep="navigates the first signedprice decision flow|mobile primary navigation remains tappable and reaches the market flow|Insights opens analysis and preserves the news journey|News and Guides keep the same global header and the guide highlights Guides|Explore and district evidence keep Rankings reachable beside the five global product links|mobile controls keep 44px focus targets and natural document scrolling|Seoul and Singapore Explore share the same desktop rail width"
+          --grep="navigates the first signedprice decision flow|mobile primary navigation remains tappable and reaches the market flow|News & Insights opens the unified hub and preserves the filter journey|News & Insights and Guides keep the same global header and the guide highlights Guides|Explore and district evidence keep Rankings reachable beside the five global product links|mobile controls keep 44px focus targets and natural document scrolling|Seoul and Singapore Explore share the same desktop rail width"
       - name: Upload mobile diagnostics
         if: failure()
         uses: actions/upload-artifact@v4.6.2

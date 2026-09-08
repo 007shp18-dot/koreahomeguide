@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { openPrimaryNavigation } from './navigation-helpers';
 
 test('uses one navigation order and published language links across markets', async ({ page }) => {
   for (const [path, languages] of [
@@ -10,14 +11,9 @@ test('uses one navigation order and published language links across markets', as
     ['/ae/dubai/explore/', ['EN', 'KO']],
   ] as const) {
     await page.goto(path);
-    const header = page.locator('header.site-header');
-    const menu = header.getByLabel('Open menu', { exact: true });
-    if (await menu.isVisible()) await menu.click();
-    const navigation = header.getByRole('navigation', {
-      name: page.viewportSize()!.width <= 760 ? 'Site menu' : 'Primary navigation',
-      exact: true,
-    });
-    await expect(navigation.getByRole('link')).toHaveText(['Markets', 'Prices', 'Tools', 'Insights', 'Guides']);
+    const header = page.locator('header.site-header:visible');
+    const navigation = await openPrimaryNavigation(page);
+    await expect(navigation.getByRole('link')).toHaveText(['Markets', 'Prices', 'Tools', 'News & Insights', 'Guides']);
     await expect(header.getByRole('navigation', { name: 'Language navigation', exact: true }).getByRole('link')).toHaveText([...languages]);
     await expect(page.locator('footer').getByRole('link', { name: 'Singapore', exact: true })).toHaveCount(1);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(true);
@@ -31,8 +27,9 @@ for (const width of [320, 390, 430]) {
       test.skip(testInfo.project.name !== 'mobile-chromium', 'Mobile viewport regression');
       for (const path of ['/', '/ko/passport/', '/zh-cn/passport/']) {
         await page.goto(path);
-        await page.locator('header.site-header summary').click();
-        const languages = page.getByRole('navigation', { name: 'Language navigation', exact: true });
+        const header = page.locator('header.site-header:visible');
+        await header.locator('summary').click();
+        const languages = header.getByRole('navigation', { name: 'Language navigation', exact: true });
         await expect(languages.getByRole('link')).toHaveText(['EN', 'KO', '中文']);
         const boxes = await languages.getByRole('link').evaluateAll(nodes => nodes.map(node => {
           const box = node.getBoundingClientRect();

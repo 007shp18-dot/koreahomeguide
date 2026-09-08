@@ -139,7 +139,7 @@ test('Explore and district evidence keep Rankings reachable beside the five glob
   const productNavigation = await openPrimaryNavigation(page);
   await expect(productNavigation.getByRole('link', { name: 'Prices' }))
     .toHaveAttribute('href', '/prices/');
-  await expect(productNavigation.getByRole('link')).toHaveText(['Markets', 'Prices', 'Tools', 'Insights', 'Guides']);
+  await expect(productNavigation.getByRole('link')).toHaveText(['Markets', 'Prices', 'Tools', 'News & Insights', 'Guides']);
 
   await page.goto('/kr/seoul/explore/jongno-gu/');
   await expect(page.getByRole('link', { name: 'View district rankings' }))
