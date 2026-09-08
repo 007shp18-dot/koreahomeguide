@@ -23,11 +23,11 @@ const readingGroups: readonly Readonly<{
     ],
   },
   {
-    slugs: ['seoul-84sqm-under-one-billion-2026', 'seoul-apartment-buying-budget-guide'],
+    slugs: ['seoul-59sqm-under-700-million-2026', 'seoul-84sqm-under-one-billion-2026', 'seoul-apartment-buying-budget-guide'],
     links: [
+      { label: 'Explore Seoul 59 sqm sales below KRW 700 million', href: '/news/seoul-59sqm-under-700-million-2026/' },
       { label: 'Explore Seoul 84 sqm sales below KRW 1 billion', href: '/news/seoul-84sqm-under-one-billion-2026/' },
       { label: 'Build a Seoul apartment budget', href: '/guides/seoul-apartment-buying-budget-guide/' },
-      { label: 'Check the foreign-buyer purchase sequence', href: '/guides/buy-property-in-korea-as-foreigner/' },
     ],
   },
 ];

@@ -1,4 +1,5 @@
 import type { EditorialPortfolioRecord } from '../portfolio-types';
+import { SEOUL_59SQM_UNDER_700M } from './seoul-59sqm-under-700m';
 
 export const AFFORDABLE_RESALE_STORIES: readonly EditorialPortfolioRecord[] = [
   {
@@ -89,6 +90,7 @@ export const AFFORDABLE_RESALE_STORIES: readonly EditorialPortfolioRecord[] = [
       "conversionProvenance": null
     }
   },
+  SEOUL_59SQM_UNDER_700M,
   {
     "id": "en:singapore-condos-under-1-5-million-2026",
     "slug": "singapore-condos-under-1-5-million-2026",

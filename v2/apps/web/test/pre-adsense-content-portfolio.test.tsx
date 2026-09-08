@@ -26,10 +26,10 @@ function sectionCount(body: string): number {
 }
 
 describe('pre-AdSense reviewed launch portfolio', () => {
-  it('keeps the 72-record portfolio and public English parameters', () => {
+  it('keeps the 73-record portfolio and public English parameters', () => {
     const english = listPortfolioRecords('en');
-    expect(EDITORIAL_PORTFOLIO).toHaveLength(72);
-    expect(english).toHaveLength(32);
+    expect(EDITORIAL_PORTFOLIO).toHaveLength(73);
+    expect(english).toHaveLength(33);
     expect(generateEnglishArticleParams()).toEqual(english
       .filter(({ type }) => type === 'market-brief' || type === 'data-story')
       .map(({ slug }) => ({ slug })));
@@ -45,7 +45,7 @@ describe('pre-AdSense reviewed launch portfolio', () => {
         expect(url.protocol).toBe('https:');
         expect(officialHosts.has(url.hostname)
           || (source.kind === 'secondary' && secondaryHosts.has(url.hostname))).toBe(true);
-        expect(['2026-09-04', '2026-09-06', '2026-09-07']).toContain(source.checkedAt);
+        expect(['2026-09-04', '2026-09-06', '2026-09-07', '2026-09-08']).toContain(source.checkedAt);
       }
     }
   });
