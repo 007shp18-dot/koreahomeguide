@@ -97,15 +97,15 @@ export function indexableMetadata({
     en: `/${string}`;
     ko?: `/${string}`;
     'zh-Hans'?: `/${string}`;
-  }>;
+  }> | null;
   locale?: 'en_US' | 'ko_KR' | 'zh_CN';
   imagePath?: `/${string}`;
 }>): Metadata {
-  if (!languageAlternates) {
+  if (languageAlternates === undefined) {
     const routes = languageDestinations(path);
     if (routes.en && routes.ko) languageAlternates = { en: routes.en as `/${string}`, ko: routes.ko as `/${string}`, ...(routes['zh-CN'] ? { 'zh-Hans': routes['zh-CN'] as `/${string}` } : {}) };
   }
-  const languages = languageAlternates === undefined ? undefined : {
+  const languages = languageAlternates == null ? undefined : {
     en: publicCanonical(languageAlternates.en),
     ...(languageAlternates.ko === undefined ? {} : {
       ko: publicCanonical(languageAlternates.ko),
@@ -132,7 +132,7 @@ export function indexableMetadata({
       description,
       url: canonical,
       locale,
-      ...(languageAlternates === undefined ? {} : {
+      ...(languageAlternates == null ? {} : {
         alternateLocale: [
           ...(locale === 'en_US' ? [] : ['en_US']),
           ...(languageAlternates.ko === undefined || locale === 'ko_KR' ? [] : ['ko_KR']),

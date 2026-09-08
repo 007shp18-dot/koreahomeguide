@@ -53,12 +53,11 @@ export function SingaporeSegmentDetail({ locale = 'en', model }: Readonly<{ loca
       <MarketDetailShell locale={locale}
         breadcrumb={<nav className={styles.breadcrumbs} aria-label={sgText(locale, "Breadcrumb")}><Link href={marketHref(locale, "/sg/singapore/explore/")}>{sgText(locale, "Explore")}</Link><span>{sgText(locale, model.identity.segment)}</span></nav>}
         identity={<div className={styles.detailIdentity} data-singapore-segment="ready"><p className={styles.eyebrow}>{sgText(locale, "Singapore · Market segment")}</p><h1>{sgText(locale, model.identity.segment)}</h1><SingaporeScope locale={locale} activeSegment={model.identity.segment} /></div>}
-        metric={<div className={styles.detailMetric}><small>{sgText(locale, "Median price")}</small><strong>{sgText(locale, model.display.medianPriceLabel)}</strong><span>{sgText(locale, model.display.sampleLabel)}</span></div>}
+        metric={<div className={styles.detailMetric}><small>{sgText(locale, "Median price")}</small><strong>{sgText(locale, model.display.medianPriceLabel)}</strong><span>{sgText(locale, model.display.sampleLabel)} · {model.evidence.period}</span></div>}
         evidence={<><section className={styles.section} aria-labelledby="segment-distribution-heading">
         <p className={styles.sectionLabel}>{sgText(locale, "01 / Published distribution")}</p>
         <h2 id="segment-distribution-heading">{sgText(locale, "Raw transaction evidence.")}</h2>
         <dl className={styles.stats}>
-          <div className={styles.stat}><dt>{sgText(locale, "Median price")}</dt><dd>{sgText(locale, model.display.medianPriceLabel)}</dd></div>
           <div className={styles.stat}><dt>{sgText(locale, "Middle half")}</dt><dd><PriceRange locale={locale} value={model.display.middlePriceLabel} /></dd></div>
           <div className={styles.stat}><dt>{sgText(locale, "Median unit price")}</dt><dd>{sgText(locale, model.display.medianPsfLabel)}</dd></div>
         </dl>

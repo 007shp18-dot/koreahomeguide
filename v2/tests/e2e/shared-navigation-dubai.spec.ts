@@ -2,13 +2,13 @@ import { expect, test } from '@playwright/test';
 import { openPrimaryNavigation } from './navigation-helpers';
 
 test('uses one navigation order and published language links across markets', async ({ page }) => {
-  for (const [path, languages] of [
-    ['/prices/', ['EN', 'KO']],
-    ['/news/', ['EN', 'KO', '中文']],
-    ['/guides/', ['EN', 'KO', '中文']],
-    ['/kr/seoul/explore/', ['EN', 'KO']],
-    ['/sg/singapore/explore/', ['EN', 'KO']],
-    ['/ae/dubai/explore/', ['EN', 'KO']],
+  for (const path of [
+    '/prices/',
+    '/news/',
+    '/guides/',
+    '/kr/seoul/explore/',
+    '/sg/singapore/explore/',
+    '/ae/dubai/explore/',
   ] as const) {
     await page.goto(path);
     const header = page.locator('header.site-header:visible');

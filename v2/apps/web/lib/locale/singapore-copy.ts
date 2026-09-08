@@ -1,6 +1,21 @@
 import { marketText, type MarketLocale } from './market-localization';
 
 const copy: Readonly<Record<string, string>> = {
+  "Compare an asking price in Singapore | signedprice": "싱가포르 매물 가격 비교 | signedprice",
+  "Compare private-home sale prices, HDB resale prices or monthly rents with recent Singapore transactions.": "민간주택 매매가격, HDB 재판매 가격이나 월세를 최근 싱가포르 실거래가와 비교하세요.",
+  "Markers use source coordinates. Select a project for its transactions. Projects without exact coordinates stay in the list; area references show their approximate district.": "표시는 원자료의 좌표를 사용합니다. 단지를 선택해 거래를 확인하세요. 정확한 좌표가 없는 단지도 목록에 남으며, 지역 참고 표시를 켜면 대략적인 지구 위치를 볼 수 있습니다.",
+  "Transaction records for this comparison are unavailable.": "이 비교에 필요한 거래 자료가 없습니다.",
+  "Explore Singapore transactions": "싱가포르 실거래가 탐색",
+  "Asking price (SGD)": "매물 가격 (SGD)",
+  "Reporting month": "집계 기준 월",
+  "Data available": "자료 있음",
+  "Price percentile": "가격 백분위",
+  "Reporting period": "집계 기간",
+  "Middle 50% (P25–P75)": "거래가격 중간 50% 범위 (P25–P75)",
+  "Enter an asking price.": "매물 가격을 입력하세요.",
+  "Compare the median, middle 50% (P25–P75) and price percentile. Scope, sample, reporting period and source are shown with each result.": "중앙값, 거래가격 중간 50% 범위와 가격 백분위를 비교하세요. 결과마다 비교 조건, 표본 수, 집계 기간과 출처를 함께 표시합니다.",
+  "Compare an asking price": "매물 가격 비교",
+  "Compare an asking rent": "매물 임대료 비교",
   "Area only": "지역 위치만 확인",
   "approximate area, not project locations": "대략적 지역이며 단지 위치가 아닙니다",
   "new_sale": "신규 분양", "sub_sale": "준공 전 전매", "resale": "재판매",
@@ -12,7 +27,7 @@ const copy: Readonly<Record<string, string>> = {
 
 "Verified Singapore evidence unavailable":"검증된 싱가포르 자료를 이용할 수 없습니다","Verified evidence unavailable":"검증된 자료 이용 불가","Private residential sales only; HDB resale and rental evidence is shown in separate layers.":"민간주택 매매 자료만 포함하며 HDB 재판매 및 임대 자료는 별도로 표시합니다.","Reported transactions may be revised; unsupported product claims are not substituted.":"신고 거래는 수정될 수 있으며 자료로 뒷받침되지 않는 주장을 대신 제시하지 않습니다.","PSF is derived from reported SGD price and square metres; PSM uses the same source area basis.":"PSF는 신고된 SGD 가격과 제곱미터 면적으로 계산하며 PSM에도 같은 원본 면적 기준을 적용합니다.","Check parameters are invalid.":"입력한 검토 조건이 올바르지 않습니다.","Verified evidence for the selected Singapore market is unavailable.":"선택한 싱가포르 시장의 검증된 자료를 이용할 수 없습니다.","Complete every required native-market field.":"해당 시장의 필수 항목을 모두 입력하세요.","The selected completed-month window is outside verified evidence.":"선택한 완료 월의 기간이 검증된 자료 범위를 벗어납니다.","Both offers need supported native-market evidence before comparison.":"두 제안을 비교하려면 각각 해당 시장의 검증된 자료가 필요합니다.","Selected project and filters":"선택한 단지 및 필터","Selected project":"선택한 단지","Selected district":"선택한 지구","Selected market segment":"선택한 시장 권역","Selected town and filters":"선택한 타운 및 필터","Selected block and filters":"선택한 블록 및 필터","Selected block":"선택한 블록","Selected town":"선택한 타운","Singapore HDB":"싱가포르 HDB","Singapore private residential":"싱가포르 민간주택","Apartment":"아파트","Condominium":"콘도미니엄","Executive condominium":"이그제큐티브 콘도미니엄","Terrace house":"테라스 주택","Semi-detached house":"반단독 주택","Detached house":"단독주택","Strata area":"구분소유 면적","Land area":"토지 면적","Freehold":"영구 소유권","Unavailable":"이용 불가","Current product depth":"현재 제공 범위","Available evidence":"이용 가능한 자료","URA private residential sale transactions":"URA 민간주택 매매 거래","Native market segments":"현지 시장 권역","CCR, RCR and OCR remain separate.":"CCR, RCR 및 OCR을 구분합니다.","Supported decisions":"지원하는 의사결정","Explore and comparison tools stay inside the verified Singapore evidence boundary.":"둘러보기와 비교 도구는 검증된 싱가포르 자료 범위에서 제공합니다.","Explore Singapore":"싱가포르 둘러보기","Browse released segments and projects.":"공개된 권역과 단지를 확인하세요.","Check an offer":"제안 가격 검토","Compare against compatible released evidence.":"비교 가능한 공개 자료와 대조하세요.","Known limitations":"알려진 한계","These limits remain visible until the exact evidence and operating gates pass.":"자료 검증 및 운영 기준을 충족할 때까지 해당 한계를 표시합니다.","Listings and investment service":"매물 및 투자 서비스","Active listings, inquiries and personalized investment recommendations are not offered yet.":"현재 매물, 문의 및 개인 맞춤 투자 추천은 아직 제공하지 않습니다.","Open Singapore Explore":"싱가포르 둘러보기 열기","Read source, rights and publication rules.":"출처, 이용 권한 및 공개 기준을 확인하세요.","Singapore market overview":"싱가포르 시장 개요","Singapore market":"싱가포르 시장","Singapore Market Overview":"싱가포르 시장 개요","Market intelligence":"시장 정보","Transactions":"거래 수","Projects":"단지 수","Released URA evidence":"공개된 URA 자료","Currency":"통화","Native market currency":"해당 시장의 통화","Publication":"공개 상태","Verified":"검증됨","Minimum-sample rules enforced":"최소 표본 기준 적용","limited":"제한적 제공","available":"이용 가능","planned":"준비 중","Singapore Check | signedprice":"싱가포르 매물 가격 비교 | signedprice","Position a private sale, HDB resale, or HDB rent offer against verified recent Singapore evidence.":"민간주택 매매, HDB 재판매 또는 HDB 월세 제안을 최근 검증된 싱가포르 자료와 비교하세요.","Singapore private residential project rankings | signedprice":"싱가포르 민간주택 단지 순위 | signedprice","Compare published URA project sale medians, unit prices and reported transaction volumes.":"공개된 URA 단지별 매매 중위가격, 단위면적당 가격 및 신고 거래량을 비교하세요.","Singapore HDB town evidence | signedprice":"싱가포르 HDB 타운 자료 | signedprice","Separate HDB resale, rental, and property evidence by town and block.":"타운과 블록별 HDB 재판매, 임대 및 주택 정보를 구분하여 확인하세요.","Singapore HDB block evidence | signedprice":"싱가포르 HDB 블록 자료 | signedprice","Official HDB resale, rental, and property facts for one observed block.":"해당 블록의 공식 HDB 재판매, 임대 및 주택 정보입니다.","Singapore evidence corrections | signedprice":"싱가포르 자료 정정 내역 | signedprice",
   "Breadcrumb": "현재 위치",
-  "Explore": "둘러보기",
+  "Explore": "실거래가 탐색",
   "Singapore · HDB block": "싱가포르 · HDB 블록",
   "· official transaction and property records": "· 공식 거래 및 주택 기록",
   "Resale median": "재판매 중위가격",
@@ -61,7 +76,7 @@ const copy: Readonly<Record<string, string>> = {
   "Scope": "범위",
   "Separate evidence": "구분된 자료",
   "Resale and rental observations remain separate. Select a block for reported facts and nearby Google Street View.": "재판매와 임대 자료는 별도로 표시합니다. 블록을 선택하여 신고 정보와 인근 Google 스트리트 뷰를 확인하세요.",
-  "Offer": "제안",
+  "Offer": "매물",
   "Individual transaction evidence for this price check is not available in the current release.": "현재 버전에서는 이 가격 검토에 필요한 개별 거래 자료를 이용할 수 없습니다.",
   "Explore published Singapore evidence": "공개된 싱가포르 자료 둘러보기",
   "Any": "전체",
@@ -83,16 +98,16 @@ const copy: Readonly<Record<string, string>> = {
   "A/B result": "A/B 비교 결과",
   "Trade-off": "비교 시 고려할 점",
   "Each offer remains in its native market. No winner or conversion is inferred.": "각 제안은 해당 시장 안에서 비교합니다. 우열을 판단하거나 통화를 환산하지 않습니다.",
-  "Offer A": "제안 A",
-  "Offer B": "제안 B",
-  "Singapore Check": "싱가포르 가격 검토",
+  "Offer A": "매물 A",
+  "Offer B": "매물 B",
+  "Singapore Check": "싱가포르 가격 비교",
   "Position an offer against its own market.": "이 매물, 최근 실거래가와 얼마나 다를까요?",
   "Recent completed months only": "최근 완료된 월의 자료만 사용",
   "Minimum 5 comparable transactions": "최소 5건의 비교 가능한 거래",
-  "Check mode": "검토 방식",
-  "One offer": "제안 1개",
+  "Check mode": "비교 방식",
+  "One offer": "매물 1개",
   "Compare A/B": "A/B 비교",
-  "Check result": "가격 검토 결과",
+  "Check result": "가격 비교 결과",
   "Singapore · Release gate": "싱가포르 · 공개 상태",
   "Private-home transaction evidence is not available in this view yet. Use the market overview for the available sources and coverage.": "이 화면에서는 아직 민간주택 거래 자료를 이용할 수 없습니다. 시장 개요에서 이용 가능한 출처와 범위를 확인하세요.",
   "Review Global Trust": "자료 신뢰성 확인",
@@ -156,7 +171,7 @@ const copy: Readonly<Record<string, string>> = {
   ": distribution not published.": ": 가격 분포 미공개",
   "reported transactions. At least": "건의 신고 거래. 최소 표본:",
   "are required.": "건 필요",
-  "Check this project price": "이 단지 가격 검토",
+  "Check this project price": "매물 가격 비교",
   "Median price": "중위가격",
   "01 / Project distribution": "01 / 단지 가격 분포",
   "Price and unit-price evidence.": "가격 및 단위면적당 가격 자료",
@@ -231,7 +246,7 @@ const copy: Readonly<Record<string, string>> = {
   "HDB resale": "HDB 재판매",
   "HDB rent": "HDB 임대",
   "Evidence ready": "자료 이용 가능",
-  "Compare offers": "제안 비교",
+  "Compare offers": "매물 비교",
   "Check offer": "제안 가격 검토",
   "Monthly rent (SGD)": "월세(SGD)",
   "Price (SGD)": "가격(SGD)",
@@ -270,12 +285,12 @@ export function sgText<T>(locale: MarketLocale, value: T): T {
     .replace(/Area only/g, '지역 위치만 확인')
     .replace(/([\d,]+–[\d,]+) shown/g, '$1 표시')
     .replace(/Open (.+) evidence/g, '$1 자료 보기')
-    .replace(/Offer ([AB]) market/g, '제안 $1 시장')
+    .replace(/Offer ([AB]) market/g, '매물 $1 거래 유형')
     .replace(/District (\d+)/g, '지구 $1')
     .replace(/(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sept?|Oct|Nov|Dec) (\d{4})/g, (_, month: string, year: string) => `${year}년 ${monthNames[month]}월`)
     .replace(/Most-observed towns · full reported period (.+)/g, '거래가 많은 타운 · 전체 신고 기간 $1')
     .replace(/The exact selection was below five records; (\w+) evidence is shown without widening the time window\./g, (_, level: string) => `정확히 일치하는 거래가 5건 미만이므로 기간을 확대하지 않고 ${{project:'단지',district:'지구',segment:'권역',block:'블록',town:'타운',national:'전국'}[level] ?? level} 범위의 자료를 표시합니다.`)
-    .replace(/(\d+)(?: yrs| years| Yrs| Years)(?: lease)?(?: from (\d{4}))?/g, (_, years: string, from?: string) => `${years}년 임차권${from ? ` (${from}년 시작)` : ''}`);
+    .replace(/(\d+)(?: yrs| years| Yrs| Years)(?: lease)?(?: (?:commencing )?from (\d{4}))?/g, (_, years: string, from?: string) => `${years}년 임차권${from ? ` (${from}년 시작)` : ''}`);
   if (translated !== value) return translated as T;
   if (value.includes(' · ')) return value.split(' · ').map(part => sgText(locale, part)).join(' · ') as T;
   return marketText(locale, value) as T;

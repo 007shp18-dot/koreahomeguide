@@ -33,7 +33,7 @@ export default async function KoreanRankingsPage({
       <main>
         <DistrictRankings locale="ko" model={model} />
       </main>
-      <SiteFooter copy={KOREAN_SITE_FOOTER} />
+      <SiteFooter locale="ko" copy={KOREAN_SITE_FOOTER} />
     </div>
   );
 }

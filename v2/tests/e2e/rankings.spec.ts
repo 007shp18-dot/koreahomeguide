@@ -1,4 +1,5 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
+import { visibleProductNavigation } from './site-header-helpers';
 
 import { resolveReleaseTestTarget } from '../../release-test-target';
 import { openPrimaryNavigation } from './navigation-helpers';

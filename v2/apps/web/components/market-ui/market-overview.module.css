@@ -1,0 +1,33 @@
+.overview { color: var(--ink); overflow-wrap: anywhere; }
+.overview:lang(ko) { word-break: keep-all; letter-spacing: normal; }
+.overview h1, .overview:lang(ko) h1 { letter-spacing: normal; line-height: 1.2; }
+.overview > [data-market-hero], .content { width: min(var(--content-frame), calc(100% - 2 * var(--page-gutter))); }
+.overview > [data-market-hero] > div { min-width: 0; }
+.content { margin: 32px auto 64px; display: grid; gap: 32px; }
+.content > *, .facts > div, .actions > a { min-width: 0; }
+.content h2 { margin: 0 0 16px; font-size: 1.35rem; line-height: 1.35; }
+.facts { margin: 0; display: grid; grid-template-columns: repeat(var(--overview-columns, 4), minmax(0, 1fr)); gap: 24px; }
+.facts > div { padding: 24px; border: var(--rule-default); background: var(--surface); }
+.facts dt { color: var(--muted); font-size: .875rem; line-height: 1.5; }
+.facts dd { margin: 8px 0 0; font-size: 1.25rem; font-weight: 700; line-height: 1.4; }
+.facts small { display: block; margin-top: 8px; color: var(--muted); font-size: .875rem; font-weight: 400; line-height: 1.6; }
+.period { margin: 16px 0 0; color: var(--muted); font-size: .875rem; line-height: 1.6; }
+.actions { display: grid; grid-template-columns: repeat(var(--overview-columns, 3), minmax(0, 1fr)); gap: 24px; }
+.actions a { padding: 24px; border: var(--rule-default); color: inherit; text-decoration: none; }
+.actions a[data-primary-action='true'] { border-top: 3px solid var(--accent); }
+.actions a:hover { background: var(--surface); }
+.actions a:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.actions h3 { margin: 0 0 8px; font-size: 1.05rem; line-height: 1.45; }
+.actions p { margin: 0; color: var(--muted); line-height: 1.6; }
+.notes { padding-top: 24px; border-top: var(--rule-default); line-height: 1.7; }
+.notes p { margin: 0 0 16px; }
+.notes ul { padding-left: 24px; }
+.notes li + li { margin-top: 8px; }
+@media (max-width: 960px) {
+  .facts, .actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  .content { margin-top: 24px; gap: 24px; }
+  .facts, .actions { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .facts > div, .actions a { padding: 16px; }
+}

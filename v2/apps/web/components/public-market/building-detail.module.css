@@ -733,13 +733,17 @@
 .main .identityHero > [data-detail-order='media'] { flex: 0 1 40%; aspect-ratio: auto; }
 .main .identityHero > [data-detail-order='media']:has(> :empty), .main .identityHero > [data-detail-order='media']:empty { display: none; }
 .main .identityHero > .identitySummary { flex: 1; padding: 0; background: transparent; aspect-ratio: auto; overflow: visible; }
-.main .identitySummary h1 { font-size: clamp(1.6rem, 3vw, 2.3rem); line-height: 1.3; }
+.main .identitySummary h1 { font-size: clamp(1.6rem, 3vw, 2.3rem); line-height: 1.3; letter-spacing: normal; word-break: keep-all; overflow-wrap: break-word; }
 .main .heroPrice { margin: 16px 0 6px; }
 .main .heroPrice strong { font-size: clamp(2rem, 4vw, 2.8rem); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .main .heroPrice span, .sourceLine { font-size: .875rem; }
-.main .identitySummary .factGrid { display: none; }
+.main .identitySummary .factGrid { display: grid; grid-template-columns: 1fr; margin-top: 8px; }
 .main .findingGrid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
 .main .findingGrid dd { overflow-wrap: normal; font-variant-numeric: tabular-nums; font-size: 1.25rem; }
+.main .findingGrid .primaryFinding { grid-column: 1 / -1; }
+.main .findingGrid .primaryFinding dd { max-width: 100%; font-size: clamp(1.8rem, 3.5vw, 2.8rem); line-height: 1.2; white-space: nowrap; overflow-x: auto; }
+.main .primaryFinding small { color: var(--muted); font-size: var(--text-meta); line-height: 1.5; }
+.main p, .main dt { letter-spacing: normal; word-break: keep-all; overflow-wrap: break-word; }
 .main > .evidence, .main > .areaBands, .main > .factsAnchor { border: 0; padding-inline: 0; box-shadow: none; margin-block: 28px; }
 .main .areaBands li a { min-height: 44px; display: inline-flex; align-items: center; padding-block: 10px; }
 @media (max-width: 720px) {

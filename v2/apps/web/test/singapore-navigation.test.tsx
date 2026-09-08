@@ -42,14 +42,29 @@ describe('Singapore navigation promotion gate', () => {
     expect(html.match(/<h1/g) ?? []).toHaveLength(1);
   });
 
-  it('keeps the Singapore overview concise without repeated item badges or a source row', () => {
+  it('shows actual Singapore counts, period, currency and limits without internal product status rows', () => {
     const html = renderToStaticMarkup(<SingaporeEntry model={ready} />);
 
-    expect(html).toContain('data-overview-row="05"');
-    expect(html).toContain('>05</span>');
-    expect(html).not.toContain('Source and methodology');
-    expect(html).not.toContain('href="#source"');
-    expect(html.match(/data-state="available"/g) ?? []).toHaveLength(1);
+    expect(html).toContain('data-market-overview="true"');
+    expect(html).toMatch(/Transactions<\/dt><dd[^>]*>12/);
+    expect(html).toMatch(/Projects<\/dt><dd[^>]*>2/);
+    expect(html).toContain('SGD');
+    expect(html).toContain('Jun 2026–Aug 2026');
+    expect(html).toContain('Private residential sales only.');
+    expect(html).toContain('https://www.ura.gov.sg/Corporate/Property/Property-Data');
+    expect(html).toContain('href="/sg/singapore/check"');
+    expect(html).not.toContain('Current product depth');
+    expect(html).not.toContain('data-overview-row=');
+  });
+
+  it('keeps Korean Singapore comparison actions localized even without evidence', () => {
+    const html = renderToStaticMarkup(<SingaporeEntry model={unavailable} locale="ko" />);
+    expect(html).toContain('role="status"');
+    expect(html).toContain('href="/ko/sg/singapore/check"');
+    expect(html).toContain('href="/ko/sg/singapore/explore"');
+    expect(html).toContain('href="/ko/sg/singapore/corrections"');
+    expect(html).not.toContain('<dt>');
+    expect(html).not.toContain('Release gate');
   });
 
   it('keeps Singapore and Dubai visible in global market navigation', async () => {

@@ -71,7 +71,7 @@ describe('browser route coverage contract', () => {
     expect(paths).toHaveLength(84);
     expect(new Set(paths).size).toBe(84);
     expect(publicRoutes.find(({ path }) => path === '/kr/seoul/check/')).toMatchObject({
-      heading: 'Check one asking price.',
+      heading: 'Compare an asking price',
       indexing: 'index',
       canonical: '/kr/seoul/check/',
     });

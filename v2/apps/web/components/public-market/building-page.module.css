@@ -25,7 +25,7 @@
 
 .identityHero {
   display: grid;
-  grid-template-columns: minmax(0, 7fr) minmax(300px, 5fr);
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
   overflow: hidden;
   border: var(--line-subtle);
   border-radius: var(--radius-card);
@@ -41,6 +41,9 @@
   overflow: hidden;
   background: var(--surface);
 }
+
+.identityHero[data-has-media='false'] { grid-template-columns: minmax(0, 1fr); }
+.identityHero[data-has-media='false'] .identitySummary { grid-column: 1; grid-row: 1; border: 0; }
 
 .identityMedia > section,
 .identityMedia > figure,
@@ -78,11 +81,12 @@
 .identitySummary h1 {
   max-width: 24ch;
   margin: var(--space-3) 0 var(--space-2);
-  font-size: var(--page-title-size);
+  font-size: clamp(1.6rem, 3vw, 2.3rem);
   font-weight: 720;
-  letter-spacing: var(--tracking-display);
-  line-height: 1.08;
-  overflow-wrap: anywhere;
+  letter-spacing: normal;
+  line-height: 1.3;
+  overflow-wrap: break-word;
+  word-break: keep-all;
   text-wrap: balance;
 }
 
@@ -95,7 +99,7 @@
 .identityFacts {
   margin-top: var(--space-5);
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-4);
 }
 
@@ -146,7 +150,7 @@
 .summaryGrid {
   margin-top: var(--space-4);
   display: grid;
-  grid-template-columns: minmax(180px, .75fr) minmax(0, 1.3fr) minmax(180px, .75fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: var(--space-4);
 }
 
@@ -165,7 +169,7 @@
 
 .priceSummary { display: grid; align-content: start; }
 .priceSummary span { color: var(--muted); font-size: var(--meta-size); }
-.priceSummary strong { margin-top: var(--space-2); font-size: var(--card-title-size); letter-spacing: -.025em; }
+.priceSummary strong { margin-top: var(--space-2); max-width: 100%; font-size: clamp(1.8rem, 3.5vw, 2.8rem); letter-spacing: normal; white-space: nowrap; overflow-x: auto; overflow-wrap: normal; line-height: 1.2; }
 .priceSummary small { margin-top: var(--space-2); color: var(--muted); font-size: var(--meta-size); }
 
 .transactionList { list-style: none; }
@@ -229,8 +233,7 @@
   .identityHero { grid-template-columns: 1fr; }
   .identityMedia { grid-column: 1; grid-row: 1; }
   .identitySummary { grid-column: 1; grid-row: 2; border-top: var(--line-subtle); border-left: 0; }
-  .summaryGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .summaryGrid article:last-child { grid-column: 1 / -1; }
+  .summaryGrid { grid-template-columns: 1fr; }
   .contextGrid,
   .profileFacts { grid-template-columns: 1fr; }
 }

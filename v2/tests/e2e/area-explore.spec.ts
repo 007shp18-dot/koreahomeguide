@@ -1,4 +1,5 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
+import { visibleProductNavigation } from './site-header-helpers';
 
 import { resolveReleaseTestTarget } from '../../release-test-target';
 import { openPrimaryNavigation } from './navigation-helpers';
@@ -426,7 +427,7 @@ test('journey: Explore selection survives Detail, Check, and the return link', a
   await expect(page.locator('[data-building-detail="ready"], [data-building-detail="exact-evidence"]')).toBeVisible();
   const detailUrl = new URL(page.url());
 
-  await page.getByRole('link', { name: /Check (?:this contract|a contract)/ }).click();
+  await page.getByRole('link', { name: 'Compare an asking price', exact: true }).click();
   await expect(page).toHaveURL(/market=kr-seoul.*entity=synthetic-test-building.*returnTo=/);
   const checkUrl = new URL(page.url());
   const returnTo = new URL(checkUrl.searchParams.get('returnTo')!, checkUrl.origin);

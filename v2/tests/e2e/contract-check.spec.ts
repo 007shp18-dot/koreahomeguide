@@ -1,4 +1,5 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
+import { visibleProductNavigation } from './site-header-helpers';
 
 import { resolveReleaseTestTarget } from '../../release-test-target';
 import { openPrimaryNavigation } from './navigation-helpers';
@@ -89,7 +90,8 @@ test('primary Contract Check exposes one quote and routes to the two-offer compa
   expect(response?.status()).toBe(200);
   await expect(page.getByRole('heading', {
     level: 1,
-    name: 'Check one asking price.',
+    name: 'Compare an asking price',
+    exact: true,
   })).toBeVisible();
   await expect(page.locator('[data-primary-check="single-quote"]')).toHaveCount(1);
   await expect(page.locator('form select')).toHaveCount(3);
@@ -132,7 +134,7 @@ test('primary Contract Check exposes one quote and routes to the two-offer compa
   expect(htmlResponse.status()).toBe(200);
   expect(html).toContain('Compare a sale, jeonse or monthly-rent quote');
   expect(html).toContain('/kr/seoul/check/compare/');
-  const visibleDecisionCopy = await page.locator('main').innerText();
+  const visibleDecisionCopy = await singleCheck.locator('main').innerText();
   expect(visibleDecisionCopy).not.toMatch(/Singapore|Dubai|72,291|29\.4%/i);
 
   await page.getByRole('link', { name: 'Compare two offers' }).first().click();
@@ -183,7 +185,7 @@ test('Contract Check stays ordered, touch-sized, and keyboard reachable', async 
 
   const panels = page.locator('fieldset, [data-result-focus-target="true"]');
   await expect(panels).toHaveCount(4);
-  await expect(panels.nth(0)).toContainText('Conditions');
+  await expect(panels.nth(0)).toContainText('Property details');
   await expect(panels.nth(1)).toContainText('Offer A');
   await expect(panels.nth(2)).toContainText('Offer B');
   await expect(panels.nth(3)).toContainText('Result');
@@ -206,7 +208,8 @@ test('Contract Check stays ordered, touch-sized, and keyboard reachable', async 
     .toHaveAttribute('href', '/guides/');
   await expect(productNavigation.getByText('Planned')).toHaveCount(0);
   await expect(page.getByRole('link', {
-    name: 'Check one asking price',
+    name: 'Compare an asking price',
+    exact: true,
   }).first()).toHaveAttribute('href', '/kr/seoul/check/');
   assertNoRuntimeFailures();
 });
@@ -228,9 +231,9 @@ test('each offer changes type independently and sale versus rent stays a neutral
   const result = page.locator('[data-result-focus-target="true"]');
   await expect(result.locator('[data-comparison-basis="tradeoff"]')).toBeVisible();
   await expect(result).toContainText('Trade-off — no winner declared');
-  await expect(result).toContainText('Sale price as filed');
-  await expect(result).toContainText('Deposit as filed');
-  await expect(result).toContainText('Monthly rent as filed');
+  await expect(result).toContainText('Asking sale price');
+  await expect(result).toContainText('Asking deposit');
+  await expect(result).toContainText('Asking monthly rent');
   await expect(result).toContainText('7 completed months');
   await expect(result).not.toContainText(/Offer [AB] (?:has the lower|wins)/i);
   await expect(result.locator('[data-responsive-ticks="5-desktop-3-mobile"]')).toHaveCount(2);

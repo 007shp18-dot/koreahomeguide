@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import { seoulDetailText } from '../../lib/locale/seoul-detail-copy';
+import type { ProductLocale } from '../../lib/locale/product-copy';
 
 import {
   BUILDING_CONTRACT_COHORTS,
@@ -24,12 +26,13 @@ const COHORT_LABELS = {
   renewal: 'Renewal',
 } as const satisfies Readonly<Record<BuildingContractCohort, string>>;
 
-export function BuildingDecisionTabs({ base, selection }: Readonly<{
+export function BuildingDecisionTabs({ base, selection, locale = 'en' }: Readonly<{
+  locale?: ProductLocale;
   base: string;
   selection: BuildingDecisionSelection;
 }>) {
   return (
-    <nav className={styles.decisionTabs} aria-label="Building decision mode">
+    <nav className={styles.decisionTabs} aria-label={seoulDetailText(locale, 'Building decision mode')}>
       <div role="tablist">
         {BUILDING_DECISION_MODES.map((mode) => (
           <Link
@@ -40,12 +43,12 @@ export function BuildingDecisionTabs({ base, selection }: Readonly<{
             aria-selected={selection.mode === mode}
             aria-controls="building-mode-panel"
           >
-            {MODE_LABELS[mode]}
+            {seoulDetailText(locale, MODE_LABELS[mode])}
           </Link>
         ))}
       </div>
       {selection.mode === 'rent' ? (
-        <div role="group" aria-label="Rent contract cohort">
+        <div role="group" aria-label={seoulDetailText(locale, 'Rent contract cohort')}>
           {BUILDING_CONTRACT_COHORTS.map((contract) => (
             <Link
               key={contract}
@@ -53,7 +56,7 @@ export function BuildingDecisionTabs({ base, selection }: Readonly<{
               role="button"
               aria-pressed={selection.contract === contract}
             >
-              {COHORT_LABELS[contract]}
+              {seoulDetailText(locale, COHORT_LABELS[contract])}
             </Link>
           ))}
         </div>

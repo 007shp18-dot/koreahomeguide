@@ -57,6 +57,25 @@ function detailProps(
 }
 
 describe('public building detail', () => {
+  it('keeps the reporting period beside the primary price and translates the Korean detail labels', () => {
+    const html = renderToStaticMarkup(<BuildingDetailPage {...detailProps()} locale="ko" />);
+    const summary = html.slice(html.indexOf('id="building-overview"'), html.indexOf('id="rent-evidence"'));
+    expect(summary).toContain(model().evidence.period);
+    expect(html).toContain('매물 가격 비교');
+    expect(html).not.toContain('Median refundable deposit');
+    expect(html).not.toContain('Viewing Rent');
+    expect(html).toContain('전체 계약 거래');
+    expect(html).not.toContain('Open full Rent Check');
+    expect(html).toContain('href="/ko/news?market=seoul"');
+    expect(html).toContain('서울 소식 모두 보기');
+    expect(html).not.toContain('Latest verified News');
+    expect(html).toContain('층 보정 자료 부족');
+    expect(html).toContain('같은 단지·같은 전용면적에서 층만 다른 신고 계약을 비교합니다. 비교 가능한 거래가 6쌍 미만이면 보정 계수를 표시하지 않습니다.');
+    expect(html).not.toContain('Back to Seoul map');
+    expect(html).toContain('aria-label="계약 구분별 거래"');
+    expect(html).toContain('id="building-source"');
+    expect(html.indexOf('id="building-evidence"')).toBeLessThan(html.indexOf('data-detail-order="facts"'));
+  });
   it('captures database-backed projections in hourly ISR snapshots', async () => {
     const englishRoute = await import('../app/(en)/kr/seoul/explore/[district]/[buildingId]/page') as {
       dynamic?: string;
@@ -223,8 +242,8 @@ describe('public building detail', () => {
     expect(html).toContain('data-detail-hero-metric="identity"');
     expect(html).toContain('<dl class="');
     expect(html).toContain('<dt>Property type</dt>');
-    expect(html).toContain('<dt>Evidence</dt>');
-    expect(html).toContain('<dt>Period</dt>');
+    expect(html).toContain('6 reported contracts · 2026-01/2026-07');
+    expect(html).toContain('<dt>Evidence period</dt>');
     expect(html).not.toContain('Verified building identity');
     expect(html).not.toContain('Properties · Service preparing');
     expect(html).not.toContain('Listing service');
@@ -240,7 +259,6 @@ describe('public building detail', () => {
       backHref="/kr/seoul/explore/?transaction=monthly&propertyType=apartment&district=gangnam-gu&neighborhood=yeoksam-dong&buildingId=gangnam-evidence-tower"
     />);
     const ordered = [
-      'data-detail-order="media"',
       'data-detail-order="identity"',
       'data-detail-order="current-evidence"',
       'data-detail-order="history"',
@@ -252,6 +270,7 @@ describe('public building detail', () => {
     ].map((needle) => html.indexOf(needle));
 
     expect(ordered.every((position) => position >= 0)).toBe(true);
+    expect(html).not.toContain('data-detail-order="media"');
     expect([...ordered].sort((left, right) => left - right)).toEqual(ordered);
     expect(html).toContain('market=kr-seoul');
     expect(html).toContain('entity=gangnam-evidence-tower');
@@ -286,7 +305,7 @@ describe('public building detail', () => {
     expect(html).toContain('Latest verified News');
     expect(html).not.toContain('Community signal');
     expect(html).toContain('Use this evidence within its boundary');
-    expect(html.indexOf('Open full Rent Check')).toBeLessThan(html.indexOf('<details', html.indexOf('data-building-section="decision"')));
+    expect(html.indexOf('Compare an asking rent')).toBeLessThan(html.indexOf('<details', html.indexOf('data-building-section="decision"')));
   });
 
   it('renders the published distribution while withholding an unassessable comparison', () => {
@@ -384,7 +403,7 @@ describe('public building detail', () => {
     const html = renderToStaticMarkup(<BuildingDetailPage {...detailProps()} />);
     expect(html).toContain('data-detail-layout="research"');
     expect(html).toContain('>Back to Gangnam-gu Explore</a>');
-    expect(html).toContain('>Check this contract</a>');
+    expect(html).toContain('>Compare an asking price</a>');
     expect(html).toContain('aria-label="Building page sections"');
   });
 });

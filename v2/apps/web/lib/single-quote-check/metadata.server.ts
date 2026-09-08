@@ -9,15 +9,15 @@ import { contractCheckEvidenceRepositoriesFromEnvironment } from '../contract-ch
 const copy = Object.freeze({
   en: Object.freeze({
     path: '/kr/seoul/check/' as const,
-    title: 'Check a Seoul sale, jeonse or rent quote | signedprice',
-    description: 'Compare one Seoul sale, jeonse or monthly-rent asking quote with compatible official reported transaction evidence.',
+    title: 'Compare an asking price in Seoul | signedprice',
+    description: 'Compare a Seoul asking sale price, jeonse deposit or monthly rent with similar reported transactions.',
     locale: 'en_US' as const,
     imagePath: '/og/en/' as const,
   }),
   ko: Object.freeze({
     path: '/ko/kr/seoul/check/' as const,
-    title: '서울 매매·전세·월세 실거래가 비교 | signedprice',
-    description: '서울 매물의 매매가격·전세 보증금·월세를 조건이 맞는 공식 신고 거래와 비교해 제시가격을 확인합니다.',
+    title: '서울 매물 가격 비교 | signedprice',
+    description: '서울 매물의 매매가격·전세 보증금·월세를 조건이 비슷한 신고 거래와 비교하세요.',
     locale: 'ko_KR' as const,
     imagePath: '/og/ko/' as const,
   }),

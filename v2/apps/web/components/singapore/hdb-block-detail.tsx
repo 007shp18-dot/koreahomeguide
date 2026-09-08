@@ -29,24 +29,21 @@ export function HdbBlockDetail({ locale = 'en',
     <MarketDetailShell locale={locale}
       breadcrumb={<nav className={styles.breadcrumbs} aria-label={sgText(locale, "Breadcrumb")}><Link href={marketHref(locale, "/sg/singapore/explore/")}>{sgText(locale, "Explore")}</Link><Link href={marketHref(locale, townHref)}>{town}</Link><span>{block.address}</span></nav>}
       identity={<div className={styles.detailIdentity} data-hdb-block="ready"><p className={styles.eyebrow}>{sgText(locale, "Singapore · HDB block")}</p><h1>{block.address}</h1><p>{town}{sgText(locale, " · official transaction and property records")}</p></div>}
-      metric={<div className={styles.detailMetric}><small>{sgText(locale, "Resale median")}</small><strong>{sgText(locale, block.resaleMedianLabel ?? 'Not published')}</strong><span>{sgText(locale, block.resaleCountLabel)}{sgText(locale, " records")}</span></div>}
-      evidence={<><section className={styles.section} aria-labelledby="hdb-block-media-heading">
-      <p className={styles.sectionLabel}>{sgText(locale, "01 / Building photo")}</p><h2 id="hdb-block-media-heading">{block.address}</h2>
-      <GooglePlacePhoto locale={locale}
+      metric={<div className={styles.detailMetric}><small>{sgText(locale, "Resale median")}</small><strong>{sgText(locale, block.resaleMedianLabel ?? 'Not published')}</strong><span>{sgText(locale, block.resaleCountLabel)}{sgText(locale, " records")} · {block.resalePeriod ?? (locale === 'ko' ? '집계 기간 미제공' : 'Reporting period unavailable')}</span></div>}
+      media={<GooglePlacePhoto locale={locale}
         browserKey={googleMapsBrowserKey}
         buildingName={block.address}
         address={address}
         registryKey={`sg-hdb:${town}:${block.address}`}
         fallback={<ProjectedEntityMedia locale={locale} buildingName={block.address} media={null} evidenceHref="#hdb-block-evidence-heading" />}
-      />
-    </section><SingaporeNearbyPlaces locale={locale} proximity={proximity} /><section className={styles.section} aria-labelledby="hdb-block-evidence-heading">
+      />}
+      evidence={<><section className={styles.section} aria-labelledby="hdb-block-evidence-heading">
       <p className={styles.sectionLabel}>{sgText(locale, "02 / Separate distributions")}</p><h2 id="hdb-block-evidence-heading">{sgText(locale, "Reported HDB evidence.")}</h2>
       <dl className={styles.stats}>
-        <div className={styles.stat}><dt>{sgText(locale, "Resale median")}</dt><dd>{sgText(locale, block.resaleMedianLabel ?? 'Not published')}</dd><small>{sgText(locale, block.resaleCountLabel)}{sgText(locale, " records")}</small></div>
-        <div className={styles.stat}><dt>{sgText(locale, "Monthly rent median")}</dt><dd>{sgText(locale, block.rentalMedianLabel ?? 'Not published')}</dd><small>{sgText(locale, block.rentalCountLabel)}{sgText(locale, " records")}</small></div>
+        <div className={styles.stat}><dt>{sgText(locale, "Monthly rent median")}</dt><dd>{sgText(locale, block.rentalMedianLabel ?? 'Not published')}</dd><small>{sgText(locale, block.rentalCountLabel)}{sgText(locale, " records")} · {block.rentalPeriod ?? (locale === 'ko' ? '집계 기간 미제공' : 'Reporting period unavailable')}</small></div>
         <div className={styles.stat}><dt>{sgText(locale, "Publication minimum")}</dt><dd>{sgText(locale, "5")}</dd><small>{sgText(locale, "per transaction type")}</small></div>
       </dl>
-    </section></>}
+    </section><SingaporeNearbyPlaces locale={locale} proximity={proximity} /></>}
       rail={<section className={styles.section} aria-labelledby="hdb-block-facts-heading">
       <p className={styles.sectionLabel}>{sgText(locale, "03 / Property facts")}</p><h2 id="hdb-block-facts-heading">{sgText(locale, "HDB property information.")}</h2>
       {block.property === null ? <p>{sgText(locale, "Matched property facts are unavailable for this observed block.")}</p> : <dl className={styles.stats}>

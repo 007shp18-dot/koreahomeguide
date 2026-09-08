@@ -82,7 +82,7 @@ describe('Korean embedded product components', () => {
   it('keeps the Korean surface in the compact two-tier header and exposes a crawlable English switch', () => {
     const html = renderToStaticMarkup(<>
       <SiteHeader copy={KOREAN_SITE_HEADER} />
-      <SiteFooter copy={KOREAN_SITE_FOOTER} />
+      <SiteFooter locale="ko" copy={KOREAN_SITE_FOOTER} />
     </>);
 
     expect(html).toContain('data-navigation-tier="global"');
@@ -90,7 +90,7 @@ describe('Korean embedded product components', () => {
     expect(html).toContain('href="/kr/seoul"');
     expect(html).toMatch(/hreflang="en"/i);
     expect(html).toContain('href="/ko/kr/seoul/check"');
-    expect(html).toContain('>News &amp; Insights</a>');
+    expect(html).toContain('>뉴스·인사이트</a>');
   });
 
   it('switches Korean Explore and Rankings to their matching English routes', async () => {
@@ -106,6 +106,10 @@ describe('Korean embedded product components', () => {
 
     expect(explore).toMatch(/hreflang="en"[^>]*href="\/kr\/seoul\/explore"/i);
     expect(rankings).toMatch(/hreflang="en"[^>]*href="\/kr\/seoul\/rankings"/i);
+    for (const html of [explore, rankings]) {
+      expect(html).toContain('aria-label="Footer 서비스"');
+      expect(html).not.toContain('Explore SignedPrice');
+    }
   });
 
   it('preserves Korean Explore URL selection and search state', async () => {

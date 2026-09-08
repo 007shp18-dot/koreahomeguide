@@ -1,4 +1,5 @@
 import {expect,test} from '@playwright/test';
+import { visibleLanguageNavigation, visibleProductNavigation } from './site-header-helpers';
 
 import { openPrimaryNavigation } from './navigation-helpers';
 
@@ -6,7 +7,7 @@ test('Chinese market cards align their primary actions on multi-column screens',
  await page.goto('/zh-cn/kr/seoul/');
  await page.evaluate(()=>document.fonts.ready);
  const positions=await page.locator('[data-contextual-action]').evaluateAll(nodes=>nodes.map(node=>{
-  const r=node.getBoundingClientRect();const a=node.querySelector('a')!.getBoundingClientRect();return {top:r.top,action:a.top-r.top};
+  const r=node.getBoundingClientRect();const a=node.querySelector('[data-primary-action="explore"]')!.getBoundingClientRect();return {top:r.top,action:a.top-r.top};
  }));
  expect(positions).toHaveLength(3);
  if(Math.max(...positions.map(p=>p.top))-Math.min(...positions.map(p=>p.top))<=2)
@@ -22,7 +23,7 @@ test('home presents three stable city cards and one budget journey without overf
  await expect(cards).toHaveCount(3);
  const positions = await cards.evaluateAll(nodes => nodes.map(node => {
   const box = node.getBoundingClientRect();
-  const action = node.querySelector('a')!.getBoundingClientRect();
+  const action = node.querySelector('[data-primary-action="explore"]')!.getBoundingClientRect();
   const title = node.querySelector('h3')!;
   return {top:box.top, action:action.top, height:action.height, titleFits:title.scrollWidth <= title.clientWidth};
  }));

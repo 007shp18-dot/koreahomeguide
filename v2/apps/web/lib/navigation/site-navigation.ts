@@ -47,7 +47,7 @@ export function languageDestinations(pathname: string, search = ''): Record<Site
     destinations.ko = withQuery(`/ko${english}`);
     destinations.en = withQuery(english);
     destinations['zh-CN'] = withQuery(`/zh-cn${english}`);
-  } else if (/^\/sg\/singapore\/(?:explore(?:\/[^/]+(?:\/[^/]+)?)?|hdb\/[^/]+\/[^/]+|check|rankings|shortlist|corrections)$/.test(english) || /^\/ae\/dubai\/(?:explore(?:\/[^/]+)?|check|shortlist|guide)$/.test(english)) {
+  } else if (/^\/sg\/singapore\/(?:explore(?:\/[^/]+(?:\/[^/]+)?)?|hdb\/[^/]+(?:\/[^/]+)?|check|rankings|shortlist|corrections)$/.test(english) || /^\/ae\/dubai\/(?:explore(?:\/[^/]+)?|check|shortlist|guide)$/.test(english)) {
     destinations.en = withQuery(english);
     destinations.ko = withQuery(`/ko${english}`);
   } else if (['/sg', '/sg/singapore', '/ae/dubai', '/contact'].includes(english)) {

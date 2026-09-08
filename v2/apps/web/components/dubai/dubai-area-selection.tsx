@@ -25,5 +25,5 @@ export function DubaiAreaSelection({ slug, segments, variant, locale = 'en' }: R
   return <PassportLink className={styles.primaryAction} href={marketHref(locale, createDubaiCheckHref({
     area: slug, housing: segment.housing, completion: stage, askingPriceAed: null,
     areaSqm: null, annualRentAed: null, returnTo: current || `/ae/dubai/explore/${slug}/`,
-  }))}>{t('Check this asking price')}</PassportLink>;
+  }))}>{t('Compare an asking price')}</PassportLink>;
 }
