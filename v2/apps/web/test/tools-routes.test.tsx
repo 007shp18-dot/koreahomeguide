@@ -17,14 +17,23 @@ it.each(['en','ko','zh-CN'] as const)('publishes a translated tools directory wi
  expect(globalNavigation(locale)).toHaveLength(5);
  expect(html).toContain('/ae/dubai/check');expect(html).toContain('/sg/singapore/check');expect(html).toContain('/tools/property-scenario');
 });
+it('groups every existing tool once by decision',()=>{
+ const html=renderToStaticMarkup(<ToolsHub locale="en"/>);
+ const headings=['Check a price','Compare','Costs & returns'];
+ const positions=headings.map(heading=>html.indexOf(`>${heading.replace('&','&amp;')}</h2>`));
+ expect(positions.every(position=>position>=0)).toBe(true);
+ expect(positions).toEqual([...positions].sort((left,right)=>left-right));
+ for(const tool of ['passport','single-quote','offer-compare','rent-check','property-scenario','singapore-check','dubai-check'])
+  expect(html.match(new RegExp(`data-tool-id="${tool}"`,'g'))).toHaveLength(1);
+});
 it.each(['en','ko'] as const)('keeps calculator parameters out of indexable metadata: %s',locale=>{
  const base=buildPropertyScenarioMetadata(locale,false), query=buildPropertyScenarioMetadata(locale,true);
  expect(base.robots).toEqual({index:true,follow:true});expect(query.robots).toEqual({index:false,follow:true});
  expect(base.alternates).toEqual(query.alternates);
  expect(languageDestinations('/tools/property-scenario/').ko).toBe('/ko/tools/property-scenario/');
 });
-it('selects only Tools for Check and only Prices for Explore',()=>{
- for(const [href,label] of [['/kr/seoul/check/','Tools'],['/ko/tools/property-scenario/','Tools'],['/kr/seoul/explore/','Prices']]) {
+it('selects only Tools for Check, Explore for search, and Rankings for ranking pages',()=>{
+ for(const [href,label] of [['/kr/seoul/check/','Tools'],['/ko/tools/property-scenario/','Tools'],['/kr/seoul/explore/','Explore'],['/kr/seoul/rankings/','Rankings']]) {
   const html=renderToStaticMarkup(<SiteHeader copy={{brand:'signedprice',homeLabel:'home',navigationLabel:'Local',links:[{label:'Current',href:href!,isCurrent:true}]}}/>);
   const nav=html.match(/<nav[^>]*aria-label="Primary navigation"[\s\S]*?<\/nav>/)?.[0] ?? '';
   expect(nav.match(/aria-current="page"/g)).toHaveLength(1);expect(nav).toMatch(new RegExp(`aria-current="page"[^>]*>${label}</a>`));

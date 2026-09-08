@@ -23,6 +23,7 @@ import { BuildingVisual } from './building-visual';
 import { DetailNewsList } from '../news/detail-news-list';
 import pageStyles from './building-page.module.css';
 import { createEntityCheckHref } from '../../lib/navigation/explorer-selection';
+import { BuildingSaveButton } from './building-save-button';
 
 const footer: SiteFooterModel = {
   brand: 'signedprice',
@@ -104,7 +105,7 @@ export function BuildingDetailPage({
           data-building-section="identity"
           data-has-media={hasMedia}
         >
-          {hasMedia ? <div className={pageStyles.identityMedia} data-detail-order="media">{propertyMedia ?? <BuildingVisual model={visual} />}</div> : null}
+          {hasMedia ? <section className={pageStyles.identityMedia} data-detail-order="media" data-building-gallery="verified" aria-label={locale === 'ko' ? '확인된 건물 사진' : 'Verified building photograph'}><span className={pageStyles.mediaKind} data-media-kind="exterior">{locale === 'ko' ? '외관' : 'Exterior'}</span>{propertyMedia ?? <BuildingVisual model={visual} />}</section> : null}
           <div className={pageStyles.identitySummary} data-detail-hero-metric="identity" data-detail-order="identity">
             <Link
               className={pageStyles.backAction}
@@ -120,6 +121,12 @@ export function BuildingDetailPage({
             <Link className={pageStyles.primaryAction} href={checkHref}>
               {locale === 'ko' ? '매물 가격 비교' : 'Compare an asking price'}
             </Link>
+            <BuildingSaveButton
+              buildingKey={`${model.district.slug}/${model.building.buildingId}`}
+              buildingName={model.building.name}
+              locale={locale}
+              variant="detail"
+            />
           </div>
         </section>
 

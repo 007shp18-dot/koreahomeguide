@@ -44,6 +44,13 @@ const koreanPublishedHubUrls = [
   '/ko/ae/dubai/explore/', '/ko/ae/dubai/guide/',
 ].map(path => `https://www.signedprice.com${path}`);
 
+const rankingCanonicalUrls = [
+  '/rankings/',
+  '/ko/rankings/',
+  '/sg/singapore/rankings/',
+  '/ko/sg/singapore/rankings/',
+].map(path => `https://www.signedprice.com${path}`);
+
 function releasedDubaiEvidenceUrls(): string[] {
   const repository = dubaiEvidenceRepositoryFromEnvironment();
   if (repository === null) return [];
@@ -341,6 +348,7 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/sg/singapore/explore/ocr/',
       ...portfolioUrls,
       ...koreanPublishedHubUrls,
+      ...rankingCanonicalUrls,
       'https://www.signedprice.com/',
       'https://www.signedprice.com/compare/',
       'https://www.signedprice.com/trust/',
@@ -494,6 +502,7 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/sg/singapore/explore/ocr/',
       ...portfolioUrls,
       ...koreanPublishedHubUrls,
+      ...rankingCanonicalUrls,
       'https://www.signedprice.com/',
       'https://www.signedprice.com/compare/',
       'https://www.signedprice.com/trust/',
@@ -540,6 +549,7 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/sg/singapore/explore/ocr/',
       ...portfolioUrls,
       ...koreanPublishedHubUrls,
+      ...rankingCanonicalUrls,
       'https://www.signedprice.com/',
       'https://www.signedprice.com/compare/',
       'https://www.signedprice.com/trust/',

@@ -8,8 +8,28 @@ import { SiteFooter } from '../components/site-footer';
 import { homepageCopy } from '../lib/site-copy';
 
 describe('shared navigation destinations', () => {
-  it('keeps five global sections in the same order in English and Chinese', () => {
-    for (const locale of ['en', 'ko', 'zh-CN'] as const) expect(globalNavigation(locale).map(({href}) => href.replace(/^\/(?:zh-cn|ko)(?=\/)/, ''))).toEqual(['/markets/', '/prices/', '/tools/', '/news/', '/guides/']);
+  it('keeps the five redesigned global sections in the same order', () => {
+    expect(globalNavigation('en')).toEqual([
+      { label: 'Explore', href: '/prices/' },
+      { label: 'Rankings', href: '/rankings/' },
+      { label: 'Tools', href: '/tools/' },
+      { label: 'News & Insights', href: '/news/' },
+      { label: 'Guides', href: '/guides/' },
+    ]);
+
+    for (const locale of ['ko', 'zh-CN'] as const) {
+      expect(globalNavigation(locale)).toHaveLength(5);
+      expect(globalNavigation(locale).map(({ href }) => href.replace(/^\/(?:zh-cn|ko)(?=\/)/, '')))
+        .toEqual(['/prices/', '/rankings/', '/tools/', '/news/', '/guides/']);
+    }
+  });
+  it('switches between the published English and Korean ranking hubs', () => {
+    expect(languageDestinations('/rankings/', '?view=markets')).toEqual({
+      en: '/rankings/?view=markets',
+      ko: '/ko/rankings/?view=markets',
+      'zh-CN': null,
+    });
+    expect(languageDestinations('/ko/rankings/').en).toBe('/rankings/');
   });
   it('preserves Seoul selection and building detail when switching languages', () => {
     const path = '/kr/seoul/explore/gangnam-gu/example/';
@@ -63,7 +83,8 @@ describe('shared navigation destinations', () => {
     expect(html.match(/href="\/sg\/?"/g)).toHaveLength(1);
     expect(html).not.toContain('Singapore Explore');
     expect(html).not.toContain('/kr/seoul/news/');
-    const positions = ['Markets', 'Prices', 'Tools', 'News &amp; Insights', 'Guides'].map((label) => html.indexOf(`>${label}</a>`));
+    expect(html).toMatch(/href="\/jp\/tokyo\/?">Tokyo<\/a>/);
+    const positions = ['Explore', 'Rankings', 'Tools', 'News &amp; Insights', 'Guides'].map((label) => html.indexOf(`>${label}</a>`));
     expect(positions).toEqual([...positions].sort((a,b) => a-b));
   });
 });

@@ -28,9 +28,9 @@ describe('signedprice public editorial homepage', () => {
   it('uses one headline across exactly three ordered home regions', async () => {
     const markup = renderToStaticMarkup(await Home());
     const positions = [
-      'data-home-region="passport"',
       'data-home-region="markets"',
       'data-home-region="analysis"',
+      'data-home-region="passport"',
     ].map((needle) => markup.indexOf(needle));
 
     expect(markup.match(/<h1/g)).toHaveLength(1);
@@ -40,9 +40,9 @@ describe('signedprice public editorial homepage', () => {
     expect([...positions].sort((a, b) => a - b)).toEqual(positions);
   }, 20_000);
 
-  it('shows three city actions and three unique articles without repeating promotional sections', async () => {
+  it('shows four city actions and three unique articles without repeating promotional sections', async () => {
     const markup = renderToStaticMarkup(await Home());
-    expect(markup.match(/data-contextual-action=/g)).toHaveLength(3);
+    expect(markup.match(/data-contextual-action=/g)).toHaveLength(4);
     const articles = [...markup.matchAll(/data-editorial-content-id="([^"]+)"/g)].map(match => match[1]);
     expect(articles).toHaveLength(3);
     expect(new Set(articles).size).toBe(3);
@@ -50,9 +50,8 @@ describe('signedprice public editorial homepage', () => {
     expect(markup).not.toMatch(/data-what-changed-item|data-lead-data-story|data-home-guide|three-market-home-title/);
     for (const city of ['kr-seoul', 'sg-singapore', 'ae-dubai']) {
       const card = markup.match(new RegExp('<li[^>]*data-contextual-action="' + city + '"[^>]*>([\\s\\S]*?)</li>'))?.[1] ?? '';
-      expect(card.match(/<a /g)).toHaveLength(2);
+      expect(card.match(/<a /g)).toHaveLength(1);
       expect(card).toContain('/explore');
-      expect(card).toContain('/check');
     }
   });
 
@@ -61,7 +60,7 @@ describe('signedprice public editorial homepage', () => {
     const navigation = markup.match(/<nav[^>]*aria-label="Primary navigation"[^>]*>([\s\S]*?)<\/nav>/)?.[1] ?? '';
 
     expect(navigation.match(/<a /g) ?? []).toHaveLength(5);
-    for (const destination of ['/markets', '/prices', '/news', '/guides']) {
+    for (const destination of ['/prices', '/rankings', '/tools', '/news', '/guides']) {
       expect(navigation).toContain(`href="${destination}"`);
     }
     expect(markup).toContain('aria-label="Language navigation"');

@@ -62,21 +62,21 @@ function rankedArtifact() {
 
 const REFERENCE_INSTANT = '2026-09-01T00:00:00.000Z';
 
-function build(source: unknown = rankedArtifact(), period = PUBLIC_AREA_FIXTURE_PERIOD) {
-  return buildPublicAreaRankingsModel({ source, period, referenceInstant: REFERENCE_INSTANT });
+function build(source: unknown = rankedArtifact(), period = PUBLIC_AREA_FIXTURE_PERIOD, page = 1) {
+  return buildPublicAreaRankingsModel({ source, period, referenceInstant: REFERENCE_INSTANT, page });
 }
 
 describe('Seoul public district rankings model', () => {
-  it('derives all four raw-number rankings with legal-code tie breaks', () => {
+  it('ranks the median high to low with legal-code tie breaks', () => {
     const model = build();
     expect(model.status).toBe('ready');
     if (model.status !== 'ready') throw new Error('Expected ready rankings');
 
-    expect(model.cheapest.map(({ slug }) => slug)).toEqual([
+    expect(model.median.map(({ slug }) => slug)).toEqual([
+      'seongdong-gu',
+      'jongno-gu',
       'jung-gu',
       'yongsan-gu',
-      'jongno-gu',
-      'seongdong-gu',
     ]);
     expect(model.change).toEqual([]);
     expect(model.spread.map(({ slug, metric }) => [slug, metric])).toEqual([
@@ -91,7 +91,7 @@ describe('Seoul public district rankings model', () => {
       'jongno-gu',
       'seongdong-gu',
     ]);
-    expect(model.cheapest.map(({ rank }) => rank)).toEqual([1, 2, 3, 4]);
+    expect(model.median.map(({ rank }) => rank)).toEqual([1, 2, 3, 4]);
   });
 
   it('omits withheld rows everywhere and excludes every uncounted stored change', () => {
@@ -100,7 +100,7 @@ describe('Seoul public district rankings model', () => {
 
     expect(model.withheldDistrictCount).toBe(21);
     expect(model.changeExcludedDistrictCount).toBe(25);
-    expect(model.cheapest).toHaveLength(4);
+    expect(model.median).toHaveLength(4);
     expect(model.change).toHaveLength(0);
     expect(model.spread).toHaveLength(4);
     expect(model.sample).toHaveLength(4);
@@ -117,7 +117,7 @@ describe('Seoul public district rankings model', () => {
     const model = build(artifact);
     if (model.status !== 'ready') throw new Error('Expected ready rankings');
 
-    for (const rows of [model.cheapest, model.spread, model.sample]) {
+    for (const rows of [model.median, model.spread, model.sample]) {
       expect(rows.map(({ slug }) => slug)).toEqual(['jongno-gu', 'jung-gu']);
     }
     expect(model.change).toEqual([]);
@@ -127,9 +127,9 @@ describe('Seoul public district rankings model', () => {
     const model = build();
     if (model.status !== 'ready') throw new Error('Expected ready rankings');
 
-    expect(model.cheapest[0]).toMatchObject({
-      valueLabel: '₩100,000,000',
-      metric: 100_000_000,
+    expect(model.median[0]).toMatchObject({
+      valueLabel: '₩300,000,000',
+      metric: 300_000_000,
       bar: null,
     });
     expect(model.changeAxisLabel).toEqual({ minimum: '0.0%', maximum: '0.0%' });
@@ -149,7 +149,7 @@ describe('Seoul public district rankings model', () => {
       max: 500_000_000,
     });
     expect(model.spread.at(0)?.plotAxis).toEqual({ min: 60_000_000, max: 500_000_000 });
-    expect(model.cheapest.every(({ distribution }) => distribution === null)).toBe(true);
+    expect(model.median.every(({ distribution }) => distribution === null)).toBe(true);
     expect(model.sample.every(({ distribution }) => distribution === null)).toBe(true);
     expect(model.sample.at(0)?.valueLabel).toBe('9');
     expect(model.hasNegativeChange).toBe(false);
@@ -175,15 +175,15 @@ describe('Seoul public district rankings model', () => {
     expect(model.changeExcludedDistrictCount).toBe(25);
   });
 
-  it('renders the count blocker and classified period without a false comparison claim', () => {
+  it('renders classified periods while leaving unsupported change metrics out of the public selector', () => {
     const model = build();
     if (model.status !== 'ready') throw new Error('Expected ready rankings');
 
     const html = renderToStaticMarkup(createElement(DistrictRankings, { model }));
 
-    expect(html).toContain('Three-month change not assessable');
-    expect(html).toContain('Prior/latest sample counts were not retained in this snapshot.');
-    expect(html).toContain('Stored change values are excluded from rankings');
+    expect(html).not.toContain('Three-month change not assessable');
+    expect(html).not.toContain('Prior/latest sample counts were not retained in this snapshot.');
+    expect(html).not.toContain('Stored change values are excluded from rankings');
     expect(html).not.toMatch(/[+-](?:2\.0|5\.0)%/);
     expect(html).not.toContain('two completed windows');
     expect(html).not.toContain('Four comparisons');
@@ -200,7 +200,7 @@ describe('Seoul public district rankings model', () => {
     const model = build(createPublicAreaFixture({ publishedMedians: {} }));
     if (model.status !== 'ready') throw new Error('Expected ready rankings');
 
-    expect(model.cheapest).toEqual([]);
+    expect(model.median).toEqual([]);
     expect(model.change).toEqual([]);
     expect(model.spread).toEqual([]);
     expect(model.sample).toEqual([]);
@@ -216,8 +216,8 @@ describe('Seoul public district rankings model', () => {
 
     expect(artifact).toEqual(before);
     expect(Object.isFrozen(model)).toBe(true);
-    expect(Object.isFrozen(model.cheapest)).toBe(true);
-    expect(Object.isFrozen(model.cheapest[0])).toBe(true);
+    expect(Object.isFrozen(model.median)).toBe(true);
+    expect(Object.isFrozen(model.median[0])).toBe(true);
     expect(Object.isFrozen(model.changeInterpretation)).toBe(true);
     expect(Object.isFrozen(model.period)).toBe(true);
     expect(Object.isFrozen(model.period.months)).toBe(true);
@@ -234,7 +234,20 @@ describe('Seoul public district rankings model', () => {
       status: 'unavailable',
       message: 'Verified district summary unavailable',
     });
-    expect(model).not.toHaveProperty('cheapest');
+    expect(model).not.toHaveProperty('median');
     expect(JSON.stringify(model)).not.toMatch(/100000000|200000000|300000000/);
+  });
+
+  it('assigns stable global ranks before slicing adjacent pages', () => {
+    const pageOne = build(createPublicAreaFixture(), PUBLIC_AREA_FIXTURE_PERIOD, 1);
+    const pageTwo = build(createPublicAreaFixture(), PUBLIC_AREA_FIXTURE_PERIOD, 2);
+    if (pageOne.status !== 'ready' || pageTwo.status !== 'ready') throw new Error('Expected ready rankings');
+
+    expect(pageOne.median).toHaveLength(20);
+    expect(pageOne.median.map(({ rank }) => rank)).toEqual(Array.from({ length: 20 }, (_, index) => index + 1));
+    expect(pageTwo.median.map(({ rank }) => rank)).toEqual([21, 22, 23, 24, 25]);
+    expect(pageOne.median.at(-1)?.metric).toBeGreaterThanOrEqual(pageTwo.median[0]!.metric);
+    expect(new Set([...pageOne.median, ...pageTwo.median].map(({ lawdCd }) => lawdCd)).size).toBe(25);
+    expect(pageTwo.pagination).toMatchObject({ page: 2, pageSize: 20, total: 25, pageCount: 2 });
   });
 });

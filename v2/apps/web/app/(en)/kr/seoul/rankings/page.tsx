@@ -65,6 +65,8 @@ export function resolveKoreaRankingsPageModel(
   repositories: KoreaEvidenceRepositories,
   referenceInstant: string | Date = new Date(),
 ) {
+  const pageValue = typeof query.page === 'string' ? Number.parseInt(query.page, 10) : 1;
+  const page = Number.isSafeInteger(pageValue) && pageValue > 0 ? pageValue : 1;
   const selection = parseExplorerSelection(
     query,
     { market: 'kr', transaction: 'sale' },
@@ -77,8 +79,18 @@ export function resolveKoreaRankingsPageModel(
     contractGroup: selection.contractType ?? 'all',
   });
   return projection.status === 'ready'
-    ? buildKoreaEvidenceAreaRankingsModel(projection, referenceInstant)
-    : buildPublicAreaRankingsModel();
+    ? buildKoreaEvidenceAreaRankingsModel(projection, referenceInstant, page)
+    : buildPublicAreaRankingsModel({
+        source: process.env.SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT === undefined
+          ? undefined
+          : (() => {
+              try { return JSON.parse(process.env.SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT!); }
+              catch { return undefined; }
+            })(),
+        period: process.env.SIGNEDPRICE_PUBLIC_SUMMARY_PERIOD ?? '',
+        referenceInstant,
+        page,
+      });
 }
 
 const footer: SiteFooterModel = {

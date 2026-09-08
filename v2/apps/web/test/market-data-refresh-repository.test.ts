@@ -145,7 +145,7 @@ describe('market refresh transactional persistence', () => {
         [{ received: '1', inserted: '1', updated: '0', unchanged: '0', unlinked: '0' }],
       ])
       .mockResolvedValueOnce([
-        [], [], [],
+        [], [],
         [{ received: '1', inserted: '0', updated: '1', unchanged: '0', unlinked: '0' }],
       ]);
     const first = batch.records[0]!;
@@ -175,7 +175,9 @@ describe('market refresh transactional persistence', () => {
     const secondStatements = transaction.mock.calls[1]?.[0] as readonly Readonly<{
       statement: string; parameters: readonly unknown[];
     }>[];
-    expect(secondStatements[2]?.statement).toMatch(/property_entities\.property_class IS NULL/i);
+    expect(secondStatements).toHaveLength(3);
+    expect(secondStatements.some(({ statement }) => statement.includes('market-data-refresh:dataset'))).toBe(false);
+    expect(secondStatements[1]?.statement).toMatch(/property_entities\.property_class IS NULL/i);
   });
 
   it('finishes a run and releases its exact lease in the same transaction', async () => {

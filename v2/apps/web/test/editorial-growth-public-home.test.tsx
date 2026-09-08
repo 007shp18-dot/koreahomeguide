@@ -1,4 +1,3 @@
-import { readFileSync } from 'node:fs';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -6,29 +5,24 @@ vi.mock('server-only', () => ({}));
 
 import Home, { metadata } from '../app/(en)/page';
 
-const source = readFileSync(new URL('../app/(en)/page.tsx', import.meta.url), 'utf8');
+vi.mock('../lib/design-review/editorial-growth-review-model.server', () => ({
+  buildEditorialGrowthReviewModel: () => { throw new Error('Public home must not read the review database or price snapshots'); },
+}));
 
 describe('public editorial homepage', () => {
-  it('uses the approved canonical editorial composition', () => {
-    expect(source).toContain('buildEditorialGrowthReviewModel');
-    expect(source).toContain('EditorialGrowthPublicShell');
-    expect(source).not.toContain('HomeMarketBrowser');
-    expect(source).not.toContain('HomeEditorialSections');
-  });
-
   it('renders one global decision promise with Seoul evidence links', async () => {
     const markup = renderToStaticMarkup(await Home());
 
     expect(markup.match(/<h1/g)).toHaveLength(1);
-    expect(markup).toContain('Where can your budget become a home?');
-    expect(markup).toContain('Where can your budget become a home?');
+    expect(markup).toContain('Somewhere worth knowing.');
+    expect(markup).toContain('Somewhere worth knowing.');
     expect(markup).toContain('href="/tools"');
     expect(markup).toContain('href="/kr/seoul/explore"');
     expect(markup).toContain('href="/news"');
     expect(markup).not.toContain('/design-review/');
   });
 
-  it('keeps Seoul, Singapore, and Dubai visible in the first-screen selector', async () => {
+  it('keeps Seoul, Singapore, Dubai and Tokyo visible in the first-screen selector', async () => {
     const markup = renderToStaticMarkup(await Home());
     const markets = markup.indexOf('data-home-region="markets"');
     const insight = markup.indexOf('data-home-section="insight"');
@@ -41,6 +35,10 @@ describe('public editorial homepage', () => {
     expect(markup).toContain('data-market-id="kr-seoul"');
     expect(markup).toContain('data-market-id="sg-singapore"');
     expect(markup).toContain('data-market-id="ae-dubai"');
+    expect(markup).toContain('data-market-id="jp-tokyo"');
+    expect(markup).toContain('href="/jp/tokyo"');
+    expect(markup).toContain('role="search"');
+    expect(markup.indexOf('data-home-region="passport"')).toBeGreaterThan(insight);
   });
 
   it('opens with an honest market photograph instead of a decorative mock', async () => {
@@ -54,7 +52,7 @@ describe('public editorial homepage', () => {
   it('keeps global destinations and capability-safe market entry points crawlable', async () => {
     const markup = renderToStaticMarkup(await Home());
 
-    for (const href of ['/markets', '/prices', '/news', '/guides']) {
+    for (const href of ['/prices', '/kr/seoul/rankings', '/news', '/guides']) {
       expect(markup).toContain(`href="${href}"`);
     }
     for (const href of [

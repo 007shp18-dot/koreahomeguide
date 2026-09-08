@@ -10,14 +10,14 @@ import {
 } from '../lib/home/three-market-hero-state';
 
 describe('three-market editorial hero', () => {
-  it('renders one global promise and three always-visible city controls', () => {
+  it('renders one global promise and four always-visible city controls', () => {
     const markup = renderToStaticMarkup(createElement(ThreeMarketHero, {
       model: createThreeMarketHomeModel({ locale: 'en', seoulMetric: null }),
     }));
 
     expect(markup.match(/<h2/g)).toHaveLength(2);
     expect(markup).toContain('See the market before you make the move.');
-    expect(markup.match(/role="tab"/g)).toHaveLength(3);
+    expect(markup.match(/role="tab"/g)).toHaveLength(4);
     expect(markup).toContain('data-market-id="kr-seoul"');
     expect(markup).toContain('data-market-id="sg-singapore"');
     expect(markup).toContain('data-market-id="ae-dubai"');

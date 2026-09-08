@@ -7,9 +7,21 @@ import styles from './site-footer.module.css';
 
 export function SiteFooter({ copy, locale = 'en' }: Readonly<{ copy: SiteFooterModel; locale?: SiteLocale }>) {
   const ko = locale === 'ko';
+  const zh = locale === 'zh-CN';
+  const marketLinks = marketNavigation.map((market) => ({
+    ...market,
+    label: ko
+      ? ({ 'kr-seoul': '서울', 'sg-singapore': '싱가포르', 'ae-dubai': '두바이', 'jp-tokyo': '도쿄' } as const)[market.id]
+      : zh
+        ? ({ 'kr-seoul': '首尔', 'sg-singapore': '新加坡', 'ae-dubai': '迪拜', 'jp-tokyo': '东京' } as const)[market.id]
+        : market.label,
+    href: ko && market.id !== 'jp-tokyo'
+      ? ({ 'kr-seoul': '/ko/kr/seoul/', 'sg-singapore': '/ko/sg/', 'ae-dubai': '/ko/ae/dubai/' } as const)[market.id]
+      : market.href,
+  }));
   const groups = [
     { label: ko ? '서비스' : 'Explore SignedPrice', links: globalNavigation(locale) },
-    { label: ko ? '도시' : 'Markets', links: ko ? [{ label: '서울', href: '/ko/kr/seoul/' }, { label: '싱가포르', href: '/ko/sg/' }, { label: '두바이', href: '/ko/ae/dubai/' }] : marketNavigation },
+    { label: ko ? '도시' : zh ? '城市' : 'Cities', links: marketLinks },
     { label: ko ? '안내' : 'About', links: [{ label: ko ? '데이터 기준 (영문)' : 'Method', href: '/trust/' }, { label: ko ? '개인정보 (영문)' : 'Privacy', href: '/privacy/' }, { label: ko ? '문의' : 'Contact', href: ko ? '/ko/contact/' : '/contact/' }] },
   ];
   return <footer className={styles.footer}>

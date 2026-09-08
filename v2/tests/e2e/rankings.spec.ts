@@ -38,33 +38,22 @@ async function expectTouchTarget(locator: Locator) {
   expect(box?.height).toBeGreaterThanOrEqual(44);
 }
 
-test('rankings server HTML exposes four complete evidence lists', async ({ page }) => {
+test('rankings server HTML exposes the three supported evidence lists', async ({ page }) => {
   const assertNoRuntimeFailures = observeRuntimeFailures(page);
   const response = await page.goto('/kr/seoul/rankings/');
 
   expect(response?.status()).toBe(200);
-  await expect(page.getByRole('heading', { level: 1, name: 'Middle-half spread' }))
-    .toBeVisible();
-  await expect(page.locator('[data-ranking-section]')).toHaveCount(4);
-  await page.getByRole('tab', { name: 'Sale median', exact: true }).click();
-  await expect(page.getByRole('heading', { name: 'Median refundable jeonse deposit' }))
-    .toBeVisible();
-  await page.getByRole('tab', { name: 'QoQ change' }).click();
-  await expect(page.getByRole('heading', {
-    name: 'Three-month change not assessable',
-  })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Median');
+  await expect(page.locator('[data-ranking-section]')).toHaveCount(3);
+  await expect(page.getByRole('tab', { name: 'Median price', exact: true })).toHaveAttribute('aria-selected', 'true');
   await page.getByRole('tab', { name: 'Price spread' }).click();
-  await expect(page.getByRole('heading', { level: 1, name: 'Middle-half spread', exact: true }))
-    .toBeVisible();
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Middle-half spread');
   await page.getByRole('tab', { name: 'Filing volume' }).click();
   await expect(page.getByRole('heading', { name: 'Qualifying reported contracts' }))
     .toBeVisible();
   expect(await page.locator('[data-ranking-row]').count()).toBeGreaterThan(0);
-  const changeRowCount = await page
-    .locator('[data-ranking-section="change"] [data-ranking-row]')
-    .count();
-  await expect(page.locator('[data-change-centre="true"]')).toHaveCount(changeRowCount);
-  await expect(page.locator('[data-change-direction]')).toHaveCount(changeRowCount);
+  await expect(page.getByRole('tab', { name: 'QoQ change' })).toHaveCount(0);
+  await expect(page.getByText('Preparing')).toHaveCount(0);
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
     'content',
     /^index,\s*follow$/,
@@ -78,30 +67,33 @@ test('rankings server HTML exposes four complete evidence lists', async ({ page 
   const htmlResponse = await page.request.get('/kr/seoul/rankings/');
   expect(htmlResponse.status()).toBe(200);
   const html = await htmlResponse.text();
-  expect((html.match(/data-ranking-section=/g) ?? [])).toHaveLength(4);
+  expect((html.match(/data-ranking-section=/g) ?? [])).toHaveLength(3);
   expect(html).toContain('data-ranking-row=');
   assertNoRuntimeFailures();
 });
 
-test('fixture rankings reconcile exact eligibility, order, and values', async ({ page }) => {
+test('fixture rankings preserve descending order and stable ranks across page boundaries', async ({ page }) => {
   test.skip(releaseTarget.usesExternalServer, 'Exact fixture values are local-release only.');
   await page.goto('/kr/seoul/rankings/');
 
-  const sections = page.locator('[data-ranking-section]');
-  await expect(sections.nth(0).locator('[data-ranking-row]').filter({ hasText: '₩' })).toHaveCount(24);
-  await expect(sections.nth(1).locator('[data-ranking-row]')).toHaveCount(0);
-  await expect(sections.nth(2).locator('[data-ranking-row]').filter({ hasText: '₩' })).toHaveCount(24);
-  await expect(sections.nth(3).locator('[data-ranking-row]').filter({ hasNotText: 'Not published' })).toHaveCount(24);
-
-  const cheapest = sections.nth(0).locator('[data-ranking-row]').filter({ hasText: '₩' });
-  await expect(cheapest.first()).toContainText('Jung-gu');
-  await expect(cheapest.first()).toContainText('₩100,000,000');
-  await expect(cheapest.last()).toContainText('Gwangjin-gu');
-  await expect(cheapest.last()).toContainText('₩700,000,000');
-
-  await expect(sections.nth(1)).toContainText('Prior/latest sample counts were not retained');
-  await expect(page.getByText('No eligible district fell in the latest comparison.')).toHaveCount(0);
-  await expect(page.locator('[data-change-direction]')).toHaveCount(0);
+  const firstPageRows = page.locator('[data-ranking-section="median"] [data-ranking-row]');
+  await expect(firstPageRows).toHaveCount(20);
+  const firstPage = await firstPageRows.evaluateAll((rows) => rows.map((row) => ({
+    id: row.getAttribute('data-ranking-row'),
+    rank: Number(row.querySelector('[aria-label^="Rank "]')?.textContent),
+    value: Number(row.querySelector(':scope > strong')?.textContent?.replace(/[^0-9]/gu, '')),
+  })));
+  await page.getByRole('link', { name: 'Next', exact: true }).click();
+  const secondPageRows = page.locator('[data-ranking-section="median"] [data-ranking-row]');
+  const secondPage = await secondPageRows.evaluateAll((rows) => rows.map((row) => ({
+    id: row.getAttribute('data-ranking-row'),
+    rank: Number(row.querySelector('[aria-label^="Rank "]')?.textContent),
+    value: Number(row.querySelector(':scope > strong')?.textContent?.replace(/[^0-9]/gu, '')),
+  })));
+  const combined = [...firstPage, ...secondPage];
+  expect(combined.map(({ rank }) => rank)).toEqual(combined.map((_, index) => index + 1));
+  expect(new Set(combined.map(({ id }) => id)).size).toBe(combined.length);
+  expect(combined.every((row, index) => index === 0 || combined[index - 1]!.value >= row.value)).toBe(true);
 });
 
 test('rankings remain contained and keyboard-readable at every release width', async ({ page }) => {
@@ -109,8 +101,8 @@ test('rankings remain contained and keyboard-readable at every release width', a
   await page.goto('/kr/seoul/rankings/');
   await expectNoHorizontalOverflow(page);
 
-  await page.getByRole('tab', { name: 'Sale median', exact: true }).click();
-  const medianPanel = page.getByRole('tabpanel', { name: 'Sale median' });
+  await page.getByRole('tab', { name: 'Median price', exact: true }).click();
+  const medianPanel = page.getByRole('tabpanel', { name: 'Median price' });
   const districtLinks = medianPanel.locator('[data-ranking-row] a');
   await expect(districtLinks).not.toHaveCount(0);
   for (const link of await districtLinks.all()) await expectTouchTarget(link);
@@ -120,12 +112,6 @@ test('rankings remain contained and keyboard-readable at every release width', a
   await first.focus();
   await page.keyboard.press('Tab');
   await expect(second).toBeFocused();
-
-  const directions = await page.locator('[data-change-direction]')
-    .evaluateAll((elements) => elements.map((element) => element.getAttribute('data-change-direction')));
-  expect(directions.every((direction) => (
-    direction === 'negative' || direction === 'zero' || direction === 'positive'
-  ))).toBe(true);
 
   const sitemap = await page.request.get('/sitemap.xml');
   expect(sitemap.status()).toBe(200);
@@ -140,7 +126,7 @@ test('Explore and district evidence keep Rankings reachable beside the five glob
   const productNavigation = await openPrimaryNavigation(page);
   await expect(productNavigation.getByRole('link', { name: 'Prices' }))
     .toHaveAttribute('href', '/prices/');
-  await expect(productNavigation.getByRole('link')).toHaveText(['Markets', 'Prices', 'Tools', 'News & Insights', 'Guides']);
+  await expect(productNavigation.getByRole('link')).toHaveText(['Explore', 'Rankings', 'Tools', 'News & Insights', 'Guides']);
 
   await page.goto('/kr/seoul/explore/jongno-gu/');
   await expect(page.getByRole('link', { name: 'View district rankings' }))

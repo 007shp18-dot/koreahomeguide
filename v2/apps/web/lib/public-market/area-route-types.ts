@@ -149,7 +149,7 @@ export type PublicAreaSourceBoundaryModel = PublicSourceBoundaryModel & Readonly
   geometryAttribution: 'KOSTAT census boundaries via southkorea/seoul-maps (Apache-2.0)';
 }>;
 
-export type RankingKind = 'cheapest' | 'change' | 'spread' | 'sample';
+export type RankingKind = 'median' | 'change' | 'spread' | 'sample';
 
 export type SignedRankingBar = Readonly<{
   direction: 'negative' | 'zero' | 'positive';
@@ -195,10 +195,18 @@ export type PublicAreaRankingsModel =
         sale: boolean;
       }>;
       citySummary: PublicMarketSummary;
-      cheapest: readonly PublicDistrictRankingRow[];
+      median: readonly PublicDistrictRankingRow[];
       change: readonly PublicDistrictRankingRow[];
       spread: readonly PublicDistrictRankingRow[];
       sample: readonly PublicDistrictRankingRow[];
+      pagination: Readonly<{
+        page: number;
+        pageSize: number;
+        total: number;
+        pageCount: number;
+        previousPage: number | null;
+        nextPage: number | null;
+      }>;
       unavailableDistricts: readonly UnavailableRankingDistrict[];
       withheldDistrictCount: number;
       changeExcludedDistrictCount: number;

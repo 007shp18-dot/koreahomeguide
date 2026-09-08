@@ -17,7 +17,7 @@ import {
   KoreaEvidenceBuildingDetail,
   ObservedBuildingDetail,
 } from '@/components/public-market/observed-building-detail';
-import { PropertyTypeDetailPage } from '@/components/public-market/property-type-detail-page';
+import { PropertyTypeDetailPage, propertyTypeLabel } from '@/components/public-market/property-type-detail-page';
 import { getSeoulDistrictBySlug } from '@signedprice/korea-rent/browser';
 import {
   createSelectionHref,
@@ -347,10 +347,22 @@ export async function generateMetadata({
   const propertyTypeModel = buildPublicPropertyTypeModel(district, buildingId);
   if (propertyTypeModel !== null) {
     const buildingCount = propertyTypeModel.coverage.contributingBuildings;
+    const englishPath = `/kr/seoul/explore/${propertyTypeModel.district.slug}/${propertyTypeModel.propertyType.slug}/` as const;
+    const koreanPath = `/ko${englishPath}` as const;
+    const languageAlternates = Object.freeze({ en: englishPath, ko: koreanPath });
+    if (locale === 'ko') return indexableMetadata({
+      path: koreanPath,
+      title: `${propertyTypeModel.district.nameKo} ${propertyTypeLabel(propertyTypeModel.propertyType, 'ko')} 전세 실거래가 | signedprice`,
+      description: `${propertyTypeModel.district.nameKo} ${propertyTypeLabel(propertyTypeModel.propertyType, 'ko')} 공개 건물 ${buildingCount}곳의 최근 전세 계약 ${propertyTypeModel.coverage.retainedContracts}건을 바탕으로 보증금 분포와 국토교통부 자료 범위를 확인하세요.`,
+      languageAlternates,
+      locale: 'ko_KR',
+      imagePath: '/og/ko/',
+    });
     return indexableMetadata({
-      path: `/kr/seoul/explore/${propertyTypeModel.district.slug}/${propertyTypeModel.propertyType.slug}/`,
+      path: englishPath,
       title: `${propertyTypeModel.district.nameEn} ${propertyTypeModel.propertyType.slug} jeonse evidence | signedprice`,
       description: `${propertyTypeModel.coverage.retainedContracts} retained recent contracts across ${buildingCount} published ${propertyTypeModel.district.nameEn} ${propertyTypeModel.propertyType.slug} building${buildingCount === 1 ? '' : 's'}, with MOLIT source and coverage limits shown.`,
+      languageAlternates,
     });
   }
   const repositories = koreaEvidenceRepositoriesFromEnvironment();
@@ -436,7 +448,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
         const sibling = buildPublicPropertyTypeModel(route.district, route.propertyType);
         return sibling === null ? [] : [sibling.propertyType];
     });
-    return <PropertyTypeDetailPage model={propertyTypeModel} siblings={siblings} />;
+    return <PropertyTypeDetailPage locale={locale} model={propertyTypeModel} siblings={siblings} />;
   }
   const exact = resolveKoreaEvidenceBuildingRoute(
     district,

@@ -27,6 +27,7 @@ describe('global property database migration', () => {
       '0011_market_data_refresh.sql',
       '0012_singapore_nearby_seed_stage.sql',
       '0013_singapore_nearby_storage.sql',
+      '0015_japan_area_releases.sql',
     ]);
     expect(bundles.find(({ name }) => name === '0003_global_property_core.sql')?.statements.length)
       .toBeGreaterThan(10);

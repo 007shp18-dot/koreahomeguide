@@ -9,18 +9,18 @@ test('Chinese market cards align their primary actions on multi-column screens',
  const positions=await page.locator('[data-contextual-action]').evaluateAll(nodes=>nodes.map(node=>{
   const r=node.getBoundingClientRect();const a=node.querySelector('[data-primary-action="explore"]')!.getBoundingClientRect();return {top:r.top,action:a.top-r.top};
  }));
- expect(positions).toHaveLength(3);
+ expect(positions).toHaveLength(4);
  if(Math.max(...positions.map(p=>p.top))-Math.min(...positions.map(p=>p.top))<=2)
   expect(Math.max(...positions.map(p=>p.action))-Math.min(...positions.map(p=>p.action))).toBeLessThanOrEqual(2);
 });
 
-test('home presents three stable city cards and one budget journey without overflow', async ({page}) => {
+test('home presents four stable city cards and one budget journey without overflow', async ({page}) => {
  await page.goto('/');
  await page.evaluate(() => document.fonts.ready);
  await expect(page.locator('main [data-home-region]')).toHaveCount(3);
  await expect(page.getByRole('heading', {level:1})).toHaveCount(1);
  const cards = page.locator('[data-contextual-action]');
- await expect(cards).toHaveCount(3);
+ await expect(cards).toHaveCount(4);
  const positions = await cards.evaluateAll(nodes => nodes.map(node => {
   const box = node.getBoundingClientRect();
   const action = node.querySelector('[data-primary-action="explore"]')!.getBoundingClientRect();
@@ -30,7 +30,7 @@ test('home presents three stable city cards and one budget journey without overf
  expect(positions.every(p => p.height >= 44 && p.titleFits)).toBe(true);
  if (Math.max(...positions.map(p => p.top)) - Math.min(...positions.map(p => p.top)) <= 2)
   expect(Math.max(...positions.map(p => p.action)) - Math.min(...positions.map(p => p.action))).toBeLessThanOrEqual(2);
- for (const [index, path] of ['/kr/seoul/explore', '/sg/singapore/explore', '/ae/dubai/explore'].entries())
+ for (const [index, path] of ['/kr/seoul/explore', '/sg/singapore/explore', '/ae/dubai/explore', '/jp/tokyo'].entries())
   await expect(cards.nth(index).locator('[data-primary-action="explore"]')).toHaveAttribute('href', new RegExp('^' + path + '/?$'));
  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
  await page.locator('[data-home-region="passport"] input[name="budget"]').fill('750000');

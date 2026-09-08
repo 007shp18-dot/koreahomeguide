@@ -49,5 +49,11 @@ export function PolicyRecordArticle({ policy, article }: Readonly<{
       <h2 id="policy-source-boundary-title">Source and verification</h2>
       <ol><li><span>Primary</span><a href={policy.source.href} rel="noreferrer">{policy.source.title}</a><small>Checked {policy.source.checkedAt}</small></li></ol>
     </section>
+    <aside className={styles.relatedAction}>
+      <p>Related guidance and evidence</p>
+      <Link href={article.relatedHref ?? (policy.marketId === 'kr-seoul' ? '/kr/seoul/explore/' : '/sg/singapore/explore/')} data-editorial-event="article_to_explore">Explore related prices</Link>
+      <Link href={policy.marketId === 'kr-seoul' ? '/guides/buy-property-in-korea-as-foreigner/' : '/guides/read-singapore-private-transactions/'} data-editorial-event="article_open">Read the market guide</Link>
+      <Link href={policy.marketId === 'kr-seoul' ? '/kr/seoul/check/' : '/sg/singapore/check/'} data-editorial-event="article_to_check">Check an offer</Link>
+    </aside>
   </main>;
 }

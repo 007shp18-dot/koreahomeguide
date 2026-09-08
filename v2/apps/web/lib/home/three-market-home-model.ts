@@ -5,7 +5,7 @@ import { MARKET_PHOTOS, type MarketPhoto } from '../../components/market-represe
 export type ThreeMarketHomeAction = Readonly<{ label: string; href: string }>;
 
 export type ThreeMarketHomePanel = Readonly<{
-  id: MarketId;
+  id: MarketId | 'jp-tokyo';
   city: string;
   position: string;
   photo: MarketPhoto;
@@ -93,6 +93,19 @@ export function createThreeMarketHomeModel(input: Input): ThreeMarketHomeModel {
         evidenceNote: zh ? '已发布区域价格、样本量与数据期间；不作为实时房源。' : 'Area sale prices and annual rents, with sample sizes and dates. Figures describe recorded transactions, not homes currently for sale.',
         primaryAction: { label: zh ? '探索' : 'Explore', href: '/ae/dubai/explore/' },
         secondaryAction: { label: zh ? '购房指南（英文）' : 'Buying guide', href: '/ae/dubai/guide/' },
+      },
+      {
+        id: 'jp-tokyo',
+        city: zh ? '东京' : 'Tokyo',
+        position: '04',
+        photo: MARKET_PHOTOS.tokyo,
+        summary: zh ? '地区、面积与季度成交。' : 'Neighbourhoods and quarterly sales.',
+        evidenceState: 'limited',
+        evidenceTitle: zh ? '日本国土交通省地区成交资料' : 'MLIT area transaction evidence',
+        evidenceValue: null,
+        evidenceNote: zh ? '匿名区域成交；不提供建筑物名称或房号。' : 'Anonymous area transactions; building names and unit identities are not disclosed.',
+        primaryAction: { label: zh ? '探索 · English' : 'Explore', href: '/jp/tokyo/' },
+        secondaryAction: null,
       },
     ],
   });

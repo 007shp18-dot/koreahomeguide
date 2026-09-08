@@ -300,6 +300,9 @@
   border-top: 0;
 }
 
+.guideActions { margin-top: auto; display: flex; flex-wrap: wrap; gap: 6px 16px; }
+.guideActions a { min-height: 44px; display: inline-flex; align-items: center; }
+
 .newsToolbar {
   min-height: 82px;
   display: flex;

@@ -16,8 +16,8 @@ test('uses one navigation order and published language links across markets', as
   ] as const) {
     await page.goto(path);
     const productLinks = (await visibleProductNavigation(page)).getByRole('link');
-    await expect(productLinks).toHaveText(['Markets', 'Prices', 'Tools', 'News & Insights', 'Guides']);
-    for (const [index, href] of ['/markets/', '/prices/', '/tools/', '/news/', '/guides/'].entries()) {
+    await expect(productLinks).toHaveText(['Explore', 'Rankings', 'Tools', 'News & Insights', 'Guides']);
+    for (const [index, href] of ['/prices/', '/rankings/', '/tools/', '/news/', '/guides/'].entries()) {
       await expect(productLinks.nth(index)).toHaveAttribute('href', href);
     }
     const translations = {
@@ -35,8 +35,8 @@ test('uses one navigation order and published language links across markets', as
       await expect(languageLinks.nth(index)).toHaveAttribute('href', href);
     }
     const cityLinks = (await visibleMarketNavigation(page)).getByRole('link');
-    await expect(cityLinks).toHaveText(['Seoul', 'Singapore', 'Dubai']);
-    for (const [index, href] of ['/kr/seoul/', '/sg/', '/ae/dubai/'].entries()) {
+    await expect(cityLinks).toHaveText(['Seoul', 'Singapore', 'Dubai', 'Tokyo']);
+    for (const [index, href] of ['/kr/seoul/', '/sg/', '/ae/dubai/', '/jp/tokyo/'].entries()) {
       await expect(cityLinks.nth(index)).toHaveAttribute('href', href);
     }
     const localPages = {

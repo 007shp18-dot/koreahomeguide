@@ -8,14 +8,15 @@ const COPY = {
   'zh-CN': { eyebrow: 'SignedPrice Passport', title: '你的预算可以在哪里买到房子？', lead: '输入预算，按实际成交价格比较首尔、新加坡和迪拜的地区与参考面积。', label: '韩元预算', action: '比较城市', note: '初步筛选 · 仅含购房价格' },
 } as const;
 
-export function PassportEntry({ locale }: Readonly<{ locale: PassportLocale }>) {
+export function PassportEntry({ locale, headingLevel = 1 }: Readonly<{ locale: PassportLocale; headingLevel?: 1 | 2 }>) {
   const copy = COPY[locale];
   const budget = defaultPassportBudget(locale);
   const action = locale === 'ko' ? '/ko/passport/' : locale === 'zh-CN' ? '/zh-cn/passport/' : '/passport/';
+  const Heading = headingLevel === 1 ? 'h1' : 'h2';
   return <section className={styles.entry} aria-labelledby="passport-entry-title" data-home-region="passport">
     <p className={styles.eyebrow}>{copy.eyebrow}</p>
     <div className={styles.entryGrid}>
-      <div><h1 id="passport-entry-title">{copy.title}</h1><p className={styles.lead}>{copy.lead}</p></div>
+      <div><Heading id="passport-entry-title">{copy.title}</Heading><p className={styles.lead}>{copy.lead}</p></div>
       <form action={action} className={styles.entryForm}>
         <PassportBudgetFields amount={budget.amount} currency={budget.currency} locale={locale} id={`passport-budget-${locale}`} />
         <button type="submit">{copy.action}</button>

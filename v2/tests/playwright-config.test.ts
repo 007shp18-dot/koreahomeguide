@@ -116,8 +116,8 @@ describe('Playwright release target configuration', () => {
     });
     expect(rankings).toMatchObject({ status: 'ready', withheldDistrictCount: 1 });
     if (rankings.status !== 'ready') throw new Error('Expected fixture Rankings.');
-    expect(rankings.cheapest.slice(0, 2).map(({ slug }) => slug)).toEqual([
-      'jung-gu', 'yongsan-gu',
+    expect(rankings.median.slice(0, 2).map(({ slug }) => slug)).toEqual([
+      'gwangjin-gu', 'gangdong-gu',
     ]);
     expect(observed?.listRecords()).toHaveLength(1);
     expect(observed?.getById(PUBLIC_BUILDING_TEST_ID)).toMatchObject({

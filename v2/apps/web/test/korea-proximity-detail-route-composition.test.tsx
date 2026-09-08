@@ -104,6 +104,8 @@ describe('Korea proximity Detail route composition', () => {
     }));
     if (identity.coordinate.status !== 'ready') throw new Error('Expected ready fixture coordinate.');
     expect(html).toContain('data-building-detail="exact-evidence"');
+    expect(html).toContain(`data-building-save="gangnam-gu/${exact.buildingId}"`);
+    expect(html).toContain(`aria-label="Save ${exact.officialName}"`);
     expect(html).toContain('Route station · 1호선 · 250 m');
     const factsSection = html.slice(
       html.indexOf('data-building-section="official-facts"'),
@@ -175,6 +177,7 @@ describe('Korea proximity Detail route composition', () => {
     }));
     expect(html.match(/Route station · 1호선 · 250 m/g)).toHaveLength(1);
     expect(html.match(/Route school · 500 m/g)).toHaveLength(1);
+    expect(html).toContain('data-building-save="jongno-gu/jongno-monthly-home"');
   });
 
   it('composes the legacy-public route with the missing disclosure rather than hiding the Detail page', () => {

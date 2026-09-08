@@ -139,7 +139,7 @@ describe('nine intent routes use one connected decision hierarchy', () => {
       const page = renderToStaticMarkup(await IntentPage({ params: Promise.resolve(params) }));
       const globalNavigation = navigationMarkup(page);
       expect(globalNavigation.match(/<a /g) ?? []).toHaveLength(5);
-      for (const label of ['Markets', 'Prices', 'Tools', 'News &amp; Insights', 'Guides']) {
+      for (const label of ['Explore', 'Rankings', 'Tools', 'News &amp; Insights', 'Guides']) {
         expect(globalNavigation).toContain(`>${label}</a>`);
       }
 
@@ -224,7 +224,7 @@ describe('comparison remains a semantic Modernist table', () => {
     const markup = navigationMarkup(renderToStaticMarkup(createElement(ComparePage)));
 
     expect(markup.match(/<a /g) ?? []).toHaveLength(5);
-    expect(markup).toContain('>Prices</a>');
+    expect(markup).toContain('>Explore</a>');
   });
 
   it('keeps Singapore private sales separate and Dubai transaction detail blocked', () => {

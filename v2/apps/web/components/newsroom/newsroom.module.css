@@ -153,6 +153,31 @@
   background: var(--surface-strong);
 }
 
+.insightTabs {
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--review-line);
+}
+
+.insightTabs a {
+  min-height: 36px;
+  padding: 0 12px;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  border: 1px solid var(--review-line);
+  border-radius: 999px;
+  color: var(--review-muted);
+  font-size: .8125rem;
+  font-weight: 680;
+  text-decoration: none;
+}
+
+.insightTabs a[aria-current='page'] { color: white; border-color: var(--review-ink); background: var(--review-ink); }
+
 .policyJump a {
   border: 1px solid var(--review-line);
   border-radius: 999px;
@@ -220,6 +245,7 @@
 
 .heroAction:focus-visible,
 .typeTabs a:focus-visible,
+.insightTabs a:focus-visible,
 .marketFilters a:focus-visible,
 .leadStory a:focus-visible,
 .latest a:focus-visible,

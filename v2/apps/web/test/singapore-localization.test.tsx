@@ -1,5 +1,6 @@
 import { renderToStaticMarkup } from 'react-dom/server';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+vi.mock('server-only', () => ({}));
 import { SingaporeCheckWorkspace } from '../components/singapore/singapore-check-workspace';
 import { SingaporeRankings } from '../components/singapore/singapore-rankings';
 import { buildSingaporeExploreHref, parseSingaporeExploreSearchParams } from '../components/singapore/singapore-explorer';
@@ -7,6 +8,7 @@ import { marketHref } from '../lib/locale/market-localization';
 import { sgText, singaporeMetadata } from '../lib/locale/singapore-copy';
 import { indexableMetadata } from '../lib/public-metadata';
 import type { SingaporeCheckRouteModel } from '../lib/singapore/check-route-model.server';
+import { buildSingaporeRankingsModel } from '../lib/public-market/rankings-route-model.server';
 
 const catalog = { available: true, months: ['2026-08'], segments: ['CCR'], projects: [{ id: 'project-a', label: 'THE ORIGINAL PROJECT' }], districts: ['09'], propertyTypes: ['Condominium'], floorRanges: ['06-10'], saleTypes: ['Resale'], towns: [], blocks: [], flatTypes: [], storeyRanges: [] } as const;
 const model: SingaporeCheckRouteModel = { mode: 'compare', catalogs: { 'ura-private-sale': catalog, 'hdb-resale': catalog, 'hdb-rent': catalog }, drafts: { a: { market: 'ura-private-sale' }, b: { market: 'hdb-rent' } }, result: { kind: 'empty' } };
@@ -40,7 +42,8 @@ describe('Singapore Korean functional surfaces', () => {
     expect(parseSingaporeExploreSearchParams(new URL(marketHref('ko', en), 'https://www.signedprice.com').searchParams)).toEqual(state);
   });
   it('renders ranking labels and localized links without converting numbers or property names', () => {
-    const html = renderToStaticMarkup(<SingaporeRankings locale="ko" periodLabel="Jun 2026–Aug 2026" rows={[{ id: 'project-a', name: 'THE ORIGINAL PROJECT', street: 'ORIGINAL ROAD', segment: 'CCR', district: '09', sample: 7, medianPriceSgd: 300000, medianPsf: 1900, href: '/sg/singapore/explore/ccr/project-a/' }]} />);
+    const ranking = buildSingaporeRankingsModel([{ id: 'project-a', name: 'THE ORIGINAL PROJECT', street: 'ORIGINAL ROAD', segment: 'CCR', district: '09', sample: 7, medianPriceSgd: 300000, medianPsf: 1900, href: '/sg/singapore/explore/ccr/project-a/' }], 'price', 1);
+    const html = renderToStaticMarkup(<SingaporeRankings locale="ko" periodLabel="Jun 2026–Aug 2026" model={ranking} />);
     expect(html).toContain('단지별 신고 자료를 비교하세요.');
     expect(html).toContain('THE ORIGINAL PROJECT');
     expect(html).toContain('300,000');

@@ -489,7 +489,7 @@ describe('installed Korea evidence repositories', () => {
     }));
 
     expect(html).toContain('>Explore</h1>');
-    expect(html).toContain('District median reported monthly rent');
+    expect(html).toContain('Median reported monthly rent');
     expect(html).toContain('Reported monthly-rent contracts; filed deposit is shown separately.');
     expect(html).not.toContain('45–55㎡');
     expect(html).not.toContain('Refundable zero-rent jeonse');
@@ -519,6 +519,19 @@ describe('installed Korea evidence repositories', () => {
     expect(html).not.toContain('data-contract-group=');
     expect(html).not.toContain('New, renewal and combined');
     expect(html).not.toContain('contractType=');
+    const building = projection.buildingPage?.buildings[0];
+    if (building === undefined) throw new Error('Sale Explore must include a building.');
+    expect(repositories.rent?.getBuilding('gangnam-gu', building.buildingId)).toBeDefined();
+    const encodedHref = html.match(new RegExp(`href="([^"]*${building.buildingId}[^"]*)"`))?.[1];
+    if (encodedHref === undefined) throw new Error('Sale Explore must link to its building Detail.');
+    const detailUrl = new URL(encodedHref.replaceAll('&amp;', '&'), 'https://signedprice.invalid');
+    expect(detailUrl.searchParams.get('transaction')).toBe('sale');
+    const detail = buildKoreaExplorerBuildingDetailModel(repositories, 'gangnam-gu', building.buildingId, {
+      transaction: detailUrl.searchParams.get('transaction') as 'sale',
+      areaBand: 'all', housingType: 'apartment', contractGroup: 'all',
+    });
+    expect(detail).toMatchObject({ selection: { transaction: 'sale' }, evidence: { primaryMetric: 'sale-price' } });
+    expect(html).toContain(`data-building-save="gangnam-gu/${building.buildingId}"`);
   });
 
   it('builds sale rankings from the selected exact evidence cohort', async () => {
@@ -548,7 +561,7 @@ describe('installed Korea evidence repositories', () => {
         contractGroup: 'not-applicable',
       },
       transactionAvailability: { sale: true, jeonse: true, monthly: true },
-      cheapest: [{
+      median: [{
         slug: 'gangnam-gu',
         valueLabel: '₩600,000,000',
         href: '/kr/seoul/explore/gangnam-gu/?area=all&propertyType=apartment&district=gangnam-gu',
@@ -577,7 +590,8 @@ describe('installed Korea evidence repositories', () => {
 
     expect(html).toContain('data-ranking-filters="exact-cohort"');
     expect(html).toContain('name="transaction"');
-    expect(html).not.toContain('name="area"');
+    expect(html).toContain('name="area"');
+    expect(html).toContain('value="all"');
     expect(html).toContain('name="propertyType"');
     expect(html).toContain('Median reported sale price');
     expect(html).toContain('MOLIT reported sale contracts');
@@ -610,7 +624,7 @@ describe('installed Korea evidence repositories', () => {
         transaction: 'sale', areaBand: 'all', housingType: 'apartment',
         contractGroup: 'not-applicable',
       },
-      cheapest: [{ slug: 'gangnam-gu', valueLabel: '₩600,000,000' }],
+      median: [{ slug: 'gangnam-gu', valueLabel: '₩600,000,000' }],
     });
   });
 

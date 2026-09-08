@@ -1,13 +1,13 @@
 import type { Metadata } from 'next';
 
-import { EditorialGrowthPublicShell } from '@/components/editorial-growth/editorial-growth-public-shell';
-import { buildEditorialGrowthReviewModel } from '@/lib/design-review/editorial-growth-review-model.server';
+import { EditorialGrowthPublicFrame } from '@/components/editorial-growth/editorial-growth-public-shell';
+import { PropertyHome } from '@/components/design-review/editorial-growth-home';
 import { indexableMetadata } from '@/lib/public-metadata';
 
 export const metadata: Metadata = indexableMetadata({
   path: '/zh-cn/kr/seoul/',
-  title: '韩国租房真实成交数据与指南 | signedprice',
-  description: '通过首尔已申报合同、明确的可比范围和实用中文指南，判断韩国租房与购房价格。',
+  title: '首尔、新加坡、迪拜与东京房产价格 | SignedPrice',
+  description: '探索首尔、新加坡、迪拜与东京的房产成交资料，比较区域、核对报价并规划购房。查看数据来源、交易时期和覆盖范围。',
   languageAlternates: {
     en: '/',
     ko: '/ko/',
@@ -16,12 +16,6 @@ export const metadata: Metadata = indexableMetadata({
   locale: 'zh_CN',
 });
 
-export default async function ChineseHome() {
-  const model = await buildEditorialGrowthReviewModel({
-    locale: 'zh-CN',
-    state: 'ready',
-    ad: 'empty',
-  });
-
-  return <EditorialGrowthPublicShell surface="home" model={model} />;
+export default function ChineseHome() {
+  return <EditorialGrowthPublicFrame locale="zh-CN" surface="home" shell><PropertyHome locale="zh-CN" /></EditorialGrowthPublicFrame>;
 }

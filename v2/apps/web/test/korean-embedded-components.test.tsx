@@ -164,19 +164,18 @@ describe('Korean embedded product components', () => {
       '월세',
       '매매',
       '데이터 범위',
-      '구별 전세보증금 중앙값',
+      '전세보증금 중앙값',
       '신규 계약',
       '표본',
       '출처와 한계',
       '좁은 중간 절반',
       '3개월 변화 확인 불가',
       '국토교통부 신고 임대차 계약',
-      '서울 건물 네이버 지도',
     ]) expect(html).toContain(visible);
-    expect(html).toContain('data-map-state="loading"');
+    expect(html).not.toContain('data-map-state="loading"');
     expect(html).not.toContain('data-map-state="coordinate-pending"');
     expect(html).not.toContain('href="/ko/kr/seoul/rankings"');
-    expect(html).toContain('data-explorer-layout="split"');
+    expect(html).toContain('data-explorer-layout="list"');
     expect(html).not.toMatch(
       /Verified coverage|District map|New contracts|Source and limits|Narrow middle-half|3-month change not assessable|Prior\/latest sample|reported rent contracts|Interactive NAVER map/,
     );
@@ -191,8 +190,8 @@ describe('Korean embedded product components', () => {
 
     for (const visible of [
       '서울 구별 실거래가 비교',
-      '신고 전세보증금 중앙값',
-      '최근 비교',
+      '전세보증금 중앙값',
+      '높은 신고 중앙값',
       '중간 50% 구간 분포 폭',
       '신고 계약 표본 수',
       '순위 해석의 한계',
@@ -200,7 +199,7 @@ describe('Korean embedded product components', () => {
       '최솟값',
     ]) expect(html).toContain(visible);
     expect(html).toContain('<strong>중구</strong><span lang="en">Jung-gu</span>');
-    expect(html).toContain('href="/kr/seoul/explore/jung-gu"');
+    expect(html).toContain('href="/ko/kr/seoul/explore/jung-gu"');
     expect(html).not.toMatch(
       /Seoul district rankings|Recent comparison|Evidence depth|Ranking limitations|Jan 2026|Minimum/,
     );

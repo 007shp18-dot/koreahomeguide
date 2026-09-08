@@ -16,10 +16,10 @@ test('News & Insights opens the unified hub and preserves the filter journey', a
   await expect(page.locator('header.site-header:visible details.site-header__mobile-menu')).not.toHaveAttribute('open', '');
   await expect(page.getByRole('heading', { level: 1, name: 'News & Insights', exact: true })).toBeVisible();
   const types = page.getByRole('navigation', { name: 'News and insight types' });
-  await expect(types.getByRole('link', { name: 'Latest', exact: true })).toHaveAttribute('aria-current', 'page');
-  await types.getByRole('link', { name: 'Market Insight', exact: true }).click();
+  await expect(types.getByRole('link', { name: 'Insights', exact: true })).toHaveAttribute('aria-current', 'page');
+  await page.getByRole('navigation', { name: 'Insight types' }).getByRole('link', { name: 'Market Insight', exact: true }).click();
   await expect(page).toHaveURL(/\/news\/\?type=market$/);
-  await expect(types.getByRole('link', { name: 'Market Insight', exact: true })).toHaveAttribute('aria-current', 'page');
+  await expect(types.getByRole('link', { name: 'Insights', exact: true })).toHaveAttribute('aria-current', 'page');
   await types.getByRole('link', { name: 'News', exact: true }).click();
   await expect(page).toHaveURL(/\/news\/\?type=news$/);
   await expect(page.getByRole('heading', { level: 2, name: 'External headlines', exact: true })).toBeVisible();
@@ -31,7 +31,7 @@ test('Newsroom filters reviewed SignedPrice records and opens the policy lifecyc
 
   await expect(page).toHaveTitle(/Property news, policy and market insights/);
   await expect(page.getByRole('heading', { level: 1, name: 'News & Insights', exact: true })).toBeVisible();
-  await expect(page.getByRole('navigation', { name: 'News and insight types' }).getByRole('link')).toHaveCount(5);
+  await expect(page.getByRole('navigation', { name: 'News and insight types' }).getByRole('link')).toHaveCount(3);
   await expect(page.getByRole('navigation', { name: 'News markets' }).getByRole('link')).toHaveText(['All', 'Seoul', 'Singapore', 'Dubai']);
   await expect(page.locator('[data-newsroom-lead]')).toHaveCount(1);
   await expect(page.locator('body')).not.toContainText(/provider|credential|ingestion|Naver News API/i);

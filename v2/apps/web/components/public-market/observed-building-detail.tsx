@@ -15,6 +15,7 @@ import {
   type SiteFooterModel,
 } from '../../lib/site-copy';
 import { SiteFooter } from '../site-footer';
+import { BuildingSaveButton } from './building-save-button';
 import { BuildingDetailHeader } from './building-detail-header';
 import styles from './building-detail.module.css';
 
@@ -156,6 +157,12 @@ export function ObservedBuildingDetail({
             <dl className={styles.factGrid}>
               <div><dt>{t('Housing type')}</dt><dd>{t(model.building.housingType)}</dd></div>
             </dl>
+            <BuildingSaveButton
+              buildingKey={`${model.district.slug}/${model.building.buildingId}`}
+              buildingName={model.building.officialName}
+              locale={locale}
+              variant="detail"
+            />
           </div>
         </section>
 
@@ -301,6 +308,12 @@ export function KoreaEvidenceBuildingDetail({
             <dl className={styles.factGrid}>
               <div><dt>{t('Housing type')}</dt><dd>{t(model.building.housingType)}</dd></div>
             </dl>
+            <BuildingSaveButton
+              buildingKey={`${model.district.slug}/${model.building.buildingId}`}
+              buildingName={model.building.officialName}
+              locale={locale}
+              variant="detail"
+            />
           </div>
         </section>
 

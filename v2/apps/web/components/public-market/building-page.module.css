@@ -25,7 +25,7 @@
 
 .identityHero {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
   overflow: hidden;
   border: var(--line-subtle);
   border-radius: var(--radius-card);
@@ -34,12 +34,28 @@
 }
 
 .identityMedia {
+  position: relative;
   grid-column: 1;
   grid-row: 1;
   min-width: 0;
   aspect-ratio: 16 / 9;
   overflow: hidden;
   background: var(--surface);
+}
+
+.mediaKind {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 2;
+  padding: 5px 8px;
+  border-radius: 8px;
+  color: #fff;
+  background: rgb(16 32 24 / 78%);
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: .06em;
+  text-transform: uppercase;
 }
 
 .identityHero[data-has-media='false'] { grid-template-columns: minmax(0, 1fr); }
@@ -121,6 +137,8 @@
   font-weight: 750;
   text-decoration: none;
 }
+
+.identitySummary > [data-save-variant='detail'] { margin-top: var(--space-2); }
 
 .tabs {
   margin-top: var(--space-4);

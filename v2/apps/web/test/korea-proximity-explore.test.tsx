@@ -136,6 +136,26 @@ function dependencies(proximityRepository = readyProximity) {
 }
 
 describe('Korea Explore proximity route model', () => {
+  it('keeps the implicit Explore sale default explicit on a building Detail URL', () => {
+    const href = createKoreaBuildingDetailHref({
+      id: 'gangnam-gu-47qbfa', districtSlug: 'gangnam-gu', neighborhoodId: 'gangnam-gu-dong-gzsaxw',
+      neighborhoodName: '개포동', name: '개포자이프레지던스', housingType: 'apartment', latitude: null,
+      longitude: null, evidenceStatus: 'published', observationCount: 62, jeonseObservationCount: 0,
+      monthlyObservationCount: 0, firstObservedMonth: '2026-02', lastObservedMonth: '2026-08',
+      sampleLabel: '62 reported contracts', medianLabel: '₩3,500,000,000', newSampleLabel: '', newMedianLabel: null,
+      renewalSampleLabel: '', renewalMedianLabel: null, unknownContractCount: 0, proximity: null,
+      href: '/kr/seoul/explore/gangnam-gu/gangnam-gu-47qbfa/',
+    }, {
+      market: 'kr', transaction: 'sale', district: 'gangnam-gu',
+      neighborhood: 'gangnam-gu-dong-gzsaxw', buildingId: 'gangnam-gu-47qbfa',
+    }, 'en', { query: 'Gangnam' });
+
+    const target = new URL(href, 'https://signedprice.invalid');
+    expect(target.searchParams.get('transaction')).toBe('sale');
+    expect(target.searchParams.get('buildingId')).toBe('gangnam-gu-47qbfa');
+    expect(target.searchParams.get('q')).toBe('Gangnam');
+  });
+
   it('keeps q, page, generic state, and both proximity pairs on a live Detail href', () => {
     const href = createKoreaBuildingDetailHref({
       id: 'jongno-monthly-home', districtSlug: 'jongno-gu', neighborhoodId: 'sajik-dong',
@@ -485,7 +505,7 @@ describe('Korea Explore proximity route model', () => {
     expect(html).toContain('Same name · 2호선 · 250 m');
     expect(html).toContain('School proximity · straight-line distance');
     expect(html).toContain('School A · 500 m');
-    expect(html).toContain('href="/kr/seoul/explore/?district=gangnam-gu&amp;station=station-a&amp;stationDistance=250&amp;school=school-a&amp;schoolDistance=500"');
+    expect(html).toContain('href="/kr/seoul/explore?transaction=jeonse&amp;district=gangnam-gu&amp;view=list&amp;station=station-a&amp;stationDistance=250&amp;school=school-a&amp;schoolDistance=500"');
   });
 
   it('renders deterministic station lines for both distinct same-name building facts', () => {

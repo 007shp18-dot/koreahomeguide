@@ -20,18 +20,11 @@ test('Explore recovery keeps discovery primary and search touch-safe', async ({ 
   const map = page.locator('[data-explorer-region="map"]');
   const search = page.getByRole('searchbox', { name: 'Search area or building', exact: true });
   await expect(rail).toBeVisible();
-  await expect(map).toBeVisible();
+  await expect(page.locator('[data-explorer-layout="list"]')).toBeVisible();
+  await expect(map).toHaveCount(0);
   const railBox = await rail.boundingBox();
-  const mapBox = await map.boundingBox();
   expect(railBox).not.toBeNull();
-  expect(mapBox).not.toBeNull();
-  const viewport = page.viewportSize()!;
-  if (viewport.width > 1120) {
-    expect(Math.abs(railBox!.width - 420)).toBeLessThanOrEqual(2);
-    expect(railBox!.x + railBox!.width).toBeLessThanOrEqual(mapBox!.x + 2);
-  } else if (viewport.width <= 800) {
-    expect(mapBox!.y + mapBox!.height).toBeLessThanOrEqual(railBox!.y + 2);
-  }
+  expect(railBox!.width).toBeGreaterThan(300);
   await expectTouchTarget(search);
   expect(await search.evaluate((element) => parseFloat(getComputedStyle(element).fontSize))).toBeGreaterThanOrEqual(14);
   await expectNoHorizontalOverflow(page);
@@ -95,7 +88,8 @@ test('initial HTML and hydration expose one synchronized 25-district Explorer', 
     level: 1,
     name: 'Explore',
   })).toBeAttached();
-  await expect(page.locator('[data-explorer-region="map"]')).toBeVisible();
+  await expect(page.locator('[data-explorer-layout="list"]')).toBeVisible();
+  await expect(page.locator('[data-explorer-region="map"]')).toHaveCount(0);
   await expect(page.locator('[data-district-option]')).toHaveCount(25);
   const jongnoRow = page.locator('[data-district-option="jongno-gu"]');
   await expect(page.getByRole('combobox', { name: 'All 25 Seoul districts' })).toHaveValue('all');
@@ -111,27 +105,35 @@ test('initial HTML and hydration expose one synchronized 25-district Explorer', 
   await expectNoHorizontalOverflow(page);
 
   if (testInfo.project.name === 'desktop-chromium') {
-    const workspace = page.locator('[data-explorer-layout="split"]');
-    const mapPanel = workspace.locator(':scope > [data-explorer-region="map"]');
-    const discoveryRail = workspace.locator(':scope > [data-explorer-region="results"]');
-    const [workspaceBox, mapBox, railBox] = await Promise.all([
-      workspace.boundingBox(),
-      mapPanel.boundingBox(),
-      discoveryRail.boundingBox(),
-    ]);
-    expect(workspaceBox).not.toBeNull();
-    expect(mapBox).not.toBeNull();
-    expect(railBox).not.toBeNull();
-    expect(Math.abs(railBox!.width - 420)).toBeLessThanOrEqual(2);
-    expect(mapBox!.x).toBeGreaterThanOrEqual(railBox!.x + railBox!.width - 2);
-    expect(Math.abs(mapBox!.height - railBox!.height)).toBeLessThanOrEqual(2);
-
     const htmlResponse = await page.request.get('/kr/seoul/explore/');
     expect(htmlResponse.status()).toBe(200);
     const html = await htmlResponse.text();
     expect((html.match(/data-district-option=/g) ?? [])).toHaveLength(25);
   }
   assertNoRuntimeFailures();
+});
+
+test('default list keeps rows compact, saveable, and free of map requests', async ({ page }) => {
+  test.skip(releaseTarget.usesExternalServer, 'Synthetic media and row counts are local-release only.');
+  const mapRequests: string[] = [];
+  page.on('request', request => {
+    if (/naver-district-map|maps\.googleapis|openapi\.map\.naver/i.test(request.url())) mapRequests.push(request.url());
+  });
+  await page.goto('/kr/seoul/explore/?district=gangnam-gu');
+
+  await expect(page.locator('[data-explorer-layout="list"]')).toBeVisible();
+  const rowCount = await page.locator('[data-building-row]').count();
+  expect(rowCount).toBeGreaterThan(0);
+  expect(rowCount).toBeLessThanOrEqual(20);
+  const firstRow = page.locator('[data-building-row]').first();
+  await expect(firstRow.getByRole('link').first()).toHaveAttribute(
+    'href',
+    /\/kr\/seoul\/explore\/[^/?]+\/[^/?]+(?:\/|\?)/,
+  );
+  await expect(firstRow.getByRole('button', { name: /^Save / })).toBeVisible();
+  await firstRow.getByRole('button', { name: /^Save / }).click();
+  await expect(firstRow.getByRole('button', { name: /^Remove / })).toHaveAttribute('aria-pressed', 'true');
+  expect(mapRequests).toEqual([]);
 });
 
 test('synthetic release fixture keeps withheld district selection money-free', async ({
@@ -151,11 +153,12 @@ test('synthetic release fixture keeps withheld district selection money-free', a
 
 test('rail selection opens the map-owned drawer and full-detail CTA', async ({ page }, testInfo) => {
   test.skip(releaseTarget.usesExternalServer, 'Exact fixture values are local-release only.');
-  await page.goto('/kr/seoul/explore/?district=jongno-gu');
+  await page.goto('/kr/seoul/explore/?district=jongno-gu&view=split');
 
-  const trigger = page.locator(`[data-building-row="${PUBLIC_BUILDING_TEST_ID}"] > button`);
-  await expect(trigger.locator('strong[title]').first()).toHaveCSS('white-space', 'nowrap');
-  await expect(trigger.locator('strong[title]').first()).toHaveAttribute('title', /.+/);
+  const trigger = page.locator(`[data-building-row="${PUBLIC_BUILDING_TEST_ID}"] [data-building-preview]`);
+  const title = page.locator(`[data-building-row="${PUBLIC_BUILDING_TEST_ID}"] strong[title]`).first();
+  await expect(title).toHaveCSS('white-space', 'nowrap');
+  await expect(title).toHaveAttribute('title', /.+/);
   await trigger.click();
   await expect(page).toHaveURL(/\/kr\/seoul\/explore\/\?.*buildingId=/);
   const drawer = page.locator(`[data-building-drawer="${PUBLIC_BUILDING_TEST_ID}"]`);
@@ -192,7 +195,7 @@ test('restores a verified building selection after opening Detail and returning'
   await page.goto(`/kr/seoul/explore/?district=jongno-gu&neighborhood=sajik-dong&buildingId=${PUBLIC_BUILDING_TEST_ID}`);
 
   const row = page.locator(`[data-building-row="${PUBLIC_BUILDING_TEST_ID}"]`).first();
-  await expect(row.locator(':scope > button')).toHaveAttribute('aria-pressed', 'true');
+  await expect(row.locator('[data-building-preview]')).toHaveAttribute('aria-pressed', 'true');
   const drawer = page.locator(`[data-building-drawer="${PUBLIC_BUILDING_TEST_ID}"]`);
   await expect(drawer).toBeVisible();
 
@@ -204,7 +207,7 @@ test('restores a verified building selection after opening Detail and returning'
 
   await expect(page).toHaveURL(new RegExp(`district=jongno-gu.*buildingId=${PUBLIC_BUILDING_TEST_ID}`));
   await expect(page.locator(`[data-building-drawer="${PUBLIC_BUILDING_TEST_ID}"]`)).toBeVisible();
-  await expect(page.locator(`[data-building-row="${PUBLIC_BUILDING_TEST_ID}"]`).first().locator(':scope > button'))
+  await expect(page.locator(`[data-building-row="${PUBLIC_BUILDING_TEST_ID}"]`).first().locator('[data-building-preview]'))
     .toHaveAttribute('aria-pressed', 'true');
 });
 
@@ -218,7 +221,7 @@ test('district selection stays inside the Explore workspace', async ({ page }) =
   await expect(page).toHaveURL(/\/kr\/seoul\/explore\/\?.*district=gangnam-gu/);
   expect(new URL(page.url()).pathname).toBe('/kr/seoul/explore/');
   await expect(page.getByText('Selected · Gangnam-gu')).toBeVisible();
-  await expect(page.locator('[data-explorer-layout="split"]')).toBeVisible();
+  await expect(page.locator('[data-explorer-layout="list"]')).toBeVisible();
 });
 
 test('published sale detail links to Contract Check and withheld district statistics stay money-free', async ({ page }) => {
@@ -266,7 +269,7 @@ test('mobile controls keep 44px focus targets and natural document scrolling', a
   test.skip(testInfo.project.name !== 'mobile-chromium');
   await page.goto('/kr/seoul/explore/');
 
-  const workspace = page.locator('[data-explorer-layout="split"]');
+  const workspace = page.locator('[data-explorer-layout="list"]');
   const discoveryRail = workspace.locator(':scope > [data-explorer-region="results"]');
   await expect(discoveryRail).toBeVisible();
   const railPlacement = await discoveryRail.evaluate((element) => {
@@ -342,7 +345,7 @@ test('ready injected proximity fixture keeps controls touch-sized and round-trip
   await selectors.nth(3).selectOption('1000');
   await expect(page).toHaveURL(/school=e2e-school.*schoolDistance=1000/);
   await expect(page.locator('[data-building-browser="jongno-gu"]')).toContainText('E2E Station');
-  await page.locator('[data-building-row="synthetic-test-building"] button').click();
+  await page.locator('[data-building-row="synthetic-test-building"] [data-building-preview]').click();
   const detail = page.getByRole('link', { name: 'Open full building evidence' }).first();
   await expect(detail).toHaveAttribute('href', /station=e2e-station.*stationDistance=750.*school=e2e-school.*schoolDistance=1000/);
   await detail.click();
@@ -408,7 +411,7 @@ test('unsupported intent pages never relabel district artifact money', async ({ 
 
 test('journey: Explore selection survives Detail, Check, and the return link', async ({ page }) => {
   test.skip(releaseTarget.usesExternalServer, 'Synthetic journey evidence is local-release only.');
-  await page.goto('/kr/seoul/explore/?transaction=monthly&propertyType=apartment&district=jongno-gu');
+  await page.goto('/kr/seoul/explore/?transaction=monthly&propertyType=apartment&district=jongno-gu&view=split');
 
   const selectionRequests: string[] = [];
   page.on('request', request => {
@@ -416,7 +419,7 @@ test('journey: Explore selection survives Detail, Check, and the return link', a
     if (request.headers()['rsc'] === '1' && url.pathname === '/kr/seoul/explore/' && url.searchParams.get('buildingId') === 'synthetic-test-building') selectionRequests.push(request.url());
   });
   const row = page.locator('[data-building-row="synthetic-test-building"]');
-  await row.getByRole('button').click();
+  await row.locator('[data-building-preview]').click();
   await expect(page.locator('[data-map-evidence="selected-building"]')).toBeAttached();
   expect(selectionRequests).toEqual([]);
   await expect(page).toHaveURL(/transaction=monthly.*propertyType=apartment.*district=jongno-gu.*buildingId=synthetic-test-building/);

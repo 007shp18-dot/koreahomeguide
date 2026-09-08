@@ -24,7 +24,12 @@ export const MARKET_PHOTOS = Object.freeze({
     alt: 'Dubai skyline and high-rise buildings',
     focalPoint: Object.freeze({ x: 50, y: 52 }),
   }),
-} satisfies Readonly<Record<'seoul' | 'singapore' | 'dubai', MarketPhoto>>);
+  tokyo: Object.freeze({
+    src: '/assets/markets/tokyo-cityscape.jpg',
+    alt: 'Tokyo cityscape seen from Tokyo Skytree',
+    focalPoint: Object.freeze({ x: 50, y: 50 }),
+  }),
+} satisfies Readonly<Record<'seoul' | 'singapore' | 'dubai' | 'tokyo', MarketPhoto>>);
 
 export function MarketRepresentativePhoto({ photo, eager = false, cityLabel, context = 'property', locale = 'en' }: Readonly<{
   photo: MarketPhoto | null;

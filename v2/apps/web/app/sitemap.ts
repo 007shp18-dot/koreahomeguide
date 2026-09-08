@@ -48,6 +48,7 @@ const localizedPairs: readonly LocalizedPair[] = Object.freeze([
   Object.freeze({ en: '/tools/property-scenario/', ko: '/ko/tools/property-scenario/' }),
   Object.freeze({ en: '/', ko: '/ko/', 'zh-Hans': '/zh-cn/kr/seoul/' }),
   Object.freeze({ en: '/prices/', ko: '/ko/prices/' }),
+  Object.freeze({ en: '/rankings/', ko: '/ko/rankings/' }),
   Object.freeze({ en: '/news/', ko: '/ko/news/', 'zh-Hans': '/zh-cn/news/' }),
   Object.freeze({ en: '/guides/', ko: '/ko/guides/', 'zh-Hans': '/zh-cn/guides/' }),
   Object.freeze({ en: '/kr/seoul/', ko: '/ko/kr/seoul/' }),
@@ -58,6 +59,7 @@ const localizedPairs: readonly LocalizedPair[] = Object.freeze([
   }),
   Object.freeze({ en: '/kr/seoul/explore/', ko: '/ko/kr/seoul/explore/' }),
   Object.freeze({ en: '/kr/seoul/rankings/', ko: '/ko/kr/seoul/rankings/' }),
+  Object.freeze({ en: '/sg/singapore/rankings/', ko: '/ko/sg/singapore/rankings/' }),
   Object.freeze({ en: '/kr/seoul/shortlist/', ko: '/ko/kr/seoul/shortlist/' }),
   Object.freeze({ en: '/sg/', ko: '/ko/sg/' }),
   Object.freeze({ en: '/ae/dubai/', ko: '/ko/ae/dubai/' }),
@@ -172,6 +174,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     sitemapEntry('/ko/contact/'),
     sitemapEntry('/ko/guides/', guideLastModified),
     sitemapEntry('/ko/prices/', summaryLastModified),
+    sitemapEntry('/rankings/'),
+    sitemapEntry('/ko/rankings/'),
     sitemapEntry('/ko/news/', latestDate(EDITORIAL_PORTFOLIO.filter(({ locale, type }) => locale === 'ko' && type !== 'guide').map(({ updatedAt }) => updatedAt))),
     ...['/sg/singapore/explore/', '/sg/singapore/explore/ccr/', '/sg/singapore/explore/rcr/', '/sg/singapore/explore/ocr/', '/ae/dubai/explore/', '/ae/dubai/guide/'].map(path => sitemapEntry(`/ko${path}`)),
     sitemapEntry('/zh-cn/passport/'),
@@ -204,6 +208,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     sitemapEntry('/sg/singapore/explore/ccr/'),
     sitemapEntry('/sg/singapore/explore/rcr/'),
     sitemapEntry('/sg/singapore/explore/ocr/'),
+    sitemapEntry('/sg/singapore/rankings/'),
+    sitemapEntry('/ko/sg/singapore/rankings/'),
   ];
   entries.push(...EDITORIAL_PORTFOLIO.map((article) => sitemapEntry(
     article.canonicalHref as `/${string}`,
@@ -244,10 +250,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
       const [, , , , district, propertyType] = route.path.split('/');
       if (!publishedDistricts.has(district ?? '')) return [];
       const model = buildPublicPropertyTypeModel(district ?? '', propertyType ?? '');
-      return [sitemapEntry(
-        route.path as `/${string}`,
-        validDate(model?.evidence.generatedAt),
-      )];
+      const en = route.path as `/${string}`;
+      const ko = `/ko${route.path}` as `/${string}`;
+      const pair = Object.freeze({ en, ko });
+      const lastModified = validDate(model?.evidence.generatedAt);
+      return [
+        sitemapEntry(en, lastModified, pair),
+        sitemapEntry(ko, lastModified, pair),
+      ];
     }));
   }
   if (dubaiEvidence !== null) {

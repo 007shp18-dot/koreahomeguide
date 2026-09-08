@@ -92,6 +92,6 @@ export function NewsroomArticle({ article }: Readonly<{
       <h2 id="article-sources-title">{t("Sources","출처")}</h2>
       <ol>{article.sources.map((source) => <li key={source.id}><span>{ko ? (source.kind === "primary" ? "공식 자료" : "참고 자료") : source.kind}</span><a href={source.href} rel="noreferrer" data-editorial-event="policy_source_open">{source.publisher} · {source.title}</a><small>{t("Checked", "확인일")} {source.checkedAt.slice(0, 10)}</small></li>)}</ol>
     </section>
-    {relatedHref === null ? null : <aside className={styles.relatedAction}><p>{t("Related reading and tools","이어서 살펴보기")}</p><Link href={relatedHref} data-editorial-event={relatedEvent}>{relatedLabel}</Link>{reading.filter(({ href }) => !href.endsWith(`/${article.slug}/`)).map((item) => <Link key={item.href} href={item.href}>{item.label}</Link>)}</aside>}
+    {relatedHref === null && reading.length === 0 ? null : <aside className={styles.relatedAction}><p>{t("Related reading and tools","이어서 살펴보기")}</p>{relatedHref === null ? null : <Link href={relatedHref} data-editorial-event={relatedEvent}>{relatedLabel}</Link>}{reading.filter(({ href }) => !href.endsWith(`/${article.slug}/`)).map((item) => <Link key={item.href} href={item.href} data-editorial-event="article_open">{item.label}</Link>)}</aside>}
   </main>;
 }

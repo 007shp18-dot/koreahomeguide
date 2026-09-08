@@ -17,6 +17,7 @@ type AreaBuildingDialogProps = Readonly<{
   detailHref: string;
   locale: ProductLocale;
   onClose: () => void;
+  onOpenDetail?: () => void;
   children: ReactNode;
 }>;
 
@@ -25,6 +26,7 @@ export function AreaBuildingDialog({
   detailHref,
   locale,
   onClose,
+  onOpenDetail,
   children,
 }: AreaBuildingDialogProps) {
   const titleId = useId();
@@ -60,7 +62,7 @@ export function AreaBuildingDialog({
         }
         const escapedBuildingId = CSS.escape(buildingId);
         document.querySelector<HTMLButtonElement>(
-          `[data-building-row="${escapedBuildingId}"] > button`,
+          `[data-building-row="${escapedBuildingId}"] [data-building-preview]`,
         )?.focus();
       });
     };
@@ -94,7 +96,7 @@ export function AreaBuildingDialog({
       </header>
       <div className={styles.buildingDialogBody}>{children}</div>
       <footer className={styles.buildingDialogFooter}>
-        <Link href={detailHref}>
+        <Link href={detailHref} onClick={onOpenDetail}>
           {locale === 'ko' ? '건물 전체 거래 내역 보기' : 'Open full building evidence'}
         </Link>
         <button type="button" onClick={onClose}>{locale === 'ko' ? '지도로 돌아가기' : 'Return to map'}</button>

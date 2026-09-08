@@ -662,3 +662,49 @@
   .metricSummary dd { white-space: normal; overflow-wrap: normal; }
   .rangeCard dd { font-size: var(--text-meta); }
 }
+
+.pagination {
+  min-height: 64px;
+  padding: 10px clamp(1rem, 3vw, 2rem);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 16px;
+  border-top: var(--rule-default);
+  font-size: var(--text-meta);
+  font-weight: 800;
+}
+.pagination a { min-height: 44px; display: inline-flex; align-items: center; color: var(--ranking-accent); text-decoration: none; }
+.pagination a:last-child { justify-self: end; }
+
+/* Compact comparison treatment shared with the approved ranking concept. */
+.frame { margin-top: 0; }
+.hero {
+  min-height: 0;
+  margin: 0;
+  padding: 40px 0 28px;
+  align-items: end;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.hero h1 { max-width: 18ch; font-size: clamp(2.25rem, 5vw, 3.5rem); font-weight: 600; }
+.heroMeta { padding: 0; border: 0; border-top: 1px solid var(--line); border-radius: 0; background: transparent; }
+.filters { margin: 0; padding: 14px 0; border: 0; border-block: 1px solid var(--line); border-radius: 0; box-shadow: none; }
+.viewWorkspace { border: 0; border-bottom: 1px solid var(--line); border-radius: 0; box-shadow: none; }
+.viewTabs { padding: 12px 0 0; gap: 28px; border-bottom: 1px solid var(--line); }
+.viewTabs button { min-height: 44px; padding: 8px 0; border-radius: 0; }
+.viewTabs button[aria-selected='true'] { color: var(--ranking-ink); background: transparent; box-shadow: inset 0 -2px var(--ranking-ink); }
+.metricSummary { padding: 14px 0; background: transparent; }
+.metricSummary > div { padding: 10px 16px; border: 0; border-right: 1px solid var(--line); border-radius: 0; background: transparent; }
+.panelHeader { min-height: 0; padding: 22px 0; }
+.row, .changeRow { min-height: 64px; }
+.limit { padding-inline: 0; }
+
+@media (max-width: 720px) {
+  .hero { padding: 28px 0 22px; }
+  .viewTabs { gap: 22px; }
+  .metricSummary > div { border: 0; border-bottom: 1px solid var(--line); }
+}
