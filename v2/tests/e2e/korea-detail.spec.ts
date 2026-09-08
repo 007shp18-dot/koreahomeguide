@@ -132,16 +132,18 @@ test('verified synthetic building detail is server rendered only in the local re
   // Wait for Next's streamed Suspense fallback to be replaced before toggling
   // native disclosure state, otherwise the replacement can close it again.
   await expect(page.locator('template[id^="B:"]')).toHaveCount(0);
-  await page.locator('details > summary', {
-    hasText: 'See records, adjustments, and methodology',
-  }).filter({ visible: true }).click();
-  await expect(page.getByRole('heading', {
-    level: 2,
-    name: 'Privacy-safe reported contracts',
-  })).toBeVisible();
   const evidenceDetails = page.locator('details[data-building-section="evidence"]').filter({ visible: true });
+  const contractsHeading = evidenceDetails.getByRole('heading', { level: 2, name: 'Privacy-safe reported contracts' });
+  // Evidence starts expanded in the shared detail layout. Check both native
+  // disclosure directions instead of accidentally closing it before asserting.
   await expect(evidenceDetails).toHaveAttribute('open', '');
-  await expect(evidenceDetails).toContainText('Privacy-safe reported contracts');
+  await expect(contractsHeading).toBeVisible();
+  await evidenceDetails.locator(':scope > summary').click();
+  await expect(evidenceDetails).not.toHaveAttribute('open', '');
+  await expect(contractsHeading).not.toBeVisible();
+  await evidenceDetails.locator(':scope > summary').click();
+  await expect(evidenceDetails).toHaveAttribute('open', '');
+  await expect(contractsHeading).toBeVisible();
   const relatedContext = page.getByRole('region', { name: 'Building news and community' });
   await expect(relatedContext).toContainText('Latest verified News');
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /^noindex,\s*follow$/);

@@ -137,7 +137,7 @@ test('ready Singapore evidence flows entry to project when promotion gates open'
   await scenario.getByLabel('Expected monthly rent (SGD)').fill('5000');
   await scenario.getByLabel('Annual operating costs, including taxes (SGD)').fill('12000');
   await scenario.getByLabel('Expected vacant months per year').fill('2');
-  await expect(scenario.locator('dl')).toContainText('3.45%');
+  await expect(scenario.locator('dl[aria-live="polite"]')).toContainText('3.45%');
   await noOverflow(page);
 
   const raw = await page.request.get(page.url());
