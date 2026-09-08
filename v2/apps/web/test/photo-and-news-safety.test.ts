@@ -44,6 +44,10 @@ describe('photo and external-news safety', () => {
 
   it('removes Naver highlight tags and decodes common entities', () => {
     expect(plainNewsText('<b>서울</b> 아파트 &amp; 주택')).toBe('서울 아파트 & 주택');
+    expect(plainNewsText('<b>R&amp;amp;D</b> &quot;home&quot;')).toBe('R&D "home"');
+    expect(plainNewsText('A &#38; B &#x26; C &#X26; D')).toBe('A & B & C & D');
+    expect(plainNewsText('&lt;b&gt;Homes &amp; gardens&lt;/b&gt;')).toBe('Homes & gardens');
+    expect(plainNewsText('A &#999999999; B')).toBe('A &#999999999; B');
   });
 
   it('uses the Naver Cloud API Hub endpoint and authentication headers', () => {
