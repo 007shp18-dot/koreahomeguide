@@ -3,6 +3,7 @@ import { unstable_cache } from 'next/cache';
 import { listPortfolioRecords } from '../../content/portfolio-manifest';
 import { REVIEWED_NEWS, REVIEWED_NEWS_CHECKED_AT } from '../../content/reviewed-news';
 import { publicContentDatabase } from '../db/postgres.server';
+import { loadReviewedNewsPublications } from './reviewed-publications.server';
 import { loadPersistedNewsItems } from './news-persistence.server';
 import { mergeReviewedHeadlines, portfolioHeadlines } from './public-headline-model';
 
@@ -24,12 +25,12 @@ async function publicationOverrides(): Promise<{ excluded: readonly string[]; sl
 
 export async function readPublicHeadlines() {
   const configured = publicContentDatabase() !== null;
-  const [stored, overrides] = await Promise.all([loadPersistedNewsItems(1500), publicationOverrides()]);
-  if (overrides === null || (configured && stored === null)) return null;
+  const [stored, overrides, publications] = await Promise.all([loadPersistedNewsItems(1500), publicationOverrides(), loadReviewedNewsPublications()]);
+  if (publications === null || overrides === null || (configured && stored === null)) return null;
   const now = Date.now();
   const checked = Date.parse(REVIEWED_NEWS_CHECKED_AT) <= now ? REVIEWED_NEWS : [];
   const files = listPortfolioRecords('en').filter(article => !overrides.slugs.includes(article.slug));
-  return mergeReviewedHeadlines(stored ?? [], [...portfolioHeadlines(files, now), ...checked], overrides.excluded, now);
+  return mergeReviewedHeadlines([...(stored ?? []), ...publications.items], [...portfolioHeadlines(files, now), ...checked], [...overrides.excluded, ...publications.excluded], now);
 }
 
 // Throw on failed review reads so a successful cache entry is not replaced with
@@ -38,7 +39,7 @@ const cachedHeadlines = unstable_cache(async () => {
   const items = await readPublicHeadlines();
   if (items === null) throw new Error('Public headline review state unavailable');
   return items;
-}, ['public-reviewed-headlines-v1'], { revalidate: 900 });
+}, ['public-reviewed-headlines-v2'], { revalidate: 900 });
 
 export async function loadPublicHeadlines() {
   try { return await cachedHeadlines(); } catch { return null; }

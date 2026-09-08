@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 
-import { parseGoogleNewsRss } from '../lib/news/google-news-rss.server';
+import { fetchGoogleNewsRssItems, parseGoogleNewsRss } from '../lib/news/google-news-rss.server';
 
 describe('Google News RSS supplement', () => {
   it('keeps publisher metadata while removing encoded feed markup', () => {
@@ -22,4 +22,11 @@ describe('Google News RSS supplement', () => {
     expect(items[0]?.publisher).toBe('Example News');
     expect(items[0]?.sourceKind).toBe('google-news-rss');
   });
+});
+
+it('collects Tokyo alongside the other three cities', async () => {
+  const requested: string[] = [];
+  vi.stubGlobal('fetch', async (url: URL) => { requested.push(url.searchParams.get('q') ?? ''); return new Response('<rss><channel></channel></rss>'); });
+  try { await fetchGoogleNewsRssItems(); expect(requested.some(query => /Tokyo/.test(query))).toBe(true); }
+  finally { vi.unstubAllGlobals(); }
 });

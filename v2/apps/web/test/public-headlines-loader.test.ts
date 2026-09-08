@@ -35,3 +35,13 @@ describe('review state precedence in the public headline loader', () => {
     expect(await readPublicHeadlines()).toBeNull();
   });
 });
+
+it('uses separately reviewed database publications and still honours discovery rejection', async () => {
+  const publication = { canonical_url: 'https://publisher.example/fresh', market_id: 'jp-tokyo', title: 'Reviewed fresh report', summary: 'Checked summary', publisher: 'Publisher', source_published_at: '2020-01-01', publication_state: 'published' };
+  state.files.mockReturnValue([]);
+  let rejected = false;
+  state.sql.mockImplementation((query: TemplateStringsArray) => Promise.resolve(query[0]!.includes('SELECT * FROM external_news_publications') ? [publication] : query[0]!.includes('SELECT canonical_url') && rejected ? [{ canonical_url: publication.canonical_url }] : []));
+  expect(await readPublicHeadlines()).toEqual([expect.objectContaining({ market: 'tokyo', title: publication.title })]);
+  rejected = true;
+  expect(await readPublicHeadlines()).toEqual([]);
+});

@@ -10,12 +10,13 @@ function plainRssText(value: string): string {
 }
 
 type GoogleNewsFeed = Readonly<{
-  market: 'seoul' | 'singapore' | 'dubai';
+  market: 'seoul' | 'singapore' | 'dubai' | 'tokyo';
   marketLabel: string;
   query: string;
 }>;
 
 const feeds: readonly GoogleNewsFeed[] = Object.freeze([
+  { market: 'tokyo', marketLabel: 'Tokyo', query: 'Tokyo property OR housing OR condominium' },
   { market: 'seoul', marketLabel: 'Seoul', query: 'Seoul real estate OR South Korea housing' },
   { market: 'singapore', marketLabel: 'Singapore', query: 'Singapore property OR HDB OR condominium' },
   { market: 'dubai', marketLabel: 'Dubai', query: 'Dubai property OR real estate OR off-plan' },

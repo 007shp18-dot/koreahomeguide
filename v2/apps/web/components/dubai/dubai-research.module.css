@@ -175,3 +175,31 @@
 .projectPrices strong { font-size: 14px; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .projectPrices span strong { overflow: hidden; text-overflow: ellipsis; }
 .projectPrices small { color: var(--muted); font-size: 13px; }
+
+
+/* Keep the map next to a finite directory, and above the results on phones. */
+.explorer [data-market-shell-region="discovery"] { max-height: 780px; overflow-y: auto; overscroll-behavior-y: contain; scrollbar-gutter: stable; }
+.explorer [data-market-shell-region="spatial"] { align-self: start; position: sticky; top: 12px; }
+.explorer .areaResults article { padding: 14px 0; }
+.explorer .areaResults article > button, .explorer .areaResults article > a,
+.explorer .pagination button, .explorer .mapSelection > button { min-height: 44px; }
+.resultPrice { margin: 8px 0 0; display: grid; gap: 5px; }
+.resultPrice > strong { font-size: 18px; font-variant-numeric: tabular-nums; }
+.resultPrice > span { color: var(--muted); font-size: 13px; line-height: 1.5; }
+.resultEvidence { margin-top: 4px; }
+.resultEvidence > summary { min-height: 44px; padding: 12px 0; color: var(--accent); font-size: 14px; cursor: pointer; }
+.resultEvidence > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.explorer .projectPrices summary { min-height: 44px; }
+.explorer .mapSelection { position: static; width: auto; margin: 12px 20px; box-shadow: none; border-radius: 8px; }
+@media (max-width: 760px) {
+  .explorer [data-market-shell-region="spatial"] { order: -1; position: static; border-bottom: 1px solid var(--line); }
+  .explorer [data-market-shell-region="discovery"] { max-height: none; overflow: visible; border-right: 0; }
+  .explorer .evidenceMap, .explorer .map { min-height: 0; }
+  .explorer [data-map-provider="google"] [role="region"] { min-height: 340px; height: 44svh; max-height: 440px; }
+  .explorer .evidenceToolbar form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .explorer .searchField { grid-column: 1 / -1; }
+  .explorer .evidenceDirectory { padding: 16px 0; }
+  .explorer .evidenceMap > header, .explorer .mapDisclosure { padding-inline: 0; }
+  .explorer .mapSelection { margin-inline: 0; }
+  .explorer .areaMetrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

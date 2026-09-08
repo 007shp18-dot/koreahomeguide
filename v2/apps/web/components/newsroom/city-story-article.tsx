@@ -22,10 +22,10 @@ export function CityStoryArticle({ story, locale }: Readonly<{ story: CityStory;
   return <main className={styles.article} lang={locale}>
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd({ '@context': 'https://schema.org', '@type': 'Article', headline: story.title[locale], description: story.deck[locale], inLanguage: locale, datePublished: '2026-09-08', dateModified: '2026-09-08', mainEntityOfPage: publicCanonical(href as `/${string}`), author: { '@type': 'Organization', name: 'SignedPrice' }, publisher: { '@type': 'Organization', name: 'SignedPrice' }, citation: story.sources.map(source => source.href), isAccessibleForFree: true }) }} />
     <Link className={styles.readLink} href={`${ko ? '/ko' : ''}/news/?market=${story.city}`}>← {ko ? '뉴스 & 인사이트' : 'News & Insights'}</Link>
-    <header><p className={styles.eyebrow}>{story.name[locale]} · City Stories · <time dateTime="2026-09-08">2026.09.08</time></p><h1>{story.title[locale]}</h1><p>{story.deck[locale]}</p></header>
+    <header className={styles.storyHeader}><p className={styles.eyebrow}>{story.name[locale]} · {ko ? '도시에서 내 집까지' : 'From city to home'}</p><h1>{story.title[locale]}</h1><p>{story.deck[locale]}</p><div className={styles.storyMeta}><span>SignedPrice</span><time dateTime="2026-09-08">2026.09.08</time><a href="#story-sources">{ko ? `참고 자료 ${story.sources.length}개` : `${story.sources.length} sources`}</a></div></header>
+    <ArticleContents locale={locale} items={story.sections.map((section, index) => ({ id: section.id, title: section.title[locale], label: STORY_STEPS[index]!.label[locale] }))} />
     <CityStoryPhoto city={story.city} locale={locale} eager />
     <div className={styles.articleBody}>
-      <ArticleContents locale={locale} items={story.sections.map(section => ({ id: section.id, title: section.title[locale] }))} />
       {story.sections.map((section, index) => <section key={section.id} id={section.id}>
         <p className={styles.eyebrow}>{String(index + 1).padStart(2, '0')} · {STORY_STEPS[index]!.label[locale]}</p><h2>{section.title[locale]}</h2>
         {section.paragraphs[locale].map(paragraph => <p key={paragraph}>{paragraph}</p>)}
@@ -33,7 +33,7 @@ export function CityStoryArticle({ story, locale }: Readonly<{ story: CityStory;
         {index === 3 && <CityStoryPhoto city={story.city} locale={locale} scene="comparison" />}
         <div className={styles.articleLinks}>{section.links.map(link => <Link key={link.href} href={storyLinkHref(link.href, locale)} {...(link.href.startsWith('https://') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{link.label[locale]} ↗</Link>)}</div>
       </section>)}
-      <section className={styles.sources}><h2>{ko ? '관련 자료' : 'Further reading'}</h2><ul>{story.sources.map(source => <li key={source.href}><a href={source.href} target="_blank" rel="noopener noreferrer">{source.title}</a></li>)}</ul></section>
+      <section className={styles.sources} id="story-sources"><h2>{ko ? '관련 자료' : 'Further reading'}</h2><ul>{story.sources.map(source => <li key={source.href}><a href={source.href} target="_blank" rel="noopener noreferrer">{source.title}</a></li>)}</ul></section>
       <section className={styles.sources}><p className={styles.eyebrow}>{ko ? '다른 도시의 이야기' : 'Discover another city'}</p><h2><Link href={cityStoryHref(next.city, locale)}>{next.title[locale]}</Link></h2><Link className={styles.readLink} href={ko ? '/ko/passport/' : '/passport/'}>{ko ? '같은 예산으로 도시 비교하기' : 'Compare cities with your budget'} ↗</Link></section>
     </div>
   </main>;

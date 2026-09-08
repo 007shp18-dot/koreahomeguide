@@ -42,7 +42,7 @@ test('Newsroom filters reviewed SignedPrice records and opens the policy lifecyc
   await expect(page.locator('[data-newsroom-lead]')).toHaveCount(1);
   await expect(page.locator('body')).not.toContainText(/provider|credential|ingestion|Naver News API/i);
 
-  await page.getByRole('link', { name: 'Policy updates', exact: true }).click();
+  await page.getByRole('link', { name: 'Open the Policy Tracker', exact: true }).click();
   await expect(page).toHaveURL(/\/news\/policy\/$/);
   await expect(page.getByRole('heading', { level: 1, name: 'Follow the date a housing rule actually changes.' })).toBeVisible();
   await expect(page.getByText('Announced', { exact: true }).first()).toBeVisible();
@@ -171,7 +171,12 @@ test('News & Insights and Guides keep the same global header and the guide highl
   await page.getByRole('link', { name: /Buying property in Korea as a foreigner/ }).click();
   navigation = await openPrimaryNavigation(page);
   await expect(navigation.getByRole('link', { name: 'Guides', exact: true })).toHaveAttribute('aria-current', 'page');
-  await expect(page.getByRole('navigation', { name: 'In this article', exact: true })).toBeVisible();
+  const openedMenu = page.locator('header.site-header details.site-header__mobile-menu[open]');
+  if (await openedMenu.isVisible()) await openedMenu.locator('summary').press('Escape');
+  const contents = page.locator('details[data-article-contents]');
+  await expect(contents).not.toHaveAttribute('open', '');
+  await contents.locator('summary').click();
+  await expect(contents.getByRole('navigation', { name: 'Contents', exact: true })).toBeVisible();
   await expectNoHorizontalOverflow(page);
 });
 

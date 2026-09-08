@@ -84,10 +84,10 @@ export function NewsroomArticle({ article }: Readonly<{
         <div><dt>{t("Updated","수정일")}</dt><dd><time dateTime={article.updatedAt}>{article.updatedAt.slice(0, 10)}</time></dd></div>
       </dl>
     </header>
+    {buyingGuide ? null : <ArticleContents locale={article.locale} items={contentSections.flatMap((item, index) => item.heading ? [{ id: `section-${index + 1}`, title: item.heading }] : [])} />}
     {isMonthlyReport(article.slug) ? <MonthlyReportTrend slug={article.slug} locale={ko ? 'ko' : 'en'} /> : null}
     {article.type === 'guide' && article.marketId ? <div className={styles.articlePhoto}><MarketRepresentativePhoto context="city" photo={article.marketId === 'kr-seoul' ? MARKET_PHOTOS.seoul : article.marketId === 'sg-singapore' ? MARKET_PHOTOS.singapore : article.marketId === 'ae-dubai' ? MARKET_PHOTOS.dubai : null} cityLabel={market} /></div> : null}
     {figure == null ? null : <Infographic spec={figure} />}
-    {buyingGuide ? null : <ArticleContents locale={article.locale} items={contentSections.flatMap((item, index) => item.heading ? [{ id: `section-${index + 1}`, title: item.heading }] : [])} />}
     {buyingGuide ? <BuyingGuide guide={buyingGuide} locale={ko ? "ko" : "en"} /> : <article className={styles.articleBody}>
       {contentSections.map((section, index) => <section id={`section-${index + 1}`} key={section.heading}>{section.heading ? <h2>{section.heading}</h2> : null}<EditorialMarkdown source={section.body} /></section>)}
     </article>}

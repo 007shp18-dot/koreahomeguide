@@ -762,3 +762,11 @@
 :global(html[lang='ko']) .articleHero h1 { max-width: 26em; }
 :global(html[lang='ko']) .articleHero .deck { max-width: 42em; font-size: 1rem; line-height: 1.65; word-break: keep-all; }
 :global(html[lang='ko']) .articleHero { gap: 16px; }
+
+.articleHero { max-width: 760px; margin-inline: auto; gap: 16px; padding-top: 16px; }
+.articleHero h1 { font-size: clamp(30px, 3.2vw, 42px); line-height: 1.25; word-break: keep-all; text-wrap: pretty; }
+.articleHero .deck { font-size: 17px; line-height: 1.8; }
+.articleHero .byline { display: flex; flex-wrap: wrap; gap: 12px 28px; margin: 0; }
+.articleHero .byline div { padding: 0; gap: 4px; }
+.article > details[data-article-contents] { max-width: 760px; margin: 12px auto 32px; }
+@media (max-width: 740px) { .articleHero .deck { font-size: 16px; } }

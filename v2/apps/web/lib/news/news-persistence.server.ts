@@ -19,12 +19,12 @@ function workspaceItem(row: NewsRow): NewsWorkspaceItem | null {
     || typeof row.canonical_url !== 'string' || typeof row.publisher !== 'string'
     || typeof row.category !== 'string' || typeof row.evidence_line !== 'string'
     || typeof row.source_kind !== 'string') return null;
-  if (!['seoul', 'singapore', 'dubai'].includes(row.market_key)) return null;
+  if (!['seoul', 'singapore', 'dubai', 'tokyo'].includes(row.market_key)) return null;
   if (!['matched', 'no-change', 'checking', 'insufficient'].includes(String(row.evidence_status))) return null;
   return Object.freeze({
     id: row.id,
     market: row.market_key as NewsWorkspaceItem['market'],
-    marketLabel: row.market_key === 'seoul' ? 'Seoul' : row.market_key === 'singapore' ? 'Singapore' : 'Dubai',
+    marketLabel: row.market_key === 'seoul' ? 'Seoul' : row.market_key === 'singapore' ? 'Singapore' : row.market_key === 'dubai' ? 'Dubai' : 'Tokyo',
     title: row.title,
     summary: row.summary,
     url: row.canonical_url,
@@ -59,7 +59,7 @@ export async function loadPersistedNewsItems(limit = 600): Promise<readonly News
       FROM (
         SELECT
           discovery.id,
-          CASE discovery.market_id WHEN 'kr-seoul' THEN 'seoul' WHEN 'sg-singapore' THEN 'singapore' WHEN 'ae-dubai' THEN 'dubai' END AS market_key,
+          CASE discovery.market_id WHEN 'kr-seoul' THEN 'seoul' WHEN 'sg-singapore' THEN 'singapore' WHEN 'ae-dubai' THEN 'dubai' WHEN 'jp-tokyo' THEN 'tokyo' END AS market_key,
           discovery.canonical_url,
           reviewed.title,
           article.summary,
@@ -115,11 +115,11 @@ export async function storeNewsItems(items: readonly NewsWorkspaceItem[]): Promi
   if (sql === null || items.length === 0) return 0;
   const payload = items
     .filter((item) => (
-      (item.market === 'seoul' || item.market === 'singapore' || item.market === 'dubai')
+      (item.market === 'seoul' || item.market === 'singapore' || item.market === 'dubai' || item.market === 'tokyo')
       && (item.sourceKind === 'naver-search' || item.sourceKind === 'google-news-rss')
     ))
     .map((item) => ({
-      market_id: item.market === 'seoul' ? 'kr-seoul' : item.market === 'singapore' ? 'sg-singapore' : 'ae-dubai',
+      market_id: item.market === 'seoul' ? 'kr-seoul' : item.market === 'singapore' ? 'sg-singapore' : item.market === 'dubai' ? 'ae-dubai' : 'jp-tokyo',
       canonical_url: item.url,
       title_hash: createHash('sha256').update(item.title.normalize('NFKC')).digest('hex'),
       title: item.title,

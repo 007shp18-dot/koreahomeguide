@@ -62,7 +62,7 @@ function CuratedDubaiExplorer({ locale = 'en',
     address: `${item.name}, Dubai, United Arab Emirates`,
     selected: selected === item.id,
   })), [areas, selected]);
-  return <MarketExploreShell locale={locale}
+  return <div className={styles.explorer}><MarketExploreShell locale={locale}
     eyebrow={t("Dubai")}
     title={t("Explore")}
     period={t("Area research")}
@@ -114,7 +114,7 @@ function CuratedDubaiExplorer({ locale = 'en',
       />
       <p>{t("Markers locate neighbourhoods, not individual buildings or available listings. Area transaction counts and prices are not published here.")}</p>
     </div>}
-  />;
+  /></div>;
 }
 
 export function DubaiExplorer({ locale = 'en',
@@ -221,7 +221,7 @@ export function DubaiExplorer({ locale = 'en',
   const hasFilters = query.trim() !== '' || housing !== 'apartment' || stage !== 'ready'
     || budgetMaximumAed !== null || yieldMinimumPct !== null;
 
-  return <div data-dubai-evidence="ready" data-dubai-explore-workspace="true">
+  return <div className={styles.explorer} data-dubai-evidence="ready" data-dubai-explore-workspace="true">
     <MarketExploreShell locale={locale}
       eyebrow={t("Dubai")}
       title={t("Explore")}
@@ -276,6 +276,9 @@ export function DubaiExplorer({ locale = 'en',
             <button type="button" aria-pressed={area.slug === selectedArea} onClick={() => selectArea(selectedArea === area.slug ? null : area.slug)}>
               <span><strong title={t(area.name)}>{t(area.name)}</strong><small>{t(housing === 'apartment' ? 'Apartment' : 'Villa')}{t(" · ")}{t(stage === 'ready' ? 'Ready' : 'Off-Plan')}</small></span>
             </button>
+            <p className={styles.resultPrice}><strong>{t(money(sale.medianPriceAed))}</strong><span>{t(sale.n.toLocaleString('en'))} {locale === 'ko' ? '건 거래' : 'sales'} · {t(moneyPerSqm(sale.medianPricePerSqmAed))}</span></p>
+            <details className={styles.resultEvidence} data-area-evidence="true" open={area.slug === selectedArea}>
+              <summary>{locale === 'ko' ? '가격·임대료 자세히 보기' : 'Price and rent details'}</summary>
             <dl className={styles.areaMetrics}>
               <div><dt>{t("Median sale price")}</dt><dd>{t(money(sale.medianPriceAed))}</dd></div>
               <div><dt>{t("Median AED/m²")}</dt><dd>{t(moneyPerSqm(sale.medianPricePerSqmAed))}</dd></div>
@@ -293,6 +296,7 @@ export function DubaiExplorer({ locale = 'en',
                 <strong>{t(money(project.medianPriceAed))}</strong>
               </button>)}</div>
             </details> : null}
+            </details>
             {area.href === null
               ? <span className={styles.unavailableLink}>{t("Area details unavailable")}</span>
               : <Link href={marketHref(locale, area.href)}>{t("View area prices")}</Link>}

@@ -50,3 +50,6 @@
   .identity { gap: 12px; }
   .detailGrid { gap: 24px; }
 }
+
+.exploreGrid[data-layout="list"] { grid-template-columns: minmax(0, 1fr); min-height: 0; }
+.exploreGrid[data-layout="list"] > .discovery { border: 0; }
