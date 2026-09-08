@@ -280,10 +280,10 @@ test('mobile controls keep 44px focus targets and natural document scrolling', a
   expect(railPlacement.maxHeight).toBe('none');
 
   const navigation = await openPrimaryNavigation(page);
-  const pricesTab = navigation.getByRole('link', { name: 'Prices' });
+  const exploreTab = navigation.getByRole('link', { name: 'Explore' });
   const viewTabs = page.getByRole('navigation', { name: 'Explorer view' }).getByRole('link');
   const districtLink = page.getByRole('combobox', { name: 'All 25 Seoul districts' });
-  for (const target of [pricesTab, districtLink]) {
+  for (const target of [exploreTab, districtLink]) {
     await expectTouchTarget(target);
     await expectCobaltFocus(page, target);
   }

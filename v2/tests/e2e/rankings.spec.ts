@@ -124,7 +124,7 @@ test('rankings remain contained and keyboard-readable at every release width', a
 test('Explore and district evidence keep Rankings reachable beside the five global product links', async ({ page }) => {
   await page.goto('/kr/seoul/explore/');
   const productNavigation = await openPrimaryNavigation(page);
-  await expect(productNavigation.getByRole('link', { name: 'Prices' }))
+  await expect(productNavigation.getByRole('link', { name: 'Explore' }))
     .toHaveAttribute('href', '/prices/');
   await expect(productNavigation.getByRole('link')).toHaveText(['Explore', 'Rankings', 'Tools', 'News & Insights', 'Guides']);
 
