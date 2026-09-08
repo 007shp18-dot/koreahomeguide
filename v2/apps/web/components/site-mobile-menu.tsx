@@ -23,6 +23,11 @@ export function SiteMobileMenu({
     <details
       className="site-header__mobile-menu"
       onClickCapture={closeAfterLinkActivation}
+      onKeyDown={event => {
+        if (event.key !== 'Escape') return;
+        menuRef.current?.removeAttribute('open');
+        menuRef.current?.querySelector('summary')?.focus();
+      }}
       ref={menuRef}
     >
       <summary aria-label={summaryLabel}>☰ <span>{summaryText}</span></summary>

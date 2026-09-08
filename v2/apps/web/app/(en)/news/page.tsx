@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 
 import { EditorialGrowthPublicFrame } from '@/components/editorial-growth/editorial-growth-public-shell';
 import { NewsroomIndex, resolveNewsroomFilters } from '@/components/newsroom/newsroom-index';
-import { listNewsroomArticles } from '@/lib/content/newsroom-content.server';
+import { listPortfolioRecords } from '@/content/portfolio-manifest';
 import { policyRepository } from '@/lib/policy/policy-repository.server';
 import { indexableMetadata } from '@/lib/public-metadata';
 
@@ -19,7 +19,7 @@ export async function generateMetadata({ searchParams = Promise.resolve({}) }: N
   return indexableMetadata({
     path: filters.canonicalHref as `/${string}`,
     title: 'Property news, policy and market insights | signedprice',
-    description: 'Property policy, market analysis and external headlines for Seoul, Singapore and Dubai, with sources and dates.',
+    description: 'City stories, buying journeys, local conversations and property news for Seoul, Singapore, Dubai and Tokyo.',
     ...(filters.type === 'insights' && filters.market === 'all' ? {
       languageAlternates: { en: '/news/' as const, ko: '/ko/news/' as const, 'zh-Hans': '/zh-cn/news/' as const },
     } : {}),
@@ -29,9 +29,9 @@ export async function generateMetadata({ searchParams = Promise.resolve({}) }: N
 export default async function NewsPage({ searchParams = Promise.resolve({}) }: NewsPageProps = {}) {
   const [filters, articles] = await Promise.all([
     searchParams.then(resolveNewsroomFilters),
-    listNewsroomArticles(),
+    Promise.resolve(listPortfolioRecords('en')),
   ]);
-  return <EditorialGrowthPublicFrame locale="en" surface="content">
-    <NewsroomIndex articles={articles} policies={policyRepository.list()} filters={filters} headlines={<Suspense fallback={<p role="status">Loading headlines…</p>}><StoredExternalHeadlines market={filters.market} preview={false} /></Suspense>} />
+  return <EditorialGrowthPublicFrame locale="en" surface="content" currentHref={filters.canonicalHref}>
+    <NewsroomIndex articles={articles} policies={policyRepository.list()} filters={filters} headlines={<Suspense fallback={<p role="status">Loading headlines…</p>}><StoredExternalHeadlines market={filters.market} preview={filters.type !== 'news'} /></Suspense>} />
   </EditorialGrowthPublicFrame>;
 }

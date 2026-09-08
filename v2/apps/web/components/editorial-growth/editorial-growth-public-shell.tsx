@@ -44,8 +44,10 @@ export function EditorialGrowthPublicFrame({
   shell = false,
   surface,
   activeSection = 'news',
+  currentHref,
 }: Readonly<{
   activeSection?: 'news' | 'guides';
+  currentHref?: string;
   children: ReactNode;
   locale: ReviewLocale;
   shell?: boolean;
@@ -66,7 +68,7 @@ export function EditorialGrowthPublicFrame({
         ...homepageCopy.header,
         homeHref: hrefs.home,
         links: surface === 'content'
-          ? [{ label: activeSection, href: `/${activeSection}/`, isCurrent: true }]
+          ? [{ label: activeSection, href: currentHref ?? `/${activeSection}/`, isCurrent: true }]
           : homepageCopy.header.links,
         ...(locale === 'zh-CN' ? {
           languageLabel: 'ZH',

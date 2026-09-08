@@ -1,4 +1,4 @@
-export type NewsWorkspaceMarket = 'all' | 'seoul' | 'singapore' | 'dubai';
+export type NewsWorkspaceMarket = 'all' | 'seoul' | 'singapore' | 'dubai' | 'tokyo';
 export type NewsWorkspaceEvidence = 'matched' | 'no-change' | 'checking' | 'insufficient';
 
 export type NewsWorkspaceItem = Readonly<{
@@ -14,7 +14,11 @@ export type NewsWorkspaceItem = Readonly<{
   category: string;
   evidence: NewsWorkspaceEvidence;
   evidenceLine: string;
-  sourceKind: 'naver-search' | 'google-news-rss' | 'signedprice-brief';
+  sourceKind: 'naver-search' | 'google-news-rss' | 'signedprice-brief' | 'reviewed-source';
+  titleKo?: string;
+  summaryKo?: string;
+  buyerNote?: string;
+  buyerNoteKo?: string;
 }>;
 
 export type NewsWorkspaceModel = Readonly<{

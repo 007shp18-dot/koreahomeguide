@@ -1,6 +1,7 @@
 import 'server-only';
 
 import type { MetadataRoute } from 'next';
+import { CITY_STORIES, cityStoryHref } from '../content/city-stories';
 import { EDITORIAL_PORTFOLIO } from '../content/portfolio-manifest';
 import { PUBLIC_POLICY_RECORDS } from '../lib/policy/policy-repository.server';
 import { contractCheckEvidenceRepositoriesFromEnvironment } from '../lib/contract-check/evidence-repositories.server';
@@ -65,6 +66,7 @@ const localizedPairs: readonly LocalizedPair[] = Object.freeze([
   Object.freeze({ en: '/ae/dubai/', ko: '/ko/ae/dubai/' }),
   Object.freeze({ en: '/contact/', ko: '/ko/contact/' }),
   ...['/sg/singapore/explore/', '/sg/singapore/explore/ccr/', '/sg/singapore/explore/rcr/', '/sg/singapore/explore/ocr/', '/ae/dubai/explore/', '/ae/dubai/check/', '/ae/dubai/guide/'].map(en => ({ en: en as `/${string}`, ko: `/ko${en}` as `/${string}` })),
+  ...CITY_STORIES.map(story => ({ en: cityStoryHref(story.city) as `/${string}`, ko: cityStoryHref(story.city, 'ko') as `/${string}` })),
   ...editorialLocalizedPairs,
 ] as const);
 
@@ -213,6 +215,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     sitemapEntry('/sg/singapore/rankings/'),
     sitemapEntry('/ko/sg/singapore/rankings/'),
   ];
+  entries.push(...CITY_STORIES.flatMap(story => (['en', 'ko'] as const).map(locale => sitemapEntry(cityStoryHref(story.city, locale) as `/${string}`, new Date('2026-09-08')))));
   entries.push(...EDITORIAL_PORTFOLIO.map((article) => sitemapEntry(
     article.canonicalHref as `/${string}`,
     new Date(article.updatedAt),

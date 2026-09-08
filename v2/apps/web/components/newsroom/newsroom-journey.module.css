@@ -1,0 +1,101 @@
+.index { width: min(1160px, calc(100% - 48px)); margin: 0 auto; padding: 38px 0 72px; color: var(--ink); }
+.index h1 { font-size: clamp(30px, 3vw, 40px); }
+.index h2, .index h3, .article h1, .article h2 { letter-spacing: -.025em; text-wrap: pretty; overflow-wrap: anywhere; }
+.index h2 { font-size: clamp(24px, 2.6vw, 32px); line-height: 1.28; margin: 0 0 12px; }
+.index h3 { font-size: 20px; line-height: 1.4; margin: 0 0 12px; }
+.index p { font-size: 16px; line-height: 1.75; margin: 0 0 18px; color: var(--muted); }
+.index a { text-decoration: none; }
+.index h2 a, .index h3 a { color: inherit; }
+.index h2 a:hover, .index h3 a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.filterBar { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px 32px; border-block: 1px solid var(--line); margin: 28px 0 32px; }
+.tabs { display: flex; flex-wrap: wrap; gap: 0 20px; align-items: center; }
+.tabs a { display: inline-flex; align-items: center; min-height: 48px; color: var(--muted); font-size: 14px; font-weight: 600; white-space: nowrap; border-bottom: 2px solid transparent; }
+.tabs a[aria-current=page] { color: var(--accent); border-color: var(--accent); }
+.hero { display: grid; grid-template-columns: minmax(0, 1.85fr) minmax(0, 1fr); gap: 44px; }
+.hero > article, .related { min-width: 0; }
+.hero > article > h2 { font-size: clamp(26px, 3vw, 36px); max-width: 28ch; }
+.photo { margin: 0 0 22px; }
+.photo > div { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: var(--surface); }
+.photo img { object-fit: cover; }
+.photo figcaption { margin-top: 8px; font-size: 12px; line-height: 1.6; color: var(--muted); }
+.photo figcaption a { color: inherit; text-decoration: underline; }
+.index .eyebrow, .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .035em; line-height: 1.6; color: var(--muted); margin: 0 0 10px; }
+.related { display: flex; flex-direction: column; justify-content: center; }
+.related article { padding: 24px 0; border-bottom: 1px solid var(--line); }
+.related article:first-child { padding-top: 0; }
+.related h3 { font-size: 24px; }
+.related article p:not(.eyebrow) { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+.readLink { display: inline-flex; align-items: center; min-height: 44px; font-size: 14px; font-weight: 600; color: var(--accent); white-space: nowrap; }
+.section { margin-top: 56px; padding-top: 28px; border-top: 1px solid var(--line); scroll-margin-top: 150px; }
+.sectionHeading { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px 24px; margin-bottom: 24px; }
+.sectionHeading h2 { margin: 0; }
+.sectionHeading > a { font-size: 14px; min-height: 44px; display: inline-flex; align-items: center; }
+.steps { display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); gap: 16px; }
+.steps button { border: 0; border-bottom: 2px solid var(--line); padding: 12px 0; background: transparent; color: var(--muted); font: inherit; font-size: 13px; font-weight: 600; text-align: left; cursor: pointer; min-height: 64px; }
+.steps button span { display: block; margin-bottom: 5px; font-size: 12px; font-weight: 400; }
+.steps button[aria-selected=true] { color: var(--accent); border-color: var(--accent); }
+.stepPanel { display: flex; justify-content: space-between; gap: 32px; padding: 28px 0 0; }
+.stepPanel > div { max-width: 760px; }
+.stepPanel > a { align-self: flex-end; }
+.rows { list-style: none; padding: 0; margin: 0; }
+.rows > li { display: grid; grid-template-columns: 106px minmax(0,1fr); gap: 24px; padding: 22px 0; border-bottom: 1px solid var(--line); }
+.rows time { font-size: 12px; color: var(--muted); padding-top: 5px; }
+.rows h3 { margin-bottom: 8px; max-width: 65ch; }
+.rows p { max-width: 80ch; margin: 0; }
+.issues { border-top: 1px solid var(--line); }
+.issue { border-bottom: 1px solid var(--line); }
+.issue summary { display: grid; grid-template-columns: 106px minmax(0,1fr); gap: 24px; cursor: pointer; padding: 22px 28px 22px 0; position: relative; }
+.issue summary::after { content: '+'; position: absolute; right: 2px; top: 22px; font-size: 22px; }
+.issue[open] summary::after { content: '−'; }
+.issue summary span { font-size: 12px; color: var(--muted); padding-top: 5px; }
+.issue summary h3 { margin: 0; }
+.issue > div { margin: 0 0 24px 130px; max-width: 78ch; }
+.issue > div > a { display: inline-flex; align-items: center; min-height: 44px; font-size: 14px; margin-right: 24px; }
+.cityLinks { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 28px; margin: 28px 0; }
+.cityLinks article { padding: 0 0 12px; }
+.more { margin-top: 20px; }
+.more > summary { padding: 12px 0; min-height: 44px; cursor: pointer; color: var(--accent); font-size: 14px; }
+.simpleStory { max-width: 780px; }
+.article { width: min(960px, calc(100% - 48px)); margin: 0 auto; padding: 32px 0 72px; color: var(--ink); }
+.article > header { max-width: 760px; margin: 32px auto; }
+.article h1 { font-size: clamp(30px, 4vw, 44px); line-height: 1.22; margin: 12px 0 20px; }
+.article > header > p { font-size: 18px; line-height: 1.8; color: var(--muted); }
+.article .photo > div { aspect-ratio: 16 / 10; }
+.articleBody { max-width: 720px; margin: 36px auto 0; }
+.articleBody > nav { padding-bottom: 24px; border-bottom: 1px solid var(--line); display: flex; gap: 8px 20px; flex-wrap: wrap; }
+.articleBody > nav a { font-size: 13px; min-height: 44px; display: inline-flex; align-items: center; }
+.articleBody section { margin: 40px 0; scroll-margin-top: 160px; }
+.articleBody h2 { font-size: clamp(24px, 2.6vw, 30px); line-height: 1.4; margin: 0 0 20px; }
+.articleBody p { font-size: 17px; line-height: 1.9; margin: 0 0 22px; word-break: normal; }
+.articleLinks { display: flex; flex-wrap: wrap; gap: 4px 24px; }
+.articleLinks a { font-size: 14px; min-height: 44px; display: inline-flex; align-items: center; }
+.sources { border-top: 1px solid var(--line); padding-top: 24px; }
+.sources li { font-size: 13px; line-height: 1.8; margin: 8px 0; overflow-wrap: anywhere; }
+@media (max-width: 740px) {
+  .index, .article { width: calc(100% - 32px); padding-top: 24px; }
+  .hero { grid-template-columns: 1fr; gap: 28px; }
+  .related { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 24px; }
+  .related article, .related article:first-child { padding: 0 0 18px; }
+  .related h3 { font-size: 20px; }
+  .related article p:not(.eyebrow) { display: none; }
+  .section { margin-top: 36px; padding-top: 24px; }
+  .steps { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 4px 20px; }
+  .steps button { min-height: 56px; }
+  .stepPanel { display: block; padding-top: 24px; }
+  .rows > li, .issue summary { grid-template-columns: 1fr; gap: 6px; }
+  .issue > div { margin-left: 0; }
+  .issue summary { padding-right: 28px; }
+  .cityLinks { grid-template-columns: 1fr; gap: 20px; }
+  .filterBar { gap: 0; margin: 22px 0 26px; }
+  .tabs { gap: 0 18px; }
+  .article > header { margin-top: 24px; }
+  .articleBody p { font-size: 16px; line-height: 1.9; }
+}
+
+.index > header[data-research-page-heading] { grid-template-columns: minmax(0, 1fr) auto; padding: 12px 0 0; gap: 12px 32px; }
+.index > header[data-research-page-heading] > p { grid-column: 1; margin: 0; }
+.index > header[data-research-page-heading] > div { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+@media (max-width: 740px) {
+  .index > header[data-research-page-heading] { grid-template-columns: 1fr; padding-top: 4px; gap: 8px; }
+  .index > header[data-research-page-heading] > div { grid-column: 1; grid-row: auto; }
+}

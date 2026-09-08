@@ -64,7 +64,7 @@ export async function loadPersistedNewsItems(limit = 600): Promise<readonly News
           reviewed.title,
           article.summary,
           reviewed.publisher,
-          coalesce(reviewed.published_at, article.published_at) AS published_at,
+          reviewed.published_at AS published_at,
           'discovery'::text AS category,
           discovery.source_kind,
           'checking'::text AS evidence_status,
@@ -78,20 +78,22 @@ export async function loadPersistedNewsItems(limit = 600): Promise<readonly News
           JOIN content_sources source ON source.id = link.source_id
           WHERE link.content_slug = article.slug
             AND source.canonical_url = discovery.canonical_url
+            AND source.published_at <= now() AND source.checked_at <= now()
           ORDER BY source.checked_at DESC, source.id
           LIMIT 1
         ) reviewed ON true
         WHERE discovery.review_state = 'linked'
               AND article.market_id = discovery.market_id
+              AND article.locale = 'en'
               AND article.editorial_status = 'published'
               AND article.published_at <= now()
-              AND article.reviewed_at IS NOT NULL
+              AND article.reviewed_at <= now()
               AND nullif(btrim(article.reviewed_by), '') IS NOT NULL
               AND article.evidence_state <> 'withdrawn'
               AND (article.evidence_state = 'not-applicable' OR EXISTS (
                 SELECT 1 FROM content_source_links link
                 JOIN content_sources source ON source.id = link.source_id
-                WHERE link.content_slug = article.slug AND source.source_kind = 'primary'
+                WHERE link.content_slug = article.slug AND source.source_kind = 'primary' AND source.checked_at <= now()
               ))
       ) discovery
       WHERE is_active = true
@@ -152,17 +154,18 @@ export async function storeNewsItems(items: readonly NewsWorkspaceItem[]): Promi
         JOIN content_source_links link ON link.source_id = source.id
         JOIN content_articles article ON article.slug = link.content_slug
         WHERE source.canonical_url = item.canonical_url
+          AND source.published_at <= now() AND source.checked_at <= now()
           AND article.market_id = item.market_id
           AND article.locale = 'en'
           AND article.editorial_status = 'published'
           AND article.published_at <= now()
-          AND article.reviewed_at IS NOT NULL
+          AND article.reviewed_at <= now()
           AND nullif(btrim(article.reviewed_by), '') IS NOT NULL
           AND article.evidence_state <> 'withdrawn'
           AND (article.evidence_state = 'not-applicable' OR EXISTS (
             SELECT 1 FROM content_source_links primary_link
             JOIN content_sources primary_source ON primary_source.id = primary_link.source_id
-            WHERE primary_link.content_slug = article.slug AND primary_source.source_kind = 'primary'
+            WHERE primary_link.content_slug = article.slug AND primary_source.source_kind = 'primary' AND primary_source.checked_at <= now() AND source.checked_at <= now()
           ))
         ORDER BY article.published_at DESC, article.slug
         LIMIT 1

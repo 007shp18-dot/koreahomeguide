@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import { loadPersistedNewsItems } from '@/lib/news/news-persistence.server';
+import { loadPublicHeadlines } from '@/lib/news/public-headlines.server';
 
 export async function GET() {
-  const stored = await loadPersistedNewsItems(1500);
+  const stored = await loadPublicHeadlines();
   // A failed read must retain the client's last successful snapshot. Discovery
   // collection belongs to the scheduled ingestion route, behind editorial review.
   if (stored === null) {

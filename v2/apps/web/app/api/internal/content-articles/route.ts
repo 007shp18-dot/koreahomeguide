@@ -61,7 +61,6 @@ export function parseEditorialArticleInput(value: unknown): SaveEditorialArticle
     || title === null || summary === null || bodyMarkdown === null
     || !['global', 'seoul', 'singapore', 'dubai'].includes(String(marketValue))
     || !['draft', 'review', 'published', 'archived'].includes(String(statusValue))
-    || (statusValue === 'published' && marketValue === 'dubai')
     || (statusValue === 'published' && (
       reviewedBy === null
       || (evidenceState !== 'not-applicable' && !sources.some(({ kind }) => kind === 'primary'))

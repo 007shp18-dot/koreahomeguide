@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 const calls = vi.hoisted(() => ({ read: vi.fn(), refresh: vi.fn(), after: vi.fn() }));
 vi.mock('server-only', () => ({}));
 vi.mock('next/server', () => ({ after: calls.after, NextResponse: { json: (value: unknown, options: ResponseInit) => Response.json(value, options) } }));
-vi.mock('../lib/news/news-persistence.server', () => ({ loadPersistedNewsItems: calls.read }));
+vi.mock('../lib/news/public-headlines.server', () => ({ loadPublicHeadlines: calls.read }));
 vi.mock('../lib/news/news-route-model.server', () => ({ buildNewsIndexModel: () => ({}) }));
 vi.mock('../lib/news/naver-news.server', () => ({ buildApprovedNewsWorkspaceModel: () => ({ items: [], naverState: 'not-configured' }), buildNewsWorkspaceModel: calls.refresh }));
 import { GET } from '../app/api/news/route';
