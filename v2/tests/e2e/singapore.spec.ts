@@ -77,7 +77,9 @@ test('Singapore routes fail closed while display rights are pending', async ({ p
     'href',
     'https://www.signedprice.com/sg/',
   );
-  await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(0);
+  for (const [language, href] of [['en', '/sg/'], ['ko', '/ko/sg/'], ['x-default', '/sg/']]) {
+    await expect(page.locator(`link[rel="alternate"][hreflang="${language}"]`)).toHaveAttribute('href', `https://www.signedprice.com${href}`);
+  }
   await noOverflow(page);
   assertClean();
 });
@@ -88,7 +90,7 @@ test('ready Singapore evidence flows entry to project when promotion gates open'
   test.skip(await page.locator('[data-singapore-entry="ready"]').count() === 0,
     'Ready browser flow remains blocked until dataset-specific display rights are confirmed.');
 
-  await page.getByRole('link', { name: 'Explore reported prices', exact: true }).click();
+  await page.getByRole('navigation', { name: 'Where to go next' }).getByRole('link', { name: /^Explore reported prices/ }).click();
   await expect(page.locator('[data-singapore-evidence="ready"]')).toBeVisible();
   for (const code of ['CCR', 'RCR', 'OCR']) await expect(page.getByText(code, { exact: true }).first()).toBeVisible();
   await page.getByRole('tab', { name: /^CCR/ }).click();
@@ -174,7 +176,7 @@ test('native Singapore Check submits single and cross-market A/B evidence', asyn
   await page.getByLabel('Asking price (SGD)', { exact: true }).fill('350000');
   await page.getByRole('button', { name: 'Compare an asking price', exact: true }).click();
   await expect(page.getByLabel('Check result')).toContainText('SGD 300,000');
-  await expect(page.getByLabel('Check result')).toContainText('60th percentile');
+  await expect(page.getByLabel('Check result').locator('dt').filter({ hasText: /^Price percentile$/ }).locator('+ dd')).toHaveText('60th');
   await expect(page.getByLabel('Check result')).toContainText('2026-08–2026-08');
 
   await page.getByRole('link', { name: 'Compare A/B' }).click();

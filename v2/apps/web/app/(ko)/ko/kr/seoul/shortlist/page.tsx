@@ -9,5 +9,5 @@ export const metadata = indexableMetadata({
   locale: 'ko_KR', languageAlternates: { en: '/kr/seoul/shortlist/', ko: '/ko/kr/seoul/shortlist/' },
 });
 export default function Page() {
-  return <><SiteHeader copy={{ ...buildKoreanSiteHeader('/kr/seoul/shortlist/'), links: [{ label: '예산·관심 목록', href: '/ko/kr/seoul/shortlist/', isCurrent: true }] }} /><SeoulShortlist locale="ko" /><SiteFooter copy={KOREAN_SITE_FOOTER} /></>;
+  return <><SiteHeader copy={{ ...buildKoreanSiteHeader('/kr/seoul/shortlist/'), links: [{ label: '예산·관심 목록', href: '/ko/kr/seoul/shortlist/', isCurrent: true }] }} /><SeoulShortlist locale="ko" /><SiteFooter locale="ko" copy={KOREAN_SITE_FOOTER} /></>;
 }

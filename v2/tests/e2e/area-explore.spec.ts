@@ -69,6 +69,8 @@ async function expectTouchTarget(locator: Locator) {
 }
 
 async function expectCobaltFocus(locator: Locator) {
+  // Enter keyboard modality: a touch-opened mobile menu does not show :focus-visible.
+  await locator.press('Tab');
   await locator.focus();
   const focus = await locator.evaluate((element) => {
     const style = getComputedStyle(element);

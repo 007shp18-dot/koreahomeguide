@@ -171,7 +171,7 @@ const copy: Readonly<Record<string, string>> = {
   ": distribution not published.": ": 가격 분포 미공개",
   "reported transactions. At least": "건의 신고 거래. 최소 표본:",
   "are required.": "건 필요",
-  "Check this project price": "이 단지 가격 검토",
+  "Check this project price": "매물 가격 비교",
   "Median price": "중위가격",
   "01 / Project distribution": "01 / 단지 가격 분포",
   "Price and unit-price evidence.": "가격 및 단위면적당 가격 자료",
@@ -290,7 +290,7 @@ export function sgText<T>(locale: MarketLocale, value: T): T {
     .replace(/(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sept?|Oct|Nov|Dec) (\d{4})/g, (_, month: string, year: string) => `${year}년 ${monthNames[month]}월`)
     .replace(/Most-observed towns · full reported period (.+)/g, '거래가 많은 타운 · 전체 신고 기간 $1')
     .replace(/The exact selection was below five records; (\w+) evidence is shown without widening the time window\./g, (_, level: string) => `정확히 일치하는 거래가 5건 미만이므로 기간을 확대하지 않고 ${{project:'단지',district:'지구',segment:'권역',block:'블록',town:'타운',national:'전국'}[level] ?? level} 범위의 자료를 표시합니다.`)
-    .replace(/(\d+)(?: yrs| years| Yrs| Years)(?: lease)?(?: from (\d{4}))?/g, (_, years: string, from?: string) => `${years}년 임차권${from ? ` (${from}년 시작)` : ''}`);
+    .replace(/(\d+)(?: yrs| years| Yrs| Years)(?: lease)?(?: (?:commencing )?from (\d{4}))?/g, (_, years: string, from?: string) => `${years}년 임차권${from ? ` (${from}년 시작)` : ''}`);
   if (translated !== value) return translated as T;
   if (value.includes(' · ')) return value.split(' · ').map(part => sgText(locale, part)).join(' · ') as T;
   return marketText(locale, value) as T;

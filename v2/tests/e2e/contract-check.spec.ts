@@ -81,11 +81,10 @@ test('streamed single Check results show the exact fixture evidence period in bo
     ['/kr/seoul/check/?check=1&district=gangnam-gu&housing=apartment&area=84&transaction=sale&price=1200000000',
       '7 completed months · 2026-02–2026-08'],
     ['/ko/kr/seoul/check/?check=1&district=gangnam-gu&housing=apartment&area=84&transaction=monthly&deposit=50000000&monthly-rent=2000000',
-      '7개월 완료 · 2026-02–2026-08'],
+      '7개월 집계 · 2026-02–2026-08'],
   ] as const) {
     const response = await page.goto(path);
     expect(response?.status()).toBe(200);
-    await page.waitForLoadState('networkidle');
     const result = page.locator('[data-single-result]').filter({ visible: true });
     await expect(result).toHaveCount(1);
     await expect(result).toContainText(period);

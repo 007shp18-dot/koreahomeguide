@@ -102,7 +102,7 @@ export default async function KoreanExplorePage({ searchParams }: KoreanExploreP
           initialSelection={restoredSelection}
         />
       </main>
-      <SiteFooter copy={KOREAN_SITE_FOOTER} />
+      <SiteFooter locale="ko" copy={KOREAN_SITE_FOOTER} />
     </div>
   );
 }

@@ -70,6 +70,9 @@ describe('shared visitor market overview', () => {
     expect(html).toContain('href="/ko/news?market=seoul&amp;type=analysis"');
     expect(html).toContain('<figcaption>도시 전경</figcaption>');
     expect(html).not.toContain('City view');
+    expect(html).toContain('aria-label="Footer 서비스"');
+    expect(html).toContain('href="/ko/sg"');
+    expect(html).not.toContain('Explore SignedPrice');
   });
 
   it('describes Singapore coverage without referring to absent headline figures', () => {

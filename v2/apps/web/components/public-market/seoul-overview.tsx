@@ -34,6 +34,6 @@ export function SeoulOverview({ locale = 'en' }: { locale?: 'en' | 'ko' }) {
           <p><a href="https://rt.molit.go.kr/">{ko ? '국토교통부 실거래가 공개시스템' : 'MOLIT reported contracts'}</a></p></>} />
     </main>
     <PublicBreadcrumbJsonLd items={[{ name: ko ? '홈' : 'Home', path: '/' }, { name: ko ? '서울' : 'Seoul', path: `${prefix}/kr/seoul/` }]} />
-    <SiteFooter copy={ko ? KOREAN_SITE_FOOTER : homepageCopy.footer} />
+    <SiteFooter locale={locale} copy={ko ? KOREAN_SITE_FOOTER : homepageCopy.footer} />
   </div>;
 }

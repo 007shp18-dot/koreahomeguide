@@ -7,7 +7,10 @@ const size = { width: 1200, height: 630 } as const;
 export async function signedPriceSocialImage(locale: 'en' | 'ko'): Promise<ImageResponse> {
   const korean = locale === 'ko';
   const koreanFont = korean
-    ? await readFile(join(process.cwd(), 'app/fonts/social/signedprice-social-ko.ttf'))
+    ? await readFile(join(process.cwd(), 'app/fonts/social/signedprice-social-ko.ttf')).catch((error: NodeJS.ErrnoException) => {
+      if (error.code !== 'ENOENT') throw error;
+      return readFile(join(process.cwd(), 'apps/web/app/fonts/social/signedprice-social-ko.ttf'));
+    })
     : undefined;
   return new ImageResponse(
     (
