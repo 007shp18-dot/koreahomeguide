@@ -163,6 +163,11 @@ test('News & Insights and Guides keep the same global header and the guide highl
   await expect(page.getByRole('heading', { name: 'Guides', exact: true, level: 1 })).toBeVisible();
   navigation = await openPrimaryNavigation(page);
   await expect(navigation).toHaveText(newsLabels, { useInnerText: true });
+  const mobileMenu = page.locator('header.site-header details.site-header__mobile-menu[open]');
+  if (await mobileMenu.isVisible()) {
+    await mobileMenu.locator('summary').press('Escape');
+    await expect(page.locator('header.site-header details.site-header__mobile-menu')).not.toHaveAttribute('open', '');
+  }
   await page.getByRole('link', { name: 'Buying in Korea as a foreigner', exact: true }).click();
   navigation = await openPrimaryNavigation(page);
   await expect(navigation.getByRole('link', { name: 'Guides', exact: true })).toHaveAttribute('aria-current', 'page');
