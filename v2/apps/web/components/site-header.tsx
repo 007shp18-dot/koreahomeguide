@@ -97,7 +97,17 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
           summaryLabel={isKorean ? '메뉴 열기' : 'Open menu'}
           summaryText={isKorean ? '메뉴' : 'Menu'}
         >
-          <nav aria-label={isKorean ? '전체 메뉴' : 'Site menu'}>{primaryLinks.map(link => <Link key={link.href} href={link.href}>{link.label}</Link>)}</nav>
+          <nav aria-label={isKorean ? '전체 메뉴' : 'Site menu'}>
+            {primaryLinks.map(link => (
+              <Link
+                key={link.href}
+                href={link.href}
+                aria-current={isCurrentGlobalLink(link.href.replace('/zh-cn', ''), currentHref) ? 'page' : undefined}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
           <nav aria-label={isKorean ? '도시 선택' : 'Choose a city'}>{visibleMarkets.map(market => <Link key={market.id} href={market.href} aria-current={marketId === market.id ? 'page' : undefined}>{market.label}</Link>)}</nav>
           {marketId && <nav aria-label={`${marketLabel} pages`}>{getMarketLocalNavigation(marketId, isKorean ? 'ko' : 'en').map(item => <Link key={item.href} href={item.href}>{item.label}</Link>)}</nav>}
           <Suspense fallback={<LanguageLinks pathname={fallbackPath} alternate={copy.languageSwitch} />}><SiteLanguageNavigation fallbackPath={fallbackPath} translations={editorialLanguageRoutes()} alternate={copy.languageSwitch} /></Suspense>
