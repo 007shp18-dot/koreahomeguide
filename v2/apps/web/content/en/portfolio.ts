@@ -3,6 +3,7 @@ import { enrichEnglishRecord } from './research-expansions';
 import { DUBAI_RENTAL_YIELD } from './dubai-rental-yield';
 import { KOREA_LARGE_ESTATE_SPILLOVER } from './korea-large-estate-spillover';
 import { SINGAPORE_LENTOR_SPILLOVER } from './singapore-lentor-spillover';
+import { LATEST_MARKET_NEWS, THREE_CITY_BUYER_PULSE } from './market-news-2026-09-08';
 import { infographic, portfolioRecord, RELEASES, SOURCES } from '../portfolio-builders';
 
 const seoulDistrictChart = infographic({
@@ -52,6 +53,8 @@ const singaporeRegionChart = infographic({
 });
 
 export const ENGLISH_PORTFOLIO = Object.freeze([
+  THREE_CITY_BUYER_PULSE,
+  ...LATEST_MARKET_NEWS,
   ...AFFORDABLE_RESALE_STORIES,
   KOREA_LARGE_ESTATE_SPILLOVER,
   SINGAPORE_LENTOR_SPILLOVER,

@@ -41,27 +41,28 @@ describe('launch editorial portfolio', () => {
     }
   });
 
-  it('publishes the 72-item portfolio with complete Korean counterparts', () => {
-    expect(EDITORIAL_PORTFOLIO).toHaveLength(72);
+  it('publishes the 82-item portfolio including official news and Korean counterparts', () => {
+    expect(EDITORIAL_PORTFOLIO).toHaveLength(82);
     expect(Object.isFrozen(EDITORIAL_PORTFOLIO)).toBe(true);
-    expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'en')).toHaveLength(32);
-    expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'ko')).toHaveLength(32);
+    expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'en')).toHaveLength(37);
+    expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'ko')).toHaveLength(37);
     expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'zh-CN')).toHaveLength(8);
-    expect(Object.fromEntries(['policy-update', 'market-brief', 'data-story', 'guide'].map((type) => [
+    expect(Object.fromEntries(['news-brief', 'policy-update', 'market-brief', 'data-story', 'guide'].map((type) => [
       type,
       EDITORIAL_PORTFOLIO.filter((record) => record.type === type).length,
     ]))).toEqual({
+      'news-brief': 6,
       'policy-update': 14,
-      'market-brief': 21,
-      'data-story': 14,
+      'market-brief': 23,
+      'data-story': 16,
       guide: 23,
     });
   });
 
   it('keeps every published claim attached to review, evidence and an internal next step', () => {
     expect(validateEditorialPortfolio(EDITORIAL_PORTFOLIO)).toBe(EDITORIAL_PORTFOLIO);
-    expect(new Set(EDITORIAL_PORTFOLIO.map(({ id }) => id)).size).toBe(72);
-    expect(new Set(EDITORIAL_PORTFOLIO.map(({ canonicalHref }) => canonicalHref)).size).toBe(72);
+    expect(new Set(EDITORIAL_PORTFOLIO.map(({ id }) => id)).size).toBe(82);
+    expect(new Set(EDITORIAL_PORTFOLIO.map(({ canonicalHref }) => canonicalHref)).size).toBe(82);
     for (const record of EDITORIAL_PORTFOLIO) {
       expect(record.status).toBe('published');
       expect(record.readerQuestion.length).toBeGreaterThan(record.locale === 'zh-CN' ? 8 : 20);
@@ -76,9 +77,9 @@ describe('launch editorial portfolio', () => {
     }
   });
 
-  it('publishes fourteen evidence-linked and accessible Data Story infographics', () => {
+  it('publishes sixteen evidence-linked and accessible Data Story infographics', () => {
     const stories = EDITORIAL_PORTFOLIO.filter(({ type }) => type === 'data-story');
-    expect(stories).toHaveLength(14);
+    expect(stories).toHaveLength(16);
     for (const story of stories) {
       expect(story.infographic).not.toBeNull();
       expect(story.infographic?.locale).toBe(story.locale);

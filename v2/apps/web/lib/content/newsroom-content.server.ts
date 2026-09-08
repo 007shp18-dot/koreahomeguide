@@ -7,11 +7,11 @@ import type { EditorialPortfolioRecord } from '../../content/portfolio-types';
 
 export const listNewsroomArticles = cache(async (): Promise<readonly EditorialPortfolioRecord[]> => {
   return Object.freeze(listPortfolioRecords('en')
-    .filter(({ type }) => type === 'market-brief' || type === 'data-story')
+    .filter(({ type }) => type === 'news-brief' || type === 'market-brief' || type === 'data-story')
     .sort((left, right) => right.publishedAt.localeCompare(left.publishedAt)));
 });
 
 export const getNewsroomArticle = cache(async (slug: string): Promise<EditorialPortfolioRecord | null> => {
   const article = getPortfolioRecord('en', slug);
-  return article?.type === 'market-brief' || article?.type === 'data-story' ? article : null;
+  return article?.type === 'news-brief' || article?.type === 'market-brief' || article?.type === 'data-story' ? article : null;
 });

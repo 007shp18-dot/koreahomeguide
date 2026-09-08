@@ -24,7 +24,7 @@ describe('public editorial homepage', () => {
     expect(markup).toContain('Where can your budget become a home?');
     expect(markup).toContain('href="/tools"');
     expect(markup).toContain('href="/kr/seoul/explore"');
-    expect(markup).toContain('href="/news?type=analysis"');
+    expect(markup).toContain('href="/news"');
     expect(markup).not.toContain('/design-review/');
   });
 
@@ -54,7 +54,7 @@ describe('public editorial homepage', () => {
   it('keeps global destinations and capability-safe market entry points crawlable', async () => {
     const markup = renderToStaticMarkup(await Home());
 
-    for (const href of ['/markets', '/prices', '/news?type=analysis', '/guides']) {
+    for (const href of ['/markets', '/prices', '/news', '/guides']) {
       expect(markup).toContain(`href="${href}"`);
     }
     for (const href of [

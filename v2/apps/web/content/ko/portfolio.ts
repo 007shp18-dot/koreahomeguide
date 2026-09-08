@@ -6,6 +6,8 @@ import { KOREAN_DUBAI_RENTAL_YIELD } from './dubai-rental-yield';
 import { KOREAN_KOREA_LARGE_ESTATE_SPILLOVER } from './korea-large-estate-spillover';
 import { KOREAN_SINGAPORE_LENTOR_SPILLOVER } from './singapore-lentor-spillover';
 import { KOREAN_MONTHLY_REPORTS } from './monthly-reports';
+import { KOREAN_LATEST_MARKET_NEWS } from './market-news-2026-09-08';
+import { KOREAN_SEOUL_59SQM_UNDER_700M } from './seoul-59sqm-under-700m';
 
 // Identity, dates, evidence, and numerical chart data are shared with the English edition.
 const copy: Readonly<Record<string, readonly [string, string, string]>> = {
@@ -85,6 +87,8 @@ function translateBase(record: EditorialPortfolioRecord): EditorialPortfolioReco
   } });
 }
 export const KOREAN_EDITORIAL_PORTFOLIO: readonly EditorialPortfolioRecord[] = Object.freeze([
+  ...KOREAN_LATEST_MARKET_NEWS,
+  KOREAN_SEOUL_59SQM_UNDER_700M,
   ...KOREAN_AFFORDABLE_RESALE_STORIES,
   KOREAN_KOREA_LARGE_ESTATE_SPILLOVER,
   KOREAN_SINGAPORE_LENTOR_SPILLOVER,
