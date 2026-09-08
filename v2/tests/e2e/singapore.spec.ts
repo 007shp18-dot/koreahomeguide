@@ -3,6 +3,7 @@ import {
   openMarketPagesNavigation,
   openPrimaryNavigation,
 } from './navigation-helpers';
+import { visibleProductNavigation } from './site-header-helpers';
 
 function observeRuntimeFailures(page: Page) {
   const consoleErrors: string[] = [];

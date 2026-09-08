@@ -6,6 +6,11 @@ import {
   openMarketPagesNavigation,
   openPrimaryNavigation,
 } from './navigation-helpers';
+import {
+  visibleLanguageNavigation,
+  visibleMarketNavigation,
+  visibleProductNavigation,
+} from './site-header-helpers';
 
 const releaseTarget = resolveReleaseTestTarget();
 

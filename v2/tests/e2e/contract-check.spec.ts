@@ -93,11 +93,17 @@ test('primary Contract Check exposes one quote and routes to the two-offer compa
     name: 'Compare an asking price',
     exact: true,
   })).toBeVisible();
-  await expect(page.locator('[data-primary-check="single-quote"]')).toHaveCount(1);
-  await expect(page.locator('form select')).toHaveCount(3);
-  await expect(page.getByRole('textbox', { name: 'Search a building · optional' })).toBeVisible();
-  await expect(page.locator('input[type="hidden"][name="building"]')).toHaveValue('');
-  await expect(page.locator('input[inputmode="numeric"]')).toHaveCount(1);
+  await page.waitForLoadState('networkidle');
+  const singleCheck = page.locator('[data-primary-check="single-quote"]').filter({ visible: true });
+  await expect(singleCheck).toHaveCount(1);
+  await expect(singleCheck.locator('fieldset').first()).toContainText('Property details');
+  await expect(singleCheck.locator('form select')).toHaveCount(3);
+  for (const name of ['district', 'housing', 'transaction']) {
+    await expect(singleCheck.locator(`select[name="${name}"]`)).toBeVisible();
+  }
+  await expect(singleCheck.getByRole('textbox', { name: 'Search a building · optional', exact: true }))
+    .toBeVisible();
+  await expect(singleCheck.locator('input[inputmode="numeric"]')).toHaveCount(1);
   await expect(page.getByRole('link', { name: 'Compare two offers' }).first())
     .toHaveAttribute('href', '/kr/seoul/check/compare/');
   const primaryIndexable = releaseTarget.usesExternalServer;
