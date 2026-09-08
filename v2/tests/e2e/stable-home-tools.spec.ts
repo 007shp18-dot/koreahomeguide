@@ -59,7 +59,7 @@ test('all tool languages use the same five navigation slots and Corrections has 
   const header = page.locator('header.site-header:visible');
   await expect(await openPrimaryNavigation(page)).toBeVisible();
   await expect(header.locator('.site-header__product-link')).toHaveCount(5);
-  await expect(header.getByRole('navigation', { name: 'Language navigation' }).filter({ visible: true }).getByRole('link')).toHaveText(['EN','KO','中文']);
+  await expect((await visibleLanguageNavigation(page)).getByRole('link')).toHaveText(['EN','KO','中文']);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
  }
  await page.goto('/kr/seoul/corrections/');

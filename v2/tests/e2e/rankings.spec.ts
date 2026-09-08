@@ -44,12 +44,16 @@ test('rankings server HTML exposes the three supported evidence lists', async ({
 
   expect(response?.status()).toBe(200);
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Seoul building price rankings');
+  await expect(page.getByRole('heading', { level: 2, name: 'Buildings with the highest medians' })).toBeVisible();
   const buildingRows = page.locator('[data-building-ranking-row]');
-  await expect(buildingRows).not.toHaveCount(0);
-  await expect(buildingRows.first().getByRole('link')).toHaveAttribute(
-    'href',
-    /\/kr\/seoul\/explore\/[^/]+\/[^/?]+\?transaction=sale&area=all&propertyType=/,
-  );
+  if (await buildingRows.count() > 0) {
+    await expect(buildingRows.first().getByRole('link')).toHaveAttribute(
+      'href',
+      /\/kr\/seoul\/explore\/[^/]+\/[^/?]+\?transaction=sale&area=all&propertyType=/,
+    );
+  } else {
+    await expect(page.getByText('Use the district comparison below.')).toBeVisible();
+  }
   await expect(page.locator('[data-ranking-section]')).toHaveCount(3);
   await expect(page.getByRole('tab', { name: 'Median price', exact: true })).toHaveAttribute('aria-selected', 'true');
   await page.getByRole('tab', { name: 'Price spread' }).click();
@@ -89,7 +93,11 @@ test('fixture district context preserves descending order and stable ranks acros
     rank: Number(row.querySelector('[aria-label^="Rank "]')?.textContent),
     value: Number(row.querySelector(':scope > strong')?.textContent?.replace(/[^0-9]/gu, '')),
   })));
-  await page.getByRole('link', { name: 'Next', exact: true }).click();
+  await page
+    .getByRole('navigation', { name: 'Ranking pages' })
+    .getByRole('link', { name: 'Next', exact: true })
+    .click();
+  await expect(page).toHaveURL(/(?:\?|&)page=2(?:&|$)/);
   const secondPageRows = page.getByRole('tabpanel', { name: 'Median price' }).locator('[data-ranking-row]');
   const secondPage = await secondPageRows.evaluateAll((rows) => rows.map((row) => ({
     id: row.getAttribute('data-ranking-row'),

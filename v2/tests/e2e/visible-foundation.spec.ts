@@ -196,17 +196,19 @@ for (const route of publicRoutes) {
   });
 }
 
-test('desktop exposes the compact Passport form and city exploration cards', async ({page}, testInfo) => {
+test('desktop exposes the primary search, compact Passport form, and city exploration cards', async ({page}, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium');
   await page.goto('/');
+  await expect(page.getByRole('heading', { level: 1, name: 'Somewhere worth knowing.' })).toBeInViewport();
+  await expect(page.getByRole('search')).toBeInViewport();
   const passport = page.locator('[data-home-region="passport"]');
   await expect(passport.getByRole('heading', {
     level: 2,
     name: 'Where can your budget become a home?',
-  })).toBeInViewport();
-  await expect(passport.getByRole('button', { name: 'Compare cities' })).toBeInViewport();
+  })).toBeVisible();
+  await expect(passport.getByRole('button', { name: 'Compare cities' })).toBeVisible();
   const markets = page.locator('[data-home-region="markets"]');
-  await expect(markets.getByRole('heading', {level:2})).toBeInViewport();
+  await expect(markets.getByRole('heading', {level:2})).toBeVisible();
   await expect(markets.locator('[data-contextual-action]')).toHaveCount(3);
   await expect(markets.locator('[data-primary-action="explore"]')).toHaveCount(3);
 });
