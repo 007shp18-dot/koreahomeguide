@@ -1,6 +1,13 @@
 name: signedprice mobile regression
 
 on:
+  pull_request:
+    paths:
+      - 'v2/tests/e2e/shared-navigation-dubai.spec.ts'
+      - 'v2/tests/e2e/passport.spec.ts'
+      - 'v2/apps/web/components/site-header.tsx'
+      - 'v2/apps/web/app/globals.css'
+      - '.github/workflows/signedprice-mobile-smoke.yml'
   push:
     paths:
       - 'v2/tests/e2e/shared-navigation-dubai.spec.ts'
