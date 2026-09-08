@@ -91,3 +91,11 @@
   .article > header { margin-top: 24px; }
   .articleBody p { font-size: 16px; line-height: 1.9; }
 }
+
+.index > header[data-research-page-heading] { grid-template-columns: minmax(0, 1fr) auto; padding: 12px 0 0; gap: 12px 32px; }
+.index > header[data-research-page-heading] > p { grid-column: 1; margin: 0; }
+.index > header[data-research-page-heading] > div { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+@media (max-width: 740px) {
+  .index > header[data-research-page-heading] { grid-template-columns: 1fr; padding-top: 4px; gap: 8px; }
+  .index > header[data-research-page-heading] > div { grid-column: 1; grid-row: auto; }
+}

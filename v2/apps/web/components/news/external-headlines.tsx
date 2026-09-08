@@ -39,7 +39,7 @@ export function ExternalHeadlines({ market, preview = false, initialModel = null
   const prefix = ko ? '/ko' : zh ? '/zh-cn' : '';
   const allHref = `${prefix}/news/?type=news${market === 'all' ? '' : `&market=${market}`}`;
   const dates = new Intl.DateTimeFormat(ko ? 'ko' : zh ? 'zh-CN' : 'en', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });
-  const title = ko ? '실제 뉴스' : zh ? '最新新闻' : 'Latest news';
+  const title = ko ? '최신 뉴스' : zh ? '最新新闻' : 'Latest news';
   return <section id="latest-news" className={styles.section} aria-labelledby="external-headlines-heading" data-external-headlines={status}>
     <header><div><h2 id="external-headlines-heading">{title}</h2><p>{ko ? '지금 나온 소식, 집을 고르는 사람에게 중요한 점.' : zh ? '近期报道，以及对购房选择的影响。' : 'What happened, and why it matters when choosing a home.'}</p></div>
       {preview ? <Link href={allHref}>{ko ? '뉴스 모두 보기' : zh ? '查看全部新闻' : 'All news'} →</Link> : <button type="button" onClick={() => setRefresh(value => value + 1)}>{ko ? '새로고침' : zh ? '刷新' : 'Refresh'}</button>}

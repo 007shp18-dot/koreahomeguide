@@ -31,7 +31,7 @@ export default async function NewsPage({ searchParams = Promise.resolve({}) }: N
     searchParams.then(resolveNewsroomFilters),
     Promise.resolve(listPortfolioRecords('en')),
   ]);
-  return <EditorialGrowthPublicFrame locale="en" surface="content">
+  return <EditorialGrowthPublicFrame locale="en" surface="content" currentHref={filters.canonicalHref}>
     <NewsroomIndex articles={articles} policies={policyRepository.list()} filters={filters} headlines={<Suspense fallback={<p role="status">Loading headlines…</p>}><StoredExternalHeadlines market={filters.market} preview={filters.type !== 'news'} /></Suspense>} />
   </EditorialGrowthPublicFrame>;
 }

@@ -12,5 +12,5 @@ export async function generateMetadata({ searchParams = Promise.resolve({}) }: P
 }
 export default async function Page({ searchParams = Promise.resolve({}) }: Props = {}) {
   const filters = resolveNewsroomFilters(await searchParams);
-  return <KoreanSiteFrame href="/ko/news/"><NewsroomIndex locale="ko" articles={listPortfolioRecords('ko')} policies={[]} filters={filters} headlines={<Suspense fallback={<p role="status">뉴스를 불러오는 중…</p>}><StoredExternalHeadlines market={filters.market} preview={filters.type !== 'news'} locale="ko" /></Suspense>} /></KoreanSiteFrame>;
+  return <KoreanSiteFrame href={`/ko${filters.canonicalHref}`}><NewsroomIndex locale="ko" articles={listPortfolioRecords('ko')} policies={[]} filters={filters} headlines={<Suspense fallback={<p role="status">뉴스를 불러오는 중…</p>}><StoredExternalHeadlines market={filters.market} preview={filters.type !== 'news'} locale="ko" /></Suspense>} /></KoreanSiteFrame>;
 }

@@ -16,5 +16,5 @@ export default async function Page({ params }: Props) {
   const { city } = await params;
   const story = CITY_STORIES.find(item => item.city === city);
   if (!story) notFound();
-  return <EditorialGrowthPublicFrame locale="en" surface="content"><CityStoryArticle story={story} locale="en" /></EditorialGrowthPublicFrame>;
+  return <EditorialGrowthPublicFrame locale="en" surface="content" currentHref={cityStoryHref(story.city)}><CityStoryArticle story={story} locale="en" /></EditorialGrowthPublicFrame>;
 }

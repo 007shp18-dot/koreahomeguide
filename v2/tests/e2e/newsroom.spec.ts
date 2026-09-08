@@ -173,13 +173,13 @@ test('News & Insights and Guides keep the same global header and the guide highl
 test('Tokyo city journey opens its own article, chapters and Korean translation', async ({ page }) => {
   await page.goto('/news/?market=tokyo');
   const lead = page.locator('[data-newsroom-lead]');
-  await expect(lead).toContainText('A Tokyo home starts with a station');
+  await expect(lead).toContainText('Finding a home in Tokyo');
   await page.getByRole('tab', { name: /Where\?/ }).click();
   await expect(page.getByRole('tabpanel')).toContainText('Narrow the city');
   await page.getByRole('tabpanel').getByRole('link', { name: /Read this chapter/ }).click();
   await expect(page).toHaveURL(/\/news\/city-stories\/tokyo\/#where$/);
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('A Tokyo home starts');
-  await expect(page.locator('main img')).toHaveJSProperty('naturalWidth', expect.any(Number));
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Finding a home in Tokyo');
+  await expect.poll(() => page.locator('main img').evaluate(image => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
   await expectNoHorizontalOverflow(page);
   await page.goto('/ko/news/city-stories/seoul/');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('성수가 좋아서, 서울의 집을 찾기 시작했다면');
@@ -188,4 +188,30 @@ test('Tokyo city journey opens its own article, chapters and Korean translation'
   await page.getByRole('link', { name: /Explore에서 지역과 가격 비교하기/ }).click();
   await expect(page).toHaveURL(/\/ko\/kr\/seoul\/explore\/$/);
   await expectNoHorizontalOverflow(page);
+});
+
+test('mobile menu and Explore fit the screen before and after opening navigation', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile-chromium');
+  for (const path of ['/news/', '/kr/seoul/explore/', '/sg/singapore/explore/']) {
+    await page.goto(path);
+    const menu = page.locator('header.site-header details.site-header__mobile-menu');
+    const summary = menu.locator('summary');
+    const box = await summary.boundingBox();
+    const width = page.viewportSize()!.width;
+    expect(box).not.toBeNull();
+    expect(box!.x).toBeGreaterThanOrEqual(0);
+    expect(box!.x + box!.width).toBeLessThanOrEqual(width);
+    await summary.click();
+    await expect(menu).toHaveAttribute('open', '');
+    const panel = menu.locator('.site-header__mobile-panel');
+    await expect(panel).toBeVisible();
+    const bounds = await panel.boundingBox();
+    expect(bounds!.x).toBeGreaterThanOrEqual(0);
+    expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width);
+    await testInfo.attach(`mobile-menu-${path.replaceAll('/', '-')}`, { body: await page.screenshot({fullPage:false}), contentType: 'image/png' });
+    await summary.press('Escape');
+    await expect(menu).not.toHaveAttribute('open', '');
+    await expectNoHorizontalOverflow(page);
+    await testInfo.attach(`mobile-page-${path.replaceAll('/', '-')}`, { body: await page.screenshot({fullPage:true}), contentType: 'image/png' });
+  }
 });
