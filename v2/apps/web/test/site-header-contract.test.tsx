@@ -42,6 +42,17 @@ describe('signedprice public navigation', () => {
     }
   });
 
+  it('marks the current destination inside the collapsed mobile menu', () => {
+    const html = renderToStaticMarkup(<SiteHeader copy={{
+      ...homepageCopy.header,
+      links: [{ label: 'Guide', href: '/guides/rent-an-apartment-in-korea/', isCurrent: true }],
+    }} />);
+    const mobileNavigation = html.match(/<nav aria-label="Site menu">([\s\S]*?)<\/nav>/)?.[1];
+    const guidesLink = mobileNavigation?.match(/<a[^>]*href="\/guides"[^>]*>Guides<\/a>/)?.[0];
+
+    expect(guidesLink).toContain('aria-current="page"');
+  });
+
   it('renders one global header and a separate market-local navigation', () => {
     const html = renderToStaticMarkup(<SiteHeader copy={header} />);
 

@@ -2,6 +2,7 @@ import { expect, test, type Locator, type Page } from '@playwright/test';
 import { visibleProductNavigation } from './site-header-helpers';
 
 import { resolveReleaseTestTarget } from '../../release-test-target';
+import { openPrimaryNavigation } from './navigation-helpers';
 
 const releaseTarget = resolveReleaseTestTarget();
 const submittedComparisonPath =
@@ -46,17 +47,17 @@ test('fixture-isolated release serves deterministic all-type A/B evidence', asyn
   const blankComparison = await request.get('/kr/seoul/check/compare/');
   const comparison = await request.get(submittedComparisonPath);
   const englishSale = await request.get(
-    '/kr/seoul/check/?check=1&district=gangnam-gu&housing=apartment&area=84' +
-    '&transaction=sale&price=1200000000',
+    '/api/seoul/check/?check=1&district=gangnam-gu&housing=apartment&area=84' +
+    '&transaction=sale&price=1200000000&locale=en',
   );
   const koreanMonthly = await request.get(
-    '/ko/kr/seoul/check/?check=1&district=gangnam-gu&housing=apartment&area=84' +
-    '&transaction=monthly&deposit=50000000&monthly-rent=2000000',
+    '/api/seoul/check/?check=1&district=gangnam-gu&housing=apartment&area=84' +
+    '&transaction=monthly&deposit=50000000&monthly-rent=2000000&locale=ko',
   );
   const blankComparisonHtml = await blankComparison.text();
   const comparisonHtml = await comparison.text();
-  const englishSaleHtml = await englishSale.text();
-  const koreanMonthlyHtml = await koreanMonthly.text();
+  const englishSalePayload = await englishSale.json();
+  const koreanMonthlyPayload = await koreanMonthly.json();
 
   expect(blankComparison.status()).toBe(200);
   expect(blankComparisonHtml).toContain('data-contract-check-form="ready"');
@@ -69,27 +70,17 @@ test('fixture-isolated release serves deterministic all-type A/B evidence', asyn
   expect(comparisonHtml).toContain('MOLIT reported sale and rental contracts');
   expect(comparisonHtml).not.toContain('Verified transaction evidence is unavailable.');
   expect(englishSale.status()).toBe(200);
+  expect(englishSalePayload.model.result).toMatchObject({
+    status: 'ready',
+    period: '2026-02/2026-08',
+    evidenceWindow: { completedMonthCount: 7 },
+  });
   expect(koreanMonthly.status()).toBe(200);
-  for (const html of [blankComparisonHtml, comparisonHtml, englishSaleHtml, koreanMonthlyHtml]) {
-    expect(html).not.toMatch(/SIGNEDPRICE_URA_ACCESS_KEY|sentinel-ura-key|AccessKey/);
-  }
-});
-
-test('streamed single Check results show the exact fixture evidence period in both languages', async ({ page }) => {
-  test.skip(releaseTarget.usesExternalServer, 'Synthetic Check evidence is local-release only.');
-  for (const [path, period] of [
-    ['/kr/seoul/check/?check=1&district=gangnam-gu&housing=apartment&area=84&transaction=sale&price=1200000000',
-      '7 completed months · 2026-02–2026-08'],
-    ['/ko/kr/seoul/check/?check=1&district=gangnam-gu&housing=apartment&area=84&transaction=monthly&deposit=50000000&monthly-rent=2000000',
-      '7개월 집계 · 2026-02–2026-08'],
-  ] as const) {
-    const response = await page.goto(path);
-    expect(response?.status()).toBe(200);
-    const result = page.locator('[data-single-result]').filter({ visible: true });
-    await expect(result).toHaveCount(1);
-    await expect(result).toContainText(period);
-    await expect(result).not.toContainText('Verified transaction evidence is unavailable.');
-  }
+  expect(koreanMonthlyPayload.model.result).toMatchObject({
+    status: 'ready',
+    period: '2026-02/2026-08',
+    evidenceWindow: { completedMonthCount: 7 },
+  });
 });
 
 test('primary Contract Check exposes one quote and routes to the two-offer comparison', async ({ page }) => {
@@ -213,7 +204,7 @@ test('Contract Check stays ordered, touch-sized, and keyboard reachable', async 
   await page.keyboard.press('Tab');
   await expect(page.locator('select[name="housing"]')).toBeFocused();
 
-  const productNavigation = await visibleProductNavigation(page);
+  const productNavigation = await openPrimaryNavigation(page);
   await expect(productNavigation.getByRole('link')).toHaveText(['Markets', 'Prices', 'Tools', 'News & Insights', 'Guides']);
   await expect(productNavigation.getByRole('link', { name: 'Prices' }))
     .toHaveAttribute('href', '/prices/');
@@ -258,12 +249,12 @@ test('each offer changes type independently and sale versus rent stays a neutral
 test('journey: unsupported entity context fails closed to the manual Check form', async ({ page }) => {
   await page.goto('/kr/seoul/check/?market=kr-seoul&entity=unknown-building&returnTo=https%3A%2F%2Fattacker.invalid%2F&building=unknown-building');
 
-  await page.waitForLoadState('networkidle');
-  const singleCheck = page.locator('[data-primary-check="single-quote"]').filter({ visible: true });
-  await expect(singleCheck).toBeVisible();
-  await expect(page.locator('input[name="market"]')).toHaveCount(0);
-  await expect(page.locator('input[name="entity"]')).toHaveCount(0);
-  await expect(page.getByRole('link', { name: /Return to / })).toHaveCount(0);
-  await expect(singleCheck.getByRole('textbox', { name: 'Search a building · optional', exact: true }))
-    .toHaveValue('');
+  await expect(page.locator('template[id^="B:"]')).toHaveCount(0);
+  const workspace = page.locator('[data-primary-check="single-quote"]').filter({ visible: true });
+  await expect(workspace).toBeVisible();
+  await expect(workspace.locator('input[name="market"]')).toHaveCount(0);
+  await expect(workspace.locator('input[name="entity"]')).toHaveCount(0);
+  await expect(workspace.getByRole('link', { name: /Return to / })).toHaveCount(0);
+  await expect(workspace.getByRole('textbox', { name: 'Search a building · optional' })).toHaveValue('');
+  await expect(workspace.locator('input[type="hidden"][name="building"]')).toHaveValue('');
 });

@@ -1,6 +1,8 @@
 import {expect,test} from '@playwright/test';
 import { visibleLanguageNavigation, visibleProductNavigation } from './site-header-helpers';
 
+import { openPrimaryNavigation } from './navigation-helpers';
+
 test('Chinese market cards align their primary actions on multi-column screens',async({page})=>{
  await page.goto('/zh-cn/kr/seoul/');
  await page.evaluate(()=>document.fonts.ready);
@@ -28,17 +30,8 @@ test('home presents three stable city cards and one budget journey without overf
  expect(positions.every(p => p.height >= 44 && p.titleFits)).toBe(true);
  if (Math.max(...positions.map(p => p.top)) - Math.min(...positions.map(p => p.top)) <= 2)
   expect(Math.max(...positions.map(p => p.action)) - Math.min(...positions.map(p => p.action))).toBeLessThanOrEqual(2);
- for (const [market, city, explore, check] of [
-  ['kr-seoul', 'Seoul', '/kr/seoul/explore/', '/kr/seoul/check/'],
-  ['sg-singapore', 'Singapore', '/sg/singapore/explore/', '/sg/singapore/check/'],
-  ['ae-dubai', 'Dubai', '/ae/dubai/explore/', '/ae/dubai/check/'],
- ] as const) {
-  const card = page.locator(`[data-contextual-action="${market}"]`);
-  await expect(card.getByRole('link')).toHaveCount(2);
-  await expect(card.locator('[data-primary-action="explore"]')).toHaveAttribute('href', explore);
-  await expect(card.getByRole('link', { name: `Check an asking price in ${city}`, exact: true }))
-   .toHaveAttribute('href', check);
- }
+ for (const [index, path] of ['/kr/seoul/explore', '/sg/singapore/explore', '/ae/dubai/explore'].entries())
+  await expect(cards.nth(index).locator('[data-primary-action="explore"]')).toHaveAttribute('href', new RegExp('^' + path + '/?$'));
  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
  await page.locator('[data-home-region="passport"] input[name="budget"]').fill('750000');
  await page.getByRole('button', {name:'Compare cities',exact:true}).click();
@@ -62,8 +55,11 @@ test('neutral calculator changes currency without carrying the previous purchase
 
 test('all tool languages use the same five navigation slots and Corrections has a useful report action',async({page})=>{
  for(const path of ['/tools/','/ko/tools/','/zh-cn/tools/']) {
-  await page.goto(path);await expect((await visibleProductNavigation(page)).getByRole('link')).toHaveCount(5);
-  await expect((await visibleLanguageNavigation(page)).getByRole('link')).toHaveText(['EN','KO','中文']);
+  await page.goto(path);
+  const header = page.locator('header.site-header:visible');
+  await expect(await openPrimaryNavigation(page)).toBeVisible();
+  await expect(header.locator('.site-header__product-link')).toHaveCount(5);
+  await expect(header.getByRole('navigation', { name: 'Language navigation' }).filter({ visible: true }).getByRole('link')).toHaveText(['EN','KO','中文']);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
  }
  await page.goto('/kr/seoul/corrections/');

@@ -1,5 +1,9 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
-import { visibleMarketNavigation, visibleProductNavigation } from './site-header-helpers';
+import {
+  openMarketPagesNavigation,
+  openPrimaryNavigation,
+} from './navigation-helpers';
+import { visibleProductNavigation } from './site-header-helpers';
 
 function observeRuntimeFailures(page: Page) {
   const consoleErrors: string[] = [];
@@ -77,9 +81,19 @@ test('Singapore routes fail closed while display rights are pending', async ({ p
     'href',
     'https://www.signedprice.com/sg/',
   );
-  for (const [language, href] of [['en', '/sg/'], ['ko', '/ko/sg/'], ['x-default', '/sg/']]) {
-    await expect(page.locator(`link[rel="alternate"][hreflang="${language}"]`)).toHaveAttribute('href', `https://www.signedprice.com${href}`);
-  }
+  await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(3);
+  await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute(
+    'href',
+    'https://www.signedprice.com/sg/',
+  );
+  await expect(page.locator('link[rel="alternate"][hreflang="ko"]')).toHaveAttribute(
+    'href',
+    'https://www.signedprice.com/ko/sg/',
+  );
+  await expect(page.locator('link[rel="alternate"][hreflang="x-default"]')).toHaveAttribute(
+    'href',
+    'https://www.signedprice.com/sg/',
+  );
   await noOverflow(page);
   assertClean();
 });
@@ -201,15 +215,15 @@ test('Seoul and Singapore Explore share the same desktop rail width', async ({ p
   await page.goto('/sg/singapore/explore/');
   const singaporeRail = await page.locator('[data-market-shell-region="discovery"]').boundingBox();
   const singaporeHeader = await page.locator('.site-header__inner').boundingBox();
-  await expect(await visibleProductNavigation(page)).toHaveCount(1);
-  await expect(await visibleMarketNavigation(page, 'Singapore')).toBeVisible();
+  await expect(await openPrimaryNavigation(page)).toBeVisible();
+  await expect(await openMarketPagesNavigation(page, 'Singapore')).toBeVisible();
   await page.goto('/kr/seoul/explore/');
   const seoulRail = await page.locator(
     '[data-explorer-layout="split"] > [data-explorer-region="results"]',
   ).boundingBox();
   const seoulHeader = await page.locator('.site-header__inner').boundingBox();
-  await expect(await visibleProductNavigation(page)).toHaveCount(1);
-  await expect(await visibleMarketNavigation(page, 'Seoul')).toBeVisible();
+  await expect(await openPrimaryNavigation(page)).toBeVisible();
+  await expect(await openMarketPagesNavigation(page, 'Seoul')).toBeVisible();
   expect(singaporeHeader?.height).toBeGreaterThanOrEqual(44);
   expect(seoulHeader?.height).toBe(singaporeHeader?.height);
   if (page.viewportSize()!.width > 1120) {

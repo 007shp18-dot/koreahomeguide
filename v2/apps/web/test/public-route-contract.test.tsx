@@ -28,6 +28,7 @@ import {
   PUBLIC_SUMMARY_ARTIFACT_VERSION,
   buildKoreaPublicPageMetadata,
 } from '../lib/public-market/route-model.server';
+import { buildPublicDistrictModel } from '../lib/public-market/area-route-model.server';
 import { indexableMetadata } from '../lib/public-metadata';
 import { buildMarketPageModel } from '../lib/route-model';
 import { dubaiEvidenceRepositoryFromEnvironment } from '../lib/dubai/evidence-repository.server';
@@ -152,7 +153,6 @@ describe('public migration containment', () => {
         ko: '/ko/kr/seoul/explore/',
       },
       locale: 'ko_KR',
-      imagePath: '/og/ko/',
     } as Parameters<typeof indexableMetadata>[0]);
 
     expect(english.alternates).toEqual({
@@ -353,6 +353,16 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/ko/kr/seoul/check/',
       'https://www.signedprice.com/ko/kr/seoul/check/compare/',
     ].sort());
+  });
+
+  it('keeps withheld district pages out of the sitemap', () => {
+    const urls = new Set(sitemap().map(({ url }) => url));
+
+    for (const { slug } of SEOUL_RENT_CHECK_DISTRICTS) {
+      const published = buildPublicDistrictModel(slug)?.status === 'published';
+      expect(urls.has(`https://www.signedprice.com/kr/seoul/explore/${slug}/`)).toBe(published);
+      expect(urls.has(`https://www.signedprice.com/ko/kr/seoul/explore/${slug}/`)).toBe(published);
+    }
   });
 
   it('adds only artifact-reconciled numeric News detail routes', () => {

@@ -15,9 +15,9 @@ const editorialTranslationPairs = [
 ] as const;
 
 export const editorialAlternates: Readonly<Record<string, Readonly<Record<string, string>>>> =
-  Object.fromEntries(editorialTranslationPairs.flatMap(([en, korean, chinese]) => {
-    const languages = { en, ko: korean, 'zh-Hans': chinese, 'x-default': en };
-    return [[en, languages], [korean, languages], [chinese, languages]];
+  Object.fromEntries(editorialTranslationPairs.flatMap(([en, ko, chinese]) => {
+    const languages = { en, ko, 'zh-Hans': chinese, 'x-default': en };
+    return [[en, languages], [ko, languages], [chinese, languages]];
   }));
 
 export const publicRoutes = [
@@ -125,7 +125,7 @@ export const publicRoutes = [
       : 'index' as const,
     ...(district.slug === PUBLIC_AREA_WITHHELD_SLUG
       ? {}
-      : { canonical: `/kr/seoul/explore/${district.slug}/`, alternates: true }),
+      : { canonical: `/kr/seoul/explore/${district.slug}/`, alternates: true as const }),
   })),
   {
     path: '/kr/seoul/explore/jongno-gu/synthetic-test-building/',

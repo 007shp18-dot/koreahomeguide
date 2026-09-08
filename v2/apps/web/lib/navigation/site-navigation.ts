@@ -34,7 +34,12 @@ export function languageDestinations(pathname: string, search = ''): Record<Site
     destinations.en = withQuery(english);
     destinations.ko = withQuery(`/ko${english}`);
     if (english === '/kr/seoul') destinations['zh-CN'] = '/zh-cn/kr/seoul/';
-  } else if (english === '/prices' || english === '/markets' || english === '/tools' || english === '/tools/property-scenario' || english === '/passport') {
+  } else if (english === '/markets') {
+    // `/ko/markets/` is a convenience redirect to the Korean home page, not
+    // an independently canonical translation. Hreflang destinations must be
+    // terminal pages, so expose only the published English route here.
+    destinations.en = withQuery(english);
+  } else if (english === '/prices' || english === '/tools' || english === '/tools/property-scenario' || english === '/passport') {
     destinations.en = withQuery(english);
     destinations.ko = withQuery(`/ko${english}`);
     if (english === '/tools' || english === '/passport') destinations['zh-CN'] = withQuery(`/zh-cn${english}`);

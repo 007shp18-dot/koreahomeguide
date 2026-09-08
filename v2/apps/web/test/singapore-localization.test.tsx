@@ -51,8 +51,26 @@ describe('Singapore Korean functional surfaces', () => {
     expect(sgText('ko', '12 reported sale transactions')).toBe('신고 매매 12건');
     expect(sgText('ko', 'Jun 2026–Aug 2026')).toBe('2026년 6월–2026년 8월');
     expect(sgText('en', 'Selected project')).toBe('Selected project');
-    const metadata = singaporeMetadata({ title: 'Singapore Check | signedprice', alternates: { canonical: 'https://www.signedprice.com/ko/sg/singapore/check/' } });
-    expect(metadata.alternates?.languages).toEqual({ en: 'https://www.signedprice.com/sg/singapore/check/', ko: 'https://www.signedprice.com/ko/sg/singapore/check/', 'x-default': 'https://www.signedprice.com/sg/singapore/check/' });
+    const metadata = singaporeMetadata({
+      title: 'Singapore Check | signedprice',
+      description: 'Compare one Singapore offer.',
+      alternates: {
+        canonical: 'https://www.signedprice.com/ko/sg/singapore/check/',
+      },
+      robots: { index: false, follow: false },
+    });
+    expect(metadata.alternates?.languages).toEqual({
+      en: 'https://www.signedprice.com/sg/singapore/check/',
+      ko: 'https://www.signedprice.com/ko/sg/singapore/check/',
+      'x-default': 'https://www.signedprice.com/sg/singapore/check/',
+    });
+    expect(metadata.openGraph).toMatchObject({
+      locale: 'ko_KR',
+      images: ['https://www.signedprice.com/og/ko/'],
+    });
+    expect(metadata.twitter).toMatchObject({
+      images: ['https://www.signedprice.com/og/ko/'],
+    });
     expect(metadata.title).toBe('싱가포르 매물 가격 비교 | signedprice');
   });
 });

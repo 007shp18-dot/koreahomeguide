@@ -6,7 +6,7 @@ import { MARKET_PHOTOS } from '@/components/market-representative-photo';
 import styles from '@/components/design-review/editorial-growth-home.module.css';
 import { indexableMetadata } from '@/lib/public-metadata';
 
-export const metadata = indexableMetadata({ path: '/ko/', title: '서울·싱가포르·두바이 부동산 실거래 비교 | SignedPrice', description: '서울·싱가포르·두바이의 실거래가를 살펴보고, 관심 있는 집의 가격을 비교해 보세요.', locale: 'ko_KR', languageAlternates: { en: '/', ko: '/ko/', 'zh-Hans': '/zh-cn/kr/seoul/' } });
+export const metadata = indexableMetadata({ path: '/ko/', title: '서울·싱가포르·두바이 부동산 실거래 비교 | SignedPrice', description: '서울·싱가포르·두바이의 실거래가를 살펴보고, 관심 있는 집의 가격을 비교해 보세요.', locale: 'ko_KR', languageAlternates: { en: '/', ko: '/ko/', 'zh-Hans': '/zh-cn/kr/seoul/' }, imagePath: '/og/ko/' });
 
 const cities = [
   { name: '서울', photo: MARKET_PHOTOS.seoul, href: '/ko/kr/seoul/', explore: '/ko/kr/seoul/explore/', check: '/ko/kr/seoul/check/', summary: '관심 있는 동네와 단지의 매매·전세·월세 실거래가를 확인하세요.', english: false },

@@ -2,6 +2,7 @@ import { expect, test, type Locator, type Page } from '@playwright/test';
 import { visibleProductNavigation } from './site-header-helpers';
 
 import { resolveReleaseTestTarget } from '../../release-test-target';
+import { openPrimaryNavigation } from './navigation-helpers';
 import {
   PUBLIC_AREA_WITHHELD_SLUG,
 } from './public-area-summary-fixture';
@@ -68,10 +69,10 @@ async function expectTouchTarget(locator: Locator) {
   expect(box?.height).toBeGreaterThanOrEqual(44);
 }
 
-async function expectCobaltFocus(locator: Locator) {
-  // Enter keyboard modality: a touch-opened mobile menu does not show :focus-visible.
-  await locator.press('Tab');
+async function expectCobaltFocus(page: Page, locator: Locator) {
+  await page.keyboard.press('Tab');
   await locator.focus();
+  await expect(locator).toBeFocused();
   const focus = await locator.evaluate((element) => {
     const style = getComputedStyle(element);
     return {
@@ -275,21 +276,19 @@ test('mobile controls keep 44px focus targets and natural document scrolling', a
   expect(railPlacement.position).toBe('static');
   expect(railPlacement.maxHeight).toBe('none');
 
-  const navigation = await visibleProductNavigation(page);
+  const navigation = await openPrimaryNavigation(page);
   const pricesTab = navigation.getByRole('link', { name: 'Prices' });
   const viewTabs = page.getByRole('navigation', { name: 'Explorer view' }).getByRole('link');
   const districtLink = page.getByRole('combobox', { name: 'All 25 Seoul districts' });
-  await expectTouchTarget(pricesTab);
-  await expectCobaltFocus(pricesTab);
-  const mobileMenu = page.locator('.site-header__mobile-menu').filter({ visible: true });
-  if (await mobileMenu.count()) await mobileMenu.locator('summary').click();
-  await expectTouchTarget(districtLink);
-  await expectCobaltFocus(districtLink);
+  for (const target of [pricesTab, districtLink]) {
+    await expectTouchTarget(target);
+    await expectCobaltFocus(page, target);
+  }
   await districtLink.selectOption('jongno-gu');
   await expect(page).toHaveURL(/district=jongno-gu/);
   const detailLink = page.locator('[data-building-row]').first().getByRole('link');
   await expectTouchTarget(detailLink);
-  await expectCobaltFocus(detailLink);
+  await expectCobaltFocus(page, detailLink);
   await expect(viewTabs).toHaveCount(4);
   for (let index = 0; index < 4; index += 1) await expectTouchTarget(viewTabs.nth(index));
   await expectNoHorizontalOverflow(page);

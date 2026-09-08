@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { visibleProductNavigation } from './site-header-helpers';
+import { openPrimaryNavigation } from './navigation-helpers';
 
 async function expectNoHorizontalOverflow(page: Page) {
   const dimensions = await page.evaluate(() => ({
@@ -9,19 +9,20 @@ async function expectNoHorizontalOverflow(page: Page) {
   expect(dimensions.scroll).toBeLessThanOrEqual(dimensions.client);
 }
 
-test('News and Insights opens the combined newsroom and preserves category navigation', async ({ page }) => {
-  await page.goto('/news/?type=data-stories');
-  await (await visibleProductNavigation(page)).getByRole('link', { name: 'News & Insights', exact: true }).click();
+test('News & Insights opens the unified hub and preserves the filter journey', async ({ page }) => {
+  await page.goto('/prices/');
+  await (await openPrimaryNavigation(page)).getByRole('link', { name: 'News & Insights', exact: true }).click();
   await expect(page).toHaveURL(/\/news\/$/);
-  await expect(page.getByRole('heading', { level: 1, name: 'News & Insights' })).toBeVisible();
+  await expect(page.locator('header.site-header:visible details.site-header__mobile-menu')).not.toHaveAttribute('open', '');
+  await expect(page.getByRole('heading', { level: 1, name: 'News & Insights', exact: true })).toBeVisible();
   const types = page.getByRole('navigation', { name: 'News and insight types' });
   await expect(types.getByRole('link', { name: 'Latest', exact: true })).toHaveAttribute('aria-current', 'page');
-  await types.getByRole('link', { name: 'Data Stories', exact: true }).click();
-  await expect(page).toHaveURL(/type=data-stories$/);
-  await expect(types.getByRole('link', { name: 'Data Stories', exact: true })).toHaveAttribute('aria-current', 'page');
-  await expect(page.locator('[data-newsroom-lead]')).toHaveAttribute('data-newsroom-lead', 'Data Story');
-  await types.getByRole('link', { name: 'Latest', exact: true }).click();
-  await expect(page).toHaveURL(/\/news\/$/);
+  await types.getByRole('link', { name: 'Market Insight', exact: true }).click();
+  await expect(page).toHaveURL(/\/news\/\?type=market$/);
+  await expect(types.getByRole('link', { name: 'Market Insight', exact: true })).toHaveAttribute('aria-current', 'page');
+  await types.getByRole('link', { name: 'News', exact: true }).click();
+  await expect(page).toHaveURL(/\/news\/\?type=news$/);
+  await expect(page.getByRole('heading', { level: 2, name: 'External headlines', exact: true })).toBeVisible();
   await expectNoHorizontalOverflow(page);
 });
 
@@ -29,7 +30,7 @@ test('Newsroom filters reviewed SignedPrice records and opens the policy lifecyc
   await page.goto('/news/');
 
   await expect(page).toHaveTitle(/Property news, policy and market insights/);
-  await expect(page.getByRole('heading', { level: 1, name: 'News & Insights' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: 'News & Insights', exact: true })).toBeVisible();
   await expect(page.getByRole('navigation', { name: 'News and insight types' }).getByRole('link')).toHaveCount(5);
   await expect(page.getByRole('navigation', { name: 'News markets' }).getByRole('link')).toHaveText(['All', 'Seoul', 'Singapore', 'Dubai']);
   await expect(page.locator('[data-newsroom-lead]')).toHaveCount(1);
@@ -133,20 +134,17 @@ test('external headlines survive market filtering and open the original publishe
   await expectNoHorizontalOverflow(page);
 });
 
-test('News and Guides keep the same global header and the guide highlights Guides', async ({ page }) => {
+test('News & Insights and Guides keep the same global header and the guide highlights Guides', async ({ page }) => {
   await page.goto('/news/');
-  const nav = await visibleProductNavigation(page);
-  const newsLabels = await nav.innerText();
-  await nav.getByRole('link', { name: 'Guides', exact: true }).click();
+  let navigation = await openPrimaryNavigation(page);
+  const newsLabels = await navigation.innerText();
+  await navigation.getByRole('link', { name: 'Guides', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Guides', exact: true, level: 1 })).toBeVisible();
-  await expect(await visibleProductNavigation(page)).toHaveText(newsLabels, { useInnerText: true });
-  const mobileMenu = page.locator('.site-header__mobile-menu').filter({ visible: true });
-  if (await mobileMenu.count()) await mobileMenu.locator('summary').click();
+  navigation = await openPrimaryNavigation(page);
+  await expect(navigation).toHaveText(newsLabels, { useInnerText: true });
   await page.getByRole('link', { name: 'Read guide', exact: true }).first().click();
-  await expect((await visibleProductNavigation(page)).getByRole('link', { name: 'Guides', exact: true }))
-    .toHaveAttribute('href', '/guides/');
-  // The desktop markup owns the active-state attribute; mobile links omit it.
-  await expect(page.locator('.site-header__product-nav a[href="/guides/"]')).toHaveAttribute('aria-current', 'page');
+  navigation = await openPrimaryNavigation(page);
+  await expect(navigation.getByRole('link', { name: 'Guides', exact: true })).toHaveAttribute('aria-current', 'page');
   await expect(page.getByRole('navigation', { name: 'In this article', exact: true })).toBeVisible();
   await expectNoHorizontalOverflow(page);
 });

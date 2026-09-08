@@ -1,5 +1,9 @@
 import { expect, test } from '@playwright/test';
-import { visibleLanguageNavigation, visibleMarketNavigation, visibleProductNavigation } from './site-header-helpers';
+import {
+  visibleLanguageNavigation,
+  visibleMarketNavigation,
+  visibleProductNavigation,
+} from './site-header-helpers';
 
 test('uses one navigation order and published language links across markets', async ({ page }) => {
   for (const path of [
@@ -66,8 +70,9 @@ for (const width of [320, 390, 430]) {
       test.skip(testInfo.project.name !== 'mobile-chromium', 'Mobile viewport regression');
       for (const path of ['/', '/ko/passport/', '/zh-cn/passport/']) {
         await page.goto(path);
-        await page.locator('header.site-header summary').click();
-        const languages = page.getByRole('navigation', { name: 'Language navigation', exact: true });
+        const header = page.locator('header.site-header:visible');
+        await header.locator('summary').click();
+        const languages = header.getByRole('navigation', { name: 'Language navigation', exact: true });
         await expect(languages.getByRole('link')).toHaveText(['EN', 'KO', '中文']);
         const boxes = await languages.getByRole('link').evaluateAll(nodes => nodes.map(node => {
           const box = node.getBoundingClientRect();

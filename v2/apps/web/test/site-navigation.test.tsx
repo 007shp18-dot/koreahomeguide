@@ -41,6 +41,13 @@ describe('shared navigation destinations', () => {
   it('keeps the current news filter on the Chinese index', () => {
     expect(languageDestinations('/news/', '?market=singapore')['zh-CN']).toBe('/zh-cn/news/?market=singapore');
   });
+  it('does not advertise the redirect-only Korean markets route as a translation', () => {
+    expect(languageDestinations('/markets/')).toEqual({
+      en: '/markets/',
+      ko: null,
+      'zh-CN': null,
+    });
+  });
   it('links translated articles through actual translation groups', () => {
     const routes = editorialLanguageRoutes();
     const published = new Set(listPortfolioRecords().map((record) => record.canonicalHref));
