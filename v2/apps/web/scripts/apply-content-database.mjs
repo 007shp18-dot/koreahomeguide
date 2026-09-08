@@ -4,6 +4,13 @@ import { dirname, join } from 'node:path';
 import { neon } from '@neondatabase/serverless';
 import { loadMigrationBundles } from './migration-files.mjs';
 
+// A preview may inherit a production connection; builds must remain read-only.
+// Operators can still migrate an isolated preview database with db:migrate.
+if (process.argv.includes('--if-configured') && process.env.VERCEL_ENV === 'preview') {
+  process.stdout.write('Preview build: automatic database migration skipped.\n');
+  process.exit(0);
+}
+
 const connectionString = process.env.DATABASE_URL?.trim();
 if (!connectionString && process.argv.includes('--if-configured')) {
   process.stdout.write('DATABASE_URL is not configured; persistent-content migration skipped.\n');

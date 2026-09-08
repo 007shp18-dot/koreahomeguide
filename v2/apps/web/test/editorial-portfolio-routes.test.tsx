@@ -44,11 +44,13 @@ describe('editorial portfolio public routes', () => {
     const records = listPortfolioRecords('zh-CN');
     const guides = records.filter(({ type }) => type === 'guide');
     const guideIndex = renderToStaticMarkup(<ChineseGuidesPage />);
-    const newsIndex = renderToStaticMarkup(await ChineseNewsPage());
+    const newsIndexes = (await Promise.all(['insights', 'news', 'policy'].map(async (type) =>
+      renderToStaticMarkup(await ChineseNewsPage({ searchParams: Promise.resolve({ type }) })),
+    ))).join('');
     expect(records).toHaveLength(8);
     expect(chineseGuideParams()).toEqual(guides.map(({ slug }) => ({ slug })));
     for (const record of records) {
-      expect(record.type === 'guide' ? guideIndex : newsIndex).toContain(record.title);
+      expect(record.type === 'guide' ? guideIndex : newsIndexes).toContain(record.title);
     }
     const guide = guides[0]!;
     expect(renderToStaticMarkup(await ChineseGuidePage({ params: Promise.resolve({ slug: guide.slug }) })))

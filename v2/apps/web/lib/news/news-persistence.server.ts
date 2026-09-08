@@ -2,7 +2,7 @@ import 'server-only';
 
 import { createHash } from 'node:crypto';
 
-import { contentDatabase } from '../db/postgres.server';
+import { contentDatabase, publicContentDatabase } from '../db/postgres.server';
 import type { NewsWorkspaceItem } from './news-workspace-model';
 
 type NewsRow = Readonly<Record<string, unknown>>;
@@ -38,9 +38,9 @@ function workspaceItem(row: NewsRow): NewsWorkspaceItem | null {
   });
 }
 
-/** External publisher headlines only; never presented as SignedPrice-reviewed articles. */
+/** Public originals must be linked to a reviewed, published article and its source list. */
 export async function loadPersistedNewsItems(limit = 600): Promise<readonly NewsWorkspaceItem[] | null> {
-  const sql = contentDatabase();
+  const sql = publicContentDatabase();
   if (sql === null) return null;
   try {
     const rows = await sql`
@@ -68,9 +68,31 @@ export async function loadPersistedNewsItems(limit = 600): Promise<readonly News
           coalesce(category_hint, 'discovery') AS category,
           source_kind,
           'checking'::text AS evidence_status,
-          'External discovery item · not reviewed for publication'::text AS evidence_line,
+          'External source reviewed for published content'::text AS evidence_line,
           is_active
-        FROM external_news_items
+        FROM external_news_items discovery
+        WHERE discovery.review_state = 'linked'
+          AND EXISTS (
+            SELECT 1
+            FROM content_articles article
+            WHERE article.slug = discovery.linked_content_slug
+              AND article.editorial_status = 'published'
+              AND article.published_at <= now()
+              AND article.reviewed_at IS NOT NULL
+              AND nullif(btrim(article.reviewed_by), '') IS NOT NULL
+              AND article.evidence_state <> 'withdrawn'
+              AND EXISTS (
+                SELECT 1 FROM content_source_links link
+                JOIN content_sources source ON source.id = link.source_id
+                WHERE link.content_slug = article.slug
+                  AND source.canonical_url = discovery.canonical_url
+              )
+              AND (article.evidence_state = 'not-applicable' OR EXISTS (
+                SELECT 1 FROM content_source_links link
+                JOIN content_sources source ON source.id = link.source_id
+                WHERE link.content_slug = article.slug AND source.source_kind = 'primary'
+              ))
+          )
       ) discovery
       WHERE is_active = true
       ORDER BY published_at DESC

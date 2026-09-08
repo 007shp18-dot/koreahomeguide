@@ -104,6 +104,8 @@ describe('Korea proximity Detail route composition', () => {
     }));
     if (identity.coordinate.status !== 'ready') throw new Error('Expected ready fixture coordinate.');
     expect(html).toContain('data-building-detail="exact-evidence"');
+    expect(html).toContain(`data-building-save="gangnam-gu/${exact.buildingId}"`);
+    expect(html).toContain(`aria-label="Save ${exact.officialName}"`);
     expect(html).toContain('Route station · 1호선 · 250 m');
     const factsSection = html.slice(
       html.indexOf('data-building-section="official-facts"'),
@@ -115,6 +117,8 @@ describe('Korea proximity Detail route composition', () => {
     expect(factsSection).toContain('Route school · 500 m');
     expect(html).toContain('station=SEOUL%3ASTN%2F001');
     expect(html).toContain('q=route+check');
+    expect(html).toContain('data-building-media="curated-market-photo"');
+    expect(html).toContain('Editorial city photograph · not this exact property');
     expect(html).not.toContain('data-building-media="location-only"');
     expect(html).not.toContain('data-building-media="google-place-photo"');
   });
@@ -152,6 +156,7 @@ describe('Korea proximity Detail route composition', () => {
     expect(html).toContain('src="/assets/buildings/evidence-tower.jpg"');
     expect(html).toContain('DB station · 2호선 · 180 m');
     expect(html).toContain('DB school · 360 m');
+    expect(html).not.toContain('data-building-media="curated-market-photo"');
     expect(html).not.toContain('/api/building-photo');
   });
 
@@ -175,6 +180,8 @@ describe('Korea proximity Detail route composition', () => {
     }));
     expect(html.match(/Route station · 1호선 · 250 m/g)).toHaveLength(1);
     expect(html.match(/Route school · 500 m/g)).toHaveLength(1);
+    expect(html).toContain('data-building-save="jongno-gu/jongno-monthly-home"');
+    expect(html).toContain('data-building-media="curated-market-photo"');
   });
 
   it('composes the legacy-public route with the missing disclosure rather than hiding the Detail page', () => {
@@ -186,6 +193,7 @@ describe('Korea proximity Detail route composition', () => {
       dependencies: { proximityRepository: Object.freeze({ state: 'missing' }) },
     }));
     expect(html).toContain('data-building-detail="ready"');
+    expect(html).toContain('data-building-media="curated-market-photo"');
     expect(html).not.toContain('Proximity data unavailable');
     expect(html).toContain('q=route+check');
   });

@@ -58,6 +58,8 @@ describe('observed building detail', () => {
       expect(html).toContain(value);
     }
     expect(html).toContain('data-building-detail="identity-only"');
+    expect(html).toContain('data-building-save="jongno-gu/jongno-monthly-home"');
+    expect(html).toContain('aria-label="Save Monthly Home"');
     expect(html).not.toContain('data-photo-state="unavailable"');
     expect(html).not.toContain('Publication boundary');
     expect(html).not.toContain('Observed</span>');

@@ -5,7 +5,6 @@ import { describe, expect, it } from 'vitest';
 import { SiteHeader } from '../components/site-header';
 import {
   homepageCopy,
-  productNavigationLinks,
   type SiteHeaderModel,
 } from '../lib/site-copy';
 
@@ -19,12 +18,10 @@ const header: SiteHeaderModel = {
   links: [{ label: 'Explore', href: '/kr/seoul/explore/', isCurrent: true }],
 };
 
-const globalLabels = ['Markets', 'Prices', 'Tools', 'News & Insights', 'Guides'] as const;
+const globalLabels = ['Explore', 'Rankings', 'Tools', 'News & Insights', 'Guides'] as const;
 
 describe('signedprice public navigation', () => {
   it('renders the same five global destinations in the same order', () => {
-    expect(productNavigationLinks.map(({ label }) => label)).toEqual(globalLabels);
-
     for (const copy of [homepageCopy.header, header]) {
       const html = renderToStaticMarkup(<SiteHeader copy={copy} />);
       const positions = globalLabels.map((label) => html.indexOf(`>${label.replace('&', '&amp;')}</`));
@@ -33,6 +30,28 @@ describe('signedprice public navigation', () => {
       expect(positions).toEqual([...positions].sort((left, right) => left - right));
       expect(html).not.toMatch(/>Properties<|>Community<|>Invest</);
     }
+  });
+
+  it('keeps saved places and offer checking alongside the language controls', () => {
+    const html = renderToStaticMarkup(<SiteHeader copy={header} />);
+    expect(html).toMatch(/<a[^>]*href="\/kr\/seoul\/shortlist\/?"[^>]*>Saved<\/a>/);
+    expect(html).toMatch(/<a[^>]*href="\/kr\/seoul\/check\/?"[^>]*>Check an offer<\/a>/);
+    expect(html).toContain('aria-label="Language navigation"');
+  });
+
+  it('recognises Tokyo without assigning Seoul market navigation or actions', () => {
+    const html = renderToStaticMarkup(<SiteHeader copy={{
+      ...homepageCopy.header,
+      marketLabel: 'Tokyo',
+      links: [{ label: 'Tokyo', href: '/jp/tokyo/', isCurrent: true }],
+    }} />);
+    expect(html).toMatch(/<a[^>]*aria-current="page"[^>]*href="\/jp\/tokyo\/?"[^>]*>Tokyo<\/a>/);
+    expect(html).toContain('data-market-context="jp-tokyo"');
+    expect(html).not.toContain('aria-label="Seoul market navigation"');
+    expect(html).not.toMatch(/class="site-header__action[^>]*href="\/kr\/seoul\/(?:check|shortlist)/);
+    expect(html).not.toMatch(/class="site-header__action[^>]*href="\/jp\/tokyo/);
+    expect(html).not.toContain('aria-label="Quick actions"');
+    expect(html).toMatch(/href="\/tools\/?"[^>]*>Tools<\/a>/);
   });
 
   it('opens the unified News & Insights hub and keeps it selected across editorial routes', () => {
@@ -53,12 +72,23 @@ describe('signedprice public navigation', () => {
     expect(guidesLink).toContain('aria-current="page"');
   });
 
-  it('renders one global header and a separate market-local navigation', () => {
+  it('marks translated global destinations from their locale-prefixed paths', () => {
+    const html = renderToStaticMarkup(<SiteHeader copy={{
+      ...homepageCopy.header,
+      languageLabel: 'KO',
+      links: [{ label: 'Guide', href: '/ko/guides/example/', isCurrent: true }],
+    }} />);
+    expect(html).toMatch(/<a[^>]*aria-current="page"[^>]*href="\/ko\/guides\/?"[^>]*>가이드<\/a>/);
+  });
+
+  it('keeps market-local destinations inside the compact city context menu', () => {
     const html = renderToStaticMarkup(<SiteHeader copy={header} />);
 
     expect(html.match(/<header\b/g)).toHaveLength(1);
     expect(html.match(/data-navigation-tier="global"/g)).toHaveLength(1);
     expect(html.match(/data-navigation-tier="market-local"/g)).toHaveLength(1);
+    expect(html).toContain('class="site-header__context-menu site-header__context-menu--market"');
+    expect(html).toContain('aria-label="Choose a city"');
     expect(html).toContain('aria-label="Seoul market navigation"');
     for (const label of ['Overview', 'Explore', 'Check', 'Rankings', 'Corrections']) {
       expect(html).toContain(`>${label}</`);
@@ -72,11 +102,11 @@ describe('signedprice public navigation', () => {
     expect(html).not.toContain('data-navigation-tier="market-local"');
   });
 
-  it('locks the global and 48px market-local geometry', () => {
+  it('keeps compact selectors and their destinations at a usable control height', () => {
     const css = readFileSync(new URL('../app/globals.css', import.meta.url), 'utf8');
 
-    expect(css).toMatch(/\.site-header__inner\s*{[\s\S]*?min-height:\s*64px;/);
-    expect(css).toMatch(/\.market-local-nav\s*{[\s\S]*?height:\s*48px;/);
+    expect(css).toMatch(/\.site-header__context-menu\s*>\s*summary\s*{[\s\S]*?min-height:\s*var\(--control-min\);/);
+    expect(css).toMatch(/\.site-header__context-panel\s+a\s*{[\s\S]*?min-height:\s*var\(--control-min\);/);
     expect(css).toMatch(/\.market-local-nav__link\s*{[\s\S]*?min-height:\s*var\(--control-min\);/);
   });
 });

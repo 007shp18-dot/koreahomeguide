@@ -15,12 +15,14 @@ import {
   type PublicAreaRouteDependencies,
 } from './area-route-model.server';
 import type {
+  PublicBuildingRankingsModel,
   PublicAreaRankingsModel,
   PublicDistrictRankingRow,
   RankingKind,
   SignedRankingBar,
   UnavailableRankingDistrict,
 } from './area-route-types';
+import type { KoreaEvidenceRepositories } from './korea-evidence-repositories.server';
 import { createSelectionHref } from '../navigation/explorer-selection';
 import { createPublicAreaSummaryRepository } from './area-summary-repository.server';
 import { buildKoreaEvidenceAreaExploreModel } from './korea-explorer-area-route.server';
@@ -33,13 +35,18 @@ import {
   evidencePeriod,
 } from './evidence-interpretation';
 
+type RankingsRouteDependencies = PublicAreaRouteDependencies & Readonly<{
+  page?: number;
+  pageSize?: number;
+}>;
+
 const money = new Intl.NumberFormat('ko-KR', {
   style: 'currency',
   currency: 'KRW',
   maximumFractionDigits: 0,
 });
 
-function environmentDependencies(): PublicAreaRouteDependencies {
+function environmentDependencies(): RankingsRouteDependencies {
   const serialized = process.env.SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT;
   let source: unknown;
   try {
@@ -177,7 +184,7 @@ function changeRows(
 }
 
 export function buildPublicAreaRankingsModel(
-  dependencies: PublicAreaRouteDependencies = environmentDependencies(),
+  dependencies: RankingsRouteDependencies = environmentDependencies(),
 ): PublicAreaRankingsModel {
   const unavailableSource = buildPublicSourceBoundary(dependencies.period, null);
   try {
@@ -192,6 +199,17 @@ export function buildPublicAreaRankingsModel(
     );
     const change = changeRows(published);
     const plotAxis = distributionAxis(published);
+    const page = pagination(published.length, dependencies.page, dependencies.pageSize);
+    const median = unsignedRows(
+      'median', published, ({ med }) => med, -1, (value) => money.format(value),
+    );
+    const spread = unsignedRows(
+      'spread', published, ({ p25, p75 }) => p75 - p25, -1,
+      (value) => money.format(value), plotAxis,
+    );
+    const sample = unsignedRows(
+      'sample', published, ({ n }) => n, -1, (value) => String(value),
+    );
     const period = evidencePeriod(
       citySummary.period,
       dependencies.referenceInstant ?? new Date(),
@@ -206,17 +224,12 @@ export function buildPublicAreaRankingsModel(
       }),
       transactionAvailability: Object.freeze({ jeonse: true, monthly: false, sale: false }),
       citySummary,
-      cheapest: unsignedRows('cheapest', published, ({ med }) => med, 1, (value) => money.format(value)),
-      change: change.rows,
-      spread: unsignedRows(
-        'spread',
-        published,
-        ({ p25, p75 }) => p75 - p25,
-        -1,
-        (value) => money.format(value),
-        plotAxis,
-      ),
-      sample: unsignedRows('sample', published, ({ n }) => n, -1, (value) => String(value)),
+      buildingRankings: Object.freeze({ status: 'unavailable', rows: Object.freeze([]) }),
+      median: pageRows(median, page),
+      change: pageRows(change.rows, page),
+      spread: pageRows(spread, page),
+      sample: pageRows(sample, page),
+      pagination: page,
       unavailableDistricts: unavailableDistricts(allDistricts),
       withheldDistrictCount: allDistricts.length - published.length,
       changeExcludedDistrictCount: allDistricts.length - change.rows.length,
@@ -264,6 +277,170 @@ function exactRankingHref(
   ) as PublicDistrictRankingRow['href'];
 }
 
+function pagination(total: number, requestedPage = 1, requestedPageSize = 20) {
+  const pageSize = Number.isSafeInteger(requestedPageSize) && requestedPageSize > 0
+    ? requestedPageSize
+    : 20;
+  const pageCount = Math.max(1, Math.ceil(total / pageSize));
+  const page = Number.isSafeInteger(requestedPage) && requestedPage > 0
+    ? Math.min(requestedPage, pageCount)
+    : 1;
+  return Object.freeze({
+    page,
+    pageSize,
+    total,
+    pageCount,
+    previousPage: page > 1 ? page - 1 : null,
+    nextPage: page < pageCount ? page + 1 : null,
+  });
+}
+
+function pageRows(
+  rows: readonly PublicDistrictRankingRow[],
+  model: ReturnType<typeof pagination>,
+) {
+  const start = (model.page - 1) * model.pageSize;
+  return Object.freeze(rows.slice(start, start + model.pageSize));
+}
+
+function buildingRankingHref(
+  building: Readonly<{
+    buildingId: string;
+    districtSlug: string;
+    housingType: string;
+  }>,
+  selection: KoreaExplorerEvidenceSelection,
+): `/kr/seoul/explore/${string}/${string}/?${string}` {
+  const query = new URLSearchParams({
+    transaction: selection.transaction,
+    area: selection.areaBand,
+    propertyType: building.housingType,
+  });
+  if (selection.transaction !== 'sale'
+    && selection.contractGroup !== 'not-applicable'
+    && selection.contractGroup !== 'unknown') {
+    query.set('contractType', selection.contractGroup);
+  }
+  return `/kr/seoul/explore/${building.districtSlug}/${building.buildingId}/?${query.toString()}`;
+}
+
+export function buildKoreaBuildingRankings(
+  repositories: KoreaEvidenceRepositories,
+  selection: KoreaExplorerEvidenceSelection,
+  requestedPage = 1,
+  requestedPageSize = 20,
+): PublicBuildingRankingsModel {
+  const source = selection.transaction === 'sale'
+    ? repositories.sale?.listBuildingRecords()
+    : repositories.rent?.listBuildingRecords();
+  if (source === undefined) return Object.freeze({ status: 'unavailable', rows: Object.freeze([]) });
+  const selected = source.filter(({ housingType }) => (
+    selection.housingType === 'all' || housingType === selection.housingType
+  )).map((building) => {
+    const distribution = selection.transaction === 'sale'
+      ? 'recentSales' in building
+        ? building.cohorts.find(({ areaBand }) => areaBand === selection.areaBand)?.price
+        : undefined
+      : 'recentTransactions' in building
+        ? building.cohorts.find((cohort) => (
+            cohort.transaction === selection.transaction
+            && cohort.areaBand === selection.areaBand
+            && cohort.contractGroup === selection.contractGroup
+          ))?.primary
+        : undefined;
+    return { building, distribution };
+  });
+  const published = selected.flatMap(({ building, distribution }) => {
+    if (distribution?.published !== true) return [];
+    const district = getSeoulDistrictBySlug(building.districtSlug);
+    if (district === null) return [];
+    return [{ building, distribution, district }];
+  }).sort((left, right) => (
+    right.distribution.med - left.distribution.med
+    || left.building.buildingId.localeCompare(right.building.buildingId)
+    || left.building.districtSlug.localeCompare(right.building.districtSlug)
+  ));
+  const ranked = Object.freeze(published.map(({ building, distribution, district }, index) => Object.freeze({
+    rank: index + 1,
+    buildingId: building.buildingId,
+    officialName: building.officialName,
+    districtSlug: building.districtSlug,
+    districtNameEn: district.nameEn,
+    districtNameKo: district.nameKo,
+    neighborhoodName: building.neighborhoodName,
+    housingType: building.housingType,
+    medianWon: distribution.med,
+    medianLabel: money.format(distribution.med),
+    sampleCount: distribution.n,
+    href: buildingRankingHref(building, selection),
+  })));
+  const page = pagination(ranked.length, requestedPage, requestedPageSize);
+  const start = (page.page - 1) * page.pageSize;
+  return Object.freeze({
+    status: 'ready',
+    rows: Object.freeze(ranked.slice(start, start + page.pageSize)),
+    withheldBuildingCount: selected.length - ranked.length,
+    pagination: page,
+  });
+}
+
+export type SingaporeRankingMetric = 'price' | 'psf' | 'sample';
+export type SingaporeRankingSourceRow = Readonly<{
+  id: string;
+  name: string;
+  segment: 'CCR' | 'RCR' | 'OCR';
+  district: string;
+  street: string;
+  sample: number;
+  medianPriceSgd: number | null;
+  medianPsf: number | null;
+  href: string;
+}>;
+export type SingaporeRankingRow = SingaporeRankingSourceRow & Readonly<{ rank: number }>;
+export type SingaporeRankingsModel = Readonly<{
+  metric: SingaporeRankingMetric;
+  rows: readonly SingaporeRankingRow[];
+  pagination: Readonly<{
+    page: number;
+    pageSize: number;
+    total: number;
+    pageCount: number;
+    previousPage: number | null;
+    nextPage: number | null;
+  }>;
+}>;
+
+function singaporeMetricValue(row: SingaporeRankingSourceRow, metric: SingaporeRankingMetric) {
+  if (metric === 'price') return row.medianPriceSgd;
+  if (metric === 'psf') return row.medianPsf;
+  return row.sample;
+}
+
+export function buildSingaporeRankingsModel(
+  sourceRows: readonly SingaporeRankingSourceRow[],
+  metric: SingaporeRankingMetric = 'price',
+  requestedPage = 1,
+  requestedPageSize = 20,
+): SingaporeRankingsModel {
+  const ranked = sourceRows
+    .filter((row) => {
+      const value = singaporeMetricValue(row, metric);
+      return value !== null && Number.isFinite(value) && value > 0;
+    })
+    .sort((left, right) => (
+      singaporeMetricValue(right, metric)! - singaporeMetricValue(left, metric)!
+      || left.id.localeCompare(right.id, 'en')
+    ))
+    .map((row, index) => Object.freeze({ ...row, rank: index + 1 }));
+  const page = pagination(ranked.length, requestedPage, requestedPageSize);
+  const start = (page.page - 1) * page.pageSize;
+  return Object.freeze({
+    metric,
+    rows: Object.freeze(ranked.slice(start, start + page.pageSize)),
+    pagination: page,
+  });
+}
+
 function unavailableDistricts(
   summaries: readonly PublicMarketSummary[],
   hrefFor?: (summary: Readonly<{ area: string }>) => UnavailableRankingDistrict['href'],
@@ -282,6 +459,10 @@ function unavailableDistricts(
 export function buildKoreaEvidenceAreaRankingsModel(
   projection: Extract<KoreaExplorerEvidenceProjection, { status: 'ready' }>,
   referenceInstant: string | Date = new Date(),
+  requestedPage = 1,
+  requestedPageSize = 20,
+  repositories?: KoreaEvidenceRepositories,
+  requestedBuildingPage = 1,
 ): PublicAreaRankingsModel {
   const explore = buildKoreaEvidenceAreaExploreModel(undefined, projection);
   const allDistricts = explore.districts.map(({ summary }) => summary);
@@ -294,27 +475,35 @@ export function buildKoreaEvidenceAreaRankingsModel(
   );
   const change = changeRows(published, hrefFor);
   const plotAxis = distributionAxis(published);
+  const page = pagination(published.length, requestedPage, requestedPageSize);
+  const median = unsignedRows(
+    'median', published, ({ med }) => med, -1, (value) => money.format(value), null, hrefFor,
+  );
+  const spread = unsignedRows(
+    'spread', published, ({ p25, p75 }) => p75 - p25, -1,
+    (value) => money.format(value), plotAxis, hrefFor,
+  );
+  const sample = unsignedRows(
+    'sample', published, ({ n }) => n, -1, (value) => String(value), null, hrefFor,
+  );
   return Object.freeze({
     status: 'ready' as const,
     evidenceSelection: projection.selection,
     transactionAvailability: projection.availability,
     citySummary: explore.citySummary,
-    cheapest: unsignedRows(
-      'cheapest', published, ({ med }) => med, 1, (value) => money.format(value), null, hrefFor,
-    ),
-    change: change.rows,
-    spread: unsignedRows(
-      'spread',
-      published,
-      ({ p25, p75 }) => p75 - p25,
-      -1,
-      (value) => money.format(value),
-      plotAxis,
-      hrefFor,
-    ),
-    sample: unsignedRows(
-      'sample', published, ({ n }) => n, -1, (value) => String(value), null, hrefFor,
-    ),
+    buildingRankings: repositories === undefined
+      ? Object.freeze({ status: 'unavailable' as const, rows: Object.freeze([]) })
+      : buildKoreaBuildingRankings(
+          repositories,
+          projection.selection,
+          requestedBuildingPage,
+          requestedPageSize,
+        ),
+    median: pageRows(median, page),
+    change: pageRows(change.rows, page),
+    spread: pageRows(spread, page),
+    sample: pageRows(sample, page),
+    pagination: page,
     unavailableDistricts: unavailableDistricts(
       allDistricts,
       (summary) => exactRankingHref(summary, projection.selection),

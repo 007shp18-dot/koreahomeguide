@@ -88,7 +88,7 @@ afterEach(() => {
 });
 
 describe('/kr/seoul/explore/ route contract', () => {
-  it('renders the indexable Seoul district evidence map and complete discovery rail', async () => {
+  it('renders the indexable Seoul discovery list without loading the optional map', async () => {
     vi.stubEnv(
       'SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT',
       JSON.stringify(createPublicAreaFixture()),
@@ -111,11 +111,11 @@ describe('/kr/seoul/explore/ route contract', () => {
       },
     });
     expect(markup).toContain('Selected · Dongjak-gu');
-    expect(markup).toContain('role="status"');
-    expect(markup).toContain('Map unavailable');
+    expect(markup).not.toContain('Map unavailable');
+    expect(markup).not.toContain('data-explorer-region="map"');
     expect(markup).not.toContain('data-district-path=');
     expect((markup.match(/data-district-option=/g) ?? [])).toHaveLength(25);
-    expect(markup).toContain('data-explorer-layout="split"');
+    expect(markup).toContain('data-explorer-layout="list"');
     expect(markup).toContain('>Search</button>');
     expect(markup).not.toMatch(/data-discovery-step|Interact with map/);
   });

@@ -16,8 +16,8 @@ test('uses one navigation order and published language links across markets', as
   ] as const) {
     await page.goto(path);
     const productLinks = (await visibleProductNavigation(page)).getByRole('link');
-    await expect(productLinks).toHaveText(['Markets', 'Prices', 'Tools', 'News & Insights', 'Guides']);
-    for (const [index, href] of ['/markets/', '/prices/', '/tools/', '/news/', '/guides/'].entries()) {
+    await expect(productLinks).toHaveText(['Explore', 'Rankings', 'Tools', 'News & Insights', 'Guides']);
+    for (const [index, href] of ['/prices/', '/rankings/', '/tools/', '/news/', '/guides/'].entries()) {
       await expect(productLinks.nth(index)).toHaveAttribute('href', href);
     }
     const translations = {
@@ -35,8 +35,8 @@ test('uses one navigation order and published language links across markets', as
       await expect(languageLinks.nth(index)).toHaveAttribute('href', href);
     }
     const cityLinks = (await visibleMarketNavigation(page)).getByRole('link');
-    await expect(cityLinks).toHaveText(['Seoul', 'Singapore', 'Dubai']);
-    for (const [index, href] of ['/kr/seoul/', '/sg/', '/ae/dubai/'].entries()) {
+    await expect(cityLinks).toHaveText(['Seoul', 'Singapore', 'Dubai', 'Tokyo']);
+    for (const [index, href] of ['/kr/seoul/', '/sg/', '/ae/dubai/', '/jp/tokyo/'].entries()) {
       await expect(cityLinks.nth(index)).toHaveAttribute('href', href);
     }
     const localPages = {
@@ -71,7 +71,7 @@ for (const width of [320, 390, 430]) {
       for (const path of ['/', '/ko/passport/', '/zh-cn/passport/']) {
         await page.goto(path);
         const header = page.locator('header.site-header:visible');
-        await header.locator('summary').click();
+        await header.locator('details.site-header__mobile-menu > summary').click();
         const languages = header.getByRole('navigation', { name: 'Language navigation', exact: true });
         await expect(languages.getByRole('link')).toHaveText(['EN', 'KO', '中文']);
         const boxes = await languages.getByRole('link').evaluateAll(nodes => nodes.map(node => {

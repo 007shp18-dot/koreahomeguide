@@ -57,7 +57,9 @@ describe('public editorial shell', () => {
     expect(markup).toContain('href="/prices"');
     expect(markup).not.toContain('/zh-cn/kr/seoul/check');
     expect(markup).not.toContain('/zh-cn/kr/seoul/explore');
-    expect(markup).toContain('>价格<');
+    expect(markup).toContain('>探索<');
+    expect(markup).toContain('>排名<');
+    expect(markup).not.toContain('>价格<');
     expect(markup).not.toContain('/design-review/');
   });
 });

@@ -23,6 +23,8 @@ import { BuildingVisual } from './building-visual';
 import { DetailNewsList } from '../news/detail-news-list';
 import pageStyles from './building-page.module.css';
 import { createEntityCheckHref } from '../../lib/navigation/explorer-selection';
+import { BuildingSaveButton } from './building-save-button';
+import { MARKET_PHOTOS, MarketRepresentativePhoto } from '../market-representative-photo';
 
 const footer: SiteFooterModel = {
   brand: 'signedprice',
@@ -72,7 +74,7 @@ export function BuildingDetailPage({
   const { mode, contract } = decision.selection;
   const t = (value: string) => seoulDetailText(locale, value);
   const districtName = locale === 'ko' ? model.district.nameKo : model.district.nameEn;
-  const hasMedia = Boolean(propertyMedia) || visual.kind !== 'unavailable';
+  const hasVerifiedMedia = Boolean(propertyMedia) || visual.kind !== 'unavailable';
   const exploreHref = backHref ?? localizedSeoulHref(`/kr/seoul/explore/?district=${model.district.slug}`,locale);
   const exploreTarget = new URL(exploreHref, 'https://signedprice.invalid');
   const detailTarget = new URL(base, 'https://signedprice.invalid');
@@ -102,9 +104,21 @@ export function BuildingDetailPage({
           data-identity-hero="true"
           data-detail-hero="building"
           data-building-section="identity"
-          data-has-media={hasMedia}
+          data-has-media="true"
         >
-          {hasMedia ? <div className={pageStyles.identityMedia} data-detail-order="media">{propertyMedia ?? <BuildingVisual model={visual} />}</div> : null}
+          <section
+            className={pageStyles.identityMedia}
+            data-detail-order="media"
+            data-building-gallery={hasVerifiedMedia ? 'verified' : 'market-context'}
+            aria-label={hasVerifiedMedia
+              ? (locale === 'ko' ? '확인된 건물 사진' : 'Verified building photograph')
+              : (locale === 'ko' ? '서울 맥락 사진 · 이 건물의 실제 사진 아님' : 'Seoul context photograph · not this exact building')}
+          >
+            <span className={pageStyles.mediaKind} data-media-kind={hasVerifiedMedia ? 'exterior' : 'market-context'}>{hasVerifiedMedia ? (locale === 'ko' ? '외관' : 'Exterior') : (locale === 'ko' ? '서울 맥락' : 'Seoul context')}</span>
+            {propertyMedia ?? (visual.kind !== 'unavailable'
+              ? <BuildingVisual model={visual} />
+              : <MarketRepresentativePhoto photo={MARKET_PHOTOS.seoul} cityLabel={locale === 'ko' ? '서울' : 'Seoul'} context="property" locale={locale} eager />)}
+          </section>
           <div className={pageStyles.identitySummary} data-detail-hero-metric="identity" data-detail-order="identity">
             <Link
               className={pageStyles.backAction}
@@ -120,6 +134,12 @@ export function BuildingDetailPage({
             <Link className={pageStyles.primaryAction} href={checkHref}>
               {locale === 'ko' ? '매물 가격 비교' : 'Compare an asking price'}
             </Link>
+            <BuildingSaveButton
+              buildingKey={`${model.district.slug}/${model.building.buildingId}`}
+              buildingName={model.building.name}
+              locale={locale}
+              variant="detail"
+            />
           </div>
         </section>
 

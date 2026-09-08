@@ -112,12 +112,19 @@ test('verified synthetic building detail is server rendered only in the local re
   await expect(page.getByRole('link', { name: /Back to .* Explore/ })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Compare an asking price', exact: true })).toBeVisible();
   const hero = page.locator('[data-detail-hero="building"]').filter({ visible: true });
-  // This synthetic building has no verified photo or location media. The shared
-  // detail layout must not reserve an empty media column above its evidence.
-  await expect(hero).toHaveAttribute('data-has-media', 'false');
-  await expect(hero.locator('[data-detail-order="media"]')).toHaveCount(0);
+  // This synthetic building has no verified photo. A labeled Seoul context
+  // photograph keeps the header useful without claiming to show this building.
+  await expect(hero).toHaveAttribute('data-has-media', 'true');
+  const contextMedia = hero.locator('[data-detail-order="media"]');
+  await expect(contextMedia).toHaveAttribute('data-building-gallery', 'market-context');
+  await expect(contextMedia).toContainText('Editorial city photograph · not this exact property');
   await expect(hero.locator('[data-detail-order="identity"]')).toBeVisible();
-  const layout = await page.locator('main[data-building-detail="ready"]').evaluate((main) => {
+  // Let Next finish replacing its streamed boundary before measuring the final
+  // page. During the replacement both copies can briefly share the DOM.
+  await expect(page.locator('template[id^="B:"]')).toHaveCount(0);
+  const readyDetail = page.locator('main[data-building-detail="ready"]');
+  await expect(readyDetail).toHaveCount(1);
+  const layout = await readyDetail.evaluate((main) => {
     const identity = main.querySelector('[data-detail-order="identity"]')!;
     const evidence = main.querySelector('[data-detail-order="current-evidence"]')!;
     const history = main.querySelector('[data-detail-order="history"]')!;
@@ -129,9 +136,6 @@ test('verified synthetic building detail is server rendered only in the local re
     };
   });
   expect(layout).toEqual({ identityBeforeEvidence: true, historyBeforeSource: true, identityOverflow: false });
-  // Wait for Next's streamed Suspense fallback to be replaced before toggling
-  // native disclosure state, otherwise the replacement can close it again.
-  await expect(page.locator('template[id^="B:"]')).toHaveCount(0);
   const evidenceDetails = page.locator('details[data-building-section="evidence"]').filter({ visible: true });
   const contractsHeading = evidenceDetails.getByRole('heading', { level: 2, name: 'Privacy-safe reported contracts' });
   // Evidence starts expanded in the shared detail layout. Check both native

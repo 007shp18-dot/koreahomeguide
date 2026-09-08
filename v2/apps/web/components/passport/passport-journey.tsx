@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useSyncExternalStore, type ComponentProps } from 'react';
-import { convertPassportCurrency, normalizePassportCurrency } from '../../lib/passport/model';
+import { normalizePassportCurrency } from '../../lib/passport/model';
 import { passportReturn } from '../../lib/tools/property-scenario-context';
 import { retainPassportContext } from '../../lib/passport/journey';
 import styles from './passport.module.css';
@@ -33,11 +33,12 @@ export function PassportBudgetContext() {
   if (!passport) return null;
   const params = new URL(passport, url).searchParams;
   const currency = normalizePassportCurrency(params.get('currency'));
-  const local = url.pathname.includes('/ae/dubai/') ? 'AED' : url.pathname.includes('/sg/singapore/') ? 'SGD' : 'KRW';
-  const budget = convertPassportCurrency(Number(params.get('budget')), currency, local);
+  // The return URL carries the entered budget, not its FX snapshot. Show that
+  // original amount rather than recomputing it with unrelated bundled rates.
+  const budget = Number(params.get('budget'));
   const ko = passport.startsWith('/ko/');
-  const label = `${local} ${Math.floor(budget).toLocaleString(ko ? 'ko-KR' : 'en')}`;
-  const compact = `${local} ${new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: 2 }).format(budget)}`;
+  const label = `${currency} ${budget.toLocaleString(ko ? 'ko-KR' : 'en')}`;
+  const compact = `${currency} ${new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: 2 }).format(budget)}`;
   return <aside className={styles.journey} aria-label="Passport budget">
     <span title={label}>{ko ? '참고 예산' : 'Budget'} · <strong aria-label={label}>≈ {compact}</strong></span>
     <Link href={passport}>{ko ? '예산 비교로' : 'Back to Passport'}</Link>

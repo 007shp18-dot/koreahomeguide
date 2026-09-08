@@ -15,7 +15,9 @@ import {
   type SiteFooterModel,
 } from '../../lib/site-copy';
 import { SiteFooter } from '../site-footer';
+import { BuildingSaveButton } from './building-save-button';
 import { BuildingDetailHeader } from './building-detail-header';
+import { MARKET_PHOTOS, MarketRepresentativePhoto } from '../market-representative-photo';
 import styles from './building-detail.module.css';
 
 const footer: SiteFooterModel = {
@@ -43,6 +45,16 @@ const exactEvidenceFooter: SiteFooterModel = {
 };
 
 const countLabel = (count: number) => `${count} observed contract${count === 1 ? '' : 's'}`;
+
+function SeoulBuildingContext({ locale }: Readonly<{ locale: ProductLocale }>) {
+  return <MarketRepresentativePhoto
+    photo={MARKET_PHOTOS.seoul}
+    cityLabel={locale === 'ko' ? '서울' : 'Seoul'}
+    context="property"
+    locale={locale}
+    eager
+  />;
+}
 
 
 function KnownBuildingFacts({ facts, locale = 'en' }: Readonly<{ locale?: ProductLocale; facts: readonly Readonly<{ label: string; value: string }>[] }>) {
@@ -145,7 +157,7 @@ export function ObservedBuildingDetail({
           data-identity-hero="true"
           data-building-section="identity"
         >
-          {visual && <div data-detail-order="media">{visual}</div>}
+          <div data-detail-order="media">{visual ?? <SeoulBuildingContext locale={locale} />}</div>
 
           <div className={styles.identitySummary}>
             <Link className={styles.backAction} href={backHref}>
@@ -156,6 +168,12 @@ export function ObservedBuildingDetail({
             <dl className={styles.factGrid}>
               <div><dt>{t('Housing type')}</dt><dd>{t(model.building.housingType)}</dd></div>
             </dl>
+            <BuildingSaveButton
+              buildingKey={`${model.district.slug}/${model.building.buildingId}`}
+              buildingName={model.building.officialName}
+              locale={locale}
+              variant="detail"
+            />
           </div>
         </section>
 
@@ -291,7 +309,7 @@ export function KoreaEvidenceBuildingDetail({
           data-identity-hero="true"
           data-building-section="identity"
         >
-          {visual && <div data-detail-order="media">{visual}</div>}
+          <div data-detail-order="media">{visual ?? <SeoulBuildingContext locale={locale} />}</div>
           <div className={styles.identitySummary} data-detail-order="identity">
             <Link className={styles.backAction} href={backHref}>
               {locale === 'ko' ? `${model.district.nameKo} 탐색으로` : `Back to ${model.district.nameEn} Explore`}
@@ -301,6 +319,12 @@ export function KoreaEvidenceBuildingDetail({
             <dl className={styles.factGrid}>
               <div><dt>{t('Housing type')}</dt><dd>{t(model.building.housingType)}</dd></div>
             </dl>
+            <BuildingSaveButton
+              buildingKey={`${model.district.slug}/${model.building.buildingId}`}
+              buildingName={model.building.officialName}
+              locale={locale}
+              variant="detail"
+            />
           </div>
         </section>
 

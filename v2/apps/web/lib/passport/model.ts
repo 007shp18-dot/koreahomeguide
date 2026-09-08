@@ -1,3 +1,7 @@
+import { PASSPORT_FX, type PassportFxSnapshot } from './fx';
+
+export { PASSPORT_FX } from './fx';
+
 export type PassportLocale = 'en' | 'ko' | 'zh-CN';
 export type PassportMarketId = 'kr-seoul' | 'sg-singapore' | 'ae-dubai';
 export type PassportCurrency = 'KRW' | 'SGD' | 'AED';
@@ -11,14 +15,6 @@ export function defaultPassportBudget(locale: PassportLocale) {
 }
 
 export const DEFAULT_PASSPORT_BUDGET_WON = 500_000_000;
-export const PASSPORT_FX = Object.freeze({
-  asOf: '2026-09-04',
-  eurKrw: 1569.38,
-  eurSgd: 1.4724,
-  eurUsd: 1.1622,
-  usdAed: 3.6725,
-  source: 'ECB and Central Bank of the UAE',
-});
 
 export type PassportScope = Readonly<{
   name: string;
@@ -59,7 +55,7 @@ export type PassportModel = Readonly<{
   budgetCurrency: PassportBudgetCurrency;
   locale: PassportLocale;
   href: string;
-  fx: typeof PASSPORT_FX;
+  fx: PassportFxSnapshot;
   markets: readonly PassportMarketResult[];
 }>;
 
@@ -76,23 +72,16 @@ export function passportHref(locale: PassportLocale, budgetWon: number, currency
   return `${prefix}/passport/?budget=${budgetWon}${currency === 'KRW' ? '' : `&currency=${currency}`}${dubaiStage === 'off-plan' ? '&dubaiStage=off-plan' : ''}`;
 }
 
-export function convertPassportCurrency(amount: number, from: PassportBudgetCurrency, to: PassportBudgetCurrency): number {
-  const rates = { KRW: PASSPORT_FX.eurKrw, SGD: PASSPORT_FX.eurSgd, USD: PASSPORT_FX.eurUsd, AED: PASSPORT_FX.eurUsd * PASSPORT_FX.usdAed };
+export function convertPassportCurrency(amount: number, from: PassportBudgetCurrency, to: PassportBudgetCurrency, fx: PassportFxSnapshot = PASSPORT_FX): number {
+  const rates = { KRW: fx.eurKrw, SGD: fx.eurSgd, USD: fx.eurUsd, AED: fx.eurUsd * fx.usdAed };
   return amount / rates[from] * rates[to];
 }
 
-export function normalizePassportAmount(value: string | undefined, currency: PassportBudgetCurrency): number {
+export function normalizePassportAmount(value: string | undefined, currency: PassportBudgetCurrency, fx: PassportFxSnapshot = PASSPORT_FX): number {
   const parsed = Number((value ?? '').replace(/,/gu, '').replace(/^[₩$\s]+/u, ''));
-  const won = convertPassportCurrency(parsed, currency, 'KRW');
+  const won = convertPassportCurrency(parsed, currency, 'KRW', fx);
   return Number.isFinite(parsed) && parsed > 0 && won >= 10_000_000 && won <= 100_000_000_000
-    ? Math.round(parsed * 100) / 100 : Math.round(convertPassportCurrency(DEFAULT_PASSPORT_BUDGET_WON, 'KRW', currency));
-}
-
-function localBudget(currency: PassportCurrency, budgetWon: number): number {
-  if (currency === 'KRW') return budgetWon;
-  const eur = budgetWon / PASSPORT_FX.eurKrw;
-  if (currency === 'SGD') return eur * PASSPORT_FX.eurSgd;
-  return eur * PASSPORT_FX.eurUsd * PASSPORT_FX.usdAed;
+    ? Math.round(parsed * 100) / 100 : Math.round(convertPassportCurrency(DEFAULT_PASSPORT_BUDGET_WON, 'KRW', currency, fx));
 }
 
 export function buildPassportModel(input: Readonly<{
@@ -102,14 +91,16 @@ export function buildPassportModel(input: Readonly<{
   dubaiStage?: 'ready' | 'off-plan';
   locale: PassportLocale;
   evidence: readonly PassportMarketEvidence[];
+  fx?: PassportFxSnapshot;
 }>): PassportModel {
+  const fx = input.fx ?? PASSPORT_FX;
   const budgetCurrency = input.budgetCurrency ?? 'KRW';
-  const budgetAmount = normalizePassportAmount(String(input.budgetAmount ?? input.budgetWon), budgetCurrency);
-  const budgetWon = convertPassportCurrency(budgetAmount, budgetCurrency, 'KRW');
+  const budgetAmount = normalizePassportAmount(String(input.budgetAmount ?? input.budgetWon), budgetCurrency, fx);
+  const budgetWon = convertPassportCurrency(budgetAmount, budgetCurrency, 'KRW', fx);
   const dubaiStage = input.dubaiStage ?? 'ready';
   const markets = input.evidence.map((base): PassportMarketResult => {
     const market = base.id === 'ae-dubai' && dubaiStage === 'off-plan' ? { ...base, ...(base.offPlan ?? { medianPsm: null, sample: 0, priceSample: 0, scopes: [], yieldPct: null }) } : base;
-    const converted = localBudget(market.currency, budgetWon);
+    const converted = convertPassportCurrency(budgetWon, 'KRW', market.currency, fx);
     const scopes = Object.freeze(market.scopes.filter(({ medianPrice }) => Number.isFinite(medianPrice) && medianPrice > 0));
     return Object.freeze({
       ...market,
@@ -128,7 +119,7 @@ export function buildPassportModel(input: Readonly<{
     budgetCurrency,
     locale: input.locale,
     href: passportHref(input.locale, budgetAmount, budgetCurrency, dubaiStage),
-    fx: PASSPORT_FX,
+    fx,
     markets: Object.freeze(markets),
   });
 }

@@ -344,7 +344,7 @@ describe('real route rendering contracts', () => {
     expect(routeMarkup).toHaveLength(13);
     for (const markup of routeMarkup) {
       expect(markup).toContain('data-brand-wordmark="true"');
-      expect(markup).toContain('href="/markets"');
+      expect(markup).toContain('href="/prices"');
       expect(markup).not.toMatch(unsupportedClaimPattern);
       expect(markup).not.toMatch(/<form|<input|<button/i);
     }

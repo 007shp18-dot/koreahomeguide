@@ -52,6 +52,19 @@ describe('SignedPrice Passport model', () => {
     expect(model.markets[2]?.yieldPct).toBe(6.2);
   });
 
+  it('uses one supplied rate snapshot for currency normalization, local budgets and matches', () => {
+    const fx = { ...PASSPORT_FX, asOf: '2026-09-07', eurKrw: 1600, eurSgd: 1.5, eurUsd: 1.2 };
+    const model = buildPassportModel({ budgetWon: 500_000, budgetCurrency: 'USD', locale: 'en', evidence, fx });
+    expect(model.budgetWon).toBeCloseTo(666_666_666.6667);
+    expect(model.markets[1]?.localBudget).toBeCloseTo(625_000);
+    expect(model.markets[1]?.indicativeAreaSqm).toBe(31);
+    expect(model.markets[1]?.matches.map(({ name }) => name)).toEqual(['Example Residence']);
+    expect(model.markets[2]?.localBudget).toBeCloseTo(1_836_250);
+    expect(model.fx.asOf).toBe('2026-09-07');
+    expect(convertPassportCurrency(1_200, 'USD', 'SGD', fx)).toBe(1_500);
+    expect(normalizePassportAmount('invalid', 'USD', fx)).toBe(375_000);
+  });
+
   it('creates one complete, localized share URL', () => {
     expect(passportHref('ko', 500_000_000)).toBe('/ko/passport/?budget=500000000');
     expect(passportHref('zh-CN', 500_000_000)).toBe('/zh-cn/passport/?budget=500000000');

@@ -8,13 +8,12 @@ import KoreanContact from '../app/(ko)/ko/contact/page';
 import { languageDestinations } from '../lib/navigation/site-navigation';
 
 describe('Korean entry routes', () => {
-  it('offers three cities with Korean tools', () => {
+  it('offers four cities and preserves Korean tools', () => {
     const html = renderToStaticMarkup(<KoreanHome />);
-    for (const path of ['/ko/kr/seoul', '/ko/sg', '/ko/ae/dubai', '/ko/contact']) expect(html).toMatch(new RegExp(`href="${path}/?"`));
-    expect(html).toContain('실거래가 보기');
+    for (const path of ['/ko/kr/seoul/explore', '/ko/sg/singapore/explore', '/ko/ae/dubai/explore', '/jp/tokyo']) expect(html).toMatch(new RegExp(`href="${path}/?"`));
+    expect(html).toContain('도시 탐색');
     expect(html).not.toContain('(영문)');
     expect(html).toContain('/ko/sg/singapore/explore');
-    expect(html).toContain('/ko/ae/dubai/check');
     expect(html).toContain('/ko/passport/');
   });
   it('opens three email drafts without posting or requiring financial documents', () => {

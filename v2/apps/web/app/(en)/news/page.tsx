@@ -20,7 +20,7 @@ export async function generateMetadata({ searchParams = Promise.resolve({}) }: N
     path: filters.canonicalHref as `/${string}`,
     title: 'Property news, policy and market insights | signedprice',
     description: 'Property policy, market analysis and external headlines for Seoul, Singapore and Dubai, with sources and dates.',
-    ...(filters.type === 'latest' && filters.market === 'all' ? {
+    ...(filters.type === 'insights' && filters.market === 'all' ? {
       languageAlternates: { en: '/news/' as const, ko: '/ko/news/' as const, 'zh-Hans': '/zh-cn/news/' as const },
     } : {}),
   });
@@ -32,6 +32,6 @@ export default async function NewsPage({ searchParams = Promise.resolve({}) }: N
     listNewsroomArticles(),
   ]);
   return <EditorialGrowthPublicFrame locale="en" surface="content">
-    <NewsroomIndex articles={articles} policies={policyRepository.list()} filters={filters} headlines={<Suspense fallback={<p role="status">Loading headlines…</p>}><StoredExternalHeadlines market={filters.market} preview={filters.type === 'latest'} /></Suspense>} />
+    <NewsroomIndex articles={articles} policies={policyRepository.list()} filters={filters} headlines={<Suspense fallback={<p role="status">Loading headlines…</p>}><StoredExternalHeadlines market={filters.market} preview={false} /></Suspense>} />
   </EditorialGrowthPublicFrame>;
 }

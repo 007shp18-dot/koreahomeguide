@@ -44,6 +44,13 @@ const koreanPublishedHubUrls = [
   '/ko/ae/dubai/explore/', '/ko/ae/dubai/guide/',
 ].map(path => `https://www.signedprice.com${path}`);
 
+const rankingCanonicalUrls = [
+  '/rankings/',
+  '/ko/rankings/',
+  '/sg/singapore/rankings/',
+  '/ko/sg/singapore/rankings/',
+].map(path => `https://www.signedprice.com${path}`);
+
 function releasedDubaiEvidenceUrls(): string[] {
   const repository = dubaiEvidenceRepositoryFromEnvironment();
   if (repository === null) return [];
@@ -211,7 +218,7 @@ describe('public migration containment', () => {
     const routes = [
       ['../app/(ko)/ko/kr/seoul/page', '<h1 id="market-page-heading">서울</h1>'],
       ['../app/(ko)/ko/kr/seoul/explore/page', '검증된 구별 자료를 확인할 수 없습니다.'],
-      ['../app/(ko)/ko/kr/seoul/rankings/page', '서울 구별 실거래가 비교'],
+      ['../app/(ko)/ko/kr/seoul/rankings/page', '서울 건물 가격 순위'],
     ] as const;
     for (const [modulePath, heading] of routes) {
       let route: { default: () => unknown } | null = null;
@@ -341,6 +348,7 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/sg/singapore/explore/ocr/',
       ...portfolioUrls,
       ...koreanPublishedHubUrls,
+      ...rankingCanonicalUrls,
       'https://www.signedprice.com/',
       'https://www.signedprice.com/compare/',
       'https://www.signedprice.com/trust/',
@@ -494,6 +502,7 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/sg/singapore/explore/ocr/',
       ...portfolioUrls,
       ...koreanPublishedHubUrls,
+      ...rankingCanonicalUrls,
       'https://www.signedprice.com/',
       'https://www.signedprice.com/compare/',
       'https://www.signedprice.com/trust/',
@@ -540,6 +549,7 @@ describe('public migration containment', () => {
       'https://www.signedprice.com/sg/singapore/explore/ocr/',
       ...portfolioUrls,
       ...koreanPublishedHubUrls,
+      ...rankingCanonicalUrls,
       'https://www.signedprice.com/',
       'https://www.signedprice.com/compare/',
       'https://www.signedprice.com/trust/',

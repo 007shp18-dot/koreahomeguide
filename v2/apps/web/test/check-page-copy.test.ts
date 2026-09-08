@@ -2,25 +2,30 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 
-import { metadata as singaporeEnglish } from '../app/(en)/sg/singapore/check/page';
-import { metadata as singaporeKorean } from '../app/(ko)/ko/sg/singapore/check/page';
+import { generateMetadata as generateSingaporeEnglish } from '../app/(en)/sg/singapore/check/page';
+import { generateMetadata as generateSingaporeKorean } from '../app/(ko)/ko/sg/singapore/check/page';
 import { buildSingleQuoteCheckMetadata } from '../lib/single-quote-check/metadata.server';
 
 afterEach(() => vi.unstubAllEnvs());
 
 describe('Check page metadata matches the asking-price task', () => {
-  it('localizes Singapore asking-price metadata without changing its canonical or index policy', () => {
+  it('localizes the evidence-backed Singapore asking-price landing metadata', async () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    const [singaporeEnglish, singaporeKorean] = await Promise.all([
+      generateSingaporeEnglish({ searchParams: Promise.resolve({}) }),
+      generateSingaporeKorean({ searchParams: Promise.resolve({}) }),
+    ]);
     expect(singaporeEnglish).toMatchObject({
       title: 'Compare an asking price in Singapore | signedprice',
       description: 'Compare private-home sale prices, HDB resale prices or monthly rents with recent Singapore transactions.',
       alternates: { canonical: 'https://www.signedprice.com/sg/singapore/check/' },
-      robots: { index: false, follow: false },
+      robots: { index: true, follow: true },
     });
     expect(singaporeKorean).toMatchObject({
       title: '싱가포르 매물 가격 비교 | signedprice',
       description: '민간주택 매매가격, HDB 재판매 가격이나 월세를 최근 싱가포르 실거래가와 비교하세요.',
       alternates: { canonical: 'https://www.signedprice.com/ko/sg/singapore/check/' },
-      robots: { index: false, follow: false },
+      robots: { index: true, follow: true },
     });
   });
 

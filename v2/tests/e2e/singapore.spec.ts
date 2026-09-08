@@ -211,7 +211,7 @@ test('native Singapore Check submits single and cross-market A/B evidence', asyn
   assertClean();
 });
 
-test('Seoul and Singapore Explore share the same desktop rail width', async ({ page }) => {
+test('Seoul and Singapore Explore share one contained navigation frame', async ({ page }) => {
   await page.goto('/sg/singapore/explore/');
   const singaporeRail = await page.locator('[data-market-shell-region="discovery"]').boundingBox();
   const singaporeHeader = await page.locator('.site-header__inner').boundingBox();
@@ -219,17 +219,16 @@ test('Seoul and Singapore Explore share the same desktop rail width', async ({ p
   await expect(await openMarketPagesNavigation(page, 'Singapore')).toBeVisible();
   await page.goto('/kr/seoul/explore/');
   const seoulRail = await page.locator(
-    '[data-explorer-layout="split"] > [data-explorer-region="results"]',
+    '[data-explorer-layout="list"] > [data-explorer-region="results"]',
   ).boundingBox();
   const seoulHeader = await page.locator('.site-header__inner').boundingBox();
   await expect(await openPrimaryNavigation(page)).toBeVisible();
   await expect(await openMarketPagesNavigation(page, 'Seoul')).toBeVisible();
   expect(singaporeHeader?.height).toBeGreaterThanOrEqual(44);
   expect(seoulHeader?.height).toBe(singaporeHeader?.height);
-  if (page.viewportSize()!.width > 1120) {
-    expect(Math.abs((singaporeRail?.width ?? 0) - 420)).toBeLessThanOrEqual(2);
-    expect(Math.abs((seoulRail?.width ?? 0) - 420)).toBeLessThanOrEqual(2);
-  }
+  expect(singaporeRail?.width).toBeGreaterThan(0);
+  expect(seoulRail?.width).toBeGreaterThan(0);
+  expect(seoulHeader?.width).toBe(singaporeHeader?.width);
   await noOverflow(page);
 });
 

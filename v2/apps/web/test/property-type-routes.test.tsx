@@ -9,6 +9,9 @@ import PropertyTypePage, {
   generateStaticParams,
 } from '../app/(en)/kr/seoul/explore/[district]/[buildingId]/page';
 import DistrictPage from '../app/(en)/kr/seoul/explore/[district]/page';
+import KoreanPropertyTypePage, {
+  generateMetadata as generateKoreanMetadata,
+} from '../app/(ko)/ko/kr/seoul/explore/[district]/[buildingId]/page';
 import {
   createPublicBuildingFixture,
   createPublicBuildingRecord,
@@ -117,6 +120,43 @@ describe('district property-type SEO routes', () => {
     expect(html).toContain('"@type":"BreadcrumbList"');
   });
 
+  it('renders the Korean alias with Korean metadata, content, links, and structured-data canonical', async () => {
+    useEvidence();
+    const params = Promise.resolve({ district: 'gangnam-gu', buildingId: 'apartment' });
+    const metadata = await generateKoreanMetadata({ params, searchParams: Promise.resolve({}) });
+    expect(metadata).toMatchObject({
+      title: '강남구 아파트 전세 실거래가 | signedprice',
+      description: '강남구 아파트 공개 건물 1곳의 최근 전세 계약 6건을 바탕으로 보증금 분포와 국토교통부 자료 범위를 확인하세요.',
+      robots: { index: true, follow: true },
+      alternates: {
+        canonical: 'https://www.signedprice.com/ko/kr/seoul/explore/gangnam-gu/apartment/',
+        languages: {
+          en: 'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/apartment/',
+          ko: 'https://www.signedprice.com/ko/kr/seoul/explore/gangnam-gu/apartment/',
+          'x-default': 'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/apartment/',
+        },
+      },
+      openGraph: {
+        url: 'https://www.signedprice.com/ko/kr/seoul/explore/gangnam-gu/apartment/',
+        locale: 'ko_KR',
+        images: ['https://www.signedprice.com/og/ko/'],
+      },
+    });
+
+    const html = renderToStaticMarkup(await KoreanPropertyTypePage({
+      params: Promise.resolve({ district: 'gangnam-gu', buildingId: 'apartment' }),
+      searchParams: Promise.resolve({}),
+    }));
+    expect(html).toContain('<h1>강남구 아파트 전세 실거래가</h1>');
+    expect(html).toContain('신고된 전세 보증금 분포');
+    expect(html).toContain('자료 범위와 한계');
+    expect(html).toContain('공개 건물 실거래가');
+    expect(html).toContain('href="/ko/kr/seoul/explore/gangnam-gu/gangnam-apartment-evidence/"');
+    expect(html).toContain('href="/ko/kr/seoul/explore/gangnam-gu/officetel/"');
+    expect(html).toContain('"url":"https://www.signedprice.com/ko/kr/seoul/explore/gangnam-gu/apartment/"');
+    expect(html).not.toContain('What this page does and does not cover');
+  });
+
   it('links publishable property types from their district parent and sitemap', async () => {
     useEvidence();
     expect(listSignedPricePropertyTypeRoutes().map((route) => ({
@@ -153,7 +193,17 @@ describe('district property-type SEO routes', () => {
       'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/apartment/',
       'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/officetel/',
       'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/villa/',
+      'https://www.signedprice.com/ko/kr/seoul/explore/gangnam-gu/apartment/',
+      'https://www.signedprice.com/ko/kr/seoul/explore/gangnam-gu/officetel/',
+      'https://www.signedprice.com/ko/kr/seoul/explore/gangnam-gu/villa/',
     ]));
+    const apartmentEntries = sitemap().filter(({ url }) => url.endsWith('/explore/gangnam-gu/apartment/'));
+    expect(apartmentEntries).toHaveLength(2);
+    for (const entry of apartmentEntries) expect(entry.alternates?.languages).toEqual({
+      en: 'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/apartment/',
+      ko: 'https://www.signedprice.com/ko/kr/seoul/explore/gangnam-gu/apartment/',
+      'x-default': 'https://www.signedprice.com/kr/seoul/explore/gangnam-gu/apartment/',
+    });
   });
 
   it('returns the 404 boundary for unsupported or unpublished combinations', async () => {

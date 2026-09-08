@@ -5,7 +5,9 @@ import { PassportLink as Link } from '../passport/passport-journey';
 import { seoulNeighborhoodLabel } from '../../lib/public-market/seoul-neighborhood-label';
 import { buildingDisplayLabel } from '../../lib/public-market/building-display-label';
 import { useRouter } from 'next/navigation';
-import { useCallback, useDeferredValue, useMemo, useReducer, useState } from 'react';
+import dynamic from 'next/dynamic';
+import Image from 'next/image';
+import { useCallback, useDeferredValue, useEffect, useMemo, useReducer, useState } from 'react';
 
 import {
   areaExplorerReducer,
@@ -22,10 +24,9 @@ import {
 } from '../../lib/navigation/explorer-selection';
 import { appendKoreaProximityPairs } from '../../lib/public-market/korea-proximity-url';
 import {
-  NaverDistrictMap,
-  buildNaverBuildingAddressQuery,
   type NaverAreaMapGroup,
 } from '../maps/naver-district-map';
+import { buildNaverBuildingAddressQuery } from '../../lib/public-market/naver-building-address';
 import type {
   ExploreBuildingModel,
   ExploreMapBuildingModel,
@@ -42,6 +43,26 @@ import { AreaBuildingDialog } from './area-building-dialog';
 import { AreaExplorerViewSwitcher } from './area-explorer-view-switcher';
 import { DistrictEvidenceSummary } from './district-evidence-summary';
 import { PublicSourceBoundary } from './public-source-boundary';
+import { BuildingSaveButton } from './building-save-button';
+
+const NaverDistrictMap = dynamic(
+  () => import('../maps/naver-district-map').then((module) => module.NaverDistrictMap),
+  { ssr: false },
+);
+
+const EXPLORE_RETURN_POSITION_KEY = 'signedprice:explore-return-position:v1';
+
+function rememberExplorePosition(returnHref: string): void {
+  try {
+    window.sessionStorage.setItem(EXPLORE_RETURN_POSITION_KEY, JSON.stringify({
+      href: returnHref,
+      y: window.scrollY,
+      savedAt: Date.now(),
+    }));
+  } catch {
+    // URL state still restores the selected result when browser storage is unavailable.
+  }
+}
 
 export function compareExploreBuildingsByEvidence(
   left: Pick<ExploreBuildingModel, 'evidenceStatus' | 'observationCount' | 'name' | 'id'>,
@@ -150,6 +171,21 @@ function compactDistrictMetric(label: string | null, locale: ProductLocale): str
   return label;
 }
 
+function exploreAreaBandLabel(
+  areaBand: Extract<PublicAreaExploreModel, { status: 'ready' }>['evidenceSelection']['areaBand'],
+  locale: ProductLocale,
+): string {
+  const labels = {
+    all: locale === 'ko' ? '전체 면적' : 'All recorded areas',
+    'under-40': locale === 'ko' ? '40㎡ 미만' : 'Under 40㎡',
+    '40-60': '40–60㎡',
+    '60-85': '60–85㎡',
+    '85-plus': locale === 'ko' ? '85㎡ 이상' : '85㎡+',
+    'legacy-45-55': '45–55㎡',
+  } as const;
+  return labels[areaBand];
+}
+
 function ProjectedBuildingMedia({
   building,
   locale,
@@ -161,9 +197,14 @@ function ProjectedBuildingMedia({
 }>) {
   if (building.media === undefined) {
     return variant === 'thumbnail' ? (
-      <span className={styles.photoUnavailable} data-building-media="location-only">
-        <strong>{locale === 'ko' ? '건물 사진 미제공' : 'Building photo unavailable'}</strong>
-        <small>{locale === 'ko' ? '건물 정보 보기' : 'View property details'}</small>
+      <span
+        className={styles.photoUnavailable}
+        data-building-media="location-only"
+        role="img"
+        aria-label={locale === 'ko' ? '건물 사진 미제공. 건물 상세 정보는 확인할 수 있습니다.' : 'Building photo unavailable. Building details remain available.'}
+      >
+        <span className={styles.photoUnavailableIcon} aria-hidden="true">▧</span>
+        <small aria-hidden="true">{locale === 'ko' ? '사진 없음' : 'No photo'}</small>
       </span>
     ) : (
       <section className={styles.buildingMediaUnavailable} data-building-media="location-only">
@@ -174,6 +215,19 @@ function ProjectedBuildingMedia({
       </section>
     );
   }
+  // List images are deliberately limited to local, rights-cleared assets so Next can
+  // generate a small derivative. External originals remain available on Detail only.
+  if (variant === 'thumbnail' && !building.media.displayUrl.startsWith('/assets/buildings/')) {
+    return <span
+      className={styles.photoUnavailable}
+      data-building-media="location-only"
+      role="img"
+      aria-label={locale === 'ko' ? '건물 사진 미제공. 건물 상세 정보는 확인할 수 있습니다.' : 'Building photo unavailable. Building details remain available.'}
+    >
+      <span className={styles.photoUnavailableIcon} aria-hidden="true">▧</span>
+      <small aria-hidden="true">{locale === 'ko' ? '사진 없음' : 'No photo'}</small>
+    </span>;
+  }
   const focalX = building.media.focalX ?? 0.5;
   const focalY = building.media.focalY ?? 0.5;
   return (
@@ -183,14 +237,23 @@ function ProjectedBuildingMedia({
       data-media-variant={variant}
     >
       {/* Projection URLs have already passed rights and editorial review on the server. */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={building.media.displayUrl}
-        alt={`${buildingDisplayLabel(building, locale).title} ${locale === 'ko' ? '건물 외관' : 'building exterior'}`}
-        width={building.media.width ?? undefined}
-        height={building.media.height ?? undefined}
-        style={{ objectPosition: `${focalX * 100}% ${focalY * 100}%` }}
-      />
+      {variant === 'thumbnail' ? <Image
+          src={building.media.displayUrl}
+          alt={`${buildingDisplayLabel(building, locale).title} ${locale === 'ko' ? '건물 외관' : 'building exterior'}`}
+          width={128}
+          height={96}
+          sizes="(max-width: 520px) 96px, 128px"
+          style={{ objectPosition: `${focalX * 100}% ${focalY * 100}%` }}
+        /> : <>
+        {/* eslint-disable-next-line @next/next/no-img-element -- Server projection URLs have passed rights and editorial review. */}
+        <img
+          src={building.media.displayUrl}
+          alt={`${buildingDisplayLabel(building, locale).title} ${locale === 'ko' ? '건물 외관' : 'building exterior'}`}
+          width={building.media.width ?? undefined}
+          height={building.media.height ?? undefined}
+          loading="lazy"
+          style={{ objectPosition: `${focalX * 100}% ${focalY * 100}%` }}
+        /></>}
       {building.media.attributionName === null ? null : (
         <figcaption>
           {building.media.attributionUrl === null
@@ -266,6 +329,9 @@ export function createKoreaBuildingDetailHref<T extends ExploreBuildingRouteIden
     { market: 'kr', transaction: 'sale' },
   ), locale), selection);
   const target = new URL(href, 'https://signedprice.invalid');
+  // Detail has independent evidence cohorts, so its URL must state the active
+  // transaction even when Explore treats Sale as the market default.
+  target.searchParams.set('transaction', selection.transaction);
   const query = location.query?.trim() ?? '';
   if (query.length > 0) target.searchParams.set('q', query);
   if (location.buildingPage !== undefined && location.buildingPage > 1) {
@@ -332,7 +398,7 @@ function ReadyAreaExplorer({
   initialSelection: ExplorerSelection;
 }>) {
   const copy = PUBLIC_MARKET_COPY[locale].area;
-  const currentView: ExplorerView = initialSelection.view ?? 'split';
+  const currentView: ExplorerView = initialSelection.view ?? 'list';
   const proximity = model.proximity;
   const linkSelection: KoreaExploreLinkSelection = Object.freeze({
     ...initialSelection,
@@ -347,6 +413,19 @@ function ReadyAreaExplorer({
   const usesLegacyCopy = model.evidenceSelection.areaBand === 'legacy-45-55';
   const countSeparator = locale === 'en' ? ' ' : '';
   const navigation = useRouter();
+
+  useEffect(() => {
+    try {
+      const raw = window.sessionStorage.getItem(EXPLORE_RETURN_POSITION_KEY);
+      if (raw === null) return;
+      const stored = JSON.parse(raw) as { href?: unknown; y?: unknown; savedAt?: unknown };
+      const currentHref = `${window.location.pathname}${window.location.search}`;
+      if (stored.href !== currentHref || typeof stored.y !== 'number'
+        || typeof stored.savedAt !== 'number' || Date.now() - stored.savedAt > 15 * 60_000) return;
+      window.sessionStorage.removeItem(EXPLORE_RETURN_POSITION_KEY);
+      window.requestAnimationFrame(() => window.requestAnimationFrame(() => window.scrollTo(0, stored.y as number)));
+    } catch {}
+  }, []);
   const router = useMemo(() => ({ ...navigation,
     replace: (href: string, options?: Parameters<typeof navigation.replace>[1]) =>
       navigation.replace(retainPassportContext(href, window.location.href), options),
@@ -398,7 +477,7 @@ function ReadyAreaExplorer({
     }),
   );
   const { selectedBuildingId } = buildingSelection;
-  const [visibleBuildingCount, setVisibleBuildingCount] = useState(50);
+  const [visibleBuildingCount, setVisibleBuildingCount] = useState(20);
   const [openAreaBuildings, setOpenAreaBuildings] = useState(false);
   const revealAreaBuildings = useCallback(() => setOpenAreaBuildings(true), [setOpenAreaBuildings]);
   const [sortMode, setSortMode] = useState<'latest' | 'evidence' | 'name'>('evidence');
@@ -463,6 +542,12 @@ function ReadyAreaExplorer({
   const selectedBuildingDetailHref = selectedBuilding === null
     ? null
     : buildingSelectionHref(selectedBuilding, linkSelection, locale, {
+        query: buildingQuery,
+        buildingPage: readyBuildingAvailability?.page,
+      });
+  const selectedBuildingReturnHref = selectedBuilding === null
+    ? null
+    : createExploreBuildingSelectionHref(selectedBuilding, linkSelection, locale, {
         query: buildingQuery,
         buildingPage: readyBuildingAvailability?.page,
       });
@@ -581,7 +666,7 @@ function ReadyAreaExplorer({
     setSelectedHousingType('all');
     setBuildingQuery('');
     dispatchBuildingSelection({ type: 'clear_building' });
-    setVisibleBuildingCount(50);
+    setVisibleBuildingCount(20);
     router.replace(districtHref(slug), { scroll: false });
   };
   const showAllDistricts = (): void => {
@@ -676,6 +761,7 @@ function ReadyAreaExplorer({
     if (readyBuildingAvailability !== null && readyBuildingAvailability.page > 1) {
       target.searchParams.set('buildingPage', String(readyBuildingAvailability.page));
     }
+    if (changes.view === 'split') target.searchParams.set('view', 'split');
     return `${target.pathname}${target.search}`;
   }, [buildingQuery, currentView, initialSelection, linkSelection, locale, mapDrilledToDistrict, model.evidenceSelection, readyBuildingAvailability, state.selectedSlug]);
   const proximityHref = useCallback((kind: 'station' | 'school', sourceId: string, distance: string): string => {
@@ -684,7 +770,7 @@ function ReadyAreaExplorer({
 
   const updateBuildingQuery = (query: string): void => {
     setBuildingQuery(query);
-    setVisibleBuildingCount(50);
+    setVisibleBuildingCount(20);
     dispatchBuildingSelection({ type: 'clear_building' });
     const resolvedSlug = resolveExploreSearchDistrict(
       model.districts,
@@ -731,7 +817,7 @@ function ReadyAreaExplorer({
     setOpenAreaBuildings(false);
     setMapDrilledToDistrict(true);
     setSelectedNeighborhood(neighborhoodId);
-    setVisibleBuildingCount(50);
+    setVisibleBuildingCount(20);
     dispatchBuildingSelection({ type: 'clear_building' });
     const href = withKoreaProximityPairs(localizedSeoulHref(createSelectionHref(
       '/kr/seoul/explore/',
@@ -820,7 +906,7 @@ function ReadyAreaExplorer({
                 onChange={(event) => {
                   const value = event.currentTarget.value;
                   setSelectedHousingType(value);
-                  setVisibleBuildingCount(50);
+                  setVisibleBuildingCount(20);
                   router.replace(evidenceHref({ propertyType: value }), { scroll: false });
                 }}
               >
@@ -1019,56 +1105,58 @@ function ReadyAreaExplorer({
                 ) : (
                   <>
                     <ul className={styles.buildingList}>
-                      {visibleBuildings.map((building) => (
+                      {visibleBuildings.map((building) => {
+                        const detailHref = buildingSelectionHref(building, linkSelection, locale, {
+                          query: buildingQuery,
+                          buildingPage: readyBuildingAvailability?.page,
+                        });
+                        const returnHref = createExploreBuildingSelectionHref(building, linkSelection, locale, {
+                          query: buildingQuery,
+                          buildingPage: readyBuildingAvailability?.page,
+                        });
+                        const display = buildingDisplayLabel(building, locale);
+                        return (
                         <li
                           key={building.id}
                           className={selectedBuilding?.id === building.id ? styles.selectedBuildingCard : undefined}
                           data-building-evidence={building.evidenceStatus}
                           data-building-row={building.id}
                         >
-                          <button
-                            type="button"
-                            aria-pressed={selectedBuilding?.id === building.id}
-                            onClick={() => selectBuilding(building.id, 'rail')}
-                          >
+                          <Link className={styles.buildingCardLink} href={detailHref} onClick={() => rememberExplorePosition(returnHref)}>
                             <span className={styles.buildingThumbnail}>
                               <ProjectedBuildingMedia building={building} locale={locale} variant="thumbnail" />
                             </span>
                             <span className={styles.buildingCardCopy}>
-                              <strong title={buildingDisplayLabel(building, locale).original}>{buildingDisplayLabel(building, locale).title}</strong>
-                              <span className={styles.buildingPrice}>{building.medianLabel ?? '—'}</span>
-                              <small title={buildingDisplayLabel(building, locale).original}>{buildingDisplayLabel(building, locale).location} · {evidenceHousingOptions.find(([value]) => value === building.housingType)?.[locale === 'ko' ? 2 : 1] ?? building.housingType}</small>
-                              {!isIndividualMapBuilding(building) && building.verifiedAddress === undefined ? <small>{locale === 'ko' ? '지도 위치 확인 전 · 상세 확인 가능' : 'Map location unavailable · Details available'}</small> : null}
-                              <small>{model.evidenceSelection.areaBand === 'legacy-45-55'
-                                ? `${copy.jeonseObservations} · ${building.jeonseObservationCount} · ${copy.monthlyObservations} · ${building.monthlyObservationCount}`
-                                : building.transaction === 'sale'
-                                  ? `${locale === 'ko' ? '매매 거래' : 'Sale filings'} ${building.observationCount}`
-                                  : building.transaction === 'monthly'
-                                    ? `${copy.monthlyObservations} ${building.monthlyObservationCount}`
-                                    : `${copy.jeonseObservations} ${building.jeonseObservationCount}`}</small>
-                              {building.transaction === 'monthly'
-                                && building.filedDepositMedianLabel !== null
-                                && building.filedDepositMedianLabel !== undefined
-                                ? <small>{locale === 'ko' ? '신고 보증금 중앙값' : 'Filed deposit median'} · {building.filedDepositMedianLabel}</small>
-                                : null}
-                              <small>{building.evidenceStatus === 'published'
-                                ? `${building.sampleLabel} · ${building.lastObservedMonth}`
-                                : `${copy.observedPeriod} · ${building.firstObservedMonth}–${building.lastObservedMonth}`}</small>
+                              <small title={display.original}>{display.location} · {evidenceHousingOptions.find(([value]) => value === building.housingType)?.[locale === 'ko' ? 2 : 1] ?? building.housingType}</small>
+                              <strong title={display.original}>{display.title}</strong>
+                              <small>{exploreAreaBandLabel(model.evidenceSelection.areaBand, locale)} · {building.firstObservedMonth}–{building.lastObservedMonth} · {localizeSampleLabel(building.sampleLabel, locale)}</small>
                               <BuildingProximityFacts building={building} locale={locale} />
                             </span>
-                          </button>
-                          <Link
-                            className={styles.buildingRowLink}
-                            href={buildingSelectionHref(building, linkSelection, locale, {
-                              query: buildingQuery,
-                              buildingPage: readyBuildingAvailability?.page,
-                            })}
-                          >
-                            <span className={styles.visuallyHidden}>{copy.openBuilding} · {buildingDisplayLabel(building, locale).title}</span>
-                            <span aria-hidden="true">→</span>
                           </Link>
+                          <span className={styles.buildingRowPrice}>
+                            <strong>{building.medianLabel ?? '—'}</strong>
+                            <small>{building.transaction === 'monthly' && building.filedDepositMedianLabel
+                              ? `${locale === 'ko' ? '보증금' : 'Deposit'} ${building.filedDepositMedianLabel}`
+                              : exactMetricCopy.medianLabel}</small>
+                          </span>
+                          <span className={styles.buildingRowActions}>
+                            <BuildingSaveButton
+                              buildingKey={`${building.districtSlug}/${building.id}`}
+                              buildingName={display.title}
+                              locale={locale}
+                            />
+                            <button
+                              type="button"
+                              className={styles.buildingPreviewButton}
+                              data-building-preview
+                              aria-label={locale === 'ko' ? `${display.title} 빠른 보기` : `Preview ${display.title}`}
+                              aria-pressed={selectedBuilding?.id === building.id}
+                              onClick={() => selectBuilding(building.id, 'rail')}
+                            >{locale === 'ko' ? '빠른 보기' : 'Preview'}</button>
+                          </span>
                         </li>
-                      ))}
+                        );
+                      })}
                     </ul>
                     {readyBuildingAvailability !== null
                       && readyBuildingAvailability.page > 1 ? (
@@ -1089,7 +1177,7 @@ function ReadyAreaExplorer({
                         className={styles.moreBuildings}
                         onClick={() => {
                           if (visibleBuildings.length < filteredBuildings.length) {
-                            setVisibleBuildingCount((count) => count + 50);
+                            setVisibleBuildingCount((count) => count + 20);
                             return;
                           }
                           if (model.buildingAvailability.status === 'ready') {
@@ -1117,6 +1205,7 @@ function ReadyAreaExplorer({
             detailHref={selectedBuildingDetailHref}
             locale={locale}
             onClose={closeBuilding}
+            onOpenDetail={selectedBuildingReturnHref === null ? undefined : () => rememberExplorePosition(selectedBuildingReturnHref)}
           >
             <ProjectedBuildingMedia building={selectedBuilding} locale={locale} variant="drawer" />
             <BuildingEvidencePanel
@@ -1210,6 +1299,10 @@ function ReadyAreaExplorer({
                             query: buildingQuery,
                             buildingPage: readyBuildingAvailability?.page,
                           })}
+                          onClick={() => rememberExplorePosition(createExploreBuildingSelectionHref(building, linkSelection, locale, {
+                            query: buildingQuery,
+                            buildingPage: readyBuildingAvailability?.page,
+                          }))}
                         >{copy.open}</Link>
                       </td>
                     </tr>
@@ -1373,7 +1466,7 @@ export function AreaExplorer({
               model.buildingAvailability.status === 'ready'
                 ? model.buildingAvailability.page
                 : 0
-            }:${initialSelection.view ?? 'split'}:${initialSelection.neighborhood ?? 'all'}:${initialSelection.buildingId ?? 'none'}`}
+            }:${initialSelection.view ?? 'list'}:${initialSelection.neighborhood ?? 'all'}:${initialSelection.buildingId ?? 'none'}`}
             model={model}
             naverMapClientId={naverMapClientId}
             googleMapsBrowserKey={googleMapsBrowserKey}

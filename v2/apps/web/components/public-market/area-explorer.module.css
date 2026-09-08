@@ -1627,17 +1627,20 @@
 }
 
 .photoUnavailable {
-  padding: 9px;
-  display: grid;
-  align-content: end;
-  gap: 3px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
   color: #697386;
   background: linear-gradient(145deg, #f0f2f6, #e4e8ef);
+  text-align: center;
   text-transform: none;
 }
 
-.photoUnavailable strong { font-size: 12px; line-height: 1.25; }
-.photoUnavailable small { font-size: var(--text-meta); line-height: 1.3; }
+.photoUnavailableIcon { color: #8791a2; font-size: 20px; line-height: 1; }
+.photoUnavailable small { margin: 0; font-size: 12px; line-height: 1.2; }
 
 .groupedBuildings {
   margin: 12px;
@@ -2004,8 +2007,8 @@
   .exploreToolbar .buildingSearch { order: 0; flex-basis: 100%; }
   .exploreToolbar .transactionFilter { order: 1; }
   .exploreToolbar > .toolbarSelect { order: 2; flex: 1 1 150px; }
-  .advancedFilters { order: 3; }
-  .advancedFiltersPanel { right: 0; }
+  .advancedFilters { order: 3; flex: 1 0 100%; }
+  .advancedFiltersPanel { position: static; width: 100%; margin-top: 8px; }
   .districtBrowser { height: auto; overflow: visible; }
   .mapEvidenceDisclosure { top: auto; bottom: 12px; }
   .mapLevelButton { top: 12px; right: 12px; }
@@ -2038,3 +2041,200 @@
 .railEvidenceDisclosure summary { display: grid; gap: 4px; cursor: pointer; font-size: 13px; }
 .railEvidenceDisclosure summary span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .railEvidenceDisclosure summary strong { white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+/* Compact Explore rows. Full-size verified media is reserved for the building page. */
+.workspace[data-explorer-layout='list'] {
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  overflow: visible;
+  background: #fff;
+}
+
+.workspace[data-explorer-layout='list'] .discoveryRail,
+.workspace[data-explorer-layout='list'] .rail,
+.workspace[data-explorer-layout='list'] .buildingBrowser {
+  max-height: none;
+  overflow: visible;
+}
+
+.buildingList li {
+  grid-template-columns: minmax(0, 1fr) minmax(130px, auto) 82px;
+  align-items: center;
+  padding: 18px 0;
+}
+
+.buildingCardLink {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 128px minmax(0, 1fr);
+  align-items: center;
+  gap: 22px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.buildingThumbnail {
+  width: 128px;
+  height: 96px;
+  min-height: 96px;
+  border-radius: 0;
+  background: #edf1ee;
+}
+
+.buildingThumbnail > [data-building-media],
+.buildingThumbnail > [data-building-media] > img,
+.buildingThumbnail > .photoUnavailable {
+  width: 128px;
+  height: 96px;
+  min-height: 96px;
+}
+
+.buildingThumbnail > [data-building-media],
+.buildingThumbnail > [data-building-media] > img { border-radius: 0; }
+
+.buildingThumbnail > [data-building-media] > img { object-fit: cover; }
+
+.buildingThumbnail:has(.photoUnavailable) { display: flex; }
+.buildingCardLink:has(.photoUnavailable) { grid-template-columns: 128px minmax(0, 1fr); }
+
+.buildingList .buildingCardCopy {
+  display: grid !important;
+  align-content: center;
+  justify-content: stretch;
+  gap: 4px;
+}
+
+.buildingList .buildingCardCopy > strong {
+  font-size: 1.1rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.buildingList .buildingCardCopy > small {
+  display: block;
+  color: #6c7571;
+  font-size: .8rem;
+  line-height: 1.45;
+}
+
+.buildingRowPrice {
+  min-width: 0;
+  padding-inline: 18px;
+  display: grid;
+  justify-items: end;
+  gap: 4px;
+  text-align: right;
+}
+
+.buildingRowPrice strong {
+  color: #15221f;
+  font-size: 1.25rem;
+  font-weight: 650;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+.buildingRowPrice small {
+  max-width: 26ch;
+  color: #6c7571;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.buildingRowActions {
+  display: grid;
+  justify-items: stretch;
+  gap: 5px;
+}
+
+/* Reset the legacy row-button layout for the two compact action controls. */
+.buildingList .buildingRowActions button {
+  width: 100%;
+  min-height: 44px;
+  padding: 7px 8px;
+  display: inline-flex;
+  grid-template-columns: none;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  text-align: center;
+}
+
+.buildingPreviewButton {
+  min-height: 44px;
+  padding: 7px 8px;
+  border: 1px solid #dfe3e7;
+  border-radius: 8px;
+  color: #245746;
+  background: #fff;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.buildingCardLink:hover .buildingCardCopy > strong { color: #245746; }
+.buildingCardLink:focus-visible,
+.buildingPreviewButton:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.workspace[data-explorer-layout='split'] .buildingList li {
+  grid-template-columns: minmax(0, 1fr) 72px;
+  padding-block: 14px;
+}
+
+.workspace[data-explorer-layout='split'] .buildingCardLink {
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 12px;
+}
+
+.workspace[data-explorer-layout='split'] .buildingThumbnail,
+.workspace[data-explorer-layout='split'] .buildingThumbnail > [data-building-media],
+.workspace[data-explorer-layout='split'] .buildingThumbnail > [data-building-media] > img,
+.workspace[data-explorer-layout='split'] .buildingThumbnail > .photoUnavailable {
+  width: 96px;
+  height: 78px;
+  min-height: 78px;
+}
+
+.workspace[data-explorer-layout='split'] .buildingRowPrice {
+  grid-column: 1;
+  padding: 6px 0 0 108px;
+  justify-items: start;
+  text-align: left;
+}
+
+.workspace[data-explorer-layout='split'] .buildingRowPrice small { display: none; }
+.workspace[data-explorer-layout='split'] .buildingRowActions { grid-column: 2; grid-row: 1 / span 2; }
+
+@media (max-width: 700px) {
+  .resultBar { align-items: stretch; }
+  .resultCount { flex: 1 0 100%; }
+  .toolbarViews { width: 100%; flex: 1 0 100%; margin-left: 0; overflow: visible; }
+  .toolbarViews > nav { width: 100%; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .toolbarViews > nav > a { min-width: 0; width: 100%; }
+  .buildingList li { grid-template-columns: minmax(0, 1fr) 72px; padding-block: 14px; }
+  .buildingCardLink { grid-template-columns: 96px minmax(0, 1fr); gap: 12px; }
+  .buildingThumbnail,
+  .buildingThumbnail > [data-building-media],
+  .buildingThumbnail > [data-building-media] > img,
+  .buildingThumbnail > .photoUnavailable { width: 96px; height: 78px; min-height: 78px; }
+  .buildingRowPrice { grid-column: 1; padding: 6px 0 0 108px; justify-items: start; text-align: left; }
+  .buildingRowPrice strong { font-size: 1.05rem; }
+  .buildingRowPrice small { display: none; }
+  .buildingRowActions { grid-column: 2; grid-row: 1 / span 2; }
+  .buildingList .buildingCardCopy > strong,
+  .buildingList .buildingCardCopy > small { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+}
+
+@media (max-width: 430px) {
+  .buildingList li { grid-template-columns: minmax(0, 1fr) 62px; }
+  .buildingCardLink { grid-template-columns: 96px minmax(0, 1fr); gap: 10px; }
+  .buildingThumbnail,
+  .buildingThumbnail > [data-building-media],
+  .buildingThumbnail > [data-building-media] > img,
+  .buildingThumbnail > .photoUnavailable { width: 96px; height: 72px; min-height: 72px; }
+  .buildingRowPrice { padding-left: 106px; }
+  .buildingList .buildingCardCopy > strong { display: block; font-size: .95rem; white-space: nowrap; }
+  .buildingList .buildingCardCopy > small { font-size: 12px; }
+}

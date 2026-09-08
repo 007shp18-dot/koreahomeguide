@@ -22,9 +22,10 @@ describe('signedprice homepage copy', () => {
   it('renders the approved editorial journey in decision order', async () => {
     const markup = renderToStaticMarkup(await Home());
     const needles = [
-      'Where can your budget become a home?',
+      'Somewhere worth knowing.',
       'Explore a city',
-      'Latest analysis',
+      'Latest insights',
+      'Where can your budget become a home?',
       'Buying &amp; renting guides',
     ];
     const positions = needles.map((needle) => markup.indexOf(needle));
@@ -116,7 +117,7 @@ describe('signedprice homepage copy', () => {
     const markup = renderToStaticMarkup(await Home());
 
     expect(markup).toContain('href="/trust">Method</a>');
-    expect(markup).toContain('How our data works');
+    expect(markup).toContain('Sources &amp; methodology');
     expect(markup).not.toMatch(/₩0|0 contracts/);
   });
 
@@ -146,11 +147,11 @@ describe('signedprice homepage copy', () => {
     vi.unstubAllEnvs();
   });
 
-  it('presents all three cities before city-specific editorial content', async () => {
+  it('presents all four cities before city-specific editorial content', async () => {
     const markup = renderToStaticMarkup(await Home());
-    const globalPromise = markup.indexOf('Where can your budget become a home?');
+    const globalPromise = markup.indexOf('Somewhere worth knowing.');
     const marketTabs = markup.indexOf('data-home-region="markets"');
-    const editorial = markup.indexOf('Latest analysis');
+    const editorial = markup.indexOf('Latest insights');
 
     expect(globalPromise).toBeGreaterThanOrEqual(0);
     expect(marketTabs).toBeGreaterThan(globalPromise);

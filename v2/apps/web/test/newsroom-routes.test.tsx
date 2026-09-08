@@ -45,7 +45,7 @@ const newsArticle: PublishedContentArticle = Object.freeze({
 });
 
 describe('public Newsroom routes', () => {
-  it('uses one News & Insights surface and preserves market selection', () => {
+  it('uses one News & Insights surface and keeps analysis types inside Insights', () => {
     const filters = resolveNewsroomFilters({ type: 'market', market: 'seoul' });
     expect(filters.canonicalHref).toBe('/news/?type=market&market=seoul');
     const marketArticle = { ...article, type: 'market-brief' as const };
@@ -56,6 +56,8 @@ describe('public Newsroom routes', () => {
     expect(html).not.toContain('External feed');
     expect(html).toContain('href="/news?type=news&amp;market=seoul"');
     expect(html).toContain('Market Insight');
+    expect(html).toContain('Data Stories');
+    expect(html).toContain('>Insights</a>');
     expect(html).not.toContain('Analysis reports');
   });
   it('normalizes type and market filters into one canonical query URL', () => {
@@ -63,13 +65,13 @@ describe('public Newsroom routes', () => {
       type: 'policy', market: 'singapore', canonicalHref: '/news/?type=policy&market=singapore',
     });
     expect(resolveNewsroomFilters({ type: 'analysis', market: 'seoul' })).toEqual({
-      type: 'latest', market: 'seoul', canonicalHref: '/news/?market=seoul',
+      type: 'insights', market: 'seoul', canonicalHref: '/news/?market=seoul',
     });
     expect(resolveNewsroomFilters({ type: 'headlines', market: 'dubai' })).toEqual({
       type: 'news', market: 'dubai', canonicalHref: '/news/?type=news&market=dubai',
     });
     expect(resolveNewsroomFilters({ type: 'unknown', market: ['seoul'] })).toEqual({
-      type: 'latest', market: 'all', canonicalHref: '/news/',
+      type: 'insights', market: 'all', canonicalHref: '/news/',
     });
   });
 
@@ -88,14 +90,16 @@ describe('public Newsroom routes', () => {
     expect(html).not.toContain(policy.title);
   });
 
-  it('renders five unified newsroom tabs, four market filters, one lead, and a row list without desk diagnostics', () => {
+  it('renders three hub tabs, four market filters, one lead, and a row list without desk diagnostics', () => {
     const html = renderToStaticMarkup(<NewsroomIndex
       articles={[article, { ...article, id: 'story-2', slug: 'second-story', title: 'Second story' }]}
       policies={[policy]}
-      filters={{ type: 'latest', market: 'all', canonicalHref: '/news/' }}
+      filters={{ type: 'insights', market: 'all', canonicalHref: '/news/' }}
     />);
 
-    for (const label of ['Latest', 'News', 'Policy', 'Market Insight', 'Data Stories']) expect(html).toContain(`>${label}</a>`);
+    for (const label of ['Insights', 'News', 'Policy']) expect(html).toContain(`>${label}</a>`);
+    expect(html.match(/aria-label="News and insight types"[\s\S]*?<\/nav>/)?.[0].match(/<a /g)).toHaveLength(3);
+    for (const label of ['All insights', 'Market Insight', 'Data Stories']) expect(html).toContain(`>${label}</a>`);
     for (const label of ['All', 'Seoul', 'Singapore', 'Dubai']) expect(html).toContain(`>${label}</a>`);
     expect(html).toContain('data-newsroom-layout="research"');
     expect(html).toContain('data-newsroom-filter-bar="true"');

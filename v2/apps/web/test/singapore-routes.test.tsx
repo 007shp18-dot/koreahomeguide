@@ -33,7 +33,7 @@ import {
 import SingaporeSegmentLoading from '../app/(en)/sg/singapore/explore/[area]/loading';
 import SingaporeProjectLoading from '../app/(en)/sg/singapore/explore/[area]/[projectId]/loading';
 import { metadata as correctionMetadata } from '../app/(en)/sg/singapore/corrections/page';
-import { metadata as checkMetadata } from '../app/(en)/sg/singapore/check/page';
+import { generateMetadata as generateCheckMetadata } from '../app/(en)/sg/singapore/check/page';
 import SingaporeExplorePage from '../app/(en)/sg/singapore/explore/page';
 import sitemap from '../app/sitemap';
 import {
@@ -378,9 +378,13 @@ describe('Singapore route containment', () => {
     expect(correctionMetadata).not.toHaveProperty('alternates');
   });
 
-  it('keeps native Singapore Check noindex and self-canonical until evidence release', () => {
-    expect(checkMetadata.robots).toEqual({ index: false, follow: false });
-    expect(checkMetadata.alternates).toEqual({ canonical: 'https://www.signedprice.com/sg/singapore/check/' });
+  it('indexes native Singapore Check after its evidence release', async () => {
+    const checkMetadata = await generateCheckMetadata({ searchParams: Promise.resolve({}) });
+    expect(checkMetadata.robots).toEqual({ index: true, follow: true });
+    expect(checkMetadata.alternates).toEqual({
+      canonical: 'https://www.signedprice.com/sg/singapore/check/',
+      languages: { en: 'https://www.signedprice.com/sg/singapore/check/', ko: 'https://www.signedprice.com/ko/sg/singapore/check/', 'x-default': 'https://www.signedprice.com/sg/singapore/check/' },
+    });
   });
 });
 

@@ -14,9 +14,10 @@ it('lists every published Singapore project with the same canonical and publicat
   const repository = await singaporeSnapshotRepositoryFromEnvironment();
   expect(repository).not.toBeNull();
   const entries = await sitemap();
-  expect(entries).toHaveLength(4824);
-  expect(entries).toHaveLength(repository!.listProjectRouteParams().length * 2);
-  const entriesByUrl = new Map(entries.map(entry => [entry.url, entry]));
+  const projectEntries = entries.filter(({ url }) => url.includes('/singapore/explore/'));
+  expect(projectEntries).toHaveLength(4824);
+  expect(projectEntries).toHaveLength(repository!.listProjectRouteParams().length * 2);
+  const entriesByUrl = new Map(projectEntries.map(entry => [entry.url, entry]));
   expect(new Set(entries.map(({ url }) => url)).size).toBe(entries.length);
   for (const { area, projectId } of repository!.listProjectRouteParams()) {
     const en = `https://www.signedprice.com/sg/singapore/explore/${area}/${projectId}/`;

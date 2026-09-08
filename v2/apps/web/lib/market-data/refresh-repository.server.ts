@@ -94,6 +94,15 @@ const UPSERT_DATASET_SQL = `
     parser_version = excluded.parser_version,
     rights_policy_id = excluded.rights_policy_id,
     updated_at = now()
+  WHERE ROW(
+    datasets.provider, datasets.official_name, datasets.landing_url,
+    datasets.subject_scope, datasets.refresh_cadence, datasets.expected_lag,
+    datasets.schema_version, datasets.parser_version, datasets.rights_policy_id
+  ) IS DISTINCT FROM ROW(
+    excluded.provider, excluded.official_name, excluded.landing_url,
+    excluded.subject_scope, excluded.refresh_cadence, excluded.expected_lag,
+    excluded.schema_version, excluded.parser_version, excluded.rights_policy_id
+  )
 `;
 
 const UPSERT_GEOGRAPHIES_SQL = `
@@ -110,6 +119,8 @@ const UPSERT_GEOGRAPHIES_SQL = `
     official_name = excluded.official_name,
     localized_names = excluded.localized_names,
     updated_at = now()
+  WHERE ROW(geographies.official_name, geographies.localized_names)
+    IS DISTINCT FROM ROW(excluded.official_name, excluded.localized_names)
 `;
 
 const UPSERT_ENTITIES_SQL = `
@@ -144,6 +155,27 @@ const UPSERT_ENTITIES_SQL = `
     local_attributes = property_entities.local_attributes || excluded.local_attributes,
     local_schema_version = excluded.local_schema_version,
     updated_at = now()
+  WHERE ROW(
+    property_entities.geography_id, property_entities.canonical_name,
+    property_entities.normalized_name, property_entities.address_text,
+    property_entities.housing_sector, property_entities.property_class,
+    property_entities.identity_status, property_entities.local_attributes,
+    property_entities.local_schema_version
+  ) IS DISTINCT FROM ROW(
+    COALESCE(excluded.geography_id, property_entities.geography_id),
+    excluded.canonical_name, excluded.normalized_name,
+    COALESCE(excluded.address_text, property_entities.address_text),
+    COALESCE(excluded.housing_sector, property_entities.housing_sector),
+    CASE
+      WHEN property_entities.property_class IS NULL OR excluded.property_class IS NULL THEN NULL
+      WHEN property_entities.property_class = excluded.property_class
+        THEN property_entities.property_class
+      ELSE NULL
+    END,
+    excluded.identity_status,
+    property_entities.local_attributes || excluded.local_attributes,
+    excluded.local_schema_version
+  )
 `;
 
 const APPLY_RECORDS_SQL = `
@@ -240,6 +272,25 @@ const APPLY_RECORDS_SQL = `
       local_attributes = excluded.local_attributes,
       local_schema_version = excluded.local_schema_version,
       updated_at = now()
+    WHERE ROW(
+      observations.stage, observations.observed_at, observations.registered_at,
+      observations.period_start, observations.period_end, observations.amount_minor,
+      observations.annual_amount_minor, observations.deposit_minor,
+      observations.recurring_amount_minor, observations.frequency,
+      observations.property_area_sqm, observations.transacted_area_sqm,
+      observations.area_basis, observations.floor_value, observations.floor_range,
+      observations.bedrooms, observations.tenure_kind, observations.status,
+      observations.local_attributes, observations.local_schema_version
+    ) IS DISTINCT FROM ROW(
+      excluded.stage, excluded.observed_at, excluded.registered_at,
+      excluded.period_start, excluded.period_end, excluded.amount_minor,
+      excluded.annual_amount_minor, excluded.deposit_minor,
+      excluded.recurring_amount_minor, excluded.frequency,
+      excluded.property_area_sqm, excluded.transacted_area_sqm,
+      excluded.area_basis, excluded.floor_value, excluded.floor_range,
+      excluded.bedrooms, excluded.tenure_kind, excluded.status,
+      excluded.local_attributes, excluded.local_schema_version
+    )
     RETURNING id
   )
   SELECT
@@ -427,6 +478,13 @@ export function createMarketRefreshRepository(
       }
       if (batch.records.length === 0) throw new TypeError('Market refresh batch is empty.');
       const dataset = batch.dataset;
+      const datasetStatement: MarketRefreshSqlStatement = {
+        statement: UPSERT_DATASET_SQL,
+        parameters: [dataset.id, dataset.marketId, dataset.provider, dataset.officialName,
+          dataset.landingUrl, dataset.subjectScope, dataset.refreshCadence,
+          dataset.expectedLag, dataset.schemaVersion, dataset.parserVersion,
+          dataset.rightsPolicyId],
+      };
       let counters: MarketRefreshCounters = Object.freeze({
         received: 0, inserted: 0, updated: 0, unchanged: 0, unlinked: 0,
       });
@@ -437,18 +495,14 @@ export function createMarketRefreshRepository(
         });
         const data = payloads(chunk);
         const results = await port.transaction([
-          {
-            statement: UPSERT_DATASET_SQL,
-            parameters: [dataset.id, dataset.marketId, dataset.provider, dataset.officialName,
-              dataset.landingUrl, dataset.subjectScope, dataset.refreshCadence,
-              dataset.expectedLag, dataset.schemaVersion, dataset.parserVersion,
-              dataset.rightsPolicyId],
-          },
+          // Keep initial dataset creation atomic with the first chunk, without
+          // another HTTP round trip or an identical upsert in every later chunk.
+          ...(offset === 0 ? [datasetStatement] : []),
           { statement: UPSERT_GEOGRAPHIES_SQL, parameters: [data.geographies] },
           { statement: UPSERT_ENTITIES_SQL, parameters: [data.entities] },
           { statement: APPLY_RECORDS_SQL, parameters: [data.records] },
         ]);
-        const row = results[3]?.[0];
+        const row = results.at(-1)?.[0];
         if (row === undefined) throw new TypeError('Market refresh counters are unavailable.');
         counters = addCounters(counters, Object.freeze({
           received: count(row.received, 'received'),

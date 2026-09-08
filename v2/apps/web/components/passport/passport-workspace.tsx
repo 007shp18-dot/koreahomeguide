@@ -23,6 +23,11 @@ const DETAIL = {
 } as const;
 
 const MONEY = { KRW: 'ko-KR', SGD: 'en-SG', AED: 'en-AE' } as const;
+const FX_COPY = {
+  en: { reference: 'Daily reference rates.', stale: 'Latest rates could not be confirmed. Using the last available reference.', fallback: 'Latest rates unavailable. Using the saved reference.', checked: 'Provider checked' },
+  ko: { reference: '일별 참고 환율입니다.', stale: '최신 환율을 확인하지 못해 마지막으로 확보한 참고 환율을 사용합니다.', fallback: '최신 환율을 불러오지 못해 저장된 참고 환율을 사용합니다.', checked: '공급자 확인' },
+  'zh-CN': { reference: '每日参考汇率。', stale: '尚未确认最新汇率，使用最近一次可用的参考汇率。', fallback: '最新汇率暂不可用，使用已保存的参考汇率。', checked: '已核对来源' },
+} as const;
 const subscribeToLocation = (notify: () => void) => {
   globalThis.addEventListener('popstate', notify);
   globalThis.addEventListener('passport:budget-updated', notify);
@@ -40,13 +45,14 @@ export function PassportWorkspace({ initialModel }: Readonly<{ initialModel: Pas
   const search = useSyncExternalStore(subscribeToLocation, locationSearch, serverSearch);
   const query = new URLSearchParams(search);
   const currency = query.has('budget') ? normalizePassportCurrency(query.get('currency')) : initialModel.budgetCurrency;
-  const budget = query.has('budget') ? normalizePassportAmount(query.get('budget') ?? undefined, currency) : initialModel.budgetAmount;
+  const budget = query.has('budget') ? normalizePassportAmount(query.get('budget') ?? undefined, currency, initialModel.fx) : initialModel.budgetAmount;
   const dubaiStage = query.get('dubaiStage') === 'off-plan' ? 'off-plan' : 'ready';
-  const model = useMemo(() => buildPassportModel({ budgetWon: budget, budgetAmount: budget, budgetCurrency: currency, dubaiStage, locale: initialModel.locale, evidence }), [budget, currency, dubaiStage, evidence, initialModel.locale]);
+  const model = useMemo(() => buildPassportModel({ budgetWon: budget, budgetAmount: budget, budgetCurrency: currency, dubaiStage, locale: initialModel.locale, evidence, fx: initialModel.fx }), [budget, currency, dubaiStage, evidence, initialModel.locale, initialModel.fx]);
   const [copiedHref, setCopiedHref] = useState<string | null>(null);
   const [copyState, setCopyState] = useState<'idle' | 'copied' | 'failed'>('idle');
   const copy = COPY[initialModel.locale];
   const detail = DETAIL[initialModel.locale];
+  const fxCopy = FX_COPY[initialModel.locale];
   const action = passportHref(initialModel.locale, initialModel.budgetWon).split('?')[0]!;
 
   return <main className={styles.workspace}>
@@ -56,12 +62,12 @@ export function PassportWorkspace({ initialModel }: Readonly<{ initialModel: Pas
       <form action={action} className={styles.resultForm} onSubmit={(event) => {
         event.preventDefault(); const data = new FormData(event.currentTarget);
         const budgetCurrency = normalizePassportCurrency(data.get('currency'));
-        const budgetAmount = normalizePassportAmount(String(data.get('budget') ?? ''), budgetCurrency);
-        const next = buildPassportModel({ budgetWon: budgetAmount, budgetAmount, budgetCurrency, dubaiStage, locale: initialModel.locale, evidence });
+        const budgetAmount = normalizePassportAmount(String(data.get('budget') ?? ''), budgetCurrency, initialModel.fx);
+        const next = buildPassportModel({ budgetWon: budgetAmount, budgetAmount, budgetCurrency, dubaiStage, locale: initialModel.locale, evidence, fx: initialModel.fx });
         globalThis.history.replaceState(null, '', next.href); globalThis.dispatchEvent(new Event('passport:budget-updated')); setCopyState('idle');
         sendToolEvent('tool_complete', { tool: 'passport', market: 'global', surface: 'standalone-tool' });
       }}>
-        <PassportBudgetFields key={`${budget}-${currency}`} amount={budget} currency={currency} locale={initialModel.locale} id="passport-result-budget" />
+        <PassportBudgetFields key={`${budget}-${currency}`} amount={budget} currency={currency} locale={initialModel.locale} id="passport-result-budget" fx={initialModel.fx} />
         <button type="submit">{copy.action}</button>
       </form>
     </header>
@@ -89,7 +95,8 @@ export function PassportWorkspace({ initialModel }: Readonly<{ initialModel: Pas
     </section>
 
     <footer className={styles.resultFooter}>
-      <p>{copy.fx} · {model.fx.asOf} · {model.fx.source}. {detail.fx}</p>
+      <p data-fx-availability={model.fx.availability}>{copy.fx} · <time dateTime={model.fx.asOf}>{model.fx.asOf}</time> · {model.fx.source}. {detail.fx} {fxCopy[model.fx.availability]}</p>
+      {model.fx.checkedAt === null ? null : <p data-fx-checked-at={model.fx.checkedAt}>{fxCopy.checked} · <time dateTime={model.fx.checkedAt}>{model.fx.checkedAt.slice(0, 16).replace('T', ' ')} UTC</time></p>}
       <button type="button" onClick={async () => {
         try {
           await navigator.clipboard.writeText(new URL(model.href, globalThis.location.origin).href);

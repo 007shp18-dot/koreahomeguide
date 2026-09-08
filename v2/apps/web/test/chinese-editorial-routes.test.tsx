@@ -22,7 +22,7 @@ describe('Simplified Chinese editorial release', () => {
       expect(markup).not.toContain('/design-review/');
     }
     expect(home).toContain('你的预算可以在哪里买到房子？');
-    expect(home).toContain('最新分析');
+    expect(home).toContain('最新洞察');
     expect(home).toContain('href="/zh-cn/news');
     expect(news).toContain('首尔与新加坡的政策更新、市场简报和数据故事。');
     expect(news).toContain('data-public-editorial-frame="content"');

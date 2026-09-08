@@ -18,7 +18,7 @@ export function AreaExplorerViewSwitcher({
     <SegmentedControl
       label={locale === 'ko' ? '탐색 보기' : 'Explorer view'}
       value={current}
-      items={(['split', 'list', 'table', 'map'] as const).map((view) => ({
+      items={(['list', 'map', 'split', 'table'] as const).map((view) => ({
         value: view,
         label: labels[view],
         href: hrefFor(view),

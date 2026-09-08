@@ -202,6 +202,7 @@ const copy: Readonly<Record<string, string>> = {
   "Default metric": "기본 지표",
   "Sale median": "매매 중위가격",
   "Singapore ranking metric": "싱가포르 순위 지표",
+  "Singapore ranking pages": "싱가포르 순위 페이지",
   "Ranking by": "정렬 기준",
   "Only projects meeting the publication minimum are included. This is not a quality or investment score.": "최소 공개 표본을 충족한 단지만 포함합니다. 주택 품질이나 투자 점수가 아닙니다.",
   "No published project distribution is available.": "공개된 단지 가격 분포가 없습니다.",

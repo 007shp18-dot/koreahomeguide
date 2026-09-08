@@ -4,20 +4,21 @@ export const marketNavigation = [
   { id: 'kr-seoul', label: 'Seoul', href: '/kr/seoul/' },
   { id: 'sg-singapore', label: 'Singapore', href: '/sg/' },
   { id: 'ae-dubai', label: 'Dubai', href: '/ae/dubai/' },
+  { id: 'jp-tokyo', label: 'Tokyo', href: '/jp/tokyo/' },
 ] as const;
 
 export function globalNavigation(locale: SiteLocale = 'en') {
   const zh = locale === 'zh-CN';
   if (locale === 'ko') return [
-    { label: '시장', href: '/ko/markets/' },
-    { label: '가격', href: '/ko/prices/' },
+    { label: '둘러보기', href: '/ko/prices/' },
+    { label: '순위', href: '/ko/rankings/' },
     { label: '도구', href: '/ko/tools/' },
     { label: '뉴스·인사이트', href: '/ko/news/' },
     { label: '가이드', href: '/ko/guides/' },
   ];
   return [
-    { label: zh ? '市场' : 'Markets', href: '/markets/' },
-    { label: zh ? '价格' : 'Prices', href: '/prices/' },
+    { label: zh ? '探索' : 'Explore', href: '/prices/' },
+    { label: zh ? '排名' : 'Rankings', href: '/rankings/' },
     { label: zh ? '工具' : 'Tools', href: zh ? '/zh-cn/tools/' : '/tools/' },
     { label: zh ? '新闻与洞察' : 'News & Insights', href: zh ? '/zh-cn/news/' : '/news/' },
     { label: zh ? '指南' : 'Guides', href: zh ? '/zh-cn/guides/' : '/guides/' },
@@ -39,6 +40,9 @@ export function languageDestinations(pathname: string, search = ''): Record<Site
     // an independently canonical translation. Hreflang destinations must be
     // terminal pages, so expose only the published English route here.
     destinations.en = withQuery(english);
+  } else if (english === '/rankings') {
+    destinations.en = withQuery(english);
+    destinations.ko = withQuery(`/ko${english}`);
   } else if (english === '/prices' || english === '/tools' || english === '/tools/property-scenario' || english === '/passport') {
     destinations.en = withQuery(english);
     destinations.ko = withQuery(`/ko${english}`);

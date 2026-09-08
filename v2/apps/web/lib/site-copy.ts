@@ -58,7 +58,7 @@ export interface NavigationLinkModel {
   readonly description?: string;
 }
 
-export type GlobalNavigationItem = 'Markets' | 'Prices' | 'Tools' | 'News & Insights' | 'Guides';
+export type GlobalNavigationItem = 'Explore' | 'Rankings' | 'Tools' | 'News & Insights' | 'Guides';
 
 export interface SiteHeaderModel {
   readonly brand: string;
@@ -86,8 +86,8 @@ export interface SiteFooterModel {
 }
 
 export const productNavigationLinks = Object.freeze([
-  { index: '01', label: 'Markets', description: 'Compare market context', href: '/markets/' },
-  { index: '02', label: 'Prices', description: 'Explore signed evidence', href: '/prices/' },
+  { index: '01', label: 'Explore', description: 'Explore signed evidence', href: '/prices/' },
+  { index: '02', label: 'Rankings', description: 'Compare recorded price levels', href: '/rankings/' },
   { index: '03', label: 'Tools', description: 'Calculate and compare terms', href: '/tools/' },
   { index: '04', label: 'News & Insights', description: 'Read official updates and original property analysis', href: '/news/' },
   { index: '05', label: 'Guides', description: 'Understand local decisions', href: '/guides/' },

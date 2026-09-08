@@ -1,12 +1,18 @@
 import { expect, test, type Page } from '@playwright/test';
+import type { NewsWorkspaceModel } from '../../apps/web/lib/news/news-workspace-model';
 import { openPrimaryNavigation } from './navigation-helpers';
 
 async function expectNoHorizontalOverflow(page: Page) {
   const dimensions = await page.evaluate(() => ({
     client: document.documentElement.clientWidth,
     scroll: document.documentElement.scrollWidth,
+    overflowing: [...document.querySelectorAll('body *')].flatMap((element) => {
+      const box = element.getBoundingClientRect();
+      return box.width > 0 && box.right > document.documentElement.clientWidth + 1
+        ? [{ tag: element.tagName, className: element.className, right: Math.round(box.right) }] : [];
+    }).slice(0, 8),
   }));
-  expect(dimensions.scroll).toBeLessThanOrEqual(dimensions.client);
+  expect(dimensions.scroll, JSON.stringify(dimensions.overflowing)).toBeLessThanOrEqual(dimensions.client);
 }
 
 test('News & Insights opens the unified hub and preserves the filter journey', async ({ page }) => {
@@ -16,10 +22,10 @@ test('News & Insights opens the unified hub and preserves the filter journey', a
   await expect(page.locator('header.site-header:visible details.site-header__mobile-menu')).not.toHaveAttribute('open', '');
   await expect(page.getByRole('heading', { level: 1, name: 'News & Insights', exact: true })).toBeVisible();
   const types = page.getByRole('navigation', { name: 'News and insight types' });
-  await expect(types.getByRole('link', { name: 'Latest', exact: true })).toHaveAttribute('aria-current', 'page');
-  await types.getByRole('link', { name: 'Market Insight', exact: true }).click();
+  await expect(types.getByRole('link', { name: 'Insights', exact: true })).toHaveAttribute('aria-current', 'page');
+  await page.getByRole('navigation', { name: 'Insight types' }).getByRole('link', { name: 'Market Insight', exact: true }).click();
   await expect(page).toHaveURL(/\/news\/\?type=market$/);
-  await expect(types.getByRole('link', { name: 'Market Insight', exact: true })).toHaveAttribute('aria-current', 'page');
+  await expect(types.getByRole('link', { name: 'Insights', exact: true })).toHaveAttribute('aria-current', 'page');
   await types.getByRole('link', { name: 'News', exact: true }).click();
   await expect(page).toHaveURL(/\/news\/\?type=news$/);
   await expect(page.getByRole('heading', { level: 2, name: 'External headlines', exact: true })).toBeVisible();
@@ -31,7 +37,7 @@ test('Newsroom filters reviewed SignedPrice records and opens the policy lifecyc
 
   await expect(page).toHaveTitle(/Property news, policy and market insights/);
   await expect(page.getByRole('heading', { level: 1, name: 'News & Insights', exact: true })).toBeVisible();
-  await expect(page.getByRole('navigation', { name: 'News and insight types' }).getByRole('link')).toHaveCount(5);
+  await expect(page.getByRole('navigation', { name: 'News and insight types' }).getByRole('link')).toHaveCount(3);
   await expect(page.getByRole('navigation', { name: 'News markets' }).getByRole('link')).toHaveText(['All', 'Seoul', 'Singapore', 'Dubai']);
   await expect(page.locator('[data-newsroom-lead]')).toHaveCount(1);
   await expect(page.locator('body')).not.toContainText(/provider|credential|ingestion|Naver News API/i);
@@ -116,21 +122,33 @@ test('News uses the shared readable type and restrained frame', async ({ page },
 });
 
 test('external headlines survive market filtering and open the original publisher', async ({ page }) => {
-  await page.route('**/api/news/', (route) => route.fulfill({ json: {
+  const reviewedHeadlines = {
     naverState: 'ready', items: [
-      { id: 'external-sg', market: 'singapore', marketLabel: 'Singapore', title: 'Singapore housing release', publisher: 'URA', publishedAt: '2026-09-06T00:00:00Z', sourceKind: 'google-news-rss', url: 'https://www.ura.gov.sg/news/media/pr26-57/' },
-      { id: 'external-kr', market: 'seoul', marketLabel: 'Seoul', title: 'Seoul housing update', publisher: 'MOLIT', publishedAt: '2026-09-05T00:00:00Z', sourceKind: 'naver-search', url: 'https://www.molit.go.kr/' },
+      { id: 'external-sg', market: 'singapore', marketLabel: 'Singapore', title: 'Singapore housing release', publisher: 'URA', publishedAt: '2026-09-06T00:00:00Z', sourceKind: 'google-news-rss', url: 'https://www.ura.gov.sg/news/media/pr26-57/', summary: 'Reviewed housing release.', internalHref: null, category: 'news-brief', evidence: 'checking', evidenceLine: 'External source reviewed for published content' },
+      { id: 'external-kr', market: 'seoul', marketLabel: 'Seoul', title: 'Seoul housing update', publisher: 'MOLIT', publishedAt: '2026-09-05T00:00:00Z', sourceKind: 'naver-search', url: 'https://www.molit.go.kr/', summary: 'Reviewed housing update.', internalHref: null, category: 'news-brief', evidence: 'checking', evidenceLine: 'External source reviewed for published content' },
     ],
-  } }));
+  } satisfies NewsWorkspaceModel;
+  await page.route('**/api/news/', (route) => route.fulfill({ json: reviewedHeadlines }));
   await page.goto('/news/');
-  await expect(page.getByRole('link', { name: 'Singapore housing release' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'External headlines', exact: true })).toHaveCount(0);
   await page.getByRole('navigation', { name: 'News and insight types' }).getByRole('link', { name: 'News', exact: true }).click();
   await expect(page).toHaveURL(/type=news/);
+  await expect(page.getByRole('link', { name: 'Singapore housing release' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Seoul housing update' })).toBeVisible();
   await page.getByRole('navigation', { name: 'News markets' }).getByRole('link', { name: 'Singapore', exact: true }).click();
   await expect(page).toHaveURL(/type=news&market=singapore/);
   await expect(page.getByRole('link', { name: 'Singapore housing release' })).toHaveAttribute('href', 'https://www.ura.gov.sg/news/media/pr26-57/');
   await expect(page.getByRole('link', { name: 'Seoul housing update' })).toHaveCount(0);
   await expect(page.getByRole('link', { name: 'Singapore housing release' })).toHaveAttribute('target', '_blank');
+  await page.context().route('https://www.ura.gov.sg/news/media/pr26-57/', (route) => route.fulfill({
+    contentType: 'text/html', body: '<h1>Original publisher release</h1>',
+  }));
+  const [publisher] = await Promise.all([
+    page.waitForEvent('popup'),
+    page.getByRole('link', { name: 'Singapore housing release' }).click(),
+  ]);
+  await expect(publisher).toHaveURL('https://www.ura.gov.sg/news/media/pr26-57/');
+  await publisher.close();
   await expectNoHorizontalOverflow(page);
 });
 

@@ -3,7 +3,7 @@ import { loadPersistedNewsItems } from '../../lib/news/news-persistence.server';
 import { ExternalHeadlines } from './external-headlines';
 
 const storedHeadlines = unstable_cache(
-  () => loadPersistedNewsItems(1500), ['external-headline-preview-v1'], { revalidate: 60 },
+  () => loadPersistedNewsItems(1500), ['reviewed-external-headline-preview-v2'], { revalidate: 60 },
 );
 
 export async function StoredExternalHeadlines({ market, preview }: Readonly<{

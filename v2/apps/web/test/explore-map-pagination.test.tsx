@@ -5,6 +5,17 @@ const capturedMap = vi.hoisted(() => ({buildings: [] as readonly {title:string; 
 
 vi.mock('server-only', () => ({}));
 vi.mock('next/navigation', () => ({ useRouter: () => ({ push: vi.fn(), replace: vi.fn() }) }));
+vi.mock('next/dynamic', () => ({
+  default: () => ({ buildings = [], areaGroups = [], neighborhoods }: {
+    buildings?: readonly {title:string; sourceName?:string; addressQuery:string}[]; areaGroups?: readonly { count: number }[];
+    neighborhoods?: readonly { buildingCount: number }[];
+  }) => {
+    capturedMap.buildings = buildings;
+    return <div data-test-map-total={neighborhoods?.reduce((sum, item) => sum + item.buildingCount, 0)
+      ?? buildings.length + areaGroups.reduce((sum, group) => sum + group.count, 0)}
+    data-test-map-tier={neighborhoods === undefined ? 'buildings' : 'neighborhoods'} />;
+  },
+}));
 vi.mock('../components/maps/naver-district-map', async (original) => {
   const mapModule = await original<typeof import('../components/maps/naver-district-map')>();
   return { ...mapModule, NaverDistrictMap: ({ buildings = [], areaGroups = [], neighborhoods }: {
@@ -29,7 +40,7 @@ describe('Seoul projection-to-map pagination', () => {
     if (projection.status !== 'ready' || projection.buildingPage === null) throw new Error('Missing installed fixture');
     const model = buildKoreaEvidenceAreaExploreModel('gangnam-gu', projection);
     const html = renderToStaticMarkup(<AreaExplorer model={model}
-      initialSelection={{ market: 'kr', transaction: 'jeonse', district: 'gangnam-gu' }} />);
+      initialSelection={{ market: 'kr', transaction: 'jeonse', district: 'gangnam-gu', view: 'split' }} />);
     expect(projection.buildingPage.buildings).toHaveLength(50);
     expect(projection.buildingPage.total).toBeGreaterThan(50);
     expect(html).toContain(`data-test-map-total="${projection.buildingPage.total}"`);
@@ -44,7 +55,7 @@ describe('Seoul projection-to-map pagination', () => {
     if (scoped.status !== 'ready' || scoped.buildingPage === null) throw new Error('Missing scoped fixture');
     const scopedHtml = renderToStaticMarkup(<AreaExplorer
       model={buildKoreaEvidenceAreaExploreModel('gangnam-gu', scoped)}
-      initialSelection={{ market: 'kr', transaction: 'jeonse', district: 'gangnam-gu', neighborhood: neighborhood.id }} />);
+      initialSelection={{ market: 'kr', transaction: 'jeonse', district: 'gangnam-gu', neighborhood: neighborhood.id, view: 'split' }} />);
     expect(scoped.buildingPage.buildings).toHaveLength(50);
     expect(scoped.buildingPage.pageSize).toBe(50);
     expect(scoped.buildingPage.mapBuildings).toHaveLength(scoped.buildingPage.total);
@@ -64,7 +75,7 @@ describe('Seoul projection-to-map pagination', () => {
     expect(english.buildingPage?.total).toBe(korean.buildingPage?.total);
     expect(english.buildingPage?.buildings.map(b => b.buildingId)).toEqual(korean.buildingPage?.buildings.map(b => b.buildingId));
     const html = renderToStaticMarkup(<AreaExplorer model={buildKoreaEvidenceAreaExploreModel('gangnam-gu', english)}
-      initialSelection={{market:'kr', transaction:'jeonse', district:'gangnam-gu'}} initialQuery="Yeoksam-dong" />);
+      initialSelection={{market:'kr', transaction:'jeonse', district:'gangnam-gu', view:'split'}} initialQuery="Yeoksam-dong" />);
     expect(html).toContain('Yeoksam-dong');
     expect(html).toContain(`data-test-map-total="${english.buildingPage?.total}"`);
     expect(html).toContain('data-building-row=');
@@ -79,7 +90,7 @@ describe('Seoul projection-to-map pagination', () => {
     const parcel = {...base.buildingAvailability.buildings[0]!, name:'(554-31)', neighborhoodName:'역삼동'};
     const model = {...base, buildingAvailability:{...base.buildingAvailability, buildings:[parcel],mapBuildings:[parcel],mapGroups:[],neighborhoods:[],total:1}};
     const render = (locale: 'en' | 'ko') => {
-      renderToStaticMarkup(<AreaExplorer model={model} locale={locale} initialSelection={{market:'kr',transaction:'jeonse',district:'gangnam-gu'}} />);
+      renderToStaticMarkup(<AreaExplorer model={model} locale={locale} initialSelection={{market:'kr',transaction:'jeonse',district:'gangnam-gu',view:'map'}} />);
       return capturedMap.buildings[0]!;
     };
     const english = render('en');

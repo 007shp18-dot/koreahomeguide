@@ -62,7 +62,9 @@ describe('pre-AdSense reviewed launch portfolio', () => {
   });
 
   it('renders crawlable Chinese News, Guides and a sourced detail', async () => {
-    const news = renderToStaticMarkup(await ChineseNewsPage());
+    const news = (await Promise.all(['insights', 'news', 'policy'].map(async (type) =>
+      renderToStaticMarkup(await ChineseNewsPage({ searchParams: Promise.resolve({ type }) })),
+    ))).join('');
     const guides = renderToStaticMarkup(<ChineseGuidesPage />);
     for (const article of listPortfolioRecords('zh-CN')) {
       expect(article.type === 'guide' ? guides : news).toContain(article.title);

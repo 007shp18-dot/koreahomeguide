@@ -181,7 +181,7 @@ describe('public building detail', () => {
   it('renders shared local product navigation and URL-backed decision tabs', () => {
     const header = renderToStaticMarkup(<BuildingDetailHeader />);
     expect(header).toContain('aria-label="signedprice home"');
-    for (const label of ['Markets', 'Prices', 'Tools', 'News &amp; Insights', 'Guides']) {
+    for (const label of ['Explore', 'Rankings', 'Tools', 'News &amp; Insights', 'Guides']) {
       expect(header).toContain(`>${label}</a>`);
     }
     for (const label of ['Overview', 'Explore', 'Check', 'Rankings', 'Corrections']) {
@@ -253,12 +253,32 @@ describe('public building detail', () => {
     expect(decision).toBeLessThan(evidence);
   });
 
+  it('exposes the existing shortlist action on the independent detail page', () => {
+    const html = renderToStaticMarkup(<BuildingDetailPage {...detailProps()} />);
+
+    expect(html).toContain('data-building-save="gangnam-gu/gangnam-evidence-tower"');
+    expect(html).toContain('aria-label="Save Evidence Tower"');
+    expect(html).toContain('<span>Save</span>');
+  });
+
+  it('labels a verified representative image by its documented media type', () => {
+    const html = renderToStaticMarkup(<BuildingDetailPage
+      {...detailProps()}
+      propertyMedia={<figure data-building-media="public-projection"><img src="/assets/buildings/evidence-tower.jpg" alt="Evidence Tower building exterior" /></figure>}
+    />);
+
+    expect(html).toContain('data-building-gallery="verified"');
+    expect(html).toContain('data-media-kind="exterior"');
+    expect(html).toContain('>Exterior</span>');
+  });
+
   it('orders the decision record and carries entity context into Check', () => {
     const html = renderToStaticMarkup(<BuildingDetailPage
       {...detailProps()}
       backHref="/kr/seoul/explore/?transaction=monthly&propertyType=apartment&district=gangnam-gu&neighborhood=yeoksam-dong&buildingId=gangnam-evidence-tower"
     />);
     const ordered = [
+      'data-detail-order="media"',
       'data-detail-order="identity"',
       'data-detail-order="current-evidence"',
       'data-detail-order="history"',
@@ -270,7 +290,8 @@ describe('public building detail', () => {
     ].map((needle) => html.indexOf(needle));
 
     expect(ordered.every((position) => position >= 0)).toBe(true);
-    expect(html).not.toContain('data-detail-order="media"');
+    expect(html).toContain('data-building-gallery="market-context"');
+    expect(html).toContain('Editorial city photograph · not this exact property');
     expect([...ordered].sort((left, right) => left - right)).toEqual(ordered);
     expect(html).toContain('market=kr-seoul');
     expect(html).toContain('entity=gangnam-evidence-tower');
