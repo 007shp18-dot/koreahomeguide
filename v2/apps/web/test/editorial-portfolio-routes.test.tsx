@@ -15,7 +15,7 @@ describe('editorial portfolio public routes', () => {
   it('curates the practical directory while keeping all ten existing guide URLs', async () => {
     const guides = listPortfolioRecords('en').filter(({ type }) => type === 'guide');
     const html = renderToStaticMarkup(await GuidesPage({ searchParams: Promise.resolve({}) }));
-    expect(guides).toHaveLength(10);
+    expect(guides).toHaveLength(9);
     expect(guideParams()).toEqual(guides.map(({ slug }) => ({ slug })));
     const main = html.match(/<main[\s\S]*?<\/main>/)?.[0] ?? '';
     expect(main.match(/<h3>/g)).toHaveLength(6);

@@ -42,7 +42,7 @@ test('Newsroom filters reviewed SignedPrice records and opens the policy lifecyc
   await expect(page.locator('[data-newsroom-lead]')).toHaveCount(1);
   await expect(page.locator('body')).not.toContainText(/provider|credential|ingestion|Naver News API/i);
 
-  await page.getByRole('link', { name: 'Open the Policy Tracker' }).click();
+  await page.getByRole('link', { name: 'Policy updates', exact: true }).click();
   await expect(page).toHaveURL(/\/news\/policy\/$/);
   await expect(page.getByRole('heading', { level: 1, name: 'Follow the date a housing rule actually changes.' })).toBeVisible();
   await expect(page.getByText('Announced', { exact: true }).first()).toBeVisible();
@@ -160,10 +160,15 @@ test('News & Insights and Guides keep the same global header and the guide highl
   let navigation = await openPrimaryNavigation(page);
   const newsLabels = await navigation.innerText();
   await navigation.getByRole('link', { name: 'Guides', exact: true }).click();
-  await expect(page.getByRole('heading', { name: 'Guides', exact: true, level: 1 })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Buying & renting guides', exact: true, level: 1 })).toBeVisible();
   navigation = await openPrimaryNavigation(page);
   await expect(navigation).toHaveText(newsLabels, { useInnerText: true });
-  await page.getByRole('link', { name: 'Read guide', exact: true }).first().click();
+  const mobileMenu = page.locator('header.site-header details.site-header__mobile-menu[open]');
+  if (await mobileMenu.isVisible()) {
+    await mobileMenu.locator('summary').press('Escape');
+    await expect(page.locator('header.site-header details.site-header__mobile-menu')).not.toHaveAttribute('open', '');
+  }
+  await page.getByRole('link', { name: /Buying property in Korea as a foreigner/ }).click();
   navigation = await openPrimaryNavigation(page);
   await expect(navigation.getByRole('link', { name: 'Guides', exact: true })).toHaveAttribute('aria-current', 'page');
   await expect(page.getByRole('navigation', { name: 'In this article', exact: true })).toBeVisible();
@@ -173,16 +178,16 @@ test('News & Insights and Guides keep the same global header and the guide highl
 test('Tokyo city journey opens its own article, chapters and Korean translation', async ({ page }) => {
   await page.goto('/news/?market=tokyo');
   const lead = page.locator('[data-newsroom-lead]');
-  await expect(lead).toContainText('Finding a home in Tokyo');
+  await expect(lead).toContainText('Tokyo: from a favourite street to a home worth keeping');
   await page.getByRole('tab', { name: /Where\?/ }).click();
-  await expect(page.getByRole('tabpanel')).toContainText('Narrow the city');
+  await expect(page.getByRole('tabpanel')).toContainText('Nakameguro gives you the Tokyu Toyoko');
   await page.getByRole('tabpanel').getByRole('link', { name: /Read this chapter/ }).click();
   await expect(page).toHaveURL(/\/news\/city-stories\/tokyo\/#where$/);
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Finding a home in Tokyo');
-  await expect.poll(() => page.locator('main img').evaluate(image => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Tokyo: from a favourite street to a home worth keeping');
+  await expect.poll(() => page.locator('main img').first().evaluate(image => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
   await expectNoHorizontalOverflow(page);
   await page.goto('/ko/news/city-stories/seoul/');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('성수가 좋아서, 서울의 집을 찾기 시작했다면');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('성수가 좋아서 시작한, 서울 내 집 찾기');
   await expect(page.locator('main img').first()).toBeVisible();
   await expect(page.locator('main')).not.toContainText('직접 방문해 작성한 취재기는 아닙니다');
   await page.getByRole('link', { name: /Explore에서 지역과 가격 비교하기/ }).click();

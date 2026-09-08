@@ -8,6 +8,8 @@ export const BUDGET_GUIDE_SLUGS = [
   'dubai-ready-apartment-buying-budget-guide',
 ] as const;
 
+export function isBudgetAnalysis(slug: string) { return (BUDGET_GUIDE_SLUGS as readonly string[]).includes(slug); }
+
 const entries = [
   { slug: 'buy-property-in-korea-as-foreigner', city: 'seoul', group: 'buy', title: ['Buying property in Korea as a foreigner', '외국인의 한국 주택 매수 절차'], deck: ['Check ownership, permissions and funding, then follow the steps from contract to registration.', '매수 자격과 허가 요건, 자금 준비부터 계약·신고·등기까지 순서대로 확인하세요.'] },
   { slug: 'read-singapore-private-transactions', city: 'singapore', group: 'buy', title: ['Singapore condos: prices and purchase costs', '싱가포르 콘도 가격과 매수 비용'], deck: ['Compare project transactions and plan stamp duties for your buyer profile.', '단지별 거래와 면적당 가격을 비교하고, 매수자 조건에 따른 인지세를 살펴보세요.'] },

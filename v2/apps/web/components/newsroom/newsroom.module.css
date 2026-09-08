@@ -723,9 +723,9 @@
 .contents a { display: flex; align-items: center; min-height: 44px; font-size: 16px; color: inherit; text-decoration: underline; text-underline-offset: 4px; }
 .articleBody section { scroll-margin-top: 160px; }
 
-.relatedAction { flex-wrap: wrap; justify-content: flex-start; gap: 12px 28px; }
+.relatedAction { display: grid; grid-template-columns: minmax(0,1fr); justify-items: start; gap: 8px; max-width: 720px; margin-inline: auto; }
 .relatedAction > p { width: 100%; }
-.relatedAction a { min-height: 44px; display: inline-flex; align-items: center; }
+.relatedAction a { min-height: 44px; display: inline-flex; align-items: center; font-weight: 500; line-height: 1.6; }
 .filterBar > nav { min-width: 0; }
 
 .articlePhoto { margin: 32px 0; }

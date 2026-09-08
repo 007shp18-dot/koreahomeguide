@@ -84,7 +84,10 @@
   .issue > div { margin-left: 0; }
   .issue summary { padding-right: 28px; }
   .cityLinks { grid-template-columns: 1fr; gap: 20px; }
-  .filterBar { gap: 0; margin: 22px 0 26px; }
+  .filterBar { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; margin: 22px 0 26px; }
+  .filterBar > nav + nav { border-top: 1px solid var(--line); }
+  .filterBar > .tabs { flex-wrap: nowrap; overflow-x: auto; min-width: 0; gap: 0 24px; }
+  .filterBar > .tabs a { flex: 0 0 auto; min-height: 48px; }
   .tabs { gap: 0 18px; }
   .article > header { margin-top: 24px; }
   .articleBody p { font-size: 16px; line-height: 1.9; }
