@@ -134,7 +134,9 @@ export function koreaEvidenceRepositoriesFromEnvironment(
     ? environmentLoader
     : createKoreaEvidenceRepositoryLoader())
     .load({ registrySource, resolveObject });
-  if (usesStrictInstalled) strictInstalledRepositories = repositories;
+  if (usesStrictInstalled && repositories.rent !== null && repositories.sale !== null) {
+    strictInstalledRepositories = repositories;
+  }
   if (retainLastVerified) {
     cachedEnvironmentRepositories = Object.freeze({
       registrySource,

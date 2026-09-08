@@ -179,10 +179,11 @@ function uniqueSorted<T extends string>(values: readonly T[]): readonly T[] {
   return Object.freeze([...new Set(values)].sort((left, right) => left.localeCompare(right, 'en')));
 }
 
-function deepFreeze<T>(value: T): T {
-  if (typeof value !== 'object' || value === null || Object.isFrozen(value)) return value;
+function deepFreeze<T>(value: T, visited = new WeakSet<object>()): T {
+  if (typeof value !== 'object' || value === null || visited.has(value)) return value;
+  visited.add(value);
   Object.freeze(value);
-  for (const child of Object.values(value as Record<string, unknown>)) deepFreeze(child);
+  for (const child of Object.values(value as Record<string, unknown>)) deepFreeze(child, visited);
   return value;
 }
 
