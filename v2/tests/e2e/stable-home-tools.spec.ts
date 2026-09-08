@@ -1,5 +1,7 @@
 import {expect,test} from '@playwright/test';
 
+import { openPrimaryNavigation } from './navigation-helpers';
+
 test('Chinese market cards align their primary actions on multi-column screens',async({page})=>{
  await page.goto('/zh-cn/kr/seoul/');
  await page.evaluate(()=>document.fonts.ready);
@@ -54,6 +56,7 @@ test('all tool languages use the same five navigation slots and Corrections has 
  for(const path of ['/tools/','/ko/tools/','/zh-cn/tools/']) {
   await page.goto(path);
   const header = page.locator('header.site-header:visible');
+  await expect(await openPrimaryNavigation(page)).toBeVisible();
   await expect(header.locator('.site-header__product-link')).toHaveCount(5);
   await expect(header.getByRole('navigation', { name: 'Language navigation' }).filter({ visible: true }).getByRole('link')).toHaveText(['EN','KO','中文']);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);

@@ -240,10 +240,12 @@ test('each offer changes type independently and sale versus rent stays a neutral
 test('journey: unsupported entity context fails closed to the manual Check form', async ({ page }) => {
   await page.goto('/kr/seoul/check/?market=kr-seoul&entity=unknown-building&returnTo=https%3A%2F%2Fattacker.invalid%2F&building=unknown-building');
 
-  await expect(page.locator('[data-primary-check="single-quote"]')).toBeVisible();
-  await expect(page.locator('input[name="market"]')).toHaveCount(0);
-  await expect(page.locator('input[name="entity"]')).toHaveCount(0);
-  await expect(page.getByRole('link', { name: /Return to / })).toHaveCount(0);
-  await expect(page.getByRole('textbox', { name: 'Search a building · optional' })).toHaveValue('');
-  await expect(page.locator('input[type="hidden"][name="building"]')).toHaveValue('');
+  await expect(page.locator('template[id^="B:"]')).toHaveCount(0);
+  const workspace = page.locator('[data-primary-check="single-quote"]').filter({ visible: true });
+  await expect(workspace).toBeVisible();
+  await expect(workspace.locator('input[name="market"]')).toHaveCount(0);
+  await expect(workspace.locator('input[name="entity"]')).toHaveCount(0);
+  await expect(workspace.getByRole('link', { name: /Return to / })).toHaveCount(0);
+  await expect(workspace.getByRole('textbox', { name: 'Search a building · optional' })).toHaveValue('');
+  await expect(workspace.locator('input[type="hidden"][name="building"]')).toHaveValue('');
 });

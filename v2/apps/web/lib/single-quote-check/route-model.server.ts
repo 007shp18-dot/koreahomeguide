@@ -3,6 +3,7 @@ import 'server-only';
 import {
   SEOUL_RENT_CHECK_DISTRICTS,
   type KoreaConversionCurveProjection,
+  type SeoulDistrictSlug,
 } from '@signedprice/korea-rent';
 import {
   evaluateSingleQuoteCheck,
@@ -13,6 +14,7 @@ import {
 } from '@signedprice/market-core';
 
 import type { KoreaEvidenceRepositories } from '../public-market/korea-evidence-repositories.server';
+import { publicBuildingRepositoryFromEnvironment } from '../public-market/building-summary-repository.server';
 
 const TRANSACTIONS = new Set<CheckTransaction>(['sale', 'jeonse', 'monthly']);
 const HOUSING_TYPES = new Set<SingleQuoteCheckInput['housingType']>([
@@ -32,7 +34,7 @@ export type SingleQuoteCheckRouteModel = Readonly<{
 
 function selectedBuildingIdentity(
   repositories: KoreaEvidenceRepositories,
-  districtSlug: string,
+  districtSlug: SeoulDistrictSlug,
   buildingId: string | null,
 ): Readonly<{ officialName: string; neighborhoodId: string }> | null {
   if (buildingId === null) return null;
@@ -51,6 +53,20 @@ function selectedBuildingIdentity(
     } catch {
       // Try the independently installed repository.
     }
+  }
+  try {
+    const building = publicBuildingRepositoryFromEnvironment()?.getById(
+      districtSlug,
+      buildingId,
+    );
+    if (building !== undefined) {
+      return Object.freeze({
+        officialName: building.name,
+        neighborhoodId: building.neighborhoodId,
+      });
+    }
+  } catch {
+    // An id absent from every verified repository is not a selectable building.
   }
   return null;
 }
@@ -139,10 +155,15 @@ export function buildSingleQuoteCheckRouteModel(
   const district = SEOUL_RENT_CHECK_DISTRICTS.find(({ slug }) => slug === requestedDistrict)
     ?? SEOUL_RENT_CHECK_DISTRICTS[0]!;
   const requestedBuilding = one(query.building)?.trim();
-  const buildingId = requestedBuilding !== undefined && requestedBuilding.length <= 200
+  const requestedBuildingId = requestedBuilding !== undefined && requestedBuilding.length <= 200
     ? requestedBuilding || null
     : null;
-  const buildingIdentity = selectedBuildingIdentity(repositories, district.slug, buildingId);
+  const buildingIdentity = selectedBuildingIdentity(
+    repositories,
+    district.slug,
+    requestedBuildingId,
+  );
+  const buildingId = buildingIdentity === null ? null : requestedBuildingId;
   const selection: SingleQuoteCheckInput = Object.freeze({
     transaction,
     districtSlug: district.slug,
