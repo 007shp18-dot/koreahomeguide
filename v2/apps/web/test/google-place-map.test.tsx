@@ -30,6 +30,7 @@ describe('Google place map', () => {
     expect(grouped).toHaveLength(2);
     expect(grouped.find(p => p.kind === 'cluster')?.memberIds).toEqual(['a', 'b']);
     expect(grouped.reduce((n,p) => n + (p.count ?? 1), 0)).toBe(775);
+    expect(googleMarketMarkerAppearance(points[2]!).label?.text).toBe('773');
     expect(clusterGoogleMarketPoints(points, 18)).toHaveLength(3);
     expect(clusterGoogleMarketPoints([points[0]!, { ...points[1]!, selected: true }], 11)).toHaveLength(2);
   });

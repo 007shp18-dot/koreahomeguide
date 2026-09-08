@@ -3,7 +3,7 @@
 .section p { margin: 8px 0 18px; max-width: 75ch; color: var(--muted, #5f6b76); font-size: 1rem; line-height: 1.7; }
 .chartWrap { max-width: 100%; overflow-x: auto; }
 /* Keep the 720-unit plot at a readable scale; only this region scrolls on mobile. */
-.chart { display: block; width: 100%; min-width: 45rem; height: auto; color: var(--accent, #2363b4); }
+.chart { display: block; width: 100%; min-width: 45rem; max-width: 800px; height: auto; margin-inline: auto; color: var(--accent, #2363b4); }
 .chart text { fill: var(--muted, #5f6b76); font-family: inherit; font-size: 14px; }
 .section .chartHint { font-size: .875rem; line-height: 1.6; }
 .chartWrap:focus-visible, .tableWrap:focus-visible { outline: 2px solid var(--accent, #2363b4); outline-offset: 2px; }

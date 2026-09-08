@@ -32,16 +32,17 @@ export function ExternalHeadlines({ market, preview = false, initialModel = null
         if (active) setStatus('error');
       } finally { pending = false; }
     };
-    void update();
+    if (initialModel === null || refresh > 0) void update();
     const timer = setInterval(() => { if (!document.hidden) void update(); }, 15 * 60 * 1000);
     return () => { active = false; clearInterval(timer); };
-  }, [refresh]);
+  }, [refresh, initialModel]);
   const items = (model?.items ?? []).filter((item) => item.sourceKind !== 'signedprice-brief'
     && (market === 'all' || item.market === market));
   const visible = items.slice(0, preview ? 4 : page * 24);
   const allHref = `/news/?type=news${market === 'all' ? '' : `&market=${market}`}`;
+  if (status === 'ready' && visible.length === 0) return null;
   return <section className={styles.section} aria-labelledby="external-headlines-heading" data-external-headlines={status}>
-    <header><div><h2 id="external-headlines-heading">External headlines</h2><p>From other publishers · Original languages · Refreshes every 15 minutes</p></div>
+    <header><div><h2 id="external-headlines-heading">External headlines</h2><p>Reviewed sources from other publishers · Original languages</p></div>
       {preview ? <Link href={allHref}>View all headlines</Link> : <button type="button" onClick={() => setRefresh((value) => value + 1)}>Refresh</button>}
     </header>
     {status === 'loading' ? <p role="status">Loading headlines…</p> : null}

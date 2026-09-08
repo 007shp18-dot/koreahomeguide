@@ -1,4 +1,5 @@
 'use client';
+import { DefaultAmountInput } from '../amount-input';
 import Link from 'next/link';
 import { useEffect, useMemo, useState, useSyncExternalStore, type FormEvent } from 'react';
 import { SEOUL_RENT_CHECK_DISTRICTS } from '@signedprice/korea-rent/browser';
@@ -65,7 +66,7 @@ export function SeoulShortlist({ locale = 'en' }: { locale?: 'en' | 'ko' }) {
       <p className={styles.price}>{price}</p><p>{sale.areaSqm}㎡ · {sale.filedMonth}{sale.floor !== undefined ? ` · ${sale.floor}${t('F', '층')}` : ''}</p>
       <p className={styles.meta}>{savedCard ? t('Latest available record · all sizes', '최신 공개 거래 · 전체 면적') : t(`${item.matchingCount} matching records in the recent sample`, `공개된 최근 표본 중 조건 일치 ${item.matchingCount}건`)}</p>
       <div className={styles.actions}><Link href={`${prefix}/kr/seoul/explore/${encodeURIComponent(item.district)}/${encodeURIComponent(item.buildingId)}/?transaction=sale&propertyType=apartment`}>{t('View evidence', '거래 근거 보기')}</Link><Link href={`${prefix}/kr/seoul/check/?${new URLSearchParams({ transaction: 'sale', housing: 'apartment', district: item.district, building: item.buildingId, area: String(sale.areaSqm) })}`}>{t('Check an asking price', '제안받은 가격 체크')}</Link>
-        <button type="button" onClick={() => baseline ? remove(item.key) : save(item)}>{baseline ? t('Remove saved', '관심 해제') : t('Save apartment', '관심 단지 저장')}</button>
+        <button className={styles.saveAction} type="button" aria-pressed={Boolean(baseline)} onClick={() => baseline ? remove(item.key) : save(item)}><span aria-hidden="true">{baseline ? '♥' : '♡'}</span> {baseline ? t('Saved', '저장됨') : t('Save apartment', '관심 단지 저장')}</button>
         {savedCard && changed && <button type="button" onClick={() => markRead(item)}>{t('Mark as seen', '확인 완료')}</button>}</div>
       {savedCard && baseline && <p className={styles.meta}>{t('Last checked', '마지막 확인')} · {baseline.checkedAt.slice(0, 10)}</p>}
     </article>;
@@ -74,10 +75,10 @@ export function SeoulShortlist({ locale = 'en' }: { locale?: 'en' | 'ko' }) {
     <header className={styles.heading}><Link href={`${prefix}/kr/seoul/explore/`}>{t('← Seoul Explore', '← 서울 탐색')}</Link><p className={styles.eyebrow}>{t('SEOUL · APARTMENT SALES', '서울 · 아파트 매매')}</p><h1>{t('Find your price. Follow the transactions.', '내 예산에 맞는 단지, 거래가 바뀌면 확인하세요.')}</h1><p>{t('Find apartment groups with recorded sales in your range, then save the ones you want to follow.', '예산과 면적에 맞는 실거래가 있었던 단지를 찾고, 관심 단지의 거래 변화를 확인하세요.')}</p></header>
     <ShortlistCities current="seoul" locale={locale} />
     <form className={styles.form} key={filtersKey} onSubmit={submit} aria-label={t('Apartment search conditions', '단지 검색 조건')}>
-      <label>{t('Price ceiling · KRW 100m', '매매 예산 상한 · 억 원')}<input name="budget" type="number" min="0.1" max="1000" step="0.01" required defaultValue={stored.filters.budget / 100_000_000} /></label>
+      <label>{t('Price ceiling · KRW 100m', '매매 예산 상한 · 억 원')}<DefaultAmountInput name="budget"  min="0.1" max="1000" step="0.01" required defaultValue={stored.filters.budget / 100_000_000} /></label>
       <label>{t('District', '지역')}<select name="district" defaultValue={stored.filters.district}><option value="all">{t('All Seoul', '서울 전체')}</option>{SEOUL_RENT_CHECK_DISTRICTS.map(d => <option value={d.slug} key={d.slug}>{ko ? d.nameKo : d.nameEn}</option>)}</select></label>
-      <label>{t('Minimum net area · m²', '최소 전용면적 · ㎡')}<input name="minArea" type="number" min="1" max="500" step="0.01" required defaultValue={stored.filters.minArea} /></label>
-      <label>{t('Maximum net area · m²', '최대 전용면적 · ㎡')}<input name="maxArea" type="number" min="1" max="500" step="0.01" required defaultValue={stored.filters.maxArea} /></label>
+      <label>{t('Minimum net area · m²', '최소 전용면적 · ㎡')}<DefaultAmountInput name="minArea"  min="1" max="500" step="0.01" required defaultValue={stored.filters.minArea} /></label>
+      <label>{t('Maximum net area · m²', '최대 전용면적 · ㎡')}<DefaultAmountInput name="maxArea"  min="1" max="500" step="0.01" required defaultValue={stored.filters.maxArea} /></label>
       <button className={styles.primary} type="submit">{t('Find & save conditions', '조건 저장하고 찾기')}</button>
     </form>
     <p className={styles.notice}>{t('Recorded sales, not available listings. Purchase price only; taxes and financing are excluded. Search covers the last 3 months of the installed data, using up to 20 recent records per apartment group. It is not an exhaustive search of all transactions.', '현재 판매 중인 매물이 아닌 실거래 기준 후보입니다. 예산은 매매가만 비교하며 세금·대출 비용은 제외합니다. 데이터 기준 최근 3개월, 단지별 최대 20건의 공개 거래를 검색하므로 전체 거래를 빠짐없이 찾는 결과는 아닙니다.')}</p>

@@ -3,21 +3,10 @@ import 'server-only';
 import { createHash } from 'node:crypto';
 
 import type { NewsWorkspaceItem } from './news-workspace-model';
-
-const rssEntities: Readonly<Record<string, string>> = Object.freeze({
-  amp: '&', apos: "'", gt: '>', lt: '<', nbsp: ' ', quot: '"',
-});
+import { plainFeedText } from './plain-feed-text';
 
 function plainRssText(value: string): string {
-  const decode = (source: string) => source.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (entity, code: string) => {
-      if (code.startsWith('#x')) return String.fromCodePoint(Number.parseInt(code.slice(2), 16));
-      if (code.startsWith('#')) return String.fromCodePoint(Number.parseInt(code.slice(1), 10));
-      return rssEntities[code.toLowerCase()] ?? entity;
-    });
-  return decode(decode(value))
-    .replace(/<[^>]*>/g, '')
-    .replace(/\s+/g, ' ')
-    .trim();
+  return plainFeedText(value);
 }
 
 type GoogleNewsFeed = Readonly<{
@@ -98,6 +87,7 @@ export async function fetchGoogleNewsRssItems(): Promise<GoogleNewsRssResult> {
     url.searchParams.set('gl', 'US');
     url.searchParams.set('ceid', 'US:en');
     const response = await fetch(url, {
+      signal: AbortSignal.timeout(10_000),
       headers: { 'User-Agent': 'SignedPrice/1.0 (+https://www.signedprice.com)' },
       next: { revalidate: 1800 },
     });

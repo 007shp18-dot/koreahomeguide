@@ -12,12 +12,14 @@
   color: var(--ink, #15221f);
   background: #fff;
   font: inherit;
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
 }
 
-.button[aria-pressed='true'] { color: #fff; border-color: var(--accent, #245746); background: var(--accent, #245746); }
+.button[aria-pressed='true'] { color: var(--ink); border-color: #ead1d5; background: #fff5f6; }
+.button[aria-pressed='true'] > span:first-child { color: var(--saved, #c54152); }
+.button > span:first-child { font-size: 19px; line-height: 1; }
 .button:focus-visible { outline: 2px solid var(--focus-ring, #245746); outline-offset: 2px; }
 
 .control[data-save-variant='detail'] .button { padding-inline: 14px; }

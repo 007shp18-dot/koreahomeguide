@@ -117,7 +117,7 @@ function articleFromRow(row: Readonly<Record<string, unknown>>): PublishedConten
     || typeof row.body_markdown !== 'string'
     || !locales.includes(row.locale as ContentLocale)
     || !contentTypes.includes(row.content_type as ContentType)
-    || !(row.market_id === null || row.market_id === 'kr-seoul' || row.market_id === 'sg-singapore')
+    || !(row.market_id === null || row.market_id === 'kr-seoul' || row.market_id === 'sg-singapore' || row.market_id === 'ae-dubai')
     || !validIsoDate(row.published_at)
     || !validIsoDate(row.updated_at)
   ) return null;

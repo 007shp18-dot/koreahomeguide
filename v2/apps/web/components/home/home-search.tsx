@@ -9,7 +9,7 @@ const CITIES = [
   { id: 'seoul', en: 'Seoul', ko: '서울', zh: '首尔', href: '/kr/seoul/explore/' },
   { id: 'singapore', en: 'Singapore', ko: '싱가포르', zh: '新加坡', href: '/sg/singapore/explore/' },
   { id: 'dubai', en: 'Dubai', ko: '두바이', zh: '迪拜', href: '/ae/dubai/explore/' },
-  { id: 'tokyo', en: 'Tokyo', ko: '도쿄', zh: '东京', href: '/jp/tokyo/' },
+  { id: 'tokyo', en: 'Tokyo', ko: '도쿄', zh: '东京', href: '/jp/tokyo/explore/' },
 ] as const;
 
 export function HomeSearch({ locale }: Readonly<{ locale: SiteLocale }>) {

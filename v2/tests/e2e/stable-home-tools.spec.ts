@@ -30,10 +30,16 @@ test('home presents four stable city cards and one budget journey without overfl
  expect(positions.every(p => p.height >= 44 && p.titleFits)).toBe(true);
  if (Math.max(...positions.map(p => p.top)) - Math.min(...positions.map(p => p.top)) <= 2)
   expect(Math.max(...positions.map(p => p.action)) - Math.min(...positions.map(p => p.action))).toBeLessThanOrEqual(2);
- for (const [index, path] of ['/kr/seoul/explore', '/sg/singapore/explore', '/ae/dubai/explore', '/jp/tokyo'].entries())
+ for (const [index, path] of ['/kr/seoul/explore', '/sg/singapore/explore', '/ae/dubai/explore', '/jp/tokyo/explore'].entries())
   await expect(cards.nth(index).locator('[data-primary-action="explore"]')).toHaveAttribute('href', new RegExp('^' + path + '/?$'));
  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
- await page.locator('[data-home-region="passport"] input[name="budget"]').fill('750000');
+ const actionColors = await page.evaluate(() => [
+  document.querySelector('main form[role="search"] button, main [role="search"] button'),
+  document.querySelector('[data-home-region="passport"] button'),
+ ].map(button => button ? getComputedStyle(button).backgroundColor : null));
+ expect(actionColors[0]).not.toBeNull();
+ expect(actionColors[1]).toBe(actionColors[0]);
+ await page.locator('[data-home-region="passport"] input[data-amount-name="budget"]').fill('750000');
  await page.getByRole('button', {name:'Compare cities',exact:true}).click();
  await expect(page).toHaveURL(/\/passport\/.*budget=750000/);
  await expect(page.locator('[data-passport-market]')).toHaveCount(3);
@@ -41,7 +47,7 @@ test('home presents four stable city cards and one budget journey without overfl
 
 test('neutral calculator changes currency without carrying the previous purchase amount',async({page})=>{
  await page.goto('/tools/property-scenario/?market=sg-singapore&currency=SGD&price=1000000');
- await expect(page.getByLabel('Purchase price (SGD)',{exact:true})).toHaveValue('1000000');
+ await expect(page.getByLabel('Purchase price (SGD)',{exact:true})).toHaveValue('1,000,000');
  await page.getByLabel('Market · currency').selectOption('ae-dubai');
  await expect(page.getByLabel('Purchase price (AED)',{exact:true})).toHaveValue('');
  await page.getByLabel('Purchase price (AED)',{exact:true}).fill('1000000');

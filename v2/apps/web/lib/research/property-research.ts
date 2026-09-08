@@ -35,6 +35,13 @@ export function buildMonthlyResearch(rows: readonly ResearchTransaction[], from:
   return months;
 }
 
+/** A project's chart begins at its first observation, not the market's launch date. */
+export function buildProjectMonthlyResearch(rows: readonly ResearchTransaction[], from: string, to: string): readonly ResearchMonth[] {
+  const months = buildMonthlyResearch(rows, from, to);
+  const first = months.findIndex(month => month.count > 0);
+  return first < 0 ? [] : months.slice(first);
+}
+
 export function summarizeSizeCohorts(rows: readonly ResearchTransaction[]): readonly ResearchSize[] {
   const groups = new Map<string, { group: string; size: string; prices: number[] }>();
   for (const row of rows.filter(eligible)) {

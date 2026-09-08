@@ -13,5 +13,5 @@ export async function StoredExternalHeadlines({ market, preview }: Readonly<{
   const items = stored?.filter((item) => market === 'all' || item.market === market)
     .slice(0, preview ? 4 : 24);
   return <ExternalHeadlines market={market} preview={preview}
-    initialModel={items?.length ? { items, naverState: 'ready' } : null} />;
+    initialModel={items === undefined ? null : { items, naverState: 'ready' }} />;
 }

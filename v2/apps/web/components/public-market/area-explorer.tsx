@@ -862,7 +862,7 @@ function ReadyAreaExplorer({
           {([
             ['sale', 'sale', locale === 'ko' ? '매매' : 'Sale'],
             ['jeonse', 'jeonse', locale === 'ko' ? '전세' : 'Jeonse'],
-            ['monthly', 'monthly-rent', locale === 'ko' ? '월세' : 'Monthly rent'],
+            ['monthly', 'monthly-rent', locale === 'ko' ? '월세' : 'Rent'],
           ] as const).map(([transaction, mode, label]) => (
             model.transactionAvailability[transaction]
               ? <Link

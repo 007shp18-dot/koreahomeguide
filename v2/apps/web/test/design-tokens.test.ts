@@ -75,18 +75,18 @@ const focusAdjacentBackgrounds = [
 ] as const;
 
 const signedPricePalette = {
-  '--canvas': '#f5f8fc',
-  '--surface': '#edf3f9',
+  '--canvas': '#f7f9f8',
+  '--surface': '#eef3f0',
   '--surface-strong': '#ffffff',
-  '--ink': '#111827',
-  '--petrol': '#16243a',
-  '--muted': '#5f6d84',
+  '--ink': '#192b25',
+  '--petrol': '#245746',
+  '--muted': '#617169',
   '--divider': '#cbd5e1',
   '--line': '#e2e8f0',
-  '--brand-orange': '#2563d8',
-  '--accent': '#2563d8',
-  '--accent-soft': '#eaf2ff',
-  '--focus-ring': '#2563d8',
+  '--brand-orange': '#245746',
+  '--accent': '#245746',
+  '--accent-soft': '#eaf2ed',
+  '--focus-ring': '#245746',
 } as const;
 
 function declarationsFor(source: string, selector: string): Record<string, string> {
@@ -112,7 +112,7 @@ function declarationsFor(source: string, selector: string): Record<string, strin
 }
 
 describe('signedprice brand foundation', () => {
-  it('uses the approved white, navy and accessible blue data-product palette', () => {
+  it('uses the approved neutral canvas and accessible green product palette', () => {
     for (const [token, value] of Object.entries(signedPricePalette)) {
       expect(readHexToken(token)).toBe(value);
     }

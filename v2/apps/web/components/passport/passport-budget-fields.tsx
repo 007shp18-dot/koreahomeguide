@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { AmountInput } from '../amount-input';
 import { convertPassportCurrency, normalizePassportAmount, normalizePassportCurrency, PASSPORT_BUDGET_CURRENCIES, type PassportBudgetCurrency, type PassportLocale } from '../../lib/passport/model';
 import { PASSPORT_FX, type PassportFxSnapshot } from '../../lib/passport/fx';
 import styles from './passport.module.css';
@@ -17,7 +18,7 @@ export function PassportBudgetFields({ amount, currency, locale, id, fx }: Reado
         setValue(new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(convertPassportCurrency(normalizePassportAmount(value, selected, rates), selected, next, rates)));
         setSelected(next);
       }}>{PASSPORT_BUDGET_CURRENCIES.map((code) => <option key={code} value={code}>{code}</option>)}</select>
-      <input id={id} name="budget" inputMode="decimal" placeholder={new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(convertPassportCurrency(amount, currency, selected, rates))} value={value} onChange={(event) => setValue(event.target.value)} />
+      <AmountInput id={id} name="budget" placeholder={new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(convertPassportCurrency(amount, currency, selected, rates))} value={value} onValueChange={setValue} />
     </div>
     {fx === undefined && selected !== currency ? <small>{locale === 'ko' ? '저장된 참고 환율' : locale === 'zh-CN' ? '已保存的参考汇率' : 'Saved reference FX'} · {rates.asOf}</small> : null}
   </>;

@@ -4,6 +4,7 @@ import type { NewsIndexModel } from './news-route-model.server';
 import type { NewsWorkspaceItem, NewsWorkspaceModel } from './news-workspace-model';
 import { loadPersistedNewsItems, storeNewsItems } from './news-persistence.server';
 import { fetchGoogleNewsRssItems } from './google-news-rss.server';
+import { plainFeedText } from './plain-feed-text';
 
 type NaverNewsItem = Readonly<{
   title?: unknown;
@@ -30,20 +31,8 @@ const searches = Object.freeze([
   { key: 'dubai-rental-offplan', market: 'dubai', marketLabel: 'Dubai', query: '두바이 부동산 임대 오프플랜' },
 ] as const);
 
-const entityMap: Readonly<Record<string, string>> = Object.freeze({
-  amp: '&', apos: "'", gt: '>', lt: '<', nbsp: ' ', quot: '"',
-});
-
 export function plainNewsText(value: string): string {
-  return value
-    .replace(/<[^>]*>/g, '')
-    .replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (entity, code: string) => {
-      if (code.startsWith('#x')) return String.fromCodePoint(Number.parseInt(code.slice(2), 16));
-      if (code.startsWith('#')) return String.fromCodePoint(Number.parseInt(code.slice(1), 10));
-      return entityMap[code.toLowerCase()] ?? entity;
-    })
-    .replace(/\s+/g, ' ')
-    .trim();
+  return plainFeedText(value);
 }
 
 function safeArticleUrl(value: unknown): string | null {
@@ -79,6 +68,7 @@ async function fetchMarketNews(search: (typeof searches)[number], clientId: stri
   url.searchParams.set('sort', 'date');
   url.searchParams.set('format', 'json');
   const response = await fetch(url, {
+    signal: AbortSignal.timeout(10_000),
     headers: {
       [NAVER_NEWS_API_HEADER_NAMES.clientId]: clientId,
       [NAVER_NEWS_API_HEADER_NAMES.clientSecret]: clientSecret,

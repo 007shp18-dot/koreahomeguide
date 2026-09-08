@@ -1,15 +1,17 @@
 import { PassportBudgetContext } from './passport/passport-journey';
 import { Suspense } from 'react';
 import { editorialLanguageRoutes } from '../lib/navigation/editorial-language-routes';
-import { globalNavigation, marketNavigation, type SiteLocale } from '../lib/navigation/site-navigation';
+import { globalNavigation, marketNavigation, marketDestination, type SiteLocale } from '../lib/navigation/site-navigation';
 import { LanguageLinks, SiteLanguageNavigation } from './site-language-navigation';
 import type { MarketId } from '@signedprice/market-core';
 import Link from 'next/link';
 
 import { type SiteHeaderModel } from '../lib/site-copy';
+import { TokyoNavigation } from './japan/tokyo-navigation';
 import { BrandWordmark } from './brand-mark';
 import { MarketLocalNav, getMarketLocalNavigation } from './market-ui/market-local-nav';
 import { SiteMobileMenu } from './site-mobile-menu';
+import { SiteContextMenu } from './site-context-menu';
 
 type SiteHeaderProps = {
   copy: SiteHeaderModel;
@@ -48,13 +50,6 @@ function contextualActions(context: HeaderMarketContext, locale: SiteLocale) {
   }
 }
 
-function isCurrentMarketLink(href: string, currentHref: string | undefined): boolean {
-  if (currentHref === undefined) return false;
-  const path = currentHref.replace(/^\/(?:ko|zh-cn)(?=\/)/, '');
-  if (href === '/sg/') return path === '/sg/' || path.startsWith('/sg/singapore/');
-  return path === href || path.startsWith(href);
-}
-
 function isCurrentGlobalLink(href: string, currentHref: string | undefined): boolean {
   if (currentHref === undefined) return false;
   href = href.replace(/^\/(?:ko|zh-cn)(?=\/)/, '');
@@ -67,7 +62,7 @@ function isCurrentGlobalLink(href: string, currentHref: string | undefined): boo
     return currentHref.includes('/explore/') || currentHref === '/prices/';
   }
   return currentHref === '/markets/'
-    || /^\/(?:kr\/seoul|sg|ae\/dubai)\/?$/.test(currentHref);
+    || /^\/(?:kr\/seoul|sg|ae\/dubai|jp\/tokyo)\/?$/.test(currentHref);
 }
 
 export function SiteHeader({ copy }: SiteHeaderProps) {
@@ -82,9 +77,7 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
       : locale === 'zh-CN'
         ? ({ 'kr-seoul': '首尔', 'sg-singapore': '新加坡', 'ae-dubai': '迪拜', 'jp-tokyo': '东京' } as const)[market.id]
         : market.label,
-    href: locale === 'ko' && market.id !== 'jp-tokyo'
-      ? ({ 'kr-seoul': '/ko/kr/seoul/', 'sg-singapore': '/ko/sg/', 'ae-dubai': '/ko/ae/dubai/' } as const)[market.id]
-      : market.href,
+    href: marketDestination(market.id, currentHref, locale),
   }));
   const marketId = marketIdFor(copy, currentHref);
   const marketLabel = copy.marketLabel
@@ -123,7 +116,7 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
         </nav>
 
         <div className="site-header__actions">
-          <details className="site-header__context-menu site-header__context-menu--market" name="site-header-context">
+          <SiteContextMenu className="site-header__context-menu site-header__context-menu--market">
             <summary aria-label={chooseCityLabel}>
               <span>{cityMenuLabel}</span><span aria-hidden="true">⌄</span>
             </summary>
@@ -133,14 +126,14 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
                   <Link
                     className="site-header__market-link"
                     href={market.href}
-                    aria-current={isCurrentMarketLink(market.href.replace(/^\/ko(?=\/)/, ''), currentHref) ? 'page' : undefined}
+                    aria-current={context === market.id ? 'page' : undefined}
                     key={market.id}
                   >
                     {market.label}
                   </Link>
                 ))}
               </nav>
-              {marketId === null ? null : (
+              {context === 'jp-tokyo' ? <TokyoNavigation current={currentHref?.includes('/explore/') ? 'explore' : 'overview'} /> : marketId === null ? null : (
                 <MarketLocalNav
                   marketId={marketId}
                   marketLabel={marketLabel}
@@ -149,9 +142,9 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
                 />
               )}
             </div>
-          </details>
+          </SiteContextMenu>
           {actionLinks && <Link className="site-header__action site-header__action--saved" href={actionLinks.saved}>{isKorean ? '관심 목록' : locale === 'zh-CN' ? '已保存' : 'Saved'}</Link>}
-          <details className="site-header__context-menu site-header__context-menu--language" name="site-header-context">
+          <SiteContextMenu className="site-header__context-menu site-header__context-menu--language">
             <summary aria-label={chooseLanguageLabel}>
               <span>{currentLanguageLabel}</span><span aria-hidden="true">⌄</span>
             </summary>
@@ -160,7 +153,7 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
                 <SiteLanguageNavigation fallbackPath={fallbackPath} translations={editorialLanguageRoutes()} alternate={copy.languageSwitch} />
               </Suspense>
             </div>
-          </details>
+          </SiteContextMenu>
           {actionLinks && <Link className="site-header__action site-header__action--offer" href={actionLinks.offer}>{isKorean ? '제안 가격 확인' : locale === 'zh-CN' ? '核对报价' : 'Check an offer'}</Link>}
         </div>
         <SiteMobileMenu
@@ -178,7 +171,7 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
               </Link>
             ))}
           </nav>
-          <nav aria-label={isKorean ? '도시 선택' : 'Choose a city'}>{visibleMarkets.map(market => <Link key={market.id} href={market.href} aria-current={isCurrentMarketLink(market.href.replace(/^\/ko(?=\/)/, ''), currentHref) ? 'page' : undefined}>{market.label}</Link>)}</nav>
+          <nav aria-label={isKorean ? '도시 선택' : 'Choose a city'}>{visibleMarkets.map(market => <Link key={market.id} href={market.href} aria-current={context === market.id ? 'page' : undefined}>{market.label}</Link>)}</nav>
           {marketId && <nav aria-label={`${marketLabel} pages`}>{getMarketLocalNavigation(marketId, isKorean ? 'ko' : 'en').map(item => <Link key={item.href} href={item.href}>{item.label}</Link>)}</nav>}
           {actionLinks && <nav aria-label={isKorean ? '빠른 작업' : 'Quick actions'}><Link href={actionLinks.saved}>{isKorean ? '관심 목록' : locale === 'zh-CN' ? '已保存' : 'Saved'}</Link><Link href={actionLinks.offer}>{isKorean ? '제안 가격 확인' : locale === 'zh-CN' ? '核对报价' : 'Check an offer'}</Link></nav>}
           <Suspense fallback={<LanguageLinks pathname={fallbackPath} alternate={copy.languageSwitch} />}><SiteLanguageNavigation fallbackPath={fallbackPath} translations={editorialLanguageRoutes()} alternate={copy.languageSwitch} /></Suspense>

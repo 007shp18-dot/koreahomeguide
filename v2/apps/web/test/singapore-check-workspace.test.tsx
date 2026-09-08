@@ -36,7 +36,9 @@ describe('Singapore Check workspace', () => {
     expect(html).toContain('P25–P75');
     expect(html).toContain('href="/sg/singapore/explore"');
     expect(html).toContain('href="/sg/singapore/rankings"');
-    expect(html).not.toContain('/kr/seoul/check');
+    // City switching may link to another market; the actual tool must stay Singapore-only.
+    const workspace = html.slice(html.indexOf('data-singapore-check-workspace="true"'), html.indexOf('</main>'));
+    expect(workspace).not.toContain('/kr/seoul/check');
     expect(html).not.toMatch(/jeonse|KRW|winner/i);
   });
 

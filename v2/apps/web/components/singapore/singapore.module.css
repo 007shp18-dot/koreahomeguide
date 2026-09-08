@@ -820,3 +820,19 @@
 @media (max-width: 760px) {
   .nearbyGrid { grid-template-columns: 1fr; }
 }
+
+.segmentRow { grid-template-columns: minmax(104px, .8fr) minmax(0, 1.2fr); gap: 8px 16px; padding: 16px; border-radius: 8px; background: var(--surface); align-items: start; }
+.segmentRow .regionPhoto { grid-column: 1; grid-row: 1 / span 3; margin: 0; min-width: 0; }
+.regionPhoto img { display: block; width: 100%; height: 100px; object-fit: cover; border-radius: 8px; }
+.regionPhoto figcaption { margin-top: 8px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+.regionPhoto details { margin-top: 4px; }
+.regionPhoto summary { cursor: pointer; }
+.segmentRow .regionPhoto a { min-height: 0; display: inline; white-space: normal; font-size: 12px; font-weight: 400; }
+.regionPhoto details span { display: block; margin-top: 4px; }
+.segmentRow h3, .segmentRow > div, .segmentRow > a { grid-column: 2; }
+.segmentRow h3 { font-size: 18px; line-height: 1.4; }
+.segmentRow > div:nth-child(3) { display: grid; grid-column: 2; text-align: left; gap: 6px; }
+.segmentRow strong { line-height: 1.4; }
+.segmentRow span { line-height: 1.5; }
+.segmentRow > a { align-self: start; font-size: 13px; white-space: normal; font-weight: 600; }
+.page .section h2 { font-size: 22px; line-height: 1.4; }

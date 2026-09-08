@@ -5,7 +5,7 @@ import { CheckBuildingSearch } from './check-building-search';
 
 import type { CheckTransaction, SingleQuoteCheckResult } from '@signedprice/market-core';
 import { PassportLink as Link, PassportFormContext } from '../passport/passport-journey';
-import { useState } from 'react';
+import { useState, type FormEventHandler } from 'react';
 
 import type { ProductLocale } from '../../lib/locale/product-copy';
 import type { SingleQuoteCheckRouteModel } from '../../lib/single-quote-check/route-model.server';
@@ -112,9 +112,10 @@ function SingleResult({ model, locale, entityContext }: Readonly<{
   );
 }
 
-export function SingleQuoteCheckWorkspace({ model, locale = 'en', entityContext = null, pending = false, error = false, onRetry }: Readonly<{
+export function SingleQuoteCheckWorkspace({ model, locale = 'en', entityContext = null, pending = false, error = false, onRetry, onSubmit }: Readonly<{
   model: SingleQuoteCheckRouteModel;
   pending?: boolean; error?: boolean; onRetry?: () => void;
+  onSubmit?: FormEventHandler<HTMLFormElement>;
   locale?: ProductLocale;
   entityContext?: EntityCheckContext | null;
 }>) {
@@ -150,7 +151,7 @@ export function SingleQuoteCheckWorkspace({ model, locale = 'en', entityContext 
           <span aria-current="page" data-check-mode="single">{c.single}</span>
           <Link data-check-mode="compare" href={localizedCheckHref(locale, '/compare/')}>{c.compare}</Link>
         </nav>
-        {pending && <p role="status">{error ? (locale === 'ko' ? '비교 자료를 불러오지 못했습니다.' : 'Comparison data could not be loaded.') : (locale === 'ko' ? '입력한 조건으로 거래를 비교하고 있습니다…' : 'Comparing contracts for your inputs…')}{error && <button type="button" onClick={onRetry}>{locale === 'ko' ? '다시 시도' : 'Retry'}</button>}</p>}<form inert={pending} aria-busy={pending} action={localizedCheckHref(locale, '/')} className={styles.form} method="get"><PassportFormContext />
+        {pending && <p role="status">{error ? (locale === 'ko' ? '비교 자료를 불러오지 못했습니다.' : 'Comparison data could not be loaded.') : (locale === 'ko' ? '입력한 조건으로 거래를 비교하고 있습니다…' : 'Comparing contracts for your inputs…')}{error && <button type="button" onClick={onRetry}>{locale === 'ko' ? '다시 시도' : 'Retry'}</button>}</p>}<form inert={pending && !error} aria-busy={pending && !error} onSubmit={onSubmit} action={localizedCheckHref(locale, '/')} className={styles.form} method="get"><PassportFormContext />
           <input name="check" type="hidden" value="1" />
           {entityContext === null || buildingId !== model.selection.buildingId ? null : <>
             <input name="market" type="hidden" value={entityContext.market} />

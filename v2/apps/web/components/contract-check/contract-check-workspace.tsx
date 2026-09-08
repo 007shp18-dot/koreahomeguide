@@ -1,6 +1,7 @@
 'use client';
 import { ResultLinkCopy } from './result-link-copy';
 import { BuildingSelection } from './building-selection';
+import { AmountInput } from '../amount-input';
 
 import type {
   CheckTransaction,
@@ -31,7 +32,7 @@ export const CHECK_COPY = Object.freeze({
     nav: 'Check', mode: 'Check mode', single: 'Compare an asking price', compare: 'Compare two offers',
     conditions: 'Property details', district: 'District', housing: 'Property type',
     area: 'Exclusive area', building: 'Building', buildingHint: 'Optional. Select a building from Explore.',
-    offer: 'Offer', transaction: 'Transaction type', sale: 'Sale', jeonse: 'Jeonse', monthly: 'Monthly rent',
+    offer: 'Offer', transaction: 'Transaction type', sale: 'Sale', jeonse: 'Jeonse', monthly: 'Rent',
     price: 'Asking sale price', deposit: 'Asking deposit', rent: 'Asking monthly rent', submitCompare: 'Compare offers',
     result: 'Result', blank: 'Enter both offers, then compare them with compatible reported evidence.',
     unavailable: 'This comparison is unavailable', tradeoff: 'Trade-off — no winner declared',
@@ -140,12 +141,12 @@ export function MoneyField({
   return (
     <label className={styles.field}>
       <span>{label} <small>KRW</small></span>
-      <input
+      <AmountInput
         autoComplete="off"
-        inputMode="numeric"
         name={name}
-        onChange={(event) => onChange(event.currentTarget.value)}
-        pattern="[0-9]+"
+        onValueChange={onChange}
+        min={0}
+        step={1}
         value={value}
       />
     </label>

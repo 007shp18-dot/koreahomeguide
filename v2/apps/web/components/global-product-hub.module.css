@@ -728,3 +728,13 @@
 :global(html[lang='ko']) .section h2 { line-height: 1.4; letter-spacing: -.015em; word-break: keep-all; overflow-wrap: anywhere; }
 :global(html[lang='ko']) .productGrid h3 { font-size: 1.125rem; line-height: 1.45; letter-spacing: -.015em; word-break: keep-all; overflow-wrap: anywhere; }
 :global(html[lang='ko']) .section p { font-size: 1rem; line-height: 1.65; word-break: keep-all; overflow-wrap: anywhere; }
+
+.guideGrid { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 0 36px; }
+.guideGrid article { padding: 24px 0; border: 0; border-top: 1px solid var(--line); background: transparent; gap: 12px; }
+.guideGrid article > span { font-size: 13px; line-height: 1.5; color: var(--muted); }
+.guideGrid h3 { font-size: 20px; line-height: 1.45; letter-spacing: -.015em; max-width: none; }
+.guideGrid p { font-size: 15px; line-height: 1.7; max-width: none; }
+.guideActions { gap: 8px 18px; margin-top: auto; padding-top: 4px; }
+.guideActions a { font-size: 14px; min-height: 40px; white-space: nowrap; }
+.guideActions a:first-child { font-weight: 600; }
+@media(max-width:650px){.guideGrid{grid-template-columns:1fr;gap:0}.guideGrid h3{font-size:19px}}

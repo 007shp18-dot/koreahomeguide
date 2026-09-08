@@ -249,7 +249,7 @@ export function buildNaverDistrictMarkerContent(district: NaverDistrictMapPoint)
 /** Count label rendered between district selection and individual buildings. */
 export function buildNaverNeighborhoodMarkerContent(neighborhood: NaverNeighborhoodMapPoint): string {
   const selectedClass = neighborhood.selected === true ? ' spMapNeighborhoodBubbleSelected' : '';
-  return `<div class="spMapNeighborhoodBubble${selectedClass}"><span>${escapeMarkerText(neighborhood.title)}</span><strong>${neighborhood.buildingCount}</strong></div>`;
+  return `<div class="spMapNeighborhoodBubble${selectedClass}" role="img" aria-label="${escapeMarkerText(neighborhood.title)} · ${neighborhood.buildingCount}"><strong>${neighborhood.buildingCount.toLocaleString('en-US')}</strong></div>`;
 }
 
 /** Price-free location marker; price evidence stays in the list and detail. */
@@ -464,7 +464,7 @@ export function mountNaverDistrictMap({
         const title = district?.nameEn ?? 'District';
         addMarker(`${title} · ${count} ${buildingCountLabel} · ${areaOnlyLabel}`,
           selectedDistrict.latitude, selectedDistrict.longitude, () => onOpenAreaBuildings?.(),
-          `<div class="spMapNeighborhoodBubble spMapAreaGroup"><span>${escapeMarkerText(title)}</span><strong>${count}</strong><small>${escapeMarkerText(areaOnlyLabel)}</small></div>`);
+          `<div class="spMapNeighborhoodBubble spMapAreaGroup" role="img" aria-label="${escapeMarkerText(title)} · ${count} · ${escapeMarkerText(areaOnlyLabel)}"><strong>${count.toLocaleString('en-US')}</strong></div>`);
         areaMarker = markers.at(-1);
       };
       for (const neighborhood of neighborhoods) {
@@ -573,7 +573,7 @@ export function mountNaverDistrictMap({
                 const district = districts.find((district) => district.slug === reference.id);
                 if (district !== undefined) onSelect(district.href);
               }
-            }, `<div class="spMapNeighborhoodBubble spMapAreaGroup"><span>${escapeMarkerText(reference.title)}</span><strong>${count}</strong><small>${escapeMarkerText(areaOnlyLabel)}</small></div>`);
+            }, `<div class="spMapNeighborhoodBubble spMapAreaGroup" role="img" aria-label="${escapeMarkerText(reference.title)} · ${count} · ${escapeMarkerText(areaOnlyLabel)}"><strong>${count.toLocaleString('en-US')}</strong></div>`);
         }
         onCoverageChange?.({ total: buildingPoints.length + additionalCount, located: located.size,
           grouped: buildingPoints.length + additionalCount - located.size - unplaced, unplaced });

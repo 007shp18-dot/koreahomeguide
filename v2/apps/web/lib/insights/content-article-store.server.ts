@@ -107,7 +107,7 @@ export async function saveEditorialArticle(input: SaveEditorialArticleInput): Pr
       ${input.status === 'published' ? new Date().toISOString() : null},
       ${input.status === 'published' ? input.reviewedBy : null},
       ${input.locale}, ${input.contentType},
-      ${input.marketKey === 'seoul' ? 'kr-seoul' : input.marketKey === 'singapore' ? 'sg-singapore' : null},
+      ${input.marketKey === 'seoul' ? 'kr-seoul' : input.marketKey === 'singapore' ? 'sg-singapore' : input.marketKey === 'dubai' ? 'ae-dubai' : null},
       ${input.status}, ${input.evidenceState}, 'SignedPrice Data Desk'
     )
     ON CONFLICT (slug) DO UPDATE SET

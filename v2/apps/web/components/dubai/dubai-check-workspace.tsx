@@ -1,3 +1,4 @@
+import { DefaultAmountInput } from '../amount-input';
 import { PassportLink as Link, PassportFormContext } from '../passport/passport-journey';
 import { BuyerNextSteps } from '../buyer-next-steps';
 
@@ -139,9 +140,9 @@ export function DubaiCheckWorkspace({ locale = 'en',
           <label><span>{t("Area")}</span><select name="area" defaultValue={areaValue} required>{model.areas.map((area) => <option key={area.slug} value={area.slug}>{t(area.name)}</option>)}</select></label>
           <label><span>{t("Home type")}</span><select name="housing" defaultValue={housingValue} required><option value="apartment">{t("Apartment")}</option><option value="villa">{t("Villa")}</option></select></label>
           <label><span>{t("Completion")}</span><select name="completion" defaultValue={completionValue} required><option value="ready">{t("Ready")}</option><option value="off-plan">{t("Off-Plan")}</option></select></label>
-          <label><span>{t("Asking price (AED)")}</span><input name="price" type="number" min="100000" max="500000000" step="1" defaultValue={query?.askingPriceAed ?? ''} required /></label>
-          <label><span>{t("Area (m²)")}</span><input name="areaSqm" type="number" min="10" max="1000" step="0.01" defaultValue={query?.areaSqm ?? ''} required /></label>
-          <label><span>{t("Expected annual rent (AED, your assumption)")}</span><input name="annualRent" type="number" min="5000" max="20000000" step="1" defaultValue={query?.annualRentAed ?? ''} required /></label>
+          <label><span>{t("Asking price (AED)")}</span><DefaultAmountInput name="price"  min="100000" max="500000000" step="1" defaultValue={query?.askingPriceAed ?? ''} required /></label>
+          <label><span>{t("Area (m²)")}</span><DefaultAmountInput name="areaSqm"  min="10" max="1000" step="0.01" defaultValue={query?.areaSqm ?? ''} required /></label>
+          <label><span>{t("Expected annual rent (AED, your assumption)")}</span><DefaultAmountInput name="annualRent"  min="5000" max="20000000" step="1" defaultValue={query?.annualRentAed ?? ''} required /></label>
           {query?.returnTo === null || query?.returnTo === undefined ? null : <input type="hidden" name="returnTo" value={query.returnTo} />}
           <button type="submit">{t("Compare price and gross yield")}</button>
         </form>

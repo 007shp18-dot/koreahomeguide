@@ -56,7 +56,7 @@
   background: transparent;
   box-shadow: none;
 }
-.hero h1 { max-width: 18ch; font-size: clamp(2.25rem, 5vw, 3.5rem); font-weight: 600; }
+.hero h1 { max-width: 100%; font-size: var(--page-title-size); font-weight: 600; line-height: 1.2; letter-spacing: -.025em; }
 .hero dl { border: 0; border-top: 1px solid var(--line); border-radius: 0; background: transparent; }
 .tabs { margin: 0; padding: 12px 0 0; gap: 28px; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: transparent; }
 .tabs a { min-height: 44px; padding: 8px 0; border-radius: 0; }

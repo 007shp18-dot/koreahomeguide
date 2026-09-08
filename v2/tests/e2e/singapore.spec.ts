@@ -194,9 +194,16 @@ test('native Singapore Check submits single and cross-market A/B evidence', asyn
   await expect(page.getByLabel('Check result')).toContainText('2026-08–2026-08');
 
   await page.getByRole('link', { name: 'Compare A/B' }).click();
+  // Wait for the compare navigation before editing A; the old single form has
+  // the same label and may remain visible while the new server view arrives.
+  await expect(page).toHaveURL(/(?:\?|&)mode=compare(?:&|$)/);
+  await expect(page.getByRole('button', { name: 'Compare offers' })).toBeVisible();
   await page.getByLabel('Asking price (SGD)', { exact: true }).fill('350000');
   await page.getByLabel('Monthly rent (SGD)').fill('2150');
+  await expect(page.getByLabel('Asking price (SGD)', { exact: true })).toHaveValue('350,000');
+  await expect(page.getByLabel('Monthly rent (SGD)')).toHaveValue('2,150');
   await page.getByRole('button', { name: 'Compare offers' }).click();
+  await expect(page).toHaveURL(/submitted=1/);
   await expect(page.getByLabel('Check result')).toContainText('Trade-off');
   await expect(page.getByLabel('Check result')).toContainText('Offer A');
   await expect(page.getByLabel('Check result')).toContainText('Offer B');
