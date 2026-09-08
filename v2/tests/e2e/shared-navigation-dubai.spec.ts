@@ -45,14 +45,28 @@ for (const width of [320, 390, 430]) {
         }
         const chinese = languages.getByRole('link', { name: '中文', exact: true });
         await expect(chinese).toHaveCSS('white-space', 'nowrap');
-        expect(await chinese.evaluate(node => {
+        const geometry = await chinese.evaluate(node => {
           const range = document.createRange();
           range.selectNodeContents(node);
           const text = range.getBoundingClientRect();
           const box = node.getBoundingClientRect();
-          return text.height <= parseFloat(getComputedStyle(node).lineHeight) + 1
-            && text.left >= box.left && text.right <= box.right;
-        })).toBe(true);
+          // CJK font ink can be taller than CSS line-height on a single line.
+          // Compare actual glyph rows and containment, not ink height to leading.
+          const glyphs = Array.from(node.firstChild?.textContent ?? '').map((_, index) => {
+            const glyph = document.createRange();
+            glyph.setStart(node.firstChild!, index);
+            glyph.setEnd(node.firstChild!, index + 1);
+            const rect = glyph.getBoundingClientRect();
+            return { top: rect.top, bottom: rect.bottom };
+          });
+          return { text: text.toJSON(), box: box.toJSON(), glyphs };
+        });
+        expect(geometry.glyphs).toHaveLength(2);
+        expect(Math.abs(geometry.glyphs[0].top - geometry.glyphs[1].top)).toBeLessThanOrEqual(1);
+        expect(geometry.text.left).toBeGreaterThanOrEqual(geometry.box.left - 1);
+        expect(geometry.text.right).toBeLessThanOrEqual(geometry.box.right + 1);
+        expect(geometry.text.top).toBeGreaterThanOrEqual(geometry.box.top - 1);
+        expect(geometry.text.bottom).toBeLessThanOrEqual(geometry.box.bottom + 1);
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
       }
     });
