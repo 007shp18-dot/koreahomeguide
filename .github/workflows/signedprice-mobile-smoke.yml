@@ -1,0 +1,56 @@
+name: signedprice mobile regression
+
+on:
+  pull_request:
+    paths:
+      - 'v2/tests/e2e/shared-navigation-dubai.spec.ts'
+      - 'v2/tests/e2e/passport.spec.ts'
+      - 'v2/apps/web/components/site-header.tsx'
+      - 'v2/apps/web/app/globals.css'
+      - '.github/workflows/signedprice-mobile-smoke.yml'
+  push:
+    paths:
+      - 'v2/tests/e2e/shared-navigation-dubai.spec.ts'
+      - 'v2/tests/e2e/passport.spec.ts'
+      - 'v2/apps/web/components/site-header.tsx'
+      - 'v2/apps/web/app/globals.css'
+      - '.github/workflows/signedprice-mobile-smoke.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: signedprice-mobile-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  mobile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: v2
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: v2/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Check mobile navigation, Chinese alignment and Passport journeys
+        run: pnpm exec playwright test tests/e2e/shared-navigation-dubai.spec.ts tests/e2e/passport.spec.ts --project=mobile-chromium
+      - name: Upload mobile diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: signedprice-mobile-diagnostics
+          path: |
+            v2/test-results
+            v2/playwright-report
+          retention-days: 7

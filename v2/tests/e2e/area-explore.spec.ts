@@ -1,4 +1,5 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
+import { visibleProductNavigation } from './site-header-helpers';
 
 import { resolveReleaseTestTarget } from '../../release-test-target';
 import {
@@ -272,14 +273,16 @@ test('mobile controls keep 44px focus targets and natural document scrolling', a
   expect(railPlacement.position).toBe('static');
   expect(railPlacement.maxHeight).toBe('none');
 
-  const navigation = page.getByRole('navigation', { name: 'Primary navigation' });
+  const navigation = await visibleProductNavigation(page);
   const pricesTab = navigation.getByRole('link', { name: 'Prices' });
   const viewTabs = page.getByRole('navigation', { name: 'Explorer view' }).getByRole('link');
   const districtLink = page.getByRole('combobox', { name: 'All 25 Seoul districts' });
-  for (const target of [pricesTab, districtLink]) {
-    await expectTouchTarget(target);
-    await expectCobaltFocus(target);
-  }
+  await expectTouchTarget(pricesTab);
+  await expectCobaltFocus(pricesTab);
+  const mobileMenu = page.locator('.site-header__mobile-menu').filter({ visible: true });
+  if (await mobileMenu.count()) await mobileMenu.locator('summary').click();
+  await expectTouchTarget(districtLink);
+  await expectCobaltFocus(districtLink);
   await districtLink.selectOption('jongno-gu');
   await expect(page).toHaveURL(/district=jongno-gu/);
   const detailLink = page.locator('[data-building-row]').first().getByRole('link');
@@ -423,7 +426,7 @@ test('journey: Explore selection survives Detail, Check, and the return link', a
   await expect(page.locator('[data-building-detail="ready"], [data-building-detail="exact-evidence"]')).toBeVisible();
   const detailUrl = new URL(page.url());
 
-  await page.getByRole('link', { name: /Check (?:this contract|a contract)/ }).click();
+  await page.getByRole('link', { name: 'Compare an asking price', exact: true }).click();
   await expect(page).toHaveURL(/market=kr-seoul.*entity=synthetic-test-building.*returnTo=/);
   const checkUrl = new URL(page.url());
   const returnTo = new URL(checkUrl.searchParams.get('returnTo')!, checkUrl.origin);

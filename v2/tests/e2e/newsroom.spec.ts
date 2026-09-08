@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { visibleProductNavigation } from './site-header-helpers';
 
 async function expectNoHorizontalOverflow(page: Page) {
   const dimensions = await page.evaluate(() => ({
@@ -10,7 +11,7 @@ async function expectNoHorizontalOverflow(page: Page) {
 
 test('Insights opens analysis and preserves the news journey', async ({ page }) => {
   await page.goto('/news/');
-  await page.getByRole('navigation', { name: 'Primary navigation' }).getByRole('link', { name: 'Insights' }).click();
+  await (await visibleProductNavigation(page)).getByRole('link', { name: 'Insights', exact: true }).click();
   await expect(page).toHaveURL(/\/news\/\?type=analysis$/);
   await expect(page.getByRole('heading', { level: 1, name: 'Insights' })).toBeVisible();
   const sections = page.getByRole('navigation', { name: 'Insights sections' });
@@ -131,13 +132,18 @@ test('external headlines survive market filtering and open the original publishe
 
 test('News and Guides keep the same global header and the guide highlights Guides', async ({ page }) => {
   await page.goto('/news/');
-  const nav = page.locator('[data-navigation-tier="global"]');
-  const newsLabels = await nav.getByRole('navigation', { name: 'Primary navigation', exact: true }).innerText();
+  const nav = await visibleProductNavigation(page);
+  const newsLabels = await nav.innerText();
   await nav.getByRole('link', { name: 'Guides', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Guides', exact: true, level: 1 })).toBeVisible();
-  await expect(nav.getByRole('navigation', { name: 'Primary navigation', exact: true })).toHaveText(newsLabels, { useInnerText: true });
+  await expect(await visibleProductNavigation(page)).toHaveText(newsLabels, { useInnerText: true });
+  const mobileMenu = page.locator('.site-header__mobile-menu').filter({ visible: true });
+  if (await mobileMenu.count()) await mobileMenu.locator('summary').click();
   await page.getByRole('link', { name: 'Read guide', exact: true }).first().click();
-  await expect(nav.getByRole('link', { name: 'Guides', exact: true })).toHaveAttribute('aria-current', 'page');
+  await expect((await visibleProductNavigation(page)).getByRole('link', { name: 'Guides', exact: true }))
+    .toHaveAttribute('href', '/guides/');
+  // The desktop markup owns the active-state attribute; mobile links omit it.
+  await expect(page.locator('.site-header__product-nav a[href="/guides/"]')).toHaveAttribute('aria-current', 'page');
   await expect(page.getByRole('navigation', { name: 'In this article', exact: true })).toBeVisible();
   await expectNoHorizontalOverflow(page);
 });

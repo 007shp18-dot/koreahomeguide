@@ -28,6 +28,17 @@ function record(overrides: Partial<UraPrivateSaleCheckRecord> = {}): UraPrivateS
 }
 
 describe('Singapore Check artifact', () => {
+  it.each(['root', 'records'])('freezes rows when the object source already has a frozen %s', (container) => {
+    const artifact = buildSingaporeCheckArtifact({
+      market: 'ura-private-sale', sourceIdentifier: 'URA',
+      generatedAt: '2026-09-02T00:00:00.000Z', records: [record()],
+    });
+    const source = JSON.parse(stringifySingaporeCheckArtifact(artifact));
+    Object.freeze(container === 'root' ? source : source.records);
+    const parsed = parseSingaporeCheckArtifact(source, 'ura-private-sale');
+    expect(Reflect.set(parsed.records[0]!, 'amountSgd', 999)).toBe(false);
+    expect(parsed.records[0]!.amountSgd).toBe(2_000_000);
+  });
   it('cuts raw builders at the latest Singapore completed month', () => {
     expect(singaporeLatestCompletedMonth('2026-09-01T00:00:00.000Z')).toBe('2026-08');
     expect(singaporeLatestCompletedMonth('2026-01-01T00:00:00.000Z')).toBe('2025-12');

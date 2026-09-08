@@ -149,6 +149,19 @@ function resolver(input: Awaited<ReturnType<typeof fixtures>>) {
 }
 
 describe('installed Korea evidence repositories', () => {
+  it('reuses immutable deployment evidence for strict Check requests without reusing it when disabled', () => {
+    const first = koreaEvidenceRepositoriesFromEnvironment({
+      useCheckedInSnapshot: true, retainLastVerified: false,
+    });
+    expect(first.rent).not.toBeNull();
+    expect(first.sale).not.toBeNull();
+    expect(koreaEvidenceRepositoriesFromEnvironment({
+      useCheckedInSnapshot: true, retainLastVerified: false,
+    })).toBe(first);
+    expect(koreaEvidenceRepositoriesFromEnvironment({
+      useCheckedInSnapshot: false, retainLastVerified: false,
+    })).toEqual({ rent: null, sale: null });
+  }, 15_000);
   it('does not resolve checked-in payloads when fixture isolation disables them', () => {
     const repositories = koreaEvidenceRepositoriesFromEnvironment({
       registrySource: resolveInstalledSnapshotRegistry(),

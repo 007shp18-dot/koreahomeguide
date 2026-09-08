@@ -303,7 +303,8 @@ export function singaporeMetadata(metadata: import('next').Metadata): import('ne
   const en = ko?.replace('/ko/sg/', '/sg/');
   const title = typeof metadata.title === 'string' ? sgText('ko', metadata.title) : metadata.title;
   return { ...metadata, title, description: sgText('ko', metadata.description),
-    alternates: ko ? { ...metadata.alternates, canonical: ko, languages: { en, ko } } : metadata.alternates,
-    openGraph: metadata.openGraph ? { ...metadata.openGraph, title: typeof metadata.openGraph.title === 'string' ? sgText('ko', metadata.openGraph.title) : metadata.openGraph.title, description: sgText('ko', metadata.openGraph.description), url: ko } : undefined,
+    alternates: ko ? { ...metadata.alternates, canonical: ko, languages: { en, ko, 'x-default': en } } : metadata.alternates,
+    openGraph: metadata.openGraph ? { ...metadata.openGraph, title: typeof metadata.openGraph.title === 'string' ? sgText('ko', metadata.openGraph.title) : metadata.openGraph.title, description: sgText('ko', metadata.openGraph.description), url: ko, locale: 'ko_KR', alternateLocale: ['en_US'], images: ['https://www.signedprice.com/og/ko/'] } : undefined,
+    twitter: metadata.twitter ? { ...metadata.twitter, title: typeof metadata.twitter.title === 'string' ? sgText('ko', metadata.twitter.title) : metadata.twitter.title, description: sgText('ko', metadata.twitter.description), images: ['https://www.signedprice.com/og/ko/'] } : undefined,
   };
 }

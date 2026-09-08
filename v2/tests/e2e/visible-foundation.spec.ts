@@ -1,6 +1,7 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
 import { resolveReleaseTestTarget } from '../../release-test-target';
 import { editorialAlternates, publicRoutes } from './public-route-contract';
+import { visibleLanguageNavigation, visibleMarketNavigation, visibleProductNavigation } from './site-header-helpers';
 
 const releaseTarget = resolveReleaseTestTarget();
 
@@ -96,7 +97,7 @@ test('navigates the first signedprice decision flow', async ({ page }) => {
     }),
   ).toBeVisible();
 
-  await page.getByRole('navigation', { name: 'Primary navigation' })
+  await (await visibleProductNavigation(page))
     .getByRole('link', { name: 'Prices' }).click();
   await expect(page).toHaveURL(/\/prices\/$/);
   await page.getByRole('navigation', { name: 'Market price destinations' }).getByRole('link', { name: 'Seoul', exact: true }).click();
@@ -106,17 +107,18 @@ test('navigates the first signedprice decision flow', async ({ page }) => {
     name: 'Explore',
   })).toBeVisible();
 
-  await page.getByRole('navigation', { name: 'Primary navigation' })
+  await (await visibleProductNavigation(page))
     .getByRole('link', { name: 'Prices' }).click();
   await expect(page).toHaveURL(/\/prices\/$/);
   await page.getByRole('navigation', { name: 'Market price destinations' }).getByRole('link', { name: 'Seoul', exact: true }).click();
   await expect(page).toHaveURL(/\/kr\/seoul\/explore\/$/);
-  await page.getByRole('navigation', { name: 'Seoul market navigation' }).getByRole('link', { name: 'Check', exact: true }).click();
+  await (await visibleMarketNavigation(page, 'Seoul')).getByRole('link', { name: 'Check', exact: true }).click();
   await expect(page).toHaveURL(/\/kr\/seoul\/check\/$/);
   await expect(
     page.getByRole('heading', {
       level: 1,
-      name: 'Check one asking price.',
+      name: 'Compare an asking price',
+      exact: true,
     }),
   ).toBeVisible();
 });
@@ -184,7 +186,17 @@ test('desktop exposes the compact Passport form and city exploration cards', asy
   await expect(passport.getByRole('button', { name: 'Compare cities' })).toBeInViewport();
   const markets = page.locator('[data-home-region="markets"]');
   await expect(markets.getByRole('heading', {level:2})).toBeInViewport();
-  await expect(markets.getByRole('link')).toHaveCount(3);
+  await expect(markets.getByRole('link')).toHaveCount(6);
+  for (const [market, city, explore, check] of [
+    ['kr-seoul', 'Seoul', '/kr/seoul/explore/', '/kr/seoul/check/'],
+    ['sg-singapore', 'Singapore', '/sg/singapore/explore/', '/sg/singapore/check/'],
+    ['ae-dubai', 'Dubai', '/ae/dubai/explore/', '/ae/dubai/check/'],
+  ] as const) {
+    const card = markets.locator(`[data-contextual-action="${market}"]`);
+    await expect(card.locator('[data-primary-action="explore"]')).toHaveAttribute('href', explore);
+    await expect(card.getByRole('link', { name: `Check an asking price in ${city}`, exact: true }))
+      .toHaveAttribute('href', check);
+  }
 });
 
 test('mobile primary navigation remains tappable and reaches the market flow', async ({
@@ -193,22 +205,29 @@ test('mobile primary navigation remains tappable and reaches the market flow', a
   test.skip(testInfo.project.name !== 'mobile-chromium');
   await page.goto('/');
 
-  const primaryNavigation = page.getByRole('navigation', {
-    name: 'Primary navigation',
-  });
+  const primaryNavigation = await visibleProductNavigation(page);
   const visibleLinks = primaryNavigation.getByRole('link').filter({ visible: true });
   await expect(visibleLinks).toHaveCount(5);
+  await expect(visibleLinks).toHaveText(['Markets', 'Prices', 'Tools', 'Insights', 'Guides']);
+  for (const [index, href] of ['/markets/', '/prices/', '/tools/', '/news/?type=analysis', '/guides/'].entries()) {
+    await expect(visibleLinks.nth(index)).toHaveAttribute('href', href);
+  }
   const primaryLinks = await visibleLinks.all();
   await expectContainedTouchTargets(page, primaryLinks);
   await expectTargetsNotToOverlap(primaryLinks);
-  const languageNavigation = page.getByRole('navigation', { name: 'Language navigation' });
+  const languageNavigation = await visibleLanguageNavigation(page);
   await expect(languageNavigation.getByRole('link')).toHaveCount(3);
+  await expect(languageNavigation.getByRole('link')).toHaveText(['EN', 'KO', '中文']);
+  for (const [index, href] of ['/', '/ko/', '/zh-cn/kr/seoul/'].entries()) {
+    await expect(languageNavigation.getByRole('link').nth(index)).toHaveAttribute('href', href);
+  }
   const languageLinks = await languageNavigation.getByRole('link').all();
   await expectContainedTouchTargets(page, languageLinks);
   await expectTargetsNotToOverlap(languageLinks);
 
-  const marketNavigation = page.locator('.site-header nav[aria-label="Market navigation"]');
+  const marketNavigation = await visibleMarketNavigation(page);
   await expect(marketNavigation).toBeVisible();
+  await expect(marketNavigation.getByRole('link')).toHaveText(['Seoul', 'Singapore', 'Dubai']);
   for (const [city, href] of [
     ['Seoul', '/kr/seoul/'],
     ['Singapore', '/sg/'],
@@ -217,6 +236,10 @@ test('mobile primary navigation remains tappable and reaches the market flow', a
     await expect(marketNavigation.getByRole('link', { name: city, exact: true }))
       .toHaveAttribute('href', href);
   }
+  const cityLinks = await marketNavigation.getByRole('link').all();
+  await expectContainedTouchTargets(page, cityLinks);
+  await expectTargetsNotToOverlap([...primaryLinks, ...languageLinks, ...cityLinks]);
+  await expectNoHorizontalPageOverflow(page);
 
   const prices = primaryNavigation.getByRole('link', { name: 'Prices' });
   await expectContainedTouchTargets(page, [prices]);
@@ -226,25 +249,31 @@ test('mobile primary navigation remains tappable and reaches the market flow', a
   await expect(page).toHaveURL(/\/kr\/seoul\/explore\/$/);
   await expectNoHorizontalPageOverflow(page);
 
-  const localNavigation = page.getByRole('navigation', { name: 'Seoul market navigation' });
+  const localNavigation = await visibleMarketNavigation(page, 'Seoul');
   await expect(localNavigation.getByRole('link')).toHaveCount(5);
+  await expect(localNavigation.getByRole('link')).toHaveText(['Overview', 'Explore', 'Check', 'Rankings', 'Corrections']);
+  for (const [index, href] of ['/kr/seoul/', '/kr/seoul/explore/', '/kr/seoul/check/', '/kr/seoul/rankings/', '/kr/seoul/corrections/'].entries()) {
+    await expect(localNavigation.getByRole('link').nth(index)).toHaveAttribute('href', href);
+  }
   await expectContainedTouchTargets(page, await localNavigation.getByRole('link').all());
+  await expectTargetsNotToOverlap(await localNavigation.getByRole('link').all());
 
-  const pricesFromExplore = page.getByRole('navigation', { name: 'Primary navigation' })
+  const pricesFromExplore = (await visibleProductNavigation(page))
     .getByRole('link', { name: 'Prices' });
   await pricesFromExplore.tap();
   await expect(page).toHaveURL(/\/prices\/$/);
 
   await page.getByRole('navigation', { name: 'Market price destinations' }).getByRole('link', { name: 'Seoul', exact: true }).tap();
   await expect(page).toHaveURL(/\/kr\/seoul\/explore\/$/);
-  const checkAskingPrice = localNavigation.getByRole('link', { name: 'Check', exact: true });
+  const checkAskingPrice = (await visibleMarketNavigation(page, 'Seoul')).getByRole('link', { name: 'Check', exact: true });
   await expectContainedTouchTargets(page, [checkAskingPrice]);
   await checkAskingPrice.tap();
   await expect(page).toHaveURL(/\/kr\/seoul\/check\/$/);
   await expect(
     page.getByRole('heading', {
       level: 1,
-      name: 'Check one asking price.',
+      name: 'Compare an asking price',
+      exact: true,
     }),
   ).toBeVisible();
 });
@@ -255,7 +284,7 @@ test('keyboard traversal activates the Home to Seoul to Check flow', async ({
   test.skip(testInfo.project.name !== 'desktop-chromium');
   await page.goto('/');
 
-  const prices = page.getByRole('navigation', { name: 'Primary navigation' })
+  const prices = (await visibleProductNavigation(page))
     .getByRole('link', { name: 'Prices' });
   await tabTo(page, prices);
   await page.keyboard.press('Enter');
@@ -266,7 +295,7 @@ test('keyboard traversal activates the Home to Seoul to Check flow', async ({
   await page.keyboard.press('Enter');
   await expect(page).toHaveURL(/\/kr\/seoul\/explore\/$/);
 
-  const pricesFromExplore = page.getByRole('navigation', { name: 'Primary navigation' })
+  const pricesFromExplore = (await visibleProductNavigation(page))
     .getByRole('link', { name: 'Prices' });
   await tabTo(page, pricesFromExplore);
   await page.keyboard.press('Enter');
@@ -275,7 +304,7 @@ test('keyboard traversal activates the Home to Seoul to Check flow', async ({
   await tabTo(page, exploreSeoul);
   await page.keyboard.press('Enter');
   await expect(page).toHaveURL(/\/kr\/seoul\/explore\/$/);
-  const checkDeposit = page.getByRole('navigation', { name: 'Seoul market navigation' }).getByRole('link', { name: 'Check', exact: true });
+  const checkDeposit = (await visibleMarketNavigation(page, 'Seoul')).getByRole('link', { name: 'Check', exact: true });
   await tabTo(page, checkDeposit);
   await page.keyboard.press('Enter');
   await expect(page).toHaveURL(/\/kr\/seoul\/check\/$/);

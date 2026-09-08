@@ -5,12 +5,19 @@ import { SingaporeRankings } from '../components/singapore/singapore-rankings';
 import { buildSingaporeExploreHref, parseSingaporeExploreSearchParams } from '../components/singapore/singapore-explorer';
 import { marketHref } from '../lib/locale/market-localization';
 import { sgText, singaporeMetadata } from '../lib/locale/singapore-copy';
+import { indexableMetadata } from '../lib/public-metadata';
 import type { SingaporeCheckRouteModel } from '../lib/singapore/check-route-model.server';
 
 const catalog = { available: true, months: ['2026-08'], segments: ['CCR'], projects: [{ id: 'project-a', label: 'THE ORIGINAL PROJECT' }], districts: ['09'], propertyTypes: ['Condominium'], floorRanges: ['06-10'], saleTypes: ['Resale'], towns: [], blocks: [], flatTypes: [], storeyRanges: [] } as const;
 const model: SingaporeCheckRouteModel = { mode: 'compare', catalogs: { 'ura-private-sale': catalog, 'hdb-resale': catalog, 'hdb-rent': catalog }, drafts: { a: { market: 'ura-private-sale' }, b: { market: 'hdb-rent' } }, result: { kind: 'empty' } };
 
 describe('Singapore Korean functional surfaces', () => {
+  it('localizes social metadata as well as the Singapore page title', () => {
+    const metadata = singaporeMetadata(indexableMetadata({ path: '/ko/sg/singapore/explore/', title: 'Singapore', description: 'Singapore prices' }));
+    expect(metadata.openGraph).toMatchObject({ locale: 'ko_KR', images: ['https://www.signedprice.com/og/ko/'], alternateLocale: ['en_US'] });
+    expect(metadata.twitter).toMatchObject({ images: ['https://www.signedprice.com/og/ko/'] });
+    expect(metadata.alternates?.languages).toMatchObject({ 'x-default': 'https://www.signedprice.com/sg/singapore/explore/' });
+  });
   it('localizes the comparison form while preserving submitted IDs and source values', () => {
     const html = renderToStaticMarkup(<SingaporeCheckWorkspace locale="ko" model={model} />);
     expect(html).toContain('매물 가격 비교');
@@ -45,7 +52,7 @@ describe('Singapore Korean functional surfaces', () => {
     expect(sgText('ko', 'Jun 2026–Aug 2026')).toBe('2026년 6월–2026년 8월');
     expect(sgText('en', 'Selected project')).toBe('Selected project');
     const metadata = singaporeMetadata({ title: 'Singapore Check | signedprice', alternates: { canonical: 'https://www.signedprice.com/ko/sg/singapore/check/' } });
-    expect(metadata.alternates?.languages).toEqual({ en: 'https://www.signedprice.com/sg/singapore/check/', ko: 'https://www.signedprice.com/ko/sg/singapore/check/' });
+    expect(metadata.alternates?.languages).toEqual({ en: 'https://www.signedprice.com/sg/singapore/check/', ko: 'https://www.signedprice.com/ko/sg/singapore/check/', 'x-default': 'https://www.signedprice.com/sg/singapore/check/' });
     expect(metadata.title).toBe('싱가포르 매물 가격 비교 | signedprice');
   });
 });

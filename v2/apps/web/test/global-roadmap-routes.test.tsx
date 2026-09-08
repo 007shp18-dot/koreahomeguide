@@ -25,6 +25,7 @@ describe('global roadmap routes', () => {
       canonical: 'https://www.signedprice.com/news/',
       languages: {
         en: 'https://www.signedprice.com/news/',
+        ko: 'https://www.signedprice.com/ko/news/',
         'zh-Hans': 'https://www.signedprice.com/zh-cn/news/',
         'x-default': 'https://www.signedprice.com/news/',
       },

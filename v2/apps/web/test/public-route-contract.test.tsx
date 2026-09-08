@@ -17,6 +17,9 @@ import { metadata as trustMetadata } from '../app/(en)/trust/page';
 import { metadata as compareMetadata } from '../app/(en)/compare/page';
 import { EDITORIAL_PORTFOLIO } from '../content/portfolio-manifest';
 import { homepageCopy } from '../lib/site-copy';
+import { metadata as koreanHomeMetadata } from '../app/(ko)/ko/page';
+import { metadata as chineseHomeMetadata } from '../app/(zh-cn)/zh-cn/kr/seoul/page';
+import { metadata as marketsMetadata } from '../app/(en)/markets/page';
 import {
   createPublicAreaFixture,
   createPublicAreaV2Fixture,
@@ -105,6 +108,31 @@ describe('released local route availability', () => {
 });
 
 describe('public migration containment', () => {
+  it('does not advertise the redirected Korean market directory as a translation', () => {
+    expect(marketsMetadata.alternates?.canonical).toBe('https://www.signedprice.com/markets/');
+    expect(marketsMetadata.alternates?.languages).toBeUndefined();
+  });
+  it('uses the Korean social image by default and preserves explicit images', () => {
+    const options = { path: '/ko/example/' as const, title: '한국어 예시', description: '한국어 페이지', locale: 'ko_KR' as const };
+    const korean = indexableMetadata(options);
+    expect(korean.openGraph).toMatchObject({ images: ['https://www.signedprice.com/og/ko/'] });
+    expect(korean.twitter).toMatchObject({ images: ['https://www.signedprice.com/og/ko/'] });
+    expect(indexableMetadata({ ...options, imagePath: '/custom.png' }).openGraph)
+      .toMatchObject({ images: ['https://www.signedprice.com/custom.png'] });
+  });
+
+  it('advertises the same reciprocal language destinations from all home locales', () => {
+    const languages = {
+      en: 'https://www.signedprice.com/',
+      ko: 'https://www.signedprice.com/ko/',
+      'zh-Hans': 'https://www.signedprice.com/zh-cn/kr/seoul/',
+      'x-default': 'https://www.signedprice.com/',
+    };
+    for (const metadata of [homepageCopy.metadata, koreanHomeMetadata, chineseHomeMetadata]) {
+      expect(metadata.alternates?.languages).toEqual(languages);
+    }
+  });
+
   it('publishes reciprocal self-canonical English and Korean alternates', () => {
     const english = indexableMetadata({
       path: '/kr/seoul/explore/',

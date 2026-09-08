@@ -23,6 +23,22 @@ function record(amountSgd: number): UraPrivateSaleCheckRecord {
 }
 
 describe('Singapore Check evidence repositories', () => {
+  it('validates an object source without copying transaction history and still rejects tampering', async () => {
+    const artifact = buildSingaporeCheckArtifact({
+      market: 'ura-private-sale', sourceIdentifier: 'URA',
+      generatedAt: '2026-09-02T00:00:00.000Z', records: [record(100)],
+    });
+    const source = {
+      payload: artifact, expectedDigest: artifact.digest, expectedPeriod: '2026-08/2026-08',
+    };
+    const repositories = await createSingaporeCheckEvidenceRepositories({ 'ura-private-sale': source });
+    expect(repositories.get('ura-private-sale')).toBe(artifact);
+    const tampered = { ...artifact, records: [record(999)] };
+    const rejected = await createSingaporeCheckEvidenceRepositories({
+      'ura-private-sale': { ...source, payload: tampered },
+    });
+    expect(rejected.get('ura-private-sale')).toBeNull();
+  });
   it('reuses immutable installed evidence but respects disabled and overridden sources', async () => {
     const first = singaporeCheckEvidenceRepositoriesFromEnvironment();
     expect(singaporeCheckEvidenceRepositoriesFromEnvironment()).toBe(first);

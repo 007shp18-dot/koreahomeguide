@@ -71,6 +71,7 @@ export function createKoreaEvidenceRepositoryLoader(): KoreaEvidenceRepositoryLo
 }
 
 const environmentLoader = createKoreaEvidenceRepositoryLoader();
+let strictInstalledRepositories: KoreaEvidenceRepositories | undefined;
 let cachedEnvironmentRepositories: Readonly<{
   registrySource: unknown;
   resolveObject: (objectUrl: string) => unknown;
@@ -114,6 +115,15 @@ export function koreaEvidenceRepositoriesFromEnvironment(
       ? resolveInstalledSnapshotObject
       : unavailableSnapshotObject);
   const retainLastVerified = dependencies.retainLastVerified !== false;
+  // Strict Check requests must not fall back to an earlier activation. The
+  // checked-in registry and resolver are immutable within one deployment, so
+  // their verified result can still be reused without retaining stale overrides.
+  const usesStrictInstalled = !retainLastVerified && useCheckedInSnapshot
+    && registrySource === resolveInstalledSnapshotRegistry()
+    && resolveObject === resolveInstalledSnapshotObject;
+  if (usesStrictInstalled && strictInstalledRepositories !== undefined) {
+    return strictInstalledRepositories;
+  }
   if (retainLastVerified
     && cachedEnvironmentRepositories !== null
     && cachedEnvironmentRepositories.registrySource === registrySource
@@ -124,6 +134,9 @@ export function koreaEvidenceRepositoriesFromEnvironment(
     ? environmentLoader
     : createKoreaEvidenceRepositoryLoader())
     .load({ registrySource, resolveObject });
+  if (usesStrictInstalled && repositories.rent !== null && repositories.sale !== null) {
+    strictInstalledRepositories = repositories;
+  }
   if (retainLastVerified) {
     cachedEnvironmentRepositories = Object.freeze({
       registrySource,

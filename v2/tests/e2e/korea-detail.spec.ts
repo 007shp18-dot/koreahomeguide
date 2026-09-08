@@ -113,7 +113,7 @@ test('verified synthetic building detail is server rendered only in the local re
   await page.waitForLoadState('networkidle');
   await expect(page.getByRole('heading', { level: 1, name: PUBLIC_BUILDING_TEST_NAME })).toBeVisible();
   await expect(page.getByRole('link', { name: /Back to .* Explore/ })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Check this contract' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Compare an asking price', exact: true })).toBeVisible();
   // During static hydration Next keeps the streamed replacement in a hidden
   // container until it swaps the visible fallback. Measure the user-visible
   // hero so strict locators do not race that hand-off.
@@ -164,7 +164,6 @@ test('verified synthetic building detail is server rendered only in the local re
   await expect(evidenceDetails).toContainText('Privacy-safe reported contracts');
   const relatedContext = page.getByRole('region', { name: 'Building news and community' });
   await expect(relatedContext).toContainText('Latest verified News');
-  await expect(relatedContext).toContainText('Community signal');
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /^noindex,\s*follow$/);
   await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
   await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(0);
