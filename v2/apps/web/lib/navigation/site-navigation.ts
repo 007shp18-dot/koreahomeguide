@@ -7,6 +7,26 @@ export const marketNavigation = [
   { id: 'jp-tokyo', label: 'Tokyo', href: '/jp/tokyo/' },
 ] as const;
 
+export type NavigationMarketId = (typeof marketNavigation)[number]['id'];
+
+/** Switch the city, not the task. Never carry a building/filter into another market. */
+export function marketDestination(marketId: NavigationMarketId, currentHref = '/', locale: SiteLocale = 'en'): string {
+  const path = (currentHref.split('?')[0] ?? '/').replace(/^\/(?:ko|zh-cn)(?=\/)/, '');
+  const prefix = locale === 'ko' ? '/ko' : '';
+  const city = { 'kr-seoul': 'seoul', 'sg-singapore': 'singapore', 'ae-dubai': 'dubai', 'jp-tokyo': 'tokyo' }[marketId];
+  if (marketId === 'jp-tokyo' && (/\/(?:news|insights|guides|guide|tools)\//.test(path))) return '/jp/tokyo/';
+  if (path.includes('/news/') || path.includes('/insights/')) return `${locale === 'zh-CN' ? '/zh-cn' : prefix}/news/?market=${city}`;
+  if (path.includes('/guides/') || path.includes('/guide/')) return `${locale === 'zh-CN' ? '/zh-cn' : prefix}/guides/?market=${city}`;
+  const base = { 'kr-seoul': '/kr/seoul', 'sg-singapore': '/sg/singapore', 'ae-dubai': '/ae/dubai', 'jp-tokyo': '/jp/tokyo' }[marketId];
+  const section = ['explore', 'check', 'shortlist', 'rankings'].find(item => path.includes(`/${item}/`));
+  if (marketId === 'jp-tokyo') return section || path === '/prices/' ? `${base}/explore/` : `${base}/`;
+  if (section === 'rankings' && marketId === 'ae-dubai') return `${prefix}${base}/explore/`;
+  if (section) return `${prefix}${base}/${section}/`;
+  if (path === '/prices/') return `${prefix}${base}/explore/`;
+  if (path === '/tools/') return `${prefix}${base}/check/`;
+  return `${prefix}${marketId === 'sg-singapore' ? '/sg' : base}/`;
+}
+
 export function globalNavigation(locale: SiteLocale = 'en') {
   const zh = locale === 'zh-CN';
   if (locale === 'ko') return [

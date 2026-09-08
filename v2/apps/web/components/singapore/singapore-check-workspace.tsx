@@ -1,4 +1,5 @@
 
+import { DefaultAmountInput } from '../amount-input';
 import { formatPricePercentile } from '../../lib/locale/price-percentile';
 import { sgText } from '../../lib/locale/singapore-copy';
 import { marketHref, type MarketLocale } from '../../lib/locale/market-localization';
@@ -33,14 +34,14 @@ function OfferFields({ locale = 'en', prefix, draft, catalog }: Readonly<{ local
   const field = (label: string, name: string, content: React.ReactNode) => <label><span>{sgText(locale, label)}</span>{sgText(locale, content)}</label>;
   return <fieldset className={styles.offerFields} data-offer={prefix.toUpperCase()}>
     <legend>{sgText(locale, "Offer ")}{sgText(locale, prefix.toUpperCase())}</legend><input type="hidden" name={`${prefix}-market`} value={draft.market} />
-    {field(draft.market === 'hdb-rent' ? 'Monthly rent (SGD)' : 'Asking price (SGD)', `${prefix}-amount`, <input name={`${prefix}-amount`} type="number" min="1" step="1" defaultValue={draft.amount} required />)}
+    {field(draft.market === 'hdb-rent' ? 'Monthly rent (SGD)' : 'Asking price (SGD)', `${prefix}-amount`, <DefaultAmountInput name={`${prefix}-amount`}  min="1" step="1" defaultValue={draft.amount} required />)}
     {draft.market === 'ura-private-sale' ? <>
       {field('Market segment', `${prefix}-segment`, <select name={`${prefix}-segment`} defaultValue={draft.segment}>{options(locale, catalog.segments, draft.segment)}</select>)}
       {field('Project', `${prefix}-project`, <select name={`${prefix}-project`} defaultValue={draft.project}>{pairOptions(locale, catalog.projects, draft.project)}</select>)}
       {field('District', `${prefix}-district`, <select name={`${prefix}-district`} defaultValue={draft.district}>{options(locale, catalog.districts, draft.district)}</select>)}
       {field('Property type', `${prefix}-property-type`, <select name={`${prefix}-property-type`} defaultValue={draft['property-type']}>{options(locale, catalog.propertyTypes, draft['property-type'])}</select>)}
-      {field('Area minimum (㎡)', `${prefix}-area-min`, <input name={`${prefix}-area-min`} type="number" min="1" defaultValue={draft['area-min'] ?? '80'} required />)}
-      {field('Area maximum (㎡)', `${prefix}-area-max`, <input name={`${prefix}-area-max`} type="number" min="1" defaultValue={draft['area-max'] ?? '120'} required />)}
+      {field('Area minimum (㎡)', `${prefix}-area-min`, <DefaultAmountInput name={`${prefix}-area-min`}  min="1" defaultValue={draft['area-min'] ?? '80'} required />)}
+      {field('Area maximum (㎡)', `${prefix}-area-max`, <DefaultAmountInput name={`${prefix}-area-max`}  min="1" defaultValue={draft['area-max'] ?? '120'} required />)}
       {field('Floor range', `${prefix}-floor-range`, <select name={`${prefix}-floor-range`} defaultValue={draft['floor-range']}><option value="">{sgText(locale, "Any")}</option>{options(locale, catalog.floorRanges, draft['floor-range'])}</select>)}
       {field('Sale type', `${prefix}-sale-type`, <select name={`${prefix}-sale-type`} defaultValue={draft['sale-type']}><option value="">{sgText(locale, "Any")}</option>{options(locale, catalog.saleTypes, draft['sale-type'])}</select>)}
     </> : <>
@@ -49,8 +50,8 @@ function OfferFields({ locale = 'en', prefix, draft, catalog }: Readonly<{ local
       {field('Flat type', `${prefix}-flat-type`, <select name={`${prefix}-flat-type`} defaultValue={draft['flat-type']}>{options(locale, catalog.flatTypes, draft['flat-type'])}</select>)}
       {draft.market === 'hdb-resale' ? <>
         {field('Storey range', `${prefix}-storey-range`, <select name={`${prefix}-storey-range`} defaultValue={draft['storey-range']}><option value="">{sgText(locale, "Any")}</option>{options(locale, catalog.storeyRanges, draft['storey-range'])}</select>)}
-        {field('Area minimum (㎡)', `${prefix}-area-min`, <input name={`${prefix}-area-min`} type="number" min="1" defaultValue={draft['area-min'] ?? '50'} required />)}
-        {field('Area maximum (㎡)', `${prefix}-area-max`, <input name={`${prefix}-area-max`} type="number" min="1" defaultValue={draft['area-max'] ?? '130'} required />)}
+        {field('Area minimum (㎡)', `${prefix}-area-min`, <DefaultAmountInput name={`${prefix}-area-min`}  min="1" defaultValue={draft['area-min'] ?? '50'} required />)}
+        {field('Area maximum (㎡)', `${prefix}-area-max`, <DefaultAmountInput name={`${prefix}-area-max`}  min="1" defaultValue={draft['area-max'] ?? '130'} required />)}
       </> : null}
     </>}
     {field('Reporting month', `${prefix}-month`, <select name={`${prefix}-month`} defaultValue={draft.month}><option value="">{sgText(locale, "Latest available")}</option>{options(locale, catalog.months, draft.month)}</select>)}

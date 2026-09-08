@@ -11,7 +11,7 @@
 
 /* Unified decision-tool surface */
 .main {
-  width: min(calc(100% - (2 * var(--page-gutter))), 1080px);
+  width: min(calc(100% - (2 * var(--page-gutter))), var(--content-frame));
   margin: 28px auto 40px;
   overflow: hidden;
   border: 1px solid var(--line);

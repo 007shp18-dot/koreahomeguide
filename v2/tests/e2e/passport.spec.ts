@@ -16,7 +16,7 @@ test('Passport opens published candidate costs and restores the original currenc
   await page.getByRole('button', { name: '다시 비교하기', exact: true }).click();
   const calculate = candidates.first().getByRole('link', { name: '비용 계산', exact: true });
   await calculate.click();
-  await expect(page.getByLabel('매입 가격 (SGD)', { exact: true })).toHaveValue('2162500');
+  await expect(page.getByLabel('매입 가격 (SGD)', { exact: true })).toHaveValue('2,162,500');
   await expect(page.getByRole('link', { name: '거래 내역으로 돌아가기', exact: true })).toHaveAttribute('href', /\/sg\/singapore\/explore\/ocr\//);
   await page.getByRole('link', { name: '내 예산 비교로 돌아가기', exact: true }).click();
   await expect(page.getByLabel('예산', { exact: true })).toHaveValue('9,000,000');

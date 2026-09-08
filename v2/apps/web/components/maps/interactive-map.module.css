@@ -6,7 +6,7 @@
 .canvas {
   width: 100%;
   min-height: clamp(360px, 56vw, 620px);
-  border: 2px solid var(--ink);
+  border: 1px solid var(--line);
   background: var(--surface-strong);
 }
 
@@ -58,25 +58,23 @@
 }
 
 :global(.spMapNeighborhoodBubble strong) {
-  min-width: 28px;
-  padding: 3px 7px;
-  border-radius: 999px;
-  color: #fff;
-  background: #243b64;
+  min-width: 20px;
+  padding: 0;
+  color: inherit;
   font-variant-numeric: tabular-nums;
   text-align: center;
 }
 
 :global(.spMapNeighborhoodBubble) {
-  min-height: 40px;
-  padding: 7px 9px 7px 13px;
-  border: 2px solid rgb(255 255 255 / 96%);
-  color: #172337;
-  background: rgb(255 255 255 / 96%);
-  box-shadow: 0 8px 22px rgb(23 35 55 / 22%), 0 0 0 1px rgb(36 59 100 / 22%);
+  min-height: 32px;
+  min-width: 32px;
+  padding: 6px 9px;
+  border: 1px solid #c6d4cb;
+  color: #245746;
+  background: #fff;
+  box-shadow: 0 1px 4px rgb(23 35 55 / 14%);
   font-size: 13px;
-  font-weight: 750;
-  backdrop-filter: blur(8px);
+  font-weight: 600;
 }
 :global(.spMapBuildingBubble) {
   min-height: 34px;
@@ -103,9 +101,9 @@
   white-space: nowrap !important;
 }
 
-:global(.spMapAreaGroup) { border: 2px dashed #52647c; border-radius: 8px; flex-wrap: wrap; max-width: 220px; white-space: normal; }
-:global(.spMapAreaGroup small) { flex-basis: 100%; text-align: center; font-size: 12px; font-weight: 400; }
-:global(.spGoogleAreaGroup) { border: 2px dashed #52647c !important; }
+:global(.spMapAreaGroup) { border: 1px solid #c6d4cb; border-radius: 999px; max-width: 160px; white-space: nowrap; }
+:global(.spMapAreaGroup small) { display: none; }
+:global(.spGoogleAreaGroup) { border: 1px solid #c6d4cb !important; }
 :global(.spGoogleRegionGroup) {
   padding: 10px 14px !important;
   border: 2px solid #fff !important;
@@ -310,3 +308,17 @@
 :global(.spGoogleCluster) { padding: 4px 7px !important; min-width: 22px; text-align: center; box-shadow: 0 1px 4px rgb(17 24 39 / 15%) !important; }
 
 .coordinateSource { display: block; margin-top: 3px; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* One compact number per group. Location precision remains in the map legend. */
+:global(.spGoogleMarketMarker), :global(.spGoogleRegionGroup), :global(.spGoogleDistrictGroup), :global(.spGoogleCluster) {
+  padding: 6px 9px !important; min-width: 28px; border: 1px solid #c6d4cb !important;
+  border-radius: 999px !important; color: #245746 !important; background: #fff !important;
+  box-shadow: 0 1px 4px rgb(23 35 55 / 14%) !important;
+  font: 600 13px/1.25 Arial, sans-serif !important; text-align: center;
+}
+:global(.spGoogleMarketMarkerSelected), :global(.spMapNeighborhoodBubbleSelected), :global(.spMapDistrictBubbleSelected) {
+  color: white !important; background: #245746 !important; border-color: #245746 !important;
+  box-shadow: 0 1px 5px rgb(23 35 55 / 20%) !important;
+}
+:global(.spMapBuildingBubble span) { background: #245746; }
+:global(.spMapBuildingBubbleSelected span) { background: #245746; box-shadow: 0 0 0 4px rgb(36 87 70 / 15%); }

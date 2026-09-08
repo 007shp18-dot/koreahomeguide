@@ -31,6 +31,14 @@ async function repositories() {
 }
 
 describe('Singapore Check route model', () => {
+  it('reuses catalog computation for an unchanged immutable repository but not a new release', async () => {
+    const release = await repositories();
+    const first = buildSingaporeCheckRouteModel(release, {});
+    const second = buildSingaporeCheckRouteModel(release, { mode: 'compare' });
+    expect(second.catalogs).toBe(first.catalogs);
+    const next = buildSingaporeCheckRouteModel(await repositories(), {});
+    expect(next.catalogs).not.toBe(first.catalogs);
+  });
   it('derives native option catalogs without exposing records', async () => {
     const model = buildSingaporeCheckRouteModel(await repositories(), {});
     expect(model.catalogs['ura-private-sale']).toMatchObject({ available: true, projects: [{ id: 'project-a', label: 'Project A' }], districts: ['09'] });

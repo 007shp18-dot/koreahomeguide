@@ -98,6 +98,7 @@ export async function fetchGoogleNewsRssItems(): Promise<GoogleNewsRssResult> {
     url.searchParams.set('gl', 'US');
     url.searchParams.set('ceid', 'US:en');
     const response = await fetch(url, {
+      signal: AbortSignal.timeout(10_000),
       headers: { 'User-Agent': 'SignedPrice/1.0 (+https://www.signedprice.com)' },
       next: { revalidate: 1800 },
     });

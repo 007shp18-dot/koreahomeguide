@@ -10,7 +10,7 @@ import { languageDestinations } from '../lib/navigation/site-navigation';
 describe('Korean entry routes', () => {
   it('offers four cities and preserves Korean tools', () => {
     const html = renderToStaticMarkup(<KoreanHome />);
-    for (const path of ['/ko/kr/seoul/explore', '/ko/sg/singapore/explore', '/ko/ae/dubai/explore', '/jp/tokyo']) expect(html).toMatch(new RegExp(`href="${path}/?"`));
+    for (const path of ['/ko/kr/seoul/explore', '/ko/sg/singapore/explore', '/ko/ae/dubai/explore', '/jp/tokyo/explore']) expect(html).toMatch(new RegExp(`href="${path}/?"`));
     expect(html).toContain('도시 탐색');
     expect(html).not.toContain('(영문)');
     expect(html).toContain('/ko/sg/singapore/explore');

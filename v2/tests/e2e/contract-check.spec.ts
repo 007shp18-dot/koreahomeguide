@@ -225,11 +225,11 @@ test('each offer changes type independently and sale versus rent stays a neutral
   await page.goto('/kr/seoul/check/compare/');
 
   await page.locator('select[name="a-transaction"]').selectOption('sale');
-  await expect(page.locator('input[name="a-price"]')).toBeVisible();
+  await expect(page.locator('input[data-amount-name="a-price"]')).toBeVisible();
   await expect(page.locator('input[name="a-deposit"]')).toHaveCount(0);
   await page.locator('select[name="b-transaction"]').selectOption('monthly');
-  await expect(page.locator('input[name="b-deposit"]')).toBeVisible();
-  await expect(page.locator('input[name="b-monthly-rent"]')).toBeVisible();
+  await expect(page.locator('input[data-amount-name="b-deposit"]')).toBeVisible();
+  await expect(page.locator('input[data-amount-name="b-monthly-rent"]')).toBeVisible();
   await expect(page.locator('input[name="b-price"]')).toHaveCount(0);
 
   const response = await page.goto(submittedComparisonPath);

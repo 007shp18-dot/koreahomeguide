@@ -57,6 +57,6 @@
   color: var(--ink);
   background: var(--surface);
 }
-.unavailable strong { font-size: var(--card-title-size); line-height: 1.25; }
+.unavailable strong { font-size: 18px; line-height: 1.4; }
 .unavailable p { max-width: 48ch; color: var(--muted); font-size: var(--body-size); line-height: var(--body-leading); }
 .unavailable a { width: fit-content; min-height: 44px; display: inline-flex; align-items: center; color: var(--accent); font-size: var(--ui-size); overflow-wrap: anywhere; }

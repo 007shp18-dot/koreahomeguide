@@ -58,41 +58,41 @@ export async function loadPersistedNewsItems(limit = 600): Promise<readonly News
         evidence_line
       FROM (
         SELECT
-          id,
-          CASE market_id WHEN 'kr-seoul' THEN 'seoul' WHEN 'sg-singapore' THEN 'singapore' WHEN 'ae-dubai' THEN 'dubai' END AS market_key,
-          canonical_url,
-          title,
-          summary,
-          publisher,
-          source_published_at AS published_at,
-          coalesce(category_hint, 'discovery') AS category,
-          source_kind,
+          discovery.id,
+          CASE discovery.market_id WHEN 'kr-seoul' THEN 'seoul' WHEN 'sg-singapore' THEN 'singapore' WHEN 'ae-dubai' THEN 'dubai' END AS market_key,
+          discovery.canonical_url,
+          reviewed.title,
+          article.summary,
+          reviewed.publisher,
+          coalesce(reviewed.published_at, article.published_at) AS published_at,
+          'discovery'::text AS category,
+          discovery.source_kind,
           'checking'::text AS evidence_status,
           'External source reviewed for published content'::text AS evidence_line,
-          is_active
+          discovery.is_active
         FROM external_news_items discovery
+        JOIN content_articles article ON article.slug = discovery.linked_content_slug
+        JOIN LATERAL (
+          SELECT source.title, source.publisher, source.published_at
+          FROM content_source_links link
+          JOIN content_sources source ON source.id = link.source_id
+          WHERE link.content_slug = article.slug
+            AND source.canonical_url = discovery.canonical_url
+          ORDER BY source.checked_at DESC, source.id
+          LIMIT 1
+        ) reviewed ON true
         WHERE discovery.review_state = 'linked'
-          AND EXISTS (
-            SELECT 1
-            FROM content_articles article
-            WHERE article.slug = discovery.linked_content_slug
+              AND article.market_id = discovery.market_id
               AND article.editorial_status = 'published'
               AND article.published_at <= now()
               AND article.reviewed_at IS NOT NULL
               AND nullif(btrim(article.reviewed_by), '') IS NOT NULL
               AND article.evidence_state <> 'withdrawn'
-              AND EXISTS (
-                SELECT 1 FROM content_source_links link
-                JOIN content_sources source ON source.id = link.source_id
-                WHERE link.content_slug = article.slug
-                  AND source.canonical_url = discovery.canonical_url
-              )
               AND (article.evidence_state = 'not-applicable' OR EXISTS (
                 SELECT 1 FROM content_source_links link
                 JOIN content_sources source ON source.id = link.source_id
                 WHERE link.content_slug = article.slug AND source.source_kind = 'primary'
               ))
-          )
       ) discovery
       WHERE is_active = true
       ORDER BY published_at DESC
@@ -143,16 +143,41 @@ export async function storeNewsItems(items: readonly NewsWorkspaceItem[]): Promi
         source_kind text,
         raw_metadata jsonb
       )
+    ), publishable_payload AS (
+      SELECT item.*, publication.slug AS linked_content_slug
+      FROM payload item
+      LEFT JOIN LATERAL (
+        SELECT article.slug
+        FROM content_sources source
+        JOIN content_source_links link ON link.source_id = source.id
+        JOIN content_articles article ON article.slug = link.content_slug
+        WHERE source.canonical_url = item.canonical_url
+          AND article.market_id = item.market_id
+          AND article.locale = 'en'
+          AND article.editorial_status = 'published'
+          AND article.published_at <= now()
+          AND article.reviewed_at IS NOT NULL
+          AND nullif(btrim(article.reviewed_by), '') IS NOT NULL
+          AND article.evidence_state <> 'withdrawn'
+          AND (article.evidence_state = 'not-applicable' OR EXISTS (
+            SELECT 1 FROM content_source_links primary_link
+            JOIN content_sources primary_source ON primary_source.id = primary_link.source_id
+            WHERE primary_link.content_slug = article.slug AND primary_source.source_kind = 'primary'
+          ))
+        ORDER BY article.published_at DESC, article.slug
+        LIMIT 1
+      ) publication ON true
     ), stored AS (
       INSERT INTO external_news_items (
         market_id, canonical_url, title_hash, title, summary, publisher,
-        source_published_at, category_hint, source_kind, raw_metadata
+        source_published_at, category_hint, source_kind, raw_metadata, review_state, linked_content_slug
       )
       SELECT
         item.market_id, item.canonical_url, item.title_hash, item.title, item.summary,
         item.publisher, item.source_published_at, item.category_hint, item.source_kind,
-        item.raw_metadata
-      FROM payload item
+        item.raw_metadata, CASE WHEN item.linked_content_slug IS NULL THEN 'new' ELSE 'linked' END,
+        item.linked_content_slug
+      FROM publishable_payload item
       ON CONFLICT (canonical_url) DO UPDATE SET
         title_hash = excluded.title_hash,
         title = excluded.title,
@@ -162,6 +187,8 @@ export async function storeNewsItems(items: readonly NewsWorkspaceItem[]): Promi
         category_hint = excluded.category_hint,
         source_kind = excluded.source_kind,
         raw_metadata = excluded.raw_metadata,
+        review_state = CASE WHEN external_news_items.review_state IN ('new', 'triaged') AND excluded.review_state = 'linked' THEN 'linked' ELSE external_news_items.review_state END,
+        linked_content_slug = CASE WHEN external_news_items.review_state IN ('new', 'triaged') AND excluded.review_state = 'linked' THEN excluded.linked_content_slug ELSE external_news_items.linked_content_slug END,
         last_seen_at = now(),
         is_active = true,
         updated_at = now()

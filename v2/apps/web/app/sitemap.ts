@@ -204,6 +204,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     sitemapEntry('/ae/dubai/explore/', new Date('2026-09-06')),
     sitemapEntry('/ae/dubai/guide/', new Date('2026-09-06')),
     sitemapEntry('/sg/'),
+    sitemapEntry('/jp/tokyo/'),
+    sitemapEntry('/jp/tokyo/explore/'),
     sitemapEntry('/sg/singapore/explore/'),
     sitemapEntry('/sg/singapore/explore/ccr/'),
     sitemapEntry('/sg/singapore/explore/rcr/'),

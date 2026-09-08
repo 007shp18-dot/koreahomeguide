@@ -3,7 +3,7 @@ import { sgText } from '../../lib/locale/singapore-copy';
 import { marketHref, type MarketLocale } from '../../lib/locale/market-localization';
 import { singaporeProjectDisplayName } from '../../lib/singapore/project-display-name';
 import { createPropertyScenarioHref } from '../../lib/tools/property-scenario-context';
-import { buildMonthlyResearch, summarizeSizeCohorts } from '../../lib/research/property-research';
+import { buildProjectMonthlyResearch, summarizeSizeCohorts } from '../../lib/research/property-research';
 import { MonthlyTransactionResearch, SizeCohortResearch } from '../market-ui/transaction-research';
 import { PropertyScenarioCalculator } from '../market-ui/property-scenario';
 import { PassportLink as Link } from '../passport/passport-journey';
@@ -71,7 +71,7 @@ export function SingaporeProjectDetail({ locale = 'en', model, googleMapsBrowser
     group: `${propertyTypeLabel} · ${saleTypeLabel} · ${areaBasisLabel} · ${tenureLabel}`,
   }));
   const [from, to] = model.evidence.period.split('..');
-  const months = buildMonthlyResearch(records, from ?? '', to ?? '');
+  const months = buildProjectMonthlyResearch(records, from ?? '', to ?? '');
   const sizes = summarizeSizeCohorts(records);
   return (
     <SingaporePage locale={locale} currentHref={marketHref(locale, "/sg/singapore/explore/")} unframed>

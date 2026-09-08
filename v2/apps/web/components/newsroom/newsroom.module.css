@@ -5,11 +5,17 @@
   color: var(--review-ink);
 }
 
-.article,
 .policyTracker {
   width: min(1180px, calc(100% - 40px));
   margin: 0 auto;
   padding: 40px 0 88px;
+  color: var(--review-ink);
+}
+
+.article {
+  width: min(800px, calc(100% - (2 * var(--page-gutter))));
+  margin: 0 auto;
+  padding: 32px 0 72px;
   color: var(--review-ink);
 }
 
@@ -33,7 +39,7 @@
 
 .indexHero h1 {
   margin: 0;
-  max-width: 16ch;
+  max-width: none;
   font-family: inherit;
   font-size: var(--page-title-size);
   font-weight: 650;
@@ -43,9 +49,9 @@
 
 .articleHero h1 {
   margin: 0;
-  max-width: 28ch;
+  max-width: none;
   font-family: inherit;
-  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-size: clamp(1.875rem, 3vw, 2.5rem);
   font-weight: 600;
   letter-spacing: -.02em;
   line-height: 1.2;
@@ -55,7 +61,7 @@
 .articleHero .deck {
   max-width: 680px;
   color: var(--review-muted);
-  font-size: clamp(18px, 2vw, 23px);
+  font-size: 17px;
   line-height: 1.5;
 }
 
@@ -205,7 +211,7 @@
 }
 
 .leadStory h2 {
-  max-width: 19ch;
+  max-width: 48ch;
   margin: 0;
   font-family: inherit;
   font-size: var(--section-title-size);
@@ -314,7 +320,7 @@
   display: flex;
   gap: 10px;
   align-items: center;
-  padding-bottom: 48px;
+  padding-bottom: 24px;
   color: var(--review-muted);
   font-size: 14px;
 }
@@ -334,8 +340,8 @@
 .articleHero {
   display: grid;
   gap: 22px;
-  max-width: 980px;
-  padding-bottom: 52px;
+  max-width: none;
+  padding-bottom: 28px;
 }
 
 .articleHero > p {
@@ -421,7 +427,7 @@
 
 .articleBody,
 .sources {
-  width: min(720px, 100%);
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -432,15 +438,16 @@
 .articleBody h2 {
   margin: 0 0 16px;
   font-family: inherit;
-  font-size: clamp(28px, 4vw, 40px);
+  font-size: clamp(1.375rem, 2vw, 1.75rem);
   font-weight: 500;
-  letter-spacing: -.025em;
+  letter-spacing: -.015em;
+  line-height: 1.4;
 }
 
 .articleBody p {
   margin: 0 0 20px;
-  font-size: 18px;
-  line-height: 1.75;
+  font-size: 16px;
+  line-height: 1.8;
 }
 
 .sources {

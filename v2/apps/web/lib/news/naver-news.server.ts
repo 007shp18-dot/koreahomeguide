@@ -79,6 +79,7 @@ async function fetchMarketNews(search: (typeof searches)[number], clientId: stri
   url.searchParams.set('sort', 'date');
   url.searchParams.set('format', 'json');
   const response = await fetch(url, {
+    signal: AbortSignal.timeout(10_000),
     headers: {
       [NAVER_NEWS_API_HEADER_NAMES.clientId]: clientId,
       [NAVER_NEWS_API_HEADER_NAMES.clientSecret]: clientSecret,

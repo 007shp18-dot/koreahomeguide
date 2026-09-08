@@ -2,9 +2,16 @@ import { describe, expect, it } from 'vitest';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MonthlyTransactionResearch } from '../components/market-ui/transaction-research';
-import { buildMonthlyResearch, calculatePropertyScenario, summarizeSizeCohorts, selectResearchPeriod } from '../lib/research/property-research';
+import { buildMonthlyResearch, buildProjectMonthlyResearch, calculatePropertyScenario, summarizeSizeCohorts, selectResearchPeriod } from '../lib/research/property-research';
 
 describe('property research calculations', () => {
+  it('starts project history at its first recorded sale and retains interior and trailing empty months', () => {
+    const rows = [{ month: '2025-08', price: 1000000, area: 80, group: 'sale' }, { month: '2025-10', price: 1100000, area: 80, group: 'sale' }];
+    expect(buildProjectMonthlyResearch(rows, '2021-08', '2025-11')).toEqual([
+      { month: '2025-08', count: 1, median: null }, { month: '2025-09', count: 0, median: null },
+      { month: '2025-10', count: 1, median: null }, { month: '2025-11', count: 0, median: null },
+    ]);
+  });
   it('selects trailing calendar months at the release end without changing suppressed values or counts', () => {
     const months = [{month: '2025-01', count: 7, median: 500}, {month: '2026-01', count: 3, median: null}, {month: '2024-12', count: 9, median: 400}];
     expect(selectResearchPeriod(months, '12')).toEqual([{month: '2026-01', count: 3, median: null}]);

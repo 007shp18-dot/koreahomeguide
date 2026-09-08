@@ -50,6 +50,7 @@ const rankingCanonicalUrls = [
   '/sg/singapore/rankings/',
   '/ko/sg/singapore/rankings/',
 ].map(path => `https://www.signedprice.com${path}`);
+const tokyoCanonicalUrls = ['/jp/tokyo/', '/jp/tokyo/explore/'].map(path => `https://www.signedprice.com${path}`);
 
 function releasedDubaiEvidenceUrls(): string[] {
   const repository = dubaiEvidenceRepositoryFromEnvironment();
@@ -349,6 +350,7 @@ describe('public migration containment', () => {
       ...portfolioUrls,
       ...koreanPublishedHubUrls,
       ...rankingCanonicalUrls,
+      ...tokyoCanonicalUrls,
       'https://www.signedprice.com/',
       'https://www.signedprice.com/compare/',
       'https://www.signedprice.com/trust/',
@@ -503,6 +505,7 @@ describe('public migration containment', () => {
       ...portfolioUrls,
       ...koreanPublishedHubUrls,
       ...rankingCanonicalUrls,
+      ...tokyoCanonicalUrls,
       'https://www.signedprice.com/',
       'https://www.signedprice.com/compare/',
       'https://www.signedprice.com/trust/',
@@ -517,6 +520,7 @@ describe('public migration containment', () => {
 
     vi.unstubAllEnvs();
     expect(sitemap().map(({ url }) => url).sort()).toEqual([
+      ...tokyoCanonicalUrls,
       'https://www.signedprice.com/kr/seoul/shortlist/',
       'https://www.signedprice.com/ko/kr/seoul/shortlist/',
       'https://www.signedprice.com/passport/',

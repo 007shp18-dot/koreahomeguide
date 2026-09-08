@@ -47,7 +47,7 @@ export function SingaporePage({ locale = 'en', children, currentHref, unframed =
     navigationLabel: locale === 'ko' ? '싱가포르 자료 탐색' : singaporeHeader.navigationLabel,
     marketLabel: locale === 'ko' ? '싱가포르' : 'Singapore',
     languageLabel: locale === 'ko' ? 'KO' : 'EN',
-    links: navigation.links,
+    links: currentHref === undefined ? navigation.links : [...navigation.links.map(link => ({ ...link, isCurrent: false })), { label: 'Current page', href: currentHref, isCurrent: true }],
   };
   const footer = { ...singaporeFooter, links: navigation.links,
     descriptor: locale === 'ko' ? '싱가포르 민간주택과 HDB 자료의 출처 기간 및 범위를 확인하세요.' : singaporeFooter.descriptor,

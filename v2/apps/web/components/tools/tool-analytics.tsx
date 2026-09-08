@@ -13,5 +13,5 @@ export function ToolEventOnMount({event,...input}:ToolDimensions & {event:'tools
  return null;
 }
 export function TrackedToolLink({href,children,...input}:ToolDimensions & {href:string;children:ReactNode}) {
- return <Link href={href} onClick={()=>sendToolEvent('tool_start',input)}>{children}</Link>;
+ return <Link href={href} prefetch={false} onClick={()=>sendToolEvent('tool_start',input)}>{children}</Link>;
 }

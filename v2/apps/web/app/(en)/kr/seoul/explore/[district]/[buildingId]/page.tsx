@@ -130,6 +130,7 @@ function projectedBuildingMediaFor(
   projection: PublicEntityProjection | null | undefined,
   photoApproval: StoredPublicPhotoApproval | null | undefined,
   registryKey?: string,
+  locale: 'en' | 'ko' = 'en',
 ) {
   const selected = projection?.media.find(({ displayUrl, providerReference, exactSubject }) =>
     exactSubject && (displayUrl !== null || providerReference !== null));
@@ -148,6 +149,7 @@ function projectedBuildingMediaFor(
   const media = selected ?? approvedFallback;
   if (media === null && registryKey === undefined) return undefined;
   return <ProjectedEntityMedia
+    locale={locale}
     buildingName={name}
     browserKey={googleMapsBrowserKeyFromEnvironment()}
     media={media}
@@ -468,6 +470,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
       entityProjection,
       photoApproval,
       photoRegistryKey,
+      locale,
     );
     const proximity = entityProjection?.proximity ?? identity?.proximity;
     const fallback = <KoreaEvidenceBuildingDetail
@@ -519,6 +522,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
       entityProjection,
       photoApproval,
       photoRegistryKey,
+      locale,
     );
     const facts = <BuildingOfficialFacts
       districtSlug={observed.district.slug}
@@ -583,7 +587,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
     mapHref: backHref,
     photo: null,
   });
-  const propertyMedia = projectedBuildingMediaFor(model.building.name, entityProjection, photoApproval, photoRegistryKey);
+  const propertyMedia = projectedBuildingMediaFor(model.building.name, entityProjection, photoApproval, photoRegistryKey, locale);
   const publicCoordinate = entityProjection?.location ?? (
     model.building.latitude === null || model.building.longitude === null
       ? null

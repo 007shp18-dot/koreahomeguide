@@ -51,11 +51,15 @@ const emptyCatalog = (): SingaporeCheckCatalog => Object.freeze({
 const unique = (values: readonly string[]) => Object.freeze([...new Set(values)].sort((a, b) => a.localeCompare(b, 'en')));
 const pairs = (values: readonly Readonly<{ id: string; label: string }>[]) => Object.freeze([...new Map(values.map((value) => [value.id, value])).values()].sort((a, b) => a.label.localeCompare(b.label, 'en')));
 
+const catalogCache = new WeakMap<SingaporeCheckEvidenceRepositories, Readonly<Record<SingaporeCheckMarket, SingaporeCheckCatalog>>>();
+
 function catalogs(repositories: SingaporeCheckEvidenceRepositories): Readonly<Record<SingaporeCheckMarket, SingaporeCheckCatalog>> {
+  const cached = catalogCache.get(repositories);
+  if (cached) return cached;
   const ura = repositories.get('ura-private-sale');
   const resale = repositories.get('hdb-resale');
   const rent = repositories.get('hdb-rent');
-  return Object.freeze({
+  const result = Object.freeze({
     'ura-private-sale': ura === null ? emptyCatalog() : Object.freeze({
       ...emptyCatalog(), available: true, months: unique(ura.records.map((r) => r.month)),
       segments: unique(ura.records.map((r) => r.marketSegment)), projects: pairs(ura.records.map((r) => ({ id: r.projectId, label: r.project }))),
@@ -72,6 +76,8 @@ function catalogs(repositories: SingaporeCheckEvidenceRepositories): Readonly<Re
       blocks: pairs(rent.records.map((r) => ({ id: r.blockId, label: `${r.block} ${r.street}` }))), flatTypes: unique(rent.records.map((r) => r.flatType)),
     }),
   });
+  catalogCache.set(repositories, result);
+  return result;
 }
 
 function draft(query: SingaporeCheckQuery, prefix: 'a' | 'b', fallback: SingaporeCheckMarket): SingaporeCheckDraft {

@@ -221,7 +221,7 @@ describe('NAVER district map', () => {
       buildingCount: 128,
       selected: true,
     })).toBe(
-      '<div class="spMapNeighborhoodBubble spMapNeighborhoodBubbleSelected"><span>&lt;Yeoksam-dong&gt;</span><strong>128</strong></div>',
+      '<div class="spMapNeighborhoodBubble spMapNeighborhoodBubbleSelected" role="img" aria-label="&lt;Yeoksam-dong&gt; · 128"><strong>128</strong></div>',
     );
   });
 

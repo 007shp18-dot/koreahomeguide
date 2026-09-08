@@ -104,7 +104,7 @@ export function createThreeMarketHomeModel(input: Input): ThreeMarketHomeModel {
         evidenceTitle: zh ? '日本国土交通省地区成交资料' : 'MLIT area transaction evidence',
         evidenceValue: null,
         evidenceNote: zh ? '匿名区域成交；不提供建筑物名称或房号。' : 'Anonymous area transactions; building names and unit identities are not disclosed.',
-        primaryAction: { label: zh ? '探索 · English' : 'Explore', href: '/jp/tokyo/' },
+        primaryAction: { label: zh ? '探索 · English' : 'Explore', href: '/jp/tokyo/explore/' },
         secondaryAction: null,
       },
     ],

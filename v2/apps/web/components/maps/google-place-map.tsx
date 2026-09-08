@@ -174,10 +174,10 @@ export function clusterGoogleMarketPoints(points: readonly GoogleMarketMapPoint[
 /** Only the selected property gets a name; overview groups keep their counts. */
 export function googleMarketMarkerAppearance(point: GoogleMarketMapPoint) {
   const group = point.kind === 'area' || point.kind === 'cluster';
-  const label = group ? point.label : point.selected ? point.title : undefined;
+  const label = group ? (point.count === undefined ? point.label : point.count.toLocaleString('en-US')) : point.selected ? point.title : undefined;
   return {
     icon: { path: 0, scale: group ? 15 : point.selected ? 8 : 5,
-      fillColor: point.selected ? '#4a5cf5' : '#243b64', fillOpacity: 1,
+      fillColor: '#245746', fillOpacity: 1,
       strokeColor: '#ffffff', strokeWeight: 2 },
     zIndex: point.selected ? 1000 : group ? 10 : 1,
     ...(label === undefined ? {} : { label: { text: label,
@@ -356,7 +356,7 @@ export function GooglePlaceMap({
       const requestedLocations = points.filter((point) => point.address !== undefined).length;
       setMessage(requestedLocations > 0
         ? (locale === 'ko' ? `Google 지도에서 장소 ${requestedLocations}곳을 찾는 중…` : `Locating ${requestedLocations} places on Google Maps…`)
-        : locale === 'ko' ? `${points.reduce((n, point) => n + (point.count ?? 1), 0).toLocaleString('ko')}건의 위치가 지도에 표시됩니다. 확대하면 묶인 위치를 구분할 수 있습니다. 점선 라벨은 지역 단위 묶음입니다.` : `${points.reduce((n, point) => n + (point.count ?? 1), 0).toLocaleString('en')} results represented on the map. Zoom in to separate location clusters; dashed labels are area-only groups.`);
+        : locale === 'ko' ? `${points.reduce((n, point) => n + (point.count ?? 1), 0).toLocaleString('ko')}건 · 숫자는 묶인 결과 수입니다. 지역 단위 자료는 건물의 정확한 위치를 뜻하지 않습니다.` : `${points.reduce((n, point) => n + (point.count ?? 1), 0).toLocaleString('en')} results · Numbers show grouped results. Area-level evidence does not identify an exact building location.`);
       if (points.every(point => point.address === undefined) && runtime.current.map.addListener) {
         zoomListener.current = runtime.current.map.addListener('zoom_changed', () => {
           if (generation.current !== currentGeneration || runtime.current === null) return;
