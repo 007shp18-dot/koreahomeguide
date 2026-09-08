@@ -33,7 +33,7 @@ function article(
 describe('published content boundary', () => {
   it('keeps the public News route off the external discovery repository', () => {
     const source = readFileSync(new URL('../app/(en)/news/page.tsx', import.meta.url), 'utf8');
-    expect(source).toContain('listNewsroomArticles');
+    expect(source).toContain("listPortfolioRecords('en')");
     expect(source).not.toContain('buildNewsWorkspaceModel');
     expect(source).not.toContain('naver-news.server');
   });

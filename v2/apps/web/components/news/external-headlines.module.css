@@ -4,9 +4,13 @@
 .section p { color: var(--muted); font-size: 14px; line-height: 1.6; }
 .section ol { list-style: none; padding: 0; margin: 0; }
 .section li { min-width: 0; padding: 20px 0; border-top: 1px solid var(--line); }
-.section li > div { display: flex; justify-content: space-between; gap: 16px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+.section li > div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; color: var(--muted); font-size: 13px; line-height: 1.5; }
 .section time { white-space: nowrap; }
-.section h3 { margin: 8px 0 0; font-size: 17px; line-height: 1.5; font-weight: 600; overflow-wrap: anywhere; }
+.section h3 { margin: 10px 0 0; max-width: 48ch; font-size: 21px; line-height: 1.4; font-weight: 600; overflow-wrap: break-word; }
+.section .summary { margin-top: 12px; max-width: 72ch; font-size: 16px; line-height: 1.7; }
+.section .meaning { margin-top: 12px; max-width: 72ch; font-size: 14px; line-height: 1.7; }
+.meaning strong { color: var(--ink); font-weight: 600; }
+.section .original { display: inline-flex; align-items: center; min-height: 44px; color: var(--accent); font-size: 14px; text-decoration: none; }
 .section h3 a { color: inherit; text-decoration: none; }
 .section h3 a:hover { text-decoration: underline; text-underline-offset: 4px; }
 .section button, .section > header > a { min-height: 44px; display: inline-flex; align-items: center; background: transparent; border: 0; padding: 4px 0; color: var(--accent); font-size: 14px; cursor: pointer; white-space: nowrap; }

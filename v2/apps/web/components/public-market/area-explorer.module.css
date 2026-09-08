@@ -2128,7 +2128,7 @@
 }
 
 .buildingRowPrice strong {
-  color: #15221f;
+  color: var(--ink);
   font-size: 1.25rem;
   font-weight: 650;
   line-height: 1.25;
@@ -2166,7 +2166,7 @@
   padding: 7px 8px;
   border: 1px solid #dfe3e7;
   border-radius: 8px;
-  color: #245746;
+  color: var(--accent);
   background: #fff;
   font: inherit;
   font-size: 12px;
@@ -2174,7 +2174,7 @@
   cursor: pointer;
 }
 
-.buildingCardLink:hover .buildingCardCopy > strong { color: #245746; }
+.buildingCardLink:hover .buildingCardCopy > strong { color: var(--accent); }
 .buildingCardLink:focus-visible,
 .buildingPreviewButton:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 

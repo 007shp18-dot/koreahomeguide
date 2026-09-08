@@ -28,7 +28,7 @@ test('News & Insights opens the unified hub and preserves the filter journey', a
   await expect(types.getByRole('link', { name: 'Insights', exact: true })).toHaveAttribute('aria-current', 'page');
   await types.getByRole('link', { name: 'News', exact: true }).click();
   await expect(page).toHaveURL(/\/news\/\?type=news$/);
-  await expect(page.getByRole('heading', { level: 2, name: 'External headlines', exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2, name: 'Latest news', exact: true })).toBeVisible();
   await expectNoHorizontalOverflow(page);
 });
 
@@ -38,7 +38,7 @@ test('Newsroom filters reviewed SignedPrice records and opens the policy lifecyc
   await expect(page).toHaveTitle(/Property news, policy and market insights/);
   await expect(page.getByRole('heading', { level: 1, name: 'News & Insights', exact: true })).toBeVisible();
   await expect(page.getByRole('navigation', { name: 'News and insight types' }).getByRole('link')).toHaveCount(3);
-  await expect(page.getByRole('navigation', { name: 'News markets' }).getByRole('link')).toHaveText(['All', 'Seoul', 'Singapore', 'Dubai']);
+  await expect(page.getByRole('navigation', { name: 'News markets' }).getByRole('link')).toHaveText(['All', 'Seoul', 'Singapore', 'Dubai', 'Tokyo']);
   await expect(page.locator('[data-newsroom-lead]')).toHaveCount(1);
   await expect(page.locator('body')).not.toContainText(/provider|credential|ingestion|Naver News API/i);
 
@@ -132,9 +132,10 @@ test('external headlines survive market filtering and open the original publishe
   } satisfies NewsWorkspaceModel;
   await page.route('**/api/news/', (route) => route.fulfill({ json: reviewedHeadlines }));
   await page.goto('/news/');
-  await expect(page.getByRole('heading', { name: 'External headlines', exact: true })).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'Latest news', exact: true })).toBeVisible();
   await page.getByRole('navigation', { name: 'News and insight types' }).getByRole('link', { name: 'News', exact: true }).click();
   await expect(page).toHaveURL(/type=news/);
+  await page.getByRole('button', { name: 'Refresh', exact: true }).click();
   await expect(page.getByRole('link', { name: 'Singapore housing release' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Seoul housing update' })).toBeVisible();
   await page.getByRole('navigation', { name: 'News markets' }).getByRole('link', { name: 'Singapore', exact: true }).click();
@@ -166,5 +167,25 @@ test('News & Insights and Guides keep the same global header and the guide highl
   navigation = await openPrimaryNavigation(page);
   await expect(navigation.getByRole('link', { name: 'Guides', exact: true })).toHaveAttribute('aria-current', 'page');
   await expect(page.getByRole('navigation', { name: 'In this article', exact: true })).toBeVisible();
+  await expectNoHorizontalOverflow(page);
+});
+
+test('Tokyo city journey opens its own article, chapters and Korean translation', async ({ page }) => {
+  await page.goto('/news/?market=tokyo');
+  const lead = page.locator('[data-newsroom-lead]');
+  await expect(lead).toContainText('A Tokyo home starts with a station');
+  await page.getByRole('tab', { name: /Where\?/ }).click();
+  await expect(page.getByRole('tabpanel')).toContainText('Narrow the city');
+  await page.getByRole('tabpanel').getByRole('link', { name: /Read this chapter/ }).click();
+  await expect(page).toHaveURL(/\/news\/city-stories\/tokyo\/#where$/);
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('A Tokyo home starts');
+  await expect(page.locator('main img')).toHaveJSProperty('naturalWidth', expect.any(Number));
+  await expectNoHorizontalOverflow(page);
+  await page.goto('/ko/news/city-stories/seoul/');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('성수가 좋아서, 서울의 집을 찾기 시작했다면');
+  await expect(page.locator('main img').first()).toBeVisible();
+  await expect(page.locator('main')).not.toContainText('직접 방문해 작성한 취재기는 아닙니다');
+  await page.getByRole('link', { name: /Explore에서 지역과 가격 비교하기/ }).click();
+  await expect(page).toHaveURL(/\/ko\/kr\/seoul\/explore\/$/);
   await expectNoHorizontalOverflow(page);
 });

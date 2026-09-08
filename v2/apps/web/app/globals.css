@@ -4,25 +4,28 @@
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
+  /* Archivo's open ampersand is easy to misread. Use the standard fallback
+     glyph for U+0026 while keeping the established typeface elsewhere. */
+  unicode-range: U+0000-0025, U+0027-10FFFF;
 }
 
 :root {
-  --canvas: #f7f9f8;
-  --surface: #eef3f0;
+  --canvas: #f5f8fc;
+  --surface: #edf3f9;
   --surface-strong: #ffffff;
-  --ink: #192b25;
-  --petrol: #245746;
-  --muted: #617169;
+  --ink: #111827;
+  --petrol: #16243a;
+  --muted: #5f6d84;
   --subtle: #8b97a9;
   --divider: #cbd5e1;
   --line: #e2e8f0;
-  --brand-orange: #245746;
-  --accent: #245746;
-  --accent-soft: #eaf2ed;
-  --focus-ring: #245746;
+  --brand-orange: #2563d8;
+  --accent: #2563d8;
+  --accent-soft: #eaf2ff;
+  --focus-ring: #2563d8;
   --saved: #c54152;
   --navy: #0f1e38;
-  --soft-blue: #eaf2ed;
+  --soft-blue: #eef5ff;
   --shadow-sm: 0 2px 8px rgb(15 30 56 / 5%);
   --shadow-md: 0 14px 38px rgb(15 30 56 / 9%);
   --line-strong: var(--ink);
@@ -3793,7 +3796,7 @@ h1 {
 .site-header__mobile-menu { display: none; }
 .site-header {
   border-color: #e1e5e2;
-  color: #15221f;
+  color: var(--ink);
   background: rgb(255 255 255 / 98%);
   backdrop-filter: blur(10px);
 }
@@ -3816,7 +3819,7 @@ h1 {
 }
 .site-header__links { gap: 4px; }
 .site-header__product-link { min-height: 44px; padding-inline: 12px; position: relative; display: inline-flex; align-items: center; line-height: 1.25; }
-.site-header__product-link[aria-current='page'] { color: #245746; background: transparent; font-weight: 650; text-decoration: none; }
+.site-header__product-link[aria-current='page'] { color: var(--accent); background: transparent; font-weight: 650; text-decoration: none; }
 .site-header__product-link[aria-current='page']::after {
   content: none;
 }
@@ -3858,7 +3861,7 @@ h1 {
   text-decoration: none;
 }
 .site-header__context-panel a:hover,
-.site-header__context-panel a[aria-current='page'] { color: #245746; }
+.site-header__context-panel a[aria-current='page'] { color: var(--accent); }
 .site-header__context-panel a[aria-current='page'] { font-weight: 650; }
 .site-header__context-panel--language { width: 128px; }
 .site-header__context-panel .site-header__markets,
@@ -3883,15 +3886,15 @@ h1 {
 .site-header__context-panel .market-local-nav__link { padding-inline: 12px; border-bottom: 0; }
 .site-header__markets { gap: 0; padding: 0; }
 .site-header__market-link { min-height: 44px; padding-inline: 9px; border-radius: 0; }
-.site-header__market-link[aria-current='page'] { color: #245746; background: transparent; font-weight: 650; text-decoration: none; }
+.site-header__market-link[aria-current='page'] { color: var(--accent); background: transparent; font-weight: 650; text-decoration: none; }
 .market-local-nav__link { padding-inline: 12px; color: #59645f; font-size: 13px; font-weight: 560; }
-.market-local-nav__link[aria-current='page'] { border-bottom-color: #245746; color: #245746; font-weight: 650; }
+.market-local-nav__link[aria-current='page'] { border-bottom-color: var(--accent); color: var(--accent); font-weight: 650; }
 .site-header__action { min-height: 44px; display: inline-flex; align-items: center; padding-inline: 6px; white-space: nowrap; text-decoration: none; }
-.site-header__action:hover { color: #245746; }
+.site-header__action:hover { color: var(--accent); }
 .site-header__action--saved::before { content: '♡'; margin-right: 7px; font-size: 17px; }
-.site-header__action--offer { padding-inline: 14px; border: 1px solid #ccd4cf; border-radius: 0; color: #15221f; }
-.site-header__action--offer::after { content: '↗'; margin-left: 12px; color: #245746; }
-.site-header__action--offer:hover { border-color: #245746; }
+.site-header__action--offer { padding-inline: 14px; border: 1px solid #ccd4cf; border-radius: 0; color: var(--ink); }
+.site-header__action--offer::after { content: '↗'; margin-left: 12px; color: var(--accent); }
+.site-header__action--offer:hover { border-color: var(--accent); }
 @media (max-width: 1240px) and (min-width: 1101px) {
   .site-header__inner { gap: 12px; }
   .site-header__product-link { padding-inline: 8px; }
@@ -3904,7 +3907,7 @@ h1 {
   .site-header__inner > .site-header__product-nav,
   .site-header__inner > .site-header__actions { display: none; }
   .site-header__mobile-menu { display: block; flex: 0 0 auto; width: max-content; max-width: 100%; }
-  .site-header__mobile-menu summary { color: #15221f; font-size: 14px; }
+  .site-header__mobile-menu summary { color: var(--ink); font-size: 14px; }
   .site-header__mobile-menu summary { display: flex; width: max-content; max-width: 100%; gap: 8px; align-items: center; min-height: 44px; padding: 8px 12px; cursor: pointer; list-style: none; }
   .site-header__mobile-menu summary::-webkit-details-marker { display: none; }
   .site-header__mobile-panel { padding: 10px 18px 18px; border-color: #e1e5e2; background: #fff; }
@@ -3912,8 +3915,8 @@ h1 {
   .site-header__mobile-menu:not([open]) > .site-header__mobile-panel { display: none; }
   .site-header__mobile-panel nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; padding: 8px 0; border-color: #e1e5e2; }
   .site-header__mobile-panel nav:first-child { grid-template-columns: 1fr; }
-  .site-header__mobile-panel a { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 12px; border-bottom: 1px solid #f0f2f0; color: #15221f; font-size: .875rem; text-decoration: none; }
-  .site-header__mobile-panel a[aria-current='page'] { color: #245746; font-weight: 650; }
+  .site-header__mobile-panel a { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 12px; border-bottom: 1px solid #f0f2f0; color: var(--ink); font-size: .875rem; text-decoration: none; }
+  .site-header__mobile-panel a[aria-current='page'] { color: var(--accent); font-weight: 650; }
   .site-header__mobile-panel .site-header__languages { display: flex; flex-wrap: nowrap; width: max-content; gap: 4px; }
   .site-header__mobile-panel .site-header__language { flex: 0 0 auto; min-width: 44px; padding-inline: 4px; white-space: nowrap; line-height: 1.25; }
 }

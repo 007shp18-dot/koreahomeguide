@@ -1,17 +1,11 @@
-import { unstable_cache } from 'next/cache';
-import { loadPersistedNewsItems } from '../../lib/news/news-persistence.server';
+import { loadPublicHeadlines } from '../../lib/news/public-headlines.server';
+import type { NewsWorkspaceMarket } from '../../lib/news/news-workspace-model';
 import { ExternalHeadlines } from './external-headlines';
 
-const storedHeadlines = unstable_cache(
-  () => loadPersistedNewsItems(1500), ['reviewed-external-headline-preview-v2'], { revalidate: 60 },
-);
-
-export async function StoredExternalHeadlines({ market, preview }: Readonly<{
-  market: 'all' | 'seoul' | 'singapore' | 'dubai'; preview: boolean;
+export async function StoredExternalHeadlines({ market, preview, locale = 'en' }: Readonly<{
+  market: NewsWorkspaceMarket; preview: boolean; locale?: 'en' | 'ko' | 'zh-CN';
 }>) {
-  const stored = await storedHeadlines();
-  const items = stored?.filter((item) => market === 'all' || item.market === market)
-    .slice(0, preview ? 4 : 24);
-  return <ExternalHeadlines market={market} preview={preview}
-    initialModel={items === undefined ? null : { items, naverState: 'ready' }} />;
+  const items = await loadPublicHeadlines();
+  return <ExternalHeadlines market={market} preview={preview} locale={locale}
+    initialModel={items === null ? null : { items, naverState: 'ready' }} />;
 }

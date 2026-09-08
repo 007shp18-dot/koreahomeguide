@@ -37,8 +37,8 @@ suite('reviewed external headline publication', () => {
     await db.exec(`
       INSERT INTO content_articles (slug, title, summary, body_markdown, market_id, editorial_status, evidence_state, reviewed_at, reviewed_by, published_at)
       VALUES ('reviewed-release', 'Reviewed release', 'Summary', 'Body', 'sg-singapore', 'published', 'verified', now(), 'News editor', now() - interval '1 day');
-      INSERT INTO content_sources (id, source_kind, publisher, title, canonical_url, checked_at)
-      VALUES ('release', 'primary', 'URA', 'Housing release', 'https://www.ura.gov.sg/release', now());
+      INSERT INTO content_sources (id, source_kind, publisher, title, canonical_url, checked_at, published_at)
+      VALUES ('release', 'primary', 'URA', 'Housing release', 'https://www.ura.gov.sg/release', now(), now() - interval '2 days');
       INSERT INTO content_source_links (content_slug, source_id) VALUES ('reviewed-release', 'release');
       INSERT INTO external_news_items (market_id, canonical_url, title_hash, title, summary, publisher, source_kind, source_published_at, review_state, linked_content_slug)
       VALUES ('sg-singapore', 'https://www.ura.gov.sg/release', repeat('a', 64), 'Singapore housing release', 'Summary', 'URA', 'google-news-rss', now() - interval '2 days', 'linked', 'reviewed-release');
@@ -108,6 +108,10 @@ suite('reviewed external headline publication', () => {
     ['missing reviewer', 'UPDATE content_articles SET reviewed_by = NULL'],
     ['blank reviewer', "UPDATE content_articles SET reviewed_by = '  '"],
     ['withdrawn evidence', "UPDATE content_articles SET evidence_state = 'withdrawn'"],
+    ['undated original', 'UPDATE content_sources SET published_at = NULL'],
+    ['future original', "UPDATE content_sources SET published_at = now() + interval '1 day'"],
+    ['future source check', "UPDATE content_sources SET checked_at = now() + interval '1 day'"],
+    ['future review', "UPDATE content_articles SET reviewed_at = now() + interval '1 day'"],
     ['future publication', "UPDATE content_articles SET published_at = now() + interval '1 day'"],
     ['unreviewed source URL', "UPDATE content_sources SET canonical_url = 'https://www.ura.gov.sg/another-release'"],
     ['missing primary evidence', "UPDATE content_sources SET source_kind = 'secondary'"],

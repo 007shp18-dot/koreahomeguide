@@ -5,10 +5,15 @@ import { ResearchPageHeading } from '../market-ui/research-page-heading';
 import type { PublishedContentArticle } from '../../lib/content/content-types';
 import type { PolicyRecord } from '../../lib/policy/policy-types';
 import { ExternalHeadlines } from '../news/external-headlines';
-import styles from './newsroom.module.css';
+import { CITY_STORIES, cityStoryHref, type StoryLocale } from '../../content/city-stories';
+import { LOCAL_CONVERSATIONS } from '../../content/local-conversations';
+import { CityStoryPhoto } from './city-story-photo';
+import { storyLinkHref } from './city-story-article';
+import { JourneySteps } from './journey-steps';
+import styles from './newsroom-journey.module.css';
 
 export type NewsroomTypeFilter = 'insights' | 'news' | 'policy' | 'market' | 'data-stories';
-export type NewsroomMarketFilter = 'all' | 'seoul' | 'singapore' | 'dubai';
+export type NewsroomMarketFilter = 'all' | 'seoul' | 'singapore' | 'dubai' | 'tokyo';
 export type NewsroomFilters = Readonly<{
   type: NewsroomTypeFilter;
   market: NewsroomMarketFilter;
@@ -25,7 +30,7 @@ export function resolveNewsroomFilters(input: SearchParams): NewsroomFilters {
       ? requestedType as NewsroomTypeFilter
       : 'insights';
   const market = typeof input.market === 'string'
-    && ['all', 'seoul', 'singapore', 'dubai'].includes(input.market)
+    && ['all', 'seoul', 'singapore', 'dubai', 'tokyo'].includes(input.market)
     ? input.market as NewsroomMarketFilter
     : 'all';
   const query = new URLSearchParams();
@@ -38,110 +43,60 @@ export function resolveNewsroomFilters(input: SearchParams): NewsroomFilters {
   });
 }
 
-type NewsroomListItem = Readonly<{
-  id: string;
-  type: 'Policy' | 'Market' | 'Data Story' | 'News';
-  market: 'Seoul' | 'Singapore' | 'Dubai' | 'Global';
-  marketKey: NewsroomMarketFilter;
-  title: string;
-  deck: string;
-  date: string;
-  href: string;
-}>;
+type StoryItem = { id: string; title: string; deck: string; href: string; date: string; type: string };
 
-function articleItem(article: PublishedContentArticle): NewsroomListItem {
-  return Object.freeze({
-    id: article.id,
-    type: article.type === 'market-brief' ? 'Market'
-      : article.type === 'data-story' ? 'Data Story'
-        : article.type === 'policy-update' ? 'Policy' : 'News',
-    market: article.marketId === 'kr-seoul' ? 'Seoul'
-      : article.marketId === 'sg-singapore' ? 'Singapore' : article.marketId === 'ae-dubai' ? 'Dubai' : 'Global',
-    marketKey: article.marketId === 'kr-seoul' ? 'seoul'
-      : article.marketId === 'sg-singapore' ? 'singapore' : article.marketId === 'ae-dubai' ? 'dubai' : 'all',
-    title: article.title,
-    deck: article.deck,
-    date: article.publishedAt,
-    href: article.type === 'policy-update'
-      ? `/news/policy/${article.slug}/` : `/news/${article.slug}/`,
-  });
+function ArticleRows({ items }: Readonly<{ items: readonly StoryItem[] }>) {
+  return <ol className={styles.rows} data-newsroom-latest-list="rows">{items.map(item => <li key={item.id}>
+    <time dateTime={item.date}>{item.date.slice(0, 10)}</time><div><h3><Link href={item.href} data-editorial-event="article_open">{item.title}</Link></h3><p>{item.deck}</p></div>
+  </li>)}</ol>;
 }
 
-function policyItem(policy: PolicyRecord): NewsroomListItem {
-  return Object.freeze({
-    id: policy.id,
-    type: 'Policy',
-    market: policy.marketId === 'kr-seoul' ? 'Seoul' : 'Singapore',
-    marketKey: policy.marketId === 'kr-seoul' ? 'seoul' : 'singapore',
-    title: policy.title,
-    deck: policy.summary,
-    date: `${policy.lastCheckedOn}T00:00:00.000Z`,
-    href: `/news/policy/${policy.slug}/`,
-  });
-}
-
-function filterHref(type: NewsroomTypeFilter, market: NewsroomMarketFilter): string {
-  return resolveNewsroomFilters({ type, market }).canonicalHref;
-}
-
-export function NewsroomIndex({ articles, policies, filters, headlines }: Readonly<{
-  articles: readonly PublishedContentArticle[];
-  policies: readonly PolicyRecord[];
-  filters: NewsroomFilters;
-  headlines?: ReactNode;
+export function NewsroomIndex({ articles, policies, filters, headlines, locale = 'en' }: Readonly<{
+  articles: readonly PublishedContentArticle[]; policies: readonly PolicyRecord[];
+  filters: NewsroomFilters; headlines?: ReactNode; locale?: StoryLocale;
 }>) {
-  const uniqueItems = new Map([...articles.filter(({ type }) => type !== 'guide').map(articleItem), ...policies.map(policyItem)]
-    .map((item) => [item.href, item] as const));
-  const items = [...uniqueItems.values()]
-    .filter((item) => (
-      (filters.market === 'all' || item.marketKey === filters.market)
-      && (filters.type === 'insights' && (item.type === 'Market' || item.type === 'Data Story')
-        || (filters.type === 'news' && item.type === 'News')
-        || (filters.type === 'policy' && item.type === 'Policy')
-        || (filters.type === 'market' && item.type === 'Market')
-        || (filters.type === 'data-stories' && item.type === 'Data Story'))
-    ))
-    .sort((left, right) => right.date.localeCompare(left.date));
-  const lead = items[0] ?? null;
-  const latest = items.slice(1);
-  const category = (item:NewsroomListItem) => /monthly-2026/.test(item.href) ? 'Monthly market updates' : /under-|rental-yield/.test(item.href) ? 'Homes within budget and ownership costs' : 'Price and rental comparisons';
+  const ko = locale === 'ko';
+  const base = ko ? '/ko/news/' : '/news/';
+  const href = (type: NewsroomTypeFilter, market = filters.market) => `${ko ? '/ko' : ''}${resolveNewsroomFilters({ type, market }).canonicalHref}`;
   const analysis = ['insights', 'market', 'data-stories'].includes(filters.type);
-  const groups = analysis ? ['Monthly market updates','Homes within budget and ownership costs','Price and rental comparisons'].map(label=>({label,items:latest.filter(item=>category(item)===label)})).filter(group=>group.items.length>0) : [{label:'More articles',items:latest}];
-  const typeTabs = [['insights', 'Insights'], ['news', 'News'], ['policy', 'Policy']] as const;
-  const insightTabs = [['insights', 'All insights'], ['market', 'Market Insight'], ['data-stories', 'Data Stories']] as const;
-  const marketTabs = [['all', 'All'], ['seoul', 'Seoul'], ['singapore', 'Singapore'], ['dubai', 'Dubai']] as const;
-
-  return <main className={styles.index} data-newsroom-layout="research">
-    <ResearchPageHeading title="News & Insights" description="Official property updates, policy changes, market interpretation and transaction-led research across Seoul, Singapore and Dubai." actions={<Link href="/news/policy/">Open the Policy Tracker</Link>} />
+  const fullJourney = filters.type === 'insights';
+  const story = CITY_STORIES.find(item => item.city === filters.market) ?? CITY_STORIES[0];
+  const markets = [['all', ko ? '모든 도시' : 'All'], ...CITY_STORIES.map(item => [item.city, item.name[locale]] as const)] as readonly (readonly [NewsroomMarketFilter, string])[];
+  const marketId = { all: null, seoul: 'kr-seoul', singapore: 'sg-singapore', dubai: 'ae-dubai', tokyo: 'jp-tokyo' }[filters.market];
+  const items: StoryItem[] = articles.filter(item => !marketId || item.marketId === marketId).map(item => ({ id: item.id, title: item.title, deck: item.deck, date: item.publishedAt, type: item.type,
+    href: 'canonicalHref' in item ? String(item.canonicalHref) : `${base}${item.type === 'policy-update' ? 'policy/' : ''}${item.slug}/`,
+  }));
+  if (!ko && filters.type === 'policy') for (const policy of policies) {
+    const policyHref = `/news/policy/${policy.slug}/`;
+    if ((!marketId || policy.marketId === marketId) && !items.some(item => item.href === policyHref)) items.push({ id: policy.id, title: policy.title, deck: policy.summary, href: policyHref, date: policy.lastCheckedOn, type: 'policy-update' });
+  }
+  items.sort((a, b) => b.date.localeCompare(a.date));
+  const comparisons = items.filter(item => item.type === 'data-story').slice(0, 3);
+  const updates = items.filter(item => item.type === 'market-brief').slice(0, 3);
+  const filtered = items.filter(item => filters.type === 'insights' ? true : filters.type === 'news' ? item.type === 'news-brief' : filters.type === 'policy' ? item.type === 'policy-update' : filters.type === 'market' ? item.type === 'market-brief' : item.type === 'data-story');
+  const conversations = filters.market === 'all' ? CITY_STORIES.map(city => LOCAL_CONVERSATIONS.find(item => item.city === city.city)!) : LOCAL_CONVERSATIONS.filter(item => item.city === filters.market);
+  return <main className={styles.index} data-newsroom-layout="research" lang={locale}>
+    <ResearchPageHeading title={ko ? '뉴스 & 인사이트' : 'News & Insights'} description={ko ? '마음이 가는 도시에서 나에게 맞는 집까지. 동네의 이야기와 가격, 구매의 다음 단계를 함께 읽어보세요.' : 'Find a city you connect with, a neighbourhood that fits, and a clearer path to a home of your own.'} actions={<Link href="/news/policy/">{ko ? '정책 변경 확인' : 'Open the Policy Tracker'}</Link>} />
     <div className={styles.filterBar} data-newsroom-filter-bar="true">
-      <nav className={styles.typeTabs} aria-label="News and insight types">
-        {typeTabs.map(([id, label]) => <Link key={id} href={filterHref(id, filters.market)} aria-current={id === 'insights' ? analysis ? 'page' : undefined : filters.type === id ? 'page' : undefined}>{label}</Link>)}
-      </nav>
-      <nav className={styles.marketFilters} aria-label="News markets">
-        {marketTabs.map(([id, label]) => <Link key={id} href={filterHref(filters.type, id)} aria-current={filters.market === id ? 'page' : undefined}>{label}</Link>)}
-      </nav>
+      <nav className={styles.tabs} aria-label={ko ? '뉴스와 인사이트 유형' : 'News and insight types'}>{([['insights', ko ? '인사이트' : 'Insights'], ['news', ko ? '뉴스' : 'News'], ['policy', ko ? '정책' : 'Policy']] as const).map(([id, label]) => <Link key={id} href={href(id)} aria-current={(id === 'insights' ? analysis : filters.type === id) ? 'page' : undefined}>{label}</Link>)}</nav>
+      <nav className={styles.tabs} aria-label={ko ? '기사 도시' : 'News markets'}>{markets.map(([id, label]) => <Link key={id} href={href(filters.type, id)} aria-current={filters.market === id ? 'page' : undefined}>{label}</Link>)}</nav>
     </div>
-    {analysis ? <nav className={styles.insightTabs} aria-label="Insight types">
-      {insightTabs.map(([id, label]) => <Link key={id} href={filterHref(id, filters.market)} aria-current={filters.type === id ? 'page' : undefined}>{label}</Link>)}
-    </nav> : null}
-    {filters.type === 'news' ? headlines ?? <ExternalHeadlines market={filters.market} preview={false} /> : null}
-    {filters.type === 'news' && lead === null ? null : lead === null ? <section className={styles.empty} data-newsroom-state="empty"><h2>No articles match these filters yet.</h2><Link href="/news/">Return to Insights</Link></section> : <>
-      <article className={styles.leadStory} data-newsroom-lead={lead.type}>
-        <div><span>{lead.type} · {lead.market}</span><time dateTime={lead.date}>{lead.date.slice(0, 10)}</time></div>
-        <h2><Link href={lead.href} data-editorial-event="article_open">{lead.title}</Link></h2>
-        <p>{lead.deck}</p>
-        <Link href={lead.href} data-editorial-event="article_open">Read article</Link>
-      </article>
-      {latest.length > 0 ? <section className={styles.latest} aria-labelledby="latest-reviewed-title">
-        <div className={styles.sectionHeading}><p>Latest articles</p><h2 id="latest-reviewed-title">{analysis ? 'More analysis' : 'More articles'}</h2></div>
-        {groups.map(group=><section key={group.label} aria-label={group.label}>{analysis && <h3>{group.label}</h3>}<ol data-newsroom-latest-list="rows">
-          {group.items.map((item) => <li key={`${item.type}:${item.id}`}>
-            <div><span>{item.type} · {item.market}</span><time dateTime={item.date}>{item.date.slice(0, 10)}</time></div>
-            <h3><Link href={item.href} data-editorial-event="article_open">{item.title}</Link></h3>
-            <p>{item.deck}</p>
-          </li>)}
-        </ol></section>)}
-      </section> : null}
+    {fullJourney && <>
+      <section className={styles.hero} aria-label={ko ? '대표 이야기' : 'Featured stories'}>
+        <article data-newsroom-lead="City Story"><CityStoryPhoto city={story.city} locale={locale} eager /><p className={styles.eyebrow}>{story.name[locale]} · City Stories</p><h2><Link href={cityStoryHref(story.city, locale)}>{story.title[locale]}</Link></h2><p>{story.deck[locale]}</p><Link className={styles.readLink} href={cityStoryHref(story.city, locale)}>{ko ? '도시 이야기 읽기' : 'Read the city story'} ↗</Link></article>
+        <aside className={styles.related}>{(filters.market === 'all' ? CITY_STORIES.filter(item => item.city !== story.city).slice(0, 2).map(item => ({ title: item.title[locale], deck: item.deck[locale], href: cityStoryHref(item.city, locale), label: item.name[locale] })) : [story.sections[2], story.sections[3]].map(section => ({ title: section.title[locale], deck: section.paragraphs[locale][0], href: `${cityStoryHref(story.city, locale)}#${section.id}`, label: story.name[locale] }))).map(item => <article key={item.href}><p className={styles.eyebrow}>{item.label}</p><h3><Link href={item.href}>{item.title}</Link></h3><p>{item.deck}</p><Link className={styles.readLink} href={item.href}>{ko ? '이어서 읽기' : 'Continue reading'} ↗</Link></article>)}</aside>
+      </section>
+      <section className={styles.section} id="city-journey"><div className={styles.sectionHeading}><div><p className={styles.eyebrow}>{story.name[locale]}</p><h2>{ko ? '마음이 가는 도시, 내 집이 되기까지' : 'Your path to owning here'}</h2></div></div><JourneySteps key={story.city} story={story} locale={locale} /></section>
+      <section className={styles.section} id="find-your-place"><div className={styles.sectionHeading}><h2>{ko ? '나에게 맞는 동네와 집' : 'Find your place'}</h2><Link href={storyLinkHref(story.sections[3].links[0]?.href ?? cityStoryHref(story.city, locale), locale)}>{ko ? '동네 둘러보기' : 'Explore neighbourhoods'} ↗</Link></div>{comparisons.length ? <ArticleRows items={comparisons} /> : <div className={styles.simpleStory}><h3><Link href={`${cityStoryHref(story.city, locale)}#where`}>{story.sections[3].title[locale]}</Link></h3><p>{story.sections[3].paragraphs[locale][0]}</p></div>}</section>
+      <section className={styles.section} id="local-conversation"><div className={styles.sectionHeading}><div><p className={styles.eyebrow}>{ko ? '현지의 질문을 더 깊이 읽기' : 'Questions people are asking locally'}</p><h2>{ko ? '현지에서 이야기하는 것들' : 'The local conversation'}</h2></div></div><div className={styles.issues}>{conversations.map((item, index) => <details key={item.url} open={index === 0} className={styles.issue}><summary><span>{CITY_STORIES.find(city => city.city === item.city)!.name[locale]}</span><h3>{item.title[locale]}</h3></summary><div><p>{item.point[locale]}</p><p><strong>{ko ? '내 집을 찾는다면' : 'For your home search'}</strong> · {item.check[locale]}</p><a href={item.url} target="_blank" rel="noopener noreferrer">{ko ? 'Reddit 원문 토론' : 'Read the Reddit discussion'} ↗</a>{filters.market === 'all' && <Link href={`${href('insights', item.city)}#local-conversation`}>{ko ? '이 도시의 이슈 5개 보기' : 'All five issues in this city'} ↗</Link>}</div></details>)}</div></section>
+      {updates.length > 0 && <section className={styles.section} id="market-updates"><div className={styles.sectionHeading}><h2>{ko ? '시장을 읽는 데이터' : 'Market updates'}</h2><Link href={href('market')}>{ko ? '시장 분석 전체' : 'All market analysis'} ↗</Link></div><ArticleRows items={updates} /></section>}
     </>}
+    {(fullJourney || filters.type === 'news') && <div className={styles.section}>{headlines ?? <ExternalHeadlines market={filters.market} preview={fullJourney} locale={locale} />}</div>}
+    <section className={styles.section} id="all-stories"><div className={styles.sectionHeading}><h2>{ko ? filters.type === 'policy' ? '정책 소식' : '전체 콘텐츠' : filters.type === 'policy' ? 'Policy updates' : 'All stories'}</h2></div>
+      {analysis && <nav className={styles.tabs} aria-label={ko ? '인사이트 유형' : 'Insight types'}>{([['insights', ko ? '전체 인사이트' : 'All insights'], ['market', ko ? '시장 분석' : 'Market Insight'], ['data-stories', ko ? '데이터 스토리' : 'Data Stories']] as const).map(([id, label]) => <Link key={id} href={href(id)} aria-current={filters.type === id ? 'page' : undefined}>{label}</Link>)}</nav>}
+      {fullJourney && <div className={styles.cityLinks}>{CITY_STORIES.filter(item => filters.market === 'all' || item.city === filters.market).map(item => <article key={item.city}><p className={styles.eyebrow}>{item.name[locale]} · City Stories</p><h3><Link href={cityStoryHref(item.city, locale)}>{item.title[locale]}</Link></h3></article>)}</div>}
+      <ArticleRows items={filtered.slice(0, 8)} />{filtered.length > 8 && <details className={styles.more}><summary>{ko ? `이전 글 ${filtered.length - 8}편 더 보기` : `Browse ${filtered.length - 8} more stories`}</summary><ArticleRows items={filtered.slice(8)} /></details>}
+      {!filtered.length && !fullJourney && filters.type !== 'news' && <p>{ko ? '이 도시의 구매 이야기를 먼저 살펴보세요.' : 'Start with the city story and its buying chapters.'} <Link href={cityStoryHref(story.city, locale)}>{story.name[locale]} ↗</Link></p>}
+    </section>
   </main>;
 }

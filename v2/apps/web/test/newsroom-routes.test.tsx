@@ -90,7 +90,7 @@ describe('public Newsroom routes', () => {
     expect(html).not.toContain(policy.title);
   });
 
-  it('renders three hub tabs, four market filters, one lead, and a row list without desk diagnostics', () => {
+  it('renders three hub tabs, five market filters, one lead, and a row list without desk diagnostics', () => {
     const html = renderToStaticMarkup(<NewsroomIndex
       articles={[article, { ...article, id: 'story-2', slug: 'second-story', title: 'Second story' }]}
       policies={[policy]}
@@ -100,14 +100,13 @@ describe('public Newsroom routes', () => {
     for (const label of ['Insights', 'News', 'Policy']) expect(html).toContain(`>${label}</a>`);
     expect(html.match(/aria-label="News and insight types"[\s\S]*?<\/nav>/)?.[0].match(/<a /g)).toHaveLength(3);
     for (const label of ['All insights', 'Market Insight', 'Data Stories']) expect(html).toContain(`>${label}</a>`);
-    for (const label of ['All', 'Seoul', 'Singapore', 'Dubai']) expect(html).toContain(`>${label}</a>`);
+    for (const label of ['All', 'Seoul', 'Singapore', 'Dubai', 'Tokyo']) expect(html).toContain(`>${label}</a>`);
     expect(html).toContain('data-newsroom-layout="research"');
     expect(html).toContain('data-newsroom-filter-bar="true"');
     expect(html).toContain('<h1>News &amp; Insights</h1>');
     expect(html.match(/aria-label="News and insight types"/g)).toHaveLength(1);
     expect(html).not.toContain('SignedPrice Newsroom');
     expect(html).not.toContain('Property change, checked against evidence.');
-    expect(html).not.toContain('→');
     expect(html.match(/data-newsroom-lead=/g)).toHaveLength(1);
     expect(html).toContain('data-newsroom-latest-list="rows"');
     expect(html).not.toMatch(/provider|credential|ingestion|500 headlines|Naver News API/i);
