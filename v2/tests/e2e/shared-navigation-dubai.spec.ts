@@ -71,7 +71,7 @@ for (const width of [320, 390, 430]) {
       for (const path of ['/', '/ko/passport/', '/zh-cn/passport/']) {
         await page.goto(path);
         const header = page.locator('header.site-header:visible');
-        await header.locator('summary').click();
+        await header.locator('details.site-header__mobile-menu > summary').click();
         const languages = header.getByRole('navigation', { name: 'Language navigation', exact: true });
         await expect(languages.getByRole('link')).toHaveText(['EN', 'KO', '中文']);
         const boxes = await languages.getByRole('link').evaluateAll(nodes => nodes.map(node => {
