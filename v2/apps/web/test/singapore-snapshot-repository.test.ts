@@ -99,6 +99,10 @@ describe('Singapore snapshot repository', () => {
       transactions: source.records.length,
       digest: source.digest,
     });
+    const project = source.projects.find(project => project.published)!;
+    expect(repository.getProject(project.marketSegment, project.id)).toBe(project);
+    expect(repository.listProjectRecords(project.marketSegment, project.id)[0])
+      .toBe(source.records.find(record => record.projectId === project.id));
   });
 
   it.each([

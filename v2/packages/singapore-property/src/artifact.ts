@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { canonicalDigest } from './canonical-digest.ts';
 
 import { SINGAPORE_MARKET_SEGMENTS, type SingaporeMarketSegment } from './browser.ts';
 import {
@@ -262,14 +263,14 @@ function snapshotObject(value: unknown): Record<string, unknown> {
   return value as Record<string, unknown>;
 }
 
-export function parseSingaporeSnapshot(payload: string): SingaporeSnapshot {
+export function parseSingaporeSnapshot(payload: unknown): SingaporeSnapshot {
   let value: unknown;
-  try { value = JSON.parse(payload); } catch { throw new Error('Singapore snapshot is invalid.'); }
+  try { value = typeof payload === 'string' ? JSON.parse(payload) : payload; } catch { throw new Error('Singapore snapshot is invalid.'); }
   const object = snapshotObject(value);
   const digest = object.digest;
   if (typeof digest !== 'string') throw new Error('Singapore snapshot is invalid.');
   const { digest: _digest, ...unsigned } = object;
-  const expected = createHash('sha256').update(canonicalJson(unsigned)).digest('hex');
+  const expected = canonicalDigest(unsigned);
   if (digest !== expected) throw new Error('Singapore snapshot digest is invalid.');
   if (object.version !== SINGAPORE_SNAPSHOT_VERSION
     || !Array.isArray(object.records)

@@ -1,4 +1,4 @@
-import { createHash } from 'node:crypto';
+import { canonicalDigest } from './canonical-digest.ts';
 
 import type {
   SingaporeProjectSummary,
@@ -27,15 +27,6 @@ export type SingaporePublicIndex = Readonly<{
   evidenceReleaseByScope: Readonly<Record<string, PublicEvidenceReleaseRef>>;
   digest: string;
 }>;
-
-function canonicalJson(value: unknown): string {
-  if (value === null || typeof value !== 'object') return JSON.stringify(value);
-  if (Array.isArray(value)) return `[${value.map(canonicalJson).join(',')}]`;
-  const object = value as Record<string, unknown>;
-  return `{${Object.keys(object).sort().map((key) => (
-    `${JSON.stringify(key)}:${canonicalJson(object[key])}`
-  )).join(',')}}`;
-}
 
 function deepFreeze<T>(value: T): T {
   if (typeof value !== 'object' || value === null || Object.isFrozen(value)) return value;
@@ -80,7 +71,7 @@ export function buildSingaporePublicIndex(snapshot: SingaporeSnapshot): Singapor
   }
   const projectTransactionsByIdPeriod = Object.fromEntries(
     Object.entries(groupedRecords).sort(([left], [right]) => left.localeCompare(right, 'en'))
-      .map(([key, records]) => [key, Object.freeze([...records])]),
+      .map(([key, records]) => [key, Object.freeze(records)]),
   ) as Record<string, readonly SingaporeSnapshotRecord[]>;
 
   const period = `${snapshot.period.from}..${snapshot.period.to}`;
@@ -111,6 +102,6 @@ export function buildSingaporePublicIndex(snapshot: SingaporeSnapshot): Singapor
   } as const;
   return deepFreeze({
     ...unsigned,
-    digest: createHash('sha256').update(canonicalJson(unsigned)).digest('hex'),
+    digest: canonicalDigest(unsigned),
   });
 }

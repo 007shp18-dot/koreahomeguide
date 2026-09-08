@@ -51,6 +51,8 @@ jobs:
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test
+      - name: Check full installed snapshot memory and warm reuse
+        run: node --expose-gc --max-old-space-size=1536 --conditions=react-server --experimental-loader ./scripts/typescript-extension-loader.mjs --experimental-transform-types scripts/profile-snapshot-memory.mts --max-rss-mib=1536
       - name: Verify workbook QA mapping
         run: pnpm exec vitest run tests/public-p1-workbook-qa.test.ts
       - run: pnpm build

@@ -15,6 +15,7 @@ import {
 
 type CheckEvidenceSource = Readonly<{
   serialized?: string;
+  payload?: unknown;
   load?: () => Promise<string>;
   expectedDigest: string;
   expectedPeriod: string;
@@ -34,7 +35,7 @@ export type SingaporeCheckEvidenceRepositories = Readonly<{
 function validExpectation(source: CheckEvidenceSource): boolean {
   return /^[a-f0-9]{64}$/.test(source.expectedDigest)
     && /^20\d{2}-(0[1-9]|1[0-2])\/20\d{2}-(0[1-9]|1[0-2])$/.test(source.expectedPeriod)
-    && ((source.serialized === undefined) !== (source.load === undefined));
+    && [source.serialized, source.payload, source.load].filter(value => value !== undefined).length === 1;
 }
 
 export async function createSingaporeCheckEvidenceRepositories(
@@ -45,8 +46,8 @@ export async function createSingaporeCheckEvidenceRepositories(
     const source = sources[market];
     if (source === undefined || !validExpectation(source)) return;
     try {
-      const serialized = source.serialized ?? await source.load!();
-      const artifact = parseSingaporeCheckArtifact(serialized, market);
+      const payload = source.payload !== undefined ? source.payload : source.serialized ?? await source.load!();
+      const artifact = parseSingaporeCheckArtifact(payload, market);
       const period = `${artifact.period.from}/${artifact.period.to}`;
       if (artifact.digest !== source.expectedDigest || period !== source.expectedPeriod) return;
       installed.set(market, artifact);
@@ -110,7 +111,7 @@ function loadSingaporeCheckEvidenceRepositories(): Promise<
       })
     : null;
   const sources: SingaporeCheckEvidenceSources = Object.fromEntries(
-    SINGAPORE_CHECK_MARKETS.flatMap((market) => {
+    SINGAPORE_CHECK_MARKETS.flatMap<[SingaporeCheckMarket, CheckEvidenceSource]>((market) => {
       const names = ENVIRONMENT[market];
       const serialized = process.env[names.artifact];
       if (serialized !== undefined) return [[market, {
@@ -123,7 +124,7 @@ function loadSingaporeCheckEvidenceRepositories(): Promise<
         const installed = installedRepository.get('sg-singapore', DATASETS[market]);
         const payload = installed.payload as Readonly<{ digest?: unknown }>;
         return [[market, {
-          serialized: JSON.stringify(installed.payload),
+          payload: installed.payload,
           expectedDigest: typeof payload.digest === 'string' ? payload.digest : '',
           expectedPeriod: installed.metadata.period,
         }]];
