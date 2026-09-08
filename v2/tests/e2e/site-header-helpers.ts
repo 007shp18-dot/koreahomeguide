@@ -1,25 +1,26 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 
+async function openDetails(details: Locator) {
+  await expect(details).toHaveCount(1);
+  await expect(async () => {
+    if (await details.getAttribute('open') === null) {
+      await details.locator(':scope > summary').click();
+    }
+    expect(await details.getAttribute('open')).toBe('');
+  }).toPass();
+}
+
 async function openVisibleMobileMenu(page: Page): Promise<Locator | null> {
   const mobile = page.locator('.site-header__mobile-menu').filter({ visible: true });
   if (await mobile.count() === 0) return null;
 
-  await expect(mobile).toHaveCount(1);
-  // Boolean attributes are present as an empty string, not a truthy value.
-  if (await mobile.getAttribute('open') === null) {
-    await mobile.locator('summary').click();
-  }
-  await expect(mobile).toHaveAttribute('open', '');
+  await openDetails(mobile);
   return mobile;
 }
 
 async function openVisibleContextMenu(page: Page, className: string): Promise<Locator> {
   const menu = page.locator(`header.site-header .${className}`).filter({ visible: true });
-  await expect(menu).toHaveCount(1);
-  if (await menu.getAttribute('open') === null) {
-    await menu.locator('summary').click();
-  }
-  await expect(menu).toHaveAttribute('open', '');
+  await openDetails(menu);
   return menu;
 }
 
