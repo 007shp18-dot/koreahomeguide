@@ -16,7 +16,7 @@ export function SeoulOverview({ locale = 'en' }: { locale?: 'en' | 'ko' }) {
   const actions = [
     { label: ko ? '실거래가 탐색' : 'Explore reported prices', href: `${prefix}/kr/seoul/explore/`, description: ko ? '구 → 동 → 단지 탐색' : 'District → neighbourhood → building', external: false },
     { label: ko ? '매물 가격 비교' : 'Compare an asking price', href: `${prefix}/kr/seoul/check/`, description: ko ? '단지와 면적, 매물 가격을 입력해 실거래가와 비교하세요.' : 'Compare a building, size and asking price with reported contracts.', external: false },
-    { label: ko ? '서울 실거래 분석' : 'Seoul price analysis', href: `${prefix}/news/?market=seoul&type=analysis`, description: ko ? '실제 거래로 읽는 지역별 가격' : 'Read local price stories based on reported transactions.', external: false },
+    { label: ko ? '서울 실거래 분석' : 'Seoul price analysis', href: `${prefix}/news/?type=data-stories&market=seoul`, description: ko ? '실제 거래로 읽는 지역별 가격' : 'Read local price stories based on reported transactions.', external: false },
   ];
   const summaries = [
     ...(sale ? [{ label: ko ? '매매 계약' : 'Sale contracts', value: sale.stats.eligibleRecordCount.toLocaleString(), detail: sale.period.replace('/', '–') }] : []),

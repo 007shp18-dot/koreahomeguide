@@ -19,7 +19,7 @@ const header: SiteHeaderModel = {
   links: [{ label: 'Explore', href: '/kr/seoul/explore/', isCurrent: true }],
 };
 
-const globalLabels = ['Markets', 'Prices', 'Tools', 'Insights', 'Guides'] as const;
+const globalLabels = ['Markets', 'Prices', 'Tools', 'News & Insights', 'Guides'] as const;
 
 describe('signedprice public navigation', () => {
   it('renders the same five global destinations in the same order', () => {
@@ -27,18 +27,18 @@ describe('signedprice public navigation', () => {
 
     for (const copy of [homepageCopy.header, header]) {
       const html = renderToStaticMarkup(<SiteHeader copy={copy} />);
-      const positions = globalLabels.map((label) => html.indexOf(`>${label}</`));
+      const positions = globalLabels.map((label) => html.indexOf(`>${label.replace('&', '&amp;')}</`));
 
       expect(positions.every((position) => position >= 0)).toBe(true);
       expect(positions).toEqual([...positions].sort((left, right) => left - right));
-      expect(html).not.toMatch(/>Properties<|>Community<|>Invest<|>News</);
+      expect(html).not.toMatch(/>Properties<|>Community<|>Invest</);
     }
   });
 
-  it('opens the analysis hub and keeps it selected for reports and external news', () => {
+  it('opens the unified News & Insights hub and keeps it selected across editorial routes', () => {
     for (const href of ['/insights/', '/insights/example/', '/news/']) {
       const html = renderToStaticMarkup(<SiteHeader copy={{ ...homepageCopy.header, links: [{ label: 'Editorial', href, isCurrent: true }] }} />);
-      expect(html).toMatch(/<a[^>]*aria-current="page"[^>]*href="\/news\/?\?type=analysis"[^>]*>Insights</);
+      expect(html).toMatch(/<a[^>]*aria-current="page"[^>]*href="\/news"[^>]*>News &amp; Insights</);
     }
   });
 

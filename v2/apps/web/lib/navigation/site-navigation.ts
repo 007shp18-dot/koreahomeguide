@@ -12,14 +12,14 @@ export function globalNavigation(locale: SiteLocale = 'en') {
     { label: '시장', href: '/ko/markets/' },
     { label: '가격', href: '/ko/prices/' },
     { label: '도구', href: '/ko/tools/' },
-    { label: '분석', href: '/ko/news/?type=analysis' },
+    { label: '뉴스·인사이트', href: '/ko/news/' },
     { label: '가이드', href: '/ko/guides/' },
   ];
   return [
     { label: zh ? '市场' : 'Markets', href: '/markets/' },
     { label: zh ? '价格' : 'Prices', href: '/prices/' },
     { label: zh ? '工具' : 'Tools', href: zh ? '/zh-cn/tools/' : '/tools/' },
-    { label: zh ? '洞察' : 'Insights', href: zh ? '/zh-cn/news/' : '/news/?type=analysis' },
+    { label: zh ? '新闻与洞察' : 'News & Insights', href: zh ? '/zh-cn/news/' : '/news/' },
     { label: zh ? '指南' : 'Guides', href: zh ? '/zh-cn/guides/' : '/guides/' },
   ] as const;
 }

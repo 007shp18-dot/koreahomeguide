@@ -179,7 +179,7 @@ describe('public building detail', () => {
   it('renders shared local product navigation and URL-backed decision tabs', () => {
     const header = renderToStaticMarkup(<BuildingDetailHeader />);
     expect(header).toContain('aria-label="signedprice home"');
-    for (const label of ['Markets', 'Prices', 'Tools', 'Insights', 'Guides']) {
+    for (const label of ['Markets', 'Prices', 'Tools', 'News &amp; Insights', 'Guides']) {
       expect(header).toContain(`>${label}</a>`);
     }
     for (const label of ['Overview', 'Explore', 'Check', 'Rankings', 'Corrections']) {

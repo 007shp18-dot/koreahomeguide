@@ -36,39 +36,71 @@ const policy: PolicyRecord = Object.freeze({
   events: Object.freeze([Object.freeze({ type: 'announcement', date: '2025-03-01', label: 'Announced' })]),
 });
 
+const newsArticle: PublishedContentArticle = Object.freeze({
+  ...article,
+  id: 'news-1',
+  slug: 'official-market-release',
+  type: 'news-brief',
+  title: 'Official market release',
+});
+
 describe('public Newsroom routes', () => {
-  it('opens analysis separately while preserving news and market selection', () => {
-    const filters = resolveNewsroomFilters({ type: 'analysis', market: 'seoul' });
-    expect(filters.canonicalHref).toBe('/news/?type=analysis&market=seoul');
-    const html = renderToStaticMarkup(<NewsroomIndex articles={[article]} policies={[policy]} filters={filters} headlines={<p>External feed</p>} />);
-    expect(html).toContain('<h1>Insights</h1>');
+  it('uses one News & Insights surface and preserves market selection', () => {
+    const filters = resolveNewsroomFilters({ type: 'market', market: 'seoul' });
+    expect(filters.canonicalHref).toBe('/news/?type=market&market=seoul');
+    const marketArticle = { ...article, type: 'market-brief' as const };
+    const html = renderToStaticMarkup(<NewsroomIndex articles={[marketArticle]} policies={[policy]} filters={filters} headlines={<p>External feed</p>} />);
+    expect(html).toContain('<h1>News &amp; Insights</h1>');
     expect(html).toContain(article.title);
     expect(html).not.toContain(policy.title);
     expect(html).not.toContain('External feed');
-    expect(html).toContain('href="/news?market=seoul"');
-    expect(html).toContain('Analysis reports');
+    expect(html).toContain('href="/news?type=news&amp;market=seoul"');
+    expect(html).toContain('Market Insight');
+    expect(html).not.toContain('Analysis reports');
   });
   it('normalizes type and market filters into one canonical query URL', () => {
     expect(resolveNewsroomFilters({ type: 'policy', market: 'singapore' })).toEqual({
       type: 'policy', market: 'singapore', canonicalHref: '/news/?type=policy&market=singapore',
+    });
+    expect(resolveNewsroomFilters({ type: 'analysis', market: 'seoul' })).toEqual({
+      type: 'latest', market: 'seoul', canonicalHref: '/news/?market=seoul',
+    });
+    expect(resolveNewsroomFilters({ type: 'headlines', market: 'dubai' })).toEqual({
+      type: 'news', market: 'dubai', canonicalHref: '/news/?type=news&market=dubai',
     });
     expect(resolveNewsroomFilters({ type: 'unknown', market: ['seoul'] })).toEqual({
       type: 'latest', market: 'all', canonicalHref: '/news/',
     });
   });
 
-  it('renders four newsroom tabs, three market filters, one lead, and a row list without desk diagnostics', () => {
+  it('keeps official news briefs and external headlines together without mixing in analysis', () => {
+    const filters = resolveNewsroomFilters({ type: 'news', market: 'seoul' });
+    const html = renderToStaticMarkup(<NewsroomIndex
+      articles={[newsArticle, article]}
+      policies={[policy]}
+      filters={filters}
+      headlines={<p>External feed</p>}
+    />);
+
+    expect(html).toContain(newsArticle.title);
+    expect(html).toContain('External feed');
+    expect(html).not.toContain(article.title);
+    expect(html).not.toContain(policy.title);
+  });
+
+  it('renders five unified newsroom tabs, four market filters, one lead, and a row list without desk diagnostics', () => {
     const html = renderToStaticMarkup(<NewsroomIndex
       articles={[article, { ...article, id: 'story-2', slug: 'second-story', title: 'Second story' }]}
       policies={[policy]}
       filters={{ type: 'latest', market: 'all', canonicalHref: '/news/' }}
     />);
 
-    for (const label of ['Latest', 'Policy', 'Market', 'Data Stories']) expect(html).toContain(`>${label}</a>`);
-    for (const label of ['All', 'Seoul', 'Singapore']) expect(html).toContain(`>${label}</a>`);
+    for (const label of ['Latest', 'News', 'Policy', 'Market Insight', 'Data Stories']) expect(html).toContain(`>${label}</a>`);
+    for (const label of ['All', 'Seoul', 'Singapore', 'Dubai']) expect(html).toContain(`>${label}</a>`);
     expect(html).toContain('data-newsroom-layout="research"');
     expect(html).toContain('data-newsroom-filter-bar="true"');
-    expect(html).toContain('<h1>News</h1>');
+    expect(html).toContain('<h1>News &amp; Insights</h1>');
+    expect(html.match(/aria-label="News and insight types"/g)).toHaveLength(1);
     expect(html).not.toContain('SignedPrice Newsroom');
     expect(html).not.toContain('Property change, checked against evidence.');
     expect(html).not.toContain('→');

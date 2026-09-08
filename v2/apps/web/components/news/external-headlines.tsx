@@ -39,7 +39,7 @@ export function ExternalHeadlines({ market, preview = false, initialModel = null
   const items = (model?.items ?? []).filter((item) => item.sourceKind !== 'signedprice-brief'
     && (market === 'all' || item.market === market));
   const visible = items.slice(0, preview ? 4 : page * 24);
-  const allHref = `/news/?type=headlines${market === 'all' ? '' : `&market=${market}`}`;
+  const allHref = `/news/?type=news${market === 'all' ? '' : `&market=${market}`}`;
   return <section className={styles.section} aria-labelledby="external-headlines-heading" data-external-headlines={status}>
     <header><div><h2 id="external-headlines-heading">External headlines</h2><p>From other publishers · Original languages · Refreshes every 15 minutes</p></div>
       {preview ? <Link href={allHref}>View all headlines</Link> : <button type="button" onClick={() => setRefresh((value) => value + 1)}>Refresh</button>}

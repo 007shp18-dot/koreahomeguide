@@ -233,7 +233,7 @@ describe('SignedPrice cohort zero SEO', () => {
       '/tools',
       '/kr/seoul/explore',
       '/sg/singapore/explore',
-      '/news?type=analysis',
+      '/news',
       '/guides',
     ]) {
       expect(homeHtml).toContain(`href="${href}"`);

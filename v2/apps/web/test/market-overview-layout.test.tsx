@@ -67,7 +67,7 @@ describe('shared visitor market overview', () => {
     expect(html).toContain('role="status"');
     expect(html).not.toContain('<dt>');
     expect(html).toContain('href="/ko/kr/seoul/check"');
-    expect(html).toContain('href="/ko/news?market=seoul&amp;type=analysis"');
+    expect(html).toContain('href="/ko/news?type=data-stories&amp;market=seoul"');
     expect(html).toContain('<figcaption>도시 전경</figcaption>');
     expect(html).not.toContain('City view');
     expect(html).toContain('aria-label="Footer 서비스"');

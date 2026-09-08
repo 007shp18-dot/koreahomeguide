@@ -12,8 +12,8 @@ test('uses one navigation order and published language links across markets', as
   ] as const) {
     await page.goto(path);
     const productLinks = (await visibleProductNavigation(page)).getByRole('link');
-    await expect(productLinks).toHaveText(['Markets', 'Prices', 'Tools', 'Insights', 'Guides']);
-    for (const [index, href] of ['/markets/', '/prices/', '/tools/', '/news/?type=analysis', '/guides/'].entries()) {
+    await expect(productLinks).toHaveText(['Markets', 'Prices', 'Tools', 'News & Insights', 'Guides']);
+    for (const [index, href] of ['/markets/', '/prices/', '/tools/', '/news/', '/guides/'].entries()) {
       await expect(productLinks.nth(index)).toHaveAttribute('href', href);
     }
     const translations = {

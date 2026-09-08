@@ -14,7 +14,7 @@ type NewsArticlePageProps = Readonly<{ params: Promise<Readonly<{ slug: string }
 
 export function generateStaticParams() {
   return listPortfolioRecords('en')
-    .filter(({ type }) => type === 'market-brief' || type === 'data-story')
+    .filter(({ type }) => type === 'news-brief' || type === 'market-brief' || type === 'data-story')
     .map(({ slug }) => ({ slug }));
 }
 

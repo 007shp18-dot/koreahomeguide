@@ -208,8 +208,8 @@ test('mobile primary navigation remains tappable and reaches the market flow', a
   const primaryNavigation = await visibleProductNavigation(page);
   const visibleLinks = primaryNavigation.getByRole('link').filter({ visible: true });
   await expect(visibleLinks).toHaveCount(5);
-  await expect(visibleLinks).toHaveText(['Markets', 'Prices', 'Tools', 'Insights', 'Guides']);
-  for (const [index, href] of ['/markets/', '/prices/', '/tools/', '/news/?type=analysis', '/guides/'].entries()) {
+  await expect(visibleLinks).toHaveText(['Markets', 'Prices', 'Tools', 'News & Insights', 'Guides']);
+  for (const [index, href] of ['/markets/', '/prices/', '/tools/', '/news/', '/guides/'].entries()) {
     await expect(visibleLinks.nth(index)).toHaveAttribute('href', href);
   }
   const primaryLinks = await visibleLinks.all();
