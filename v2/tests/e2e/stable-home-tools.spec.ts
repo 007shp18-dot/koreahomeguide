@@ -28,7 +28,7 @@ test('home presents three stable city cards and one budget journey without overf
  if (Math.max(...positions.map(p => p.top)) - Math.min(...positions.map(p => p.top)) <= 2)
   expect(Math.max(...positions.map(p => p.action)) - Math.min(...positions.map(p => p.action))).toBeLessThanOrEqual(2);
  for (const [index, path] of ['/kr/seoul/explore', '/sg/singapore/explore', '/ae/dubai/explore'].entries())
-  await expect(cards.nth(index).getByRole('link')).toHaveAttribute('href', new RegExp('^' + path + '/?$'));
+  await expect(cards.nth(index).locator('[data-primary-action="explore"]')).toHaveAttribute('href', new RegExp('^' + path + '/?$'));
  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
  await page.locator('[data-home-region="passport"] input[name="budget"]').fill('750000');
  await page.getByRole('button', {name:'Compare cities',exact:true}).click();
@@ -52,8 +52,10 @@ test('neutral calculator changes currency without carrying the previous purchase
 
 test('all tool languages use the same five navigation slots and Corrections has a useful report action',async({page})=>{
  for(const path of ['/tools/','/ko/tools/','/zh-cn/tools/']) {
-  await page.goto(path);await expect(page.locator('.site-header__product-link')).toHaveCount(5);
-  await expect(page.locator('.site-header__language')).toHaveText(['EN','KO','中文']);
+  await page.goto(path);
+  const header = page.locator('header.site-header:visible');
+  await expect(header.locator('.site-header__product-link')).toHaveCount(5);
+  await expect(header.getByRole('navigation', { name: 'Language navigation' }).filter({ visible: true }).getByRole('link')).toHaveText(['EN','KO','中文']);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
  }
  await page.goto('/kr/seoul/corrections/');

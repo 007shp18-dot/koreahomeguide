@@ -1,6 +1,7 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
 
 import { resolveReleaseTestTarget } from '../../release-test-target';
+import { openPrimaryNavigation } from './navigation-helpers';
 
 const releaseTarget = resolveReleaseTestTarget();
 const submittedComparisonPath =
@@ -45,17 +46,17 @@ test('fixture-isolated release serves deterministic all-type A/B evidence', asyn
   const blankComparison = await request.get('/kr/seoul/check/compare/');
   const comparison = await request.get(submittedComparisonPath);
   const englishSale = await request.get(
-    '/kr/seoul/check/?check=1&district=gangnam-gu&housing=apartment&area=84' +
-    '&transaction=sale&price=1200000000',
+    '/api/seoul/check/?check=1&district=gangnam-gu&housing=apartment&area=84' +
+    '&transaction=sale&price=1200000000&locale=en',
   );
   const koreanMonthly = await request.get(
-    '/ko/kr/seoul/check/?check=1&district=gangnam-gu&housing=apartment&area=84' +
-    '&transaction=monthly&deposit=50000000&monthly-rent=2000000',
+    '/api/seoul/check/?check=1&district=gangnam-gu&housing=apartment&area=84' +
+    '&transaction=monthly&deposit=50000000&monthly-rent=2000000&locale=ko',
   );
   const blankComparisonHtml = await blankComparison.text();
   const comparisonHtml = await comparison.text();
-  const englishSaleHtml = await englishSale.text();
-  const koreanMonthlyHtml = await koreanMonthly.text();
+  const englishSalePayload = await englishSale.json();
+  const koreanMonthlyPayload = await koreanMonthly.json();
 
   expect(blankComparison.status()).toBe(200);
   expect(blankComparisonHtml).toContain('data-contract-check-form="ready"');
@@ -68,13 +69,17 @@ test('fixture-isolated release serves deterministic all-type A/B evidence', asyn
   expect(comparisonHtml).toContain('MOLIT reported sale and rental contracts');
   expect(comparisonHtml).not.toContain('Verified transaction evidence is unavailable.');
   expect(englishSale.status()).toBe(200);
-  expect(englishSaleHtml).toContain('data-single-result');
-  expect(englishSaleHtml).toContain('7 completed months · 2026-02–2026-08');
-  expect(englishSaleHtml).not.toContain('Verified transaction evidence is unavailable.');
+  expect(englishSalePayload.model.result).toMatchObject({
+    status: 'ready',
+    period: '2026-02/2026-08',
+    evidenceWindow: { completedMonthCount: 7 },
+  });
   expect(koreanMonthly.status()).toBe(200);
-  expect(koreanMonthlyHtml).toContain('data-single-result');
-  expect(koreanMonthlyHtml).toContain('7개월 완료 · 2026-02–2026-08');
-  expect(koreanMonthlyHtml).not.toContain('Verified transaction evidence is unavailable.');
+  expect(koreanMonthlyPayload.model.result).toMatchObject({
+    status: 'ready',
+    period: '2026-02/2026-08',
+    evidenceWindow: { completedMonthCount: 7 },
+  });
 });
 
 test('primary Contract Check exposes one quote and routes to the two-offer comparison', async ({ page }) => {
@@ -87,8 +92,9 @@ test('primary Contract Check exposes one quote and routes to the two-offer compa
     name: 'Check one asking price.',
   })).toBeVisible();
   await expect(page.locator('[data-primary-check="single-quote"]')).toHaveCount(1);
-  await expect(page.locator('form select')).toHaveCount(4);
-  await expect(page.locator('select[name="building"]')).toBeVisible();
+  await expect(page.locator('form select')).toHaveCount(3);
+  await expect(page.getByRole('textbox', { name: 'Search a building · optional' })).toBeVisible();
+  await expect(page.locator('input[type="hidden"][name="building"]')).toHaveValue('');
   await expect(page.locator('input[inputmode="numeric"]')).toHaveCount(1);
   await expect(page.getByRole('link', { name: 'Compare two offers' }).first())
     .toHaveAttribute('href', '/kr/seoul/check/compare/');
@@ -190,9 +196,7 @@ test('Contract Check stays ordered, touch-sized, and keyboard reachable', async 
   await page.keyboard.press('Tab');
   await expect(page.locator('select[name="housing"]')).toBeFocused();
 
-  const productNavigation = page.getByRole('navigation', {
-    name: 'Primary navigation',
-  });
+  const productNavigation = await openPrimaryNavigation(page);
   await expect(productNavigation.getByRole('link')).toHaveText(['Markets', 'Prices', 'Tools', 'News & Insights', 'Guides']);
   await expect(productNavigation.getByRole('link', { name: 'Prices' }))
     .toHaveAttribute('href', '/prices/');
@@ -240,5 +244,6 @@ test('journey: unsupported entity context fails closed to the manual Check form'
   await expect(page.locator('input[name="market"]')).toHaveCount(0);
   await expect(page.locator('input[name="entity"]')).toHaveCount(0);
   await expect(page.getByRole('link', { name: /Return to / })).toHaveCount(0);
-  await expect(page.getByRole('combobox', { name: 'Building to compare' })).toHaveValue('');
+  await expect(page.getByRole('textbox', { name: 'Search a building · optional' })).toHaveValue('');
+  await expect(page.locator('input[type="hidden"][name="building"]')).toHaveValue('');
 });

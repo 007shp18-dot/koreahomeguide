@@ -192,7 +192,8 @@ test('desktop exposes the compact Passport form and city exploration cards', asy
   await expect(passport.getByRole('button', { name: 'Compare cities' })).toBeInViewport();
   const markets = page.locator('[data-home-region="markets"]');
   await expect(markets.getByRole('heading', {level:2})).toBeInViewport();
-  await expect(markets.getByRole('link')).toHaveCount(3);
+  await expect(markets.locator('[data-contextual-action]')).toHaveCount(3);
+  await expect(markets.locator('[data-primary-action="explore"]')).toHaveCount(3);
 });
 
 test('mobile primary navigation remains tappable and reaches the market flow', async ({

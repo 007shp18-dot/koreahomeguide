@@ -80,7 +80,19 @@ test('Singapore routes fail closed while display rights are pending', async ({ p
     'href',
     'https://www.signedprice.com/sg/',
   );
-  await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(0);
+  await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(3);
+  await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute(
+    'href',
+    'https://www.signedprice.com/sg/',
+  );
+  await expect(page.locator('link[rel="alternate"][hreflang="ko"]')).toHaveAttribute(
+    'href',
+    'https://www.signedprice.com/ko/sg/',
+  );
+  await expect(page.locator('link[rel="alternate"][hreflang="x-default"]')).toHaveAttribute(
+    'href',
+    'https://www.signedprice.com/sg/',
+  );
   await noOverflow(page);
   assertClean();
 });
@@ -138,7 +150,7 @@ test('ready Singapore evidence flows entry to project when promotion gates open'
   await scenario.getByLabel('Expected monthly rent (SGD)').fill('5000');
   await scenario.getByLabel('Annual operating costs, including taxes (SGD)').fill('12000');
   await scenario.getByLabel('Expected vacant months per year').fill('2');
-  await expect(scenario.locator('dl')).toContainText('3.45%');
+  await expect(scenario.locator('dl[aria-live="polite"]')).toContainText('3.45%');
   await noOverflow(page);
 
   const raw = await page.request.get(page.url());

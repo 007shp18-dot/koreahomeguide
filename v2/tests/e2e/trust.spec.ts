@@ -83,7 +83,7 @@ test('Seoul market hub is a terminal self-canonical page', async ({ request }) =
   const html = await response.text();
 
   expect(response.status()).toBe(200);
-  expect(html).toMatch(/<h1[^>]*>Seoul Market Overview<\/h1>/);
+  expect(html).toMatch(/<h1[^>]*>Seoul reported prices<\/h1>/);
   expect(html).toContain(
     '<link rel="canonical" href="https://www.signedprice.com/kr/seoul/"',
   );

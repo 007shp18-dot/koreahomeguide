@@ -103,7 +103,7 @@ export const publicRoutes = [
   { path: '/ae/dubai/invest/', heading: 'Invest in Dubai', indexing: 'noindex' },
   { path: '/news/', heading: 'News', indexing: 'index', canonical: '/news/' },
   { path: '/news/policy/singapore-absd-policy-status/', heading: 'Singapore ABSD: current buyer-profile check', indexing: 'index', canonical: '/news/policy/singapore-absd-policy-status/' },
-  { path: '/news/seoul-district-price-distribution/', heading: 'Similar medians, different markets: read Seoul distributions', indexing: 'index', canonical: '/news/seoul-district-price-distribution/' },
+  { path: '/news/seoul-district-price-distribution/', heading: 'Seoul rental deposits by district: what a median price hides', indexing: 'index', canonical: '/news/seoul-district-price-distribution/' },
   { path: '/guides/', heading: 'Guides', indexing: 'index', canonical: '/guides/' },
   { path: '/guides/rent-an-apartment-in-korea/', heading: 'Rent an apartment in Korea: search-to-move-in sequence', indexing: 'index', canonical: '/guides/rent-an-apartment-in-korea/' },
   { path: '/zh-cn/news/', heading: '政策变化与市场数据，都回到原始依据。', indexing: 'index', canonical: '/zh-cn/news/' },
