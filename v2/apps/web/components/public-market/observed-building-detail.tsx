@@ -17,6 +17,7 @@ import {
 import { SiteFooter } from '../site-footer';
 import { BuildingSaveButton } from './building-save-button';
 import { BuildingDetailHeader } from './building-detail-header';
+import { MARKET_PHOTOS, MarketRepresentativePhoto } from '../market-representative-photo';
 import styles from './building-detail.module.css';
 
 const footer: SiteFooterModel = {
@@ -44,6 +45,16 @@ const exactEvidenceFooter: SiteFooterModel = {
 };
 
 const countLabel = (count: number) => `${count} observed contract${count === 1 ? '' : 's'}`;
+
+function SeoulBuildingContext({ locale }: Readonly<{ locale: ProductLocale }>) {
+  return <MarketRepresentativePhoto
+    photo={MARKET_PHOTOS.seoul}
+    cityLabel={locale === 'ko' ? '서울' : 'Seoul'}
+    context="property"
+    locale={locale}
+    eager
+  />;
+}
 
 
 function KnownBuildingFacts({ facts, locale = 'en' }: Readonly<{ locale?: ProductLocale; facts: readonly Readonly<{ label: string; value: string }>[] }>) {
@@ -146,7 +157,7 @@ export function ObservedBuildingDetail({
           data-identity-hero="true"
           data-building-section="identity"
         >
-          {visual && <div data-detail-order="media">{visual}</div>}
+          <div data-detail-order="media">{visual ?? <SeoulBuildingContext locale={locale} />}</div>
 
           <div className={styles.identitySummary}>
             <Link className={styles.backAction} href={backHref}>
@@ -298,7 +309,7 @@ export function KoreaEvidenceBuildingDetail({
           data-identity-hero="true"
           data-building-section="identity"
         >
-          {visual && <div data-detail-order="media">{visual}</div>}
+          <div data-detail-order="media">{visual ?? <SeoulBuildingContext locale={locale} />}</div>
           <div className={styles.identitySummary} data-detail-order="identity">
             <Link className={styles.backAction} href={backHref}>
               {locale === 'ko' ? `${model.district.nameKo} 탐색으로` : `Back to ${model.district.nameEn} Explore`}

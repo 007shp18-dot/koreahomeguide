@@ -81,12 +81,14 @@ describe('signedprice public navigation', () => {
     expect(html).toMatch(/<a[^>]*aria-current="page"[^>]*href="\/ko\/guides\/?"[^>]*>가이드<\/a>/);
   });
 
-  it('renders one global header and a separate market-local navigation', () => {
+  it('keeps market-local destinations inside the compact city context menu', () => {
     const html = renderToStaticMarkup(<SiteHeader copy={header} />);
 
     expect(html.match(/<header\b/g)).toHaveLength(1);
     expect(html.match(/data-navigation-tier="global"/g)).toHaveLength(1);
     expect(html.match(/data-navigation-tier="market-local"/g)).toHaveLength(1);
+    expect(html).toContain('class="site-header__context-menu site-header__context-menu--market"');
+    expect(html).toContain('aria-label="Choose a city"');
     expect(html).toContain('aria-label="Seoul market navigation"');
     for (const label of ['Overview', 'Explore', 'Check', 'Rankings', 'Corrections']) {
       expect(html).toContain(`>${label}</`);
@@ -100,10 +102,11 @@ describe('signedprice public navigation', () => {
     expect(html).not.toContain('data-navigation-tier="market-local"');
   });
 
-  it('keeps the market-local navigation at a usable control height', () => {
+  it('keeps compact selectors and their destinations at a usable control height', () => {
     const css = readFileSync(new URL('../app/globals.css', import.meta.url), 'utf8');
 
-    expect(css).toMatch(/\.market-local-nav\s*{[\s\S]*?height:\s*48px;/);
+    expect(css).toMatch(/\.site-header__context-menu\s*>\s*summary\s*{[\s\S]*?min-height:\s*var\(--control-min\);/);
+    expect(css).toMatch(/\.site-header__context-panel\s+a\s*{[\s\S]*?min-height:\s*var\(--control-min\);/);
     expect(css).toMatch(/\.market-local-nav__link\s*{[\s\S]*?min-height:\s*var\(--control-min\);/);
   });
 });

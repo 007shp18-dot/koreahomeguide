@@ -16,6 +16,7 @@ import {
 } from '../../lib/locale/product-copy';
 import { EvidencePeriodStrip } from './evidence-period-strip';
 import { PublicSourceBoundary } from './public-source-boundary';
+import { buildingDisplayName, neighborhoodDisplayName } from '../../lib/public-market/seoul-display-names';
 import styles from './district-rankings.module.css';
 
 type ReadyModel = Extract<PublicAreaRankingsModel, { status: 'ready' }>;
@@ -73,16 +74,6 @@ function selectedRankingCopy(
   } as const;
 }
 
-function activeRankingCopy(view: RankingView, selected: ReturnType<typeof selectedRankingCopy>, locale: ProductLocale) {
-  if (view === 'median') return [selected.medianTitle, selected.medianDefinition] as const;
-  if (view === 'spread') return locale === 'ko'
-    ? ['중간 50% 구간 분포 폭', selected.spreadDefinition] as const
-    : ['Middle-half spread', selected.spreadDefinition] as const;
-  return locale === 'ko'
-    ? ['신고 계약 표본 수', '선택 조건에 남은 적격 신고 계약 건수입니다.'] as const
-    : ['Reported filing volume', 'Qualifying reported contracts retained in the selected cohort.'] as const;
-}
-
 function DistributionRange({ summary, locale }: Readonly<{
   summary: Extract<PublicMarketSummary, { published: true }>;
   locale: ProductLocale;
@@ -112,6 +103,14 @@ const rankingHousingOptions = Object.freeze([
   ['officetel', 'Officetel', '오피스텔'],
   ['villa_multifamily', 'Villa / multifamily', '연립·다세대'],
   ['detached', 'Detached / multi-unit', '단독·다가구'],
+] as const);
+
+const rankingAreaOptions = Object.freeze([
+  ['all', 'All areas', '전체 면적'],
+  ['under-40', 'Under 40㎡', '40㎡ 미만'],
+  ['40-60', '40–60㎡', '40–60㎡'],
+  ['60-85', '60–85㎡', '60–85㎡'],
+  ['85-plus', '85㎡ and over', '85㎡ 이상'],
 ] as const);
 
 function RankingRows({ rows, locale, copy, distributionLabel }: Readonly<{
@@ -181,8 +180,65 @@ function rankingPageHref(model: ReadyModel, page: number, locale: ProductLocale)
     }
   }
   if (page > 1) query.set('page', String(page));
+  if (model.buildingRankings.status === 'ready' && model.buildingRankings.pagination.page > 1) {
+    query.set('buildingPage', String(model.buildingRankings.pagination.page));
+  }
   const suffix = query.size === 0 ? '' : `?${query.toString()}`;
   return localizedSeoulHref(`/kr/seoul/rankings/${suffix}`, locale);
+}
+
+function buildingRankingPageHref(model: ReadyModel, page: number, locale: ProductLocale) {
+  const query = new URLSearchParams();
+  if (model.evidenceSelection.areaBand !== 'legacy-45-55') {
+    query.set('transaction', model.evidenceSelection.transaction);
+    query.set('area', model.evidenceSelection.areaBand);
+    if (model.evidenceSelection.housingType !== 'all') query.set('propertyType', model.evidenceSelection.housingType);
+    if (!['all', 'unknown', 'not-applicable'].includes(model.evidenceSelection.contractGroup)) {
+      query.set('contractType', model.evidenceSelection.contractGroup);
+    }
+  }
+  if (page > 1) query.set('buildingPage', String(page));
+  if (model.pagination.page > 1) query.set('page', String(model.pagination.page));
+  const suffix = query.size === 0 ? '' : `?${query.toString()}`;
+  return localizedSeoulHref(`/kr/seoul/rankings/${suffix}`, locale);
+}
+
+function BuildingRankings({ model, locale }: Readonly<{ model: ReadyModel; locale: ProductLocale }>) {
+  const ranking = model.buildingRankings;
+  const transactionLabel = locale === 'ko' ? {
+    sale: '신고 매매', jeonse: '신고 전세', monthly: '신고 월세',
+  }[model.evidenceSelection.transaction] : {
+    sale: 'reported sales', jeonse: 'reported jeonse contracts', monthly: 'reported monthly rents',
+  }[model.evidenceSelection.transaction];
+  return <section className={styles.buildingRanking} aria-labelledby="building-ranking-heading">
+    <header className={styles.buildingRankingHeader}>
+      <div><p>{locale === 'ko' ? '건물 순위' : 'Building rankings'}</p><h2 id="building-ranking-heading">{locale === 'ko' ? '중앙값이 높은 건물' : 'Buildings with the highest medians'}</h2></div>
+      <p>{ranking.status === 'ready'
+        ? locale === 'ko'
+          ? `${ranking.pagination.total.toLocaleString('ko-KR')}개 건물 · 최소 ${model.source.publicationMinimum}건`
+          : `${ranking.pagination.total.toLocaleString('en-US')} ${ranking.pagination.total === 1 ? 'building' : 'buildings'} · minimum ${model.source.publicationMinimum} filings`
+        : locale === 'ko' ? '현재 건물 단위 자료를 불러올 수 없습니다.' : 'Building-level evidence is unavailable for this snapshot.'}</p>
+    </header>
+    {ranking.status === 'unavailable' || ranking.rows.length === 0
+      ? <p className={styles.empty}>{ranking.status === 'ready'
+        ? locale === 'ko' ? '이 조건에서 공개 기준을 충족한 건물이 없습니다.' : 'No building meets the publication minimum for these filters.'
+        : locale === 'ko' ? '아래에서 구별 비교를 확인하세요.' : 'Use the district comparison below.'}</p>
+      : <ol className={styles.buildingRows} start={ranking.rows[0]?.rank}>
+        {ranking.rows.map((row) => <li key={`${row.districtSlug}/${row.buildingId}`} data-building-ranking-row={row.buildingId}>
+          <span className={styles.buildingRank} aria-label={`${locale === 'ko' ? '순위' : 'Rank'} ${row.rank}`}>{row.rank}</span>
+          <Link className={styles.buildingLink} href={localizedSeoulHref(row.href, locale)}>
+            <strong>{buildingDisplayName(row.officialName, locale)}</strong>
+            <span>{neighborhoodDisplayName(row.neighborhoodName, locale)} · {locale === 'ko' ? row.districtNameKo : row.districtNameEn}</span>
+          </Link>
+          <div className={styles.buildingValue}><strong>{row.medianLabel}</strong><span>{row.sampleCount.toLocaleString(locale === 'ko' ? 'ko-KR' : 'en-US')} {transactionLabel}</span></div>
+        </li>)}
+      </ol>}
+    {ranking.status === 'ready' && ranking.pagination.pageCount > 1 ? <nav className={styles.pagination} aria-label={locale === 'ko' ? '건물 순위 페이지' : 'Building ranking pages'}>
+      {ranking.pagination.previousPage === null ? <span /> : <Link href={buildingRankingPageHref(model, ranking.pagination.previousPage, locale)}>{locale === 'ko' ? '이전' : 'Previous'}</Link>}
+      <span>{ranking.pagination.page} / {ranking.pagination.pageCount}</span>
+      {ranking.pagination.nextPage === null ? <span /> : <Link href={buildingRankingPageHref(model, ranking.pagination.nextPage, locale)}>{locale === 'ko' ? '다음' : 'Next'}</Link>}
+    </nav> : null}
+  </section>;
 }
 
 function ReadyRankings({ model, locale }: Readonly<{ model: ReadyModel; locale: ProductLocale }>) {
@@ -190,21 +246,15 @@ function ReadyRankings({ model, locale }: Readonly<{ model: ReadyModel; locale: 
   const exact = model.evidenceSelection.areaBand !== 'legacy-45-55';
   const selected = selectedRankingCopy(model.evidenceSelection.transaction, locale);
   const [activeView, setActiveView] = useState<RankingView>('median');
-  const [activeTitle, activeDefinition] = activeRankingCopy(activeView, selected, locale);
   return <section className={styles.rankings} aria-labelledby="district-rankings-heading">
     <div className={styles.frame} data-ranking-frame="contained">
-      <header className={styles.hero}>
+      <header className={styles.hero} data-ranking-method="published-context">
         <div className={styles.heroCopy}>
-          <p>{locale === 'ko' ? '서울 구별 실거래가 비교' : 'Seoul district rankings'}</p>
-          <h1 id="district-rankings-heading">{activeTitle}</h1>
-          <p>{activeDefinition}</p>
-          <p className={styles.exclusion}>{selected.description} · {model.source.period} · {model.withheldDistrictCount}{locale === 'en' ? ' ' : ''}{copy.exclusionTail}</p>
+          <p>{locale === 'ko' ? '신고 건물 가격' : 'Reported building prices'}</p>
+          <h1 id="district-rankings-heading">{locale === 'ko' ? '서울 건물 가격 순위' : 'Seoul building price rankings'}</h1>
+          <p>{locale === 'ko' ? '선택 조건의 공개 가능한 건물을 신고 중앙값이 높은 순서로 비교합니다.' : 'Compare publishable buildings for these filters, ordered by reported median price.'}</p>
+          <p className={styles.exclusion}>{selected.description} · {model.source.period} · {locale === 'ko' ? `최소 ${model.source.publicationMinimum}건` : `minimum ${model.source.publicationMinimum} filings`}</p>
         </div>
-        <dl className={styles.heroMeta} data-ranking-method="published-context">
-          <div><dt>{locale === 'ko' ? '기간' : 'Period'}</dt><dd>{model.source.period}</dd></div>
-          <div><dt>{locale === 'ko' ? '게시 구' : 'Published districts'}</dt><dd>{model.pagination.total} / 25</dd></div>
-          <div><dt>{locale === 'ko' ? '최소 표본' : 'Minimum sample'}</dt><dd>{model.source.publicationMinimum}</dd></div>
-        </dl>
       </header>
       {exact ? <form className={styles.filters} action={localizedSeoulHref('/kr/seoul/rankings/', locale)} method="get" data-ranking-filters="exact-cohort">
         <label><span>{locale === 'ko' ? '거래유형' : 'Transaction'}</span><select name="transaction" defaultValue={model.evidenceSelection.transaction}>
@@ -212,7 +262,9 @@ function ReadyRankings({ model, locale }: Readonly<{ model: ReadyModel; locale: 
           <option value="jeonse" disabled={!model.transactionAvailability.jeonse}>{locale === 'ko' ? '전세' : 'Jeonse'}</option>
           <option value="monthly" disabled={!model.transactionAvailability.monthly}>{locale === 'ko' ? '월세' : 'Monthly rent'}</option>
         </select></label>
-        <input type="hidden" name="area" value={model.evidenceSelection.areaBand} />
+        <label><span>{locale === 'ko' ? '면적' : 'Area'}</span><select name="area" defaultValue={model.evidenceSelection.areaBand}>
+          {rankingAreaOptions.map(([value, en, ko]) => <option value={value} key={value}>{locale === 'ko' ? ko : en}</option>)}
+        </select></label>
         <label><span>{locale === 'ko' ? '건물유형' : 'Building type'}</span><select name="propertyType" defaultValue={model.evidenceSelection.housingType}>
           {rankingHousingOptions.map(([value, en, ko]) => <option value={value} key={value}>{locale === 'ko' ? ko : en}</option>)}
         </select></label>
@@ -221,8 +273,10 @@ function ReadyRankings({ model, locale }: Readonly<{ model: ReadyModel; locale: 
         </select></label>}
         <button type="submit">{locale === 'ko' ? '적용' : 'Apply'}</button>
       </form> : null}
-      <EvidencePeriodStrip model={model.period} label={copy.periodLabel} locale={locale} />
-      <div className={styles.viewWorkspace}>
+      <BuildingRankings model={model} locale={locale} />
+      <section className={styles.districtComparison} aria-labelledby="district-comparison-heading">
+        <header className={styles.districtComparisonHeader}><p>{locale === 'ko' ? '지역 비교' : 'Area context'}</p><h2 id="district-comparison-heading">{locale === 'ko' ? '구별 가격과 신고 건수' : 'District prices and filing volume'}</h2></header>
+        <div className={styles.viewWorkspace}>
         <div className={styles.viewTabs} role="tablist" aria-label={locale === 'ko' ? '순위 지표' : 'Ranking measure'}>
           {rankingViews.map((view) => <button type="button" role="tab" id={`ranking-tab-${view.id}`} aria-controls={`ranking-view-${view.id}`} aria-selected={activeView === view.id} tabIndex={activeView === view.id ? 0 : -1} onClick={() => setActiveView(view.id)} key={view.id}>{view.label[locale]}</button>)}
         </div>
@@ -243,7 +297,9 @@ function ReadyRankings({ model, locale }: Readonly<{ model: ReadyModel; locale: 
           <span>{model.pagination.page} / {model.pagination.pageCount}</span>
           {model.pagination.nextPage === null ? <span /> : <Link href={rankingPageHref(model, model.pagination.nextPage, locale)}>{locale === 'ko' ? '다음' : 'Next'}</Link>}
         </nav> : null}
-      </div>
+        </div>
+      </section>
+      <EvidencePeriodStrip model={model.period} label={copy.periodLabel} locale={locale} />
       <aside className={styles.limit} aria-label={copy.limitationAria}><p>{copy.limitation}</p></aside>
       <PublicSourceBoundary model={model.source} locale={locale} transaction={exact ? model.evidenceSelection.transaction : undefined} compact />
     </div>
@@ -256,7 +312,7 @@ function UnavailableRankings({ model, locale }: Readonly<{
 }>) {
   const copy = PUBLIC_MARKET_COPY[locale].rankings;
   return <section className={styles.rankings} aria-labelledby="rankings-unavailable-heading">
-    <header className={styles.hero}><p>{copy.unavailableEyebrow}</p><h1 id="rankings-unavailable-heading">{copy.heading}</h1><p>{locale === 'ko' ? copy.unavailableMessage : model.message}</p><p>{copy.unavailableReason}</p></header>
+    <header className={styles.hero}><p>{copy.unavailableEyebrow}</p><h1 id="rankings-unavailable-heading">{locale === 'ko' ? '서울 건물 가격 순위' : 'Seoul building price rankings'}</h1><p>{locale === 'ko' ? copy.unavailableMessage : model.message}</p><p>{copy.unavailableReason}</p></header>
     <div className={styles.unavailable}><p>{copy.unavailableReason}</p><Link href={localizedSeoulHref('/kr/seoul/explore/', locale)}>{copy.unavailableAction}</Link></div>
     <PublicSourceBoundary model={model.source} locale={locale} compact />
   </section>;

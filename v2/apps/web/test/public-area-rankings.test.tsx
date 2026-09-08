@@ -46,7 +46,7 @@ describe('Seoul district rankings page', () => {
 
     const html = renderToStaticMarkup(await RankingsPage());
 
-    expect(html).toContain('Seoul district rankings');
+    expect(html).toContain('Seoul building price rankings');
     expect(html).toContain('Median refundable jeonse deposit');
     expect(html).toContain('Middle-half spread (P75 − P25)');
     expect(html).toContain('Qualifying reported contracts');
@@ -58,7 +58,7 @@ describe('Seoul district rankings page', () => {
     expect(html).not.toContain('+3.0%');
     expect(html).not.toContain('data-change-centre="true"');
     expect(html).not.toContain('data-change-direction=');
-    expect(html).toContain('23 districts excluded');
+    expect(html).toContain('Use the district comparison below.');
     expect(html).not.toMatch(/Preparing|Price per ㎡|Filing completion|QoQ change/);
     expect(html).toContain('aria-current="page"');
     expect(html).toMatch(/aria-current="page"[^>]*href="\/kr\/seoul\/rankings"/);
@@ -88,7 +88,7 @@ describe('Seoul district rankings page', () => {
     const html = renderToStaticMarkup(<DistrictRankings model={model} />);
 
     expect(html.match(/data-ranking-row=/g) ?? []).toHaveLength(0);
-    expect(html).toContain('25 districts excluded');
+    expect(html).toContain('Use the district comparison below.');
     expect(html).not.toContain('data-ranking-distribution=');
   });
 

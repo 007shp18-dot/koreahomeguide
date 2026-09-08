@@ -21,7 +21,7 @@ export const editorialAlternates: Readonly<Record<string, Readonly<Record<string
   }));
 
 export const publicRoutes = [
-  { path: '/', heading: 'Where can your budget become a home?', indexing: 'index', canonical: '/' },
+  { path: '/', heading: 'Somewhere worth knowing.', indexing: 'index', canonical: '/' },
   { path: '/trust/', heading: 'How SignedPrice publishes evidence', indexing: 'index', canonical: '/trust/' },
   {
     path: '/kr/seoul/check/',
@@ -58,7 +58,7 @@ export const publicRoutes = [
   },
   {
     path: '/kr/seoul/rankings/',
-    heading: 'Middle-half spread',
+    heading: 'Seoul building price rankings',
     indexing: 'index',
     canonical: '/kr/seoul/rankings/',
     alternates: true,

@@ -15,12 +15,14 @@ import {
   type PublicAreaRouteDependencies,
 } from './area-route-model.server';
 import type {
+  PublicBuildingRankingsModel,
   PublicAreaRankingsModel,
   PublicDistrictRankingRow,
   RankingKind,
   SignedRankingBar,
   UnavailableRankingDistrict,
 } from './area-route-types';
+import type { KoreaEvidenceRepositories } from './korea-evidence-repositories.server';
 import { createSelectionHref } from '../navigation/explorer-selection';
 import { createPublicAreaSummaryRepository } from './area-summary-repository.server';
 import { buildKoreaEvidenceAreaExploreModel } from './korea-explorer-area-route.server';
@@ -222,6 +224,7 @@ export function buildPublicAreaRankingsModel(
       }),
       transactionAvailability: Object.freeze({ jeonse: true, monthly: false, sale: false }),
       citySummary,
+      buildingRankings: Object.freeze({ status: 'unavailable', rows: Object.freeze([]) }),
       median: pageRows(median, page),
       change: pageRows(change.rows, page),
       spread: pageRows(spread, page),
@@ -298,6 +301,87 @@ function pageRows(
 ) {
   const start = (model.page - 1) * model.pageSize;
   return Object.freeze(rows.slice(start, start + model.pageSize));
+}
+
+function buildingRankingHref(
+  building: Readonly<{
+    buildingId: string;
+    districtSlug: string;
+    housingType: string;
+  }>,
+  selection: KoreaExplorerEvidenceSelection,
+): `/kr/seoul/explore/${string}/${string}/?${string}` {
+  const query = new URLSearchParams({
+    transaction: selection.transaction,
+    area: selection.areaBand,
+    propertyType: building.housingType,
+  });
+  if (selection.transaction !== 'sale'
+    && selection.contractGroup !== 'not-applicable'
+    && selection.contractGroup !== 'unknown') {
+    query.set('contractType', selection.contractGroup);
+  }
+  return `/kr/seoul/explore/${building.districtSlug}/${building.buildingId}/?${query.toString()}`;
+}
+
+export function buildKoreaBuildingRankings(
+  repositories: KoreaEvidenceRepositories,
+  selection: KoreaExplorerEvidenceSelection,
+  requestedPage = 1,
+  requestedPageSize = 20,
+): PublicBuildingRankingsModel {
+  const source = selection.transaction === 'sale'
+    ? repositories.sale?.listBuildingRecords()
+    : repositories.rent?.listBuildingRecords();
+  if (source === undefined) return Object.freeze({ status: 'unavailable', rows: Object.freeze([]) });
+  const selected = source.filter(({ housingType }) => (
+    selection.housingType === 'all' || housingType === selection.housingType
+  )).map((building) => {
+    const distribution = selection.transaction === 'sale'
+      ? 'recentSales' in building
+        ? building.cohorts.find(({ areaBand }) => areaBand === selection.areaBand)?.price
+        : undefined
+      : 'recentTransactions' in building
+        ? building.cohorts.find((cohort) => (
+            cohort.transaction === selection.transaction
+            && cohort.areaBand === selection.areaBand
+            && cohort.contractGroup === selection.contractGroup
+          ))?.primary
+        : undefined;
+    return { building, distribution };
+  });
+  const published = selected.flatMap(({ building, distribution }) => {
+    if (distribution?.published !== true) return [];
+    const district = getSeoulDistrictBySlug(building.districtSlug);
+    if (district === null) return [];
+    return [{ building, distribution, district }];
+  }).sort((left, right) => (
+    right.distribution.med - left.distribution.med
+    || left.building.buildingId.localeCompare(right.building.buildingId)
+    || left.building.districtSlug.localeCompare(right.building.districtSlug)
+  ));
+  const ranked = Object.freeze(published.map(({ building, distribution, district }, index) => Object.freeze({
+    rank: index + 1,
+    buildingId: building.buildingId,
+    officialName: building.officialName,
+    districtSlug: building.districtSlug,
+    districtNameEn: district.nameEn,
+    districtNameKo: district.nameKo,
+    neighborhoodName: building.neighborhoodName,
+    housingType: building.housingType,
+    medianWon: distribution.med,
+    medianLabel: money.format(distribution.med),
+    sampleCount: distribution.n,
+    href: buildingRankingHref(building, selection),
+  })));
+  const page = pagination(ranked.length, requestedPage, requestedPageSize);
+  const start = (page.page - 1) * page.pageSize;
+  return Object.freeze({
+    status: 'ready',
+    rows: Object.freeze(ranked.slice(start, start + page.pageSize)),
+    withheldBuildingCount: selected.length - ranked.length,
+    pagination: page,
+  });
 }
 
 export type SingaporeRankingMetric = 'price' | 'psf' | 'sample';
@@ -377,6 +461,8 @@ export function buildKoreaEvidenceAreaRankingsModel(
   referenceInstant: string | Date = new Date(),
   requestedPage = 1,
   requestedPageSize = 20,
+  repositories?: KoreaEvidenceRepositories,
+  requestedBuildingPage = 1,
 ): PublicAreaRankingsModel {
   const explore = buildKoreaEvidenceAreaExploreModel(undefined, projection);
   const allDistricts = explore.districts.map(({ summary }) => summary);
@@ -405,6 +491,14 @@ export function buildKoreaEvidenceAreaRankingsModel(
     evidenceSelection: projection.selection,
     transactionAvailability: projection.availability,
     citySummary: explore.citySummary,
+    buildingRankings: repositories === undefined
+      ? Object.freeze({ status: 'unavailable' as const, rows: Object.freeze([]) })
+      : buildKoreaBuildingRankings(
+          repositories,
+          projection.selection,
+          requestedBuildingPage,
+          requestedPageSize,
+        ),
     median: pageRows(median, page),
     change: pageRows(change.rows, page),
     spread: pageRows(spread, page),

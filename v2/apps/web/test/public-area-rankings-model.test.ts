@@ -4,7 +4,12 @@ import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 
-import { buildPublicAreaRankingsModel } from '../lib/public-market/rankings-route-model.server';
+import {
+  buildKoreaBuildingRankings,
+  buildPublicAreaRankingsModel,
+} from '../lib/public-market/rankings-route-model.server';
+import type { KoreaEvidenceRepositories } from '../lib/public-market/korea-evidence-repositories.server';
+import type { PublicAreaRankingsModel } from '../lib/public-market/area-route-types';
 import { DistrictRankings } from '../components/public-market/district-rankings';
 import {
   PUBLIC_AREA_FIXTURE_PERIOD,
@@ -62,11 +67,156 @@ function rankedArtifact() {
 
 const REFERENCE_INSTANT = '2026-09-01T00:00:00.000Z';
 
+function publishedBuildingPrice(median: number) {
+  return Object.freeze({
+    n: 5, published: true as const, min: median - 2, p25: median - 1,
+    med: median, p75: median + 1, max: median + 2, chg3m: null,
+  });
+}
+
+function saleBuilding(buildingId: string, median: number, published = true) {
+  return Object.freeze({
+    buildingId,
+    districtSlug: 'gangnam-gu' as const,
+    neighborhoodId: 'gangnam-gu-daechi',
+    neighborhoodName: '대치동',
+    officialName: `Building ${buildingId}`,
+    housingType: 'apartment' as const,
+    cohorts: Object.freeze([{ areaBand: 'all' as const, price: published
+      ? publishedBuildingPrice(median)
+      : Object.freeze({ n: 4, published: false as const }) }]),
+    recentSales: Object.freeze([]),
+  });
+}
+
+function saleRepositories(buildings: readonly ReturnType<typeof saleBuilding>[]): KoreaEvidenceRepositories {
+  return Object.freeze({
+    rent: null,
+    sale: Object.freeze({
+      listBuildingRecords: () => buildings,
+    }) as unknown as NonNullable<KoreaEvidenceRepositories['sale']>,
+  });
+}
+
+function rentRepositories(): KoreaEvidenceRepositories {
+  const record = Object.freeze({
+    buildingId: 'rent-building',
+    districtSlug: 'mapo-gu' as const,
+    neighborhoodId: 'mapo-gu-hapjeong',
+    neighborhoodName: '합정동',
+    officialName: 'Rent Building',
+    housingType: 'apartment' as const,
+    cohorts: Object.freeze([
+      Object.freeze({
+        transaction: 'jeonse' as const, areaBand: '40-60' as const,
+        contractGroup: 'all' as const, primaryMetric: 'deposit' as const,
+        primary: publishedBuildingPrice(400_000_000), filedDeposit: null,
+      }),
+      Object.freeze({
+        transaction: 'monthly' as const, areaBand: '60-85' as const,
+        contractGroup: 'new' as const, primaryMetric: 'monthly-rent' as const,
+        primary: publishedBuildingPrice(1_500_000),
+        filedDeposit: publishedBuildingPrice(50_000_000),
+      }),
+    ]),
+    recentTransactions: Object.freeze([]),
+  });
+  return Object.freeze({
+    sale: null,
+    rent: Object.freeze({
+      listBuildingRecords: () => Object.freeze([record]),
+    }) as unknown as NonNullable<KoreaEvidenceRepositories['rent']>,
+  });
+}
+
 function build(source: unknown = rankedArtifact(), period = PUBLIC_AREA_FIXTURE_PERIOD, page = 1) {
   return buildPublicAreaRankingsModel({ source, period, referenceInstant: REFERENCE_INSTANT, page });
 }
 
 describe('Seoul public district rankings model', () => {
+  it('ranks publishable buildings by median before slicing stable-ID ties across pages', () => {
+    const leading = Array.from({ length: 19 }, (_, index) => (
+      saleBuilding(`leader-${String(index).padStart(2, '0')}`, 1_000_000_000 - index)
+    ));
+    const repositories = saleRepositories([
+      ...leading,
+      saleBuilding('tie-z', 500_000_000),
+      saleBuilding('tie-a', 500_000_000),
+      saleBuilding('withheld', 900_000_000, false),
+      saleBuilding('last', 100_000_000),
+    ]);
+    const selection = {
+      transaction: 'sale' as const,
+      areaBand: 'all' as const,
+      housingType: 'apartment' as const,
+      contractGroup: 'not-applicable' as const,
+    };
+
+    const first = buildKoreaBuildingRankings(repositories, selection, 1, 20);
+    const second = buildKoreaBuildingRankings(repositories, selection, 2, 20);
+
+    expect(first.status).toBe('ready');
+    expect(second.status).toBe('ready');
+    if (first.status !== 'ready' || second.status !== 'ready') return;
+    expect(first.rows.at(-1)).toMatchObject({ buildingId: 'tie-a', rank: 20 });
+    expect(second.rows[0]).toMatchObject({
+      buildingId: 'tie-z', rank: 21, medianWon: 500_000_000, sampleCount: 5,
+      href: '/kr/seoul/explore/gangnam-gu/tie-z/?transaction=sale&area=all&propertyType=apartment',
+    });
+    expect(second.pagination).toMatchObject({ page: 2, total: 22, pageCount: 2 });
+    expect(first.withheldBuildingCount).toBe(1);
+    expect(new Set([...first.rows, ...second.rows].map(({ buildingId }) => buildingId)).size).toBe(22);
+  });
+
+  it('keeps building and district pagination state independent in their links', () => {
+    const districtPage = build(createPublicAreaFixture(), PUBLIC_AREA_FIXTURE_PERIOD, 2);
+    if (districtPage.status !== 'ready') throw new Error('Expected ready district rankings');
+    const repositories = saleRepositories(Array.from(
+      { length: 45 },
+      (_, index) => saleBuilding(`building-${String(index).padStart(2, '0')}`, 1_000_000_000 - index),
+    ));
+    const selection = {
+      transaction: 'sale' as const,
+      areaBand: 'all' as const,
+      housingType: 'apartment' as const,
+      contractGroup: 'not-applicable' as const,
+    };
+    const model = Object.freeze({
+      ...districtPage,
+      evidenceSelection: selection,
+      transactionAvailability: Object.freeze({ sale: true, jeonse: false, monthly: false }),
+      buildingRankings: buildKoreaBuildingRankings(repositories, selection, 2, 20),
+    }) satisfies PublicAreaRankingsModel;
+
+    const html = renderToStaticMarkup(createElement(DistrictRankings, { model }));
+
+    expect(model.pagination.page).toBe(2);
+    expect(model.buildingRankings.status).toBe('ready');
+    if (model.buildingRankings.status !== 'ready') return;
+    expect(model.buildingRankings.pagination.page).toBe(2);
+    expect(model.buildingRankings.rows.map(({ rank }) => rank)).toEqual(
+      Array.from({ length: 20 }, (_, index) => index + 21),
+    );
+    expect(html).toContain('href="/kr/seoul/rankings?transaction=sale&amp;area=all&amp;propertyType=apartment&amp;page=2"');
+    expect(html).toContain('href="/kr/seoul/rankings?transaction=sale&amp;area=all&amp;propertyType=apartment&amp;buildingPage=3&amp;page=2"');
+    expect(html).toContain('href="/kr/seoul/rankings?transaction=sale&amp;area=all&amp;propertyType=apartment&amp;buildingPage=2"');
+  });
+
+  it.each([
+    [{ transaction: 'jeonse', areaBand: '40-60', housingType: 'apartment', contractGroup: 'all' }, '₩400,000,000', 'transaction=jeonse&area=40-60&propertyType=apartment&contractType=all'],
+    [{ transaction: 'monthly', areaBand: '60-85', housingType: 'apartment', contractGroup: 'new' }, '₩1,500,000', 'transaction=monthly&area=60-85&propertyType=apartment&contractType=new'],
+  ] as const)('keeps the exact rental context on building detail links', (selection, label, query) => {
+    const model = buildKoreaBuildingRankings(rentRepositories(), selection, 1, 20);
+
+    expect(model.status).toBe('ready');
+    if (model.status !== 'ready') return;
+    expect(model.rows[0]).toMatchObject({
+      buildingId: 'rent-building',
+      medianLabel: label,
+      href: `/kr/seoul/explore/mapo-gu/rent-building/?${query}`,
+    });
+  });
+
   it('ranks the median high to low with legal-code tie breaks', () => {
     const model = build();
     expect(model.status).toBe('ready');

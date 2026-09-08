@@ -112,10 +112,12 @@ test('verified synthetic building detail is server rendered only in the local re
   await expect(page.getByRole('link', { name: /Back to .* Explore/ })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Compare an asking price', exact: true })).toBeVisible();
   const hero = page.locator('[data-detail-hero="building"]').filter({ visible: true });
-  // This synthetic building has no verified photo or location media. The shared
-  // detail layout must not reserve an empty media column above its evidence.
-  await expect(hero).toHaveAttribute('data-has-media', 'false');
-  await expect(hero.locator('[data-detail-order="media"]')).toHaveCount(0);
+  // This synthetic building has no verified photo. A labeled Seoul context
+  // photograph keeps the header useful without claiming to show this building.
+  await expect(hero).toHaveAttribute('data-has-media', 'true');
+  const contextMedia = hero.locator('[data-detail-order="media"]');
+  await expect(contextMedia).toHaveAttribute('data-building-gallery', 'market-context');
+  await expect(contextMedia).toContainText('Editorial city photograph · not this exact property');
   await expect(hero.locator('[data-detail-order="identity"]')).toBeVisible();
   const layout = await page.locator('main[data-building-detail="ready"]').evaluate((main) => {
     const identity = main.querySelector('[data-detail-order="identity"]')!;

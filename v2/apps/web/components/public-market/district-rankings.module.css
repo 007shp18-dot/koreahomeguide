@@ -708,3 +708,111 @@
   .viewTabs { gap: 22px; }
   .metricSummary > div { border: 0; border-bottom: 1px solid var(--line); }
 }
+
+.hero { display: block; padding-bottom: 20px; }
+.heroCopy > p:not(:first-child) { max-width: 760px; }
+.filters { grid-template-columns: repeat(4, minmax(0, 1fr)) auto; }
+
+.buildingRanking {
+  margin-top: 18px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.buildingRankingHeader,
+.districtComparisonHeader {
+  padding: 18px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 24px;
+  border-bottom: 1px solid var(--line);
+}
+.buildingRankingHeader p,
+.districtComparisonHeader p {
+  margin: 0;
+  color: var(--ranking-muted);
+  font-size: var(--text-meta);
+}
+.buildingRankingHeader > div > p,
+.districtComparisonHeader > p {
+  color: var(--ranking-accent);
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.buildingRankingHeader h2,
+.districtComparisonHeader h2 {
+  margin: 4px 0 0;
+  font-size: clamp(1.35rem, 2.5vw, 2rem);
+  font-weight: 650;
+  letter-spacing: -.025em;
+}
+.buildingRows { margin: 0; padding: 0; list-style: none; }
+.buildingRows li {
+  min-width: 0;
+  min-height: 68px;
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) minmax(150px, auto);
+  align-items: stretch;
+  border-bottom: 1px solid var(--line);
+}
+.buildingRows li:last-child { border-bottom: 0; }
+.buildingRank {
+  display: grid;
+  place-items: center;
+  border-right: 1px solid var(--line);
+  color: var(--ranking-accent);
+  font-size: .82rem;
+  font-weight: 850;
+}
+.buildingLink {
+  min-width: 0;
+  min-height: 44px;
+  padding: 11px 14px;
+  display: grid;
+  align-content: center;
+  gap: 3px;
+  color: inherit;
+  text-decoration: none;
+}
+.buildingLink strong,
+.buildingLink span,
+.buildingValue strong,
+.buildingValue span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.buildingLink strong { font-size: .94rem; }
+.buildingLink span,
+.buildingValue span { color: var(--ranking-muted); font-size: .75rem; }
+.buildingValue {
+  min-width: 0;
+  padding: 11px 14px;
+  display: grid;
+  align-content: center;
+  justify-items: end;
+  gap: 3px;
+  border-left: 1px solid var(--line);
+}
+.buildingValue strong { font-size: .9rem; }
+.districtComparison { margin-top: 38px; }
+
+@media (max-width: 720px) {
+  .filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .buildingRankingHeader,
+  .districtComparisonHeader { align-items: start; flex-direction: column; gap: 8px; }
+  .buildingRows li { grid-template-columns: 38px minmax(0, 1fr) minmax(104px, auto); }
+  .buildingLink { padding-inline: 10px; }
+  .buildingValue { padding-inline: 9px; }
+  .buildingValue strong { font-size: .8rem; }
+}
+
+@media (max-width: 420px) {
+  .filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .buildingRows li { grid-template-columns: 34px minmax(0, 1fr) minmax(94px, auto); }
+  .buildingLink strong { font-size: .86rem; }
+  .buildingLink span,
+  .buildingValue span { font-size: .75rem; }
+  .buildingValue strong { font-size: .75rem; }
+}

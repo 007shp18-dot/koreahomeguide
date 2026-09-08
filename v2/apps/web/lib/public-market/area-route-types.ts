@@ -173,6 +173,40 @@ export type PublicDistrictRankingRow = Readonly<{
   plotAxis: QuotePositionAxis | null;
 }>;
 
+export type PublicBuildingRankingRow = Readonly<{
+  rank: number;
+  buildingId: string;
+  officialName: string;
+  districtSlug: SeoulDistrictSlug;
+  districtNameEn: string;
+  districtNameKo: string;
+  neighborhoodName: string;
+  housingType: 'apartment' | 'officetel' | 'villa_multifamily' | 'detached';
+  medianWon: number;
+  medianLabel: string;
+  sampleCount: number;
+  href: `/kr/seoul/explore/${string}/${string}/?${string}`;
+}>;
+
+export type PublicBuildingRankingsModel =
+  | Readonly<{
+      status: 'ready';
+      rows: readonly PublicBuildingRankingRow[];
+      withheldBuildingCount: number;
+      pagination: Readonly<{
+        page: number;
+        pageSize: number;
+        total: number;
+        pageCount: number;
+        previousPage: number | null;
+        nextPage: number | null;
+      }>;
+    }>
+  | Readonly<{
+      status: 'unavailable';
+      rows: readonly PublicBuildingRankingRow[];
+    }>;
+
 export type UnavailableRankingDistrict = Readonly<{
   slug: SeoulDistrictSlug;
   nameEn: string;
@@ -195,6 +229,7 @@ export type PublicAreaRankingsModel =
         sale: boolean;
       }>;
       citySummary: PublicMarketSummary;
+      buildingRankings: PublicBuildingRankingsModel;
       median: readonly PublicDistrictRankingRow[];
       change: readonly PublicDistrictRankingRow[];
       spread: readonly PublicDistrictRankingRow[];

@@ -189,7 +189,8 @@ describe('Korean embedded product components', () => {
     const html = renderToStaticMarkup(<DistrictRankings locale="ko" model={model} />);
 
     for (const visible of [
-      '서울 구별 실거래가 비교',
+      '서울 건물 가격 순위',
+      '구별 가격과 신고 건수',
       '전세보증금 중앙값',
       '높은 신고 중앙값',
       '중간 50% 구간 분포 폭',

@@ -278,6 +278,7 @@ describe('public building detail', () => {
       backHref="/kr/seoul/explore/?transaction=monthly&propertyType=apartment&district=gangnam-gu&neighborhood=yeoksam-dong&buildingId=gangnam-evidence-tower"
     />);
     const ordered = [
+      'data-detail-order="media"',
       'data-detail-order="identity"',
       'data-detail-order="current-evidence"',
       'data-detail-order="history"',
@@ -289,7 +290,8 @@ describe('public building detail', () => {
     ].map((needle) => html.indexOf(needle));
 
     expect(ordered.every((position) => position >= 0)).toBe(true);
-    expect(html).not.toContain('data-detail-order="media"');
+    expect(html).toContain('data-building-gallery="market-context"');
+    expect(html).toContain('Editorial city photograph · not this exact property');
     expect([...ordered].sort((left, right) => left - right)).toEqual(ordered);
     expect(html).toContain('market=kr-seoul');
     expect(html).toContain('entity=gangnam-evidence-tower');

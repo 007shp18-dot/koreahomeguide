@@ -218,7 +218,7 @@ describe('public migration containment', () => {
     const routes = [
       ['../app/(ko)/ko/kr/seoul/page', '<h1 id="market-page-heading">서울</h1>'],
       ['../app/(ko)/ko/kr/seoul/explore/page', '검증된 구별 자료를 확인할 수 없습니다.'],
-      ['../app/(ko)/ko/kr/seoul/rankings/page', '서울 구별 실거래가 비교'],
+      ['../app/(ko)/ko/kr/seoul/rankings/page', '서울 건물 가격 순위'],
     ] as const;
     for (const [modulePath, heading] of routes) {
       let route: { default: () => unknown } | null = null;

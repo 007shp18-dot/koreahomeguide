@@ -200,7 +200,10 @@ test('desktop exposes the compact Passport form and city exploration cards', asy
   test.skip(testInfo.project.name !== 'desktop-chromium');
   await page.goto('/');
   const passport = page.locator('[data-home-region="passport"]');
-  await expect(passport.getByRole('heading', { level: 1 })).toBeInViewport();
+  await expect(passport.getByRole('heading', {
+    level: 2,
+    name: 'Where can your budget become a home?',
+  })).toBeInViewport();
   await expect(passport.getByRole('button', { name: 'Compare cities' })).toBeInViewport();
   const markets = page.locator('[data-home-region="markets"]');
   await expect(markets.getByRole('heading', {level:2})).toBeInViewport();

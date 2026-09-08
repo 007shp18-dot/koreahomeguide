@@ -7,21 +7,31 @@ vi.mock('../lib/news/news-route-model.server', () => ({ buildNewsIndexModel: () 
 vi.mock('../lib/news/naver-news.server', () => ({ buildApprovedNewsWorkspaceModel: () => ({ items: [], naverState: 'not-configured' }), buildNewsWorkspaceModel: calls.refresh }));
 import { GET } from '../app/api/news/route';
 describe('news response latency boundary', () => {
-  beforeEach(() => vi.clearAllMocks());
-  it('returns stored Dubai headlines without waiting for external collection or writes', async () => {
-    calls.read.mockResolvedValue([{ id: 'dubai', market: 'dubai', url: 'https://example.test/story', publishedAt: '2026-09-06' }]);
+  beforeEach(() => {
+    vi.clearAllMocks();
+    calls.refresh.mockResolvedValue({ items: [{ id: 'unreviewed-discovery' }], naverState: 'ready' });
+  });
+  it('returns reviewed stored headlines without scheduling public-request collection or writes', async () => {
+    calls.read.mockResolvedValue([{ id: 'singapore', market: 'singapore', url: 'https://example.test/story', publishedAt: '2026-09-06' }]);
     const response = await GET();
-    expect((await response.json()).items[0].market).toBe('dubai');
+    expect((await response.json()).items[0].market).toBe('singapore');
     expect(calls.refresh).not.toHaveBeenCalled();
-    expect(calls.after).toHaveBeenCalledOnce();
-    await calls.after.mock.calls[0]![0]();
-    expect(calls.refresh).toHaveBeenCalledOnce();
+    expect(calls.after).not.toHaveBeenCalled();
     expect(response.headers.get('cache-control')).toContain('s-maxage=900');
   });
-  it('collects a fallback when the DB has no items', async () => {
+  it('reports a storage outage without collecting unreviewed fallback headlines', async () => {
     calls.read.mockResolvedValue(null);
-    calls.refresh.mockResolvedValue({ items: [], naverState: 'unavailable' });
-    expect((await (await GET()).json()).naverState).toBe('unavailable');
+    const response = await GET();
+    expect(response.status).toBe(503);
+    expect(response.headers.get('cache-control')).toBe('no-store');
+    expect(calls.refresh).not.toHaveBeenCalled();
+    expect(calls.after).not.toHaveBeenCalled();
+  });
+  it('keeps a successful empty review queue empty instead of publishing live discovery', async () => {
+    calls.read.mockResolvedValue([]);
+    const response = await GET();
+    expect(await response.json()).toMatchObject({ items: [], naverState: 'ready' });
+    expect(calls.refresh).not.toHaveBeenCalled();
     expect(calls.after).not.toHaveBeenCalled();
   });
 });

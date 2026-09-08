@@ -146,6 +146,7 @@ function projectedBuildingMediaFor(
       }
     : null;
   const media = selected ?? approvedFallback;
+  if (media === null && registryKey === undefined) return undefined;
   return <ProjectedEntityMedia
     buildingName={name}
     browserKey={googleMapsBrowserKeyFromEnvironment()}

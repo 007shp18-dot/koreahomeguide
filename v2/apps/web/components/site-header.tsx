@@ -92,6 +92,11 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
     ?? 'Global';
   const isKorean = copy.languageLabel === 'KO';
   const actionLinks = contextualActions(context, locale);
+  const currentMarketLabel = visibleMarkets.find(({ id }) => id === context)?.label;
+  const cityMenuLabel = currentMarketLabel ?? (isKorean ? '도시' : locale === 'zh-CN' ? '城市' : 'Cities');
+  const chooseCityLabel = isKorean ? '도시 선택' : locale === 'zh-CN' ? '选择城市' : 'Choose a city';
+  const chooseLanguageLabel = isKorean ? '언어 선택' : locale === 'zh-CN' ? '选择语言' : 'Choose language';
+  const currentLanguageLabel = locale === 'zh-CN' ? '中文' : locale.toUpperCase();
   const fallbackPath = locale === 'zh-CN' ? (currentHref?.startsWith('/zh-cn/') ? currentHref : currentHref === '/news/' || currentHref === '/guides/' ? `/zh-cn${currentHref}` : '/zh-cn/kr/seoul/') : currentHref ?? (locale === 'en' && copy.languageSwitch?.hrefLang === 'ko' ? copy.languageSwitch.href.replace(/^\/ko/, '') : copy.homeHref) ?? '/';
 
   return (
@@ -117,24 +122,45 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
           </ul>
         </nav>
 
-        <nav className="site-header__markets" aria-label="Market navigation">
-          {visibleMarkets.map((market) => (
-            <Link
-              className="site-header__market-link"
-              href={market.href}
-              aria-current={isCurrentMarketLink(market.href.replace(/^\/ko(?=\/)/, ''), currentHref) ? 'page' : undefined}
-              key={market.id}
-            >
-              {market.label}
-            </Link>
-          ))}
-        </nav>
-
         <div className="site-header__actions">
+          <details className="site-header__context-menu site-header__context-menu--market" name="site-header-context">
+            <summary aria-label={chooseCityLabel}>
+              <span>{cityMenuLabel}</span><span aria-hidden="true">⌄</span>
+            </summary>
+            <div className="site-header__context-panel site-header__context-panel--market">
+              <nav className="site-header__markets" aria-label="Market navigation">
+                {visibleMarkets.map((market) => (
+                  <Link
+                    className="site-header__market-link"
+                    href={market.href}
+                    aria-current={isCurrentMarketLink(market.href.replace(/^\/ko(?=\/)/, ''), currentHref) ? 'page' : undefined}
+                    key={market.id}
+                  >
+                    {market.label}
+                  </Link>
+                ))}
+              </nav>
+              {marketId === null ? null : (
+                <MarketLocalNav
+                  marketId={marketId}
+                  marketLabel={marketLabel}
+                  currentHref={currentHref}
+                  locale={isKorean ? 'ko' : 'en'}
+                />
+              )}
+            </div>
+          </details>
           {actionLinks && <Link className="site-header__action site-header__action--saved" href={actionLinks.saved}>{isKorean ? '관심 목록' : locale === 'zh-CN' ? '已保存' : 'Saved'}</Link>}
-          <Suspense fallback={<LanguageLinks pathname={fallbackPath} alternate={copy.languageSwitch} />}>
-            <SiteLanguageNavigation fallbackPath={fallbackPath} translations={editorialLanguageRoutes()} alternate={copy.languageSwitch} />
-          </Suspense>
+          <details className="site-header__context-menu site-header__context-menu--language" name="site-header-context">
+            <summary aria-label={chooseLanguageLabel}>
+              <span>{currentLanguageLabel}</span><span aria-hidden="true">⌄</span>
+            </summary>
+            <div className="site-header__context-panel site-header__context-panel--language">
+              <Suspense fallback={<LanguageLinks pathname={fallbackPath} alternate={copy.languageSwitch} />}>
+                <SiteLanguageNavigation fallbackPath={fallbackPath} translations={editorialLanguageRoutes()} alternate={copy.languageSwitch} />
+              </Suspense>
+            </div>
+          </details>
           {actionLinks && <Link className="site-header__action site-header__action--offer" href={actionLinks.offer}>{isKorean ? '제안 가격 확인' : locale === 'zh-CN' ? '核对报价' : 'Check an offer'}</Link>}
         </div>
         <SiteMobileMenu
@@ -158,15 +184,6 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
           <Suspense fallback={<LanguageLinks pathname={fallbackPath} alternate={copy.languageSwitch} />}><SiteLanguageNavigation fallbackPath={fallbackPath} translations={editorialLanguageRoutes()} alternate={copy.languageSwitch} /></Suspense>
         </SiteMobileMenu>
       </div>
-
-      {marketId === null ? null : (
-        <MarketLocalNav
-          marketId={marketId}
-          marketLabel={marketLabel}
-          currentHref={currentHref}
-          locale={isKorean ? 'ko' : 'en'}
-        />
-      )}
     </header><PassportBudgetContext /></>
   );
 }

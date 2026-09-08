@@ -43,11 +43,17 @@ test('rankings server HTML exposes the three supported evidence lists', async ({
   const response = await page.goto('/kr/seoul/rankings/');
 
   expect(response?.status()).toBe(200);
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Median');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Seoul building price rankings');
+  const buildingRows = page.locator('[data-building-ranking-row]');
+  await expect(buildingRows).not.toHaveCount(0);
+  await expect(buildingRows.first().getByRole('link')).toHaveAttribute(
+    'href',
+    /\/kr\/seoul\/explore\/[^/]+\/[^/?]+\?transaction=sale&area=all&propertyType=/,
+  );
   await expect(page.locator('[data-ranking-section]')).toHaveCount(3);
   await expect(page.getByRole('tab', { name: 'Median price', exact: true })).toHaveAttribute('aria-selected', 'true');
   await page.getByRole('tab', { name: 'Price spread' }).click();
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Middle-half spread');
+  await expect(page.getByRole('heading', { level: 2, name: 'Middle-half spread (P75 − P25)' })).toBeVisible();
   await page.getByRole('tab', { name: 'Filing volume' }).click();
   await expect(page.getByRole('heading', { name: 'Qualifying reported contracts' }))
     .toBeVisible();
@@ -72,11 +78,11 @@ test('rankings server HTML exposes the three supported evidence lists', async ({
   assertNoRuntimeFailures();
 });
 
-test('fixture rankings preserve descending order and stable ranks across page boundaries', async ({ page }) => {
+test('fixture district context preserves descending order and stable ranks across page boundaries', async ({ page }) => {
   test.skip(releaseTarget.usesExternalServer, 'Exact fixture values are local-release only.');
   await page.goto('/kr/seoul/rankings/');
 
-  const firstPageRows = page.locator('[data-ranking-section="median"] [data-ranking-row]');
+  const firstPageRows = page.getByRole('tabpanel', { name: 'Median price' }).locator('[data-ranking-row]');
   await expect(firstPageRows).toHaveCount(20);
   const firstPage = await firstPageRows.evaluateAll((rows) => rows.map((row) => ({
     id: row.getAttribute('data-ranking-row'),
@@ -84,7 +90,7 @@ test('fixture rankings preserve descending order and stable ranks across page bo
     value: Number(row.querySelector(':scope > strong')?.textContent?.replace(/[^0-9]/gu, '')),
   })));
   await page.getByRole('link', { name: 'Next', exact: true }).click();
-  const secondPageRows = page.locator('[data-ranking-section="median"] [data-ranking-row]');
+  const secondPageRows = page.getByRole('tabpanel', { name: 'Median price' }).locator('[data-ranking-row]');
   const secondPage = await secondPageRows.evaluateAll((rows) => rows.map((row) => ({
     id: row.getAttribute('data-ranking-row'),
     rank: Number(row.querySelector('[aria-label^="Rank "]')?.textContent),

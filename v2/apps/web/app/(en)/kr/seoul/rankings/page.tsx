@@ -26,8 +26,8 @@ import { indexableMetadata } from '@/lib/public-metadata';
 
 export const metadata: Metadata = indexableMetadata({
   path: '/kr/seoul/rankings/',
-  title: 'Seoul sale, jeonse and monthly-rent rankings | signedprice',
-  description: 'Compare verified Seoul district sale, jeonse and monthly-rent medians, spread and sample depth.',
+  title: 'Seoul building price rankings | signedprice',
+  description: 'Compare published Seoul building sale, jeonse and monthly-rent medians, with district price context and source periods.',
   languageAlternates: {
     en: '/kr/seoul/rankings/',
     ko: '/ko/kr/seoul/rankings/',
@@ -67,6 +67,12 @@ export function resolveKoreaRankingsPageModel(
 ) {
   const pageValue = typeof query.page === 'string' ? Number.parseInt(query.page, 10) : 1;
   const page = Number.isSafeInteger(pageValue) && pageValue > 0 ? pageValue : 1;
+  const buildingPageValue = typeof query.buildingPage === 'string'
+    ? Number.parseInt(query.buildingPage, 10)
+    : 1;
+  const buildingPage = Number.isSafeInteger(buildingPageValue) && buildingPageValue > 0
+    ? buildingPageValue
+    : 1;
   const selection = parseExplorerSelection(
     query,
     { market: 'kr', transaction: 'sale' },
@@ -79,7 +85,14 @@ export function resolveKoreaRankingsPageModel(
     contractGroup: selection.contractType ?? 'all',
   });
   return projection.status === 'ready'
-    ? buildKoreaEvidenceAreaRankingsModel(projection, referenceInstant, page)
+    ? buildKoreaEvidenceAreaRankingsModel(
+        projection,
+        referenceInstant,
+        page,
+        20,
+        repositories,
+        buildingPage,
+      )
     : buildPublicAreaRankingsModel({
         source: process.env.SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT === undefined
           ? undefined

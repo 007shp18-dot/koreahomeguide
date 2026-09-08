@@ -2007,8 +2007,8 @@
   .exploreToolbar .buildingSearch { order: 0; flex-basis: 100%; }
   .exploreToolbar .transactionFilter { order: 1; }
   .exploreToolbar > .toolbarSelect { order: 2; flex: 1 1 150px; }
-  .advancedFilters { order: 3; }
-  .advancedFiltersPanel { right: 0; }
+  .advancedFilters { order: 3; flex: 1 0 100%; }
+  .advancedFiltersPanel { position: static; width: 100%; margin-top: 8px; }
   .districtBrowser { height: auto; overflow: visible; }
   .mapEvidenceDisclosure { top: auto; bottom: 12px; }
   .mapLevelButton { top: 12px; right: 12px; }

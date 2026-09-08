@@ -9,8 +9,8 @@ import styles from '../korean-evidence.module.css';
 
 export const metadata = indexableMetadata({
   path: '/ko/kr/seoul/rankings/',
-  title: '서울 구별 전세 근거 순위 | signedprice',
-  description: '서울 구별 신고 전세 계약의 중앙값, 분포 폭과 표본 깊이를 같은 기준으로 비교합니다.',
+  title: '서울 건물 실거래가 순위 | signedprice',
+  description: '선택 조건에 맞는 서울 건물의 매매·전세·월세 중앙값을 비교하고 구별 가격과 자료 기간을 함께 확인합니다.',
   locale: 'ko_KR',
   imagePath: '/og/ko/',
   languageAlternates: { en: '/kr/seoul/rankings/', ko: '/ko/kr/seoul/rankings/' },

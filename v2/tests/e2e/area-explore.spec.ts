@@ -119,7 +119,7 @@ test('default list keeps rows compact, saveable, and free of map requests', asyn
   page.on('request', request => {
     if (/naver-district-map|maps\.googleapis|openapi\.map\.naver/i.test(request.url())) mapRequests.push(request.url());
   });
-  await page.goto('/kr/seoul/explore/?district=gangnam-gu');
+  await page.goto('/kr/seoul/explore/?district=jongno-gu');
 
   await expect(page.locator('[data-explorer-layout="list"]')).toBeVisible();
   const rowCount = await page.locator('[data-building-row]').count();
@@ -168,7 +168,7 @@ test('rail selection opens the map-owned drawer and full-detail CTA', async ({ p
   const panel = drawer.locator(`[data-building-panel="${PUBLIC_BUILDING_TEST_ID}"]`);
   await expect(panel).toBeVisible();
   await expect(drawer.getByRole('link', { name: 'Open full building evidence' }).first())
-    .toHaveAttribute('href', PUBLIC_BUILDING_TEST_SELECTION_HREF);
+    .toHaveAttribute('href', `${PUBLIC_BUILDING_TEST_SELECTION_HREF}&transaction=sale`);
   const drawerBox = await drawer.boundingBox();
   expect(drawerBox).not.toBeNull();
   if (testInfo.project.name === 'desktop-chromium') {

@@ -582,11 +582,17 @@ describe('installed Korea evidence repositories', () => {
       contractGroup: 'all',
     });
     if (projection.status !== 'ready') throw new Error('Projection must be ready.');
+    const rankedBuilding = repositories.sale?.listBuildingRecords()[0];
+    if (rankedBuilding === undefined) throw new Error('Sale building fixture must exist.');
     const model = buildKoreaEvidenceAreaRankingsModel(
       projection,
       '2026-09-01T00:00:00.000Z',
+      1,
+      20,
+      repositories,
     );
     const html = renderToStaticMarkup(createElement(DistrictRankings, { model }));
+    const koreanHtml = renderToStaticMarkup(createElement(DistrictRankings, { model, locale: 'ko' }));
 
     expect(html).toContain('data-ranking-filters="exact-cohort"');
     expect(html).toContain('name="transaction"');
@@ -595,9 +601,55 @@ describe('installed Korea evidence repositories', () => {
     expect(html).toContain('name="propertyType"');
     expect(html).toContain('Median reported sale price');
     expect(html).toContain('MOLIT reported sale contracts');
+    expect(html).toContain('>Seoul building price rankings</h1>');
+    expect(html).toContain('data-building-ranking-row=');
+    expect(html).toContain('검증아파트');
+    expect(html).toContain('Daechi-dong');
+    expect(html).toContain('5 reported sales');
+    expect(html).toContain(`/kr/seoul/explore/gangnam-gu/${rankedBuilding.buildingId}?transaction=sale&amp;area=all&amp;propertyType=apartment`);
     expect(html).not.toContain('45–55㎡');
     expect(html).not.toContain('zero-rent jeonse');
+    expect(koreanHtml).toContain('>서울 건물 가격 순위</h1>');
+    expect(koreanHtml).toContain('data-building-ranking-row=');
+    expect(koreanHtml).toContain(`/ko/kr/seoul/explore/gangnam-gu/${rankedBuilding.buildingId}?transaction=sale&amp;area=all&amp;propertyType=apartment`);
   });
+
+  it('shows published building rows for the default checked-in ranking filters', async () => {
+    const repositories = koreaEvidenceRepositoriesFromEnvironment({
+      useCheckedInSnapshot: true,
+      retainLastVerified: false,
+    });
+    const pageModule = await import('../app/(en)/kr/seoul/rankings/page');
+    const model = pageModule.resolveKoreaRankingsPageModel(
+      {},
+      repositories,
+      '2026-09-01T00:00:00.000Z',
+    );
+
+    expect(model.status).toBe('ready');
+    if (model.status !== 'ready') return;
+    expect(model.evidenceSelection).toMatchObject({
+      transaction: 'sale', areaBand: 'all', housingType: 'all',
+    });
+    expect(model.buildingRankings.status).toBe('ready');
+    if (model.buildingRankings.status !== 'ready') return;
+    expect(model.buildingRankings.rows.length).toBeGreaterThan(0);
+    const html = renderToStaticMarkup(createElement(DistrictRankings, { model }));
+    expect(html).toContain('>Seoul building price rankings</h1>');
+    expect(html).toContain('data-building-ranking-row=');
+
+    const independentlyPaged = pageModule.resolveKoreaRankingsPageModel(
+      { page: '2', buildingPage: '2' },
+      repositories,
+      '2026-09-01T00:00:00.000Z',
+    );
+    expect(independentlyPaged.status).toBe('ready');
+    if (independentlyPaged.status !== 'ready') return;
+    expect(independentlyPaged.pagination.page).toBe(2);
+    expect(independentlyPaged.buildingRankings.status).toBe('ready');
+    if (independentlyPaged.buildingRankings.status !== 'ready') return;
+    expect(independentlyPaged.buildingRankings.pagination.page).toBe(2);
+  }, 15_000);
 
   it('resolves ranking search parameters to the exact installed cohort', async () => {
     const source = await fixtures();
