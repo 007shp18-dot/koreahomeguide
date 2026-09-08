@@ -75,7 +75,7 @@ export const publicRoutes = [
     canonical: '/sg/',
     alternates: true,
   },
-  { path: '/ae/dubai/', heading: 'Dubai Market Overview', indexing: 'index', canonical: '/ae/dubai/', alternates: true },
+  { path: '/ae/dubai/', heading: 'Dubai', indexing: 'index', canonical: '/ae/dubai/', alternates: true },
   {
     path: '/sg/singapore/explore/',
     heading: 'Explore',
