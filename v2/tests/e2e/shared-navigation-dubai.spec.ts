@@ -1,5 +1,9 @@
 import { expect, test } from '@playwright/test';
-import { openPrimaryNavigation } from './navigation-helpers';
+import {
+  visibleLanguageNavigation,
+  visibleMarketNavigation,
+  visibleProductNavigation,
+} from './site-header-helpers';
 
 test('uses one navigation order and published language links across markets', async ({ page }) => {
   for (const path of [
@@ -11,10 +15,49 @@ test('uses one navigation order and published language links across markets', as
     '/ae/dubai/explore/',
   ] as const) {
     await page.goto(path);
-    const header = page.locator('header.site-header:visible');
-    const navigation = await openPrimaryNavigation(page);
-    await expect(navigation.getByRole('link')).toHaveText(['Markets', 'Prices', 'Tools', 'News & Insights', 'Guides']);
-    await expect(header.getByRole('navigation', { name: 'Language navigation', exact: true }).getByRole('link')).toHaveText([...languages]);
+    const productLinks = (await visibleProductNavigation(page)).getByRole('link');
+    await expect(productLinks).toHaveText(['Markets', 'Prices', 'Tools', 'News & Insights', 'Guides']);
+    for (const [index, href] of ['/markets/', '/prices/', '/tools/', '/news/', '/guides/'].entries()) {
+      await expect(productLinks.nth(index)).toHaveAttribute('href', href);
+    }
+    const translations = {
+      '/prices/': [['EN', '/prices/'], ['KO', '/ko/prices/']],
+      '/news/': [['EN', '/news/'], ['KO', '/ko/news/'], ['中文', '/zh-cn/news/']],
+      '/guides/': [['EN', '/guides/'], ['KO', '/ko/guides/'], ['中文', '/zh-cn/guides/']],
+      '/kr/seoul/explore/': [['EN', '/kr/seoul/explore/'], ['KO', '/ko/kr/seoul/explore/']],
+      '/sg/singapore/explore/': [['EN', '/sg/singapore/explore/'], ['KO', '/ko/sg/singapore/explore/']],
+      '/ae/dubai/explore/': [['EN', '/ae/dubai/explore/'], ['KO', '/ko/ae/dubai/explore/']],
+    } as const;
+    const expectedLanguages = translations[path as keyof typeof translations];
+    const languageLinks = (await visibleLanguageNavigation(page)).getByRole('link');
+    await expect(languageLinks).toHaveText(expectedLanguages.map(([label]: readonly [string, string]) => label));
+    for (const [index, [, href]] of expectedLanguages.entries()) {
+      await expect(languageLinks.nth(index)).toHaveAttribute('href', href);
+    }
+    const cityLinks = (await visibleMarketNavigation(page)).getByRole('link');
+    await expect(cityLinks).toHaveText(['Seoul', 'Singapore', 'Dubai']);
+    for (const [index, href] of ['/kr/seoul/', '/sg/', '/ae/dubai/'].entries()) {
+      await expect(cityLinks.nth(index)).toHaveAttribute('href', href);
+    }
+    const localPages = {
+      '/kr/seoul/explore/': ['Seoul', [
+        ['Overview', '/kr/seoul/'], ['Explore', '/kr/seoul/explore/'], ['Check', '/kr/seoul/check/'],
+        ['Rankings', '/kr/seoul/rankings/'], ['Corrections', '/kr/seoul/corrections/'],
+      ]],
+      '/sg/singapore/explore/': ['Singapore', [
+        ['Overview', '/sg/'], ['Explore', '/sg/singapore/explore/'], ['Check', '/sg/singapore/check/'],
+        ['Rankings', '/sg/singapore/rankings/'], ['Corrections', '/sg/singapore/corrections/'],
+      ]],
+      '/ae/dubai/explore/': ['Dubai', [['Overview', '/ae/dubai/'], ['Explore', '/ae/dubai/explore/']]],
+    } as const;
+    if (path in localPages) {
+      const [market, pages] = localPages[path as keyof typeof localPages];
+      const links = (await visibleMarketNavigation(page, market)).getByRole('link');
+      await expect(links).toHaveText(pages.map(([label]: readonly [string, string]) => label));
+      for (const [index, [, href]] of pages.entries()) {
+        await expect(links.nth(index)).toHaveAttribute('href', href);
+      }
+    }
     await expect(page.locator('footer').getByRole('link', { name: 'Singapore', exact: true })).toHaveCount(1);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(true);
   }
