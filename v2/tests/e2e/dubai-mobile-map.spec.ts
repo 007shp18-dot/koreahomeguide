@@ -13,6 +13,17 @@ for (const width of [390, 760]) {
       expect(mapBox).not.toBeNull();
       expect(resultsBox).not.toBeNull();
       expect(mapBox!.y + mapBox!.height).toBeLessThanOrEqual(resultsBox!.y + 1);
+      // The isolated release fixture intentionally withholds Dubai prices.
+      // Verify its curated fallback as well as the published evidence path.
+      if (await discovery.getByRole('heading', { name: 'Area guide', exact: true }).count()) {
+        const firstArea = discovery.getByRole('button').first();
+        await firstArea.click();
+        await expect(firstArea).toHaveAttribute('aria-pressed', 'true');
+        await expect(discovery.getByRole('link', { name: 'Official neighbourhood guide' })).toBeVisible();
+        await expect(page).toHaveURL(/[?&]area=/);
+        expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(true);
+        return;
+      }
       const first = discovery.locator('article').first();
       await expect(first.locator('[data-area-evidence]')).not.toHaveAttribute('open');
       await first.getByRole('button').first().click();
