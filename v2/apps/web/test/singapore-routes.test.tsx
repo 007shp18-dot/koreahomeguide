@@ -199,7 +199,7 @@ describe('Singapore route SSR', () => {
     expect(html).toContain('href="/sg/singapore/explore/ccr/');
     expect(html).toContain('CCR');
     expect(html).toContain(`href="/sg/singapore/explore/ccr/${projectIdentity.id}"`);
-    expect(project).toContain('Check this project price');
+    expect(project).toContain('Compare an asking price');
     expect(project).toContain(`a-project=${projectIdentity.id}`);
     expect(project).not.toMatch(/a-amount=|a-area-min=|a-area-max=/);
     expect(html).toContain('data-hdb-evidence="unavailable"');

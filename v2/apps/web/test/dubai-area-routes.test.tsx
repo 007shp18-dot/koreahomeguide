@@ -68,7 +68,7 @@ describe('Dubai area evidence routes', () => {
     for (const label of [
       'Ready vs Off-Plan', 'Median annual rent', 'Estimated gross rent-to-price ratio',
       '31 registered sales', '30 new rent contracts', '2026-06-08–2026-09-05',
-      'Comparable areas', 'Check this asking price', 'Source: Dubai Land Department',
+      'Comparable areas', 'Compare an asking price', 'Source: Dubai Land Department',
     ]) expect(html).toContain(label);
     expect(html).toContain('data-comparable-stage="ready"');
     expect(html).toContain('data-comparable-stage="off-plan"');
