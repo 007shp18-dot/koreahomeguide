@@ -1,7 +1,7 @@
 import type { Locator, Page } from '@playwright/test';
 
 async function openMobileMenu(page: Page): Promise<void> {
-  const header = page.locator('header.site-header');
+  const header = page.locator('header.site-header:visible');
   const toggle = header.getByLabel(/^(?:Open menu|메뉴 열기)$/);
   if (!await toggle.isVisible()) return;
   const menu = header.locator('details.site-header__mobile-menu');
@@ -9,7 +9,7 @@ async function openMobileMenu(page: Page): Promise<void> {
 }
 
 export async function openPrimaryNavigation(page: Page): Promise<Locator> {
-  const header = page.locator('header.site-header');
+  const header = page.locator('header.site-header:visible');
   const desktop = header.getByRole('navigation', {
     name: 'Primary navigation',
     exact: true,
@@ -20,7 +20,7 @@ export async function openPrimaryNavigation(page: Page): Promise<Locator> {
 }
 
 export async function openCityNavigation(page: Page): Promise<Locator> {
-  const header = page.locator('header.site-header');
+  const header = page.locator('header.site-header:visible');
   const desktop = header.getByRole('navigation', {
     name: 'Market navigation',
     exact: true,
@@ -34,11 +34,12 @@ export async function openMarketPagesNavigation(
   page: Page,
   market: 'Seoul' | 'Singapore' | 'Dubai',
 ): Promise<Locator> {
-  const desktop = page.getByRole('navigation', {
+  const header = page.locator('header.site-header:visible');
+  const desktop = header.getByRole('navigation', {
     name: `${market} market navigation`,
     exact: true,
   });
   if (await desktop.isVisible()) return desktop;
   await openMobileMenu(page);
-  return page.getByRole('navigation', { name: `${market} pages`, exact: true });
+  return header.getByRole('navigation', { name: `${market} pages`, exact: true });
 }

@@ -13,6 +13,7 @@ test('Insights opens analysis and preserves the news journey', async ({ page }) 
   await page.goto('/news/');
   await (await openPrimaryNavigation(page)).getByRole('link', { name: 'Insights' }).click();
   await expect(page).toHaveURL(/\/news\/\?type=analysis$/);
+  await expect(page.locator('header.site-header:visible details.site-header__mobile-menu')).not.toHaveAttribute('open', '');
   await expect(page.getByRole('heading', { level: 1, name: 'Insights' })).toBeVisible();
   const sections = page.getByRole('navigation', { name: 'Insights sections' });
   await expect(sections.getByRole('link', { name: 'Analysis reports' })).toHaveAttribute('aria-current', 'page');

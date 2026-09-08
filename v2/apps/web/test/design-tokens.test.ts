@@ -278,6 +278,12 @@ describe('signedprice normal-text design tokens', () => {
 });
 
 describe('signedprice focus indicator', () => {
+  it('applies the shared focus indicator to navigation and form controls', () => {
+    expect(css).toMatch(
+      /a:focus-visible,\s*button:focus-visible,\s*summary:focus-visible,\s*input:focus-visible,\s*select:focus-visible,\s*textarea:focus-visible\s*\{[\s\S]*?outline:\s*2px solid var\(--focus-ring\);[\s\S]*?outline-offset:\s*2px;/,
+    );
+  });
+
   it('keeps every authored outline two pixels while permitting audited local contrast', () => {
     const authoredOutlines = [
       ...css.matchAll(/outline:\s*(\d+)px solid ([^;]+);/g),

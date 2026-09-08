@@ -68,8 +68,10 @@ async function expectTouchTarget(locator: Locator) {
   expect(box?.height).toBeGreaterThanOrEqual(44);
 }
 
-async function expectCobaltFocus(locator: Locator) {
+async function expectCobaltFocus(page: Page, locator: Locator) {
+  await page.keyboard.press('Tab');
   await locator.focus();
+  await expect(locator).toBeFocused();
   const focus = await locator.evaluate((element) => {
     const style = getComputedStyle(element);
     return {
@@ -279,13 +281,13 @@ test('mobile controls keep 44px focus targets and natural document scrolling', a
   const districtLink = page.getByRole('combobox', { name: 'All 25 Seoul districts' });
   for (const target of [pricesTab, districtLink]) {
     await expectTouchTarget(target);
-    await expectCobaltFocus(target);
+    await expectCobaltFocus(page, target);
   }
   await districtLink.selectOption('jongno-gu');
   await expect(page).toHaveURL(/district=jongno-gu/);
   const detailLink = page.locator('[data-building-row]').first().getByRole('link');
   await expectTouchTarget(detailLink);
-  await expectCobaltFocus(detailLink);
+  await expectCobaltFocus(page, detailLink);
   await expect(viewTabs).toHaveCount(4);
   for (let index = 0; index < 4; index += 1) await expectTouchTarget(viewTabs.nth(index));
   await expectNoHorizontalOverflow(page);
