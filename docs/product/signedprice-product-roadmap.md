@@ -1,8 +1,74 @@
 # SignedPrice product roadmap
 
-Updated 2026-09-07. Current user-approved order supersedes the August preview-only plan.
+Updated 2026-09-08. This checkpoint supersedes the 7 September continuation
+notes and the August preview-only plan.
 
-## Continuation checkpoint — 7 September
+## Current audit checkpoint — 8 September
+
+The three-city research journey is available and the production smoke check found
+no unavailable states or HTTP 5xx responses on the sampled Home, Passport, Seoul,
+Singapore, Dubai, Tools, News, Guides and Korean routes. Warm route transitions
+were generally below two seconds. The first cold Home request took about fourteen
+seconds and is the clearest current performance risk.
+
+This release corrects reciprocal English/Korean/Chinese metadata, Korean social
+images, and mobile navigation coverage. The mobile test contract now opens the
+collapsed header before checking Home → Prices → Explore → Check, News → Guides,
+Rankings and the Seoul/Singapore Explore journeys. Production verification still
+requires the release browser suite; a local Chromium download was unavailable
+during this audit.
+
+The market refresh rollout remains deliberately bounded. Production allows only
+`kr-seoul-sale`; its first canary safely recorded `configuration_missing` because
+the runtime used the legacy MOLIT key name. The compatibility fix accepts either
+key name. Do not enable Seoul rent, Singapore or Dubai jobs until the corrected
+sale canary succeeds twice and the second run reconciles as unchanged.
+
+### Priorities
+
+| Priority | Work | Exit evidence |
+| --- | --- | --- |
+| P0 | Release the mobile navigation and SEO corrections | Mobile release projects pass; canonical, hreflang and social images are correct in production |
+| P0 | Complete the Seoul sale refresh canary | First run receives and persists records; immediate repeat classifies exact records as unchanged |
+| P0 | Reduce cold-start latency | Production cold-route samples are repeatable and the slowest path is explained or brought under the two-second target |
+| P1 | Add validated publication from internal observations to versioned public snapshots | Validation, quarantine, last-good activation and rollback are exercised without removing current evidence |
+| P1 | Roll out Seoul rent, then Singapore sale and rent one at a time | Each job passes first-run, idempotency, freshness and storage checks before the next is enabled |
+| P1 | Automate daily official FX inputs for Passport | Source date is visible, stale data alerts, and the last valid rates remain available on provider failure |
+| P2 | Connect Passport candidates to a compatible shortlist and comparison | Type, tenure, area, period and currency differences stay explicit; user assumptions can be saved |
+| P2 | Add opt-in accounts and alerts | Consent, unsubscribe, retention and failure handling exist before notifications ship |
+| P2 | Add verified professional handoff | Real partner identity, scope, consent and audit trail exist before any service claim is shown |
+
+### Automatic update policy
+
+Every automated dataset follows four separate gates:
+
+1. Collect provider records into internal observations.
+2. Validate schema, counts, freshness, duplicates and entity links; quarantine a
+   failed batch without deleting prior evidence.
+3. Build a versioned public projection with its source period and sample coverage.
+4. Activate only a passing projection, retain the last-good version and provide a
+   tested rollback.
+
+Automate market refresh run/failure alerts, public-snapshot freshness, daily FX
+freshness, broken internal links, sitemap/indexability drift, metadata reciprocity
+and a small desktop/mobile journey suite. Keep Dubai ingestion disabled until its
+storage and source-display gates are approved.
+
+### Product simplification decisions
+
+- Keep one user path: market or budget → evidence → Check/scenario → shortlist →
+  compatible comparison. Prefer improving this path over adding more hubs.
+- Remove user-visible links to unfinished property inventory, investment,
+  brokerage, account or alert experiences. Preserve permanent redirects for any
+  retired public URL with external value.
+- Consolidate legacy duplicate entry pages and repeated explanatory cards only
+  after their canonical destination and search traffic are checked.
+- Do not restore the deprecated “Search this map” control or decorative legend
+  without observed user demand.
+- Never imply live listings, guaranteed returns, accounts, partners or licensed
+  services before the corresponding system and real-world operation exist.
+
+## Historical checkpoint — 7 September
 
 - Tools, calculator and three-city Check design is merged in #181; typography
   follow-up is merged in #185. The latter records passing unit and browser CI.

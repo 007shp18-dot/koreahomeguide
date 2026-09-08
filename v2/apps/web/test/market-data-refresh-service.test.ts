@@ -175,6 +175,62 @@ describe('market data refresh service coordination', () => {
     );
   });
 
+  it('accepts the existing DATA_GO_KR service-key alias for Seoul refreshes', async () => {
+    const store = repository();
+    const collectSeoul = vi.fn(async () => batch('kr-seoul-sale'));
+    const service = createMarketDataRefreshService({
+      repository: store,
+      environment: {
+        SIGNEDPRICE_MARKET_REFRESH_JOBS: 'kr-seoul-sale',
+        DATA_GO_KR_SERVICE_KEY: '  existing-key  ',
+      },
+      collectSeoul,
+    });
+
+    await expect(service.run('kr-seoul-sale')).resolves.toMatchObject({
+      state: 'ready',
+      job: 'kr-seoul-sale',
+    });
+    expect(collectSeoul).toHaveBeenCalledWith(expect.objectContaining({
+      job: 'kr-seoul-sale',
+      serviceKey: 'existing-key',
+    }));
+  });
+
+  it.each([
+    {
+      name: 'prefers the SignedPrice-specific key when both are configured',
+      primary: 'preferred-key',
+      alias: 'existing-key',
+      expected: 'preferred-key',
+    },
+    {
+      name: 'falls back when the SignedPrice-specific key is whitespace-only',
+      primary: '   ',
+      alias: 'existing-key',
+      expected: 'existing-key',
+    },
+  ])('$name', async ({ primary, alias, expected }) => {
+    const collectSeoul = vi.fn(async () => batch('kr-seoul-sale'));
+    const service = createMarketDataRefreshService({
+      repository: repository(),
+      environment: {
+        SIGNEDPRICE_MARKET_REFRESH_JOBS: 'kr-seoul-sale',
+        SIGNEDPRICE_PUBLIC_DATA_SERVICE_KEY: primary,
+        DATA_GO_KR_SERVICE_KEY: alias,
+      },
+      collectSeoul,
+    });
+
+    await expect(service.run('kr-seoul-sale')).resolves.toMatchObject({
+      state: 'ready',
+      job: 'kr-seoul-sale',
+    });
+    expect(collectSeoul).toHaveBeenCalledWith(expect.objectContaining({
+      serviceKey: expected,
+    }));
+  });
+
   it('rejects a Dubai auto-download URL outside official HTTPS hosts', async () => {
     const store = repository();
     const fetchResponse = vi.fn<typeof fetch>();

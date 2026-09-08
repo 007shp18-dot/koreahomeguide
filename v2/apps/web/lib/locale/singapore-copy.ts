@@ -286,9 +286,28 @@ export function singaporeMetadata(metadata: import('next').Metadata): import('ne
   const canonical = metadata.alternates?.canonical?.toString();
   const ko = canonical?.replace(/(?<!\/ko)\/sg\/singapore\//, '/ko/sg/singapore/');
   const en = ko?.replace('/ko/sg/', '/sg/');
+  const image = 'https://www.signedprice.com/og/ko/';
   const title = typeof metadata.title === 'string' ? sgText('ko', metadata.title) : metadata.title;
-  return { ...metadata, title, description: sgText('ko', metadata.description),
-    alternates: ko ? { ...metadata.alternates, canonical: ko, languages: { en, ko } } : metadata.alternates,
-    openGraph: metadata.openGraph ? { ...metadata.openGraph, title: typeof metadata.openGraph.title === 'string' ? sgText('ko', metadata.openGraph.title) : metadata.openGraph.title, description: sgText('ko', metadata.openGraph.description), url: ko } : undefined,
+  const description = sgText('ko', metadata.description);
+  const fallbackTitle = typeof title === 'string' ? title : undefined;
+  const fallbackDescription = typeof description === 'string' ? description : undefined;
+  const openGraphTitle = typeof metadata.openGraph?.title === 'string'
+    ? sgText('ko', metadata.openGraph.title)
+    : (metadata.openGraph?.title ?? fallbackTitle);
+  const openGraphDescription = sgText(
+    'ko',
+    metadata.openGraph?.description ?? fallbackDescription,
+  );
+  const twitterTitle = typeof metadata.twitter?.title === 'string'
+    ? sgText('ko', metadata.twitter.title)
+    : (metadata.twitter?.title ?? fallbackTitle);
+  const twitterDescription = sgText(
+    'ko',
+    metadata.twitter?.description ?? fallbackDescription,
+  );
+  return { ...metadata, title, description,
+    alternates: ko ? { ...metadata.alternates, canonical: ko, languages: { en, ko, 'x-default': en } } : metadata.alternates,
+    openGraph: { ...metadata.openGraph, title: openGraphTitle, description: openGraphDescription, url: ko, locale: 'ko_KR', alternateLocale: ['en_US'], images: [image] },
+    twitter: { ...metadata.twitter, card: 'summary_large_image', title: twitterTitle, description: twitterDescription, images: [image] },
   };
 }

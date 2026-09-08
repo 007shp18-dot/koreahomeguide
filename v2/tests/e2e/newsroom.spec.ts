@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { openPrimaryNavigation } from './navigation-helpers';
 
 async function expectNoHorizontalOverflow(page: Page) {
   const dimensions = await page.evaluate(() => ({
@@ -10,8 +11,9 @@ async function expectNoHorizontalOverflow(page: Page) {
 
 test('Insights opens analysis and preserves the news journey', async ({ page }) => {
   await page.goto('/news/');
-  await page.getByRole('navigation', { name: 'Primary navigation' }).getByRole('link', { name: 'Insights' }).click();
+  await (await openPrimaryNavigation(page)).getByRole('link', { name: 'Insights' }).click();
   await expect(page).toHaveURL(/\/news\/\?type=analysis$/);
+  await expect(page.locator('header.site-header:visible details.site-header__mobile-menu')).not.toHaveAttribute('open', '');
   await expect(page.getByRole('heading', { level: 1, name: 'Insights' })).toBeVisible();
   const sections = page.getByRole('navigation', { name: 'Insights sections' });
   await expect(sections.getByRole('link', { name: 'Analysis reports' })).toHaveAttribute('aria-current', 'page');
@@ -131,13 +133,15 @@ test('external headlines survive market filtering and open the original publishe
 
 test('News and Guides keep the same global header and the guide highlights Guides', async ({ page }) => {
   await page.goto('/news/');
-  const nav = page.locator('[data-navigation-tier="global"]');
-  const newsLabels = await nav.getByRole('navigation', { name: 'Primary navigation', exact: true }).innerText();
-  await nav.getByRole('link', { name: 'Guides', exact: true }).click();
+  let navigation = await openPrimaryNavigation(page);
+  const newsLabels = await navigation.innerText();
+  await navigation.getByRole('link', { name: 'Guides', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Guides', exact: true, level: 1 })).toBeVisible();
-  await expect(nav.getByRole('navigation', { name: 'Primary navigation', exact: true })).toHaveText(newsLabels, { useInnerText: true });
+  navigation = await openPrimaryNavigation(page);
+  await expect(navigation).toHaveText(newsLabels, { useInnerText: true });
   await page.getByRole('link', { name: 'Read guide', exact: true }).first().click();
-  await expect(nav.getByRole('link', { name: 'Guides', exact: true })).toHaveAttribute('aria-current', 'page');
+  navigation = await openPrimaryNavigation(page);
+  await expect(navigation.getByRole('link', { name: 'Guides', exact: true })).toHaveAttribute('aria-current', 'page');
   await expect(page.getByRole('navigation', { name: 'In this article', exact: true })).toBeVisible();
   await expectNoHorizontalOverflow(page);
 });

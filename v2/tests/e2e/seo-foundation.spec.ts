@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { editorialAlternates } from './public-route-contract';
 
 function sitemapLocations(xml: string): string[] {
   return [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]!);
@@ -96,5 +97,25 @@ test('SEO foundation: every English and Korean alternate links back', async ({ r
     expect(counterpartResponse.status(), counterpartUrl).toBe(200);
     const counterpartAlternates = alternatesFrom(await counterpartResponse.text());
     expect(counterpartAlternates.get(sourceLanguage), counterpartUrl).toBe(sourceCanonical);
+  }
+});
+
+test('SEO foundation: every reviewed editorial locale is reciprocal', async ({ request }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop-chromium');
+  test.setTimeout(120_000);
+
+  for (const [path, expected] of Object.entries(editorialAlternates)) {
+    const response = await request.get(path, { maxRedirects: 0 });
+    expect(response.status(), path).toBe(200);
+    const html = await response.text();
+    const canonical = `https://www.signedprice.com${path}`;
+    expect(canonicalFrom(html), path).toBe(canonical);
+    const actual = alternatesFrom(html);
+    expect(Object.fromEntries(actual), path).toEqual(Object.fromEntries(
+      Object.entries(expected).map(([language, href]) => [
+        language,
+        `https://www.signedprice.com${href}`,
+      ]),
+    ));
   }
 });

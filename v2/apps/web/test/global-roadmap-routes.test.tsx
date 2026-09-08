@@ -8,6 +8,9 @@ vi.mock('next/navigation', () => ({
 
 import CommunityPage, { metadata as communityMetadata } from '../app/(en)/community/page';
 import NewsPage, { generateMetadata as generateNewsMetadata } from '../app/(en)/news/page';
+import { metadata as guidesMetadata } from '../app/(en)/guides/page';
+import { metadata as chineseGuidesMetadata } from '../app/(zh-cn)/zh-cn/guides/page';
+import { metadata as chineseNewsMetadata } from '../app/(zh-cn)/zh-cn/news/page';
 import MarketFeatureRoute from '../app/(en)/[country]/[city]/[intent]/page';
 
 afterEach(() => vi.unstubAllGlobals());
@@ -25,10 +28,23 @@ describe('global roadmap routes', () => {
       canonical: 'https://www.signedprice.com/news/',
       languages: {
         en: 'https://www.signedprice.com/news/',
+        ko: 'https://www.signedprice.com/ko/news/',
         'zh-Hans': 'https://www.signedprice.com/zh-cn/news/',
         'x-default': 'https://www.signedprice.com/news/',
       },
     });
+    expect(guidesMetadata.alternates?.languages).toEqual({
+      en: 'https://www.signedprice.com/guides/',
+      ko: 'https://www.signedprice.com/ko/guides/',
+      'zh-Hans': 'https://www.signedprice.com/zh-cn/guides/',
+      'x-default': 'https://www.signedprice.com/guides/',
+    });
+    expect(chineseGuidesMetadata.alternates?.languages).toEqual(
+      guidesMetadata.alternates?.languages,
+    );
+    expect(chineseNewsMetadata.alternates?.languages).toEqual(
+      newsMetadata.alternates?.languages,
+    );
     expect(communityMetadata.alternates).toEqual({ canonical: 'https://www.signedprice.com/community/' });
     expect(news).toContain('<h1>News &amp; Insights</h1>');
     expect(news).toContain('Official property updates, policy changes, market interpretation and transaction-led research across Seoul, Singapore and Dubai.');
