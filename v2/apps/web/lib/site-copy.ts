@@ -44,6 +44,7 @@ const englishMetadata = indexableMetadata({
     'Compare property prices, rents and buying costs in Seoul, Singapore and Dubai, with transaction dates and sources.',
   languageAlternates: {
     en: '/',
+    ko: '/ko/',
     'zh-Hans': '/zh-cn/kr/seoul/',
   },
 }) satisfies Metadata;

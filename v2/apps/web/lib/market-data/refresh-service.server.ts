@@ -22,6 +22,7 @@ const OFFICIAL_DLD_HOSTS = Object.freeze([
 type RefreshEnvironment = Readonly<Partial<Record<
   | 'SIGNEDPRICE_MARKET_REFRESH_JOBS'
   | 'SIGNEDPRICE_PUBLIC_DATA_SERVICE_KEY'
+  | 'DATA_GO_KR_SERVICE_KEY'
   | 'SIGNEDPRICE_URA_ACCESS_KEY'
   | 'SIGNEDPRICE_DLD_TRANSACTIONS_CSV_URL'
   | 'SIGNEDPRICE_DLD_RENTS_CSV_URL',
@@ -224,7 +225,8 @@ export function createMarketDataRefreshService(dependencies: Readonly<{
       try {
         if (job === 'kr-seoul-sale' || job === 'kr-seoul-rent') {
           if (input.uploadedCsv !== undefined) throw new SourceInvalidError('Unexpected CSV upload.');
-          const serviceKey = configured(environment.SIGNEDPRICE_PUBLIC_DATA_SERVICE_KEY);
+          const serviceKey = configured(environment.SIGNEDPRICE_PUBLIC_DATA_SERVICE_KEY)
+            ?? configured(environment.DATA_GO_KR_SERVICE_KEY);
           if (serviceKey === null) return skip(run, 'configuration_missing');
           batch = await collectSeoul({ job, serviceKey, reference });
         } else if (job === 'sg-private-sale' || job === 'sg-private-rent') {

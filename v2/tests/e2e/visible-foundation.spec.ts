@@ -1,6 +1,11 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
 import { resolveReleaseTestTarget } from '../../release-test-target';
 import { editorialAlternates, publicRoutes } from './public-route-contract';
+import {
+  openCityNavigation,
+  openMarketPagesNavigation,
+  openPrimaryNavigation,
+} from './navigation-helpers';
 
 const releaseTarget = resolveReleaseTestTarget();
 
@@ -96,8 +101,7 @@ test('navigates the first signedprice decision flow', async ({ page }) => {
     }),
   ).toBeVisible();
 
-  await page.getByRole('navigation', { name: 'Primary navigation' })
-    .getByRole('link', { name: 'Prices' }).click();
+  await (await openPrimaryNavigation(page)).getByRole('link', { name: 'Prices' }).click();
   await expect(page).toHaveURL(/\/prices\/$/);
   await page.getByRole('navigation', { name: 'Market price destinations' }).getByRole('link', { name: 'Seoul', exact: true }).click();
   await expect(page).toHaveURL(/\/kr\/seoul\/explore\/$/);
@@ -106,12 +110,13 @@ test('navigates the first signedprice decision flow', async ({ page }) => {
     name: 'Explore',
   })).toBeVisible();
 
-  await page.getByRole('navigation', { name: 'Primary navigation' })
-    .getByRole('link', { name: 'Prices' }).click();
+  await (await openPrimaryNavigation(page)).getByRole('link', { name: 'Prices' }).click();
   await expect(page).toHaveURL(/\/prices\/$/);
   await page.getByRole('navigation', { name: 'Market price destinations' }).getByRole('link', { name: 'Seoul', exact: true }).click();
   await expect(page).toHaveURL(/\/kr\/seoul\/explore\/$/);
-  await page.getByRole('navigation', { name: 'Seoul market navigation' }).getByRole('link', { name: 'Check', exact: true }).click();
+  await (await openMarketPagesNavigation(page, 'Seoul'))
+    .getByRole('link', { name: 'Check', exact: true })
+    .click();
   await expect(page).toHaveURL(/\/kr\/seoul\/check\/$/);
   await expect(
     page.getByRole('heading', {
@@ -168,6 +173,9 @@ for (const route of publicRoutes) {
       await expect(page.locator('link[rel="alternate"][hreflang="ko"]')).toHaveAttribute(
         'href', `https://www.signedprice.com/ko${route.canonical}`,
       );
+      await expect(page.locator('link[rel="alternate"][hreflang="x-default"]')).toHaveAttribute(
+        'href', `https://www.signedprice.com${route.canonical}`,
+      );
     } else {
       await expect(alternates).toHaveCount(0);
     }
@@ -193,12 +201,9 @@ test('mobile primary navigation remains tappable and reaches the market flow', a
   test.skip(testInfo.project.name !== 'mobile-chromium');
   await page.goto('/');
 
-  const primaryNavigation = page.getByRole('navigation', {
-    name: 'Primary navigation',
-  });
-  const visibleLinks = primaryNavigation.getByRole('link').filter({ visible: true });
-  await expect(visibleLinks).toHaveCount(5);
-  const primaryLinks = await visibleLinks.all();
+  let primaryNavigation = await openPrimaryNavigation(page);
+  await expect(primaryNavigation.getByRole('link')).toHaveCount(5);
+  const primaryLinks = await primaryNavigation.getByRole('link').all();
   await expectContainedTouchTargets(page, primaryLinks);
   await expectTargetsNotToOverlap(primaryLinks);
   const languageNavigation = page.getByRole('navigation', { name: 'Language navigation' });
@@ -207,8 +212,11 @@ test('mobile primary navigation remains tappable and reaches the market flow', a
   await expectContainedTouchTargets(page, languageLinks);
   await expectTargetsNotToOverlap(languageLinks);
 
-  const marketNavigation = page.locator('.site-header nav[aria-label="Market navigation"]');
+  const marketNavigation = await openCityNavigation(page);
   await expect(marketNavigation).toBeVisible();
+  const marketLinks = await marketNavigation.getByRole('link').all();
+  await expectContainedTouchTargets(page, marketLinks);
+  await expectTargetsNotToOverlap(marketLinks);
   for (const [city, href] of [
     ['Seoul', '/kr/seoul/'],
     ['Singapore', '/sg/'],
@@ -226,17 +234,20 @@ test('mobile primary navigation remains tappable and reaches the market flow', a
   await expect(page).toHaveURL(/\/kr\/seoul\/explore\/$/);
   await expectNoHorizontalPageOverflow(page);
 
-  const localNavigation = page.getByRole('navigation', { name: 'Seoul market navigation' });
+  let localNavigation = await openMarketPagesNavigation(page, 'Seoul');
   await expect(localNavigation.getByRole('link')).toHaveCount(5);
-  await expectContainedTouchTargets(page, await localNavigation.getByRole('link').all());
+  const localLinks = await localNavigation.getByRole('link').all();
+  await expectContainedTouchTargets(page, localLinks);
+  await expectTargetsNotToOverlap(localLinks);
 
-  const pricesFromExplore = page.getByRole('navigation', { name: 'Primary navigation' })
-    .getByRole('link', { name: 'Prices' });
+  primaryNavigation = await openPrimaryNavigation(page);
+  const pricesFromExplore = primaryNavigation.getByRole('link', { name: 'Prices' });
   await pricesFromExplore.tap();
   await expect(page).toHaveURL(/\/prices\/$/);
 
   await page.getByRole('navigation', { name: 'Market price destinations' }).getByRole('link', { name: 'Seoul', exact: true }).tap();
   await expect(page).toHaveURL(/\/kr\/seoul\/explore\/$/);
+  localNavigation = await openMarketPagesNavigation(page, 'Seoul');
   const checkAskingPrice = localNavigation.getByRole('link', { name: 'Check', exact: true });
   await expectContainedTouchTargets(page, [checkAskingPrice]);
   await checkAskingPrice.tap();

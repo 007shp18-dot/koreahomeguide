@@ -5,14 +5,34 @@ on:
     paths:
       - 'v2/tests/e2e/shared-navigation-dubai.spec.ts'
       - 'v2/tests/e2e/passport.spec.ts'
+      - 'v2/tests/e2e/navigation-helpers.ts'
+      - 'v2/tests/e2e/visible-foundation.spec.ts'
+      - 'v2/tests/e2e/newsroom.spec.ts'
+      - 'v2/tests/e2e/rankings.spec.ts'
+      - 'v2/tests/e2e/area-explore.spec.ts'
+      - 'v2/tests/e2e/singapore.spec.ts'
       - 'v2/apps/web/components/site-header.tsx'
+      - 'v2/apps/web/components/site-language-navigation.tsx'
+      - 'v2/apps/web/components/market-ui/market-local-nav.tsx'
+      - 'v2/apps/web/lib/navigation/site-navigation.ts'
+      - 'v2/apps/web/lib/navigation/editorial-language-routes.ts'
       - 'v2/apps/web/app/globals.css'
       - '.github/workflows/signedprice-mobile-smoke.yml'
   push:
     paths:
       - 'v2/tests/e2e/shared-navigation-dubai.spec.ts'
       - 'v2/tests/e2e/passport.spec.ts'
+      - 'v2/tests/e2e/navigation-helpers.ts'
+      - 'v2/tests/e2e/visible-foundation.spec.ts'
+      - 'v2/tests/e2e/newsroom.spec.ts'
+      - 'v2/tests/e2e/rankings.spec.ts'
+      - 'v2/tests/e2e/area-explore.spec.ts'
+      - 'v2/tests/e2e/singapore.spec.ts'
       - 'v2/apps/web/components/site-header.tsx'
+      - 'v2/apps/web/components/site-language-navigation.tsx'
+      - 'v2/apps/web/components/market-ui/market-local-nav.tsx'
+      - 'v2/apps/web/lib/navigation/site-navigation.ts'
+      - 'v2/apps/web/lib/navigation/editorial-language-routes.ts'
       - 'v2/apps/web/app/globals.css'
       - '.github/workflows/signedprice-mobile-smoke.yml'
   workflow_dispatch:
@@ -45,6 +65,16 @@ jobs:
       - run: pnpm exec playwright install --with-deps chromium
       - name: Check mobile navigation, Chinese alignment and Passport journeys
         run: pnpm exec playwright test tests/e2e/shared-navigation-dubai.spec.ts tests/e2e/passport.spec.ts --project=mobile-chromium
+      - name: Check collapsed mobile navigation journeys
+        run: >-
+          pnpm exec playwright test
+          tests/e2e/visible-foundation.spec.ts
+          tests/e2e/newsroom.spec.ts
+          tests/e2e/rankings.spec.ts
+          tests/e2e/area-explore.spec.ts
+          tests/e2e/singapore.spec.ts
+          --project=mobile-chromium
+          --grep="navigates the first signedprice decision flow|mobile primary navigation remains tappable and reaches the market flow|Insights opens analysis and preserves the news journey|News and Guides keep the same global header and the guide highlights Guides|Explore and district evidence keep Rankings reachable beside the five global product links|mobile controls keep 44px focus targets and natural document scrolling|Seoul and Singapore Explore share the same desktop rail width"
       - name: Upload mobile diagnostics
         if: failure()
         uses: actions/upload-artifact@v4.6.2

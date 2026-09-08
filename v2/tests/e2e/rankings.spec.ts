@@ -1,6 +1,7 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
 
 import { resolveReleaseTestTarget } from '../../release-test-target';
+import { openPrimaryNavigation } from './navigation-helpers';
 
 const releaseTarget = resolveReleaseTestTarget();
 
@@ -135,7 +136,7 @@ test('rankings remain contained and keyboard-readable at every release width', a
 
 test('Explore and district evidence keep Rankings reachable beside the five global product links', async ({ page }) => {
   await page.goto('/kr/seoul/explore/');
-  const productNavigation = page.getByRole('navigation', { name: 'Primary navigation' });
+  const productNavigation = await openPrimaryNavigation(page);
   await expect(productNavigation.getByRole('link', { name: 'Prices' }))
     .toHaveAttribute('href', '/prices/');
   await expect(productNavigation.getByRole('link')).toHaveText(['Markets', 'Prices', 'Tools', 'Insights', 'Guides']);

@@ -1,4 +1,8 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
+import {
+  openMarketPagesNavigation,
+  openPrimaryNavigation,
+} from './navigation-helpers';
 
 function observeRuntimeFailures(page: Page) {
   const consoleErrors: string[] = [];
@@ -195,15 +199,15 @@ test('Seoul and Singapore Explore share the same desktop rail width', async ({ p
   await page.goto('/sg/singapore/explore/');
   const singaporeRail = await page.locator('[data-market-shell-region="discovery"]').boundingBox();
   const singaporeHeader = await page.locator('.site-header__inner').boundingBox();
-  await expect(page.getByRole('navigation', { name: 'Primary navigation', exact: true })).toHaveCount(1);
-  await expect(page.getByRole('navigation', { name: 'Singapore market navigation' })).toBeVisible();
+  await expect(await openPrimaryNavigation(page)).toBeVisible();
+  await expect(await openMarketPagesNavigation(page, 'Singapore')).toBeVisible();
   await page.goto('/kr/seoul/explore/');
   const seoulRail = await page.locator(
     '[data-explorer-layout="split"] > [data-explorer-region="results"]',
   ).boundingBox();
   const seoulHeader = await page.locator('.site-header__inner').boundingBox();
-  await expect(page.getByRole('navigation', { name: 'Primary navigation', exact: true })).toHaveCount(1);
-  await expect(page.getByRole('navigation', { name: 'Seoul market navigation' })).toBeVisible();
+  await expect(await openPrimaryNavigation(page)).toBeVisible();
+  await expect(await openMarketPagesNavigation(page, 'Seoul')).toBeVisible();
   expect(singaporeHeader?.height).toBeGreaterThanOrEqual(44);
   expect(seoulHeader?.height).toBe(singaporeHeader?.height);
   if (page.viewportSize()!.width > 1120) {

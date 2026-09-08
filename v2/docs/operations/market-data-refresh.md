@@ -10,12 +10,16 @@ This runbook covers the internal Seoul, Singapore, and Dubai market-evidence ref
 | `CRON_SECRET` | Scheduled GET | Exact Vercel Cron bearer |
 | `CONTENT_ADMIN_SECRET` | Manual DLD POST | Exact operator bearer |
 | `SIGNEDPRICE_MARKET_REFRESH_JOBS` | Scheduled writes | Comma-separated exact job allow-list; empty disables every job |
-| `SIGNEDPRICE_PUBLIC_DATA_SERVICE_KEY` | Seoul | Free MOLIT service key |
+| `SIGNEDPRICE_PUBLIC_DATA_SERVICE_KEY` or `DATA_GO_KR_SERVICE_KEY` | Seoul | Free MOLIT service key; the SignedPrice-specific name takes precedence when both are set |
 | `SIGNEDPRICE_URA_ACCESS_KEY` | Singapore | Free URA Data Service access key |
 | `SIGNEDPRICE_DLD_TRANSACTIONS_CSV_URL` | Dubai transaction auto-run | Direct official HTTPS CSV URL |
 | `SIGNEDPRICE_DLD_RENTS_CSV_URL` | Dubai rent auto-run | Direct official HTTPS CSV URL |
 
 Only `https://dubailand.gov.ae`, `https://dubaipulse.gov.ae`, and their subdomains are accepted for automatic DLD downloads. Redirects, embedded URL credentials, nonstandard ports, and other hosts fail closed. Missing provider configuration creates a `skipped` run; it does not remove the last valid evidence.
+
+The ingestion jobs write internal observations only. They do not automatically
+replace the installed public snapshots. Public promotion requires a separate
+validated, versioned projection with last-good retention and rollback.
 
 Deploy with `SIGNEDPRICE_MARKET_REFRESH_JOBS` empty. After the migration and capacity checks pass, enable one exact job such as `kr-seoul-sale`, run and repeat its canary, then add the next job to the comma-separated list. A job not present in the list records `job_disabled` without calling its provider or writing evidence.
 

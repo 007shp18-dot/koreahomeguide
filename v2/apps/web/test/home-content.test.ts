@@ -4,6 +4,9 @@ import { describe, expect, it, vi } from 'vitest';
 vi.mock('server-only', () => ({}));
 
 import Home, { metadata as homeMetadata } from '../app/(en)/page';
+import { metadata as koreanHomeMetadata } from '../app/(ko)/ko/page';
+import { metadata as chineseHomeMetadata } from '../app/(zh-cn)/zh-cn/kr/seoul/page';
+import { metadata as koreanShortlistMetadata } from '../app/(ko)/ko/kr/seoul/shortlist/page';
 import {
   homepageCopy,
   homepageIntentGroups,
@@ -57,6 +60,28 @@ describe('signedprice homepage copy', () => {
       robots: { index: true, follow: true },
       alternates: { canonical: 'https://www.signedprice.com/' },
     });
+  });
+
+  it('keeps the English, Korean, and Chinese homes mutually discoverable', () => {
+    const languages = {
+      en: 'https://www.signedprice.com/',
+      ko: 'https://www.signedprice.com/ko/',
+      'zh-Hans': 'https://www.signedprice.com/zh-cn/kr/seoul/',
+      'x-default': 'https://www.signedprice.com/',
+    };
+
+    for (const metadata of [homeMetadata, koreanHomeMetadata, chineseHomeMetadata]) {
+      expect(metadata.alternates?.languages).toEqual(languages);
+    }
+  });
+
+  it('uses the Korean social image for the Korean Seoul shortlist', () => {
+    expect(koreanShortlistMetadata.openGraph?.images).toEqual([
+      'https://www.signedprice.com/og/ko/',
+    ]);
+    expect(koreanShortlistMetadata.twitter?.images).toEqual([
+      'https://www.signedprice.com/og/ko/',
+    ]);
   });
 
   it('keeps every visible claim anonymous and claim-safe', async () => {

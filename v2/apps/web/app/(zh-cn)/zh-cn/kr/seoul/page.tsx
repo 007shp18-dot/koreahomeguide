@@ -10,6 +10,7 @@ export const metadata: Metadata = indexableMetadata({
   description: '通过首尔已申报合同、明确的可比范围和实用中文指南，判断韩国租房与购房价格。',
   languageAlternates: {
     en: '/',
+    ko: '/ko/',
     'zh-Hans': '/zh-cn/kr/seoul/',
   },
   locale: 'zh_CN',

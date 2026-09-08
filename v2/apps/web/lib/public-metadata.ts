@@ -88,7 +88,7 @@ export function indexableMetadata({
   description,
   languageAlternates,
   locale = 'en_US',
-  imagePath = '/og/en/',
+  imagePath,
 }: Readonly<{
   path: `/${string}`;
   title: string;
@@ -116,7 +116,7 @@ export function indexableMetadata({
     'x-default': publicCanonical(languageAlternates.en),
   };
   const canonical = publicCanonical(path);
-  const image = publicCanonical(imagePath);
+  const image = publicCanonical(imagePath ?? (locale === 'ko_KR' ? '/og/ko/' : '/og/en/'));
   return {
     title,
     description,
