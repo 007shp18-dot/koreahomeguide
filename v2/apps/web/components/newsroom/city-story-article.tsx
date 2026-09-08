@@ -4,6 +4,7 @@ import { listPortfolioRecords } from '../../content/portfolio-manifest';
 import { languageDestinations } from '../../lib/navigation/site-navigation';
 import { publicCanonical, safeJsonLd } from '../../lib/public-metadata';
 import { CityStoryPhoto } from './city-story-photo';
+import { CITY_STORY_PHOTOS } from '../../content/city-story-photos';
 import styles from './newsroom-journey.module.css';
 
 export function storyLinkHref(href: string, locale: StoryLocale): string {
@@ -28,7 +29,7 @@ export function CityStoryArticle({ story, locale }: Readonly<{ story: CityStory;
       {story.sections.map((section, index) => <section key={section.id} id={section.id}>
         <p className={styles.eyebrow}>{String(index + 1).padStart(2, '0')} · {STORY_STEPS[index]!.label[locale]}</p><h2>{section.title[locale]}</h2>
         {section.paragraphs[locale].map(paragraph => <p key={paragraph}>{paragraph}</p>)}
-        {story.city === 'seoul' && index === 0 && <CityStoryPhoto city="seoul" locale={locale} forest />}
+        {CITY_STORY_PHOTOS.filter(photo => photo.city === story.city && photo.afterSection === section.id).map(photo => <CityStoryPhoto key={photo.id} city={story.city} locale={locale} media={photo} />)}
         <div className={styles.articleLinks}>{section.links.map(link => <Link key={link.href} href={storyLinkHref(link.href, locale)} {...(link.href.startsWith('https://') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{link.label[locale]} ↗</Link>)}</div>
       </section>)}
       <section className={styles.sources}><h2>{ko ? '관련 자료' : 'Further reading'}</h2><ul>{story.sources.map(source => <li key={source.href}><a href={source.href} target="_blank" rel="noopener noreferrer">{source.title}</a></li>)}</ul></section>

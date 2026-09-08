@@ -163,7 +163,7 @@ test('News & Insights and Guides keep the same global header and the guide highl
   await expect(page.getByRole('heading', { name: 'Guides', exact: true, level: 1 })).toBeVisible();
   navigation = await openPrimaryNavigation(page);
   await expect(navigation).toHaveText(newsLabels, { useInnerText: true });
-  await page.getByRole('link', { name: 'Read guide', exact: true }).first().click();
+  await page.getByRole('link', { name: 'Buying in Korea as a foreigner', exact: true }).click();
   navigation = await openPrimaryNavigation(page);
   await expect(navigation.getByRole('link', { name: 'Guides', exact: true })).toHaveAttribute('aria-current', 'page');
   await expect(page.getByRole('navigation', { name: 'In this article', exact: true })).toBeVisible();
@@ -173,19 +173,19 @@ test('News & Insights and Guides keep the same global header and the guide highl
 test('Tokyo city journey opens its own article, chapters and Korean translation', async ({ page }) => {
   await page.goto('/news/?market=tokyo');
   const lead = page.locator('[data-newsroom-lead]');
-  await expect(lead).toContainText('Finding a home in Tokyo');
+  await expect(lead).toContainText('Three Tokyos');
   await page.getByRole('tab', { name: /Where\?/ }).click();
-  await expect(page.getByRole('tabpanel')).toContainText('Narrow the city');
+  await expect(page.getByRole('tabpanel')).toContainText('The housing differences extend beyond the floor plan');
   await page.getByRole('tabpanel').getByRole('link', { name: /Read this chapter/ }).click();
   await expect(page).toHaveURL(/\/news\/city-stories\/tokyo\/#where$/);
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Finding a home in Tokyo');
-  await expect.poll(() => page.locator('main img').evaluate(image => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Three Tokyos');
+  await expect.poll(() => page.locator('main img').first().evaluate(image => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
   await expectNoHorizontalOverflow(page);
   await page.goto('/ko/news/city-stories/seoul/');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('성수가 좋아서, 서울의 집을 찾기 시작했다면');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('성수가 좋다면, 왕십리와 마포의 집도 함께 볼 이유');
   await expect(page.locator('main img').first()).toBeVisible();
   await expect(page.locator('main')).not.toContainText('직접 방문해 작성한 취재기는 아닙니다');
-  await page.getByRole('link', { name: /Explore에서 지역과 가격 비교하기/ }).click();
+  await page.getByRole('link', { name: /Explore에서 지역과 실거래 비교하기/ }).click();
   await expect(page).toHaveURL(/\/ko\/kr\/seoul\/explore\/$/);
   await expectNoHorizontalOverflow(page);
 });

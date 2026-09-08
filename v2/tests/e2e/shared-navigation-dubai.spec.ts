@@ -37,7 +37,7 @@ test('uses one navigation order and published language links across markets', as
     const cityLinks = (await visibleMarketNavigation(page)).getByRole('link');
     await expect(cityLinks).toHaveText(['Seoul', 'Singapore', 'Dubai', 'Tokyo']);
     const cityDestinations = path === '/news/' ? ['/news/?market=seoul', '/news/?market=singapore', '/news/?market=dubai', '/news/?market=tokyo']
-      : path === '/guides/' ? ['/guides/?market=seoul', '/guides/?market=singapore', '/guides/?market=dubai', '/jp/tokyo/']
+      : path === '/guides/' ? ['/guides/?market=seoul', '/guides/?market=singapore', '/guides/?market=dubai', '/guides/?market=tokyo']
       : ['/kr/seoul/explore/', '/sg/singapore/explore/', '/ae/dubai/explore/', '/jp/tokyo/explore/'];
     for (const [index, href] of cityDestinations.entries()) {
       await expect(cityLinks.nth(index)).toHaveAttribute('href', href);

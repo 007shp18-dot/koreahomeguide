@@ -7,6 +7,7 @@ import type { PolicyRecord } from '../../lib/policy/policy-types';
 import { ExternalHeadlines } from '../news/external-headlines';
 import { CITY_STORIES, cityStoryHref, type StoryLocale } from '../../content/city-stories';
 import { LOCAL_CONVERSATIONS } from '../../content/local-conversations';
+import { isBudgetAnalysis } from '../../content/guide-directory';
 import { CityStoryPhoto } from './city-story-photo';
 import { storyLinkHref } from './city-story-article';
 import { JourneySteps } from './journey-steps';
@@ -63,7 +64,7 @@ export function NewsroomIndex({ articles, policies, filters, headlines, locale =
   const story = CITY_STORIES.find(item => item.city === filters.market) ?? CITY_STORIES[0];
   const markets = [['all', ko ? '모든 도시' : 'All'], ...CITY_STORIES.map(item => [item.city, item.name[locale]] as const)] as readonly (readonly [NewsroomMarketFilter, string])[];
   const marketId = { all: null, seoul: 'kr-seoul', singapore: 'sg-singapore', dubai: 'ae-dubai', tokyo: 'jp-tokyo' }[filters.market];
-  const items: StoryItem[] = articles.filter(item => !marketId || item.marketId === marketId).map(item => ({ id: item.id, title: item.title, deck: item.deck, date: item.publishedAt, type: item.type,
+  const items: StoryItem[] = articles.filter(item => (item.type !== 'guide' || isBudgetAnalysis(item.slug)) && (!marketId || item.marketId === marketId)).map(item => ({ id: item.id, title: item.title, deck: item.deck, date: item.publishedAt, type: isBudgetAnalysis(item.slug) ? 'data-story' : item.type,
     href: 'canonicalHref' in item ? String(item.canonicalHref) : `${base}${item.type === 'policy-update' ? 'policy/' : ''}${item.slug}/`,
   }));
   if (!ko && filters.type === 'policy') for (const policy of policies) {
@@ -76,7 +77,7 @@ export function NewsroomIndex({ articles, policies, filters, headlines, locale =
   const filtered = items.filter(item => filters.type === 'insights' ? true : filters.type === 'news' ? item.type === 'news-brief' : filters.type === 'policy' ? item.type === 'policy-update' : filters.type === 'market' ? item.type === 'market-brief' : item.type === 'data-story');
   const conversations = filters.market === 'all' ? CITY_STORIES.map(city => LOCAL_CONVERSATIONS.find(item => item.city === city.city)!) : LOCAL_CONVERSATIONS.filter(item => item.city === filters.market);
   return <main className={styles.index} data-newsroom-layout="research" lang={locale}>
-    <ResearchPageHeading title={ko ? '뉴스 & 인사이트' : 'News & Insights'} description={ko ? '마음이 가는 도시에서 나에게 맞는 집까지. 동네의 이야기와 가격, 구매의 다음 단계를 함께 읽어보세요.' : 'Find a city you connect with, a neighbourhood that fits, and a clearer path to a home of your own.'} actions={<Link href={ko ? href('policy') : '/news/policy/'}>{ko ? '정책 변경 확인' : 'Open the Policy Tracker'}</Link>} />
+    <ResearchPageHeading title={ko ? '뉴스 & 인사이트' : 'News & Insights'} description={ko ? '살고 싶은 동네, 예산에 맞는 집. 도시의 생활과 주택 가격, 시장에서 달라진 소식을 읽습니다.' : 'Neighbourhood life, homes at your budget, and the changes shaping each property market.'} actions={<Link href={ko ? href('policy') : '/news/policy/'}>{ko ? '정책 소식' : 'Policy updates'}</Link>} />
     <div className={styles.filterBar} data-newsroom-filter-bar="true">
       <nav className={styles.tabs} aria-label={ko ? '뉴스와 인사이트 유형' : 'News and insight types'}>{([['insights', ko ? '인사이트' : 'Insights'], ['news', ko ? '뉴스' : 'News'], ['policy', ko ? '정책' : 'Policy']] as const).map(([id, label]) => <Link key={id} href={href(id)} aria-current={(id === 'insights' ? analysis : filters.type === id) ? 'page' : undefined}>{label}</Link>)}</nav>
       <nav className={styles.tabs} aria-label={ko ? '기사 도시' : 'News markets'}>{markets.map(([id, label]) => <Link key={id} href={href(filters.type, id)} aria-current={filters.market === id ? 'page' : undefined}>{label}</Link>)}</nav>

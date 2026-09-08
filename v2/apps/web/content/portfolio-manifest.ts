@@ -93,7 +93,7 @@ export const EDITORIAL_PORTFOLIO = Object.freeze(validateEditorialPortfolio(Obje
   ...KOREAN_BUYING_GUIDES,
   ...KOREAN_EDITORIAL_PORTFOLIO,
   ...CHINESE_PORTFOLIO,
-])));
+].filter(article => article.slug !== 'compare-seoul-district-prices'))));
 
 export function listPortfolioRecords(locale?: EditorialPortfolioRecord['locale']): readonly EditorialPortfolioRecord[] {
   return locale === undefined ? EDITORIAL_PORTFOLIO : EDITORIAL_PORTFOLIO.filter((record) => record.locale === locale);

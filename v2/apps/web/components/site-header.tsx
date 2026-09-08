@@ -54,8 +54,9 @@ function isCurrentGlobalLink(href: string, currentHref: string | undefined): boo
   if (currentHref === undefined) return false;
   href = href.replace(/^\/(?:ko|zh-cn)(?=\/)/, '');
   currentHref = currentHref.replace(/^\/(?:ko|zh-cn)(?=\/)/, '');
-  if (href.startsWith('/news/')) return currentHref.includes('/news/') || currentHref.includes('/insights/');
-  if (href === '/guides/') return currentHref.includes('/guide') || currentHref === '/guides/';
+  const budgetAnalysis = /\/(?:seoul-apartment|singapore-condo|dubai-ready-apartment)-buying-budget-guide\//.test(currentHref);
+  if (href.startsWith('/news/')) return currentHref.includes('/news/') || currentHref.includes('/insights/') || budgetAnalysis;
+  if (href === '/guides/') return !budgetAnalysis && (currentHref.includes('/guide') || currentHref === '/guides/');
   if (href === '/tools/' || href === '/ko/tools/') return currentHref.includes('/tools/') || currentHref.includes('/check/') || currentHref.includes('/passport/') || currentHref.includes('/shortlist/');
   if (href.includes('/rankings/')) return currentHref.includes('/rankings/');
   if (href === '/prices/') {

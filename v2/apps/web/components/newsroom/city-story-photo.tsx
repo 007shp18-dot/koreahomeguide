@@ -1,9 +1,14 @@
 import Image from 'next/image';
 import type { StoryCity, StoryLocale } from '../../content/city-stories';
+import type { StoryPhoto } from '../../content/city-story-photos';
 import { MARKET_PHOTOS } from '../market-representative-photo';
 import styles from './newsroom-journey.module.css';
 
-export function CityStoryPhoto({ city, locale = 'en', forest = false, eager = false }: Readonly<{ city: StoryCity; locale?: StoryLocale; forest?: boolean; eager?: boolean }>) {
+export function CityStoryPhoto({ city, locale = 'en', forest = false, eager = false, media }: Readonly<{ city: StoryCity; locale?: StoryLocale; forest?: boolean; eager?: boolean; media?: StoryPhoto }>) {
+  if (media) return <figure className={styles.photo} data-story-photo={media.id}>
+    <div><Image src={media.src} alt={media.caption[locale]} fill sizes="(max-width: 740px) calc(100vw - 32px), 720px" loading="lazy" /></div>
+    <figcaption>{media.caption[locale]} · {media.year}<br /><a href={media.source} target="_blank" rel="noopener noreferrer">{media.creator}</a> · <a href={media.licenseUrl} target="_blank" rel="noopener noreferrer">{media.license}</a> · {locale === 'ko' ? '크기·비율 조정' : 'Resized and cropped'}</figcaption>
+  </figure>;
   const seoul = city === 'seoul';
   const photo = MARKET_PHOTOS[city];
   const caption = seoul

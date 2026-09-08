@@ -9,23 +9,24 @@ import ChineseGuidesPage from '../app/(zh-cn)/zh-cn/guides/page';
 import ChineseNewsPage from '../app/(zh-cn)/zh-cn/news/page';
 import ChineseGuidePage, { generateStaticParams as chineseGuideParams } from '../app/(zh-cn)/zh-cn/guides/[slug]/page';
 import { listPortfolioRecords } from '../content/portfolio-manifest';
+import { listPracticalGuides } from '../content/guide-directory';
 
 describe('editorial portfolio public routes', () => {
-  it('publishes all ten English guides on the global Guide hub', async () => {
+  it('lists practical guides while preserving routes for moved budget comparisons', async () => {
     const guides = listPortfolioRecords('en').filter(({ type }) => type === 'guide');
     const html = renderToStaticMarkup(await GuidesPage({ searchParams: Promise.resolve({}) }));
-    expect(guides).toHaveLength(10);
+    expect(guides).toHaveLength(9);
     expect(guideParams()).toEqual(guides.map(({ slug }) => ({ slug })));
-    for (const guide of guides) {
-      expect(html).toContain(guide.title);
+    for (const guide of listPracticalGuides('en')) {
       expect(html).toContain(`href="${guide.canonicalHref.slice(0, -1)}"`);
     }
   });
 
   it('filters guides by city and makes Dubai research discoverable', async () => {
     const html = renderToStaticMarkup(await GuidesPage({ searchParams: Promise.resolve({market: 'dubai'}) }));
-    expect(html).toContain('Research a Dubai property purchase');
-    expect(html).toContain('2 guides');
+    expect(html).toContain('Before buying a home in Dubai');
+    expect(html).toContain('href="/ae/dubai/guide"');
+    expect(html).not.toContain('buying-budget-guide');
     expect(html).not.toContain('Read Singapore private residential transactions');
   });
 

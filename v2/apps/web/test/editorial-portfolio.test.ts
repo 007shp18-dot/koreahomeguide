@@ -41,11 +41,11 @@ describe('launch editorial portfolio', () => {
     }
   });
 
-  it('publishes the 82-item portfolio including official news and Korean counterparts', () => {
-    expect(EDITORIAL_PORTFOLIO).toHaveLength(82);
+  it('publishes the 80-item portfolio including official news and Korean counterparts', () => {
+    expect(EDITORIAL_PORTFOLIO).toHaveLength(80);
     expect(Object.isFrozen(EDITORIAL_PORTFOLIO)).toBe(true);
-    expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'en')).toHaveLength(37);
-    expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'ko')).toHaveLength(37);
+    expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'en')).toHaveLength(36);
+    expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'ko')).toHaveLength(36);
     expect(EDITORIAL_PORTFOLIO.filter(({ locale }) => locale === 'zh-CN')).toHaveLength(8);
     expect(Object.fromEntries(['news-brief', 'policy-update', 'market-brief', 'data-story', 'guide'].map((type) => [
       type,
@@ -55,14 +55,14 @@ describe('launch editorial portfolio', () => {
       'policy-update': 14,
       'market-brief': 23,
       'data-story': 16,
-      guide: 23,
+      guide: 21,
     });
   });
 
   it('keeps every published claim attached to review, evidence and an internal next step', () => {
     expect(validateEditorialPortfolio(EDITORIAL_PORTFOLIO)).toBe(EDITORIAL_PORTFOLIO);
-    expect(new Set(EDITORIAL_PORTFOLIO.map(({ id }) => id)).size).toBe(82);
-    expect(new Set(EDITORIAL_PORTFOLIO.map(({ canonicalHref }) => canonicalHref)).size).toBe(82);
+    expect(new Set(EDITORIAL_PORTFOLIO.map(({ id }) => id)).size).toBe(80);
+    expect(new Set(EDITORIAL_PORTFOLIO.map(({ canonicalHref }) => canonicalHref)).size).toBe(80);
     for (const record of EDITORIAL_PORTFOLIO) {
       expect(record.status).toBe('published');
       expect(record.readerQuestion.length).toBeGreaterThan(record.locale === 'zh-CN' ? 8 : 20);

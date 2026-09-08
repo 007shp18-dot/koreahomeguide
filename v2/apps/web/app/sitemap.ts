@@ -216,7 +216,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     sitemapEntry('/ko/sg/singapore/rankings/'),
   ];
   entries.push(...CITY_STORIES.flatMap(story => (['en', 'ko'] as const).map(locale => sitemapEntry(cityStoryHref(story.city, locale) as `/${string}`, new Date('2026-09-08')))));
-  entries.push(...EDITORIAL_PORTFOLIO.map((article) => sitemapEntry(
+  entries.push(...EDITORIAL_PORTFOLIO.filter(article => article.slug !== 'compare-seoul-district-prices').map((article) => sitemapEntry(
     article.canonicalHref as `/${string}`,
     new Date(article.updatedAt),
   )));

@@ -46,7 +46,7 @@ export function relatedReading(article: Pick<PublishedContentArticle, 'slug' | '
     ] : [
       { label: 'Build a Seoul apartment budget', href: '/guides/seoul-apartment-buying-budget-guide/' },
       { label: 'Compare Seoul sale transactions', href: '/guides/read-seoul-sale-transactions/' },
-      { label: 'Compare districts on the same basis', href: '/guides/compare-seoul-district-prices/' },
+      { label: 'Read the district price comparison', href: '/news/seoul-district-price-distribution/' },
     ]);
   return links.filter(({ href }) => !href.endsWith(`/${article.slug}/`)).slice(0, 2);
 }

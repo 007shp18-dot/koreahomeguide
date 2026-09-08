@@ -134,10 +134,6 @@ const koreanPairs = [
     "/ko/guides/read-seoul-sale-transactions/"
   ],
   [
-    "/guides/compare-seoul-district-prices/",
-    "/ko/guides/compare-seoul-district-prices/"
-  ],
-  [
     "/guides/buy-property-in-korea-as-foreigner/",
     "/ko/guides/buy-property-in-korea-as-foreigner/"
   ],

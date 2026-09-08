@@ -11,6 +11,7 @@ import type { PublishedContentArticle } from '../../lib/content/content-types';
 import type { InfographicSpec } from '../../lib/infographics/infographic-types';
 import { KOREAN_RESEARCH_FIGURES } from '../../content/ko/research-figures';
 import { getPortfolioRecord } from '../../content/portfolio-manifest';
+import { isBudgetAnalysis } from '../../content/guide-directory';
 import { marketHref } from '../../lib/locale/market-localization';
 import { RESEARCH_FIGURES } from '../../content/en/research-figures';
 import { Infographic } from '../infographics/infographic';
@@ -38,11 +39,12 @@ export function NewsroomArticle({ article }: Readonly<{
 }>) {
   const ko = article.locale === 'ko';
   const t = (en:string, translated:string) => ko ? translated : en;
-  const typeLabel = ko ? ({'news-brief':'뉴스','policy-update':'정책','market-brief':'시장 분석','data-story':'데이터 분석',guide:'가이드'} as const)[article.type] : typeLabels[article.type];
+  const budgetAnalysis = isBudgetAnalysis(article.slug);
+  const typeLabel = budgetAnalysis ? t('Budget comparison', '예산별 주택 비교') : ko ? ({'news-brief':'뉴스','policy-update':'정책','market-brief':'시장 분석','data-story':'데이터 분석',guide:'가이드'} as const)[article.type] : typeLabels[article.type];
   const buyingGuide = (ko ? KOREAN_BUYING_GUIDE_DATA : article.locale === 'en' ? BUYING_GUIDE_DATA : []).find(guide => guide.slug === article.slug);
   const figure = article.infographic ?? (ko ? KOREAN_RESEARCH_FIGURES[article.slug] : article.locale === 'en' ? RESEARCH_FIGURES[article.slug] : undefined);
   const contentSections = sections(article.bodyMarkdown);
-  const section = article.type === 'guide'
+  const section = article.type === 'guide' && !budgetAnalysis
     ? { label: t('Guides','가이드'), href: ko ? '/ko/guides/' : '/guides/' }
     : { label: t('News', '뉴스'), href: ko ? '/ko/news/' : '/news/' };
   const market = article.marketId === 'kr-seoul' ? t('Seoul','서울')
