@@ -33,6 +33,12 @@ test('home presents four stable city cards and one budget journey without overfl
  for (const [index, path] of ['/kr/seoul/explore', '/sg/singapore/explore', '/ae/dubai/explore', '/jp/tokyo/explore'].entries())
   await expect(cards.nth(index).locator('[data-primary-action="explore"]')).toHaveAttribute('href', new RegExp('^' + path + '/?$'));
  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+ const actionColors = await page.evaluate(() => [
+  document.querySelector('main form[role="search"] button, main [role="search"] button'),
+  document.querySelector('[data-home-region="passport"] button'),
+ ].map(button => button ? getComputedStyle(button).backgroundColor : null));
+ expect(actionColors[0]).not.toBeNull();
+ expect(actionColors[1]).toBe(actionColors[0]);
  await page.locator('[data-home-region="passport"] input[data-amount-name="budget"]').fill('750000');
  await page.getByRole('button', {name:'Compare cities',exact:true}).click();
  await expect(page).toHaveURL(/\/passport\/.*budget=750000/);
