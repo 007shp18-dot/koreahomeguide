@@ -49,7 +49,7 @@ describe('SignedPrice cohort zero SEO', () => {
     expect(entries.map(({ title }) => title)).toEqual([
       'signedprice | Real prices. Better property decisions.',
       'Seoul reported prices | signedprice',
-      'Check a Seoul sale, jeonse or rent quote | signedprice',
+      'Compare an asking price in Seoul | signedprice',
       'Seoul sale, jeonse and monthly-rent evidence | signedprice',
       'Seoul sale, jeonse and monthly-rent rankings | signedprice',
     ]);
@@ -109,8 +109,8 @@ describe('SignedPrice cohort zero SEO', () => {
     const comparison = await koreanOfferComparisonMetadata();
 
     expect(check).toMatchObject({
-      title: '서울 매매·전세·월세 실거래가 비교 | signedprice',
-      description: '서울 매물의 매매가격·전세 보증금·월세를 조건이 맞는 공식 신고 거래와 비교해 제시가격을 확인합니다.',
+      title: '서울 매물 가격 비교 | signedprice',
+      description: '서울 매물의 매매가격·전세 보증금·월세를 조건이 비슷한 신고 거래와 비교하세요.',
     });
     expect(comparison).toMatchObject({
       title: '전세·월세 조건 비교 | 서울 실거래 전환율 기준 | signedprice',

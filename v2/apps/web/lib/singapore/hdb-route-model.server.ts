@@ -17,6 +17,8 @@ export type HdbTownDisplay = Readonly<{
 }>;
 
 export type HdbBlockDisplay = Readonly<{
+  resalePeriod?: string;
+  rentalPeriod?: string;
   blockId: string;
   href: `/sg/singapore/hdb/${string}/${string}/`;
   address: string;
@@ -35,6 +37,8 @@ export type HdbBlockDisplay = Readonly<{
 }>;
 
 export type HdbTownModel = Readonly<{
+  resalePeriod?: string;
+  rentalPeriod?: string;
   town: string;
   townSlug: string;
   blocks: readonly HdbBlockDisplay[];
@@ -102,7 +106,10 @@ export function buildHdbTownModel(
 ): HdbTownModel | null {
   const identity = repository.listTowns().find((town) => hdbTownSlug(town.town) === townSlug);
   if (identity === undefined) return null;
+  const { resalePeriod, rentalPeriod } = repository.getContext();
   const blocks = repository.listBlocks(identity.town).map((block) => Object.freeze({
+    resalePeriod,
+    rentalPeriod,
     blockId: block.blockId,
     href: `/sg/singapore/hdb/${townSlug}/${block.blockId}/` as const,
     address: `${block.block} ${block.street}`,
@@ -119,5 +126,5 @@ export function buildHdbTownModel(
       multistoreyCarpark: block.property.multistoreyCarpark,
     }),
   }));
-  return Object.freeze({ town: identity.town, townSlug, blocks: Object.freeze(blocks) });
+  return Object.freeze({ town: identity.town, townSlug, resalePeriod, rentalPeriod, blocks: Object.freeze(blocks) });
 }

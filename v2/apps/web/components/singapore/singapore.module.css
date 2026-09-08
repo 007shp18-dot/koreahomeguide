@@ -758,7 +758,7 @@
 .stat { padding: 20px; }
 .stat dd { min-width: 0; max-width: 100%; font-size: clamp(18px, 2vw, 26px); overflow-wrap: normal; word-break: normal; line-height: 1.4; }
 .detailMetric { text-align: left; }
-.detailMetric strong { max-width: 100%; font-size: clamp(22px, 2.4vw, 32px); line-height: 1.25; }
+.detailMetric strong { max-width: 100%; font-size: clamp(1.8rem, 3.5vw, 2.8rem); line-height: 1.2; }
 .table { table-layout: auto; width: max-content; min-width: 100%; }
 .table th, .table td { white-space: nowrap; overflow-wrap: normal; word-break: normal; }
 .section { box-shadow: none; }
@@ -787,7 +787,7 @@
 .checkForm, .checkResult { padding: 28px; }
 .checkForm { border-right-width: 1px; }
 .checkResult { background: var(--soft-blue); }
-.checkMode a { font-weight: 650; }
+.checkMode a { font-weight: 650; max-width: 100%; padding-block: 10px; white-space: normal; line-height: 1.5; }
 .checkMode a[aria-current='page'] { background: var(--soft-blue); color: var(--accent); box-shadow: inset 0 -2px var(--accent); }
 .checkMarkets a { min-height: 80px; padding: 12px; border-radius: 8px; }
 .offerFields { gap: 20px 16px; }
@@ -797,7 +797,7 @@
 .resultMedian { color: var(--accent); font-weight: 650; font-size: clamp(1.6rem, 3vw, 2.4rem); }
 .resultCard dl div { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); padding-block: 12px; }
 .resultCard dd { overflow-wrap: normal; }
-.checkSubmit { font-weight: 650; }
+.checkSubmit { font-weight: 650; padding-block: 12px; white-space: normal; line-height: 1.5; }
 @media (max-width: 900px) { .checkBody { grid-template-columns: 1fr; } .checkForm { border-right: 0; border-bottom: 1px solid var(--line); } }
 @media (max-width: 560px) { .checkHeader, .checkForm, .checkResult { padding: 20px; } .offerFields { grid-template-columns: 1fr; } }
 

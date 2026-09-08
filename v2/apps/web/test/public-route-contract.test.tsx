@@ -181,7 +181,7 @@ describe('public migration containment', () => {
 
   it('renders Korean evidence routes that do not require conversion evidence', async () => {
     const routes = [
-      ['../app/(ko)/ko/kr/seoul/page', '서울 실거래가'],
+      ['../app/(ko)/ko/kr/seoul/page', '<h1 id="market-page-heading">서울</h1>'],
       ['../app/(ko)/ko/kr/seoul/explore/page', '검증된 구별 자료를 확인할 수 없습니다.'],
       ['../app/(ko)/ko/kr/seoul/rankings/page', '서울 구별 실거래가 비교'],
     ] as const;

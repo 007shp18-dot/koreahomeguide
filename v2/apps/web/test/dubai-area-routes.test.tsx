@@ -59,6 +59,12 @@ describe('Dubai area evidence routes', () => {
     if (model === null) throw new Error('missing area model');
     const html = renderToStaticMarkup(<DubaiAreaDetail model={model} />);
 
+    for (const id of ['detail-overview', 'detail-evidence', 'detail-source']) expect(html).toContain(`id="${id}"`);
+    const overview = html.slice(html.indexOf('id="detail-overview"'), html.indexOf('id="detail-evidence"'));
+    expect(overview).toContain('2026-06-08–2026-09-05');
+    expect(overview).toContain('31 registered sales');
+    expect(overview).toContain('Off-Plan');
+
     for (const label of [
       'Ready vs Off-Plan', 'Median annual rent', 'Estimated gross rent-to-price ratio',
       '31 registered sales', '30 new rent contracts', '2026-06-08–2026-09-05',

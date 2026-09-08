@@ -72,6 +72,20 @@ async function repository() {
 const repositoriesForCheck = () => createSingaporeCheckEvidenceRepositories({});
 
 describe('Singapore route SSR', () => {
+  it('places one project summary median, sample and reporting period before its full transaction evidence', async () => {
+    const store = await repository();
+    const identity = store.listProjects('CCR')[0]!;
+    const model = buildSingaporeProjectModel(store, 'ccr', identity.id);
+    if (model === null || model.status !== 'ready') throw new Error('missing project');
+    const html = renderToStaticMarkup(<SingaporeProjectDetail model={model} />);
+    const overview = html.slice(html.indexOf('id="detail-overview"'), html.indexOf('id="detail-evidence"'));
+    expect(overview).toContain(model.evidence.period);
+    expect(overview).toContain(model.display.sampleLabel);
+    const summary = html.slice(html.indexOf('id="project-summary-heading"'), html.indexOf('id="transaction-heading"'));
+    expect(summary).not.toContain(`<dd>${model.display.medianPriceLabel}</dd>`);
+    expect(html).toContain('id="transaction-heading"');
+    expect(html).toContain('Area basis');
+  });
   it('links published projects beyond the first result page in server HTML', async () => {
     const model = buildSingaporeExploreModel(await repository());
     if (model.status !== 'ready') throw new Error('Missing fixture');

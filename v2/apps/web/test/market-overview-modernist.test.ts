@@ -125,7 +125,7 @@ describe('three market overview routes', () => {
         await MarketOverviewPage({ params: Promise.resolve(params) }),
       );
 
-      if(params.country === 'kr') {expect(markup).toContain('Seoul reported prices');expect(markup).toContain('District → neighbourhood → building');expect(markup).not.toContain('data-market-tier=');continue;}
+      if(params.country === 'kr') {expect(markup).toContain('<h1 id="market-page-heading">Seoul</h1>');expect(markup).toContain('District → neighbourhood → building');expect(markup).not.toContain('data-market-tier=');expect(markup).toContain('Sources and coverage');continue;}
       expect(markup.match(/data-overview-row=/g)).toHaveLength(4);
       expect(markup).toContain('<summary>Sources and limits</summary>');
       for (const title of expectedRows) expect(markup).toContain(`>${title}<`);
@@ -196,7 +196,7 @@ describe('three market overview routes', () => {
         await MarketOverviewPage({ params: Promise.resolve(params) }),
       );
 
-      if(params.country === 'kr') {expect(markup).toContain('Seoul reported prices');expect(markup).toContain('District → neighbourhood → building');expect(markup).not.toContain('data-market-tier=');continue;}
+      if(params.country === 'kr') {expect(markup).toContain('<h1 id="market-page-heading">Seoul</h1>');expect(markup).toContain('District → neighbourhood → building');expect(markup).not.toContain('data-market-tier=');expect(markup).toContain('aria-label="Where to go next"');continue;}
       expect(markup).toContain('data-market-hero="overview"');
       expect(markup).toContain('data-product-intro="true"');
       expect(markup).toContain('data-market-tier="true"');

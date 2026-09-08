@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import { localizedSeoulHref, type ProductLocale } from '../../lib/locale/product-copy';
+import { seoulDetailText } from '../../lib/locale/seoul-detail-copy';
 
 import type { PublicBuildingModel } from '../../lib/public-market/building-route-model.server';
 import { EvidenceSectionHeading } from '../evidence-ui/section-heading';
@@ -24,90 +26,93 @@ function floorLabel(contract: PublicBuildingModel['building']['recentContracts']
   return 'Floor was not retained in this verified snapshot.';
 }
 
-function CohortEvidence({ model }: Readonly<{ model: PublicBuildingModel }>) {
+function CohortEvidence({ model, locale = 'en' }: Readonly<{ model: PublicBuildingModel; locale?: ProductLocale }>) {
+  const t = (value: string) => seoulDetailText(locale, value);
   return (
     <section className={styles.evidence} aria-labelledby="building-distribution-heading">
       <EvidenceSectionHeading
-        eyebrow="01 / Reported distribution"
-        title={model.presentation.distributionHeading}
+        eyebrow={t("01 / Reported distribution")}
+        title={t(model.presentation.distributionHeading)}
         id="building-distribution-heading"
       />
-      <EvidencePeriodStrip model={model.period} label="Building evidence period" />
+      <EvidencePeriodStrip model={model.period} label={t("Building evidence period")} locale={locale} />
       <dl className={styles.findingGrid}>
         <div>
-          <dt>Recent change</dt>
+          <dt>{t("Recent change")}</dt>
           <dd>
-            <strong>{model.display.changeLabel}</strong>
+            <strong>{t(model.display.changeLabel)}</strong>
             {model.display.change.reasons.map((reason) => (
-              <span key={reason}>{reason}</span>
+              <span key={reason}>{t(reason)}</span>
             ))}
           </dd>
         </div>
       </dl>
-      <dl className={styles.findingGrid} aria-label="Contract type evidence">
+      <dl className={styles.findingGrid} aria-label={t('Contract type evidence')}>
         <div>
-          <dt>New contracts</dt>
+          <dt>{t("New contracts")}</dt>
           <dd>{model.building.groups.new.published
-            ? `${money.format(model.building.groups.new.med)} · ${model.building.groups.new.n} records`
-            : `Not published · ${model.building.groups.new.n} records`}</dd>
+            ? `${money.format(model.building.groups.new.med)} · ${model.building.groups.new.n}${locale === 'ko' ? '건' : ' records'}`
+            : `${t('Not published')} · ${model.building.groups.new.n}${locale === 'ko' ? '건' : ' records'}`}</dd>
         </div>
         <div>
-          <dt>Renewal contracts</dt>
+          <dt>{t("Renewal contracts")}</dt>
           <dd>{model.building.groups.renewal.published
-            ? `${money.format(model.building.groups.renewal.med)} · ${model.building.groups.renewal.n} records`
-            : `Not published · ${model.building.groups.renewal.n} records`}</dd>
+            ? `${money.format(model.building.groups.renewal.med)} · ${model.building.groups.renewal.n}${locale === 'ko' ? '건' : ' records'}`
+            : `${t('Not published')} · ${model.building.groups.renewal.n}${locale === 'ko' ? '건' : ' records'}`}</dd>
         </div>
-        <div><dt>Unclassified type</dt><dd>{model.building.unknownContractCount} records</dd></div>
+        <div><dt>{t("Unclassified type")}</dt><dd>{model.building.unknownContractCount}{locale === 'ko' ? '건' : ' records'}</dd></div>
       </dl>
     </section>
   );
 }
 
-function FloorEvidence({ model }: Readonly<{ model: PublicBuildingModel }>) {
+function FloorEvidence({ model, locale = 'en' }: Readonly<{ model: PublicBuildingModel; locale?: ProductLocale }>) {
+  const t = (value: string) => seoulDetailText(locale, value);
   return (
     <section className={styles.areaBands} aria-labelledby="floor-coefficient-heading">
       <EvidenceSectionHeading
-        eyebrow="02 / Floor evidence"
-        title="Floor adjustment evidence"
+        eyebrow={t("02 / Floor evidence")}
+        title={t("Floor adjustment evidence")}
         id="floor-coefficient-heading"
       />
       <div data-floor-coefficient={model.floorCoefficient.status}>
         {model.floorCoefficient.status === 'unavailable' ? (
-          <strong>{model.floorCoefficient.reason}</strong>
+          <strong>{t(model.floorCoefficient.reason)}</strong>
         ) : (
           <strong>{model.floorCoefficient.coefficient}</strong>
         )}
-        <p>{model.floorCoefficient.pairCount} eligible pairs</p>
-        <p>{model.floorCoefficient.basis}</p>
+        <p>{model.floorCoefficient.pairCount}{locale === 'ko' ? '쌍의 비교 가능한 거래' : ' eligible pairs'}</p>
+        <p>{t(model.floorCoefficient.basis)}</p>
       </div>
     </section>
   );
 }
 
-function AreaBandEvidence({ model }: Readonly<{ model: PublicBuildingModel }>) {
+function AreaBandEvidence({ model, locale = 'en' }: Readonly<{ model: PublicBuildingModel; locale?: ProductLocale }>) {
+  const t = (value: string) => seoulDetailText(locale, value);
   return (
     <section className={styles.areaBands} aria-labelledby="building-area-heading">
       <EvidenceSectionHeading
-        eyebrow="03 / Area bands"
-        title="Evidence by filed area band"
+        eyebrow={t("03 / Area bands")}
+        title={t("Evidence by filed area band")}
         id="building-area-heading"
       />
       {model.building.areaBands.length === 1
         && model.building.areaBands[0]?.band === '45–55㎡' ? (
           <div data-area-band-state="single-fixed-band">
-            <strong>Other floor-area bands are not available yet.</strong>
-            <p>Published contract evidence is currently fixed to the 45–55㎡ floor-area band.</p>
-            <p>Additional bands will open after the collection scope expands.</p>
+            <strong>{t("Other floor-area bands are not available yet.")}</strong>
+            <p>{t("Published contract evidence is currently fixed to the 45–55㎡ floor-area band.")}</p>
+            <p>{t("Additional bands will open after the collection scope expands.")}</p>
           </div>
         ) : model.building.areaBands.length === 0 ? (
-          <p>No area-band distribution is published for this record.</p>
+          <p>{t("No area-band distribution is published for this record.")}</p>
         ) : (
           <ul>
             {model.building.areaBands.map(({ band, summary }) => (
               <li key={band}>
                 <strong>{band}</strong>
-                <span>{summary.n} reported contract{summary.n === 1 ? '' : 's'}</span>
-                <span>{summary.published ? money.format(summary.med) : 'Not published'}</span>
+                <span>{t(`${summary.n} reported contract${summary.n === 1 ? '' : 's'}`)}</span>
+                <span>{summary.published ? money.format(summary.med) : t('Not published')}</span>
               </li>
             ))}
           </ul>
@@ -116,26 +121,27 @@ function AreaBandEvidence({ model }: Readonly<{ model: PublicBuildingModel }>) {
   );
 }
 
-function RecentContractEvidence({ model }: Readonly<{ model: PublicBuildingModel }>) {
+function RecentContractEvidence({ model, locale = 'en' }: Readonly<{ model: PublicBuildingModel; locale?: ProductLocale }>) {
+  const t = (value: string) => seoulDetailText(locale, value);
   return (
     <section className={styles.contracts} aria-labelledby="recent-contracts-heading">
       <EvidenceSectionHeading
-        eyebrow="04 / Recent records"
-        title="Privacy-safe reported contracts"
+        eyebrow={t("04 / Recent records")}
+        title={t("Privacy-safe reported contracts")}
         id="recent-contracts-heading"
       />
       {model.building.recentContracts.length === 0 ? (
-        <p>No recent public contract rows are included in this artifact.</p>
+        <p>{t("No recent public contract rows are included in this artifact.")}</p>
       ) : (
         <div className={styles.tableWrap}>
           <table>
             <thead>
               <tr>
-                <th>Filed month</th>
-                <th>Area</th>
-                <th>Floor</th>
-                <th>Contract</th>
-                <th>Jeonse deposit</th>
+                <th>{t("Filed month")}</th>
+                <th>{t("Area")}</th>
+                <th>{t("Floor")}</th>
+                <th>{t("Contract")}</th>
+                <th>{t("Jeonse deposit")}</th>
               </tr>
             </thead>
             <tbody>
@@ -143,8 +149,8 @@ function RecentContractEvidence({ model }: Readonly<{ model: PublicBuildingModel
                 <tr key={`${contract.filedMonth}-${contract.areaSqm}-${index}`}>
                   <td>{contract.filedMonth}</td>
                   <td>{contract.areaSqm}㎡</td>
-                  <td>{floorLabel(contract)}</td>
-                  <td>{contractTypeLabel(contract.contractType)}</td>
+                  <td>{t(floorLabel(contract))}</td>
+                  <td>{t(contractTypeLabel(contract.contractType))}</td>
                   <td>{money.format(contract.depositWon)}</td>
                 </tr>
               ))}
@@ -156,62 +162,65 @@ function RecentContractEvidence({ model }: Readonly<{ model: PublicBuildingModel
   );
 }
 
-function BuildingSourceEvidence({ model }: Readonly<{ model: PublicBuildingModel }>) {
+export function BuildingSourceEvidence({ model, locale = 'en' }: Readonly<{ model: PublicBuildingModel; locale?: ProductLocale }>) {
+  const t = (value: string) => seoulDetailText(locale, value);
   return (
-    <section className={styles.source} aria-labelledby="building-source-heading">
+    <section id="building-source" className={styles.source} aria-labelledby="building-source-heading">
       <EvidenceSectionHeading
-        eyebrow="05 / Source and limits"
-        title="Use this evidence within its boundary"
+        eyebrow={t("05 / Source and limits")}
+        title={t("Use this evidence within its boundary")}
         id="building-source-heading"
       />
-      <EvidenceDisclosure
+      <EvidenceDisclosure locale={locale}
         model={model.evidence.descriptor}
-        boundary={model.presentation.sourceBoundary}
+        boundary={t(model.presentation.sourceBoundary)}
         attribution={['Ministry of Land, Infrastructure and Transport (MOLIT)']}
       />
       <details className={styles.sourceDetails}>
-        <summary>Filters and publication rules</summary>
+        <summary>{t("Filters and publication rules")}</summary>
         <dl className={styles.sourceGrid}>
-          <div><dt>Supported deals</dt><dd>jeonse</dd></div>
-          <div><dt>{model.presentation.periodLabel}</dt><dd>{model.evidence.period}</dd></div>
-          <div><dt>Publication minimum</dt><dd>{model.evidence.publicationMinimum}</dd></div>
-          <div><dt>Exclusions</dt><dd>{model.evidence.exclusions.join(' · ')}</dd></div>
+          <div><dt>{t("Supported deals")}</dt><dd>{t('jeonse')}</dd></div>
+          <div><dt>{t(model.presentation.periodLabel)}</dt><dd>{model.evidence.period}</dd></div>
+          <div><dt>{t("Publication minimum")}</dt><dd>{model.evidence.publicationMinimum}</dd></div>
+          <div><dt>{t("Exclusions")}</dt><dd>{model.evidence.exclusions.map(t).join(' · ')}</dd></div>
         </dl>
       </details>
       <div className={styles.actions}>
-        <Link href="/trust/">Read SignedPrice Trust</Link>
-        <Link href="/kr/seoul/corrections/">Review Seoul corrections</Link>
+        <Link href="/trust/">{t("Read SignedPrice Trust")}</Link>
+        <Link href={localizedSeoulHref("/kr/seoul/corrections/", locale)}>{t("Review Seoul corrections")}</Link>
       </div>
     </section>
   );
 }
 
-function BuildingNavigation({ model }: Readonly<{ model: PublicBuildingModel }>) {
+function BuildingNavigation({ model, locale = 'en' }: Readonly<{ model: PublicBuildingModel; locale?: ProductLocale }>) {
+  const t = (value: string) => seoulDetailText(locale, value);
   return (
-    <nav className={styles.navigation} aria-label="Building evidence navigation">
-      <Link href={`/kr/seoul/explore/${model.district.slug}/`}>
-        Back to {model.district.nameEn} evidence
+    <nav className={styles.navigation} aria-label={t("Building evidence navigation")}>
+      <Link href={localizedSeoulHref(`/kr/seoul/explore/${model.district.slug}/`, locale)}>
+        {locale === 'ko' ? `${model.district.nameKo} 거래 보기` : `Back to ${model.district.nameEn} evidence`}
       </Link>
-      <Link href={`/kr/seoul/explore/?district=${model.district.slug}`}>
-        Back to Seoul map
+      <Link href={localizedSeoulHref(`/kr/seoul/explore/?district=${model.district.slug}`, locale)}>
+        {t('Back to Seoul map')}
       </Link>
-      <Link href="/kr/seoul/rankings/">View district rankings</Link>
-      <Link href="/kr/seoul/corrections/">Review Seoul corrections</Link>
+      <Link href={localizedSeoulHref("/kr/seoul/rankings/", locale)}>{t("View district rankings")}</Link>
+      <Link href={localizedSeoulHref("/kr/seoul/corrections/", locale)}>{t("Review Seoul corrections")}</Link>
     </nav>
   );
 }
 
-export function BuildingEvidenceDetails({ model }: Readonly<{ model: PublicBuildingModel }>) {
+export function BuildingEvidenceDetails({ model, locale = 'en', includeSource = true }: Readonly<{ model: PublicBuildingModel; locale?: ProductLocale; includeSource?: boolean }>) {
+  const t = (value: string) => seoulDetailText(locale, value);
   return (
-    <details className={styles.evidenceDetails} data-building-section="evidence">
-      <summary>See records, adjustments, and methodology</summary>
+    <details open className={styles.evidenceDetails} data-building-section="evidence">
+      <summary>{t("See records, adjustments, and methodology")}</summary>
       <div className={styles.evidenceDetailsBody}>
-        <CohortEvidence model={model} />
-        <FloorEvidence model={model} />
-        <AreaBandEvidence model={model} />
-        <RecentContractEvidence model={model} />
-        <BuildingSourceEvidence model={model} />
-        <BuildingNavigation model={model} />
+        <CohortEvidence model={model} locale={locale} />
+        <FloorEvidence model={model} locale={locale} />
+        <AreaBandEvidence model={model} locale={locale} />
+        <RecentContractEvidence model={model} locale={locale} />
+        {includeSource ? <BuildingSourceEvidence model={model} locale={locale} /> : null}
+        <BuildingNavigation model={model} locale={locale} />
       </div>
     </details>
   );

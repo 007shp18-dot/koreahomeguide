@@ -33,6 +33,14 @@ function identityModel() {
 }
 
 describe('observed building detail', () => {
+  it('keeps unavailable price evidence ahead of supplementary facts and localizes Korean labels', () => {
+    const html = renderToStaticMarkup(<ObservedBuildingDetail model={identityModel()} backHref="/ko/kr/seoul/explore/" locale="ko" />);
+    expect(html).toContain('가격 자료 없음');
+    expect(html).not.toContain('Housing type');
+    expect(html).not.toContain('Price evidence unavailable');
+    expect(html.indexOf('id="building-overview"')).toBeLessThan(html.indexOf('data-building-facts="known"'));
+    expect(html).toContain('id="building-source"');
+  });
   it('renders verified identity and observation counts without fabricating a price', () => {
     const html = renderToStaticMarkup(
       <ObservedBuildingDetail

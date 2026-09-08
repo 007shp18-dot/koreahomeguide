@@ -13,9 +13,9 @@ const model: SingaporeCheckRouteModel = { mode: 'compare', catalogs: { 'ura-priv
 describe('Singapore Korean functional surfaces', () => {
   it('localizes the comparison form while preserving submitted IDs and source values', () => {
     const html = renderToStaticMarkup(<SingaporeCheckWorkspace locale="ko" model={model} />);
-    expect(html).toContain('이 매물, 최근 실거래가와 얼마나 다를까요?');
+    expect(html).toContain('매물 가격 비교');
     expect(html).toContain('action="/ko/sg/singapore/check/"');
-    expect(html).toContain('제안 비교');
+    expect(html).toContain('매물 비교');
     expect(html).toContain('name="a-project"');
     expect(html).toContain('value="project-a"');
     expect(html).toContain('THE ORIGINAL PROJECT');
@@ -24,7 +24,7 @@ describe('Singapore Korean functional surfaces', () => {
     expect(html).toContain('name="b-market"');
     expect(html).toContain('value="hdb-rent"');
     expect(JSON.stringify(model)).toContain('Condominium');
-    expect(renderToStaticMarkup(<SingaporeCheckWorkspace model={model} />)).toContain('Position an offer against its own market.');
+    expect(renderToStaticMarkup(<SingaporeCheckWorkspace model={model} />)).toContain('Compare an asking price');
   });
   it('keeps explorer selection and query parameters intact in Korean URLs', () => {
     const state = parseSingaporeExploreSearchParams(new URLSearchParams('q=Original&region=ccr&district=09&sort=name&page=2&project=project-a'));

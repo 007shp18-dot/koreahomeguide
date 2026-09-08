@@ -951,8 +951,8 @@ function ReadyAreaExplorer({
                 <p>{locale === 'ko' ? '서울 전체' : 'All Seoul'}</p>
                 <h2 id="district-table-heading">{locale === 'ko' ? '구를 선택하세요' : 'Choose a district'}</h2>
                 <span>{locale === 'ko'
-                  ? '지도와 목록이 함께 해당 구의 동별 분포로 이동합니다.'
-                  : 'The map and list move together to neighborhood distribution.'}</span>
+                  ? '선택한 구의 동별 거래를 지도와 목록에서 확인하세요.'
+                  : 'See neighbourhood transactions on the map and in the list.'}</span>
               </div>
               <ul className={styles.districtList}>
                 {model.districts.map((district) => (
@@ -1169,13 +1169,13 @@ function ReadyAreaExplorer({
         >
           <div className={styles.sectionHeading}>
             <p>{copy.buildingsEyebrow}</p>
-            <h2 id="building-table-heading">{locale === 'ko' ? '조건에 맞는 건물별 거래' : 'Filtered building evidence'}</h2>
+            <h2 id="building-table-heading">{locale === 'ko' ? '조건에 맞는 건물별 거래' : 'Matching building transactions'}</h2>
           </div>
           <div className={styles.tableWrap}>
             <table className={styles.table}>
               <caption>{locale === 'ko'
                 ? '선택한 조건과 기간의 건물별 거래'
-                : 'Building evidence for the current filters and reporting period'}</caption>
+                : 'Building transactions for the selected filters and reporting period'}</caption>
               <thead>
                 <tr>
                   <th scope="col">{locale === 'ko' ? '건물' : 'Building'}</th>

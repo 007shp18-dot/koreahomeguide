@@ -38,11 +38,20 @@ function render(mode: BuildingDecisionMode, contract: BuildingContractCohort): s
 }
 
 describe('building decision views', () => {
+  it('localizes the accessible label for published Korean buy evidence', () => {
+    const model = buildingModel();
+    const decision = buildBuildingDecisionModel(model, { mode: 'buy', contract: 'all' });
+    const html = renderToStaticMarkup(<BuildingDecisionView locale="ko" model={model}
+      decision={{ ...decision, buy: { ...decision.buy, readiness: { state: 'published', count: 6 } } }}
+      base="/ko/kr/seoul/explore/gangnam-gu/gangnam-evidence-tower/" />);
+    expect(html).toContain('aria-label="매매 거래 자료"');
+    expect(html).not.toContain('aria-label="Buy evidence"');
+  });
   it('keeps Overview concise and points to the supported Rent decision', () => {
     const overview = render('overview', 'new');
-    expect(overview).toContain('Evidence is ready for a rent comparison');
+    expect(overview).toContain('Compare with reported rental contracts');
     expect(overview).toContain('Official sale evidence is not ready');
-    expect(overview).toContain('Check my contract');
+    expect(overview).toContain('Compare rental contracts');
     expect(overview).not.toContain('Privacy-safe reported contracts');
   });
 
@@ -50,7 +59,7 @@ describe('building decision views', () => {
     const rentAll = render('rent', 'all');
     expect(rentAll).toContain('data-plot-variant="full"');
     expect(rentAll).toContain('6 reported contracts');
-    expect(rentAll).toContain('Open full Rent Check');
+    expect(rentAll).toContain('Compare an asking rent');
 
     const rentNew = render('rent', 'new');
     expect(rentNew).toContain('New contract evidence is not published');

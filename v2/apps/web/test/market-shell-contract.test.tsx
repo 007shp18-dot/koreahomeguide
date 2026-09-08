@@ -7,7 +7,7 @@ import {
   MarketExploreShell,
   MarketLayerControl,
 } from '../components/market-ui/market-shell';
-import { MarketRepresentativePhoto } from '../components/market-representative-photo';
+import { MARKET_PHOTOS, MarketRepresentativePhoto } from '../components/market-representative-photo';
 
 describe('shared market composition', () => {
   it('keeps Explore information order and one active market layer', () => {
@@ -65,5 +65,28 @@ describe('shared market composition', () => {
     expect(html).toContain('data-building-media="market-context-fallback"');
     expect(html).toContain('Seoul market context');
     expect(html).toContain('No approved market photograph is available.');
+  });
+
+  it.each([
+    ['city', '도시 전경'],
+    ['property', '도시 참고 사진 · 해당 매물의 사진이 아닙니다'],
+  ] as const)('localizes the %s photo caption without dropping the city or image', (context, caption) => {
+    const html = renderToStaticMarkup(<MarketRepresentativePhoto photo={MARKET_PHOTOS.singapore} cityLabel="싱가포르" locale="ko" context={context} />);
+    expect(html).toContain(`<figcaption>싱가포르 · ${caption}</figcaption>`);
+    expect(html).toContain('singapore-residential.jpg');
+    expect(html).toContain('alt="High-rise residential architecture in Singapore"');
+  });
+
+  it('retains the English editorial disclaimer for callers without a locale', () => {
+    const html = renderToStaticMarkup(<MarketRepresentativePhoto photo={MARKET_PHOTOS.dubai} cityLabel="Dubai" />);
+    expect(html).toContain('<figcaption>Dubai · Editorial city photograph · not this exact property</figcaption>');
+  });
+
+  it('localizes the missing-photo explanation and caption', () => {
+    const html = renderToStaticMarkup(<MarketRepresentativePhoto photo={null} cityLabel="서울" locale="ko" />);
+    expect(html).toContain('서울 주택 시장');
+    expect(html).toContain('사용할 수 있는 도시 사진이 없습니다.');
+    expect(html).toContain('<figcaption>서울 · 확인된 시장 정보</figcaption>');
+    expect(html).not.toContain('Verified market context');
   });
 });

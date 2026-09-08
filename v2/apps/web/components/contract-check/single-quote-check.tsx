@@ -38,7 +38,9 @@ function resultReason(
   locale: ProductLocale,
 ): string {
   if (result.status === 'insufficient') {
-    return `Only ${result.sample.count} compatible reported contracts within ${completedMonthWindowLabel(result.evidenceWindow, locale)}; five are required.`;
+    return locale === 'ko'
+      ? `${completedMonthWindowLabel(result.evidenceWindow, locale)}의 비교 거래는 ${result.sample.count}건입니다. 최소 5건이 필요합니다.`
+      : `Only ${result.sample.count} compatible reported contracts within ${completedMonthWindowLabel(result.evidenceWindow, locale)}; five are required.`;
   }
   return result.message;
 }
@@ -59,7 +61,7 @@ function SingleResult({ model, locale, entityContext }: Readonly<{
           : 'Enter one property’s conditions and asking price to compare with compatible reported contracts.'}</p></div>
       ) : result.status !== 'ready' ? (
         <div className={styles.resultEmpty} data-result-state={result.status}>
-          <h3>{result.status === 'insufficient' ? 'Not enough compatible contracts' : c.unavailable}</h3>
+          <h3>{result.status === 'insufficient' ? (locale === 'ko' ? '비교할 거래가 부족합니다' : 'Not enough compatible contracts') : c.unavailable}</h3>
           <p>{resultReason(result, locale)}</p>
         </div>
       ) : (
@@ -85,12 +87,12 @@ function SingleResult({ model, locale, entityContext }: Readonly<{
           </section>
           <section className={styles.marketEvidence} data-check-section="evidence" data-result-order="market-evidence">
             <h3>{c.evidence}</h3>
-            <p>{result.sample.count} {c.sample} · ±{result.filters.areaTolerancePct}% area · {completedMonthWindowLabel(result.evidenceWindow, locale)}</p>
+            <p>{result.sample.count} {c.sample} · ±{result.filters.areaTolerancePct}% {locale === 'ko' ? '면적 범위' : 'area'} · {completedMonthWindowLabel(result.evidenceWindow, locale)}</p>
             <div className={styles.comparableRows}>
               {result.comparableRows.map((row, index) => (
                 <p key={`${row.buildingId}-${row.filedMonth}-${index}`}>
                   {row.filedMonth} · {row.areaSqm}㎡ · {won.format(row.adjustedValueWon)}
-                  {entityContext === null ? null : <Link href={`${locale === 'ko' ? '/ko' : ''}/kr/seoul/explore/${row.districtSlug}/${row.buildingId}/?transaction=${model.selection.transaction}&propertyType=${model.selection.housingType}&district=${row.districtSlug}&buildingId=${row.buildingId}`}>Open building evidence</Link>}
+                  {entityContext === null ? null : <Link href={`${locale === 'ko' ? '/ko' : ''}/kr/seoul/explore/${row.districtSlug}/${row.buildingId}/?transaction=${model.selection.transaction}&propertyType=${model.selection.housingType}&district=${row.districtSlug}&buildingId=${row.buildingId}`}>{locale === 'ko' ? '단지 거래 보기' : 'View building transactions'}</Link>}
                 </p>
               ))}
             </div>
@@ -98,10 +100,10 @@ function SingleResult({ model, locale, entityContext }: Readonly<{
           <ResultLinkCopy locale={locale} tool="single-quote" />
           <section className={styles.disclosure} data-check-section="disclosure" data-result-order="disclosure">
             <h3>{c.disclosure}</h3>
-            <p>{result.fallbackDisclosure ?? 'At least five matching reported contracts are used for each comparison.'}</p>
+            <p>{result.fallbackDisclosure ?? (locale === 'ko' ? '각 비교에는 조건이 맞는 신고 거래를 최소 5건 사용합니다.' : 'At least five matching reported contracts are used for each comparison.')}</p>
             <p>{result.comparisonBasis === 'verified-deposit-adjusted-monthly-rent'
-              ? 'Filed deposit and monthly rent remain visible; only the installed verified conversion curve normalizes the comparison.'
-              : 'Official reported values are compared directly within the selected transaction market.'}</p>
+              ? (locale === 'ko' ? '신고 보증금과 월세는 그대로 표시하며, 검증된 전환율 자료로만 비교 금액을 환산합니다.' : 'Filed deposit and monthly rent remain visible; a verified conversion curve adjusts the comparison.')
+              : (locale === 'ko' ? '선택한 거래 유형의 공식 신고 금액을 직접 비교합니다.' : 'Official reported values are compared directly within the selected transaction market.')}</p>
             <p>{c.reference}</p>
           </section>
         </div>
@@ -139,7 +141,7 @@ export function SingleQuoteCheckWorkspace({ model, locale = 'en', entityContext 
       <main className={styles.main}>
         <section className={styles.hero}>
           <p>{locale === 'ko' ? '서울 · 실거래가 비교' : 'Seoul · Official transaction evidence'}</p>
-          <h1>{locale === 'ko' ? '이 매물, 실거래가와 얼마나 다를까?' : 'Check one asking price.'}</h1>
+          <h1>{locale === 'ko' ? '매물 가격 비교' : 'Compare an asking price'}</h1>
           <p>{locale === 'ko'
             ? '매매가격이나 보증금·월세를 입력해 비슷한 거래와 비교하세요.'
             : 'Compare a sale, jeonse or monthly-rent quote with compatible reported contracts.'}</p>
@@ -172,7 +174,7 @@ export function SingleQuoteCheckWorkspace({ model, locale = 'en', entityContext 
             </div>
           </fieldset>
           <fieldset className={styles.singleOffer} data-offer="single">
-            <legend><span>02</span>{locale === 'ko' ? '매물 가격' : 'Single offer'}</legend>
+            <legend><span>02</span>{locale === 'ko' ? '매물 가격' : 'Asking price'}</legend>
             <TransactionSelect
               availability={model.availability}
               locale={locale}
@@ -186,12 +188,12 @@ export function SingleQuoteCheckWorkspace({ model, locale = 'en', entityContext 
             {draft.transaction === 'jeonse' || draft.transaction === 'monthly' ? <MoneyField name="deposit" label={c.deposit} value={draft.depositWon} onChange={(value) => edit('depositWon', value)} /> : null}
             {draft.transaction === 'monthly' ? <MoneyField name="monthly-rent" label={c.rent} value={draft.monthlyRentWon} onChange={(value) => edit('monthlyRentWon', value)} /> : null}
           </fieldset>
-          <div className={styles.actions}><button type="submit">{locale === 'ko' ? '실거래가와 비교하기' : 'Check this quote'}</button></div>
+          <div className={styles.actions}><button type="submit">{locale === 'ko' ? '매물 가격 비교' : 'Compare an asking price'}</button></div>
         </form>
         <SingleResult model={model} locale={locale} entityContext={entityContext} />
         <nav className={styles.contextLinks} aria-label={c.evidence}>
           {entityContext === null ? null : <Link href={entityContext.returnTo}>
-            Return to {model.buildingName ?? 'selected building'}
+            {locale === 'ko' ? `${model.buildingName ?? '선택한 단지'} 돌아가기` : `Return to ${model.buildingName ?? 'selected building'}`}
           </Link>}
           <Link href={localizedCheckHref(locale, '/compare/')}>{c.compare}</Link>
           <Link href={`${locale === 'ko' ? '/ko' : ''}/kr/seoul/explore/`}>{c.explore}</Link>

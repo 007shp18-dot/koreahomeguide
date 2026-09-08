@@ -162,9 +162,9 @@ describe('all-type Contract Check workspace', () => {
     expect(html).toContain('Trade-off — no winner declared');
     expect(html).toContain('Upfront cash');
     expect(html).toContain('Recurring cash flow');
-    expect(html).toContain('Sale price as filed');
-    expect(html).toContain('Deposit as filed');
-    expect(html).toContain('Monthly rent as filed');
+    expect(html).toContain('Asking sale price');
+    expect(html).toContain('Asking deposit');
+    expect(html).toContain('Asking monthly rent');
     expect(html).toContain('Not modeled');
     expect(html).not.toMatch(/₩0\s*\/\s*month/);
     expect(html).not.toMatch(/Offer [AB] (?:has the lower|wins)/i);
@@ -181,8 +181,8 @@ describe('all-type Contract Check workspace', () => {
     const html = renderToStaticMarkup(<ContractCheckWorkspace model={readyModel('sale', 'monthly', true)} />);
     expect(html).toContain('Copy result link');
 
-    expect(html).toContain('Sale evidence window · 7 completed months · 2026-01–2026-07');
-    expect(html).toContain('Rental evidence window · 7 completed months · 2026-02–2026-08');
+    expect(html).toContain('Sale reporting period · 7 completed months · 2026-01–2026-07');
+    expect(html).toContain('Rental reporting period · 7 completed months · 2026-02–2026-08');
     expect(html).toContain('Conversion period · 2026-03/2026-08');
   });
 

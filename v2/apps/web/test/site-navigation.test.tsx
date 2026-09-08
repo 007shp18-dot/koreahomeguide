@@ -29,6 +29,15 @@ describe('shared navigation destinations', () => {
     }
     expect(languageDestinations('/sg/singapore/explore/').ko).toBe('/ko/sg/singapore/explore/');
   });
+  it.each(['/sg/singapore/hdb/ang-mo-kio/', '/sg/singapore/hdb/ang-mo-kio/123/'])('keeps both languages and the query on HDB route %s', (path) => {
+    const query = '?transaction=resale&flatType=4-room';
+    expect(languageDestinations(path, query).ko).toBe(`/ko${path}${query}`);
+    expect(languageDestinations(`/ko${path}`, query).en).toBe(`${path}${query}`);
+    const html = renderToStaticMarkup(<LanguageLinks pathname={`/ko${path}`} />);
+    expect(html).toContain('>EN<');
+    expect(html).toContain('>KO<');
+    expect(html).not.toContain('>中文<');
+  });
   it('keeps the current news filter on the Chinese index', () => {
     expect(languageDestinations('/news/', '?market=singapore')['zh-CN']).toBe('/zh-cn/news/?market=singapore');
   });

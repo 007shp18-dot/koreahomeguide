@@ -1,4 +1,5 @@
 import { buildingDisplayName, neighborhoodDisplayName } from '../../lib/public-market/seoul-display-names';
+import { seoulDetailText } from '../../lib/locale/seoul-detail-copy';
 import { createPropertyScenarioHref } from '../../lib/tools/property-scenario-context';
 import { RecentTransactionPlot, SizeCohortResearch } from '../market-ui/transaction-research';
 import { PropertyScenarioCalculator } from '../market-ui/property-scenario';
@@ -44,10 +45,11 @@ const exactEvidenceFooter: SiteFooterModel = {
 const countLabel = (count: number) => `${count} observed contract${count === 1 ? '' : 's'}`;
 
 
-function KnownBuildingFacts({ facts }: Readonly<{ facts: readonly Readonly<{ label: string; value: string }>[] }>) {
+function KnownBuildingFacts({ facts, locale = 'en' }: Readonly<{ locale?: ProductLocale; facts: readonly Readonly<{ label: string; value: string }>[] }>) {
+  const t = (value: string) => seoulDetailText(locale, value);
   return <section className={styles.knownFacts} aria-labelledby="known-building-facts-heading" data-building-facts="known">
-    <div className={styles.sectionHeading}><p>Building profile</p><h2 id="known-building-facts-heading">Verified facts already attached</h2></div>
-    <dl className={styles.findingGrid}>{facts.filter(fact => !/not reported|pending|unavailable|unverified/i.test(fact.value)).map((fact) => <div key={fact.label}><dt>{fact.label}</dt><dd>{fact.value}</dd></div>)}</dl>
+    <div className={styles.sectionHeading}><p>{t('Building profile')}</p><h2 id="known-building-facts-heading">{t('Verified facts already attached')}</h2></div>
+    <dl className={styles.findingGrid}>{facts.filter(fact => !/not reported|pending|unavailable|unverified/i.test(fact.value)).map((fact) => <div key={fact.label}><dt>{t(fact.label)}</dt><dd>{t(fact.value)}</dd></div>)}</dl>
   </section>;
 }
 
@@ -124,10 +126,11 @@ export function ObservedBuildingDetail({
   locale?: ProductLocale;
 }>) {
   const hasMonthly = model.observations.monthly > 0;
+  const t = (value: string) => seoulDetailText(locale, value);
   const hasJeonse = model.observations.jeonse > 0;
   const evidenceKinds = [
-    hasJeonse ? 'Jeonse' : null,
-    hasMonthly ? 'Monthly rent' : null,
+    hasJeonse ? t('Jeonse') : null,
+    hasMonthly ? t('Monthly rent') : null,
   ].filter((value): value is string => value !== null).join(' + ');
   const coordinateLabel = model.coordinate.status === 'ready'
     ? 'Verified coordinate available'
@@ -142,62 +145,62 @@ export function ObservedBuildingDetail({
           data-identity-hero="true"
           data-building-section="identity"
         >
-          {visual}
+          {visual && <div data-detail-order="media">{visual}</div>}
 
           <div className={styles.identitySummary}>
             <Link className={styles.backAction} href={backHref}>
               {locale === 'ko' ? `${model.district.nameKo} 탐색으로` : `Back to ${model.district.nameEn} Explore`}
             </Link>
-            <h1>{buildingDisplayName(model.building.officialName, locale)}{locale === 'ko' ? ' 실거래가' : ' · reported prices'}</h1>
+            <h1>{buildingDisplayName(model.building.officialName, locale)}</h1>
             <p>{neighborhoodDisplayName(model.building.neighborhoodName, locale)} · {locale === 'ko' ? model.district.nameKo : model.district.nameEn}</p>
             <dl className={styles.factGrid}>
-              <div><dt>Housing type</dt><dd>{model.building.housingType}</dd></div>
-              <div><dt>Observed contracts</dt><dd>{countLabel(model.observations.total)}</dd></div>
-              <div><dt>Contract evidence</dt><dd>{evidenceKinds}</dd></div>
-              <div><dt>Observed period</dt><dd>{model.observations.firstMonth}–{model.observations.lastMonth}</dd></div>
+              <div><dt>{t('Housing type')}</dt><dd>{t(model.building.housingType)}</dd></div>
             </dl>
           </div>
         </section>
 
-        <KnownBuildingFacts facts={[
+        <nav className={styles.mockupTabs} aria-label={t('Building page sections')}><a href="#building-overview">{t('Overview')}</a><a href="#building-source">{t('Source')}</a></nav>
+        <section id="building-overview" className={styles.evidence} data-building-section="identity-evidence">
+          <div className={styles.sectionHeading}>
+            <p>{t('Evidence boundary')}</p>
+            <h2>{t('Price evidence unavailable')}</h2>
+          </div>
+          <p>{locale === 'ko' ? '전용면적 45~55㎡·월세 없는 전세 조건에 가격을 표시할 수 있는 거래 자료가 없습니다.' : model.evidence.message}</p>
+          <p>{t(countLabel(model.observations.total))} · {model.observations.firstMonth}–{model.observations.lastMonth} · {evidenceKinds}</p>
+          <dl className={styles.findingGrid}>
+            <div><dt>{t('All observed')}</dt><dd>{model.observations.total}</dd></div>
+            <div><dt>{t('Jeonse')}</dt><dd>{model.observations.jeonse}</dd></div>
+            <div><dt>{t('Monthly rent')}</dt><dd>{model.observations.monthly}</dd></div>
+            <div><dt>{t('Map status')}</dt><dd>{t(coordinateLabel)}</dd></div>
+          </dl>
+        </section>
+        <KnownBuildingFacts locale={locale} facts={[
           { label: 'Official identity', value: model.building.officialName },
           { label: 'Area', value: `${model.building.neighborhoodName} · ${locale === 'ko' ? model.district.nameKo : model.district.nameEn}` },
-          { label: 'Housing type', value: locale === 'ko' ? ({apartment:'아파트',officetel:'오피스텔',villa_multifamily:'연립·다세대',detached:'단독·다가구'}[model.building.housingType]) : model.building.housingType },
+          { label: 'Housing type', value: model.building.housingType },
           { label: 'Observed evidence', value: countLabel(model.observations.total) },
           { label: 'Evidence period', value: `${model.observations.firstMonth}–${model.observations.lastMonth}` },
           { label: 'Map identity', value: coordinateLabel },
         ]} />
         {facts}
-
-        <section className={styles.evidence} data-building-section="identity-evidence">
-          <div className={styles.sectionHeading}>
-            <p>Evidence boundary</p>
-            <h2>Price evidence unavailable</h2>
-          </div>
-          <p>{model.evidence.message}</p>
-          <dl className={styles.findingGrid}>
-            <div><dt>All observed</dt><dd>{model.observations.total}</dd></div>
-            <div><dt>Jeonse</dt><dd>{model.observations.jeonse}</dd></div>
-            <div><dt>Monthly rent</dt><dd>{model.observations.monthly}</dd></div>
-            <div><dt>Map status</dt><dd>{coordinateLabel}</dd></div>
-          </dl>
-          {facts === undefined ? <BuildingProximityDisclosure proximity={model.proximity} locale={locale} /> : null}
+        {facts === undefined ? <BuildingProximityDisclosure proximity={model.proximity} locale={locale} /> : null}
+        <section id="building-source" className={styles.source}>
           <details className={styles.sourceDetails}>
-            <summary>Source and observation details</summary>
+            <summary>{t('Source and observation details')}</summary>
             <dl className={styles.sourceGrid}>
-              <div><dt>Source</dt><dd>{model.source.provider} {model.source.dataset}</dd></div>
-              <div><dt>Source period</dt><dd>{model.source.period}</dd></div>
-              <div><dt>Observed first</dt><dd>{model.observations.firstMonth}</dd></div>
-              <div><dt>Observed latest</dt><dd>{model.observations.lastMonth}</dd></div>
+              <div><dt>{t('Source')}</dt><dd>{model.source.provider} {model.source.dataset}</dd></div>
+              <div><dt>{t('Source period')}</dt><dd>{model.source.period}</dd></div>
+              <div><dt>{t('Observed first')}</dt><dd>{model.observations.firstMonth}</dd></div>
+              <div><dt>{t('Observed latest')}</dt><dd>{model.observations.lastMonth}</dd></div>
             </dl>
           </details>
           <div className={styles.actions}>
-            <Link href={backHref}>Return to Explore</Link>
-            <Link href="/trust/">Read the evidence policy</Link>
+            <Link href={backHref}>{t('Return to Explore')}</Link>
+            <Link href="/trust/">{t('Read the evidence policy')}</Link>
           </div>
         </section>
       </main>
-      <SiteFooter copy={footer} />
+      <SiteFooter locale={locale} copy={locale === 'ko' ? { ...footer, descriptor: '확인된 서울 단지 정보와 가격 자료의 제공 범위를 표시합니다.' } : footer} />
     </div>
   );
 }
@@ -267,6 +270,7 @@ export function KoreaEvidenceBuildingDetail({
   locale?: ProductLocale;
 }>) {
   const areaLabel = locale === 'ko' ? {all:'전체 면적','under-40':'40㎡ 미만','40-60':'40~60㎡','60-85':'60~85㎡','85-plus':'85㎡ 이상'}[model.selection.areaBand] : areaLabels[model.selection.areaBand];
+  const t = (value: string) => seoulDetailText(locale, value);
   const transactionLabel = locale === 'ko' ? {sale:'매매',jeonse:'전세',monthly:'월세'}[model.selection.transaction] : transactionLabels[model.selection.transaction];
   const primaryLabel = locale === 'ko' ? {'sale-price':'매매가격 중앙값',deposit:'보증금 중앙값','monthly-rent':'월세 중앙값'}[model.evidence.primaryMetric] : primaryMetricLabels[model.evidence.primaryMetric];
   const publicationHeading = model.evidence.state === 'published'
@@ -275,8 +279,7 @@ export function KoreaEvidenceBuildingDetail({
       ? (locale === 'ko' ? '최근 신고 거래' : 'Recent reported contracts')
       : (locale === 'ko' ? '선택한 조건의 신고 거래가 없습니다' : 'No matching contracts');
 
-  const pricePerSqmValues = model.recentTransactions.filter(r => r.areaSqm > 0 && Number.isFinite(r.primaryWon)).map(r => r.primaryWon / r.areaSqm).sort((a,b) => a-b);
-  const sqmMedian = model.evidence.state === 'published' && pricePerSqmValues.length >= 5 ? (pricePerSqmValues[Math.floor((pricePerSqmValues.length - 1)/2)]! + pricePerSqmValues[Math.floor(pricePerSqmValues.length/2)]!) / 2 : null;
+  const monthlyUnit = model.evidence.primaryMetric === 'monthly-rent' ? (locale === 'ko' ? ' /월' : ' /month') : '';
   const money = (value: number) => locale === 'ko' ? (value >= 100_000_000 ? `${(value / 100_000_000).toLocaleString('ko-KR', { maximumFractionDigits: 2 })}억 원` : value >= 10_000 ? `${(value / 10_000).toLocaleString('ko-KR', { maximumFractionDigits: 0 })}만 원` : `${Math.round(value).toLocaleString('ko-KR')}원`) : `₩${new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: 2 }).format(value)}`;
   const sourceLine = `${locale === 'ko' ? '출처: 국토교통부' : 'Source: MOLIT'} · ${model.period} · ${locale === 'ko' ? '갱신' : 'Updated'} ${model.generatedAt.slice(0,10)}`;
   return (
@@ -293,15 +296,10 @@ export function KoreaEvidenceBuildingDetail({
             <Link className={styles.backAction} href={backHref}>
               {locale === 'ko' ? `${model.district.nameKo} 탐색으로` : `Back to ${model.district.nameEn} Explore`}
             </Link>
-            <h1>{buildingDisplayName(model.building.officialName, locale)}{locale === 'ko' ? ' 실거래가' : ' · reported prices'}</h1>
+            <h1>{buildingDisplayName(model.building.officialName, locale)}</h1>
             <p>{neighborhoodDisplayName(model.building.neighborhoodName, locale)} · {locale === 'ko' ? model.district.nameKo : model.district.nameEn}</p>
-            {model.evidence.medianWon !== null && <p className={styles.heroPrice}><strong>{money(model.evidence.medianWon)}</strong> <span>{locale === 'ko' ? '중앙값' : 'median'}</span></p>}
-            <p>{locale === 'ko' ? model.evidence.sampleLabel.replace(/ reported contracts?/, '건') : model.evidence.sampleLabel} · {model.period}</p><p className={styles.sourceLine}>{sourceLine}</p>
             <dl className={styles.factGrid}>
-              <div><dt>Transaction</dt><dd>{transactionLabel}</dd></div>
-              <div><dt>Area cohort</dt><dd>{areaLabel}</dd></div>
-              <div><dt>Housing type</dt><dd>{model.building.housingType}</dd></div>
-              <div><dt>Evidence period</dt><dd>{model.period}</dd></div>
+              <div><dt>{t('Housing type')}</dt><dd>{t(model.building.housingType)}</dd></div>
             </dl>
           </div>
         </section>
@@ -321,29 +319,28 @@ export function KoreaEvidenceBuildingDetail({
             <h2>{publicationHeading}</h2>
           </div>
           <dl className={styles.findingGrid}>
-            {model.evidence.medianWon !== null && <div><dt>{primaryLabel}</dt><dd>{money(model.evidence.medianWon)}</dd></div>}
-            <div><dt>{locale === 'ko' ? '신고 거래 수' : 'Reported contracts'}</dt><dd>{locale === 'ko' ? model.evidence.sampleLabel.replace(/ reported contracts?/, '건') : model.evidence.sampleLabel}</dd></div>
-            {sqmMedian !== null && <div><dt>{locale === 'ko' ? '㎡당 가격 중앙값' : 'Median price per m²'}</dt><dd>{money(sqmMedian)}</dd><small>{locale === 'ko' ? `최근 공개 거래 ${pricePerSqmValues.length}건 기준` : `${pricePerSqmValues.length} recent displayed contracts`}</small></div>}
-            {model.evidence.middleHalfLabel && <div><dt>{locale === 'ko' ? '중간 50%' : 'Middle half'}</dt><dd>{model.evidence.middleHalfLabel}</dd></div>}
+            {model.evidence.medianWon !== null && <div className={styles.primaryFinding}><dt>{primaryLabel}</dt><dd>{money(model.evidence.medianWon)}{monthlyUnit}</dd><small>{t(model.evidence.sampleLabel)} · {model.period}</small></div>}
+            {model.evidence.medianWon === null && <div><dt>{t('Observed contracts')}</dt><dd>{t(model.evidence.sampleLabel)} · {model.period}</dd></div>}
+            {model.evidence.middleHalfLabel && <div><dt>{locale === 'ko' ? '중간 50%' : 'Middle half'}</dt><dd>{model.evidence.middleHalfLabel}{monthlyUnit}</dd></div>}
             
           </dl>
           {model.evidence.primaryMetric === 'monthly-rent' ? (
             <dl className={styles.sourceGrid}>
               <div>
-                <dt>Filed deposit median</dt>
-                <dd>{model.evidence.filedDepositMedianLabel ?? 'Not published'}</dd>
+                <dt>{t('Filed deposit median')}</dt>
+                <dd>{model.evidence.filedDepositMedianLabel ?? t('Not published')}</dd>
               </div>
-              <div><dt>Monthly rent metric</dt><dd>Filed monthly rent only</dd></div>
-              <div><dt>Area scope</dt><dd>{areaLabel}</dd></div>
-              <div><dt>Contract group</dt><dd>{model.selection.contractGroup}</dd></div>
+              <div><dt>{t('Monthly rent metric')}</dt><dd>{t('Filed monthly rent only')}</dd></div>
+              <div><dt>{t('Area scope')}</dt><dd>{areaLabel}</dd></div>
+              <div><dt>{t('Contract group')}</dt><dd>{t(model.selection.contractGroup)}</dd></div>
             </dl>
           ) : null}
 
-          <RecentTransactionPlot rows={model.recentTransactions} locale={locale} />
+          <RecentTransactionPlot rows={model.recentTransactions} locale={locale} periodUnit={model.evidence.primaryMetric === 'monthly-rent' ? 'month' : undefined} />
 
           <div id="building-transactions" className={styles.sectionHeading} data-detail-order="history"><p>{locale === 'ko' ? '실제 신고 거래' : 'Reported contracts'}</p><h2>{locale === 'ko' ? '선택한 면적대의 최근 실거래' : 'Recent contracts matching these filters'}</h2></div>
           {model.recentTransactions.length === 0 ? (
-            <p>No privacy-safe recent rows remain in this selected cohort.</p>
+            <p>{t('No privacy-safe recent rows remain in this selected cohort.')}</p>
           ) : (
             <div className={styles.tableWrap}>
               <table>
@@ -352,8 +349,8 @@ export function KoreaEvidenceBuildingDetail({
                     <th>{locale === 'ko' ? '계약 월' : 'Filed month'}</th>
                     <th>{locale === 'ko' ? '전용면적' : 'Area'}</th>
                     <th>{locale === 'ko' ? (model.evidence.primaryMetric === 'sale-price' ? '신고 매매가격' : model.evidence.primaryMetric === 'deposit' ? '신고 보증금' : '신고 월세') : (model.evidence.primaryMetric === 'sale-price' ? 'Filed sale price' : model.evidence.primaryMetric === 'deposit' ? 'Filed deposit' : 'Filed monthly rent')}</th>
-                    {model.evidence.primaryMetric === 'monthly-rent' ? <th>Filed deposit</th> : null}
-                    <th>{locale === 'ko' ? '㎡당 금액' : 'Price / m²'}</th><th>{locale === 'ko' ? '층·계약 구분' : 'Floor / contract'}</th>
+                    {model.evidence.primaryMetric === 'monthly-rent' ? <th>{t('Filed deposit')}</th> : null}
+                    <th>{locale === 'ko' ? '㎡당 금액' : 'Price / m²'}{monthlyUnit}</th><th>{locale === 'ko' ? '층·계약 구분' : 'Floor / contract'}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -361,11 +358,11 @@ export function KoreaEvidenceBuildingDetail({
                     <tr key={`${row.filedMonth}-${row.areaSqm}-${row.primaryWon}-${index}`}>
                       <td>{row.filedMonth}</td>
                       <td>{row.areaLabel}</td>
-                      <td>{row.primaryLabel}</td>
+                      <td>{row.primaryLabel}{monthlyUnit}</td>
                       {model.evidence.primaryMetric === 'monthly-rent'
                         ? <td>{row.filedDepositLabel ?? '—'}</td>
                         : null}
-                      <td>{row.areaSqm > 0 ? money(row.primaryWon / row.areaSqm) : '—'}</td><td>{row.contractType ?? (row.floor === null ? (locale === 'ko' ? '신고 계약' : 'Reported contract') : locale === 'ko' ? `${row.floor}층` : `Floor ${row.floor}`)}</td>
+                      <td>{row.areaSqm > 0 ? `${money(row.primaryWon / row.areaSqm)}${monthlyUnit}` : '—'}</td><td>{row.contractType === null ? (row.floor === null ? (locale === 'ko' ? '신고 계약' : 'Reported contract') : locale === 'ko' ? `${row.floor}층` : `Floor ${row.floor}`) : t(row.contractType)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -379,17 +376,17 @@ export function KoreaEvidenceBuildingDetail({
             <p>{locale === 'ko' ? '면적별 가격' : 'Price by home size'}</p>
             <h2 id="building-area-prices-heading">{locale === 'ko' ? '같은 건물의 면적 구간을 전환합니다.' : 'Switch between verified size cohorts for this building.'}</h2>
           </div>
-          {model.sizeCohorts ? <SizeCohortResearch rows={model.sizeCohorts} currency="KRW" locale={locale} /> : null}
+          {model.sizeCohorts ? <SizeCohortResearch rows={model.sizeCohorts} currency="KRW" locale={locale} periodUnit={model.evidence.primaryMetric === 'monthly-rent' ? 'month' : undefined} /> : null}
           <ul>{Object.entries(areaLabels).map(([id, label]) => <li key={id}>
-            <strong>{label}</strong>
-            <span>{id === model.selection.areaBand ? `${primaryLabel} · ${model.evidence.medianLabel ?? (locale === 'ko' ? '미확인' : 'Not published')}` : (locale === 'ko' ? '선택해 거래 내역 보기' : 'Open this evidence cohort')}</span>
+            <strong>{t(label)}</strong>
+            <span>{id === model.selection.areaBand ? (locale === 'ko' ? '현재 선택한 면적' : 'Selected size cohort') : (locale === 'ko' ? '선택해 거래 내역 보기' : 'Open this evidence cohort')}</span>
             <Link href={localizedSeoulHref(`/kr/seoul/explore/${model.district.slug}/${model.building.buildingId}/?transaction=${model.selection.transaction}&area=${id}${model.selection.contractGroup === 'not-applicable' ? '' : `&contractType=${model.selection.contractGroup}`}`, locale)}>{locale === 'ko' ? '이 면적 보기' : 'View size cohort'}</Link>
           </li>)}</ul>
         </section>
 
         {model.selection.transaction === 'sale' ? <div className={styles.areaBands}><PropertyScenarioCalculator key={`${model.building.buildingId}-${model.selection.areaBand}`} price={model.evidence.medianWon} housingType={model.building.housingType} annualRent={model.rentStartingPoint?.annualRent} rentSource={model.rentStartingPoint ? `MOLIT · ${model.rentStartingPoint.period} · ${model.rentStartingPoint.count} contracts · refundable deposit ${money(model.rentStartingPoint.deposit)} (not deducted from purchase cash)` : undefined} currency="KRW" locale={locale} analytics={{market:'kr-seoul',surface:'property-detail'}} /><Link href={createPropertyScenarioHref({locale,market:'kr-seoul',currency:'KRW',entity:model.building.buildingId,propertyName:model.building.officialName,transaction:'sale',price:model.evidence.state === 'published' ? model.evidence.medianWon : null,returnTo:localizedSeoulHref(`/kr/seoul/explore/${model.district.slug}/${model.building.buildingId}/`,locale)})}>{locale === 'ko' ? '전체 계산기 열기' : 'Open calculator'}</Link></div> : null}
 
-        <div id="building-facts" className={styles.factsAnchor} data-detail-order="facts"><KnownBuildingFacts facts={[
+        <div id="building-facts" className={styles.factsAnchor} data-detail-order="facts"><KnownBuildingFacts locale={locale} facts={[
           { label: locale === 'ko' ? '공식 건물명' : 'Official identity', value: model.building.officialName },
           { label: locale === 'ko' ? '지역' : 'Area', value: `${model.building.neighborhoodName} · ${locale === 'ko' ? model.district.nameKo : model.district.nameEn}` },
           { label: locale === 'ko' ? '주택 유형' : 'Housing type', value: locale === 'ko' ? ({apartment:'아파트',officetel:'오피스텔',villa_multifamily:'연립·다세대',detached:'단독·다가구'}[model.building.housingType]) : model.building.housingType },
@@ -402,11 +399,12 @@ export function KoreaEvidenceBuildingDetail({
 
         <details id="building-source" className={styles.sourceDetails} data-detail-order="sources">
           <summary>{locale === 'ko' ? '출처·기간·표본 기준' : 'Source and sample details'}</summary>
+          <p className={styles.sourceLine}>{sourceLine}</p>
           <dl className={styles.sourceGrid}>
-            <div><dt>Source</dt><dd>MOLIT reported contracts</dd></div>
-            <div><dt>Source period</dt><dd>{model.period}</dd></div>
-            <div><dt>Generated</dt><dd>{model.generatedAt.slice(0, 10)}</dd></div>
-            <div><dt>Publication minimum</dt><dd>5 eligible contracts</dd></div>
+            <div><dt>{t('Source')}</dt><dd>{t('MOLIT reported contracts')}</dd></div>
+            <div><dt>{t('Source period')}</dt><dd>{model.period}</dd></div>
+            <div><dt>{t('Generated')}</dt><dd>{model.generatedAt.slice(0, 10)}</dd></div>
+            <div><dt>{t('Publication minimum')}</dt><dd>{t('5 eligible contracts')}</dd></div>
           </dl>
         </details>
 
@@ -416,7 +414,7 @@ export function KoreaEvidenceBuildingDetail({
           {!!model.nearbyBuildings?.length && <><h3>{locale === 'ko' ? '같은 동 다른 단지 · 같은 검색 조건' : 'Other buildings in this neighbourhood · same filters'}</h3><ul>{model.nearbyBuildings.map(b => <li key={b.id}><Link href={localizedSeoulHref(`/kr/seoul/explore/${model.district.slug}/${b.id}/?transaction=${model.selection.transaction}&area=${model.selection.areaBand}`,locale)}>{buildingDisplayName(b.name,locale)} · {money(b.median)} · {b.count}{locale === 'ko' ? '건' : ' contracts'}</Link></li>)}</ul></>}
         </section>
       </main>
-      <SiteFooter copy={exactEvidenceFooter} />
+      <SiteFooter locale={locale} copy={locale === 'ko' ? { ...exactEvidenceFooter, descriptor: '서울 실거래가와 집계 기간·거래 건수·출처를 확인하세요.' } : exactEvidenceFooter} />
     </div>
   );
 }
