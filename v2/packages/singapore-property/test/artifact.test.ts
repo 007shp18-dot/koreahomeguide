@@ -27,6 +27,16 @@ function records() {
 }
 
 describe('Singapore private-sale snapshot', () => {
+  it.each(['root', 'records'])('freezes rows when the object source already has a frozen %s', (container) => {
+    const artifact = buildSingaporeSnapshot({
+      records: records(), generatedAt: '2026-08-31T09:00:00.000Z', rights: allowedRights,
+    });
+    const source = JSON.parse(stringifySingaporeSnapshot(artifact));
+    Object.freeze(container === 'root' ? source : source.records);
+    const parsed = parseSingaporeSnapshot(source);
+    expect(Reflect.set(parsed.records[0]!, 'priceSgd', 999)).toBe(false);
+    expect(parsed.records[0]!.priceSgd).not.toBe(999);
+  });
   it('uses native measurements, raw observations, and complete batch reconciliation', () => {
     expect(toSquareFeet(100)).toBeCloseTo(1076.39104167, 8);
     expect(calculatePsf(2_000_000, 100)).toBe(1858);

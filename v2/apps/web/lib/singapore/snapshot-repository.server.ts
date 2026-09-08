@@ -59,6 +59,7 @@ export class SingaporeEvidenceUnavailableError extends Error {
 
 type RepositoryInput = Readonly<{
   serialized?: string;
+  payload?: unknown;
   load?: () => Promise<string>;
   expectedDigest: string;
   expectedPeriod: string;
@@ -81,11 +82,11 @@ export async function createSingaporeSnapshotRepository(
     if (!/^[a-f0-9]{64}$/.test(input.expectedDigest) || input.expectedPeriod.trim().length === 0) {
       throw new Error('invalid expected evidence');
     }
-    if ((input.serialized === undefined) === (input.load === undefined)) {
+    if ([input.serialized, input.payload, input.load].filter(value => value !== undefined).length !== 1) {
       throw new Error('exactly one Singapore snapshot source is required');
     }
-    const serialized = input.serialized ?? await input.load!();
-    const snapshot = parseSingaporeSnapshot(serialized);
+    const source = input.payload !== undefined ? input.payload : input.serialized ?? await input.load!();
+    const snapshot = parseSingaporeSnapshot(source);
     const period = `${snapshot.period.from}..${snapshot.period.to}`;
     if (snapshot.digest !== input.expectedDigest || period !== input.expectedPeriod) {
       throw new Error('Singapore snapshot expectation mismatch');
@@ -160,7 +161,7 @@ export async function createSingaporeSnapshotRepositoryFromInstalled(
     throw new SingaporeEvidenceUnavailableError();
   }
   return createSingaporeSnapshotRepository({
-    serialized: JSON.stringify(installed.payload),
+    payload: installed.payload,
     expectedDigest: payload.digest,
     expectedPeriod: installed.metadata.period.replace('/', '..'),
   });

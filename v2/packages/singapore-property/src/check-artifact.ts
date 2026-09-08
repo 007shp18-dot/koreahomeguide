@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { canonicalDigest } from './canonical-digest.ts';
 
 import type { SingaporeSnapshot } from './artifact.ts';
 import type { HdbSnapshot } from './hdb.ts';
@@ -95,10 +96,11 @@ function canonicalJson(value: unknown): string {
   )).join(',')}}`;
 }
 
-function deepFreeze<T>(value: T): T {
-  if (typeof value !== 'object' || value === null || Object.isFrozen(value)) return value;
+function deepFreeze<T>(value: T, visited = new WeakSet<object>()): T {
+  if (typeof value !== 'object' || value === null || visited.has(value)) return value;
+  visited.add(value);
   Object.freeze(value);
-  for (const child of Object.values(value as Record<string, unknown>)) deepFreeze(child);
+  for (const child of Object.values(value as Record<string, unknown>)) deepFreeze(child, visited);
   return value;
 }
 
@@ -252,18 +254,18 @@ export function stringifySingaporeCheckArtifact(
 }
 
 export function parseSingaporeCheckArtifact<TMarket extends SingaporeCheckMarket>(
-  serialized: string,
+  serialized: unknown,
   expectedMarket: TMarket,
 ): SingaporeCheckArtifact<TMarket> {
   let value: unknown;
-  try { value = JSON.parse(serialized); } catch {
+  try { value = typeof serialized === 'string' ? JSON.parse(serialized) : serialized; } catch {
     throw new Error('Singapore Check artifact is invalid.');
   }
   if (!exactKeys(value, ARTIFACT_KEYS) || typeof value.digest !== 'string') {
     throw new Error('Singapore Check artifact is invalid.');
   }
   const { digest: actualDigest, ...unsigned } = value;
-  if (actualDigest !== digest(unsigned)) {
+  if (actualDigest !== canonicalDigest(unsigned)) {
     throw new Error('Singapore Check artifact digest is invalid.');
   }
   if (value.market !== expectedMarket) {
@@ -281,12 +283,14 @@ export function parseSingaporeCheckArtifact<TMarket extends SingaporeCheckMarket
     || value.recordCount !== value.records.length) {
     throw new Error('Singapore Check artifact is invalid.');
   }
-  const records = value.records.map((record) => normalizedRecord(record, expectedMarket)) as unknown as readonly Extract<
-    SingaporeCheckRecord,
-    { market: TMarket }
-  >[];
-  const months = records.map(({ month }) => month).sort();
-  if (value.period.from !== months[0] || value.period.to !== months.at(-1)) {
+  let firstMonth: string | undefined;
+  let lastMonth: string | undefined;
+  for (const record of value.records) {
+    const { month } = normalizedRecord(record, expectedMarket);
+    if (firstMonth === undefined || month < firstMonth) firstMonth = month;
+    if (lastMonth === undefined || month > lastMonth) lastMonth = month;
+  }
+  if (value.period.from !== firstMonth || value.period.to !== lastMonth) {
     throw new Error('Singapore Check artifact period is invalid.');
   }
   return deepFreeze(value as SingaporeCheckArtifact<TMarket>);
