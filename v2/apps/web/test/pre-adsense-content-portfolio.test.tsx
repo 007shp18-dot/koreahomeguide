@@ -12,7 +12,7 @@ import sitemap from '../app/sitemap';
 import { EDITORIAL_PORTFOLIO, listPortfolioRecords } from '../content/portfolio-manifest';
 
 const officialHosts = new Set([
-  'www.data.go.kr', 'data.gov.sg', 'centers.ibs.re.kr',
+  'www.data.go.kr', 'data.gov.sg', 'centers.ibs.re.kr', 'www.bok.or.kr',
   'dubailand.gov.ae', 'u.ae', 'www.sla.gov.sg', 'www.easylaw.go.kr',
   'www.investkorea.org', 'english.seoul.go.kr', 'm.easylaw.go.kr',
   'www.law.go.kr', 'rt.molit.go.kr', 'www.molit.go.kr', 'land.seoul.go.kr',
@@ -26,12 +26,12 @@ function sectionCount(body: string): number {
 }
 
 describe('pre-AdSense reviewed launch portfolio', () => {
-  it('keeps the 72-record portfolio and public English parameters', () => {
+  it('keeps the 82-record portfolio and public English parameters', () => {
     const english = listPortfolioRecords('en');
-    expect(EDITORIAL_PORTFOLIO).toHaveLength(72);
-    expect(english).toHaveLength(32);
+    expect(EDITORIAL_PORTFOLIO).toHaveLength(82);
+    expect(english).toHaveLength(37);
     expect(generateEnglishArticleParams()).toEqual(english
-      .filter(({ type }) => type === 'market-brief' || type === 'data-story')
+      .filter(({ type }) => type === 'news-brief' || type === 'market-brief' || type === 'data-story')
       .map(({ slug }) => ({ slug })));
     expect(generateEnglishGuideParams()).toEqual(english
       .filter(({ type }) => type === 'guide')
@@ -45,7 +45,7 @@ describe('pre-AdSense reviewed launch portfolio', () => {
         expect(url.protocol).toBe('https:');
         expect(officialHosts.has(url.hostname)
           || (source.kind === 'secondary' && secondaryHosts.has(url.hostname))).toBe(true);
-        expect(['2026-09-04', '2026-09-06', '2026-09-07']).toContain(source.checkedAt);
+        expect(['2026-09-04', '2026-09-06', '2026-09-07', '2026-09-08']).toContain(source.checkedAt);
       }
     }
   });

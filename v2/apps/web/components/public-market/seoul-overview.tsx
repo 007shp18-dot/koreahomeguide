@@ -18,7 +18,7 @@ export function SeoulOverview({ locale = 'en' }: { locale?: 'en' | 'ko' }) {
   const actions = [
     { label: ko ? '실거래가 탐색' : 'Explore reported prices', href: `${prefix}/kr/seoul/explore/`, description: ko ? '구 → 동 → 단지 탐색' : 'District → neighbourhood → building', external: false },
     { label: ko ? '관심 매물 가격 비교' : 'Check an asking price', href: `${prefix}/kr/seoul/check/`, description: ko ? '관심 매물의 가격을 실제 거래된 가격과 비교하세요.' : 'Compare a building, size and asking price with reported contracts.', external: false },
-    { label: ko ? '서울 실거래 분석' : 'Seoul price analysis', href: '/news/?market=seoul&type=analysis', description: ko ? '실제 거래로 읽는 지역별 가격' : 'Read local price stories based on reported transactions.', external: false },
+    { label: ko ? '서울 실거래 분석' : 'Seoul price analysis', href: '/news/?type=data-stories&market=seoul', description: ko ? '실제 거래로 읽는 지역별 가격' : 'Read local price stories based on reported transactions.', external: false },
   ];
   const rows: MarketOverviewRowModel[] = [
     { number: '02', title: ko ? '실거래 자료' : 'Reported prices', description: ko ? '구와 동을 골라 단지별 최근 계약과 같은 면적대의 가격을 확인하세요.' : 'Choose a district and neighbourhood to see recent building contracts and prices for similar sizes.', state: 'available', stateLabel: ko ? '매매 · 전세 · 월세' : 'Sale · jeonse · monthly rent', items: [{ label: ko ? '국토교통부 신고 자료' : 'MOLIT reported contracts', description: ko ? '매매와 임대 거래는 따로 집계합니다. 이미 계약된 거래 내역으로, 현재 나온 매물과는 다릅니다.' : 'Sale and rental samples are counted separately. Reported transactions are not current listings.' }] },

@@ -13,9 +13,10 @@ describe('research navigation continuity', () => {
   });
   it('keeps external headlines reachable from the News index', () => {
     const filters = resolveNewsroomFilters({ type: 'headlines', market: 'singapore' });
-    expect(filters.canonicalHref).toBe('/news/?type=headlines&market=singapore');
+    expect(filters.canonicalHref).toBe('/news/?type=news&market=singapore');
     const html = renderToStaticMarkup(<NewsroomIndex articles={[]} policies={[]} filters={filters} />);
     expect(html).toContain('External headlines');
+    expect(html).toContain('href="/news?type=news&amp;market=singapore"');
     expect(html).not.toContain('No articles match');
   });
 });

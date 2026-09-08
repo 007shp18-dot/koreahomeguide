@@ -30,8 +30,8 @@ describe('global roadmap routes', () => {
       },
     });
     expect(communityMetadata.alternates).toEqual({ canonical: 'https://www.signedprice.com/community/' });
-    expect(news).toContain('<h1>News</h1>');
-    expect(news).toContain('Policy changes, market releases and data stories for Seoul, Singapore and Dubai.');
+    expect(news).toContain('<h1>News &amp; Insights</h1>');
+    expect(news).toContain('Official property updates, policy changes, market interpretation and transaction-led research across Seoul, Singapore and Dubai.');
     expect(news).toContain('data-public-editorial-frame="content"');
     expect(news).toContain('Singapore condo prices: CCR vs RCR vs OCR compared');
     expect(news).toContain('aria-label="News markets"');

@@ -55,7 +55,7 @@ export function EditorialGrowthHome({ model }: Readonly<{
     <section className={styles.section} data-home-region="analysis" data-home-section="insight" aria-labelledby="home-analysis-title">
       <div className={styles.sectionHeading}>
         <h2 id="home-analysis-title">{copy.analysis}</h2>
-        <Link href={`${prefix}/news/?type=analysis`}>{copy.all}<span aria-hidden="true"> →</span></Link>
+        <Link href={`${prefix}/news/`}>{copy.all}<span aria-hidden="true"> →</span></Link>
       </div>
       <ol className={styles.researchGrid}>
         {featuredResearch.map(article => <li key={article.id} className={styles.researchCard}
