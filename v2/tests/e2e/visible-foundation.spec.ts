@@ -208,9 +208,9 @@ test('desktop exposes the primary search, compact Passport form, and city explor
   })).toBeVisible();
   await expect(passport.getByRole('button', { name: 'Compare cities' })).toBeVisible();
   const markets = page.locator('[data-home-region="markets"]');
-  await expect(markets.getByRole('heading', {level:2})).toBeVisible();
-  await expect(markets.locator('[data-contextual-action]')).toHaveCount(3);
-  await expect(markets.locator('[data-primary-action="explore"]')).toHaveCount(3);
+  await expect(markets).toHaveAttribute('aria-label', 'Explore a city');
+  await expect(markets.locator('[data-contextual-action]')).toHaveCount(4);
+  await expect(markets.locator('[data-primary-action="explore"]')).toHaveCount(4);
 });
 
 test('mobile primary navigation remains tappable and reaches the market flow', async ({
