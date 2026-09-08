@@ -45,4 +45,10 @@ describe('editable amounts', () => {
     expect(html).toContain('value="1,000."');
     expect(html).toContain('required=""');
   });
+  it('uses the integer keypad for whole-unit money and preserves an explicit keypad choice', () => {
+    const render = (props: Record<string, unknown>) => renderToStaticMarkup(createElement(AmountInput, { value: '1000', onValueChange: () => {}, ...props }));
+    expect(render({ step: 1 })).toContain('inputMode="numeric"');
+    expect(render({ step: '0.01' })).toContain('inputMode="decimal"');
+    expect(render({ inputMode: 'numeric' })).toContain('inputMode="numeric"');
+  });
 });

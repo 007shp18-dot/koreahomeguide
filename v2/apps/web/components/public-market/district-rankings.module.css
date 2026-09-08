@@ -690,7 +690,7 @@
   background: transparent;
   box-shadow: none;
 }
-.hero h1 { max-width: 18ch; font-size: clamp(2.25rem, 5vw, 3.5rem); font-weight: 600; }
+.hero h1 { max-width: 100%; font-size: var(--page-title-size); font-weight: 600; line-height: 1.2; letter-spacing: -.025em; }
 .heroMeta { padding: 0; border: 0; border-top: 1px solid var(--line); border-radius: 0; background: transparent; }
 .filters { margin: 0; padding: 14px 0; border: 0; border-block: 1px solid var(--line); border-radius: 0; box-shadow: none; }
 .viewWorkspace { border: 0; border-bottom: 1px solid var(--line); border-radius: 0; box-shadow: none; }

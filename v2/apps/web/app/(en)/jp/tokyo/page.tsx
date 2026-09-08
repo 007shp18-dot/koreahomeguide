@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import { indexableMetadata } from '@/lib/public-metadata';
 import Link from 'next/link';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
@@ -9,11 +9,11 @@ import TokyoExplorer from '@/components/japan/tokyo-explorer';
 import styles from './tokyo.module.css';
 
 type Params = Record<string, string | string[] | undefined>;
-export const metadata: Metadata = {
+export const metadata = indexableMetadata({
+  path: '/jp/tokyo/',
   title: 'Tokyo property prices and neighbourhoods | SignedPrice',
   description: 'Discover Tokyo neighbourhoods with official quarterly property transactions in JPY.',
-  alternates: { canonical: '/jp/tokyo/' }, robots: { index: true, follow: true },
-};
+});
 export default async function Tokyo({ searchParams }: { searchParams: Promise<Params> }) {
   const params = await searchParams;
   // Keep older bookmarked searches functional without losing their filters.

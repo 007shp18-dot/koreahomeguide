@@ -110,9 +110,11 @@ test('News uses the shared readable type and restrained frame', async ({ page },
   expect(Number.parseFloat(values.uiSize)).toBe(0.875);
   expect(values.readingFrame).toBe('720px');
   if (testInfo.project.name === 'desktop-chromium' || testInfo.project.name === 'wide-chromium') {
-    expect(values.headingSize).toBe(48);
+    // The September polish deliberately reduces oversized page headings.
+    expect(values.headingSize).toBe(40);
   } else {
-    expect(values.headingSize).toBeGreaterThanOrEqual(32);
+    expect(values.headingSize).toBeGreaterThanOrEqual(30);
+    expect(values.headingSize).toBeLessThanOrEqual(40);
   }
   expect(values.summarySize).toBeGreaterThanOrEqual(16);
   expect(values.typeFilterSize).toBeGreaterThanOrEqual(14);

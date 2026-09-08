@@ -34,7 +34,7 @@ export function AmountInput({ value, onValueChange, name, resetValue, ...props }
   }, [display, value, props.min, props.max, props.step]);
   return <>
     {name ? <input type="hidden" name={name} disabled={props.disabled} form={props.form} value={submittedAmountInput(String(value))} /> : null}
-    <input {...props} data-amount-name={name} ref={input} type="text" inputMode="decimal" value={display} onChange={event => {
+    <input {...props} data-amount-name={name} ref={input} type="text" inputMode={props.inputMode ?? (Number(props.step) === 1 ? 'numeric' : 'decimal')} value={display} onChange={event => {
       const raw = rawAmountInput(event.target.value);
       if (raw === null) return;
       caret.current = event.target.value.slice(0, event.target.selectionStart ?? event.target.value.length).replace(/,/g, '').length;
