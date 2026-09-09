@@ -7,6 +7,8 @@ test('mobile evidence has readable compact metrics and an inset guide link', asy
   const disclosure = page.locator('details').filter({ has: card });
   if (await disclosure.count()) await disclosure.locator('summary').first().click();
   await expect(card).toBeVisible();
+  await expect(card).toHaveAttribute('data-district-summary', 'published');
+  await expect(card.locator('dl > div').first()).toBeVisible();
   const layout = await card.evaluate(element => {
     const rect = element.getBoundingClientRect();
     const metric = element.querySelector('dl > div')!;

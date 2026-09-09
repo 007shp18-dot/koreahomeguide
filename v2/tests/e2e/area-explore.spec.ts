@@ -518,7 +518,7 @@ test('journey: Explore selection survives Detail, Check, and the return link', a
   await expect(page.locator('[data-building-detail="ready"], [data-building-detail="exact-evidence"]')).toBeVisible();
   const detailUrl = new URL(page.url());
 
-  await page.getByRole('link', { name: 'Compare an asking price', exact: true }).click();
+  await page.locator('#building-overview').getByRole('link', { name: 'Compare an asking price', exact: true }).click();
   await expect(page).toHaveURL(/market=kr-seoul.*entity=synthetic-test-building.*returnTo=/);
   const checkUrl = new URL(page.url());
   const returnTo = new URL(checkUrl.searchParams.get('returnTo')!, checkUrl.origin);

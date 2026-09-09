@@ -20,7 +20,7 @@ test('evidence filters, bulk confirmation and consent dashboard are usable', asy
       else { expect(command.action).toBe('bulk-preview'); previews++; }
       return route.fulfill({ json: { matched: 1, eligible: 1, blocked: 0, fingerprint: 'a'.repeat(32), ...(changed ? {changed:1} : {}) } });
     }
-    if (url.searchParams.get('view') === 'research') return route.fulfill({ json: { total: 1, groups: [{market:'kr-seoul',tool:'single-quote',count:1}], distributions: [{market:'kr-seoul',tool:'single-quote',currency:'KRW',kind:'band',field:'area',value:'sqm-60-85',label:'60–85 m²',count:1}], recent: [{market:'kr-seoul',tool:'single-quote',createdAt:now,expiresAt:'2099-12-31T00:00:00.000Z',bands:{area:'60–85 m²'},categories:{verdict:'typical'}}] } });
+    if (url.searchParams.get('view') === 'research') return route.fulfill({ json: { countedAt: now, lastAggregatedAt: null, priorities: [], total: 1, groups: [{market:'kr-seoul',tool:'single-quote',count:1}], distributions: [{market:'kr-seoul',tool:'single-quote',currency:'KRW',kind:'band',field:'area',value:'sqm-60-85',label:'60–85 m²',count:1}], recent: [{market:'kr-seoul',tool:'single-quote',createdAt:now,expiresAt:'2099-12-31T00:00:00.000Z',bands:{area:'60–85 m²'},categories:{verdict:'typical'}}] } });
     queried.push(url.searchParams.get('quality') ?? '');
     const data: PoolData = { sources: [], evidence: [{...row,status:changed?'approved':'pending',version:changed?2:1}], total:1, page:1, counts:{pending:changed?0:1,approved:changed?1:0,rejected:0,withdrawn:0,expired:0} };
     return route.fulfill({json:data});

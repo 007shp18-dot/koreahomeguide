@@ -13,14 +13,18 @@ const deadline = AbortSignal.timeout(budgetMs);
 const progress = (stage: string, count?: number) => { deadline.throwIfAborted(); onProgress?.({stage,count,elapsedMs:Date.now()-startedAt}); };
 progress('start');
 const sql = neon(process.env.DATABASE_URL!, { fetchOptions: { get signal() { return AbortSignal.any([deadline, AbortSignal.timeout(25_000)]); } } });
-const [running] = await sql.query("SELECT count(*)::integer AS n FROM market_data_refresh_runs WHERE job IN ('sg-private-sale','sg-private-rent') AND state='running'");
-if (Number(running?.n ?? 0)) throw new Error('Publication withheld while collection is running');
 const WATERMARK = `SELECT md5(concat(count(*),'|',max(o.updated_at)::text,'|',max(o.source_record_id)::text,'|',(SELECT string_agg(concat(r.id,':',r.updated_at::text,':',r.can_display,':',r.can_create_derived,':',r.can_use_commercially),'|' ORDER BY r.id) FROM rights_policies r WHERE r.id IN ('sg-ura-private-sale-v1','sg-ura-private-rent-v1')))) AS value
  FROM observations o JOIN source_records s ON s.id=o.source_record_id
  WHERE s.dataset_id IN ('sg-private-sale','sg-private-rent')`;
-const [watermark] = await sql.query(WATERMARK);
+const [initial] = await sql.query(`SELECT w.value,
+ (SELECT count(*)::integer FROM market_data_refresh_runs WHERE job IN ('sg-private-sale','sg-private-rent') AND state='running') AS running,
+ (SELECT jsonb_build_object('id',r.id,'source_as_of',r.source_as_of,'released_at',r.released_at,'sale_count',r.sale_count,'rent_count',r.rent_count) FROM singapore_publication_active a JOIN singapore_publication_releases r ON r.id=a.release_id) - 'payload_gzip_base64' AS active
+ FROM (${WATERMARK}) w`);
+if (Number(initial?.running ?? 0)) throw new Error('Publication withheld while collection is running');
+const watermark = initial;
 const publicationId = `sg-publication:${createHash('sha256').update(`${watermark?.value}:${new Date().toISOString().slice(0,7)}`).digest('hex')}`;
-const [existing] = await sql.query(`SELECT r.id,r.source_as_of,r.released_at,r.sale_count,r.rent_count FROM singapore_publication_active a JOIN singapore_publication_releases r ON r.id=a.release_id WHERE r.id=$1`, [publicationId]);
+const active = initial?.active as Record<string, unknown> | null;
+const existing = active?.id === publicationId ? active : null;
 if (existing && !verifyFull) return {id:existing.id, sourceAsOf:existing.source_as_of, releasedAt:existing.released_at, saleCount:existing.sale_count, rentalRecordCount:existing.rent_count, applied:apply, unchanged:true};
 const installed = createInstalledSnapshotRepository({ registrySource: resolveInstalledSnapshotRegistry(), resolveObject: resolveInstalledSnapshotObject }).get('sg-singapore', 'sg-private-sale');
 const previous = parseSingaporeSnapshot(installed.payload);
@@ -82,8 +86,10 @@ const serialized = JSON.stringify(bundle);
 const digest = createHash('sha256').update(serialized).digest('hex');
 parseSingaporePublication(serialized, digest);
 progress('bundle_verified');
-const [after] = await sql.query(WATERMARK);
-if (after?.value !== watermark?.value) throw new Error('Publication withheld: observations changed during build');
+if (!apply) {
+ const [after] = await sql.query(WATERMARK);
+ if (after?.value !== watermark?.value) throw new Error('Publication withheld: observations changed during build');
+}
 const id = publicationId;
 const summary = { elapsedMs: Date.now() - startedAt, id, sourceAsOf, releasedAt, saleCount: records.length, rentalRecordCount: bundle.rentalRecordCount, rentalGroups: rentalRows.length, applied: apply };
 progress('ready_to_activate');
