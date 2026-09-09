@@ -127,7 +127,7 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
                 {visibleMarkets.map((market) => (
                   <Link
                     className="site-header__market-link"
-                    href={market.href}
+                    href={market.href} prefetch={currentHref?.includes('/check/') && market.href.includes('/check/') ? false : undefined}
                     aria-current={context === market.id ? 'page' : undefined}
                     key={market.id}
                   >
@@ -174,8 +174,8 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
               </Link>
             )}
           </nav>
-          <nav aria-label={isKorean ? '도시 선택' : 'Choose a city'}>{visibleMarkets.map(market => <Link key={market.id} href={market.href} aria-current={context === market.id ? 'page' : undefined}>{market.label}</Link>)}</nav>
-          {marketId && <nav aria-label={`${marketLabel} pages`}>{getMarketLocalNavigation(marketId, isKorean ? 'ko' : 'en').map(item => <Link key={item.href} href={item.href}>{item.label}</Link>)}</nav>}
+          <nav aria-label={isKorean ? '도시 선택' : 'Choose a city'}>{visibleMarkets.map(market => <Link key={market.id} href={market.href} prefetch={currentHref?.includes('/check/') && market.href.includes('/check/') ? false : undefined} aria-current={context === market.id ? 'page' : undefined}>{market.label}</Link>)}</nav>
+          {marketId && <nav aria-label={`${marketLabel} pages`}>{getMarketLocalNavigation(marketId, isKorean ? 'ko' : 'en').map(item => <Link key={item.href} href={item.href} prefetch={currentHref?.includes('/check/') && item.href.includes('/check/') ? false : undefined}>{item.label}</Link>)}</nav>}
           {actionLinks && <nav aria-label={isKorean ? '빠른 작업' : 'Quick actions'}><Link href={actionLinks.saved}>{isKorean ? '관심 목록' : locale === 'zh-CN' ? '已保存' : 'Saved'}</Link><Link href={actionLinks.offer} prefetch={currentHref?.includes('/check/') ? false : undefined}>{isKorean ? '제안 가격 확인' : locale === 'zh-CN' ? '核对报价' : 'Check an offer'}</Link></nav>}
           <Suspense fallback={<LanguageLinks pathname={fallbackPath} alternate={copy.languageSwitch} />}><SiteLanguageNavigation fallbackPath={fallbackPath} translations={editorialLanguageRoutes()} alternate={copy.languageSwitch} /></Suspense>
         </SiteMobileMenu>
