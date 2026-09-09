@@ -6,7 +6,7 @@ import { indexableMetadata } from '@/lib/public-metadata';
 
 export const metadata: Metadata = indexableMetadata({
   path: '/prices/',
-  title: 'Signed property prices | signedprice',
+  title: 'Explore property prices by city | SignedPrice',
   description: 'Search released property contract evidence and compare local prices with their source context.',
 });
 
@@ -21,7 +21,7 @@ export default async function PricesPage({ searchParams }: Readonly<{
       ? '/sg/singapore/explore/'
       : market === 'dubai'
         ? '/ae/dubai/explore/'
-        : '/kr/seoul/explore/';
+        : market === 'tokyo' ? '/jp/tokyo/explore/' : '/kr/seoul/explore/';
     redirect(`${target}?q=${encodeURIComponent(q)}`);
   }
   return <GlobalProductHub kind="prices" />;

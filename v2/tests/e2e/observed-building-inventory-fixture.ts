@@ -59,3 +59,12 @@ export const OBSERVED_BUILDING_INVENTORY_TEST_ARTIFACT = JSON.stringify({
   ...unsigned,
   sha256: createHash('sha256').update(canonicalJson(unsigned)).digest('hex'),
 });
+
+const unlocated = {
+  ...unsigned,
+  stats: { ...unsigned.stats, coordinateReadyCount: 0, coordinatePendingCount: 1 },
+  records: unsigned.records.map(record => ({ ...record, coordinate: { state: 'pending', reason: 'coordinate_not_resolved' } })),
+};
+export const UNLOCATED_BUILDING_INVENTORY_TEST_ARTIFACT = JSON.stringify({
+  ...unlocated, sha256: createHash('sha256').update(canonicalJson(unlocated)).digest('hex'),
+});

@@ -317,6 +317,34 @@
   grid-template-columns: minmax(0, 1fr);
 }
 
+.workspace[data-explorer-layout='map'] .discoveryRail {
+  position: absolute;
+  inset: 72px auto 16px 16px;
+  z-index: 6;
+  width: min(360px, calc(100% - 32px));
+  max-height: calc(100% - 88px);
+  overflow-y: auto;
+  border: 1px solid var(--explore-line);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgb(16 24 40 / 12%);
+}
+
+.workspace[data-explorer-layout='map'] .discoveryRail > .mapLevelButton {
+  position: static;
+  align-self: flex-end;
+  flex-shrink: 0;
+  margin: 12px;
+}
+
+@media (max-width: 800px) {
+  .workspace[data-explorer-layout='map'] .discoveryRail {
+    inset: auto 12px 12px;
+    width: auto;
+    height: 56%;
+    max-height: 56%;
+  }
+}
+
 .mapPanel,
 .rail {
   min-width: 0;

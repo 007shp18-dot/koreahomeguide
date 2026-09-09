@@ -1,5 +1,5 @@
 'use client';
-import Link from 'next/link';
+import { ExploreLink } from '../market-ui/explore-link';
 import { useEffect, useRef, type ReactNode } from 'react';
 import { track } from '@vercel/analytics/react';
 import { sendGoogleEvent } from '../../lib/analytics/google-events';
@@ -13,5 +13,5 @@ export function ToolEventOnMount({event,...input}:ToolDimensions & {event:'tools
  return null;
 }
 export function TrackedToolLink({href,children,...input}:ToolDimensions & {href:string;children:ReactNode}) {
- return <Link href={href} prefetch={false} onClick={()=>sendToolEvent('tool_start',input)}>{children}</Link>;
+ return <ExploreLink href={href} onClick={()=>sendToolEvent('tool_start',input)}>{children}</ExploreLink>;
 }

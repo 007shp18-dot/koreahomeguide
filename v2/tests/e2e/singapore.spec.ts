@@ -180,8 +180,13 @@ test('released Singapore discovery pages appear in the sitemap and browser never
 
 test('native Singapore Check submits single and cross-market A/B evidence', async ({ page }) => {
   const assertClean = observeRuntimeFailures(page);
-  await page.goto('/sg/singapore/check/');
+  await page.goto('/sg/singapore/check/?a-project=project-a');
   await expect(page.locator('[data-singapore-check-workspace="true"]')).toBeVisible();
+  const projectSelect = page.getByRole('combobox', { name: 'Project', exact: true });
+  await expect(projectSelect).toHaveAttribute('aria-busy', 'false');
+  await expect(projectSelect.locator('option')).toHaveCount(2);
+  await expect(projectSelect).toHaveValue('project-a');
+  await page.evaluate(() => Reflect.set(window, '__signedpriceToolNavigation', true));
   // Active-state markup is a desktop contract; visible destinations are checked below.
   await expect(page.locator('.site-header__product-nav a[aria-current="page"]')).toHaveText('Tools');
   for (const market of ['URA private sale', 'HDB resale', 'HDB rent']) {
@@ -190,6 +195,8 @@ test('native Singapore Check submits single and cross-market A/B evidence', asyn
   await page.getByLabel('Asking price (SGD)', { exact: true }).fill('350000');
   await page.getByRole('button', { name: 'Compare an asking price', exact: true }).click();
   await expect(page.getByLabel('Check result')).toContainText('SGD 300,000');
+  expect(await page.evaluate(() => Reflect.get(window, '__signedpriceToolNavigation'))).toBe(true);
+  await expect(page.getByRole('combobox', { name: 'Project', exact: true })).toHaveValue('project-a');
   await expect(page.getByLabel('Check result').locator('dt').filter({ hasText: /^Price percentile$/ }).locator('+ dd')).toHaveText('60th');
   await expect(page.getByLabel('Check result')).toContainText('2026-08–2026-08');
 

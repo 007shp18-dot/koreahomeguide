@@ -62,9 +62,7 @@ test('all tool languages use the same four primary navigation slots and Correcti
   await expect(navigation).toBeVisible();
   await expect(navigation.locator('.site-header__product-link')).toHaveCount(4);
   const rankings = navigation.getByRole('link', { name: /^(?:Rankings|지역 비교|地区排名)$/ });
-  if (!(await rankings.isVisible())) await navigation.locator('summary').click();
-  await expect(rankings).toBeVisible();
-  await expect(rankings).toHaveAttribute('href', path.startsWith('/ko/') ? '/ko/rankings/' : '/rankings/');
+  await expect(rankings).toHaveCount(0);
   await expect((await visibleLanguageNavigation(page)).getByRole('link')).toHaveText(['EN','KO','中文']);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
  }
