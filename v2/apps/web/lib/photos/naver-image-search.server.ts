@@ -117,7 +117,7 @@ export function selectNaverBuildingImageCandidate(input: Readonly<{
     return Object.freeze({ candidate, exactName, score: candidateScore(candidate, exactName) });
   }).sort((left, right) => right.score - left.score);
   const selected = ranked[0];
-  if (selected === undefined) return null;
+  if (selected === undefined || !selected.exactName) return null;
   return Object.freeze({
     candidate: selected.candidate,
     confidence: selected.exactName ? 0.65 : 0.35,

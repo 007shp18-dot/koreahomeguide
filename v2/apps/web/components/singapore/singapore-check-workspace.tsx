@@ -9,6 +9,8 @@ import { BuyerNextSteps } from '../buyer-next-steps';
 import type { SingaporeCheckMarket, SingaporeCheckResult } from '@signedprice/singapore-property';
 import type { SingaporeCheckCatalog, SingaporeCheckDraft, SingaporeCheckRouteModel } from '../../lib/singapore/check-route-model.server';
 import { SingaporePage, singaporeStyles as styles } from './singapore-shell';
+import { ToolResearchShare } from '../tools/tool-research-share';
+import { createSingaporeResearchSnapshot } from '../../lib/tool-research/client';
 
 const labels: Readonly<Record<SingaporeCheckMarket, string>> = {
   'ura-private-sale': 'URA private sale', 'hdb-resale': 'HDB resale', 'hdb-rent': 'HDB rent',
@@ -80,11 +82,27 @@ function OfferResult({ locale = 'en', result, label }: Readonly<{ locale?: Marke
   if (result.status === 'insufficient') return <article className={styles.resultCard}><p className={styles.sectionLabel}>{sgText(locale, label)}</p><h3>{sgText(locale, "Insufficient recent evidence")}</h3><p>{locale === 'ko' ? `비교 거래 ${result.sampleCount}건 · 최소 ${result.minimumSample}건 필요` : `${result.sampleCount} comparable records · minimum ${result.minimumSample}`}</p><p>{sgText(locale, result.window.from)}{sgText(locale, "–")}{sgText(locale, result.window.to)}{sgText(locale, "; the time window was not widened.")}</p></article>;
   return <article className={styles.resultCard}><p className={styles.sectionLabel}>{sgText(locale, label)}</p><h3>{sgText(locale, "Evidence unavailable")}</h3><p>{sgText(locale, result.message)}</p></article>;
 }
+function ResearchOffer({ locale, draft, result, label }: Readonly<{
+  locale: MarketLocale;
+  draft: SingaporeCheckDraft;
+  result: SingaporeCheckResult;
+  label?: string;
+}>) {
+  const snapshot = result.status === 'ready'
+    ? createSingaporeResearchSnapshot({ draft, result })
+    : null;
+  return <ToolResearchShare
+    locale={locale}
+    resultRevision={globalThis.crypto.randomUUID()}
+    snapshot={snapshot}
+    label={label}
+  />;
+}
 function ResultPanel({ locale = 'en', model }: Readonly<{ locale?: MarketLocale; model: SingaporeCheckRouteModel }>) {
   if (model.result.kind === 'empty') return <><p className={styles.sectionLabel}>{sgText(locale, "Result")}</p><h2>{sgText(locale, "Enter an asking price.")}</h2><p>{sgText(locale, "Compare the median, middle 50% (P25–P75) and price percentile. Scope, sample, reporting period and source are shown with each result.")}</p></>;
   if (model.result.kind === 'invalid') return <><p className={styles.sectionLabel}>{sgText(locale, "Result")}</p><h2>{sgText(locale, "Check the entered fields.")}</h2><p>{sgText(locale, model.result.message)}</p></>;
-  if (model.result.kind === 'single') return <OfferResult locale={locale} result={model.result.offer} />;
-  return <><header className={styles.tradeoff}><p className={styles.sectionLabel}>{sgText(locale, "A/B result")}</p><h2>{sgText(locale, "Trade-off")}</h2><p>{sgText(locale, "Each offer remains in its native market. No winner or conversion is inferred.")}</p></header><OfferResult locale={locale} result={model.result.offers[0]} label={sgText(locale, "Offer A")} /><OfferResult locale={locale} result={model.result.offers[1]} label={sgText(locale, "Offer B")} /></>;
+  if (model.result.kind === 'single') return <><OfferResult locale={locale} result={model.result.offer} /><ResearchOffer locale={locale} draft={model.drafts.a} result={model.result.offer} /></>;
+  return <><header className={styles.tradeoff}><p className={styles.sectionLabel}>{sgText(locale, "A/B result")}</p><h2>{sgText(locale, "Trade-off")}</h2><p>{sgText(locale, "Each offer remains in its native market. No winner or conversion is inferred.")}</p></header><OfferResult locale={locale} result={model.result.offers[0]} label={sgText(locale, "Offer A")} /><ResearchOffer locale={locale} draft={model.drafts.a} result={model.result.offers[0]} label={sgText(locale, "Offer A")} /><OfferResult locale={locale} result={model.result.offers[1]} label={sgText(locale, "Offer B")} /><ResearchOffer locale={locale} draft={model.drafts.b} result={model.result.offers[1]} label={sgText(locale, "Offer B")} /></>;
 }
 
 export function SingaporeCheckWorkspace({ locale = 'en', model }: Readonly<{ locale?: MarketLocale; model: SingaporeCheckRouteModel }>) {

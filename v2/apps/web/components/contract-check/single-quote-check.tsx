@@ -21,6 +21,8 @@ import {
   localizedCheckHref,
 } from './contract-check-workspace';
 import styles from './contract-check.module.css';
+import { ToolResearchShare } from '../tools/tool-research-share';
+import { createSingleQuoteResearchSnapshot } from '../../lib/tool-research/client';
 
 const won = new Intl.NumberFormat('ko-KR', {
   style: 'currency', currency: 'KRW', maximumFractionDigits: 0,
@@ -52,6 +54,12 @@ function SingleResult({ model, locale, entityContext }: Readonly<{
 }>) {
   const c = CHECK_COPY[locale];
   const result = model.result;
+  const researchSnapshot = model.submitted && result?.status === 'ready'
+    ? createSingleQuoteResearchSnapshot(result)
+    : null;
+  const researchRevision = model.submitted && result?.status === 'ready'
+    ? JSON.stringify(result)
+    : 'no-result';
   return (
     <section aria-live="polite" className={styles.resultPanel} data-check-section="verdict" data-result-focus-target="true">
       <header><span>03</span><h2>{c.result}</h2></header>
@@ -108,6 +116,7 @@ function SingleResult({ model, locale, entityContext }: Readonly<{
           </section>
         </div>
       )}
+      <ToolResearchShare locale={locale} resultRevision={researchRevision} snapshot={researchSnapshot} />
     </section>
   );
 }

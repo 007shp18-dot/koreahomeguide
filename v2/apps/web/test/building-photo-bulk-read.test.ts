@@ -1,10 +1,33 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
+const dependencies = vi.hoisted(() => ({ database: vi.fn(), seed: vi.fn() }));
+vi.mock('../lib/db/postgres.server', () => ({ contentDatabase: dependencies.database }));
+vi.mock('../lib/photos/verified-building-photo-registry.server', () => ({ getPublicPhotoApproval: dependencies.seed }));
 
-import { createStoredPublicPhotoApprovalReader } from '../lib/photos/building-photo-store.server';
+import { createStoredPublicPhotoApprovalReader, listStoredPublicPhotoApprovals } from '../lib/photos/building-photo-store.server';
+
+beforeEach(() => vi.clearAllMocks());
 
 describe('stored public photo approval bulk reader', () => {
+  it('does not restore a revoked seed when the configured database fails', async () => {
+    dependencies.database.mockReturnValue({ query: async () => { throw new Error('offline'); } });
+    const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const result = await listStoredPublicPhotoApprovals(['revoked-key']);
+    expect(result.databaseReadFailed).toBe(true);
+    expect(result.approvals.size).toBe(0);
+    expect(dependencies.seed).not.toHaveBeenCalled();
+    error.mockRestore();
+  });
+
+  it('treats an empty live approval list as authoritative', async () => {
+    dependencies.database.mockReturnValue({ query: async () => [] });
+    const result = await listStoredPublicPhotoApprovals(['revoked-key']);
+    expect(result.databaseReadFailed).toBe(false);
+    expect(result.approvals.size).toBe(0);
+    expect(dependencies.seed).not.toHaveBeenCalled();
+  });
+
   it('reads the first approved photo for a bounded set of registry keys in one query', async () => {
     const calls: Array<{ statement: string; parameters: readonly unknown[] }> = [];
     const reader = createStoredPublicPhotoApprovalReader({

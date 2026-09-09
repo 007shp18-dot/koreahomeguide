@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { HdbBlockDetail } from '@/components/singapore/hdb-block-detail';
+import { getStoredPublicPhotoApproval } from '@/lib/photos/building-photo-store.server';
+import { selectPublishedBuildingPhoto } from '@/lib/photos/published-photo-selection';
 import { googleMapsBrowserKeyFromEnvironment } from '@/lib/maps/google-maps-browser-key.server';
 import { indexableMetadata } from '@/lib/public-metadata';
 import { isPublishedHdbBlock } from '@/lib/singapore/hdb-index-policy.server';
@@ -10,6 +12,7 @@ import { hdbSnapshotRepositoryFromEnvironment } from '@/lib/singapore/hdb-snapsh
 import { publicEntityProjectionReaderFromEnvironment } from '@/lib/public-data/entity-location-projection.server';
 
 export const dynamicParams = true;
+export const revalidate = 3_600;
 export async function generateMetadata({ params }: Readonly<{ params: Promise<{ town: string; blockId: string }> }>): Promise<Metadata> {
   const { town, blockId } = await params;
   const repository = hdbSnapshotRepositoryFromEnvironment();
@@ -43,6 +46,7 @@ export default async function HdbBlockPage({ params }: Readonly<{
     town={model.town}
     townHref={`/sg/singapore/hdb/${model.townSlug}/`}
     googleMapsBrowserKey={googleMapsBrowserKeyFromEnvironment()}
+    media={selectPublishedBuildingPhoto(projections?.get(entityId)?.media ?? [], await getStoredPublicPhotoApproval(`sg-hdb:${model.town}:${block.address}`), `singapore:block:${blockId}`)}
     proximity={projections?.get(entityId)?.proximity ?? null}
   />;
 }

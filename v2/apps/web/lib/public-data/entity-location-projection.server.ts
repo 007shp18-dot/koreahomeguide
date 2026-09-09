@@ -63,11 +63,25 @@ const MEDIA_SQL = `
     public.display_url, public.provider_reference, public.width, public.height,
     public.focal_x, public.focal_y, public.attribution_name, public.attribution_url,
     public.exact_subject, public.published_at, public.last_checked_at,
-    media.review_state, rights.can_display
+    media.source_url AS source_page_url, media.review_state, rights.can_display
   FROM public_entity_media AS public
   INNER JOIN media_assets AS media ON media.id = public.media_asset_id
   INNER JOIN rights_policies AS rights ON rights.id = media.rights_policy_id
+  LEFT JOIN building_photos AS legacy ON legacy.registry_key = media.legacy_registry_key
   WHERE public.entity_id = ANY($1::text[])
+    AND public.entity_id = media.subject_entity_id
+    AND (media.legacy_registry_key IS NULL OR (
+      legacy.status = 'approved' AND legacy.approved_at IS NOT NULL
+      AND legacy.approved_by IS NOT NULL
+      AND media.approved_at = legacy.approved_at
+      AND public.published_at = legacy.approved_at
+      AND legacy.rights_status IN ('licensed', 'owned', 'provider-display-only')
+      AND legacy.visual_reviewed_at IS NOT NULL
+      AND EXISTS (SELECT 1 FROM property_entities AS identity
+        WHERE identity.id = public.entity_id
+          AND identity.local_attributes ->> 'legacyBuildingKey' = legacy.building_key)
+      AND legacy.subject_kind IN ('building-exterior', 'building-front', 'site-aerial')
+    ))
   ORDER BY public.entity_id, public.position, public.media_asset_id
 `;
 
@@ -220,6 +234,7 @@ function mediaCandidateFromRow(row: SqlRow): PublicEntityMediaCandidate | null {
     focalY: unitNumber(row.focal_y),
     attributionName: stringOrNull(row.attribution_name) ?? null,
     attributionUrl: stringOrNull(row.attribution_url) ?? null,
+    sourcePageUrl: stringOrNull(row.source_page_url) ?? null,
     exactSubject: row.exact_subject,
     publishedAt,
     lastCheckedAt,

@@ -5,6 +5,7 @@ vi.mock('server-only', () => ({}));
 
 import {
   AdvertisingConsent,
+  buildGoogleAnalyticsInitScript,
   buildAdSenseScriptSrc,
   buildGoogleAnalyticsScriptSrc,
   shouldLoadAnalytics,
@@ -127,5 +128,16 @@ describe('advertising consent boundary', () => {
     expect(buildGoogleAnalyticsScriptSrc('G-KWHQXKY40N')).toBe(
       'https://www.googletagmanager.com/gtag/js?id=G-KWHQXKY40N',
     );
+  });
+
+  it('sets sanitized initial GA page location and referrer values', () => {
+    const script = buildGoogleAnalyticsInitScript(
+      'G-KWHQXKY40N',
+      'https://www.signedprice.com/tools/property-scenario/',
+      'https://search.example/search',
+    );
+    expect(script).toContain('"page_location":"https://www.signedprice.com/tools/property-scenario/"');
+    expect(script).toContain('"page_referrer":"https://search.example/search"');
+    expect(script).not.toMatch(/price=|private\+address/);
   });
 });

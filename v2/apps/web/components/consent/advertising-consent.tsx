@@ -5,6 +5,7 @@ import Script from 'next/script';
 import { useEffect, useState, useSyncExternalStore } from 'react';
 
 import styles from './advertising-consent.module.css';
+import { redactAnalyticsLocation } from '../../lib/analytics/url-redaction';
 
 export type AdvertisingConsentChoice = 'unknown' | 'granted' | 'denied';
 
@@ -49,14 +50,30 @@ export function buildGoogleAnalyticsScriptSrc(measurementId: string): string {
   return `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
 }
 
-function GoogleAnalytics({ measurementId }: Readonly<{ measurementId: string }>) {
+export function buildGoogleAnalyticsInitScript(
+  measurementId: string,
+  pageLocation: string,
+  pageReferrer: string,
+): string {
+  const parameters = JSON.stringify({
+    page_location: pageLocation,
+    page_referrer: pageReferrer,
+  });
+  return `window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', ${JSON.stringify(measurementId)}, ${parameters});`;
+}
+
+function GoogleAnalytics({ measurementId, pageLocation, pageReferrer }: Readonly<{
+  measurementId: string;
+  pageLocation: string;
+  pageReferrer: string;
+}>) {
   return (
     <>
       <Script id="signedprice-ga4-init" strategy="afterInteractive">
-        {`window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', '${measurementId}');`}
+        {buildGoogleAnalyticsInitScript(measurementId, pageLocation, pageReferrer)}
       </Script>
       <Script
         id="signedprice-ga4"
@@ -173,7 +190,11 @@ export function AdvertisingConsent({
   return (
     <>
       {hydrated && analyticsMeasurementId && shouldLoadAnalytics(analyticsChoice) ? (
-        <GoogleAnalytics measurementId={analyticsMeasurementId} />
+        <GoogleAnalytics
+          measurementId={analyticsMeasurementId}
+          pageLocation={redactAnalyticsLocation(globalThis.location.href) ?? ''}
+          pageReferrer={redactAnalyticsLocation(globalThis.document.referrer) ?? ''}
+        />
       ) : null}
       {publisherId && shouldLoadAdvertising(advertisingChoice) ? (
         <Script

@@ -9,6 +9,7 @@ import { KoreaBuildingDecisionClient } from '@/components/public-market/korea-bu
 import { KoreaObservedBuildingClient } from '@/components/public-market/korea-observed-building-client';
 import { ProjectedEntityMedia } from '@/components/public-market/projected-entity-media';
 import { googleMapsBrowserKeyFromEnvironment } from '@/lib/maps/google-maps-browser-key.server';
+import { selectPublishedBuildingPhoto } from '@/lib/photos/published-photo-selection';
 import {
   listStoredPublicPhotoApprovals,
   type StoredPublicPhotoApproval,
@@ -132,21 +133,7 @@ function projectedBuildingMediaFor(
   registryKey?: string,
   locale: 'en' | 'ko' = 'en',
 ) {
-  const selected = projection?.media.find(({ displayUrl, providerReference, exactSubject }) =>
-    exactSubject && (displayUrl !== null || providerReference !== null));
-  const approvedFallback = selected === undefined && photoApproval !== null && photoApproval !== undefined
-    ? {
-        displayUrl: photoApproval.assetUrl,
-        providerReference: photoApproval.placeId,
-        width: null,
-        height: null,
-        focalX: null,
-        focalY: null,
-        attributionName: photoApproval.attributionName,
-        attributionUrl: photoApproval.attributionUrl,
-      }
-    : null;
-  const media = selected ?? approvedFallback;
+  const media = selectPublishedBuildingPhoto(projection?.media ?? [], photoApproval);
   if (media === null && registryKey === undefined) return undefined;
   return <ProjectedEntityMedia
     locale={locale}
@@ -154,6 +141,7 @@ function projectedBuildingMediaFor(
     browserKey={googleMapsBrowserKeyFromEnvironment()}
     media={media}
     registryKey={registryKey}
+    fallbackMarket="seoul"
   />;
 }
 
@@ -437,7 +425,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
     ?? buildObservedBuildingIdentityModel;
   const entityProjection = input.dependencies?.entityProjection;
   const photoApproval = input.dependencies?.photoApproval;
-  const photoRegistryKey = input.dependencies?.photoApprovalReadFailed === true
+  const photoRegistryKey = input.dependencies?.photoApprovalReadFailed === true || photoApproval != null || Boolean(entityProjection?.media.length)
     ? `kr-seoul:${buildingId}`
     : undefined;
   const propertyTypeModel = buildPublicPropertyTypeModel(district, buildingId);

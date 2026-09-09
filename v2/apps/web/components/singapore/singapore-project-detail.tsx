@@ -13,8 +13,7 @@ import type {
   SingaporeUnavailableModel,
 } from '../../lib/singapore/route-types';
 import type { PublicEntityProximity } from '../../lib/public-data/entity-location-projection.server';
-import { GooglePlacePhoto } from '../maps/google-place-photo';
-import { ProjectedEntityMedia } from '../public-market/projected-entity-media';
+import { ProjectedEntityMedia, type ProjectedEntityMediaModel } from '../public-market/projected-entity-media';
 import {
   SingaporeEvidence,
   SingaporePage,
@@ -23,6 +22,7 @@ import {
 import { MarketDetailShell } from '../market-ui/market-shell';
 import { MarketSummary } from '../market-ui/market-summary';
 import { SingaporeNearbyPlaces } from './singapore-nearby-places';
+import { SingaporeTransactionsTable } from './singapore-transactions-table';
 
 function PriceRange({ locale = 'en', value }: Readonly<{ locale?: MarketLocale; value: string }>) {
   const separator = value.indexOf('–');
@@ -30,10 +30,11 @@ function PriceRange({ locale = 'en', value }: Readonly<{ locale?: MarketLocale; 
   return <>{sgText(locale, value.slice(0, separator + 1))}<wbr />{sgText(locale, value.slice(separator + 1))}</>;
 }
 
-export function SingaporeProjectDetail({ locale = 'en', model, googleMapsBrowserKey = null, proximity = null }: Readonly<{ locale?: MarketLocale;
+export function SingaporeProjectDetail({ locale = 'en', model, googleMapsBrowserKey = null, proximity = null, media = null }: Readonly<{ locale?: MarketLocale;
   model: SingaporeProjectModel | SingaporeUnavailableModel;
   googleMapsBrowserKey?: string | null;
   proximity?: PublicEntityProximity | null;
+  media?: ProjectedEntityMediaModel | null;
 }>) {
   if (model.status === 'unavailable') return (
     <SingaporePage locale={locale} currentHref={marketHref(locale, "/sg/singapore/explore/")}>
@@ -52,13 +53,16 @@ export function SingaporeProjectDetail({ locale = 'en', model, googleMapsBrowser
           <p>{sgText(locale, model.count)}{sgText(locale, " reported transactions. At least ")}{sgText(locale, model.threshold)}{sgText(locale, " are required.")}</p>
         </section>
         <div className={styles.insufficientMedia} aria-label={sgText(locale, `${displayName} building media`)}>
-          <GooglePlacePhoto locale={locale}
+          <ProjectedEntityMedia locale={locale}
+            media={media}
+            fallbackMarket="singapore"
             browserKey={googleMapsBrowserKey}
             buildingName={model.identity.project}
-          displayBuildingName={displayName}
-            address={`${model.identity.street}, Singapore`}
+          buildingKey={`singapore:project:${model.identity.id}`}
+          address={`${model.identity.street}, Singapore`}
+            displayBuildingName={displayName}
             registryKey={`sg-project:${model.identity.marketSegment}:${model.identity.project}`}
-            fallback={<ProjectedEntityMedia locale={locale} buildingName={displayName} media={null} evidenceHref="#singapore-source-heading" />}
+            evidenceHref="#singapore-source-heading"
           />
         </div>
       </div>
@@ -98,13 +102,16 @@ export function SingaporeProjectDetail({ locale = 'en', model, googleMapsBrowser
           ]}
           actions={<Link href={marketHref(locale, model.checkHref)}>{sgText(locale, 'Compare an asking price')}</Link>}
         /></div>}
-        media={<GooglePlacePhoto locale={locale}
+        media={<ProjectedEntityMedia locale={locale}
+          media={media}
+          fallbackMarket="singapore"
           browserKey={googleMapsBrowserKey}
           buildingName={model.identity.project}
-          displayBuildingName={displayName}
+          buildingKey={`singapore:project:${model.identity.id}`}
           address={`${model.identity.street}, Singapore`}
+          displayBuildingName={displayName}
           registryKey={`sg-project:${model.identity.marketSegment}:${model.identity.project}`}
-          fallback={<ProjectedEntityMedia locale={locale} buildingName={displayName} media={null} evidenceHref="#project-summary-heading" />}
+          evidenceHref="#project-summary-heading"
         />}
         evidence={<><section className={styles.section} aria-labelledby="project-summary-heading">
         <p className={styles.sectionLabel}>{sgText(locale, "01 / Project distribution")}</p>
@@ -118,19 +125,7 @@ export function SingaporeProjectDetail({ locale = 'en', model, googleMapsBrowser
       <section className={styles.section} aria-labelledby="transaction-heading">
         <p className={styles.sectionLabel}>{sgText(locale, "02 / Recent reported transactions")}</p>
         <h2 id="transaction-heading">{sgText(locale, "Reported sales, unit sizes and floors.")}</h2>
-        <div className={styles.tableWrap}>
-          <table className={styles.table}>
-            <thead><tr><th>{sgText(locale, "Month")}</th><th>{sgText(locale, "Price")}</th><th>{sgText(locale, "Area")}</th><th>{sgText(locale, "PSF")}</th><th>{sgText(locale, "PSM")}</th><th>{sgText(locale, "Sale")}</th><th>{sgText(locale, "Property")}</th><th>{sgText(locale, "Area basis")}</th><th>{sgText(locale, "Tenure")}</th><th>{sgText(locale, "Floor")}</th></tr></thead>
-            <tbody>{model.transactions.map((transaction) => (
-              <tr key={`${transaction.source.sourceOrder.batch}-${transaction.source.sourceOrder.project}-${transaction.source.sourceOrder.transaction}`}>
-                <td>{sgText(locale, transaction.contractMonthLabel)}</td><td>{sgText(locale, transaction.priceLabel)}</td>
-                <td>{sgText(locale, transaction.areaLabel)}</td><td>{sgText(locale, transaction.psfLabel)}</td><td>{sgText(locale, transaction.psmLabel)}</td>
-                <td>{sgText(locale, transaction.saleTypeLabel)}</td><td>{sgText(locale, transaction.propertyTypeLabel)}</td>
-                <td>{sgText(locale, transaction.areaBasisLabel)}</td><td>{sgText(locale, transaction.tenureLabel)}</td><td>{sgText(locale, transaction.floorRangeLabel)}</td>
-              </tr>
-            ))}</tbody>
-          </table>
-        </div>
+        <SingaporeTransactionsTable key={model.identity.id} locale={locale} rows={model.transactions.map(({ source, ...row }) => { void source; return row; })} />
       </section>
       <SingaporeNearbyPlaces locale={locale} proximity={proximity} />
       <section className={styles.section} aria-labelledby="project-size-heading"><h2 id="project-size-heading">{sgText(locale, "Compare prices by home size")}</h2><p>{sgText(locale, "Same project and reporting period. Property type, sale type, area basis and tenure stay separate. A cohort needs at least five transactions to publish its median.")}</p><SizeCohortResearch locale={locale} rows={sizes} currency="SGD" /></section>

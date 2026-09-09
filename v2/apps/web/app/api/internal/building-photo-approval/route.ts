@@ -1,92 +1,48 @@
 import { NextResponse } from 'next/server';
 
 import {
-  approveBuildingPhoto,
-  listBuildingPhotoCandidates,
-  type PhotoApprovalInput,
-} from '@/lib/photos/building-photo-store.server';
+  parsePhotoReviewDecision, photoReviewStoreFromEnvironment,
+  type PhotoReviewFilter,
+} from '@/lib/photos/photo-review-store.server';
 
 export const dynamic = 'force-dynamic';
-
-function authorized(request: Request): boolean {
+const HEADERS = { 'Cache-Control': 'private, no-store' };
+function authorized(request: Request) {
   const secret = process.env.CONTENT_ADMIN_SECRET?.trim();
   return Boolean(secret && request.headers.get('authorization') === `Bearer ${secret}`);
 }
+function response(body: Record<string, unknown>, status = 200) {
+  return NextResponse.json(body, { status, headers: HEADERS });
+}
 
 export async function GET(request: Request) {
-  if (!authorized(request)) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
-  try {
-    return NextResponse.json({ items: await listBuildingPhotoCandidates() });
-  } catch (error) {
-    console.error('SignedPrice photo candidates read failed.', error);
-    return NextResponse.json({ error: 'storage_unavailable' }, { status: 503 });
-  }
-}
-
-function text(value: unknown, maximum: number): string | null {
-  return typeof value === 'string' && value.trim() !== '' && value.length <= maximum ? value.trim() : null;
-}
-
-function httpUrl(value: unknown): string | null {
-  const source = text(value, 2_000);
-  if (source === null) return null;
-  try {
-    const url = new URL(source);
-    return ['https:', 'http:'].includes(url.protocol) ? url.toString() : null;
-  } catch {
-    return null;
-  }
-}
-
-function approvalInput(value: unknown): PhotoApprovalInput | null {
-  if (typeof value !== 'object' || value === null || Array.isArray(value)) return null;
-  const item = value as Record<string, unknown>;
-  const registryKey = text(item.registryKey, 240);
-  const buildingKey = text(item.buildingKey, 240);
-  const externalId = text(item.externalId, 240);
-  const buildingName = text(item.buildingName, 240);
-  const address = text(item.address, 500);
-  const marketKey = item.marketKey;
-  const provider = item.provider;
-  const subjectKind = item.subjectKind ?? 'building-exterior';
-  const placeId = text(item.placeId, 500);
-  const assetUrl = httpUrl(item.assetUrl);
-  if (registryKey === null || buildingKey === null || externalId === null
-    || buildingName === null || address === null
-    || !['seoul', 'singapore', 'dubai'].includes(String(marketKey))
-    || !['google-place', 'licensed-url', 'owned-object'].includes(String(provider))
-    || !['building-exterior', 'building-front', 'site-aerial', 'map-only'].includes(String(subjectKind))) return null;
-  if ((provider === 'google-place' && placeId === null)
-    || (provider !== 'google-place' && assetUrl === null)) return null;
-  return Object.freeze({
-    registryKey,
-    marketKey: marketKey as PhotoApprovalInput['marketKey'],
-    buildingKey,
-    externalId,
-    buildingName,
-    address,
-    provider: provider as PhotoApprovalInput['provider'],
-    subjectKind: subjectKind as NonNullable<PhotoApprovalInput['subjectKind']>,
-    placeId: provider === 'google-place' ? placeId : null,
-    assetUrl: provider === 'google-place' ? null : assetUrl,
-    attributionName: text(item.attributionName, 240),
-    attributionUrl: httpUrl(item.attributionUrl),
-  });
+  if (!authorized(request)) return response({ error: 'unauthorized' }, 401);
+  const params = new URL(request.url).searchParams;
+  if ([...params.keys()].some(key => !['afterId', 'limit', 'source', 'market', 'status'].includes(key))) return response({ error: 'invalid_filter' }, 400);
+  const filter: PhotoReviewFilter = {
+    ...(params.has('afterId') ? { afterId: params.get('afterId')! } : {}),
+    ...(params.has('limit') ? { limit: Number(params.get('limit')) } : {}),
+    ...(params.has('source') ? { source: params.get('source') as PhotoReviewFilter['source'] } : {}),
+    ...(params.has('market') ? { market: params.get('market') as PhotoReviewFilter['market'] } : {}),
+    ...(params.has('status') ? { status: params.get('status') as PhotoReviewFilter['status'] } : {}),
+  };
+  try { return response(await photoReviewStoreFromEnvironment().list(filter)); }
+  catch (error) { return response({ error: error instanceof TypeError ? 'invalid_filter' : 'storage_unavailable' }, error instanceof TypeError ? 400 : 503); }
 }
 
 export async function POST(request: Request) {
-  if (!authorized(request)) {
-    return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
-  }
+  if (!authorized(request)) return response({ error: 'unauthorized' }, 401);
+  if (Number(request.headers.get('content-length') ?? 0) > 4096) return response({ error: 'payload_too_large' }, 413);
   let body: unknown;
-  try { body = await request.json(); } catch { return NextResponse.json({ error: 'invalid_json' }, { status: 400 }); }
-  const input = approvalInput(body);
-  if (input === null) return NextResponse.json({ error: 'invalid_request' }, { status: 400 });
   try {
-    await approveBuildingPhoto(input);
-    return NextResponse.json({ state: 'approved', registryKey: input.registryKey });
-  } catch (error) {
-    console.error('SignedPrice photo approval failed.', error);
-    return NextResponse.json({ error: 'storage_unavailable' }, { status: 503 });
-  }
+    const text = await request.text();
+    if (new TextEncoder().encode(text).byteLength > 4096) return response({ error: 'payload_too_large' }, 413);
+    body = JSON.parse(text);
+  } catch { return response({ error: 'invalid_json' }, 400); }
+  const input = parsePhotoReviewDecision(body);
+  if (!input) return response({ error: 'invalid_request' }, 400);
+  try {
+    const result = await photoReviewStoreFromEnvironment().review(input);
+    return response(result, result.state === 'reviewed' ? 200 : result.state === 'not-found' ? 404 : 409);
+  } catch { return response({ error: 'storage_unavailable' }, 503); }
 }

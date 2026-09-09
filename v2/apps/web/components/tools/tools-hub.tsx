@@ -6,6 +6,7 @@ import { ResearchPageHeading } from '../market-ui/research-page-heading';
 import { ToolEventOnMount, TrackedToolLink } from './tool-analytics';
 import { ToolsShell } from './tools-shell';
 import styles from './tools.module.css';
+import { ToolResearchManagement } from './tool-research-share';
 
 type ToolGroup = 'check' | 'compare' | 'returns';
 
@@ -51,6 +52,7 @@ export function ToolsHub({ locale = 'en' }: Readonly<{ locale?: SiteLocale }>) {
         </li>)}</ul>
       </section>)}
     </div>
+    <ToolResearchManagement locale={locale} />
     <section className={`${styles.group} ${styles.budget}`}><div className={styles.groupHeading}><h2>{ko ? '예산으로 단지 찾기' : zh ? '按预算寻找住宅' : 'Find homes within your budget'}</h2><p>{ko ? '예산 안에서 거래된 단지를 찾아 이 브라우저에 저장할 수 있습니다. 현재 판매 중인 매물은 별도로 확인해 주세요.' : zh ? '根据已申报交易筛选住宅，并在当前浏览器保存关注列表。不是在售房源。' : 'Find places with reported prices within your budget and save a shortlist in this browser. These are transaction screens, not available listings.'}</p></div><nav className={styles.links} aria-label={ko ? '지역별 예산 검색' : 'Budget search by city'}><Link href={`${prefix}/kr/seoul/shortlist/`}>{ko ? '서울' : 'Seoul'}</Link><Link href={marketHref(ko ? 'ko' : 'en', '/sg/singapore/shortlist/')}>{ko ? '싱가포르' : 'Singapore'}</Link><Link href={marketHref(ko ? 'ko' : 'en', '/ae/dubai/shortlist/')}>{ko ? '두바이' : 'Dubai'}</Link></nav></section>
   </ToolsShell>;
 }

@@ -7,7 +7,7 @@
   color: var(--ink);
   font-variant-numeric: tabular-nums;
 }
-.actions { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 24px; }
+.actions { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); }
 .actions a { display: inline-flex; align-items: center; min-height: 44px; color: var(--muted); font-size: 14px; line-height: 20px; }
 .overview { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(240px, 1fr); grid-template-areas: 'identity price'; gap: 28px; align-items: center; }
 .overview[data-has-trend='true'] { grid-template-columns: minmax(140px, .65fr) minmax(0, 1.1fr) minmax(240px, 1fr); grid-template-areas: 'trend identity price'; }
@@ -31,7 +31,7 @@
 }
 @media (max-width: 640px) {
   .card { padding: 18px 20px 22px; border-radius: 12px; }
-  .actions { gap: 8px; margin-bottom: 18px; }
+  .actions { gap: 8px; margin-top: 18px; }
   .overview, .overview[data-has-trend='true'] { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'identity' 'price' 'trend'; gap: 22px; }
   .identity h1 { margin-top: 6px; font-size: 25px; line-height: 1.35; }
   .price { text-align: left; }

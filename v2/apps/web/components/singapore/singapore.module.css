@@ -383,7 +383,6 @@
 }
 
 .actions a,
-.breadcrumbs a,
 .scope span {
   min-height: 44px;
   padding: 0.65rem 0.8rem;
@@ -495,6 +494,18 @@
   letter-spacing: -0.04em;
   line-height: 1;
 }
+
+.breadcrumbs { gap: 8px; font-size: 13px; line-height: 1.5; }
+.breadcrumbs a { min-height: 44px; display: inline-flex; align-items: center; color: var(--muted); text-decoration: none; }
+.breadcrumbs a:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+.breadcrumbs > * + *::before { content: '/'; margin-right: 8px; color: var(--subtle); }
+
+.transactionPagination { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding-block: 16px; }
+.transactionPagination p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+.transactionPagination > div { display: flex; gap: 8px; }
+.transactionPagination button { min-height: 44px; min-width: 76px; padding: 8px 14px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-strong); color: var(--ink); font: inherit; font-size: 14px; cursor: pointer; }
+.transactionPagination button:disabled { color: var(--subtle); cursor: default; }
+.transactionPagination button:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
 
 .insufficientProject {
   display: grid;
@@ -720,7 +731,6 @@
 .unavailable h1 { font-size: clamp(2.35rem, 5vw, 4.6rem); font-weight: 740; line-height: 1.02; }
 .hero > p:not(.eyebrow) { font-size: .875rem; line-height: 1.65; }
 .actions a,
-.breadcrumbs a,
 .scope span { border-color: var(--line); border-radius: 8px; font-size: .8125rem; }
 .section {
   margin-top: 16px;

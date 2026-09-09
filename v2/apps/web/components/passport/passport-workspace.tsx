@@ -9,6 +9,8 @@ import { PassportBudgetFields } from './passport-budget-fields';
 import styles from './passport.module.css';
 import { passportCandidateHref } from '../../lib/passport/journey';
 import { sendToolEvent } from '../tools/tool-analytics';
+import { ToolResearchShare } from '../tools/tool-research-share';
+import { createPassportResearchSnapshot } from '../../lib/tool-research/client';
 
 const COPY = {
   en: { title: 'Your purchasing power across three cities', label: 'Budget in Korean won', action: 'Update comparison', local: 'Local budget', area: 'Indicative area', matches: 'Areas and projects within budget', evidence: 'Evidence', cost: 'Purchase price only', excluded: 'Taxes, fees, financing, buyer eligibility and live availability are excluded.', share: 'Copy result link', copied: 'Link copied', open: 'Explore market', none: 'None of the areas or projects covered has a median price within this budget. Individual transactions may still fall below it.', approx: 'at the observed unit-price midpoint', sample: 'reported transactions', fx: 'Reference FX', back: 'All tools' },
@@ -54,6 +56,12 @@ export function PassportWorkspace({ initialModel }: Readonly<{ initialModel: Pas
   const detail = DETAIL[initialModel.locale];
   const fxCopy = FX_COPY[initialModel.locale];
   const action = passportHref(initialModel.locale, initialModel.budgetWon).split('?')[0]!;
+  const researchSnapshot = createPassportResearchSnapshot({
+    budgetAmount: model.budgetAmount,
+    budgetCurrency: model.budgetCurrency,
+    dubaiStage: model.dubaiStage,
+    markets: model.markets.map(({ id, indicativeAreaSqm, sample }) => ({ id, indicativeAreaSqm, sample })),
+  });
 
   return <main className={styles.workspace}>
     <header className={styles.resultHeader}>
@@ -93,6 +101,8 @@ export function PassportWorkspace({ initialModel }: Readonly<{ initialModel: Pas
         </article>;
       })}
     </section>
+
+    <ToolResearchShare locale={initialModel.locale} resultRevision={JSON.stringify(model)} snapshot={researchSnapshot} />
 
     <footer className={styles.resultFooter}>
       <p data-fx-availability={model.fx.availability}>{copy.fx} · <time dateTime={model.fx.asOf}>{model.fx.asOf}</time> · {model.fx.source}. {detail.fx} {fxCopy[model.fx.availability]}</p>

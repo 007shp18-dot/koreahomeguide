@@ -17,7 +17,6 @@ export type MarketSummaryProps = Readonly<{
 /** Presentational only: each market supplies the meaning, scope and available facts. */
 export function MarketSummary({ title, location, context, metric, facts, actions, trend, id, kind = 'building', locale = 'en' }: MarketSummaryProps) {
   return <section id={id} className={styles.card} data-building-summary={kind === 'building' ? 'true' : undefined} data-market-summary="true" data-summary-kind={kind} data-building-section={kind === 'building' ? 'identity' : undefined} data-identity-hero="true" lang={locale}>
-    {actions ? <div className={styles.actions}>{actions}</div> : null}
     <div className={styles.overview} data-has-trend={Boolean(trend)}>
       <header className={styles.identity} data-detail-order="identity">
         <p className={styles.context}>{context}</p>
@@ -33,5 +32,6 @@ export function MarketSummary({ title, location, context, metric, facts, actions
       {trend ? <div className={styles.trend}>{trend}</div> : null}
     </div>
     {facts.length ? <dl className={styles.facts}>{facts.map(fact => <div key={fact.label}><dt>{fact.label}</dt><dd>{fact.value}</dd></div>)}</dl> : null}
+    {actions ? <div className={styles.actions}>{actions}</div> : null}
   </section>;
 }

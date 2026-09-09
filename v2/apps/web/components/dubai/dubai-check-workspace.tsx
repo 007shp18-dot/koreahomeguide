@@ -12,6 +12,9 @@ import type { DubaiCheckModel } from '../../lib/dubai/route-types';
 import { createPropertyScenarioHref } from '../../lib/tools/property-scenario-context';
 import styles from './dubai-research.module.css';
 import { marketText, marketHref, type MarketLocale } from '../../lib/locale/market-localization';
+import { ToolResearchShare } from '../tools/tool-research-share';
+import { createDubaiResearchSnapshot } from '../../lib/tool-research/client';
+import type { NormalizedToolResearchSnapshot } from '../../lib/tool-research/contract';
 
 
 const integer = new Intl.NumberFormat('en-AE', { maximumFractionDigits: 0 });
@@ -32,6 +35,8 @@ type ResolvedCheck = Readonly<{
   housing: 'apartment' | 'villa';
   resultHref: string;
   calculatorHref: string;
+  researchSnapshot: Extract<NormalizedToolResearchSnapshot, { tool: 'dubai-check' }>;
+  researchRevision: string;
 }>;
 
 function resolveCheck(model: Extract<DubaiCheckModel, { status: 'ready' }>, state: DubaiCheckRouteState, locale: MarketLocale = 'en'):
@@ -47,15 +52,16 @@ function resolveCheck(model: Extract<DubaiCheckModel, { status: 'ready' }>, stat
     return { kind: 'empty' };
   }
   const resultHref = marketHref(locale, createDubaiCheckHref(query));
+  const result = calculateDubaiCheck({
+    askingPriceAed: query.askingPriceAed,
+    areaSqm: query.areaSqm,
+    annualRentAed: query.annualRentAed,
+    benchmark: sale,
+  });
   return {
     kind: 'ready',
     value: Object.freeze({
-      result: calculateDubaiCheck({
-        askingPriceAed: query.askingPriceAed,
-        areaSqm: query.areaSqm,
-        annualRentAed: query.annualRentAed,
-        benchmark: sale,
-      }),
+      result,
       areaName: area.name,
       saleCount: sale.n,
       completion: query.completion,
@@ -74,6 +80,18 @@ function resolveCheck(model: Extract<DubaiCheckModel, { status: 'ready' }>, stat
         annualRent: query.annualRentAed,
         returnTo: resultHref,
       }),
+      researchSnapshot: createDubaiResearchSnapshot({
+        askingPriceAed: result.askingPriceAed,
+        areaSqm: query.areaSqm,
+        annualRentAed: query.annualRentAed,
+        yieldPct: result.grossYieldPct,
+        sample: sale.n,
+        stage: query.completion,
+        housingType: query.housing,
+        verdict: result.verdict === 'below-middle-range' ? 'below'
+          : result.verdict === 'above-middle-range' ? 'above' : 'typical',
+      }),
+      researchRevision: globalThis.crypto.randomUUID(),
     }),
   };
 }
@@ -104,6 +122,7 @@ function ResultPanel({ locale = 'en',  value, model }: Readonly<{
     </div>
     <p className={styles.checkDisclosure}>{t("The typical range covers the middle 50% of recorded prices per m² for the selected area and property type. It is not an appraisal, forecast, or recommendation. The gross scenario uses only your annual-rent input and excludes vacancy, service charges, financing, taxes, acquisition costs, repairs, and management.")}</p>
     <p className={styles.checkDisclosure}>{t("Reporting period ")}{t(model.context.comparisonPeriod.from)}{t("–")}{t(model.context.comparisonPeriod.to)}{t(" · ")}{t(model.context.attribution)}</p>
+    <ToolResearchShare locale={locale} resultRevision={value.researchRevision} snapshot={value.researchSnapshot} />
   </article>;
 }
 
