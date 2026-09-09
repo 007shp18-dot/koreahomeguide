@@ -47,13 +47,14 @@ test('Newsroom filters reviewed SignedPrice records and opens the policy lifecyc
   await expect(page.getByRole('heading', { level: 1, name: 'Follow the date a housing rule actually changes.' })).toBeVisible();
   await expect(page.getByText('Announced', { exact: true }).first()).toBeVisible();
   await expect(page.getByText('Effective', { exact: true }).first()).toBeVisible();
-  await expect(page.getByText('Last checked', { exact: true }).first()).toBeVisible();
+  await expect(page.getByText('Last checked', { exact: true })).toHaveCount(0);
 
   await page.getByRole('link', { name: 'Singapore ABSD: current buyer-profile check' }).click();
   await expect(page).toHaveURL(/\/news\/policy\/singapore-absd-policy-status\/$/);
-  await expect(page.getByRole('heading', { level: 2, name: 'What changed, in date order' })).toBeVisible();
-  await expect(page.getByRole('link', { name: /Open official record/ })).toHaveAttribute('href', /^https:\/\//);
-  await expect(page.getByText(/not legal advice/)).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: 'Singapore ABSD: the tax that can change your home budget' })).toBeVisible();
+  await expect(page.getByRole('table').filter({ hasText: 'S$900,000' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2, name: 'Sources' })).toBeVisible();
+  await expect(page.locator('section[aria-labelledby="article-sources-title"] a').first()).toHaveAttribute('href', /^https:\/\//);
   await expectNoHorizontalOverflow(page);
 });
 

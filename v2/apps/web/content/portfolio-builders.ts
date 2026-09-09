@@ -55,6 +55,7 @@ function route(input: Pick<RecordInput, 'locale' | 'type' | 'slug'>): string {
 
 export function portfolioRecord(input: RecordInput): EditorialPortfolioRecord {
   const [first, second, third] = input.points;
+  const boundaryHeading = input.locale === 'zh-CN' ? '适用范围' : input.locale === 'ko' ? '적용 범위' : 'Scope';
   return Object.freeze({
     id: `${input.locale}:${input.slug}`,
     slug: input.slug,
@@ -64,7 +65,7 @@ export function portfolioRecord(input: RecordInput): EditorialPortfolioRecord {
     title: input.title,
     deck: input.deck,
     readerQuestion: input.question,
-    bodyMarkdown: `## ${first[0]}\n\n${first[1]}\n\n## ${second[0]}\n\n${second[1]}\n\n## ${third[0]}\n\n${third[1]}\n\n## Evidence boundary\n\n${input.boundary}`,
+    bodyMarkdown: `## ${first[0]}\n\n${first[1]}\n\n## ${second[0]}\n\n${second[1]}\n\n## ${third[0]}\n\n${third[1]}\n\n## ${boundaryHeading}\n\n${input.boundary}`,
     status: 'published',
     evidenceState: 'verified',
     authorName: 'SignedPrice Data Desk',

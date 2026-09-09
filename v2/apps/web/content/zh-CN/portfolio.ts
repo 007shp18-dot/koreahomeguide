@@ -1,3 +1,4 @@
+import { policyExplainers } from '../policy-explainers';
 import { infographic, portfolioRecord, RELEASES, SOURCES } from '../portfolio-builders';
 
 const seoulDistrictChartZh = infographic({
@@ -24,20 +25,7 @@ const singaporeRegionChartZh = infographic({
 });
 
 export const CHINESE_PORTFOLIO = Object.freeze([
-  portfolioRecord({
-    slug: 'kr-rental-deposit-protection-zh', locale: 'zh-CN', type: 'policy-update', marketId: 'kr-seoul',
-    title: '韩国租房押金保护：当前核验步骤', deck: '把入住占有、居住申报、确定日期和保证产品分开核验，避免把其中一步误当成全部保障。',
-    question: '当前韩国租房押金保护规则如何适用？',
-    points: [['先核验房屋', '付款前应核对准确地址、登记用途、所有权人、最新权利记录以及收款账户。'], ['再核验顺序', '入住占有、适用的居住申报、确定日期与保证申请各有不同作用，应按租客身份和房屋情况确认顺序。'], ['保存当前依据', '记录查询日期、官方答复、合同与付款凭证；后续规则或登记状态变化时重新核验。']],
-    boundary: '本文只提供核验路径，不判断具体押金的法律优先顺位、保证资格或安全性。', sources: [SOURCES.koreaLeaseLaw], evidenceReleaseIds: [RELEASES.policyKorea], relatedHref: '/kr/seoul/check/', translationGroupId: 'kr-rental-deposit-protection',
-  }),
-  portfolioRecord({
-    slug: 'sg-absd-policy-zh', locale: 'zh-CN', type: 'policy-update', marketId: 'sg-singapore',
-    title: '新加坡 ABSD：先确认买方身份与持有套数', deck: '额外买方印花税取决于买方身份、住宅持有情况、取得方式和日期，最终应以 IRAS 当前规则为准。',
-    question: '新加坡额外买方印花税目前如何适用？',
-    points: [['确认买方类别', '公民、永久居民、外国人或实体，以及现有住宅数量，可能改变适用的 ABSD 处理。'], ['确认取得事项', '产权份额、取得日期、取得方式及可能的减免条件也需要逐项核对。'], ['使用当前税率表', '计算前打开 IRAS 官方页面并保存所用版本与日期，不沿用旧文章中的税率。']],
-    boundary: 'SignedPrice 不计算最终税额，也不判断个案是否符合减免条件。', sources: [SOURCES.singaporeAbsd], evidenceReleaseIds: [RELEASES.policySingapore], relatedHref: '/sg/singapore/check/', translationGroupId: 'sg-absd',
-  }),
+  ...policyExplainers('zh-CN'),
   portfolioRecord({
     slug: 'seoul-rent-market-brief-zh', locale: 'zh-CN', type: 'market-brief', marketId: 'kr-seoul',
     title: '首尔全租与月租：2026年8月数据简报', deck: '当前租赁版本包含 49,129 条合格申报合同；比较前必须分开全租、押金和月租结构。',

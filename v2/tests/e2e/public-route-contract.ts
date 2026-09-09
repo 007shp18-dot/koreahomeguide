@@ -102,7 +102,7 @@ export const publicRoutes = [
   { path: '/ae/dubai/buy/', heading: 'Buy in Dubai', indexing: 'noindex' },
   { path: '/ae/dubai/invest/', heading: 'Invest in Dubai', indexing: 'noindex' },
   { path: '/news/', heading: 'News & Insights', indexing: 'index', canonical: '/news/' },
-  { path: '/news/policy/singapore-absd-policy-status/', heading: 'Singapore ABSD: current buyer-profile check', indexing: 'index', canonical: '/news/policy/singapore-absd-policy-status/' },
+  { path: '/news/policy/singapore-absd-policy-status/', heading: 'Singapore ABSD: the tax that can change your home budget', indexing: 'index', canonical: '/news/policy/singapore-absd-policy-status/' },
   { path: '/news/seoul-district-price-distribution/', heading: 'Seoul rental deposits by district: what a median price hides', indexing: 'index', canonical: '/news/seoul-district-price-distribution/' },
   { path: '/guides/', heading: 'Guides', indexing: 'index', canonical: '/guides/' },
   { path: '/guides/rent-an-apartment-in-korea/', heading: 'Rent an apartment in Korea: search-to-move-in sequence', indexing: 'index', canonical: '/guides/rent-an-apartment-in-korea/' },

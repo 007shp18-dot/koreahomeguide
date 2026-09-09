@@ -51,12 +51,11 @@ export function InsightsArticle({ article }: Readonly<{ article: EditorialArticl
             <EditorialMarkdown source={article.bodyMarkdown} />
             {article.sources.length > 0 ? (
               <section className={styles.sources} aria-labelledby="article-sources">
-                <h2 id="article-sources">Sources and verification date</h2>
+                <h2 id="article-sources">Sources</h2>
                 <ul>
                   {article.sources.map((source) => (
                     <li key={source.href}>
                       <a href={source.href} rel="noreferrer">{source.publisher} · {source.label}</a>
-                      <span>Checked {source.checkedAt}</span>
                     </li>
                   ))}
                 </ul>

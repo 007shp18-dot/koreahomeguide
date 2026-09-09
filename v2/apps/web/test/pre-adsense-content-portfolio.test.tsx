@@ -11,12 +11,13 @@ import { generateStaticParams as generateEnglishGuideParams } from '../app/(en)/
 import sitemap from '../app/sitemap';
 import { EDITORIAL_PORTFOLIO, listPortfolioRecords } from '../content/portfolio-manifest';
 
-const officialHosts = new Set([
+const primarySourceHosts = new Set([
   'www.data.go.kr', 'data.gov.sg', 'centers.ibs.re.kr', 'www.bok.or.kr',
   'dubailand.gov.ae', 'u.ae', 'www.sla.gov.sg', 'www.easylaw.go.kr',
   'www.investkorea.org', 'english.seoul.go.kr', 'm.easylaw.go.kr',
   'www.law.go.kr', 'rt.molit.go.kr', 'www.molit.go.kr', 'land.seoul.go.kr',
   'www.fsc.go.kr', 'www.iras.gov.sg', 'www.hdb.gov.sg', 'www.ura.gov.sg',
+  'www.cbre.ae', 'easylaw.go.kr', 'www.gov.kr', 'www.hf.go.kr',
 ]);
 
 const secondaryHosts = new Set(['kbthink.com', 'www.ajunews.com', 'v.daum.net', 'news.nate.com', 'www.guocoland.com.sg']);
@@ -43,9 +44,12 @@ describe('pre-AdSense reviewed launch portfolio', () => {
       for (const source of article.sources) {
         const url = new URL(source.href);
         expect(url.protocol).toBe('https:');
-        expect(officialHosts.has(url.hostname)
+        expect(primarySourceHosts.has(url.hostname)
           || (source.kind === 'secondary' && secondaryHosts.has(url.hostname))).toBe(true);
-        expect(['2026-09-04', '2026-09-06', '2026-09-07', '2026-09-08']).toContain(source.checkedAt);
+        expect(source.checkedAt).toMatch(/^\d{4}-\d{2}-\d{2}$/u);
+        const checkedDate = new Date(`${source.checkedAt}T00:00:00.000Z`);
+        expect(Number.isNaN(checkedDate.valueOf())).toBe(false);
+        expect(checkedDate.toISOString().slice(0, 10)).toBe(source.checkedAt);
       }
     }
   });

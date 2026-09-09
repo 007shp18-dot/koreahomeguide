@@ -44,20 +44,28 @@ describe('foreign-reader worked examples', () => {
 
   it('checks Dubai payments by amortizing the balance and reconciles break-even rent with cash flow', () => {
     const article = getPortfolioRecord('en', 'dubai-rental-yield-after-costs')!;
+    const financeSection = article.bodyMarkdown
+      .split('## Financing changes the cash result\n\n')[1]
+      ?.split('\n\n## ')[0];
+    expect(financeSection).toBeDefined();
+    const financeSentences = financeSection!.split(/(?<=\.)\s+/u);
+    const annualIncome = 70000 * 11 / 12 * .95 - 15000;
+    expect(annualIncome).toBeCloseTo(45958.33, 2);
     for (const annualRate of [.05, .07]) {
       const monthlyRate = annualRate / 12;
       const payment = 700000 * monthlyRate / (1 - Math.pow(1 + monthlyRate, -300));
       let balance = 700000;
       for (let month = 0; month < 300; month++) balance = balance * (1 + monthlyRate) - payment;
       expect(balance).toBeCloseTo(0, 4);
-      const annualIncome = 70000 * 11 / 12 * .95 - 15000;
       const cash = annualIncome - 12 * payment;
-      expect(article.bodyMarkdown).toContain(`| ${number(annualRate * 100)}% | AED ${number(payment)} | −AED ${number(-cash)} |`);
+      const rateSentence = financeSentences.find(sentence => sentence.includes(`${number(annualRate * 100)}%`));
+      expect(rateSentence).toContain(`AED ${number(payment)}`);
+      expect(rateSentence).toContain(`−AED ${number(-cash)}`);
       const requiredRent = (12 * payment + 15000) / (11 / 12 * .95);
-      expect(article.bodyMarkdown).toContain(`AED ${number(requiredRent)}`);
+      expect(financeSection).toContain(`AED ${number(requiredRent)}`);
       expect(requiredRent * 11 / 12 * .95 - 15000 - 12 * payment).toBeCloseTo(0, 6);
     }
-    expect(article.bodyMarkdown).toContain('Neither rate below is a lender quote');
+    expect(financeSection).toContain('These rates are scenarios, not lender quotes');
     expect(article.publishedAt).toBe('2026-09-06T00:00:00.000Z');
   });
 });

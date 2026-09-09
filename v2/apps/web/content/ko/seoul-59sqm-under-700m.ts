@@ -5,8 +5,8 @@ export const KOREAN_SEOUL_59SQM_UNDER_700M: EditorialPortfolioRecord = Object.fr
   ...SEOUL_59SQM_UNDER_700M,
   id: 'ko:seoul-59sqm-under-700-million-2026',
   locale: 'ko',
-  title: '서울 59㎡ 아파트 7억원 이하: 최근 실거래가 확인된 17곳',
-  deck: '2026년 7~8월 서울 9개 자치구의 아파트 그룹 17개에서 적격 거래 112건이 확인됐고, 이 중 110건이 7억원 이하였다.',
+  title: '서울 55~65㎡ 아파트: 거래 중앙값 7억원 이하인 17개 그룹',
+  deck: '전용 55~65㎡를 대상으로 한 2026년 7~8월 분석이다. 정확히 59㎡만 고른 자료는 아니다. 17개 그룹의 적격 거래 112건 중 110건이 7억원 이하였다.',
   readerQuestion: '2026년 7~8월 서울에서 전용 55~65㎡ 아파트가 7억원 안팎 또는 이하에 반복 거래된 곳은 어디인가요?',
   bodyMarkdown: `## 7억원으로 검색을 시작할 수 있었던 17곳
 
@@ -82,7 +82,7 @@ export const KOREAN_SEOUL_59SQM_UNDER_700M: EditorialPortfolioRecord = Object.fr
   authorName: 'SignedPrice 데이터팀',
   reviewedBy: 'SignedPrice 출처 및 계산 자동 점검',
   relatedHref: '/ko/news/seoul-84sqm-under-one-billion-2026/',
-  revisionNote: '원문의 거래 기준, 수치, 단지 식별자와 근거 한계를 유지해 한국어로 검토했습니다.',
+  revisionNote: '2026년 9월 9일 제목과 소개에 실제 전용 55~65㎡ 범위와 그룹 중앙값 기준을 명시했습니다. 기존 거래 자료와 계산은 유지했습니다.',
   canonicalHref: '/ko/news/seoul-59sqm-under-700-million-2026/',
   translationGroupId: SEOUL_59SQM_UNDER_700M.slug,
   sources: Object.freeze(SEOUL_59SQM_UNDER_700M.sources.map(source => Object.freeze({

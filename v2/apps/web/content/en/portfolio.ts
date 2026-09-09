@@ -1,3 +1,4 @@
+import { policyExplainers } from '../policy-explainers';
 import { AFFORDABLE_RESALE_STORIES } from './affordable-resale';
 import { enrichEnglishRecord } from './research-expansions';
 import { DUBAI_RENTAL_YIELD } from './dubai-rental-yield';
@@ -53,24 +54,13 @@ const singaporeRegionChart = infographic({
 });
 
 export const ENGLISH_PORTFOLIO = Object.freeze([
+  ...policyExplainers('en'),
   THREE_CITY_BUYER_PULSE,
   ...LATEST_MARKET_NEWS,
   ...AFFORDABLE_RESALE_STORIES,
   KOREA_LARGE_ESTATE_SPILLOVER,
   SINGAPORE_LENTOR_SPILLOVER,
   DUBAI_RENTAL_YIELD,
-  portfolioRecord({
-    slug: 'korea-rental-deposit-protection-status', locale: 'en', type: 'policy-update', marketId: 'kr-seoul',
-    title: 'Korea rental-deposit protection: current verification status',
-    deck: 'A practical status record for possession, resident reporting, fixed-date and guarantee checks—kept separate because each serves a different purpose.',
-    question: 'Which deposit-protection rules apply now, and when did they take effect?',
-    points: [
-      ['What applies', 'Protection depends on the exact home, current registry, possession and the reporting steps available to the tenant. A fixed date and a guarantee are separate checks, not interchangeable labels.'],
-      ['What to verify', 'Match the registered property and owner before payment, then confirm the sequence and eligibility with the responsible public office or guarantee provider for the tenant’s status.'],
-      ['What changed', 'This launch record replaces broad deposit-safety language with a source-led checklist and a dated status boundary.'],
-    ], boundary: 'This record explains a verification sequence and does not decide legal priority, guarantee eligibility or the safety of a specific deposit.',
-    sources: [SOURCES.koreaLeaseLaw], evidenceReleaseIds: [RELEASES.policyKorea], relatedHref: '/kr/seoul/check/', translationGroupId: 'kr-rental-deposit-protection',
-  }),
   portfolioRecord({
     slug: 'korea-foreign-property-reporting-status', locale: 'en', type: 'policy-update', marketId: 'kr-seoul',
     title: 'Korea foreign-buyer reporting: what changed in February 2026',
@@ -106,18 +96,6 @@ export const ENGLISH_PORTFOLIO = Object.freeze([
       ['Confirm in writing', 'Ask the lender which rule set, property value, borrower profile and documentation date produced the quoted amount.'],
     ], boundary: 'This status page is not a credit decision, loan offer or statement that one ratio applies to every Seoul buyer.',
     sources: [SOURCES.koreaFinance], evidenceReleaseIds: [RELEASES.policyKorea], relatedHref: '/kr/seoul/check/',
-  }),
-  portfolioRecord({
-    slug: 'singapore-absd-policy-status', locale: 'en', type: 'policy-update', marketId: 'sg-singapore',
-    title: 'Singapore ABSD: check buyer profile before calculating duty',
-    deck: 'Additional Buyer’s Stamp Duty is profile- and property-dependent; IRAS is the controlling rate and remission source.',
-    question: 'Which Additional Buyer’s Stamp Duty rules apply by buyer profile?',
-    points: [
-      ['Classify the buyer', 'Citizenship or residency, entity status and the number of residential properties owned can change the applicable ABSD treatment.'],
-      ['Classify the acquisition', 'Property interest, acquisition date, manner of acquisition and possible remission conditions also matter.'],
-      ['Use the current table', 'Calculate only after checking the current IRAS rates and definitions, then preserve the page and date used in the transaction file.'],
-    ], boundary: 'SignedPrice does not calculate final stamp duty or determine eligibility for a remission.',
-    sources: [SOURCES.singaporeAbsd], evidenceReleaseIds: [RELEASES.policySingapore], relatedHref: '/sg/singapore/check/', translationGroupId: 'sg-absd',
   }),
   portfolioRecord({
     slug: 'singapore-hdb-private-owner-waitout-status', locale: 'en', type: 'policy-update', marketId: 'sg-singapore',
