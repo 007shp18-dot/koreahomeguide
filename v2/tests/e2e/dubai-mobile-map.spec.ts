@@ -26,11 +26,20 @@ for (const width of [390, 760]) {
       }
       const first = discovery.locator('article').first();
       await expect(first.locator('[data-area-evidence]')).not.toHaveAttribute('open');
+      const compactHeight = (await first.boundingBox())!.height;
       await first.getByRole('button').first().click();
       await expect(first.getByRole('button').first()).toHaveAttribute('aria-pressed', 'true');
-      await expect(first.locator('[data-area-evidence]')).toHaveAttribute('open');
+      await expect(first.locator('[data-area-evidence]')).not.toHaveAttribute('open');
+      expect((await first.boundingBox())!.height).toBe(compactHeight);
       await expect(page).toHaveURL(/[?&]area=/);
       await expect(spatial.getByRole('button', { name: 'Close area preview' })).toBeVisible();
+      const rowBox = (await first.boundingBox())!;
+      const titleBox = (await first.getByRole('button').first().boundingBox())!;
+      expect(titleBox.x - rowBox.x).toBeGreaterThanOrEqual(16);
+      await first.locator('[data-area-evidence] > summary').click();
+      await expect(first.locator('[data-area-evidence]')).toHaveAttribute('open');
+      await expect(first.getByText('Median annual rent', { exact: true })).toBeVisible();
+      await expect(spatial).toBeVisible();
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(true);
     });
   });
