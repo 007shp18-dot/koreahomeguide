@@ -1,3 +1,4 @@
+import { assessEvidence } from './quality';
 export const markets = { seoul: '서울', singapore: '싱가포르', dubai: '두바이' } as const;
 export const tiers = { essential: '필수 기반', supporting: '판단 보강', insight: '향후 분석' } as const;
 export const metrics = { sale_price: '매매 가격', rent: '임대료', service_charge: '관리비', repair_cost: '수선비', transaction_cost: '취득·매도 비용' } as const;
@@ -8,12 +9,13 @@ export const statuses = { pending: '검토 대기', approved: '승인', rejected
 export type Status = keyof typeof statuses;
 export type SourceInput = { name: string; url: string; kind: keyof typeof sourceKinds };
 export type EvidenceInput = {
+  address?: string; housingType?: string; conditions?: string; billingPeriod?: 'monthly' | 'annual' | 'once';
   sourceId: string; market: keyof typeof markets; tier: keyof typeof tiers; metric: keyof typeof metrics;
   basis: keyof typeof bases; amount: number; currency: 'KRW' | 'SGD' | 'AED'; unit: keyof typeof units;
   area: string; building: string; sizeSqm: number | null; observedOn: string; expiresOn: string; url: string;
 };
 export type Source = SourceInput & { id: string; status: Status; version: number; createdAt: string };
-export type Evidence = EvidenceInput & { id: string; status: Status; version: number; createdAt: string; sourceName: string; sourceStatus: Status; sourceKind: SourceInput['kind'] };
+export type Evidence = EvidenceInput & { id: string; status: Status; version: number; createdAt: string; sourceName: string; sourceStatus: Status; sourceKind: SourceInput['kind']; duplicate?: boolean };
 export type AuditEvent = { id: string; action: string; actor: string; reason: string; createdAt: string; snapshot: Record<string, unknown> };
 export type PoolData = { sources: Source[]; sourceTotal?: number; sourcePage?: number; evidence: Evidence[]; total: number; counts: Record<Status | 'expired', number>; page: number };
 export type Command = { action: 'create-source'; input: SourceInput }
@@ -50,7 +52,10 @@ export function parseSource(value: unknown): SourceInput | null {
 }
 export function parseEvidence(value: unknown): EvidenceInput | null {
   const v = object(value);
-  if (!v || !keys(v, ['sourceId', 'market', 'tier', 'metric', 'basis', 'amount', 'currency', 'unit', 'area', 'building', 'sizeSqm', 'observedOn', 'expiresOn', 'url'])) return null;
+  if (!v) return null;
+  const extraKeys = ['address', 'housingType', 'conditions', 'billingPeriod'].filter((key) => key in v);
+  if (!keys(v, [...extraKeys, 'sourceId', 'market', 'tier', 'metric', 'basis', 'amount', 'currency', 'unit', 'area', 'building', 'sizeSqm', 'observedOn', 'expiresOn', 'url'])) return null;
+  if (extraKeys.some((key) => key === 'billingPeriod' ? !['monthly', 'annual', 'once'].includes(String(v[key])) : !label(v[key], 0, key === 'conditions' ? 240 : 160))) return null;
   if (!isId(v.sourceId) || !choice(v.market, markets) || !choice(v.tier, tiers) || !choice(v.metric, metrics)
     || !choice(v.basis, bases) || !choice(v.unit, units) || !safeUrl(v.url)
     || !label(v.area, 2, 120) || !label(v.building, 0, 160)
@@ -58,7 +63,7 @@ export function parseEvidence(value: unknown): EvidenceInput | null {
     || !(v.sizeSqm === null || (typeof v.sizeSqm === 'number' && Number.isFinite(v.sizeSqm) && v.sizeSqm > 0 && v.sizeSqm <= 100000))
     || !date(v.observedOn) || !date(v.expiresOn) || v.expiresOn <= v.observedOn
     || v.currency !== { seoul: 'KRW', singapore: 'SGD', dubai: 'AED' }[v.market]) return null;
-  return { sourceId: v.sourceId, market: v.market, tier: v.tier, metric: v.metric, basis: v.basis, amount: v.amount,
+  return { ...Object.fromEntries(extraKeys.map((key) => [key, v[key]])), sourceId: v.sourceId, market: v.market, tier: v.tier, metric: v.metric, basis: v.basis, amount: v.amount,
     currency: v.currency as EvidenceInput['currency'], unit: v.unit, area: v.area, building: v.building, sizeSqm: v.sizeSqm,
     observedOn: v.observedOn, expiresOn: v.expiresOn, url: v.url };
 }
@@ -76,14 +81,17 @@ export function parseCommand(value: unknown): Command | null {
   }
   return null;
 }
-export function readiness(row: Pick<Evidence, 'status' | 'sourceStatus' | 'sourceKind' | 'expiresOn' | 'observedOn' | 'basis' | 'building' | 'sizeSqm'>, today: string) {
+export function readiness(row: Pick<Evidence, 'status' | 'sourceStatus' | 'sourceKind' | 'expiresOn' | 'observedOn' | 'basis' | 'building' | 'sizeSqm'> & Partial<Evidence>, today: string) {
   const reasons: string[] = [];
   if (row.status !== 'approved') reasons.push('자료 미승인');
   if (row.sourceStatus !== 'approved') reasons.push('출처 미승인·철회');
   if (row.expiresOn < today) reasons.push('유효기간 만료');
   if (row.observedOn > today) reasons.push('미래 시점 자료');
   if (row.sourceKind === 'community' || row.basis === 'reported') reasons.push('정성 참고 전용');
-  if (!row.building) reasons.push('건물 정보 없음');
-  if (row.sizeSqm === null) reasons.push('면적 정보 없음');
+  if (row.metric && row.area !== undefined) reasons.push(...assessEvidence(row as Evidence, today).reasons);
+  else {
+    if (!row.building) reasons.push('건물 정보 없음');
+    if (row.sizeSqm === null) reasons.push('면적 정보 없음');
+  }
   return { ready: reasons.length === 0, reasons };
 }

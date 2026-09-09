@@ -2,9 +2,13 @@ import 'server-only';
 import { createHash, randomUUID } from 'node:crypto';
 import type { AuditEvent, Command, Evidence, EvidenceInput, PoolData, Source } from './contract';
 
+import { researchDashboard } from './research.server';
+import { classified, filterWhere } from './query.server';
+import type { BulkCommand, BulkPreview } from './bulk';
+
 type Row = Record<string, unknown>;
 export type SqlPort = { query(statement: string, parameters?: unknown[]): Promise<Row[]> };
-export type Filters = { page: number; market: string; status: string; query: string; sourcePage?: number };
+export type Filters = { page: number; market: string; status: string; query: string; sourcePage?: number; quality?: string };
 export type PoolRepository = ReturnType<typeof createPoolRepository>;
 function fingerprint(input: EvidenceInput) {
   // Retention changes alone must not make an observation new.
@@ -16,7 +20,7 @@ function source(row: Row): Source {
   return { id: String(row.id), name: String(row.name), url: String(row.url), kind: row.kind as Source['kind'], status: row.status as Source['status'], version: Number(row.version), createdAt: timestamp(row.created_at) };
 }
 function evidence(row: Row): Evidence {
-  return { ...row.data as EvidenceInput, id: String(row.id), status: row.status as Evidence['status'], version: Number(row.version), createdAt: timestamp(row.created_at), sourceName: String(row.source_name), sourceStatus: row.source_status as Evidence['sourceStatus'], sourceKind: row.source_kind as Evidence['sourceKind'] };
+  return { ...row.data as EvidenceInput, id: String(row.id), status: row.status as Evidence['status'], version: Number(row.version), createdAt: timestamp(row.created_at), sourceName: String(row.source_name), sourceStatus: row.source_status as Evidence['sourceStatus'], sourceKind: row.source_kind as Evidence['sourceKind'], duplicate: Boolean(row.duplicate) };
 }
 function audit(cte: string) {
   return `WITH changed AS (${cte}), recorded AS (
@@ -26,18 +30,17 @@ function audit(cte: string) {
 }
 export function createPoolRepository(sql: SqlPort) {
   return {
+    research: (market: string, tool: string) => researchDashboard(sql, market, tool),
     async list(filters: Filters): Promise<PoolData> {
-      const where = `($1::text = '' OR e.data->>'market' = $1)
-        AND ($2::text = '' OR e.status = $2 OR ($2 = 'expired' AND e.data->>'expiresOn' < to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD')))
-        AND ($3::text = '' OR strpos(lower(concat(e.data->>'area', ' ', e.data->>'building', ' ', s.name)), lower($3)) > 0)`;
-      const parameters = [filters.market, filters.status, filters.query];
+      const where = filterWhere;
+      const parameters = [filters.market, filters.status, filters.query, filters.quality ?? ''];
       const sourcePage = filters.sourcePage ?? 1;
       const [sources, rows, totals, counts, sourceCounts] = await Promise.all([
         sql.query('SELECT * FROM property_pool_sources ORDER BY created_at DESC, id LIMIT 100 OFFSET $1', [(sourcePage - 1) * 100]),
-        sql.query(`SELECT e.*, s.name AS source_name, s.status AS source_status, s.kind AS source_kind
-          FROM property_pool_evidence e JOIN property_pool_sources s ON s.id = e.source_id WHERE ${where}
-          ORDER BY e.created_at DESC, e.id LIMIT 25 OFFSET $4`, [...parameters, (filters.page - 1) * 25]),
-        sql.query(`SELECT count(*)::integer AS total FROM property_pool_evidence e JOIN property_pool_sources s ON s.id = e.source_id WHERE ${where}`, parameters),
+        sql.query(`${classified} SELECT e.*, s.name AS source_name, s.status AS source_status, s.kind AS source_kind
+          FROM classified e JOIN property_pool_sources s ON s.id = e.source_id WHERE ${where}
+          ORDER BY e.created_at DESC, e.id LIMIT 25 OFFSET $5`, [...parameters, (filters.page - 1) * 25]),
+        sql.query(`${classified} SELECT count(*)::integer AS total FROM classified e JOIN property_pool_sources s ON s.id = e.source_id WHERE ${where}`, parameters),
         sql.query(`SELECT count(*) FILTER (WHERE status = 'pending')::integer AS pending,
           count(*) FILTER (WHERE status = 'approved')::integer AS approved,
           count(*) FILTER (WHERE status = 'rejected')::integer AS rejected,
@@ -47,6 +50,39 @@ export function createPoolRepository(sql: SqlPort) {
       ]);
       return { sources: sources.map(source), sourceTotal: Number(sourceCounts[0]?.total ?? 0), sourcePage, evidence: rows.map(evidence), total: Number(totals[0]?.total ?? 0), page: filters.page,
         counts: { pending: Number(counts[0]?.pending ?? 0), approved: Number(counts[0]?.approved ?? 0), rejected: Number(counts[0]?.rejected ?? 0), withdrawn: Number(counts[0]?.withdrawn ?? 0), expired: Number(counts[0]?.expired ?? 0) } };
+    },
+    async bulk(command: BulkCommand, actor: string): Promise<BulkPreview & { changed?: number }> {
+      const { scope } = command;
+      const base = `${classified}, targets AS MATERIALIZED (
+        SELECT e.id, e.version, s.version AS source_version,
+          (e.status <> 'withdrawn' AND e.status <> $6 AND ($6 <> 'approved' OR (e.quality = 'qualified' AND s.status = 'approved'))) AS eligible
+        FROM classified e JOIN property_pool_sources s ON s.id = e.source_id
+        WHERE ${filterWhere} AND ($5::uuid[] IS NULL OR e.id = ANY($5::uuid[]))
+      ), locked AS MATERIALIZED (
+        SELECT t.* FROM targets t JOIN property_pool_evidence actual ON actual.id = t.id
+        JOIN property_pool_sources src ON src.id = actual.source_id
+        WHERE actual.version = t.version AND src.version = t.source_version
+        ORDER BY actual.id FOR UPDATE OF actual, src
+      ), summary AS (
+        SELECT count(*)::int AS matched, count(*) FILTER (WHERE eligible)::int AS eligible,
+          count(*) FILTER (WHERE NOT eligible)::int AS blocked,
+          md5(coalesce(string_agg(id::text || ':' || version || ':' || source_version || ':' || eligible, ',' ORDER BY id), '')) AS fingerprint
+        FROM locked
+      )`;
+      const parameters: unknown[] = [scope.market, scope.status, scope.query, scope.quality, scope.ids, command.status];
+      const statement = command.action === 'bulk-preview' ? `${base} SELECT * FROM summary` : `${base}, changed AS (
+        UPDATE property_pool_evidence e SET status = $6, version = e.version + 1, updated_at = now()
+        FROM locked l, summary summary WHERE e.id = l.id AND e.version = l.version AND l.eligible
+          AND summary.fingerprint = $7 AND summary.matched = (SELECT count(*) FROM targets)
+        RETURNING e.*
+      ), recorded AS (
+        INSERT INTO property_pool_events(entity, entity_id, action, actor, reason, snapshot)
+        SELECT 'evidence', id, $6, $8, $9, to_jsonb(changed) FROM changed RETURNING entity_id
+      ) SELECT summary.*, (SELECT count(*)::int FROM recorded) AS changed FROM summary`;
+      if (command.action === 'bulk-review') parameters.push(command.fingerprint, actor, command.reason);
+      const row = (await sql.query(statement, parameters))[0];
+      if (!row || (command.action === 'bulk-review' && (row.fingerprint !== command.fingerprint || Number(row.changed) !== Number(row.eligible)))) throw new Error('conflict');
+      return { matched: Number(row.matched), eligible: Number(row.eligible), blocked: Number(row.blocked), fingerprint: String(row.fingerprint), ...(command.action === 'bulk-review' ? { changed: Number(row.changed) } : {}) };
     },
     async history(entity: 'source' | 'evidence', id: string): Promise<AuditEvent[]> {
       const rows = await sql.query(`SELECT * FROM (SELECT * FROM property_pool_events WHERE entity = $1 AND entity_id = $2::uuid ORDER BY id DESC LIMIT 100) recent ORDER BY id`, [entity, id]);
@@ -73,7 +109,8 @@ export function createPoolRepository(sql: SqlPort) {
         const approvalGate = command.entity === 'evidence'
           ? `AND ($7 <> 'approved' OR (data->>'expiresOn' >= to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD')
             AND data->>'observedOn' <= to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD')
-            AND EXISTS (SELECT 1 FROM property_pool_sources s WHERE s.id = source_id AND s.status = 'approved')))` : '';
+            AND EXISTS (SELECT 1 FROM property_pool_sources s WHERE s.id = source_id AND s.status = 'approved')
+            AND id IN (${classified} SELECT id FROM classified WHERE quality = 'qualified')))` : '';
         statement = audit(`UPDATE ${table} SET status = $7, version = version + 1, updated_at = now()
           WHERE id = $5::uuid AND version = $6 AND status <> 'withdrawn' AND status <> $7 ${approvalGate} RETURNING *`);
         parameters = [command.entity, command.status, actor, command.reason, command.id, command.version, command.status];

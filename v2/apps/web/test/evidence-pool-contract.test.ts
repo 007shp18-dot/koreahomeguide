@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { parseEvidence, parseSource, readiness, parseCommand } from '../lib/evidence-pool/contract';
 
 export const sampleEvidence = {
+  conditions: 'Annual common area charges',
   sourceId: '11111111-1111-4111-8111-111111111111', market: 'dubai', tier: 'supporting',
   metric: 'service_charge', basis: 'invoiced', amount: 12000, currency: 'AED', unit: 'annual',
   area: 'Dubai Marina', building: 'Example Tower', sizeSqm: 80,
@@ -35,6 +36,6 @@ describe('evidence pool input boundaries', () => {
     expect(readiness({ ...row, sourceStatus: 'withdrawn' }, '2026-09-09').ready).toBe(false);
     expect(readiness({ ...row, sourceKind: 'community' }, '2026-09-09').ready).toBe(false);
     expect(readiness(row, '2026-12-02').reasons).toContain('유효기간 만료');
-    expect(readiness({ ...row, building: '' }, '2026-09-09').reasons).toContain('건물 정보 없음');
+    expect(readiness({ ...row, building: '' }, '2026-09-09').reasons).toContain('주소 또는 지역·단지명 필요');
   });
 });

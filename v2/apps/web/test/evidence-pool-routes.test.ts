@@ -36,6 +36,8 @@ describe('evidence pool route boundaries', () => {
     let received: unknown;
     let actor = '';
     const handlers = createPoolHandlers(() => ({
+      research: async () => { throw new Error('unexpected research'); },
+      bulk: async () => { throw new Error('unexpected bulk'); },
       list: async () => { throw new Error('unexpected list'); },
       history: async () => [],
       mutate: async (command, operator) => { received = command; actor = operator; return { id: 'result', version: 1 }; },
