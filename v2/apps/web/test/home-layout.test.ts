@@ -25,30 +25,20 @@ describe('signedprice public editorial homepage', () => {
     expect(homeCss).not.toMatch(/(?:heroGrid|snapshotGrid|marketGrid|buildingGrid|insightGrid|propertyGrid|bottomGrid)[^{]*\{[^}]*100vw/);
   }, 10_000);
 
-  it('uses one headline across exactly three ordered home regions', async () => {
+  it('keeps the homepage focused on city discovery', async () => {
     const markup = renderToStaticMarkup(await Home());
-    const positions = [
-      'data-home-region="markets"',
-      'data-home-region="analysis"',
-      'data-home-region="passport"',
-    ].map((needle) => markup.indexOf(needle));
-
     expect(markup.match(/<h1/g)).toHaveLength(1);
-    expect(markup.match(/data-home-region=/g)).toHaveLength(3);
-    expect(markup).toContain('Where can your budget become a home?');
-    expect(positions.every((position) => position >= 0)).toBe(true);
-    expect([...positions].sort((a, b) => a - b)).toEqual(positions);
+    expect(markup).toContain('data-home-region="markets"');
+    expect(markup).not.toContain('data-home-region="analysis"');
+    expect(markup).not.toContain('data-home-region="passport"');
   }, 20_000);
 
-  it('shows four city actions and three unique articles without repeating promotional sections', async () => {
+  it('gives each city a single destination without repeating article feeds', async () => {
     const markup = renderToStaticMarkup(await Home());
     expect(markup.match(/data-contextual-action=/g)).toHaveLength(4);
-    const articles = [...markup.matchAll(/data-editorial-content-id="([^"]+)"/g)].map(match => match[1]);
-    expect(articles).toHaveLength(3);
-    expect(new Set(articles).size).toBe(3);
-    expect(markup.match(/data-editorial-event="article_open"/g)).toHaveLength(3);
+    expect(markup).not.toContain('data-editorial-content-id');
     expect(markup).not.toMatch(/data-what-changed-item|data-lead-data-story|data-home-guide|three-market-home-title/);
-    for (const city of ['kr-seoul', 'sg-singapore', 'ae-dubai']) {
+    for (const city of ['kr-seoul', 'sg-singapore', 'ae-dubai', 'jp-tokyo']) {
       const card = markup.match(new RegExp('<li[^>]*data-contextual-action="' + city + '"[^>]*>([\\s\\S]*?)</li>'))?.[1] ?? '';
       expect(card.match(/<a /g)).toHaveLength(1);
       expect(card).toContain('/explore');
@@ -114,7 +104,7 @@ describe('signedprice public editorial homepage', () => {
   it('closes with guides, methodology, privacy, and contact', async () => {
     const markup = renderToStaticMarkup(await Home());
 
-    expect(markup).toContain('Buying &amp; renting guides');
+    expect(markup).toContain('href="/guides"');
     expect(markup).toContain('href="/trust">Data &amp; sources</a>');
     expect(markup).toContain('href="/privacy">Privacy</a>');
     expect(markup).toContain('href="/contact">Contact</a>');

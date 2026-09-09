@@ -21,6 +21,14 @@ const header: SiteHeaderModel = {
 const globalLabels = ['Explore', 'Insights', 'Tools', 'Guides'] as const;
 
 describe('signedprice public navigation', () => {
+  it('keeps global navigation free of duplicate market-specific actions and uses decorative vector disclosure icons', () => {
+    const html = renderToStaticMarkup(<SiteHeader copy={homepageCopy.header} />);
+    expect(html).not.toContain('Check an offer');
+    expect(html).not.toContain('⌄');
+    expect(html).toMatch(/<svg[^>]*aria-hidden="true"[^>]*data-ui-icon="chevron-down"/);
+    expect(html).toContain('aria-label="Choose language"');
+    expect(html).toContain('aria-label="Choose a city"');
+  });
   it('renders the same four global destinations in the same order', () => {
     for (const copy of [homepageCopy.header, header]) {
       const html = renderToStaticMarkup(<SiteHeader copy={copy} />);

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { UiIcon } from '../ui-icon';
 import { SiteHeader } from '@/components/site-header';
 import { homepageCopy } from '@/lib/site-copy';
 import { parseJapanScope } from '@/lib/japan/source.server';
@@ -89,8 +90,8 @@ export default async function TokyoExplorer({ searchParams }: { searchParams: Pr
       {error ? <div className={styles.empty} role="alert"><h2>Transactions are unavailable</h2><p>{error}</p></div> : data === null ? <div className={styles.empty}>
         <h2>Prices for this period are not available yet.</h2>
         <p>We have not published records for this ward and quarter. This does not mean that no homes traded.</p>
-        {availableInWard && <Link className={styles.emptyLink} href={scopeLink(availableInWard)}>View {wardName(availableInWard.city)} · {availableInWard.year} Q{availableInWard.quarter} <span aria-hidden="true">→</span></Link>}
-        <Link className={styles.emptyLink} href="/news/city-stories/tokyo/">Find your Tokyo neighbourhood <span aria-hidden="true">→</span></Link>
+        {availableInWard && <Link className={styles.emptyLink} href={scopeLink(availableInWard)}>View {wardName(availableInWard.city)} · {availableInWard.year} Q{availableInWard.quarter} <UiIcon name="arrow-right" /></Link>}
+        <Link className={styles.emptyLink} href="/news/city-stories/tokyo/">Find your Tokyo neighbourhood <UiIcon name="arrow-right" /></Link>
       </div> : <>
         <div className={styles.results}><h2>{data.filteredCount.toLocaleString('en')} recorded transactions</h2><p>{scope.year} Q{scope.quarter} · JPY · Price, high to low</p></div>
         <p className={styles.source}>{data.sourceCount.toLocaleString('en')} records in this ward and quarter · Source retrieved {new Date(data.retrievedAt).toLocaleDateString('en-GB', { timeZone: 'UTC' })}</p>
@@ -104,9 +105,9 @@ export default async function TokyoExplorer({ searchParams }: { searchParams: Pr
         </div>
         {!data.records.length && <p>No published records match these filters. Try a wider area range or another neighbourhood.</p>}
         <nav className={styles.pagination} aria-label="Transaction pages">
-          {filters.page > 1 && <Link href={pageLink(filters.page - 1)}>← Previous</Link>}
+          {filters.page > 1 && <Link href={pageLink(filters.page - 1)}><UiIcon name="arrow-left" /> Previous</Link>}
           <span>Page {filters.page} of {Math.max(1, Math.ceil(data.filteredCount / 20))}</span>
-          {filters.page * 20 < data.filteredCount && <Link href={pageLink(filters.page + 1)}>Next →</Link>}
+          {filters.page * 20 < data.filteredCount && <Link href={pageLink(filters.page + 1)}>Next <UiIcon name="arrow-right" /></Link>}
         </nav>
       </>}
         </>}

@@ -14,7 +14,7 @@ type NewsPageProps = Readonly<{
   searchParams?: Promise<Readonly<Record<string, string | readonly string[] | undefined>>>;
 }>;
 
-export async function generateMetadata({ searchParams = Promise.resolve({}) }: NewsPageProps = {}): Promise<Metadata> {
+export async function generateMetadata({ searchParams = Promise.resolve({}) }: NewsPageProps): Promise<Metadata> {
   const filters = resolveNewsroomFilters(await searchParams);
   return indexableMetadata({
     path: filters.canonicalHref as `/${string}`,
@@ -26,7 +26,7 @@ export async function generateMetadata({ searchParams = Promise.resolve({}) }: N
   });
 }
 
-export default async function NewsPage({ searchParams = Promise.resolve({}) }: NewsPageProps = {}) {
+export default async function NewsPage({ searchParams = Promise.resolve({}) }: NewsPageProps) {
   const [filters, articles] = await Promise.all([
     searchParams.then(resolveNewsroomFilters),
     Promise.resolve(listPortfolioRecords('en')),

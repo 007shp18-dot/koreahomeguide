@@ -2,6 +2,7 @@
 import { retainPassportContext } from '../../lib/passport/journey';
 
 import { PassportLink as Link } from '../passport/passport-journey';
+import { UiIcon } from '../ui-icon';
 import {
   useCallback,
   useDeferredValue,
@@ -326,6 +327,6 @@ export function DubaiExplorer({ locale = 'en',
         <p className={styles.mapDisclosure}>{t("Markers locate areas. They do not represent units or listings.")}</p>
       </section>}
     />
-    <p className={styles.exploreSupport}><span>{locale === 'ko' ? '구매를 준비하고 있나요?' : 'Planning a purchase?'}</span><Link href={marketHref(locale, "/guides/dubai-ready-apartment-buying-budget-guide/")}>{locale === 'ko' ? '예산·구매 비용 가이드' : 'Read the budget & buying costs guide'}<span aria-hidden="true"> →</span></Link></p>
+    <p className={styles.exploreSupport}><span>{locale === 'ko' ? '구매를 준비하고 있나요?' : 'Planning a purchase?'}</span><Link href={marketHref(locale, "/guides/dubai-ready-apartment-buying-budget-guide/")}>{locale === 'ko' ? '예산·구매 비용 가이드' : 'Read the budget & buying costs guide'}<UiIcon name="arrow-right" /></Link></p>
   </div>;
 }

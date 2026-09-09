@@ -1,6 +1,7 @@
 'use client';
 import { useRef, useState } from 'react';
 import Link from 'next/link';
+import { UiIcon } from '../ui-icon';
 import { STORY_STEPS } from '../../content/city-journey-routes';
 import type { StoryLocale } from '../../content/city-stories';
 import styles from './newsroom-journey.module.css';
@@ -19,8 +20,8 @@ export function JourneySteps({ stages, locale }: Readonly<{ stages: readonly Jou
       }}><span>{String(index + 1).padStart(2, '0')}</span>{step.label[locale]}</button>)}
     </div>
     <div className={styles.stepPanel} role="tabpanel" id={`panel-${section.id}`} aria-labelledby={`step-${section.id}`} tabIndex={0}>
-      <div><p className={styles.eyebrow}>{STORY_STEPS[selected]!.question[locale]}</p><h3><Link href={section.href}>{section.title}</Link></h3><p>{section.deck}</p><nav className={styles.articleLinks} aria-label={locale === 'ko' ? '함께 읽기' : 'Related reading'}>{section.related.map(link => <Link key={link.href} href={link.href}>{link.label} ↗</Link>)}</nav></div>
-      <Link className={styles.readLink} href={section.href}>{locale === 'ko' ? '상세 기사 읽기' : 'Read this article'} ↗</Link>
+      <div><p className={styles.eyebrow}>{STORY_STEPS[selected]!.question[locale]}</p><h3><Link href={section.href}>{section.title}</Link></h3><p>{section.deck}</p><nav className={styles.articleLinks} aria-label={locale === 'ko' ? '함께 읽기' : 'Related reading'}>{section.related.map(link => <Link key={link.href} href={link.href}>{link.label} <UiIcon name="arrow-right" /></Link>)}</nav></div>
+      <Link className={styles.readLink} href={section.href}>{locale === 'ko' ? '상세 기사 읽기' : 'Read this article'} <UiIcon name="arrow-right" /></Link>
     </div>
   </div>;
 }

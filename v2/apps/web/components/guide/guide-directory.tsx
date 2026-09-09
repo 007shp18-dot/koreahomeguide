@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { UiIcon } from '../ui-icon';
 import { guideDirectory, type GuideLocale, type GuideMarket } from '../../content/guide-directory';
 import styles from './guide-directory.module.css';
 
@@ -28,7 +29,7 @@ export function GuideDirectory({ locale = 'en', market = 'all' }: Readonly<{ loc
           <Link className={styles.entry} href={entry.href}>
             <span className={styles.city}>{cities[entry.city]}</span>
             <div><h3>{entry.title}</h3><p>{entry.deck}</p></div>
-            <span className={styles.arrow} aria-hidden="true">→</span>
+            <UiIcon name="arrow-right" className={styles.arrow} />
           </Link>
         </li>)}</ol>
       </section>;

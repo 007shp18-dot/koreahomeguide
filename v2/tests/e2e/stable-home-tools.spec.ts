@@ -12,17 +12,17 @@ test('Chinese market cards align their primary actions on multi-column screens',
   expect(Math.max(...positions.map(p=>p.action))-Math.min(...positions.map(p=>p.action))).toBeLessThanOrEqual(2);
 });
 
-test('home presents four stable city cards and one budget journey without overflow', async ({page}) => {
+test('home presents four city destinations and a separate budget journey without overflow', async ({page}) => {
  await page.goto('/');
  await page.evaluate(() => document.fonts.ready);
- await expect(page.locator('main [data-home-region]')).toHaveCount(3);
+ await expect(page.locator('main [data-home-region]')).toHaveCount(1);
  await expect(page.getByRole('heading', {level:1})).toHaveCount(1);
  const cards = page.locator('[data-contextual-action]');
  await expect(cards).toHaveCount(4);
  const positions = await cards.evaluateAll(nodes => nodes.map(node => {
   const box = node.getBoundingClientRect();
   const action = node.querySelector('[data-primary-action="explore"]')!.getBoundingClientRect();
-  const title = node.querySelector('h3')!;
+  const title = node.querySelector('h2')!;
   return {top:box.top, action:action.top, height:action.height, titleFits:title.scrollWidth <= title.clientWidth};
  }));
  expect(positions.every(p => p.height >= 44 && p.titleFits)).toBe(true);
@@ -31,14 +31,12 @@ test('home presents four stable city cards and one budget journey without overfl
  for (const [index, path] of ['/kr/seoul/explore', '/sg/singapore/explore', '/ae/dubai/explore', '/jp/tokyo/explore'].entries())
   await expect(cards.nth(index).locator('[data-primary-action="explore"]')).toHaveAttribute('href', new RegExp('^' + path + '/?$'));
  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
- const actionColors = await page.evaluate(() => [
-  document.querySelector('main form[role="search"] button, main [role="search"] button'),
-  document.querySelector('[data-home-region="passport"] button'),
- ].map(button => button ? getComputedStyle(button).backgroundColor : null));
- expect(actionColors[0]).not.toBeNull();
- expect(actionColors[1]).toBe(actionColors[0]);
- await page.locator('[data-home-region="passport"] input[data-amount-name="budget"]').fill('750000');
- await page.getByRole('button', {name:'Compare cities',exact:true}).click();
+ await expect(page.locator('main form')).toHaveCount(0);
+ await page.getByRole('navigation', {name:'Take a closer look'}).getByRole('link', {name:/^Tools/}).click();
+ await expect(page).toHaveURL(/\/tools\/?$/);
+ await page.locator('main a[href="/passport/"], main a[href="/passport"]').first().click();
+ await page.locator('input[data-amount-name="budget"]').fill('750000');
+ await page.getByRole('button', {name:'Update comparison',exact:true}).click();
  await expect(page).toHaveURL(/\/passport\/.*budget=750000/);
  await expect(page.locator('[data-passport-market]')).toHaveCount(3);
 });

@@ -11,10 +11,11 @@ describe('Korean entry routes', () => {
   it('offers four cities and preserves Korean tools', () => {
     const html = renderToStaticMarkup(<KoreanHome />);
     for (const path of ['/ko/kr/seoul/explore', '/ko/sg/singapore/explore', '/ko/ae/dubai/explore', '/jp/tokyo/explore']) expect(html).toMatch(new RegExp(`href="${path}/?"`));
-    expect(html).toContain('도시 탐색');
-    expect(html).not.toContain('(영문)');
+    expect(html).toContain('도시 둘러보기');
+    expect(html).toContain('네 개의 도시,');
     expect(html).toContain('/ko/sg/singapore/explore');
-    expect(html).toContain('/ko/passport/');
+    expect(html).toMatch(/href="\/ko\/tools\/?"/);
+    expect(html).toMatch(/href="\/ko\/news\/?"/);
   });
   it('keeps old city anchors at one contact section without posting or requiring financial documents', () => {
     const html = renderToStaticMarkup(<KoreanContact />);

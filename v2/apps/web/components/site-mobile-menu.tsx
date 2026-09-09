@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, type MouseEvent, type ReactNode } from 'react';
+import { UiIcon } from './ui-icon';
 
 export function SiteMobileMenu({
   children,
@@ -30,7 +31,7 @@ export function SiteMobileMenu({
       }}
       ref={menuRef}
     >
-      <summary aria-label={summaryLabel}>☰ <span>{summaryText}</span></summary>
+      <summary aria-label={summaryLabel}><UiIcon name="menu" /><span>{summaryText}</span></summary>
       <div className="site-header__mobile-panel">{children}</div>
     </details>
   );

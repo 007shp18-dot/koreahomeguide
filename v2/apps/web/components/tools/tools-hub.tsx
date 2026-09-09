@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { UiIcon } from '../ui-icon';
 import { marketHref } from '../../lib/locale/market-localization';
 import type { SiteLocale } from '../../lib/navigation/site-navigation';
 import type { ToolId, ToolMarket } from '../../lib/analytics/tool-events';
@@ -48,7 +49,7 @@ export function ToolsHub({ locale = 'en' }: Readonly<{ locale?: SiteLocale }>) {
         <div className={styles.groupHeading}><h2>{group.label}</h2><p>{group.description}</p></div>
         <ul className={styles.list}>{items.filter((item) => item.group === group.id).map((item) => <li key={item.tool} data-tool-id={item.tool} data-tool-market={item.market}>
           <div><small>{item.market === 'global' ? (item.tool === 'passport' ? 'USD · KRW · SGD · AED' : 'KRW · SGD · AED') : item.market === 'kr-seoul' ? (ko ? '서울' : 'Seoul') : item.market === 'ae-dubai' ? (ko ? '두바이' : 'Dubai') : (ko ? '싱가포르' : 'Singapore')}{zh && item.tool !== 'passport' ? ' · English' : ''}</small><h3>{item.title}</h3><p>{item.description}</p></div>
-          <TrackedToolLink href={marketHref(ko ? 'ko' : 'en', item.href)} market={item.market} tool={item.tool} surface="tools-hub">{ko ? '열기' : zh ? '打开' : 'Open tool'}</TrackedToolLink>
+          <TrackedToolLink href={marketHref(ko ? 'ko' : 'en', item.href)} market={item.market} tool={item.tool} surface="tools-hub">{ko ? '열기' : zh ? '打开' : 'Open tool'}<UiIcon name="arrow-right" /></TrackedToolLink>
         </li>)}</ul>
       </section>)}
     </div>

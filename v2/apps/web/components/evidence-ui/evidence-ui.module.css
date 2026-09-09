@@ -42,7 +42,11 @@
   max-width: 100%;
   display: flex;
   overflow-x: auto;
-  border: var(--rule-strong);
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f1f4f8;
   scrollbar-width: thin;
 }
 
@@ -52,11 +56,12 @@
   padding-inline: var(--space-4);
   display: inline-grid;
   place-items: center;
-  border-right: var(--rule-default);
+  border: 0;
+  border-radius: 8px;
   color: var(--ink);
-  background: var(--canvas);
+  background: transparent;
   font-size: var(--evidence-type-ui);
-  font-weight: 800;
+  font-weight: 600;
   line-height: 1;
   text-decoration: none;
 }
@@ -66,8 +71,9 @@
 }
 
 .segmentedControl a[aria-current='page'] {
-  color: var(--canvas);
-  background: var(--ink);
+  color: var(--accent);
+  background: white;
+  box-shadow: 0 1px 4px rgb(15 23 42 / 8%);
 }
 
 .segmentedControl a:focus-visible {

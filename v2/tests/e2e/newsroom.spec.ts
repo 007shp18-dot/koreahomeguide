@@ -42,7 +42,9 @@ test('Newsroom filters reviewed SignedPrice records and opens the policy lifecyc
   await expect(page.locator('[data-newsroom-lead]')).toHaveCount(1);
   await expect(page.locator('body')).not.toContainText(/provider|credential|ingestion|Naver News API/i);
 
-  await page.getByRole('link', { name: 'Open the Policy Tracker', exact: true }).click();
+  await page.getByRole('navigation', { name: 'News and insight types' }).getByRole('link', { name: 'Policy', exact: true }).click();
+  await expect(page).toHaveURL(/\/news\/\?type=policy$/);
+  await page.getByRole('link', { name: 'Policy tracker', exact: true }).click();
   await expect(page).toHaveURL(/\/news\/policy\/$/);
   await expect(page.getByRole('heading', { level: 1, name: 'Follow the date a housing rule actually changes.' })).toBeVisible();
   await expect(page.getByText('Announced', { exact: true }).first()).toBeVisible();
