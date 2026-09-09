@@ -55,19 +55,20 @@ export default function PrivacyPage() {
             <ul className={styles.plainList}>
               <li>Standard hosting and security logs, such as IP address, requested page, time, browser and device signals.</li>
               <li>Privacy choices stored in your browser.</li>
-              <li>Structured community selections and an opaque first-party identifier when that feature is available.</li>
+              <li>Broad value bands and categories that you explicitly choose to contribute from a completed tool result, with a pseudonymous first-party browser ownership cookie.</li>
+              <li>Structured community selections and a separate opaque first-party identifier when that feature is available.</li>
               <li>Your email address and message when you contact us.</li>
             </ul>
           </article>
           <article>
             <p className={styles.meta}>03 · Purpose</p>
             <h2>Why we use it</h2>
-            <p>To deliver and secure the site, return the comparison you request, remember your privacy choice, prevent abuse, understand permitted page usage and respond to messages.</p>
+            <p>To deliver and secure the site, return the comparison you request, improve tools through optional product research, remember your privacy choice, prevent abuse, understand permitted page usage and respond to messages.</p>
           </article>
           <article>
             <p className={styles.meta}>04 · Property tools</p>
             <h2>Your decision inputs</h2>
-            <p>Contract and comparison values are processed to produce the result shown to you. The public tools do not request your name, phone number or free-text personal history, and those values are not included in analytics events.</p>
+            <p>Contract and comparison values are processed to produce the result shown to you. Nothing is contributed for product research unless you check the separate consent box and press the share button below a completed result. A contribution contains only the broad bands and categories shown there, without exact prices, addresses, building or project identifiers, links, buyer identity or free text. These values are not included in analytics events.</p>
           </article>
           <article>
             <p className={styles.meta}>05 · Cookies</p>
@@ -87,12 +88,12 @@ export default function PrivacyPage() {
           <article>
             <p className={styles.meta}>08 · Retention</p>
             <h2>How long we keep it</h2>
-            <p>We keep information only for the period needed for the purpose above, security, dispute handling or a legal obligation. Consent choices remain on your device until cleared; the community identifier expires after 12 months; contact messages are deleted or archived when no longer needed.</p>
+            <p>We keep information only for the period needed for the purpose above, security, dispute handling or a legal obligation. Optional product-research contributions are deleted automatically after 90 days. Their ownership cookie can remain for up to 12 months; clearing it means the browser can no longer find earlier contributions for direct deletion, but those records still expire after 90 days. Consent choices remain on your device until cleared; the separate community identifier expires after 12 months; contact messages are deleted or archived when no longer needed.</p>
           </article>
           <article>
             <p className={styles.meta}>09 · Your rights</p>
             <h2>Access, correction and deletion</h2>
-            <p>You may ask what personal information we hold about you, request correction or deletion, object to or restrict processing where applicable, and withdraw consent without affecting earlier processing. Email the privacy address above.</p>
+            <p>You can delete every product-research contribution owned by the current browser from the Tools page or any contribution panel. You may also ask what personal information we hold about you, request correction or deletion, object to or restrict processing where applicable, and withdraw consent without affecting earlier processing. Email the privacy address above.</p>
           </article>
           <article>
             <p className={styles.meta}>10 · Safeguards</p>

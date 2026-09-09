@@ -1,12 +1,14 @@
 'use client';
 
-import { useEffect, useId, useRef, useState } from 'react';
+import { Fragment, useEffect, useId, useRef, useState } from 'react';
 import { calculatePropertyScenario, type PropertyScenario } from '../../lib/research/property-research';
 import styles from './property-scenario.module.css';
 import { AmountInput } from '../amount-input';
 import { acquisitionCosts, COST_RULES_CHECKED, COST_SOURCES, type CostProfile } from '../../lib/tools/acquisition-costs';
 import {sendToolEvent} from '../tools/tool-analytics';
 import type {ToolDimensions} from '../../lib/analytics/tool-events';
+import { ToolResearchShare} from '../tools/tool-research-share';
+import {createPropertyScenarioResearchSnapshot} from '../../lib/tool-research/client';
 
 export function PropertyScenarioCalculator({ price, currency, annualRent, locale = 'en', analytics, rentSource, areaSqm, housingType }: Readonly<{
   price: number | null; currency: 'KRW' | 'SGD' | 'AED'; locale?: 'en' | 'ko'; analytics?: Pick<ToolDimensions,'market'|'surface'>;
@@ -29,6 +31,17 @@ export function PropertyScenarioCalculator({ price, currency, annualRent, locale
   const resolved = { ...inputs, acquisitionCosts: inputs.acquisitionCosts || (fees ? String(fees.total) : '') };
   const ready = Object.values(resolved).every(value => value.trim() !== '');
   const scenario = ready ? calculatePropertyScenario({ price: Number(resolved.price), acquisitionCosts: Number(resolved.acquisitionCosts), monthlyRent: Number(resolved.monthlyRent), annualCosts: Number(resolved.annualCosts), vacancyMonths: Number(resolved.vacancyMonths) }) : null;
+  const researchSnapshot = scenario === null ? null : createPropertyScenarioResearchSnapshot({
+    currency,
+    purchasePrice: Number(resolved.price),
+    acquisitionCosts: Number(resolved.acquisitionCosts),
+    monthlyRent: Number(resolved.monthlyRent),
+    annualOperatingCosts: Number(resolved.annualCosts),
+    yieldPct: scenario.netYield,
+    areaSqm,
+    housingType,
+  });
+  const researchRevision = scenario === null ? 'no-result' : JSON.stringify({ resolved, scenario });
   useEffect(() => {
     if (scenario !== null && !completed.current && started.current && analytics) {
       completed.current = true; sendToolEvent('tool_complete', {...analytics, tool:'property-scenario'});
@@ -51,13 +64,14 @@ export function PropertyScenarioCalculator({ price, currency, annualRent, locale
     </div>
     {fees && <><dl className={styles.costLines}>{fees.lines.map(line => <div key={line.en}><dt>{ko ? line.ko : line.en}</dt><dd>{money(line.amount)}</dd></div>)}</dl><p>{ko ? '자동 계산 합계' : 'Calculated subtotal'}: {money(fees.total)} · {ko ? '법무·대출·추가 비용은 아래 합계에 더하세요.' : 'Add legal, financing and other costs to the total below.'}</p>{inputs.acquisitionCosts && <button type="button" onClick={() => setInputs({ ...inputs, acquisitionCosts: '' })}>{ko ? '자동 계산값으로 되돌리기' : 'Restore calculated subtotal'}</button>}</>}
     <p>{currency === 'KRW' ? (ko ? '일반 주택 매매 기준이며 생애최초·일시적 2주택 등 감면을 자동 판정하지 않습니다. 중과 여부는 주택 수·조정대상지역·예외 조건을 확인해 선택하세요. 중개보수는 상한이며 부가세·법무·채권 비용은 별도입니다.' : 'Residential sale before relief. Select surcharge treatment after checking household count, regulated-area status and exceptions. Brokerage is a cap; VAT, legal and bond costs are additional.') : currency === 'SGD' ? (ko ? '개인 단독 주택 매입 기준. 매입가와 법정 시장가치 중 높은 금액이 과세기준입니다. 공동매수·신탁·법인·FTA 및 부부 감면은 자동 반영하지 않습니다.' : 'Single individual residential purchase. Duty uses the higher of purchase price and statutory market value. Joint buyers, trusts, entities, FTA and married-couple remissions need separate checks.') : (ko ? '아파트·빌라 매매 등록 기준. 공식 등록비는 매도자 2%·매수자 2%이며 실제 부담은 계약을 확인하세요. 중개보수 2%는 변경 가능한 가정입니다.' : 'Apartment/villa sale registration. The official schedule assigns 2% each to buyer and seller; confirm contractual allocation. The 2% brokerage input is an editable assumption.')}</p>
-    <p>{ko ? '기준 확인' : 'Rules checked'} {COST_RULES_CHECKED} · {COST_SOURCES[currency].map(([label,href]) => <a key={href} href={href} target="_blank" rel="noreferrer">{label} · </a>)}</p></details>
+    <p>{ko ? '기준 확인' : 'Rules checked'} {COST_RULES_CHECKED} · {COST_SOURCES[currency].map(([label,href], index) => <Fragment key={href}>{index === 0 ? null : ' · '}<a href={href} target="_blank" rel="noreferrer">{label}</a></Fragment>)}</p></details>
     <div className={styles.workspace}><div className={styles.inputPanel}><h3>{ko ? '매입·임대 조건' : 'Your assumptions'}</h3><div className={styles.form}>{fields.map(([key, label]) => <label key={key} htmlFor={`${id}-${key}`}>{label}{key === 'vacancyMonths' ? '' : ` (${currency})`}<AmountInput id={`${id}-${key}`} min="0" max={key === 'vacancyMonths' ? 12 : undefined} step="any" value={resolved[key]} placeholder={key === 'price' ? undefined : (ko ? '직접 입력 · 해당 없으면 0' : 'Enter assumption; 0 if none')} onValueChange={(value) => edit(key,value)} /></label>)}</div></div><div className={styles.resultPanel}><h3>{ko ? '계산 결과' : 'Your scenario'}</h3>
     {scenario ? <dl className={styles.results} aria-live="polite">
       <div className={styles.primaryResult}><dt>{ko ? '총매입 비용 대비 임대수익률' : 'Operating yield on total cost'}</dt><dd>{scenario.netYield.toFixed(2)}<span>%</span></dd></div>
       <div><dt>{ko ? '총 취득 비용' : 'Total acquisition outlay'}</dt><dd>{money(scenario.totalCost)}</dd></div>
       <div><dt>{ko ? '연간 임대수입 · 운영비 차감 후' : 'Annual net operating income'}</dt><dd>{money(scenario.netIncome)}</dd></div>
     </dl> : <p className={styles.empty} role="status">{ko ? '비용과 임대 조건을 모두 입력하면 결과가 표시됩니다. 해당 없는 항목은 0을 입력하세요.' : 'Complete every assumption to calculate. Enter 0 for costs that do not apply.'}</p>}</div></div>
+    <ToolResearchShare locale={locale} resultRevision={researchRevision} snapshot={researchSnapshot} />
     <p className={styles.method}>{ko ? '계산식: (월 임대료 × (12 − 공실 개월) − 연 운영 비용) ÷ (매입 가격 + 취득 비용). 차입금·이자·양도차익·개인 소득세·환율 변화는 반영하지 않습니다. 실제 수익률 예측이 아닙니다.' : 'Formula: (monthly rent × (12 − vacant months) − annual operating costs) ÷ (price + acquisition costs). Excludes financing, capital gains, personal income tax and exchange-rate changes. Results reflect only the assumptions entered.'}</p>
   </section>;
 }

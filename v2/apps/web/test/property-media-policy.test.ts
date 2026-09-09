@@ -1,5 +1,9 @@
 import { readFileSync } from 'node:fs';
+import { createElement } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
+
+import { MARKET_PHOTOS, MarketRepresentativePhoto } from '../components/market-representative-photo';
 
 const seoulDetailRoute = readFileSync(
   new URL('../app/(en)/kr/seoul/explore/[district]/[buildingId]/page.tsx', import.meta.url),
@@ -26,10 +30,11 @@ describe('property media policy', () => {
   });
 
   it('labels editorial city photography as representative rather than exact-property evidence', () => {
-    const marketPhoto = readFileSync(
-      new URL('../components/market-representative-photo.tsx', import.meta.url),
-      'utf8',
-    );
+    const marketPhoto = renderToStaticMarkup(createElement(MarketRepresentativePhoto, {
+      photo: MARKET_PHOTOS.seoul,
+      context: 'property',
+      locale: 'en',
+    }));
     expect(marketPhoto).toContain('Editorial city photograph');
     expect(marketPhoto).toContain('not this exact property');
   });

@@ -851,7 +851,7 @@ function ReadyAreaExplorer({
       data-explore-view={currentView}
       data-explorer-version="guide-v2"
     >
-      <header className="explore-page-heading"><h1 id="area-explorer-heading">{locale === 'ko' ? `${model.districts.find(d => d.slug === model.selectedSlug)?.nameKo ?? '서울'} 실거래가` : 'Explore'}</h1><p>{locale === 'ko' ? '출처: 국토교통부' : 'Source: MOLIT'} · {model.source.period}</p></header>
+      <header className="explore-page-heading"><h1 id="area-explorer-heading">{locale === 'ko' ? `${model.districts.find(d => d.slug === model.selectedSlug)?.nameKo ?? '서울'} 실거래가` : 'Explore'}</h1><p>{locale === 'ko' ? '서울' : 'Seoul'} · {model.source.period}</p></header>
       <div className={styles.exploreToolbar} data-explorer-region="filters">
         <div
           className={styles.transactionFilter}

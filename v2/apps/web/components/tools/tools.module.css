@@ -25,10 +25,8 @@
 .links a { min-width: 120px; justify-content: space-between; padding: 0 14px; border: 1px solid #ccd4cf; border-radius: 0; text-decoration: none; }
 .links a::after { content: '↗'; margin-left: 16px; }
 .links a:hover { border-color: var(--accent); }
-@media (max-width: 760px) { .page { width: calc(100% - 36px); } .intro { padding: 34px 0 24px; } .group { grid-template-columns: 1fr; gap: 24px; padding: 30px 0 34px; } .groupHeading p { max-width: 52ch; } }
+@media (max-width: 760px) { .intro { padding: 34px 0 24px; } .group { grid-template-columns: 1fr; gap: 24px; padding: 30px 0 34px; } .groupHeading p { max-width: 52ch; } }
 @media (max-width: 560px) { .list { grid-template-columns: 1fr; } .list li, .list li:nth-child(-n + 2) { padding: 20px 0; border-top: 1px solid #e1e5e2; } .list li:first-child { padding-top: 0; border-top: 0; } .list h3 { font-size: 19px; } .links { display: grid; grid-template-columns: 1fr; } }
-
-.page h1 { letter-spacing: normal; line-height: 1.2; }
 
 :global(html[lang='ko']) .list h3 { max-width: none; font-size: 1.25rem; line-height: 1.45; }
 :global(html[lang='ko']) .list p { max-width: none; line-height: 1.65; }

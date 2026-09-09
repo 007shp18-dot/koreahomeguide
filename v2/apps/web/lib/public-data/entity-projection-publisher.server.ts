@@ -71,7 +71,7 @@ const REFRESH_MEDIA_SQL = `
     media.checked_at
   FROM media_assets AS media
   INNER JOIN rights_policies AS rights ON rights.id = media.rights_policy_id
-  WHERE media.market_id = 'kr-seoul'
+  WHERE media.market_id IN ('kr-seoul', 'sg-singapore')
     AND media.subject_entity_id IS NOT NULL
     AND media.review_state = 'approved'
     AND rights.can_display = true
@@ -101,7 +101,9 @@ const REFRESH_APPROVED_BUILDING_PHOTOS_SQL = `
     visual_reviewed_at, approved_at, approved_by, legacy_registry_key, updated_at
   )
   SELECT
-    entity.market_id, entity.id, 'photograph', 'exact-property', photo.provider,
+    entity.market_id, entity.id, 'photograph',
+    CASE WHEN photo.subject_kind = 'site-aerial' THEN 'parent-project' ELSE 'exact-property' END,
+    photo.provider,
     photo.provider_place_id,
     CASE WHEN photo.provider = 'google-place' THEN NULL ELSE photo.asset_url END,
     photo.source_page_url,
@@ -128,7 +130,9 @@ const REFRESH_APPROVED_BUILDING_PHOTOS_SQL = `
     WHEN building.market_key = 'singapore' THEN 'sg-' || building.key
   END
   WHERE photo.status = 'approved'
-    AND entity.market_id = 'kr-seoul'
+    AND entity.market_id IN ('kr-seoul', 'sg-singapore')
+    AND entity.identity_status = 'verified'
+    AND photo.subject_kind IN ('building-exterior', 'building-front', 'site-aerial')
     AND photo.approved_at IS NOT NULL
     AND photo.approved_by IS NOT NULL
     AND photo.visual_reviewed_at IS NOT NULL
@@ -155,6 +159,38 @@ const REFRESH_APPROVED_BUILDING_PHOTOS_SQL = `
     updated_at = now()
 `;
 
+const RECONCILE_MEDIA_SQL = `
+  /* public-entity-projection:reconcile-media */
+  WITH revoked AS (
+    UPDATE media_assets AS media
+    SET review_state = 'review_required', updated_at = now()
+    WHERE media.market_id IN ('kr-seoul', 'sg-singapore')
+      AND media.legacy_registry_key IS NOT NULL
+      AND NOT EXISTS (
+        SELECT 1 FROM building_photos AS photo
+        WHERE photo.registry_key = media.legacy_registry_key
+          AND photo.status = 'approved'
+          AND photo.approved_at IS NOT NULL AND photo.approved_by IS NOT NULL
+          AND photo.visual_reviewed_at IS NOT NULL
+          AND photo.subject_kind IN ('building-exterior', 'building-front', 'site-aerial')
+      )
+    RETURNING media.id
+  )
+  DELETE FROM public_entity_media AS public
+  USING media_assets AS media, rights_policies AS rights
+  WHERE public.media_asset_id = media.id AND rights.id = media.rights_policy_id
+    AND media.market_id IN ('kr-seoul', 'sg-singapore')
+    AND (media.id IN (SELECT id FROM revoked)
+      OR public.entity_id <> media.subject_entity_id
+      OR (media.legacy_registry_key IS NOT NULL AND NOT EXISTS (
+        SELECT 1 FROM building_photos AS photo
+        JOIN property_entities AS identity
+          ON identity.local_attributes ->> 'legacyBuildingKey' = photo.building_key
+        WHERE photo.registry_key = media.legacy_registry_key AND identity.id = public.entity_id
+      ))
+      OR media.review_state <> 'approved' OR rights.can_display = false)
+`;
+
 const COUNTS_SQL = `
   /* public-entity-projection:counts */
   SELECT
@@ -169,7 +205,7 @@ const COUNTS_SQL = `
     (
       SELECT count(*)::text FROM public_entity_media AS media
       INNER JOIN property_entities AS entity ON entity.id = media.entity_id
-      WHERE entity.market_id = 'kr-seoul'
+      WHERE entity.market_id IN ('kr-seoul', 'sg-singapore')
     ) AS media_published
   FROM public_entity_locations AS location
   INNER JOIN rights_policies AS rights ON rights.id = location.rights_policy_id
@@ -190,7 +226,10 @@ export function createPublicEntityProjectionPublisher(
 ): Readonly<{ publishSeoul(): Promise<PublicEntityProjectionPublishResult> }> {
   return Object.freeze({
     async publishSeoul() {
+      // Seoul location publication also maintains approved media for the two
+      // markets with verified building identities. The legacy method stays stable.
       await port.query(REFRESH_LOCATIONS_SQL);
+      await port.query(RECONCILE_MEDIA_SQL);
       await port.query(REFRESH_APPROVED_BUILDING_PHOTOS_SQL);
       await port.query(REFRESH_MEDIA_SQL);
       const [row] = await port.query(COUNTS_SQL);

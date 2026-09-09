@@ -19,6 +19,8 @@ import { ComparableContracts } from './comparable-contracts';
 import { RentCheckForm } from './rent-check-form';
 import { RentCheckResult } from './rent-check-result';
 import { SourceDisclosure } from './source-disclosure';
+import { ToolResearchShare } from '../tools/tool-research-share';
+import { createRentCheckResearchSnapshot } from '../../lib/tool-research/client';
 
 type RentCheckWorkspaceProps = {
   readonly initialInput?: RentCheckInput;
@@ -56,6 +58,11 @@ export function RentCheckWorkspace({
   );
   const nextRequestId = useRef(0);
   const resultHeading = useRef<HTMLHeadingElement>(null);
+  const researchSnapshot = state.status === 'success'
+    && state.checkedInput !== null
+    && state.envelope !== null
+    ? createRentCheckResearchSnapshot({ checkedInput: state.checkedInput, envelope: state.envelope })
+    : null;
 
   useEffect(() => {
     if (state.status === 'success' || state.status === 'insufficient') {
@@ -163,6 +170,7 @@ export function RentCheckWorkspace({
                   )}
                 />
               ) : null}
+            <ToolResearchShare resultRevision={state.requestId} snapshot={researchSnapshot} />
           </div>
         </section>
 

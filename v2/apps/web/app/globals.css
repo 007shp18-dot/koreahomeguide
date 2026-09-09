@@ -2835,7 +2835,7 @@ h1 {
    translated labels or live data are longer than the reference fixtures. */
 :where([lang="ko"], .ko) {
   font-family: var(--font-noto-sans-kr), "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-  letter-spacing: -.018em;
+  letter-spacing: normal;
   word-break: keep-all;
 }
 

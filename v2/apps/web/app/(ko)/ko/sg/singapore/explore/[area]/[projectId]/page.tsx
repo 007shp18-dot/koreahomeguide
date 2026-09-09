@@ -4,6 +4,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { SingaporeProjectDetail } from '@/components/singapore/singapore-project-detail';
+import { getStoredPublicPhotoApproval } from '@/lib/photos/building-photo-store.server';
+import { selectPublishedBuildingPhoto } from '@/lib/photos/published-photo-selection';
 import { googleMapsBrowserKeyFromEnvironment } from '@/lib/maps/google-maps-browser-key.server';
 import { publicEntityProjectionReaderFromEnvironment } from '@/lib/public-data/entity-location-projection.server';
 import { indexableMetadata } from '@/lib/public-metadata';
@@ -17,6 +19,7 @@ import { singaporeSnapshotRepositoryFromEnvironment } from '@/lib/singapore/snap
 type Props = Readonly<{ params: Promise<Readonly<{ area: string; projectId: string }>> }>;
 
 export const dynamicParams = true;
+export const revalidate = 3_600;
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { area, projectId } = await params;
   const code = area.toLowerCase();
@@ -60,6 +63,7 @@ export default async function SingaporeProjectPage({ params }: Props) {
   return <SingaporeProjectDetail locale="ko"
     model={model}
     googleMapsBrowserKey={googleMapsBrowserKeyFromEnvironment()}
+    media={selectPublishedBuildingPhoto(projections?.get(entityId)?.media ?? [], await getStoredPublicPhotoApproval(`sg-project:${model.identity.marketSegment}:${model.identity.project}`), `singapore:project:${projectId}`)}
     proximity={projections?.get(entityId)?.proximity ?? null}
   />;
 }

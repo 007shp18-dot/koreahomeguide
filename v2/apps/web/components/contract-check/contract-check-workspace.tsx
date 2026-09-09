@@ -22,6 +22,8 @@ import type { EntityCheckContext } from '../../lib/navigation/explorer-selection
 import type { SiteHeaderModel } from '../../lib/site-copy';
 import { SiteHeader } from '../site-header';
 import styles from './contract-check.module.css';
+import { ToolResearchShare } from '../tools/tool-research-share';
+import { createOfferCompareResearchSnapshot } from '../../lib/tool-research/client';
 
 const won = new Intl.NumberFormat('ko-KR', {
   style: 'currency', currency: 'KRW', maximumFractionDigits: 0,
@@ -297,6 +299,12 @@ function ResultPanel({ model, locale }: Readonly<{
   const c = CHECK_COPY[locale];
   const comparison = model.comparison;
   const checks = model.offerChecks;
+  const researchSnapshot = model.submitted && comparison?.status === 'ready'
+    ? createOfferCompareResearchSnapshot(comparison)
+    : null;
+  const researchRevision = model.submitted && comparison?.status === 'ready'
+    ? JSON.stringify(comparison)
+    : 'no-result';
   return (
     <section aria-live="polite" className={styles.resultPanel} data-check-section="verdict" data-result-focus-target="true">
       <header><span>04</span><h2>{c.result}</h2></header>
@@ -363,6 +371,7 @@ function ResultPanel({ model, locale }: Readonly<{
         <p>{model.disclosure.boundary}</p>
         <p>{c.reference}</p>
       </section>
+      <ToolResearchShare locale={locale} resultRevision={researchRevision} snapshot={researchSnapshot} />
     </section>
   );
 }

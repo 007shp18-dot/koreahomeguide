@@ -3,6 +3,10 @@
   "ignoreCommand": "git diff --quiet HEAD^ HEAD -- ../..",
   "crons": [
     {
+      "path": "/api/internal/tool-research-expiry/",
+      "schedule": "43 0 * * *"
+    },
+    {
       "path": "/api/internal/news-ingest/",
       "schedule": "17 0 * * *"
     },
@@ -13,10 +17,6 @@
     {
       "path": "/api/internal/building-enrichment/?source=official&limit=250",
       "schedule": "17 * * * *"
-    },
-    {
-      "path": "/api/internal/building-enrichment/?source=naver&limit=250",
-      "schedule": "*/15 * * * *"
     },
     {
       "path": "/api/internal/building-enrichment/?source=google&limit=30",

@@ -6,13 +6,19 @@ import { scorePhotoIdentity, type PhotoIdentityDecision } from './photo-identity
 
 export type PhotoSubjectKind = 'building-exterior' | 'building-front' | 'site-aerial' | 'map-only';
 
+export function privatePhotoCandidateKey(buildingKey: string, source: 'naver-search' | 'wikimedia' | 'google'): string {
+  return `candidate:${source}:${buildingKey}`;
+}
+
 export type StoredPublicPhotoApproval = Readonly<{
+  buildingKey?: string | null;
   provider: 'google-place' | 'licensed-url' | 'owned-object';
   subjectKind: PhotoSubjectKind;
   placeId: string | null;
   assetUrl: string | null;
   attributionName: string | null;
   attributionUrl: string | null;
+  sourcePageUrl?: string | null;
   buildingName: string;
   address: string;
   approvedAt: string;
@@ -29,22 +35,28 @@ export type StoredPublicPhotoApprovalReadPort = Readonly<{
 
 const PUBLIC_PHOTO_APPROVALS_SQL = `
   /* building-photo-store:public-approvals */
-  SELECT DISTINCT ON (photo.registry_key)
-    photo.registry_key,
+  SELECT DISTINCT ON (photo.publication_registry_key)
+    photo.publication_registry_key AS registry_key,
+    photo.building_key,
     photo.provider,
     photo.subject_kind,
     photo.provider_place_id,
     photo.asset_url,
     photo.attribution_name,
     photo.attribution_url,
+    photo.source_page_url,
     building.official_name,
     coalesce(building.road_address, building.legal_address) AS address,
     photo.approved_at
   FROM building_photos photo
   JOIN buildings building ON building.key = photo.building_key
-  WHERE photo.registry_key = ANY($1::text[])
+  WHERE photo.publication_registry_key = ANY($1::text[])
     AND photo.status = 'approved'
-  ORDER BY photo.registry_key, photo.position, photo.id
+    AND photo.approved_at IS NOT NULL AND photo.approved_by IS NOT NULL
+    AND photo.visual_reviewed_at IS NOT NULL
+    AND photo.rights_status IN ('licensed', 'owned', 'provider-display-only')
+    AND building.identity_status = 'verified'
+  ORDER BY photo.publication_registry_key, photo.position, photo.approved_at DESC, photo.id
 `;
 
 function safeHttpUrl(value: unknown): string | null {
@@ -77,12 +89,14 @@ function storedPublicPhotoApprovalFromRow(
   if ((provider === 'google-place' && placeId === null)
     || (provider !== 'google-place' && assetUrl === null)) return null;
   return Object.freeze({
+    buildingKey: typeof row.building_key === 'string' ? row.building_key : null,
     provider: provider as StoredPublicPhotoApproval['provider'],
     subjectKind: subjectKind as PhotoSubjectKind,
     placeId,
     assetUrl,
     attributionName: typeof row.attribution_name === 'string' ? row.attribution_name : null,
     attributionUrl: safeHttpUrl(row.attribution_url),
+    sourcePageUrl: safeHttpUrl(row.source_page_url),
     buildingName,
     address,
     approvedAt,
@@ -149,6 +163,9 @@ export async function listStoredPublicPhotoApprovals(
       console.error('SignedPrice approved-photo database read failed.', error);
     }
   }
+  // A configured live database is authoritative, including during an outage.
+  // Static seeds must never resurrect a photograph rejected in the database.
+  if (sql !== null) return Object.freeze({ approvals, databaseReadFailed });
   for (const key of normalized) {
     if (approvals.has(key)) continue;
     const fallback = fallbackPublicPhotoApproval(key);
@@ -162,84 +179,6 @@ export async function getStoredPublicPhotoApproval(
 ): Promise<StoredPublicPhotoApproval | null | undefined> {
   const { approvals, databaseReadFailed } = await listStoredPublicPhotoApprovals([key]);
   return approvals.get(key) ?? (databaseReadFailed ? undefined : null);
-}
-
-export type PhotoApprovalInput = Readonly<{
-  registryKey: string;
-  marketKey: 'seoul' | 'singapore' | 'dubai';
-  buildingKey: string;
-  externalId: string;
-  buildingName: string;
-  address: string;
-  provider: StoredPublicPhotoApproval['provider'];
-  subjectKind?: PhotoSubjectKind;
-  placeId: string | null;
-  assetUrl: string | null;
-  attributionName: string | null;
-  attributionUrl: string | null;
-}>;
-
-export async function approveBuildingPhoto(input: PhotoApprovalInput): Promise<void> {
-  const sql = contentDatabase();
-  if (sql === null) throw new Error('database_not_configured');
-  const market = input.marketKey === 'seoul'
-    ? { name: 'Seoul', countryCode: 'KR' }
-    : input.marketKey === 'singapore'
-      ? { name: 'Singapore', countryCode: 'SG' }
-      : { name: 'Dubai', countryCode: 'AE' };
-  const normalizedName = input.buildingName.normalize('NFKC').toLocaleLowerCase('en-US')
-    .replace(/[^\p{L}\p{N}]+/gu, '');
-  await sql`
-    WITH market_upsert AS (
-      INSERT INTO markets (key, name, country_code)
-      VALUES (${input.marketKey}, ${market.name}, ${market.countryCode})
-      ON CONFLICT (key) DO UPDATE SET name = excluded.name, updated_at = now()
-      RETURNING key
-    ), building_upsert AS (
-      INSERT INTO buildings (
-        key, market_key, external_id, official_name, normalized_name,
-        legal_address, identity_status
-      )
-      SELECT
-        ${input.buildingKey}, market_upsert.key, ${input.externalId}, ${input.buildingName},
-        ${normalizedName}, ${input.address}, 'verified'
-      FROM market_upsert
-      ON CONFLICT (key) DO UPDATE SET
-        official_name = excluded.official_name,
-        normalized_name = excluded.normalized_name,
-        legal_address = excluded.legal_address,
-        identity_status = 'verified',
-        updated_at = now()
-      RETURNING key
-    )
-    INSERT INTO building_photos (
-      building_key, registry_key, provider, provider_place_id, asset_url,
-      attribution_name, attribution_url, status, approved_at, approved_by,
-      subject_kind, rights_status, source_page_url, visual_reviewed_at
-    )
-    SELECT
-      building_upsert.key, ${input.registryKey}, ${input.provider}, ${input.placeId}, ${input.assetUrl},
-      ${input.attributionName}, ${input.attributionUrl}, 'approved', now(), 'content-admin-api',
-      ${input.subjectKind ?? 'building-exterior'}, ${input.provider === 'owned-object' ? 'owned' : input.provider === 'licensed-url' ? 'licensed' : 'provider-display-only'},
-      ${input.attributionUrl}, now()
-    FROM building_upsert
-    ON CONFLICT (registry_key) DO UPDATE SET
-      building_key = excluded.building_key,
-      provider = excluded.provider,
-      provider_place_id = excluded.provider_place_id,
-      asset_url = excluded.asset_url,
-      attribution_name = excluded.attribution_name,
-      attribution_url = excluded.attribution_url,
-      status = 'approved',
-      approved_at = now(),
-      approved_by = 'content-admin-api',
-      subject_kind = excluded.subject_kind,
-      rights_status = excluded.rights_status,
-      source_page_url = excluded.source_page_url,
-      visual_reviewed_at = now(),
-      checked_at = now(),
-      updated_at = now()
-  `;
 }
 
 type CandidateBuilding = Readonly<{
@@ -389,6 +328,9 @@ type CommonsSearchPage = Readonly<{
 }>;
 
 export type WikimediaPhotoCandidate = Readonly<{
+  title: string;
+  width: number | null;
+  height: number | null;
   assetUrl: string;
   sourcePageUrl: string;
   attributionName: string;
@@ -426,8 +368,7 @@ async function countCandidatesInBatches<T>(
   return candidates;
 }
 
-/** Licensed Commons results need country evidence; only exact independent
- * identity evidence can publish one without entering the review queue. */
+/** Metadata ranks licensed candidates; publication requires a separate visual review. */
 export function selectWikimediaPhotoCandidate(
   identity: WikimediaBuildingIdentity,
   pages: readonly CommonsSearchPage[],
@@ -486,6 +427,9 @@ export function selectWikimediaPhotoCandidate(
     if (pixels > 0 && pixels < 1_000_000) continue;
     candidates.push(Object.freeze({
       candidate: Object.freeze({
+        title,
+        width: width || null,
+        height: height || null,
         assetUrl,
         sourcePageUrl,
         attributionName,
@@ -527,7 +471,9 @@ export async function discoverWikimediaCommonsPhotoCandidates(
       AND NOT EXISTS (
         SELECT 1 FROM building_photos photo
         WHERE photo.building_key = building.key
-          AND photo.status IN ('approved', 'review_required', 'candidate')
+          AND (photo.status = 'approved' OR (
+            photo.status IN ('review_required', 'candidate') AND photo.candidate_source = 'wikimedia'
+          ))
       )
       AND NOT EXISTS (
         SELECT 1 FROM building_enrichment_attempts attempt
@@ -599,23 +545,28 @@ export async function discoverWikimediaCommonsPhotoCandidates(
         await recordEnrichmentAttempt({ buildingKey: building.key, pipeline: 'photo-wikimedia', status: 'no-candidate', reason: 'exact-licensed-image-not-found', retryAfter: 'month' });
         return false;
       }
-      const status = candidate.disposition === 'auto-approve' ? 'approved' : 'review_required';
-      const approvedBy = status === 'approved' ? 'provider-identity-policy-v2' : null;
       const written = await sql`
         INSERT INTO building_photos (
-          building_key, registry_key, provider, asset_url, attribution_name, attribution_url,
+          building_key, registry_key, publication_registry_key, candidate_source,
+          candidate_title, candidate_width, candidate_height,
+          provider, asset_url, attribution_name, attribution_url,
           status, approved_at, approved_by, subject_kind, rights_status, source_page_url,
           visual_reviewed_at, match_policy_version, match_confidence, match_evidence, checked_at
         ) VALUES (
-          ${building.key}, ${registryKey}, 'licensed-url', ${candidate.assetUrl},
+          ${building.key}, ${privatePhotoCandidateKey(building.key, 'wikimedia')}, ${registryKey}, 'wikimedia',
+          ${candidate.title}, ${candidate.width}, ${candidate.height}, 'licensed-url', ${candidate.assetUrl},
           ${`${candidate.attributionName} · ${candidate.licenseName}`}, ${candidate.licenseUrl},
-          ${status}, ${status === 'approved' ? new Date() : null}, ${approvedBy},
+          'review_required', NULL, NULL,
           'building-exterior', 'licensed', ${candidate.sourcePageUrl},
-          ${status === 'approved' ? new Date() : null}, ${candidate.policyVersion},
+          NULL, ${candidate.policyVersion},
           ${candidate.confidence}, ${JSON.stringify(candidate.evidence)}::jsonb, now()
         )
         ON CONFLICT (registry_key) DO UPDATE SET
           building_key = excluded.building_key,
+          publication_registry_key = excluded.publication_registry_key,
+          candidate_title = excluded.candidate_title,
+          candidate_width = excluded.candidate_width,
+          candidate_height = excluded.candidate_height,
           provider = excluded.provider,
           provider_place_id = NULL,
           asset_url = excluded.asset_url,
@@ -634,7 +585,7 @@ export async function discoverWikimediaCommonsPhotoCandidates(
           checked_at = now(), updated_at = now()
         WHERE building_photos.status <> 'approved'
           AND NOT (
-            building_photos.status = 'rejected'
+            building_photos.status IN ('rejected', 'broken')
             AND building_photos.source_page_url IS NOT DISTINCT FROM excluded.source_page_url
           )
         RETURNING id
@@ -691,7 +642,9 @@ export async function discoverGooglePlacePhotoCandidates(
       AND NOT EXISTS (
         SELECT 1 FROM building_photos photo
         WHERE photo.building_key = building.key
-          AND photo.status IN ('approved', 'review_required', 'candidate')
+          AND (photo.status = 'approved' OR (
+            photo.status IN ('review_required', 'candidate') AND photo.candidate_source = 'google'
+          ))
       )
       AND NOT EXISTS (
         SELECT 1 FROM building_enrichment_attempts attempt
@@ -784,26 +737,27 @@ export async function discoverGooglePlacePhotoCandidates(
         await recordEnrichmentAttempt({ buildingKey: building.key, pipeline: 'photo-google', status: 'no-candidate', reason: 'exact-place-with-photo-not-found', retryAfter: 'month' });
         return false;
       }
-      const status = identity.disposition === 'auto-approve' ? 'approved' : 'review_required';
-      const approvedBy = status === 'approved' ? 'provider-identity-policy-v2' : null;
       const providerSourceUri = safeHttpUrl(place?.googleMapsUri);
       const written = await sql`
         INSERT INTO building_photos (
-          building_key, registry_key, provider, provider_place_id, status,
+          building_key, registry_key, publication_registry_key, candidate_source, candidate_title,
+          provider, provider_place_id, status,
           approved_at, approved_by, attribution_name, attribution_url,
           subject_kind, rights_status, source_page_url, visual_reviewed_at,
           match_policy_version, match_confidence, match_evidence,
           provider_source_uri, provider_checked_at, checked_at
         ) VALUES (
-          ${building.key}, ${registryKey}, 'google-place', ${placeId},
-          ${status}, ${status === 'approved' ? new Date() : null}, ${approvedBy},
+          ${building.key}, ${privatePhotoCandidateKey(building.key, 'google')}, ${registryKey}, 'google', ${placeName},
+          'google-place', ${placeId}, 'review_required', NULL, NULL,
           'Google Maps', ${providerSourceUri}, 'building-exterior', 'provider-display-only',
-          ${providerSourceUri}, ${status === 'approved' ? new Date() : null},
+          ${providerSourceUri}, NULL,
           ${identity.policyVersion}, ${identity.confidence}, ${JSON.stringify(identity.evidence)}::jsonb,
           ${providerSourceUri}, now(), now()
         )
         ON CONFLICT (registry_key) DO UPDATE SET
           building_key = excluded.building_key,
+          publication_registry_key = excluded.publication_registry_key,
+          candidate_title = excluded.candidate_title,
           provider = excluded.provider,
           provider_place_id = excluded.provider_place_id,
           asset_url = NULL,
@@ -824,7 +778,7 @@ export async function discoverGooglePlacePhotoCandidates(
           checked_at = now(), updated_at = now()
         WHERE building_photos.status <> 'approved'
           AND NOT (
-            building_photos.status = 'rejected'
+            building_photos.status IN ('rejected', 'broken')
             AND building_photos.provider_place_id IS NOT DISTINCT FROM excluded.provider_place_id
           )
         RETURNING id
@@ -868,25 +822,4 @@ export async function discoverGooglePlacePhotoCandidates(
     state: terminalProviderError === null ? 'ready' : 'provider-error',
     ...(terminalProviderError === null ? {} : { reason: terminalProviderError }),
   });
-}
-
-export async function listBuildingPhotoCandidates(limit = 100): Promise<readonly Readonly<Record<string, unknown>>[]> {
-  const sql = contentDatabase();
-  if (sql === null) throw new Error('database_not_configured');
-  const rows = await sql`
-    SELECT photo.registry_key AS "registryKey", building.key AS "buildingKey",
-      building.market_key AS "marketKey", building.external_id AS "externalId",
-      building.official_name AS "buildingName",
-      coalesce(building.road_address, building.legal_address) AS address,
-      photo.provider, photo.provider_place_id AS "placeId", photo.asset_url AS "assetUrl",
-      photo.attribution_name AS "attributionName", photo.attribution_url AS "attributionUrl",
-      photo.source_page_url AS "sourcePageUrl", photo.rights_status AS "rightsStatus",
-      photo.status, photo.checked_at AS "checkedAt"
-    FROM building_photos photo
-    JOIN buildings building ON building.key = photo.building_key
-    WHERE photo.status IN ('candidate', 'review_required')
-    ORDER BY photo.checked_at DESC
-    LIMIT ${Math.min(Math.max(limit, 1), 300)}
-  `;
-  return Object.freeze(rows.map((row) => Object.freeze({ ...row })));
 }

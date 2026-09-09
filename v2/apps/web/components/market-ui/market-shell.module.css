@@ -1,4 +1,4 @@
-.detail { width: min(1180px, calc(100% - 40px)); margin: 26px auto 72px; }
+.detail { width: min(calc(100% - 2 * var(--page-gutter)), var(--content-frame)); margin: 26px auto 72px; }
 .explore { width: min(calc(100% - 2 * var(--page-gutter)), var(--workspace-frame)); margin: 0 auto 72px; }
 .explore > :global(.explore-page-heading) { width: 100%; }
 .exploreHeader { min-height: 76px; padding: 24px 0; display: flex; align-items: end; justify-content: space-between; gap: var(--space-5); border-bottom: var(--rule-default); }
@@ -34,10 +34,10 @@
 .detailSummary > div, .detailSummary > div > div { min-width: 0; }
 .detailSummary small, .detailSummary span { color: var(--muted); font-size: var(--text-meta); line-height: 1.5; }
 .detailSummary strong { display: block; margin-top: 8px; max-width: 100%; font-size: clamp(1.5rem, 2.5vw, 2rem); line-height: 1.3; letter-spacing: normal; font-variant-numeric: tabular-nums; white-space: nowrap; overflow-wrap: normal; overflow-x: auto; }
-.detailGrid { margin-top: 24px; display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 32px; align-items: start; }
+.detailGrid { margin-top: 24px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; align-items: start; }
 .detailMain, .detailRail { min-width: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
 .detailMain > div > section, .detailRail > section { border: 0; border-radius: 0; box-shadow: none; }
-.detailRail { container-type: inline-size; }
+.detailRail { container-type: inline-size; padding-top: 24px; border-top: 1px solid var(--line); }
 .detailRail h2 { font-size: 20px; line-height: 1.4; letter-spacing: -.01em; }
 .detailRail > section { padding: 20px; background: var(--surface); border-radius: 8px; }
 .detailRail p, .detailRail li { font-size: 14px; line-height: 1.65; }

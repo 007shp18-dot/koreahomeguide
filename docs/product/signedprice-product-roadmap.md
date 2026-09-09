@@ -13,8 +13,10 @@ costs that can be reproduced. Acquiring more public rows alone does not establis
 that value.
 
 The immediate Tokyo diagnosis is specific: the input accepts all 23 wards, but
-the scheduled collection scope was fixed to Minato (`13103`). Expand collection
-and align available filters with actual publications. XIT001 contains anonymous
+the scheduled collection scope was fixed to Minato (`13103`). The 9 September
+collector release now rotates through 23 wards and eight completed quarters,
+one ward-quarter per hourly run. Verify actual publications before expanding
+the visible filters. XIT001 contains anonymous
 regional transactions; expanding ward coverage does not establish building-level
 transaction identities.
 
@@ -48,6 +50,24 @@ Keep the collect → validate → publish → activate flow and retain the last 
 version. The Seoul canary, later-market enablement, source rights, storage and
 rollback gates recorded below remain open unless newer execution evidence closes
 them. Updated UI, content or deployed collection code does not close those gates.
+
+## Tools and photography implementation — 9 September
+
+The Tools/media follow-up implements the first optional research submission
+path: completed results expose the exact broad bands to be shared, explicit
+consent precedes a first-party submission, and Neon retains them for 90 days with
+browser-owned deletion and a daily expiry job. This is `user_scenario` product
+research, separate from actual cost reports and official transactions. Cost
+evidence uploads and public demand statistics remain later milestones.
+
+The same follow-up repairs the photograph review queue and common detail layout.
+The audit found 84 approvals, 40,451 pending rows, 40,430 unlicensed search links
+and 26,568 duplicate URL uses. Candidate count is not usable coverage. Provider
+candidates now coexist; source/license and visual review precede publication;
+the review API supports source filters, oldest-first pagination, retraction and
+audit events. See [photo review operations](../operations/building-photo-review.md)
+and the [implementation plan](../superpowers/plans/2026-09-09-tools-media-polish.md).
+Deployment and actual approved counts must be confirmed against the release.
 
 ## Historical audit checkpoint — 8 September
 

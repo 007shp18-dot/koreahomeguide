@@ -44,7 +44,7 @@ describe('shared visitor market overview', () => {
     expect(html).toContain('2026-01–2026-06');
     expect(html).not.toContain('현재 영어로 제공');
     expect(html).toContain('출처와 집계 범위');
-    expect(html).toMatch(/<figcaption>[^<]*도시 참고 사진 · 해당 매물의 사진이 아닙니다<\/figcaption>/);
+    expect(html).toMatch(/<figcaption\b[^>]*>[^<]*도시 참고 사진 · 해당 매물의 사진이 아닙니다<\/figcaption>/);
     expect(html).not.toContain('Editorial city photograph');
   });
 
@@ -68,7 +68,7 @@ describe('shared visitor market overview', () => {
     expect(html).not.toContain('<dt>');
     expect(html).toContain('href="/ko/kr/seoul/check"');
     expect(html).toContain('href="/ko/news?type=data-stories&amp;market=seoul"');
-    expect(html).toContain('<figcaption>도시 전경</figcaption>');
+    expect(html).toMatch(/<figcaption\b[^>]*>도시 전경<\/figcaption>/);
     expect(html).not.toContain('City view');
     expect(html).toContain('aria-label="Footer 서비스"');
     expect(html).toContain('href="/ko/sg"');

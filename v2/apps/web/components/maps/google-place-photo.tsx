@@ -8,6 +8,7 @@ import {
   GOOGLE_MAPS_READY_CALLBACK,
 } from './google-place-map';
 import styles from './building-street-view.module.css';
+import photoStyles from './property-photo.module.css';
 
 const GOOGLE_MAPS_READY_EVENT = 'signedprice:google-maps-ready';
 const GOOGLE_MAPS_READY_FLAG = '__signedpriceGoogleMapsLoaded';
@@ -63,6 +64,7 @@ type PhotoLabel = 'Verified place photos' | 'Verified building photograph' | 'Ve
 type PhotoState = Readonly<{
   items: readonly DisplayPhoto[];
   label: PhotoLabel;
+  sourcePageUrl?: string | null;
 }> | 'loading' | 'unavailable';
 
 export function photoApprovalLabel(
@@ -136,13 +138,15 @@ type GooglePlacePhotoProps = Readonly<{
   registryKey?: string;
   /** Only a server-published, exact-property approval may supply this ID. */
   verifiedPlaceId?: string;
+  verifiedSubjectKind?: PhotoSubjectKind;
+  expectedBuildingKey?: string;
 }>;
 
 export function GooglePlacePhoto(props: GooglePlacePhotoProps) {
   // Reset approval and in-flight state when navigating between properties.
   // Requests belonging to an unmounted identity cannot update the new photo.
   return <GooglePlacePhotoForIdentity
-    key={JSON.stringify([props.registryKey, props.verifiedPlaceId, props.buildingName, props.address, props.browserKey])}
+    key={JSON.stringify([props.registryKey, props.verifiedPlaceId, props.verifiedSubjectKind, props.expectedBuildingKey, props.buildingName, props.address, props.browserKey])}
     {...props}
   />;
 }
@@ -157,9 +161,12 @@ function GooglePlacePhotoForIdentity({
   linkAttribution = true,
   registryKey,
   verifiedPlaceId,
+  verifiedSubjectKind = 'building-exterior',
+  expectedBuildingKey,
 }: GooglePlacePhotoProps) {
   const [photo, setPhoto] = useState<PhotoState>('loading');
   const [activePhoto, setActivePhoto] = useState(0);
+  const [approvedSubjectKind, setApprovedSubjectKind] = useState<PhotoSubjectKind>(verifiedSubjectKind);
   const [approvedPlaceId, setApprovedPlaceId] = useState<string | null | undefined>(
     verifiedPlaceId ?? (registryKey === undefined ? null : undefined),
   );
@@ -184,11 +191,14 @@ function GooglePlacePhotoForIdentity({
           assetUrl?: unknown;
           attributionName?: unknown;
           attributionUrl?: unknown;
+          sourcePageUrl?: unknown;
           buildingName?: unknown;
+          buildingKey?: unknown;
           address?: unknown;
         }>;
         const expectedAddress = normalizedPlaceText(address);
         if (approval.state !== 'approved'
+          || (expectedBuildingKey !== undefined && approval.buildingKey !== expectedBuildingKey)
           || typeof approval.buildingName !== 'string' || typeof approval.address !== 'string'
           || normalizedPlaceText(approval.buildingName) !== normalizedPlaceText(buildingName)
           || (expectedAddress.length > 0
@@ -199,6 +209,7 @@ function GooglePlacePhotoForIdentity({
           && typeof approval.assetUrl === 'string') {
           if (!active) return;
           setPhoto(Object.freeze({
+            sourcePageUrl: typeof approval.sourcePageUrl === 'string' ? approval.sourcePageUrl : null,
             label: photoApprovalLabel(
               approval.subjectKind === 'site-aerial' ? 'site-aerial' : 'building-exterior',
               approval.provider,
@@ -219,13 +230,16 @@ function GooglePlacePhotoForIdentity({
           throw new Error('Approved photo provider is incomplete.');
         }
         if (browserKey === null) throw new Error('Google Places browser key unavailable.');
-        if (active) setApprovedPlaceId(approval.placeId);
+        if (active) {
+          setApprovedSubjectKind(approval.subjectKind === 'site-aerial' ? 'site-aerial' : 'building-exterior');
+          setApprovedPlaceId(approval.placeId);
+        }
       } catch {
         if (active) setPhoto('unavailable');
       }
     })();
     return () => { active = false; };
-  }, [address, browserKey, buildingName, registryKey]);
+  }, [address, browserKey, buildingName, expectedBuildingKey, registryKey]);
 
   const initialize = useCallback(async () => {
     const sdk = (window as GoogleReadyScope).google?.maps;
@@ -238,7 +252,7 @@ function GooglePlacePhotoForIdentity({
         return;
       }
       setPhoto(Object.freeze({
-        label: photoApprovalLabel('building-exterior', 'google-place'),
+        label: photoApprovalLabel(approvedSubjectKind, 'google-place'),
         items: Object.freeze(results.map((result) => Object.freeze({
           src: result.getURI({ maxHeight: 900, maxWidth: 1400 }),
           attributions: Object.freeze([...result.authorAttributions]),
@@ -247,7 +261,7 @@ function GooglePlacePhotoForIdentity({
     } catch {
       setPhoto('unavailable');
     }
-  }, [approvedPlaceId]);
+  }, [approvedPlaceId, approvedSubjectKind]);
 
   useEffect(() => {
     if (browserKey === null || approvedPlaceId === undefined) return;
@@ -273,7 +287,8 @@ function GooglePlacePhotoForIdentity({
     .slice(0, 4);
 
   return (
-    <div className={styles.frame} data-building-media="google-place-photo" data-media-state={photo === 'loading' ? 'loading' : 'ready'}>
+    <figure className={photoStyles.frame} data-building-media="google-place-photo" data-media-state={photo === 'loading' ? 'loading' : 'ready'}>
+      <div className={photoStyles.stage}>
       {photo === 'loading' && verifiedPlaceId !== undefined
         ? <p className={styles.photoLabel}>{locale === 'ko' ? '확인된 장소 사진' : 'Verified place photos'}</p>
         : null}
@@ -292,7 +307,6 @@ function GooglePlacePhotoForIdentity({
         />
       )}
       {photo === 'loading' ? null : <>
-        <p className={styles.photoLabel}>{locale === 'ko' ? { 'Verified place photos': '확인된 장소 사진', 'Verified building photograph': '확인된 건물 사진', 'Verified project or estate photograph': '확인된 단지 사진' }[photo.label] : photo.label}</p>
         {secondary.length === 0 ? null : <div className={styles.photoStrip} aria-label={locale === 'ko' ? '확인된 장소 사진 더 보기' : 'More verified place photos'}>
           {secondary.map(({ item, index }) => <button
             type="button"
@@ -304,17 +318,23 @@ function GooglePlacePhotoForIdentity({
             <img src={item.src} alt="" decoding="async" />
           </button>)}
         </div>}
-        {current === null || current.attributions.length === 0 ? null : (
-          <p className={styles.attribution} aria-label={locale === 'ko' ? '사진 출처' : 'Photo credit'}>
+      </>}
+      </div>
+      {photo === 'loading' ? null : <figcaption className={photoStyles.caption}>
+        <span className={photoStyles.relationship}>{locale === 'ko' ? { 'Verified place photos': '확인된 장소 사진', 'Verified building photograph': '확인된 건물 사진', 'Verified project or estate photograph': '확인된 단지 사진' }[photo.label] : photo.label}</span>
+        {current === null ? null : (
+          <span className={photoStyles.credit} aria-label={locale === 'ko' ? '사진 출처' : 'Photo credit'}>
             {current.attributions.map((attribution, index) => <span key={`${attribution.displayName}:${index}`}>
               {index === 0 ? null : ' · '}
               {attribution.uri === null || !linkAttribution
                 ? attribution.displayName
                 : <a href={attribution.uri}>{attribution.displayName}</a>}
             </span>)}
-          </p>
+            {photo.sourcePageUrl && !current.attributions.some(a => a.uri === photo.sourcePageUrl)
+              ? <a href={photo.sourcePageUrl} rel="noreferrer">{locale === 'ko' ? '원본 사진' : 'Photo source'}</a> : null}
+          </span>
         )}
-      </>}
+      </figcaption>}
       {browserKey === null || approvedPlaceId === undefined ? null : (
         <Script
           src={buildGoogleMapsScriptUrl(browserKey, 'singapore', locale)}
@@ -324,6 +344,6 @@ function GooglePlacePhotoForIdentity({
           data-google-photo-loader={GOOGLE_MAPS_READY_CALLBACK}
         />
       )}
-    </div>
+    </figure>
   );
 }

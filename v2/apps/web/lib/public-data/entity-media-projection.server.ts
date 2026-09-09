@@ -13,6 +13,7 @@ export type PublicEntityMedia = Readonly<{
   focalY: number | null;
   attributionName: string | null;
   attributionUrl: string | null;
+  sourcePageUrl?: string | null;
   exactSubject: boolean;
   publishedAt: string;
   lastCheckedAt: string;
@@ -70,6 +71,7 @@ export function selectPublicEntityMedia(
       focalY: candidate.focalY,
       attributionName: candidate.attributionName,
       attributionUrl: candidate.attributionUrl,
+      sourcePageUrl: candidate.sourcePageUrl ?? null,
       exactSubject: candidate.exactSubject,
       publishedAt: candidate.publishedAt,
       lastCheckedAt: candidate.lastCheckedAt,

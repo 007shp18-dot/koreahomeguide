@@ -1,6 +1,4 @@
-import Image from 'next/image';
-
-import styles from './market-representative-photo.module.css';
+import MarketRepresentativePhotoFrame from './market-representative-photo-frame';
 
 export type MarketPhoto = Readonly<{
   src: string;
@@ -31,37 +29,14 @@ export const MARKET_PHOTOS = Object.freeze({
   }),
 } satisfies Readonly<Record<'seoul' | 'singapore' | 'dubai' | 'tokyo', MarketPhoto>>);
 
-export function MarketRepresentativePhoto({ photo, eager = false, cityLabel, context = 'property', locale = 'en' }: Readonly<{
+export type MarketRepresentativePhotoProps = Readonly<{
   photo: MarketPhoto | null;
   eager?: boolean;
   cityLabel?: string;
   context?: 'property' | 'city';
   locale?: 'en' | 'ko';
-}>) {
-  const ko = locale === 'ko';
-  if (photo === null) return <figure className={styles.frame} data-building-media="market-context-fallback">
-    <div className={styles.fallback}>
-      <strong>{ko ? (cityLabel === undefined ? '주택 시장 정보' : `${cityLabel} 주택 시장`) : (cityLabel === undefined ? 'Property market context' : `${cityLabel} market context`)}</strong>
-      <span>{ko ? '사용할 수 있는 도시 사진이 없습니다.' : 'No approved market photograph is available.'}</span>
-    </div>
-    <figcaption>{cityLabel === undefined ? null : `${cityLabel} · `}{ko ? '확인된 시장 정보' : 'Verified market context'}</figcaption>
-  </figure>;
+}>;
 
-  return <figure className={styles.frame} data-building-media="curated-market-photo">
-    {/* These are stable editorial market images, not a claim about a specific listing. */}
-    <Image
-      alt={photo.alt}
-      src={photo.src}
-      fill
-      priority={eager}
-      sizes="(max-width: 850px) 100vw, 55vw"
-      style={{ objectPosition: `${photo.focalPoint.x}% ${photo.focalPoint.y}%` }}
-    />
-    <figcaption>
-      {cityLabel === undefined ? null : `${cityLabel} · `}
-      {context === 'city'
-        ? (ko ? '도시 전경' : 'City view')
-        : (ko ? '도시 참고 사진 · 해당 매물의 사진이 아닙니다' : 'Editorial city photograph · not this exact property')}
-    </figcaption>
-  </figure>;
+export function MarketRepresentativePhoto(props: MarketRepresentativePhotoProps) {
+  return <MarketRepresentativePhotoFrame {...props} />;
 }

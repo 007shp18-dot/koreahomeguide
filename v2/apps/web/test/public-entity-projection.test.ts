@@ -131,13 +131,14 @@ describe('public entity projection', () => {
     await expect(publisher.publishSeoul()).resolves.toEqual({
       published: 12, provisional: 4, rejected: 2, rightsBlocked: 3, mediaPublished: 7,
     });
-    expect(calls).toHaveLength(4);
+    expect(calls).toHaveLength(5);
     expect(calls[0]).toContain('locationVerificationStatus');
     expect(calls[0]).toContain("= 'verified'");
-    expect(calls[1]).toContain('building_photos');
-    expect(calls[1]).toContain("'kr-seoul:estate:' || building.external_id");
-    expect(calls[1]).toContain('legacy_registry_key');
-    expect(calls[2]).toContain("media.review_state = 'approved'");
+    expect(calls[1]).toContain('reconcile-media');
+    expect(calls[2]).toContain('building_photos');
+    expect(calls[2]).toContain("'kr-seoul:estate:' || building.external_id");
+    expect(calls[2]).toContain('legacy_registry_key');
+    expect(calls[3]).toContain("media.review_state = 'approved'");
   });
 
   it('loads stored locations and media in two bounded bulk reads', async () => {

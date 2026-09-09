@@ -46,9 +46,9 @@ describe('shared market composition', () => {
     const css = readFileSync(new URL('../components/market-ui/market-shell.module.css', import.meta.url), 'utf8');
     const overviewCss = readFileSync(new URL('../components/market-dashboard.module.css', import.meta.url), 'utf8');
     const photoCss = readFileSync(new URL('../components/market-representative-photo.module.css', import.meta.url), 'utf8');
-    expect(css).toMatch(/\.detail\s*\{[^}]*width:\s*min\(1180px,\s*calc\(100% - 40px\)\)/);
+    expect(css).toMatch(/\.detail\s*\{[^}]*width:[^;]*var\(--page-gutter\)[^;]*var\(--content-frame\)/);
     expect(css).toMatch(/grid-template-columns:\s*minmax\(320px, \.85fr\) minmax\(0, 1\.15fr\)/);
-    expect(css).toMatch(/grid-template-columns:\s*minmax\(0, 1fr\) 300px/);
+    expect(css).toMatch(/\.detailGrid\s*\{[^}]*grid-template-columns:\s*minmax\(0, 1fr\);/);
     expect(overviewCss).toMatch(/\.hero[\s\S]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
     expect(photoCss).toMatch(/aspect-ratio:\s*16\s*\/\s*9/);
     expect(css).toMatch(/min-height:\s*44px/);
@@ -72,21 +72,21 @@ describe('shared market composition', () => {
     ['property', '도시 참고 사진 · 해당 매물의 사진이 아닙니다'],
   ] as const)('localizes the %s photo caption without dropping the city or image', (context, caption) => {
     const html = renderToStaticMarkup(<MarketRepresentativePhoto photo={MARKET_PHOTOS.singapore} cityLabel="싱가포르" locale="ko" context={context} />);
-    expect(html).toContain(`<figcaption>싱가포르 · ${caption}</figcaption>`);
+    expect(html.match(/<figcaption[^>]*>(.*?)<\/figcaption>/)?.[1]).toBe(`싱가포르 · ${caption}`);
     expect(html).toContain('singapore-residential.jpg');
     expect(html).toContain('alt="High-rise residential architecture in Singapore"');
   });
 
   it('retains the English editorial disclaimer for callers without a locale', () => {
     const html = renderToStaticMarkup(<MarketRepresentativePhoto photo={MARKET_PHOTOS.dubai} cityLabel="Dubai" />);
-    expect(html).toContain('<figcaption>Dubai · Editorial city photograph · not this exact property</figcaption>');
+    expect(html.match(/<figcaption[^>]*>(.*?)<\/figcaption>/)?.[1]).toBe('Dubai · Editorial city photograph · not this exact property');
   });
 
   it('localizes the missing-photo explanation and caption', () => {
     const html = renderToStaticMarkup(<MarketRepresentativePhoto photo={null} cityLabel="서울" locale="ko" />);
     expect(html).toContain('서울 주택 시장');
     expect(html).toContain('사용할 수 있는 도시 사진이 없습니다.');
-    expect(html).toContain('<figcaption>서울 · 확인된 시장 정보</figcaption>');
+    expect(html.match(/<figcaption[^>]*>(.*?)<\/figcaption>/)?.[1]).toBe('서울 · 지역 정보');
     expect(html).not.toContain('Verified market context');
   });
 });

@@ -3,6 +3,7 @@ import 'server-only';
 import { contentDatabase } from '../db/postgres.server';
 import {
   candidatePhotoRegistryKey,
+  privatePhotoCandidateKey,
   discoverGooglePlacePhotoCandidates,
   discoverWikimediaCommonsPhotoCandidates,
 } from './building-photo-store.server';
@@ -37,18 +38,25 @@ type NaverPhotoCandidateWrite = Readonly<{
 const UPSERT_NAVER_PHOTO_CANDIDATE_SQL = `
   /* photo-backfill:upsert-naver-review-candidate */
   INSERT INTO building_photos (
-    building_key, registry_key, provider, asset_url, attribution_name, attribution_url,
+    building_key, registry_key, publication_registry_key, candidate_source,
+    candidate_title, candidate_width, candidate_height,
+    provider, asset_url, attribution_name, attribution_url,
     status, subject_kind, rights_status, source_page_url,
     match_policy_version, match_confidence, match_evidence,
     provider_source_uri, provider_checked_at, checked_at
   ) VALUES (
-    $1, $2, 'licensed-url', $3, 'NAVER Image Search', $4,
+    $1, $8, $2, 'naver-search', $9, $10, $11,
+    'licensed-url', $3, 'NAVER Image Search', $4,
     'review_required', 'building-exterior', 'review-required', $4,
     'naver-image-candidate-v1', $5, $6::jsonb,
     $7, now(), now()
   )
   ON CONFLICT (registry_key) DO UPDATE SET
     building_key = excluded.building_key,
+    publication_registry_key = excluded.publication_registry_key,
+    candidate_title = excluded.candidate_title,
+    candidate_width = excluded.candidate_width,
+    candidate_height = excluded.candidate_height,
     provider = excluded.provider,
     provider_place_id = NULL,
     asset_url = excluded.asset_url,
@@ -92,6 +100,10 @@ export function createNaverPhotoCandidateStore(port: NaverPhotoCandidateStorePor
         input.confidence,
         JSON.stringify(input.evidence),
         input.candidate.temporaryThumbnailUrl,
+        privatePhotoCandidateKey(input.buildingKey, 'naver-search'),
+        input.candidate.title,
+        input.candidate.width,
+        input.candidate.height,
       ]);
       return rows.length > 0;
     },
@@ -372,7 +384,9 @@ async function runNaverAttemptBatch(
       AND NOT EXISTS (
         SELECT 1 FROM building_photos photo
         WHERE photo.building_key = building.key
-          AND photo.status IN ('approved', 'review_required', 'candidate')
+          AND (photo.status = 'approved' OR (
+            photo.status IN ('review_required', 'candidate') AND photo.candidate_source = 'naver-search'
+          ))
       )
       AND NOT EXISTS (
         SELECT 1 FROM building_enrichment_attempts attempt
@@ -466,7 +480,7 @@ export async function runPhotoBackfillSlice(options: PhotoBackfillOptions) {
 export async function readPhotoCoverageStatus() {
   const sql = contentDatabase();
   if (sql === null) throw new Error('database_not_configured');
-  const [coverage, providerHealth, dailyUsage, missingRows, reviewRows] = await Promise.all([
+  const [coverage, providerHealth, dailyUsage, missingRows, reviewRows, reviewBreakdown] = await Promise.all([
     readPhotoCoverageSummary(),
     sql`SELECT provider, state, reason, paused_until AS "pausedUntil", checked_at AS "checkedAt" FROM photo_provider_health ORDER BY provider`,
     sql`SELECT provider, usage_date AS "usageDate", request_count AS "requestCount", estimated_cost_microusd AS "estimatedCostMicrousd" FROM photo_provider_daily_usage WHERE usage_date >= current_date - 1 ORDER BY usage_date DESC, provider`,
@@ -478,6 +492,11 @@ export async function readPhotoCoverageStatus() {
         AND (building.latitude IS NULL OR building.longitude IS NULL)
     `,
     sql`SELECT count(*)::text AS count FROM building_photos WHERE status IN ('candidate', 'review_required')`,
+    sql`SELECT candidate_source AS source, rights_status AS "rightsStatus",
+      count(*)::integer AS candidates, count(DISTINCT asset_url)::integer AS "distinctAssets",
+      count(*) FILTER (WHERE match_confidence < 0.5)::integer AS "lowConfidence"
+      FROM building_photos WHERE status IN ('candidate', 'review_required')
+      GROUP BY candidate_source, rights_status ORDER BY candidate_source, rights_status`,
   ]);
   return Object.freeze({
     coverage,
@@ -485,5 +504,6 @@ export async function readPhotoCoverageStatus() {
     dailyUsage: Object.freeze(dailyUsage.map((row) => Object.freeze({ ...row }))),
     missingCoordinates: Number(missingRows[0]?.count ?? 0),
     reviewQueue: Number(reviewRows[0]?.count ?? 0),
+    reviewBreakdown: Object.freeze(reviewBreakdown.map(row => Object.freeze({ ...row }))),
   });
 }
