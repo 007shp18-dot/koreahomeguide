@@ -10,13 +10,14 @@ import { singaporeProjectSearchTerm } from '../../lib/singapore/project-display-
 import { PassportLink as Link } from '../passport/passport-journey';
 import { useCallback, useDeferredValue, useEffect, useMemo, useState } from 'react';
 import type { SingaporeExploreModel } from '../../lib/singapore/route-types';
+import { unpackSingaporeExploreModel, type PackedSingaporeExploreModel } from '../../lib/singapore/explore-transport';
+import { SingaporeProjectDirectory } from './singapore-project-directory';
 import type { HdbExploreModel } from '../../lib/singapore/hdb-route-model.server';
 import { GooglePlaceMap } from '../maps/google-place-map';
 import { buildSingaporeAreaMapCoverage, buildSingaporeMapCoverage } from '../../lib/singapore/map-coverage';
 import { HdbMarketPanel } from './hdb-market-panel';
 import { MarketExploreShell, MarketLayerControl } from '../market-ui/market-shell';
 import { SingaporeEvidence, SingaporePage, singaporeStyles as styles } from './singapore-shell';
-import directoryStyles from '../public-market/building-directory.module.css';
 import searchStyles from '../price-market-search.module.css';
 
 import { selectedResultPage } from '../../lib/navigation/selected-result-page';
@@ -71,7 +72,7 @@ export function formatSingaporeMapPrice(label: string | null, fallback: string):
 }
 
 export function SingaporeExplorer({ locale = 'en',
-  model,
+  model: incomingModel,
   hdbModel = { status: 'unavailable' },
   googleMapsBrowserKey = null,
   initialQuery = '',
@@ -82,7 +83,7 @@ export function SingaporeExplorer({ locale = 'en',
   initialProjectId = null,
   restoreStateFromUrl = false,
 }: Readonly<{ locale?: MarketLocale;
-  model: SingaporeExploreModel;
+  model: SingaporeExploreModel | PackedSingaporeExploreModel;
   hdbModel?: HdbExploreModel;
   googleMapsBrowserKey?: string | null;
   initialQuery?: string;
@@ -93,6 +94,7 @@ export function SingaporeExplorer({ locale = 'en',
   initialProjectId?: string | null;
   restoreStateFromUrl?: boolean;
 }>) {
+  const model = useMemo(() => unpackSingaporeExploreModel(incomingModel), [incomingModel]);
   const [selectedSegment, setSelectedSegment] = useState<'CCR' | 'RCR' | 'OCR' | null>(initialSegment);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(initialProjectId);
   const [query, setQuery] = useState(initialQuery);
@@ -255,18 +257,7 @@ export function SingaporeExplorer({ locale = 'en',
         </section>}
       />
     </div>
-    <details className={directoryStyles.directory}>
-      <summary>{sgText(locale, "All published project prices")}</summary>
-      <p className={directoryStyles.summary}>{sgText(locale, "Browse every published project by market region, including projects beyond the current result page.")}</p>
-      {segments.map((segment) => <section key={segment.code}>
-        <h2>{segment.state === 'published' ? <Link href={marketHref(locale, segment.href)}>{sgText(locale, segment.code)}{sgText(locale, " property prices")}</Link> : `${segment.code} projects`}</h2>
-        <ul className={directoryStyles.list}>
-          {(segment.projects ?? []).filter((project) => project.state === 'published').map((project) => <li key={project.id}>
-            <Link className={directoryStyles.link} href={marketHref(locale, project.href)}>{project.name}</Link>
-          </li>)}
-        </ul>
-      </section>)}
-    </details>
+    <SingaporeProjectDirectory segments={segments} locale={locale} />
     <p><Link href={marketHref(locale, "/guides/singapore-condo-buying-budget-guide/")}>{sgText(locale, "Condo buying guide: budgets, costs and ownership checks")}</Link></p>
     <HdbMarketPanel locale={locale} model={hdbModel} /><SingaporeEvidence locale={locale} model={model.evidence} compact />
   </SingaporePage>;

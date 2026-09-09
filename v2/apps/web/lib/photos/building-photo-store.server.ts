@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { contentDatabase } from '../db/postgres.server';
+import { contentDatabase, publicContentDatabase } from '../db/postgres.server';
 import { getPublicPhotoApproval } from './verified-building-photo-registry.server';
 import { scorePhotoIdentity, type PhotoIdentityDecision } from './photo-identity-policy';
 
@@ -152,7 +152,7 @@ export async function listStoredPublicPhotoApprovals(
   ].slice(0, 2_500));
   let approvals = new Map<string, StoredPublicPhotoApproval>();
   let databaseReadFailed = false;
-  const sql = contentDatabase();
+  const sql = publicContentDatabase();
   if (sql !== null && normalized.length > 0) {
     try {
       approvals = new Map(await createStoredPublicPhotoApprovalReader({

@@ -220,11 +220,13 @@ test('native Singapore Check submits single and cross-market A/B evidence', asyn
 
 test('Seoul and Singapore Explore share one contained navigation frame', async ({ page }) => {
   await page.goto('/sg/singapore/explore/');
+  await expect(page.locator('[data-market-shell-region="discovery"]')).toBeVisible();
   const singaporeRail = await page.locator('[data-market-shell-region="discovery"]').boundingBox();
   const singaporeHeader = await page.locator('.site-header__inner').boundingBox();
   await expect(await openPrimaryNavigation(page)).toBeVisible();
   await expect(await openMarketPagesNavigation(page, 'Singapore')).toBeVisible();
   await page.goto('/kr/seoul/explore/');
+  await expect(page.locator('[data-explorer-layout="list"] > [data-explorer-region="results"]')).toBeVisible();
   const seoulRail = await page.locator(
     '[data-explorer-layout="list"] > [data-explorer-region="results"]',
   ).boundingBox();
