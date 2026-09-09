@@ -3,6 +3,7 @@ import { randomUUID } from 'node:crypto';
 import { contentDatabase, publicContentDatabase } from '../db/postgres.server';
 import type { MarketRefreshSqlPort } from '../market-data/refresh-repository.server';
 import { scopeKey, type JapanRecord, type JapanScope, type JapanSnapshot } from './source.server';
+import { TOKYO_WARDS } from './query';
 
 export type JapanRun = { runId: string; leaseToken: string; releaseId: string };
 export function japanSqlPort(publicRead = false): MarketRefreshSqlPort | null {
@@ -81,6 +82,24 @@ export function createJapanRepository(port: MarketRefreshSqlPort, batchSize = 20
 export type JapanFilters = { q: string; type: string; minArea: number | null; maxArea: number | null; page: number; release: string | null };
 export type JapanPublished = { releaseId: string; retrievedAt: string; publishedAt: string; sourceUrl: string;
   sourceCount: number; filteredCount: number; records: JapanRecord[]; scope: JapanScope; filters: JapanFilters };
+
+export type JapanPublishedScope = JapanScope & { sourceCount: number };
+export async function readJapanCoverage(port = japanSqlPort(true)): Promise<JapanPublishedScope[]> {
+  if (port === null) throw new Error('database_not_configured');
+  // Only current, activated publications. No transaction rows or staged candidates
+  // are loaded; the supported 23 wards and year range bound the metadata response.
+  const rows = await port.query(`/* japan:coverage */
+    SELECT p.city, p.year, p.quarter, r.expected_count
+    FROM japan_area_publications p JOIN japan_area_releases r
+      ON r.id = p.release_id AND r.city = p.city AND r.year = p.year AND r.quarter = p.quarter
+    WHERE r.state = 'published' AND p.city = ANY($1::text[])
+      AND p.year BETWEEN 2024 AND $2::integer
+    ORDER BY p.year DESC, p.quarter DESC, p.city`,
+  [TOKYO_WARDS.map(([code]) => code), new Date().getUTCFullYear()]);
+  return rows.map(row => ({ city: String(row.city), year: String(row.year), quarter: String(row.quarter),
+    sourceCount: Number(row.expected_count) }));
+}
+
 export async function readJapanPublication(scope: JapanScope, filters: JapanFilters, port = japanSqlPort(true)): Promise<JapanPublished | null> {
   if (port === null) throw new Error('database_not_configured');
   // One statement gives the metadata, count and rows the same MVCC snapshot.

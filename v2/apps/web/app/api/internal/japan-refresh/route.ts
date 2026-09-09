@@ -1,4 +1,4 @@
-import { createJapanRepository, japanSqlPort, readJapanPublication } from '@/lib/japan/repository.server';
+import { createJapanRepository, japanSqlPort } from '@/lib/japan/repository.server';
 import { refreshJapan, scheduledJapanScope } from '@/lib/japan/refresh.server';
 import { parseJapanScope } from '@/lib/japan/source.server';
 
@@ -24,16 +24,6 @@ async function execute(request: Request, operator: boolean) {
   const port = japanSqlPort();
   if (!port) return json({ error: 'database_not_configured' }, 503);
   try {
-    if (!operator && explicit.length === 0) {
-      // The first authenticated cron run seeds the public page's canonical
-      // scope. Read uncached through this same port: a cached absence must not
-      // keep selecting the bootstrap once its first publication succeeds.
-      const bootstrap = { city: '13103', year: '2025', quarter: '4' };
-      const published = await readJapanPublication(bootstrap, {
-        q: '', type: '', minArea: null, maxArea: null, page: 1, release: null,
-      }, port);
-      if (published === null) scope = bootstrap;
-    }
     const result = await refreshJapan(createJapanRepository(port), scope, key,
       { allowLargeReduction: operator && query.get('allowLargeReduction') === 'true' });
     return json(result, result.state === 'failed' ? 502 : result.state === 'busy' ? 202 : 200);

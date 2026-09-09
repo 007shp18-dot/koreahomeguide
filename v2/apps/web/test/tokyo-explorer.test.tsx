@@ -3,12 +3,50 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 const read = vi.hoisted(() => vi.fn());
-vi.mock('../lib/japan/publication-cache.server', () => ({ readCachedJapanPublication: read }));
+const coverage = vi.hoisted(() => vi.fn());
+vi.mock('../lib/japan/publication-cache.server', () => ({ readCachedJapanPublication: read, readCachedJapanCoverage: coverage }));
 import TokyoExplorer from '../components/japan/tokyo-explorer';
 
-beforeEach(() => { read.mockReset(); });
+beforeEach(() => { read.mockReset(); coverage.mockReset().mockResolvedValue([]); });
 
 describe('Tokyo transaction exploration', () => {
+  it('starts a ward-only search at its latest published period and reports actual ward coverage', async () => {
+    coverage.mockResolvedValue([
+      { city: '13113', year: '2026', quarter: '1', sourceCount: 12 },
+      { city: '13103', year: '2025', quarter: '4', sourceCount: 197 },
+    ]);
+    read.mockResolvedValue(null);
+    const html = renderToStaticMarkup(await TokyoExplorer({ searchParams: Promise.resolve({ city: '13113' }) }));
+    expect(read).toHaveBeenCalledWith({ city: '13113', year: '2026', quarter: '1' }, expect.anything());
+    expect(html).toContain('1 of 23 wards available');
+    expect(html).toContain('Browse published wards');
+    expect(html).toContain('city=13103&amp;year=2025&amp;quarter=4');
+    expect(html).toContain('city=13113&amp;year=2026&amp;quarter=1');
+    expect(html.match(/<details\b[^>]*aria-label="More filters"[^>]*>/)?.[0]).not.toContain('open=""');
+    expect(html).toContain('<select name="year" disabled="">');
+    expect(html).toContain('<select name="quarter" disabled="">');
+  });
+
+  it('preserves an explicitly requested unpublished quarter while offering a real published alternative', async () => {
+    coverage.mockResolvedValue([{ city: '13113', year: '2025', quarter: '4', sourceCount: 12 }]);
+    read.mockResolvedValue(null);
+    const html = renderToStaticMarkup(await TokyoExplorer({ searchParams: Promise.resolve({ city: '13113', year: '2026', quarter: '2' }) }));
+    expect(read).toHaveBeenCalledWith({ city: '13113', year: '2026', quarter: '2' }, expect.anything());
+    expect(html).toContain('Prices for this period are not available yet.');
+    expect(html).toContain('View Shibuya · 2025 Q4');
+    expect(html).not.toContain('0 recorded transactions');
+  });
+
+  it('keeps published transactions readable if the coverage summary cannot be loaded', async () => {
+    coverage.mockRejectedValue(new Error('private coverage error'));
+    read.mockResolvedValue({ retrievedAt: '2026-09-01T00:00:00Z', sourceCount: 1, filteredCount: 1, records: [] });
+    const html = renderToStaticMarkup(await TokyoExplorer({ searchParams: Promise.resolve({}) }));
+    expect(html).toContain('1 recorded transactions');
+    expect(html).not.toContain('0 of 23');
+    expect(html).not.toContain('private coverage error');
+    expect(html).not.toContain('role="alert"');
+  });
+
   it('uses the shared Explore frame without inventing a building map and preserves query pagination', async () => {
     read.mockResolvedValue({ releaseId: 'release-one', retrievedAt: '2026-09-01T00:00:00Z', sourceCount: 24, filteredCount: 24,
       records: [{ recordReference: 'one', district: 'Azabu', municipality: 'Minato', type: 'Pre-owned Condominiums, etc.', areaLabel: '60', floorPlan: '2LDK', buildingYear: '2010', structure: 'RC', price: 85000000 }] });

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 vi.mock('server-only', () => ({}));
 import { collectJapanSnapshot, MAX_JAPAN_RECORDS, parseJapanSnapshot } from '../lib/japan/source.server';
-import { japanPageQuery, parseJapanFilters } from '../lib/japan/query';
+import { japanPageQuery, parseJapanFilters, TOKYO_WARDS } from '../lib/japan/query';
 import { refreshJapan, scheduledJapanScope } from '../lib/japan/refresh.server';
 import type { createJapanRepository } from '../lib/japan/repository.server';
 
@@ -61,10 +61,38 @@ describe('Japan source precision and complete snapshots', () => {
     expect(() => parseJapanFilters(japanPageQuery({ unexpected: 'value' }))).toThrow();
     expect(() => parseJapanFilters(new URLSearchParams('utm_source=search'))).toThrow();
   });
-  it('rotates exactly one ward/quarter per scheduled invocation', () => {
-    const scopes = Array.from({ length: 8 }, (_, week) => scheduledJapanScope(new Date(Date.UTC(2026, 6, 1 + 7 * week))));
-    expect(new Set(scopes.map(s => `${s.year}-${s.quarter}`)).size).toBe(8);
-    expect(scopes.every(s => s.city === '13103')).toBe(true);
+  it('visits every Tokyo ward in each aligned 23-hour block and every ward-quarter in 184 hours', () => {
+    const start = Date.parse('2026-07-04T16:00:00Z');
+    const scopes = Array.from({ length: 184 }, (_, hour) => scheduledJapanScope(new Date(start + hour * 3_600_000)));
+    expect(new Set(scopes.map(s => `${s.city}:${s.year}:Q${s.quarter}`)).size).toBe(184);
+    expect(new Set(scopes.map(s => `${s.year}-Q${s.quarter}`))).toEqual(new Set([
+      '2024-Q3', '2024-Q4', '2025-Q1', '2025-Q2', '2025-Q3', '2025-Q4', '2026-Q1', '2026-Q2',
+    ]));
+    for (let offset = 0; offset < scopes.length; offset += 23) {
+      expect(scopes.slice(offset, offset + 23).map(s => s.city).sort()).toEqual(TOKYO_WARDS.map(([city]) => city));
+    }
+  });
+  it('keeps one scope for the whole UTC hour and advances to a different ward in the next hour', () => {
+    const first = scheduledJapanScope(new Date('2026-09-09T02:00:00Z'));
+    expect(scheduledJapanScope(new Date('2026-09-09T02:59:59Z'))).toEqual(first);
+    expect(scheduledJapanScope(new Date('2026-09-09T03:00:00Z')).city).not.toBe(first.city);
+  });
+  it('never schedules an unfinished quarter at year and quarter boundaries', () => {
+    for (const date of ['2025-12-31T23:40:00Z', '2026-01-01T00:40:00Z', '2026-06-30T23:40:00Z', '2026-07-01T00:40:00Z']) {
+      const now = new Date(date);
+      const selected = scheduledJapanScope(now);
+      const period = Number(selected.year) * 4 + Number(selected.quarter) - 1;
+      const current = now.getUTCFullYear() * 4 + Math.floor(now.getUTCMonth() / 3);
+      expect(period).toBeLessThan(current);
+      expect(period).toBeGreaterThanOrEqual(current - 8);
+      expect(TOKYO_WARDS.some(([city]) => city === selected.city)).toBe(true);
+    }
+  });
+  it('bounds early rollout dates to completed quarters from 2024 onward', () => {
+    const scopes = Array.from({ length: 23 }, (_, hour) => scheduledJapanScope(new Date(Date.UTC(2024, 3, 10, hour))));
+    expect(new Set(scopes.map(s => `${s.year}-Q${s.quarter}`))).toEqual(new Set(['2024-Q1']));
+    expect(() => scheduledJapanScope(new Date('2024-03-31T23:00:00Z'))).toThrow('invalid_scope');
+    expect(() => scheduledJapanScope(new Date('invalid'))).toThrow('invalid_scope');
   });
 });
 

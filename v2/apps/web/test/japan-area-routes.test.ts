@@ -5,7 +5,7 @@ vi.mock('../lib/japan/publication-cache.server', () => ({ readCachedJapanPublica
 vi.mock('../lib/japan/repository.server', () => ({ readJapanPublication: mocks.read,
   japanSqlPort: mocks.port, createJapanRepository: mocks.repository }));
 vi.mock('../lib/japan/refresh.server', () => ({ refreshJapan: mocks.refresh,
-  scheduledJapanScope: () => ({ city: '13103', year: '2025', quarter: '1' }) }));
+  scheduledJapanScope: () => ({ city: '13123', year: '2025', quarter: '1' }) }));
 import { GET as publicGet } from '../app/api/japan/transactions/route';
 import { GET as cronGet, POST as operatorPost } from '../app/api/internal/japan-refresh/route';
 afterEach(() => { vi.unstubAllEnvs(); vi.clearAllMocks(); });
@@ -45,31 +45,24 @@ describe('Japan internal refresh authorization and bounded schedule', () => {
     expect(mocks.refresh).not.toHaveBeenCalled();
     expect(mocks.read).not.toHaveBeenCalled();
   });
-  it('bootstraps the missing canonical publication then uses weekly rotation once that publication exists', async () => {
+  it('executes one scheduled scope without requiring a Minato bootstrap publication', async () => {
     vi.stubEnv('CRON_SECRET', 'cron-test'); vi.stubEnv('SIGNEDPRICE_JAPAN_REFRESH_ENABLED', 'true');
     vi.stubEnv('SIGNEDPRICE_REINFOLIB_API_KEY', 'source-test');
     const port = { query: vi.fn() };
     mocks.port.mockReturnValue(port); mocks.repository.mockReturnValue({}); mocks.refresh.mockResolvedValue({ state: 'ready' });
-    mocks.read.mockResolvedValueOnce(null).mockResolvedValueOnce({ releaseId: 'canonical-published', sourceCount: 197 });
+    mocks.read.mockRejectedValue(new Error('public scope is unavailable'));
     expect((await cronGet(request('', 'Bearer cron-test'))).status).toBe(200);
-    expect(mocks.read.mock.calls[0]).toEqual([
-      { city: '13103', year: '2025', quarter: '4' },
-      { q: '', type: '', minArea: null, maxArea: null, page: 1, release: null }, port,
-    ]);
-    expect(mocks.refresh.mock.calls[0]?.[1]).toEqual({ city: '13103', year: '2025', quarter: '4' });
-    expect((await cronGet(request('', 'Bearer cron-test'))).status).toBe(200);
-    expect(mocks.refresh.mock.calls[1]?.[1]).toEqual({ city: '13103', year: '2025', quarter: '1' });
-    expect(mocks.read).toHaveBeenCalledTimes(2);
+    expect(mocks.refresh).toHaveBeenCalledTimes(1);
+    expect(mocks.refresh.mock.calls[0]?.[1]).toEqual({ city: '13123', year: '2025', quarter: '1' });
+    expect(mocks.read).not.toHaveBeenCalled();
   });
-  it('fails closed on a bootstrap read error and preserves explicit authenticated GET scopes', async () => {
+  it('preserves explicit authenticated GET scopes without a bootstrap lookup', async () => {
     vi.stubEnv('CRON_SECRET', 'cron-test'); vi.stubEnv('SIGNEDPRICE_JAPAN_REFRESH_ENABLED', 'true');
     vi.stubEnv('SIGNEDPRICE_REINFOLIB_API_KEY', 'source-test');
     mocks.port.mockReturnValue({}); mocks.repository.mockReturnValue({}); mocks.refresh.mockResolvedValue({ state: 'ready' });
     mocks.read.mockRejectedValue(new Error('database unavailable'));
-    expect((await cronGet(request('', 'Bearer cron-test'))).status).toBe(503);
-    expect(mocks.refresh).not.toHaveBeenCalled();
     expect((await cronGet(request('city=13102&year=2025&quarter=3', 'Bearer cron-test'))).status).toBe(200);
-    expect(mocks.read).toHaveBeenCalledTimes(1);
+    expect(mocks.read).not.toHaveBeenCalled();
     expect(mocks.refresh.mock.calls[0]?.[1]).toEqual({ city: '13102', year: '2025', quarter: '3' });
   });
   it('allows the authenticated initial ward-quarter and protects the large-reduction override', async () => {

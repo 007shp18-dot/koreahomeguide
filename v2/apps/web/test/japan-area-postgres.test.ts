@@ -1,10 +1,10 @@
-import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { readFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 vi.mock('server-only', () => ({}));
-import { createJapanRepository, readJapanPublication, type JapanRun } from '../lib/japan/repository.server';
+import { createJapanRepository, readJapanCoverage, readJapanPublication, type JapanRun } from '../lib/japan/repository.server';
 import type { MarketRefreshSqlPort } from '../lib/market-data/refresh-repository.server';
-import { parseJapanSnapshot, type JapanSnapshot } from '../lib/japan/source.server';
+import { parseJapanSnapshot, type JapanScope, type JapanSnapshot } from '../lib/japan/source.server';
 
 type Row = Record<string, unknown>;
 type Database = { query(sql: string, params?: unknown[]): Promise<{ rows: Row[] }>;
@@ -112,5 +112,67 @@ suite('Japan real PostgreSQL publication and failure modes', () => {
     await expect(repo.activate(corrupt)).rejects.toThrow('candidate_incomplete');
     expect((await readJapanPublication(scope, filters, port))?.releaseId).toBe(previous.releaseId);
     await repo.fail(corrupt, 'source_invalid');
+  });
+
+  describe('published ward coverage', () => {
+    const scopedSnapshot = (selected: JapanScope, count = 1) => parseJapanSnapshot(JSON.stringify({
+      status: 'OK', data: Array.from({ length: count }, () => ({ ...source,
+        MunicipalityCode: selected.city, Municipality: `Test ward ${selected.city}`,
+        Period: `${selected.year}年第${selected.quarter}四半期`,
+      })),
+    }), selected, '2026-09-08T00:00:00Z');
+
+    beforeEach(async () => {
+      // This suite only connects to the isolated, in-memory PGlite database above.
+      await db.exec('TRUNCATE japan_area_publications, japan_area_records, japan_area_releases, market_data_refresh_runs CASCADE');
+      await db.exec('DELETE FROM market_data_refresh_leases');
+    });
+
+    it('shows activated scopes only, keeping new staged and failed wards out of coverage', async () => {
+      const repo = createJapanRepository(port);
+      expect(await readJapanCoverage(port)).toEqual([]);
+      const first = await repo.start() as JapanRun;
+      await repo.stage(first, scopedSnapshot(scope, 2));
+      expect(await readJapanCoverage(port)).toEqual([]);
+      await repo.activate(first);
+      const published = [{ ...scope, sourceCount: 2 }];
+      expect(await readJapanCoverage(port)).toEqual(published);
+
+      const candidate = await repo.start() as JapanRun;
+      await repo.stage(candidate, scopedSnapshot({ ...scope, city: '13104' }));
+      expect(await readJapanCoverage(port)).toEqual(published);
+      await repo.fail(candidate, 'source_invalid');
+      expect(await readJapanCoverage(port)).toEqual(published);
+    });
+
+    it('replacing a publication updates its count without duplicating a superseded scope', async () => {
+      const previous = await publish(scopedSnapshot(scope, 2));
+      const repo = createJapanRepository(port);
+      const replacement = await repo.start() as JapanRun;
+      await repo.stage(replacement, scopedSnapshot(scope, 3));
+      expect(await readJapanCoverage(port)).toEqual([{ ...scope, sourceCount: 2 }]);
+      await repo.activate(replacement);
+      expect(await readJapanCoverage(port)).toEqual([{ ...scope, sourceCount: 3 }]);
+      const history = await db.query('SELECT state FROM japan_area_releases WHERE id = $1', [previous.releaseId]);
+      expect(history.rows[0]?.state).toBe('superseded');
+    });
+
+    it('returns every published ward and quarter with newest periods first and stable ward ordering', async () => {
+      const scopes = [
+        { city: '13113', year: '2024', quarter: '4' },
+        { city: '13103', year: '2025', quarter: '4' },
+        { city: '13104', year: '2025', quarter: '3' },
+        { city: '13101', year: '2025', quarter: '4' },
+        { city: '13103', year: '2025', quarter: '2' },
+      ] as const;
+      for (const [index, selected] of scopes.entries()) await publish(scopedSnapshot(selected, index + 1));
+      expect(await readJapanCoverage(port)).toEqual([
+        { ...scopes[3], sourceCount: 4 },
+        { ...scopes[1], sourceCount: 2 },
+        { ...scopes[2], sourceCount: 3 },
+        { ...scopes[4], sourceCount: 5 },
+        { ...scopes[0], sourceCount: 1 },
+      ]);
+    });
   });
 });
