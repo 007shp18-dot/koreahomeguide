@@ -20,6 +20,9 @@ transaction identities.
 
 See the [data collection roadmap](../superpowers/plans/2026-09-09-data-roadmap.md)
 for city-specific fields, source boundaries, storage decisions and exit criteria.
+The [user-contributed data roadmap](../superpowers/plans/2026-09-09-user-contributed-data.md)
+adds optional buyer preferences, actual ownership costs and purchase experiences,
+with explicit consent, review and deletion before collection is enabled.
 The [9 September refresh review](../superpowers/plans/2026-09-09-refresh-review.md)
 records the shared design and editorial scope; its dated verification notes are
 not a substitute for current deployment or ingestion evidence.
