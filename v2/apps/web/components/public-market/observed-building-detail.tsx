@@ -2,7 +2,8 @@ import { buildingDisplayName, neighborhoodDisplayName } from '../../lib/public-m
 import { seoulDetailText } from '../../lib/locale/seoul-detail-copy';
 import { createPropertyScenarioHref } from '../../lib/tools/property-scenario-context';
 import { RecentTransactionPlot, SizeCohortResearch } from '../market-ui/transaction-research';
-import { PropertyScenarioCalculator } from '../market-ui/property-scenario';
+import { DetailTools } from '../market-ui/detail-tools';
+import detailStyles from '../market-ui/detail-layout.module.css';
 import { PassportLink as Link } from '../passport/passport-journey';
 import type { ReactNode } from 'react';
 
@@ -17,7 +18,7 @@ import {
 import { SiteFooter } from '../site-footer';
 import { BuildingSaveButton } from './building-save-button';
 import { BuildingDetailHeader } from './building-detail-header';
-import { MARKET_PHOTOS, MarketRepresentativePhoto } from '../market-representative-photo';
+import { ProjectedEntityMedia } from './projected-entity-media';
 import styles from './building-detail.module.css';
 import { BuildingSummaryCard } from './building-summary-card';
 
@@ -47,21 +48,15 @@ const exactEvidenceFooter: SiteFooterModel = {
 
 const countLabel = (count: number) => `${count} observed contract${count === 1 ? '' : 's'}`;
 
-function SeoulBuildingContext({ locale }: Readonly<{ locale: ProductLocale }>) {
-  return <MarketRepresentativePhoto
-    photo={MARKET_PHOTOS.seoul}
-    cityLabel={locale === 'ko' ? '서울' : 'Seoul'}
-    context="property"
-    locale={locale}
-    eager
-  />;
+function SeoulBuildingContext({ locale, name, href }: Readonly<{ locale: ProductLocale; name: string; href: string }>) {
+  return <ProjectedEntityMedia locale={locale} buildingName={name} media={null} fallbackMarket="seoul" locationHref={href} />;
 }
 
 
 function KnownBuildingFacts({ facts, locale = 'en' }: Readonly<{ locale?: ProductLocale; facts: readonly Readonly<{ label: string; value: string }>[] }>) {
   const t = (value: string) => seoulDetailText(locale, value);
   return <section className={styles.knownFacts} aria-labelledby="known-building-facts-heading" data-building-facts="known">
-    <div className={styles.sectionHeading}><p>{t('Building profile')}</p><h2 id="known-building-facts-heading">{t('Verified facts already attached')}</h2></div>
+    <div className={styles.sectionHeading}><p>{t('Building profile')}</p><h2 id="known-building-facts-heading">{t('Building profile')}</h2></div>
     <dl className={styles.findingGrid}>{facts.filter(fact => !/not reported|pending|unavailable|unverified/i.test(fact.value)).map((fact) => <div key={fact.label}><dt>{t(fact.label)}</dt><dd>{t(fact.value)}</dd></div>)}</dl>
   </section>;
 }
@@ -152,13 +147,13 @@ export function ObservedBuildingDetail({
   return (
     <div id="top" className={styles.page}>
       <BuildingDetailHeader locale={locale} />
-      <main className={styles.main} data-building-detail="identity-only">
+      <main className={`${styles.main} ${detailStyles.root}`} data-detail-layout="unified" data-building-detail="identity-only">
         <section
           className={styles.identityHero}
           data-identity-hero="true"
           data-building-section="identity"
         >
-          <div data-detail-order="media">{visual ?? <SeoulBuildingContext locale={locale} />}</div>
+          <div data-detail-order="media">{visual ?? <SeoulBuildingContext locale={locale} name={model.building.officialName} href={backHref} />}</div>
 
           <div className={styles.identitySummary}>
             <Link className={styles.backAction} href={backHref}>
@@ -178,7 +173,7 @@ export function ObservedBuildingDetail({
           </div>
         </section>
 
-        <nav className={styles.mockupTabs} aria-label={t('Building page sections')}><a href="#building-overview">{t('Overview')}</a><a href="#building-source">{t('Source')}</a></nav>
+        <nav className={styles.mockupTabs} aria-label={t('Building page sections')}><a href="#building-overview">{t('Overview')}</a><a href="#building-facts">{t('Building profile')}</a><a href="#building-source">{t('Source')}</a></nav>
         <section id="building-overview" className={styles.evidence} data-building-section="identity-evidence">
           <div className={styles.sectionHeading}>
             <p>{t('Evidence boundary')}</p>
@@ -193,15 +188,9 @@ export function ObservedBuildingDetail({
             <div><dt>{t('Map status')}</dt><dd>{t(coordinateLabel)}</dd></div>
           </dl>
         </section>
-        <KnownBuildingFacts locale={locale} facts={[
-          { label: 'Official identity', value: model.building.officialName },
-          { label: 'Area', value: `${model.building.neighborhoodName} · ${locale === 'ko' ? model.district.nameKo : model.district.nameEn}` },
-          { label: 'Housing type', value: model.building.housingType },
-          { label: 'Observed evidence', value: countLabel(model.observations.total) },
-          { label: 'Evidence period', value: `${model.observations.firstMonth}–${model.observations.lastMonth}` },
-          { label: 'Map identity', value: coordinateLabel },
-        ]} />
-        {facts}
+        <div id="building-facts" className={detailStyles.section}>
+          {facts ?? <KnownBuildingFacts locale={locale} facts={[{ label: 'Map identity', value: coordinateLabel }]} />}
+        </div>
         {facts === undefined ? <BuildingProximityDisclosure proximity={model.proximity} locale={locale} /> : null}
         <section id="building-source" className={styles.source}>
           <details className={styles.sourceDetails}>
@@ -298,31 +287,31 @@ export function KoreaEvidenceBuildingDetail({
   return (
     <div id="top" className={styles.page}>
       <BuildingDetailHeader locale={locale} />
-      <main className={styles.main} data-building-detail="exact-evidence" data-detail-locale={locale}>
+      <main className={`${styles.main} ${detailStyles.root}`} data-detail-layout="unified" data-building-detail="exact-evidence" data-detail-locale={locale}>
         <BuildingSummaryCard model={model} backHref={backHref} locale={locale} />
-        <div className={styles.summaryMedia} data-detail-order="media">{visual ?? <SeoulBuildingContext locale={locale} />}</div>
+        <div className={styles.summaryMedia} data-detail-order="media">{visual ?? <SeoulBuildingContext locale={locale} name={model.building.officialName} href={backHref} />}</div>
 
         <nav className={styles.mockupTabs} aria-label={locale === 'ko' ? '건물 상세 항목' : 'Building detail sections'}>
           <a href="#building-overview">{locale === 'ko' ? '개요' : 'Overview'}</a>
           <a href="#building-transactions">{locale === 'ko' ? '실거래' : 'Transactions'}</a>
-          <a href="#building-area-prices">{locale === 'ko' ? '면적별 가격' : 'Price by area'}</a>
           <a href="#building-facts">{locale === 'ko' ? '단지 정보' : 'Building facts'}</a>
+          <a href="#building-tools">{locale === 'ko' ? '내 조건 비교' : 'Compare'}</a>
           <a href="#building-source">{locale === 'ko' ? '출처' : 'Sources'}</a>
         </nav>
 
 
         <section className={styles.evidence} data-building-section="exact-evidence">
+          <nav className={detailStyles.filters} aria-label={locale === 'ko' ? '거래 유형' : 'Transaction type'}>
+            {(['sale', 'jeonse', 'monthly'] as const).map(transaction => <Link key={transaction} aria-current={transaction === model.selection.transaction ? 'true' : undefined} href={localizedSeoulHref(`/kr/seoul/explore/${model.district.slug}/${model.building.buildingId}/?transaction=${transaction}&area=${model.selection.areaBand}`,locale)}>{t(transactionLabels[transaction])}</Link>)}
+          </nav>
+          <nav className={detailStyles.filters} aria-label={locale === 'ko' ? '면적 선택' : 'Home size'}>
+            {Object.entries(areaLabels).map(([id, label]) => <Link key={id} aria-current={id === model.selection.areaBand ? 'true' : undefined} href={localizedSeoulHref(`/kr/seoul/explore/${model.district.slug}/${model.building.buildingId}/?transaction=${model.selection.transaction}&area=${id}${model.selection.contractGroup === 'not-applicable' ? '' : `&contractType=${model.selection.contractGroup}`}`, locale)}>{t(label)}</Link>)}
+          </nav>
           <div className={styles.sectionHeading}>
             <p>{transactionLabel} · {areaLabel}</p>
             <h2>{publicationHeading}</h2>
           </div>
-          {model.evidence.primaryMetric === 'monthly-rent' ? (
-            <dl className={styles.sourceGrid}>
-              <div><dt>{t('Filed deposit median')}</dt><dd>{model.evidence.filedDepositMedianLabel ?? t('Not published')}</dd></div>
-              <div><dt>{t('Monthly rent metric')}</dt><dd>{t('Filed monthly rent only')}</dd></div>
-              <div><dt>{t('Contract group')}</dt><dd>{t(model.selection.contractGroup)}</dd></div>
-            </dl>
-          ) : null}
+          {model.evidence.primaryMetric === 'monthly-rent' ? <p>{locale === 'ko' ? '월세와 반환 보증금을 별도로 표시합니다.' : 'Monthly rent and refundable deposits are shown separately.'}</p> : null}
 
           <RecentTransactionPlot rows={model.recentTransactions} locale={locale} periodUnit={model.evidence.primaryMetric === 'monthly-rent' ? 'month' : undefined} />
 
@@ -330,7 +319,7 @@ export function KoreaEvidenceBuildingDetail({
           {model.recentTransactions.length === 0 ? (
             <p>{t('No privacy-safe recent rows remain in this selected cohort.')}</p>
           ) : (
-            <div className={styles.tableWrap}>
+            <div className={styles.tableWrap} tabIndex={0} role="region" aria-label={locale === 'ko' ? '실거래표 · 가로로 스크롤' : 'Reported transactions · scroll horizontally'}>
               <table>
                 <thead>
                   <tr>
@@ -362,28 +351,19 @@ export function KoreaEvidenceBuildingDetail({
         <section id="building-area-prices" className={styles.areaBands} data-detail-order="comparable-range" aria-labelledby="building-area-prices-heading">
           <div className={styles.sectionHeading}>
             <p>{locale === 'ko' ? '면적별 가격' : 'Price by home size'}</p>
-            <h2 id="building-area-prices-heading">{locale === 'ko' ? '같은 건물의 면적 구간을 전환합니다.' : 'Switch between verified size cohorts for this building.'}</h2>
+            <h2 id="building-area-prices-heading">{locale === 'ko' ? '면적별 가격 비교' : 'Prices by home size'}</h2>
           </div>
           {model.sizeCohorts ? <SizeCohortResearch rows={model.sizeCohorts} currency="KRW" locale={locale} periodUnit={model.evidence.primaryMetric === 'monthly-rent' ? 'month' : undefined} /> : null}
-          <ul>{Object.entries(areaLabels).map(([id, label]) => <li key={id}>
-            <strong>{t(label)}</strong>
-            <span>{id === model.selection.areaBand ? (locale === 'ko' ? '현재 선택한 면적' : 'Selected size cohort') : (locale === 'ko' ? '선택해 거래 내역 보기' : 'Open this evidence cohort')}</span>
-            <Link href={localizedSeoulHref(`/kr/seoul/explore/${model.district.slug}/${model.building.buildingId}/?transaction=${model.selection.transaction}&area=${id}${model.selection.contractGroup === 'not-applicable' ? '' : `&contractType=${model.selection.contractGroup}`}`, locale)}>{locale === 'ko' ? '이 면적 보기' : 'View size cohort'}</Link>
-          </li>)}</ul>
+
         </section>
 
-        {model.selection.transaction === 'sale' ? <div className={styles.areaBands}><PropertyScenarioCalculator key={`${model.building.buildingId}-${model.selection.areaBand}`} price={model.evidence.medianWon} housingType={model.building.housingType} annualRent={model.rentStartingPoint?.annualRent} rentSource={model.rentStartingPoint ? `MOLIT · ${model.rentStartingPoint.period} · ${model.rentStartingPoint.count} contracts · refundable deposit ${money(model.rentStartingPoint.deposit)} (not deducted from purchase cash)` : undefined} currency="KRW" locale={locale} analytics={{market:'kr-seoul',surface:'property-detail'}} /><Link href={createPropertyScenarioHref({locale,market:'kr-seoul',currency:'KRW',entity:model.building.buildingId,propertyName:model.building.officialName,transaction:'sale',price:model.evidence.state === 'published' ? model.evidence.medianWon : null,returnTo:localizedSeoulHref(`/kr/seoul/explore/${model.district.slug}/${model.building.buildingId}/`,locale)})}>{locale === 'ko' ? '전체 계산기 열기' : 'Open calculator'}</Link></div> : null}
-
-        <div id="building-facts" className={styles.factsAnchor} data-detail-order="facts"><KnownBuildingFacts locale={locale} facts={[
-          { label: locale === 'ko' ? '공식 건물명' : 'Official identity', value: model.building.officialName },
-          { label: locale === 'ko' ? '지역' : 'Area', value: `${model.building.neighborhoodName} · ${locale === 'ko' ? model.district.nameKo : model.district.nameEn}` },
-          { label: locale === 'ko' ? '주택 유형' : 'Housing type', value: locale === 'ko' ? ({apartment:'아파트',officetel:'오피스텔',villa_multifamily:'연립·다세대',detached:'단독·다가구'}[model.building.housingType]) : model.building.housingType },
-          { label: locale === 'ko' ? '거래 유형' : 'Transaction', value: transactionLabel },
-          { label: locale === 'ko' ? '면적 구간' : 'Area cohort', value: areaLabel },
-          { label: locale === 'ko' ? '집계 기간' : 'Evidence period', value: model.period },
-        ]} /></div>
-        <div data-detail-order="proximity">{facts}</div>
-
+        <div id="building-facts" className={styles.factsAnchor} data-detail-order="facts">
+          {facts ?? <KnownBuildingFacts locale={locale} facts={[
+            { label: 'Housing type', value: model.building.housingType },
+          ]} />}
+        </div>
+        <DetailTools locale={locale} id="building-tools" checkHref={buildKoreaEvidenceCheckHref(model, locale)}
+          calculatorHref={model.selection.transaction === 'sale' ? createPropertyScenarioHref({locale,market:'kr-seoul',currency:'KRW',entity:model.building.buildingId,propertyName:model.building.officialName,transaction:'sale',housing:model.building.housingType,price:model.evidence.state === 'published' ? model.evidence.medianWon : null,annualRent:model.rentStartingPoint?.annualRent,returnTo:localizedSeoulHref(`/kr/seoul/explore/${model.district.slug}/${model.building.buildingId}/?transaction=${model.selection.transaction}&area=${model.selection.areaBand}`,locale)}) : undefined} />
 
         <details id="building-source" className={styles.sourceDetails} data-detail-order="sources">
           <summary>{locale === 'ko' ? '출처·기간·표본 기준' : 'Source and sample details'}</summary>
@@ -396,11 +376,11 @@ export function KoreaEvidenceBuildingDetail({
           </dl>
         </details>
 
-        <section data-detail-order="related-actions" className={styles.areaBands} aria-label={locale === 'ko' ? '다음으로 확인하기' : 'Continue your search'}>
-          <h2>{locale === 'ko' ? '다음으로 확인하기' : 'Continue your search'}</h2>
-          <div className={styles.actions}>{(['sale','jeonse','monthly'] as const).map(transaction => <Link key={transaction} href={localizedSeoulHref(`/kr/seoul/explore/${model.district.slug}/${model.building.buildingId}/?transaction=${transaction}&area=${model.selection.areaBand}`,locale)}>{locale === 'ko' ? {sale:'매매',jeonse:'전세',monthly:'월세'}[transaction] : transactionLabels[transaction]}</Link>)}<Link href={buildKoreaEvidenceCheckHref(model,locale)}>{locale === 'ko' ? '매물 가격 비교' : 'Compare an asking price'}</Link></div>
-          {!!model.nearbyBuildings?.length && <><h3>{locale === 'ko' ? '같은 동 다른 단지 · 같은 검색 조건' : 'Other buildings in this neighbourhood · same filters'}</h3><ul>{model.nearbyBuildings.map(b => <li key={b.id}><Link href={localizedSeoulHref(`/kr/seoul/explore/${model.district.slug}/${b.id}/?transaction=${model.selection.transaction}&area=${model.selection.areaBand}`,locale)}>{buildingDisplayName(b.name,locale)} · {money(b.median)} · {b.count}{locale === 'ko' ? '건' : ' contracts'}</Link></li>)}</ul></>}
-        </section>
+        {!!model.nearbyBuildings?.length && <section data-detail-order="related-actions" className={styles.areaBands} aria-label={locale === 'ko' ? '주변 다른 건물' : 'Other buildings nearby'}>
+          <h2>{locale === 'ko' ? '주변 다른 건물' : 'Other buildings nearby'}</h2>
+
+          {!!model.nearbyBuildings?.length && <><h3>{locale === 'ko' ? '같은 동 · 같은 검색 조건' : 'Same neighbourhood and filters'}</h3><ul>{model.nearbyBuildings.map(b => <li key={b.id}><Link href={localizedSeoulHref(`/kr/seoul/explore/${model.district.slug}/${b.id}/?transaction=${model.selection.transaction}&area=${model.selection.areaBand}`,locale)}>{buildingDisplayName(b.name,locale)} · {money(b.median)} · {b.count}{locale === 'ko' ? '건' : ' contracts'}</Link></li>)}</ul></>}
+        </section>}
       </main>
       <SiteFooter locale={locale} copy={locale === 'ko' ? { ...exactEvidenceFooter, descriptor: '서울 실거래가와 집계 기간·거래 건수·출처를 확인하세요.' } : exactEvidenceFooter} />
     </div>

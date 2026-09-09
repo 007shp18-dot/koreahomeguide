@@ -45,7 +45,7 @@ describe('building official facts panel', () => {
     expect(html).toContain('초등학교(구룡초, 포이초)');
     expect(html).not.toMatch(/meters|metres|\d+m\b/i);
     expect(html).not.toContain('MOLIT Building HUB');
-    expect(html).toContain('Official complex profile');
+    expect(html).toContain('Official building information');
     expect(html).not.toContain('Complex and building-register profile');
   });
 });

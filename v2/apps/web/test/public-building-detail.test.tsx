@@ -237,20 +237,20 @@ describe('public building detail', () => {
     const evidence = html.indexOf('data-building-section="evidence"');
 
     expect(html).not.toContain('data-building-media="evidence-fallback"');
-    expect(html).toContain('data-detail-layout="research"');
-    expect(html).toContain('data-detail-hero="building"');
-    expect(html).toContain('data-detail-hero-metric="identity"');
+    expect(html).toContain('data-detail-layout="unified"');
+    expect(html).toContain('data-market-summary="true"');
+    expect(html).toContain('data-detail-order="identity"');
     expect(html).toContain('<dl class="');
     expect(html).toContain('<dt>Property type</dt>');
     expect(html).toContain('6 reported contracts · 2026-01/2026-07');
-    expect(html).toContain('<dt>Evidence period</dt>');
+    expect(html).toContain('id="building-source"');
     expect(html).not.toContain('Verified building identity');
     expect(html).not.toContain('Properties · Service preparing');
     expect(html).not.toContain('Listing service');
     expect(html).not.toMatch(/<img[^>]+src="(?:data:|https?:\/\/)/);
     expect(identity).toBeGreaterThan(-1);
-    expect(identity).toBeLessThan(decision);
-    expect(decision).toBeLessThan(evidence);
+    expect(identity).toBeLessThan(evidence);
+    expect(evidence).toBeLessThan(decision);
   });
 
   it('exposes the existing shortlist action on the independent detail page', () => {
@@ -267,9 +267,9 @@ describe('public building detail', () => {
       propertyMedia={<figure data-building-media="public-projection"><img src="/assets/buildings/evidence-tower.jpg" alt="Evidence Tower building exterior" /></figure>}
     />);
 
-    expect(html).toContain('data-building-gallery="verified"');
-    expect(html).toContain('data-media-kind="exterior"');
-    expect(html).toContain('>Exterior</span>');
+    expect(html).toContain('data-building-media="public-projection"');
+    expect(html).toContain('Evidence Tower building exterior');
+    expect(html).not.toContain('data-location-fallback="true"');
   });
 
   it('orders the decision record and carries entity context into Check', () => {
@@ -278,20 +278,19 @@ describe('public building detail', () => {
       backHref="/kr/seoul/explore/?transaction=monthly&propertyType=apartment&district=gangnam-gu&neighborhood=yeoksam-dong&buildingId=gangnam-evidence-tower"
     />);
     const ordered = [
-      'data-detail-order="media"',
       'data-detail-order="identity"',
       'data-detail-order="current-evidence"',
-      'data-detail-order="history"',
+      'data-detail-order="media"',
       'data-detail-order="comparable-range"',
       'data-detail-order="facts"',
-      'data-detail-order="proximity"',
+      'data-detail-order="tools"',
       'data-detail-order="sources"',
       'data-detail-order="related-actions"',
     ].map((needle) => html.indexOf(needle));
 
     expect(ordered.every((position) => position >= 0)).toBe(true);
-    expect(html).toContain('data-building-gallery="market-context"');
-    expect(html).toContain('Editorial city photograph · not this exact property');
+    expect(html).toContain('data-location-fallback="true"');
+    expect(html).not.toContain('Editorial city photograph');
     expect([...ordered].sort((left, right) => left - right)).toEqual(ordered);
     expect(html).toContain('market=kr-seoul');
     expect(html).toContain('entity=gangnam-evidence-tower');
@@ -318,7 +317,7 @@ describe('public building detail', () => {
 
     expect(html).toContain('<details');
     expect(html).toContain(
-      '<summary>See records, adjustments, and methodology</summary>',
+      '<summary>Floor and size analysis and methodology</summary>',
     );
     expect(html).toContain('Floor adjustment evidence');
     expect(html).toContain('Evidence by filed area band');
@@ -422,7 +421,7 @@ describe('public building detail', () => {
 
   it('keeps navigation and primary actions available in the research layout', () => {
     const html = renderToStaticMarkup(<BuildingDetailPage {...detailProps()} />);
-    expect(html).toContain('data-detail-layout="research"');
+    expect(html).toContain('data-detail-layout="unified"');
     expect(html).toContain('>Back to Gangnam-gu Explore</a>');
     expect(html).toContain('>Compare an asking price</a>');
     expect(html).toContain('aria-label="Building page sections"');

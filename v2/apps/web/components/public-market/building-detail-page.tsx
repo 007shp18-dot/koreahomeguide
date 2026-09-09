@@ -24,7 +24,10 @@ import { DetailNewsList } from '../news/detail-news-list';
 import pageStyles from './building-page.module.css';
 import { createEntityCheckHref } from '../../lib/navigation/explorer-selection';
 import { BuildingSaveButton } from './building-save-button';
-import { MARKET_PHOTOS, MarketRepresentativePhoto } from '../market-representative-photo';
+import { ProjectedEntityMedia } from './projected-entity-media';
+import { MarketSummary } from '../market-ui/market-summary';
+import { DetailTools } from '../market-ui/detail-tools';
+import detailStyles from '../market-ui/detail-layout.module.css';
 
 const footer: SiteFooterModel = {
   brand: 'signedprice',
@@ -74,7 +77,6 @@ export function BuildingDetailPage({
   const { mode, contract } = decision.selection;
   const t = (value: string) => seoulDetailText(locale, value);
   const districtName = locale === 'ko' ? model.district.nameKo : model.district.nameEn;
-  const hasVerifiedMedia = Boolean(propertyMedia) || visual.kind !== 'unavailable';
   const exploreHref = backHref ?? localizedSeoulHref(`/kr/seoul/explore/?district=${model.district.slug}`,locale);
   const exploreTarget = new URL(exploreHref, 'https://signedprice.invalid');
   const detailTarget = new URL(base, 'https://signedprice.invalid');
@@ -97,60 +99,22 @@ export function BuildingDetailPage({
   return (
     <div id="top" className={pageStyles.page}>
       <BuildingDetailHeader locale={locale} />
-      <main className={pageStyles.main} data-building-detail="ready" data-detail-layout="research">
-        <nav className={pageStyles.breadcrumb} aria-label={t('Breadcrumb')}><Link href={localizedSeoulHref('/kr/seoul/',locale)}>{t('Seoul')}</Link><Link href={exploreHref}>{districtName}</Link><span aria-current="page">{model.building.name}</span></nav>
-        <section
-          className={pageStyles.identityHero}
-          data-identity-hero="true"
-          data-detail-hero="building"
-          data-building-section="identity"
-          data-has-media="true"
-        >
-          <section
-            className={pageStyles.identityMedia}
-            data-detail-order="media"
-            data-building-gallery={hasVerifiedMedia ? 'verified' : 'market-context'}
-            aria-label={hasVerifiedMedia
-              ? (locale === 'ko' ? '확인된 건물 사진' : 'Verified building photograph')
-              : (locale === 'ko' ? '서울 맥락 사진 · 이 건물의 실제 사진 아님' : 'Seoul context photograph · not this exact building')}
-          >
-            <span className={pageStyles.mediaKind} data-media-kind={hasVerifiedMedia ? 'exterior' : 'market-context'}>{hasVerifiedMedia ? (locale === 'ko' ? '외관' : 'Exterior') : (locale === 'ko' ? '서울 맥락' : 'Seoul context')}</span>
-            {propertyMedia ?? (visual.kind !== 'unavailable'
-              ? <BuildingVisual model={visual} />
-              : <MarketRepresentativePhoto photo={MARKET_PHOTOS.seoul} cityLabel={locale === 'ko' ? '서울' : 'Seoul'} context="property" locale={locale} eager />)}
-          </section>
-          <div className={pageStyles.identitySummary} data-detail-hero-metric="identity" data-detail-order="identity">
-            <Link
-              className={pageStyles.backAction}
-              href={exploreHref}
-            >
-              {locale === 'ko' ? `${districtName} 탐색으로` : `Back to ${districtName} Explore`}
-            </Link>
-            <h1>{model.building.name}</h1>
-            <p className={pageStyles.location}>{model.building.neighborhoodName} · {districtName}, {t('Seoul')}</p>
-            <dl className={pageStyles.identityFacts}>
-              <div><dt>{t('Property type')}</dt><dd>{t(model.building.housingType)}</dd></div>
-            </dl>
-            <Link className={pageStyles.primaryAction} href={checkHref}>
-              {locale === 'ko' ? '매물 가격 비교' : 'Compare an asking price'}
-            </Link>
-            <BuildingSaveButton
-              buildingKey={`${model.district.slug}/${model.building.buildingId}`}
-              buildingName={model.building.name}
-              locale={locale}
-              variant="detail"
-            />
-          </div>
-        </section>
-
-        <nav className={pageStyles.tabs} aria-label={t('Building page sections')}><a href="#building-overview">{t('Overview')}</a><a href="#building-evidence">{t('Transactions')}</a><a href="#rent-evidence">{t('Rent evidence')}</a><a href="#building-source">{t('Source')}</a></nav>
-        <section className={pageStyles.summaryGrid} id="building-overview" aria-label={t('Building summary')}>
-          <article className={pageStyles.priceSummary} data-detail-order="current-evidence"><h2>{t('Price summary')}</h2><span>{t('Median refundable deposit')}</span><strong>{model.display.medianLabel}</strong><small>{t(model.display.sampleLabel)} · {model.evidence.period}</small></article>
-          <article data-detail-order="history"><h2>{t('Recent reported evidence')}</h2><ul className={pageStyles.transactionList}>{model.building.recentContracts.slice(0, 3).map((contract, index) => <li key={`${contract.filedMonth}-${index}`}><span>{contract.filedMonth}</span><span>{contract.areaSqm}㎡ · {locale === 'ko' ? `${contract.floor ?? '—'}층` : `Floor ${contract.floor ?? '—'}`}</span><strong>{new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW', maximumFractionDigits: 0 }).format(contract.depositWon)}</strong></li>)}</ul></article>
-
-        </section>
-
-        <section className={pageStyles.decisionRegion} data-building-section="decision" data-detail-order="comparable-range" id="rent-evidence">
+      <main className={`${pageStyles.main} ${detailStyles.root}`} data-building-detail="ready" data-detail-layout="unified">
+        <nav className={pageStyles.breadcrumb} aria-label={t('Breadcrumb')}><Link href={localizedSeoulHref('/kr/seoul/',locale)}>{t('Seoul')}</Link><Link href={exploreHref}>{locale === 'ko' ? `${districtName} 탐색으로` : `Back to ${districtName} Explore`}</Link><span aria-current="page">{model.building.name}</span></nav>
+        <MarketSummary locale={locale} id="building-overview" title={model.building.name}
+          location={`${model.building.neighborhoodName} · ${districtName}`}
+          context={locale === 'ko' ? '서울 · 신고 임대차 거래' : 'Seoul · Reported rental contracts'}
+          metric={{label:t('Median refundable deposit'),value:model.display.medianLabel,note:`${t(model.display.sampleLabel)} · ${model.evidence.period}`}}
+          facts={[{label:t('Property type'),value:t(model.building.housingType)}]}
+          actions={<><Link href={checkHref}>{locale === 'ko' ? '매물 가격 비교' : 'Compare an asking price'}</Link><BuildingSaveButton buildingKey={`${model.district.slug}/${model.building.buildingId}`} buildingName={model.building.name} locale={locale} variant="detail" /></>} />
+        <div data-detail-order="media">{propertyMedia ?? (visual.kind !== 'unavailable' ? <BuildingVisual model={visual} /> : <ProjectedEntityMedia locale={locale} buildingName={model.building.name} address={`${model.building.neighborhoodName}, ${districtName}, Seoul`} media={null} locationHref={exploreHref} />)}</div>
+        <nav className={pageStyles.tabs} aria-label={t('Building page sections')}>
+          <a href="#building-overview">{t('Overview')}</a><a href="#building-evidence">{t('Transactions')}</a><a href="#building-facts">{t('Building profile')}</a><a href="#building-tools">{locale === 'ko' ? '내 조건 비교' : 'Compare'}</a><a href="#building-source">{t('Source')}</a>
+        </nav>
+        <div className={pageStyles.details} id="building-evidence"><BuildingEvidenceDetails model={model} locale={locale} includeSource={false} /></div>
+        <details id="rent-evidence" className={detailStyles.disclosure} open={mode !== 'overview'}>
+          <summary>{locale === 'ko' ? '임대차 조건별 추가 분석' : 'Additional analysis by rental contract type'}</summary>
+        <section className={pageStyles.decisionRegion} data-building-section="decision" data-detail-order="comparable-range">
           <BuildingDecisionTabs base={base} selection={decision.selection} locale={locale} />
           <p className={pageStyles.selectedModeStatus} aria-live="polite">
             {locale === 'ko' ? `${t(MODE_LABELS[mode])} · ${t(COHORT_LABELS[contract])} 계약` : `Viewing ${MODE_LABELS[mode]} · ${COHORT_LABELS[contract]} contract cohort`}
@@ -158,18 +122,11 @@ export function BuildingDetailPage({
           <BuildingDecisionView model={model} decision={decision} base={base} locale={locale} />
         </section>
 
-        <div className={pageStyles.details} id="building-evidence"><BuildingEvidenceDetails model={model} locale={locale} includeSource={false} /></div>
-        <section className={pageStyles.profileFacts} data-detail-order="facts" aria-labelledby="building-profile-heading">
-          <div><span>{t('Building profile')}</span><h2 id="building-profile-heading">{t('Verified facts already attached')}</h2></div>
-          <dl>
-            <div><dt>{t('Building')}</dt><dd>{model.building.name}</dd></div>
-            <div><dt>{t('Area')}</dt><dd>{model.building.neighborhoodName} · {districtName}</dd></div>
-            <div><dt>{t('Housing type')}</dt><dd>{t(model.building.housingType)}</dd></div>
-            <div><dt>{t('Evidence period')}</dt><dd>{model.evidence.period}</dd></div>
-          </dl>
-        </section>
-
-        <div className={pageStyles.facts} data-detail-order="proximity">{facts}</div>
+        </details>
+        <div id="building-facts" className={detailStyles.section} data-detail-order="facts">
+          {facts ?? <section><h2>{t('Building profile')}</h2><p>{t(model.building.housingType)} · {model.building.neighborhoodName}</p></section>}
+        </div>
+        <DetailTools locale={locale} id="building-tools" checkHref={checkHref} />
         <div className={pageStyles.details} data-detail-order="sources"><BuildingSourceEvidence model={model} locale={locale} /></div>
         <section className={pageStyles.contextGrid} data-detail-order="related-actions" aria-label={t('Building news and community')}>
           <DetailNewsList news={model.news} locale={locale} />

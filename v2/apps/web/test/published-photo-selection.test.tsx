@@ -47,10 +47,11 @@ describe('published building photographs', () => {
     expect(html).toContain('Photo source');
   });
 
-  it('uses a clearly labelled city photograph when a building has no approved image', () => {
+  it('uses a compact location fallback when a building has no approved image', () => {
     const html = renderToStaticMarkup(<ProjectedEntityMedia locale="ko" buildingName="Example" media={null} fallbackMarket="singapore" />);
-    expect(html).toContain('curated-market-photo');
-    expect(html).toContain('해당 매물의 사진이 아닙니다');
-    expect(html).not.toContain('확인된 건물 사진');
+    expect(html).not.toContain('curated-market-photo');
+    expect(html).toContain('data-location-fallback="true"');
+    expect(html).toContain('지도에서 위치 확인');
+    expect(html).not.toContain('<img');
   });
 });

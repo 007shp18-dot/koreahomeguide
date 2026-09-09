@@ -284,7 +284,7 @@ describe('Singapore route SSR', () => {
     expect(html).toContain('data-building-media="google-place-photo"');
     expect(html).toContain(`${model.count} reported transactions`);
     expect(html).not.toMatch(/SGD [\d,]+/);
-    expect(html).not.toContain('data-market-summary="true"');
+    expect(html).toContain('data-market-summary="true"');
   });
 
   it('renders fixed route loading boundaries and disables unsupported evidence links', async () => {

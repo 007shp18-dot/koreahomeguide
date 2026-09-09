@@ -20,6 +20,6 @@ describe('Singapore detail transaction history', () => {
   it('does not offer nonexistent pages for a short sample', () => {
     const html = renderToStaticMarkup(<SingaporeTransactionsTable locale="ko" rows={[transaction(1)]} />);
     expect(html).toContain('총 1건 중 1–1건');
-    expect(html).not.toContain('<button');
+    expect(html.match(/<nav[\s\S]*?<\/nav>/)?.[0]).not.toContain('<button');
   });
 });

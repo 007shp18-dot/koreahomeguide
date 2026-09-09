@@ -30,8 +30,6 @@ function transactionBuildingFacts(
     Object.freeze({ label: 'Observed build year', value: years.length === 0 ? 'Not reported' : years.join(', ') }),
     Object.freeze({ label: 'Observed floors', value: range(floors) }),
     Object.freeze({ label: 'Observed filed area', value: range(areas, '㎡') }),
-    Object.freeze({ label: 'Evidence period', value: model.period }),
-    Object.freeze({ label: 'Verified rows in view', value: model.recentTransactions.length.toLocaleString('en-US') }),
     Object.freeze({ label: 'Map identity', value: coordinate === undefined ? 'Coordinate verification pending' : `${coordinate.latitude.toFixed(5)}, ${coordinate.longitude.toFixed(5)}` }),
   ]);
 }
