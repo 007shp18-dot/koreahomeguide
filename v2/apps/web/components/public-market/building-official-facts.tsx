@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import type { OfficialBuildingFacts } from '../../lib/public-market/official-building-facts.server';
 import type { ObservedBuildingIdentityModel } from '../../lib/public-market/observed-building-route-model.server';
 import type { ProductLocale } from '../../lib/locale/product-copy';
+import { seoulDetailText } from '../../lib/locale/seoul-detail-copy';
 import { BuildingProximityDisclosure } from './observed-building-detail';
 import styles from './building-detail.module.css';
 
@@ -71,14 +72,14 @@ export function ReadyOfficialFacts({ envelope, locale = 'en' }: Readonly<{ envel
   const labels:Record<string,string>={Households:'세대 수',Buildings:'동 수','Approval date':'사용승인일',Heating:'난방', 'Corridor type':'복도 유형','Sale type':'공급 유형','Main use':'주용도',Structure:'구조','Total floor area':'연면적','Building area':'건축면적',Floors:'층수','Parking spaces':'주차대수',Subway:'지하철','Bus stop walk':'버스 정류장',Schools:'학교','Nearby services':'주변 편의시설','Legal address':'지번 주소','Road address':'도로명 주소','Apartment source':'단지 정보 출처','Register source':'건축물대장 출처','Nearby source':'주변 정보 출처'};
   const grid = (rows: string[][], className: string | undefined) => rows.length === 0 ? null : <dl className={className}>{rows.map((row) => <div key={row[0]!}><dt>{locale === 'ko' ? labels[row[0]!] ?? row[0]! : row[0]!}</dt><dd>{row[1]!}</dd></div>)}</dl>;
   return <>
-    <div className={styles.sectionHeading}><p>Official sources</p><h3>{register === null ? 'Official complex profile' : 'Complex and building-register profile'}</h3></div>
+    <div className={styles.sectionHeading}><h3>{locale === 'ko' ? '공식 건물 정보' : 'Official building information'}</h3></div>
     {grid(profile, styles.findingGrid)}
     {grid(registerProfile, styles.sourceGrid)}
     {nearbyProfile.length === 0 ? null : <>
-      <div className={styles.sectionHeading}><p>Official nearby facilities</p><h3>Transit, schools and local services</h3></div>
+      <div className={styles.sectionHeading}><h3>{locale === 'ko' ? '교통·학교·편의시설' : 'Transit, schools and local services'}</h3></div>
       {grid(nearbyProfile, `${styles.sourceGrid} ${styles.nearbyGrid}`)}
     </>}
-    {grid(sources, styles.sourceGrid)}
+    <details className={styles.sourceDetails}><summary>{locale === 'ko' ? '공식 주소와 정보 출처' : 'Official addresses and fact sources'}</summary>{grid(sources, styles.sourceGrid)}</details>
   </>;
 }
 
@@ -125,8 +126,8 @@ export function BuildingOfficialFacts({ districtSlug, buildingId, observedFacts 
 
   return (
     <section className={`${styles.evidence} ${styles.officialFacts}`} data-building-section="official-facts" data-building-facts={dataState}>
-      <div className={styles.sectionHeading}><p>{locale === 'ko' ? '건물 정보' : 'Building facts'}</p><h2>{locale === 'ko' ? '건물 기본 정보' : 'Property profile'}</h2></div>
-      {visibleFacts.length === 0 ? null : <dl className={styles.findingGrid}>{visibleFacts.map((fact) => <div key={fact.label}><dt>{fact.label}</dt><dd>{fact.value}</dd></div>)}</dl>}
+      <div className={styles.sectionHeading}><h2>{locale === 'ko' ? '건물·주변 정보' : 'Property and location'}</h2></div>
+      {visibleFacts.length === 0 ? null : <dl className={styles.findingGrid}>{visibleFacts.map((fact) => <div key={fact.label}><dt>{seoulDetailText(locale, fact.label)}</dt><dd>{seoulDetailText(locale, fact.value)}</dd></div>)}</dl>}
       <BuildingProximityDisclosure proximity={proximity} locale={locale} />
       {state !== 'loading' && state !== 'error' ? <ReadyOfficialFacts envelope={state} locale={locale} /> : null}
     </section>

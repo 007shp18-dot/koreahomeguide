@@ -27,7 +27,9 @@ describe('projected entity media', () => {
     />);
 
     expect(html).not.toContain('data-building-media="location-only"');
-    expect(html).toContain('Building photo unavailable');
+    expect(html).toContain('A verified building photograph is not available yet.');
+    expect(html).toContain('View location on map');
+    expect(html).not.toContain('<img');
     expect(html).toContain('data-photo-state="unavailable"');
     expect(html).not.toContain('Evidence status');
     expect(html).not.toContain('data-state="rights-blocked"');

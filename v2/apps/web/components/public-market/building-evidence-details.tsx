@@ -7,6 +7,7 @@ import { EvidenceSectionHeading } from '../evidence-ui/section-heading';
 import { EvidenceDisclosure } from '../trust/evidence-disclosure';
 import { EvidencePeriodStrip } from './evidence-period-strip';
 import styles from './building-detail.module.css';
+import detailStyles from '../market-ui/detail-layout.module.css';
 
 const money = new Intl.NumberFormat('ko-KR', {
   style: 'currency',
@@ -124,7 +125,7 @@ function AreaBandEvidence({ model, locale = 'en' }: Readonly<{ model: PublicBuil
 function RecentContractEvidence({ model, locale = 'en' }: Readonly<{ model: PublicBuildingModel; locale?: ProductLocale }>) {
   const t = (value: string) => seoulDetailText(locale, value);
   return (
-    <section className={styles.contracts} aria-labelledby="recent-contracts-heading">
+    <section className={styles.contracts} aria-labelledby="recent-contracts-heading" data-detail-order="history">
       <EvidenceSectionHeading
         eyebrow={t("04 / Recent records")}
         title={t("Privacy-safe reported contracts")}
@@ -210,18 +211,17 @@ function BuildingNavigation({ model, locale = 'en' }: Readonly<{ model: PublicBu
 }
 
 export function BuildingEvidenceDetails({ model, locale = 'en', includeSource = true }: Readonly<{ model: PublicBuildingModel; locale?: ProductLocale; includeSource?: boolean }>) {
-  const t = (value: string) => seoulDetailText(locale, value);
   return (
-    <details open className={styles.evidenceDetails} data-building-section="evidence">
-      <summary>{t("See records, adjustments, and methodology")}</summary>
-      <div className={styles.evidenceDetailsBody}>
-        <CohortEvidence model={model} locale={locale} />
+    <div data-building-section="evidence">
+      <CohortEvidence model={model} locale={locale} />
+      <RecentContractEvidence model={model} locale={locale} />
+      <details className={detailStyles.disclosure}>
+        <summary>{locale === 'ko' ? '층·면적별 분석과 집계 기준' : 'Floor and size analysis and methodology'}</summary>
         <FloorEvidence model={model} locale={locale} />
         <AreaBandEvidence model={model} locale={locale} />
-        <RecentContractEvidence model={model} locale={locale} />
-        {includeSource ? <BuildingSourceEvidence model={model} locale={locale} /> : null}
         <BuildingNavigation model={model} locale={locale} />
-      </div>
-    </details>
+      </details>
+      {includeSource ? <BuildingSourceEvidence model={model} locale={locale} /> : null}
+    </div>
   );
 }

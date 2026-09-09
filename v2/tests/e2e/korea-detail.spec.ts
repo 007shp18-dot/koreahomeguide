@@ -110,15 +110,11 @@ test('verified synthetic building detail is server rendered only in the local re
   expect(response?.status()).toBe(200);
   await expect(page.getByRole('heading', { level: 1, name: PUBLIC_BUILDING_TEST_NAME })).toBeVisible();
   await expect(page.getByRole('link', { name: /Back to .* Explore/ })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Compare an asking price', exact: true })).toBeVisible();
-  const hero = page.locator('[data-detail-hero="building"]').filter({ visible: true });
-  // This synthetic building has no verified photo. A labeled Seoul context
-  // photograph keeps the header useful without claiming to show this building.
-  await expect(hero).toHaveAttribute('data-has-media', 'true');
-  const contextMedia = hero.locator('[data-detail-order="media"]');
-  await expect(contextMedia).toHaveAttribute('data-building-gallery', 'market-context');
-  await expect(contextMedia).toContainText('Editorial city photograph · not this exact property');
+  await expect(page.getByRole('link', { name: 'Compare an asking price', exact: true }).first()).toBeVisible();
+  const hero = page.locator('[data-market-summary="true"]').filter({ visible: true });
   await expect(hero.locator('[data-detail-order="identity"]')).toBeVisible();
+  await expect(page.locator('[data-location-fallback="true"]')).toBeVisible();
+  await expect(page.locator('main [data-building-media="curated-market-photo"]')).toHaveCount(0);
   // Let Next finish replacing its streamed boundary before measuring the final
   // page. During the replacement both copies can briefly share the DOM.
   await expect(page.locator('template[id^="B:"]')).toHaveCount(0);
@@ -136,18 +132,18 @@ test('verified synthetic building detail is server rendered only in the local re
     };
   });
   expect(layout).toEqual({ identityBeforeEvidence: true, historyBeforeSource: true, identityOverflow: false });
-  const evidenceDetails = page.locator('details[data-building-section="evidence"]').filter({ visible: true });
-  const contractsHeading = evidenceDetails.getByRole('heading', { level: 2, name: 'Privacy-safe reported contracts' });
-  // Evidence starts expanded in the shared detail layout. Check both native
-  // disclosure directions instead of accidentally closing it before asserting.
-  await expect(evidenceDetails).toHaveAttribute('open', '');
-  await expect(contractsHeading).toBeVisible();
-  await evidenceDetails.locator(':scope > summary').click();
-  await expect(evidenceDetails).not.toHaveAttribute('open', '');
-  await expect(contractsHeading).not.toBeVisible();
-  await evidenceDetails.locator(':scope > summary').click();
-  await expect(evidenceDetails).toHaveAttribute('open', '');
-  await expect(contractsHeading).toBeVisible();
+  const evidence = page.locator('[data-building-section="evidence"]').filter({ visible: true });
+  await expect(evidence.getByRole('heading', { level: 2, name: 'Privacy-safe reported contracts' })).toBeVisible();
+  const extra = evidence.locator('details').filter({ has: page.getByText('Floor and size analysis and methodology', { exact: true }) });
+  await expect(extra).not.toHaveAttribute('open', '');
+  await extra.locator(':scope > summary').click();
+  await expect(extra.getByRole('heading', { name: 'Floor adjustment evidence' })).toBeVisible();
+  await extra.locator(':scope > summary').click();
+  await expect(extra.getByRole('heading', { name: 'Floor adjustment evidence' })).not.toBeVisible();
+  const headingSizes = await readyDetail.locator('h2').evaluateAll(nodes => nodes.map(node => getComputedStyle(node).fontSize));
+  expect(new Set(headingSizes).size).toBe(1);
+  const values = await readyDetail.locator('dl dd').evaluateAll(nodes => nodes.map(node => ({ size: parseFloat(getComputedStyle(node).fontSize), weight: parseInt(getComputedStyle(node).fontWeight) })));
+  expect(values.every(value => value.size === 16 && value.weight <= 600)).toBe(true);
   const relatedContext = page.getByRole('region', { name: 'Building news and community' });
   await expect(relatedContext).toContainText('Latest verified News');
   await expect(relatedContext).not.toContainText('Community signal');

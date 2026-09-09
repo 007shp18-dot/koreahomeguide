@@ -131,7 +131,7 @@ test('ready Singapore evidence flows entry to project when promotion gates open'
   expect(numericLayout.priceWhiteSpace).toBe('nowrap');
 
   expect(Date.now() - warmStarted).toBeLessThanOrEqual(1_000);
-  for (const label of ['SGD', 'PSF', 'PSM', 'New sale', 'Subsale', 'Resale', 'URA']) {
+  for (const label of ['SGD', 'PSF', 'New sale', 'Subsale', 'Resale', 'URA']) {
     await expect(page.locator('body')).toContainText(label);
   }
   await expect(page.getByRole('link', { name: 'Explore' }).first()).toBeVisible();
@@ -145,6 +145,27 @@ test('ready Singapore evidence flows entry to project when promotion gates open'
   expect(await history.locator('tbody tr').count()).toBeLessThanOrEqual(12);
   await history.getByRole('button', { name: 'All', exact: true }).click();
   await expect(history.getByRole('button', { name: 'All', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  const transactions = page.locator('[data-project-transactions]');
+  await transactions.getByRole('button', { name: 'SGD / m²', exact: true }).click();
+  await expect(transactions.locator('thead th')).toHaveCount(6);
+  await expect(transactions.locator('tbody tr').first()).toContainText('PSM');
+  const rowDetails = transactions.locator('tbody details').first();
+  await rowDetails.locator('summary').click();
+  await expect(rowDetails.getByText('Area basis', { exact: true })).toBeVisible();
+  await rowDetails.locator('summary').click();
+  await expect(page.locator('[data-property-scenario]')).toHaveCount(0);
+  const sectionSizes = await page.locator('[data-market-detail-shell] h2').evaluateAll(nodes => nodes.map(node => getComputedStyle(node).fontSize));
+  expect(new Set(sectionSizes).size).toBe(1);
+  const positions = await page.locator('[data-market-detail-shell]').evaluate(shell => ['project-size-heading','project-profile','detail-tools'].map(id => shell.querySelector(`[id="${id}"]`)!.getBoundingClientRect().top));
+  expect(positions[0]).toBeLessThan(positions[1]!);
+  expect(positions[1]).toBeLessThan(positions[2]!);
+  const raw = await page.request.get(page.url());
+  expect(raw.status()).toBe(200);
+  const html = await raw.text();
+  expect(html).toContain('data-singapore-project="ready"');
+  expect(html).not.toMatch(/SIGNEDPRICE_URA_ACCESS_KEY|sentinel-ura-key|insertNewToken|invokeUraDS|AccessKey/);
+  await page.getByRole('link', { name: 'Open calculator', exact: true }).click();
+  await expect(page).toHaveURL(/tools\/property-scenario\/?.*market=sg-singapore/);
   const scenario = page.locator('[data-property-scenario="SGD"]');
   await scenario.getByLabel('Purchase price (SGD)', { exact: true }).fill('1000000');
   await scenario.getByLabel('Acquisition costs, including taxes and fees (SGD)').fill('100000');
@@ -153,12 +174,6 @@ test('ready Singapore evidence flows entry to project when promotion gates open'
   await scenario.getByLabel('Expected vacant months per year').fill('2');
   await expect(scenario.locator('dl[aria-live="polite"]')).toContainText('3.45%');
   await noOverflow(page);
-
-  const raw = await page.request.get(page.url());
-  expect(raw.status()).toBe(200);
-  const html = await raw.text();
-  expect(html).toContain('data-singapore-project="ready"');
-  expect(html).not.toMatch(/SIGNEDPRICE_URA_ACCESS_KEY|sentinel-ura-key|insertNewToken|invokeUraDS|AccessKey/);
   assertClean();
 });
 

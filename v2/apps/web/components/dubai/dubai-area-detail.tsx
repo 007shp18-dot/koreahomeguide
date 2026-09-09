@@ -6,6 +6,7 @@ import type { DubaiAreaModel, DubaiAreaSegmentModel } from '../../lib/dubai/rout
 import { DubaiShell } from './dubai-shell';
 import { MarketDetailShell } from '../market-ui/market-shell';
 import styles from './dubai-research.module.css';
+import detailStyles from '../market-ui/detail-layout.module.css';
 import { marketText, marketHref, type MarketLocale } from '../../lib/locale/market-localization';
 
 
@@ -76,6 +77,13 @@ export function DubaiAreaDetail({ locale = 'en',  model }: Readonly<{ model: Dub
   return <DubaiShell locale={locale} href={marketHref(locale, "/ae/dubai/explore/")}>
     <main data-dubai-area-evidence="ready">
       <MarketDetailShell locale={locale}
+      sections={[
+        { id: 'detail-overview', label: locale === 'ko' ? '지역 개요' : 'Area overview' },
+        { id: 'detail-evidence', label: locale === 'ko' ? '매매' : 'Sales' },
+        { id: 'area-rent', label: locale === 'ko' ? '임대' : 'Rent' },
+        { id: 'comparable-areas', label: locale === 'ko' ? '비교 지역' : 'Comparable areas' },
+        { id: 'detail-source', label: locale === 'ko' ? '출처' : 'Sources' },
+      ]}
       breadcrumb={<nav className={styles.breadcrumbs} aria-label={t("Breadcrumb")}>
         <Link href={marketHref(locale, "/ae/dubai/")}>{t("Dubai")}</Link><span>{t("/")}</span>
         <Link href={marketHref(locale, "/ae/dubai/explore/")}>{t("Explore")}</Link><span>{t("/")}</span>
@@ -84,11 +92,9 @@ export function DubaiAreaDetail({ locale = 'en',  model }: Readonly<{ model: Dub
       summary={<DubaiAreaSummary locale={locale} model={model} />}
       evidence={<>
         {model.segments.map((segment) => <SegmentSales locale={locale} key={segment.housing} segment={segment} />)}
-        <p>{t("Rent source period")}: {model.context.sourcePeriods.rents.from}–{model.context.sourcePeriods.rents.to}</p>
-        {model.segments.map((segment) => <SegmentRent locale={locale} key={segment.housing} segment={segment} />)}
-      </>}
-      rail={<div className={styles.areaRail}>
-          <section className={styles.sourceCard}>
+        <div id="area-rent" className={detailStyles.section}><h2>{locale === 'ko' ? '지역 임대료' : 'Area rental evidence'}</h2><p>{t("Rent source period")}: {model.context.sourcePeriods.rents.from}–{model.context.sourcePeriods.rents.to}</p>
+        {model.segments.map((segment) => <SegmentRent locale={locale} key={segment.housing} segment={segment} />)}</div>
+          <section id="comparable-areas" className={detailStyles.section}>
             <h2>{t("Comparable areas")}</h2>
             <p>{t("Same home type, sale stage, method, and comparison window—not a geographic-nearness claim.")}</p>
             <nav className={styles.comparableLinks} aria-label={t("Comparable Dubai areas")}>
@@ -98,8 +104,9 @@ export function DubaiAreaDetail({ locale = 'en',  model }: Readonly<{ model: Dub
               </div>)}
             </nav>
           </section>
-          <section className={styles.sourceCard}>
-            <h2>{t("Evidence scope")}</h2>
+      </>}
+      rail={<details className={detailStyles.disclosure}>
+            <summary>{locale === 'ko' ? '출처·기간·집계 기준' : 'Sources, periods and methodology'}</summary>
             <dl>
               <div><dt>{t("Comparison window")}</dt><dd>{t(model.context.comparisonPeriod.from)}{t("–")}{t(model.context.comparisonPeriod.to)}</dd></div>
               <div><dt>{t("Transaction source period")}</dt><dd>{t(model.context.sourcePeriods.transactions.from)}{t("–")}{t(model.context.sourcePeriods.transactions.to)}</dd></div>
@@ -110,8 +117,7 @@ export function DubaiAreaDetail({ locale = 'en',  model }: Readonly<{ model: Dub
             <p><a href={marketHref(locale, model.context.sourceUrl)} target="_blank" rel="noreferrer">{t("DLD source page")}</a> {t(" · ")}<a href={marketHref(locale, model.context.licenseUrl)} target="_blank" rel="noreferrer">{t("Dataset licence")}</a></p>
             <p>{t("Gross ratios exclude service charges, vacancy, financing, taxes, acquisition costs, repairs, and management.")}</p>
             <p><Link href={marketHref(locale, "/trust/")}>{t("Method and corrections")}</Link></p>
-          </section>
-        </div>}
+        </details>}
       />
     </main>
   </DubaiShell>;
