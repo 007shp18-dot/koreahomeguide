@@ -1,4 +1,6 @@
 .page { min-width: 0; }
+.mapLoading { min-height: 420px; margin-top: 24px; padding: 24px; border-radius: 12px; background: #f2f6f8; color: var(--muted); }
+.page :global([data-market-shell-region='spatial']) { position: sticky; top: 20px; }
 .intro { max-width: 65ch; margin: 0 0 20px; color: var(--muted); font-size: 15px; line-height: 1.7; }
 .filters { padding-bottom: 24px; border-bottom: 1px solid var(--line); }
 .primaryFilters { display: grid; grid-template-columns: minmax(0, 2fr) minmax(160px, 1fr) auto; align-items: end; gap: 16px; }
@@ -41,6 +43,7 @@
 .links { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 16px; font-size: 14px; }
 .filters :focus-visible, .pagination a:focus-visible, .links a:focus-visible, .emptyLink:focus-visible, .method summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 @media (max-width: 760px) {
+  .page :global([data-market-shell-region='spatial']) { position: static; grid-row: 1; }
   .page > :global([data-market-explore-shell]), .sourcePanel { width: calc(100% - 40px); }
   .primaryFilters { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
   .search { grid-column: 1 / -1; }
