@@ -1,12 +1,14 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { DataQualityPanel } from './data-quality-panel';
+import type { DataQuality } from '../../lib/data-operations/data-quality.server';
 import type { MarketCollectionStatus } from '../../lib/data-operations/market-status.server';
 import type { CollectionStatus } from '../../lib/data-operations/repository.server';
 import {HdbBuildingPanel} from './hdb-building-panel';
 import styles from './workspace.module.css';
 
 type Publication = {sourceAsOf:string;releasedAt:string;saleCount:number;rentCount:number;digest:string};
-type Dashboard = {markets?: MarketCollectionStatus[]; sources: CollectionStatus[]; publication: string};
+type Dashboard = {quality?: DataQuality[]; markets?: MarketCollectionStatus[]; sources: CollectionStatus[]; publication: string};
 type Snapshot = {id: string; source_id: string; fetched_at: string; status: string; byte_count: number; content_hash: string; source_url: string; content?: string; previous_snapshot_id?: string | null; reviewed_at?: string | null; review_reason?: string | null};
 const endpoint = '/api/internal/data-collection/';
 const statuses: Record<string,string> = {pending:'검토 대기',reviewed:'원문 검토 완료',rejected:'제외',new:'신규 원문 저장',changed:'변경 원문 저장',unchanged:'변경 없음',failed:'수집 실패',not_due_or_busy:'다른 수집 진행 중 또는 실행 시점 전',blocked:'수집 보류'};
@@ -62,7 +64,8 @@ export function CollectionPanel({initialData, onUnauthorized}: {initialData?: Da
   <p>마지막 수집 성공과 사이트 공개는 별개입니다. 원문 검토 완료 후 조건·금액을 구조화하고 자료 승인을 거쳐야 계산에 사용할 수 있습니다.</p>
   {error && <p role="alert" className={styles.error}>{error}</p>}{message && <p role="status" className={styles.success}>{message}</p>}
   {!data ? <p role="status">{loading?'출처별 수집 현황을 불러오고 있습니다…':'수집 현황에 연결하지 못했습니다.'}</p> : <>
-   {data.markets && <div className={styles.tableScroll}><table><caption>공식 매매·임대 수집 · 건수는 마지막 시도 기준 · 성공 시각과 구분</caption><thead><tr><th scope="col">작업</th><th scope="col">시각</th><th scope="col">마지막 시도 건수</th><th scope="col">오류·이상 징후</th></tr></thead><tbody>{data.markets.map(market=><tr key={market.job}><td><strong>{market.job}</strong><small>{market.enabled?'예약 수집 활성':'예약 수집 비활성'} · {market.state ?? '실행 기록 없음'}</small></td><td><small>시도 {formatTime(market.lastAttemptAt)}</small><small>성공 {formatTime(market.lastSuccessAt)}</small><small>원자료 기준 {formatTime(market.sourceAsOf)}</small></td><td><small>수신 {market.received} · 신규 {market.inserted} · 수정 {market.updated}</small><small>변경 없음 {market.unchanged} · 연결 필요 {market.unlinked}</small></td><td><small>연속 실패 {market.consecutiveFailures}회</small>{market.errorCode && <strong>{market.errorCode}</strong>}{market.anomaly && <p role="status">{market.anomaly}</p>}</td></tr>)}</tbody></table></div>}
+   {data.quality && <DataQualityPanel rows={data.quality}/>}
+   {data.markets && <div className={styles.tableScroll}><table><caption>공식 매매·임대 수집 · 건수는 마지막 시도 기준 · 성공 시각과 구분</caption><thead><tr><th scope="col">작업</th><th scope="col">시각</th><th scope="col">마지막 시도 건수</th><th scope="col">오류·이상 징후</th></tr></thead><tbody>{data.markets.map(market=><tr key={market.job}><td><strong>{market.job}</strong><small>{market.enabled?'예약 수집 활성':'예약 수집 비활성'} · {market.state ?? '실행 기록 없음'}</small></td><td><small>시도 {formatTime(market.lastAttemptAt)}</small><small>성공 {formatTime(market.lastSuccessAt)}</small><small>성공 실행의 기준 시각 {formatTime(market.sourceAsOf)}</small></td><td><small>수신 {market.received} · 신규 {market.inserted} · 수정 {market.updated}</small><small>변경 없음 {market.unchanged} · 연결 필요 {market.unlinked}</small></td><td><small>연속 실패 {market.consecutiveFailures}회</small>{market.errorCode && <strong>{market.errorCode}</strong>}{market.anomaly && <p role="status">{market.anomaly}</p>}</td></tr>)}</tbody></table></div>}
    <div className={styles.tableScroll}><table><caption>출처별 수집 상태 · 시각은 UTC · 신규·변경은 마지막 성공 실행 기준</caption><thead><tr><th scope="col">출처</th><th scope="col">수집 시각</th><th scope="col">변경·검토</th><th scope="col">실패·이상 징후</th><th scope="col">마지막 공개</th><th scope="col">작업</th></tr></thead><tbody>{data.sources.map(source=><tr key={source.sourceId}>
     <td><strong>{source.name}</strong><small>{source.market} · {source.category} · {source.intervalDays}일 간격</small><small>{source.mode==='page-monitor'?'공식 페이지 변경 확인':source.mode}</small><small>{source.limitation}</small><a href={source.url} target="_blank" rel="noreferrer">공식 출처</a></td>
     <td><small>성공 {formatTime(source.lastSuccessAt)}</small><small>시도 {formatTime(source.lastAttemptAt)}</small><small>다음 확인 {formatTime(source.nextDueAt)}</small></td>
