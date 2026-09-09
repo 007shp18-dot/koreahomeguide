@@ -1,3 +1,4 @@
+import { SingaporeRentalEvidence } from '@/components/singapore/singapore-rental-evidence';
 import { singaporeMetadata } from '@/lib/locale/singapore-copy';
 import { singaporeProjectDisplayName } from '@/lib/singapore/project-display-name';
 import type { Metadata } from 'next';
@@ -19,7 +20,7 @@ import { singaporeSnapshotRepositoryFromEnvironment } from '@/lib/singapore/snap
 type Props = Readonly<{ params: Promise<Readonly<{ area: string; projectId: string }>> }>;
 
 export const dynamicParams = true;
-export const revalidate = 3_600;
+export const revalidate = 60;
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { area, projectId } = await params;
   const code = area.toLowerCase();
@@ -60,10 +61,10 @@ export default async function SingaporeProjectPage({ params }: Props) {
   }} />;
   const model = buildSingaporeProjectModel(repository, area, projectId);
   if (model === null) notFound();
-  return <SingaporeProjectDetail locale="ko"
+  return <><SingaporeProjectDetail locale="ko"
     model={model}
     googleMapsBrowserKey={googleMapsBrowserKeyFromEnvironment()}
     media={selectPublishedBuildingPhoto(projections?.get(entityId)?.media ?? [], await getStoredPublicPhotoApproval(`sg-project:${model.identity.marketSegment}:${model.identity.project}`), `singapore:project:${projectId}`)}
     proximity={projections?.get(entityId)?.proximity ?? null}
-  />;
+  /><SingaporeRentalEvidence saleDigest={repository.getContext().digest} projectId={projectId} locale="ko" /></>;
 }

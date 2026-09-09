@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { randomUUID } from 'node:crypto';
+import { retainedResearchPredicate } from './retention.server';
 
 import type {
   NormalizedToolResearchSnapshot,
@@ -102,7 +103,7 @@ const SUMMARY_SQL = `
   /* tool-research:retained-summary */
   SELECT market, tool, count(*)::text AS count
   FROM tool_research_submissions
-  WHERE expires_at > $1::timestamptz
+  WHERE ${retainedResearchPredicate('$1::timestamptz')}
     AND ($2::text IS NULL OR market = $2)
     AND ($3::text IS NULL OR tool = $3)
   GROUP BY market, tool

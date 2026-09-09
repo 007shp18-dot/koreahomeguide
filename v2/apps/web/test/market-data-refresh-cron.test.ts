@@ -18,11 +18,11 @@ const expectedMarketCrons = Object.freeze([
   }),
   Object.freeze({
     path: '/api/internal/market-data-refresh/?job=sg-private-sale',
-    schedule: '10 2 * * 2,5',
+    schedule: '10 2 * * *',
   }),
   Object.freeze({
     path: '/api/internal/market-data-refresh/?job=sg-private-rent',
-    schedule: '25 2 16 * *',
+    schedule: '25 2 * * *',
   }),
   Object.freeze({
     path: '/api/internal/market-data-refresh/?job=ae-dubai-transaction',

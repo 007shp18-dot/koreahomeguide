@@ -51,3 +51,5 @@ export default async function SingaporeSegmentPage({ params }: Props) {
   if (model === null) notFound();
   return <SingaporeSegmentDetail locale="ko" model={model} />;
 }
+
+export const revalidate = 60;

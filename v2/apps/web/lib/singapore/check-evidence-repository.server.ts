@@ -1,4 +1,5 @@
 import 'server-only';
+import { activeSingaporePublication, singaporePublicationRightsRevoked } from './publication.server';
 
 import {
   SINGAPORE_CHECK_MARKETS,
@@ -92,7 +93,7 @@ const ENVIRONMENT = Object.freeze({
 const checkedInMarkets = new Map<SingaporeCheckMarket, Promise<SingaporeCheckEvidenceRepositories>>();
 const checkedInSelections = new Map<string, Promise<SingaporeCheckEvidenceRepositories>>();
 
-export function singaporeCheckEvidenceRepositoriesFromEnvironment(
+function installedSingaporeCheckEvidenceRepositoriesFromEnvironment(
   markets: readonly SingaporeCheckMarket[] = SINGAPORE_CHECK_MARKETS,
 ): Promise<SingaporeCheckEvidenceRepositories> {
   // Checked-in artifacts are immutable for this deployment. Avoid decompressing
@@ -157,4 +158,19 @@ function loadSingaporeCheckEvidenceRepositories(markets: readonly SingaporeCheck
     }),
   );
   return createSingaporeCheckEvidenceRepositories(sources);
+}
+
+async function publishedSingaporeCheckEvidenceRepositoriesFromEnvironment(markets: readonly SingaporeCheckMarket[] = SINGAPORE_CHECK_MARKETS): Promise<SingaporeCheckEvidenceRepositories> {
+  const [installed, publication] = await Promise.all([installedSingaporeCheckEvidenceRepositoriesFromEnvironment(markets), activeSingaporePublication()]);
+  if (singaporePublicationRightsRevoked()) return Object.freeze({ get<TMarket extends SingaporeCheckMarket>(market: TMarket) { return market === 'ura-private-sale' ? null : installed.get(market); }, availability: () => Object.freeze({...installed.availability(), 'ura-private-sale': false}) });
+  if (!publication || process.env.SIGNEDPRICE_SINGAPORE_CHECK_URA_ARTIFACT !== undefined || !markets.includes('ura-private-sale')) return installed;
+  return Object.freeze({
+    get<TMarket extends SingaporeCheckMarket>(market: TMarket) { return (market === 'ura-private-sale' ? publication.check : installed.get(market)) as SingaporeCheckArtifact<TMarket> | null; },
+    availability: () => Object.freeze({ ...installed.availability(), 'ura-private-sale': true }),
+  });
+}
+
+export function singaporeCheckEvidenceRepositoriesFromEnvironment(markets: readonly SingaporeCheckMarket[] = SINGAPORE_CHECK_MARKETS): Promise<SingaporeCheckEvidenceRepositories> {
+ if (!process.env.DATABASE_URL?.trim()) return installedSingaporeCheckEvidenceRepositoriesFromEnvironment(markets);
+ return publishedSingaporeCheckEvidenceRepositoriesFromEnvironment(markets);
 }

@@ -51,3 +51,5 @@ export default async function SingaporeRankingsPage({ searchParams = Promise.res
   const periodLabel = context === undefined ? 'Verified evidence unavailable' : context.period.replace('..', '–');
   return <SingaporePage currentHref="/sg/singapore/rankings/" unframed><SingaporeRankings model={model} periodLabel={periodLabel} /></SingaporePage>;
 }
+
+export const revalidate = 60;

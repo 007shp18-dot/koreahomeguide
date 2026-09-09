@@ -6,6 +6,7 @@ type ExpiryEnvironment = Readonly<{
   repository: ToolResearchRepository | null;
   secret: string;
   now?: () => Date;
+  aggregate?: (now: Date) => Promise<void>;
 }>;
 
 function json(body: Readonly<Record<string, unknown>>, status: number): Response {
@@ -22,6 +23,7 @@ export function createToolResearchExpiryHandler(environment: ExpiryEnvironment) 
     try {
       const now = (environment.now ?? (() => new Date()))();
       const deletedCount = await environment.repository.expire(now);
+      await environment.aggregate?.(now);
       return json({ state: 'expired', deletedCount }, 200);
     } catch {
       return json({ error: 'storage_unavailable' }, 503);

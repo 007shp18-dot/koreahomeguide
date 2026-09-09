@@ -31,3 +31,5 @@ export default async function SingaporeCheckPage({ searchParams = Promise.resolv
   const model = await loadSingaporeCheckPageModel(await searchParams);
   return <SingaporeCheckWorkspace locale="ko" model={model} />;
 }
+
+export const revalidate = 60;

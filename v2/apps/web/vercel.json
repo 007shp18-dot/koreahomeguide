@@ -3,6 +3,18 @@
   "ignoreCommand": "git diff --quiet HEAD^ HEAD -- ../..",
   "crons": [
     {
+      "path": "/api/internal/data-collection/",
+      "schedule": "5 3 * * *"
+    },
+    {
+      "path": "/api/internal/hdb-buildings/",
+      "schedule": "20 3 * * *"
+    },
+    {
+      "path": "/api/internal/singapore-publication/",
+      "schedule": "50 2 * * *"
+    },
+    {
       "path": "/api/internal/tool-research-expiry/",
       "schedule": "43 0 * * *"
     },
@@ -36,11 +48,11 @@
     },
     {
       "path": "/api/internal/market-data-refresh/?job=sg-private-sale",
-      "schedule": "10 2 * * 2,5"
+      "schedule": "10 2 * * *"
     },
     {
       "path": "/api/internal/market-data-refresh/?job=sg-private-rent",
-      "schedule": "25 2 16 * *"
+      "schedule": "25 2 * * *"
     },
     {
       "path": "/api/internal/market-data-refresh/?job=ae-dubai-transaction",

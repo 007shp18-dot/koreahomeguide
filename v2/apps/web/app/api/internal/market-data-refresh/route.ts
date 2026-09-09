@@ -1,3 +1,5 @@
+import { publishSingaporeObservations } from '@/lib/singapore/publication-build.server';
+import { invalidateSingaporePublicationPages } from '@/lib/singapore/publication-invalidate.server';
 import { NextResponse } from 'next/server';
 
 import { contentDatabase } from '@/lib/db/postgres.server';
@@ -68,6 +70,7 @@ function refreshService() {
 }
 
 async function execute(job: MarketRefreshJob, uploadedCsv?: string) {
+  const beganAt = Date.now();
   const service = refreshService();
   if (service === null) {
     return json({ error: 'database_not_configured' }, 503);
@@ -76,6 +79,11 @@ async function execute(job: MarketRefreshJob, uploadedCsv?: string) {
     const result = uploadedCsv === undefined
       ? await service.run(job)
       : await service.run(job, { uploadedCsv });
+    if (result.state === 'ready' && (job === 'sg-private-sale' || job === 'sg-private-rent')) {
+      if (Date.now() - beganAt > 30_000) return json({ ...result, publication: { state: 'deferred', reason: 'scheduled_publisher_required' } });
+      try { const publication = await publishSingaporeObservations({ apply: true }); invalidateSingaporePublicationPages(); return json({ ...result, publication }); }
+      catch { return json({ ...result, publication: { state: 'withheld', reason: 'publication_validation_failed' } }); }
+    }
     return json(result, responseStatus(result));
   } catch {
     console.error('SignedPrice market data refresh failed unexpectedly.');

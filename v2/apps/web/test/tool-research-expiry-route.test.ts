@@ -75,4 +75,21 @@ describe('tool research expiry cron', () => {
       path: '/api/internal/tool-research-expiry/', schedule: '43 0 * * *',
     });
   });
+
+  it('checks current aggregates only after expiry and reports aggregation failures', async () => {
+    const calls: string[] = [];
+    const now = new Date('2026-09-10T00:43:00Z');
+    const aggregate = vi.fn(async () => { calls.push('aggregate'); throw new Error('secret'); });
+    const handler = createToolResearchExpiryHandler({
+      repository: repository({ expire: async () => { calls.push('expire'); return 2; } }),
+      secret: 'cron-value', now: () => now, aggregate,
+    });
+    expect((await handler(new Request(endpoint))).status).toBe(401);
+    expect(aggregate).not.toHaveBeenCalled();
+    const response = await handler(new Request(endpoint, { headers: { Authorization: 'Bearer cron-value' } }));
+    expect(calls).toEqual(['expire', 'aggregate']);
+    expect(aggregate).toHaveBeenCalledWith(now);
+    expect(response.status).toBe(503);
+    expect(await response.json()).toEqual({ error: 'storage_unavailable' });
+  });
 });

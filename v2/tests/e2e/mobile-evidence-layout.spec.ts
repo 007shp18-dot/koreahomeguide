@@ -2,11 +2,15 @@ import { expect, test } from '@playwright/test';
 
 test('mobile evidence has readable compact metrics and an inset guide link', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('/kr/seoul/explore/?district=jongno-gu&transaction=jeonse&view=split');
+  // The installed contract fixture publishes Gangnam apartment cohorts;
+  // Jongno deliberately has no comparable rental sample.
+  await page.goto('/kr/seoul/explore/?district=gangnam-gu&propertyType=apartment&transaction=jeonse&area=all&contractType=all&view=split');
   const card = page.locator('[data-district-summary]').first();
   const disclosure = page.locator('details').filter({ has: card });
   if (await disclosure.count()) await disclosure.locator('summary').first().click();
   await expect(card).toBeVisible();
+  await expect(card).toHaveAttribute('data-district-summary', 'published');
+  await expect(card.locator('dl > div').first()).toBeVisible();
   const layout = await card.evaluate(element => {
     const rect = element.getBoundingClientRect();
     const metric = element.querySelector('dl > div')!;

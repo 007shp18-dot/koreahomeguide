@@ -2,7 +2,7 @@ import { assessEvidence } from './quality';
 export const markets = { seoul: '서울', singapore: '싱가포르', dubai: '두바이' } as const;
 export const tiers = { essential: '필수 기반', supporting: '판단 보강', insight: '향후 분석' } as const;
 export const metrics = { sale_price: '매매 가격', rent: '임대료', service_charge: '관리비', repair_cost: '수선비', transaction_cost: '취득·매도 비용' } as const;
-export const bases = { asking: '호가', quoted: '견적', invoiced: '청구액', paid: '실제 지급액', reported: '미검증 제보' } as const;
+export const bases = { asking: '호가', quoted: '견적', invoiced: '청구액', paid: '실제 지급액', registered: '공식 신고·등록값', published: '공식 공시 요금', reported: '미검증 제보' } as const;
 export const units = { total: '총액', monthly: '월간', annual: '연간', sqm: '㎡당' } as const;
 export const sourceKinds = { official: '공식 자료', commercial: '중개·상업 자료', community: '커뮤니티', contributed: '직접 제공 자료' } as const;
 export const statuses = { pending: '검토 대기', approved: '승인', rejected: '제외', withdrawn: '철회' } as const;
@@ -10,6 +10,7 @@ export type Status = keyof typeof statuses;
 export type SourceInput = { name: string; url: string; kind: keyof typeof sourceKinds };
 export type EvidenceInput = {
   address?: string; housingType?: string; conditions?: string; billingPeriod?: 'monthly' | 'annual' | 'once';
+  observedPrecision?: 'month' | 'day'; observedPeriod?: string;
   sourceId: string; market: keyof typeof markets; tier: keyof typeof tiers; metric: keyof typeof metrics;
   basis: keyof typeof bases; amount: number; currency: 'KRW' | 'SGD' | 'AED'; unit: keyof typeof units;
   area: string; building: string; sizeSqm: number | null; observedOn: string; expiresOn: string; url: string;
@@ -53,9 +54,15 @@ export function parseSource(value: unknown): SourceInput | null {
 export function parseEvidence(value: unknown): EvidenceInput | null {
   const v = object(value);
   if (!v) return null;
-  const extraKeys = ['address', 'housingType', 'conditions', 'billingPeriod'].filter((key) => key in v);
+  const extraKeys = ['address', 'housingType', 'conditions', 'billingPeriod', 'observedPrecision', 'observedPeriod'].filter((key) => key in v);
   if (!keys(v, [...extraKeys, 'sourceId', 'market', 'tier', 'metric', 'basis', 'amount', 'currency', 'unit', 'area', 'building', 'sizeSqm', 'observedOn', 'expiresOn', 'url'])) return null;
-  if (extraKeys.some((key) => key === 'billingPeriod' ? (typeof v[key] !== 'string' || !['monthly', 'annual', 'once'].includes(v[key] as string)) : !label(v[key], 0, key === 'conditions' ? 240 : 160))) return null;
+  if (extraKeys.some((key) => {
+    if (key === 'billingPeriod') return typeof v[key] !== 'string' || !['monthly', 'annual', 'once'].includes(v[key]);
+    if (key === 'observedPrecision') return v[key] !== 'month' && v[key] !== 'day';
+    if (key === 'observedPeriod') return typeof v[key] !== 'string' || !/^\d{4}-(0[1-9]|1[0-2])$/u.test(v[key]);
+    return !label(v[key], 0, key === 'conditions' ? 240 : 160);
+  })) return null;
+  if (v.observedPrecision === 'month' ? v.observedOn !== `${v.observedPeriod}-01` : v.observedPeriod !== undefined) return null;
   if (!isId(v.sourceId) || !choice(v.market, markets) || !choice(v.tier, tiers) || !choice(v.metric, metrics)
     || !choice(v.basis, bases) || !choice(v.unit, units) || !safeUrl(v.url)
     || !label(v.area, 2, 120) || !label(v.building, 0, 160)

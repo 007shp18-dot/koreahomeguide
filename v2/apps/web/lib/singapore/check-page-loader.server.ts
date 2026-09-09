@@ -1,4 +1,5 @@
 import 'server-only';
+import { activeSingaporePublication, singaporePublicationRightsRevoked } from './publication.server';
 
 import { singaporeCheckEvidenceRepositoriesFromEnvironment } from './check-evidence-repository.server';
 import { loadSingaporeCheckFormCatalog } from './check-form-catalog.server';
@@ -10,7 +11,7 @@ import {
 } from './check-route-model.server';
 
 export async function loadSingaporeCheckPageModel(query: SingaporeCheckQuery) {
-  const prepared = loadSingaporeCheckFormCatalog();
+  const prepared = (await activeSingaporePublication() || singaporePublicationRightsRevoked() || process.env.DATABASE_URL?.trim()) ? null : loadSingaporeCheckFormCatalog();
   // Overrides and a changed release fall back to the existing verified loader.
   // The prepared catalog only supplies form choices, never calculation evidence.
   const repositories = await singaporeCheckEvidenceRepositoriesFromEnvironment(
@@ -21,7 +22,7 @@ export async function loadSingaporeCheckPageModel(query: SingaporeCheckQuery) {
 
 export async function singaporeCheckPageIsIndexable(query: SingaporeCheckQuery): Promise<boolean> {
   if (Object.keys(query).length > 0) return false;
-  const prepared = loadSingaporeCheckFormCatalog();
+  const prepared = (await activeSingaporePublication() || singaporePublicationRightsRevoked() || process.env.DATABASE_URL?.trim()) ? null : loadSingaporeCheckFormCatalog();
   if (prepared !== null) return prepared.published;
   try {
     return isSingaporeCheckLandingIndexable(await singaporeCheckEvidenceRepositoriesFromEnvironment(), query);
