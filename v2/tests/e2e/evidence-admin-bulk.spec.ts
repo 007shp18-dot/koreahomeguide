@@ -3,6 +3,10 @@ import type { Evidence, PoolData } from '../../apps/web/lib/evidence-pool/contra
 
 test('evidence filters, bulk confirmation and consent dashboard are usable', async ({ page, baseURL }) => {
   test.skip(!baseURL?.includes('127.0.0.1') && !baseURL?.includes('localhost'), 'Synthetic admin credentials are only used on the local test server.');
+  // NextURL canonicalizes loopback IPs to localhost; use that same origin
+  // for the strict same-origin session endpoint and its cookie.
+  const adminURL = new URL(baseURL!); adminURL.hostname = 'localhost';
+  const adminOrigin = adminURL.origin;
   const now = new Date().toISOString();
   const row: Evidence = { id: '11111111-1111-4111-8111-111111111111', sourceId: '22222222-2222-4222-8222-222222222222', sourceName: '검증용 공식 출처', sourceStatus: 'approved', sourceKind: 'official', version: 1, createdAt: now, status: 'pending', market: 'seoul', tier: 'essential', metric: 'sale_price', basis: 'paid', amount: 500000000, currency: 'KRW', unit: 'total', area: '검증 지역', building: '검증 단지', sizeSqm: 80, observedOn: now.slice(0,10), expiresOn: '2099-12-31', url: 'https://example.com/evidence', housingType: '아파트', conditions: '잔금 지급 완료, 공실 인도' };
   let changed = false; let previews = 0; let confirmations = 0;
@@ -21,9 +25,9 @@ test('evidence filters, bulk confirmation and consent dashboard are usable', asy
     const data: PoolData = { sources: [], evidence: [{...row,status:changed?'approved':'pending',version:changed?2:1}], total:1, page:1, counts:{pending:changed?0:1,approved:changed?1:0,rejected:0,withdrawn:0,expired:0} };
     return route.fulfill({json:data});
   });
-  const login = await page.request.post(`${baseURL}/api/internal/evidence-session/`, {headers:{Origin:baseURL!},data:{secret:'playwright-only-evidence-admin-secret-32-characters'}});
-  expect(login.ok()).toBe(true);
-  await page.goto('/admin/evidence/');
+  const login = await page.request.post(`${adminOrigin}/api/internal/evidence-session/`, {headers:{Origin:adminOrigin},data:{secret:'playwright-only-evidence-admin-secret-32-characters'}});
+  expect(login.status(), await login.text()).toBe(200);
+  await page.goto(`${adminOrigin}/admin/evidence/`);
   await expect(page.getByRole('button',{name:'검증 단지',exact:true})).toBeVisible();
   await page.getByLabel('수집 점검').selectOption('qualified');
   await page.getByRole('button',{name:'조회',exact:true}).click();
