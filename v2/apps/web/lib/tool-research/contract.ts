@@ -378,3 +378,10 @@ export function describeToolResearchBands(
   }
   return Object.freeze(labels);
 }
+
+/** Human-readable labels for already bucketed administrative aggregates. */
+export function describeResearchBand(id: string, currency: ResearchCurrency): string {
+  if (id === 'amount-none') return `${currency} 0`;
+  return [...AMOUNT_SCALES[currency], ...AREA_SCALE, ...YIELD_SCALE, ...SAMPLE_SCALE]
+    .find(([, candidate]) => candidate === id)?.[2] ?? id;
+}

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { parseEvidence, parseSource, readiness, parseCommand } from '../lib/evidence-pool/contract';
 
 export const sampleEvidence = {
+  conditions: 'Annual common area charges',
   sourceId: '11111111-1111-4111-8111-111111111111', market: 'dubai', tier: 'supporting',
   metric: 'service_charge', basis: 'invoiced', amount: 12000, currency: 'AED', unit: 'annual',
   area: 'Dubai Marina', building: 'Example Tower', sizeSqm: 80,
@@ -14,7 +15,7 @@ describe('evidence pool input boundaries', () => {
     expect(parseEvidence({ ...sampleEvidence, amount: '12000' })).toBeNull();
   });
   it.each([
-    { author: 'person' }, { rawPost: 'text' }, { amount: -1 }, { amount: Infinity },
+    { billingPeriod: ['monthly'] }, { conditions: ['unchecked'] }, { author: 'person' }, { rawPost: 'text' }, { amount: -1 }, { amount: Infinity },
     { observedOn: '2026-02-30' }, { expiresOn: '2026-08-01' }, { sizeSqm: 0 },
     { url: 'javascript:alert(1)' }, { url: 'https://user:password@example.com' }, { currency: 'KRW' },
   ])('rejects unsafe or inconsistent fields %j', (change) => {
@@ -35,6 +36,6 @@ describe('evidence pool input boundaries', () => {
     expect(readiness({ ...row, sourceStatus: 'withdrawn' }, '2026-09-09').ready).toBe(false);
     expect(readiness({ ...row, sourceKind: 'community' }, '2026-09-09').ready).toBe(false);
     expect(readiness(row, '2026-12-02').reasons).toContain('유효기간 만료');
-    expect(readiness({ ...row, building: '' }, '2026-09-09').reasons).toContain('건물 정보 없음');
+    expect(readiness({ ...row, building: '' }, '2026-09-09').reasons).toContain('주소 또는 지역·단지명 필요');
   });
 });

@@ -33,6 +33,8 @@ export function EvidenceForm({ sources, busy, submit, existing }: { sources: Sou
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); const form = event.currentTarget; const data = new FormData(form);
     const input: EvidenceInput = {
+      address: String(data.get('address')).trim(), housingType: String(data.get('housingType')).trim(), conditions: String(data.get('conditions')).trim(),
+      ...(data.get('billingPeriod') ? { billingPeriod: String(data.get('billingPeriod')) as EvidenceInput['billingPeriod'] } : {}),
       sourceId: String(data.get('sourceId')), market, currency: currency as EvidenceInput['currency'],
       tier: String(data.get('tier')) as EvidenceInput['tier'], metric: String(data.get('metric')) as EvidenceInput['metric'],
       basis: String(data.get('basis')) as EvidenceInput['basis'], unit: String(data.get('unit')) as EvidenceInput['unit'],
@@ -56,6 +58,10 @@ export function EvidenceForm({ sources, busy, submit, existing }: { sources: Sou
       <label>금액 단위<select name="unit" defaultValue={existing?.unit ?? 'annual'}><Options values={units} /></select></label>
       <label>지역<input name="area" required minLength={2} maxLength={120} defaultValue={existing?.area} /></label>
       <label>건물 · 선택<input name="building" maxLength={160} defaultValue={existing?.building} /></label>
+      <label>정확한 주소 · 선택<input name="address" maxLength={160} defaultValue={existing?.address} /></label>
+      <label>주택 유형<input name="housingType" maxLength={160} defaultValue={existing?.housingType} placeholder="아파트·HDB·콘도 등" /></label>
+      <label className={styles.full}>거래·부과·서비스 조건<input name="conditions" maxLength={240} defaultValue={existing?.conditions} placeholder="임대 보증금·계약 기간, 관리비 포함 항목, 수선 범위 등" /><small>확인된 조건만 입력하세요. 누락 자료는 정보 부족으로 분류됩니다.</small></label>
+      <label>별도 부과 기간<select name="billingPeriod" defaultValue={existing?.billingPeriod ?? ''}><option value="">금액 단위에 따름</option><option value="monthly">월간</option><option value="annual">연간</option><option value="once">일회성</option></select></label>
       <label>면적 ㎡ · 선택<input name="sizeSqm" type="number" min="0.01" max="100000" step="any" defaultValue={existing?.sizeSqm ?? ''} /></label>
       <label>거래·관측일<input name="observedOn" type="date" required defaultValue={existing?.observedOn} /></label>
       <label>유효 종료일<input name="expiresOn" type="date" required defaultValue={existing?.expiresOn} /><small>종료일까지 유효하며, 다음 날부터 분석 대상에서 제외됩니다.</small></label>

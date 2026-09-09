@@ -20,7 +20,7 @@ type Database = { query(sql: string, params?: unknown[]): Promise<{ rows: Record
   afterAll(async () => { await db?.close(); });
   it('persists, reviews, corrects, rejects stale changes and never restores withdrawal', async () => {
     const source = await repository.mutate({ action: 'create-source', input: { name: 'Official test', url: 'https://example.com', kind: 'official' } }, 'test-operator');
-    const input: EvidenceInput = { sourceId: source.id, market: 'dubai', tier: 'supporting', metric: 'rent', basis: 'paid', amount: 100000, currency: 'AED', unit: 'annual', area: 'Marina', building: 'Tower', sizeSqm: 80, observedOn: '2026-09-01', expiresOn: '2099-12-01', url: 'https://example.com/rent' };
+    const input: EvidenceInput = { conditions: 'Verified fixed term and charges', housingType: 'apartment', sourceId: source.id, market: 'dubai', tier: 'supporting', metric: 'rent', basis: 'paid', amount: 100000, currency: 'AED', unit: 'annual', area: 'Marina', building: 'Tower', sizeSqm: 80, observedOn: '2026-09-01', expiresOn: '2099-12-01', url: 'https://example.com/rent' };
     const evidence = await repository.mutate({ action: 'create-evidence', input }, 'test-operator');
     const review = { action: 'review' as const, entity: 'evidence' as const, id: evidence.id, version: 1, status: 'approved' as const, reason: 'Source checked' };
     await expect(repository.mutate(review, 'test-operator')).rejects.toThrow('conflict');
@@ -48,7 +48,7 @@ type Database = { query(sql: string, params?: unknown[]): Promise<{ rows: Record
   it('exposes withdrawn source state immediately and blocks reapproval through it', async () => {
     const source = await repository.mutate({ action: 'create-source', input: { name: 'Withdrawal source', url: 'https://withdrawal.example', kind: 'official' } }, 'test-operator');
     await repository.mutate({ action: 'review', entity: 'source', id: source.id, version: 1, status: 'approved', reason: 'Checked source' }, 'test-operator');
-    const input: EvidenceInput = { sourceId: source.id, market: 'seoul', tier: 'essential', metric: 'sale_price', basis: 'paid', amount: 500000000, currency: 'KRW', unit: 'total', area: 'Gangnam', building: 'Test Building', sizeSqm: 80, observedOn: '2026-09-01', expiresOn: '2099-12-01', url: 'https://withdrawal.example/price' };
+    const input: EvidenceInput = { conditions: 'Verified fixed term and charges', housingType: 'apartment', sourceId: source.id, market: 'seoul', tier: 'essential', metric: 'sale_price', basis: 'paid', amount: 500000000, currency: 'KRW', unit: 'total', area: 'Gangnam', building: 'Test Building', sizeSqm: 80, observedOn: '2026-09-01', expiresOn: '2099-12-01', url: 'https://withdrawal.example/price' };
     const row = await repository.mutate({ action: 'create-evidence', input }, 'test-operator');
     await repository.mutate({ action: 'review', entity: 'evidence', id: row.id, version: 1, status: 'approved', reason: 'Price checked' }, 'test-operator');
     await repository.mutate({ action: 'review', entity: 'source', id: source.id, version: 2, status: 'withdrawn', reason: 'Source withdrawn' }, 'test-operator');
@@ -60,7 +60,7 @@ type Database = { query(sql: string, params?: unknown[]): Promise<{ rows: Record
   it('keeps expired evidence out of approvals and filters it by UTC date', async () => {
     const source = await repository.mutate({ action: 'create-source', input: { name: 'Expired source', url: 'https://expired.example', kind: 'official' } }, 'test-operator');
     await repository.mutate({ action: 'review', entity: 'source', id: source.id, version: 1, status: 'approved', reason: 'Checked source' }, 'test-operator');
-    const input: EvidenceInput = { sourceId: source.id, market: 'singapore', tier: 'supporting', metric: 'rent', basis: 'paid', amount: 3000, currency: 'SGD', unit: 'monthly', area: 'Central', building: 'Test Building', sizeSqm: 60, observedOn: '2000-01-01', expiresOn: '2000-02-01', url: 'https://expired.example/rent' };
+    const input: EvidenceInput = { conditions: 'Verified fixed term and charges', housingType: 'apartment', sourceId: source.id, market: 'singapore', tier: 'supporting', metric: 'rent', basis: 'paid', amount: 3000, currency: 'SGD', unit: 'monthly', area: 'Central', building: 'Test Building', sizeSqm: 60, observedOn: '2000-01-01', expiresOn: '2000-02-01', url: 'https://expired.example/rent' };
     const row = await repository.mutate({ action: 'create-evidence', input }, 'test-operator');
     await expect(repository.mutate({ action: 'review', entity: 'evidence', id: row.id, version: 1, status: 'approved', reason: 'Cannot approve expired' }, 'test-operator')).rejects.toThrow('conflict');
     const data = await repository.list({ page: 1, market: 'singapore', status: 'expired', query: '' });

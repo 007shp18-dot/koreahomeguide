@@ -57,6 +57,7 @@ export function createPlaywrightConfig(
       new URL('./tests/e2e/korea-proximity-web-server.mjs', import.meta.url),
     ))} ${port}`,
     env: {
+      EVIDENCE_ADMIN_SECRET: 'playwright-only-evidence-admin-secret-32-characters',
       VERCEL_ENV: target.expectedEnvironment,
       VERCEL_GIT_COMMIT_SHA: target.expectedCommit,
       VERCEL_URL: '127.0.0.1:3100',
