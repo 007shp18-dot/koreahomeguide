@@ -1,9 +1,52 @@
 # SignedPrice product roadmap
 
-Updated 2026-09-08. This checkpoint supersedes the 7 September continuation
-notes and the August preview-only plan.
+Updated 2026-09-09. The current priorities below supersede the older sequencing.
+Historical release observations remain dated evidence; unresolved collection and
+publication gates still require actual operational verification.
 
-## Current audit checkpoint — 8 September
+## Current checkpoint — 9 September: data coverage and accumulated evidence
+
+Develop data collection alongside the shared UX and city content journeys. The
+next source of lasting value is reliable regional coverage, verified links across
+records for the same property, and a history of prices, conditions and ownership
+costs that can be reproduced. Acquiring more public rows alone does not establish
+that value.
+
+The immediate Tokyo diagnosis is specific: the input accepts all 23 wards, but
+the scheduled collection scope was fixed to Minato (`13103`). Expand collection
+and align available filters with actual publications. XIT001 contains anonymous
+regional transactions; expanding ward coverage does not establish building-level
+transaction identities.
+
+See the [data collection roadmap](../superpowers/plans/2026-09-09-data-roadmap.md)
+for city-specific fields, source boundaries, storage decisions and exit criteria.
+The [9 September refresh review](../superpowers/plans/2026-09-09-refresh-review.md)
+records the shared design and editorial scope; its dated verification notes are
+not a substitute for current deployment or ingestion evidence.
+
+| Priority | Work | Exit evidence |
+| --- | --- | --- |
+| P0 · coverage | Collect and validate all 23 Tokyo wards for a common officially available quarter, then extend reviewed historical coverage | Every ward has an explicit publication or source-status result; source/public counts agree; repeat collection adds no duplicates; failed batches preserve the prior publication |
+| P0 · operations | Establish the actual four-city coverage and freshness baseline by region, period, housing type and transaction kind | Each public dataset has a target denominator, source period, successful retrieval time, publication version and source-specific delay threshold; deployed collectors are not assumed to be enabled |
+| P1 · identity | Strengthen verified project/building IDs, aliases and cross-source links | Linked records retain their evidence and review status; sampled false matches and unresolved records are measured together; anonymous Tokyo rows remain regional |
+| P1 · costs | Review an initial 10 property/project candidates per city for available management, repair, tenure or handover evidence | Each usable fact has its subject, unit, period, source and verification date; missing costs are not treated as zero; access and reuse conditions are checked before acquisition |
+| P1 · history | Retain corrections and changing property facts; make compatible historical comparisons reproducible | Previous public results can be reconstructed from their evidence and calculation versions; source corrections and changing samples are distinguishable from market movements |
+| Parallel · UX | Continue reducing the work needed to find and compare candidates within the shared Explore/detail design | Usable region/period choices, consistent controls and readable mobile layouts lead from search to evidence and cost comparison |
+| Parallel · content | Extend the six-stage city journeys and five local issues per city using the collected evidence | Articles disclose periods, samples and assumptions, link to usable Explore/Check evidence, and generate aggregate evidence of actual downstream use |
+
+Use the existing Neon/PostgreSQL foundation as the canonical store for collected
+records, identity links, histories and publication versions. Google Sheets is an
+optional operational surface for coverage summaries, review queues and editorial
+status. Start with a one-way summary export if it is needed; spreadsheet edits
+remain review proposals and do not directly publish prices. No Sheets integration
+or four-city automatic ingestion is claimed complete by this roadmap.
+
+Keep the collect → validate → publish → activate flow and retain the last good
+version. The Seoul canary, later-market enablement, source rights, storage and
+rollback gates recorded below remain open unless newer execution evidence closes
+them. Updated UI, content or deployed collection code does not close those gates.
+
+## Historical audit checkpoint — 8 September
 
 The three-city research journey is available and the production smoke check found
 no unavailable states or HTTP 5xx responses on the sampled Home, Passport, Seoul,

@@ -9,9 +9,18 @@
 .advancedFilters summary { width: fit-content; min-height: 44px; align-content: center; color: var(--ink); font-size: 14px; font-weight: 600; line-height: 1.5; cursor: pointer; }
 .advancedFilters summary span { margin-left: 8px; color: var(--muted); font-size: 13px; font-weight: 400; }
 .secondaryFilters { display: grid; grid-template-columns: 1fr 1fr minmax(0, 2fr) 1fr 1fr; gap: 16px; min-width: 0; margin: 12px 0 0; padding: 0; border: 0; }
+.secondaryFilters .latestPeriod { display: flex; align-items: center; grid-column: 1 / -1; gap: 10px; min-height: 44px; color: var(--ink); font-weight: 400; }
+.latestPeriod input { width: 18px; min-height: 18px; height: 18px; margin: 0; accent-color: var(--accent); }
+.filters select:disabled { opacity: .6; }
 .results { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px 24px; padding: 24px 0 8px; }
 .results h2 { margin: 0; font-size: 20px; font-weight: 600; line-height: 1.4; }
 .results p, .source { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.7; }
+.coverage { padding-top: 12px; }
+.coverage summary { width: fit-content; min-height: 44px; align-content: center; color: var(--ink); font-size: 14px; line-height: 1.5; cursor: pointer; }
+.coverageLinks { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 0 24px; padding: 8px 0; }
+.coverageLinks a { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-width: 0; min-height: 44px; color: var(--accent); font-size: 14px; line-height: 1.5; text-underline-offset: 4px; }
+.coverageLinks a span:last-child { color: var(--muted); font-size: 13px; white-space: nowrap; }
+.coverage :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .list { margin-top: 18px; border-top: 1px solid var(--line); }
 .row { padding: 20px 0; border-bottom: 1px solid var(--line); }
 .rowHeading { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 24px; margin-bottom: 8px; }
@@ -36,7 +45,7 @@
   .primaryFilters { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
   .search { grid-column: 1 / -1; }
   .secondaryFilters { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-  .secondaryFilters label:nth-of-type(3) { grid-column: 1 / -1; grid-row: 2; }
+  .secondaryFilters .propertyType { grid-column: 1 / -1; }
   .advancedFilters summary span { display: none; }
   .row { padding: 18px 0; }
   .rowHeading { gap: 6px 16px; }

@@ -1,14 +1,20 @@
 import 'server-only';
 import { collectJapanSnapshot, parseJapanScope, type JapanScope } from './source.server';
 import type { createJapanRepository } from './repository.server';
+import { TOKYO_WARDS } from './query';
 
-// One ward and one quarter per invocation. Weekly rotation revisits the previous
-// eight completed quarters, accommodating provider lag and retrospective revisions.
+// One ward and one quarter per hourly invocation. A 23-hour block covers all
+// wards, and eight blocks revisit the completed-quarter window without bursts.
 export function scheduledJapanScope(now = new Date()): JapanScope {
+  const hour = Math.floor(now.getTime() / (60 * 60 * 1000));
   const current = now.getUTCFullYear() * 4 + Math.floor(now.getUTCMonth() / 3);
-  const week = Math.floor(now.getTime() / (7 * 24 * 60 * 60 * 1000));
-  const target = current - 1 - (week % 8);
-  return parseJapanScope(new URLSearchParams({ city: '13103', year: String(Math.floor(target / 4)), quarter: String(target % 4 + 1) }));
+  const completedQuarters = Math.min(8, current - 2024 * 4);
+  if (!Number.isFinite(hour) || completedQuarters < 1) throw new TypeError('invalid_scope');
+  const ward = TOKYO_WARDS[hour % TOKYO_WARDS.length];
+  if (!ward) throw new TypeError('invalid_scope');
+  const [city] = ward;
+  const target = current - 1 - (Math.floor(hour / TOKYO_WARDS.length) % completedQuarters);
+  return parseJapanScope(new URLSearchParams({ city, year: String(Math.floor(target / 4)), quarter: String(target % 4 + 1) }));
 }
 export async function refreshJapan(repository: ReturnType<typeof createJapanRepository>, scope: JapanScope,
   apiKey: string, options: { fetchResponse?: typeof fetch; allowLargeReduction?: boolean } = {}) {

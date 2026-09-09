@@ -52,7 +52,7 @@
     },
     {
       "path": "/api/internal/japan-refresh/",
-      "schedule": "40 2 * * 3"
+      "schedule": "40 * * * *"
     }
   ]
 }
