@@ -30,4 +30,21 @@ No material correctness, source-support, route or translation defect found. The 
 
 ## Scoped copy-fix confirmation
 
-Reviewed the final five-line copy patch only: exactly one Tokyo English title replacement and four 왕십니→왕십리 replacements across the two identified content files. Both P3 findings are **ADDRESSED**. No data, route, identifier or calculation change appears in this patch. Prior APPROVED verdicts stand; no additional research or full review was performed. Root reports the 13 targeted city-story/journey tests passed.
+Reviewed `copy-fix.diff` only: exactly one Tokyo English title replacement and four 왕십니→왕십리 replacements across the two identified content files. Both P3 findings are **ADDRESSED**. No data, route, identifier or calculation change appears in this patch. Prior APPROVED verdicts stand; no additional research or full review was performed. Root reports the 13 targeted city-story/journey tests passed.
+
+## Scoped CI compatibility review
+
+Reviewed `ci-compat.diff` only (two test files): **APPROVED**. The mortgage test retains its independent 300-month balance amortization, checks operating income and break-even cash reconciliation, and now locates the financing section and each rate's sentence before asserting its corresponding payment and annual cash result. This preserves the financial assertions while adapting to the new prose format. The primary-source host allowlist remains an exact hostname set; only the four verified new hosts are added. The date allowlist remains explicit with only 2026-09-09 added. No production code changes, new research or full review. Focused test execution remains the root/author's release gate.
+
+## Scoped source-date UI and policy-route integration review
+
+Reviewed the current uncommitted diff and its actual Newsroom, journey, policy, Insights and buying-guide consumers: **APPROVED — no material defects found in the requested scope**.
+
+- Separate source-check labels/dates are removed from the specified headers, source lists and policy trackers. Original source hrefs and internal provenance remain intact. Genuine article publication/update dates, statistical periods and policy announcement/effective/expiry rendering are preserved.
+- Exactly the two named English policy explainers select `NewsroomArticle` and their portfolio title/deck metadata, making the complete Markdown bodies and tables reachable on their existing canonical policy routes. All four other policy routes retain `PolicyRecordArticle`; its lifecycle, affected-group, timeline and before/after consumers remain intact. Structured data still receives the actual portfolio article.
+- Removing journey JSON-LD `datePublished`/`dateModified` is semantically correct: `JourneyArticle` defines `checkedAt` but no publication/update fields. This avoids asserting invented publication history while retaining canonical URL, headline, author, publisher and citations.
+- The two-column source grid matches both remaining list children; the existing small-screen one-column rule remains. The E2E source selector correctly addresses the labelled section rather than a heading descendant.
+- The source-date assertion now validates strict ISO day syntax, valid parsing and exact UTC calendar round-trip; invalid normalized dates are rejected. The exact host gate and independently amortized mortgage/rate/payment/cash assertions remain intact.
+- Existing unit expectations cover both integrated explainer routes, metadata and original links; lifecycle/date expectations are updated without removing genuine date checks. Root/implementer reports 39 focused tests, typecheck and scoped lint passed; this review did not repeat those gates or source research.
+
+Scope clarification received from root: removal concerns separate “출처 확인일” / source-check UI labels, not a site-wide article-history redesign. Existing generic index-card dates derived from journey/provenance fields remain unchanged and are not newly relabelled by this diff; their broader date-model cleanup is outside this narrow approval. This verdict does not claim every source-check mention in editorial prose or every generic index date was removed.

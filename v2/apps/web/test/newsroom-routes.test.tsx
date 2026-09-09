@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from 'vitest';
 vi.mock('server-only', () => ({}));
 
 import nextConfig from '../next.config';
+import PolicyPage, { generateMetadata as generatePolicyMetadata } from '../app/(en)/news/policy/[slug]/page';
 import sitemap from '../app/sitemap';
 import { NewsroomArticle } from '../components/newsroom/newsroom-article';
 import { NewsroomIndex, resolveNewsroomFilters } from '../components/newsroom/newsroom-index';
@@ -135,6 +136,9 @@ describe('public Newsroom routes', () => {
     expect(html).not.toContain('Reviewer');
     expect(html).not.toContain(article.reviewedBy!);
     expect(html).not.toContain(article.authorName);
+    expect(html).not.toContain('Checked');
+    expect(html).toContain(article.publishedAt.slice(0, 10));
+    expect(html).toContain(article.updatedAt.slice(0, 10));
     expect(html).not.toContain('data-article-takeaway=');
     expect(html).toContain('href="#article-sources-title"');
     expect(html).toContain('href="https://rt.molit.go.kr/"');
@@ -146,7 +150,8 @@ describe('public Newsroom routes', () => {
     expect(html).toContain('Announced');
     expect(html).toContain('Effective');
     expect(html).toContain('Expiry');
-    expect(html).toContain('Last checked');
+    expect(html).not.toContain('Last checked');
+    expect(html).toContain(policy.announcedOn);
     expect(html).toContain('Date not confirmed');
   });
 
@@ -160,6 +165,26 @@ describe('public Newsroom routes', () => {
     expect(html).toContain('Who may be affected');
     expect(html).toContain('not legal advice');
     expect(html).toContain('href="https://example.gov/policy"');
+    expect(html).not.toContain(policy.lastCheckedOn);
+  });
+
+  it('renders the two expanded policy explainers through the full article route', async () => {
+    const cases = [
+      ['singapore-absd-policy-status', 'S$900,000', 'Buyer in this example'],
+      ['korea-rental-deposit-protection-status', 'A fixed date alone', 'ordinary priority'],
+    ] as const;
+    for (const [slug, calculation, explanation] of cases) {
+      const article = getPortfolioRecord('en', slug)!;
+      const params = Promise.resolve({ slug });
+      const html = renderToStaticMarkup(await PolicyPage({ params }));
+      const metadata = await generatePolicyMetadata({ params });
+      expect(html).toContain(article.title);
+      expect(html).toContain(calculation);
+      expect(html.toLowerCase()).toContain(explanation.toLowerCase());
+      expect(html).toContain(article.sources[0]!.href.replaceAll('&', '&amp;'));
+      expect(metadata.title).toBe(`${article.title} | signedprice`);
+      expect(metadata.description).toBe(article.deck);
+    }
   });
 
   it('permanently redirects archived legacy Insights routes to the reviewed News index', async () => {

@@ -37,7 +37,7 @@ export function ChineseInsightsIndex({ articles }: Readonly<{
     <main className={styles.main}>
       <header className={styles.hero}>
         <div><p>SignedPrice · 中文原创</p><h1>理解韩国房产，再做决定。</h1></div>
-        <p>面向跨境租客与买家的原创报道和实用指南。每篇文章标明官方资料与核对日期，并直接连接首尔成交数据和价格查询。</p>
+        <p>面向跨境租客与买家的原创报道和实用指南。每篇文章标明官方资料，并直接连接首尔成交数据和价格查询。</p>
       </header>
       <nav className={styles.deskNav} aria-label="中文房地产导航">
         <Link aria-current="page" href="/zh-cn/kr/seoul/insights/">全部文章</Link>
@@ -86,12 +86,11 @@ export function ChineseInsightsArticle({ article }: Readonly<{
           <div>
             <EditorialMarkdown source={article.bodyMarkdown} />
             <section className={styles.sources} aria-labelledby="chinese-article-sources">
-              <h2 id="chinese-article-sources">资料来源与核对日期</h2>
+              <h2 id="chinese-article-sources">资料来源</h2>
               <ul>
                 {article.sources.map((source) => (
                   <li key={source.href}>
                     <a href={source.href} rel="noreferrer">{source.publisher} · {source.label}</a>
-                    <span>核对于 {source.checkedAt}</span>
                   </li>
                 ))}
               </ul>

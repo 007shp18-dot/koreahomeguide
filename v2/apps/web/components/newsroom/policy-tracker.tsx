@@ -20,7 +20,6 @@ function PolicyDates({ policy }: Readonly<{ policy: PolicyRecord }>) {
     <div><dt>Announced</dt><dd><time dateTime={policy.announcedOn}>{policy.announcedOn}</time></dd></div>
     <div><dt>Effective</dt><dd>{policy.effectiveOn === null ? dateValue(null) : <time dateTime={policy.effectiveOn}>{policy.effectiveOn}</time>}</dd></div>
     <div><dt>Expiry</dt><dd>{policy.expiresOn === null ? dateValue(null) : <time dateTime={policy.expiresOn}>{policy.expiresOn}</time>}</dd></div>
-    <div><dt>Last checked</dt><dd><time dateTime={policy.lastCheckedOn}>{policy.lastCheckedOn}</time></dd></div>
   </dl>;
 }
 

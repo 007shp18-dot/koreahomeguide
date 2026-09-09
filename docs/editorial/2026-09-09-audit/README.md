@@ -19,10 +19,11 @@ The recurring defect is a missing answer, not length alone. Policy stubs defer t
 
 - Dubai rental-yield column, EN/KO: current report context, collected-rent evidence, operating-income calculation and one sensitivity matrix. Preserve concise financed cash-flow results.
 - Tokyo old-condo cost column and which-home document guide, EN/KO: one explains the ten-year cash comparison; the other teaches which documents and fields change the decision.
-- Korea deposit-protection and Singapore ABSD explainers, EN/KO/zh-CN: replace generic policy stubs with current rules, examples and document checks. Keep original routes/publication history; date only the newly reviewed sources.
+- Korea deposit-protection and Singapore ABSD explainers, EN/KO/zh-CN: replace generic policy stubs with current rules, examples and document checks. Keep original routes/publication history; date only the newly reviewed sources internally. The two English routes now use the full article renderer so these bodies and their tables reach readers.
 - Four city hubs, EN/KO: replace parallel long articles with short six-stage introductions and existing links to full articles.
 - Seoul budget-screen headline/deck, EN/KO: explicitly state the inclusive 55–65 sqm range and group-median threshold; underlying data unchanged.
 - Correct duplicated source labels where section citations already retain the same evidence. Localize the generic Chinese scope heading.
+- Remove visible source-check dates at the user's request. Preserve article publication/update dates, data periods, policy timelines, source links and internal verification metadata.
 
 ## Ordered next work
 

@@ -9,7 +9,7 @@
 
 ## Global Constraints
 - Preserve route IDs, publication history, translations and working examples.
-- Research dates and legal applicability must be explicit; synthetic inputs remain labelled.
+- Retain research dates internally and make legal applicability and data periods explicit; synthetic inputs remain labelled. Per the user's later direction, source-check dates are not reader-facing labels.
 - Do not normalize unrelated files or add tests that merely restate prose.
 - One implementation agent owns its named files; root owns integration and audit documentation. Research agents remain read-only.
 
@@ -32,5 +32,6 @@
 
 ### Task 4: Review and release
 - [x] Independent editorial/source review of the complete diff, recalculation of worked examples, targeted existing content tests, typecheck and lint.
+- [x] Remove visible source-check dates while preserving source links and actual publication, statistical and legal dates. Route the two expanded English policy explainers through the full article renderer and verify their rendered bodies.
 - [ ] Publish one GitHub PR, complete required CI, merge under existing authorization and verify the changed public articles.
 - [ ] Report the exact reviewed and rewritten scope and the remaining ordered backlog.

@@ -46,8 +46,8 @@ export function PolicyRecordArticle({ policy, article }: Readonly<{
     </div>
     <PolicyBeforeAfter comparison={policy.beforeAfter} />
     <section className={styles.sources} aria-labelledby="policy-source-boundary-title" data-editorial-event="article_complete">
-      <h2 id="policy-source-boundary-title">Source and verification</h2>
-      <ol><li><span>Primary</span><a href={policy.source.href} rel="noreferrer">{policy.source.title}</a><small>Checked {policy.source.checkedAt}</small></li></ol>
+      <h2 id="policy-source-boundary-title">Official source</h2>
+      <ol><li><span>Primary</span><a href={policy.source.href} rel="noreferrer">{policy.source.title}</a></li></ol>
     </section>
     <aside className={styles.relatedAction}>
       <p>Related guidance and evidence</p>

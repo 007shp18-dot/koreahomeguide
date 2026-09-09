@@ -23,6 +23,8 @@ Use original statistics, enacted rules, official service pages or the research p
 
 Store publisher, original URL, publication/effective date where known, observation period and actual check date. A site footer is not a report’s publication date. Official releases can contain inconsistent totals or translation errors: reconcile them or omit the conflicting claim.
 
+Source-check dates are internal provenance. Do not display a separate “Checked” or “출처 확인일” label in article headers, source lists or policy trackers. Keep original source links, actual article publication/update dates, statistical observation periods and policy announcement/effective dates visible where relevant. Never relabel a source-check timestamp as a publication date.
+
 Label a scenario once next to its inputs and maintain the distinction at the conclusion. Recompute totals from unrounded inputs; disclose rounding only where material. Separate purchase-price yield, yield on acquisition cash, operating income and cash after debt service. Avoid double-counting reserve contributions, special assessments, insurance or principal/interest. Cumulative cash is not investment return when residual asset value and opportunity cost are excluded.
 
 Keep citations close to the claims they support. Use one visible citation mechanism per claim plus a final source list. Never remove a unique source while reducing visual repetition. A national survey is not a current quote for a Tokyo unit; a community rent index is not a lease forecast for a Dubai apartment.
