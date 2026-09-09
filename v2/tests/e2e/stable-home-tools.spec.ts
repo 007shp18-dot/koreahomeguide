@@ -73,16 +73,31 @@ test('all tool languages use the same four primary navigation slots and Correcti
 
 // Inspect the real tool routes, including empty states at every release viewport.
 test('tool screens keep fields and results inside the viewport', async ({page}, testInfo) => {
+ let headingSize: string | undefined;
  for (const [name, path, target] of [
   ['tools', '/tools/', 'main'],
+  ['passport', '/passport/', 'main'],
   ['calculator', '/tools/property-scenario/', '[data-property-scenario]'],
   ['seoul-check', '/kr/seoul/check/', '[data-check-section="verdict"]'],
+  ['seoul-compare', '/kr/seoul/check/compare/', '[data-contract-check-form]'],
+  ['seoul-rent-quote', '/kr/seoul/tools/rent-check/', 'main form'],
   ['singapore-check', '/sg/singapore/check/', '[data-singapore-check-workspace]'],
   ['dubai-check', '/ae/dubai/check/', '[data-dubai-check-workspace]'],
  ] as const) {
   await page.goto(path);
   await expect(page.locator(target).filter({visible:true}).first()).toBeVisible();
   await page.evaluate(() => document.fonts.ready);
+  const title = page.locator('main h1').filter({visible:true}).first();
+  const size = await title.evaluate(element => getComputedStyle(element).fontSize);
+  headingSize ??= size;
+  expect(size, `${name} uses the shared tool title size`).toBe(headingSize);
+  const control = page.locator('main input:not([type="hidden"]):not([type="radio"]):not([type="checkbox"]), main select').filter({visible:true}).first();
+  if (await control.count()) {
+   const controlSurface = name === 'passport' ? control.locator('..') : control;
+   const geometry = await controlSurface.evaluate(element => ({height:element.getBoundingClientRect().height,radius:getComputedStyle(element).borderTopLeftRadius}));
+   expect(geometry.height, `${name} control height`).toBeGreaterThanOrEqual(48);
+   expect(geometry.radius, `${name} control radius`).toBe('8px');
+  }
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), name).toBe(true);
   await testInfo.attach(`${name}-${testInfo.project.name}`, {body: await page.screenshot({fullPage:true}), contentType:'image/png'});
  }

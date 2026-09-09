@@ -884,3 +884,18 @@
 .segmentRow span { line-height: 1.5; }
 .segmentRow > a { align-self: start; font-size: 13px; white-space: normal; font-weight: 600; }
 .page .section h2 { font-size: 22px; line-height: 1.4; }
+
+/* Check only: Explore and market-detail layouts retain their own styling. */
+.checkWorkspace { border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.checkHeader { min-height: 0; padding: var(--tool-heading-padding); border: 0; }
+.checkHeader h1 { font-size: var(--tool-title-size); font-weight: 650; line-height: 1.2; letter-spacing: normal; }
+.checkMode { margin-bottom: 24px; border: 1px solid var(--line); border-radius: var(--tool-control-radius); overflow: hidden; }
+.checkMode a { min-height: var(--tool-control-height); }
+.checkBody { border: 1px solid var(--line); border-radius: var(--tool-panel-radius); overflow: hidden; background: var(--surface-strong); }
+.checkForm, .checkResult { padding: var(--tool-panel-padding); }
+.checkResult { background: var(--tool-result-background); }
+.offerFields { gap: var(--tool-field-gap); }
+.offerFields label { font-weight: 550; text-transform: none; letter-spacing: normal; }
+.offerFields input, .offerFields select, .checkSubmit { min-height: var(--tool-control-height); border-radius: var(--tool-control-radius); }
+.checkSubmit { font-size: 16px; font-weight: 650; }
+.checkMarkets a { border-radius: var(--tool-control-radius); }

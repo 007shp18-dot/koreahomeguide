@@ -19,7 +19,7 @@
   background: var(--surface-strong);
   box-shadow: var(--shadow-sm);
 }
-.hero { border-color: var(--line); background: linear-gradient(130deg, #fff 50%, #eef5ff); }
+.hero { border-color: var(--line); background: var(--surface-strong); }
 .hero h1,
 .unavailable h1 { font-size: clamp(2.35rem, 5vw, 4.2rem); font-weight: 740; line-height: 1.02; }
 .modeSelector,
@@ -1156,3 +1156,19 @@
 .buildingChoices button { min-height: 44px; width: 100%; padding: 10px; text-align: left; color: var(--ink); background: var(--canvas); border: 0; border-bottom: 1px solid var(--line); font: inherit; }
 .scopeComparison { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 20px; margin-bottom: 24px; }
 .scopeComparison > div { padding: 16px; border-block: 1px solid var(--line); }
+
+/* Decision-tool frame, shared with Rent Quote and the other market checks. */
+.main { margin: 0 auto 48px; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.hero { min-height: 0; padding: var(--tool-heading-padding); border: 0; background: transparent; gap: 12px; }
+.hero h1 { margin: 0; font-size: var(--tool-title-size); font-weight: 650; line-height: 1.2; letter-spacing: normal; }
+.hero > p:first-child, .hero > p:last-child { margin: 0; }
+.hero > p:last-child { max-width: 68ch; font-size: var(--body-size); line-height: var(--body-leading); }
+.form { border: 1px solid var(--line); border-radius: var(--tool-panel-radius); overflow: hidden; background: var(--surface-strong); }
+.modeSelector { margin-bottom: 24px; border: 1px solid var(--line); border-radius: var(--tool-control-radius); overflow: hidden; }
+.modeSelector > a, .modeSelector > button, .modeSelector > span { min-height: var(--tool-control-height); }
+.field input, .field select, .offerPanel input, .housingType select { min-height: var(--tool-control-height); border-radius: var(--tool-control-radius); }
+.field, .offerPanel > label, .moneyFields > label { padding: var(--tool-panel-padding); }
+.actions { padding: var(--tool-panel-padding); }
+.actions button { min-height: var(--tool-control-height); border-radius: var(--tool-control-radius); font-size: 16px; font-weight: 650; }
+.resultPanel { background: var(--tool-result-background); }
+.resultEmpty { padding: var(--tool-panel-padding); }
