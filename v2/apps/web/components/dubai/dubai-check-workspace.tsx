@@ -1,3 +1,4 @@
+import toolSurface from '../tools/tool-surface.module.css';
 import { DefaultAmountInput } from '../amount-input';
 import { PassportLink as Link, PassportFormContext } from '../passport/passport-journey';
 import { BuyerNextSteps } from '../buyer-next-steps';
@@ -148,7 +149,7 @@ export function DubaiCheckWorkspace({ locale = 'en',
   const housingValue = query?.housing ?? firstArea?.housing[0] ?? 'apartment';
   const completionValue = query?.completion ?? 'ready';
   const resolved = resolveCheck(model, state, locale);
-  return <div className={styles.checkPage} data-dubai-check-workspace="ready">
+  return <div className={`${styles.checkPage} ${toolSurface.surface}`} data-dubai-check-workspace="ready">
     <header className={styles.checkHeader}>
       <div><p className={styles.eyebrow}>{t("Dubai Check")}</p><h1>{t("Compare an asking price")}</h1></div>
       <p>{t(model.context.comparisonPeriod.from)}{t("–")}{t(model.context.comparisonPeriod.to)}<br />{locale === 'ko' ? `비교 그룹별 최소 ${model.context.publicationMinimum}건` : `Minimum ${model.context.publicationMinimum} records per cohort`}</p>
@@ -166,7 +167,7 @@ export function DubaiCheckWorkspace({ locale = 'en',
           <button type="submit">{t("Compare price and gross yield")}</button>
         </form>
       </section>
-      <aside className={styles.checkResultPanel} aria-live="polite">
+      <aside data-tool-result className={styles.checkResultPanel} aria-live="polite">
         {resolved.kind === 'ready' ? <ResultPanel locale={locale} value={resolved.value} model={model} /> : null}
         {resolved.kind === 'empty' ? <div className={styles.checkEmpty}><p className={styles.eyebrow}>{t("Result")}</p><h2>{t("Enter an asking price, size and expected annual rent.")}</h2><p>{t("Compare with area transactions. The rent input is your own assumption.")}</p></div> : null}
         {resolved.kind === 'invalid' ? <div className={styles.checkEmpty}><p className={styles.eyebrow}>{t("Result")}</p><h2>{t("Check the entered fields.")}</h2><p>{t("Use one valid area, stage, positive decimal amounts, and a local return link.")}</p></div> : null}

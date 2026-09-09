@@ -1,4 +1,6 @@
 'use client';
+import toolSurface from '../tools/tool-surface.module.css';
+
 
 import { useEffect, useReducer, useRef } from 'react';
 
@@ -107,7 +109,7 @@ export function RentCheckWorkspace({
   };
 
   return (
-    <section className={styles['workspace']} aria-label="Seoul Rent Check workspace">
+    <section className={`${styles['workspace']} ${toolSurface.surface}`} aria-label="Seoul Rent Check workspace">
       {explorerContext ? (
         <div className={styles['explorer-context']}>
           <span>Verified Explorer context</span>
