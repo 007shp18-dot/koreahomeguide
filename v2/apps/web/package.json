@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node scripts/apply-content-database.mjs --if-configured && node scripts/build-building-identity-index.mjs && node scripts/seed-singapore-nearby-places.mjs --if-production",
+    "prebuild": "node scripts/apply-content-database.mjs --if-configured && node scripts/build-building-identity-index.mjs && node scripts/seed-singapore-nearby-places.mjs --if-production && node --conditions=react-server --experimental-loader ../../scripts/typescript-extension-loader.mjs --experimental-transform-types ../../scripts/build-singapore-check-form-catalog.mts --if-installed",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",

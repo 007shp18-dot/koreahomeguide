@@ -31,6 +31,14 @@ async function repositories() {
 }
 
 describe('Singapore Check route model', () => {
+  it('opens an empty form from verified catalogs without reading transaction records', async () => {
+    const prepared = buildSingaporeCheckRouteModel(await repositories(), {}).catalogs;
+    const unloaded = { get: () => { throw new Error('Transaction history must not load'); }, availability: () => ({ 'ura-private-sale': false, 'hdb-resale': false, 'hdb-rent': false }) };
+    const form = buildSingaporeCheckRouteModel(unloaded, { 'a-project': 'project-a' }, prepared);
+    expect(form.catalogs).toBe(prepared);
+    expect(form.drafts.a.project).toBe('project-a');
+    expect(form.result).toEqual({ kind: 'empty' });
+  });
   it('reuses catalog computation for an unchanged immutable repository but not a new release', async () => {
     const release = await repositories();
     const first = buildSingaporeCheckRouteModel(release, {});

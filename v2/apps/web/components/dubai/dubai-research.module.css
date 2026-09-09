@@ -212,3 +212,15 @@
 .exploreSupport > span { color: var(--muted); }
 .exploreSupport a { min-height: 44px; display: inline-flex; align-items: center; gap: 4px; color: var(--ink); text-underline-offset: 4px; }
 .exploreSupport a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* Split panels can be narrow even on desktop; size content to the panel. */
+.explorer .resultHeader { flex-wrap: wrap; align-items: start; }
+.explorer .areaResults article > button strong { white-space: normal; overflow: visible; text-overflow: clip; overflow-wrap: anywhere; line-height: 1.5; }
+.explorer .projectPrices button { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+.explorer .projectPrices strong { white-space: normal; overflow-wrap: anywhere; }
+.explorer .projectPrices span strong { overflow: visible; text-overflow: clip; }
+.explorer .areaMetrics { grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr)); }
+.explorer .areaMetrics dt { min-height: 0; line-height: 1.5; }
+.explorer .areaMetrics dd, .explorer .resultPrice strong { white-space: normal; overflow-wrap: anywhere; line-height: 1.5; }
+.explorer .evidenceToolbar form { grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); }
+.explorer .mapSelection { max-width: 100%; box-sizing: border-box; }

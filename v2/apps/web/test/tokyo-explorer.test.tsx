@@ -47,13 +47,13 @@ describe('Tokyo transaction exploration', () => {
     expect(html).not.toContain('role="alert"');
   });
 
-  it('uses the shared Explore frame without inventing a building map and preserves query pagination', async () => {
+  it('uses a split Explore frame for the ward map and preserves query pagination', async () => {
     read.mockResolvedValue({ releaseId: 'release-one', retrievedAt: '2026-09-01T00:00:00Z', sourceCount: 24, filteredCount: 24,
       records: [{ recordReference: 'one', district: 'Azabu', municipality: 'Minato', type: 'Pre-owned Condominiums, etc.', areaLabel: '60', floorPlan: '2LDK', buildingYear: '2010', structure: 'RC', price: 85000000 }] });
     const html = renderToStaticMarkup(await TokyoExplorer({ searchParams: Promise.resolve({ q: 'Azabu', city: '13103', year: '2025', quarter: '4' }) }));
     expect(html).toContain('data-market-explore-shell="true"');
-    expect(html).toContain('data-layout="list"');
-    expect(html).not.toContain('data-market-shell-region="spatial"');
+    expect(html).toContain('data-layout="split"');
+    expect(html).toContain('data-market-shell-region="spatial"');
     expect(html).toContain('¥85,000,000');
     expect(html).toContain('q=Azabu&amp;city=13103&amp;year=2025&amp;quarter=4&amp;page=2&amp;release=release-one');
     expect(read).toHaveBeenCalledWith({ city: '13103', year: '2025', quarter: '4' }, expect.objectContaining({ q: 'Azabu' }));

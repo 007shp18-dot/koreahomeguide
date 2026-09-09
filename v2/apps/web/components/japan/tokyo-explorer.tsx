@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Suspense } from 'react';
 import { UiIcon } from '../ui-icon';
 import { SiteHeader } from '@/components/site-header';
 import { homepageCopy } from '@/lib/site-copy';
@@ -9,6 +10,7 @@ import { readCachedJapanCoverage, readCachedJapanPublication } from '@/lib/japan
 import { SiteFooter } from '@/components/site-footer';
 import { MarketExploreShell } from '../market-ui/market-shell';
 import { TokyoPeriodFields } from './tokyo-period-fields';
+import { TokyoMapPanel } from './tokyo-map-panel';
 import styles from './tokyo-explorer.module.css';
 
 type Params = Record<string, string | string[] | undefined>;
@@ -111,6 +113,10 @@ export default async function TokyoExplorer({ searchParams }: { searchParams: Pr
         </nav>
       </>}
         </>}
+        spatial={<Suspense fallback={<p className={styles.mapLoading} role="status">Preparing Tokyo ward map…</p>}>
+          <TokyoMapPanel city={scope.city} year={scope.year} quarter={scope.quarter}
+            filters={{ q: filters.q, type: filters.type, minArea: filters.minArea, maxArea: filters.maxArea }} />
+        </Suspense>}
       />
       <div className={styles.sourcePanel}>
       <details className={styles.method}><summary>About these recorded prices</summary>

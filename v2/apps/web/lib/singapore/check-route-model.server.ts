@@ -123,7 +123,20 @@ function evaluate(repositories: SingaporeCheckEvidenceRepositories, offer: Singa
   return evaluateSingaporeCheckOffer({ artifact, offer });
 }
 
-export function buildSingaporeCheckRouteModel(repositories: SingaporeCheckEvidenceRepositories, query: SingaporeCheckQuery): SingaporeCheckRouteModel {
+export function singaporeCheckMarketsForQuery(query: SingaporeCheckQuery): readonly SingaporeCheckMarket[] {
+  if (query.submitted !== '1' || Object.values(query).some(Array.isArray)
+    || (query.mode !== undefined && query.mode !== 'single' && query.mode !== 'compare')) return [];
+  const left = offerFromDraft(draft(query, 'a', 'ura-private-sale'));
+  const right = query.mode === 'compare' ? offerFromDraft(draft(query, 'b', 'hdb-rent')) : null;
+  if (left === null || (query.mode === 'compare' && right === null)) return [];
+  return [...new Set([left.market, ...(right === null ? [] : [right.market])])];
+}
+
+export function buildSingaporeCheckRouteModel(
+  repositories: SingaporeCheckEvidenceRepositories,
+  query: SingaporeCheckQuery,
+  preparedCatalogs?: SingaporeCheckRouteModel['catalogs'],
+): SingaporeCheckRouteModel {
   const invalidShape = Object.values(query).some((value) => Array.isArray(value));
   const mode = query.mode === 'compare' ? 'compare' : 'single';
   const drafts = Object.freeze({ a: draft(query, 'a', 'ura-private-sale'), b: draft(query, 'b', 'hdb-rent') });
@@ -143,5 +156,5 @@ export function buildSingaporeCheckRouteModel(repositories: SingaporeCheckEviden
       }
     }
   }
-  return Object.freeze({ mode, catalogs: catalogs(repositories), drafts, result });
+  return Object.freeze({ mode, catalogs: preparedCatalogs ?? catalogs(repositories), drafts, result });
 }

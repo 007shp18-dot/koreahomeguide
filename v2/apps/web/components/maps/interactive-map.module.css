@@ -333,3 +333,5 @@
 }
 :global(.spMapBuildingBubble span) { background: var(--accent); }
 :global(.spMapBuildingBubbleSelected span) { background: var(--accent); box-shadow: 0 0 0 4px rgb(37 99 216 / 15%); }
+
+:global(.spGoogleAreaPrice) { max-width: 240px; padding: 7px 10px !important; border-radius: 8px !important; font-size: 12px !important; white-space: normal !important; line-height: 1.4 !important; text-align: center; transform: translateY(-20px); }

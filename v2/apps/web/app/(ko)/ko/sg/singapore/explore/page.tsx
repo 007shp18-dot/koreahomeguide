@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import { SingaporeExplorer } from '@/components/singapore/singapore-explorer';
 import { indexableMetadata } from '@/lib/public-metadata';
 import { buildSingaporeExploreModel } from '@/lib/singapore/route-model.server';
-import { packSingaporeExploreModel } from '@/lib/singapore/explore-transport';
+import { singaporeExploreOverview } from '@/lib/singapore/explore-progressive.server';
 import { buildHdbExploreModel } from '@/lib/singapore/hdb-route-model.server';
 import { hdbSnapshotRepositoryFromEnvironment } from '@/lib/singapore/hdb-snapshot-repository.server';
 import { singaporeSnapshotRepositoryFromEnvironment } from '@/lib/singapore/snapshot-repository.server';
@@ -24,8 +24,12 @@ export default async function SingaporeExplorePage() {
   const repository = await singaporeSnapshotRepositoryFromEnvironment();
   const hdbRepository = hdbSnapshotRepositoryFromEnvironment();
   const googleMapsBrowserKey = googleMapsBrowserKeyFromEnvironment();
+  const overview = singaporeExploreOverview(buildSingaporeExploreModel(repository));
   return <SingaporeExplorer locale="ko"
-    model={packSingaporeExploreModel(buildSingaporeExploreModel(repository))}
+    model={overview.model}
+    progressive
+    regionPoints={overview.regionPoints}
+    districtSummary={overview.districtSummary}
     hdbModel={buildHdbExploreModel(hdbRepository)}
     googleMapsBrowserKey={googleMapsBrowserKey}
     restoreStateFromUrl
