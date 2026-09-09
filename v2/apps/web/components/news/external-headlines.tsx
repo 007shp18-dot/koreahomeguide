@@ -30,7 +30,9 @@ export function ExternalHeadlines({ market, preview = false, initialModel = null
       } catch { if (active) setStatus('error'); }
       finally { pending = false; }
     };
-    if (initialModel === null || refresh > 0) void update();
+    // Static/ISR HTML may contain an older reviewed snapshot. Revalidate on
+    // mount as well; the shared resource deduplicates navigation requests.
+    void update();
     const timer = setInterval(() => { if (!document.hidden) void update(); }, 15 * 60 * 1000);
     return () => { active = false; clearInterval(timer); };
   }, [refresh, initialModel]);
@@ -38,7 +40,7 @@ export function ExternalHeadlines({ market, preview = false, initialModel = null
   const visible = items.slice(0, preview ? 4 : page * 24);
   const prefix = ko ? '/ko' : zh ? '/zh-cn' : '';
   const allHref = `${prefix}/news/?type=news${market === 'all' ? '' : `&market=${market}`}`;
-  const dates = new Intl.DateTimeFormat(ko ? 'ko' : zh ? 'zh-CN' : 'en', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });
+  const dates = Object.fromEntries(Object.entries({ seoul: 'Asia/Seoul', singapore: 'Asia/Singapore', dubai: 'Asia/Dubai', tokyo: 'Asia/Tokyo' }).map(([city, timeZone]) => [city, new Intl.DateTimeFormat(ko ? 'ko' : zh ? 'zh-CN' : 'en', { year: 'numeric', month: 'short', day: 'numeric', timeZone })]));
   const title = ko ? '최신 뉴스' : zh ? '最新新闻' : 'Latest news';
   return <section id="latest-news" className={styles.section} aria-labelledby="external-headlines-heading" data-external-headlines={status}>
     <header><div><h2 id="external-headlines-heading">{title}</h2><p>{ko ? '지금 나온 소식, 집을 고르는 사람에게 중요한 점.' : zh ? '近期报道，以及对购房选择的影响。' : 'What happened, and why it matters when choosing a home.'}</p></div>
@@ -49,7 +51,7 @@ export function ExternalHeadlines({ market, preview = false, initialModel = null
     {status === 'ready' && visible.length === 0 ? <p>{ko ? '이 도시의 새 소식은 아직 없습니다.' : 'No news is available for this city yet.'}</p> : null}
     <ol className={preview ? styles.preview : undefined}>
       {visible.map(item => <li key={item.id}>
-        <div><span>{item.marketLabel} · {item.publisher}</span><time dateTime={item.publishedAt}>{dates.format(new Date(item.publishedAt))}</time></div>
+        <div><span>{item.marketLabel} · {item.publisher}</span><time dateTime={item.publishedAt}>{dates[item.market]!.format(new Date(item.publishedAt))}</time></div>
         <h3><a href={item.url} target="_blank" rel="noreferrer">{ko ? item.titleKo ?? item.title : item.title}</a></h3>
         {item.summary ? <p className={styles.summary}>{ko ? item.summaryKo ?? item.summary : item.summary}</p> : null}
         {item.buyerNote ? <p className={styles.meaning}><strong>{ko ? '집을 찾는다면' : zh ? '购房视角' : 'For your search'}</strong> {ko ? item.buyerNoteKo ?? item.buyerNote : item.buyerNote}</p> : null}

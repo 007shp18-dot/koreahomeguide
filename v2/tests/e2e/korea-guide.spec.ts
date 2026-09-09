@@ -18,7 +18,7 @@ test('Guide index and documents remain complete, indexable, and keyboard reachab
     await page.goto(`/kr/seoul/guide/${slug}/`);
     await expect(page).toHaveURL(/\/guides\/$/);
   }
-  const guide = page.getByRole('link', { name: 'Read guide', exact: true }).first();
+  const guide = page.getByRole('link', { name: /Buying property in Korea as a foreigner/ });
   const href = await guide.getAttribute('href');
   expect(href).toMatch(/^\/guides\/.+\/$/);
   await guide.focus();

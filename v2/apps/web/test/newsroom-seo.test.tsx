@@ -12,10 +12,12 @@ import { signedPricePublicRouteRegistry } from '../lib/seo/public-route-registry
 describe('Newsroom and Guide SEO release contract', () => {
   it('publishes every reviewed portfolio canonical and no legacy editorial route', () => {
     const urls = sitemap().map(({ url }) => url);
-    for (const record of EDITORIAL_PORTFOLIO) {
+    const activeRecords = EDITORIAL_PORTFOLIO.filter(record => record.slug !== 'compare-seoul-district-prices');
+    expect(urls).not.toContain('https://www.signedprice.com/guides/compare-seoul-district-prices/');
+    for (const record of activeRecords) {
       expect(urls).toContain(`https://www.signedprice.com${record.canonicalHref}`);
     }
-    const canonicalUrls = EDITORIAL_PORTFOLIO.map(({ canonicalHref }) => `https://www.signedprice.com${canonicalHref}`);
+    const canonicalUrls = activeRecords.map(({ canonicalHref }) => `https://www.signedprice.com${canonicalHref}`);
     expect(urls.filter((url) => canonicalUrls.includes(url)).sort())
       .toEqual([...canonicalUrls].sort());
     expect(urls.some((url) => /\/insights\/|\/kr\/seoul\/guide\//u.test(url))).toBe(false);

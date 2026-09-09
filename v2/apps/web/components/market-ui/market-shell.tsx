@@ -32,7 +32,7 @@ export function MarketExploreShell({ locale = 'en',  eyebrow, title, period, lay
   period: React.ReactNode;
   layers: React.ReactNode;
   discovery: React.ReactNode;
-  spatial: React.ReactNode;
+  spatial?: React.ReactNode;
 }> & { locale?: MarketLocale }) {
   const t = <T,>(value: T): T => marketText(locale, value);
 
@@ -42,9 +42,9 @@ export function MarketExploreShell({ locale = 'en',  eyebrow, title, period, lay
       <p>{t(eyebrow)}{t(" · ")}{t(period)}</p>
     </header>
     {t(layers)}
-    <div className={styles.exploreGrid}>
+    <div className={styles.exploreGrid} data-layout={spatial == null ? 'list' : 'split'}>
       <section className={styles.discovery} data-market-shell-region="discovery">{t(discovery)}</section>
-      <section className={styles.spatial} data-market-shell-region="spatial">{t(spatial)}</section>
+      {spatial == null ? null : <section className={styles.spatial} data-market-shell-region="spatial">{t(spatial)}</section>}
     </div>
   </div>;
 }

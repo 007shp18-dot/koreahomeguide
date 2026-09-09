@@ -35,6 +35,13 @@ describe('Dubai project Explore release', () => {
     expect(marker?.title).not.toBe(project.name);
     expect(captured.points).toHaveLength(Math.min(24, captured.points.length));
   });
+  it('keeps area comparisons compact until the reader opens their evidence', () => {
+    const html = renderToStaticMarkup(<DubaiExplorer browserKey={null} model={model} projects={projects} />);
+    const disclosures = [...html.matchAll(/<details[^>]*data-area-evidence[^>]*>/g)].map(match => match[0]);
+    expect(disclosures).toHaveLength(captured.points.length);
+    expect(disclosures.every(tag => !tag.includes(' open'))).toBe(true);
+    expect(html).toContain('Price and rent details');
+  });
   it('restores valid project identity without publishing a project-only URL', () => {
     const state = parseDubaiExploreState({ area: 'business-bay', project: '123-apartment-off-plan', stage: 'off-plan' });
     expect(buildDubaiExploreHref(state)).toContain('project=123-apartment-off-plan');

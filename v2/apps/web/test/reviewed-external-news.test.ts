@@ -27,7 +27,7 @@ suite('reviewed external headline publication', () => {
     database.sql.mockImplementation(async (parts: TemplateStringsArray, ...parameters: unknown[]) => (
       await db.query(parts.reduce((text, part, index) => text + (index ? `$${index}` : '') + part, ''), parameters)
     ).rows);
-    for (const filename of ['0001_persistent_content.sql', '0005_newsroom_content_system.sql', '0016_dubai_editorial_market.sql']) {
+    for (const filename of ['0001_persistent_content.sql', '0005_newsroom_content_system.sql', '0016_dubai_editorial_market.sql', '0017_reviewed_external_news.sql']) {
       const sql = await readFile(new URL(`../db/migrations/${filename}`, import.meta.url), 'utf8');
       for (const statement of sql.split(/^\s*-- statement-breakpoint\s*$/m)) if (statement.trim()) await db.exec(statement);
     }
@@ -61,6 +61,12 @@ suite('reviewed external headline publication', () => {
     expect(before).toEqual([expect.objectContaining({ title: 'Housing release', summary: 'Summary', publisher: 'URA' })]);
     await ingestReviewedSource({ title: 'Unreviewed replacement', summary: 'Unreviewed summary', publisher: 'Changed publisher', publishedAt: '2099-01-01T00:00:00.000Z' });
     expect(await loadPersistedNewsItems()).toEqual([expect.objectContaining({ title: 'Housing release', summary: 'Summary', publisher: 'URA', publishedAt: before?.[0]?.publishedAt })]);
+  });
+  it('stores Tokyo discoveries without publishing them', async () => {
+    await db.exec('TRUNCATE external_news_items');
+    expect(await ingestReviewedSource({ market: 'tokyo', marketLabel: 'Tokyo' })).toBe(1);
+    expect((await db.query('SELECT market_id, review_state FROM external_news_items')).rows).toEqual([{ market_id: 'jp-tokyo', review_state: 'new' }]);
+    expect(await loadPersistedNewsItems()).toEqual([]);
   });
   it('links an exact already-reviewed source during ingestion', async () => {
     await db.exec('TRUNCATE external_news_items');

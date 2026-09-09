@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { EditorialGrowthPublicFrame } from '@/components/editorial-growth/editorial-growth-public-shell';
+import { isBudgetAnalysis } from '@/content/guide-directory';
 import { NewsroomArticle } from '@/components/newsroom/newsroom-article';
 import { PublicEditorialJsonLd } from '@/components/public-json-ld';
 import { EDITORIAL_PORTFOLIO, getPortfolioRecord, listPortfolioRecords } from '@/content/portfolio-manifest';
@@ -30,7 +31,7 @@ export async function generateMetadata({ params }: GuidePageProps): Promise<Meta
 export default async function GuidePage({ params }: GuidePageProps) {
   const guide = getPortfolioRecord('en', (await params).slug);
   if (guide?.type !== 'guide') notFound();
-  return <EditorialGrowthPublicFrame locale="en" surface="content" activeSection="guides">
+  return <EditorialGrowthPublicFrame locale="en" surface="content" currentHref={guide.canonicalHref} activeSection={isBudgetAnalysis(guide.slug) ? 'news' : 'guides'}>
     <NewsroomArticle article={guide} />
     <PublicEditorialJsonLd article={guide} />
   </EditorialGrowthPublicFrame>;

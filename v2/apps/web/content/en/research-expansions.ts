@@ -221,7 +221,7 @@ Preserve the signed lease, identity checks, payment receipts, records of filings
 
 This checklist helps identify missing information. It cannot establish the priority of a claim, the solvency of the landlord or entitlement under a guarantee. Ask for an explanation of unresolved issues before committing the deposit.`,
   },
-  'read-seoul-sale-transactions': { body: `## A completed contract answers a narrow question
+  'read-seoul-sale-transactions': { updatedAt: '2026-09-08T17:00:00.000Z', revisionNote: 'Merged the district-comparison reference into the transaction-reading guide; original sources retained.', body: `## A completed contract answers a narrow question
 
 A transaction record tells you that a reported deal occurred under the source’s definitions. It does not tell you the asking price today, the seller’s motivation or the condition of the unit. Start with the reported contract date and property identity rather than the largest number in a search result.
 
@@ -247,7 +247,15 @@ If you plan to rent the home out, obtain compatible rental evidence. Subtract re
 
 ## Record the reason for the shortlist
 
-Write one sentence explaining why the property remains a candidate and one question that could rule it out. Attach the comparable contracts, source period and unresolved differences. Return to the building page after a new release; review the new observations instead of simply replacing yesterday’s median with today’s.`, },
+Write one sentence explaining why the property remains a candidate and one question that could rule it out. Attach the comparable contracts, source period and unresolved differences. Return to the building page after a new release; review the new observations instead of simply replacing yesterday’s median with today’s.
+
+## Comparing districts before choosing a building
+
+Use the same transaction type, housing type, floor-area band and period across districts. A district with more large apartments can look more expensive simply because its sample contains different homes. New developments entering the sample can also change the summary without an equivalent price change in existing buildings.
+
+Read the calculation label: the median of every contract and the median of building medians are different measures. In the second, each represented building contributes one value regardless of its transaction count. Check the number of contributing buildings and the spread, not only the middle. An unpublished result is not a zero price.
+
+Use the district comparison to pick two or three search areas, then return to compatible building-level transactions. It does not rank future returns, building condition or quality of life.`, },
   'compare-seoul-district-prices': { body: `## Decide what the ranking is supposed to help you do
 
 A district ranking can narrow a search area. It cannot rank individual apartments, future returns or the quality of a commute. Begin with a budget and a housing type, then ask which districts contain homes worth inspecting under those constraints.

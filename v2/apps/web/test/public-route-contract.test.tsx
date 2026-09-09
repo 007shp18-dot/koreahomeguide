@@ -34,7 +34,7 @@ import { buildMarketPageModel } from '../lib/route-model';
 import { dubaiEvidenceRepositoryFromEnvironment } from '../lib/dubai/evidence-repository.server';
 
 const period = '2026-01/2026-07';
-const portfolioUrls = EDITORIAL_PORTFOLIO.map(({ canonicalHref }) => `https://www.signedprice.com${canonicalHref}`);
+const portfolioUrls = EDITORIAL_PORTFOLIO.filter(record => record.slug !== 'compare-seoul-district-prices').map(({ canonicalHref }) => `https://www.signedprice.com${canonicalHref}`);
 
 // Published Korean hubs and translated market research are independent of Seoul evidence.
 const koreanPublishedHubUrls = [
@@ -464,8 +464,9 @@ describe('public migration containment', () => {
     expect(entries.get('https://www.signedprice.com/kr/seoul/news/how-signedprice-reads-reported-rental-contracts/')).toMatchObject({
       lastModified: new Date('2026-08-31T00:00:00.000Z'),
     });
-    expect(entries.get('https://www.signedprice.com/guides/compare-seoul-district-prices/')).toMatchObject({
-      lastModified: new Date('2026-09-06T00:00:00.000Z'),
+    expect(entries.has('https://www.signedprice.com/guides/compare-seoul-district-prices/')).toBe(false);
+    expect(entries.get('https://www.signedprice.com/guides/read-seoul-sale-transactions/')).toMatchObject({
+      lastModified: new Date('2026-09-08T17:00:00.000Z'),
     });
   });
 

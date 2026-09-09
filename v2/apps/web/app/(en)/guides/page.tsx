@@ -5,8 +5,8 @@ import { indexableMetadata } from '@/lib/public-metadata';
 
 export const metadata: Metadata = indexableMetadata({
   path: '/guides/',
-  title: 'Cross-border property guides | signedprice',
-  description: 'Understand local property terms, comparison methods and evidence limits before making a decision.',
+  title: 'Buying & renting guides | signedprice',
+  description: 'Plan the costs, check the paperwork and work through the buying or renting process before signing.',
   languageAlternates: { en: '/guides/', ko: '/ko/guides/', 'zh-Hans': '/zh-cn/guides/' },
 });
 

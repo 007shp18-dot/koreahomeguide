@@ -1,3 +1,5 @@
+import { BUDGET_GUIDE_SLUGS } from '../../content/guide-directory';
+import { listPortfolioRecords } from '../../content/portfolio-manifest';
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { ResearchPageHeading } from '../market-ui/research-page-heading';
@@ -63,7 +65,7 @@ export function NewsroomIndex({ articles, policies, filters, headlines, locale =
   const story = CITY_STORIES.find(item => item.city === filters.market) ?? CITY_STORIES[0];
   const markets = [['all', ko ? '모든 도시' : 'All'], ...CITY_STORIES.map(item => [item.city, item.name[locale]] as const)] as readonly (readonly [NewsroomMarketFilter, string])[];
   const marketId = { all: null, seoul: 'kr-seoul', singapore: 'sg-singapore', dubai: 'ae-dubai', tokyo: 'jp-tokyo' }[filters.market];
-  const items: StoryItem[] = articles.filter(item => !marketId || item.marketId === marketId).map(item => ({ id: item.id, title: item.title, deck: item.deck, date: item.publishedAt, type: item.type,
+  const items: StoryItem[] = articles.filter(item => item.type !== 'guide' && (!marketId || item.marketId === marketId)).map(item => ({ id: item.id, title: item.title, deck: item.deck, date: item.publishedAt, type: item.type,
     href: 'canonicalHref' in item ? String(item.canonicalHref) : `${base}${item.type === 'policy-update' ? 'policy/' : ''}${item.slug}/`,
   }));
   if (!ko && filters.type === 'policy') for (const policy of policies) {
@@ -71,9 +73,10 @@ export function NewsroomIndex({ articles, policies, filters, headlines, locale =
     if ((!marketId || policy.marketId === marketId) && !items.some(item => item.href === policyHref)) items.push({ id: policy.id, title: policy.title, deck: policy.summary, href: policyHref, date: policy.lastCheckedOn, type: 'policy-update' });
   }
   items.sort((a, b) => b.date.localeCompare(a.date));
-  const comparisons = items.filter(item => item.type === 'data-story').slice(0, 3);
+  const budgetComparisons: StoryItem[] = listPortfolioRecords(locale).filter(item => BUDGET_GUIDE_SLUGS.some(slug => slug === item.slug) && (!marketId || item.marketId === marketId)).map(item => ({ id: item.id, title: item.title, deck: item.deck, date: item.updatedAt, type: item.type, href: item.canonicalHref }));
+  const comparisons = [...budgetComparisons, ...items.filter(item => item.type === 'data-story').slice(0, 3)];
   const updates = items.filter(item => item.type === 'market-brief').slice(0, 3);
-  const filtered = items.filter(item => filters.type === 'insights' ? true : filters.type === 'news' ? item.type === 'news-brief' : filters.type === 'policy' ? item.type === 'policy-update' : filters.type === 'market' ? item.type === 'market-brief' : item.type === 'data-story');
+  const filtered = [...items, ...(['insights', 'data-stories'].includes(filters.type) ? budgetComparisons : [])].filter(item => filters.type === 'insights' ? true : filters.type === 'news' ? item.type === 'news-brief' : filters.type === 'policy' ? item.type === 'policy-update' : filters.type === 'market' ? item.type === 'market-brief' : item.type === 'data-story' || item.type === 'guide').sort((a, b) => b.date.localeCompare(a.date));
   const conversations = filters.market === 'all' ? CITY_STORIES.map(city => LOCAL_CONVERSATIONS.find(item => item.city === city.city)!) : LOCAL_CONVERSATIONS.filter(item => item.city === filters.market);
   return <main className={styles.index} data-newsroom-layout="research" lang={locale}>
     <ResearchPageHeading title={ko ? '뉴스 & 인사이트' : 'News & Insights'} description={ko ? '마음이 가는 도시에서 나에게 맞는 집까지. 동네의 이야기와 가격, 구매의 다음 단계를 함께 읽어보세요.' : 'Find a city you connect with, a neighbourhood that fits, and a clearer path to a home of your own.'} actions={<Link href={ko ? href('policy') : '/news/policy/'}>{ko ? '정책 변경 확인' : 'Open the Policy Tracker'}</Link>} />

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { ResearchPageHeading } from './market-ui/research-page-heading';
 
-import { listPortfolioRecords } from '../content/portfolio-manifest';
+import { GuideDirectory } from './guide/guide-directory';
 import type { NewsWorkspaceModel } from '../lib/news/news-workspace-model';
 import type { SeoulLiveModel } from '../lib/public-market/seoul-live-model.server';
 import {
@@ -173,27 +173,8 @@ function InsightsHub({ workspace }: Readonly<{ workspace?: NewsWorkspaceModel }>
   );
 }
 
-function GuidesHub({ market = 'all' }: Readonly<{ market?: GlobalProductHubProps['guideMarket'] }>) {
-  const guides = listPortfolioRecords('en').filter(({ type, marketId }) => type === 'guide' && (market === 'all' || (market === 'seoul' && marketId === 'kr-seoul') || (market === 'singapore' && marketId === 'sg-singapore') || (market === 'dubai' && marketId === 'ae-dubai'))).sort((a, b) => {
-    const first = ['buy-property-in-korea-as-foreigner', 'read-singapore-private-transactions'];
-    return (first.includes(a.slug) ? first.indexOf(a.slug) : 2) - (first.includes(b.slug) ? first.indexOf(b.slug) : 2);
-  });
-  return (
-    <>
-      <nav className={styles.directoryFilters} aria-label="Guide markets">{([['all', 'All'], ['seoul', 'Seoul'], ['singapore', 'Singapore'], ['dubai', 'Dubai']] as const).map(([id, label]) => <Link key={id} href={id === 'all' ? '/guides/' : `/guides/?market=${id}`} aria-current={market === id ? 'page' : undefined}>{label}</Link>)}</nav>
-      <section className={styles.section} aria-labelledby="guides-title">
-        <div className={styles.sectionHeading}><p>Buying and renting</p><h2 id="guides-title">Practical guides for each market.</h2></div>
-        <p className={styles.resultCount}>{guides.length + (market === 'all' || market === 'dubai' ? 1 : 0)} {guides.length + (market === 'all' || market === 'dubai' ? 1 : 0) === 1 ? 'guide' : 'guides'} · Sources and dates are listed in each guide</p>
-        <div className={styles.guideGrid}>{guides.map((guide) => {
-          const exploreHref = guide.marketId === 'kr-seoul' ? '/kr/seoul/explore/?transaction=sale' : guide.marketId === 'ae-dubai' ? '/ae/dubai/explore/' : '/sg/singapore/explore/';
-          return <article key={guide.slug}><span>{guide.marketId === 'kr-seoul' ? 'Seoul' : guide.marketId === 'ae-dubai' ? 'Dubai' : 'Singapore'} · Last reviewed {guide.updatedAt.slice(0, 10)}</span><h3>{guide.title}</h3><p>{guide.deck}</p><nav className={styles.guideActions} aria-label={`${guide.title} next steps`}><Link href={guide.canonicalHref}>Read guide</Link><Link href={exploreHref}>Explore prices</Link><Link href="/tools/">Open tools</Link></nav></article>;
-        })}{market === 'all' || market === 'dubai' ? <article><span>Dubai · Last reviewed 2026-09-06</span><h3>Research a Dubai property purchase</h3><p>Check project identity, completion status and service charges, then build an AED purchase-cost scenario.</p><nav className={styles.guideActions} aria-label="Dubai purchase research next steps"><Link href="/ae/dubai/guide/">Read guide</Link><Link href="/ae/dubai/explore/">Explore prices</Link><Link href="/tools/property-scenario/?market=ae-dubai&amp;currency=AED">Calculate costs</Link></nav></article> : null}</div>
-      </section>
-    </>
-  );
-}
-
 export function GlobalProductHub({ kind, newsWorkspace, guideMarket }: GlobalProductHubProps) {
+  if (kind === 'guides') return <div id="top"><SiteHeader copy={headerFor(kind)} /><GuideDirectory market={guideMarket} /><SiteFooter copy={homepageCopy.footer} /></div>;
   const copy = hubCopy[kind];
   return (
     <div id="top">
@@ -203,7 +184,6 @@ export function GlobalProductHub({ kind, newsWorkspace, guideMarket }: GlobalPro
         {kind === 'markets' ? <MarketsHub /> : null}
         {kind === 'prices' ? <PricesHub /> : null}
         {kind === 'news' ? <InsightsHub workspace={newsWorkspace} /> : null}
-        {kind === 'guides' ? <GuidesHub market={guideMarket} /> : null}
       </main>
       <SiteFooter copy={homepageCopy.footer} />
     </div>
