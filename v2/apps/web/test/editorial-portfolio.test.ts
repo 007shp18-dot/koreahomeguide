@@ -143,6 +143,7 @@ describe('launch editorial portfolio', () => {
     const officialHosts = new Set([
       'www.law.go.kr', 'www.molit.go.kr', 'www.fsc.go.kr', 'land.seoul.go.kr',
       'www.iras.gov.sg', 'www.hdb.gov.sg',
+      'www.easylaw.go.kr', 'easylaw.go.kr', 'www.gov.kr', 'www.hf.go.kr',
     ]);
     for (const policy of EDITORIAL_PORTFOLIO.filter(({ type }) => type === 'policy-update')) {
       expect(policy.sources.some(({ kind, href }) => kind === 'primary'
