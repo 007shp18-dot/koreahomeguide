@@ -35,8 +35,8 @@ describe('Dubai project Explore release', () => {
     expect(marker?.title).not.toBe(project.name);
     expect(captured.points).toHaveLength(Math.min(24, captured.points.length));
   });
-  it('keeps area comparisons compact until the reader opens their evidence', () => {
-    const html = renderToStaticMarkup(<DubaiExplorer browserKey={null} model={model} projects={projects} />);
+  it.each([undefined, 'marsa-dubai'])('keeps area comparisons compact, including selected area %s, until the reader opens evidence', (initialArea) => {
+    const html = renderToStaticMarkup(<DubaiExplorer browserKey={null} model={model} projects={projects} initialArea={initialArea} />);
     const disclosures = [...html.matchAll(/<details[^>]*data-area-evidence[^>]*>/g)].map(match => match[0]);
     expect(disclosures).toHaveLength(captured.points.length);
     expect(disclosures.every(tag => !tag.includes(' open'))).toBe(true);

@@ -85,3 +85,10 @@
 .journey a { flex: none; color: var(--accent); white-space: nowrap; }
 .stageSelect { display: flex; gap: 8px; align-items: center; font-size: 14px; margin: 0 0 16px; }
 .stageSelect select { min-height: 40px; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 10px; background: white; color: #111827; font: inherit; }
+
+/* The budget tool keeps its compound currency control and comparison grid. */
+.entry h1, .resultHeader h1 { font-size: var(--tool-title-size); font-weight: 650; line-height: 1.2; letter-spacing: normal; }
+.inputFrame, .resultForm .inputFrame, .compactInput,
+.entryForm button, .resultForm button, .resultFooter button { min-height: var(--tool-control-height); border-radius: var(--tool-control-radius); }
+.candidateSearch input, .stageSelect select { min-height: var(--tool-control-height); border-radius: var(--tool-control-radius); }
+.cardGrid { border-radius: var(--tool-panel-radius); overflow: hidden; }

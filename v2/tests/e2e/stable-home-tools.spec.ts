@@ -76,6 +76,7 @@ test('tool screens keep fields and results inside the viewport', async ({page}, 
  let headingSize: string | undefined;
  for (const [name, path, target] of [
   ['tools', '/tools/', 'main'],
+  ['passport', '/passport/', 'main'],
   ['calculator', '/tools/property-scenario/', '[data-property-scenario]'],
   ['seoul-check', '/kr/seoul/check/', '[data-check-section="verdict"]'],
   ['seoul-compare', '/kr/seoul/check/compare/', '[data-contract-check-form]'],
@@ -92,7 +93,8 @@ test('tool screens keep fields and results inside the viewport', async ({page}, 
   expect(size, `${name} uses the shared tool title size`).toBe(headingSize);
   const control = page.locator('main input:not([type="hidden"]):not([type="radio"]):not([type="checkbox"]), main select').filter({visible:true}).first();
   if (await control.count()) {
-   const geometry = await control.evaluate(element => ({height:element.getBoundingClientRect().height,radius:getComputedStyle(element).borderTopLeftRadius}));
+   const controlSurface = name === 'passport' ? control.locator('..') : control;
+   const geometry = await controlSurface.evaluate(element => ({height:element.getBoundingClientRect().height,radius:getComputedStyle(element).borderTopLeftRadius}));
    expect(geometry.height, `${name} control height`).toBeGreaterThanOrEqual(48);
    expect(geometry.radius, `${name} control radius`).toBe('8px');
   }
