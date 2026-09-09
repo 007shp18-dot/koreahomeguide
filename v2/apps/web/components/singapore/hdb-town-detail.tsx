@@ -19,7 +19,7 @@ export function HdbTownDetail({ locale = 'en', model }: Readonly<{ locale?: Mark
       <div className={styles.tableWrap}><table className={`${styles.table} ${styles.hdbTable}`}>
         <thead><tr><th>{sgText(locale, "Block")}</th><th>{sgText(locale, "Resale median")}</th><th>{sgText(locale, "Resale n")}</th><th>{sgText(locale, "Monthly rent median")}</th><th>{sgText(locale, "Rental n")}</th></tr></thead>
         <tbody>{model.blocks.map((block) => <tr key={block.blockId}>
-          <th scope="row"><Link href={marketHref(locale, block.href)}>{block.address}</Link></th>
+          <th scope="row"><Link prefetch={false} href={marketHref(locale, block.href)}>{block.address}</Link></th>
           <td>{sgText(locale, block.resaleMedianLabel ?? 'Not published')}</td><td>{sgText(locale, block.resaleCountLabel)}</td>
           <td>{sgText(locale, block.rentalMedianLabel ?? 'Not published')}</td><td>{sgText(locale, block.rentalCountLabel)}</td>
         </tr>)}</tbody>
