@@ -33,7 +33,7 @@
 .tool p { margin: 8px 0 12px; color: var(--muted); }
 .tool a { display: inline-flex; align-items: center; min-height: 44px; color: var(--accent); font-size: .875rem; font-weight: 500; text-underline-offset: 3px; }
 .filters { display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 16px 0; }
-.filters a { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 14px; border: 1px solid var(--line); border-radius: 6px; color: var(--ink); font-size: .875rem; text-decoration: none; }
+.filters a { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 14px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); font-size: .875rem; text-decoration: none; }
 .filters a[aria-current='true'] { color: var(--accent); background: var(--accent-soft); border-color: var(--accent); }
 .disclosure { margin-top: 16px; border-top: 1px solid var(--line); }
 .root[data-detail-layout] .disclosure > summary { color: var(--muted); }

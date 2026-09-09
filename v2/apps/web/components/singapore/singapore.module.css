@@ -886,7 +886,7 @@
 .page .section h2 { font-size: 22px; line-height: 1.4; }
 
 .transactionControls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 12px 0; font-size: .875rem; }
-.transactionControls button { min-height: 44px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 6px; color: var(--ink); background: var(--surface-strong); font: inherit; cursor: pointer; }
+.transactionControls button { min-height: 44px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: var(--surface-strong); font: inherit; cursor: pointer; }
 .transactionControls button[aria-pressed='true'] { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
 .transactionDetails { min-width: 4rem; }
 .transactionDetails[open] { min-width: 12rem; }
