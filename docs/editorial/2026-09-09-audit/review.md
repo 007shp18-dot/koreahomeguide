@@ -48,3 +48,14 @@ Reviewed the current uncommitted diff and its actual Newsroom, journey, policy, 
 - Existing unit expectations cover both integrated explainer routes, metadata and original links; lifecycle/date expectations are updated without removing genuine date checks. Root/implementer reports 39 focused tests, typecheck and scoped lint passed; this review did not repeat those gates or source research.
 
 Scope clarification received from root: removal concerns separate “출처 확인일” / source-check UI labels, not a site-wide article-history redesign. Existing generic index-card dates derived from journey/provenance fields remain unchanged and are not newly relabelled by this diff; their broader date-model cleanup is outside this narrow approval. This verdict does not claim every source-check mention in editorial prose or every generic index date was removed.
+
+## Scoped home screenshot and ABSD heading contract review
+
+**APPROVED.** Independently inspected the CI actual, expected and diff screenshots at both mobile and wide sizes. Visible changes begin in Latest insights: the corrected Seoul title/deck/date, the newly updated Dubai yield article entering the latest list, and Singapore moving to the third position. Longer copy wraps naturally; the resulting vertical shifts through the budget form/footer are expected. No new clipping, overlap, broken image or containment defect is visible. Existing short city-card teasers are unchanged.
+
+Verified both replacement repository PNGs are byte-for-byte identical to those reviewed CI actuals:
+
+- Mobile SHA-256: `8f02df34e03034e038033f8361589302bad97f60d9062f3d3b5a3bd4538b0ae9`
+- Wide SHA-256: `1607d802681e61d06ed860931c73c4c4911f844f46fa6fe117dfc7a21c8a219f`
+
+The only other uncommitted change is the ABSD heading string in `public-route-contract.ts`, correctly matching the approved full-article renderer; its path, canonical and indexing expectation are preserved. No production CSS/content, screenshot thresholds or masks change. This is approval of the three test-only compatibility changes, not a claim that subsequent full CI has already passed.
