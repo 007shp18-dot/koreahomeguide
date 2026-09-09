@@ -2,7 +2,7 @@
   min-width: 0;
   padding: 24px 28px;
   border: 1px solid var(--divider);
-  border-radius: 16px;
+  border-radius: 12px;
   background: var(--surface-strong, #fff);
   color: var(--ink);
   font-variant-numeric: tabular-nums;
