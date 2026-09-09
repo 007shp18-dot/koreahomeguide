@@ -1,5 +1,6 @@
 'use client';
 import React, { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
+import Link from 'next/link';
 import { bases, markets, metrics, readiness, sourceKinds, statuses, tiers, units, type Command, type Evidence, type PoolData, type Source } from '@/lib/evidence-pool/contract';
 import { EvidenceForm, Options, SourceForm } from './forms';
 import { ReviewPanel } from './review-panel';
@@ -27,31 +28,31 @@ export function EvidenceAdmin({ initialAuthenticated, initialData = null }: { in
   const [data, setData] = useState<PoolData | null>(initialData);
   const [tab, setTab] = useState<'evidence' | 'sources' | 'create'>('evidence');
   const [selected, setSelected] = useState<{ entity: 'source' | 'evidence'; id: string } | null>(null);
-  const [filters, setFilters] = useState({ market: '', status: '', q: '', page: 1, sourcePage: 1 });
+  const [filters, setFilterValues] = useState({ market: '', status: '', q: '', page: 1, sourcePage: 1 });
   const [loading, setLoading] = useState(!initialData);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const requestId = useRef(0);
   const mutationLock = useRef(false);
+  function setFilters(next: typeof filters) { setLoading(true); setFilterValues(next); }
   const showError = useCallback((cause: unknown) => {
     setError(cause instanceof Error ? cause.message : '요청에 실패했습니다. 다시 시도하세요.');
     if (cause instanceof ApiError && cause.code === 'unauthorized') { setAuthenticated(false); setData(null); }
   }, []);
-  const load = useCallback(async () => {
-    const id = ++requestId.current; setLoading(true);
-    try {
-      const query = new URLSearchParams({ ...filters, page: String(filters.page), sourcePage: String(filters.sourcePage) });
-      const result = await api<PoolData>(`${endpoint}?${query}`);
+  const load = useCallback(() => {
+    const id = ++requestId.current;
+    const query = new URLSearchParams({ ...filters, page: String(filters.page), sourcePage: String(filters.sourcePage) });
+    return api<PoolData>(`${endpoint}?${query}`).then((result) => {
       if (id === requestId.current) { setData(result); setError(''); }
-    } catch (cause) { if (id === requestId.current) showError(cause); }
-    finally { if (id === requestId.current) setLoading(false); }
+    }).catch((cause: unknown) => { if (id === requestId.current) showError(cause); })
+      .finally(() => { if (id === requestId.current) setLoading(false); });
   }, [filters, showError]);
   useEffect(() => { if (authenticated) void load(); return () => { requestId.current += 1; }; }, [authenticated, load]);
   async function login(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); const form = event.currentTarget; const secret = String(new FormData(form).get('secret'));
     setBusy(true); setError('');
-    try { await api('/api/internal/evidence-session/', post({ secret })); form.reset(); setAuthenticated(true); }
+    try { await api('/api/internal/evidence-session/', post({ secret })); form.reset(); setLoading(true); setAuthenticated(true); }
     catch (cause) { showError(cause); } finally { setBusy(false); }
   }
   async function logout() {
@@ -62,25 +63,25 @@ export function EvidenceAdmin({ initialAuthenticated, initialData = null }: { in
   async function mutate(command: Command) {
     if (mutationLock.current) return false;
     mutationLock.current = true; setBusy(true); setError(''); setMessage('');
-    try { await api(endpoint, post(command)); setMessage('변경 내용과 이력을 저장했습니다.'); await load(); return true; }
+    try { await api(endpoint, post(command)); setMessage('변경 내용과 이력을 저장했습니다.'); setLoading(true); await load(); return true; }
     catch (cause) { showError(cause); return false; }
     finally { mutationLock.current = false; setBusy(false); }
   }
   const selectedRow = selected?.entity === 'source' ? data?.sources.find((row) => row.id === selected.id) : data?.evidence.find((row) => row.id === selected?.id);
   const today = new Date().toISOString().slice(0, 10);
-  if (!authenticated) return <main className={styles.login}><a href="/" className={styles.brand}>signedprice<span>INTERNAL</span></a><section className={styles.loginCard}>
+  if (!authenticated) return <main className={styles.login}><Link href="/" prefetch={false} className={styles.brand}>signedprice<span>INTERNAL</span></Link><section className={styles.loginCard}>
     <p className={styles.eyebrow}>PROPERTY EVIDENCE</p><h1>관리자 로그인</h1><p>부동산 자료를 등록하고 근거를 검토하는 내부 공간입니다.</p>
     <form onSubmit={login}><label>관리자 키<input name="secret" type="password" required autoComplete="current-password" maxLength={1024} /></label><button type="submit" disabled={busy} className={styles.primary}>{busy ? '확인 중…' : '로그인'}</button></form>
     {error && <p role="alert" className={styles.error}>{error}</p>}<small>관리자 키는 서버 설정값입니다. 로그인은 8시간 유지되며, 키를 브라우저 저장소에 보관하지 않습니다.</small>
   </section></main>;
   return <div className={styles.shell}>
-    <aside className={styles.sidebar}><a href="/" className={styles.brand}>signedprice<span>INTERNAL</span></a><p className={styles.eyebrow}>자료 운영</p><nav aria-label="관리 메뉴">
+    <aside className={styles.sidebar}><Link href="/" prefetch={false} className={styles.brand}>signedprice<span>INTERNAL</span></Link><p className={styles.eyebrow}>자료 운영</p><nav aria-label="관리 메뉴">
       <button type="button" aria-current={tab === 'evidence' ? 'page' : undefined} onClick={() => { setTab('evidence'); setSelected(null); }}>자료 검토 <span>{data?.counts.pending ?? '—'}</span></button>
       <button type="button" aria-current={tab === 'sources' ? 'page' : undefined} onClick={() => { setTab('sources'); setSelected(null); }}>출처 관리</button>
       <button type="button" aria-current={tab === 'create' ? 'page' : undefined} onClick={() => { setTab('create'); setSelected(null); }}>자료 등록</button>
     </nav><div className={styles.sidebarFoot}><p>내부 전용 · 공개되지 않음</p><small>자료 승인과 사이트 게시는 별개입니다. 자동 수집은 아직 연결되지 않았습니다.</small><button type="button" disabled={busy} onClick={() => void logout()}>로그아웃</button></div></aside>
     <main className={styles.main}>
-      <header className={styles.header}><div><p className={styles.eyebrow}>EVIDENCE WORKSPACE</p><h1>{tab === 'sources' ? '출처 관리' : tab === 'create' ? '자료 등록' : '자료 검토'}</h1><p>{tab === 'sources' ? '자료를 가져온 출처부터 확인하세요.' : tab === 'create' ? '원문 대신 확인 가능한 값과 출처를 남기세요.' : '검토 대기 자료를 확인하고, 분석에 쓸 근거를 정리하세요.'}</p></div><button type="button" disabled={loading || busy} onClick={() => void load()}>{loading ? '불러오는 중…' : '새로고침'}</button></header>
+      <header className={styles.header}><div><p className={styles.eyebrow}>EVIDENCE WORKSPACE</p><h1>{tab === 'sources' ? '출처 관리' : tab === 'create' ? '자료 등록' : '자료 검토'}</h1><p>{tab === 'sources' ? '자료를 가져온 출처부터 확인하세요.' : tab === 'create' ? '원문 대신 확인 가능한 값과 출처를 남기세요.' : '검토 대기 자료를 확인하고, 분석에 쓸 근거를 정리하세요.'}</p></div><button type="button" disabled={loading || busy} onClick={() => { setLoading(true); void load(); }}>{loading ? '불러오는 중…' : '새로고침'}</button></header>
       {error && <p role="alert" className={styles.error}>{error}</p>}{message && <p role="status" className={styles.success}>{message}</p>}
       {data && <section className={styles.stats} aria-label="전체 자료 현황">{([['pending', '검토 대기'], ['approved', '승인 자료'], ['expired', '유효기간 만료'], ['withdrawn', '철회']] as const).map(([key, label]) => <button type="button" key={key} onClick={() => { setTab('evidence'); setSelected(null); setFilters({ ...filters, status: key, page: 1 }); }}><span>{label}</span><strong>{data.counts[key]}</strong></button>)}</section>}
       {!data && <section className={styles.panel}><p role="status">{loading ? '저장된 자료를 불러오고 있습니다…' : '자료에 연결하지 못했습니다. 설정을 확인한 뒤 새로고침하세요.'}</p></section>}

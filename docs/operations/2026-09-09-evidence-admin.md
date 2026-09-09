@@ -61,4 +61,13 @@ EVIDENCE_TEST_PGLITE_MODULE="$evidence_test_dir/node_modules/@electric-sql/pglit
 - 전체 Next 빌드 2회 통과(2,980개 정적 페이지). 마지막 글자 크기 보정 후 코드 컴파일 모드도 통과. 생성물 정리 중 환경의 ENOTEMPTY 오류가 있어 최종 컴파일 때만 `cleanDistDir:false`를 임시 적용했고, 검증 후 원래 설정으로 되돌렸다. 이 임시 설정은 커밋에 포함하지 않는다. 배포 시에는 새 전체 빌드를 실행해야 한다.
 - 첫 전체 테스트 실행에서는 빌드와의 동시 실행으로 시간 초과가 발생했고, 작은 글자 크기와 마이그레이션 목록 기대값도 보정했다. 제한된 병렬 실행으로 최종 전체 통과를 확인했다.
 - 독립 코드 리뷰의 중요 지적 두 건(철회 출처의 자동 대체 선택, 출처 1,001건 이후 읽기 중단)을 회귀 테스트와 함께 수정했고 재검토에서 추가 차단 문제는 없었다.
-- 운영 Neon 변경, 자동 수집, main 병합, 원격 푸시·PR 생성, 운영 배포는 실행하지 않았다.
+- 위 구현 검증 시점에는 운영 변경과 원격 반영을 실행하지 않았다. 이후 배포 진행 상황은 아래 기록을 따른다.
+
+## 2026-09-09 배포 진행 기록
+
+- GitHub PR: https://github.com/007shp18-dot/koreahomeguide/pull/257 . 최신 main `c431a186` 위에 반영하여 탐색 성능 개선을 보존했다.
+- 사용자 최종 승인 후 Neon migration `f09ce2c8-6ec5-41ff-973a-03e9e1359f90`을 운영 `signedprice-production` / `neondb` / `br-super-butterfly-b31hhh93`에 적용했다. 세 테이블과 마이그레이션 기록을 조회하여 확인했다.
+- 테스트 브랜치에서 등록·감사 이력·버전 갱신·중복·외래키 검증에 성공했고 테스트 레코드는 롤백했다. 마이그레이션 완료 도구가 임시 브랜치 `br-gentle-math-b337ivhh`를 삭제했다. 기존 운영 자료는 삭제하지 않았다.
+- 첫 원격 CI는 lint 단계에서 내부 링크와 effect의 동기 상태 갱신 규칙으로 실패했다. 내부 링크를 Next Link로 전환하고 로딩 시작은 사용자 이벤트에서, 로딩 종료와 결과 반영은 네트워크 응답 콜백에서 처리하도록 보정했다.
+- 로그인: 운영 배포 완료 후 `https://www.signedprice.com/admin/evidence/` 접속 → Vercel signedprice 프로젝트의 Settings / Environment Variables에 설정된 `CONTENT_ADMIN_SECRET`을 관리자 키로 입력. 별도 아이디 없음, 8시간 세션. 운영 키의 존재·길이와 실제 인증 성공은 아직 확인하지 않았으며 키를 자동 변경하지 않았다.
+- 이 기록 시점에서 수정 후 원격 CI와 운영 배포 완료 확인은 대기 중이다. 실제 완료 여부는 PR 및 Vercel 배포 상태로 확인한다.
