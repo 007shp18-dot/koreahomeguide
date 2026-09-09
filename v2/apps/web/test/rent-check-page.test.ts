@@ -156,8 +156,11 @@ describe('route metadata and authored head contract', () => {
 
 describe('Shared responsive form contract', () => {
   it('authors rounded 48px controls with a visible two-pixel focus', () => {
-    expect(css).toMatch(/\.primary-control\s*\{[\s\S]*?min-height:\s*48px;/);
-    expect(css).toMatch(/\.primary-control\s*\{[\s\S]*?border-radius:\s*8px;/);
+    const tokens = readFileSync(new URL('../components/tools/tool-design.css', import.meta.url), 'utf8');
+    expect(tokens).toContain('--tool-control-height: 48px;');
+    expect(tokens).toContain('--tool-control-radius: 8px;');
+    expect(css).toMatch(/\.primary-control\s*\{[\s\S]*?min-height:\s*var\(--tool-control-height\);/);
+    expect(css).toMatch(/\.primary-control\s*\{[\s\S]*?border-radius:\s*var\(--tool-control-radius\);/);
     expect(css).toMatch(/:focus-visible\s*\{[\s\S]*?outline:\s*2px solid var\(--focus-ring\);/);
     expect(css).not.toMatch(/box-shadow:\s*(?!none)/);
   });

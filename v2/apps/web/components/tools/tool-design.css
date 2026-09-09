@@ -1,0 +1,18 @@
+/* Shared dimensions for decision tools; these tokens do not style other pages. */
+:root {
+  --tool-control-height: 48px;
+  --tool-control-radius: 8px;
+  --tool-panel-radius: 12px;
+  --tool-panel-padding: 24px;
+  --tool-field-gap: 20px 16px;
+  --tool-title-size: var(--page-title-size);
+  --tool-heading-padding: 48px 0 40px;
+  --tool-result-background: var(--surface, #f6f8fa);
+}
+
+@media (max-width: 640px) {
+  :root {
+    --tool-panel-padding: 20px;
+    --tool-heading-padding: 32px 0;
+  }
+}

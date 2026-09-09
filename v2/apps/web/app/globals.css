@@ -1,3 +1,5 @@
+@import '../components/tools/tool-design.css';
+
 @font-face {
   font-family: "Archivo";
   src: url("/fonts/archivo-latin-wght-normal.woff2") format("woff2");

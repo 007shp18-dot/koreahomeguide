@@ -26,7 +26,7 @@
 
 .connected-frame {
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--tool-panel-radius);
   overflow: hidden;
   background: var(--surface-strong);
   min-width: 0;
@@ -47,7 +47,7 @@
 }
 
 .panel-heading {
-  min-height: 48px;
+  min-height: var(--tool-control-height);
   display: grid;
   grid-template-columns: 54px minmax(0, 1fr);
   align-items: stretch;
@@ -110,10 +110,10 @@
 .primary-control {
   width: 100%;
   min-width: 0;
-  min-height: 48px;
+  min-height: var(--tool-control-height);
   padding-inline: 13px;
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: var(--tool-control-radius);
   color: var(--ink);
   background: var(--surface-strong);
   font: inherit;
@@ -487,7 +487,7 @@
   min-height: 44px;
   padding-inline: 18px;
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: var(--tool-control-radius);
   color: var(--canvas);
   background: var(--accent);
   font: inherit;
@@ -757,11 +757,11 @@
 /* Connected controls retain one outline and comfortable touch targets. */
 .housing-choices,
 .unit-toggle,
-.preset-group > div { border-radius: 8px; overflow: hidden; }
-.size-control .primary-control { border-radius: 8px 0 0 8px; }
+.preset-group > div { border-radius: var(--tool-control-radius); overflow: hidden; }
+.size-control .primary-control { border-radius: var(--tool-control-radius) 0 0 8px; }
 .size-control .unit-toggle { border-radius: 0 8px 8px 0; }
 .panel-heading { background: var(--surface); }
 .panel-heading h2 { letter-spacing: 0; text-transform: none; font-size: 0.9rem; }
 .stale-label,
 .provenance-grid,
-.source-disclosure { border-radius: 8px; }
+.source-disclosure { border-radius: var(--tool-control-radius); }

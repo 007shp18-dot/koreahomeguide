@@ -210,3 +210,14 @@
 .exploreSupport > span { color: var(--muted); }
 .exploreSupport a { min-height: 44px; display: inline-flex; align-items: center; gap: 4px; color: var(--ink); text-underline-offset: 4px; }
 .exploreSupport a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* Check uses the shared decision-tool dimensions, independently of Explore. */
+.checkPage { padding-top: 0; }
+.checkHeader { padding: var(--tool-heading-padding); border: 0; }
+.checkHeader h1 { font-size: var(--tool-title-size); font-weight: 650; line-height: 1.2; letter-spacing: normal; }
+.checkGrid { padding-top: 0; gap: 24px; }
+.checkFormPanel, .checkResultCard, .checkEmpty { padding: var(--tool-panel-padding); border-radius: var(--tool-panel-radius); }
+.checkFormPanel form { gap: var(--tool-field-gap); }
+.checkFormPanel input, .checkFormPanel select, .checkFormPanel form > button { min-height: var(--tool-control-height); border-radius: var(--tool-control-radius); font-size: 16px; }
+.checkFormPanel form > button { font-weight: 650; }
+.checkResultCard, .checkEmpty { background: var(--tool-result-background); }
