@@ -73,6 +73,7 @@ export function MarketLocalNav({
           <Link
             className="market-local-nav__link"
             href={item.href}
+            prefetch={currentHref?.includes('/check/') && item.href.includes('/check/') ? false : undefined}
             aria-current={isCurrentLocalHref(currentHref, item.href) ? 'page' : undefined}
             data-capability-state={item.state}
             key={item.label}

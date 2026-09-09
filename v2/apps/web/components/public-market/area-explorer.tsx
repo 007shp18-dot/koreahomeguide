@@ -18,7 +18,7 @@ import {
   type AreaExplorerState,
 } from '../../lib/public-market/area-explorer-state';
 import {
-  createSelectionHref,
+  createSelectionHref as createSharedSelectionHref,
   type ExplorerSelection,
   type ExplorerView,
 } from '../../lib/navigation/explorer-selection';
@@ -272,6 +272,16 @@ type KoreaExploreLinkSelection = ExplorerSelection & Readonly<{
   schoolDistance?: 250 | 500 | 750 | 1000;
 }>;
 
+// The shared serializer predates Seoul's list default and omits split.
+// Keep the selected layout explicit on every Seoul drill-down and return URL.
+function createSelectionHref(...args: Parameters<typeof createSharedSelectionHref>): string {
+  const href = createSharedSelectionHref(...args);
+  if (args[1].view !== 'split') return href;
+  const target = new URL(href, 'https://signedprice.invalid');
+  target.searchParams.set('view', 'split');
+  return `${target.pathname}${target.search}`;
+}
+
 export function withKoreaProximityPairs(href: string, selection: KoreaExploreLinkSelection): string {
   return appendKoreaProximityPairs(href, {
     station: selection.station === undefined || selection.stationDistance === undefined
@@ -479,7 +489,11 @@ function ReadyAreaExplorer({
   const { selectedBuildingId } = buildingSelection;
   const [visibleBuildingCount, setVisibleBuildingCount] = useState(20);
   const [openAreaBuildings, setOpenAreaBuildings] = useState(false);
-  const revealAreaBuildings = useCallback(() => setOpenAreaBuildings(true), [setOpenAreaBuildings]);
+  const [showAreaResults, setShowAreaResults] = useState(false);
+  const revealAreaBuildings = useCallback(() => {
+    setOpenAreaBuildings(true);
+    setShowAreaResults(true);
+  }, [setOpenAreaBuildings, setShowAreaResults]);
   const [sortMode, setSortMode] = useState<'latest' | 'evidence' | 'name'>('evidence');
   const readyBuildingAvailability = model.buildingAvailability.status === 'ready'
     ? model.buildingAvailability
@@ -659,6 +673,7 @@ function ReadyAreaExplorer({
     || mapNeighborhoods.length === 0;
 
   const selectDistrict = (slug: string): void => {
+    setShowAreaResults(false);
     setOpenAreaBuildings(false);
     dispatch({ type: 'select', slug });
     setMapDrilledToDistrict(true);
@@ -670,6 +685,7 @@ function ReadyAreaExplorer({
     router.replace(districtHref(slug), { scroll: false });
   };
   const showAllDistricts = (): void => {
+    setShowAreaResults(false);
     setOpenAreaBuildings(false);
     setMapDrilledToDistrict(false);
     setBuildingQuery('');
@@ -814,6 +830,11 @@ function ReadyAreaExplorer({
     return `${target.pathname}${target.search}`;
   };
   const selectNeighborhood = (neighborhoodId: string): void => {
+    if (neighborhoodId === selectedNeighborhood && showBuildingLayer) {
+      revealAreaBuildings();
+      return;
+    }
+    setShowAreaResults(false);
     setOpenAreaBuildings(false);
     setMapDrilledToDistrict(true);
     setSelectedNeighborhood(neighborhoodId);
@@ -1012,8 +1033,11 @@ function ReadyAreaExplorer({
         </section>
         )}
 
-        {currentView === 'map' ? null : (
+        {currentView === 'map' && !showAreaResults ? null : (
         <aside className={styles.discoveryRail} data-explorer-region="results" aria-label={locale === 'ko' ? '지역과 건물 탐색' : 'District and building discovery'}>
+          {currentView === 'map' ? <button className={styles.mapLevelButton} type="button" onClick={() => setShowAreaResults(false)}>
+            {locale === 'ko' ? '지역 목록 닫기' : 'Close area results'}
+          </button> : null}
           {mapDrilledToDistrict ? <details className={styles.railEvidenceDisclosure}>
             <summary>
               <span>{copy.selected} · {selectedBuilding === null ? (locale === 'ko' ? selected.nameKo : selected.nameEn) : buildingDisplayLabel(selectedBuilding, locale).title}</span>

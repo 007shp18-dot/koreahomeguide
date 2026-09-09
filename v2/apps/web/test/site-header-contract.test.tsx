@@ -40,12 +40,11 @@ describe('signedprice public navigation', () => {
     }
   });
 
-  it('keeps rankings in an accessible Explore disclosure and selects Explore on ranking pages', () => {
+  it('keeps Explore as a direct destination without a lone Rankings submenu', () => {
     const html = renderToStaticMarkup(<SiteHeader copy={{ ...header, links: [{ label: 'Rankings', href: '/rankings/', isCurrent: true }] }} />);
-    expect(html).toContain('aria-label="Explore options"');
-    expect(html).toMatch(/<details[^>]*site-header__context-menu--explore[\s\S]*?<summary[\s\S]*?href="\/rankings\/?"/);
+    expect(html).not.toContain('aria-label="Explore options"');
     expect(html).toMatch(/<a[^>]*aria-current="page"[^>]*href="\/prices\/?"[^>]*>Explore<\/a>/);
-    expect(html).toContain('site-header__mobile-sub-link');
+    expect(html).not.toContain('site-header__mobile-sub-link');
   });
 
   it('keeps saved places and offer checking alongside the language controls', () => {

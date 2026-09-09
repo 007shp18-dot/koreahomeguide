@@ -1,42 +1,6 @@
-.rent-check-page {
-  min-width: 0;
-  overflow-x: clip;
-  background: var(--canvas);
-}
-
-.market-header {
-  width: min(1440px, 100%);
-  margin-inline: auto;
-  padding: clamp(30px, 5vw, 72px) clamp(18px, 4vw, 56px);
-  border-bottom: 2px solid var(--ink);
-}
-
-.market-header > p:first-child {
-  margin-bottom: 18px;
-  color: var(--accent);
-  font-size: var(--text-meta);
-  font-weight: 850;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.market-header h1 {
-  max-width: 980px;
-  font-size: clamp(2.5rem, 6vw, 6.4rem);
-  font-weight: 900;
-  letter-spacing: -0.04em;
-  line-height: 1;
-}
-
-.market-header > p:last-child {
-  max-width: 760px;
-  margin-top: 24px;
-  color: var(--muted);
-  line-height: 1.55;
-}
-
 .workspace {
-  width: min(1440px, 100%);
+  margin-block: 8px 48px;
+  width: 100%;
   min-width: 0;
   margin-inline: auto;
 }
@@ -47,7 +11,7 @@
   display: grid;
   grid-template-columns: minmax(170px, 1fr) minmax(0, 3fr) minmax(210px, 1.4fr);
   gap: 16px;
-  border-bottom: 2px solid var(--ink);
+  border-bottom: 1px solid var(--line);
   background: var(--accent-soft);
   font-size: 0.78rem;
   line-height: 1.45;
@@ -55,23 +19,27 @@
 
 .explorer-context span {
   color: var(--accent);
-  font-weight: 850;
+  font-weight: 650;
   letter-spacing: 0.07em;
   text-transform: uppercase;
 }
 
 .connected-frame {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--surface-strong);
   min-width: 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  border-bottom: 2px solid var(--ink);
+  border-bottom: 1px solid var(--line);
 }
 
 .quote-panel,
 .evidence-panel,
 .comparables-panel {
   min-width: 0;
-  border-bottom: 2px solid var(--ink);
+  border-bottom: 1px solid var(--line);
 }
 
 .comparables-panel {
@@ -83,23 +51,23 @@
   display: grid;
   grid-template-columns: 54px minmax(0, 1fr);
   align-items: stretch;
-  border-bottom: 2px solid var(--ink);
+  border-bottom: 1px solid var(--line);
 }
 
 .panel-heading span {
   display: grid;
   place-items: center;
-  border-right: 2px solid var(--ink);
+  border-right: 1px solid var(--line);
   color: var(--accent);
   font-size: var(--text-meta);
-  font-weight: 900;
+  font-weight: 650;
 }
 
 .panel-heading h2 {
   align-self: center;
   padding-inline: 14px;
   font-size: 0.78rem;
-  font-weight: 900;
+  font-weight: 650;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
@@ -116,6 +84,11 @@
   gap: 12px;
 }
 
+/* Give all five housing labels their own full-width row. */
+.form-grid > .field:first-child,
+.form-grid > .field:last-child,
+.housing-fieldset { grid-column: 1 / -1; }
+
 .field,
 .housing-fieldset {
   min-width: 0;
@@ -129,7 +102,7 @@
   display: block;
   margin-bottom: 7px;
   font-size: var(--text-meta);
-  font-weight: 850;
+  font-weight: 650;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
@@ -139,12 +112,12 @@
   min-width: 0;
   min-height: 48px;
   padding-inline: 13px;
-  border: 2px solid var(--ink);
-  border-radius: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
   color: var(--ink);
   background: var(--surface-strong);
   font: inherit;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .primary-control:focus-visible,
@@ -159,21 +132,21 @@
   min-width: 0;
   display: grid;
   grid-template-columns: repeat(5, minmax(44px, 1fr));
-  border: 2px solid var(--ink);
+  border: 1px solid var(--line);
 }
 
 .housing-choice {
   min-width: 44px;
   min-inline-size: 44px;
-  height: 44px;
+  height: 46px;
   padding: 7px;
   display: grid;
   place-items: center;
-  border-right: 1px solid var(--ink);
+  border-right: 1px solid var(--line);
   border-radius: 0;
   cursor: pointer;
   font-size: var(--text-meta);
-  font-weight: 800;
+  font-weight: 600;
   line-height: 1.15;
   text-align: center;
 }
@@ -205,7 +178,7 @@
 .unit-toggle {
   display: grid;
   grid-template-columns: repeat(2, auto);
-  border: 2px solid var(--ink);
+  border: 1px solid var(--line);
 }
 
 .unit-toggle button,
@@ -214,13 +187,13 @@
   min-inline-size: 44px;
   padding-inline: 10px;
   border: 0;
-  border-right: 1px solid var(--ink);
+  border-right: 1px solid var(--line);
   border-radius: 0;
   color: var(--ink);
   background: var(--canvas);
   font: inherit;
   font-size: var(--text-meta);
-  font-weight: 800;
+  font-weight: 600;
   cursor: pointer;
 }
 
@@ -245,14 +218,14 @@
   margin-top: 7px;
   color: var(--ink);
   font-size: var(--text-meta);
-  font-weight: 800;
+  font-weight: 600;
   line-height: 1.35;
 }
 
 .submit-button {
   color: var(--canvas);
   background: var(--accent);
-  font-weight: 900;
+  font-weight: 650;
   cursor: pointer;
 }
 
@@ -284,13 +257,13 @@
   display: block;
   margin-bottom: 7px;
   color: var(--ink);
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .preset-group > div {
   display: inline-grid;
   grid-template-columns: repeat(3, 1fr);
-  border: 1px solid var(--ink);
+  border: 1px solid var(--line);
 }
 
 .result-slot,
@@ -353,7 +326,7 @@
 .result-verdict > p {
   color: var(--accent-soft);
   font-size: 0.78rem;
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .result-evidence {
@@ -373,7 +346,7 @@
 .stale-label {
   color: var(--ink);
   font-size: var(--text-meta);
-  font-weight: 900;
+  font-weight: 650;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -381,7 +354,7 @@
 .stale-label {
   width: fit-content;
   padding: 5px 8px;
-  border: 2px solid var(--ink);
+  border: 1px solid var(--line);
 }
 
 .evidence-strength {
@@ -404,13 +377,13 @@
   min-width: 0;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  border: 2px solid var(--ink);
+  border: 1px solid var(--line);
 }
 
 .provenance-grid > section {
   min-width: 0;
   padding: 14px;
-  border-right: 1px solid var(--ink);
+  border-right: 1px solid var(--line);
 }
 
 .provenance-grid > section:last-child {
@@ -452,7 +425,7 @@
 .result-metrics dt {
   color: var(--muted);
   font-size: var(--text-meta);
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
@@ -461,7 +434,7 @@
   margin-top: 5px;
   color: var(--ink);
   font-size: 0.95rem;
-  font-weight: 850;
+  font-weight: 650;
 }
 
 .rent-range {
@@ -479,7 +452,7 @@
   height: 28px;
   margin-top: 10px;
   overflow: hidden;
-  border: 2px solid var(--ink);
+  border: 1px solid var(--line);
   background: var(--surface);
 }
 
@@ -489,7 +462,7 @@
   left: var(--range-start);
   right: calc(100% - var(--range-end));
   background: var(--surface-strong);
-  border-inline: 1px solid var(--ink);
+  border-inline: 1px solid var(--line);
 }
 
 .range-asking {
@@ -513,12 +486,12 @@
   min-width: 96px;
   min-height: 44px;
   padding-inline: 18px;
-  border: 2px solid var(--ink);
-  border-radius: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
   color: var(--canvas);
   background: var(--accent);
   font: inherit;
-  font-weight: 900;
+  font-weight: 650;
   cursor: pointer;
 }
 
@@ -582,7 +555,7 @@
 }
 
 .comparables-scroll thead th {
-  border-bottom: 2px solid var(--ink);
+  border-bottom: 1px solid var(--line);
   background: var(--surface);
   font-size: var(--text-meta);
   letter-spacing: 0.05em;
@@ -590,7 +563,7 @@
 }
 
 .comparables-scroll tbody th {
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .method-band {
@@ -599,7 +572,7 @@
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 18px;
-  border-bottom: 2px solid var(--ink);
+  border-bottom: 1px solid var(--line);
   color: var(--muted);
   font-size: var(--text-meta);
   line-height: 1.45;
@@ -634,7 +607,7 @@
   margin-bottom: 4px;
   color: var(--ink);
   font-size: var(--text-meta);
-  font-weight: 900;
+  font-weight: 650;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -645,9 +618,9 @@
 
 .mapping-warning {
   padding: 9px 11px;
-  border: 1px solid var(--ink);
+  border: 1px solid var(--line);
   color: var(--ink);
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .limitations {
@@ -674,16 +647,16 @@
 
 @media (min-width: 1180px) {
   .connected-frame {
-    grid-template-columns: minmax(720px, 3fr) minmax(360px, 2fr);
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
   }
 
   .quote-panel {
-    border-right: 2px solid var(--ink);
+    border-right: 1px solid var(--line);
   }
 
   .quote-panel,
   .evidence-panel {
-    border-bottom: 2px solid var(--ink);
+    border-bottom: 1px solid var(--line);
   }
 
   .comparables-panel {
@@ -718,10 +691,6 @@
 }
 
 @media (max-width: 720px) {
-  .market-header {
-    padding-block: 34px;
-  }
-
   .explorer-context,
   .form-assist,
   .method-band {
@@ -743,7 +712,7 @@
   .housing-choice {
     justify-items: start;
     border-right: 0;
-    border-bottom: 1px solid var(--ink);
+    border-bottom: 1px solid var(--line);
     text-align: left;
   }
 
@@ -783,4 +752,16 @@
   }
 }
 
-.rent-check-page .primary-control { min-block-size: 48px; }
+.form-grid .primary-control { min-block-size: 48px; }
+
+/* Connected controls retain one outline and comfortable touch targets. */
+.housing-choices,
+.unit-toggle,
+.preset-group > div { border-radius: 8px; overflow: hidden; }
+.size-control .primary-control { border-radius: 8px 0 0 8px; }
+.size-control .unit-toggle { border-radius: 0 8px 8px 0; }
+.panel-heading { background: var(--surface); }
+.panel-heading h2 { letter-spacing: 0; text-transform: none; font-size: 0.9rem; }
+.stale-label,
+.provenance-grid,
+.source-disclosure { border-radius: 8px; }

@@ -16,6 +16,8 @@ import {
   AreaExplorer,
   compareExploreBuildingsByEvidence,
   createExploreBuildingSelectionHref,
+  createKoreaDistrictHref,
+  createKoreaBuildingDetailHref,
   isIndividualMapBuilding,
 } from '../components/public-market/area-explorer';
 import {
@@ -100,6 +102,20 @@ it('keeps unlocated buildings in the primary results list', () => {
 });
 
 describe('public Seoul area Explorer', () => {
+  it.each(['split', 'map'] as const)('retains the %s layout through district and building selection', (view) => {
+    const model = readyModel();
+    const building = model.buildingAvailability.status === 'ready'
+      ? model.buildingAvailability.buildings[0]!
+      : model.buildingAvailability.fallbackBuildings[0]!;
+    const selection = { market: 'kr', transaction: 'sale', view } as const;
+    for (const locale of ['en', 'ko'] as const) {
+      for (const href of [
+        createKoreaDistrictHref('gangnam-gu', selection, locale),
+        createExploreBuildingSelectionHref(building, selection, locale),
+        createKoreaBuildingDetailHref(building, selection, locale),
+      ]) expect(new URL(href, 'https://signedprice.test').searchParams.get('view')).toBe(view);
+    }
+  });
   it('ranks published and better-supported buildings before unavailable rows', () => {
     const rows = [
       { id: 'unavailable', name: 'A', evidenceStatus: 'unavailable', observationCount: 20 },

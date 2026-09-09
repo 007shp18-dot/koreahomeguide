@@ -43,7 +43,7 @@ export const publicRoutes = [
   { path: '/kr/seoul/rent/', heading: 'Rent in Seoul', indexing: 'noindex' },
   {
     path: '/kr/seoul/tools/rent-check/',
-    heading: 'Check the quote against reported contracts.',
+    heading: 'Check a Seoul rent quote',
     indexing: 'index',
     canonical: '/kr/seoul/tools/rent-check/',
   },

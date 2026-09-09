@@ -1,4 +1,6 @@
-
+import Form from 'next/form';
+import { Fragment } from 'react';
+import { CheckEntitySelect } from './check-entity-select';
 import { DefaultAmountInput } from '../amount-input';
 import { formatPricePercentile } from '../../lib/locale/price-percentile';
 import { sgText } from '../../lib/locale/singapore-copy';
@@ -22,10 +24,6 @@ function options(locale: MarketLocale, values: readonly string[], _selected?: st
   void _selected;
   return values.map((value) => <option key={value} value={value}>{sgText(locale, value)}</option>);
 }
-function pairOptions(locale: MarketLocale, values: readonly Readonly<{ id: string; label: string }>[], _selected?: string) {
-  void _selected;
-  return <><option value="">{sgText(locale, "Any")}</option>{values.map((value) => <option key={value.id} value={value.id}>{value.label}</option>)}</>;
-}
 
 function OfferFields({ locale = 'en', prefix, draft, catalog }: Readonly<{ locale?: MarketLocale; prefix: 'a' | 'b'; draft: SingaporeCheckDraft; catalog: SingaporeCheckCatalog }>) {
   if (!catalog.available) return <fieldset className={styles.offerFields}>
@@ -39,7 +37,7 @@ function OfferFields({ locale = 'en', prefix, draft, catalog }: Readonly<{ local
     {field(draft.market === 'hdb-rent' ? 'Monthly rent (SGD)' : 'Asking price (SGD)', `${prefix}-amount`, <DefaultAmountInput name={`${prefix}-amount`}  min="1" step="1" defaultValue={draft.amount} required />)}
     {draft.market === 'ura-private-sale' ? <>
       {field('Market segment', `${prefix}-segment`, <select name={`${prefix}-segment`} defaultValue={draft.segment}>{options(locale, catalog.segments, draft.segment)}</select>)}
-      {field('Project', `${prefix}-project`, <select name={`${prefix}-project`} defaultValue={draft.project}>{pairOptions(locale, catalog.projects, draft.project)}</select>)}
+      {field('Project', `${prefix}-project`, <CheckEntitySelect name={`${prefix}-project`} defaultValue={draft.project} anyLabel={sgText(locale, "Any")} options={catalog.projects.map(({id, label}) => [id, label] as const)} />)}
       {field('District', `${prefix}-district`, <select name={`${prefix}-district`} defaultValue={draft.district}>{options(locale, catalog.districts, draft.district)}</select>)}
       {field('Property type', `${prefix}-property-type`, <select name={`${prefix}-property-type`} defaultValue={draft['property-type']}>{options(locale, catalog.propertyTypes, draft['property-type'])}</select>)}
       {field('Area minimum (㎡)', `${prefix}-area-min`, <DefaultAmountInput name={`${prefix}-area-min`}  min="1" defaultValue={draft['area-min'] ?? '80'} required />)}
@@ -48,7 +46,7 @@ function OfferFields({ locale = 'en', prefix, draft, catalog }: Readonly<{ local
       {field('Sale type', `${prefix}-sale-type`, <select name={`${prefix}-sale-type`} defaultValue={draft['sale-type']}><option value="">{sgText(locale, "Any")}</option>{options(locale, catalog.saleTypes, draft['sale-type'])}</select>)}
     </> : <>
       {field('Town', `${prefix}-town`, <select name={`${prefix}-town`} defaultValue={draft.town}>{options(locale, catalog.towns, draft.town)}</select>)}
-      {field('Block / street', `${prefix}-block`, <select name={`${prefix}-block`} defaultValue={draft.block}>{pairOptions(locale, catalog.blocks, draft.block)}</select>)}
+      {field('Block / street', `${prefix}-block`, <CheckEntitySelect name={`${prefix}-block`} defaultValue={draft.block} anyLabel={sgText(locale, "Any")} options={catalog.blocks.map(({id, label}) => [id, label] as const)} />)}
       {field('Flat type', `${prefix}-flat-type`, <select name={`${prefix}-flat-type`} defaultValue={draft['flat-type']}>{options(locale, catalog.flatTypes, draft['flat-type'])}</select>)}
       {draft.market === 'hdb-resale' ? <>
         {field('Storey range', `${prefix}-storey-range`, <select name={`${prefix}-storey-range`} defaultValue={draft['storey-range']}><option value="">{sgText(locale, "Any")}</option>{options(locale, catalog.storeyRanges, draft['storey-range'])}</select>)}
@@ -69,7 +67,7 @@ function MarketTabs({ locale = 'en', prefix, model }: Readonly<{ locale?: Market
       const nextB = prefix === 'b' ? typed : model.drafts.b.market;
       const query = new URLSearchParams({ mode: model.mode, 'a-market': nextA });
       if (model.mode === 'compare') query.set('b-market', nextB);
-      return <Link key={market} href={marketHref(locale, `/sg/singapore/check/?${query}`)} aria-current={draft.market === market ? 'page' : undefined} data-evidence={available ? 'ready' : 'unavailable'}><strong>{sgText(locale, label)}</strong><span>{sgText(locale, available ? 'Data available' : 'Evidence unavailable')}</span></Link>;
+      return <Link prefetch={false} key={market} href={marketHref(locale, `/sg/singapore/check/?${query}`)} aria-current={draft.market === market ? 'page' : undefined} data-evidence={available ? 'ready' : 'unavailable'}><strong>{sgText(locale, label)}</strong><span>{sgText(locale, available ? 'Data available' : 'Evidence unavailable')}</span></Link>;
     }))}
   </nav>;
 }
@@ -106,11 +104,14 @@ function ResultPanel({ locale = 'en', model }: Readonly<{ locale?: MarketLocale;
 }
 
 export function SingaporeCheckWorkspace({ locale = 'en', model }: Readonly<{ locale?: MarketLocale; model: SingaporeCheckRouteModel }>) {
+  // Do not prefetch the indexable empty calculator while showing a private
+  // query result: its metadata-only response can replace the active robots tag.
+  // Form and mode links still navigate through the client router on activation.
   const available = model.catalogs[model.drafts.a.market].available && (model.mode === 'single' || model.catalogs[model.drafts.b.market].available);
   return <SingaporePage locale={locale} currentHref={marketHref(locale, "/sg/singapore/check/")}><div className={styles.checkWorkspace} data-singapore-check-workspace="true">
     <header className={styles.checkHeader}><div><p className={styles.eyebrow}>{sgText(locale, "Singapore Check")}</p><h1>{sgText(locale, "Compare an asking price")}</h1></div><p>{sgText(locale, "Recent completed months only")}<br />{sgText(locale, "Minimum 5 comparable transactions")}</p></header>
-    <nav className={styles.checkMode} aria-label={sgText(locale, "Check mode")}><Link aria-current={model.mode === 'single' ? 'page' : undefined} href={marketHref(locale, "/sg/singapore/check/")}>{sgText(locale, "One offer")}</Link><Link aria-current={model.mode === 'compare' ? 'page' : undefined} href={marketHref(locale, "/sg/singapore/check/?mode=compare")}>{sgText(locale, "Compare A/B")}</Link></nav>
-    <section className={styles.checkBody}><div className={styles.checkForm}><form action={marketHref(locale, "/sg/singapore/check/")} method="get"><PassportFormContext /><input type="hidden" name="submitted" value="1" /><input type="hidden" name="mode" value={model.mode} /><MarketTabs locale={locale} prefix="a" model={model} /><OfferFields locale={locale} prefix="a" draft={model.drafts.a} catalog={model.catalogs[model.drafts.a.market]} />{model.mode === 'compare' ? <><MarketTabs locale={locale} prefix="b" model={model} /><OfferFields locale={locale} prefix="b" draft={model.drafts.b} catalog={model.catalogs[model.drafts.b.market]} /></> : null}<button className={styles.checkSubmit} type="submit" disabled={!available}>{sgText(locale, model.mode === 'compare' ? 'Compare offers' : model.drafts.a.market === 'hdb-rent' ? 'Compare an asking rent' : 'Compare an asking price')}</button></form></div><aside className={styles.checkResult} aria-label={sgText(locale, "Check result")}><ResultPanel locale={locale} model={model} /></aside></section>
+    <nav className={styles.checkMode} aria-label={sgText(locale, "Check mode")}><Link prefetch={false} aria-current={model.mode === 'single' ? 'page' : undefined} href={marketHref(locale, "/sg/singapore/check/")}>{sgText(locale, "One offer")}</Link><Link prefetch={false} aria-current={model.mode === 'compare' ? 'page' : undefined} href={marketHref(locale, "/sg/singapore/check/?mode=compare")}>{sgText(locale, "Compare A/B")}</Link></nav>
+    <section className={styles.checkBody}><div className={styles.checkForm}><Form prefetch={false} action={marketHref(locale, "/sg/singapore/check/")} scroll={false}><Fragment key={JSON.stringify([model.mode, model.drafts])}><PassportFormContext /><input type="hidden" name="submitted" value="1" /><input type="hidden" name="mode" value={model.mode} /><MarketTabs locale={locale} prefix="a" model={model} /><OfferFields locale={locale} prefix="a" draft={model.drafts.a} catalog={model.catalogs[model.drafts.a.market]} />{model.mode === 'compare' ? <><MarketTabs locale={locale} prefix="b" model={model} /><OfferFields locale={locale} prefix="b" draft={model.drafts.b} catalog={model.catalogs[model.drafts.b.market]} /></> : null}<button className={styles.checkSubmit} type="submit" disabled={!available}>{sgText(locale, model.mode === 'compare' ? 'Compare offers' : model.drafts.a.market === 'hdb-rent' ? 'Compare an asking rent' : 'Compare an asking price')}</button></Fragment></Form></div><aside className={styles.checkResult} aria-label={sgText(locale, "Check result")}><ResultPanel locale={locale} model={model} /></aside></section>
     <BuyerNextSteps locale={locale} market="singapore" />
   </div></SingaporePage>;
 }

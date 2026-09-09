@@ -571,7 +571,10 @@ export function mountNaverDistrictMap({
               if (reference.neighborhoodId !== undefined) onSelectNeighborhood?.(reference.neighborhoodId);
               else {
                 const district = districts.find((district) => district.slug === reference.id);
-                if (district !== undefined) onSelect(district.href);
+                if (district !== undefined && selectedDistrict.latitude === district.latitude
+                  && selectedDistrict.longitude === district.longitude && onOpenAreaBuildings !== undefined) {
+                  onOpenAreaBuildings();
+                } else if (district !== undefined) onSelect(district.href);
               }
             }, `<div class="spMapNeighborhoodBubble spMapAreaGroup" role="img" aria-label="${escapeMarkerText(reference.title)} · ${count} · ${escapeMarkerText(areaOnlyLabel)}"><strong>${count.toLocaleString('en-US')}</strong></div>`);
         }

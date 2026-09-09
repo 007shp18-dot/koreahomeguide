@@ -88,6 +88,12 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium
       - name: Run wide, desktop and mobile workbook release gate
         run: pnpm e2e --project=desktop-chromium --project=mobile-chromium --project=tablet-chromium --project=wide-chromium
+      - name: Verify Seoul bubble interactions with isolated map SDK
+        if: ${{ !cancelled() }}
+        env:
+          NAVER_MAP_CLIENT_ID: e2e-map-fixture
+          SIGNEDPRICE_TEST_NAVER_MAP: 'true'
+        run: pnpm exec playwright test area-explore.spec.ts --grep 'bubble' --project=desktop-chromium --project=mobile-chromium --reporter=line --output=map-test-results
       - name: Upload browser failure diagnostics
         if: failure()
         uses: actions/upload-artifact@v4.6.2
@@ -95,6 +101,7 @@ jobs:
           name: signedprice-v2-browser-diagnostics
           path: |
             v2/test-results
+            v2/map-test-results
             v2/playwright-report
           if-no-files-found: ignore
           retention-days: 7
