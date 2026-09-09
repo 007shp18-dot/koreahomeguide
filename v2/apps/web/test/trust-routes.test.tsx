@@ -62,13 +62,13 @@ describe('Trust routes', () => {
     expect(html).toContain('data-product-intro="true"');
 
     for (const visible of [
-      'How SignedPrice publishes evidence',
-      'Evidence states',
-      'Freshness',
-      'Rights',
-      'Corrections',
-      'Accuracy',
-      'No model-accuracy figure is currently published',
+      'Data &amp; sources',
+      'Where do the prices come from?',
+      'When is the data updated?',
+      'source rights explicitly permit each use',
+      'How can I report an error?',
+      'How should I read a price?',
+      'We do not publish an accuracy score',
     ]) {
       expect(html).toContain(visible);
     }

@@ -40,4 +40,6 @@ it('lists every published Singapore project with the same canonical and publicat
     expect(entry?.alternates?.languages).toMatchObject(pageMetadata.alternates?.languages ?? {});
     expect(entry?.lastModified).toEqual(new Date(repository!.getContext().generatedAt));
   }
-}, 20_000);
+// Loads the full checked-in URA and HDB snapshots on a cold worker.
+// This verifies publication coverage, not a response-time performance budget.
+}, 60_000);

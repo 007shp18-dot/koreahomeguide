@@ -17,7 +17,7 @@ async function expectNoHorizontalOverflow(page: Page) {
 
 test('News & Insights opens the unified hub and preserves the filter journey', async ({ page }) => {
   await page.goto('/prices/');
-  await (await openPrimaryNavigation(page)).getByRole('link', { name: 'News & Insights', exact: true }).click();
+  await (await openPrimaryNavigation(page)).getByRole('link', { name: 'Insights', exact: true }).click();
   await expect(page).toHaveURL(/\/news\/$/);
   await expect(page.locator('header.site-header:visible details.site-header__mobile-menu')).not.toHaveAttribute('open', '');
   await expect(page.getByRole('heading', { level: 1, name: 'News & Insights', exact: true })).toBeVisible();
@@ -183,12 +183,12 @@ test('News & Insights and Guides keep the same global header and the guide highl
 test('Tokyo city journey opens its own article, chapters and Korean translation', async ({ page }) => {
   await page.goto('/news/?market=tokyo');
   const lead = page.locator('[data-newsroom-lead]');
-  await expect(lead).toContainText('Tokyo: from a favourite street to a home worth keeping');
+  await expect(lead).toContainText("A Tokyo neighbourhood you will want to come home to");
   await page.getByRole('tab', { name: /Where\?/ }).click();
-  await expect(page.getByRole('tabpanel')).toContainText('Nakameguro gives you the Tokyu Toyoko');
-  await page.getByRole('tabpanel').getByRole('link', { name: /Read this chapter/ }).click();
-  await expect(page).toHaveURL(/\/news\/city-stories\/tokyo\/#where$/);
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Tokyo: from a favourite street to a home worth keeping');
+  await expect(page.getByRole('tabpanel')).toContainText("Compare Nakameguro, Kiyosumi Shirakawa and Kagurazaka through the journeys you actually make, then check the street and building.");
+  await page.getByRole('tabpanel').getByRole('link', { name: /Read this article/ }).click();
+  await expect(page).toHaveURL(/\/news\/city-stories\/tokyo\/where\/$/);
+  await expect(page.getByRole('heading', { level: 1 })).toContainText("Choose the railway, then the street");
   await expect.poll(() => page.locator('main img').first().evaluate(image => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
   await expectNoHorizontalOverflow(page);
   await page.goto('/ko/news/city-stories/seoul/');

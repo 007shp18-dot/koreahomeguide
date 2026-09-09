@@ -1123,22 +1123,23 @@ function ReadyAreaExplorer({
                           data-building-row={building.id}
                         >
                           <Link className={styles.buildingCardLink} href={detailHref} onClick={() => rememberExplorePosition(returnHref)}>
-                            <span className={styles.buildingThumbnail}>
+                            {building.media?.displayUrl.startsWith('/assets/buildings/') ? <span className={styles.buildingThumbnail}>
                               <ProjectedBuildingMedia building={building} locale={locale} variant="thumbnail" />
-                            </span>
+                            </span> : null}
                             <span className={styles.buildingCardCopy}>
                               <small title={display.original}>{display.location} · {evidenceHousingOptions.find(([value]) => value === building.housingType)?.[locale === 'ko' ? 2 : 1] ?? building.housingType}</small>
                               <strong title={display.original}>{display.title}</strong>
-                              <small>{exploreAreaBandLabel(model.evidenceSelection.areaBand, locale)} · {building.firstObservedMonth}–{building.lastObservedMonth} · {localizeSampleLabel(building.sampleLabel, locale)}</small>
-                              <BuildingProximityFacts building={building} locale={locale} />
-                            </span>
-                          </Link>
                           <span className={styles.buildingRowPrice}>
                             <strong>{building.medianLabel ?? '—'}</strong>
                             <small>{building.transaction === 'monthly' && building.filedDepositMedianLabel
                               ? `${locale === 'ko' ? '보증금' : 'Deposit'} ${building.filedDepositMedianLabel}`
                               : exactMetricCopy.medianLabel}</small>
                           </span>
+                              <small>{exploreAreaBandLabel(model.evidenceSelection.areaBand, locale)} · {building.firstObservedMonth}–{building.lastObservedMonth} · {localizeSampleLabel(building.sampleLabel, locale)}</small>
+                              <BuildingProximityFacts building={building} locale={locale} />
+                            </span>
+                          </Link>
+
                           <span className={styles.buildingRowActions}>
                             <BuildingSaveButton
                               buildingKey={`${building.districtSlug}/${building.id}`}

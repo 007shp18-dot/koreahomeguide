@@ -81,6 +81,10 @@ describe('Singapore route SSR', () => {
     const overview = html.slice(html.indexOf('id="detail-overview"'), html.indexOf('id="detail-evidence"'));
     expect(overview).toContain(model.evidence.period);
     expect(overview).toContain(model.display.sampleLabel);
+    expect(overview).toContain('data-summary-kind="project"');
+    expect(overview).toContain(model.display.medianPsfLabel);
+    expect(overview.indexOf('data-market-summary="true"')).toBeLessThan(overview.indexOf('data-building-media="google-place-photo"'));
+    expect(overview.split(model.display.medianPriceLabel)).toHaveLength(2);
     const summary = html.slice(html.indexOf('id="project-summary-heading"'), html.indexOf('id="transaction-heading"'));
     expect(summary).not.toContain(`<dd>${model.display.medianPriceLabel}</dd>`);
     expect(html).toContain('id="transaction-heading"');
@@ -280,6 +284,7 @@ describe('Singapore route SSR', () => {
     expect(html).toContain('data-building-media="google-place-photo"');
     expect(html).toContain(`${model.count} reported transactions`);
     expect(html).not.toMatch(/SGD [\d,]+/);
+    expect(html).not.toContain('data-market-summary="true"');
   });
 
   it('renders fixed route loading boundaries and disables unsupported evidence links', async () => {

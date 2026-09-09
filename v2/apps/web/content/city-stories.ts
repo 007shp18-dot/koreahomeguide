@@ -5,14 +5,7 @@ export type StoryLink = Readonly<{ href: string; label: StoryText }>;
 export type StorySection = Readonly<{ id: string; title: StoryText; paragraphs: Readonly<{ en: readonly string[]; ko: readonly string[] }>; links: readonly StoryLink[] }>;
 export type CityStory = Readonly<{ city: StoryCity; name: StoryText; title: StoryText; deck: StoryText; sections: readonly [StorySection, StorySection, StorySection, StorySection, StorySection, StorySection]; sources: readonly { title: string; href: string }[] }>;
 
-export const STORY_STEPS = [
-  { id: 'discover', label: { en: 'Discover', ko: '도시의 매력' }, question: { en: 'What would life here feel like?', ko: '여기서 살면 어떤 일상일까?' } },
-  { id: 'why-buy', label: { en: 'Why buy?', ko: '매수할 이유' }, question: { en: 'Does owning fit your plans?', ko: '내 집 마련이 앞으로의 계획에 맞을까?' } },
-  { id: 'can-i-buy', label: { en: 'Can I buy?', ko: '자격과 예산' }, question: { en: 'What is possible for you?', ko: '내 조건으로 어떤 집을 살 수 있을까?' } },
-  { id: 'where', label: { en: 'Where?', ko: '지역 선택' }, question: { en: 'Which neighbourhood fits?', ko: '어느 동네가 나에게 맞을까?' } },
-  { id: 'which-home', label: { en: 'Which home?', ko: '집 선택' }, question: { en: 'What makes a good shortlist?', ko: '어떤 집을 후보로 남길까?' } },
-  { id: 'make-it-happen', label: { en: 'Make it happen', ko: '계약과 입주' }, question: { en: 'How do you get to the keys?', ko: '계약부터 입주까지 무엇을 준비할까?' } },
-] as const;
+export { STORY_STEPS } from './city-journey-routes';
 
 export function cityStoryHref(city: StoryCity, locale: StoryLocale = 'en') { return `${locale === 'ko' ? '/ko' : ''}/news/city-stories/${city}/`; }
 

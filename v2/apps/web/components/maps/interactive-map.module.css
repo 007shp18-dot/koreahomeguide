@@ -65,6 +65,17 @@
   text-align: center;
 }
 
+.placeWorkspace .locationStatus {
+  margin: 0;
+  padding: 10px 16px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 20px;
+  letter-spacing: normal;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
 :global(.spMapNeighborhoodBubble) {
   min-height: 32px;
   min-width: 32px;

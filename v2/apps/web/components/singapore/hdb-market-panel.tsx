@@ -51,13 +51,13 @@ function ComparisonChart({ locale = 'en',
 
 export function HdbMarketPanel({ locale = 'en', model }: Readonly<{ locale?: MarketLocale; model: HdbExploreModel }>) {
   if (model.status === 'unavailable') return (
-    <section className={styles.section} aria-labelledby="hdb-heading" data-hdb-evidence="unavailable">
+    <section className={`${styles.section} ${styles.hdbPanel}`} aria-labelledby="hdb-heading" data-hdb-evidence="unavailable">
       <p className={styles.sectionLabel}>{sgText(locale, "03 / HDB evidence")}</p>
       <h2 id="hdb-heading">{sgText(locale, "Verified HDB evidence is unavailable.")}</h2>
     </section>
   );
   return (
-    <section className={styles.section} aria-labelledby="hdb-heading" data-hdb-evidence="ready">
+    <section className={`${styles.section} ${styles.hdbPanel}`} aria-labelledby="hdb-heading" data-hdb-evidence="ready">
       <p className={styles.sectionLabel}>{sgText(locale, "03 / HDB public housing")}</p>
       <div className={styles.sectionIntro}>
         <div>
@@ -102,16 +102,21 @@ export function HdbMarketPanel({ locale = 'en', model }: Readonly<{ locale?: Mar
           </tr>)}</tbody>
         </table>
       </div>
-      <ul className={styles.limitations}>
-        <li>{sgText(locale, "HDB resale prices are indicative historical transactions, not a valuation.")}</li>
-        <li>{sgText(locale, "Rental data is owner-declared when the flat is rented out and is not independently verified by HDB.")}</li>
-        <li>{sgText(locale, "Property facts are reported through ")}{sgText(locale, model.propertyThrough)}{sgText(locale, "; map and nearby Street View use Google separately.")}</li>
-      </ul>
-      <div className={styles.actions} aria-label={sgText(locale, "Official HDB source datasets")}>
-        <a href={marketHref(locale, "https://data.gov.sg/datasets/d_8b84c4ee58e3cfc0ece0d773c8ca6abc/view")} target="_blank" rel="noopener noreferrer">{sgText(locale, "HDB resale source")}</a>
-        <a href={marketHref(locale, "https://data.gov.sg/datasets/d_c9f57187485a850908655db0e8cfe651/view")} target="_blank" rel="noopener noreferrer">{sgText(locale, "HDB rental source")}</a>
-        <a href={marketHref(locale, "https://data.gov.sg/datasets/d_17f5382f26140b1fdae0ba2ef6239d2f/view")} target="_blank" rel="noopener noreferrer">{sgText(locale, "HDB property source")}</a>
-      </div>
+      <details className={styles.evidenceDisclosure}>
+        <summary>{locale === 'ko' ? '데이터·출처' : 'Data & sources'}</summary>
+        <div className={styles.disclosureBody}>
+          <ul className={styles.limitations}>
+            <li>{sgText(locale, "HDB resale prices are indicative historical transactions, not a valuation.")}</li>
+            <li>{sgText(locale, "Rental data is owner-declared when the flat is rented out and is not independently verified by HDB.")}</li>
+            <li>{sgText(locale, "Property facts are reported through ")}{sgText(locale, model.propertyThrough)}{sgText(locale, "; map and nearby Street View use Google separately.")}</li>
+          </ul>
+          <nav className={styles.sourceLinks} aria-label={sgText(locale, "Official HDB source datasets")}>
+            <a href={marketHref(locale, "https://data.gov.sg/datasets/d_8b84c4ee58e3cfc0ece0d773c8ca6abc/view")} target="_blank" rel="noopener noreferrer">{sgText(locale, "HDB resale source")}</a>
+            <a href={marketHref(locale, "https://data.gov.sg/datasets/d_c9f57187485a850908655db0e8cfe651/view")} target="_blank" rel="noopener noreferrer">{sgText(locale, "HDB rental source")}</a>
+            <a href={marketHref(locale, "https://data.gov.sg/datasets/d_17f5382f26140b1fdae0ba2ef6239d2f/view")} target="_blank" rel="noopener noreferrer">{sgText(locale, "HDB property source")}</a>
+          </nav>
+        </div>
+      </details>
     </section>
   );
 }

@@ -1,8 +1,6 @@
 import {expect,test} from '@playwright/test';
 import { visibleLanguageNavigation, visibleProductNavigation } from './site-header-helpers';
 
-import { openPrimaryNavigation } from './navigation-helpers';
-
 test('Chinese market cards align their primary actions on multi-column screens',async({page})=>{
  await page.goto('/zh-cn/kr/seoul/');
  await page.evaluate(()=>document.fonts.ready);
@@ -59,12 +57,16 @@ test('neutral calculator changes currency without carrying the previous purchase
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
 });
 
-test('all tool languages use the same five navigation slots and Corrections has a useful report action',async({page})=>{
+test('all tool languages use the same four primary navigation slots and Corrections has a useful report action',async({page})=>{
  for(const path of ['/tools/','/ko/tools/','/zh-cn/tools/']) {
   await page.goto(path);
-  const header = page.locator('header.site-header:visible');
-  await expect(await openPrimaryNavigation(page)).toBeVisible();
-  await expect(header.locator('.site-header__product-link')).toHaveCount(5);
+  const navigation = await visibleProductNavigation(page);
+  await expect(navigation).toBeVisible();
+  await expect(navigation.locator('.site-header__product-link')).toHaveCount(4);
+  const rankings = navigation.getByRole('link', { name: /^(?:Rankings|지역 비교|地区排名)$/ });
+  if (!(await rankings.isVisible())) await navigation.locator('summary').click();
+  await expect(rankings).toBeVisible();
+  await expect(rankings).toHaveAttribute('href', path.startsWith('/ko/') ? '/ko/rankings/' : '/rankings/');
   await expect((await visibleLanguageNavigation(page)).getByRole('link')).toHaveText(['EN','KO','中文']);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
  }

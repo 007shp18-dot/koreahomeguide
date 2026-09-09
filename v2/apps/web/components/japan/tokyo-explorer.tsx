@@ -32,38 +32,46 @@ export default async function TokyoExplorer({ searchParams }: { searchParams: Pr
   };
   const yen = new Intl.NumberFormat('en', { style: 'currency', currency: 'JPY', maximumFractionDigits: 0 });
   const years = Array.from({ length: new Date().getUTCFullYear() - 2023 }, (_, i) => String(2024 + i));
+  const advancedFiltersActive = Boolean(error) || scope.year !== '2025' || scope.quarter !== '4'
+    || Boolean(filters.type) || filters.minArea !== null || filters.maxArea !== null;
   return <>
     <SiteHeader copy={{ ...homepageCopy.header, marketLabel: 'Tokyo', links: [{ label: 'Explore', href: '/jp/tokyo/explore/', isCurrent: true }] }} />
-    <main>
+    <main className={styles.page}>
       <MarketExploreShell eyebrow="Tokyo" title="Explore" period={`${TOKYO_WARDS.find(([code]) => code === scope.city)?.[1] ?? 'Ward'} · ${scope.year} Q${scope.quarter} · JPY`}
         layers={<div>
           <p className={styles.intro}>Recorded prices by neighbourhood. Find the area, size and layout that fit.</p>
-      <form className={styles.filters} action="/jp/tokyo/explore/" aria-label="Tokyo transaction filters">
+      <form className={styles.filters} action="/jp/tokyo/explore/" method="get" aria-label="Tokyo transaction filters">
         <div className={styles.primaryFilters}>
         <label className={styles.search}>Neighbourhood, layout or built year<input name="q" placeholder="Azabu, 2LDK, 2010…" defaultValue={filters.q} maxLength={100} /></label>
         <label>Ward<select name="city" defaultValue={scope.city}>{TOKYO_WARDS.map(([code, name]) => <option value={code} key={code}>{name}</option>)}</select></label>
         <button type="submit">Explore transactions</button>
-        </div><fieldset className={styles.secondaryFilters}><legend>Refine transactions</legend>
+        </div>
+        <details className={styles.advancedFilters} aria-label="More filters" open={advancedFiltersActive}>
+        <summary>More filters <span>Period, property type and area</span></summary>
+        <fieldset className={styles.secondaryFilters} aria-label="Period, property type and area">
         <label>Year<select name="year" defaultValue={scope.year}>{years.map(year => <option key={year}>{year}</option>)}</select></label>
         <label>Quarter<select name="quarter" defaultValue={scope.quarter}>{['1','2','3','4'].map(q => <option value={q} key={q}>Q{q}</option>)}</select></label>
         <label>Property type<select name="type" defaultValue={filters.type}><option value="">All types</option><option>Pre-owned Condominiums, etc.</option><option>Residential Land(Land and Building)</option><option>Residential Land(Land Only)</option></select></label>
         <label>Min area (m²)<input name="minArea" type="number" min="1" max="100000" step="any" defaultValue={filters.minArea ?? ''} /></label>
         <label>Max area (m²)<input name="maxArea" type="number" min="1" max="100000" step="any" defaultValue={filters.maxArea ?? ''} /></label>
         </fieldset>
+        </details>
       </form>
         </div>}
         discovery={<>
       {error ? <div className={styles.empty} role="alert"><h2>Transactions are unavailable</h2><p>{error}</p></div> : data === null ? <div className={styles.empty}>
-        <h2>This ward and quarter is not published yet.</h2>
-        <p>Try Minato, 2025 Q4. An unpublished quarter does not mean that no homes traded.</p>
+        <h2>Prices for this period are not available yet.</h2>
+        <p>We have not published records for this ward and quarter. This does not mean that no homes traded.</p>
+        <Link className={styles.emptyLink} href="/news/city-stories/tokyo/">Find your Tokyo neighbourhood <span aria-hidden="true">→</span></Link>
       </div> : <>
         <div className={styles.results}><h2>{data.filteredCount.toLocaleString('en')} recorded transactions</h2><p>{scope.year} Q{scope.quarter} · JPY · Price, high to low</p></div>
         <p className={styles.source}>{data.sourceCount.toLocaleString('en')} records in this ward and quarter · Source retrieved {new Date(data.retrievedAt).toLocaleDateString('en-GB', { timeZone: 'UTC' })}</p>
         <div className={styles.list}>
           {data.records.map(row => <article className={styles.row} key={row.recordReference}>
-            <div className={styles.details}><h3>{row.district || row.municipality}</h3><p>{row.municipality} · {row.type}</p>
+            <div className={styles.rowHeading}><h3>{row.district || row.municipality}</h3><strong className={styles.price}>{yen.format(row.price)}</strong></div>
+            <div className={styles.details}><p>{row.municipality} · {row.type}</p>
               <p>{row.areaLabel || 'Area not disclosed'}{row.areaLabel ? ' m²' : ''} · {row.floorPlan || 'Layout not disclosed'} · Built {row.buildingYear || 'not disclosed'} · {row.structure || 'Structure not disclosed'}</p>
-            </div><div className={styles.price}><strong>{yen.format(row.price)}</strong><span>{scope.year} Q{scope.quarter}</span></div>
+            </div>
           </article>)}
         </div>
         {!data.records.length && <p>No published records match these filters. Try a wider area range or another neighbourhood.</p>}
@@ -77,12 +85,10 @@ export default async function TokyoExplorer({ searchParams }: { searchParams: Pr
       />
       <div className={styles.sourcePanel}>
       <details className={styles.method}><summary>About these recorded prices</summary>
-        <p>These are anonymous regional transactions, not available listings. Building names, exact addresses and unit identities are not disclosed. No building or property location is inferred.</p>
-        <p>Dates retain quarter precision. Area and prices retain the precision disclosed by the provider; area ranges are excluded when a numeric area filter is applied. Identical disclosed records can represent separate transactions.</p>
-        <p>Each published version replaces the complete ward and quarter. Earlier versions remain in the evidence history. The source does not identify which individual transactions were corrected or removed.</p>
-        {data && <p>Version: {data.releaseId}. Retrieved {new Date(data.retrievedAt).toISOString()}.</p>}
+        <p>These are completed transactions reported by area, not homes currently for sale. The source does not disclose building names, exact addresses or unit identities.</p>
+        <p>Dates are reported by quarter. Prices and areas use the precision supplied by MLIT. Homes with an area range are left out when you set a minimum or maximum area; similar-looking records can be separate transactions.</p>
       </details>
-      <p className={styles.source}>Source: <a href="https://www.reinfolib.mlit.go.jp/">MLIT Real Estate Information Library</a>. Transaction price information (XIT001), edited and presented by SignedPrice.</p>
+      <p className={styles.source}>Source: <a href="https://www.reinfolib.mlit.go.jp/">MLIT Real Estate Information Library</a> · Transaction price information, edited by SignedPrice.</p>
       <nav className={styles.links} aria-label="Tokyo research"><Link href="/jp/tokyo/">Market overview</Link><Link href="/news/?market=tokyo">Tokyo stories &amp; insights</Link><a href="https://www.reinfolib.mlit.go.jp/" rel="noreferrer">Data source</a></nav>
       </div>
     </main>

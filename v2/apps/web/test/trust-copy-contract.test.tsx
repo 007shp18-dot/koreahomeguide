@@ -14,11 +14,11 @@ describe('Trust publication copy contract', () => {
     ].join('\n');
 
     for (const required of [
-      'Evidence states',
-      'Freshness',
-      'Rights',
-      'Corrections',
-      'No model-accuracy figure is currently published',
+      'Where do the prices come from?',
+      'When is the data updated?',
+      'source rights explicitly permit each use',
+      'How can I report an error?',
+      'We do not publish an accuracy score',
       'No published corrections',
     ]) {
       expect(html).toContain(required);

@@ -18,20 +18,58 @@
 
 .exploreMap { position: relative; min-width: 0; background: var(--surface); }
 .mapHeading {
-  min-height: 64px;
-  padding: 13px 16px;
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid var(--divider);
+  min-width: 0;
+  padding: 16px 20px 8px;
+  display: grid;
+  gap: 4px;
   background: var(--surface-strong);
 }
 .mapHeading h2,
 .mapHeading p { margin: 0; }
-.mapHeading h2 { font-size: 20px; line-height: 1.2; letter-spacing: -.025em; }
-.mapHeading p { margin-top: 3px; color: var(--muted); font-size: var(--text-meta); line-height: 1.35; }
+.mapHeading h2 { font-size: 16px; line-height: 24px; font-weight: 600; letter-spacing: -.01em; }
+.mapHeading p { color: var(--muted); font-size: 13px; line-height: 20px; }
+.evidenceDisclosure { margin-top: 20px; border-top: 1px solid var(--divider); }
+.evidenceDisclosure > summary {
+  min-height: 44px;
+  padding: 10px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: 0;
+  cursor: pointer;
+  list-style: none;
+}
+.evidenceDisclosure > summary::-webkit-details-marker { display: none; }
+.evidenceDisclosure > summary::after { content: '+'; flex: 0 0 auto; font-size: 16px; }
+.evidenceDisclosure[open] > summary::after { content: '−'; }
+.evidenceDisclosure > summary:focus-visible,
+.mapCoverageToggle input:focus-visible,
+.sourceLinks a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.disclosureBody { min-width: 0; padding-bottom: 16px; color: var(--muted); font-size: 13px; line-height: 20px; }
+.disclosureBody > p { margin: 0 0 12px; }
+.disclosureBody .limitations { margin: 0; padding-left: 20px; font-size: 13px; line-height: 20px; }
+.disclosureBody .limitations li + li { margin-top: 8px; }
+.mapCoverage { margin: 0; padding: 0 20px; border-top: 0; border-bottom: 1px solid var(--divider); background: var(--surface-strong); }
+.mapCoverageToggle { min-height: 44px; display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.mapCoverageToggle input { width: 16px; height: 16px; margin: 0; flex: 0 0 auto; accent-color: var(--accent); }
+.sourceLinks { display: flex; flex-wrap: wrap; gap: 0 20px; margin-top: 8px; }
+.sourceLinks a { min-height: 44px; display: inline-flex; align-items: center; color: var(--accent); font-size: 13px; font-weight: 500; line-height: 20px; text-decoration: underline; text-underline-offset: 3px; }
+.page .section.hdbPanel h2,
+.hdbPanel .chart figcaption h3 { font-size: 16px; font-weight: 600; line-height: 24px; letter-spacing: -.01em; }
+.hdbPanel .sectionIntro p,
+.hdbPanel .chart figcaption p { font-size: 13px; line-height: 20px; }
 .mapUnplaced { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; }
 .mapUnplaced p { flex-basis: 100%; margin: 0; font-size: 14px; color: var(--muted); }
 .mapUnplaced button { padding: 8px 12px; border: 1px dashed var(--line); background: var(--paper, #fff); color: var(--ink); font-size: 14px; cursor: pointer; }
+.mapCoverage .mapUnplaced { padding: 4px 0 0; }
+.mapCoverage .mapUnplaced p { font-size: 13px; line-height: 20px; }
+.mapCoverage .mapUnplaced button { min-height: 44px; font-size: 13px; line-height: 20px; }
+@media (max-width: 760px) { .page .hdbPanel { padding: 20px; } }
 .exploreFilters { padding: 18px 0 22px; }
 .exploreFilters form { display: grid; grid-template-columns: minmax(260px, 1fr) minmax(210px, auto) minmax(168px, auto) auto; gap: 12px; }
 .clearFilters { color: var(--accent) !important; background: var(--surface-strong) !important; }

@@ -1,4 +1,4 @@
-import { DubaiAreaSelection } from './dubai-area-selection';
+import { DubaiAreaSummary } from './dubai-area-selection';
 import { PassportLink as Link } from '../passport/passport-journey';
 
 import type { DubaiSaleDistribution } from '../../lib/dubai/evidence-contract';
@@ -81,20 +81,9 @@ export function DubaiAreaDetail({ locale = 'en',  model }: Readonly<{ model: Dub
         <Link href={marketHref(locale, "/ae/dubai/explore/")}>{t("Explore")}</Link><span>{t("/")}</span>
         <span>{t(model.identity.name)}</span>
       </nav>}
-      identity={
-        <div>
-          <p className={styles.eyebrow}>{t("Dubai · Area evidence")}</p>
-          <h1>{t(model.identity.name)}</h1>
-          <p>{t(model.segments.map(({ housing }) => t(housing === 'apartment' ? 'Apartment' : 'Villa')).join(locale === 'ko' ? ' · ' : ' and '))} · {locale === 'ko' ? '자료 기준일' : 'As of'} {model.context.asOfDate}</p>
-          <DubaiAreaSelection locale={locale} slug={model.identity.slug} segments={model.segments} variant="check" />
-        </div>
-      }
-      metric={<>
-        <p>{t("Comparison window")}: {model.context.comparisonPeriod.from}–{model.context.comparisonPeriod.to}</p>
-        <p>{locale === 'ko' ? '지역별 통계이며 개별 주택의 가격이 아닙니다.' : 'Area-level statistics, not a price for a specific home.'}</p>
-        {model.segments.map((segment) => <SegmentSales locale={locale} key={segment.housing} segment={segment} />)}
-      </>}
+      summary={<DubaiAreaSummary locale={locale} model={model} />}
       evidence={<>
+        {model.segments.map((segment) => <SegmentSales locale={locale} key={segment.housing} segment={segment} />)}
         <p>{t("Rent source period")}: {model.context.sourcePeriods.rents.from}–{model.context.sourcePeriods.rents.to}</p>
         {model.segments.map((segment) => <SegmentRent locale={locale} key={segment.housing} segment={segment} />)}
       </>}

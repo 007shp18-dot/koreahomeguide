@@ -63,7 +63,10 @@ describe('Dubai area evidence routes', () => {
     const overview = html.slice(html.indexOf('id="detail-overview"'), html.indexOf('id="detail-evidence"'));
     expect(overview).toContain('2026-06-08–2026-09-05');
     expect(overview).toContain('31 registered sales');
-    expect(overview).toContain('Off-Plan');
+    expect(overview).toContain('data-summary-kind="area"');
+    expect(overview).toContain('Apartment · Ready · median sale price');
+    const transactions = html.slice(html.indexOf('id="detail-evidence"'));
+    expect(transactions).toContain('Off-Plan');
 
     for (const label of [
       'Ready vs Off-Plan', 'Median annual rent', 'Estimated gross rent-to-price ratio',

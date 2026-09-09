@@ -535,9 +535,9 @@ describe('Korea Explore proximity route model', () => {
 
     expect(html).toContain('data-explore-view="table"');
     expect(html).toContain('aria-label="탐색 보기"');
-    const viewNavigation = html.match(/<nav[^>]*aria-label="탐색 보기"[^>]*>(.*?)<\/nav>/)?.[1];
-    expect(viewNavigation).toBeDefined();
-    const viewAnchors = [...viewNavigation!.matchAll(/href="([^"]+)"/g)];
+    const viewNavigation = [...html.matchAll(/<nav[^>]*aria-label="(?:추가 )?탐색 보기"[^>]*>(.*?)<\/nav>/g)];
+    expect(viewNavigation).toHaveLength(2);
+    const viewAnchors = viewNavigation.flatMap(([, content]) => [...content!.matchAll(/href="([^"]+)"/g)]);
     expect(viewAnchors).toHaveLength(4);
     for (const [, href] of viewAnchors) {
       if (!href) throw new Error('Expected an Explore view destination.');

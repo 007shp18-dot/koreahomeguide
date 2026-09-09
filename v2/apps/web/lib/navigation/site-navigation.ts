@@ -32,16 +32,14 @@ export function globalNavigation(locale: SiteLocale = 'en') {
   const zh = locale === 'zh-CN';
   if (locale === 'ko') return [
     { label: '둘러보기', href: '/ko/prices/' },
-    { label: '순위', href: '/ko/rankings/' },
+    { label: '인사이트', href: '/ko/news/' },
     { label: '도구', href: '/ko/tools/' },
-    { label: '뉴스·인사이트', href: '/ko/news/' },
     { label: '가이드', href: '/ko/guides/' },
   ];
   return [
     { label: zh ? '探索' : 'Explore', href: '/prices/' },
-    { label: zh ? '排名' : 'Rankings', href: '/rankings/' },
+    { label: zh ? '洞察' : 'Insights', href: zh ? '/zh-cn/news/' : '/news/' },
     { label: zh ? '工具' : 'Tools', href: zh ? '/zh-cn/tools/' : '/tools/' },
-    { label: zh ? '新闻与洞察' : 'News & Insights', href: zh ? '/zh-cn/news/' : '/news/' },
     { label: zh ? '指南' : 'Guides', href: zh ? '/zh-cn/guides/' : '/guides/' },
   ] as const;
 }

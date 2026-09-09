@@ -16,12 +16,15 @@ describe('Korean entry routes', () => {
     expect(html).toContain('/ko/sg/singapore/explore');
     expect(html).toContain('/ko/passport/');
   });
-  it('opens three email drafts without posting or requiring financial documents', () => {
+  it('keeps old city anchors at one contact section without posting or requiring financial documents', () => {
     const html = renderToStaticMarkup(<KoreanContact />);
     for (const city of ['seoul', 'singapore', 'dubai']) expect(html).toContain(`id="research-${city}"`);
-    expect(html.match(/subject=/g)).toHaveLength(3);
+    expect(html.match(/href="mailto:contact@signedprice.com"/g)).toHaveLength(1);
+    expect(html).toContain('href="mailto:privacy@signedprice.com"');
+    expect(html).toMatch(/href="\/kr\/seoul\/corrections\/?"/);
+    expect(html).toMatch(/href="\/privacy\/?"/);
     expect(html).not.toContain('<form');
-    expect(html).toContain('직접 보내주세요');
+    expect(html).toContain('신분증, 계좌 정보, 비공개 계약서는 보내지 마세요.');
   });
   it('switches only published Korean surfaces and preserves queries', () => {
     expect(languageDestinations('/').ko).toBe('/ko/');

@@ -54,7 +54,7 @@ describe('verified Seoul News routes', () => {
     expect(html).toContain('data-navigation-tier="global"');
     expect(html).toContain('data-navigation-tier="market-local"');
     expect(html).toContain('aria-current="page"');
-    expect(html).toContain('>News &amp; Insights</a>');
+    expect(html).toContain('>Insights</a>');
     expect(html).toContain('href="/kr/seoul/check">Check</a>');
     expect(html).not.toMatch(/articleText|<iframe|dangerouslySetInnerHTML/);
   });
