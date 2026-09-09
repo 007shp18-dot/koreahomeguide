@@ -14,7 +14,7 @@ Each item supplies canonical identity/address/coordinates, asset or place ID, so
 
 ## Decision
 
-Inspect the real image, source page, author/license and location evidence. An exterior must depict the intended building. An estate or parent development photograph must be labeled `site-aerial` (the legacy field mapped to parent-project presentation). A playground, trail, neighboring building, interior, render or unfinished site is not a current building exterior.
+Inspect the real image, source page, author/license and location evidence. An exterior must clearly depict the intended building at the displayed size; neighboring buildings may be present. Do not require an isolated building composition. An estate or parent development photograph must be labeled `site-aerial` (the legacy field mapped to parent-project presentation). A playground, trail, unrelated building, interior, render or unfinished site cannot be labeled as the intended building's exterior. A valid facility/interior photograph needs its own accurate gallery role instead of being discarded solely for not being an exterior.
 
 POST a single stored candidate decision:
 
