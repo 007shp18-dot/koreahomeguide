@@ -96,6 +96,8 @@ export type NormalizedMarketBatch = Readonly<{
   dataset: RefreshDataset;
   sourceAsOf: string;
   records: readonly NormalizedMarketRecord[];
+  /** Fully fetched URA months; retire absent anonymous records only after all chunks succeed. */
+  reconciliationMonths?: readonly string[];
 }>;
 
 export type MarketRefreshCounters = Readonly<{
