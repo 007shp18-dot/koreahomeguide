@@ -36,6 +36,7 @@ export type OfficialBuildingFacts = Readonly<{
     approvalDate: string | null;
     parkingSpaces: number | null;
   }> | null;
+  registerState?: 'ready' | 'address-unresolved' | 'provider-unavailable' | 'not-found' | 'ambiguous' | 'invalid-record';
   nearby?: Readonly<{
     subwayLine: string | null;
     subwayStation: string | null;
@@ -135,9 +136,22 @@ async function getJson(
       headers: { Accept: 'application/json' },
       signal: AbortSignal.timeout(8_000),
     });
-    if (!response.ok) return null;
-    return responseBody(await response.json());
+    if (!response.ok) {
+      console.warn('Official building provider rejected request', { service: new URL(base).pathname, httpStatus: response.status });
+      return null;
+    }
+    const envelope = await response.json();
+    const body = responseBody(envelope);
+    if (body === null) {
+      const code = text(record(record(record(envelope)?.response)?.header)?.resultCode);
+      console.warn('Official building provider returned an error', {
+        service: new URL(base).pathname,
+        resultCode: code !== null && /^[A-Z0-9_]{1,40}$/.test(code) ? code : 'invalid-envelope',
+      });
+    }
+    return body;
   } catch {
+    console.warn('Official building provider request failed', { service: new URL(base).pathname, reason: 'transport-or-json' });
     return null;
   }
 }
@@ -219,6 +233,7 @@ export async function loadOfficialBuildingFacts(input: LoaderInput): Promise<Off
   }
   const lot = lotFromAddress(legalAddress, input.neighborhoodName);
   let registerFacts: Extract<OfficialBuildingFacts, { status: 'ready' }>['register'] = null;
+  let registerState: NonNullable<Extract<OfficialBuildingFacts, { status: 'ready' }>['registerState']> = 'address-unresolved';
   if (lot !== null) {
     const registerBody = await getJson(input.fetch, BUILDING_REGISTER_URL, input.serviceKey, {
       sigunguCd: bjdCode.slice(0, 5),
@@ -230,10 +245,13 @@ export async function loadOfficialBuildingFacts(input: LoaderInput): Promise<Off
       pageNo: '1',
     });
     const registerItems = registerBody === null ? [] : itemArray(registerBody);
+    registerState = registerBody === null ? 'provider-unavailable'
+      : registerItems.length === 0 ? 'not-found' : registerItems.length > 1 ? 'ambiguous' : 'invalid-record';
     if (registerItems.length === 1) {
       const register = registerItems[0]!;
       const ledgerKey = text(register.mgmBldrgstPk);
       if (ledgerKey !== null) {
+        registerState = 'ready';
         registerFacts = Object.freeze({
           ledgerKey,
           mainUse: text(register.mainPurpsCdNm),
@@ -268,5 +286,6 @@ export async function loadOfficialBuildingFacts(input: LoaderInput): Promise<Off
       totalAreaSqm: number(basic.kaptTarea),
     }),
     register: registerFacts,
+    registerState,
   });
 }

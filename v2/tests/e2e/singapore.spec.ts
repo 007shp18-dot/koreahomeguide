@@ -182,7 +182,7 @@ test('native Singapore Check submits single and cross-market A/B evidence', asyn
   const assertClean = observeRuntimeFailures(page);
   await page.goto('/sg/singapore/check/?a-project=project-a');
   await expect(page.locator('[data-singapore-check-workspace="true"]')).toBeVisible();
-  const projectSelect = page.getByRole('combobox', { name: 'Project', exact: true });
+  const projectSelect = page.getByRole('combobox', { name: 'Choose project', exact: true });
   await expect(projectSelect).toHaveAttribute('aria-busy', 'false');
   await expect(projectSelect.locator('option')).toHaveCount(2);
   await expect(projectSelect).toHaveValue('project-a');
@@ -196,7 +196,7 @@ test('native Singapore Check submits single and cross-market A/B evidence', asyn
   await page.getByRole('button', { name: 'Compare an asking price', exact: true }).click();
   await expect(page.getByLabel('Check result')).toContainText('SGD 300,000');
   expect(await page.evaluate(() => Reflect.get(window, '__signedpriceToolNavigation'))).toBe(true);
-  await expect(page.getByRole('combobox', { name: 'Project', exact: true })).toHaveValue('project-a');
+  await expect(page.getByRole('combobox', { name: 'Choose project', exact: true })).toHaveValue('project-a');
   await expect(page.getByLabel('Check result').locator('dt').filter({ hasText: /^Price percentile$/ }).locator('+ dd')).toHaveText('60th');
   await expect(page.getByLabel('Check result')).toContainText('2026-08–2026-08');
 
@@ -286,6 +286,7 @@ test('Singapore Explore keeps filters and project selection in its shareable URL
 
 test('Prices sends a Singapore project search to Singapore Explore', async ({ page }) => {
   await page.goto('/sg/singapore/explore/');
+  await page.getByRole('tab', { name: /^CCR/ }).click();
   const projectTitle = page.locator('[data-selected] > button strong[title]').first();
   const projectName = await projectTitle.textContent();
   await expect(projectTitle).toHaveAttribute('title', projectName!);

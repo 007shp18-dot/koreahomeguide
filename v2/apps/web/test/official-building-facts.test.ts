@@ -94,4 +94,18 @@ test('matches a local district prefix only when the official address confirms th
   const result = await loadOfficialBuildingFacts({ serviceKey: 'test', fetch,
     districtLawdCd: '11170', neighborhoodName: '한강로3가', officialName: '센트럴파크', housingType: 'apartment' });
   expect(result.status).toBe('ready');
+  expect(result).toMatchObject({ register: null, registerState: 'not-found' });
+});
+
+test('logs safe provider error codes without leaking service keys', async () => {
+  const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+  try {
+    const result = await loadOfficialBuildingFacts({ serviceKey: 'private-key-do-not-log',
+      districtLawdCd: '11680', neighborhoodName: '역삼동', officialName: '한빛', housingType: 'apartment',
+      fetch: vi.fn().mockResolvedValue(json({ response: { header: { resultCode: '30', resultMsg: 'private-key-do-not-log' } } })),
+    });
+    expect(result).toMatchObject({ status: 'unavailable', reason: 'provider_unavailable' });
+    expect(warn).toHaveBeenCalledWith(expect.any(String), expect.objectContaining({ resultCode: '30' }));
+    expect(JSON.stringify(warn.mock.calls)).not.toContain('private-key-do-not-log');
+  } finally { warn.mockRestore(); }
 });

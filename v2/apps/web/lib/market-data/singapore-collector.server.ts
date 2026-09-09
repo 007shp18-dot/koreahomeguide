@@ -29,7 +29,7 @@ type RentalRecord = Readonly<{
   propertyType: string;
   leaseMonth: string;
   areaRange: string;
-  areaMidpoint: number;
+  areaMidpoint: number | null;
   bedrooms: number | null;
   rentSgd: number;
   sourceOrder: Readonly<{ quarter: string; project: number; rental: number }>;
@@ -42,7 +42,7 @@ const datasets = Object.freeze({
     landingUrl: 'https://eservice.ura.gov.sg/property-market-information/pmiResidentialTransactionSearch',
     subjectScope: 'Singapore private residential sale', refreshCadence: 'Tuesday and Friday',
     expectedLag: 'provider release', schemaVersion: 'signedprice-singapore-private-sale-live-v1',
-    parserVersion: 'ura-private-sale-v1', rightsPolicyId: 'sg-ura-private-sale-v1',
+    parserVersion: 'ura-private-sale-v2', rightsPolicyId: 'sg-ura-private-sale-v1',
   }),
   'sg-private-rent': Object.freeze({
     id: 'sg-private-rent', marketId: 'sg-singapore', provider: 'URA',
@@ -50,7 +50,7 @@ const datasets = Object.freeze({
     landingUrl: 'https://eservice.ura.gov.sg/property-market-information/pmiResidentialRentalSearch',
     subjectScope: 'Singapore private residential rent', refreshCadence: 'monthly',
     expectedLag: 'provider release', schemaVersion: 'signedprice-singapore-private-rent-live-v1',
-    parserVersion: 'ura-private-rent-v1', rightsPolicyId: 'sg-ura-private-rent-v1',
+    parserVersion: 'ura-private-rent-v2', rightsPolicyId: 'sg-ura-private-rent-v1',
   }),
 }) satisfies Readonly<Record<SingaporeRefreshJob, RefreshDataset>>;
 
@@ -71,7 +71,7 @@ function text(value: unknown, allowEmpty = false): string {
 }
 
 function positive(value: unknown): number {
-  const source = text(value);
+  const source = typeof value === 'number' && Number.isFinite(value) ? String(value) : text(value);
   if (!/^(?:0|[1-9]\d*)(?:\.\d+)?$/u.test(source)) rentalInvalid();
   const result = Number(source);
   if (!Number.isFinite(result) || result <= 0) rentalInvalid();
@@ -84,8 +84,9 @@ function rentalMonth(value: unknown): string {
   return `20${match[2]}-${match[1]}-01`;
 }
 
-function areaRange(value: unknown): Readonly<{ raw: string; midpoint: number }> {
+function areaRange(value: unknown): Readonly<{ raw: string; midpoint: number | null }> {
   const raw = text(value);
+  if (/^(?:>|<=)\s*[1-9]\d*(?:\.\d+)?$/u.test(raw)) return Object.freeze({ raw, midpoint: null });
   const match = /^(\d+(?:\.\d+)?)\s*-\s*(\d+(?:\.\d+)?)$/u.exec(raw);
   if (match === null) rentalInvalid();
   const low = Number(match[1]);
@@ -113,22 +114,30 @@ export function parseUraPrivateRentalEnvelope(value: unknown, quarter: string): 
     project.rental.forEach((rentalValue, rentalIndex) => {
       const rental = record(rentalValue);
       const allowedRentalKeys = new Set([
-        'district', 'propertyType', 'leaseDate', 'areaSqm', 'noOfBedRoom', 'rent',
+        'district', 'propertyType', 'leaseDate', 'areaSqm', 'areaSqft', 'noOfBedRoom', 'rent',
       ]);
       if (Object.keys(rental).some((key) => !allowedRentalKeys.has(key))) rentalInvalid();
       const area = areaRange(rental.areaSqm);
       const bedroomText = rental.noOfBedRoom === undefined ? '' : text(rental.noOfBedRoom, true);
-      const bedrooms = bedroomText === '' ? null : positive(bedroomText);
+      const bedrooms = bedroomText === '' || bedroomText === 'NA' ? null : positive(bedroomText);
+      if (bedrooms !== null && !Number.isSafeInteger(bedrooms)) rentalInvalid();
+      const leaseMonth = rentalMonth(rental.leaseDate);
+      const expectedQuarter = `${leaseMonth.slice(2, 4)}q${Math.ceil(Number(leaseMonth.slice(5, 7)) / 3)}`;
+      if (expectedQuarter !== quarter) rentalInvalid();
+      const district = text(rental.district);
+      if (!/^(?:0[1-9]|1\d|2[0-8])$/u.test(district)) rentalInvalid();
+      const rentSgd = positive(rental.rent);
+      if (!Number.isSafeInteger(rentSgd * 100)) rentalInvalid();
       output.push(Object.freeze({
         project: projectName,
         street,
-        district: text(rental.district),
+        district,
         propertyType: text(rental.propertyType),
-        leaseMonth: rentalMonth(rental.leaseDate),
+        leaseMonth,
         areaRange: area.raw,
         areaMidpoint: area.midpoint,
         bedrooms,
-        rentSgd: positive(rental.rent),
+        rentSgd,
         sourceOrder: Object.freeze({ quarter, project: projectIndex, rental: rentalIndex }),
       }));
     });
@@ -139,7 +148,7 @@ export function parseUraPrivateRentalEnvelope(value: unknown, quarter: string): 
 
 async function requestUraJson(url: string, headers: Readonly<Record<string, string>>): Promise<unknown> {
   const response = await fetch(url, {
-    headers,
+    headers: { ...headers, 'User-Agent': 'signedprice/1.0 (+https://signedprice.com)' },
     cache: 'no-store',
     signal: AbortSignal.timeout(8_000),
   });
@@ -219,14 +228,12 @@ function withOccurrenceKeys(
 ): readonly NormalizedMarketRecord[] {
   const sorted = [...candidates].sort((left, right) => left.baseKey.localeCompare(right.baseKey)
     || left.row.contentHash.localeCompare(right.row.contentHash));
-  const totals = new Map<string, number>();
-  for (const candidate of sorted) totals.set(candidate.baseKey, (totals.get(candidate.baseKey) ?? 0) + 1);
   const seen = new Map<string, number>();
   return Object.freeze(sorted.map(({ baseKey, row }) => {
     const ordinal = (seen.get(baseKey) ?? 0) + 1;
     seen.set(baseKey, ordinal);
     return Object.freeze({
-      businessKey: totals.get(baseKey) === 1 ? baseKey : `${baseKey}:${ordinal}`,
+      businessKey: `${baseKey}:${ordinal}`,
       ...row,
     });
   }));
@@ -238,12 +245,8 @@ function normalizeSales(
 ): readonly NormalizedMarketRecord[] {
   return withOccurrenceKeys(transactions.map((transaction) => {
     const entity = saleEntity(transaction);
-    const identity = {
-      project: transaction.project, street: transaction.street, district: transaction.district,
-      propertyType: transaction.propertyType, contractMonth: transaction.contractMonth,
-      areaSqm: transaction.areaSqm, floorRange: transaction.floorRange,
-      saleType: transaction.saleType, units: transaction.units,
-    };
+    const { sourceOrder: _sourceOrder, ...identity } = transaction;
+    void _sourceOrder;
     const rawMetadata = Object.freeze({
       contractDate: transaction.contractDate,
       district: transaction.district,
@@ -265,7 +268,7 @@ function normalizeSales(
     return Object.freeze({
       baseKey: `sale:${sha256(canonicalJson(identity)).slice(0, 32)}`,
       row: Object.freeze({
-        contentHash: sha256({ transaction }), sourceObservedAt, rawMetadata, entity, observation,
+        contentHash: sha256(identity), sourceObservedAt, rawMetadata, entity, observation,
       }),
     });
   }));
@@ -277,11 +280,8 @@ function normalizeRentals(
 ): readonly NormalizedMarketRecord[] {
   return withOccurrenceKeys(rentals.map((rental) => {
     const entity = rentalEntity(rental);
-    const identity = {
-      project: rental.project, street: rental.street, district: rental.district,
-      propertyType: rental.propertyType, leaseMonth: rental.leaseMonth,
-      areaRange: rental.areaRange, bedrooms: rental.bedrooms,
-    };
+    const { sourceOrder: _sourceOrder, ...identity } = rental;
+    void _sourceOrder;
     const rawMetadata = Object.freeze({
       areaRange: rental.areaRange,
       district: rental.district,
@@ -294,16 +294,16 @@ function normalizeRentals(
       periodStart: rental.leaseMonth, periodEnd: rental.leaseMonth,
       amountMinor: null, annualAmountMinor: monthlyMinor * 12, currencyCode: 'SGD',
       depositMinor: null, recurringAmountMinor: monthlyMinor, frequency: 'monthly',
-      propertyAreaSqm: rental.areaMidpoint, transactedAreaSqm: null,
-      areaBasis: 'ura-reported-range-midpoint', floorValue: null, floorRange: null,
+      propertyAreaSqm: null, transactedAreaSqm: null,
+      areaBasis: 'ura-reported-range', floorValue: null, floorRange: null,
       bedrooms: rental.bedrooms, tenureKind: null, status: 'active',
-      localAttributes: Object.freeze({ areaRange: rental.areaRange }),
+      localAttributes: Object.freeze({ areaRange: rental.areaRange, areaMidpointEstimate: rental.areaMidpoint }),
       localSchemaVersion: 'sg-private-rent-live@1',
     });
     return Object.freeze({
       baseKey: `rent:${sha256(canonicalJson(identity)).slice(0, 32)}`,
       row: Object.freeze({
-        contentHash: sha256({ rental }), sourceObservedAt, rawMetadata, entity, observation,
+        contentHash: sha256(identity), sourceObservedAt, rawMetadata, entity, observation,
       }),
     });
   }));
@@ -334,6 +334,7 @@ export async function collectSingaporeEvidence(input: Readonly<{
     return Object.freeze({
       job: input.job, dataset: datasets[input.job], sourceAsOf,
       records: normalizeSales(transactions, sourceAsOf),
+      reconciliationMonths: [...refreshMonths].map((month) => `${month.slice(0, 4)}-${month.slice(4)}-01`),
     });
   }
 
@@ -348,5 +349,8 @@ export async function collectSingaporeEvidence(input: Readonly<{
   return Object.freeze({
     job: input.job, dataset: datasets[input.job], sourceAsOf,
     records: normalizeRentals(rentals, sourceAsOf),
+    reconciliationMonths: quarters.flatMap((quarter) => Array.from({ length: 3 }, (_, index) => (
+      `20${quarter.slice(0, 2)}-${String((Number(quarter.at(-1)) - 1) * 3 + index + 1).padStart(2, '0')}-01`
+    ))),
   });
 }

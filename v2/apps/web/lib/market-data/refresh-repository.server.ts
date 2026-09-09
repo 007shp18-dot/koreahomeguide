@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { randomUUID } from 'node:crypto';
+import { normalizeEntityName } from './normalization.server';
 
 import type {
   MarketRefreshCounters,
@@ -37,6 +38,51 @@ const JOB_METADATA = Object.freeze({
 }) satisfies Readonly<Record<MarketRefreshJob, Readonly<{ marketId: string; datasetId: string }>>>;
 
 const DEFAULT_MAX_RECORDS_PER_TRANSACTION = 2_000;
+
+const RENTAL_PROJECTS_SQL = `
+  /* market-data-refresh:rental-projects */
+  SELECT p.id, p.canonical_name, p.local_attributes->>'street' AS street,
+    COALESCE(p.local_attributes->>'district', g.provider_code) AS district
+  FROM property_entities p LEFT JOIN geographies g ON g.id=p.geography_id
+  WHERE p.market_id='sg-singapore' AND p.kind='project'
+    AND p.id LIKE 'sg-singapore:project:%' AND p.housing_sector='private_residential'
+`;
+
+// URA supplies anonymous monthly records, not stable contract IDs. Keep old
+// source rows as history, but retire absent versions in a completely fetched
+// scope. This also prevents overlap with the earlier positional-key seed.
+const RECONCILE_URA_SQL = `
+  /* market-data-refresh:reconcile-ura */
+  UPDATE observations o SET status='superseded', updated_at=now()
+  FROM source_records s
+  WHERE s.id=o.source_record_id AND s.dataset_id=$1
+    AND o.market_id='sg-singapore' AND o.status IN ('active','corrected')
+    AND o.observed_at=ANY($2::date[])
+    AND NOT ((s.business_key || '|' || o.subject_entity_id)=ANY($3::text[]))
+`;
+
+function rentalJoinKey(name: string, street: string, district: string): string {
+  return [normalizeEntityName(name), normalizeEntityName(street), district].join('|');
+}
+
+async function linkRentalProjects(port: MarketRefreshSqlPort, batch: NormalizedMarketBatch): Promise<NormalizedMarketBatch> {
+  const matches = new Map<string, string | null>();
+  for (const row of await port.query(RENTAL_PROJECTS_SQL)) {
+    if (typeof row.id !== 'string' || typeof row.canonical_name !== 'string'
+      || typeof row.street !== 'string' || typeof row.district !== 'string') continue;
+    const key = rentalJoinKey(row.canonical_name, row.street, row.district);
+    matches.set(key, matches.has(key) ? null : row.id);
+  }
+  return { ...batch, records: batch.records.map((record) => {
+    const entity = record.entity;
+    if (entity === null) return record;
+    const street = entity.localAttributes.street;
+    const district = entity.localAttributes.district;
+    const id = typeof street === 'string' && typeof district === 'string'
+      ? matches.get(rentalJoinKey(entity.canonicalName, street, district)) : null;
+    return id ? { ...record, entity: { ...entity, id } } : record;
+  }) };
+}
 
 const START_SQL = `
   /* market-data-refresh:start */
@@ -477,6 +523,14 @@ export function createMarketRefreshRepository(
         throw new TypeError('Market refresh job mismatch.');
       }
       if (batch.records.length === 0) throw new TypeError('Market refresh batch is empty.');
+      if (batch.reconciliationMonths !== undefined && (
+        !['sg-private-sale', 'sg-private-rent'].includes(batch.job)
+        || batch.reconciliationMonths.length === 0
+        || batch.reconciliationMonths.some((month) => !/^20\d{2}-(?:0[1-9]|1[0-2])-01$/.test(month))
+        || batch.records.some((row) => row.observation === null
+          || !batch.reconciliationMonths!.includes(row.observation.observedAt))
+      )) throw new TypeError('URA reconciliation scope is invalid.');
+      if (batch.job === 'sg-private-rent') batch = await linkRentalProjects(port, batch);
       const dataset = batch.dataset;
       const datasetStatement: MarketRefreshSqlStatement = {
         statement: UPSERT_DATASET_SQL,
@@ -511,6 +565,10 @@ export function createMarketRefreshRepository(
           unchanged: count(row.unchanged, 'unchanged'),
           unlinked: count(row.unlinked, 'unlinked'),
         }));
+      }
+      if (batch.reconciliationMonths !== undefined) {
+        await port.query(RECONCILE_URA_SQL, [batch.dataset.id, batch.reconciliationMonths,
+          batch.records.map((record) => `${record.businessKey}|${record.entity?.id ?? ''}`)]);
       }
       return counters;
     },

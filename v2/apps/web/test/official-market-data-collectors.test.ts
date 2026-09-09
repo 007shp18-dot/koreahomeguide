@@ -133,13 +133,49 @@ const uraRentalEnvelope = (quarter: string) => ({
     project: `RENT RESIDENCE ${quarter}`,
     street: 'RENT STREET',
     rental: [{
-      district: '09', propertyType: 'Condominium', leaseDate: '0926',
-      areaSqm: '70-80', noOfBedRoom: '2', rent: '6500',
+      district: '09', propertyType: 'Condominium', leaseDate: quarter === '26q2' ? '0626' : '0926',
+      areaSqm: '70-80', areaSqft: '750-850', noOfBedRoom: '2', rent: 6500,
     }],
   }],
 });
 
 describe('Singapore official evidence collector', () => {
+  it('accepts numeric rents, unavailable bedrooms and open area bands from the live API', () => {
+    const envelope = uraRentalEnvelope('26q2');
+    const row = envelope.Result[0]!.rental[0]!;
+    row.noOfBedRoom = 'NA';
+    row.areaSqm = '>300';
+    expect(parseUraPrivateRentalEnvelope(envelope, '26q2')[0]).toMatchObject({
+      bedrooms: null, areaRange: '>300', areaMidpoint: null, rentSgd: 6500,
+    });
+    row.areaSqm = '<=100';
+    expect(parseUraPrivateRentalEnvelope(envelope, '26q2')[0]?.areaMidpoint).toBeNull();
+    expect(() => parseUraPrivateRentalEnvelope(envelope, '26q3')).toThrow();
+    row.areaSqm = 'unknown';
+    expect(() => parseUraPrivateRentalEnvelope(envelope, '26q2')).toThrow();
+  });
+
+  it('keeps anonymous record keys stable when provider order or duplicate counts change', async () => {
+    const collect = (reverse: boolean, duplicate: boolean) => collectSingaporeEvidence({
+      job: 'sg-private-rent', accessKey: 'test', reference,
+      fetchRentalEnvelope: async (quarter) => {
+        const envelope = uraRentalEnvelope(quarter);
+        const original = envelope.Result[0]!.rental[0]!;
+        const rows = [original, { ...original, rent: 7000 }];
+        if (duplicate) rows.push({ ...original });
+        envelope.Result[0]!.rental = reverse ? rows.reverse() : rows;
+        return envelope;
+      },
+    });
+    const first = await collect(false, false);
+    const reordered = await collect(true, false);
+    const keys = (batch: typeof first) => batch.records.map((row) => [row.businessKey, row.contentHash]);
+    expect(keys(reordered)).toEqual(keys(first));
+    const added = await collect(false, true);
+    expect(added.records).toHaveLength(6);
+    for (const row of first.records) expect(keys(added)).toContainEqual([row.businessKey, row.contentHash]);
+  });
+
   it('normalizes all four required URA private-sale batches', async () => {
     const batch = await collectSingaporeEvidence({
       job: 'sg-private-sale',
@@ -202,12 +238,12 @@ describe('Singapore official evidence collector', () => {
     expect(batch.records).toHaveLength(2);
     expect(batch.records[0]?.observation).toMatchObject({
       kind: 'rent',
-      observedAt: '2026-09-01',
+      observedAt: expect.stringMatching(/^2026-(06|09)-01$/),
       recurringAmountMinor: 650_000,
       annualAmountMinor: 7_800_000,
       frequency: 'monthly',
-      propertyAreaSqm: 75,
-      areaBasis: 'ura-reported-range-midpoint',
+      propertyAreaSqm: null,
+      areaBasis: 'ura-reported-range',
       bedrooms: 2,
     });
     expect(batch.records[0]?.rawMetadata).toMatchObject({ areaRange: '70-80' });
