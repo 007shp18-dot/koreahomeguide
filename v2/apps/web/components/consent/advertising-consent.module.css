@@ -1,7 +1,7 @@
 .banner {
   position: fixed;
   right: 50%;
-  bottom: 18px;
+  bottom: max(18px, env(safe-area-inset-bottom));
   z-index: 1000;
   width: min(calc(100% - 28px), 980px);
   padding: 16px 18px;
@@ -109,6 +109,16 @@
 }
 
 @media (max-width: 720px) {
+  .preferences {
+    position: static;
+    display: block;
+    width: fit-content;
+    margin: 1rem 1.25rem max(1rem, env(safe-area-inset-bottom)) auto;
+    box-shadow: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
   .banner {
     grid-template-columns: 1fr;
     gap: 10px;
