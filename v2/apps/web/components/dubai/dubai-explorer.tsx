@@ -299,7 +299,7 @@ export function DubaiExplorer({ locale = 'en',
             </details>
             {area.href === null
               ? <span className={styles.unavailableLink}>{t("Area details unavailable")}</span>
-              : <Link href={marketHref(locale, area.href)}>{t("View area prices")}</Link>}
+              : <Link href={marketHref(locale, `${area.href}?housing=${segment.housing}&stage=${stage}`)}>{t("View area prices")}</Link>}
           </article>)}
           {results.length === 0 ? <p className={styles.emptyState}>{t("No areas match these filters. Increase the budget or lower the ratio threshold.")}</p> : null}
         </div>
@@ -321,7 +321,7 @@ export function DubaiExplorer({ locale = 'en',
           <strong>{t(money(selectedProject?.medianPriceAed ?? selected.sale.medianPriceAed))}</strong>
           <span>{t(moneyPerSqm(selectedProject?.medianPricePerSqmAed ?? selected.sale.medianPricePerSqmAed))}{t(" · ")}{t((selectedProject?.n ?? selected.sale.n).toLocaleString('en'))}{t(" registered sales")}</span>
           {selectedProject ? <span>{t("DLD project ")}{t(selectedProject.projectNumber)}{t(" · ")}{t(model.context.comparisonPeriod.from)}{t("–")}{t(model.context.comparisonPeriod.to)}</span> : null}
-          {selected.area.href === null ? null : <Link href={marketHref(locale, selected.area.href)}>{t("View area prices")}</Link>}
+          {selected.area.href === null ? null : <Link href={marketHref(locale, `${selected.area.href}?housing=${selected.segment.housing}&stage=${stage}`)}>{t("View area prices")}</Link>}
         </aside> : null}
         <p className={styles.mapDisclosure}>{t("Markers locate areas. They do not represent units or listings.")}</p>
       </section>}
