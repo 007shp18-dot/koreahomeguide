@@ -1013,9 +1013,9 @@ ul {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: var(--ink);
+  color: #101114;
   font-family: "Archivo", sans-serif;
-  font-size: 18px;
+  font-size: 24px;
   letter-spacing: -0.04em;
   line-height: 1;
   white-space: nowrap;
@@ -1023,7 +1023,7 @@ ul {
 
 .brand-wordmark--compact {
   gap: 6px;
-  font-size: 16px;
+  font-size: 22px;
 }
 
 .brand-wordmark--inverted {
@@ -1032,6 +1032,7 @@ ul {
 
 .brand-wordmark__type {
   display: inline-flex;
+  align-items: baseline;
 }
 
 .brand-wordmark__signed {
@@ -1039,7 +1040,13 @@ ul {
 }
 
 .brand-wordmark__price {
-  font-weight: 500;
+  font-weight: 900;
+}
+
+.brand-wordmark__dot {
+  color: #2b4eff;
+  font-weight: 900;
+  margin-inline-start: 0.035em;
 }
 
 .brand-mark {

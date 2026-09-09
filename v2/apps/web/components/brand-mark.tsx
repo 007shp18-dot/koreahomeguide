@@ -49,10 +49,10 @@ export function BrandWordmark({ compact = false, inverted = false }: BrandWordma
 
   return (
     <span className={modifiers.join(' ')} data-brand-wordmark="true">
-      <BrandMark inverted={inverted} size={compact ? 22 : 28} />
       <span className="brand-wordmark__type">
-        <span className="brand-wordmark__signed">signed</span>
+        <span className="brand-wordmark__signed">Signed</span>
         <span className="brand-wordmark__price">price</span>
+        <span className="brand-wordmark__dot" aria-hidden="true">.</span>
       </span>
     </span>
   );
