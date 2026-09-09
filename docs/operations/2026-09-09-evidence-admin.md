@@ -1,5 +1,17 @@
 # SignedPrice 자료 관리 화면
 
+## 전용 비밀번호 분리 변경
+
+관리화면 인증을 `EVIDENCE_ADMIN_SECRET`으로 분리한다. 기존 `CONTENT_ADMIN_SECRET`과 해당 키를 쓰는 운영 도구는 변경하지 않는다. 이 변경은 코드 배포와 아래 환경변수 설정을 모두 완료해야 활성화된다.
+
+1. Vercel `signedprice` 프로젝트 → Settings → Environment Variables → Add Environment Variable.
+2. Key: `EVIDENCE_ADMIN_SECRET`, Type: `Secret`, Environment: `Production`.
+3. Value: 비밀번호 관리자로 생성한 32자 이상 무작위 값. 저장 전 비밀번호 관리자에 보관한다. 채팅·소스·로그에 노출하지 않는다.
+4. 저장 후 이 변경 코드로 운영 배포한다. 이미 배포했다면 재배포한다.
+5. `/admin/evidence/`의 **관리화면 비밀번호** 칸에 보관한 값을 입력한다. 기존 키는 사용할 수 없다.
+
+새 값이 없거나 짧으면 로그인을 차단하며 기존 키로 대체하지 않는다. 기존 키로 발급한 세션도 사용할 수 없다. 전용 비밀번호를 변경하면 관리화면 세션만 무효화된다. 아래 `CONTENT_ADMIN_SECRET` 재사용 설명은 최초 배포 당시 기록이며 이 변경 배포 후에는 위 안내를 따른다.
+
 ## 사용 순서
 
 배포 후 `/admin/evidence/`에서 사용한다. 현재 작업은 기능 구현이며 운영 DB 초기화·GitHub main 병합·Vercel 운영 배포는 별도다.

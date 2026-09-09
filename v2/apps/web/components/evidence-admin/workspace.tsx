@@ -9,7 +9,7 @@ import styles from './workspace.module.css';
 const endpoint = '/api/internal/evidence-pool/';
 const errors: Record<string, string> = {
   unauthorized: '로그인이 필요하거나 세션이 만료되었습니다. 다시 로그인하세요.',
-  admin_not_configured: '관리자 인증 설정이 필요합니다. 32자 이상의 관리자 키를 서버에 설정하세요.',
+  admin_not_configured: '관리화면 전용 비밀번호 설정이 필요합니다. Vercel의 Production 환경에 EVIDENCE_ADMIN_SECRET을 32자 이상으로 설정하고 재배포하세요.',
   database_not_configured: '저장소 연결이 설정되지 않았습니다. 운영 설정을 확인하세요.',
   storage_unavailable: '자료를 불러오거나 저장하지 못했습니다. 연결과 DB 초기화 상태를 확인하고 다시 시도하세요.',
   invalid_payload: '입력값을 확인하세요. URL은 HTTPS 주소이며 ?와 #이 없어야 합니다. 유효 종료일은 관측일 이후여야 합니다.',
@@ -71,8 +71,8 @@ export function EvidenceAdmin({ initialAuthenticated, initialData = null }: { in
   const today = new Date().toISOString().slice(0, 10);
   if (!authenticated) return <main className={styles.login}><Link href="/" prefetch={false} className={styles.brand}>signedprice<span>INTERNAL</span></Link><section className={styles.loginCard}>
     <p className={styles.eyebrow}>PROPERTY EVIDENCE</p><h1>관리자 로그인</h1><p>부동산 자료를 등록하고 근거를 검토하는 내부 공간입니다.</p>
-    <form onSubmit={login}><label>관리자 키<input name="secret" type="password" required autoComplete="current-password" maxLength={1024} /></label><button type="submit" disabled={busy} className={styles.primary}>{busy ? '확인 중…' : '로그인'}</button></form>
-    {error && <p role="alert" className={styles.error}>{error}</p>}<small>관리자 키는 서버 설정값입니다. 로그인은 8시간 유지되며, 키를 브라우저 저장소에 보관하지 않습니다.</small>
+    <form onSubmit={login}><label>관리화면 비밀번호<input name="secret" type="password" required autoComplete="current-password" maxLength={1024} /></label><button type="submit" disabled={busy} className={styles.primary}>{busy ? '확인 중…' : '로그인'}</button></form>
+    {error && <p role="alert" className={styles.error}>{error}</p>}<small>EVIDENCE_ADMIN_SECRET에 설정한 전용 비밀번호를 입력하세요. 기존 운영 키와는 별개입니다. 로그인은 8시간 유지됩니다.</small>
   </section></main>;
   return <div className={styles.shell}>
     <aside className={styles.sidebar}><Link href="/" prefetch={false} className={styles.brand}>signedprice<span>INTERNAL</span></Link><p className={styles.eyebrow}>자료 운영</p><nav aria-label="관리 메뉴">
