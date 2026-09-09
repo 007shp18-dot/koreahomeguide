@@ -31,6 +31,6 @@
 - [x] Correct the Seoul 59 sqm headline/deck to disclose the actual inclusive 55–65 sqm screen; keep its dataset and canonical URL.
 
 ### Task 4: Review and release
-- [ ] Independent editorial/source review of the complete diff, recalculation of worked examples, targeted existing content tests, typecheck and lint.
+- [x] Independent editorial/source review of the complete diff, recalculation of worked examples, targeted existing content tests, typecheck and lint.
 - [ ] Publish one GitHub PR, complete required CI, merge under existing authorization and verify the changed public articles.
 - [ ] Report the exact reviewed and rewritten scope and the remaining ordered backlog.

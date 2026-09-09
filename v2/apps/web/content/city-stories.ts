@@ -22,7 +22,7 @@ export const CITY_STORIES: readonly [CityStory, ...CityStory[]] = [
     },
     "deck": {
       "en": "Seoul Forest, Wangsimni’s connections, Mangwon’s market streets. Decide which part of Seoul you want to make your own, then work out what that choice asks of your budget.",
-      "ko": "서울숲 가까운 집, 왕십니에서 출퇴근하기 편한 집, 망원시장에서 장보는 일상. 마음이 가는 동네를 출발점 삼아, 내 생활과 예산에 맞는 집을 찾아본다."
+      "ko": "서울숲 가까운 집, 왕십리에서 출퇴근하기 편한 집, 망원시장에서 장보는 일상. 마음이 가는 동네를 출발점 삼아, 내 생활과 예산에 맞는 집을 찾아본다."
     },
     "sections": [
       {
@@ -36,7 +36,7 @@ export const CITY_STORIES: readonly [CityStory, ...CityStory[]] = [
             "Start with the Seoul you would use every day: Seongsu’s park and workshop streets, Wangsimni’s connections or Mangwon’s market. The discovery story turns that attraction into a housing brief."
           ],
           "ko": [
-            "서울숲과 성수의 골목, 왕십니의 교통, 망원의 시장 중 어떤 일상을 원하는가. 도시를 발견하는 글에서 마음이 가는 장소를 실제 주거 조건으로 바꿔본다."
+            "서울숲과 성수의 골목, 왕십리의 교통, 망원의 시장 중 어떤 일상을 원하는가. 도시를 발견하는 글에서 마음이 가는 장소를 실제 주거 조건으로 바꿔본다."
           ]
         },
         "links": [
@@ -108,14 +108,14 @@ export const CITY_STORIES: readonly [CityStory, ...CityStory[]] = [
         "id": "where",
         "title": {
           "en": "Seongsu, Wangsimni or Mangwon?",
-          "ko": "성수, 왕십니, 망원에서 달라지는 선택"
+          "ko": "성수, 왕십리, 망원에서 달라지는 선택"
         },
         "paragraphs": {
           "en": [
             "Begin with Seongsu, Wangsimni and Mangwon as three different search directions. Open the neighbourhood guides, then compare candidate homes within your commute and budget."
           ],
           "ko": [
-            "성수·왕십니·망원을 서로 다른 탐색의 출발점으로 삼는다. 동네별 글을 읽은 뒤 출퇴근 조건과 예산 안에서 실제 후보를 좁힌다."
+            "성수·왕십리·망원을 서로 다른 탐색의 출발점으로 삼는다. 동네별 글을 읽은 뒤 출퇴근 조건과 예산 안에서 실제 후보를 좁힌다."
           ]
         },
         "links": [

@@ -40,5 +40,6 @@ The recurring defect is a missing answer, not length alone. Policy stubs defer t
 - [Dubai: original-source evidence and exclusions](dubai-content-evidence.md)
 - [Tokyo: original-source evidence and exclusions](tokyo-content-evidence.md)
 - [Editorial standard](../editorial-standard.md)
+- [Independent review and source verification](review.md)
 
 Release status and exact validation results are recorded in the implementation plan and release note after review. No later rewrite is claimed complete by its presence in this backlog.
