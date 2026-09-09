@@ -164,7 +164,7 @@ describe('signedprice brand foundation', () => {
     });
     expect(declarationsFor(css, '.site-header__inner')).toMatchObject({
       width: 'min(calc(100% - 2 * var(--page-gutter)), var(--workspace-frame))',
-      'min-height': '64px',
+      'min-height': '72px',
       'margin-inline': 'auto',
       gap: '24px',
     });
@@ -204,11 +204,14 @@ describe('signedprice brand foundation', () => {
     });
   });
 
-  it('uses bundled Archivo consistently for Latin UI and the wordmark', () => {
+  it('uses Inter and Pretendard for UI while preserving the Archivo wordmark', () => {
     expect(css).not.toMatch(/fonts\.googleapis\.com/i);
     expect(css).toMatch(/@font-face\s*{[\s\S]*?font-family:\s*"Archivo"/);
     expect(css).toContain('/fonts/archivo-latin-wght-normal.woff2');
-    expect(declarationsFor(css, 'body')['font-family']).toMatch(/^"Archivo", var\(--font-noto-sans-kr\), "Noto Sans KR"/);
+    expect(css).toContain('/fonts/inter-variable.woff2');
+    expect(css).toContain('/fonts/pretendard-variable.woff2');
+    expect(declarationsFor(css, 'body')['font-family']).toMatch(/^"Inter", "Pretendard"/);
+    expect(declarationsFor(css, 'html:lang(ko) body')['font-family']).toMatch(/^"Pretendard", "Inter"/);
     expect(declarationsFor(css, '.brand-wordmark')['font-family']).toBe('"Archivo", sans-serif');
   });
 

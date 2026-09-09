@@ -156,14 +156,15 @@ describe('editorial growth design-review route', () => {
     expect(siteCopySource).not.toContain('/design-review/');
   });
 
-  it('gives Homepage one global promise and one primary action before editorial content', async () => {
+  it('gives Homepage a city index with direct exploration and separate editorial navigation', async () => {
     const markup = await renderReview('home', { locale: 'en' });
 
     expect(markup.match(/<h1/g)).toHaveLength(1);
-    expect(markup).toContain('Where can your budget become a home?');
-    expect(markup).toContain('data-primary-action="explore"');
-    expect(markup.indexOf('data-primary-action="explore"'))
-      .toBeLessThan(markup.indexOf('data-home-section="insight"'));
+    expect(markup).toContain('Four cities.');
+    expect(markup.match(/data-primary-action="explore"/g)).toHaveLength(4);
+    expect(markup).toContain('href="/news"');
+    expect(markup).not.toContain('data-home-section="insight"');
+    expect(markup).toContain('data-market-id="jp-tokyo"');
     expect(markup).toContain('data-market-id="kr-seoul"');
     expect(markup).toContain('data-market-id="sg-singapore"');
     expect(markup).toContain('data-market-id="ae-dubai"');

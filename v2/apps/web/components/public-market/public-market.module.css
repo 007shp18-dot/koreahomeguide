@@ -572,7 +572,7 @@
   padding: 10px 14px;
   gap: 12px;
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: 8px;
   background: #f7f9fb;
   display: flex;
   align-items: center;
