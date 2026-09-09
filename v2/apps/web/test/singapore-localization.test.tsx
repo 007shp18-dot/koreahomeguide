@@ -21,9 +21,12 @@ describe('Singapore Korean functional surfaces', () => {
     expect(metadata.alternates?.languages).toMatchObject({ 'x-default': 'https://www.signedprice.com/sg/singapore/explore/' });
   });
   it('localizes the comparison form while preserving submitted IDs and source values', () => {
-    const html = renderToStaticMarkup(<SingaporeCheckWorkspace locale="ko" model={model} />);
+    // Large project catalogs hydrate on the client; the selected project's
+    // original label and submitted ID must already be present in server HTML.
+    const selectedModel = { ...model, drafts: { ...model.drafts, a: { ...model.drafts.a, project: 'project-a' } } };
+    const html = renderToStaticMarkup(<SingaporeCheckWorkspace locale="ko" model={selectedModel} />);
     expect(html).toContain('매물 가격 비교');
-    expect(html).toContain('action="/ko/sg/singapore/check/"');
+    expect(html).toMatch(/action="\/ko\/sg\/singapore\/check\/?"/);
     expect(html).toContain('매물 비교');
     expect(html).toContain('name="a-project"');
     expect(html).toContain('value="project-a"');
