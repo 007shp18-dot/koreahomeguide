@@ -3,7 +3,7 @@ import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
 
 export const SESSION_COOKIE = 'sp_evidence_session';
 export const SESSION_SECONDS = 8 * 60 * 60;
-export function adminSecret(): string { return process.env.CONTENT_ADMIN_SECRET?.trim() ?? ''; }
+export function adminSecret(): string { return process.env.EVIDENCE_ADMIN_SECRET?.trim() ?? ''; }
 export function strongSecret(secret: string): boolean { return secret.length >= 32; }
 export function equalSecret(a: string, b: string): boolean {
   const left = Buffer.from(a); const right = Buffer.from(b);
