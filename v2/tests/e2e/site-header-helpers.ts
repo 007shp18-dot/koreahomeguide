@@ -11,6 +11,7 @@ async function openDetails(details: Locator) {
 }
 
 async function openVisibleMobileMenu(page: Page): Promise<Locator | null> {
+  await expect(page.locator('header.site-header:visible')).toBeVisible();
   const mobile = page.locator('.site-header__mobile-menu').filter({ visible: true });
   if (await mobile.count() === 0) return null;
 

@@ -1,4 +1,4 @@
-import type { Locator, Page } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
 
 async function openMobileMenu(page: Page): Promise<void> {
   const header = page.locator('header.site-header:visible');
@@ -20,6 +20,7 @@ async function openDesktopContextMenu(
 
 export async function openPrimaryNavigation(page: Page): Promise<Locator> {
   const header = page.locator('header.site-header:visible');
+  await expect(header).toBeVisible();
   const desktop = header.getByRole('navigation', {
     name: 'Primary navigation',
     exact: true,
@@ -31,6 +32,7 @@ export async function openPrimaryNavigation(page: Page): Promise<Locator> {
 
 export async function openCityNavigation(page: Page): Promise<Locator> {
   const header = page.locator('header.site-header:visible');
+  await expect(header).toBeVisible();
   const desktop = await openDesktopContextMenu(header, 'site-header__context-menu--market');
   if (desktop) return desktop.getByRole('navigation', { name: 'Market navigation', exact: true });
   await openMobileMenu(page);
@@ -42,6 +44,7 @@ export async function openMarketPagesNavigation(
   market: 'Seoul' | 'Singapore' | 'Dubai',
 ): Promise<Locator> {
   const header = page.locator('header.site-header:visible');
+  await expect(header).toBeVisible();
   const desktop = await openDesktopContextMenu(header, 'site-header__context-menu--market');
   if (desktop) return desktop.getByRole('navigation', {
     name: `${market} market navigation`,

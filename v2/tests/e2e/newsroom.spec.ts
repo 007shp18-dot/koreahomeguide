@@ -209,6 +209,7 @@ test('mobile menu and Explore fit the screen before and after opening navigation
     await page.goto(path);
     const menu = page.locator('header.site-header details.site-header__mobile-menu');
     const summary = menu.locator('summary');
+    await expect(summary).toBeVisible();
     const box = await summary.boundingBox();
     const width = page.viewportSize()!.width;
     expect(box).not.toBeNull();

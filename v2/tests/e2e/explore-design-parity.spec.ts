@@ -5,6 +5,7 @@ test('four Explore markets share heading geometry and contained controls', async
   for (const city of ['kr/seoul', 'sg/singapore', 'ae/dubai', 'jp/tokyo']) {
     await page.goto(`/${city}/explore/`);
     const heading = page.locator('.explore-page-heading h1');
+    await expect(heading).toBeVisible();
     await expect(heading).toHaveText('Explore');
     measurements.push(await heading.evaluate(node => ({ size: getComputedStyle(node).fontSize, weight: getComputedStyle(node).fontWeight, left: node.getBoundingClientRect().left })));
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
