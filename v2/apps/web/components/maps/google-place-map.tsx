@@ -40,14 +40,15 @@ export type GoogleMarketMapPoint = Readonly<{
   kind?: 'area' | 'cluster';
   level?: 'region' | 'district';
   count?: number;
+  showFullLabel?: boolean;
   memberIds?: readonly string[];
   bounds?: Readonly<{ south: number; north: number; west: number; east: number }>;
 }>;
 export type GoogleGeocoderInstance = Readonly<{
   geocode: (request: Readonly<{
     address: string;
-    componentRestrictions: Readonly<{ country: 'SG' | 'AE' }>;
-    region: 'SG' | 'AE';
+    componentRestrictions: Readonly<{ country: 'SG' | 'AE' | 'JP' }>;
+    region: 'SG' | 'AE' | 'JP';
   }>) => Promise<Readonly<{ results: readonly GoogleGeocoderResult[] }>>;
 }>;
 export type GoogleMapsSdk = Readonly<{
@@ -82,8 +83,8 @@ export type GooglePlaceMapRuntime = Readonly<{
 }>;
 
 export const GOOGLE_MAPS_READY_CALLBACK = '__signedpriceGoogleMapsReady' as const;
-export type GoogleMarket = 'singapore' | 'dubai';
-const marketConfig = { singapore: { country: 'SG', name: 'Singapore', center: { lat: 1.3521, lng: 103.8198 }, south: 1.15, north: 1.5, west: 103.55, east: 104.15 }, dubai: { country: 'AE', name: 'Dubai', center: { lat: 25.15, lng: 55.25 }, south: 24.7, north: 25.6, west: 54.8, east: 55.7 } } as const;
+export type GoogleMarket = 'singapore' | 'dubai' | 'tokyo';
+const marketConfig = { tokyo: { country: 'JP', name: 'Tokyo', center: { lat: 35.68, lng: 139.75 }, south: 35.5, north: 35.95, west: 139.5, east: 139.95 }, singapore: { country: 'SG', name: 'Singapore', center: { lat: 1.3521, lng: 103.8198 }, south: 1.15, north: 1.5, west: 103.55, east: 104.15 }, dubai: { country: 'AE', name: 'Dubai', center: { lat: 25.15, lng: 55.25 }, south: 24.7, north: 25.6, west: 54.8, east: 55.7 } } as const;
 const geocodeCache = new WeakMap<GoogleGeocoderInstance, Map<string, Promise<GoogleGeocoderResult | null>>>();
 
 const GOOGLE_MAPS_READY_EVENT = 'signedprice:google-maps-ready' as const;
@@ -174,14 +175,14 @@ export function clusterGoogleMarketPoints(points: readonly GoogleMarketMapPoint[
 /** Only the selected property gets a name; overview groups keep their counts. */
 export function googleMarketMarkerAppearance(point: GoogleMarketMapPoint) {
   const group = point.kind === 'area' || point.kind === 'cluster';
-  const label = group ? (point.count === undefined ? point.label : point.count.toLocaleString('en-US')) : point.selected ? point.title : undefined;
+  const label = point.showFullLabel ? point.label : group ? (point.count === undefined ? point.label : point.count.toLocaleString('en-US')) : point.selected ? point.title : undefined;
   return {
     icon: { path: 0, scale: group ? 15 : point.selected ? 8 : 5,
       fillColor: '#245746', fillOpacity: 1,
       strokeColor: '#ffffff', strokeWeight: 2 },
     zIndex: point.selected ? 1000 : group ? 10 : 1,
     ...(label === undefined ? {} : { label: { text: label,
-      className: point.kind === 'area' ? `spGoogleMarketMarker spGoogleAreaGroup${point.level === 'region' ? ' spGoogleRegionGroup' : point.level === 'district' ? ' spGoogleDistrictGroup' : ''}`
+      className: point.showFullLabel ? 'spGoogleMarketMarker spGoogleAreaPrice' : point.kind === 'area' ? `spGoogleMarketMarker spGoogleAreaGroup${point.level === 'region' ? ' spGoogleRegionGroup' : point.level === 'district' ? ' spGoogleDistrictGroup' : ''}`
         : point.kind === 'cluster' ? 'spGoogleMarketMarker spGoogleCluster'
           : 'spGoogleMarketMarker spGoogleMarketMarkerSelected' } }),
   };
@@ -245,7 +246,7 @@ export async function geocodeGoogleMarketPoints(
   for (const point of [...points].sort((a, b) => Number(Boolean(b.selected)) - Number(Boolean(a.selected))).filter((candidate) => candidate.address !== undefined && !(Number.isFinite(candidate.latitude) && Number.isFinite(candidate.longitude)))) {
     if (!isActive()) break;
     try {
-      const cacheKey = `${config.country}:${point.address}`;
+      const cacheKey = `${config.country}:${point.kind ?? "project"}:${point.address}`;
       let lookup = cached.get(cacheKey);
       if (lookup === undefined) {
         // Share in-flight requests even when the initiating selection is superseded.
@@ -254,7 +255,7 @@ export async function geocodeGoogleMarketPoints(
             const result = results.length === 1 ? results[0] : undefined;
             const position = result?.geometry.location;
             const broadTypes = new Set(['locality', 'political', 'country', 'administrative_area_level_1', 'administrative_area_level_2']);
-            if (!result || result.partial_match || (result.types?.length && result.types.every(type => broadTypes.has(type)))
+            if (!result || result.partial_match || (result.types?.length && result.types.every(type => broadTypes.has(type)) && !(market === 'tokyo' && point.kind === 'area' && !result.types.includes('country') && !result.types.includes('administrative_area_level_1')))
               || !position || !Number.isFinite(position.lat()) || !Number.isFinite(position.lng())
               || position.lat() < config.south || position.lat() > config.north || position.lng() < config.west || position.lng() > config.east) return null;
             return result;
@@ -371,7 +372,7 @@ export function GooglePlaceMap({
         }
         marketMarkers.current = Object.freeze([...marketMarkers.current, ...markers]);
         if (requestedLocations > 0) {
-          setMessage(locale === 'ko' ? `${points.length}곳 중 ${marketMarkers.current.length}곳의 ${market === 'dubai' ? '지역' : '단지'} 위치가 표시됩니다.` : `${marketMarkers.current.length} of ${points.length} ${market === 'dubai' ? 'area' : 'project'} locations shown.`);
+          setMessage(locale === 'ko' ? `${points.length}곳 중 ${marketMarkers.current.length}곳의 ${market !== 'singapore' ? '지역' : '단지'} 위치가 표시됩니다.` : `${marketMarkers.current.length} of ${points.length} ${market !== 'singapore' ? 'area' : 'project'} locations shown.`);
         }
       });
       setMapState('ready');

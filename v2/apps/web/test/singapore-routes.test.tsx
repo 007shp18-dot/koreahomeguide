@@ -119,7 +119,7 @@ describe('Singapore route SSR', () => {
     expect(html).toContain(`Page ${initialPage} of 33`);
     expect(html).not.toContain('24 projects on this page');
   });
-  it('uses region, district, then complete project map levels while retaining the project list', async () => {
+  it('uses region, district, then paged project map levels while retaining the project list', async () => {
     const model = buildSingaporeExploreModel(await repository());
     if (model.status !== 'ready') throw new Error('Missing fixture');
     const segment = model.segments.find(item => (item.projects?.length ?? 0) > 0)!;
@@ -136,7 +136,7 @@ describe('Singapore route SSR', () => {
     expect(searchHtml).toContain('data-singapore-map-level="projects"');
     for (const html of [regionHtml, districtHtml, projectHtml]) expect(html).toContain('class="');
     expect(districtHtml).toContain('matching projects');
-    expect(projectHtml).toContain('matching projects across all result pages');
+    expect(projectHtml).toContain('projects on this page');
   });
   it('keeps A and B market choices independent while switching tabs', async () => {
     const html = renderToStaticMarkup(<SingaporeCheckWorkspace model={buildSingaporeCheckRouteModel(

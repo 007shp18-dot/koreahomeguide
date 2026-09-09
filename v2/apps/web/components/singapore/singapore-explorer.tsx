@@ -13,7 +13,7 @@ import type { SingaporeExploreModel } from '../../lib/singapore/route-types';
 import { unpackSingaporeExploreModel, type PackedSingaporeExploreModel } from '../../lib/singapore/explore-transport';
 import { SingaporeProjectDirectory } from './singapore-project-directory';
 import type { HdbExploreModel } from '../../lib/singapore/hdb-route-model.server';
-import { GooglePlaceMap } from '../maps/google-place-map';
+import { GooglePlaceMap, type GoogleMarketMapPoint } from '../maps/google-place-map';
 import { buildSingaporeAreaMapCoverage, buildSingaporeMapCoverage } from '../../lib/singapore/map-coverage';
 import { HdbMarketPanel } from './hdb-market-panel';
 import { MarketExploreShell, MarketLayerControl } from '../market-ui/market-shell';
@@ -82,6 +82,9 @@ export function SingaporeExplorer({ locale = 'en',
   initialPage = 1,
   initialProjectId = null,
   restoreStateFromUrl = false,
+  progressive = false,
+  regionPoints = [],
+  districtSummary = [],
 }: Readonly<{ locale?: MarketLocale;
   model: SingaporeExploreModel | PackedSingaporeExploreModel;
   hdbModel?: HdbExploreModel;
@@ -93,10 +96,16 @@ export function SingaporeExplorer({ locale = 'en',
   initialPage?: number;
   initialProjectId?: string | null;
   restoreStateFromUrl?: boolean;
+  progressive?: boolean;
+  regionPoints?: readonly GoogleMarketMapPoint[];
+  districtSummary?: readonly { region: string; district: string; count: number }[];
 }>) {
-  const model = useMemo(() => unpackSingaporeExploreModel(incomingModel), [incomingModel]);
+  const overview = useMemo(() => unpackSingaporeExploreModel(incomingModel), [incomingModel]);
+  const [result, setResult] = useState<{ key: string; model: SingaporeExploreModel | null; error: boolean } | null>(null);
+  const [retry, setRetry] = useState(0);
   const [selectedSegment, setSelectedSegment] = useState<'CCR' | 'RCR' | 'OCR' | null>(initialSegment);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(initialProjectId);
+  const [lookupProjectId, setLookupProjectId] = useState<string | null>(initialProjectId);
   const [query, setQuery] = useState(initialQuery);
   const deferredQuery = useDeferredValue(query);
   const [showAreaReferences, setShowAreaReferences] = useState(false);
@@ -105,6 +114,31 @@ export function SingaporeExplorer({ locale = 'en',
   const [sort, setSort] = useState<string>(initialSort);
   const [pendingHref, setPendingHref] = useState<string | null>(null);
   const [urlStateReady, setUrlStateReady] = useState(!restoreStateFromUrl);
+  const needsProjects = progressive && urlStateReady && (selectedSegment !== null || deferredQuery.trim() !== '' || district !== 'all' || lookupProjectId !== null);
+  const requestKey = JSON.stringify([selectedSegment, deferredQuery, district, lookupProjectId, retry]);
+  const currentResult = needsProjects && result?.key === requestKey ? result : null;
+  const loadedModel = currentResult?.model ?? null;
+  const model = loadedModel ?? overview;
+  const loadingProjects = needsProjects && currentResult === null;
+  const loadError = currentResult?.error ?? false;
+  useEffect(() => {
+    if (!needsProjects) return;
+    const controller = new AbortController();
+    const timer = window.setTimeout(async () => {
+      const params = new URLSearchParams();
+      if (selectedSegment) params.set('region', selectedSegment);
+      if (deferredQuery.trim()) params.set('q', deferredQuery.trim().slice(0, 100));
+      if (district !== 'all') params.set('district', district);
+      if (lookupProjectId && !selectedSegment && !deferredQuery.trim() && district === 'all') params.set('project', lookupProjectId);
+      try {
+        const response = await fetch(`/api/singapore/explore/?${params}`, { signal: AbortSignal.any([controller.signal, AbortSignal.timeout(15000)]) });
+        if (!response.ok) throw new Error('unavailable');
+        const next = unpackSingaporeExploreModel(await response.json());
+        if (!controller.signal.aborted) setResult({ key: requestKey, model: next, error: false });
+      } catch { if (!controller.signal.aborted) setResult({ key: requestKey, model: null, error: true }); }
+    }, 200);
+    return () => { clearTimeout(timer); controller.abort(); };
+  }, [needsProjects, requestKey, selectedSegment, deferredQuery, district, lookupProjectId]);
   const segments = model.status === 'ready' ? model.segments : [];
   const selected = segments.find((segment) => segment.code === selectedSegment);
   const allProjects = useMemo(() => model.status === 'ready' ? model.segments.flatMap((segment) => (segment.projects ?? []).map((project) => ({ ...project, segment: segment.code }))) : [], [model]);
@@ -126,12 +160,16 @@ export function SingaporeExplorer({ locale = 'en',
   const selectedProject = projects.find((project) => project.id === selectedProjectId);
   const districtCounts = useMemo(() => {
     const counts = new Map<string, number>();
+    if (progressive) {
+      for (const item of districtSummary) if (selectedSegment === null || item.region === selectedSegment) counts.set(item.district, (counts.get(item.district) ?? 0) + item.count);
+      return [...counts.entries()].sort(([a], [b]) => a.localeCompare(b));
+    }
     for (const project of allProjects.filter((candidate) => selectedSegment === null || candidate.segment === selectedSegment)) {
       counts.set(project.district, (counts.get(project.district) ?? 0) + 1);
     }
     return [...counts.entries()].sort(([left], [right]) => left.localeCompare(right));
-  }, [allProjects, selectedSegment]);
-  const hasFilters = query.trim() !== '' || selectedSegment !== null || district !== 'all' || sort !== 'transactions';
+  }, [allProjects, selectedSegment, progressive, districtSummary]);
+  const hasFilters = query.trim() !== '' || selectedSegment !== null || district !== 'all' || sort !== 'transactions' || lookupProjectId !== null;
 
   useEffect(() => {
     if (!restoreStateFromUrl) return;
@@ -143,25 +181,26 @@ export function SingaporeExplorer({ locale = 'en',
       setSort(restored.sort);
       setPage(restored.page);
       setSelectedProjectId(restored.selectedProjectId);
+      setLookupProjectId(restored.selectedProjectId);
       setUrlStateReady(true);
     });
     return () => window.cancelAnimationFrame(frame);
   }, [restoreStateFromUrl]);
 
   useEffect(() => {
-    if (!urlStateReady) return;
+    if (!urlStateReady || (progressive && (loadingProjects || (loadedModel === null && (selectedSegment !== null || query.trim() !== '' || district !== 'all' || lookupProjectId !== null))))) return;
     const href = retainPassportContext(marketHref(locale, buildSingaporeExploreHref({
       query,
       selectedSegment,
       district,
       sort,
       page: activePage,
-      selectedProjectId: selectedProject?.id ?? null,
+      selectedProjectId: selectedProjectId,
     })), window.location.href);
     if (`${window.location.pathname}${window.location.search}` !== href) window.history.replaceState(null, '', href);
-  }, [activePage, district, query, selectedProject, selectedSegment, sort, urlStateReady, locale]);
+  }, [activePage, district, query, selectedProjectId, selectedSegment, sort, urlStateReady, locale, progressive, loadingProjects, loadedModel, lookupProjectId]);
   const selectSegment = useCallback((segment: 'CCR' | 'RCR' | 'OCR' | null) => {
-    setSelectedSegment(segment); setSelectedProjectId(null); setDistrict('all'); setPage(1);
+    setSelectedSegment(segment); setLookupProjectId(null); setSelectedProjectId(null); setDistrict('all'); setPage(1);
   }, []);
   const onMapSelect = useCallback((id: string) => {
     if (id.startsWith('region-')) { selectSegment(id.slice(7) as 'CCR' | 'RCR' | 'OCR'); return; }
@@ -172,14 +211,14 @@ export function SingaporeExplorer({ locale = 'en',
     ? 'projects'
     : selectedSegment === null ? 'regions' : 'districts';
   const projectMapCoverage = useMemo(() => mapLevel === 'projects'
-    ? buildSingaporeMapCoverage(projects, allProjects, selectedProjectId)
-    : buildSingaporeMapCoverage([], [], null), [projects, allProjects, selectedProjectId, mapLevel]);
+    ? buildSingaporeMapCoverage(visible, allProjects, selectedProjectId)
+    : buildSingaporeMapCoverage([], [], null), [visible, allProjects, selectedProjectId, mapLevel]);
   const areaMapCoverage = useMemo(() => mapLevel === 'projects'
     ? buildSingaporeAreaMapCoverage([], [], 'district')
     : mapLevel === 'regions'
     ? buildSingaporeAreaMapCoverage(projects, allProjects, 'region')
     : buildSingaporeAreaMapCoverage(projects, allProjects, 'district'), [allProjects, mapLevel, projects]);
-  const activeMapPoints = mapLevel === 'projects' ? projectMapCoverage.points : areaMapCoverage.points;
+  const activeMapPoints = progressive && mapLevel === 'regions' ? regionPoints : mapLevel === 'projects' ? projectMapCoverage.points : areaMapCoverage.points;
   const mapPoints = useMemo(() => {
     const byId = new Map(projects.map(project => [`project-${project.id}`, project]));
     return activeMapPoints.filter(point => mapLevel !== 'projects' || showAreaReferences || point.kind !== 'area' || point.selected === true).map(point => {
@@ -196,10 +235,10 @@ export function SingaporeExplorer({ locale = 'en',
     ]} />
     <div className={`${searchStyles.search} ${styles.exploreFilters}`}>
       <form role="search" onSubmit={(event) => { event.preventDefault(); setPage(1); }}>
-        <label className={searchStyles.query}>{sgText(locale, "Search Singapore projects")}<input name="q" type="search" value={query} placeholder={sgText(locale, "Project, street or district number")} onChange={(event) => { setQuery(event.currentTarget.value); setPage(1); setSelectedProjectId(null); }} /></label>
-        <label>{sgText(locale, "District")}<select value={district} onChange={(event) => { setDistrict(event.currentTarget.value); setPage(1); setSelectedProjectId(null); }}><option value="all">{sgText(locale, "All districts")}</option>{districtCounts.map(([value, count]) => <option key={value} value={value}>{sgText(locale, "District ")}{sgText(locale, value)}{sgText(locale, " · ")}{sgText(locale, count.toLocaleString('en'))}{sgText(locale, " projects")}</option>)}</select></label>
+        <label className={searchStyles.query}>{sgText(locale, "Search Singapore projects")}<input name="q" type="search" value={query} placeholder={sgText(locale, "Project, street or district number")} onChange={(event) => { setQuery(event.currentTarget.value); setLookupProjectId(null); setPage(1); setSelectedProjectId(null); }} /></label>
+        <label>{sgText(locale, "District")}<select value={district} onChange={(event) => { setDistrict(event.currentTarget.value); setLookupProjectId(null); setPage(1); setSelectedProjectId(null); }}><option value="all">{sgText(locale, "All districts")}</option>{districtCounts.map(([value, count]) => <option key={value} value={value}>{sgText(locale, "District ")}{sgText(locale, value)}{sgText(locale, " · ")}{sgText(locale, count.toLocaleString('en'))}{sgText(locale, " projects")}</option>)}</select></label>
         <label>{sgText(locale, "Sort")}<select value={sort} onChange={(event) => { setSort(event.currentTarget.value); setPage(1); }}><option value="transactions">{sgText(locale, "Most transactions")}</option><option value="name">{sgText(locale, "Project name")}</option></select></label>
-        {hasFilters ? <button type="button" className={styles.clearFilters} onClick={() => { setQuery(''); setSelectedSegment(null); setDistrict('all'); setSort('transactions'); setPage(1); setSelectedProjectId(null); }}>{sgText(locale, "Clear filters")}</button> : null}
+        {hasFilters ? <button type="button" className={styles.clearFilters} onClick={() => { setQuery(''); setLookupProjectId(null); setSelectedSegment(null); setDistrict('all'); setSort('transactions'); setPage(1); setSelectedProjectId(null); }}>{sgText(locale, "Clear filters")}</button> : null}
       </form>
     </div>
   </>;
@@ -211,14 +250,14 @@ export function SingaporeExplorer({ locale = 'en',
           <h2 id="segment-heading">{sgText(locale, "Private residential projects")}</h2>
           <p className={styles.marketScopeLine}>{sgText(locale, "URA private sales · New sale, Subsale and Resale")}<br />{sgText(locale, model.transactionLabel)}</p>
           <div className={styles.segmentTabs} role="tablist" aria-label={sgText(locale, "Singapore market regions")}>
-            <button type="button" role="tab" aria-selected={selectedSegment === null} onClick={() => selectSegment(null)}><strong>{sgText(locale, "All")}</strong><span>{sgText(locale, allProjects.length.toLocaleString('en'))}</span></button>
+            <button type="button" role="tab" aria-selected={selectedSegment === null} onClick={() => selectSegment(null)}><strong>{sgText(locale, "All")}</strong><span>{sgText(locale, segments.reduce((sum, segment) => sum + segment.projectCount, 0).toLocaleString('en'))}</span></button>
             {segments.map((segment) => <button key={segment.code} type="button" role="tab" aria-selected={selectedSegment === segment.code} onClick={() => selectSegment(segment.code)}><strong>{sgText(locale, segment.code)}</strong><span>{sgText(locale, segment.projectCount.toLocaleString('en'))}</span></button>)}
           </div>
           {selected ? <div className={styles.segmentList}><article className={styles.segmentRow}><RegionContextPhoto region={selected.code} locale={locale} /><h3>{sgText(locale, selected.code)}</h3><div><strong>{sgText(locale, selected.medianPriceLabel ?? 'Not published')}</strong><span>{sgText(locale, selected.n.toLocaleString('en'))}{sgText(locale, " transactions · ")}{sgText(locale, selected.projectCount.toLocaleString('en'))}{sgText(locale, " projects")}</span></div>{selected.state === 'published' ? <Link href={marketHref(locale, selected.href)} aria-busy={pendingHref === selected.href} data-navigation-state={pendingHref === selected.href ? 'pending' : 'idle'} onClick={() => setPendingHref(selected.href)}>{sgText(locale, "Open ")}{sgText(locale, selected.code)}{sgText(locale, " evidence")}</Link> : <span data-evidence-link="unavailable">{sgText(locale, "At least 5 transactions are required")}</span>}</article></div> : null}
-          <div className={styles.projectList} aria-live="polite" aria-busy={query !== deferredQuery}>
+          <div className={styles.projectList} aria-live="polite" aria-busy={loadingProjects || query !== deferredQuery}>
             <header><span>{sgText(locale, projects.length.toLocaleString('en'))}{sgText(locale, " matching projects")}</span><small>{sgText(locale, projects.length === 0 ? 'No matches' : `${(activePage - 1) * PAGE_SIZE + 1}–${Math.min(activePage * PAGE_SIZE, projects.length)} shown`)}</small></header>
-            {projects.length === 0 ? <p>{sgText(locale, "No projects match these filters. Try a different name or district.")}</p> : null}
-            {visible.map((project) => <div key={project.id} data-selected={selectedProjectId === project.id}>
+            {loadingProjects ? <p role="status">{locale === 'ko' ? '선택한 지역을 불러오는 중…' : 'Loading selected area…'}</p> : loadError ? <p role="alert">{locale === 'ko' ? '불러오지 못했습니다.' : 'Could not load projects.'} <button type="button" onClick={() => setRetry(value => value + 1)}>{locale === 'ko' ? '다시 시도' : 'Retry'}</button></p> : progressive && loadedModel === null ? <p>{locale === 'ko' ? '지도에서 권역을 선택하거나 단지를 검색하세요.' : 'Choose a region on the map or search for a project.'}</p> : projects.length === 0 ? <p>{sgText(locale, "No projects match these filters. Try a different name or district.")}</p> : null}
+            {(!loadingProjects && !loadError ? visible : []).map((project) => <div key={project.id} data-selected={selectedProjectId === project.id}>
               <button type="button" aria-pressed={selectedProjectId === project.id} onClick={() => setSelectedProjectId((current) => current === project.id ? null : project.id)}><span><strong title={project.name}>{project.name}</strong><small title={sgText(locale, `${project.street} · District ${project.district}`)}>{project.street}{sgText(locale, " · District ")}{sgText(locale, project.district)}</small></span><span><strong>{sgText(locale, project.medianPriceLabel ?? 'Not published')}</strong><small>{sgText(locale, project.n.toLocaleString('en'))}{sgText(locale, " ")}{sgText(locale, project.n === 1 ? 'sale' : 'sales')}</small></span></button>
               {project.state === 'published' ? <Link href={marketHref(locale, project.href)} aria-label={sgText(locale, `Open ${project.name} evidence`)} aria-busy={pendingHref === project.href} onClick={() => setPendingHref(project.href)}>{sgText(locale, "Details")}</Link> : <span className={styles.evidenceUnavailableLink} data-evidence-link="unavailable" title={sgText(locale, "At least 5 transactions are required")}>{sgText(locale, "Below 5 sales")}</span>}
             </div>)}
@@ -238,7 +277,7 @@ export function SingaporeExplorer({ locale = 'en',
             <summary>{locale === 'ko' ? '지도 범위' : 'Map coverage'}</summary>
             <div className={styles.disclosureBody}>
               {mapLevel === 'projects' ? <>
-                <p>{sgText(locale, projectMapCoverage.total.toLocaleString('en'))}{sgText(locale, " matching projects across all result pages · ")}{sgText(locale, projectMapCoverage.located.toLocaleString('en'))}{sgText(locale, " with source coordinates · ")}{sgText(locale, projectMapCoverage.areaOnly.toLocaleString('en'))}{sgText(locale, " area-only · ")}{sgText(locale, projectMapCoverage.unplaced.toLocaleString('en'))}{sgText(locale, " without a map reference.")}</p>
+                <p>{sgText(locale, projectMapCoverage.total.toLocaleString('en'))}{sgText(locale, " projects on this page · ")}{sgText(locale, projectMapCoverage.located.toLocaleString('en'))}{sgText(locale, " with source coordinates · ")}{sgText(locale, projectMapCoverage.areaOnly.toLocaleString('en'))}{sgText(locale, " area-only · ")}{sgText(locale, projectMapCoverage.unplaced.toLocaleString('en'))}{sgText(locale, " without a map reference.")}</p>
                 <p>{sgText(locale, "Markers use source coordinates. Select a project for its transactions. Projects without exact coordinates stay in the list; area references show their approximate district.")}</p>
                 <label className={styles.mapCoverageToggle}><input type="checkbox" checked={showAreaReferences} onChange={event => setShowAreaReferences(event.currentTarget.checked)} /> <span>{sgText(locale, " Show approximate district groups")}</span></label>
               </> : <p>{sgText(locale, areaMapCoverage.total.toLocaleString('en'))}{sgText(locale, " matching projects across all result pages · choose a ")}{sgText(locale, mapLevel === 'regions' ? 'market region' : 'postal district')}{sgText(locale, " to open its full project map.")}</p>}
@@ -257,7 +296,7 @@ export function SingaporeExplorer({ locale = 'en',
         </section>}
       />
     </div>
-    <SingaporeProjectDirectory segments={segments} locale={locale} />
+    {progressive ? <nav aria-label={locale === 'ko' ? '권역별 전체 단지' : 'All projects by region'}>{segments.map(segment => <Link key={segment.code} prefetch={false} href={marketHref(locale, segment.href)}>{segment.code} · {segment.projectCount}　</Link>)}</nav> : <SingaporeProjectDirectory segments={segments} locale={locale} />}
     <p><Link href={marketHref(locale, "/guides/singapore-condo-buying-budget-guide/")}>{sgText(locale, "Condo buying guide: budgets, costs and ownership checks")}</Link></p>
     <HdbMarketPanel locale={locale} model={hdbModel} /><SingaporeEvidence locale={locale} model={model.evidence} compact />
   </SingaporePage>;

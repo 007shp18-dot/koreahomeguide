@@ -53,3 +53,13 @@
   .row { padding: 18px 0; }
   .rowHeading { gap: 6px 16px; }
 }
+
+.areaMap { min-width: 0; padding-top: 24px; }
+.areaMap h2 { margin: 0; font-size: 20px; line-height: 1.4; }
+.areaMap p { font-size: 14px; line-height: 1.6; color: var(--muted); }
+.areaMap nav, .mapAreaList { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-block: 12px; }
+.areaMap button { min-height: 44px; max-width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-strong); color: var(--ink); font: inherit; font-size: 14px; white-space: normal; text-align: left; }
+.areaMap button[aria-pressed='true'] { color: var(--accent); border-color: var(--accent); }
+.areaMap summary { min-height: 44px; padding-block: 12px; cursor: pointer; }
+.page [data-market-shell-region='spatial'] { position: sticky; top: 12px; }
+@media(max-width:760px) { .page [data-market-shell-region='spatial'] { position: static; order: -1; } .rowHeading { flex-wrap: wrap; } }
