@@ -2,8 +2,8 @@ import { createHash } from 'node:crypto';
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
-vi.mock('../lib/db/postgres.server', () => ({ contentDatabase: vi.fn(() => null) }));
-import { contentDatabase } from '../lib/db/postgres.server';
+vi.mock('../lib/db/postgres.server', () => ({ publicContentDatabase: vi.fn(() => null) }));
+import { publicContentDatabase } from '../lib/db/postgres.server';
 
 import { SEOUL_RENT_CHECK_DISTRICTS } from '@signedprice/korea-rent/browser';
 import {
@@ -246,7 +246,7 @@ describe('public area Explore model', () => {
     let finish!: (value: Map<string, never>) => void;
     const pending = new Promise<Map<string, never>>((resolve) => { finish = resolve; });
     const sql = vi.fn(async () => []);
-    vi.mocked(contentDatabase).mockReturnValueOnce(sql as unknown as ReturnType<typeof contentDatabase>);
+    vi.mocked(publicContentDatabase).mockReturnValueOnce(sql as unknown as ReturnType<typeof publicContentDatabase>);
     const result = hydratePublicAreaExploreModelWithProjections(base, { listBuildings: () => pending });
     try { expect(sql).toHaveBeenCalledOnce(); } finally { finish(new Map<string, never>()); await result; }
   });
@@ -256,7 +256,7 @@ describe('public area Explore model', () => {
       ...dependencies(), buildingSource: createPublicBuildingFixture(),
     });
     const sql = vi.fn(async () => [{ external_id: 'gangnam-evidence-tower', road_address: '서울특별시 강남구 테헤란로 123' }]);
-    vi.mocked(contentDatabase).mockReturnValueOnce(sql as unknown as ReturnType<typeof contentDatabase>);
+    vi.mocked(publicContentDatabase).mockReturnValueOnce(sql as unknown as ReturnType<typeof publicContentDatabase>);
     const model = await hydratePublicAreaExploreModelWithProjections(base, null);
     expect(sql).toHaveBeenCalledOnce();
     if (model.status !== 'ready' || model.buildingAvailability.status !== 'not_loaded') throw new Error('fixture unavailable');
@@ -268,7 +268,7 @@ describe('public area Explore model', () => {
       ...dependencies(), buildingSource: createPublicBuildingFixture(),
     });
     const sql = vi.fn(async () => [{ external_id: 'gangnam-evidence-tower', legal_address: '서울특별시 강남구 역삼동 Evidence Tower', road_address: null }]);
-    vi.mocked(contentDatabase).mockReturnValueOnce(sql as unknown as ReturnType<typeof contentDatabase>);
+    vi.mocked(publicContentDatabase).mockReturnValueOnce(sql as unknown as ReturnType<typeof publicContentDatabase>);
     const model = await hydratePublicAreaExploreModelWithProjections(base, null);
     if (model.status !== 'ready' || model.buildingAvailability.status !== 'not_loaded') throw new Error('fixture unavailable');
     expect(model.buildingAvailability.fallbackBuildings[0]?.verifiedAddress).toBeUndefined();
