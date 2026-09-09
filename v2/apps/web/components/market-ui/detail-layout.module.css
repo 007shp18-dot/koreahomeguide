@@ -1,0 +1,53 @@
+.root[data-detail-layout] {
+  --detail-section-size: 1.375rem;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+.root[data-detail-layout] :is(section, header, div) h1 { font-size: 2rem; font-weight: 650; line-height: 1.3; letter-spacing: -.015em; overflow-wrap: anywhere; }
+.root[data-detail-layout] :is(section, article, header, div, aside, figcaption) > h2 { font-size: var(--detail-section-size); font-weight: 600; line-height: 1.4; letter-spacing: -.01em; }
+.root[data-detail-layout] h3 { font-size: 1rem; font-weight: 600; line-height: 1.5; }
+.root[data-detail-layout] p { font-size: 1rem; font-weight: 400; line-height: 1.6; }
+.root[data-detail-layout] dl dt { font-size: .875rem; font-weight: 400; line-height: 1.5; letter-spacing: normal; text-transform: none; color: var(--muted); }
+.root[data-detail-layout] dl dd { min-width: 0; margin: 0; font-size: 1rem; font-weight: 500; line-height: 1.6; letter-spacing: normal; overflow-wrap: anywhere; white-space: normal; }
+.root[data-detail-layout] dl > div { min-height: 0; align-content: start; }
+.root[data-detail-layout] table { font-size: .875rem; line-height: 1.5; }
+.root[data-detail-layout] th { font-size: .875rem; font-weight: 500; text-transform: none; letter-spacing: normal; }
+.root[data-detail-layout] td { font-size: .875rem; font-weight: 400; }
+.root[data-detail-layout] summary { min-height: 44px; padding-block: 12px; font-size: .875rem; font-weight: 500; line-height: 1.5; cursor: pointer; }
+.root[data-detail-layout] nav a { font-size: .875rem; font-weight: 500; line-height: 1.5; }
+.root[data-detail-layout] button { font-weight: 500; }
+.root[data-detail-layout] [id] { scroll-margin-top: 100px; }
+.root[data-detail-layout] [data-market-summary] p { font-size: .875rem; }
+.root[data-detail-layout] [data-detail-order='current-evidence'] > strong { font-size: 2.25rem; font-weight: 650; line-height: 1.25; }
+.root[data-detail-layout] [data-detail-order='media'],
+.root[data-detail-layout] [data-detail-media] { margin-block: 20px; }
+.root[data-detail-layout] [data-detail-order='media'] > [data-building-media],
+.root[data-detail-layout] [data-detail-media] > [data-building-media] { height: clamp(200px, 25vw, 300px); min-height: 0; }
+.section { min-width: 0; margin-block: 28px; padding-block: 24px; border-top: 1px solid var(--line); }
+.section > :first-child { margin-top: 0; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: 20px 24px; margin-block: 20px; }
+.facts > div { display: grid; gap: 6px; }
+.tools { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.tool { min-width: 0; padding: 20px; border: 1px solid var(--line); border-radius: 8px; }
+.tool h3 { margin: 0; }
+.tool p { margin: 8px 0 12px; color: var(--muted); }
+.tool a { display: inline-flex; align-items: center; min-height: 44px; color: var(--accent); font-size: .875rem; font-weight: 500; text-underline-offset: 3px; }
+.filters { display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 16px 0; }
+.filters a { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 14px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); font-size: .875rem; text-decoration: none; }
+.filters a[aria-current='true'] { color: var(--accent); background: var(--accent-soft); border-color: var(--accent); }
+.disclosure { margin-top: 16px; border-top: 1px solid var(--line); }
+.root[data-detail-layout] .disclosure > summary { color: var(--muted); }
+.root[data-detail-layout] a:focus-visible, .root[data-detail-layout] summary:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
+@media (max-width: 640px) {
+  .root[data-detail-layout] { --detail-section-size: 1.25rem; }
+  .root[data-detail-layout] :is(section, header, div) h1 { font-size: 1.625rem; }
+  .root[data-detail-layout] [data-detail-order='current-evidence'] > strong { font-size: 1.875rem; }
+  .tools { grid-template-columns: minmax(0, 1fr); }
+  .section { margin-block: 24px; padding-block: 20px; }
+}
+
+.root[data-detail-layout] dl dd :is(strong, span) { font-size: inherit; line-height: inherit; font-weight: inherit; }
+.root[data-detail-layout] [data-location-fallback] p { font-size: .875rem; }
+.root[data-detail-layout] [data-building-media='licensed-photo'] { position: relative; }
+.root[data-detail-layout] [data-building-media='licensed-photo'] figcaption { position: absolute; bottom: 0; width: 100%; }
+.root[data-detail-layout] [data-building-section='official-facts'] { margin-inline: 0; padding: 0; border: 0; border-radius: 0; background: transparent; }

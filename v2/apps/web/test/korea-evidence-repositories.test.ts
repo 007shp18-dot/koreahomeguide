@@ -781,7 +781,7 @@ describe('installed Korea evidence repositories', () => {
     expect(html).toContain('Monthly rent');
     expect(html).toContain('60–85㎡');
     expect(html).toContain('₩300,000');
-    expect(html).toContain('Filed deposit median');
+    expect(summaryHtml).toContain('Deposit median');
     expect(html).toContain('₩30,000,000');
     expect(html).toContain('5 reported contracts');
     expect(html).toContain('href="/kr/seoul/explore?transaction=monthly&amp;area=60-85&amp;district=gangnam-gu"');
@@ -792,8 +792,7 @@ describe('installed Korea evidence repositories', () => {
       'data-detail-order="identity"',
       'data-detail-order="history"',
       'data-detail-order="comparable-range"', 'data-detail-order="facts"',
-      'data-detail-order="proximity"', 'data-detail-order="sources"',
-      'data-detail-order="related-actions"',
+      'data-detail-order="tools"', 'data-detail-order="sources"',
     ].map((needle) => html.indexOf(needle));
     expect(detailOrder.every((position) => position >= 0)).toBe(true);
     expect([...detailOrder].sort((left, right) => left - right)).toEqual(detailOrder);

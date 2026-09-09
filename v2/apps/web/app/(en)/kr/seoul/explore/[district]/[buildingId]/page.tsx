@@ -92,8 +92,6 @@ function transactionBuildingFacts(model: KoreaExplorerBuildingDetailModel, coord
     Object.freeze({ label: 'Observed build year', value: years.length === 0 ? 'Not reported' : years.join(', ') }),
     Object.freeze({ label: 'Observed floors', value: range(floors) }),
     Object.freeze({ label: 'Observed filed area', value: range(areas, '㎡') }),
-    Object.freeze({ label: 'Evidence period', value: model.period }),
-    Object.freeze({ label: 'Verified rows in view', value: model.recentTransactions.length.toLocaleString('en-US') }),
     Object.freeze({ label: 'Map identity', value: coordinate === undefined ? 'Coordinate verification pending' : `${coordinate.latitude.toFixed(5)}, ${coordinate.longitude.toFixed(5)}` }),
   ]);
 }
@@ -519,7 +517,6 @@ export function composeKoreaBuildingRoute(input: Readonly<{
         { label: 'Official identity', value: observed.building.officialName },
         { label: 'Area', value: `${observed.building.neighborhoodName} · ${observed.district.nameEn}` },
         { label: 'Housing type', value: observed.building.housingType },
-        { label: 'Evidence period', value: `${observed.observations.firstMonth}–${observed.observations.lastMonth}` },
         { label: 'Map identity', value: observed.coordinate.status === 'ready' ? `${observed.coordinate.latitude.toFixed(5)}, ${observed.coordinate.longitude.toFixed(5)}` : 'Coordinate verification pending' },
       ]}
       proximity={entityProjection?.proximity ?? observed.proximity}
@@ -588,7 +585,6 @@ export function composeKoreaBuildingRoute(input: Readonly<{
       label: 'Observed filed area',
       value: `${Math.min(...recentAreas).toLocaleString('en-US')}–${Math.max(...recentAreas).toLocaleString('en-US')}㎡`,
     }]),
-    { label: 'Evidence period', value: model.evidence.period },
     {
       label: 'Map identity',
       value: publicCoordinate === null

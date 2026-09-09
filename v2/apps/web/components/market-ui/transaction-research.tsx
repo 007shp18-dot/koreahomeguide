@@ -10,11 +10,17 @@ export { MonthlyTransactionResearch } from './monthly-transaction-research';
 
 export function SizeCohortResearch({ rows, currency, locale = 'en', periodUnit }: Readonly<{ rows: readonly ResearchSize[]; currency: 'SGD' | 'KRW'; locale?: 'en' | 'ko'; periodUnit?: 'month' }>) {
   const unit = periodUnit === 'month' ? (locale === 'ko' ? ' /월' : ' /month') : '';
+  const populated = rows.filter(row => row.count > 0);
+  const empty = rows.filter(row => row.count === 0);
   const max = Math.max(...rows.map((row) => row.median ?? 0), 1);
-  return <div className={styles.tableWrap} data-size-comparison={currency} role="region" aria-label={locale === 'ko' ? '면적별 가격 비교표 — 가로로 스크롤' : 'Prices by home size — scroll horizontally'} tabIndex={0}><table className={styles.table}>
+  const table = (visible: readonly ResearchSize[]) => <div className={styles.tableWrap} data-size-comparison={currency} role="region" aria-label={locale === 'ko' ? '면적별 가격 비교표 — 가로로 스크롤' : 'Prices by home size — scroll horizontally'} tabIndex={0}><table className={styles.table}>
     <thead><tr><th>{locale === 'ko' ? '비교 조건' : 'Cohort'}</th><th>{locale === 'ko' ? '면적' : 'Size'}</th><th>{locale === 'ko' ? '거래 수' : 'Transactions'}</th><th>{locale === 'ko' ? '중앙값' : 'Median'}</th></tr></thead>
-    <tbody>{rows.map((row) => <tr key={`${row.group}-${row.size}`}><td>{locale === 'ko' ? row.group.replaceAll('New Sale', '신규 분양').replaceAll('Resale', '재판매').replaceAll('Sub Sale', '분양권 전매').replaceAll('Non-landed', '공동주택').replaceAll('Landed', '토지 포함 주택').replaceAll('Apartment', '아파트').replaceAll('Condominium', '콘도미니엄') : row.group}</td><td>{locale === 'ko' ? row.size.replace('Under 60 m²', '60㎡ 미만').replace('135 m² and over', '135㎡ 이상').replaceAll('m²', '㎡') : row.size}</td><td>{row.count}</td><td>{row.median === null ? (locale === 'ko' ? '게시 기준 미달' : 'Not published') : <>{money(row.median, currency)}{unit}<span className={styles.bar} style={{ width: `${row.median / max * 100}%` }} aria-hidden="true" /></>}</td></tr>)}</tbody>
+    <tbody>{visible.map((row) => <tr key={`${row.group}-${row.size}`}><td>{locale === 'ko' ? row.group.replaceAll('New Sale', '신규 분양').replaceAll('Resale', '재판매').replaceAll('Sub Sale', '분양권 전매').replaceAll('Non-landed', '공동주택').replaceAll('Landed', '토지 포함 주택').replaceAll('Apartment', '아파트').replaceAll('Condominium', '콘도미니엄') : row.group}</td><td>{locale === 'ko' ? row.size.replace('Under 60 m²', '60㎡ 미만').replace('135 m² and over', '135㎡ 이상').replaceAll('m²', '㎡') : row.size}</td><td>{row.count}</td><td>{row.median === null ? (locale === 'ko' ? '게시 기준 미달' : 'Not published') : <>{money(row.median, currency)}{unit}<span className={styles.bar} style={{ width: `${row.median / max * 100}%` }} aria-hidden="true" /></>}</td></tr>)}</tbody>
   </table></div>;
+  return <>
+    {populated.length ? table(populated) : <p>{locale === 'ko' ? '선택 조건의 면적별 거래가 없습니다.' : 'No size cohorts have transactions for these filters.'}</p>}
+    {empty.length ? <details><summary>{locale === 'ko' ? `거래가 없는 면적 구간 ${empty.length}개` : `${empty.length} size cohorts without transactions`}</summary>{table(empty)}</details> : null}
+  </>;
 }
 
 export function RecentTransactionPlot({ rows, locale = 'en', periodUnit }: Readonly<{

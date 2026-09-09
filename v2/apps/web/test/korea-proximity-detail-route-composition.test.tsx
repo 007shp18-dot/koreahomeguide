@@ -117,8 +117,8 @@ describe('Korea proximity Detail route composition', () => {
     expect(factsSection).toContain('Route school · 500 m');
     expect(html).toContain('station=SEOUL%3ASTN%2F001');
     expect(html).toContain('q=route+check');
-    expect(html).toContain('data-building-media="curated-market-photo"');
-    expect(html).toContain('Editorial city photograph · not this exact property');
+    expect(html).toContain('data-location-fallback="true"');
+    expect(html).not.toContain('Editorial city photograph');
     expect(html).not.toContain('data-building-media="location-only"');
     expect(html).not.toContain('data-building-media="google-place-photo"');
   });
@@ -181,7 +181,7 @@ describe('Korea proximity Detail route composition', () => {
     expect(html.match(/Route station · 1호선 · 250 m/g)).toHaveLength(1);
     expect(html.match(/Route school · 500 m/g)).toHaveLength(1);
     expect(html).toContain('data-building-save="jongno-gu/jongno-monthly-home"');
-    expect(html).toContain('data-building-media="curated-market-photo"');
+    expect(html).toContain('data-location-fallback="true"');
   });
 
   it('composes the legacy-public route with the missing disclosure rather than hiding the Detail page', () => {
@@ -193,7 +193,7 @@ describe('Korea proximity Detail route composition', () => {
       dependencies: { proximityRepository: Object.freeze({ state: 'missing' }) },
     }));
     expect(html).toContain('data-building-detail="ready"');
-    expect(html).toContain('data-building-media="curated-market-photo"');
+    expect(html).toContain('data-location-fallback="true"');
     expect(html).not.toContain('Proximity data unavailable');
     expect(html).toContain('q=route+check');
   });

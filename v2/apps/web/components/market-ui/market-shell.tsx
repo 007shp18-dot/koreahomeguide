@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
 import styles from './market-shell.module.css';
+import detailStyles from './detail-layout.module.css';
 import { marketText, marketHref, type MarketLocale } from '../../lib/locale/market-localization';
 
 
@@ -49,8 +50,9 @@ export function MarketExploreShell({ locale = 'en',  eyebrow, title, period, lay
   </div>;
 }
 
-export function MarketDetailShell({ locale = 'en',  breadcrumb, identity, metric, evidence, rail, media, summary }: Readonly<{
+export function MarketDetailShell({ locale = 'en',  breadcrumb, identity, metric, evidence, rail, media, summary, sections }: Readonly<{
   breadcrumb: React.ReactNode;
+  sections?: readonly Readonly<{ id: string; label: string }>[];
   identity?: React.ReactNode;
   metric?: React.ReactNode;
   summary?: React.ReactNode;
@@ -60,13 +62,17 @@ export function MarketDetailShell({ locale = 'en',  breadcrumb, identity, metric
 }> & { locale?: MarketLocale }) {
   const t = <T,>(value: T): T => marketText(locale, value);
 
-  return <article className={styles.detail} data-market-detail-shell="true">
+  return <article className={`${styles.detail} ${detailStyles.root}`} data-detail-layout="unified" data-market-detail-shell="true">
     <div className={styles.breadcrumb}>{t(breadcrumb)}</div>
     {summary ? <>
       <div id="detail-overview">{summary}</div>
-      {media ? <div className={styles.summaryMedia}>{t(media)}</div> : null}
+      {media ? <div className={styles.summaryMedia} data-detail-media="true">{t(media)}</div> : null}
     </> : <header className={styles.identity} data-has-media={media ? "true" : "false"}><div>{t(identity)}</div>{media ? <div className={styles.heroMedia}>{t(media)}</div> : null}</header>}
-    <nav className={styles.detailTabs} aria-label={t("Detail sections")}><a href={marketHref(locale, "#detail-overview")}>{t("Overview")}</a><a href={marketHref(locale, "#detail-evidence")}>{t("Transactions")}</a><a href={marketHref(locale, "#detail-source")}>{t("Source")}</a></nav>
+    <nav className={styles.detailTabs} aria-label={t("Detail sections")}>{(sections ?? [
+      { id: 'detail-overview', label: 'Overview' },
+      { id: 'detail-evidence', label: 'Transactions' },
+      { id: 'detail-source', label: 'Source' },
+    ]).map(section => <a key={section.id} href={`#${section.id}`}>{t(section.label)}</a>)}</nav>
     {metric ? <section className={styles.detailSummary} id={summary ? undefined : "detail-overview"}><div>{t(metric)}</div></section> : null}
     <div className={styles.detailGrid}>
       <div className={styles.detailMain}>

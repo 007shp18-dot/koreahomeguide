@@ -60,3 +60,9 @@
 .unavailable strong { font-size: 18px; line-height: 1.4; }
 .unavailable p { max-width: 48ch; color: var(--muted); font-size: var(--body-size); line-height: var(--body-leading); }
 .unavailable a { width: fit-content; min-height: 44px; display: inline-flex; align-items: center; color: var(--accent); font-size: var(--ui-size); overflow-wrap: anywhere; }
+
+/* A missing photograph keeps the property context compact. */
+.unavailable[data-location-fallback] { min-height: 0; padding: 20px 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; border: 1px solid var(--line); border-radius: 8px; }
+.unavailable[data-location-fallback] strong { font-size: 1rem; font-weight: 500; }
+.unavailable[data-location-fallback] p { margin: 4px 0 0; font-size: .875rem; line-height: 1.5; }
+.unavailable[data-location-fallback] a { font-size: .875rem; }

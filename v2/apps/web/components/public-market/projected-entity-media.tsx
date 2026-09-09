@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { GooglePlacePhoto } from '../maps/google-place-photo';
-import { MARKET_PHOTOS, MarketRepresentativePhoto } from '../market-representative-photo';
+import type { MARKET_PHOTOS } from '../market-representative-photo';
 import styles from './projected-entity-media.module.css';
 import photoStyles from '../maps/property-photo.module.css';
 
@@ -29,6 +29,7 @@ export function ProjectedEntityMedia({
   evidenceHref = '#building-evidence',
   registryKey,
   fallbackMarket,
+  locationHref,
 }: Readonly<{
   locale?: 'en' | 'ko';
   buildingName: string;
@@ -40,9 +41,10 @@ export function ProjectedEntityMedia({
   evidenceHref?: string;
   registryKey?: string;
   fallbackMarket?: keyof typeof MARKET_PHOTOS;
+  locationHref?: string;
 }>) {
   const [failedUrl, setFailedUrl] = useState<string | null>(null);
-  if (media?.displayUrl && media.displayUrl === failedUrl) return <ProjectedEntityMedia locale={locale} buildingName={buildingName} displayBuildingName={displayBuildingName} address={address} buildingKey={buildingKey} media={null} evidenceHref={evidenceHref} browserKey={browserKey} registryKey={registryKey} fallbackMarket={fallbackMarket} />;
+  if (media?.displayUrl && media.displayUrl === failedUrl) return <ProjectedEntityMedia locale={locale} buildingName={buildingName} displayBuildingName={displayBuildingName} address={address} buildingKey={buildingKey} media={null} evidenceHref={evidenceHref} browserKey={browserKey} registryKey={registryKey} fallbackMarket={fallbackMarket} locationHref={locationHref} />;
   if (media === null || (media.displayUrl === null && !media.providerReference)) {
     if (registryKey !== undefined) return <GooglePlacePhoto
       locale={locale}
@@ -52,15 +54,17 @@ export function ProjectedEntityMedia({
       address={address}
       expectedBuildingKey={buildingKey}
       registryKey={registryKey}
-      fallback={<ProjectedEntityMedia locale={locale} buildingName={buildingName} displayBuildingName={displayBuildingName} media={null} evidenceHref={evidenceHref} fallbackMarket={fallbackMarket} />}
+      fallback={<ProjectedEntityMedia locale={locale} buildingName={buildingName} displayBuildingName={displayBuildingName} address={address} media={null} evidenceHref={evidenceHref} fallbackMarket={fallbackMarket} locationHref={locationHref} />}
     />;
-    if (fallbackMarket) return <MarketRepresentativePhoto locale={locale} photo={MARKET_PHOTOS[fallbackMarket]} cityLabel={locale === 'ko'
-      ? { seoul: '서울', singapore: '싱가포르', dubai: '두바이', tokyo: '도쿄' }[fallbackMarket]
-      : { seoul: 'Seoul', singapore: 'Singapore', dubai: 'Dubai', tokyo: 'Tokyo' }[fallbackMarket]} />;
-    return <div className={styles.unavailable} data-photo-state="unavailable">
-      <strong>{locale === 'ko' ? '건물 사진 확인 중' : 'Building photo unavailable'}</strong>
-      <p>{locale === 'ko' ? '이 건물로 확인된 사진만 제공합니다. 실거래와 건물 정보는 아래에서 확인하세요.' : 'Only photographs verified for this building are shown. Recorded prices and property details are available below.'}</p>
-      <a href={evidenceHref}>{locale === 'ko' ? '실거래 보기' : 'View transactions'}</a>
+    const city = fallbackMarket ? { seoul: 'Seoul', singapore: 'Singapore', dubai: 'Dubai', tokyo: 'Tokyo' }[fallbackMarket] : '';
+    const mapHref = locationHref ?? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([buildingName, address, city].filter(Boolean).join(', '))}`;
+    return <div className={styles.unavailable} data-photo-state="unavailable" data-location-fallback="true">
+      <div>
+        <strong>{displayBuildingName}</strong>
+        {address ? <p>{address}</p> : null}
+        <p>{locale === 'ko' ? '확인된 건물 사진이 아직 없습니다.' : 'A verified building photograph is not available yet.'}</p>
+      </div>
+      <a href={mapHref}>{locale === 'ko' ? '지도에서 위치 확인' : 'View location on map'}</a>
     </div>;
   }
   if (media.displayUrl === null) return <GooglePlacePhoto
@@ -73,7 +77,7 @@ export function ProjectedEntityMedia({
     expectedBuildingKey={buildingKey}
     verifiedSubjectKind={media.relationship === 'parent' ? 'site-aerial' : 'building-exterior'}
     verifiedPlaceId={media.providerReference!}
-    fallback={<ProjectedEntityMedia locale={locale} buildingName={buildingName} displayBuildingName={displayBuildingName} media={null} evidenceHref={evidenceHref} fallbackMarket={fallbackMarket} />}
+    fallback={<ProjectedEntityMedia locale={locale} buildingName={buildingName} displayBuildingName={displayBuildingName} address={address} media={null} evidenceHref={evidenceHref} fallbackMarket={fallbackMarket} locationHref={locationHref} />}
   />;
   const focalX = media.focalX ?? 0.5;
   const focalY = media.focalY ?? 0.5;
