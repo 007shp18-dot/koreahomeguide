@@ -43,14 +43,17 @@ describe('SignedPrice brand mark', () => {
     ]);
   });
 
-  test('keeps the signed and price wordmark weights independently addressable', () => {
+  test('renders the approved full-name wordmark and terminal blue dot without the old symbol', () => {
     const html = renderToStaticMarkup(<BrandWordmark />);
 
     expect(html).toContain('data-brand-wordmark="true"');
-    expect(html).toContain('class="brand-wordmark__signed">signed</span>');
+    expect(html).toContain('class="brand-wordmark__signed">Signed</span>');
     expect(html).toContain('class="brand-wordmark__price">price</span>');
     expect(css).toMatch(/\.brand-wordmark__signed\s*{[^}]*font-weight:\s*900;/);
-    expect(css).toMatch(/\.brand-wordmark__price\s*{[^}]*font-weight:\s*500;/);
+    expect(css).toMatch(/\.brand-wordmark__price\s*{[^}]*font-weight:\s*900;/);
+    expect(html).toContain('class="brand-wordmark__dot" aria-hidden="true">.</span>');
+    expect(html).not.toContain('<svg');
+    expect(css).toMatch(/\.brand-wordmark__dot\s*{[^}]*color:\s*#2b4eff;/i);
   });
 
   test('uses the shared wordmark in global and Contract Check headers', () => {
@@ -61,8 +64,11 @@ describe('SignedPrice brand mark', () => {
 
     expect(globalHeader).toContain('data-brand-wordmark="true"');
     expect(contractHeader).toContain('data-brand-wordmark="true"');
-    expect(globalHeader.match(/<path\b/g)).toHaveLength(3);
-    expect(contractHeader.match(/<path\b/g)).toHaveLength(3);
+    for (const header of [globalHeader, contractHeader]) {
+      expect(header).toContain('class="brand-wordmark__signed">Signed</span>');
+      expect(header).toContain('class="brand-wordmark__dot" aria-hidden="true">.</span>');
+      expect(header).not.toContain('brand-mark__orange');
+    }
   });
 
   test('renders one global header and the capability-derived Seoul navigation', () => {
