@@ -1,5 +1,6 @@
 import 'server-only';
 
+import { createPhotoReadGate } from './photo-read-gate';
 import { contentDatabase, publicContentDatabase } from '../db/postgres.server';
 import { getPublicPhotoApproval } from './verified-building-photo-registry.server';
 import { scorePhotoIdentity, type PhotoIdentityDecision } from './photo-identity-policy';
@@ -141,6 +142,10 @@ export function createStoredPublicPhotoApprovalReader(
   });
 }
 
+const readPublicApprovals = createPhotoReadGate<ReadonlyMap<string, StoredPublicPhotoApproval>>({
+  onError: error => console.error('SignedPrice approved-photo database read failed.', error),
+});
+
 export async function listStoredPublicPhotoApprovals(
   keys: readonly string[],
 ): Promise<Readonly<{
@@ -154,14 +159,12 @@ export async function listStoredPublicPhotoApprovals(
   let databaseReadFailed = false;
   const sql = publicContentDatabase();
   if (sql !== null && normalized.length > 0) {
-    try {
-      approvals = new Map(await createStoredPublicPhotoApprovalReader({
+    const result = await readPublicApprovals(JSON.stringify([...normalized].sort()), () =>
+      createStoredPublicPhotoApprovalReader({
         query: (statement, parameters) => sql.query(statement, [...parameters]),
       }).list(normalized));
-    } catch (error) {
-      databaseReadFailed = true;
-      console.error('SignedPrice approved-photo database read failed.', error);
-    }
+    databaseReadFailed = result === null;
+    if (result !== null) approvals = new Map(result);
   }
   // A configured live database is authoritative, including during an outage.
   // Static seeds must never resurrect a photograph rejected in the database.
