@@ -23,6 +23,15 @@ function record(amountSgd: number): UraPrivateSaleCheckRecord {
 }
 
 describe('Singapore Check evidence repositories', () => {
+  it('loads only requested markets and reuses their verified evidence across selections', async () => {
+    const single = await singaporeCheckEvidenceRepositoriesFromEnvironment(['ura-private-sale']);
+    expect(single.availability()).toEqual({ 'ura-private-sale': true, 'hdb-resale': false, 'hdb-rent': false });
+    expect(await singaporeCheckEvidenceRepositoriesFromEnvironment(['ura-private-sale'])).toBe(single);
+    const all = await singaporeCheckEvidenceRepositoriesFromEnvironment();
+    expect(all.get('ura-private-sale')).toBe(single.get('ura-private-sale'));
+    const empty = await singaporeCheckEvidenceRepositoriesFromEnvironment([]);
+    expect(Object.values(empty.availability())).toEqual([false, false, false]);
+  }, 30_000);
   it('validates an object source without copying transaction history and still rejects tampering', async () => {
     const artifact = buildSingaporeCheckArtifact({
       market: 'ura-private-sale', sourceIdentifier: 'URA',
