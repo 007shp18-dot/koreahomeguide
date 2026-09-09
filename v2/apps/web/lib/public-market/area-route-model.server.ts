@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { contentDatabase } from '../db/postgres.server';
+import { publicContentDatabase } from '../db/postgres.server';
 
 import {
   type EvidenceDescriptor,
@@ -172,7 +172,7 @@ export async function hydratePublicAreaExploreModelWithProjections(
     ? undefined
     : listBuildingProjections(reader, projectionIds);
   const addresses = new Map<string, string>();
-  const sql = contentDatabase();
+  const sql = publicContentDatabase();
   const addressesPending = (async () => {
   if (sql !== null && projectionIds.length > 0) {
     try {

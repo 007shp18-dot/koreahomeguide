@@ -9,6 +9,7 @@ import {
   stringifySingaporeSnapshot,
 } from '@signedprice/singapore-property';
 import { createSingaporeSnapshotRepository } from '../lib/singapore/snapshot-repository.server';
+import { packSingaporeExploreModel, unpackSingaporeExploreModel } from '../lib/singapore/explore-transport';
 import {
   buildSingaporeEntryModel,
   buildSingaporeExploreModel,
@@ -37,6 +38,15 @@ async function repository() {
 }
 
 describe('Singapore route models', () => {
+  it('transports every project, publication state and coordinate without changing the model', async () => {
+    const model = buildSingaporeExploreModel(await repository());
+    const wire = JSON.parse(JSON.stringify(packSingaporeExploreModel(model)));
+    expect(unpackSingaporeExploreModel(wire)).toEqual(model);
+    expect(JSON.stringify(wire).length).toBeLessThan(JSON.stringify(model).length);
+    const unavailable = buildSingaporeExploreModel(null);
+    expect(unpackSingaporeExploreModel(packSingaporeExploreModel(unavailable))).toEqual(unavailable);
+  });
+
   it('builds native market entry and segment evidence without foreign product vocabulary', async () => {
     const store = await repository();
     const entry = buildSingaporeEntryModel(store);

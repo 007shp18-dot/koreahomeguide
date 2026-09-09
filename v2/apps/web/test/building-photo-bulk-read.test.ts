@@ -2,7 +2,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 const dependencies = vi.hoisted(() => ({ database: vi.fn(), seed: vi.fn() }));
-vi.mock('../lib/db/postgres.server', () => ({ contentDatabase: dependencies.database }));
+vi.mock('../lib/db/postgres.server', () => ({
+  contentDatabase: () => { throw new Error('Public reads must not use the longer administration deadline'); },
+  publicContentDatabase: dependencies.database,
+}));
 vi.mock('../lib/photos/verified-building-photo-registry.server', () => ({ getPublicPhotoApproval: dependencies.seed }));
 
 import { createStoredPublicPhotoApprovalReader, listStoredPublicPhotoApprovals } from '../lib/photos/building-photo-store.server';

@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { ExploreLink } from '../market-ui/explore-link';
 import Link from 'next/link';
 import { UiIcon } from '../ui-icon';
 import type { EditorialGrowthReviewModel } from '@/lib/design-review/editorial-growth-review-model';
@@ -110,7 +111,7 @@ export function PropertyHome({ locale }: Readonly<{ locale: SiteLocale }>) {
           const href = `${locale === 'ko' && market.id !== 'jp-tokyo' ? '/ko' : ''}${market.primaryAction.href}`;
           const englishDestination = locale !== 'en' && (locale === 'zh-CN' || market.id === 'jp-tokyo');
           return <li className={styles.marketCard} key={market.id} id={`city-${market.id}`} data-market-id={market.id} data-contextual-action={market.id}>
-            <Link href={href} className={styles.cityLink} prefetch={false} data-primary-action="explore" aria-label={`${copy.explore} ${city}${englishDestination ? ' · English' : ''}`}>
+            <ExploreLink href={href} className={styles.cityLink} data-primary-action="explore" aria-label={`${copy.explore} ${city}${englishDestination ? ' · English' : ''}`}>
               <div className={styles.photo}>
                 <Image src={photo.src} alt={photo.caption[locale === 'ko' ? 'ko' : 'en']} fill
                   loading={index === 0 ? 'eager' : 'lazy'} fetchPriority={index === 0 ? 'high' : 'auto'}
@@ -122,7 +123,7 @@ export function PropertyHome({ locale }: Readonly<{ locale: SiteLocale }>) {
                 <span className={styles.cityArrow}><UiIcon name="arrow-right" /></span>
               </div>
               <p className={styles.place}>{photo.place}{englishDestination ? ' · English' : ''}</p>
-            </Link>
+            </ExploreLink>
           </li>;
         })}
       </ol>

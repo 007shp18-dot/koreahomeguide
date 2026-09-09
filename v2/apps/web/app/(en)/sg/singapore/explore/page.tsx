@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { SingaporeExplorer } from '@/components/singapore/singapore-explorer';
 import { indexableMetadata } from '@/lib/public-metadata';
 import { buildSingaporeExploreModel } from '@/lib/singapore/route-model.server';
+import { packSingaporeExploreModel } from '@/lib/singapore/explore-transport';
 import { buildHdbExploreModel } from '@/lib/singapore/hdb-route-model.server';
 import { hdbSnapshotRepositoryFromEnvironment } from '@/lib/singapore/hdb-snapshot-repository.server';
 import { singaporeSnapshotRepositoryFromEnvironment } from '@/lib/singapore/snapshot-repository.server';
@@ -23,7 +24,7 @@ export default async function SingaporeExplorePage() {
   const hdbRepository = hdbSnapshotRepositoryFromEnvironment();
   const googleMapsBrowserKey = googleMapsBrowserKeyFromEnvironment();
   return <SingaporeExplorer
-    model={buildSingaporeExploreModel(repository)}
+    model={packSingaporeExploreModel(buildSingaporeExploreModel(repository))}
     hdbModel={buildHdbExploreModel(hdbRepository)}
     googleMapsBrowserKey={googleMapsBrowserKey}
     restoreStateFromUrl
