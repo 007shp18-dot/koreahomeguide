@@ -89,19 +89,42 @@ const ENVIRONMENT = Object.freeze({
   },
 } as const);
 
-let checkedInRepositories: Promise<SingaporeCheckEvidenceRepositories> | undefined;
+const checkedInMarkets = new Map<SingaporeCheckMarket, Promise<SingaporeCheckEvidenceRepositories>>();
+const checkedInSelections = new Map<string, Promise<SingaporeCheckEvidenceRepositories>>();
 
-export function singaporeCheckEvidenceRepositoriesFromEnvironment(): Promise<SingaporeCheckEvidenceRepositories> {
+export function singaporeCheckEvidenceRepositoriesFromEnvironment(
+  markets: readonly SingaporeCheckMarket[] = SINGAPORE_CHECK_MARKETS,
+): Promise<SingaporeCheckEvidenceRepositories> {
   // Checked-in artifacts are immutable for this deployment. Avoid decompressing
   // and validating all transaction history again on every offer submission.
   // Explicit overrides and the disable switch always bypass the warm cache.
   const usesOnlyInstalled = checkedInSnapshotsAreEnabled()
     && Object.values(ENVIRONMENT).every(names => process.env[names.artifact] === undefined);
-  if (!usesOnlyInstalled) return loadSingaporeCheckEvidenceRepositories();
-  return checkedInRepositories ??= loadSingaporeCheckEvidenceRepositories();
+  const selected = SINGAPORE_CHECK_MARKETS.filter(market => markets.includes(market));
+  if (!usesOnlyInstalled) return loadSingaporeCheckEvidenceRepositories(selected);
+  const key = selected.join(',');
+  const cached = checkedInSelections.get(key);
+  if (cached) return cached;
+  const pending = Promise.all(selected.map(market => {
+    let repository = checkedInMarkets.get(market);
+    if (!repository) {
+      repository = loadSingaporeCheckEvidenceRepositories([market]);
+      checkedInMarkets.set(market, repository);
+    }
+    return repository;
+  })).then(repositories => Object.freeze({
+    get<TMarket extends SingaporeCheckMarket>(market: TMarket) {
+      return repositories.find(repository => repository.get(market) !== null)?.get(market) ?? null;
+    },
+    availability: () => Object.freeze(Object.fromEntries(SINGAPORE_CHECK_MARKETS.map(market => [
+      market, repositories.some(repository => repository.get(market) !== null),
+    ])) as Record<SingaporeCheckMarket, boolean>),
+  }));
+  checkedInSelections.set(key, pending);
+  return pending;
 }
 
-function loadSingaporeCheckEvidenceRepositories(): Promise<
+function loadSingaporeCheckEvidenceRepositories(markets: readonly SingaporeCheckMarket[]): Promise<
   SingaporeCheckEvidenceRepositories
 > {
   const installedRepository = checkedInSnapshotsAreEnabled()
@@ -111,7 +134,7 @@ function loadSingaporeCheckEvidenceRepositories(): Promise<
       })
     : null;
   const sources: SingaporeCheckEvidenceSources = Object.fromEntries(
-    SINGAPORE_CHECK_MARKETS.flatMap<[SingaporeCheckMarket, CheckEvidenceSource]>((market) => {
+    markets.flatMap<[SingaporeCheckMarket, CheckEvidenceSource]>((market) => {
       const names = ENVIRONMENT[market];
       const serialized = process.env[names.artifact];
       if (serialized !== undefined) return [[market, {
