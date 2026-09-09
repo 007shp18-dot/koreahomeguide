@@ -326,6 +326,6 @@ export function DubaiExplorer({ locale = 'en',
         <p className={styles.mapDisclosure}>{t("Markers locate areas. They do not represent units or listings.")}</p>
       </section>}
     />
-    <p><Link href={marketHref(locale, "/guides/dubai-ready-apartment-buying-budget-guide/")}>{t("Ready apartment buying guide: budgets, costs and ownership checks")}</Link></p>
+    <p className={styles.exploreSupport}><span>{locale === 'ko' ? '구매를 준비하고 있나요?' : 'Planning a purchase?'}</span><Link href={marketHref(locale, "/guides/dubai-ready-apartment-buying-budget-guide/")}>{locale === 'ko' ? '예산·구매 비용 가이드' : 'Read the budget & buying costs guide'}<span aria-hidden="true"> →</span></Link></p>
   </div>;
 }

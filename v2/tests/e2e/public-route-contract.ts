@@ -22,7 +22,7 @@ export const editorialAlternates: Readonly<Record<string, Readonly<Record<string
 
 export const publicRoutes = [
   { path: '/', heading: 'Somewhere worth knowing.', indexing: 'index', canonical: '/' },
-  { path: '/trust/', heading: 'How SignedPrice publishes evidence', indexing: 'index', canonical: '/trust/' },
+  { path: '/trust/', heading: 'Data & sources', indexing: 'index', canonical: '/trust/' },
   {
     path: '/kr/seoul/check/',
     heading: 'Compare an asking price',

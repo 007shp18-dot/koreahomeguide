@@ -1,6 +1,7 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { listPortfolioRecords } from '../content/portfolio-manifest';
+import { JOURNEY_ARTICLE_ROUTES, journeyArticleHref } from '../content/city-journey-routes';
 import { editorialLanguageRoutes } from '../lib/navigation/editorial-language-routes';
 import { globalNavigation, languageDestinations } from '../lib/navigation/site-navigation';
 import { LanguageLinks } from '../components/site-language-navigation';
@@ -8,19 +9,18 @@ import { SiteFooter } from '../components/site-footer';
 import { homepageCopy } from '../lib/site-copy';
 
 describe('shared navigation destinations', () => {
-  it('keeps the five redesigned global sections in the same order', () => {
+  it('keeps the four global sections in the same order', () => {
     expect(globalNavigation('en')).toEqual([
       { label: 'Explore', href: '/prices/' },
-      { label: 'Rankings', href: '/rankings/' },
+      { label: 'Insights', href: '/news/' },
       { label: 'Tools', href: '/tools/' },
-      { label: 'News & Insights', href: '/news/' },
       { label: 'Guides', href: '/guides/' },
     ]);
 
     for (const locale of ['ko', 'zh-CN'] as const) {
-      expect(globalNavigation(locale)).toHaveLength(5);
+      expect(globalNavigation(locale)).toHaveLength(4);
       expect(globalNavigation(locale).map(({ href }) => href.replace(/^\/(?:zh-cn|ko)(?=\/)/, '')))
-        .toEqual(['/prices/', '/rankings/', '/tools/', '/news/', '/guides/']);
+        .toEqual(['/prices/', '/news/', '/tools/', '/guides/']);
     }
   });
   it('switches between the published English and Korean ranking hubs', () => {
@@ -70,7 +70,10 @@ describe('shared navigation destinations', () => {
   });
   it('links translated articles through actual translation groups', () => {
     const routes = editorialLanguageRoutes();
-    const published = new Set(listPortfolioRecords().map((record) => record.canonicalHref));
+    const published = new Set([
+      ...listPortfolioRecords().map((record) => record.canonicalHref),
+      ...JOURNEY_ARTICLE_ROUTES.flatMap(({ city, id }) => ['en', 'ko'].map(locale => journeyArticleHref(city, id, locale as 'en' | 'ko'))),
+    ]);
     for (const destinations of Object.values(routes)) for (const href of Object.values(destinations)) expect(published.has(href)).toBe(true);
     const translated = Object.entries(routes).find(([, destinations]) => destinations.en && destinations['zh-CN']);
     expect(translated).toBeDefined();
@@ -82,9 +85,12 @@ describe('shared navigation destinations', () => {
     const html = renderToStaticMarkup(<SiteFooter copy={homepageCopy.footer} />);
     expect(html.match(/href="\/sg\/?"/g)).toHaveLength(1);
     expect(html).not.toContain('Singapore Explore');
+    expect(html).toMatch(/href="\/rankings\/?"[^>]*>Rankings<\/a>/);
+    expect(html).toContain('Data &amp; sources');
+    expect(html).not.toContain('mailto:');
     expect(html).not.toContain('/kr/seoul/news/');
     expect(html).toMatch(/href="\/jp\/tokyo\/?">Tokyo<\/a>/);
-    const positions = ['Explore', 'Rankings', 'Tools', 'News &amp; Insights', 'Guides'].map((label) => html.indexOf(`>${label}</a>`));
+    const positions = ['Explore', 'Insights', 'Tools', 'Guides'].map((label) => html.indexOf(`>${label}</a>`));
     expect(positions).toEqual([...positions].sort((a,b) => a-b));
   });
 });

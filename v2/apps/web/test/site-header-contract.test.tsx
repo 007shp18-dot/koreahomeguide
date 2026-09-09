@@ -18,10 +18,10 @@ const header: SiteHeaderModel = {
   links: [{ label: 'Explore', href: '/kr/seoul/explore/', isCurrent: true }],
 };
 
-const globalLabels = ['Explore', 'Rankings', 'Tools', 'News & Insights', 'Guides'] as const;
+const globalLabels = ['Explore', 'Insights', 'Tools', 'Guides'] as const;
 
 describe('signedprice public navigation', () => {
-  it('renders the same five global destinations in the same order', () => {
+  it('renders the same four global destinations in the same order', () => {
     for (const copy of [homepageCopy.header, header]) {
       const html = renderToStaticMarkup(<SiteHeader copy={copy} />);
       const positions = globalLabels.map((label) => html.indexOf(`>${label.replace('&', '&amp;')}</`));
@@ -30,6 +30,14 @@ describe('signedprice public navigation', () => {
       expect(positions).toEqual([...positions].sort((left, right) => left - right));
       expect(html).not.toMatch(/>Properties<|>Community<|>Invest</);
     }
+  });
+
+  it('keeps rankings in an accessible Explore disclosure and selects Explore on ranking pages', () => {
+    const html = renderToStaticMarkup(<SiteHeader copy={{ ...header, links: [{ label: 'Rankings', href: '/rankings/', isCurrent: true }] }} />);
+    expect(html).toContain('aria-label="Explore options"');
+    expect(html).toMatch(/<details[^>]*site-header__context-menu--explore[\s\S]*?<summary[\s\S]*?href="\/rankings\/?"/);
+    expect(html).toMatch(/<a[^>]*aria-current="page"[^>]*href="\/prices\/?"[^>]*>Explore<\/a>/);
+    expect(html).toContain('site-header__mobile-sub-link');
   });
 
   it('keeps saved places and offer checking alongside the language controls', () => {
@@ -57,7 +65,7 @@ describe('signedprice public navigation', () => {
   it('opens the unified News & Insights hub and keeps it selected across editorial routes', () => {
     for (const href of ['/insights/', '/insights/example/', '/news/']) {
       const html = renderToStaticMarkup(<SiteHeader copy={{ ...homepageCopy.header, links: [{ label: 'Editorial', href, isCurrent: true }] }} />);
-      expect(html).toMatch(/<a[^>]*aria-current="page"[^>]*href="\/news"[^>]*>News &amp; Insights</);
+      expect(html).toMatch(/<a[^>]*aria-current="page"[^>]*href="\/news"[^>]*>Insights</);
     }
   });
 

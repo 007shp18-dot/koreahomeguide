@@ -16,7 +16,7 @@ async function expectNoOverflow(page: Page) {
 for (const route of [
   {
     path: '/trust/',
-    heading: 'How SignedPrice publishes evidence',
+    heading: 'Data & sources',
     robots: /^index,\s*follow$/,
     canonical: 'https://www.signedprice.com/trust/',
   },

@@ -224,22 +224,33 @@ export function SingaporeExplorer({ locale = 'en',
           <nav className={styles.projectPagination} aria-label={sgText(locale, "Project result pages")}><button type="button" disabled={activePage === 1} onClick={() => { setPage(activePage - 1); setSelectedProjectId(null); }}>{sgText(locale, "Previous")}</button><span>{sgText(locale, "Page ")}{sgText(locale, activePage)}{sgText(locale, " of ")}{sgText(locale, pageCount)}</span><button type="button" disabled={activePage >= pageCount} onClick={() => { setPage(activePage + 1); setSelectedProjectId(null); }}>{sgText(locale, "Next")}</button></nav>
         </section>}
         spatial={<section className={styles.exploreMap} aria-labelledby="singapore-map-heading" data-singapore-map-level={mapLevel}>
-          <header className={styles.mapHeading}><div><h2 id="singapore-map-heading">{sgText(locale, mapLevel === 'regions' ? 'Market regions' : mapLevel === 'districts' ? 'Postal districts' : 'Project locations')}</h2>
-            {mapLevel === 'projects' ? <>
-              <p>{sgText(locale, projectMapCoverage.total.toLocaleString('en'))}{sgText(locale, " matching projects across all result pages · ")}{sgText(locale, projectMapCoverage.located.toLocaleString('en'))}{sgText(locale, " with source coordinates · ")}{sgText(locale, projectMapCoverage.areaOnly.toLocaleString('en'))}{sgText(locale, " area-only · ")}{sgText(locale, projectMapCoverage.unplaced.toLocaleString('en'))}{sgText(locale, " without a map reference.")}</p>
-              <p>{sgText(locale, "Markers use source coordinates. Select a project for its transactions. Projects without exact coordinates stay in the list; area references show their approximate district.")}</p>
-              <label><input type="checkbox" checked={showAreaReferences} onChange={event => setShowAreaReferences(event.currentTarget.checked)} /> {sgText(locale, " Show approximate district groups")}</label>
-            </> : <p>{sgText(locale, areaMapCoverage.total.toLocaleString('en'))}{sgText(locale, " matching projects across all result pages · choose a ")}{sgText(locale, mapLevel === 'regions' ? 'market region' : 'postal district')}{sgText(locale, " to open its full project map.")}</p>}
-          </div></header>
+          <header className={styles.mapHeading}>
+            <h2 id="singapore-map-heading">{sgText(locale, mapLevel === 'regions' ? 'Market regions' : mapLevel === 'districts' ? 'Postal districts' : 'Project locations')}</h2>
+            <p>{mapLevel === 'projects'
+              ? locale === 'ko' ? '마커를 선택하세요. 지역 묶음은 대략적인 위치입니다.' : 'Select a marker; district groups are approximate.'
+              : mapLevel === 'regions'
+                ? locale === 'ko' ? '권역을 선택해 우편구역을 살펴보세요.' : 'Choose a region to see its districts.'
+                : locale === 'ko' ? '우편구역을 선택해 단지 위치를 살펴보세요.' : 'Choose a district to see project locations.'}</p>
+          </header>
+          <details className={`${styles.evidenceDisclosure} ${styles.mapCoverage}`}>
+            <summary>{locale === 'ko' ? '지도 범위' : 'Map coverage'}</summary>
+            <div className={styles.disclosureBody}>
+              {mapLevel === 'projects' ? <>
+                <p>{sgText(locale, projectMapCoverage.total.toLocaleString('en'))}{sgText(locale, " matching projects across all result pages · ")}{sgText(locale, projectMapCoverage.located.toLocaleString('en'))}{sgText(locale, " with source coordinates · ")}{sgText(locale, projectMapCoverage.areaOnly.toLocaleString('en'))}{sgText(locale, " area-only · ")}{sgText(locale, projectMapCoverage.unplaced.toLocaleString('en'))}{sgText(locale, " without a map reference.")}</p>
+                <p>{sgText(locale, "Markers use source coordinates. Select a project for its transactions. Projects without exact coordinates stay in the list; area references show their approximate district.")}</p>
+                <label className={styles.mapCoverageToggle}><input type="checkbox" checked={showAreaReferences} onChange={event => setShowAreaReferences(event.currentTarget.checked)} /> <span>{sgText(locale, " Show approximate district groups")}</span></label>
+              </> : <p>{sgText(locale, areaMapCoverage.total.toLocaleString('en'))}{sgText(locale, " matching projects across all result pages · choose a ")}{sgText(locale, mapLevel === 'regions' ? 'market region' : 'postal district')}{sgText(locale, " to open its full project map.")}</p>}
+              {mapLevel === 'projects' && projectMapCoverage.unplacedGroups.length > 0 ? <div className={styles.mapUnplaced}>
+                <p>{sgText(locale, "These district totals remain in the results; no reliable map reference is available yet.")}</p>
+                {projectMapCoverage.unplacedGroups.map(group => <button type="button" key={group.district} onClick={() => onMapSelect(`district-${group.district}`)}>{sgText(locale, "District ")}{sgText(locale, group.district)}{sgText(locale, " · ")}{sgText(locale, group.count.toLocaleString('en'))}{sgText(locale, " projects")}</button>)}
+              </div> : null}
+              {mapLevel !== 'projects' && areaMapCoverage.unplacedGroups.length > 0 ? <div className={styles.mapUnplaced}>
+                <p>{sgText(locale, areaMapCoverage.unplaced.toLocaleString('en'))}{sgText(locale, " projects remain selectable while their area reference is unavailable.")}</p>
+                {areaMapCoverage.unplacedGroups.map(group => <button type="button" key={group.id} onClick={() => onMapSelect(group.id)}>{sgText(locale, group.label)}{sgText(locale, " · ")}{sgText(locale, group.count.toLocaleString('en'))}{sgText(locale, " projects")}</button>)}
+              </div> : null}
+            </div>
+          </details>
           <GooglePlaceMap locale={locale} browserKey={googleMapsBrowserKey} points={mapPoints} onSelectPoint={onMapSelect} showAddressSearch={false} clusterLocations={true} />
-          {mapLevel === 'projects' && projectMapCoverage.unplacedGroups.length > 0 ? <div className={styles.mapUnplaced}>
-            <p>{sgText(locale, "These district totals remain in the results; no reliable map reference is available yet.")}</p>
-            {projectMapCoverage.unplacedGroups.map(group => <button type="button" key={group.district} onClick={() => onMapSelect(`district-${group.district}`)}>{sgText(locale, "District ")}{sgText(locale, group.district)}{sgText(locale, " · ")}{sgText(locale, group.count.toLocaleString('en'))}{sgText(locale, " projects")}</button>)}
-          </div> : null}
-          {mapLevel !== 'projects' && areaMapCoverage.unplacedGroups.length > 0 ? <div className={styles.mapUnplaced}>
-            <p>{sgText(locale, areaMapCoverage.unplaced.toLocaleString('en'))}{sgText(locale, " projects remain selectable while their area reference is unavailable.")}</p>
-            {areaMapCoverage.unplacedGroups.map(group => <button type="button" key={group.id} onClick={() => onMapSelect(group.id)}>{sgText(locale, group.label)}{sgText(locale, " · ")}{sgText(locale, group.count.toLocaleString('en'))}{sgText(locale, " projects")}</button>)}
-          </div> : null}
           {selectedProject ? <aside className={styles.mapSelection}><button type="button" aria-label={sgText(locale, "Close project preview")} onClick={() => setSelectedProjectId(null)}>{sgText(locale, "Close")}</button><h3>{selectedProject.name}</h3><p>{selectedProject.street}{sgText(locale, " · District ")}{sgText(locale, selectedProject.district)}{sgText(locale, " · ")}{sgText(locale, selectedProject.segment)}</p>{!selectedProject.location ? <p>{sgText(locale, projectMapCoverage.points.some(point => point.kind === 'area' && point.selected) ? 'Approximate district location' : 'Project location unavailable')}</p> : null}<strong>{sgText(locale, selectedProject.medianPriceLabel ?? 'Not published')}</strong><span>{sgText(locale, selectedProject.medianPsfLabel ?? `${selectedProject.n} reported sales`)}</span>{selectedProject.state === 'published' ? <Link href={marketHref(locale, selectedProject.href)}>{sgText(locale, "Open project evidence")}</Link> : null}</aside> : null}
         </section>}
       />

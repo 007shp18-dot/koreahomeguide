@@ -8,6 +8,14 @@ import { listPortfolioRecords } from '../content/portfolio-manifest';
 import { languageDestinations } from '../lib/navigation/site-navigation';
 
 describe('published city journeys', () => {
+  it.each(CITY_STORIES)('lets readers open all six $city stages as independent articles', story => {
+    for (const locale of ['en', 'ko'] as const) {
+      const html = renderToStaticMarkup(<CityStoryArticle story={story} locale={locale} />);
+      for (const step of STORY_STEPS) {
+        expect(html).toContain(`href="${cityStoryHref(story.city, locale)}${step.id}"`);
+      }
+    }
+  });
   it('offers a collapsible contents list with the actual chapter titles', () => {
     const story = CITY_STORIES[0];
     const html = renderToStaticMarkup(<CityStoryArticle story={story} locale="ko" />);

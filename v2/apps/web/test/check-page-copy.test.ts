@@ -27,7 +27,8 @@ describe('Check page metadata matches the asking-price task', () => {
       alternates: { canonical: 'https://www.signedprice.com/ko/sg/singapore/check/' },
       robots: { index: true, follow: true },
     });
-  });
+  // Both locales load the full evidence snapshots on a cold worker.
+  }, 60_000);
 
   it.each([
     ['en', 'Compare an asking price in Seoul | signedprice', 'Compare a Seoul asking sale price, jeonse deposit or monthly rent with similar reported transactions.'],

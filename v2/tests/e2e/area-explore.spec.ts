@@ -157,7 +157,8 @@ test('rail selection opens the map-owned drawer and full-detail CTA', async ({ p
 
   const trigger = page.locator(`[data-building-row="${PUBLIC_BUILDING_TEST_ID}"] [data-building-preview]`);
   const title = page.locator(`[data-building-row="${PUBLIC_BUILDING_TEST_ID}"] strong[title]`).first();
-  await expect(title).toHaveCSS('white-space', 'nowrap');
+  await expect(title).toHaveCSS('white-space', 'normal');
+  await expect(title).toHaveCSS('word-break', 'keep-all');
   await expect(title).toHaveAttribute('title', /.+/);
   await trigger.click();
   await expect(page).toHaveURL(/\/kr\/seoul\/explore\/\?.*buildingId=/);
@@ -292,8 +293,24 @@ test('mobile controls keep 44px focus targets and natural document scrolling', a
   const detailLink = page.locator('[data-building-row]').first().getByRole('link');
   await expectTouchTarget(detailLink);
   await expectCobaltFocus(page, detailLink);
-  await expect(viewTabs).toHaveCount(4);
-  for (let index = 0; index < 4; index += 1) await expectTouchTarget(viewTabs.nth(index));
+  const firstResult = page.locator('[data-building-row]').first();
+  const saveControl = firstResult.locator('[data-building-save]');
+  const previewControl = firstResult.locator('[data-building-preview]');
+  const saveSize = await saveControl.boundingBox();
+  const previewSize = await previewControl.boundingBox();
+  expect(saveSize).not.toBeNull();
+  expect(previewSize).not.toBeNull();
+  expect(Math.abs(saveSize!.width - previewSize!.width)).toBeLessThanOrEqual(1);
+  expect(Math.abs(saveSize!.height - previewSize!.height)).toBeLessThanOrEqual(1);
+  expect(await saveControl.evaluate(element => getComputedStyle(element).fontSize))
+    .toBe(await previewControl.evaluate(element => getComputedStyle(element).fontSize));
+  await expect(viewTabs).toHaveCount(2);
+  for (let index = 0; index < 2; index += 1) await expectTouchTarget(viewTabs.nth(index));
+  await page.getByText('More views', { exact: true }).click();
+  const additionalViews = page.getByRole('navigation', { name: 'Additional explorer views' }).getByRole('link');
+  await expect(additionalViews).toHaveCount(2);
+  for (let index = 0; index < 2; index += 1) await expectTouchTarget(additionalViews.nth(index));
+  await page.getByText('More views', { exact: true }).click();
   await expectNoHorizontalOverflow(page);
   const scroll = await page.evaluate(() => {
     const previousScrollBehavior = document.documentElement.style.scrollBehavior;
@@ -383,7 +400,8 @@ test('each view link renders only its supplied Explore surface', async ({ page }
   await expect(page.locator('[data-explorer-region="results"]').first()).toBeVisible();
   await expect(page.locator('[data-explorer-region="map"]')).toHaveCount(0);
 
-  await views.getByRole('link', { name: 'Table' }).click();
+  await page.getByText('More views', { exact: true }).click();
+  await page.getByRole('navigation', { name: 'Additional explorer views' }).getByRole('link', { name: 'Table' }).click();
   await expect(page.locator('[data-building-table="filtered"]')).toBeVisible();
   await expect(page.locator('[data-explorer-region="results"]')).toHaveCount(0);
   await expect(page.locator('[data-explorer-region="map"]')).toHaveCount(0);
@@ -393,7 +411,8 @@ test('each view link renders only its supplied Explore surface', async ({ page }
   await expect(page.locator('[data-explorer-region="map"]')).toBeVisible();
   await expect(page.locator('[data-explorer-region="results"]')).toHaveCount(0);
 
-  await views.getByRole('link', { name: 'Split' }).click();
+  await page.getByText('More views', { exact: true }).click();
+  await page.getByRole('navigation', { name: 'Additional explorer views' }).getByRole('link', { name: 'Split' }).click();
   await expect(page.locator('[data-explorer-layout="split"]')).toBeVisible();
   await expect(page.locator('[data-explorer-region="results"]').first()).toBeVisible();
   await expect(page.locator('[data-explorer-region="map"]')).toBeVisible();

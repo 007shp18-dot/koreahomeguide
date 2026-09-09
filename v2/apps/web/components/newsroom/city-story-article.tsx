@@ -5,6 +5,7 @@ import { languageDestinations } from '../../lib/navigation/site-navigation';
 import { publicCanonical, safeJsonLd } from '../../lib/public-metadata';
 import { CityStoryPhoto } from './city-story-photo';
 import { ArticleContents } from './article-contents';
+import { journeyArticleHref } from '../../content/city-journey-routes';
 import styles from './newsroom-journey.module.css';
 
 export function storyLinkHref(href: string, locale: StoryLocale): string {
@@ -31,7 +32,7 @@ export function CityStoryArticle({ story, locale }: Readonly<{ story: CityStory;
         {section.paragraphs[locale].map(paragraph => <p key={paragraph}>{paragraph}</p>)}
         {index === 0 && <CityStoryPhoto city={story.city} locale={locale} forest={story.city === 'seoul'} scene={story.city === 'seoul' ? undefined : 'neighborhood'} />}
         {index === 3 && <CityStoryPhoto city={story.city} locale={locale} scene="comparison" />}
-        <div className={styles.articleLinks}>{section.links.map(link => <Link key={link.href} href={storyLinkHref(link.href, locale)} {...(link.href.startsWith('https://') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{link.label[locale]} ↗</Link>)}</div>
+        <div className={styles.articleLinks}><Link href={journeyArticleHref(story.city, section.id, locale)}>{ko ? '이 단계의 상세 기사 읽기' : 'Read the full stage article'} ↗</Link>{section.links.map(link => <Link key={link.href} href={storyLinkHref(link.href, locale)} {...(link.href.startsWith('https://') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{link.label[locale]} ↗</Link>)}</div>
       </section>)}
       <section className={styles.sources} id="story-sources"><h2>{ko ? '관련 자료' : 'Further reading'}</h2><ul>{story.sources.map(source => <li key={source.href}><a href={source.href} target="_blank" rel="noopener noreferrer">{source.title}</a></li>)}</ul></section>
       <section className={styles.sources}><p className={styles.eyebrow}>{ko ? '다른 도시의 이야기' : 'Discover another city'}</p><h2><Link href={cityStoryHref(next.city, locale)}>{next.title[locale]}</Link></h2><Link className={styles.readLink} href={ko ? '/ko/passport/' : '/passport/'}>{ko ? '같은 예산으로 도시 비교하기' : 'Compare cities with your budget'} ↗</Link></section>

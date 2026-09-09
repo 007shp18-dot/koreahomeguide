@@ -451,9 +451,9 @@ export function GooglePlaceMap({
             {locale === 'ko' ? (searching ? '검색 중…' : '지도에서 보기') : (searching ? 'Searching…' : 'Show on map')}
           </button>
         </div>
-        <p aria-live="polite">{message}</p>
-      </form> : <p aria-live="polite">{message}</p>}
-      {mapState === 'error' ? <p role="status">{locale === 'ko' ? '지도를 불러오지 못했습니다. 목록에서 검색 결과와 상세 정보를 확인할 수 있습니다.' : 'The map could not load. Search results and project details remain available in the list.'}</p> : null}
+        <p className={styles.locationStatus} aria-live="polite">{message}</p>
+      </form> : <p className={styles.locationStatus} aria-live="polite">{message}</p>}
+      {mapState === 'error' ? <p className={styles.locationStatus} role="status">{locale === 'ko' ? '지도를 불러오지 못했습니다. 목록에서 검색 결과와 상세 정보를 확인할 수 있습니다.' : 'The map could not load. Search results and project details remain available in the list.'}</p> : null}
       <div
         ref={container}
         className={styles.canvas}

@@ -1,4 +1,5 @@
 import type { SiteLocale } from './site-navigation';
+import { JOURNEY_ARTICLE_ROUTES, journeyArticleHref } from '../../content/city-journey-routes';
 export type EditorialLanguageRoutes = Record<string, Partial<Record<SiteLocale, string>>>;
 // Published translation groups only. Keep article bodies out of client navigation bundles.
 const routes: EditorialLanguageRoutes = {
@@ -169,5 +170,12 @@ const koreanPairs = [
 for (const [en, ko] of koreanPairs) {
   const group = { ...(routes[en] ?? {}), en, ko };
   for (const href of Object.values(group)) routes[href] = group;
+}
+for (const { city, id } of JOURNEY_ARTICLE_ROUTES) {
+  const en = journeyArticleHref(city, id);
+  const ko = journeyArticleHref(city, id, 'ko');
+  const pair = { en, ko };
+  routes[en] = pair;
+  routes[ko] = pair;
 }
 export function editorialLanguageRoutes(): EditorialLanguageRoutes { return routes; }

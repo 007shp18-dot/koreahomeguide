@@ -72,7 +72,7 @@ describe('public district detail page', () => {
     expect(html).toContain('MOLIT');
     expect(html).toContain('href="/kr/seoul/corrections"');
     expect(html).toContain('KOSTAT census boundaries via southkorea/seoul-maps (Apache-2.0)');
-    expect(html).toContain('Source, reporting period and coverage are shown with each dataset.');
+    expect(html).toMatch(/href="\/trust\/?"[^>]*>Data &amp; sources<\/a>/);
     expect(html).not.toMatch(/public P2 preview|Production launch is not authorized/i);
     expect(html).toContain('href="/kr/seoul/explore?district=gangnam-gu"');
     expect(html).toContain('href="/kr/seoul/rankings"');

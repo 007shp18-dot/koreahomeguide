@@ -75,8 +75,8 @@ const focusAdjacentBackgrounds = [
 ] as const;
 
 const signedPricePalette = {
-  '--canvas': '#f5f8fc',
-  '--surface': '#edf3f9',
+  '--canvas': '#f7f8fa',
+  '--surface': '#f0f2f5',
   '--surface-strong': '#ffffff',
   '--ink': '#111827',
   '--petrol': '#16243a',
@@ -112,7 +112,7 @@ function declarationsFor(source: string, selector: string): Record<string, strin
 }
 
 describe('signedprice brand foundation', () => {
-  it('preserves the original blue and navy product palette', () => {
+  it('pairs the blue and navy product palette with quiet neutral backgrounds', () => {
     for (const [token, value] of Object.entries(signedPricePalette)) {
       expect(readHexToken(token)).toBe(value);
     }
@@ -151,7 +151,7 @@ describe('signedprice brand foundation', () => {
     expect(css).toMatch(/--radius:\s*12px;/);
     expect(css).toMatch(/--reading-frame:\s*760px;/);
     expect(css).toMatch(/--content-frame:\s*1120px;/);
-    expect(css).toMatch(/--workspace-frame:\s*1320px;/);
+    expect(css).toMatch(/--workspace-frame:\s*1280px;/);
     expect(css).toMatch(/--page-gutter:\s*32px;/);
     expect(css).toMatch(/--rule-strong:\s*1px solid var\(--line\);/);
     expect(css).toMatch(/--rule-default:\s*1px solid var\(--line\);/);
@@ -163,9 +163,10 @@ describe('signedprice brand foundation', () => {
       'z-index': '30',
     });
     expect(declarationsFor(css, '.site-header__inner')).toMatchObject({
-      width: '100%',
+      width: 'min(calc(100% - 2 * var(--page-gutter)), var(--workspace-frame))',
       'min-height': '64px',
-      padding: '0 22px',
+      'margin-inline': 'auto',
+      gap: '24px',
     });
     expect(declarationsFor(css, '.site-header__product-link')).toMatchObject({
       'min-height': 'var(--control-min)',

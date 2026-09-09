@@ -1,12 +1,12 @@
 .footer { margin-top: 64px; border-top: 1px solid var(--line); background: var(--surface-strong); }
-.inner { width: min(calc(100% - 2 * var(--page-gutter)), var(--content-frame)); margin-inline: auto; padding: 40px 0 24px; display: grid; grid-template-columns: minmax(220px, 1fr) minmax(0, 1.3fr); gap: 32px 48px; }
-.intro { display: grid; align-content: start; justify-items: start; gap: 12px; }
-.descriptor { max-width: 38ch; margin: 0; color: var(--muted); font-size: var(--body-size); line-height: 1.6; }
-.navigation { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
-.navigation nav > p { margin: 0 0 8px; color: var(--muted); font-size: var(--text-meta); font-weight: 600; }
+.inner { width: min(calc(100% - 2 * var(--page-gutter)), var(--content-frame)); margin-inline: auto; padding: 48px 0; display: grid; grid-template-columns: minmax(220px, 1fr) minmax(0, 1.3fr); gap: 40px 64px; }
+.intro { display: grid; align-content: start; justify-items: start; gap: 16px; }
+.descriptor { max-width: 30ch; margin: 0; color: var(--muted); font-size: 14px; line-height: 1.65; text-wrap: pretty; }
+.navigation { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+.navigation nav > p { margin: 0 0 12px; color: var(--ink); font-size: 13px; font-weight: 600; line-height: 20px; }
 .links { margin: 0; padding: 0; list-style: none; }
-.links a { min-height: var(--control-min); display: flex; align-items: center; color: var(--ink); font-size: var(--text-control); font-weight: 600; text-decoration: none; }
-.links a:hover, .contacts a:hover { color: var(--accent); }
-.status { margin: 0; color: var(--muted); font-size: var(--text-meta); line-height: 1.6; }
-.contacts { display: flex; flex-wrap: wrap; gap: 8px 20px; color: var(--muted); font-size: var(--text-meta); }
-@media (max-width: 760px) { .inner { grid-template-columns: minmax(0, 1fr); gap: 28px; } .navigation { gap: 12px; } }
+.links a { min-height: 36px; display: flex; align-items: center; color: var(--muted); font-size: 14px; font-weight: 400; line-height: 22px; text-decoration: none; }
+.links a:hover { color: var(--accent); }
+.links a:focus-visible, .intro a:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 4px; border-radius: 8px; }
+@media (max-width: 760px) { .inner { grid-template-columns: minmax(0, 1fr); gap: 32px; padding-block: 32px; } .navigation { gap: 16px; } .links a { min-height: 44px; font-size: 13px; } }
+@media (max-width: 380px) { .navigation { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 16px; } }
