@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { UiIcon } from '../ui-icon';
 import type { ReactNode } from 'react';
 import { CITY_STORIES, cityStoryHref, type StoryLocale } from '../../content/city-stories';
 import { getJourneyArticle, journeyArticleActions, type JourneyArticle as Article } from '../../content/city-journey-articles';
@@ -53,9 +54,9 @@ export function JourneyArticle({ article, locale }: Readonly<{ article: Article;
         {section.table && <div className={styles.tableWrap} tabIndex={0} role="region" aria-label={section.table.title[locale]}><table><caption>{section.table.title[locale]}</caption><thead><tr>{section.table.columns[locale].map(column => <th key={column} scope="col">{column}</th>)}</tr></thead><tbody>{section.table.rows[locale].map((row, index) => <tr key={index}>{row.map((cell, cellIndex) => cellIndex === 0 ? <th key={cellIndex} scope="row">{cell}</th> : <td key={cellIndex}><InlineCopy text={cell} /></td>)}</tr>)}</tbody></table><p className={styles.tableNote}>{section.table.note[locale]}</p></div>}
         {section.sourceIds.length > 0 && <p className={styles.references}>{ko ? '근거 자료' : 'Sources'} {section.sourceIds.map(id => <a key={id} href={`#source-${id}`} aria-label={`${ko ? '출처' : 'Source'} ${article.sources.findIndex(source => source.id === id) + 1}`}>[{article.sources.findIndex(source => source.id === id) + 1}]</a>)}</p>}
       </section>)}
-      {article.city === 'seoul' && article.id === 'where' && <section className={styles.neighborhoods}><h2>{ko ? '세 동네를 더 자세히' : 'Take a closer look at each neighbourhood'}</h2><ul>{SEOUL_NEIGHBORHOODS.map(id => <li key={id}><Link href={journeyArticleHref('seoul', id, locale)}>{getJourneyArticle('seoul', id)!.title[locale]} <span aria-hidden="true">↗</span></Link></li>)}</ul></section>}
-      <section className={styles.nextAction} aria-label={ko ? '다음 단계' : 'Next step'}><p className={styles.eyebrow}>{ko ? '다음으로 해볼 일' : 'Your next step'}</p><h2><Link href={actions.primary.href} data-editorial-event="journey_next">{actions.primary.label[locale]} <span aria-hidden="true">→</span></Link></h2></section>
-      <aside className={styles.related} aria-label={ko ? '함께 읽기' : 'Related reading'}><h2>{ko ? '함께 읽기' : 'Related reading'}</h2><ul>{actions.related.map(link => <li key={link.href}><Link href={link.href}>{link.label[locale]} ↗</Link></li>)}</ul></aside>
+      {article.city === 'seoul' && article.id === 'where' && <section className={styles.neighborhoods}><h2>{ko ? '세 동네를 더 자세히' : 'Take a closer look at each neighbourhood'}</h2><ul>{SEOUL_NEIGHBORHOODS.map(id => <li key={id}><Link href={journeyArticleHref('seoul', id, locale)}>{getJourneyArticle('seoul', id)!.title[locale]} <UiIcon name="arrow-right" /></Link></li>)}</ul></section>}
+      <section className={styles.nextAction} aria-label={ko ? '다음 단계' : 'Next step'}><p className={styles.eyebrow}>{ko ? '다음으로 해볼 일' : 'Your next step'}</p><h2><Link href={actions.primary.href} data-editorial-event="journey_next">{actions.primary.label[locale]} <UiIcon name="arrow-right" /></Link></h2></section>
+      <aside className={styles.related} aria-label={ko ? '함께 읽기' : 'Related reading'}><h2>{ko ? '함께 읽기' : 'Related reading'}</h2><ul>{actions.related.map(link => <li key={link.href}><Link href={link.href}>{link.label[locale]} <UiIcon name="arrow-right" /></Link></li>)}</ul></aside>
       <section className={styles.sources} id="article-sources"><h2>{ko ? '출처와 참고 자료' : 'Sources and further reading'}</h2><ol>{article.sources.map(source => <li key={source.id} id={`source-${source.id}`}><a href={source.href} target="_blank" rel="noopener noreferrer">{source.title}</a></li>)}</ol></section>
     </article>
   </main>;

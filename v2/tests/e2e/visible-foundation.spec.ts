@@ -102,13 +102,13 @@ test('navigates the first signedprice decision flow', async ({ page }) => {
   await expect(
     page.getByRole('heading', {
       level: 1,
-      name: 'Somewhere worth knowing.',
+      name: /Four cities.\s*Many ways to live./,
     }),
   ).toBeVisible();
   await expect(
     page.getByRole('heading', {
       level: 2,
-      name: 'Where can your budget become a home?',
+      name: 'Seoul',
     }),
   ).toBeVisible();
 
@@ -196,19 +196,14 @@ for (const route of publicRoutes) {
   });
 }
 
-test('desktop exposes the primary search, compact Passport form, and city exploration cards', async ({page}, testInfo) => {
+test('desktop exposes the city index and photo-led city destinations', async ({page}, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium');
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1, name: 'Somewhere worth knowing.' })).toBeInViewport();
-  await expect(page.getByRole('search')).toBeInViewport();
-  const passport = page.locator('[data-home-region="passport"]');
-  await expect(passport.getByRole('heading', {
-    level: 2,
-    name: 'Where can your budget become a home?',
-  })).toBeVisible();
-  await expect(passport.getByRole('button', { name: 'Compare cities' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: /Four cities.\s*Many ways to live./ })).toBeInViewport();
+  await expect(page.locator('main form')).toHaveCount(0);
   const markets = page.locator('[data-home-region="markets"]');
-  await expect(markets).toHaveAttribute('aria-label', 'Explore a city');
+  await expect(markets).toHaveAttribute('aria-label', 'Choose a city');
+  await expect(markets.getByRole('navigation', { name: 'Choose a city' })).toBeInViewport();
   await expect(markets.locator('[data-contextual-action]')).toHaveCount(4);
   await expect(markets.locator('[data-primary-action="explore"]')).toHaveCount(4);
 });

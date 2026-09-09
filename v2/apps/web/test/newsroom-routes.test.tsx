@@ -46,6 +46,15 @@ const newsArticle: PublishedContentArticle = Object.freeze({
 });
 
 describe('public Newsroom routes', () => {
+  it('keeps the policy tracker inside the policy view instead of beside the page title', () => {
+    const markup = (type: string) => renderToStaticMarkup(<NewsroomIndex articles={[]} policies={[policy]} filters={resolveNewsroomFilters({type})} headlines={<p>Feed</p>} />);
+    const insights = markup('insights');
+    const heading = insights.match(/<header[\s\S]*?<\/header>/)?.[0] ?? '';
+    expect(heading).not.toContain('/news/policy');
+    expect(insights).not.toContain('Open the Policy Tracker');
+    expect(insights).toContain('/news?type=policy');
+    expect(markup('policy')).toContain('href="/news/policy"');
+  });
   it('keeps budget comparisons in Insights and Data Stories, with a matching article breadcrumb', () => {
     for (const locale of ['en', 'ko'] as const) {
       const budget = getPortfolioRecord(locale, 'singapore-condo-buying-budget-guide')!;

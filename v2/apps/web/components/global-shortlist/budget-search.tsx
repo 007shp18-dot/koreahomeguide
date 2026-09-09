@@ -1,6 +1,7 @@
 'use client';
 import { DefaultAmountInput } from '../amount-input';
 import Link from 'next/link';
+import { UiIcon } from '../ui-icon';
 import { useEffect, useMemo, useState, useSyncExternalStore, type FormEvent } from 'react';
 import { validBudgetFilters, type OverseasMarket, type BudgetItem, type BudgetResult } from '@/lib/global-shortlist/model';
 import { parseGlobalSaved, readGlobalSaved, subscribeGlobalSaved, writeGlobalSaved, type GlobalSaved } from '@/lib/global-shortlist/storage';
@@ -53,7 +54,7 @@ export function BudgetSearch({ locale = 'en', market, embedded = false }: { mark
       {savedCard && baseline && <p className={styles.meta}>{t("Last checked · ")}{t(baseline.checkedAt.slice(0, 10))}</p>}
     </article>;
   }
-  return <Root className={styles.page}><header className={styles.heading}><Link href={marketHref(locale, sg ? '/sg/singapore/explore/' : '/ae/dubai/explore/')}>{locale === 'ko' ? `← ${sg ? '싱가포르' : '두바이'} 탐색` : `← ${sg ? 'Singapore' : 'Dubai'} Explore`}</Link><p className={styles.eyebrow}>{t(sg ? 'SINGAPORE · PRIVATE RESALE' : 'DUBAI · AREA PRICE SCREEN')}</p><h1>{t(sg ? 'Find projects within your budget' : 'Find areas by median sale price')}</h1><p>{t(sg ? 'Search recorded resales, save projects and check an asking price against local evidence.' : 'Screen area medians against your budget, save areas and continue to a price check.')}</p></header>
+  return <Root className={styles.page}><header className={styles.heading}><Link href={marketHref(locale, sg ? '/sg/singapore/explore/' : '/ae/dubai/explore/')}><UiIcon name="arrow-left" /> {locale === 'ko' ? `${sg ? '싱가포르' : '두바이'} 탐색` : `${sg ? 'Singapore' : 'Dubai'} Explore`}</Link><p className={styles.eyebrow}>{t(sg ? 'SINGAPORE · PRIVATE RESALE' : 'DUBAI · AREA PRICE SCREEN')}</p><h1>{t(sg ? 'Find projects within your budget' : 'Find areas by median sale price')}</h1><p>{t(sg ? 'Search recorded resales, save projects and check an asking price against local evidence.' : 'Screen area medians against your budget, save areas and continue to a price check.')}</p></header>
     <ShortlistCities locale={locale} current={market} /><form className={styles.form} key={filterKey} onSubmit={submit} aria-label={t("Budget search conditions")}>
       <label>{t("Purchase-price ceiling · ")}{t(currency)}<DefaultAmountInput name="budget"  min="1" max="500000000" required defaultValue={filters.budget} /></label>
       <label>{t(sg ? 'Market segment' : 'Area')}<select name="region" defaultValue={filters.region}><option value="all">{t(sg ? 'All released segments' : 'All released areas')}</option>{(data?.regions ?? (sg ? ['CCR','RCR','OCR'].map(value => ({ value, label: value })) : [{ value: filters.region, label: filters.region }].filter(r => r.value !== 'all'))).map(r => <option key={r.value} value={r.value}>{t(r.label)}</option>)}</select></label>

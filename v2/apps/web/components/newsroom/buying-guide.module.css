@@ -18,7 +18,7 @@
 .tableScroll th, .tableScroll td { text-align: left; border-bottom: 1px solid var(--review-line); padding: 7px; white-space: nowrap; }
 .guide summary { min-height: 44px; padding: 9px 0; cursor: pointer; }
 .profile { display: grid; gap: 8px; max-width: 100%; }
-.profile select { font: inherit; font-size: 16px; color: var(--review-ink); background: var(--review-paper, white); border: 1px solid var(--review-line); padding: 10px; width: min(100%, 430px); }
+.profile select { font: inherit; font-size: 16px; color: var(--review-ink); background: var(--review-paper, white); border: 1px solid var(--review-line); border-radius: 8px; padding: 10px; width: min(100%, 430px); }
 .costBar { display: flex; height: 24px; margin: 22px 0 12px; overflow: hidden; }
 .priceFill { background: var(--review-accent); }
 .taxFill { background: var(--review-muted); }

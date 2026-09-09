@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { UiIcon } from '../ui-icon';
 
 import { SiteFooter } from '../site-footer';
 import { SiteHeader } from '../site-header';
@@ -49,7 +50,7 @@ export function MarketFeaturePage({ city, code, feature, href, overviewHref }: R
             <article><span>03</span><strong>Clear limits</strong><p>Missing, insufficient or rights-blocked data is labelled directly.</p></article>
           </div>
         </section>
-        <aside className={styles.next}><div><span>SERVICE STATE</span><strong>{copy.status}</strong></div><p>The route and shared layout are in place. Content opens market by market after its exact data and operating gates pass.</p><Link href={overviewHref}>Return to {city} overview →</Link></aside>
+        <aside className={styles.next}><div><span>SERVICE STATE</span><strong>{copy.status}</strong></div><p>The route and shared layout are in place. Content opens market by market after its exact data and operating gates pass.</p><Link href={overviewHref}>Return to {city} overview <UiIcon name="arrow-right" /></Link></aside>
       </main>
       <SiteFooter copy={footer} />
     </div>

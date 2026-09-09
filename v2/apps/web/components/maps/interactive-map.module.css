@@ -52,7 +52,7 @@
   color: #172337;
   background: #fff;
   box-shadow: 0 2px 5px rgb(17 24 39 / 14%);
-  font: 600 12px/1.25 Arial, sans-serif;
+  font: 600 12px/1.25 "Inter", "Pretendard", sans-serif;
   white-space: nowrap;
   cursor: pointer;
 }
@@ -108,7 +108,7 @@
   color: #174985 !important;
   background: rgb(255 255 255 / 97%) !important;
   box-shadow: 0 8px 22px rgb(17 24 39 / 24%), 0 0 0 1px rgb(23 73 133 / 22%) !important;
-  font: 800 11px/1.15 var(--font-archivo), Arial, sans-serif !important;
+  font: 600 12px/1.25 "Inter", "Pretendard", sans-serif !important;
   white-space: nowrap !important;
 }
 

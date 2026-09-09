@@ -20,8 +20,8 @@ describe('global roadmap routes', () => {
     const externalFetch = vi.fn();
     vi.stubGlobal('fetch', externalFetch);
 
-    const news = renderToStaticMarkup(await NewsPage());
-    const newsMetadata = await generateNewsMetadata();
+    const news = renderToStaticMarkup(await NewsPage({}));
+    const newsMetadata = await generateNewsMetadata({});
     const community = renderToStaticMarkup(<CommunityPage />);
 
     expect(newsMetadata.alternates).toEqual({

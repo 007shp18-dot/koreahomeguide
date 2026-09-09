@@ -36,16 +36,14 @@ describe('three-city research journeys', () => {
     });
   });
 
-  it('gives each city one attributed analysis link without repeating its tool actions', async () => {
+  it('routes homepage readers to the dedicated insights page without an embedded feed', async () => {
     vi.stubEnv('DATABASE_URL', '');
     const markup = renderToStaticMarkup(await Home());
-    const start = markup.indexOf('data-home-region="analysis"');
+    const start = markup.indexOf('aria-label="Take a closer look"');
     expect(start).toBeGreaterThan(0);
-    const section = markup.slice(start, markup.indexOf('</section>', start));
-    for (const market of ['kr-seoul', 'sg-singapore', 'ae-dubai']) expect(section).toContain('data-editorial-market="' + market + '"');
-    for (const event of ['article_open']) {
-      expect(section.match(new RegExp('data-editorial-event="' + event + '"', 'g'))).toHaveLength(3);
-    }
+    const section = markup.slice(start, markup.indexOf('</nav>', start));
+    expect(section).toContain('href="/news"');
+    expect(markup).not.toContain('data-home-region="analysis"');
   });
 
   it('marks internal tool links while leaving external and unrelated links untracked', () => {

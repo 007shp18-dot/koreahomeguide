@@ -19,20 +19,14 @@ import {
 } from './public-area-fixture';
 
 describe('signedprice homepage copy', () => {
-  it('renders the approved editorial journey in decision order', async () => {
+  it('leads with city discovery and links to separate functional pages', async () => {
     const markup = renderToStaticMarkup(await Home());
-    const needles = [
-      'Somewhere worth knowing.',
-      'Explore a city',
-      'Latest insights',
-      'Where can your budget become a home?',
-      'Buying &amp; renting guides',
-    ];
-    const positions = needles.map((needle) => markup.indexOf(needle));
-
-    expect(positions.every((position) => position >= 0)).toBe(true);
-    expect([...positions].sort((a, b) => a - b)).toEqual(positions);
-    expect(markup).toContain('Enter your budget to compare property prices and estimated floor area');
+    const markets = markup.indexOf('data-home-region="markets"');
+    const directory = markup.indexOf('aria-label="Take a closer look"');
+    expect(markets).toBeGreaterThan(0);
+    expect(directory).toBeGreaterThan(markets);
+    for (const href of ['/tools', '/news', '/guides']) expect(markup).toContain(`href="${href}"`);
+    expect(markup).not.toContain('data-home-region="passport"');
     expect(markup).toContain('data-primary-action="explore"');
   }, 10_000);
 
@@ -117,7 +111,7 @@ describe('signedprice homepage copy', () => {
     const markup = renderToStaticMarkup(await Home());
 
     expect(markup).toContain('href="/trust">Data &amp; sources</a>');
-    expect(markup).toContain('Sources &amp; methodology');
+    expect(markup).toContain('aria-label="Take a closer look"');
     expect(markup).not.toMatch(/₩0|0 contracts/);
   });
 
@@ -147,11 +141,11 @@ describe('signedprice homepage copy', () => {
     vi.unstubAllEnvs();
   });
 
-  it('presents all four cities before city-specific editorial content', async () => {
+  it('presents all four cities before the section directory', async () => {
     const markup = renderToStaticMarkup(await Home());
-    const globalPromise = markup.indexOf('Somewhere worth knowing.');
+    const globalPromise = markup.indexOf('<h1');
     const marketTabs = markup.indexOf('data-home-region="markets"');
-    const editorial = markup.indexOf('Latest insights');
+    const editorial = markup.indexOf('aria-label="Take a closer look"');
 
     expect(globalPromise).toBeGreaterThanOrEqual(0);
     expect(marketTabs).toBeGreaterThan(globalPromise);
@@ -159,5 +153,6 @@ describe('signedprice homepage copy', () => {
     expect(markup).toContain('data-market-id="kr-seoul"');
     expect(markup).toContain('data-market-id="sg-singapore"');
     expect(markup).toContain('data-market-id="ae-dubai"');
+    expect(markup).toContain('data-market-id="jp-tokyo"');
   });
 });

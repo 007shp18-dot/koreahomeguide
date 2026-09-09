@@ -1,6 +1,7 @@
 'use client';
 import { DefaultAmountInput } from '../amount-input';
 import Link from 'next/link';
+import { UiIcon } from '../ui-icon';
 import { useEffect, useMemo, useState, useSyncExternalStore, type FormEvent } from 'react';
 import { SEOUL_RENT_CHECK_DISTRICTS } from '@signedprice/korea-rent/browser';
 import { buildingDisplayName } from '@/lib/public-market/seoul-display-names';
@@ -72,7 +73,7 @@ export function SeoulShortlist({ locale = 'en' }: { locale?: 'en' | 'ko' }) {
     </article>;
   }
   return <main className={styles.page}>
-    <header className={styles.heading}><Link href={`${prefix}/kr/seoul/explore/`}>{t('← Seoul Explore', '← 서울 탐색')}</Link><p className={styles.eyebrow}>{t('SEOUL · APARTMENT SALES', '서울 · 아파트 매매')}</p><h1>{t('Find your price. Follow the transactions.', '내 예산에 맞는 단지, 거래가 바뀌면 확인하세요.')}</h1><p>{t('Find apartment groups with recorded sales in your range, then save the ones you want to follow.', '예산과 면적에 맞는 실거래가 있었던 단지를 찾고, 관심 단지의 거래 변화를 확인하세요.')}</p></header>
+    <header className={styles.heading}><Link href={`${prefix}/kr/seoul/explore/`}><UiIcon name="arrow-left" /> {t('Seoul Explore', '서울 탐색')}</Link><p className={styles.eyebrow}>{t('SEOUL · APARTMENT SALES', '서울 · 아파트 매매')}</p><h1>{t('Find your price. Follow the transactions.', '내 예산에 맞는 단지, 거래가 바뀌면 확인하세요.')}</h1><p>{t('Find apartment groups with recorded sales in your range, then save the ones you want to follow.', '예산과 면적에 맞는 실거래가 있었던 단지를 찾고, 관심 단지의 거래 변화를 확인하세요.')}</p></header>
     <ShortlistCities current="seoul" locale={locale} />
     <form className={styles.form} key={filtersKey} onSubmit={submit} aria-label={t('Apartment search conditions', '단지 검색 조건')}>
       <label>{t('Price ceiling · KRW 100m', '매매 예산 상한 · 억 원')}<DefaultAmountInput name="budget"  min="0.1" max="1000" step="0.01" required defaultValue={stored.filters.budget / 100_000_000} /></label>

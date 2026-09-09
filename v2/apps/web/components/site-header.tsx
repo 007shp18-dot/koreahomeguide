@@ -12,6 +12,7 @@ import { BrandWordmark } from './brand-mark';
 import { MarketLocalNav, getMarketLocalNavigation } from './market-ui/market-local-nav';
 import { SiteMobileMenu } from './site-mobile-menu';
 import { SiteContextMenu } from './site-context-menu';
+import { UiIcon } from './ui-icon';
 
 type SiteHeaderProps = {
   copy: SiteHeaderModel;
@@ -46,7 +47,7 @@ function contextualActions(context: HeaderMarketContext, locale: SiteLocale) {
     case 'ae-dubai': return { saved: `${prefix}/ae/dubai/shortlist/`, offer: `${prefix}/ae/dubai/check/` };
     case 'jp-tokyo': return null;
     case 'kr-seoul': return { saved: `${prefix}/kr/seoul/shortlist/`, offer: `${prefix}/kr/seoul/check/` };
-    default: return { saved: `${prefix}/kr/seoul/shortlist/`, offer: `${prefix}/tools/` };
+    default: return null;
   }
 }
 
@@ -114,7 +115,7 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
                   {link.label}
                 </Link>
                 {index === 0 && <SiteContextMenu className="site-header__context-menu site-header__context-menu--explore">
-                  <summary aria-label={isKorean ? '둘러보기 메뉴' : locale === 'zh-CN' ? '探索菜单' : 'Explore options'}><span aria-hidden="true">⌄</span></summary>
+                  <summary aria-label={isKorean ? '둘러보기 메뉴' : locale === 'zh-CN' ? '探索菜单' : 'Explore options'}><UiIcon name="chevron-down" /></summary>
                   <div className="site-header__context-panel site-header__context-panel--explore">
                     <Link href={rankingsHref}>{rankingsLabel}</Link>
                   </div>
@@ -127,7 +128,7 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
         <div className="site-header__actions">
           <SiteContextMenu className="site-header__context-menu site-header__context-menu--market">
             <summary aria-label={chooseCityLabel}>
-              <span>{cityMenuLabel}</span><span aria-hidden="true">⌄</span>
+              <span>{cityMenuLabel}</span><UiIcon name="chevron-down" />
             </summary>
             <div className="site-header__context-panel site-header__context-panel--market">
               <nav className="site-header__markets" aria-label="Market navigation">
@@ -155,7 +156,7 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
           {actionLinks && <Link className="site-header__action site-header__action--saved" href={actionLinks.saved}>{isKorean ? '관심 목록' : locale === 'zh-CN' ? '已保存' : 'Saved'}</Link>}
           <SiteContextMenu className="site-header__context-menu site-header__context-menu--language">
             <summary aria-label={chooseLanguageLabel}>
-              <span>{currentLanguageLabel}</span><span aria-hidden="true">⌄</span>
+              <span>{currentLanguageLabel}</span><UiIcon name="chevron-down" />
             </summary>
             <div className="site-header__context-panel site-header__context-panel--language">
               <Suspense fallback={<LanguageLinks pathname={fallbackPath} alternate={copy.languageSwitch} />}>

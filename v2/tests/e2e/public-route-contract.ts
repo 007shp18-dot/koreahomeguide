@@ -21,7 +21,7 @@ export const editorialAlternates: Readonly<Record<string, Readonly<Record<string
   }));
 
 export const publicRoutes = [
-  { path: '/', heading: 'Somewhere worth knowing.', indexing: 'index', canonical: '/' },
+  { path: '/', heading: /Four cities\.\s*Many ways to live\./, indexing: 'index', canonical: '/' },
   { path: '/trust/', heading: 'Data & sources', indexing: 'index', canonical: '/trust/' },
   {
     path: '/kr/seoul/check/',

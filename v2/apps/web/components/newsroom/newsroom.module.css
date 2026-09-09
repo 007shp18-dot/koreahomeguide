@@ -146,7 +146,7 @@
   flex: 0 0 auto;
   align-items: center;
   border: 1px solid transparent;
-  border-radius: 999px;
+  border-radius: 8px;
   color: var(--review-muted);
   font-size: var(--ui-size);
   font-weight: 680;
@@ -169,24 +169,24 @@
 }
 
 .insightTabs a {
-  min-height: 36px;
+  min-height: 44px;
   padding: 0 12px;
   display: inline-flex;
   flex: 0 0 auto;
   align-items: center;
   border: 1px solid var(--review-line);
-  border-radius: 999px;
+  border-radius: 8px;
   color: var(--review-muted);
   font-size: .8125rem;
   font-weight: 680;
   text-decoration: none;
 }
 
-.insightTabs a[aria-current='page'] { color: white; border-color: var(--review-ink); background: var(--review-ink); }
+.insightTabs a[aria-current='page'] { color: var(--review-accent); border-color: var(--review-line); background: var(--soft-blue); }
 
 .policyJump a {
   border: 1px solid var(--review-line);
-  border-radius: 999px;
+  border-radius: 8px;
   padding: 0 18px;
 }
 

@@ -1,5 +1,6 @@
 import type { ExplorerView } from '../../lib/navigation/explorer-selection';
 import { SegmentedControl } from '../evidence-ui/segmented-control';
+import { UiIcon } from '../ui-icon';
 import styles from './area-explorer-view-switcher.module.css';
 
 export function AreaExplorerViewSwitcher({
@@ -27,7 +28,7 @@ export function AreaExplorerViewSwitcher({
       }))}
       />
       <details className={styles.more} key={current}>
-        <summary>{current === 'split' || current === 'table' ? labels[current] : locale === 'ko' ? '다른 보기' : 'More views'}</summary>
+        <summary>{current === 'split' || current === 'table' ? labels[current] : locale === 'ko' ? '다른 보기' : 'More views'}<UiIcon name="chevron-down" /></summary>
         <SegmentedControl
           label={locale === 'ko' ? '추가 탐색 보기' : 'Additional explorer views'}
           value={current}

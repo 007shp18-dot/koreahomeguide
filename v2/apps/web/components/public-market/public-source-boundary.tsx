@@ -7,6 +7,7 @@ import {
 import { EvidenceDisclosure } from '../trust/evidence-disclosure';
 import { EvidenceEmptyStatePanel } from '../trust/evidence-empty-state';
 import styles from './public-market.module.css';
+import { UiIcon } from '../ui-icon';
 
 export function PublicSourceBoundary({
   model,
@@ -112,7 +113,7 @@ export function PublicSourceBoundary({
     >
       {compact ? (
         <details className={styles.publicSourceCompactDisclosure}>
-          <summary>{locale === 'ko' ? '출처 및 공개 기준' : 'Sources & limits'}</summary>
+          <summary>{locale === 'ko' ? '출처 및 공개 기준' : 'Sources & limits'}<UiIcon name="chevron-down" /></summary>
           <div>{content}</div>
         </details>
       ) : content}
