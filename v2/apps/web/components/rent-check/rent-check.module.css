@@ -752,7 +752,7 @@
   }
 }
 
-.rent-check-page .primary-control { min-block-size: 48px; }
+.form-grid .primary-control { min-block-size: 48px; }
 
 /* Connected controls retain one outline and comfortable touch targets. */
 .housing-choices,
