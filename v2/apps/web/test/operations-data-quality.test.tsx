@@ -35,3 +35,12 @@ it('keeps quarter precision and does not turn absent building evidence into a ze
   expect(html).toContain('사이트 공개 건수와 다를 수 있음');
   expect(html).toContain('별도 배포된 두바이 지역 통계');
 });
+
+it('does not compare counts across Tokyo ward and quarter collection scopes', async () => {
+  const rows = await marketCollectionStatus({query:vi.fn().mockResolvedValue([
+    {job:'jp-tokyo-sale',state:'succeeded',received:50,previous_received:500},
+    {job:'kr-seoul-sale',state:'succeeded',received:50,previous_received:500},
+  ])});
+  expect(rows.find(row => row.job==='jp-tokyo-sale')?.anomaly).toBeNull();
+  expect(rows.find(row => row.job==='kr-seoul-sale')?.anomaly).toContain('기간 변경');
+});

@@ -29,6 +29,6 @@ export async function marketCollectionStatus(sql: SqlPort): Promise<MarketCollec
       errorCode: row?.error_code == null ? null : String(row.error_code),
       received: Number(row?.received ?? 0), inserted: Number(row?.inserted ?? 0), updated: Number(row?.updated ?? 0),
       unchanged: Number(row?.unchanged ?? 0), unlinked: Number(row?.unlinked ?? 0), consecutiveFailures: Number(row?.consecutive_failures ?? 0),
-      anomaly: row?.state === 'succeeded' && Number(row.previous_received) > 0 && Number(row.received) < Number(row.previous_received) * 0.5 ? '수집량이 이전 성공보다 50% 이상 감소했습니다. 원자료 기간 변경 여부를 확인하세요.' : null };
+      anomaly: job !== 'jp-tokyo-sale' && row?.state === 'succeeded' && Number(row.previous_received) > 0 && Number(row.received) < Number(row.previous_received) * 0.5 ? '수집량이 이전 성공보다 50% 이상 감소했습니다. 원자료 기간 변경 여부를 확인하세요.' : null };
   });
 }
