@@ -236,7 +236,7 @@ test('rail selection opens the map-owned drawer and full-detail CTA', async ({ p
   const panel = drawer.locator(`[data-building-panel="${PUBLIC_BUILDING_TEST_ID}"]`);
   await expect(panel).toBeVisible();
   await expect(drawer.getByRole('link', { name: 'Open full building evidence' }).first())
-    .toHaveAttribute('href', `${PUBLIC_BUILDING_TEST_SELECTION_HREF}&transaction=sale`);
+    .toHaveAttribute('href', `${PUBLIC_BUILDING_TEST_SELECTION_HREF}&view=split&transaction=sale`);
   const drawerBox = await drawer.boundingBox();
   expect(drawerBox).not.toBeNull();
   if (testInfo.project.name === 'desktop-chromium') {

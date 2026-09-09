@@ -177,21 +177,12 @@ describe('Shared responsive form contract', () => {
   it('keeps every housing and unit target at least 44px wide without 720px overflow', () => {
     expect(css).toMatch(/\.unit-toggle button[\s\S]*?min-inline-size:\s*44px;/);
     expect(css).toMatch(/\.housing-choice\s*\{[\s\S]*?min-inline-size:\s*44px;/);
-    expect(css).toMatch(/\.housing-choice\s*\{[\s\S]*?height:\s*44px;/);
+    expect(css).toMatch(/\.housing-choice\s*\{[\s\S]*?height:\s*46px;/);
     expect(css).toMatch(
       /\.housing-choices\s*\{[\s\S]*?grid-template-columns:\s*repeat\(5,\s*minmax\(44px,\s*1fr\)\);/,
     );
 
-    const quotePanelRightBorder = 2;
-    const authoredHorizontalPadding = 11 * 2;
-    const authoredColumnGaps = 12 * 2;
-    const housingInlineBorders = 2 * 2;
-    for (const quoteWidth of [720, 721, 755]) {
-      const housingTrackContentWidth = (
-        quoteWidth - quotePanelRightBorder - authoredHorizontalPadding - authoredColumnGaps
-      ) / 3 - housingInlineBorders;
-      expect(housingTrackContentWidth / 5).toBeGreaterThanOrEqual(44);
-    }
+    expect(css).toMatch(/\.housing-fieldset\s*\{\s*grid-column:\s*1\s*\/\s*-1;/);
     expect(css).toMatch(/\.form-grid\s*\{[\s\S]*?padding:\s*12px 11px;[\s\S]*?gap:\s*12px;/);
   });
 

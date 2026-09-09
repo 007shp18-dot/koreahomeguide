@@ -84,6 +84,11 @@
   gap: 12px;
 }
 
+/* Give all five housing labels their own full-width row. */
+.form-grid > .field:first-child,
+.form-grid > .field:last-child,
+.housing-fieldset { grid-column: 1 / -1; }
+
 .field,
 .housing-fieldset {
   min-width: 0;
@@ -133,7 +138,7 @@
 .housing-choice {
   min-width: 44px;
   min-inline-size: 44px;
-  height: 44px;
+  height: 46px;
   padding: 7px;
   display: grid;
   place-items: center;

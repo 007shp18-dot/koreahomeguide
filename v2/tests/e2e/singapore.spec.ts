@@ -194,9 +194,9 @@ test('native Singapore Check submits single and cross-market A/B evidence', asyn
   }
   await page.getByLabel('Asking price (SGD)', { exact: true }).fill('350000');
   await page.getByRole('button', { name: 'Compare an asking price', exact: true }).click();
+  await expect(page.getByLabel('Check result')).toContainText('SGD 300,000');
   expect(await page.evaluate(() => Reflect.get(window, '__signedpriceToolNavigation'))).toBe(true);
   await expect(page.getByRole('combobox', { name: 'Project', exact: true })).toHaveValue('project-a');
-  await expect(page.getByLabel('Check result')).toContainText('SGD 300,000');
   await expect(page.getByLabel('Check result').locator('dt').filter({ hasText: /^Price percentile$/ }).locator('+ dd')).toHaveText('60th');
   await expect(page.getByLabel('Check result')).toContainText('2026-08–2026-08');
 

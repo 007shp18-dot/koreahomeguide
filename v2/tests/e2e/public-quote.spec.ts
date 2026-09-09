@@ -41,6 +41,7 @@ test('public quote controls retain 44px targets and natural mobile scrolling', a
     page.getByLabel('Area', { exact: true }),
     page.getByLabel('Deposit (KRW)'),
   ]) {
+    await expect(control).toBeVisible();
     const box = await control.boundingBox();
     expect(box?.height).toBeGreaterThanOrEqual(44);
   }

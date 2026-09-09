@@ -545,10 +545,19 @@ test('keeps desktop controls aligned and touch-sized', async ({ page }, testInfo
     expect(control.height).toBe(housing.height);
   }
   expect(housing.height).toBeGreaterThanOrEqual(44);
-  expect(Math.abs(area.y - housing.y)).toBeLessThanOrEqual(0.5);
-  expect(Math.abs(area.y - size.y)).toBeLessThanOrEqual(0.5);
+  expect(Math.abs(area.width - housing.width)).toBeLessThanOrEqual(0.5);
+  expect(housing.y).toBeGreaterThan(area.y);
+  expect(Math.abs(size.y - deposit.y)).toBeLessThanOrEqual(0.5);
   expect(Math.abs(deposit.y - monthly.y)).toBeLessThanOrEqual(0.5);
-  expect(Math.abs(deposit.y - submit.y)).toBeLessThanOrEqual(0.5);
+  expect(submit.y).toBeGreaterThan(monthly.y);
+  for (const label of await page.locator('fieldset').filter({ hasText: 'Housing type' }).locator('label').all()) {
+    const target = await box(label);
+    const text = await box(label.locator('span'));
+    expect(target.width).toBeGreaterThanOrEqual(44);
+    expect(text.x).toBeGreaterThanOrEqual(target.x);
+    expect(text.x + text.width).toBeLessThanOrEqual(target.x + target.width);
+  }
+
 });
 
 test('keeps the mobile form in one-column order with contained 44px targets', async ({
