@@ -83,15 +83,41 @@ test('ready evidence surfaces do not expose unusable rows or wrapped figures', a
     const figure = figures.nth(index);
     const dimensions = await figure.evaluate((element) => {
       const style = getComputedStyle(element);
-      return { height: element.getBoundingClientRect().height, lineHeight: Number.parseFloat(style.lineHeight) };
+      const figureBox = element.getBoundingClientRect();
+      const contextBox = element.parentElement!.querySelector('p')!.getBoundingClientRect();
+      return {
+        height: figureBox.height,
+        lineHeight: Number.parseFloat(style.lineHeight),
+        width: element.clientWidth,
+        scrollWidth: element.scrollWidth,
+        overlapsContext: figureBox.left < contextBox.right && figureBox.right > contextBox.left
+          && figureBox.top < contextBox.bottom && figureBox.bottom > contextBox.top,
+      };
     });
     expect(dimensions.height).toBeLessThanOrEqual(dimensions.lineHeight * 1.1);
+    expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.width + 1);
+    expect(dimensions.overlapsContext).toBe(false);
   }
 
   await page.goto('/design-review/editorial-growth/explore/?locale=en&state=ready&ad=empty');
   const results = page.locator('[data-review-surface="explore"]');
   await expect(results).not.toContainText('Evidence withheld');
   await expect(results).not.toContainText('0 reported contracts');
+});
+
+test('Check figures stay contained at intermediate widths', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'wide-chromium', 'Run the responsive boundary sweep once.');
+  await page.goto('/design-review/editorial-growth/check/?locale=en&state=ready&ad=empty');
+  for (const width of [681, 900, 1100]) {
+    await page.setViewportSize({ width, height: 900 });
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    expect(overflow).toBeLessThanOrEqual(0);
+    const figures = page.locator('[data-check-region="figures"] dd');
+    for (const figure of await figures.all()) {
+      const excess = await figure.evaluate((element) => element.scrollWidth - element.clientWidth);
+      expect(excess).toBeLessThanOrEqual(1);
+    }
+  }
 });
 
 test('wide homepage keeps the opening proposition above the fold', async ({ page }, testInfo) => {

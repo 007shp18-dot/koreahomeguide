@@ -989,6 +989,11 @@
     --review-gutter: 24px;
   }
 
+  .checkWorkspace {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--review-space-7);
+  }
+
   .guideList a {
     grid-template-columns: 110px minmax(180px, 0.8fr) minmax(220px, 1.2fr);
   }
