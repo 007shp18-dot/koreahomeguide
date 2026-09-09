@@ -42,6 +42,20 @@ describe('Dubai project Explore release', () => {
     expect(disclosures.every(tag => !tag.includes(' open'))).toBe(true);
     expect(html).toContain('Price and rent details');
   });
+  it.each(['apartment', 'villa'] as const)('carries the selected Off-Plan %s cohort from both list and map preview into detail', (housing) => {
+    if (model.status !== 'ready') throw new Error('missing released Dubai evidence');
+    const area = model.areas.find(item => item.href !== null && item.segments.some(segment => segment.housing === housing && segment.sales.offPlan !== null));
+    if (area?.href == null) throw new Error('missing released Off-Plan cohort');
+    const html = renderToStaticMarkup(<DubaiExplorer browserKey={null} model={model}
+      initialArea={area.slug} initialStage="off-plan" initialHousing={housing} />);
+    const links = [...html.matchAll(/<a[^>]*href="([^"]+)"[^>]*>View area prices<\/a>/g)].map(match => new URL(match[1]!.replaceAll('&amp;', '&'), 'https://signedprice.test'));
+    expect(links.length).toBeGreaterThan(1);
+    expect(links.filter(link => link.pathname.replace(/\/$/u, '') === area.href!.replace(/\/$/u, ''))).toHaveLength(2);
+    for (const link of links) {
+      expect(link.searchParams.get('stage')).toBe('off-plan');
+      expect(link.searchParams.get('housing')).toBe(housing);
+    }
+  });
   it('restores valid project identity without publishing a project-only URL', () => {
     const state = parseDubaiExploreState({ area: 'business-bay', project: '123-apartment-off-plan', stage: 'off-plan' });
     expect(buildDubaiExploreHref(state)).toContain('project=123-apartment-off-plan');
