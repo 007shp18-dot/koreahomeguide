@@ -13,14 +13,19 @@ test('Tokyo ward map changes the ward while retaining period and property filter
   await expect(map.locator('a[data-ward="13113"]')).toHaveAttribute('aria-current', 'location');
   await expect(page.locator('select[name="city"]')).toHaveValue('13113');
   await expect(page.locator('input[name="minArea"]')).toHaveValue('50');
-  const geometry = await map.boundingBox();
+  // Keyboard navigation can still be smoothly scrolling the page. Measure both
+  // regions in one frame so viewport-relative coordinates remain comparable.
+  const geometry = await map.evaluate(element => {
+    const bounds = element.getBoundingClientRect();
+    const list = document.querySelector('[data-market-shell-region="discovery"]')?.getBoundingClientRect();
+    return { x: bounds.x, width: bounds.width, bottom: bounds.bottom, listTop: list?.top ?? null };
+  });
   const viewport = page.viewportSize()!;
-  expect(geometry).not.toBeNull();
-  expect(geometry!.x).toBeGreaterThanOrEqual(0);
-  expect(geometry!.x + geometry!.width).toBeLessThanOrEqual(viewport.width + 1);
+  expect(geometry.x).toBeGreaterThanOrEqual(0);
+  expect(geometry.x + geometry.width).toBeLessThanOrEqual(viewport.width + 1);
   if (viewport.width <= 760) {
-    const list = await page.locator('[data-market-shell-region="discovery"]').boundingBox();
-    expect(geometry!.y + geometry!.height).toBeLessThanOrEqual(list!.y + 1);
+    expect(geometry.listTop).not.toBeNull();
+    expect(geometry.bottom).toBeLessThanOrEqual(geometry.listTop! + 1);
   }
   await test.info().attach('tokyo-ward-map', { body: await map.screenshot(), contentType: 'image/png' });
 });
