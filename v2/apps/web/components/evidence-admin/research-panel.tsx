@@ -29,6 +29,11 @@ export function ResearchPanel() {
     </form>
     {error ? <p role="alert">{error}</p> : !data ? <p role="status">공유 현황을 불러오는 중…</p> : <>
       <h3>보관 중인 공유 {data.total}건</h3>
+      <p>현재 조회: {data.countedAt.slice(0, 16).replace('T', ' ')} UTC · 일일 집계 확인: {data.lastAggregatedAt ? `${data.lastAggregatedAt.slice(0, 16).replace('T', ' ')} UTC` : '아직 실행 기록 없음'}</p>
+      <h3>자료 수집 우선순위</h3>
+      <p>직접 공유가 많은 시장, 근거 0–4건인 공유가 많은 시장, 보완·갱신이 필요한 자료가 많은 시장 순서입니다. 공유는 이용자 수가 아니며, 비교 도구의 공유는 별도로 표시합니다.</p>
+      <div className={styles.tableScroll}><table><caption>현재 동의가 유지된 공유와 자료 검토 현황</caption><thead><tr><th>시장</th><th>직접 공유</th><th>도시 비교 공유</th><th>근거 0–4건 공유</th><th>승인·유효 근거</th><th>보완 필요</th><th>갱신 필요</th><th>중복 후보</th><th>검토 대기</th></tr></thead><tbody>{data.priorities.map(r => <tr key={r.market}><td>{marketLabels[r.market]}</td><td>{r.directShares}건</td><td>{r.comparisonShares}건</td><td>{r.lowEvidenceShares}건</td><td>{r.approvedEvidence}건</td><td>{r.incompleteEvidence}건</td><td>{r.outdatedEvidence}건</td><td>{r.duplicateEvidence}건</td><td>{r.pendingEvidence}건</td></tr>)}</tbody></table></div>
+      <p>자료 건수는 검토 자료함 기준이며 전체 거래 DB 건수가 아닙니다. 검토 대기는 다른 분류와 겹칠 수 있습니다. 만료·삭제된 공유는 조회 즉시 제외하며 과거 집계 건수를 별도로 보관하지 않습니다.</p>
       {!data.total ? <p className={styles.empty}>조건에 맞는 공유 데이터가 아직 없습니다. 사용자가 도구에서 공유에 동의하면 이곳에 표시됩니다.</p> : <>
         <div className={styles.tableScroll}><table><caption>도구·시장별 공유 건수</caption><thead><tr><th>시장</th><th>도구</th><th>공유</th></tr></thead><tbody>{data.groups.map(r => <tr key={`${r.market}-${tools[r.tool] ?? r.tool}`}><td>{marketLabels[r.market]}</td><td>{tools[r.tool] ?? r.tool}</td><td>{r.count}건</td></tr>)}</tbody></table></div>
         <h3>가격·면적·계산 결과 분포</h3><p>항목별 건수입니다. 같은 공유가 여러 항목에 포함되므로 항목 간 합계를 이용자 수로 해석하지 마세요.</p>

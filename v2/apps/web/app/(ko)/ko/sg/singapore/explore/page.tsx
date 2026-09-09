@@ -35,3 +35,5 @@ export default async function SingaporeExplorePage() {
     restoreStateFromUrl
   />;
 }
+
+export const revalidate = 60;

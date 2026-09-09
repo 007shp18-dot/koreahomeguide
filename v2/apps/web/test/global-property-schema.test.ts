@@ -33,6 +33,10 @@ describe('global property database migration', () => {
       '0018_tool_research_submissions.sql',
       '0019_building_photo_review_queue.sql',
       '0020_property_evidence_pool.sql',
+      '0021_data_collection.sql',
+      '0022_singapore_publication.sql',
+      '0023_tool_research_maintenance.sql',
+      '0024_hdb_building_collection.sql',
     ]);
     expect(bundles.find(({ name }) => name === '0003_global_property_core.sql')?.statements.length)
       .toBeGreaterThan(10);

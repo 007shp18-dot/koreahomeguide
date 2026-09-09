@@ -1,4 +1,5 @@
 import 'server-only';
+import { activeSingaporePublication, singaporePublicationRightsRevoked } from './publication.server';
 
 import {
   SG_URA_PRIVATE_SALE_RIGHTS,
@@ -174,7 +175,16 @@ let environmentCache: Readonly<{
   repository: Promise<SingaporeSnapshotRepository | null>;
 }> | null = null;
 
-export function singaporeSnapshotRepositoryFromEnvironment(): Promise<SingaporeSnapshotRepository | null> {
+const publishedRepositories = new WeakMap<object, Promise<SingaporeSnapshotRepository>>();
+
+export async function singaporeSnapshotRepositoryFromEnvironment(): Promise<SingaporeSnapshotRepository | null> {
+  const published = await activeSingaporePublication();
+  if (singaporePublicationRightsRevoked()) return null;
+  if (published && process.env.SIGNEDPRICE_SINGAPORE_SNAPSHOT_ARTIFACT === undefined) {
+    let repository = publishedRepositories.get(published);
+    if (!repository) { repository = createSingaporeSnapshotRepository({ payload: published.snapshot, expectedDigest: published.snapshot.digest, expectedPeriod: `${published.snapshot.period.from}..${published.snapshot.period.to}` }); publishedRepositories.set(published, repository); }
+    return repository;
+  }
   const serialized = process.env.SIGNEDPRICE_SINGAPORE_SNAPSHOT_ARTIFACT;
   const digest = process.env.SIGNEDPRICE_SINGAPORE_SNAPSHOT_SHA256 ?? '';
   const period = process.env.SIGNEDPRICE_SINGAPORE_SNAPSHOT_PERIOD ?? '';

@@ -1,3 +1,5 @@
+import { publicContentDatabase } from '@/lib/db/postgres.server';
+import { getApprovedHdbBuildingFacts } from '@/lib/data-operations/hdb-buildings.server';
 import { singaporeMetadata } from '@/lib/locale/singapore-copy';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -41,8 +43,13 @@ export default async function HdbBlockPage({ params }: Readonly<{
   const block = model?.blocks.find((item) => item.blockId === blockId);
   if (model === null || model === undefined || block === undefined) notFound();
   const entityId = `sg-singapore:block:${blockId}`;
-  const projections = await publicEntityProjectionReaderFromEnvironment()?.listBuildings([entityId]);
+  const factsSql=publicContentDatabase();
+  const [approvedFacts,projections]=await Promise.all([
+    factsSql?getApprovedHdbBuildingFacts({query:async(s,p)=>factsSql.query(s,p)},entityId).catch(()=>null):Promise.resolve(null),
+    publicEntityProjectionReaderFromEnvironment()?.listBuildings([entityId]),
+  ]);
   return <HdbBlockDetail locale="ko"
+    approvedFacts={approvedFacts}
     block={block}
     town={model.town}
     townHref={`/ko/sg/singapore/hdb/${model.townSlug}/`}

@@ -7,6 +7,8 @@ const calls = vi.hoisted(() => ({
   createRepository: vi.fn(),
   createService: vi.fn(),
   run: vi.fn(),
+  publish: vi.fn(),
+  invalidate: vi.fn(),
 }));
 
 vi.mock('../lib/db/postgres.server', () => ({
@@ -21,6 +23,9 @@ vi.mock('../lib/market-data/refresh-service.server', () => ({
   createMarketDataRefreshService: calls.createService,
 }));
 
+vi.mock('../lib/singapore/publication-build.server', () => ({ publishSingaporeObservations: calls.publish }));
+vi.mock('../lib/singapore/publication-invalidate.server', () => ({ invalidateSingaporePublicationPages: calls.invalidate }));
+
 import * as refreshRoute from '../app/api/internal/market-data-refresh/route';
 
 beforeEach(() => {
@@ -28,6 +33,7 @@ beforeEach(() => {
     query: vi.fn(),
     transaction: vi.fn(),
   });
+  calls.publish.mockResolvedValue({id:'verified-release'});
   calls.contentDatabase.mockReturnValue(sql);
   calls.createRepository.mockReturnValue({ repository: 'test' });
   calls.createService.mockReturnValue({ run: calls.run });
@@ -103,10 +109,13 @@ describe('scheduled market data refresh route', () => {
     await expect(response.json()).resolves.toEqual({
       state: 'ready',
       job: 'sg-private-sale',
+      publication: {id:'verified-release'},
       sourceAsOf: '2026-09-06T00:00:00.000Z',
       counters: { received: 3, inserted: 2, updated: 0, unchanged: 1, unlinked: 0 },
     });
     expect(calls.run).toHaveBeenCalledWith('sg-private-sale');
+    expect(calls.publish).toHaveBeenCalledWith({apply:true});
+    expect(calls.invalidate).toHaveBeenCalledOnce();
   });
 
   it('returns accepted when the exact job already has an active lease', async () => {
@@ -208,4 +217,23 @@ describe('operator Dubai CSV refresh route', () => {
     expect(response.status).toBe(413);
     expect(calls.run).not.toHaveBeenCalled();
   });
+});
+
+describe('Singapore publication after collection', () => {
+ it('keeps successful collection visible when publication is withheld', async () => {
+  vi.stubEnv('CRON_SECRET','cron-secret');
+  calls.run.mockResolvedValue({state:'ready',job:'sg-private-rent'});
+  calls.publish.mockRejectedValue(new Error('invalid evidence'));
+  const response = await refreshRoute.GET(new Request('https://signedprice.test/api/internal/market-data-refresh?job=sg-private-rent',{headers:{authorization:'Bearer cron-secret'}}));
+  expect(await response.json()).toMatchObject({state:'ready',publication:{state:'withheld'}});
+  expect(calls.invalidate).not.toHaveBeenCalled();
+ });
+ it('does not publish failed collection or a different market', async () => {
+  vi.stubEnv('CRON_SECRET','cron-secret');
+  for (const [job,state] of [['sg-private-sale','failed'],['kr-seoul-sale','ready']]) {
+   calls.run.mockResolvedValue({job,state});
+   await refreshRoute.GET(new Request(`https://signedprice.test/api/internal/market-data-refresh?job=${job}`,{headers:{authorization:'Bearer cron-secret'}}));
+  }
+  expect(calls.publish).not.toHaveBeenCalled();
+ });
 });

@@ -42,6 +42,13 @@ describe('HDB detail composition', () => {
     expect(`${town}${detail}`).not.toContain('/kr/seoul/check');
   });
 
+  it('uses only approved exact-entity building updates with source date', () => {
+    const facts={id:'candidate',version:2,status:'approved',entityId:'sg-singapore:block:10-bedok-road',block:'10',street:'BEDOK ROAD',yearCompleted:1999,maxFloorLevel:24,dwellingUnits:240,residential:true,town:'BD',fetchedAt:'2026-09-09T00:00:00Z',sourceUrl:'https://data.gov.sg/',contentHash:'hash',isCurrent:true};
+    const render=(status:string,entityId=facts.entityId)=>renderToStaticMarkup(<HdbBlockDetail block={block} town="BEDOK" townHref="/sg/singapore/hdb/bedok/" googleMapsBrowserKey={null} approvedFacts={{...facts,status,entityId}} />);
+    expect(render('approved')).toContain('1999');expect(render('approved')).toContain('2026-09-09');
+    expect(render('pending')).not.toContain('1999');expect(render('approved','sg-singapore:block:wrong')).not.toContain('1999');
+  });
+
   it('renders official nearest rail and school evidence on a block', () => {
     const detail = renderToStaticMarkup(<HdbBlockDetail
       block={block}

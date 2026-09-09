@@ -26,6 +26,14 @@ describe('evidence pool input boundaries', () => {
     expect(parseSource(source)).toEqual(source);
     expect(parseSource({ ...source, status: 'approved' })).toBeNull();
   });
+  it('preserves month precision without inventing a transaction day', () => {
+    const monthly = { ...sampleEvidence, basis: 'registered', observedOn: '2026-08-01', observedPrecision: 'month', observedPeriod: '2026-08' };
+    expect(parseEvidence(monthly)).toEqual(monthly);
+    expect(parseEvidence({ ...monthly, observedOn: '2026-08-15' })).toBeNull();
+    expect(parseEvidence({ ...monthly, observedPeriod: '2026-13' })).toBeNull();
+    expect(parseEvidence({ ...monthly, observedPrecision: 'day' })).toBeNull();
+    expect(parseEvidence({ ...sampleEvidence, observedPrecision: 'month' })).toBeNull();
+  });
   it('requires optimistic versions and a reason for review', () => {
     expect(parseCommand({ action: 'review', entity: 'evidence', id: sampleEvidence.sourceId, version: 1, status: 'approved', reason: 'Checked source' })).not.toBeNull();
     expect(parseCommand({ action: 'review', entity: 'evidence', id: sampleEvidence.sourceId, version: 0, status: 'approved', reason: '' })).toBeNull();

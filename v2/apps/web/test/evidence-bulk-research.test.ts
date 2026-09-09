@@ -19,7 +19,7 @@ type DB = { query(sql: string, params?: unknown[]): Promise<{ rows: Record<strin
   beforeAll(async () => {
     const { PGlite } = createRequire(import.meta.url)(modulePath!);
     db = new PGlite();
-    for (const name of ['0020_property_evidence_pool.sql', '0018_tool_research_submissions.sql']) await db.exec(await readFile(new URL(`../db/migrations/${name}`, import.meta.url), 'utf8'));
+    for (const name of ['0020_property_evidence_pool.sql', '0018_tool_research_submissions.sql', '0023_tool_research_maintenance.sql']) await db.exec(await readFile(new URL(`../db/migrations/${name}`, import.meta.url), 'utf8'));
     repo = createPoolRepository({ query: async (sql, params) => (await db.query(sql, params)).rows });
     const source = await repo.mutate({ action: 'create-source', input: { name: 'Verified source', url: 'https://bulk.example', kind: 'official' } }, 'test');
     sourceId = source.id;
