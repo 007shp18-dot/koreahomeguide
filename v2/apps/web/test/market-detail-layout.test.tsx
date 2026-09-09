@@ -27,4 +27,16 @@ describe('detail reading order', () => {
     expect(html).toContain('SGD 2,400');
     expect(html.indexOf('SGD 543,210')).toBeLessThan(html.indexOf('id="detail-evidence"'));
   });
+
+  it('keeps a supplied market summary before visible media without repeating the overview anchor', () => {
+    const html = renderToStaticMarkup(<MarketDetailShell breadcrumb="Explore"
+      summary={<section><h1>Project</h1><strong>SGD 123,456</strong></section>}
+      media={<figure aria-label="Building photo">Building photo</figure>}
+      evidence="Reported sales" rail="URA source" />);
+    expect(html.match(/id="detail-overview"/g)).toHaveLength(1);
+    expect(html.match(/SGD 123,456/g)).toHaveLength(1);
+    expect(html.indexOf('SGD 123,456')).toBeLessThan(html.indexOf('Building photo'));
+    expect(html).not.toContain('<details');
+    for (const id of ['detail-overview', 'detail-evidence', 'detail-source']) expect(html).toContain(`href="#${id}"`);
+  });
 });

@@ -18,10 +18,10 @@ import { ProjectedEntityMedia } from '../public-market/projected-entity-media';
 import {
   SingaporeEvidence,
   SingaporePage,
-  SingaporeScope,
   singaporeStyles as styles,
 } from './singapore-shell';
 import { MarketDetailShell } from '../market-ui/market-shell';
+import { MarketSummary } from '../market-ui/market-summary';
 import { SingaporeNearbyPlaces } from './singapore-nearby-places';
 
 function PriceRange({ locale = 'en', value }: Readonly<{ locale?: MarketLocale; value: string }>) {
@@ -82,8 +82,22 @@ export function SingaporeProjectDetail({ locale = 'en', model, googleMapsBrowser
           {sgText(locale, model.identity.marketSegment)}
         </Link>
         <span>{displayName}</span></nav>}
-        identity={<div className={styles.detailIdentity} data-singapore-project="ready"><p className={styles.eyebrow}>{sgText(locale, "Singapore · ")}{sgText(locale, model.identity.marketSegment)}{sgText(locale, " · District ")}{sgText(locale, model.identity.district)}</p><h1>{displayName}</h1><p>{model.identity.street}</p><SingaporeScope locale={locale} activeSegment={model.identity.marketSegment} /><div className={styles.actions}><Link href={marketHref(locale, model.checkHref)}>{sgText(locale, "Compare an asking price")}</Link></div></div>}
-        metric={<div className={styles.detailMetric}><small>{sgText(locale, "Median price")}</small><strong>{sgText(locale, model.display.medianPriceLabel)}</strong><span>{sgText(locale, model.display.sampleLabel)} · {model.evidence.period}</span></div>}
+        summary={<div data-singapore-project="ready"><MarketSummary locale={locale} kind="project"
+          title={displayName}
+          location={model.identity.street}
+          context={`${sgText(locale, 'Singapore')} · ${model.identity.marketSegment} · ${sgText(locale, 'District')} ${model.identity.district}`}
+          metric={{
+            label: locale === 'ko' ? '집계 기간 매매가격 중앙값' : 'Median sale price for this period',
+            value: sgText(locale, model.display.medianPriceLabel),
+            secondary: sgText(locale, model.display.medianPsfLabel),
+            note: `${sgText(locale, 'Reporting period')} · ${model.evidence.period}`,
+          }}
+          facts={[
+            { label: sgText(locale, 'Sample'), value: sgText(locale, model.display.sampleLabel) },
+            ...(model.identity.tenures.filter(Boolean).length ? [{ label: sgText(locale, 'Tenure in reported records'), value: sgText(locale, model.identity.tenures.filter(Boolean).join(' · ')) }] : []),
+          ]}
+          actions={<Link href={marketHref(locale, model.checkHref)}>{sgText(locale, 'Compare an asking price')}</Link>}
+        /></div>}
         media={<GooglePlacePhoto locale={locale}
           browserKey={googleMapsBrowserKey}
           buildingName={model.identity.project}

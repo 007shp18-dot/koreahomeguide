@@ -49,10 +49,11 @@ export function MarketExploreShell({ locale = 'en',  eyebrow, title, period, lay
   </div>;
 }
 
-export function MarketDetailShell({ locale = 'en',  breadcrumb, identity, metric, evidence, rail, media }: Readonly<{
+export function MarketDetailShell({ locale = 'en',  breadcrumb, identity, metric, evidence, rail, media, summary }: Readonly<{
   breadcrumb: React.ReactNode;
-  identity: React.ReactNode;
-  metric: React.ReactNode;
+  identity?: React.ReactNode;
+  metric?: React.ReactNode;
+  summary?: React.ReactNode;
   evidence: React.ReactNode;
   rail: React.ReactNode;
   media?: React.ReactNode;
@@ -61,9 +62,12 @@ export function MarketDetailShell({ locale = 'en',  breadcrumb, identity, metric
 
   return <article className={styles.detail} data-market-detail-shell="true">
     <div className={styles.breadcrumb}>{t(breadcrumb)}</div>
-    <header className={styles.identity} data-has-media={media ? "true" : "false"}><div>{t(identity)}</div>{media ? <div className={styles.heroMedia}>{t(media)}</div> : null}</header>
+    {summary ? <>
+      <div id="detail-overview">{summary}</div>
+      {media ? <div className={styles.summaryMedia}>{t(media)}</div> : null}
+    </> : <header className={styles.identity} data-has-media={media ? "true" : "false"}><div>{t(identity)}</div>{media ? <div className={styles.heroMedia}>{t(media)}</div> : null}</header>}
     <nav className={styles.detailTabs} aria-label={t("Detail sections")}><a href={marketHref(locale, "#detail-overview")}>{t("Overview")}</a><a href={marketHref(locale, "#detail-evidence")}>{t("Transactions")}</a><a href={marketHref(locale, "#detail-source")}>{t("Source")}</a></nav>
-    <section className={styles.detailSummary} id="detail-overview"><div>{t(metric)}</div></section>
+    {metric ? <section className={styles.detailSummary} id={summary ? undefined : "detail-overview"}><div>{t(metric)}</div></section> : null}
     <div className={styles.detailGrid}>
       <div className={styles.detailMain}>
         <div id="detail-evidence">{t(evidence)}</div>

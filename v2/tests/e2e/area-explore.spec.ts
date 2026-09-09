@@ -284,10 +284,12 @@ test('mobile controls keep 44px focus targets and natural document scrolling', a
   const exploreTab = navigation.getByRole('link', { name: 'Explore' });
   const viewTabs = page.getByRole('navigation', { name: 'Explorer view' }).getByRole('link');
   const districtLink = page.getByRole('combobox', { name: 'All 25 Seoul districts' });
-  for (const target of [exploreTab, districtLink]) {
-    await expectTouchTarget(target);
-    await expectCobaltFocus(page, target);
-  }
+  await expectTouchTarget(exploreTab);
+  await expectCobaltFocus(page, exploreTab);
+  await exploreTab.press('Escape');
+  await expect(page.locator('header.site-header details.site-header__mobile-menu')).not.toHaveAttribute('open', '');
+  await expectTouchTarget(districtLink);
+  await expectCobaltFocus(page, districtLink);
   await districtLink.selectOption('jongno-gu');
   await expect(page).toHaveURL(/district=jongno-gu/);
   const detailLink = page.locator('[data-building-row]').first().getByRole('link');

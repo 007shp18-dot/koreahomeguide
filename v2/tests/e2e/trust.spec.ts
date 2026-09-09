@@ -40,7 +40,7 @@ for (const route of [
     const raw = await request.get(route.path);
     expect(raw.status()).toBe(200);
     const html = await raw.text();
-    expect(html).toContain(route.heading);
+    expect(html).toContain(route.heading.replaceAll('&', '&amp;'));
     expect(html).not.toMatch(/191,067|8\.2%|most accurate|guaranteed/i);
 
     const response = await page.goto(route.path);

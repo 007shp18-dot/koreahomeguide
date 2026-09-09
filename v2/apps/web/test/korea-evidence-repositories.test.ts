@@ -764,9 +764,7 @@ describe('installed Korea evidence repositories', () => {
       : '';
 
     expect(html).toContain('data-building-detail="exact-evidence"');
-    const identityHtml = html.slice(html.indexOf('data-building-section="identity"'), html.indexOf('id="building-overview"'));
-    expect(identityHtml).not.toContain('₩300K');
-    const summaryHtml = html.slice(html.indexOf('id="building-overview"'), html.indexOf('id="building-transactions"'));
+    const summaryHtml = html.slice(html.indexOf('data-building-summary="true"'), html.indexOf('data-detail-order="media"'));
     expect(summaryHtml.match(/₩300K/g)).toHaveLength(1);
     expect(summaryHtml).toContain(model.period);
     expect(summaryHtml).not.toContain('Median price per m²');
