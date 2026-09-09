@@ -1,6 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { createRequire } from 'node:module';
 vi.mock('server-only', () => ({}));
+import { readTokyoAreaSummary } from '../lib/japan/area-map-summary.server';
 import { readTokyoMapSummary } from '../lib/japan/map-summary.server';
 import type { MarketRefreshSqlPort } from '../lib/market-data/refresh-repository.server';
 
@@ -34,4 +35,14 @@ suite('Tokyo map aggregates published transactions, not the visible page', () =>
     const rows = await readTokyoMapSummary('2025', '4', { ...filters, minArea: 80 }, port);
     expect(rows).toEqual([{ city: '13101', count: 0, medianPrice: null }, { city: '13103', count: 0, medianPrice: null }]);
   });
+  it('Google area bubbles use the full matching population and never replace a missing selected period', async () => {
+    const rows = await readTokyoAreaSummary('13103', '2025', '4', { ...filters, type: 'Condo', minArea: 50 }, port);
+    expect(rows).toEqual([
+      { city: '13103', year: '2025', quarter: '4', municipality: 'Minato', district: null, count: 25, median: 13000000 },
+      { city: '13103', year: '2025', quarter: '4', municipality: 'Minato', district: 'Azabu', count: 25, median: 13000000 },
+    ]);
+    expect(await readTokyoAreaSummary('13103', '2025', '4', { ...filters, minArea: 80 }, port)).toEqual([]);
+    expect((await readTokyoAreaSummary('13103', '2024', '1', filters, port)).filter(row => row.city === '13103')).toEqual([]);
+  });
+
 });

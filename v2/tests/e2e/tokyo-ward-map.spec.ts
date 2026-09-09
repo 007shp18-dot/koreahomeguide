@@ -2,8 +2,11 @@ import { expect, test } from '@playwright/test';
 
 test('Tokyo ward map changes the ward while retaining period and property filters', async ({ page }) => {
   await page.goto('/jp/tokyo/explore/?city=13103&year=2025&quarter=4&minArea=50');
-  const map = page.locator('[data-tokyo-ward-map]');
+  const map = page.locator('[data-tokyo-google-map]');
   await expect(map).toBeVisible();
+  await expect(map.getByRole('heading', { name: 'Tokyo price map' })).toBeVisible();
+  await expect(map.getByRole('button', { name: 'Open ward and neighbourhood price map' })).toHaveCount(0);
+  await map.getByText('All Tokyo wards', { exact: true }).click();
   await expect(map.locator('a[data-ward]')).toHaveCount(23);
   const shibuya = map.locator('a[data-ward="13113"]');
   await shibuya.focus();
