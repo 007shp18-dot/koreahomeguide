@@ -2,8 +2,9 @@ import 'server-only';
 
 // Read-time classification preserves the original values and review history.
 export const classified = `WITH duplicates AS (
-  SELECT e.*, count(*) OVER (PARTITION BY data - ARRAY['sourceId','url','tier','expiresOn']) > 1 AS duplicate
-  FROM property_pool_evidence e WHERE status <> 'withdrawn'
+  SELECT e.*, count(*) FILTER (WHERE status NOT IN ('withdrawn','rejected')) OVER (PARTITION BY data - ARRAY['sourceId','url','tier','expiresOn'])
+    > CASE WHEN status IN ('withdrawn','rejected') THEN 0 ELSE 1 END AS duplicate
+  FROM property_pool_evidence e
 ), classified AS (
   SELECT e.*, CASE
     WHEN coalesce(d.duplicate, false) THEN 'duplicate'

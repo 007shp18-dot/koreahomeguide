@@ -55,7 +55,7 @@ export function parseEvidence(value: unknown): EvidenceInput | null {
   if (!v) return null;
   const extraKeys = ['address', 'housingType', 'conditions', 'billingPeriod'].filter((key) => key in v);
   if (!keys(v, [...extraKeys, 'sourceId', 'market', 'tier', 'metric', 'basis', 'amount', 'currency', 'unit', 'area', 'building', 'sizeSqm', 'observedOn', 'expiresOn', 'url'])) return null;
-  if (extraKeys.some((key) => key === 'billingPeriod' ? !['monthly', 'annual', 'once'].includes(String(v[key])) : !label(v[key], 0, key === 'conditions' ? 240 : 160))) return null;
+  if (extraKeys.some((key) => key === 'billingPeriod' ? (typeof v[key] !== 'string' || !['monthly', 'annual', 'once'].includes(v[key] as string)) : !label(v[key], 0, key === 'conditions' ? 240 : 160))) return null;
   if (!isId(v.sourceId) || !choice(v.market, markets) || !choice(v.tier, tiers) || !choice(v.metric, metrics)
     || !choice(v.basis, bases) || !choice(v.unit, units) || !safeUrl(v.url)
     || !label(v.area, 2, 120) || !label(v.building, 0, 160)

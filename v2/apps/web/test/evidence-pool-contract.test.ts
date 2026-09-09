@@ -15,7 +15,7 @@ describe('evidence pool input boundaries', () => {
     expect(parseEvidence({ ...sampleEvidence, amount: '12000' })).toBeNull();
   });
   it.each([
-    { author: 'person' }, { rawPost: 'text' }, { amount: -1 }, { amount: Infinity },
+    { billingPeriod: ['monthly'] }, { conditions: ['unchecked'] }, { author: 'person' }, { rawPost: 'text' }, { amount: -1 }, { amount: Infinity },
     { observedOn: '2026-02-30' }, { expiresOn: '2026-08-01' }, { sizeSqm: 0 },
     { url: 'javascript:alert(1)' }, { url: 'https://user:password@example.com' }, { currency: 'KRW' },
   ])('rejects unsafe or inconsistent fields %j', (change) => {

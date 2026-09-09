@@ -62,8 +62,8 @@ type DB = { query(sql: string, params?: unknown[]): Promise<{ rows: Record<strin
   });
   it('detects cross-source duplicate candidates and expiry; filter-wide rejection preserves values', async () => {
     const a = input('Duplicate');
-    await repo.mutate({ action: 'create-evidence', input: a },'test');
-    await repo.mutate({ action: 'create-evidence', input: { ...a, url: 'https://bulk.example/another' } },'test');
+    const duplicateA = await repo.mutate({ action: 'create-evidence', input: a },'test');
+    const duplicateB = await repo.mutate({ action: 'create-evidence', input: { ...a, url: 'https://bulk.example/another' } },'test');
     const old = await repo.mutate({ action: 'create-evidence', input: { ...input('Expired'), observedOn: '2000-01-01', expiresOn: '2001-01-01' } },'test');
     const duplicates = await repo.list({ page:1,market:'',status:'',query:'',quality:'duplicate' });
     expect(duplicates.total).toBe(2);
@@ -75,6 +75,8 @@ type DB = { query(sql: string, params?: unknown[]): Promise<{ rows: Record<strin
     expect(preview.eligible).toBe(2);
     expect(await repo.bulk({ ...command,action:'bulk-review',fingerprint:preview.fingerprint },'test')).toMatchObject({ changed:2 });
     expect((await repo.list({page:1,market:'',status:'rejected',query:'Duplicate'})).total).toBe(2);
+    await repo.mutate({ action: 'review', entity: 'evidence', id: duplicateA.id, version: 2, status: 'approved', reason: 'Keep verified copy; other copy rejected' }, 'test');
+    expect((await repo.bulk(bulk([duplicateB.id]), 'test')).eligible).toBe(0);
   });
   it('excludes expired and deleted shares and never returns identity hashes', async () => {
     const research = createToolResearchRepository({ query: async (sql, params) => (await db.query(sql, params ? [...params] : [])).rows });
