@@ -105,7 +105,7 @@
 .stageCard dl div, .rentCard dl div, .sourceCard dl div { min-width: 0; }
 .stageCard dt, .rentCard dt, .sourceCard dt { color: var(--muted); font-size: var(--text-meta); }
 .stageCard dd, .rentCard dd, .sourceCard dd { min-width: 0; margin: 4px 0 0; font-variant-numeric: tabular-nums; overflow-wrap: break-word; }
-.stageCard dl > div:first-child dd { font-size: clamp(1.8rem, 3.5vw, 2.8rem); line-height: 1.2; font-weight: 750; white-space: nowrap; overflow-wrap: normal; overflow-x: auto; }
+.stageCard dl > div:first-child dd { font-size: 1rem; line-height: 1.6; font-weight: 500; white-space: normal; overflow-wrap: break-word; }
 .rentCard { padding: 20px; background: var(--surface); }
 .rentCard dl { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .areaRail { min-width: 0; display: grid; align-content: start; gap: 18px; }
