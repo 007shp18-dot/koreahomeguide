@@ -18,26 +18,27 @@ export function CheckEntitySelect({ name, market, kind, defaultValue = '', selec
   const [active, setActive] = useState(false);
   const [value, setValue] = useState(defaultValue);
   const [selectionLabel, setSelectionLabel] = useState(selectedLabel);
-  const [options, setOptions] = useState<readonly Option[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [result, setResult] = useState<{ key: string; options: readonly Option[]; error: boolean } | null>(null);
   const [retry, setRetry] = useState(0);
+  const requestKey = JSON.stringify([market, kind, query, retry]);
+  const currentResult = result?.key === requestKey ? result : null;
+  const options = currentResult?.options ?? [];
+  const loading = active && currentResult === null;
+  const error = currentResult?.error ?? false;
   useEffect(() => {
     if (!active) return;
     const controller = new AbortController();
-    setLoading(true); setError(false);
     const timer = window.setTimeout(async () => {
       try {
         const params = new URLSearchParams({ market, kind, q: query });
         const response = await fetch(`/api/singapore/check-options/?${params}`, { signal: AbortSignal.any([controller.signal, AbortSignal.timeout(15000)]) });
         if (!response.ok) throw new Error('unavailable');
         const result = await response.json();
-        if (!controller.signal.aborted) setOptions(result.options);
-      } catch { if (!controller.signal.aborted) setError(true); }
-      finally { if (!controller.signal.aborted) setLoading(false); }
+        if (!controller.signal.aborted) setResult({ key: requestKey, options: result.options, error: false });
+      } catch { if (!controller.signal.aborted) setResult({ key: requestKey, options: [], error: true }); }
     }, 200);
     return () => { clearTimeout(timer); controller.abort(); };
-  }, [active, market, kind, query, retry]);
+  }, [active, market, kind, query, requestKey]);
   const visible = value && !options.some(([key]) => key === value) ? [[value, selectionLabel] as const, ...options] : options;
   return <span style={{ display: 'grid', gap: 8, minWidth: 0 }}>
     <input type="search" value={query} maxLength={100} aria-label={locale === 'ko' ? '단지 또는 주소 검색' : 'Search project or address'} aria-controls={id}

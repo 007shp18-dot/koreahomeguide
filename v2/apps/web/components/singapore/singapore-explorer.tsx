@@ -101,10 +101,7 @@ export function SingaporeExplorer({ locale = 'en',
   districtSummary?: readonly { region: string; district: string; count: number }[];
 }>) {
   const overview = useMemo(() => unpackSingaporeExploreModel(incomingModel), [incomingModel]);
-  const [loadedModel, setLoadedModel] = useState<SingaporeExploreModel | null>(null);
-  const model = loadedModel ?? overview;
-  const [loadingProjects, setLoadingProjects] = useState(false);
-  const [loadError, setLoadError] = useState(false);
+  const [result, setResult] = useState<{ key: string; model: SingaporeExploreModel | null; error: boolean } | null>(null);
   const [retry, setRetry] = useState(0);
   const [selectedSegment, setSelectedSegment] = useState<'CCR' | 'RCR' | 'OCR' | null>(initialSegment);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(initialProjectId);
@@ -117,13 +114,16 @@ export function SingaporeExplorer({ locale = 'en',
   const [sort, setSort] = useState<string>(initialSort);
   const [pendingHref, setPendingHref] = useState<string | null>(null);
   const [urlStateReady, setUrlStateReady] = useState(!restoreStateFromUrl);
+  const needsProjects = progressive && urlStateReady && (selectedSegment !== null || deferredQuery.trim() !== '' || district !== 'all' || lookupProjectId !== null);
+  const requestKey = JSON.stringify([selectedSegment, deferredQuery, district, lookupProjectId, retry]);
+  const currentResult = needsProjects && result?.key === requestKey ? result : null;
+  const loadedModel = currentResult?.model ?? null;
+  const model = loadedModel ?? overview;
+  const loadingProjects = needsProjects && currentResult === null;
+  const loadError = currentResult?.error ?? false;
   useEffect(() => {
-    if (!progressive || !urlStateReady) return;
-    if (selectedSegment === null && !deferredQuery.trim() && district === 'all' && lookupProjectId === null) {
-      setLoadedModel(null); setLoadingProjects(false); setLoadError(false); return;
-    }
+    if (!needsProjects) return;
     const controller = new AbortController();
-    setLoadingProjects(true); setLoadError(false);
     const timer = window.setTimeout(async () => {
       const params = new URLSearchParams();
       if (selectedSegment) params.set('region', selectedSegment);
@@ -134,12 +134,11 @@ export function SingaporeExplorer({ locale = 'en',
         const response = await fetch(`/api/singapore/explore/?${params}`, { signal: AbortSignal.any([controller.signal, AbortSignal.timeout(15000)]) });
         if (!response.ok) throw new Error('unavailable');
         const next = unpackSingaporeExploreModel(await response.json());
-        if (!controller.signal.aborted) setLoadedModel(next);
-      } catch { if (!controller.signal.aborted) setLoadError(true); }
-      finally { if (!controller.signal.aborted) setLoadingProjects(false); }
+        if (!controller.signal.aborted) setResult({ key: requestKey, model: next, error: false });
+      } catch { if (!controller.signal.aborted) setResult({ key: requestKey, model: null, error: true }); }
     }, 200);
     return () => { clearTimeout(timer); controller.abort(); };
-  }, [progressive, urlStateReady, selectedSegment, deferredQuery, district, lookupProjectId, retry]);
+  }, [needsProjects, requestKey, selectedSegment, deferredQuery, district, lookupProjectId]);
   const segments = model.status === 'ready' ? model.segments : [];
   const selected = segments.find((segment) => segment.code === selectedSegment);
   const allProjects = useMemo(() => model.status === 'ready' ? model.segments.flatMap((segment) => (segment.projects ?? []).map((project) => ({ ...project, segment: segment.code }))) : [], [model]);
