@@ -234,7 +234,7 @@ async function gotoRentCheck(page: Page) {
   expect(response?.status()).toBe(200);
   await expect(page.getByRole('heading', {
     level: 1,
-    name: 'Check the quote against reported contracts.',
+    name: 'Check a Seoul rent quote',
   })).toBeVisible();
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
     'content',

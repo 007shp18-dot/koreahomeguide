@@ -14,6 +14,73 @@ import {
 
 const releaseTarget = resolveReleaseTestTarget();
 
+test('Seoul area bubble opens and closes results without replacing its map', async ({ page }) => {
+  test.skip(releaseTarget.usesExternalServer || process.env.SIGNEDPRICE_TEST_NAVER_MAP !== 'true',
+    'Run with SIGNEDPRICE_TEST_NAVER_MAP=true NAVER_MAP_CLIENT_ID=e2e-map-fixture for the isolated SDK fixture.');
+  await page.route('https://oapi.map.naver.com/openapi/v3/maps.js**', route => route.fulfill({
+    contentType: 'application/javascript',
+    body: `
+      class FixtureMap {
+        constructor(element) { this.element = element; this.zoom = 13; element.dataset.fixtureMap = String(Date.now()); }
+        setCenter() {} setZoom(zoom) { this.zoom = zoom; } getZoom() { return this.zoom; }
+      }
+      class FixtureMarker {
+        constructor({ map, title, icon }) {
+          this.element = document.createElement('button');
+          this.element.type = 'button'; this.element.title = title;
+          this.element.innerHTML = icon?.content || title;
+          this.element.style.cssText = 'position:relative;display:inline-block;margin:12px;min-width:48px;min-height:48px';
+          map.element.append(this.element);
+        }
+        setMap(map) { if (map === null) this.element.remove(); }
+      }
+      window.naver = { maps: {
+        Map: FixtureMap, Marker: FixtureMarker, LatLng: class {},
+        Event: {
+          addListener(target, event, callback) {
+            target.element.addEventListener(event, callback); return { target, event, callback };
+          },
+          removeListener({ target, event, callback }) { target.element.removeEventListener(event, callback); }
+        },
+        Service: { Status: { OK: 'OK' }, geocode(_input, callback) { callback('ZERO_RESULTS', {}); } }
+      } };
+    `,
+  }));
+  await page.goto('/kr/seoul/explore/?district=jongno-gu&transaction=jeonse&view=map');
+  const canvas = page.locator('[data-fixture-map]');
+  await expect(canvas).toBeVisible();
+  const mapIdentity = await canvas.getAttribute('data-fixture-map');
+  const bubble = canvas.getByRole('button').filter({ has: page.locator('.spMapAreaGroup') }).first();
+  await expect(bubble).toBeVisible();
+  await bubble.click();
+  const results = page.getByRole('complementary', { name: 'District and building discovery', exact: true });
+  await expect(results).toBeVisible();
+  await expect(results.locator('[data-building-row]').first()).toBeVisible();
+  await expect(canvas).toHaveAttribute('data-fixture-map', mapIdentity!);
+  await expect(page.locator('[data-explorer-layout="map"]')).toBeVisible();
+  await results.getByRole('button', { name: 'Close area results', exact: true }).click();
+  await expect(results).toHaveCount(0);
+  await expect(canvas).toBeVisible();
+  await expect(canvas).toHaveAttribute('data-fixture-map', mapIdentity!);
+});
+
+for (const view of ['split', 'map'] as const) {
+  test(`Seoul keeps ${view} and its map while drilling into a district`, async ({ page }) => {
+    await page.goto(`/kr/seoul/explore/?view=${view}`);
+    const map = page.locator('[data-explorer-region="map"]');
+    await expect(map).toBeVisible();
+    await page.getByRole('combobox', { name: 'All 25 Seoul districts', exact: true }).selectOption('gangnam-gu');
+    await expect(page).toHaveURL(new RegExp(`district=gangnam-gu`));
+    await expect(page.locator(`[data-explorer-layout="${view}"]`)).toBeVisible();
+    await expect(map).toBeVisible();
+    expect(new URL(page.url()).searchParams.get('view')).toBe(view);
+    await page.getByRole('button', { name: 'All Seoul districts', exact: true }).click();
+    await expect(page).not.toHaveURL(/district=/);
+    await expect(page.locator(`[data-explorer-layout="${view}"]`)).toBeVisible();
+    await expect(map).toBeVisible();
+  });
+}
+
 test('Explore recovery keeps discovery primary and search touch-safe', async ({ page }) => {
   await page.goto('/kr/seoul/explore/');
   const rail = page.getByRole('complementary', { name: 'District and building discovery', exact: true });

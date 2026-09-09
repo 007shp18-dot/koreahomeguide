@@ -135,16 +135,15 @@ test('rankings remain contained and keyboard-readable at every release width', a
   assertNoRuntimeFailures();
 });
 
-test('Explore and district evidence keep Rankings reachable inside Explore with four global product links', async ({ page }) => {
+test('Explore keeps four direct product links while district evidence retains its Rankings action', async ({ page }) => {
   await page.goto('/kr/seoul/explore/');
   const productNavigation = await openPrimaryNavigation(page);
   await expect(productNavigation.getByRole('link', { name: 'Explore' }))
     .toHaveAttribute('href', '/prices/');
   await expect(productNavigation.locator('.site-header__product-link')).toHaveText(['Explore', 'Insights', 'Tools', 'Guides']);
   const rankingsLink = productNavigation.getByRole('link', { name: 'Rankings', exact: true });
-  if (!(await rankingsLink.isVisible())) await productNavigation.locator('summary[aria-label="Explore options"]').click();
-  await expect(rankingsLink).toBeVisible();
-  await expect(rankingsLink).toHaveAttribute('href', '/rankings/');
+  await expect(rankingsLink).toHaveCount(0);
+  await expect(page.getByRole('navigation', { name: 'Footer Explore' }).getByRole('link', { name: 'Rankings', exact: true })).toHaveAttribute('href', '/rankings/');
 
 
   await page.goto('/kr/seoul/explore/jongno-gu/');

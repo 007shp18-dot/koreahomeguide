@@ -46,3 +46,11 @@ export const PUBLIC_BUILDING_SUMMARY_TEST_ARTIFACT = JSON.stringify({
   ...unsigned,
   sha256: createHash('sha256').update(canonicalJson(unsigned)).digest('hex'),
 });
+
+const unlocated = {
+  ...unsigned,
+  records: unsigned.records.map(record => ({ ...record, latitude: null, longitude: null })),
+};
+export const UNLOCATED_BUILDING_SUMMARY_TEST_ARTIFACT = JSON.stringify({
+  ...unlocated, sha256: createHash('sha256').update(canonicalJson(unlocated)).digest('hex'),
+});

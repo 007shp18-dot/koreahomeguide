@@ -37,6 +37,25 @@ const districts = [{
 }] as const;
 
 describe('NAVER district map', () => {
+  it('opens the selected district area group instead of navigating back to the same district', () => {
+    const clicks: (() => void)[] = [];
+    const onOpenAreaBuildings = vi.fn();
+    const onSelect = vi.fn();
+    class Map { setCenter() {} setZoom() {} }
+    class LatLng {}
+    class Marker { setMap() {} }
+    mountNaverDistrictMap({
+      sdk: { Map, LatLng, Marker, Event: { addListener: (_target, event, callback) => { if (event === 'click') clicks.push(callback); }, removeListener() {} } },
+      element: {} as HTMLElement, districts, selectedDistrict: districts[0], buildings: [],
+      areaGroups: [{ reference: { id: districts[0].slug, title: districts[0].nameEn,
+        latitude: districts[0].latitude, longitude: districts[0].longitude }, count: 12 }],
+      onSelect, onOpenAreaBuildings,
+    });
+    expect(clicks).toHaveLength(1);
+    clicks[0]!();
+    expect(onOpenAreaBuildings).toHaveBeenCalledOnce();
+    expect(onSelect).not.toHaveBeenCalled();
+  });
   it('retains unlocated neighborhood totals at an approximate district reference without a geocoder', () => {
     const icons: string[] = [];
     const clicks: (() => void)[] = [];

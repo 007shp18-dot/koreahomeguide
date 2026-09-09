@@ -31,7 +31,7 @@ const hubCopy = {
   },
   prices: {
     eyebrow: 'Signed price evidence',
-    title: 'Prices',
+    title: 'Explore',
     description: 'Find recorded sale prices and rents by city, then compare the area, building or project you are considering.',
   },
   news: {
@@ -152,6 +152,7 @@ function PricesHub() {
         <Link href="/kr/seoul/explore/"><span>Seoul · KRW</span><h3>Reported housing contracts</h3><p>Explore sale, jeonse and monthly rent by district, neighborhood and building. Compare the same property type and area.</p><strong>Explore →</strong></Link>
         <Link href="/sg/singapore/explore/"><span>Singapore · SGD</span><h3>Private homes and HDB</h3><p>Search private projects and inspect transaction history, size bands and tenure. HDB records stay in their own dataset.</p><strong>Explore →</strong></Link>
         <Link href="/ae/dubai/explore/"><span>Dubai · AED</span><h3>Ready and Off-Plan prices</h3><p>Compare Ready and Off-Plan sale prices, annual rents and gross yields by area, with sample sizes and reporting dates.</p><strong>Explore →</strong></Link>
+        <Link href="/jp/tokyo/explore/"><span>Tokyo · JPY</span><h3>Recorded neighbourhood prices</h3><p>Browse disclosed transactions by ward, neighbourhood, floor area and quarter.</p><strong>Explore →</strong></Link>
       </div>
     </section>
   </>;

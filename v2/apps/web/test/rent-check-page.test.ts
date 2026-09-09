@@ -44,7 +44,8 @@ describe('Seoul Rent Check page shell', () => {
     const markup = renderToStaticMarkup(await Page({ searchParams: Promise.resolve({}) }) as never);
 
     expect(markup.match(/<h1(?:\s|>)/g)).toHaveLength(1);
-    expect(markup).toContain('Check the quote against reported contracts.');
+    expect(markup).toContain('Check a Seoul rent quote');
+    expect(markup).toContain('data-research-page-heading="true"');
     expect(markup).toMatch(/>01<\/span><h2[^>]*>Quote<\/h2>/);
     expect(markup).toMatch(/>02<\/span><h2[^>]*>Market evidence<\/h2>/);
     expect(markup).toMatch(/>03<\/span><h2[^>]*>Comparable contracts<\/h2>/);
@@ -153,23 +154,23 @@ describe('route metadata and authored head contract', () => {
   });
 });
 
-describe('Modernist responsive form contract', () => {
-  it('authors square 48px controls with a visible two-pixel focus', () => {
+describe('Shared responsive form contract', () => {
+  it('authors rounded 48px controls with a visible two-pixel focus', () => {
     expect(css).toMatch(/\.primary-control\s*\{[\s\S]*?min-height:\s*48px;/);
-    expect(css).toMatch(/\.primary-control\s*\{[\s\S]*?border-radius:\s*0;/);
+    expect(css).toMatch(/\.primary-control\s*\{[\s\S]*?border-radius:\s*8px;/);
     expect(css).toMatch(/:focus-visible\s*\{[\s\S]*?outline:\s*2px solid var\(--focus-ring\);/);
     expect(css).not.toMatch(/box-shadow:\s*(?!none)/);
   });
 
   it('uses the approved desktop columns, intermediate stack and mobile one-column flow', () => {
     expect(css).toMatch(
-      /@media\s*\(min-width:\s*1180px\)[\s\S]*?grid-template-columns:\s*minmax\(720px,\s*3fr\)\s+minmax\(360px,\s*2fr\);/,
+      /@media\s*\(min-width:\s*1180px\)[\s\S]*?grid-template-columns:\s*minmax\(0,\s*3fr\)\s+minmax\(0,\s*2fr\);/,
     );
     expect(css).toMatch(
       /@media\s*\(max-width:\s*720px\)[\s\S]*?\.form-grid\s*\{[\s\S]*?grid-template-columns:\s*1fr;/,
     );
     expect(css).toMatch(/min-width:\s*0;/);
-    expect(css).toMatch(/width:\s*min\(1440px,\s*100%\);/);
+    expect(css).toMatch(/width:\s*100%;/);
     expect(css).not.toMatch(/overflow-x:\s*(auto|scroll)/);
   });
 

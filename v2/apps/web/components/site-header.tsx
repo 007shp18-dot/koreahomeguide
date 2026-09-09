@@ -1,5 +1,5 @@
 import { PassportBudgetContext } from './passport/passport-journey';
-import { Fragment, Suspense } from 'react';
+import { Suspense } from 'react';
 import { editorialLanguageRoutes } from '../lib/navigation/editorial-language-routes';
 import { globalNavigation, marketNavigation, marketDestination, type SiteLocale } from '../lib/navigation/site-navigation';
 import { LanguageLinks, SiteLanguageNavigation } from './site-language-navigation';
@@ -92,8 +92,6 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
   const chooseCityLabel = isKorean ? '도시 선택' : locale === 'zh-CN' ? '选择城市' : 'Choose a city';
   const chooseLanguageLabel = isKorean ? '언어 선택' : locale === 'zh-CN' ? '选择语言' : 'Choose language';
   const currentLanguageLabel = locale === 'zh-CN' ? '中文' : locale.toUpperCase();
-  const rankingsHref = isKorean ? '/ko/rankings/' : '/rankings/';
-  const rankingsLabel = isKorean ? '지역 비교' : locale === 'zh-CN' ? '地区排名' : 'Rankings';
   const fallbackPath = locale === 'zh-CN' ? (currentHref?.startsWith('/zh-cn/') ? currentHref : currentHref === '/news/' || currentHref === '/guides/' ? `/zh-cn${currentHref}` : '/zh-cn/kr/seoul/') : currentHref ?? (locale === 'en' && copy.languageSwitch?.hrefLang === 'ko' ? copy.languageSwitch.href.replace(/^\/ko/, '') : copy.homeHref) ?? '/';
 
   return (
@@ -105,7 +103,7 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
 
         <nav className="site-header__product-nav" aria-label="Primary navigation">
           <ul className="site-header__links">
-            {primaryLinks.map((link, index) => (
+            {primaryLinks.map((link) => (
               <li key={link.href} className="site-header__nav-item">
                 <Link
                   className="site-header__product-link"
@@ -114,12 +112,6 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
                 >
                   {link.label}
                 </Link>
-                {index === 0 && <SiteContextMenu className="site-header__context-menu site-header__context-menu--explore">
-                  <summary aria-label={isKorean ? '둘러보기 메뉴' : locale === 'zh-CN' ? '探索菜单' : 'Explore options'}><UiIcon name="chevron-down" /></summary>
-                  <div className="site-header__context-panel site-header__context-panel--explore">
-                    <Link href={rankingsHref}>{rankingsLabel}</Link>
-                  </div>
-                </SiteContextMenu>}
               </li>
             ))}
           </ul>
@@ -171,16 +163,16 @@ export function SiteHeader({ copy }: SiteHeaderProps) {
           summaryText={isKorean ? '메뉴' : 'Menu'}
         >
           <nav aria-label={isKorean ? '전체 메뉴' : 'Site menu'}>
-            {primaryLinks.map((link, index) => <Fragment key={link.href}>
+            {primaryLinks.map((link) =>
               <Link
+                key={link.href}
                 className="site-header__product-link"
                 href={link.href}
                 aria-current={isCurrentGlobalLink(link.href, currentHref) ? 'page' : undefined}
               >
                 {link.label}
               </Link>
-              {index === 0 && <Link className="site-header__mobile-sub-link" href={rankingsHref}>{rankingsLabel}</Link>}
-            </Fragment>)}
+            )}
           </nav>
           <nav aria-label={isKorean ? '도시 선택' : 'Choose a city'}>{visibleMarkets.map(market => <Link key={market.id} href={market.href} aria-current={context === market.id ? 'page' : undefined}>{market.label}</Link>)}</nav>
           {marketId && <nav aria-label={`${marketLabel} pages`}>{getMarketLocalNavigation(marketId, isKorean ? 'ko' : 'en').map(item => <Link key={item.href} href={item.href}>{item.label}</Link>)}</nav>}
