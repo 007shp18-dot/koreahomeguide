@@ -3,6 +3,6 @@ const test = require('node:test');
 
 const config = require('../vercel.json');
 
-test('legacy KoreaHomeGuide has no repository-managed deployment exclusions', () => {
-  assert.equal(config.git?.deploymentEnabled, undefined);
+test('legacy KoreaHomeGuide keeps its deployed redirects without rebuilding on every app commit', () => {
+  assert.equal(config.git?.deploymentEnabled, false);
 });

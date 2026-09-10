@@ -76,7 +76,7 @@ export async function GET(request: Request) {
   if (!contentDatabaseConfigured()) return NextResponse.json({ error: 'database_not_configured' }, { status: 503 });
   const parameters = new URL(request.url).searchParams;
   const market = parameters.get('market');
-  const scheduledSource = request.headers.get('x-vercel-cron-schedule') === '7 * * * *'
+  const scheduledSource = request.headers.get('x-vercel-cron-schedule') === '7 */6 * * *'
     ? 'wikimedia'
     : 'all';
   const source = parameters.get('source') ?? scheduledSource;

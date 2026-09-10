@@ -46,7 +46,7 @@ describe('scoped property enrichment',()=>{
  it('uses the hourly schedule for a larger Wikimedia-only review batch',async()=>{
   vi.stubEnv('CRON_SECRET','test-secret');
   calls.backfill.mockResolvedValue({state:'ready',checked:60,candidates:4});
-  const response=await GET(new Request('https://example.com/api/internal/building-enrichment',{headers:{authorization:'Bearer test-secret','x-vercel-cron-schedule':'7 * * * *'}}));
+  const response=await GET(new Request('https://example.com/api/internal/building-enrichment',{headers:{authorization:'Bearer test-secret','x-vercel-cron-schedule':'7 */6 * * *'}}));
   expect(response.status).toBe(200);
   expect(calls.backfill).toHaveBeenCalledWith(expect.objectContaining({limit:60,market:'kr-seoul',provider:'wikimedia'}));
   expect(calls.backfill).toHaveBeenCalledWith(expect.objectContaining({limit:60,market:'sg-singapore',provider:'wikimedia'}));
@@ -105,9 +105,9 @@ describe('scoped property enrichment',()=>{
    crons?:readonly Readonly<{path:string;schedule:string}>[];
   };
   expect(config.crons).toEqual(expect.arrayContaining([
-   {path:'/api/internal/building-enrichment/?source=wikimedia&limit=60',schedule:'7 * * * *'},
-   {path:'/api/internal/building-enrichment/?source=google&limit=30',schedule:'47 * * * *'},
-   {path:'/api/internal/building-enrichment/?source=official&limit=250',schedule:'17 * * * *'},
+   {path:'/api/internal/building-enrichment/?source=wikimedia&limit=60',schedule:'7 */6 * * *'},
+   {path:'/api/internal/building-enrichment/?source=google&limit=30',schedule:'47 */6 * * *'},
+   {path:'/api/internal/building-enrichment/?source=official&limit=250',schedule:'17 */6 * * *'},
   ]));
   expect(config.crons?.every(({path})=>new URL(path,'https://signedprice.com').pathname.endsWith('/'))).toBe(true);
  });

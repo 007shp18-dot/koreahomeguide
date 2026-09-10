@@ -80,10 +80,10 @@ describe('public entity projection route authorization', () => {
   });
 });
 
-it('publishes approved media and drains coverage hourly without reloading proximity', async () => {
+it('publishes approved media in a six-hour batch without reloading proximity', async () => {
  vi.stubEnv('CRON_SECRET','expected-secret');calls.coverage.mockResolvedValue({updated:600,complete:true});
  const response=await projectionRoute.GET(new Request('https://signedprice.test/api/internal/public-entity-projection/?mediaOnly=1',{headers:{authorization:'Bearer expected-secret'}}));
  expect(response.status).toBe(200);expect(calls.publishMedia).toHaveBeenCalledOnce();expect(calls.coverage).toHaveBeenCalledOnce();expect(calls.publishProximity).not.toHaveBeenCalled();
  const config=JSON.parse(readFileSync(new URL('../vercel.json',import.meta.url),'utf8'));
- expect(config.crons).toContainEqual({path:'/api/internal/public-entity-projection/?mediaOnly=1',schedule:'57 * * * *'});
+ expect(config.crons).toContainEqual({path:'/api/internal/public-entity-projection/?mediaOnly=1',schedule:'57 */6 * * *'});
 });
