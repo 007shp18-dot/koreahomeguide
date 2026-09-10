@@ -33,18 +33,18 @@ export function BuildingSaveButton({
 
   const toggle = () => {
     if (saved) {
-      writeSavedSearch({
+      const persisted = writeSavedSearch({
         ...savedSearch,
         buildings: savedSearch.buildings.filter(({ key }) => key !== buildingKey),
       });
-      setMessage(locale === 'ko' ? '관심 목록에서 해제했습니다.' : 'Removed from Saved.');
+      setMessage(persisted ? (locale === 'ko' ? '관심 목록에서 해제했습니다.' : 'Removed from Saved.') : (locale === 'ko' ? '브라우저 저장이 차단되어 이번 페이지에서만 유지됩니다.' : 'Browser storage is blocked. Changes last only for this page session.'));
       return;
     }
     if (savedSearch.buildings.length >= 30) {
       setMessage(locale === 'ko' ? '관심 건물은 최대 30개까지 저장할 수 있습니다.' : 'You can save up to 30 buildings.');
       return;
     }
-    writeSavedSearch({
+    const persisted = writeSavedSearch({
       ...savedSearch,
       buildings: [...savedSearch.buildings, {
         key: buildingKey,
@@ -53,7 +53,7 @@ export function BuildingSaveButton({
         checkedAt: new Date().toISOString(),
       }],
     });
-    setMessage(locale === 'ko' ? '관심 목록에 저장했습니다.' : 'Saved in this browser.');
+    setMessage(persisted ? (locale === 'ko' ? '관심 목록에 저장했습니다.' : 'Saved in this browser.') : (locale === 'ko' ? '브라우저 저장이 차단되어 이번 페이지에서만 유지됩니다.' : 'Browser storage is blocked. Changes last only for this page session.'));
   };
 
   return <span className={styles.control} data-save-variant={variant}>

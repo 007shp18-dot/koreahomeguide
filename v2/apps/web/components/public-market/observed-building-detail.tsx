@@ -300,6 +300,15 @@ export function KoreaEvidenceBuildingDetail({
         </nav>
 
 
+        <section id="building-area-prices" className={styles.areaBands} data-detail-order="comparable-range" aria-labelledby="building-area-prices-heading">
+          <div className={styles.sectionHeading}>
+            <p>{locale === 'ko' ? '면적별 가격' : 'Price by home size'}</p>
+            <h2 id="building-area-prices-heading">{locale === 'ko' ? '면적별 가격 비교' : 'Prices by home size'}</h2>
+          </div>
+          {model.sizeCohorts ? <SizeCohortResearch rows={model.sizeCohorts} currency="KRW" locale={locale} periodUnit={model.evidence.primaryMetric === 'monthly-rent' ? 'month' : undefined} /> : null}
+
+        </section>
+
         <section className={styles.evidence} data-building-section="exact-evidence">
           <nav className={detailStyles.filters} aria-label={locale === 'ko' ? '거래 유형' : 'Transaction type'}>
             {(['sale', 'jeonse', 'monthly'] as const).map(transaction => <Link key={transaction} aria-current={transaction === model.selection.transaction ? 'true' : undefined} href={localizedSeoulHref(`/kr/seoul/explore/${model.district.slug}/${model.building.buildingId}/?transaction=${transaction}&area=${model.selection.areaBand}`,locale)}>{t(transactionLabels[transaction])}</Link>)}
@@ -319,7 +328,7 @@ export function KoreaEvidenceBuildingDetail({
           {model.recentTransactions.length === 0 ? (
             <p>{t('No privacy-safe recent rows remain in this selected cohort.')}</p>
           ) : (
-            <div className={styles.tableWrap} tabIndex={0} role="region" aria-label={locale === 'ko' ? '실거래표 · 가로로 스크롤' : 'Reported transactions · scroll horizontally'}>
+            <div className={`${styles.tableWrap} ${styles.recentTable}`} tabIndex={0} role="region" aria-label={locale === 'ko' ? '실거래표 · 가로로 스크롤' : 'Reported transactions · scroll horizontally'}>
               <table>
                 <thead>
                   <tr>
@@ -348,22 +357,13 @@ export function KoreaEvidenceBuildingDetail({
           )}
         </section>
 
-        <section id="building-area-prices" className={styles.areaBands} data-detail-order="comparable-range" aria-labelledby="building-area-prices-heading">
-          <div className={styles.sectionHeading}>
-            <p>{locale === 'ko' ? '면적별 가격' : 'Price by home size'}</p>
-            <h2 id="building-area-prices-heading">{locale === 'ko' ? '면적별 가격 비교' : 'Prices by home size'}</h2>
-          </div>
-          {model.sizeCohorts ? <SizeCohortResearch rows={model.sizeCohorts} currency="KRW" locale={locale} periodUnit={model.evidence.primaryMetric === 'monthly-rent' ? 'month' : undefined} /> : null}
-
-        </section>
-
         <div id="building-facts" className={styles.factsAnchor} data-detail-order="facts">
           {facts ?? <KnownBuildingFacts locale={locale} facts={[
             { label: 'Housing type', value: model.building.housingType },
           ]} />}
         </div>
         <DetailTools locale={locale} id="building-tools" checkHref={buildKoreaEvidenceCheckHref(model, locale)}
-          calculatorHref={model.selection.transaction === 'sale' ? createPropertyScenarioHref({locale,market:'kr-seoul',currency:'KRW',entity:model.building.buildingId,propertyName:model.building.officialName,transaction:'sale',housing:model.building.housingType,price:model.evidence.state === 'published' ? model.evidence.medianWon : null,annualRent:model.rentStartingPoint?.annualRent,returnTo:localizedSeoulHref(`/kr/seoul/explore/${model.district.slug}/${model.building.buildingId}/?transaction=${model.selection.transaction}&area=${model.selection.areaBand}`,locale)}) : undefined} />
+          calculatorHref={model.selection.transaction === 'sale' ? createPropertyScenarioHref({locale,market:'kr-seoul',currency:'KRW',entity:model.building.buildingId,propertyName:model.building.officialName,transaction:'sale',housing:model.building.housingType,areaBand:model.selection.areaBand,price:model.evidence.state === 'published' ? model.evidence.medianWon : null,annualRent:model.rentStartingPoint?.annualRent,returnTo:localizedSeoulHref(`/kr/seoul/explore/${model.district.slug}/${model.building.buildingId}/?transaction=${model.selection.transaction}&area=${model.selection.areaBand}`,locale)}) : undefined} />
 
         <details id="building-source" className={styles.sourceDetails} data-detail-order="sources">
           <summary>{locale === 'ko' ? '출처·기간·표본 기준' : 'Source and sample details'}</summary>

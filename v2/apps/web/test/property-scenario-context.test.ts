@@ -45,3 +45,12 @@ it.each([
     expect(parsePropertyScenarioContext({ market, currency, returnTo: unsafe }, 'ko').returnTo).toBeNull();
   }
 });
+
+it.each(['under-40','40-60','60-85','85-plus','all'])('preserves the selected %s cohort without inventing an exact area', areaBand => {
+ const href = createPropertyScenarioHref({locale:'en',market:'kr-seoul',currency:'KRW',price:935000000,areaBand});
+ const parsed = parsePropertyScenarioContext(Object.fromEntries(new URL(href,'https://signedprice.test').searchParams));
+ expect(parsed.areaBand).toBe(areaBand);
+ expect(parsed.areaSqm).toBeNull();
+ expect(parsed.price).toBe(935000000);
+ expect(parsePropertyScenarioContext({areaBand:'untrusted'}).areaBand).toBeUndefined();
+});

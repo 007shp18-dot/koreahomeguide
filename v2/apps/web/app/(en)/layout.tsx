@@ -45,7 +45,8 @@ export default function EnglishRootLayout({ children }: { children: ReactNode })
               : {})}
           />
         ) : null}
-        {vercelAnalyticsEnabled ? <><EditorialAnalytics /><Analytics /></> : null}
+        {analytics.status === "ready" || vercelAnalyticsEnabled ? <EditorialAnalytics vercelEnabled={vercelAnalyticsEnabled} /> : null}
+        {vercelAnalyticsEnabled ? <Analytics /> : null}
       </body>
     </html>
   );

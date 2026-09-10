@@ -42,3 +42,16 @@ export function writeSavedSearch(value: SavedSearch): boolean {
   window.dispatchEvent(new Event(SHORTLIST_EVENT));
   return persisted;
 }
+
+/** First successful observation establishes a baseline; historical rows are not updates. */
+export function initializeSavedBaselines(stored: SavedSearch, observed: readonly {key: string; signatures: string[]}[], checkedAt: string): SavedSearch {
+  let changed = false;
+  const buildings = stored.buildings.map(building => {
+    if (building.signatures.length) return building;
+    const item = observed.find(item => item.key === building.key);
+    if (!item?.signatures.length) return building;
+    changed = true;
+    return {...building, signatures: item.signatures, checkedAt};
+  });
+  return changed ? {...stored, buildings} : stored;
+}

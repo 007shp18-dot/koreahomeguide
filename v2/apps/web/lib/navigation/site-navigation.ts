@@ -62,10 +62,10 @@ export function languageDestinations(pathname: string, search = ''): Record<Site
   } else if (english === '/rankings') {
     destinations.en = withQuery(english);
     destinations.ko = withQuery(`/ko${english}`);
-  } else if (english === '/prices' || english === '/tools' || english === '/tools/property-scenario' || english === '/passport') {
+  } else if (english === '/prices' || english === '/tools' || english === '/tools/property-scenario' || english === '/passport' || english === '/saved') {
     destinations.en = withQuery(english);
     destinations.ko = withQuery(`/ko${english}`);
-    if (english === '/tools' || english === '/passport') destinations['zh-CN'] = withQuery(`/zh-cn${english}`);
+    if (english === '/tools' || english === '/passport' || english === '/saved') destinations['zh-CN'] = withQuery(`/zh-cn${english}`);
   } else if (/^\/news\/city-stories\/(?:seoul|singapore|dubai|tokyo)$/.test(english)) {
     destinations.en = withQuery(english);
     destinations.ko = withQuery(`/ko${english}`);

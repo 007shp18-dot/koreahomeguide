@@ -32,11 +32,15 @@ describe('privacy-safe editorial analytics', () => {
   it('rejects unknown event names and invalid editorial dimensions', () => {
     expect(() => createEditorialEvent('page_view' as EditorialEvent, base)).toThrow(/event/i);
     expect(() => createEditorialEvent('article_complete', { ...base, contentId: '../address' })).toThrow(/content/i);
-    expect(() => createEditorialEvent('article_complete', { ...base, locale: 'ko' })).toThrow(/locale/i);
+    expect(() => createEditorialEvent('article_complete', { ...base, locale: 'invalid' })).toThrow(/locale/i);
   });
 
   it('accepts Dubai journeys and rejects unknown markets', () => {
     expect(createEditorialEvent('article_open', { ...base, market: 'ae-dubai' })).toMatchObject({ market: 'ae-dubai' });
     expect(() => createEditorialEvent('article_open', { ...base, market: 'unknown' as typeof base.market })).toThrow(/market/i);
   });
+});
+
+it('supports Korean and Tokyo without widening event properties', () => {
+ expect(createEditorialEvent('article_open', {...base, contentId:'ko:tokyo-buying', locale:'ko', market:'jp-tokyo'})).toMatchObject({locale:'ko',market:'jp-tokyo'});
 });

@@ -771,3 +771,7 @@
   .main .identitySummary .backAction { min-height: 44px; margin-bottom: 8px; }
   .main .findingGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+/* Keep long histories within one viewport while preserving every published row. */
+.recentTable { max-height: 28rem; overflow: auto; overscroll-behavior: contain; }
+.recentTable thead { position: sticky; top: 0; background: var(--color-background, #f6f7f9); z-index: 1; }

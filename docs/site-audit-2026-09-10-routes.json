@@ -1,0 +1,612 @@
+[
+  {
+    "route": "/admin/evidence/",
+    "kind": "admin",
+    "source": "v2/apps/web/app/(admin)/admin/evidence/page.tsx"
+  },
+  {
+    "route": "/[country]/[city]/[intent]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(en)/[country]/[city]/[intent]/page.tsx"
+  },
+  {
+    "route": "/[country]/[city]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(en)/[country]/[city]/page.tsx"
+  },
+  {
+    "route": "/ae/dubai/check/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/ae/dubai/check/page.tsx"
+  },
+  {
+    "route": "/ae/dubai/explore/[area]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(en)/ae/dubai/explore/[area]/page.tsx"
+  },
+  {
+    "route": "/ae/dubai/explore/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/ae/dubai/explore/page.tsx"
+  },
+  {
+    "route": "/ae/dubai/guide/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/ae/dubai/guide/page.tsx"
+  },
+  {
+    "route": "/ae/dubai/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/ae/dubai/page.tsx"
+  },
+  {
+    "route": "/ae/dubai/shortlist/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/ae/dubai/shortlist/page.tsx"
+  },
+  {
+    "route": "/community/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/community/page.tsx"
+  },
+  {
+    "route": "/compare/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/compare/page.tsx"
+  },
+  {
+    "route": "/contact/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/contact/page.tsx"
+  },
+  {
+    "route": "/design-review/editorial-growth/[surface]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(en)/design-review/editorial-growth/[surface]/page.tsx"
+  },
+  {
+    "route": "/guides/[slug]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(en)/guides/[slug]/page.tsx"
+  },
+  {
+    "route": "/guides/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/guides/page.tsx"
+  },
+  {
+    "route": "/insights/[slug]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(en)/insights/[slug]/page.tsx"
+  },
+  {
+    "route": "/insights/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/insights/page.tsx"
+  },
+  {
+    "route": "/insights/write/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/insights/write/page.tsx"
+  },
+  {
+    "route": "/invest/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/invest/page.tsx"
+  },
+  {
+    "route": "/jp/tokyo/explore/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/jp/tokyo/explore/page.tsx"
+  },
+  {
+    "route": "/jp/tokyo/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/jp/tokyo/page.tsx"
+  },
+  {
+    "route": "/kr/check/[area]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(en)/kr/check/[area]/page.tsx"
+  },
+  {
+    "route": "/kr/news/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/kr/news/page.tsx"
+  },
+  {
+    "route": "/kr/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/kr/page.tsx"
+  },
+  {
+    "route": "/kr/seoul/check/compare/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/kr/seoul/check/compare/page.tsx"
+  },
+  {
+    "route": "/kr/seoul/check/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/kr/seoul/check/page.tsx"
+  },
+  {
+    "route": "/kr/seoul/community/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/kr/seoul/community/page.tsx"
+  },
+  {
+    "route": "/kr/seoul/corrections/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/kr/seoul/corrections/page.tsx"
+  },
+  {
+    "route": "/kr/seoul/explore/[district]/[buildingId]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(en)/kr/seoul/explore/[district]/[buildingId]/page.tsx"
+  },
+  {
+    "route": "/kr/seoul/explore/[district]/neighborhood/[neighborhoodId]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(en)/kr/seoul/explore/[district]/neighborhood/[neighborhoodId]/page.tsx"
+  },
+  {
+    "route": "/kr/seoul/explore/[district]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(en)/kr/seoul/explore/[district]/page.tsx"
+  },
+  {
+    "route": "/kr/seoul/explore/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/kr/seoul/explore/page.tsx"
+  },
+  {
+    "route": "/kr/seoul/guide/[slug]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(en)/kr/seoul/guide/[slug]/page.tsx"
+  },
+  {
+    "route": "/kr/seoul/guide/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/kr/seoul/guide/page.tsx"
+  },
+  {
+    "route": "/kr/seoul/news/[slug]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(en)/kr/seoul/news/[slug]/page.tsx"
+  },
+  {
+    "route": "/kr/seoul/news/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/kr/seoul/news/page.tsx"
+  },
+  {
+    "route": "/kr/seoul/rankings/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/kr/seoul/rankings/page.tsx"
+  },
+  {
+    "route": "/kr/seoul/same-cash/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/kr/seoul/same-cash/page.tsx"
+  },
+  {
+    "route": "/kr/seoul/sell/",
+    "kind": "retired-404",
+    "source": "v2/apps/web/app/(en)/kr/seoul/sell/page.tsx"
+  },
+  {
+    "route": "/kr/seoul/shortlist/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/kr/seoul/shortlist/page.tsx"
+  },
+  {
+    "route": "/kr/seoul/tools/rent-check/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/kr/seoul/tools/rent-check/page.tsx"
+  },
+  {
+    "route": "/markets/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/markets/page.tsx"
+  },
+  {
+    "route": "/news/[slug]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(en)/news/[slug]/page.tsx"
+  },
+  {
+    "route": "/news/city-stories/[city]/[step]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(en)/news/city-stories/[city]/[step]/page.tsx"
+  },
+  {
+    "route": "/news/city-stories/[city]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(en)/news/city-stories/[city]/page.tsx"
+  },
+  {
+    "route": "/news/neighbourhoods/[slug]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(en)/news/neighbourhoods/[slug]/page.tsx"
+  },
+  {
+    "route": "/news/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/news/page.tsx"
+  },
+  {
+    "route": "/news/policy/[slug]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(en)/news/policy/[slug]/page.tsx"
+  },
+  {
+    "route": "/news/policy/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/news/policy/page.tsx"
+  },
+  {
+    "route": "/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/page.tsx"
+  },
+  {
+    "route": "/passport/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/passport/page.tsx"
+  },
+  {
+    "route": "/prices/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/prices/page.tsx"
+  },
+  {
+    "route": "/privacy/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/privacy/page.tsx"
+  },
+  {
+    "route": "/properties/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/properties/page.tsx"
+  },
+  {
+    "route": "/rankings/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/rankings/page.tsx"
+  },
+  {
+    "route": "/saved/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/saved/page.tsx"
+  },
+  {
+    "route": "/sg/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/sg/page.tsx"
+  },
+  {
+    "route": "/sg/singapore/check/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/sg/singapore/check/page.tsx"
+  },
+  {
+    "route": "/sg/singapore/corrections/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/sg/singapore/corrections/page.tsx"
+  },
+  {
+    "route": "/sg/singapore/explore/[area]/[projectId]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(en)/sg/singapore/explore/[area]/[projectId]/page.tsx"
+  },
+  {
+    "route": "/sg/singapore/explore/[area]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(en)/sg/singapore/explore/[area]/page.tsx"
+  },
+  {
+    "route": "/sg/singapore/explore/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/sg/singapore/explore/page.tsx"
+  },
+  {
+    "route": "/sg/singapore/hdb/[town]/[blockId]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(en)/sg/singapore/hdb/[town]/[blockId]/page.tsx"
+  },
+  {
+    "route": "/sg/singapore/hdb/[town]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(en)/sg/singapore/hdb/[town]/page.tsx"
+  },
+  {
+    "route": "/sg/singapore/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/sg/singapore/page.tsx"
+  },
+  {
+    "route": "/sg/singapore/rankings/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/sg/singapore/rankings/page.tsx"
+  },
+  {
+    "route": "/sg/singapore/shortlist/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/sg/singapore/shortlist/page.tsx"
+  },
+  {
+    "route": "/tools/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/tools/page.tsx"
+  },
+  {
+    "route": "/tools/property-scenario/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/tools/property-scenario/page.tsx"
+  },
+  {
+    "route": "/trust/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(en)/trust/page.tsx"
+  },
+  {
+    "route": "/ko/ae/dubai/check/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(ko)/ko/ae/dubai/check/page.tsx"
+  },
+  {
+    "route": "/ko/ae/dubai/explore/[area]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(ko)/ko/ae/dubai/explore/[area]/page.tsx"
+  },
+  {
+    "route": "/ko/ae/dubai/explore/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(ko)/ko/ae/dubai/explore/page.tsx"
+  },
+  {
+    "route": "/ko/ae/dubai/guide/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(ko)/ko/ae/dubai/guide/page.tsx"
+  },
+  {
+    "route": "/ko/ae/dubai/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(ko)/ko/ae/dubai/page.tsx"
+  },
+  {
+    "route": "/ko/ae/dubai/shortlist/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(ko)/ko/ae/dubai/shortlist/page.tsx"
+  },
+  {
+    "route": "/ko/contact/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(ko)/ko/contact/page.tsx"
+  },
+  {
+    "route": "/ko/guides/[slug]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(ko)/ko/guides/[slug]/page.tsx"
+  },
+  {
+    "route": "/ko/guides/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(ko)/ko/guides/page.tsx"
+  },
+  {
+    "route": "/ko/kr/seoul/check/compare/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(ko)/ko/kr/seoul/check/compare/page.tsx"
+  },
+  {
+    "route": "/ko/kr/seoul/check/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(ko)/ko/kr/seoul/check/page.tsx"
+  },
+  {
+    "route": "/ko/kr/seoul/explore/[district]/[buildingId]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(ko)/ko/kr/seoul/explore/[district]/[buildingId]/page.tsx"
+  },
+  {
+    "route": "/ko/kr/seoul/explore/[district]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(ko)/ko/kr/seoul/explore/[district]/page.tsx"
+  },
+  {
+    "route": "/ko/kr/seoul/explore/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(ko)/ko/kr/seoul/explore/page.tsx"
+  },
+  {
+    "route": "/ko/kr/seoul/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(ko)/ko/kr/seoul/page.tsx"
+  },
+  {
+    "route": "/ko/kr/seoul/rankings/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(ko)/ko/kr/seoul/rankings/page.tsx"
+  },
+  {
+    "route": "/ko/kr/seoul/shortlist/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(ko)/ko/kr/seoul/shortlist/page.tsx"
+  },
+  {
+    "route": "/ko/markets/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(ko)/ko/markets/page.tsx"
+  },
+  {
+    "route": "/ko/news/[slug]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(ko)/ko/news/[slug]/page.tsx"
+  },
+  {
+    "route": "/ko/news/city-stories/[city]/[step]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(ko)/ko/news/city-stories/[city]/[step]/page.tsx"
+  },
+  {
+    "route": "/ko/news/city-stories/[city]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(ko)/ko/news/city-stories/[city]/page.tsx"
+  },
+  {
+    "route": "/ko/news/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(ko)/ko/news/page.tsx"
+  },
+  {
+    "route": "/ko/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(ko)/ko/page.tsx"
+  },
+  {
+    "route": "/ko/passport/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(ko)/ko/passport/page.tsx"
+  },
+  {
+    "route": "/ko/prices/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(ko)/ko/prices/page.tsx"
+  },
+  {
+    "route": "/ko/rankings/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(ko)/ko/rankings/page.tsx"
+  },
+  {
+    "route": "/ko/saved/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(ko)/ko/saved/page.tsx"
+  },
+  {
+    "route": "/ko/sg/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(ko)/ko/sg/page.tsx"
+  },
+  {
+    "route": "/ko/sg/singapore/check/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(ko)/ko/sg/singapore/check/page.tsx"
+  },
+  {
+    "route": "/ko/sg/singapore/corrections/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(ko)/ko/sg/singapore/corrections/page.tsx"
+  },
+  {
+    "route": "/ko/sg/singapore/explore/[area]/[projectId]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(ko)/ko/sg/singapore/explore/[area]/[projectId]/page.tsx"
+  },
+  {
+    "route": "/ko/sg/singapore/explore/[area]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(ko)/ko/sg/singapore/explore/[area]/page.tsx"
+  },
+  {
+    "route": "/ko/sg/singapore/explore/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(ko)/ko/sg/singapore/explore/page.tsx"
+  },
+  {
+    "route": "/ko/sg/singapore/hdb/[town]/[blockId]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(ko)/ko/sg/singapore/hdb/[town]/[blockId]/page.tsx"
+  },
+  {
+    "route": "/ko/sg/singapore/hdb/[town]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(ko)/ko/sg/singapore/hdb/[town]/page.tsx"
+  },
+  {
+    "route": "/ko/sg/singapore/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(ko)/ko/sg/singapore/page.tsx"
+  },
+  {
+    "route": "/ko/sg/singapore/rankings/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(ko)/ko/sg/singapore/rankings/page.tsx"
+  },
+  {
+    "route": "/ko/sg/singapore/shortlist/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(ko)/ko/sg/singapore/shortlist/page.tsx"
+  },
+  {
+    "route": "/ko/tools/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(ko)/ko/tools/page.tsx"
+  },
+  {
+    "route": "/ko/tools/property-scenario/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(ko)/ko/tools/property-scenario/page.tsx"
+  },
+  {
+    "route": "/zh-cn/guides/[slug]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(zh-cn)/zh-cn/guides/[slug]/page.tsx"
+  },
+  {
+    "route": "/zh-cn/guides/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(zh-cn)/zh-cn/guides/page.tsx"
+  },
+  {
+    "route": "/zh-cn/kr/seoul/check/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(zh-cn)/zh-cn/kr/seoul/check/page.tsx"
+  },
+  {
+    "route": "/zh-cn/kr/seoul/explore/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(zh-cn)/zh-cn/kr/seoul/explore/page.tsx"
+  },
+  {
+    "route": "/zh-cn/kr/seoul/insights/[slug]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(zh-cn)/zh-cn/kr/seoul/insights/[slug]/page.tsx"
+  },
+  {
+    "route": "/zh-cn/kr/seoul/insights/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(zh-cn)/zh-cn/kr/seoul/insights/page.tsx"
+  },
+  {
+    "route": "/zh-cn/kr/seoul/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(zh-cn)/zh-cn/kr/seoul/page.tsx"
+  },
+  {
+    "route": "/zh-cn/news/[slug]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(zh-cn)/zh-cn/news/[slug]/page.tsx"
+  },
+  {
+    "route": "/zh-cn/news/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(zh-cn)/zh-cn/news/page.tsx"
+  },
+  {
+    "route": "/zh-cn/news/policy/[slug]/",
+    "kind": "parameterized",
+    "source": "v2/apps/web/app/(zh-cn)/zh-cn/news/policy/[slug]/page.tsx"
+  },
+  {
+    "route": "/zh-cn/passport/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(zh-cn)/zh-cn/passport/page.tsx"
+  },
+  {
+    "route": "/zh-cn/tools/",
+    "kind": "static",
+    "source": "v2/apps/web/app/(zh-cn)/zh-cn/tools/page.tsx"
+  }
+]
