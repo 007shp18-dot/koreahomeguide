@@ -7,7 +7,7 @@ for(const p of plan.selected) {
  const current=JSON.parse(execFileSync('gh',['api',`repos/${repo}/pulls/${p.number}`],{encoding:'utf8'}));
  if(current.state!=='open'||current.draft||current.head.sha!==p.sha||!current.labels.some(l=>l.name==='release-ready')) throw new Error(`PR #${p.number} changed during validation`);
 }
-if(!plan.selected.length)process.exit(0);
+if(!plan.selected.length&&!plan.pendingMain)process.exit(0);
 if(git('ls-remote','origin','refs/heads/main').split(/\s/)[0]!==plan.base)throw new Error('main changed; rerun validation');
 git('commit','--allow-empty','-m',`[release] Unified batch ${plan.selected.map(p=>'#'+p.number).join(' ')}`);
 // A normal fast-forward push also rejects a concurrent main update after the check.
