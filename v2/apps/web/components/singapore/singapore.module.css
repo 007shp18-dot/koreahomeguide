@@ -1000,7 +1000,7 @@
 .segmentProjectPrice { display: grid; align-content: start; gap: 7px; text-align: right; font-variant-numeric: tabular-nums; }
 .segmentProjectPrice strong { font-size: 18px; }
 .segmentProjectPrice span, .segmentProject > small { font-size: 12px; color: var(--muted); }
-.segmentProject > a, .segmentProject > .evidenceUnavailableLink { justify-self: end; font-size: 13px; }
+.segmentProject > a, .segmentProject > .evidenceUnavailableLink { justify-self: end; display: inline-flex; align-items: center; min-width: 44px; min-height: 44px; font-size: 13px; }
 @media (max-width: 600px) {
   .regionDirectory nav { grid-template-columns: 1fr; gap: 16px; }
   .regionDirectory nav a { grid-template-columns: 50px minmax(0, 1fr); align-items: baseline; }
