@@ -83,6 +83,7 @@ export function BuildingDetailPage({
   const detailTarget = new URL(base, 'https://signedprice.invalid');
   for (const [key, value] of exploreTarget.searchParams) detailTarget.searchParams.set(key, value);
   const transaction = exploreTarget.searchParams.get('transaction');
+  const locationHref = seoulBuildingLocationHref(exploreHref);
   const checkHref = createEntityCheckHref(localizedSeoulHref('/kr/seoul/check/',locale), {
     locale,
     market: 'kr-seoul',
@@ -107,8 +108,8 @@ export function BuildingDetailPage({
           context={locale === 'ko' ? '서울 · 신고 임대차 거래' : 'Seoul · Reported rental contracts'}
           metric={{label:t('Median refundable deposit'),value:model.display.medianLabel,note:`${t(model.display.sampleLabel)} · ${model.evidence.period}`}}
           facts={[{label:t('Property type'),value:t(model.building.housingType)}]}
-          actions={<><Link href={checkHref}>{locale === 'ko' ? '매물 가격 비교' : 'Compare an asking price'}</Link><BuildingSaveButton buildingKey={`${model.district.slug}/${model.building.buildingId}`} buildingName={model.building.name} locale={locale} variant="detail" /></>} />
-        <div data-detail-order="media">{propertyMedia ?? (visual.kind !== 'unavailable' ? <BuildingVisual model={visual} /> : <ProjectedEntityMedia locale={locale} buildingName={model.building.name} address={`${model.building.neighborhoodName}, ${districtName}, Seoul`} media={null} locationHref={seoulBuildingLocationHref(exploreHref)} />)}</div>
+          actions={<><Link href={locationHref}>{locale === 'ko' ? '지도에서 위치 확인' : 'View location on map'}</Link><Link href={checkHref}>{locale === 'ko' ? '매물 가격 비교' : 'Compare an asking price'}</Link><BuildingSaveButton buildingKey={`${model.district.slug}/${model.building.buildingId}`} buildingName={model.building.name} locale={locale} variant="detail" /></>} />
+        <div data-detail-order="media">{propertyMedia ?? (visual.kind !== 'unavailable' ? <BuildingVisual model={visual} /> : <ProjectedEntityMedia locale={locale} buildingName={model.building.name} address={`${model.building.neighborhoodName}, ${districtName}, Seoul`} media={null} locationHref={locationHref} />)}</div>
         <nav className={pageStyles.tabs} aria-label={t('Building page sections')}>
           <a href="#building-overview">{t('Overview')}</a><a href="#building-evidence">{t('Transactions')}</a><a href="#building-facts">{t('Building profile')}</a><a href="#building-tools">{locale === 'ko' ? '내 조건 비교' : 'Compare'}</a><a href="#building-source">{t('Source')}</a>
         </nav>
