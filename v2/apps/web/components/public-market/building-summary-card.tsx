@@ -1,6 +1,7 @@
 import type { KoreaExplorerBuildingDetailModel } from '../../lib/public-market/korea-explorer-evidence.server';
 import { buildingDisplayName, neighborhoodDisplayName } from '../../lib/public-market/seoul-display-names';
 import { seoulDetailText } from '../../lib/locale/seoul-detail-copy';
+import { seoulBuildingLocationHref } from '../../lib/public-market/seoul-building-location';
 import { MarketSummary } from '../market-ui/market-summary';
 import { PassportLink as Link } from '../passport/passport-journey';
 import { BuildingSaveButton } from './building-save-button';
@@ -72,6 +73,6 @@ export function BuildingSummaryCard({ model, backHref, locale = 'en' }: Readonly
     facts={facts}
     trend={trend}
     locale={locale}
-    actions={<><Link href={backHref}>{ko ? `${district} 탐색으로` : `Back to ${district} Explore`}</Link><BuildingSaveButton buildingKey={`${model.district.slug}/${model.building.buildingId}`} buildingName={model.building.officialName} locale={locale} variant="detail" /></>}
+    actions={<><Link href={seoulBuildingLocationHref(backHref)}>{ko ? '지도에서 위치 확인' : 'View location on map'}</Link><Link href={backHref}>{ko ? `${district} 탐색으로` : `Back to ${district} Explore`}</Link><BuildingSaveButton buildingKey={`${model.district.slug}/${model.building.buildingId}`} buildingName={model.building.officialName} locale={locale} variant="detail" /></>}
   />;
 }
