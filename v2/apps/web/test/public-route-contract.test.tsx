@@ -15,6 +15,7 @@ import { generateMetadata as generateExplorerMetadata } from '../app/(en)/kr/seo
 import { metadata as newsMetadata } from '../app/(en)/kr/seoul/news/page';
 import { metadata as trustMetadata } from '../app/(en)/trust/page';
 import { metadata as compareMetadata } from '../app/(en)/compare/page';
+import { NEIGHBOURHOOD_STORIES, neighbourhoodHref } from '../content/neighbourhood-stories';
 import { EDITORIAL_PORTFOLIO } from '../content/portfolio-manifest';
 import { homepageCopy } from '../lib/site-copy';
 import { metadata as koreanHomeMetadata } from '../app/(ko)/ko/page';
@@ -32,6 +33,8 @@ import { buildPublicDistrictModel } from '../lib/public-market/area-route-model.
 import { indexableMetadata } from '../lib/public-metadata';
 import { buildMarketPageModel } from '../lib/route-model';
 import { dubaiEvidenceRepositoryFromEnvironment } from '../lib/dubai/evidence-repository.server';
+
+const neighbourhoodCanonicalUrls = NEIGHBOURHOOD_STORIES.map(({ slug }) => `https://www.signedprice.com${neighbourhoodHref(slug)}`);
 
 const period = '2026-01/2026-07';
 const portfolioUrls = EDITORIAL_PORTFOLIO.filter(record => record.slug !== 'compare-seoul-district-prices').map(({ canonicalHref }) => `https://www.signedprice.com${canonicalHref}`);
@@ -351,6 +354,7 @@ describe('public migration containment', () => {
       ...['seoul', 'singapore', 'dubai', 'tokyo'].flatMap(city => ['discover', 'why-buy', 'can-i-buy', 'where', 'which-home', 'make-it-happen'].flatMap(step => ['', '/ko'].map(locale => `https://www.signedprice.com${locale}/news/city-stories/${city}/${step}/`))),
       ...['seoul/seongsu', 'seoul/wangsimni', 'seoul/mangwon', 'seoul/buy-jeonse-rent', 'singapore/new-launch-premium', 'tokyo/old-condo-costs'].flatMap(path => ['', '/ko'].map(locale => `https://www.signedprice.com${locale}/news/city-stories/${path}/`)),
       ...portfolioUrls,
+      ...neighbourhoodCanonicalUrls,
       ...koreanPublishedHubUrls,
       ...rankingCanonicalUrls,
       ...tokyoCanonicalUrls,
@@ -510,6 +514,7 @@ describe('public migration containment', () => {
       ...['seoul', 'singapore', 'dubai', 'tokyo'].flatMap(city => ['discover', 'why-buy', 'can-i-buy', 'where', 'which-home', 'make-it-happen'].flatMap(step => ['', '/ko'].map(locale => `https://www.signedprice.com${locale}/news/city-stories/${city}/${step}/`))),
       ...['seoul/seongsu', 'seoul/wangsimni', 'seoul/mangwon', 'seoul/buy-jeonse-rent', 'singapore/new-launch-premium', 'tokyo/old-condo-costs'].flatMap(path => ['', '/ko'].map(locale => `https://www.signedprice.com${locale}/news/city-stories/${path}/`)),
       ...portfolioUrls,
+      ...neighbourhoodCanonicalUrls,
       ...koreanPublishedHubUrls,
       ...rankingCanonicalUrls,
       ...tokyoCanonicalUrls,
@@ -562,6 +567,7 @@ describe('public migration containment', () => {
       ...['seoul', 'singapore', 'dubai', 'tokyo'].flatMap(city => ['discover', 'why-buy', 'can-i-buy', 'where', 'which-home', 'make-it-happen'].flatMap(step => ['', '/ko'].map(locale => `https://www.signedprice.com${locale}/news/city-stories/${city}/${step}/`))),
       ...['seoul/seongsu', 'seoul/wangsimni', 'seoul/mangwon', 'seoul/buy-jeonse-rent', 'singapore/new-launch-premium', 'tokyo/old-condo-costs'].flatMap(path => ['', '/ko'].map(locale => `https://www.signedprice.com${locale}/news/city-stories/${path}/`)),
       ...portfolioUrls,
+      ...neighbourhoodCanonicalUrls,
       ...koreanPublishedHubUrls,
       ...rankingCanonicalUrls,
       'https://www.signedprice.com/',
