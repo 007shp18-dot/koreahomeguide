@@ -90,7 +90,7 @@ describe('NAVER building image search', () => {
         title: '개포래미안포레스트 외관',
         temporaryImageUrl: 'https://images.example.com/full.jpg',
         temporaryThumbnailUrl: 'https://images.example.com/thumb.jpg',
-        sourceDocumentUrl: 'https://images.example.com/full.jpg',
+        sourceDocumentUrl: null,
         width: 1600,
         height: 1000,
       }],
