@@ -32,7 +32,12 @@ for (const width of [390, 760]) {
       await expect(first.locator('[data-area-evidence]')).not.toHaveAttribute('open');
       expect((await first.boundingBox())!.height).toBe(compactHeight);
       await expect(page).toHaveURL(/[?&]area=/);
-      await expect(spatial.getByRole('button', { name: 'Close area preview' })).toBeVisible();
+      const selection = discovery.locator('[data-dubai-area-selection]');
+      await expect(selection).toBeVisible();
+      await expect(selection.getByText('Median annual rent', { exact: true })).toBeVisible();
+      await expect(selection.getByRole('link', { name: 'Compare an asking price' })).toHaveAttribute('href', /[?&]area=/);
+      await expect(selection.getByRole('heading', { name: /Project sales summaries/ })).toBeVisible();
+      await expect(selection.getByRole('button', { name: 'Close area preview' })).toBeVisible();
       const rowBox = (await first.boundingBox())!;
       const titleBox = (await first.getByRole('button').first().boundingBox())!;
       expect(titleBox.x - rowBox.x).toBeGreaterThanOrEqual(16);

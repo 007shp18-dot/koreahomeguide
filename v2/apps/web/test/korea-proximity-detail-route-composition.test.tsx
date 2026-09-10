@@ -118,6 +118,11 @@ describe('Korea proximity Detail route composition', () => {
     expect(html).toContain('station=SEOUL%3ASTN%2F001');
     expect(html).toContain('q=route+check');
     expect(html).toContain('data-location-fallback="true"');
+    const locationHref = html.match(/<a href="([^"]+)">View location on map<\/a>/)?.[1];
+    expect(locationHref).toBeDefined();
+    const mapUrl = new URL(locationHref!.replaceAll('&amp;', '&'), 'https://signedprice.com');
+    expect(mapUrl.searchParams.get('view')).toBe('map');
+    expect(mapUrl.searchParams.get('buildingId')).toBe(exact.buildingId);
     expect(html).not.toContain('Editorial city photograph');
     expect(html).not.toContain('data-building-media="location-only"');
     expect(html).not.toContain('data-building-media="google-place-photo"');

@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import {
   buildGoogleMapsScriptUrl,
   GOOGLE_MAPS_READY_CALLBACK,
+  GOOGLE_MAPS_SCRIPT_ID,
 } from './google-place-map';
 import styles from './building-street-view.module.css';
 import photoStyles from './property-photo.module.css';
@@ -337,7 +338,8 @@ function GooglePlacePhotoForIdentity({
       </figcaption>}
       {browserKey === null || approvedPlaceId === undefined ? null : (
         <Script
-          src={buildGoogleMapsScriptUrl(browserKey, 'singapore', locale)}
+          id={GOOGLE_MAPS_SCRIPT_ID}
+          src={buildGoogleMapsScriptUrl(browserKey)}
           strategy="lazyOnload"
           onReady={() => { void initialize(); }}
           onError={() => setPhoto('unavailable')}

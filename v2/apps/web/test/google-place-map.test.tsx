@@ -53,9 +53,14 @@ describe('Google place map', () => {
 
   it('loads the async weekly Maps JavaScript API for Singapore', () => {
     expect(buildGoogleMapsScriptUrl('key/value + test')).toBe(
-      'https://maps.googleapis.com/maps/api/js?key=key%2Fvalue+%2B+test&loading=async&callback=__signedpriceGoogleMapsReady&v=weekly&language=en&region=SG',
+      'https://maps.googleapis.com/maps/api/js?key=key%2Fvalue+%2B+test&loading=async&callback=__signedpriceGoogleMapsReady&v=weekly&language=en',
     );
-    expect(buildGoogleMapsScriptUrl('test-key', 'dubai')).toContain('region=AE');
+    const urls = (['singapore', 'dubai', 'tokyo'] as const).map(market => {
+      const html = renderToStaticMarkup(createElement(GooglePlaceMap, { browserKey: 'same-key', market }));
+      return html.match(/<script[^>]*src="([^"]+)/)?.[1];
+    });
+    expect(new Set(urls).size).toBe(1);
+    expect(urls[0]).toContain('maps.googleapis.com/maps/api/js');
   });
 
   it('initializes only from the API completion callback and restores prior state', () => {

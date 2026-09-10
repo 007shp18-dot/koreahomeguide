@@ -28,34 +28,45 @@ function options(locale: MarketLocale, values: readonly string[], _selected?: st
 
 function OfferFields({ locale = 'en', prefix, draft, catalog }: Readonly<{ locale?: MarketLocale; prefix: 'a' | 'b'; draft: SingaporeCheckDraft; catalog: SingaporeCheckCatalog }>) {
   if (!catalog.available) return <fieldset className={styles.offerFields}>
-    <legend>{sgText(locale, "Offer ")}{sgText(locale, prefix.toUpperCase())}{sgText(locale, " · ")}{sgText(locale, labels[draft.market])}</legend>
+    <legend>{sgText(locale, "Offer ")}{prefix.toUpperCase()} · {sgText(locale, labels[draft.market])}</legend>
     <p>{sgText(locale, "Transaction records for this comparison are unavailable.")}</p>
-    <Link href={marketHref(locale, draft.market === 'ura-private-sale' ? '/sg/singapore/explore/' : '/sg/singapore/explore/')}>{sgText(locale, "Explore Singapore transactions")}</Link>
+    <Link href={marketHref(locale, '/sg/singapore/explore/')}>{sgText(locale, "Explore Singapore transactions")}</Link>
   </fieldset>;
-  const field = (label: string, name: string, content: React.ReactNode) => <label><span>{sgText(locale, label)}</span>{sgText(locale, content)}</label>;
+  const field = (label: string, content: React.ReactNode, full = false) => <label className={full ? styles.offerFullWidth : undefined}><span>{sgText(locale, label)}</span>{content}</label>;
+  const isPrivate = draft.market === 'ura-private-sale';
+  const advancedActive = ['floor-range', 'sale-type', 'storey-range', 'month'].some(key => Boolean(draft[key]));
   return <fieldset className={styles.offerFields} data-offer={prefix.toUpperCase()}>
-    <legend>{sgText(locale, "Offer ")}{sgText(locale, prefix.toUpperCase())}</legend><input type="hidden" name={`${prefix}-market`} value={draft.market} />
-    {field(draft.market === 'hdb-rent' ? 'Monthly rent (SGD)' : 'Asking price (SGD)', `${prefix}-amount`, <DefaultAmountInput name={`${prefix}-amount`}  min="1" step="1" defaultValue={draft.amount} required />)}
-    {draft.market === 'ura-private-sale' ? <>
-      {field('Market segment', `${prefix}-segment`, <select name={`${prefix}-segment`} defaultValue={draft.segment}>{options(locale, catalog.segments, draft.segment)}</select>)}
-      {field('Project', `${prefix}-project`, <CheckEntitySelect name={`${prefix}-project`} defaultValue={draft.project} anyLabel={sgText(locale, "Any")} market={draft.market} kind="projects" locale={locale} selectedLabel={catalog.projects.find(project => project.id === draft.project)?.label} />)}
-      {field('District', `${prefix}-district`, <select name={`${prefix}-district`} defaultValue={draft.district}>{options(locale, catalog.districts, draft.district)}</select>)}
-      {field('Property type', `${prefix}-property-type`, <select name={`${prefix}-property-type`} defaultValue={draft['property-type']}>{options(locale, catalog.propertyTypes, draft['property-type'])}</select>)}
-      {field('Area minimum (㎡)', `${prefix}-area-min`, <DefaultAmountInput name={`${prefix}-area-min`}  min="1" defaultValue={draft['area-min'] ?? '80'} required />)}
-      {field('Area maximum (㎡)', `${prefix}-area-max`, <DefaultAmountInput name={`${prefix}-area-max`}  min="1" defaultValue={draft['area-max'] ?? '120'} required />)}
-      {field('Floor range', `${prefix}-floor-range`, <select name={`${prefix}-floor-range`} defaultValue={draft['floor-range']}><option value="">{sgText(locale, "Any")}</option>{options(locale, catalog.floorRanges, draft['floor-range'])}</select>)}
-      {field('Sale type', `${prefix}-sale-type`, <select name={`${prefix}-sale-type`} defaultValue={draft['sale-type']}><option value="">{sgText(locale, "Any")}</option>{options(locale, catalog.saleTypes, draft['sale-type'])}</select>)}
+    <legend>{sgText(locale, "Offer ")}{prefix.toUpperCase()}</legend>
+    <input type="hidden" name={`${prefix}-market`} value={draft.market} />
+    <div className={`${styles.offerEntity} ${styles.offerFullWidth}`}>
+      <span>{sgText(locale, isPrivate ? 'Project' : 'Block / street')}</span>
+      <CheckEntitySelect name={`${prefix}-${isPrivate ? 'project' : 'block'}`} defaultValue={isPrivate ? draft.project : draft.block}
+        anyLabel={sgText(locale, "Any")} market={draft.market} kind={isPrivate ? 'projects' : 'blocks'} locale={locale}
+        selectedLabel={isPrivate ? catalog.projects.find(project => project.id === draft.project)?.label : catalog.blocks.find(block => block.id === draft.block)?.label} />
+    </div>
+    {field(draft.market === 'hdb-rent' ? 'Monthly rent (SGD)' : 'Asking price (SGD)', <DefaultAmountInput name={`${prefix}-amount`} min="1" step="1" defaultValue={draft.amount} required />, true)}
+    {draft.market !== 'hdb-rent' ? <>
+      {field('Area minimum (㎡)', <DefaultAmountInput name={`${prefix}-area-min`} min="1" defaultValue={draft['area-min'] ?? (isPrivate ? '80' : '50')} required />)}
+      {field('Area maximum (㎡)', <DefaultAmountInput name={`${prefix}-area-max`} min="1" defaultValue={draft['area-max'] ?? (isPrivate ? '120' : '130')} required />)}
+    </> : null}
+    {isPrivate ? <>
+      {field('Market segment', <select name={`${prefix}-segment`} defaultValue={draft.segment}>{options(locale, catalog.segments)}</select>)}
+      {field('District', <select name={`${prefix}-district`} defaultValue={draft.district}>{options(locale, catalog.districts)}</select>)}
+      {field('Property type', <select name={`${prefix}-property-type`} defaultValue={draft['property-type']}>{options(locale, catalog.propertyTypes)}</select>, true)}
     </> : <>
-      {field('Town', `${prefix}-town`, <select name={`${prefix}-town`} defaultValue={draft.town}>{options(locale, catalog.towns, draft.town)}</select>)}
-      {field('Block / street', `${prefix}-block`, <CheckEntitySelect name={`${prefix}-block`} defaultValue={draft.block} anyLabel={sgText(locale, "Any")} market={draft.market} kind="blocks" locale={locale} selectedLabel={catalog.blocks.find(block => block.id === draft.block)?.label} />)}
-      {field('Flat type', `${prefix}-flat-type`, <select name={`${prefix}-flat-type`} defaultValue={draft['flat-type']}>{options(locale, catalog.flatTypes, draft['flat-type'])}</select>)}
-      {draft.market === 'hdb-resale' ? <>
-        {field('Storey range', `${prefix}-storey-range`, <select name={`${prefix}-storey-range`} defaultValue={draft['storey-range']}><option value="">{sgText(locale, "Any")}</option>{options(locale, catalog.storeyRanges, draft['storey-range'])}</select>)}
-        {field('Area minimum (㎡)', `${prefix}-area-min`, <DefaultAmountInput name={`${prefix}-area-min`}  min="1" defaultValue={draft['area-min'] ?? '50'} required />)}
-        {field('Area maximum (㎡)', `${prefix}-area-max`, <DefaultAmountInput name={`${prefix}-area-max`}  min="1" defaultValue={draft['area-max'] ?? '130'} required />)}
-      </> : null}
+      {field('Town', <select name={`${prefix}-town`} defaultValue={draft.town}>{options(locale, catalog.towns)}</select>)}
+      {field('Flat type', <select name={`${prefix}-flat-type`} defaultValue={draft['flat-type']}>{options(locale, catalog.flatTypes)}</select>)}
     </>}
-    {field('Reporting month', `${prefix}-month`, <select name={`${prefix}-month`} defaultValue={draft.month}><option value="">{sgText(locale, "Latest available")}</option>{options(locale, catalog.months, draft.month)}</select>)}
+    <details data-comparison-options="true" className={`${styles.offerAdvanced} ${styles.offerFullWidth}`} open={advancedActive}>
+      <summary>{locale === 'ko' ? '세부 비교 조건' : 'More comparison options'}</summary>
+      <div className={styles.offerAdvancedGrid}>
+        {isPrivate ? <>
+          {field('Floor range', <select name={`${prefix}-floor-range`} defaultValue={draft['floor-range']}><option value="">{sgText(locale, "Any")}</option>{options(locale, catalog.floorRanges)}</select>)}
+          {field('Sale type', <select name={`${prefix}-sale-type`} defaultValue={draft['sale-type']}><option value="">{sgText(locale, "Any")}</option>{options(locale, catalog.saleTypes)}</select>)}
+        </> : draft.market === 'hdb-resale' ? field('Storey range', <select name={`${prefix}-storey-range`} defaultValue={draft['storey-range']}><option value="">{sgText(locale, "Any")}</option>{options(locale, catalog.storeyRanges)}</select>) : null}
+        {field('Reporting month', <select name={`${prefix}-month`} defaultValue={draft.month}><option value="">{sgText(locale, "Latest available")}</option>{options(locale, catalog.months)}</select>, true)}
+      </div>
+    </details>
   </fieldset>;
 }
 

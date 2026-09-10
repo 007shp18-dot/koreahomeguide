@@ -1,5 +1,15 @@
 import type { JapanFilters } from './repository.server';
 
+export const TOKYO_CONDOMINIUM_TYPE = 'Pre-owned Condominiums, etc.';
+
+// Explore opens on comparable apartment transactions. An explicit empty type
+// still means all property types; the public API retains its existing defaults.
+export function japanExploreQuery(params: Record<string, string | string[] | undefined>): URLSearchParams {
+  const query = japanPageQuery(params);
+  if (!query.has('type')) query.set('type', TOKYO_CONDOMINIUM_TYPE);
+  return query;
+}
+
 export const TOKYO_WARDS = [
   ['13101','Chiyoda'],['13102','Chuo'],['13103','Minato'],['13104','Shinjuku'],
   ['13105','Bunkyo'],['13106','Taito'],['13107','Sumida'],['13108','Koto'],

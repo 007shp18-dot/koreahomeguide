@@ -4,6 +4,8 @@ import type { PolicyRecord } from '../../lib/policy/policy-types';
 import { PolicyBeforeAfter } from './policy-before-after';
 import { PolicyDates } from './policy-tracker';
 import { PolicyTimeline } from './policy-timeline';
+import { EditorialArticleHeader } from './editorial-article-header';
+import layout from './journey-article.module.css';
 import styles from './newsroom.module.css';
 import type { EditorialPortfolioRecord } from '../../content/portfolio-types';
 
@@ -13,21 +15,19 @@ export function PolicyRecordArticle({ policy, article }: Readonly<{
 }>) {
   const market = policy.marketId === 'kr-seoul' ? 'Seoul' : 'Singapore';
   return <main
-    className={styles.article}
+    className={`${layout.article} ${styles.standardArticle}`}
     data-editorial-content-id={article.id}
     data-editorial-content-type={article.type}
     data-editorial-locale={article.locale}
     data-editorial-market={article.marketId ?? undefined}
   >
-    <nav className={styles.breadcrumb} aria-label="Breadcrumb">
-      <Link href="/news/">News</Link><Link href="/news/policy/">Policy Tracker</Link>
+    <nav className={layout.breadcrumb} aria-label="Breadcrumb">
+      <Link href="/news/">Insights</Link><Link href="/news/policy/">Policy Tracker</Link>
     </nav>
-    <header className={styles.articleHero}>
-      <p>Policy · {market} · {policy.status}</p>
-      <h1>{policy.title}</h1>
-      <div className={styles.deck}>{policy.summary}</div>
-      <PolicyDates policy={policy} />
-    </header>
+    <EditorialArticleHeader topic={`${market} · Policy · ${policy.status}`} title={policy.title} deck={policy.summary}>
+      <span>SignedPrice</span><a href="#policy-source-boundary-title">Official source</a>
+    </EditorialArticleHeader>
+    <PolicyDates policy={policy} />
     <section className={styles.leadEvidence} aria-labelledby="official-source-title">
       <p>Official source</p>
       <h2 id="official-source-title">{policy.source.publisher}</h2>

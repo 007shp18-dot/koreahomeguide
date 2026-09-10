@@ -17,7 +17,7 @@ export function CheckEntitySelect({ name, market, kind, defaultValue = '', selec
   const [query, setQuery] = useState('');
   const [active, setActive] = useState(false);
   const [value, setValue] = useState(defaultValue);
-  const [selectionLabel, setSelectionLabel] = useState(selectedLabel);
+  const [selectionLabel, setSelectionLabel] = useState(selectedLabel || (defaultValue ? (locale === 'ko' ? '선택한 단지' : 'Selected project') : ''));
   const [result, setResult] = useState<{ key: string; options: readonly Option[]; error: boolean } | null>(null);
   const [retry, setRetry] = useState(0);
   const requestKey = JSON.stringify([market, kind, query, retry]);
@@ -40,7 +40,7 @@ export function CheckEntitySelect({ name, market, kind, defaultValue = '', selec
     return () => { clearTimeout(timer); controller.abort(); };
   }, [active, market, kind, query, requestKey]);
   const visible = value && !options.some(([key]) => key === value) ? [[value, selectionLabel] as const, ...options] : options;
-  return <span style={{ display: 'grid', gap: 8, minWidth: 0 }}>
+  return <span className="singapore-check-entity" style={{ display: 'grid', gap: 8, minWidth: 0 }}>
     <input type="search" value={query} maxLength={100} aria-label={locale === 'ko' ? '단지 또는 주소 검색' : 'Search project or address'} aria-controls={id}
       placeholder={locale === 'ko' ? '이름이나 주소로 검색' : 'Search by name or address'}
       onKeyDown={event => { if (event.key === 'Enter') event.preventDefault(); }} onFocus={() => setActive(true)} onChange={event => { setQuery(event.target.value); setActive(true); }} />
@@ -48,7 +48,7 @@ export function CheckEntitySelect({ name, market, kind, defaultValue = '', selec
       <option value="">{anyLabel}</option>
       {visible.map(([key, label]) => <option key={key} value={key}>{label}</option>)}
     </select>
-    <small role="status">{loading ? (locale === 'ko' ? '검색 중…' : 'Searching…') : error ? (locale === 'ko' ? '검색에 실패했습니다.' : 'Search unavailable.') : active ? (locale === 'ko' ? '최대 40개 표시. 검색어를 입력해 범위를 좁히세요.' : 'Up to 40 matches. Type to narrow your search.') : ''}</small>
+    {active ? <small role="status">{loading ? (locale === 'ko' ? '검색 중…' : 'Searching…') : error ? (locale === 'ko' ? '검색에 실패했습니다.' : 'Search unavailable.') : active ? (locale === 'ko' ? '최대 40개 표시. 검색어를 입력해 범위를 좁히세요.' : 'Up to 40 matches. Type to narrow your search.') : ''}</small> : null}
     {error ? <button type="button" onClick={() => setRetry(value => value + 1)}>{locale === 'ko' ? '다시 시도' : 'Retry'}</button> : null}
   </span>;
 }

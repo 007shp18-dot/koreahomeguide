@@ -12,10 +12,11 @@ test('Tokyo ward map changes the ward while retaining period and property filter
   await shibuya.focus();
   await expect(shibuya).toBeFocused();
   await shibuya.press('Enter');
-  await expect(page).toHaveURL(/city=13113&year=2025&quarter=4&minArea=50/);
+  await expect(page).toHaveURL(/city=13113&year=2025&quarter=4&type=Pre-owned\+Condominiums%2C\+etc\.&minArea=50/);
   await expect(map.locator('a[data-ward="13113"]')).toHaveAttribute('aria-current', 'location');
   await expect(page.locator('select[name="city"]')).toHaveValue('13113');
   await expect(page.locator('input[name="minArea"]')).toHaveValue('50');
+  await expect(map.getByRole('heading', { name: 'Neighbourhoods in Shibuya' })).toBeVisible();
   // Keyboard navigation can still be smoothly scrolling the page. Measure both
   // regions in one frame so viewport-relative coordinates remain comparable.
   const geometry = await map.evaluate(element => {

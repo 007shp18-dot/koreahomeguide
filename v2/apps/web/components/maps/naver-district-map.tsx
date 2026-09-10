@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 
 import type { ProductLocale } from '../../lib/locale/product-copy';
 import { isTrustedGooglePlaceMatch } from './google-place-photo';
-import { buildGoogleMapsScriptUrl } from './google-place-map';
+import { buildGoogleMapsScriptUrl, GOOGLE_MAPS_SCRIPT_ID } from './google-place-map';
 export { buildNaverBuildingAddressQuery } from '../../lib/public-market/naver-building-address';
 import styles from './interactive-map.module.css';
 
@@ -1043,6 +1043,7 @@ export function NaverDistrictMap({
         onError={failClosed}
       />
       {googleMapsBrowserKey === null ? null : <Script
+        id={GOOGLE_MAPS_SCRIPT_ID}
         src={buildGoogleMapsScriptUrl(googleMapsBrowserKey)}
         strategy="lazyOnload"
         onReady={() => { void resolveSelectedGoogleCoordinate(); }}

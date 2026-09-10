@@ -1,3 +1,4 @@
+import { seoulBuildingLocationHref } from '@/lib/public-market/seoul-building-location';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
@@ -130,6 +131,7 @@ function projectedBuildingMediaFor(
   photoApproval: StoredPublicPhotoApproval | null | undefined,
   registryKey?: string,
   locale: 'en' | 'ko' = 'en',
+  locationHref?: string,
 ) {
   const media = selectPublishedBuildingPhoto(projection?.media ?? [], photoApproval);
   if (media === null && registryKey === undefined) return undefined;
@@ -140,6 +142,7 @@ function projectedBuildingMediaFor(
     media={media}
     registryKey={registryKey}
     fallbackMarket="seoul"
+    locationHref={locationHref ? seoulBuildingLocationHref(locationHref) : undefined}
   />;
 }
 
@@ -457,6 +460,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
       photoApproval,
       photoRegistryKey,
       locale,
+      exact.backHref,
     );
     const proximity = entityProjection?.proximity ?? identity?.proximity;
     const fallback = <KoreaEvidenceBuildingDetail
@@ -509,6 +513,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
       photoApproval,
       photoRegistryKey,
       locale,
+      backHref,
     );
     const facts = <BuildingOfficialFacts
       districtSlug={observed.district.slug}
@@ -572,7 +577,7 @@ export function composeKoreaBuildingRoute(input: Readonly<{
     mapHref: backHref,
     photo: null,
   });
-  const propertyMedia = projectedBuildingMediaFor(model.building.name, entityProjection, photoApproval, photoRegistryKey, locale);
+  const propertyMedia = projectedBuildingMediaFor(model.building.name, entityProjection, photoApproval, photoRegistryKey, locale, backHref);
   const publicCoordinate = entityProjection?.location ?? (
     model.building.latitude === null || model.building.longitude === null
       ? null

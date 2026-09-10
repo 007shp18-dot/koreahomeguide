@@ -13,6 +13,7 @@ type Envelope = Readonly<{
   schemaVersion: 1;
   source: Readonly<{ apartment: string; register: string | null; nearby?: string | null }>;
   facts: OfficialBuildingFacts;
+  proximity?: ObservedBuildingIdentityModel['proximity'] | null;
 }>;
 
 function area(value: number): string {
@@ -103,7 +104,9 @@ export function BuildingOfficialFacts({ districtSlug, buildingId, observedFacts 
   proximity?: ObservedBuildingIdentityModel['proximity'];
   locale?: ProductLocale;
 }>) {
-  const [state, setState] = useState<Envelope | 'loading' | 'error'>('loading');
+  const requestKey = `${districtSlug}/${buildingId}`;
+  const [responseState, setResponseState] = useState<{ requestKey: string; value: Envelope | 'error' } | null>(null);
+  const state = responseState?.requestKey === requestKey ? responseState.value : 'loading';
 
   useEffect(() => {
     const controller = new AbortController();
@@ -113,22 +116,23 @@ export function BuildingOfficialFacts({ districtSlug, buildingId, observedFacts 
         if (!response.ok) throw new TypeError('Building facts unavailable.');
         return response.json() as Promise<Envelope>;
       })
-      .then(setState)
+      .then((value) => { if (!controller.signal.aborted) setResponseState({ requestKey, value }); })
       .catch((error: unknown) => {
-        if (!(error instanceof DOMException && error.name === 'AbortError')) setState('error');
+        if (!controller.signal.aborted && !(error instanceof DOMException && error.name === 'AbortError')) setResponseState({ requestKey, value: 'error' });
       });
   return () => controller.abort();
-  }, [buildingId, districtSlug]);
+  }, [buildingId, districtSlug, requestKey]);
 
   const dataState = state === 'loading' ? 'loading' : state === 'error' || state.facts.status === 'unavailable' ? 'unavailable' : 'ready';
     const visibleFacts = observedFacts.filter(fact => !/not reported|pending|unavailable|unverified/i.test(fact.value));
-  if (visibleFacts.length === 0 && dataState !== 'ready' && proximity?.coordinateStatus !== 'ready') return null;
+  const currentProximity = state !== 'loading' && state !== 'error' ? state.proximity ?? proximity : proximity;
 
   return (
     <section className={`${styles.evidence} ${styles.officialFacts}`} data-building-section="official-facts" data-building-facts={dataState}>
       <div className={styles.sectionHeading}><h2>{locale === 'ko' ? '건물·주변 정보' : 'Property and location'}</h2></div>
       {visibleFacts.length === 0 ? null : <dl className={styles.findingGrid}>{visibleFacts.map((fact) => <div key={fact.label}><dt>{seoulDetailText(locale, fact.label)}</dt><dd>{seoulDetailText(locale, fact.value)}</dd></div>)}</dl>}
-      <BuildingProximityDisclosure proximity={proximity} locale={locale} />
+      <BuildingProximityDisclosure proximity={currentProximity} locale={locale} />
+      {state === 'loading' ? <p role="status">{locale === 'ko' ? '공식 건물·주변 정보를 불러오는 중입니다…' : 'Loading official building and nearby information…'}</p> : state === 'error' ? <p role="status">{locale === 'ko' ? '추가 건물 정보를 불러오지 못했습니다. 확인된 정보는 위에 표시됩니다.' : 'Additional building facts could not be loaded. Confirmed information is shown above.'}</p> : state.facts.status === 'unavailable' ? <p>{reasonCopy(state.facts.reason, locale)}</p> : null}
       {state !== 'loading' && state !== 'error' ? <ReadyOfficialFacts envelope={state} locale={locale} /> : null}
     </section>
   );

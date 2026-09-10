@@ -2,7 +2,7 @@ import { describe, expect, test, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 
-import { createBuildingFactsGetHandler } from '../lib/public-market/building-facts-route-handler.server';
+import { createBuildingFactsGetHandler, supplementStoredNearbyFacts } from '../lib/public-market/building-facts-route-handler.server';
 import { OBSERVED_BUILDING_INVENTORY_TEST_ARTIFACT } from '../../../tests/e2e/observed-building-inventory-fixture';
 import { PUBLIC_AREA_SUMMARY_TEST_PERIOD } from '../../../tests/e2e/public-area-summary-fixture';
 import { PUBLIC_BUILDING_TEST_ID } from '../../../tests/e2e/public-building-summary-fixture';
@@ -167,5 +167,43 @@ describe('building facts API handler', () => {
       schemaVersion: 1,
       facts: { status: 'unavailable', reason: 'configuration_missing' },
     });
+  });
+});
+
+
+describe('restoring existing nearby evidence', () => {
+  test('recovers nearby schools from the installed facts only for the exact same K-apt identity', () => {
+    const stored = {
+      status: 'ready' as const, match: { kaptCode: 'A1', bjdCode: '1168010100' },
+      apartment: { name: 'Example', legalAddress: '서울 강남구 역삼동 1', roadAddress: null, households: 120, buildings: 1, heating: null, corridorType: null, saleType: null, approvalDate: null, totalAreaSqm: null },
+      register: null,
+      nearby: { subwayLine: '2호선', subwayStation: '역삼역', subwayWalkTime: null, busWalkTime: null, educationFacility: null, convenientFacility: null },
+    };
+    const installed = { ...stored, source: { apartment: 'K-apt weekly', register: null, nearby: 'K-apt complex details' }, nearby: { ...stored.nearby, subwayStation: 'Older station value', educationFacility: '역삼초등학교' } };
+    const result = supplementStoredNearbyFacts(stored, installed);
+    expect(result).toMatchObject({ nearby: { subwayStation: '역삼역', educationFacility: '역삼초등학교' }, source: { nearby: 'K-apt complex details' } });
+    expect(supplementStoredNearbyFacts(stored, { ...installed, match: { ...installed.match, kaptCode: 'OTHER' } })).toBe(stored);
+  });
+
+  test('delivers stored school and station distances even when apartment facts are unavailable', async () => {
+    const proximity = { status: 'ready', coordinateStatus: 'ready', nearestStation: { sourceId: 'station-1', name: 'Taereung', lines: ['6'], distanceMeters: 210 }, nearestSchool: { sourceId: 'school-1', name: 'School', distanceMeters: 400 } } as const;
+    const handler = createBuildingFactsGetHandler({
+      resolveIdentity: () => ({ districtLawdCd: '11260', neighborhoodName: '묵동', officialName: '세이지움태릉입구역', housingType: 'apartment' }),
+      load: vi.fn().mockResolvedValue({ status: 'unavailable', reason: 'apartment_not_found' }),
+      loadProximity: vi.fn().mockResolvedValue(proximity),
+    });
+    const response = await handler(new Request('https://example.test/api?district=jungnang-gu&building=jungnang-gu-1giu390'));
+    expect(await response.json()).toMatchObject({ facts: { status: 'unavailable' }, proximity });
+  });
+
+  test('a failed nearby database read preserves available official building facts', async () => {
+    const handler = createBuildingFactsGetHandler({
+      resolveIdentity: () => ({ districtLawdCd: '11260', neighborhoodName: '묵동', officialName: 'Example', housingType: 'apartment' }),
+      load: vi.fn().mockResolvedValue({ status: 'unavailable', reason: 'configuration_missing' }),
+      loadProximity: vi.fn().mockRejectedValue(new Error('database timeout')),
+    });
+    const response = await handler(new Request('https://example.test/api?district=jungnang-gu&building=jungnang-gu-1giu390'));
+    expect(response.status).toBe(200);
+    expect(await response.json()).toMatchObject({ proximity: null });
   });
 });

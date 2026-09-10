@@ -55,7 +55,7 @@ describe('Tokyo transaction exploration', () => {
     expect(html).toContain('data-layout="split"');
     expect(html).toContain('data-market-shell-region="spatial"');
     expect(html).toContain('¥85,000,000');
-    expect(html).toContain('q=Azabu&amp;city=13103&amp;year=2025&amp;quarter=4&amp;page=2&amp;release=release-one');
+    expect(html).toMatch(/q=Azabu&amp;city=13103&amp;year=2025&amp;quarter=4&amp;type=Pre-owned\+Condominiums%2C\+etc\.&amp;page=2&amp;release=release-one/);
     expect(read).toHaveBeenCalledWith({ city: '13103', year: '2025', quarter: '4' }, expect.objectContaining({ q: 'Azabu' }));
   });
 
@@ -98,7 +98,7 @@ describe('Tokyo transaction exploration', () => {
     expect(html).toContain('<option value="13110" selected="">Meguro</option>');
     expect(html).toContain('<option selected="">2024</option>');
     expect(html).toContain('<option value="2" selected="">Q2</option>');
-    expect(html).toContain('<option selected="">Pre-owned Condominiums, etc.</option>');
+    expect(html).toContain('<option value="Pre-owned Condominiums, etc." selected="">Apartments &amp; condominiums</option>');
     expect(html).toContain('value="50"');
     expect(html).toContain('value="80"');
   });
@@ -109,5 +109,12 @@ describe('Tokyo transaction exploration', () => {
     expect(html).not.toContain('Try Minato, 2025 Q4');
     expect(html).not.toContain('0 recorded transactions');
     expect(html).toMatch(/href="\/news\/city-stories\/tokyo\/?"/);
+  });
+  it('opens on apartment transactions but preserves an explicit all-property selection', async () => {
+    read.mockResolvedValue(null);
+    await TokyoExplorer({ searchParams: Promise.resolve({}) });
+    expect(read).toHaveBeenLastCalledWith(expect.anything(), expect.objectContaining({ type: 'Pre-owned Condominiums, etc.' }));
+    await TokyoExplorer({ searchParams: Promise.resolve({ type: '' }) });
+    expect(read).toHaveBeenLastCalledWith(expect.anything(), expect.objectContaining({ type: '' }));
   });
 });

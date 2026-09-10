@@ -770,3 +770,7 @@
 .articleHero .byline div { padding: 0; gap: 4px; }
 .article > details[data-article-contents] { max-width: 760px; margin: 12px auto 32px; }
 @media (max-width: 740px) { .articleHero .deck { font-size: 16px; } }
+
+.standardArticle > :not(script):not(header):not(nav) { max-width: 700px; margin-inline: auto; }
+.standardArticle > .articlePhoto { max-width: 900px; }
+.standardArticle > .sources { margin-top: 40px; }

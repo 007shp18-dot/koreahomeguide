@@ -33,3 +33,23 @@ if (process.argv.includes('--check')) {
   writeFileSync(target, serialized);
   console.info(`Wrote ${Buffer.byteLength(serialized)} bytes to ${fileURLToPath(target)}`);
 }
+
+// Keep the Explore API independent of full transaction decompression on first use.
+const { createSingaporeSnapshotRepositoryFromInstalled } = await import('../apps/web/lib/singapore/snapshot-repository.server.ts');
+const { createInstalledSnapshotRepository, resolveInstalledSnapshotObject, resolveInstalledSnapshotRegistry } = await import('../apps/web/lib/snapshots/installed-snapshot-repository.server.ts');
+const { buildSingaporeExploreModel } = await import('../apps/web/lib/singapore/route-model.server.ts');
+const { packSingaporeExploreModel } = await import('../apps/web/lib/singapore/explore-transport.ts');
+const { singaporeExploreRegistryFingerprint, SINGAPORE_EXPLORE_INDEX_VERSION } = await import('../apps/web/lib/singapore/explore-index.server.ts');
+if (process.env.SIGNEDPRICE_SINGAPORE_SNAPSHOT_ARTIFACT === undefined) {
+  const fingerprint = singaporeExploreRegistryFingerprint(JSON.parse(readFileSync(registryPath, 'utf8')));
+  const model = buildSingaporeExploreModel(await createSingaporeSnapshotRepositoryFromInstalled(createInstalledSnapshotRepository({ registrySource: resolveInstalledSnapshotRegistry(), resolveObject: resolveInstalledSnapshotObject }).get('sg-singapore', 'sg-private-sale')));
+  if (fingerprint === null || model.status !== 'ready') throw new Error('Installed Singapore Explore index could not be verified.');
+  const exploreTarget = new URL('../apps/web/data/singapore-explore-index.json', import.meta.url);
+  const serializedIndex = `${JSON.stringify({ version: SINGAPORE_EXPLORE_INDEX_VERSION, registryFingerprint: fingerprint, model: packSingaporeExploreModel(model) })}\n`;
+  if (process.argv.includes('--check')) {
+    if (readFileSync(exploreTarget, 'utf8') !== serializedIndex) throw new Error('Singapore Explore index is stale.');
+  } else {
+    writeFileSync(exploreTarget, serializedIndex);
+    console.info(`Wrote ${Buffer.byteLength(serializedIndex)} bytes to ${fileURLToPath(exploreTarget)}`);
+  }
+}
