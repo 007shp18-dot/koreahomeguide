@@ -1,16 +1,12 @@
-# Unified release and publication
+# Code deployment and publication
 
-## Code release
+## Code deployment
 
-The coordinator is `.github/workflows/unified-release.yml`, scheduled daily at 09:00 UTC (18:00 Korea) and manually dispatchable for urgent changes. GitHub schedules are best-effort, not an exact-time SLA.
+The daily unified code release workflow and its queue/publish scripts were removed at the user's request. Code changes can be merged individually after the applicable GitHub checks; there is no daily batch or `release-ready` label requirement. Vercel's Git integration handles deployment from the configured branches. No new deploy token is required.
 
-Work in same-repository PRs. After review, apply `release-ready`. The coordinator selects only open, non-draft PRs with successful latest `verify` and no pending or failed checks. It merges them locally, leaves conflicts queued, and runs the combined lint, types, tests, memory check, production build, boundary checks, legacy gate and browser suite. On failure nothing is pushed to main. Before pushing it checks PR heads/labels and the original main SHA again. A normal fast-forward push rejects races. Runtime changes already on main since the previous release marker are included even when no new PR is selected. Concurrency serializes coordinators.
+Repository-managed Vercel build exclusions are removed. Neither configuration defines `ignoreCommand` or branch deployment exclusions. The legacy `ignore-build.mjs` compatibility command always exits 1 (continue build) if an external project setting still calls it. Commit markers, changed-file paths and deployment environments do not control its result.
 
-Production Vercel builds require `[release]` at the beginning of the final commit subject. Preview builds require `[preview]`. Other pushes are held. A requested release with only documentation/tests skips the Vercel build; runtime dependencies and data are included. Diff uses the last Vercel deployment SHA, not the marker commit's empty diff. Markers are workflow conventions, not access control. Maintainers can still explicitly bypass them; protect main using repository settings where supported. Do not force-push or bypass required checks if GitHub rejects a coordinator push.
-
-Initial installation is a single `[release]` bootstrap merge. After installation, use the coordinator; do not individually merge and deploy each task. Vercel's Git integration remains the deploy transport, so no additional deploy token is embedded in the repository. GitHub's built-in token has contents write only in the release job; validation steps do not receive that token and checkout does not persist credentials. Publishing script is restored from the trusted base commit after validation. The candidate SHA and plan are retained as workflow outputs; changed HEAD or tracked files fail publication.
-
-The GitHub job summary lists selected and blocked PRs. A pushed main commit is not a successful deployment: verify Vercel READY and representative public routes. Vercel preserves the previous deployment on build failure. A code rollback does not roll back DB writes. This workflow's first scheduled run and any account-level branch permission restrictions must be checked after installation.
+Report GitHub merge and Vercel READY separately. A code rollback does not roll back database content. Existing CI workflows and branch protections remain in effect.
 
 ## Editorial publishing
 
@@ -28,4 +24,4 @@ Existing collection schedules and the authenticated 정기 수집 운영 panel r
 
 ## Cost accounting
 
-No-change code queue exits before installing dependencies or building. Normal task pushes no longer request Vercel Preview builds. Required verification runs in Actions, and Vercel performs one final production build; these are separate services/costs. No claim of zero build cost, guaranteed savings, or automatic observability plan changes. Compare future Build CPU Minutes, deployment count and total platform costs to the #282 baseline.
+With the exclusions removed, task pushes may request Vercel Preview builds, including documentation and test changes. Required verification runs in Actions; Vercel builds are a separate service/cost. No claim of zero build cost, guaranteed savings, or automatic observability plan changes. Compare future Build CPU Minutes, deployment count and total platform costs to the #282 baseline.

@@ -347,12 +347,6 @@
     }
   ],
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "git": {
-    "deploymentEnabled": {
-      "codex/signedprice-*": false
-    }
-  },
-  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- . ':(exclude)v2/**' ':(exclude)docs/superpowers/**'",
   "rewrites": [
     {
       "source": "/api/maps-config",
