@@ -1,3 +1,4 @@
+import { photoSourceRecoverySummary } from '../../../../lib/photos/photo-source-recovery.server';
 import { mediaPipeline } from '../../../../lib/photos/media-pipeline.server';
 import { contentDatabase } from '../../../../lib/db/postgres.server';
 import { authorized, equalSecret, operatorId, sameOrigin } from '../../../../lib/evidence-pool/auth.server';
@@ -22,8 +23,8 @@ export async function GET(request: Request) {
   if (snapshotId) { if (!/^[a-f0-9-]{36}$/i.test(snapshotId)) return reply({ error: 'invalid_id' },400); return reply({ snapshot: await repository.snapshot(snapshotId) }); }
   const sourceId = new URL(request.url).searchParams.get('sourceId');
   if (sourceId) { if (!COLLECTION_SOURCES.some((s) => s.id === sourceId)) return reply({ error: 'invalid_source' },400); return reply({ snapshots: await repository.snapshots(sourceId) }); }
-  const [sources,markets,quality,media] = await Promise.all([repository.status(),marketCollectionStatus(sql),dataQuality(sql),mediaPipeline(sql)]);
-  return reply({ sources, markets, quality, media, publication: 'Raw snapshots require review and structured evidence before publication.' });
+  const [sources,markets,quality,media,recovery] = await Promise.all([repository.status(),marketCollectionStatus(sql),dataQuality(sql),mediaPipeline(sql),photoSourceRecoverySummary(sql)]);
+  return reply({ sources, markets, quality, media, recovery, publication: 'Raw snapshots require review and structured evidence before publication.' });
  } catch { return reply({ error: 'collection_storage_unavailable' },503); }
 }
 export async function POST(request: Request) {

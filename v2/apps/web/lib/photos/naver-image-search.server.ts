@@ -4,7 +4,7 @@ export type NaverImageCandidate = Readonly<{
   title: string;
   temporaryImageUrl: string;
   temporaryThumbnailUrl: string;
-  sourceDocumentUrl: string;
+  sourceDocumentUrl: string | null;
   width: number | null;
   height: number | null;
 }>;
@@ -179,7 +179,8 @@ export async function searchNaverBuildingImages(input: Readonly<{
         title: plainText(item.title),
         temporaryImageUrl,
         temporaryThumbnailUrl,
-        sourceDocumentUrl: temporaryImageUrl,
+        // Image Search returns an asset URL, not its publishing page.
+        sourceDocumentUrl: null,
         width: dimension(item.sizewidth),
         height: dimension(item.sizeheight),
       })];
