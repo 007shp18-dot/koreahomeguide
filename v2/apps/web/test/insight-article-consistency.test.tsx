@@ -35,7 +35,18 @@ describe('consistent insight articles and curation', () => {
       expect(html).toContain('id="article-sources"');
       expect(html).not.toContain('aria-label="City buying journey"');
       expect(html).not.toContain('data-market-representative-photo');
+      expect(html).toContain('data-neighbourhood-photo');
     }
+  });
+
+  it('gives the published insight cards credited photos with varied scenes', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-09-10T12:00:00Z'));
+    const items = buildInsightItems([], 'all');
+    expect(items.every(item => item.photo?.source && item.photo.licenseUrl)).toBe(true);
+    expect(new Set(items.map(item => item.photo?.src)).size).toBeGreaterThanOrEqual(24);
+    expect(items.find(item => item.href.endsWith('/wangsimni/'))?.photo?.src).toContain('wangsimni-station');
+    expect(items.find(item => item.href.endsWith('/mangwon/'))?.photo?.src).toContain('mangwon-river');
   });
 
   it('uses the same article header for daily neighbourhood stories and existing analysis', () => {
