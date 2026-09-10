@@ -50,7 +50,7 @@ const exactEvidenceFooter: SiteFooterModel = {
 const countLabel = (count: number) => `${count} observed contract${count === 1 ? '' : 's'}`;
 
 function SeoulBuildingContext({ locale, name, href }: Readonly<{ locale: ProductLocale; name: string; href: string }>) {
-  return <ProjectedEntityMedia locale={locale} buildingName={name} media={null} fallbackMarket="seoul" locationHref={seoulBuildingLocationHref(href)} />;
+  return <ProjectedEntityMedia locale={locale} buildingName={name} media={null} showLocationAction={false} fallbackMarket="seoul" locationHref={seoulBuildingLocationHref(href)} />;
 }
 
 

@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { listPortfolioRecords } from '../content/portfolio-manifest';
@@ -19,17 +20,38 @@ describe('shared navigation destinations', () => {
     ]);
 
     for (const locale of ['ko', 'zh-CN'] as const) {
-      expect(globalNavigation(locale)).toHaveLength(4);
+      expect(globalNavigation(locale)).toHaveLength(5);
       expect(globalNavigation(locale).map(({ href }) => href.replace(/^\/(?:zh-cn|ko)(?=\/)/, '')))
-        .toEqual(['/prices/', '/news/', '/tools/', '/guides/']);
+        .toEqual(['/prices/', '/news/', '/news/?type=news', '/tools/', '/guides/']);
     }
   });
   it('keeps the news view while changing city and advertises only supported Tokyo guides', () => {
     expect(marketDestination('jp-tokyo', '/news/?type=news&market=dubai')).toBe('/news/?type=news&market=tokyo');
     expect(marketDestination('sg-singapore', '/news/?type=policy')).toBe('/news/?type=policy&market=singapore');
     expect(marketDestination('jp-tokyo', '/guides/', 'en')).toBe('/guides/?market=tokyo');
-    expect(marketDestination('jp-tokyo', '/ko/guides/', 'ko')).toBe('/jp/tokyo/');
-    expect(marketDestination('jp-tokyo', '/zh-cn/guides/', 'zh-CN')).toBe('/jp/tokyo/');
+    expect(marketDestination('jp-tokyo', '/ko/guides/', 'ko')).toBe('/ko/guides/?market=tokyo');
+    expect(marketDestination('jp-tokyo', '/zh-cn/guides/', 'zh-CN')).toBe('/zh-cn/guides/?market=tokyo');
+  });
+  it('retains Tokyo tools and saved tasks in every supported language', () => {
+    for (const locale of ['en', 'ko', 'zh-CN'] as const) {
+      const prefix = locale === 'en' ? '' : locale === 'ko' ? '/ko' : '/zh-cn';
+      expect(marketDestination('jp-tokyo', `${prefix}/tools/`, locale)).toBe(`${prefix}/tools/property-scenario/?market=jp-tokyo&currency=JPY`);
+      expect(marketDestination('jp-tokyo', `${prefix}/kr/seoul/check/`, locale)).toBe(`${prefix}/tools/property-scenario/?market=jp-tokyo&currency=JPY`);
+      expect(marketDestination('jp-tokyo', `${prefix}/kr/seoul/shortlist/`, locale)).toBe(`${prefix}/jp/tokyo/shortlist/`);
+      expect(marketDestination('jp-tokyo', `${prefix}/news/?type=news&market=seoul`, locale)).toBe(`${prefix}/news/?type=news&market=tokyo`);
+    }
+  });
+  it('advertises real Tokyo locale routes and preserves the selected ward and period', () => {
+    const query = '?city=13113&year=2026&quarter=1';
+    for (const section of ['', 'explore/', 'shortlist/']) {
+      const path = `/jp/tokyo/${section}`;
+      const destinations = languageDestinations(path, query);
+      expect(destinations).toEqual({ en: `${path}${query}`, ko: `/ko${path}${query}`, 'zh-CN': `/zh-cn${path}${query}` });
+      for (const [group, prefix] of [['(en)', ''], ['(ko)', '/ko'], ['(zh-cn)', '/zh-cn']]) {
+        expect(existsSync(new URL(`../app/${group}${prefix}${path}page.tsx`, import.meta.url))).toBe(true);
+      }
+    }
+    expect(languageDestinations('/zh-cn/')).toEqual({ en: '/', ko: '/ko/', 'zh-CN': '/zh-cn/' });
   });
   it('switches between the published English and Korean ranking hubs', () => {
     expect(languageDestinations('/rankings/', '?view=markets')).toEqual({
@@ -88,6 +110,14 @@ describe('shared navigation destinations', () => {
     const [path, destinations] = translated!;
     const html = renderToStaticMarkup(<LanguageLinks pathname={path} translations={routes} />);
     expect(html).toContain(destinations['zh-CN']!.replace(/\/$/, ''));
+  });
+  it('preserves Korean and Chinese Tokyo destinations in the footer and brand link', () => {
+    for (const locale of ['ko', 'zh-CN'] as const) {
+      const prefix = locale === 'ko' ? '/ko' : '/zh-cn';
+      const html = renderToStaticMarkup(<SiteFooter locale={locale} copy={homepageCopy.footer} />);
+      expect(html).toContain(`href="${prefix}/jp/tokyo"`);
+      expect(html).toMatch(new RegExp(`aria-label="signedprice home"[^>]*href="${prefix}/?"`));
+    }
   });
   it('uses the same footer on editorial and market pages without duplicate market links', () => {
     const html = renderToStaticMarkup(<SiteFooter copy={homepageCopy.footer} />);

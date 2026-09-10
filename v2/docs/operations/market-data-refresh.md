@@ -31,8 +31,8 @@ All times are UTC.
 | --- | --- | --- |
 | `kr-seoul-sale` | Daily 18:10 | Current and previous month, all 25 districts and four housing types |
 | `kr-seoul-rent` | Daily 18:25 | Current and previous month, all 25 districts and four housing types |
-| `sg-private-sale` | Tuesday and Friday 02:10 | Current and previous month from all four URA batches |
-| `sg-private-rent` | Monthly on the 16th at 02:25 | Current and previous quarter |
+| `sg-private-sale` | Daily 02:10 | Current and previous month from all four URA batches |
+| `sg-private-rent` | Daily 02:25 | Current and previous quarter |
 | `ae-dubai-transaction` | Daily 01:10 | Current and previous registration month |
 | `ae-dubai-rent` | Daily 01:25 | Current and previous registration month |
 

@@ -1,6 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "regions": ["sin1"],
+  "regions": [
+    "sin1"
+  ],
   "crons": [
     {
       "path": "/api/internal/data-collection/",
@@ -68,7 +70,7 @@
     },
     {
       "path": "/api/internal/japan-refresh/",
-      "schedule": "40 * * * *"
+      "schedule": "*/5 * * * *"
     },
     {
       "path": "/api/internal/public-entity-projection/?mediaOnly=1",

@@ -9,7 +9,7 @@ vi.mock('../lib/japan/refresh.server', () => ({ refreshJapan: mocks.refresh,
 vi.mock('../lib/japan/backfill.server', () => ({ readJapanBackfillStatus: mocks.status, runJapanBackfill: mocks.backfill }));
 import { GET as publicGet } from '../app/api/japan/transactions/route';
 import { GET as cronGet, POST as operatorPost } from '../app/api/internal/japan-refresh/route';
-afterEach(() => { vi.unstubAllEnvs(); vi.clearAllMocks(); });
+afterEach(() => { vi.unstubAllEnvs(); vi.clearAllMocks(); vi.useRealTimers(); });
 const request = (query = '', token = '') => new Request(`https://example.test/api?${query}`, { headers: { authorization: token } });
 
 describe('Japan published API', () => {
@@ -47,6 +47,7 @@ describe('Japan internal refresh authorization and bounded schedule', () => {
     expect(mocks.read).not.toHaveBeenCalled();
   });
   it('executes one scheduled scope without requiring a Minato bootstrap publication', async () => {
+    vi.useFakeTimers(); vi.setSystemTime(new Date('2026-09-10T00:00:00Z'));
     vi.stubEnv('CRON_SECRET', 'cron-test'); vi.stubEnv('SIGNEDPRICE_JAPAN_REFRESH_ENABLED', 'true');
     vi.stubEnv('SIGNEDPRICE_REINFOLIB_API_KEY', 'source-test');
     const port = { query: vi.fn().mockResolvedValue([]) };
@@ -58,13 +59,22 @@ describe('Japan internal refresh authorization and bounded schedule', () => {
     expect(mocks.refresh.mock.calls[0]?.[1]).toEqual({ city: '13123', year: '2025', quarter: '1' });
     expect(mocks.read).not.toHaveBeenCalled();
   });
+  it('avoids repeated maintenance fetches between hourly refresh slots', async () => {
+    vi.useFakeTimers(); vi.setSystemTime(new Date('2026-09-10T00:05:00Z'));
+    vi.stubEnv('CRON_SECRET', 'cron-test'); vi.stubEnv('SIGNEDPRICE_JAPAN_REFRESH_ENABLED', 'true');
+    vi.stubEnv('SIGNEDPRICE_REINFOLIB_API_KEY', 'source-test');
+    mocks.port.mockReturnValue({}); mocks.status.mockResolvedValue({ remaining: 0 });
+    expect(await (await cronGet(request('', 'Bearer cron-test'))).json())
+      .toEqual({ state: 'skipped', reason: 'maintenance_not_due' });
+    expect(mocks.refresh).not.toHaveBeenCalled();
+  });
   it('fills missing scopes before revisiting the hourly rotation', async () => {
     vi.stubEnv('CRON_SECRET', 'cron-test'); vi.stubEnv('SIGNEDPRICE_JAPAN_REFRESH_ENABLED', 'true');
     vi.stubEnv('SIGNEDPRICE_REINFOLIB_API_KEY', 'source-test');
     mocks.port.mockReturnValue({}); mocks.status.mockResolvedValue({ remaining: 120 });
     mocks.backfill.mockResolvedValue({ state: 'partial', remaining: 117, results: [] });
     expect((await cronGet(request('', 'Bearer cron-test'))).status).toBe(200);
-    expect(mocks.backfill).toHaveBeenCalledWith({ apiKey: 'source-test', port: {} });
+    expect(mocks.backfill).toHaveBeenCalledWith({ apiKey: 'source-test', port: {}, maxScopes: 8, maxDurationMs: 75_000 });
     expect(mocks.refresh).not.toHaveBeenCalled();
   });
   it('preserves explicit authenticated GET scopes without a bootstrap lookup', async () => {

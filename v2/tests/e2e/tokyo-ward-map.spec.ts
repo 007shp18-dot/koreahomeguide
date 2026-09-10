@@ -6,7 +6,7 @@ test('Tokyo ward map changes the ward while retaining period and property filter
   await expect(map).toBeVisible();
   await expect(map.getByRole('heading', { name: 'Explore Tokyo by area' })).toBeVisible();
   await expect(map.getByRole('button', { name: 'Open ward and neighbourhood price map' })).toHaveCount(0);
-  await map.getByText('All Tokyo wards', { exact: true }).click();
+  await map.getByText('Change ward · 23 wards', { exact: true }).click();
   await expect(map.locator('a[data-ward]')).toHaveCount(23);
   const shibuya = map.locator('a[data-ward="13113"]');
   await shibuya.focus();

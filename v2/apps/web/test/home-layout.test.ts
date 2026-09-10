@@ -55,7 +55,7 @@ describe('signedprice public editorial homepage', () => {
     }
     expect(markup).toContain('aria-label="Language navigation"');
     expect(markup).toContain('aria-label="Market navigation"');
-    expect(markup).toContain('href="/zh-cn/kr/seoul"');
+    expect(markup).toContain('href="/zh-cn"');
     expect(markup).not.toContain('data-navigation-tier="product"');
   });
 

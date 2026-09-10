@@ -45,3 +45,13 @@ it('uses separately reviewed database publications and still honours discovery r
   rejected = true;
   expect(await readPublicHeadlines()).toEqual([]);
 });
+
+it('includes automatic metadata without promoting it to a reviewed publication, and honours rejection', async () => {
+  state.files.mockReturnValue([]);
+  const headline = { id: 42, market_id: 'jp-tokyo', title: 'Tokyo condominium prices and housing demand', publisher: 'Publisher', canonical_url: 'https://news.google.com/rss/articles/42', source_published_at: new Date(Date.now() - 86_400_000).toISOString(), source_kind: 'google-news-rss', review_state: 'new', is_active: true };
+  let rejected = false;
+  state.sql.mockImplementation((query: TemplateStringsArray) => Promise.resolve(query[0]!.includes('row_number()') ? [headline] : query[0]!.includes('SELECT canonical_url') && rejected ? [{ canonical_url: headline.canonical_url }] : []));
+  expect(await readPublicHeadlines()).toEqual([expect.objectContaining({ category: 'External headline', summary: '', evidence: 'checking' })]);
+  rejected = true;
+  expect(await readPublicHeadlines()).toEqual([]);
+});

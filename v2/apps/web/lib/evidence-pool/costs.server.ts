@@ -6,7 +6,7 @@ import { scenarioCostOptions, type ScenarioCostOption } from './costs';
 import type { PropertyScenarioContext } from '../tools/property-scenario-context';
 
 export async function loadScenarioCosts(context: PropertyScenarioContext): Promise<{state: 'ready' | 'unavailable'; options: ScenarioCostOption[]}> {
-  if (!context.propertyName || !context.housing) return {state: 'ready', options: []};
+  if (context.market === 'jp-tokyo' || !context.propertyName || !context.housing) return {state: 'ready', options: []};
   const sql = publicContentDatabase();
   if (!sql) return {state: 'unavailable', options: []};
   try {

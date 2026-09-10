@@ -39,3 +39,14 @@
 .page .saveAction[aria-pressed=true] { border-color: #ead1d5; background: #fff5f6; }
 .saveAction[aria-pressed=true] span { color: var(--saved, #c54152); }
 .card p { line-height: 1.65; }
+
+/* Editorial list: make saved places and their next action legible without nested cards. */
+.savedCities > label { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin: 12px 0 20px; color: var(--muted); font-size: 14px; }
+.savedCities select { min-width: 180px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 8px; background: white; color: var(--ink); }
+.savedCities ul { list-style: none; margin: 24px 0; padding: 0; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); column-gap: 36px; }
+.savedCities li { border-bottom: 1px solid var(--line); min-width: 0; }
+.savedCities li a { display: flex; justify-content: space-between; padding: 18px 0; gap: 16px; color: var(--ink); text-decoration: none; font-size: 17px; line-height: 1.5; }
+.savedCities li a::after { content: '↗'; color: var(--accent); flex-shrink: 0; }
+.savedCities li a:hover { color: var(--accent); }
+.savedCities a:focus-visible, .savedCities select:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+@media (max-width: 560px) { .savedCities ul { grid-template-columns: 1fr; } }

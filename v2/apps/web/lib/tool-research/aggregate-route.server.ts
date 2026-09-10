@@ -1,7 +1,7 @@
 import { RESEARCH_TOOL_IDS } from './contract';
 
 type Counter = (tool: string, market: string) => Promise<void>;
-const markets = ['global', 'kr-seoul', 'sg-singapore', 'ae-dubai'];
+const markets = ['global', 'kr-seoul', 'sg-singapore', 'ae-dubai', 'jp-tokyo'];
 
 export function createToolUsageHandler(count: Counter) {
   return async (request: Request): Promise<Response> => {

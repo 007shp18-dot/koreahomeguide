@@ -10,12 +10,11 @@ import styles from './passport.module.css';
 import { passportCandidateHref } from '../../lib/passport/journey';
 import { sendToolEvent } from '../tools/tool-analytics';
 import { ToolResearchShare } from '../tools/tool-research-share';
-import { createPassportResearchSnapshot } from '../../lib/tool-research/client';
 
 const COPY = {
-  en: { title: 'Your purchasing power across three cities', label: 'Budget in Korean won', action: 'Update comparison', local: 'Local budget', area: 'Indicative area', matches: 'Areas and projects within budget', evidence: 'Evidence', cost: 'Purchase price only', excluded: 'Taxes, fees, financing, buyer eligibility and live availability are excluded.', share: 'Copy result link', copied: 'Link copied', open: 'Explore market', none: 'None of the areas or projects covered has a median price within this budget. Individual transactions may still fall below it.', approx: 'at the observed unit-price midpoint', sample: 'reported transactions', fx: 'Reference FX', back: 'All tools' },
-  ko: { title: '같은 예산, 세 도시의 집값', label: '원화 예산', action: '다시 비교하기', local: '현지 통화로 환산한 예산', area: '예산으로 환산한 면적', matches: '예산 안에서 살펴볼 지역·단지', evidence: '비교에 쓴 거래 자료', cost: '매매가격만 반영', excluded: '세금·수수료·대출·구매 자격·실시간 매물 여부는 제외했습니다.', share: '결과 링크 복사', copied: '링크 복사됨', open: '실거래가 보기', none: '현재 자료에는 중앙값이 예산 이하인 지역·단지가 없습니다. 개별 거래 중에는 예산에 맞는 사례가 있을 수 있습니다.', approx: '㎡당 거래가격 중간값 기준', sample: '신고 거래', fx: '기준 환율', back: '전체 도구' },
-  'zh-CN': { title: '三座城市中的预算购买力', label: '韩元预算', action: '更新比较', local: '当地预算', area: '参考可购面积', matches: '预算内的地区与项目', evidence: '数据依据', cost: '仅含购房价格', excluded: '不含税费、融资、买方资格及实时房源可售性。', share: '复制结果链接', copied: '链接已复制', open: '探索市场', none: '现有资料中，没有成交中位价低于此预算的地区或项目，个别成交仍可能符合预算。', approx: '按已发布单位面积价格中位数', sample: '笔申报成交', fx: '参考汇率', back: '全部工具' },
+  en: { title: 'Your purchasing power across four cities', label: 'Budget in Korean won', action: 'Update comparison', local: 'Local budget', area: 'Indicative area', matches: 'Areas and projects within budget', evidence: 'Evidence', cost: 'Purchase price only', excluded: 'Taxes, fees, financing, buyer eligibility and live availability are excluded.', share: 'Copy result link', copied: 'Link copied', open: 'Explore market', none: 'None of the areas or projects covered has a median price within this budget. Individual transactions may still fall below it.', approx: 'at the observed unit-price midpoint', sample: 'reported transactions', fx: 'Reference FX', back: 'All tools' },
+  ko: { title: '같은 예산, 네 도시의 집값', label: '원화 예산', action: '다시 비교하기', local: '현지 통화로 환산한 예산', area: '예산으로 환산한 면적', matches: '예산 안에서 살펴볼 지역·단지', evidence: '비교에 쓴 거래 자료', cost: '매매가격만 반영', excluded: '세금·수수료·대출·구매 자격·실시간 매물 여부는 제외했습니다.', share: '결과 링크 복사', copied: '링크 복사됨', open: '실거래가 보기', none: '현재 자료에는 중앙값이 예산 이하인 지역·단지가 없습니다. 개별 거래 중에는 예산에 맞는 사례가 있을 수 있습니다.', approx: '㎡당 거래가격 중간값 기준', sample: '신고 거래', fx: '기준 환율', back: '전체 도구' },
+  'zh-CN': { title: '四座城市中的预算购买力', label: '韩元预算', action: '更新比较', local: '当地预算', area: '参考可购面积', matches: '预算内的地区与项目', evidence: '数据依据', cost: '仅含购房价格', excluded: '不含税费、融资、买方资格及实时房源可售性。', share: '复制结果链接', copied: '链接已复制', open: '探索市场', none: '现有资料中，没有成交中位价低于此预算的地区或项目，个别成交仍可能符合预算。', approx: '按已发布单位面积价格中位数', sample: '笔申报成交', fx: '参考汇率', back: '全部工具' },
 } as const;
 
 const DETAIL = {
@@ -24,7 +23,7 @@ const DETAIL = {
   'zh-CN': { comparison: '各城市的数据期间与汇总单位不同。面积估算仅供初步筛选，不代表同等条件的住房。', unavailable: '暂时没有可比较的价格数据。', copyFailed: '无法复制链接。请复制浏览器地址以分享此结果。', fx: '仅供参考，实际汇款汇率可能不同。', yield: 'Ready 地区估算毛收益率的中位数', basis: { transactions: '现有公寓成交单位面积价格的中位数', projects: '已发布项目单位面积价格中位数的中位数', areas: 'Ready 公寓地区单位面积价格中位数的中位数' } },
 } as const;
 
-const MONEY = { KRW: 'ko-KR', SGD: 'en-SG', AED: 'en-AE' } as const;
+const MONEY = { KRW: 'ko-KR', SGD: 'en-SG', AED: 'en-AE', JPY: 'ja-JP' } as const;
 const FX_COPY = {
   en: { reference: 'Daily reference rates.', stale: 'Latest rates could not be confirmed. Using the last available reference.', fallback: 'Latest rates unavailable. Using the saved reference.', checked: 'Provider checked' },
   ko: { reference: '일별 참고 환율입니다.', stale: '최신 환율을 확인하지 못해 마지막으로 확보한 참고 환율을 사용합니다.', fallback: '최신 환율을 불러오지 못해 저장된 참고 환율을 사용합니다.', checked: '공급자 확인' },
@@ -56,12 +55,7 @@ export function PassportWorkspace({ initialModel }: Readonly<{ initialModel: Pas
   const detail = DETAIL[initialModel.locale];
   const fxCopy = FX_COPY[initialModel.locale];
   const action = passportHref(initialModel.locale, initialModel.budgetWon).split('?')[0]!;
-  const researchSnapshot = createPassportResearchSnapshot({
-    budgetAmount: model.budgetAmount,
-    budgetCurrency: model.budgetCurrency,
-    dubaiStage: model.dubaiStage,
-    markets: model.markets.map(({ id, indicativeAreaSqm, sample }) => ({ id, indicativeAreaSqm, sample })),
-  });
+
 
   return <main className={styles.workspace}>
     <header className={styles.resultHeader}>
@@ -89,7 +83,7 @@ export function PassportWorkspace({ initialModel }: Readonly<{ initialModel: Pas
     <section className={styles.cardGrid} aria-label={copy.title}>
       {model.markets.map((market) => {
         const money = new Intl.NumberFormat(MONEY[market.currency], { style: 'currency', currency: market.currency, currencyDisplay: 'code', maximumFractionDigits: 0 });
-        const href = marketHref(initialModel.locale === 'ko' ? 'ko' : 'en', market.id === 'kr-seoul' ? '/kr/seoul/explore/?transaction=sale&propertyType=apartment' : market.id === 'sg-singapore' ? '/sg/singapore/explore/' : `/ae/dubai/explore/?housing=apartment&stage=${dubaiStage}&budgetMax=${Math.floor(market.localBudget)}`);
+        const href = marketHref(initialModel.locale === 'ko' ? 'ko' : 'en', market.id === 'kr-seoul' ? '/kr/seoul/explore/?transaction=sale&propertyType=apartment' : market.id === 'sg-singapore' ? '/sg/singapore/explore/' : market.id === 'jp-tokyo' ? '/jp/tokyo/explore/?type=Pre-owned+Condominiums%2C+etc.' : `/ae/dubai/explore/?housing=apartment&stage=${dubaiStage}&budgetMax=${Math.floor(market.localBudget)}`);
         return <article className={styles.marketCard} data-passport-market={market.id} key={market.id}>
           <div className={styles.cardTitle}><span>{market.currency}</span><h2>{market.city}</h2></div>
           <div className={styles.metricRow} data-passport-row="local-budget"><span>{copy.local}</span><strong>{money.format(market.localBudget)}</strong></div>
@@ -102,7 +96,7 @@ export function PassportWorkspace({ initialModel }: Readonly<{ initialModel: Pas
       })}
     </section>
 
-    <ToolResearchShare locale={initialModel.locale} resultRevision={JSON.stringify(model)} snapshot={researchSnapshot} />
+    <ToolResearchShare locale={initialModel.locale} resultRevision={JSON.stringify(model)} snapshot={null} usage={{tool:'passport',market:'global'}} />
 
     <footer className={styles.resultFooter}>
       <p data-fx-availability={model.fx.availability}>{copy.fx} · <time dateTime={model.fx.asOf}>{model.fx.asOf}</time> · {model.fx.source}. {detail.fx} {fxCopy[model.fx.availability]}</p>

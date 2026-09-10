@@ -17,23 +17,31 @@ export function japanBackfillScopes(now = new Date()): JapanScope[] {
 
 async function inventory(port: MarketRefreshSqlPort, now: Date) {
   const rows = await port.query(`/* japan:backfill-inventory */
-    SELECT p.city, p.year, p.quarter, true AS published, NULL::text AS retry_after
+    SELECT p.city, p.year, p.quarter, true AS published, NULL::text AS retry_after, NULL::text AS checked_at
     FROM japan_area_publications p JOIN japan_area_releases r ON r.id = p.release_id
     WHERE r.state = 'published'
     UNION ALL
-    SELECT a.city, a.year, a.quarter, false AS published, a.retry_after::text
+    SELECT a.city, a.year, a.quarter, false AS published, a.retry_after::text, a.checked_at::text
     FROM japan_backfill_attempts a WHERE NOT EXISTS (
       SELECT 1 FROM japan_area_publications p WHERE p.city = a.city AND p.year = a.year AND p.quarter = a.quarter)
   `);
   const published = new Set<string>();
   const deferred = new Set<string>();
+  const attempted = new Map<string, number>();
   for (const row of rows) {
     const key = scopeKey({ city: String(row.city), year: String(row.year), quarter: String(row.quarter) });
     if (row.published === true) published.add(key);
-    else if (Date.parse(String(row.retry_after)) > now.getTime()) deferred.add(key);
+    else {
+      if (Date.parse(String(row.retry_after)) > now.getTime()) deferred.add(key);
+      attempted.set(key, Date.parse(String(row.checked_at)) || 0);
+    }
   }
   const scopes = japanBackfillScopes(now);
-  const due = scopes.filter(scope => !published.has(scopeKey(scope)) && !deferred.has(scopeKey(scope)));
+  // Finish the first pass before retrying unavailable newer quarters. Otherwise
+  // daily 404 retries can displace older, never-requested housing data.
+  // Stable sorting preserves newest-first order among unattempted scopes.
+  const due = scopes.filter(scope => !published.has(scopeKey(scope)) && !deferred.has(scopeKey(scope)))
+    .sort((a, b) => (attempted.get(scopeKey(a)) ?? -1) - (attempted.get(scopeKey(b)) ?? -1));
   const quarters = new Map<string, { year: string; quarter: string; published: number; deferred: number; remaining: number }>();
   for (const scope of scopes) {
     const period = `${scope.year}:${scope.quarter}`;
@@ -62,7 +70,7 @@ export async function runJapanBackfill(options: {
   if (!options.apiKey.trim()) throw new Error('configuration_missing');
   const maxScopes = options.maxScopes ?? 3;
   const budget = options.maxDurationMs ?? 75_000;
-  if (!Number.isInteger(maxScopes) || maxScopes < 1 || maxScopes > 3
+  if (!Number.isInteger(maxScopes) || maxScopes < 1 || maxScopes > 8
     || !Number.isFinite(budget) || budget < 30_000 || budget > 75_000) throw new TypeError('invalid_backfill_bound');
   const now = options.now ?? new Date();
   const clock = options.clock ?? Date.now;

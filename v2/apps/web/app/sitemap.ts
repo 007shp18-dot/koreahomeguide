@@ -49,7 +49,7 @@ const localizedPairs: readonly LocalizedPair[] = Object.freeze([
   Object.freeze({ en: '/passport/', ko: '/ko/passport/', 'zh-Hans': '/zh-cn/passport/' }),
   Object.freeze({ en: '/tools/', ko: '/ko/tools/', 'zh-Hans': '/zh-cn/tools/' }),
   Object.freeze({ en: '/tools/property-scenario/', ko: '/ko/tools/property-scenario/' }),
-  Object.freeze({ en: '/', ko: '/ko/', 'zh-Hans': '/zh-cn/kr/seoul/' }),
+  Object.freeze({ en: '/', ko: '/ko/', 'zh-Hans': '/zh-cn/' }),
   Object.freeze({ en: '/prices/', ko: '/ko/prices/' }),
   Object.freeze({ en: '/rankings/', ko: '/ko/rankings/' }),
   Object.freeze({ en: '/news/', ko: '/ko/news/', 'zh-Hans': '/zh-cn/news/' }),
@@ -201,7 +201,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     sitemapEntry('/zh-cn/guides/', latestDate(EDITORIAL_PORTFOLIO
       .filter(({ locale, type }) => locale === 'zh-CN' && type === 'guide')
       .map(({ updatedAt }) => updatedAt))),
-    sitemapEntry('/zh-cn/kr/seoul/'),
+    sitemapEntry('/zh-cn/'),
+    sitemapEntry('/zh-cn/rankings/'),
+    sitemapEntry('/ko/jp/tokyo/'),
+    sitemapEntry('/zh-cn/jp/tokyo/'),
+    sitemapEntry('/ko/jp/tokyo/explore/'),
+    sitemapEntry('/zh-cn/jp/tokyo/explore/'),
     sitemapEntry('/community/'),
     sitemapEntry('/guides/', guideLastModified),
     sitemapEntry('/privacy/'),

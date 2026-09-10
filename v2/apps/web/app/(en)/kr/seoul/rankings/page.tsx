@@ -92,6 +92,7 @@ export function resolveKoreaRankingsPageModel(
         20,
         repositories,
         buildingPage,
+        query.metric === 'volume' || query.metric === 'recent-high' || query.metric === 'recent-psm' ? query.metric : 'median',
       )
     : buildPublicAreaRankingsModel({
         source: process.env.SIGNEDPRICE_PUBLIC_AREA_SUMMARY_ARTIFACT === undefined

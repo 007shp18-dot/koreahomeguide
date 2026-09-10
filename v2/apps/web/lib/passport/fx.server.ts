@@ -4,7 +4,7 @@ import { unstable_cache } from 'next/cache';
 import { cache } from 'react';
 import { PASSPORT_FX, type PassportFxSnapshot } from './fx';
 
-const PROVIDER_URL = 'https://api.frankfurter.dev/v1/latest?base=EUR&symbols=KRW,SGD,USD';
+const PROVIDER_URL = 'https://api.frankfurter.dev/v1/latest?base=EUR&symbols=KRW,SGD,USD,JPY';
 const DAY_MS = 86_400_000;
 const MAX_RESPONSE_BYTES = 16_384;
 
@@ -20,13 +20,13 @@ export function parsePassportFxResponse(body: unknown, checkedAt: Date): Passpor
     || date.getTime() > checkedAt.getTime() || checkedAt.getTime() - date.getTime() > 7 * DAY_MS
     || row.date < PASSPORT_FX.asOf
     || typeof rates !== 'object' || rates === null || Array.isArray(rates)
-    || !['KRW', 'SGD', 'USD'].every(code => typeof rates[code] === 'number'
+    || !['KRW', 'SGD', 'USD', 'JPY'].every(code => typeof rates[code] === 'number'
       && Number.isFinite(rates[code]) && rates[code] > 0 && rates[code] < 10_000_000)) {
     throw new TypeError('passport_fx_invalid');
   }
   return Object.freeze({
     asOf: row.date as string, checkedAt: checkedAt.toISOString(),
-    eurKrw: rates.KRW as number, eurSgd: rates.SGD as number, eurUsd: rates.USD as number,
+    eurKrw: rates.KRW as number, eurSgd: rates.SGD as number, eurUsd: rates.USD as number, eurJpy: rates.JPY as number,
     usdAed: PASSPORT_FX.usdAed,
     source: 'Frankfurter; AED uses the CBUAE USD peg (1 USD = 3.6725 AED)',
     availability: 'reference',
@@ -83,7 +83,7 @@ export function createPassportFxLoader(dependencies: Readonly<{ readSnapshot: ()
 // Cache retains the prior result when revalidation throws (including validation
 // failures). Never catch inside this callback and cache a fallback as success.
 const readCachedSnapshot = unstable_cache(
-  () => fetchPassportFxSnapshot(), ['signedprice-passport-fx-v1'], { revalidate: 86_400 },
+  () => fetchPassportFxSnapshot(), ['signedprice-passport-fx-v2-jpy'], { revalidate: 86_400 },
 );
 
 export const loadPassportFx = cache(createPassportFxLoader({ readSnapshot: readCachedSnapshot }));

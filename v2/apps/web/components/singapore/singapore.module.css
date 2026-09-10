@@ -960,3 +960,53 @@
   .segmentRow .regionPhoto { display: none; }
   .segmentRow h3, .segmentRow > div, .segmentRow > div:nth-child(3), .segmentRow > a { grid-column: 1; }
 }
+
+/* Region navigation: full names, readable counts, one shared locale layout. */
+.segmentTabs { gap: 0; margin: 16px 0 0; border-bottom: 1px solid var(--line); }
+.segmentTabs button { gap: 5px; min-height: 112px; padding: 14px 8px; border-bottom-width: 3px; }
+.segmentTabs button:hover { background: var(--surface); }
+.segmentTabs button[aria-selected='true'] { background: color-mix(in srgb, var(--accent) 6%, transparent); }
+.segmentTabs strong { font-size: 16px; }
+.segmentTabs small { min-height: 32px; font-size: 12px; line-height: 16px; color: var(--muted); font-weight: 500; white-space: normal; }
+.segmentTabs span { font-variant-numeric: tabular-nums; font-size: 13px; font-weight: 600; }
+.segmentTabs button:focus-visible, .regionDirectory summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.exploreStart { margin: 0; padding: 32px 14px 28px; border: 0; background: transparent; }
+.exploreStartKicker { color: var(--accent); font-size: 12px; font-weight: 650; }
+.exploreStart h3 { margin: 10px 0 12px; font-size: clamp(22px, 2vw, 28px); line-height: 1.2; letter-spacing: -.04em; }
+.exploreStart p { max-width: 34ch; margin: 0; color: var(--muted); font-size: 14px; line-height: 1.65; }
+.exploreSteps { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 24px 0 0; padding: 16px 0 0; border-top: 1px solid var(--line); font-size: 12px; color: var(--muted); }
+.exploreSteps li + li::before { content: '→'; margin-right: 8px; color: var(--accent); }
+.regionDirectory { padding: 18px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.regionDirectory > summary { cursor: pointer; font-weight: 600; font-size: 15px; }
+.regionDirectory nav { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; padding-top: 20px; }
+.regionDirectory nav a { display: grid; gap: 7px; color: inherit; text-decoration: none; padding: 0 0 10px; border-bottom: 2px solid transparent; }
+.regionDirectory nav a:hover { border-color: var(--accent); }
+.regionDirectory nav strong { color: var(--accent); font-size: 20px; }
+.regionDirectory nav span { font-size: 14px; }
+.regionDirectory nav small { color: var(--muted); font-variant-numeric: tabular-nums; }
+.section.evidenceSection { background: transparent; box-shadow: none; }
+.sourceSummary { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px 16px; padding: 18px 0 12px; font-size: 13px; }
+.sourceSummary strong { color: var(--accent); }
+.sourceSummary span { color: var(--muted); }
+.sourceSummary time { margin-left: auto; font-variant-numeric: tabular-nums; }
+.compactEvidence > details > div { padding: 20px 0; border: 0; border-radius: 0; background: transparent; }
+.evidenceLinks { display: flex; flex-wrap: wrap; gap: 12px 24px; padding-top: 12px; border-top: 1px solid var(--line); }
+.evidenceLinks a { color: var(--accent); font-size: 13px; font-weight: 550; text-decoration: underline; text-underline-offset: 4px; }
+.segmentProjects { display: grid; border-top: 1px solid var(--line); }
+.segmentProject { display: grid; grid-template-columns: minmax(0, 1fr) minmax(140px, auto); gap: 12px 24px; padding: 24px 0; border-bottom: 1px solid var(--line); }
+.segmentProjectIdentity { min-width: 0; }
+.segmentProjectIdentity h3 { margin: 0 0 7px; font-size: 18px; letter-spacing: -.025em; overflow-wrap: anywhere; }
+.segmentProjectIdentity p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+.segmentProjectPrice { display: grid; align-content: start; gap: 7px; text-align: right; font-variant-numeric: tabular-nums; }
+.segmentProjectPrice strong { font-size: 18px; }
+.segmentProjectPrice span, .segmentProject > small { font-size: 12px; color: var(--muted); }
+.segmentProject > a, .segmentProject > .evidenceUnavailableLink { justify-self: end; font-size: 13px; }
+@media (max-width: 600px) {
+  .regionDirectory nav { grid-template-columns: 1fr; gap: 16px; }
+  .regionDirectory nav a { grid-template-columns: 50px minmax(0, 1fr); align-items: baseline; }
+  .regionDirectory nav small { grid-column: 2; }
+  .segmentProject { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .segmentProjectPrice { text-align: left; }
+  .segmentProject > a, .segmentProject > .evidenceUnavailableLink { justify-self: start; }
+  .sourceSummary time { flex-basis: 100%; margin-left: 0; }
+}

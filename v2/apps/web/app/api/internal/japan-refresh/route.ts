@@ -28,9 +28,12 @@ async function execute(request: Request, operator: boolean) {
     if (!operator && explicit.length === 0) {
       const status = await readJapanBackfillStatus(port);
       if (status.remaining > 0) {
-        const batch = await runJapanBackfill({ apiKey: key, port });
+        const batch = await runJapanBackfill({ apiKey: key, port, maxScopes: 8, maxDurationMs: 75_000 });
         return json(batch, batch.state === 'busy' ? 202 : batch.results.some(row => row.state === 'failed' && row.code !== 'no_data') ? 502 : 200);
       }
+      // A five-minute backfill schedule must not multiply steady-state reads.
+      // Once there is no due gap, retain one ordinary refresh per UTC hour.
+      if (new Date().getUTCMinutes() >= 5) return json({ state: 'skipped', reason: 'maintenance_not_due' });
       // Don't repeatedly ask a source-absent scope during its documented backoff.
       const deferred = await port.query(`SELECT 1 FROM japan_backfill_attempts
         WHERE city = $1 AND year = $2::integer AND quarter = $3::integer AND retry_after > now()

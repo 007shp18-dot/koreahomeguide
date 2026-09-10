@@ -2,7 +2,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 vi.mock('next/navigation', () => ({ useRouter: () => ({ push: vi.fn() }) }));
 vi.mock('../components/maps/google-place-map', () => ({ GooglePlaceMap: ({ market, points }: { market: string; points: { label: string }[] }) => <div data-google-market={market}>{points.map(p => p.label).join('|')}</div> }));
-import { TokyoAreaMap, tokyoMapAreaHref, tokyoAreaPoint } from '../components/japan/tokyo-area-map';
+import { TokyoAreaMap, tokyoMapAreaHref, tokyoAreaPoint, filterTokyoAreas } from '../components/japan/tokyo-area-map';
 import { TOKYO_WARDS } from '../lib/japan/query';
 import wardLocations from '../lib/japan/tokyo-ward-locations.json';
 const row = { city: '13103', year: '2025', quarter: '4', municipality: 'Minato Ward', district: null, count: 25, median: 13000000 };
@@ -62,6 +62,24 @@ describe('Tokyo Google map', () => {
     expect(html).toMatch(/data-neighbourhood="Ebisu"[^>]*aria-current="location"/);
     expect(html).toContain('#tokyo-transactions');
     expect(html).not.toContain('aria-label="Map detail"');
+  });
+  it('makes every neighbourhood searchable without six-item page navigation', () => {
+    const areas = Array.from({ length: 24 }, (_, index) => ({ ...row, district: `Area ${String(index).padStart(2, '0')}` }));
+    const html = renderToStaticMarkup(<TokyoAreaMap rows={[row, ...areas]} city="13103" year="2025" quarter="4" browserKey="test" filters={filters} />);
+    expect(html.match(/data-neighbourhood=/g)).toHaveLength(24);
+    expect(html).toContain('Find a neighbourhood');
+    expect(html).toContain('Find a ward');
+    expect(html).not.toContain('Neighbourhood pages');
+    expect(filterTokyoAreas(areas, ' area 23 ')).toEqual([areas[23]]);
+    expect(filterTokyoAreas(areas, 'missing')).toEqual([]);
+  });
+  it('keeps the same map and neighbourhood navigation in Korean and Chinese', () => {
+    for (const locale of ['ko', 'zh-CN'] as const) {
+      const html = renderToStaticMarkup(<TokyoAreaMap locale={locale} rows={[row, { ...row, district: 'Azabu' }]} city="13103" year="2025" quarter="4" browserKey="test" filters={filters} />);
+      expect(html).toMatch(new RegExp(`href="/${locale === 'zh-CN' ? 'zh-cn' : locale}/jp/tokyo/explore/?\\?city=13103`));
+      expect(html).toContain('data-neighbourhood="Azabu"');
+      expect(html).toContain(locale === 'ko' ? '동네 검색' : '搜索街区');
+    }
   });
   it('retains an explicitly selected all-property view when switching wards', () => {
     const href = new URL(tokyoMapAreaHref(row, { q: 'Hiroo', type: '', minArea: null, maxArea: null }), 'https://signedprice.com');

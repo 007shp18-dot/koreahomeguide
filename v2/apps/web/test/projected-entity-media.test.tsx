@@ -35,6 +35,14 @@ describe('projected entity media', () => {
     expect(html).not.toContain('data-state="rights-blocked"');
   });
 
+  it('keeps location context without duplicating a parent summary map action', () => {
+    const html = renderToStaticMarkup(<ProjectedEntityMedia buildingName="Evidence Tower" media={null} showLocationAction={false} locationHref="/kr/seoul/explore/?buildingId=tower&view=map" />);
+    expect(html).toContain('Building location');
+    expect(html).toContain('Evidence Tower');
+    expect(html).not.toContain('View location on map');
+    expect(html).not.toContain('<a ');
+  });
+
   it('checks the exact approval registry when the server projection misses', () => {
     const html = renderToStaticMarkup(<ProjectedEntityMedia
       buildingName="Evidence Tower"

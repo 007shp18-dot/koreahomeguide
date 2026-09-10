@@ -147,7 +147,7 @@ type PassportSnapshot = Readonly<{
 type PropertyScenarioSnapshot = Readonly<{
   schemaVersion: 1;
   tool: 'property-scenario';
-  market: Exclude<ResearchMarket, 'global'>;
+  market: Exclude<ResearchMarket, 'global' | 'jp-tokyo'>;
   currency: Exclude<ResearchCurrency, 'USD'>;
   bands: Readonly<Record<'purchasePrice' | 'acquisitionCosts' | 'monthlyRent' | 'annualOperatingCosts', ResearchAmountBandId>
     & Record<'yield', ResearchYieldBandId> & Partial<Record<'area', ResearchAreaBandId>>>;
@@ -294,7 +294,7 @@ function normalizedSnapshot(value: unknown): NormalizedToolResearchSnapshot {
   const rule = TOOL_RULES[tool];
   const market = enumValue(snapshot.market, rule.markets);
   const currency = enumValue(snapshot.currency, rule.currencies) as ResearchCurrency;
-  if (tool === 'property-scenario' && ({ 'kr-seoul': 'KRW', 'sg-singapore': 'SGD', 'ae-dubai': 'AED' } as const)[market as Exclude<ResearchMarket, 'global'>] !== currency) invalid();
+  if (tool === 'property-scenario' && ({ 'kr-seoul': 'KRW', 'sg-singapore': 'SGD', 'ae-dubai': 'AED' } as const)[market as Exclude<ResearchMarket, 'global' | 'jp-tokyo'>] !== currency) invalid();
 
   const bandsValue = snapshot.bands;
   if (typeof bandsValue !== 'object' || bandsValue === null || Array.isArray(bandsValue)) invalid();

@@ -9,15 +9,16 @@ ward/quarter scopes sequentially, with a one-second gap. The browser can continu
 bounded batches and stop after the current batch; source requests never run from
 public Explore pages.
 
-Missing scopes are checked newest completed quarter first, back through 2024 Q1.
+Never-attempted missing scopes are checked newest completed quarter first, back through 2024 Q1. After that first pass, eligible failed scopes are retried oldest-check first, so repeatedly absent recent quarters cannot starve older gaps.
 On September 10, 2026 this starts at 2026 Q2; 2026 Q3 is still in progress. A 404
 defers only that ward/quarter for 24 hours. It does not publish an empty snapshot
 or establish that the entire quarter is absent. Other errors stop the current
 batch and defer the scope briefly. Existing publications and validation gates
 remain in place. Status `deferred` is not `complete`.
 
-The enabled hourly cron prioritizes these missing scopes (up to three per run)
-before its normal refresh rotation. The signed-session administrator route is
+The enabled five-minute cron prioritizes these missing scopes (up to eight per run, with the same 75-second budget and one-second spacing)
+before its normal refresh rotation. When no missing scope is due, only the first
+five-minute invocation runs ordinary maintenance; the others return without a provider request. The signed-session administrator route is
 `/api/internal/japan-backfill/`: GET reads progress; POST executes one bounded batch.
 The operator CLI is `v2/scripts/backfill-japan-area.mts`. Collection completion
 must be checked against published counts for every quarter, not just successful
@@ -65,7 +66,7 @@ No production data collection, migration, deployment or environment change was p
 3. With the existing `DATABASE_URL` and `SIGNEDPRICE_REINFOLIB_API_KEY` injected server-side, repeat with `--execute`. The command outputs only state, scope, run release/hash/count and retrieval time, never keys or raw provider errors. Repeat with `--verify` for a bounded read of the selected public snapshot (count, first-page count, currency, precision, source instant).
 4. Compare the exact received count from execute with the sourceCount/filteredCount from verify and public API. An unfiltered first page has min(20, count) rows. Load `/jp/tokyo/?city=13103&year=2025&quarter=4`, paginate and verify the response keeps the release ID and source instant. Run execute again: public count must remain unchanged; latest run inserted=0 and unchanged=received.
 5. If a candidate fails `source_count_reduction`, compare the complete retained raw responses and provider publication changes before using `--allow-large-reduction` together with `--execute`. The ordinary cron cannot use this override.
-6. Enable `SIGNEDPRICE_JAPAN_REFRESH_ENABLED=true` only after the verified operator flow succeeds and the existing CRON_SECRET is available. The Vercel cron runs at minute 40 of every UTC hour and fetches exactly one ward and one quarter per invocation. The absolute UTC hour rotates over all 23 wards; each aligned 23-hour block visits every ward once, and successive blocks rotate over the previous eight completed quarters. Near the start of the supported 2024 range, only completed supported quarters are selected. A full 184-invocation cycle takes about eight days while the completed-quarter window is unchanged, assuming the cron is enabled, invocations run, and the provider succeeds. Deploying this schedule does not mean all scopes have been collected or published.
+6. Enable `SIGNEDPRICE_JAPAN_REFRESH_ENABLED=true` only after the verified operator flow succeeds and the existing CRON_SECRET is available. After backfill, the Vercel cron performs ordinary maintenance at minute 0 of every UTC hour and fetches one ward and one quarter; the other five-minute slots only collect due gaps. The absolute UTC hour rotates over all 23 wards; each aligned 23-hour block visits every ward once, and successive blocks rotate over the previous eight completed quarters. Near the start of the supported 2024 range, only completed supported quarters are selected. A full 184-invocation cycle takes about eight days while the completed-quarter window is unchanged, assuming the cron is enabled, invocations run, and the provider succeeds. Deploying this schedule does not mean all scopes have been collected or published.
 
    There is no Minato-only bootstrap or publication prerequisite. A missing provider quarter or failed request retains prior published data and does not trap later hourly invocations on the same scope. The global `jp-tokyo-sale` lease still permits only one active refresh across all wards. Operator backfills must run explicit ward-quarter scopes sequentially, preserving a gap between provider requests; do not launch all wards in parallel. Review actual public counts and refresh-run outcomes before claiming coverage is complete. This schedule adds no bulk collection endpoint and does not change the existing authorization or enabled gate.
 

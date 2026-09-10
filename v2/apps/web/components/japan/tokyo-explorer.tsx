@@ -12,9 +12,12 @@ import { MarketExploreShell } from '../market-ui/market-shell';
 import { TokyoPeriodFields } from './tokyo-period-fields';
 import { TokyoMapPanel } from './tokyo-map-panel';
 import styles from './tokyo-explorer.module.css';
+import { tokyoText, tokyoHref, type TokyoLocale } from './tokyo-copy';
 
 type Params = Record<string, string | string[] | undefined>;
-export default async function TokyoExplorer({ searchParams }: { searchParams: Promise<Params> }) {
+export default async function TokyoExplorer({ searchParams, locale = 'en' }: { searchParams: Promise<Params>; locale?: TokyoLocale }) {
+  const t = (text: string) => tokyoText(locale, text);
+  const href = (path: string) => tokyoHref(locale, path);
   const params = await searchParams;
   const query = japanExploreQuery(params);
   let data: JapanPublished | null = null;
@@ -40,7 +43,7 @@ export default async function TokyoExplorer({ searchParams }: { searchParams: Pr
     for (const [key, value] of Object.entries(scope)) next.set(key, value);
     next.set('page', String(page));
     if (data) next.set('release', data.releaseId);
-    return `/jp/tokyo/explore/?${next}`;
+    return href(`/jp/tokyo/explore/?${next}`);
   };
   const yen = new Intl.NumberFormat('en', { style: 'currency', currency: 'JPY', maximumFractionDigits: 0 });
   const wardName = (city: string) => TOKYO_WARDS.find(([code]) => code === city)?.[1] ?? 'Ward';
@@ -48,7 +51,7 @@ export default async function TokyoExplorer({ searchParams }: { searchParams: Pr
     const next = new URLSearchParams({ city, year, quarter, type: filters.type });
     if (filters.minArea !== null) next.set('minArea', String(filters.minArea));
     if (filters.maxArea !== null) next.set('maxArea', String(filters.maxArea));
-    return `/jp/tokyo/explore/?${next}`;
+    return href(`/jp/tokyo/explore/?${next}`);
   };
   const availableInWard = coverage?.find(item => item.city === scope.city);
   const periodCoverage = coverage?.filter(item => item.year === scope.year && item.quarter === scope.quarter);
@@ -60,32 +63,32 @@ export default async function TokyoExplorer({ searchParams }: { searchParams: Pr
   const advancedFiltersActive = Boolean(error) || (!useLatestPeriod && (scope.year !== '2025' || scope.quarter !== '4'))
     || filters.type !== TOKYO_CONDOMINIUM_TYPE || filters.minArea !== null || filters.maxArea !== null;
   return <>
-    <SiteHeader copy={{ ...homepageCopy.header, marketLabel: 'Tokyo', links: [{ label: 'Explore', href: '/jp/tokyo/explore/', isCurrent: true }] }} />
+    <SiteHeader copy={{ ...homepageCopy.header, languageLabel: locale === 'ko' ? 'KO' : locale === 'zh-CN' ? 'ZH' : 'EN', homeHref: locale === 'en' ? '/' : locale === 'ko' ? '/ko/' : '/zh-cn/', marketLabel: t('Tokyo'), links: [{ label: t('Explore'), href: href('/jp/tokyo/explore/'), isCurrent: true }] }} />
     <main className={styles.page}>
-      <MarketExploreShell eyebrow="Tokyo" title="Explore" period={`${TOKYO_WARDS.find(([code]) => code === scope.city)?.[1] ?? 'Ward'} · ${scope.year} Q${scope.quarter} · JPY`}
+      <MarketExploreShell eyebrow={t("Tokyo")} title={t("Explore")} period={`${TOKYO_WARDS.find(([code]) => code === scope.city)?.[1] ?? 'Ward'} · ${scope.year} Q${scope.quarter} · JPY`}
         layers={<div>
-          <p className={styles.intro}>Choose a ward, then a neighbourhood to compare recorded home prices.</p>
-          <p className={styles.propertyScope}>{filters.type === TOKYO_CONDOMINIUM_TYPE ? 'Apartments & condominiums' : filters.type || 'All property types'} · Change property type in More filters.</p>
-      <form key={JSON.stringify([scope, filters.q, filters.type, filters.minArea, filters.maxArea, useLatestPeriod])} className={styles.filters} action="/jp/tokyo/explore/" method="get" aria-label="Tokyo transaction filters">
+          <p className={styles.intro}>{t('Choose a ward, then a neighbourhood to compare recorded home prices.')}</p>
+          <p className={styles.propertyScope}>{filters.type === TOKYO_CONDOMINIUM_TYPE ? t('Apartments & condominiums') : filters.type || t('All property types')} · {t('Change property type in More filters.')}</p>
+      <form key={JSON.stringify([scope, filters.q, filters.type, filters.minArea, filters.maxArea, useLatestPeriod])} className={styles.filters} action={href("/jp/tokyo/explore/")} method="get" aria-label="Tokyo transaction filters">
         <div className={styles.primaryFilters}>
-        <label className={styles.search}>Neighbourhood, layout or built year<input name="q" placeholder="Azabu, 2LDK, 2010…" defaultValue={filters.q} maxLength={100} /></label>
-        <label>Ward<select name="city" defaultValue={scope.city}>{TOKYO_WARDS.map(([code, name]) => <option value={code} key={code}>{name}</option>)}</select></label>
-        <button type="submit">Explore transactions</button>
+        <label className={styles.search}>{t('Neighbourhood, layout or built year')}<input name="q" placeholder="Azabu, 2LDK, 2010…" defaultValue={filters.q} maxLength={100} /></label>
+        <label>{t('Ward')}<select name="city" defaultValue={scope.city}>{TOKYO_WARDS.map(([code, name]) => <option value={code} key={code}>{name}</option>)}</select></label>
+        <button type="submit">{t('Explore transactions')}</button>
         </div>
         <details className={styles.advancedFilters} aria-label="More filters" open={advancedFiltersActive}>
-        <summary>More filters <span>Period, property type and area</span></summary>
+        <summary>{t('More filters')} <span>{t('Period, property type and area')}</span></summary>
         <fieldset className={styles.secondaryFilters} aria-label="Period, property type and area">
-        <TokyoPeriodFields key={`${scope.city}:${scope.year}:${scope.quarter}:${useLatestPeriod}`} years={years} year={scope.year} quarter={scope.quarter} useLatest={useLatestPeriod} />
-        <label className={styles.propertyType}>Property type<select name="type" defaultValue={filters.type}><option value={TOKYO_CONDOMINIUM_TYPE}>Apartments &amp; condominiums</option><option value="Residential Land(Land and Building)">Land with a building</option><option value="Residential Land(Land Only)">Land only</option><option value="">All property types</option></select></label>
-        <label>Min area (m²)<input name="minArea" type="number" min="1" max="100000" step="any" defaultValue={filters.minArea ?? ''} /></label>
-        <label>Max area (m²)<input name="maxArea" type="number" min="1" max="100000" step="any" defaultValue={filters.maxArea ?? ''} /></label>
+        <TokyoPeriodFields locale={locale} key={`${scope.city}:${scope.year}:${scope.quarter}:${useLatestPeriod}`} years={years} year={scope.year} quarter={scope.quarter} useLatest={useLatestPeriod} />
+        <label className={styles.propertyType}>{t('Property type')}<select name="type" defaultValue={filters.type}><option value={TOKYO_CONDOMINIUM_TYPE}>{t('Apartments & condominiums')}</option><option value="Residential Land(Land and Building)">{t('Land with a building')}</option><option value="Residential Land(Land Only)">{t('Land only')}</option><option value="">{t('All property types')}</option></select></label>
+        <label>{t('Min area (m²)')}<input name="minArea" type="number" min="1" max="100000" step="any" defaultValue={filters.minArea ?? ''} /></label>
+        <label>{t('Max area (m²)')}<input name="maxArea" type="number" min="1" max="100000" step="any" defaultValue={filters.maxArea ?? ''} /></label>
         </fieldset>
         </details>
       </form>
       {coverage !== null && <div className={styles.coverage}>
-        <p className={styles.source}>{scope.year} Q{scope.quarter} · {periodCoverage?.length ?? 0} of 23 wards available</p>
+        <p className={styles.source}>{scope.year} Q{scope.quarter} · {periodCoverage?.length ?? 0} {t('of 23 wards available')}</p>
         {publishedWards.length > 0 && <details>
-          <summary>Browse published wards</summary>
+          <summary>{t('Browse published wards')}</summary>
           <nav className={styles.coverageLinks} aria-label="Published Tokyo wards">
             {publishedWards.map(item => <Link href={scopeLink(item)} key={item.city} prefetch={false}>
               <span>{wardName(item.city)}</span><span>{item.year} Q{item.quarter}</span>
@@ -95,45 +98,45 @@ export default async function TokyoExplorer({ searchParams }: { searchParams: Pr
       </div>}
         </div>}
         discovery={<>
-      {error ? <div className={styles.empty} role="alert"><h2>Transactions are unavailable</h2><p>{error}</p></div> : data === null ? <div className={styles.empty}>
-        <h2>Prices for this period are not available yet.</h2>
-        <p>We have not published records for this ward and quarter. This does not mean that no homes traded.</p>
+      {error ? <div className={styles.empty} role="alert"><h2>{t('Transactions are unavailable')}</h2><p>{error}</p></div> : data === null ? <div className={styles.empty}>
+        <h2>{t('Prices for this period are not available yet.')}</h2>
+        <p>{t('We have not published records for this ward and quarter. This does not mean that no homes traded.')}</p>
         {availableInWard && <Link className={styles.emptyLink} href={scopeLink(availableInWard)}>View {wardName(availableInWard.city)} · {availableInWard.year} Q{availableInWard.quarter} <UiIcon name="arrow-right" /></Link>}
         <Link className={styles.emptyLink} href="/news/city-stories/tokyo/">Find your Tokyo neighbourhood <UiIcon name="arrow-right" /></Link>
       </div> : <>
-        <div id="tokyo-transactions" className={styles.results}><h2>{data.filteredCount.toLocaleString('en')} recorded transactions</h2><p>{(filters.neighbourhood || filters.q) ? `${filters.neighbourhood || filters.q} · ` : ''}{wardName(scope.city)} · {scope.year} Q{scope.quarter}</p></div>
+        <div id="tokyo-transactions" className={styles.results}><h2>{data.filteredCount.toLocaleString('en')} {t('recorded transactions')}</h2><p>{(filters.neighbourhood || filters.q) ? `${filters.neighbourhood || filters.q} · ` : ''}{wardName(scope.city)} · {scope.year} Q{scope.quarter}</p></div>
         {(filters.neighbourhood || filters.q) && <Link className={styles.clearSearch} href={scopeLink({ ...scope, sourceCount: data.sourceCount })} prefetch={false}>Show all neighbourhoods in {wardName(scope.city)}</Link>}
         <p className={styles.source}>{data.sourceCount.toLocaleString('en')} records in this ward and quarter · Source retrieved {new Date(data.retrievedAt).toLocaleDateString('en-GB', { timeZone: 'UTC' })}</p>
-        <p className={styles.source}>Price, high to low · Area-level records; building names are not disclosed.</p>
+        <p className={styles.source}>{t('Price, high to low · Area-level records; building names are not disclosed.')}</p>
         <div className={styles.list}>
           {data.records.map(row => <article className={styles.row} key={row.recordReference}>
             <div className={styles.rowHeading}><h3>{row.district || row.municipality}</h3><strong className={styles.price}>{yen.format(row.price)}</strong></div>
-            <div className={styles.details}><p>{row.areaLabel || 'Area not disclosed'}{row.areaLabel ? ' m²' : ''} · {row.floorPlan || 'Layout not disclosed'}</p><p>Built {row.buildingYear || 'not disclosed'} · {row.structure || 'Structure not disclosed'}</p><details className={styles.recordDetails}><summary>Record details</summary><p>{row.municipality} · {row.type}</p></details>
+            <div className={styles.details}><p>{row.areaLabel || t('Area not disclosed')}{row.areaLabel ? ' m²' : ''} · {row.floorPlan || t('Layout not disclosed')}</p><p>{t('Built')} {row.buildingYear || t('not disclosed')} · {row.structure || t('Structure not disclosed')}</p><details className={styles.recordDetails}><summary>{t('Record details')}</summary><p>{row.municipality} · {row.type}</p></details>
             </div>
           </article>)}
         </div>
-        {!data.records.length && <p>No published records match these filters. Try a wider area range or another neighbourhood.</p>}
+        {!data.records.length && <p>{t('No published records match these filters. Try a wider area range or another neighbourhood.')}</p>}
         <nav className={styles.pagination} aria-label="Transaction pages">
-          {filters.page > 1 && <Link href={pageLink(filters.page - 1)}><UiIcon name="arrow-left" /> Previous</Link>}
+          {filters.page > 1 && <Link href={pageLink(filters.page - 1)}><UiIcon name="arrow-left" /> {t('Previous')}</Link>}
           <span>Page {filters.page} of {Math.max(1, Math.ceil(data.filteredCount / 20))}</span>
-          {filters.page * 20 < data.filteredCount && <Link href={pageLink(filters.page + 1)}>Next <UiIcon name="arrow-right" /></Link>}
+          {filters.page * 20 < data.filteredCount && <Link href={pageLink(filters.page + 1)}>{t('Next')} <UiIcon name="arrow-right" /></Link>}
         </nav>
       </>}
         </>}
-        spatial={<Suspense fallback={<p className={styles.mapLoading} role="status">Preparing Tokyo ward map…</p>}>
-          <TokyoMapPanel city={scope.city} year={scope.year} quarter={scope.quarter}
+        spatial={<Suspense fallback={<p className={styles.mapLoading} role="status">{t('Preparing Tokyo ward map…')}</p>}>
+          <TokyoMapPanel locale={locale} city={scope.city} year={scope.year} quarter={scope.quarter}
             filters={{ q: filters.q, neighbourhood: filters.neighbourhood, type: filters.type, minArea: filters.minArea, maxArea: filters.maxArea }} />
         </Suspense>}
       />
       <div className={styles.sourcePanel}>
-      <details className={styles.method}><summary>About these recorded prices</summary>
+      <details className={styles.method}><summary>{t('About these recorded prices')}</summary>
         <p>These are completed transactions reported by area, not homes currently for sale. The source does not disclose building names, exact addresses or unit identities.</p>
         <p>Dates are reported by quarter. Prices and areas use the precision supplied by MLIT. Homes with an area range are left out when you set a minimum or maximum area; similar-looking records can be separate transactions.</p>
       </details>
       <p className={styles.source}>Source: <a href="https://www.reinfolib.mlit.go.jp/">MLIT Real Estate Information Library</a> · Transaction price information, edited by SignedPrice.</p>
-      <nav className={styles.links} aria-label="Tokyo research"><Link href="/jp/tokyo/">Market overview</Link><Link href="/news/?market=tokyo">Tokyo stories &amp; insights</Link><a href="https://www.reinfolib.mlit.go.jp/" rel="noreferrer">Data source</a></nav>
+      <nav className={styles.links} aria-label="Tokyo research"><Link href={href("/jp/tokyo/")}>{t('Market overview')}</Link><Link href="/news/?market=tokyo">Tokyo stories &amp; insights</Link><a href="https://www.reinfolib.mlit.go.jp/" rel="noreferrer">Data source</a></nav>
       </div>
     </main>
-    <SiteFooter copy={homepageCopy.footer} />
+    <SiteFooter locale={locale} copy={homepageCopy.footer} />
   </>;
 }

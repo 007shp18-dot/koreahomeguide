@@ -46,7 +46,7 @@ describe('Japan bounded durable initial backfill', () => {
       calls.push(scope.city);
       return scope.city === '13103' ? { state: 'failed' as const, code: 'no_data' } : ready(scope);
     });
-    const pause = vi.fn(async () => {});
+    const pause = vi.fn(async (_ms: number) => { void _ms; });
     const result = await runJapanBackfill({ apiKey: 'test', port: db.port, now, refresh, pause });
     expect(calls).toEqual(['13103', '13104', '13105']);
     expect(result).toMatchObject({ attempted: 3, published: 3, deferred: 2, remaining: 225 });
@@ -72,6 +72,16 @@ describe('Japan bounded durable initial backfill', () => {
     expect((await runJapanBackfill({ apiKey: 'test', port: db.port, now, refresh: busy })).state).toBe('busy');
     expect(busy).toHaveBeenCalledTimes(1);
   });
+  it('allows eight sequential fast scopes but rejects larger batches', async () => {
+    const db = storage();
+    const refresh: typeof refreshJapan = vi.fn(async (_repo, scope) => ready(scope));
+    const pause = vi.fn(async (_ms: number) => { void _ms; });
+    const result = await runJapanBackfill({ apiKey: 'test', port: db.port, now, refresh, pause, maxScopes: 8 });
+    expect(result.attempted).toBe(8);
+    expect(pause).toHaveBeenCalledTimes(7);
+    expect(pause.mock.calls.every(([ms]) => ms === 1000)).toBe(true);
+    await expect(runJapanBackfill({ apiKey: 'test', port: db.port, maxScopes: 9 })).rejects.toThrow('invalid_backfill_bound');
+  });
   it('does not mark an entire quarter unavailable from a single404', async () => {
     const db = storage();
     db.rows.set('13101:2026:Q2', { city: '13101', year: 2026, quarter: 2, published: false, retry_after: '2026-09-11T00:00:00Z' });
@@ -81,6 +91,17 @@ describe('Japan bounded durable initial backfill', () => {
     const fetch404 = vi.fn(async () => new Response(null, { status: 404 }));
     await expect(collectJapanSnapshot(status.next!, 'test', fetch404)).rejects.toBeInstanceOf(JapanNoDataError);
     await expect(collectJapanSnapshot(status.next!, 'test', vi.fn(async () => new Response(null, { status: 500 })))).rejects.toThrow('provider_unavailable');
+  });
+  it('finishes never-attempted scopes before retrying a newer absent quarter', async () => {
+    const db = storage();
+    db.rows.set('13101:2026:Q2', { city: '13101', year: 2026, quarter: 2, published: false,
+      retry_after: '2026-09-09T00:00:00Z', checked_at: '2026-09-08T00:00:00Z' });
+    const status = await readJapanBackfillStatus(db.port, now);
+    expect(status.next).toEqual({ city: '13102', year: '2026', quarter: '2' });
+    const calls: string[] = [];
+    const refresh: typeof refreshJapan = vi.fn(async (_repo, scope) => { calls.push(scope.city); return ready(scope); });
+    await runJapanBackfill({ apiKey: 'test', port: db.port, now, refresh, pause: async () => {} });
+    expect(calls).toEqual(['13102', '13103', '13104']);
   });
   it('reports deferred, not complete, when missing scopes are awaiting the provider recheck', async () => {
     const db = storage();
@@ -93,3 +114,4 @@ describe('Japan bounded durable initial backfill', () => {
     expect(refresh).not.toHaveBeenCalled();
   });
 });
+

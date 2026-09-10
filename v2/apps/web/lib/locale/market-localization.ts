@@ -296,6 +296,6 @@ export function marketText<T>(locale: MarketLocale, value: T): T {
 export function marketHref(locale: MarketLocale, href: string): string {
   if (locale !== 'ko' || !href.startsWith('/') || href.startsWith('/ko/')) return href;
   if (/^\/sg(?:\/)?(?:[?#].*)?$/.test(href)) return href.replace(/^\/sg/, '/ko/sg');
-  if (/^\/(?:sg\/singapore(?:\/(?:explore|check|hdb|rankings|shortlist|corrections))?|ae\/dubai(?:\/(?:explore|check|shortlist|guide))?|kr\/seoul(?:\/(?:explore|check|rankings|shortlist))?|guides|news|tools|passport|contact)(?:[/?#]|$)/.test(href)) return '/ko' + href.replace(/^\/news\/policy\//, '/news/');
+  if (/^\/(?:sg\/singapore(?:\/(?:explore|check|hdb|rankings|shortlist|corrections))?|ae\/dubai(?:\/(?:explore|check|shortlist|guide))?|jp\/tokyo(?:\/(?:explore|shortlist))?|kr\/seoul(?:\/(?:explore|check|rankings|shortlist))?|guides|news|tools|passport|contact)(?:[/?#]|$)/.test(href)) return '/ko' + href.replace(/^\/news\/policy\//, '/news/');
   return href;
 }

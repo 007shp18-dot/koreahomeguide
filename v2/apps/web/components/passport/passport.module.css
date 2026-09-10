@@ -27,9 +27,9 @@
 .resultForm label{grid-column:1/-1}
 .compactInput{min-height:50px;padding:0 14px;gap:8px}
 .resultForm button{padding:0 18px;white-space:nowrap}
-.cardGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid #cbd5e1}
-.marketCard{min-width:0;display:grid;grid-template-rows:84px 94px minmax(156px,auto) minmax(250px,1fr) minmax(132px,auto) minmax(110px,auto) 58px;padding:0 24px;border-right:1px solid #cbd5e1}
-.marketCard:last-child{border-right:0}
+.cardGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.marketCard{min-width:0;display:grid;grid-template-rows:84px 94px minmax(156px,auto) minmax(250px,1fr) minmax(132px,auto) minmax(110px,auto) 58px;padding:0 24px;border:1px solid #dbe3ee;border-radius:12px;background:#fff}
+
 .cardTitle{padding:20px 0;border-bottom:1px solid #e2e8f0}
 .cardTitle span,.metricRow span,.matchRow>span,.evidenceRow>span{color:#64748b;font-size:12px;letter-spacing:.05em;text-transform:uppercase}
 .cardTitle h2{margin:4px 0 0;font-size:25px}
