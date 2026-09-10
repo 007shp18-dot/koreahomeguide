@@ -423,6 +423,8 @@ describe('public building detail', () => {
     const html = renderToStaticMarkup(<BuildingDetailPage {...detailProps()} />);
     expect(html).toContain('data-detail-layout="unified"');
     expect(html).toContain('>Back to Gangnam-gu Explore</a>');
+    expect(html).toContain('>View location on map</a>');
+    expect(html).toContain('district=gangnam-gu&amp;view=map');
     expect(html).toContain('>Compare an asking price</a>');
     expect(html).toContain('aria-label="Building page sections"');
   });
