@@ -1,7 +1,7 @@
 export type CollectionSource = {
   id: string; name: string; market: 'seoul' | 'singapore' | 'dubai';
   category: 'building' | 'cost' | 'policy' | 'asking-price';
-  url: string; intervalDays: number; mode: 'page-monitor' | 'building-api' | 'blocked'; limitation: string;
+  url: string; intervalDays: number; mode: 'page-monitor' | 'building-api' | 'address-api' | 'blocked'; limitation: string;
 };
 // Fixed destinations only. Provider credentials and arbitrary submitted URLs never enter this runner.
 export const COLLECTION_SOURCES: readonly CollectionSource[] = [
@@ -12,7 +12,7 @@ export const COLLECTION_SOURCES: readonly CollectionSource[] = [
   { id: 'ae-dld-sale-fees', name: 'Dubai sale registration fees', market: 'dubai', category: 'policy', url: 'https://dubailand.gov.ae/en/eservices/property-sale-registration/', intervalDays: 7, mode: 'page-monitor', limitation: 'Internal monitoring only; fee conditions and commercial reuse require review before publication.' },
   { id: 'ae-dld-service-index', name: 'Dubai service charge index documentation', market: 'dubai', category: 'cost', url: 'https://dubailand.gov.ae/en/eservices/service-charge-index-overview/', intervalDays: 30, mode: 'page-monitor', limitation: 'Monitors service documentation, not project charge amounts; project/year queries and reuse rights remain unverified.' },
   { id: 'kr-kapt-cost', name: 'K-apt management costs', market: 'seoul', category: 'cost', url: 'https://www.k-apt.go.kr/', intervalDays: 30, mode: 'blocked', limitation: 'Official common-management API catalog confirms free unrestricted data, V3 endpoint verified; runtime subscription, unit interpretation and complex identifiers need verification before collection.' },
-  { id: 'sg-onemap-building', name: 'OneMap building addresses', market: 'singapore', category: 'building', url: 'https://www.onemap.gov.sg/apidocs/', intervalDays: 7, mode: 'blocked', limitation: 'Authenticated token and permitted storage scope required; no successful collection asserted.' },
+  { id: 'sg-onemap-building', name: 'OneMap building addresses', market: 'singapore', category: 'building', url: 'https://www.onemap.gov.sg/apidocs/search', intervalDays: 7, mode: 'address-api', limitation: 'Exact HDB block and canonical street matches only. Each building is checked weekly; new or changed coordinates require individual review. OneMap tokens remain server-only and are renewed from server credentials.' },
   { id: 'ae-dld-cost', name: 'Dubai Land Department service charges', market: 'dubai', category: 'cost', url: 'https://dubailand.gov.ae/', intervalDays: 30, mode: 'blocked', limitation: 'Project-level retrieval and commercial reuse must be verified before ingestion.' },
   { id: 'licensed-listings', name: 'Licensed asking prices', market: 'singapore', category: 'asking-price', url: 'https://www.signedprice.com/', intervalDays: 1, mode: 'blocked', limitation: 'No licensed listing feed configured. Asking prices remain separate from recorded transactions.' },
 ];
