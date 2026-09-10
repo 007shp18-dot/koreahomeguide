@@ -3,10 +3,7 @@ import 'server-only';
 import { neon, type NeonQueryFunction } from '@neondatabase/serverless';
 
 let client: NeonQueryFunction<false, false> | null | undefined;
-// Public reads must survive a suspended Neon compute resuming. Production
-// telemetry showed the previous three-second budget expiring while the driver
-// was still connecting, before the query reached Postgres.
-export const PUBLIC_CONTENT_READ_TIMEOUT_MS = 8_000;
+export const PUBLIC_CONTENT_READ_TIMEOUT_MS = 3_000;
 
 export function contentDatabaseConfigured(): boolean {
   return Boolean(process.env.DATABASE_URL?.trim());
