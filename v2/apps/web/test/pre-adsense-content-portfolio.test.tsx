@@ -11,8 +11,10 @@ import { generateStaticParams as generateEnglishGuideParams } from '../app/(en)/
 import sitemap from '../app/sitemap';
 import { EDITORIAL_PORTFOLIO, listPortfolioRecords } from '../content/portfolio-manifest';
 
+import { DAILY_CITY_EDITIONS } from '../content/en/daily-city-editions';
+
 const primarySourceHosts = new Set([
-  'www.data.go.kr', 'data.gov.sg', 'centers.ibs.re.kr', 'www.bok.or.kr',
+  'www.lta.gov.sg', 'www.mlit.go.jp', 'www.data.go.kr', 'data.gov.sg', 'centers.ibs.re.kr', 'www.bok.or.kr',
   'dubailand.gov.ae', 'u.ae', 'www.sla.gov.sg', 'www.easylaw.go.kr',
   'www.investkorea.org', 'english.seoul.go.kr', 'm.easylaw.go.kr',
   'www.law.go.kr', 'rt.molit.go.kr', 'www.molit.go.kr', 'land.seoul.go.kr',
@@ -29,8 +31,8 @@ function sectionCount(body: string): number {
 describe('pre-AdSense reviewed launch portfolio', () => {
   it('keeps the active portfolio and public English parameters after guide consolidation', () => {
     const english = listPortfolioRecords('en');
-    expect(EDITORIAL_PORTFOLIO).toHaveLength(80);
-    expect(english).toHaveLength(36);
+    expect(EDITORIAL_PORTFOLIO).toHaveLength(80 + DAILY_CITY_EDITIONS.length);
+    expect(english).toHaveLength(36 + DAILY_CITY_EDITIONS.length);
     expect(generateEnglishArticleParams()).toEqual(english
       .filter(({ type }) => type === 'news-brief' || type === 'market-brief' || type === 'data-story')
       .map(({ slug }) => ({ slug })));

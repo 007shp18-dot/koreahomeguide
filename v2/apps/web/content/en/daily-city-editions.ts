@@ -27,7 +27,7 @@ export const DAILY_CITY_EDITIONS: readonly DailyCityEdition[] = [
         "publisher": "Korea Ministry of Land, Infrastructure and Transport",
         "title": "Real Estate Transaction Disclosure System",
         "href": "https://rt.molit.go.kr/",
-        "checkedAt": "2026-09-10T00:45:00.000Z"
+        "checkedAt": "2026-09-10"
       }
     ],
     "readerQuestion": "Same Seoul. Are you comparing the same kind of home?",
@@ -66,7 +66,7 @@ export const DAILY_CITY_EDITIONS: readonly DailyCityEdition[] = [
         "publisher": "Singapore Land Transport Authority",
         "title": "MRT/LRT map",
         "href": "https://www.lta.gov.sg/content/ltagov/en/map/train.html",
-        "checkedAt": "2026-09-10T00:45:00.000Z"
+        "checkedAt": "2026-09-10"
       }
     ],
     "readerQuestion": "Love the condo? Check the whole commute.",
@@ -105,7 +105,7 @@ export const DAILY_CITY_EDITIONS: readonly DailyCityEdition[] = [
         "publisher": "Dubai Land Department",
         "title": "Service Charge Index",
         "href": "https://dubailand.gov.ae/en/eservices/service-charge-index-overview/service-charge-index/",
-        "checkedAt": "2026-09-10T00:45:00.000Z"
+        "checkedAt": "2026-09-10"
       }
     ],
     "readerQuestion": "Buying in Dubai? Check the service charge behind the price.",
@@ -144,7 +144,7 @@ export const DAILY_CITY_EDITIONS: readonly DailyCityEdition[] = [
         "publisher": "Japan Ministry of Land, Infrastructure, Transport and Tourism",
         "title": "Guide to Looking for a Home, July 2021 edition",
         "href": "https://www.mlit.go.jp/common/001334734.pdf",
-        "checkedAt": "2026-09-10T00:45:00.000Z"
+        "checkedAt": "2026-09-10"
       }
     ],
     "readerQuestion": "Renting in Tokyo? The rent is only part of the budget.",
