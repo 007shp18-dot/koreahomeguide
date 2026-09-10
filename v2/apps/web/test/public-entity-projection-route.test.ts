@@ -2,12 +2,13 @@ import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
-const calls = vi.hoisted(() => ({ publishSeoul: vi.fn(), publishProximity: vi.fn() }));
+const calls = vi.hoisted(() => ({ publishSeoul: vi.fn(), publishProximity: vi.fn(), publishMedia: vi.fn(), coverage: vi.fn() }));
+vi.mock('../lib/photos/photo-coverage-store.server', () => ({reconcilePhotoCoverage: calls.coverage}));
 vi.mock('../lib/db/postgres.server', () => ({
   contentDatabase: () => ({ query: vi.fn() }),
 }));
 vi.mock('../lib/public-data/entity-projection-publisher.server', () => ({
-  createPublicEntityProjectionPublisher: () => ({ publishSeoul: calls.publishSeoul }),
+  createPublicEntityProjectionPublisher: () => ({ publishSeoul: calls.publishSeoul, publishMedia: calls.publishMedia }),
 }));
 vi.mock('../lib/public-market/korea-proximity-database.server', () => ({
   publishInstalledKoreaProximityToDatabase: calls.publishProximity,
@@ -77,4 +78,12 @@ describe('public entity projection route authorization', () => {
       schedule: '57 0 * * *',
     });
   });
+});
+
+it('publishes approved media and drains coverage hourly without reloading proximity', async () => {
+ vi.stubEnv('CRON_SECRET','expected-secret');calls.coverage.mockResolvedValue({updated:600,complete:true});
+ const response=await projectionRoute.GET(new Request('https://signedprice.test/api/internal/public-entity-projection/?mediaOnly=1',{headers:{authorization:'Bearer expected-secret'}}));
+ expect(response.status).toBe(200);expect(calls.publishMedia).toHaveBeenCalledOnce();expect(calls.coverage).toHaveBeenCalledOnce();expect(calls.publishProximity).not.toHaveBeenCalled();
+ const config=JSON.parse(readFileSync(new URL('../vercel.json',import.meta.url),'utf8'));
+ expect(config.crons).toContainEqual({path:'/api/internal/public-entity-projection/?mediaOnly=1',schedule:'57 * * * *'});
 });

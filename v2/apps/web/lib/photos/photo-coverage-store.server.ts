@@ -25,7 +25,7 @@ export type PhotoCoverageSummary = Readonly<{
   complete: number;
 }>;
 
-const SYNC_SQL = `
+export const SYNC_SQL = `
   /* photo-coverage:sync */
   WITH ranked_photos AS (
     SELECT
@@ -53,6 +53,9 @@ const SYNC_SQL = `
       AND photo.approved_at IS NOT NULL
       AND photo.approved_by IS NOT NULL
       AND photo.visual_reviewed_at IS NOT NULL
+      AND photo.rights_status IN ('licensed', 'owned', 'provider-display-only')
+      AND building.identity_status = 'verified'
+      AND photo.subject_kind IN ('building-exterior', 'building-front', 'site-aerial')
     WHERE entity.market_id IN ('kr-seoul', 'sg-singapore', 'ae-dubai')
       AND ($1::text IS NULL OR entity.market_id = $1)
       AND entity.identity_status = 'verified'
@@ -69,8 +72,8 @@ const SYNC_SQL = `
       NULL::text AS provider,
       'unavailable'::text AS state,
       'no-approved-exact-photo'::text AS reason,
-      greatest(wikimedia.attempted_at, google.attempted_at, naver.attempted_at) AS checked_at,
-      least(wikimedia.next_retry_at, google.next_retry_at, naver.next_retry_at) AS next_retry_at
+      greatest(wikimedia.attempted_at, google.attempted_at) AS checked_at,
+      least(wikimedia.next_retry_at, google.next_retry_at) AS next_retry_at
     FROM property_entities AS entity
     INNER JOIN buildings AS building
       ON building.key = entity.local_attributes ->> 'legacyBuildingKey'
@@ -82,10 +85,6 @@ const SYNC_SQL = `
       ON google.building_key = building.key
       AND google.pipeline = 'photo-google'
       AND google.status IN ('succeeded', 'no-candidate')
-    INNER JOIN building_enrichment_attempts AS naver
-      ON naver.building_key = building.key
-      AND naver.pipeline = 'photo-naver-search'
-      AND naver.status IN ('succeeded', 'no-candidate')
     WHERE entity.market_id IN ('kr-seoul', 'sg-singapore', 'ae-dubai')
       AND ($1::text IS NULL OR entity.market_id = $1)
       AND entity.identity_status = 'verified'
@@ -93,6 +92,7 @@ const SYNC_SQL = `
         SELECT 1 FROM building_photos AS pending
         WHERE pending.building_key = building.key
           AND pending.status IN ('candidate', 'review_required')
+          AND pending.rights_status IN ('licensed', 'owned', 'provider-display-only')
       )
       AND NOT EXISTS (
         SELECT 1 FROM best_photos AS approved
@@ -218,4 +218,20 @@ export async function syncPhotoCoverage(
 
 export async function readPhotoCoverageSummary() {
   return configuredStore().readSummary();
+}
+
+// Drain changed rows, not the same first page. Stops on exhaustion or a time
+// budget; the next scheduled run resumes through the SQL distinctness filter.
+export async function reconcilePhotoCoverage(
+  sync = syncPhotoCoverage,
+  now: () => number = Date.now,
+) {
+  const started = now();
+  let updated = 0;
+  for (let batches = 0; batches < 40 && now() - started < 20_000; batches++) {
+    const result = await sync(300);
+    updated += result.updated;
+    if (result.updated < 300) return {updated, complete: true};
+  }
+  return {updated, complete: false};
 }
