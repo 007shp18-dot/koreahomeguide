@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
+import type { ReportedNearbyPlace } from '../../lib/public-market/reported-nearby-places';
 import type { OfficialBuildingFacts } from '../../lib/public-market/official-building-facts.server';
 import type { ObservedBuildingIdentityModel } from '../../lib/public-market/observed-building-route-model.server';
 import type { ProductLocale } from '../../lib/locale/product-copy';
@@ -11,6 +12,7 @@ import styles from './building-detail.module.css';
 
 type Envelope = Readonly<{
   schemaVersion: 1;
+  reportedNearby?: readonly ReportedNearbyPlace[];
   source: Readonly<{ apartment: string; register: string | null; nearby?: string | null }>;
   facts: OfficialBuildingFacts;
   proximity?: ObservedBuildingIdentityModel['proximity'] | null;
@@ -84,6 +86,31 @@ export function ReadyOfficialFacts({ envelope, locale = 'en' }: Readonly<{ envel
   </>;
 }
 
+export function ReportedNearbyFacts({ places, facts, locale = 'en' }: Readonly<{
+  places: readonly ReportedNearbyPlace[];
+  facts: OfficialBuildingFacts;
+  locale?: ProductLocale;
+}>) {
+  const nearby = facts.status === 'ready' ? facts.nearby : null;
+  // The complete original K-apt field already names these facilities.
+  const visible = places.filter((place) => place.kind === 'school'
+    ? !nearby?.educationFacility?.trim() : !nearby?.subwayStation?.trim());
+  if (visible.length === 0) return null;
+  return <section className={styles.proximityDetails} data-building-reported-nearby="ready">
+    <h3>{locale === 'ko' ? '단지에서 안내한 학교·역' : 'Schools and stations reported by the complex'}</h3>
+    <dl className={`${styles.sourceGrid} ${styles.nearbyGrid}`}>{visible.map((place) => <div key={place.sourceId}>
+      <dt>{place.kind === 'school' ? (locale === 'ko' ? '학교' : 'School') : (locale === 'ko' ? '지하철' : 'Station')}</dt>
+      <dd>{[place.name, ...place.lines, place.walkingMinutesUpperBound === null ? null
+        : locale === 'ko' ? `안내된 도보 시간: ${place.walkingMinutesUpperBound}분 이내`
+          : `Reported walk: up to ${place.walkingMinutesUpperBound} min`].filter(Boolean).join(' · ')}</dd>
+    </div>)}</dl>
+    <p>{locale === 'ko' ? '단지 안내 자료이며 최단 거리나 학교 배정을 의미하지 않습니다.' : 'Complex-reported facilities; this does not establish nearest distance or school eligibility.'}</p>
+    <details className={styles.sourceDetails}><summary>{locale === 'ko' ? '주변 정보 출처' : 'Nearby source'}</summary>
+      <a href="https://www.k-apt.go.kr/" target="_blank" rel="noreferrer">K-apt</a>
+    </details>
+  </section>;
+}
+
 export function reasonCopy(reason: Extract<OfficialBuildingFacts, { status: 'unavailable' }>['reason'], locale: ProductLocale = 'en') {
   if (locale === 'ko') {
     const reasons = { unsupported_housing_type: '이 주택 유형은 K-apt 제공 대상이 아닙니다.', configuration_missing: '공식 건물 정보가 아직 연결되지 않았습니다.', apartment_not_found: '주소가 정확히 일치하는 K-apt 단지를 찾지 못했습니다.', ambiguous_apartment_match: '동일한 후보가 여러 개여서 단지를 확정하지 못했습니다.', identity_mismatch: '공식 자료 간 건물 식별 정보가 일치하지 않습니다.' };
@@ -132,6 +159,7 @@ export function BuildingOfficialFacts({ districtSlug, buildingId, observedFacts 
       <div className={styles.sectionHeading}><h2>{locale === 'ko' ? '건물·주변 정보' : 'Property and location'}</h2></div>
       {visibleFacts.length === 0 ? null : <dl className={styles.findingGrid}>{visibleFacts.map((fact) => <div key={fact.label}><dt>{seoulDetailText(locale, fact.label)}</dt><dd>{seoulDetailText(locale, fact.value)}</dd></div>)}</dl>}
       <BuildingProximityDisclosure proximity={currentProximity} locale={locale} />
+      {state !== 'loading' && state !== 'error' ? <ReportedNearbyFacts places={state.reportedNearby ?? []} facts={state.facts} locale={locale} /> : null}
       {state === 'loading' ? <p role="status">{locale === 'ko' ? '공식 건물·주변 정보를 불러오는 중입니다…' : 'Loading official building and nearby information…'}</p> : state === 'error' ? <p role="status">{locale === 'ko' ? '추가 건물 정보를 불러오지 못했습니다. 확인된 정보는 위에 표시됩니다.' : 'Additional building facts could not be loaded. Confirmed information is shown above.'}</p> : state.facts.status === 'unavailable' ? <p>{reasonCopy(state.facts.reason, locale)}</p> : null}
       {state !== 'loading' && state !== 'error' ? <ReadyOfficialFacts envelope={state} locale={locale} /> : null}
     </section>

@@ -31,3 +31,5 @@
 .costRules select { min-height: 44px; width: 100%; color: var(--ink); background: var(--surface-strong); border: 1px solid var(--line); border-radius: 8px; padding: 10px; font: inherit; }
 .costLines > div { display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--line); }
 .costLines dd { margin: 0; white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+@container (max-width: 760px) { .section [data-tool-layout] { grid-template-columns: minmax(0, 1fr); } }

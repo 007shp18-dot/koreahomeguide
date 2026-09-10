@@ -1,5 +1,28 @@
 # Japan regional transaction publication
 
+## Latest-first initial collection (September 2026)
+
+Migration `0029_japan_backfill.sql` records scope-specific attempts. The authenticated
+Evidence workspace now offers a Tokyo backfill action using the existing signed
+admin session and same-origin protection. Each request processes at most three
+ward/quarter scopes sequentially, with a one-second gap. The browser can continue
+bounded batches and stop after the current batch; source requests never run from
+public Explore pages.
+
+Missing scopes are checked newest completed quarter first, back through 2024 Q1.
+On September 10, 2026 this starts at 2026 Q2; 2026 Q3 is still in progress. A 404
+defers only that ward/quarter for 24 hours. It does not publish an empty snapshot
+or establish that the entire quarter is absent. Other errors stop the current
+batch and defer the scope briefly. Existing publications and validation gates
+remain in place. Status `deferred` is not `complete`.
+
+The enabled hourly cron prioritizes these missing scopes (up to three per run)
+before its normal refresh rotation. The signed-session administrator route is
+`/api/internal/japan-backfill/`: GET reads progress; POST executes one bounded batch.
+The operator CLI is `v2/scripts/backfill-japan-area.mts`. Collection completion
+must be checked against published counts for every quarter, not just successful
+requests. Older instructions below describe the original single-scope rollout.
+
 Japan XIT001 uses anonymous ward/quarter transactions, not property identities. This implementation adapts PR242's registered official endpoint and field parsing; it does not merge its branch or publish cached API responses directly.
 
 ## Source contract

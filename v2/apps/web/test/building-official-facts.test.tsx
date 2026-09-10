@@ -1,7 +1,7 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, test } from 'vitest';
 
-import { BuildingOfficialFacts } from '../components/public-market/building-official-facts';
+import { BuildingOfficialFacts, ReportedNearbyFacts } from '../components/public-market/building-official-facts';
 import * as factsComponents from '../components/public-market/building-official-facts';
 
 describe('building official facts panel', () => {
@@ -50,4 +50,17 @@ describe('building official facts panel', () => {
     expect(html).toContain('Official building information');
     expect(html).not.toContain('Complex and building-register profile');
   });
+});
+
+
+test('shows reported schools and bounded walking time independently of apartment facts', () => {
+  const html = renderToStaticMarkup(<ReportedNearbyFacts facts={{ status: 'unavailable', reason: 'apartment_not_found' }} places={[
+    { kind: 'station', sourceId: 'kapt:A1:station:1', name: '녹천', lines: ['1호선'], walkingMinutesUpperBound: 5, source: 'https://www.k-apt.go.kr/' },
+    { kind: 'school', sourceId: 'kapt:A1:school:1', name: '창일초', lines: [], walkingMinutesUpperBound: null, source: 'https://www.k-apt.go.kr/' },
+  ]} />);
+  expect(html).toContain('창일초');
+  expect(html).toContain('녹천');
+  expect(html).toContain('Reported walk: up to 5 min');
+  expect(html).toContain('does not establish nearest distance or school eligibility');
+  expect(html).not.toContain('0 m');
 });

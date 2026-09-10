@@ -1,6 +1,7 @@
 import { createJapanRepository, japanSqlPort } from '@/lib/japan/repository.server';
 import { refreshJapan, scheduledJapanScope } from '@/lib/japan/refresh.server';
 import { parseJapanScope } from '@/lib/japan/source.server';
+import { readJapanBackfillStatus, runJapanBackfill } from '@/lib/japan/backfill.server';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -24,6 +25,18 @@ async function execute(request: Request, operator: boolean) {
   const port = japanSqlPort();
   if (!port) return json({ error: 'database_not_configured' }, 503);
   try {
+    if (!operator && explicit.length === 0) {
+      const status = await readJapanBackfillStatus(port);
+      if (status.remaining > 0) {
+        const batch = await runJapanBackfill({ apiKey: key, port });
+        return json(batch, batch.state === 'busy' ? 202 : batch.results.some(row => row.state === 'failed' && row.code !== 'no_data') ? 502 : 200);
+      }
+      // Don't repeatedly ask a source-absent scope during its documented backoff.
+      const deferred = await port.query(`SELECT 1 FROM japan_backfill_attempts
+        WHERE city = $1 AND year = $2::integer AND quarter = $3::integer AND retry_after > now()
+          AND state IN ('running','no_data','failed','busy')`, [scope.city, scope.year, scope.quarter]);
+      if (deferred.length) return json({ state: 'skipped', reason: 'source_recheck_deferred', scope });
+    }
     const result = await refreshJapan(createJapanRepository(port), scope, key,
       { allowLargeReduction: operator && query.get('allowLargeReduction') === 'true' });
     return json(result, result.state === 'failed' ? 502 : result.state === 'busy' ? 202 : 200);

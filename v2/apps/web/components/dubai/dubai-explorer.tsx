@@ -58,10 +58,12 @@ function CuratedDubaiExplorer({ locale = 'en',
     url.searchParams.set('area', id);
     window.history.replaceState(null, '', url);
   }, []);
-  const points = useMemo(() => areas.map((item) => ({
+  const points = useMemo<readonly GoogleMarketMapPoint[]>(() => areas.map((item) => ({
     id: item.id,
     title: item.name,
     label: item.name,
+    kind: 'area',
+    showFullLabel: true,
     address: `${item.name}, Dubai, United Arab Emirates`,
     selected: selected === item.id,
   })), [areas, selected]);
@@ -186,6 +188,8 @@ export function DubaiExplorer({ locale = 'en',
     id: result.area.slug,
     title: result.area.name,
     label: result.area.name,
+    kind: 'area',
+    showFullLabel: true,
     address: `${result.area.name}, Dubai, United Arab Emirates`,
     selected: result.area.slug === selectedArea,
   })), [selectedArea, visible]);

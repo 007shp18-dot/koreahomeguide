@@ -3,7 +3,7 @@ import 'server-only';
 import { createHash } from 'node:crypto';
 import registry from '../../data/installed-snapshots.json';
 import installedIndex from '../../data/singapore-explore-index.json' with { type: 'json' };
-import { activeSingaporePublication, singaporePublicationRightsRevoked } from './publication.server';
+import { loadPublishedSingaporeExplore } from './explore-publication.server';
 import { singaporeSnapshotRepositoryFromEnvironment } from './snapshot-repository.server';
 import { buildSingaporeExploreModel } from './route-model.server';
 import { unpackSingaporeExploreModel, type PackedSingaporeExploreModel } from './explore-transport';
@@ -36,9 +36,11 @@ export function loadInstalledSingaporeExploreIndex({ candidate = installedIndex 
 
 const modelCache = new WeakMap<object, SingaporeExploreModel>();
 export async function loadSingaporeExploreIndex(): Promise<SingaporeExploreModel> {
-  const publication = await activeSingaporePublication();
-  if (singaporePublicationRightsRevoked()) return buildSingaporeExploreModel(null);
-  if (publication === null) {
+  const explicitSource = process.env.SIGNEDPRICE_SINGAPORE_SNAPSHOT_ARTIFACT !== undefined || process.env.SIGNEDPRICE_INSTALLED_SNAPSHOT_REGISTRY !== undefined;
+  if (!explicitSource) {
+    const publication = await loadPublishedSingaporeExplore();
+    if (publication.status === 'ready') return publication.model;
+    if (publication.status === 'unavailable') return buildSingaporeExploreModel(null);
     const installed = loadInstalledSingaporeExploreIndex();
     if (installed !== null) return installed;
   }
