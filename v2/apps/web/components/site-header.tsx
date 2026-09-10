@@ -58,7 +58,7 @@ function isCurrentGlobalLink(href: string, currentHref: string | undefined): boo
   const budgetAnalysis = /\/(?:seoul-apartment|singapore-condo|dubai-ready-apartment)-buying-budget-guide\//.test(currentHref);
   if (href.startsWith('/news/')) return currentHref.includes('/news/') || currentHref.includes('/insights/') || budgetAnalysis;
   if (href === '/guides/') return !budgetAnalysis && (currentHref.includes('/guide') || currentHref === '/guides/');
-  if (href === '/tools/' || href === '/ko/tools/') return currentHref.includes('/tools/') || currentHref.includes('/check/') || currentHref.includes('/passport/') || currentHref.includes('/shortlist/');
+  if (href === '/tools/' || href === '/ko/tools/') return currentHref.includes('/tools/') || currentHref.includes('/check/') || currentHref.includes('/passport/') || currentHref.includes('/shortlist/') || currentHref.includes('/saved/');
   if (href.includes('/rankings/')) return currentHref.includes('/rankings/');
   if (href === '/prices/') {
     return currentHref.includes('/explore/') || currentHref.includes('/rankings/') || currentHref === '/prices/';

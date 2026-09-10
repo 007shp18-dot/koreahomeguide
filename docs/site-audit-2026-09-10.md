@@ -27,7 +27,7 @@ User authorized one ad hoc production deployment, explicitly including pending p
 
 ## Verification record
 
-Local initial full tests: 3,070 passed, 84 skipped, two failures. Both corrected: the accepted evidence-section order and Tokyo must not be assigned Seoul-specific actions. Affected rerun: 46 passed. Further editorial rerun: 14 passed. Lint: zero errors, 12 existing warnings. Typecheck passed. Required combined CI, build and browser checks remain the release gate; exact final results are recorded on PR #287.
+Local initial full tests: 3,070 passed, 84 skipped, two failures. Both corrected: the accepted evidence-section order and Tokyo must not be assigned Seoul-specific actions. Affected rerun: 46 passed. Further editorial rerun: 14 passed. Lint: zero errors, 12 existing warnings. Typecheck passed. Local browser startup was blocked by this environment’s Google Fonts network access; it is not counted as a pass. Required combined CI, build and browser checks remain the release gate; exact final results are recorded on PR #287.
 
 ## Deferred product work
 
