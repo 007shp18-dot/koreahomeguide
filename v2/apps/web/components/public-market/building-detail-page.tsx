@@ -1,3 +1,4 @@
+import { seoulBuildingLocationHref } from '../../lib/public-market/seoul-building-location';
 import {localizedSeoulHref, type ProductLocale} from '../../lib/locale/product-copy';
 import { seoulDetailText } from '../../lib/locale/seoul-detail-copy';
 import { PassportLink as Link } from '../passport/passport-journey';
@@ -107,7 +108,7 @@ export function BuildingDetailPage({
           metric={{label:t('Median refundable deposit'),value:model.display.medianLabel,note:`${t(model.display.sampleLabel)} · ${model.evidence.period}`}}
           facts={[{label:t('Property type'),value:t(model.building.housingType)}]}
           actions={<><Link href={checkHref}>{locale === 'ko' ? '매물 가격 비교' : 'Compare an asking price'}</Link><BuildingSaveButton buildingKey={`${model.district.slug}/${model.building.buildingId}`} buildingName={model.building.name} locale={locale} variant="detail" /></>} />
-        <div data-detail-order="media">{propertyMedia ?? (visual.kind !== 'unavailable' ? <BuildingVisual model={visual} /> : <ProjectedEntityMedia locale={locale} buildingName={model.building.name} address={`${model.building.neighborhoodName}, ${districtName}, Seoul`} media={null} locationHref={exploreHref} />)}</div>
+        <div data-detail-order="media">{propertyMedia ?? (visual.kind !== 'unavailable' ? <BuildingVisual model={visual} /> : <ProjectedEntityMedia locale={locale} buildingName={model.building.name} address={`${model.building.neighborhoodName}, ${districtName}, Seoul`} media={null} locationHref={seoulBuildingLocationHref(exploreHref)} />)}</div>
         <nav className={pageStyles.tabs} aria-label={t('Building page sections')}>
           <a href="#building-overview">{t('Overview')}</a><a href="#building-evidence">{t('Transactions')}</a><a href="#building-facts">{t('Building profile')}</a><a href="#building-tools">{locale === 'ko' ? '내 조건 비교' : 'Compare'}</a><a href="#building-source">{t('Source')}</a>
         </nav>

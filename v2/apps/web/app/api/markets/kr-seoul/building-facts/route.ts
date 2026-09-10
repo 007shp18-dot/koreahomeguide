@@ -1,6 +1,6 @@
 
 import { createBuildingFactsGetHandler } from '@/lib/public-market/building-facts-route-handler.server';
-import { loadStoredBuildingFacts, storeBuildingFacts } from '@/lib/public-market/building-facts-store.server';
+import { loadStoredBuildingFacts, loadStoredBuildingProximity, storeBuildingFacts } from '@/lib/public-market/building-facts-store.server';
 import { resolveIndexedBuildingIdentity } from '@/lib/public-market/building-identity-index.server';
 import { installedKaptBuildingFactsSnapshot } from '@/lib/public-market/kapt-building-facts-snapshot.server';
 import { loadOfficialBuildingFacts } from '@/lib/public-market/official-building-facts.server';
@@ -22,6 +22,7 @@ export const GET = createBuildingFactsGetHandler({
     ?? process.env.DATA_GO_KR_SERVICE_KEY,
   load: loadOfficialBuildingFacts,
   loadStored: loadStoredBuildingFacts,
+  loadProximity: loadStoredBuildingProximity,
   loadInstalled(identity) {
     const record = kaptSnapshot?.records().find(({ buildingId }) => buildingId === identity.buildingId);
     if (record === undefined || record.districtSlug !== identity.districtSlug

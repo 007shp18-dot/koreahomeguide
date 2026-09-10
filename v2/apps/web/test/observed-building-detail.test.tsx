@@ -234,7 +234,9 @@ describe('observed building detail', () => {
       : { status: state, coordinateStatus: 'unavailable', nearestStation: null, nearestSchool: null } as const;
     const html = renderToStaticMarkup(<BuildingProximityDisclosure proximity={proximity} locale={locale} />);
     expect(html).not.toContain(expected);
-    expect(html).toBe('');
+    expect(html).toContain('data-building-proximity="unavailable"');
+    expect(html).toContain(locale === 'ko' ? '아직 확인되지 않았습니다.' : 'have not been confirmed yet.');
+    expect(html).not.toMatch(/\d+ m/);
   });
 
   it.each([

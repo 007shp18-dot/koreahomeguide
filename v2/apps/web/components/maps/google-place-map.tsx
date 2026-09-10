@@ -82,6 +82,7 @@ export type GooglePlaceMapRuntime = Readonly<{
   geocoder: GoogleGeocoderInstance;
 }>;
 
+export const GOOGLE_MAPS_SCRIPT_ID = 'signedprice-google-maps';
 export const GOOGLE_MAPS_READY_CALLBACK = '__signedpriceGoogleMapsReady' as const;
 export type GoogleMarket = 'singapore' | 'dubai' | 'tokyo';
 const marketConfig = { tokyo: { country: 'JP', name: 'Tokyo', center: { lat: 35.68, lng: 139.75 }, south: 35.5, north: 35.95, west: 139.5, east: 139.95 }, singapore: { country: 'SG', name: 'Singapore', center: { lat: 1.3521, lng: 103.8198 }, south: 1.15, north: 1.5, west: 103.55, east: 104.15 }, dubai: { country: 'AE', name: 'Dubai', center: { lat: 25.15, lng: 55.25 }, south: 24.7, north: 25.6, west: 54.8, east: 55.7 } } as const;
@@ -116,18 +117,49 @@ if (typeof window !== 'undefined') {
   });
 }
 
+/** A cached script may be ready before this route subscribes to its callback. */
+export function observeGoogleMapsReady(
+  scope: EventTarget & { google?: { maps?: Partial<GoogleMapsSdk> } },
+  onReady: () => void,
+  onTimeout: () => void,
+  timeoutMs = 12_000,
+): () => void {
+  let stopped = false;
+  const cleanup = () => {
+    stopped = true;
+    clearInterval(poll);
+    clearTimeout(timeout);
+    scope.removeEventListener(GOOGLE_MAPS_READY_EVENT, check);
+  };
+  const check = () => {
+    if (stopped) return;
+    const sdk = scope.google?.maps;
+    if (typeof sdk?.Map !== 'function' || typeof sdk.Marker !== 'function' || typeof sdk.Geocoder !== 'function') return;
+    cleanup();
+    onReady();
+  };
+  const poll = setInterval(check, 250);
+  const timeout = setTimeout(() => {
+    // Stop polling, but allow a slow SDK callback to recover this mounted map.
+    clearInterval(poll);
+    onTimeout();
+  }, timeoutMs);
+  scope.addEventListener(GOOGLE_MAPS_READY_EVENT, check);
+  queueMicrotask(check);
+  return cleanup;
+}
+
 export function buildGoogleMapsScriptUrl(
   browserKey: string,
-  market: GoogleMarket = 'singapore',
-  locale: 'en' | 'ko' = 'en',
 ): string {
   const url = new URL('https://maps.googleapis.com/maps/api/js');
   url.searchParams.set('key', browserKey);
   url.searchParams.set('loading', 'async');
   url.searchParams.set('callback', GOOGLE_MAPS_READY_CALLBACK);
   url.searchParams.set('v', 'weekly');
-  url.searchParams.set('language', locale);
-  url.searchParams.set('region', marketConfig[market].country);
+  // All routes share this exact URL, including while the SDK is still loading.
+  // Country restrictions are applied per geocoder request, not by reloading the SDK.
+  url.searchParams.set('language', 'en');
   return url.toString();
 }
 
@@ -346,7 +378,7 @@ export function GooglePlaceMap({
     const sdk = (globalThis as typeof globalThis & {
       google?: Readonly<{ maps: GoogleMapsSdk }>;
     }).google?.maps;
-    if (sdk === undefined || container.current === null) return;
+    if (typeof sdk?.Map !== 'function' || typeof sdk.Marker !== 'function' || typeof sdk.Geocoder !== 'function' || container.current === null) return;
     try {
       const currentGeneration = ++generation.current;
       runtime.current ??= mountGooglePlaceMap({ sdk, element: container.current, market });
@@ -354,7 +386,7 @@ export function GooglePlaceMap({
       zoomListener.current = null;
       for (const marker of marketMarkers.current) marker.setMap(null);
       marketMarkers.current = mountGoogleMarketPoints(sdk, runtime.current.map, points, onSelectPoint, true, clusterLocations, locale);
-      const requestedLocations = points.filter((point) => point.address !== undefined).length;
+      const requestedLocations = points.filter((point) => point.address !== undefined && !(Number.isFinite(point.latitude) && Number.isFinite(point.longitude))).length;
       setMessage(requestedLocations > 0
         ? (locale === 'ko' ? `Google 지도에서 장소 ${requestedLocations}곳을 찾는 중…` : `Locating ${requestedLocations} places on Google Maps…`)
         : locale === 'ko' ? `${points.reduce((n, point) => n + (point.count ?? 1), 0).toLocaleString('ko')}건 · 숫자는 묶인 결과 수입니다. 지역 단위 자료는 건물의 정확한 위치를 뜻하지 않습니다.` : points.some(point => point.showFullLabel) ? `${points.length} areas shown. Select an area to view its recorded prices.` : `${points.reduce((n, point) => n + (point.count ?? 1), 0).toLocaleString('en')} results · Numbers show grouped results. Area-level evidence does not identify an exact building location.`);
@@ -383,18 +415,17 @@ export function GooglePlaceMap({
 
   useEffect(() => {
     const requestGeneration = generation;
-    const scope = window as Window & GoogleMapsReadyScope;
-    window.addEventListener(GOOGLE_MAPS_READY_EVENT, initialize);
-    if (scope[GOOGLE_MAPS_READY_FLAG] === true) queueMicrotask(initialize);
+    if (browserKey === null) return;
+    const stopObserving = observeGoogleMapsReady(window, initialize, () => setMapState('error'));
     return () => {
       ++requestGeneration.current;
       zoomListener.current?.remove();
       zoomListener.current = null;
-      window.removeEventListener(GOOGLE_MAPS_READY_EVENT, initialize);
+      stopObserving();
       for (const marker of marketMarkers.current) marker.setMap(null);
       marketMarkers.current = [];
     };
-  }, [initialize]);
+  }, [initialize, browserKey]);
 
   useEffect(() => {
     const scope = window as Window & { gm_authFailure?: () => void };
@@ -432,7 +463,7 @@ export function GooglePlaceMap({
 
   if (browserKey === null) return (
     <div className={styles.unavailable} data-map-provider="static" data-map-state="fallback">
-      {locale === 'ko' ? `Google 지도를 사용할 수 없습니다. ${market === 'dubai' ? '목록에서 지역을 선택하고 가이드를 읽을 수 있습니다.' : '목록에서 단지를 검색하고 상세 정보를 확인할 수 있습니다.'}` : <>Interactive Google map unavailable. {market === 'dubai' ? 'You can still select areas and read their guides in the list.' : 'You can still search projects and open their details in the list.'}</>}
+      {locale === 'ko' ? `Google 지도를 사용할 수 없습니다. ${market === 'tokyo' ? '목록에서 구와 동네별 거래를 확인할 수 있습니다.' : market === 'dubai' ? '목록에서 지역을 선택하고 가이드를 읽을 수 있습니다.' : '목록에서 단지를 검색하고 상세 정보를 확인할 수 있습니다.'}` : <>Interactive Google map unavailable. {market === 'tokyo' ? 'You can still choose wards and neighbourhood transactions from the list.' : market === 'dubai' ? 'You can still select areas and read their guides in the list.' : 'You can still search projects and open their details in the list.'}</>}
     </div>
   );
 
@@ -454,15 +485,24 @@ export function GooglePlaceMap({
         </div>
         <p className={styles.locationStatus} aria-live="polite">{message}</p>
       </form> : <p className={styles.locationStatus} aria-live="polite">{message}</p>}
-      {mapState === 'error' ? <p className={styles.locationStatus} role="status">{locale === 'ko' ? '지도를 불러오지 못했습니다. 목록에서 검색 결과와 상세 정보를 확인할 수 있습니다.' : 'The map could not load. Search results and project details remain available in the list.'}</p> : null}
+      <div className={styles.mapViewport}>
+      {mapState !== 'ready' ? <div className={styles.mapNotice} role="status">
+        <p>{mapState === 'loading'
+          ? (locale === 'ko' ? '지도를 불러오는 중입니다. 아래 목록에서도 지역을 선택할 수 있습니다.' : 'Loading map. You can also choose an area from the list.')
+          : (locale === 'ko' ? '지도를 불러오지 못했습니다. 목록은 계속 이용할 수 있습니다.' : 'The map could not load. The area list is still available.')}</p>
+        {mapState === 'error' ? <button type="button" onClick={() => window.location.reload()}>{locale === 'ko' ? '지도 다시 불러오기' : 'Reload map'}</button> : null}
+      </div> : null}
       <div
         ref={container}
         className={styles.canvas}
+        aria-busy={mapState === 'loading'}
         role="region"
-        aria-label={locale === 'ko' ? `${market === 'dubai' ? '두바이' : '싱가포르'} Google 지도` : `Interactive Google map of ${marketConfig[market].name}`}
+        aria-label={locale === 'ko' ? `${market === 'dubai' ? '두바이' : market === 'tokyo' ? '도쿄' : '싱가포르'} Google 지도` : `Interactive Google map of ${marketConfig[market].name}`}
       />
+      </div>
       <Script
-        src={buildGoogleMapsScriptUrl(browserKey, market, locale)}
+        id={GOOGLE_MAPS_SCRIPT_ID}
+        src={buildGoogleMapsScriptUrl(browserKey)}
         strategy="afterInteractive"
         onError={() => setMapState('error')}
       />

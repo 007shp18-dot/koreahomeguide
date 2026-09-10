@@ -1,6 +1,7 @@
 import 'server-only';
 
-import { contentDatabase } from '../db/postgres.server';
+import { contentDatabase, publicContentDatabase } from '../db/postgres.server';
+import type { PublicEntityProximity } from '../public-data/entity-location-projection.server';
 import type { OfficialBuildingFacts } from './official-building-facts.server';
 
 export type BuildingFactsIdentity = Readonly<{
@@ -113,3 +114,33 @@ export async function storeBuildingFacts(
   `;
 }
 
+
+/** Read the existing nearby-place store directly by an already verified identity.
+ * This also covers legacy buildings not yet mapped into property_entities. */
+export async function loadStoredBuildingProximity(identity: BuildingFactsIdentity): Promise<PublicEntityProximity | null> {
+  const sql = publicContentDatabase();
+  if (sql === null) return null;
+  const rows = await sql`
+    SELECT DISTINCT ON (kind) kind, provider_id, name, distance_meters, lines
+    FROM nearby_places
+    WHERE building_key = ${`seoul:${identity.buildingId}`}
+      AND kind IN ('station', 'school') AND distance_meters IS NOT NULL
+    ORDER BY kind, is_nearest DESC, distance_meters, provider_id
+    LIMIT 2
+  `;
+  let nearestStation: PublicEntityProximity['nearestStation'] = null;
+  let nearestSchool: PublicEntityProximity['nearestSchool'] = null;
+  for (const row of rows) {
+    const distanceMeters = Number(row.distance_meters);
+    if (!Number.isFinite(distanceMeters) || distanceMeters < 0 || typeof row.name !== 'string'
+      || !row.name.trim() || typeof row.provider_id !== 'string') continue;
+    if (row.kind === 'station' && nearestStation === null) nearestStation = {
+      sourceId: row.provider_id, name: row.name, distanceMeters,
+      lines: Array.isArray(row.lines) ? row.lines.filter((line): line is string => typeof line === 'string') : [],
+    };
+    if (row.kind === 'school' && nearestSchool === null) nearestSchool = { sourceId: row.provider_id, name: row.name, distanceMeters };
+  }
+  return nearestStation === null && nearestSchool === null ? null : {
+    status: 'ready', coordinateStatus: 'ready', nearestStation, nearestSchool,
+  };
+}

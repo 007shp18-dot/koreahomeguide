@@ -17,6 +17,23 @@ const model: SingaporeCheckRouteModel = {
 };
 
 describe('Singapore Check workspace', () => {
+  it('keeps optional fields collapsed while retaining values in the GET form', () => {
+    const html = renderToStaticMarkup(<SingaporeCheckWorkspace model={model} />);
+    expect(html).toContain('More comparison options');
+    const start = html.indexOf('<details data-comparison-options=');
+    const advanced = html.slice(start, html.indexOf('</details>', start));
+    expect(advanced).toContain('name="a-floor-range"');
+    expect(advanced).toContain('name="a-sale-type"');
+    expect(advanced).toContain('name="a-month"');
+    expect(advanced).not.toMatch(/<details[^>]*open/);
+    expect(html.indexOf('name="a-project"')).toBeLessThan(html.indexOf('name="a-amount"'));
+  });
+
+  it('opens non-default advanced conditions handed over in a shared result', () => {
+    const html = renderToStaticMarkup(<SingaporeCheckWorkspace model={{ ...model, drafts: { ...model.drafts, a: { market: 'ura-private-sale', 'floor-range': '06-10' } } }} />);
+    expect(html).toMatch(/<details[^>]*open/);
+    expect(html).toContain('<option value="06-10" selected="">');
+  });
   it('offers a usable evidence link instead of an empty HDB form', () => {
     const html = renderToStaticMarkup(<SingaporeCheckWorkspace model={{...model, drafts:{...model.drafts, a:{market:'hdb-resale'}}}} />);
     expect(html).toContain('Explore Singapore transactions');

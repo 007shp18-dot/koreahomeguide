@@ -11,14 +11,14 @@ import wardLocations from '../../lib/japan/tokyo-ward-locations.json';
 
 export function tokyoMapAreaHref(row: Pick<TokyoAreaSummary, 'city' | 'year' | 'quarter' | 'district'>, filters: TokyoMapFilters): string {
   const params = new URLSearchParams({ city: row.city, year: row.year, quarter: row.quarter });
-  if (row.district || filters.q) params.set('q', row.district ?? filters.q);
-  if (filters.type) params.set('type', filters.type);
+  if (row.district) params.set('q', row.district);
+  params.set('type', filters.type);
   if (filters.minArea !== null) params.set('minArea', String(filters.minArea));
   if (filters.maxArea !== null) params.set('maxArea', String(filters.maxArea));
   return `/jp/tokyo/explore/?${params}`;
 }
 
-const AREA_PAGE_SIZE = 12;
+const AREA_PAGE_SIZE = 6;
 
 /** Ward reference coordinates come from the published MLIT boundaries, not browser geocoding. */
 export function tokyoAreaPoint(row: TokyoAreaSummary, index: number, selected: boolean) {
@@ -37,36 +37,56 @@ export function TokyoAreaMap({ rows, city, year, quarter, browserKey, filters, u
   filters: TokyoMapFilters; unavailable?: boolean;
 }) {
   const router = useRouter();
-  const [level, setLevel] = useState<'wards' | 'neighbourhoods'>('wards');
-  const [page, setPage] = useState(0);
+  const [paging, setPaging] = useState({ scope: `${city}:${year}:${quarter}`, page: 0 });
+  const pagingScope = `${city}:${year}:${quarter}`;
+  const page = paging.scope === pagingScope ? paging.page : 0;
+  const setPage = (next: number) => setPaging({ scope: pagingScope, page: next });
   const [pending, startTransition] = useTransition();
-  const areas = useMemo(() => rows.filter(row => level === 'wards' ? row.district === null : row.city === city && row.district !== null), [rows, level, city]);
-  const pageSize = level === 'wards' ? 23 : AREA_PAGE_SIZE;
-  const activePage = Math.min(page, Math.max(0, Math.ceil(areas.length / pageSize) - 1));
-  const visible = useMemo(() => areas.slice(activePage * pageSize, (activePage + 1) * pageSize), [areas, activePage, pageSize]);
-  const selectedArea = rows.find(row => row.city === city && (level === 'wards' ? row.district === null : row.district === filters.q));
-  const points = useMemo(() => visible.map((row, index) => tokyoAreaPoint(row, index, level === 'wards' ? row.city === city : row.district === filters.q)), [visible, city, level, filters.q]);
-  const select = useCallback((id: string) => {
-    const row = visible[Number(id)]; if (!row) return;
+  const wardName = TOKYO_WARDS.find(([code]) => code === city)?.[1] ?? 'this ward';
+  const wards = useMemo(() => rows.filter(row => row.district === null), [rows]);
+  const neighbourhoods = useMemo(() => rows.filter(row => row.city === city && row.district !== null)
+    .sort((a, b) => (a.district ?? '').localeCompare(b.district ?? '', 'en')), [rows, city]);
+  const activePage = Math.min(page, Math.max(0, Math.ceil(neighbourhoods.length / AREA_PAGE_SIZE) - 1));
+  const visible = neighbourhoods.slice(activePage * AREA_PAGE_SIZE, (activePage + 1) * AREA_PAGE_SIZE);
+  const selectedArea = rows.find(row => row.city === city && row.district === (filters.q || null));
+  const points = useMemo(() => wards.map((row, index) => tokyoAreaPoint(row, index, row.city === city)), [wards, city]);
+  const selectWard = useCallback((id: string) => {
+    const row = wards[Number(id)]; if (!row) return;
+    setPaging({ scope: `${row.city}:${row.year}:${row.quarter}`, page: 0 });
     startTransition(() => router.push(tokyoMapAreaHref(row, filters), { scroll: false }));
-  }, [visible, router, filters]);
+  }, [wards, router, filters]);
   return <section className={styles.areaMap} aria-label="Tokyo area price map" data-tokyo-google-map="true" aria-busy={pending}>
     <h2>Explore Tokyo by area</h2>
-    <p>Choose an area to see its recorded prices. Markers show approximate areas, not individual buildings.</p>
-    <nav aria-label="Map detail"><button type="button" aria-pressed={level === 'wards'} onClick={() => { setLevel('wards'); setPage(0); }}>Wards</button><button type="button" aria-pressed={level === 'neighbourhoods'} onClick={() => { setLevel('neighbourhoods'); setPage(0); }}>Neighbourhoods</button></nav>
-    <GooglePlaceMap market="tokyo" browserKey={browserKey} points={points} onSelectPoint={select} showAddressSearch={false} clusterLocations={false} />
+    <p>Choose a ward on the map, then a neighbourhood below. Markers show ward areas.</p>
+    <div className={styles.mapViewport}>
+      <GooglePlaceMap market="tokyo" browserKey={browserKey} points={points} onSelectPoint={selectWard} showAddressSearch={false} clusterLocations={false} />
+    </div>
     {selectedArea ? <div className={styles.selectedArea} aria-label="Selected area price summary">
-      <div><h3>{selectedArea.district ?? selectedArea.municipality.replace(' Ward', '')}</h3><p>{selectedArea.year} Q{selectedArea.quarter} · {selectedArea.count.toLocaleString('en')} transactions</p></div>
+      <div><h3>{selectedArea.district ?? wardName}</h3><p>{selectedArea.year} Q{selectedArea.quarter} · {selectedArea.count.toLocaleString('en')} transactions</p></div>
       <div><span>Median recorded price</span><strong>¥{selectedArea.median.toLocaleString('en')}</strong></div>
     </div> : null}
     {pending ? <p role="status">Loading area transactions…</p> : null}
-    {!areas.length ? <p>{unavailable ? 'Area summaries are temporarily unavailable. Transaction results remain available.' : 'No published area summaries match these filters.'}</p> : <details><summary>Choose an area from the list</summary><div className={styles.mapAreaList}>{visible.map((row, index) => <button type="button" key={`${row.city}:${row.district}`} onClick={() => select(String(index))}>{row.district ?? row.municipality} · {row.count} transactions · {row.year} Q{row.quarter}</button>)}</div></details>}
-    {level === 'wards' ? <details><summary>All Tokyo wards</summary><div className={styles.mapAreaList}>{TOKYO_WARDS.map(([code, name]) => {
-      const summary = rows.find(row => row.city === code && row.district === null);
+    <section className={styles.neighbourhoods} aria-label={`Neighbourhoods in ${wardName}`}>
+      <div className={styles.neighbourhoodHeading}><h3>Neighbourhoods in {wardName}</h3><span>{neighbourhoods.length} available</span></div>
+      <p className={styles.neighbourhoodHelp}>Select a neighbourhood to show its transactions. Property type and area filters apply.</p>
+      {!neighbourhoods.length ? <p>{unavailable ? 'Neighbourhood summaries are temporarily unavailable. You can still search the transaction records.' : 'No neighbourhoods match this period and property filters. Try another quarter or a wider area range.'}</p> : <>
+        <nav className={styles.neighbourhoodList} aria-label="Choose a Tokyo neighbourhood">
+          {visible.map(row => <Link key={`${row.city}:${row.district}`} data-neighbourhood={row.district}
+            href={`${tokyoMapAreaHref(row, filters)}#tokyo-transactions`} prefetch={false}
+            aria-current={row.district === filters.q ? 'location' : undefined}>
+            <strong>{row.district}</strong><span>{row.count.toLocaleString('en')} transactions · {row.year} Q{row.quarter}</span>
+          </Link>)}
+        </nav>
+        {filters.q ? <Link className={styles.clearSearch} href={tokyoMapAreaHref({ city, year, quarter, district: null }, filters)} prefetch={false} scroll={false}>All {wardName} transactions</Link> : null}
+        {neighbourhoods.length > AREA_PAGE_SIZE ? <nav className={styles.areaPagination} aria-label="Neighbourhood pages"><button type="button" disabled={activePage === 0} onClick={() => setPage(activePage - 1)}>Previous</button><span>{activePage + 1} / {Math.ceil(neighbourhoods.length / AREA_PAGE_SIZE)}</span><button type="button" disabled={(activePage + 1) * AREA_PAGE_SIZE >= neighbourhoods.length} onClick={() => setPage(activePage + 1)}>Next</button></nav> : null}
+      </>}
+    </section>
+    <details className={styles.wardDirectory}><summary>All Tokyo wards</summary><div className={styles.mapAreaList}>{TOKYO_WARDS.map(([code, name]) => {
+      const summary = wards.find(row => row.city === code);
       return <Link key={code} data-ward={code} aria-current={code === city ? 'location' : undefined} prefetch={false} scroll={false}
+        onClick={() => setPage(0)}
         href={tokyoMapAreaHref(summary ?? { city: code, year, quarter, district: null }, filters)}>{name}</Link>;
-    })}</div></details> : null}
-    {areas.length > pageSize ? <nav aria-label="Map area pages"><button type="button" disabled={activePage === 0} onClick={() => setPage(activePage - 1)}>Previous</button><span>{activePage + 1} / {Math.ceil(areas.length / pageSize)}</span><button type="button" disabled={(activePage + 1) * pageSize >= areas.length} onClick={() => setPage(activePage + 1)}>Next</button></nav> : null}
-    <details className={styles.mapMethod}><summary>Map coverage and source</summary><p>{year} Q{quarter} · Your filters apply. Other wards use their latest available quarter when this period is missing. Prices cover different property types unless filtered; area medians are not like-for-like home valuations.</p><p><a href={wardLocations.source.url} target="_blank" rel="noreferrer">Ward reference points: MLIT 2020</a> · Derived by SignedPrice. Neighbourhood locations are resolved only when opened.</p></details>
+    })}</div></details>
+    <details className={styles.mapMethod}><summary>Map coverage and source</summary><p>{year} Q{quarter} · Property type and area filters apply. Other wards use their latest available quarter when this period is missing. Neighbourhoods show the selected ward and quarter. Area medians are not like-for-like home valuations.</p><p><a href={wardLocations.source.url} target="_blank" rel="noreferrer">Ward reference points: MLIT 2020</a> · Derived by SignedPrice. Neighbourhoods are selected from published transaction records, without inferred building locations.</p></details>
   </section>;
 }

@@ -121,5 +121,8 @@ describe('primary single quote Check workspace', () => {
     expect(html).toContain('name="entity" value="gangnam-evidence-tower"');
     expect(html).toContain('name="returnTo"');
     expect(html).toContain('Return to Evidence Tower');
+    expect(html).toContain('data-selected-building="gangnam-evidence-tower"');
+    expect(html).toContain('aria-label="Clear Evidence Tower"');
+    expect(html.indexOf('data-selected-building=')).toBeGreaterThan(html.indexOf('Search a building'));
   });
 });

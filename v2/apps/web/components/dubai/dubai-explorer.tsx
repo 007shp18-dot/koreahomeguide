@@ -8,6 +8,7 @@ import {
   useDeferredValue,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 
@@ -24,6 +25,7 @@ import styles from './dubai-research.module.css';
 import type { DubaiProjectEvidence } from '../../lib/dubai/project-evidence';
 import { selectedResultPage } from '../../lib/navigation/selected-result-page';
 import { marketText, marketHref, type MarketLocale } from '../../lib/locale/market-localization';
+import { DubaiExploreSelection } from './dubai-explore-selection';
 
 
 const unavailableModel = Object.freeze({
@@ -154,7 +156,13 @@ export function DubaiExplorer({ locale = 'en',
   const [yieldMinimumPct, setYieldMinimumPct] = useState(initialYieldMinimumPct);
   const [page, setPage] = useState(initialPage);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(initialProjectId);
-  const selectArea = useCallback((slug: string | null) => { setSelectedArea(slug); setSelectedProjectId(null); }, []);
+  const selectionRef = useRef<HTMLElement>(null);
+  const revealSelection = useRef(false);
+  const selectArea = useCallback((slug: string | null) => {
+    revealSelection.current = slug !== null;
+    setSelectedArea(slug);
+    setSelectedProjectId(null);
+  }, []);
   const results = useMemo(() => filterDubaiExploreResults(
     model.status === 'ready' ? model.areas : [], {
       query: deferredQuery,
@@ -173,6 +181,7 @@ export function DubaiExplorer({ locale = 'en',
   const selected = results.find(({ area }) => area.slug === selectedArea);
   const projectResults = useMemo(() => projects.filter(project => project.housing === housing && project.stage === stage), [projects, housing, stage]);
   const selectedProject = projectResults.find(project => project.id === selectedProjectId && project.areaSlug === selected?.area.slug);
+  const selectedAreaProjects = useMemo(() => projectResults.filter(project => project.areaSlug === selected?.area.slug), [projectResults, selected]);
   const mapPoints = useMemo<readonly GoogleMarketMapPoint[]>(() => visible.map((result) => ({
     id: result.area.slug,
     title: result.area.name,
@@ -180,6 +189,12 @@ export function DubaiExplorer({ locale = 'en',
     address: `${result.area.name}, Dubai, United Arab Emirates`,
     selected: result.area.slug === selectedArea,
   })), [selectedArea, visible]);
+
+  useEffect(() => {
+    if (!selected || !revealSelection.current) return;
+    revealSelection.current = false;
+    selectionRef.current?.scrollIntoView({ block: 'nearest', behavior: 'auto' });
+  }, [selected]);
 
   useEffect(() => {
     if (model.status !== 'ready') return;
@@ -268,13 +283,22 @@ export function DubaiExplorer({ locale = 'en',
         </nav>
       </div>}
       discovery={<section className={styles.evidenceDirectory} aria-labelledby="dubai-area-results">
+        {selected ? <DubaiExploreSelection locale={locale} selected={selected} stage={stage}
+          period={`${model.context.comparisonPeriod.from}–${model.context.comparisonPeriod.to}`}
+          asOfDate={model.context.asOfDate} projects={selectedAreaProjects} selectedProject={selectedProject}
+          onSelectProject={setSelectedProjectId} onClose={() => selectArea(null)} panelRef={selectionRef}
+          returnTo={buildDubaiExploreHref({ query, housing, stage, budgetMaximumAed, yieldMinimumPct,
+            page: activePage, selectedArea: selected.area.slug, selectedProject: selectedProject?.id ?? null })}
+        /> : <p className={styles.selectionPrompt}>{locale === 'ko'
+          ? '지역을 선택하면 가격·임대료와 프로젝트별 거래 요약이 여기에 표시됩니다.'
+          : 'Select an area to see prices, rent and project sales summaries here.'}</p>}
         <header className={styles.resultHeader}>
           <div><h2 id="dubai-area-results">{t("Area prices")}</h2><p>{t(results.length.toLocaleString('en'))}{t(" matching areas · ")}{t(housing)}{t(" · ")}{t(stage)}</p></div>
           <small>{t(results.length === 0 ? 'No matches' : `${(activePage - 1) * DUBAI_EXPLORE_PAGE_SIZE + 1}–${Math.min(activePage * DUBAI_EXPLORE_PAGE_SIZE, results.length)} shown`)}</small>
         </header>
         <div className={styles.areaResults} aria-live="polite" aria-busy={query !== deferredQuery}>
           {visible.map(({ area, segment, sale }) => <article key={area.id} data-selected={area.slug === selectedArea}>
-            <button type="button" aria-pressed={area.slug === selectedArea} onClick={() => selectArea(selectedArea === area.slug ? null : area.slug)}>
+            <button type="button" aria-pressed={area.slug === selectedArea} aria-controls="dubai-selected-area" onClick={() => selectArea(selectedArea === area.slug ? null : area.slug)}>
               <span><strong title={t(area.name)}>{t(area.name)}</strong><small>{t(housing === 'apartment' ? 'Apartment' : 'Villa')}{t(" · ")}{t(stage === 'ready' ? 'Ready' : 'Off-Plan')}</small></span>
             </button>
             <p className={styles.resultPrice}><strong>{t(money(sale.medianPriceAed))}</strong><span>{t(sale.n.toLocaleString('en'))} {locale === 'ko' ? '건 거래' : 'sales'} · {t(moneyPerSqm(sale.medianPricePerSqmAed))}</span></p>
@@ -287,20 +311,10 @@ export function DubaiExplorer({ locale = 'en',
               <div><dt>{t("Median annual rent")}</dt><dd>{t(moneyPerYear(segment.rent.medianAnnualRentAed))}</dd></div>
               <div><dt>{t("Estimated gross rent-to-price ratio")}</dt><dd>{t(stage === 'ready' && segment.readyGrossYieldPct !== null ? `${segment.readyGrossYieldPct.toFixed(1)}%` : stage === 'off-plan' ? 'Not shown for Off-Plan' : 'Not published')}</dd></div>
             </dl>
-            {projectResults.some(project => project.areaSlug === area.slug) ? <details className={styles.projectPrices}>
-              <summary>{t("Project prices · ")}{t(projectResults.filter(project => project.areaSlug === area.slug).length)}</summary>
-              <p>{t("Partial project coverage. Projects with at least 30 sales · ")}{t(model.context.comparisonPeriod.from)}{t("–")}{t(model.context.comparisonPeriod.to)}</p>
-              <div>{projectResults.filter(project => project.areaSlug === area.slug).map(project => <button
-                key={project.id} type="button" aria-pressed={selectedProject?.id === project.id}
-                onClick={() => { setSelectedArea(area.slug); setSelectedProjectId(project.id); }}>
-                <span><strong title={t(project.name)}>{t(project.name)}</strong><small>{t(project.n.toLocaleString('en'))}{t(" sales")}</small></span>
-                <strong>{t(money(project.medianPriceAed))}</strong>
-              </button>)}</div>
-            </details> : null}
             </details>
             {area.href === null
               ? <span className={styles.unavailableLink}>{t("Area details unavailable")}</span>
-              : <Link href={marketHref(locale, `${area.href}?housing=${segment.housing}&stage=${stage}`)}>{t("View area prices")}</Link>}
+              : <Link href={marketHref(locale, `${area.href}?housing=${segment.housing}&stage=${stage}`)}>{locale === 'ko' ? '지역 분석 전체 보기' : 'Full area analysis'}</Link>}
           </article>)}
           {results.length === 0 ? <p className={styles.emptyState}>{t("No areas match these filters. Increase the budget or lower the ratio threshold.")}</p> : null}
         </div>
@@ -313,17 +327,7 @@ export function DubaiExplorer({ locale = 'en',
       </section>}
       spatial={<section className={styles.evidenceMap} aria-labelledby="dubai-area-map">
         <header><div><h2 id="dubai-area-map">{t("Area locations")}</h2><p>{t(visible.length.toLocaleString('en'))}{t(" areas on this page · area summaries only")}</p></div></header>
-        <GooglePlaceMap locale={locale} market="dubai" browserKey={browserKey} points={mapPoints} onSelectPoint={selectArea} showAddressSearch={false} />
-        {selected ? <aside className={styles.mapSelection}>
-          <button type="button" onClick={() => selectArea(null)} aria-label={t("Close area preview")}>{t("Close")}</button>
-          <h3 title={t(selectedProject?.name ?? selected.area.name)}>{t(selectedProject?.name ?? selected.area.name)}</h3>
-          {selectedProject ? <p>{t(selected.area.name)}{t(" · Area location only")}</p> : null}
-          <p>{t(housing === 'apartment' ? 'Apartment' : 'Villa')}{t(" · ")}{t(stage === 'ready' ? 'Ready' : 'Off-Plan')}</p>
-          <strong>{t(money(selectedProject?.medianPriceAed ?? selected.sale.medianPriceAed))}</strong>
-          <span>{t(moneyPerSqm(selectedProject?.medianPricePerSqmAed ?? selected.sale.medianPricePerSqmAed))}{t(" · ")}{t((selectedProject?.n ?? selected.sale.n).toLocaleString('en'))}{t(" registered sales")}</span>
-          {selectedProject ? <span>{t("DLD project ")}{t(selectedProject.projectNumber)}{t(" · ")}{t(model.context.comparisonPeriod.from)}{t("–")}{t(model.context.comparisonPeriod.to)}</span> : null}
-          {selected.area.href === null ? null : <Link href={marketHref(locale, `${selected.area.href}?housing=${selected.segment.housing}&stage=${stage}`)}>{t("View area prices")}</Link>}
-        </aside> : null}
+        <GooglePlaceMap locale={locale} market="dubai" browserKey={browserKey} points={mapPoints} onSelectPoint={selectArea} showAddressSearch={false} clusterLocations={false} />
         <p className={styles.mapDisclosure}>{t("Markers locate areas. They do not represent units or listings.")}</p>
       </section>}
     />

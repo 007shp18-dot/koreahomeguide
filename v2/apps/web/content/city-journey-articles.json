@@ -712,7 +712,7 @@
       "ko": "성수에서 살 집, 숲과 골목 사이에서 고르기"
     },
     "deck": {
-      "en": "A walk through Seoul Forest, a turn into Seongsu’s streets, and a neighbourhood worth getting to know slowly.",
+      "en": "Seoul Forest walks and Seongsu’s workshop streets offer different versions of everyday life. Follow the routes you would use, then compare the homes along them.",
       "ko": "성수가 좋다는 마음을 어느 입구, 어느 거리, 어느 창문을 고를지에 대한 질문으로 바꿔본다."
     },
     "checkedAt": "2026-09-09",
@@ -720,12 +720,13 @@
       {
         "id": "two-centres",
         "title": {
-          "en": "Start with a little green",
+          "en": "Choose the part of Seongsu you would use every day",
           "ko": "공원과 상권, 먼저 고를 중심"
         },
         "paragraphs": {
           "en": [
-            "Picture an afternoon with nothing urgent on the calendar. Seoul Forest gives this version of Seongsu its starting point: a path through the trees, a place to sit, and a reason to stay outside a little longer. The appeal is in having somewhere to return to, rather than ticking off another stop."
+            "Seoul Forest gives one version of Seongsu its starting point: a path through the trees, a place to sit, and a reason to stay outside a little longer. Around Yeonmujang-gil, shops and workshops offer another centre for daily life. Start a home search with the places you would return to during an ordinary week.",
+            "Walk from a candidate home to the park entrance you would actually use. A building beside a patch of green on the map may still require a detour around a crossing or a closed boundary. If the shops are the attraction, try the same route after work and notice the sound outside the windows."
           ],
           "ko": [
             "성수라는 이름 안에는 다른 장면이 함께 있다. 연무장길의 상점과 작업장, 서울숲 주변의 산책길은 같은 동네를 즐기는 서로 다른 방법이다. 집을 찾을 때도 두 곳을 한 덩어리로 보기보다, 내가 더 자주 이용할 곳을 중심으로 탐색 범위를 그리는 편이 좋다.",
@@ -740,13 +741,13 @@
       {
         "id": "home-type",
         "title": {
-          "en": "Follow the streets out of the park",
+          "en": "Follow the street, then look at the home",
           "ko": "동네 가격보다 주택 유형 먼저"
         },
         "paragraphs": {
           "en": [
-            "Around Yeonmujang-gil, Seongsu tells another part of its story through shops, workshops and commercial streets. A day here can make room for both the park and the street. You do not have to choose one version of the neighbourhood before enjoying the other.",
-            "Take the photographs as an invitation to look closer: the ground floor of a building, the turn into a side street, the way the neighbourhood changes towards evening. The places you would happily revisit are more useful clues to your own Seongsu than a list of every destination you could fit into one day."
+            "A neighbourhood name can hide very different homes. Separate apartments from smaller multi-family buildings before comparing floor area and recent prices. Parking, lifts, shared space and maintenance arrangements can change what a similar amount of private space feels like to live in.",
+            "Look at the ground floor, the entrance and the direction of the windows. Return when delivery traffic or evening visitors are likely to overlap with your routine. Seongsu’s popularity does not tell you whether an individual home has enough light, quiet or storage for your needs."
           ],
           "ko": [
             "성수의 이름으로 가격을 검색하면 서로 다른 주택이 같은 목록에 나타난다. 아파트, 다세대주택, 주거용으로 사용하는 다른 유형을 비교할 때는 전용면적과 용도, 관리 방식부터 구분하자. 단순히 ㎡당 가격이 낮다는 이유만으로 같은 주거 조건을 더 싸게 산다고 말할 수는 없다.",
@@ -760,13 +761,13 @@
       {
         "id": "next-step",
         "title": {
-          "en": "Keep a small piece of Seongsu in your week",
+          "en": "Keep the places you love within a workable budget",
           "ko": "가격에 포함된 기대를 분리하기"
         },
         "paragraphs": {
           "en": [
-            "Perhaps the attraction is a walk before dinner. Perhaps it is living near streets you already enjoy visiting. Start with that small, repeatable pleasure. A home search can grow from the wish to make an ordinary afternoon feel more like this one.",
-            "When curiosity becomes a search, open the neighbourhood map and look at the actual homes around your chosen places. Their size, housing type and access will differ. There is time for those comparisons; first, decide which part of Seongsu you would like to come back to."
+            "Perhaps the reason to stay is a walk before dinner; perhaps it is living near work and streets you already enjoy. Keep that reason in view while comparing two or three homes of a similar housing type and floor area. Note the transaction period and the number of comparable records before drawing a conclusion from their prices.",
+            "Open the neighbourhood map with that shortlist in mind. Decide which compromises in space, building age or walking distance you could live with. A pleasant afternoon is a useful starting point; the everyday route, the actual building and the total cost are what turn it into a housing decision."
           ],
           "ko": [
             "정비사업 이야기를 듣는다면 현재 고시와 인가 단계, 대상 구역에 실제 포함되는지부터 확인한다. 예상 일정과 미래 가치에 대한 설명은 확인된 사업 상태와 분리해 적는다. 그 기대를 빼고도 현재의 공간과 생활권이 내 예산에 맞는지가 중요하다.",

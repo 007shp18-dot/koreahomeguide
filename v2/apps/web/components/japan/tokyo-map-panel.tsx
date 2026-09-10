@@ -6,6 +6,8 @@ import type { TokyoMapFilters } from '@/lib/japan/map-summary.server';
 export async function TokyoMapPanel({ city, year, quarter, filters }: { city: string; year: string; quarter: string; filters: TokyoMapFilters }) {
   let rows: TokyoAreaSummary[] = [];
   let unavailable = false;
-  try { rows = await readTokyoAreaMapSummary(city, year, quarter, filters); } catch { unavailable = true; }
+  // Keep sibling neighbourhoods discoverable after choosing one. Property and
+  // area filters still apply, but a neighbourhood search must not erase the map.
+  try { rows = await readTokyoAreaMapSummary(city, year, quarter, { ...filters, q: '' }); } catch { unavailable = true; }
   return <TokyoAreaMap rows={rows} city={city} year={year} quarter={quarter} filters={filters} unavailable={unavailable} browserKey={googleMapsBrowserKeyFromEnvironment()} />;
 }

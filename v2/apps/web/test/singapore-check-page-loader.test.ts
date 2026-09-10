@@ -1,7 +1,8 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
-const mocks = vi.hoisted(() => ({ prepared: vi.fn(), evidence: vi.fn(), get: vi.fn() }));
+const mocks = vi.hoisted(() => ({ prepared: vi.fn(), evidence: vi.fn(), get: vi.fn(), publication: vi.fn(), revoked: vi.fn() }));
+vi.mock('../lib/singapore/publication.server', () => ({ activeSingaporePublication: mocks.publication, singaporePublicationRightsRevoked: mocks.revoked }));
 vi.mock('../lib/singapore/check-form-catalog.server', () => ({ loadSingaporeCheckFormCatalog: mocks.prepared }));
 vi.mock('../lib/singapore/check-evidence-repository.server', () => ({ singaporeCheckEvidenceRepositoriesFromEnvironment: mocks.evidence }));
 
@@ -20,11 +21,40 @@ const ura = {
 beforeEach(() => {
   vi.clearAllMocks();
   mocks.prepared.mockReturnValue(prepared);
+  mocks.publication.mockResolvedValue(null);
+  mocks.revoked.mockReturnValue(false);
   mocks.get.mockReturnValue(null);
   mocks.evidence.mockResolvedValue({ get: mocks.get, availability: () => ({ 'ura-private-sale': false, 'hdb-resale': false, 'hdb-rent': false }) });
 });
 
+afterEach(() => vi.unstubAllEnvs());
+
 describe('Singapore Check incremental evidence loading', () => {
+  it('uses form-only choices with a production database configured', async () => {
+    vi.stubEnv('DATABASE_URL', 'postgres://configured');
+    const model = await loadSingaporeCheckPageModel({ 'a-project': 'known-project' });
+    expect(mocks.evidence).toHaveBeenCalledWith([]);
+    expect(mocks.get).not.toHaveBeenCalled();
+    expect(model.catalogs).toBe(prepared.catalogs);
+    expect(mocks.publication).toHaveBeenCalledTimes(1);
+  });
+
+  it('overlays active private project choices without expanding HDB archives', async () => {
+    mocks.publication.mockResolvedValue({ check: { records: [{ month: '2026-08', marketSegment: 'RCR', project: 'LIVE PROJECT', projectId: 'live-project', district: '15', propertyType: 'Condominium', floorRange: '06-10', saleType: 'Resale' }] } });
+    const model = await loadSingaporeCheckPageModel({});
+    expect(model.catalogs['ura-private-sale'].projects).toEqual([{ id: 'live-project', label: 'LIVE PROJECT' }]);
+    expect(model.catalogs['hdb-rent']).toBe(prepared.catalogs['hdb-rent']);
+    expect(mocks.evidence).toHaveBeenCalledWith([]);
+    expect(mocks.get).not.toHaveBeenCalled();
+  });
+
+  it('withdraws private form choices when active display rights are revoked', async () => {
+    mocks.revoked.mockReturnValue(true);
+    const model = await loadSingaporeCheckPageModel({});
+    expect(model.catalogs['ura-private-sale'].available).toBe(false);
+    expect(model.catalogs['ura-private-sale'].projects).toEqual([]);
+    expect(model.catalogs['hdb-resale']).toBe(prepared.catalogs['hdb-resale']);
+  });
   it('opens a retained project form without reading transaction evidence', async () => {
     const model = await loadSingaporeCheckPageModel({ 'a-project': 'known-project' });
     expect(mocks.evidence).toHaveBeenCalledWith([]);

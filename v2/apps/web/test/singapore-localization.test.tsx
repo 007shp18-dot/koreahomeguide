@@ -80,3 +80,13 @@ describe('Singapore Korean functional surfaces', () => {
     expect(metadata.title).toBe('싱가포르 매물 가격 비교 | signedprice');
   });
 });
+
+
+describe('Singapore public project identity handoff', () => {
+  it('retains the real namespaced project ID in a shared map URL', () => {
+    const id = 'sg-singapore:project-123';
+    const parsed = parseSingaporeExploreSearchParams(new URLSearchParams({ region: 'ccr', project: id }));
+    expect(parsed.selectedProjectId).toBe(id);
+    expect(new URL(buildSingaporeExploreHref(parsed), 'https://signedprice.com').searchParams.get('project')).toBe(id);
+  });
+});

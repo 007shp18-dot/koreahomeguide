@@ -13,9 +13,12 @@ import type { PublishedContentArticle } from '../../lib/content/content-types';
 import type { InfographicSpec } from '../../lib/infographics/infographic-types';
 import { KOREAN_RESEARCH_FIGURES } from '../../content/ko/research-figures';
 import { getPortfolioRecord } from '../../content/portfolio-manifest';
+import { MONTHLY_REPORT_REFERENCES } from '../../content/insight-curation';
 import { marketHref } from '../../lib/locale/market-localization';
 import { RESEARCH_FIGURES } from '../../content/en/research-figures';
 import { Infographic } from '../infographics/infographic';
+import { EditorialArticleHeader } from './editorial-article-header';
+import layout from './journey-article.module.css';
 import styles from './newsroom.module.css';
 
 const typeLabels = Object.freeze({
@@ -47,9 +50,9 @@ export function NewsroomArticle({ article }: Readonly<{
   const contentSections = sections(article.bodyMarkdown);
   const section = article.type === 'guide' && !budgetComparison
     ? { label: t('Guides','가이드'), href: ko ? '/ko/guides/' : '/guides/' }
-    : { label: t('News & Insights', '뉴스 & 인사이트'), href: ko ? '/ko/news/' : '/news/' };
+    : article.type === 'news-brief' ? { label: t('News', '뉴스'), href: `${ko ? '/ko' : ''}/news/?type=news` } : { label: t('Insights', '인사이트'), href: ko ? '/ko/news/' : '/news/' };
   const market = article.marketId === 'kr-seoul' ? t('Seoul','서울')
-    : article.marketId === 'sg-singapore' ? t('Singapore','싱가포르') : article.marketId === 'ae-dubai' ? t('Dubai','두바이') : t('Global','전체 도시');
+    : article.marketId === 'sg-singapore' ? t('Singapore','싱가포르') : article.marketId === 'ae-dubai' ? t('Dubai','두바이') : article.marketId === 'jp-tokyo' ? t('Tokyo','도쿄') : t('Global','전체 도시');
   const relatedHref = article.relatedHref === null ? null : marketHref(ko ? 'ko' : 'en', article.relatedHref);
   const relatedLabel = relatedHref?.includes('/check') ? t('Check a price', '가격 확인하기')
     : relatedHref?.includes('/explore') ? t('Explore transaction records', '실거래가 탐색하기')
@@ -57,7 +60,11 @@ export function NewsroomArticle({ article }: Readonly<{
     : relatedHref?.includes('/tools/') ? t('Open calculator', '계산기 열기')
     : relatedHref?.includes('/guide') ? t('Read the guide', '가이드 읽기')
     : t('Read related analysis', '관련 분석 읽기');
-  const reading = relatedReading(article).map(item => {
+  const referenceReading = (MONTHLY_REPORT_REFERENCES[article.slug] ?? []).flatMap(slug => {
+    const record = getPortfolioRecord(ko ? 'ko' : 'en', slug);
+    return record ? [{ href: record.canonicalHref, label: record.title }] : [];
+  });
+  const reading = [...relatedReading(article), ...referenceReading].map(item => {
     if (!ko) return item;
     const slug = item.href.split('/').filter(Boolean).at(-1) ?? '';
     const translated = getPortfolioRecord('ko', slug);
@@ -65,30 +72,24 @@ export function NewsroomArticle({ article }: Readonly<{
   });
   const relatedEvent = article.relatedHref?.includes('/check') ? 'article_to_check' : article.relatedHref?.includes('/explore') ? 'article_to_explore' : 'article_open';
   return <main
-    className={`${styles.article} ${isMonthlyReport(article.slug) ? styles.monthlyArticle : ''}`}
+    className={`${layout.article} ${styles.standardArticle} ${isMonthlyReport(article.slug) ? styles.monthlyArticle : ''}`}
     data-editorial-content-id={article.id}
     data-editorial-content-type={article.type}
     data-editorial-locale={article.locale}
     data-editorial-market={article.marketId ?? undefined}
   >
-    <nav className={styles.breadcrumb} aria-label={t('Breadcrumb', '현재 위치')}><Link href={section.href}>{section.label}</Link><span>{typeLabel}</span></nav>
+    <nav className={layout.breadcrumb} aria-label={t('Breadcrumb', '현재 위치')}><Link href={section.href}>{section.label}</Link><span>{typeLabel}</span></nav>
     {isMonthlyReport(article.slug) ? <MonthlyReportNavigation slug={article.slug} locale={ko ? 'ko' : 'en'} /> : null}
-    <header className={styles.articleHero}>
-      <p>{typeLabel} · {market}</p>
-      <h1>{article.title}</h1>
-      <div className={styles.deck}>{article.deck}</div>
-      <dl className={styles.byline}>
-        <div><dt>{t("Publisher","발행")}</dt><dd>SignedPrice</dd></div>
-        <div><dt>{t("Published","발행일")}</dt><dd><time dateTime={article.publishedAt}>{article.publishedAt.slice(0, 10)}</time></dd></div>
-        <div><dt>{t("Sources","출처")}</dt><dd><a href="#article-sources-title">{ko ? `${article.sources.length}개` : `${article.sources.length} source${article.sources.length === 1 ? '' : 's'}`}</a></dd></div>
-        <div><dt>{t("Updated","수정일")}</dt><dd><time dateTime={article.updatedAt}>{article.updatedAt.slice(0, 10)}</time></dd></div>
-      </dl>
-    </header>
+    <EditorialArticleHeader topic={`${market} · ${typeLabel}`} title={article.title} deck={article.deck}>
+      <span aria-label={`${t('Publisher', '발행')}: SignedPrice`}>SignedPrice</span><time aria-label={`${t('Published', '발행일')}: ${article.publishedAt.slice(0, 10)}`} dateTime={article.publishedAt}>{article.publishedAt.slice(0, 10)}</time>
+      <a href="#article-sources-title">{ko ? `출처 ${article.sources.length}개` : `${article.sources.length} source${article.sources.length === 1 ? '' : 's'}`}</a>
+      {article.updatedAt.slice(0, 10) !== article.publishedAt.slice(0, 10) && <span>{t('Updated', '수정')} <time dateTime={article.updatedAt}>{article.updatedAt.slice(0, 10)}</time></span>}
+    </EditorialArticleHeader>
     {buyingGuide ? null : <ArticleContents locale={article.locale} items={contentSections.flatMap((item, index) => item.heading ? [{ id: `section-${index + 1}`, title: item.heading }] : [])} />}
     {isMonthlyReport(article.slug) ? <MonthlyReportTrend slug={article.slug} locale={ko ? 'ko' : 'en'} /> : null}
     {article.type === 'guide' && article.marketId ? <div className={styles.articlePhoto}><MarketRepresentativePhoto context="city" photo={article.marketId === 'kr-seoul' ? MARKET_PHOTOS.seoul : article.marketId === 'sg-singapore' ? MARKET_PHOTOS.singapore : article.marketId === 'ae-dubai' ? MARKET_PHOTOS.dubai : null} cityLabel={market} /></div> : null}
     {figure == null ? null : <Infographic spec={figure} />}
-    {buyingGuide ? <BuyingGuide guide={buyingGuide} locale={ko ? "ko" : "en"} /> : <article className={styles.articleBody}>
+    {buyingGuide ? <BuyingGuide guide={buyingGuide} locale={ko ? "ko" : "en"} /> : <article className={layout.body}>
       {contentSections.map((section, index) => <section id={`section-${index + 1}`} key={section.heading}>{section.heading ? <h2>{section.heading}</h2> : null}<EditorialMarkdown source={section.body} /></section>)}
     </article>}
     <section className={styles.sources} aria-labelledby="article-sources-title" data-editorial-event="article_complete">

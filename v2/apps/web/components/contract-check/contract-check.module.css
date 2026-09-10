@@ -1156,3 +1156,33 @@
 .buildingChoices button { min-height: 44px; width: 100%; padding: 10px; text-align: left; color: var(--ink); background: var(--canvas); border: 0; border-bottom: 1px solid var(--line); font: inherit; }
 .scopeComparison { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 20px; margin-bottom: 24px; }
 .scopeComparison > div { padding: 16px; border-block: 1px solid var(--line); }
+
+/* Keep handoff identity outside the editable two-column field grid. */
+.selectedBuilding {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-width: 0;
+  padding: 16px 20px;
+  background: var(--soft-blue);
+  border-top: 1px solid var(--line);
+}
+.selectedBuilding > div { display: grid; gap: 4px; min-width: 0; }
+.selectedBuilding span { font-size: 12px; line-height: 1.5; color: var(--muted); }
+.selectedBuilding strong { font-size: 15px; line-height: 1.5; overflow-wrap: anywhere; }
+.secondaryAction {
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-strong);
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.4;
+  cursor: pointer;
+}
+.secondaryAction:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.requestStatus { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin: 0; padding: 16px 20px; font-size: 14px; line-height: 1.6; }

@@ -7,6 +7,8 @@ import { publicCanonical, safeJsonLd } from '../../lib/public-metadata';
 import { CityStoryPhoto } from './city-story-photo';
 import { ArticleContents } from './article-contents';
 import { journeyArticleHref } from '../../content/city-journey-routes';
+import { EditorialArticleHeader } from './editorial-article-header';
+import layout from './journey-article.module.css';
 import styles from './newsroom-journey.module.css';
 
 export function storyLinkHref(href: string, locale: StoryLocale): string {
@@ -21,13 +23,15 @@ export function CityStoryArticle({ story, locale }: Readonly<{ story: CityStory;
   const ko = locale === 'ko';
   const href = cityStoryHref(story.city, locale);
   const next = CITY_STORIES[(CITY_STORIES.indexOf(story) + 1) % CITY_STORIES.length]!;
-  return <main className={styles.article} lang={locale}>
+  return <main className={layout.article} lang={locale}>
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd({ '@context': 'https://schema.org', '@type': 'Article', headline: story.title[locale], description: story.deck[locale], inLanguage: locale, datePublished: '2026-09-08', dateModified: '2026-09-08', mainEntityOfPage: publicCanonical(href as `/${string}`), author: { '@type': 'Organization', name: 'SignedPrice' }, publisher: { '@type': 'Organization', name: 'SignedPrice' }, citation: story.sources.map(source => source.href), isAccessibleForFree: true }) }} />
-    <Link className={styles.readLink} href={`${ko ? '/ko' : ''}/news/?market=${story.city}`}><UiIcon name="arrow-left" /> {ko ? '뉴스 & 인사이트' : 'News & Insights'}</Link>
-    <header className={styles.storyHeader}><p className={styles.eyebrow}>{story.name[locale]} · {ko ? '도시에서 내 집까지' : 'From city to home'}</p><h1>{story.title[locale]}</h1><p>{story.deck[locale]}</p><div className={styles.storyMeta}><span>SignedPrice</span><time dateTime="2026-09-08">2026.09.08</time><a href="#story-sources">{ko ? `참고 자료 ${story.sources.length}개` : `${story.sources.length} sources`}</a></div></header>
+    <Link className={styles.readLink} href={`${ko ? '/ko' : ''}/news/?market=${story.city}`}><UiIcon name="arrow-left" /> {ko ? '인사이트' : 'Insights'}</Link>
+    <EditorialArticleHeader topic={`${story.name[locale]} · ${ko ? '도시에서 내 집까지' : 'From city to home'}`} title={story.title[locale]} deck={story.deck[locale]}>
+      <span>SignedPrice</span><time dateTime="2026-09-08">2026.09.08</time><a href="#story-sources">{ko ? `참고 자료 ${story.sources.length}개` : `${story.sources.length} sources`}</a>
+    </EditorialArticleHeader>
     <ArticleContents locale={locale} items={story.sections.map((section, index) => ({ id: section.id, title: section.title[locale], label: STORY_STEPS[index]!.label[locale] }))} />
     <CityStoryPhoto city={story.city} locale={locale} eager />
-    <div className={styles.articleBody}>
+    <div className={layout.body}>
       {story.sections.map((section, index) => <section key={section.id} id={section.id}>
         <p className={styles.eyebrow}>{String(index + 1).padStart(2, '0')} · {STORY_STEPS[index]!.label[locale]}</p><h2>{section.title[locale]}</h2>
         {section.paragraphs[locale].map(paragraph => <p key={paragraph}>{paragraph}</p>)}

@@ -6,8 +6,8 @@
 .header h1 { font-size: clamp(34px, 4.3vw, 54px); line-height: 1.08; letter-spacing: -.035em; margin: 18px 0; }
 .deck { font-size: 19px; line-height: 1.65; color: #4b5e75; }
 .meta { font-size: 12px; color: #607188; margin-top: 24px; }
-.hero { margin: 0 auto; max-width: 960px; }
-.hero img { width: 100%; height: auto; max-height: 680px; object-fit: cover; object-position: center 65%; border-radius: 8px; }
+.hero { margin: 0 auto; max-width: 900px; }
+.hero img { width: 100%; height: auto; max-height: 680px; object-fit: cover; object-position: center 65%; aspect-ratio: 3 / 2; border-radius: 8px; }
 .hero figcaption, .photo figcaption { margin-top: 9px; font-size: 12px; line-height: 1.6; color: #637185; }
 .hero figcaption a, .photo figcaption a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 .body { max-width: 700px; margin: 42px auto 0; }

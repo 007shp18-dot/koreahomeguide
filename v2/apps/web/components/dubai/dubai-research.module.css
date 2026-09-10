@@ -25,7 +25,7 @@
 .directory button[aria-pressed='true'] { border-bottom-color: var(--accent); color: var(--accent); }
 .directory button strong { font-size: 16px; }
 .directory button span { color: var(--muted); font-size: var(--text-meta); }
-.map { min-height: 500px; }
+.map { min-height: 0; }
 .map > p { padding: 12px 20px; font-size: var(--text-meta); color: var(--muted); }
 .areaDetail { margin: 24px 0; padding-top: 20px; border-top: 1px solid var(--line); }
 .areaDetail h3 { font-size: 20px; }
@@ -44,7 +44,7 @@
 .stageTabs button { min-height: 44px; border: 0; border-right: 1px solid var(--line); background: var(--surface-strong); color: var(--muted); font-weight: 650; cursor: pointer; }
 .stageTabs button:last-child { border-right: 0; }
 .stageTabs button[aria-selected='true'] { background: var(--ink); color: var(--surface-strong); }
-.evidenceDirectory { min-width: 0; padding: 20px; }
+.evidenceDirectory { min-width: 0; padding: 0; }
 .resultHeader { display: flex; justify-content: space-between; gap: 16px; align-items: end; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
 .resultHeader h2, .resultHeader p { margin: 0; }
 .resultHeader p, .resultHeader small { color: var(--muted); font-size: var(--text-meta); line-height: 1.5; }
@@ -69,20 +69,13 @@
 .areaIndex summary { min-height: 40px; color: var(--accent); font-weight: 650; cursor: pointer; }
 .areaIndex nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 14px; padding: 8px 0; }
 .areaIndex a { min-width: 0; color: var(--ink); font-size: var(--text-meta); line-height: 1.4; overflow-wrap: anywhere; }
-.evidenceMap { position: relative; min-height: 500px; }
+.evidenceMap { min-width: 0; }
 .evidenceMap > header { display: flex; justify-content: space-between; gap: 16px; padding: 16px 20px; border-bottom: 1px solid var(--line); background: var(--surface-strong); }
 .evidenceMap > header h2, .evidenceMap > header p { margin: 0; }
 .evidenceMap > header h2 { font-size: 16px; font-weight: 600; line-height: 24px; letter-spacing: normal; }
 .evidenceMap > header p { margin-top: 4px; font-size: 13px; line-height: 20px; }
 .evidenceMap > header p, .mapDisclosure { color: var(--muted); font-size: var(--text-meta); }
 .mapDisclosure { margin: 0; padding: 12px 20px; line-height: 1.5; }
-.mapSelection { position: absolute; z-index: 3; right: 20px; bottom: 58px; width: min(340px, calc(100% - 40px)); display: grid; gap: 8px; padding: 18px; border: 1px solid var(--line); background: var(--surface-strong); box-shadow: 0 14px 40px rgb(15 23 42 / 14%); }
-.mapSelection h3, .mapSelection p { margin: 0; }
-.mapSelection h3 { min-width: 0; font-size: 18px; line-height: 26px; white-space: normal; overflow-wrap: anywhere; }
-.mapSelection > button { justify-self: end; min-height: 36px; border: 0; background: transparent; color: var(--accent); }
-.mapSelection > strong, .mapSelection > span { min-width: 0; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
-.mapSelection > strong { white-space: nowrap; overflow-wrap: normal; overflow-x: auto; }
-.mapSelection > a { color: var(--accent); font-weight: 650; }
 .areaPage { width: min(calc(100% - 2 * var(--page-gutter)), var(--content-frame)); margin-inline: auto; padding: 34px 0 64px; }
 .breadcrumbs { display: flex; flex-wrap: wrap; gap: 8px; color: var(--muted); font-size: var(--text-meta); }
 .breadcrumbs a { color: var(--accent); }
@@ -167,24 +160,12 @@
 .checkResultActions { grid-template-columns: minmax(0, 1fr); }
 .checkResultActions a { white-space: normal; overflow-wrap: anywhere; line-height: 1.5; }
 
-.projectPrices { margin-top: 14px; min-width: 0; }
-.projectPrices summary { cursor: pointer; color: var(--accent); font-size: 14px; padding: 10px 0; }
-.projectPrices p { color: var(--muted); font-size: 13px; line-height: 1.5; }
-.projectPrices > div { max-height: 320px; overflow-y: auto; }
-.projectPrices button { width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center; text-align: left; padding: 12px 4px; border: 0; border-top: 1px solid var(--line); background: transparent; color: inherit; cursor: pointer; }
-.projectPrices button[aria-pressed='true'] { background: var(--surface-strong); }
-.projectPrices button span { display: grid; gap: 4px; min-width: 0; }
-.projectPrices strong { font-size: 14px; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.projectPrices span strong { overflow: hidden; text-overflow: ellipsis; }
-.projectPrices small { color: var(--muted); font-size: 13px; }
-
-
 /* Keep the map next to a finite directory, and above the results on phones. */
-.explorer [data-market-shell-region="discovery"] { max-height: 780px; overflow-y: auto; overscroll-behavior-y: contain; scrollbar-gutter: stable; }
+.explorer [data-market-shell-region="discovery"] { max-height: min(780px, 82svh); overflow-y: auto; overscroll-behavior-y: contain; scrollbar-gutter: stable; }
 .explorer [data-market-shell-region="spatial"] { align-self: start; position: sticky; top: 12px; }
 .explorer .areaResults article { padding: 16px; }
 .explorer .areaResults article > button, .explorer .areaResults article > a,
-.explorer .pagination button, .explorer .mapSelection > button { min-height: 44px; }
+.explorer .pagination button { min-height: 44px; }
 .resultPrice { margin: 8px 0 0; display: grid; gap: 5px; }
 .resultPrice > strong { font-size: 18px; font-variant-numeric: tabular-nums; }
 .resultPrice > span { color: var(--muted); font-size: 13px; line-height: 1.5; }
@@ -193,20 +174,7 @@
 .resultEvidence > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .resultEvidence .areaMetrics { margin-top: 8px; gap: 12px; }
 .resultEvidence .areaMetrics > div { min-height: 44px; }
-.explorer .projectPrices summary { min-height: 44px; }
-.explorer .mapSelection { position: static; width: auto; margin: 12px 20px; box-shadow: none; border-radius: 8px; }
-@media (max-width: 760px) {
-  .explorer [data-market-shell-region="spatial"] { order: -1; position: static; border-bottom: 1px solid var(--line); }
-  .explorer [data-market-shell-region="discovery"] { max-height: none; overflow: visible; border-right: 0; }
-  .explorer .evidenceMap, .explorer .map { min-height: 0; }
-  .explorer [data-map-provider="google"] [role="region"] { min-height: 340px; height: 44svh; max-height: 440px; }
-  .explorer .evidenceToolbar form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .explorer .searchField { grid-column: 1 / -1; }
-  .explorer .evidenceDirectory { padding: 16px 0; }
-  .explorer .evidenceMap > header, .explorer .mapDisclosure { padding-inline: 0; }
-  .explorer .mapSelection { margin-inline: 0; }
-  .explorer .areaMetrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
+@media (max-width: 760px) { .explorer .searchField { grid-column: 1 / -1; } }
 
 .exploreSupport { width: min(calc(100% - 2 * var(--page-gutter)), var(--workspace-frame)); margin: -40px auto 64px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 14px; line-height: 24px; }
 .exploreSupport > span { color: var(--muted); }
@@ -216,11 +184,53 @@
 /* Split panels can be narrow even on desktop; size content to the panel. */
 .explorer .resultHeader { flex-wrap: wrap; align-items: start; }
 .explorer .areaResults article > button strong { white-space: normal; overflow: visible; text-overflow: clip; overflow-wrap: anywhere; line-height: 1.5; }
-.explorer .projectPrices button { grid-template-columns: minmax(0, 1fr); gap: 6px; }
-.explorer .projectPrices strong { white-space: normal; overflow-wrap: anywhere; }
-.explorer .projectPrices span strong { overflow: visible; text-overflow: clip; }
 .explorer .areaMetrics { grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr)); }
 .explorer .areaMetrics dt { min-height: 0; line-height: 1.5; }
 .explorer .areaMetrics dd, .explorer .resultPrice strong { white-space: normal; overflow-wrap: anywhere; line-height: 1.5; }
 .explorer .evidenceToolbar form { grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); }
-.explorer .mapSelection { max-width: 100%; box-sizing: border-box; }
+
+/* Area selection and its evidence share one panel; the map only locates areas. */
+.explorer [data-layout="split"] { min-height: 0; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); }
+.explorer [data-map-provider="google"] [role="region"] { min-height: 320px; height: 44svh; max-height: 460px; }
+.explorer .searchField { min-width: 0; }
+.explorer .evidenceToolbar input, .explorer .evidenceToolbar select { font-size: 16px; line-height: 1.5; }
+.selectionPrompt { margin: 0 0 16px; padding: 16px; background: var(--surface); color: var(--muted); font-size: 14px; line-height: 1.6; }
+.selectedArea { min-width: 0; padding: 20px; margin: 0 0 24px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-strong); scroll-margin-top: 20px; }
+.selectionHeader { display: flex; justify-content: space-between; align-items: start; gap: 12px; }
+.selectionHeader > div { min-width: 0; }
+.selectionHeader h2 { margin: 4px 0 8px; font-size: 22px; font-weight: 650; line-height: 1.4; letter-spacing: normal; overflow-wrap: anywhere; }
+.selectionHeader p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+.selectionHeader > button { flex-shrink: 0; min-height: 44px; padding: 8px; border: 0; background: transparent; color: var(--accent); font-size: 14px; cursor: pointer; }
+.selectionHeader > button:focus-visible, .selectionProjectList button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.selectionMetrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 20px 0 12px; }
+.selectionMetrics > div { min-width: 0; }
+.selectionMetrics dt { color: var(--muted); font-size: 13px; line-height: 1.5; }
+.selectionMetrics dd { margin: 6px 0 0; font-size: 16px; font-weight: 650; line-height: 1.5; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.selectionNote { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+.selectionActions { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 20px; margin-top: 14px; }
+.selectionActions a { display: inline-flex; align-items: center; min-height: 44px; color: var(--accent); font-size: 14px; font-weight: 600; line-height: 1.5; text-underline-offset: 4px; }
+.selectionProjects { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--line); min-width: 0; }
+.selectionProjects h3 { margin: 0; font-size: 17px; font-weight: 650; line-height: 1.5; letter-spacing: normal; }
+.selectionProjects h3 span { margin-left: 6px; color: var(--muted); font-weight: 400; }
+.selectionProjects > p { margin: 8px 0 12px; color: var(--muted); font-size: 13px; line-height: 1.6; }
+.selectionProjectList { min-width: 0; max-height: 270px; overflow-y: auto; overscroll-behavior-y: contain; }
+.selectionProjectList button { width: 100%; min-height: 60px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; padding: 14px 8px; border: 0; border-top: 1px solid var(--line); background: transparent; color: var(--ink); text-align: left; cursor: pointer; }
+.selectionProjectList button[aria-pressed="true"] { background: var(--accent-soft); }
+.selectionProjectList button > span { min-width: 0; display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; }
+.selectionProjectList strong { min-width: 0; font-size: 14px; font-weight: 600; line-height: 1.5; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.selectionProjectList small { color: var(--muted); font-size: 12px; line-height: 1.5; }
+.selectedProject { margin-top: 12px; padding: 14px; background: var(--surface); border-radius: 8px; }
+.selectedProject h4 { margin: 0; font-size: 16px; font-weight: 650; line-height: 1.5; overflow-wrap: anywhere; }
+.selectedProject p { margin: 6px 0 0; color: var(--muted); font-size: 13px; line-height: 1.6; overflow-wrap: anywhere; }
+@media (max-width: 1050px) {
+  .explorer [data-layout="split"] { grid-template-columns: minmax(0, 1fr); }
+  .explorer [data-market-shell-region="spatial"] { order: -1; position: static; border-bottom: 1px solid var(--line); }
+  .explorer [data-market-shell-region="discovery"] { max-height: none; overflow: visible; }
+  .explorer [data-map-provider="google"] [role="region"] { min-height: 280px; height: 38svh; max-height: 380px; }
+  .explorer .evidenceMap > header, .explorer .mapDisclosure { padding-inline: 16px; }
+}
+@media (max-width: 480px) {
+  .selectedArea { padding: 16px; }
+  .selectionMetrics { gap: 16px 12px; }
+  .selectionMetrics dd { font-size: 15px; }
+}

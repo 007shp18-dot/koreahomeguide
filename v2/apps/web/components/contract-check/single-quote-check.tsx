@@ -160,7 +160,7 @@ export function SingleQuoteCheckWorkspace({ model, locale = 'en', entityContext 
           <span aria-current="page" data-check-mode="single">{c.single}</span>
           <Link data-check-mode="compare" href={localizedCheckHref(locale, '/compare/')}>{c.compare}</Link>
         </nav>
-        {pending && <p role="status">{error ? (locale === 'ko' ? '비교 자료를 불러오지 못했습니다.' : 'Comparison data could not be loaded.') : (locale === 'ko' ? '입력한 조건으로 거래를 비교하고 있습니다…' : 'Comparing contracts for your inputs…')}{error && <button type="button" onClick={onRetry}>{locale === 'ko' ? '다시 시도' : 'Retry'}</button>}</p>}<form inert={pending && !error} aria-busy={pending && !error} onSubmit={onSubmit} action={localizedCheckHref(locale, '/')} className={styles.form} method="get"><PassportFormContext />
+        {pending && <p className={styles.requestStatus} role="status">{error ? (locale === 'ko' ? '비교 자료를 불러오지 못했습니다.' : 'Comparison data could not be loaded.') : (locale === 'ko' ? '입력한 조건으로 거래를 비교하고 있습니다…' : 'Comparing contracts for your inputs…')}{error && <button type="button" className={styles.secondaryAction} onClick={onRetry}>{locale === 'ko' ? '다시 시도' : 'Retry'}</button>}</p>}<form inert={pending && !error} aria-busy={pending && !error} onSubmit={onSubmit} action={localizedCheckHref(locale, '/')} className={styles.form} method="get"><PassportFormContext />
           <input name="check" type="hidden" value="1" />
           {entityContext === null || buildingId !== model.selection.buildingId ? null : <>
             <input name="market" type="hidden" value={entityContext.market} />
@@ -180,8 +180,8 @@ export function SingleQuoteCheckWorkspace({ model, locale = 'en', entityContext 
               <label className={styles.field}><span>{c.area} <small>㎡</small></span><input value={area} onChange={e => setArea(e.target.value)} inputMode="decimal" name="area" /></label>
               <input type="hidden" name="building" value={buildingId ?? ''} />
               <CheckBuildingSearch text={buildingQuery} onText={value => { setBuildingQuery(value); clearBuilding(); }} locale={locale} onSelect={item => { setBuildingId(item.id); setBuildingName(item.name); setDistrict(item.district); setHousing(item.housing); if (item.area !== null) setArea(String(item.area)); setBuildingQuery(''); }} />
-              {buildingName && <p>{locale === 'ko' ? '선택한 단지' : 'Selected building'}: {buildingName} <button type="button" onClick={clearBuilding}>{locale === 'ko' ? '해제' : 'Clear'}</button></p>}
             </div>
+            {buildingName && <div className={styles.selectedBuilding} data-selected-building={buildingId}><div><span>{locale === 'ko' ? '선택한 단지' : 'Selected building'}</span><strong>{buildingName}</strong></div><button className={styles.secondaryAction} type="button" onClick={clearBuilding} aria-label={locale === 'ko' ? `${buildingName} 선택 해제` : `Clear ${buildingName}`}>{locale === 'ko' ? '해제' : 'Clear'}</button></div>}
           </fieldset>
           <fieldset className={styles.singleOffer} data-offer="single">
             <legend><span>02</span>{locale === 'ko' ? '매물 가격' : 'Asking price'}</legend>

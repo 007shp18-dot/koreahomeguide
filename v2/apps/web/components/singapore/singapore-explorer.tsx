@@ -44,7 +44,7 @@ export function parseSingaporeExploreSearchParams(params: URLSearchParams): Sing
     district: /^(?:0[1-9]|1\d|2[0-8])$/.test(district) ? district : 'all',
     sort: params.get('sort') === 'name' ? 'name' : 'transactions',
     page: Number.isSafeInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1,
-    selectedProjectId: projectId !== null && /^[a-z0-9-]{1,128}$/i.test(projectId) ? projectId : null,
+    selectedProjectId: projectId !== null && /^[a-z0-9:_-]{1,128}$/i.test(projectId) ? projectId : null,
   });
 }
 
@@ -101,7 +101,7 @@ export function SingaporeExplorer({ locale = 'en',
   districtSummary?: readonly { region: string; district: string; count: number }[];
 }>) {
   const overview = useMemo(() => unpackSingaporeExploreModel(incomingModel), [incomingModel]);
-  const [result, setResult] = useState<{ key: string; model: SingaporeExploreModel | null; error: boolean } | null>(null);
+  const [results, setResults] = useState<Readonly<Record<string, { model: SingaporeExploreModel | null; error: boolean }>>>({});
   const [retry, setRetry] = useState(0);
   const [selectedSegment, setSelectedSegment] = useState<'CCR' | 'RCR' | 'OCR' | null>(initialSegment);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(initialProjectId);
@@ -115,30 +115,35 @@ export function SingaporeExplorer({ locale = 'en',
   const [pendingHref, setPendingHref] = useState<string | null>(null);
   const [urlStateReady, setUrlStateReady] = useState(!restoreStateFromUrl);
   const needsProjects = progressive && urlStateReady && (selectedSegment !== null || deferredQuery.trim() !== '' || district !== 'all' || lookupProjectId !== null);
-  const requestKey = JSON.stringify([selectedSegment, deferredQuery, district, lookupProjectId, retry]);
-  const currentResult = needsProjects && result?.key === requestKey ? result : null;
+  // A loaded region contains all its districts: refine it locally instead of
+  // clearing the map and starting another server request on every click/key.
+  const requestQuery = selectedSegment === null ? deferredQuery : '';
+  const requestDistrict = selectedSegment === null ? district : 'all';
+  const requestProject = selectedSegment === null && !requestQuery.trim() && requestDistrict === 'all' ? lookupProjectId : null;
+  const requestKey = JSON.stringify([selectedSegment, requestQuery, requestDistrict, requestProject, retry]);
+  const currentResult = needsProjects ? results[requestKey] ?? null : null;
   const loadedModel = currentResult?.model ?? null;
   const model = loadedModel ?? overview;
   const loadingProjects = needsProjects && currentResult === null;
   const loadError = currentResult?.error ?? false;
   useEffect(() => {
-    if (!needsProjects) return;
+    if (!needsProjects || currentResult !== null) return;
     const controller = new AbortController();
     const timer = window.setTimeout(async () => {
       const params = new URLSearchParams();
       if (selectedSegment) params.set('region', selectedSegment);
-      if (deferredQuery.trim()) params.set('q', deferredQuery.trim().slice(0, 100));
-      if (district !== 'all') params.set('district', district);
-      if (lookupProjectId && !selectedSegment && !deferredQuery.trim() && district === 'all') params.set('project', lookupProjectId);
+      if (requestQuery.trim()) params.set('q', requestQuery.trim().slice(0, 100));
+      if (requestDistrict !== 'all') params.set('district', requestDistrict);
+      if (requestProject) params.set('project', requestProject);
       try {
         const response = await fetch(`/api/singapore/explore/?${params}`, { signal: AbortSignal.any([controller.signal, AbortSignal.timeout(15000)]) });
         if (!response.ok) throw new Error('unavailable');
         const next = unpackSingaporeExploreModel(await response.json());
-        if (!controller.signal.aborted) setResult({ key: requestKey, model: next, error: false });
-      } catch { if (!controller.signal.aborted) setResult({ key: requestKey, model: null, error: true }); }
-    }, 200);
+        if (!controller.signal.aborted) setResults(previous => ({ ...Object.fromEntries(Object.entries(previous).slice(-11)), [requestKey]: { model: next, error: false } }));
+      } catch { if (!controller.signal.aborted) setResults(previous => ({ ...previous, [requestKey]: { model: null, error: true } })); }
+    }, requestQuery.trim() ? 200 : 0);
     return () => { clearTimeout(timer); controller.abort(); };
-  }, [needsProjects, requestKey, selectedSegment, deferredQuery, district, lookupProjectId]);
+  }, [needsProjects, requestKey, selectedSegment, requestQuery, requestDistrict, requestProject, currentResult]);
   const segments = model.status === 'ready' ? model.segments : [];
   const selected = segments.find((segment) => segment.code === selectedSegment);
   const allProjects = useMemo(() => model.status === 'ready' ? model.segments.flatMap((segment) => (segment.projects ?? []).map((project) => ({ ...project, segment: segment.code }))) : [], [model]);
@@ -218,7 +223,7 @@ export function SingaporeExplorer({ locale = 'en',
     : mapLevel === 'regions'
     ? buildSingaporeAreaMapCoverage(projects, allProjects, 'region')
     : buildSingaporeAreaMapCoverage(projects, allProjects, 'district'), [allProjects, mapLevel, projects]);
-  const activeMapPoints = progressive && mapLevel === 'regions' ? regionPoints : mapLevel === 'projects' ? projectMapCoverage.points : areaMapCoverage.points;
+  const activeMapPoints = progressive && (mapLevel === 'regions' || loadingProjects) ? regionPoints : mapLevel === 'projects' ? projectMapCoverage.points : areaMapCoverage.points;
   const mapPoints = useMemo(() => {
     const byId = new Map(projects.map(project => [`project-${project.id}`, project]));
     return activeMapPoints.filter(point => mapLevel !== 'projects' || showAreaReferences || point.kind !== 'area' || point.selected === true).map(point => {
@@ -253,6 +258,10 @@ export function SingaporeExplorer({ locale = 'en',
             <button type="button" role="tab" aria-selected={selectedSegment === null} onClick={() => selectSegment(null)}><strong>{sgText(locale, "All")}</strong><span>{sgText(locale, segments.reduce((sum, segment) => sum + segment.projectCount, 0).toLocaleString('en'))}</span></button>
             {segments.map((segment) => <button key={segment.code} type="button" role="tab" aria-selected={selectedSegment === segment.code} onClick={() => selectSegment(segment.code)}><strong>{sgText(locale, segment.code)}</strong><span>{sgText(locale, segment.projectCount.toLocaleString('en'))}</span></button>)}
           </div>
+          {selectedSegment !== null ? <nav className={styles.districtChoices} aria-label={locale === 'ko' ? '선택 권역의 우편구역' : 'Districts in selected region'}>
+            <button type="button" aria-pressed={district === 'all'} onClick={() => { setDistrict('all'); setPage(1); setSelectedProjectId(null); }}>{locale === 'ko' ? '전체 단지' : 'All projects'}</button>
+            {districtCounts.map(([value, count]) => <button key={value} type="button" aria-pressed={district === value} onClick={() => { setDistrict(value); setPage(1); setSelectedProjectId(null); }}><span>{locale === 'ko' ? '우편구역 ' : 'District '}{value}</span><small>{count.toLocaleString('en')}</small></button>)}
+          </nav> : null}
           {selected ? <div className={styles.segmentList}><article className={styles.segmentRow}><RegionContextPhoto region={selected.code} locale={locale} /><h3>{sgText(locale, selected.code)}</h3><div><strong>{sgText(locale, selected.medianPriceLabel ?? 'Not published')}</strong><span>{sgText(locale, selected.n.toLocaleString('en'))}{sgText(locale, " transactions · ")}{sgText(locale, selected.projectCount.toLocaleString('en'))}{sgText(locale, " projects")}</span></div>{selected.state === 'published' ? <Link href={marketHref(locale, selected.href)} aria-busy={pendingHref === selected.href} data-navigation-state={pendingHref === selected.href ? 'pending' : 'idle'} onClick={() => setPendingHref(selected.href)}>{sgText(locale, "Open ")}{sgText(locale, selected.code)}{sgText(locale, " evidence")}</Link> : <span data-evidence-link="unavailable">{sgText(locale, "At least 5 transactions are required")}</span>}</article></div> : null}
           <div className={styles.projectList} aria-live="polite" aria-busy={loadingProjects || query !== deferredQuery}>
             {!loadingProjects && !loadError && (!progressive || loadedModel !== null) ? (<header><span>{sgText(locale, projects.length.toLocaleString('en'))}{sgText(locale, " matching projects")}</span><small>{sgText(locale, projects.length === 0 ? 'No matches' : `${(activePage - 1) * PAGE_SIZE + 1}–${Math.min(activePage * PAGE_SIZE, projects.length)} shown`)}</small></header>) : null}

@@ -318,3 +318,26 @@ test('Prices sends a Singapore project search to Singapore Explore', async ({ pa
   await expect(page.getByRole('searchbox', { name: 'Search Singapore projects' })).toHaveValue(projectName!.trim());
   await expect(page.locator('[data-selected] > button strong').first()).toHaveText(projectName!.trim());
 });
+
+
+test('Singapore region selection keeps district filtering local and reuses a loaded region', async ({ page }) => {
+  const requests: string[] = [];
+  page.on('request', request => { if (new URL(request.url()).pathname === '/api/singapore/explore/') requests.push(request.url()); });
+  await page.goto('/sg/singapore/explore/');
+  await page.getByRole('tab', { name: /^CCR/ }).click();
+  const districts = page.getByRole('navigation', { name: 'Districts in selected region' });
+  await expect(districts).toBeVisible();
+  await expect(page.getByText(/matching projects$/)).toBeVisible();
+  expect(requests).toHaveLength(1);
+  await districts.getByRole('button', { name: /^District / }).first().click();
+  await expect(page.locator('[data-singapore-map-level="projects"]')).toBeVisible();
+  await expect(page.getByText(/matching projects$/)).toBeVisible();
+  expect(requests).toHaveLength(1);
+  await page.getByRole('tab', { name: /^OCR/ }).click();
+  await expect(page.getByText(/matching projects$/)).toBeVisible();
+  expect(requests).toHaveLength(2);
+  await page.getByRole('tab', { name: /^CCR/ }).click();
+  await expect(page.getByText(/matching projects$/)).toBeVisible();
+  expect(requests).toHaveLength(2);
+  await noOverflow(page);
+});

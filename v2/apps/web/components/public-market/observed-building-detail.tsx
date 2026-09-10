@@ -1,3 +1,4 @@
+import { seoulBuildingLocationHref } from '../../lib/public-market/seoul-building-location';
 import { buildingDisplayName, neighborhoodDisplayName } from '../../lib/public-market/seoul-display-names';
 import { seoulDetailText } from '../../lib/locale/seoul-detail-copy';
 import { createPropertyScenarioHref } from '../../lib/tools/property-scenario-context';
@@ -49,7 +50,7 @@ const exactEvidenceFooter: SiteFooterModel = {
 const countLabel = (count: number) => `${count} observed contract${count === 1 ? '' : 's'}`;
 
 function SeoulBuildingContext({ locale, name, href }: Readonly<{ locale: ProductLocale; name: string; href: string }>) {
-  return <ProjectedEntityMedia locale={locale} buildingName={name} media={null} fallbackMarket="seoul" locationHref={href} />;
+  return <ProjectedEntityMedia locale={locale} buildingName={name} media={null} fallbackMarket="seoul" locationHref={seoulBuildingLocationHref(href)} />;
 }
 
 
@@ -63,7 +64,7 @@ function KnownBuildingFacts({ facts, locale = 'en' }: Readonly<{ locale?: Produc
 
 const proximityCopy = Object.freeze({
   en: Object.freeze({
-    heading: 'Proximity',
+    heading: 'Nearby schools and stations',
     unavailable: 'Proximity data unavailable',
     pending: 'Distance not confirmed',
     coordinateUnavailable: 'Coordinate unavailable',
@@ -80,7 +81,7 @@ const proximityCopy = Object.freeze({
     methodologySuffix: '',
   }),
   ko: Object.freeze({
-    heading: '인접성',
+    heading: '주변 학교와 지하철',
     unavailable: '인접성 데이터를 확인할 수 없습니다.',
     pending: '거리 미확정',
     coordinateUnavailable: '좌표 확인 불가',
@@ -103,20 +104,20 @@ export function BuildingProximityDisclosure({ proximity, locale = 'en' }: Readon
   locale?: ProductLocale;
 }>) {
   const copy = proximityCopy[locale];
-  if (proximity === undefined || proximity.status !== 'ready' || proximity.coordinateStatus !== 'ready' || (!proximity.nearestStation && !proximity.nearestSchool)) return null;
+  if (proximity === undefined || proximity.status !== 'ready' || proximity.coordinateStatus !== 'ready' || (!proximity.nearestStation && !proximity.nearestSchool)) return <section className={styles.proximityDetails} data-building-proximity="unavailable"><h3>{copy.heading}</h3><p>{locale === 'ko' ? '이 건물과 정확히 연결된 학교·역의 거리 정보는 아직 확인되지 않았습니다.' : 'School and station distances for this exact building have not been confirmed yet.'}</p></section>;
   return <section className={styles.proximityDetails} data-building-proximity="ready">
     <h3>{copy.heading}</h3>
     <dl className={styles.findingGrid}>
-      {proximity.nearestStation && <div><dt>{copy.station}</dt><dd>{proximity.nearestStation.name} · {proximity.nearestStation.lines.join(', ')} · {Math.round(proximity.nearestStation.distanceMeters)} m</dd></div>}
+      {proximity.nearestStation && <div><dt>{copy.station}</dt><dd>{[proximity.nearestStation.name, proximity.nearestStation.lines.join(', '), `${Math.round(proximity.nearestStation.distanceMeters)} m`].filter(Boolean).join(' · ')}</dd></div>}
       {proximity.nearestSchool && <div><dt>{copy.school}</dt><dd>{proximity.nearestSchool.name} · {Math.round(proximity.nearestSchool.distanceMeters)} m</dd></div>}
     </dl>
     <p>{copy.attendanceDisclaimer}</p>
-    {proximity.provenance === undefined ? null : <dl className={styles.sourceGrid}>
+    {proximity.provenance === undefined ? null : <details><summary>{locale === 'ko' ? '거리 정보 출처' : 'Distance sources'}</summary><dl className={styles.sourceGrid}>
       <div><dt>{copy.stationSource}</dt><dd>{proximity.provenance.stationSource.landingPage} · {copy.version} {proximity.provenance.stationSource.sourceVersion} · {copy.asOf} {proximity.provenance.stationSource.asOf}</dd></div>
       <div><dt>{copy.schoolSource}</dt><dd>{proximity.provenance.schoolSource.landingPage} · {copy.version} {proximity.provenance.schoolSource.sourceVersion} · {copy.asOf} {proximity.provenance.schoolSource.asOf}</dd></div>
       <div><dt>{copy.coordinateSource}</dt><dd>{proximity.provenance.coordinateSource.landingPage} · {copy.version} {proximity.provenance.coordinateSource.sourceVersion} · {copy.asOf} {proximity.provenance.coordinateSource.asOf}</dd></div>
       <div><dt>{copy.methodology}</dt><dd>{proximity.provenance.methodology}{copy.methodologySuffix}</dd></div>
-    </dl>}
+    </dl></details>}
   </section>;
 }
 
@@ -243,7 +244,7 @@ export function buildKoreaEvidenceCheckHref(
     `/kr/seoul/explore/${model.district.slug}/${model.building.buildingId}/?${detailQuery.toString()}`,
     locale,
   );
-  return createEntityCheckHref(localizedSeoulHref('/kr/seoul/check/', locale), {
+  const checkHref = createEntityCheckHref(localizedSeoulHref('/kr/seoul/check/', locale), {
     market: 'kr-seoul',
     locale,
     entity: model.building.buildingId,
@@ -257,6 +258,13 @@ export function buildKoreaEvidenceCheckHref(
       buildingId: model.building.buildingId,
     },
   });
+  // Carry an exact filed size only when the visible cohort identifies one size.
+  // A range such as 60–85㎡ is not an individual unit area.
+  const sizes = [...new Set(model.recentTransactions.map(row => row.areaSqm).filter(area => Number.isFinite(area) && area > 0))];
+  if (sizes.length !== 1) return checkHref;
+  const target = new URL(checkHref, 'https://signedprice.invalid');
+  target.searchParams.set('area', String(sizes[0]));
+  return `${target.pathname}${target.search}`;
 }
 
 export function KoreaEvidenceBuildingDetail({

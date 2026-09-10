@@ -2,9 +2,9 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 const mocks = vi.hoisted(() => ({ sql: vi.fn() }));
-vi.mock('../lib/db/postgres.server', () => ({ contentDatabase: () => mocks.sql }));
+vi.mock('../lib/db/postgres.server', () => ({ contentDatabase: () => mocks.sql, publicContentDatabase: () => mocks.sql }));
 
-import { storeBuildingFacts } from '../lib/public-market/building-facts-store.server';
+import { storeBuildingFacts, loadStoredBuildingProximity } from '../lib/public-market/building-facts-store.server';
 
 describe('building facts database provenance', () => {
   beforeEach(() => {
@@ -36,5 +36,27 @@ describe('building facts database provenance', () => {
     expect(statement).toContain('register_source = excluded.register_source');
     expect(values).toContain('K-apt weekly apartment profile (2026-09-04)');
     expect(values).toContain(null);
+  });
+});
+
+
+describe('nearby evidence for existing legacy buildings', () => {
+  test('retrieves verified school and station distances without requiring a new entity mapping', async () => {
+    mocks.sql.mockResolvedValue([
+      { kind: 'school', provider_id: 'school-1', name: 'Local school', distance_meters: 400, lines: [] },
+      { kind: 'station', provider_id: 'station-1', name: 'Local station', distance_meters: 210, lines: ['6', '7'] },
+    ]);
+    const result = await loadStoredBuildingProximity({ districtSlug: 'jungnang-gu', buildingId: 'jungnang-gu-1giu390', districtLawdCd: '11260', neighborhoodName: '묵동', officialName: '세이지움태릉입구역', housingType: 'apartment' });
+    expect(result).toMatchObject({ nearestSchool: { name: 'Local school', distanceMeters: 400 }, nearestStation: { name: 'Local station', distanceMeters: 210, lines: ['6', '7'] } });
+    const [strings, ...values] = mocks.sql.mock.calls.at(-1)!;
+    expect((strings as TemplateStringsArray).join('')).toContain('SELECT DISTINCT ON (kind)');
+    expect((strings as TemplateStringsArray).join('')).not.toContain('property_entities');
+    expect(values).toEqual(['seoul:jungnang-gu-1giu390']);
+  });
+
+  test('does not turn invalid distances into nearby claims', async () => {
+    mocks.sql.mockResolvedValue([{ kind: 'station', provider_id: 'bad', name: 'Bad coordinates', distance_meters: -200 }]);
+    const result = await loadStoredBuildingProximity({ districtSlug: 'jungnang-gu', buildingId: 'jungnang-gu-1giu390', districtLawdCd: '11260', neighborhoodName: '묵동', officialName: 'Example', housingType: 'apartment' });
+    expect(result).toBeNull();
   });
 });

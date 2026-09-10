@@ -171,6 +171,6 @@ async function publishedSingaporeCheckEvidenceRepositoriesFromEnvironment(market
 }
 
 export function singaporeCheckEvidenceRepositoriesFromEnvironment(markets: readonly SingaporeCheckMarket[] = SINGAPORE_CHECK_MARKETS): Promise<SingaporeCheckEvidenceRepositories> {
- if (!process.env.DATABASE_URL?.trim()) return installedSingaporeCheckEvidenceRepositoriesFromEnvironment(markets);
+ if (markets.length === 0 || !process.env.DATABASE_URL?.trim()) return installedSingaporeCheckEvidenceRepositoriesFromEnvironment(markets);
  return publishedSingaporeCheckEvidenceRepositoriesFromEnvironment(markets);
 }
