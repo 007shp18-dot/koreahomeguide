@@ -1,0 +1,366 @@
+[
+  {
+    "slug": "yeonhui-dong",
+    "city": "seoul",
+    "cityName": "Seoul",
+    "neighbourhood": "Yeonhui-dong",
+    "title": "Yeonhui-dong: leave room for a slow afternoon",
+    "deck": "Rooftops, a long coffee break, and residential lanes worth taking the scenic way through.",
+    "publishedAt": "2026-09-10",
+    "route": "Yeonhui-ro → Yeonhui Mat-gil → a coffee stop → a neighbourhood detour",
+    "hero": {
+      "src": "/assets/neighbourhoods/day1-1.jpg",
+      "width": 900,
+      "height": 1200,
+      "alt": "Low-rise rooftops and green hills in Yeonhui-dong, Seoul",
+      "caption": "Yeonhui-dong rooftops · May 2021",
+      "author": "Minchelin",
+      "source": "https://commons.wikimedia.org/wiki/File:%EC%97%B0%ED%9D%AC%EB%8F%99_%EC%A3%BC%ED%83%9D%EA%B0%80_%EC%A0%84%EA%B2%BD_2.jpg",
+      "license": "CC BY-SA 2.0 KR",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/kr/"
+    },
+    "intro": "Some Seoul afternoons deserve a smaller plan. Pick a street, find lunch, and leave enough room for the café you did not bookmark. Yeonhui-dong is a good setting for that kind of day: a residential pocket in Seodaemun where low rooftops give the skyline a more intimate scale.",
+    "sections": [
+      {
+        "title": "Start with the streets between the stops",
+        "paragraphs": [
+          "Begin around Yeonhui-ro and the restaurant streets of Yeonhui Mat-gil. Choose one place for lunch, then let the walk between destinations do some of the work. Look up as well as into shop windows: rooflines, garden walls and the spaces between buildings are part of the neighbourhood’s character.",
+          "Make your detours small. A side street can be interesting without being a destination, and a café does not need to become an afternoon-long research project. The useful question here is simple: which corner would you choose to pass again tomorrow?"
+        ],
+        "photo": {
+          "src": "/assets/neighbourhoods/day1-0.jpg",
+          "width": 1280,
+          "height": 960,
+          "alt": "Afternoon light on the community centre and neighbouring low-rise buildings in Yeonhui-dong",
+          "caption": "Yeonhui-dong community centre · May 2014",
+          "author": "안우석",
+          "source": "https://commons.wikimedia.org/wiki/File:Yeonhui-dong_Community_Service_Center_Seoul_20140513_164754.jpg",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+        }
+      },
+      {
+        "title": "Give coffee its own chapter",
+        "paragraphs": [
+          "Build in a proper sit-down break. Order something you would happily linger over, put the map away for a while, and give yourself permission to return to the same street instead of constantly finding a new one. A window seat can be as satisfying as another saved location.",
+          "That is the appeal of approaching Yeonhui-dong as a neighbourhood rather than a checklist. You can come for a meal and leave with a tiny routine: a preferred turn, a place to pause, and an idea of what your next visit might look like."
+        ],
+        "photo": {
+          "src": "/assets/neighbourhoods/day1-3.jpg",
+          "width": 640,
+          "height": 640,
+          "alt": "The exterior of a Starbucks café in Yeonhui-dong in 2015",
+          "caption": "Yeonhui-dong café · April 2015",
+          "author": "Jude Lee",
+          "source": "https://commons.wikimedia.org/wiki/File:%ED%95%9C_%EB%8B%AC%EC%97%90_%ED%95%9C_%EB%B2%88%EC%AF%A4%EC%9D%80_%ED%9A%8C%EC%82%AC_%EB%95%A1%EB%95%A1%EC%9D%B4..._%EC%9A%B0%EB%A6%AC_%EB%8F%99%EB%84%A4_%EC%83%88%EB%A1%9C_%EC%83%9D%EA%B8%B4_%EB%B3%84%EB%8B%A4%EB%B0%A9%EC%97%90%EC%84%9C_%EB%A7%9D%EC%A4%91%ED%95%9C..._-Seoul_-Yeonhui-dong_-Starbucks_(17056470069).jpg",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0/"
+        }
+      },
+      {
+        "title": "Save a detour for the museum",
+        "paragraphs": [
+          "If the afternoon needs a second anchor, the Seodaemun Museum of Natural History is in Yeonhui-dong. Its permanent exhibitions move through Earth’s environment, the evolution of life, and the relationship between people and nature. It gives the day a different texture after lunch and coffee.",
+          "Or keep the plan deliberately modest and spend that time on another public street. Look for the point where a roofline meets the hills, then bring your attention back to street level: a garden wall, a doorway, the turn you nearly walked past. Let the return journey be part of the afternoon."
+        ],
+        "photo": {
+          "src": "/assets/neighbourhoods/day1-2.jpg",
+          "width": 900,
+          "height": 1200,
+          "alt": "A second view across the rooftops of residential Yeonhui-dong",
+          "caption": "Yeonhui-dong residential streets · May 2021",
+          "author": "Minchelin",
+          "source": "https://commons.wikimedia.org/wiki/File:%EC%97%B0%ED%9D%AC%EB%8F%99_%EC%A3%BC%ED%83%9D%EA%B0%80_%EC%A0%84%EA%B2%BD_1.jpg",
+          "license": "CC BY-SA 2.0 KR",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/kr/"
+        }
+      }
+    ],
+    "living": "Try the route from a potential home to your actual bus stop or station, carrying the things you carry on a normal day. Notice gradients, evening lighting and the distance to groceries. A neighbourhood becomes personal when the small everyday journeys feel as good as the afternoon that first brought you here.",
+    "sources": [
+      {
+        "label": "Yeonhui-dong",
+        "href": "https://en.wikipedia.org/wiki/Yeonhui-dong%2C_Seoul"
+      },
+      {
+        "label": "Natural History Museum",
+        "href": "https://namu.sdm.go.kr/"
+      }
+    ]
+  },
+  {
+    "slug": "joo-chiat-katong",
+    "city": "singapore",
+    "cityName": "Singapore",
+    "neighbourhood": "Joo Chiat & Katong",
+    "title": "Joo Chiat & Katong: colour first, lunch next",
+    "deck": "A shophouse stroll with room for laksa, a coffee break, and one more turn down a side street.",
+    "publishedAt": "2026-09-10",
+    "route": "Koon Seng Road → Joo Chiat Road → a Katong lunch → Joo Chiat Place",
+    "hero": {
+      "src": "/assets/neighbourhoods/day1-8.jpg",
+      "width": 960,
+      "height": 1449,
+      "alt": "Pastel terraces with blue shutters and ornamental plasterwork in the Joo Chiat neighbourhood",
+      "caption": "Joo Chiat neighbourhood · 2014",
+      "author": "Kate Branch",
+      "source": "https://commons.wikimedia.org/wiki/File:Joo_Chiat_road_in_Singapore.jpg",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+    },
+    "intro": "The first thing to catch your eye might be a shutter: blue against cream, turquoise against pink, a little flourish above a window. Joo Chiat and Katong reward that close-up way of looking. Come for the colour, then let lunch and the side streets give the day its shape.",
+    "sections": [
+      {
+        "title": "Look beyond the postcard",
+        "paragraphs": [
+          "Start with the heritage houses around Koon Seng Road. Take in the repeated windows, tiled roofs and decorative fronts before reaching for your camera. The pleasure is in the small variations: how one doorway changes the rhythm of a row, or how two colours make an ordinary façade feel unexpectedly cheerful.",
+          "Leave doorways clear and enjoy the houses from the public street. Once you have your photograph, keep walking. The neighbourhood has more to offer than a single row of pastel façades, and the next part of the day should taste as good as it looks."
+        ],
+        "photo": {
+          "src": "/assets/neighbourhoods/day1-9.jpg",
+          "width": 960,
+          "height": 1450,
+          "alt": "A bright pink heritage house with turquoise shutters and decorative details",
+          "caption": "Joo Chiat neighbourhood · 2014",
+          "author": "Kate Branch",
+          "source": "https://commons.wikimedia.org/wiki/File:Pink_house_Joo_Chiat_road_in_Singapore.jpg",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+        }
+      },
+      {
+        "title": "Let lunch choose the pace",
+        "paragraphs": [
+          "Katong’s food culture is a good reason to arrive hungry. Laksa makes a natural starting point, with the area’s Peranakan heritage adding another layer to a walk that might otherwise stay at the level of pretty buildings. Choose a meal you want to sit down for, then resist immediately turning it into another appointment.",
+          "After lunch, make coffee optional. If a place catches your eye, stop; if you would rather look along another block, do that. Keep the route loose enough for weather, appetite and an unexpectedly good conversation to change it."
+        ],
+        "photo": {
+          "src": "/assets/neighbourhoods/day1-10.jpg",
+          "width": 960,
+          "height": 1280,
+          "alt": "A white shophouse at 35 Joo Chiat Place, with shutters and a bicycle outside",
+          "caption": "35 Joo Chiat Place · March 2025",
+          "author": "Chainwit.",
+          "source": "https://commons.wikimedia.org/wiki/File:35_Joo_Chiat_Place_(2025).jpg",
+          "license": "CC BY 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
+        }
+      },
+      {
+        "title": "Take the side street home",
+        "paragraphs": [
+          "Joo Chiat Place gives the walk a quieter visual chapter: long rows of shophouses, shutters above the pavement, and the everyday details that do not usually make the headline photograph. Try following the rhythm of the upper floors, then look down again at the bicycles, entrances and small interruptions at street level.",
+          "Try noticing three details on your own walk: a window you like, a stretch of shade, and a corner you would remember without a map. Those small observations make a place easier to return to than a long list of recommendations ever could."
+        ],
+        "photo": {
+          "src": "/assets/neighbourhoods/day1-11.jpg",
+          "width": 1280,
+          "height": 960,
+          "alt": "An archival street view between two rows of shophouses on Joo Chiat Place",
+          "caption": "Joo Chiat Place · July 2006",
+          "author": "Terence Ong",
+          "source": "https://commons.wikimedia.org/wiki/File:Joo_Chiat_Place.jpg",
+          "license": "CC BY 2.5",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.5/"
+        }
+      }
+    ],
+    "living": "Walk the exact block you are considering at lunchtime and again in the evening. Think about restaurant activity, road crossings, the route to transport, and the errands you would make in the heat or rain. The prettiest façade is a starting point; the daily route around it is what you would actually live with.",
+    "sources": [
+      {
+        "label": "Visit Singapore",
+        "href": "https://www.visitsingapore.com/neighbourhood/featured-neighbourhood/katong-joo-chiat/"
+      },
+      {
+        "label": "Katong heritage",
+        "href": "https://en.wikipedia.org/wiki/Katong"
+      },
+      {
+        "label": "Joo Chiat Road",
+        "href": "https://en.wikipedia.org/wiki/Joo_Chiat_Road"
+      }
+    ]
+  },
+  {
+    "slug": "alserkal-al-quoz",
+    "city": "dubai",
+    "cityName": "Dubai",
+    "neighbourhood": "Alserkal Avenue & Al Quoz",
+    "title": "Al Quoz: an afternoon between art and coffee",
+    "deck": "Warehouse lanes, a gallery detour, and a cinema evening at Alserkal Avenue.",
+    "publishedAt": "2026-09-10",
+    "route": "Alserkal Avenue lanes → one gallery → a coffee break → Cinema Akil",
+    "hero": {
+      "src": "/assets/neighbourhoods/day1-4.jpg",
+      "width": 1280,
+      "height": 960,
+      "alt": "Visitors walking between Alserkal Avenue warehouses under fabric shade canopies",
+      "caption": "Alserkal Avenue · November 2024",
+      "author": "Fuzheado",
+      "source": "https://commons.wikimedia.org/wiki/File:Dubai_Alserkal_Avenue_2024-11-17.jpg",
+      "license": "CC0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "intro": "Make the warehouse lane your starting point. At Alserkal Avenue in Al Quoz, corrugated walls, shade canopies and big doors set the scene for a day built around art, food and film. You only need a few stops; leave the space between them open.",
+    "sections": [
+      {
+        "title": "Choose one gallery, then wander",
+        "paragraphs": [
+          "Alserkal’s current community directory includes galleries such as The Third Line and Carbon 12, alongside design, food and other creative spaces. Pick an exhibition that interests you before setting out, then give it more than the few minutes you would spend scrolling past an image.",
+          "Outside, the lane becomes the connecting thread. Notice the change from bright pavement to a cool interior, the scale of a warehouse doorway, and how much an afternoon can change when you pause in front of something unfamiliar. You do not need to see everything for the visit to feel complete."
+        ],
+        "photo": {
+          "src": "/assets/neighbourhoods/day1-5.jpg",
+          "width": 960,
+          "height": 1200,
+          "alt": "Green seating and strings of lights inside a dining space at Alserkal Avenue",
+          "caption": "Inside Alserkal Avenue · February 2023",
+          "author": "Pravichris",
+          "source": "https://commons.wikimedia.org/wiki/File:Alserkal_Avenue_Christina_Pravi.jpg",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+        }
+      },
+      {
+        "title": "Make room for the coffee interval",
+        "paragraphs": [
+          "Nightjar Coffee Roasters and bkry appear in Alserkal’s community directory, giving you useful starting points for a food or coffee break. Check their own opening information when you choose your day, then leave a generous gap before the next stop.",
+          "Let the interval stay an interval. Find a table, compare notes on what you have just seen, and decide whether you want another gallery or a longer conversation. A good afternoon does not need every gap filled. Art, something good to eat, and time to talk is already a complete plan."
+        ],
+        "photo": {
+          "src": "/assets/neighbourhoods/day1-6.jpg",
+          "width": 1280,
+          "height": 853,
+          "alt": "A striped Bacio Gelato food truck beside an Alserkal Avenue sign in 2015",
+          "caption": "Alserkal Avenue food truck · April 2015",
+          "author": "siska maria eviline",
+          "source": "https://commons.wikimedia.org/wiki/File:Bacio_Gelato_Food_Truck_(22957012866).jpg",
+          "license": "CC BY-SA 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/"
+        }
+      },
+      {
+        "title": "Let the evening have a final scene",
+        "paragraphs": [
+          "Cinema Akil gives you a reason to stay for the next chapter. Choose a film from its current programme and make the screening the fixed point around which the rest of the afternoon can bend. A cinema booking can turn a casual gallery visit into a whole evening without adding much complication.",
+          "The entrance has its own appeal: lettering above the door, café tables outside, people gathering before a film. Finish with that small, shared ritual of going into a dark room and paying attention to one thing. It is a satisfying way to end a day of looking."
+        ],
+        "photo": {
+          "src": "/assets/neighbourhoods/day1-7.jpg",
+          "width": 1030,
+          "height": 1030,
+          "alt": "Cinema Akil’s illuminated entrance and outdoor café tables",
+          "caption": "Cinema Akil · 2020",
+          "author": "Mohamed Somji",
+          "source": "https://commons.wikimedia.org/wiki/File:Cinema_akil.jpg",
+          "license": "CC BY 2.5",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.5/"
+        }
+      }
+    ],
+    "living": "Alserkal Avenue is a cultural destination within Al Quoz, not a residential development. If being close to this creative scene appeals to you, test the journey from an actual home address, including the return after a screening. The useful measure is how easily this could become part of your week.",
+    "sources": [
+      {
+        "label": "Alserkal community & venues",
+        "href": "https://alserkal.online/community/"
+      },
+      {
+        "label": "Alserkal programme",
+        "href": "https://alserkal.online/"
+      }
+    ]
+  },
+  {
+    "slug": "kichijoji",
+    "city": "tokyo",
+    "cityName": "Tokyo",
+    "neighbourhood": "Kichijoji",
+    "title": "Kichijoji: a park morning, a side-street evening",
+    "deck": "Pond reflections, shopping arcades, and the pleasure of having two very different afternoons around one station.",
+    "publishedAt": "2026-09-10",
+    "route": "Kichijoji Station → Inokashira Park → the shopping streets → Harmonica Alley",
+    "hero": {
+      "src": "/assets/neighbourhoods/day1-14.jpg",
+      "width": 1280,
+      "height": 779,
+      "alt": "Green trees and a red shrine reflected in the pond at Inokashira Park",
+      "caption": "Inokashira Park · July 2024",
+      "author": "ARandomName123",
+      "source": "https://commons.wikimedia.org/wiki/File:Inokashira_park_pond_2024.jpg",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+    },
+    "intro": "Start with water and trees, finish with a street full of light. Kichijoji makes that change of mood feel like a natural day out. The station is your hinge: Inokashira Park to the south, shopping streets and the small lanes of Harmonica Alley to the north.",
+    "sections": [
+      {
+        "title": "Give the pond the first hour",
+        "paragraphs": [
+          "Head towards Inokashira Park and let the first part of the walk stay unhurried. The pond, wooded paths and Benten shrine give you several ways to pause without inventing an activity. Boats are another option if you would like to spend some of the visit on the water.",
+          "Choose a patch of the pond to watch for a while. Reflections make a surprisingly good reason to put the phone down. Try a slow circuit, then pause where the trees open up to the water. Give the walk a little room to repeat itself; you might notice more on the way back."
+        ],
+        "photo": {
+          "src": "/assets/neighbourhoods/day1-15.jpg",
+          "width": 1280,
+          "height": 960,
+          "alt": "Autumn foliage around Inokashira Park’s pond in early December",
+          "caption": "Inokashira Park · December 2024",
+          "author": "Htanaungg",
+          "source": "https://commons.wikimedia.org/wiki/File:Inokashira_Park_Momiji.jpg",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+        }
+      },
+      {
+        "title": "Cross back into everyday Kichijoji",
+        "paragraphs": [
+          "Return towards the station when you are ready for a different pace. Sun Road and Daiyagai offer the shopping-arcade part of the day, with clothes, bakeries and casual places to eat among the browsing possibilities. Choose a street because it looks interesting, rather than trying to cover both in a hurry.",
+          "This is a good moment for a small purchase instead of a grand souvenir: something to eat, something to read, or simply a drink while you decide what comes next. A park walk and a shopping street make a pleasantly ordinary combination. That is precisely why it is easy to imagine doing it again."
+        ],
+        "photo": {
+          "src": "/assets/neighbourhoods/day1-12.jpg",
+          "width": 1280,
+          "height": 836,
+          "alt": "The north entrance of Kichijoji Station with buses outside",
+          "caption": "Kichijoji Station · February 2022",
+          "author": "Nesnad",
+          "source": "https://commons.wikimedia.org/wiki/File:Kichijoji_Station_north_exit_-_2022_feb_19_various.jpeg",
+          "license": "CC BY 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
+        }
+      },
+      {
+        "title": "Keep a little energy for the lanes",
+        "paragraphs": [
+          "Harmonica Alley, north of the station, is a compact network of lanes with small places to eat and drink. GO TOKYO traces its beginnings to a postwar market; today it offers an evening chapter that feels very different from the open space around the pond.",
+          "Take a look before deciding where to settle. Small rooms call for a flexible plan: one available seat and a menu that appeals can be enough. Afterwards, walk back through the broader streets towards the station. That change from a narrow lane to the lights of a busy road is a lovely final shift in scale."
+        ],
+        "photo": {
+          "src": "/assets/neighbourhoods/day1-13.jpg",
+          "width": 1280,
+          "height": 960,
+          "alt": "Night lights on a Kichijoji street looking toward the station",
+          "caption": "Kichijoji after dark · June 2014",
+          "author": "Douglas Paul Perkins",
+          "source": "https://commons.wikimedia.org/wiki/File:Kichijoji_at_night.jpg",
+          "license": "CC BY 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+        }
+      }
+    ],
+    "living": "Walk both sides of the station before deciding which version of Kichijoji fits your routine. Try the route home after the shops are busy, and the route to the park when you have only a short break. The appeal is having a choice of moods close by; the best address is the one that makes your preferred everyday route easy.",
+    "sources": [
+      {
+        "label": "GO TOKYO: Kichijoji",
+        "href": "https://www.gotokyo.org/en/destinations/western-tokyo/kichijoji/index.html"
+      },
+      {
+        "label": "Inokashira Park",
+        "href": "https://www.gotokyo.org/en/spot/624/index.html"
+      },
+      {
+        "label": "Harmonica Alley",
+        "href": "https://www.gotokyo.org/en/spot/165/index.html"
+      }
+    ]
+  }
+]

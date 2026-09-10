@@ -1,4 +1,5 @@
 import 'server-only';
+import { NEIGHBOURHOOD_STORIES, neighbourhoodHref } from '../content/neighbourhood-stories';
 
 import type { MetadataRoute } from 'next';
 import { CITY_STORIES, cityStoryHref } from '../content/city-stories';
@@ -168,6 +169,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ? undefined
     : validDate(dubaiEvidence.getContext().generatedAt);
   const entries: MetadataRoute.Sitemap = [
+    ...NEIGHBOURHOOD_STORIES.map(story => sitemapEntry(neighbourhoodHref(story.slug), new Date(story.publishedAt))),
     sitemapEntry('/kr/seoul/shortlist/'),
     sitemapEntry('/ko/kr/seoul/shortlist/'),
     sitemapEntry('/passport/'),

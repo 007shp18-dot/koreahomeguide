@@ -1,3 +1,5 @@
+import { listNeighbourhoodStories, neighbourhoodHref } from '../../content/neighbourhood-stories';
+import { NeighbourhoodStoryCards } from './neighbourhood-story';
 import { BUDGET_GUIDE_SLUGS } from '../../content/guide-directory';
 import { listPortfolioRecords } from '../../content/portfolio-manifest';
 import type { ReactNode } from 'react';
@@ -90,7 +92,8 @@ export function NewsroomIndex({ articles, policies, filters, headlines, locale =
   const budgetComparisons: StoryItem[] = listPortfolioRecords(locale).filter(item => BUDGET_GUIDE_SLUGS.some(slug => slug === item.slug) && (!marketId || item.marketId === marketId)).map(item => ({ id: item.id, title: item.title, deck: item.deck, date: item.updatedAt, type: item.type, href: item.canonicalHref }));
   const comparisons = [...standaloneItems.filter(item => item.type === 'neighborhood'), ...budgetComparisons, ...items.filter(item => item.type === 'data-story').slice(0, 3)];
   const updates = items.filter(item => item.type === 'market-brief').slice(0, 3);
-  const filtered = [...(filters.type === 'insights' ? standaloneItems : []), ...items, ...(['insights', 'data-stories'].includes(filters.type) ? budgetComparisons : [])].filter(item => filters.type === 'insights' ? true : filters.type === 'news' ? item.type === 'news-brief' : filters.type === 'policy' ? item.type === 'policy-update' : filters.type === 'market' ? item.type === 'market-brief' : item.type === 'data-story' || item.type === 'guide').sort((a, b) => b.date.localeCompare(a.date));
+  const notebookItems: StoryItem[] = ko ? [] : listNeighbourhoodStories(filters.market).map(item => ({ id: `notebook-${item.slug}`, title: item.title, deck: item.deck, href: neighbourhoodHref(item.slug), date: item.publishedAt, type: 'neighborhood' }));
+  const filtered = [...(filters.type === 'insights' ? notebookItems : []), ...(filters.type === 'insights' ? standaloneItems : []), ...items, ...(['insights', 'data-stories'].includes(filters.type) ? budgetComparisons : [])].filter(item => filters.type === 'insights' ? true : filters.type === 'news' ? item.type === 'news-brief' : filters.type === 'policy' ? item.type === 'policy-update' : filters.type === 'market' ? item.type === 'market-brief' : item.type === 'data-story' || item.type === 'guide').sort((a, b) => b.date.localeCompare(a.date));
   const conversations = filters.market === 'all' ? CITY_STORIES.map(city => LOCAL_CONVERSATIONS.find(item => item.city === city.city)!) : LOCAL_CONVERSATIONS.filter(item => item.city === filters.market);
   return <main className={styles.index} data-newsroom-layout="research" lang={locale}>
     <ResearchPageHeading title={ko ? '뉴스 & 인사이트' : 'News & Insights'} description={ko ? '마음이 가는 도시에서 나에게 맞는 집까지. 동네의 이야기와 가격, 구매의 다음 단계를 함께 읽어보세요.' : 'Find a city you connect with, a neighbourhood that fits, and a clearer path to a home of your own.'} />
@@ -100,6 +103,7 @@ export function NewsroomIndex({ articles, policies, filters, headlines, locale =
     </div>
     {filters.type === 'policy' && <div className={styles.policyEntry}><p>{ko ? '정책 변경 사항을 날짜별로 확인하세요.' : 'Follow policy changes, by date and market.'}</p><Link href="/news/policy/">{ko ? '정책 타임라인 · English' : 'Policy tracker'} <UiIcon name="arrow-right" /></Link></div>}
     {fullJourney && <>
+      {!ko && <NeighbourhoodStoryCards city={filters.market} />}
       <section className={styles.hero} aria-label={ko ? '대표 이야기' : 'Featured stories'}>
         <article data-newsroom-lead="City Story"><CityStoryPhoto city={story.city} locale={locale} eager /><p className={styles.eyebrow}>{story.name[locale]} · City Stories</p><h2><Link href={journeyArticleHref(story.city, 'discover', locale)}>{featured.title[locale]}</Link></h2><p>{featured.deck[locale]}</p><Link className={styles.readLink} href={journeyArticleHref(story.city, 'discover', locale)}>{ko ? '도시 이야기 읽기' : 'Read the city story'} <UiIcon name="arrow-right" /></Link></article>
         <aside className={styles.related}>{(filters.market === 'all' ? CITY_STORIES.filter(item => item.city !== story.city).slice(0, 2).map(item => ({ title: item.title[locale], deck: item.deck[locale], href: cityStoryHref(item.city, locale), label: item.name[locale] })) : [story.sections[2], story.sections[3]].map(section => ({ title: getJourneyArticle(story.city, section.id)!.title[locale], deck: getJourneyArticle(story.city, section.id)!.deck[locale], href: journeyArticleHref(story.city, section.id, locale), label: story.name[locale] }))).map(item => <article key={item.href}><p className={styles.eyebrow}>{item.label}</p><h3><Link href={item.href}>{item.title}</Link></h3><p>{item.deck}</p><Link className={styles.readLink} href={item.href}>{ko ? '이어서 읽기' : 'Continue reading'} <UiIcon name="arrow-right" /></Link></article>)}</aside>
