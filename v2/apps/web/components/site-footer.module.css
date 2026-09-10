@@ -7,6 +7,12 @@
 .links { margin: 0; padding: 0; list-style: none; }
 .links a { min-height: 36px; display: flex; align-items: center; color: var(--muted); font-size: 14px; font-weight: 400; line-height: 22px; text-decoration: none; }
 .links a:hover { color: var(--accent); }
+.social { grid-column: 1 / -1; display: flex; align-items: center; flex-wrap: wrap; gap: 8px 24px; border-top: 1px solid var(--line); padding-top: 16px; }
+.social p { margin: 0; font-size: 14px; color: var(--muted); }
+.social ul { display: flex; flex-wrap: wrap; gap: 4px 20px; list-style: none; padding: 0; margin: 0; }
+.social a { display: inline-flex; align-items: center; min-height: 44px; font-size: 14px; color: var(--ink); text-decoration: none; }
+.social a:hover { color: var(--accent); text-decoration: underline; }
+.social a:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 4px; border-radius: 4px; }
 .links a:focus-visible, .intro a:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 4px; border-radius: 8px; }
 @media (max-width: 760px) { .inner { grid-template-columns: minmax(0, 1fr); gap: 32px; padding-block: 32px; } .navigation { gap: 16px; } .links a { min-height: 44px; font-size: 13px; } }
 @media (max-width: 380px) { .navigation { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 16px; } }
