@@ -3,7 +3,7 @@ import { unstable_cache } from 'next/cache';
 import { japanSqlPort, type JapanFilters } from './repository.server';
 import { TOKYO_WARDS } from './query';
 
-export type TokyoMapFilters = Pick<JapanFilters, 'q' | 'type' | 'minArea' | 'maxArea'>;
+export type TokyoMapFilters = Pick<JapanFilters, 'q' | 'neighbourhood' | 'type' | 'minArea' | 'maxArea'>;
 export type TokyoWardSummary = { city: string; count: number; medianPrice: number | null };
 
 export async function readTokyoMapSummary(year: string, quarter: string, filters: TokyoMapFilters,
