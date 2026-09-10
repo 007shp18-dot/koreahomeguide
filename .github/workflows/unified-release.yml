@@ -27,7 +27,6 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          cp scripts/release/publish.mjs /tmp/signedprice-publish.mjs
           node scripts/release/prepare.mjs
       - uses: pnpm/action-setup@v4
         if: steps.queue.outputs.changed == 'true'
@@ -58,4 +57,9 @@ jobs:
         if: steps.queue.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: node /tmp/signedprice-publish.mjs
+          VALIDATED_HEAD: ${{ steps.queue.outputs.validated_head }}
+          RELEASE_PLAN: ${{ steps.queue.outputs.plan }}
+          BASE_SHA: ${{ steps.queue.outputs.base_sha }}
+        run: |
+          git --no-replace-objects show "$BASE_SHA:scripts/release/publish.mjs" > /tmp/signedprice-publish.mjs
+          node /tmp/signedprice-publish.mjs

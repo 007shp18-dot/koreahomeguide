@@ -21,5 +21,5 @@ for(const p of prs) {
  catch {git('merge','--abort');if(git('rev-parse','HEAD')!==before)throw new Error('Merge recovery failed');blocked.push(`#${p.number}: conflict`);}
 }
 writeFileSync('/tmp/signedprice-release.json',JSON.stringify({base,selected,pendingMain}));
-appendFileSync(process.env.GITHUB_OUTPUT,`changed=${selected.length>0||pendingMain}\n`);
+appendFileSync(process.env.GITHUB_OUTPUT,`changed=${selected.length>0||pendingMain}\nvalidated_head=${git('rev-parse','HEAD')}\nbase_sha=${base}\nplan=${Buffer.from(JSON.stringify({base,selected,pendingMain})).toString('base64')}\n`);
 appendFileSync(process.env.GITHUB_STEP_SUMMARY,`## Release queue\nPending main changes: ${pendingMain}\nSelected: ${selected.map(p=>'#'+p.number).join(', ')||'none'}\n\n${blocked.join('\n')}\n`);

@@ -18,5 +18,5 @@ export const listNewsroomArticles=cache(async(locale:ContentLocale='en'):Promise
 export const getNewsroomArticle=cache(async(slug:string,locale:ContentLocale='en'):Promise<EditorialPortfolioRecord|null>=>{
  const stored=await getPublishedContent(locale,slug);
  if(stored && isNews(stored))return storedEditorialRecord(stored);
- const article=getPortfolioRecord(locale,slug);return article&&isNews(article)?article:null;
+ const article=getPortfolioRecord(locale,slug);return article&&(isNews(article)||(locale==='ko'&&article.type==='policy-update'))?article:null;
 });

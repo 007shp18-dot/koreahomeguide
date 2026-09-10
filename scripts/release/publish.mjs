@@ -1,8 +1,10 @@
 import {execFileSync} from 'node:child_process';
-import {readFileSync,appendFileSync} from 'node:fs';
+import {appendFileSync} from 'node:fs';
 const repo=process.env.GITHUB_REPOSITORY;
-const plan=JSON.parse(readFileSync('/tmp/signedprice-release.json','utf8'));
+const plan=JSON.parse(Buffer.from(process.env.RELEASE_PLAN??'', 'base64').toString('utf8'));
 const git=(...a)=>execFileSync('git',a,{encoding:'utf8'}).trim();
+if(!/^[a-f0-9]{40}$/.test(process.env.VALIDATED_HEAD??'') || git('rev-parse','HEAD')!==process.env.VALIDATED_HEAD)throw new Error('Validated HEAD changed');
+git('diff','--exit-code');git('diff','--cached','--exit-code');
 for(const p of plan.selected) {
  const current=JSON.parse(execFileSync('gh',['api',`repos/${repo}/pulls/${p.number}`],{encoding:'utf8'}));
  if(current.state!=='open'||current.draft||current.head.sha!==p.sha||!current.labels.some(l=>l.name==='release-ready')) throw new Error(`PR #${p.number} changed during validation`);
