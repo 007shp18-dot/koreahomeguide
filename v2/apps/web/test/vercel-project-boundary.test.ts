@@ -7,7 +7,8 @@ describe('Vercel project build configuration',()=>{
     '%s does not configure build exclusions',
     relativePath=>{
       const config=JSON.parse(readFileSync(fileURLToPath(new URL(relativePath,import.meta.url)),'utf8'));
-      expect(config.ignoreCommand).toBeUndefined();
+      // Explicit continue overrides a stale project-level Ignored Build Step.
+      expect(config.ignoreCommand).toBe(relativePath==='../vercel.json'?'exit 1':undefined);
       expect(config.git?.deploymentEnabled).toBeUndefined();
     },
   );

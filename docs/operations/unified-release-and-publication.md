@@ -4,7 +4,7 @@
 
 The daily unified code release workflow and its queue/publish scripts were removed at the user's request. Code changes can be merged individually after the applicable GitHub checks; there is no daily batch or `release-ready` label requirement. Vercel's Git integration handles deployment from the configured branches. No new deploy token is required.
 
-Repository-managed Vercel build exclusions are removed. Neither configuration defines `ignoreCommand` or branch deployment exclusions. The legacy `ignore-build.mjs` compatibility command always exits 1 (continue build) if an external project setting still calls it. Commit markers, changed-file paths and deployment environments do not control its result.
+Repository-managed Vercel build exclusions are removed. Neither configuration defines branch deployment exclusions. SignedPrice explicitly sets `ignoreCommand` to `exit 1` (always continue) to override the stale Vercel project-level command that was canceling production deployments. The root configuration omits `ignoreCommand`. The legacy `ignore-build.mjs` compatibility command always exits 1 (continue build) if an external project setting still calls it. Commit markers, changed-file paths and deployment environments do not control its result.
 
 Report GitHub merge and Vercel READY separately. A code rollback does not roll back database content. Existing CI workflows and branch protections remain in effect.
 

@@ -81,5 +81,6 @@
       "path": "/api/internal/editorial-publish/",
       "schedule": "*/15 * * * *"
     }
-  ]
+  ],
+  "ignoreCommand": "exit 1"
 }
