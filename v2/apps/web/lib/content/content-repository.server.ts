@@ -103,7 +103,12 @@ function sourceFromRow(value: unknown): ContentSource | null {
   });
 }
 
-function articleFromRow(row: Readonly<Record<string, unknown>>): PublishedContentArticle | null {
+export function articleFromRow(row: Readonly<Record<string, unknown>>): PublishedContentArticle | null {
+  // The Neon driver decodes timestamptz columns as Date objects; JSON source metadata uses strings.
+  row = { ...row, ...Object.fromEntries(['published_at', 'updated_at', 'reviewed_at'].map(key => {
+    const value = row[key];
+    return [key, value instanceof Date && Number.isFinite(value.getTime()) ? value.toISOString() : value];
+  })) };
   const sources = Array.isArray(row.sources)
     ? Object.freeze(row.sources.flatMap((source) => {
         const parsed = sourceFromRow(source);
