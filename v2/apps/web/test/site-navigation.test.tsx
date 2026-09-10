@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { listPortfolioRecords } from '../content/portfolio-manifest';
 import { JOURNEY_ARTICLE_ROUTES, journeyArticleHref } from '../content/city-journey-routes';
 import { editorialLanguageRoutes } from '../lib/navigation/editorial-language-routes';
-import { globalNavigation, languageDestinations } from '../lib/navigation/site-navigation';
+import { globalNavigation, languageDestinations, marketDestination } from '../lib/navigation/site-navigation';
 import { LanguageLinks } from '../components/site-language-navigation';
 import { SiteFooter } from '../components/site-footer';
 import { homepageCopy } from '../lib/site-copy';
@@ -23,6 +23,13 @@ describe('shared navigation destinations', () => {
       expect(globalNavigation(locale).map(({ href }) => href.replace(/^\/(?:zh-cn|ko)(?=\/)/, '')))
         .toEqual(['/prices/', '/news/', '/tools/', '/guides/']);
     }
+  });
+  it('keeps the news view while changing city and advertises only supported Tokyo guides', () => {
+    expect(marketDestination('jp-tokyo', '/news/?type=news&market=dubai')).toBe('/news/?type=news&market=tokyo');
+    expect(marketDestination('sg-singapore', '/news/?type=policy')).toBe('/news/?type=policy&market=singapore');
+    expect(marketDestination('jp-tokyo', '/guides/', 'en')).toBe('/guides/?market=tokyo');
+    expect(marketDestination('jp-tokyo', '/ko/guides/', 'ko')).toBe('/jp/tokyo/');
+    expect(marketDestination('jp-tokyo', '/zh-cn/guides/', 'zh-CN')).toBe('/jp/tokyo/');
   });
   it('switches between the published English and Korean ranking hubs', () => {
     expect(languageDestinations('/rankings/', '?view=markets')).toEqual({

@@ -141,5 +141,5 @@ test('opens area research, uses AED assumptions and connects Dubai news', async 
   await expect(page.getByText('6.19%', { exact: true })).toBeVisible();
   await page.getByRole('link', { name: 'Dubai news', exact: true }).click();
   await expect(page).toHaveURL(/market=dubai/);
-  await expect(page.getByRole('navigation', { name: 'Insight cities' }).getByRole('link', { name: 'Dubai' })).toHaveAttribute('aria-current', 'page');
+  await expect(page.getByRole('navigation', { name: 'News markets' }).getByRole('link', { name: 'Dubai' })).toHaveAttribute('aria-current', 'page');
 });

@@ -15,8 +15,13 @@ export function marketDestination(marketId: NavigationMarketId, currentHref = '/
   const prefix = locale === 'ko' ? '/ko' : '';
   const city = { 'kr-seoul': 'seoul', 'sg-singapore': 'singapore', 'ae-dubai': 'dubai', 'jp-tokyo': 'tokyo' }[marketId];
   if (/\/(?:seoul-apartment|singapore-condo|dubai-ready-apartment)-buying-budget-guide\//.test(path)) return `${prefix}/news/?market=${city}`;
-  if (marketId === 'jp-tokyo' && (/\/tools\//.test(path))) return '/jp/tokyo/';
-  if (path.includes('/news/') || path.includes('/insights/')) return `${locale === 'zh-CN' ? '/zh-cn' : prefix}/news/?market=${city}`;
+  if (marketId === 'jp-tokyo' && (/\/tools\//.test(path) || (locale !== 'en' && /\/(?:guides|guide)\//.test(path)))) return '/jp/tokyo/';
+  if (path.includes('/news/') || path.includes('/insights/')) {
+    const requestedType = new URLSearchParams(currentHref.split('?')[1] ?? '').get('type');
+    const type = requestedType === 'headlines' ? 'news' : requestedType;
+    const view = type && ['news', 'policy', 'market', 'data-stories'].includes(type) ? `type=${type}&` : '';
+    return `${locale === 'zh-CN' ? '/zh-cn' : prefix}/news/?${view}market=${city}`;
+  }
   if (path.includes('/guides/') || path.includes('/guide/')) return `${locale === 'zh-CN' ? '/zh-cn' : prefix}/guides/?market=${city}`;
   const base = { 'kr-seoul': '/kr/seoul', 'sg-singapore': '/sg/singapore', 'ae-dubai': '/ae/dubai', 'jp-tokyo': '/jp/tokyo' }[marketId];
   const section = ['explore', 'check', 'shortlist', 'rankings'].find(item => path.includes(`/${item}/`));

@@ -86,7 +86,7 @@ function CuratedDubaiExplorer({ locale = 'en',
       <nav className={styles.actions} aria-label={t("Dubai research")}>
         <Link href={marketHref(locale, "/ae/dubai/")}>{t("Market overview")}</Link>
         <Link href={marketHref(locale, "/ae/dubai/guide/")}>{t("Buying research guide")}</Link>
-        <Link href={marketHref(locale, "/news/?market=dubai")}>{t("News")}</Link>
+        <Link href={marketHref(locale, "/news/?type=news&market=dubai")}>{t("News")}</Link>
       </nav>
     </div>}
     discovery={<div className={styles.directory}>
@@ -264,7 +264,7 @@ export function DubaiExplorer({ locale = 'en',
         <nav className={styles.actions} aria-label={t("Dubai research")}>
           <Link href={marketHref(locale, "/ae/dubai/")}>{t("Market overview")}</Link>
           <Link href={marketHref(locale, "/ae/dubai/guide/")}>{t("Buying research guide")}</Link>
-          <Link href={marketHref(locale, "/news/?market=dubai")}>{t("News")}</Link>
+          <Link href={marketHref(locale, "/news/?type=news&market=dubai")}>{t("News")}</Link>
         </nav>
       </div>}
       discovery={<section className={styles.evidenceDirectory} aria-labelledby="dubai-area-results">
