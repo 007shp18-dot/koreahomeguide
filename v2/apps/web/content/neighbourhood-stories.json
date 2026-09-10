@@ -98,15 +98,15 @@
     "publishedAt": "2026-09-10",
     "route": "Koon Seng Road → Joo Chiat Road → a Katong lunch → Joo Chiat Place",
     "hero": {
-      "src": "/assets/neighbourhoods/day1-8.jpg",
-      "width": 960,
-      "height": 1449,
-      "alt": "Pastel terraces with blue shutters and ornamental plasterwork in the Joo Chiat neighbourhood",
-      "caption": "Joo Chiat neighbourhood · 2014",
-      "author": "Kate Branch",
-      "source": "https://commons.wikimedia.org/wiki/File:Joo_Chiat_road_in_Singapore.jpg",
-      "license": "CC BY-SA 4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+      "src": "/assets/neighbourhoods/joo-chiat-283-2025.jpg",
+      "width": 1280,
+      "height": 960,
+      "alt": "Pale corner shophouse and café at 283 Joo Chiat Road",
+      "caption": "283 Joo Chiat Road · March 2025",
+      "author": "Chainwit.",
+      "source": "https://commons.wikimedia.org/wiki/File:283_Joo_Chiat_Rd,_Singapore_(2025)_-_img_01.jpg",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
     },
     "intro": "The first thing to catch your eye might be a shutter: blue against cream, turquoise against pink, a little flourish above a window. Joo Chiat and Katong reward that close-up way of looking. Come for the colour, then let lunch and the side streets give the day its shape.",
     "sections": [
@@ -117,15 +117,15 @@
           "Leave doorways clear and enjoy the houses from the public street. Once you have your photograph, keep walking. The neighbourhood has more to offer than a single row of pastel façades, and the next part of the day should taste as good as it looks."
         ],
         "photo": {
-          "src": "/assets/neighbourhoods/day1-9.jpg",
+          "src": "/assets/neighbourhoods/joo-chiat-352-2025.jpg",
           "width": 960,
-          "height": 1450,
-          "alt": "A bright pink heritage house with turquoise shutters and decorative details",
-          "caption": "Joo Chiat neighbourhood · 2014",
-          "author": "Kate Branch",
-          "source": "https://commons.wikimedia.org/wiki/File:Pink_house_Joo_Chiat_road_in_Singapore.jpg",
-          "license": "CC BY-SA 4.0",
-          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+          "height": 1280,
+          "alt": "Red corner shophouse at 352 Joo Chiat Road",
+          "caption": "352 Joo Chiat Road · March 2025",
+          "author": "Chainwit.",
+          "source": "https://commons.wikimedia.org/wiki/File:352_Joo_Chiat_Rd,_Singapore_(2025)_-_img_01.jpg",
+          "license": "CC BY 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
         }
       },
       {
@@ -135,13 +135,13 @@
           "After lunch, make coffee optional. If a place catches your eye, stop; if you would rather look along another block, do that. Keep the route loose enough for weather, appetite and an unexpectedly good conversation to change it."
         ],
         "photo": {
-          "src": "/assets/neighbourhoods/day1-10.jpg",
-          "width": 960,
-          "height": 1280,
-          "alt": "A white shophouse at 35 Joo Chiat Place, with shutters and a bicycle outside",
-          "caption": "35 Joo Chiat Place · March 2025",
+          "src": "/assets/neighbourhoods/joo-chiat-185-2025.jpg",
+          "width": 1280,
+          "height": 960,
+          "alt": "White corner café with outdoor tables at 185 Joo Chiat Road",
+          "caption": "185 Joo Chiat Road · March 2025",
           "author": "Chainwit.",
-          "source": "https://commons.wikimedia.org/wiki/File:35_Joo_Chiat_Place_(2025).jpg",
+          "source": "https://commons.wikimedia.org/wiki/File:185_Joo_Chiat_Rd,_Singapore_(2025)_-_img_01.jpg",
           "license": "CC BY 4.0",
           "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
         }
@@ -153,15 +153,15 @@
           "Try noticing three details on your own walk: a window you like, a stretch of shade, and a corner you would remember without a map. Those small observations make a place easier to return to than a long list of recommendations ever could."
         ],
         "photo": {
-          "src": "/assets/neighbourhoods/day1-11.jpg",
-          "width": 1280,
-          "height": 960,
-          "alt": "An archival street view between two rows of shophouses on Joo Chiat Place",
-          "caption": "Joo Chiat Place · July 2006",
-          "author": "Terence Ong",
-          "source": "https://commons.wikimedia.org/wiki/File:Joo_Chiat_Place.jpg",
-          "license": "CC BY 2.5",
-          "licenseUrl": "https://creativecommons.org/licenses/by/2.5/"
+          "src": "/assets/neighbourhoods/day1-10.jpg",
+          "width": 960,
+          "height": 1280,
+          "alt": "A white shophouse at 35 Joo Chiat Place, with shutters and a bicycle outside",
+          "caption": "35 Joo Chiat Place · March 2025",
+          "author": "Chainwit.",
+          "source": "https://commons.wikimedia.org/wiki/File:35_Joo_Chiat_Place_(2025).jpg",
+          "license": "CC BY 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
         }
       }
     ],
@@ -280,15 +280,15 @@
     "publishedAt": "2026-09-10",
     "route": "Kichijoji Station → Inokashira Park → the shopping streets → Harmonica Alley",
     "hero": {
-      "src": "/assets/neighbourhoods/day1-14.jpg",
+      "src": "/assets/neighbourhoods/inokashira-park-2025.jpg",
       "width": 1280,
-      "height": 779,
-      "alt": "Green trees and a red shrine reflected in the pond at Inokashira Park",
-      "caption": "Inokashira Park · July 2024",
-      "author": "ARandomName123",
-      "source": "https://commons.wikimedia.org/wiki/File:Inokashira_park_pond_2024.jpg",
-      "license": "CC BY-SA 4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+      "height": 960,
+      "alt": "Cherry blossoms and swan boats on Inokashira Park pond",
+      "caption": "Inokashira Park · March 2025",
+      "author": "nakashi",
+      "source": "https://commons.wikimedia.org/wiki/File:Sakura_(cherry_blossoms)_at_inokashira_park_%E4%BA%95%E3%81%AE%E9%A0%AD%E5%85%AC%E5%9C%92%E3%81%AE%E6%A1%9C_(54419046691).jpg",
+      "license": "CC BY-SA 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/"
     },
     "intro": "Start with water and trees, finish with a street full of light. Kichijoji makes that change of mood feel like a natural day out. The station is your hinge: Inokashira Park to the south, shopping streets and the small lanes of Harmonica Alley to the north.",
     "sections": [
@@ -317,13 +317,13 @@
           "This is a good moment for a small purchase instead of a grand souvenir: something to eat, something to read, or simply a drink while you decide what comes next. A park walk and a shopping street make a pleasantly ordinary combination. That is precisely why it is easy to imagine doing it again."
         ],
         "photo": {
-          "src": "/assets/neighbourhoods/day1-12.jpg",
+          "src": "/assets/neighbourhoods/kichijoji-station-2025.jpg",
           "width": 1280,
-          "height": 836,
-          "alt": "The north entrance of Kichijoji Station with buses outside",
-          "caption": "Kichijoji Station · February 2022",
+          "height": 960,
+          "alt": "Brick entrance to Kichijoji Station with pedestrians outside",
+          "caption": "Kichijoji Station · March 2025",
           "author": "Nesnad",
-          "source": "https://commons.wikimedia.org/wiki/File:Kichijoji_Station_north_exit_-_2022_feb_19_various.jpeg",
+          "source": "https://commons.wikimedia.org/wiki/File:Kichijoji_Station_2025_March_6_various_23_28_52_213000.jpeg",
           "license": "CC BY 4.0",
           "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
         }
@@ -335,15 +335,15 @@
           "Take a look before deciding where to settle. Small rooms call for a flexible plan: one available seat and a menu that appeals can be enough. Afterwards, walk back through the broader streets towards the station. That change from a narrow lane to the lights of a busy road is a lovely final shift in scale."
         ],
         "photo": {
-          "src": "/assets/neighbourhoods/day1-13.jpg",
-          "width": 1280,
-          "height": 960,
-          "alt": "Night lights on a Kichijoji street looking toward the station",
-          "caption": "Kichijoji after dark · June 2014",
-          "author": "Douglas Paul Perkins",
-          "source": "https://commons.wikimedia.org/wiki/File:Kichijoji_at_night.jpg",
-          "license": "CC BY 3.0",
-          "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+          "src": "/assets/neighbourhoods/harmonica-alley-2025.jpg",
+          "width": 960,
+          "height": 1280,
+          "alt": "Entrance sign and shops in Harmonica Alley in afternoon light",
+          "caption": "Harmonica Alley · January 2025",
+          "author": "ITA-ATU",
+          "source": "https://commons.wikimedia.org/wiki/File:Harmonica_street_2025-01.jpg",
+          "license": "CC0",
+          "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/"
         }
       }
     ],
