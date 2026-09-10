@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { cache } from 'react';
+import {createHash} from 'node:crypto';
 
 import { contentDatabase } from '../db/postgres.server';
 import { getPortfolioRecord, listPortfolioRecords } from '../../content/portfolio-manifest';
@@ -87,15 +88,16 @@ export async function saveEditorialArticle(input: SaveEditorialArticleInput): Pr
     || (input.evidenceState !== 'not-applicable'
       && !input.sources.some(({ kind }) => kind === 'primary'))
   )) throw new Error('publication_requirements_not_met');
+  const queries = [];
   if (input.marketKey !== null) {
     const countryCode = input.marketKey === 'seoul' ? 'KR' : input.marketKey === 'singapore' ? 'SG' : 'AE';
-    await sql`
+    queries.push(sql`
       INSERT INTO markets (key, name, country_code)
       VALUES (${input.marketKey}, ${editorialMarketLabels[input.marketKey]}, ${countryCode})
       ON CONFLICT (key) DO UPDATE SET name = excluded.name, updated_at = now()
-    `;
+    `);
   }
-  await sql`
+  queries.push(sql`
     INSERT INTO content_articles (
       slug, market_key, title, summary, body_markdown, status, published_at,
       reviewed_at, reviewed_by, locale, content_type, market_id, editorial_status,
@@ -129,16 +131,18 @@ export async function saveEditorialArticle(input: SaveEditorialArticleInput): Pr
       reviewed_at = CASE WHEN excluded.status = 'published' THEN now() ELSE content_articles.reviewed_at END,
       reviewed_by = CASE WHEN excluded.status = 'published' THEN excluded.reviewed_by ELSE content_articles.reviewed_by END,
       updated_at = now()
-  `;
+  `);
+  queries.push(sql`DELETE FROM content_source_links WHERE content_slug = ${input.slug}`);
   for (const [position, source] of input.sources.entries()) {
-    await sql`
+    const sourceId = `article-${createHash('sha256').update(`${source.href}:${source.title}`).digest('hex')}`;
+    queries.push(sql`
       INSERT INTO content_sources (
         id, source_kind, publisher, title, canonical_url, published_at, checked_at
       ) VALUES (
-        ${source.id}, ${source.kind}, ${source.publisher}, ${source.title}, ${source.href},
+        ${sourceId}, ${source.kind}, ${source.publisher}, ${source.title}, ${source.href},
         ${source.publishedAt ?? null}, ${source.checkedAt}
       )
-      ON CONFLICT (id) DO UPDATE SET
+      ON CONFLICT (canonical_url, title) DO UPDATE SET
         source_kind = excluded.source_kind,
         publisher = excluded.publisher,
         title = excluded.title,
@@ -146,11 +150,13 @@ export async function saveEditorialArticle(input: SaveEditorialArticleInput): Pr
         published_at = excluded.published_at,
         checked_at = excluded.checked_at,
         updated_at = now()
-    `;
-    await sql`
+    `);
+    queries.push(sql`
       INSERT INTO content_source_links (content_slug, source_id, claim_scope, position)
-      VALUES (${input.slug}, ${source.id}, ${source.kind === 'primary' ? 'primary' : 'article'}, ${position})
+      SELECT ${input.slug}, id, ${source.kind === 'primary' ? 'primary' : 'article'}, ${position}
+      FROM content_sources WHERE canonical_url = ${source.href} AND title = ${source.title}
       ON CONFLICT (content_slug, source_id, claim_scope) DO NOTHING
-    `;
+    `);
   }
+  await sql.transaction(queries);
 }

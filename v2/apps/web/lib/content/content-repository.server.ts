@@ -145,7 +145,7 @@ function articleFromRow(row: Readonly<Record<string, unknown>>): PublishedConten
   return isPublishableContent(article) ? article : null;
 }
 
-async function queryPublishedContent(query: PublishedContentQuery): Promise<readonly PublishedContentArticle[]> {
+async function queryPublishedContent(query: PublishedContentQuery, slug?: string): Promise<readonly PublishedContentArticle[]> {
   const sql = publicContentDatabase();
   if (sql === null) return Object.freeze([]);
   try {
@@ -169,6 +169,7 @@ async function queryPublishedContent(query: PublishedContentQuery): Promise<read
       ) source_set ON true
       WHERE article.editorial_status = 'published'
         AND article.locale = ${query.locale}
+        AND (${slug ?? null}::text IS NULL OR article.slug = ${slug ?? null})
         AND (${query.marketId ?? null}::text IS NULL OR article.market_id = ${query.marketId ?? null})
         AND (${query.type ?? null}::text IS NULL OR article.content_type = ${query.type ?? null})
         AND article.published_at IS NOT NULL
@@ -200,6 +201,6 @@ export const getPublishedContent = cache(async (
   slug: string,
 ): Promise<PublishedContentArticle | null> => {
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/u.test(slug)) return null;
-  const articles = await queryPublishedContent({ locale, limit: 200 });
+  const articles = await queryPublishedContent({ locale, limit: 1 }, slug);
   return articles.find((article) => article.slug === slug) ?? null;
 });
