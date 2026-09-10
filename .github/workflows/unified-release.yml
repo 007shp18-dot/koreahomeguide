@@ -1,0 +1,65 @@
+name: Unified production release
+on:
+  schedule:
+    - cron: '0 9 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: read
+  checks: read
+concurrency:
+  group: signedprice-production-release
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Prepare release queue
+        id: queue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          node scripts/release/prepare.mjs
+      - uses: pnpm/action-setup@v4
+        if: steps.queue.outputs.changed == 'true'
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v5
+        if: steps.queue.outputs.changed == 'true'
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: v2/pnpm-lock.yaml
+      - name: Verify combined release
+        if: steps.queue.outputs.changed == 'true'
+        working-directory: v2
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm lint
+          pnpm typecheck
+          pnpm test
+          node --expose-gc --max-old-space-size=1536 --conditions=react-server --experimental-loader ./scripts/typescript-extension-loader.mjs --experimental-transform-types scripts/profile-snapshot-memory.mts --max-rss-mib=1536
+          pnpm build
+          pnpm check:rent-client-boundary
+          pnpm check:singapore-client-boundary
+          node ../scripts/v2-migration/verify-phase-0.cjs
+          pnpm exec playwright install --with-deps chromium
+          pnpm e2e --project=desktop-chromium --project=mobile-chromium --project=tablet-chromium --project=wide-chromium
+      - name: Publish exact validated batch
+        if: steps.queue.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VALIDATED_HEAD: ${{ steps.queue.outputs.validated_head }}
+          RELEASE_PLAN: ${{ steps.queue.outputs.plan }}
+          BASE_SHA: ${{ steps.queue.outputs.base_sha }}
+        run: |
+          git --no-replace-objects show "$BASE_SHA:scripts/release/publish.mjs" > /tmp/signedprice-publish.mjs
+          node /tmp/signedprice-publish.mjs

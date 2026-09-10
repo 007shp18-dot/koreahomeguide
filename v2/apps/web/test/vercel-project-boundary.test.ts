@@ -25,6 +25,7 @@ function run(command: string, cwd: string) {
   return spawnSync(command, {
     cwd,
     encoding: 'utf8',
+    env: { ...process.env, VERCEL_ENV: 'production', VERCEL_GIT_PREVIOUS_SHA: spawnSync('git',['rev-parse','HEAD^'],{cwd,encoding:'utf8'}).stdout.trim() },
     shell: process.platform === 'win32' ? 'powershell.exe' : true,
   });
 }
@@ -51,12 +52,13 @@ function createChangedRepository(relativePath: string) {
   writeFixtureFile(repository, 'docs/superpowers/plan.md', 'plan\n');
   writeFixtureFile(repository, 'v2/apps/web/page.tsx', 'signedprice app\n');
   writeFixtureFile(repository, 'v2/packages/korea-rent/index.ts', 'rent package\n');
+  writeFixtureFile(repository, 'scripts/release/ignore-build.mjs', readFileSync(resolve(repositoryRoot,'scripts/release/ignore-build.mjs'),'utf8'));
   git(repository, 'add', '.');
   git(repository, 'commit', '--quiet', '-m', 'base');
 
   writeFixtureFile(repository, relativePath, `changed ${relativePath}\n`);
   git(repository, 'add', '.');
-  git(repository, 'commit', '--quiet', '-m', `change ${relativePath}`);
+  git(repository, 'commit', '--quiet', '-m', `[release] change ${relativePath}`);
 
   return repository;
 }

@@ -1,4 +1,5 @@
 'use client';
+import { EditorialOperationsPanel } from './editorial-operations-panel';
 import React, { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import { bases, markets, metrics, readiness, sourceKinds, statuses, tiers, units, type Command, type Evidence, type PoolData, type Source } from '@/lib/evidence-pool/contract';
@@ -32,7 +33,7 @@ export function EvidenceAdmin({ initialAuthenticated, initialData = null }: { in
   const [authenticated, setAuthenticated] = useState(initialAuthenticated);
   const expireSession = useCallback(() => setAuthenticated(false), []);
   const [data, setData] = useState<PoolData | null>(initialData);
-  const [tab, setTab] = useState<'evidence' | 'sources' | 'create' | 'research' | 'collection'>('evidence');
+  const [tab, setTab] = useState<'evidence' | 'sources' | 'create' | 'research' | 'collection' | 'operations'>('evidence');
   const [selected, setSelected] = useState<{ entity: 'source' | 'evidence'; id: string } | null>(null);
   const [filters, setFilterValues] = useState({ market: '', status: '', quality: '', q: '', page: 1, sourcePage: 1 });
   const [checked, setChecked] = useState<string[]>([]);
@@ -98,16 +99,18 @@ export function EvidenceAdmin({ initialAuthenticated, initialData = null }: { in
       <button type="button" aria-current={tab === 'sources' ? 'page' : undefined} onClick={() => { setTab('sources'); setSelected(null); }}>출처 관리</button>
       <button type="button" aria-current={tab === 'create' ? 'page' : undefined} onClick={() => { setTab('create'); setSelected(null); }}>자료 등록</button>
       <button type="button" aria-current={tab === 'research' ? 'page' : undefined} onClick={() => { setTab('research'); setSelected(null); }}>Tool 공유 데이터</button>
+      <button type="button" onClick={() => { setTab('operations'); setSelected(null); }}>배포·기사 발행</button>
       <button type="button" aria-current={tab === 'collection' ? 'page' : undefined} onClick={() => { setTab('collection'); setSelected(null); }}>정기 수집 운영</button>
     </nav><div className={styles.sidebarFoot}><p>내부 전용 · 공개되지 않음</p><small>수집·원문 검토·자료 승인·사이트 공개 시점을 구분해 확인하세요.</small><button type="button" disabled={busy} onClick={() => void logout()}>로그아웃</button></div></aside>
     <main className={styles.main}>
-      <header className={styles.header}><div><p className={styles.eyebrow}>EVIDENCE WORKSPACE</p><h1>{tab === 'collection' ? '정기 수집 운영' : tab === 'research' ? 'Tool 공유 데이터' : tab === 'sources' ? '출처 관리' : tab === 'create' ? '자료 등록' : '자료 검토'}</h1><p>{tab === 'sources' ? '자료를 가져온 출처부터 확인하세요.' : tab === 'create' ? '원문 대신 확인 가능한 값과 출처를 남기세요.' : '검토 대기 자료를 확인하고, 분석에 쓸 근거를 정리하세요.'}</p></div><button type="button" disabled={loading || busy} onClick={() => { setLoading(true); void load(); }}>{loading ? '불러오는 중…' : '새로고침'}</button></header>
+      <header className={styles.header}><div><p className={styles.eyebrow}>EVIDENCE WORKSPACE</p><h1>{tab === 'operations' ? '배포·기사 발행' : tab === 'collection' ? '정기 수집 운영' : tab === 'research' ? 'Tool 공유 데이터' : tab === 'sources' ? '출처 관리' : tab === 'create' ? '자료 등록' : '자료 검토'}</h1><p>{tab === 'sources' ? '자료를 가져온 출처부터 확인하세요.' : tab === 'create' ? '원문 대신 확인 가능한 값과 출처를 남기세요.' : '검토 대기 자료를 확인하고, 분석에 쓸 근거를 정리하세요.'}</p></div><button type="button" disabled={loading || busy} onClick={() => { setLoading(true); void load(); }}>{loading ? '불러오는 중…' : '새로고침'}</button></header>
       {error && <p role="alert" className={styles.error}>{error}</p>}{message && <p role="status" className={styles.success}>{message}</p>}
       {data && <section className={styles.stats} aria-label="전체 자료 현황">{([['pending', '검토 대기'], ['approved', '승인 자료'], ['expired', '유효기간 만료'], ['withdrawn', '철회']] as const).map(([key, label]) => <button type="button" key={key} disabled={busy} onClick={() => { setTab('evidence'); setSelected(null); setFilters({ ...filters, status: key, page: 1 }); }}><span>{label}</span><strong>{data.counts[key]}</strong></button>)}</section>}
       {!data && <section className={styles.panel}><p role="status">{loading ? '저장된 자료를 불러오고 있습니다…' : '자료에 연결하지 못했습니다. 설정을 확인한 뒤 새로고침하세요.'}</p></section>}
       {data && (data.sourceTotal ?? 0) > 100 && <div className={styles.pagination} style={{ marginBottom: '1rem' }} aria-label="출처 페이지"><span>선택할 출처 {filters.sourcePage} / {Math.ceil((data.sourceTotal ?? 0) / 100)} 페이지</span><button type="button" disabled={loading || busy || filters.sourcePage <= 1} onClick={() => { if (selected?.entity === 'source') setSelected(null); setFilters({ ...filters, sourcePage: filters.sourcePage - 1 }); }}>이전 출처</button><button type="button" disabled={loading || busy || filters.sourcePage * 100 >= (data.sourceTotal ?? 0)} onClick={() => { if (selected?.entity === 'source') setSelected(null); setFilters({ ...filters, sourcePage: filters.sourcePage + 1 }); }}>다음 출처</button></div>}
       {data && <div className={selectedRow ? styles.split : ''}>
         <section className={styles.panel}>
+          {tab === 'operations' && <EditorialOperationsPanel />}
           {tab === 'collection' && <CollectionPanel onUnauthorized={expireSession} />}
           {tab === 'research' && <ResearchPanel />}
           {tab === 'create' && <><h2>새 자료</h2><EvidenceForm sources={data.sources} busy={busy} submit={mutate} /></>}

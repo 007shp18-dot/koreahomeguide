@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import { KoreanSiteFrame } from '@/components/korean-site-frame';
 import { NewsroomIndex, resolveNewsroomFilters } from '@/components/newsroom/newsroom-index';
 import { StoredExternalHeadlines } from '@/components/news/stored-external-headlines';
-import { listPortfolioRecords } from '@/content/portfolio-manifest';
+import { listNewsroomArticles } from '@/lib/content/newsroom-content.server';
 import { indexableMetadata } from '@/lib/public-metadata';
 export const revalidate = 900;
 type Props = { searchParams?: Promise<Record<string, string | readonly string[] | undefined>> };
@@ -12,5 +12,5 @@ export async function generateMetadata({ searchParams = Promise.resolve({}) }: P
 }
 export default async function Page({ searchParams = Promise.resolve({}) }: Props) {
   const filters = resolveNewsroomFilters(await searchParams);
-  return <KoreanSiteFrame href={`/ko${filters.canonicalHref}`}><NewsroomIndex locale="ko" articles={listPortfolioRecords('ko')} policies={[]} filters={filters} headlines={<Suspense fallback={<p role="status">뉴스를 불러오는 중…</p>}><StoredExternalHeadlines market={filters.market} preview={filters.type !== 'news'} locale="ko" /></Suspense>} /></KoreanSiteFrame>;
+  return <KoreanSiteFrame href={`/ko${filters.canonicalHref}`}><NewsroomIndex locale="ko" articles={await listNewsroomArticles('ko')} policies={[]} filters={filters} headlines={<Suspense fallback={<p role="status">뉴스를 불러오는 중…</p>}><StoredExternalHeadlines market={filters.market} preview={filters.type !== 'news'} locale="ko" /></Suspense>} /></KoreanSiteFrame>;
 }

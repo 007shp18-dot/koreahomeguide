@@ -103,7 +103,12 @@ function sourceFromRow(value: unknown): ContentSource | null {
   });
 }
 
-function articleFromRow(row: Readonly<Record<string, unknown>>): PublishedContentArticle | null {
+export function articleFromRow(row: Readonly<Record<string, unknown>>): PublishedContentArticle | null {
+  // The Neon driver decodes timestamptz columns as Date objects; JSON source metadata uses strings.
+  row = { ...row, ...Object.fromEntries(['published_at', 'updated_at', 'reviewed_at'].map(key => {
+    const value = row[key];
+    return [key, value instanceof Date && Number.isFinite(value.getTime()) ? value.toISOString() : value];
+  })) };
   const sources = Array.isArray(row.sources)
     ? Object.freeze(row.sources.flatMap((source) => {
         const parsed = sourceFromRow(source);
@@ -145,7 +150,7 @@ function articleFromRow(row: Readonly<Record<string, unknown>>): PublishedConten
   return isPublishableContent(article) ? article : null;
 }
 
-async function queryPublishedContent(query: PublishedContentQuery): Promise<readonly PublishedContentArticle[]> {
+async function queryPublishedContent(query: PublishedContentQuery, slug?: string): Promise<readonly PublishedContentArticle[]> {
   const sql = publicContentDatabase();
   if (sql === null) return Object.freeze([]);
   try {
@@ -169,6 +174,7 @@ async function queryPublishedContent(query: PublishedContentQuery): Promise<read
       ) source_set ON true
       WHERE article.editorial_status = 'published'
         AND article.locale = ${query.locale}
+        AND (${slug ?? null}::text IS NULL OR article.slug = ${slug ?? null})
         AND (${query.marketId ?? null}::text IS NULL OR article.market_id = ${query.marketId ?? null})
         AND (${query.type ?? null}::text IS NULL OR article.content_type = ${query.type ?? null})
         AND article.published_at IS NOT NULL
@@ -200,6 +206,6 @@ export const getPublishedContent = cache(async (
   slug: string,
 ): Promise<PublishedContentArticle | null> => {
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/u.test(slug)) return null;
-  const articles = await queryPublishedContent({ locale, limit: 200 });
+  const articles = await queryPublishedContent({ locale, limit: 1 }, slug);
   return articles.find((article) => article.slug === slug) ?? null;
 });

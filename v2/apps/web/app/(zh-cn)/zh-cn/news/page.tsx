@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 import { EditorialGrowthPublicFrame } from '@/components/editorial-growth/editorial-growth-public-shell';
 import { EditorialPortfolioIndex } from '@/components/newsroom/editorial-portfolio-index';
-import { listPortfolioRecords } from '@/content/portfolio-manifest';
+import { listNewsroomArticles } from '@/lib/content/newsroom-content.server';
 import { indexableMetadata } from '@/lib/public-metadata';
 import styles from '@/components/tools/tools.module.css';
 
@@ -15,7 +15,7 @@ const isInsight = (type: string) => ['insights', 'market', 'data-stories'].inclu
 export default async function ChineseNewsPage({ searchParams }: Readonly<{ searchParams?: Promise<{ type?: string | string[] }> }> = {}) {
   const requested = (await searchParams)?.type;
   const type = typeof requested === 'string' && [...tabs, ...insightTabs].some(([id]) => id === requested) ? requested : 'insights';
-  const records = listPortfolioRecords('zh-CN').filter(article => article.type !== 'guide'
+  const records = (await listNewsroomArticles('zh-CN')).filter(article => article.type !== 'guide'
     && (type === 'insights' ? article.type === 'data-story' || article.type === 'market-brief'
       : type === 'market' ? article.type === 'market-brief'
         : type === 'data-stories' ? article.type === 'data-story'
