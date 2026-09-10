@@ -38,7 +38,7 @@ test('home presents four city destinations and a separate budget journey without
  await page.locator('input[data-amount-name="budget"]').fill('750000');
  await page.getByRole('button', {name:'Update comparison',exact:true}).click();
  await expect(page).toHaveURL(/\/passport\/.*budget=750000/);
- await expect(page.locator('[data-passport-market]')).toHaveCount(3);
+ await expect(page.locator('[data-passport-market]')).toHaveCount(4);
 });
 
 test('neutral calculator changes currency without carrying the previous purchase amount',async({page})=>{
@@ -60,7 +60,7 @@ test('tool languages retain their published primary navigation and Corrections h
   await page.goto(path);
   const navigation = await visibleProductNavigation(page);
   await expect(navigation).toBeVisible();
-  await expect(navigation.locator('.site-header__product-link')).toHaveCount(path === '/tools/' ? 5 : 4);
+  await expect(navigation.locator('.site-header__product-link')).toHaveCount(5);
   const rankings = navigation.getByRole('link', { name: /^(?:Rankings|지역 비교|地区排名)$/ });
   await expect(rankings).toHaveCount(0);
   await expect((await visibleLanguageNavigation(page)).getByRole('link')).toHaveText(['EN','KO','中文']);
