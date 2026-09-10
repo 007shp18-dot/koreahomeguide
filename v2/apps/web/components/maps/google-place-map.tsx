@@ -357,8 +357,8 @@ export function GooglePlaceMap({
       const requestedLocations = points.filter((point) => point.address !== undefined).length;
       setMessage(requestedLocations > 0
         ? (locale === 'ko' ? `Google 지도에서 장소 ${requestedLocations}곳을 찾는 중…` : `Locating ${requestedLocations} places on Google Maps…`)
-        : locale === 'ko' ? `${points.reduce((n, point) => n + (point.count ?? 1), 0).toLocaleString('ko')}건 · 숫자는 묶인 결과 수입니다. 지역 단위 자료는 건물의 정확한 위치를 뜻하지 않습니다.` : `${points.reduce((n, point) => n + (point.count ?? 1), 0).toLocaleString('en')} results · Numbers show grouped results. Area-level evidence does not identify an exact building location.`);
-      if (points.every(point => point.address === undefined) && runtime.current.map.addListener) {
+        : locale === 'ko' ? `${points.reduce((n, point) => n + (point.count ?? 1), 0).toLocaleString('ko')}건 · 숫자는 묶인 결과 수입니다. 지역 단위 자료는 건물의 정확한 위치를 뜻하지 않습니다.` : points.some(point => point.showFullLabel) ? `${points.length} areas shown. Select an area to view its recorded prices.` : `${points.reduce((n, point) => n + (point.count ?? 1), 0).toLocaleString('en')} results · Numbers show grouped results. Area-level evidence does not identify an exact building location.`);
+      if (clusterLocations && points.every(point => point.address === undefined) && runtime.current.map.addListener) {
         zoomListener.current = runtime.current.map.addListener('zoom_changed', () => {
           if (generation.current !== currentGeneration || runtime.current === null) return;
           for (const marker of marketMarkers.current) marker.setMap(null);

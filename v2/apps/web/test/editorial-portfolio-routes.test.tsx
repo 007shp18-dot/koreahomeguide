@@ -12,22 +12,28 @@ import ChineseGuidePage, { generateStaticParams as chineseGuideParams } from '..
 import { listPortfolioRecords } from '../content/portfolio-manifest';
 
 describe('editorial portfolio public routes', () => {
-  it('curates the practical directory while keeping all ten existing guide URLs', async () => {
+  it('curates Seoul guidance by default while keeping all existing guide URLs', async () => {
     const guides = listPortfolioRecords('en').filter(({ type }) => type === 'guide');
     const html = renderToStaticMarkup(await GuidesPage({ searchParams: Promise.resolve({}) }));
     expect(guides).toHaveLength(9);
     expect(guideParams()).toEqual(guides.map(({ slug }) => ({ slug })));
     const main = html.match(/<main[\s\S]*?<\/main>/)?.[0] ?? '';
-    expect(main.match(/<h3>/g)).toHaveLength(6);
-    for (const slug of ['buy-property-in-korea-as-foreigner', 'read-singapore-private-transactions', 'rent-an-apartment-in-korea', 'wolse-vs-jeonse', 'korea-rental-contract-checklist']) expect(main).toContain(`/guides/${slug}`);
-    expect(main).toContain('/ae/dubai/guide');
+    expect(main).toContain('Before you buy');
+    expect(main).toContain('Owning &amp; ongoing costs');
+    expect(main).toContain('Essential Seoul guides');
+    expect(main).toContain('href="/kr/seoul/explore"');
+    for (const slug of ['buy-property-in-korea-as-foreigner', 'rent-an-apartment-in-korea', 'wolse-vs-jeonse', 'korea-rental-contract-checklist']) expect(main).toContain(`/guides/${slug}`);
+    expect(main).not.toContain('/ae/dubai/guide');
+    expect(main).not.toContain('/guides/read-singapore-private-transactions');
     for (const slug of ['read-seoul-sale-transactions', 'compare-seoul-district-prices', 'seoul-apartment-buying-budget-guide']) expect(main).not.toContain(slug);
   });
 
   it('filters guides by city and makes Dubai research discoverable', async () => {
     const html = renderToStaticMarkup(await GuidesPage({ searchParams: Promise.resolve({market: 'dubai'}) }));
     expect(html).toContain('Buying in Dubai: checks before you commit');
-    expect(html.match(/<h3>/g)).toHaveLength(1);
+    expect(html).toContain('Essential Dubai guides');
+    expect(html).toContain('href="/ae/dubai/guide"');
+    expect(html).toContain('href="/ae/dubai/explore"');
     expect(html).not.toContain('/guides/read-singapore-private-transactions');
   });
 

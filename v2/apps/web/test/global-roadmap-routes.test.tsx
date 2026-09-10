@@ -46,11 +46,11 @@ describe('global roadmap routes', () => {
       newsMetadata.alternates?.languages,
     );
     expect(communityMetadata.alternates).toEqual({ canonical: 'https://www.signedprice.com/community/' });
-    expect(news).toContain('<h1>News &amp; Insights</h1>');
-    expect(news).toContain('Find a city you connect with, a neighbourhood that fits, and a clearer path to a home of your own.');
+    expect(news).toContain('<h1>Insights</h1>');
+    expect(news).toContain('Places, prices and the changes that matter to your next home.');
     expect(news).toContain('data-public-editorial-frame="content"');
     expect(news).toContain('Singapore condo prices: CCR vs RCR vs OCR compared');
-    expect(news).toContain('aria-label="News markets"');
+    expect(news).toContain('aria-label="Insight cities"');
     expect(news).not.toContain('Live external news');
     expect(externalFetch).not.toHaveBeenCalled();
     expect(community).toContain('One community, organized by place.');

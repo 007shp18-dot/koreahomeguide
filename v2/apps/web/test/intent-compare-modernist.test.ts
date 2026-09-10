@@ -138,8 +138,8 @@ describe('nine intent routes use one connected decision hierarchy', () => {
     for (const params of intentRouteParams) {
       const page = renderToStaticMarkup(await IntentPage({ params: Promise.resolve(params) }));
       const globalNavigation = navigationMarkup(page);
-      expect(globalNavigation.match(/<a /g) ?? []).toHaveLength(4);
-      for (const label of ['Explore', 'Insights', 'Tools', 'Guides']) {
+      expect(globalNavigation.match(/<a /g) ?? []).toHaveLength(5);
+      for (const label of ['Explore', 'Insights', 'News', 'Tools', 'Guides']) {
         expect(globalNavigation).toContain(`>${label}</a>`);
       }
 
@@ -223,7 +223,7 @@ describe('comparison remains a semantic Modernist table', () => {
   it('keeps comparison inside the shared global hierarchy', () => {
     const markup = navigationMarkup(renderToStaticMarkup(createElement(ComparePage)));
 
-    expect(markup.match(/<a /g) ?? []).toHaveLength(4);
+    expect(markup.match(/<a /g) ?? []).toHaveLength(5);
     expect(markup).toContain('>Explore</a>');
   });
 

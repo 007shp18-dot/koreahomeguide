@@ -55,12 +55,12 @@ test('neutral calculator changes currency without carrying the previous purchase
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
 });
 
-test('all tool languages use the same four primary navigation slots and Corrections has a useful report action',async({page})=>{
+test('tool languages retain their published primary navigation and Corrections has a useful report action',async({page})=>{
  for(const path of ['/tools/','/ko/tools/','/zh-cn/tools/']) {
   await page.goto(path);
   const navigation = await visibleProductNavigation(page);
   await expect(navigation).toBeVisible();
-  await expect(navigation.locator('.site-header__product-link')).toHaveCount(4);
+  await expect(navigation.locator('.site-header__product-link')).toHaveCount(path === '/tools/' ? 5 : 4);
   const rankings = navigation.getByRole('link', { name: /^(?:Rankings|지역 비교|地区排名)$/ });
   await expect(rankings).toHaveCount(0);
   await expect((await visibleLanguageNavigation(page)).getByRole('link')).toHaveText(['EN','KO','中文']);

@@ -893,3 +893,36 @@
 .transactionDetails dl { margin: 0; display: grid; gap: 10px; }
 .transactionDetails dt, .transactionDetails dd { white-space: normal; }
 .transactionDetails summary { color: var(--accent); }
+
+/* Supporting evidence follows the map workspace gutters, including on mobile. */
+.exploreSupportingContent {
+  width: min(calc(100% - 2 * var(--page-gutter)), var(--workspace-frame));
+  min-width: 0;
+  margin: 24px auto 48px;
+}
+.exploreSupportingContent > p { margin: 12px 0 24px; font-size: 14px; line-height: 1.6; }
+.exploreSupportingContent > p a { color: var(--accent); text-underline-offset: 3px; }
+.exploreSupportingContent .hdbPanel { min-width: 0; border-radius: 8px; }
+.exploreSupportingContent .sectionIntro > *,
+.exploreSupportingContent .chartGrid > * { min-width: 0; }
+.compactEvidence > details { min-width: 0; }
+.compactEvidence > details > summary { gap: 16px; min-height: 44px; font-size: 14px; line-height: 1.5; letter-spacing: 0; font-weight: 600; }
+.compactEvidence > details > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.compactEvidence > details > div { min-width: 0; grid-template-columns: minmax(0, 1fr); gap: 16px; border-radius: 8px; }
+.compactEvidence > details > div > * { min-width: 0; }
+.compactEvidence .sectionLabel,
+.page .compactEvidence h2,
+.compactEvidence .limitations { margin: 0; }
+.compactEvidence .limitations { font-size: 14px; line-height: 1.6; overflow-wrap: anywhere; }
+.compactEvidence .limitations li + li { margin-top: 8px; }
+.compactEvidence .actions { margin: 0; gap: 8px 24px; }
+.compactEvidence .actions a { min-width: 0; max-width: 100%; padding: 8px 0; border: 0; border-radius: 0; color: var(--accent); background: transparent; font-size: 14px; font-weight: 500; line-height: 1.5; text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; }
+@media (max-width: 480px) {
+  .exploreSupportingContent .hdbPanel { padding: 16px; }
+  .exploreSupportingContent .chart { padding: 14px; }
+  .exploreSupportingContent .chartRow { grid-template-columns: minmax(0, 1fr) auto; gap: 6px 12px; }
+  .exploreSupportingContent .chartName { white-space: normal; line-height: 1.5; }
+  .exploreSupportingContent .chartValue { grid-column: 2; grid-row: 1; line-height: 1.5; }
+  .exploreSupportingContent .chartTrack { grid-column: 1 / -1; grid-row: 2; }
+  .compactEvidence > details > div { padding: 16px; }
+}

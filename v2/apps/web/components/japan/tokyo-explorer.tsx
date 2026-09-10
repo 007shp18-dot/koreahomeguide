@@ -81,7 +81,7 @@ export default async function TokyoExplorer({ searchParams }: { searchParams: Pr
         {publishedWards.length > 0 && <details>
           <summary>Browse published wards</summary>
           <nav className={styles.coverageLinks} aria-label="Published Tokyo wards">
-            {publishedWards.map(item => <Link href={scopeLink(item)} key={item.city}>
+            {publishedWards.map(item => <Link href={scopeLink(item)} key={item.city} prefetch={false}>
               <span>{wardName(item.city)}</span><span>{item.year} Q{item.quarter}</span>
             </Link>)}
           </nav>
@@ -100,8 +100,7 @@ export default async function TokyoExplorer({ searchParams }: { searchParams: Pr
         <div className={styles.list}>
           {data.records.map(row => <article className={styles.row} key={row.recordReference}>
             <div className={styles.rowHeading}><h3>{row.district || row.municipality}</h3><strong className={styles.price}>{yen.format(row.price)}</strong></div>
-            <div className={styles.details}><p>{row.municipality} · {row.type}</p>
-              <p>{row.areaLabel || 'Area not disclosed'}{row.areaLabel ? ' m²' : ''} · {row.floorPlan || 'Layout not disclosed'} · Built {row.buildingYear || 'not disclosed'} · {row.structure || 'Structure not disclosed'}</p>
+            <div className={styles.details}><p>{row.areaLabel || 'Area not disclosed'}{row.areaLabel ? ' m²' : ''} · {row.floorPlan || 'Layout not disclosed'}</p><details className={styles.recordDetails}><summary>Property details</summary><p>{row.municipality} · {row.type}</p><p>Built {row.buildingYear || 'not disclosed'} · {row.structure || 'Structure not disclosed'}</p></details>
             </div>
           </article>)}
         </div>

@@ -7,6 +7,7 @@ import nextConfig from '../next.config';
 import PolicyPage, { generateMetadata as generatePolicyMetadata } from '../app/(en)/news/policy/[slug]/page';
 import sitemap from '../app/sitemap';
 import { NewsroomArticle } from '../components/newsroom/newsroom-article';
+import { buildInsightItems } from '../components/newsroom/insights-index';
 import { NewsroomIndex, resolveNewsroomFilters } from '../components/newsroom/newsroom-index';
 import { PolicyRecordArticle } from '../components/newsroom/policy-record-article';
 import { PolicyTracker } from '../components/newsroom/policy-tracker';
@@ -52,7 +53,7 @@ describe('public Newsroom routes', () => {
     const heading = insights.match(/<header[\s\S]*?<\/header>/)?.[0] ?? '';
     expect(heading).not.toContain('/news/policy');
     expect(insights).not.toContain('Open the Policy Tracker');
-    expect(insights).toContain('/news?type=policy');
+    expect(insights).not.toContain('aria-label="News and insight types"');
     expect(markup('policy')).toContain('href="/news/policy"');
   });
   it('keeps budget comparisons in Insights and Data Stories, with a matching article breadcrumb', () => {
@@ -114,26 +115,28 @@ describe('public Newsroom routes', () => {
     expect(html).not.toContain(policy.title);
   });
 
-  it('renders three hub tabs, five market filters, one lead, and a row list without desk diagnostics', () => {
-    const html = renderToStaticMarkup(<NewsroomIndex
-      articles={[article, { ...article, id: 'story-2', slug: 'second-story', title: 'Second story' }]}
-      policies={[policy]}
-      filters={{ type: 'insights', market: 'all', canonicalHref: '/news/' }}
-    />);
-
-    for (const label of ['Insights', 'News', 'Policy']) expect(html).toContain(`>${label}</a>`);
-    expect(html.match(/aria-label="News and insight types"[\s\S]*?<\/nav>/)?.[0].match(/<a /g)).toHaveLength(3);
-    for (const label of ['All insights', 'Market Insight', 'Data Stories']) expect(html).toContain(`>${label}</a>`);
-    for (const label of ['All', 'Seoul', 'Singapore', 'Dubai', 'Tokyo']) expect(html).toContain(`>${label}</a>`);
-    expect(html).toContain('data-newsroom-layout="research"');
-    expect(html).toContain('data-newsroom-filter-bar="true"');
-    expect(html).toContain('<h1>News &amp; Insights</h1>');
-    expect(html.match(/aria-label="News and insight types"/g)).toHaveLength(1);
-    expect(html).not.toContain('SignedPrice Newsroom');
-    expect(html).not.toContain('Property change, checked against evidence.');
+  it('renders city-only discovery with one hero, six visible cards and concrete topics', () => {
+    const html = renderToStaticMarkup(<NewsroomIndex articles={[article]} policies={[policy]} filters={resolveNewsroomFilters({})} />);
+    expect(html).toContain('<h1>Insights</h1>');
+    const nav = html.match(/aria-label="Insight cities"[\s\S]*?<\/nav>/)?.[0] ?? '';
+    expect(nav.match(/<a /g)).toHaveLength(5);
+    for (const label of ['All', 'Seoul', 'Tokyo', 'Singapore', 'Dubai']) expect(nav).toContain(`>${label}</a>`);
     expect(html.match(/data-newsroom-lead=/g)).toHaveLength(1);
-    expect(html).toContain('data-newsroom-latest-list="rows"');
-    expect(html).not.toMatch(/provider|credential|ingestion|500 headlines|Naver News API/i);
+    expect(html).toContain('Neighborhood living');
+    expect(html).toContain('Ownership costs');
+    expect(html).toContain('Latest stories');
+    expect(html).not.toContain('aria-label="Insight types"');
+    expect(html).not.toContain('local-conversation');
+    expect(html).not.toContain('View the buying steps');
+  });
+
+  it('keeps future, withdrawn and duplicate records out of Insights discovery', () => {
+    const future = { ...article, id: 'future', slug: 'future', publishedAt: '2999-01-01' };
+    const withdrawn = { ...article, id: 'withdrawn', slug: 'withdrawn', evidenceState: 'withdrawn' as const };
+    const items = buildInsightItems([article, article, future, withdrawn, newsArticle], 'seoul');
+    expect(items.filter(item => item.id === article.id)).toHaveLength(1);
+    expect(items.some(item => ['future', 'withdrawn', newsArticle.id].includes(item.id))).toBe(false);
+    expect(items.every(item => item.city === 'seoul')).toBe(true);
   });
 
   it('shows article provenance and at most three first-viewport takeaways', () => {

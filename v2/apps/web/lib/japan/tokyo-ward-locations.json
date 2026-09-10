@@ -1,0 +1,241 @@
+{
+  "source": {
+    "url": "https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03-v2_4.html",
+    "dataUrl": "https://raw.githubusercontent.com/niiyz/JapanCityGeoJson/master/geojson/custom/tokyo23.json",
+    "sha256": "c9d00c8c8b3b8e0741a9b82ae90f3c9ffa7fc694e626a0405d6cbb49bc9b4400",
+    "attribution": "MLIT N03 (2020), via JapanCityGeoJson. Area reference points derived by SignedPrice.",
+    "method": "Midpoint of widest interior horizontal segment at the main polygon mid-latitude; bounds from all ward polygons. Area reference points, not buildings or addresses."
+  },
+  "wards": {
+    "13101": {
+      "latitude": 35.68748,
+      "longitude": 139.750269,
+      "bounds": {
+        "south": 35.669609,
+        "north": 35.705352,
+        "west": 139.730001,
+        "east": 139.782661
+      }
+    },
+    "13102": {
+      "latitude": 35.671305,
+      "longitude": 139.773345,
+      "bounds": {
+        "south": 35.646039,
+        "north": 35.696571,
+        "west": 139.754317,
+        "east": 139.792752
+      }
+    },
+    "13103": {
+      "latitude": 35.652958,
+      "longitude": 139.742379,
+      "bounds": {
+        "south": 35.623084,
+        "north": 35.682832,
+        "west": 139.708564,
+        "east": 139.782376
+      }
+    },
+    "13104": {
+      "latitude": 35.701477,
+      "longitude": 139.715736,
+      "bounds": {
+        "south": 35.673433,
+        "north": 35.72952,
+        "west": 139.673438,
+        "east": 139.74587
+      }
+    },
+    "13105": {
+      "latitude": 35.717748,
+      "longitude": 139.743314,
+      "bounds": {
+        "south": 35.69964,
+        "north": 35.735855,
+        "west": 139.717473,
+        "east": 139.772402
+      }
+    },
+    "13106": {
+      "latitude": 35.712961,
+      "longitude": 139.784855,
+      "bounds": {
+        "south": 35.694704,
+        "north": 35.731218,
+        "west": 139.762789,
+        "east": 139.809719
+      }
+    },
+    "13107": {
+      "latitude": 35.715102,
+      "longitude": 139.818715,
+      "bounds": {
+        "south": 35.686776,
+        "north": 35.743429,
+        "west": 139.788646,
+        "east": 139.842155
+      }
+    },
+    "13108": {
+      "latitude": 35.615675,
+      "longitude": 139.781572,
+      "bounds": {
+        "south": 35.60184,
+        "north": 35.708008,
+        "west": 139.771325,
+        "east": 139.848227
+      }
+    },
+    "13109": {
+      "latitude": 35.614605,
+      "longitude": 139.724092,
+      "bounds": {
+        "south": 35.58493,
+        "north": 35.641848,
+        "west": 139.695393,
+        "east": 139.773596
+      }
+    },
+    "13110": {
+      "latitude": 35.632298,
+      "longitude": 139.698602,
+      "bounds": {
+        "south": 35.600647,
+        "north": 35.663949,
+        "west": 139.661483,
+        "east": 139.717654
+      }
+    },
+    "13111": {
+      "latitude": 35.572672,
+      "longitude": 139.71425,
+      "bounds": {
+        "south": 35.528198,
+        "north": 35.61321,
+        "west": 139.652975,
+        "east": 139.826028
+      }
+    },
+    "13112": {
+      "latitude": 35.636481,
+      "longitude": 139.635885,
+      "bounds": {
+        "south": 35.590146,
+        "north": 35.682816,
+        "west": 139.582489,
+        "east": 139.686396
+      }
+    },
+    "13113": {
+      "latitude": 35.666741,
+      "longitude": 139.692218,
+      "bounds": {
+        "south": 35.641458,
+        "north": 35.692025,
+        "west": 139.661591,
+        "east": 139.72356
+      }
+    },
+    "13114": {
+      "latitude": 35.705865,
+      "longitude": 139.673174,
+      "bounds": {
+        "south": 35.676348,
+        "north": 35.735382,
+        "west": 139.624328,
+        "east": 139.694331
+      }
+    },
+    "13115": {
+      "latitude": 35.698127,
+      "longitude": 139.626854,
+      "bounds": {
+        "south": 35.665806,
+        "north": 35.730449,
+        "west": 139.584919,
+        "east": 139.667769
+      }
+    },
+    "13116": {
+      "latitude": 35.729029,
+      "longitude": 139.707121,
+      "bounds": {
+        "south": 35.712266,
+        "north": 35.745793,
+        "west": 139.677344,
+        "east": 139.75276
+      }
+    },
+    "13117": {
+      "latitude": 35.765241,
+      "longitude": 139.734032,
+      "bounds": {
+        "south": 35.731578,
+        "north": 35.798904,
+        "west": 139.689398,
+        "east": 139.771125
+      }
+    },
+    "13118": {
+      "latitude": 35.739733,
+      "longitude": 139.782177,
+      "bounds": {
+        "south": 35.724611,
+        "north": 35.754855,
+        "west": 139.749638,
+        "east": 139.814661
+      }
+    },
+    "13119": {
+      "latitude": 35.768374,
+      "longitude": 139.684039,
+      "bounds": {
+        "south": 35.73587,
+        "north": 35.800879,
+        "west": 139.624489,
+        "east": 139.722728
+      }
+    },
+    "13120": {
+      "latitude": 35.745869,
+      "longitude": 139.619802,
+      "bounds": {
+        "south": 35.711912,
+        "north": 35.779826,
+        "west": 139.562786,
+        "east": 139.681307
+      }
+    },
+    "13121": {
+      "latitude": 35.778137,
+      "longitude": 139.79464,
+      "bounds": {
+        "south": 35.738568,
+        "north": 35.817706,
+        "west": 139.735705,
+        "east": 139.8588
+      }
+    },
+    "13122": {
+      "latitude": 35.7541,
+      "longitude": 139.850429,
+      "bounds": {
+        "south": 35.710853,
+        "north": 35.797346,
+        "west": 139.81321,
+        "east": 139.894568
+      }
+    },
+    "13123": {
+      "latitude": 35.63771,
+      "longitude": 139.857803,
+      "bounds": {
+        "south": 35.632679,
+        "north": 35.750765,
+        "west": 139.833118,
+        "east": 139.918908
+      }
+    }
+  }
+}

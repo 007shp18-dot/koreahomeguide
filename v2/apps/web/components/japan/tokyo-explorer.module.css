@@ -61,5 +61,34 @@
 .areaMap button { min-height: 44px; max-width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-strong); color: var(--ink); font: inherit; font-size: 14px; white-space: normal; text-align: left; }
 .areaMap button[aria-pressed='true'] { color: var(--accent); border-color: var(--accent); }
 .areaMap summary { min-height: 44px; padding-block: 12px; cursor: pointer; }
-.page [data-market-shell-region='spatial'] { position: sticky; top: 12px; }
-@media(max-width:760px) { .page [data-market-shell-region='spatial'] { position: static; order: -1; } .rowHeading { flex-wrap: wrap; } }
+
+
+.areaMap :global(.spGoogleAreaPrice) { max-width: 140px; padding: 5px 8px !important; font-size: 12px !important; line-height: 1.3 !important; }
+.selectedArea { display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 12px 24px; padding: 18px 0; border-bottom: 1px solid var(--line); }
+.selectedArea h3 { margin: 0; font-size: 17px; font-weight: 600; line-height: 1.45; }
+.selectedArea p { margin: 5px 0 0; font-size: 13px; }
+.selectedArea span { display: block; font-size: 12px; line-height: 1.5; color: var(--muted); }
+.selectedArea strong { display: block; margin-top: 4px; font-size: 20px; line-height: 1.4; font-variant-numeric: tabular-nums; }
+.mapAreaList { align-items: stretch; }
+.mapAreaList a { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; font-size: 14px; line-height: 1.5; text-decoration: none; }
+.mapAreaList a[aria-current] { border-color: var(--accent); color: var(--accent); }
+.areaMap summary { font-size: 13px; line-height: 1.5; color: var(--muted); }
+.areaMap :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.mapMethod { border-top: 1px solid var(--line); }
+.mapMethod p { font-size: 12px; line-height: 1.65; }
+.recordDetails { margin-top: 6px; }
+.recordDetails summary { width: fit-content; min-height: 36px; align-content: center; font-size: 13px; line-height: 1.5; color: var(--muted); cursor: pointer; }
+.recordDetails summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+@media (min-width: 761px) and (max-width: 1050px) {
+  .page :global([data-layout='split']) { grid-template-columns: minmax(0, 1fr); }
+  .page :global([data-market-shell-region='spatial']) { position: static; grid-row: 1; }
+}
+@media (max-width: 760px) {
+  .areaMap { padding-top: 20px; }
+  .page > :global([data-market-explore-shell]), .sourcePanel { width: calc(100% - 2 * var(--page-gutter)); }
+  .primaryFilters { grid-template-columns: minmax(0, 1fr); }
+  .search { grid-column: auto; }
+  .primaryFilters button { width: 100%; }
+  .areaMap nav[aria-label='Map detail'] { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .areaMap nav[aria-label='Map detail'] button { text-align: center; }
+}

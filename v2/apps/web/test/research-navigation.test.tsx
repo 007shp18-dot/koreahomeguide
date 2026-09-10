@@ -15,7 +15,7 @@ describe('research navigation continuity', () => {
     const filters = resolveNewsroomFilters({ type: 'headlines', market: 'singapore' });
     expect(filters.canonicalHref).toBe('/news/?type=news&market=singapore');
     const html = renderToStaticMarkup(<NewsroomIndex articles={[]} policies={[]} filters={filters} />);
-    expect(html).toContain('Latest news');
+    expect(html).toContain('Latest updates');
     expect(html).toContain('href="/news?type=news&amp;market=singapore"');
     expect(html).not.toContain('No articles match');
   });
