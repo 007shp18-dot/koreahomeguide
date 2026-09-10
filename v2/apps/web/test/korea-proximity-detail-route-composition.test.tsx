@@ -161,7 +161,7 @@ describe('Korea proximity Detail route composition', () => {
     expect(html).toContain('src="/assets/buildings/evidence-tower.jpg"');
     expect(html).toContain('DB station · 2호선 · 180 m');
     expect(html).toContain('DB school · 360 m');
-    const photoLocationHref = html.match(/<a href="([^"]+)">View location on map<\\/a>/)?.[1];
+    const photoLocationHref = html.match(/<a href="([^"]+)">View location on map<\/a>/)?.[1];
     expect(photoLocationHref).toBeDefined();
     const photoMapUrl = new URL(photoLocationHref!.replaceAll('&amp;', '&'), 'https://signedprice.com');
     expect(photoMapUrl.searchParams.get('view')).toBe('map');
