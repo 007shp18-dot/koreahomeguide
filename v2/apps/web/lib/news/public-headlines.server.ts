@@ -40,7 +40,7 @@ const cachedHeadlines = unstable_cache(async () => {
   const items = await readPublicHeadlines();
   if (items === null) throw new Error('Public headline review state unavailable');
   return items;
-}, ['public-headlines-v3'], { revalidate: 900 });
+}, ['public-headlines-v4-automatic'], { revalidate: 900 });
 
 export async function loadPublicHeadlines() {
   try { return await cachedHeadlines(); } catch { return null; }
