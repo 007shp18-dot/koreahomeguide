@@ -37,7 +37,6 @@ describe('global property database migration', () => {
       '0022_singapore_publication.sql',
       '0023_tool_research_maintenance.sql',
       '0024_hdb_building_collection.sql',
-      '0025_onemap_location_collection.sql',
     ]);
     expect(bundles.find(({ name }) => name === '0003_global_property_core.sql')?.statements.length)
       .toBeGreaterThan(10);

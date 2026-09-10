@@ -11,10 +11,6 @@
       "schedule": "20 3 * * *"
     },
     {
-      "path": "/api/internal/onemap-locations/",
-      "schedule": "35 */4 * * *"
-    },
-    {
       "path": "/api/internal/singapore-publication/",
       "schedule": "50 2 * * *"
     },

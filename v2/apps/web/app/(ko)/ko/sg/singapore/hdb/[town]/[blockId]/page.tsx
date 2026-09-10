@@ -54,7 +54,6 @@ export default async function HdbBlockPage({ params }: Readonly<{
     town={model.town}
     townHref={`/ko/sg/singapore/hdb/${model.townSlug}/`}
     googleMapsBrowserKey={googleMapsBrowserKeyFromEnvironment()}
-    location={projections?.get(entityId)?.location ?? null}
     media={selectPublishedBuildingPhoto(projections?.get(entityId)?.media ?? [], await getStoredPublicPhotoApproval(`sg-hdb:${model.town}:${block.address}`), `singapore:block:${blockId}`)}
     proximity={projections?.get(entityId)?.proximity ?? null}
   />;

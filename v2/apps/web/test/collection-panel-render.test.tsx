@@ -14,10 +14,3 @@ it('never offers page collection for a blocked/manual source', () => {
  const html=renderToStaticMarkup(<CollectionPanel initialData={{sources:[{...source,mode:'blocked'}],publication:'review required'}}/>);
  expect(html).not.toContain('지금 변경 확인');expect(html).toContain('수집 이력');
 });
-it('shows OneMap candidate and publication counts without treating candidates as public', () => {
- const onemap={...source,sourceId:'sg-onemap-building',name:'OneMap building addresses',mode:'address-api',pendingCount:0,pendingCandidateCount:14,recordCount:100,lastPublishedAt:'2026-09-10T02:00:00Z'};
- const html=renderToStaticMarkup(<CollectionPanel initialData={{sources:[onemap],publication:'review required'}}/>);
- expect(html).toContain('위치 후보 100건 · 위치 검토 대기 14건');
- expect(html).toContain('공식 주소 API');expect(html).not.toContain('수집 이력');
- expect(html).toContain('마지막 공개');expect(html).toContain('2026-09-10 02:00:00 UTC');
-});
