@@ -35,4 +35,4 @@ export default async function SingaporeExplorePage() {
   />;
 }
 
-export const revalidate = 60;
+export const revalidate = 3_600;

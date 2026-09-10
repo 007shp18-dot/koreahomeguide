@@ -28,15 +28,15 @@
     },
     {
       "path": "/api/internal/building-enrichment/?source=wikimedia&limit=60",
-      "schedule": "7 * * * *"
+      "schedule": "7 */6 * * *"
     },
     {
       "path": "/api/internal/building-enrichment/?source=official&limit=250",
-      "schedule": "17 * * * *"
+      "schedule": "17 */6 * * *"
     },
     {
       "path": "/api/internal/building-enrichment/?source=google&limit=30",
-      "schedule": "47 * * * *"
+      "schedule": "47 */6 * * *"
     },
     {
       "path": "/api/internal/public-entity-projection/",
@@ -72,16 +72,16 @@
     },
     {
       "path": "/api/internal/public-entity-projection/?mediaOnly=1",
-      "schedule": "57 * * * *"
+      "schedule": "57 */6 * * *"
     },
     {
       "path": "/api/internal/photo-source-recovery/",
-      "schedule": "31 * * * *"
+      "schedule": "31 */6 * * *"
     },
     {
       "path": "/api/internal/editorial-publish/",
       "schedule": "*/15 * * * *"
     }
   ],
-  "ignoreCommand": "exit 1"
+  "ignoreCommand": "node ../../../scripts/release/ignore-build.mjs"
 }
