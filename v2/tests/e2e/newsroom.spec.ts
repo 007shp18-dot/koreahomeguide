@@ -23,7 +23,7 @@ test('Insights keeps discovery simple and city selection works', async ({ page }
   const cities = page.getByRole('navigation', { name: 'Insight cities' });
   await expect(cities.getByRole('link')).toHaveText(['All', 'Seoul', 'Tokyo', 'Singapore', 'Dubai']);
   await expect(page.locator('main article:visible')).toHaveCount(7);
-  await page.getByText('More stories', { exact: true }).click();
+  await page.locator('summary').filter({ hasText: 'More stories' }).click();
   expect(await page.locator('main article:visible').count()).toBeGreaterThan(7);
   await cities.getByRole('link', { name: 'Tokyo', exact: true }).click();
   await expect(page).toHaveURL(/market=tokyo/);
