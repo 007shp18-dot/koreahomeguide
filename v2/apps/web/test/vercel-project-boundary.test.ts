@@ -12,4 +12,9 @@ describe('Vercel project build configuration',()=>{
       expect(config.git?.deploymentEnabled).toBeUndefined();
     },
   );
+
+  it('runs application functions in the production database region',()=>{
+    const config=JSON.parse(readFileSync(fileURLToPath(new URL('../vercel.json',import.meta.url)),'utf8'));
+    expect(config.regions).toEqual(['sin1']);
+  });
 });
