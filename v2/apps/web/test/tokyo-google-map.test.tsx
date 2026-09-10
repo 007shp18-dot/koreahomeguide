@@ -40,7 +40,7 @@ describe('Tokyo Google map', () => {
     const ward = new URL(tokyoMapAreaHref(row, { ...filters, q: 'Azabu' }), 'https://signedprice.com');
     expect(Object.fromEntries(ward.searchParams)).toEqual({ city: '13103', year: '2025', quarter: '4', type: 'Condo', minArea: '50', maxArea: '90' });
     const area = new URL(tokyoMapAreaHref({ ...row, district: 'Akasaka' }, { ...filters, q: 'Azabu' }), 'https://signedprice.com');
-    expect(area.searchParams.get('q')).toBe('Akasaka');
+    expect(area.searchParams.get('neighbourhood')).toBe('Akasaka');
     expect(area.searchParams.has('page')).toBe(false);
   });
   it('keeps the map visible during summary outages', () => {

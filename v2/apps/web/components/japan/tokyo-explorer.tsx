@@ -5,7 +5,7 @@ import { SiteHeader } from '@/components/site-header';
 import { homepageCopy } from '@/lib/site-copy';
 import { parseJapanScope } from '@/lib/japan/source.server';
 import { japanExploreQuery, parseJapanFilters, TOKYO_CONDOMINIUM_TYPE, TOKYO_WARDS } from '@/lib/japan/query';
-import type { JapanPublished, JapanPublishedScope } from '@/lib/japan/repository.server';
+import type { JapanFilters, JapanPublished, JapanPublishedScope } from '@/lib/japan/repository.server';
 import { readCachedJapanCoverage, readCachedJapanPublication } from '@/lib/japan/publication-cache.server';
 import { SiteFooter } from '@/components/site-footer';
 import { MarketExploreShell } from '../market-ui/market-shell';
@@ -21,7 +21,7 @@ export default async function TokyoExplorer({ searchParams }: { searchParams: Pr
   let coverage: JapanPublishedScope[] | null = null;
   let error = '';
   let scope = { city: '13103', year: '2025', quarter: '4' };
-  let filters = { q: '', type: '', minArea: null as number | null, maxArea: null as number | null, page: 1, release: null as string | null };
+  let filters: JapanFilters = { q: '', type: '', minArea: null as number | null, maxArea: null as number | null, page: 1, release: null as string | null };
   const useLatestPeriod = !query.has('year') && !query.has('quarter') && !query.has('page') && !query.has('release');
   try { scope = parseJapanScope(query); filters = parseJapanFilters(query); }
   catch { error = 'Some filters are invalid. Choose a ward, year and quarter below.'; }
@@ -101,8 +101,8 @@ export default async function TokyoExplorer({ searchParams }: { searchParams: Pr
         {availableInWard && <Link className={styles.emptyLink} href={scopeLink(availableInWard)}>View {wardName(availableInWard.city)} · {availableInWard.year} Q{availableInWard.quarter} <UiIcon name="arrow-right" /></Link>}
         <Link className={styles.emptyLink} href="/news/city-stories/tokyo/">Find your Tokyo neighbourhood <UiIcon name="arrow-right" /></Link>
       </div> : <>
-        <div id="tokyo-transactions" className={styles.results}><h2>{data.filteredCount.toLocaleString('en')} recorded transactions</h2><p>{filters.q ? `${filters.q} · ` : ''}{wardName(scope.city)} · {scope.year} Q{scope.quarter}</p></div>
-        {filters.q && <Link className={styles.clearSearch} href={scopeLink({ ...scope, sourceCount: data.sourceCount })} prefetch={false}>Show all neighbourhoods in {wardName(scope.city)}</Link>}
+        <div id="tokyo-transactions" className={styles.results}><h2>{data.filteredCount.toLocaleString('en')} recorded transactions</h2><p>{(filters.neighbourhood || filters.q) ? `${filters.neighbourhood || filters.q} · ` : ''}{wardName(scope.city)} · {scope.year} Q{scope.quarter}</p></div>
+        {(filters.neighbourhood || filters.q) && <Link className={styles.clearSearch} href={scopeLink({ ...scope, sourceCount: data.sourceCount })} prefetch={false}>Show all neighbourhoods in {wardName(scope.city)}</Link>}
         <p className={styles.source}>{data.sourceCount.toLocaleString('en')} records in this ward and quarter · Source retrieved {new Date(data.retrievedAt).toLocaleDateString('en-GB', { timeZone: 'UTC' })}</p>
         <p className={styles.source}>Price, high to low · Area-level records; building names are not disclosed.</p>
         <div className={styles.list}>
@@ -122,7 +122,7 @@ export default async function TokyoExplorer({ searchParams }: { searchParams: Pr
         </>}
         spatial={<Suspense fallback={<p className={styles.mapLoading} role="status">Preparing Tokyo ward map…</p>}>
           <TokyoMapPanel city={scope.city} year={scope.year} quarter={scope.quarter}
-            filters={{ q: filters.q, type: filters.type, minArea: filters.minArea, maxArea: filters.maxArea }} />
+            filters={{ q: filters.q, neighbourhood: filters.neighbourhood, type: filters.type, minArea: filters.minArea, maxArea: filters.maxArea }} />
         </Suspense>}
       />
       <div className={styles.sourcePanel}>

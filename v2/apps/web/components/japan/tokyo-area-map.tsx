@@ -11,7 +11,7 @@ import wardLocations from '../../lib/japan/tokyo-ward-locations.json';
 
 export function tokyoMapAreaHref(row: Pick<TokyoAreaSummary, 'city' | 'year' | 'quarter' | 'district'>, filters: TokyoMapFilters): string {
   const params = new URLSearchParams({ city: row.city, year: row.year, quarter: row.quarter });
-  if (row.district) params.set('q', row.district);
+  if (row.district) params.set('neighbourhood', row.district);
   params.set('type', filters.type);
   if (filters.minArea !== null) params.set('minArea', String(filters.minArea));
   if (filters.maxArea !== null) params.set('maxArea', String(filters.maxArea));
@@ -48,7 +48,7 @@ export function TokyoAreaMap({ rows, city, year, quarter, browserKey, filters, u
     .sort((a, b) => (a.district ?? '').localeCompare(b.district ?? '', 'en')), [rows, city]);
   const activePage = Math.min(page, Math.max(0, Math.ceil(neighbourhoods.length / AREA_PAGE_SIZE) - 1));
   const visible = neighbourhoods.slice(activePage * AREA_PAGE_SIZE, (activePage + 1) * AREA_PAGE_SIZE);
-  const selectedArea = rows.find(row => row.city === city && row.district === (filters.q || null));
+  const selectedArea = rows.find(row => row.city === city && row.district === (filters.neighbourhood || filters.q || null));
   const points = useMemo(() => wards.map((row, index) => tokyoAreaPoint(row, index, row.city === city)), [wards, city]);
   const selectWard = useCallback((id: string) => {
     const row = wards[Number(id)]; if (!row) return;
@@ -73,11 +73,11 @@ export function TokyoAreaMap({ rows, city, year, quarter, browserKey, filters, u
         <nav className={styles.neighbourhoodList} aria-label="Choose a Tokyo neighbourhood">
           {visible.map(row => <Link key={`${row.city}:${row.district}`} data-neighbourhood={row.district}
             href={`${tokyoMapAreaHref(row, filters)}#tokyo-transactions`} prefetch={false}
-            aria-current={row.district === filters.q ? 'location' : undefined}>
+            aria-current={row.district === (filters.neighbourhood || filters.q) ? 'location' : undefined}>
             <strong>{row.district}</strong><span>{row.count.toLocaleString('en')} transactions · {row.year} Q{row.quarter}</span>
           </Link>)}
         </nav>
-        {filters.q ? <Link className={styles.clearSearch} href={tokyoMapAreaHref({ city, year, quarter, district: null }, filters)} prefetch={false} scroll={false}>All {wardName} transactions</Link> : null}
+        {(filters.neighbourhood || filters.q) ? <Link className={styles.clearSearch} href={tokyoMapAreaHref({ city, year, quarter, district: null }, filters)} prefetch={false} scroll={false}>All {wardName} transactions</Link> : null}
         {neighbourhoods.length > AREA_PAGE_SIZE ? <nav className={styles.areaPagination} aria-label="Neighbourhood pages"><button type="button" disabled={activePage === 0} onClick={() => setPage(activePage - 1)}>Previous</button><span>{activePage + 1} / {Math.ceil(neighbourhoods.length / AREA_PAGE_SIZE)}</span><button type="button" disabled={(activePage + 1) * AREA_PAGE_SIZE >= neighbourhoods.length} onClick={() => setPage(activePage + 1)}>Next</button></nav> : null}
       </>}
     </section>

@@ -1,4 +1,5 @@
 'use client';
+import { requestSingaporeExplore } from '../../lib/singapore/explore-request';
 import { RegionContextPhoto } from './region-context-photo';
 import { sgText } from '../../lib/locale/singapore-copy';
 import { marketHref, type MarketLocale } from '../../lib/locale/market-localization';
@@ -136,9 +137,8 @@ export function SingaporeExplorer({ locale = 'en',
       if (requestDistrict !== 'all') params.set('district', requestDistrict);
       if (requestProject) params.set('project', requestProject);
       try {
-        const response = await fetch(`/api/singapore/explore/?${params}`, { signal: AbortSignal.any([controller.signal, AbortSignal.timeout(15000)]) });
-        if (!response.ok) throw new Error('unavailable');
-        const next = unpackSingaporeExploreModel(await response.json());
+        const payload = await requestSingaporeExplore(`/api/singapore/explore/?${params}`, controller.signal);
+        const next = unpackSingaporeExploreModel(payload as PackedSingaporeExploreModel);
         if (!controller.signal.aborted) setResults(previous => ({ ...Object.fromEntries(Object.entries(previous).slice(-11)), [requestKey]: { model: next, error: false } }));
       } catch { if (!controller.signal.aborted) setResults(previous => ({ ...previous, [requestKey]: { model: null, error: true } })); }
     }, requestQuery.trim() ? 200 : 0);

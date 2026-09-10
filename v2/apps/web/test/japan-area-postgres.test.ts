@@ -93,6 +93,14 @@ suite('Japan real PostgreSQL publication and failure modes', () => {
     const state = await db.query('SELECT state,error_code FROM market_data_refresh_runs WHERE id=$1', [old.runId]);
     expect(state.rows[0]).toMatchObject({ state: 'failed', error_code: 'lease_expired' });
   });
+  it('keeps an exact neighbourhood separate from similarly named neighbours', async () => {
+    await publish(snapshot(['Ebisu', 'Ebisuminami', 'Ebisunishi'].map(DistrictName => ({ ...source, DistrictName }))));
+    const exact = await readJapanPublication(scope, { ...filters, neighbourhood: 'Ebisu' }, port);
+    expect(exact?.filteredCount).toBe(1);
+    expect(exact?.records.map(row => row.district)).toEqual(['Ebisu']);
+    const search = await readJapanPublication(scope, { ...filters, q: 'Ebisu' }, port);
+    expect(search?.filteredCount).toBe(3);
+  });
   it('quarter-only records store JPY and disclosed area without creating any building or exact date', async () => {
     await publish(snapshot([{ ...source, Area: '2000 or greater' }]));
     const current = await readJapanPublication(scope, filters, port);

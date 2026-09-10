@@ -79,7 +79,7 @@ export function createJapanRepository(port: MarketRefreshSqlPort, batchSize = 20
   };
 }
 
-export type JapanFilters = { q: string; type: string; minArea: number | null; maxArea: number | null; page: number; release: string | null };
+export type JapanFilters = { q: string; neighbourhood?: string; type: string; minArea: number | null; maxArea: number | null; page: number; release: string | null };
 export type JapanPublished = { releaseId: string; retrievedAt: string; publishedAt: string; sourceUrl: string;
   sourceCount: number; filteredCount: number; records: JapanRecord[]; scope: JapanScope; filters: JapanFilters };
 
@@ -112,6 +112,7 @@ export async function readJapanPublication(scope: JapanScope, filters: JapanFilt
     ), filtered AS (
       SELECT a.* FROM japan_area_records a JOIN release r ON a.release_id = r.id
       WHERE ($4 = '' OR concat_ws(' ', a.record->>'district', a.record->>'municipality', a.record->>'floorPlan', a.record->>'buildingYear') ILIKE '%' || $4 || '%')
+        AND ($11 = '' OR a.record->>'district' = $11)
         AND ($5 = '' OR a.record->>'type' = $5)
         AND ($6::numeric IS NULL OR (a.record->>'areaSqm')::numeric >= $6::numeric)
         AND ($7::numeric IS NULL OR (a.record->>'areaSqm')::numeric <= $7::numeric)
@@ -121,7 +122,7 @@ export async function readJapanPublication(scope: JapanScope, filters: JapanFilt
     ) SELECT r.id, r.retrieved_at::text, r.published_at::text, r.source_url, r.expected_count,
       (SELECT count(*) FROM filtered)::integer AS filtered_count,
       COALESCE((SELECT jsonb_agg(record) FROM page), '[]'::jsonb) AS records FROM release r`,
-  [scope.city, scope.year, scope.quarter, filters.q, filters.type, filters.minArea, filters.maxArea, 20, (filters.page - 1) * 20, filters.release]);
+  [scope.city, scope.year, scope.quarter, filters.q, filters.type, filters.minArea, filters.maxArea, 20, (filters.page - 1) * 20, filters.release, filters.neighbourhood ?? '']);
   const row = rows[0];
   if (!row) return null;
   return { releaseId: String(row.id), retrievedAt: String(row.retrieved_at), publishedAt: String(row.published_at),

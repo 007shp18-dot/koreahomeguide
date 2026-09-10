@@ -20,7 +20,7 @@ export const TOKYO_WARDS = [
 ] as const;
 export function parseJapanFilters(query: URLSearchParams): JapanFilters {
   for (const [key] of query) {
-    if (!['city','year','quarter','q','type','minArea','maxArea','page','release'].includes(key)
+    if (!['city','year','quarter','q','neighbourhood','type','minArea','maxArea','page','release'].includes(key)
       || query.getAll(key).length !== 1) throw new TypeError('invalid_query');
   }
   const numeric = (key: string) => {
@@ -32,12 +32,13 @@ export function parseJapanFilters(query: URLSearchParams): JapanFilters {
   const minArea = numeric('minArea'); const maxArea = numeric('maxArea');
   const page = query.get('page') ?? '1';
   const q = query.get('q')?.trim() ?? '';
+  const neighbourhood = query.get('neighbourhood')?.trim();
   const type = query.get('type') ?? '';
   const release = query.get('release');
-  if (!/^[1-9]\d{0,3}$/.test(page) || q.length > 100 || type.length > 100
+  if (!/^[1-9]\d{0,3}$/.test(page) || q.length > 100 || (neighbourhood?.length ?? 0) > 100 || type.length > 100
     || (minArea !== null && maxArea !== null && minArea > maxArea)
     || (release !== null && !/^jp-area-[a-f0-9-]{36}$/.test(release))) throw new TypeError('invalid_query');
-  return { q, type, minArea, maxArea, page: Number(page), release };
+  return { q, ...(neighbourhood ? { neighbourhood } : {}), type, minArea, maxArea, page: Number(page), release };
 }
 
 // Attribution belongs to the page URL, not to the database filter contract.
