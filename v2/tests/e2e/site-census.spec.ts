@@ -12,6 +12,11 @@ const routes = readdirSync(app, { recursive: true, encoding: 'utf8' })
 
 for (const path of routes) test(`public page census: ${path}`, async ({ page }) => {
   const response = await page.goto(path);
+  if (path === '/kr/seoul/sell/') {
+    // Explicit retired route: restoring a sale service here would be a regression.
+    expect(response?.status()).toBe(404);
+    return;
+  }
   expect(response?.status(), path).toBeLessThan(400);
   await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1);
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
