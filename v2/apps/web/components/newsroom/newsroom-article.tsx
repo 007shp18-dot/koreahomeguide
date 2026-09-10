@@ -1,4 +1,3 @@
-import { DAILY_CITY_EDITIONS } from '../../content/en/daily-city-editions';
 import { KOREAN_BUYING_GUIDE_DATA } from '../../content/ko/buying-guides';
 import { BuyingGuide } from './buying-guide';
 import { ArticleContents } from './article-contents';
@@ -40,17 +39,16 @@ export function NewsroomArticle({ article }: Readonly<{
   article: PublishedContentArticle & Readonly<{ infographic?: InfographicSpec | null }>;
 }>) {
   const ko = article.locale === 'ko';
-  const dailyEdition = DAILY_CITY_EDITIONS.find(item => item.id === article.id);
   const budgetComparison = BUDGET_GUIDE_SLUGS.some(slug => slug === article.slug);
   const t = (en:string, translated:string) => ko ? translated : en;
-  const typeLabel = dailyEdition ? (dailyEdition.editionKind === 'news' ? 'City Check · Market update' : 'City Check · Evergreen explainer') : budgetComparison ? t('Budget comparison', '예산 비교') : ko ? ({'news-brief':'뉴스','policy-update':'정책','market-brief':'시장 분석','data-story':'데이터 분석',guide:'가이드'} as const)[article.type] : typeLabels[article.type];
+  const typeLabel = budgetComparison ? t('Budget comparison', '예산 비교') : ko ? ({'news-brief':'뉴스','policy-update':'정책','market-brief':'시장 분석','data-story':'데이터 분석',guide:'가이드'} as const)[article.type] : typeLabels[article.type];
   const buyingGuide = (ko ? KOREAN_BUYING_GUIDE_DATA : article.locale === 'en' ? BUYING_GUIDE_DATA : []).find(guide => guide.slug === article.slug);
   const figure = article.infographic ?? (ko ? KOREAN_RESEARCH_FIGURES[article.slug] : article.locale === 'en' ? RESEARCH_FIGURES[article.slug] : undefined);
   const contentSections = sections(article.bodyMarkdown);
   const section = article.type === 'guide' && !budgetComparison
     ? { label: t('Guides','가이드'), href: ko ? '/ko/guides/' : '/guides/' }
     : { label: t('News & Insights', '뉴스 & 인사이트'), href: ko ? '/ko/news/' : '/news/' };
-  const market = dailyEdition?.city === 'tokyo' ? 'Tokyo' : article.marketId === 'kr-seoul' ? t('Seoul','서울')
+  const market = article.marketId === 'kr-seoul' ? t('Seoul','서울')
     : article.marketId === 'sg-singapore' ? t('Singapore','싱가포르') : article.marketId === 'ae-dubai' ? t('Dubai','두바이') : t('Global','전체 도시');
   const relatedHref = article.relatedHref === null ? null : marketHref(ko ? 'ko' : 'en', article.relatedHref);
   const relatedLabel = relatedHref?.includes('/check') ? t('Check a price', '가격 확인하기')

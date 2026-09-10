@@ -21,7 +21,7 @@ describe('public editorial homepage', () => {
     expect(markup).not.toContain('/design-review/');
   });
 
-  it('makes all four cities reachable alongside four daily articles without embedding tools', async () => {
+  it('makes all four cities reachable without embedding tools or article feeds', async () => {
     const markup = renderToStaticMarkup(await Home());
     const markets = markup.indexOf('data-home-region="markets"');
 
@@ -37,8 +37,7 @@ describe('public editorial homepage', () => {
     const main = markup.slice(markup.indexOf('<main'), markup.indexOf('</main>'));
     expect(main).not.toContain('<form');
     expect(main).not.toContain('data-home-region="passport"');
-    expect(main.match(/data-editorial-content-id=/g)).toHaveLength(4);
-    expect(main).toContain('data-home-region="daily"');
+    expect(main).not.toContain('data-editorial-content-id');
     expect(main.match(/data-primary-action="explore"/g)).toHaveLength(4);
   });
 
