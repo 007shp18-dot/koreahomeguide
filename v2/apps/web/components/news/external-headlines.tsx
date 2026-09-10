@@ -45,7 +45,7 @@ export function ExternalHeadlines({ market, preview = false, initialModel = null
   const prefix = ko ? '/ko' : zh ? '/zh-cn' : '';
   const allHref = `${prefix}/news/?type=news${market === 'all' ? '' : `&market=${market}`}`;
   const dates = Object.fromEntries(Object.entries({ seoul: 'Asia/Seoul', singapore: 'Asia/Singapore', dubai: 'Asia/Dubai', tokyo: 'Asia/Tokyo' }).map(([city, timeZone]) => [city, new Intl.DateTimeFormat(ko ? 'ko' : zh ? 'zh-CN' : 'en', { year: 'numeric', month: 'short', day: 'numeric', timeZone })]));
-  const editorial = locale === 'en' && !preview;
+  const editorial = !preview;
   const lead = editorial ? visible[0] : undefined;
   const title = ko ? '최신 뉴스' : zh ? '最新新闻' : 'Latest news';
   return <section id="latest-news" className={`${styles.section} ${editorial ? styles.editorial : ''}`} aria-labelledby="external-headlines-heading" data-external-headlines={status}>
@@ -55,6 +55,7 @@ export function ExternalHeadlines({ market, preview = false, initialModel = null
     {status === 'loading' ? <p role="status">{ko ? '뉴스를 불러오는 중…' : 'Loading headlines…'}</p> : null}
     {status === 'error' ? <p role="status">{ko ? '새 소식을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.' : 'Unable to refresh. Please try again.'} <button type="button" onClick={() => setRefresh(value => value + 1)}>{ko ? '다시 시도' : 'Try again'}</button></p> : null}
     {status === 'ready' && visible.length === 0 ? <p>{ko ? '이 도시의 새 소식은 아직 없습니다.' : 'No news is available for this city yet.'}</p> : null}
+    <p className={styles.source}>{ko ? '외부 뉴스 제목과 원문 링크는 자동 갱신됩니다. 기사 주장은 SignedPrice의 검증된 거래 분석과 구분됩니다.' : zh ? '外部新闻标题与原文链接自动更新，报道观点不代表 SignedPrice 已验证的交易分析。' : 'Source headlines and original links update automatically. Reported claims are separate from SignedPrice’s verified transaction analysis.'}</p>
     {lead && <article className={`${styles.lead} ${failedPhoto === lead.market ? styles.textLead : ''}`} aria-labelledby="lead-news-title">
       {failedPhoto !== lead.market && <figure className={styles.leadPhoto}>
         <div><Image src={MARKET_PHOTOS[lead.market].src} alt={MARKET_PHOTOS[lead.market].alt} fill priority sizes="(max-width: 740px) calc(100vw - 40px), (max-width: 1280px) 55vw, 640px" onError={() => setFailedPhoto(lead.market)} style={{ objectFit: 'cover', objectPosition: `${MARKET_PHOTOS[lead.market].focalPoint.x}% ${MARKET_PHOTOS[lead.market].focalPoint.y}%` }} /></div>
@@ -62,13 +63,13 @@ export function ExternalHeadlines({ market, preview = false, initialModel = null
       </figure>}
       <div className={styles.leadCopy}>
         <span className={styles.topic}>{lead.marketLabel} · {lead.category}</span>
-        <h2 id="lead-news-title"><a href={lead.url} target="_blank" rel="noreferrer">{lead.title}</a></h2>
-        {lead.summary && <p className={styles.leadSummary}>{lead.summary}</p>}
+        <h2 id="lead-news-title"><a href={lead.url} target="_blank" rel="noreferrer">{ko ? lead.titleKo ?? lead.title : lead.title}</a></h2>
+        {lead.summary && <p className={styles.leadSummary}>{ko ? lead.summaryKo ?? lead.summary : lead.summary}</p>}
         <p className={styles.source}>{lead.publisher} · <time dateTime={lead.publishedAt}>{dates[lead.market]!.format(new Date(lead.publishedAt))}</time></p>
-        <a className={styles.original} href={lead.url} target="_blank" rel="noreferrer">Read original <UiIcon name="arrow-up-right" /></a>
+        <a className={styles.original} href={lead.url} target="_blank" rel="noreferrer">{ko ? '원문 읽기' : zh ? '阅读原文' : 'Read original'} <UiIcon name="arrow-up-right" /></a>
       </div>
     </article>}
-    {editorial && <header className={styles.updatesHeader}><h2 id="external-headlines-heading">Latest updates</h2><button type="button" onClick={() => setRefresh(value => value + 1)}>Refresh</button></header>}
+    {editorial && <header className={styles.updatesHeader}><h2 id="external-headlines-heading">{ko ? '최신 소식' : zh ? '最新动态' : 'Latest updates'}</h2><button type="button" onClick={() => setRefresh(value => value + 1)}>{ko ? '새로고침' : zh ? '刷新' : 'Refresh'}</button></header>}
     <ol className={preview ? styles.preview : editorial ? styles.updates : undefined}>
       {(editorial ? visible.slice(1) : visible).map(item => <li key={item.id}>
         <div><span>{item.marketLabel} · {editorial ? item.category : item.publisher}</span><time dateTime={item.publishedAt}>{dates[item.market]!.format(new Date(item.publishedAt))}</time></div>

@@ -18,6 +18,7 @@ import type {
   PublicBuildingRankingsModel,
   PublicAreaRankingsModel,
   PublicDistrictRankingRow,
+  BuildingRankingMetric,
   RankingKind,
   SignedRankingBar,
   UnavailableRankingDistrict,
@@ -329,7 +330,9 @@ export function buildKoreaBuildingRankings(
   selection: KoreaExplorerEvidenceSelection,
   requestedPage = 1,
   requestedPageSize = 20,
+  requestedMetric: BuildingRankingMetric = 'median',
 ): PublicBuildingRankingsModel {
+  const metric = selection.transaction === 'sale' || requestedMetric === 'volume' ? requestedMetric : 'median';
   const source = selection.transaction === 'sale'
     ? repositories.sale?.listBuildingRecords()
     : repositories.rent?.listBuildingRecords();
@@ -354,13 +357,24 @@ export function buildKoreaBuildingRankings(
     if (distribution?.published !== true) return [];
     const district = getSeoulDistrictBySlug(building.districtSlug);
     if (district === null) return [];
-    return [{ building, distribution, district }];
+    const recent = (metric === 'recent-high' || metric === 'recent-psm') && 'recentSales' in building ? building.recentSales.filter(row => {
+      const area = row.areaSqm;
+      return Number.isFinite(area) && area > 0 && Number.isFinite(row.priceWon) && row.priceWon > 0 && (
+        selection.areaBand === 'all' || selection.areaBand === 'under-40' && area < 40
+        || selection.areaBand === '40-60' && area >= 40 && area < 60
+        || selection.areaBand === '60-85' && area >= 60 && area < 85
+        || selection.areaBand === '85-plus' && area >= 85);
+    }).sort((a, b) => (metric === 'recent-psm' ? b.priceWon / b.areaSqm - a.priceWon / a.areaSqm : b.priceWon - a.priceWon) || b.filedMonth.localeCompare(a.filedMonth)) : [];
+    const observation = recent[0];
+    if ((metric === 'recent-high' || metric === 'recent-psm') && !observation) return [];
+    const rankingValue = metric === 'volume' ? distribution.n : metric === 'recent-high' ? observation!.priceWon : metric === 'recent-psm' ? observation!.priceWon / observation!.areaSqm : distribution.med;
+    return [{ building, distribution, district, rankingValue, observation }];
   }).sort((left, right) => (
-    right.distribution.med - left.distribution.med
+    right.rankingValue - left.rankingValue
     || left.building.buildingId.localeCompare(right.building.buildingId)
     || left.building.districtSlug.localeCompare(right.building.districtSlug)
   ));
-  const ranked = Object.freeze(published.map(({ building, distribution, district }, index) => Object.freeze({
+  const ranked = Object.freeze(published.map(({ building, distribution, district, rankingValue, observation }, index) => Object.freeze({
     rank: index + 1,
     buildingId: building.buildingId,
     officialName: building.officialName,
@@ -369,6 +383,9 @@ export function buildKoreaBuildingRankings(
     districtNameKo: district.nameKo,
     neighborhoodName: building.neighborhoodName,
     housingType: building.housingType,
+    rankingValue,
+    rankingLabel: metric === 'volume' ? rankingValue.toLocaleString('en-US') : `${money.format(rankingValue)}${metric === 'recent-psm' ? ' /㎡' : ''}`,
+    ...((metric === 'recent-high' || metric === 'recent-psm') && observation ? { observedMonth: observation.filedMonth, observedAreaSqm: observation.areaSqm } : {}),
     medianWon: distribution.med,
     medianLabel: money.format(distribution.med),
     sampleCount: distribution.n,
@@ -379,6 +396,7 @@ export function buildKoreaBuildingRankings(
   return Object.freeze({
     status: 'ready',
     rows: Object.freeze(ranked.slice(start, start + page.pageSize)),
+    metric,
     withheldBuildingCount: selected.length - ranked.length,
     pagination: page,
   });
@@ -463,6 +481,7 @@ export function buildKoreaEvidenceAreaRankingsModel(
   requestedPageSize = 20,
   repositories?: KoreaEvidenceRepositories,
   requestedBuildingPage = 1,
+  buildingMetric: BuildingRankingMetric = 'median',
 ): PublicAreaRankingsModel {
   const explore = buildKoreaEvidenceAreaExploreModel(undefined, projection);
   const allDistricts = explore.districts.map(({ summary }) => summary);
@@ -498,6 +517,7 @@ export function buildKoreaEvidenceAreaRankingsModel(
           projection.selection,
           requestedBuildingPage,
           requestedPageSize,
+          buildingMetric,
         ),
     median: pageRows(median, page),
     change: pageRows(change.rows, page),

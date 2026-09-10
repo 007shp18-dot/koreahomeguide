@@ -24,6 +24,11 @@ import searchStyles from '../price-market-search.module.css';
 import { selectedResultPage } from '../../lib/navigation/selected-result-page';
 
 const PAGE_SIZE = 24;
+const REGION_NAMES = {
+  CCR: { en: 'Core Central Region', ko: '핵심 중심 권역' },
+  RCR: { en: 'Rest of Central Region', ko: '그 외 중심 권역' },
+  OCR: { en: 'Outside Central Region', ko: '외곽 권역' },
+} as const;
 
 type SingaporeExplorerState = Readonly<{
   query: string;
@@ -145,6 +150,7 @@ export function SingaporeExplorer({ locale = 'en',
     return () => { clearTimeout(timer); controller.abort(); };
   }, [needsProjects, requestKey, selectedSegment, requestQuery, requestDistrict, requestProject, currentResult]);
   const segments = model.status === 'ready' ? model.segments : [];
+  const regionNavigation = overview.status === 'ready' ? overview.segments : segments;
   const selected = segments.find((segment) => segment.code === selectedSegment);
   const allProjects = useMemo(() => model.status === 'ready' ? model.segments.flatMap((segment) => (segment.projects ?? []).map((project) => ({ ...project, segment: segment.code }))) : [], [model]);
   const searchIndex = useMemo(() => allProjects.map((project) => ({
@@ -255,8 +261,8 @@ export function SingaporeExplorer({ locale = 'en',
           <h2 id="segment-heading">{sgText(locale, "Private residential projects")}</h2>
           <p className={styles.marketScopeLine}>{sgText(locale, "URA private sales · New sale, Subsale and Resale")}<br />{sgText(locale, model.transactionLabel)}</p>
           <div className={styles.segmentTabs} role="tablist" aria-label={sgText(locale, "Singapore market regions")}>
-            <button type="button" role="tab" aria-selected={selectedSegment === null} onClick={() => selectSegment(null)}><strong>{sgText(locale, "All")}</strong><span>{sgText(locale, segments.reduce((sum, segment) => sum + segment.projectCount, 0).toLocaleString('en'))}</span></button>
-            {segments.map((segment) => <button key={segment.code} type="button" role="tab" aria-selected={selectedSegment === segment.code} onClick={() => selectSegment(segment.code)}><strong>{sgText(locale, segment.code)}</strong><span>{sgText(locale, segment.projectCount.toLocaleString('en'))}</span></button>)}
+            <button type="button" role="tab" aria-selected={selectedSegment === null} onClick={() => selectSegment(null)}><strong>{sgText(locale, "All")}</strong><small>{locale === 'ko' ? '싱가포르 전체' : 'Singapore'}</small><span>{sgText(locale, regionNavigation.reduce((sum, segment) => sum + segment.projectCount, 0).toLocaleString('en'))}</span></button>
+            {regionNavigation.map((segment) => <button key={segment.code} type="button" role="tab" aria-selected={selectedSegment === segment.code} onClick={() => selectSegment(segment.code)}><strong>{sgText(locale, segment.code)}</strong><small>{REGION_NAMES[segment.code][locale]}</small><span>{sgText(locale, segment.projectCount.toLocaleString('en'))}</span></button>)}
           </div>
           {selectedSegment !== null ? <nav className={styles.districtChoices} aria-label={locale === 'ko' ? '선택 권역의 우편구역' : 'Districts in selected region'}>
             <button type="button" aria-pressed={district === 'all'} onClick={() => { setDistrict('all'); setPage(1); setSelectedProjectId(null); }}>{locale === 'ko' ? '전체 단지' : 'All projects'}</button>
@@ -265,7 +271,12 @@ export function SingaporeExplorer({ locale = 'en',
           {selected ? <div className={styles.segmentList}><article className={styles.segmentRow}><RegionContextPhoto region={selected.code} locale={locale} /><h3>{sgText(locale, selected.code)}</h3><div><strong>{sgText(locale, selected.medianPriceLabel ?? 'Not published')}</strong><span>{sgText(locale, selected.n.toLocaleString('en'))}{sgText(locale, " transactions · ")}{sgText(locale, selected.projectCount.toLocaleString('en'))}{sgText(locale, " projects")}</span></div>{selected.state === 'published' ? <Link href={marketHref(locale, selected.href)} aria-busy={pendingHref === selected.href} data-navigation-state={pendingHref === selected.href ? 'pending' : 'idle'} onClick={() => setPendingHref(selected.href)}>{sgText(locale, "Open ")}{sgText(locale, selected.code)}{sgText(locale, " evidence")}</Link> : <span data-evidence-link="unavailable">{sgText(locale, "At least 5 transactions are required")}</span>}</article></div> : null}
           <div className={styles.projectList} aria-live="polite" aria-busy={loadingProjects || query !== deferredQuery}>
             {!loadingProjects && !loadError && (!progressive || loadedModel !== null) ? (<header><span>{sgText(locale, projects.length.toLocaleString('en'))}{sgText(locale, " matching projects")}</span><small>{sgText(locale, projects.length === 0 ? 'No matches' : `${(activePage - 1) * PAGE_SIZE + 1}–${Math.min(activePage * PAGE_SIZE, projects.length)} shown`)}</small></header>) : null}
-            {loadingProjects ? <p role="status">{locale === 'ko' ? '선택한 지역을 불러오는 중…' : 'Loading selected area…'}</p> : loadError ? <p role="alert">{locale === 'ko' ? '불러오지 못했습니다.' : 'Could not load projects.'} <button type="button" onClick={() => setRetry(value => value + 1)}>{locale === 'ko' ? '다시 시도' : 'Retry'}</button></p> : progressive && loadedModel === null ? <p>{locale === 'ko' ? '지도에서 권역을 선택하거나 단지를 검색하세요.' : 'Choose a region on the map or search for a project.'}</p> : projects.length === 0 ? <p>{sgText(locale, "No projects match these filters. Try a different name or district.")}</p> : null}
+            {loadingProjects ? <p role="status">{locale === 'ko' ? '선택한 지역을 불러오는 중…' : 'Loading selected area…'}</p> : loadError ? <p role="alert">{locale === 'ko' ? '불러오지 못했습니다.' : 'Could not load projects.'} <button type="button" onClick={() => setRetry(value => value + 1)}>{locale === 'ko' ? '다시 시도' : 'Retry'}</button></p> : progressive && loadedModel === null ? <section className={styles.exploreStart} aria-label={locale === 'ko' ? '탐색 시작' : 'Start exploring'}>
+              <span className={styles.exploreStartKicker}>{locale === 'ko' ? '단지 찾기' : 'Find your neighbourhood'}</span>
+              <h3>{locale === 'ko' ? '어느 지역을 살펴볼까요?' : 'Where would you like to look?'}</h3>
+              <p>{locale === 'ko' ? '위 권역이나 지도에서 시작하세요. 단지 이름으로 바로 검색할 수도 있어요.' : 'Start with a region above or on the map. Already have a project in mind? Search by name.'}</p>
+              <ol className={styles.exploreSteps}><li>{locale === 'ko' ? '권역' : 'Region'}</li><li>{locale === 'ko' ? '우편구역' : 'District'}</li><li>{locale === 'ko' ? '단지·실거래' : 'Projects & sales'}</li></ol>
+            </section> : projects.length === 0 ? <p>{sgText(locale, "No projects match these filters. Try a different name or district.")}</p> : null}
             {(!loadingProjects && !loadError ? visible : []).map((project) => <div key={project.id} data-selected={selectedProjectId === project.id}>
               <button type="button" aria-pressed={selectedProjectId === project.id} onClick={() => setSelectedProjectId((current) => current === project.id ? null : project.id)}><span><strong title={project.name}>{project.name}</strong><small title={sgText(locale, `${project.street} · District ${project.district}`)}>{project.street}{sgText(locale, " · District ")}{sgText(locale, project.district)}</small></span><span><strong>{sgText(locale, project.medianPriceLabel ?? 'Not published')}</strong><small>{sgText(locale, project.n.toLocaleString('en'))}{sgText(locale, " ")}{sgText(locale, project.n === 1 ? 'sale' : 'sales')}</small></span></button>
               {project.state === 'published' ? <Link prefetch={false} href={marketHref(locale, project.href)} aria-label={sgText(locale, `Open ${project.name} evidence`)} aria-busy={pendingHref === project.href} onClick={() => setPendingHref(project.href)}>{sgText(locale, "Details")}</Link> : <span className={styles.evidenceUnavailableLink} data-evidence-link="unavailable" title={sgText(locale, "At least 5 transactions are required")}>{sgText(locale, "Below 5 sales")}</span>}
@@ -306,7 +317,10 @@ export function SingaporeExplorer({ locale = 'en',
       />
     </div>
     <div className={styles.exploreSupportingContent}>
-    {progressive ? <nav className={styles.sourceLinks} aria-label={locale === 'ko' ? '권역별 전체 단지' : 'All projects by region'}>{segments.map(segment => <Link key={segment.code} prefetch={false} href={marketHref(locale, segment.href)}>{segment.code} · {segment.projectCount}</Link>)}</nav> : <SingaporeProjectDirectory segments={segments} locale={locale} />}
+    {progressive ? <details className={styles.regionDirectory}>
+      <summary>{locale === 'ko' ? '권역별 가격·단지 살펴보기' : 'Regional prices & project directories'}</summary>
+      <nav aria-label={locale === 'ko' ? '권역별 전체 단지' : 'All projects by region'}>{regionNavigation.map(segment => <Link key={segment.code} prefetch={false} href={marketHref(locale, segment.href)}><strong>{segment.code}</strong><span>{REGION_NAMES[segment.code][locale]}</span><small>{segment.projectCount.toLocaleString('en')} {locale === 'ko' ? '단지' : 'projects'} <span aria-hidden="true">↗</span></small></Link>)}</nav>
+    </details> : <SingaporeProjectDirectory segments={segments} locale={locale} />}
     <p><Link href={marketHref(locale, "/guides/singapore-condo-buying-budget-guide/")}>{sgText(locale, "Condo buying guide: budgets, costs and ownership checks")}</Link></p>
     <HdbMarketPanel locale={locale} model={hdbModel} /><SingaporeEvidence locale={locale} model={model.evidence} compact />
     </div>

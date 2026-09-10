@@ -5,7 +5,7 @@ vi.mock('server-only', () => ({}));
 
 import Home, { metadata as homeMetadata } from '../app/(en)/page';
 import { metadata as koreanHomeMetadata } from '../app/(ko)/ko/page';
-import { metadata as chineseHomeMetadata } from '../app/(zh-cn)/zh-cn/kr/seoul/page';
+import { metadata as chineseHomeMetadata } from '../app/(zh-cn)/zh-cn/page';
 import { metadata as koreanShortlistMetadata } from '../app/(ko)/ko/kr/seoul/shortlist/page';
 import {
   homepageCopy,
@@ -61,7 +61,7 @@ describe('signedprice homepage copy', () => {
     const languages = {
       en: 'https://www.signedprice.com/',
       ko: 'https://www.signedprice.com/ko/',
-      'zh-Hans': 'https://www.signedprice.com/zh-cn/kr/seoul/',
+      'zh-Hans': 'https://www.signedprice.com/zh-cn/',
       'x-default': 'https://www.signedprice.com/',
     };
 

@@ -18,7 +18,7 @@ const header: SiteHeaderModel = {
   links: [{ label: 'Explore', href: '/kr/seoul/explore/', isCurrent: true }],
 };
 
-const globalLabels = ['Explore', 'Insights', 'Tools', 'Guides'] as const;
+const globalLabels = ['Explore', 'Insights', 'News', 'Tools', 'Guides'] as const;
 
 describe('signedprice public navigation', () => {
   it('keeps global navigation free of duplicate market-specific actions and uses decorative vector disclosure icons', () => {
@@ -29,7 +29,7 @@ describe('signedprice public navigation', () => {
     expect(html).toContain('aria-label="Choose language"');
     expect(html).toContain('aria-label="Choose a city"');
   });
-  it('renders the same four global destinations in the same order', () => {
+  it('renders the same five global destinations in the same order', () => {
     for (const copy of [homepageCopy.header, header]) {
       const html = renderToStaticMarkup(<SiteHeader copy={copy} />);
       const positions = globalLabels.map((label) => html.indexOf(`>${label.replace('&', '&amp;')}</`));
@@ -64,11 +64,26 @@ describe('signedprice public navigation', () => {
     expect(html).toContain('data-market-context="jp-tokyo"');
     expect(html).not.toContain('aria-label="Seoul market navigation"');
     expect(html).not.toMatch(/class="site-header__action[^>]*href="\/kr\/seoul\/(?:check|shortlist)/);
-    expect(html).not.toMatch(/class="site-header__action[^>]*href="\/jp\/tokyo/);
-    expect(html).not.toContain('aria-label="Quick actions"');
+    expect(html).toMatch(/class="site-header__action[^>]*href="\/jp\/tokyo\/shortlist\/?"/);
+    expect(html).toMatch(/href="\/tools\/property-scenario\/?\?market=jp-tokyo&amp;currency=JPY"[^>]*>Calculate costs<\/a>/);
+    expect(html).toContain('aria-label="Quick actions"');
     expect(html).toMatch(/href="\/tools\/?"[^>]*>Tools<\/a>/);
   });
 
+  it('keeps Tokyo quick actions and the wordmark inside the current locale', () => {
+    for (const [locale, prefix, languageLabel, label] of [
+      ['ko', '/ko', 'KO', '매입 비용 계산'], ['zh-CN', '/zh-cn', 'ZH', '计算购置成本'],
+    ] as const) {
+      const html = renderToStaticMarkup(<SiteHeader copy={{ ...homepageCopy.header, homeHref: `${prefix}/`, languageLabel,
+        marketLabel: 'Tokyo', links: [{ label: 'Explore', href: `${prefix}/jp/tokyo/explore/`, isCurrent: true }] }} />);
+      expect(html).toMatch(new RegExp(`class="wordmark"[^>]*href="${prefix}/?"`));
+      expect(html).toContain(`href="${prefix}/jp/tokyo/shortlist`);
+      expect(html).toContain(`href="${prefix}/tools/property-scenario?market=jp-tokyo&amp;currency=JPY">${label}`);
+      expect(html).toContain(`href="${prefix}/news?type=news"`);
+      expect(html).not.toContain('href="/kr/seoul/check');
+      expect(html).toContain(locale === 'ko' ? '>도쿄<' : '>东京<');
+    }
+  });
   it('opens the unified News & Insights hub and keeps it selected across editorial routes', () => {
     for (const href of ['/insights/', '/insights/example/', '/news/']) {
       const html = renderToStaticMarkup(<SiteHeader copy={{ ...homepageCopy.header, links: [{ label: 'Editorial', href, isCurrent: true }] }} />);

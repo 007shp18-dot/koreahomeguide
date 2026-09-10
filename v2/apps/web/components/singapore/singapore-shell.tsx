@@ -89,14 +89,14 @@ export function SingaporeEvidence({ locale = 'en',
     <ul className={styles.limitations}>
       {model.limitations.map((limitation) => <li key={limitation}>{sgText(locale, limitation)}</li>)}
     </ul>
-    <div className={styles.actions}>
+    <nav className={styles.evidenceLinks} aria-label={locale === 'ko' ? '출처 안내' : 'Evidence guidance'}>
       <Link href={marketHref(locale, "/trust/")}>{sgText(locale, "Review Global Trust")}</Link>
       <Link href={marketHref(locale, model.correctionHref)}>{sgText(locale, "Review Singapore corrections")}</Link>
-    </div>
+    </nav>
   </>;
   return (
-    <section id="singapore-source" className={`${styles.section} ${compact ? styles.compactEvidence : ''}`} aria-labelledby="singapore-source-heading">
-      {compact ? <details><summary>{sgText(locale, "Sources & limits")}</summary><div>{sgText(locale, content)}</div></details> : content}
+    <section id="singapore-source" className={`${styles.section} ${styles.evidenceSection} ${compact ? styles.compactEvidence : ''}`} aria-labelledby="singapore-source-heading">
+      {compact ? <><div className={styles.sourceSummary}><strong>{model.descriptor.provider}</strong><span>{locale === 'ko' ? '민간주택 실거래' : 'Private residential sales'}</span><time>{model.period}</time></div><details><summary>{sgText(locale, "Sources & limits")}</summary><div>{sgText(locale, content)}</div></details></> : content}
     </section>
   );
 }

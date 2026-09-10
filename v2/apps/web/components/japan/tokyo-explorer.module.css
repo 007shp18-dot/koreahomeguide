@@ -1,6 +1,8 @@
 .page { min-width: 0; }
 .mapLoading { min-height: 420px; margin-top: 24px; padding: 24px; border-radius: 12px; background: #f2f6f8; color: var(--muted); }
-.page :global([data-market-shell-region='spatial']) { position: static; }
+.page :global([data-market-shell-region='spatial']) { position: static; grid-column: 1; grid-row: 1; background: transparent; }
+.page :global([data-market-shell-region='discovery']) { grid-column: 2; grid-row: 1; }
+.page :global([data-layout='split']) { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 36px; }
 .intro { max-width: 65ch; margin: 0 0 8px; color: var(--muted); font-size: 15px; line-height: 1.7; }
 .propertyScope { margin: 0 0 20px; color: var(--muted); font-size: 13px; line-height: 1.6; }
 .filters { padding-bottom: 24px; border-bottom: 1px solid var(--line); }
@@ -73,9 +75,11 @@
 .selectedArea p { margin: 5px 0 0; font-size: 13px; }
 .selectedArea span { display: block; font-size: 12px; line-height: 1.5; color: var(--muted); }
 .selectedArea strong { display: block; margin-top: 4px; font-size: 20px; line-height: 1.4; font-variant-numeric: tabular-nums; }
-.mapAreaList { align-items: stretch; }
-.mapAreaList a { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; font-size: 14px; line-height: 1.5; text-decoration: none; }
-.mapAreaList a[aria-current] { border-color: var(--accent); color: var(--accent); }
+.areaMap .mapAreaList { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); max-height: 264px; overflow-y: auto; gap: 0 16px; margin: 8px 0 16px; }
+.mapAreaList a { display: grid; align-content: center; gap: 3px; min-height: 58px; padding: 8px 4px; border-bottom: 1px solid var(--line); color: var(--ink); font-size: 14px; line-height: 1.5; text-decoration: none; }
+.mapAreaList a > span { font-size: 12px; color: var(--muted); }
+.mapAreaList a[aria-current] { color: var(--accent); box-shadow: inset 0 -2px var(--accent); }
+.mapAreaList a:hover { color: var(--accent); }
 .areaMap summary { font-size: 13px; line-height: 1.5; color: var(--muted); }
 .areaMap :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .mapMethod { border-top: 1px solid var(--line); }
@@ -85,23 +89,37 @@
 .neighbourhoodHeading h3 { margin: 0; font-size: 17px; line-height: 1.5; font-weight: 600; }
 .neighbourhoodHeading > span { color: var(--muted); font-size: 13px; line-height: 1.5; }
 .areaMap .neighbourhoodHelp { margin: 8px 0 16px; font-size: 13px; line-height: 1.6; }
-.areaMap .neighbourhoodList { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0; }
-.neighbourhoodList a { display: grid; gap: 5px; min-width: 0; padding: 14px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); text-decoration: none; overflow-wrap: anywhere; }
-.neighbourhoodList strong { font-size: 14px; line-height: 1.5; font-weight: 600; }
-.neighbourhoodList span { color: var(--muted); font-size: 12px; line-height: 1.6; }
-.neighbourhoodList a[aria-current] { border-color: var(--accent); background: var(--accent-soft); }
+.areaMap .neighbourhoodList { display: block; max-height: 352px; overflow-y: auto; overscroll-behavior: contain; margin: 0; border-top: 1px solid var(--line); }
+.neighbourhoodList a { display: flex; justify-content: space-between; align-items: center; gap: 16px; min-width: 0; min-height: 68px; padding: 12px 8px; border-bottom: 1px solid var(--line); color: var(--ink); text-decoration: none; overflow-wrap: anywhere; }
+.neighbourhoodList a > span:first-child { min-width: 0; }
+.neighbourhoodList strong { display: block; font-size: 14px; line-height: 1.5; font-weight: 600; }
+.neighbourhoodList small { display: block; margin-top: 3px; color: var(--muted); font-size: 12px; line-height: 1.6; }
+.neighbourhoodList .neighbourhoodPrice { flex-shrink: 0; font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.neighbourhoodPrice > span { margin-left: 8px; color: var(--accent); }
+.neighbourhoodList a[aria-current] { color: var(--accent); background: var(--accent-soft); box-shadow: inset 3px 0 var(--accent); padding-left: 14px; }
+.neighbourhoodList a:hover { background: var(--accent-soft); }
+.neighbourhoodColumns { display: flex; justify-content: space-between; gap: 12px; margin: 16px 8px 8px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+.areaSearch { display: grid; gap: 8px; font-size: 12px; font-weight: 600; color: var(--muted); }
+.areaSearch input { width: 100%; min-width: 0; min-height: 44px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: var(--paper, #fff); font: inherit; font-size: 16px; }
 .clearSearch { display: inline-flex; align-items: center; min-height: 44px; color: var(--accent); font-size: 13px; line-height: 1.5; text-underline-offset: 4px; }
 .areaMap .areaPagination { justify-content: space-between; margin: 16px 0 0; font-size: 13px; }
 .areaPagination button:disabled { opacity: .5; cursor: default; }
-.wardDirectory { border-top: 1px solid var(--line); }
+.wardDirectory { margin: 16px 0; border-block: 1px solid var(--line); }
+.areaMap .wardDirectory > summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 0; color: var(--ink); }
+.wardDirectory > summary > span:first-child { font-size: 16px; font-weight: 600; }
+.wardDirectory > summary > span:last-child { color: var(--accent); font-size: 12px; }
+.wardDirectory[open] > summary { margin-bottom: 8px; }
 .recordDetails { margin-top: 6px; }
 .recordDetails summary { width: fit-content; min-height: 36px; align-content: center; font-size: 13px; line-height: 1.5; color: var(--muted); cursor: pointer; }
 .recordDetails summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 @media (min-width: 761px) and (max-width: 1050px) {
   .page :global([data-layout='split']) { grid-template-columns: minmax(0, 1fr); }
+  .page :global([data-market-shell-region='discovery']) { grid-column: 1; grid-row: 2; }
   .page :global([data-market-shell-region='spatial']) { position: static; grid-row: 1; }
 }
 @media (max-width: 760px) {
+  .page :global([data-layout='split']) { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .page :global([data-market-shell-region='discovery']) { grid-column: 1; grid-row: 2; }
   .areaMap { padding-top: 20px; }
   .page > :global([data-market-explore-shell]), .sourcePanel { width: calc(100% - 2 * var(--page-gutter)); }
   .primaryFilters { grid-template-columns: minmax(0, 1fr); }
@@ -111,6 +129,8 @@
   .areaMap nav[aria-label='Map detail'] button { text-align: center; }
 }
 @media (max-width: 480px) {
-  .areaMap .neighbourhoodList { grid-template-columns: minmax(0, 1fr); }
+  .areaMap .mapAreaList { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .neighbourhoodList a { gap: 8px; }
+  .neighbourhoodList .neighbourhoodPrice { font-size: 12px; }
   .mapViewport :global([data-map-provider='google']) :global([role='region']) { min-height: 320px; height: 320px; }
 }

@@ -1,4 +1,5 @@
 import 'server-only';
+import { tokyoBudget } from './tokyo-budget.server';
 import { createHash } from 'node:crypto';
 import { singaporeSnapshotRepositoryFromEnvironment, type SingaporeSnapshotRepository } from '@/lib/singapore/snapshot-repository.server';
 import { dubaiEvidenceRepositoryFromEnvironment, type DubaiEvidenceRepository } from '@/lib/dubai/evidence-repository.server';
@@ -54,6 +55,7 @@ export function dubaiBudget(repository: DubaiEvidenceRepository, filters: Budget
   return finish(matching, all, saved, page, { period: `${context.comparisonPeriod.from}–${context.comparisonPeriod.to}`, updated: context.generatedAt, source: context.attribution, regions: repository.listAreas().map(a => ({ value: a.slug, label: a.name })) });
 }
 export async function overseasBudget(market: OverseasMarket, filters: BudgetFilters, saved: string[], page: number): Promise<BudgetResult | null> {
+  if (market === 'tokyo') return tokyoBudget(filters, saved, page);
   if (market === 'singapore') { const repository = await singaporeSnapshotRepositoryFromEnvironment(); return repository ? singaporeBudget(repository, filters, saved, page) : null; }
   const repository = dubaiEvidenceRepositoryFromEnvironment();
   return repository ? dubaiBudget(repository, filters, saved, page) : null;

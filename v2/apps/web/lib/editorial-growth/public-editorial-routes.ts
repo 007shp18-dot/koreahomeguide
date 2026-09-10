@@ -16,7 +16,7 @@ export const PUBLIC_EDITORIAL_SURFACES: PublicEditorialRouteTable = Object.freez
     explore: '/kr/seoul/explore/',
   }),
   'zh-CN': Object.freeze({
-    home: '/zh-cn/kr/seoul/',
+    home: '/zh-cn/',
     content: '/zh-cn/news/',
     check: '/kr/seoul/check/',
     explore: '/kr/seoul/explore/',

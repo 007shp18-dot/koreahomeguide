@@ -224,7 +224,7 @@ test('mobile primary navigation remains tappable and reaches the market flow', a
   const languageNavigation = await visibleLanguageNavigation(page);
   await expect(languageNavigation.getByRole('link')).toHaveCount(3);
   await expect(languageNavigation.getByRole('link')).toHaveText(['EN', 'KO', '中文']);
-  for (const [index, href] of ['/', '/ko/', '/zh-cn/kr/seoul/'].entries()) {
+  for (const [index, href] of ['/', '/ko/', '/zh-cn/'].entries()) {
     await expect(languageNavigation.getByRole('link').nth(index)).toHaveAttribute('href', href);
   }
   const languageLinks = await languageNavigation.getByRole('link').all();

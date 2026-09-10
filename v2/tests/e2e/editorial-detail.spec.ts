@@ -1,9 +1,9 @@
 import { expect, test } from '@playwright/test';
 
 test('Korean news filters stay on separate rows at phone widths', async ({ page }, testInfo) => {
+  await page.goto('/ko/news/?market=seoul', { waitUntil: 'domcontentloaded' });
   for (const width of [360, 390, 430]) {
     await page.setViewportSize({ width, height: 844 });
-    await page.goto('/ko/news/?market=seoul');
     const types = page.getByRole('navigation', { name: '뉴스와 인사이트 유형', exact: true });
     const cities = page.getByRole('navigation', { name: '기사 도시', exact: true });
     await expect(types).toBeVisible();

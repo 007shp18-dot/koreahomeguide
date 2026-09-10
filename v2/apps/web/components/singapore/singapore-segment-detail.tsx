@@ -64,13 +64,12 @@ export function SingaporeSegmentDetail({ locale = 'en', model }: Readonly<{ loca
       </section><section className={styles.section} aria-labelledby="project-list-heading">
         <p className={styles.sectionLabel}>{sgText(locale, "02 / Projects")}</p>
         <h2 id="project-list-heading">{sgText(locale, "Projects in ")}{sgText(locale, model.identity.segment)}{sgText(locale, ".")}</h2>
-        <div className={styles.projectGrid}>
+        <div className={styles.segmentProjects}>
           {model.projects.map((project) => (
-            <article className={styles.projectCard} key={project.id}>
-              <h3>{project.name}</h3><p>{project.street}{sgText(locale, " · District ")}{sgText(locale, project.district)}</p>
-              <p>{sgText(locale, project.n)}{sgText(locale, " reported transactions")}</p>
-              <p>{sgText(locale, project.medianPriceLabel ?? 'Distribution not published')}</p>
-              <p>{sgText(locale, project.medianPsfLabel ?? 'PSF not published')}</p>
+            <article className={styles.segmentProject} key={project.id}>
+              <div className={styles.segmentProjectIdentity}><h3>{project.name}</h3><p>{project.street}{sgText(locale, " · District ")}{sgText(locale, project.district)}</p></div>
+              <div className={styles.segmentProjectPrice}><strong>{sgText(locale, project.medianPriceLabel ?? 'Distribution not published')}</strong><span>{sgText(locale, project.medianPsfLabel ?? 'PSF not published')}</span></div>
+              <small>{sgText(locale, project.n)}{sgText(locale, " reported transactions")}</small>
               {project.state === 'published'
                 ? <EvidencePendingLink locale={locale} href={marketHref(locale, project.href)}>{sgText(locale, "Open project evidence")}</EvidencePendingLink>
                 : <span className={styles.evidenceUnavailableLink} data-evidence-link="unavailable" aria-disabled="true">{sgText(locale, "At least 5 transactions are required")}</span>}

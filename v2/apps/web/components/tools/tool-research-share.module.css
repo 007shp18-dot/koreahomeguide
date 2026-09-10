@@ -71,7 +71,16 @@
 
 .actions button {
   min-block-size: 2.75rem;
-  padding: .55rem .85rem;
+  padding: .65rem 1rem;
+  border: 1px solid var(--line, #d8e1ef);
+  border-radius: .75rem;
+  background: #fff;
+  color: var(--ink, #14243a);
+  font: inherit;
+  font-size: .875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
 }
 
 .delete {
@@ -104,3 +113,7 @@
   .actions { align-items: stretch; }
   .actions button { inline-size: 100%; }
 }
+
+.actions button:hover:not(:disabled) { border-color: #2563eb; background: #f4f8ff; }
+.actions button:focus-visible { outline: 2px solid #2563eb; outline-offset: 3px; }
+.actions button:disabled { opacity: .55; cursor: wait; }

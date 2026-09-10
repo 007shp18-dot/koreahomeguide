@@ -38,7 +38,7 @@ export async function GET(request: Request) {
     });
     return NextResponse.json({
       status,
-      publicationState: 'internal-discovery-only',
+      publicationState: 'eligible-metadata-links-after-validation',
       fetchedCount: items.length,
       storedCount,
     });

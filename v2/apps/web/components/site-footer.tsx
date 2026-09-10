@@ -22,7 +22,7 @@ export function SiteFooter({ copy, locale = 'en' }: Readonly<{ copy: SiteFooterM
       : zh
         ? ({ 'kr-seoul': '首尔', 'sg-singapore': '新加坡', 'ae-dubai': '迪拜', 'jp-tokyo': '东京' } as const)[market.id]
         : market.label,
-    href: ko && market.id !== 'jp-tokyo'
+    href: market.id === 'jp-tokyo' ? `${ko ? '/ko' : zh ? '/zh-cn' : ''}/jp/tokyo/` : ko
       ? ({ 'kr-seoul': '/ko/kr/seoul/', 'sg-singapore': '/ko/sg/', 'ae-dubai': '/ko/ae/dubai/' } as const)[market.id]
       : market.href,
   }));
@@ -33,7 +33,7 @@ export function SiteFooter({ copy, locale = 'en' }: Readonly<{ copy: SiteFooterM
   ];
   return <footer className={styles.footer} aria-label={copy.navigationLabel}>
     <div className={styles.inner}>
-      <div className={styles.intro}><Link href={ko ? '/ko/' : '/'} aria-label="signedprice home"><BrandWordmark /></Link><p className={styles.descriptor}>{ko ? '도시를 알아보고, 거래를 비교하고, 나에게 맞는 집을 찾아보세요.' : zh ? '了解城市，比较成交，找到适合自己的家。' : 'Discover a city. Understand its prices. Find your place.'}</p></div>
+      <div className={styles.intro}><Link href={ko ? '/ko/' : zh ? '/zh-cn/' : '/'} aria-label="signedprice home"><BrandWordmark /></Link><p className={styles.descriptor}>{ko ? '도시를 알아보고, 거래를 비교하고, 나에게 맞는 집을 찾아보세요.' : zh ? '了解城市，比较成交，找到适合自己的家。' : 'Discover a city. Understand its prices. Find your place.'}</p></div>
       <div className={styles.navigation}>{groups.map((group) => <nav key={group.label} aria-label={`Footer ${group.label}`}><p>{group.label}</p><ul className={styles.links}>{group.links.map((link) => <li key={link.href}><Link href={link.href}>{link.label}</Link></li>)}</ul></nav>)}</div>
       <nav className={styles.social} aria-label={ko ? 'SignedPrice 공식 SNS' : zh ? 'SignedPrice 官方社交账号' : 'SignedPrice social accounts'}>
         <p>{ko ? '소셜에서 만나세요' : zh ? '关注我们' : 'Follow SignedPrice'}</p>

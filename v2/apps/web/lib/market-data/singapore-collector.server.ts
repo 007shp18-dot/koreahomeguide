@@ -98,6 +98,8 @@ function areaRange(value: unknown): Readonly<{ raw: string; midpoint: number | n
 export function parseUraPrivateRentalEnvelope(value: unknown, quarter: string): readonly RentalRecord[] {
   if (!/^\d{2}q[1-4]$/u.test(quarter)) rentalInvalid();
   const envelope = record(value);
+  // An explicit provider failure is not evidence of a changed rental schema.
+  if (envelope.Status === 'Failure') throw new Error('URA provider request failed.');
   const envelopeKeys = Object.keys(envelope).sort();
   if (envelopeKeys.join('|') !== 'Message|Result|Status'
     || text(envelope.Status) !== 'Success') rentalInvalid();
@@ -146,14 +148,30 @@ export function parseUraPrivateRentalEnvelope(value: unknown, quarter: string): 
   return Object.freeze(output);
 }
 
-async function requestUraJson(url: string, headers: Readonly<Record<string, string>>): Promise<unknown> {
-  const response = await fetch(url, {
-    headers: { ...headers, 'User-Agent': 'signedprice/1.0 (+https://signedprice.com)' },
-    cache: 'no-store',
-    signal: AbortSignal.timeout(8_000),
-  });
-  if (!response.ok) throw new Error('URA provider request failed.');
-  return response.json();
+export async function requestUraJson(url: string, headers: Readonly<Record<string, string>>): Promise<unknown> {
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    let response: Response;
+    try {
+      response = await fetch(url, {
+        headers: { ...headers, 'User-Agent': 'signedprice/1.0 (+https://signedprice.com)' },
+        cache: 'no-store',
+        signal: AbortSignal.timeout(8_000),
+      });
+    } catch (error) {
+      const transient = error instanceof TypeError || (error instanceof Error
+        && (error.name === 'AbortError' || error.name === 'TimeoutError'));
+      if (attempt === 0 && transient) continue;
+      throw new Error('URA provider request failed.');
+    }
+    if (!response.ok) {
+      if (attempt === 0 && response.status >= 500 && response.status <= 599) continue;
+      throw new Error('URA provider request failed.');
+    }
+    // Invalid successful JSON/schema and explicit provider/auth failures are
+    // deliberately not retried. Neither source payloads nor credentials are logged.
+    return response.json();
+  }
+  throw new Error('URA provider request failed.');
 }
 
 async function defaultRentalEnvelopes(

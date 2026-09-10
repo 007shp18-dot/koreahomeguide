@@ -177,6 +177,13 @@ describe('Korea Explore proximity route model', () => {
     expect(localizedSeoulHref('/kr/seoul/explore/gangnam-gu/gangnam-evidence-tower/?station=station-a&stationDistance=250', 'ko'))
       .toBe('/ko/kr/seoul/explore/gangnam-gu/gangnam-evidence-tower/?station=station-a&stationDistance=250');
   });
+  it('preserves explicit split view when returning from a selected building', () => {
+    const href = createKoreaDetailBackHref({}, { market: 'kr', transaction: 'sale', district: 'gangnam-gu', neighborhood: 'yeoksam-dong', buildingId: 'tower', view: 'split' }, nonSlugReadyProximity);
+    const query = new URL(href, 'https://signedprice.invalid').searchParams;
+    expect(query.get('view')).toBe('split');
+    expect(query.get('buildingId')).toBe('tower');
+  });
+
   it('round-trips validated non-slug proximity pairs through the Detail back-url builders', () => {
     const query = {
       transaction: 'monthly', area: '60-85', propertyType: 'apartment', district: 'gangnam-gu',

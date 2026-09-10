@@ -45,7 +45,7 @@ const englishMetadata = indexableMetadata({
   languageAlternates: {
     en: '/',
     ko: '/ko/',
-    'zh-Hans': '/zh-cn/kr/seoul/',
+    'zh-Hans': '/zh-cn/',
   },
 }) satisfies Metadata;
 

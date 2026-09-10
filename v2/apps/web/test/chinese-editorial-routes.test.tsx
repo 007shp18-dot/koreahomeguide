@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 
-import ChineseHome, { metadata as homeMetadata } from '../app/(zh-cn)/zh-cn/kr/seoul/page';
+import ChineseHome, { metadata as homeMetadata } from '../app/(zh-cn)/zh-cn/page';
 import ChineseNews, { metadata as newsMetadata } from '../app/(zh-cn)/zh-cn/news/page';
 import sitemap from '../app/sitemap';
 
@@ -41,10 +41,10 @@ describe('Simplified Chinese editorial release', () => {
     expect(homeMetadata).toMatchObject({
       robots: { index: true, follow: true },
       alternates: {
-        canonical: 'https://www.signedprice.com/zh-cn/kr/seoul/',
+        canonical: 'https://www.signedprice.com/zh-cn/',
         languages: {
           en: 'https://www.signedprice.com/',
-          'zh-Hans': 'https://www.signedprice.com/zh-cn/kr/seoul/',
+          'zh-Hans': 'https://www.signedprice.com/zh-cn/',
           'x-default': 'https://www.signedprice.com/',
         },
       },
@@ -63,7 +63,7 @@ describe('Simplified Chinese editorial release', () => {
 
   it('indexes only the localized editorial surfaces and bridges tools to live English products', () => {
     const urls = sitemap().map(({ url }) => url);
-    expect(urls).toContain('https://www.signedprice.com/zh-cn/kr/seoul/');
+    expect(urls).toContain('https://www.signedprice.com/zh-cn/');
     expect(urls).toContain('https://www.signedprice.com/zh-cn/news/');
     expect(urls).toContain('https://www.signedprice.com/zh-cn/guides/');
     expect(urls).not.toContain('https://www.signedprice.com/zh-cn/kr/seoul/check/');

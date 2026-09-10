@@ -5,7 +5,7 @@ export function retainPassportContext(href: string, source: string, includeDubai
   if (!href.startsWith('/') || href.startsWith('//') || /[\\\u0000-\u001f]/.test(href)) return href;
   const current = new URL(source, origin);
   const target = new URL(href, origin);
-  if (!/^\/(?:ko\/|zh-cn\/)?(?:kr\/seoul|sg\/singapore|ae\/dubai|tools\/property-scenario)(?:\/|$)/.test(target.pathname)) return href;
+  if (!/^\/(?:ko\/|zh-cn\/)?(?:kr\/seoul|sg\/singapore|ae\/dubai|jp\/tokyo|tools\/property-scenario)(?:\/|$)/.test(target.pathname)) return href;
   const passport = current.searchParams.getAll('passport').length === 1 ? passportReturn(current.searchParams.get('passport')) : undefined;
   if (!passport) return href;
   target.searchParams.set('passport', passport);

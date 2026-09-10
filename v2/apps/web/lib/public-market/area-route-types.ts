@@ -173,6 +173,8 @@ export type PublicDistrictRankingRow = Readonly<{
   plotAxis: QuotePositionAxis | null;
 }>;
 
+export type BuildingRankingMetric = 'median' | 'volume' | 'recent-high' | 'recent-psm';
+
 export type PublicBuildingRankingRow = Readonly<{
   rank: number;
   buildingId: string;
@@ -182,6 +184,10 @@ export type PublicBuildingRankingRow = Readonly<{
   districtNameKo: string;
   neighborhoodName: string;
   housingType: 'apartment' | 'officetel' | 'villa_multifamily' | 'detached';
+  rankingValue?: number;
+  rankingLabel?: string;
+  observedMonth?: string;
+  observedAreaSqm?: number;
   medianWon: number;
   medianLabel: string;
   sampleCount: number;
@@ -192,6 +198,7 @@ export type PublicBuildingRankingsModel =
   | Readonly<{
       status: 'ready';
       rows: readonly PublicBuildingRankingRow[];
+      metric?: BuildingRankingMetric;
       withheldBuildingCount: number;
       pagination: Readonly<{
         page: number;

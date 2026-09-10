@@ -6,6 +6,7 @@ import type { SingaporeProjectSummary } from '@signedprice/singapore-property';
 import { dubaiEvidenceRepositoryFromEnvironment } from '../dubai/evidence-repository.server';
 import { koreaEvidenceRepositoriesFromEnvironment } from '../public-market/korea-evidence-repositories.server';
 import { singaporeSnapshotRepositoryFromEnvironment } from '../singapore/snapshot-repository.server';
+import { tokyoPassportEvidence } from './tokyo-evidence.server';
 import type { PassportMarketEvidence, PassportScope } from './model';
 
 function median(values: readonly number[]): number | null {
@@ -75,5 +76,6 @@ function dubaiEvidence(): PassportMarketEvidence {
 }
 
 export async function loadPassportEvidence(): Promise<readonly PassportMarketEvidence[]> {
-  return Object.freeze([seoulEvidence(), await singaporeEvidence(), dubaiEvidence()]);
+  const [singapore, tokyo] = await Promise.all([singaporeEvidence(), tokyoPassportEvidence()]);
+  return Object.freeze([seoulEvidence(), singapore, dubaiEvidence(), tokyo]);
 }

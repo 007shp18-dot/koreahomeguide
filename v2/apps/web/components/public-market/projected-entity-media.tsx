@@ -30,6 +30,7 @@ export function ProjectedEntityMedia({
   registryKey,
   fallbackMarket,
   locationHref,
+  showLocationAction = true,
 }: Readonly<{
   locale?: 'en' | 'ko';
   buildingName: string;
@@ -42,9 +43,10 @@ export function ProjectedEntityMedia({
   registryKey?: string;
   fallbackMarket?: keyof typeof MARKET_PHOTOS;
   locationHref?: string;
+  showLocationAction?: boolean;
 }>) {
   const [failedUrl, setFailedUrl] = useState<string | null>(null);
-  if (media?.displayUrl && media.displayUrl === failedUrl) return <ProjectedEntityMedia locale={locale} buildingName={buildingName} displayBuildingName={displayBuildingName} address={address} buildingKey={buildingKey} media={null} evidenceHref={evidenceHref} browserKey={browserKey} registryKey={registryKey} fallbackMarket={fallbackMarket} locationHref={locationHref} />;
+  if (media?.displayUrl && media.displayUrl === failedUrl) return <ProjectedEntityMedia locale={locale} buildingName={buildingName} displayBuildingName={displayBuildingName} address={address} buildingKey={buildingKey} media={null} evidenceHref={evidenceHref} browserKey={browserKey} registryKey={registryKey} fallbackMarket={fallbackMarket} locationHref={locationHref} showLocationAction={showLocationAction} />;
   if (media === null || (media.displayUrl === null && !media.providerReference)) {
     if (registryKey !== undefined) return <GooglePlacePhoto
       locale={locale}
@@ -54,17 +56,19 @@ export function ProjectedEntityMedia({
       address={address}
       expectedBuildingKey={buildingKey}
       registryKey={registryKey}
-      fallback={<ProjectedEntityMedia locale={locale} buildingName={buildingName} displayBuildingName={displayBuildingName} address={address} media={null} evidenceHref={evidenceHref} fallbackMarket={fallbackMarket} locationHref={locationHref} />}
+      fallback={<ProjectedEntityMedia locale={locale} buildingName={buildingName} displayBuildingName={displayBuildingName} address={address} media={null} evidenceHref={evidenceHref} fallbackMarket={fallbackMarket} locationHref={locationHref} showLocationAction={showLocationAction} />}
     />;
     const city = fallbackMarket ? { seoul: 'Seoul', singapore: 'Singapore', dubai: 'Dubai', tokyo: 'Tokyo' }[fallbackMarket] : '';
     const mapHref = locationHref ?? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([buildingName, address, city].filter(Boolean).join(', '))}`;
     return <div className={styles.unavailable} data-photo-state="unavailable" data-location-fallback="true">
+      <span className={styles.locationIcon} aria-hidden="true">⌖</span>
       <div>
+        <span className={styles.locationLabel}>{locale === 'ko' ? '건물 위치' : 'Building location'}</span>
         <strong>{displayBuildingName}</strong>
         {address ? <p>{address}</p> : null}
         <p>{locale === 'ko' ? '확인된 건물 사진이 아직 없습니다.' : 'A verified building photograph is not available yet.'}</p>
       </div>
-      <a href={mapHref}>{locale === 'ko' ? '지도에서 위치 확인' : 'View location on map'}</a>
+      {showLocationAction ? <a href={mapHref}>{locale === 'ko' ? '지도에서 위치 확인' : 'View location on map'}</a> : null}
     </div>;
   }
   if (media.displayUrl === null) return <GooglePlacePhoto
@@ -77,7 +81,7 @@ export function ProjectedEntityMedia({
     expectedBuildingKey={buildingKey}
     verifiedSubjectKind={media.relationship === 'parent' ? 'site-aerial' : 'building-exterior'}
     verifiedPlaceId={media.providerReference!}
-    fallback={<ProjectedEntityMedia locale={locale} buildingName={buildingName} displayBuildingName={displayBuildingName} address={address} media={null} evidenceHref={evidenceHref} fallbackMarket={fallbackMarket} locationHref={locationHref} />}
+    fallback={<ProjectedEntityMedia locale={locale} buildingName={buildingName} displayBuildingName={displayBuildingName} address={address} media={null} evidenceHref={evidenceHref} fallbackMarket={fallbackMarket} locationHref={locationHref} showLocationAction={showLocationAction} />}
   />;
   const focalX = media.focalX ?? 0.5;
   const focalY = media.focalY ?? 0.5;

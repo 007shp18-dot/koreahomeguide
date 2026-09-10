@@ -3,10 +3,10 @@ import { PASSPORT_FX, type PassportFxSnapshot } from './fx';
 export { PASSPORT_FX } from './fx';
 
 export type PassportLocale = 'en' | 'ko' | 'zh-CN';
-export type PassportMarketId = 'kr-seoul' | 'sg-singapore' | 'ae-dubai';
-export type PassportCurrency = 'KRW' | 'SGD' | 'AED';
+export type PassportMarketId = 'kr-seoul' | 'sg-singapore' | 'ae-dubai' | 'jp-tokyo';
+export type PassportCurrency = 'KRW' | 'SGD' | 'AED' | 'JPY';
 export type PassportBudgetCurrency = PassportCurrency | 'USD';
-export const PASSPORT_BUDGET_CURRENCIES = ['USD', 'KRW', 'SGD', 'AED'] as const;
+export const PASSPORT_BUDGET_CURRENCIES = ['USD', 'KRW', 'SGD', 'AED', 'JPY'] as const;
 export function normalizePassportCurrency(value: unknown): PassportBudgetCurrency {
   return PASSPORT_BUDGET_CURRENCIES.includes(value as PassportBudgetCurrency) ? value as PassportBudgetCurrency : 'KRW';
 }
@@ -20,7 +20,7 @@ export type PassportScope = Readonly<{
   name: string;
   href: string;
   medianPrice: number;
-  kind?: 'building' | 'project' | 'ready-area' | 'off-plan-area';
+  kind?: 'building' | 'project' | 'ready-area' | 'off-plan-area' | 'neighbourhood';
   sample?: number;
   locationLabel?: string;
   neighborhoodName?: string;
@@ -73,7 +73,7 @@ export function passportHref(locale: PassportLocale, budgetWon: number, currency
 }
 
 export function convertPassportCurrency(amount: number, from: PassportBudgetCurrency, to: PassportBudgetCurrency, fx: PassportFxSnapshot = PASSPORT_FX): number {
-  const rates = { KRW: fx.eurKrw, SGD: fx.eurSgd, USD: fx.eurUsd, AED: fx.eurUsd * fx.usdAed };
+  const rates = { KRW: fx.eurKrw, SGD: fx.eurSgd, USD: fx.eurUsd, AED: fx.eurUsd * fx.usdAed, JPY: fx.eurJpy };
   return amount / rates[from] * rates[to];
 }
 

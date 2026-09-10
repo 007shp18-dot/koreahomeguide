@@ -40,17 +40,20 @@ test('Passport restores the selected currency and converts the input when curren
 test('Passport restores a shared budget and keeps all city result rows aligned', async ({ page }) => {
   await page.goto('/passport/?budget=750000000');
   await expect(page.getByLabel('Budget', { exact: true })).toHaveValue('750,000,000');
-  await expect(page.locator('[data-passport-market]')).toHaveCount(3);
-  await expect(page.locator('[data-passport-row="local-budget"]')).toHaveCount(3);
-  await expect(page.locator('[data-passport-row="area"]')).toHaveCount(3);
+  await expect(page.locator('[data-passport-market]')).toHaveCount(4);
+  await expect(page.locator('[data-passport-row="local-budget"]')).toHaveCount(4);
+  await expect(page.locator('[data-passport-row="area"]')).toHaveCount(4);
 
   const cards = await page.locator('[data-passport-market]').evaluateAll((nodes) => nodes.map((node) => {
     const box = node.getBoundingClientRect();
     return { top: box.top, height: box.height };
   }));
   if (page.viewportSize()!.width > 860) {
-    expect(Math.max(...cards.map(({ top }) => top)) - Math.min(...cards.map(({ top }) => top))).toBeLessThanOrEqual(2);
-    expect(Math.max(...cards.map(({ height }) => height)) - Math.min(...cards.map(({ height }) => height))).toBeLessThanOrEqual(2);
+    for (const row of [cards.slice(0, 2), cards.slice(2, 4)]) {
+      expect(Math.abs(row[0]!.top - row[1]!.top)).toBeLessThanOrEqual(2);
+      expect(Math.abs(row[0]!.height - row[1]!.height)).toBeLessThanOrEqual(2);
+    }
+    expect(cards[2]!.top).toBeGreaterThan(cards[0]!.top);
   }
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
 });

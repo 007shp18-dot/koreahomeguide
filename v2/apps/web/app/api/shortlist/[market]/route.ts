@@ -2,7 +2,7 @@ import { defaults, validBudgetFilters, type BudgetFilters } from '@/lib/global-s
 import { overseasBudget } from '@/lib/global-shortlist/repository.server';
 export async function GET(request: Request, { params }: { params: Promise<{ market: string }> }) {
   const { market } = await params;
-  if (market !== 'singapore' && market !== 'dubai') return Response.json({ error: 'unknown_market' }, { status: 404 });
+  if (market !== 'singapore' && market !== 'dubai' && market !== 'tokyo') return Response.json({ error: 'unknown_market' }, { status: 404 });
   const query = new URL(request.url).searchParams;
   const base = defaults(market);
   const filters: BudgetFilters = { budget: Number(query.get('budget') ?? base.budget), minArea: Number(query.get('minArea') ?? base.minArea), maxArea: Number(query.get('maxArea') ?? base.maxArea), region: query.get('region') ?? base.region, housing: query.get('housing') ?? base.housing, completion: query.get('completion') ?? base.completion };

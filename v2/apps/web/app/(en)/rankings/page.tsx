@@ -7,7 +7,7 @@ export const metadata: Metadata = indexableMetadata({
   path: '/rankings/',
   title: 'Property price rankings by market | signedprice',
   description: 'Compare higher verified median transaction prices across published Seoul district and Singapore project cohorts.',
-  languageAlternates: { en: '/rankings/', ko: '/ko/rankings/' },
+  languageAlternates: { en: '/rankings/', ko: '/ko/rankings/', 'zh-Hans': '/zh-cn/rankings/' },
 });
 
 export default function RankingsHubPage() { return <RankingMarketsHub />; }

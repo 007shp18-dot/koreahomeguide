@@ -401,3 +401,28 @@ describe('Seoul public district rankings model', () => {
     expect(pageTwo.pagination).toMatchObject({ page: 2, pageSize: 20, total: 25, pageCount: 2 });
   });
 });
+
+
+describe('building ranking measures', () => {
+  it('ranks retained sales independently from medians and shows actual area and month', () => {
+    const rows = [
+      { ...saleBuilding('lower-median', 100), recentSales: [{ filedMonth: '2026-07', areaSqm: 50, priceWon: 900 }] },
+      { ...saleBuilding('higher-median', 200), recentSales: [{ filedMonth: '2026-08', areaSqm: 100, priceWon: 1000 }] },
+      { ...saleBuilding('withheld', 100, false), recentSales: [{ filedMonth: '2026-08', areaSqm: 10, priceWon: 99999 }] },
+    ];
+    const repositories = saleRepositories(rows as unknown as Parameters<typeof saleRepositories>[0]);
+    const selection = { transaction: 'sale', areaBand: 'all', housingType: 'apartment', contractGroup: 'not-applicable' } as const;
+    const high = buildKoreaBuildingRankings(repositories, selection, 1, 20, 'recent-high');
+    expect(high.rows.map(row => row.buildingId)).toEqual(['higher-median', 'lower-median']);
+    expect(high.rows[0]).toMatchObject({ rankingValue: 1000, observedMonth: '2026-08', observedAreaSqm: 100 });
+    const psm = buildKoreaBuildingRankings(repositories, selection, 1, 20, 'recent-psm');
+    expect(psm.rows.map(row => row.buildingId)).toEqual(['lower-median', 'higher-median']);
+    expect(psm.rows[0]?.rankingValue).toBe(18);
+  });
+  it('sorts full cohort filing counts before pagination', () => {
+    const first = saleBuilding('expensive', 500);
+    const second = { ...saleBuilding('busy', 100), cohorts: [{ areaBand: 'all' as const, price: { ...publishedBuildingPrice(100), n: 20 } }] };
+    const model = buildKoreaBuildingRankings(saleRepositories([first, second] as unknown as Parameters<typeof saleRepositories>[0]), { transaction: 'sale', areaBand: 'all', housingType: 'apartment', contractGroup: 'not-applicable' }, 1, 1, 'volume');
+    expect(model.rows[0]).toMatchObject({ buildingId: 'busy', rankingValue: 20 });
+  });
+});

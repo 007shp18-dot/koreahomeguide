@@ -59,15 +59,16 @@ function ToolResearchDeleteControl({ locale, onDeleted, disabled = false }: Read
 }
 
 /** Counts only allowlisted tool/market categories; never sends the research snapshot. */
-export function ToolResearchShare({ snapshot, resultRevision, locale = 'en' }: Readonly<{
+export function ToolResearchShare({ snapshot, usage, resultRevision, locale = 'en' }: Readonly<{
   snapshot: NormalizedToolResearchSnapshot | null;
+  usage?: Parameters<typeof recordToolCompletion>[0];
   resultRevision: string | number;
   locale?: ToolResearchLocale;
   label?: string;
 }>) {
   const lastResult = useRef<string | null>(null);
-  const tool = snapshot?.tool;
-  const market = snapshot?.market;
+  const tool = usage?.tool ?? snapshot?.tool;
+  const market = usage?.market ?? snapshot?.market;
   useEffect(() => {
     if (!tool || !market) return;
     const key = `${tool}:${market}:${resultRevision}`;
@@ -75,7 +76,7 @@ export function ToolResearchShare({ snapshot, resultRevision, locale = 'en' }: R
     lastResult.current = key;
     void recordToolCompletion({ tool, market });
   }, [tool, market, resultRevision]);
-  if (snapshot === null) return null;
+  if (!tool || !market) return null;
   const notice = locale === 'ko'
     ? '도구·도시별 이용 횟수만 집계합니다. 입력값과 개인 식별자는 저장하지 않습니다.'
     : locale === 'zh-CN'

@@ -115,6 +115,8 @@ export function createKoreaDetailBackHref(
     { market: 'kr', transaction: 'sale' },
   ), locale);
   const target = new URL(href, 'https://signedprice.invalid');
+  // The shared serializer omits split, but Seoul otherwise defaults to list.
+  if (selection.view === 'split') target.searchParams.set('view', 'split');
   const searchQuery = scalarQuery(query, 'q')?.trim();
   if (searchQuery !== undefined && searchQuery.length > 0) target.searchParams.set('q', searchQuery);
   const page = Number(scalarQuery(query, 'buildingPage'));
@@ -141,6 +143,7 @@ function projectedBuildingMediaFor(
     browserKey={googleMapsBrowserKeyFromEnvironment()}
     media={media}
     registryKey={registryKey}
+    showLocationAction={false}
     fallbackMarket="seoul"
     locationHref={locationHref ? seoulBuildingLocationHref(locationHref) : undefined}
   />;

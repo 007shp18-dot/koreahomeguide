@@ -10,6 +10,17 @@ import TokyoExplorer from '../components/japan/tokyo-explorer';
 beforeEach(() => { read.mockReset(); coverage.mockReset().mockResolvedValue([]); });
 
 describe('Tokyo transaction exploration', () => {
+  it('keeps locale-specific header actions, form, and footer on the shared translated explorer', async () => {
+    read.mockResolvedValue(null);
+    for (const locale of ['ko', 'zh-CN'] as const) {
+      const prefix = locale === 'ko' ? '/ko' : '/zh-cn';
+      const html = renderToStaticMarkup(await TokyoExplorer({ locale, searchParams: Promise.resolve({ city: '13113' }) }));
+      expect(html).toContain(`action="${prefix}/jp/tokyo/explore/"`);
+      expect(html).toContain(`href="${prefix}/jp/tokyo/shortlist"`);
+      expect(html).toContain(`href="${prefix}/tools/property-scenario?market=jp-tokyo&amp;currency=JPY"`);
+      expect(html).toContain(locale === 'ko' ? '>매입 비용 계산<' : '>计算购置成本<');
+    }
+  });
   it('starts a ward-only search at its latest published period and reports actual ward coverage', async () => {
     coverage.mockResolvedValue([
       { city: '13113', year: '2026', quarter: '1', sourceCount: 12 },

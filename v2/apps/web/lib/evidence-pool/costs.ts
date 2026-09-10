@@ -7,7 +7,7 @@ export type ScenarioCostOption = Readonly<{
   conditions: string; observedOn: string; observedLabel: string; expiresOn: string; sourceName: string; url: string;
   originalAmount: number; originalUnit: Evidence['unit']; billingPeriod?: Evidence['billingPeriod'];
 }>;
-const marketNames = { 'kr-seoul': 'seoul', 'sg-singapore': 'singapore', 'ae-dubai': 'dubai' } as const;
+const marketNames = { 'kr-seoul': 'seoul', 'sg-singapore': 'singapore', 'ae-dubai': 'dubai', 'jp-tokyo': 'tokyo' } as const;
 const normalized = (value: string | null | undefined) => value?.normalize('NFKC').trim().replace(/\s+/g, ' ').toLocaleLowerCase('en') ?? '';
 
 // A candidate is never an automatic cost assignment: location and free-text

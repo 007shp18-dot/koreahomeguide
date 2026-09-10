@@ -171,6 +171,7 @@ function MetricSummary({ model, view, locale }: Readonly<{ model: ReadyModel; vi
 
 function rankingPageHref(model: ReadyModel, page: number, locale: ProductLocale) {
   const query = new URLSearchParams();
+  if (model.buildingRankings.status === 'ready' && model.buildingRankings.metric && model.buildingRankings.metric !== 'median') query.set('metric', model.buildingRankings.metric);
   if (model.evidenceSelection.areaBand !== 'legacy-45-55') {
     query.set('transaction', model.evidenceSelection.transaction);
     query.set('area', model.evidenceSelection.areaBand);
@@ -189,6 +190,7 @@ function rankingPageHref(model: ReadyModel, page: number, locale: ProductLocale)
 
 function buildingRankingPageHref(model: ReadyModel, page: number, locale: ProductLocale) {
   const query = new URLSearchParams();
+  if (model.buildingRankings.status === 'ready' && model.buildingRankings.metric && model.buildingRankings.metric !== 'median') query.set('metric', model.buildingRankings.metric);
   if (model.evidenceSelection.areaBand !== 'legacy-45-55') {
     query.set('transaction', model.evidenceSelection.transaction);
     query.set('area', model.evidenceSelection.areaBand);
@@ -205,6 +207,9 @@ function buildingRankingPageHref(model: ReadyModel, page: number, locale: Produc
 
 function BuildingRankings({ model, locale }: Readonly<{ model: ReadyModel; locale: ProductLocale }>) {
   const ranking = model.buildingRankings;
+  const metric = ranking.status === 'ready' ? ranking.metric ?? 'median' : 'median';
+  const measures = [{ id: 'median', en: 'Median price', ko: '중앙값' }, { id: 'volume', en: 'Most transactions', ko: '거래량' }, ...(model.evidenceSelection.transaction === 'sale' ? [{ id: 'recent-high', en: 'Recent high sales', ko: '최근 고가 실거래' }, { id: 'recent-psm', en: 'Recent high sales /㎡', ko: '최근 ㎡당 고가 실거래' }] : [])];
+  const metricHref = (id: string) => { const target = new URL(buildingRankingPageHref(model, 1, locale), 'https://signedprice.invalid'); target.searchParams.set('metric', id); return `${target.pathname}${target.search}`; };
   const transactionLabel = locale === 'ko' ? {
     sale: '신고 매매', jeonse: '신고 전세', monthly: '신고 월세',
   }[model.evidenceSelection.transaction] : {
@@ -212,13 +217,17 @@ function BuildingRankings({ model, locale }: Readonly<{ model: ReadyModel; local
   }[model.evidenceSelection.transaction];
   return <section className={styles.buildingRanking} aria-labelledby="building-ranking-heading">
     <header className={styles.buildingRankingHeader}>
-      <div><p>{locale === 'ko' ? '건물 순위' : 'Building rankings'}</p><h2 id="building-ranking-heading">{locale === 'ko' ? '중앙값이 높은 건물' : 'Buildings with the highest medians'}</h2></div>
+      <div><p>{locale === 'ko' ? '건물 순위' : 'Building rankings'}</p><h2 id="building-ranking-heading">{metric === 'median' ? (locale === 'ko' ? '중앙값이 높은 건물' : 'Buildings with the highest medians') : measures.find(item => item.id === metric)?.[locale]}</h2></div>
       <p>{ranking.status === 'ready'
         ? locale === 'ko'
           ? `${ranking.pagination.total.toLocaleString('ko-KR')}개 건물 · 최소 ${model.source.publicationMinimum}건`
           : `${ranking.pagination.total.toLocaleString('en-US')} ${ranking.pagination.total === 1 ? 'building' : 'buildings'} · minimum ${model.source.publicationMinimum} filings`
         : locale === 'ko' ? '현재 건물 단위 자료를 불러올 수 없습니다.' : 'Building-level evidence is unavailable for this snapshot.'}</p>
     </header>
+    <nav className={styles.measureLinks} aria-label={locale === 'ko' ? '건물 순위 기준' : 'Building ranking measure'}>{measures.map(item => <Link key={item.id} href={metricHref(item.id)} aria-current={metric === item.id ? 'page' : undefined}>{item[locale]}</Link>)}</nav>
+    <p className={styles.measureNote}>{metric.startsWith('recent-')
+      ? locale === 'ko' ? '건물별 보유 최근 거래 중 최고가입니다. 전체 기간의 모든 거래를 보유한 순위가 아니며, 계약 월과 면적을 함께 확인하세요.' : 'Highest among the retained recent contracts for each eligible building. This is not a complete citywide record; contract month and unit size are shown.'
+      : locale === 'ko' ? '선택한 기간·주택 유형·면적 조건의 공개 기준 충족 건물을 비교합니다.' : 'Compare buildings meeting the publication minimum for the selected period, property type and unit size.'}</p>
     {ranking.status === 'unavailable' || ranking.rows.length === 0
       ? <p className={styles.empty}>{ranking.status === 'ready'
         ? locale === 'ko' ? '이 조건에서 공개 기준을 충족한 건물이 없습니다.' : 'No building meets the publication minimum for these filters.'
@@ -228,9 +237,9 @@ function BuildingRankings({ model, locale }: Readonly<{ model: ReadyModel; local
           <span className={styles.buildingRank} aria-label={`${locale === 'ko' ? '순위' : 'Rank'} ${row.rank}`}>{row.rank}</span>
           <Link className={styles.buildingLink} href={localizedSeoulHref(row.href, locale)}>
             <strong>{buildingDisplayName(row.officialName, locale)}</strong>
-            <span>{neighborhoodDisplayName(row.neighborhoodName, locale)} · {locale === 'ko' ? row.districtNameKo : row.districtNameEn}</span>
+            <span>{neighborhoodDisplayName(row.neighborhoodName, locale)} · {locale === 'ko' ? row.districtNameKo : row.districtNameEn} · {rankingHousingOptions.find(([id]) => id === row.housingType)?.[locale === 'ko' ? 2 : 1]}</span>
           </Link>
-          <div className={styles.buildingValue}><strong>{row.medianLabel}</strong><span>{row.sampleCount.toLocaleString(locale === 'ko' ? 'ko-KR' : 'en-US')} {transactionLabel}</span></div>
+          <div className={styles.buildingValue}><strong>{row.rankingLabel ?? row.medianLabel}</strong>{row.observedMonth ? <span>{row.observedMonth} · {row.observedAreaSqm}㎡</span> : null}<span>{row.sampleCount.toLocaleString(locale === 'ko' ? 'ko-KR' : 'en-US')} {transactionLabel}</span></div>
         </li>)}
       </ol>}
     {ranking.status === 'ready' && ranking.pagination.pageCount > 1 ? <nav className={styles.pagination} aria-label={locale === 'ko' ? '건물 순위 페이지' : 'Building ranking pages'}>
@@ -252,7 +261,7 @@ function ReadyRankings({ model, locale }: Readonly<{ model: ReadyModel; locale: 
         <div className={styles.heroCopy}>
           <p>{locale === 'ko' ? '신고 건물 가격' : 'Reported building prices'}</p>
           <h1 id="district-rankings-heading">{locale === 'ko' ? '서울 건물 가격 순위' : 'Seoul building price rankings'}</h1>
-          <p>{locale === 'ko' ? '선택 조건의 공개 가능한 건물을 신고 중앙값이 높은 순서로 비교합니다.' : 'Compare publishable buildings for these filters, ordered by reported median price.'}</p>
+          <p>{locale === 'ko' ? '실제 신고 거래로 건물별 가격과 거래량을 비교하고, 계약 내역까지 확인하세요.' : 'Compare building prices and activity from reported contracts, then open the underlying evidence.'}</p>
           <p className={styles.exclusion}>{selected.description} · {model.source.period} · {locale === 'ko' ? `최소 ${model.source.publicationMinimum}건` : `minimum ${model.source.publicationMinimum} filings`}</p>
         </div>
       </header>
@@ -271,7 +280,7 @@ function ReadyRankings({ model, locale }: Readonly<{ model: ReadyModel; locale: 
         {model.evidenceSelection.transaction === 'sale' ? null : <label><span>{locale === 'ko' ? '계약구분' : 'Contract group'}</span><select name="contractType" defaultValue={model.evidenceSelection.contractGroup}>
           <option value="all">{locale === 'ko' ? '전체' : 'All'}</option><option value="new">{locale === 'ko' ? '신규' : 'New'}</option><option value="renewal">{locale === 'ko' ? '갱신' : 'Renewal'}</option>
         </select></label>}
-        <button type="submit">{locale === 'ko' ? '적용' : 'Apply'}</button>
+        <input type="hidden" name="metric" value={model.buildingRankings.status === 'ready' ? model.buildingRankings.metric ?? 'median' : 'median'} /><button type="submit">{locale === 'ko' ? '적용' : 'Apply'}</button>
       </form> : null}
       <BuildingRankings model={model} locale={locale} />
       <section className={styles.districtComparison} aria-labelledby="district-comparison-heading">

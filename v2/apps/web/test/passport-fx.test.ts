@@ -6,7 +6,7 @@ import { PASSPORT_FX } from '../lib/passport/fx';
 import { createPassportFxLoader, fetchPassportFxSnapshot, parsePassportFxResponse } from '../lib/passport/fx.server';
 
 const instant = new Date('2026-09-08T17:00:00.000Z');
-const provider = { amount: 1, base: 'EUR', date: '2026-09-07', rates: { KRW: 1600, SGD: 1.5, USD: 1.2 } };
+const provider = { amount: 1, base: 'EUR', date: '2026-09-07', rates: { KRW: 1600, SGD: 1.5, USD: 1.2, JPY: 180 } };
 
 describe('Passport reference rates', () => {
   it('keeps the provider effective date separate from the actual successful check', () => {
@@ -30,7 +30,7 @@ describe('Passport reference rates', () => {
 
   it('fetches the narrow existing provider response without caching unvalidated JSON', async () => {
     const fetchResponse: typeof fetch = async (url, options) => {
-      expect(String(url)).toBe('https://api.frankfurter.dev/v1/latest?base=EUR&symbols=KRW,SGD,USD');
+      expect(String(url)).toBe('https://api.frankfurter.dev/v1/latest?base=EUR&symbols=KRW,SGD,USD,JPY');
       expect(options?.cache).toBe('no-store');
       expect(options?.redirect).toBe('error');
       expect(options?.signal).toBeInstanceOf(AbortSignal);

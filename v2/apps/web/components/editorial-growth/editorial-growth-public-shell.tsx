@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react';
+import type { SiteLocale } from '../../lib/navigation/site-navigation';
 
 import { EditorialGrowthContent } from '../design-review/editorial-growth-content';
 import { EditorialGrowthHome } from '../design-review/editorial-growth-home';
 import reviewStyles from '../design-review/editorial-growth-review.module.css';
 import type {
   EditorialGrowthReviewModel,
-  ReviewLocale,
 } from '../../lib/design-review/editorial-growth-review-model';
 import { PUBLIC_EDITORIAL_SURFACES } from '../../lib/editorial-growth/public-editorial-routes';
 import { SiteHeader } from '../site-header';
@@ -16,6 +16,7 @@ import { SiteFooter } from '../site-footer';
 type PublicEditorialSurface = 'home' | 'content';
 
 const COPY = {
+  ko: { footer: '국경을 넘는 주거 선택을 위한 신고 부동산 자료와 실용적인 가이드.' },
   en: { footer: 'Reported property evidence and practical guidance for decisions across borders.' },
   'zh-CN': { footer: '为跨境决策提供已申报房地产数据和实用指南。' },
 } as const;
@@ -49,12 +50,12 @@ export function EditorialGrowthPublicFrame({
   activeSection?: 'news' | 'guides';
   currentHref?: string;
   children: ReactNode;
-  locale: ReviewLocale;
+  locale: SiteLocale;
   shell?: boolean;
   surface: PublicEditorialSurface;
 }>) {
   const copy = COPY[locale];
-  const hrefs = PUBLIC_EDITORIAL_SURFACES[locale];
+  const hrefs = locale === 'ko' ? { home: '/ko/' } : PUBLIC_EDITORIAL_SURFACES[locale];
 
   return (
     <div
@@ -70,6 +71,7 @@ export function EditorialGrowthPublicFrame({
         links: surface === 'content'
           ? [{ label: activeSection, href: currentHref ?? `/${activeSection}/`, isCurrent: true }]
           : homepageCopy.header.links,
+        ...(locale === 'ko' ? { homeLabel: 'SignedPrice 홈', languageLabel: 'KO' } : {}),
         ...(locale === 'zh-CN' ? {
           languageLabel: 'ZH',
           languageSwitch: { label: 'English', href: surface === 'home' ? '/' : `/${activeSection}/`, hrefLang: 'en' as const },

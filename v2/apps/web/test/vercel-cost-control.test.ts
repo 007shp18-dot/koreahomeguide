@@ -17,9 +17,9 @@ describe('Vercel usage controls',()=>{
     ]));
   });
 
-  it('keeps time-sensitive Japan rotation and editorial publication schedules',()=>{
+  it('keeps bounded Japan backfill and editorial publication schedules',()=>{
     expect(config.crons).toEqual(expect.arrayContaining([
-      {path:'/api/internal/japan-refresh/',schedule:'40 * * * *'},
+      {path:'/api/internal/japan-refresh/',schedule:'*/5 * * * *'},
       {path:'/api/internal/editorial-publish/',schedule:'*/15 * * * *'},
     ]));
   });
