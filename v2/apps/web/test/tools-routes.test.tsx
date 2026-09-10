@@ -26,7 +26,7 @@ it('groups every existing tool once by decision',()=>{
  for(const tool of ['passport','single-quote','offer-compare','rent-check','property-scenario','singapore-check','dubai-check'])
   expect(html.match(new RegExp(`data-tool-id="${tool}"`,'g'))).toHaveLength(1);
 });
-it.each(['en','ko'] as const)('keeps calculator parameters out of indexable metadata: %s',locale=>{
+it.each(['en','ko','zh-CN'] as const)('keeps calculator parameters out of indexable metadata: %s',locale=>{
  const base=buildPropertyScenarioMetadata(locale,false), query=buildPropertyScenarioMetadata(locale,true);
  expect(base.robots).toEqual({index:true,follow:true});expect(query.robots).toEqual({index:false,follow:true});
  expect(base.alternates).toEqual(query.alternates);
@@ -38,4 +38,15 @@ it('selects only Tools for Check and Explore for search or ranking pages',()=>{
   const nav=html.match(/<nav[^>]*aria-label="Primary navigation"[\s\S]*?<\/nav>/)?.[0] ?? '';
   expect(nav.match(/aria-current="page"/g)).toHaveLength(1);expect(nav).toMatch(new RegExp(`aria-current="page"[^>]*>${label}</a>`));
  }
+});
+
+it('gives Chinese calculator metadata its own canonical and reciprocal language alternates',()=>{
+ const chinese=buildPropertyScenarioMetadata('zh-CN',false);
+ expect(chinese.alternates?.canonical).toBe('https://www.signedprice.com/zh-cn/tools/property-scenario/');
+ expect(chinese.openGraph).toMatchObject({locale:'zh_CN',url:'https://www.signedprice.com/zh-cn/tools/property-scenario/'});
+ expect(chinese.openGraph?.images).toEqual(['https://www.signedprice.com/og/en/']);
+ for(const locale of ['en','ko','zh-CN'] as const) expect(buildPropertyScenarioMetadata(locale,false).alternates?.languages).toEqual({
+  en:'https://www.signedprice.com/tools/property-scenario/',ko:'https://www.signedprice.com/ko/tools/property-scenario/',
+  'zh-Hans':'https://www.signedprice.com/zh-cn/tools/property-scenario/','x-default':'https://www.signedprice.com/tools/property-scenario/',
+ });
 });
