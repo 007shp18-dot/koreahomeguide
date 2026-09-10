@@ -187,6 +187,7 @@ test('Tokyo city journey opens its own article, chapters and Korean translation'
   await page.goto('/news/?market=tokyo');
   const lead = page.locator('[data-newsroom-lead]');
   await expect(lead).toContainText("A Tokyo neighbourhood you will want to come home to");
+  await page.getByText('View the buying steps', {exact:true}).click();
   await page.getByRole('tab', { name: /Where\?/ }).click();
   await expect(page.getByRole('tabpanel')).toContainText("Compare Nakameguro, Kiyosumi Shirakawa and Kagurazaka through the journeys you actually make, then check the street and building.");
   await page.getByRole('tabpanel').getByRole('link', { name: /Read this article/ }).click();

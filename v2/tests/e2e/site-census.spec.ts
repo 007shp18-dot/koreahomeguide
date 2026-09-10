@@ -26,10 +26,10 @@ for (const path of routes) test(`public page census: ${path}`, async ({ page }) 
 
 test('Seoul range context requires an individual size before an automatic cost subtotal', async ({page}) => {
  await page.goto('/tools/property-scenario/?market=kr-seoul&currency=KRW&price=935000000&areaBand=85-plus');
- await expect(page.getByLabel('Net area', {exact:true})).toHaveValue('');
+ await expect(page.getByRole('combobox', {name:'Net area', exact:true})).toHaveValue('');
  await expect(page.getByText(/Calculated subtotal:/)).toHaveCount(0);
  await expect(page.getByText(/selected transactions represent a size range/)).toBeVisible();
- await page.getByLabel('Net area', {exact:true}).selectOption('over');
+ await page.getByRole('combobox', {name:'Net area', exact:true}).selectOption('over');
  await expect(page.getByText(/Calculated subtotal:/)).toBeVisible();
  await expect(page.getByLabel('Purchase price (KRW)', {exact:true})).toHaveValue('935,000,000');
 });
