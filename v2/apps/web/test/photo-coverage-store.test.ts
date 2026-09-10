@@ -22,7 +22,7 @@ describe('photo coverage store', () => {
     expect(result).toEqual({ checked: 2, updated: 2 });
     expect(calls).toHaveLength(1);
     expect(calls[0]?.statement).toContain('photo-coverage:sync');
-    expect(calls[0]?.statement).toContain("'photo-naver-search'");
+    expect(calls[0]?.statement).not.toContain("'photo-naver-search'");
     expect(calls[0]?.statement).toContain("'unavailable'");
     expect(calls[0]?.statement).toContain('IS DISTINCT FROM');
     expect(calls[0]?.statement).toContain("photo.subject_kind = 'site-aerial'");

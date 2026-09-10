@@ -65,6 +65,10 @@
     {
       "path": "/api/internal/japan-refresh/",
       "schedule": "40 * * * *"
+    },
+    {
+      "path": "/api/internal/public-entity-projection/?mediaOnly=1",
+      "schedule": "57 * * * *"
     }
   ]
 }

@@ -1,3 +1,4 @@
+import { reconcilePhotoCoverage } from '@/lib/photos/photo-coverage-store.server';
 import { NextResponse } from 'next/server';
 
 import { contentDatabase } from '@/lib/db/postgres.server';
@@ -26,6 +27,11 @@ export async function POST(request: Request) {
     const publisher = createPublicEntityProjectionPublisher({
       query: (statement, parameters = []) => sql.query(statement, [...parameters]),
     });
+    if (new URL(request.url).searchParams.get('mediaOnly') === '1') {
+      await publisher.publishMedia();
+      const coverage = await reconcilePhotoCoverage();
+      return NextResponse.json({state: 'ready', coverage}, {headers: {'Cache-Control': 'private, no-store'}});
+    }
     const projection = await publisher.publishSeoul();
     const proximity = await publishInstalledKoreaProximityToDatabase();
     return NextResponse.json({ state: 'ready', ...projection, proximity });

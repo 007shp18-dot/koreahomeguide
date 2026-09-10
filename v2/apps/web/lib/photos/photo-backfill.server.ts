@@ -1,3 +1,4 @@
+import { mediaPipeline } from './media-pipeline.server';
 import 'server-only';
 
 import { contentDatabase } from '../db/postgres.server';
@@ -480,7 +481,7 @@ export async function runPhotoBackfillSlice(options: PhotoBackfillOptions) {
 export async function readPhotoCoverageStatus() {
   const sql = contentDatabase();
   if (sql === null) throw new Error('database_not_configured');
-  const [coverage, providerHealth, dailyUsage, missingRows, reviewRows, reviewBreakdown] = await Promise.all([
+  const [coverage, providerHealth, dailyUsage, missingRows, reviewRows, reviewBreakdown, pipeline] = await Promise.all([
     readPhotoCoverageSummary(),
     sql`SELECT provider, state, reason, paused_until AS "pausedUntil", checked_at AS "checkedAt" FROM photo_provider_health ORDER BY provider`,
     sql`SELECT provider, usage_date AS "usageDate", request_count AS "requestCount", estimated_cost_microusd AS "estimatedCostMicrousd" FROM photo_provider_daily_usage WHERE usage_date >= current_date - 1 ORDER BY usage_date DESC, provider`,
@@ -497,9 +498,11 @@ export async function readPhotoCoverageStatus() {
       count(*) FILTER (WHERE match_confidence < 0.5)::integer AS "lowConfidence"
       FROM building_photos WHERE status IN ('candidate', 'review_required')
       GROUP BY candidate_source, rights_status ORDER BY candidate_source, rights_status`,
+    mediaPipeline({query: (statement) => sql.query(statement)}),
   ]);
   return Object.freeze({
     coverage,
+    pipeline,
     providerHealth: Object.freeze(providerHealth.map((row) => Object.freeze({ ...row }))),
     dailyUsage: Object.freeze(dailyUsage.map((row) => Object.freeze({ ...row }))),
     missingCoordinates: Number(missingRows[0]?.count ?? 0),

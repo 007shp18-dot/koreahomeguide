@@ -223,8 +223,13 @@ function count(value: unknown): number {
 
 export function createPublicEntityProjectionPublisher(
   port: PublicEntityProjectionSqlPort,
-): Readonly<{ publishSeoul(): Promise<PublicEntityProjectionPublishResult> }> {
+): Readonly<{ publishSeoul(): Promise<PublicEntityProjectionPublishResult>; publishMedia(): Promise<void> }> {
   return Object.freeze({
+    async publishMedia() {
+      await port.query(RECONCILE_MEDIA_SQL);
+      await port.query(REFRESH_APPROVED_BUILDING_PHOTOS_SQL);
+      await port.query(REFRESH_MEDIA_SQL);
+    },
     async publishSeoul() {
       // Seoul location publication also maintains approved media for the two
       // markets with verified building identities. The legacy method stays stable.
