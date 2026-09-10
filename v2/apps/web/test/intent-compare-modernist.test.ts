@@ -139,7 +139,7 @@ describe('nine intent routes use one connected decision hierarchy', () => {
       const page = renderToStaticMarkup(await IntentPage({ params: Promise.resolve(params) }));
       const globalNavigation = navigationMarkup(page);
       expect(globalNavigation.match(/<a /g) ?? []).toHaveLength(5);
-      for (const label of ['Explore', 'Insights', 'Tools', 'Guides']) {
+      for (const label of ['Explore', 'Insights', 'News', 'Tools', 'Guides']) {
         expect(globalNavigation).toContain(`>${label}</a>`);
       }
 

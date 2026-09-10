@@ -21,7 +21,7 @@ describe('editorial portfolio public routes', () => {
     expect(main).toContain('Before you buy');
     expect(main).toContain('Owning &amp; ongoing costs');
     expect(main).toContain('Essential Seoul guides');
-    expect(main).toContain('href="/kr/seoul/explore/"');
+    expect(main).toContain('href="/kr/seoul/explore"');
     for (const slug of ['buy-property-in-korea-as-foreigner', 'rent-an-apartment-in-korea', 'wolse-vs-jeonse', 'korea-rental-contract-checklist']) expect(main).toContain(`/guides/${slug}`);
     expect(main).not.toContain('/ae/dubai/guide');
     expect(main).not.toContain('/guides/read-singapore-private-transactions');
@@ -32,8 +32,8 @@ describe('editorial portfolio public routes', () => {
     const html = renderToStaticMarkup(await GuidesPage({ searchParams: Promise.resolve({market: 'dubai'}) }));
     expect(html).toContain('Buying in Dubai: checks before you commit');
     expect(html).toContain('Essential Dubai guides');
-    expect(html).toContain('href="/ae/dubai/guide/"');
-    expect(html).toContain('href="/ae/dubai/explore/"');
+    expect(html).toContain('href="/ae/dubai/guide"');
+    expect(html).toContain('href="/ae/dubai/explore"');
     expect(html).not.toContain('/guides/read-singapore-private-transactions');
   });
 
