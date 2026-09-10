@@ -1,3 +1,4 @@
+import { latestCityEditions } from '@/content/en/daily-city-editions';
 import Image from 'next/image';
 import { ExploreLink } from '../market-ui/explore-link';
 import Link from 'next/link';
@@ -97,6 +98,19 @@ export function PropertyHome({ locale }: Readonly<{ locale: SiteLocale }>) {
       </div>
       <p className={styles.lead}>{copy.lead}</p>
     </header>
+
+    <section className={`${styles.section} ${styles.dailySection}`} aria-labelledby="daily-city-heading" lang="en" data-home-region="daily">
+      <div className={styles.dailyHeading}><div><p className={styles.kicker}>CITY CHECK / DAILY EDITIONS</p><h2 id="daily-city-heading">Four cities. A closer look.</h2><p>One practical read from each city. Publication dates are shown below.</p></div><Link href="/news/">All insights →</Link></div>
+      <div className={styles.dailyGrid}>
+        {latestCityEditions().map((edition, index) => <article key={edition.id} className={styles.dailyCard}>
+          <div className={styles.dailyMeta}><span>{edition.city}</span><time dateTime={edition.editionDate}>{edition.editionDate}</time></div>
+          <span className={styles.dailyNumber} aria-hidden="true">0{index + 1}</span>
+          <p className={styles.dailyCategory}>{edition.editionKind === 'news' ? 'MARKET UPDATE' : 'EVERGREEN EXPLAINER'}</p>
+          <h3><Link href={edition.canonicalHref} data-editorial-content-id={edition.id}>{edition.title}</Link></h3>
+          <p>{edition.deck}</p><Link href={edition.canonicalHref} className={styles.dailyRead}>Read the city check →</Link>
+        </article>)}
+      </div>
+    </section>
 
     <section className={styles.section} data-home-region="markets" aria-label={copy.markets}>
       <nav className={styles.cityIndex} aria-label={copy.markets}>
