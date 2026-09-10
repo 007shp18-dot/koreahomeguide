@@ -48,3 +48,9 @@
   .body p { font-size: 16px; line-height: 1.78; }
   .body > section { margin: 32px 0; }
 }
+
+.scenePhoto { margin: 28px 0 36px; }
+.scenePhoto > img { display: block; width: 100%; height: auto; max-height: 760px; object-fit: contain; border-radius: 8px; }
+.scenePhoto figcaption { display: block; margin-top: 10px; color: var(--muted); font-size: 12px; line-height: 1.6; }
+.scenePhoto figcaption span { display: block; margin-top: 4px; }
+.scenePhoto figcaption a { color: inherit; text-underline-offset: 3px; }

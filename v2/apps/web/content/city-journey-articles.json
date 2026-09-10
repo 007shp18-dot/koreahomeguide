@@ -712,7 +712,7 @@
       "ko": "성수에서 살 집, 숲과 골목 사이에서 고르기"
     },
     "deck": {
-      "en": "Turn your interest in Seongsu into decisions about the entrance, street and windows that would shape daily life.",
+      "en": "A walk through Seoul Forest, a turn into Seongsu’s streets, and a neighbourhood worth getting to know slowly.",
       "ko": "성수가 좋다는 마음을 어느 입구, 어느 거리, 어느 창문을 고를지에 대한 질문으로 바꿔본다."
     },
     "checkedAt": "2026-09-09",
@@ -720,13 +720,13 @@
       {
         "id": "two-centres",
         "title": {
-          "en": "Choose your centre: park or commercial streets",
+          "en": "Start with a little green",
           "ko": "공원과 상권, 먼저 고를 중심"
         },
         "paragraphs": {
           "en": [
-            "Seongsu contains more than one scene. The shops and workshops around Yeonmujang-gil and the paths around Seoul Forest offer different ways to spend time in the same neighbourhood. When looking for a home, draw the search around the places you would use most instead of treating the whole area as one address.",
-            "If the park matters most, check the entrance and the actual walking route. A building can appear close to green space while requiring a detour around a road or fence. If lively shopping streets are the attraction, revisit the possible building on a weekday evening. Consider what it would be like if a favourite destination were directly below your window."
+            "Picture an afternoon with nothing urgent on the calendar. Seoul Forest gives this version of Seongsu its starting point: a path through the trees, a place to sit, and a reason to stay outside a little longer. The appeal is in having somewhere to return to, rather than ticking off another stop.",
+            "Our photographs show different moments in the park, including an older autumn view of the lake. They are a small neighbourhood album, not a report on today’s weather or planting. Which would become your familiar spot: the boardwalk, the water, or a bench along the way?"
           ],
           "ko": [
             "성수라는 이름 안에는 다른 장면이 함께 있다. 연무장길의 상점과 작업장, 서울숲 주변의 산책길은 같은 동네를 즐기는 서로 다른 방법이다. 집을 찾을 때도 두 곳을 한 덩어리로 보기보다, 내가 더 자주 이용할 곳을 중심으로 탐색 범위를 그리는 편이 좋다.",
@@ -741,13 +741,13 @@
       {
         "id": "home-type",
         "title": {
-          "en": "Start with the property type",
+          "en": "Follow the streets out of the park",
           "ko": "동네 가격보다 주택 유형 먼저"
         },
         "paragraphs": {
           "en": [
-            "A search for Seongsu can put quite different properties in one list. When comparing apartments, multi-family buildings and other property types used as homes, separate exclusive-use area, registered use and management arrangements first. A lower price per square metre does not necessarily buy the same living conditions for less.",
-            "At each building, look at the streets its windows and entrance face and how those routes overlap with deliveries and other vehicle movements. Daytime atmosphere will not establish evening noise, and commercial popularity does not explain how easily an individual home will resell. Record the date and time of each visit so later impressions can be compared."
+            "Around Yeonmujang-gil, Seongsu tells another part of its story through shops, workshops and commercial streets. A day here can make room for both the park and the street. You do not have to choose one version of the neighbourhood before enjoying the other.",
+            "Take the photographs as an invitation to look closer: the ground floor of a building, the turn into a side street, the way the neighbourhood changes towards evening. The places you would happily revisit are more useful clues to your own Seongsu than a list of every destination you could fit into one day."
           ],
           "ko": [
             "성수의 이름으로 가격을 검색하면 서로 다른 주택이 같은 목록에 나타난다. 아파트, 다세대주택, 주거용으로 사용하는 다른 유형을 비교할 때는 전용면적과 용도, 관리 방식부터 구분하자. 단순히 ㎡당 가격이 낮다는 이유만으로 같은 주거 조건을 더 싸게 산다고 말할 수는 없다.",
@@ -761,13 +761,13 @@
       {
         "id": "next-step",
         "title": {
-          "en": "Separate today's home from future expectations",
+          "en": "Keep a small piece of Seongsu in your week",
           "ko": "가격에 포함된 기대를 분리하기"
         },
         "paragraphs": {
           "en": [
-            "If redevelopment is part of the conversation, start with the current notice, approval stage and whether the actual property is included. Keep suggested dates and future value separate from formally established progress. The existing space and neighbourhood should still be considered against your budget before adding an uncertain future benefit.",
-            "Choose one reason to keep Seongsu on your list. It could be daily walks in Seoul Forest or keeping work and home within the area. Once that reason is clear, you do not need to expand the search indefinitely. Compare recent records for the same property type and floor area, then decide what changes in space or age you would accept to keep your chosen location."
+            "Perhaps the attraction is a walk before dinner. Perhaps it is living near streets you already enjoy visiting. Start with that small, repeatable pleasure. A home search can grow from the wish to make an ordinary afternoon feel more like this one.",
+            "When curiosity becomes a search, open the neighbourhood map and look at the actual homes around your chosen places. Their size, housing type and access will differ. There is time for those comparisons; first, decide which part of Seongsu you would like to come back to."
           ],
           "ko": [
             "정비사업 이야기를 듣는다면 현재 고시와 인가 단계, 대상 구역에 실제 포함되는지부터 확인한다. 예상 일정과 미래 가치에 대한 설명은 확인된 사업 상태와 분리해 적는다. 그 기대를 빼고도 현재의 공간과 생활권이 내 예산에 맞는지가 중요하다.",
@@ -1241,7 +1241,7 @@
       "ko": "싱가포르는 집 앞에서 시작된다: 티옹바루의 일상"
     },
     "deck": {
-      "en": "A market run, a familiar meal and a walk through low-rise streets can explain a neighbourhood better than a condo brochure. Start your Singapore home search with the places you would use every week.",
+      "en": "Market tables, curved balconies and an unhurried turn through the streets: meet Tiong Bahru at neighbourhood scale.",
       "ko": "시장에 들르고, 익숙한 한 끼를 먹고, 낮은 건물 사이를 걷는 일상. 매주 찾고 싶은 장소에서 싱가포르의 집 찾기를 시작해 보세요."
     },
     "checkedAt": "2026-09-09",
@@ -1249,12 +1249,13 @@
       {
         "id": "section-1",
         "title": {
-          "en": "A morning in Tiong Bahru",
+          "en": "Start at the market",
           "ko": "티옹바루의 평범한 아침"
         },
         "paragraphs": {
           "en": [
-            "Tiong Bahru offers a useful way into Singapore: begin with an ordinary morning. The National Heritage Board’s trail starts at the market and food centre, a longstanding place to shop and eat. Nearby, the curved blocks of Moh Guan Terrace and Guan Chuan Street introduce a different scale from the towers usually pictured in condo advertising. These are places to explore before deciding which kind of home belongs in your search."
+            "Imagine beginning a free morning with one simple plan: find something to eat, then take a walk. Tiong Bahru Market and Food Centre is the starting point of the National Heritage Board’s neighbourhood trail. It also gives this story a familiar centre: a place where eating and everyday errands belong in the same outing.",
+            "The market photographs here were taken in September 2025. They show the food centre and its open-air seating, rather than a recommendation for a particular stall. Let the room, the tables and the surrounding homes set the scene."
           ],
           "ko": [
             "티옹바루에서 싱가포르를 알아가는 방법은 평범한 아침을 상상하는 것입니다. 국가유산위원회가 소개하는 탐방로는 오랫동안 장을 보고 식사하는 장소였던 시장과 푸드센터에서 시작합니다. 가까운 모관테라스와 관추안스트리트의 곡선형 주거 건물은 콘도 광고에 자주 나오는 타워와 다른 규모의 거리를 보여줍니다. 어떤 집을 찾아볼지 정하기 전에 먼저 둘러볼 만한 장소들입니다."
@@ -1267,12 +1268,13 @@
       {
         "id": "section-2",
         "title": {
-          "en": "Trace your weekday route",
+          "en": "Look up at the balconies",
           "ko": "평일의 동선을 따라가 보기"
         },
         "paragraphs": {
           "en": [
-            "Imagine doing the same errands on a working day. Where would you buy dinner after getting home late? Which route would you take with groceries? Would you walk to the station, use a bus, or change the journey when it rains? Mark the building’s pedestrian exit and the transport entrance you would actually use. A neighbourhood name leaves those small but repeated decisions unanswered."
+            "Beyond the market, the curved residential blocks around Moh Guan Terrace and Guan Chuan Street change the scale of the view. This is the detail worth slowing down for: a corner, a balcony, a row of windows above the street.",
+            "A neighbourhood becomes memorable through these small recognisable forms. You might first come for a meal and leave remembering the buildings, or return to take a different route past them."
           ],
           "ko": [
             "같은 용무를 평일에 본다고 생각해 보세요. 늦게 돌아오는 날에는 어디에서 저녁을 살까요? 장을 본 뒤에는 어느 길로 집에 갈까요? 역까지 걸을지, 버스를 탈지, 비가 오면 경로를 바꿀지도 살펴보세요. 건물의 실제 보행자 출입구와 이용할 역 입구를 지도에 표시해 보세요. 동네 이름만으로는 자주 반복할 이 작은 선택들을 알 수 없습니다."
@@ -1283,12 +1285,12 @@
       {
         "id": "section-3",
         "title": {
-          "en": "Visit at different times",
+          "en": "Leave room to linger",
           "ko": "다른 시간에 다시 방문하기"
         },
         "paragraphs": {
           "en": [
-            "Then visit at two different times. A street that feels relaxed over breakfast may sound different during an evening meal or the morning school run. Spend a few minutes outside the candidate building with your phone put away. Listen, look at crossings and shelter, and check whether the walk still feels comfortable when you carry a bag. Record what you notice instead of converting a pleasant first impression into a buying decision."
+            "An afternoon does not need an ambitious itinerary. Make space for a second look at the streets, a pause over a drink, or an errand that becomes part of the walk. The appeal of this kind of city story is the possibility of returning without needing a special occasion."
           ],
           "ko": [
             "시간대를 달리해 두 번 방문해 보세요. 아침에는 한적한 거리가 저녁 식사 시간이나 등교 시간에는 다르게 들릴 수 있습니다. 후보 건물 밖에서 휴대전화를 내려놓고 잠시 머물러 보세요. 소리를 듣고 횡단보도와 비를 피할 길을 살피며, 가방을 들고도 편하게 걸을 수 있을지 확인하세요. 좋은 첫인상을 바로 구매 결정으로 연결하기보다 직접 관찰한 내용을 적어두는 편이 좋습니다."
@@ -1299,12 +1301,12 @@
       {
         "id": "section-4",
         "title": {
-          "en": "Identify the property category",
+          "en": "Picture an ordinary weekday",
           "ko": "마음에 든 집의 주택 유형 확인하기"
         },
         "paragraphs": {
           "en": [
-            "The appealing street and the purchasable home are separate parts of the search. Tiong Bahru contains different property categories; a heritage-looking flat should not be assumed to have the same ownership rules as a private condominium. Identify the exact address, title and housing category before treating it as an option for your household. The next eligibility article explains where citizenship and permanent residency change the route."
+            "Now place a little of that outing inside a normal week. Where would you stop after work? Which familiar corner would tell you that you were nearly home? These are personal questions, and the same streets can suggest different lives to different people."
           ],
           "ko": [
             "마음에 드는 거리와 실제 구매할 수 있는 집은 별도로 확인해야 합니다. 티옹바루에는 여러 주택 유형이 섞여 있습니다. 오래된 모습을 간직한 아파트라고 해서 민간 콘도와 같은 소유 규칙이 적용된다고 가정해서는 안 됩니다. 정확한 주소, 권리관계와 주택 유형을 확인한 뒤 가족의 구매 후보에 넣으세요. 이어지는 구매 자격 기사에서는 시민권과 영주권에 따라 달라지는 경로를 설명합니다."
@@ -1315,12 +1317,12 @@
       {
         "id": "section-5",
         "title": {
-          "en": "Leave with a search brief",
+          "en": "Take the neighbourhood with you",
           "ko": "내 집 찾기의 기준 남기기"
         },
         "paragraphs": {
           "en": [
-            "Leave the visit with a small brief: three places you want within easy reach, one journey you want to simplify and one feature you need inside the home. Use that brief to compare Tiong Bahru with other neighbourhoods. You may decide you want this particular market-and-street routine, or discover that another part of Singapore gives you more of the week you want. Either answer creates a more useful shortlist than choosing a building from its facilities list."
+            "Keep three things you liked: perhaps the market, the low-rise streets and a particular building detail. Those are a useful beginning for exploring homes nearby. Housing categories and buying eligibility vary by property, so the neighbourhood you enjoy visiting and the home you can buy still need to meet at an exact address."
           ],
           "ko": [
             "방문을 마치면 가까이 두고 싶은 장소 세 곳, 간편해졌으면 하는 이동 한 가지, 집 안에서 필요한 특징 한 가지를 적어보세요. 이를 기준으로 티옹바루와 다른 동네를 비교할 수 있습니다. 이 시장과 거리의 일상을 원한다는 확신이 생길 수도 있고, 싱가포르의 다른 지역이 원하는 한 주에 더 잘 맞는다는 사실을 알게 될 수도 있습니다. 어느 쪽이든 시설 목록만 보고 건물을 고르는 것보다 구체적인 후보 목록으로 이어집니다."
@@ -2378,7 +2380,7 @@
       "ko": "매일 돌아가고 싶은 두바이는 어디일까?"
     },
     "deck": {
-      "en": "A promenade after work, dinner by the lakes, or an evening at the opera. Start with the places you would use before choosing the tower you would live in.",
+      "en": "Waterfront walks, a park between the towers and a table near the lakes. Find the everyday scenes behind Dubai’s skyline.",
       "ko": "퇴근 후 산책로, 호숫가에서 먹는 저녁, 오페라 공연이 있는 밤. 살고 싶은 타워를 고르기 전에 자주 찾게 될 장소부터 떠올려보세요."
     },
     "checkedAt": "2026-09-09",
@@ -2386,12 +2388,13 @@
       {
         "id": "section-1",
         "title": {
-          "en": "Begin at street level",
+          "en": "Come down to the water",
           "ko": "거리에서 시작하기"
         },
         "paragraphs": {
           "en": [
-            "A skyline makes a city easy to recognise. It tells you much less about coming home with groceries or finding somewhere to walk after a long day. Dubai Marina's waterfront promenade offers one starting point: think about reaching the water from your own front door, rather than only seeing it from a balcony. The distinction can change which side of a tower, entrance or street you prefer."
+            "Picture finishing work with enough daylight left for a walk. Dubai Marina’s promenade gives the skyline a different scale: the towers become the backdrop to a route beside the water. This story begins with that ordinary outing and the pleasure of having somewhere to go without making a whole evening of it.",
+            "The photographs include an archive view of Marina Walk from February 2014 alongside other waterfront views. They show the setting across different moments, not a current inventory of businesses or construction."
           ],
           "ko": [
             "스카이라인은 도시를 한눈에 알아보게 해줍니다. 하지만 장을 보고 돌아오는 길이나 긴 하루 뒤 산책할 곳까지 보여주지는 않습니다. 두바이 마리나의 수변 산책로에서 시작해보세요. 발코니에서 물이 보이는지와 함께 현관을 나서서 물가까지 어떻게 가는지 살펴보는 겁니다. 이 차이는 같은 타워에서도 선호하는 방향과 출입구, 거리의 위치를 바꿀 수 있습니다."
@@ -2404,12 +2407,13 @@
       {
         "id": "section-2",
         "title": {
-          "en": "Choose the places you would return to",
+          "en": "Find a patch of green in JLT",
           "ko": "계속 찾게 될 장소 고르기"
         },
         "paragraphs": {
           "en": [
-            "In Jumeirah Lakes Towers, the lakes and park create another setting for everyday life, with restaurants that can become regular destinations. Around Downtown, a night at Dubai Opera offers a different reason to stay close to home. These are starting points for a personal shortlist. A neighbourhood becomes useful when it contains places you would visit repeatedly, at the times your schedule allows."
+            "Jumeirah Lakes Towers offers another scene: paths and lawns between tall residential buildings, with the lakes and nearby restaurants giving an evening its shape. Imagine a short walk followed by dinner somewhere you would be happy to revisit.",
+            "The neighbourhood’s appeal is easier to picture through those small routines than through a skyline alone. A place can become familiar because of the path you take through it, not simply the view from above."
           ],
           "ko": [
             "주메이라 레이크 타워스(JLT)에서는 호수와 공원, 동네 식당을 중심으로 일상을 그려볼 수 있습니다. 다운타운에서는 두바이 오페라의 공연이 집 가까이 머물 이유가 될 수도 있습니다. 이런 장소들은 나에게 맞는 후보 지역을 찾는 출발점입니다. 내 일정에 맞는 시간에 반복해서 찾을 곳이 있어야 그 동네가 실제로 쓸모 있는 생활권이 됩니다."
@@ -2424,12 +2428,12 @@
       {
         "id": "section-3",
         "title": {
-          "en": "Give the weekday as much attention as the weekend",
+          "en": "Give the evening its own mood",
           "ko": "주말만큼 평일도 살펴보기"
         },
         "paragraphs": {
           "en": [
-            "Write down the address you need to reach most often, then trace the complete journey from each candidate building. Include the lift, the walk to a station or parking space, and the final connection at the other end. RTA's transport map is a sound place to begin. Test the actual route before relying on a station pin or a district description; neither measures your door-to-door journey."
+            "Downtown offers a different starting point for a night out, with Dubai Opera among its cultural destinations. Marina, JLT and Downtown do not need to compete for one universal title. Each can be the setting for a different version of your week."
           ],
           "ko": [
             "가장 자주 가야 할 주소를 적고 각 후보 건물에서 그곳까지의 전체 동선을 따라가보세요. 엘리베이터, 역이나 주차장까지의 이동, 목적지 쪽에서의 마지막 연결까지 포함해야 합니다. RTA의 공식 교통 지도가 출발점이 됩니다. 역 표시나 지역 소개만 믿기 전에 실제 경로를 확인하세요. 지도 위의 역 하나로 집 문에서 목적지 문까지 걸리는 시간을 알 수는 없습니다."
@@ -2442,12 +2446,12 @@
       {
         "id": "section-4",
         "title": {
-          "en": "Try the neighbourhood at your own pace",
+          "en": "Choose the scene you would repeat",
           "ko": "내 생활 속도로 동네 둘러보기"
         },
         "paragraphs": {
           "en": [
-            "Use a viewing day to answer ordinary questions. Can you carry shopping home comfortably? Where would a visitor arrive? Would the route to your favourite place still work when you prefer to spend less time outside? Observe the entrance and shared spaces, and return at another time if the answer matters to you. These are checks for your visit, not claims that every building in a district behaves the same way."
+            "Would you keep the waterfront walk, the park, or an evening close to a performance? Let one of those scenes lead the next visit. A favourite place is a reason to explore; the route, season and time of day will shape how it fits your own life."
           ],
           "ko": [
             "집을 보러 가는 날에는 평범한 질문에도 답해보세요. 장을 본 물건을 들고 편하게 돌아올 수 있나요? 손님은 어디로 들어오나요? 야외 이동을 줄이고 싶은 날에도 좋아하는 장소까지의 경로가 편한가요? 출입구와 공용공간을 살펴보고, 중요한 조건이라면 다른 시간에도 방문해보세요. 이는 현장에서 직접 확인할 질문이며, 한 지역의 모든 건물이 같은 특성을 가진다는 뜻은 아닙니다."
@@ -2458,12 +2462,12 @@
       {
         "id": "section-5",
         "title": {
-          "en": "Turn an impression into a shortlist",
+          "en": "Let the home search follow",
           "ko": "좋은 인상을 후보 목록으로 바꾸기"
         },
         "paragraphs": {
           "en": [
-            "Choose two priorities that would justify paying for this location: perhaps a useful commute and a walk you would take most evenings. Keep two or three neighbourhoods that meet them, then add a purchase-price range. The next stage is to decide whether ownership supports the way you expect to use the home. That question will determine how much weight to put on space, flexibility and rental income."
+            "Once a neighbourhood stays with you, open its map and look at where the homes sit in relation to your favourite places. Building entrances, access and costs come next. The first question can remain a lighter one: which Dubai would you enjoy coming home to?"
           ],
           "ko": [
             "그 위치에 비용을 지불할 이유가 되는 우선순위 두 가지를 골라보세요. 예를 들면 편리한 출퇴근과 거의 매일 걷게 될 산책로입니다. 조건을 충족하는 동네 두세 곳을 남기고 매수가격 범위를 더하세요. 다음에는 이 집을 어떻게 이용할 계획인지, 소유하는 것이 그 계획에 맞는지 판단합니다. 그 답에 따라 공간, 이동의 자유, 임대수입의 중요도가 달라집니다."
@@ -3255,7 +3259,7 @@
       "ko": "여행에서 좋아한 도쿄, 일상으로 삼고 싶은 동네"
     },
     "deck": {
-      "en": "River walks, garden afternoons and small streets: use three different Tokyo neighbourhoods to discover the everyday life you want before choosing an apartment.",
+      "en": "A green river, a spring evening and a turn into a stone-paved lane. Three neighbourhoods for a slower look at Tokyo.",
       "ko": "강변 산책, 정원에서 보내는 오후, 작은 골목. 서로 다른 도쿄 동네 세 곳을 통해 아파트를 고르기 전에 원하는 일상을 찾아봅니다."
     },
     "checkedAt": "2026-09-09",
@@ -3263,12 +3267,13 @@
       {
         "id": "an-ordinary-week",
         "title": {
-          "en": "Picture an ordinary week",
+          "en": "Make a little room in the afternoon",
           "ko": "평범한 일주일을 떠올려 보기"
         },
         "paragraphs": {
           "en": [
-            "A city break gives you permission to spend every afternoon somewhere new. A home gives you a smaller, more familiar map. Before opening property results, write down the places you would return to on an ordinary weekday: work, groceries, a walk, dinner and somewhere to meet a friend. The best starting neighbourhood is the one that brings those places together without making everyday travel a project."
+            "Imagine arriving with one free afternoon and no list to finish. You might follow a river, stop for coffee or turn into a lane because it looks inviting. A neighbourhood story begins with those small choices; a place to live can begin with wanting to make them again.",
+            "This photo sequence moves between Nakameguro and Kagurazaka, with another stop in the story at Kiyosumi Shirakawa. The dated photographs show different seasons and years, rather than one continuous walk or today’s street conditions."
           ],
           "ko": [
             "여행 중에는 매일 새로운 곳에서 오후를 보내도 좋습니다. 집을 고를 때는 더 작고 익숙한 지도가 필요합니다. 매물을 열기 전에 평일에도 되풀이해 찾을 곳을 적어보세요. 직장, 장보기, 산책, 저녁 식사, 친구를 만날 장소가 그 출발점입니다. 매번 큰 이동 계획을 세우지 않아도 이 장소들을 오갈 수 있는 동네부터 살펴보는 것이 좋습니다."
@@ -3279,12 +3284,13 @@
       {
         "id": "nakameguro",
         "title": {
-          "en": "Nakameguro: a river and its side streets",
+          "en": "Nakameguro, in more than one season",
           "ko": "나카메구로: 강변과 그 옆 골목"
         },
         "paragraphs": {
           "en": [
-            "Nakameguro combines the Meguro River with small shops, restaurants and the commercial spaces beneath the railway. Cherry-blossom season draws crowds; the streets also have a life outside that short window. Treat the river as one destination to test, then try the quieter approach to a candidate home. A pleasing weekend photograph does not tell you whether its doorstep feels right on a wet Tuesday."
+            "The Meguro River gives Nakameguro a line to follow. Our August photograph shows green trees above the water; the March photograph records an evening in cherry-blossom season. Put them together and the same neighbourhood has two very different moods.",
+            "The river and its side streets leave room for shops, a meal and an unplanned turn. The famous spring scene may be the introduction, but it need not be the only reason to stay curious about the area."
           ],
           "ko": [
             "나카메구로에는 메구로강과 작은 상점·음식점, 철로 아래의 상업 공간이 함께 있습니다. 벚꽃철에는 많은 사람이 모이지만 동네의 일상은 그 짧은 계절 밖에서도 이어집니다. 강변을 실제로 이용할 목적지 하나로 놓고, 후보 주택까지 이어지는 조용한 길도 걸어보세요. 주말에 찍은 매력적인 사진만으로는 비 오는 평일에도 그 집 앞이 마음에 들지 알 수 없습니다."
@@ -3297,12 +3303,12 @@
       {
         "id": "kiyosumi",
         "title": {
-          "en": "Kiyosumi Shirakawa: room for an unplanned afternoon",
+          "en": "An unplanned afternoon in Kiyosumi Shirakawa",
           "ko": "기요스미시라카와: 계획 없이 보낼 수 있는 오후"
         },
         "paragraphs": {
           "en": [
-            "Kiyosumi Shirakawa offers a different set of anchors: coffee shops, Kiyosumi Gardens and, in the wider area near Kiba Park, the Museum of Contemporary Art Tokyo. Mark each destination on a map before calling the whole neighbourhood walkable. For a home search, the useful question is which of these places would become part of your routine and which would remain an occasional outing."
+            "Coffee shops and Kiyosumi Gardens offer another way to spend an afternoon. In the wider area near Kiba Park, the Museum of Contemporary Art Tokyo adds a different destination. Think of these as possibilities for separate outings, not a promise that every stop sits beside the next."
           ],
           "ko": [
             "기요스미시라카와에서는 카페와 기요스미정원, 조금 더 넓은 생활권의 기바공원 인근 도쿄도현대미술관이 일상의 중심이 될 수 있습니다. 동네 전체를 도보 생활권으로 생각하기 전에 각 장소를 지도에 따로 표시해보세요. 주거지를 고를 때는 그중 무엇을 정기적으로 이용하고, 무엇을 가끔 찾아가는 나들이 장소로 남길지 구분하는 것이 유용합니다."
@@ -3315,12 +3321,12 @@
       {
         "id": "kagurazaka",
         "title": {
-          "en": "Kagurazaka: the turn off the main street",
+          "en": "Take the turn into Kagurazaka",
           "ko": "가구라자카: 큰길에서 한 번 꺾어 들어가기"
         },
         "paragraphs": {
           "en": [
-            "Kagurazaka's lanes, restaurants and shops invite a search at street level. Approaching from Kagurazaka, Iidabashi or Ushigome-Kagurazaka can give the same general neighbourhood a different journey home. During a viewing, follow your intended route, pause near the entrance and look for the practical things you will use after the novelty fades: food shopping, bicycle access and a comfortable walk after dark."
+            "Kagurazaka’s stone-paved lanes make the smaller view rewarding. A restaurant entrance, a shopfront or a turn away from the main street can become the detail you remember. The station photograph brings the outing back to everyday scale: a neighbourhood is also somewhere you arrive and leave."
           ],
           "ko": [
             "가구라자카의 골목과 음식점·상점은 거리 단위로 동네를 살펴보게 합니다. 가구라자카역, 이다바시역, 우시고메카구라자카역 중 어디에서 접근하느냐에 따라 같은 동네에서도 귀갓길이 달라집니다. 집을 보러 갔다면 실제로 다닐 길을 따라 입구까지 가보세요. 새로움이 익숙해진 뒤에도 필요한 장보기, 자전거 접근, 해가 진 뒤 걷기 편한 길을 확인할 차례입니다."
@@ -3333,12 +3339,12 @@
       {
         "id": "your-brief",
         "title": {
-          "en": "Turn the attraction into a short brief",
+          "en": "Keep the feeling, then open the map",
           "ko": "좋아하는 분위기를 짧은 선택 기준으로"
         },
         "paragraphs": {
           "en": [
-            "Give each candidate area three notes: the routine it supports, the compromise it asks of you and what still needs a visit. Keep a maximum of three areas in this first shortlist. You are not deciding which district is objectively best; you are creating a brief that will make later price and building comparisons meaningful. Then move to the question of what ownership would add to that life."
+            "Choose the scene you would want in an ordinary week: water and trees, an afternoon around coffee and gardens, or dinner reached through small streets. Then explore the homes and routes nearby. There is no need to decide which neighbourhood is best for everyone before finding one that feels worth another visit."
           ],
           "ko": [
             "후보 동네마다 세 가지를 적어보세요. 이곳에서 가능한 일상, 감수할 점, 직접 가서 더 확인할 점입니다. 첫 후보는 세 동네 이내로 줄여보세요. 어느 지역이 객관적으로 최고인지 정하는 과정이 아니라, 뒤에 나올 가격과 건물 비교에 의미를 주는 기준을 만드는 과정입니다. 그다음에는 이 일상에 집을 소유하는 것이 무엇을 더해주는지 살펴봅니다."
