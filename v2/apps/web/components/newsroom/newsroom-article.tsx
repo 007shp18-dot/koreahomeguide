@@ -1,3 +1,5 @@
+import { INSIGHT_PHOTOS } from '../../content/insight-photos';
+import { NeighbourhoodPhoto } from './neighbourhood-photo';
 import { KOREAN_BUYING_GUIDE_DATA } from '../../content/ko/buying-guides';
 import { BuyingGuide } from './buying-guide';
 import { ArticleContents } from './article-contents';
@@ -42,6 +44,7 @@ export function NewsroomArticle({ article }: Readonly<{
   article: PublishedContentArticle & Readonly<{ infographic?: InfographicSpec | null }>;
 }>) {
   const ko = article.locale === 'ko';
+  const articlePhoto = INSIGHT_PHOTOS[article.slug];
   const budgetComparison = BUDGET_GUIDE_SLUGS.some(slug => slug === article.slug);
   const t = (en:string, translated:string) => ko ? translated : en;
   const typeLabel = budgetComparison ? t('Budget comparison', '예산 비교') : ko ? ({'news-brief':'뉴스','policy-update':'정책','market-brief':'시장 분석','data-story':'데이터 분석',guide:'가이드'} as const)[article.type] : typeLabels[article.type];
@@ -87,7 +90,7 @@ export function NewsroomArticle({ article }: Readonly<{
     </EditorialArticleHeader>
     {buyingGuide ? null : <ArticleContents locale={article.locale} items={contentSections.flatMap((item, index) => item.heading ? [{ id: `section-${index + 1}`, title: item.heading }] : [])} />}
     {isMonthlyReport(article.slug) ? <MonthlyReportTrend slug={article.slug} locale={ko ? 'ko' : 'en'} /> : null}
-    {article.type === 'guide' && article.marketId ? <div className={styles.articlePhoto}><MarketRepresentativePhoto context="city" photo={article.marketId === 'kr-seoul' ? MARKET_PHOTOS.seoul : article.marketId === 'sg-singapore' ? MARKET_PHOTOS.singapore : article.marketId === 'ae-dubai' ? MARKET_PHOTOS.dubai : null} cityLabel={market} /></div> : null}
+    {articlePhoto ? <div className={layout.hero}><NeighbourhoodPhoto id={articlePhoto} eager context /></div> : article.type === 'guide' && article.marketId ? <div className={styles.articlePhoto}><MarketRepresentativePhoto context="city" photo={article.marketId === 'kr-seoul' ? MARKET_PHOTOS.seoul : article.marketId === 'sg-singapore' ? MARKET_PHOTOS.singapore : article.marketId === 'ae-dubai' ? MARKET_PHOTOS.dubai : null} cityLabel={market} /></div> : null}
     {figure == null ? null : <Infographic spec={figure} />}
     {buyingGuide ? <BuyingGuide guide={buyingGuide} locale={ko ? "ko" : "en"} /> : <article className={layout.body}>
       {contentSections.map((section, index) => <section id={`section-${index + 1}`} key={section.heading}>{section.heading ? <h2>{section.heading}</h2> : null}<EditorialMarkdown source={section.body} /></section>)}

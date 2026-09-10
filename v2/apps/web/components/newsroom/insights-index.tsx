@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { listNeighbourhoodStories, neighbourhoodHref, type NeighbourhoodPhoto } from '../../content/neighbourhood-stories';
 import { CITY_JOURNEY_ARTICLES } from '../../content/city-journey-articles';
 import { journeyArticlePhoto } from '../../content/journey-article-photos';
+import { insightPhoto } from '../../content/insight-photos';
 import { isInsightReference } from '../../content/insight-curation';
 import { journeyArticleHref } from '../../content/city-journey-routes';
 import { BUDGET_GUIDE_SLUGS } from '../../content/guide-directory';
@@ -30,7 +31,7 @@ export function buildInsightItems(articles: readonly PublishedContentArticle[], 
   const notebook: Insight[] = listNeighbourhoodStories().map(item => ({ id: `en:${item.slug}`, title: item.title, deck: item.deck, href: neighbourhoodHref(item.slug), date: item.publishedAt, city: item.city as City, topic: 'Neighborhood living', type: 'guide', photo: item.hero }));
   const local: Insight[] = CITY_JOURNEY_ARTICLES.filter(item => item.kind !== 'journey').map(item => ({ id: `en:city-article-${item.city}-${item.id}`, title: item.title.en, deck: item.deck.en, href: journeyArticleHref(item.city, item.id, 'en'), date: item.checkedAt, city: item.city, topic: topicFor(item.title.en, item.kind), type: item.kind === 'neighborhood' ? 'guide' : 'data-story', photo: journeyArticlePhoto(item.city, item.id), requiresLocalPhoto: item.kind === 'neighborhood' }));
   const records = [...articles, ...listPortfolioRecords('en').filter(item => item.type !== 'guide' || BUDGET_GUIDE_SLUGS.some(slug => slug === item.slug))].filter(item => !isInsightReference(item.slug));
-  const analysis: Insight[] = records.filter(item => item.status === 'published' && item.evidenceState !== 'withdrawn' && item.type !== 'news-brief' && (item.type !== 'guide' || BUDGET_GUIDE_SLUGS.some(slug => slug === item.slug))).map(item => ({ id: item.id, title: item.title, deck: item.deck, href: 'canonicalHref' in item ? String(item.canonicalHref) : `/news/${item.type === 'policy-update' ? 'policy/' : ''}${item.slug}/`, date: item.publishedAt, city: cities.find(city => marketIds[city] === item.marketId) ?? null, topic: topicFor(item.title, item.type), type: item.type }));
+  const analysis: Insight[] = records.filter(item => item.status === 'published' && item.evidenceState !== 'withdrawn' && item.type !== 'news-brief' && (item.type !== 'guide' || BUDGET_GUIDE_SLUGS.some(slug => slug === item.slug))).map(item => ({ id: item.id, title: item.title, deck: item.deck, href: 'canonicalHref' in item ? String(item.canonicalHref) : `/news/${item.type === 'policy-update' ? 'policy/' : ''}${item.slug}/`, date: item.publishedAt, city: cities.find(city => marketIds[city] === item.marketId) ?? null, topic: topicFor(item.title, item.type), type: item.type, photo: insightPhoto(item.slug) }));
   const seen = new Set<string>();
   const now = Date.now();
   return [...notebook, ...local, ...analysis].filter(item => {
@@ -48,7 +49,7 @@ function StoryPhoto({ item, eager = false }: { item: Insight; eager?: boolean })
     <Link href={item.href} data-editorial-event="article_open" aria-label={item.title} tabIndex={-1}>
       <Image src={photo.src} alt={photo.alt} fill priority={eager} sizes={eager ? '(max-width: 760px) calc(100vw - 40px), 700px' : '(max-width: 600px) calc(100vw - 40px), (max-width: 960px) 45vw, 380px'} />
     </Link>
-    {item.photo && <details className={styles.credit}><summary aria-label="Photo credit">Photo</summary><span><a href={item.photo.source}>{item.photo.author}</a> · <a href={item.photo.licenseUrl}>{item.photo.license}</a></span></details>}
+    {item.photo && <details className={styles.credit}><summary aria-label="Photo credit">Photo</summary><span>{item.photo.caption} · <a href={item.photo.source}>{item.photo.author}</a> · <a href={item.photo.licenseUrl}>{item.photo.license}</a></span></details>}
   </figure>;
 }
 

@@ -158,5 +158,155 @@
     "licenseHref": "https://unsplash.com/license",
     "width": 2400,
     "height": 1800
+  },
+  "mangwon-market": {
+    "src": "/assets/stories/mangwon-market.webp",
+    "caption": "Mangwon Market, Seoul · April 2023",
+    "source": "https://commons.wikimedia.org/wiki/File:Mercado_Mangwon_en_Se%C3%BAl.jpg",
+    "author": "Enamoradadecorea",
+    "license": "CC0",
+    "licenseHref": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "width": 1280,
+    "height": 576
+  },
+  "mangwon-night": {
+    "src": "/assets/stories/mangwon-night.webp",
+    "caption": "Mangwon-dong streets at night · June 2026",
+    "source": "https://commons.wikimedia.org/wiki/File:Mangwon_Street_at_Night.jpg",
+    "author": "Qhairy",
+    "license": "CC BY 4.0",
+    "licenseHref": "https://creativecommons.org/licenses/by/4.0",
+    "width": 1280,
+    "height": 1707
+  },
+  "mangwon-river": {
+    "src": "/assets/stories/mangwon-river.webp",
+    "caption": "Mangwon Hangang Park · June 2018",
+    "source": "https://commons.wikimedia.org/wiki/File:Mangwon_Hangang_Park.png",
+    "author": "Brit in Seoul",
+    "license": "CC BY-SA 4.0",
+    "licenseHref": "https://creativecommons.org/licenses/by-sa/4.0",
+    "width": 1280,
+    "height": 958
+  },
+  "wangsimni-station": {
+    "src": "/assets/stories/wangsimni-station.webp",
+    "caption": "Wangsimni Station, entrance 6 · November 2018",
+    "source": "https://commons.wikimedia.org/wiki/File:Wangsimni-station-entrance-06-20181123-074144.jpg",
+    "author": "LERK",
+    "license": "CC BY-SA 4.0",
+    "licenseHref": "https://creativecommons.org/licenses/by-sa/4.0",
+    "width": 1280,
+    "height": 720
+  },
+  "nowon-apartments": {
+    "src": "/assets/stories/nowon-apartments.webp",
+    "caption": "Apartment buildings in Nowon-gu, Seoul · March 2024",
+    "source": "https://commons.wikimedia.org/wiki/File:Nowon-gu_apartment_buildings_seen_from_Dobong-gu.jpg",
+    "author": "Ox1997cow",
+    "license": "CC BY-SA 4.0",
+    "licenseHref": "https://creativecommons.org/licenses/by-sa/4.0",
+    "width": 1280,
+    "height": 960
+  },
+  "nowon-view": {
+    "src": "/assets/stories/nowon-view.webp",
+    "caption": "Nowon-gu viewed from Changdong · April 2025",
+    "source": "https://commons.wikimedia.org/wiki/File:Nowon-gu_seen_from_Seed_Cube_Changdong.jpg",
+    "author": "Ox1997cow",
+    "license": "CC BY-SA 4.0",
+    "licenseHref": "https://creativecommons.org/licenses/by-sa/4.0",
+    "width": 1280,
+    "height": 960
+  },
+  "lentor-station": {
+    "src": "/assets/stories/lentor-station.webp",
+    "caption": "Lentor MRT Station · July 2024",
+    "source": "https://commons.wikimedia.org/wiki/File:Lentor_MRT_Station.jpg",
+    "author": "Fans018",
+    "license": "CC BY-SA 4.0",
+    "licenseHref": "https://creativecommons.org/licenses/by-sa/4.0",
+    "width": 1280,
+    "height": 1013
+  },
+  "sg-heritage": {
+    "src": "/assets/stories/sg-heritage.webp",
+    "caption": "Heritage View, Dover Rise · March 2013",
+    "source": "https://commons.wikimedia.org/wiki/File:Heritage_View,_Singapore_-_20130317.jpg",
+    "author": "Erwin Soo",
+    "license": "CC BY 2.0",
+    "licenseHref": "https://creativecommons.org/licenses/by/2.0",
+    "width": 1280,
+    "height": 1110
+  },
+  "sg-scala": {
+    "src": "/assets/stories/sg-scala.webp",
+    "caption": "The Scala condominium, Singapore · April 2015",
+    "source": "https://commons.wikimedia.org/wiki/File:The_Scala_Condominium,_Singapore.JPG",
+    "author": "ProjectManhattan",
+    "license": "CC BY-SA 4.0",
+    "licenseHref": "https://creativecommons.org/licenses/by-sa/4.0",
+    "width": 1280,
+    "height": 720
+  },
+  "sg-bishan": {
+    "src": "/assets/stories/sg-bishan.webp",
+    "caption": "HDB block 501, Bishan · December 2025",
+    "source": "https://commons.wikimedia.org/wiki/File:Bishan_HDB_apartment_block_501.jpg",
+    "author": "MapStaringEnthusiast",
+    "license": "CC0",
+    "licenseHref": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "width": 1280,
+    "height": 1007
+  },
+  "tokyo-apartments": {
+    "src": "/assets/stories/tokyo-apartments.webp",
+    "caption": "Apartment building in Tokyo · July 2017",
+    "source": "https://commons.wikimedia.org/wiki/File:Tokyo_Apartment_Block_(227773659).jpeg",
+    "author": "Joe Pettersson",
+    "license": "CC BY 3.0",
+    "licenseHref": "https://creativecommons.org/licenses/by/3.0",
+    "width": 1280,
+    "height": 934
+  },
+  "yeonhui-community": {
+    "src": "/assets/neighbourhoods/day1-0.jpg",
+    "width": 1280,
+    "height": 960,
+    "caption": "Yeonhui-dong community centre · May 2014",
+    "author": "안우석",
+    "source": "https://commons.wikimedia.org/wiki/File:Yeonhui-dong_Community_Service_Center_Seoul_20140513_164754.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseHref": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "yeonhui-housing": {
+    "src": "/assets/neighbourhoods/day1-2.jpg",
+    "width": 900,
+    "height": 1200,
+    "caption": "Yeonhui-dong residential streets · May 2021",
+    "author": "Minchelin",
+    "source": "https://commons.wikimedia.org/wiki/File:%EC%97%B0%ED%9D%AC%EB%8F%99_%EC%A3%BC%ED%83%9D%EA%B0%80_%EC%A0%84%EA%B2%BD_1.jpg",
+    "license": "CC BY-SA 2.0 KR",
+    "licenseHref": "https://creativecommons.org/licenses/by-sa/2.0/kr/"
+  },
+  "dunchon-station": {
+    "src": "/assets/stories/dunchon-station.webp",
+    "caption": "Dunchon-dong Station, entrance 1 · September 2018",
+    "source": "https://commons.wikimedia.org/wiki/File:Seoul-metro-P549-Dunchon-dong-station-entrance-1-20180915-092112.jpg",
+    "author": "LERK",
+    "license": "CC BY-SA 4.0",
+    "licenseHref": "https://creativecommons.org/licenses/by-sa/4.0",
+    "width": 1280,
+    "height": 2276
+  },
+  "dubai-miracle-garden": {
+    "src": "/assets/stories/dubai-miracle-garden.webp",
+    "caption": "Dubai Miracle Garden, Dubailand · January 2015",
+    "source": "https://commons.wikimedia.org/wiki/File:Path_of_Umbrellas.jpg",
+    "author": "Ashwin Geet Dsa",
+    "license": "CC BY-SA 4.0",
+    "licenseHref": "https://creativecommons.org/licenses/by-sa/4.0",
+    "width": 1280,
+    "height": 853
   }
 }
