@@ -1,6 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "ignoreCommand": "node ../../../scripts/release/ignore-build.mjs",
   "crons": [
     {
       "path": "/api/internal/data-collection/",
