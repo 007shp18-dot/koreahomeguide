@@ -2,9 +2,9 @@
 
 ## Code deployment
 
-The daily unified code release workflow and its queue/publish scripts were removed at the user's request. Code changes can be merged individually after the applicable GitHub checks; there is no daily batch or `release-ready` label requirement. Vercel's Git integration handles deployment from the configured branches. No new deploy token is required.
+The daily unified code release workflow and its queue/publish scripts were removed at the user's request. Code changes can be merged individually after the applicable GitHub checks; there is no daily batch or `release-ready` label requirement. Vercel's Git integration handles production deployment from `main`. No new deploy token is required.
 
-Repository-managed Vercel build exclusions are removed. Neither configuration defines branch deployment exclusions. SignedPrice explicitly sets `ignoreCommand` to `exit 1` (always continue) to override the stale Vercel project-level command that was canceling production deployments. The root configuration omits `ignoreCommand`. The legacy `ignore-build.mjs` compatibility command always exits 1 (continue build) if an external project setting still calls it. Commit markers, changed-file paths and deployment environments do not control its result.
+Repository-managed cost controls prevent routine feature-branch commits from starting a four-minute SignedPrice build. Production and `main` always build. A hosted preview is opt-in: include `[vercel-preview]` in the commit message. The complete build and browser release gate continues to run inside GitHub Actions for every applicable pull request. The legacy KoreaHomeGuide redirect project keeps its last READY deployment and has automatic Git deployments disabled; deploy it manually only when its root redirect configuration changes.
 
 Report GitHub merge and Vercel READY separately. A code rollback does not roll back database content. Existing CI workflows and branch protections remain in effect.
 
@@ -24,4 +24,4 @@ Existing collection schedules and the authenticated 정기 수집 운영 panel r
 
 ## Cost accounting
 
-With the exclusions removed, task pushes may request Vercel Preview builds, including documentation and test changes. Required verification runs in Actions; Vercel builds are a separate service/cost. No claim of zero build cost, guaranteed savings, or automatic observability plan changes. Compare future Build CPU Minutes, deployment count and total platform costs to the #282 baseline.
+Required verification runs in Actions; Vercel builds are a separate service/cost. Routine branch pushes no longer request Vercel Preview builds. Compare future Build CPU Minutes, Observability Events, Fluid Active CPU, ISR Writes, deployment count and total platform costs to the September 2026 baseline documented in `vercel-cost-control.md`.

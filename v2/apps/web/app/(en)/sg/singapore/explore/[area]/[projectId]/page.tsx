@@ -19,7 +19,7 @@ import { singaporeSnapshotRepositoryFromEnvironment } from '@/lib/singapore/snap
 type Props = Readonly<{ params: Promise<Readonly<{ area: string; projectId: string }>> }>;
 
 export const dynamicParams = true;
-export const revalidate = 60;
+export const revalidate = 3_600;
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { area, projectId } = await params;
   const code = area.toLowerCase();

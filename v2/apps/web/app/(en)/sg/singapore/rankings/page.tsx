@@ -52,4 +52,4 @@ export default async function SingaporeRankingsPage({ searchParams = Promise.res
   return <SingaporePage currentHref="/sg/singapore/rankings/" unframed><SingaporeRankings model={model} periodLabel={periodLabel} /></SingaporePage>;
 }
 
-export const revalidate = 60;
+export const revalidate = 3_600;

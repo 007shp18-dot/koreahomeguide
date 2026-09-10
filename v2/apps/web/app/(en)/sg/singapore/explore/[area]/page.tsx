@@ -51,4 +51,4 @@ export default async function SingaporeSegmentPage({ params }: Props) {
   return <SingaporeSegmentDetail model={model} />;
 }
 
-export const revalidate = 60;
+export const revalidate = 3_600;
