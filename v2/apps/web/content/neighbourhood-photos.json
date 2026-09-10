@@ -1,7 +1,7 @@
 {
   "seoul-lake": {
     "src": "/assets/stories/seoul-forest-lake.jpg",
-    "caption": "The lake in Seoul Forest, photographed in November 2009.",
+    "caption": "Seoul Forest lake · November 2009",
     "source": "https://commons.wikimedia.org/wiki/File:Seoulforest_lake01.jpg",
     "author": "Enigma7seven",
     "license": "CC BY-SA 3.0",
@@ -11,7 +11,7 @@
   },
   "seoul-forest": {
     "src": "/assets/stories/seoul-forest-boardwalk.jpg",
-    "caption": "A boardwalk and tables in Seoul Forest.",
+    "caption": "Seoul Forest boardwalk",
     "source": "https://commons.wikimedia.org/wiki/File:Seoul_Forest_boardwalk_with_tables.jpg",
     "author": "CartoonChess",
     "license": "CC BY-SA 4.0",
@@ -21,7 +21,7 @@
   },
   "seoul-street": {
     "src": "/assets/stories/seongsu-evening-street.jpg",
-    "caption": "An evening street in Seongsu-dong.",
+    "caption": "Seongsu-dong at dusk",
     "source": "https://commons.wikimedia.org/wiki/File:Evening_street_in_Seongsu-dong.jpg",
     "author": "CartoonChess",
     "license": "CC BY-SA 4.0",
@@ -31,7 +31,7 @@
   },
   "sg-market": {
     "src": "/assets/stories/tiong-bahru-food-centre.jpg",
-    "caption": "Inside Tiong Bahru Market’s food centre, September 2025.",
+    "caption": "Tiong Bahru Food Centre · September 2025",
     "source": "https://commons.wikimedia.org/wiki/File:Tiong_Bahru_Market,_food_centre.jpg",
     "author": "Kbseah",
     "license": "CC BY-SA 4.0",
@@ -41,7 +41,7 @@
   },
   "sg-seating": {
     "src": "/assets/stories/tiong-bahru-seating.jpg",
-    "caption": "Open-air seating at Tiong Bahru Market, September 2025.",
+    "caption": "Tiong Bahru Market · September 2025",
     "source": "https://commons.wikimedia.org/wiki/File:Tiong_Bahru_Market,_open_air_seating.jpg",
     "author": "Kbseah",
     "license": "CC BY-SA 4.0",
@@ -51,7 +51,7 @@
   },
   "dubai-walk": {
     "src": "/assets/stories/dubai-marina-walk.jpg",
-    "caption": "Dubai Marina Walk and the waterfront, photographed in February 2014.",
+    "caption": "Dubai Marina Walk · February 2014",
     "source": "https://commons.wikimedia.org/wiki/File:Dubai_Marina_Walk_(222830095).jpeg",
     "author": "Francisco Anzola",
     "license": "CC BY 3.0",
@@ -61,7 +61,7 @@
   },
   "tokyo-river": {
     "src": "/assets/stories/nakameguro-river.jpg",
-    "caption": "The Meguro River in Nakameguro 2-chome, August 2018.",
+    "caption": "Meguro River, Nakameguro · August 2018",
     "source": "https://commons.wikimedia.org/wiki/File:De_Meguro_in_Nakameguro_2-chōme,_stroomafwaarts_gezien_vanaf_de_Nakamekōen-brug,_-13_augustus_2018_a.jpg",
     "author": "ひでわく",
     "license": "CC BY-SA 2.1 Japan",
@@ -71,7 +71,7 @@
   },
   "tokyo-blossom": {
     "src": "/assets/stories/nakameguro-blossom.jpg",
-    "caption": "Cherry blossoms in Nakameguro on 28 March 2023: a spring scene.",
+    "caption": "Nakameguro · March 2023",
     "source": "https://commons.wikimedia.org/wiki/File:Cherry_blossom_in_Nakameguro_20230328.jpg",
     "author": "Suicasmo",
     "license": "CC BY-SA 4.0",
@@ -81,7 +81,7 @@
   },
   "seoul-river": {
     "src": "/assets/stories/seoul-seongsu-riverfront.webp",
-    "caption": "Seongsu Bridge and the riverfront skyline beside the Han River.",
+    "caption": "Seongsu Bridge and the Han River",
     "source": "https://commons.wikimedia.org/wiki/File:Seongsu_Bridge_and_Lotte_World_Tower.jpg",
     "author": "lazy fri13th",
     "license": "CC BY 2.0",
@@ -91,7 +91,7 @@
   },
   "sg-flats": {
     "src": "/assets/stories/singapore-tiong-bahru-flats.webp",
-    "caption": "Homes and ground-floor shops at 57 and 58 Tiong Bahru Road.",
+    "caption": "Tiong Bahru Road",
     "source": "https://commons.wikimedia.org/wiki/File:57_and_58_Tiong_Bahru_Road_from_Seng_Poh_Road_-_2022-08-14.jpg",
     "author": "Wzhkevin",
     "license": "CC BY-SA 4.0",
@@ -101,7 +101,7 @@
   },
   "sg-balconies": {
     "src": "/assets/stories/singapore-moh-guan-terrace.webp",
-    "caption": "The curved balconies of a residential block on Moh Guan Terrace, Tiong Bahru.",
+    "caption": "Moh Guan Terrace, Tiong Bahru",
     "source": "https://commons.wikimedia.org/wiki/File:Moh_Guan_Terrace_(13775639653).jpg",
     "author": "Nicolas Lannuzel",
     "license": "CC BY-SA 2.0",
@@ -111,7 +111,7 @@
   },
   "dubai-waterfront": {
     "src": "/assets/stories/dubai-marina-waterfront.webp",
-    "caption": "Dubai Marina’s towers seen across the waterfront.",
+    "caption": "Dubai Marina waterfront",
     "source": "https://commons.wikimedia.org/wiki/File:Dubai_Marina_Skyline.jpg",
     "author": "Norlando Pobre",
     "license": "CC BY 2.0",
@@ -121,7 +121,7 @@
   },
   "dubai-park": {
     "src": "/assets/stories/dubai-jlt-park.webp",
-    "caption": "Paths and lawns among the towers in Jumeirah Lakes Towers.",
+    "caption": "Jumeirah Lakes Towers Park",
     "source": "https://commons.wikimedia.org/wiki/File:Jumeirah_Lakes_Towers_Park_@_Dubai.jpg",
     "author": "Guilhem Vellut",
     "license": "CC BY 2.0",
@@ -131,7 +131,7 @@
   },
   "tokyo-lane": {
     "src": "/assets/stories/tokyo-kagurazaka-lane.webp",
-    "caption": "A stone-paved lane in Kagurazaka, Tokyo.",
+    "caption": "Kagurazaka, Tokyo",
     "source": "https://commons.wikimedia.org/wiki/File:Kagurazaka_path.jpg",
     "author": "Kazuhiko Maeda",
     "license": "CC BY 2.0",
@@ -141,7 +141,7 @@
   },
   "tokyo-station": {
     "src": "/assets/stories/tokyo-kagurazaka-station.webp",
-    "caption": "The entrance to Kagurazaka Station in Yaraicho.",
+    "caption": "Kagurazaka Station",
     "source": "https://commons.wikimedia.org/wiki/File:Kagurazaka_Station_2.jpg",
     "author": "Higa4",
     "license": "CC0 1.0",
@@ -151,7 +151,7 @@
   },
   "dubai-day": {
     "src": "/assets/home/dubai-waqas-sultan.jpg",
-    "caption": "Residential towers around Dubai Marina in daylight.",
+    "caption": "Dubai Marina",
     "source": "https://unsplash.com/photos/high-rise-buildings-near-calm-water-at-daytime-eNFNHIcYizY",
     "author": "Waqas Sultan",
     "license": "Unsplash License",

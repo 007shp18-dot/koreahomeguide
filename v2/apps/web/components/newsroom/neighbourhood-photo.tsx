@@ -14,6 +14,6 @@ export function NeighbourhoodPhoto({ id, eager = false }: Readonly<{ id: Neighbo
   const photo = photos[id];
   return <figure className={styles.scenePhoto} data-neighbourhood-photo={id}>
     <Image src={photo.src} alt={photo.caption} width={photo.width} height={photo.height} loading={eager ? "eager" : "lazy"} fetchPriority={eager ? "high" : undefined} sizes="(max-width: 740px) calc(100vw - 40px), 900px" />
-    <figcaption>{photo.caption}<span><a href={photo.source} target="_blank" rel="noopener noreferrer">Photo: {photo.author}</a> · <a href={photo.licenseHref} target="_blank" rel="noopener noreferrer">{photo.license}</a></span></figcaption>
+    <figcaption>{photo.caption}<span><a href={photo.source} target="_blank" rel="noopener noreferrer">{photo.author}</a> · <a href={photo.licenseHref} target="_blank" rel="noopener noreferrer">{photo.license}</a></span></figcaption>
   </figure>;
 }
