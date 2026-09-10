@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { editorialAlternates } from './public-route-contract';
+import { NEIGHBOURHOOD_STORIES, neighbourhoodHref } from '../../apps/web/content/neighbourhood-stories';
 
 function sitemapLocations(xml: string): string[] {
   return [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]!);
@@ -63,13 +64,13 @@ test('SEO foundation: every sitemap URL is terminal, indexable, and self-canonic
     const chinese = parsed.pathname.startsWith('/zh-cn/');
     expect(metaContent(html, 'property', 'og:url'), url).toBe(url);
     expect(metaContent(html, 'property', 'og:locale'), url).toBe(korean ? 'ko_KR' : chinese ? 'zh_CN' : 'en_US');
-    expect(metaContent(html, 'property', 'og:image'), url).toBe(
-      `https://www.signedprice.com/og/${korean ? 'ko' : 'en'}/`,
-    );
+    const neighbourhood = NEIGHBOURHOOD_STORIES.find((story) => neighbourhoodHref(story.slug) === parsed.pathname);
+    const expectedImage = neighbourhood
+      ? new URL(neighbourhood.hero.src, parsed.origin).href
+      : `https://www.signedprice.com/og/${korean ? 'ko' : 'en'}/`;
+    expect(metaContent(html, 'property', 'og:image'), url).toBe(expectedImage);
     expect(metaContent(html, 'name', 'twitter:card'), url).toBe('summary_large_image');
-    expect(metaContent(html, 'name', 'twitter:image'), url).toBe(
-      `https://www.signedprice.com/og/${korean ? 'ko' : 'en'}/`,
-    );
+    expect(metaContent(html, 'name', 'twitter:image'), url).toBe(expectedImage);
   }
 });
 
