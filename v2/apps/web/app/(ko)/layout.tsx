@@ -1,3 +1,4 @@
+import { EditorialAnalytics } from '@/components/editorial-analytics';
 import { AdvertisingConsent } from '@/components/consent/advertising-consent';
 import { PublicSiteJsonLd } from '@/components/public-json-ld';
 import { advertisingConfigFromEnvironment } from '@/lib/advertising/advertising-config.server';
@@ -22,6 +23,7 @@ export const metadata: Metadata = {
 };
 
 export default function KoreanRootLayout({ children }: { children: ReactNode }) {
+  const vercelAnalyticsEnabled = vercelAnalyticsEnabledFromEnvironment();
   const analytics = analyticsConfigFromEnvironment();
   const advertising = advertisingConfigFromEnvironment();
   preload('/fonts/archivo-latin-wght-normal.woff2', {
@@ -45,7 +47,8 @@ export default function KoreanRootLayout({ children }: { children: ReactNode }) 
               : {})}
           />
         ) : null}
-        {vercelAnalyticsEnabledFromEnvironment() ? <Analytics /> : null}
+        {analytics.status === "ready" || vercelAnalyticsEnabled ? <EditorialAnalytics vercelEnabled={vercelAnalyticsEnabled} /> : null}
+        {vercelAnalyticsEnabled ? <Analytics /> : null}
       </body>
     </html>
   );

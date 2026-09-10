@@ -6,13 +6,13 @@ import { parseGlobalSaved, readGlobalSaved, subscribeGlobalSaved } from '@/lib/g
 import { parseSavedSearch, readSavedSearch, subscribeSavedSearch } from '@/lib/seoul-shortlist/storage';
 import styles from '../seoul-shortlist/shortlist.module.css';
 const empty = () => '';
-export function SavedCities({ locale = 'en' }: { locale?: 'en' | 'ko' }) {
+export function SavedCities({ locale = 'en', initiallyOpen = false }: { locale?: 'en' | 'ko'; initiallyOpen?: boolean }) {
   const ko = locale === 'ko';
   const [city, setCity] = useState('all');
   const globalRaw = useSyncExternalStore(subscribeGlobalSaved, readGlobalSaved, empty);
   const seoulRaw = useSyncExternalStore(subscribeSavedSearch, readSavedSearch, empty);
   const places = useMemo(() => [...parseSavedSearch(seoulRaw).buildings.map(p => ({ ...p, market: 'seoul' as const })), ...parseGlobalSaved(globalRaw).places], [globalRaw, seoulRaw]);
-  return <details className={styles.savedCities}><summary>{ko ? '모든 도시 관심 목록' : 'Saved across cities'} · {places.length}</summary>
+  return <details className={styles.savedCities} open={initiallyOpen}><summary>{ko ? '모든 도시 관심 목록' : 'Saved across cities'} · {places.length}</summary>
     <label>{ko ? '도시 선택' : 'City'} <select value={city} onChange={e => setCity(e.target.value)}><option value="all">{ko ? '전체' : 'All cities'}</option>{Object.keys(cityPaths).map(c => <option key={c} value={c}>{c === 'seoul' ? 'Seoul' : c === 'singapore' ? 'Singapore' : 'Dubai'}</option>)}</select></label>
     <p className={styles.meta}>{ko ? '이 브라우저에 저장한 목록입니다. 해당 도시에서 거래 변화 확인과 관심 해제를 할 수 있습니다.' : 'Saved in this browser. Open a city to check evidence updates or remove saved places.'}</p>
     <ul>{places.filter(p => city === 'all' || city === p.market).map(p => <li key={`${p.market}:${p.key}`}><Link href={`${ko ? '/ko' : ''}${cityPaths[p.market]}#saved-title`}>{p.name} · {p.market === 'seoul' ? 'Seoul' : p.market === 'singapore' ? 'Singapore' : 'Dubai'}</Link></li>)}</ul>

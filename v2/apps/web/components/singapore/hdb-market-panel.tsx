@@ -88,7 +88,7 @@ export function HdbMarketPanel({ locale = 'en', model }: Readonly<{ locale?: Mar
           />
         </div>
       </div>
-      <div className={styles.tableWrap} id="hdb-towns">
+      <details id="hdb-towns" className={styles.evidenceDisclosure}><summary>{locale === 'ko' ? '모든 HDB 타운 비교 · 전체 수록 기간' : 'Compare all HDB towns · full reported period'}</summary><div className={styles.tableWrap}>
         <table className={`${styles.table} ${styles.hdbTable}`}>
           <caption className={styles.srOnly}>{sgText(locale, "HDB resale and rental evidence by town")}</caption>
           <thead><tr>
@@ -101,7 +101,7 @@ export function HdbMarketPanel({ locale = 'en', model }: Readonly<{ locale?: Mar
             <td>{sgText(locale, town.rentalMedianLabel ?? 'Not published')}</td><td>{sgText(locale, town.rentalCountLabel)}</td>
           </tr>)}</tbody>
         </table>
-      </div>
+      </div></details>
       <details className={styles.evidenceDisclosure}>
         <summary>{locale === 'ko' ? '데이터·출처' : 'Data & sources'}</summary>
         <div className={styles.disclosureBody}>

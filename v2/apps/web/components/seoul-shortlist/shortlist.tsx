@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState, useSyncExternalStore, type FormEvent } fr
 import { SEOUL_RENT_CHECK_DISTRICTS } from '@signedprice/korea-rent/browser';
 import { buildingDisplayName } from '@/lib/public-market/seoul-display-names';
 import { newlyObservedCount, validFilters, type ShortlistItem, type ShortlistResult } from '@/lib/seoul-shortlist/model';
-import { parseSavedSearch, readSavedSearch, subscribeSavedSearch, writeSavedSearch, type SavedSearch } from '@/lib/seoul-shortlist/storage';
+import { initializeSavedBaselines, parseSavedSearch, readSavedSearch, subscribeSavedSearch, writeSavedSearch, type SavedSearch } from '@/lib/seoul-shortlist/storage';
 import styles from './shortlist.module.css';
 import { SavedCities, ShortlistCities } from '../global-shortlist/saved-cities';
 const serverSnapshot = () => '';
@@ -36,6 +36,12 @@ export function SeoulShortlist({ locale = 'en' }: { locale?: 'en' | 'ko' }) {
   }, [filtersKey, idsKey, page, refresh, requestKey]);
   const current = response?.key === requestKey ? response : null;
   const data = current?.data;
+  useEffect(() => {
+    if (!data) return;
+    const latest = parseSavedSearch(readSavedSearch());
+    const initialized = initializeSavedBaselines(latest, data.saved, new Date().toISOString());
+    if (initialized !== latest) writeSavedSearch(initialized);
+  }, [data]);
   const prefix = ko ? '/ko' : '';
   function persist(next: SavedSearch, success: string) {
     setMessage(writeSavedSearch(next) ? success : t('Browser storage is blocked. Changes last only for this page session.', '브라우저 저장이 차단되어 이번 페이지에서만 유지됩니다.'));
@@ -56,8 +62,8 @@ export function SeoulShortlist({ locale = 'en' }: { locale?: 'en' | 'ko' }) {
   function markRead(item: ShortlistItem) { persist({ ...stored, buildings: stored.buildings.map(b => b.key === item.key ? { ...b, signatures: item.signatures, checkedAt: new Date().toISOString() } : b) }, t('Updates marked as seen.', '업데이트 확인을 완료했습니다.')); }
   function card(item: ShortlistItem, savedCard = false) {
     const baseline = stored.buildings.find(b => b.key === item.key);
-    const added = baseline ? newlyObservedCount(baseline.signatures, item.signatures) : 0;
-    const changed = baseline ? added > 0 || newlyObservedCount(item.signatures, baseline.signatures) > 0 : false;
+    const added = baseline?.signatures.length ? newlyObservedCount(baseline.signatures, item.signatures) : 0;
+    const changed = baseline?.signatures.length ? added > 0 || newlyObservedCount(item.signatures, baseline.signatures) > 0 : false;
     const district = SEOUL_RENT_CHECK_DISTRICTS.find(d => d.slug === item.district);
     const sale = item.latest;
     const price = ko ? `${(sale.priceWon / 100_000_000).toLocaleString('ko-KR', { maximumFractionDigits: 3 })}억 원` : `KRW ${sale.priceWon.toLocaleString('en-US')}`;

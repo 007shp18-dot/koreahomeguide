@@ -54,7 +54,8 @@ describe('standalone city article publication', () => {
         expect(html).toContain('data-article-contents');
         expect(html).toContain('href="#source-');
         expect(html).toContain('<table>');
-        expect(html).toContain('data-editorial-event="journey_next"');
+        expect(html).toContain('data-editorial-event="article_complete"');
+        expect(html).toMatch(/data-editorial-event="article_(?:open|to_explore|to_check)"/);
         expect(html).toContain(locale === 'ko' ? '가정' : 'hypothetical');
       }
     }

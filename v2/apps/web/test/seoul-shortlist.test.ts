@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { KoreaSaleEvidenceBuildingRecord } from '@signedprice/korea-rent';
 import { buildShortlist, DEFAULT_FILTERS, newlyObservedCount, validFilters } from '../lib/seoul-shortlist/model';
-import { parseSavedSearch, readSavedSearch, writeSavedSearch } from '../lib/seoul-shortlist/storage';
+import { initializeSavedBaselines, parseSavedSearch, readSavedSearch, writeSavedSearch } from '../lib/seoul-shortlist/storage';
 vi.mock('server-only', () => ({}));
 import { GET } from '../app/api/seoul/shortlist/route';
 afterEach(() => { vi.unstubAllEnvs(); vi.unstubAllGlobals(); });
@@ -86,3 +86,12 @@ describe('Seoul saved search', () => {
    }
    console.info('Installed shortlist', { period: result.period, total: result.total, first: result.items[0]?.name });
  });
+
+it('initializes a first detail save only on successful evidence and preserves later changes', () => {
+ const saved = parseSavedSearch(JSON.stringify({version:1,filters:DEFAULT_FILTERS,buildings:[{key:'jongno-gu/a',name:'A',signatures:[],checkedAt:'2026-09-01'}]}));
+ expect(initializeSavedBaselines(saved, [], '2026-09-10')).toBe(saved);
+ const initialized = initializeSavedBaselines(saved, [{key:'jongno-gu/a',signatures:['old']}], '2026-09-10');
+ expect(newlyObservedCount(initialized.buildings[0]!.signatures, ['old'])).toBe(0);
+ expect(initializeSavedBaselines(initialized, [{key:'jongno-gu/a',signatures:['old','new']}], '2026-09-11')).toBe(initialized);
+ expect(newlyObservedCount(initialized.buildings[0]!.signatures, ['old','new'])).toBe(1);
+});
