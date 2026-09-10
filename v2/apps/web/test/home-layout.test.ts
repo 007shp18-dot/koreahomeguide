@@ -33,10 +33,10 @@ describe('signedprice public editorial homepage', () => {
     expect(markup).not.toContain('data-home-region="passport"');
   }, 20_000);
 
-  it('gives each city a discovery destination and one daily article', async () => {
+  it('gives each city a single destination without repeating article feeds', async () => {
     const markup = renderToStaticMarkup(await Home());
     expect(markup.match(/data-contextual-action=/g)).toHaveLength(4);
-    expect(markup.match(/data-editorial-content-id=/g)).toHaveLength(4);
+    expect(markup).not.toContain('data-editorial-content-id');
     expect(markup).not.toMatch(/data-what-changed-item|data-lead-data-story|data-home-guide|three-market-home-title/);
     for (const city of ['kr-seoul', 'sg-singapore', 'ae-dubai', 'jp-tokyo']) {
       const card = markup.match(new RegExp('<li[^>]*data-contextual-action="' + city + '"[^>]*>([\\s\\S]*?)</li>'))?.[1] ?? '';

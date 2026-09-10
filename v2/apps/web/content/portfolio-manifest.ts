@@ -1,4 +1,3 @@
-import { DAILY_CITY_EDITIONS } from './en/daily-city-editions';
 import { KOREAN_EDITORIAL_PORTFOLIO } from './ko/portfolio';
 import { KOREAN_BUYING_GUIDES } from './ko/buying-guides';
 import { BUYING_GUIDES } from './en/buying-guides';
@@ -88,7 +87,6 @@ export function validateEditorialPortfolio(values: readonly unknown[]): readonly
 }
 
 export const EDITORIAL_PORTFOLIO = Object.freeze(validateEditorialPortfolio(Object.freeze([
-  ...DAILY_CITY_EDITIONS,
   ...ENGLISH_PORTFOLIO.map(article => ({ ...article, translationGroupId: article.translationGroupId ?? article.slug })),
   ...MONTHLY_REPORTS.map(article => ({ ...article, translationGroupId: article.translationGroupId ?? article.slug })),
   ...BUYING_GUIDES.map(article => ({ ...article, translationGroupId: article.slug })),
